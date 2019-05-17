@@ -1,0 +1,523 @@
+var calendar = {
+	"name": "Tal'Dorei",
+ 
+	"date": {
+		"year": 1,
+		"timespan": 1,
+		"day": 2,
+		"hour": 0,
+		"minute": 0
+	},
+
+	"year_data": {
+		"first_day": 1,
+		"overflow": false,
+		"global_week": [
+			"Monday",
+			"Tuesday",
+			"Wednesday",
+			"Thursday",
+			"Friday",
+			"Saturday",
+			"Sunday",
+		],
+		"timespans": [
+			{
+				"name": "January",
+				"type": "month",
+				"interval": 1,
+				"offset": 0,
+				"length": 31
+			},
+			{
+				"name": "February",
+				"type": "month",
+				"interval": 1,
+				"offset": 0,
+				"length": 5
+			},
+			{
+				"name": "March",
+				"type": "month",
+				"interval": 1,
+				"offset": 0,
+				"length": 31
+			},
+			{
+				"name": "April",
+				"type": "month",
+				"interval": 1,
+				"offset": 0,
+				"length": 30
+			},
+			{
+				"name": "May",
+				"type": "month",
+				"interval": 1,
+				"offset": 0,
+				"length": 31
+			},
+			{
+				"name": "June",
+				"type": "month",
+				"interval": 1,
+				"offset": 0,
+				"length": 30
+			},
+			{
+				"name": "July",
+				"type": "month",
+				"interval": 1,
+				"offset": 0,
+				"length": 31
+			},
+			{
+				"name": "August",
+				"type": "month",
+				"interval": 1,
+				"offset": 0,
+				"length": 31
+			},
+			{
+				"name": "September",
+				"type": "month",
+				"interval": 1,
+				"offset": 0,
+				"length": 30
+			},
+			{
+				"name": "October",
+				"type": "month",
+				"interval": 1,
+				"offset": 0,
+				"length": 31
+			},
+			{
+				"name": "November",
+				"type": "month",
+				"interval": 1,
+				"offset": 0,
+				"length": 30
+			},
+			{
+				"name": "December",
+				"type": "month",
+				"interval": 1,
+				"offset": 0,
+				"length": 31
+			},
+		],
+		"leap_days": [
+			{
+				"name": "Named",
+
+				"intercalary": true,
+
+				"timespan": 1,
+
+				"adds_week_day": false,
+				"day": 1,
+				"week_day": "Test",
+
+				"interval": 2,
+				"offset": 0,
+				"reference": "year"
+			},
+			{
+				"name": "Custom!",
+
+				"intercalary": true,
+
+				"timespan": 1,
+
+				"adds_week_day": false,
+				"day": 5,
+				"week_day": "Test",
+
+				"interval": 2,
+				"offset": 0,
+				"reference": "year"
+			},
+			{
+				"name": "What's this?",
+
+				"intercalary": true,
+
+				"timespan": 1,
+
+				"adds_week_day": false,
+				"day": 2,
+				"week_day": "Test",
+
+				"interval": 2,
+				"offset": 0,
+				"reference": "year"
+			},
+			{
+				"name": "WOT",
+
+				"intercalary": true,
+
+				"timespan": 1,
+
+				"adds_week_day": false,
+				"day": 2,
+				"week_day": "Test",
+
+				"interval": 2,
+				"offset": 0,
+				"reference": "year"
+			}
+		]
+	},
+ 
+	"moons": [
+		{
+			"name": "Moon",
+			"cycle": 17,
+			"shift": 10,
+			"granularity": 16,
+			"color": "#ff00ff",
+			"hidden": false
+		},
+		{
+			"name": "Moon",
+			"cycle": 11,
+			"shift": 7,
+			"granularity": 16,
+			"color": "#ffff00",
+			"hidden": false
+		},
+		{
+			"name": "Moon",
+			"cycle": 13,
+			"shift": 1,
+			"granularity": 16,
+			"color": "#00ffff",
+			"hidden": false
+		},
+		{
+			"name": "The Red Moon",
+			"cycle": 32,
+			"shift": 8,
+			"granularity": 32,
+			"color": "#ff0000",
+			"hidden": true
+		}
+	],
+ 
+	"clock": {
+		"hours": 24,
+		"minutes": 60
+	},
+ 
+	"seasons": {
+		"data": [
+			{
+				"name": "Summer",
+				"duration": 0,
+				"transition_length": 90,
+				"time": {
+					"sunrise": {
+						"hour": 9,
+						"minute": 0
+					},
+					"sunset": {
+						"hour": 16,
+						"minute": 0
+					}
+				},
+			},
+			{
+				"name": "Winter",
+				"duration": 0,
+				"transition_length": 90,
+				"time": {
+					"sunrise": {
+						"hour": 6,
+						"minute": 0
+					},
+					"sunset": {
+						"hour": 19,
+						"minute": 0
+					}
+				},
+			}
+		],
+		"location_type": "custom",
+		"location": 0,
+		"locations": [
+			{
+				"name": "Northern Dusuna",
+				"seasons": [
+					{
+						"name": "Summer",
+						"custom_name": true,
+						"time": {
+							"sunrise": {
+								"hour": 9,
+								"minute": 0
+							},
+							"sunset": {
+								"hour": 16,
+								"minute": 0
+							}
+						},
+						"weather":{
+							"temp_low": 24,
+							"temp_high": 32,
+							"precipitation": 0.45,
+							"precipitation_intensity": 0.3
+						}
+					},
+					{
+						"name": "Winter",
+						"custom_name": true,
+						"time": {
+							"sunrise": {
+								"hour": 6,
+								"minute": 0
+							},
+							"sunset": {
+								"hour": 19,
+								"minute": 0
+							}
+						},
+						"weather":{
+							"temp_low": -10,
+							"temp_high": 5,
+							"precipitation": 0.45,
+							"precipitation_intensity": 0.7
+						}
+					}
+				],
+				"custom_dates": {
+					"0": {
+						"temperature": ["i", 33],
+						"precipitation": "Test",
+						"clouds": 4,
+						"wind_speed": 5,
+						"wind_speed_desc": "",
+						"wind_velocity": ["m", "7"],
+						"wind_direction": "S",
+						"feature": "Dust storm"
+					}
+				},
+
+				"settings": {
+					"timezone": {
+						"hour": -1,
+						"minute": -30,
+					},
+
+					"large_noise_frequency": 0.015,
+					"large_noise_amplitude": 5.0,
+
+					"medium_noise_frequency": 0.3,
+					"medium_noise_amplitude": 2.0,
+
+					"small_noise_frequency": 0.8,
+					"small_noise_amplitude": 3.0
+				}
+			}
+		],
+		"global_settings": {
+			"fixed": false,
+			"offset": 30,
+			"seed": 826116802,
+			"temp_sys": "metric",
+			"wind_sys": "metric",
+			"cinematic": true
+		}
+	},
+ 
+	"eras": [
+		{
+			"name": "The Age of Arcanum",
+			"abbreviation": "AoA",
+			"description": "WOOOOOOOOOOOOOOOO",
+			"settings": {
+				"show_as_event": false,
+				"event_category": 0,
+				"ends_year": false
+			},
+			"date": {
+				"year": -1500,
+				"timespan": 1,
+				"day": 1
+			}
+		},
+		{
+			"name": "Death of The Great King Odmund",
+			"abbreviation": "PD",
+			"description": "",
+			"settings": {
+				"show_as_event": true,
+				"event_category": 0,
+				"ends_year": false
+			},
+			"date": {
+				"year": 1,
+				"timespan": 1,
+				"day": 15
+			}
+		},
+		{
+			"name": "Post Divergence",
+			"abbreviation": "PD",
+			"description": "",
+			"settings": {
+				"show_as_event": true,
+				"event_category": 0,
+				"ends_year": false
+			},
+			"date": {
+				"year": 2,
+				"timespan": 1,
+				"day": 1
+			}
+		},
+		{
+			"name": "The Calamity",
+			"abbreviation": "TC",
+			"description": "",
+			"settings": {
+				"show_as_event": true,
+				"event_category": 0,
+				"ends_year": true
+			},
+			"date": {
+				"year": 4,
+				"timespan": 5,
+				"day": 9
+			}
+		}
+	],
+
+	"settings": {
+		"layout": "grid", 
+		"show_current_month": false,
+		"show_era_abbreviation": false,
+		"allow_view": true,
+		"only_backwards": true,
+		"only_reveal_today": false,
+		"hide_moons": false,
+		"hide_clock": false,
+		"hide_events": false,
+		"hide_eras": false,
+		"hide_all_weather": false,
+		"hide_future_weather": false,
+		"auto_events": true,
+		"add_month_number": true,
+		"add_year_day_number": false
+	},
+
+	"cycles": {
+		"format": "Era of $1, Year of the $2 $3",
+		"data": [
+			{
+				"offset": 0,
+				"length": 12,
+				"names": [
+					"Peace",
+					"Strife",
+					"War",
+					"Hardship",
+					"Plenty"
+				]
+			},
+			{
+				"offset": 0,
+				"length": 2,
+				"names": [
+					"Wind",
+					"Mist",
+					"Water",
+					"Clay",
+					"Earth",
+					"Magma",
+					"Flame",
+					"Ash"
+				]
+			},
+			{
+				"offset": 0,
+				"length": 1,
+				"names": [
+					"Cockatrice",
+					"Dryad",
+					"Sabretooth",
+					"Hydra",
+					"Dragon",
+					"Snake",
+					"Auroch",
+					"Yeti",
+					"Strider",
+					"Unicorn",
+					"Woad",
+					"Roc"
+				]
+			}
+		]
+	},
+
+	"event_data": {
+		"categories": [
+			{
+				"name": "Test",
+				"color": "Red", /* Options: Dark-Solid, Red, Pink, Purple, Deep-Purple, Blue, Light-Blue, Cyan, Teal, Green, Light-Green, Lime, Yellow, Orange, Blue-Grey */
+				"text": "text", /* options: text, dot, background */
+				"category_settings":{
+					"hide": false, // Hide from players?
+					"player_usable": false // Category available to players?
+				},
+				"event_settings": { // this contains
+					"hide": false,
+					"noprint": false
+				}
+			},
+			{
+				"name": "New",
+				"color": "Blue", /* Options: Dark-Solid, Red, Pink, Purple, Deep-Purple, Blue, Light-Blue, Cyan, Teal, Green, Light-Green, Lime, Yellow, Orange, Blue-Grey */
+				"text": "dot", /* options: text, dot, background */
+				"category_settings":{
+					"hide": false, // Hide from players?
+					"player_usable": false // Category available to players?
+				},
+				"event_settings": { // this contains
+					"hide": false,
+					"noprint": false
+				}
+			},
+		],
+		"events": [
+			{
+				"name": "New Dawn",
+				"description": "<h1>Test</h1>",
+				"settings": {
+					"color": "Red", /* Options: Dark-Solid, Red, Pink, Purple, Deep-Purple, Blue, Light-Blue, Cyan, Teal, Green, Light-Green, Lime, Yellow, Orange, Blue-Grey */
+					"text": "text", /* options: text, dot, background */
+					"hide": true,
+					"noprint": false
+				},
+				"category": 0,
+				"data": {
+					"length": 1, //611,
+					"show_start_end": false,
+					"show_first_last": false,
+					"conditions": [
+						[
+							"3",
+							[
+								["Moons",0,["0","8"]],
+								["Moons",0,["1","8"]],
+								["Moons",0,["2","8"]],
+								["Moons",0,["3","16"]]
+							],
+						]
+					],
+				}
+			},
+		]
+	}
+};

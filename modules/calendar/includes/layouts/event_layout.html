@@ -1,0 +1,127 @@
+<div id="event_show_background" class='clickable_background hidden'>
+	<div class='event-basic-container'>
+		<div class='event-basic-wrapper'>
+			<div class='event-basic-wrapper'>
+				<div class='event-wrapper'>
+					<div class='event-close-btn-bg'></div>
+					<i class="close_event_btn icon-remove-circle"></i>
+
+					<h2 class='event_name event-form-heading'></h2>
+					<div class='detail-row italics-text'>
+						Description:
+					</div>
+					<div class='detail-row form-control'>
+						<div class="event_desc"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="event_edit_background" class='clickable_background hidden'>
+	<div class='event-basic-container'>
+		<div class='event-basic-wrapper'>
+			<form id="event-form" class="event-wrapper" action="post"> 
+
+				<div class='event-close-btn-bg'></div>
+				<i class="close_event_btn icon-remove-circle"></i>
+
+				<h2 class='event-form-heading'>Edit Event</h2>
+				<div class='detail-row'>
+					<input type='text' class='form-control event_name' name='event_name' placeholder='Event name' autofocus='' />
+				</div>
+				
+				<div class='detail-row'>
+					<textarea class='form-control event_desc editable' name='event_desc' placeholder='Event description' autofocus=''></textarea>
+				</div>
+
+				<div class='detail-row'>
+					<h5 class='event-form-heading'>Conditions:</h5>
+					<div class='detail-row'>
+						<button type='button' id='add_event_condition' class='btn btn-primary half'>Add condition</button>
+						<button type='button' id='add_event_condition_group' class='btn btn-primary half'>Add new group</button>
+					</div>
+					<div class='detail-row'>
+
+						<ol class='form-control group_list_root' id='event_conditions_container'>
+							
+						</ol>
+
+					</div>
+					<div class='detail-row'>
+						<button type='button' id='remove_dropped' class='btn btn-danger full hidden space_below'>DROP TO REMOVE</button>
+					</div>
+				</div>
+
+				<div class='detail-row'>
+					<h5 class='event-form-heading'>Category:</h5>
+					<select class="form-control" id="event_categories" name='event_categories' placeholder='Event Category'>
+
+					</select>
+				</div>
+
+				<div class='detail-row'>
+					<div class='detail-column half'>
+						<h5 class='event-form-heading'>Text color:</h5>
+						<select id="color_style" name='color_style' class='form-control event-text-input color_display' key='color_display'>
+							<option class="event background Dark-Solid">Dark-Solid</option>
+							<option class="event background Red">Red</option>
+							<option class="event background Pink">Pink</option>
+							<option class="event background Purple">Purple</option>
+							<option class="event background Deep-Purple">Deep-Purple</option>
+							<option class="event background Blue">Blue</option>
+							<option class="event background Light-Blue">Light-Blue</option>
+							<option class="event background Cyan">Cyan</option>
+							<option class="event background Teal">Teal</option>
+							<option class="event background Green">Green</option>
+							<option class="event background Light-Green">Light-Green</option>
+							<option class="event background Lime">Lime</option>
+							<option class="event background Yellow">Yellow</option>
+							<option class="event background Orange">Orange</option>
+							<option class="event background Blue-Grey">Blue-Grey</option>
+						</select>
+					</div>
+
+					<div class='detail-column half'>
+						<h5 class='event-form-heading'>Text style:</h5>
+						<select id="text_style" name='text_style' class='form-control event-text-input text_display'>
+							<option class="event Dark-Solid text" value="text">Just text</option>
+							<option class="event Dark-Solid dot" value="dot">• Dot with text</option>
+							<option class="event Dark-Solid background" value="background">Background</option>
+						</select>
+					</div>
+				</div>
+
+				<div class='detail-row'>
+					<div class='detail-column half'>
+						<label class='form-control checkbox'>
+							<input type='checkbox' id='event_hide_players' name='event_hide_players'> Hide from players  
+						</label>
+					</div>
+
+					<div class='detail-column half'>
+						<label class='form-control checkbox'>
+							<input type='checkbox' id='event_dontprint_checkbox' name='event_dontprint_checkbox'> Do not print
+						</label>
+					</div>
+				</div>
+
+				<div class='detail-row'>
+					<div class='detail-column full'>
+						Event look: <div class='half event-text-output event'>Event name</div>
+					</div>
+				</div>
+
+				<div class='detail-row'>
+					<div class='detail-column full'>
+						<list id='event_messagebox'></list>
+					</div>
+				</div>
+
+				<button class='btn btn-lg btn-primary btn-block' type='submit' id='btn_event_save'>Save</button>
+				<button class='btn btn-sm btn-danger btn-block' id='btn_event_delete'>Delete</button>
+			</form>
+		</div>
+	</div>
+</div>

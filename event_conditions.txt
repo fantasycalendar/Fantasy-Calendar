@@ -1,0 +1,132 @@
+Year
+	Year is exactly
+	Year is not
+	Year is or later than
+	Year is or earlier than
+	Year is later than
+	Year is earlier than
+	Every nth year
+
+Era year
+	Era year is exactly
+	Era year is not
+	Era year is or later than
+	Era year is or earlier than
+	Era year is later than
+	Era year is earlier than
+	Every nth era year
+
+Month
+	Month is exactly
+	Month is not
+	Month is or later than
+	Month is or earlier than
+	Month is later than
+	Month is earlier than
+	Every nth specific month
+
+	Month number is exactly
+	Month number is not
+	Month number is or later than
+	Month number is or earlier than
+	Month number is later than
+	Month number is earlier than
+	Every nth month
+	Month name is exactly
+	Month name is not
+
+Day
+	Day in month is exactly
+	Day in month is not
+	Day in month is or later than
+	Day in month is or earlier than
+	Day in month is later than
+	Day in month is earlier than
+	Day in year is exactly
+	Day in year is not
+	Day in year is or later than
+	Day in year is or earlier than
+	Day in year is later than
+	Day in year is earlier than
+	Every nth day in year
+
+Epoch
+	Epoch is
+	Epoch is not
+	Epoch is or later than
+	Epoch is or earlier than
+	Epoch is later than
+	Epoch is earlier than
+	Every nth epoch
+
+Weekday
+	Weekday is exactly
+	Weekday is not
+	Weekday is or later than
+	Weekday is or earlier than
+	Weekday is later than
+	Weekday is earlier than
+	Every nth weekday
+
+	Weekday number is exactly
+	Weekday number is not
+	Weekday number is or later than
+	Weekday number is or earlier than
+	Weekday number is later than
+	Weekday number is earlier than
+
+Week
+	Month-week number is exactly
+	Month-week number is not
+	Month-week number is or later than
+	Month-week number is or earlier than
+	Month-week number is later than
+	Month-week number is earlier than
+	Every nth month-week
+	Year-week number is exactly
+	Year-week number is not
+	Year-week number is or later than
+	Year-week number is or earlier than
+	Year-week number is later than
+	Year-week number is earlier than
+	Every nth year-week
+	Total week number is exactly
+	Total week number is not
+	Total week number is or later than
+	Total week number is or earlier than
+	Total week number is later than
+	Total week number is earlier than
+	Every nth total week
+
+Moons
+	Phase is exactly
+	Phase is not
+	Phase is or later than
+	Phase is or earlier than
+	Phase is later than
+	Phase is earlier than
+	Every nth phase
+
+	Month-phase is exactly
+	Month-phase is not
+	Month-phase is or later than
+	Month-phase is or earlier than
+	Month-phase is later than
+	Month-phase is earlier than
+	Every nth phase
+
+	Year-phase is exactly
+	Year-phase is not
+	Year-phase is or later than
+	Year-phase is or earlier than
+	Year-phase is later than
+	Year-phase is earlier than
+	Every nth phase
+
+Cycle
+	Cycle is exactly
+	Cycle is not
+
+Era
+	Era is exactly
+	Era is not

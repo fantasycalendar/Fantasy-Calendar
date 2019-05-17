@@ -1,0 +1,1446 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"curr",
+				"current_day"
+			],
+			[
+				"time",
+				"timespan_index"
+			],
+			[
+				"current",
+				"current_timespan"
+			],
+			[
+				"cur",
+				"current_day"
+			],
+			[
+				"leap_day",
+				"leap_day_index"
+			],
+			[
+				"location",
+				"locations"
+			],
+			[
+				"reindex_location",
+				"reindex_location_select_list"
+			],
+			[
+				"pre",
+				"precisionRound"
+			],
+			[
+				"evaluat",
+				"evaluate_calendar_start"
+			],
+			[
+				"start",
+				"start_epoch"
+			],
+			[
+				"fle",
+				"flex-direction\tproperty"
+			],
+			[
+				"first",
+				"first_switch"
+			],
+			[
+				"slider",
+				"slider_percentage"
+			],
+			[
+				"form-",
+				"form-control-sm"
+			],
+			[
+				"form",
+				"form-control"
+			],
+			[
+				"temper",
+				"temperature_chart"
+			],
+			[
+				"selecte",
+				"selected_timespan"
+			],
+			[
+				"reindex",
+				"reindex_season_sortable"
+			],
+			[
+				"toggle",
+				"toggleClass"
+			],
+			[
+				"sortabl",
+				"sortable-container"
+			],
+			[
+				"global",
+				"global_settings"
+			],
+			[
+				"tempera",
+				"temperature"
+			],
+			[
+				"tempe",
+				"temperature"
+			],
+			[
+				"per",
+				"precipitation_chart"
+			],
+			[
+				"perci",
+				"percipitation"
+			],
+			[
+				"next",
+				"next_era"
+			],
+			[
+				"this",
+				"This"
+			],
+			[
+				"rg",
+				"rgba()\tbackground-color"
+			],
+			[
+				"bord",
+				"border-radius\tproperty"
+			],
+			[
+				"padding",
+				"padding-right\tproperty"
+			],
+			[
+				"border-radius",
+				"border-top-left-radius\tproperty"
+			],
+			[
+				"operator",
+				"operator_control"
+			],
+			[
+				"op",
+				"operator"
+			],
+			[
+				"border-bo",
+				"border-bottom\tproperty"
+			],
+			[
+				"flex",
+				"inline-flex\tdisplay"
+			],
+			[
+				"event_condition",
+				"event_condition_sortable"
+			],
+			[
+				"add",
+				"addClass"
+			],
+			[
+				"operato",
+				"operators"
+			],
+			[
+				"opt",
+				"optgroup"
+			],
+			[
+				"prev",
+				"prev_val"
+			],
+			[
+				"value",
+				"value_type"
+			],
+			[
+				"event_con",
+				"event_condition_group_container"
+			],
+			[
+				"event_cont",
+				"event_condition_sortable"
+			],
+			[
+				"min-",
+				"min-height\tproperty"
+			],
+			[
+				"week",
+				"weekday_num"
+			],
+			[
+				"event_cat",
+				"event_categories"
+			],
+			[
+				"event",
+				"event_settings"
+			],
+			[
+				"player",
+				"player_usable"
+			],
+			[
+				"cat",
+				"category_settings"
+			],
+			[
+				"cate",
+				"category_index"
+			],
+			[
+				"temperature",
+				"temperature_i"
+			],
+			[
+				"wind_",
+				"wind_velocity"
+			],
+			[
+				"to",
+				"toString"
+			],
+			[
+				"wind",
+				"wind_direction"
+			],
+			[
+				"dice",
+				"dice_formula"
+			],
+			[
+				"wind_type",
+				"wind_type_chance"
+			],
+			[
+				"impe",
+				"imperial_temp"
+			],
+			[
+				"Prec",
+				"precisionRound"
+			],
+			[
+				"prec",
+				"precisionRound"
+			],
+			[
+				"percip",
+				"precipitation_chance"
+			],
+			[
+				"precip",
+				"precipitation_roll"
+			],
+			[
+				"par",
+				"precipitation_chance"
+			],
+			[
+				"return",
+				"return_data"
+			],
+			[
+				"temp",
+				"temp_high"
+			],
+			[
+				"next_",
+				"next_season"
+			],
+			[
+				"last",
+				"last_point"
+			],
+			[
+				"mid",
+				"middle"
+			],
+			[
+				"bez",
+				"bezierQuadratic"
+			],
+			[
+				"last_",
+				"last_season"
+			],
+			[
+				"season",
+				"season_epoch"
+			],
+			[
+				"child",
+				"childNodes"
+			],
+			[
+				"curre",
+				"current_event"
+			],
+			[
+				"index",
+				"indexOf"
+			],
+			[
+				"condition",
+				"conditions_valid"
+			],
+			[
+				"moon",
+				"moon_data"
+			],
+			[
+				"sub",
+				"sub_condition"
+			],
+			[
+				"calendar",
+				"calendar_list"
+			],
+			[
+				"timespan",
+				"timespans_to_evaluate"
+			],
+			[
+				"timepans",
+				"timespans_to_evaluate"
+			],
+			[
+				"inter",
+				"intercalary"
+			],
+			[
+				"timespans",
+				"timespans_to_build"
+			],
+			[
+				"timespans_",
+				"timespans_to_evaluate"
+			],
+			[
+				"era",
+				"era_index"
+			],
+			[
+				"exc",
+				"exclusive"
+			],
+			[
+				"calenda",
+				"calendar_data"
+			],
+			[
+				"year",
+				"year_index"
+			],
+			[
+				"total",
+				"total_backtrack"
+			],
+			[
+				"moon_",
+				"moon_repetitions"
+			],
+			[
+				"epoch",
+				"epoch_data"
+			],
+			[
+				"leap",
+				"leap_day_index"
+			],
+			[
+				"curren",
+				"current_timespan"
+			],
+			[
+				"num",
+				"num_days"
+			],
+			[
+				"back",
+				"background_color"
+			],
+			[
+				"de",
+				"detail-row"
+			],
+			[
+				"detail",
+				"detail-text"
+			],
+			[
+				"new",
+				"new_order"
+			],
+			[
+				"sort",
+				"sortable-container"
+			],
+			[
+				"name",
+				"name-input"
+			],
+			[
+				"week_",
+				"week_list"
+			],
+			[
+				"is",
+				"is_leap"
+			],
+			[
+				"day",
+				"timespan-day-list"
+			],
+			[
+				"in",
+				"inline-flex\tdisplay"
+			],
+			[
+				"event_",
+				"event_category"
+			],
+			[
+				"small",
+				"small-text"
+			],
+			[
+				"cy",
+				"cycle_year"
+			],
+			[
+				"cycle",
+				"cycle_sortable"
+			],
+			[
+				"glo",
+				"global_week_sortable"
+			],
+			[
+				"timesp",
+				"timespan_sortable"
+			],
+			[
+				"detai",
+				"detail-text"
+			],
+			[
+				"stat",
+				"static_input"
+			],
+			[
+				"max-",
+				"max-width\tproperty"
+			],
+			[
+				"expan",
+				"expanded"
+			],
+			[
+				"itali",
+				"italics-text"
+			],
+			[
+				"interval",
+				"interval_val"
+			],
+			[
+				"off",
+				"offset_val"
+			],
+			[
+				"coll",
+				"collapsible-content"
+			],
+			[
+				"inv",
+				"interval"
+			],
+			[
+				"remove",
+				"removeClass"
+			],
+			[
+				"margin",
+				"margin-left"
+			],
+			[
+				"custom",
+				"custom-week-container"
+			],
+			[
+				"overflow",
+				"overflow\tproperty"
+			],
+			[
+				"nex",
+				"next_index"
+			],
+			[
+				"con",
+				"current_location"
+			],
+			[
+				"season_",
+				"season_data"
+			],
+			[
+				"cu",
+				"current_location"
+			],
+			[
+				"temp_",
+				"temp_high"
+			],
+			[
+				"high",
+				"temp_high"
+			],
+			[
+				"sea",
+				"season_data"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "modules/calendar/js/calendar_manager.js",
+			"settings":
+			{
+				"buffer_size": 2482,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "modules/calendar/includes/inputs/full_inputs.php",
+			"settings":
+			{
+				"buffer_size": 25505,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "modules/calendar/js/calendar_input_layout.js",
+			"settings":
+			{
+				"buffer_size": 104965,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "calendar_diff.php",
+			"settings":
+			{
+				"buffer_size": 759,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "header.php",
+			"settings":
+			{
+				"buffer_size": 6627,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "modules/calendar/js/calendar_layout_builder.js",
+			"settings":
+			{
+				"buffer_size": 37755,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "modules/calendar/js/calendar_functions.js",
+			"settings":
+			{
+				"buffer_size": 17817,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "css/calendar_styles.css",
+			"settings":
+			{
+				"buffer_size": 17366,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "css/calendar_input_style.css",
+			"settings":
+			{
+				"buffer_size": 17348,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"liverelad",
+				"LiveReload: Self test"
+			],
+			[
+				"packa",
+				"Package Control: Enable Package"
+			],
+			[
+				"packag",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/css",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/js",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/modules",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/modules/calendar",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/modules/calendar/class",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/modules/calendar/includes",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/modules/calendar/includes/inputs",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/modules/calendar/includes/layouts",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/modules/calendar/js",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/modules/calendar/webworkers",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/modules/chartjs",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/modules/notifyjs"
+	],
+	"file_history":
+	[
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/modules/calendar/js/calendar_weather_layout.js",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/modules/calendar/js/calendar_climate_generator.js",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/calendar_json_02.json",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/modules/chartjs/Chart.min.js",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/modules/calendar/includes/layouts/weather_tooltip_layout.html",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/css/calendar_styles.css",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/modules/calendar/includes/edit.php",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/modules/calendar/js/calendar_layout_builder.js",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/header.php",
+		"/P/Arma 4/A4Data/anims/anm/player/vehicles/Ural4320/p_ural_codriver_getIn.txa",
+		"/P/Arma 4/A4Data/anims/export_profiles/FullBody_Unarmed.apr",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/css/header_style.css",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/css/calendar_input_style.css",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/modules/calendar/includes/inputs/full_inputs.php",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/modules/calendar/js/calendar_input_layout.js",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/modules/calendar/webworkers/worker_climate.js",
+		"/P/_Internal/DZ/anims/workspaces/player/player_main/Locomotion.agr",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/modules/calendar/js/calendar_functions.js",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/modules/calendar/js/calendar_variables.js",
+		"/P/_Internal/Enfusion/Scripts/4_World/Entities/ManBase/DayZPlayer/DayZPlayerCfgBase.c",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/modules/calendar/js/calendar_manager.js",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/modules/calendar/webworkers/worker_calendar.js",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/modules/calendar/class/c_calendar.php",
+		"/P/_Internal/DZ/anims/anm/player/moves/1handed/throwing/p_1hd_erc_throw_out.txa",
+		"/P/_Internal/DZ/anims/anm/player/reloads/VSS/p_erc_reload_mag_remove_VSS_ras.txa",
+		"/P/_Internal/DZ/anims/anm/player/reloads/AKM/p_erc_reload_mag_remove_AKM_ras.txa",
+		"/P/_Internal/DZ/anims/workspaces/player/player_main/player_main.aw",
+		"/P/_Internal/DZ/anims/workspaces/player/player_main/props/player_main_1h_nightvision.asi",
+		"/P/Arma 4/A4Data/anims/export_profiles/UpperbodyAdditive_ArmsAbsolute_WeaponDummy.apr",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/weather_view.php",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/modules/calendar/includes/view.php",
+		"/P/Arma 4/A4Data/anims/workspaces/player/arma_4_player/player_main_rifle.asi",
+		"/P/Arma 4/A4Data/anims/export_profiles/FullBody_Rifles.apr",
+		"/P/Arma 4/A4Data/anims/export_profiles/FullBody_Additive.apr",
+		"/C/Users/orestenada/Dropbox/Projects/Fantasy-Calendar/changelog.txt",
+		"/P/_Internal/DZ/anims/export_profiles/Actions_05_UpperBodyADD_RArmABS_LArmABS.apr",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/new_input_layout.php",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/load.js",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/modules/calendar/layouts/event_layout.html",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/modules/calendar/class/c_db.php",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/potential_monetization.txt",
+		"/C/Users/orestenada/Dropbox/Projects/Fantasy-Calendar-2.0/conditions.txt",
+		"/C/Users/orestenada/Dropbox/Projects/Fantasy-Calendar-2.0/calendar_json_02.json",
+		"/P/_Internal/DZ/anims/export_profiles/Vehicles_12_UpperBodyADD_RArmNone_LHandABS.apr",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/modules/calendar/calendar_builder.js",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/modules/calendar/calendar_events.js",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/modules/calendar/calendar_weather_tooltip.js",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/calendar_layout.php",
+		"/C/Users/orestenada/Dropbox/Projects/Fantasy-Calendar-2.0/calendar_event_layout.php",
+		"/P/Arma 4/A4Data/anims/workspaces/player/arma_4_player/player_main.aw",
+		"/P/Arma 4/A4Data/anims/workspaces/player/arma_4_player/player_main_machinegun.asi",
+		"/P/Arma 4/A4Data/anims/workspaces/player/arma_4_player/player_main.asi",
+		"/P/Arma 4/A4Data/anims/workspaces/player/arma_4_player/Locomotion.agr",
+		"/P/Arma 4/A4Data/anims/workspaces/player/arma_4_player/player_main.agr",
+		"/P/_Internal/DZ/anims/anm/player/vehicles/hatchback_02/p_hatchback_02_passengerL_death.txa",
+		"/P/_Internal/DZ/anims/anm/player/vehicles/hatchback_02/p_hatchback_02_passengerR_death.txa",
+		"/P/_Internal/DZ/anims/workspaces/player/player_main/player_main.asi",
+		"/P/Arma 4/A4Data/anims/export_profiles/IK.apr",
+		"/P/Arma 4/A4Data/anims/export_profiles/exportFn.c",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/modules/calendar/calendar_variables.js",
+		"/C/Users/orestenada/Dropbox/Projects/Fantasy-Calendar-2.0/header.php",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/js/calendar_display.js",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/js/calendar_edit.js",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/js/calendar_load.js",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/js/calendar_print.js",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/js/calendar_view.js",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/js/forgotten.js",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/modules/calendar/calendar_climate_generator.js",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/new_calendar_layout.php",
+		"/P/Arma 4/A4Data/anims/anm/player/locomotion/pistols/turns/p_pst_cro_turnL_90_ads.txa",
+		"/P/Arma 4/A4Data/anims/anm/player/vehicles/Ural4320/p_ural_driver_getIn.txa",
+		"/P/Arma 4/A4Data/anims/anm/player/vehicles/Ural4320/p_ural_driver_getOut.txa",
+		"/C/Users/orestenada/Dropbox/Projects/Fantasy-Calendar-2.0/listtest.php",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/calendar_variables.js",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/calendar_climate_generator.js",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/calendar_builder_v2.js",
+		"/C/Users/orestenada/Dropbox/Projects/Fantasy-Calendar-2.0/load.js",
+		"/C/Users/orestenada/Dropbox/Projects/Fantasy-Calendar-2.0/test.js",
+		"/C/Users/orestenada/Dropbox/Projects/Fantasy-Calendar-2.0/epochfunctions.js",
+		"/C/Users/orestenada/Dropbox/Projects/Fantasy-Calendar-2.0/conditions.js",
+		"/P/Arma 4/A4Data/anims/export_profiles/Weapons_Hammer.apr",
+		"/P/Arma 4/A4Data/anims/export_profiles/Weapons_Trigger.apr",
+		"/P/Arma 4/A4Data/anims/export_profiles/Weapons_MagRelease.apr",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/js/calendar_input_layout.js",
+		"/C/Users/orestenada/Dropbox/Projects/Fantasy-Calendar-2.0/css/calendar_input_style.css",
+		"/P/Arma 4/A4Data/Assets/Weapons/Handguns/Makarov/anims/anm/w_makarov_idle.txa",
+		"/P/_Internal/DZ/anims/workspaces/player/player_main/Master.agr",
+		"/P/Arma 4/A4Data/anims/export_profiles/Vehicles_09_Throttle.apr",
+		"/P/Arma 4/A4Data/anims/export_profiles/Vehicles_10_ShiftGear.apr",
+		"/P/Arma 4/A4Data/anims/export_profiles/Weapons_Idle.apr",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/calendar_functions.js",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/conditions.js",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/css/login_style.css",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/css/index_style.css",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/js/login.js",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/js/planet_phase.js",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar/includes/calendar_event_layout.php",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/weather.html",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/calendar_json_01.json",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/new_event_layout.php",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/curvetest.html",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/old_weather.html",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/js/calendar_functions.js",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/calendar_builder.js",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/epochfunctions.js",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/new_month_layout.php",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/new_day_layout.php",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar/css/calendar_display_style.css",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/css/spectrum.css",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/css/calendar_display_style.css",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar-2.0/css/calendar_generation_style.css",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar/js/calendar_display.js",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar/js/calendar_functions.js",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar/js/calendar_view.js",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar/header.php",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar/new_calendar/curvetest.html",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar/new_calendar/test.js",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar/new_calendar/new_calendar_layout.php",
+		"/C/Users/Adam/Desktop/roll20_script_WoJ/config.json",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar/new_calendar/calendarbackup2.txt",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar/new_calendar/calendarbackup4.txt",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar/new_calendar/calendarbackup3.txt",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar/new_calendar/curvetest.php",
+		"/C/Users/Adam/Documents/DayZ/stats.DayZ.json",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar/class/c_db.php",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar/js/login.js",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar/ajax/ajax_user.php",
+		"/C/Users/Adam/Dropbox/Projects/Fantasy-Calendar/js/calendar_edit.js"
+	],
+	"find":
+	{
+		"height": 23.0
+	},
+	"find_in_files":
+	{
+		"height": 120.0,
+		"where_history":
+		[
+			"C:\\Users\\Adam\\Dropbox\\Projects\\Fantasy-Calendar-2.0\\",
+			"C:\\Users\\Adam\\Dropbox\\Projects\\Fantasy-Calendar-v2\\",
+			"C:\\Users\\Adam\\Dropbox\\Projects\\Fantasy-Calendar\\",
+			"C:\\Users\\Adam\\Dropbox\\Projects\\Fantasy-Calendar\\js",
+			"C:\\Users\\Adam\\Dropbox\\Projects\\Fantasy-Calendar",
+			"C:\\Users\\Adam\\Dropbox\\Fantasy-Calendar",
+			"C:\\Users\\Adam\\Dropbox\\FantasyCalendar"
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"found ",
+			"_timespan",
+			"curr_timespan",
+			"curr_year",
+			"console.log",
+			"current_timespan",
+			"prev_year",
+			"current_year",
+			"chart",
+			"location_select",
+			"reindex_location_select_list",
+			"custom_",
+			"location_sele",
+			"console.lo",
+			".btn_accept",
+			"accept",
+			"input_container",
+			"remove",
+			"metric",
+			"weather_temp_desc",
+			"temp",
+			"weather_desc",
+			"190",
+			"clamp",
+			"console.log",
+			"bind_calendar_events",
+			"evaluate_position",
+			"#calendar",
+			"#content",
+			"input_collapse_btn",
+			"#input_container_parent",
+			"location",
+			"{\n\t\t\t'name'",
+			"\t\t\t'name'",
+			"\t\t\t'seasons': [",
+			"\t\t\t\t\t'name': ",
+			"location_select",
+			"custom",
+			"copy_location_data",
+			"?ver=<?php echo $jsversion; ?>",
+			"?ver=",
+			"slider_input",
+			"error_check(",
+			"parent =",
+			"parent",
+			"error_check",
+			"evaluate_weather_charts",
+			"chart",
+			"#calendar",
+			"calendar",
+			"evaluate_weather_charts",
+			"location_select",
+			"reindex_location_list",
+			"reindex_season_sortable",
+			"reindex_location_list",
+			"reindex_location_sortable",
+			"add_location_to_list",
+			"add_location_to_sortable",
+			"add_location",
+			"add_location_to_list",
+			"form-control full dynamic_input",
+			"number",
+			" object ",
+			":\");\n",
+			" object ",
+			"target.attr('class').",
+			"Object.keys(calendar.seasons.locations)",
+			"location_select",
+			"|object:${key}|",
+			"${location}",
+			"|${key}|",
+			"[${key}]",
+			".${key}.",
+			"data='seasons.locations.${key}",
+			"${location}",
+			"location",
+			"add_location",
+			"error",
+			"collapsible_cycle_",
+			"cycle",
+			"moon",
+			"cycle",
+			"$(this)",
+			"$(e.target)",
+			"$(this)",
+			"    ",
+			"seasons.location.",
+			"seasons.location",
+			"timer",
+			"calendar",
+			"dynamic_input",
+			"dynamic input",
+			"slider",
+			"medium",
+			"Medium",
+			"medium",
+			"large",
+			"Large",
+			"seasons[i].",
+			"Temperature",
+			"half",
+			"checkbox",
+			"form-control",
+			"form-control ",
+			"margin",
+			"center",
+			"add_location_to_sortable",
+			"location_list",
+			"data.",
+			"key",
+			"locations",
+			"location_list",
+			"location_select",
+			"add_location_to_sortable",
+			"dynamic input",
+			"collapsible_climates",
+			"Climates",
+			"collapsible_climates",
+			"console.log",
+			"season_length",
+			"console.log",
+			"precipitation_chart",
+			"weather",
+			"console.log",
+			"season",
+			"refresh",
+			"Belt",
+			"Civilian"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			".${key}.",
+			"${key}",
+			"|object:${key}|",
+			"|${key}|",
+			"[[0d0+10]]",
+			"seasons",
+			"",
+			"\\1_adj\\2_ads\\3",
+			"\t",
+			"lmg",
+			"machineguns",
+			"hatchback",
+			"VehicleActions.Hatchback02",
+			"Vehicle\\.Hatchback02",
+			"p_hatchbach_02_",
+			"DZ/anims/anm/player/vehicles/hatchback_02/",
+			"\"",
+			"(var i = 0;",
+			"\t",
+			"this.data.next_epoch",
+			"this.data.last_epoch",
+			"this.data.next_point",
+			"this.data.last_point",
+			"this.data.season_epoch",
+			"'",
+			"event_condition",
+			"qual",
+			"calendar.climate",
+			"'",
+			"\t",
+			"this.calendar.push",
+			"calendar_calc.add",
+			"",
+			"$calendar->get($_GET['id'])['data']['calendar']",
+			"$calendar->get($_GET['id'])['data']['json']",
+			"\t",
+			"\"Test\": {\n\t\t\t\t\"color\": \"Red\", /* Options: Dark-Solid, Red, Pink, Purple, Deep-Purple, Blue, Light-Blue, Cyan, Teal, Green, Light-Green, Lime, Yellow, Orange, Blue-Grey */\n\t\t\t\t\"category_settings\":{\n\t\t\t\t\t\"hide\": false // Hide from players?\n\t\t\t\t},\n\t\t\t\t\"event_settings\": { // this contains\n\t\t\t\t\t\"color_display\": \"text\", /* options: text, dot, background */\n\t\t\t\t\t\"hide\": false,\n\t\t\t\t\t\"noprint\": false\n\t\t\t\t}\n\t\t\t}",
+			"layouts.calendar",
+			"this.this.calendar",
+			"this.calendar",
+			" => ",
+			")",
+			" => array(",
+			">\\n<",
+			"",
+			"timespan_day",
+			">\\n<",
+			">\\r<",
+			">\\n<",
+			"this.layout",
+			"this.text",
+			"text",
+			"</div>",
+			"\t",
+			"];\n",
+			"}else{",
+			"){",
+			"list_epoch ? epoch_count.current",
+			"epoch_count.increment()",
+			" === ",
+			"){",
+			"\n\t",
+			".\\1",
+			"[1]",
+			"[0]",
+			".\\1",
+			"'",
+			"\"",
+			"'",
+			"\t",
+			"window.baseurl+'",
+			"window.baseurl+\"",
+			"\t",
+			"",
+			"'",
+			"\t",
+			"'",
+			"\t'\\1': \\2",
+			"'\\1': \\2",
+			"\\1",
+			"'\\2': \\1",
+			": ",
+			"",
+			": ",
+			"",
+			"]",
+			"[",
+			"\\2",
+			"[",
+			"\\2",
+			"'\\2': '\\1'",
+			"\\2, \\1",
+			"'0.\\2': {\n\t\t\t'name': '\\1',",
+			"'\\2': {\n\t\t\t'name': '\\1',",
+			", ",
+			"\\1f':",
+			"new_direction = get_wind_direction(Math.random(), new_direction);",
+			"new_direction",
+			"new_direction = get_wind_direction(Math.random(), direction);",
+			"",
+			"new_direction = get_wind_direction(Math.random(), direction);\nconsole.log(new_direction);",
+			"'\\2': '\\1'",
+			"'\\2': \\1",
+			"",
+			"winter",
+			"temperature",
+			"\t}\n\t\t\t},\n\t\t\t'summer': {\n\t\t\t\t'temperature': {",
+			"\t}\n\t\t\t},\n\t\t\t'summer': {",
+			"\t}\n\t\t\t},\n\t\t\t'upper': {",
+			"\t}\n},\n\t\t\t'upper': {",
+			"},\n\t\t\t'upper': {",
+			"\t\t\t},\n\t\t\t'upper': {",
+			"\t\t\t},\n\t\t\t\t'upper': {",
+			"\t\t\t},\n'upper': {",
+			"upper",
+			"winter",
+			"'",
+			"display_calendar[",
+			"calendar[",
+			"display_calendar[",
+			"display_calendar",
+			"<button \\1>\\2</button>",
+			"placeholder='",
+			"'",
+			"\"",
+			"",
+			"\"",
+			"\"\""
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"folders":
+	[
+		{
+			"path": "C:\\Users\\Adam\\Dropbox\\Projects\\Fantasy-Calendar-2.0"
+		}
+	],
+	"groups":
+	[
+		{
+			"selected": 2,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "modules/calendar/js/calendar_manager.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2482,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								811,
+								811
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 350.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "modules/calendar/includes/inputs/full_inputs.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 25505,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								27,
+								27
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 8,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "modules/calendar/js/calendar_input_layout.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 104965,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								8745,
+								8745
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 4066.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "calendar_diff.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 759,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								692,
+								692
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "header.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6627,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								41,
+								5
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "modules/calendar/js/calendar_layout_builder.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 37755,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								7323,
+								7323
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 3694.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "modules/calendar/js/calendar_functions.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 17817,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								10782,
+								10782
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 5858.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "css/calendar_styles.css",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 17366,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								57,
+								57
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/CSS/CSS.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "css/calendar_input_style.css",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 17348,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1222,
+								1222
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/CSS/CSS.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 536.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 23.0
+	},
+	"input":
+	{
+		"height": 37.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "",
+	"replace":
+	{
+		"height": 42.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"C:\\Users\\Adam\\Dropbox\\Projects\\Fantasy-Calendar\\fantasycalendar.sublime-workspace"
+			]
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 297.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
