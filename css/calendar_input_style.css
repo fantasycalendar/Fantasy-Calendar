@@ -303,7 +303,15 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
 }
 
 .threequarter{
-	width:74% !important;
+	width: 74% !important;
+}
+
+.fifth{
+	width: 19% !important;
+}
+
+.fourfifths{
+	width: 79% !important;
 }
 
 .clock-input{
@@ -345,8 +353,36 @@ label{
 .detail-text{
 	line-height: 28px;
 	order:1;
-	margin-right:10px;
+	margin-right:1%;
 }
+
+.detail-text.right-align{
+	text-align: right;
+}
+
+.input_buttons{
+	display:inline-flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+}
+
+.input_buttons select, .input_buttons input{
+	flex:0 1 auto;
+	margin:0 1%;
+}
+
+.sub-btn, .add-btn{
+	flex:1 0 auto;
+	line-height: 0px;
+	text-align: center;
+	width:29px;
+	height:29px;
+	padding-top:0.5em;
+}
+
+
+
+
 
 .sortable-container .detail-column input, .sortable-container .detail-row input{
 	order:2;
@@ -645,7 +681,7 @@ label{
 }
 
 .lbl-toggle {
-	padding:5px;
+	padding:4px;
 	display: block;
 
 	cursor: pointer;
@@ -657,6 +693,10 @@ label{
 	-o-user-select: none;
 
 	margin:0;
+}
+
+.lbl-toggle:hover{
+	background-color: rgba(0,0,0,0.1);
 }
 
 .wiki, .setting-question{

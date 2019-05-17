@@ -238,7 +238,7 @@ function get_days_in_timespan(year, timespan_index){
 
 	var days = [];
 
-	for(var i = 1; i < timespan.length; i++){
+	for(var i = 1; i <= timespan.length; i++){
 		days.push({
 			text: `Day ${i}`,
 			is_there: does_day_appear(year, timespan_index, i)
@@ -632,6 +632,7 @@ function get_epoch(calendar, year, month, day, inclusive){
 
 	epoch += day;
 
+
 	if(calendar.year_data.overflow){
 		total_week_num += Math.floor((epoch-intercalary)/calendar.year_data.global_week.length);
 	}
@@ -647,6 +648,7 @@ function evaluate_calendar_start(calendar, year, month, day){
 	var era_year = year >= 0 ? year+1 : year;
 	var month = !isNaN(month) ? month : 0;
 	var day = !isNaN(day) ? day-1 : 0;
+
 	tmp = get_epoch(calendar, (year|0), (month|0), (day|0));
 	var epoch = tmp[0];
 	var intercalary = tmp[1];
@@ -655,14 +657,15 @@ function evaluate_calendar_start(calendar, year, month, day){
 	var total_week_num = tmp[4];
 	var week_day = calendar.year_data.first_day;
 
+
 	for(var era_index = 0; era_index < calendar.eras.length; era_index++){
 
 		era = calendar.eras[era_index];
 
 		if(era.settings.ends_year && year > era.date.year-1){
 
-			era_epoch = get_epoch(calendar, era.date.year-1, era.date.timespan, era.date.day);
-			normal_epoch_during_era = get_epoch(calendar, era.date.year);
+			era_epoch = get_epoch(calendar, era.date.year-1, era.date.timespan, era.date.day-1);
+			normal_epoch_during_era = get_epoch(calendar, era.date.year-1);
 
 			epoch -= (normal_epoch_during_era[0] - era_epoch[0]);
 
@@ -685,6 +688,7 @@ function evaluate_calendar_start(calendar, year, month, day){
 	}else{
 		week_day = 1;
 	}
+
 
 	return {"epoch": epoch,
 			"era_year": era_year,

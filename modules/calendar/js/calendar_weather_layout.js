@@ -166,20 +166,20 @@ function evaluate_weather_charts(epoch_data){
 
 		var temperature_datasets = [
 			{
-				label: 'Temperature high',
-				fill: false,
-				data: temperature[0],
-				borderColor: 'rgba(0, 255, 0, 0.5)',
-          		fillBetweenSet: 0,
-          		fillBetweenColor: "rgba(5,5,255, 0.2)"
-			},
-			{
-				label: 'Temperature low',
+				label: 'Temperature High',
 				fill: false,
 				data: temperature[1],
 				borderColor: 'rgba(0, 255, 0, 0.5)',
-          		fillBetweenSet: 0,
-         		fillBetweenColor: "rgba(5,5,255, 0.2)"
+				fillBetweenSet: 0,
+				fillBetweenColor: "rgba(5,5,255, 0.2)"
+			},
+			{
+				label: 'Temperature Low',
+				fill: false,
+				data: temperature[0],
+				borderColor: 'rgba(0, 255, 0, 0.5)',
+				fillBetweenSet: 0,
+				fillBetweenColor: "rgba(5,5,255, 0.2)"
 			},
 			{
 				label: 'Season High',

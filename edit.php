@@ -34,6 +34,7 @@ function load_calendar(){
 			set_up_edit_inputs();
 			bind_calendar_events();
 			rebuild_calendar('calendar');
+			
 		},
 		error: function ( log )
 		{

@@ -121,7 +121,7 @@
 				<div class='detail-row'>
 					<div class='detail-column half'>
 						<div class='detail-text bold-text'>
-							Fract. year length:
+							Avg. year length:
 						</div>
 					</div>
 					<div class='detail-column float statistics_text'>
@@ -161,19 +161,41 @@
 
 			<div class='detail-row'>
 
-				<input class='form-control date_control' id='current_year' type='number'>
+				<div class='detail-column fifth'>
+					<div class='detail-text right-align full'>Year:</div>
+				</div>
+				<div class='detail-column fourfifths input_buttons'>
+					<div class='btn btn-sm btn-info sub-btn' id='sub_year'><i class="icon-minus"></i></div>
+					<input class='form-control form-control-sm date_control' id='current_year' type='number'>
+					<div class='btn btn-sm btn-info add-btn' id='add_year'><i class="icon-plus"></i></div>
+				</div>
+			</div>
+
+			<div class='detail-row'>
+
+
+				<div class='detail-column fifth'>
+					<div class='detail-text right-align full'>Month:</div>
+				</div>
+				<div class='detail-column fourfifths input_buttons'>
+					<div class='btn btn-sm btn-info sub-btn' id='sub_timespan'><i class="icon-minus"></i></div>
+					<select class='form-control form-control-sm date_control' id='current_timespan'></select>
+					<div class='btn btn-sm btn-info add-btn' id='add_timespan'><i class="icon-plus"></i></div>
+				</div>
 
 			</div>
 
 			<div class='detail-row'>
 
-				<select class='form-control date_control' id='current_timespan'></select>
 
-			</div>
-
-			<div class='detail-row'>
-
-				<select class='form-control date_control' id='current_day'></select>
+				<div class='detail-column fifth'>
+					<div class='detail-text right-align full'>Day:</div>
+				</div>
+				<div class='detail-column fourfifths input_buttons'>
+					<div class='btn btn-sm btn-info sub-btn' id='sub_day'><i class="icon-minus"></i></div>
+					<select class='form-control form-control-sm date_control' id='current_day'></select>
+					<div class='btn btn-sm btn-info add-btn' id='add_day'><i class="icon-plus"></i></div>
+				</div>
 
 			</div>
 

@@ -4,7 +4,7 @@ var calendar = {
 	"date": {
 		"year": 1,
 		"timespan": 1,
-		"day": 2,
+		"day": 1,
 		"hour": 0,
 		"minute": 0
 	},
@@ -26,7 +26,7 @@ var calendar = {
 				"name": "January",
 				"type": "month",
 				"interval": 1,
-				"offset": 0,
+				"offset": 1,
 				"length": 31
 			},
 			{

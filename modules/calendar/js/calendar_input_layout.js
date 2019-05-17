@@ -17,6 +17,7 @@ function set_up_edit_inputs(){
 	location_select = $('#location_select');
 	location_list = $('#location_list');
 
+	set_date = $('#set_date');
 	current_year = $('#current_year');
 	current_timespan = $('#current_timespan');
 	current_day = $('#current_day');
@@ -228,12 +229,129 @@ function set_up_edit_inputs(){
 	
 	/* ------------------- Dynamic and static callbacks ------------------- */
 
+
+	sub_year = $('#sub_year');
+	add_year = $('#add_year');
+
+	sub_timespan = $('#sub_timespan');
+	add_timespan = $('#add_timespan');
+
+	sub_day = $('#sub_day');
+	add_day = $('#add_day');
+
+	sub_day.click(function(){
+
+		var target = $(this).next();
+		var value = target.val()|0;
+		var selected = target.find('option:selected');
+		var options = target.children(":enabled");
+		var prev = options.index(selected)-1;
+
+		if(prev < 0){
+			sub_timespan.click();
+			target.children('option:enabled').last().prop('selected', true).change();
+		}else{
+			options.eq(prev).prop('selected', true);
+			target.change();
+		}
+	});
+
+	sub_timespan.click(function(){
+
+		var target = $(this).next();
+		var value = target.val()|0;
+		var selected = target.find('option:selected');
+		var options = target.children(":enabled");
+		var prev = options.index(selected)-1;
+
+		if(prev < 0){
+			sub_year.click();
+			target.children('option:enabled').last().prop('selected', true).change();
+		}else{
+			options.eq(prev).prop('selected', true);
+			target.change();
+		}
+
+	});
+
+	sub_year.click(function(){
+
+		var target = $(this).next();
+		var value = target.val()|0;
+		target.val(value-1).change();
+		if(current_timespan.children(":enabled").length == 0){
+			sub_year.click();
+		}else{
+			if(current_timespan.val() === null){
+				current_timespan.children('option:enabled').eq(calendar.date.timespan).prop('selected', true).change();
+			}
+			
+			if(current_day.val() === null){
+				current_day.children('option:enabled').eq(calendar.date.timespan).prop('selected', true).change();
+			}
+		}
+
+	});
+
+	add_day.click(function(){
+
+		var target = $(this).prev();
+		var value = target.val()|0;
+		var selected = target.find('option:selected');
+		var options = target.children(":enabled");
+		var next = options.index(selected)+1;
+
+		if(next == options.length){
+			add_timespan.click();
+			target.children('option:enabled').first().prop('selected', true).change();
+		}else{
+			options.eq(next).prop('selected', true);
+			target.change();
+		}
+	});
+
+	add_timespan.click(function(){
+
+		var target = $(this).prev();
+		var value = target.val()|0;
+		var selected = target.find('option:selected');
+		var options = target.children(":enabled");
+		var next = options.index(selected)+1;
+
+		if(next == options.length){
+			add_year.click();
+			target.children('option:enabled').first().prop('selected', true).change();
+		}else{
+			options.eq(next).prop('selected', true);
+			target.change();
+		}
+
+	});
+
+	add_year.click(function(){
+
+		var target = $(this).prev();
+		var value = target.val()|0;
+		target.val(value+1).change();
+		if(current_timespan.children(":enabled").length == 0){
+			add_year.click();
+		}else{
+			if(current_timespan.val() === null){
+				current_timespan.children('option:enabled').eq(calendar.date.timespan).prop('selected', true).change();
+			}
+			
+			if(current_day.val() === null){
+				current_day.children('option:enabled').eq(calendar.date.timespan).prop('selected', true).change();
+			}
+		}
+	});
+
+
 	current_year.change(function(){
 
 		var curr_year = $(this).val()|0;
-		var rebuild = false;
-
-    	if(curr_year == 0){
+		
+		if(curr_year == 0){
 			if(calendar.date.year < 0){
 				curr_year = 1;
 			}else if(calendar.date.year > 0){
@@ -245,23 +363,11 @@ function set_up_edit_inputs(){
 
 		if(calendar.date.year != curr_year){
 
-			rebuild = true;
-
 			var curr_timespan = repopulate_timespan_select(curr_year > 0 ? curr_year-1 : curr_year);
 
-			var curr_day = repopulate_day_select(curr_year > 0 ? curr_year-1 : curr_year, curr_timespan);
+			repopulate_day_select(curr_year > 0 ? curr_year-1 : curr_year, curr_timespan);
 
 		}
-
-		calendar.date.year = curr_year;
-		calendar.date.timespan = curr_timespan;
-		calendar.date.day = curr_day;
-
-		if(rebuild){
-			rebuild_calendar('calendar');
-			update_current_day(true);
-		}
-
 
 	});
 
@@ -271,30 +377,38 @@ function set_up_edit_inputs(){
 		var prev_timespan = $(this).data('val')|0;
 		var rebuild = false;
 
-		var curr_day = repopulate_day_select(calendar.date.year > 0 ? calendar.date.year-1 : calendar.date.year, curr_timespan);
+		repopulate_day_select(calendar.date.year > 0 ? calendar.date.year-1 : calendar.date.year, curr_timespan);
+
+	});
+
+	$('.date_control').change($.debounce(10, function(e) {
+
+		var rebuild = false;
+
+		var curr_year = current_year.val()|0;
+		var curr_timespan = current_timespan.val()|0;
+		var curr_day = current_day.val()|0;
+
+		console.log(curr_year, curr_timespan, curr_day)
+
+		if(calendar.date.year != curr_year){
+			rebuild = true;
+		}else if(calendar.date.timespan != curr_timespan && calendar.settings.show_current_month){
+			rebuild = true;
+		}
+
+		calendar.date.year = curr_year;
 		calendar.date.timespan = curr_timespan;
 		calendar.date.day = curr_day;
 
-		if(curr_timespan != prev_timespan && calendar.settings.show_current_month){
+		if(rebuild){
 			rebuild_calendar('calendar');
-			update_current_day(true);
-		}else{
-			update_current_day(true);
 		}
-
-
-	});
-
-	current_day.change(function(){
-
-		var curr_day = $(this).val()|0;
-		var prev_day = $(this).data('val')|0;
-
-		calendar.date.day = curr_day;
-
 		update_current_day(true);
 
-	});
+		console.log(calendar.date)
+
+	}));
 
 	function repopulate_timespan_select(year){
 		var html = [];
