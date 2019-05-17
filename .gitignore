@@ -1,2 +1,4 @@
 modules/calendar/class/
 modules/calendar/ajax/
+*.sublime-workspace
+.htaccess
