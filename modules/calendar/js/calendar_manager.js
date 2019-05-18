@@ -1,6 +1,8 @@
-const worker_calendar = new Worker('modules/calendar/webworkers/worker_calendar.js');
-const worker_events = new Worker('modules/calendar/webworkers/worker_events.js');
-const worker_climate = new Worker('modules/calendar/webworkers/worker_climate.js');
+var utcDate1 = Date.now();
+
+const worker_calendar = new Worker('modules/calendar/webworkers/worker_calendar.js?v='+utcDate1);
+const worker_events = new Worker('modules/calendar/webworkers/worker_events.js?v='+utcDate1);
+const worker_climate = new Worker('modules/calendar/webworkers/worker_climate.js?v='+utcDate1);
 
 function bind_calendar_events(){
 
@@ -73,7 +75,7 @@ worker_events.onmessage = e => {
 worker_climate.onmessage = e => {
 
 	calendar_weather.epoch_data = e.data;
-	evaluate_weather_charts(calendar_weather.epoch_data);
+	evaluate_weather_charts();
 
 }
 
@@ -101,7 +103,7 @@ worker_calendar.onmessage = e => {
 
 		}else if(e.data.action === "weather"){
 
-			evaluate_weather_charts(evaluated_calendar_data.epoch_data)
+			evaluate_weather_charts()
 
 		}
 

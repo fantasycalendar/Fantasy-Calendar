@@ -1,5 +1,7 @@
 <?php
 
+header('Cache-Control: no-cache');
+
 $calendar_name = $calendar_data['calendar_name'];
 $owner = $calendar_data['owner'];
 
@@ -8,6 +10,7 @@ $title = $calendar_name;
 include('header.php');
 
 ?>
+<script src="calendar_json_02.json?ver=<?php echo $jsversion; ?>"></script>
 
 <script>
 
@@ -38,12 +41,13 @@ function update_date(base){
 	}
 }
 
+
 hash = getUrlParameter('id');
 
-data = {};
+/*data = {};
 data.name = "<?php echo $calendar_data['calendar_name'] ?>";
 data.date = JSON.parse(<?php echo json_encode($calendar_data['date']); ?>);
-data.structure = JSON.parse(<?php echo json_encode($calendar_data['structure']); ?>);
+data.structure = JSON.parse(<?php echo json_encode($calendar_data['structure']); ?>);*/
 last_date_changed = new Date("<?php echo $calendar_data['last_date_changed']; ?>");
 last_structure_changed = new Date("<?php echo $calendar_data['last_structure_changed']; ?>");
 
@@ -55,7 +59,7 @@ function reload_calendar(data){
 
 $(document).ready(function(){
 
-	timer = setTimeout('check_last_date_changed()', 100);
+	/*timer = setTimeout('check_last_date_changed()', 100);
 	
 	$(window).focus(function() {
 		if(!timer)
@@ -65,11 +69,11 @@ $(document).ready(function(){
 	$(window).blur(function() {
 		clearTimeout(timer);
 		timer = 0;
-	});
+	});*/
 
-	reload_calendar(data);
+	//reload_calendar(data);
 	set_up_edit_inputs();
-	bind_calendar_events();
+	//bind_calendar_events();
 	rebuild_calendar('calendar');
 
 });

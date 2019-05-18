@@ -368,19 +368,26 @@ label{
 
 .input_buttons select, .input_buttons input{
 	flex:0 1 auto;
-	margin:0 1%;
+	margin:0 2px;
+	height:100%;
 }
 
 .sub-btn, .add-btn{
 	flex:1 0 auto;
-	line-height: 0px;
-	text-align: center;
 	width:29px;
 	height:29px;
-	padding-top:0.5em;
+	margin: 0 2px;
+	padding:0;
 }
 
+.input_buttons i{
+	position:relative;
+	top:0.4em;
+}
 
+.input_buttons .clocktext{
+	font-size:0.75em;
+}
 
 
 
@@ -677,7 +684,7 @@ label{
 
 .lbl-text{
 	font-weight: bold;
-	font-size: 1.25rem;
+	font-size: 1.1rem;
 }
 
 .lbl-toggle {
@@ -693,10 +700,6 @@ label{
 	-o-user-select: none;
 
 	margin:0;
-}
-
-.lbl-toggle:hover{
-	background-color: rgba(0,0,0,0.1);
 }
 
 .wiki, .setting-question{

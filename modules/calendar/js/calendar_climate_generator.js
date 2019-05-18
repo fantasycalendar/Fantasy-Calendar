@@ -252,6 +252,7 @@ var climate_generator = {
 		var range_low = Math.abs((this.random.noise(epoch+this.data.season_length*3, 1.0, 0.5, 1.5))*(high-low)*0.5);
 		var range_high = Math.abs((this.random.noise(epoch+this.data.season_length*4, 1.0, 0.5, 1.5))*(high-low)*0.5);
 
+
 		var temperature_i = [temp-range_low, temp+range_high];
 		var temperature_m = [this.fahrenheit_to_celcius(temperature_i[0]), this.fahrenheit_to_celcius(temperature_i[1])];
 		var temperature_c = this.pick_from_table(temp, this.temperature_gauge, false).key;
@@ -345,12 +346,12 @@ var climate_generator = {
 
 			if(custom_weather.temperature[0] === "i"){
 				var temperature_i = custom_weather.temperature[1];
-				var temperature_m = this.fahrenheit_to_celcius(temperature_i);
+				var temperature_m = [this.fahrenheit_to_celcius(temperature_i[0]), this.fahrenheit_to_celcius(temperature_i[1])];
 			}else{
 				var temperature_m = custom_weather.temperature[1];
-				var temperature_i = this.celcius_to_fahrenheit(temperature_m);
+				var temperature_i = [this.celcius_to_fahrenheit(temperature_m[0]), this.celcius_to_fahrenheit(temperature_m[1])];
 			}
-			var temperature_c = this.pick_from_table(temperature_i, this.temperature_gauge, false).key;
+			var temperature_c = this.pick_from_table(mid(temperature_i[0], temperature_i[1]), this.temperature_gauge, false).key;
 
 			precipitation.key = custom_weather.precipitation !== undefined ? custom_weather.precipitation : precipitation.key;
 
@@ -968,8 +969,8 @@ var climate_generator = {
 					'name': 'Winter',
 					'custom_name': true,
 					'weather': {
-						'temp_low': -15,
-						'temp_high': 35,
+						'temp_low': -35,
+						'temp_high': -15,
 						'precipitation': 0.1,
 						'precipitation_intensity': 0.1
 					}
@@ -978,23 +979,23 @@ var climate_generator = {
 					'name': 'Summer',
 					'custom_name': true,
 					'weather': {
-						'temp_low': 32,
-						'temp_high': 65,
+						'temp_low': 35,
+						'temp_high': 55,
 						'precipitation': 0.1,
 						'precipitation_intensity': 0.1
 					}
 				}
 			]
 		},
-		'Polar': {
-			'name': 'Polar',
+		'Polar: Arctic': {
+			'name': 'Arctic',
 			'seasons': [
 				{
 					'name': 'Winter',
 					'custom_name': true,
 					'weather': {
-						'temp_low': -35,
-						'temp_high': 32,
+						'temp_low': -20,
+						'temp_high': -10,
 						'precipitation': 0.1,
 						'precipitation_intensity': 0.1
 					}
@@ -1003,8 +1004,33 @@ var climate_generator = {
 					'name': 'Summer',
 					'custom_name': true,
 					'weather': {
-						'temp_low': 17,
-						'temp_high': 50,
+						'temp_low': 50,
+						'temp_high': 70,
+						'precipitation': 0.3,
+						'precipitation_intensity': 0.1
+					}
+				}
+			]
+		},
+		'Polar: Antarctic': {
+			'name': 'Antarctic',
+			'seasons': [
+				{
+					'name': 'Winter',
+					'custom_name': true,
+					'weather': {
+						'temp_low': -81,
+						'temp_high': -65,
+						'precipitation': 0.1,
+						'precipitation_intensity': 0.1
+					}
+				},
+				{
+					'name': 'Summer',
+					'custom_name': true,
+					'weather': {
+						'temp_low': -22,
+						'temp_high': -15,
 						'precipitation': 0.1,
 						'precipitation_intensity': 0.1
 					}

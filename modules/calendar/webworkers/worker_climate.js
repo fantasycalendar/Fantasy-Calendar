@@ -1,6 +1,8 @@
-importScripts('../js/calendar_functions.js');
-importScripts('../js/calendar_variables.js');
-importScripts('../js/calendar_climate_generator.js');
+var utcDate1 = Date.now();
+
+importScripts('../js/calendar_functions.js?v='+utcDate1);
+importScripts('../js/calendar_variables.js?v='+utcDate1);
+importScripts('../js/calendar_climate_generator.js?v=2000'+utcDate1);
 
 onmessage = e => {
 	

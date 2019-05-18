@@ -1,31 +1,3 @@
-<script>
-
-function reload_calendar(data){
-	calendar 	  = data.structure;
-	calendar.name = data.name;
-	calendar.date = data.date;
-}
-
-$(document).ready(function(){
-
-	hash = getUrlParameter('id');
-
-	data = {};
-	data.name = "<?php echo $calendar_data['calendar_name'] ?>";
-	data.date = JSON.parse(<?php echo json_encode($calendar_data['date']); ?>);
-	data.structure = JSON.parse(<?php echo json_encode($calendar_data['structure']); ?>);
-	last_date_changed = new Date("<?php echo $calendar_data['last_date_changed']; ?>");
-	last_structure_changed = new Date("<?php echo $calendar_data['last_structure_changed']; ?>");
-
-	reload_calendar(data);
-	set_up_view_inputs();
-	bind_calendar_events();
-	rebuild_calendar('calendar');
-
-});
-
-</script>
-
 <div id="input_container_parent">
 	<form id="input_container">
 
@@ -35,49 +7,73 @@ $(document).ready(function(){
 		</div>
 
 
-		<div class='wrap-collapsible'>
-			<div class='detail-row form-inline'>
-				<input type='text' class='form-control form-control-lg full static_input' data='' key='name' placeholder='Calendar name' />
-			</div>
-		</div>
+		
 
 
-		<div class='wrap-collapsible margin-below'>
+	<!---------------------------------------------->
+	<!---------------- CURRENT DATE ---------------->
+	<!---------------------------------------------->
 
-			<button disabled id='btn_save' class='btn btn-lg btn-primary btn-block'>Save</button>
+	<div class='wrap-collapsible'>
+		<input id="collapsible_date" class="toggle" type="checkbox" checked>
+		<label for="collapsible_date" class="lbl-toggle lbl-text">Current Date <a target="_blank" title='Fantasy Calendar Wiki: Date' href='https://wiki.fantasy-calendar.com/index.php?title=Date' class="wiki"><i class="icon-question-sign"></i></a></label>
+		<div class="collapsible-content">
 
-		</div>
+			<div class='detail-row'>
 
-		<div class='wrap-collapsible'>
-			<div class='separator'></div>
-		</div>
-
-		<div class='wrap-collapsible'>
-			<input id="collapsible_globalweek" class="toggle" type="checkbox">
-			<label for="collapsible_globalweek" class="lbl-toggle lbl-text">Global Week <a target="_blank" title='Fantasy Calendar Wiki: Global week' href='https://wiki.fantasy-calendar.com/index.php?title=Global_week' class="wiki"><i class="icon-question-sign"></i></a></label>
-			<div class="collapsible-content">
-
-				<div class='form-inline global_week'>
-
-					<input type='text' class='form-control name' placeholder='Weekday name'>
-
-					<input type='button' value='Add' class='btn btn-primary add'>
-
+				<div class='detail-column fifth'>
+					<div class='detail-text right-align full'>Year:</div>
 				</div>
-
-				<div class='sortable' id='global_week_sortable'>
+				<div class='detail-column fourfifths input_buttons'>
+					<div class='btn btn-sm btn-info sub-btn' id='sub_year'><i class="icon-minus"></i></div>
+					<input class='form-control form-control-sm date_control' id='current_year' type='number'>
+					<div class='btn btn-sm btn-info add-btn' id='add_year'><i class="icon-plus"></i></div>
 				</div>
-
 			</div>
 
-			<div class='separator'></div>
+			<div class='detail-row'>
+
+
+				<div class='detail-column fifth'>
+					<div class='detail-text right-align full'>Month:</div>
+				</div>
+				<div class='detail-column fourfifths input_buttons'>
+					<div class='btn btn-sm btn-info sub-btn' id='sub_timespan'><i class="icon-minus"></i></div>
+					<select class='form-control form-control-sm date_control' id='current_timespan'></select>
+					<div class='btn btn-sm btn-info add-btn' id='add_timespan'><i class="icon-plus"></i></div>
+				</div>
+
+			</div>
+
+			<div class='detail-row'>
+
+
+				<div class='detail-column fifth'>
+					<div class='detail-text right-align full'>Day:</div>
+				</div>
+				<div class='detail-column fourfifths input_buttons'>
+					<div class='btn btn-sm btn-info sub-btn' id='sub_day'><i class="icon-minus"></i></div>
+					<select class='form-control form-control-sm date_control' id='current_day'></select>
+					<div class='btn btn-sm btn-info add-btn' id='add_day'><i class="icon-plus"></i></div>
+				</div>
+
+			</div>
 
 		</div>
+
+		<div class='separator'></div>
+
+	</div>
+
 	</form>
 	<div class="input_collapse_btn btn btn-outline-primary"></div>
 </div>
 
 <div id="calendar_container">
+
+	<div id="top_follower">
+
+	</div>
 
 	<div id="calendar">
 

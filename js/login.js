@@ -78,7 +78,7 @@ $(document).ready(function(){
 
 function logout(){
 	$.ajax({
-		url:window.baseurl+"ajax/ajax_user",
+		url:window.baseurl+"modules/calendar/ajax/ajax_user",
 		type: "post",
 		dataType: "json",
 		data: {action: "logout"},

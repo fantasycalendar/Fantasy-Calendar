@@ -49,6 +49,27 @@ const calendar_weather = {
 
 			var weather_epoch = day_container.attr('epoch');
 
+			var weather = calendar_weather.epoch_data[weather_epoch].weather;
+
+			var desc = weather.temperature.cinematic;
+
+			var temp_sys = calendar.seasons.global_settings.temp_sys;
+			var height = 115;
+			if(temp_sys == 'imperial'){
+				temp_symbol = '°F';
+				var temp = `${precisionRound(weather.temperature[temp_sys].value[0], 1).toString()+temp_symbol} to ${precisionRound(weather.temperature[temp_sys].value[1], 1).toString()+temp_symbol}`;
+			}else if(temp_sys == 'metric'){
+				temp_symbol = '°C';
+				var temp = `${precisionRound(weather.temperature[temp_sys].value[0], 1).toString()+temp_symbol} to ${precisionRound(weather.temperature[temp_sys].value[1], 1).toString()+temp_symbol}`;
+			}else{
+				var temp_f = `<span class='newline'>${precisionRound(weather.temperature['imperial'].value[0], 1).toString()}°F to ${precisionRound(weather.temperature['imperial'].value[1], 1).toString()}°F</span>`;
+				var temp_c = `<span class='newline'>${precisionRound(weather.temperature['metric'].value[0], 1).toString()}°C to ${precisionRound(weather.temperature['metric'].value[1], 1).toString()}°C</span>`;
+				var temp = `${temp_f}${temp_c}`;
+				height += 35;
+			}
+			this.weather_tooltip_box.toggleClass('taller', temp_sys == 'both');
+			this.weather_temp.toggleClass('newline', temp_sys == 'both');
+
 			var position = '';
 
 			var val = 0;
@@ -64,11 +85,10 @@ const calendar_weather = {
 				}
 			}
 
-
 			var combined = position+val == "0" ? "" : position+val;
 			this.weather_tooltip_box.position({
 				my: "center"+combined,
-				at: 'top-115',
+				at: `top-${height}`,
 				of: icon.parent().parent(),
 				collision: "none"
 			});
@@ -78,20 +98,12 @@ const calendar_weather = {
 			tooltip_box.pseudoStyle("before", "left", "calc(50% "+position+" "+val+"px) !important");
 			tooltip_box.pseudoStyle("after", "left", "calc(50% "+position+" "+val+"px)  !important");
 
-			var weather = calendar_weather.epoch_data[weather_epoch].weather;
-
-			var desc = weather.temperature.cinematic;
-
-			var temp_sys = calendar.seasons.global_settings.temp_sys;
-			var temp_symbol = temp_sys === "imperial" ? '°F' : '°C';
-			var temp = `${precisionRound(weather.temperature[temp_sys].value[0], 1).toString()+temp_symbol} to ${precisionRound(weather.temperature[temp_sys].value[1], 1).toString()+temp_symbol}`;
-
 			this.weather_temp_desc.each(function(){
 				$(this).text(desc);
 			});
 
 			this.weather_temp.each(function(){
-				$(this).text(temp);
+				$(this).html(temp);
 			});
 
 			this.weather_wind.each(function(){
@@ -134,7 +146,9 @@ function addData(chart, label, dataset) {
 var precipitation_chart;
 var temperature_chart;
 
-function evaluate_weather_charts(epoch_data){
+function evaluate_weather_charts(){
+
+	var epoch_data = calendar_weather.epoch_data;
 
 	var keys = Object.keys(epoch_data);
 	var length = keys.length;
@@ -144,6 +158,9 @@ function evaluate_weather_charts(epoch_data){
 	var labels = [];
 
 	var temp_sys = calendar.seasons.global_settings.temp_sys;
+	if(temp_sys === "both"){
+		var temp_sys = "imperial";
+	}
 
 	if(epoch_data[keys[0]].weather){
 
@@ -166,7 +183,7 @@ function evaluate_weather_charts(epoch_data){
 
 		var temperature_datasets = [
 			{
-				label: 'Temperature High',
+				label: `Temperature High (${temp_sys})`,
 				fill: false,
 				data: temperature[1],
 				borderColor: 'rgba(0, 255, 0, 0.5)',
@@ -174,7 +191,7 @@ function evaluate_weather_charts(epoch_data){
 				fillBetweenColor: "rgba(5,5,255, 0.2)"
 			},
 			{
-				label: 'Temperature Low',
+				label: `Temperature Low (${temp_sys})`,
 				fill: false,
 				data: temperature[0],
 				borderColor: 'rgba(0, 255, 0, 0.5)',

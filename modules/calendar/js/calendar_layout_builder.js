@@ -104,9 +104,9 @@ var eras = {
 		this.end_epoch = end_epoch;
 		this.era = undefined;
 
-		for(var i = 0; i < calendar.eras.length; i++){
+		/*for(var i = 0; i < calendar.eras.length; i++){
 			calendar.eras[i].date.epoch = evaluate_calendar_start(calendar, calendar.eras[i].date.year-1, calendar.eras[i].date.timespan, calendar.eras[i].date.day).epoch;
-		}
+		}*/
 
 		// If the last era shift was behind us, then it is the last era
 		if(this.start_epoch > calendar.eras[calendar.eras.length-1].date.epoch){
@@ -731,7 +731,7 @@ var calendar_layouts = {
 					return era.year === calendar.date.internal_year && era.timespan === timespan.index && era.day === 0;
 				});
 
-				this.insert_intercalary_day(timespan, filtered_leap_days_beforestart, timespan.length);
+				this.insert_intercalary_day(timespan, filtered_leap_days_beforestart, timespan.length, true);
 
 				calendar_layouts.html.push("<div class='timespan_container wide'>");
 
@@ -787,7 +787,7 @@ var calendar_layouts = {
 								calendar_layouts.year_data.week_day++;
 							}
 
-							this.insert_intercalary_day(timespan, filtered_features, timespan.length);
+							this.insert_intercalary_day(timespan, filtered_features, timespan.length, true);
 
 						}
 
@@ -842,9 +842,11 @@ var calendar_layouts = {
 
 		},
 
-		insert_intercalary_day: function(timespan, filtered_features, length){
+		insert_intercalary_day: function(timespan, filtered_features, length, add_subt){
 
 			if(filtered_features.length > 0){
+
+				calendar_layouts.year_data.epoch += add_subt ? 1 : 0;
 
 				if(!(filtered_features[0].day === 0) && !(filtered_features[0].day === length)){
 
@@ -910,6 +912,8 @@ var calendar_layouts = {
 					this.get_overflow(true, calendar_layouts.year_data.week_day-1);
 
 				}
+
+				calendar_layouts.year_data.epoch -= add_subt ? 1 : 0;
 			}
 		},
 
@@ -1046,7 +1050,7 @@ var calendar_layouts = {
 					return era.year === calendar.date.internal_year && era.timespan === timespan.index && era.day === 0;
 				});
 
-				this.insert_intercalary_day(timespan, filtered_leap_days_beforestart, timespan.length);
+				this.insert_intercalary_day(timespan, filtered_leap_days_beforestart, timespan.length, true);
 
 				calendar_layouts.html.push("<div class='timespan_container vertical'>");
 
@@ -1082,7 +1086,7 @@ var calendar_layouts = {
 								calendar_layouts.year_data.week_day++;
 							}
 
-							this.insert_intercalary_day(timespan, filtered_features, timespan.length);
+							this.insert_intercalary_day(timespan, filtered_features, timespan.length, true);
 
 						}
 
@@ -1123,9 +1127,11 @@ var calendar_layouts = {
 
 		},
 
-		insert_intercalary_day: function(timespan, filtered_features, length){
+		insert_intercalary_day: function(timespan, filtered_features, length, add_subt){
 
 			if(filtered_features.length > 0){
+
+				calendar_layouts.year_data.epoch += add_subt ? 1 : 0;
 
 				if(!(filtered_features[0].day === 0) && !(filtered_features[0].day === length)){
 					
@@ -1170,6 +1176,8 @@ var calendar_layouts = {
 					calendar_layouts.html.push("<div class='timespan_row_container'>");
 
 				}
+
+				calendar_layouts.year_data.epoch -= add_subt ? 1 : 0;
 			}
 		},
 

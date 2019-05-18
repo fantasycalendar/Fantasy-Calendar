@@ -1044,6 +1044,7 @@ var calendar_builder = {
 onmessage = e => {
 	calendar_builder.calendar = e.data.calendar;
 	data = calendar_builder.evaluate_calendar_data();
+	
 	postMessage({
 		processed_data: data,
 		action: e.data.action

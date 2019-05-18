@@ -1,5 +1,22 @@
 (function(b,c){var $=b.jQuery||b.Cowboy||(b.Cowboy={}),a;$.throttle=a=function(e,f,j,i){var h,d=0;if(typeof f!=="boolean"){i=j;j=f;f=c}function g(){var o=this,m=+new Date()-d,n=arguments;function l(){d=+new Date();j.apply(o,n)}function k(){h=c}if(i&&!h){l()}h&&clearTimeout(h);if(i===c&&m>e){l()}else{if(f!==true){h=setTimeout(i?k:l,i===c?e-m:e)}}}if($.guid){g.guid=j.guid=j.guid||$.guid++}return g};$.debounce=function(d,e,f){return f===c?a(d,e,false):a(d,f,e!==false)}})(this);
 
+
+function debounce(func, wait, immediate) {
+	var timeout;
+	return function() {
+		var context = this, args = arguments;
+		var later = function() {
+			timeout = null;
+			if (!immediate) func.apply(context, args);
+		};
+		var callNow = immediate && !timeout;
+		clearTimeout(timeout);
+		timeout = setTimeout(later, wait);
+		if (callNow) func.apply(context, args);
+	};
+};
+
+
 Object.compare = function (obj1, obj2) {
 	//Loop through properties in object 1
 	for (var p in obj1) {
@@ -231,8 +248,12 @@ function does_leap_day_appear(year, timespan, leap_day){
 
 }
 
+function convert_year(year){
+	return year > 0 ? year-1 : year;
+}
 
-function get_days_in_timespan(year, timespan_index){
+
+function get_days_in_timespan(year, timespan_index, exclusive){
 
 	var timespan = calendar.year_data.timespans[timespan_index];
 
@@ -241,7 +262,8 @@ function get_days_in_timespan(year, timespan_index){
 	for(var i = 1; i <= timespan.length; i++){
 		days.push({
 			text: `Day ${i}`,
-			is_there: does_day_appear(year, timespan_index, i)
+			is_there: does_day_appear(year, timespan_index, i),
+			leaping: false
 		});
 	}
 
@@ -267,23 +289,33 @@ function get_days_in_timespan(year, timespan_index){
 					}
 				}
 
-				days.splice(leap_day.day+offset, 0, {
-					text: `Intercalary "${leap_day.name}"`,
-					is_there: is_there
-				});
+				if(exclusive && is_there.result){
 
-				offset++;
+					days.splice(leap_day.day+offset, 0, {
+						text: `Intercalary "${leap_day.name}"`,
+						is_there: is_there,
+						leaping: leap_day.interval > 0
+					});
+
+					offset++;
+
+				}
 
 			}else{
 
 				var is_there = does_day_appear(year, timespan_index, i);
 
-				days.push({
-					text: `Day ${i}`,
-					is_there: is_there
-				});
-				i++;
 
+				if(exclusive && is_there.result){
+
+					days.push({
+						text: `Day ${i}`,
+						is_there: is_there,
+						leaping: leap_day.interval > 0
+					});
+					i++;
+
+				}
 			}
 		}
 	}

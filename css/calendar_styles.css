@@ -610,7 +610,7 @@ body.hide_timespan_number .timespan_number{
 }
 
 .current_day{
-	background-color:red;
+	background-color:#BF6347;
 }
 
 body .year_day_number{
@@ -871,6 +871,10 @@ body.hide_year_day .year_day_number{
 	box-shadow: 0px 0px 28px 3px rgba(0,0,0,0.36);
 }
 
+#weather_tooltip_box.taller {
+	height:150px;
+}
+
 #weather_tooltip_box:after, #weather_tooltip_box:before {
 	top: 100%;
 	left: 50%;
@@ -894,8 +898,14 @@ body.hide_year_day .year_day_number{
 	border-width: 11px;
 	margin-left: -11px;
 }
+
 #weather_tooltip_box div{
 	float:left;
 	text-align:center;
 	width:100%;
+}
+
+#weather_tooltip_box .newline{
+	width:100%;
+    display: inline-block;
 }

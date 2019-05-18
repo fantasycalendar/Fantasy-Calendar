@@ -208,7 +208,8 @@ var calendar = {
  
 	"clock": {
 		"hours": 24,
-		"minutes": 60
+		"minutes": 60,
+		"offset": 0
 	},
  
 	"seasons": {
@@ -293,7 +294,7 @@ var calendar = {
 				],
 				"custom_dates": {
 					"0": {
-						"temperature": ["i", 33],
+						"temperature": ["i", [33, 90]],
 						"precipitation": "Test",
 						"clouds": 4,
 						"wind_speed": 5,
@@ -359,7 +360,7 @@ var calendar = {
 			"date": {
 				"year": 1,
 				"timespan": 1,
-				"day": 15
+				"day": 5
 			}
 		},
 		{

@@ -156,7 +156,7 @@
 
 	<div class='wrap-collapsible'>
 		<input id="collapsible_date" class="toggle" type="checkbox">
-		<label for="collapsible_date" class="lbl-toggle lbl-text">Current Date <a target="_blank" title='Fantasy Calendar Wiki: Date' href='https://wiki.fantasy-calendar.com/index.php?title=Date' class="wiki"><i class="icon-question-sign"></i></a></label>
+		<label for="collapsible_date" class="lbl-toggle lbl-text">Current Date & Time <a target="_blank" title='Fantasy Calendar Wiki: Date' href='https://wiki.fantasy-calendar.com/index.php?title=Date' class="wiki"><i class="icon-question-sign"></i></a></label>
 		<div class="collapsible-content">
 
 			<div class='detail-row'>
@@ -165,9 +165,9 @@
 					<div class='detail-text right-align full'>Year:</div>
 				</div>
 				<div class='detail-column fourfifths input_buttons'>
-					<div class='btn btn-sm btn-info sub-btn' id='sub_year'><i class="icon-minus"></i></div>
+					<div class='btn btn-sm btn-danger sub-btn' id='sub_year'><i class="icon-minus"></i></div>
 					<input class='form-control form-control-sm date_control' id='current_year' type='number'>
-					<div class='btn btn-sm btn-info add-btn' id='add_year'><i class="icon-plus"></i></div>
+					<div class='btn btn-sm btn-success add-btn' id='add_year'><i class="icon-plus"></i></div>
 				</div>
 			</div>
 
@@ -178,9 +178,9 @@
 					<div class='detail-text right-align full'>Month:</div>
 				</div>
 				<div class='detail-column fourfifths input_buttons'>
-					<div class='btn btn-sm btn-info sub-btn' id='sub_timespan'><i class="icon-minus"></i></div>
+					<div class='btn btn-sm btn-danger sub-btn' id='sub_timespan'><i class="icon-minus"></i></div>
 					<select class='form-control form-control-sm date_control' id='current_timespan'></select>
-					<div class='btn btn-sm btn-info add-btn' id='add_timespan'><i class="icon-plus"></i></div>
+					<div class='btn btn-sm btn-success add-btn' id='add_timespan'><i class="icon-plus"></i></div>
 				</div>
 
 			</div>
@@ -192,9 +192,95 @@
 					<div class='detail-text right-align full'>Day:</div>
 				</div>
 				<div class='detail-column fourfifths input_buttons'>
-					<div class='btn btn-sm btn-info sub-btn' id='sub_day'><i class="icon-minus"></i></div>
+					<div class='btn btn-sm btn-danger sub-btn' id='sub_day'><i class="icon-minus"></i></div>
 					<select class='form-control form-control-sm date_control' id='current_day'></select>
-					<div class='btn btn-sm btn-info add-btn' id='add_day'><i class="icon-plus"></i></div>
+					<div class='btn btn-sm btn-success add-btn' id='add_day'><i class="icon-plus"></i></div>
+				</div>
+
+			</div>
+
+			<div class='separator'></div>
+
+			<div class='detail-row'>
+
+				<div class='detail-column fifth'>
+					<div class='detail-text right-align full'>Time:</div>
+				</div>
+				<div class='detail-column fourfifths input_buttons'>
+					<div class='btn btn-sm btn-danger sub-btn adjust_hour' val='-1'><i class="clocktext">1h</i></div>
+					<div class='btn btn-sm btn-danger sub-btn adjust_minute' val='-30'><i class="clocktext">30m</i></div>
+					<input class='form-control form-control-sm' type='number' id='current_hour'>:
+					<input class='form-control form-control-sm' type='number' id='current_minute'>
+					<div class='btn btn-sm btn-success add-btn adjust_minute' val='30'><i class="clocktext">30m</i></div>
+					<div class='btn btn-sm btn-success add-btn adjust_hour' val='1'><i class="clocktext">1h</i></div>
+				</div>
+
+			</div>
+
+		</div>
+
+		<div class='separator'></div>
+
+	</div>
+
+
+
+	<!---------------------------------------------->
+	<!-------------------- CLOCK ------------------->
+	<!---------------------------------------------->
+
+	<div class='wrap-collapsible'>
+		<input id="collapsible_clock" class="toggle" type="checkbox">
+		<label for="collapsible_clock" class="lbl-toggle lbl-text">Clock <a target="_blank" title='Fantasy Calendar Wiki: Clock' href='https://wiki.fantasy-calendar.com/index.php?title=Clock' class="wiki"><i class="icon-question-sign"></i></a></label>
+		<div class="collapsible-content">
+
+			<div class='detail-row'>
+
+				<div class='detail-column half'>
+					<div class='detail-text'>
+						Hours per day:
+					</div>
+				</div>
+
+				<div class='detail-column half'>
+					<div class='detail-text'>
+						Minutes per day:
+					</div>
+				</div>
+
+			</div>
+
+			<div class='detail-row'>
+
+				<div class='detail-column half input_buttons'>
+					<div class='btn btn-sm btn-danger sub-btn' onclick='adjustInput(this, -1);'><i class="icon-minus"></i></div>
+					<input class='form-control form-control-sm static_input' data='clock' key='hours' type='number'>
+					<div class='btn btn-sm btn-success add-btn' onclick='adjustInput(this, +1);'><i class="icon-plus"></i></div>
+				</div>
+
+				<div class='detail-column half input_buttons'>
+					<div class='btn btn-sm btn-danger sub-btn' onclick='adjustInput(this, -1);'><i class="icon-minus"></i></div>
+					<input class='form-control form-control-sm static_input' data='clock' key='minutes' type='number'>
+					<div class='btn btn-sm btn-success add-btn' onclick='adjustInput(this, +1);'><i class="icon-plus"></i></div>
+				</div>
+
+			</div>
+
+			<div class='detail-row'>
+
+				<div class='detail-column half'>
+					<div class='detail-text'>
+						Offset hours:
+					</div>
+				</div>
+
+			</div>
+			<div class='detail-row'>
+
+				<div class='detail-column half input_buttons'>
+					<div class='btn btn-sm btn-danger sub-btn' onclick='adjustInput(this, -1);'><i class="icon-minus"></i></div>
+					<input class='form-control form-control-sm static_input' data='clock' key='offset' type='number'>
+					<div class='btn btn-sm btn-success add-btn' onclick='adjustInput(this, +1);'><i class="icon-plus"></i></div>
 				</div>
 
 			</div>
@@ -374,6 +460,7 @@
 						<select class='custom-select type full static_input' data='seasons.global_settings' key='temp_sys'>
 							<option selected value='metric'>Metric</option>
 							<option value='imperial'>Imperial</option>
+							<option value='both'>Both</option>
 						</select>
 					</div>
 				</div>
@@ -381,16 +468,17 @@
 				<div class='detail-column half'>
 					<div class='detail-row'>Wind speed system:</div>
 					<div class='detail-row'>
-						<select class='custom-select type full static_input' data='seasons.global_settings' key='temp_sys'>
+						<select class='custom-select type full static_input' data='seasons.global_settings' key='wind_sys'>
 							<option selected value='metric'>Metric</option>
 							<option value='imperial'>Imperial</option>
+							<option value='both'>Both</option>
 						</select>
 					</div>
 				</div>
 			</div>
 
 			<div class='detail-row'>
-				<div class='detail-column'>Cinematic desciptions:</div>
+				<div class='detail-column'>Cinematic temperature desciption:</div>
 				<div class='detail-column float'>
 					<label class="custom-control custom-checkbox">
 						<input type="checkbox" class="custom-control-input static_input" data='seasons.global_settings' key='cinematic'>
@@ -688,10 +776,8 @@
 
 <div id="calendar_container">
 
-
 	<div id="calendar_errors_background">
 		<div id="calendar_errors">
-			<span id="calendar_errors_closebtn" onclick="close_calendar_message();">&times;</span>
 			<span id="calendar_error_text">
 				This is an alert box.
 			</span>
