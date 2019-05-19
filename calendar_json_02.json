@@ -257,11 +257,11 @@ var calendar = {
 						"time": {
 							"sunrise": {
 								"hour": 9,
-								"minute": 0
+								"minute": 30
 							},
 							"sunset": {
 								"hour": 16,
-								"minute": 0
+								"minute": 24
 							}
 						},
 						"weather":{

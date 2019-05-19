@@ -166,7 +166,7 @@ var climate_generator = {
 
 	},
 
-	get_weather: function(epoch){
+	get_season_data: function(epoch){
 
 		this.data.season_epoch = (epoch-this.data.season_offset) % this.data.season_length;
 		this.data.season_epoch = this.data.season_epoch < 0 ? this.data.season_epoch + this.data.season_length : this.data.season_epoch;
@@ -233,8 +233,13 @@ var climate_generator = {
 		var curr_season_data = this.current_location.seasons[curr_season];
 		var next_season_data = this.current_location.seasons[next_season];
 
-		var sunrise = precisionRound(lerp(curr_season_data.time.sunrise, next_season_data.time.sunrise, perc),2);
-		var sunset =  precisionRound(lerp(curr_season_data.time.sunset, next_season_data.time.sunset, perc),2);
+		var sunrise_minute = Math.round(lerp(curr_season_data.time.sunrise.minute, next_season_data.time.sunrise.minute, perc));
+		var sunrise_hour = lerp(curr_season_data.time.sunrise.hour, next_season_data.time.sunrise.hour, perc);
+		var sunrise = sunrise_hour+sunrise_minute/this.calendar.clock.minutes;
+
+		var sunset_minute = Math.round(lerp(curr_season_data.time.sunset.minute, next_season_data.time.sunset.minute, perc));
+		var sunset_hour = lerp(curr_season_data.time.sunset.hour, next_season_data.time.sunset.hour, perc);
+		var sunset = sunset_hour+sunset_minute/this.calendar.clock.minutes;
 
 		var sunrise_m = (Math.round(fract(sunrise)*this.calendar.clock.minutes)).toString().length < 2 ? "0"+(Math.round(fract(sunrise)*this.calendar.clock.minutes)).toString() : (Math.round(fract(sunrise)*this.calendar.clock.minutes));
 		var sunset_m = (Math.round(fract(sunset)*this.calendar.clock.minutes)).toString().length < 2 ? "0"+(Math.round(fract(sunset)*this.calendar.clock.minutes)).toString() : (Math.round(fract(sunset)*this.calendar.clock.minutes));
@@ -380,6 +385,8 @@ var climate_generator = {
 		}
 
 		var return_data = {
+			season_name: curr_season_data.name,
+			season_val: val,
 			temperature: {
 				imperial: {
 					value: temperature_i,

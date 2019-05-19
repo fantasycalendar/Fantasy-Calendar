@@ -23,8 +23,6 @@ function set_up_view_inputs(){
 
 	if(calendar.clock && calendar.date.hour !== undefined && calendar.date.minute !== undefined){
 
-		console.log(calendar.date.hour);
-
 		current_hour.val(calendar.date.hour).prop('min', 0).prop('max', calendar.clock.hours-1);
 		current_minute.val(calendar.date.minute).prop('min', 0).prop('max', calendar.clock.minutes-1);
 
@@ -214,8 +212,12 @@ function set_up_view_inputs(){
 
 		if(rebuild){
 			rebuild_calendar('calendar');
+			update_current_day(true);
+			evaluate_sun();
+		}else{
+			update_current_day(true);
+			evaluate_sun();
 		}
-		update_current_day(true);
 
 	}
 
@@ -279,7 +281,7 @@ function set_up_view_inputs(){
 			curr_hour = 0;
 		}
 
-		current_hour.val(curr_hour);
+		current_hour.val(curr_hour).change();
 
 	});
 
@@ -298,10 +300,121 @@ function set_up_view_inputs(){
 			curr_minute = Math.abs(calendar.clock.minutes-curr_minute);
 		}
 
-		current_minute.val(curr_minute);
+		current_minute.val(curr_minute).change();
 
 	});
 
+	current_hour.change(function(){
+		calendar.date.hour = $(this).val()|0;
+		eval_current_time();
+	});
+
+	current_minute.change(function(){
+		calendar.date.minute = $(this).val()|0;
+		eval_current_time();
+	});
+
+}
 
 
+function eval_clock(){
+
+	clock_hours = calendar.clock.hours;
+
+	$('#clock').empty();
+
+	$('#clock').css('display', 'block');
+
+	var element = [];
+	element.push("<img src='resources/clock_arm.png' id='clock_arm'/>");
+	element.push("<div id='clock_hours'></div>");
+	element.push("<img src='resources/endofday_dayhelper.png' id='end_dayhelper' class='SunUpDown'/>");
+	element.push("<img src='resources/endofday_nighthelper.png' id='end_nighthelper' class='SunUpDown'/>");
+	element.push("<img src='resources/startofday_dayhelper.png' id='start_dayhelper' class='SunUpDown'/>");
+	element.push("<img src='resources/startofday_nighthelper.png' id='start_nighthelper' class='SunUpDown'/>");
+	element.push("<img src='resources/startofday.png' id='StartOfDay' class='SunUpDown'/>");
+	element.push("<img src='resources/endofday.png' id='EndOfDay' class='SunUpDown' />");
+	element.push("<img src='resources/clock_base.png' id='base'/>");
+
+	$('#clock').html(element.join(''));
+
+	element = [];
+	for(var i = 0; i < clock_hours; i++){
+		var rotation = ((360/clock_hours)*i);
+		element.push(`<div class='clock_hour_text_container' style='transform: rotate(${rotation+180}deg);'><span class='clock_hour_text' style='transform: rotate(-${rotation+180}deg);'>${i}</span></div>`)
+		element.push(`<img class='clock_hour' src='resources/clock_hour.png' style='transform: rotate(${rotation}deg);'>`);
+	}
+
+	$('#clock_hours').html(element.join(''));
+
+	eval_current_time();
+
+}
+
+function eval_current_time(){
+
+	var clock_hour = calendar.date.hour;
+	var clock_minute = calendar.date.minute;
+	var clock_time = clock_hour + (clock_minute/60);
+	var clock_fraction_time = clock_time/clock_hours;
+
+	var rotation = (360/clock_hours)*clock_time;
+
+	if(clock_time >= clock_hours)
+	{
+		rotation = 360+(360/clock_hours)*clock_time;
+	}
+	else if(clock_time < 0)
+	{
+		rotation = (360/clock_hours)*clock_time;
+	}
+
+	rotate_element($('#clock_arm'), rotation);
+
+	evaluate_sun();
+
+}
+
+function evaluate_sun(){
+
+	if(evaluated_calendar_data.epoch_data[calendar.date.epoch]){
+
+		var sunset = evaluated_calendar_data.epoch_data[calendar.date.epoch].weather.sunset[0];
+		var sunrise = evaluated_calendar_data.epoch_data[calendar.date.epoch].weather.sunrise[0];
+
+		sunset = (360/clock_hours)*(sunset+clock_hours/4);
+		sunrise = (360/clock_hours)*(sunrise-clock_hours/4);
+
+		if(sunrise > 0){
+			$('#start_dayhelper').css('display', 'none');
+			$('#start_nighthelper').css('display', 'block');
+		}else{
+			$('#start_dayhelper').css('display', 'block');
+			$('#start_nighthelper').css('display', 'none');
+		}
+
+		if(sunset > 360){
+			$('#end_dayhelper').css('display', 'block');
+			$('#end_nighthelper').css('display', 'none');
+		}else{
+			$('#end_dayhelper').css('display', 'none');
+			$('#end_nighthelper').css('display', 'block');
+		}
+
+		rotate_element($('#StartOfDay'), sunrise);
+		rotate_element($('#start_dayhelper'), sunrise*0.935);
+		rotate_element($('#start_nighthelper'), sunrise*0.935);
+
+		rotate_element($('#EndOfDay'), sunset);
+		rotate_element($('#end_dayhelper'), (sunset-360)*0.935);
+		rotate_element($('#end_nighthelper'), (sunset-360)*0.935);
+		
+	}
+
+}
+
+function rotate_element(element, rotation){
+	element.css('-webkit-transform','rotate('+rotation+'deg)'); 
+	element.css('-moz-transform','rotate('+rotation+'deg)');
+	element.css('transform','rotate('+rotation+'deg)');
 }

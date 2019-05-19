@@ -6,7 +6,7 @@ var utcDate1 = Date.now();
 
 importScripts('../js/calendar_functions.js?version='+utcDate1);
 importScripts('../js/calendar_variables.js?version='+utcDate1);
-importScripts('../js/calendar_climate_generator.js?version='+utcDate1);
+importScripts('../js/calendar_season_generator.js?version='+utcDate1);
 
 var calendar_builder = {
 
@@ -832,7 +832,7 @@ var calendar_builder = {
 							}
 
 							if(climate_generator.process){
-								data.weather = climate_generator.get_weather(epoch);
+								data.weather = climate_generator.get_season_data(epoch);
 							}
 
 							for(moon_index = 0; moon_index < this.calendar.moons.length; moon_index++){
@@ -900,7 +900,7 @@ var calendar_builder = {
 					}
 
 					if(climate_generator.process){
-						data.weather = climate_generator.get_weather(epoch);
+						data.weather = climate_generator.get_season_data(epoch);
 					}
 					
 					for(moon_index = 0; moon_index < this.calendar.moons.length; moon_index++){
@@ -979,7 +979,7 @@ var calendar_builder = {
 							}
 
 							if(climate_generator.process){
-								data.weather = climate_generator.get_weather(epoch);
+								data.weather = climate_generator.get_season_data(epoch);
 							}
 
 							for(moon_index = 0; moon_index < this.calendar.moons.length; moon_index++){

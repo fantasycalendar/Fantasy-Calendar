@@ -2,7 +2,7 @@ var utcDate1 = Date.now();
 
 importScripts('../js/calendar_functions.js?v='+utcDate1);
 importScripts('../js/calendar_variables.js?v='+utcDate1);
-importScripts('../js/calendar_climate_generator.js?v=2000'+utcDate1);
+importScripts('../js/calendar_season_generator.js?v=2000'+utcDate1);
 
 onmessage = e => {
 	
@@ -19,7 +19,7 @@ onmessage = e => {
 
 	for(var i = 0; i < length; i++){
 		var epoch = keys[i]|0;
-		epoch_data[epoch].weather = climate_generator.get_weather(epoch);
+		epoch_data[epoch].weather = climate_generator.get_season_data(epoch);
 	}
 	
 	postMessage(epoch_data);

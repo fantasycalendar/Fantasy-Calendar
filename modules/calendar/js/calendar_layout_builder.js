@@ -373,6 +373,7 @@ var calendar_layouts = {
 		
 		update_current_day(true);
 
+		eval_clock();
 
 	},
 
