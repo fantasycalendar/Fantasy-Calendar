@@ -301,7 +301,7 @@ var calendar = {
 						"wind_speed_desc": "",
 						"wind_velocity": ["m", "7"],
 						"wind_direction": "S",
-						"feature": "Dust storm",
+						"feature": "Dust storm"
 					}
 				},
 
