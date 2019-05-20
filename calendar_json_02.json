@@ -313,10 +313,8 @@ var calendar = {
 
 					"large_noise_frequency": 0.015,
 					"large_noise_amplitude": 5.0,
-
 					"medium_noise_frequency": 0.3,
 					"medium_noise_amplitude": 2.0,
-
 					"small_noise_frequency": 0.8,
 					"small_noise_amplitude": 3.0
 				}
@@ -324,7 +322,9 @@ var calendar = {
 		],
 		"global_settings": {
 			"fixed": false,
-			"offset": 30,
+			"season_offset": 30,
+			"weather_offset": -30,
+
 			"seed": 826116802,
 			"temp_sys": "metric",
 			"wind_sys": "metric",
@@ -355,10 +355,10 @@ var calendar = {
 			"settings": {
 				"show_as_event": true,
 				"event_category": 0,
-				"ends_year": false
+				"ends_year": true
 			},
 			"date": {
-				"year": 1,
+				"year": -1,
 				"timespan": 1,
 				"day": 5
 			}
@@ -370,7 +370,7 @@ var calendar = {
 			"settings": {
 				"show_as_event": true,
 				"event_category": 0,
-				"ends_year": false
+				"ends_year": true
 			},
 			"date": {
 				"year": 2,

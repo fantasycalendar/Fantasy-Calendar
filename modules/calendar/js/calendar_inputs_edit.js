@@ -305,8 +305,6 @@ function set_up_edit_inputs(){
 					if(target.attr('class').indexOf('slider_input') > -1){
 						value = value/100;
 					}
-
-					console.log(current_calendar_data, data, value)
 					
 					current_calendar_data[data] = value;
 
@@ -2724,12 +2722,12 @@ function evaluate_season_lengths(){
 
 		data.season_offset = calendar.seasons.global_settings.offset;
 
-		$('#season_length_text').parent().removeClass('hidden');
+		$('#season_length_text').removeClass('hidden');
 		$('#season_length_text').text(`Season length: ${data.season_length} / ${fract_year_length()} (year length)`);
 	
 	}else{
 
-		$('#season_length_text').parent().addClass('hidden');
+		$('#season_length_text').addClass('hidden');
 			
 	}
 

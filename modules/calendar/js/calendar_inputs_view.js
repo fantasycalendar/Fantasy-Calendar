@@ -172,11 +172,13 @@ function set_up_view_inputs(){
 
 	current_timespan.change(function(){
 
+		var curr_year = current_year.val()|0;
+
 		var curr_timespan = $(this).val()|0;
 		var prev_timespan = $(this).data('val')|0;
 		var rebuild = false;
 
-		repopulate_day_select(convert_year(calendar.date.year), curr_timespan);
+		repopulate_day_select(convert_year(curr_year), curr_timespan);
 
 	});
 
@@ -378,7 +380,7 @@ function eval_current_time(){
 function evaluate_sun(){
 
 	if(evaluated_calendar_data.epoch_data[calendar.date.epoch]){
-
+		
 		var sunset = evaluated_calendar_data.epoch_data[calendar.date.epoch].weather.sunset[0];
 		var sunrise = evaluated_calendar_data.epoch_data[calendar.date.epoch].weather.sunrise[0];
 

@@ -369,7 +369,7 @@ function does_day_appear(year, timespan, day){
 
 		var era = calendar.eras[era_index];
 
-		if(era.settings.ends_year && year == era.date.year-1 && timespan == era.date.timespan && day >= era.date.day){
+		if(era.settings.ends_year && year == era.date.year-1 && timespan == era.date.timespan && day > era.date.day){
 
 			return {
 				result: false,
@@ -739,7 +739,7 @@ function has_year_ending_era(calendar, year){
 
 		var era = calendar.eras[era_index];
 
-		if(era.settings.ends_year && year == era.date.year-1){
+		if(era.settings.ends_year && year == convert_year(era.date.year)){
 
 			return true;
 

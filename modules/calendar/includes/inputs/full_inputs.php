@@ -453,6 +453,13 @@
 				<div class='detail-row small-text'>Warning! If you have any leaping months or eras that ends the year, this will not work very well! I recommend reading the Wiki page for this feature.</div>
 			</div>
 
+			<div class='detail-row'>
+				<div class='detail-column'>Season offset:</div>
+				<div class='detail-column float'>
+					<input class='form-control form-control-sm' type='number' min='0' data='seasons.global_settings' key='season_offset'/>
+				</div>
+			</div>
+
 			<div class='separator'></div>
 
 			<div class='detail-row'>
