@@ -859,8 +859,8 @@ body.hide_year_day .year_day_number{
 	background: #FFF;
 	border: 1px solid #AAA;
 	top:0px;
-	width:220px;
-	height:115px;
+	width:240px;
+	height:110px;
 	border-radius: 7px;
 	padding:10px;
 	font-size:9pt;
@@ -869,10 +869,6 @@ body.hide_year_day .year_day_number{
 	-webkit-box-shadow: 0px 0px 28px 3px rgba(0,0,0,0.36);
 	-moz-box-shadow: 0px 0px 28px 3px rgba(0,0,0,0.36);
 	box-shadow: 0px 0px 28px 3px rgba(0,0,0,0.36);
-}
-
-#weather_tooltip_box.taller {
-	height:150px;
 }
 
 #weather_tooltip_box:after, #weather_tooltip_box:before {

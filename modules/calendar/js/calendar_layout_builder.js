@@ -16,7 +16,7 @@ function display_events(calendar, event_data){
 			var start = event_data.starts[event_index].indexOf(local_epoch) != -1;
 			var end = event_data.ends[event_index].indexOf(local_epoch) != -1;
 
-			var category_name = calendar.event_data.categories[current_event.category].name;
+			var category_name = current_event.category != -1 ? calendar.event_data.categories[current_event.category].name : "";
 
 			var event_group = current_event.settings.color ? " " + current_event.settings.color : "";
 			event_group += current_event.settings.text ? " " + current_event.settings.text : "";
@@ -240,10 +240,14 @@ var eras = {
 
 			if(parent !== undefined){
 
-				var category = calendar.event_data.categories[current_era.settings.event_category];
+				var event_group = '';
+				var category = '';
 
-				var event_group = category.color ? " " + category.color : "";
-				event_group += category.text ? " " + category.text : "";
+				if(current_era.settings.event_category != -1){
+					var category = calendar.event_data.categories[current_era.settings.event_category];
+					event_group = category.color ? " " + category.color : "";
+					event_group += category.text ? " " + category.text : "";
+				}
 
 				var html = `<div class='event era_event ${event_group}' era_id='${era_index}' category='${category.name}'>${ current_era.name}</div>`;
 

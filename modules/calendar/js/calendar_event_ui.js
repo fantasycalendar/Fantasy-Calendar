@@ -13,7 +13,27 @@ var edit_event_ui = {
 
 		this.event_background 					= $('#event_edit_background');
 		this.event_conditions_container			= $('#event_conditions_container');
-		this.close_event						= this.event_background.find('.close_event_btn');
+		this.save_btn							= this.event_background.find('#btn_event_save');
+		this.close_ui_btn						= this.event_background.find('.close_ui_btn');
+		this.trumbowyg							= this.event_background.find('.event_desc');
+
+		this.trumbowyg.trumbowyg();
+
+		$(document).on('click', '.open-edit-event-ui', function(){
+
+			var index = $(this).closest('.sortable-container').attr('key');
+
+			edit_event_ui.set_current_event(index);
+
+		});
+
+		this.save_btn.click(function(){
+			edit_event_ui.save_current_event();
+		})
+
+		edit_event_ui.close_ui_btn.click(function(){
+			edit_event_ui.clear_ui();
+		});
 
 		$(document).on('change', '.event-text-input', function(){
 
@@ -115,64 +135,80 @@ var edit_event_ui = {
 			edit_event_ui.evaluate_condition_selects(edit_event_ui.event_conditions_container);
 		})
 
-		edit_event_ui.close_event.click(function(){
-			edit_event_ui.clear_ui();
-		});
-
 		edit_event_ui.populate_categories();
 
 	},
 
 	populate_categories: function(){
 		var html = [];
-		html.push("<option value='-1'>None</option>")
+		html.push("<option selected value='-1'>None</option>")
 		for(var i = 0; i < calendar.event_data.categories.length; i++){
 			var category = calendar.event_data.categories[i];
 			html.push(`<option value='${i}'>`)
 			html.push(category.name)
 			html.push("</option>")
 		}
-		$("#event_categories").empty().append(html.join(""))
+		$("#event_categories").html(html.join(""));
 	},
 
 	set_current_event: function(event_id){
 
-		edit_event_ui.event_id = event_id;
+		this.editing_event = calendar.event_data.events[event_id];
 
-		var event = calendar.event_data.events[event_id];
+		this.event_background.find('.event_name').val(this.editing_event.name);
 
-		this.event_background.find('.event_name').val(event.name);
+		this.trumbowyg.trumbowyg('html', this.editing_event.description);
 
-		this.event_background.find('.event_desc').trumbowyg('html', event.description);
-
-		edit_event_ui.create_conditions(event.data.conditions, edit_event_ui.event_conditions_container);
+		edit_event_ui.create_conditions(this.editing_event.data.conditions, edit_event_ui.event_conditions_container);
 
 		edit_event_ui.evaluate_condition_selects(edit_event_ui.event_conditions_container);
 		
-		if(event.category !== undefined){
-			$('#event_categories').val(event.category);
+		if(this.editing_event.category !== undefined){
+			$('#event_categories').val(this.editing_event.category);
 		}else{
 			$('#event_categories').val(-1);
 		}
 
-		$('#color_style').val(event.settings.color);
-		$('#text_style').val(event.settings.text).change();
+		$('#color_style').val(this.editing_event.settings.color);
+		$('#text_style').val(this.editing_event.settings.text).change();
 
-		$('#event_hide_players').prop('checked', event.settings.hide);
+		$('#event_hide_players').prop('checked', this.editing_event.settings.hide);
 
-		$('#event_dontprint_checkbox').prop('checked', event.settings.noprint);
+		$('#event_dontprint_checkbox').prop('checked', this.editing_event.settings.noprint);
 
 		edit_event_ui.event_background.removeClass('hidden');
 
 	},
 
+	save_current_event: function(){
+
+		this.editing_event.name = this.event_background.find('.event_name').val()
+
+		this.editing_event.description = this.trumbowyg.trumbowyg('html');
+
+		this.editing_event.data.conditions = this.create_condition_array(edit_event_ui.event_conditions_container);
+
+		this.editing_event.category = $('#event_categories').val();
+
+		this.editing_event.color = $('#color_style').val();
+
+		this.editing_event.text = $('#text_style').val();
+
+		this.editing_event.settings.hide = $('#event_hide_players').prop('checked');
+
+		this.editing_event.settings.noprint = $('#event_dontprint_checkbox').prop('checked');
+
+		edit_event_ui.clear_ui();
+
+	},
+
 	clear_ui: function(){
 
-		edit_event_ui.event_id = null;
+		this.editing_event = null;
 
 		this.event_background.find('.event_name').val('');
 
-		this.event_background.find('.event_desc').trumbowyg('html', '');
+		this.trumbowyg.trumbowyg('html', '');
 
 		edit_event_ui.event_conditions_container.empty();
 		
@@ -654,9 +690,9 @@ var show_event_ui = {
 		this.delete_droppable					= false;
 
 		this.event_background 					= $('#event_show_background');
-		this.close_event						= show_event_ui.event_background.find('.close_event_btn');
+		this.close_ui_btn						= show_event_ui.event_background.find('.close_ui_btn');
 
-		show_event_ui.close_event.click(function(){
+		show_event_ui.close_ui_btn.click(function(){
 			show_event_ui.clear_ui();
 		});
 
@@ -687,6 +723,71 @@ var show_event_ui = {
 		show_event_ui.event_background.find('.event_desc').html('').removeClass('hidden');
 
 		show_event_ui.event_background.addClass('hidden');
+
+	},
+
+}
+
+
+var edit_HTML_ui = {
+
+	bind_events: function(){
+
+		this.html_edit_background 				= $('#html_edit_background');
+		this.save_btn							= this.html_edit_background.find('#btn_html_save');
+		this.close_ui_btn						= this.html_edit_background.find('.close_ui_btn');
+		this.data								= null;
+		this.key								= null;
+		this.value								= null;
+		this.trumbowyg							= this.html_edit_background.find('.html_input');
+
+		this.trumbowyg.trumbowyg();
+
+		edit_HTML_ui.save_btn.click(function(){
+			edit_HTML_ui.save_html();
+		})
+
+		edit_HTML_ui.close_ui_btn.click(function(){
+			edit_HTML_ui.clear_ui();
+		});
+
+		$(document).on('click', '.html_edit', function(){
+			var data = $(this).attr('data');
+			edit_HTML_ui.key = $(this).attr('key');
+			edit_HTML_ui.data = get_calendar_data(data);
+			edit_HTML_ui.value = clone(edit_HTML_ui.data[edit_HTML_ui.key]);
+			edit_HTML_ui.set_html();
+		})
+
+	},
+
+	set_html: function(){
+
+		this.trumbowyg.trumbowyg('html', this.value);
+
+		this.html_edit_background.removeClass('hidden');
+
+	},
+
+	save_html: function(){
+
+		this.data[this.key] = this.trumbowyg.trumbowyg('html');
+
+		edit_HTML_ui.key = null;
+		edit_HTML_ui.data = null;
+		edit_HTML_ui.value = null;
+
+		this.clear_ui();
+
+	},
+
+	clear_ui: function(){
+
+		this.trumbowyg.trumbowyg('html', '');
+
+		this.reference = null;
+
+		this.html_edit_background.addClass('hidden');
 
 	},
 

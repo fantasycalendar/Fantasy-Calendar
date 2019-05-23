@@ -146,7 +146,7 @@ function set_up_edit_inputs(){
 	if(calendar.seasons){
 
 		for(var i = 0; i < calendar.seasons.data.length; i++){
-			add_season_to_sortable(season_sortable, i, calendar.seasons.data[i], calendar.seasons.global_settings.fixed);
+			add_season_to_sortable(season_sortable, i, calendar.seasons.data[i]);
 		}
 		evaluate_season_lengths();
 
@@ -217,19 +217,12 @@ function set_up_edit_inputs(){
 
 	$('.static_input').each(function(){
 
-		var data = $(this).attr('data').split('.');
-		if(data[0] !== ""){
-			var current_calendar_data = calendar[data[0]];
-			for(var i = 1; i < data.length; i++){
-				current_calendar_data = current_calendar_data[data[i]];
-			}
-		}else{
-			var current_calendar_data = calendar;
-		}
+		var data = $(this).attr('data');
+		var key = $(this).attr('key');
+
+		var current_calendar_data = get_calendar_data(data)
 
 		if(current_calendar_data !== undefined){
-
-			var key = $(this).attr('key')
 
 			switch($(this).attr('type')){
 				case "checkbox":
@@ -522,18 +515,10 @@ function set_up_edit_inputs(){
 			}
 		};
 
-		if(calendar.seasons.global_settings.fixed){
+		stats.transition_length = Math.floor((evaluated_calendar_data.year_data.last_epoch - evaluated_calendar_data.year_data.epoch)/2);
+		stats.duration = 0;
 
-			stats.timespan = Math.floor(calendar.year_data.timespans.length/(calendar.seasons.data.length-id))-1;
-			stats.day = Math.floor(calendar.year_data.timespans[stats.timespan].length/2);
-
-		}else{
-			stats.transition_length = Math.floor((evaluated_calendar_data.year_data.last_epoch - evaluated_calendar_data.year_data.epoch)/2);
-			stats.duration = 0;
-
-		}
-
-		add_season_to_sortable(season_sortable, id, stats, calendar.seasons.global_settings.fixed);
+		add_season_to_sortable(season_sortable, id, stats);
 		season_sortable.sortable('refresh');
 		reindex_season_sortable();
 		name.val("");
@@ -648,7 +633,7 @@ function set_up_edit_inputs(){
 
 	$('.form-inline.cycle .add').click(function(){
 
-		id = $('#cycle_sortable .sortable-container').length;
+		id = cycle_sortable.children().length;
 		stats = {
 			'length': 1,
 			'offset': 0,
@@ -662,6 +647,27 @@ function set_up_edit_inputs(){
 		}
 		calendar.cycles.data.push(stats);
 		add_cycle_to_sortable(cycle_sortable, id, stats);
+	});
+
+
+	$('.form-inline.events .add').click(function(){
+
+		id = events_list.children().length;
+		stats = {
+			'name': $(this).prev().val(),
+			'data': {
+				'conditions': []
+			},
+			'settings': {
+				'color': 'Dark-Solid',
+				'text': 'text'
+			}
+		};
+		$(this).prev().val('');
+		calendar.event_data.events.push(stats);
+		add_event_to_list(events_list, id, stats);
+		edit_event_ui.set_current_event(id);
+
 	});
 
 	$(document).on('click', '.btn_remove', function(){
@@ -702,7 +708,7 @@ function set_up_edit_inputs(){
 	$(document).on('click', '.btn_accept', function(){
 
 		type = $(this).closest('.sortable-container').parent().attr('id');
-		key = $(this).closest('.sortable-container').attr('key');
+		key = $(this).closest('.sortable-container').attr('key')|0;
 
 		$(this).parent().parent().remove();
 		$(this).parent().parent().parent().sortable('refresh');
@@ -742,7 +748,27 @@ function set_up_edit_inputs(){
 				break;
 
 			case "event_category_list":
+
+				console.log(key)
+
+				for(var i = 0; i < calendar.event_data.events.length; i++){
+					if(calendar.event_data.events[i].category == key){
+						calendar.event_data.events[i].category = -1;
+					}
+				}
+
+				for(var i = 0; i < calendar.eras.length; i++){
+					if(calendar.eras[i].settings.event_category == key){
+						calendar.eras[i].settings.event_category = -1;
+					}
+				}
+
 				reindex_event_category_list();
+				break;
+
+			case "events_list":
+				calendar.event_data.events.splice(key, 1);
+				reindex_events_list();
 				break;
 
 			case "leap_day_list":
@@ -756,6 +782,7 @@ function set_up_edit_inputs(){
 		}
 
 		evaluate_remove_buttons();
+
 		error_check(type);
 
 		removing = null;
@@ -818,19 +845,6 @@ function set_up_edit_inputs(){
 			$(this).parent().parent().parent().next().addClass('hidden');
 			$(this).parent().parent().parent().next().find('.dynamic_input').prop('disabled', true).change();
 			delete calendar.eras[key].settings.event_category;
-		}
-	});
-
-	$(document).on('focusin', '.era_description', function(){
-		$(this).data('val', $(this).val());
-	});
-	$(document).on('keyup change', '.era_description', function(){
-		var prev = $(this).data('val');
-		if(prev.length <= 500){
-			$(this).next().children().first().text($(this).val().length);
-		}else{
-			$(this).next().children().first().text($(this).val().length);
-			$(this).val(prev);
 		}
 	});
 
@@ -1089,17 +1103,6 @@ function set_up_edit_inputs(){
 		if($(this).val() !== null){
 			$(this).removeClass('invalid');
 		}
-	});
-
-	$(document).on('change', '#seasons_fixed_length', function(){
-		var checked = $('#seasons_fixed_length').prop('checked');
-		season_sortable.children().each(function(){
-			$(this).find('.season-date').toggleClass('hidden', !checked);
-			$(this).find('.season-duration').toggleClass('hidden', checked);
-		});
-		calendar.seasons.global_settings.fixed = checked;
-		reindex_season_sortable();
-		evaluate_season_lengths();
 	});
 
 	$(document).on('change', '.season-duration, .season-date', function(){
@@ -1486,7 +1489,7 @@ function add_moon_to_list(parent, key, data){
 	parent.append(element.join(""));
 }
 
-function add_season_to_sortable(parent, key, data, fixed){
+function add_season_to_sortable(parent, key, data){
 	element = [];
 	element.push(`<div class='sortable-container season collapsed' key='${key}'>`);
 		element.push("<div class='main-container'>");
@@ -1505,58 +1508,7 @@ function add_season_to_sortable(parent, key, data, fixed){
 				
 		element.push("<div class='detail-container hidden'>");
 
-			element.push(`<div class='detail-row season-date ${!fixed ? " hidden" : ""}'>`);
-			
-				element.push("<div class='detail-row'>");
-					element.push("<div class='detail-column quarter'>");
-						element.push("<div class='detail-text'>Timespan:</div>");
-					element.push("</div>");
-					element.push("<div class='detail-column threequarter'>");
-						element.push(`<select type='number' class='custom-select form-control-sm timespan-list dynamic_input half' data='seasons.data.${key}' key='timespan'>`);
-
-							if(data.timespan == "" || data.timespan == undefined){
-								var selected_timespan = Math.ceil(calendar.year_data.timespans.length/((calendar.seasons.data.length+1)-key-1))-1;
-							}else{
-								var selected_timespan = data.timespan;
-							}
-
-							for(var i = 0; i < calendar.year_data.timespans.length; i++)
-							{
-								var timespan = calendar.year_data.timespans[i];
-								element.push(`<option value="${i}" ${(timespan.interval > 1 ? "disabled" : "")} ${(i==selected_timespan ? "selected" : "")}>`);
-								element.push(timespan.name+(timespan.interval > 1 ? " (leaping)" : ""));
-								element.push('</option>');
-							}
-
-						element.push("</select>");
-					element.push("</div>");
-				element.push("</div>");
-
-				element.push("<div class='detail-row'>");
-					element.push("<div class='detail-column quarter'>");
-						element.push("<div class='detail-text'>Day:</div>");
-					element.push("</div>");
-					element.push("<div class='detail-column threequarter'>");
-						element.push(`<select type='number' class='custom-select form-control-sm timespan-day-list dynamic_input third' data='seasons.data.${key}' key='day'>`);
-
-						if(data.day == "" || data.day == undefined){
-							var selected_day = Math.floor(calendar.year_data.timespans[selected_timespan].length/2);
-						}else{
-							var selected_day = data.day;
-						}
-
-						for(var i = 1; i <= calendar.year_data.timespans[selected_timespan].length; i++)
-						{
-							element.push(`<option value="${i}" ${(i==selected_day ? "selected" : "")}>${i}</option>`);
-						}
-
-						element.push("</select>");
-					element.push("</div>");
-				element.push("</div>");
-
-			element.push("</div>");
-
-			element.push(`<div class='detail-row season-duration ${fixed ? " hidden" : ""}'>`);
+			element.push(`<div class='detail-row season-duration'>`);
 				element.push("<div class='detail-column half'>");
 					element.push("<div class='detail-row'>");
 						element.push("<div class='detail-text'>Duration:</div>");
@@ -1928,13 +1880,7 @@ function add_era_to_list(parent, key, data){
 			element.push("</div>");
 			element.push("<div class='detail-row'>");
 				element.push("<div class='detail-column full'>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text'>Description:</div>");
-					element.push("</div>");
-					element.push("<div class='detail-row'>");
-						element.push(`<textarea class='form-control dynamic_input era_description' data='eras.${key}' key='description' maxlength='500'>${data.description}</textarea>`);
-						element.push(`<div class='detail-text text-limit italics-text small-text'><span>${data.description.length}</span>/500</div>`);
-					element.push("</div>");
+					element.push(`<div class='btn btn-outline-primary full era_description html_edit' value='${data.description}' data='eras.${key}' key='description'>Edit event description</div>`);
 				element.push("</div>");
 			element.push("</div>");
 
@@ -2057,7 +2003,7 @@ function add_category_to_list(parent, key, data){
 
 	element = [];
 
-	element.push("<div class='sortable-container category_inputs collapsed'>");
+	element.push(`<div class='sortable-container category_inputs collapsed' key='${key}'>`);
 		element.push("<div class='main-container'>");
 			element.push("<div class='expand icon-collapse'></div>");
 			element.push("<div class='name-container'>");
@@ -2180,9 +2126,9 @@ function add_event_to_list(parent, key, data){
 
 	element = [];
 
-	element.push("<div class='sortable-container events_input'>");
+	element.push(`<div class='sortable-container events_input' key='${key}'>`);
 		element.push("<div class='main-container'>");
-			element.push(`<div class='btn btn-outline-primary open-edit-event-ui' event_index='${key}' >Edit - ${data.name}</div>`);
+			element.push(`<div class='btn btn-outline-primary open-edit-event-ui'>Edit - ${data.name}</div>`);
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
@@ -2229,19 +2175,8 @@ function error_check(parent){
 	
 	for(var season_i = 0; season_i < calendar.seasons.data.length; season_i++){
 		var season = calendar.seasons.data[season_i];
-		if(calendar.seasons.global_settings.fixed){
-			if(season.timespan === undefined || isNaN(season.timespan) || season.timespan === ""){
-				errors.push(`Season <i>${season.name}</i> doesn't have a valid month selected.`);
-			}
-			if(season.day === undefined || isNaN(season.day) || season.day === ""){
-				errors.push(`Season <i>${season.name}</i> doesn't have a valid day selected.`);
-			}
-		}else{
-
-			if(season.transition_length == 0 || season.transition_length == 0){
-				errors.push(`Season <i>${season.name}</i> can't have 0 transition length.`);
-			}
-
+		if(season.transition_length == 0){
+			errors.push(`Season <i>${season.name}</i> can't have 0 transition length.`);
 		}
 	}
 
@@ -2386,13 +2321,8 @@ function reindex_season_sortable(key){
 			}
 		};
 
-		if(calendar.seasons.global_settings.fixed){
-			calendar.seasons.data[i].timespan = ($(this).find('.timespan-list').val()|0);
-			calendar.seasons.data[i].day = ($(this).find('.timespan-day-list').val()|0);
-		}else{
-			calendar.seasons.data[i].transition_length = parseFloat($(this).find('.transition_length').val());
-			calendar.seasons.data[i].duration = parseFloat($(this).find('.duration').val());
-		}
+		calendar.seasons.data[i].transition_length = parseFloat($(this).find('.transition_length').val());
+		calendar.seasons.data[i].duration = parseFloat($(this).find('.duration').val());
 
 	});
 
@@ -2579,7 +2509,7 @@ function reindex_era_list(){
 		calendar.eras[i] = {
 			'name': $(this).find('.name-input').val(),
 			'abbreviation': $(this).find('.era_abbreviation').val(),
-			'description': $(this).find('.era_description').val(),
+			'description': $(this).find('.era_description').attr('value'),
 			'settings': {
 				'show_as_event': $(this).find('.show_as_event').is(':checked'),
 				'event_category': $(this).find('.event-category-list').val(),
@@ -2604,7 +2534,7 @@ function reindex_event_category_list(){
 	
 	calendar.event_data.categories = [];
 
-	$('#event_category_list').children().each(function(i){
+	event_category_list.children().each(function(i){
 
 		$('.dynamic_input', this).each(function(){
 			$(this).attr('data', $(this).attr('data').replace(/[0-9]/g, i));
@@ -2642,6 +2572,19 @@ function reindex_event_category_list(){
 	error_check();
 
 }
+
+function reindex_events_list(){
+
+	events_list.empty();
+
+	for(var i = 0; i < calendar.event_data.events.length; i++){
+
+		add_event_to_list(events_list, i, calendar.event_data.events[i]);
+
+	}
+
+}
+
 
 function repopulate_month_lists(){
 	$(".timespan-list").each(function(i){
@@ -2704,33 +2647,24 @@ function recreate_moon_colors(){
 
 function evaluate_season_lengths(){
 
-	if(!calendar.seasons.global_settings.fixed){
-
-		var data = {
-			'season_length': 0
-		};
-		
-		var epoch_start = evaluate_calendar_start(calendar, calendar.date.internal_year).epoch;
-		var epoch_end = evaluate_calendar_start(calendar, calendar.date.internal_year+1).epoch-1;
-		var season_length = epoch_end-epoch_start;
+	var data = {
+		'season_length': 0
+	};
 	
-		for(var i = 0; i < calendar.seasons.data.length; i++){
-			current_season = calendar.seasons.data[i];
-			data.season_length += current_season.transition_length;
-			data.season_length += current_season.duration;
-		}
+	var epoch_start = evaluate_calendar_start(calendar, calendar.date.internal_year).epoch;
+	var epoch_end = evaluate_calendar_start(calendar, calendar.date.internal_year+1).epoch-1;
+	var season_length = epoch_end-epoch_start;
 
-		data.season_offset = calendar.seasons.global_settings.offset;
-
-		$('#season_length_text').removeClass('hidden');
-		$('#season_length_text').text(`Season length: ${data.season_length} / ${fract_year_length()} (year length)`);
-	
-	}else{
-
-		$('#season_length_text').addClass('hidden');
-			
+	for(var i = 0; i < calendar.seasons.data.length; i++){
+		current_season = calendar.seasons.data[i];
+		data.season_length += current_season.transition_length;
+		data.season_length += current_season.duration;
 	}
 
+	data.season_offset = calendar.seasons.global_settings.offset;
+
+	$('#season_length_text').removeClass('hidden');
+	$('#season_length_text').text(`Season length: ${data.season_length} / ${fract_year_length()} (year length)`);
 
 }
 

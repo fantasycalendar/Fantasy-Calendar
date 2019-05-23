@@ -321,10 +321,8 @@ var calendar = {
 			}
 		],
 		"global_settings": {
-			"fixed": false,
 			"season_offset": 30,
 			"weather_offset": -30,
-
 			"seed": 826116802,
 			"temp_sys": "metric",
 			"wind_sys": "metric",
@@ -355,7 +353,7 @@ var calendar = {
 			"settings": {
 				"show_as_event": true,
 				"event_category": 0,
-				"ends_year": true
+				"ends_year": false
 			},
 			"date": {
 				"year": -1,
@@ -370,7 +368,7 @@ var calendar = {
 			"settings": {
 				"show_as_event": true,
 				"event_category": 0,
-				"ends_year": true
+				"ends_year": false
 			},
 			"date": {
 				"year": 2,
@@ -385,7 +383,7 @@ var calendar = {
 			"settings": {
 				"show_as_event": true,
 				"event_category": 0,
-				"ends_year": true
+				"ends_year": false
 			},
 			"date": {
 				"year": 4,

@@ -164,7 +164,7 @@ function set_up_view_inputs(){
 
 			var curr_timespan = repopulate_timespan_select(convert_year(curr_year));
 
-			repopulate_day_select(convert_year(curr_year), curr_timespan);
+			repopulate_day_select(convert_year(curr_year), curr_timespan);			
 
 		}
 
@@ -202,9 +202,7 @@ function set_up_view_inputs(){
 		var curr_timespan = current_timespan.val()|0;
 		var curr_day = current_day.val()|0;
 
-		if(calendar.date.year != curr_year){
-			rebuild = true;
-		}else if(calendar.date.timespan != curr_timespan && calendar.settings.show_current_month){
+		if((calendar.date.year != curr_year) || (calendar.date.timespan != curr_timespan && calendar.settings.show_current_month)){
 			rebuild = true;
 		}
 
@@ -296,7 +294,7 @@ function set_up_view_inputs(){
 
 		if(curr_minute < 0){
 			$('.adjust_hour[val=-1]').click();
-			curr_minute = calendar.clock.minutes-1;
+			curr_minute = Math.abs(calendar.clock.minutes+curr_minute);
 		}else if(curr_minute >= calendar.clock.minutes){
 			$('.adjust_hour[val=1]').click();
 			curr_minute = Math.abs(calendar.clock.minutes-curr_minute);
@@ -380,7 +378,7 @@ function eval_current_time(){
 function evaluate_sun(){
 
 	if(evaluated_calendar_data.epoch_data[calendar.date.epoch]){
-		
+
 		var sunset = evaluated_calendar_data.epoch_data[calendar.date.epoch].weather.sunset[0];
 		var sunrise = evaluated_calendar_data.epoch_data[calendar.date.epoch].weather.sunrise[0];
 

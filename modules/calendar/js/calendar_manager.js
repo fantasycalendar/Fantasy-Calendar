@@ -75,6 +75,7 @@ worker_events.onmessage = e => {
 worker_climate.onmessage = e => {
 
 	calendar_weather.epoch_data = e.data;
+
 	evaluate_weather_charts();
 
 }
@@ -93,6 +94,8 @@ worker_calendar.onmessage = e => {
 
 			calendar_weather.epoch_data = evaluated_calendar_data.epoch_data;
 
+			evaluate_weather_charts();
+
 			var start_epoch = Number(Object.keys(calendar_layouts.epoch_data)[0]);
 			var end_epoch = Number(Object.keys(calendar_layouts.epoch_data)[Object.keys(calendar_layouts.epoch_data).length-1]);
 			eras.evaluate_current_era(calendar, start_epoch, end_epoch);
@@ -103,7 +106,7 @@ worker_calendar.onmessage = e => {
 
 		}else if(e.data.action === "weather"){
 
-			evaluate_weather_charts()
+			evaluate_weather_charts();
 
 		}
 

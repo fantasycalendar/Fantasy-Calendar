@@ -3,8 +3,8 @@
 		<div class='event-basic-wrapper'>
 			<div class='event-basic-wrapper'>
 				<div class='event-wrapper'>
-					<div class='event-close-btn-bg'></div>
-					<i class="close_event_btn icon-remove-circle"></i>
+					<div class='close-ui-btn-bg'></div>
+					<i class="close_ui_btn icon-remove-circle"></i>
 
 					<h2 class='event_name event-form-heading'></h2>
 					<div class='detail-row italics-text'>
@@ -24,8 +24,8 @@
 		<div class='event-basic-wrapper'>
 			<form id="event-form" class="event-wrapper" action="post"> 
 
-				<div class='event-close-btn-bg'></div>
-				<i class="close_event_btn icon-remove-circle"></i>
+				<div class='close-ui-btn-bg'></div>
+				<i class="close_ui_btn icon-remove-circle"></i>
 
 				<h2 class='event-form-heading'>Edit Event</h2>
 				<div class='detail-row'>
@@ -119,8 +119,28 @@
 					</div>
 				</div>
 
-				<button class='btn btn-lg btn-primary btn-block' type='submit' id='btn_event_save'>Save</button>
-				<button class='btn btn-sm btn-danger btn-block' id='btn_event_delete'>Delete</button>
+				<div class='btn btn-lg btn-primary btn-block' id='btn_event_save'>Save</div>
+				<div class='btn btn-sm btn-danger btn-block' id='btn_event_delete'>Delete</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<div id="html_edit_background" class='clickable_background hidden'>
+	<div class='event-basic-container'>
+		<div class='event-basic-wrapper'>
+			<form id="html-form" class="event-wrapper" action="post"> 
+
+				<div class='close-ui-btn-bg'></div>
+				<i class="close_ui_btn icon-remove-circle"></i>
+
+				<h2 class='event-form-heading'>Edit HTML</h2>
+				
+				<div class='detail-row'>
+					<textarea class='form-control html_input editable' name='html_input' placeholder='Event description' autofocus=''></textarea>
+				</div>
+
+				<div class='btn btn-lg btn-primary btn-block' id='btn_html_save'>Save</div>
 			</form>
 		</div>
 	</div>

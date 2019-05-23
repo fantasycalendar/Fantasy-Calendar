@@ -56,7 +56,8 @@ $(document).ready(function(){
 	set_up_edit_inputs();
 	bind_calendar_events();
 	rebuild_calendar('calendar');
-	//edit_event_ui.bind_events();
+	edit_event_ui.bind_events();
+	edit_HTML_ui.bind_events();
 	//edit_event_ui.set_current_event(0);
 
 });

@@ -1,5 +1,18 @@
 (function(b,c){var $=b.jQuery||b.Cowboy||(b.Cowboy={}),a;$.throttle=a=function(e,f,j,i){var h,d=0;if(typeof f!=="boolean"){i=j;j=f;f=c}function g(){var o=this,m=+new Date()-d,n=arguments;function l(){d=+new Date();j.apply(o,n)}function k(){h=c}if(i&&!h){l()}h&&clearTimeout(h);if(i===c&&m>e){l()}else{if(f!==true){h=setTimeout(i?k:l,i===c?e-m:e)}}}if($.guid){g.guid=j.guid=j.guid||$.guid++}return g};$.debounce=function(d,e,f){return f===c?a(d,e,false):a(d,f,e!==false)}})(this);
 
+function get_calendar_data(data){
+	data = data.split('.')
+	if(data[0] !== ""){
+		var current_calendar_data = calendar[data[0]];
+		for(var i = 1; i < data.length; i++){
+			current_calendar_data = current_calendar_data[data[i]];
+		}
+	}else{
+		var current_calendar_data = calendar;
+	}
+	return current_calendar_data;
+}
+
 
 function debounce(func, wait, immediate) {
 	var timeout;

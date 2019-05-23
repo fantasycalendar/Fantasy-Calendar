@@ -436,27 +436,21 @@
 
 			<div class='detail-row sortable' id='season_sortable'></div>
 			
-			<div class='detail-row' id='season_length_text'></div>
+			<div class='detail-row small-text' id='season_length_text'></div>
 
 			<div class='separator'></div>
 
 			<div class='detail-row'>
-				<div class='detail-row'>
-					<div class='detail-column'>Fixed seasons (bound to month):</div>
-					<div class='detail-column float'>
-						<label class="custom-control custom-checkbox">
-							<input type="checkbox" class="custom-control-input static_input" id='seasons_fixed_length' data='seasons.global_settings' key='fixed' refresh='false'>
-							<span class="custom-control-indicator"></span>
-						</label>
-					</div>
+				<div class='detail-column'>Season offset:</div>
+				<div class='detail-column float'>
+					<input class='form-control form-control-sm static_input' type='number' data='seasons.global_settings' key='season_offset'/>
 				</div>
-				<div class='detail-row small-text'>Warning! If you have any leaping months or eras that ends the year, this will not work very well! I recommend reading the Wiki page for this feature.</div>
 			</div>
 
 			<div class='detail-row'>
-				<div class='detail-column'>Season offset:</div>
+				<div class='detail-column'>Weather offset:</div>
 				<div class='detail-column float'>
-					<input class='form-control form-control-sm' type='number' min='0' data='seasons.global_settings' key='season_offset'/>
+					<input class='form-control form-control-sm static_input' type='number' data='seasons.global_settings' key='weather_offset'/>
 				</div>
 			</div>
 
@@ -812,3 +806,5 @@
 	<?php include('footnote.php') ?>
 
 </div>
+
+<div id='html_edit'></div>

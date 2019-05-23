@@ -21,7 +21,7 @@ HTMLElement.prototype.pseudoStyle = function(element,prop,value){
 	return this;
 };
 
-const calendar_weather = {
+var calendar_weather = {
 
 	epoch_data: {},
 
@@ -30,6 +30,7 @@ const calendar_weather = {
 		set_up: function(){
 
 			this.weather_tooltip_box = $('#weather_tooltip_box');
+			this.base_height = parseInt(this.weather_tooltip_box.css('height'));
 			this.weather_temp_desc = $('.weather_temp_desc');
 			if(calendar.seasons.global_settings.cinematic){
 				this.weather_temp_desc.css('display', '');
@@ -54,7 +55,7 @@ const calendar_weather = {
 			var desc = weather.temperature.cinematic;
 
 			var temp_sys = calendar.seasons.global_settings.temp_sys;
-			var height = 115;
+			var height = 0;
 			if(temp_sys == 'imperial'){
 				temp_symbol = '°F';
 				var temp = `${precisionRound(weather.temperature[temp_sys].value[0], 1).toString()+temp_symbol} to ${precisionRound(weather.temperature[temp_sys].value[1], 1).toString()+temp_symbol}`;
@@ -65,10 +66,29 @@ const calendar_weather = {
 				var temp_f = `<span class='newline'>${precisionRound(weather.temperature['imperial'].value[0], 1).toString()}°F to ${precisionRound(weather.temperature['imperial'].value[1], 1).toString()}°F</span>`;
 				var temp_c = `<span class='newline'>${precisionRound(weather.temperature['metric'].value[0], 1).toString()}°C to ${precisionRound(weather.temperature['metric'].value[1], 1).toString()}°C</span>`;
 				var temp = `${temp_f}${temp_c}`;
-				height += 35;
+				height += 40;
 			}
-			this.weather_tooltip_box.toggleClass('taller', temp_sys == 'both');
 			this.weather_temp.toggleClass('newline', temp_sys == 'both');
+
+
+			var wind_sys = calendar.seasons.global_settings.wind_sys;
+
+			if(wind_sys == 'imperial'){
+				var wind_symbol = "MPH";
+				var wind_text = `${weather.wind_speed} (${weather.wind_direction}) (${weather.wind_velocity[wind_sys]} ${wind_symbol})`;
+			}else if(wind_sys == 'metric'){
+				var wind_symbol = "KPH";
+				var wind_text = `${weather.wind_speed} (${weather.wind_direction}) (${weather.wind_velocity[wind_sys]} ${wind_symbol})`;
+			}else{
+				var wind_text = `<span class='newline'>${weather.wind_speed} (${weather.wind_direction}) (${weather.wind_velocity.imperial} MPH | ${weather.wind_velocity.metric} KPH)</span>`;
+				height += 15;
+			}
+
+			this.weather_wind.toggleClass('newline', wind_sys == 'both');
+
+			console.log(this.base_height+height)
+
+			this.weather_tooltip_box.css('height', `${this.base_height+height}px`)
 
 			var position = '';
 
@@ -88,7 +108,7 @@ const calendar_weather = {
 			var combined = position+val == "0" ? "" : position+val;
 			this.weather_tooltip_box.position({
 				my: "center"+combined,
-				at: `top-${height}`,
+				at: `top-${75+height/2}`,
 				of: icon.parent().parent(),
 				collision: "none"
 			});
@@ -107,7 +127,7 @@ const calendar_weather = {
 			});
 
 			this.weather_wind.each(function(){
-				$(this).text(weather.wind_speed + ' ('+weather.wind_direction+')');
+				$(this).html(wind_text);
 			});
 
 			this.weather_precip.each(function(){
