@@ -10,6 +10,7 @@ importScripts('../js/calendar_season_generator.js?version='+utcDate1);
 
 var calendar_builder = {
 
+	date: {},
 	calendar: {},
 
 	create_adjusted_timespan: function(list){
@@ -31,11 +32,11 @@ var calendar_builder = {
 				var add = false;
 				if(leap_day.timespan == timespan_index){
 					if(leap_day.reference === "year"){
-						if((this.calendar.date.internal_year+leap_day.offset) % leap_day.interval === 0){
+						if((this.date.internal_year+leap_day.offset) % leap_day.interval === 0){
 							add = true;
 						}
 					}else if(leap_day.reference === "timespan"){
-						if((Math.floor(this.calendar.date.internal_year / timespan.interval)+leap_day.offset) % leap_day.interval === 0){
+						if((Math.floor(this.date.internal_year / timespan.interval)+leap_day.offset) % leap_day.interval === 0){
 							add = true;
 						}
 					}
@@ -234,7 +235,7 @@ var calendar_builder = {
 		}
 
 		// Set the internal year, so that year 1 is technically year 0, and year 2 is technically year 1, which means that it's easier to calculate negative years.
-		this.calendar.date.internal_year = this.calendar.date.year >= 0 ? this.calendar.date.year - 1 : this.calendar.date.year;
+		this.date.internal_year = this.date.year >= 0 ? this.date.year - 1 : this.date.year;
 
 
 		this.calendar_list = {
@@ -251,25 +252,25 @@ var calendar_builder = {
 		// If the setting is on, only select the current month to be calculated
 		if(this.calendar.settings.show_current_month){
 
-			this.calendar_list.timespans_to_build[this.calendar.date.timespan] = clone(this.calendar.year_data.timespans[this.calendar.date.timespan]);
-			this.calendar_list.timespans_to_build[this.calendar.date.timespan]["index"] = this.calendar.date.timespan;
+			this.calendar_list.timespans_to_build[this.date.timespan] = clone(this.calendar.year_data.timespans[this.date.timespan]);
+			this.calendar_list.timespans_to_build[this.date.timespan]["index"] = this.date.timespan;
 
-			this.calendar_list.timespans_to_build[this.calendar.date.timespan].week = this.calendar_list.timespans_to_build[this.calendar.date.timespan].week ? this.calendar_list.timespans_to_build[this.calendar.date.timespan].week : clone(this.calendar.year_data.global_week);
+			this.calendar_list.timespans_to_build[this.date.timespan].week = this.calendar_list.timespans_to_build[this.date.timespan].week ? this.calendar_list.timespans_to_build[this.date.timespan].week : clone(this.calendar.year_data.global_week);
 
-			this.calendar_list.timespans_to_build[this.calendar.date.timespan].leap_days = [];
+			this.calendar_list.timespans_to_build[this.date.timespan].leap_days = [];
 
 			// Get all current leap days and check if any of them should be on this timespan
 			for(leap_day_index = 0; leap_day_index < this.calendar.year_data.leap_days.length; leap_day_index++){
 				var leap_day = this.calendar.year_data.leap_days[leap_day_index];
 				leap_day.index = leap_day_index;
 				var add = false;
-				if(leap_day.timespan == this.calendar.date.timespan){
+				if(leap_day.timespan == this.date.timespan){
 					if(leap_day.reference === "year"){
-						if((this.calendar.date.internal_year+leap_day.offset) % leap_day.interval === 0){
+						if((this.date.internal_year+leap_day.offset) % leap_day.interval === 0){
 							add = true;
 						}
 					}else if(leap_day.reference === "timespan"){
-						if((Math.floor(this.calendar.date.internal_year / this.calendar_list.timespans_to_build[this.calendar.date.timespan].interval)+leap_day.offset) % leap_day.interval === 0){
+						if((Math.floor(this.date.internal_year / this.calendar_list.timespans_to_build[this.date.timespan].interval)+leap_day.offset) % leap_day.interval === 0){
 							add = true;
 						}
 					}
@@ -277,11 +278,11 @@ var calendar_builder = {
 
 					if(add){
 						if(leap_day.intercalary){
-							this.calendar_list.timespans_to_build[this.calendar.date.timespan].leap_days.push(leap_day);
+							this.calendar_list.timespans_to_build[this.date.timespan].leap_days.push(leap_day);
 						}else{
-							this.calendar_list.timespans_to_build[this.calendar.date.timespan].length++;
+							this.calendar_list.timespans_to_build[this.date.timespan].length++;
 							if(leap_day.adds_week_day){
-								this.calendar_list.timespans_to_build[this.calendar.date.timespan].week.splice(leap_day.day-1, 0, leap_day.week_day)
+								this.calendar_list.timespans_to_build[this.date.timespan].week.splice(leap_day.day-1, 0, leap_day.week_day)
 							}
 
 						}
@@ -302,7 +303,7 @@ var calendar_builder = {
 
 				era = this.calendar.eras[era_index];
 
-				if(era.settings.ends_year && this.calendar.date.internal_year == era.date.year-1 && era.date.timespan < num_timespans+1){
+				if(era.settings.ends_year && this.date.internal_year == era.date.year-1 && era.date.timespan < num_timespans+1){
 
 					num_timespans = era.date.timespan+1;
 					ending_day = era.date.day;
@@ -313,7 +314,7 @@ var calendar_builder = {
 
 			for(timespan = 0; timespan < num_timespans; timespan++){
 
-				if((this.calendar.date.internal_year+this.calendar.year_data.timespans[timespan].offset)%this.calendar.year_data.timespans[timespan].interval == 0){
+				if((this.date.internal_year+this.calendar.year_data.timespans[timespan].offset)%this.calendar.year_data.timespans[timespan].interval == 0){
 
 					this.calendar_list.timespans_to_build[timespan] = clone(this.calendar.year_data.timespans[timespan]);
 					this.calendar_list.timespans_to_build[timespan]["index"] = timespan;
@@ -329,11 +330,11 @@ var calendar_builder = {
 						var add = false;
 						if(leap_day.timespan == timespan){
 							if(leap_day.reference === "year"){
-								if((this.calendar.date.internal_year+leap_day.offset) % leap_day.interval === 0){
+								if((this.date.internal_year+leap_day.offset) % leap_day.interval === 0){
 									add = true;
 								}
 							}else if(leap_day.reference === "timespan"){
-								if((Math.floor(this.calendar.date.internal_year / this.calendar_list.timespans_to_build[timespan].interval)+leap_day.offset) % leap_day.interval === 0){
+								if((Math.floor(this.date.internal_year / this.calendar_list.timespans_to_build[timespan].interval)+leap_day.offset) % leap_day.interval === 0){
 									add = true;
 								}
 							}
@@ -375,7 +376,7 @@ var calendar_builder = {
 
 		days = 0;
 		timespan = parseInt(Object.keys(this.calendar_list.timespans_to_build)[0]);
-		year = this.calendar.date.internal_year;
+		year = this.date.internal_year;
 
 		if(backtrack_days != 1){
 
@@ -500,7 +501,7 @@ var calendar_builder = {
 
 		}else{
 
-			first_eval_year = this.calendar.date.internal_year;
+			first_eval_year = this.date.internal_year;
 			first_eval_month = parseInt(Object.keys(this.calendar_list.timespans_to_build)[0]);
 
 		}
@@ -560,7 +561,7 @@ var calendar_builder = {
 							if(leap_day.intercalary && leap_day.day === day){
 
 								data = {
-									'year': this.calendar.date.year,
+									'year': this.date.year,
 									'era_year': era_year,
 
 									'timespan_index': timespan_index,
@@ -622,7 +623,7 @@ var calendar_builder = {
 
 						data = {
 						
-							'year': this.calendar.date.year,
+							'year': this.date.year,
 							'era_year': era_year,
 
 							'timespan_index': timespan_index,
@@ -693,7 +694,7 @@ var calendar_builder = {
 							if(leap_day.intercalary && leap_day.day === day){
 
 								data = {
-									'year': this.calendar.date.year,
+									'year': this.date.year,
 									'era_year': era_year,
 
 									'timespan_index': timespan_index,
@@ -767,7 +768,7 @@ var calendar_builder = {
 
 		climate_generator.set_up(this.calendar, first_epoch, this.calendar_list.timespans_to_build);
 
-		current_cycle = this.get_cycle(this.calendar.date.internal_year)
+		current_cycle = this.get_cycle(this.date.internal_year)
 
 		for(var i = 0; i < Object.keys(this.calendar_list.timespans_to_build).length; i++){
 
@@ -799,7 +800,7 @@ var calendar_builder = {
 						if(leap_day.intercalary && leap_day.day === day){
 
 							data = {
-								'year': this.calendar.date.year,
+								'year': this.date.year,
 								'era_year': era_year,
 
 								'timespan_index': false,
@@ -870,7 +871,7 @@ var calendar_builder = {
 				if(day > 0){
 
 					data = {
-						'year': this.calendar.date.year,
+						'year': this.date.year,
 						'era_year': era_year,
 
 						'timespan_index': timespan_index,
@@ -947,7 +948,7 @@ var calendar_builder = {
 						if(leap_day.intercalary && leap_day.day === day){
 
 							data = {
-								'year': this.calendar.date.year,
+								'year': this.date.year,
 								'era_year': era_year,
 
 								'timespan_index': false,
@@ -1024,7 +1025,7 @@ var calendar_builder = {
 			calendar: this.calendar,
 			success: true,
 			year_data: {
-				year: this.calendar.date.year,
+				year: this.date.year,
 				era_year: era_year,
 				epoch: first_epoch,
 				last_epoch: epoch,
@@ -1043,6 +1044,7 @@ var calendar_builder = {
 
 onmessage = e => {
 	calendar_builder.calendar = e.data.calendar;
+	calendar_builder.date = e.data.date;
 	data = calendar_builder.evaluate_calendar_data();
 	
 	postMessage({

@@ -355,7 +355,7 @@
 #top_follower{
 	display:flex;
 	width:inherit;
-	flex-direction:column;
+	flex-direction:row;
 	border:1px solid black;
 	border-top:0;
 	border-bottom-left-radius: 10px;
@@ -363,23 +363,54 @@
 	background-color: white;
 	width:100%;
 	z-index: 99;
-	padding-top: 5px;
-	padding-bottom: 5px;
 	position: relative;
 }
 
-#top_follower div{
+#top_follower .btn_container{
+	display:inline-flex;
+	flex-direction: column;
+	width:5em;
+	flex:0 1 auto;
+	border-radius: 0px;
+	border-bottom-left-radius: 9px;
+	border-bottom-right-radius: 0;
+	border-right:1px solid black;
+	overflow: hidden;
+}
+
+#top_follower .btn_container:last-child{
+	border-right:0;
+	border-left:1px solid black;
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 9px;
+}
+
+#top_follower .btn:last-child{
+	border-top:1px solid black;
+}
+
+#top_follower .btn{
+	border-radius: 0px;
+	text-align: center;
+	flex:1;
+	padding:0;
 	text-align: center;
 }
 
-#top_follower .year{
+#top_follower_content{
+	text-align: center;
+	padding:5px 0;
 	flex:1;
-  flex-grow: 1;
+}
+
+#top_follower_content .year{
+	flex:1;
+	flex-grow: 1;
 	width:100%;
 	font-size:14pt;
 }
 
-#top_follower .cycle{
+#top_follower_content .cycle{
 	flex:1;
   flex-grow: 1;
 	order:2;
@@ -387,7 +418,7 @@
 	font-size:10pt;
 }
 
-#top_follower .era{
+#top_follower_content .era{
 }
 
 .era.hidden{

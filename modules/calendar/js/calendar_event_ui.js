@@ -725,9 +725,7 @@ var show_event_ui = {
 		show_event_ui.event_background.addClass('hidden');
 
 	},
-
 }
-
 
 var edit_HTML_ui = {
 
@@ -790,5 +788,4 @@ var edit_HTML_ui = {
 		this.html_edit_background.addClass('hidden');
 
 	},
-
 }

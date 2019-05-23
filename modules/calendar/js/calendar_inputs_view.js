@@ -7,36 +7,51 @@ function set_up_view_inputs(){
 	current_year = $('#current_year');
 	current_timespan = $('#current_timespan');
 	current_day = $('#current_day');
+	
+	target_year = $('#target_year');
+	target_timespan = $('#target_timespan');
+	target_day = $('#target_day');
 
 	current_hour = $('#current_hour');
 	current_minute = $('#current_minute');
 
-	if(calendar.date){
+	preview_date = clone(date);
 
-		current_year.val(calendar.date.year);
+	if(date){
+
+		current_year.val(date.year);
 		current_year.data('val', current_year.val());
 
-		var curr_timespan = repopulate_timespan_select(convert_year(calendar.date.year));
-		repopulate_day_select(convert_year(calendar.date.year), curr_timespan);
+		var curr_timespan = repopulate_timespan_select(current_timespan, convert_year(date.year));
+		repopulate_day_select(current_day, convert_year(date.year), curr_timespan);
+
+		if(target_year.length){
+
+			target_year.val(preview_date.year);
+			target_year.data('val', target_year.val());
+
+			var curr_timespan = repopulate_timespan_select(target_timespan, convert_year(preview_date.year));
+			repopulate_day_select(target_day, convert_year(preview_date.year), curr_timespan);
+
+		}
 
 	}
 
-	if(calendar.clock && calendar.date.hour !== undefined && calendar.date.minute !== undefined){
+	if(calendar.clock && date.hour !== undefined && date.minute !== undefined){
 
-		current_hour.val(calendar.date.hour).prop('min', 0).prop('max', calendar.clock.hours-1);
-		current_minute.val(calendar.date.minute).prop('min', 0).prop('max', calendar.clock.minutes-1);
+		current_hour.val(date.hour).prop('min', 0).prop('max', calendar.clock.hours-1);
+		current_minute.val(date.minute).prop('min', 0).prop('max', calendar.clock.minutes-1);
 
 	}
 
+	sub_year = $('.sub_year');
+	add_year = $('.add_year');
 
-	sub_year = $('#sub_year');
-	add_year = $('#add_year');
+	sub_timespan = $('.sub_timespan');
+	add_timespan = $('.add_timespan');
 
-	sub_timespan = $('#sub_timespan');
-	add_timespan = $('#add_timespan');
-
-	sub_day = $('#sub_day');
-	add_day = $('#add_day');
+	sub_day = $('.sub_day');
+	add_day = $('.add_day');
 
 	sub_day.click(function(){
 
@@ -82,11 +97,11 @@ function set_up_view_inputs(){
 			sub_year.click();
 		}else{
 			if(current_timespan.val() === null){
-				current_timespan.children('option:enabled').eq(calendar.date.timespan).prop('selected', true).change();
+				current_timespan.children('option:enabled').eq(date.timespan).prop('selected', true).change();
 			}
 			
 			if(current_day.val() === null){
-				current_day.children('option:enabled').eq(calendar.date.timespan).prop('selected', true).change();
+				current_day.children('option:enabled').eq(date.timespan).prop('selected', true).change();
 			}
 		}
 
@@ -136,35 +151,35 @@ function set_up_view_inputs(){
 			add_year.click();
 		}else{
 			if(current_timespan.val() === null){
-				current_timespan.children('option:enabled').eq(calendar.date.timespan).prop('selected', true).change();
+				current_timespan.children('option:enabled').eq(date.timespan).prop('selected', true).change();
 			}
 			
 			if(current_day.val() === null){
-				current_day.children('option:enabled').eq(calendar.date.timespan).prop('selected', true).change();
+				current_day.children('option:enabled').eq(date.timespan).prop('selected', true).change();
 			}
 		}
-	});
 
+	});
 
 	current_year.change(function(){
 
 		var curr_year = $(this).val()|0;
 		
 		if(curr_year == 0){
-			if(calendar.date.year < 0){
+			if(date.year < 0){
 				curr_year = 1;
-			}else if(calendar.date.year > 0){
+			}else if(date.year > 0){
 				curr_year = -1;
 			}
 			$(this).data('val', curr_year);
 			$(this).val(curr_year);
 		}
 
-		if(calendar.date.year != curr_year){
+		if(date.year != curr_year){
 
-			var curr_timespan = repopulate_timespan_select(convert_year(curr_year));
+			var curr_timespan = repopulate_timespan_select(current_timespan, convert_year(curr_year));
 
-			repopulate_day_select(convert_year(curr_year), curr_timespan);			
+			repopulate_day_select(current_day, convert_year(curr_year), curr_timespan);			
 
 		}
 
@@ -176,39 +191,46 @@ function set_up_view_inputs(){
 
 		var curr_timespan = $(this).val()|0;
 		var prev_timespan = $(this).data('val')|0;
-		var rebuild = false;
 
-		repopulate_day_select(convert_year(curr_year), curr_timespan);
+		repopulate_day_select(current_day, convert_year(curr_year), curr_timespan);
 
 	});
 
 	current_year.change($.debounce(200, function(e) {
-		set_date();
-	}));
-
-	current_timespan.change($.debounce(50, function(e) {
-		set_date();
-	}));
-
-	current_day.change($.debounce(10, function(e) {
-		set_date();
-	}));
-
-	function set_date(){
-
-		var rebuild = false;
-
 		var curr_year = current_year.val()|0;
 		var curr_timespan = current_timespan.val()|0;
 		var curr_day = current_day.val()|0;
+		set_date(curr_year, curr_timespan, curr_day);
+	}));
 
-		if((calendar.date.year != curr_year) || (calendar.date.timespan != curr_timespan && calendar.settings.show_current_month)){
+	current_timespan.change($.debounce(50, function(e) {
+		var curr_year = current_year.val()|0;
+		var curr_timespan = current_timespan.val()|0;
+		var curr_day = current_day.val()|0;
+		set_date(curr_year, curr_timespan, curr_day);
+	}));
+
+	current_day.change($.debounce(10, function(e) {
+		var curr_year = current_year.val()|0;
+		var curr_timespan = current_timespan.val()|0;
+		var curr_day = current_day.val()|0;
+		set_date(curr_year, curr_timespan, curr_day);
+	}));
+
+	function set_date(year, timespan, day){
+
+		var rebuild = false;
+
+		if((date.year != year || (date.year == year && date.year != preview_date.year))
+			||
+			(calendar.settings.show_current_month && (date.timespan != timespan || (date.timespan == timespan && date.timespan != preview_date.timespan)))
+		){
 			rebuild = true;
 		}
 
-		calendar.date.year = curr_year;
-		calendar.date.timespan = curr_timespan;
-		calendar.date.day = curr_day;
+		date.year = year;
+		date.timespan = timespan;
+		date.day = day;
 
 		if(rebuild){
 			rebuild_calendar('calendar');
@@ -221,7 +243,78 @@ function set_up_view_inputs(){
 
 	}
 
-	function repopulate_timespan_select(year){
+	function set_preview_date(year, timespan, day){
+
+		var rebuild = false;
+
+		if((preview_date.year != year || (preview_date.year == year && preview_date.year != date.year))
+			||
+			(calendar.settings.show_current_month && (preview_date.timespan != timespan || (preview_date.timespan == timespan && preview_date.timespan != date.timespan)))
+		){
+			rebuild = true;
+		}
+
+		preview_date.year = year;
+		preview_date.timespan = timespan;
+		preview_date.day = day;
+
+		if(rebuild){
+			rebuild_calendar('preview', preview_date);
+		}
+
+	}
+
+
+	target_year.change(function(){
+
+		var tar_year = $(this).val()|0;
+		
+		if(tar_year == 0){
+			if(preview_date.year < 0){
+				tar_year = 1;
+			}else if(preview_date.year > 0){
+				tar_year = -1;
+			}
+			$(this).data('val', tar_year);
+			$(this).val(tar_year);
+		}
+
+
+		var tar_timespan = repopulate_timespan_select(target_timespan, convert_year(tar_year));
+
+		repopulate_day_select(target_day, convert_year(tar_year), tar_timespan);
+
+	});
+
+	target_timespan.change(function(){
+
+		var tar_year = target_year.val()|0;
+
+		var tar_timespan = $(this).val()|0;
+		var prev_timespan = $(this).data('val')|0;
+
+		repopulate_day_select(target_day, convert_year(tar_year), tar_timespan);
+
+	});
+
+	$('#go_to_preview_date').click(function(){
+		var tar_year = target_year.val()|0;
+		var tar_timespan = target_timespan.val()|0;
+		var tar_day = target_day.val()|0;
+		set_preview_date(tar_year, tar_timespan, tar_day);
+	});
+
+	$('#reset_preview_date').click(function(){
+		target_year.val(current_year.val());
+		target_timespan.val(current_timespan.val());
+		target_day.val(current_day.val());
+		var curr_year = current_year.val()|0;
+		var curr_timespan = current_timespan.val()|0;
+		var curr_day = current_day.val()|0;
+		set_date(curr_year, curr_timespan, curr_day);
+	});
+
+	function repopulate_timespan_select(select, year){
 		var html = [];
 		for(var i = 0; i < calendar.year_data.timespans.length; i++){
 			var is_there = does_timespan_appear(year, i);
@@ -230,20 +323,20 @@ function set_up_view_inputs(){
 			html.push('</option>');
 		}
 
-		current_timespan.html(html.join('')).val(calendar.date.timespan);
-		if(current_timespan.find('option:selected').prop('disabled') || current_timespan.val() == null){
-			for(var i = current_timespan.find('option:selected').val()|0; i >= 0 ; i--){
-				if(!current_timespan.children().eq(i).prop('disabled')){
+		select.html(html.join('')).val(date.timespan);
+		if(select.find('option:selected').prop('disabled') || select.val() == null){
+			for(var i = select.find('option:selected').val()|0; i >= 0 ; i--){
+				if(!select.children().eq(i).prop('disabled')){
 					break;
 				}
 			}
-			current_timespan.val(i);
+			select.val(i);
 		}
 
-		return current_timespan.val()|0;
+		return select.val()|0;
 	}
 
-	function repopulate_day_select(year, timespan){
+	function repopulate_day_select(select, year, timespan){
 		var days = get_days_in_timespan(year, timespan, true);
 		var html = [];
 		for(var i = 0; i < days.length; i++){
@@ -252,19 +345,35 @@ function set_up_view_inputs(){
 			html.push(day.text + (!day.is_there.result ? ` (${day.is_there.reason})` : ''));
 			html.push('</option>');
 		}
-		current_day.html(html.join('')).val(calendar.date.day);
-		if(current_day.find('option:selected').prop('disabled') || current_day.val() == null){
-			for(var i = calendar.date.day-1; i >= 0; i--){
-				if(current_day.children().eq(i).length && !current_day.children().eq(i).prop('disabled')){
+		select.html(html.join('')).val(date.day);
+		if(select.find('option:selected').prop('disabled') || select.val() == null){
+			for(var i = date.day-1; i >= 0; i--){
+				if(select.children().eq(i).length && !select.children().eq(i).prop('disabled')){
 					break;
 				}
 			}
-			current_day.val(i+1);
+			select.val(i+1);
 		}
-		current_day.data('val', calendar.date.day);
+		select.data('val', date.day);
 
-		return current_day.val()|0;
+		return select.val()|0;
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 	$('.adjust_hour').click(function(){
@@ -305,12 +414,12 @@ function set_up_view_inputs(){
 	});
 
 	current_hour.change(function(){
-		calendar.date.hour = $(this).val()|0;
+		date.hour = $(this).val()|0;
 		eval_current_time();
 	});
 
 	current_minute.change(function(){
-		calendar.date.minute = $(this).val()|0;
+		date.minute = $(this).val()|0;
 		eval_current_time();
 	});
 
@@ -353,8 +462,8 @@ function eval_clock(){
 
 function eval_current_time(){
 
-	var clock_hour = calendar.date.hour;
-	var clock_minute = calendar.date.minute;
+	var clock_hour = date.hour;
+	var clock_minute = date.minute;
 	var clock_time = clock_hour + (clock_minute/60);
 	var clock_fraction_time = clock_time/clock_hours;
 
@@ -377,10 +486,10 @@ function eval_current_time(){
 
 function evaluate_sun(){
 
-	if(evaluated_calendar_data.epoch_data[calendar.date.epoch]){
+	if(evaluated_calendar_data.epoch_data[date.epoch]){
 
-		var sunset = evaluated_calendar_data.epoch_data[calendar.date.epoch].weather.sunset[0];
-		var sunrise = evaluated_calendar_data.epoch_data[calendar.date.epoch].weather.sunrise[0];
+		var sunset = evaluated_calendar_data.epoch_data[date.epoch].weather.sunset[0];
+		var sunrise = evaluated_calendar_data.epoch_data[date.epoch].weather.sunrise[0];
 
 		sunset = (360/clock_hours)*(sunset+clock_hours/4);
 		sunrise = (360/clock_hours)*(sunrise-clock_hours/4);

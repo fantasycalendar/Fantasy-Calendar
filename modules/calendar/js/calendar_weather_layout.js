@@ -86,8 +86,6 @@ var calendar_weather = {
 
 			this.weather_wind.toggleClass('newline', wind_sys == 'both');
 
-			console.log(this.base_height+height)
-
 			this.weather_tooltip_box.css('height', `${this.base_height+height}px`)
 
 			var position = '';

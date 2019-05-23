@@ -2651,8 +2651,8 @@ function evaluate_season_lengths(){
 		'season_length': 0
 	};
 	
-	var epoch_start = evaluate_calendar_start(calendar, calendar.date.internal_year).epoch;
-	var epoch_end = evaluate_calendar_start(calendar, calendar.date.internal_year+1).epoch-1;
+	var epoch_start = evaluate_calendar_start(calendar, date.internal_year).epoch;
+	var epoch_end = evaluate_calendar_start(calendar, date.internal_year+1).epoch-1;
 	var season_length = epoch_end-epoch_start;
 
 	for(var i = 0; i < calendar.seasons.data.length; i++){

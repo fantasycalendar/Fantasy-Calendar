@@ -39,10 +39,17 @@ function bind_calendar_events(){
 
 var evaluated_calendar_data = {};
 
+function rebuild_calendar(action, target_date){
 
-function rebuild_calendar(action){
+	if(target_date === undefined){
+		var internal_date = date;
+	}else{
+		var internal_date = target_date;
+	}
+
 	worker_calendar.postMessage({
 		calendar: calendar,
+		date: internal_date,
 		action: action
 	});
 }
@@ -83,12 +90,12 @@ worker_climate.onmessage = e => {
 worker_calendar.onmessage = e => {
 
 	evaluated_calendar_data = e.data.processed_data;
-
-	calendar = evaluated_calendar_data.calendar;
+	var calendar = evaluated_calendar_data.calendar;
+	var action = e.data.action;
 
 	if(evaluated_calendar_data.success){
 	
-		if(e.data.action === "calendar"){
+		if(action === "calendar" || action === "preview"){
 
 			calendar_layouts.insert_calendar(evaluated_calendar_data);
 
@@ -103,8 +110,11 @@ worker_calendar.onmessage = e => {
 			eras.display_era_events(calendar);
 
 			rebuild_events();
+			if(action !== "preview"){
+				eval_clock();
+			}
 
-		}else if(e.data.action === "weather"){
+		}else if(action === "weather"){
 
 			evaluate_weather_charts();
 

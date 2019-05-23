@@ -14,7 +14,7 @@ include('header.php');
 
 $(document).ready(function(){
 
-	timeoutID = window.setTimeout(load_calendar, 150);
+	//timeoutID = window.setTimeout(load_calendar, 150);
 
 });
 

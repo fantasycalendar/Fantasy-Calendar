@@ -276,11 +276,11 @@ function update_current_day(recalculate){
 	$('.current_day').removeClass('current_day');
 
 	if(recalculate){
-		calendar.date.internal_year = calendar.date.year > 0 ? calendar.date.year - 1 : calendar.date.year;
-		calendar.date.epoch = evaluate_calendar_start(calendar, calendar.date.internal_year, calendar.date.timespan, calendar.date.day).epoch;
+		date.internal_year = date.year > 0 ? date.year - 1 : date.year;
+		date.epoch = evaluate_calendar_start(calendar, date.internal_year, date.timespan, date.day).epoch;
 	}
 
-	$(`[epoch=${calendar.date.epoch}]`).addClass('current_day');
+	$(`[epoch=${date.epoch}]`).addClass('current_day');
 
 }
 
@@ -374,10 +374,8 @@ var calendar_layouts = {
 		this.add_year_day_number();
 
 		this.add_month_number();
-		
-		update_current_day(true);
 
-		eval_clock();
+		update_current_day(false);
 
 	},
 
@@ -390,7 +388,7 @@ var calendar_layouts = {
 			html.push("<span class='era'></span></div>");
 			html.push(`<div class='cycle'>${get_cycle(calendar_layouts.year_data.year).text}</div>`);
 
-			$('#top_follower').empty().html(html.join('')).removeClass().addClass('grid');
+			$('#top_follower_content').html(html.join('')).removeClass().addClass('grid');
 
 		},
 
@@ -437,7 +435,7 @@ var calendar_layouts = {
 				});
 
 				filtered_era_beforestart = calendar.eras.filter(function(era){
-					return era.year === calendar.date.internal_year && era.timespan === timespan.index && era.day === 0;
+					return era.year === date.internal_year && era.timespan === timespan.index && era.day === 0;
 				});
 
 				this.insert_intercalary_day(timespan, filtered_leap_days_beforestart, timespan.length, true);
@@ -490,7 +488,7 @@ var calendar_layouts = {
 							});
 
 							filtered_era = calendar.eras.filter(function(era){
-								return era.year === calendar.date.internal_year &&
+								return era.year === date.internal_year &&
 								era.timespan === timespan.index &&
 								era.day === timespan_day &&
 								era.day != timespan.length;
@@ -686,7 +684,7 @@ var calendar_layouts = {
 			html.push("<span class='era'></span></div>");
 			html.push(`<div class='cycle'>${get_cycle(calendar_layouts.year_data.year).text}</div>`);
 
-			$('#top_follower').empty().html(html.join('')).removeClass().addClass('wide');
+			$('#top_follower_content').html(html.join('')).removeClass().addClass('wide');
 
 		},
 
@@ -733,7 +731,7 @@ var calendar_layouts = {
 				});
 
 				filtered_era_beforestart = calendar.eras.filter(function(era){
-					return era.year === calendar.date.internal_year && era.timespan === timespan.index && era.day === 0;
+					return era.year === date.internal_year && era.timespan === timespan.index && era.day === 0;
 				});
 
 				this.insert_intercalary_day(timespan, filtered_leap_days_beforestart, timespan.length, true);
@@ -776,7 +774,7 @@ var calendar_layouts = {
 							});
 
 							filtered_era = calendar.eras.filter(function(era){
-								return era.year === calendar.date.internal_year &&
+								return era.year === date.internal_year &&
 								era.timespan === timespan.index &&
 								era.day === timespan_day &&
 								era.day != timespan.length;
@@ -958,7 +956,7 @@ var calendar_layouts = {
 			html.push("<span class='era'></span></div>");
 			html.push(`<div class='cycle'>${get_cycle(calendar_layouts.year_data.year).text}</div>`);
 
-			$('#top_follower').empty().html(html.join('')).removeClass().addClass('vertical');
+			$('#top_follower_content').html(html.join('')).removeClass().addClass('vertical');
 
 		},
 
@@ -1052,7 +1050,7 @@ var calendar_layouts = {
 				});
 
 				filtered_era_beforestart = calendar.eras.filter(function(era){
-					return era.year === calendar.date.internal_year && era.timespan === timespan.index && era.day === 0;
+					return era.year === date.internal_year && era.timespan === timespan.index && era.day === 0;
 				});
 
 				this.insert_intercalary_day(timespan, filtered_leap_days_beforestart, timespan.length, true);
@@ -1079,7 +1077,7 @@ var calendar_layouts = {
 							});
 
 							filtered_era = calendar.eras.filter(function(era){
-								return era.year === calendar.date.internal_year &&
+								return era.year === date.internal_year &&
 								era.timespan === timespan.index &&
 								era.day === timespan_day &&
 								era.day != timespan.length;

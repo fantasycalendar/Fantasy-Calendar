@@ -1,13 +1,14 @@
-var calendar_1 = {
+var date = {
+	"year": 1,
+	"interval": 1,
+	"day": 1,
+	"hour": 0,
+	"minute": 0,
+	"epoch": 0
+}
+
+var calendar = {
 	"Name": "Tal'Dorei",
- 
-	"date": {
-		"year": 1567,
-		"interval": 1,
-		"day": 1,
-		"hour": 0,
-		"minute": 0
-	},
 
 	"year_data": {
 		"first_day": 1,
