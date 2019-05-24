@@ -66,7 +66,7 @@ var calendar_weather = {
 				var temp_f = `<span class='newline'>${precisionRound(weather.temperature['imperial'].value[0], 1).toString()}°F to ${precisionRound(weather.temperature['imperial'].value[1], 1).toString()}°F</span>`;
 				var temp_c = `<span class='newline'>${precisionRound(weather.temperature['metric'].value[0], 1).toString()}°C to ${precisionRound(weather.temperature['metric'].value[1], 1).toString()}°C</span>`;
 				var temp = `${temp_f}${temp_c}`;
-				height += 40;
+				height += 37;
 			}
 			this.weather_temp.toggleClass('newline', temp_sys == 'both');
 
@@ -81,7 +81,7 @@ var calendar_weather = {
 				var wind_text = `${weather.wind_speed} (${weather.wind_direction}) (${weather.wind_velocity[wind_sys]} ${wind_symbol})`;
 			}else{
 				var wind_text = `<span class='newline'>${weather.wind_speed} (${weather.wind_direction}) (${weather.wind_velocity.imperial} MPH | ${weather.wind_velocity.metric} KPH)</span>`;
-				height += 15;
+				height += 17;
 			}
 
 			this.weather_wind.toggleClass('newline', wind_sys == 'both');
@@ -91,7 +91,6 @@ var calendar_weather = {
 			var position = '';
 
 			var val = 0;
-
 			if(day_container.innerWidth() < 190){
 				if(icon.attr('align') != ""){
 					val = clamp(190-day_container.innerWidth(), 0, 70);
@@ -104,9 +103,10 @@ var calendar_weather = {
 			}
 
 			var combined = position+val == "0" ? "" : position+val;
+			
 			this.weather_tooltip_box.position({
 				my: "center"+combined,
-				at: `top-${75+height/2}`,
+				at: `top-${this.base_height+height/2}`,
 				of: icon.parent().parent(),
 				collision: "none"
 			});
@@ -166,6 +166,10 @@ var temperature_chart;
 
 function evaluate_weather_charts(){
 
+	if($('#precipitation').length == 0 || $('#temperature').length == 0){
+		return;
+	}
+
 	var epoch_data = calendar_weather.epoch_data;
 
 	var keys = Object.keys(epoch_data);
@@ -186,16 +190,21 @@ function evaluate_weather_charts(){
 
 			var epoch = epoch_data[keys[i]];
 
-			labels.push([keys[i], ordinal_suffix_of(epoch.day) + " of " + epoch.timespan_name]);
+			if(epoch.weather){
 
-			temperature[0].push({x: keys[i], y: precisionRound(epoch.weather.temperature[temp_sys].value[0], 5)});
-			temperature[1].push({x: keys[i], y: precisionRound(epoch.weather.temperature[temp_sys].value[1], 5)});
-			temperature[2].push({x: keys[i], y: precisionRound(epoch.weather.temperature[temp_sys].high, 5)});
-			temperature[3].push({x: keys[i], y: precisionRound(epoch.weather.temperature[temp_sys].low, 5)});
+				labels.push([keys[i], ordinal_suffix_of(epoch.day) + " of " + epoch.timespan_name]);
 
-			precipitation[0].push({x: keys[i], y: precisionRound(epoch.weather.precipitation.chance*100, 5)});
-			precipitation[1].push({x: keys[i], y: precisionRound(epoch.weather.precipitation.intensity*100, 5)});
-			precipitation[2].push({x: keys[i], y: precisionRound(epoch.weather.precipitation.actual*100, 5)});
+				temperature[0].push({x: keys[i], y: precisionRound(epoch.weather.temperature[temp_sys].value[0], 5)});
+				temperature[1].push({x: keys[i], y: precisionRound(epoch.weather.temperature[temp_sys].value[1], 5)});
+				temperature[2].push({x: keys[i], y: precisionRound(epoch.weather.temperature[temp_sys].high, 5)});
+				temperature[3].push({x: keys[i], y: precisionRound(epoch.weather.temperature[temp_sys].low, 5)});
+
+				precipitation[0].push({x: keys[i], y: precisionRound(epoch.weather.precipitation.chance*100, 5)});
+				precipitation[1].push({x: keys[i], y: precisionRound(epoch.weather.precipitation.intensity*100, 5)});
+				precipitation[2].push({x: keys[i], y: precisionRound(epoch.weather.precipitation.actual*100, 5)});
+
+			}
+
 		}
 
 

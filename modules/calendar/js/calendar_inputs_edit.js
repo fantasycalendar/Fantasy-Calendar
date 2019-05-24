@@ -16,7 +16,6 @@ function set_up_edit_inputs(){
 	era_list = $('#era_list');
 	event_category_list = $('#event_category_list');
 	events_list = $('#events_list');
-	location_select = $('#location_select');
 	location_list = $('#location_list');
 
 	var previous_view_type = 'owner';
@@ -26,6 +25,7 @@ function set_up_edit_inputs(){
 	$('input[name="view_type"]').change(function(){
 
 		view_type = $(this).val();
+		owner = true;
 
 		switch(view_type){
 			case "owner":
@@ -38,6 +38,7 @@ function set_up_edit_inputs(){
 				break;
 
 			case "player":
+				owner = 0;
 				if(previous_view_type !== 'player'){
 					error_check();
 				}
@@ -119,11 +120,6 @@ function set_up_edit_inputs(){
 		}
 	});
 
-	$('#input_collapse_btn').click(function(){
-		$("#input_container").toggleClass('inputs_collapsed');
-		evaluate_error_background_size();
-	})
-
 
 	for(var i = 0; i < calendar.year_data.global_week.length; i++){
 		name = calendar.year_data.global_week[i];
@@ -149,8 +145,6 @@ function set_up_edit_inputs(){
 			add_season_to_sortable(season_sortable, i, calendar.seasons.data[i]);
 		}
 		evaluate_season_lengths();
-
-		reindex_location_select_list();
 
 		for(var i = 0; i < calendar.seasons.locations.length; i++){
 			add_location_to_list(location_list, i, calendar.seasons.locations[i]);
@@ -568,7 +562,7 @@ function set_up_edit_inputs(){
 
 		add_location_to_list(location_list, id, stats);
 		reindex_location_list();
-		reindex_location_select_list();
+		repopulate_location_select_list();
 
 		$('.slider_percentage').slider({
 			min: 0,
@@ -610,7 +604,7 @@ function set_up_edit_inputs(){
 
 		add_location_to_list(location_list, id, stats);
 		reindex_location_list();
-		reindex_location_select_list();
+		repopulate_location_select_list();
 
 		$('.slider_percentage').slider({
 			min: 0,
@@ -732,7 +726,7 @@ function set_up_edit_inputs(){
 			case "location_list":
 				type = 'seasons';
 				reindex_location_list();
-				reindex_location_select_list();
+				repopulate_location_select_list();
 				break;
 
 			case "cycle_sortable":
@@ -2198,7 +2192,7 @@ function error_check(parent){
 		if(parent !== undefined && (parent === "seasons")){
 			rebuild_climate();
 		}else{
-			rebuild_calendar('calendar');
+			rebuild_calendar('calendar', date);
 		}
 
 	}else{
@@ -2332,30 +2326,6 @@ function reindex_season_sortable(key){
 
 	error_check(season_sortable);
 
-}
-
-function reindex_location_select_list(){
-	var html = [];
-	if(calendar.seasons.locations.length > 0){
-		html.push('<optgroup label="Custom" value="custom">');
-		for(var i = 0; i < calendar.seasons.locations.length; i++){
-			html.push(`<option value='${i}'>${calendar.seasons.locations[i].name}</option>`);
-		}
-		html.push('</optgroup>');
-	}
-	html.push('<optgroup label="Presets" value="preset">');
-	for(var i = 0; i < Object.keys(climate_generator.presets).length; i++){
-		html.push(`<option>${Object.keys(climate_generator.presets)[i]}</option>`);
-	}
-	html.push('</optgroup>');
-
-	location_select.html(html.join('')).val(calendar.seasons.location);
-
-	if(location_select.val() === null){
-		location_select.find('option').first().prop('selected', true);
-		calendar.seasons.location = location_select.val();
-		calendar.seasons.location_type = location_select.find('option:selected').parent().attr('value');
-	}
 }
 
 function reindex_location_list(){

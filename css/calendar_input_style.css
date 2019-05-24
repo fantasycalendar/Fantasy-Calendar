@@ -698,8 +698,6 @@ label{
 	padding:4px;
 	display: block;
 
-	cursor: pointer;
-
 	user-select: none;
 	-moz-user-select: none;
 	-khtml-user-select: none;
@@ -754,6 +752,10 @@ label{
 .toggle:checked + .lbl-toggle {
 	border-bottom-right-radius: 0;
 	border-bottom-left-radius: 0;
+}
+
+.lbl-toggle.disabled::before{
+	display:none;
 }
 
 .collapsible-content .content-inner {

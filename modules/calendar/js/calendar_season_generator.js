@@ -155,8 +155,6 @@ var climate_generator = {
 
 	get_season_data: function(epoch){
 
-		/*----------------------------- SEASON & TIME GENERATION ------------------------------------*/
-
 		this.data.season_epoch = (epoch-this.data.season_offset) % this.data.season_length;
 		this.data.season_epoch = this.data.season_epoch < 0 ? this.data.season_epoch + this.data.season_length : this.data.season_epoch;
 
@@ -212,6 +210,17 @@ var climate_generator = {
 		var sunrise_s = Math.floor(sunrise)+":"+sunrise_m;
 		var sunset_s = Math.floor(sunset)+":"+sunset_m;
 
+		return {
+			season_name: curr_season_data.name,
+			season_index: curr_season,
+			season_perc: this.data.perc,
+			sunrise: [sunrise, sunrise_s],
+			sunset: [sunset, sunset_s]
+		}
+
+	},
+
+	get_weather_data: function(epoch){
 
 		/*----------------------------- WEATHER GENERATION ------------------------------------*/
 
@@ -284,11 +293,11 @@ var climate_generator = {
 		var high = lerp(curr_season_data.weather.temp_high, next_season_data.weather.temp_high, val);
 		var temp = mid(low, high);
 		temp += this.random.noise(epoch, 1.0, this.current_location.settings.large_noise_frequency, this.current_location.settings.large_noise_amplitude);
-		temp += this.random.noise(epoch+this.data.season_length, 1.0, this.current_location.settings.medium_noise_frequency, this.current_location.settings.medium_noise_amplitude);
-		temp += this.random.noise(epoch+this.data.season_length*2, 1.0, this.current_location.settings.small_noise_frequency, this.current_location.settings.small_noise_amplitude);
+		temp += this.random.noise(epoch+this.weather.season_length, 1.0, this.current_location.settings.medium_noise_frequency, this.current_location.settings.medium_noise_amplitude);
+		temp += this.random.noise(epoch+this.weather.season_length*2, 1.0, this.current_location.settings.small_noise_frequency, this.current_location.settings.small_noise_amplitude);
 		
-		var range_low = Math.abs((this.random.noise(epoch+this.data.season_length*3, 1.0, 0.5, 1.5))*(high-low)*0.5);
-		var range_high = Math.abs((this.random.noise(epoch+this.data.season_length*4, 1.0, 0.5, 1.5))*(high-low)*0.5);
+		var range_low = Math.abs((this.random.noise(epoch+this.weather.season_length*3, 1.0, 0.5, 1.5))*(high-low)*0.5);
+		var range_high = Math.abs((this.random.noise(epoch+this.weather.season_length*4, 1.0, 0.5, 1.5))*(high-low)*0.5);
 
 
 		var temperature_i = [temp-range_low, temp+range_high];
@@ -300,7 +309,7 @@ var climate_generator = {
 		var precipitation_chance = lerp(curr_season_data.weather.precipitation, next_season_data.weather.precipitation, val);
 		var precipitation_intensity = lerp(curr_season_data.weather.precipitation_intensity, next_season_data.weather.precipitation_intensity, val);
 
-		chance = clamp(0.5+this.random.noise(epoch+this.data.season_length*4, 5.0, 0.35, 0.5), 0.0, 1.0);
+		chance = clamp(0.5+this.random.noise(epoch+this.weather.season_length*4, 5.0, 0.35, 0.5), 0.0, 1.0);
 
 		var inner_chance = 0;
 
@@ -312,7 +321,7 @@ var climate_generator = {
 
 		if(precipitation_chance > chance){
 
-			inner_chance = clamp((0.5+this.random.noise(epoch+this.data.season_length*5, 10, 0.3, 0.5))*precipitation_intensity, 0.0, 1.0);
+			inner_chance = clamp((0.5+this.random.noise(epoch+this.weather.season_length*5, 10, 0.3, 0.5))*precipitation_intensity, 0.0, 1.0);
 	
 			precipitation = this.pick_from_table(inner_chance, this.precipitation[percipitation_table], true);
 
@@ -320,10 +329,10 @@ var climate_generator = {
 
 				clouds = this.clouds[precipitation.index];
 
-				wind_type_chance = this.random.roll_dice(epoch+this.data.season_length, this.wind.type[precipitation.index]);
+				wind_type_chance = this.random.roll_dice(epoch+this.weather.season_length, this.wind.type[precipitation.index]);
 
 				if(wind_type_chance == 20){
-					wind_type_chance += this.random.roll_dice(epoch+this.data.season_length*6, '1d10');
+					wind_type_chance += this.random.roll_dice(epoch+this.weather.season_length*6, '1d10');
 					feature_select = 'Storm';
 				}else{
 					feature_select = 'Rain';
@@ -335,7 +344,7 @@ var climate_generator = {
 
 		}else{
 
-			clouds_chance = clamp((0.5+this.random.noise(epoch+this.data.season_length*7, 10, 0.4, 0.5)), 0.0, 1.0);
+			clouds_chance = clamp((0.5+this.random.noise(epoch+this.weather.season_length*7, 10, 0.4, 0.5)), 0.0, 1.0);
 
 			another_precipitation = this.pick_from_table(clouds_chance-0.3, this.precipitation[percipitation_table], true);
 
@@ -343,7 +352,7 @@ var climate_generator = {
 				clouds = this.clouds[another_precipitation.index];
 			}
 
-			wind_type_chance = this.random.roll_dice(epoch+this.data.season_length*8, this.wind.type[another_precipitation.index]);
+			wind_type_chance = this.random.roll_dice(epoch+this.weather.season_length*8, this.wind.type[another_precipitation.index]);
 
 			wind_type_chance = wind_type_chance == 20 ? 19 : wind_type_chance;
 			
@@ -357,7 +366,7 @@ var climate_generator = {
 
 		if(feature_select && this.feature_table[feature_select]){
 
-			feature_chance = clamp((0.5+this.random.noise(epoch+this.data.season_length*9, 10, 0.4, 0.5)), 0.0, 1.0);
+			feature_chance = clamp((0.5+this.random.noise(epoch+this.weather.season_length*9, 10, 0.4, 0.5)), 0.0, 1.0);
 
 			feature = this.pick_from_table(feature_chance, this.feature_table[feature_select][percipitation_table], false).key;
 
@@ -418,9 +427,6 @@ var climate_generator = {
 		}
 
 		var return_data = {
-			season_name: curr_season_data.name,
-			season_index: curr_season,
-			season_perc: this.data.perc,
 			temperature: {
 				imperial: {
 					value: temperature_i,
@@ -441,8 +447,6 @@ var climate_generator = {
 				intensity: precipitation_intensity,
 			},
 			clouds: clouds,
-			sunrise: [sunrise, sunrise_s],
-			sunset: [sunset, sunset_s],
 			feature: feature,
 			wind_speed: wind_speed.key,
 			wind_speed_desc: wind_info.desciption,

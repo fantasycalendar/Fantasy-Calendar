@@ -19,7 +19,8 @@ onmessage = e => {
 
 	for(var i = 0; i < length; i++){
 		var epoch = keys[i]|0;
-		epoch_data[epoch].weather = climate_generator.get_season_data(epoch);
+		epoch_data[epoch].season = climate_generator.get_season_data(epoch);
+		epoch_data[epoch].weather = climate_generator.get_weather_data(epoch);
 	}
 	
 	postMessage(epoch_data);

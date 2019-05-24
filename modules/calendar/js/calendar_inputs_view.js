@@ -1,21 +1,19 @@
-function set_up_view_inputs(){
+rebuild_type = 'calendar';
 
-	bind_calendar_events();
+function set_up_view_inputs(){
+	
+	set_up_visitor_inputs();
 
 	calendar_container = $('#calendar');
 	
 	current_year = $('#current_year');
 	current_timespan = $('#current_timespan');
 	current_day = $('#current_day');
-	
-	target_year = $('#target_year');
-	target_timespan = $('#target_timespan');
-	target_day = $('#target_day');
 
 	current_hour = $('#current_hour');
 	current_minute = $('#current_minute');
 
-	preview_date = clone(date);
+	location_select = $('#location_select');
 
 	if(date){
 
@@ -24,16 +22,6 @@ function set_up_view_inputs(){
 
 		var curr_timespan = repopulate_timespan_select(current_timespan, convert_year(date.year));
 		repopulate_day_select(current_day, convert_year(date.year), curr_timespan);
-
-		if(target_year.length){
-
-			target_year.val(preview_date.year);
-			target_year.data('val', target_year.val());
-
-			var curr_timespan = repopulate_timespan_select(target_timespan, convert_year(preview_date.year));
-			repopulate_day_select(target_day, convert_year(preview_date.year), curr_timespan);
-
-		}
 
 	}
 
@@ -44,122 +32,11 @@ function set_up_view_inputs(){
 
 	}
 
-	sub_year = $('.sub_year');
-	add_year = $('.add_year');
+	if(calendar.seasons.locations){
 
-	sub_timespan = $('.sub_timespan');
-	add_timespan = $('.add_timespan');
+		repopulate_location_select_list();
 
-	sub_day = $('.sub_day');
-	add_day = $('.add_day');
-
-	sub_day.click(function(){
-
-		var target = $(this).next();
-		var value = target.val()|0;
-		var selected = target.find('option:selected');
-		var options = target.children(":enabled");
-		var prev = options.index(selected)-1;
-
-		if(prev < 0){
-			sub_timespan.click();
-			target.children('option:enabled').last().prop('selected', true).change();
-		}else{
-			options.eq(prev).prop('selected', true);
-			target.change();
-		}
-	});
-
-	sub_timespan.click(function(){
-
-		var target = $(this).next();
-		var value = target.val()|0;
-		var selected = target.find('option:selected');
-		var options = target.children(":enabled");
-		var prev = options.index(selected)-1;
-
-		if(prev < 0){
-			sub_year.click();
-			target.children('option:enabled').last().prop('selected', true).change();
-		}else{
-			options.eq(prev).prop('selected', true);
-			target.change();
-		}
-
-	});
-
-	sub_year.click(function(){
-
-		var target = $(this).next();
-		var value = target.val()|0;
-		target.val(value-1).change();
-		if(current_timespan.children(":enabled").length == 0){
-			sub_year.click();
-		}else{
-			if(current_timespan.val() === null){
-				current_timespan.children('option:enabled').eq(date.timespan).prop('selected', true).change();
-			}
-			
-			if(current_day.val() === null){
-				current_day.children('option:enabled').eq(date.timespan).prop('selected', true).change();
-			}
-		}
-
-	});
-
-	add_day.click(function(){
-
-		var target = $(this).prev();
-		var value = target.val()|0;
-		var selected = target.find('option:selected');
-		var options = target.children(":enabled");
-		var next = options.index(selected)+1;
-
-		if(next == options.length){
-			add_timespan.click();
-			target.children('option:enabled').first().prop('selected', true).change();
-		}else{
-			options.eq(next).prop('selected', true);
-			target.change();
-		}
-	});
-
-	add_timespan.click(function(){
-
-		var target = $(this).prev();
-		var value = target.val()|0;
-		var selected = target.find('option:selected');
-		var options = target.children(":enabled");
-		var next = options.index(selected)+1;
-
-		if(next == options.length){
-			add_year.click();
-			target.children('option:enabled').first().prop('selected', true).change();
-		}else{
-			options.eq(next).prop('selected', true);
-			target.change();
-		}
-
-	});
-
-	add_year.click(function(){
-
-		var target = $(this).prev();
-		var value = target.val()|0;
-		target.val(value+1).change();
-		if(current_timespan.children(":enabled").length == 0){
-			add_year.click();
-		}else{
-			if(current_timespan.val() === null){
-				current_timespan.children('option:enabled').eq(date.timespan).prop('selected', true).change();
-			}
-			
-			if(current_day.val() === null){
-				current_day.children('option:enabled').eq(date.timespan).prop('selected', true).change();
-			}
-		}
-
-	});
+	}
 
 	current_year.change(function(){
 
@@ -216,163 +93,6 @@ function set_up_view_inputs(){
 		var curr_day = current_day.val()|0;
 		set_date(curr_year, curr_timespan, curr_day);
 	}));
-
-	function set_date(year, timespan, day){
-
-		var rebuild = false;
-
-		if((date.year != year || (date.year == year && date.year != preview_date.year))
-			||
-			(calendar.settings.show_current_month && (date.timespan != timespan || (date.timespan == timespan && date.timespan != preview_date.timespan)))
-		){
-			rebuild = true;
-		}
-
-		date.year = year;
-		date.timespan = timespan;
-		date.day = day;
-
-		if(rebuild){
-			rebuild_calendar('calendar');
-			update_current_day(true);
-			evaluate_sun();
-		}else{
-			update_current_day(true);
-			evaluate_sun();
-		}
-
-	}
-
-	function set_preview_date(year, timespan, day){
-
-		var rebuild = false;
-
-		if((preview_date.year != year || (preview_date.year == year && preview_date.year != date.year))
-			||
-			(calendar.settings.show_current_month && (preview_date.timespan != timespan || (preview_date.timespan == timespan && preview_date.timespan != date.timespan)))
-		){
-			rebuild = true;
-		}
-
-		preview_date.year = year;
-		preview_date.timespan = timespan;
-		preview_date.day = day;
-
-		if(rebuild){
-			rebuild_calendar('preview', preview_date);
-		}
-
-	}
-
-
-	target_year.change(function(){
-
-		var tar_year = $(this).val()|0;
-		
-		if(tar_year == 0){
-			if(preview_date.year < 0){
-				tar_year = 1;
-			}else if(preview_date.year > 0){
-				tar_year = -1;
-			}
-			$(this).data('val', tar_year);
-			$(this).val(tar_year);
-		}
-
-
-		var tar_timespan = repopulate_timespan_select(target_timespan, convert_year(tar_year));
-
-		repopulate_day_select(target_day, convert_year(tar_year), tar_timespan);
-
-	});
-
-	target_timespan.change(function(){
-
-		var tar_year = target_year.val()|0;
-
-		var tar_timespan = $(this).val()|0;
-		var prev_timespan = $(this).data('val')|0;
-
-		repopulate_day_select(target_day, convert_year(tar_year), tar_timespan);
-
-	});
-
-	$('#go_to_preview_date').click(function(){
-		var tar_year = target_year.val()|0;
-		var tar_timespan = target_timespan.val()|0;
-		var tar_day = target_day.val()|0;
-		set_preview_date(tar_year, tar_timespan, tar_day);
-	});
-
-	$('#reset_preview_date').click(function(){
-		target_year.val(current_year.val());
-		target_timespan.val(current_timespan.val());
-		target_day.val(current_day.val());
-		var curr_year = current_year.val()|0;
-		var curr_timespan = current_timespan.val()|0;
-		var curr_day = current_day.val()|0;
-		set_date(curr_year, curr_timespan, curr_day);
-	});
-
-	function repopulate_timespan_select(select, year){
-		var html = [];
-		for(var i = 0; i < calendar.year_data.timespans.length; i++){
-			var is_there = does_timespan_appear(year, i);
-			html.push(`<option ${!is_there.result ? 'disabled' : ''} value='${i}'>`);
-			html.push(calendar.year_data.timespans[i].name + (!is_there.result ? ` (${is_there.reason})` : ''));
-			html.push('</option>');
-		}
-
-		select.html(html.join('')).val(date.timespan);
-		if(select.find('option:selected').prop('disabled') || select.val() == null){
-			for(var i = select.find('option:selected').val()|0; i >= 0 ; i--){
-				if(!select.children().eq(i).prop('disabled')){
-					break;
-				}
-			}
-			select.val(i);
-		}
-
-		return select.val()|0;
-	}
-
-	function repopulate_day_select(select, year, timespan){
-		var days = get_days_in_timespan(year, timespan, true);
-		var html = [];
-		for(var i = 0; i < days.length; i++){
-			var day = days[i];
-			html.push(`<option value='${i+1}' ${!day.is_there.result ? 'disabled' : ''}>`);
-			html.push(day.text + (!day.is_there.result ? ` (${day.is_there.reason})` : ''));
-			html.push('</option>');
-		}
-		select.html(html.join('')).val(date.day);
-		if(select.find('option:selected').prop('disabled') || select.val() == null){
-			for(var i = date.day-1; i >= 0; i--){
-				if(select.children().eq(i).length && !select.children().eq(i).prop('disabled')){
-					break;
-				}
-			}
-			select.val(i+1);
-		}
-		select.data('val', date.day);
-
-		return select.val()|0;
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -488,8 +208,8 @@ function evaluate_sun(){
 
 	if(evaluated_calendar_data.epoch_data[date.epoch]){
 
-		var sunset = evaluated_calendar_data.epoch_data[date.epoch].weather.sunset[0];
-		var sunrise = evaluated_calendar_data.epoch_data[date.epoch].weather.sunrise[0];
+		var sunset = evaluated_calendar_data.epoch_data[date.epoch].season.sunset[0];
+		var sunrise = evaluated_calendar_data.epoch_data[date.epoch].season.sunrise[0];
 
 		sunset = (360/clock_hours)*(sunset+clock_hours/4);
 		sunrise = (360/clock_hours)*(sunrise-clock_hours/4);
@@ -526,4 +246,101 @@ function rotate_element(element, rotation){
 	element.css('-webkit-transform','rotate('+rotation+'deg)'); 
 	element.css('-moz-transform','rotate('+rotation+'deg)');
 	element.css('transform','rotate('+rotation+'deg)');
+}
+
+
+function set_date(year, timespan, day){
+
+	var rebuild = false;
+
+	if((date.year != year || (date.year == year && date.year != preview_date.year))
+		||
+		(calendar.settings.show_current_month && (date.timespan != timespan || (date.timespan == timespan && date.timespan != preview_date.timespan)))
+	){
+		rebuild = true;
+	}
+
+	date.year = year;
+	date.timespan = timespan;
+	date.day = day;
+
+	if(rebuild){
+		rebuild_calendar('calendar', date);
+		update_current_day(true);
+		evaluate_sun();
+	}else{
+		update_current_day(true);
+		evaluate_sun();
+	}
+
+}
+
+function repopulate_timespan_select(select, year){
+	var html = [];
+	for(var i = 0; i < calendar.year_data.timespans.length; i++){
+		var is_there = does_timespan_appear(year, i);
+		html.push(`<option ${!is_there.result ? 'disabled' : ''} value='${i}'>`);
+		html.push(calendar.year_data.timespans[i].name + (!is_there.result ? ` (${is_there.reason})` : ''));
+		html.push('</option>');
+	}
+
+	select.html(html.join('')).val(date.timespan);
+	if(select.find('option:selected').prop('disabled') || select.val() == null){
+		for(var i = select.find('option:selected').val()|0; i >= 0 ; i--){
+			if(!select.children().eq(i).prop('disabled')){
+				break;
+			}
+		}
+		select.val(i);
+	}
+
+	return select.val()|0;
+}
+
+function repopulate_day_select(select, year, timespan){
+	var days = get_days_in_timespan(year, timespan, true);
+	var html = [];
+	for(var i = 0; i < days.length; i++){
+		var day = days[i];
+		html.push(`<option value='${i+1}' ${!day.is_there.result ? 'disabled' : ''}>`);
+		html.push(day.text + (!day.is_there.result ? ` (${day.is_there.reason})` : ''));
+		html.push('</option>');
+	}
+	select.html(html.join('')).val(date.day);
+	if(select.find('option:selected').prop('disabled') || select.val() == null){
+		for(var i = date.day-1; i >= 0; i--){
+			if(select.children().eq(i).length && !select.children().eq(i).prop('disabled')){
+				break;
+			}
+		}
+		select.val(i+1);
+	}
+	select.data('val', date.day);
+
+	return select.val()|0;
+	
+}
+
+function repopulate_location_select_list(){
+	var html = [];
+	if(calendar.seasons.locations.length > 0){
+		html.push('<optgroup label="Custom" value="custom">');
+		for(var i = 0; i < calendar.seasons.locations.length; i++){
+			html.push(`<option value='${i}'>${calendar.seasons.locations[i].name}</option>`);
+		}
+		html.push('</optgroup>');
+	}
+	html.push('<optgroup label="Presets" value="preset">');
+	for(var i = 0; i < Object.keys(climate_generator.presets).length; i++){
+		html.push(`<option>${Object.keys(climate_generator.presets)[i]}</option>`);
+	}
+	html.push('</optgroup>');
+
+	location_select.html(html.join('')).val(calendar.seasons.location);
+
+	if(location_select.val() === null){
+		location_select.find('option').first().prop('selected', true);
+		calendar.seasons.location = location_select.val();
+		calendar.seasons.location_type = location_select.find('option:selected').parent().attr('value');
+	}
 }

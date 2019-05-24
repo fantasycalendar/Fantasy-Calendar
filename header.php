@@ -68,6 +68,7 @@ $jsversion = "2.0";
     	<script src="modules/calendar/js/calendar_weather_layout.js"></script>
     	<script src="modules/calendar/js/calendar_season_generator.js"></script>
     	<script src="modules/calendar/js/calendar_layout_builder.js"></script>
+    	<script src="modules/calendar/js/calendar_inputs_visitor.js"></script>
     	<script src="modules/calendar/js/calendar_inputs_view.js"></script>
     	<script src="modules/calendar/js/calendar_inputs_edit.js"></script>
     	<script src="modules/calendar/js/calendar_manager.js"></script>

@@ -4,7 +4,7 @@ var date = {
 	"day": 1,
 	"hour": 0,
 	"minute": 0,
-	"epoch": 0
+	"epoch": 31
 }
 
 var calendar = {
@@ -357,7 +357,7 @@ var calendar = {
 				"ends_year": false
 			},
 			"date": {
-				"year": -1,
+				"year": 1,
 				"timespan": 1,
 				"day": 5
 			}
@@ -407,7 +407,6 @@ var calendar = {
 		"hide_eras": false,
 		"hide_all_weather": false,
 		"hide_future_weather": false,
-		"auto_events": true,
 		"add_month_number": true,
 		"add_year_day_number": false
 	},

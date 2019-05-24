@@ -33,7 +33,7 @@ function load_calendar(){
 			console.log(result.data);
 			set_up_edit_inputs();
 			bind_calendar_events();
-			rebuild_calendar('calendar');
+			rebuild_calendar('calendar', date);
 			
 		},
 		error: function ( log )

@@ -20,11 +20,15 @@
 	flex-direction: row;
 }
 
-
 .timespan_day,
 .timespan_intercalary{
 	background-color:white;
 }
+
+.timespan_day.empty_timespan_day{
+	background-color:grey;
+}
+
 
 .grid .timespan_intercalary{
 	border-top:0px !important;
@@ -948,8 +952,8 @@ body.hide_year_day .year_day_number{
 	background-size: cover;
 	overflow:hidden;
 	display:none;
-	width:305px;
-	height:305px;
+	width:360px;
+	height:360px;
 	z-index:-100;
 }
 

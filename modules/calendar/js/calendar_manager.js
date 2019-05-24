@@ -31,26 +31,17 @@ function bind_calendar_events(){
 		eras.evaluate_position();
 	});
 
-
-
-
 }
 
 
 var evaluated_calendar_data = {};
 
 function rebuild_calendar(action, target_date){
-
-	if(target_date === undefined){
-		var internal_date = date;
-	}else{
-		var internal_date = target_date;
-	}
-
 	worker_calendar.postMessage({
 		calendar: calendar,
-		date: internal_date,
-		action: action
+		date: target_date,
+		action: action,
+		owner: owner
 	});
 }
 
@@ -94,36 +85,32 @@ worker_calendar.onmessage = e => {
 	var action = e.data.action;
 
 	if(evaluated_calendar_data.success){
-	
-		if(action === "calendar" || action === "preview"){
 
-			calendar_layouts.insert_calendar(evaluated_calendar_data);
+		calendar_layouts.insert_calendar(evaluated_calendar_data);
 
-			calendar_weather.epoch_data = evaluated_calendar_data.epoch_data;
+		calendar_weather.epoch_data = evaluated_calendar_data.epoch_data;
 
-			evaluate_weather_charts();
+		var start_epoch = Number(Object.keys(evaluated_calendar_data.epoch_data)[0]);
+		var end_epoch = Number(Object.keys(evaluated_calendar_data.epoch_data)[Object.keys(evaluated_calendar_data.epoch_data).length-1]);
+		eras.evaluate_current_era(calendar, start_epoch, end_epoch);
+		eras.set_up_position();
+		eras.display_era_events(calendar);
 
-			var start_epoch = Number(Object.keys(calendar_layouts.epoch_data)[0]);
-			var end_epoch = Number(Object.keys(calendar_layouts.epoch_data)[Object.keys(calendar_layouts.epoch_data).length-1]);
-			eras.evaluate_current_era(calendar, start_epoch, end_epoch);
-			eras.set_up_position();
-			eras.display_era_events(calendar);
+		rebuild_events();
 
-			rebuild_events();
-			if(action !== "preview"){
-				eval_clock();
-			}
-
-		}else if(action === "weather"){
-
-			evaluate_weather_charts();
-
+		if(action !== "preview"){
+			eval_clock();
+			update_current_day(false);
 		}
+
+		evaluate_weather_charts();
 
 	}else{
 
 		calendar_layouts.insert_empty_calendar(evaluated_calendar_data);
 
 	}
+
+	evaluate_settings();
 
 };

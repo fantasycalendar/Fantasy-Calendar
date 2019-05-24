@@ -166,7 +166,7 @@
 				<div class='detail-column fifth'>
 					<div class='detail-text right-align full'>Year:</div>
 				</div>
-				<div class='detail-column fourfifths input_buttons'>
+				<div class='detail-column fourfifths input_buttons' value='current'>
 					<div class='btn btn-sm btn-danger sub-btn sub_year' id='sub_year'><i class="icon-minus"></i></div>
 					<input class='form-control form-control-sm date_control' id='current_year' type='number'>
 					<div class='btn btn-sm btn-success add-btn add_year' id='add_year'><i class="icon-plus"></i></div>
@@ -179,7 +179,7 @@
 				<div class='detail-column fifth'>
 					<div class='detail-text right-align full'>Month:</div>
 				</div>
-				<div class='detail-column fourfifths input_buttons'>
+				<div class='detail-column fourfifths input_buttons' value='current'>
 					<div class='btn btn-sm btn-danger sub-btn sub_timespan' id='sub_timespan'><i class="icon-minus"></i></div>
 					<select class='form-control form-control-sm date_control' id='current_timespan'></select>
 					<div class='btn btn-sm btn-success add-btn add_timespan' id='add_timespan'><i class="icon-plus"></i></div>
@@ -193,7 +193,7 @@
 				<div class='detail-column fifth'>
 					<div class='detail-text right-align full'>Day:</div>
 				</div>
-				<div class='detail-column fourfifths input_buttons'>
+				<div class='detail-column fourfifths input_buttons' value='current'>
 					<div class='btn btn-sm btn-danger sub-btn sub_day' id='sub_day'><i class="icon-minus"></i></div>
 					<select class='form-control form-control-sm date_control' id='current_day'></select>
 					<div class='btn btn-sm btn-success add-btn add_day' id='add_day'><i class="icon-plus"></i></div>
@@ -227,7 +227,7 @@
 
 			<div class='detail-row'>
 
-				<div class='detail-column fifth'>
+				<div class='detail-column fifth' value='target'>
 					<div class='detail-text right-align full'>Year:</div>
 				</div>
 				<div class='detail-column fourfifths input_buttons'>
@@ -243,7 +243,7 @@
 				<div class='detail-column fifth'>
 					<div class='detail-text right-align full'>Month:</div>
 				</div>
-				<div class='detail-column fourfifths input_buttons'>
+				<div class='detail-column fourfifths input_buttons' value='target'>
 					<div class='btn btn-sm btn-danger sub-btn sub_timespan'><i class="icon-minus"></i></div>
 					<select class='form-control form-control-sm date_control' id='target_timespan'></select>
 					<div class='btn btn-sm btn-success add-btn add_timespan'><i class="icon-plus"></i></div>
@@ -257,7 +257,7 @@
 				<div class='detail-column fifth'>
 					<div class='detail-text right-align full'>Day:</div>
 				</div>
-				<div class='detail-column fourfifths input_buttons'>
+				<div class='detail-column fourfifths input_buttons' value='target'>
 					<div class='btn btn-sm btn-danger sub-btn sub_day'><i class="icon-minus"></i></div>
 					<select class='form-control form-control-sm date_control' id='target_day'></select>
 					<div class='btn btn-sm btn-success add-btn add_day'><i class="icon-plus"></i></div>
@@ -844,16 +844,16 @@
 
 	<div id="top_follower">
 
-		<div class='btn_container'>
-			<button class='btn btn-danger' id='btn_prev_year'>< Year</button>
-			<button class='btn btn-danger' id='btn_prev_month'>< Month</button>
+		<div class='btn_container hidden'>
+			<button class='btn btn-danger btn_preview_date hidden' disabled key='year' value='-1'>< Year</button>
+			<button class='btn btn-danger btn_preview_date hidden' disabled key='timespan' value='-1'>< Month</button>
 		</div>
 
 		<div id='top_follower_content'></div>
 
-		<div class='btn_container'>
-			<button class='btn btn-success' id='btn_next_year'>Year ></button>
-			<button class='btn btn-success' id='btn_next_month'>Month ></button>
+		<div class='btn_container hidden'>
+			<button class='btn btn-success btn_preview_date hidden' disabled key='year' value='1'>Year ></button>
+			<button class='btn btn-success btn_preview_date hidden' disabled key='timespan' value='1'>Month ></button>
 		</div>
 
 	</div>
