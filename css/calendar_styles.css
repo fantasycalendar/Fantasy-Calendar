@@ -527,8 +527,8 @@
 .moon_container.plus{
 	padding:2px;
 	background: url('../resources/icons/plus_icon.png') no-repeat scroll right center;
-    background-origin: content-box;
-    background-size: cover;
+	background-origin: content-box;
+	background-size: cover;
 }
 
 .moon_container.plus:hover{
@@ -938,7 +938,7 @@ body.hide_year_day .year_day_number{
 
 #weather_tooltip_box .newline{
 	width:100%;
-    display: inline-block;
+	display: inline-block;
 }
 
 
@@ -948,8 +948,6 @@ body.hide_year_day .year_day_number{
 
 #clock{
 	position:relative;
-	background-image: url("../resources/base.png");
-	background-size: cover;
 	overflow:hidden;
 	display:none;
 	width:360px;
@@ -957,12 +955,49 @@ body.hide_year_day .year_day_number{
 	z-index:-100;
 }
 
-
 .SunUpDown{
-	height:100%;
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	z-index:100;
+}
+
+#SunUp_Container{
+	height: 100%;
+	width: calc(100% + 1px);
+	right: calc(50% - 1px);
+	transform-origin: right center;
+	position: absolute;
+	display: inline-block;
+	overflow: hidden;
+	z-index: 110;
+}
+
+#SunUp_Container #StartOfDay{
+	height: 100%;
+	transform-origin: right center;
+	right:0%;
 	position:absolute;
 	display:inline-block;
-	z-index:100;
+}
+
+#SunDown_Container{
+	height: 100%;
+	width: calc(100% + 1px);
+	left: calc(50% - 1px);
+	transform-origin: left center;
+	position: absolute;
+	display: inline-block;
+	overflow: hidden;
+	z-index: 110;
+}
+
+#SunDown_Container #EndOfDay{
+	height: 100%;
+	transform-origin: left center;
+	left:0%;
+	position:absolute;
+	display:inline-block;
 }
 
 #clock_arm{
@@ -984,12 +1019,12 @@ body.hide_year_day .year_day_number{
 }
 
 #base{
+	top:0;
 	height:100%;
 	position:absolute;
 	display:inline-block;
 	z-index:500;
 }
-
 
 .clock_hour_text_container{
 	display:inline-block;

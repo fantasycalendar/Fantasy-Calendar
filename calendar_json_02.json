@@ -1,10 +1,10 @@
 var date = {
 	"year": 1,
-	"timespan": 1,
+	"timespan": 0,
 	"day": 1,
 	"hour": 0,
 	"minute": 0,
-	"epoch": 31
+	"epoch": 0
 }
 
 var calendar = {
@@ -218,7 +218,7 @@ var calendar = {
 			{
 				"name": "Summer",
 				"duration": 0,
-				"transition_length": 90,
+				"transition_length": 15,
 				"time": {
 					"sunrise": {
 						"hour": 9,
@@ -233,7 +233,7 @@ var calendar = {
 			{
 				"name": "Winter",
 				"duration": 0,
-				"transition_length": 90,
+				"transition_length": 15,
 				"time": {
 					"sunrise": {
 						"hour": 6,
@@ -257,12 +257,12 @@ var calendar = {
 						"custom_name": true,
 						"time": {
 							"sunrise": {
-								"hour": 9,
-								"minute": 30
+								"hour": 10,
+								"minute": 0
 							},
 							"sunset": {
-								"hour": 16,
-								"minute": 24
+								"hour": 8,
+								"minute": 0
 							}
 						},
 						"weather":{
@@ -277,11 +277,11 @@ var calendar = {
 						"custom_name": true,
 						"time": {
 							"sunrise": {
-								"hour": 6,
+								"hour": -1,
 								"minute": 0
 							},
 							"sunset": {
-								"hour": 19,
+								"hour": 26,
 								"minute": 0
 							}
 						},
@@ -322,8 +322,8 @@ var calendar = {
 			}
 		],
 		"global_settings": {
-			"season_offset": 30,
-			"weather_offset": -30,
+			"season_offset": 0,
+			"weather_offset": 0,
 			"seed": 826116802,
 			"temp_sys": "metric",
 			"wind_sys": "metric",
