@@ -4,20 +4,16 @@
 		<div class='title-text center-text'>View Calendar</div>
 	</div>
 
-<!---------------------------------------------->
+	<!---------------------------------------------->
 	<!---------------- CURRENT DATE ---------------->
 	<!---------------------------------------------->
 
 	<div class='wrap-collapsible'>
-		<input id="collapsible_date" class="toggle" type="checkbox" checked disabled>
-		<label for="collapsible_date" class="lbl-toggle lbl-text disabled">Current Date & Time <a target="_blank" title='Fantasy Calendar Wiki: Date' href='https://wiki.fantasy-calendar.com/index.php?title=Date' class="wiki"><i class="icon-question-sign"></i></a></label>
+		<input id="collapsible_date" class="toggle" type="checkbox">
+		<label for="collapsible_date" class="lbl-toggle lbl-text">Current Date & Time <a target="_blank" title='Fantasy Calendar Wiki: Date' href='https://wiki.fantasy-calendar.com/index.php?title=Date' class="wiki"><i class="icon-question-sign"></i></a></label>
 		<div class="collapsible-content">
 			
 			<div id='clock'></div>
-
-			<div class='detail-row'>
-				<h4>Preview date:</h4>
-			</div>
 
 			<div class='detail-row'>
 
@@ -25,9 +21,9 @@
 					<div class='detail-text right-align full'>Year:</div>
 				</div>
 				<div class='detail-column fourfifths input_buttons'>
-					<div class='btn btn-sm btn-danger sub-btn sub_year'><i class="icon-minus"></i></div>
+					<div class='btn btn-sm btn-danger sub-btn sub_year' id='sub_target_year'><i class="icon-minus"></i></div>
 					<input class='form-control form-control-sm date_control' id='target_year' type='number'>
-					<div class='btn btn-sm btn-success add-btn add_year'><i class="icon-plus"></i></div>
+					<div class='btn btn-sm btn-success add-btn add_year' id='add_target_year'><i class="icon-plus"></i></div>
 				</div>
 			</div>
 
@@ -38,9 +34,9 @@
 					<div class='detail-text right-align full'>Month:</div>
 				</div>
 				<div class='detail-column fourfifths input_buttons' value='target'>
-					<div class='btn btn-sm btn-danger sub-btn sub_timespan'><i class="icon-minus"></i></div>
+					<div class='btn btn-sm btn-danger sub-btn sub_timespan' id='sub_target_timespan'><i class="icon-minus"></i></div>
 					<select class='form-control form-control-sm date_control' id='target_timespan'></select>
-					<div class='btn btn-sm btn-success add-btn add_timespan'><i class="icon-plus"></i></div>
+					<div class='btn btn-sm btn-success add-btn add_timespan' id='add_target_timespan'><i class="icon-plus"></i></div>
 				</div>
 
 			</div>
@@ -52,9 +48,9 @@
 					<div class='detail-text right-align full'>Day:</div>
 				</div>
 				<div class='detail-column fourfifths input_buttons' value='target'>
-					<div class='btn btn-sm btn-danger sub-btn sub_day'><i class="icon-minus"></i></div>
+					<div class='btn btn-sm btn-danger sub-btn sub_day' id='sub_target_day'><i class="icon-minus"></i></div>
 					<select class='form-control form-control-sm date_control' id='target_day'></select>
-					<div class='btn btn-sm btn-success add-btn add_day'><i class="icon-plus"></i></div>
+					<div class='btn btn-sm btn-success add-btn add_day' id='add_target_day'><i class="icon-plus"></i></div>
 				</div>
 
 			</div>

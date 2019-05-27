@@ -40,33 +40,16 @@ function set_up_visitor_inputs(){
 
 	}
 
-	sub_year = $('.sub_year');
-	add_year = $('.add_year');
+	sub_target_year = $('#sub_target_year');
+	add_target_year = $('#add_target_year');
 
-	sub_timespan = $('.sub_timespan');
-	add_timespan = $('.add_timespan');
+	sub_target_timespan = $('#sub_target_timespan');
+	add_target_timespan = $('#add_target_timespan');
 
-	sub_day = $('.sub_day');
-	add_day = $('.add_day');
+	sub_target_day = $('#sub_target_day');
+	add_target_day = $('#add_target_day');
 
-	sub_day.click(function(){
-
-		var target = $(this).next();
-		var value = target.val()|0;
-		var selected = target.find('option:selected');
-		var options = target.children(":enabled");
-		var prev = options.index(selected)-1;
-
-		if(prev < 0){
-			sub_timespan.click();
-			target.children('option:enabled').last().prop('selected', true).change();
-		}else{
-			options.eq(prev).prop('selected', true);
-			target.change();
-		}
-	});
-
-	sub_timespan.click(function(){
+	sub_target_day.click(function(){
 
 		var target = $(this).next();
 		var value = target.val()|0;
@@ -75,7 +58,7 @@ function set_up_visitor_inputs(){
 		var prev = options.index(selected)-1;
 
 		if(prev < 0){
-			sub_year.click();
+			sub_target_timespan.click();
 			target.children('option:enabled').last().prop('selected', true).change();
 		}else{
 			options.eq(prev).prop('selected', true);
@@ -84,7 +67,25 @@ function set_up_visitor_inputs(){
 
 	});
 
-	sub_year.click(function(){
+	sub_target_timespan.click(function(){
+
+		var target = $(this).next();
+		var value = target.val()|0;
+		var selected = target.find('option:selected');
+		var options = target.children(":enabled");
+		var prev = options.index(selected)-1;
+
+		if(prev < 0){
+			sub_target_year.click();
+			target.children('option:enabled').last().prop('selected', true).change();
+		}else{
+			options.eq(prev).prop('selected', true);
+			target.change();
+		}
+
+	});
+
+	sub_target_year.click(function(){
 
 		var target = $(this).next();
 		var value = target.val()|0;
@@ -101,7 +102,7 @@ function set_up_visitor_inputs(){
 		var date_var = btn_type ? date : preview_date;
 
 		if(timespan_input.children(":enabled").length == 0){
-			sub_year.click();
+			sub_target_year.click();
 		}else{
 			if(timespan_input.val() === null){
 				timespan_input.children('option:enabled').eq(date_var.timespan).prop('selected', true).change();
@@ -116,7 +117,7 @@ function set_up_visitor_inputs(){
 
 	});
 
-	add_day.click(function(){
+	add_target_day.click(function(){
 
 		var target = $(this).prev();
 		var value = target.val()|0;
@@ -125,15 +126,16 @@ function set_up_visitor_inputs(){
 		var next = options.index(selected)+1;
 
 		if(next == options.length){
-			add_timespan.click();
+			add_target_timespan.click();
 			target.children('option:enabled').first().prop('selected', true).change();
 		}else{
 			options.eq(next).prop('selected', true);
 			target.change();
 		}
+
 	});
 
-	add_timespan.click(function(){
+	add_target_timespan.click(function(){
 
 		var target = $(this).prev();
 		var value = target.val()|0;
@@ -142,7 +144,7 @@ function set_up_visitor_inputs(){
 		var next = options.index(selected)+1;
 
 		if(next == options.length){
-			add_year.click();
+			add_target_year.click();
 			target.children('option:enabled').first().prop('selected', true).change();
 		}else{
 			options.eq(next).prop('selected', true);
@@ -151,7 +153,7 @@ function set_up_visitor_inputs(){
 
 	});
 
-	add_year.click(function(){
+	add_target_year.click(function(){
 
 		var target = $(this).prev();
 		var value = target.val()|0;
@@ -168,7 +170,7 @@ function set_up_visitor_inputs(){
 		var date_var = btn_type ? date : preview_date;
 
 		if(timespan_input.children(":enabled").length == 0){
-			add_year.click();
+			add_target_year.click();
 		}else{
 			if(timespan_input.val() === null){
 				timespan_input.children('option:enabled').eq(date_var.timespan).prop('selected', true).change();

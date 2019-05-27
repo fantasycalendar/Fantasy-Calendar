@@ -65,6 +65,153 @@ function set_up_view_inputs(){
 
 	});
 
+
+
+	sub_curr_year = $('#sub_current_year');
+	add_curr_year = $('#add_current_year');
+
+	sub_curr_timespan = $('#sub_current_timespan');
+	add_curr_timespan = $('#add_current_timespan');
+
+	sub_curr_day = $('#sub_current_day');
+	add_curr_day = $('#add_current_day');
+
+	sub_curr_day.click(function(){
+
+		var target = $(this).next();
+		var value = target.val()|0;
+		var selected = target.find('option:selected');
+		var options = target.children(":enabled");
+		var prev = options.index(selected)-1;
+
+		if(prev < 0){
+			sub_curr_timespan.click();
+			target.children('option:enabled').last().prop('selected', true).change();
+		}else{
+			options.eq(prev).prop('selected', true);
+			target.change();
+		}
+
+	});
+
+	sub_curr_timespan.click(function(){
+
+		var target = $(this).next();
+		var value = target.val()|0;
+		var selected = target.find('option:selected');
+		var options = target.children(":enabled");
+		var prev = options.index(selected)-1;
+
+		if(prev < 0){
+			sub_curr_year.click();
+			target.children('option:enabled').last().prop('selected', true).change();
+		}else{
+			options.eq(prev).prop('selected', true);
+			target.change();
+		}
+
+	});
+
+	sub_curr_year.click(function(){
+
+		var target = $(this).next();
+		var value = target.val()|0;
+		if(value == 1){
+			value -= 2;
+		}else{
+			value -= 1;
+		}
+
+		var btn_type = $(this).parent().attr('value') === "current";
+
+		var timespan_input = btn_type ? current_timespan : target_timespan;
+		var day_input = btn_type ? current_day : target_day;
+		var date_var = btn_type ? date : preview_date;
+
+		if(timespan_input.children(":enabled").length == 0){
+			sub_curr_year.click();
+		}else{
+			if(timespan_input.val() === null){
+				timespan_input.children('option:enabled').eq(date_var.timespan).prop('selected', true).change();
+			}
+			
+			if(day_input.val() === null){
+				day_input.children('option:enabled').eq(date_var.day).prop('selected', true).change();
+			}
+		}
+
+		target.val(value).change();
+
+	});
+
+	add_curr_day.click(function(){
+
+		var target = $(this).prev();
+		var value = target.val()|0;
+		var selected = target.find('option:selected');
+		var options = target.children(":enabled");
+		var next = options.index(selected)+1;
+
+		if(next == options.length){
+			add_curr_timespan.click();
+			target.children('option:enabled').first().prop('selected', true).change();
+		}else{
+			options.eq(next).prop('selected', true);
+			target.change();
+		}
+
+	});
+
+	add_curr_timespan.click(function(){
+
+		var target = $(this).prev();
+		var value = target.val()|0;
+		var selected = target.find('option:selected');
+		var options = target.children(":enabled");
+		var next = options.index(selected)+1;
+
+		if(next == options.length){
+			add_curr_year.click();
+			target.children('option:enabled').first().prop('selected', true).change();
+		}else{
+			options.eq(next).prop('selected', true);
+			target.change();
+		}
+
+	});
+
+	add_curr_year.click(function(){
+
+		var target = $(this).prev();
+		var value = target.val()|0;
+		if(value == -1){
+			value += 2;
+		}else{
+			value += 1;
+		}
+
+		var btn_type = $(this).parent().attr('value') === "current";
+
+		var timespan_input = btn_type ? current_timespan : target_timespan;
+		var day_input = btn_type ? current_day : target_day;
+		var date_var = btn_type ? date : preview_date;
+
+		if(timespan_input.children(":enabled").length == 0){
+			add_curr_year.click();
+		}else{
+			if(timespan_input.val() === null){
+				timespan_input.children('option:enabled').eq(date_var.timespan).prop('selected', true).change();
+			}
+			
+			if(day_input.val() === null){
+				day_input.children('option:enabled').eq(date_var.day).prop('selected', true).change();
+			}
+		}
+		
+		target.val(value).change();
+
+	});
+
 	current_year.change($.debounce(200, function(e) {
 		var curr_year = current_year.val()|0;
 		var curr_timespan = current_timespan.val()|0;
@@ -95,10 +242,10 @@ function set_up_view_inputs(){
 		curr_hour = curr_hour + adjust;
 
 		if(curr_hour < 0){
-			sub_day.click();
+			sub_curr_day.click();
 			curr_hour = calendar.clock.hours-1;
 		}else if(curr_hour >= calendar.clock.hours){
-			add_day.click();
+			add_curr_day.click();
 			curr_hour = 0;
 		}
 
@@ -133,6 +280,87 @@ function set_up_view_inputs(){
 	current_minute.change(function(){
 		date.minute = $(this).val()|0;
 		eval_current_time();
+	});
+
+
+
+	location_select.change(function(){
+
+		var prev_location_type = calendar.seasons.location_type;
+		if(prev_location_type === "preset"){
+			var prev_location = climate_generator.presets[calendar.seasons.location];
+		}else{
+			var prev_location = calendar.seasons.locations[calendar.seasons.location];
+		}
+
+		calendar.seasons.location_type = $(this).find('option:selected').parent().attr('value');
+
+		calendar.seasons.location = $(this).val();
+
+		if(calendar.seasons.location_type === "preset"){
+
+			var location = climate_generator.presets[calendar.seasons.location];
+
+		}else{
+
+			var location = calendar.seasons.locations[calendar.seasons.location];
+
+		}
+
+		if(prev_location_type === "custom"){
+
+			date.hour -= prev_location.settings.timezone.hour;
+			date.minute -= prev_location.settings.timezone.minute;
+			
+		}
+
+		if(calendar.seasons.location_type === "custom"){
+
+			date.hour += location.settings.timezone.hour;
+			date.minute += location.settings.timezone.minute;
+
+		}
+
+		if(date.minute < 0){
+			date.minute = Math.abs(calendar.clock.minutes+date.minute);
+			date.hour--;
+		}else if(date.minute >= calendar.clock.minutes){
+			date.minute = Math.abs(calendar.clock.minutes-date.minute);
+			date.hour++;
+		}
+
+		var day_adjust = 0;
+		if(date.hour < 0){
+			date.hour = Math.abs(calendar.clock.hours+date.hour);
+			day_adjust = 1;
+		}else if(date.hour >= calendar.clock.hours){
+			date.hour = Math.abs(calendar.clock.hours-date.hour);
+			day_adjust = -1;
+		}
+
+		current_hour.val(date.hour);
+		current_minute.val(date.minute);
+
+		if(day_adjust != 0){
+			var value = current_day.val()|0;
+			var selected = current_day.find('option:selected');
+			var options = current_day.children(":enabled");
+			var val = options.index(selected)+day_adjust;
+
+			if(val < 0){
+				sub_curr_timespan.click();
+				current_day.children('option:enabled').last().prop('selected', true).change();
+			}else if(val == options.length){
+				add_curr_timespan.click();
+				target.children('option:enabled').first().prop('selected', true).change();
+			}else{
+				options.eq(val).prop('selected', true);
+				current_day.change();
+			}
+		}
+
+		eval_current_time();
+
 	});
 
 }
@@ -225,9 +453,6 @@ function evaluate_sun(){
 
 			rotate_element($('#EndOfDay'), sunset-rotate_parent);
 			rotate_element($('#SunDown_Container'), rotate_parent);
-
-			rotate_element($('#nighthelper'), rotate_parent);
-			rotate_element($('#dayhelper'), rotate_parent);
 
 		}
 		

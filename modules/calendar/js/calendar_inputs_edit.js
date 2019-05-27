@@ -345,27 +345,11 @@ function set_up_edit_inputs(){
 					break;
 
 				default:
-					switch(target.prop('nodeName')){
-						case "SELECT":
-							var value = target.val();
-							if(target.find('option:selected').closest('optgroup').length){
-								var key2 = target.attr('key2');
-								var value2 = target.find('option:selected').closest('optgroup').attr('value');
-							}
-							break;
-
-						default:
-							value = target.val();
-							break;
-					}
+					value = target.val();
+					break;
 			}
 
 			current_calendar_data[key] = value;
-
-			if(key2){
-				current_calendar_data[key2] = value2;
-			}
-
 
 			var refresh = target.attr('refresh');
 			refresh = refresh === "true" || refresh === undefined;
@@ -1099,9 +1083,13 @@ function set_up_edit_inputs(){
 		}
 	});
 
-	$(document).on('change', '.season-duration, .season-date', function(){
+	$(document).on('change', '.season-duration', function(){
 		evaluate_season_lengths();
 		rebuild_climate();
+	});
+
+	$(document).on('change', '.location-name', function(){
+		repopulate_location_select_list();
 	});
 
 }
@@ -1565,7 +1553,7 @@ function add_location_to_list(parent, key, data){
 		element.push("<div class='main-container'>");
 			element.push("<div class='expand icon-collapse'></div>");
 			element.push("<div class='name-container'>");
-				element.push(`<input type='text' value='${data.name}' tabindex='${(500+key)}' class='name-input small-input form-control dynamic_input' data='seasons.locations' key='${key}' object/>`);
+				element.push(`<input type='text' value='${data.name}' tabindex='${(500+key)}' class='name-input small-input form-control dynamic_input location-name' data='seasons.locations.${key}' key='name'/>`);
 			element.push("</div>");
 		element.push("</div>");
 				
