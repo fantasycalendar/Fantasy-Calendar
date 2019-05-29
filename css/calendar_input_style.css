@@ -4,10 +4,10 @@ body{
 
 /* ------------------ Sortable styles ----------------- */
 
-input:invalid { 
+input.invalid { 
 	border: 2px solid red;
 }
-select:invalid { 
+select.invalid { 
 	border: 2px solid red;
 }
 
@@ -103,6 +103,10 @@ select:invalid {
 #timespan_sortable, #leap_day_list, #moon_list {
 	margin-top:10px;
 	overflow: auto;
+}
+
+.leap_day_variance_output, .timespan_variance_output{
+	font-size:0.9em;
 }
 
 .sortable-container, .highlight{
@@ -402,6 +406,10 @@ label{
 	order:2;
 	flex:2 1 auto;
 	width:0;
+}
+
+.sortable-container .detail-column input[type="text"], .sortable-container .detail-row input[type="text"]{	
+	padding:3px;
 }
 
 .sortable-container .detail-column input[type="number"], .sortable-container .detail-row input[type="number"]{	
@@ -823,8 +831,38 @@ label{
     margin-bottom: 40px;
 }
 
-.clickable_background
-{
+#event_form{
+	z-index:2;
+}
+
+#event_data_container{
+	display:flex;
+	position: absolute;
+	top:600px;
+	right:-200px;
+	height:400px;
+	width:200px;
+	z-index:1;
+	background-color:white;
+	border-top-right-radius: 15px;
+	border-bottom-right-radius: 15px;
+}
+
+#event_data_container .data{
+	flex:1 0 auto;
+}
+
+#event_data_container .btn{
+	height:100%;
+	flex:0 1 auto;
+}
+
+#event_data_container .btn span{
+	position: relative;
+	top:45%;
+}
+
+.clickable_background{
 	position: fixed;
 	top: 0px;
 	bottom: 0px;

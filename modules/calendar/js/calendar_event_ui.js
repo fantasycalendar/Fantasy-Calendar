@@ -4,6 +4,8 @@
 
 var edit_event_ui = {
 
+	data: {},
+
 	bind_events: function(){
 
 		this.event_id							= null;

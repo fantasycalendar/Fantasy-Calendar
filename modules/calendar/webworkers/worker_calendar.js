@@ -13,45 +13,44 @@ var calendar_builder = {
 	date: {},
 	calendar: {},
 
-	create_adjusted_timespan: function(list){
+	create_adjusted_timespan: function(timespan_index){
 
-		for(var timespan_i = 0; timespan_i < Object.keys(list).length; timespan_i++){
+		var timespan = clone(this.calendar.year_data.timespans[timespan_index]);
 
-			timespan_index = Object.keys(list)[timespan_i];
+		timespan.index = timespan_index;
 
-			current_timespan = list[timespan_index];
+		timespan.week = timespan.week ? timespan.week : clone(this.calendar.year_data.global_week);
 
-			current_timespan.week = current_timespan.week ? current_timespan.week : clone(this.calendar.year_data.global_week);
+		timespan.leap_days = [];
 
-			current_timespan.leap_days = [];
+		// Get all current leap days and check if any of them should be on this timespan
+		for(leap_day_index = 0; leap_day_index < this.calendar.year_data.leap_days.length; leap_day_index++){
 
-			// Get all current leap days and check if any of them should be on this timespan
-			for(leap_day_index = 0; leap_day_index < this.calendar.year_data.leap_days.length; leap_day_index++){
-				var leap_day = this.calendar.year_data.leap_days[leap_day_index];
+			var leap_day = this.calendar.year_data.leap_days[leap_day_index];
+
+			if(leap_day.timespan == timespan_index){
+
 				leap_day.index = leap_day_index;
+
 				var add = false;
-				if(leap_day.timespan == timespan_index){
-					if(leap_day.reference === "year"){
-						if((this.date.internal_year+leap_day.offset) % leap_day.interval === 0){
-							add = true;
-						}
-					}else if(leap_day.reference === "timespan"){
-						if((Math.floor(this.date.internal_year / timespan.interval)+leap_day.offset) % leap_day.interval === 0){
-							add = true;
-						}
-					}
+
+				if(is_leap(this.date.internal_year, leap_day.interval, leap_day.offset)){
+
+					add = true;
 
 					if(leap_day.intercalary){
-						current_timespan.leap_days.push(leap_day);
+						timespan.leap_days.push(leap_day);
 					}else{
-						current_timespan.length++;
+						timespan.length++;
 						if(leap_day.adds_week_day){
-							current_timespan.week.splice(leap_day.day-1, 0, leap_day.week_day)
+							timespan.week.splice(leap_day.day-1, 0, leap_day.week_day)
 						}
 					}
 				}
 			}
 		}
+
+		return timespan;
 	},
 
 
@@ -250,45 +249,7 @@ var calendar_builder = {
 		// If the setting is on, only select the current month to be calculated
 		if(this.calendar.settings.show_current_month){
 
-			this.calendar_list.timespans_to_build[this.date.timespan] = clone(this.calendar.year_data.timespans[this.date.timespan]);
-			this.calendar_list.timespans_to_build[this.date.timespan]["index"] = this.date.timespan;
-
-			this.calendar_list.timespans_to_build[this.date.timespan].week = this.calendar_list.timespans_to_build[this.date.timespan].week ? this.calendar_list.timespans_to_build[this.date.timespan].week : clone(this.calendar.year_data.global_week);
-
-			this.calendar_list.timespans_to_build[this.date.timespan].leap_days = [];
-
-			// Get all current leap days and check if any of them should be on this timespan
-			for(leap_day_index = 0; leap_day_index < this.calendar.year_data.leap_days.length; leap_day_index++){
-				var leap_day = this.calendar.year_data.leap_days[leap_day_index];
-				leap_day.index = leap_day_index;
-				var add = false;
-				if(leap_day.timespan == this.date.timespan){
-					if(leap_day.reference === "year"){
-						if((this.date.internal_year+leap_day.offset) % leap_day.interval === 0){
-							add = true;
-						}
-					}else if(leap_day.reference === "timespan"){
-						if((Math.floor(this.date.internal_year / this.calendar_list.timespans_to_build[this.date.timespan].interval)+leap_day.offset) % leap_day.interval === 0){
-							add = true;
-						}
-					}
-
-
-					if(add){
-						if(leap_day.intercalary){
-							this.calendar_list.timespans_to_build[this.date.timespan].leap_days.push(leap_day);
-						}else{
-							this.calendar_list.timespans_to_build[this.date.timespan].length++;
-							if(leap_day.adds_week_day){
-								this.calendar_list.timespans_to_build[this.date.timespan].week.splice(leap_day.day-1, 0, leap_day.week_day)
-							}
-
-						}
-					}
-
-				}
-
-			}
+			this.calendar_list.timespans_to_build[this.date.timespan] = this.create_adjusted_timespan(this.date.timespan);
 
 
 		}else{
@@ -312,48 +273,9 @@ var calendar_builder = {
 
 			for(timespan = 0; timespan < num_timespans; timespan++){
 
-				if((this.date.internal_year+this.calendar.year_data.timespans[timespan].offset)%this.calendar.year_data.timespans[timespan].interval == 0){
+				if(is_leap(this.date.internal_year, this.calendar.year_data.timespans[timespan].interval, this.calendar.year_data.timespans[timespan].offset)){
 
-
-					this.calendar_list.timespans_to_build[timespan] = clone(this.calendar.year_data.timespans[timespan]);
-					this.calendar_list.timespans_to_build[timespan]["index"] = timespan;
-
-					this.calendar_list.timespans_to_build[timespan].week = this.calendar_list.timespans_to_build[timespan].week ? this.calendar_list.timespans_to_build[timespan].week : clone(this.calendar.year_data.global_week);
-
-					this.calendar_list.timespans_to_build[timespan].leap_days = [];
-
-					// Get all current leap days and check if any of them should be on this timespan
-					for(leap_day_index = 0; leap_day_index < this.calendar.year_data.leap_days.length; leap_day_index++){
-						var leap_day = this.calendar.year_data.leap_days[leap_day_index];
-						leap_day.index = leap_day_index;
-						var add = false;
-						if(leap_day.timespan == timespan){
-							if(leap_day.reference === "year"){
-								if((this.date.internal_year+leap_day.offset) % leap_day.interval === 0){
-									add = true;
-								}
-							}else if(leap_day.reference === "timespan"){
-								if((Math.floor(this.date.internal_year / this.calendar_list.timespans_to_build[timespan].interval)+leap_day.offset) % leap_day.interval === 0){
-									add = true;
-								}
-							}
-
-
-							if(add){
-								if(leap_day.intercalary){
-									this.calendar_list.timespans_to_build[timespan].leap_days.push(leap_day);
-								}else{
-									this.calendar_list.timespans_to_build[timespan].length++;
-									if(leap_day.adds_week_day){
-										this.calendar_list.timespans_to_build[timespan].week.splice(leap_day.day-1, 0, leap_day.week_day)
-									}
-
-								}
-							}
-
-						}
-
-					}
+					this.calendar_list.timespans_to_build[timespan] = this.create_adjusted_timespan(timespan);
 
 					if(ending_day > 0 && timespan == num_timespans-1){
 						this.calendar_list.timespans_to_build[timespan].length = ending_day > this.calendar_list.timespans_to_build[timespan].length ? this.calendar_list.timespans_to_build[timespan].length : ending_day; 
@@ -417,49 +339,9 @@ var calendar_builder = {
 
 				for(timespan = num_timespans; timespan >= 0; timespan--){
 
-					if((year+this.calendar.year_data.timespans[timespan].offset)%this.calendar.year_data.timespans[timespan].interval == 0){
+					if(is_leap(year, this.calendar.year_data.timespans[timespan].interval, this.calendar.year_data.timespans[timespan].offset)){
 
-						this.calendar_list.timespans_to_evaluate[year][timespan] = clone(this.calendar.year_data.timespans[timespan]);
-
-						this.calendar_list.timespans_to_evaluate[year][timespan].week = this.calendar_list.timespans_to_evaluate[year][timespan].week ? this.calendar_list.timespans_to_evaluate[year][timespan].week : clone(this.calendar.year_data.global_week);
-
-						this.calendar_list.timespans_to_evaluate[year][timespan].leap_days = [];
-
-						// Get all current leap days and check if any of them should be on this timespan
-						for(leap_day_index = 0; leap_day_index < this.calendar.year_data.leap_days.length; leap_day_index++){
-
-							var leap_day = this.calendar.year_data.leap_days[leap_day_index];
-
-							leap_day.index = leap_day_index;
-
-							var add = false;
-
-							if(leap_day.timespan == timespan){
-								if(leap_day.reference === "year"){
-									if((year+leap_day.offset) % leap_day.interval === 0){
-										add = true;
-									}
-								}else if(leap_day.reference === "timespan"){
-									if((Math.floor(year / timespan.interval)+leap_day.offset) % leap_day.interval === 0){
-										add = true;
-									}
-								}
-								
-								if(add){
-									if(leap_day.intercalary){
-										this.calendar_list.timespans_to_evaluate[year][timespan].leap_days.push(leap_day);
-									}else{
-										this.calendar_list.timespans_to_evaluate[year][timespan].length++;
-										if(leap_day.adds_week_day){
-											this.calendar_list.timespans_to_evaluate[year][timespan].week.splice(leap_day.day-1, 0, leap_day.week_day)
-										}
-
-									}
-								}
-
-							}
-
-						}
+						this.calendar_list.timespans_to_evaluate[year][timespan] = this.create_adjusted_timespan(timespan);
 
 						if(ending_day > 0 && timespan == num_timespans){
 							this.calendar_list.timespans_to_evaluate[year][timespan].length = ending_day > this.calendar_list.timespans_to_evaluate[year][timespan].length ? this.calendar_list.timespans_to_evaluate[year][timespan].length : ending_day; 

@@ -1,5 +1,5 @@
 var date = {
-	"year": 1,
+	"year": 30,
 	"timespan": 0,
 	"day": 1,
 	"hour": 0,
@@ -26,168 +26,168 @@ var calendar = {
 			{
 				"name": "Saggitarius",
 				"type": "month",
-				"interval": 1,
+				"interval": "1",
 				"offset": 0,
 				"length": 28
 			},
 			{
 				"name": "Dhanus",
 				"type": "month",
-				"interval": 1,
+				"interval": "1",
 				"offset": 0,
 				"length": 28
 			},
 			{
 				"name": "Capricornus",
 				"type": "month",
-				"interval": 1,
+				"interval": "1",
 				"offset": 0,
 				"length": 28
 			},
 			{
 				"name": "Makara",
 				"type": "month",
-				"interval": 1,
+				"interval": "1",
 				"offset": 0,
 				"length": 28
 			},
 			{
 				"name": "Aquarius",
 				"type": "month",
-				"interval": 1,
+				"interval": "1",
 				"offset": 0,
 				"length": 28
 			},
 			{
 				"name": "Kumbha",
 				"type": "month",
-				"interval": 1,
+				"interval": "1",
 				"offset": 0,
 				"length": 27
 			},
 			{
 				"name": "Pisces",
 				"type": "month",
-				"interval": 1,
+				"interval": "1",
 				"offset": 0,
 				"length": 28
 			},
 			{
 				"name": "Mina",
 				"type": "month",
-				"interval": 1,
+				"interval": "1",
 				"offset": 0,
 				"length": 28
 			},
 			{
 				"name": "Aries",
 				"type": "month",
-				"interval": 1,
+				"interval": "1",
 				"offset": 0,
 				"length": 28
 			},
 			{
 				"name": "Mesha",
 				"type": "month",
-				"interval": 1,
+				"interval": "1",
 				"offset": 0,
 				"length": 28
 			},
 			{
 				"name": "Taurus",
 				"type": "month",
-				"interval": 1,
+				"interval": "1",
 				"offset": 0,
 				"length": 28
 			},
 			{
 				"name": "Rishabha",
 				"type": "month",
-				"interval": 1,
+				"interval": "1",
 				"offset": 0,
 				"length": 27
 			},
 			{
 				"name": "Gemini",
 				"type": "month",
-				"interval": 1,
+				"interval": "1",
 				"offset": 0,
 				"length": 28
 			},
 			{
 				"name": "Mithuna",
 				"type": "month",
-				"interval": 1,
+				"interval": "1",
 				"offset": 0,
 				"length": 28
 			},
 			{
 				"name": "Cancer",
 				"type": "month",
-				"interval": 1,
+				"interval": "1",
 				"offset": 0,
 				"length": 28
 			},
 			{
 				"name": "Karka",
 				"type": "month",
-				"interval": 1,
+				"interval": "1",
 				"offset": 0,
 				"length": 28
 			},
 			{
 				"name": "Leo",
 				"type": "month",
-				"interval": 1,
+				"interval": "1",
 				"offset": 0,
 				"length": 28
 			},
 			{
 				"name": "Simha",
 				"type": "month",
-				"interval": 1,
+				"interval": "1",
 				"offset": 0,
 				"length": 27
 			},
 			{
 				"name": "Virgo",
 				"type": "month",
-				"interval": 1,
+				"interval": "1",
 				"offset": 0,
 				"length": 28
 			},
 			{
 				"name": "Kanya",
 				"type": "month",
-				"interval": 1,
+				"interval": "1",
 				"offset": 0,
 				"length": 28
 			},
 			{
 				"name": "Libra",
 				"type": "month",
-				"interval": 1,
+				"interval": "1",
 				"offset": 0,
 				"length": 28
 			},
 			{
 				"name": "Tula",
 				"type": "month",
-				"interval": 1,
+				"interval": "1",
 				"offset": 0,
 				"length": 28
 			},
 			{
 				"name": "Scorpius",
 				"type": "month",
-				"interval": 1,
+				"interval": "1",
 				"offset": 0,
 				"length": 28
 			},
 			{
 				"name": "Vrishika",
 				"type": "month",
-				"interval": 1,
+				"interval": "1",
 				"offset": 0,
 				"length": 27
 			},
@@ -196,7 +196,7 @@ var calendar = {
 			{
 				"name": "Named",
 
-				"intercalary": true,
+				"intercalary": false,
 
 				"timespan": 23,
 
@@ -204,9 +204,8 @@ var calendar = {
 				"day": 1,
 				"week_day": "Test",
 
-				"interval": 2,
-				"offset": 0,
-				"reference": "year"
+				"interval": "+!10,3",
+				"offset": 2
 			}
 		]
 	},

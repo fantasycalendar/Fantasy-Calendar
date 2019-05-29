@@ -1,13 +1,13 @@
-var date = {
+var date1 = {
 	"year": 1,
-	"interval": 1,
+	"timespan": 1,
 	"day": 1,
 	"hour": 0,
 	"minute": 0,
 	"epoch": 0
 }
 
-var calendar = {
+var calendar1 = {
 	"Name": "Tal'Dorei",
 
 	"year_data": {
@@ -287,7 +287,7 @@ var calendar = {
 	},
  
 	"clock": {
-		"hours": 24,
+		"hours": 25,
 		"minutes": 60
 	},
  

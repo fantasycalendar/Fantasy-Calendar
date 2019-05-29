@@ -16,7 +16,7 @@ include('header.php');
 
 ?>
 
-<script src="calendar_json_02.json?ver=<?php echo $jsversion; ?>"></script>
+<script src="mars_calendar.json?ver=234234234234234234"></script>
 
 <script>
 
@@ -57,6 +57,7 @@ last_structure_changed = new Date("<?php echo $calendar_data['last_structure_cha
 owner = <?php echo $owner ?>;
 
 $(document).ready(function(){
+
 	//reload_calendar(data);
 	set_up_edit_inputs();
 	bind_calendar_events();

@@ -8,188 +8,104 @@ var date = {
 }
 
 var calendar = {
-	"name": "Darian",
+	"name": "Tal'Dorei",
 
 	"year_data": {
 		"first_day": 1,
 		"overflow": false,
 		"global_week": [
-			"Solis",
-			"Lunae",
-			"Martis",
-			"Mercurii",
-			"Jovis",
-			"Veneris",
-			"Saturni"
+			"Monday",
+			"Tuesday",
+			"Wednesday",
+			"Thursday",
+			"Friday",
+			"Saturday",
+			"Sunday",
 		],
 		"timespans": [
 			{
-				"name": "Saggitarius",
+				"name": "January",
 				"type": "month",
 				"interval": 1,
-				"offset": 0,
-				"length": 28
+				"offset": 1,
+				"length": 31
 			},
 			{
-				"name": "Dhanus",
+				"name": "February",
 				"type": "month",
 				"interval": 1,
 				"offset": 0,
-				"length": 28
+				"length": 5
 			},
 			{
-				"name": "Capricornus",
+				"name": "March",
 				"type": "month",
 				"interval": 1,
 				"offset": 0,
-				"length": 28
+				"length": 31
 			},
 			{
-				"name": "Makara",
+				"name": "April",
 				"type": "month",
 				"interval": 1,
 				"offset": 0,
-				"length": 28
+				"length": 30
 			},
 			{
-				"name": "Aquarius",
+				"name": "May",
 				"type": "month",
 				"interval": 1,
 				"offset": 0,
-				"length": 28
+				"length": 31
 			},
 			{
-				"name": "Kumbha",
+				"name": "June",
 				"type": "month",
 				"interval": 1,
 				"offset": 0,
-				"length": 27
+				"length": 30
 			},
 			{
-				"name": "Pisces",
+				"name": "July",
 				"type": "month",
 				"interval": 1,
 				"offset": 0,
-				"length": 28
+				"length": 31
 			},
 			{
-				"name": "Mina",
+				"name": "August",
 				"type": "month",
 				"interval": 1,
 				"offset": 0,
-				"length": 28
+				"length": 31
 			},
 			{
-				"name": "Aries",
+				"name": "September",
 				"type": "month",
 				"interval": 1,
 				"offset": 0,
-				"length": 28
+				"length": 30
 			},
 			{
-				"name": "Mesha",
+				"name": "October",
 				"type": "month",
 				"interval": 1,
 				"offset": 0,
-				"length": 28
+				"length": 31
 			},
 			{
-				"name": "Taurus",
+				"name": "November",
 				"type": "month",
 				"interval": 1,
 				"offset": 0,
-				"length": 28
+				"length": 30
 			},
 			{
-				"name": "Rishabha",
+				"name": "December",
 				"type": "month",
 				"interval": 1,
 				"offset": 0,
-				"length": 27
-			},
-			{
-				"name": "Gemini",
-				"type": "month",
-				"interval": 1,
-				"offset": 0,
-				"length": 28
-			},
-			{
-				"name": "Mithuna",
-				"type": "month",
-				"interval": 1,
-				"offset": 0,
-				"length": 28
-			},
-			{
-				"name": "Cancer",
-				"type": "month",
-				"interval": 1,
-				"offset": 0,
-				"length": 28
-			},
-			{
-				"name": "Karka",
-				"type": "month",
-				"interval": 1,
-				"offset": 0,
-				"length": 28
-			},
-			{
-				"name": "Leo",
-				"type": "month",
-				"interval": 1,
-				"offset": 0,
-				"length": 28
-			},
-			{
-				"name": "Simha",
-				"type": "month",
-				"interval": 1,
-				"offset": 0,
-				"length": 27
-			},
-			{
-				"name": "Virgo",
-				"type": "month",
-				"interval": 1,
-				"offset": 0,
-				"length": 28
-			},
-			{
-				"name": "Kanya",
-				"type": "month",
-				"interval": 1,
-				"offset": 0,
-				"length": 28
-			},
-			{
-				"name": "Libra",
-				"type": "month",
-				"interval": 1,
-				"offset": 0,
-				"length": 28
-			},
-			{
-				"name": "Tula",
-				"type": "month",
-				"interval": 1,
-				"offset": 0,
-				"length": 28
-			},
-			{
-				"name": "Scorpius",
-				"type": "month",
-				"interval": 1,
-				"offset": 0,
-				"length": 28
-			},
-			{
-				"name": "Vrishika",
-				"type": "month",
-				"interval": 1,
-				"offset": 0,
-				"length": 27
+				"length": 31
 			},
 		],
 		"leap_days": [
@@ -198,10 +114,55 @@ var calendar = {
 
 				"intercalary": true,
 
-				"timespan": 23,
+				"timespan": 1,
 
 				"adds_week_day": false,
 				"day": 1,
+				"week_day": "Test",
+
+				"interval": 2,
+				"offset": 0,
+				"reference": "year"
+			},
+			{
+				"name": "Custom!",
+
+				"intercalary": true,
+
+				"timespan": 1,
+
+				"adds_week_day": false,
+				"day": 5,
+				"week_day": "Test",
+
+				"interval": 2,
+				"offset": 0,
+				"reference": "year"
+			},
+			{
+				"name": "What's this?",
+
+				"intercalary": true,
+
+				"timespan": 1,
+
+				"adds_week_day": false,
+				"day": 2,
+				"week_day": "Test",
+
+				"interval": 2,
+				"offset": 0,
+				"reference": "year"
+			},
+			{
+				"name": "WOT",
+
+				"intercalary": true,
+
+				"timespan": 1,
+
+				"adds_week_day": false,
+				"day": 2,
 				"week_day": "Test",
 
 				"interval": 2,

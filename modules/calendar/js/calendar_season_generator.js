@@ -47,9 +47,9 @@ var climate_generator = {
 				seed += (1+this.calendar.year_data.timespans[i].offset)/this.calendar.year_data.timespans[i].interval;
 			}
 
-			for(var i = 0; i < this.calendar.year_data.leap_days.length; i++){
+			/*for(var i = 0; i < this.calendar.year_data.leap_days.length; i++){
 				seed += (1+this.calendar.year_data.leap_days[i].offset)/this.calendar.year_data.leap_days[i].interval;
-			}
+			}*/
 
 			seed += this.calendar.year_data.global_week.length;
 
@@ -313,11 +313,11 @@ var climate_generator = {
 
 		var inner_chance = 0;
 
-		precipitation = {'key': 'None'};
-		wind_speed = {'key': 'Calm'};
-		clouds = 'Clear';
-		feature_select = false;
-		feature = '';
+		var precipitation = {'key': 'None'};
+		var wind_speed = {'key': 'Calm'};
+		var clouds = 'Clear';
+		var feature_select = false;
+		var feature = '';
 
 		if(precipitation_chance > chance){
 

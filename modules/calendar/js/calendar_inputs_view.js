@@ -52,6 +52,10 @@ function set_up_view_inputs(){
 			$(this).val(curr_year);
 		}
 
+		var curr_timespan = repopulate_timespan_select(current_timespan, convert_year(curr_year));
+
+		repopulate_day_select(current_day, convert_year(curr_year), curr_timespan);
+
 	});
 
 	current_timespan.change(function(){
