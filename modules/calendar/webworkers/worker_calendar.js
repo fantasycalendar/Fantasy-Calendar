@@ -273,7 +273,12 @@ var calendar_builder = {
 
 			for(timespan = 0; timespan < num_timespans; timespan++){
 
-				if(is_leap(this.date.internal_year, this.calendar.year_data.timespans[timespan].interval, this.calendar.year_data.timespans[timespan].offset)){
+				var offset = (this.calendar.year_data.timespans[timespan].interval-this.calendar.year_data.timespans[timespan].offset)%this.calendar.year_data.timespans[timespan].interval;
+
+				// Get the fraction of that month's appearances
+				var is_leaping = (this.date.internal_year + offset) % this.calendar.year_data.timespans[timespan].interval == 0;
+
+				if(is_leaping){
 
 					this.calendar_list.timespans_to_build[timespan] = this.create_adjusted_timespan(timespan);
 
@@ -339,7 +344,12 @@ var calendar_builder = {
 
 				for(timespan = num_timespans; timespan >= 0; timespan--){
 
-					if(is_leap(year, this.calendar.year_data.timespans[timespan].interval, this.calendar.year_data.timespans[timespan].offset)){
+					var offset = (this.calendar.year_data.timespans[timespan].interval-this.calendar.year_data.timespans[timespan].offset)%this.calendar.year_data.timespans[timespan].interval;
+
+					// Get the fraction of that month's appearances
+					var is_leaping = (year + offset) % this.calendar.year_data.timespans[timespan].interval == 0;
+
+					if(is_leaping){
 
 						this.calendar_list.timespans_to_evaluate[year][timespan] = this.create_adjusted_timespan(timespan);
 

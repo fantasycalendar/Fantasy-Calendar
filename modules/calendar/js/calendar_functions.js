@@ -611,14 +611,14 @@ function is_leap(year, intervals, offsets){
 
 		var interval = intervals[i];
 
-		if(intervals[i].includes('!')){
+		if(interval.includes('!')){
 
 			if(interval.includes('+')){
 				var interval = Number(interval.slice(2));
 				var offset = 1;
 			}else{
 				var interval = Number(interval.slice(1));
-				var offset = (interval-offset)%interval;
+				var offset = (interval-offset+1)%interval;
 			}
 
 			if((year + offset) % interval == 0){
@@ -632,7 +632,7 @@ function is_leap(year, intervals, offsets){
 				var offset = 1;
 			}else{
 				var interval = Number(interval);
-				var offset = (interval-offset)%interval;
+				var offset = (interval-offset+1)%interval;
 			}
 
 			if((year + offset) % interval == 0){
@@ -652,7 +652,7 @@ function is_leap(year, intervals, offsets){
 }
 
 
-function get_timespan_fraction(year, intervals, offsets){
+function get_leap_fraction(year, intervals, offsets){
 
 	intervals = intervals.split(',');
 
@@ -671,8 +671,6 @@ function get_timespan_fraction(year, intervals, offsets){
 
 		if(interval.includes('!')){
 
-			console.log(interval)
-
 			if(interval.includes('+')){
 				var interval = Number(interval.slice(2));
 				offset = 1;
@@ -681,7 +679,7 @@ function get_timespan_fraction(year, intervals, offsets){
 				offset = (interval-offset)%interval;
 			}
 
-			fraction -= Math.ceil((year+offset) / interval);
+			fraction -= Math.ceil((year+offset+1) / interval);
 
 		}else{
 
@@ -692,8 +690,7 @@ function get_timespan_fraction(year, intervals, offsets){
 				var interval = Number(interval);
 				offset = (interval-offset)%interval;
 			}
-
-			fraction += Math.ceil((year+offset) / interval);
+			fraction += Math.ceil((year+offset+1) / interval);
 
 		}
 
@@ -704,70 +701,58 @@ function get_timespan_fraction(year, intervals, offsets){
 }
 
 
-function get_leap_day_fraction(year, parent_intervals, intervals, offset){
+function get_leap_day_fraction(year, timespan, leap_day){
 
-	console.log(parent_intervals)
-	parent_intervals = parent_intervals.split(',');
-	intervals = intervals.split(',');
+	var parent_interval = timespan.interval;
+	var intervals = leap_day.interval.split(',');
 
 	var fraction = 0;
-	var offset = offset;
 
-	if(parent_intervals.length == 1 && intervals.length == 1){
-		return Math.ceil((year+(offset*Number(parent_intervals[0]))) / lcm(Number(parent_intervals[0]), Number(interval[0])));
+	if(parent_interval == 1 && intervals.length == 1){
+		return Math.ceil((year+(offsets*Number(parent_interval))) / lcm(Number(parent_intervals[0]), Number(interval[0])));
 	}
 
-	for(var i = 0; i < parent_intervals.length; i++){
 
-		var parent_interval = parent_intervals[i];
+	for(var j = 0; j < intervals.length; j++){
 
-		if(parent_interval.includes('!')){
+		var interval = intervals[j];
 
-			var parent_interval = Number(parent_interval.slice(1));
-			var inverse = true;
+		var inverse = 1;
 
-		}else{
+		if(interval.includes('+')){
+			
+			offset = 1;
 
-			var parent_interval = Number(parent_interval);
-			var inverse = false;
-
-		}
-
-		for(var j = 0; j < intervals.length; j++){
-
-			var interval = intervals[j];
+			interval = interval.slice(1);
 
 			if(interval.includes('!')){
 
-				if(interval.includes('+')){
-					var interval = Number(interval.slice(2));
-					offset = 1;
-				}else{
-					var interval = Number(interval.slice(1));
-					offset = (interval-offset)%interval;
-				}
-
-				fraction -= Math.ceil((year+(offset*parent_interval)) / lcm(parent_interval, interval));
+				interval = Number(interval.slice(1));
+				var inverse = -1;
 
 			}else{
 
-				if(interval.includes('+')){
-					var interval = Number(interval.slice(1));
-					offset = 1;
-				}else{
-					var interval = Number(interval);
-					offset = (interval-offset)%interval;
-				}
+				interval = Number(interval);
 
-				if(inverse){
-					fraction -= Math.ceil((year+(offset*parent_interval)) / lcm(parent_interval, interval));
-				}else{
-					fraction += Math.ceil((year+(offset*parent_interval)) / lcm(parent_interval, interval));
-				}
+			}
+
+		}else{
+
+			if(interval.includes('!')){
+
+				interval = Number(interval.slice(1));
+
+				var inverse = -1;
+
+			}else{
+
+				interval = Number(interval);
 
 			}
 
 		}
+
+		fraction += (Math.floor((year+(offset*parent_interval)) / lcm(parent_interval, interval)))*inverse;
 
 	}
 
@@ -798,8 +783,10 @@ function get_epoch(calendar, year, month, day, inclusive){
 		// Get the current timespan's data
 		timespan = calendar.year_data.timespans[index];
 
+		var offset = (timespan.interval-timespan.offset)%timespan.interval;
+
 		// Get the fraction of that month's appearances
-		var timespan_fraction = get_timespan_fraction(year, timespan.interval, timespan.offset);
+		var timespan_fraction = Math.floor((year + offset) / timespan.interval);
 
 		if(!calendar.year_data.overflow){
 			if(timespan.week){
@@ -832,7 +819,7 @@ function get_epoch(calendar, year, month, day, inclusive){
 				
 				// Multiple the moduli by each other, dividing the years by that to get the number of eligiable leap days
 				//added_leap_day = Math.floor((year+(leap_day.offset*timespan.interval)) / lcm(timespan.interval, leap_day.interval));
-				added_leap_day = get_leap_day_fraction(year, timespan.interval, leap_day.interval, leap_day.offset);
+				added_leap_day = get_leap_fraction(timespan_fraction, leap_day.interval, leap_day.offset);
 
 				// If we have leap days days that are intercalary (eg, do not affect the flow of the calendar, add them to the overall epoch, but remove them from the start of the year week day selection)
 				if(leap_day.intercalary){

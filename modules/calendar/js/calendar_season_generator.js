@@ -43,13 +43,17 @@ var climate_generator = {
 				seed *= this.calendar.name.charCodeAt(i)/100;
 			}
 
-			for(var i = 0; i < this.calendar.year_data.timespans.length; i++){
+			/*for(var i = 0; i < this.calendar.year_data.timespans.length; i++){
 				seed += (1+this.calendar.year_data.timespans[i].offset)/this.calendar.year_data.timespans[i].interval;
 			}
 
-			/*for(var i = 0; i < this.calendar.year_data.leap_days.length; i++){
+			for(var i = 0; i < this.calendar.year_data.leap_days.length; i++){
 				seed += (1+this.calendar.year_data.leap_days[i].offset)/this.calendar.year_data.leap_days[i].interval;
 			}*/
+
+
+
+			seed += this.calendar.year_data.timespans.length * (this.calendar.year_data.leap_days.length+1);
 
 			seed += this.calendar.year_data.global_week.length;
 
@@ -195,6 +199,10 @@ var climate_generator = {
 
 		var curr_season_data = this.current_location.seasons[curr_season];
 		var next_season_data = this.current_location.seasons[next_season];
+
+		if(!curr_season_data){
+			console.log(curr_season, next_season);
+		}
 
 		var sunrise_minute = Math.round(lerp(curr_season_data.time.sunrise.minute, next_season_data.time.sunrise.minute, this.data.perc));
 		var sunrise_hour = lerp(curr_season_data.time.sunrise.hour, next_season_data.time.sunrise.hour, this.data.perc);

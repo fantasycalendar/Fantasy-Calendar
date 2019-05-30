@@ -749,13 +749,13 @@ function set_up_edit_inputs(){
 
 
 		interval = $(this).closest('.sortable-container').find('.interval');
-		interval_val = interval.val();
+		interval_val = interval.val()|0;
 		offset = $(this).closest('.sortable-container').find('.offset');
 		offset_val = offset.val();
 
 		if(interval_val === undefined || offset_val === undefined) return;
 
-		/*text = "This timespan will appear every";
+		text = "This timespan will appear every";
 
 		if(interval.val() > 1){
 			text += " " + ordinal_suffix_of(interval.val())
@@ -771,141 +771,11 @@ function set_up_edit_inputs(){
 			text += ", starting year " + start_year + ".";
 		}else{
 			text +=  ".";
-		}*/
-
-		var global_regex = /[`~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z]/g;
-		var local_regex = /^\+*!*[1-9]+[0-9]*$/;
-		var numbers_regex = /([1-9]+[0-9]*)/;
-
-		var invalid = global_regex.test(interval_val);
-		var values = interval_val.split(',');
-
-		if($(this).hasClass('interval')){
-
-			if(!invalid){
-
-				for(var i = 0; i < values.length; i++){
-					if(!local_regex.test(values[i])){
-						invalid = true;
-						break;
-					}
-				}
-
-			}
-
-			if(!invalid){
-
-				var unsorted = [];
-
-				for(var i = 0; i < values.length; i++){
-					unsorted.push(Number(values[i].match(numbers_regex)[0]));
-				}
-
-				var sorted = unsorted.slice(0).sort(sorter).reverse();
-				var result = [];
-
-				for(var i = 0; i < sorted.length; i++){
-					var key = unsorted.indexOf(sorted[i]);
-					result.push(values[key]);
-				}
-
-				$(this).val(result.join(','));
-
-				values = result;
-
-			}
-
-			$(this).toggleClass('invalid', invalid);
-
-		}else{
-
-			if(!invalid){
-
-				var unsorted = [];
-
-				for(var i = 0; i < values.length; i++){
-					unsorted.push(Number(values[i].match(numbers_regex)[0]));
-				}
-
-				var sorted = unsorted.slice(0).sort(sorter).reverse();
-				var result = [];
-
-				for(var i = 0; i < sorted.length; i++){
-					var key = unsorted.indexOf(sorted[i]);
-					result.push(values[key]);
-				}
-
-				values = result;
-
-			}
-
-		}
-
-		if(!invalid){
-
-			values = values.reverse();
-			sorted = sorted.reverse();
-
-			offset.prop('disabled', interval.val() == 1);
-			offset.val(interval.val() == 1 ? 0 : offset.val());
-
-			text = "This timespan will appear every";
-
-			for(var i = 0; i < values.length; i++){
-						
-				var total_offset = (sorted[i]-offset_val)%sorted[i];
-
-				if(i == 0 && sorted[i] == 1){
-
-					text += " year"
-
-				}else if(i == 0){
-
-					if(values.length > 1){
-						text += ": <br>•";
-					}
-
-					text += ` ${ordinal_suffix_of(sorted[i])} year`;
-
-					if(total_offset != 0){
-						if(values.length == 1){
-							text += "<br>";
-						}else{
-							text += " ";
-						}
-						text += `(year ${total_offset}, ${total_offset+sorted[i]}, ${total_offset+sorted[i]*2}...)`;
-					}
-
-				}
-
-				if(i > 0 && sorted[i] > 1){
-
-					if(values[i].indexOf('!') != -1){
-
-						text += `<br>• but not every ${ordinal_suffix_of(sorted[i])} year`;
-
-						if(total_offset != 0 && values[i].indexOf('+') == -1){
-							text += ` (year ${total_offset}, ${total_offset+sorted[i]}, ${total_offset+sorted[i]*2}...)`;
-						}
-
-					}else{
-
-						text += `<br>• but also every ${ordinal_suffix_of(sorted[i])} year`;
-
-						if(total_offset != 0 && values[i].indexOf('+') == -1){
-							text += ` (year ${total_offset}, ${total_offset+sorted[i]}, ${total_offset+sorted[i]*2}...)`;
-						}
-
-					}
-
-				}
-
-			}
-
-			$(this).closest('.sortable-container').find('.timespan_variance_output').html(text);
-
 		}
 		
+		$(this).closest('.sortable-container').find('.timespan_variance_output').html(text);
+
+		$('.leap_day_occurance_input').change();
 
 		repopulate_month_lists();
 
@@ -1000,15 +870,22 @@ function set_up_edit_inputs(){
 
 			offset.val(Number(values[0]) == 1 ? 0 : offset.val());
 
+			var timespan_item = timespan_sortable.children().eq(timespan_val);
+			var timespan_interval = timespan_item.find('.interval').val()|0;
+			var timespan_name = timespan_item.find('.name').val();
+
 			var text = "This leap day will appear every";
 
 			for(var i = 0; i < values.length; i++){
 
 				var leap_interval = sorted[i];
 				var leap_offset = offset_val;
-				var timespan_interval = calendar.year_data.timespans[timespan_val].interval;
-						
-				var total_offset = (leap_interval*(((leap_offset%leap_interval))*timespan_interval));
+
+				var total_offset = (((leap_interval-leap_offset)%leap_interval)*timespan_interval);
+
+				if(total_offset == 0){
+					total_offset = sorted[i]*timespan_interval;
+				}
 
 				if(i == 0 && sorted[i] == 1){
 
@@ -1020,50 +897,39 @@ function set_up_edit_inputs(){
 						text += ": <br>•";
 					}
 
-					if(calendar.year_data.timespans[timespan_val].interval == 1){
+					if(timespan_interval == '1'){
 						text += ` ${ordinal_suffix_of(sorted[i])} year`;
 					}else{
-						text += ` ${ordinal_suffix_of(calendar.year_data.timespans[timespan_val].interval*sorted[i])} ${calendar.year_data.timespans[timespan_val].name}`;
+						text += ` ${ordinal_suffix_of(sorted[i])} ${timespan_name}`;
 					}
-
-					if(total_offset != 0){
-						if(values.length == 1){
-							text += "<br>";
-						}else{
-							text += " ";
-						}
-
-						if(calendar.year_data.timespans[timespan_val].interval.match(numbers_regex)){
-							text += `(year ${total_offset}, ${(total_offset+sorted[i]*timespan_interval)}, ${total_offset+sorted[i]*2*timespan_interval}...)`;
-						}else{
-							text += `(complex...)`;
-						}
-					}
+						
+					text += ` (year ${total_offset}, ${(total_offset+sorted[i]*timespan_interval)}, ${total_offset+sorted[i]*2*timespan_interval}...)`;
 
 				}
 
 				if(i > 0 && sorted[i] > 1){
 
 					if(values[i].indexOf('!') != -1){
-						if(calendar.year_data.timespans[timespan_val].interval == 1){
+
+						if(timespan_interval == '1'){
 							text += `<br>• but not every ${ordinal_suffix_of(sorted[i])} year`;
 						}else{
-							text += `<br>• but not every ${ordinal_suffix_of(calendar.year_data.timespans[timespan_val].interval*sorted[i])} ${calendar.year_data.timespans[timespan_val].name}`;
+							text += `<br>• but not every ${ordinal_suffix_of(sorted[i])} ${timespan_name}`;
 						}
 
-						if(total_offset != 0 && values[i].indexOf('+') == -1){
+						if(values[i].indexOf('+') == -1){
 							text += ` (year ${total_offset}, ${total_offset+sorted[i]}, ${total_offset+sorted[i]*2}...)`;
 						}
 
 					}else{
 
-						if(calendar.year_data.timespans[timespan_val].interval == 1){
+						if(timespan_interval == '1'){
 							text += `<br>• but also every ${ordinal_suffix_of(sorted[i])} year`;
 						}else{
-							text += `<br>• but also every ${ordinal_suffix_of(calendar.year_data.timespans[timespan_val].interval*sorted[i])} ${calendar.year_data.timespans[timespan_val].name}`;
+							text += `<br>• but also every ${ordinal_suffix_of(sorted[i])} ${timespan_name}`;
 						}
 
-						if(total_offset != 0 && values[i].indexOf('+') == -1){
+						if(values[i].indexOf('+') == -1){
 							text += ` (year ${total_offset}, ${total_offset+sorted[i]}, ${total_offset+sorted[i]*2}...)`;
 						}
 
@@ -1074,6 +940,7 @@ function set_up_edit_inputs(){
 			}
 
 			$(this).closest('.sortable-container').find('.leap_day_variance_output').html(text);
+
 		}
 
 
@@ -1270,11 +1137,6 @@ function set_up_edit_inputs(){
 					if(target.attr('class').indexOf('slider_input') > -1){
 						value = value/100;
 					}
-
-					if(key == "interval"){
-						//value = value.split(',');
-						console.log(value.split(','), value);
-					}
 					
 					current_calendar_data[key] = value;
 
@@ -1413,7 +1275,7 @@ function add_timespan_to_sortable(parent, key, name, data){
 						element.push("<div class='detail-column half'>");
 							element.push("<div class='detail-row'>");
 									element.push("<div class='detail-text'>Interval:</div>");
-									element.push(`<input type='text' class='form-control timespan_occurance_input interval dynamic_input small-input' data='year_data.timespans.${key}' key='interval' value='${data.interval}' />`);
+									element.push(`<input type='number' min='1' class='form-control timespan_occurance_input interval dynamic_input small-input' data='year_data.timespans.${key}' key='interval' value='${data.interval}' />`);
 							element.push("</div>");	
 						element.push("</div>");
 
@@ -1605,9 +1467,18 @@ function add_leap_day_to_list(parent, key, data){
 
 					var text = "This leap day will appear every";
 
+					var timespan_interval = calendar.year_data.timespans[data.timespan].interval;
+
 					for(var i = 0; i < values.length; i++){
+
+						var leap_interval = sorted[i];
+						var leap_offset = data.offset;
 						
-						var total_offset = (leap_interval*(((leap_offset%leap_interval))*timespan_interval));
+						var total_offset = (((leap_interval-leap_offset)%leap_interval)*timespan_interval);
+
+						if(total_offset == 0){
+							total_offset = sorted[i]*timespan_interval;
+						}
 
 						if(i == 0 && sorted[i] == 1){
 
@@ -1622,47 +1493,35 @@ function add_leap_day_to_list(parent, key, data){
 							if(calendar.year_data.timespans[data.timespan].interval == 1){
 								text += ` ${ordinal_suffix_of(sorted[i])} year`;
 							}else{
-								text += ` ${ordinal_suffix_of(calendar.year_data.timespans[data.timespan].interval*sorted[i])} ${calendar.year_data.timespans[data.timespan].name}`;
+								text += ` ${ordinal_suffix_of(timespan_interval*sorted[i])} ${calendar.year_data.timespans[data.timespan].name}`;
 							}
 
-							if(total_offset != 0){
-								if(values.length == 1){
-									text += "<br>";
-								}else{
-									text += " ";
-								}
-
-								if(calendar.year_data.timespans[timespan_val].interval.match(numbers_regex)){
-									text += `(year ${total_offset}, ${(total_offset+sorted[i]*timespan_interval)}, ${total_offset+sorted[i]*2*timespan_interval}...)`;
-								}else{
-									text += `(complex...)`;
-								}
-							}
+							text += ` (year ${total_offset}, ${(total_offset+sorted[i]*timespan_interval)}, ${total_offset+sorted[i]*2*timespan_interval}...)`;
 
 						}
 
 						if(i > 0 && sorted[i] > 1){
 
 							if(values[i].indexOf('!') != -1){
-								if(calendar.year_data.timespans[data.timespan].interval == 1){
+								if(timespan_interval == 1){
 									text += `<br>• but not every ${ordinal_suffix_of(sorted[i])} year`;
 								}else{
-									text += `<br>• but not every ${ordinal_suffix_of(calendar.year_data.timespans[data.timespan].interval*sorted[i])} ${calendar.year_data.timespans[data.timespan].name}`;
+									text += `<br>• but not every ${ordinal_suffix_of(timespan_interval*sorted[i])} ${calendar.year_data.timespans[data.timespan].name}`;
 								}
 
-								if(total_offset != 0 && values[i].indexOf('+') == -1){
+								if(values[i].indexOf('+') == -1){
 									text += ` (year ${total_offset}, ${total_offset+sorted[i]}, ${total_offset+sorted[i]*2}...)`;
 								}
 
 							}else{
 
-								if(calendar.year_data.timespans[data.timespan].interval == 1){
+								if(timespan_interval == 1){
 									text += `<br>• but also every ${ordinal_suffix_of(sorted[i])} year`;
 								}else{
-									text += `<br>• but also every ${ordinal_suffix_of(calendar.year_data.timespans[data.timespan].interval*sorted[i])} ${calendar.year_data.timespans[data.timespan].name}`;
+									text += `<br>• but also every ${ordinal_suffix_of(timespan_interval*sorted[i])} ${calendar.year_data.timespans[data.timespan].name}`;
 								}
 
-								if(total_offset != 0 && values[i].indexOf('+') == -1){
+								if(values[i].indexOf('+') == -1){
 									text += ` (year ${total_offset}, ${total_offset+sorted[i]}, ${total_offset+sorted[i]*2}...)`;
 								}
 
