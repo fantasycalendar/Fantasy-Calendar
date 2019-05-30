@@ -1,5 +1,5 @@
 var date = {
-	"year": 3,
+	"year": 1,
 	"timespan": 0,
 	"day": 1,
 	"hour": 0,
@@ -204,7 +204,7 @@ var calendar = {
 				"day": 1,
 				"week_day": "Test",
 
-				"interval": "+10,3",
+				"interval": "+40,+!10,4",
 				"offset": 0
 			}
 		]
@@ -370,7 +370,7 @@ var calendar = {
 	},
  
 	"eras": [
-		{
+		/*{
 			"name": "The Age of Arcanum",
 			"abbreviation": "AoA",
 			"description": "WOOOOOOOOOOOOOOOO",
@@ -429,7 +429,7 @@ var calendar = {
 				"timespan": 5,
 				"day": 9
 			}
-		}
+		}*/
 	],
 
 	"settings": {

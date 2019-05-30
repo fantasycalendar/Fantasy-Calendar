@@ -105,50 +105,36 @@ var eras = {
 
 	evaluate_current_era: function(calendar, start_epoch, end_epoch){
 
-		this.current_eras = [];
-		this.internal_class = '';
-		this.prev_era = -1;
-		this.current_era = 0;
-		this.next_era = 1;
-		this.start_epoch = start_epoch;
-		this.end_epoch = end_epoch;
-		this.era = undefined;
+		if(calendar.eras.length > 0){
 
-		for(var i = 0; i < calendar.eras.length; i++){
-			calendar.eras[i].date.epoch = evaluate_calendar_start(calendar, calendar.eras[i].date.year-1, calendar.eras[i].date.timespan, calendar.eras[i].date.day).epoch;
-		}
-
-		// If the last era shift was behind us, then it is the last era
-		if(this.start_epoch > calendar.eras[calendar.eras.length-1].date.epoch){
-			this.current_eras.push({
-				"id": calendar.eras.length-1,
-				"position": 0,
-				"data": calendar.eras[calendar.eras.length-1]
-			});
-		// Otherwise, this finds the current overlapping eras with the displayed days
-		}else{
+			this.current_eras = [];
+			this.internal_class = '';
+			this.prev_era = -1;
+			this.current_era = 0;
+			this.next_era = 1;
+			this.start_epoch = start_epoch;
+			this.end_epoch = end_epoch;
+			this.era = undefined;
 
 			for(var i = 0; i < calendar.eras.length; i++){
-
-				var current_era = calendar.eras[i];
-
-				if(current_era.date.epoch >= this.start_epoch && current_era.date.epoch <= this.end_epoch){
-					this.current_eras.push({
-						"id": i,
-						"position": 0,
-						"data": current_era
-					});
-				}
+				calendar.eras[i].date.epoch = evaluate_calendar_start(calendar, calendar.eras[i].date.year-1, calendar.eras[i].date.timespan, calendar.eras[i].date.day).epoch;
 			}
 
-			if(this.current_eras.length == 0){
+			// If the last era shift was behind us, then it is the last era
+			if(this.start_epoch > calendar.eras[calendar.eras.length-1].date.epoch){
+				this.current_eras.push({
+					"id": calendar.eras.length-1,
+					"position": 0,
+					"data": calendar.eras[calendar.eras.length-1]
+				});
+			// Otherwise, this finds the current overlapping eras with the displayed days
+			}else{
 
-				for(var i = 0; i < calendar.eras.length-1; i++){
+				for(var i = 0; i < calendar.eras.length; i++){
 
 					var current_era = calendar.eras[i];
-					var next_era = calendar.eras[i+1];
 
-					if(this.start_epoch > current_era.date.epoch && next_era.date.epoch > this.end_epoch){
+					if(current_era.date.epoch >= this.start_epoch && current_era.date.epoch <= this.end_epoch){
 						this.current_eras.push({
 							"id": i,
 							"position": 0,
@@ -156,116 +142,143 @@ var eras = {
 						});
 					}
 				}
-			// If there are eras, and the first era is after the starting epoch
-			// that means that we need to add the previous era too
-			}else{
 
-				if(this.current_eras[0].data.date.epoch > this.start_epoch){
-					if(calendar.eras[this.current_eras[0].id-1]){
-						this.current_eras.splice(0, 0, {
-							"id": this.current_eras[0].id-1,
-							"position": 0,
-							"data": calendar.eras[this.current_eras[0].id-1]
-						});
+				if(this.current_eras.length == 0){
+
+					for(var i = 0; i < calendar.eras.length-1; i++){
+
+						var current_era = calendar.eras[i];
+						var next_era = calendar.eras[i+1];
+
+						if(this.start_epoch > current_era.date.epoch && next_era.date.epoch > this.end_epoch){
+							this.current_eras.push({
+								"id": i,
+								"position": 0,
+								"data": current_era
+							});
+						}
+					}
+				// If there are eras, and the first era is after the starting epoch
+				// that means that we need to add the previous era too
+				}else{
+
+					if(this.current_eras[0].data.date.epoch > this.start_epoch){
+						if(calendar.eras[this.current_eras[0].id-1]){
+							this.current_eras.splice(0, 0, {
+								"id": this.current_eras[0].id-1,
+								"position": 0,
+								"data": calendar.eras[this.current_eras[0].id-1]
+							});
+						}
 					}
 				}
 			}
 		}
-		
 	},
 
 	// This simply sets the new era
 	set_current_era: function(index){
 
-		// If it's not a new era, don't update the text
-		if(this.era != index){
-			this.era = index;
-			if(owner || !calendar.settings.hide_eras){
-				this.internal_class = document.getElementsByClassName('era')[0];
-				var text = calendar.settings.show_era_abbreviation ? this.current_eras[this.era].data.abbreviation : this.current_eras[this.era].data.name;
-				this.internal_class.innerHTML = " - " + text;
+		if(calendar.eras.length > 0){
+			// If it's not a new era, don't update the text
+			if(this.era != index){
+				this.era = index;
+				if(owner || !calendar.settings.hide_eras){
+					this.internal_class = document.getElementsByClassName('era')[0];
+					var text = calendar.settings.show_era_abbreviation ? this.current_eras[this.era].data.abbreviation : this.current_eras[this.era].data.name;
+					this.internal_class.innerHTML = " - " + text;
+				}
 			}
 		}
-
 	},
 
 	// This just sets up the starting era, in case the user refreshed and isn't at the top of the page
 	set_up_position: function(){
 
-		for(var i = 0; i < eras.current_eras.length; i++){
-			if($(`[epoch=${eras.current_eras[i].data.date.epoch}]`).length){
-				eras.current_eras[i].position = $(`[epoch=${eras.current_eras[i].data.date.epoch}]`).offset().top - 175;
-			}
-		}
+		if(calendar.eras.length > 0){
 
-		if(this.current_eras.length > 1){
-			var position = $(window).scrollTop();
-			for(var i = 0; i < this.current_eras.length; i++){
-				var current_era = this.current_eras[i];
-				if(position > current_era.position && i < this.current_eras.length-1){
-					this.prev_era++;
-					this.current_era++;
-					this.next_era++;
+			for(var i = 0; i < eras.current_eras.length; i++){
+				if($(`[epoch=${eras.current_eras[i].data.date.epoch}]`).length){
+					eras.current_eras[i].position = $(`[epoch=${eras.current_eras[i].data.date.epoch}]`).offset().top - 175;
 				}
 			}
-		}else{
-			this.current_era = 0;
+
+			if(this.current_eras.length > 1){
+				var position = $(window).scrollTop();
+				for(var i = 0; i < this.current_eras.length; i++){
+					var current_era = this.current_eras[i];
+					if(position > current_era.position && i < this.current_eras.length-1){
+						this.prev_era++;
+						this.current_era++;
+						this.next_era++;
+					}
+				}
+			}else{
+				this.current_era = 0;
+			}
+			eras.set_current_era(this.current_era);
 		}
-		eras.set_current_era(this.current_era);
 		
 	},
 
 	// This is evaluated every time the user scrolls to calculate the next era
 	evaluate_position: function(){
 
-		// If there's only one era, don't do anything
-		if(this.current_eras.length <= 1) return;
+		if(calendar.eras.length > 0){
 
-		var position = $("#calendar").scrollTop();
+			// If there's only one era, don't do anything
+			if(this.current_eras.length <= 1) return;
 
-		if(this.next_era < this.current_eras.length){
-			if(position > this.current_eras[this.next_era].position){
-				this.prev_era++;
-				this.current_era++;
-				this.next_era++;
+			var position = $("#calendar").scrollTop();
+
+			if(this.next_era < this.current_eras.length){
+				if(position > this.current_eras[this.next_era].position){
+					this.prev_era++;
+					this.current_era++;
+					this.next_era++;
+				}
 			}
-		}
-		if(position < this.current_eras[this.current_era].position){
-			this.next_era--;
-			this.current_era--;
-			this.prev_era--;
-		}
+			if(position < this.current_eras[this.current_era].position){
+				this.next_era--;
+				this.current_era--;
+				this.prev_era--;
+			}
 
-		eras.set_current_era(this.current_era);
+			eras.set_current_era(this.current_era);
+
+		}
 
 	},
 
 
 	display_era_events: function(calendar){
 
-		var num_eras = Object.keys(calendar.eras).length;
-				
-		for(var era_index = 0; era_index < num_eras; era_index++){
+		if(calendar.eras.length > 0){
 
-			var current_era = calendar.eras[era_index];
+			var num_eras = Object.keys(calendar.eras).length;
+					
+			for(var era_index = 0; era_index < num_eras; era_index++){
 
-			var parent = $(`.timespan_day[epoch='${current_era.date.epoch}'] .event_container`);
+				var current_era = calendar.eras[era_index];
 
-			if(parent !== undefined){
+				var parent = $(`.timespan_day[epoch='${current_era.date.epoch}'] .event_container`);
 
-				var event_group = '';
-				var category = '';
+				if(parent !== undefined){
 
-				if(current_era.settings.event_category != -1){
-					var category = calendar.event_data.categories[current_era.settings.event_category];
-					event_group = category.color ? " " + category.color : "";
-					event_group += category.text ? " " + category.text : "";
+					var event_group = '';
+					var category = '';
+
+					if(current_era.settings.event_category != -1){
+						var category = calendar.event_data.categories[current_era.settings.event_category];
+						event_group = category.color ? " " + category.color : "";
+						event_group += category.text ? " " + category.text : "";
+					}
+
+					var html = `<div class='event era_event ${event_group}' era_id='${era_index}' category='${category.name}'>${ current_era.name}</div>`;
+
+					parent.append(html);
+					
 				}
-
-				var html = `<div class='event era_event ${event_group}' era_id='${era_index}' category='${category.name}'>${ current_era.name}</div>`;
-
-				parent.append(html);
-				
 			}
 		}
 	},

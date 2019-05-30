@@ -654,15 +654,17 @@ function is_leap(year, intervals, offsets){
 
 function get_leap_fraction(year, intervals, offsets){
 
-	intervals = intervals.split(',');
+	intervals = intervals.split(',').reverse();
 
 	var fraction = 0;
 
 	if(intervals.length == 1){
 		var interval = Number(intervals[0]);
 		var offset = (interval-offsets)%interval;
-		return Math.ceil((year+offset) / Number(interval));
+		return Math.floor((year+offset) / Number(interval));
 	}
+
+	var base_interval = Number(intervals[0]);
 
 	for(var i = 0; i < intervals.length; i++){
 
@@ -673,24 +675,25 @@ function get_leap_fraction(year, intervals, offsets){
 
 			if(interval.includes('+')){
 				var interval = Number(interval.slice(2));
-				offset = 1;
+				offset = 0;
 			}else{
 				var interval = Number(interval.slice(1));
 				offset = (interval-offset)%interval;
 			}
 
-			fraction -= Math.ceil((year+offset+1) / interval);
+			fraction -= Math.floor((year+offset) / lcm(interval, base_interval));
 
 		}else{
 
 			if(interval.includes('+')){
 				var interval = Number(interval.slice(1));
-				offset = 1;
+				offset = 0;
+				fraction += Math.floor((year+offset) / interval);
 			}else{
 				var interval = Number(interval);
 				offset = (interval-offset)%interval;
+				fraction += Math.floor((year+offset) / interval);
 			}
-			fraction += Math.ceil((year+offset+1) / interval);
 
 		}
 
@@ -699,67 +702,6 @@ function get_leap_fraction(year, intervals, offsets){
 	return fraction;
 
 }
-
-
-function get_leap_day_fraction(year, timespan, leap_day){
-
-	var parent_interval = timespan.interval;
-	var intervals = leap_day.interval.split(',');
-
-	var fraction = 0;
-
-	if(parent_interval == 1 && intervals.length == 1){
-		return Math.ceil((year+(offsets*Number(parent_interval))) / lcm(Number(parent_intervals[0]), Number(interval[0])));
-	}
-
-
-	for(var j = 0; j < intervals.length; j++){
-
-		var interval = intervals[j];
-
-		var inverse = 1;
-
-		if(interval.includes('+')){
-			
-			offset = 1;
-
-			interval = interval.slice(1);
-
-			if(interval.includes('!')){
-
-				interval = Number(interval.slice(1));
-				var inverse = -1;
-
-			}else{
-
-				interval = Number(interval);
-
-			}
-
-		}else{
-
-			if(interval.includes('!')){
-
-				interval = Number(interval.slice(1));
-
-				var inverse = -1;
-
-			}else{
-
-				interval = Number(interval);
-
-			}
-
-		}
-
-		fraction += (Math.floor((year+(offset*parent_interval)) / lcm(parent_interval, interval)))*inverse;
-
-	}
-
-	return fraction;
-
-}
-
 
 function get_epoch(calendar, year, month, day, inclusive){
 
@@ -783,10 +725,8 @@ function get_epoch(calendar, year, month, day, inclusive){
 		// Get the current timespan's data
 		timespan = calendar.year_data.timespans[index];
 
-		var offset = (timespan.interval-timespan.offset)%timespan.interval;
-
 		// Get the fraction of that month's appearances
-		var timespan_fraction = Math.floor((year + offset) / timespan.interval);
+		var timespan_fraction = Math.floor((year + timespan.offset) / timespan.interval);
 
 		if(!calendar.year_data.overflow){
 			if(timespan.week){

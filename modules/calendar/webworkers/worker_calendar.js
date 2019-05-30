@@ -947,9 +947,12 @@ var calendar_builder = {
 			}
 		}
 
+		console.log(this.date.year, first_epoch, epoch, year_day-1)
+
 		if(!this.calendar.settings.show_current_month){
 			year_day = 1;
 		}
+
 
 		return {
 			calendar: this.calendar,
