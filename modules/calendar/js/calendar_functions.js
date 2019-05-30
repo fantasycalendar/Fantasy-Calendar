@@ -656,8 +656,6 @@ function get_leap_fraction(year, intervals, offsets){
 
 	intervals = intervals.split(',').reverse();
 
-	var fraction = 0;
-
 	if(intervals.length == 1){
 		var interval = Number(intervals[0]);
 		var offset = (interval-offsets)%interval;
@@ -665,8 +663,10 @@ function get_leap_fraction(year, intervals, offsets){
 	}
 
 	var base_interval = Number(intervals[0]);
+	var offset = (base_interval-offsets)%base_interval;
+	var fraction = Math.floor((year+offset) / base_interval);
 
-	for(var i = 0; i < intervals.length; i++){
+	for(var i = 1; i < intervals.length; i++){
 
 		var interval = intervals[i];
 		var offset = offsets;
@@ -688,11 +688,16 @@ function get_leap_fraction(year, intervals, offsets){
 			if(interval.includes('+')){
 				var interval = Number(interval.slice(1));
 				offset = 0;
-				fraction += Math.floor((year+offset) / interval);
+				if(interval%base_interval != 0){
+					fraction += Math.floor((year+offset) / interval);
+				}
+
 			}else{
 				var interval = Number(interval);
 				offset = (interval-offset)%interval;
-				fraction += Math.floor((year+offset) / interval);
+				if(interval%base_interval != 0){
+					fraction += Math.floor((year+offset) / interval);
+				}
 			}
 
 		}
