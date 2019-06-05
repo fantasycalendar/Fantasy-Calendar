@@ -8,15 +8,15 @@
 
 		<div class='wrap-collapsible'>
 			<div class='detail-row'>
-				<input type='text' class='form-control form-control-lg full static_input' data='' key='name' placeholder='Calendar name' />
+				<input type='text' class='form-control form-control-lg full' id='calendar_name' placeholder='Calendar name' />
 			</div>
 		</div>
 
 		<div class='wrap-collapsible margin-below'>
 
-			<button disabled id='btn_save' class='btn btn-lg btn-primary btn-block'>Save</button>
+			<button type="button" disabled id='btn_save' class='btn btn-lg btn-primary btn-block'>Save</button>
 		
-			<button id='btn_delete' class='btn btn-sm btn-danger btn-block'>Delete</button>
+			<button type="button" id='btn_delete' class='btn btn-sm btn-danger btn-block'>Delete</button>
 
 		</div>
 

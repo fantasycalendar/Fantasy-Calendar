@@ -6,13 +6,17 @@ importScripts('../js/calendar_season_generator.js?v=2000'+utcDate1);
 
 onmessage = e => {
 	
-	var calendar = e.data.calendar;
-	
-	var epoch_data = e.data.calendar_data.epoch_data;
+	var calendar_name = e.data.calendar_name;
 
-	var first_epoch = Object.keys(epoch_data)[0];
+	var static_data = e.data.static_data;
 	
-	climate_generator.set_up(calendar, first_epoch|0);
+	var dynamic_data = e.data.dynamic_data;
+	
+	var epoch_data = e.data.evaluated_static_data;
+
+	var first_epoch = Object.keys(epoch_data)[0]|0;
+	
+	climate_generator.set_up(static_data, dynamic_data, first_epoch);
 
 	var keys = Object.keys(epoch_data);
 	var length = keys.length;

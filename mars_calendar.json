@@ -1,13 +1,15 @@
-var date = {
-	"year": 1,
+var dynamic_data = {
+	"year": 9,
 	"timespan": 0,
 	"day": 1,
 	"hour": 0,
 	"minute": 0,
-	"epoch": 0
+	"epoch": 0,
+	"custom_location": true,
+	"location": 0
 }
 
-var calendar = {
+var static_data = {
 	"name": "Darian",
 
 	"year_data": {
@@ -190,7 +192,7 @@ var calendar = {
 				"interval": 1,
 				"offset": 0,
 				"length": 28
-			},
+			}
 		],
 		"leap_days": [
 			{
@@ -204,7 +206,7 @@ var calendar = {
 				"day": 1,
 				"week_day": "Test",
 
-				"interval": "+40,+!10,4",
+				"interval": "10,3",
 				"offset": 0
 			}
 		]
@@ -266,7 +268,7 @@ var calendar = {
 						"hour": 16,
 						"minute": 0
 					}
-				},
+				}
 			},
 			{
 				"name": "Winter",
@@ -281,11 +283,9 @@ var calendar = {
 						"hour": 19,
 						"minute": 0
 					}
-				},
+				}
 			}
 		],
-		"location_type": "custom",
-		"location": 0,
 		"locations": [
 			{
 				"name": "Northern Dusuna",
@@ -347,7 +347,7 @@ var calendar = {
 				"settings": {
 					"timezone": {
 						"hour": -1,
-						"minute": -30,
+						"minute": -30
 					},
 
 					"large_noise_frequency": 0.015,
@@ -370,7 +370,7 @@ var calendar = {
 	},
  
 	"eras": [
-		/*{
+		{
 			"name": "The Age of Arcanum",
 			"abbreviation": "AoA",
 			"description": "WOOOOOOOOOOOOOOOO",
@@ -429,7 +429,7 @@ var calendar = {
 				"timespan": 5,
 				"day": 9
 			}
-		}*/
+		}
 	],
 
 	"settings": {
@@ -502,44 +502,44 @@ var calendar = {
 		"categories": [
 			{
 				"name": "Test",
-				"color": "Red", /* Options: Dark-Solid, Red, Pink, Purple, Deep-Purple, Blue, Light-Blue, Cyan, Teal, Green, Light-Green, Lime, Yellow, Orange, Blue-Grey */
-				"text": "text", /* options: text, dot, background */
+				"color": "Red",
+				"text": "text",
 				"category_settings":{
-					"hide": false, // Hide from players?
-					"player_usable": false // Category available to players?
+					"hide": false,
+					"player_usable": false
 				},
-				"event_settings": { // this contains
+				"event_settings": {
 					"hide": false,
 					"noprint": false
 				}
 			},
 			{
 				"name": "New",
-				"color": "Blue", /* Options: Dark-Solid, Red, Pink, Purple, Deep-Purple, Blue, Light-Blue, Cyan, Teal, Green, Light-Green, Lime, Yellow, Orange, Blue-Grey */
-				"text": "dot", /* options: text, dot, background */
+				"color": "Blue",
+				"text": "dot",
 				"category_settings":{
-					"hide": false, // Hide from players?
-					"player_usable": false // Category available to players?
+					"hide": false,
+					"player_usable": false
 				},
-				"event_settings": { // this contains
+				"event_settings": {
 					"hide": false,
 					"noprint": false
 				}
-			},
+			}
 		],
 		"events": [
 			{
 				"name": "New Dawn",
 				"description": "<h1>Test</h1>",
 				"settings": {
-					"color": "Red", /* Options: Dark-Solid, Red, Pink, Purple, Deep-Purple, Blue, Light-Blue, Cyan, Teal, Green, Light-Green, Lime, Yellow, Orange, Blue-Grey */
-					"text": "text", /* options: text, dot, background */
+					"color": "Red",
+					"text": "text",
 					"hide": true,
 					"noprint": false
 				},
 				"category": 0,
 				"data": {
-					"length": 1, //611,
+					"length": 1,
 					"show_start_end": false,
 					"show_first_last": false,
 					"conditions": [
@@ -550,11 +550,11 @@ var calendar = {
 								["Moons",0,["1","8"]],
 								["Moons",0,["2","8"]],
 								["Moons",0,["3","16"]]
-							],
+							]
 						]
-					],
+					]
 				}
-			},
+			}
 		]
 	}
 };

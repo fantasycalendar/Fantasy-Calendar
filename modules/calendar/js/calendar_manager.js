@@ -34,12 +34,13 @@ function bind_calendar_events(){
 }
 
 
-var evaluated_calendar_data = {};
+var evaluated_static_data = {};
 
-function rebuild_calendar(action, target_date){
+function rebuild_calendar(action, dynamic_data){
 	worker_calendar.postMessage({
-		calendar: calendar,
-		date: target_date,
+		calendar_name: calendar_name,
+		static_data: static_data,
+		dynamic_data: dynamic_data,
 		action: action,
 		owner: owner
 	});
@@ -47,26 +48,26 @@ function rebuild_calendar(action, target_date){
 
 function rebuild_climate(){
 	worker_climate.postMessage({
-		calendar: calendar,
-		calendar_data: evaluated_calendar_data
+		calendar_name: calendar_name,
+		static_data: static_data,
+		dynamic_data: dynamic_data,
+		evaluated_static_data: evaluated_static_data.epoch_data
 	});
 }
 
 function rebuild_events(event_id){
-
 	worker_events.postMessage({
-		calendar: calendar,
-		pre_epoch_data: evaluated_calendar_data.pre_epoch_data,
-		epoch_data: evaluated_calendar_data.epoch_data,
+		static_data: static_data,
+		pre_epoch_data: evaluated_static_data.pre_epoch_data,
+		epoch_data: evaluated_static_data.epoch_data,
 		event_id: event_id
 	});
-
 }
 
 
 worker_events.onmessage = e => {
 
-	display_events(calendar, e.data)
+	display_events(static_data, e.data)
 
 }
 
@@ -80,21 +81,22 @@ worker_climate.onmessage = e => {
 
 worker_calendar.onmessage = e => {
 
-	evaluated_calendar_data = e.data.processed_data;
-	var calendar = evaluated_calendar_data.calendar;
+	evaluated_static_data = e.data.processed_data;
+	var static_data = evaluated_static_data.static_data;
 	var action = e.data.action;
 
-	if(evaluated_calendar_data.success){
+	if(evaluated_static_data.success){
 
-		calendar_layouts.insert_calendar(evaluated_calendar_data);
+		calendar_layouts.insert_calendar(evaluated_static_data);
 
-		calendar_weather.epoch_data = evaluated_calendar_data.epoch_data;
+		calendar_weather.epoch_data = evaluated_static_data.epoch_data;
 
-		var start_epoch = Number(Object.keys(evaluated_calendar_data.epoch_data)[0]);
-		var end_epoch = Number(Object.keys(evaluated_calendar_data.epoch_data)[Object.keys(evaluated_calendar_data.epoch_data).length-1]);
-		eras.evaluate_current_era(calendar, start_epoch, end_epoch);
+		var start_epoch = Number(Object.keys(evaluated_static_data.epoch_data)[0]);
+		var end_epoch = Number(Object.keys(evaluated_static_data.epoch_data)[Object.keys(evaluated_static_data.epoch_data).length-1]);
+
+		eras.evaluate_current_era(static_data, start_epoch, end_epoch);
 		eras.set_up_position();
-		eras.display_era_events(calendar);
+		eras.display_era_events(static_data);
 
 		rebuild_events();
 
@@ -107,7 +109,7 @@ worker_calendar.onmessage = e => {
 
 	}else{
 
-		calendar_layouts.insert_empty_calendar(evaluated_calendar_data);
+		calendar_layouts.insert_empty_calendar(evaluated_static_data);
 
 	}
 

@@ -32,7 +32,7 @@ var calendar_weather = {
 			this.weather_tooltip_box = $('#weather_tooltip_box');
 			this.base_height = parseInt(this.weather_tooltip_box.css('height'));
 			this.weather_temp_desc = $('.weather_temp_desc');
-			if(calendar.seasons.global_settings.cinematic){
+			if(static_data.seasons.global_settings.cinematic){
 				this.weather_temp_desc.css('display', '');
 			}else{
 				this.weather_temp_desc.css('display', 'none');
@@ -54,7 +54,7 @@ var calendar_weather = {
 
 			var desc = weather.temperature.cinematic;
 
-			var temp_sys = calendar.seasons.global_settings.temp_sys;
+			var temp_sys = static_data.seasons.global_settings.temp_sys;
 			var height = 0;
 			if(temp_sys == 'imperial'){
 				temp_symbol = '°F';
@@ -71,7 +71,7 @@ var calendar_weather = {
 			this.weather_temp.toggleClass('newline', temp_sys == 'both');
 
 
-			var wind_sys = calendar.seasons.global_settings.wind_sys;
+			var wind_sys = static_data.seasons.global_settings.wind_sys;
 
 			if(wind_sys == 'imperial'){
 				var wind_symbol = "MPH";
@@ -179,7 +179,7 @@ function evaluate_weather_charts(){
 	var precipitation = [[], [], []];
 	var labels = [];
 
-	var temp_sys = calendar.seasons.global_settings.temp_sys;
+	var temp_sys = static_data.seasons.global_settings.temp_sys;
 	if(temp_sys === "both"){
 		var temp_sys = "imperial";
 	}

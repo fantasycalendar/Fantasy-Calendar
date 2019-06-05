@@ -62,6 +62,7 @@ $jsversion = "2.0";
     	<script src="modules/sortable/jquery-sortable-min.js"></script>
     	<script src="modules/spectrum/spectrum.js"></script>
     	<script src="modules/calendar/js/header.js"></script>
+    	<script src="modules/calendar/js/calendar_ajax_functions.js"></script>
     	<script src="modules/calendar/js/calendar_event_ui.js"></script>
     	<script src="modules/calendar/js/calendar_functions.js"></script>
     	<script src="modules/calendar/js/calendar_variables.js"></script>
@@ -72,7 +73,6 @@ $jsversion = "2.0";
     	<script src="modules/calendar/js/calendar_inputs_view.js"></script>
     	<script src="modules/calendar/js/calendar_inputs_edit.js"></script>
     	<script src="modules/calendar/js/calendar_manager.js"></script>
-    	<script src="modules/calendar/js/calendar_ajax_functions.js"></script>
 
 		<link rel="stylesheet" href="css/calendar_input_style.css">
 		<link rel="stylesheet" href="css/calendar_styles.css">

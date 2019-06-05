@@ -2,15 +2,17 @@ var climate_generator = {
 
 	process: true,
 
-	set_up: function(calendar, epoch){
+	set_up: function(calendar_name, static_data, dynamic_data, epoch){
 
-		this.calendar = clone(calendar);
+		this.calendar_name = calendar_name;
+		this.static_data = clone(static_data);
+		this.dynamic_data = clone(dynamic_data);
 
-		if(this.calendar.year_data.timespans.length == 0
+		if(this.static_data.year_data.timespans.length == 0
 		   ||
-		   this.calendar.year_data.global_week.length == 0
+		   this.static_data.year_data.global_week.length == 0
 		   ||
-		   this.calendar.seasons.location === ''
+		   this.dynamic_data.location === ''
 		){
 
 			this.process = false;
@@ -31,41 +33,18 @@ var climate_generator = {
 
 			this.current_location = {};
 
-			this.wind_direction = false;
+			if(this.dynamic_data.custom_location){
 
-			var seed = 100;
-
-			for(var i = 0; i < this.calendar.seasons.location.length; i++){
-				seed *= this.calendar.seasons.location.charCodeAt(i)/100;
-			}
-
-			for(var i = 0; i < this.calendar.name.length; i++){
-				seed *= this.calendar.name.charCodeAt(i)/100;
-			}
-
-			for(var i = 0; i < this.calendar.year_data.timespans.length; i++){
-				seed += (1+this.calendar.year_data.timespans[i].offset)/this.calendar.year_data.timespans[i].interval;
-			}
-
-			seed += this.calendar.year_data.timespans.length * (this.calendar.year_data.leap_days.length+1);
-
-			seed += this.calendar.year_data.global_week.length;
-
-			seed += this.calendar.seasons.global_settings.seed;
-
-			this.random = new random(seed);
-
-			if(this.calendar.seasons.location_type === 'custom'){
-
-				this.current_location = clone(this.calendar.seasons.locations[this.calendar.seasons.location]);
+				this.current_location = clone(this.static_data.seasons.locations[this.dynamic_data.location]);
 
 			}else{
 
-				this.current_location = this.presets[this.calendar.seasons.location];
+				this.current_location = this.presets[this.dynamic_data.location];
 
-				for(var i = 0; i < this.calendar.seasons.data.length; i++){
 
-					this.current_location.seasons[i].time = clone(this.calendar.seasons.data[i].time);
+				for(var i = 0; i < this.static_data.seasons.data.length; i++){
+
+					this.current_location.seasons[i].time = clone(this.static_data.seasons.data[i].time);
 
 				}
 
@@ -74,9 +53,33 @@ var climate_generator = {
 				this.current_location.custom_dates = {};
 
 			}
+
+			this.wind_direction = false;
+
+			var seed = 100;
+
+			for(var i = 0; i < this.current_location.name.length; i++){
+				seed *= this.current_location.name.charCodeAt(i)/100;
+			}
+
+			for(var i = 0; i < this.calendar_name.length; i++){
+				seed *= this.calendar_name.charCodeAt(i)/100;
+			}
+
+			for(var i = 0; i < this.static_data.year_data.timespans.length; i++){
+				seed += (1+this.static_data.year_data.timespans[i].offset)/this.static_data.year_data.timespans[i].interval;
+			}
+
+			seed += this.static_data.year_data.timespans.length * (this.static_data.year_data.leap_days.length+1);
+
+			seed += this.static_data.year_data.global_week.length;
+
+			seed += this.static_data.seasons.global_settings.seed;
+
+			this.random = new random(seed);
 			
-			for(var i = 0; i < this.calendar.seasons.data.length; i++){
-				current_season = this.calendar.seasons.data[i];
+			for(var i = 0; i < this.static_data.seasons.data.length; i++){
+				current_season = this.static_data.seasons.data[i];
 				this.data.season_length += current_season.transition_length;
 				this.data.season_length += current_season.duration;
 			}
@@ -84,8 +87,8 @@ var climate_generator = {
 			// This creates a list that we can use to loop through to find the current season
 			this.data.seasons = [];
 			var added_season = 0;
-			for(var i = 0; i < this.calendar.seasons.data.length; i++){
-				current_season = this.calendar.seasons.data[i];
+			for(var i = 0; i < this.static_data.seasons.data.length; i++){
+				current_season = this.static_data.seasons.data[i];
 				this.data.seasons.push(added_season);
 				this.data.seasons.push(added_season + (current_season.duration ? current_season.duration : 0));
 				added_season += current_season.transition_length + (current_season.duration ? current_season.duration : 0);
@@ -93,7 +96,7 @@ var climate_generator = {
 			}
 			this.data.seasons.push(added_season);
 
-			this.data.season_offset = this.calendar.seasons.global_settings.season_offset;
+			this.data.season_offset = this.static_data.seasons.global_settings.season_offset;
 
 			this.data.season_epoch = (epoch-this.data.season_offset) % this.data.season_length;
 			this.data.season_epoch = this.data.season_epoch < 0 ? this.data.season_epoch + this.data.season_length : this.data.season_epoch;
@@ -122,7 +125,7 @@ var climate_generator = {
 
 			this.weather = clone(this.data);
 
-			this.weather.season_epoch = (epoch-this.weather.season_offset-this.calendar.seasons.global_settings.weather_offset) % this.weather.season_length;
+			this.weather.season_epoch = (epoch-this.weather.season_offset-this.static_data.seasons.global_settings.weather_offset) % this.weather.season_length;
 			this.weather.season_epoch = this.weather.season_epoch < 0 ? this.weather.season_epoch + this.weather.season_length : this.weather.season_epoch;
 
 			this.weather.last_point = 0;
@@ -176,7 +179,7 @@ var climate_generator = {
 		var curr_season = Math.floor(this.data.last_point / 2);
 		var next_season = Math.floor(this.data.next_point / 2) != this.current_location.seasons.length ? Math.floor(this.data.next_point / 2) : 0;
 
-		if(this.calendar.seasons.data.length == 1){
+		if(this.static_data.seasons.data.length == 1){
 			var next_season = curr_season;
 		}
 
@@ -196,14 +199,14 @@ var climate_generator = {
 
 		var sunrise_minute = Math.round(lerp(curr_season_data.time.sunrise.minute, next_season_data.time.sunrise.minute, this.data.perc));
 		var sunrise_hour = lerp(curr_season_data.time.sunrise.hour, next_season_data.time.sunrise.hour, this.data.perc);
-		var sunrise = sunrise_hour+sunrise_minute/this.calendar.clock.minutes;
+		var sunrise = sunrise_hour+sunrise_minute/this.static_data.clock.minutes;
 
 		var sunset_minute = Math.round(lerp(curr_season_data.time.sunset.minute, next_season_data.time.sunset.minute, this.data.perc));
 		var sunset_hour = lerp(curr_season_data.time.sunset.hour, next_season_data.time.sunset.hour, this.data.perc);
-		var sunset = sunset_hour+sunset_minute/this.calendar.clock.minutes;
+		var sunset = sunset_hour+sunset_minute/this.static_data.clock.minutes;
 
-		var sunrise_m = (Math.round(fract(sunrise)*this.calendar.clock.minutes)).toString().length < 2 ? "0"+(Math.round(fract(sunrise)*this.calendar.clock.minutes)).toString() : (Math.round(fract(sunrise)*this.calendar.clock.minutes));
-		var sunset_m = (Math.round(fract(sunset)*this.calendar.clock.minutes)).toString().length < 2 ? "0"+(Math.round(fract(sunset)*this.calendar.clock.minutes)).toString() : (Math.round(fract(sunset)*this.calendar.clock.minutes));
+		var sunrise_m = (Math.round(fract(sunrise)*this.static_data.clock.minutes)).toString().length < 2 ? "0"+(Math.round(fract(sunrise)*this.static_data.clock.minutes)).toString() : (Math.round(fract(sunrise)*this.static_data.clock.minutes));
+		var sunset_m = (Math.round(fract(sunset)*this.static_data.clock.minutes)).toString().length < 2 ? "0"+(Math.round(fract(sunset)*this.static_data.clock.minutes)).toString() : (Math.round(fract(sunset)*this.static_data.clock.minutes));
 
 		var sunrise_s = Math.floor(sunrise)+":"+sunrise_m;
 		var sunset_s = Math.floor(sunset)+":"+sunset_m;
@@ -222,7 +225,7 @@ var climate_generator = {
 
 		/*----------------------------- WEATHER GENERATION ------------------------------------*/
 
-		this.weather.season_epoch = (epoch-this.weather.season_offset-this.calendar.seasons.global_settings.weather_offset) % this.weather.season_length;
+		this.weather.season_epoch = (epoch-this.weather.season_offset-this.static_data.seasons.global_settings.weather_offset) % this.weather.season_length;
 		this.weather.season_epoch = this.weather.season_epoch < 0 ? this.weather.season_epoch + this.weather.season_length : this.weather.season_epoch;
 
 		if(this.weather.season_epoch == this.weather.next_epoch){
@@ -246,7 +249,7 @@ var climate_generator = {
 
 		var val = 0;
 
-		if(this.calendar.seasons.data.length == 1){
+		if(this.static_data.seasons.data.length == 1){
 			next_season = curr_season;
 		}
 

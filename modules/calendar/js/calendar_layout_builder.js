@@ -1,13 +1,13 @@
-function display_events(calendar, event_data){
+function display_events(static_data, event_data){
 
-	if(owner || !calendar.settings.hide_events){
+	if(owner || !static_data.settings.hide_events){
 
 		var num_valid_events = Object.keys(event_data.valid).length;
 				
 		for(var i = 0; i < num_valid_events; i++){
 
 			var event_index = Object.keys(event_data.valid)[i];
-			var current_event = calendar.event_data.events[event_index];
+			var current_event = static_data.event_data.events[event_index];
 
 			$(`[event_id='${event_index}']`).remove();
 
@@ -18,7 +18,7 @@ function display_events(calendar, event_data){
 				var start = event_data.starts[event_index].indexOf(local_epoch) != -1;
 				var end = event_data.ends[event_index].indexOf(local_epoch) != -1;
 
-				var category_name = current_event.category != -1 ? calendar.event_data.categories[current_event.category].name : "";
+				var category_name = current_event.category != -1 ? static_data.event_data.categories[current_event.category].name : "";
 
 				var event_group = current_event.settings.color ? " " + current_event.settings.color : "";
 				event_group += current_event.settings.text ? " " + current_event.settings.text : "";
@@ -38,11 +38,11 @@ function insert_moons(data){
 
 	var moon_text = '<div class="calendar_moon_container">';
 
-	if(owner || !calendar.settings.hide_moons){
+	if(owner || !static_data.settings.hide_moons){
 
-		for(moon_index = 0; moon_index < calendar.moons.length; moon_index++){
+		for(moon_index = 0; moon_index < static_data.moons.length; moon_index++){
 
-			var moon = calendar.moons[moon_index];
+			var moon = static_data.moons[moon_index];
 
 			if(owner || !moon.hidden){
 
@@ -73,9 +73,9 @@ function update_moon_colors(){
 		html.push("<style type='text/css' id='global_moon_colors'>");
 	}
 
-	for(var index = 0; index < calendar.moons.length; index++){
+	for(var index = 0; index < static_data.moons.length; index++){
 
-		color = calendar.moons[index].color ? calendar.moons[index].color : '#ffffff';
+		color = static_data.moons[index].color ? static_data.moons[index].color : '#ffffff';
 		html.push(`.lunar_background[moon_id='${index}']{ background-color:${color}; }\n`);
 
 	}
@@ -103,9 +103,9 @@ var eras = {
 
 	era: undefined,
 
-	evaluate_current_era: function(calendar, start_epoch, end_epoch){
+	evaluate_current_era: function(static_data, start_epoch, end_epoch){
 
-		if(calendar.eras.length > 0){
+		if(static_data.eras.length > 0){
 
 			this.current_eras = [];
 			this.internal_class = '';
@@ -116,23 +116,23 @@ var eras = {
 			this.end_epoch = end_epoch;
 			this.era = undefined;
 
-			for(var i = 0; i < calendar.eras.length; i++){
-				calendar.eras[i].date.epoch = evaluate_calendar_start(calendar, calendar.eras[i].date.year-1, calendar.eras[i].date.timespan, calendar.eras[i].date.day).epoch;
+			for(var i = 0; i < static_data.eras.length; i++){
+				static_data.eras[i].date.epoch = evaluate_calendar_start(static_data, static_data.eras[i].date.year-1, static_data.eras[i].date.timespan, static_data.eras[i].date.day).epoch;
 			}
 
 			// If the last era shift was behind us, then it is the last era
-			if(this.start_epoch > calendar.eras[calendar.eras.length-1].date.epoch){
+			if(this.start_epoch > static_data.eras[static_data.eras.length-1].date.epoch){
 				this.current_eras.push({
-					"id": calendar.eras.length-1,
+					"id": static_data.eras.length-1,
 					"position": 0,
-					"data": calendar.eras[calendar.eras.length-1]
+					"data": static_data.eras[static_data.eras.length-1]
 				});
 			// Otherwise, this finds the current overlapping eras with the displayed days
 			}else{
 
-				for(var i = 0; i < calendar.eras.length; i++){
+				for(var i = 0; i < static_data.eras.length; i++){
 
-					var current_era = calendar.eras[i];
+					var current_era = static_data.eras[i];
 
 					if(current_era.date.epoch >= this.start_epoch && current_era.date.epoch <= this.end_epoch){
 						this.current_eras.push({
@@ -145,10 +145,10 @@ var eras = {
 
 				if(this.current_eras.length == 0){
 
-					for(var i = 0; i < calendar.eras.length-1; i++){
+					for(var i = 0; i < static_data.eras.length-1; i++){
 
-						var current_era = calendar.eras[i];
-						var next_era = calendar.eras[i+1];
+						var current_era = static_data.eras[i];
+						var next_era = static_data.eras[i+1];
 
 						if(this.start_epoch > current_era.date.epoch && next_era.date.epoch > this.end_epoch){
 							this.current_eras.push({
@@ -163,11 +163,11 @@ var eras = {
 				}else{
 
 					if(this.current_eras[0].data.date.epoch > this.start_epoch){
-						if(calendar.eras[this.current_eras[0].id-1]){
+						if(static_data.eras[this.current_eras[0].id-1]){
 							this.current_eras.splice(0, 0, {
 								"id": this.current_eras[0].id-1,
 								"position": 0,
-								"data": calendar.eras[this.current_eras[0].id-1]
+								"data": static_data.eras[this.current_eras[0].id-1]
 							});
 						}
 					}
@@ -179,13 +179,13 @@ var eras = {
 	// This simply sets the new era
 	set_current_era: function(index){
 
-		if(calendar.eras.length > 0){
+		if(static_data.eras.length > 0){
 			// If it's not a new era, don't update the text
 			if(this.era != index){
 				this.era = index;
-				if(owner || !calendar.settings.hide_eras){
+				if(owner || !static_data.settings.hide_eras){
 					this.internal_class = document.getElementsByClassName('era')[0];
-					var text = calendar.settings.show_era_abbreviation ? this.current_eras[this.era].data.abbreviation : this.current_eras[this.era].data.name;
+					var text = static_data.settings.show_era_abbreviation ? this.current_eras[this.era].data.abbreviation : this.current_eras[this.era].data.name;
 					this.internal_class.innerHTML = " - " + text;
 				}
 			}
@@ -195,7 +195,7 @@ var eras = {
 	// This just sets up the starting era, in case the user refreshed and isn't at the top of the page
 	set_up_position: function(){
 
-		if(calendar.eras.length > 0){
+		if(static_data.eras.length > 0){
 
 			for(var i = 0; i < eras.current_eras.length; i++){
 				if($(`[epoch=${eras.current_eras[i].data.date.epoch}]`).length){
@@ -224,12 +224,12 @@ var eras = {
 	// This is evaluated every time the user scrolls to calculate the next era
 	evaluate_position: function(){
 
-		if(calendar.eras.length > 0){
+		if(static_data.eras.length > 0){
 
 			// If there's only one era, don't do anything
 			if(this.current_eras.length <= 1) return;
 
-			var position = $("#calendar").scrollTop();
+			var position = $("#static_data").scrollTop();
 
 			if(this.next_era < this.current_eras.length){
 				if(position > this.current_eras[this.next_era].position){
@@ -251,15 +251,15 @@ var eras = {
 	},
 
 
-	display_era_events: function(calendar){
+	display_era_events: function(static_data){
 
-		if(calendar.eras.length > 0){
+		if(static_data.eras.length > 0){
 
-			var num_eras = Object.keys(calendar.eras).length;
+			var num_eras = Object.keys(static_data.eras).length;
 					
 			for(var era_index = 0; era_index < num_eras; era_index++){
 
-				var current_era = calendar.eras[era_index];
+				var current_era = static_data.eras[era_index];
 
 				var parent = $(`.timespan_day[epoch='${current_era.date.epoch}'] .event_container`);
 
@@ -269,7 +269,7 @@ var eras = {
 					var category = '';
 
 					if(current_era.settings.event_category != -1){
-						var category = calendar.event_data.categories[current_era.settings.event_category];
+						var category = static_data.event_data.categories[current_era.settings.event_category];
 						event_group = category.color ? " " + category.color : "";
 						event_group += category.text ? " " + category.text : "";
 					}
@@ -302,11 +302,12 @@ function update_current_day(recalculate){
 	$('.current_day').removeClass('current_day');
 
 	if(recalculate){
-		date.internal_year = date.year > 0 ? date.year - 1 : date.year;
-		date.epoch = evaluate_calendar_start(calendar, date.internal_year, date.timespan, date.day).epoch;
+		dynamic_data.internal_year = dynamic_data.year > 0 ? dynamic_data.year - 1 : dynamic_data.year;
+		dynamic_data.epoch = evaluate_calendar_start(static_data, dynamic_data.internal_year, dynamic_data.timespan, dynamic_data.day).epoch;
 	}
 
-	$(`[epoch=${date.epoch}]`).addClass('current_day');
+	$(`[epoch=${dynamic_data.epoch}]`).addClass('current_day');
+	eval_current_time();
 
 }
 
@@ -330,7 +331,7 @@ var calendar_layouts = {
 	year_data: {},
 
 	add_year_day_number: function(){
-		if(calendar.settings.add_year_day_number){
+		if(static_data.settings.add_year_day_number){
 			$('body').removeClass("hide_year_day");
 		}else{
 			$('body').addClass("hide_year_day");
@@ -338,7 +339,7 @@ var calendar_layouts = {
 	},
 
 	add_month_number: function(){
-		if(calendar.settings.add_month_number){
+		if(static_data.settings.add_month_number){
 			$('body').removeClass("hide_timespan_number");
 		}else{
 			$('body').addClass("hide_timespan_number");
@@ -350,7 +351,7 @@ var calendar_layouts = {
 		this.year_data = data.year_data;
 		this.epoch_data = data.epoch_data;
 		this.timespans = data.timespans;
-		this.layout = calendar_layouts[calendar.settings.layout];
+		this.layout = calendar_layouts[static_data.settings.layout];
 	
 		this.layout.insert_year_follower();
 
@@ -360,10 +361,13 @@ var calendar_layouts = {
 
 	insert_calendar: function(data){
 
+		var div = document.getElementById('calendar');
+		div.innerHTML = "";
+
 		this.year_data = data.year_data;
 		this.epoch_data = data.epoch_data;
 		this.timespans = data.timespans;
-		this.layout = calendar_layouts[calendar.settings.layout];
+		this.layout = calendar_layouts[static_data.settings.layout];
 
 		if(!this.year_data.has_weather){
 			var style = document.createElement('style');
@@ -383,7 +387,7 @@ var calendar_layouts = {
 
 			var timespan_index = Object.keys(this.timespans)[i]
 
-			if(calendar.settings.only_reveal_today && !owner && timespan_index > date.timespan){
+			if(static_data.settings.only_reveal_today && !owner && timespan_index > dynamic_data.timespan){
 
 				continue;
 
@@ -426,7 +430,7 @@ var calendar_layouts = {
 
 		insert_day: function(epoch, weather_align, day_num, day_class, title){
 
-			if(calendar.settings.only_reveal_today && !owner && (this.timespan.index > date.timespan || (this.timespan.index == date.timespan && this.timespan.day > date.day))){
+			if(static_data.settings.only_reveal_today && !owner && (calendar_layouts.year_data.year > dynamic_data.year || this.timespan.index > dynamic_data.timespan || (this.timespan.index == dynamic_data.timespan && this.timespan.day > dynamic_data.day))){
 
 				this.insert_empty_day(day_class);
 
@@ -484,8 +488,8 @@ var calendar_layouts = {
 					return features.intercalary && features.day === 0;
 				});
 
-				filtered_era_beforestart = calendar.eras.filter(function(era){
-					return era.year === date.internal_year && era.timespan === timespan.index && era.day === 0;
+				filtered_era_beforestart = static_data.eras.filter(function(era){
+					return era.year === dynamic_data.internal_year && era.timespan === timespan.index && era.day === 0;
 				});
 
 				this.insert_intercalary_day(timespan, filtered_leap_days_beforestart, timespan.length, true);
@@ -515,7 +519,7 @@ var calendar_layouts = {
 
 					calendar_layouts.html.push("<div class='timespan_row'>");
 
-						if(calendar.year_data.overflow){
+						if(static_data.year_data.overflow){
 							this.get_overflow(true, calendar_layouts.year_data.week_day-1);
 						}else{
 							calendar_layouts.year_data.week_day = 1;
@@ -537,8 +541,8 @@ var calendar_layouts = {
 								return features.intercalary && features.day === timespan_day && timespan.length != features.day;
 							});
 
-							filtered_era = calendar.eras.filter(function(era){
-								return era.year === date.internal_year &&
+							filtered_era = static_data.eras.filter(function(era){
+								return era.year === dynamic_data.internal_year &&
 								era.timespan === timespan.index &&
 								era.day === timespan_day &&
 								era.day != timespan.length;
@@ -572,7 +576,7 @@ var calendar_layouts = {
 				calendar_layouts.html.push("<div class='timespan_container grid'>");
 
 					calendar_layouts.html.push("<div class='timespan_name'>");
-						calendar_layouts.html.push(timespan.name + (calendar.settings.add_month_number ? " - Month " + (timespan.index+1) : ""));
+						calendar_layouts.html.push(timespan.name + (static_data.settings.add_month_number ? " - Month " + (timespan.index+1) : ""));
 					calendar_layouts.html.push("</div>");
 
 					calendar_layouts.html.push("<div class='timespan_row_container'>");
@@ -677,7 +681,7 @@ var calendar_layouts = {
 
 					calendar_layouts.html.push("<div class='timespan_container grid'>");
 					calendar_layouts.html.push("<div class='timespan_name'>");
-						calendar_layouts.html.push(timespan.name + (calendar.settings.add_month_number ? " - Month " + (timespan.index+1) : ""));
+						calendar_layouts.html.push(timespan.name + (static_data.settings.add_month_number ? " - Month " + (timespan.index+1) : ""));
 					calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("<div class='timespan_row_container'>");
 					calendar_layouts.html.push("<div class='timespan_row_names'>");
@@ -783,8 +787,8 @@ var calendar_layouts = {
 					return features.intercalary && features.day === 0;
 				});
 
-				filtered_era_beforestart = calendar.eras.filter(function(era){
-					return era.year === date.internal_year && era.timespan === timespan.index && era.day === 0;
+				filtered_era_beforestart = static_data.eras.filter(function(era){
+					return era.year === dynamic_data.internal_year && era.timespan === timespan.index && era.day === 0;
 				});
 
 				this.insert_intercalary_day(timespan, filtered_leap_days_beforestart, timespan.length, true);
@@ -792,7 +796,7 @@ var calendar_layouts = {
 				calendar_layouts.html.push("<div class='timespan_container wide'>");
 
 				calendar_layouts.html.push("<div class='timespan_name'>");
-					calendar_layouts.html.push(timespan.name + (calendar.settings.add_month_number ? " - Month " + (timespan.index+1) : ""));
+					calendar_layouts.html.push(timespan.name + (static_data.settings.add_month_number ? " - Month " + (timespan.index+1) : ""));
 				calendar_layouts.html.push("</div>");
 
 
@@ -812,7 +816,7 @@ var calendar_layouts = {
 
 					calendar_layouts.html.push("<div class='timespan_row'>");
 
-						if(calendar.year_data.overflow){
+						if(static_data.year_data.overflow){
 							this.get_overflow(true, calendar_layouts.year_data.week_day-1);
 						}else{
 							calendar_layouts.year_data.week_day = 1;
@@ -826,8 +830,8 @@ var calendar_layouts = {
 								return features.intercalary && features.day === timespan_day && timespan.length != features.day;
 							});
 
-							filtered_era = calendar.eras.filter(function(era){
-								return era.year === date.internal_year &&
+							filtered_era = static_data.eras.filter(function(era){
+								return era.year === dnamic_data.internal_year &&
 								era.timespan === timespan.index &&
 								era.day === timespan_day &&
 								era.day != timespan.length;
@@ -861,7 +865,7 @@ var calendar_layouts = {
 				calendar_layouts.html.push("<div class='timespan_container wide'>");
 
 					calendar_layouts.html.push("<div class='timespan_name'>");
-						calendar_layouts.html.push(timespan.name + (calendar.settings.add_month_number ? " - Month " + (timespan.index+1) : ""));
+						calendar_layouts.html.push(timespan.name + (static_data.settings.add_month_number ? " - Month " + (timespan.index+1) : ""));
 					calendar_layouts.html.push("</div>");
 
 					calendar_layouts.html.push("<div class='timespan_row_container'>");
@@ -950,7 +954,7 @@ var calendar_layouts = {
 
 					calendar_layouts.html.push("<div class='timespan_container wide'>");
 					calendar_layouts.html.push("<div class='timespan_name'>");
-						calendar_layouts.html.push(timespan.name + (calendar.settings.add_month_number ? " - Month " + (timespan.index+1) : ""));
+						calendar_layouts.html.push(timespan.name + (static_data.settings.add_month_number ? " - Month " + (timespan.index+1) : ""));
 					calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("<div class='timespan_row_container'>");
 					calendar_layouts.html.push("<div class='timespan_row_names'>");
@@ -1042,7 +1046,7 @@ var calendar_layouts = {
 					weather = calendar_layouts.epoch_data[epoch].weather;
 
 					temp = "";
-					switch(calendar.climate.global_settings.temp_sys){
+					switch(static_data.climate.global_settings.temp_sys){
 						case "metric":
 							temp = weather.temperature_m+"°C";
 							break
@@ -1060,7 +1064,7 @@ var calendar_layouts = {
 
 					if(weather.wind_velocity_m !== undefined && weather.wind_velocity_i !== undefined){
 						wind += " (";
-						switch(calendar.climate.global_settings.wind_sys){
+						switch(static_data.climate.global_settings.wind_sys){
 							case "metric":
 								wind += weather.wind_velocity_m+" KPH";
 								break
@@ -1102,8 +1106,8 @@ var calendar_layouts = {
 					return features.intercalary && features.day === 0;
 				});
 
-				filtered_era_beforestart = calendar.eras.filter(function(era){
-					return era.year === date.internal_year && era.timespan === timespan.index && era.day === 0;
+				filtered_era_beforestart = static_data.eras.filter(function(era){
+					return era.year === dynamic_data.internal_year && era.timespan === timespan.index && era.day === 0;
 				});
 
 				this.insert_intercalary_day(timespan, filtered_leap_days_beforestart, timespan.length, true);
@@ -1111,13 +1115,13 @@ var calendar_layouts = {
 				calendar_layouts.html.push("<div class='timespan_container vertical'>");
 
 				calendar_layouts.html.push("<div class='timespan_name'>");
-					calendar_layouts.html.push(timespan.name + (calendar.settings.add_month_number ? " - Month " + (timespan.index+1) : ""));
+					calendar_layouts.html.push(timespan.name + (static_data.settings.add_month_number ? " - Month " + (timespan.index+1) : ""));
 				calendar_layouts.html.push("</div>");
 
 
 				calendar_layouts.html.push("<div class='timespan_row_container'>");
 
-						if(!calendar.year_data.overflow){
+						if(!static_data.year_data.overflow){
 							calendar_layouts.year_data.week_day = 1;
 						}
 
@@ -1129,8 +1133,8 @@ var calendar_layouts = {
 								return features.intercalary && features.day === timespan_day && timespan.length != features.day;
 							});
 
-							filtered_era = calendar.eras.filter(function(era){
-								return era.year === date.internal_year &&
+							filtered_era = static_data.eras.filter(function(era){
+								return era.year === dynamic_data.internal_year &&
 								era.timespan === timespan.index &&
 								era.day === timespan_day &&
 								era.day != timespan.length;
@@ -1156,7 +1160,7 @@ var calendar_layouts = {
 				calendar_layouts.html.push("<div class='timespan_container vertical'>");
 
 					calendar_layouts.html.push("<div class='timespan_name'>");
-						calendar_layouts.html.push(timespan.name + (calendar.settings.add_month_number ? " - Month " + (timespan.index+1) : ""));
+						calendar_layouts.html.push(timespan.name + (static_data.settings.add_month_number ? " - Month " + (timespan.index+1) : ""));
 					calendar_layouts.html.push("</div>");
 
 					calendar_layouts.html.push("<div class='timespan_row_container'>");
@@ -1227,7 +1231,7 @@ var calendar_layouts = {
 
 					calendar_layouts.html.push("<div class='timespan_container vertical'>");
 					calendar_layouts.html.push("<div class='timespan_name'>");
-						calendar_layouts.html.push(timespan.name + (calendar.settings.add_month_number ? " - Month " + (timespan.index+1) : ""));
+						calendar_layouts.html.push(timespan.name + (static_data.settings.add_month_number ? " - Month " + (timespan.index+1) : ""));
 					calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("<div class='timespan_row_container'>");
 

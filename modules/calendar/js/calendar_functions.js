@@ -9,12 +9,12 @@ function sorter(a, b) {
 function get_calendar_data(data){
 	data = data.split('.')
 	if(data[0] !== ""){
-		var current_calendar_data = calendar[data[0]];
+		var current_calendar_data = static_data[data[0]];
 		for(var i = 1; i < data.length; i++){
 			current_calendar_data = current_calendar_data[data[i]];
 		}
 	}else{
-		var current_calendar_data = calendar;
+		var current_calendar_data = static_data;
 	}
 	return current_calendar_data;
 }
@@ -211,19 +211,19 @@ function get_cycle(year){
 	var index_array = [];
 
 	// If cycles are enabled
-	if(calendar.cycles && year >= 0){
+	if(static_data.cycles && year >= 0){
 
 		// Define the index array
 		var index_array = [];
 
 		// Get the format
-		text = calendar.cycles.format;
+		text = static_data.cycles.format;
 
 		// Loop through each cycle
-		for(var index = 0; index < calendar.cycles.data.length; index++){
+		for(var index = 0; index < static_data.cycles.data.length; index++){
 
 		
-			var cycle = calendar.cycles.data[index];
+			var cycle = static_data.cycles.data[index];
 
 			// Get the cycle length from the year
 			var cycle_year = Math.floor((year + cycle.offset) / cycle.length);
@@ -250,7 +250,7 @@ function does_leap_day_appear(year, timespan, leap_day){
 
 	var timespan_appears = does_timespan_appear(year, timespan).result;
 
-	var leap_day = calendar.year_data.leap_days[leap_day];
+	var leap_day = static_data.year_data.leap_days[leap_day];
 
 	return timespan_appears && is_leap(year, leap_day.interval, leap_day.offset);
 
@@ -263,7 +263,7 @@ function convert_year(year){
 
 function get_days_in_timespan(year, timespan_index, exclusive){
 
-	var timespan = calendar.year_data.timespans[timespan_index];
+	var timespan = static_data.year_data.timespans[timespan_index];
 
 	var days = [];
 
@@ -277,7 +277,7 @@ function get_days_in_timespan(year, timespan_index, exclusive){
 
 	var offset = 0;
 
-	var leap_days = clone(calendar.year_data.leap_days.sort((a, b) => (a.day > b.day) ? 1 : -1))
+	var leap_days = clone(static_data.year_data.leap_days.sort((a, b) => (a.day > b.day) ? 1 : -1))
 
 	for(var leap_day_index = 0; leap_day_index < leap_days.length; leap_day_index++){
 
@@ -340,9 +340,9 @@ function get_days_in_timespan(year, timespan_index, exclusive){
 
 function does_timespan_appear(year, timespan){
 
-	for(var era_index = 0; era_index < calendar.eras.length; era_index++){
+	for(var era_index = 0; era_index < static_data.eras.length; era_index++){
 
-		var era = calendar.eras[era_index];
+		var era = static_data.eras[era_index];
 
 		if(era.settings.ends_year && year == era.date.year-1){
 
@@ -359,7 +359,7 @@ function does_timespan_appear(year, timespan){
 
 	}
 
-	if((year+calendar.year_data.timespans[timespan].offset) % calendar.year_data.timespans[timespan].interval != 0){
+	if((year+static_data.year_data.timespans[timespan].offset) % static_data.year_data.timespans[timespan].interval != 0){
 		return {
 			result: false,
 			reason: 'leaping'
@@ -378,9 +378,9 @@ function does_timespan_appear(year, timespan){
 
 function does_day_appear(year, timespan, day){
 
-	for(var era_index = 0; era_index < calendar.eras.length; era_index++){
+	for(var era_index = 0; era_index < static_data.eras.length; era_index++){
 
-		var era = calendar.eras[era_index];
+		var era = static_data.eras[era_index];
 
 		if(era.settings.ends_year && year == era.date.year-1 && timespan == era.date.timespan && day > era.date.day){
 
@@ -404,26 +404,16 @@ function fract_year_length(){
 
 	var length = 0;
 
-	for(var i = 0; i < calendar.year_data.timespans.length; i++){
-		length += calendar.year_data.timespans[i].length/calendar.year_data.timespans[i].interval;
+	for(var i = 0; i < static_data.year_data.timespans.length; i++){
+		length += static_data.year_data.timespans[i].length/static_data.year_data.timespans[i].interval;
 	}
 
-	for(var i = 0; i < calendar.year_data.leap_days.length; i++){
+	for(var i = 0; i < static_data.year_data.leap_days.length; i++){
 
-		var leap_day = calendar.year_data.leap_days[i];
-		var timespan = calendar.year_data.timespans[leap_day.timespan];
+		var leap_day = static_data.year_data.leap_days[i];
 
-		if(leap_day.reference === "year"){
-
-			// Get the least common multiple for the interval and divide the total by the total years, getting the number of eligiable leap days
-			length += 1 / lcm(timespan.interval, leap_day.interval);
-
-		}
+		length += get_leap_fraction(0, leap_day.interval, leap_day.offset)
 		
-		else if(leap_day.reference === "timespan"){
-			// Multiple the moduli by each other, dividing the years by that to get the number of eligiable leap days
-			length += timespan.interval/leap_day.interval;
-		}
 	}
 
 	return precisionRound(length, 4);
@@ -436,36 +426,21 @@ function avg_month_length(){
 	var length = 0;
 	var num_months = 0;
 
-	for(var i = 0; i < calendar.year_data.timespans.length; i++){
+	for(var i = 0; i < static_data.year_data.timespans.length; i++){
 
-		if(calendar.year_data.timespans[i].type === 'month'){
+		if(static_data.year_data.timespans[i].type === 'month'){
 
 			num_months++;
 
-			length += calendar.year_data.timespans[i].length/calendar.year_data.timespans[i].interval;
+			length += static_data.year_data.timespans[i].length/static_data.year_data.timespans[i].interval;
 		}
 	}
 
-	for(var i = 0; i < calendar.year_data.leap_days.length; i++){
+	for(var i = 0; i < static_data.year_data.leap_days.length; i++){
 
-		var leap_day = calendar.year_data.leap_days[i];
+		var leap_day = static_data.year_data.leap_days[i];
 
-		if(!leap_day.intercalary){
-
-			var timespan = calendar.year_data.timespans[leap_day.timespan];
-
-			if(leap_day.reference === "year"){
-
-				// Get the least common multiple for the interval and divide the total by the total years, getting the number of eligiable leap days
-				length += lcm(timespan.interval, leap_day.interval);
-
-			}
-			
-			else if(leap_day.reference === "timespan"){
-				// Multiple the moduli by each other, dividing the years by that to get the number of eligiable leap days
-				length += timespan.interval/leap_day.interval;
-			}
-		}
+		length += get_leap_fraction(0, leap_day.interval, leap_day.offset)
 	}
 
 	return length/num_months;
@@ -507,13 +482,13 @@ function clone(obj) {
 }
 
 
-function get_date(calendar, inc_calendar, epoch){
+function get_date(static_data, inc_calendar, epoch){
 
-	console.log(calendar.clock.hours / inc_calendar.clock.hours)
+	console.log(static_data.clock.hours / inc_calendar.clock.hours)
 
 	var year = Math.floor(epoch / fract_year_length());
 
-	if(evaluate_calendar_start(calendar, year).epoch > epoch){
+	if(evaluate_calendar_start(static_data, year).epoch > epoch){
 
 		var month = 0;
 		var day = 1;
@@ -525,7 +500,7 @@ function get_date(calendar, inc_calendar, epoch){
 
 		while(!found_date){
 			if(!found_year){
-				var find_epoch = evaluate_calendar_start(calendar, year).epoch;
+				var find_epoch = evaluate_calendar_start(static_data, year).epoch;
 				if(find_epoch < epoch){
 					found_year = true;
 				}else{
@@ -533,11 +508,11 @@ function get_date(calendar, inc_calendar, epoch){
 				}
 			}else{
 				if(!found_timespan){
-					var find_epoch = evaluate_calendar_start(calendar, year, month).epoch;
+					var find_epoch = evaluate_calendar_start(static_data, year, month).epoch;
 					if(find_epoch > epoch){
 						found_timespan = true;
 						month--;
-						var find_epoch = evaluate_calendar_start(calendar, year, month, day).epoch;
+						var find_epoch = evaluate_calendar_start(static_data, year, month, day).epoch;
 					}else{
 						month++;
 					}
@@ -552,11 +527,11 @@ function get_date(calendar, inc_calendar, epoch){
 			}
 		}
 	}else{
-		var month = calendar.year_data.timespans.length-1;
+		var month = static_data.year_data.timespans.length-1;
 		var day = 1;
 		while(!found_date){
 			if(!found_year){
-				var find_epoch = evaluate_calendar_start(calendar, year).epoch;
+				var find_epoch = evaluate_calendar_start(static_data, year).epoch;
 				if(find_epoch > epoch){
 					year--;
 					found_year = true;
@@ -565,7 +540,7 @@ function get_date(calendar, inc_calendar, epoch){
 				}
 			}else{
 				if(!found_timespan){
-					var find_epoch = evaluate_calendar_start(calendar, year, month).epoch;
+					var find_epoch = evaluate_calendar_start(static_data, year, month).epoch;
 					if(find_epoch < epoch){
 						found_timespan = true;
 					}else{
@@ -654,51 +629,58 @@ function is_leap(year, intervals, offsets){
 
 function get_leap_fraction(year, intervals, offsets){
 
+	// The intervals parameter is a string with numbers seperated by commas, usually in the format of:
+	// +400,+!100,4
+	// Every fourth, except if divisible by 100, disregarding the previous rule every 400th year
 	intervals = intervals.split(',').reverse();
 
+	// If there's only one interval, we can calculate that without looping through each part
 	if(intervals.length == 1){
-		var interval = Number(intervals[0]);
+		var interval = intervals[0]|0;
 		var offset = (interval-offsets)%interval;
-		return Math.floor((year+offset) / Number(interval));
+		return (year+offset) / interval|0;
 	}
 
-	var base_interval = Number(intervals[0]);
+	// Get the base fraction, which we will add to or subtract based on its following rules
+	var base_interval = intervals[0]|0;
 	var offset = (base_interval-offsets)%base_interval;
-	var fraction = Math.floor((year+offset) / base_interval);
+	var fraction = (year+offset) / base_interval;
 
 	for(var i = 1; i < intervals.length; i++){
 
 		var interval = intervals[i];
 		var offset = offsets;
 
+		// If it is a negator, subtract it from the total
 		if(interval.includes('!')){
 
+			// That ignores offset or respects offset
 			if(interval.includes('+')){
-				var interval = Number(interval.slice(2));
+				var interval = interval.slice(2)|0;
 				offset = 0;
 			}else{
-				var interval = Number(interval.slice(1));
+				var interval = interval.slice(1)|0;
 				offset = (interval-offset)%interval;
 			}
 
-			fraction -= Math.floor((year+offset) / lcm(interval, base_interval));
+			fraction -= (year+offset) / lcm(interval, base_interval);
 
+		// If it is inclusive
 		}else{
 
+			// That ignores or respects the offset
 			if(interval.includes('+')){
-				var interval = Number(interval.slice(1));
+				var interval = interval.slice(1)|0;
 				offset = 0;
-				if(interval%base_interval != 0){
-					fraction += Math.floor((year+offset) / interval);
-				}
-
 			}else{
-				var interval = Number(interval);
+				var interval = interval|0;
 				offset = (interval-offset)%interval;
-				if(interval%base_interval != 0){
-					fraction += Math.floor((year+offset) / interval);
-				}
 			}
+
+			fraction += (year+offset) / interval;
+
+			// We subtract because of intersections, eg every 3rd year and every 10 years would intersect on 30, so we need to subtract then.
+			fraction -= (year+offset) / lcm(interval, base_interval);
 
 		}
 
@@ -708,8 +690,9 @@ function get_leap_fraction(year, intervals, offsets){
 
 }
 
-function get_epoch(calendar, year, month, day, inclusive){
+function get_epoch(static_data, year, month, day, inclusive){
 
+	// Set up variables
 	var epoch = 0;
 	var month = !isNaN(month) ? month : 0;
 	var day = !isNaN(day) ? day : 0;
@@ -719,33 +702,39 @@ function get_epoch(calendar, year, month, day, inclusive){
 	var count_timespans = [];
 	var total_week_num = 1;
 
-	for(index = 0; index < calendar.year_data.timespans.length; index++){
+	// Loop through each month
+	for(month_index = 0; month_index < static_data.year_data.timespans.length; month_index++){
 
-		if(index < month){
+		// If the month index is lower than the month parameter, add a year so we can get the exact epoch for a month within a year
+		if(month_index < month){
 			year = actual_year+1;
 		}else{
 			year = actual_year;
 		}
 
 		// Get the current timespan's data
-		timespan = calendar.year_data.timespans[index];
+		timespan = static_data.year_data.timespans[month_index];
 
 		// Get the fraction of that month's appearances
 		var timespan_fraction = Math.floor((year + timespan.offset) / timespan.interval);
 
-		if(!calendar.year_data.overflow){
+		// Get the number of weeks for that month (check if it has a custom week or not)
+		if(!static_data.year_data.overflow){
 			if(timespan.week){
 				total_week_num += Math.abs(Math.floor((timespan.length * timespan_fraction)/timespan.week));
 			}else{
-				total_week_num += Math.abs(Math.floor((timespan.length * timespan_fraction)/calendar.year_data.global_week.length));
+				total_week_num += Math.abs(Math.floor((timespan.length * timespan_fraction)/static_data.year_data.global_week.length));
 			}
 		}
 
-		count_timespans[index] = Math.abs(timespan_fraction);
+		// Count the number of times each month has appeared
+		count_timespans[month_index] = Math.abs(timespan_fraction);
  
 		// Add the month's length to the epoch, adjusted by its interval
 		epoch += timespan.length * timespan_fraction;
 
+
+		// If the month is intercalary, add it to the variable to be subtracted when calculating first day of the year
 		if(timespan.type === "intercalary"){
 			intercalary += timespan.length * timespan_fraction;
 		}else{
@@ -753,20 +742,18 @@ function get_epoch(calendar, year, month, day, inclusive){
 		}
 
 		// Loop through each leap day
-		for(leap_day_index = 0; leap_day_index < calendar.year_data.leap_days.length; leap_day_index++){
+		for(leap_day_index = 0; leap_day_index < static_data.year_data.leap_days.length; leap_day_index++){
 
 			// Get the current leap day data
-			leap_day = calendar.year_data.leap_days[leap_day_index];
+			leap_day = static_data.year_data.leap_days[leap_day_index];
 
 			added_leap_day = 0;
 
-			if(index === leap_day.timespan){
+			if(month_index === leap_day.timespan){
 				
-				// Multiple the moduli by each other, dividing the years by that to get the number of eligiable leap days
-				//added_leap_day = Math.floor((year+(leap_day.offset*timespan.interval)) / lcm(timespan.interval, leap_day.interval));
-				added_leap_day = get_leap_fraction(timespan_fraction, leap_day.interval, leap_day.offset);
+				added_leap_day = Math.floor(get_leap_fraction(timespan_fraction, leap_day.interval, leap_day.offset));
 
-				// If we have leap days days that are intercalary (eg, do not affect the flow of the calendar, add them to the overall epoch, but remove them from the start of the year week day selection)
+				// If we have leap days days that are intercalary (eg, do not affect the flow of the static_data, add them to the overall epoch, but remove them from the start of the year week day selection)
 				if(leap_day.intercalary){
 					intercalary += added_leap_day;
 				}
@@ -782,8 +769,8 @@ function get_epoch(calendar, year, month, day, inclusive){
 	epoch += day;
 
 
-	if(calendar.year_data.overflow){
-		total_week_num += Math.floor((epoch-intercalary)/calendar.year_data.global_week.length);
+	if(static_data.year_data.overflow){
+		total_week_num += Math.floor((epoch-intercalary)/static_data.year_data.global_week.length);
 	}
 
 	return [epoch, intercalary, count_timespans, num_timespans, total_week_num];
@@ -791,29 +778,29 @@ function get_epoch(calendar, year, month, day, inclusive){
 }
 
 
-function evaluate_calendar_start(calendar, year, month, day){
+function evaluate_calendar_start(static_data, year, month, day){
 
 	//Initiatlize variables
 	var era_year = year >= 0 ? year+1 : year;
 	var month = !isNaN(month) ? month : 0;
 	var day = !isNaN(day) ? day-1 : 0;
-	tmp = get_epoch(calendar, (year|0), (month|0), (day|0));
+	tmp = get_epoch(static_data, (year|0), (month|0), (day|0));
 	var epoch = tmp[0];
 	var intercalary = tmp[1];
 	var count_timespans = tmp[2];
 	var num_timespans = tmp[3];
 	var total_week_num = tmp[4];
-	var week_day = calendar.year_data.first_day;
+	var week_day = static_data.year_data.first_day;
 
+	// For each era, check if they end the year, subtract the remaining days of that year from the epoch total so we can get proper start of the year
+	for(var era_index = 0; era_index < static_data.eras.length; era_index++){
 
-	for(var era_index = 0; era_index < calendar.eras.length; era_index++){
-
-		era = calendar.eras[era_index];
+		era = static_data.eras[era_index];
 
 		if(era.settings.ends_year && year > era.date.year-1){
 
-			era_epoch = get_epoch(calendar, era.date.year-1, era.date.timespan, era.date.day-1);
-			normal_epoch_during_era = get_epoch(calendar, era.date.year-1);
+			era_epoch = get_epoch(static_data, era.date.year-1, era.date.timespan, era.date.day-1);
+			normal_epoch_during_era = get_epoch(static_data, era.date.year-1);
 
 			epoch -= (normal_epoch_during_era[0] - era_epoch[0]);
 
@@ -828,10 +815,10 @@ function evaluate_calendar_start(calendar, year, month, day){
 
 	}
 	
-
-	if(calendar.year_data.overflow){
-		week_day = (epoch-intercalary+calendar.year_data.first_day-1) % calendar.year_data.global_week.length;
-		if (week_day < 0) week_day += calendar.year_data.global_week.length;
+	// Calculate the start of week
+	if(static_data.year_data.overflow){
+		week_day = (epoch-intercalary+static_data.year_data.first_day-1) % static_data.year_data.global_week.length;
+		if (week_day < 0) week_day += static_data.year_data.global_week.length;
 		week_day += 1;
 	}else{
 		week_day = 1;
@@ -849,11 +836,11 @@ function evaluate_calendar_start(calendar, year, month, day){
 }
 
 
-function has_year_ending_era(calendar, year){
+function has_year_ending_era(static_data, year){
 
-	for(var era_index = 0; era_index < calendar.eras.length; era_index++){
+	for(var era_index = 0; era_index < static_data.eras.length; era_index++){
 
-		var era = calendar.eras[era_index];
+		var era = static_data.eras[era_index];
 
 		if(era.settings.ends_year && year == convert_year(era.date.year)){
 

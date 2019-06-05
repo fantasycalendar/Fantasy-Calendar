@@ -1,13 +1,15 @@
-var date = {
+var dynamic_data = {
 	"year": 1,
 	"timespan": 0,
 	"day": 1,
 	"hour": 0,
 	"minute": 0,
-	"epoch": 0
+	"epoch": 0,
+	"location_type": "custom",
+	"location": 0,
 }
 
-var calendar = {
+var static_data = {
 	"name": "Darian",
 
 	"year_data": {
@@ -285,8 +287,6 @@ var calendar = {
 				},
 			}
 		],
-		"location_type": "custom",
-		"location": 0,
 		"locations": [
 			{
 				"name": "Northern Dusuna",

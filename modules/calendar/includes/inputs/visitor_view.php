@@ -9,7 +9,7 @@
 	<!---------------------------------------------->
 
 	<div class='wrap-collapsible'>
-		<input id="collapsible_date" class="toggle" type="checkbox">
+		<input id="collapsible_date" class="toggle" type="checkbox" checked disabled>
 		<label for="collapsible_date" class="lbl-toggle lbl-text">Current Date & Time <a target="_blank" title='Fantasy Calendar Wiki: Date' href='https://wiki.fantasy-calendar.com/index.php?title=Date' class="wiki"><i class="icon-question-sign"></i></a></label>
 		<div class="collapsible-content">
 			

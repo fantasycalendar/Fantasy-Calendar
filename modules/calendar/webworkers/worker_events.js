@@ -3,7 +3,7 @@ importScripts('../js/calendar_variables.js');
 
 
 onmessage = e => {
-	data = event_evaluator.init(e.data.calendar, e.data.pre_epoch_data, e.data.epoch_data, e.data.event_id);
+	data = event_evaluator.init(e.data.static_data, e.data.pre_epoch_data, e.data.epoch_data, e.data.event_id);
 	postMessage(data);
 }
 
@@ -14,13 +14,13 @@ var event_evaluator = {
 
 	start_epoch: 0,
 
-	calendar: {},
+	static_data: {},
 	pre_epoch_data: {},
 	epoch_data: {},
 
-	init: function(calendar, pre_epoch_data, epoch_data, event_id){
+	init: function(static_data, pre_epoch_data, epoch_data, event_id){
 
-		this.calendar = calendar;
+		this.static_data = static_data;
 		this.pre_epoch_data = pre_epoch_data;
 		this.epoch_data = epoch_data;
 
@@ -42,8 +42,8 @@ var event_evaluator = {
 
 		this.start_epoch = Number(Object.keys(this.epoch_data)[0]);
 
-		this.events = clone(this.calendar.event_data.events);
-		this.categories = clone(this.calendar.event_data.categories);
+		this.events = clone(this.static_data.event_data.events);
+		this.categories = clone(this.static_data.event_data.categories);
 		this.evaluate_valid_events(this.pre_epoch_data, event_id);
 		this.evaluate_valid_events(this.epoch_data, event_id);
 

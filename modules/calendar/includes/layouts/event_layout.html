@@ -55,6 +55,22 @@
 				</div>
 
 				<div class='detail-row'>
+					<h5 class='event-form-heading full'>Settings:</h5>
+
+					<div class='detail-column half'>
+						<label class='form-control checkbox'>
+							<input type='checkbox' id='event_hide_players' name='event_hide_players'> Hide from players  
+						</label>
+					</div>
+
+					<div class='detail-column half'>
+						<label class='form-control checkbox'>
+							<input type='checkbox' id='event_dontprint_checkbox' name='event_dontprint_checkbox'> Do not print
+						</label>
+					</div>
+				</div>
+
+				<div class='detail-row'>
 					<h5 class='event-form-heading'>Category:</h5>
 					<select class="form-control" id="event_categories" name='event_categories' placeholder='Event Category'>
 
@@ -94,20 +110,6 @@
 				</div>
 
 				<div class='detail-row'>
-					<div class='detail-column half'>
-						<label class='form-control checkbox'>
-							<input type='checkbox' id='event_hide_players' name='event_hide_players'> Hide from players  
-						</label>
-					</div>
-
-					<div class='detail-column half'>
-						<label class='form-control checkbox'>
-							<input type='checkbox' id='event_dontprint_checkbox' name='event_dontprint_checkbox'> Do not print
-						</label>
-					</div>
-				</div>
-
-				<div class='detail-row'>
 					<div class='detail-column full'>
 						Event look: <div class='half event-text-output event'>Event name</div>
 					</div>
@@ -121,15 +123,7 @@
 
 				<div class='btn btn-lg btn-primary btn-block' id='btn_event_save'>Save</div>
 				<div class='btn btn-sm btn-danger btn-block' id='btn_event_delete'>Delete</div>
-
-
-				<div id='event_data_container'>
-					<div class='data detail-column'>
-						<div class='header'>Data today:</div>
-						<div></div>
-					</div>
-					<div class='btn btn-primary btn-sm detail-column'><span><</span></div>
-				</div>
+				
 			</form>
 		</div>
 	</div>

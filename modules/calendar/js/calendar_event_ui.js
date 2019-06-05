@@ -86,7 +86,7 @@ var edit_event_ui = {
 
 		$("#event_categories").change(function(){
 			if($(this).val() != -1){
-				var category = calendar.event_data.categories[$(this).val()];
+				var category = static_data.event_data.categories[$(this).val()];
 				$('#color_style').val(category.color);
 				$('#text_style').val(category.text).change();
 				$('#event_hide_players').prop('checked', category.event_settings.hide);
@@ -144,8 +144,8 @@ var edit_event_ui = {
 	populate_categories: function(){
 		var html = [];
 		html.push("<option selected value='-1'>None</option>")
-		for(var i = 0; i < calendar.event_data.categories.length; i++){
-			var category = calendar.event_data.categories[i];
+		for(var i = 0; i < static_data.event_data.categories.length; i++){
+			var category = static_data.event_data.categories[i];
 			html.push(`<option value='${i}'>`)
 			html.push(category.name)
 			html.push("</option>")
@@ -155,7 +155,7 @@ var edit_event_ui = {
 
 	set_current_event: function(event_id){
 
-		this.editing_event = calendar.event_data.events[event_id];
+		this.editing_event = static_data.event_data.events[event_id];
 
 		this.event_background.find('.event_name').val(this.editing_event.name);
 
@@ -390,9 +390,9 @@ var edit_event_ui = {
 			if(condition_selected[0] == "select"){
 				html.push("<select class='form-control form-control-sm'>")
 
-				for(var i = 0; i < calendar.year_data.timespans.length; i++){
+				for(var i = 0; i < static_data.year_data.timespans.length; i++){
 					html.push(`<option value='${i}'>`);
-					html.push(calendar.year_data.timespans[i].name);
+					html.push(static_data.year_data.timespans[i].name);
 					html.push("</option>");
 				}
 
@@ -424,9 +424,9 @@ var edit_event_ui = {
 
 				html.push("<select class='form-control form-control-sm'>")
 
-				for(var i = 0; i < moon_phases[calendar.moons[selected_moon].granularity].length; i++){
+				for(var i = 0; i < moon_phases[static_data.moons[selected_moon].granularity].length; i++){
 					html.push(`<option value='${i}'>`);
-					html.push(moon_phases[calendar.moons[selected_moon].granularity][i]);
+					html.push(moon_phases[static_data.moons[selected_moon].granularity][i]);
 					html.push("</option>");
 				}
 
@@ -453,11 +453,11 @@ var edit_event_ui = {
 		}else if(type == "Cycle"){
 
 			html.push("<select class='form-control form-control-sm'>")
-			for(var i = 0; i < calendar.cycles.data.length; i++){
+			for(var i = 0; i < static_data.cycles.data.length; i++){
 				html.push(`<optgroup label='${ordinal_suffix_of(i+1)} cycle group' value='${i}'>`);
-				for(var j = 0; j < calendar.cycles.data[i].names.length; j++){
+				for(var j = 0; j < static_data.cycles.data[i].names.length; j++){
 					html.push(`<option value='${j}'>`);
-					html.push(calendar.cycles.data[i].names[j]);
+					html.push(static_data.cycles.data[i].names[j]);
 					html.push("</option>");
 				}
 				html.push("</optgroup>");
@@ -468,9 +468,9 @@ var edit_event_ui = {
 		}else if(type == "Era"){
 
 			html.push("<select class='form-control form-control-sm'>")
-			for(var i = 0; i < calendar.eras.length; i++){
+			for(var i = 0; i < static_data.eras.length; i++){
 				html.push(`<option value='${j}'>`);
-				html.push(calendar.eras[i].name);
+				html.push(static_data.eras[i].name);
 				html.push("</option>");
 			}
 
@@ -482,26 +482,26 @@ var edit_event_ui = {
 
 				html.push(`<optgroup label='Global week' value='global_week'>`);
 
-				for(var i = 0; i < calendar.year_data.global_week.length; i++){
+				for(var i = 0; i < static_data.year_data.global_week.length; i++){
 
 					html.push(`<option value='${i}'>`);
-					html.push(calendar.year_data.global_week[i]);
+					html.push(static_data.year_data.global_week[i]);
 					html.push("</option>");
 					
 				}
 
 				html.push("</optgroup>");
 
-				for(var i = 0; i < calendar.year_data.timespans.length; i++){
+				for(var i = 0; i < static_data.year_data.timespans.length; i++){
 
-					if(calendar.year_data.timespans[i].week){
+					if(static_data.year_data.timespans[i].week){
 
-						html.push(`<optgroup label='${calendar.year_data.timespans[i].name} (custom week)' value='${i}'>`);
+						html.push(`<optgroup label='${static_data.year_data.timespans[i].name} (custom week)' value='${i}'>`);
 
-						for(var j = 0; j < calendar.year_data.timespans[i].week.length; j++){
+						for(var j = 0; j < static_data.year_data.timespans[i].week.length; j++){
 
 							html.push(`<option value='${j}'>`);
-							html.push(calendar.year_data.timespans[i].week[j]);
+							html.push(static_data.year_data.timespans[i].week[j]);
 							html.push("</option>");
 
 						}
@@ -545,9 +545,9 @@ var edit_event_ui = {
 			html.push(`<div class='condition_container ${type}'>`);
 				html.push("<div class='handle icon-reorder'></div>");
 				html.push("<select class='form-control form-control-sm moon_select'>");
-					for(var i = 0; i < calendar.moons.length; i++){
+					for(var i = 0; i < static_data.moons.length; i++){
 						html.push(`<option value='${i}'>`);
-						html.push(calendar.moons[i].name);
+						html.push(static_data.moons[i].name);
 						html.push("</option>");
 					}
 				html.push("</select>");
@@ -559,17 +559,17 @@ var edit_event_ui = {
 
 
 						if(
-							(keys[i] === "Era year" && calendar.eras === undefined)
+							(keys[i] === "Era year" && static_data.eras === undefined)
 							||
-							(keys[i] === "Era" && calendar.eras === undefined)
+							(keys[i] === "Era" && static_data.eras === undefined)
 							||
-							(keys[i] === "Month" && calendar.year_data.timespans === undefined)
+							(keys[i] === "Month" && static_data.year_data.timespans === undefined)
 							||
-							(keys[i] === "Weekday" && calendar.year_data.global_week === undefined)
+							(keys[i] === "Weekday" && static_data.year_data.global_week === undefined)
 							||
-							(keys[i] === "Moons" && calendar.moons === undefined)
+							(keys[i] === "Moons" && static_data.moons === undefined)
 							||
-							(keys[i] === "Cycle" && calendar.cycles === undefined)
+							(keys[i] === "Cycle" && static_data.cycles === undefined)
 						){
 							continue;
 						}
@@ -694,37 +694,53 @@ var show_event_ui = {
 		this.event_background 					= $('#event_show_background');
 		this.close_ui_btn						= show_event_ui.event_background.find('.close_ui_btn');
 
-		show_event_ui.close_ui_btn.click(function(){
+		this.event_wrapper						= this.event_background.find('.event-wrapper');
+		this.event_name							= this.event_background.find('.event_name');
+		this.event_desc							= this.event_background.find('.event_desc');
+
+		this.close_ui_btn.click(function(){
 			show_event_ui.clear_ui();
+		});
+
+		this.event_wrapper.mousedown(function(event){
+			event.stopPropagation();
+		});
+
+		this.event_background.mousedown(function(){
+			show_event_ui.clear_ui();
+		});
+
+		$(document).on('click', '.event', function(){
+
+			show_event_ui.set_current_event($(this).attr('event_id')|0)
+
 		});
 
 	},
 
 	set_current_event: function(event_id){
 
-		show_event_ui.event_id = event_id;
+		this.event_id = event_id;
 
-		var event = calendar.event_data.events[event_id];
+		var event = static_data.event_data.events[event_id];
 
-		show_event_ui.event_background.find('.event_name').text(event.name)
-		if(event.description.length > 1){
-			show_event_ui.event_background.find('.event_desc').html(event.description)
-		}else{
-			show_event_ui.event_background.find('.event_desc').addClass('hidden');
-		}
+		this.event_name.text(event.name)
+		
+		this.event_desc.html(event.description).toggleClass('hidden', event.description.length == 0);
 
-		show_event_ui.event_background.removeClass('hidden');
+		this.event_background.removeClass('hidden');
 
 	},
 
 	clear_ui: function(){
 
-		show_event_ui.event_id = null;
+		this.event_id = null;
 
-		show_event_ui.event_background.find('.event_name').text('');
-		show_event_ui.event_background.find('.event_desc').html('').removeClass('hidden');
+		this.event_name.text('');
 
-		show_event_ui.event_background.addClass('hidden');
+		this.event_desc.html('').removeClass('hidden');
+
+		this.event_background.addClass('hidden');
 
 	},
 }

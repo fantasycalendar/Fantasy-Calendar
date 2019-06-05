@@ -831,37 +831,6 @@ label{
     margin-bottom: 40px;
 }
 
-#event_form{
-	z-index:2;
-}
-
-#event_data_container{
-	display:flex;
-	position: absolute;
-	top:600px;
-	right:-200px;
-	height:400px;
-	width:200px;
-	z-index:1;
-	background-color:white;
-	border-top-right-radius: 15px;
-	border-bottom-right-radius: 15px;
-}
-
-#event_data_container .data{
-	flex:1 0 auto;
-}
-
-#event_data_container .btn{
-	height:100%;
-	flex:0 1 auto;
-}
-
-#event_data_container .btn span{
-	position: relative;
-	top:45%;
-}
-
 .clickable_background{
 	position: fixed;
 	top: 0px;

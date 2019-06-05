@@ -1,4 +1,6 @@
 function set_up_visitor_inputs(){
+
+	show_event_ui.bind_events();
 	
 	target_year = $('#target_year');
 	target_timespan = $('#target_timespan');
@@ -28,7 +30,7 @@ function set_up_visitor_inputs(){
 	});
 
 
-	preview_date = clone(date);
+	preview_date = clone(dynamic_data);
 
 	if(preview_date){
 
@@ -226,10 +228,10 @@ function set_up_visitor_inputs(){
 	});
 
 	$('#reset_preview_date').click(function(){
-		target_year.val(date.year);
-		target_timespan.val(date.timespan);
-		target_day.val(date.day);
-		set_date(date.year, date.timespan, date.day);
+		target_year.val(dynamic_data.year);
+		target_timespan.val(dynamic_data.timespan);
+		target_day.val(dynamic_data.day);
+		set_date(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
 	});
 
 	
@@ -245,9 +247,9 @@ function set_preview_date(year, timespan, day){
 
 	var rebuild = false;
 
-	if((preview_date.year != year || (preview_date.year == year && preview_date.year != date.year))
+	if((preview_date.year != year || (preview_date.year == year && preview_date.year != dynamic_data.year))
 		||
-		(calendar.settings.show_current_month && (preview_date.timespan != timespan || (preview_date.timespan == timespan && preview_date.timespan != date.timespan)))
+		(static_data.settings.show_current_month && (preview_date.timespan != timespan || (preview_date.timespan == timespan && preview_date.timespan != dynamic_data.timespan)))
 	){
 		rebuild = true;
 	}
@@ -265,8 +267,179 @@ function set_preview_date(year, timespan, day){
 
 function evaluate_settings(){
 
-	$('.btn_container').toggleClass('hidden', !owner && !calendar.settings.allow_view);
-	$('.btn_preview_date[key="year"]').prop('disabled', !owner && !calendar.settings.allow_view).toggleClass('hidden', !owner && !calendar.settings.allow_view);
-	$('.btn_preview_date[key="timespan"]').prop('disabled', !owner && !calendar.settings.show_current_month).toggleClass('hidden', !owner && !calendar.settings.show_current_month)
+	$('.btn_container').toggleClass('hidden', !owner && !static_data.settings.allow_view);
+	$('.btn_preview_date[key="year"]').prop('disabled', !owner && !static_data.settings.allow_view).toggleClass('hidden', !owner && !static_data.settings.allow_view);
+	$('.btn_preview_date[key="timespan"]').prop('disabled', !owner && !static_data.settings.show_current_month).toggleClass('hidden', !owner && !static_data.settings.show_current_month)
 
+}
+
+
+function eval_clock(){
+
+	clock_hours = static_data.clock.hours;
+
+	$('#clock').empty();
+
+	$('#clock').css('display', 'block');
+
+	var element = [];
+	element.push("<img src='resources/clock_arm.png' id='clock_arm'/>");
+	element.push("<div id='clock_hours'></div>");
+	element.push("<img src='resources/dayhelper.png' id='dayhelper' class='SunUpDown'/>");
+	element.push("<img src='resources/nighthelper.png' id='nighthelper' class='SunUpDown'/>");
+	element.push("<div id='SunUp_Container'>");
+		element.push("<img src='resources/startofday.png' id='StartOfDay'/>");
+	element.push("</div>");
+	element.push("<div id='SunDown_Container'>");
+		element.push("<img src='resources/endofday.png' id='EndOfDay' />");
+	element.push("</div>");
+	element.push("<img src='resources/clock_base.png' id='base'/>");
+
+	$('#clock').html(element.join(''));
+
+	element = [];
+	for(var i = 0; i < clock_hours; i++){
+		var rotation = ((360/clock_hours)*i);
+		element.push(`<div class='clock_hour_text_container' style='transform: rotate(${rotation+180}deg);'><span class='clock_hour_text' style='transform: rotate(-${rotation+180}deg);'>${i}</span></div>`)
+		element.push(`<img class='clock_hour' src='resources/clock_hour.png' style='transform: rotate(${rotation}deg);'>`);
+	}
+
+	$('#clock_hours').html(element.join(''));
+
+	eval_current_time();
+
+}
+
+function eval_current_time(){
+
+	var clock_hour = dynamic_data.hour;
+	var clock_minute = dynamic_data.minute;
+	var clock_time = clock_hour + (clock_minute/60);
+	var clock_fraction_time = clock_time/clock_hours;
+
+	var rotation = (360/clock_hours)*clock_time;
+
+	if(clock_time >= clock_hours)
+	{
+		rotation = 360+(360/clock_hours)*clock_time;
+	}
+	else if(clock_time < 0)
+	{
+		rotation = (360/clock_hours)*clock_time;
+	}
+
+	rotate_element($('#clock_arm'), rotation);
+
+	evaluate_sun();
+
+}
+
+function evaluate_sun(){
+
+	if(evaluated_static_data.epoch_data[dynamic_data.epoch]){
+
+		var sunset = evaluated_static_data.epoch_data[dynamic_data.epoch].season.sunset[0];
+		var sunrise = evaluated_static_data.epoch_data[dynamic_data.epoch].season.sunrise[0];
+
+		sunrise = (360/clock_hours)*(sunrise-clock_hours/4);
+		sunset = (360/clock_hours)*(sunset+clock_hours/4)-360;
+
+		if(Math.abs(sunset-sunrise) < 220){
+
+			var rotate_parent = mid(sunrise, sunset);
+
+			if(sunset-sunrise > 0){
+				$('#dayhelper').css('display', 'block');
+				$('#nighthelper').css('display', 'none');
+			}else{
+				$('#nighthelper').css('display', 'block');
+				$('#dayhelper').css('display', 'none');
+			}
+
+			rotate_element($('#StartOfDay'), sunrise-rotate_parent);
+			rotate_element($('#SunUp_Container'), rotate_parent);
+
+			rotate_element($('#EndOfDay'), sunset-rotate_parent);
+			rotate_element($('#SunDown_Container'), rotate_parent);
+
+		}
+		
+	}
+
+}
+
+function rotate_element(element, rotation){
+	element.css('-webkit-transform','rotate('+rotation+'deg)'); 
+	element.css('-moz-transform', 'rotate('+rotation+'deg)');
+	element.css('transform', 'rotate('+rotation+'deg)');
+}
+
+function repopulate_timespan_select(select, year){
+	var html = [];
+	for(var i = 0; i < static_data.year_data.timespans.length; i++){
+		var is_there = does_timespan_appear(year, i);
+		html.push(`<option ${!is_there.result ? 'disabled' : ''} value='${i}'>`);
+		html.push(static_data.year_data.timespans[i].name + (!is_there.result ? ` (${is_there.reason})` : ''));
+		html.push('</option>');
+	}
+
+	select.html(html.join('')).val(dynamic_data.timespan);
+	if(select.find('option:selected').prop('disabled') || select.val() == null){
+		for(var i = select.find('option:selected').val()|0; i >= 0 ; i--){
+			if(!select.children().eq(i).prop('disabled')){
+				break;
+			}
+		}
+		select.val(i);
+	}
+
+	return select.val()|0;
+}
+
+function repopulate_day_select(select, year, timespan){
+	var days = get_days_in_timespan(year, timespan, true);
+	var html = [];
+	for(var i = 0; i < days.length; i++){
+		var day = days[i];
+		html.push(`<option value='${i+1}' ${!day.is_there.result ? 'disabled' : ''}>`);
+		html.push(day.text + (!day.is_there.result ? ` (${day.is_there.reason})` : ''));
+		html.push('</option>');
+	}
+	select.html(html.join('')).val(dynamic_data.day);
+	if(select.find('option:selected').prop('disabled') || select.val() == null){
+		for(var i = dynamic_data.day-1; i >= 0; i--){
+			if(select.children().eq(i).length && !select.children().eq(i).prop('disabled')){
+				break;
+			}
+		}
+		select.val(i+1);
+	}
+	select.data('val', dynamic_data.day);
+
+	return select.val()|0;
+	
+}
+
+function repopulate_location_select_list(){
+	var html = [];
+	if(static_data.seasons.locations.length > 0){
+		html.push('<optgroup label="Custom" value="custom">');
+		for(var i = 0; i < static_data.seasons.locations.length; i++){
+			html.push(`<option value='${i}'>${static_data.seasons.locations[i].name}</option>`);
+		}
+		html.push('</optgroup>');
+	}
+	html.push('<optgroup label="Presets" value="preset">');
+	for(var i = 0; i < Object.keys(climate_generator.presets).length; i++){
+		html.push(`<option>${Object.keys(climate_generator.presets)[i]}</option>`);
+	}
+	html.push('</optgroup>');
+
+	location_select.html(html.join('')).val(dynamic_data.location);
+
+	if(location_select.val() === null){
+		location_select.find('option').first().prop('selected', true);
+		dynamic_data.location = location_select.val();
+		dynamic_data.custom_location = location_select.find('option:selected').parent().attr('value');
+	}
 }
