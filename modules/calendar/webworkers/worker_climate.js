@@ -16,7 +16,7 @@ onmessage = e => {
 
 	var first_epoch = Object.keys(epoch_data)[0]|0;
 	
-	climate_generator.set_up(static_data, dynamic_data, first_epoch);
+	climate_generator.set_up(calendar_name, static_data, dynamic_data, first_epoch);
 
 	var keys = Object.keys(epoch_data);
 	var length = keys.length;

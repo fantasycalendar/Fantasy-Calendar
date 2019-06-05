@@ -230,12 +230,12 @@ function set_up_view_inputs(){
 		set_date(curr_year, curr_timespan, curr_day);
 	}));
 
-	current_day.change($.debounce(10, function(e) {
+	current_day.change(function(){
 		var curr_year = current_year.val()|0;
 		var curr_timespan = current_timespan.val()|0;
 		var curr_day = current_day.val()|0;
 		set_date(curr_year, curr_timespan, curr_day);
-	}));
+	});
 
 
 
@@ -355,8 +355,6 @@ function set_up_view_inputs(){
 				current_day.change();
 			}
 		}
-
-		eval_current_time();
 
 		rebuild_climate();
 

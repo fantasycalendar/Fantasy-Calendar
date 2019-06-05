@@ -73,9 +73,12 @@ worker_events.onmessage = e => {
 
 worker_climate.onmessage = e => {
 
-	calendar_weather.epoch_data = e.data;
+	evaluated_static_data.epoch_data = e.data;
+	calendar_weather.epoch_data = clone(evaluated_static_data.epoch_data);
 
 	evaluate_weather_charts();
+	
+	eval_current_time();
 
 }
 

@@ -11,9 +11,11 @@ function update_date(new_date){
 		dynamic_data.timespan = new_date.timespan;
 		dynamic_data.year = new_date.year;
 		rebuild_calendar('calendar', dynamic_data);
+		update_current_day(true);
 	}else if(dynamic_data.timespan != new_date.timespan){
-		if(calendar.settings.show_current_month){
+		if(static_data.settings.show_current_month){
 			rebuild_calendar('calendar', dynamic_data);
+			update_current_day(true);
 		}else{
 			dynamic_data.day = new_date.day;
 			dynamic_data.timespan = new_date.timespan;
@@ -59,22 +61,58 @@ function check_last_change(){
 
 			if(result){
 
-				var new_dynamic = new Date(result.last_dynamic_change);
-				var new_static = new Date(result.last_static_change);
+				var new_dynamic_change = new Date(result.last_dynamic_change);
+				var new_static_change = new Date(result.last_static_change);
 
-				if(new_static > last_static_change){
+				if(new_static_change > last_static_change){
 
-					last_static_change = new_static;
-					last_dynamic_change = new_dynamic;
+					last_static_change = new_static_change;
+					last_dynamic_change = new_dynamic_change;
 					get_all_data();
 
 				}else{
 
-					if(new_dynamic > last_dynamic_change){
+					if(new_dynamic_change > last_dynamic_change){
 
-						last_dynamic_change = new_dynamic;
+						last_dynamic_change = new_dynamic_change;
 						get_dynamic_data();
 					}
+
+				}
+
+				if(document.hasFocus()){
+					timer = setTimeout('check_last_change()', 2500);
+				}
+			}
+		},
+		error: function ( log )
+		{
+			console.log(log);
+		}
+	});
+
+}
+
+function check_last_change_forced(){
+
+	$.ajax({
+		url:window.baseurl+"modules/calendar/ajax/ajax_calendar",
+		type: "post",
+		dataType: 'json',
+		proccessData: false,
+		data: {action: 'check_last_change', hash: hash},
+		success: function(result){
+
+			if(result){
+
+				var new_dynamic_change = new Date(result.last_dynamic_change);
+				var new_static_change = new Date(result.last_static_change);
+
+				if(new_static_change > last_static_change || new_dynamic_change > last_dynamic_change){
+
+					last_static_change = new_static_change;
+					last_dynamic_change = new_dynamic_change;
+					get_all_data();
 
 				}
 
@@ -104,11 +142,17 @@ function get_dynamic_data(){
 			var new_dynamic_data = JSON.parse(result.dynamic_data);
 
 			if(JSON.stringify(dynamic_data) !== JSON.stringify(new_dynamic_data)){
+
 				if(static_data.settings.only_reveal_today){
 					dynamic_data = clone(new_dynamic_data);
 					rebuild_calendar('calendar', dynamic_data);
+					update_current_day(true);
 				}else{
 					update_date(new_dynamic_data);
+					if(dynamic_data.location != new_dynamic_data.location){
+						dynamic_data = clone(new_dynamic_data);
+						rebuild_climate();
+					}
 				}
 
 			}

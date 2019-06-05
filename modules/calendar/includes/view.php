@@ -40,12 +40,11 @@ $(document).ready(function(){
 	bind_calendar_events();
 	rebuild_calendar('calendar', dynamic_data);
 
-
-	timer = setTimeout('check_last_change()', 100);
+	timer = setTimeout('check_last_change_forced()', 100);
 	
 	$(window).focus(function() {
 		if(!timer)
-			timer = setTimeout('check_last_change()', 2500);
+			timer = setTimeout('check_last_change_forced()', 1500);
 	});
 
 	$(window).blur(function() {
@@ -53,7 +52,17 @@ $(document).ready(function(){
 		timer = 0;
 	});
 
+	$('#current_year, #current_timespan, #current_day, #current_hour, #current_minute, #location_select').change(function(){
+		do_update_dynamic();
+	});
+
+	var do_update_dynamic = debounce(function(type){
+		update_dynamic();
+	}, 250);
+
 });
+
+
 
 </script>
 

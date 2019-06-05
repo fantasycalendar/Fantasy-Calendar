@@ -43,8 +43,9 @@ $(document).ready(function(){
 	timer = setTimeout('check_last_change()', 100);
 	
 	$(window).focus(function() {
-		if(!timer)
-			timer = setTimeout('check_last_change()', 2500);
+		if(!timer){
+			check_last_change();
+		}
 	});
 
 	$(window).blur(function() {
