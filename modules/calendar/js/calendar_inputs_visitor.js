@@ -377,7 +377,7 @@ function rotate_element(element, rotation){
 function repopulate_timespan_select(select, year){
 	var html = [];
 	for(var i = 0; i < static_data.year_data.timespans.length; i++){
-		var is_there = does_timespan_appear(year, i);
+		var is_there = does_timespan_appear(static_data, year, i);
 		html.push(`<option ${!is_there.result ? 'disabled' : ''} value='${i}'>`);
 		html.push(static_data.year_data.timespans[i].name + (!is_there.result ? ` (${is_there.reason})` : ''));
 		html.push('</option>');
@@ -397,7 +397,7 @@ function repopulate_timespan_select(select, year){
 }
 
 function repopulate_day_select(select, year, timespan){
-	var days = get_days_in_timespan(year, timespan, true);
+	var days = get_days_in_timespan(static_data, year, timespan, true);
 	var html = [];
 	for(var i = 0; i < days.length; i++){
 		var day = days[i];

@@ -1,10 +1,3 @@
-function reload_calendar(data){
-	calendar_name		= data.name;
-	static_data			= data.static_data;
-	dynamic_data 		= data.dynamic_data;
-}
-
-
 function update_date(new_date){
 	if(dynamic_data.year != new_date.year){
 		dynamic_data.day = new_date.day;
@@ -49,41 +42,56 @@ function getUrlParameter(sParam) {
 	}
 };
 
-function check_last_change(){
+function update_name(){
+	$.ajax({
+		url:window.baseurl+"modules/calendar/ajax/ajax_calendar",
+		type: "post",
+		dataType: 'json',
+		proccessData: false,
+		data: {action: 'update_name', name: calendar_name, hash: hash},
+		error: function ( log )
+		{
+			console.log(log);
+		}
+	});
+}
+
+function update_dynamic(){
+
+	check_last_change(function(output){
+
+		/*var new_dynamic_change = new Date(output.last_dynamic_change)
+
+		if(new_dynamic_change > last_dynamic_change){
+
+			alert('The calendar was updated before your data was saved. Refreshing now.');
+			location.reload();
+			
+		}*/
+
+		do_update_dynamic();
+
+	});
+}
+
+function do_update_dynamic(){
 
 	$.ajax({
 		url:window.baseurl+"modules/calendar/ajax/ajax_calendar",
 		type: "post",
 		dataType: 'json',
 		proccessData: false,
-		data: {action: 'check_last_change', hash: hash},
-		success: function(result){
+		data: {action: 'update_dynamic', dynamic_data: JSON.stringify(dynamic_data), hash: hash},
+		success: function ( result ){
 
-			if(result){
-
-				var new_dynamic_change = new Date(result.last_dynamic_change);
-				var new_static_change = new Date(result.last_static_change);
-
-				if(new_static_change > last_static_change){
-
-					last_static_change = new_static_change;
-					last_dynamic_change = new_dynamic_change;
-					get_all_data();
-
-				}else{
-
-					if(new_dynamic_change > last_dynamic_change){
-
-						last_dynamic_change = new_dynamic_change;
-						get_dynamic_data();
-					}
-
-				}
-
-				if(document.hasFocus()){
-					timer = setTimeout('check_last_change()', 2500);
-				}
+			if(!dynamic_same){
+				prev_dynamic_data = clone(dynamic_data);
 			}
+
+			evaluate_save_button();
+
+			update_children_dynamic_data();
+
 		},
 		error: function ( log )
 		{
@@ -93,33 +101,83 @@ function check_last_change(){
 
 }
 
-function check_last_change_forced(){
+function update_all(){
+
+	check_last_change(function(output){
+
+		var new_static_change = new Date(output.last_static_change)
+
+		if(new_static_change > last_static_change){
+
+			if(!confirm('The calendar was updated before you saved. Do you want to override your last changes?')){
+				return;
+			}
+
+		}
+
+		do_update_all();
+
+	});
+}
+
+function do_update_all(){
+	$.ajax({
+		url:window.baseurl+"modules/calendar/ajax/ajax_calendar",
+		type: "post",
+		dataType: 'json',
+		proccessData: false,
+		data: {action: 'update_all', dynamic_data: JSON.stringify(dynamic_data), static_data: JSON.stringify(static_data), hash: hash},
+		success: function(result){
+
+			if(!calendar_name_same){
+				prev_calendar_name = clone(calendar_name);
+			}
+
+			if(!static_same){
+				prev_static_data = clone(static_data);
+			}
+
+			if(!dynamic_same){
+				prev_dynamic_data = clone(dynamic_data);
+			}
+
+			update_children_dynamic_data();
+
+			evaluate_save_button();
+
+		},
+		error: function ( log )
+		{
+			console.log(log);
+		}
+	});
+}
+
+function update_hashes(child_hash){
 
 	$.ajax({
 		url:window.baseurl+"modules/calendar/ajax/ajax_calendar",
 		type: "post",
 		dataType: 'json',
 		proccessData: false,
-		data: {action: 'check_last_change', hash: hash},
-		success: function(result){
+		data: {action: 'update_children_hashes', hash: hash, children_hashes: JSON.stringify(link_data.children)},
+		success: function( result ){
 
-			if(result){
-
-				var new_dynamic_change = new Date(result.last_dynamic_change);
-				var new_static_change = new Date(result.last_static_change);
-
-				if(new_static_change > last_static_change || new_dynamic_change > last_dynamic_change){
-
-					last_static_change = new_static_change;
-					last_dynamic_change = new_dynamic_change;
-					get_all_data();
-
+			$.ajax({
+				url:window.baseurl+"modules/calendar/ajax/ajax_calendar",
+				type: "post",
+				dataType: 'json',
+				proccessData: false,
+				data: {action: 'update_master_hash', hash: child_hash, master_hash: hash},
+				success: function( result ){
+					populate_calendar_lists();
+				},
+				error: function ( log )
+				{
+					console.log(log);
 				}
+			});
 
-				if(document.hasFocus()){
-					timer = setTimeout('check_last_change()', 2500);
-				}
-			}
 		},
 		error: function ( log )
 		{
@@ -128,8 +186,63 @@ function check_last_change_forced(){
 	});
 
 }
+function remove_hashes(child_hash){
 
-function get_dynamic_data(){
+	$.ajax({
+		url:window.baseurl+"modules/calendar/ajax/ajax_calendar",
+		type: "post",
+		dataType: 'json',
+		proccessData: false,
+		data: {action: 'update_children_hashes', hash: hash, children_hashes: JSON.stringify(link_data.children)},
+		success: function( result ){
+
+			$.ajax({
+				url:window.baseurl+"modules/calendar/ajax/ajax_calendar",
+				type: "post",
+				dataType: 'json',
+				proccessData: false,
+				data: {action: 'remove_master_hash', hash: child_hash},
+				success: function( result ){
+					populate_calendar_lists();
+				},
+				error: function ( log )
+				{
+					console.log(log);
+				}
+			});
+
+		},
+		error: function ( log )
+		{
+			console.log(log);
+		}
+	});
+	
+}
+
+
+
+function get_all_data(output){
+
+	$.ajax({
+		url:window.baseurl+"modules/calendar/ajax/ajax_calendar",
+		type: "post",
+		dataType: 'json',
+		proccessData: false,
+		data: {action: 'load_all', hash: hash},
+		success: function(result){
+			
+			output(result);
+
+		},
+		error: function ( log )
+		{
+			console.log(log);
+		}
+	});
+
+}
+function get_dynamic_data(output){
 
 	$.ajax({
 		url:window.baseurl+"modules/calendar/ajax/ajax_calendar",
@@ -139,21 +252,69 @@ function get_dynamic_data(){
 		data: {action: 'load_dynamic', hash: hash},
 		success: function(result){
 
-			var new_dynamic_data = JSON.parse(result.dynamic_data);
+			output(result);
 
-			if(JSON.stringify(dynamic_data) !== JSON.stringify(new_dynamic_data)){
+		},
+		error: function ( log )
+		{
+			console.log(log);
+		}
+	});
 
-				if(static_data.settings.only_reveal_today){
-					dynamic_data = clone(new_dynamic_data);
-					rebuild_calendar('calendar', dynamic_data);
-					update_current_day(true);
-				}else{
-					update_date(new_dynamic_data);
-					if(dynamic_data.location != new_dynamic_data.location){
-						dynamic_data = clone(new_dynamic_data);
-						rebuild_climate();
+}
+
+
+function get_owned_calendars(output){
+	$.ajax({
+		url:window.baseurl+"modules/calendar/ajax/ajax_calendar",
+		type: "post",
+		dataType: 'json',
+		proccessData: false,
+		data: {action: 'list'},
+		success: function(result){
+			output(result);
+		},
+		error: function ( log )
+		{
+			console.log(log);
+		}
+	});
+}
+
+
+function update_children_dynamic_data(){
+
+	$.ajax({
+		url:window.baseurl+"modules/calendar/ajax/ajax_calendar",
+		type: "post",
+		dataType: 'json',
+		proccessData: false,
+		data: {action: 'list_children_calendars', hash: hash},
+		success: function(result){
+
+			for(var i = 0; i < result.length; i++){
+
+				var child_hash = result[i].hash;
+				var child_static_data = JSON.parse(result[i].static_data);
+				var child_dynamic_data = JSON.parse(result[i].dynamic_data);
+				var converted_date = date_converter.get_date(static_data, child_static_data, dynamic_data.epoch);
+				child_dynamic_data.year = converted_date.year;
+				child_dynamic_data.internal_year = converted_date.year > 0 ? converted_date.year-1 : converted_date.year;
+				child_dynamic_data.timespan = converted_date.timespan;
+				child_dynamic_data.day = converted_date.day;
+				child_dynamic_data.epoch = converted_date.epoch;
+
+				$.ajax({
+					url:window.baseurl+"modules/calendar/ajax/ajax_calendar",
+					type: "post",
+					dataType: 'json',
+					proccessData: false,
+					data: {action: 'update_dynamic', dynamic_data: JSON.stringify(child_dynamic_data), hash: child_hash},
+					error: function ( log )
+					{
+						console.log(log);
 					}
-				}
+				});
 
 			}
 
@@ -165,22 +326,16 @@ function get_dynamic_data(){
 	});
 }
 
-function get_all_data(){
+
+function check_last_change(output){
 	$.ajax({
 		url:window.baseurl+"modules/calendar/ajax/ajax_calendar",
 		type: "post",
 		dataType: 'json',
 		proccessData: false,
-		data: {action: 'load_all', hash: hash},
+		data: {action: 'check_last_change', hash: hash},
 		success: function(result){
-			var new_static_data = JSON.parse(result.static_data);
-			var new_dynamic_data = JSON.parse(result.dynamic_data);
-			if(JSON.stringify(static_data) !== JSON.stringify(new_static_data) || static_data.settings.only_reveal_today){
-				static_data = clone(new_static_data);
-				rebuild_calendar('calendar', dynamic_data);
-			}else{
-				update_date(new_dynamic_data);
-			}
+			output(result);
 		},
 		error: function ( log )
 		{
@@ -189,33 +344,21 @@ function get_all_data(){
 	});
 }
 
-function update_dynamic(){
-	$.ajax({
-		url:window.baseurl+"modules/calendar/ajax/ajax_calendar",
-		type: "post",
-		dataType: 'json',
-		proccessData: false,
-		data: {action: 'update_dynamic', dynamic_data: JSON.stringify(dynamic_data), hash: hash},
-		error: function ( log )
-		{
-			console.log(log);
-		}
-	});
-}
+function delete_calendar(){
 
-function update_all(){
 	$.ajax({
 		url:window.baseurl+"modules/calendar/ajax/ajax_calendar",
 		type: "post",
 		dataType: 'json',
 		proccessData: false,
-		data: {action: 'update_all', name: calendar_name, dynamic_data: JSON.stringify(dynamic_data), static_data: JSON.stringify(static_data), hash: hash},
-		success: function(result){
-			save_button.prop('disabled', true);
+		data: {action: 'delete', hash: hash},
+		success: function ( result ){
+			window.location.href = '';
 		},
 		error: function ( log )
 		{
 			console.log(log);
 		}
 	});
+
 }

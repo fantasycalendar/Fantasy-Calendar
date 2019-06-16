@@ -37,6 +37,9 @@ function bind_calendar_events(){
 var evaluated_static_data = {};
 
 function rebuild_calendar(action, dynamic_data){
+
+	show_loading_screen();
+
 	worker_calendar.postMessage({
 		calendar_name: calendar_name,
 		static_data: static_data,
@@ -47,6 +50,9 @@ function rebuild_calendar(action, dynamic_data){
 }
 
 function rebuild_climate(){
+
+	show_loading_screen();
+
 	worker_climate.postMessage({
 		calendar_name: calendar_name,
 		static_data: static_data,
@@ -56,6 +62,9 @@ function rebuild_climate(){
 }
 
 function rebuild_events(event_id){
+
+	show_loading_screen();
+
 	worker_events.postMessage({
 		static_data: static_data,
 		pre_epoch_data: evaluated_static_data.pre_epoch_data,
@@ -69,6 +78,8 @@ worker_events.onmessage = e => {
 
 	display_events(static_data, e.data)
 
+	hide_loading_screen();
+
 }
 
 worker_climate.onmessage = e => {
@@ -79,6 +90,8 @@ worker_climate.onmessage = e => {
 	evaluate_weather_charts();
 	
 	eval_current_time();
+
+	hide_loading_screen();
 
 }
 
@@ -117,5 +130,7 @@ worker_calendar.onmessage = e => {
 	}
 
 	evaluate_settings();
+
+	hide_loading_screen();
 
 };

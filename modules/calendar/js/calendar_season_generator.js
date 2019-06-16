@@ -41,7 +41,6 @@ var climate_generator = {
 
 				this.current_location = this.presets[this.dynamic_data.location];
 
-
 				for(var i = 0; i < this.static_data.seasons.data.length; i++){
 
 					this.current_location.seasons[i].time = clone(this.static_data.seasons.data[i].time);

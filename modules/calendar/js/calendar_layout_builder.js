@@ -747,34 +747,42 @@ var calendar_layouts = {
 
 		insert_day: function(epoch, day_num, day_class, title){
 
-			calendar_layouts.html.push(`<div class='${day_class}' epoch='${epoch}'>`);
+			if(static_data.settings.only_reveal_today && !owner && (calendar_layouts.year_data.year > dynamic_data.year || this.timespan.index > dynamic_data.timespan || (this.timespan.index == dynamic_data.timespan && this.timespan.day > dynamic_data.day))){
 
-				calendar_layouts.html.push("<div class='day_row'>");
-					calendar_layouts.html.push("<div class='toprow left'>");
-						calendar_layouts.html.push(`<div class='number'>${day_num}</div>`);
-					calendar_layouts.html.push("</div>");
-					calendar_layouts.html.push("<div class='toprow center'>");
-						calendar_layouts.html.push("<div class='weather_icon'></div>");
-					calendar_layouts.html.push("</div>");
-					calendar_layouts.html.push("<div class='toprow right'>");
-						calendar_layouts.html.push("<div class='btn_create_event btn btn-success'>+</div>");
-					calendar_layouts.html.push("</div>");
-				calendar_layouts.html.push("</div>");
-				if(title){
+				this.insert_empty_day(day_class);
+
+			}else{
+
+				calendar_layouts.html.push(`<div class='${day_class}' epoch='${epoch}'>`);
+
 					calendar_layouts.html.push("<div class='day_row'>");
-						calendar_layouts.html.push(`<div class='title'>${title}</div>`);
+						calendar_layouts.html.push("<div class='toprow left'>");
+							calendar_layouts.html.push(`<div class='number'>${day_num}</div>`);
+						calendar_layouts.html.push("</div>");
+						calendar_layouts.html.push("<div class='toprow center'>");
+							calendar_layouts.html.push("<div class='weather_icon'></div>");
+						calendar_layouts.html.push("</div>");
+						calendar_layouts.html.push("<div class='toprow right'>");
+							calendar_layouts.html.push("<div class='btn_create_event btn btn-success'>+</div>");
+						calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("</div>");
-				}
-				calendar_layouts.html.push("<div class='day_row'>");
-					calendar_layouts.html.push(insert_moons(calendar_layouts.epoch_data[epoch]));
+					if(title){
+						calendar_layouts.html.push("<div class='day_row'>");
+							calendar_layouts.html.push(`<div class='title'>${title}</div>`);
+						calendar_layouts.html.push("</div>");
+					}
+					calendar_layouts.html.push("<div class='day_row'>");
+						calendar_layouts.html.push(insert_moons(calendar_layouts.epoch_data[epoch]));
+					calendar_layouts.html.push("</div>");
+					calendar_layouts.html.push("<div class='day_row'>");
+						calendar_layouts.html.push("<div class='event_container'></div>");
+					calendar_layouts.html.push("</div>");
+					calendar_layouts.html.push("<div class='day_row year_day_number'>");
+						calendar_layouts.html.push(calendar_layouts.year_data.year_day);
+					calendar_layouts.html.push("</div>");
 				calendar_layouts.html.push("</div>");
-				calendar_layouts.html.push("<div class='day_row'>");
-					calendar_layouts.html.push("<div class='event_container'></div>");
-				calendar_layouts.html.push("</div>");
-				calendar_layouts.html.push("<div class='day_row year_day_number'>");
-					calendar_layouts.html.push(calendar_layouts.year_data.year_day);
-				calendar_layouts.html.push("</div>");
-			calendar_layouts.html.push("</div>");
+
+			}
 		},
 
 		insert_timespan: function(timespan){

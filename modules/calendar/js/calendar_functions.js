@@ -246,9 +246,9 @@ function get_cycle(year){
 }
 
 
-function does_leap_day_appear(year, timespan, leap_day){
+function does_leap_day_appear(static_data, year, timespan, leap_day){
 
-	var timespan_appears = does_timespan_appear(year, timespan).result;
+	var timespan_appears = does_timespan_appear(static_data, year, timespan).result;
 
 	var leap_day = static_data.year_data.leap_days[leap_day];
 
@@ -261,7 +261,7 @@ function convert_year(year){
 }
 
 
-function get_days_in_timespan(year, timespan_index, exclusive){
+function get_days_in_timespan(static_data, year, timespan_index, exclusive){
 
 	var timespan = static_data.year_data.timespans[timespan_index];
 
@@ -270,7 +270,7 @@ function get_days_in_timespan(year, timespan_index, exclusive){
 	for(var i = 1; i <= timespan.length; i++){
 		days.push({
 			text: `Day ${i}`,
-			is_there: does_day_appear(year, timespan_index, i),
+			is_there: does_day_appear(static_data, year, timespan_index, i),
 			leaping: false
 		});
 	}
@@ -287,10 +287,10 @@ function get_days_in_timespan(year, timespan_index, exclusive){
 
 			if(leap_day.intercalary){
 
-				var is_there = does_day_appear(year, timespan_index, leap_day.day-1);
+				var is_there = does_day_appear(static_data, year, timespan_index, leap_day.day-1);
 
 				if(is_there.result){
-					var leaping = does_leap_day_appear(year, timespan_index, leap_day_index);
+					var leaping = does_leap_day_appear(static_data, year, timespan_index, leap_day_index);
 					is_there.result = leaping;
 					if(!leaping){
 						is_there.reason = "leaping"
@@ -311,11 +311,11 @@ function get_days_in_timespan(year, timespan_index, exclusive){
 
 			}else{
 
-				var is_there = does_day_appear(year, timespan_index, i);
+				var is_there = does_day_appear(static_data, year, timespan_index, i);
 
 				if(exclusive && is_there.result){
 					
-					var leaping = does_leap_day_appear(year, timespan_index, leap_day_index);
+					var leaping = does_leap_day_appear(static_data, year, timespan_index, leap_day_index);
 
 					is_there.result = leaping;
 					if(!leaping){
@@ -337,8 +337,28 @@ function get_days_in_timespan(year, timespan_index, exclusive){
 
 }
 
+function get_timespans_in_year(static_data, year, exclusive){
 
-function does_timespan_appear(year, timespan){
+	var results = [];
+
+	for(var timespan_index = 0; timespan_index < static_data.year_data.timespans.length; timespan_index++){
+
+		var appears = does_timespan_appear(static_data, year, timespan_index);
+
+		if(appears.result && exclusive){
+			
+			results.push(appears);
+
+		}
+
+	}
+
+	return results;
+
+}
+
+
+function does_timespan_appear(static_data, year, timespan){
 
 	for(var era_index = 0; era_index < static_data.eras.length; era_index++){
 
@@ -376,7 +396,7 @@ function does_timespan_appear(year, timespan){
 
 
 
-function does_day_appear(year, timespan, day){
+function does_day_appear(static_data, year, timespan, day){
 
 	for(var era_index = 0; era_index < static_data.eras.length; era_index++){
 
@@ -400,7 +420,7 @@ function does_day_appear(year, timespan, day){
 }
 
 
-function fract_year_length(){
+function fract_year_length(static_data){
 
 	var length = 0;
 
@@ -421,7 +441,7 @@ function fract_year_length(){
 }
 
 
-function avg_month_length(){
+function avg_month_length(static_Data){
 
 	var length = 0;
 	var num_months = 0;
@@ -482,87 +502,140 @@ function clone(obj) {
 }
 
 
-function get_date(static_data, inc_calendar, epoch){
+var date_converter = {
 
-	console.log(static_data.clock.hours / inc_calendar.clock.hours)
+	get_date: function(static_data, inc_calendar, epoch){
 
-	var year = Math.floor(epoch / fract_year_length());
+		this.static_data = static_data;
+		this.inc_calendar = inc_calendar;
+		this.target_epoch = epoch;
 
-	if(evaluate_calendar_start(static_data, year).epoch > epoch){
+		this.year = Math.floor(this.target_epoch / fract_year_length(this.inc_calendar));
+		this.timespan = 0;
+		this.day = 1;
 
-		var month = 0;
-		var day = 1;
+		this.loops = 0;
 
-		var found_date = false;
-		var found_year = false;
-		var found_timespan = false;
-		var found_day = false;
+		while(true){
 
-		while(!found_date){
-			if(!found_year){
-				var find_epoch = evaluate_calendar_start(static_data, year).epoch;
-				if(find_epoch < epoch){
-					found_year = true;
-				}else{
-					year--;
-				}
+			var first_suggested_epoch = evaluate_calendar_start(this.inc_calendar, this.year).epoch;
+
+			if(first_suggested_epoch > this.target_epoch){
+				this.year++;
 			}else{
-				if(!found_timespan){
-					var find_epoch = evaluate_calendar_start(static_data, year, month).epoch;
-					if(find_epoch > epoch){
-						found_timespan = true;
-						month--;
-						var find_epoch = evaluate_calendar_start(static_data, year, month, day).epoch;
-					}else{
-						month++;
-					}
-				}else{
-					find_epoch++;
-					if(find_epoch > epoch){
-						found_date = true;
-					}else{
-						day++;
-					}
-				}
+				break;
 			}
-		}
-	}else{
-		var month = static_data.year_data.timespans.length-1;
-		var day = 1;
-		while(!found_date){
-			if(!found_year){
-				var find_epoch = evaluate_calendar_start(static_data, year).epoch;
-				if(find_epoch > epoch){
-					year--;
-					found_year = true;
-				}else{
-					year++;
-				}
-			}else{
-				if(!found_timespan){
-					var find_epoch = evaluate_calendar_start(static_data, year, month).epoch;
-					if(find_epoch < epoch){
-						found_timespan = true;
-					}else{
-						month--;
-					}
-				}else{
-					find_epoch++;
-					if(find_epoch > epoch){
-						found_date = true;
-					}else{
-						day++;
-					}
 
+			this.loops++;
+
+		}
+
+
+
+		while(true){
+
+			if(!does_timespan_appear(this.inc_calendar, this.year, this.timespan).result){
+
+				this.increase_month();
+
+			}else{
+
+				this.suggested_epoch = evaluate_calendar_start(this.inc_calendar, this.year, this.timespan).epoch;
+
+				if(this.suggested_epoch < this.target_epoch){
+					this.increase_month();
+				}else{
+					this.decrease_month();
+					this.suggested_epoch = evaluate_calendar_start(this.inc_calendar, this.year, this.timespan).epoch;
+					break;
 				}
 
 			}
 
+			this.loops++;
+
 		}
+
+		while(true){
+
+			this.suggested_epoch = evaluate_calendar_start(this.inc_calendar, this.year, this.timespan, this.day).epoch;
+
+			if(this.suggested_epoch != this.target_epoch){
+				this.increase_day();
+			}else{
+				break;
+			}
+
+			this.loops++;
+
+		}
+
+
+		this.year = this.year >= 0 ? this.year+1 : this.year;
+		
+		return {
+			"year": this.year,
+			"timespan": this.timespan,
+			"day": this.day,
+			"epoch": this.suggested_epoch
+		};
+
+	},
+
+	increase_day: function(){
+
+		this.day++;
+
+		if(this.day > this.timespan_length.length){
+
+			this.increase_month();
+			this.day = 1;
+
+		}
+
+		if(!this.timespan_length[this.day-1].is_there.result){
+			this.day++;
+		}
+
+	},
+
+	increase_month: function(){
+
+		this.timespan++;
+
+		if(this.timespan == this.inc_calendar.year_data.timespans.length){
+
+			this.year++;
+			this.timespan = 0;
+
+		}
+
+		if(!does_timespan_appear(this.inc_calendar, this.year, this.timespan).result){
+			this.increase_month();
+		}
+
+		this.timespan_length = get_days_in_timespan(this.inc_calendar, this.year, this.timespan);
+
+	},
+
+	decrease_month: function(){
+
+		this.timespan--;
+
+		if(this.timespan < 0){
+
+			this.year--;
+			this.timespan = this.inc_calendar.year_data.timespans.length-1;
+
+		}
+
+		if(!does_timespan_appear(this.inc_calendar, this.year, this.timespan).result){
+			this.decrease_month();
+		}
+
+		this.timespan_length = get_days_in_timespan(this.inc_calendar, this.year, this.timespan);
 
 	}
-
-	return [year, month, day]
 
 }
 
@@ -713,10 +786,12 @@ function get_epoch(static_data, year, month, day, inclusive){
 		}
 
 		// Get the current timespan's data
-		timespan = static_data.year_data.timespans[month_index];
+		var timespan = static_data.year_data.timespans[month_index];
+
+		var offset = (timespan.interval-timespan.offset)%timespan.interval;
 
 		// Get the fraction of that month's appearances
-		var timespan_fraction = Math.floor((year + timespan.offset) / timespan.interval);
+		var timespan_fraction = Math.ceil((year + offset) / timespan.interval);
 
 		// Get the number of weeks for that month (check if it has a custom week or not)
 		if(!static_data.year_data.overflow){

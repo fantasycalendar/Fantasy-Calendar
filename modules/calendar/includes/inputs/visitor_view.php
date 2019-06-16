@@ -21,9 +21,9 @@
 					<div class='detail-text right-align full'>Year:</div>
 				</div>
 				<div class='detail-column fourfifths input_buttons'>
-					<div class='btn btn-sm btn-danger sub-btn sub_year' id='sub_target_year'><i class="icon-minus"></i></div>
+					<button type='button' class='btn btn-sm btn-danger sub-btn sub_year' id='sub_target_year'><i class="icon-minus"></i></button>
 					<input class='form-control form-control-sm date_control' id='target_year' type='number'>
-					<div class='btn btn-sm btn-success add-btn add_year' id='add_target_year'><i class="icon-plus"></i></div>
+					<button type='button' class='btn btn-sm btn-success add-btn add_year' id='add_target_year'><i class="icon-plus"></i></button>
 				</div>
 			</div>
 
@@ -34,9 +34,9 @@
 					<div class='detail-text right-align full'>Month:</div>
 				</div>
 				<div class='detail-column fourfifths input_buttons' value='target'>
-					<div class='btn btn-sm btn-danger sub-btn sub_timespan' id='sub_target_timespan'><i class="icon-minus"></i></div>
+					<button type='button' class='btn btn-sm btn-danger sub-btn sub_timespan' id='sub_target_timespan'><i class="icon-minus"></i></button>
 					<select class='form-control form-control-sm date_control' id='target_timespan'></select>
-					<div class='btn btn-sm btn-success add-btn add_timespan' id='add_target_timespan'><i class="icon-plus"></i></div>
+					<button type='button' class='btn btn-sm btn-success add-btn add_timespan' id='add_target_timespan'><i class="icon-plus"></i></button>
 				</div>
 
 			</div>
@@ -48,9 +48,9 @@
 					<div class='detail-text right-align full'>Day:</div>
 				</div>
 				<div class='detail-column fourfifths input_buttons' value='target'>
-					<div class='btn btn-sm btn-danger sub-btn sub_day' id='sub_target_day'><i class="icon-minus"></i></div>
+					<button type='button' class='btn btn-sm btn-danger sub-btn sub_day' id='sub_target_day'><i class="icon-minus"></i></button>
 					<select class='form-control form-control-sm date_control' id='target_day'></select>
-					<div class='btn btn-sm btn-success add-btn add_day' id='add_target_day'><i class="icon-plus"></i></div>
+					<button type='button' class='btn btn-sm btn-success add-btn add_day' id='add_target_day'><i class="icon-plus"></i></button>
 				</div>
 
 			</div>

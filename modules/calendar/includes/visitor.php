@@ -20,32 +20,51 @@ include('header.php');
 
 hash = getUrlParameter('id');
 
-
-data = {
-	name: "<?php echo $calendar_data['calendar_name'] ?>",
-	dynamic_data: <?php echo $calendar_data['dynamic_data']; ?>,
-	static_data: <?php echo $calendar_data['static_data']; ?>
-};
-last_dynamic_change = new Date("<?php echo $calendar_data['last_dynamic_change']; ?>");
-last_static_change = new Date("<?php echo $calendar_data['last_static_change']; ?>");
-
+calendar_name = "<?php echo $calendar_data['calendar_name'] ?>";
 owner = <?php echo $owner; ?>;
 static_data = {};
 dynamic_data = {};
+link_data = {
+	master_hash: "",
+	children: []
+};
 
-$(document).ready(function(){
+get_all_data(function(result){
 
-	reload_calendar(data);
+	static_data = JSON.parse(result.static_data);
+	dynamic_data = JSON.parse(result.dynamic_data);
+
+	last_static_change = new Date(result.last_static_change)
+	last_dynamic_change = new Date(result.last_dynamic_change)
+
+	if(!result.children){
+		result.children = [];
+	}else{
+		link_data.children = JSON.parse(result.children);
+	}
+
+	link_data.master_hash = result.master_hash;
+
 	set_up_visitor_inputs();
 	bind_calendar_events();
 	rebuild_calendar('calendar', dynamic_data);
 
-	timer = setTimeout('check_last_change()', 100);
+	timer = setTimeout(function(){
+		check_last_change(function(output){
+			check_dates(output);
+		})
+	}, 100);
 	
 	$(window).focus(function() {
-		if(!timer){
-			check_last_change();
-		}
+		if(!timer)
+			check_last_change(function(output){
+				check_dates(output);
+			});
+			timer = setTimeout(function(){
+				check_last_change(function(output){
+					check_dates(output);
+				});
+			}, 2500);
 	});
 
 	$(window).blur(function() {
@@ -54,6 +73,39 @@ $(document).ready(function(){
 	});
 
 });
+
+function check_dates(output){
+
+	new_static_change = new Date(output.last_static_change)
+	new_dynamic_change = new Date(output.last_dynamic_change)
+
+	if(new_static_change > last_static_change){
+
+		get_all_data(function(output){
+
+			static_data = JSON.parse(result.static_data);
+			dynamic_data = JSON.parse(result.dynamic_data);
+
+			last_static_change = new Date(result.last_static_change);
+			last_dynamic_change = new Date(result.last_dynamic_change);
+
+
+
+		});
+
+	}else if(new_dynamic_change > last_dynamic_change){
+
+		get_dynamic_data(function(output){
+
+			dynamic_data = JSON.parse(output.dynamic_data);
+
+			last_dynamic_change = new_dynamic_change;
+
+		});
+
+	}
+
+}
 
 </script>
 

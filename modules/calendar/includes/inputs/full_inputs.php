@@ -14,7 +14,7 @@
 
 		<div class='wrap-collapsible margin-below'>
 
-			<button type="button" disabled id='btn_save' class='btn btn-lg btn-primary btn-block'>Save</button>
+			<button type="button" disabled id='btn_save' class='btn btn-lg btn-primary btn-block'>No changes to save</button>
 		
 			<button type="button" id='btn_delete' class='btn btn-sm btn-danger btn-block'>Delete</button>
 
@@ -161,60 +161,68 @@
 			
 			<div id='clock'></div>
 
-			<div class='detail-row'>
+			<div class='detail-row' id='date_inputs'>
 
-				<div class='detail-column fifth'>
-					<div class='detail-text right-align full'>Year:</div>
-				</div>
-				<div class='detail-column fourfifths input_buttons' value='current'>
-					<div class='btn btn-sm btn-danger sub-btn sub_year' id='sub_current_year'><i class="icon-minus"></i></div>
-					<input class='form-control form-control-sm date_control' id='current_year' type='number'>
-					<div class='btn btn-sm btn-success add-btn add_year' id='add_current_year'><i class="icon-plus"></i></div>
-				</div>
-			</div>
-
-			<div class='detail-row'>
-
-
-				<div class='detail-column fifth'>
-					<div class='detail-text right-align full'>Month:</div>
-				</div>
-				<div class='detail-column fourfifths input_buttons' value='current'>
-					<div class='btn btn-sm btn-danger sub-btn sub_timespan' id='sub_current_timespan'><i class="icon-minus"></i></div>
-					<select class='form-control form-control-sm date_control' id='current_timespan'></select>
-					<div class='btn btn-sm btn-success add-btn add_timespan' id='add_current_timespan'><i class="icon-plus"></i></div>
+				<div class='detail-row center-text hidden calendar_link_explaination'>
+					This calendar is using a different calendar's date to calculate the current date. Only the master calendar can set the date for this calendar.
 				</div>
 
-			</div>
+				<div class='detail-row'>
 
-			<div class='detail-row'>
-
-
-				<div class='detail-column fifth'>
-					<div class='detail-text right-align full'>Day:</div>
-				</div>
-				<div class='detail-column fourfifths input_buttons' value='current'>
-					<div class='btn btn-sm btn-danger sub-btn sub_day' id='sub_current_day'><i class="icon-minus"></i></div>
-					<select class='form-control form-control-sm date_control' id='current_day'></select>
-					<div class='btn btn-sm btn-success add-btn add_day' id='add_current_day'><i class="icon-plus"></i></div>
+					<div class='detail-column fifth'>
+						<div class='detail-text right-align full'>Year:</div>
+					</div>
+					<div class='detail-column fourfifths input_buttons' value='current'>
+						<button type='button' class='btn btn-sm btn-danger sub-btn sub_year' id='sub_current_year'><i class="icon-minus"></i></button>
+						<input class='form-control form-control-sm date_control' id='current_year' type='number'>
+						<button type='button' class='btn btn-sm btn-success add-btn add_year' id='add_current_year'><i class="icon-plus"></i></button>
+					</div>
 				</div>
 
-			</div>
+				<div class='detail-row'>
 
-			<div class='separator'></div>
 
-			<div class='detail-row'>
+					<div class='detail-column fifth'>
+						<div class='detail-text right-align full'>Month:</div>
+					</div>
+					<div class='detail-column fourfifths input_buttons' value='current'>
+						<button type='button' class='btn btn-sm btn-danger sub-btn sub_timespan' id='sub_current_timespan'><i class="icon-minus"></i></button>
+						<select class='form-control form-control-sm date_control' id='current_timespan'></select>
+						<button type='button' class='btn btn-sm btn-success add-btn add_timespan' id='add_current_timespan'><i class="icon-plus"></i></button>
+					</div>
 
-				<div class='detail-column fifth'>
-					<div class='detail-text right-align full'>Time:</div>
 				</div>
-				<div class='detail-column fourfifths input_buttons'>
-					<div class='btn btn-sm btn-danger sub-btn adjust_hour' val='-1'><i class="clocktext">1h</i></div>
-					<div class='btn btn-sm btn-danger sub-btn adjust_minute' val='-30'><i class="clocktext">30m</i></div>
-					<input class='form-control form-control-sm' type='number' id='current_hour'>:
-					<input class='form-control form-control-sm' type='number' id='current_minute'>
-					<div class='btn btn-sm btn-success add-btn adjust_minute' val='30'><i class="clocktext">30m</i></div>
-					<div class='btn btn-sm btn-success add-btn adjust_hour' val='1'><i class="clocktext">1h</i></div>
+
+				<div class='detail-row'>
+
+
+					<div class='detail-column fifth'>
+						<div class='detail-text right-align full'>Day:</div>
+					</div>
+					<div class='detail-column fourfifths input_buttons' value='current'>
+						<button type='button' class='btn btn-sm btn-danger sub-btn sub_day' id='sub_current_day'><i class="icon-minus"></i></button>
+						<select class='form-control form-control-sm date_control' id='current_day'></select>
+						<button type='button' class='btn btn-sm btn-success add-btn add_day' id='add_current_day'><i class="icon-plus"></i></button>
+					</div>
+
+				</div>
+
+				<div class='separator'></div>
+
+				<div class='detail-row'>
+
+					<div class='detail-column fifth'>
+						<div class='detail-text right-align full'>Time:</div>
+					</div>
+					<div class='detail-column fourfifths input_buttons'>
+						<button type='button' class='btn btn-sm btn-danger sub-btn adjust_hour' val='-1'><i class="clocktext">1h</i></button>
+						<button type='button' class='btn btn-sm btn-danger sub-btn adjust_minute' val='-30'><i class="clocktext">30m</i></button>
+						<input class='form-control form-control-sm hour_input' type='number' id='current_hour'>:
+						<input class='form-control form-control-sm minute_input' type='number' id='current_minute'>
+						<button type='button' class='btn btn-sm btn-success add-btn adjust_minute' val='30'><i class="clocktext">30m</i></button>
+						<button type='button' class='btn btn-sm btn-success add-btn adjust_hour' val='1'><i class="clocktext">1h</i></button>
+					</div>
+
 				</div>
 
 			</div>
@@ -231,9 +239,9 @@
 					<div class='detail-text right-align full'>Year:</div>
 				</div>
 				<div class='detail-column fourfifths input_buttons'>
-					<div class='btn btn-sm btn-danger sub-btn sub_year' id='sub_target_year'><i class="icon-minus"></i></div>
+					<button type='button' class='btn btn-sm btn-danger sub-btn sub_year' id='sub_target_year'><i class="icon-minus"></i></button>
 					<input class='form-control form-control-sm date_control' id='target_year' type='number'>
-					<div class='btn btn-sm btn-success add-btn add_year' id='add_target_year'><i class="icon-plus"></i></div>
+					<button type='button' class='btn btn-sm btn-success add-btn add_year' id='add_target_year'><i class="icon-plus"></i></button>
 				</div>
 			</div>
 
@@ -244,9 +252,9 @@
 					<div class='detail-text right-align full'>Month:</div>
 				</div>
 				<div class='detail-column fourfifths input_buttons' value='target'>
-					<div class='btn btn-sm btn-danger sub-btn sub_timespan' id='sub_target_timespan'><i class="icon-minus"></i></div>
+					<button type='button' class='btn btn-sm btn-danger sub-btn sub_timespan' id='sub_target_timespan'><i class="icon-minus"></i></button>
 					<select class='form-control form-control-sm date_control' id='target_timespan'></select>
-					<div class='btn btn-sm btn-success add-btn add_timespan' id='add_target_timespan'><i class="icon-plus"></i></div>
+					<button type='button' class='btn btn-sm btn-success add-btn add_timespan' id='add_target_timespan'><i class="icon-plus"></i></button>
 				</div>
 
 			</div>
@@ -258,19 +266,19 @@
 					<div class='detail-text right-align full'>Day:</div>
 				</div>
 				<div class='detail-column fourfifths input_buttons' value='target'>
-					<div class='btn btn-sm btn-danger sub-btn sub_day' id='sub_target_day'><i class="icon-minus"></i></div>
+					<button type='button' class='btn btn-sm btn-danger sub-btn sub_day' id='sub_target_day'><i class="icon-minus"></i></button>
 					<select class='form-control form-control-sm date_control' id='target_day'></select>
-					<div class='btn btn-sm btn-success add-btn add_day' id='add_target_day'><i class="icon-plus"></i></div>
+					<button type='button' class='btn btn-sm btn-success add-btn add_day' id='add_target_day'><i class="icon-plus"></i></button>
 				</div>
 
 			</div>
 
 			<div class='detail-row'>
 				<div class='detail-column half'>
-					<div class='btn btn-danger full' id='reset_preview_date'>Go to base date</div>
+					<button type='button' class='btn btn-danger full' id='reset_preview_date'>Go to base date</button>
 				</div>
 				<div class='detail-column half'>
-					<div class='btn btn-success full' id='go_to_preview_date'>Go to preview date</div>
+					<button type='button' class='btn btn-success full' id='go_to_preview_date'>Go to preview date</button>
 				</div>
 			</div>
 
@@ -826,6 +834,44 @@
 				</label>
 			</div>
 		</div>
+		<div class='separator'></div>
+	</div>
+
+
+	<!---------------------------------------------->
+	<!------------------ LINKING ------------------->
+	<!---------------------------------------------->
+
+	<div class='wrap-collapsible'>
+		<input id="collapsible_linking" class="toggle" type="checkbox">
+		<label for="collapsible_linking" class="lbl-toggle lbl-text">Calendar Linking <a target="_blank" title='Fantasy Calendar Wiki: Calendar Linking' href='https://wiki.fantasy-calendar.com/index.php?title=Calendar_Linking' class="wiki"><i class="icon-question-sign"></i></a></label>
+		<div class="collapsible-content">
+
+			<div class='detail-row center-text hidden calendar_link_explaination'>
+				This calendar is already linked to another calendar. Before linking any calendars to this one, you must unlink it from the master.
+			</div>
+
+			<div id='calendar_link_hide'>
+
+				<div class='detail-row'>
+					<select class='form-control form-control' id='calendar_link_select'></select>
+				</div>
+				<div class='detail-row'>
+					<button type='button' class='btn btn-sm btn-secondary full' id='refresh_calendar_list_select'>Refresh</button>
+				</div>
+				<div class='detail-row'>
+					<button type='button' class='btn btn-primary full' id='link_calendar'>Link</button>
+				</div>
+
+				<div class='sortable' id='calendar_link_list'></div>
+
+			</div>
+
+		</div>
+
+
+
+
 		<div class='separator'></div>
 	</div>
 </form>

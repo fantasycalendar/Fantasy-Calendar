@@ -15,6 +15,21 @@
 	background-color:#DDD;
 }
 
+#loading_background{
+	display:flex;
+	flex-direction: column;
+	top:40px;
+}
+
+#loading_background img, #loading_background div{
+	display:inline-flex;
+	align-self: center;
+	position:relative;
+	top:45vh;
+	padding-top:10px;
+	color:white;
+}
+
 #logo:after{
 	content:'Home';
 }

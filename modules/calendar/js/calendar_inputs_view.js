@@ -15,28 +15,9 @@ function set_up_view_inputs(){
 
 	location_select = $('#location_select');
 
-	if(dynamic_data){
+	link_changed();
 
-		current_year.val(dynamic_data.year);
-		current_year.data('val', current_year.val());
-
-		var curr_timespan = repopulate_timespan_select(current_timespan, convert_year(dynamic_data.year));
-		repopulate_day_select(current_day, convert_year(dynamic_data.year), curr_timespan);
-
-	}
-
-	if(static_data.clock && dynamic_data.hour !== undefined && dynamic_data.minute !== undefined){
-
-		current_hour.val(dynamic_data.hour).prop('min', 0).prop('max', static_data.clock.hours-1);
-		current_minute.val(dynamic_data.minute).prop('min', 0).prop('max', static_data.clock.minutes-1);
-
-	}
-
-	if(static_data.seasons.locations){
-
-		repopulate_location_select_list();
-
-	}
+	set_up_view_values();
 
 	current_year.change(function(){
 
@@ -381,5 +362,33 @@ function set_date(year, timespan, day){
 	dynamic_data.day = day;
 
 	error_check(undefined, rebuild);
+
+}
+
+
+function set_up_view_values(){
+
+	if(dynamic_data){
+
+		current_year.val(dynamic_data.year);
+		current_year.data('val', current_year.val());
+
+		var curr_timespan = repopulate_timespan_select(current_timespan, convert_year(dynamic_data.year));
+		repopulate_day_select(current_day, convert_year(dynamic_data.year), curr_timespan);
+
+	}
+
+	if(static_data.clock && dynamic_data.hour !== undefined && dynamic_data.minute !== undefined){
+
+		current_hour.val(dynamic_data.hour).prop('min', 0).prop('max', static_data.clock.hours-1);
+		current_minute.val(dynamic_data.minute).prop('min', 0).prop('max', static_data.clock.minutes-1);
+
+	}
+
+	if(static_data.seasons.locations){
+
+		repopulate_location_select_list();
+
+	}
 
 }

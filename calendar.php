@@ -25,9 +25,9 @@ if(isset($_GET['action']) && $_GET['action'] === "generate")
 elseif(isset($_GET['id']))
 {
 
-	$calendar_data = $calendar->get($_GET['id']);
+	$calendar_data = $calendar->check_ownership($_GET['id']);
 
-	if(isset($calendar_data))
+	if(!empty($calendar_data))
 	{
 
 		$calendar_data['owner'] = $calendar_data['owner'] === 'true'? true: false;
@@ -66,6 +66,10 @@ elseif(isset($_GET['id']))
 			include('modules/calendar/includes/visitor.php');
 
 		}
+
+	}else{
+
+		include('404.php');
 
 	}
 
