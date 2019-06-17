@@ -4,14 +4,21 @@ const worker_calendar = new Worker('modules/calendar/webworkers/worker_calendar.
 const worker_events = new Worker('modules/calendar/webworkers/worker_events.js?v='+utcDate1);
 const worker_climate = new Worker('modules/calendar/webworkers/worker_climate.js?v='+utcDate1);
 
+function sidescroll(){
+	//calculate left position
+	var left = $(this.event.target).scrollLeft();
+	//apply to header in negative
+	$(this.event.target).children().first().css('left', left);
+
+}
+
 function bind_calendar_events(){
 
-	$(".timespan_container").on('scroll', function(e) {
-		//calculate left position
-		var left = $(this).scrollLeft();
-		//apply to header in negative
-		$(this).children().first().css('left', left);
-	});
+	$('#input_collapse_btn').click(function(){
+		$("#input_container").toggleClass('inputs_collapsed');
+		$("#calendar").toggleClass('inputs_collapsed');
+		evaluate_error_background_size();
+	})
 
 	calendar_weather.tooltip.set_up();
 	
@@ -23,7 +30,7 @@ function bind_calendar_events(){
 		calendar_weather.tooltip.hide();
 	});
 
-	$(document).on('scroll', function(){
+	$('#calendar').on('scroll', function(){
 		calendar_weather.tooltip.hide();
 	});
 

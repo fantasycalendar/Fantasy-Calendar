@@ -357,7 +357,7 @@
 }
 
 #top_follower{
-	display:flex;
+	display:inline-flex;
 	width:inherit;
 	flex-direction:row;
 	border:1px solid black;
@@ -699,6 +699,7 @@ body.hide_year_day .year_day_number{
 	border-radius:10px;
 	border:1px solid black;
 	overflow-x: scroll;
+	flex:1 0 auto;
 }
 
 .timespan_container::-webkit-scrollbar-track

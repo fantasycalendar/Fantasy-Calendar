@@ -234,13 +234,6 @@ function set_up_visitor_inputs(){
 		set_date(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
 	});
 
-	
-
-	$('#input_collapse_btn').click(function(){
-		$("#input_container").toggleClass('inputs_collapsed');
-		evaluate_error_background_size();
-	})
-
 }
 
 function set_preview_date(year, timespan, day){
