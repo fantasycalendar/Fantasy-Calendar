@@ -58,7 +58,7 @@
 
 		<div class='wrap-collapsible'>
 			<div class='detail-row form-inline'>
-				<input type='text' class='form-control form-control-lg full static_input' data='' key='name' placeholder='Calendar name' />
+				<input type='text' class='form-control form-control-lg full' id='calendar_name' placeholder='Calendar name' />
 			</div>
 		</div>
 
@@ -68,16 +68,16 @@
 			<?php
 			if(!empty($_SESSION['user_id'])){
 			?>
-				<button disabled id='btn_save' class='btn btn-lg btn-primary btn-block'>Save</button>
+				<button type='button' id='btn_create' class='btn btn-lg btn-primary btn-block'>Save</button>
 			<?php
 			} else {
 			?>
-				<button class='login-show-button btn btn-lg btn-info btn-block'>Log in to save</button>
+				<button type='button' class='login-show-button btn btn-lg btn-info btn-block'>Log in to save</button>
 			<?php
 			}
 			?>
 			
-			<button id='btn_clear' class='btn btn-sm btn-danger btn-block'>Clear</button>
+			<button id='btn_clear' type='button' class='btn btn-sm btn-danger btn-block'>Clear</button>
 
 			<select id='presets'>
 				<option val=''>Presets</option>
@@ -90,7 +90,7 @@
 				<option val='Forgotten Realms'>Forgotten Realms</option>
 			</select>
 			
-			<button id='json_apply' class='btn btn-warning btn-sm' >Apply</button>
+			<button id='json_apply' type='button' class='btn btn-warning btn-sm' >Apply</button>
 
 			<div id='json_container'>
 				<p>JSON input:</p>
@@ -318,15 +318,15 @@
 			<div class='detail-row'>
 
 				<div class='detail-column half input_buttons'>
-					<div class='btn btn-sm btn-danger sub-btn' onclick='adjustInput(this, -1);'><i class="icon-minus"></i></div>
+					<button type='button' class='btn btn-sm btn-danger sub-btn' onclick='adjustInput(this, -1);'><i class="icon-minus"></i></button>
 					<input class='form-control form-control-sm static_input' data='clock' key='hours' type='number'>
-					<div class='btn btn-sm btn-success add-btn' onclick='adjustInput(this, +1);'><i class="icon-plus"></i></div>
+					<button type='button' class='btn btn-sm btn-success add-btn' onclick='adjustInput(this, +1);'><i class="icon-plus"></i></button>
 				</div>
 
 				<div class='detail-column half input_buttons'>
-					<div class='btn btn-sm btn-danger sub-btn' onclick='adjustInput(this, -1);'><i class="icon-minus"></i></div>
+					<button type='button' class='btn btn-sm btn-danger sub-btn' onclick='adjustInput(this, -1);'><i class="icon-minus"></i></button>
 					<input class='form-control form-control-sm static_input' data='clock' key='minutes' type='number'>
-					<div class='btn btn-sm btn-success add-btn' onclick='adjustInput(this, +1);'><i class="icon-plus"></i></div>
+					<button type='button' class='btn btn-sm btn-success add-btn' onclick='adjustInput(this, +1);'><i class="icon-plus"></i></button>
 				</div>
 
 			</div>
@@ -343,9 +343,9 @@
 			<div class='detail-row'>
 
 				<div class='detail-column half input_buttons'>
-					<div class='btn btn-sm btn-danger sub-btn' onclick='adjustInput(this, -1);'><i class="icon-minus"></i></div>
+					<button type='button' class='btn btn-sm btn-danger sub-btn' onclick='adjustInput(this, -1);'><i class="icon-minus"></i></button>
 					<input class='form-control form-control-sm static_input' data='clock' key='offset' type='number'>
-					<div class='btn btn-sm btn-success add-btn' onclick='adjustInput(this, +1);'><i class="icon-plus"></i></div>
+					<button type='button' class='btn btn-sm btn-success add-btn' onclick='adjustInput(this, +1);'><i class="icon-plus"></i></button>
 				</div>
 
 			</div>
@@ -393,13 +393,17 @@
 
 			<div class='detail-text bold-text big-text'>Settings:</div>
 
+			<div class='detail-row center-text hidden' id='overflow_explanation'>
+				This calendar has a custom week in some months, this will disable overflows	between months, because it makes no sense for two weeks that do not go together to overflow into each other. Sorry.
+			</div>
+
 			<div class='detail-row'>
 				<div class='detail-column'>
 					Overflow month days:
 				</div>
 				<div class='detail-column float'>
 					<label class="custom-control custom-checkbox">
-						<input type="checkbox" class="custom-control-input static_input" data='year_data' key='overflow'>
+						<input type="checkbox" class="custom-control-input static_input" data='year_data' key='overflow' id='month_overflow'>
 						<span class="custom-control-indicator"></span>
 					</label>
 				</div>
@@ -438,6 +442,10 @@
 		<input id="collapsible_leapdays" class="toggle" type="checkbox">
 		<label for="collapsible_leapdays" class="lbl-toggle lbl-text">Leap days <a target="_blank" title='Fantasy Calendar Wiki: Leap Days' href='https://wiki.fantasy-calendar.com/index.php?title=Leap_days' class="wiki"><i class="icon-question-sign"></i></a></label>
 		<div class="collapsible-content">
+
+			<div class='detail-row center-text' id='leap_day_explaination'>
+				You need to have at least one month in order to add a leap day.
+			</div>
 
 			<div class='form-inline leap'>
 
@@ -520,48 +528,60 @@
 			<div class='separator'></div>
 
 			<div class='detail-row'>
-				<div class='detail-column half'>
-					<div class='detail-row'>Temperature system:</div>
-					<div class='detail-row'>
-						<select class='custom-select type full static_input' data='seasons.global_settings' key='temp_sys'>
-							<option selected value='metric'>Metric</option>
-							<option value='imperial'>Imperial</option>
-							<option value='both'>Both</option>
-						</select>
-					</div>
-				</div>
-
-				<div class='detail-column half'>
-					<div class='detail-row'>Wind speed system:</div>
-					<div class='detail-row'>
-						<select class='custom-select type full static_input' data='seasons.global_settings' key='wind_sys'>
-							<option selected value='metric'>Metric</option>
-							<option value='imperial'>Imperial</option>
-							<option value='both'>Both</option>
-						</select>
-					</div>
-				</div>
-			</div>
-
-			<div class='detail-row'>
-				<div class='detail-column'>Cinematic temperature desciption:</div>
+				<div class='detail-column'>Enable weather:</div>
 				<div class='detail-column float'>
 					<label class="custom-control custom-checkbox">
-						<input type="checkbox" class="custom-control-input static_input" data='seasons.global_settings' key='cinematic'>
+						<input type="checkbox" class="custom-control-input static_input" id='enable_weather' data='seasons.global_settings' key='enable_weather'>
 						<span class="custom-control-indicator"></span>
 					</label>
 				</div>
 			</div>
 
-			<div class='separator'></div>
+			<div id='weather_inputs'>
+				<div class='detail-row'>
+					<div class='detail-column half'>
+						<div class='detail-row'>Temperature system:</div>
+						<div class='detail-row'>
+							<select class='custom-select type full static_input' data='seasons.global_settings' key='temp_sys'>
+								<option selected value='metric'>Metric</option>
+								<option value='imperial'>Imperial</option>
+								<option value='both'>Both</option>
+							</select>
+						</div>
+					</div>
 
-			<div class='detail-row'>
-				<div class='detail-row'>Weather generation seed:</div>
-				<div class='detail-column half'>
-					<input type='number' id='seasons_seed' class='form-control static_input' data='seasons.global_settings' key='seed' />
+					<div class='detail-column half'>
+						<div class='detail-row'>Wind speed system:</div>
+						<div class='detail-row'>
+							<select class='custom-select type full static_input' data='seasons.global_settings' key='wind_sys'>
+								<option selected value='metric'>Metric</option>
+								<option value='imperial'>Imperial</option>
+								<option value='both'>Both</option>
+							</select>
+						</div>
+					</div>
 				</div>
-				<div class='detail-column half'>
-					<div class='btn btn-primary full' id='reseed_seasons'>Generate new seed</div>
+
+				<div class='detail-row'>
+					<div class='detail-column'>Cinematic temperature desciption:</div>
+					<div class='detail-column float'>
+						<label class="custom-control custom-checkbox">
+							<input type="checkbox" class="custom-control-input static_input" data='seasons.global_settings' key='cinematic'>
+							<span class="custom-control-indicator"></span>
+						</label>
+					</div>
+				</div>
+
+				<div class='separator'></div>
+
+				<div class='detail-row'>
+					<div class='detail-row'>Weather generation seed:</div>
+					<div class='detail-column half'>
+						<input type='number' id='seasons_seed' class='form-control static_input' data='seasons.global_settings' key='seed' />
+					</div>
+					<div class='detail-column half'>
+						<div class='btn btn-primary full' id='reseed_seasons'>Generate new seed</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -608,9 +628,15 @@
 		<input id="collapsible_cycles" class="toggle" type="checkbox">
 		<label for="collapsible_cycles" class="lbl-toggle lbl-text">Cycles <a target="_blank" title='Fantasy Calendar Wiki: Cycles' href='https://wiki.fantasy-calendar.com/index.php?title=Cycles' class="wiki"><i class="icon-question-sign"></i></a></label>
 		<div class="collapsible-content">
+			<div class="detail-row">
+				Cycle format:
+			</div>	
+			<div class="detail-row">
+				<input type='text' id='cycle_format' class='form-control name static_input' data='cycles' key='format' placeholder='Cycle format'>
+			</div>	
+
 			<div class='form-inline cycle'>
 				<input type='button' value='Add new cycle' class='btn btn-primary add'>
-				<input type='text' id='cycle_format' class='form-control name static_input' data='cycles' key='format' placeholder='Cycle format'>
 			</div>
 
 			<div class='sortable' id='cycle_sortable'></div>
@@ -657,7 +683,7 @@
 		<input id="collapsible_categories" class="toggle" type="checkbox">
 		<label for="collapsible_categories" class="lbl-toggle lbl-text">Event Categories <a target="_blank" title='Fantasy Calendar Wiki: Event Categories' href='https://wiki.fantasy-calendar.com/index.php?title=Event_categories' class="wiki"><i class="icon-question-sign"></i></a></label>
 		<div class="collapsible-content">
-			<div class='form-inline events'>
+			<div class='form-inline event_categories'>
 				<input type='text' class='form-control name' placeholder='Event category name'>
 				<input type='button' value='Add' class='btn btn-primary add'>
 			</div>
@@ -711,7 +737,7 @@
 						<option value='grid'>Grid style</option>
 						<option value='wide'>Wide style</option>
 						<option value='vertical'>Vertical style</option>
-						<option value='mini'>Minimalistic style</option>
+						<!--<option value='mini'>Minimalistic style</option>-->
 					</select>
 				</label>
 

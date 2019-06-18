@@ -391,4 +391,6 @@ function set_up_view_values(){
 
 	}
 
+	set_up_preview_values();
+
 }

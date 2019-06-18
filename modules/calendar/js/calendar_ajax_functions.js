@@ -222,6 +222,26 @@ function remove_hashes(child_hash){
 
 
 
+function get_session_data(output){
+
+	$.ajax({
+		url:window.baseurl+"modules/calendar/ajax/ajax_calendar",
+		type: "post",
+		dataType: 'json',
+		proccessData: false,
+		data: {action: 'session_get'},
+		success: function(result){
+			
+			output(result);
+
+		},
+		error: function ( log )
+		{
+			console.log(log);
+		}
+	});
+}
+
 function get_all_data(output){
 
 	$.ajax({
@@ -240,8 +260,8 @@ function get_all_data(output){
 			console.log(log);
 		}
 	});
-
 }
+
 function get_dynamic_data(output){
 
 	$.ajax({
@@ -354,6 +374,25 @@ function delete_calendar(){
 		data: {action: 'delete', hash: hash},
 		success: function ( result ){
 			window.location.href = '';
+		},
+		error: function ( log )
+		{
+			console.log(log);
+		}
+	});
+
+}
+
+function create_calendar(){
+
+	$.ajax({
+		url:window.baseurl+"modules/calendar/ajax/ajax_calendar",
+		type: "post",
+		dataType: 'json',
+		proccessData: false,
+		data: {action: 'create', name: calendar_name, dynamic_data: JSON.stringify(dynamic_data), static_data: JSON.stringify(static_data)},
+		success: function ( result ){
+			window.location.href = window.baseurl+'calendar?action=edit&id='+result.hash;
 		},
 		error: function ( log )
 		{

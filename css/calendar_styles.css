@@ -27,6 +27,7 @@
 
 .timespan_day.empty_timespan_day{
 	background-color:grey;
+	min-height:75px;
 }
 
 
@@ -358,7 +359,6 @@
 
 #top_follower{
 	display:inline-flex;
-	width:inherit;
 	flex-direction:row;
 	border:1px solid black;
 	border-top:0;
@@ -375,17 +375,18 @@
 	flex-direction: column;
 	width:5em;
 	flex:0 1 auto;
-	border-radius: 0px;
-	border-bottom-left-radius: 9px;
-	border-bottom-right-radius: 0;
-	border-right:1px solid black;
 	overflow: hidden;
+	padding:0;
+	margin:0;
+	border-right:1px solid black;
+	border-bottom-left-radius: 9px;
 }
 
 #top_follower .btn_container:last-child{
-	border-right:0;
+	position:relative;
+	right:-2px;
 	border-left:1px solid black;
-	border-bottom-left-radius: 0;
+	border-bottom-left-radius: 0px;
 	border-bottom-right-radius: 9px;
 }
 
@@ -398,7 +399,7 @@
 	text-align: center;
 	flex:1;
 	padding:0;
-	text-align: center;
+	position:relative;
 }
 
 #top_follower_content{

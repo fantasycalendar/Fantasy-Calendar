@@ -25,6 +25,8 @@ var calendar_weather = {
 
 	epoch_data: {},
 
+	processed_weather: true,
+
 	tooltip: {
 
 		set_up: function(){
@@ -45,6 +47,8 @@ var calendar_weather = {
 		},
 
 		show: function(icon){
+
+			if(!calendar_weather.processed_weather) return;
 
 			var day_container = icon.closest(".timespan_day");
 
@@ -165,6 +169,8 @@ var precipitation_chart;
 var temperature_chart;
 
 function evaluate_weather_charts(){
+
+	if(!calendar_weather.processed_weather) return;
 
 	if($('#precipitation').length == 0 || $('#temperature').length == 0){
 		return;

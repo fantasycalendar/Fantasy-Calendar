@@ -48,7 +48,7 @@ $jsversion = "2.0";
 		<script>
 
 		window.baseurl = "";
-		//window.baseurl = "https://fantasy-calendar.com/";
+		//window.baseurl = "https://beta.fantasy-calendar.com/";
 		
 		</script>
 
@@ -91,6 +91,7 @@ $jsversion = "2.0";
 		<header id="header">
 			
 			<div id="header_left_container">
+				<!--<a href="https://beta.fantasy-calendar.com/" id="logo"><img src="resources/calendar-logo.png" alt="Logo"/></a>-->
 				<!--<a href="https://www.beta.fantasy-calendar.com/" id="logo"><img src="resources/calendar-logo.png" alt="Logo"/></a>-->
 				<a href="http://127.0.0.1:8080/edsa-Fantasy-2.0/" id="logo"><img src="resources/calendar-logo.png" alt="Logo"/></a>
 				<a href="calendar?action=generate"><div class="button" id="new_calendar">New Calendar</div></a>
@@ -100,7 +101,7 @@ $jsversion = "2.0";
 
 			<div id="header_right_container">
 			
-			<a href="calendar?action=generate"><div class="button">New Calendar</div></a>
+			<a href='https://ko-fi.com/adamoresten'><div id='support-button' class='button'>Support me</div></a>
 
 			<?php if(!empty($_SESSION["user_id"])){ ?>
 				<div id="logout-button" class="button">Log Out</div>

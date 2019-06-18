@@ -19,6 +19,20 @@ function get_calendar_data(data){
 	return current_calendar_data;
 }
 
+var entityMap = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': '&quot;',
+    "'": '&#39;',
+    "/": '&#x2F;'
+};
+
+function escapeHtml(string) {
+    return String(string).replace(/[&<>"'\/]/g, function (s) {
+        return entityMap[s];
+    });
+}
 
 function debounce(func, wait, immediate) {
 	var timeout;
@@ -265,6 +279,8 @@ function get_days_in_timespan(static_data, year, timespan_index, exclusive){
 
 	var timespan = static_data.year_data.timespans[timespan_index];
 
+	if(!timespan) return [];
+
 	var days = [];
 
 	for(var i = 1; i <= timespan.length; i++){
@@ -432,11 +448,11 @@ function fract_year_length(static_data){
 
 		var leap_day = static_data.year_data.leap_days[i];
 
-		length += get_leap_fraction(0, leap_day.interval, leap_day.offset)
+		length += get_leap_fraction(1, leap_day.interval, 0)
 		
 	}
 
-	return precisionRound(length, 4);
+	return precisionRound(length, 10);
 
 }
 
@@ -460,10 +476,10 @@ function avg_month_length(static_Data){
 
 		var leap_day = static_data.year_data.leap_days[i];
 
-		length += get_leap_fraction(0, leap_day.interval, leap_day.offset)
+		length += get_leap_fraction(1, leap_day.interval, 0)
 	}
 
-	return length/num_months;
+	return precisionRound(length/num_months, 10);
 
 }
 
@@ -642,9 +658,15 @@ var date_converter = {
 
 function is_leap(year, intervals, offsets){
 
-	intervals = intervals.split(',');
+	var intervals = intervals.split(',');
 
 	if(intervals.length == 0){
+
+		var interval = interval[0];
+
+		var offset = (interval-offsets+1)%interval;
+
+		console.log(offset)
 
 		return (year + offset) % interval == 0;
 
@@ -709,9 +731,12 @@ function get_leap_fraction(year, intervals, offsets){
 
 	// If there's only one interval, we can calculate that without looping through each part
 	if(intervals.length == 1){
+
 		var interval = intervals[0]|0;
+
 		var offset = (interval-offsets)%interval;
-		return (year+offset) / interval|0;
+
+		return (year+offset) / interval;
 	}
 
 	// Get the base fraction, which we will add to or subtract based on its following rules

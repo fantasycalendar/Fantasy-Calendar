@@ -33,18 +33,14 @@ var calendar_builder = {
 
 				leap_day.index = leap_day_index;
 
-				var add = false;
-
 				if(is_leap(this.dynamic_data.internal_year, leap_day.interval, leap_day.offset)){
-
-					add = true;
 
 					if(leap_day.intercalary){
 						timespan.leap_days.push(leap_day);
 					}else{
 						timespan.length++;
 						if(leap_day.adds_week_day){
-							timespan.week.splice(leap_day.day-1, 0, leap_day.week_day)
+							timespan.week.splice(leap_day.day, 0, leap_day.week_day)
 						}
 					}
 				}
@@ -217,6 +213,7 @@ var calendar_builder = {
 	evaluate_calendar_data: function(){
 
 		if(this.static_data.year_data.timespans.length === 0 || this.static_data.year_data.global_week.length === 0){
+			
 			var result = {
 				success: false,
 				errors: []
@@ -231,6 +228,7 @@ var calendar_builder = {
 			}
 
 			return result;
+
 		}
 
 		// Set the internal year, so that year 1 is technically year 0, and year 2 is technically year 1, which means that it's easier to calculate negative years.
@@ -274,7 +272,7 @@ var calendar_builder = {
 
 			for(timespan = 0; timespan < num_timespans; timespan++){
 
-				var offset = (this.static_data.year_data.timespans[timespan].interval-this.static_data.year_data.timespans[timespan].offset)%this.static_data.year_data.timespans[timespan].interval;
+				var offset = (this.static_data.year_data.timespans[timespan].interval-this.static_data.year_data.timespans[timespan].offset+1)%this.static_data.year_data.timespans[timespan].interval;
 
 				// Get the fraction of that month's appearances
 				var is_leaping = (this.dynamic_data.internal_year + offset) % this.static_data.year_data.timespans[timespan].interval == 0;
@@ -345,7 +343,7 @@ var calendar_builder = {
 
 				for(timespan = num_timespans; timespan >= 0; timespan--){
 
-					var offset = (this.static_data.year_data.timespans[timespan].interval-this.static_data.year_data.timespans[timespan].offset)%this.static_data.year_data.timespans[timespan].interval;
+					var offset = (this.static_data.year_data.timespans[timespan].interval-this.static_data.year_data.timespans[timespan].offset+1)%this.static_data.year_data.timespans[timespan].interval;
 
 					// Get the fraction of that month's appearances
 					var is_leaping = (year + offset) % this.static_data.year_data.timespans[timespan].interval == 0;
@@ -742,8 +740,10 @@ var calendar_builder = {
 							if((this.static_data.settings.hide_all_weather && !this.owner) || (this.static_data.settings.hide_future_weather && !this.owner && (timespan_index > this.dynamic_data.timespan || (timespan_index == this.dynamic_data.timespan && total_day > this.dynamic_data.day)))){
 								data.weather = false;
 							}else{
-								if(climate_generator.process){
+								if(climate_generator.process_weather){
 									data.weather = climate_generator.get_weather_data(epoch);
+								}else{
+									data.weather = false;
 								}
 							}
 
@@ -820,7 +820,7 @@ var calendar_builder = {
 					if((this.static_data.settings.hide_all_weather && !this.owner) || (this.static_data.settings.hide_future_weather && !this.owner && (timespan_index > this.dynamic_data.timespan || (timespan_index == this.dynamic_data.timespan && total_day > this.dynamic_data.day)))){
 						data.weather = false;
 					}else{
-						if(climate_generator.process){
+						if(climate_generator.process_weather){
 							data.weather = climate_generator.get_weather_data(epoch);
 						}
 					}
@@ -905,7 +905,7 @@ var calendar_builder = {
 							if((this.static_data.settings.hide_all_weather && !this.owner) || (this.static_data.settings.hide_future_weather && !this.owner && (timespan_index > this.dynamic_data.timespan || (timespan_index == this.dynamic_data.timespan && total_day > this.dynamic_data.day)))){
 								data.weather = false;
 							}else{
-								if(climate_generator.process){
+								if(climate_generator.process_weather){
 									data.weather = climate_generator.get_weather_data(epoch);
 								}
 							}
@@ -952,22 +952,22 @@ var calendar_builder = {
 			year_day = 1;
 		}
 
-
 		return {
-			static_data: this.static_data,
 			success: true,
+			static_data: this.static_data,
 			year_data: {
 				year: this.dynamic_data.year,
 				era_year: era_year,
 				epoch: first_epoch,
 				last_epoch: epoch,
 				week_day: first_week_day,
-				year_day: year_day,
-				has_weather: climate_generator.process
+				year_day: year_day
 			},
 			timespans: this.calendar_list.timespans_to_build,
 			epoch_data: this.data.epochs,
 			pre_epoch_data: this.pre_data.epochs,
+			processed_seasons: climate_generator.process_seasons,
+			processed_weather: climate_generator.process_weather
 		}
 
 	},

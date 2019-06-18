@@ -64,7 +64,9 @@ function rebuild_climate(){
 		calendar_name: calendar_name,
 		static_data: static_data,
 		dynamic_data: dynamic_data,
-		evaluated_static_data: evaluated_static_data.epoch_data
+		preview_date: preview_date,
+		evaluated_static_data: evaluated_static_data.epoch_data,
+		owner: owner
 	});
 }
 
@@ -91,12 +93,43 @@ worker_events.onmessage = e => {
 
 worker_climate.onmessage = e => {
 
-	evaluated_static_data.epoch_data = e.data;
-	calendar_weather.epoch_data = clone(evaluated_static_data.epoch_data);
+	var prev_seasons = calendar_weather.processed_seasons;
+	var prev_weather = calendar_weather.processed_weather;
 
-	evaluate_weather_charts();
-	
-	eval_current_time();
+	evaluated_static_data.epoch_data = e.data.epoch_data;
+	evaluated_static_data.processed_weather = e.data.processed_weather;
+	calendar_weather.epoch_data = clone(evaluated_static_data.epoch_data);
+	calendar_weather.processed_seasons = clone(e.data.processed_seasons);
+	calendar_weather.processed_weather = clone(e.data.processed_weather);
+
+	if(prev_seasons != calendar_weather.processed_seasons || prev_weather != calendar_weather.processed_weather){
+
+		var start_epoch = Number(Object.keys(evaluated_static_data.epoch_data)[0]);
+		var end_epoch = Number(Object.keys(evaluated_static_data.epoch_data)[Object.keys(evaluated_static_data.epoch_data).length-1]);
+
+		calendar_layouts.insert_calendar(evaluated_static_data);
+
+		calendar_weather.epoch_data = evaluated_static_data.epoch_data;
+		calendar_weather.processed_weather = evaluated_static_data.processed_weather;
+
+		eras.evaluate_current_era(static_data, start_epoch, end_epoch);
+		eras.set_up_position();
+		eras.display_era_events(static_data);
+
+		rebuild_events();
+
+		eval_clock();
+		update_current_day(false);
+
+		evaluate_weather_charts();
+
+	}else{
+
+		evaluate_weather_charts();
+		
+		eval_current_time();
+
+	}
 
 	hide_loading_screen();
 
@@ -110,29 +143,49 @@ worker_calendar.onmessage = e => {
 
 	if(evaluated_static_data.success){
 
-		calendar_layouts.insert_calendar(evaluated_static_data);
+		if(Object.keys(evaluated_static_data.timespans).length > 0){
 
-		calendar_weather.epoch_data = evaluated_static_data.epoch_data;
+			calendar_layouts.insert_calendar(evaluated_static_data);
 
-		var start_epoch = Number(Object.keys(evaluated_static_data.epoch_data)[0]);
-		var end_epoch = Number(Object.keys(evaluated_static_data.epoch_data)[Object.keys(evaluated_static_data.epoch_data).length-1]);
+			calendar_weather.epoch_data = evaluated_static_data.epoch_data;
+			calendar_weather.processed_weather = evaluated_static_data.processed_weather;
 
-		eras.evaluate_current_era(static_data, start_epoch, end_epoch);
-		eras.set_up_position();
-		eras.display_era_events(static_data);
+			var start_epoch = Number(Object.keys(evaluated_static_data.epoch_data)[0]);
+			var end_epoch = Number(Object.keys(evaluated_static_data.epoch_data)[Object.keys(evaluated_static_data.epoch_data).length-1]);
 
-		rebuild_events();
+			eras.evaluate_current_era(static_data, start_epoch, end_epoch);
+			eras.set_up_position();
+			eras.display_era_events(static_data);
 
-		if(action !== "preview"){
-			eval_clock();
-			update_current_day(false);
+			rebuild_events();
+
+			if(action !== "preview"){
+				eval_clock();
+				update_current_day(false);
+			}
+
+			evaluate_weather_charts();
+
+		}else{
+
+			calendar_layouts.insert_empty_calendar(evaluated_static_data);
+
 		}
-
-		evaluate_weather_charts();
 
 	}else{
 
-		calendar_layouts.insert_empty_calendar(evaluated_static_data);
+		var text = [];
+		
+		text.push(`Errors:<ol>`);
+
+		for(var i = 0; i < evaluated_static_data.errors.length; i++){
+
+			text.push(`<li>${evaluated_static_data.errors[i]}</li>`);
+
+		}
+		text.push(`</ol>`);
+
+		calendar_error_message(text.join(''));
 
 	}
 

@@ -4,6 +4,9 @@ var climate_generator = {
 
 	set_up: function(calendar_name, static_data, dynamic_data, epoch){
 
+		this.process_seasons = true;
+		this.process_weather = true;
+
 		this.calendar_name = calendar_name;
 		this.static_data = clone(static_data);
 		this.dynamic_data = clone(dynamic_data);
@@ -13,140 +16,151 @@ var climate_generator = {
 		   this.static_data.year_data.global_week.length == 0
 		   ||
 		   this.dynamic_data.location === ''
+		   ||
+		   this.static_data.seasons.data.length == 0
 		){
 
-			this.process = false;
+			this.process_seasons = false;
+			this.process_weather = false;
+			return;
+
+		}
+
+		if(this.static_data.seasons.global_settings.enable_weather){
+			this.process_weather = false;
+		}
+
+
+		this.data =  {
+			"season_length": 0,
+			"season_offset": 0,
+			"seasons": []
+		};
+
+		this.weather =  {
+			"season_length": 0,
+			"season_offset": 0,
+			"seasons": []
+		};
+
+		this.current_location = {};
+
+		if(this.dynamic_data.custom_location){
+
+			this.current_location = clone(this.static_data.seasons.locations[this.dynamic_data.location]);
 
 		}else{
 
-			this.data =  {
-				"season_length": 0,
-				"season_offset": 0,
-				"seasons": []
-			};
+			this.current_location = this.presets[this.dynamic_data.location];
 
-			this.weather =  {
-				"season_length": 0,
-				"season_offset": 0,
-				"seasons": []
-			};
+			for(var i = 0; i < this.static_data.seasons.data.length; i++){
 
-			this.current_location = {};
-
-			if(this.dynamic_data.custom_location){
-
-				this.current_location = clone(this.static_data.seasons.locations[this.dynamic_data.location]);
-
-			}else{
-
-				this.current_location = this.presets[this.dynamic_data.location];
-
-				for(var i = 0; i < this.static_data.seasons.data.length; i++){
-
-					this.current_location.seasons[i].time = clone(this.static_data.seasons.data[i].time);
-
+				if(i > this.current_location.seasons.length-1){
+					this.current_location.seasons.push(this.current_location.seasons[i % this.current_location.seasons.length])
 				}
 
-				this.current_location.settings = clone(this.preset_curves);
-				this.current_location.settings.timezone = 0;
-				this.current_location.custom_dates = {};
+				this.current_location.seasons[i].time = clone(this.static_data.seasons.data[i].time);
 
 			}
 
-			this.wind_direction = false;
+			this.current_location.settings = clone(this.preset_curves);
+			this.current_location.settings.timezone = 0;
+			this.current_location.custom_dates = {};
 
-			var seed = 100;
+		}
 
-			for(var i = 0; i < this.current_location.name.length; i++){
-				seed *= this.current_location.name.charCodeAt(i)/100;
-			}
+		this.wind_direction = false;
 
-			for(var i = 0; i < this.calendar_name.length; i++){
-				seed *= this.calendar_name.charCodeAt(i)/100;
-			}
+		var seed = 100;
 
-			for(var i = 0; i < this.static_data.year_data.timespans.length; i++){
-				seed += (1+this.static_data.year_data.timespans[i].offset)/this.static_data.year_data.timespans[i].interval;
-			}
+		for(var i = 0; i < this.current_location.name.length; i++){
+			seed *= this.current_location.name.charCodeAt(i)/100;
+		}
 
-			seed += this.static_data.year_data.timespans.length * (this.static_data.year_data.leap_days.length+1);
+		for(var i = 0; i < this.calendar_name.length; i++){
+			seed *= this.calendar_name.charCodeAt(i)/100;
+		}
 
-			seed += this.static_data.year_data.global_week.length;
+		for(var i = 0; i < this.static_data.year_data.timespans.length; i++){
+			seed += (1+this.static_data.year_data.timespans[i].offset)/this.static_data.year_data.timespans[i].interval;
+		}
 
-			seed += this.static_data.seasons.global_settings.seed;
+		seed += this.static_data.year_data.timespans.length * (this.static_data.year_data.leap_days.length+1);
 
-			this.random = new random(seed);
-			
-			for(var i = 0; i < this.static_data.seasons.data.length; i++){
-				current_season = this.static_data.seasons.data[i];
-				this.data.season_length += current_season.transition_length;
-				this.data.season_length += current_season.duration;
-			}
+		seed += this.static_data.year_data.global_week.length;
 
-			// This creates a list that we can use to loop through to find the current season
-			this.data.seasons = [];
-			var added_season = 0;
-			for(var i = 0; i < this.static_data.seasons.data.length; i++){
-				current_season = this.static_data.seasons.data[i];
-				this.data.seasons.push(added_season);
-				this.data.seasons.push(added_season + (current_season.duration ? current_season.duration : 0));
-				added_season += current_season.transition_length + (current_season.duration ? current_season.duration : 0);
+		seed += this.static_data.seasons.global_settings.seed;
 
-			}
+		this.random = new random(seed);
+		
+		for(var i = 0; i < this.static_data.seasons.data.length; i++){
+			current_season = this.static_data.seasons.data[i];
+			this.data.season_length += current_season.transition_length;
+			this.data.season_length += current_season.duration;
+		}
+
+		// This creates a list that we can use to loop through to find the current season
+		this.data.seasons = [];
+		var added_season = 0;
+		for(var i = 0; i < this.static_data.seasons.data.length; i++){
+			current_season = this.static_data.seasons.data[i];
 			this.data.seasons.push(added_season);
+			this.data.seasons.push(added_season + (current_season.duration ? current_season.duration : 0));
+			added_season += current_season.transition_length + (current_season.duration ? current_season.duration : 0);
 
-			this.data.season_offset = this.static_data.seasons.global_settings.season_offset;
+		}
+		this.data.seasons.push(added_season);
 
-			this.data.season_epoch = (epoch-this.data.season_offset) % this.data.season_length;
-			this.data.season_epoch = this.data.season_epoch < 0 ? this.data.season_epoch + this.data.season_length : this.data.season_epoch;
+		this.data.season_offset = this.static_data.seasons.global_settings.season_offset;
 
-			this.data.last_point = 0;
-			this.data.next_point = 1;
+		this.data.season_epoch = (epoch-this.data.season_offset) % this.data.season_length;
+		this.data.season_epoch = this.data.season_epoch < 0 ? this.data.season_epoch + this.data.season_length : this.data.season_epoch;
 
-			// Here we actually loop through each season to find out which one we're in currently
-			for(i = 0; i < this.data.seasons.length-1; i++, this.data.last_point++, this.data.next_point++){
+		this.data.last_point = 0;
+		this.data.next_point = 1;
 
+		// Here we actually loop through each season to find out which one we're in currently
+		for(i = 0; i < this.data.seasons.length-1; i++, this.data.last_point++, this.data.next_point++){
+
+			this.data.last_epoch = this.data.seasons[this.data.last_point];
+			this.data.next_epoch = this.data.seasons[this.data.next_point];
+
+			if(this.data.last_epoch == this.data.next_epoch){
+				this.data.last_point++;
+				this.data.next_point++;
 				this.data.last_epoch = this.data.seasons[this.data.last_point];
 				this.data.next_epoch = this.data.seasons[this.data.next_point];
-
-				if(this.data.last_epoch == this.data.next_epoch){
-					this.data.last_point++;
-					this.data.next_point++;
-					this.data.last_epoch = this.data.seasons[this.data.last_point];
-					this.data.next_epoch = this.data.seasons[this.data.next_point];
-				}
-
-				if(this.data.season_epoch >= this.data.last_epoch && this.data.season_epoch < this.data.next_epoch){
-					break;
-				}
-
 			}
 
-			this.weather = clone(this.data);
+			if(this.data.season_epoch >= this.data.last_epoch && this.data.season_epoch < this.data.next_epoch){
+				break;
+			}
 
-			this.weather.season_epoch = (epoch-this.weather.season_offset-this.static_data.seasons.global_settings.weather_offset) % this.weather.season_length;
-			this.weather.season_epoch = this.weather.season_epoch < 0 ? this.weather.season_epoch + this.weather.season_length : this.weather.season_epoch;
+		}
 
-			this.weather.last_point = 0;
-			this.weather.next_point = 1;
+		this.weather = clone(this.data);
 
-			// Here we actually loop through each season to find out which one we're in currently
-			for(i = 0; i < this.weather.seasons.length-1; i++, this.weather.last_point++, this.weather.next_point++){
+		this.weather.season_epoch = (epoch-this.weather.season_offset-this.static_data.seasons.global_settings.weather_offset) % this.weather.season_length;
+		this.weather.season_epoch = this.weather.season_epoch < 0 ? this.weather.season_epoch + this.weather.season_length : this.weather.season_epoch;
 
+		this.weather.last_point = 0;
+		this.weather.next_point = 1;
+
+		// Here we actually loop through each season to find out which one we're in currently
+		for(i = 0; i < this.weather.seasons.length-1; i++, this.weather.last_point++, this.weather.next_point++){
+
+			this.weather.last_epoch = this.weather.seasons[this.weather.last_point];
+			this.weather.next_epoch = this.weather.seasons[this.weather.next_point];
+
+			if(this.weather.last_epoch == this.weather.next_epoch){
+				this.weather.last_point++;
+				this.weather.next_point++;
 				this.weather.last_epoch = this.weather.seasons[this.weather.last_point];
 				this.weather.next_epoch = this.weather.seasons[this.weather.next_point];
+			}
 
-				if(this.weather.last_epoch == this.weather.next_epoch){
-					this.weather.last_point++;
-					this.weather.next_point++;
-					this.weather.last_epoch = this.weather.seasons[this.weather.last_point];
-					this.weather.next_epoch = this.weather.seasons[this.weather.next_point];
-				}
-
-				if(this.weather.season_epoch >= this.weather.last_epoch && this.weather.season_epoch < this.weather.next_epoch){
-					break;
-				}
-
+			if(this.weather.season_epoch >= this.weather.last_epoch && this.weather.season_epoch < this.weather.next_epoch){
+				break;
 			}
 
 		}
@@ -154,6 +168,8 @@ var climate_generator = {
 	},
 
 	get_season_data: function(epoch){
+
+		if(!this.process_seasons) return;
 
 		this.data.season_epoch = (epoch-this.data.season_offset) % this.data.season_length;
 		this.data.season_epoch = this.data.season_epoch < 0 ? this.data.season_epoch + this.data.season_length : this.data.season_epoch;
@@ -221,6 +237,8 @@ var climate_generator = {
 	},
 
 	get_weather_data: function(epoch){
+
+		if(!this.process_weather) return;
 
 		/*----------------------------- WEATHER GENERATION ------------------------------------*/
 

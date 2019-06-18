@@ -29,18 +29,7 @@ function set_up_visitor_inputs(){
 
 	});
 
-
-	preview_date = clone(dynamic_data);
-
-	if(preview_date){
-
-		target_year.val(preview_date.year);
-		target_year.data('val', target_year.val());
-
-		var curr_timespan = repopulate_timespan_select(target_timespan, convert_year(preview_date.year));
-		repopulate_day_select(target_day, convert_year(preview_date.year), curr_timespan);
-
-	}
+	set_up_preview_values();
 
 	sub_target_year = $('#sub_target_year');
 	add_target_year = $('#add_target_year');
@@ -262,14 +251,16 @@ function evaluate_settings(){
 
 	$('.btn_container').toggleClass('hidden', !owner && !static_data.settings.allow_view);
 	$('.btn_preview_date[key="year"]').prop('disabled', !owner && !static_data.settings.allow_view).toggleClass('hidden', !owner && !static_data.settings.allow_view);
-	$('.btn_preview_date[key="timespan"]').prop('disabled', !owner && !static_data.settings.show_current_month).toggleClass('hidden', !owner && !static_data.settings.show_current_month)
+	$('.btn_preview_date[key="timespan"]').prop('disabled', !static_data.settings.show_current_month).toggleClass('hidden', !static_data.settings.show_current_month)
 
 }
 
 
 function eval_clock(){
 
-	clock_hours = static_data.clock.hours;
+	if(isNaN(static_data.clock.hours) || isNaN(static_data.clock.minutes) || isNaN(static_data.clock.offset)) return;
+
+	var clock_hours = static_data.clock.hours;
 
 	$('#clock').empty();
 
@@ -305,6 +296,10 @@ function eval_clock(){
 
 function eval_current_time(){
 
+	if(isNaN(static_data.clock.hours) || isNaN(static_data.clock.minutes) || isNaN(static_data.clock.offset)) return;
+
+
+	var clock_hours = static_data.clock.hours;
 	var clock_hour = dynamic_data.hour;
 	var clock_minute = dynamic_data.minute;
 	var clock_time = clock_hour + (clock_minute/60);
@@ -329,7 +324,11 @@ function eval_current_time(){
 
 function evaluate_sun(){
 
-	if(evaluated_static_data.epoch_data[dynamic_data.epoch]){
+	if(isNaN(static_data.clock.hours) || isNaN(static_data.clock.minutes) || isNaN(static_data.clock.offset)) return;
+
+	if(evaluated_static_data.epoch_data && evaluated_static_data.epoch_data[dynamic_data.epoch] && evaluated_static_data.epoch_data[dynamic_data.epoch].season){
+
+		var clock_hours = static_data.clock.hours;
 
 		var sunset = evaluated_static_data.epoch_data[dynamic_data.epoch].season.sunset[0];
 		var sunrise = evaluated_static_data.epoch_data[dynamic_data.epoch].season.sunrise[0];
@@ -435,4 +434,20 @@ function repopulate_location_select_list(){
 		dynamic_data.location = location_select.val();
 		dynamic_data.custom_location = location_select.find('option:selected').parent().attr('value');
 	}
+}
+
+function set_up_preview_values(){
+
+	preview_date = clone(dynamic_data);
+
+	if(preview_date){
+
+		target_year.val(preview_date.year);
+		target_year.data('val', target_year.val());
+
+		var curr_timespan = repopulate_timespan_select(target_timespan, convert_year(preview_date.year));
+		repopulate_day_select(target_day, convert_year(preview_date.year), curr_timespan);
+
+	}
+
 }
