@@ -836,8 +836,7 @@ var calendar_builder = {
 						this.data.repititions.year_moons[moon_index][phase]++;
 						this.data.repititions.timespan_moons[timespan_index][moon_index][phase]++;
 
-						var position_data = ((epoch-moon.shift)/moon.cycle)
-						var phase_epoch = Math.floor(Math.abs(position_data)+1);
+						var phase_epoch = Math.floor(Math.abs(moon_position_data)+1);
 
 						data['moon_phase'][moon_index] = phase;
 						data['moon_phase_num_epoch'][moon_index] = phase_epoch;

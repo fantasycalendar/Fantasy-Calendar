@@ -1,5 +1,7 @@
 function display_events(static_data, event_data){
 
+	$('#calendar .event:not(.era_event)').remove();
+
 	if(owner || !static_data.settings.hide_events){
 
 		var num_valid_events = Object.keys(event_data.valid).length;
@@ -18,7 +20,7 @@ function display_events(static_data, event_data){
 				var start = event_data.starts[event_index].indexOf(local_epoch) != -1;
 				var end = event_data.ends[event_index].indexOf(local_epoch) != -1;
 
-				var category_name = current_event.category != -1 ? static_data.event_data.categories[current_event.category].name : "";
+				var category_name = current_event.category && current_event.category > -1 ? static_data.event_data.categories[current_event.category].name : "";
 
 				var event_group = current_event.settings.color ? " " + current_event.settings.color : "";
 				event_group += current_event.settings.text ? " " + current_event.settings.text : "";
@@ -115,6 +117,7 @@ var eras = {
 			this.start_epoch = start_epoch;
 			this.end_epoch = end_epoch;
 			this.era = undefined;
+			this.internal_class = document.getElementsByClassName('era')[0];
 
 			for(var i = 0; i < static_data.eras.length; i++){
 				static_data.eras[i].date.epoch = evaluate_calendar_start(static_data, static_data.eras[i].date.year-1, static_data.eras[i].date.timespan, static_data.eras[i].date.day).epoch;
@@ -143,34 +146,12 @@ var eras = {
 					}
 				}
 
-				if(this.current_eras.length == 0){
-
-					for(var i = 0; i < static_data.eras.length-1; i++){
-
-						var current_era = static_data.eras[i];
-						var next_era = static_data.eras[i+1];
-
-						if(this.start_epoch > current_era.date.epoch && next_era.date.epoch > this.end_epoch){
-							this.current_eras.push({
-								"id": i,
-								"position": 0,
-								"data": current_era
-							});
-						}
-					}
-				// If there are eras, and the first era is after the starting epoch
-				// that means that we need to add the previous era too
-				}else{
-
-					if(this.current_eras[0].data.date.epoch > this.start_epoch){
-						if(static_data.eras[this.current_eras[0].id-1]){
-							this.current_eras.splice(0, 0, {
-								"id": this.current_eras[0].id-1,
-								"position": 0,
-								"data": static_data.eras[this.current_eras[0].id-1]
-							});
-						}
-					}
+				if(this.current_eras.length > 0 && this.current_eras[0].data.date.epoch > this.start_epoch && static_data.eras[this.current_eras[0].id-1]){
+					this.current_eras.splice(0, 0, {
+						"id": this.current_eras[0].id-1,
+						"position": 0,
+						"data": static_data.eras[this.current_eras[0].id-1]
+					});
 				}
 			}
 		}
@@ -179,16 +160,21 @@ var eras = {
 	// This simply sets the new era
 	set_current_era: function(index){
 
-		if(static_data.eras.length > 0){
+		if(this.current_eras.length > 0){
 			// If it's not a new era, don't update the text
 			if(this.era != index){
-				this.era = index;
-				if(owner || !static_data.settings.hide_eras){
-					this.internal_class = document.getElementsByClassName('era')[0];
-					var text = static_data.settings.show_era_abbreviation ? this.current_eras[this.era].data.abbreviation : this.current_eras[this.era].data.name;
-					this.internal_class.innerHTML = " - " + text;
+				if(index >= 0){
+					this.era = index;
+					if(owner || !static_data.settings.hide_eras){
+						var text = static_data.settings.show_era_abbreviation ? this.current_eras[this.era].data.abbreviation : this.current_eras[this.era].data.name;
+						this.internal_class.innerHTML = " - " + text;
+					}
+				}else{
+					this.internal_class.innerHTML = "";
 				}
 			}
+		}else{
+			this.internal_class.innerHTML = "";
 		}
 	},
 
@@ -203,8 +189,21 @@ var eras = {
 				}
 			}
 
-			if(this.current_eras.length > 1){
-				var position = $(window).scrollTop();
+			var position = $("#calendar").scrollTop();
+
+			if(this.current_eras.length == 0){
+				
+				eras.set_current_era(0);
+
+			}else if(this.current_eras.length == 1){
+
+				if(position > this.current_eras[0].position || this.current_eras[0].data.date.epoch < this.start_epoch){	
+					eras.set_current_era(0);
+				}else{
+					eras.set_current_era(-1);
+				}
+
+			}else{
 				for(var i = 0; i < this.current_eras.length; i++){
 					var current_era = this.current_eras[i];
 					if(position > current_era.position && i < this.current_eras.length-1){
@@ -213,10 +212,8 @@ var eras = {
 						this.next_era++;
 					}
 				}
-			}else{
-				this.current_era = 0;
+				eras.set_current_era(this.current_era);
 			}
-			eras.set_current_era(this.current_era);
 		}
 		
 	},
@@ -226,25 +223,44 @@ var eras = {
 
 		if(static_data.eras.length > 0){
 
+			var position = $("#calendar").scrollTop();
+
 			// If there's only one era, don't do anything
-			if(this.current_eras.length <= 1) return;
+			if(this.current_eras.length == 0){
 
-			var position = $("#static_data").scrollTop();
+				eras.set_current_era(0);
 
-			if(this.next_era < this.current_eras.length){
-				if(position > this.current_eras[this.next_era].position){
-					this.prev_era++;
-					this.current_era++;
-					this.next_era++;
+			}else if(this.current_eras.length == 1){
+
+				if(position > this.current_eras[0].position || this.current_eras[0].data.date.epoch < this.start_epoch){	
+
+					eras.set_current_era(0);
+
+				}else{
+
+					eras.set_current_era(-1);
+
 				}
-			}
-			if(position < this.current_eras[this.current_era].position){
-				this.next_era--;
-				this.current_era--;
-				this.prev_era--;
-			}
+				
 
-			eras.set_current_era(this.current_era);
+			}else{
+
+				if(this.next_era < this.current_eras.length){
+					if(position > this.current_eras[this.next_era].position){
+						this.prev_era++;
+						this.current_era++;
+						this.next_era++;
+					}
+				}
+				if(position < this.current_eras[this.current_era].position){
+					this.next_era--;
+					this.current_era--;
+					this.prev_era--;
+				}
+
+				eras.set_current_era(this.current_era);
+
+			}
 
 		}
 
@@ -268,7 +284,7 @@ var eras = {
 					var event_group = '';
 					var category = '';
 
-					if(current_era.settings.event_category != -1){
+					if(current_era.settings.event_category && current_era.settings.event_category > -1){
 						var category = static_data.event_data.categories[current_era.settings.event_category];
 						event_group = category.color ? " " + category.color : "";
 						event_group += category.text ? " " + category.text : "";

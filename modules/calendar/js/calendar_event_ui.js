@@ -92,11 +92,11 @@ var edit_event_ui = {
 
 		$("#event_categories").change(function(){
 			if($(this).val() != -1){
-				var category = static_data.event_data.categories[$(this).val()];
+				var category = static_data.event_data.categories[$(this).val()].event_settings;
 				$('#color_style').val(category.color);
 				$('#text_style').val(category.text).change();
-				$('#event_hide_players').prop('checked', category.event_settings.hide);
-				$('#event_dontprint_checkbox').prop('checked', category.event_settings.noprint);
+				$('#event_hide_players').prop('checked', category.hide);
+				$('#event_dontprint_checkbox').prop('checked', category.noprint);
 			}
 		});
 
@@ -143,46 +143,32 @@ var edit_event_ui = {
 			edit_event_ui.evaluate_condition_selects(edit_event_ui.event_conditions_container);
 		})
 
-		edit_event_ui.populate_categories();
-
-	},
-
-	populate_categories: function(){
-		var html = [];
-		html.push("<option selected value='-1'>None</option>")
-		for(var i = 0; i < static_data.event_data.categories.length; i++){
-			var category = static_data.event_data.categories[i];
-			html.push(`<option value='${i}'>`)
-			html.push(category.name)
-			html.push("</option>")
-		}
-		$("#event_categories").html(html.join(""));
 	},
 
 	set_current_event: function(event_id){
 
-		this.editing_event = static_data.event_data.events[event_id];
+		this.event_id = event_id;
 
-		this.event_background.find('.event_name').val(this.editing_event.name);
+		this.event_background.find('.event_name').val(static_data.event_data.events[this.event_id].name);
 
-		this.trumbowyg.trumbowyg('html', this.editing_event.description);
+		this.trumbowyg.trumbowyg('html', static_data.event_data.events[this.event_id].description);
 
-		edit_event_ui.create_conditions(this.editing_event.data.conditions, edit_event_ui.event_conditions_container);
+		edit_event_ui.create_conditions(static_data.event_data.events[this.event_id].data.conditions, edit_event_ui.event_conditions_container);
 
 		edit_event_ui.evaluate_condition_selects(edit_event_ui.event_conditions_container);
 		
-		if(this.editing_event.category !== undefined){
-			$('#event_categories').val(this.editing_event.category);
+		if(static_data.event_data.events[this.event_id].category !== undefined){
+			$('#event_categories').val(static_data.event_data.events[this.event_id].category);
 		}else{
 			$('#event_categories').val(-1);
 		}
 
-		$('#color_style').val(this.editing_event.settings.color);
-		$('#text_style').val(this.editing_event.settings.text).change();
+		$('#color_style').val(static_data.event_data.events[this.event_id].settings.color);
+		$('#text_style').val(static_data.event_data.events[this.event_id].settings.text).change();
 
-		$('#event_hide_players').prop('checked', this.editing_event.settings.hide);
+		$('#event_hide_players').prop('checked', static_data.event_data.events[this.event_id].settings.hide);
 
-		$('#event_dontprint_checkbox').prop('checked', this.editing_event.settings.noprint);
+		$('#event_dontprint_checkbox').prop('checked', static_data.event_data.events[this.event_id].settings.noprint);
 
 		edit_event_ui.event_background.removeClass('hidden');
 
@@ -190,29 +176,39 @@ var edit_event_ui = {
 
 	save_current_event: function(){
 
-		this.editing_event.name = this.event_background.find('.event_name').val()
+		static_data.event_data.events[this.event_id] = {};
 
-		this.editing_event.description = this.trumbowyg.trumbowyg('html');
+		static_data.event_data.events[this.event_id].name = this.event_background.find('.event_name').val()
 
-		this.editing_event.data.conditions = this.create_condition_array(edit_event_ui.event_conditions_container);
+		static_data.event_data.events[this.event_id].description = this.trumbowyg.trumbowyg('html');
 
-		this.editing_event.category = $('#event_categories').val();
+		static_data.event_data.events[this.event_id].data = {
+			length: 1,
+			show_start_end: false,
+			show_first_last: false,
+			conditions: this.create_condition_array(edit_event_ui.event_conditions_container)
+		};
 
-		this.editing_event.color = $('#color_style').val();
+		static_data.event_data.events[this.event_id].category = $('#event_categories').val();
 
-		this.editing_event.text = $('#text_style').val();
-
-		this.editing_event.settings.hide = $('#event_hide_players').prop('checked');
-
-		this.editing_event.settings.noprint = $('#event_dontprint_checkbox').prop('checked');
+		static_data.event_data.events[this.event_id].settings = {
+			color: $('#color_style').val(),
+			text: $('#text_style').val(),
+			hide: $('#event_hide_players').prop('checked'),
+			noprint: $('#event_dontprint_checkbox').prop('checked')
+		}
 
 		edit_event_ui.clear_ui();
+
+		error_check();
+
+		rebuild_events();
 
 	},
 
 	clear_ui: function(){
 
-		this.editing_event = null;
+		this.event_id = null;
 
 		this.event_background.find('.event_name').val('');
 
@@ -243,18 +239,38 @@ var edit_event_ui = {
 			if($(this).hasClass('condition')){
 
 				var selected_option = $(this).find('.condition_type').find(":selected");
+				console.log(selected_option)
 				var type = selected_option.parent().attr('label');
 				var values = [];
 
 				if(type === "Moons"){
-					values.push($(this).find('.moon_select').val());
-					values.push($(this).find('.input_container').children().first().val());
+
+					values.push($(this).children('.moon_select').val());
+
+					$(this).children('.input_container').children().each(function(i){
+
+						if($(this).val() == ""){
+							var val = 0;
+						}else{
+							var val = $(this).val();
+						}
+						values.push(val);
+					});
+
 				}else if(type === "Cycle"){
 					values.push($(this).find('.input_container').find("option:selected").parent().attr("value"));
 					values.push($(this).find('.input_container').find("option:selected").val());
+				}else if(type === "Year" && selected_option.val() != 6){
+					var val = $(this).find('.input_container').val()|0;
+					values.push(val > 0 ? val-1 : val);
 				}else{
 					$(this).find('.input_container').children().each(function(){
-						values.push($(this).val());
+						if($(this).val() == ""){
+							var val = 0;
+						}else{
+							var val = $(this).val();
+						}
+						values.push(val);
 					});
 				}
 
@@ -272,7 +288,7 @@ var edit_event_ui = {
 					type = type.find('.num_group_con').val();
 				}
 
-				array.push([type, edit_event_ui.create_condition_array($(this).find('.group_list'))])
+				array.push([type, edit_event_ui.create_condition_array($(this).children('.group_list'))])
 
 			}
 
@@ -339,13 +355,13 @@ var edit_event_ui = {
 					group_type = "num";
 				}
 
-				parent = edit_event_ui.add_group(parent, group_type);
+				var parent_new = edit_event_ui.add_group(parent, group_type);
 
 				if(element[0] >= 1){
-					parent.parent().find('.num_group_con').prop('disabled', false).val(element[0]);
+					parent_new.parent().find('.num_group_con').prop('disabled', false).val(element[0]);
 				}
 
-				edit_event_ui.create_conditions(element[1], parent, group_type);
+				edit_event_ui.create_conditions(element[1], parent_new, group_type);
 
 			}else{
 
@@ -353,9 +369,10 @@ var edit_event_ui = {
 
 				condition.find('.condition_type').find(`optgroup[label=${element[0]}]`).find(`option[value=${element[1]}]`).prop('selected', true);
 
-
 				if(element[0] === "Moons"){
 					condition.find('.moon_select').val(element[2][0])
+				}else if(element[0] === "Year" && element[1] != 6){
+					element[2][0] = element[2][0] >= 0 ? element[2][0]+1 : element[2][0];
 				}
 
 				edit_event_ui.evaluate_inputs(condition);
@@ -424,9 +441,12 @@ var edit_event_ui = {
 		}else if(type == "Moons"){
 
 			var next_start = 0;
+
 			if(condition_selected[0] == "select"){
 
 				var selected_moon = element.find('.moon_select').val();
+
+				selected_moon = selected_moon ? selected_moon : 0;
 
 				html.push("<select class='form-control form-control-sm'>")
 
@@ -437,8 +457,11 @@ var edit_event_ui = {
 				}
 
 				html.push("</select>")
+
 				next_start++;
+
 			}
+
 
 			for(var i = next_start; i < condition_selected.length; i++){
 
@@ -518,6 +541,24 @@ var edit_event_ui = {
 				}
 
 			html.push("</select>");
+
+		}else if(type == "Year" && condition_selected.length == 1){
+
+			for(var i = 0; i < condition_selected.length; i++){
+
+				html.push(`<input type='${condition_selected[i][0]}' placeholder='${condition_selected[i][1]}' class='form-control form-control-sm ${condition_selected[i][1]}'`);
+
+				if(condition_selected[i][2]){
+					html.push(` value='${(condition_selected[i][2]|0) >= 0 ? (condition_selected[i][2]|0)+1 : (condition_selected[i][2]|0)}'`);
+				}
+
+				if(condition_selected[i][3]){
+					html.push(` min='${condition_selected[i][3]}'`);
+				}
+
+				html.push(">");
+
+			}
 
 		}else{
 
@@ -798,6 +839,8 @@ var edit_HTML_ui = {
 		edit_HTML_ui.key = null;
 		edit_HTML_ui.data = null;
 		edit_HTML_ui.value = null;
+
+		evaluate_save_button();
 
 		this.clear_ui();
 

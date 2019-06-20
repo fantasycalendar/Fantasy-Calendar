@@ -191,10 +191,9 @@ function set_up_visitor_inputs(){
 			$(this).val(tar_year);
 		}
 
+		repopulate_timespan_select(target_timespan, preview_date.timespan);
 
-		var tar_timespan = repopulate_timespan_select(target_timespan, convert_year(tar_year));
-
-		repopulate_day_select(target_day, convert_year(tar_year), tar_timespan);
+		repopulate_day_select(target_day, preview_date.day);
 
 	});
 
@@ -205,7 +204,7 @@ function set_up_visitor_inputs(){
 		var tar_timespan = $(this).val()|0;
 		var prev_timespan = $(this).data('val')|0;
 
-		repopulate_day_select(target_day, convert_year(tar_year), tar_timespan);
+		repopulate_day_select(target_day, preview_date.day);
 
 	});
 
@@ -366,49 +365,86 @@ function rotate_element(element, rotation){
 	element.css('transform', 'rotate('+rotation+'deg)');
 }
 
-function repopulate_timespan_select(select, year){
-	var html = [];
-	for(var i = 0; i < static_data.year_data.timespans.length; i++){
-		var is_there = does_timespan_appear(static_data, year, i);
-		html.push(`<option ${!is_there.result ? 'disabled' : ''} value='${i}'>`);
-		html.push(static_data.year_data.timespans[i].name + (!is_there.result ? ` (${is_there.reason})` : ''));
-		html.push('</option>');
-	}
+function repopulate_timespan_select(select, val){
 
-	select.html(html.join('')).val(dynamic_data.timespan);
-	if(select.find('option:selected').prop('disabled') || select.val() == null){
-		for(var i = select.find('option:selected').val()|0; i >= 0 ; i--){
-			if(!select.children().eq(i).prop('disabled')){
-				break;
-			}
+	select.each(function(){
+
+		var year = convert_year($(this).closest('.date_control').find('.year-input').val()|0);
+
+		var html = [];
+		for(var i = 0; i < static_data.year_data.timespans.length; i++){
+			var is_there = does_timespan_appear(static_data, year, i);
+			html.push(`<option ${!is_there.result ? 'disabled' : ''} value='${i}'>`);
+			html.push(static_data.year_data.timespans[i].name + (!is_there.result ? ` (${is_there.reason})` : ''));
+			html.push('</option>');
 		}
-		select.val(i);
-	}
 
-	return select.val()|0;
+		if(val === undefined){
+			var value = $(this).val()|0;
+		}else{
+			var value = val;
+		}
+
+		$(this).html(html.join('')).val(value);
+		if($(this).find('option:selected').prop('disabled') || $(this).val() == null){
+			internal_loop:
+			for(var i = value; i >= 0 ; i--){
+				if(!$(this).children().eq(i).prop('disabled')){
+					break internal_loop;
+				}
+			}
+			$(this).val(i);
+		}
+		$(this).change();
+
+	});
+
+
 }
 
-function repopulate_day_select(select, year, timespan){
-	var days = get_days_in_timespan(static_data, year, timespan, true);
-	var html = [];
-	for(var i = 0; i < days.length; i++){
-		var day = days[i];
-		html.push(`<option value='${i+1}' ${!day.is_there.result ? 'disabled' : ''}>`);
-		html.push(day.text + (!day.is_there.result ? ` (${day.is_there.reason})` : ''));
-		html.push('</option>');
-	}
-	select.html(html.join('')).val(dynamic_data.day);
-	if(select.find('option:selected').prop('disabled') || select.val() == null){
-		for(var i = dynamic_data.day-1; i >= 0; i--){
-			if(select.children().eq(i).length && !select.children().eq(i).prop('disabled')){
-				break;
-			}
-		}
-		select.val(i+1);
-	}
-	select.data('val', dynamic_data.day);
+function repopulate_day_select(select, val){
 
-	return select.val()|0;
+	select.each(function(){
+	
+		var year = convert_year($(this).closest('.date_control').find('.year-input').val()|0);
+		var timespan = $(this).closest('.date_control').find('.timespan-list').val()|0;
+
+		var days = get_days_in_timespan(static_data, year, timespan, !$(this).hasClass('inclusive'));
+
+		var html = [];
+
+		
+		if($(this).hasClass('inclusive')){
+			html.push(`<option value="${0}">Before 1</option>`);
+		}
+
+		for(var i = 0; i < days.length; i++){
+			var day = days[i];
+			html.push(`<option value='${i+1}' ${!day.is_there.result ? 'disabled' : ''}>`);
+			html.push(day.text + (!day.is_there.result ? ` (${day.is_there.reason})` : ''));
+			html.push('</option>');
+		}
+
+		if(val === undefined){
+			var value = $(this).val()|0;
+		}else{
+			var value = val;
+		}
+
+		$(this).html(html.join('')).val(value);
+
+		if($(this).find('option:selected').prop('disabled') || $(this).val() == null){
+			internal_loop:
+			for(var i = value-1; i >= 0; i--){
+				if($(this).children().eq(i).length && !$(this).children().eq(i).prop('disabled')){
+					break internal_loop;
+				}
+			}
+			$(this).val(i+1);
+		}
+		$(this).change();
+
+	});
 	
 }
 
@@ -445,8 +481,8 @@ function set_up_preview_values(){
 		target_year.val(preview_date.year);
 		target_year.data('val', target_year.val());
 
-		var curr_timespan = repopulate_timespan_select(target_timespan, convert_year(preview_date.year));
-		repopulate_day_select(target_day, convert_year(preview_date.year), curr_timespan);
+		repopulate_timespan_select(target_timespan, preview_date.timespan);
+		repopulate_day_select(target_day, preview_date.day);
 
 	}
 

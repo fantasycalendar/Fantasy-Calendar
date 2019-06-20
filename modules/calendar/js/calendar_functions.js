@@ -395,7 +395,9 @@ function does_timespan_appear(static_data, year, timespan){
 
 	}
 
-	if((year+static_data.year_data.timespans[timespan].offset) % static_data.year_data.timespans[timespan].interval != 0){
+	var offset = (this.static_data.year_data.timespans[timespan].interval-this.static_data.year_data.timespans[timespan].offset+1)%this.static_data.year_data.timespans[timespan].interval;
+
+	if((year+offset) % this.static_data.year_data.timespans[timespan].interval != 0){
 		return {
 			result: false,
 			reason: 'leaping'
@@ -413,6 +415,8 @@ function does_timespan_appear(static_data, year, timespan){
 
 
 function does_day_appear(static_data, year, timespan, day){
+
+
 
 	for(var era_index = 0; era_index < static_data.eras.length; era_index++){
 

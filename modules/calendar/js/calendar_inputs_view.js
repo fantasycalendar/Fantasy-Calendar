@@ -33,9 +33,9 @@ function set_up_view_inputs(){
 			$(this).val(curr_year);
 		}
 
-		var curr_timespan = repopulate_timespan_select(current_timespan, convert_year(curr_year));
+		repopulate_timespan_select(current_timespan, dynamic_data.timespan);
 
-		repopulate_day_select(current_day, convert_year(curr_year), curr_timespan);
+		repopulate_day_select(current_day, dynamic_data.day);
 
 	});
 
@@ -46,7 +46,7 @@ function set_up_view_inputs(){
 		var curr_timespan = $(this).val()|0;
 		var prev_timespan = $(this).data('val')|0;
 
-		repopulate_day_select(current_day, convert_year(curr_year), curr_timespan);
+		repopulate_day_select(current_day, dynamic_data.day);
 
 	});
 
@@ -339,7 +339,7 @@ function set_up_view_inputs(){
 
 		rebuild_climate();
 
-		error_check();
+		do_error_check();
 
 	});
 
@@ -361,7 +361,7 @@ function set_date(year, timespan, day){
 	dynamic_data.timespan = timespan;
 	dynamic_data.day = day;
 
-	error_check(undefined, rebuild);
+	do_error_check(undefined, rebuild);
 
 }
 
@@ -373,8 +373,8 @@ function set_up_view_values(){
 		current_year.val(dynamic_data.year);
 		current_year.data('val', current_year.val());
 
-		var curr_timespan = repopulate_timespan_select(current_timespan, convert_year(dynamic_data.year));
-		repopulate_day_select(current_day, convert_year(dynamic_data.year), curr_timespan);
+		repopulate_timespan_select(current_timespan, dynamic_data.timespan);
+		repopulate_day_select(current_day, dynamic_data.day);
 
 	}
 

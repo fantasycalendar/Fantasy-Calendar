@@ -77,6 +77,7 @@ var event_evaluator = {
 					return a < b;
 					break;
 				case '%':
+					c = (b-c+1)%b;
 					return (a-c)%b==0;
 					break;
 				case '&&':
@@ -105,19 +106,32 @@ var event_evaluator = {
 			var result = true;
 			
 			for(var i = 0; i < condition_mapping[category][type][1].length; i++){
+
 				var subcon = condition_mapping[category][type][1][i];
 				var selector = subcon[0];
 				var operator = subcon[1];
 
+
+				if(array[0] === "Moons"){
+					var selected = data[selector][array[2][0]];
+					var cond_1 = array[2][subcon[2]];
+					var cond_2 = array[2][subcon[3]] ? array[2][subcon[3]] : undefined;
+				}else{
+					var selected = data[selector];
+					var cond_1 = array[2][subcon[2]];
+					var cond_2 = array[2][subcon[3]] ? array[2][subcon[3]] : undefined;
+				}
+
 				if(operator == '%'){
-					var result = evaluate_operator("&&", evaluate_operator(operator, data[selector], array[2][subcon[2]], array[2][subcon[3]]), result)
+					var result = evaluate_operator("&&", evaluate_operator(operator, selected, cond_1, cond_2), result)
 				}else{
 					if(subcon.length == 4){
-						var result = evaluate_operator("&&", evaluate_operator(operator, data[selector][array[2][subcon[2]]], array[2][subcon[3]]), result)
+						var result = evaluate_operator("&&", evaluate_operator(operator, selected, cond_1, cond_2), result)
 					}else{
-						var result = evaluate_operator("&&", evaluate_operator(operator, data[selector], array[2][subcon[2]]), result)
+						var result = evaluate_operator("&&", evaluate_operator(operator, selected, cond_1), result)
 					}
 				}
+
 
 			}
 			return result;
