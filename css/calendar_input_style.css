@@ -5,10 +5,10 @@ body{
 /* ------------------ Sortable styles ----------------- */
 
 input.invalid { 
-	border: 2px solid red;
+	border: 2px solid red !important;
 }
 select.invalid { 
-	border: 2px solid red;
+	border: 2px solid red !important;
 }
 
 .sortable{

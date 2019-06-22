@@ -6,6 +6,15 @@ function sorter(a, b) {
 	return 0; // equal values MUST yield zero
 }
 
+var execution_time = {
+	start: function(){
+		this.starttime = performance.now();
+	},
+	end: function(){
+		console.log(`${precisionRound(performance.now() - this.starttime, 7)}ms`);
+	}
+}
+
 function get_calendar_data(data){
 	data = data.split('.')
 	if(data[0] !== ""){
@@ -19,21 +28,26 @@ function get_calendar_data(data){
 	return current_calendar_data;
 }
 
-var entityMap = {
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': '&quot;',
-    "'": '&#39;',
-    "/": '&#x2F;'
+var entityMap1 = {
+	"&": "&amp;",
+	"<": "&lt;",
+	">": "&gt;",
+	'"': '&quot;',
+	"'": '&#39;',
+	"/": '&#x2F;'
 };
 
 function escapeHtml(string) {
-    return String(string).replace(/[&<>"'\/]/g, function (s) {
-        return entityMap[s];
-    });
+	return String(string).replace(/[&<>"'\/]/g, function (s) {
+		return entityMap1[s];
+	});
 }
 
+function unescapeHtml(input){
+	var e = document.createElement('textarea');
+	e.innerHTML = input;
+	return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+}
 function debounce(func, wait, immediate) {
 	var timeout;
 	return function() {

@@ -14,6 +14,80 @@ var calendar_builder = {
 	dynamic_data: {},
 	static_data: {},
 
+	add_pre_moon_data: function(epoch, data, year_index, timespan_index){
+
+		for(moon_index = 0; moon_index < this.static_data.moons.length; moon_index++){
+
+			var moon = this.static_data.moons[moon_index];
+
+			if(moon.custom_phase){
+
+				var custom_cycle = moon.custom_cycle.split(',');
+				var phase = custom_cycle[epoch%(custom_cycle.length|0)]|0;
+
+				var phase_epoch = Math.floor(Math.abs(epoch/(custom_cycle.length|0))+1)
+
+			}else{
+
+				var moon_position_data = ((epoch - moon.shift) / moon.cycle);
+				var moon_position = (moon_position_data - Math.floor(moon_position_data));
+				var phase = Math.floor(moon_position*moon.granularity);
+
+				var phase_epoch = Math.floor(Math.abs(moon_position_data)+1);
+
+			}
+
+			this.pre_data.repititions.year_moons[year_index][moon_index][phase]++;
+			this.pre_data.repititions.timespan_moons[year_index][timespan_index][moon_index][phase]++;
+
+			data['moon_phase'][moon_index] = phase;
+			data['moon_phase_num_epoch'][moon_index] = phase_epoch;
+			data['moon_phase_num_month'][moon_index] = this.pre_data.repititions.timespan_moons[year_index][timespan_index][moon_index][phase];
+			data['moon_phase_num_year'][moon_index] = this.pre_data.repititions.year_moons[year_index][moon_index][phase];
+
+		}
+
+		return data;
+
+	},
+
+	add_moon_data: function(epoch, data, timespan_index){
+
+		for(moon_index = 0; moon_index < this.static_data.moons.length; moon_index++){
+
+			var moon = this.static_data.moons[moon_index];
+
+			if(moon.custom_phase){
+
+				var custom_cycle = moon.custom_cycle.split(',');
+				var phase = custom_cycle[epoch%(custom_cycle.length)]|0;
+
+				var phase_epoch = Math.floor(Math.abs(epoch/(custom_cycle.length))+1)
+
+			}else{
+
+				var moon_position_data = ((epoch - moon.shift) / moon.cycle);
+				var moon_position = (moon_position_data - Math.floor(moon_position_data));
+				var phase = Math.floor(moon_position*moon.granularity);
+
+				var phase_epoch = Math.floor(Math.abs(moon_position_data)+1);
+
+			}
+
+			this.data.repititions.year_moons[moon_index][phase]++;
+			this.data.repititions.timespan_moons[timespan_index][moon_index][phase]++;
+
+			data['moon_phase'][moon_index] = phase;
+			data['moon_phase_num_epoch'][moon_index] = phase_epoch;
+			data['moon_phase_num_month'][moon_index] = this.data.repititions.timespan_moons[timespan_index][moon_index][phase];
+			data['moon_phase_num_year'][moon_index] = this.data.repititions.year_moons[moon_index][phase];
+
+		}
+
+		return data;
+
+	},
+
 	create_adjusted_timespan: function(timespan_index){
 
 		var timespan = clone(this.static_data.year_data.timespans[timespan_index]);
@@ -437,8 +511,6 @@ var calendar_builder = {
 
 				if(!this.static_data.year_data.overflow){
 					week_day = 1;
-					year_week_num++;
-					total_week_num++;
 				}
 
 				for(day = 0; day <= current_timespan.length; day++){
@@ -480,27 +552,7 @@ var calendar_builder = {
 									'leap_day': leap_day.index,
 								}
 
-								for(moon_index = 0; moon_index < this.static_data.moons.length; moon_index++){
-
-
-									var moon = this.static_data.moons[moon_index];
-
-									var moon_position_data = ((epoch - moon.shift) / moon.cycle);
-									var moon_position = (moon_position_data - Math.floor(moon_position_data));
-									var phase = Math.floor(moon_position*moon.granularity);
-
-									this.pre_data.repititions.year_moons[year_index][moon_index][phase]++;
-									this.pre_data.repititions.timespan_moons[year_index][timespan_index][moon_index][phase]++;
-
-									var position_data = ((epoch-moon.shift)/moon.cycle)
-									var phase_epoch = Math.floor(Math.abs(position_data)+1);
-
-									data['moon_phase'][moon_index] = phase;
-									data['moon_phase_num_epoch'][moon_index] = phase_epoch;
-									data['moon_phase_num_month'][moon_index] = this.pre_data.repititions.timespan_moons[year_index][timespan_index][moon_index][phase];
-									data['moon_phase_num_year'][moon_index] = this.pre_data.repititions.year_moons[year_index][moon_index][phase];
-
-								}
+								data = this.add_pre_moon_data(epoch, data, year_index, timespan_index);
 
 								this.add_epoch_pre_data(epoch, data);
 								epoch++;
@@ -543,26 +595,7 @@ var calendar_builder = {
 							'leap_day': false,
 						}
 
-						for(moon_index = 0; moon_index < this.static_data.moons.length; moon_index++){
-
-
-							var moon = this.static_data.moons[moon_index];
-
-							var moon_position_data = ((epoch - moon.shift) / moon.cycle);
-							var moon_position = (moon_position_data - Math.floor(moon_position_data));
-							var phase = Math.floor(moon_position*moon.granularity);
-
-							this.pre_data.repititions.year_moons[year_index][moon_index][phase]++;
-							this.pre_data.repititions.timespan_moons[year_index][timespan_index][moon_index][phase]++;
-
-							var position_data = ((epoch-moon.shift)/moon.cycle)
-							var phase_epoch = Math.floor(Math.abs(position_data)+1);
-
-							data['moon_phase'][moon_index] = phase;
-							data['moon_phase_num_epoch'][moon_index] = phase_epoch;
-							data['moon_phase_num_month'][moon_index] = this.pre_data.repititions.timespan_moons[year_index][timespan_index][moon_index][phase];
-							data['moon_phase_num_year'][moon_index] = this.pre_data.repititions.year_moons[year_index][moon_index][phase];
-						}
+						data = this.add_pre_moon_data(epoch, data, year_index, timespan_index);
 
 						this.pre_data.repititions.week_days[year_index][data.timespan_index][data.week_day]++;
 						data.week_day_num = this.pre_data.repititions.week_days[year_index][data.timespan_index][data.week_day];
@@ -615,25 +648,7 @@ var calendar_builder = {
 									'leap_day': leap_day.index,
 								}
 
-								for(moon_index = 0; moon_index < this.static_data.moons.length; moon_index++){
-
-									var moon = this.static_data.moons[moon_index];
-
-									var moon_position_data = ((epoch - moon.shift) / moon.cycle);
-									var moon_position = (moon_position_data - Math.floor(moon_position_data));
-									var phase = Math.floor(moon_position*moon.granularity);
-
-									this.pre_data.repititions.year_moons[year_index][moon_index][phase]++;
-									this.pre_data.repititions.timespan_moons[year_index][timespan_index][moon_index][phase]++;
-
-									var position_data = ((epoch-moon.shift)/moon.cycle)
-									var phase_epoch = Math.floor(Math.abs(position_data)+1);
-
-									data['moon_phase'][moon_index] = phase;
-									data['moon_phase_num_epoch'][moon_index] = phase_epoch;
-									data['moon_phase_num_month'][moon_index] = this.pre_data.repititions.timespan_moons[year_index][timespan_index][moon_index][phase];
-									data['moon_phase_num_year'][moon_index] = this.pre_data.repititions.year_moons[year_index][moon_index][phase];
-								}
+								data = this.add_pre_moon_data(epoch, data, year_index, timespan_index);
 
 								this.add_epoch_pre_data(epoch, data);
 								epoch++;
@@ -641,6 +656,11 @@ var calendar_builder = {
 							}
 						}
 					}	
+				}
+
+				if(!this.static_data.year_data.overflow){
+					year_week_num++;
+					total_week_num++;
 				}
 			}
 			last_year = year_index;
@@ -674,8 +694,6 @@ var calendar_builder = {
 
 			if(!this.static_data.year_data.overflow){
 				week_day = 1;
-				year_week_num++;
-				total_week_num++;
 			}
 
 			for(day = 0; day <= current_timespan.length; day++, total_day++){
@@ -747,26 +765,7 @@ var calendar_builder = {
 								}
 							}
 
-							for(moon_index = 0; moon_index < this.static_data.moons.length; moon_index++){
-
-								var moon = this.static_data.moons[moon_index];
-
-								var moon_position_data = ((epoch - moon.shift) / moon.cycle);
-								var moon_position = (moon_position_data - Math.floor(moon_position_data));
-								var phase = Math.floor(moon_position*moon.granularity);
-
-								this.data.repititions.year_moons[moon_index][phase]++;
-								this.data.repititions.timespan_moons[timespan_index][moon_index][phase]++;
-
-								var position_data = ((epoch-moon.shift)/moon.cycle)
-								var phase_epoch = Math.floor(Math.abs(position_data)+1);
-
-								data['moon_phase'][moon_index] = phase;
-								data['moon_phase_num_epoch'][moon_index] = phase_epoch;
-								data['moon_phase_num_month'][moon_index] = this.data.repititions.timespan_moons[timespan_index][moon_index][phase];
-								data['moon_phase_num_year'][moon_index] = this.data.repititions.year_moons[moon_index][phase];
-
-							}
+							data = this.add_moon_data(epoch, data, timespan_index);
 
 							this.add_epoch_data(epoch, data);
 
@@ -824,26 +823,8 @@ var calendar_builder = {
 							data.weather = climate_generator.get_weather_data(epoch);
 						}
 					}
-					
-					for(moon_index = 0; moon_index < this.static_data.moons.length; moon_index++){
 
-						var moon = this.static_data.moons[moon_index];
-
-						var moon_position_data = ((epoch - moon.shift) / moon.cycle);
-						var moon_position = (moon_position_data - Math.floor(moon_position_data));
-						var phase = Math.floor(moon_position*moon.granularity);
-
-						this.data.repititions.year_moons[moon_index][phase]++;
-						this.data.repititions.timespan_moons[timespan_index][moon_index][phase]++;
-
-						var phase_epoch = Math.floor(Math.abs(moon_position_data)+1);
-
-						data['moon_phase'][moon_index] = phase;
-						data['moon_phase_num_epoch'][moon_index] = phase_epoch;
-						data['moon_phase_num_month'][moon_index] = this.data.repititions.timespan_moons[timespan_index][moon_index][phase];
-						data['moon_phase_num_year'][moon_index] = this.data.repititions.year_moons[moon_index][phase];
-
-					}
+					data = this.add_moon_data(epoch, data, timespan_index);
 
 					this.data.repititions.week_days[data.timespan_index][data.week_day]++;
 					data.week_day_num = this.data.repititions.week_days[data.timespan_index][data.week_day];
@@ -909,27 +890,7 @@ var calendar_builder = {
 								}
 							}
 
-							for(moon_index = 0; moon_index < this.static_data.moons.length; moon_index++){
-
-								var moon = this.static_data.moons[moon_index];
-
-								var moon_position_data = ((epoch - moon.shift) / moon.cycle);
-								var moon_position = (moon_position_data - Math.floor(moon_position_data));
-								var phase = Math.floor(moon_position*moon.granularity);
-
-								this.data.repititions.year_moons[moon_index][phase]++;
-								this.data.repititions.timespan_moons[timespan_index][moon_index][phase]++;
-
-								var position_data = ((epoch-moon.shift)/moon.cycle)
-								var phase_epoch = Math.floor(Math.abs(position_data)+1);
-
-								data['moon_phase'][moon_index] = phase;
-								data['moon_phase_num_epoch'][moon_index] = phase_epoch;
-								data['moon_phase_num_month'][moon_index] = this.data.repititions.timespan_moons[timespan_index][moon_index][phase];
-								data['moon_phase_num_year'][moon_index] = this.data.repititions.year_moons[moon_index][phase];
-
-							}
-
+							data = this.add_moon_data(epoch, data, timespan_index);
 
 							this.add_epoch_data(epoch, data);
 							
@@ -944,6 +905,11 @@ var calendar_builder = {
 
 					total_day--;
 				}
+			}
+
+			if(!this.static_data.year_data.overflow){
+				year_week_num++;
+				total_week_num++;
 			}
 		}
 

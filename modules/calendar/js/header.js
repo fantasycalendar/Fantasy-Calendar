@@ -67,12 +67,14 @@ var loading_screen_texts = [
 	`Converting epochs...`,
 	`Defining an era...`,
 	`Waking up after a nightmare about leap months with leap days...`,
+	`Breaking moon phases...`,
 	`Disciplining child calendars...`,
 	`Calculating epoch of year 3 billion...`,
 	`Making Mondays leap...`,
 	`Locating phased moons...`,
 	`Ignoring worldbuilding...`,
 	`Stocking taverns with hooded strangers...`,
+	`Breaking wasp...`,
 ];
 
 function show_loading_screen(){

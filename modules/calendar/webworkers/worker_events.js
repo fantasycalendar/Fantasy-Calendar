@@ -18,6 +18,8 @@ var event_evaluator = {
 	pre_epoch_data: {},
 	epoch_data: {},
 
+	current_data: {},
+
 	init: function(static_data, pre_epoch_data, epoch_data, event_id){
 
 		this.static_data = static_data;
@@ -95,7 +97,7 @@ var event_evaluator = {
 			}
 		}
 
-		function evaluate_condition(array, data){
+		function evaluate_condition(array){
 
 			data_value = []
 
@@ -111,15 +113,26 @@ var event_evaluator = {
 				var selector = subcon[0];
 				var operator = subcon[1];
 
-
 				if(array[0] === "Moons"){
-					var selected = data[selector][array[2][0]];
-					var cond_1 = array[2][subcon[2]];
-					var cond_2 = array[2][subcon[3]] ? array[2][subcon[3]] : undefined;
+					var selected = this.current_data[selector][array[2][0]];
+					var cond_1 = array[2][subcon[2]]|0;
+					var cond_2 = array[2][subcon[3]] ? array[2][subcon[3]]|0 : undefined;
+
+				}else if(array[0] === "Season"){
+
+					var selected = this.current_data["season"][selector];
+					var cond_1 = array[2][subcon[2]]|0;
+					var cond_2 = array[2][subcon[3]] ? array[2][subcon[3]]|0 : undefined;
+
+					if(selector === "season_perc"){
+						cond_1 = (cond_1-1)/100;
+					}
+
 				}else{
-					var selected = data[selector];
-					var cond_1 = array[2][subcon[2]];
+					var selected = this.current_data[selector];
+					var cond_1 = Number(array[2][subcon[2]]) != NaN ? Number(array[2][subcon[2]]) : array[2][subcon[2]];
 					var cond_2 = array[2][subcon[3]] ? array[2][subcon[3]] : undefined;
+					cond_2 = Number(cond_2) != NaN ? Number(cond_2) : cond_2;
 				}
 
 				if(operator == '%'){
@@ -137,43 +150,98 @@ var event_evaluator = {
 			return result;
 		}
 
-		function evaluate_event_conditions(array, data, num){
-			var result = undefined;
-			var num_result = 0;
-			var decrement = num ? 1 : 2;
-			for(var i = array.length-1; i >= 0; i-=decrement){
+		function evaluate_event_num_group(array, num){
+
+			var result = false;
+
+			var count_result = 0;
+
+			for(var i = array.length-1; i >= 0; i-=1){
+
 				var condition = array[i];
-				if(Array.isArray(condition[1])){
-					if(Number(condition[0]) !== NaN){
-						var result = evaluate_event_conditions(condition[1], data, Number(condition[0]));
+
+				var is_array = Array.isArray(condition[1]);
+
+				if(is_array){
+
+					var is_count = Number(condition[0]) != NaN;
+
+					if(is_count){
+
+						var new_result = evaluate_event_num_group(condition[1], Number(condition[0]));
+
 					}else{
-						var result = evaluate_event_conditions(condition[1], data);
-						if(condition[0] == "!"){
-							result = !result;
-						}
+
+						var new_result = evaluate_event_group(condition[1]);
+
+						new_result = condition[0] === "!" ? !new_result : new_result;
+
 					}
 
 				}else{
-					if(num !== undefined){
-						var test = evaluate_condition(condition, data);
-						if(test){
-							num_result++;
-						}
-						if(i == 0){
-							var result = num_result >= num;
-						}
+
+					var new_result = evaluate_condition(condition);
+
+				}
+
+				count_result = new_result ? count_result+1 : count_result;
+
+				result = count_result >= num;
+
+				if(result) return true;
+
+			}
+
+			return false;
+
+		}
+
+		function evaluate_event_group(array){
+
+			var result = false;
+
+			for(var i = array.length-1; i >= 0; i-=2){
+
+				var condition = array[i];
+
+				var is_array = Array.isArray(condition[1]);
+
+				if(is_array){
+
+					var is_count = condition[0] !== "" && Number(condition[0]) !== NaN;
+
+					if(is_count){
+
+						var new_result = evaluate_event_num_group(condition[1], Number(condition[0]));
+
 					}else{
-						if(i != array.length-1){
-							condition_operator = array[i+1][0];
-							var result = evaluate_operator(condition_operator, evaluate_condition(condition, data), result);
-						}else{
-							var result = evaluate_condition(condition, data);
-						}
+
+						var new_result = evaluate_event_group(condition[1]);
+
+						new_result = condition[0] === "!" ? !new_result : new_result;
+
 					}
+
+				}else{
+
+					var new_result = evaluate_condition(condition);
+
+				}
+
+				if(array[i+1]){
+					
+					result = evaluate_operator(array[i+1][0], result, new_result); 
+
+				}else{
+
+					result = new_result;
+
 				}
 
 			}
+
 			return result;
+
 		}
 
 		function evaluate_event(event_index){
@@ -186,9 +254,9 @@ var event_evaluator = {
 
 				var epoch = parseInt(Object.keys(epoch_list)[epoch_index]);
 
-				var current_epoch_data = epoch_list[epoch];
+				this.current_data = epoch_list[epoch];
 
-				var result = evaluate_event_conditions(current_event.data.conditions, current_epoch_data);
+				var result = evaluate_event_group(current_event.data.conditions);
 
 				if(result){
 						
@@ -231,6 +299,7 @@ var event_evaluator = {
 				}
 
 			}
+
 		}
 
 

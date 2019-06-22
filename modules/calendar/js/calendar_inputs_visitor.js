@@ -257,11 +257,12 @@ function evaluate_settings(){
 
 function eval_clock(){
 
-	if(isNaN(static_data.clock.hours) || isNaN(static_data.clock.minutes) || isNaN(static_data.clock.offset)) return;
+	if(!static_data.clock.enabled || isNaN(static_data.clock.hours) || isNaN(static_data.clock.minutes) || isNaN(static_data.clock.offset)){
+		$('#clock').css('display', 'none');
+		return;
+	}
 
 	var clock_hours = static_data.clock.hours;
-
-	$('#clock').empty();
 
 	$('#clock').css('display', 'block');
 
@@ -295,8 +296,10 @@ function eval_clock(){
 
 function eval_current_time(){
 
-	if(isNaN(static_data.clock.hours) || isNaN(static_data.clock.minutes) || isNaN(static_data.clock.offset)) return;
-
+	if(!static_data.clock.enabled || isNaN(static_data.clock.hours) || isNaN(static_data.clock.minutes) || isNaN(static_data.clock.offset)){
+		$('#clock').css('display', 'none');
+		return;
+	}
 
 	var clock_hours = static_data.clock.hours;
 	var clock_hour = dynamic_data.hour;
@@ -323,9 +326,12 @@ function eval_current_time(){
 
 function evaluate_sun(){
 
-	if(isNaN(static_data.clock.hours) || isNaN(static_data.clock.minutes) || isNaN(static_data.clock.offset)) return;
+	if(!static_data.clock.enabled || isNaN(static_data.clock.hours) || isNaN(static_data.clock.minutes) || isNaN(static_data.clock.offset)){
+		$('#clock').css('display', 'none');
+		return;
+	}
 
-	if(evaluated_static_data.epoch_data && evaluated_static_data.epoch_data[dynamic_data.epoch] && evaluated_static_data.epoch_data[dynamic_data.epoch].season){
+	if(evaluated_static_data.epoch_data && evaluated_static_data.epoch_data[dynamic_data.epoch] && evaluated_static_data.epoch_data[dynamic_data.epoch].season.sunset){
 
 		var clock_hours = static_data.clock.hours;
 

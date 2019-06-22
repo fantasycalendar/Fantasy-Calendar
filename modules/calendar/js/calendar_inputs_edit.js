@@ -247,6 +247,8 @@ function set_up_edit_inputs(){
 
 	populate_calendar_lists();
 
+	evaluate_clock_inputs();
+
 	evaluate_remove_buttons();
 
 	repopulate_event_category_lists();
@@ -306,11 +308,15 @@ function set_up_edit_inputs(){
 
 	$("input[data='clock']").change(function(){
 
-		$('#current_hour').prop('min', 0)
-		$('#current_hour').prop('max', ($("input[data='clock'][key='hours']").val()|0)-1);
+		evaluate_clock_inputs();
 
-		$('#current_minute').prop('min', 0)
-		$('#current_minute').prop('max', ($("input[data='clock'][key='minutes']").val()|0)-1);
+	});
+
+	$('#enable_clock').change(function(){
+
+		static_data.clock.enabled = $(this).is(':checked');
+
+		evaluate_clock_inputs();
 
 	});
 
@@ -798,6 +804,92 @@ function set_up_edit_inputs(){
 
 	/* ------------------- Custom callbacks ------------------- */
 
+
+	$(document).on('change', '.custom_phase', function(){
+
+		var checked = $(this).is(':checked');
+
+		var key = $(this).closest('.sortable-container').attr('key')|0;
+
+		$(this).closest('.sortable-container').find('.no_custom_phase_container').toggleClass('hidden', checked);
+		$(this).closest('.sortable-container').find('.custom_phase_container').toggleClass('hidden', !checked);
+
+		if(checked){
+
+			var value = "";
+
+			for(var i = 0; i < static_data.moons[key].granularity-2; i++){
+				value += `${i},`
+			}
+
+			value += `${i}`
+
+			delete static_data.moons[key].cycle;
+			delete static_data.moons[key].shift;
+			
+			$(this).closest('.sortable-container').find('.custom_cycle').val(value).change();
+
+		}else{
+
+			var strings = $(this).closest('.sortable-container').find('.custom_cycle').val().split(',');
+
+			var value = strings[strings.length-1];
+			
+			$(this).closest('.sortable-container').find('.cycle').val(value).change();
+			$(this).closest('.sortable-container').find('.shift').val(0).change();
+
+			delete static_data.moons[key].custom_cycle;
+		}
+
+	});
+
+	$(document).on('change', '.custom_cycle', function(e){
+
+		var key = $(this).closest('.sortable-container').attr('key')|0;
+
+		var global_regex = /[`!+~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z]/g;
+		var ending_regex = /,$/g;
+		var regex = /,{2,}/g;
+
+		var value = $(this).val();
+
+		var invalid = global_regex.test(value) || ending_regex.test(value) || regex.test(value);
+
+		$(this).toggleClass('invalid', invalid).attr('error_msg', invalid ? `${static_data.moons[key].name} has an invalid custom cycle.` : '');
+
+		if(!invalid){
+
+			var granularity = Math.max.apply(null, value.split(','))+1;
+
+			if(granularity >= 32){
+
+				invalid = true;
+
+				$(this).toggleClass('invalid', invalid).attr('error_msg', invalid ? `${static_data.moons[key].name} has an invalid custom cycle. 31 is the highest possible number.` : '');
+
+			}else{
+
+				if(granularity <= 4){
+					granularity = 4;
+				}else if(granularity <= 8){
+					granularity = 8;
+				}else if(granularity <= 16){
+					granularity = 16;
+				}else{
+					granularity = 32;
+				}
+
+				static_data.moons[key].granularity = granularity;
+
+				do_error_check();
+
+			}
+
+		}
+
+	});
+
+
 	$(document).on('change', '.adds-week-day', function(){
 		if($(this).is(':checked')){
 			$(this).parent().parent().parent().next().removeClass('hidden');
@@ -945,6 +1037,7 @@ function set_up_edit_inputs(){
 
 	$(document).on('change', '.leap_day_occurance_input', function(){
 
+		var key = $(this).closest('.sortable-container').attr('key')|0;
 		var interval = $(this).closest('.sortable-container').find('.interval');
 		interval.val(interval.val().replace(/[|&;$%@"<> ()]/g, ""));
 		var interval_val = interval.val();
@@ -963,6 +1056,8 @@ function set_up_edit_inputs(){
 
 		var invalid = global_regex.test(interval_val);
 		var values = interval_val.split(',');
+
+		$(this).toggleClass('invalid', invalid).attr('error_msg', invalid ? `${static_data.year_data.leap_days[key].name} has an invalid interval formula.` : '');
 
 		if($(this).hasClass('interval')){
 
@@ -998,8 +1093,6 @@ function set_up_edit_inputs(){
 				values = result;
 
 			}
-
-			$(this).toggleClass('invalid', invalid);
 
 		}else{
 
@@ -1678,20 +1771,50 @@ function add_moon_to_list(parent, key, data){
 		element.push("</div>");
 
 		element.push("<div class='detail-container'>");
+
 			element.push("<div class='detail-row'>");
-				element.push("<div class='detail-column half'>");
+				element.push("<div class='detail-column twothird'>");
 					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text'>Cycle:</div>");
-						element.push(`<input type='number' class='form-control dynamic_input cycle' data='moons.${key}' key='cycle' value='${data.cycle}' />`);
-					element.push("</div>");
-				element.push("</div>");
-				element.push("<div class='detail-column half'>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text'>Shift:</div>");
-						element.push(`<input type='number' class='form-control dynamic_input shift' data='moons.${key}' key='shift' value='${data.shift}' />`);
+						element.push("<div class='detail-text'>Custom phase count: </div>");
+						element.push(`<input type='checkbox' class='dynamic_input custom_phase' data='moons.${key}' key='custom_phase'`);
+						element.push(data.custom_phase ? "checked" : "");
+						element.push("/>");
 					element.push("</div>");
 				element.push("</div>");
 			element.push("</div>");
+				
+			element.push("<div class='separator'></div>");
+
+			element.push(`<div class='full no_custom_phase_container ${data.custom_phase ? "hidden" : ""}'>`);
+				element.push("<div class='detail-row'>");
+					element.push("<div class='detail-column half'>");
+						element.push("<div class='detail-row'>");
+							element.push("<div class='detail-text'>Cycle:</div>");
+							element.push(`<input type='number' class='form-control dynamic_input cycle' data='moons.${key}' key='cycle' value='${!data.custom_phase ? data.cycle : ''}' />`);
+						element.push("</div>");
+					element.push("</div>");
+					element.push("<div class='detail-column half'>");
+						element.push("<div class='detail-row'>");
+							element.push("<div class='detail-text'>Shift:</div>");
+							element.push(`<input type='number' class='form-control dynamic_input shift' data='moons.${key}' key='shift' value='${!data.custom_phase ? data.shift : ''}' />`);
+						element.push("</div>");
+					element.push("</div>");
+				element.push("</div>");
+			element.push("</div>");
+
+			element.push(`<div class='full custom_phase_container ${!data.custom_phase ? "hidden" : ""}'>`);
+				element.push("<div class='detail-row'>");
+					element.push("<div class='detail-column full'>");
+						element.push("<div class='detail-row'>");
+							element.push("<div class='detail-text'>Custom phase:</div>");
+							element.push(`<input type='text' class='form-control dynamic_input custom_cycle' data='moons.${key}' key='custom_cycle' value='${data.custom_phase ? data.custom_cycle : ''}' />`);
+						element.push("</div>");
+					element.push("</div>");
+				element.push("</div>");
+			element.push("</div>");
+				
+			element.push("<div class='separator'></div>");
+
 			element.push("<div class='detail-row'>");
 				element.push("<div class='detail-column half'>");
 					element.push("<div class='detail-row'>");
@@ -1755,33 +1878,35 @@ function add_season_to_sortable(parent, key, data){
 				
 			element.push("<div class='separator'></div>");
 
-			element.push("<div class='detail-row'>");
-				element.push("<div class='detail-column half'>");
-					element.push("<div class='detail-row no-margin'>");
-						element.push("<div class='detail-text'>Sunrise:</div>");
-					element.push("</div>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-column clock-input'>");
-							element.push(`<input type='number' class='form-control full dynamic_input' clocktype='sunrise_hour' data='seasons.data.${key}.time.sunrise' key='hour' value='${data.time.sunrise.hour}' />`);
+			element.push("<div class='clock_inputs'>");
+				element.push("<div class='detail-row'>");
+					element.push("<div class='detail-column half'>");
+						element.push("<div class='detail-row no-margin'>");
+							element.push("<div class='detail-text'>Sunrise:</div>");
 						element.push("</div>");
-						element.push("<div class='detail-column'>:</div>");
-						element.push("<div class='detail-column float clock-input'>");
-							element.push(`<input type='number' class='form-control full dynamic_input' clocktype='sunrise_minute' data='seasons.data.${key}.time.sunrise' key='minute' value='${data.time.sunrise.minute}' />`);
+						element.push("<div class='detail-row'>");
+							element.push("<div class='detail-column clock-input'>");
+								element.push(`<input type='number' class='form-control full dynamic_input' clocktype='sunrise_hour' data='seasons.data.${key}.time.sunrise' key='hour' value='${data.time.sunrise.hour}' />`);
+							element.push("</div>");
+							element.push("<div class='detail-column'>:</div>");
+							element.push("<div class='detail-column float clock-input'>");
+								element.push(`<input type='number' class='form-control full dynamic_input' clocktype='sunrise_minute' data='seasons.data.${key}.time.sunrise' key='minute' value='${data.time.sunrise.minute}' />`);
+							element.push("</div>");
 						element.push("</div>");
 					element.push("</div>");
-				element.push("</div>");
 
-				element.push("<div class='detail-column half'>");
-					element.push("<div class='detail-row no-margin'>");
-						element.push("<div class='detail-text'>Sunset:</div>");
-					element.push("</div>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-column clock-input'>");
-							element.push(`<input type='number' class='form-control full dynamic_input' clocktype='sunset_hour' data='seasons.data.${key}.time.sunset' key='hour' value='${data.time.sunset.hour}' />`);
+					element.push("<div class='detail-column half'>");
+						element.push("<div class='detail-row no-margin'>");
+							element.push("<div class='detail-text'>Sunset:</div>");
 						element.push("</div>");
-						element.push("<div class='detail-column'>:</div>");
-						element.push("<div class='detail-column float clock-input'>");
-							element.push(`<input type='number' class='form-control full dynamic_input' clocktype='sunset_minute' data='seasons.data.${key}.time.sunset' key='minute' value='${data.time.sunset.minute}' />`);
+						element.push("<div class='detail-row'>");
+							element.push("<div class='detail-column clock-input'>");
+								element.push(`<input type='number' class='form-control full dynamic_input' clocktype='sunset_hour' data='seasons.data.${key}.time.sunset' key='hour' value='${data.time.sunset.hour}' />`);
+							element.push("</div>");
+							element.push("<div class='detail-column'>:</div>");
+							element.push("<div class='detail-column float clock-input'>");
+								element.push(`<input type='number' class='form-control full dynamic_input' clocktype='sunset_minute' data='seasons.data.${key}.time.sunset' key='minute' value='${data.time.sunset.minute}' />`);
+							element.push("</div>");
 						element.push("</div>");
 					element.push("</div>");
 				element.push("</div>");
@@ -1882,33 +2007,35 @@ function add_location_to_list(parent, key, data){
 						element.push("</div>");
 					element.push("</div>");
 
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-column half'>");
-							element.push("<div class='detail-row no-margin'>");
-								element.push("<div class='detail-text'>Sunrise:</div>");
-							element.push("</div>");
-							element.push("<div class='detail-row'>");
-								element.push("<div class='detail-column clock-input'>");
-									element.push(`<input type='number' class='form-control full dynamic_input' clocktype='sunrise_hour' data='seasons.locations.${key}.seasons.${i}.time.sunrise' key='hour' value='${data.seasons[i].time.sunrise.hour}' />`);
+					element.push("<div class='clock_inputs'>");
+						element.push("<div class='detail-row'>");
+							element.push("<div class='detail-column half'>");
+								element.push("<div class='detail-row no-margin'>");
+									element.push("<div class='detail-text'>Sunrise:</div>");
 								element.push("</div>");
-								element.push("<div class='detail-column'>:</div>");
-								element.push("<div class='detail-column float clock-input'>");
-									element.push(`<input type='number' class='form-control full dynamic_input' clocktype='sunrise_minute' data='seasons.locations.${key}.seasons.${i}.time.sunrise' key='minute' value='${data.seasons[i].time.sunrise.minute}' />`);
+								element.push("<div class='detail-row'>");
+									element.push("<div class='detail-column clock-input'>");
+										element.push(`<input type='number' class='form-control full dynamic_input' clocktype='sunrise_hour' data='seasons.locations.${key}.seasons.${i}.time.sunrise' key='hour' value='${data.seasons[i].time.sunrise.hour}' />`);
+									element.push("</div>");
+									element.push("<div class='detail-column'>:</div>");
+									element.push("<div class='detail-column float clock-input'>");
+										element.push(`<input type='number' class='form-control full dynamic_input' clocktype='sunrise_minute' data='seasons.locations.${key}.seasons.${i}.time.sunrise' key='minute' value='${data.seasons[i].time.sunrise.minute}' />`);
+									element.push("</div>");
 								element.push("</div>");
 							element.push("</div>");
-						element.push("</div>");
 
-						element.push("<div class='detail-column half'>");
-							element.push("<div class='detail-row no-margin'>");
-								element.push("<div class='detail-text'>Sunset:</div>");
-							element.push("</div>");
-							element.push("<div class='detail-row'>");
-								element.push("<div class='detail-column clock-input'>");
-									element.push(`<input type='number' class='form-control full dynamic_input' clocktype='sunset_hour' data='seasons.locations.${key}.seasons.${i}.time.sunset' key='hour' value='${data.seasons[i].time.sunset.hour}' />`);
+							element.push("<div class='detail-column half'>");
+								element.push("<div class='detail-row no-margin'>");
+									element.push("<div class='detail-text'>Sunset:</div>");
 								element.push("</div>");
-								element.push("<div class='detail-column'>:</div>");
-								element.push("<div class='detail-column float clock-input'>");
-									element.push(`<input type='number' class='form-control full dynamic_input' clocktype='sunset_minute' data='seasons.locations.${key}.seasons.${i}.time.sunset' key='minute' value='${data.seasons[i].time.sunset.minute}' />`);
+								element.push("<div class='detail-row'>");
+									element.push("<div class='detail-column clock-input'>");
+										element.push(`<input type='number' class='form-control full dynamic_input' clocktype='sunset_hour' data='seasons.locations.${key}.seasons.${i}.time.sunset' key='hour' value='${data.seasons[i].time.sunset.hour}' />`);
+									element.push("</div>");
+									element.push("<div class='detail-column'>:</div>");
+									element.push("<div class='detail-column float clock-input'>");
+										element.push(`<input type='number' class='form-control full dynamic_input' clocktype='sunset_minute' data='seasons.locations.${key}.seasons.${i}.time.sunset' key='minute' value='${data.seasons[i].time.sunset.minute}' />`);
+									element.push("</div>");
 								element.push("</div>");
 							element.push("</div>");
 						element.push("</div>");
@@ -1929,18 +2056,20 @@ function add_location_to_list(parent, key, data){
 					element.push("</div>");
 				element.push("</div>");
 
-				element.push("<div class='detail-row'>");
-					element.push("<div class='detail-column half'>");
-						element.push("<div class='detail-row no-margin'>");
-							element.push("<div class='detail-text'>Timezone:</div>");
-						element.push("</div>");
-						element.push("<div class='detail-row'>");
-							element.push("<div class='detail-column clock-input'>");
-								element.push(`<input type='number' class='form-control form-control-sm full dynamic_input' data='seasons.locations.${key}.settings.timezone' clocktype='timezone_hour' key='hour' value='${data.settings.timezone.hour}' />`);
+				element.push("<div class='clock_inputs'>");
+					element.push("<div class='detail-row'>");
+						element.push("<div class='detail-column half'>");
+							element.push("<div class='detail-row no-margin'>");
+								element.push("<div class='detail-text'>Timezone:</div>");
 							element.push("</div>");
-							element.push("<div class='detail-column'>:</div>");
-							element.push("<div class='detail-column float clock-input'>");
-								element.push(`<input type='number' class='form-control form-control-sm full dynamic_input' data='seasons.locations.${key}.settings.timezone' clocktype='timezone_minute' key='minute' value='${data.settings.timezone.minute}' />`);
+							element.push("<div class='detail-row'>");
+								element.push("<div class='detail-column clock-input'>");
+									element.push(`<input type='number' class='form-control form-control-sm full dynamic_input' data='seasons.locations.${key}.settings.timezone' clocktype='timezone_hour' key='hour' value='${data.settings.timezone.hour}' />`);
+								element.push("</div>");
+								element.push("<div class='detail-column'>:</div>");
+								element.push("<div class='detail-column float clock-input'>");
+									element.push(`<input type='number' class='form-control form-control-sm full dynamic_input' data='seasons.locations.${key}.settings.timezone' clocktype='timezone_minute' key='minute' value='${data.settings.timezone.minute}' />`);
+								element.push("</div>");
 							element.push("</div>");
 						element.push("</div>");
 					element.push("</div>");
@@ -2431,6 +2560,7 @@ function error_check(parent, rebuild){
 		evaluate_save_button();
 
 		close_calendar_message();
+
 		if(parent !== undefined && (parent === "seasons")){
 			rebuild_climate();
 		}else{
@@ -2446,6 +2576,10 @@ function error_check(parent, rebuild){
 	}else{
 
 		var text = [];
+
+		$('.invalid').each(function(){
+			errors.push($(this).attr('error_msg'));
+		})
 		
 		text.push(`Errors:<ol>`);
 
@@ -2754,26 +2888,34 @@ function reindex_moon_list(){
 
 		$(this).attr('key', i);
 
-		var cycle = ($(this).find('.cycle').val()|0);
-
-		if(cycle <= 4){
-			var granularity = 4;
-		}else if(cycle <= 8){
-			var granularity = 8;
-		}else if(cycle <= 16){
-			var granularity = 16;
-		}else{
-			var granularity = 32;
-		}
-
 		static_data.moons[i] = {
 			'name': $(this).find('.name-input').val(),
-			'cycle': ($(this).find('.cycle').val()|0),
-			'shift': ($(this).find('.shift').val()|0),
+			'custom_phase': $(this).find('.custom_phase').is(':checked'),
 			'color': $(this).find('.color').spectrum('get', 'hex').toString(),
 			'hidden': $(this).find('.moon-hidden').is(':checked'),
-			'granularity': granularity
+			'custom_cycle': $(this).find('.custom_cycle').val(),
+			'cycle': ($(this).find('.cycle').val()|0),
+			'shift': ($(this).find('.shift').val()|0),
+
 		};
+
+		if(static_data.moons[i].custom_phase){
+
+			static_data.moons[i].granularity = Math.max.apply(null, static_data.moons[i].custom_cycle.split(','))+1;
+
+		}else{
+
+			if(static_data.moons[i].cycle <= 4){
+				static_data.moons[i].granularity = 4;
+			}else if(static_data.moons[i].cycle <= 8){
+				static_data.moons[i].granularity = 8;
+			}else if(static_data.moons[i].cycle <= 16){
+				static_data.moons[i].granularity = 16;
+			}else{
+				static_data.moons[i].granularity = 32;
+			}
+
+		}
 
 	});
 
@@ -3047,6 +3189,20 @@ function repopulate_event_category_lists(){
 	$('.event-category-list').each(function(){
 		var val = $(this).val();
 		$(this).html(html.join("")).val(val);
+	});
+
+}
+
+function evaluate_clock_inputs(){
+
+	$('.clock_inputs :input, .clock_inputs :button').prop('disabled', !static_data.clock.enabled);
+	$('.clock_inputs').toggleClass('hidden', !static_data.clock.enabled);
+
+	$('.hour_input').each(function(){
+		$(this).prop('min', 0).prop('max', static_data.clock.hours).prop('disabled', !static_data.clock.enabled).toggleClass('hidden', !static_data.clock.enabled);
+	});
+	$('.minute_input').each(function(){
+		$(this).prop('min', 1).prop('max', static_data.clock.minutes-1).prop('disabled', !static_data.clock.enabled).toggleClass('hidden', !static_data.clock.enabled);
 	});
 
 }

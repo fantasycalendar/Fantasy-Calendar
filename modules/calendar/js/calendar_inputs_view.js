@@ -345,8 +345,7 @@ function set_up_view_inputs(){
 
 }
 
-
-function set_date(year, timespan, day){
+var set_date = debounce(function(year, timespan, day){
 
 	var rebuild = false;
 
@@ -361,9 +360,9 @@ function set_date(year, timespan, day){
 	dynamic_data.timespan = timespan;
 	dynamic_data.day = day;
 
-	do_error_check(undefined, rebuild);
+	error_check(undefined, rebuild);
 
-}
+}, 200);
 
 
 function set_up_view_values(){

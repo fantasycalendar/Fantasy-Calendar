@@ -1,12 +1,12 @@
 var condition_mapping = {
 
 	"Year": [
-		["Year is exactly", 				[["year", "==", 0]], 	[["number", "Number", "0"]]],
-		["Year is not", 					[["year", "!=", 0]],	[["number", "Number", "0"]]],
-		["Year is or later than", 			[["year", ">=", 0]],	[["number", "Number", "0"]]],
-		["Year is or earlier than", 		[["year", "<=", 0]],	[["number", "Number", "0"]]],
-		["Year is later than", 				[["year", ">", 0]],		[["number", "Number", "0"]]],
-		["Year is earlier than", 			[["year", "<", 0]],		[["number", "Number", "0"]]],
+		["Year is exactly", 				[["year", "==", 0]], 	[["number", "Number", "1"]]],
+		["Year is not", 					[["year", "!=", 0]],	[["number", "Number", "1"]]],
+		["Year is or later than", 			[["year", ">=", 0]],	[["number", "Number", "1"]]],
+		["Year is or earlier than", 		[["year", "<=", 0]],	[["number", "Number", "1"]]],
+		["Year is later than", 				[["year", ">", 0]],		[["number", "Number", "1"]]],
+		["Year is earlier than", 			[["year", "<", 0]],		[["number", "Number", "1"]]],
 		["Every nth year", 					[["year", "%", 0]],		[["number", "nth", "1", "1"], ["number", "offset", "0", "0"]]]
 	],
 
@@ -47,6 +47,7 @@ var condition_mapping = {
 		["Day in month is or earlier than",	[["day", "<=", 0]],				[["number", "Number", "1"]]],
 		["Day in month is later than",		[["day", ">", 0]],				[["number", "Number", "1"]]],
 		["Day in month is earlier than",	[["day", "<", 0]],				[["number", "Number", "1"]]],
+		["Every nth day in month",			[["day", "%", 0, 1]],			[["number", "nth", "1", "1"], ["number", "offset", "0", "0"]]],
 		["Day in year is exactly",			[["yearday", "==", 0]],			[["number", "Number", "1"]]],
 		["Day in year is not",				[["yearday", "!=", 0]],			[["number", "Number", "1"]]],
 		["Day in year is or later than",	[["yearday", ">=", 0]],			[["number", "Number", "1"]]],
@@ -120,33 +121,58 @@ var condition_mapping = {
 		["Every nth phase",					[["moon_phase", "==", 1],
 											 ["moon_phase_num_epoch", "%", 2, 3]],	[["select"], ["number", "nth", "1", "1"], ["number", "offset", "0"]]],
 		
-		["Month-phase is exactly", 			[["moon_phase_month", "==", 1]], [["select"]]],
-		["Month-phase is not", 				[["moon_phase_month", "!=", 1]], [["select"]]],
-		["Month-phase is or later than",	[["moon_phase_month", ">=", 1]], [["select"]]],
-		["Month-phase is or earlier than", 	[["moon_phase_month", "<=", 1]], [["select"]]],
-		["Month-phase is later than", 		[["moon_phase_month", ">", 1]], [["select"]]],
-		["Month-phase is earlier than", 	[["moon_phase_month", "<", 1]], [["select"]]],
-		["Every nth month-phase",			[["moon_phase", "==", 1],
-											 ["moon_phase_num_month", "%", 2, 3]],	[["select"], ["number", "nth", "1", "1"], ["number", "offset", "0"]]],
+		["Month-phase count is exactly", 			[["moon_phase_num_month", "==", 1]], [["number", "Number", "1", "1"]]],
+		["Month-phase count is not", 				[["moon_phase_num_month", "!=", 1]], [["number", "Number", "1", "1"]]],
+		["Month-phase count is or later than",		[["moon_phase_num_month", ">=", 1]], [["number", "Number", "1", "1"]]],
+		["Month-phase count is or earlier than", 	[["moon_phase_num_month", "<=", 1]], [["number", "Number", "1", "1"]]],
+		["Month-phase count is later than", 		[["moon_phase_num_month", ">", 1]], [["number", "Number", "1", "1"]]],
+		["Month-phase count is earlier than", 		[["moon_phase_num_month", "<", 1]], [["number", "Number", "1", "1"]]],
+		["Every nth month-phase count", 			[["moon_phase_num_month", "%", 1, 2]],	[["number", "nth", "1", "1"], ["number", "offset", "0", "0"]]],
 
-		["Year-phase is exactly", 			[["moon_phase_year","==", 1]], [["select"]]],
-		["Year-phase is not", 				[["moon_phase_year","!=", 1]], [["select"]]],
-		["Year-phase is or later than", 	[["moon_phase_year",">=", 1]], [["select"]]],
-		["Year-phase is or earlier than", 	[["moon_phase_year","<=", 1]], [["select"]]],
-		["Year-phase is later than", 		[["moon_phase_year",">", 1]], [["select"]]],
-		["Year-phase is earlier than", 		[["moon_phase_year","<", 1]], [["select"]]],
-		["Every nth year-phase",			[["moon_phase", "==", 1],
-											 ["moon_phase_num_year", "%", 2, 3]],	[["select"], ["number", "nth", "1", "1"], ["number", "offset", "0"]]],
+
+		["Year-phase count is exactly", 			[["moon_phase_num_year", "==", 1]], [["number", "Number", "1", "1"]]],
+		["Year-phase count is not", 				[["moon_phase_num_year", "!=", 1]], [["number", "Number", "1", "1"]]],
+		["Year-phase count is or later than", 		[["moon_phase_num_year", ">=", 1]], [["number", "Number", "1", "1"]]],
+		["Year-phase count is or earlier than", 	[["moon_phase_num_year", "<=", 1]], [["number", "Number", "1", "1"]]],
+		["Year-phase count is later than", 			[["moon_phase_num_year", ">", 1]], [["number", "Number", "1", "1"]]],
+		["Year-phase count is earlier than", 		[["moon_phase_num_year", "<", 1]], [["number", "Number", "1", "1"]]],
+		["Every nth year-phase count", 				[["moon_phase_num_year", "%", 1, 2]],	[["number", "nth", "1", "1"], ["number", "offset", "0", "0"]]],
+
+		["Epoch-phase count is exactly", 			[["moon_phase_num_epoch", "==", 1]], [["number", "Number", "1", "1"]]],
+		["Epoch-phase count is not", 				[["moon_phase_num_epoch", "!=", 1]], [["number", "Number", "1", "1"]]],
+		["Epoch-phase count is or later than", 		[["moon_phase_num_epoch", ">=", 1]], [["number", "Number", "1", "1"]]],
+		["Epoch-phase count is or earlier than", 	[["moon_phase_num_epoch", "<=", 1]], [["number", "Number", "1", "1"]]],
+		["Epoch-phase count is later than", 		[["moon_phase_num_epoch", ">", 1]], [["number", "Number", "1", "1"]]],
+		["Epoch-phase count is earlier than", 		[["moon_phase_num_epoch", "<", 1]], [["number", "Number", "1", "1"]]],
+		["Every nth epoch-phase count", 			[["moon_phase_num_epoch", "%", 1, 2]],	[["number", "nth", "1", "1"], ["number", "offset", "0", "0"]]],
 	],
 
 	"Cycle": [
-		["Cycle is exactly", 				[["cycle", "==", 0, 1]], [["select"]]],
-		["Cycle is not", 					[["cycle", "!=", 0, 1]], [["select"]]]
+		["Cycle is exactly", 						[["cycle", "==", 0, 1]], [["select"]]],
+		["Cycle is not", 							[["cycle", "!=", 0, 1]], [["select"]]]
 	],
 
 	"Era": [
-		["Era is exactly", 					[["era", "==", 0, 1]], [["select"]]],
-		["Era is not", 						[["era", "!=", 0, 1]], [["select"]]]
+		["Era is exactly", 							[["era", "==", 0, 1]], [["select"]]],
+		["Era is not", 								[["era", "!=", 0, 1]], [["select"]]]
+	],
+
+	"Season": [
+		["Season is exactly", 						[["season_index", "==", 0]], 	[["select"]]],
+		["Season is not", 							[["season_index", "!=", 0]], 	[["select"]]],
+		["Season percent is exactly", 				[["season_perc", "==", 0]],		[["number", "Number", "1", "1", "100"]]],
+		["Season percent is not", 					[["season_perc", "!=", 0]],		[["number", "Number", "1", "1", "100"]]],
+		["Season percent is or later than", 		[["season_perc", ">=", 0]],		[["number", "Number", "1", "1", "100"]]],
+		["Season percent is or earlier than", 		[["season_perc", "<=", 0]],		[["number", "Number", "1", "1", "100"]]],
+		["Season percent is later than", 			[["season_perc", ">", 0]],		[["number", "Number", "1", "1", "100"]]],
+		["Season percent is earlier than", 			[["season_perc", "<", 0]],		[["number", "Number", "1", "1", "100"]]],
+		["Season day is exactly", 					[["season_day", "==", 0]],		[["number", "Number", "1", "1"]]],
+		["Season day is not",						[["season_day", "!=", 0]],		[["number", "Number", "1", "1"]]],
+		["Season day is or later than",				[["season_day", ">=", 0]],		[["number", "Number", "1", "1"]]],
+		["Season day is or earlier than",			[["season_day", "<=", 0]],		[["number", "Number", "1", "1"]]],
+		["Season day is later than",				[["season_day", ">", 0]],		[["number", "Number", "1", "1"]]],
+		["Season day is earlier than",				[["season_day", "<", 0]],		[["number", "Number", "1", "1"]]],
+		["Every nth season day",					[["season_day", "%", 0, 1]],	[["number", "nth", "1", "1"], ["number", "offset", "0", "0"]]],
 	]
 }
 

@@ -206,20 +206,24 @@
 
 				</div>
 
-				<div class='separator'></div>
+				<div class='clock_inputs'>
 
-				<div class='detail-row'>
+					<div class='separator'></div>
 
-					<div class='detail-column fifth'>
-						<div class='detail-text right-align full'>Time:</div>
-					</div>
-					<div class='detail-column fourfifths input_buttons'>
-						<button type='button' class='btn btn-sm btn-danger sub-btn adjust_hour' val='-1'><i class="clocktext">1h</i></button>
-						<button type='button' class='btn btn-sm btn-danger sub-btn adjust_minute' val='-30'><i class="clocktext">30m</i></button>
-						<input class='form-control form-control-sm hour_input' type='number' id='current_hour'>:
-						<input class='form-control form-control-sm minute_input' type='number' id='current_minute'>
-						<button type='button' class='btn btn-sm btn-success add-btn adjust_minute' val='30'><i class="clocktext">30m</i></button>
-						<button type='button' class='btn btn-sm btn-success add-btn adjust_hour' val='1'><i class="clocktext">1h</i></button>
+					<div class='detail-row'>
+
+						<div class='detail-column fifth'>
+							<div class='detail-text right-align full'>Time:</div>
+						</div>
+						<div class='detail-column fourfifths input_buttons'>
+							<button type='button' class='btn btn-sm btn-danger sub-btn adjust_hour' val='-1'><i class="clocktext">1h</i></button>
+							<button type='button' class='btn btn-sm btn-danger sub-btn adjust_minute' val='-30'><i class="clocktext">30m</i></button>
+							<input class='form-control form-control-sm hour_input' type='number' id='current_hour'>:
+							<input class='form-control form-control-sm minute_input' type='number' id='current_minute'>
+							<button type='button' class='btn btn-sm btn-success add-btn adjust_minute' val='30'><i class="clocktext">30m</i></button>
+							<button type='button' class='btn btn-sm btn-success add-btn adjust_hour' val='1'><i class="clocktext">1h</i></button>
+						</div>
+
 					</div>
 
 				</div>
@@ -303,52 +307,66 @@
 		<div class="collapsible-content">
 
 			<div class='detail-row'>
-
-				<div class='detail-column half'>
-					<div class='detail-text'>
-						Hours per day:
-					</div>
+				<div class='detail-column'>Enable clock:</div>
+				<div class='detail-column float'>
+					<label class="custom-control custom-checkbox">
+						<input type="checkbox" class="custom-control-input static_input" id='enable_clock' data='clock' key='enabled'>
+						<span class="custom-control-indicator"></span>
+					</label>
 				</div>
-
-				<div class='detail-column half'>
-					<div class='detail-text'>
-						Minutes per day:
-					</div>
-				</div>
-
 			</div>
 
-			<div class='detail-row'>
+			<div class='clock_inputs' id='clock_inputs'>
 
-				<div class='detail-column half input_buttons'>
-					<button type='button' class='btn btn-sm btn-danger sub-btn' onclick='adjustInput(this, -1);'><i class="icon-minus"></i></button>
-					<input class='form-control form-control-sm static_input' data='clock' key='hours' type='number'>
-					<button type='button' class='btn btn-sm btn-success add-btn' onclick='adjustInput(this, +1);'><i class="icon-plus"></i></button>
-				</div>
+				<div class='detail-row'>
 
-				<div class='detail-column half input_buttons'>
-					<button type='button' class='btn btn-sm btn-danger sub-btn' onclick='adjustInput(this, -1);'><i class="icon-minus"></i></button>
-					<input class='form-control form-control-sm static_input' data='clock' key='minutes' type='number'>
-					<button type='button' class='btn btn-sm btn-success add-btn' onclick='adjustInput(this, +1);'><i class="icon-plus"></i></button>
-				</div>
-
-			</div>
-
-			<div class='detail-row'>
-
-				<div class='detail-column half'>
-					<div class='detail-text'>
-						Offset hours:
+					<div class='detail-column half'>
+						<div class='detail-text'>
+							Hours per day:
+						</div>
 					</div>
+
+					<div class='detail-column half'>
+						<div class='detail-text'>
+							Minutes per day:
+						</div>
+					</div>
+
 				</div>
 
-			</div>
-			<div class='detail-row'>
+				<div class='detail-row'>
 
-				<div class='detail-column half input_buttons'>
-					<button type='button' class='btn btn-sm btn-danger sub-btn' onclick='adjustInput(this, -1);'><i class="icon-minus"></i></button>
-					<input class='form-control form-control-sm static_input' data='clock' key='offset' type='number'>
-					<button type='button' class='btn btn-sm btn-success add-btn' onclick='adjustInput(this, +1);'><i class="icon-plus"></i></button>
+					<div class='detail-column half input_buttons'>
+						<button type='button' class='btn btn-sm btn-danger sub-btn' onclick='adjustInput(this, -1);'><i class="icon-minus"></i></button>
+						<input class='form-control form-control-sm static_input' data='clock' key='hours' type='number'>
+						<button type='button' class='btn btn-sm btn-success add-btn' onclick='adjustInput(this, +1);'><i class="icon-plus"></i></button>
+					</div>
+
+					<div class='detail-column half input_buttons'>
+						<button type='button' class='btn btn-sm btn-danger sub-btn' onclick='adjustInput(this, -1);'><i class="icon-minus"></i></button>
+						<input class='form-control form-control-sm static_input' data='clock' key='minutes' type='number'>
+						<button type='button' class='btn btn-sm btn-success add-btn' onclick='adjustInput(this, +1);'><i class="icon-plus"></i></button>
+					</div>
+
+				</div>
+
+				<div class='detail-row'>
+
+					<div class='detail-column half'>
+						<div class='detail-text'>
+							Offset hours:
+						</div>
+					</div>
+
+				</div>
+				<div class='detail-row'>
+
+					<div class='detail-column half input_buttons'>
+						<button type='button' class='btn btn-sm btn-danger sub-btn' onclick='adjustInput(this, -1);'><i class="icon-minus"></i></button>
+						<input class='form-control form-control-sm static_input' data='clock' key='offset' type='number'>
+						<button type='button' class='btn btn-sm btn-success add-btn' onclick='adjustInput(this, +1);'><i class="icon-plus"></i></button>
+					</div>
+
 				</div>
 
 			</div>
@@ -566,7 +584,7 @@
 				</div>
 
 				<div class='detail-row'>
-					<div class='detail-column'>Cinematic temperature desciption:</div>
+					<div class='detail-column'>Cinematic temperature description:</div>
 					<div class='detail-column float'>
 						<label class="custom-control custom-checkbox">
 							<input type="checkbox" class="custom-control-input static_input" data='seasons.global_settings' key='cinematic'>
