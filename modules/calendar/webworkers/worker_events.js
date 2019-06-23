@@ -124,10 +124,6 @@ var event_evaluator = {
 					var cond_1 = array[2][subcon[2]]|0;
 					var cond_2 = array[2][subcon[3]] ? array[2][subcon[3]]|0 : undefined;
 
-					if(selector === "season_perc"){
-						cond_1 = (cond_1-1)/100;
-					}
-
 				}else{
 					var selected = this.current_data[selector];
 					var cond_1 = Number(array[2][subcon[2]]) != NaN ? Number(array[2][subcon[2]]) : array[2][subcon[2]];

@@ -136,10 +136,10 @@ var climate_generator = {
 			}
 
 		}
-		
-		this.data.season_day = Math.floor(this.data.season_epoch - this.data.last_epoch);
 
 		this.data.last_season = this.data.last_point % this.static_data.seasons.data.length;
+		
+		this.data.season_day = Math.floor(this.data.season_epoch -  (this.static_data.seasons.data[this.data.last_season].transition_length+this.static_data.seasons.data[this.data.last_season].duration));
 
 		this.weather = clone(this.data);
 
@@ -216,8 +216,10 @@ var climate_generator = {
 		if(curr_season != this.data.last_season){
 			this.data.season_day = 0;
 		}
-		this.data.season_day++;
 		this.data.last_season = curr_season;
+
+		this.data.season_day++;
+		this.data.season_perc = this.data.season_day/(this.static_data.seasons.data[curr_season].transition_length+this.static_data.seasons.data[curr_season].duration);
 
 		var curr_season_data = this.current_location.seasons[curr_season];
 		var next_season_data = this.current_location.seasons[next_season];
@@ -241,7 +243,7 @@ var climate_generator = {
 			return {
 				season_name: curr_season_data.name,
 				season_index: curr_season,
-				season_perc: precisionRound(this.data.perc, 2),
+				season_perc: precisionRound(this.data.season_perc, 2)*100,
 				season_day: this.data.season_day,
 				sunrise: [sunrise, sunrise_s],
 				sunset: [sunset, sunset_s]
@@ -252,7 +254,7 @@ var climate_generator = {
 			return {
 				season_name: curr_season_data.name,
 				season_index: curr_season,
-				season_perc: precisionRound(this.data.perc, 2),
+				season_perc: precisionRound(this.data.season_perc, 2)*100,
 				season_day: this.data.season_day
 			}
 
