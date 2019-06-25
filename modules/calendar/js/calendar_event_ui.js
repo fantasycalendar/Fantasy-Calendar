@@ -261,9 +261,6 @@ var edit_event_ui = {
 				}else if(type === "Cycle"){
 					values.push($(this).find('.input_container').find("option:selected").parent().attr("value"));
 					values.push($(this).find('.input_container').find("option:selected").val());
-				}else if(type === "Year" && selected_option.val() != 6){
-					var val = $(this).find('.input_container').children().first().val()|0;
-					values.push(val > 0 ? val-1 : val);
 				}else{
 					$(this).find('.input_container').children().each(function(){
 						if($(this).val() == ""){
@@ -359,7 +356,7 @@ var edit_event_ui = {
 				var parent_new = edit_event_ui.add_group(parent, group_type);
 
 				if(element[0] >= 1){
-					parent_new.parent().find('.num_group_con').prop('disabled', false).val(element[0]);
+					parent_new.parent().children('.group_type').find('.num_group_con').prop('disabled', false).val(element[0]);
 				}
 
 				edit_event_ui.create_conditions(element[1], parent_new, group_type);
@@ -372,12 +369,10 @@ var edit_event_ui = {
 
 				condition = edit_event_ui.add_condition(parent, element[0]);
 
-				condition.find('.condition_type').find(`optgroup[label=${element[0]}]`).find(`option[value=${element[1]}]`).prop('selected', true);
+				condition.find('.condition_type').find(`optgroup[label='${element[0]}']`).find(`option[value='${element[1]}']`).prop('selected', true);
 
 				if(element[0] === "Moons"){
 					condition.find('.moon_select').val(element[2][0])
-				}else if(element[0] === "Year" && element[1] != 6){
-					element[2][0] = element[2][0] >= 0 ? element[2][0]+1 : element[2][0];
 				}
 
 				edit_event_ui.evaluate_inputs(condition);
@@ -433,10 +428,14 @@ var edit_event_ui = {
 				html.push(`<input type='${condition_selected[i][0]}' placeholder='${condition_selected[i][1]}' class='form-control form-control-sm ${condition_selected[i][1]}'`);
 
 				if(condition_selected[i][2]){
-					html.push(` value='${condition_selected[i][2]}'`);
+					html.push(` alt='${condition_selected[i][2]}'`)
 				}
+
 				if(condition_selected[i][3]){
-					html.push(` min='${condition_selected[i][3]}'`);
+					html.push(` value='${condition_selected[i][3]}'`);
+				}
+				if(condition_selected[i][4]){
+					html.push(` min='${condition_selected[i][4]}'`);
 				}
 
 				html.push(">");
@@ -473,11 +472,15 @@ var edit_event_ui = {
 				html.push(`<input type='${condition_selected[i][0]}' placeholder='${condition_selected[i][1]}' class='form-control form-control-sm ${condition_selected[i][1]}'`);
 
 				if(condition_selected[i][2]){
-					html.push(` value='${condition_selected[i][2]}'`);
+					html.push(` alt='${condition_selected[i][2]}'`)
 				}
 
 				if(condition_selected[i][3]){
-					html.push(` min='${condition_selected[i][3]}'`);
+					html.push(` value='${condition_selected[i][3]}'`);
+				}
+
+				if(condition_selected[i][4]){
+					html.push(` min='${condition_selected[i][4]}'`);
 				}
 
 				html.push(">");
@@ -503,7 +506,7 @@ var edit_event_ui = {
 
 			html.push("<select class='form-control form-control-sm'>")
 			for(var i = 0; i < static_data.eras.length; i++){
-				html.push(`<option value='${j}'>`);
+				html.push(`<option value='${i}'>`);
 				html.push(static_data.eras[i].name);
 				html.push("</option>");
 			}
@@ -530,15 +533,19 @@ var edit_event_ui = {
 					html.push(`<input type='${condition_selected[i][0]}' placeholder='${condition_selected[i][1]}' class='form-control form-control-sm ${condition_selected[i][1]}'`);
 
 					if(condition_selected[i][2]){
-						html.push(` value='${condition_selected[i][2]}'`);
+						html.push(` alt='${condition_selected[i][2]}'`)
 					}
 
 					if(condition_selected[i][3]){
-						html.push(` min='${condition_selected[i][3]}'`);
+						html.push(` value='${condition_selected[i][3]}'`);
 					}
 
 					if(condition_selected[i][4]){
-						html.push(` max='${condition_selected[i][4]}'`);
+						html.push(` min='${condition_selected[i][4]}'`);
+					}
+
+					if(condition_selected[i][5]){
+						html.push(` max='${condition_selected[i][5]}'`);
 					}
 
 					html.push(">");
@@ -600,15 +607,19 @@ var edit_event_ui = {
 				html.push(`<input type='${condition_selected[i][0]}' placeholder='${condition_selected[i][1]}' class='form-control form-control-sm ${condition_selected[i][1]}'`);
 
 				if(condition_selected[i][2]){
-					html.push(` value='${condition_selected[i][2]}'`);
+					html.push(` alt='${condition_selected[i][2]}'`)
 				}
 
 				if(condition_selected[i][3]){
-					html.push(` min='${condition_selected[i][3]}'`);
+					html.push(` value='${condition_selected[i][3]}'`);
 				}
 
 				if(condition_selected[i][4]){
-					html.push(` max='${condition_selected[i][4]}'`);
+					html.push(` min='${condition_selected[i][4]}'`);
+				}
+
+				if(condition_selected[i][5]){
+					html.push(` max='${condition_selected[i][5]}'`);
 				}
 
 				html.push(">");
@@ -617,24 +628,6 @@ var edit_event_ui = {
 
 			html.push("</select>");
 
-		}else if(type == "Year" && condition_selected.length == 1){
-
-			for(var i = 0; i < condition_selected.length; i++){
-
-				html.push(`<input type='${condition_selected[i][0]}' placeholder='${condition_selected[i][1]}' class='form-control form-control-sm ${condition_selected[i][1]}'`);
-
-				if(condition_selected[i][2]){
-					html.push(` value='${(condition_selected[i][2]|0) >= 0 ? (condition_selected[i][2]|0)+1 : (condition_selected[i][2]|0)}'`);
-				}
-
-				if(condition_selected[i][3]){
-					html.push(` min='${condition_selected[i][3]}'`);
-				}
-
-				html.push(">");
-
-			}
-
 		}else{
 
 			for(var i = 0; i < condition_selected.length; i++){
@@ -642,15 +635,19 @@ var edit_event_ui = {
 				html.push(`<input type='${condition_selected[i][0]}' placeholder='${condition_selected[i][1]}' class='form-control form-control-sm ${condition_selected[i][1]}'`);
 
 				if(condition_selected[i][2]){
-					html.push(` value='${condition_selected[i][2]}'`);
+					html.push(` alt='${condition_selected[i][2]}'`)
 				}
 
 				if(condition_selected[i][3]){
-					html.push(` min='${condition_selected[i][3]}'`);
+					html.push(` value='${condition_selected[i][3]}'`);
 				}
 
 				if(condition_selected[i][4]){
-					html.push(` max='${condition_selected[i][4]}'`);
+					html.push(` min='${condition_selected[i][4]}'`);
+				}
+
+				if(condition_selected[i][5]){
+					html.push(` max='${condition_selected[i][5]}'`);
 				}
 
 				html.push(">");
@@ -769,7 +766,6 @@ var edit_event_ui = {
 	},
 
 	update_radio_button_names: function(){
-		var array = []
 		$(".group_type").each(function(i){
 			$(this).find("input[type='radio']").attr("name", `${i}_group_type`);
 			var type = $(this).attr('type');
@@ -788,19 +784,28 @@ var edit_event_ui = {
 			}
 
 			if($(this).hasClass('group')){
-				edit_event_ui.evaluate_condition_selects($(this).find('.group_list'));
+
+				edit_event_ui.evaluate_condition_selects($(this).children('.group_list'));
+
 			}
+
 		});
 
 		if(element.hasClass('group_list')){
+
 			if(element.parent().children().first().attr('type') === 'num'){
-				element.parent().find('.num_group_con').attr('min', 1).attr('max', Math.max(1, element.children().length));
+
+				element.parent().children('.num_group_con').attr('min', 1).attr('max', Math.max(1, element.children().length));
+
 				element.children().each(function(){
+
 					$(this).children('.condition_operator').prop('disabled', true).addClass('hidden');
+
 				});
+
 				element.children().each(function(){
 					if($(this).hasClass('group')){
-						edit_event_ui.evaluate_condition_selects($(this).find('.group_list'));
+						edit_event_ui.evaluate_condition_selects($(this).children('.group_list'));
 					}
 				});
 			}

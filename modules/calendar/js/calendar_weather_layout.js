@@ -72,7 +72,7 @@ var calendar_weather = {
 				var temp = `${temp_f}${temp_c}`;
 				height += 37;
 			}
-			this.weather_temp.toggleClass('newline', temp_sys == 'both');
+			this.weather_temp.toggleClass('newline', temp_sys == 'both_i' || temp_sys == 'both_m');
 
 
 			var wind_sys = static_data.seasons.global_settings.wind_sys;
@@ -186,8 +186,10 @@ function evaluate_weather_charts(){
 	var labels = [];
 
 	var temp_sys = static_data.seasons.global_settings.temp_sys;
-	if(temp_sys === "both"){
+	if(temp_sys === "both_i"){
 		var temp_sys = "imperial";
+	}else if(temp_sys === "both_m"){
+		var temp_sys = "metric";
 	}
 
 	if(epoch_data[keys[0]].weather){

@@ -37,6 +37,10 @@ function set_up_view_inputs(){
 
 		repopulate_day_select(current_day, dynamic_data.day);
 
+		repopulate_timespan_select(target_timespan, dynamic_data.timespan);
+
+		repopulate_day_select(target_day, dynamic_data.day);
+
 	});
 
 	current_timespan.change(function(){
@@ -47,6 +51,7 @@ function set_up_view_inputs(){
 		var prev_timespan = $(this).data('val')|0;
 
 		repopulate_day_select(current_day, dynamic_data.day);
+		repopulate_day_select(target_day, dynamic_data.day);
 
 	});
 
@@ -137,6 +142,8 @@ function set_up_view_inputs(){
 		var options = target.children(":enabled");
 		var next = options.index(selected)+1;
 
+		console.log('wot')
+
 		if(next == options.length){
 			add_curr_timespan.click();
 			target.children('option:enabled').first().prop('selected', true).change();
@@ -201,6 +208,9 @@ function set_up_view_inputs(){
 		var curr_year = current_year.val()|0;
 		var curr_timespan = current_timespan.val()|0;
 		var curr_day = current_day.val()|0;
+		target_year.val(curr_year);
+		target_timespan.val(curr_timespan);
+		target_day.val(curr_day);
 		set_date(curr_year, curr_timespan, curr_day);
 	}));
 
@@ -208,13 +218,20 @@ function set_up_view_inputs(){
 		var curr_year = current_year.val()|0;
 		var curr_timespan = current_timespan.val()|0;
 		var curr_day = current_day.val()|0;
+		target_year.val(curr_year);
+		target_timespan.val(curr_timespan);
+		target_day.val(curr_day);
 		set_date(curr_year, curr_timespan, curr_day);
 	}));
 
-	current_day.change(function(){
+	current_day.change(function(e){
+
 		var curr_year = current_year.val()|0;
 		var curr_timespan = current_timespan.val()|0;
 		var curr_day = current_day.val()|0;
+		target_year.val(curr_year);
+		target_timespan.val(curr_timespan);
+		target_day.val(curr_day);
 		set_date(curr_year, curr_timespan, curr_day);
 	});
 
@@ -373,6 +390,7 @@ function set_up_view_values(){
 		current_year.data('val', current_year.val());
 
 		repopulate_timespan_select(current_timespan, dynamic_data.timespan);
+
 		repopulate_day_select(current_day, dynamic_data.day);
 
 	}

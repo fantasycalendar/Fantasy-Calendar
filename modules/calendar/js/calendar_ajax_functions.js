@@ -49,6 +49,9 @@ function update_name(){
 		dataType: 'json',
 		proccessData: false,
 		data: {action: 'update_name', name: calendar_name, hash: hash},
+		success: function( result ){
+			evaluate_save_button();
+		},
 		error: function ( log )
 		{
 			console.log(log);
@@ -75,6 +78,8 @@ function update_dynamic(){
 }
 
 function do_update_dynamic(){
+
+	//escapeAllHtml(dynamic_data);
 
 	$.ajax({
 		url:window.baseurl+"modules/calendar/ajax/ajax_calendar",
@@ -121,6 +126,9 @@ function update_all(){
 }
 
 function do_update_all(){
+
+	//escapeAllHtml(dynamic_data);
+	
 	$.ajax({
 		url:window.baseurl+"modules/calendar/ajax/ajax_calendar",
 		type: "post",

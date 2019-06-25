@@ -103,7 +103,7 @@ var event_evaluator = {
 
 			var category = array[0];
 			var type = array[1];
-			var values = array[1];
+			var values = array[2];
 
 			var result = true;
 			
@@ -114,21 +114,25 @@ var event_evaluator = {
 				var operator = subcon[1];
 
 				if(array[0] === "Moons"){
-					var selected = this.current_data[selector][array[2][0]];
-					var cond_1 = array[2][subcon[2]]|0;
-					var cond_2 = array[2][subcon[3]] ? array[2][subcon[3]]|0 : undefined;
+
+					var selected = this.current_data[selector][values[0]];
+					var cond_1 = values[subcon[2]]|0;
+					var cond_2 = values[subcon[3]] ? values[subcon[3]]|0 : undefined;
+
+					//console.log(this.current_data.timespan_name, this.current_data.day, selector, selected, cond_1)
 
 				}else if(array[0] === "Season"){
 
 					var selected = this.current_data["season"][selector];
-					var cond_1 = array[2][subcon[2]]|0;
-					var cond_2 = array[2][subcon[3]] ? array[2][subcon[3]]|0 : undefined;
+					var cond_1 = values[subcon[2]]|0;
+					var cond_2 = values[subcon[3]] ? values[subcon[3]]|0 : undefined;
 
 				}else{
 					var selected = this.current_data[selector];
-					var cond_1 = Number(array[2][subcon[2]]) != NaN ? Number(array[2][subcon[2]]) : array[2][subcon[2]];
-					var cond_2 = array[2][subcon[3]] ? array[2][subcon[3]] : undefined;
+					var cond_1 = Number(values[subcon[2]]) != NaN ? Number(values[subcon[2]]) : values[subcon[2]];
+					var cond_2 = values[subcon[3]] ? values[subcon[3]] : undefined;
 					cond_2 = Number(cond_2) != NaN ? Number(cond_2) : cond_2;
+					//console.log(this.current_data, selector, selected, cond_1)
 				}
 
 				if(operator == '%'){
@@ -204,7 +208,7 @@ var event_evaluator = {
 
 				if(is_array){
 
-					var is_count = condition[0] !== "" && Number(condition[0]) !== NaN;
+					var is_count = condition[0] !== "" && condition[0] !== "!" && Number(condition[0]) !== NaN;
 
 					if(is_count){
 

@@ -388,6 +388,12 @@
 		<label for="collapsible_globalweek" class="lbl-toggle lbl-text">Global Week <a target="_blank" title='Fantasy Calendar Wiki: Global week' href='https://wiki.fantasy-calendar.com/index.php?title=Global_week' class="wiki"><i class="icon-question-sign"></i></a></label>
 		<div class="collapsible-content">
 
+			<div class='detail-text bold-text'>First week day:</div>
+
+			<select class='form-control static_input' id='first_day' data='year_data' key='first_day'></select>
+
+			<div class='separator'></div>
+
 			<div class='form-inline global_week'>
 				<input type='text' class='form-control name' placeholder='Weekday name'>
 				<input type='button' value='Add' class='btn btn-primary add'>
@@ -563,10 +569,11 @@
 					<div class='detail-column half'>
 						<div class='detail-row'>Temperature system:</div>
 						<div class='detail-row'>
-							<select class='custom-select type full static_input' data='seasons.global_settings' key='temp_sys'>
+							<select class='custom-select type full static_input' id='temp_sys' data='seasons.global_settings' key='temp_sys'>
 								<option selected value='metric'>Metric</option>
 								<option value='imperial'>Imperial</option>
-								<option value='both'>Both</option>
+								<option value='both_m'>Both (inputs metric)</option>
+								<option value='both_i'>Both (inputs imperical)</option>
 							</select>
 						</div>
 					</div>

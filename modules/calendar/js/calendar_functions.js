@@ -48,6 +48,7 @@ function unescapeHtml(input){
 	e.innerHTML = input;
 	return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
 }
+
 function debounce(func, wait, immediate) {
 	var timeout;
 	return function() {
@@ -63,6 +64,17 @@ function debounce(func, wait, immediate) {
 	};
 };
 
+function escapeAllHtml(obj)
+{
+	for (var k in obj)
+	{
+		if (typeof obj[k] == "object" && obj[k] !== null){
+			escapeAllHtml(obj[k]);
+		}else{
+			obj[k] = escapeHtml(obj[k]);
+		}
+	}
+}
 
 Object.compare = function (obj1, obj2) {
 	//Loop through properties in object 1
@@ -200,7 +212,6 @@ function precisionRound(number, precision) {
 	var factor = Math.pow(10, precision);
 	return Math.round(number * factor) / factor;
 }
-
 
 function clamp(t, min, max){
 	return Math.min(Math.max(t, min), max);
@@ -375,12 +386,13 @@ function get_timespans_in_year(static_data, year, exclusive){
 
 		var appears = does_timespan_appear(static_data, year, timespan_index);
 
-		if(appears.result && exclusive){
+		appears.id = timespan_index;
 			
+		if(appears.result && exclusive){
+
 			results.push(appears);
 
-		}
-
+		}	
 	}
 
 	return results;
@@ -394,7 +406,7 @@ function does_timespan_appear(static_data, year, timespan){
 
 		var era = static_data.eras[era_index];
 
-		if(era.settings.ends_year && year == era.date.year-1){
+		if(era.settings.ends_year && year == convert_year(era.date.year)-1){
 
 			if(timespan > era.date.timespan){
 
@@ -436,7 +448,7 @@ function does_day_appear(static_data, year, timespan, day){
 
 		var era = static_data.eras[era_index];
 
-		if(era.settings.ends_year && year == era.date.year-1 && timespan == era.date.timespan && day > era.date.day){
+		if(era.settings.ends_year && year == convert_year(era.date.year)-1 && timespan == era.date.timespan && day > era.date.day){
 
 			return {
 				result: false,
@@ -544,7 +556,7 @@ var date_converter = {
 		this.inc_calendar = inc_calendar;
 		this.target_epoch = epoch;
 
-		this.year = Math.floor(this.target_epoch / fract_year_length(this.inc_calendar));
+		this.year = Math.floor(this.target_epoch / fract_year_length(this.inc_calendar))-5;
 		this.timespan = 0;
 		this.day = 1;
 
@@ -554,9 +566,10 @@ var date_converter = {
 
 			var first_suggested_epoch = evaluate_calendar_start(this.inc_calendar, this.year).epoch;
 
-			if(first_suggested_epoch > this.target_epoch){
+			if(first_suggested_epoch < this.target_epoch){
 				this.year++;
 			}else{
+				this.year--;
 				break;
 			}
 
@@ -683,8 +696,6 @@ function is_leap(year, intervals, offsets){
 		var interval = interval[0];
 
 		var offset = (interval-offsets+1)%interval;
-
-		console.log(offset)
 
 		return (year + offset) % interval == 0;
 
@@ -834,7 +845,7 @@ function get_epoch(static_data, year, month, day, inclusive){
 		var offset = (timespan.interval-timespan.offset)%timespan.interval;
 
 		// Get the fraction of that month's appearances
-		var timespan_fraction = Math.ceil((year + offset) / timespan.interval);
+		var timespan_fraction = Math.floor((year + offset) / timespan.interval);
 
 		// Get the number of weeks for that month (check if it has a custom week or not)
 		if(!static_data.year_data.overflow){
@@ -915,24 +926,39 @@ function evaluate_calendar_start(static_data, year, month, day){
 
 		era = static_data.eras[era_index];
 
-		if(era.settings.ends_year && year > era.date.year-1){
+		if(era.settings.ends_year && year > convert_year(era.date.year)){
 
-			era_epoch = get_epoch(static_data, era.date.year-1, era.date.timespan, era.date.day-1);
-			normal_epoch_during_era = get_epoch(static_data, era.date.year-1);
+			era_epoch = get_epoch(static_data, convert_year(era.date.year)-1, era.date.timespan, era.date.day);
+			normal_epoch_during_era = get_epoch(static_data, convert_year(era.date.year));
 
 			epoch -= (normal_epoch_during_era[0] - era_epoch[0]);
 
 			intercalary -= (normal_epoch_during_era[1] - era_epoch[1]);
-			count_timespans -= (normal_epoch_during_era[2] - era_epoch[2]);
+			for(var i = 0; i < normal_epoch_during_era[2].length; i++){
+				count_timespans[i] = (normal_epoch_during_era[2][i] - era_epoch[2][i]);
+			}
+
 			num_timespans -= (normal_epoch_during_era[3] - era_epoch[3]);
 			total_week_num -= (normal_epoch_during_era[4] - era_epoch[4]);
 
-			era_year -= era.date.year;
 
 		}
 
+		if(era.settings.restart && year > convert_year(era.date.year)){
+
+			if(era.date.year < 0){
+				era_year = era_year + era.date.year;
+			}else if(era.date.year > 0){
+				era_year = era_year - era.date.year;
+			}
+
+			if(era_year == 0) era_year = 1;
+
+		}
+
+
 	}
-	
+
 	// Calculate the start of week
 	if(static_data.year_data.overflow){
 		week_day = (epoch-intercalary+static_data.year_data.first_day-1) % static_data.year_data.global_week.length;

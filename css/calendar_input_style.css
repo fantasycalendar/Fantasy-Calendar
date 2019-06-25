@@ -273,6 +273,13 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
 	order:1;
 }
 
+.detail-grow{
+	flex:1 0 auto;
+}
+.detail-shrink{
+	flex:0 1 auto;
+}
+
 .slider_percentage{
 	margin:5px 10px;
 	width: calc(100% - 20px);

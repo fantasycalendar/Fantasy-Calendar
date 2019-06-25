@@ -75,6 +75,8 @@ var loading_screen_texts = [
 	`Ignoring worldbuilding...`,
 	`Stocking taverns with hooded strangers...`,
 	`Breaking wasp...`,
+	`Generating wibbly wobbly timey wimey calendar stuff...`,
+	`Figuring out issues with Easter...`,
 ];
 
 function show_loading_screen(){

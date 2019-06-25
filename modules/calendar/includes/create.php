@@ -38,7 +38,7 @@ static_data = {
 		"global_settings":{
 			"season_offset":0,
 			"weather_offset":0,
-			"seed":826116802,
+			"seed":(Math.random().toString().substr(7)|0),
 			"temp_sys":"metric",
 			"wind_sys":"metric",
 			"cinematic":false,
