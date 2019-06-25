@@ -2921,14 +2921,14 @@ function reindex_location_list(){
 					"minute": ($(this).find("input[key='timezone_minute']").val()|0),
 				},
 
-				"large_noise_frequency": ($(this).find("input[key='large_noise_frequency']").val()|0),
-				"large_noise_amplitude": ($(this).find("input[key='large_noise_amplitude']").val()|0),
+				"large_noise_frequency": Number($(this).find("input[key='large_noise_frequency']").val()),
+				"large_noise_amplitude": Number($(this).find("input[key='large_noise_amplitude']").val()),
 
-				"medium_noise_frequency": ($(this).find("input[key='medium_noise_frequency']").val()|0),
-				"medium_noise_amplitude": ($(this).find("input[key='medium_noise_amplitude']").val()|0),
+				"medium_noise_frequency": Number($(this).find("input[key='medium_noise_frequency']").val()),
+				"medium_noise_amplitude": Number($(this).find("input[key='medium_noise_amplitude']").val()),
 
-				"small_noise_frequency": ($(this).find("input[key='small_noise_frequency']").val()|0),
-				"small_noise_amplitude": ($(this).find("input[key='small_noise_amplitude']").val()|0)
+				"small_noise_frequency": Number($(this).find("input[key='small_noise_frequency']").val()),
+				"small_noise_amplitude": Number($(this).find("input[key='small_noise_amplitude']").val())
 			},
 			"custom_dates": {}
 		};
