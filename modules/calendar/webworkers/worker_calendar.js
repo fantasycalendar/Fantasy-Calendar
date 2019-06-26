@@ -958,6 +958,7 @@ var calendar_builder = {
 				}
 			}
 
+
 			if(!this.static_data.year_data.overflow){
 				year_week_num++;
 				total_week_num++;

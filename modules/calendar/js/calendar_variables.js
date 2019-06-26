@@ -48,13 +48,13 @@ var condition_mapping = {
 		["Day in month is later than",		[["day", ">", 0]],				[["number", "Number", "Enter day number", "1"]]],
 		["Day in month is earlier than",	[["day", "<", 0]],				[["number", "Number", "Enter day number", "1"]]],
 		["Every nth day in month",			[["day", "%", 0, 1]],			[["number", "nth", "Enter day interval", "1", "1"], ["number", "offset", "Enter offset for interval", "0", "0"]]],
-		["Day in year is exactly",			[["yearday", "==", 0]],			[["number", "Number", "Enter yearday number", "1"]]],
-		["Day in year is not",				[["yearday", "!=", 0]],			[["number", "Number", "Enter yearday number", "1"]]],
-		["Day in year is or later than",	[["yearday", ">=", 0]],			[["number", "Number", "Enter yearday number", "1"]]],
-		["Day in year is or earlier than",	[["yearday", "<=", 0]],			[["number", "Number", "Enter yearday number", "1"]]],
-		["Day in year is later than",		[["yearday", ">", 0]],			[["number", "Number", "Enter yearday number", "1"]]],
-		["Day in year is earlier than",		[["yearday", "<", 0]],			[["number", "Number", "Enter yearday number", "1"]]],
-		["Every nth day in year",			[["yearday", "%", 0, 1]],		[["number", "nth", "Enter yearday interval", "1", "1"], ["number", "offset", "Enter offset for interval", "0", "0"]]]
+		["Day in year is exactly",			[["year_day", "==", 0]],		[["number", "Number", "Enter yearday number", "1"]]],
+		["Day in year is not",				[["year_day", "!=", 0]],		[["number", "Number", "Enter yearday number", "1"]]],
+		["Day in year is or later than",	[["year_day", ">=", 0]],		[["number", "Number", "Enter yearday number", "1"]]],
+		["Day in year is or earlier than",	[["year_day", "<=", 0]],		[["number", "Number", "Enter yearday number", "1"]]],
+		["Day in year is later than",		[["year_day", ">", 0]],			[["number", "Number", "Enter yearday number", "1"]]],
+		["Day in year is earlier than",		[["year_day", "<", 0]],			[["number", "Number", "Enter yearday number", "1"]]],
+		["Every nth day in year",			[["year_day", "%", 0, 1]],		[["number", "nth", "Enter yearday interval", "1", "1"], ["number", "offset", "Enter offset for interval", "0", "0"]]]
 	],
 
 	"Epoch": [

@@ -539,20 +539,26 @@
 			<div class='separator'></div>
 
 			<div class='detail-row'>
-				<div class='detail-column'>Season offset:</div>
+				<div class='detail-column'>Season offset (days):</div>
 				<div class='detail-column float'>
 					<input class='form-control form-control-sm static_input' type='number' data='seasons.global_settings' key='season_offset'/>
 				</div>
 			</div>
+		</div>
 
-			<div class='detail-row'>
-				<div class='detail-column'>Weather offset:</div>
-				<div class='detail-column float'>
-					<input class='form-control form-control-sm static_input' type='number' data='seasons.global_settings' key='weather_offset'/>
-				</div>
-			</div>
+		<div class='separator'></div>
+	</div>
 
-			<div class='separator'></div>
+
+
+	<!---------------------------------------------->
+	<!------------------- WEATHER ------------------>
+	<!---------------------------------------------->
+
+	<div class='wrap-collapsible'>
+		<input id="collapsible_weather" class="toggle" type="checkbox">
+		<label for="collapsible_weather" class="lbl-toggle lbl-text">Weather<a target="_blank" title='Fantasy Calendar Wiki: Weather' href='https://wiki.fantasy-calendar.com/index.php?title=Weather' class="wiki"><i class="icon-question-sign"></i></a></label>
+		<div class="collapsible-content">
 
 			<div class='detail-row'>
 				<div class='detail-column'>Enable weather:</div>
@@ -565,6 +571,16 @@
 			</div>
 
 			<div id='weather_inputs'>
+
+				<div class='separator'></div>
+
+				<div class='detail-row'>
+					<div class='detail-column'>Weather offset (days):</div>
+					<div class='detail-column float'>
+						<input class='form-control form-control-sm static_input' type='number' data='seasons.global_settings' key='weather_offset'/>
+					</div>
+				</div>
+
 				<div class='detail-row'>
 					<div class='detail-column half'>
 						<div class='detail-row'>Temperature system:</div>
@@ -663,8 +679,10 @@
 				<input type='text' id='cycle_format' class='form-control name static_input' data='cycles' key='format' placeholder='Cycle format'>
 			</div>	
 
+			<div class='separator'></div>
+
 			<div class='form-inline cycle'>
-				<input type='button' value='Add new cycle' class='btn btn-primary add'>
+				<input type='button' value='Press to add new cycle' class='btn btn-primary add'>
 			</div>
 
 			<div class='sortable' id='cycle_sortable'></div>
