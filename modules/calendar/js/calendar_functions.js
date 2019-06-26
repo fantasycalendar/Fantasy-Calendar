@@ -924,12 +924,12 @@ function evaluate_calendar_start(static_data, year, month, day){
 	// For each era, check if they end the year, subtract the remaining days of that year from the epoch total so we can get proper start of the year
 	for(var era_index = 0; era_index < static_data.eras.length; era_index++){
 
-		era = static_data.eras[era_index];
+		var era = static_data.eras[era_index];
 
 		if(era.settings.ends_year && year > convert_year(era.date.year)){
 
-			era_epoch = get_epoch(static_data, convert_year(era.date.year)-1, era.date.timespan, era.date.day);
-			normal_epoch_during_era = get_epoch(static_data, convert_year(era.date.year));
+			era_epoch = get_epoch(static_data, convert_year(era.date.year), era.date.timespan, era.date.day);
+			normal_epoch_during_era = get_epoch(static_data, convert_year(era.date.year)+1);
 
 			epoch -= (normal_epoch_during_era[0] - era_epoch[0]);
 
@@ -940,7 +940,6 @@ function evaluate_calendar_start(static_data, year, month, day){
 
 			num_timespans -= (normal_epoch_during_era[3] - era_epoch[3]);
 			total_week_num -= (normal_epoch_during_era[4] - era_epoch[4]);
-
 
 		}
 

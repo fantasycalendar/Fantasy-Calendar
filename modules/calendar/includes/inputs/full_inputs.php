@@ -572,6 +572,10 @@
 
 			<div id='weather_inputs'>
 
+				<div class='detail-row small-text'>
+					Custom weather can be configured in custom locations.
+				</div>
+
 				<div class='separator'></div>
 
 				<div class='detail-row'>

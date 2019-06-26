@@ -307,7 +307,7 @@ var calendar_builder = {
 		this.dynamic_data.internal_year = this.dynamic_data.year >= 0 ? this.dynamic_data.year - 1 : this.dynamic_data.year;
 
 		for(var i = 0; i < this.static_data.eras.length; i++){
-			this.static_data.eras[i].date.epoch = evaluate_calendar_start(this.static_data, convert_year(this.static_data.eras[i].date.year), this.static_data.eras[i].date.timespan, this.static_data.eras[i].date.day).epoch;
+			//this.static_data.eras[i].date.epoch = evaluate_calendar_start(this.static_data, convert_year(this.static_data.eras[i].date.year), this.static_data.eras[i].date.timespan, this.static_data.eras[i].date.day).epoch;
 		}
 
 		this.calendar_list = {

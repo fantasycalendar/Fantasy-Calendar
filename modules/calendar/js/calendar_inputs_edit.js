@@ -807,6 +807,26 @@ function set_up_edit_inputs(){
 	/* ------------------- Custom callbacks ------------------- */
 
 
+	$(document).on('change', '.moon_inputs .cycle', function(){
+
+		var key = $(this).closest('.sortable-container').attr('key')|0;
+
+		var cycle = $(this).val()|0;
+
+		if(cycle <= 4){
+			granularity = 4;
+		}else if(cycle <= 8){
+			granularity = 8;
+		}else if(cycle <= 16){
+			granularity = 16;
+		}else{
+			granularity = 32;
+		}
+
+		static_data.moons[key].granularity = granularity;
+
+	});
+
 	$(document).on('change', '.custom_phase', function(){
 
 		var checked = $(this).is(':checked');
@@ -820,7 +840,7 @@ function set_up_edit_inputs(){
 
 			var value = "";
 
-			for(var i = 0; i < static_data.moons[key].granularity-2; i++){
+			for(var i = 0; i < static_data.moons[key].granularity-1; i++){
 				value += `${i},`
 			}
 
@@ -835,7 +855,7 @@ function set_up_edit_inputs(){
 
 			var strings = $(this).closest('.sortable-container').find('.custom_cycle').val().split(',');
 
-			var value = strings[strings.length-1];
+			var value = (strings[strings.length-1]|0)+1;
 			
 			$(this).closest('.sortable-container').find('.cycle').val(value).change();
 			$(this).closest('.sortable-container').find('.shift').val(0).change();
@@ -849,21 +869,21 @@ function set_up_edit_inputs(){
 
 	$(document).on('keyup', '.custom_cycle', function(e){
 
-		$(this).val($(this).val().replace(/[`!+~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z ]/g,'').replace(/,$/g,'').replace(/,{2,}/g,","));
+		$(this).val($(this).val().replace(/[`!+~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z ]/g,'').replace(/,{2,}/g,","));
 
 	});
 
 	$(document).on('change', '.custom_cycle', function(e){
 
-		$(this).val($(this).val().replace(/[`!+~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z ]/g,'').replace(/,$/g,'').replace(/,{2,}/g,","));
+		$(this).val($(this).val().replace(/[`!+~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z ]/g,'').replace(/,{2,}/g,","));
+		
+		var value = $(this).val();
 
 		var key = $(this).closest('.sortable-container').attr('key')|0;
 
-		var value = $(this).val();
-
 		var granularity = Math.max.apply(null, value.split(','))+1;
 
-		if(granularity >= 32){
+		if(granularity > 32){
 
 			invalid = true;
 
@@ -974,6 +994,11 @@ function set_up_edit_inputs(){
 			$(this).parent().parent().parent().next().find('.dynamic_input').prop('disabled', true).change();
 			delete static_data.eras[key].settings.event_category;
 		}
+	});
+
+
+	$(document).on('change', '#era_list .date_control', function(){
+		reindex_era_list();
 	});
 
 	$(document).on('change', '.week-length', function(){
@@ -1244,36 +1269,6 @@ function set_up_edit_inputs(){
 
 	$(document).on('change', '.timespan_length', function(){
 		repopulate_day_select($('.timespan-day-list'));
-	});
-
-	$('#reorder_eras').click(function(){
-		$(this).addClass('hidden');
-		era_list.children().each(function(i){
-			var curr = $(this);
-			var curr_year = (curr.find('.year-input').val()|0);
-			var curr_timespan = (curr.find('.timespan-list').val()|0);
-			var curr_day = (curr.find('.timespan-day-list').val()|0);
-
-			era_list.children().each(function(j){
-
-				var comp = $(this);
-				var comp_year = (comp.find('.year-input').val()|0);
-				var comp_timespan = (comp.find('.timespan-list').val()|0);
-				var comp_day = (comp.find('.timespan-day-list').val()|0);
-
-				if(curr_year > comp_year){
-					comp.insertBefore(curr);
-				}else if(curr_year == comp_year){
-					if(curr_timespan > comp_timespan){
-						comp.insertBefore(curr);
-					}else if(curr_timespan == comp_timespan){
-						if(curr_day >= comp_day){
-							comp.insertBefore(curr);
-						}
-					}
-				}
-			});
-		});
 	});
 
 	$('#enable_weather').change(function(){
@@ -1860,7 +1855,7 @@ function add_moon_to_list(parent, key, data){
 
 	var element = [];
 
-	element.push("<div class='sortable-container moon_inputs expanded'>");
+	element.push(`<div class='sortable-container moon_inputs expanded' key='${key}'>`);
 		element.push("<div class='main-container'>");
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' value='${data.name}' class='form-control name-input small-input dynamic_input' data='moons.${key}' key='name' tabindex='${(300+key)}'/>`);
@@ -3086,6 +3081,8 @@ function reindex_moon_list(){
 }
 
 function reindex_era_list(){
+
+	sort_era_list_by_date();
 	
 	static_data.eras = [];
 
@@ -3113,12 +3110,47 @@ function reindex_era_list(){
 			}
 		};
 
-		static_data.eras[i].date.epoch = evaluate_calendar_start(calendar, convert_year(static_data.eras[i].date.year), static_data.eras[i].date.timespan, static_data.eras[i].date.day).epoch;
+		static_data.eras[i].date.epoch = evaluate_calendar_start(static_data, convert_year(static_data.eras[i].date.year), static_data.eras[i].date.timespan, static_data.eras[i].date.day).epoch;
 
 	});
 
 	do_error_check();
 
+}
+
+function sort_era_list_by_date(){
+
+	era_list.children().each(function(i){
+
+		var curr = $(this);
+		var curr_year = (curr.find('.year-input').val()|0);
+		var curr_timespan = (curr.find('.timespan-list').val()|0);
+		var curr_day = (curr.find('.timespan-day-list').val()|0);
+
+		era_list.children().each(function(j){
+
+			var comp = $(this);
+			var comp_year = (comp.find('.year-input').val()|0);
+			var comp_timespan = (comp.find('.timespan-list').val()|0);
+			var comp_day = (comp.find('.timespan-day-list').val()|0);
+
+			//console.log(curr_year, comp_year)
+			//console.log(curr_timespan, comp_timespan)
+			//console.log(curr_day, comp_day)
+
+			if(curr_year > comp_year){
+				comp.insertBefore(curr);
+			}else if(curr_year == comp_year){
+				if(curr_timespan > comp_timespan){
+					comp.insertBefore(curr);
+				}else if(curr_timespan == comp_timespan){
+					if(curr_day >= comp_day){
+						comp.insertBefore(curr);
+					}
+				}
+			}
+		});
+	});
 }
 
 function reindex_event_category_list(){

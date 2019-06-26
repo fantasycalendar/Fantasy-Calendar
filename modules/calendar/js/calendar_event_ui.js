@@ -225,7 +225,10 @@ var edit_event_ui = {
 
 		$('#event_dontprint_checkbox').prop('checked',false);
 
+		reindex_events_list();
+
 		edit_event_ui.event_background.addClass('hidden');
+
 
 	},
 

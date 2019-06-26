@@ -120,51 +120,42 @@ var eras = {
 			this.internal_class = document.getElementsByClassName('era')[0];
 
 			// If the last era shift was behind us, then it is the last era
-			if(this.start_epoch > static_data.eras[static_data.eras.length-1].date.epoch){
+			if(static_data.eras[static_data.eras.length-1].date.epoch < this.start_epoch){
 
 				this.current_eras.push({
 					"id": static_data.eras.length-1,
 					"position": 0,
 					"data": static_data.eras[static_data.eras.length-1]
 				});
+
 			// Otherwise, this finds the current overlapping eras with the displayed days
 			}else{
 
-				for(var i = 0; i < static_data.eras.length; i++){
+				// Find eras within this year
+				for(var i = static_data.eras.length-1; i >= 0; i--){
 
-					var current_era = static_data.eras[i];
+					var era = static_data.eras[i];
 
-					if(current_era.date.epoch >= this.start_epoch && current_era.date.epoch <= this.end_epoch){
+					if(era.date.epoch > this.start_epoch && era.date.epoch <= this.end_epoch){
 						this.current_eras.push({
 							"id": i,
 							"position": 0,
-							"data": current_era
+							"data": era
 						});
-					}
-				}
-
-				if(this.current_eras.length == 0){
-					
-					for(var i = 0; i < static_data.eras.length; i++){
-
-						var current_era = static_data.eras[i];
-
-						if(this.start_epoch > current_era.date.epoch || current_era.date.epoch >= this.end_epoch){
+					}else{
+						if(era.date.epoch < this.start_epoch){
 							this.current_eras.push({
 								"id": i,
 								"position": 0,
-								"data": current_era
+								"data": era
 							});
+							break;
 						}
 					}
-
-				}else if(this.current_eras.length > 0 && this.current_eras[0].data.date.epoch > this.start_epoch && static_data.eras[this.current_eras[0].id-1]){
-					this.current_eras.splice(0, 0, {
-						"id": this.current_eras[0].id-1,
-						"position": 0,
-						"data": static_data.eras[this.current_eras[0].id-1]
-					});
 				}
+
+				this.current_eras.reverse();
+
 			}
 		}
 	},
@@ -195,13 +186,13 @@ var eras = {
 
 		if(static_data.eras.length > 0){
 
+			var position = $("#calendar").scrollTop();
+
 			for(var i = 0; i < eras.current_eras.length; i++){
 				if($(`[epoch=${eras.current_eras[i].data.date.epoch}]`).length){
-					eras.current_eras[i].position = $(`[epoch=${eras.current_eras[i].data.date.epoch}]`).offset().top - 175;
+					eras.current_eras[i].position = position + $(`[epoch=${eras.current_eras[i].data.date.epoch}]`).offset().top - 175;
 				}
 			}
-
-			var position = $("#calendar").scrollTop();
 
 			if(this.current_eras.length == 0){
 				
