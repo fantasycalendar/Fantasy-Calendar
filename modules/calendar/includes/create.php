@@ -4,8 +4,6 @@ header('Cache-Control: no-cache');
 
 $calendar_name = 'New Calendar';
 
-$owner = "true";
-
 $title = $calendar_name;
 
 include('header.php');
@@ -14,10 +12,12 @@ include('header.php');
 
 <script>
 
+wizard = false;
+
 hash = getUrlParameter('id');
 
 calendar_name = 'New Calendar';
-owner = <?php echo $owner ?>;
+owner = true;
 static_data = {
 	"year_data":{
 		"first_day":1,
@@ -28,6 +28,7 @@ static_data = {
 	},
 	"moons":[],
 	"clock":{
+		"enabled":false,
 		"hours":24,
 		"minutes":60,
 		"offset":0
@@ -99,19 +100,59 @@ get_session_data(function(result){
 			link_data.children = JSON.parse(result.children);
 		}
 
-		set_up_edit_inputs();
+		set_up_edit_inputs(true);
 		bind_calendar_events();
 		rebuild_calendar('calendar', dynamic_data);
 		
 	}else{
 
-		set_up_edit_inputs();
+		set_up_edit_inputs(false);
 		bind_calendar_events();
 
 	}
 
 	edit_event_ui.bind_events();
 	edit_HTML_ui.bind_events();
+
+});
+
+$(document).ready(function(){
+	var html = [];
+	for(var i = 0; i < Object.keys(calendar_presets).length; i++){
+		var name = Object.keys(calendar_presets)[i];
+		var preset = calendar_presets[name];
+		html.push(`<option>${name}</option>`)
+	}
+	$('#presets').append(html.join(''));
+
+	$('#presets').change(function(){
+		$('#json_container').toggleClass('hidden', true);
+		$('#json_input').val('');
+		$('#json_apply').prop('disabled', $(this).val() === 'Presets');
+		if($(this).val() == 'Custom JSON'){
+			$('#json_container').toggleClass('hidden', false);
+		}
+	});
+
+	$('#json_apply').click(function(){
+		if($('#presets').val() == 'Custom JSON'){
+			var calendar = parse_json($('#json_input').val());
+			if(calendar){
+				dynamic_data = calendar.dynamic_data;
+				static_data = calendar.static_data;
+				empty_edit_values();
+				set_up_edit_values();
+				$('#json_input').val('');
+			}else{
+				alert("Unrecognized JSON format.")
+			}
+		}else{
+			dynamic_data = calendar_presets[$('#presets').val()].dynamic_data;
+			static_data = calendar_presets[$('#presets').val()].static_data;
+			empty_edit_values();
+			set_up_edit_values();
+		}
+	});
 
 });
 

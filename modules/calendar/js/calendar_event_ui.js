@@ -8,16 +8,23 @@ var edit_event_ui = {
 
 	bind_events: function(){
 
+		this.new_event							= false;
 		this.event_id							= null;
 		this.event_condition_sortables			= [];
 		this.current_sortable					= null;
 		this.delete_droppable					= false;
+		this.prev_version_event					= {};
 
 		this.event_background 					= $('#event_edit_background');
 		this.event_conditions_container			= $('#event_conditions_container');
+		this.condition_presets					= $('#condition_presets');
+		this.repeat_input						= $('#repeat_input');
+		this.preset_buttons						= $('#preset_buttons');
+		this.non_preset_buttons					= $('#non_preset_buttons');
 		this.save_btn							= this.event_background.find('#btn_event_save');
 		this.close_ui_btn						= this.event_background.find('.close_ui_btn');
 		this.trumbowyg							= this.event_background.find('.event_desc');
+
 
 		this.trumbowyg.trumbowyg();
 
@@ -25,7 +32,19 @@ var edit_event_ui = {
 
 			var index = $(this).closest('.sortable-container').attr('key');
 
-			edit_event_ui.set_current_event(index);
+			edit_event_ui.edit_event(index);
+
+		});
+
+		$(document).on('click', '.btn_create_event', function(){
+
+			var epoch = $(this).closest('.timespan_day').attr('epoch')|0;
+
+			edit_event_ui.data = clone(evaluated_static_data.epoch_data[epoch]);
+
+			edit_event_ui.populate_condition_presets();
+
+			edit_event_ui.create_new_event();
 
 		});
 
@@ -34,7 +53,48 @@ var edit_event_ui = {
 		})
 
 		edit_event_ui.close_ui_btn.click(function(){
+			
+			if(!confirm('This event will not be saved! Are you sure you want to close the event UI?')){
+				return;
+			}
+
+			if(edit_event_ui.new_event){
+				delete static_data.event_data.events.pop();
+			}
+
 			edit_event_ui.clear_ui();
+
+		});
+
+
+		this.condition_presets.change(function(){
+
+			var selected = edit_event_ui.condition_presets.children(':selected')[0].hasAttribute('nth');
+			edit_event_ui.repeat_input.prop('disabled', !selected).parent().toggleClass('hidden', !selected);
+			edit_event_ui.update_every_nth_presets();
+
+			edit_event_ui.preset_buttons.toggleClass('hidden', edit_event_ui.condition_presets.children(':selected').val() == "None");
+			edit_event_ui.non_preset_buttons.toggleClass('hidden', edit_event_ui.condition_presets.children(':selected').val() != "None");
+
+		});
+
+		edit_event_ui.repeat_input.change(function(){
+			edit_event_ui.update_every_nth_presets();
+		});
+
+		$('#add_event_preset').click(function(){
+
+			var preset = edit_event_ui.condition_presets.val();
+			var repeats = edit_event_ui.repeat_input.val()|0;
+
+			edit_event_ui.repeat_input.val('1').parent().toggleClass('hidden', true);
+			edit_event_ui.condition_presets.children().eq(0).prop('selected', true);
+			edit_event_ui.preset_buttons.toggleClass('hidden', true);
+			edit_event_ui.non_preset_buttons.toggleClass('hidden', false);
+			edit_event_ui.update_every_nth_presets();
+
+			edit_event_ui.add_preset_conditions(preset, repeats);
+
 		});
 
 		$(document).on('change', '.event-text-input', function(){
@@ -145,6 +205,37 @@ var edit_event_ui = {
 
 	},
 
+	create_new_event: function(name){
+
+		edit_event_ui.new_event = true;
+
+		var stats = {
+			'name': name !== undefined ? name : '',
+			'data': {
+				'conditions': []
+			},
+			'settings': {
+				'color': 'Dark-Solid',
+				'text': 'text',
+				'hide': false,
+				'noprint': false
+			}
+		};
+
+		static_data.event_data.events.push(stats);
+
+		this.set_current_event(static_data.event_data.events.length-1)
+
+	},
+
+	edit_event: function(event_id){
+
+		this.prev_version_event = clone(static_data.event_data.events[event_id]);
+
+		this.set_current_event(event_id)
+
+	},
+
 	set_current_event: function(event_id){
 
 		this.event_id = event_id;
@@ -178,7 +269,10 @@ var edit_event_ui = {
 
 		static_data.event_data.events[this.event_id] = {};
 
-		static_data.event_data.events[this.event_id].name = escapeHtml(this.event_background.find('.event_name').val());
+		var name = escapeHtml(this.event_background.find('.event_name').val());
+		name = name !== '' ? name : "Unnamed Event";
+
+		static_data.event_data.events[this.event_id].name = name;
 
 		static_data.event_data.events[this.event_id].description = this.trumbowyg.trumbowyg('html');
 
@@ -198,6 +292,10 @@ var edit_event_ui = {
 			noprint: $('#event_dontprint_checkbox').prop('checked')
 		}
 
+		if(edit_event_ui.new_event){
+			add_event_to_list(events_list, this.event_id, static_data.event_data.events[this.event_id]);
+		}
+
 		edit_event_ui.clear_ui();
 
 		error_check();
@@ -214,7 +312,17 @@ var edit_event_ui = {
 
 		this.trumbowyg.trumbowyg('html', '');
 
-		edit_event_ui.event_conditions_container.empty();
+		this.repeat_input.val('1').parent().toggleClass('hidden', true);
+		this.condition_presets.children().eq(0).prop('selected', true);
+		this.preset_buttons.toggleClass('hidden', true);
+		this.non_preset_buttons.toggleClass('hidden', false);
+		this.update_every_nth_presets();
+
+		this.event_conditions_container.empty();
+
+		this.data = {};
+
+		this.new_event = false;
 		
 		$('#event_categories').val('');
 
@@ -227,8 +335,208 @@ var edit_event_ui = {
 
 		reindex_events_list();
 
-		edit_event_ui.event_background.addClass('hidden');
+		this.event_background.addClass('hidden');
 
+
+	},
+
+	populate_condition_presets: function(){
+
+		this.condition_presets.parent().toggleClass('hidden', false);
+
+		this.condition_presets.find('option[value="weekly"]').text(`Weekly on ${edit_event_ui.data.week_day_name}`);
+		this.condition_presets.find('option[value="fortnightly"]').text(`Fortnightly on ${edit_event_ui.data.week_day_name}`);
+		this.condition_presets.find('option[value="monthly_date"]').text(`Monthly on the ${ordinal_suffix_of(edit_event_ui.data.day)}`);
+		this.condition_presets.find('option[value="monthly_weekday"]').text(`Monthly on the ${ordinal_suffix_of(edit_event_ui.data.month_week_num)} ${edit_event_ui.data.week_day_name}`);
+		this.condition_presets.find('option[value="annually_date"]').text(`Annually on the ${ordinal_suffix_of(edit_event_ui.data.day)} of ${edit_event_ui.data.timespan_name}`);
+		this.condition_presets.find('option[value="annually_month_weekday"]').text(`Annually on the ${ordinal_suffix_of(edit_event_ui.data.month_week_num)} ${edit_event_ui.data.week_day_name} in ${edit_event_ui.data.timespan_name}`);
+	},
+
+	update_every_nth_presets: function(){
+
+		var repeat_value = this.repeat_input.val()|0;
+
+		if(repeat_value < 0){
+			repeat_value = 'nth';
+		}
+
+		this.condition_presets.find('option[value="every_x_day"]').text(`Every ${ordinal_suffix_of(repeat_value)} day`);
+		this.condition_presets.find('option[value="every_x_weekday"]').text(`Every ${ordinal_suffix_of(repeat_value)} ${edit_event_ui.data.week_day_name}`);
+		this.condition_presets.find('option[value="every_x_monthly_date"]').text(`Every ${ordinal_suffix_of(repeat_value)} month on the ${ordinal_suffix_of(edit_event_ui.data.day)}`);
+		this.condition_presets.find('option[value="every_x_monthly_weekday"]').text(`Every ${ordinal_suffix_of(repeat_value)} month on the ${ordinal_suffix_of(edit_event_ui.data.month_week_num)} ${edit_event_ui.data.week_day_name}`);
+		this.condition_presets.find('option[value="every_x_annually_date"]').text(`Every ${ordinal_suffix_of(repeat_value)} year on the ${ordinal_suffix_of(edit_event_ui.data.day)} of ${edit_event_ui.data.timespan_name}`);
+		this.condition_presets.find('option[value="every_x_annually_weekday"]').text(`Every ${ordinal_suffix_of(repeat_value)} year on the ${ordinal_suffix_of(edit_event_ui.data.month_week_num)} ${edit_event_ui.data.week_day_name} in ${edit_event_ui.data.timespan_name}`);
+
+	},
+
+	add_preset_conditions: function(preset, repeats){
+
+		switch(preset){
+			case 'once':
+				var result = [
+					['Year', '0', [edit_event_ui.data.year]],
+					['&&'],
+					['Month', '0', [edit_event_ui.data.timespan_index]],
+					['&&'],
+					['Day', '0', [edit_event_ui.data.day]]
+				];
+				break;
+
+			case 'daily':
+				var result = [
+					['Epoch', '6', ["1", "0"]]
+				];
+				break;
+
+			case 'weekly':
+				var result = [
+					['Weekday', '0', [edit_event_ui.data.week_day]]
+				];
+				break;
+
+			case 'fortnightly':
+				var result = [
+					['Weekday', '0', [edit_event_ui.data.week_day]],
+					['&&'],
+					['Week', '13', [edit_event_ui.data.week_even ? '2' : '1', '0']]
+				];
+				break;
+
+			case 'monthly_date':
+				var result = [
+					['Day', '0', [edit_event_ui.data.day]],
+				];
+				break;
+
+			case 'annually_date':
+				var result = [
+					['Month', '0', [edit_event_ui.data.timespan_index]],
+					['&&'],
+					['Day', '0', [edit_event_ui.data.day]]
+				];
+				break;
+
+			case 'monthly_weekday':
+				var result = [
+					['Weekday', '0', [edit_event_ui.data.week_day]],
+					['&&'],
+					['Week', '0', [edit_event_ui.data.month_week_number]]
+				];
+				break;
+
+			case 'annually_month_weekday':
+				var result = [
+					['Month', '0', [edit_event_ui.data.timespan_index]],
+					['&&'],
+					['Weekday', '0', [edit_event_ui.data.week_day]],
+					['&&'],
+					['Week', '0', [edit_event_ui.data.month_week_number]]
+				];
+				break;
+
+			case 'every_x_day':
+				var result = [
+					['Epoch', '6', [repeats, (edit_event_ui.data.epoch+1)%repeats]]
+				];
+				break;
+
+			case 'every_x_weekday':
+				var result = [
+					['Weekday', '0', [edit_event_ui.data.week_day]],
+					['&&'],
+					['Week', '20', [repeats, (edit_event_ui.data.total_week_num+1)%repeats]]
+				];
+				break;
+
+			case 'every_x_monthly_date':
+				var result = [
+					['Day', '0', [edit_event_ui.data.day]],
+					['&&'],
+					['Month', '13', [repeats, (edit_event_ui.data.timespan_count+1)%repeats]]
+				];
+				break;
+
+			case 'every_x_monthly_weekday':
+				var result = [
+					['Weekday', '0', [edit_event_ui.data.week_day]],
+					['&&'],
+					['Week', '0', [edit_event_ui.data.month_week_number]],
+					['&&'],
+					['Month', '13', [repeats, (edit_event_ui.data.timespan_count+1)%repeats]]
+				];
+				break;
+
+			case 'every_x_annually_date':
+				var result = [
+					['Day', '0', [edit_event_ui.data.day]],
+					['&&'],
+					['Month', '0', [edit_event_ui.data.timespan_index]],
+					['&&'],
+					['Year', '6', [repeats, (edit_event_ui.data.year+1)%repeats]]
+				];
+				break;
+
+			case 'every_x_annually_weekday':
+				var result = [
+					['Weekday', '0', [edit_event_ui.data.week_day]],
+					['&&'],
+					['Week', '0', [edit_event_ui.data.month_week_number]],
+					['&&'],
+					['Month', '0', [edit_event_ui.data.timespan_index]],
+					['&&'],
+					['Year', '6', [repeats, (edit_event_ui.data.year+1)%repeats]]
+				];
+				break;
+
+			/*case 'moon_every':
+				var result = [
+					['Moons', '0', [edit_event_ui.data.moon_id, convert_to_granularity(edit_event_ui.data.moon_phase)]]
+				];
+				break;
+
+			case 'moon_monthly':
+				var result = [
+					['Moons', '0', [edit_event_ui.data.moon_id, convert_to_granularity(edit_event_ui.data.moon_phase)]],
+					['&&'],
+					['Moons', '7', [edit_event_ui.data.moon_id, convert_to_granularity(edit_event_ui.data.moon_phase_number)]]
+				];
+				break;
+
+			case 'moon_anually':
+				var result = [
+					['Moons', '0', [edit_event_ui.data.moon_id, convert_to_granularity(edit_event_ui.data.moon_phase)]],
+					['&&'],
+					['Moons', '7', [edit_event_ui.data.moon_id, edit_event_ui.data.moon_phase_number]],
+					['&&'],
+					['Month', '0', [edit_event_ui.data.timespan_index]]
+				];
+				break;
+
+			case 'multimoon_every':
+				var result = [];
+				for(var i = 0; i < edit_event_ui.data.moons.length; i++){
+					result.push(['Moons', '0', [i, convert_to_granularity(edit_event_ui.data.moons[i].moon_phase)]])
+					if(i != edit_event_ui.data.moons.length-1){
+						result.push(['&&']);
+					}
+				}
+				break;
+
+			case 'multimoon_anually':
+				var result = [];
+				result.push(['Month', '0', [edit_event_ui.data.timespan_index]]);
+				result.push(['&&']);
+				for(var i = 0; i < edit_event_ui.data.moons.length; i++){
+					result.push(['Moons', '0', [i, convert_to_granularity(edit_event_ui.data.moons[i].moon_phase)]])
+					if(i != edit_event_ui.data.moons.length-1){
+						result.push(['&&']);
+					}
+				}
+				break;*/
+		}
+
+		this.create_conditions(result, edit_event_ui.event_conditions_container);
+		this.evaluate_condition_selects(edit_event_ui.event_conditions_container);
 
 	},
 
@@ -677,6 +985,13 @@ var edit_event_ui = {
 						html.push("</option>");
 					}
 				html.push("</select>");
+				/*html.push("<select class='form-control form-control-sm event_select'>");
+					for(var i = 0; i < static_data.event_data.events.length; i++){
+						html.push(`<option value='${i}'>`);
+						html.push(static_data.event_data.events[i].name);
+						html.push("</option>");
+					}
+				html.push("</select>");*/
 				html.push("<select class='form-control form-control-sm condition_type'>");
 
 					var keys = Object.keys(condition_mapping);
@@ -846,19 +1161,21 @@ var show_event_ui = {
 
 		$(document).on('click', '.event:not(.event-text-output)', function(){
 
-			show_event_ui.set_current_event($(this).attr('event_id')|0)
+			if($(this).hasClass('era_event')){
+				var id = $(this).attr('era_id')|0;
+				show_event_ui.set_current_event(static_data.eras[id]);
+			}else{
+				var id = $(this).attr('event_id')|0;
+				show_event_ui.set_current_event(static_data.event_data.events[id]);
+			}
 
 		});
 
 	},
 
-	set_current_event: function(event_id){
+	set_current_event: function(event){
 
-		this.event_id = event_id;
-
-		var event = static_data.event_data.events[event_id];
-
-		this.event_name.text(event.name)
+		this.event_name.text(unescapeHtml(event.name));
 		
 		this.event_desc.html(event.description).toggleClass('hidden', event.description.length == 0);
 
@@ -867,8 +1184,6 @@ var show_event_ui = {
 	},
 
 	clear_ui: function(){
-
-		this.event_id = null;
 
 		this.event_name.text('');
 

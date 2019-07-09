@@ -1,11 +1,11 @@
 #loading_background{
-	display:flex;
+	display: flex;
 	flex-direction: column;
 	top:40px;
 }
 
 #loading_background img, #loading_background div{
-	display:inline-flex;
+	display: inline-flex;
 	align-self: center;
 	position:relative;
 	top:45vh;
@@ -158,7 +158,7 @@ div .button:hover{
 }
 
 body{
-	display:flex;
+	display: flex;
 	flex-direction: column;
 	min-height:100vh;
 }

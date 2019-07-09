@@ -37,10 +37,40 @@
 				</div>
 
 				<div class='detail-row'>
+
+					<label for="condition_presets">Condition presets:</label>
+					<select class="form-control" id="condition_presets">
+						<option value='none'>None</option>
+						<option value='once'>Happens once</option>
+						<option value='daily'>Daily</option>
+						<option value='weekly'>Weekly on Wednesday</option>
+						<option value='fortnightly'>Fortnightly on Wednesday</option>
+						<option value='monthly_date'>Monthly on this date</option>
+						<option value='monthly_weekday'>Monthly on the 1st Wednesday</option>
+						<option value='annually_date'>Annually on this date</option>
+						<option value='annually_month_weekday'>Annually on this date</option>
+						<option nth value='every_x_day'>Every x day</option>
+						<option nth value='every_x_weekday'>Every x Wednesday</option>
+						<option nth value='every_x_monthly_date'>Every x month on the 3rd</option>
+						<option nth value='every_x_monthly_weekday'>Every x month on the 3rd Wednesday</option>
+						<option nth value='every_x_annually_date'>Every x year on the 3rd of June</option>
+						<option nth value='every_x_annually_weekday'>Every x year on the 3rd Wednesday in June</option>
+					</select>
+
+				</div>
+
+				<div class='detail-row hidden'>
+					<input type='number' class='form-control' id='repeat_input' name='repeat_input' value='1' min='1' placeholder='Every nth' />
+				</div>
+
+				<div class='detail-row'>
 					<h5 class='event-form-heading'>Conditions:</h5>
-					<div class='detail-row'>
+					<div class='detail-row' id='non_preset_buttons'>
 						<button type='button' id='add_event_condition' class='btn btn-primary half'>Add condition</button>
 						<button type='button' id='add_event_condition_group' class='btn btn-primary half'>Add new group</button>
+					</div>
+					<div class='detail-row hidden' id='preset_buttons'>
+						<button type='button' id='add_event_preset' class='btn btn-info full'>Add condition preset</button>
 					</div>
 					<div class='detail-row'>
 

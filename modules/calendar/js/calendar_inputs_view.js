@@ -23,7 +23,7 @@ function set_up_view_inputs(){
 
 		var curr_year = $(this).val()|0;
 		
-		if(curr_year == 0){
+		if(curr_year == 0 && !static_data.settings.year_zero_exists){
 			if(dynamic_data.year < 0){
 				curr_year = 1;
 			}else if(dynamic_data.year > 0){
@@ -106,7 +106,7 @@ function set_up_view_inputs(){
 
 		var target = $(this).next();
 		var value = target.val()|0;
-		if(value == 1){
+		if(value == 1 && !static_data.settings.year_zero_exists){
 			value -= 2;
 		}else{
 			value -= 1;
@@ -176,7 +176,7 @@ function set_up_view_inputs(){
 
 		var target = $(this).prev();
 		var value = target.val()|0;
-		if(value == -1){
+		if(value == -1 && !static_data.settings.year_zero_exists){
 			value += 2;
 		}else{
 			value += 1;

@@ -4,7 +4,7 @@ header('Cache-Control: no-cache');
 
 $calendar_name = $calendar_data['calendar_name'];
 
-if(isset($_SESSION['user_id']) && $_SESSION['user_id'] == $calendar_data['owner']){
+if(isset($_SESSION['user_id']) && $calendar_data['owner'] || $_SESSION['permission'] == "Admin"){
 	$owner = "true";
 }else{
 	$owner = "false";
@@ -17,6 +17,8 @@ include('header.php');
 ?>
 
 <script>
+
+wizard = false;
 
 hash = getUrlParameter('id');
 
@@ -45,7 +47,25 @@ get_all_data(function(result){
 
 	link_data.master_hash = result.master_hash;
 
-	set_up_edit_inputs();
+	/*year = 0;
+
+	for(var i = 1; i <= 6; i++){
+
+
+		for(var j = 1; j <= 6; j++){
+
+			console.log(year+j)
+			console.log(evaluate_calendar_start(static_data, year+j).epoch);
+			console.log(evaluate_calendar_start(static_data, year+j+1).epoch);
+
+		}
+		console.log('-----------------')
+
+		year = (i*100)-4;
+
+	}*/
+
+	set_up_edit_inputs(true);
 	bind_calendar_events();
 	rebuild_calendar('calendar', dynamic_data);
 	

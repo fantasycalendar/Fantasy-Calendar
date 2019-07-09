@@ -34,7 +34,7 @@ elseif(isset($_GET['id']))
 	if(!empty($calendar_data))
 	{
 
-		$calendar_data['owner'] = $calendar_data['owner'] === 'true'? true: false;
+		$calendar_data['owner'] = $calendar_data['owner'] === 'true' ? true : false;
 
 		if($calendar_data['owner'] || (isset($_SESSION['permission']) && $_SESSION['permission'] === "Admin"))
 		{

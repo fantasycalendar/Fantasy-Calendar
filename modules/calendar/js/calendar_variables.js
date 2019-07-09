@@ -25,8 +25,8 @@ var condition_mapping = {
 		["Month is not",					[["timespan_index", "!=", 0]],		[["select"]]],
 		["Month is or later than",			[["timespan_index", ">=", 0]],		[["select"]]],
 		["Month is or earlier than",		[["timespan_index", "<=", 0]],		[["select"]]],
-		["Month is later than",				[["timespan_index", "}>", 0]],		[["select"]]],
-		["Month is earlier than",			[["timespan_index", "}<", 0]],		[["select"]]],
+		["Month is later than",				[["timespan_index", ">", 0]],		[["select"]]],
+		["Month is earlier than",			[["timespan_index", "<", 0]],		[["select"]]],
 		["Every nth specific month",		[["timespan_index", "==", 0],
 											 ["timespan_count", "%", 1, 2]],	[["select"], ["number", "nth", "Enter month interval", "1", "1"], ["number", "offset", "Enter offset for interval", "0"]]],
 		["Month number is exactly",			[["timespan_number", "==", 0]],		[["number", "Number", "Enter month number", "1"]]],
@@ -74,41 +74,40 @@ var condition_mapping = {
 		["Weekday is or earlier than", 			[["week_day", "<=", 0]],		[["select"]]],
 		["Weekday is later than", 				[["week_day", ">", 0]],			[["select"]]],
 		["Weekday is earlier than", 			[["week_day", "<", 0]],			[["select"]]],
-		["Every nth weekday",					[["week_day", "==", 0],
-												 ["week_day_num", "%", 1, 2]],	[["select"], ["number", "nth", "Enter week day number interval", "1", "1"], ["number", "offset", "Enter offset for interval", "0", "0"]]],
-		["Weekday number is exactly", 			[["week_day_num", "==", 0]],	[["number", "Number", "Enter week day number", "1", "1"]]],
-		["Weekday number is not", 				[["week_day_num", "!=", 0]],	[["number", "Number", "Enter week day number", "1", "1"]]],
-		["Weekday number is or later than", 	[["week_day_num", ">=", 0]],	[["number", "Number", "Enter week day number", "1", "1"]]],
-		["Weekday number is or earlier than", 	[["week_day_num", "<=", 0]],	[["number", "Number", "Enter week day number", "1", "1"]]],
-		["Weekday number is later than", 		[["week_day_num", ">", 0]],		[["number", "Number", "Enter week day number", "1", "1"]]],
-		["Weekday number is earlier than", 		[["week_day_num", "<", 0]],		[["number", "Number", "Enter week day number", "1", "1"]]],
+
+		["Weekday number is exactly", 			[["week_day", "==", 0]],		[["number", "Number", "Enter week day number", "1", "1"]]],
+		["Weekday number is not", 				[["week_day", "!=", 0]],		[["number", "Number", "Enter week day number", "1", "1"]]],
+		["Weekday number is or later than", 	[["week_day", ">=", 0]],		[["number", "Number", "Enter week day number", "1", "1"]]],
+		["Weekday number is or earlier than", 	[["week_day", "<=", 0]],		[["number", "Number", "Enter week day number", "1", "1"]]],
+		["Weekday number is later than", 		[["week_day", ">", 0]],			[["number", "Number", "Enter week day number", "1", "1"]]],
+		["Weekday number is earlier than", 		[["week_day", "<", 0]],			[["number", "Number", "Enter week day number", "1", "1"]]],
 
 		["Weekday name is exactly",				[["week_day_name", "==", 0]],		[["text", "Name", "Enter week day name"]]],
 		["Weekday name is not",					[["week_day_name", "!=", 0]],		[["text", "Name", "Enter week day name"]]]
 	],
 
 	"Week":[
-		["Month-week number is exactly", 			[["month_week_num", "==", 0]],	[["number", "Number", "Enter week number in month", "1", "1"]]],
-		["Month-week number is not", 				[["month_week_num", "!=", 0]],	[["number", "Number", "Enter week number in month", "1", "1"]]],
-		["Month-week number is or later than", 		[["month_week_num", ">=", 0]],	[["number", "Number", "Enter week number in month", "1", "1"]]],
-		["Month-week number is or earlier than", 	[["month_week_num", "<=", 0]],	[["number", "Number", "Enter week number in month", "1", "1"]]],
-		["Month-week number is later than", 		[["month_week_num", ">", 0]],	[["number", "Number", "Enter week number in month", "1", "1"]]],
-		["Month-week number is earlier than", 		[["month_week_num", "<", 0]],	[["number", "Number", "Enter week number in month", "1", "1"]]],
-		["Every nth month-week", 					[["month_week_num", "%", 0]],	[["number", "nth", "Enter week number in month interval", "1", "1"], ["number", "offset", "Enter offset for interval", "0", "0"]]],
-		["Year-week number is exactly", 			[["year_week_num", "==", 0]],	[["number", "Number", "Enter week number in year", "1", "1"]]],
-		["Year-week number is not", 				[["year_week_num", "!=", 0]],	[["number", "Number", "Enter week number in year", "1", "1"]]],
-		["Year-week number is or later than", 		[["year_week_num", ">=", 0]],	[["number", "Number", "Enter week number in year", "1", "1"]]],
-		["Year-week number is or earlier than", 	[["year_week_num", "<=", 0]],	[["number", "Number", "Enter week number in year", "1", "1"]]],
-		["Year-week number is later than", 			[["year_week_num", ">", 0]],	[["number", "Number", "Enter week number in year", "1", "1"]]],
-		["Year-week number is earlier than", 		[["year_week_num", "<", 0]],	[["number", "Number", "Enter week number in year", "1", "1"]]],
-		["Every nth year-week", 					[["year_week_num", "%", 0]],	[["number", "nth", "Enter week number in year interval", "1", "1"], ["number", "offset", "Enter offset for interval", "0", "0"]]],
-		["Total week number is exactly", 			[["total_week_num", "==", 0]],	[["number", "Number", "Enter overall week number", "1", "1"]]],
-		["Total week number is not", 				[["total_week_num", "!=", 0]],	[["number", "Number", "Enter overall week number", "1", "1"]]],
-		["Total week number is or later than", 		[["total_week_num", ">=", 0]],	[["number", "Number", "Enter overall week number", "1", "1"]]],
-		["Total week number is or earlier than", 	[["total_week_num", "<=", 0]],	[["number", "Number", "Enter overall week number", "1", "1"]]],
-		["Total week number is later than", 		[["total_week_num", ">", 0]],	[["number", "Number", "Enter overall week number", "1", "1"]]],
-		["Total week number is earlier than", 		[["total_week_num", "<", 0]],	[["number", "Number", "Enter overall week number", "1", "1"]]],
-		["Every nth total week", 					[["total_week_num", "%", 0]],	[["number", "nth", "Enter overall week number interval", "1", "1"], ["number", "offset", "Enter offset for interval", "0", "0"]]]
+		["Month-week number is exactly", 			[["month_week_num", "==", 0]],		[["number", "Number", "Enter week number in month", "1", "1"]]],
+		["Month-week number is not", 				[["month_week_num", "!=", 0]],		[["number", "Number", "Enter week number in month", "1", "1"]]],
+		["Month-week number is or later than", 		[["month_week_num", ">=", 0]],		[["number", "Number", "Enter week number in month", "1", "1"]]],
+		["Month-week number is or earlier than", 	[["month_week_num", "<=", 0]],		[["number", "Number", "Enter week number in month", "1", "1"]]],
+		["Month-week number is later than", 		[["month_week_num", ">", 0]],		[["number", "Number", "Enter week number in month", "1", "1"]]],
+		["Month-week number is earlier than", 		[["month_week_num", "<", 0]],		[["number", "Number", "Enter week number in month", "1", "1"]]],
+		["Every nth month-week", 					[["month_week_num", "%", 0, 1]],	[["number", "nth", "Enter week number in month interval", "1", "1"], ["number", "offset", "Enter offset for interval", "0", "0"]]],
+		["Year-week number is exactly", 			[["year_week_num", "==", 0]],		[["number", "Number", "Enter week number in year", "1", "1"]]],
+		["Year-week number is not", 				[["year_week_num", "!=", 0]],		[["number", "Number", "Enter week number in year", "1", "1"]]],
+		["Year-week number is or later than", 		[["year_week_num", ">=", 0]],		[["number", "Number", "Enter week number in year", "1", "1"]]],
+		["Year-week number is or earlier than", 	[["year_week_num", "<=", 0]],		[["number", "Number", "Enter week number in year", "1", "1"]]],
+		["Year-week number is later than", 			[["year_week_num", ">", 0]],		[["number", "Number", "Enter week number in year", "1", "1"]]],
+		["Year-week number is earlier than", 		[["year_week_num", "<", 0]],		[["number", "Number", "Enter week number in year", "1", "1"]]],
+		["Every nth year-week", 					[["year_week_num", "%", 0, 1]],		[["number", "nth", "Enter week number in year interval", "1", "1"], ["number", "offset", "Enter offset for interval", "0", "0"]]],
+		["Total week number is exactly", 			[["total_week_num", "==", 0]],		[["number", "Number", "Enter overall week number", "1", "1"]]],
+		["Total week number is not", 				[["total_week_num", "!=", 0]],		[["number", "Number", "Enter overall week number", "1", "1"]]],
+		["Total week number is or later than", 		[["total_week_num", ">=", 0]],		[["number", "Number", "Enter overall week number", "1", "1"]]],
+		["Total week number is or earlier than", 	[["total_week_num", "<=", 0]],		[["number", "Number", "Enter overall week number", "1", "1"]]],
+		["Total week number is later than", 		[["total_week_num", ">", 0]],		[["number", "Number", "Enter overall week number", "1", "1"]]],
+		["Total week number is earlier than", 		[["total_week_num", "<", 0]],		[["number", "Number", "Enter overall week number", "1", "1"]]],
+		["Every nth total week", 					[["total_week_num", "%", 0, 1]],	[["number", "nth", "Enter overall week number interval", "1", "1"], ["number", "offset", "Enter offset for interval", "0", "0"]]]
 	],
 
 	"Moons": [
@@ -174,7 +173,20 @@ var condition_mapping = {
 		["Season day is later than",				[["season_day", ">", 0]],		[["number", "Number", "Enter day in season", "1", "1"]]],
 		["Season day is earlier than",				[["season_day", "<", 0]],		[["number", "Number", "Enter day in season", "1", "1"]]],
 		["Every nth season day",					[["season_day", "%", 0, 1]],	[["number", "nth", "Enter day in season interval", "1", "1"], ["number", "offset", "Enter offset for interval", "0", "0"]]]
+	],
+
+	"Random": [
+		["Random chance is above", 		[["season_perc", ">", 0, 1]],		[["number", "(0-100%)", "Random chance", "", "0", "100"], ["number", "Seed", "Seed", Math.abs(Math.random().toString().substr(7)|0), "0"]]],
+		["Random chance is below", 		[["season_perc", "<", 0, 1]],		[["number", "(0-100%)", "Random chance", "", "0", "100"], ["number", "Seed", "Seed", Math.abs(Math.random().toString().substr(7)|0), "0"]]],
 	]
+	/*,
+
+	"Events": [
+		["Event is happening now", 			[["event", "==", 1]], [["select"]]],
+		["Event is not happening now", 		[["event", "!=", 1]], [["select"]]],
+		["Event has happened within", 		[["event", ">=", 1]], [["select"]]],
+		["Event is going to happen within",	[["event", "<=", 1]], [["select"]]]
+	]*/
 }
 
 var moon_phases = {
@@ -213,6 +225,33 @@ var moon_phases = {
 		'Waning Crescent Rising',
 		'Waning Crescent',
 		'New Moon Rising'
+	],
+
+	'24': [
+		'New Moon',
+		'New Moon Fading',
+		'Waxing Crescent Rising',
+		'Waxing Crescent',
+		'Waxing Crescent Fading',
+		'First Quarter Rising',
+		'First Quarter',
+		'First Quarter Fading',
+		'Waxing Gibbous Rising',
+		'Waxing Gibbous',
+		'Waxing Gibbous Fading',
+		'Full Moon Rising',
+		'Full Moon',
+		'Full Moon Fading',
+		'Waning Gibbous Rising',
+		'Waning Gibbous',
+		'Waning Gibbous Fading',
+		'Last Quarter Rising',
+		'Last Quarter',
+		'Last Quarter Fading',
+		'Waning Crescent Rising',
+		'Waning Crescent',
+		'Waning Crescent Fading',
+		'New Moon Rising',
 	],
 
 	'32': [

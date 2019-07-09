@@ -50,6 +50,7 @@ function update_name(){
 		proccessData: false,
 		data: {action: 'update_name', name: calendar_name, hash: hash},
 		success: function( result ){
+			prev_calendar_name = calendar_name;
 			evaluate_save_button();
 		},
 		error: function ( log )
@@ -112,11 +113,13 @@ function update_all(){
 
 		var new_static_change = new Date(output.last_static_change)
 
-		if(new_static_change > last_static_change){
+		if(last_static_change > new_static_change){
 
 			if(!confirm('The calendar was updated before you saved. Do you want to override your last changes?')){
 				return;
 			}
+
+			last_static_change = new_static_change;
 
 		}
 

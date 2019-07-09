@@ -4,7 +4,7 @@ header('Cache-Control: no-cache');
 
 $calendar_name = $calendar_data['calendar_name'];
 
-if(isset($_SESSION['user_id']) && $_SESSION['user_id'] == $calendar_data['owner']){
+if(isset($_SESSION['user_id']) && $calendar_data['owner'] || $_SESSION['permission'] == "Admin"){
 	$owner = "true";
 }else{
 	$owner = "false";
@@ -17,6 +17,8 @@ include('header.php');
 ?>
 
 <script>
+
+wizard = false;
 
 hash = getUrlParameter('id');
 

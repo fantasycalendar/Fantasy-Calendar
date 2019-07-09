@@ -136,7 +136,7 @@ var eras = {
 
 					var era = static_data.eras[i];
 
-					if(era.date.epoch > this.start_epoch && era.date.epoch <= this.end_epoch){
+					if(era.date.epoch >= this.start_epoch && era.date.epoch < this.end_epoch){
 						this.current_eras.push({
 							"id": i,
 							"position": 0,
@@ -146,7 +146,7 @@ var eras = {
 						if(era.date.epoch < this.start_epoch){
 							this.current_eras.push({
 								"id": i,
-								"position": 0,
+								"position": -1000,
 								"data": era
 							});
 							break;
@@ -190,7 +190,7 @@ var eras = {
 
 			for(var i = 0; i < eras.current_eras.length; i++){
 				if($(`[epoch=${eras.current_eras[i].data.date.epoch}]`).length){
-					eras.current_eras[i].position = position + $(`[epoch=${eras.current_eras[i].data.date.epoch}]`).offset().top - 175;
+					eras.current_eras[i].position = eras.current_eras[i].position + position + $(`[epoch=${eras.current_eras[i].data.date.epoch}]`).offset().top - 175;
 				}
 			}
 
@@ -280,23 +280,26 @@ var eras = {
 
 				var current_era = static_data.eras[era_index];
 
-				var parent = $(`.timespan_day[epoch='${current_era.date.epoch}'] .event_container`);
+				if(current_era.settings.show_as_event){
 
-				if(parent !== undefined){
+					var parent = $(`.timespan_day[epoch='${current_era.date.epoch}'] .event_container`);
 
-					var event_group = '';
-					var category = '';
+					if(parent !== undefined){
 
-					if(current_era.settings.event_category && current_era.settings.event_category > -1){
-						var category = static_data.event_data.categories[current_era.settings.event_category];
-						event_group = category.color ? " " + category.color : "";
-						event_group += category.text ? " " + category.text : "";
+						var event_group = '';
+						var category = '';
+
+						if(current_era.settings.event_category && current_era.settings.event_category > -1){
+							var category = static_data.event_data.categories[current_era.settings.event_category];
+							event_group = category.color ? " " + category.color : "";
+							event_group += category.text ? " " + category.text : "";
+						}
+
+						var html = `<div class='event era_event ${event_group}' era_id='${era_index}' category='${category.name}'>${current_era.name}</div>`;
+
+						parent.append(html);
+						
 					}
-
-					var html = `<div class='event era_event ${event_group}' era_id='${era_index}' category='${category.name}'>${current_era.name}</div>`;
-
-					parent.append(html);
-					
 				}
 			}
 		}
@@ -491,7 +494,7 @@ var calendar_layouts = {
 
 			if(timespan.type === 'month'){
 
-				filtered_leap_days_beforestart = timespan.leap_days.filter(function(features){
+				var filtered_leap_days_beforestart = timespan.leap_days.filter(function(features){
 					return features.intercalary && features.day === 0;
 				});
 

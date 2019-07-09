@@ -120,9 +120,13 @@ var climate_generator = {
 
 		}
 
-		this.data.last_season = (this.data.seasons.length-1) % this.data.last_point;
+		if(this.data.last_point == 0){
+			this.data.last_season = 0;
+		}else{
+			this.data.last_season = (this.data.seasons.length-1) % this.data.last_point;
+		}
 
-		this.data.season_day = Math.floor(this.data.season_epoch % (this.static_data.seasons.data[this.data.last_season].transition_length+this.static_data.seasons.data[this.data.last_season].duration));
+		this.data.season_day = Math.round(this.data.season_epoch % (this.static_data.seasons.data[this.data.last_season].transition_length+this.static_data.seasons.data[this.data.last_season].duration));
 
 		this.weather = clone(this.data);
 

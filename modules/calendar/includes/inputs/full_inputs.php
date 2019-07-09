@@ -68,7 +68,9 @@
 			<?php
 			if(!empty($_SESSION['user_id'])){
 			?>
-				<button type='button' id='btn_create' class='btn btn-lg btn-primary btn-block'>Save</button>
+
+				<button type="button" disabled id='btn_create' class='btn btn-lg btn-primary btn-block'>No changes to save</button>
+
 			<?php
 			} else {
 			?>
@@ -76,26 +78,23 @@
 			<?php
 			}
 			?>
-			
-			<button id='btn_clear' type='button' class='btn btn-sm btn-danger btn-block'>Clear</button>
 
-			<select id='presets'>
-				<option val=''>Presets</option>
-				<option val='Custom'>Custom JSON</option>
-				<option val='Earth'>Earth</option>
-				<option val='Tal\'Dorei'>Tal'Dorei</option>
-				<option val='Eberron'>Eberron</option>
-				<option val='Golarion'>Golarion</option>
-				<option val='Greyhawk'>Greyhawk</option>
-				<option val='Forgotten Realms'>Forgotten Realms</option>
-			</select>
-			
-			<button id='json_apply' type='button' class='btn btn-warning btn-sm' >Apply</button>
+			<div id='preset_container'>
 
-			<div id='json_container'>
-				<p>JSON input:</p>
-				<textarea id='json_input'></textarea>
+				<select class='form-control' id='presets'>
+					<option>Presets</option>
+					<option>Custom JSON</option>
+				</select>
+				
+				<button id='json_apply' disabled type='button' class='btn btn-warning btn-sm' >Apply</button>
+
 			</div>
+
+			<div class='hidden' id='json_container'>
+				<div>JSON input:</div>
+				<textarea class='form-control' id='json_input'></textarea>
+			</div>
+
 		</div>
 
 	<?php
@@ -390,17 +389,16 @@
 
 			<div class='detail-text bold-text'>First week day:</div>
 
-			<select class='form-control static_input' id='first_day' data='year_data' key='first_day'></select>
+			<select type='number' class='form-control static_input' id='first_day' data='year_data' key='first_day'></select>
 
 			<div class='separator'></div>
 
 			<div class='form-inline global_week'>
 				<input type='text' class='form-control name' placeholder='Weekday name'>
-				<input type='button' value='Add' class='btn btn-primary add'>
+				<button type='button' class='btn btn-primary add'>Add</button>
 			</div>
 
-			<div class='sortable' id='global_week_sortable'>
-			</div>
+			<div class='sortable' id='global_week_sortable'></div>
 
 		</div>
 
@@ -415,13 +413,13 @@
 	<div class='wrap-collapsible'>
 
 		<input id="collapsible_timespans" class="toggle" type="checkbox">
-		<label for="collapsible_timespans" class="lbl-toggle lbl-text">Months & Intercalaries <a target="_blank" title='Fantasy Calendar Wiki: Months & Intercalaries' href='https://wiki.fantasy-calendar.com/index.php?title=Months_intercalaries' class="wiki"><i class="icon-question-sign"></i></a></label>
+		<label for="collapsible_timespans" class="lbl-toggle lbl-text">Months & Intercalaries <a target="_blank" title='Fantasy Calendar Wiki: Months & Intercalaries' href='https://wiki.fantasy-calendar.com/index.php?title=Months_%26_Intercalaries' class="wiki"><i class="icon-question-sign"></i></a></label>
 		<div class="collapsible-content">
 
 			<div class='detail-text bold-text big-text'>Settings:</div>
 
 			<div class='detail-row center-text hidden' id='overflow_explanation'>
-				This calendar has a custom week in some months, this will disable overflows	between months, because it makes no sense for two weeks that do not go together to overflow into each other. Sorry.
+				This calendar has a custom week in some months or a leap day is adding a week-day, this will disable overflows between months, because it makes no sense for two weeks that do not go together to overflow into each other. Sorry.
 			</div>
 
 			<div class='detail-row'>
@@ -447,11 +445,10 @@
 					<option value='intercalary'>Intercalary</option>
 				</select>
 
-				<input type='button' value='Add' class='btn btn-primary add'>
+				<button type='button' class='btn btn-primary add'>Add</button>
 			</div>
 
-			<div class='sortable' id='timespan_sortable'>
-			</div>
+			<div class='sortable' id='timespan_sortable'></div>
 
 		</div>
 
@@ -483,18 +480,38 @@
 					<option value='intercalary'>Intercalary</option>
 				</select>
 
-				<input type='button' value='Add' class='btn btn-primary add'>
+				<button type='button' class='btn btn-primary add'>Add</button>
 			</div>
 
-			<div class='sortable' id='leap_day_list'>
-			</div>
+			<div class='sortable' id='leap_day_list'></div>
 
 		</div>
 		<div class='separator'></div>
 	</div>
 
 
-	
+
+	<!---------------------------------------------->
+	<!---------- Observational Adjustments --------->
+	<!---------------------------------------------->
+	<!--
+	<div class='wrap-collapsible'>
+		<input id="collapsible_observationaladjustments" class="toggle" type="checkbox">
+		<label for="collapsible_observationaladjustments" class="lbl-toggle lbl-text">Observational Adjustments <a target="_blank" title='Fantasy Calendar Wiki: Observational Adjustments' href='https://wiki.fantasy-calendar.com/index.php?title=Observational_Adjustments' class="wiki"><i class="icon-question-sign"></i></a></label>
+		<div class="collapsible-content">
+
+			<div class='form-inline observational'>
+
+				<button type='button' class='btn btn-primary add'>Add</button>
+
+			</div>
+
+			<div class='sortable' id='observational_list'></div>
+
+		</div>
+		<div class='separator'></div>
+	</div>
+	-->
 
 	<!---------------------------------------------->
 	<!------------------- MOONS -------------------->
@@ -506,12 +523,11 @@
 		<div class="collapsible-content">
 			<div class='form-inline moon'>
 				<input type='text' class='form-control name' placeholder='Moon name'>
-				<input type='button' value='Add' class='btn btn-primary add'>
+				<button type='button' class='btn btn-primary add'>Add</button>
 				<input type='number' class='form-control cycle' min='1' placeholder='Cycle'>
 				<input type='number' class='form-control shift' placeholder='Shift'>
 			</div>
-			<div class='sortable' id='moon_list'>
-			</div>
+			<div class='sortable' id='moon_list'></div>
 		</div>
 		<div class='separator'></div>
 	</div>
@@ -593,7 +609,7 @@
 								<option selected value='metric'>Metric</option>
 								<option value='imperial'>Imperial</option>
 								<option value='both_m'>Both (inputs metric)</option>
-								<option value='both_i'>Both (inputs imperical)</option>
+								<option value='both_i'>Both (inputs imperial)</option>
 							</select>
 						</div>
 					</div>
@@ -713,11 +729,10 @@
 
 			<div class='form-inline eras'>
 				<input type='text' class='form-control name' placeholder='Era name'>
-				<input type='button' value='Add' class='btn btn-primary add'>
+				<button type='button' class='btn btn-primary add'>Add</button>
 			</div>
 
-			<div class='sortable' id='era_list'>
-			</div>
+			<div class='sortable' id='era_list'></div>
 
 			<input type='button' value='Reorder based on date' id='reorder_eras' class='btn btn-primary full hidden'>
 
@@ -735,11 +750,10 @@
 		<div class="collapsible-content">
 			<div class='form-inline event_categories'>
 				<input type='text' class='form-control name' placeholder='Event category name'>
-				<input type='button' value='Add' class='btn btn-primary add'>
+				<button type='button' class='btn btn-primary add'>Add</button>
 			</div>
 
-			<div class='sortable' id='event_category_list'>
-			</div>
+			<div class='sortable' id='event_category_list'></div>
 		</div>
 		<div class='separator'></div>
 	</div>
@@ -756,11 +770,10 @@
 
 			<div class='form-inline events'>
 				<input type='text' class='form-control name' placeholder='Event name'>
-				<input type='button' value='Add' class='btn btn-primary add'>
+				<button type='button' class='btn btn-primary add'>Add</button>
 			</div>
 
-			<div class='sortable' id='events_list'>
-			</div>
+			<div class='sortable' id='events_list'></div>
 		</div>
 		<div class='separator'></div>
 	</div>
@@ -891,7 +904,7 @@
 
 				<!------------------------------------------------------->
 
-				<div class='bold-text'>Event Settings:</div>
+				<div class='bold-text'>Display Settings:</div>
 
 				<label class="form-control full setting first">
 					<input type='checkbox' class='margin-right static_input' refresh='false' data='settings' key='add_month_number' onclick="setTimeout(calendar_layouts.add_month_number, 0);"> 
@@ -901,13 +914,22 @@
 					<a target="_blank" title='' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
 				</label>
 
-				<label class="form-control full setting last">
+				<label class="form-control full setting">
 					<input type='checkbox' class='margin-right static_input' refresh='false' data='settings' key='add_year_day_number' onclick="setTimeout(calendar_layouts.add_year_day_number, 0);"> 
 					<span>
 						Add year day to each day
 					</span>
 					<a target="_blank" title='' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
 				</label>
+
+				<label class="form-control full setting last">
+					<input type='checkbox' class='margin-right static_input' refresh='false' data='settings' key='year_zero_exists'> 
+					<span>
+						Year zero exists
+					</span>
+					<a target="_blank" title='' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
+				</label>
+
 			</div>
 		</div>
 		<div class='separator'></div>

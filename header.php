@@ -73,6 +73,7 @@ $jsversion = "2.0";
     	<script src="modules/calendar/js/calendar_inputs_view.js"></script>
     	<script src="modules/calendar/js/calendar_inputs_edit.js"></script>
     	<script src="modules/calendar/js/calendar_manager.js"></script>
+    	<script src="modules/calendar/js/calendar_presets.js"></script>
 
 		<link rel="stylesheet" href="css/calendar_input_style.css">
 		<link rel="stylesheet" href="css/calendar_styles.css">

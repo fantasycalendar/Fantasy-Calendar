@@ -244,6 +244,20 @@ function lcm(x, y){
 	return (!x || !y) ? 0 : Math.abs((x * y) / gcd(x, y));
 }
 
+function get_moon_granularity(cycle){
+	if(cycle >= 32){
+		return 32;
+	}else if(cycle >= 24){
+		return 24;
+	}else if(cycle >= 16){
+		return 16;
+	}else if(cycle >= 8){
+		return 8;
+	}else{
+		return 4;
+	}
+}
+
 function get_cycle(year){
 
 	var text = '';
@@ -295,14 +309,18 @@ function does_leap_day_appear(static_data, year, timespan, leap_day){
 
 }
 
-function convert_year(year){
-	return year > 0 ? year-1 : year;
+function convert_year(static_data, year){
+	if(static_data.settings.year_zero_exists){
+		return year;
+	}else{
+		return year > 0 ? year-1 : year;
+	}
 }
 
 
 function get_days_in_timespan(static_data, year, timespan_index, exclusive){
 
-	var timespan = static_data.year_data.timespans[timespan_index];
+	var timespan = clone(static_data.year_data.timespans[timespan_index]);
 
 	if(!timespan) return [];
 
@@ -318,7 +336,7 @@ function get_days_in_timespan(static_data, year, timespan_index, exclusive){
 
 	var offset = 0;
 
-	var leap_days = clone(static_data.year_data.leap_days.sort((a, b) => (a.day > b.day) ? 1 : -1))
+	var leap_days = clone(static_data.year_data.leap_days).sort((a, b) => (a.day > b.day) ? 1 : -1);
 
 	for(var leap_day_index = 0; leap_day_index < leap_days.length; leap_day_index++){
 
@@ -406,7 +424,7 @@ function does_timespan_appear(static_data, year, timespan){
 
 		var era = static_data.eras[era_index];
 
-		if(era.settings.ends_year && year == convert_year(era.date.year)-1){
+		if(era.settings.ends_year && year == convert_year(static_data, era.date.year)-1){
 
 			if(timespan > era.date.timespan){
 
@@ -448,7 +466,7 @@ function does_day_appear(static_data, year, timespan, day){
 
 		var era = static_data.eras[era_index];
 
-		if(era.settings.ends_year && year == convert_year(era.date.year)-1 && timespan == era.date.timespan && day > era.date.day){
+		if(era.settings.ends_year && year == convert_year(static_data, era.date.year)-1 && timespan == era.date.timespan && day > era.date.day){
 
 			return {
 				result: false,
@@ -478,7 +496,11 @@ function fract_year_length(static_data){
 
 		var leap_day = static_data.year_data.leap_days[i];
 
-		length += get_leap_fraction(1, leap_day.interval, 0)
+		if(leap_day.removes_day){
+			length -= get_leap_fraction(1, leap_day.interval, 0, false)
+		}else{
+			length += get_leap_fraction(1, leap_day.interval, 0, false)
+		}
 		
 	}
 
@@ -487,7 +509,7 @@ function fract_year_length(static_data){
 }
 
 
-function avg_month_length(static_Data){
+function avg_month_length(static_data){
 
 	var length = 0;
 	var num_months = 0;
@@ -506,7 +528,11 @@ function avg_month_length(static_Data){
 
 		var leap_day = static_data.year_data.leap_days[i];
 
-		length += get_leap_fraction(1, leap_day.interval, 0)
+		if(leap_day.removes_day){
+			length -= get_leap_fraction(1, leap_day.interval, 0)
+		}else{
+			length += get_leap_fraction(1, leap_day.interval, 0)
+		}
 	}
 
 	return precisionRound(length/num_months, 10);
@@ -751,63 +777,55 @@ function is_leap(year, intervals, offsets){
 }
 
 
-function get_leap_fraction(year, intervals, offsets){
+function get_leap_fraction(year, intervals, offsets, floor){
 
 	// The intervals parameter is a string with numbers seperated by commas, usually in the format of:
-	// +400,+!100,4
+	// 400,!100,4
 	// Every fourth, except if divisible by 100, disregarding the previous rule every 400th year
 	intervals = intervals.split(',').reverse();
+		
+	var base_interval = intervals[0]|0;
 
-	// If there's only one interval, we can calculate that without looping through each part
+	var offset = (base_interval-offsets)%base_interval;
+
+	if(floor){
+		var fraction = Math.floor((year+offset) / base_interval);
+	}else{
+		var fraction = (year+offset) / base_interval;
+	}
+
 	if(intervals.length == 1){
-
-		var interval = intervals[0]|0;
-
-		var offset = (interval-offsets)%interval;
-
-		return (year+offset) / interval;
+		return fraction;
 	}
 
 	// Get the base fraction, which we will add to or subtract based on its following rules
-	var base_interval = intervals[0]|0;
-	var offset = (base_interval-offsets)%base_interval;
-	var fraction = (year+offset) / base_interval;
-
 	for(var i = 1; i < intervals.length; i++){
 
 		var interval = intervals[i];
-		var offset = offsets;
 
 		// If it is a negator, subtract it from the total
 		if(interval.includes('!')){
 
-			// That ignores offset or respects offset
-			if(interval.includes('+')){
-				var interval = interval.slice(2)|0;
-				offset = 0;
-			}else{
-				var interval = interval.slice(1)|0;
-				offset = (interval-offset)%interval;
-			}
+			var interval = interval.slice(1)|0;
+			offset = (interval-offsets)%interval;
 
-			fraction -= (year+offset) / lcm(interval, base_interval);
+			if(floor){
+				fraction -= Math.floor((year+offset) / lcm(base_interval, interval));
+			}else{
+				fraction -= (year+offset) / lcm(base_interval, interval);
+			}
 
 		// If it is inclusive
 		}else{
 
-			// That ignores or respects the offset
-			if(interval.includes('+')){
-				var interval = interval.slice(1)|0;
-				offset = 0;
+			var interval = interval|0;
+			offset = (interval-offsets)%interval;
+
+			if(floor){
+				fraction += Math.floor((year+offset) / lcm(base_interval, interval));
 			}else{
-				var interval = interval|0;
-				offset = (interval-offset)%interval;
+				fraction += (year+offset) / lcm(base_interval, interval);
 			}
-
-			fraction += (year+offset) / interval;
-
-			// We subtract because of intersections, eg every 3rd year and every 10 years would intersect on 30, so we need to subtract then.
-			fraction -= (year+offset) / lcm(interval, base_interval);
 
 		}
 
@@ -879,12 +897,16 @@ function get_epoch(static_data, year, month, day, inclusive){
 			added_leap_day = 0;
 
 			if(month_index === leap_day.timespan){
-				
-				added_leap_day = Math.floor(get_leap_fraction(timespan_fraction, leap_day.interval, leap_day.offset));
+
+				added_leap_day = get_leap_fraction(timespan_fraction, leap_day.interval, leap_day.offset, true);
 
 				// If we have leap days days that are intercalary (eg, do not affect the flow of the static_data, add them to the overall epoch, but remove them from the start of the year week day selection)
 				if(leap_day.intercalary){
 					intercalary += added_leap_day;
+				}
+
+				if(leap_day.removes_day){
+					added_leap_day = added_leap_day * -1;
 				}
 
 			}
@@ -896,7 +918,6 @@ function get_epoch(static_data, year, month, day, inclusive){
 	}
 
 	epoch += day;
-
 
 	if(static_data.year_data.overflow){
 		total_week_num += Math.floor((epoch-intercalary)/static_data.year_data.global_week.length);
@@ -910,26 +931,34 @@ function get_epoch(static_data, year, month, day, inclusive){
 function evaluate_calendar_start(static_data, year, month, day){
 
 	//Initiatlize variables
-	var era_year = year >= 0 ? year+1 : year;
-	var month = !isNaN(month) ? month : 0;
-	var day = !isNaN(day) ? day-1 : 0;
-	tmp = get_epoch(static_data, (year|0), (month|0), (day|0));
+	var year = (year|0);
+	var month = !isNaN(month) ? (month|0) : 0;
+	var day = !isNaN(day) ? (day|0) : 0;
+
+	if(static_data.settings.year_zero_exists){
+		var era_year = year;
+	}else{
+		var era_year = year >= 0 ? year+1 : year;
+	}
+	
+	tmp = get_epoch(static_data, year, month, day);
 	var epoch = tmp[0];
 	var intercalary = tmp[1];
 	var count_timespans = tmp[2];
 	var num_timespans = tmp[3];
 	var total_week_num = tmp[4];
-	var week_day = static_data.year_data.first_day;
 
 	// For each era, check if they end the year, subtract the remaining days of that year from the epoch total so we can get proper start of the year
 	for(var era_index = 0; era_index < static_data.eras.length; era_index++){
 
 		var era = static_data.eras[era_index];
 
-		if(era.settings.ends_year && year > convert_year(era.date.year)){
+		era.date.era_year = era.date.year;
 
-			era_epoch = get_epoch(static_data, convert_year(era.date.year), era.date.timespan, era.date.day);
-			normal_epoch_during_era = get_epoch(static_data, convert_year(era.date.year)+1);
+		if(era.settings.ends_year && year > convert_year(static_data, era.date.year)){
+
+			era_epoch = get_epoch(static_data, convert_year(static_data, era.date.year), era.date.timespan, era.date.day);
+			normal_epoch_during_era = get_epoch(static_data, convert_year(static_data, era.date.year)+1);
 
 			epoch -= (normal_epoch_during_era[0] - era_epoch[0]);
 
@@ -943,15 +972,21 @@ function evaluate_calendar_start(static_data, year, month, day){
 
 		}
 
-		if(era.settings.restart && year > convert_year(era.date.year)){
+		if(era.settings.restart && year > convert_year(static_data, era.date.year)){
 
-			if(era.date.year < 0){
-				era_year = era_year + era.date.year;
-			}else if(era.date.year > 0){
-				era_year = era_year - era.date.year;
+			for(var i = 0; i < era_index; i++){
+
+				var prev_era = static_data.eras[i];
+
+				if(prev_era.settings.restart){
+
+					era.date.era_year -= prev_era.date.era_year;
+
+				}
+
 			}
 
-			if(era_year == 0) era_year = 1;
+			era_year = era_year - era.date.era_year;
 
 		}
 
@@ -960,13 +995,16 @@ function evaluate_calendar_start(static_data, year, month, day){
 
 	// Calculate the start of week
 	if(static_data.year_data.overflow){
-		week_day = (epoch-intercalary+static_data.year_data.first_day-1) % static_data.year_data.global_week.length;
-		if (week_day < 0) week_day += static_data.year_data.global_week.length;
-		week_day += 1;
-	}else{
-		week_day = 1;
-	}
 
+		var week_day = (epoch-intercalary+(Number(static_data.year_data.first_day)-1)) % static_data.year_data.global_week.length;
+
+		if (week_day < 0) week_day += static_data.year_data.global_week.length-1;
+
+		week_day += 1;
+
+	}else{
+		var week_day = 1;
+	}
 
 	return {"epoch": epoch,
 			"era_year": era_year,
@@ -985,7 +1023,7 @@ function has_year_ending_era(static_data, year){
 
 		var era = static_data.eras[era_index];
 
-		if(era.settings.ends_year && year == convert_year(era.date.year)){
+		if(era.settings.ends_year && year == convert_year(static_data, era.date.year)){
 
 			return true;
 
@@ -996,3 +1034,5 @@ function has_year_ending_era(static_data, year){
 	return false;
 
 }
+
+

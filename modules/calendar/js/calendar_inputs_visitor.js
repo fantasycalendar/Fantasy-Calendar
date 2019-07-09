@@ -80,7 +80,7 @@ function set_up_visitor_inputs(){
 
 		var target = $(this).next();
 		var value = target.val()|0;
-		if(value == 1){
+		if(value == 1 && !static_data.settings.year_zero_exists){
 			value -= 2;
 		}else{
 			value -= 1;
@@ -148,7 +148,7 @@ function set_up_visitor_inputs(){
 
 		var target = $(this).prev();
 		var value = target.val()|0;
-		if(value == -1){
+		if(value == -1 && !static_data.settings.year_zero_exists){
 			value += 2;
 		}else{
 			value += 1;
@@ -181,7 +181,7 @@ function set_up_visitor_inputs(){
 
 		var tar_year = $(this).val()|0;
 		
-		if(tar_year == 0){
+		if(tar_year == 0 && !static_data.settings.year_zero_exists){
 			if(preview_date.year < 0){
 				tar_year = 1;
 			}else if(preview_date.year > 0){
@@ -371,11 +371,13 @@ function rotate_element(element, rotation){
 	element.css('transform', 'rotate('+rotation+'deg)');
 }
 
-function repopulate_timespan_select(select, val){
+function repopulate_timespan_select(select, val, change){
+
+	change = change === undefined ? true : change;
 
 	select.each(function(){
 
-		var year = convert_year($(this).closest('.date_control').find('.year-input').val()|0);
+		var year = convert_year(static_data, $(this).closest('.date_control').find('.year-input').val()|0);
 
 		var html = [];
 		for(var i = 0; i < static_data.year_data.timespans.length; i++){
@@ -401,24 +403,26 @@ function repopulate_timespan_select(select, val){
 			}
 			$(this).val(i);
 		}
-		$(this).change();
-
+		if(change){
+			$(this).change();
+		}
 	});
 
 
 }
 
-function repopulate_day_select(select, val){
+function repopulate_day_select(select, val, change){
+
+	var change = change === undefined ? true : change;
 
 	select.each(function(){
-	
-		var year = convert_year($(this).closest('.date_control').find('.year-input').val()|0);
+
+		var year = convert_year(static_data, $(this).closest('.date_control').find('.year-input').val()|0);
 		var timespan = $(this).closest('.date_control').find('.timespan-list').val()|0;
 
 		var days = get_days_in_timespan(static_data, year, timespan, !$(this).hasClass('inclusive'));
 
 		var html = [];
-
 		
 		if($(this).hasClass('inclusive')){
 			html.push(`<option value="${0}">Before 1</option>`);
@@ -448,7 +452,9 @@ function repopulate_day_select(select, val){
 			}
 			$(this).val(i+1);
 		}
-		$(this).change();
+		if(change){
+			$(this).change();
+		}
 
 	});
 	
