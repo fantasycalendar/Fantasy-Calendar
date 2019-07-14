@@ -636,55 +636,55 @@ function set_up_edit_inputs(set_up){
 
 		switch(type){
 			case "timespan_sortable":
-				$(this).closest('.sortable-container').parent().remove();
-				$(this).closest('.sortable-container').parent().parent().refresh();
+				$(this).closest('.sortable-container').remove();
+				$(this).closest('.sortable-container').parent().sortable('refresh');
 				reindex_timespan_sortable();
 				recalc_stats();
 				break;
 
 			case "global_week_sortable":
-				$(this).closest('.sortable-container').parent().remove();
-				$(this).closest('.sortable-container').parent().parent().refresh();
+				$(this).closest('.sortable-container').remove();
+				$(this).closest('.sortable-container').parent().sortable('refresh');
 				reindex_weekday_sortable();
 				break;
 
 			case "season_sortable":
-				$(this).closest('.sortable-container').parent().remove();
-				$(this).closest('.sortable-container').parent().parent().refresh();
+				$(this).closest('.sortable-container').remove();
+				$(this).closest('.sortable-container').parent().sortable('refresh');
 				type = 'seasons';
 				reindex_season_sortable(key);
 				reindex_location_list();
 				break;
 
 			case "location_list":
-				$(this).closest('.sortable-container').parent().remove();
-				$(this).closest('.sortable-container').parent().parent().refresh();
+				$(this).closest('.sortable-container').remove();
+				$(this).closest('.sortable-container').parent().sortable('refresh');
 				type = 'seasons';
 				reindex_location_list();
 				repopulate_location_select_list();
 				break;
 
 			case "cycle_sortable":
-				$(this).closest('.sortable-container').parent().remove();
-				$(this).closest('.sortable-container').parent().parent().refresh();
+				$(this).closest('.sortable-container').remove();
+				$(this).closest('.sortable-container').parent().sortable('refresh');
 				reindex_cycle_sortable();
 				break;
 
 			case "moon_list":
-				$(this).closest('.sortable-container').parent().remove();
-				$(this).closest('.sortable-container').parent().parent().refresh();
+				$(this).closest('.sortable-container').remove();
+				$(this).closest('.sortable-container').parent().sortable('refresh');
 				reindex_moon_list();
 				break;
 
 			case "era_list":
-				$(this).closest('.sortable-container').parent().remove();
-				$(this).closest('.sortable-container').parent().parent().refresh();
+				$(this).closest('.sortable-container').remove();
+				$(this).closest('.sortable-container').parent().sortable('refresh');
 				reindex_era_list();
 				break;
 
 			case "event_category_list":
-				$(this).closest('.sortable-container').parent().remove();
-				$(this).closest('.sortable-container').parent().parent().refresh();
+				$(this).closest('.sortable-container').remove();
+				$(this).closest('.sortable-container').parent().sortable('refresh');
 
 				for(var i = 0; i < static_data.event_data.events.length; i++){
 					if(static_data.event_data.events[i].category == key){
@@ -711,52 +711,70 @@ function set_up_edit_inputs(set_up){
 						warnings.push(i);
 					}
 				}
-				var html = [];
-				html.push(`<h4>You are deleting "${static_data.event_data.events[key].name}" which referenced in the following events:</h4>`)
-				for(var i = 0; i < warnings.length; i++){
-					var event_id = warnings[i];
-					html.push(`<h6>"${static_data.event_data.events[event_id].name}" event:</h6>`);
-					html.push(`<select class="form-control event_list" delete="${key}" event="${event_id}">`);
-					html.push('<option value="-1">Delete conditions with this event</option>');
-					for(var j = 0; j < static_data.event_data.events.length; j++){
-						html.push('<option');
-						if(j == key){
-							html.push(` disabled>${static_data.event_data.events[j].name} (to be deleted)`);
-						}else if(j == event_id){
-							html.push(` disabled>${static_data.event_data.events[j].name} (this event)`);
-						}else{
-							if(check_event_chain(event_id, j)){
-								if(j > key){
-									html.push(` value="${j-1}">Replace with: ${static_data.event_data.events[j].name}`);
-								}else if(j < key){
-									html.push(` value="${j}">Replace with: ${static_data.event_data.events[j].name}`);
-								}
+				if(warnings.length > 0){
+					var html = [];
+					html.push(`<h4>You are deleting "${static_data.event_data.events[key].name}" which referenced in the following events:</h4>`)
+					for(var i = 0; i < warnings.length; i++){
+						var event_id = warnings[i];
+						html.push(`<h6>"${static_data.event_data.events[event_id].name}" event:</h6>`);
+						html.push(`<select class="form-control event_list" delete="${key}" event="${event_id}">`);
+						html.push('<option value="-1">Delete conditions with this event</option>');
+						for(var j = 0; j < static_data.event_data.events.length; j++){
+							html.push('<option');
+							if(j == key){
+								html.push(` disabled>${static_data.event_data.events[j].name} (to be deleted)`);
+							}else if(j == event_id){
+								html.push(` disabled>${static_data.event_data.events[j].name} (this event)`);
 							}else{
-								html.push(` disabled>${static_data.event_data.events[j].name} (chains to this event)`);
+								if(check_event_chain(event_id, j)){
+									if(j > key){
+										html.push(` value="${j-1}">Replace with: ${static_data.event_data.events[j].name}`);
+									}else if(j < key){
+										html.push(` value="${j}">Replace with: ${static_data.event_data.events[j].name}`);
+									}
+								}else{
+									html.push(` disabled>${static_data.event_data.events[j].name} (chains to this event)`);
+								}
+							}
+							html.push('</option>');
+						}
+						html.push('</select>');
+						if(i < warnings.length-1){
+							html.push('<br>');
+						}
+					}
+					warning_message.show(html.join(''), delete_event_callback);
+					$(this).closest('.sortable-container').find('.btn_cancel').click();
+				}else{
+					callback = false;
+
+					static_data.event_data.events.splice(key, 1);
+
+					for(var i = 0; i < static_data.event_data.events.length; i++){
+						if(static_data.event_data.events[i].data.connected_events !== undefined && static_data.event_data.events[i].data.connected_events.length > 0){
+							for(var j = 0; j < static_data.event_data.events[i].data.connected_events.length; j++){
+								if(static_data.event_data.events[i].data.connected_events[j] > key){
+									static_data.event_data.events[i].data.connected_events[j]--;
+								}
 							}
 						}
-						html.push('</option>');
 					}
-					html.push('</select>');
-					if(i < warnings.length-1){
-						html.push('<br>');
-					}
+
+					reindex_events_list();
 				}
-				warning_message.show(html.join(''), delete_event_callback);
-				$(this).closest('.sortable-container').find('.btn_cancel').click();
 				break;
 
 			case "leap_day_list":
-				$(this).closest('.sortable-container').parent().remove();
-				$(this).closest('.sortable-container').parent().parent().refresh();
+				$(this).closest('.sortable-container').remove();
+				$(this).closest('.sortable-container').parent().sortable('refresh');
 				static_data.year_data.leap_days.splice(key, 1)
 				reindex_leap_day_list();
 				recalc_stats();
 				break;
 
 			case "calendar_link_list":
-				$(this).closest('.sortable-container').parent().remove();
-				$(this).closest('.sortable-container').parent().parent().refresh();
+				$(this).closest('.sortable-container').remove();
+				$(this).closest('.sortable-container').parent().sortable('refresh');
 				var target_hash = link_data.children[key];
 				link_data.children.splice(key, 1);
 				remove_hashes(target_hash);
@@ -2620,18 +2638,34 @@ function add_category_to_list(parent, key, data){
 			element.push("</div>");
 
 			element.push("<div class='detail-row'>");
-				element.push("<div class='detail-column half'>");
-					element.push("<div class='detail-row'>");
+				
+				element.push("<div class='detail-row'>");
+					element.push("<div class='detail-column half'>");
+						element.push("<div class='detail-text'>Fully hide event:</div>");
+					element.push("</div>");
+					element.push("<div class='detail-column half'>");
+						element.push(`<input type='checkbox' class='form-control dynamic_input' data='event_data.categories.${key}.event_settings' key='hide_full' ${(data.event_settings.hide_full ? "checked" : "")} />`);
+					element.push("</div>");
+				element.push("</div>");
+			
+				element.push("<div class='detail-row'>");
+					element.push("<div class='detail-column half'>");
 						element.push("<div class='detail-text'>Hide event:</div>");
+					element.push("</div>");
+					element.push("<div class='detail-column half'>");
 						element.push(`<input type='checkbox' class='form-control dynamic_input local_hide' data='event_data.categories.${key}.event_settings' key='hide' ${(data.event_settings.hide ? "checked" : "")} />`);
 					element.push("</div>");
 				element.push("</div>");
-				element.push("<div class='detail-column half'>");
-					element.push("<div class='detail-row'>");
+			
+				element.push("<div class='detail-row'>");
+					element.push("<div class='detail-column half'>");
 						element.push("<div class='detail-text'>Don't print event:</div>");
+					element.push("</div>");
+					element.push("<div class='detail-column half'>");
 						element.push(`<input type='checkbox' class='form-control dynamic_input noprint' data='event_data.categories.${key}.event_settings' key='noprint' ${(data.event_settings.noprint ? "checked" : "")} />`);
 					element.push("</div>");
 				element.push("</div>");
+
 			element.push("</div>");
 
 		element.push("</div>");
@@ -3316,15 +3350,15 @@ function reindex_event_category_list(){
 
 		static_data.event_data.categories[i] = {
 			'name': escapeHtml($(this).find('.name-input').val()),
-			'color': $(this).find('.color_display').val(),
-			'text': $(this).find('.text_display').val(),
 			'category_settings': {
 				'hide': $(this).find('.global_hide').is(':checked'),
 				'player_usable': $(this).find('.player_usable').is(':checked')
 			},
 			'event_settings': {
 				'hide': $(this).find('.local_hide').is(':checked'),
-				'noprint': $(this).find('.noprint').is(':checked')
+				'noprint': $(this).find('.noprint').is(':checked'),
+				'color': $(this).find('.color_display').val(),
+				'text': $(this).find('.text_display').val()
 			}
 		};
 

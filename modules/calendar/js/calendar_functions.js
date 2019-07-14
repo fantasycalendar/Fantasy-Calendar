@@ -933,14 +933,14 @@ function evaluate_calendar_start(static_data, year, month, day){
 	//Initiatlize variables
 	var year = (year|0);
 	var month = !isNaN(month) ? (month|0) : 0;
-	var day = !isNaN(day) ? (day|0) : 0;
+	var day = !isNaN(day) ? (day|0)-1 : 0;
 
 	if(static_data.settings.year_zero_exists){
 		var era_year = year;
 	}else{
 		var era_year = year >= 0 ? year+1 : year;
 	}
-	
+
 	tmp = get_epoch(static_data, year, month, day);
 	var epoch = tmp[0];
 	var intercalary = tmp[1];
@@ -993,6 +993,8 @@ function evaluate_calendar_start(static_data, year, month, day){
 
 	}
 
+	epoch = year < 0 ? epoch+1 : epoch;
+
 	// Calculate the start of week
 	if(static_data.year_data.overflow){
 
@@ -1005,6 +1007,8 @@ function evaluate_calendar_start(static_data, year, month, day){
 	}else{
 		var week_day = 1;
 	}
+
+	epoch = year < 0 ? epoch-1 : epoch;
 
 	return {"epoch": epoch,
 			"era_year": era_year,

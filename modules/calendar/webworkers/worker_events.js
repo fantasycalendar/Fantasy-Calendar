@@ -146,39 +146,67 @@ var event_evaluator = {
 					cond_1 = this.current_event.data.connected_events[cond_1];
 					var cond_2 = values[subcon[3]]|0;
 
-					if(event_evaluator.event_data.valid[cond_1] === undefined){
+					if(event_evaluator.event_data.valid[cond_1] === undefined || event_evaluator.event_data.valid[cond_1].length == 0){
 
 						var result = false;
 
-					}else if(operator == "exactly_past" && event_evaluator.event_data.valid[cond_1].length > 0){
+					}else if(operator == "exactly_past"){
 
 						for(var j = 0; j < event_evaluator.event_data.valid[cond_1].length; j++){
 
 							var result = this.current_data.epoch == event_evaluator.event_data.valid[cond_1][j]+cond_2
 
+							if(result) break;
+
 						}
 
-					}else if(operator == "exactly_future" && event_evaluator.event_data.valid[cond_1].length > 0){
+					}else if(operator == "exactly_future"){
 
 						for(var j = 0; j < event_evaluator.event_data.valid[cond_1].length; j++){
 
 							var result = this.current_data.epoch == event_evaluator.event_data.valid[cond_1][j]-cond_2
 
+							if(result) break;
+
 						}
 
-					}else if(operator == "in_past" && event_evaluator.event_data.valid[cond_1].length > 0){
+					}else if(operator == "in_past_exc"){
 
 						for(var j = 0; j < event_evaluator.event_data.valid[cond_1].length; j++){
 
 							var result = this.current_data.epoch >= event_evaluator.event_data.valid[cond_1][j]-cond_2 && event_evaluator.event_data.valid[cond_1][j] > this.current_data.epoch
 
+							if(result) break;
+
 						}
 
-					}else if(operator == "in_future" && event_evaluator.event_data.valid[cond_1].length > 0){
+					}else if(operator == "in_future_exc"){
 
 						for(var j = 0; j < event_evaluator.event_data.valid[cond_1].length; j++){
 
 							var result = this.current_data.epoch <= event_evaluator.event_data.valid[cond_1][j]+cond_2 && event_evaluator.event_data.valid[cond_1][j] < this.current_data.epoch
+
+							if(result) break;
+
+						}
+
+					}else if(operator == "in_past_inc"){
+
+						for(var j = 0; j < event_evaluator.event_data.valid[cond_1].length; j++){
+
+							var result = this.current_data.epoch >= event_evaluator.event_data.valid[cond_1][j]-cond_2 && event_evaluator.event_data.valid[cond_1][j] >= this.current_data.epoch
+
+							if(result) break;
+
+						}
+
+					}else if(operator == "in_future_inc"){
+
+						for(var j = 0; j < event_evaluator.event_data.valid[cond_1].length; j++){
+
+							var result = this.current_data.epoch <= event_evaluator.event_data.valid[cond_1][j]+cond_2 && event_evaluator.event_data.valid[cond_1][j] <= this.current_data.epoch
+
+							if(result) break;
 
 						}
 
@@ -190,6 +218,8 @@ var event_evaluator = {
 					var cond_1 = Number(values[subcon[2]]) != NaN ? Number(values[subcon[2]]) : values[subcon[2]];
 					var cond_2 = values[subcon[3]] ? values[subcon[3]] : undefined;
 					cond_2 = Number(cond_2) != NaN ? Number(cond_2) : cond_2;
+
+					console.log(selector, selected, operator, cond_1)
 
 				}
 

@@ -158,6 +158,7 @@ var edit_event_ui = {
 				$('#text_style').val(category.text).change();
 				$('#event_hide_players').prop('checked', category.hide);
 				$('#event_dontprint_checkbox').prop('checked', category.noprint);
+				$('#event_hide_full').prop('checked', category.hide_full);
 			}
 		});
 

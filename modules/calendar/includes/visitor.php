@@ -23,7 +23,7 @@ wizard = false;
 hash = getUrlParameter('id');
 
 calendar_name = "<?php echo $calendar_data['calendar_name'] ?>";
-owner = <?php echo $owner; ?>;
+const owner = <?php echo $owner; ?>;
 static_data = {};
 dynamic_data = {};
 link_data = {

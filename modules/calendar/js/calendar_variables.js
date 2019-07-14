@@ -10,16 +10,6 @@ var condition_mapping = {
 		["Every nth year", 					[["year", "%", 0]],		[["number", "nth", "Enter year interval", "1", "1"], ["number", "offset", "Enter offset for interval", "0", "0"]]]
 	],
 
-	"Era year": [
-		["Era year is exactly", 			[["era_year", "==", 0]], 	[["number", "Number", "Enter era year number", "0"]]],
-		["Era year is not", 				[["era_year", "!=", 0]],	[["number", "Number", "Enter era year number", "0"]]],
-		["Era year is or later than", 		[["era_year", ">=", 0]],	[["number", "Number", "Enter era year number", "0"]]],
-		["Era year is or earlier than", 	[["era_year", "<=", 0]],	[["number", "Number", "Enter era year number", "0"]]],
-		["Era year is later than", 			[["era_year", ">", 0]],		[["number", "Number", "Enter era year number", "0"]]],
-		["Era year is earlier than", 		[["era_year", "<", 0]],		[["number", "Number", "Enter era year number", "0"]]],
-		["Every nth era year", 				[["era_year", "%", 0]],		[["number", "nth", "Enter era year interval", "1", "1"], ["number", "offset", "Enter offset for interval", "0", "0"]]]
-	],
-
 	"Month": [
 		["Month is exactly",				[["timespan_index", "==", 0]],		[["select"]]],
 		["Month is not",					[["timespan_index", "!=", 0]],		[["select"]]],
@@ -156,6 +146,16 @@ var condition_mapping = {
 		["Era is not", 								[["era", "!=", 0, 1]], [["select"]]]
 	],
 
+	"Era year": [
+		["Era year is exactly", 			[["era_year", "==", 0]], 	[["number", "Number", "Enter era year number", "0"]]],
+		["Era year is not", 				[["era_year", "!=", 0]],	[["number", "Number", "Enter era year number", "0"]]],
+		["Era year is or later than", 		[["era_year", ">=", 0]],	[["number", "Number", "Enter era year number", "0"]]],
+		["Era year is or earlier than", 	[["era_year", "<=", 0]],	[["number", "Number", "Enter era year number", "0"]]],
+		["Era year is later than", 			[["era_year", ">", 0]],		[["number", "Number", "Enter era year number", "0"]]],
+		["Era year is earlier than", 		[["era_year", "<", 0]],		[["number", "Number", "Enter era year number", "0"]]],
+		["Every nth era year", 				[["era_year", "%", 0]],		[["number", "nth", "Enter era year interval", "1", "1"], ["number", "offset", "Enter offset for interval", "0", "0"]]]
+	],
+
 	"Season": [
 		["Season is exactly", 						[["season_index", "==", 0]], 	[["select"]]],
 		["Season is not", 							[["season_index", "!=", 0]], 	[["select"]]],
@@ -181,10 +181,12 @@ var condition_mapping = {
 	],
 
 	"Events": [
-		["Event has happened exactly x days ago", 			[["event", "exactly_past", 0, 1]],		[["select"], ["number", "Number", "Enter number of days", "1", "1"]]],
-		["Event is happening exactly x days from now", 		[["event", "exactly_future", 0, 1]],	[["select"], ["number", "Number", "Enter number of days", "1", "1"]]],
-		["Event is going to happen within the next x days",	[["event", "in_past", 0, 1]],			[["select"], ["number", "Number", "Enter number of days", "1", "1"]]],
-		["Event has happened in the last x days", 			[["event", "in_future", 0, 1]],		[["select"], ["number", "Number", "Enter number of days", "1", "1"]]]
+		["Target event happened exactly x days ago", 							[["event", "exactly_past", 0, 1]],		[["select"], ["number", "Number", "Enter number of days", "1", "1"]]],
+		["Target event is happening exactly x days from now", 					[["event", "exactly_future", 0, 1]],	[["select"], ["number", "Number", "Enter number of days", "1", "1"]]],
+		["Target event is going to happen within the next x days (exclusive)",	[["event", "in_past_exc", 0, 1]],		[["select"], ["number", "Number", "Enter number of days", "1", "1"]]],
+		["Target event has happened in the last x days (exclusive)", 			[["event", "in_future_exc", 0, 1]],		[["select"], ["number", "Number", "Enter number of days", "1", "1"]]],
+		["Target event is going to happen within the next x days (inclusive)",	[["event", "in_past_inc", 0, 1]],		[["select"], ["number", "Number", "Enter number of days", "1", "1"]]],
+		["Target event has happened in the last x days (inclusive)", 			[["event", "in_future_inc", 0, 1]],		[["select"], ["number", "Number", "Enter number of days", "1", "1"]]]
 	]
 }
 

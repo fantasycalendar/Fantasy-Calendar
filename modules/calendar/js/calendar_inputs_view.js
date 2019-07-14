@@ -142,8 +142,6 @@ function set_up_view_inputs(){
 		var options = target.children(":enabled");
 		var next = options.index(selected)+1;
 
-		console.log('wot')
-
 		if(next == options.length){
 			add_curr_timespan.click();
 			target.children('option:enabled').first().prop('selected', true).change();
