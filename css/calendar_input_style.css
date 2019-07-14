@@ -757,7 +757,7 @@ flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 	display:block !important;
 }
 
-.separator{
+.separator, .spacey_separator{
 	width:100%;
 	border: 0;
 	height: 1px;
@@ -771,6 +771,9 @@ flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 	background:         linear-gradient(left, hsla(0,0%,0%,0) 0%, hsla(0,0%,0%,.75) 50%, hsla(0,0%,0%,0) 100%);
 }
 
+.spacey_separator{
+	margin:10px 0 15px 0;
+}
 
 .wrap-collapsible{
 	width: 350px;
@@ -1162,11 +1165,6 @@ flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 	display:none;
 }
 
-.condition_container .event_select{
-	order:2;
-	display:none;
-}
-
 .condition_container.Moons .condition_type{
 	width:13.5em;
 }
@@ -1175,7 +1173,6 @@ flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 	width:auto;
 	display:block;
 }
-
 
 .condition_container .input_container{
 	display: -moz-inline-flex;
@@ -1241,7 +1238,7 @@ flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 
 
 
-#calendar_errors_background{
+#errors_background, #warnings_background{
 	width:100%;
 	height:100%;
 	background-color: rgba(0, 0, 0, 0.5);
@@ -1252,19 +1249,31 @@ flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 	display:none;
 }
 
-/* The alert message box */
-#calendar_errors {
+#warnings_content{
+	margin-bottom:10px;
+}
+
+
+#errors, #warnings {
+	border-radius: 5px;
 	padding: 20px;
-	background-color: #f44336; /* Red */
-	color: white;
-	width:50%;
+	width:500px;
 	position:relative;
 	margin:auto;
 	z-index: 10000;
 }
 
+#errors {
+	background-color: #f44336;
+	color: white;
+}
+
+#warnings {
+	background-color: #ffffff;
+}
+
 /* The close button */
-#calendar_errors_closebtn {
+#errors_closebtn {
 	margin-left: 15px;
 	color: white;
 	font-weight: bold;
@@ -1276,6 +1285,6 @@ flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 }
 
 /* When moving the mouse over the close button */
-#calendar_errors_closebtn:hover {
+#errors_closebtn:hover {
 	color: black;
 }

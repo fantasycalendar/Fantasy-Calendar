@@ -629,47 +629,62 @@ function set_up_edit_inputs(set_up){
 
 	$(document).on('click', '.btn_accept', function(){
 
-		type = $(this).closest('.sortable-container').parent().attr('id');
-		key = $(this).closest('.sortable-container').attr('key')|0;
+		var type = $(this).closest('.sortable-container').parent().attr('id');
+		var key = $(this).closest('.sortable-container').attr('key')|0;
 
-		$(this).parent().parent().remove();
-		$(this).parent().parent().parent().sortable('refresh');
+		var callback = false;
 
 		switch(type){
 			case "timespan_sortable":
+				$(this).closest('.sortable-container').parent().remove();
+				$(this).closest('.sortable-container').parent().parent().refresh();
 				reindex_timespan_sortable();
 				recalc_stats();
 				break;
 
 			case "global_week_sortable":
+				$(this).closest('.sortable-container').parent().remove();
+				$(this).closest('.sortable-container').parent().parent().refresh();
 				reindex_weekday_sortable();
 				break;
 
 			case "season_sortable":
+				$(this).closest('.sortable-container').parent().remove();
+				$(this).closest('.sortable-container').parent().parent().refresh();
 				type = 'seasons';
 				reindex_season_sortable(key);
 				reindex_location_list();
 				break;
 
 			case "location_list":
+				$(this).closest('.sortable-container').parent().remove();
+				$(this).closest('.sortable-container').parent().parent().refresh();
 				type = 'seasons';
 				reindex_location_list();
 				repopulate_location_select_list();
 				break;
 
 			case "cycle_sortable":
+				$(this).closest('.sortable-container').parent().remove();
+				$(this).closest('.sortable-container').parent().parent().refresh();
 				reindex_cycle_sortable();
 				break;
 
 			case "moon_list":
+				$(this).closest('.sortable-container').parent().remove();
+				$(this).closest('.sortable-container').parent().parent().refresh();
 				reindex_moon_list();
 				break;
 
 			case "era_list":
+				$(this).closest('.sortable-container').parent().remove();
+				$(this).closest('.sortable-container').parent().parent().refresh();
 				reindex_era_list();
 				break;
 
 			case "event_category_list":
+				$(this).closest('.sortable-container').parent().remove();
+				$(this).closest('.sortable-container').parent().parent().refresh();
 
 				for(var i = 0; i < static_data.event_data.events.length; i++){
 					if(static_data.event_data.events[i].category == key){
@@ -684,20 +699,64 @@ function set_up_edit_inputs(set_up){
 				}
 
 				reindex_event_category_list();
+				
 				break;
 
 			case "events_list":
-				static_data.event_data.events.splice(key, 1);
-				reindex_events_list();
+
+				callback = true;
+				var warnings = [];
+				for(var i = 0; i < static_data.event_data.events.length; i++){
+					if(static_data.event_data.events[i].data.connected_events !== undefined && static_data.event_data.events[i].data.connected_events.includes(key)){
+						warnings.push(i);
+					}
+				}
+				var html = [];
+				html.push(`<h4>You are deleting "${static_data.event_data.events[key].name}" which referenced in the following events:</h4>`)
+				for(var i = 0; i < warnings.length; i++){
+					var event_id = warnings[i];
+					html.push(`<h6>"${static_data.event_data.events[event_id].name}" event:</h6>`);
+					html.push(`<select class="form-control event_list" delete="${key}" event="${event_id}">`);
+					html.push('<option value="-1">Delete conditions with this event</option>');
+					for(var j = 0; j < static_data.event_data.events.length; j++){
+						html.push('<option');
+						if(j == key){
+							html.push(` disabled>${static_data.event_data.events[j].name} (to be deleted)`);
+						}else if(j == event_id){
+							html.push(` disabled>${static_data.event_data.events[j].name} (this event)`);
+						}else{
+							if(check_event_chain(event_id, j)){
+								if(j > key){
+									html.push(` value="${j-1}">Replace with: ${static_data.event_data.events[j].name}`);
+								}else if(j < key){
+									html.push(` value="${j}">Replace with: ${static_data.event_data.events[j].name}`);
+								}
+							}else{
+								html.push(` disabled>${static_data.event_data.events[j].name} (chains to this event)`);
+							}
+						}
+						html.push('</option>');
+					}
+					html.push('</select>');
+					if(i < warnings.length-1){
+						html.push('<br>');
+					}
+				}
+				warning_message.show(html.join(''), delete_event_callback);
+				$(this).closest('.sortable-container').find('.btn_cancel').click();
 				break;
 
 			case "leap_day_list":
+				$(this).closest('.sortable-container').parent().remove();
+				$(this).closest('.sortable-container').parent().parent().refresh();
 				static_data.year_data.leap_days.splice(key, 1)
 				reindex_leap_day_list();
 				recalc_stats();
 				break;
 
 			case "calendar_link_list":
+				$(this).closest('.sortable-container').parent().remove();
+				$(this).closest('.sortable-container').parent().parent().refresh();
 				var target_hash = link_data.children[key];
 				link_data.children.splice(key, 1);
 				remove_hashes(target_hash);
@@ -705,14 +764,79 @@ function set_up_edit_inputs(set_up){
 
 		}
 
-		evaluate_remove_buttons();
 
-		do_error_check(type);
+		if(!callback){
 
-		removing = null;
-		input_container.change();
+			evaluate_remove_buttons();
+
+			do_error_check(type);
+
+			removing = null;
+
+			input_container.change();
+
+		}
 
 	});
+
+	function delete_event_callback(result){
+
+		if(result){
+
+			var delete_id = -1;
+
+			warning_message.background.find('.event_list').each(function(){
+
+				var event_id = $(this).attr('event')|0;
+				delete_id = $(this).attr('delete')|0;
+				var event_replace = $(this).val()|0;
+
+				if(event_replace != -1){
+
+					var index = static_data.event_data.events[event_id].data.connected_events.indexOf(delete_id);
+
+					static_data.event_data.events[event_id].data.connected_events[index] = event_replace;
+
+				}else{
+
+					var index = static_data.event_data.events[event_id].data.connected_events.indexOf(delete_id);
+
+					static_data.event_data.events[event_id].data.connected_events.splice(index, 1);
+
+					static_data.event_data.events[event_id].data.conditions = $.grep(static_data.event_data.events[event_id].data.conditions, function(e){ 
+						return !(e[0] == "Events" && e[2][0] == index);
+					});
+
+				}
+
+			});
+
+			static_data.event_data.events.splice(delete_id, 1);
+
+			for(var i = 0; i < static_data.event_data.events.length; i++){
+				if(static_data.event_data.events[i].data.connected_events !== undefined && static_data.event_data.events[i].data.connected_events.length > 0){
+					for(var j = 0; j < static_data.event_data.events[i].data.connected_events.length; j++){
+						if(static_data.event_data.events[i].data.connected_events[j] > delete_id){
+							static_data.event_data.events[i].data.connected_events[j]--;
+						}
+					}
+				}
+			}
+
+
+			reindex_events_list();
+
+			evaluate_remove_buttons();
+
+			do_error_check();
+
+			removing = null;
+
+			input_container.change();
+
+		}
+
+	}
 
 
 
@@ -2612,7 +2736,7 @@ function error_check(parent, rebuild){
 
 		evaluate_save_button();
 
-		close_calendar_message();
+		close_error_message();
 
 		if(parent === "eras"){
 			recalculate_era_epochs();
@@ -2648,7 +2772,7 @@ function error_check(parent, rebuild){
 		}
 		text.push(`</ol>`);
 
-		calendar_error_message(text.join(''));
+		error_message(text.join(''));
 
 		//save_button.prop('disabled', true);
 
@@ -2779,15 +2903,12 @@ function repopulate_weekday_select(elements){
 }
 
 function reindex_timespan_sortable(){
+
 	var tabindex = 100;
 	
 	static_data.year_data.timespans = [];
 
-
-	new_order = [];
 	timespan_sortable.children().each(function(i){
-
-		new_order.push(($(this).attr('key')|0));
 
 		$('.dynamic_input', this).each(function(){
 			$(this).attr('data', $(this).attr('data').replace(/[0-9]+/g, i));
@@ -2833,11 +2954,7 @@ function reindex_leap_day_list(){
 	
 	static_data.year_data.leap_days = [];
 
-	new_order = [];
-
 	leap_day_list.children().each(function(i){
-
-		new_order.push(($(this).attr('key')|0));
 
 		$('.dynamic_input', this).each(function(){
 			$(this).attr('data', $(this).attr('data').replace(/[0-9]+/g, i));

@@ -976,11 +976,20 @@
 
 <div id='input_collapse_btn' class="btn btn-outline-primary"></div>
 
+<div id="warnings_background">
+	<div id="warnings">
+		<div id='warnings_content'>
+		</div>
+		<button type='button' id='warnings_ok' class='btn btn-success half'>OK</button>
+		<button type='button' id='warnings_cancel' class='btn btn-danger half'>Cancel</button>
+	</div>
+</div>
+
 <div id="calendar_container">
 
-	<div id="calendar_errors_background">
-		<div id="calendar_errors">
-			<span id="calendar_error_text">
+	<div id="errors_background">
+		<div id="errors">
+			<span id="error_text">
 				This is an alert box.
 			</span>
 		</div>

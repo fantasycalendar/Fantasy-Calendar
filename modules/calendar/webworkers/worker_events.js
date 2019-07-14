@@ -42,6 +42,8 @@ var event_evaluator = {
 
 		}
 
+		this.events_only_happen_once = [];
+
 		this.start_epoch = Number(Object.keys(this.epoch_data)[0]);
 
 		this.events = clone(this.static_data.event_data.events);
@@ -138,7 +140,52 @@ var event_evaluator = {
 					var cond_2 = values[subcon[3]] ? values[subcon[3]]|0 : undefined;
 					var selected = fract(43758.5453 * Math.sin(cond_2 + (78.233 * this.current_data.epoch)))*100;
 
+				}else if(array[0] === "Events"){
+
+					var cond_1 = values[subcon[2]]|0;
+					cond_1 = this.current_event.data.connected_events[cond_1];
+					var cond_2 = values[subcon[3]]|0;
+
+					if(event_evaluator.event_data.valid[cond_1] === undefined){
+
+						var result = false;
+
+					}else if(operator == "exactly_past" && event_evaluator.event_data.valid[cond_1].length > 0){
+
+						for(var j = 0; j < event_evaluator.event_data.valid[cond_1].length; j++){
+
+							var result = this.current_data.epoch == event_evaluator.event_data.valid[cond_1][j]+cond_2
+
+						}
+
+					}else if(operator == "exactly_future" && event_evaluator.event_data.valid[cond_1].length > 0){
+
+						for(var j = 0; j < event_evaluator.event_data.valid[cond_1].length; j++){
+
+							var result = this.current_data.epoch == event_evaluator.event_data.valid[cond_1][j]-cond_2
+
+						}
+
+					}else if(operator == "in_past" && event_evaluator.event_data.valid[cond_1].length > 0){
+
+						for(var j = 0; j < event_evaluator.event_data.valid[cond_1].length; j++){
+
+							var result = this.current_data.epoch >= event_evaluator.event_data.valid[cond_1][j]-cond_2 && event_evaluator.event_data.valid[cond_1][j] > this.current_data.epoch
+
+						}
+
+					}else if(operator == "in_future" && event_evaluator.event_data.valid[cond_1].length > 0){
+
+						for(var j = 0; j < event_evaluator.event_data.valid[cond_1].length; j++){
+
+							var result = this.current_data.epoch <= event_evaluator.event_data.valid[cond_1][j]+cond_2 && event_evaluator.event_data.valid[cond_1][j] < this.current_data.epoch
+
+						}
+
+					}
+
 				}else{
+
 					var selected = this.current_data[selector];
 					var cond_1 = Number(values[subcon[2]]) != NaN ? Number(values[subcon[2]]) : values[subcon[2]];
 					var cond_2 = values[subcon[3]] ? values[subcon[3]] : undefined;
@@ -146,18 +193,22 @@ var event_evaluator = {
 
 				}
 
-				if(operator == '%'){
-					var result = evaluate_operator("&&", evaluate_operator(operator, selected, cond_1, cond_2), result)
-				}else{
-					if(subcon.length == 4){
+				if(array[0] !== "Events"){
+
+					if(operator == '%'){
 						var result = evaluate_operator("&&", evaluate_operator(operator, selected, cond_1, cond_2), result)
 					}else{
-						var result = evaluate_operator("&&", evaluate_operator(operator, selected, cond_1), result)
+						if(subcon.length == 4){
+							var result = evaluate_operator("&&", evaluate_operator(operator, selected, cond_1, cond_2), result)
+						}else{
+							var result = evaluate_operator("&&", evaluate_operator(operator, selected, cond_1), result)
+						}
 					}
+
 				}
 
-
 			}
+
 			return result;
 		}
 
@@ -257,7 +308,11 @@ var event_evaluator = {
 
 		function evaluate_event(event_index){
 
-			var current_event = event_evaluator.events[event_index];
+			if(event_evaluator.events_only_happen_once.indexOf(event_index) != -1){
+				return;
+			}
+
+			this.current_event = event_evaluator.events[event_index];
 
 			var num_epochs = Object.keys(epoch_list).length;
 
@@ -267,7 +322,7 @@ var event_evaluator = {
 
 				this.current_data = epoch_list[epoch];
 
-				var result = evaluate_event_group(current_event.data.conditions);
+				var result = evaluate_event_group(this.current_event.data.conditions);
 
 				if(result){
 						
@@ -277,26 +332,26 @@ var event_evaluator = {
 						event_evaluator.event_data.ends[event_index] = [];
 					}
 
-					if(current_event.data.length > 1){
+					if(this.current_event.data.has_duration){
 
 						if(event_evaluator.event_data.valid[event_index].indexOf(epoch) == -1 && epoch >= event_evaluator.start_epoch) {
 							event_evaluator.event_data.valid[event_index].push(epoch);
 							event_evaluator.event_data.starts[event_index].push(epoch);
 						}
 
-						if(!current_event.data.show_first_last){
+						if(!this.current_event.data.show_first_last){
 
-							for(var length = 1; length < current_event.data.length; length++)
+							for(var duration = 1; duration < this.current_event.data.duration; duration++)
 							{
-								if(event_evaluator.event_data.valid[event_index].indexOf(epoch+length) == -1 && epoch+length >= event_evaluator.start_epoch) {
-									event_evaluator.event_data.valid[event_index].push(epoch+length);
+								if(event_evaluator.event_data.valid[event_index].indexOf(epoch+duration) == -1 && epoch+duration >= event_evaluator.start_epoch) {
+									event_evaluator.event_data.valid[event_index].push(epoch+duration);
 								}
 							}
 						}
 
-						if(event_evaluator.event_data.valid[event_index].indexOf(epoch+current_event.data.length) == -1 && epoch+current_event.data.length >= event_evaluator.start_epoch) {
-							event_evaluator.event_data.valid[event_index].push(epoch+current_event.data.length);
-							event_evaluator.event_data.ends[event_index].push(epoch+current_event.data.length);
+						if(event_evaluator.event_data.valid[event_index].indexOf(epoch+this.current_event.data.duration) == -1 && epoch+this.current_event.data.duration >= event_evaluator.start_epoch) {
+							event_evaluator.event_data.valid[event_index].push(epoch+this.current_event.data.duration);
+							event_evaluator.event_data.ends[event_index].push(epoch+this.current_event.data.duration);
 						}
 
 					}else{
@@ -307,12 +362,16 @@ var event_evaluator = {
 
 					}
 
+					if(this.current_event.data.only_happen_once){
+						event_evaluator.events_only_happen_once.push(event_index);
+						break;
+					}
+
 				}
 
 			}
 
 		}
-
 
 		if(event_id !== undefined){
 
@@ -322,15 +381,45 @@ var event_evaluator = {
 
 			var num_events = this.events.length;
 
-			//execution_time.start();
+			for(var event_index = 0; event_index < num_events; event_index++){
+				if(this.events[event_index].data.connected_events === undefined || this.events[event_index].data.connected_events.length == 0){
+					evaluate_event(event_index);
+				}
+			}
+
+			execution_time.start();
 
 			for(var event_index = 0; event_index < num_events; event_index++){
+				if(this.events[event_index].data.connected_events !== undefined && this.events[event_index].data.connected_events.length > 0){
+					check_event_chain(event_index);
+				}
+			}
 
-				evaluate_event(event_index);
+			execution_time.end();
+		}
+
+		function check_event_chain(id){
+
+			var current_event = event_evaluator.events[id];
+
+			if(current_event.data.connected_events !== undefined){
+
+				for(var i = 0; i < current_event.data.connected_events.length; i++){
+
+					var parent_id = current_event.data.connected_events[i];
+						
+					check_event_chain(parent_id);
+
+				}
 
 			}
 
-			//execution_time.end();
+			if(event_evaluator.event_data.valid[id] === undefined){
+
+				evaluate_event(id);
+
+			}
+
 		}
 
 	}

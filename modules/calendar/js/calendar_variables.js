@@ -176,17 +176,16 @@ var condition_mapping = {
 	],
 
 	"Random": [
-		["Random chance is above", 		[["season_perc", ">", 0, 1]],		[["number", "(0-100%)", "Random chance", "", "0", "100"], ["number", "Seed", "Seed", Math.abs(Math.random().toString().substr(7)|0), "0"]]],
-		["Random chance is below", 		[["season_perc", "<", 0, 1]],		[["number", "(0-100%)", "Random chance", "", "0", "100"], ["number", "Seed", "Seed", Math.abs(Math.random().toString().substr(7)|0), "0"]]],
-	]
-	/*,
+		["Random chance is above", 					[["season_perc", ">", 0, 1]],		[["number", "(0-100%)", "Random chance", "", "0", "100"], ["number", "Seed", "Seed", Math.abs(Math.random().toString().substr(7)|0), "0"]]],
+		["Random chance is below", 					[["season_perc", "<", 0, 1]],		[["number", "(0-100%)", "Random chance", "", "0", "100"], ["number", "Seed", "Seed", Math.abs(Math.random().toString().substr(7)|0), "0"]]],
+	],
 
 	"Events": [
-		["Event is happening now", 			[["event", "==", 1]], [["select"]]],
-		["Event is not happening now", 		[["event", "!=", 1]], [["select"]]],
-		["Event has happened within", 		[["event", ">=", 1]], [["select"]]],
-		["Event is going to happen within",	[["event", "<=", 1]], [["select"]]]
-	]*/
+		["Event has happened exactly x days ago", 			[["event", "exactly_past", 0, 1]],		[["select"], ["number", "Number", "Enter number of days", "1", "1"]]],
+		["Event is happening exactly x days from now", 		[["event", "exactly_future", 0, 1]],	[["select"], ["number", "Number", "Enter number of days", "1", "1"]]],
+		["Event is going to happen within the next x days",	[["event", "in_past", 0, 1]],			[["select"], ["number", "Number", "Enter number of days", "1", "1"]]],
+		["Event has happened in the last x days", 			[["event", "in_future", 0, 1]],		[["select"], ["number", "Number", "Enter number of days", "1", "1"]]]
+	]
 }
 
 var moon_phases = {

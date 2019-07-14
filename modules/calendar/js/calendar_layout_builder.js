@@ -13,6 +13,8 @@ function display_events(static_data, event_data){
 
 			$(`[event_id='${event_index}']`).remove();
 
+			if(current_event.settings.hide_full) continue;
+
 			for(var epoch_index = 0; event_data.valid[event_index] && epoch_index < event_data.valid[event_index].length; epoch_index++){
 
 				var local_epoch = event_data.valid[event_index][epoch_index];
@@ -571,8 +573,6 @@ var calendar_layouts = {
 
 			}else if(timespan.type === 'intercalary'){
 
-				return_week_day = 0;
-
 				calendar_layouts.html.push("<div class='timespan_container grid'>");
 
 					calendar_layouts.html.push("<div class='timespan_name'>");
@@ -877,8 +877,6 @@ var calendar_layouts = {
 				calendar_layouts.html.push("</div>");
 
 			}else if(timespan.type === 'intercalary'){
-
-				return_week_day = 0;
 
 				calendar_layouts.html.push("<div class='timespan_container wide' onscroll='sidescroll()'>");
 
@@ -1191,8 +1189,6 @@ var calendar_layouts = {
 				calendar_layouts.html.push("</div>");
 
 			}else if(timespan.type === 'intercalary'){
-
-				return_week_day = 0;
 
 				calendar_layouts.html.push("<div class='timespan_container vertical'>");
 

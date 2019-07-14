@@ -4,38 +4,78 @@ $(document).ready(function(){
 		evaluate_error_background_size();
 	});
 
+	warning_message = {
+
+		background: $('#warnings_background'),
+
+		init: function(){
+
+			this.button_ok = $('#warnings_ok');
+			this.button_cancel = $('#warnings_cancel');
+
+			this.button_ok.click(function(){
+				warning_message.callback(true);
+				warning_message.hide();
+			});
+			this.button_cancel.click(function(){
+				warning_message.callback(false);
+				warning_message.hide();
+			});
+
+			this.content = this.background.children().first().children().first();
+
+		},
+
+		show: function(html, callback){
+
+			this.callback = callback;
+
+			this.content.html(html);
+
+			var width = this.background.parent().width();
+
+			this.background.css('display', 'flex');
+
+			evaluate_error_background_size();
+
+		},
+
+		hide: function(){
+
+			this.background.css('display', 'none');
+
+			this.content.html('');
+
+		}
+
+	}
+
+	warning_message.init();
+
 });
 
 function evaluate_error_background_size(){
-	var width = $('#calendar_errors_background').parent().width();
-	$('#calendar_errors_background').width(width);
+	var width = $('#errors_background').parent().width();
+	$('#errors_background').width(width);
+	var width = $('#warnings_background').parent().width();
+	$('#warnings_background').width(width);
 }
 
-function calendar_error_message(message){
+function error_message(message){
 
-	var width = $('#calendar_errors_background').parent().width();
+	var width = $('#errors_background').parent().width();
 
-	$('#calendar_error_text').empty().append(message);
-	$('#calendar_errors_background').removeClass().addClass('error').css('display', 'flex');
+	$('#error_text').empty().append(message);
+	$('#errors_background').removeClass().addClass('error').css('display', 'flex');
 
 	evaluate_error_background_size();
 
 }
 
-function calendar_warning_message(message){
 
-	var width = $('#calendar_errors_background').parent().width();
+function close_error_message(){
 
-	$('#calendar_error_text').empty().append(message);
-	$('#calendar_errors_background').removeClass().addClass('warning').css('display', 'flex');
-
-	evaluate_error_background_size();
-
-}
-
-function close_calendar_message(){
-
-	$('#calendar_errors_background').removeClass().css('display', 'none');
+	$('#errors_background').removeClass().css('display', 'none');
 
 }
 
