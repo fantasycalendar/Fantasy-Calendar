@@ -224,8 +224,19 @@ function set_up_edit_inputs(set_up){
 
 		static_data.clock.enabled = $(this).is(':checked');
 
+		dynamic_data.hour = 0;
+		dynamic_data.minute = 0;
+
 		evaluate_clock_inputs();
 
+	});
+
+	$('#collapsible_clock').change(function(){
+		if($(this).is(':checked')){
+			$('#clock').prependTo($(this).parent().children('.collapsible-content'));
+		}else{
+			$('#clock').prependTo($('#collapsible_date').parent().children('.collapsible-content'));
+		}
 	});
 
 

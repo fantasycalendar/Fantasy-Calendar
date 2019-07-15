@@ -219,8 +219,6 @@ var event_evaluator = {
 					var cond_2 = values[subcon[3]] ? values[subcon[3]] : undefined;
 					cond_2 = Number(cond_2) != NaN ? Number(cond_2) : cond_2;
 
-					console.log(selector, selected, operator, cond_1)
-
 				}
 
 				if(array[0] !== "Events"){

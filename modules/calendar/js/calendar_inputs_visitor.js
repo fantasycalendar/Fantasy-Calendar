@@ -269,14 +269,14 @@ function eval_clock(){
 	var element = [];
 	element.push("<img src='resources/clock_arm.png' id='clock_arm'/>");
 	element.push("<div id='clock_hours'></div>");
-	element.push("<img src='resources/dayhelper.png' id='dayhelper' class='SunUpDown'/>");
-	element.push("<img src='resources/nighthelper.png' id='nighthelper' class='SunUpDown'/>");
-	element.push("<div id='SunUp_Container'>");
-		element.push("<img src='resources/startofday.png' id='StartOfDay'/>");
-	element.push("</div>");
-	element.push("<div id='SunDown_Container'>");
-		element.push("<img src='resources/endofday.png' id='EndOfDay' />");
-	element.push("</div>");
+	element.push(`<img src='resources/dayhelper.png' id='dayhelper' class='SunUpDown'/>`);
+	element.push(`<img src='resources/nighthelper.png' id='nighthelper' class='SunUpDown ${!evaluated_static_data.processed_seasons ? 'hidden' : ''}'/>`);
+	element.push(`<div id='SunUp_Container' ${!evaluated_static_data.processed_seasons ? 'class="hidden"' : ''}>`);
+		element.push(`<img src='resources/startofday.png' id='StartOfDay'/>`);
+	element.push(`</div>`);
+	element.push(`<div id='SunDown_Container' ${!evaluated_static_data.processed_seasons ? 'class="hidden"' : ''}>`);
+		element.push(`<img src='resources/endofday.png' id='EndOfDay' />`);
+	element.push(`</div>`);
 	element.push("<img src='resources/clock_base.png' id='base'/>");
 
 	$('#clock').html(element.join(''));
@@ -284,7 +284,9 @@ function eval_clock(){
 	element = [];
 	for(var i = 0; i < clock_hours; i++){
 		var rotation = ((360/clock_hours)*i);
-		element.push(`<div class='clock_hour_text_container' style='transform: rotate(${rotation+180}deg);'><span class='clock_hour_text' style='transform: rotate(-${rotation+180}deg);'>${i}</span></div>`)
+		var hour = (i-static_data.clock.offset)%clock_hours;
+		hour = hour < 0 ? hour+clock_hours : hour;
+		element.push(`<div class='clock_hour_text_container' style='transform: rotate(${rotation+180}deg);'><span class='clock_hour_text' style='transform: rotate(-${rotation+180}deg);'>${hour}</span></div>`)
 		element.push(`<img class='clock_hour' src='resources/clock_hour.png' style='transform: rotate(${rotation}deg);'>`);
 	}
 
@@ -302,9 +304,11 @@ function eval_current_time(){
 	}
 
 	var clock_hours = static_data.clock.hours;
+	var clock_minutes = static_data.clock.minutes;
 	var clock_hour = dynamic_data.hour;
 	var clock_minute = dynamic_data.minute;
-	var clock_time = clock_hour + (clock_minute/60);
+	var clock_time = ((clock_hour+static_data.clock.offset)%clock_hours) + (clock_minute/clock_minutes);
+
 	var clock_fraction_time = clock_time/clock_hours;
 
 	var rotation = (360/clock_hours)*clock_time;
@@ -331,12 +335,15 @@ function evaluate_sun(){
 		return;
 	}
 
-	if(evaluated_static_data.epoch_data && evaluated_static_data.epoch_data[dynamic_data.epoch] && evaluated_static_data.epoch_data[dynamic_data.epoch].season.sunset){
+	if(evaluated_static_data.processed_seasons){
 
 		var clock_hours = static_data.clock.hours;
 
 		var sunset = evaluated_static_data.epoch_data[dynamic_data.epoch].season.sunset[0];
 		var sunrise = evaluated_static_data.epoch_data[dynamic_data.epoch].season.sunrise[0];
+
+		sunset = (sunset-static_data.clock.offset)%clock_hours;
+		sunrise = (sunrise-static_data.clock.offset)%clock_hours;
 
 		sunrise = (360/clock_hours)*(sunrise-clock_hours/4);
 		sunset = (360/clock_hours)*(sunset+clock_hours/4)-360;
