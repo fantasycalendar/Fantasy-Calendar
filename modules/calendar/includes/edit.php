@@ -47,24 +47,6 @@ get_all_data(function(result){
 
 	link_data.master_hash = result.master_hash;
 
-	/*year = 0;
-
-	for(var i = 1; i <= 6; i++){
-
-
-		for(var j = 1; j <= 6; j++){
-
-			console.log(year+j)
-			console.log(evaluate_calendar_start(static_data, year+j).epoch);
-			console.log(evaluate_calendar_start(static_data, year+j+1).epoch);
-
-		}
-		console.log('-----------------')
-
-		year = (i*100)-4;
-
-	}*/
-
 	set_up_edit_inputs(true);
 	bind_calendar_events();
 	rebuild_calendar('calendar', dynamic_data);

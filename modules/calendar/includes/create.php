@@ -39,7 +39,7 @@ static_data = {
 		"global_settings":{
 			"season_offset":0,
 			"weather_offset":0,
-			"seed":(Math.random().toString().substr(7)|0),
+			"seed":Math.abs(Math.random().toString().substr(7)|0),
 			"temp_sys":"metric",
 			"wind_sys":"metric",
 			"cinematic":false,
@@ -75,7 +75,7 @@ static_data = {
 
 dynamic_data = {
 	"year": 1,
-	"month": 0,
+	"timespan": 0,
 	"day": 1,
 	"epoch": 0,
 	"custom_location": false,
@@ -138,6 +138,8 @@ $(document).ready(function(){
 		if($('#presets').val() == 'Custom JSON'){
 			var calendar = parse_json($('#json_input').val());
 			if(calendar){
+			    prev_dynamic_data = {}
+			    prev_static_data = {}
 				dynamic_data = calendar.dynamic_data;
 				static_data = calendar.static_data;
 				empty_edit_values();

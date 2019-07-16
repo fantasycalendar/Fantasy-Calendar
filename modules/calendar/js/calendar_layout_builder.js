@@ -326,8 +326,7 @@ function update_current_day(recalculate){
 	$('.current_day').removeClass('current_day');
 
 	if(recalculate){
-		dynamic_data.internal_year = dynamic_data.year > 0 ? dynamic_data.year - 1 : dynamic_data.year;
-		dynamic_data.epoch = evaluate_calendar_start(static_data, dynamic_data.internal_year, dynamic_data.timespan, dynamic_data.day).epoch;
+		dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
 	}
 
 	$(`[epoch=${dynamic_data.epoch}]`).addClass('current_day');

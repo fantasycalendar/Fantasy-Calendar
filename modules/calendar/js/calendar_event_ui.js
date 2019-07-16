@@ -50,6 +50,7 @@ var edit_event_ui = {
 		});
 
 		this.save_btn.click(function(){
+			edit_event_ui.event_background.scrollTop = 0;
 			edit_event_ui.save_current_event();
 		})
 
@@ -597,8 +598,6 @@ var edit_event_ui = {
 				}else if(type === "Events"){
 
 					var event_id = $(this).find('.input_container').find("option:selected").val()|0;
-
-					console.log($(this).find('.input_container').children().eq(0).val())
 
 					if(edit_event_ui.connected_events.indexOf(event_id) == -1){
 						edit_event_ui.connected_events.push(event_id)

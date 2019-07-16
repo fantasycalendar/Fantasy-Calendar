@@ -2,109 +2,108 @@
 
 	<?php if($_GET['action'] === "edit"){ ?>
 
-		<div class='wrap-collapsible'>
-			<div class='title-text center-text'>Edit Calendar</div>
+	<div class='wrap-collapsible'>
+		<div class='title-text center-text'>Edit Calendar</div>
+	</div>
+
+	<div class='wrap-collapsible'>
+		<div class='detail-row'>
+			<input type='text' class='form-control form-control-lg full' id='calendar_name' placeholder='Calendar name' />
 		</div>
+	</div>
 
-		<div class='wrap-collapsible'>
-			<div class='detail-row'>
-				<input type='text' class='form-control form-control-lg full' id='calendar_name' placeholder='Calendar name' />
-			</div>
-		</div>
+	<div class='wrap-collapsible margin-below'>
 
-		<div class='wrap-collapsible margin-below'>
+		<button type="button" disabled id='btn_save' class='btn btn-lg btn-primary btn-block'>No changes to save</button>
+	
+		<button type="button" id='btn_delete' class='btn btn-sm btn-danger btn-block'>Delete</button>
 
-			<button type="button" disabled id='btn_save' class='btn btn-lg btn-primary btn-block'>No changes to save</button>
-		
-			<button type="button" id='btn_delete' class='btn btn-sm btn-danger btn-block'>Delete</button>
-
-		</div>
-
-		<div class='wrap-collapsible'>
-			<div class="detail-row">
-				<label class="detail-column third">
-					<div class="form-check form-check-inline form-control form-control-sm">
-						<input type='radio' name='view_type' value='owner' checked> 
-						<span>
-							Owner View
-						</span>
-					</div>
-				</label>
-				<label class="detail-column third">
-					<div class="form-check form-check-inline form-control form-control-sm">
-						<input type='radio' name='view_type' value='player'> 
-						<span>
-							Player View
-						</span>
-					</div>
-				</label>
-				<label class="detail-column third">
-					<div class="form-check form-check-inline form-control form-control-sm">
-						<input type='radio' name='view_type' value='weather'> 
-						<span>
-							Climate view
-						</span>
-					</div>
-				</label>
-			</div>
-		</div>
+	</div>
 
 	<?php }elseif($_GET['action'] === "generate"){ ?>
 
-		<div class='wrap-collapsible'>
-			<div class='title-text center-text'>Create Calendar</div>
+	<div class='wrap-collapsible'>
+		<div class='title-text center-text'>Create Calendar</div>
+	</div>
+
+
+	<div class='wrap-collapsible'>
+		<div class='detail-row form-inline'>
+			<input type='text' class='form-control form-control-lg full' id='calendar_name' placeholder='Calendar name' />
+		</div>
+	</div>
+
+
+	<div class='wrap-collapsible margin-below'>
+
+		<?php
+		if(!empty($_SESSION['user_id'])){
+		?>
+
+			<button type="button" disabled id='btn_create' class='btn btn-lg btn-primary btn-block'>No changes to save</button>
+
+		<?php
+		} else {
+		?>
+			<button type='button' class='login-show-button btn btn-lg btn-info btn-block'>Log in to save</button>
+		<?php
+		}
+		?>
+
+		<div id='preset_container'>
+
+			<select class='form-control' id='presets'>
+				<option>Presets</option>
+				<option>Custom JSON</option>
+			</select>
+			
+			<button id='json_apply' disabled type='button' class='btn btn-warning btn-sm' >Apply</button>
+
 		</div>
 
-
-		<div class='wrap-collapsible'>
-			<div class='detail-row form-inline'>
-				<input type='text' class='form-control form-control-lg full' id='calendar_name' placeholder='Calendar name' />
-			</div>
+		<div class='hidden' id='json_container'>
+			<div>JSON input:</div>
+			<textarea class='form-control' id='json_input'></textarea>
 		</div>
 
-
-		<div class='wrap-collapsible margin-below'>
-
-			<?php
-			if(!empty($_SESSION['user_id'])){
-			?>
-
-				<button type="button" disabled id='btn_create' class='btn btn-lg btn-primary btn-block'>No changes to save</button>
-
-			<?php
-			} else {
-			?>
-				<button type='button' class='login-show-button btn btn-lg btn-info btn-block'>Log in to save</button>
-			<?php
-			}
-			?>
-
-			<div id='preset_container'>
-
-				<select class='form-control' id='presets'>
-					<option>Presets</option>
-					<option>Custom JSON</option>
-				</select>
-				
-				<button id='json_apply' disabled type='button' class='btn btn-warning btn-sm' >Apply</button>
-
-			</div>
-
-			<div class='hidden' id='json_container'>
-				<div>JSON input:</div>
-				<textarea class='form-control' id='json_input'></textarea>
-			</div>
-
-		</div>
+	</div>
 
 	<?php
 	}
 	?>
 
 	<div class='wrap-collapsible'>
-		<div class='separator'></div>
+		<div class="detail-row">
+			<label class="detail-column third">
+				<div class="form-check form-check-inline form-control form-control-sm">
+					<input type='radio' name='view_type' value='owner' checked> 
+					<span>
+						Owner View
+					</span>
+				</div>
+			</label>
+			<label class="detail-column third">
+				<div class="form-check form-check-inline form-control form-control-sm">
+					<input type='radio' name='view_type' value='player'> 
+					<span>
+						Player View
+					</span>
+				</div>
+			</label>
+			<label class="detail-column third">
+				<div class="form-check form-check-inline form-control form-control-sm">
+					<input type='radio' name='view_type' value='weather'> 
+					<span>
+						Climate view
+					</span>
+				</div>
+			</label>
+		</div>
 	</div>
 
+	<div class='wrap-collapsible'>
+		<div class='separator'></div>
+	</div>
 
 
 	<!---------------------------------------------->
@@ -559,6 +558,11 @@
 				<div class='detail-column float'>
 					<input class='form-control form-control-sm static_input' type='number' data='seasons.global_settings' key='season_offset'/>
 				</div>
+			</div>
+
+			<div class='detail-row'>
+				<button type='button' class='btn btn-secondary full' id='create_season_events'>Create seasonsal events</button>
+				<a target="_blank" title='Makes the calendar only show the current month' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
 			</div>
 		</div>
 

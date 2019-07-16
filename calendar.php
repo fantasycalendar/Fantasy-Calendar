@@ -1,11 +1,6 @@
 <?php
 
-if(!isset($_SESSION))
-{
-	session_start();
-}
-
-require_once('modules/calendar/class/c_calendar.php');
+require_once('modules/calendar/class/includes.php');
 
 $calendar = new calendar;
 

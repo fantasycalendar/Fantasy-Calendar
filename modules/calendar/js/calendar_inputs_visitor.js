@@ -307,7 +307,9 @@ function eval_current_time(){
 	var clock_minutes = static_data.clock.minutes;
 	var clock_hour = dynamic_data.hour;
 	var clock_minute = dynamic_data.minute;
-	var clock_time = ((clock_hour+static_data.clock.offset)%clock_hours) + (clock_minute/clock_minutes);
+	var clock_time = clock_hour + (clock_minute/clock_minutes);
+	clock_time = ((clock_time+static_data.clock.offset)%clock_hours)
+	clock_time = clock_time < 0 ? clock_time+clock_hours : clock_time;
 
 	var clock_fraction_time = clock_time/clock_hours;
 
@@ -344,6 +346,8 @@ function evaluate_sun(){
 
 		sunset = (sunset-static_data.clock.offset)%clock_hours;
 		sunrise = (sunrise-static_data.clock.offset)%clock_hours;
+		sunset = sunset < 0 ? sunset + clock_hours : sunset;
+		sunrise = sunrise < 0 ? sunrise + clock_hours : sunrise;
 
 		sunrise = (360/clock_hours)*(sunrise-clock_hours/4);
 		sunset = (360/clock_hours)*(sunset+clock_hours/4)-360;

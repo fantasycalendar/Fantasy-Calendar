@@ -330,7 +330,6 @@ function update_children_dynamic_data(){
 				var child_dynamic_data = JSON.parse(result[i].dynamic_data);
 				var converted_date = date_converter.get_date(static_data, child_static_data, dynamic_data.epoch);
 				child_dynamic_data.year = converted_date.year;
-				child_dynamic_data.internal_year = converted_date.year > 0 ? converted_date.year-1 : converted_date.year;
 				child_dynamic_data.timespan = converted_date.timespan;
 				child_dynamic_data.day = converted_date.day;
 				child_dynamic_data.epoch = converted_date.epoch;

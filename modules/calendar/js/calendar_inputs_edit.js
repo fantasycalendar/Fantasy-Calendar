@@ -335,7 +335,7 @@ function set_up_edit_inputs(set_up){
 		var cycle_val = cycle.val()|0;
 		var id = $('#moon_list .sortable-container').length;
 
-		var granularity = get_moon_granularity(cycle);
+		var granularity = get_moon_granularity(cycle_val);
 
 		stats = {
 			'name': escapeHtml(name.val()),
@@ -396,8 +396,22 @@ function set_up_edit_inputs(set_up){
 		reindex_location_list();
 		name.val("");
 		do_error_check();
+		
+		$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0);
 
 	});
+
+	$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0);
+
+	$('#create_season_events').click(function(){
+		if(confirm('Are you sure you want to create seasonal events? If you already have created them, you might get doubling.')){
+			for(var i = 0; i < static_data.seasons.data.length; i++){
+				static_data.event_data.events = static_data.event_data.events.concat(create_season_events(i, static_data.seasons.data[i].name));
+			}
+			reindex_events_list();
+			do_error_check('seasons');
+		}
+	})
 
 	$('.form-inline.locations .add').click(function(){
 
@@ -560,8 +574,8 @@ function set_up_edit_inputs(set_up){
 
 		static_data.eras.push(stats);
 		add_era_to_list(era_list, id, stats);
-		repopulate_timespan_select(era_list.children().last().find('.timespan-list'), static_data.eras[id].date.timespan);
-		repopulate_day_select(era_list.children().last().find('.timespan-day-list'), static_data.eras[id].date.day);
+		repopulate_timespan_select(era_list.children().last().find('.timespan-list'), dynamic_data.timespan);
+		repopulate_day_select(era_list.children().last().find('.timespan-day-list'), dynamic_data.day);
 		name.val("");
 		do_error_check();
 
@@ -1353,7 +1367,7 @@ function set_up_edit_inputs(set_up){
 	});
 
 	$('#reseed_seasons').click(function(){
-		$('#seasons_seed').val((Math.random().toString().substr(7)|0)).change();
+		$('#seasons_seed').val(Math.abs((Math.random().toString().substr(7)|0))).change();
 	});
 
 
@@ -2819,7 +2833,8 @@ function error_check(parent, rebuild){
 
 		error_message(text.join(''));
 
-		//save_button.prop('disabled', true);
+		save_button.prop('disabled', true);
+		create_button.prop('disabled', true);
 
 	}
 
@@ -3437,8 +3452,8 @@ function evaluate_season_lengths(){
 		'season_length': 0
 	};
 	
-	var epoch_start = evaluate_calendar_start(static_data, dynamic_data.internal_year).epoch;
-	var epoch_end = evaluate_calendar_start(static_data, dynamic_data.internal_year+1).epoch-1;
+	var epoch_start = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year)).epoch;
+	var epoch_end = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year)+1).epoch-1;
 	var season_length = epoch_end-epoch_start;
 
 	for(var i = 0; i < static_data.seasons.data.length; i++){
@@ -3476,7 +3491,6 @@ function adjustInput(element, int){
 
 function evaluate_save_button(){
 
-
 	if($('#btn_save').length){
 
 		calendar_name_same = calendar_name == prev_calendar_name;
@@ -3487,6 +3501,16 @@ function evaluate_save_button(){
 
 		save_button.prop('disabled', static_same && dynamic_same && calendar_name_same).text(text);
 
+	}else if($('#btn_create').length){
+
+		calendar_name_same = calendar_name == prev_calendar_name;
+		static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
+		dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
+
+		text = static_same && dynamic_same && calendar_name_same ? "No changes to save" : "Save calendar";
+
+		create_button.prop('disabled', static_same && dynamic_same && calendar_name_same).text(text);
+		
 	}
 
 }
@@ -3682,12 +3706,16 @@ function set_up_edit_values(){
 	}
 
 	if(static_data.eras){
+
 		for(var i = 0; i < static_data.eras.length; i++){
 			add_era_to_list(era_list, i, static_data.eras[i])
 		}
+		
 		era_list.children().each(function(i){
-			repopulate_timespan_select($(this).find('.timespan-list'), static_data.eras[i].date.timespan);
-			repopulate_day_select($(this).find('.timespan-day-list'), static_data.eras[i].date.day);
+			
+			repopulate_timespan_select($(this).find('.timespan-list'), static_data.eras[i].date.timespan, false);
+			repopulate_day_select($(this).find('.timespan-day-list'), static_data.eras[i].date.day, false);
+
 		})
 	}
 

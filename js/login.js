@@ -60,7 +60,7 @@ $(document).ready(function(){
 					},
 					error: function ( log )
 					{
-						console.log(log);
+						console.log(log.responseText);
 					}
 				});
 			}

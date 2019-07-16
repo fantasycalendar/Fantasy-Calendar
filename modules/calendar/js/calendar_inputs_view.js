@@ -352,9 +352,7 @@ function set_up_view_inputs(){
 			}
 		}
 
-		rebuild_climate();
-
-		do_error_check();
+		do_error_check('seasons');
 
 	});
 

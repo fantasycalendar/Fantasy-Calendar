@@ -200,7 +200,7 @@ function evaluate_weather_charts(){
 
 			if(epoch.weather){
 
-				labels.push([keys[i], ordinal_suffix_of(epoch.day) + " of " + epoch.timespan_name]);
+				labels.push([keys[i], ordinal_suffix_of(epoch.day) + " of " + unescapeHtml(epoch.timespan_name)]);
 
 				temperature[0].push({x: keys[i], y: precisionRound(epoch.weather.temperature[temp_sys].value[0], 5)});
 				temperature[1].push({x: keys[i], y: precisionRound(epoch.weather.temperature[temp_sys].value[1], 5)});

@@ -149,11 +149,11 @@ div .button:hover{
 	background-color:#ff6666;
 }
 
-#support-button{
-	width:150px;
+#donate-button{
+	width:100px;
 }
 
-#support-button:hover{
+#donate-button:hover{
 	background-color: rgb(250, 118, 100);
 }
 
