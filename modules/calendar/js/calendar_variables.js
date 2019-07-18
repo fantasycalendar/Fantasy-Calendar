@@ -7,7 +7,7 @@ var condition_mapping = {
 		["Year is or earlier than", 		[["year", "<=", 0]],	[["number", "Number", "Enter year number", "1"]]],
 		["Year is later than", 				[["year", ">", 0]],		[["number", "Number", "Enter year number", "1"]]],
 		["Year is earlier than", 			[["year", "<", 0]],		[["number", "Number", "Enter year number", "1"]]],
-		["Every nth year", 					[["year", "%", 0]],		[["number", "nth", "Enter year interval", "1", "1"], ["number", "offset", "Enter offset for interval", "0", "0"]]]
+		["Every nth year", 					[["year", "%", 0, 1]],		[["number", "nth", "Enter year interval", "1", "1"], ["number", "offset", "Enter offset for interval", "0", "0"]]]
 	],
 
 	"Month": [
