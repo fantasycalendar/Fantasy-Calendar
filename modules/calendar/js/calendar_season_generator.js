@@ -345,6 +345,7 @@ var climate_generator = {
 			var temperature_m = [temp-range_low, temp+range_high];
 			var temperature_i = [this.celcius_to_fahrenheit(temperature_m[0]), this.celcius_to_fahrenheit(temperature_m[1])];
 			var temperature_c = this.pick_from_table(this.celcius_to_fahrenheit(temp), this.temperature_gauge, false).key;
+			temp = this.celcius_to_fahrenheit(temp);
 		}
 
 		var percipitation_table = temp > 32 ? "warm" : "cold";
