@@ -162,7 +162,7 @@ class auth_token
 			$user_id.':'.$selector.':'.base64_encode($authenticator),
 			$expiryTime,
 			'/',
-			getenv('COOKIEADDRESS')
+			$_SERVER['HTTP_HOST']
 		);
 		
 	}

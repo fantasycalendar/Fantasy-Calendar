@@ -473,7 +473,7 @@ class user
 			$mail->Password = getenv('MAIL_PASS');
 			
 			//Recipients
-			$mail->setFrom('fantasycalendar@fantasy-calendar.com');
+			$mail->setFrom(getenv('MAIL_USER'));
 			$mail->addAddress($email);
 
 			$mail->addCustomHeader('MIME-Version: 1.0');

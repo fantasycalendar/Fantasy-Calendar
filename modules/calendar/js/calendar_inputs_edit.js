@@ -172,32 +172,6 @@ function set_up_edit_inputs(set_up){
 		evaluate_save_button();
 	});
 
-	$('.static_input').each(function(){
-
-		var data = $(this).attr('data');
-		var key = $(this).attr('key');
-
-		var current_calendar_data = get_calendar_data(data)
-
-		if(current_calendar_data !== undefined){
-
-			switch($(this).attr('type')){
-				case "checkbox":
-					$(this).prop("checked", current_calendar_data[key]);
-					break;
-
-				case "color":
-					$(this).spectrum("set", current_calendar_data[key]);
-					break;
-
-				default:
-					$(this).val(current_calendar_data[key]);
-					break;
-			}
-		}
-
-	});
-
 	$(document).on('change', '.length-input, .interval, .offset', function(){
 		recalc_stats();
 	});
@@ -3628,6 +3602,32 @@ function recalculate_era_epochs(){
 }
 
 function set_up_edit_values(){
+
+	$('.static_input').each(function(){
+
+		var data = $(this).attr('data');
+		var key = $(this).attr('key');
+
+		var current_calendar_data = get_calendar_data(data);
+
+		if(current_calendar_data !== undefined){
+
+			switch($(this).attr('type')){
+				case "checkbox":
+					$(this).prop("checked", current_calendar_data[key]);
+					break;
+
+				case "color":
+					$(this).spectrum("set", current_calendar_data[key]);
+					break;
+
+				default:
+					$(this).val(current_calendar_data[key]);
+					break;
+			}
+		}
+
+	});
 
 	for(var i = 0; i < static_data.year_data.global_week.length; i++){
 		name = static_data.year_data.global_week[i];
