@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  fantasydb:
+    image: mariadb:10.3
+    container_name: fc-mariadb
+    volumes:
+      - fantasy-calendar-db:/var/lib/mysql
+      - ./setup/database.sql:/docker-entrypoint-initdb.d/dump.sql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: fantasy-calendar
+    ports:
+      - "13306:3306"
+
+  fantasy-calendar:
+    image: nginxinc/nginx-unprivileged
+    container_name: fantasy_calendar
+    user: "1000:1000"
+    volumes:
+      - ./:/fantasy-calendar
+      - ./setup/docker.env:/fantasy-calendar/modules/calendar/class/server.env
+      - ./setup/nginx/fantasy-calendar.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "9980:8080"
+
+  fantasy-calendar-php:
+    build: ./setup/php/
+    user: "1000:1000"
+    volumes:
+      - ./:/fantasy-calendar
+      - ./setup/docker.env:/fantasy-calendar/modules/calendar/class/server.env
+
+volumes:
+  fantasy-calendar-db:

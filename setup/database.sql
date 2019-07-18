@@ -29,7 +29,7 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `auth_tokens` (
-  `id` int(11) UNSIGNED NOT NULL,
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `user_id` int(10) UNSIGNED NOT NULL,
   `selector` char(12) NOT NULL,
   `token` varchar(255) NOT NULL,
@@ -43,7 +43,7 @@ CREATE TABLE `auth_tokens` (
 --
 
 CREATE TABLE `calendars` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `user_id` int(11) NOT NULL,
   `name` varchar(256) NOT NULL,
   `data` longtext NOT NULL,
@@ -60,7 +60,7 @@ CREATE TABLE `calendars` (
 --
 
 CREATE TABLE `calendars_beta` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `user_id` int(11) NOT NULL,
   `name` varchar(64) NOT NULL,
   `dynamic_data` text NOT NULL,
@@ -68,7 +68,7 @@ CREATE TABLE `calendars_beta` (
   `children` varchar(4000) NOT NULL DEFAULT '[]',
   `master_hash` varchar(32) DEFAULT '',
   `hash` varchar(32) DEFAULT '',
-  `last_dynamic_change` datetime NOT NULL,
+  `last_dynamic_change` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `last_static_change` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `date_created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `deleted` tinyint(1) NOT NULL DEFAULT '0'
@@ -81,7 +81,7 @@ CREATE TABLE `calendars_beta` (
 --
 
 CREATE TABLE `confirm` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `user_id` int(11) NOT NULL,
   `email_key` varchar(64) NOT NULL,
   `expires` datetime NOT NULL
@@ -94,7 +94,7 @@ CREATE TABLE `confirm` (
 --
 
 CREATE TABLE `forgotten` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `user_id` int(11) NOT NULL,
   `email_key` varchar(64) NOT NULL,
   `expires` datetime NOT NULL
@@ -107,7 +107,7 @@ CREATE TABLE `forgotten` (
 --
 
 CREATE TABLE `login_attempts` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `attempts` int(11) NOT NULL,
   `IP` varchar(20) NOT NULL,
   `last_login` datetime NOT NULL,
@@ -121,7 +121,7 @@ CREATE TABLE `login_attempts` (
 --
 
 CREATE TABLE `permissions` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `name` varchar(255) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
@@ -132,7 +132,7 @@ CREATE TABLE `permissions` (
 --
 
 CREATE TABLE `users` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `username` varchar(20) NOT NULL,
   `password` varchar(255) NOT NULL,
   `permissions` int(11) NOT NULL DEFAULT '6',
@@ -149,111 +149,11 @@ INSERT INTO `users` (`id`, `username`, `password`, `permissions`, `email`, `acti
 -- Indexes for dumped tables
 --
 
---
--- Indexes for table `auth_tokens`
---
-ALTER TABLE `auth_tokens`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `calendars`
---
-ALTER TABLE `calendars`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `calendars_beta`
---
-ALTER TABLE `calendars_beta`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `confirm`
---
-ALTER TABLE `confirm`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `forgotten`
---
-ALTER TABLE `forgotten`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `login_attempts`
---
-ALTER TABLE `login_attempts`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `permissions`
---
-ALTER TABLE `permissions`
-  ADD PRIMARY KEY (`id`);
 
 INSERT INTO `permissions` (`id`, `name`) VALUES
 (1, 'Admin'),
 (3, 'Moderator'),
 (6, 'User');
-
---
--- Indexes for table `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `auth_tokens`
---
-ALTER TABLE `auth_tokens`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `calendars`
---
-ALTER TABLE `calendars`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `calendars_beta`
---
-ALTER TABLE `calendars_beta`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `confirm`
---
-ALTER TABLE `confirm`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `forgotten`
---
-ALTER TABLE `forgotten`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `login_attempts`
---
-ALTER TABLE `login_attempts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `permissions`
---
-ALTER TABLE `permissions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `users`
---
-ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
