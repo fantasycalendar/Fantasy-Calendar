@@ -1498,6 +1498,7 @@ function set_up_edit_inputs(set_up){
 						$(this).children().first().next().prop('for', `collapsible_seasons_${i}_${j}`).text(`Season name: ${static_data.seasons.data[j].name}`);
 					});
 				});
+				repopulate_location_select_list();
 			}
 
 			if(refresh || refresh === undefined){

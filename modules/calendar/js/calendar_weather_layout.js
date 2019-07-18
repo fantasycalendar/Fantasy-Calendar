@@ -34,11 +34,6 @@ var calendar_weather = {
 			this.weather_tooltip_box = $('#weather_tooltip_box');
 			this.base_height = parseInt(this.weather_tooltip_box.css('height'));
 			this.weather_temp_desc = $('.weather_temp_desc');
-			if(static_data.seasons.global_settings.cinematic){
-				this.weather_temp_desc.css('display', '');
-			}else{
-				this.weather_temp_desc.css('display', 'none');
-			}
 			this.weather_temp = $('.weather_temp');
 			this.weather_wind = $('.weather_wind');
 			this.weather_precip = $('.weather_precip');
@@ -50,6 +45,15 @@ var calendar_weather = {
 
 			if(!calendar_weather.processed_weather) return;
 
+			var height = 0;
+
+			if(static_data.seasons.global_settings.cinematic){
+				this.weather_temp_desc.parent().css('display', '');
+			}else{
+				this.weather_temp_desc.parent().css('display', 'none');
+				height -= 18;
+			}
+
 			var day_container = icon.closest(".timespan_day");
 
 			var weather_epoch = day_container.attr('epoch');
@@ -59,7 +63,7 @@ var calendar_weather = {
 			var desc = weather.temperature.cinematic;
 
 			var temp_sys = static_data.seasons.global_settings.temp_sys;
-			var height = 0;
+
 			if(temp_sys == 'imperial'){
 				temp_symbol = '°F';
 				var temp = `${precisionRound(weather.temperature[temp_sys].value[0], 1).toString()+temp_symbol} to ${precisionRound(weather.temperature[temp_sys].value[1], 1).toString()+temp_symbol}`;
@@ -84,11 +88,9 @@ var calendar_weather = {
 				var wind_symbol = "KPH";
 				var wind_text = `${weather.wind_speed} (${weather.wind_direction}) (${weather.wind_velocity[wind_sys]} ${wind_symbol})`;
 			}else{
-				var wind_text = `<span class='newline'>${weather.wind_speed} (${weather.wind_direction}) (${weather.wind_velocity.imperial} MPH | ${weather.wind_velocity.metric} KPH)</span>`;
+				var wind_text = `${weather.wind_speed} (${weather.wind_direction}) <span class='newline'>(${weather.wind_velocity.imperial} MPH | ${weather.wind_velocity.metric} KPH)</span>`;
 				height += 17;
 			}
-
-			this.weather_wind.toggleClass('newline', wind_sys == 'both');
 
 			this.weather_tooltip_box.css('height', `${this.base_height+height}px`)
 

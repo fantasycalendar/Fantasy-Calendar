@@ -491,7 +491,7 @@ function repopulate_location_select_list(){
 	if(location_select.val() === null){
 		location_select.find('option').first().prop('selected', true);
 		dynamic_data.location = location_select.val();
-		dynamic_data.custom_location = location_select.find('option:selected').parent().attr('value');
+		dynamic_data.custom_location = location_select.find('option:selected').parent().attr('value') === 'custom';
 	}
 }
 

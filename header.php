@@ -91,22 +91,8 @@ $jsversion = "2.0";
 		<header id="header">
 			
 			<div id="header_left_container">
-
-				<?php 
-				if(getenv('WEBADDRESS') == 'https://www.fantasy-calendar.com/'){
-				?>
-					<a href="https://www.fantasy-calendar.com/" id="logo"><img src="resources/calendar-logo.png" alt="Logo"/></a>
-				<?php 
-				}elseif(getenv('WEBADDRESS') == 'https://www.beta.fantasy-calendar.com/'){
-				?>
-					<a href="https://www.beta.fantasy-calendar.com/" id="logo"><img src="resources/calendar-logo.png" alt="Logo"/></a>
-				<?php 
-				}else{
-				?>
-					<a href="http://127.0.0.1/edsa-Fantasy-Calendar-2.0/" id="logo"><img src="resources/calendar-logo.png" alt="Logo"/></a>
-				<?php 
-				}
-				?>
+				
+				<a href="<?php echo getenv('WEBADDRESS'); ?>" id="logo"><img src="resources/calendar-logo.png" alt="Logo"/></a>
 
 				<a href="calendar?action=generate"><div class="button" id="new_calendar">New Calendar</div></a>
 			</div>
