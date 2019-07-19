@@ -10,6 +10,10 @@ class Calendar extends Model
 
     public $timestamps = false;
 
+    public function user() {
+        return $this->belongsTo('App\User');
+    }
+
     public function getDynamicDataAttribute($value) {
         return json_decode($value, true);
     }

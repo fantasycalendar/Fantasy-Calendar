@@ -12,7 +12,15 @@
 */
 
 Route::get('/', function () {
-    $calendar = App\Calendar::find(1);
+    $changelog = file_get_contents(__DIR__ . '/../changelog.txt');
+    $changelog = preg_replace( "/###[ ]?([A-Z0-9\.]+): ([A-Z0-9 ,]+)/i", "<h3>$1</h3>" . PHP_EOL . "<i>$2</i>" . PHP_EOL . "<ul>", $changelog );
+    $changelog = preg_replace( "/\* ([A-Z0-9 !\._,'\(\)\/\-&\"\']+)/i", "<li>$1</li>", $changelog );
+    $changelog = preg_replace( "/" . PHP_EOL . "<h3>/i", "</ul>" . PHP_EOL . PHP_EOL . "<h3>", $changelog );
+    $changelog .= PHP_EOL . "</ul>";
 
-    return $calendar;
+    return view('home', [
+        'title' => env('APP_NAME'),
+        'changelog' => $changelog,
+        'calendars' => collect(App\Calendar::all())
+    ]);
 });
