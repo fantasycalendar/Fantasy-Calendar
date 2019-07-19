@@ -55,7 +55,1268 @@ var date = new Date();
 var calendar_presets = {
 	'Earth': {
 		'dynamic_data': {"year":date.getFullYear(),"timespan":date.getMonth(),"day":date.getDate(),"epoch":0,"custom_location":false,"location":"Cool and Rainy","hour":date.getHours(),"minute":date.getMinutes()},
-		'static_data': {"year_data":{"first_day":1,"overflow":true,"global_week":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],"timespans":[{"name":"January","type":"month","length":31,"interval":1,"offset":1},{"name":"February","type":"month","length":28,"interval":1,"offset":1},{"name":"March","type":"month","length":31,"interval":1,"offset":1},{"name":"April","type":"month","length":30,"interval":1,"offset":1},{"name":"May","type":"month","length":31,"interval":1,"offset":1},{"name":"June","type":"month","length":30,"interval":1,"offset":1},{"name":"July","type":"month","length":31,"interval":1,"offset":1},{"name":"August","type":"month","length":31,"interval":1,"offset":1},{"name":"September","type":"month","length":30,"interval":1,"offset":1},{"name":"October","type":"month","length":31,"interval":1,"offset":1},{"name":"November","type":"month","length":30,"interval":1,"offset":1},{"name":"December","type":"month","length":31,"interval":1,"offset":1}],"leap_days":[{"name":"Leap Day","intercalary":false,"timespan":1,"adds_week_day":false,"day":0,"week_day":"Week day name","interval":"400,!100,4","offset":0,"reference":"timespan"}]},"moons":[{"name":"Moon","cycle":29.530588853,"shift":10.24953,"granularity":32,"color":"#ffffff","hidden":false}],"clock":{"hours":24,"minutes":60,"offset":0,"enabled":true},"seasons":{"data":[{"name":"Winter","time":{"sunrise":{"hour":9,"minute":0},"sunset":{"hour":18,"minute":0}},"transition_length":182.62125,"duration":0},{"name":"Summer","time":{"sunrise":{"hour":9,"minute":0},"sunset":{"hour":18,"minute":0}},"transition_length":182.62125,"duration":0}],"locations":[],"global_settings":{"season_offset":-12,"weather_offset":56,"seed":826116802,"temp_sys":"metric","wind_sys":"metric","cinematic":true,"enable_weather":true}},"eras":[{"name":"Before Christ","abbreviation":"B.C.","description":"","settings":{"show_as_event":false,"event_category":-1,"ends_year":false,"restart":false},"date":{"year":-9000,"timespan":0,"day":0,"era_year":-9000,"epoch":-3287161}},{"name":"Anno Domini","abbreviation":"A.D.","description":"","settings":{"show_as_event":false,"event_category":-1,"ends_year":false,"restart":false},"date":{"year":-1,"timespan":11,"day":31,"era_year":-1,"epoch":-1}}],"settings":{"layout":"grid","show_current_month":false,"show_era_abbreviation":true,"allow_view":false,"only_backwards":false,"only_reveal_today":false,"hide_moons":false,"hide_clock":false,"hide_events":false,"hide_eras":false,"hide_all_weather":false,"hide_future_weather":false,"add_month_number":false,"add_year_day_number":false},"cycles":{"0":["21","21","21"],"format":"","data":[]},"event_data":{"categories":[{"name":"Christian Holiday","color":"Dark-Solid","text":"text","category_settings":{"hide":false,"player_usable":false},"event_settings":{"hide":false,"noprint":false,"color":"Red","text":"text"}},{"name":"Secular Holiday","color":"Dark-Solid","text":"text","category_settings":{"hide":false,"player_usable":false},"event_settings":{"hide":false,"noprint":false}},{"name":"Historical Event","color":"Dark-Solid","text":"text","category_settings":{"hide":false,"player_usable":false},"event_settings":{"hide":false,"noprint":false}},{"name":"Miscalaneous event","color":"Dark-Solid","text":"text","category_settings":{"hide":false,"player_usable":false},"event_settings":{"hide":false,"noprint":false,"color":"Blue-Grey"}},{"name":"Natural Event","category_settings":{"hide":false,"player_usable":false},"event_settings":{"color":"Green","text":"text","hide":false,"noprint":false}}],"events":[{"name":"Work on This Calendar Started","description":"Aecius started work on the Gregorian Calendar for Fantasy Calendar on this day.<br>","data":{"has_duration":false,"duration":0,"show_first_last":false,"only_happen_once":false,"conditions":[["Year","0",["2019"]],["&&"],["Month","0",["5"]],["&&"],["Day","0",["23"]]],"connected_events":[]},"category":"3","settings":{"color":"Blue-Grey","text":"text","hide":false,"hide_full":false,"noprint":false}},{"name":"Christmas","description":"Christmas is a Christian holiday celebrating the birth of Christ. Due to a combination of marketability and long lasting traditions it is popular even among many non-Christians, especially in countries that have a strong Christian tradition.<br>","data":{"has_duration":false,"duration":0,"show_first_last":false,"only_happen_once":false,"conditions":[["Month","0",["11"]],["&&"],["Day","0",["25"]]],"connected_events":[]},"category":"1","settings":{"color":"Red","text":"text","hide":false,"hide_full":false,"noprint":false}},{"name":"Winter Solstice","description":"The Winter Solstice is the day of the year with the least time between sunrise and sunset. Many western cultures consider it the official start of winter.<br>","data":{"has_duration":false,"duration":0,"show_first_last":false,"only_happen_once":false,"conditions":[["Season","0",["0"]],["&&"],["Season","8",["1"]]],"connected_events":[]},"category":"4","settings":{"color":"Green","text":"text","hide":false,"hide_full":false,"noprint":false}},{"name":"Summer Solstice","description":"<p>The Summer Solstice is the day of the year with the most time between \nsunrise and sunset. Many western cultures consider it the official start\n of summer.</p>","data":{"has_duration":false,"duration":0,"show_first_last":false,"only_happen_once":false,"conditions":[["Season","0",["1"]],["&&"],["Season","8",["1"]]],"connected_events":[]},"category":"4","settings":{"color":"Green","text":"text","hide":false,"hide_full":false,"noprint":false}},{"name":"Spring Equinox","description":"The Vernal Equinox,\nalso called the spring equinox is the day between the winter and\nsummer solstices where the day is the exact same length as the night.\nMany western cultures consider it the official start of Spring.\n","data":{"has_duration":false,"duration":0,"show_first_last":false,"only_happen_once":false,"conditions":[["Season","0",["0"]],["&&"],["Season","2",["50"]]],"connected_events":[]},"category":"4","settings":{"color":"Green","text":"text","hide":false,"hide_full":false,"noprint":false}},{"name":"Autumnal Equinox","description":"The Autmumnal Equinox,\nalso called the Fall equinox is the day between the summer and\nwinter solstices where the day is the exact same length as the night.\nMany western cultures consider it the official start of Autumn.\n","data":{"has_duration":false,"duration":0,"show_first_last":false,"only_happen_once":false,"conditions":[["Season","0",["1"]],["&&"],["Season","2",["50"]]],"connected_events":[]},"category":"4","settings":{"color":"Green","text":"text","hide":false,"hide_full":false,"noprint":false}},{"name":"Easter (old)","description":"<p>Easter is considered the most important feast for Christians, celebrating the resurrection of Christ. It is classed as a moveable feast occurring on the first full moon after the spring equinox, which is considered to be fixed at March 21st for the sake of computing the date.</p>(This version of the event was created before events could use eachother as conditions and can be considered deprecated. It can still serve as an example of how to make a moveable holiday as specific as Easter without event based events.)<br>","data":{"has_duration":false,"duration":0,"show_first_last":false,"only_happen_once":false,"conditions":[["",[["Moons","2",["0","15"]],["&&"],["!",[["Day","5",["21"]],["&&"],["Month","0",["2"]]]]]],["&&"],["",[["Month","0",["2"]],["||"],["",[["Month","0",["3"]],["&&"],["Day","3",["25"]],["&&"],["!",[["Day","4",["19"]],["&&"],["Moons","3",["0","15"]]]],["&&"],["!",[["Moons","3",["0","19"]],["&&"],["Day","2",["24"]]]]]]]],["&&"],["Weekday","0",["7"]],["&&"],["!",[["Month","0",["2"]],["&&"],["",[["",[["Moons","0",["0","21"]],["||"],["Moons","0",["0","19"]]]],["&&"],["Day","3",["24"]]]],["||"],["",[["Day","3",["26"]],["&&"],["Moons","3",["0","21"]]]],["&&"],["!",[["Moons","0",["0","15"]],["||"],["",[["Day","2",["22"]],["&&"],["Month","0",["2"]],["&&"],["Moons","0",["0","17"]]]]]]]],["&&"],["",[["",[["Moons","5",["0","23"]],["&&"],["Month","0",["3"]]]],["||"],["",[["Month","0",["2"]],["&&"],["Moons","5",["0","22"]]]]]]],"connected_events":[]},"category":"0","settings":{"color":"Red","text":"text","hide":false,"hide_full":true,"noprint":false}},{"name":"Valentine&#39;s Day","description":"Valentine's day is a celebration of love and romance that is popular across the world. Many more cynically minded people mosty consider it an attempt to monetize the expecation of romantic gestures on the holiday through gift cards, flowers, chocolate and dates.<br>","data":{"has_duration":false,"duration":0,"show_first_last":false,"only_happen_once":false,"conditions":[["Month","0",["1"]],["&&"],["Day","0",["14"]]],"connected_events":[]},"category":"2","settings":{"color":"Pink","text":"text","hide":false,"hide_full":false,"noprint":false}},{"name":"New Year&#39;s Day","description":"New Year's day marks the start of a new year on the Gregorian Calendar. It starts when the clock strikes midnight and is often celebrated with fireworks, champagne and kissing.<br>","data":{"has_duration":false,"duration":0,"show_first_last":false,"only_happen_once":false,"conditions":[["Day","7",["1"]]],"connected_events":[]},"category":"1","settings":{"color":"Dark-Solid","text":"text","hide":false,"hide_full":false,"noprint":false}},{"name":"Halloween","description":"<p>Halloween is holiday popular in the US, Canada and Ireland that has gradually been adopted by more and more countries. It is often celebrated by people dressing up, usually as something scary. Children will often go from door to door shouting \"trick or treat\" in the hopes of receiving candy, while adults tend to go to parties.<br></p>","data":{"has_duration":false,"duration":0,"show_first_last":false,"only_happen_once":false,"event_based_event":false,"conditions":[["Month","0",["9"]],["&&"],["Day","0",["31"]]]},"category":"1","settings":{"color":"Dark-Solid","text":"text","hide":false,"noprint":false}},{"name":"Paschal Full Moon","description":"The first full moon after march 21st, which is considered the fixed date for the spring equinox.<br>","data":{"has_duration":false,"duration":0,"show_first_last":false,"only_happen_once":true,"conditions":[["",[["",[["Month","0",["2"]],["&&"],["Day","2",["21"]]]],["||"],["",[["Month","0",["3"]],["&&"],["Day","5",["21"]]]]]],["&&"],["Moons","0",["0","15"]]],"connected_events":[]},"category":"-1","settings":{"color":"Purple","text":"text","hide":false,"hide_full":true,"noprint":false}},{"name":"Easter","description":"<p>Easter is considered the most important feast for Christians, \ncelebrating the resurrection of Christ. It is classed as a moveable \nfeast occurring on the first full moon after the spring equinox, which \nis considered to be fixed at March 21st for the sake of computing the \ndate.</p>","data":{"has_duration":false,"duration":0,"show_first_last":false,"only_happen_once":false,"conditions":[["Events","5",[0,"6"]],["&&"],["Weekday","0",["7"]]],"connected_events":[10]},"category":"0","settings":{"color":"Red","text":"text","hide":false,"hide_full":false,"noprint":false}},{"name":"Easter Monday","description":"The monday following the Easter Sunday is often considered part of the Easter Celebration and is a free day in many countries with a strong Christian tradition.<br>","data":{"has_duration":false,"duration":0,"show_first_last":false,"only_happen_once":false,"conditions":[["Events","0",[0,"1"]]],"connected_events":[11]},"category":"0","settings":{"color":"Red","text":"text","hide":false,"hide_full":false,"noprint":false}},{"name":"Good Friday","description":"Good Friday is the friday preceding Easter. It comemmorates the crucifixion of Christ according to the Bible.<br>","data":{"has_duration":false,"duration":0,"show_first_last":false,"only_happen_once":false,"conditions":[["Events","1",[0,"2"]]],"connected_events":[11]},"category":"0","settings":{"color":"Red","text":"text","hide":false,"hide_full":false,"noprint":false}},{"name":"Ascenscion Day","description":"<p>Traditionally celebrated on the 40th day after Easter, Ascenscion celebrates the day in which the Bible marks as the one Jesus ascended into heaven.<br><br>Some denominations celebrate it on the sunday following the 40th day instead.<br></p><br><br>","data":{"has_duration":false,"duration":0,"show_first_last":false,"only_happen_once":false,"conditions":[["Events","0",[0,"39"]]],"connected_events":[11]},"category":"0","settings":{"color":"Red","text":"text","hide":false,"hide_full":false,"noprint":false}},{"name":"Pentecost","description":"Celebrated exactly 50 days after easter, Pentecost is the celebration of the Holy Spirit appearing before the Apostles as described in the Bible.<br>","data":{"has_duration":false,"duration":0,"show_first_last":false,"only_happen_once":false,"conditions":[["Events","0",[0,"49"]]],"connected_events":[11]},"category":"0","settings":{"color":"Red","text":"text","hide":false,"hide_full":false,"noprint":false}}]}}
+		'static_data': {
+			"year_data":{
+				"first_day":1,
+				"overflow":true,
+				"global_week":[
+					"Monday",
+					"Tuesday",
+					"Wednesday",
+					"Thursday",
+					"Friday",
+					"Saturday",
+					"Sunday"
+				],
+				"timespans":[
+					{
+						"name":"January",
+						"type":"month",
+						"length":31,
+						"interval":1,
+						"offset":1
+					},
+					{
+						"name":"February",
+						"type":"month",
+						"length":28,
+						"interval":1,
+						"offset":1
+					},
+					{
+						"name":"March",
+						"type":"month",
+						"length":31,
+						"interval":1,
+						"offset":1
+					},
+					{
+						"name":"April",
+						"type":"month",
+						"length":30,
+						"interval":1,
+						"offset":1
+					},
+					{
+						"name":"May",
+						"type":"month",
+						"length":31,
+						"interval":1,
+						"offset":1
+					},
+					{
+						"name":"June",
+						"type":"month",
+						"length":30,
+						"interval":1,
+						"offset":1
+					},
+					{
+						"name":"July",
+						"type":"month",
+						"length":31,
+						"interval":1,
+						"offset":1
+					},
+					{
+						"name":"August",
+						"type":"month",
+						"length":31,
+						"interval":1,
+						"offset":1
+					},
+					{
+						"name":"September",
+						"type":"month",
+						"length":30,
+						"interval":1,
+						"offset":1
+					},
+					{
+						"name":"October",
+						"type":"month",
+						"length":31,
+						"interval":1,
+						"offset":1
+					},
+					{
+						"name":"November",
+						"type":"month",
+						"length":30,
+						"interval":1,
+						"offset":1
+					},
+					{
+						"name":"December",
+						"type":"month",
+						"length":31,
+						"interval":1,
+						"offset":1
+					}
+				],
+				"leap_days":[
+					{
+						"name":"Leap Day",
+						"intercalary":false,
+						"timespan":1,
+						"adds_week_day":false,
+						"interval":"400,!100,4",
+						"offset":0
+					}
+				]
+			},
+			"moons":[
+				{
+					"name":"Moon",
+					"cycle":29.530588853,
+					"shift":10.24953,
+					"granularity":32,
+					"color":"#ffffff",
+					"hidden":false
+				}
+			],
+			"clock":{
+				"hours":24,
+				"minutes":60,
+				"offset":0,
+				"enabled":true
+			},
+			"seasons":{
+				"data":[
+					{
+						"name":"Winter",
+						"time":{
+							"sunrise":{
+								"hour":9,
+								"minute":0
+							},
+							"sunset":{
+								"hour":18,
+								"minute":0
+							}
+						},
+						"transition_length":182.62125,
+						"duration":0
+					},
+					{
+						"name":"Summer",
+						"time":{
+							"sunrise":{
+								"hour":9,
+								"minute":0
+							},
+							"sunset":{
+								"hour":18,
+								"minute":0
+							}
+						},
+						"transition_length":182.62125,
+						"duration":0
+					}
+				],
+				"locations":[
+
+				],
+				"global_settings":{
+					"season_offset":-12,
+					"weather_offset":56,
+					"seed":826116802,
+					"temp_sys":"metric",
+					"wind_sys":"metric",
+					"cinematic":true,
+					"enable_weather":true
+				}
+			},
+			"eras":[
+				{
+					"name":"Before Christ",
+					"abbreviation":"B.C.",
+					"description":"",
+					"settings":{
+						"show_as_event":false,
+						"event_category":-1,
+						"ends_year":false,
+						"restart":false
+					},
+					"date":{
+						"year":-9000,
+						"timespan":0,
+						"day":0,
+						"era_year":-9000,
+						"epoch":-3287161
+					}
+				},
+				{
+					"name":"Anno Domini",
+					"abbreviation":"A.D.",
+					"description":"",
+					"settings":{
+						"show_as_event":false,
+						"event_category":-1,
+						"ends_year":false,
+						"restart":false
+					},
+					"date":{
+						"year":-1,
+						"timespan":11,
+						"day":31,
+						"era_year":-1,
+						"epoch":-1
+					}
+				}
+			],
+			"settings":{
+				"layout":"grid",
+				"show_current_month":false,
+				"show_era_abbreviation":true,
+				"allow_view":false,
+				"only_backwards":false,
+				"only_reveal_today":false,
+				"hide_moons":false,
+				"hide_clock":false,
+				"hide_events":false,
+				"hide_eras":false,
+				"hide_all_weather":false,
+				"hide_future_weather":false,
+				"add_month_number":false,
+				"add_year_day_number":false
+			},
+			"cycles":{
+				"format":"",
+				"data":[
+
+				]
+			},
+			"event_data":{
+				"categories":[
+					{
+						"name":"Christian Holiday",
+						"category_settings":{
+							"hide":false,
+							"player_usable":false
+						},
+						"event_settings":{
+							"hide":false,
+							"noprint":false,
+							"color":"Red",
+							"text":"text"
+						}
+					},
+					{
+						"name":"Secular Holiday",
+						"category_settings":{
+							"hide":false,
+							"player_usable":false
+						},
+						"event_settings":{
+							"hide":false,
+							"noprint":false
+						}
+					},
+					{
+						"name":"Historical Event",
+						"category_settings":{
+							"hide":false,
+							"player_usable":false
+						},
+						"event_settings":{
+							"hide":false,
+							"noprint":false
+						}
+					},
+					{
+						"name":"Miscalaneous event",
+						"category_settings":{
+							"hide":false,
+							"player_usable":false
+						},
+						"event_settings":{
+							"hide":false,
+							"noprint":false,
+							"color":"Blue-Grey"
+						}
+					},
+					{
+						"name":"Natural Event",
+						"category_settings":{
+							"hide":false,
+							"player_usable":false
+						},
+						"event_settings":{
+							"color":"Green",
+							"text":"text",
+							"hide":false,
+							"noprint":false
+						}
+					}
+				],
+				"events":[
+					{
+						"name":"Work on This Calendar Started",
+						"description":"Aecius started work on the Gregorian Calendar for Fantasy Calendar on this day.<br>",
+						"data":{
+							"has_duration":false,
+							"duration":0,
+							"show_first_last":false,
+							"only_happen_once":false,
+							"conditions":[
+								[
+									"Year",
+									"0",
+									[
+										"2019"
+									]
+								],
+								[
+									"&&"
+								],
+								[
+									"Month",
+									"0",
+									[
+										"5"
+									]
+								],
+								[
+									"&&"
+								],
+								[
+									"Day",
+									"0",
+									[
+										"23"
+									]
+								]
+							],
+							"connected_events":[
+
+							]
+						},
+						"category":"3",
+						"settings":{
+							"color":"Blue-Grey",
+							"text":"text",
+							"hide":false,
+							"hide_full":false,
+							"noprint":false
+						}
+					},
+					{
+						"name":"Christmas",
+						"description":"Christmas is a Christian holiday celebrating the birth of Christ. Due to a combination of marketability and long lasting traditions it is popular even among many non-Christians, especially in countries that have a strong Christian tradition.<br>",
+						"data":{
+							"has_duration":false,
+							"duration":0,
+							"show_first_last":false,
+							"only_happen_once":false,
+							"conditions":[
+								[
+									"Month",
+									"0",
+									[
+										"11"
+									]
+								],
+								[
+									"&&"
+								],
+								[
+									"Day",
+									"0",
+									[
+										"25"
+									]
+								]
+							],
+							"connected_events":[
+
+							]
+						},
+						"category":"1",
+						"settings":{
+							"color":"Red",
+							"text":"text",
+							"hide":false,
+							"hide_full":false,
+							"noprint":false
+						}
+					},
+					{
+						"name":"Winter Solstice",
+						"description":"The Winter Solstice is the day of the year with the least time between sunrise and sunset. Many western cultures consider it the official start of winter.<br>",
+						"data":{
+							"has_duration":false,
+							"duration":0,
+							"show_first_last":false,
+							"only_happen_once":false,
+							"conditions":[
+								[
+									"Season",
+									"0",
+									[
+										"0"
+									]
+								],
+								[
+									"&&"
+								],
+								[
+									"Season",
+									"8",
+									[
+										"1"
+									]
+								]
+							],
+							"connected_events":[
+
+							]
+						},
+						"category":"4",
+						"settings":{
+							"color":"Green",
+							"text":"text",
+							"hide":false,
+							"hide_full":false,
+							"noprint":false
+						}
+					},
+					{
+						"name":"Summer Solstice",
+						"description":"<p>The Summer Solstice is the day of the year with the most time between \nsunrise and sunset. Many western cultures consider it the official start\n of summer.</p>",
+						"data":{
+							"has_duration":false,
+							"duration":0,
+							"show_first_last":false,
+							"only_happen_once":false,
+							"conditions":[
+								[
+									"Season",
+									"0",
+									[
+										"1"
+									]
+								],
+								[
+									"&&"
+								],
+								[
+									"Season",
+									"8",
+									[
+										"1"
+									]
+								]
+							],
+							"connected_events":[
+
+							]
+						},
+						"category":"4",
+						"settings":{
+							"color":"Green",
+							"text":"text",
+							"hide":false,
+							"hide_full":false,
+							"noprint":false
+						}
+					},
+					{
+						"name":"Spring Equinox",
+						"description":"The Vernal Equinox,\nalso called the spring equinox is the day between the winter and\nsummer solstices where the day is the exact same length as the night.\nMany western cultures consider it the official start of Spring.\n",
+						"data":{
+							"has_duration":false,
+							"duration":0,
+							"show_first_last":false,
+							"only_happen_once":false,
+							"conditions":[
+								[
+									"Season",
+									"0",
+									[
+										"0"
+									]
+								],
+								[
+									"&&"
+								],
+								[
+									"Season",
+									"2",
+									[
+										"50"
+									]
+								]
+							],
+							"connected_events":[
+
+							]
+						},
+						"category":"4",
+						"settings":{
+							"color":"Green",
+							"text":"text",
+							"hide":false,
+							"hide_full":false,
+							"noprint":false
+						}
+					},
+					{
+						"name":"Autumnal Equinox",
+						"description":"The Autmumnal Equinox,\nalso called the Fall equinox is the day between the summer and\nwinter solstices where the day is the exact same length as the night.\nMany western cultures consider it the official start of Autumn.\n",
+						"data":{
+							"has_duration":false,
+							"duration":0,
+							"show_first_last":false,
+							"only_happen_once":false,
+							"conditions":[
+								[
+									"Season",
+									"0",
+									[
+										"1"
+									]
+								],
+								[
+									"&&"
+								],
+								[
+									"Season",
+									"2",
+									[
+										"50"
+									]
+								]
+							],
+							"connected_events":[
+
+							]
+						},
+						"category":"4",
+						"settings":{
+							"color":"Green",
+							"text":"text",
+							"hide":false,
+							"hide_full":false,
+							"noprint":false
+						}
+					},
+					{
+						"name":"Easter (old)",
+						"description":"<p>Easter is considered the most important feast for Christians, celebrating the resurrection of Christ. It is classed as a moveable feast occurring on the first full moon after the spring equinox, which is considered to be fixed at March 21st for the sake of computing the date.</p>(This version of the event was created before events could use eachother as conditions and can be considered deprecated. It can still serve as an example of how to make a moveable holiday as specific as Easter without event based events.)<br>",
+						"data":{
+							"has_duration":false,
+							"duration":0,
+							"show_first_last":false,
+							"only_happen_once":false,
+							"conditions":[
+								[
+									"",
+									[
+										[
+											"Moons",
+											"2",
+											[
+												"0",
+												"15"
+											]
+										],
+										[
+											"&&"
+										],
+										[
+											"!",
+											[
+												[
+													"Day",
+													"5",
+													[
+														"21"
+													]
+												],
+												[
+													"&&"
+												],
+												[
+													"Month",
+													"0",
+													[
+														"2"
+													]
+												]
+											]
+										]
+									]
+								],
+								[
+									"&&"
+								],
+								[
+									"",
+									[
+										[
+											"Month",
+											"0",
+											[
+												"2"
+											]
+										],
+										[
+											"||"
+										],
+										[
+											"",
+											[
+												[
+													"Month",
+													"0",
+													[
+														"3"
+													]
+												],
+												[
+													"&&"
+												],
+												[
+													"Day",
+													"3",
+													[
+														"25"
+													]
+												],
+												[
+													"&&"
+												],
+												[
+													"!",
+													[
+														[
+															"Day",
+															"4",
+															[
+																"19"
+															]
+														],
+														[
+															"&&"
+														],
+														[
+															"Moons",
+															"3",
+															[
+																"0",
+																"15"
+															]
+														]
+													]
+												],
+												[
+													"&&"
+												],
+												[
+													"!",
+													[
+														[
+															"Moons",
+															"3",
+															[
+																"0",
+																"19"
+															]
+														],
+														[
+															"&&"
+														],
+														[
+															"Day",
+															"2",
+															[
+																"24"
+															]
+														]
+													]
+												]
+											]
+										]
+									]
+								],
+								[
+									"&&"
+								],
+								[
+									"Weekday",
+									"0",
+									[
+										"7"
+									]
+								],
+								[
+									"&&"
+								],
+								[
+									"!",
+									[
+										[
+											"Month",
+											"0",
+											[
+												"2"
+											]
+										],
+										[
+											"&&"
+										],
+										[
+											"",
+											[
+												[
+													"",
+													[
+														[
+															"Moons",
+															"0",
+															[
+																"0",
+																"21"
+															]
+														],
+														[
+															"||"
+														],
+														[
+															"Moons",
+															"0",
+															[
+																"0",
+																"19"
+															]
+														]
+													]
+												],
+												[
+													"&&"
+												],
+												[
+													"Day",
+													"3",
+													[
+														"24"
+													]
+												]
+											]
+										],
+										[
+											"||"
+										],
+										[
+											"",
+											[
+												[
+													"Day",
+													"3",
+													[
+														"26"
+													]
+												],
+												[
+													"&&"
+												],
+												[
+													"Moons",
+													"3",
+													[
+														"0",
+														"21"
+													]
+												]
+											]
+										],
+										[
+											"&&"
+										],
+										[
+											"!",
+											[
+												[
+													"Moons",
+													"0",
+													[
+														"0",
+														"15"
+													]
+												],
+												[
+													"||"
+												],
+												[
+													"",
+													[
+														[
+															"Day",
+															"2",
+															[
+																"22"
+															]
+														],
+														[
+															"&&"
+														],
+														[
+															"Month",
+															"0",
+															[
+																"2"
+															]
+														],
+														[
+															"&&"
+														],
+														[
+															"Moons",
+															"0",
+															[
+																"0",
+																"17"
+															]
+														]
+													]
+												]
+											]
+										]
+									]
+								],
+								[
+									"&&"
+								],
+								[
+									"",
+									[
+										[
+											"",
+											[
+												[
+													"Moons",
+													"5",
+													[
+														"0",
+														"23"
+													]
+												],
+												[
+													"&&"
+												],
+												[
+													"Month",
+													"0",
+													[
+														"3"
+													]
+												]
+											]
+										],
+										[
+											"||"
+										],
+										[
+											"",
+											[
+												[
+													"Month",
+													"0",
+													[
+														"2"
+													]
+												],
+												[
+													"&&"
+												],
+												[
+													"Moons",
+													"5",
+													[
+														"0",
+														"22"
+													]
+												]
+											]
+										]
+									]
+								]
+							],
+							"connected_events":[
+
+							]
+						},
+						"category":"0",
+						"settings":{
+							"color":"Red",
+							"text":"text",
+							"hide":false,
+							"hide_full":true,
+							"noprint":false
+						}
+					},
+					{
+						"name":"Valentine&#39;s Day",
+						"description":"Valentine's day is a celebration of love and romance that is popular across the world. Many more cynically minded people mosty consider it an attempt to monetize the expecation of romantic gestures on the holiday through gift cards, flowers, chocolate and dates.<br>",
+						"data":{
+							"has_duration":false,
+							"duration":0,
+							"show_first_last":false,
+							"only_happen_once":false,
+							"conditions":[
+								[
+									"Month",
+									"0",
+									[
+										"1"
+									]
+								],
+								[
+									"&&"
+								],
+								[
+									"Day",
+									"0",
+									[
+										"14"
+									]
+								]
+							],
+							"connected_events":[
+
+							]
+						},
+						"category":"2",
+						"settings":{
+							"color":"Pink",
+							"text":"text",
+							"hide":false,
+							"hide_full":false,
+							"noprint":false
+						}
+					},
+					{
+						"name":"New Year&#39;s Day",
+						"description":"New Year's day marks the start of a new year on the Gregorian Calendar. It starts when the clock strikes midnight and is often celebrated with fireworks, champagne and kissing.<br>",
+						"data":{
+							"has_duration":false,
+							"duration":0,
+							"show_first_last":false,
+							"only_happen_once":false,
+							"conditions":[
+								[
+									"Day",
+									"7",
+									[
+										"1"
+									]
+								]
+							],
+							"connected_events":[
+
+							]
+						},
+						"category":"1",
+						"settings":{
+							"color":"Dark-Solid",
+							"text":"text",
+							"hide":false,
+							"hide_full":false,
+							"noprint":false
+						}
+					},
+					{
+						"name":"Halloween",
+						"description":"<p>Halloween is holiday popular in the US, Canada and Ireland that has gradually been adopted by more and more countries. It is often celebrated by people dressing up, usually as something scary. Children will often go from door to door shouting \"trick or treat\" in the hopes of receiving candy, while adults tend to go to parties.<br></p>",
+						"data":{
+							"has_duration":false,
+							"duration":0,
+							"show_first_last":false,
+							"only_happen_once":false,
+							"event_based_event":false,
+							"conditions":[
+								[
+									"Month",
+									"0",
+									[
+										"9"
+									]
+								],
+								[
+									"&&"
+								],
+								[
+									"Day",
+									"0",
+									[
+										"31"
+									]
+								]
+							]
+						},
+						"category":"1",
+						"settings":{
+							"color":"Dark-Solid",
+							"text":"text",
+							"hide":false,
+							"noprint":false
+						}
+					},
+					{
+						"name":"Paschal Full Moon",
+						"description":"The first full moon after march 21st, which is considered the fixed date for the spring equinox.<br>",
+						"data":{
+							"has_duration":false,
+							"duration":0,
+							"show_first_last":false,
+							"only_happen_once":true,
+							"conditions":[
+								[
+									"",
+									[
+										[
+											"",
+											[
+												[
+													"Month",
+													"0",
+													[
+														"2"
+													]
+												],
+												[
+													"&&"
+												],
+												[
+													"Day",
+													"2",
+													[
+														"21"
+													]
+												]
+											]
+										],
+										[
+											"||"
+										],
+										[
+											"",
+											[
+												[
+													"Month",
+													"0",
+													[
+														"3"
+													]
+												],
+												[
+													"&&"
+												],
+												[
+													"Day",
+													"5",
+													[
+														"21"
+													]
+												]
+											]
+										]
+									]
+								],
+								[
+									"&&"
+								],
+								[
+									"Moons",
+									"0",
+									[
+										"0",
+										"15"
+									]
+								]
+							],
+							"connected_events":[
+
+							]
+						},
+						"category":"-1",
+						"settings":{
+							"color":"Purple",
+							"text":"text",
+							"hide":false,
+							"hide_full":true,
+							"noprint":false
+						}
+					},
+					{
+						"name":"Easter",
+						"description":"<p>Easter is considered the most important feast for Christians, \ncelebrating the resurrection of Christ. It is classed as a moveable \nfeast occurring on the first full moon after the spring equinox, which \nis considered to be fixed at March 21st for the sake of computing the \ndate.</p>",
+						"data":{
+							"has_duration":false,
+							"duration":0,
+							"show_first_last":false,
+							"only_happen_once":false,
+							"conditions":[
+								[
+									"Events",
+									"5",
+									[
+										0,
+										"6"
+									]
+								],
+								[
+									"&&"
+								],
+								[
+									"Weekday",
+									"0",
+									[
+										"7"
+									]
+								]
+							],
+							"connected_events":[
+								10
+							]
+						},
+						"category":"0",
+						"settings":{
+							"color":"Red",
+							"text":"text",
+							"hide":false,
+							"hide_full":false,
+							"noprint":false
+						}
+					},
+					{
+						"name":"Easter Monday",
+						"description":"The monday following the Easter Sunday is often considered part of the Easter Celebration and is a free day in many countries with a strong Christian tradition.<br>",
+						"data":{
+							"has_duration":false,
+							"duration":0,
+							"show_first_last":false,
+							"only_happen_once":false,
+							"conditions":[
+								[
+									"Events",
+									"0",
+									[
+										0,
+										"1"
+									]
+								]
+							],
+							"connected_events":[
+								11
+							]
+						},
+						"category":"0",
+						"settings":{
+							"color":"Red",
+							"text":"text",
+							"hide":false,
+							"hide_full":false,
+							"noprint":false
+						}
+					},
+					{
+						"name":"Good Friday",
+						"description":"Good Friday is the friday preceding Easter. It comemmorates the crucifixion of Christ according to the Bible.<br>",
+						"data":{
+							"has_duration":false,
+							"duration":0,
+							"show_first_last":false,
+							"only_happen_once":false,
+							"conditions":[
+								[
+									"Events",
+									"1",
+									[
+										0,
+										"2"
+									]
+								]
+							],
+							"connected_events":[
+								11
+							]
+						},
+						"category":"0",
+						"settings":{
+							"color":"Red",
+							"text":"text",
+							"hide":false,
+							"hide_full":false,
+							"noprint":false
+						}
+					},
+					{
+						"name":"Ascenscion Day",
+						"description":"<p>Traditionally celebrated on the 40th day after Easter, Ascenscion celebrates the day in which the Bible marks as the one Jesus ascended into heaven.<br><br>Some denominations celebrate it on the sunday following the 40th day instead.<br></p><br><br>",
+						"data":{
+							"has_duration":false,
+							"duration":0,
+							"show_first_last":false,
+							"only_happen_once":false,
+							"conditions":[
+								[
+									"Events",
+									"0",
+									[
+										0,
+										"39"
+									]
+								]
+							],
+							"connected_events":[
+								11
+							]
+						},
+						"category":"0",
+						"settings":{
+							"color":"Red",
+							"text":"text",
+							"hide":false,
+							"hide_full":false,
+							"noprint":false
+						}
+					},
+					{
+						"name":"Pentecost",
+						"description":"Celebrated exactly 50 days after easter, Pentecost is the celebration of the Holy Spirit appearing before the Apostles as described in the Bible.<br>",
+						"data":{
+							"has_duration":false,
+							"duration":0,
+							"show_first_last":false,
+							"only_happen_once":false,
+							"conditions":[
+								[
+									"Events",
+									"0",
+									[
+										0,
+										"49"
+									]
+								]
+							],
+							"connected_events":[
+								11
+							]
+						},
+						"category":"0",
+						"settings":{
+							"color":"Red",
+							"text":"text",
+							"hide":false,
+							"hide_full":false,
+							"noprint":false
+						}
+					}
+				]
+			}
+		}
 	},
 	'Forgotten Realms': {
 		'dynamic_data': {'year':1,'timespan':0,'day':0,'epoch':0,'custom_location':false,'location':'Equatorial'},
@@ -354,10 +1615,7 @@ function parse_json(json){
 
 		switch(source){
 			case '2.0':
-				return {
-					dynamic_data: calendar.dynamic_data,
-					static_data: calendar.static_data
-				}
+				return process_fantasycalendar(calendar, dynamic_data, static_data);
 			case '1.0':
 				return process_old_fantasycalendar(calendar, dynamic_data, static_data);
 			case 'donjon':
@@ -373,6 +1631,977 @@ function parse_json(json){
 
 	}
 }
+
+function process_fantasycalendar(calendar, dynamic_data, static_data){
+
+	if(calendar.static_data.year_data.global_week !== undefined){
+		for(var i = 0; i < calendar.static_data.year_data.global_week.length; i++){
+			static_data.year_data.global_week.push(escapeHtml(unescapeHtml(calendar.static_data.year_data.global_week[i])).toString());
+		}
+	}
+
+	if(calendar.static_data.year_data.timespans !== undefined){
+
+		for(var i = 0; i < calendar.static_data.year_data.timespans.length; i++){
+			
+			var timespan = {};
+			var current_timespan = calendar.static_data.year_data.timespans[i];
+			
+
+			if(current_timespan.name !== undefined){
+				timespan.name = escapeHtml(unescapeHtml(current_timespan.name)).toString();
+			}else{
+				throw `Timespan ${i+1} does not have name data!`;
+			}
+			
+			if(current_timespan.type === 'month' || current_timespan.type === 'intercalary'){
+				timespan.type = escapeHtml(unescapeHtml(current_timespan.type).toString())
+			}else{
+				throw `${timespan.name} has invalid type!`;
+			}
+
+			if(!isNaN(Number(current_timespan.length))){
+				timespan.length = Number(current_timespan.length)
+			}else{
+				throw `${timespan.name} has invalid length!`;
+			}
+
+			if(!isNaN(Number(current_timespan.interval))){
+				timespan.interval = Number(current_timespan.interval)
+			}else{
+				throw `${timespan.name} has invalid interval!`;
+			}
+
+			if(!isNaN(Number(current_timespan.offset))){
+				timespan.offset = Number(current_timespan.offset)
+			}else{
+				throw `${timespan.name} has invalid offset!`;
+			}
+
+			if(current_timespan.week !== undefined && Array.isArray(current_timespan.week)){
+				for(var j = 0; j < current_timespan.week.length; j++){
+					timespan.push(escapeHtml(current_timespan.week[j]))
+				}
+			}
+
+			static_data.year_data.timespans.push(timespan);
+
+		}
+
+	}
+
+	if(calendar.static_data.year_data.leap_days !== undefined){
+
+		for(var i = 0; i < calendar.static_data.year_data.leap_days.length; i++){
+			
+			var leap_day = {};
+			var current_leap_day = calendar.static_data.year_data.leap_days[i];
+
+			if(current_leap_day.name !== undefined){
+				leap_day.name = escapeHtml(unescapeHtml(current_leap_day.name)).toString();
+			}else{
+				throw `Leap day ${i+1} does not have name data!`;
+			}
+			
+			if(current_leap_day.intercalary !== undefined && typeof current_leap_day.intercalary === "boolean"){
+				leap_day.intercalary = current_leap_day.intercalary
+			}else{
+				throw `${leap_day.name} has invalid intercalary setting!`;
+			}
+
+			if(current_leap_day.timespan && !isNaN(Number(current_leap_day.timespan))){
+				leap_day.timespan = Number(current_leap_day.timespan)
+			}else{
+				throw `${leap_day.name} has invalid timespan selection!`;
+			}
+			
+			if(current_leap_day.adds_week_day !== undefined){
+				if(typeof current_leap_day.adds_week_day === "boolean"){
+					leap_day.adds_week_day = current_leap_day.adds_week_day
+				}else{
+					throw `${leap_day.name} has invalid add week day setting!`;
+				}
+			}
+			
+			if(current_leap_day.removes_week_day !== undefined){
+				if(typeof current_leap_day.removes_week_day === "boolean"){
+					leap_day.removes_week_day = current_leap_day.removes_week_day
+				}else{
+					throw `${leap_day.name} has invalid remove week day setting!`;
+				}
+			}
+
+			if(current_leap_day.day !== undefined){
+				if(!isNaN(Number(current_leap_day.day))){
+					leap_day.day = Number(current_leap_day.day)
+				}else{
+					throw `${leap_day.name} has invalid day number!`;
+				}
+			}
+
+			if(current_leap_day.interval.length > 0){
+				var local_regex = /^\!*[1-9]+[0-9]{0,}$/;
+				var intervals = current_leap_day.interval.split(',');
+				for(var i = 0; i < intervals.length; i++){
+					if(!local_regex.test(intervals[i])){
+						throw `${leap_day.name} has invalid interval!`;
+					}
+				}
+			}
+
+			if(current_leap_day.offset !== undefined && !isNaN(Number(current_leap_day.offset))){
+				leap_day.offset = Number(current_leap_day.offset)
+			}else{
+				throw `${leap_day.name} has invalid offset!`;
+			}
+
+			static_data.year_data.leap_days.push(leap_day);
+
+		}
+
+	}
+
+	if(calendar.static_data.moons !== undefined){
+
+		for(var i = 0; i < calendar.static_data.moons.length; i++){
+			
+			var moon = {};
+			var current_moon = calendar.static_data.moons[i];
+
+			if(current_moon.name !== undefined){
+				moon.name = escapeHtml(unescapeHtml(current_moon.name)).toString();
+			}else{
+				throw `Moon ${i+1} does not have name data!`;
+			}
+
+			if(typeof current_moon.custom_phase === "boolean"){
+				if(current_moon.custom_phase){
+					var global_regex = /[`!+~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z ]/g;
+					if(global_regex.test(interval_val)){
+						throw `${moon.name} has invalid custom phases!`;
+					}
+
+					var granularity = Math.max.apply(null, current_moon.custom_cycle.split(','))+1;
+
+					if(granularity > 32){
+						throw `${moon.name} has invalid custom cycle number (numbers too high)!`;
+					}
+
+					moon.custom_phase = Number(current_moon.custom_phase)
+					moon.custom_cycle = Number(current_moon.custom_cycle)
+
+				}else{
+					if(current_moon.cycle && !isNaN(Number(current_moon.cycle))){
+						moon.cycle = Number(current_moon.cycle)
+					}else{
+						throw `${moon.name} has invalid cycle!`;
+					}
+				}
+
+			}
+
+			if(current_moon.shift && !isNaN(Number(current_moon.shift))){
+				moon.shift = Number(current_moon.shift)
+			}else{
+				throw `${moon.name} has invalid shift!`;
+			}
+
+			if(current_moon.granularity && !isNaN(Number(current_moon.granularity))){
+				if(current_moon.granularity > 32){
+					throw `${moon.name} has too high granularity! (32 max)`
+				}
+				moon.granularity = Number(current_moon.granularity)
+			}else{
+				throw `${moon.name} has invalid granularity!`;
+			}
+
+			if(current_moon.hidden !== undefined && typeof current_moon.hidden === "boolean"){
+				moon.hidden = current_moon.hidden
+			}else{
+				throw `${moon.name} has invalid hidden property!`;
+			}
+
+			if(current_moon.color !== undefined && isHex(current_moon.color)){
+				moon.color = current_moon.color
+			}else{
+				throw `${moon.name} has invalid color!`;
+			}
+			
+			static_data.moons.push(moon);
+
+		}
+
+	}
+
+
+	if(calendar.static_data.clock !== undefined){
+
+		if(calendar.static_data.clock.enabled !== undefined && typeof calendar.static_data.clock.enabled === "boolean"){
+			static_data.clock.enabled = calendar.static_data.clock.enabled
+		}else{
+			throw `Clock has invalid enabled property!`;
+		}
+
+		if(calendar.static_data.clock.hours !== undefined && !isNaN(Number(calendar.static_data.clock.hours))){
+			if(Number(calendar.static_data.clock.hours) < 1){
+				throw `Clock has invalid amount of hours!`;
+			}
+			static_data.clock.hours = Number(calendar.static_data.clock.hours);
+		}else{
+			throw `Clock has invalid hours!`;
+		}
+
+		if(calendar.static_data.clock.minutes !== undefined && !isNaN(Number(calendar.static_data.clock.minutes))){
+			if(Number(calendar.static_data.clock.minutes) < 1){
+				throw `Clock has invalid amount of minutes!`;
+			}
+			static_data.clock.minutes = Number(calendar.static_data.clock.minutes);
+		}else{
+			throw `Clock has invalid minutes!`;
+		}
+
+		if(calendar.static_data.clock.offset !== undefined && !isNaN(Number(calendar.static_data.clock.offset))){
+			static_data.clock.offset = Number(calendar.static_data.clock.offset);
+		}else{
+			throw `Clock has invalid offset!`;
+		}
+
+	}
+
+	if(calendar.static_data.seasons !== undefined){
+
+		if(calendar.static_data.seasons.data !== undefined){
+
+			for(var i = 0; i < calendar.static_data.seasons.data.length; i++){
+
+				var season = {}
+				var current_season = calendar.static_data.seasons.data[i];
+				
+				if(current_season.name !== undefined){
+					season.name = escapeHtml(unescapeHtml(current_season.name)).toString();
+				}else{
+					throw `Season ${i+1} does not have name data!`;
+				}
+
+				if(current_season.transition_length !== undefined && !isNaN(Number(current_season.transition_length))){
+					season.transition_length = current_season.transition_length;
+				}else{
+					throw `${season.name} has invalid transition length!`;
+				}
+
+				if(current_season.duration !== undefined && !isNaN(Number(current_season.duration))){
+					season.duration = current_season.duration;
+				}else{
+					throw `${season.name} has invalid duration!`;
+				}
+
+				if(current_season.time !== undefined){
+
+					season.time = {};
+
+					if(current_season.time.sunrise !== undefined){
+
+						season.time.sunrise = {};
+
+						if(current_season.time.sunrise.hour !== undefined && !isNaN(Number(current_season.time.sunrise.hour))){
+							season.time.sunrise.hour = current_season.time.sunrise.hour;
+						}else{
+							throw `${season.name} has invalid sunrise hour data!`;
+						}
+
+						if(current_season.time.sunrise.minute !== undefined && !isNaN(Number(current_season.time.sunrise.minute))){
+							season.time.sunrise.minute = current_season.time.sunrise.minute;
+						}else{
+							throw `${season.name} has invalid sunrise minute data!`;
+						}
+
+					}else{
+
+						throw `${season.name} has invalid sunrise data!`;
+
+					}
+
+					if(current_season.time.sunset !== undefined){
+
+						season.time.sunset = {};
+
+						if(current_season.time.sunset.hour !== undefined && !isNaN(Number(current_season.time.sunset.hour))){
+							season.time.sunset.hour = current_season.time.sunset.hour;
+						}else{
+							throw `${season.name} has invalid sunset hour data!`;
+						}
+
+						if(current_season.time.sunset.minute !== undefined && !isNaN(Number(current_season.time.sunset.minute))){
+							season.time.sunset.minute = current_season.time.sunset.minute;
+						}else{
+							throw `${season.name} has invalid sunset minute data!`;
+						}
+
+					}else{
+
+						throw `${season.name} has invalid sunset data!`;
+
+					}
+
+
+				}else{
+					throw `${season.name} has invalid time data!`;
+				}
+
+				static_data.seasons.data.push(season);
+
+			}
+
+		}
+
+		if(calendar.static_data.seasons.locations !== undefined){
+
+			for(var i = 0; i < calendar.static_data.seasons.locations.length; i++){
+
+				var location = {}
+				var current_location = calendar.static_data.seasons.locations.data[i];
+
+				if(current_location.name !== undefined){
+					location.name = escapeHtml(unescapeHtml(current_location.name)).toString();
+				}else{
+					throw `Location ${i+1} does not have name data!`;
+				}
+
+				if(current_location.seasons !== undefined && Array.isArray(current_location.seasons)){
+
+					for(var j = 0; j < current_location.seasons.length; j++){
+
+						var season = {}
+						var current_season = calendar.static_data.seasons.data[j];
+
+						if(current_season.time !== undefined){
+
+							season.time = {};
+
+							if(current_season.time.sunrise !== undefined){
+
+								season.time.sunrise = {};
+
+								if(current_season.time.sunrise.hour !== undefined && !isNaN(Number(current_season.time.sunrise.hour))){
+									season.time.sunrise.hour = current_season.time.sunrise.hour;
+								}else{
+									throw `${season.name} has invalid sunrise hour data!`;
+								}
+
+								if(current_season.time.sunrise.minute !== undefined && !isNaN(Number(current_season.time.sunrise.minute))){
+									season.time.sunrise.minute = current_season.time.sunrise.minute;
+								}else{
+									throw `${season.name} has invalid sunrise minute data!`;
+								}
+
+							}else{
+
+								throw `${season.name} has invalid sunrise data!`;
+
+							}
+
+							if(current_season.time.sunset !== undefined){
+
+								season.time.sunset = {};
+
+								if(current_season.time.sunset.hour !== undefined && !isNaN(Number(current_season.time.sunset.hour))){
+									season.time.sunset.hour = current_season.time.sunset.hour;
+								}else{
+									throw `${season.name} has invalid sunset hour data!`;
+								}
+
+								if(current_season.time.sunset.minute !== undefined && !isNaN(Number(current_season.time.sunset.minute))){
+									season.time.sunset.minute = current_season.time.sunset.minute;
+								}else{
+									throw `${season.name} has invalid sunset minute data!`;
+								}
+
+							}else{
+
+								throw `${season.name} has invalid sunset data!`;
+
+							}
+
+						}else{
+							throw `${location.name} has invalid time data!`;
+						}
+
+						if(current_season.weather !== undefined){
+
+							season.weather = {};
+
+							if(current_season.temp_low !== undefined && !isNaN(Number(current_season.temp_low))){
+								season.weather.temp_low = current_season.weather.temp_low;
+							}else{
+								throw `${location.name} has invalid low temperature!`;
+							}
+
+							if(current_season.temp_high !== undefined && !isNaN(Number(current_season.temp_high))){
+								season.weather.temp_high = current_season.weather.temp_high;
+							}else{
+								throw `${location.name} has invalid high temperature!`;
+							}
+
+							if(current_season.precipitation !== undefined && !isNaN(Number(current_season.precipitation))){
+								season.weather.precipitation = current_season.weather.precipitation;
+							}else{
+								throw `${location.name} has invalid precipitation chance!`;
+							}
+
+							if(current_season.precipitation_intensity !== undefined && !isNaN(Number(current_season.precipitation_intensity))){
+								season.weather.precipitation_intensity = current_season.weather.precipitation_intensity;
+							}else{
+								throw `${location.name} has invalid precipitation intensity!`;
+							}
+
+						}else{
+							throw `${location.name} has invalid weather!`;
+						}
+
+						static_data.seasons.locations.seasons.data.push(season);
+
+					}
+
+				}else{
+					throw `${location.name} has invalid season data!`;
+				}
+
+				if(current_location.settings !== undefined){
+
+					location.settings = {};
+
+					if(current_location.settings.timezone !== undefined){
+
+						location.settings.timezone = {};
+
+						if(current_season.settings.timezone.hour !== undefined && !isNaN(Number(current_season.settings.timezone.hour))){
+							location.settings.timezone.hour = current_location.settings.timezone.hour;
+						}else{
+							throw `${location.name} has invalid hour timezone value!`;
+						}
+
+						if(current_season.settings.timezone.minute !== undefined && !isNaN(Number(current_season.settings.timezone.minute))){
+							location.settings.timezone.minute = current_location.settings.timezone.minute;
+						}else{
+							throw `${location.name} has invalid minute timezone value!`;
+						}
+
+					}else{
+						throw `${location.name} has invalid timezone data!`;
+					}
+
+					if(current_season.settings.large_noise_frequency !== undefined && !isNaN(Number(current_season.settings.large_noise_frequency))){
+						location.settings.large_noise_frequency = current_location.settings.large_noise_frequency;
+					}else{
+						throw `${location.name} has invalid large noise frequency!`;
+					}
+
+					if(current_location.settings.large_noise_amplitude !== undefined && !isNaN(Number(current_location.settings.large_noise_amplitude))){
+						location.settings.large_noise_amplitude = current_location.settings.large_noise_amplitude;
+					}else{
+						throw `${location.name} has invalid large noise amplitude!`;
+					}
+
+					if(current_location.settings.medium_noise_frequency !== undefined && !isNaN(Number(current_location.settings.medium_noise_frequency))){
+						location.settings.medium_noise_frequency = current_location.settings.medium_noise_frequency;
+					}else{
+						throw `${location.name} has invalid medium noise frequency!`;
+					}
+
+					if(current_location.settings.medium_noise_amplitude !== undefined && !isNaN(Number(current_location.settings.medium_noise_amplitude))){
+						location.settings.medium_noise_amplitude = current_location.settings.medium_noise_amplitude;
+					}else{
+						throw `${location.name} has invalid medium noise amplitude!`;
+					}
+
+					if(current_location.settings.small_noise_frequency !== undefined && !isNaN(Number(current_location.settings.small_noise_frequency))){
+						location.settings.small_noise_frequency = current_location.settings.small_noise_frequency;
+					}else{
+						throw `${location.name} has invalid small noise frequency!`;
+					}
+
+					if(current_location.settings.small_noise_amplitude !== undefined && !isNaN(Number(current_location.settings.small_noise_amplitude))){
+						location.settings.small_noise_amplitude = current_location.settings.small_noise_amplitude;
+					}else{
+						throw `${location.name} has invalid small noise amplitude!`;
+					}
+
+				}
+
+				static_data.seasons.locations.push(location);
+
+			}
+
+		}
+
+
+		if(calendar.static_data.seasons.global_settings !== undefined){
+
+			var global_settings = calendar.static_data.seasons.global_settings;
+
+			if(global_settings.season_offset !== undefined && !isNaN(Number(global_settings.season_offset))){
+				static_data.seasons.global_settings.season_offset = global_settings.season_offset;
+			}else{
+				throw `Season settings have invalid season offset!`;
+			}
+
+			if(global_settings.weather_offset !== undefined && !isNaN(Number(global_settings.weather_offset))){
+				static_data.seasons.global_settings.weather_offset = global_settings.weather_offset;
+			}else{
+				throw `Season settings have invalid weather offset!`;
+			}
+
+			if(global_settings.seed !== undefined && !isNaN(Number(global_settings.seed))){
+				static_data.seasons.global_settings.seed = global_settings.seed;
+			}else{
+				throw `Season settings have invalid seed!`;
+			}
+
+			if(global_settings.temp_sys !== undefined && ['imperial', 'metric', 'both_i', 'both_m'].includes(global_settings.temp_sys)){
+				static_data.seasons.global_settings.temp_sys = global_settings.temp_sys;
+			}else{
+				throw `Season settings have invalid temperature system!`;
+			}
+
+			if(global_settings.wind_sys !== undefined && ['imperial', 'metric', 'both'].includes(global_settings.wind_sys)){
+				static_data.seasons.global_settings.wind_sys = global_settings.wind_sys;
+			}else{
+				throw `Season settings have invalid wind system!`;
+			}
+
+			if(global_settings.cinematic !== undefined && typeof global_settings.cinematic === "boolean"){
+				static_data.seasons.global_settings.cinematic = global_settings.cinematic
+			}else{
+				throw `Season settings have invalid cinematic data!`;
+			}
+
+			if(global_settings.enable_weather !== undefined && typeof global_settings.enable_weather === "boolean"){
+				static_data.seasons.global_settings.enable_weather = global_settings.enable_weather
+			}else{
+				throw `Season settings have invalid enable weather!`;
+			}
+
+		}else{
+			throw `Season settings have invalid season global settings!`;
+		}
+	
+	}
+
+	if(calendar.static_data.eras !== undefined){
+
+		if(Array.isArray(calendar.static_data.eras)){
+
+			for(var i = 0; i < calendar.static_data.eras.length; i++){
+
+				var era = {};
+				var current_era = calendar.static_data.eras[i];
+
+				if(current_era.name !== undefined){
+					era.name = escapeHtml(unescapeHtml(current_era.name)).toString();
+				}else{
+					throw `Era ${i+1} does not have name data!`;
+				}
+
+				if(current_era.abbreviation !== undefined){
+					era.abbreviation = escapeHtml(unescapeHtml(current_era.abbreviation)).toString();
+				}else{
+					throw `${era.name} does not have abbreviation data!`;
+				}
+
+				if(current_era.description !== undefined){
+					era.description = escapeHtml(unescapeHtml(current_era.description)).toString();
+				}else{
+					throw `${era.name} does not have description data!`;
+				}
+
+				if(current_era.settings !== undefined){
+
+					era.settings = {};
+
+					if(current_era.settings.show_as_event !== undefined && typeof current_era.settings.show_as_event === "boolean"){
+						era.settings.show_as_event = current_era.settings.show_as_event;
+					}else{
+						throw `${era.name} does not have valid show as event data!`;
+					}
+
+					if(current_era.settings.event_category !== undefined && !isNaN(Number(current_era.settings.event_category))){
+						era.settings.event_category = Number(current_era.settings.event_category);
+					}else{
+						throw `${era.name} does not have valid event category!`;
+					}
+
+					if(current_era.settings.ends_year !== undefined && typeof current_era.settings.ends_year === "boolean"){
+						era.settings.ends_year = current_era.settings.ends_year;
+					}else{
+						throw `${era.name} does not have valid ends year data!`;
+					}
+					
+					if(current_era.settings.restart !== undefined && typeof current_era.settings.restart === "boolean"){
+						era.settings.restart = current_era.settings.restart;
+					}else{
+						throw `${era.name} does not have valid restarts year data!`;
+					}
+
+				}else{
+					throw `${era.name} does not have settings data!`;
+				}
+
+				static_data.eras.push(era);
+
+			}
+
+
+		}else{
+			throw `Eras are invalid!`;
+		}
+
+	}
+
+	if(calendar.static_data.settings.layout !== undefined && ['grid', 'vertical', 'wide', 'minimalistic'].includes(calendar.static_data.settings.layout)){
+		static_data.settings.layout = calendar.static_data.settings.layout;
+	}else{
+		throw `Setting: layout is invalid!`;
+	}
+
+	if(calendar.static_data.settings.show_current_month !== undefined && typeof calendar.static_data.settings.show_current_month === "boolean"){
+		static_data.settings.show_current_month = calendar.static_data.settings.show_current_month;
+	}else{
+		throw `Setting: show_current_month is invalid!`;
+	}
+
+	if(calendar.static_data.settings.show_era_abbreviation !== undefined && typeof calendar.static_data.settings.show_era_abbreviation === "boolean"){
+		static_data.settings.show_era_abbreviation = calendar.static_data.settings.show_era_abbreviation;
+	}else{
+		throw `Setting: show_era_abbreviation is invalid!`;
+	}
+
+	if(calendar.static_data.settings.allow_view !== undefined && typeof calendar.static_data.settings.allow_view === "boolean"){
+		static_data.settings.allow_view = calendar.static_data.settings.allow_view;
+	}else{
+		throw `Setting: allow_view is invalid!`;
+	}
+
+	if(calendar.static_data.settings.only_backwards !== undefined && typeof calendar.static_data.settings.only_backwards === "boolean"){
+		static_data.settings.only_backwards = calendar.static_data.settings.only_backwards;
+	}else{
+		throw `Setting: only_backwards is invalid!`;
+	}
+
+	if(calendar.static_data.settings.only_reveal_today !== undefined && typeof calendar.static_data.settings.only_reveal_today === "boolean"){
+		static_data.settings.only_reveal_today = calendar.static_data.settings.only_reveal_today;
+	}else{
+		throw `Setting: only_reveal_today is invalid!`;
+	}
+
+	if(calendar.static_data.settings.hide_moons !== undefined && typeof calendar.static_data.settings.hide_moons === "boolean"){
+		static_data.settings.hide_moons = calendar.static_data.settings.hide_moons;
+	}else{
+		throw `Setting: hide_moons is invalid!`;
+	}
+
+	if(calendar.static_data.settings.hide_clock !== undefined && typeof calendar.static_data.settings.hide_clock === "boolean"){
+		static_data.settings.hide_clock = calendar.static_data.settings.hide_clock;
+	}else{
+		throw `Setting: hide_clock is invalid!`;
+	}
+
+	if(calendar.static_data.settings.hide_events !== undefined && typeof calendar.static_data.settings.hide_events === "boolean"){
+		static_data.settings.hide_events = calendar.static_data.settings.hide_events;
+	}else{
+		throw `Setting: hide_events is invalid!`;
+	}
+
+	if(calendar.static_data.settings.hide_eras !== undefined && typeof calendar.static_data.settings.hide_eras === "boolean"){
+		static_data.settings.hide_eras = calendar.static_data.settings.hide_eras;
+	}else{
+		throw `Setting: hide_eras is invalid!`;
+	}
+
+	if(calendar.static_data.settings.hide_all_weather !== undefined && typeof calendar.static_data.settings.hide_all_weather === "boolean"){
+		static_data.settings.hide_all_weather = calendar.static_data.settings.hide_all_weather;
+	}else{
+		throw `Setting: hide_all_weather is invalid!`;
+	}
+
+	if(calendar.static_data.settings.hide_future_weather !== undefined && typeof calendar.static_data.settings.hide_future_weather === "boolean"){
+		static_data.settings.hide_future_weather = calendar.static_data.settings.hide_future_weather;
+	}else{
+		throw `Setting: hide_future_weather is invalid!`;
+	}
+
+	if(calendar.static_data.settings.add_month_number !== undefined && typeof calendar.static_data.settings.add_month_number === "boolean"){
+		static_data.settings.add_month_number = calendar.static_data.settings.add_month_number;
+	}else{
+		throw `Setting: add_month_number is invalid!`;
+	}
+
+	if(calendar.static_data.settings.add_year_day_number !== undefined && typeof calendar.static_data.settings.add_year_day_number === "boolean"){
+		static_data.settings.add_year_day_number = calendar.static_data.settings.add_year_day_number;
+	}else{
+		throw `Setting: add_year_day_number is invalid!`;
+	}
+
+	if(calendar.static_data.cycles !== undefined){
+
+		if(calendar.static_data.cycles.format !== undefined){
+			static_data.cycles.format = escapeHtml(unescapeHtml(calendar.static_data.cycles.format)).toString();
+		}else{
+			throw `Cycles has invalid format!`;
+		}
+
+		if(calendar.static_data.cycles.data !== undefined && Array.isArray(calendar.static_data.cycles.data)){
+
+			for(var i = 0; i < calendar.static_data.cycles.data.length; i++){
+
+				var cycle = {};
+				var current_cycle = calendar.static_data.cycles.data[i];
+
+				if(calendar.static_data.cycles.data !== undefined && Array.isArray(current_cycle.names)){
+
+					cycle.names = [];
+
+					for(var j = 0; j < current_cycle.names.length; j++){
+
+						cycle.names.push(escapeHtml(unescapeHtml(current_cycle.names[j])).toString());
+
+					}
+
+				}else{
+					throw `Cycle ${i+1} does not have valid names!`;
+				}
+
+				if(current_era.offset !== undefined && !isNaN(Number(current_era.offset))){
+					cycle.offset = Number(current_era.offset);
+				}else{
+					throw `Cycle ${i+1} does not have valid offset!`;
+				}
+
+				static_data.cycles.data.push(cycle)
+
+			}
+
+		}else{
+			throw `Cycles has invalid data!`;
+		}
+
+	}
+
+	if(calendar.static_data.event_data !== undefined){
+
+		if(calendar.static_data.event_data.categories !== undefined && Array.isArray(calendar.static_data.event_data.categories)){
+
+			for(var i = 0; i < calendar.static_data.event_data.categories.length; i++){
+
+				var category = {};
+				var current_category = calendar.static_data.event_data.categories[i];
+
+				if(current_category.name !== undefined){
+					category.name = escapeHtml(unescapeHtml(current_category.name)).toString();
+				}else{
+					throw `Event category ${i+1} does not have name data!`;
+				}
+
+				if(current_category.category_settings !== undefined){
+
+					category.category_settings = {};
+
+					if(current_category.category_settings.hide !== undefined && typeof current_category.category_settings.hide === "boolean"){
+						category.category_settings.hide = current_category.category_settings.hide;
+					}else{
+						throw `${category.name} does not have hide category settings!`;
+					}
+
+					if(current_category.category_settings.player_usable !== undefined && typeof current_category.category_settings.player_usable === "boolean"){
+						category.category_settings.player_usable = current_category.category_settings.player_usable;
+					}else{
+						throw `${category.name} does not have player usable category settings!`;
+					}
+
+				}else{
+					throw `${category.name} does not have event settings!`;
+				}
+
+				if(current_category.event_settings !== undefined){
+
+					category.event_settings = {};
+
+					if(current_category.event_settings.color !== undefined){
+						category.event_settings.color = escapeHtml(unescapeHtml(current_category.event_settings.color)).toString();
+					}else{
+						throw `${category.name} does not have color event settings!`;
+					}
+
+					if(current_category.event_settings.text !== undefined){
+						category.event_settings.text = escapeHtml(unescapeHtml(current_category.event_settings.text)).toString();
+					}else{
+						throw `${category.name} does not have text event settings!`;
+					}
+
+					if(current_category.event_settings.hide !== undefined && typeof current_category.event_settings.hide === "boolean"){
+						category.event_settings.hide = current_category.event_settings.hide;
+					}else{
+						throw `${category.name} does not have hide event settings!`;
+					}
+
+					if(current_category.event_settings.noprint !== undefined && typeof current_category.event_settings.noprint === "boolean"){
+						category.event_settings.noprint = current_category.event_settings.noprint;
+					}else{
+						throw `${category.name} does not have noprint event settings!`;
+					}
+
+				}else{
+					throw `${category.name} does not have event settings!`;
+				}
+
+
+				if(current_category.name !== undefined){
+					category.name = escapeHtml(unescapeHtml(current_category.name)).toString();
+				}else{
+					throw `Event category ${i+1} does not have name data!`;
+				}
+
+			}
+
+		}else{
+
+			throw `Data has invalid event categories!`;
+
+		}
+
+		if(calendar.static_data.event_data.categories !== undefined && Array.isArray(calendar.static_data.event_data.categories)){
+
+			for(var i = 0; i < calendar.static_data.event_data.events.length; i++){
+
+				var event = {};
+				var current_event = calendar.static_data.event_data.events[i];
+
+				if(current_event.name !== undefined){
+					event.name = escapeHtml(unescapeHtml(current_event.name)).toString();
+				}else{
+					throw `Event ${i+1} does not have name data!`;
+				}
+
+				if(current_event.description !== undefined){
+					event.description = escapeHtml(unescapeHtml(current_event.description)).toString();
+				}else{
+					throw `${event.name} does not have valid description data!`;
+				}
+
+				if(current_event.category !== undefined && !isNaN(Number(current_event.category))){
+					event.category = Number(current_event.category);
+				}else{
+					throw `${event.name} does not have valid category data!`;
+				}
+
+				if(current_event.settings !== undefined){
+
+					event.settings = {};
+
+					if(current_event.settings.color !== undefined){
+						event.settings.color = escapeHtml(unescapeHtml(current_event.settings.color)).toString();
+					}else{
+						throw `${event.name} does not have valid color settings!`;
+					}
+
+					if(current_event.settings.text !== undefined){
+						event.settings.text = escapeHtml(unescapeHtml(current_event.settings.text)).toString();
+					}else{
+						throw `${event.name} does not have valid text settings!`;
+					}
+
+					if(current_event.settings.hide !== undefined && typeof current_event.settings.hide === "boolean"){
+						event.settings.hide = current_event.settings.hide;
+					}else{
+						throw `${event.name} does not have valid hide settings!`;
+					}
+
+					if(current_event.settings.hide_full !== undefined && typeof current_event.settings.hide_full === "boolean"){
+						event.settings.hide_full = current_event.settings.hide_full;
+					}else{
+						throw `${event.name} does not have valid hide full settings!`;
+					}
+
+					if(current_event.settings.noprint !== undefined && typeof current_event.settings.noprint === "boolean"){
+						event.noprint = current_event.noprint;
+					}else{
+						throw `${event.name} does not have valid noprint settings!`;
+					}
+
+				}else{
+					throw `${event.name} does not have valid settings data!`;
+				}
+
+				if(current_event.data !== undefined){
+
+					event.data = {};
+
+					if(current_event.data.has_duration !== undefined && typeof current_event.data.has_duration === "boolean"){
+						event.data.has_duration = current_event.data.has_duration;
+					}else{
+						throw `${event.name} does not have valid has duration data!`;
+					}
+
+					if(current_event.data.show_first_last !== undefined && typeof current_event.data.show_first_last === "boolean"){
+						event.data.show_first_last = current_event.data.show_first_last;
+					}else{
+						throw `${event.name} does not have valid show first last data!`;
+					}
+
+					if(current_event.data.only_happen_once !== undefined && typeof current_event.data.only_happen_once === "boolean"){
+						event.data.only_happen_once = current_event.data.only_happen_once;
+					}else{
+						throw `${event.name} does not have valid only happen once data!`;
+					}
+
+
+					if(current_event.data.duration !== undefined && !isNaN(Number(current_event.data.duration))){
+						event.data.duration = Number(current_event.data.duration);
+					}else{
+						throw `${event.name} does not have valid duration data!`;
+					}
+
+					if(current_event.data.connected_events !== undefined && Array.isArray(current_event.data.connected_events)){
+						event.data.connected_events = [];
+						for(var j = 0; j < current_event.data.connected_events.length; j++){
+							if(current_event.data.connected_events[j] !== undefined && !isNaN(Number(current_event.data.connected_events[j]))){
+								event.data.connected_events.push(Number(current_event.data.connected_events[j]));
+							}else{
+								throw `${event.name} does not have valid connected events data!`;
+							}
+						}
+					}else{
+						throw `${event.name} does not have valid connected events data!`;
+					}
+
+					// CONTINUE HERE
+					array = $.grep(current_event.data.conditions, function(check) {
+						console.log(check)
+						return !Array.isArray(check);
+					});
+
+				}else{
+					throw `${event.name} does not have valid data!`;
+				}
+
+			}
+
+		}else{
+
+			throw `Data has invalid events!`;
+
+		}
+
+	}
+
+	throw 'ERROR';
+
+	return {
+		dynamic_data: calendar.dynamic_data,
+		static_data: calendar.static_data
+	}
+
+}
+
 
 function process_old_fantasycalendar(calendar, dynamic_data, static_data){
 
@@ -853,4 +3082,8 @@ function convert_to_granularity(cycle){
 		return Math.floor(cycle/3);
 	}
 
+}
+
+function isHex(h) {
+	return /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i.test(h);
 }
