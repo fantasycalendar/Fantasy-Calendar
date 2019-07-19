@@ -1170,9 +1170,7 @@ function set_up_edit_inputs(set_up){
 		interval.val(interval.val().replace(/[|&;$%@"<> ()]/g, ""));
 		var interval_val = interval.val();
 		var offset = $(this).closest('.sortable-container').find('.offset');
-		var offset_val = (offset.val()|0)
-		var reference = $(this).closest('.sortable-container').find('.reference');
-		var reference_val = reference.val();
+		var offset_val = (offset.val()|0);
 		var timespan = $(this).closest('.sortable-container').find('.timespan-list');
 		var timespan_val = timespan.val();
 
