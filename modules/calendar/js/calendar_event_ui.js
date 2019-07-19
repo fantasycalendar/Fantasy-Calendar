@@ -249,7 +249,7 @@ var edit_event_ui = {
 
 		this.event_background.find('.event_name').val(unescapeHtml(static_data.event_data.events[this.event_id].name));
 
-		this.trumbowyg.trumbowyg('html', static_data.event_data.events[this.event_id].description);
+		this.trumbowyg.trumbowyg('html', unescapeHtml(static_data.event_data.events[this.event_id].description));
 
 		this.create_conditions(static_data.event_data.events[this.event_id].data.conditions, this.event_conditions_container);
 
@@ -291,7 +291,7 @@ var edit_event_ui = {
 
 		static_data.event_data.events[this.event_id].name = name;
 
-		static_data.event_data.events[this.event_id].description = this.trumbowyg.trumbowyg('html');
+		static_data.event_data.events[this.event_id].description = escapeHtml(this.trumbowyg.trumbowyg('html'));
 
 		static_data.event_data.events[this.event_id].data = {
 			has_duration: $('#has_duration').prop('checked'),
@@ -1335,7 +1335,7 @@ var show_event_ui = {
 
 		this.event_name.text(unescapeHtml(event.name));
 		
-		this.event_desc.html(event.description).toggleClass('hidden', event.description.length == 0);
+		this.event_desc.html(unescapeHtml(event.description)).toggleClass('hidden', event.description.length == 0);
 
 		this.event_background.removeClass('hidden');
 
