@@ -25,6 +25,7 @@ services:
       - "9980:8080"
 
   fantasy-calendar-php:
+    container_name: fantasy_calendar_php
     build: ./setup/php/
     user: "1000:1000"
     volumes:
@@ -37,8 +38,7 @@ services:
     volumes:
       - ./:/fantasy-calendar
       - ./setup/docker.env:/fantasy-calendar/.env
-    command:
-      - "php composer.phar install -d /fantasy-calendar/"
+    command: ["/usr/local/bin/php", "/var/www/html/composer.phar", "install", "-d", "/fantasy-calendar/"]
 
 volumes:
   fantasy-calendar-db:
