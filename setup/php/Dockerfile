@@ -5,4 +5,11 @@ RUN apt-get update && apt-get install -y \
         libjpeg62-turbo-dev \
         libmcrypt-dev \
         libpng-dev \
-    && docker-php-ext-install -j$(nproc) pdo_mysql
+        libzip-dev \
+        unzip \
+    && docker-php-ext-install -j$(nproc) pdo_mysql zip
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends git zip
+
+RUN curl --silent --show-error https://getcomposer.org/installer | php

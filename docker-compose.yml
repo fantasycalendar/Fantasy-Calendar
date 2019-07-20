@@ -19,7 +19,7 @@ services:
     user: "1000:1000"
     volumes:
       - ./:/fantasy-calendar
-      - ./setup/docker.env:/fantasy-calendar/modules/calendar/class/server.env
+      - ./setup/docker.env:/fantasy-calendar/.env
       - ./setup/nginx/fantasy-calendar.conf:/etc/nginx/conf.d/default.conf
     ports:
       - "9980:8080"
@@ -29,7 +29,16 @@ services:
     user: "1000:1000"
     volumes:
       - ./:/fantasy-calendar
-      - ./setup/docker.env:/fantasy-calendar/modules/calendar/class/server.env
+      - ./setup/docker.env:/fantasy-calendar/.env
+
+  fantasy-calendar-composer-install:
+    build: ./setup/php/
+    user: "1000:1000"
+    volumes:
+      - ./:/fantasy-calendar
+      - ./setup/docker.env:/fantasy-calendar/.env
+    command:
+      - "php composer.phar install -d /fantasy-calendar/"
 
 volumes:
   fantasy-calendar-db:
