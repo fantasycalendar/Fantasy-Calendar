@@ -329,26 +329,40 @@ var climate_generator = {
 
 		var low = lerp(curr_season_data.weather.temp_low, next_season_data.weather.temp_low, val);
 		var high = lerp(curr_season_data.weather.temp_high, next_season_data.weather.temp_high, val);
-		var temp = mid(low, high);
-		temp += this.random.noise(epoch, 1.0, this.current_location.settings.large_noise_frequency, this.current_location.settings.large_noise_amplitude);
-		temp += this.random.noise(epoch+this.weather.season_length, 1.0, this.current_location.settings.medium_noise_frequency, this.current_location.settings.medium_noise_amplitude);
-		temp += this.random.noise(epoch+this.weather.season_length*2, 1.0, this.current_location.settings.small_noise_frequency, this.current_location.settings.small_noise_amplitude);
-		
-		var range_low = Math.abs((this.random.noise(epoch+this.weather.season_length*3, 1.0, 0.5, 1.5))*(high-low)*0.5);
-		var range_high = Math.abs((this.random.noise(epoch+this.weather.season_length*4, 1.0, 0.5, 1.5))*(high-low)*0.5);
 
-		if(this.static_data.seasons.global_settings.temp_sys === "imperial" || this.static_data.seasons.global_settings.temp_sys === "both_i" || !this.dynamic_data.custom_location){
-			var temperature_i = [temp-range_low, temp+range_high];
-			var temperature_m = [this.fahrenheit_to_celcius(temperature_i[0]), this.fahrenheit_to_celcius(temperature_i[1])];
-			var temperature_c = this.pick_from_table(temp, this.temperature_gauge, false).key;
-		}else{
-			var temperature_m = [temp-range_low, temp+range_high];
-			var temperature_i = [this.celcius_to_fahrenheit(temperature_m[0]), this.celcius_to_fahrenheit(temperature_m[1])];
-			var temperature_c = this.pick_from_table(this.celcius_to_fahrenheit(temp), this.temperature_gauge, false).key;
-			temp = this.celcius_to_fahrenheit(temp);
+		var range_low = low+Math.abs(this.random.noise(epoch, 1.0, this.current_location.settings.large_noise_frequency, this.current_location.settings.large_noise_amplitude));
+		range_low += Math.abs(this.random.noise(epoch+this.weather.season_length, 1.0, this.current_location.settings.medium_noise_frequency, this.current_location.settings.medium_noise_amplitude));
+		range_low += Math.abs(this.random.noise(epoch+this.weather.season_length*2, 1.0, this.current_location.settings.small_noise_frequency, this.current_location.settings.small_noise_amplitude));
+		range_low += Math.abs((this.random.noise(epoch+this.weather.season_length*4, 1.0, 0.3, 1.5))*(high-low)*0.6);
+	
+		var range_high = high-Math.abs(this.random.noise(epoch-this.weather.season_length, 1.0, this.current_location.settings.large_noise_frequency, this.current_location.settings.large_noise_amplitude));
+		range_high -= Math.abs(this.random.noise(epoch-this.weather.season_length*2, 1.0, this.current_location.settings.medium_noise_frequency, this.current_location.settings.medium_noise_amplitude));
+		range_high -= Math.abs(this.random.noise(epoch-this.weather.season_length*3, 1.0, this.current_location.settings.small_noise_frequency, this.current_location.settings.small_noise_amplitude));
+		range_high -= Math.abs((this.random.noise(epoch+this.weather.season_length*3, 1.0, 0.3, 1.5))*(high-low)*0.6);
+
+
+		// If the low value happened to go over the high, swap 'em
+		if(range_low > range_high){
+			range_low=range_high+(range_high=range_low)-range_low
 		}
 
-		var percipitation_table = temp > 32 ? "warm" : "cold";
+		var temp = mid(range_low, range_high);
+
+		if(this.static_data.seasons.global_settings.temp_sys === "imperial" || this.static_data.seasons.global_settings.temp_sys === "both_i" || !this.dynamic_data.custom_location){
+			var temperature_range_i = [low, high];
+			var temperature_range_m = [this.fahrenheit_to_celcius(low), this.fahrenheit_to_celcius(high)];
+			var temperature_i = [range_low, range_high];
+			var temperature_m = [this.fahrenheit_to_celcius(temperature_i[0]), this.fahrenheit_to_celcius(temperature_i[1])];
+			var temperature_c = this.pick_from_table(temp, this.temperature_gauge, false).key;
+			var percipitation_table = temp > 32 ? "warm" : "cold";
+		}else{
+			var temperature_range_i = [this.celcius_to_fahrenheit(low), this.celcius_to_fahrenheit(high)];
+			var temperature_range_m = [low, high];
+			var temperature_m = [range_low, range_high];
+			var temperature_i = [this.celcius_to_fahrenheit(temperature_m[0]), this.celcius_to_fahrenheit(temperature_m[1])];
+			var temperature_c = this.pick_from_table(this.celcius_to_fahrenheit(temp), this.temperature_gauge, false).key;
+			var percipitation_table = temp > 0 ? "warm" : "cold";
+		}
 
 		var precipitation_chance = lerp(curr_season_data.weather.precipitation, next_season_data.weather.precipitation, val);
 		var precipitation_intensity = lerp(curr_season_data.weather.precipitation_intensity, next_season_data.weather.precipitation_intensity, val);
@@ -474,13 +488,13 @@ var climate_generator = {
 			temperature: {
 				imperial: {
 					value: temperature_i,
-					low: lerp(curr_season_data.weather.temp_low, next_season_data.weather.temp_low, val),
-					high: lerp(curr_season_data.weather.temp_high, next_season_data.weather.temp_high, val),
+					low: temperature_range_i[0],
+					high: temperature_range_i[1],
 				},
 				metric: {
 					value: temperature_m,
-					low: this.fahrenheit_to_celcius(lerp(curr_season_data.weather.temp_low, next_season_data.weather.temp_low, val)),
-					high: this.fahrenheit_to_celcius(lerp(curr_season_data.weather.temp_high, next_season_data.weather.temp_high, val)),
+					low: temperature_range_m[0],
+					high: temperature_range_m[1],
 				},
 				cinematic: temperature_c
 			},
