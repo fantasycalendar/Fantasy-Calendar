@@ -140,6 +140,7 @@ $(document).ready(function(){
 			if(calendar){
 			    prev_dynamic_data = {}
 			    prev_static_data = {}
+				calendar_name = calendar.name;
 				dynamic_data = calendar.dynamic_data;
 				static_data = calendar.static_data;
 				empty_edit_values();

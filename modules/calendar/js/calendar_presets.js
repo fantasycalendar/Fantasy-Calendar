@@ -13,9 +13,13 @@ function create_season_events(id, season_name){
 			"name":`${season_name} Solstice`,
 			"description":"",
 			"data":{
-				"length":1,
-				"show_start_end":false,
-				"show_first_last":false,
+				'has_duration': false,
+				'duration': 0,
+				'show_first_last': false,
+				'only_happen_once': false,
+				'connected_events': false,
+				'one_time_event': false,
+				'date': [],
 				"conditions":[
 					["Season","0",[id]],["&&"],["Season","8",["1"]]
 				]
@@ -25,6 +29,7 @@ function create_season_events(id, season_name){
 				"color":"Green",
 				"text":"text",
 				"hide":false,
+				"hide_full":false,
 				"noprint":false
 			}
 		},
@@ -32,9 +37,13 @@ function create_season_events(id, season_name){
 			"name": `${equinox_name} Equinox`,
 			"description":"",
 			"data":{
-				"length":1,
-				"show_start_end":false,
-				"show_first_last":false,
+				'has_duration': false,
+				'duration': 0,
+				'show_first_last': false,
+				'only_happen_once': false,
+				'connected_events': false,
+				'one_time_event': false,
+				'date': [],
 				"conditions":[
 					["Season","0",[id]],["&&"],["Season","2",["50"]]
 				]
@@ -44,6 +53,7 @@ function create_season_events(id, season_name){
 				"color":"Green",
 				"text":"text",
 				"hide":false,
+				"hide_full":false,
 				"noprint":false
 			}
 		}
@@ -55,1268 +65,7 @@ var date = new Date();
 var calendar_presets = {
 	'Earth': {
 		'dynamic_data': {"year":date.getFullYear(),"timespan":date.getMonth(),"day":date.getDate(),"epoch":0,"custom_location":false,"location":"Cool and Rainy","hour":date.getHours(),"minute":date.getMinutes()},
-		'static_data': {
-			"year_data":{
-				"first_day":1,
-				"overflow":true,
-				"global_week":[
-					"Monday",
-					"Tuesday",
-					"Wednesday",
-					"Thursday",
-					"Friday",
-					"Saturday",
-					"Sunday"
-				],
-				"timespans":[
-					{
-						"name":"January",
-						"type":"month",
-						"length":31,
-						"interval":1,
-						"offset":1
-					},
-					{
-						"name":"February",
-						"type":"month",
-						"length":28,
-						"interval":1,
-						"offset":1
-					},
-					{
-						"name":"March",
-						"type":"month",
-						"length":31,
-						"interval":1,
-						"offset":1
-					},
-					{
-						"name":"April",
-						"type":"month",
-						"length":30,
-						"interval":1,
-						"offset":1
-					},
-					{
-						"name":"May",
-						"type":"month",
-						"length":31,
-						"interval":1,
-						"offset":1
-					},
-					{
-						"name":"June",
-						"type":"month",
-						"length":30,
-						"interval":1,
-						"offset":1
-					},
-					{
-						"name":"July",
-						"type":"month",
-						"length":31,
-						"interval":1,
-						"offset":1
-					},
-					{
-						"name":"August",
-						"type":"month",
-						"length":31,
-						"interval":1,
-						"offset":1
-					},
-					{
-						"name":"September",
-						"type":"month",
-						"length":30,
-						"interval":1,
-						"offset":1
-					},
-					{
-						"name":"October",
-						"type":"month",
-						"length":31,
-						"interval":1,
-						"offset":1
-					},
-					{
-						"name":"November",
-						"type":"month",
-						"length":30,
-						"interval":1,
-						"offset":1
-					},
-					{
-						"name":"December",
-						"type":"month",
-						"length":31,
-						"interval":1,
-						"offset":1
-					}
-				],
-				"leap_days":[
-					{
-						"name":"Leap Day",
-						"intercalary":false,
-						"timespan":1,
-						"adds_week_day":false,
-						"interval":"400,!100,4",
-						"offset":0
-					}
-				]
-			},
-			"moons":[
-				{
-					"name":"Moon",
-					"cycle":29.530588853,
-					"shift":10.24953,
-					"granularity":32,
-					"color":"#ffffff",
-					"hidden":false
-				}
-			],
-			"clock":{
-				"hours":24,
-				"minutes":60,
-				"offset":0,
-				"enabled":true
-			},
-			"seasons":{
-				"data":[
-					{
-						"name":"Winter",
-						"time":{
-							"sunrise":{
-								"hour":9,
-								"minute":0
-							},
-							"sunset":{
-								"hour":18,
-								"minute":0
-							}
-						},
-						"transition_length":182.62125,
-						"duration":0
-					},
-					{
-						"name":"Summer",
-						"time":{
-							"sunrise":{
-								"hour":9,
-								"minute":0
-							},
-							"sunset":{
-								"hour":18,
-								"minute":0
-							}
-						},
-						"transition_length":182.62125,
-						"duration":0
-					}
-				],
-				"locations":[
-
-				],
-				"global_settings":{
-					"season_offset":-12,
-					"weather_offset":56,
-					"seed":826116802,
-					"temp_sys":"metric",
-					"wind_sys":"metric",
-					"cinematic":true,
-					"enable_weather":true
-				}
-			},
-			"eras":[
-				{
-					"name":"Before Christ",
-					"abbreviation":"B.C.",
-					"description":"",
-					"settings":{
-						"show_as_event":false,
-						"event_category":-1,
-						"ends_year":false,
-						"restart":false
-					},
-					"date":{
-						"year":-9000,
-						"timespan":0,
-						"day":0,
-						"era_year":-9000,
-						"epoch":-3287161
-					}
-				},
-				{
-					"name":"Anno Domini",
-					"abbreviation":"A.D.",
-					"description":"",
-					"settings":{
-						"show_as_event":false,
-						"event_category":-1,
-						"ends_year":false,
-						"restart":false
-					},
-					"date":{
-						"year":-1,
-						"timespan":11,
-						"day":31,
-						"era_year":-1,
-						"epoch":-1
-					}
-				}
-			],
-			"settings":{
-				"layout":"grid",
-				"show_current_month":false,
-				"show_era_abbreviation":true,
-				"allow_view":false,
-				"only_backwards":false,
-				"only_reveal_today":false,
-				"hide_moons":false,
-				"hide_clock":false,
-				"hide_events":false,
-				"hide_eras":false,
-				"hide_all_weather":false,
-				"hide_future_weather":false,
-				"add_month_number":false,
-				"add_year_day_number":false
-			},
-			"cycles":{
-				"format":"",
-				"data":[
-
-				]
-			},
-			"event_data":{
-				"categories":[
-					{
-						"name":"Christian Holiday",
-						"category_settings":{
-							"hide":false,
-							"player_usable":false
-						},
-						"event_settings":{
-							"hide":false,
-							"noprint":false,
-							"color":"Red",
-							"text":"text"
-						}
-					},
-					{
-						"name":"Secular Holiday",
-						"category_settings":{
-							"hide":false,
-							"player_usable":false
-						},
-						"event_settings":{
-							"hide":false,
-							"noprint":false
-						}
-					},
-					{
-						"name":"Historical Event",
-						"category_settings":{
-							"hide":false,
-							"player_usable":false
-						},
-						"event_settings":{
-							"hide":false,
-							"noprint":false
-						}
-					},
-					{
-						"name":"Miscalaneous event",
-						"category_settings":{
-							"hide":false,
-							"player_usable":false
-						},
-						"event_settings":{
-							"hide":false,
-							"noprint":false,
-							"color":"Blue-Grey"
-						}
-					},
-					{
-						"name":"Natural Event",
-						"category_settings":{
-							"hide":false,
-							"player_usable":false
-						},
-						"event_settings":{
-							"color":"Green",
-							"text":"text",
-							"hide":false,
-							"noprint":false
-						}
-					}
-				],
-				"events":[
-					{
-						"name":"Work on This Calendar Started",
-						"description":"Aecius started work on the Gregorian Calendar for Fantasy Calendar on this day.<br>",
-						"data":{
-							"has_duration":false,
-							"duration":0,
-							"show_first_last":false,
-							"only_happen_once":false,
-							"conditions":[
-								[
-									"Year",
-									"0",
-									[
-										"2019"
-									]
-								],
-								[
-									"&&"
-								],
-								[
-									"Month",
-									"0",
-									[
-										"5"
-									]
-								],
-								[
-									"&&"
-								],
-								[
-									"Day",
-									"0",
-									[
-										"23"
-									]
-								]
-							],
-							"connected_events":[
-
-							]
-						},
-						"category":"3",
-						"settings":{
-							"color":"Blue-Grey",
-							"text":"text",
-							"hide":false,
-							"hide_full":false,
-							"noprint":false
-						}
-					},
-					{
-						"name":"Christmas",
-						"description":"Christmas is a Christian holiday celebrating the birth of Christ. Due to a combination of marketability and long lasting traditions it is popular even among many non-Christians, especially in countries that have a strong Christian tradition.<br>",
-						"data":{
-							"has_duration":false,
-							"duration":0,
-							"show_first_last":false,
-							"only_happen_once":false,
-							"conditions":[
-								[
-									"Month",
-									"0",
-									[
-										"11"
-									]
-								],
-								[
-									"&&"
-								],
-								[
-									"Day",
-									"0",
-									[
-										"25"
-									]
-								]
-							],
-							"connected_events":[
-
-							]
-						},
-						"category":"1",
-						"settings":{
-							"color":"Red",
-							"text":"text",
-							"hide":false,
-							"hide_full":false,
-							"noprint":false
-						}
-					},
-					{
-						"name":"Winter Solstice",
-						"description":"The Winter Solstice is the day of the year with the least time between sunrise and sunset. Many western cultures consider it the official start of winter.<br>",
-						"data":{
-							"has_duration":false,
-							"duration":0,
-							"show_first_last":false,
-							"only_happen_once":false,
-							"conditions":[
-								[
-									"Season",
-									"0",
-									[
-										"0"
-									]
-								],
-								[
-									"&&"
-								],
-								[
-									"Season",
-									"8",
-									[
-										"1"
-									]
-								]
-							],
-							"connected_events":[
-
-							]
-						},
-						"category":"4",
-						"settings":{
-							"color":"Green",
-							"text":"text",
-							"hide":false,
-							"hide_full":false,
-							"noprint":false
-						}
-					},
-					{
-						"name":"Summer Solstice",
-						"description":"<p>The Summer Solstice is the day of the year with the most time between \nsunrise and sunset. Many western cultures consider it the official start\n of summer.</p>",
-						"data":{
-							"has_duration":false,
-							"duration":0,
-							"show_first_last":false,
-							"only_happen_once":false,
-							"conditions":[
-								[
-									"Season",
-									"0",
-									[
-										"1"
-									]
-								],
-								[
-									"&&"
-								],
-								[
-									"Season",
-									"8",
-									[
-										"1"
-									]
-								]
-							],
-							"connected_events":[
-
-							]
-						},
-						"category":"4",
-						"settings":{
-							"color":"Green",
-							"text":"text",
-							"hide":false,
-							"hide_full":false,
-							"noprint":false
-						}
-					},
-					{
-						"name":"Spring Equinox",
-						"description":"The Vernal Equinox,\nalso called the spring equinox is the day between the winter and\nsummer solstices where the day is the exact same length as the night.\nMany western cultures consider it the official start of Spring.\n",
-						"data":{
-							"has_duration":false,
-							"duration":0,
-							"show_first_last":false,
-							"only_happen_once":false,
-							"conditions":[
-								[
-									"Season",
-									"0",
-									[
-										"0"
-									]
-								],
-								[
-									"&&"
-								],
-								[
-									"Season",
-									"2",
-									[
-										"50"
-									]
-								]
-							],
-							"connected_events":[
-
-							]
-						},
-						"category":"4",
-						"settings":{
-							"color":"Green",
-							"text":"text",
-							"hide":false,
-							"hide_full":false,
-							"noprint":false
-						}
-					},
-					{
-						"name":"Autumnal Equinox",
-						"description":"The Autmumnal Equinox,\nalso called the Fall equinox is the day between the summer and\nwinter solstices where the day is the exact same length as the night.\nMany western cultures consider it the official start of Autumn.\n",
-						"data":{
-							"has_duration":false,
-							"duration":0,
-							"show_first_last":false,
-							"only_happen_once":false,
-							"conditions":[
-								[
-									"Season",
-									"0",
-									[
-										"1"
-									]
-								],
-								[
-									"&&"
-								],
-								[
-									"Season",
-									"2",
-									[
-										"50"
-									]
-								]
-							],
-							"connected_events":[
-
-							]
-						},
-						"category":"4",
-						"settings":{
-							"color":"Green",
-							"text":"text",
-							"hide":false,
-							"hide_full":false,
-							"noprint":false
-						}
-					},
-					{
-						"name":"Easter (old)",
-						"description":"<p>Easter is considered the most important feast for Christians, celebrating the resurrection of Christ. It is classed as a moveable feast occurring on the first full moon after the spring equinox, which is considered to be fixed at March 21st for the sake of computing the date.</p>(This version of the event was created before events could use eachother as conditions and can be considered deprecated. It can still serve as an example of how to make a moveable holiday as specific as Easter without event based events.)<br>",
-						"data":{
-							"has_duration":false,
-							"duration":0,
-							"show_first_last":false,
-							"only_happen_once":false,
-							"conditions":[
-								[
-									"",
-									[
-										[
-											"Moons",
-											"2",
-											[
-												"0",
-												"15"
-											]
-										],
-										[
-											"&&"
-										],
-										[
-											"!",
-											[
-												[
-													"Day",
-													"5",
-													[
-														"21"
-													]
-												],
-												[
-													"&&"
-												],
-												[
-													"Month",
-													"0",
-													[
-														"2"
-													]
-												]
-											]
-										]
-									]
-								],
-								[
-									"&&"
-								],
-								[
-									"",
-									[
-										[
-											"Month",
-											"0",
-											[
-												"2"
-											]
-										],
-										[
-											"||"
-										],
-										[
-											"",
-											[
-												[
-													"Month",
-													"0",
-													[
-														"3"
-													]
-												],
-												[
-													"&&"
-												],
-												[
-													"Day",
-													"3",
-													[
-														"25"
-													]
-												],
-												[
-													"&&"
-												],
-												[
-													"!",
-													[
-														[
-															"Day",
-															"4",
-															[
-																"19"
-															]
-														],
-														[
-															"&&"
-														],
-														[
-															"Moons",
-															"3",
-															[
-																"0",
-																"15"
-															]
-														]
-													]
-												],
-												[
-													"&&"
-												],
-												[
-													"!",
-													[
-														[
-															"Moons",
-															"3",
-															[
-																"0",
-																"19"
-															]
-														],
-														[
-															"&&"
-														],
-														[
-															"Day",
-															"2",
-															[
-																"24"
-															]
-														]
-													]
-												]
-											]
-										]
-									]
-								],
-								[
-									"&&"
-								],
-								[
-									"Weekday",
-									"0",
-									[
-										"7"
-									]
-								],
-								[
-									"&&"
-								],
-								[
-									"!",
-									[
-										[
-											"Month",
-											"0",
-											[
-												"2"
-											]
-										],
-										[
-											"&&"
-										],
-										[
-											"",
-											[
-												[
-													"",
-													[
-														[
-															"Moons",
-															"0",
-															[
-																"0",
-																"21"
-															]
-														],
-														[
-															"||"
-														],
-														[
-															"Moons",
-															"0",
-															[
-																"0",
-																"19"
-															]
-														]
-													]
-												],
-												[
-													"&&"
-												],
-												[
-													"Day",
-													"3",
-													[
-														"24"
-													]
-												]
-											]
-										],
-										[
-											"||"
-										],
-										[
-											"",
-											[
-												[
-													"Day",
-													"3",
-													[
-														"26"
-													]
-												],
-												[
-													"&&"
-												],
-												[
-													"Moons",
-													"3",
-													[
-														"0",
-														"21"
-													]
-												]
-											]
-										],
-										[
-											"&&"
-										],
-										[
-											"!",
-											[
-												[
-													"Moons",
-													"0",
-													[
-														"0",
-														"15"
-													]
-												],
-												[
-													"||"
-												],
-												[
-													"",
-													[
-														[
-															"Day",
-															"2",
-															[
-																"22"
-															]
-														],
-														[
-															"&&"
-														],
-														[
-															"Month",
-															"0",
-															[
-																"2"
-															]
-														],
-														[
-															"&&"
-														],
-														[
-															"Moons",
-															"0",
-															[
-																"0",
-																"17"
-															]
-														]
-													]
-												]
-											]
-										]
-									]
-								],
-								[
-									"&&"
-								],
-								[
-									"",
-									[
-										[
-											"",
-											[
-												[
-													"Moons",
-													"5",
-													[
-														"0",
-														"23"
-													]
-												],
-												[
-													"&&"
-												],
-												[
-													"Month",
-													"0",
-													[
-														"3"
-													]
-												]
-											]
-										],
-										[
-											"||"
-										],
-										[
-											"",
-											[
-												[
-													"Month",
-													"0",
-													[
-														"2"
-													]
-												],
-												[
-													"&&"
-												],
-												[
-													"Moons",
-													"5",
-													[
-														"0",
-														"22"
-													]
-												]
-											]
-										]
-									]
-								]
-							],
-							"connected_events":[
-
-							]
-						},
-						"category":"0",
-						"settings":{
-							"color":"Red",
-							"text":"text",
-							"hide":false,
-							"hide_full":true,
-							"noprint":false
-						}
-					},
-					{
-						"name":"Valentine&#39;s Day",
-						"description":"Valentine's day is a celebration of love and romance that is popular across the world. Many more cynically minded people mosty consider it an attempt to monetize the expecation of romantic gestures on the holiday through gift cards, flowers, chocolate and dates.<br>",
-						"data":{
-							"has_duration":false,
-							"duration":0,
-							"show_first_last":false,
-							"only_happen_once":false,
-							"conditions":[
-								[
-									"Month",
-									"0",
-									[
-										"1"
-									]
-								],
-								[
-									"&&"
-								],
-								[
-									"Day",
-									"0",
-									[
-										"14"
-									]
-								]
-							],
-							"connected_events":[
-
-							]
-						},
-						"category":"2",
-						"settings":{
-							"color":"Pink",
-							"text":"text",
-							"hide":false,
-							"hide_full":false,
-							"noprint":false
-						}
-					},
-					{
-						"name":"New Year&#39;s Day",
-						"description":"New Year's day marks the start of a new year on the Gregorian Calendar. It starts when the clock strikes midnight and is often celebrated with fireworks, champagne and kissing.<br>",
-						"data":{
-							"has_duration":false,
-							"duration":0,
-							"show_first_last":false,
-							"only_happen_once":false,
-							"conditions":[
-								[
-									"Day",
-									"7",
-									[
-										"1"
-									]
-								]
-							],
-							"connected_events":[
-
-							]
-						},
-						"category":"1",
-						"settings":{
-							"color":"Dark-Solid",
-							"text":"text",
-							"hide":false,
-							"hide_full":false,
-							"noprint":false
-						}
-					},
-					{
-						"name":"Halloween",
-						"description":"<p>Halloween is holiday popular in the US, Canada and Ireland that has gradually been adopted by more and more countries. It is often celebrated by people dressing up, usually as something scary. Children will often go from door to door shouting \"trick or treat\" in the hopes of receiving candy, while adults tend to go to parties.<br></p>",
-						"data":{
-							"has_duration":false,
-							"duration":0,
-							"show_first_last":false,
-							"only_happen_once":false,
-							"event_based_event":false,
-							"conditions":[
-								[
-									"Month",
-									"0",
-									[
-										"9"
-									]
-								],
-								[
-									"&&"
-								],
-								[
-									"Day",
-									"0",
-									[
-										"31"
-									]
-								]
-							]
-						},
-						"category":"1",
-						"settings":{
-							"color":"Dark-Solid",
-							"text":"text",
-							"hide":false,
-							"noprint":false
-						}
-					},
-					{
-						"name":"Paschal Full Moon",
-						"description":"The first full moon after march 21st, which is considered the fixed date for the spring equinox.<br>",
-						"data":{
-							"has_duration":false,
-							"duration":0,
-							"show_first_last":false,
-							"only_happen_once":true,
-							"conditions":[
-								[
-									"",
-									[
-										[
-											"",
-											[
-												[
-													"Month",
-													"0",
-													[
-														"2"
-													]
-												],
-												[
-													"&&"
-												],
-												[
-													"Day",
-													"2",
-													[
-														"21"
-													]
-												]
-											]
-										],
-										[
-											"||"
-										],
-										[
-											"",
-											[
-												[
-													"Month",
-													"0",
-													[
-														"3"
-													]
-												],
-												[
-													"&&"
-												],
-												[
-													"Day",
-													"5",
-													[
-														"21"
-													]
-												]
-											]
-										]
-									]
-								],
-								[
-									"&&"
-								],
-								[
-									"Moons",
-									"0",
-									[
-										"0",
-										"15"
-									]
-								]
-							],
-							"connected_events":[
-
-							]
-						},
-						"category":"-1",
-						"settings":{
-							"color":"Purple",
-							"text":"text",
-							"hide":false,
-							"hide_full":true,
-							"noprint":false
-						}
-					},
-					{
-						"name":"Easter",
-						"description":"<p>Easter is considered the most important feast for Christians, \ncelebrating the resurrection of Christ. It is classed as a moveable \nfeast occurring on the first full moon after the spring equinox, which \nis considered to be fixed at March 21st for the sake of computing the \ndate.</p>",
-						"data":{
-							"has_duration":false,
-							"duration":0,
-							"show_first_last":false,
-							"only_happen_once":false,
-							"conditions":[
-								[
-									"Events",
-									"5",
-									[
-										0,
-										"6"
-									]
-								],
-								[
-									"&&"
-								],
-								[
-									"Weekday",
-									"0",
-									[
-										"7"
-									]
-								]
-							],
-							"connected_events":[
-								10
-							]
-						},
-						"category":"0",
-						"settings":{
-							"color":"Red",
-							"text":"text",
-							"hide":false,
-							"hide_full":false,
-							"noprint":false
-						}
-					},
-					{
-						"name":"Easter Monday",
-						"description":"The monday following the Easter Sunday is often considered part of the Easter Celebration and is a free day in many countries with a strong Christian tradition.<br>",
-						"data":{
-							"has_duration":false,
-							"duration":0,
-							"show_first_last":false,
-							"only_happen_once":false,
-							"conditions":[
-								[
-									"Events",
-									"0",
-									[
-										0,
-										"1"
-									]
-								]
-							],
-							"connected_events":[
-								11
-							]
-						},
-						"category":"0",
-						"settings":{
-							"color":"Red",
-							"text":"text",
-							"hide":false,
-							"hide_full":false,
-							"noprint":false
-						}
-					},
-					{
-						"name":"Good Friday",
-						"description":"Good Friday is the friday preceding Easter. It comemmorates the crucifixion of Christ according to the Bible.<br>",
-						"data":{
-							"has_duration":false,
-							"duration":0,
-							"show_first_last":false,
-							"only_happen_once":false,
-							"conditions":[
-								[
-									"Events",
-									"1",
-									[
-										0,
-										"2"
-									]
-								]
-							],
-							"connected_events":[
-								11
-							]
-						},
-						"category":"0",
-						"settings":{
-							"color":"Red",
-							"text":"text",
-							"hide":false,
-							"hide_full":false,
-							"noprint":false
-						}
-					},
-					{
-						"name":"Ascenscion Day",
-						"description":"<p>Traditionally celebrated on the 40th day after Easter, Ascenscion celebrates the day in which the Bible marks as the one Jesus ascended into heaven.<br><br>Some denominations celebrate it on the sunday following the 40th day instead.<br></p><br><br>",
-						"data":{
-							"has_duration":false,
-							"duration":0,
-							"show_first_last":false,
-							"only_happen_once":false,
-							"conditions":[
-								[
-									"Events",
-									"0",
-									[
-										0,
-										"39"
-									]
-								]
-							],
-							"connected_events":[
-								11
-							]
-						},
-						"category":"0",
-						"settings":{
-							"color":"Red",
-							"text":"text",
-							"hide":false,
-							"hide_full":false,
-							"noprint":false
-						}
-					},
-					{
-						"name":"Pentecost",
-						"description":"Celebrated exactly 50 days after easter, Pentecost is the celebration of the Holy Spirit appearing before the Apostles as described in the Bible.<br>",
-						"data":{
-							"has_duration":false,
-							"duration":0,
-							"show_first_last":false,
-							"only_happen_once":false,
-							"conditions":[
-								[
-									"Events",
-									"0",
-									[
-										0,
-										"49"
-									]
-								]
-							],
-							"connected_events":[
-								11
-							]
-						},
-						"category":"0",
-						"settings":{
-							"color":"Red",
-							"text":"text",
-							"hide":false,
-							"hide_full":false,
-							"noprint":false
-						}
-					}
-				]
-			}
-		}
+		'static_data': {"year_data":{"first_day":1,"overflow":true,"global_week":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],"timespans":[{"name":"January","type":"month","length":31,"interval":1,"offset":1},{"name":"February","type":"month","length":28,"interval":1,"offset":1},{"name":"March","type":"month","length":31,"interval":1,"offset":1},{"name":"April","type":"month","length":30,"interval":1,"offset":1},{"name":"May","type":"month","length":31,"interval":1,"offset":1},{"name":"June","type":"month","length":30,"interval":1,"offset":1},{"name":"July","type":"month","length":31,"interval":1,"offset":1},{"name":"August","type":"month","length":31,"interval":1,"offset":1},{"name":"September","type":"month","length":30,"interval":1,"offset":1},{"name":"October","type":"month","length":31,"interval":1,"offset":1},{"name":"November","type":"month","length":30,"interval":1,"offset":1},{"name":"December","type":"month","length":31,"interval":1,"offset":1}],"leap_days":[{"name":"Leap Day","intercalary":false,"timespan":1,"adds_week_day":false,"interval":"400,!100,4","offset":0}]},"moons":[{"name":"Moon","cycle":29.530588853,"shift":10.24953,"granularity":32,"color":"#ffffff","hidden":false}],"clock":{"hours":24,"minutes":60,"offset":0,"enabled":true},"seasons":{"data":[{"name":"Winter","time":{"sunrise":{"hour":9,"minute":0},"sunset":{"hour":18,"minute":0}},"transition_length":182.62125,"duration":0},{"name":"Summer","time":{"sunrise":{"hour":7,"minute":0},"sunset":{"hour":20,"minute":0}},"transition_length":182.62125,"duration":0}],"locations":[],"global_settings":{"season_offset":-12,"weather_offset":56,"seed":826116802,"temp_sys":"both_m","wind_sys":"both","cinematic":true,"enable_weather":true}},"eras":[{"name":"Before Christ","abbreviation":"B.C.","description":"","settings":{"show_as_event":false,"event_category":-1,"ends_year":false,"restart":false},"date":{"year":-9000,"timespan":0,"day":0,"era_year":-9000,"epoch":-3287161}},{"name":"Anno Domini","abbreviation":"A.D.","description":"","settings":{"show_as_event":false,"event_category":-1,"ends_year":false,"restart":false},"date":{"year":-1,"timespan":11,"day":31,"era_year":-1,"epoch":-1}}],"settings":{"layout":"grid","show_current_month":false,"show_era_abbreviation":true,"allow_view":false,"only_backwards":false,"only_reveal_today":false,"hide_moons":false,"hide_clock":false,"hide_events":false,"hide_eras":false,"hide_all_weather":false,"hide_future_weather":false,"add_month_number":false,"add_year_day_number":false},"cycles":{"format":"","data":[]},"event_data":{"categories":[{"name":"Christian Holiday","category_settings":{"hide":false,"player_usable":false},"event_settings":{"hide":false,"noprint":false,"color":"Blue-Grey","text":"dot"}},{"name":"Secular Holiday","category_settings":{"hide":false,"player_usable":false},"event_settings":{"hide":false,"noprint":false,"color":"Orange","text":"dot"}},{"name":"Historical Event","category_settings":{"hide":false,"player_usable":false},"event_settings":{"hide":false,"noprint":false,"color":"Lime","text":"dot"}},{"name":"Miscalaneous event","category_settings":{"hide":false,"player_usable":false},"event_settings":{"hide":false,"noprint":false,"color":"Teal","text":"dot"}},{"name":"Natural Event","category_settings":{"hide":false,"player_usable":false},"event_settings":{"color":"Cyan","text":"text","hide":false,"noprint":false}}],"events":[{"name":"Work on This Calendar Started","description":"Aecius started work on the Gregorian Calendar for Fantasy Calendar on this day.<br>","data":{"has_duration":false,"duration":0,"show_first_last":false,"only_happen_once":false,"conditions":[["Year","0",["2019"]],["&&"],["Month","0",["5"]],["&&"],["Day","0",["23"]]],"connected_events":[]},"category":"3","settings":{"hide":false,"noprint":false,"color":"Teal","text":"dot"}},{"name":"Christmas","description":"Christmas is a Christian holiday celebrating the birth of Christ. Due to a combination of marketability and long lasting traditions it is popular even among many non-Christians, especially in countries that have a strong Christian tradition.&lt;br&gt;","data":{"has_duration":false,"duration":0,"show_first_last":false,"only_happen_once":false,"conditions":[["Month","0",["11"]],["&&"],["Day","0",["25"]]],"connected_events":[],"date":[]},"category":"1","settings":{"hide":false,"noprint":false,"color":"Orange","text":"dot"}},{"name":"Winter Solstice","description":"The Winter Solstice is the day of the year with the least time between sunrise and sunset. Many western cultures consider it the official start of winter.&lt;br&gt;","data":{"has_duration":false,"duration":0,"show_first_last":false,"only_happen_once":false,"conditions":[["Season","0",["0"]],["&&"],["Season","8",["1"]]],"connected_events":[],"date":[]},"category":"4","settings":{"color":"Cyan","text":"text","hide":false,"noprint":false}},{"name":"Summer Solstice","description":"&lt;p&gt;The Summer Solstice is the day of the year with the most time between \nsunrise and sunset. Many western cultures consider it the official start\n of summer.&lt;&#x2F;p&gt;","data":{"has_duration":false,"duration":0,"show_first_last":false,"only_happen_once":false,"conditions":[["Season","0",["1"]],["&&"],["Season","8",["1"]]],"connected_events":[],"date":[]},"category":"4","settings":{"color":"Cyan","text":"text","hide":false,"noprint":false}},{"name":"Spring Equinox","description":"The Vernal Equinox,\nalso called the spring equinox is the day between the winter and\nsummer solstices where the day is the exact same length as the night.\nMany western cultures consider it the official start of Spring.\n","data":{"has_duration":false,"duration":0,"show_first_last":false,"only_happen_once":false,"conditions":[["Season","0",["0"]],["&&"],["Season","2",["50"]]],"connected_events":[],"date":[]},"category":"4","settings":{"color":"Cyan","text":"text","hide":false,"hide_full":false,"noprint":false}},{"name":"Autumnal Equinox","description":"The Autmumnal Equinox,\nalso called the Fall equinox is the day between the summer and\nwinter solstices where the day is the exact same length as the night.\nMany western cultures consider it the official start of Autumn.\n","data":{"has_duration":false,"duration":0,"show_first_last":false,"only_happen_once":false,"conditions":[["Season","0",["1"]],["&&"],["Season","2",["50"]]],"connected_events":[],"date":[]},"category":"4","settings":{"color":"Cyan","text":"text","hide":false,"noprint":false}},{"name":"Valentine&#39;s Day","description":"Valentine&#39;s day is a celebration of love and romance that is popular across the world. Many more cynically minded people mosty consider it an attempt to monetize the expecation of romantic gestures on the holiday through gift cards, flowers, chocolate and dates.&lt;br&gt;","data":{"has_duration":false,"duration":0,"show_first_last":false,"only_happen_once":false,"conditions":[["Month","0",["1"]],["&&"],["Day","0",["14"]]],"connected_events":[],"date":[]},"category":"2","settings":{"hide":false,"noprint":false,"color":"Lime","text":"dot"}},{"name":"New Year&#39;s Day","description":"New Year&#39;s day marks the start of a new year on the Gregorian Calendar. It starts when the clock strikes midnight and is often celebrated with fireworks, champagne and kissing.&lt;br&gt;","data":{"has_duration":false,"duration":0,"show_first_last":false,"only_happen_once":false,"conditions":[["Day","7",["1"]]],"connected_events":[],"date":[]},"category":"1","settings":{"hide":false,"noprint":false,"color":"Orange","text":"dot"}},{"name":"Halloween","description":"&lt;p&gt;Halloween is holiday popular in the US, Canada and Ireland that has gradually been adopted by more and more countries. It is often celebrated by people dressing up, usually as something scary. Children will often go from door to door shouting &quot;trick or treat&quot; in the hopes of receiving candy, while adults tend to go to parties.&lt;br&gt;&lt;&#x2F;p&gt;","data":{"has_duration":false,"duration":0,"show_first_last":false,"only_happen_once":false,"conditions":[["Month","0",["9"]],["&&"],["Day","0",["31"]]],"connected_events":[],"date":[]},"category":"1","settings":{"hide":false,"noprint":false,"color":"Orange","text":"dot"}},{"name":"Paschal Full Moon","description":"The first full moon after march 21st, which is considered the fixed date for the spring equinox.&lt;br&gt;","data":{"has_duration":false,"duration":0,"show_first_last":false,"only_happen_once":true,"conditions":[["",[["",[["Month","0",["2"]],["&&"],["Day","2",["21"]]]],["||"],["",[["Month","0",["3"]],["&&"],["Day","5",["21"]]]]]],["&&"],["Moons","0",["0","15"]]],"connected_events":[],"date":[]},"category":"-1","settings":{"color":"Purple","text":"text","hide":false,"hide_full":true,"noprint":false}},{"name":"Easter","description":"<p>Easter is considered the most important feast for Christians, \ncelebrating the resurrection of Christ. It is classed as a moveable \nfeast occurring on the first full moon after the spring equinox, which \nis considered to be fixed at March 21st for the sake of computing the \ndate.</p>","data":{"has_duration":false,"duration":0,"show_first_last":false,"only_happen_once":false,"conditions":[["Events","5",[0,"6"]],["&&"],["Weekday","0",["7"]]],"connected_events":[9]},"category":"0","settings":{"hide":false,"noprint":false,"color":"Blue-Grey","text":"dot"}},{"name":"Easter Monday","description":"The monday following the Easter Sunday is often considered part of the Easter Celebration and is a free day in many countries with a strong Christian tradition.&lt;br&gt;","data":{"has_duration":false,"duration":0,"show_first_last":false,"only_happen_once":false,"conditions":[["Events","0",[0,"1"]]],"connected_events":[10],"date":[]},"category":"0","settings":{"hide":false,"noprint":false,"color":"Blue-Grey","text":"dot"}},{"name":"Good Friday","description":"Good Friday is the friday preceding Easter. It comemmorates the crucifixion of Christ according to the Bible.&lt;br&gt;","data":{"has_duration":false,"duration":0,"show_first_last":false,"only_happen_once":false,"conditions":[["Events","1",[0,"2"]]],"connected_events":[10],"date":[]},"category":"0","settings":{"hide":false,"noprint":false,"color":"Blue-Grey","text":"dot"}}]}}
 	},
 	'Forgotten Realms': {
 		'dynamic_data': {'year':1,'timespan':0,'day':0,'epoch':0,'custom_location':false,'location':'Equatorial'},
@@ -1607,10 +356,10 @@ function parse_json(json){
 
 		if(calendar.dynamic_data !== undefined){
 			var source = '2.0';
-		}else if(calendar.month_len[0] !== undefined){
-			var source = '1.0';
 		}else if(calendar.year_len){
 			var source = 'donjon';
+		}else if(calendar.month_len[0] !== undefined){
+			var source = '1.0';
 		}
 
 		switch(source){
@@ -1633,6 +382,8 @@ function parse_json(json){
 }
 
 function process_fantasycalendar(calendar, dynamic_data, static_data){
+
+	var calendar_name = escapeHtml(unescapeHtml(calendar_name.name));
 
 	if(calendar.static_data.year_data.global_week !== undefined){
 		for(var i = 0; i < calendar.static_data.year_data.global_week.length; i++){
@@ -1660,19 +411,19 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 				throw `${timespan.name} has invalid type!`;
 			}
 
-			if(!isNaN(Number(current_timespan.length))){
+			if(current_timespan.length !== undefined && !isNaN(Number(current_timespan.length))){
 				timespan.length = Number(current_timespan.length)
 			}else{
 				throw `${timespan.name} has invalid length!`;
 			}
 
-			if(!isNaN(Number(current_timespan.interval))){
+			if(current_timespan.interval !== undefined && !isNaN(Number(current_timespan.interval))){
 				timespan.interval = Number(current_timespan.interval)
 			}else{
 				throw `${timespan.name} has invalid interval!`;
 			}
 
-			if(!isNaN(Number(current_timespan.offset))){
+			if(current_timespan.offset !== undefined && !isNaN(Number(current_timespan.offset))){
 				timespan.offset = Number(current_timespan.offset)
 			}else{
 				throw `${timespan.name} has invalid offset!`;
@@ -1739,7 +490,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 				}
 			}
 
-			if(current_leap_day.interval.length > 0){
+			if(current_leap_day.interval !== undefined && current_leap_day.interval !== ""){
 				var local_regex = /^\!*[1-9]+[0-9]{0,}$/;
 				var intervals = current_leap_day.interval.split(',');
 				for(var i = 0; i < intervals.length; i++){
@@ -1747,6 +498,8 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 						throw `${leap_day.name} has invalid interval!`;
 					}
 				}
+
+				leap_day.interval = current_leap_day.interval;
 			}
 
 			if(current_leap_day.offset !== undefined && !isNaN(Number(current_leap_day.offset))){
@@ -1774,7 +527,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 				throw `Moon ${i+1} does not have name data!`;
 			}
 
-			if(typeof current_moon.custom_phase === "boolean"){
+			if(current_moon.custom_phase !== undefined && typeof current_moon.custom_phase === "boolean"){
 				if(current_moon.custom_phase){
 					var global_regex = /[`!+~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z ]/g;
 					if(global_regex.test(interval_val)){
@@ -1787,21 +540,20 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 						throw `${moon.name} has invalid custom cycle number (numbers too high)!`;
 					}
 
-					moon.custom_phase = Number(current_moon.custom_phase)
-					moon.custom_cycle = Number(current_moon.custom_cycle)
+					moon.custom_cycle = current_moon.custom_cycle
 
 				}else{
-					if(current_moon.cycle && !isNaN(Number(current_moon.cycle))){
-						moon.cycle = Number(current_moon.cycle)
+
+					if(current_moon.cycle && !isNaN(parseFloat(current_moon.cycle))){
+						moon.cycle = parseFloat(current_moon.cycle)
 					}else{
 						throw `${moon.name} has invalid cycle!`;
 					}
 				}
-
 			}
 
-			if(current_moon.shift && !isNaN(Number(current_moon.shift))){
-				moon.shift = Number(current_moon.shift)
+			if(current_moon.shift && !isNaN(parseFloat(current_moon.shift))){
+				moon.shift = parseFloat(current_moon.shift)
 			}else{
 				throw `${moon.name} has invalid shift!`;
 			}
@@ -2214,6 +966,32 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 					throw `${era.name} does not have description data!`;
 				}
 
+				if(current_era.date !== undefined){
+
+					era.date = {};
+
+					if(current_era.date.year !== undefined && !isNaN(Number(current_era.date.year))){
+						era.date.year = Number(current_era.date.year);
+					}else{
+						throw `${era.name} does not have valid year!`;
+					}
+
+					if(current_era.date.timespan !== undefined && !isNaN(Number(current_era.date.timespan))){
+						era.date.timespan = Number(current_era.date.timespan);
+					}else{
+						throw `${era.name} does not have valid timespan!`;
+					}
+
+					if(current_era.date.day !== undefined && !isNaN(Number(current_era.date.day))){
+						era.date.day = Number(current_era.date.day);
+					}else{
+						throw `${era.name} does not have valid day!`;
+					}
+
+				}else{
+					throw `${era.name} does not have valid date!`;
+				}
+
 				if(current_era.settings !== undefined){
 
 					era.settings = {};
@@ -2553,6 +1331,20 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 						throw `${event.name} does not have valid only happen once data!`;
 					}
 
+					if(current_event.data.date !== undefined && Array.isArray(current_event.data.date) && (current_event.data.date.length === 3 || current_event.data.date.length === 0)){
+						event.data.date = []
+						if(current_event.data.date.length === 3){
+							for(var j = 0; j < current_event.data.date.length; j++){
+								if(current_event.data.date[j] !== undefined && !isNaN(Number(current_event.data.date[j]))){
+									event.data.date.push(Number(current_event.data.date[j]));
+								}else{
+									throw `${event.name} does not have valid date data!`;
+								}
+							}
+						}
+					}else{
+						throw `${event.name} does not have valid date data!`;
+					}
 
 					if(current_event.data.duration !== undefined && !isNaN(Number(current_event.data.duration))){
 						event.data.duration = Number(current_event.data.duration);
@@ -2574,10 +1366,37 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 					}
 
 					// CONTINUE HERE
-					array = $.grep(current_event.data.conditions, function(check) {
-						console.log(check)
-						return !Array.isArray(check);
+					array = $.grep(current_event.data.conditions, function(array) {
+						if(!Array.isArray(array)){
+							return array;
+						}
+						if(array.length == 1){
+							if(!['^','&&','||','NAND'].includes(array[0])){
+								return array;
+							}
+						}else if(array.length == 2){
+							// If it's a group
+							if(!Array.isArray(array[1]) || !['','!'].includes(array[0]) || isNaN(Number(array[0]))){
+								return array;
+							}
+						}else if(array.length == 3){
+							if(condition_mapping[array[0]] === undefined || isNaN(Number(array[1])) || !Array.isArray(array[2]) || array[2].length == 0){
+								return array;
+							}else{
+								for(var cond = 0; cond < array[2].length; cond++){
+									if(Array.isArray(array[2][cond])){
+										return array;
+									}
+								}
+							}
+						}
 					});
+
+					if(array.length == 0){
+						event.data.conditions = current_event.data.conditions;
+					}else{
+						throw `${event.name} has invalid event conditions!`;
+					}
 
 				}else{
 					throw `${event.name} does not have valid data!`;
@@ -2593,17 +1412,75 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 
 	}
 
-	throw 'ERROR';
+
+	if(calendar.dynamic_data.year !== undefined && !isNaN(Number(calendar.dynamic_data.year))){
+		dynamic_data.year = Number(calendar.dynamic_data.year)
+	}else{
+		throw `Calendar has invalid year!`;
+	}
+
+	if(calendar.dynamic_data.timespan !== undefined && !isNaN(Number(calendar.dynamic_data.timespan)) && Number(calendar.dynamic_data.timespan) >= 0){
+		dynamic_data.timespan = Number(calendar.dynamic_data.timespan)
+	}else{
+		throw `Calendar has invalid timespan!`;
+	}
+
+	if(calendar.dynamic_data.day !== undefined && !isNaN(Number(calendar.dynamic_data.day)) && Number(calendar.dynamic_data.day) > 1){
+		dynamic_data.day = Number(calendar.dynamic_data.day)
+	}else{
+		throw `Calendar has invalid day!`;
+	}
+
+	if(calendar.dynamic_data.epoch !== undefined && !isNaN(Number(calendar.dynamic_data.epoch))){
+		dynamic_data.epoch = Number(calendar.dynamic_data.epoch)
+	}else{
+		throw `Calendar has invalid epoch!`;
+	}
+
+	if(calendar.dynamic_data.hour !== undefined && !isNaN(Number(calendar.dynamic_data.hour)) && Number(calendar.dynamic_data.hour) >= 0){
+		dynamic_data.hour = Number(calendar.dynamic_data.hour)
+	}else{
+		throw `Calendar has invalid hour!`;
+	}
+
+	if(calendar.dynamic_data.minute !== undefined && !isNaN(Number(calendar.dynamic_data.minute)) && Number(calendar.dynamic_data.minute) >= 0){
+		dynamic_data.minute = Number(calendar.dynamic_data.minute)
+	}else{
+		throw `Calendar has invalid minute!`;
+	}
+
+	if(calendar.dynamic_data.custom_location !== undefined && typeof calendar.dynamic_data.custom_location === "boolean"){
+		dynamic_data.custom_location = calendar.dynamic_data.custom_location;
+	}else{
+		throw `Custom location boolean is invalid!`;
+	}
+
+	if(!dynamic_data.custom_location){
+		if(calendar.dynamic_data.location !== undefined && climate_generator.presets[calendar.dynamic_data.location] !== undefined){
+			dynamic_data.location = calendar.dynamic_data.location;
+		}else{
+			throw `Location is invalid (preset doesn't exist)!`;
+		}
+	}else{
+		if(calendar.dynamic_data.location !== undefined && !isNaN(Number(calendar.dynamic_data.location)) && Number(calendar.dynamic_data.location) >= 0 && Number(calendar.dynamic_data.location) < static_data.seasons.locations.length){
+			dynamic_data.location = calendar.dynamic_data.location;
+		}else{
+			throw `Custom location is invalid!`;
+		}
+	}
 
 	return {
-		dynamic_data: calendar.dynamic_data,
-		static_data: calendar.static_data
+		name: calendar_name,
+		dynamic_data: dynamic_data,
+		static_data: static_data
 	}
 
 }
 
 
 function process_old_fantasycalendar(calendar, dynamic_data, static_data){
+
+	var calendar_name = escapeHtml(unescapeHtml(calendar.name));
 
 	dynamic_data.year = calendar.year;
 	dynamic_data.month = calendar.month-1;
@@ -2868,6 +1745,7 @@ function process_old_fantasycalendar(calendar, dynamic_data, static_data){
 	}
 
 	return {
+		name: calendar_name,
 		dynamic_data: dynamic_data,
 		static_data: static_data
 	}
@@ -2876,36 +1754,84 @@ function process_old_fantasycalendar(calendar, dynamic_data, static_data){
 
 function process_donjon(calendar, dynamic_data, static_data){
 
-	dynamic_data.year = calendar.year;
-
-	static_data.year_data.first_day = calendar.first_day;
-
-	static_data.year_data.global_week = calendar.weekdays;
-
-	for(var i = 0; i < calendar.months.length; i++){
-		var name = calendar.months[i];
-		static_data.year_data.timespans.push({
-			'name': escapeHtml(name),
-			'type': 'month',
-			'interval': 1,
-			'offset': 0,
-			'length': calendar.month_len[name]
-		});
+	if(calendar.year !== undefined && !isNaN(Number(calendar.year))){
+		dynamic_data.year = Number(calendar.year)
+	}else{
+		throw `Calendar has invalid year!`;
 	}
 
-	for(var i = 0; i < calendar.moons.length; i++){
-		var name = calendar.moons[i];
-		static_data.moons.push({
-			'name': escapeHtml(name),
-			'cycle': calendar.lunar_cyc[name],
-			'shift': calendar.lunar_shf[name],
-			'granularity': get_moon_granularity(calendar.lunar_cyc[name]),
-			'color': '#ffffff',
-			'hidden': false
-		});
+	if(calendar.week_len !== undefined && !isNaN(Number(calendar.week_len))){
+
+		for(var i = 0; i < calendar.week_len; i++){
+			var name = calendar.weekdays[i] ? calendar.weekdays[i] : `Weekday ${i+1}`;
+			static_data.year_data.global_week.push(name)
+		}
+
+	}else{
+		throw `Calendar has week length!`;
+	}
+
+	if(calendar.n_months !== undefined && !isNaN(Number(calendar.n_months))){
+
+		for(var i = 0; i < calendar.n_months; i++){
+			var name = calendar.months[i] ? escapeHtml(unescapeHtml(calendar.months[i])) : `Month ${i+1}`;
+			static_data.year_data.timespans.push({
+				'name': name,
+				'type': 'month',
+				'interval': 1,
+				'offset': 0,
+				'length': calendar.month_len[name] ? calendar.month_len[name] : calendar.month_len[i]
+			});
+		}
+	
+	}else{
+		throw `Calendar has number of months!`;
+	}
+
+	if(calendar.n_moons !== undefined && !isNaN(Number(calendar.n_moons))){
+
+		for(var i = 0; i < calendar.n_moons; i++){
+			var name = calendar.moons[i] ? escapeHtml(unescapeHtml(calendar.moons[i])) : `Moon ${i+1}`;
+			static_data.moons.push({
+				'name': name,
+				'cycle': calendar.lunar_cyc[name] ? calendar.lunar_cyc[name] : calendar.lunar_cyc[i],
+				'shift': calendar.lunar_shf[name] ? calendar.lunar_shf[name] : calendar.lunar_shf[i],
+				'granularity': calendar.lunar_cyc[name] ? get_moon_granularity(calendar.lunar_cyc[name]) : get_moon_granularity(calendar.lunar_cyc[i]),
+				'color': '#ffffff',
+				'hidden': false
+			});
+		}
+	
+	}else{
+		throw `Calendar has number of months!`;
+	}
+
+	if(calendar.first_day === undefined || isNaN(Number(calendar.first_day))){
+		throw `Calendar has invalid first day!`;
+	}
+
+	static_data.year_data.overflow = true;
+
+	static_data.year_data.first_day = Number(calendar.first_day)+1;
+
+	var target_first_day = Number(calendar.first_day)+1;
+
+	var first_day = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year)).week_day;
+
+	while(target_first_day != first_day){
+
+		static_data.year_data.first_day++;
+
+		if(static_data.year_data.first_day > static_data.year_data.global_week.length){
+			static_data.year_data.first_day = 1;
+		}
+		
+		first_day = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year)).week_day;
+
 	}
 
 	return {
+		name: "New Calendar",
 		dynamic_data: dynamic_data,
 		static_data: static_data
 	}
