@@ -65,4 +65,6 @@
     <link rel="stylesheet" href="css/text_styles.css">
     <link rel="stylesheet" href="modules/spectrum/spectrum.css">
     <link rel="stylesheet" href="modules/trumbowyg/ui/trumbowyg.min.css">
+
+    @stack('head')
 </head>

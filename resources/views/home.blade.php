@@ -1,5 +1,20 @@
 @extends('templates._page')
 
+@push('head')
+    <style type="text/css">
+        .changelog__content h1 {
+            font-size: 1.75rem;
+        }
+        .changelog__content h2 {
+            font-size: 1rem;
+            font-style: italic;
+        }
+        .changelog__content ul li {
+            list-style-type: circle;
+        }
+    </style>
+@endpush
+
 @section('content')
     <div id="content">
         <div id="loading_background" class='basic-background hidden'>
@@ -32,7 +47,13 @@
     </div>
 
     <div class='detail-column half'>
-        <div id='changelog'><h2>Changelog</h2>{!! $changelog !!}</div>
+        <div id='changelog'>
+            <h2>Changelog</h2>
+
+            <div class="changelog__content">
+            {!! $changelog !!}
+            </div>
+        </div>
     </div>
 
     </div>
