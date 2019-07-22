@@ -13,6 +13,7 @@ var edit_event_ui = {
 		this.event_condition_sortables			= [];
 		this.current_sortable					= null;
 		this.delete_droppable					= false;
+		this.date 								= [];
 		this.connected_events					= [];
 		this.prev_version_event					= {};
 
@@ -217,15 +218,23 @@ var edit_event_ui = {
 		edit_event_ui.new_event = true;
 
 		var stats = {
-			'name': name !== undefined ? name : '',
+			'name': name !== undefined ? name : 'New event',
 			'data': {
-				'conditions': []
+				'has_duration': false,
+				'duration': 0,
+				'show_first_last': false,
+				'only_happen_once': false,
+				'conditions': [],
+				'connected_events': false,
+				'one_time_event': false,
+				'date': [],
 			},
 			'settings': {
 				'color': 'Dark-Solid',
 				'text': 'text',
 				'hide': false,
-				'noprint': false
+				'noprint': false,
+				'hide_full': false
 			}
 		};
 
@@ -293,13 +302,55 @@ var edit_event_ui = {
 
 		static_data.event_data.events[this.event_id].description = escapeHtml(this.trumbowyg.trumbowyg('html'));
 
+		var conditions = this.create_condition_array(edit_event_ui.event_conditions_container);
+
+		this.date = []
+
+		if(conditions.length == 5){
+
+			var year = false;
+			var month = false;
+			var day = false
+			var ands = 0
+
+			for(var i = 0; i < conditions.length; i++){
+				if(conditions[i].length == 3){
+					if(conditions[i][0] == "Year" && Number(conditions[i][1]) == 0){
+						year = true;
+						this.date[0] = Number(conditions[i][2][0])
+					}
+
+					if(conditions[i][0] == "Month" && Number(conditions[i][1]) == 0){
+						month = true;
+						this.date[1] = Number(conditions[i][2][0])
+					}
+
+					if(conditions[i][0] == "Day" && Number(conditions[i][1]) == 0){
+						day = true;
+						this.date[2] = Number(conditions[i][2][0])
+					}
+				}else if(conditions[i].length == 1){
+					if(conditions[i][0] == "&&"){
+						ands++;
+					}
+				}
+			}
+
+			if(!(year && month && day && ands == 2)){
+				this.date = [];
+			}
+		}
+
+		console.log(this.date)
+
 		static_data.event_data.events[this.event_id].data = {
 			has_duration: $('#has_duration').prop('checked'),
 			duration: $('#duration').val()|0,
 			show_first_last: $('#show_first_last').prop('checked'),
 			only_happen_once: $('#only_happen_once').prop('checked'),
-			conditions: this.create_condition_array(edit_event_ui.event_conditions_container),
-			connected_events: this.connected_events
+			conditions: conditions,
+			connected_events: this.connected_events,
+			date: this.date,
 		};
 
 		static_data.event_data.events[this.event_id].category = $('#event_categories').val();
@@ -343,6 +394,9 @@ var edit_event_ui = {
 		this.data = {};
 
 		this.new_event = false;
+
+		this.date = [];
+
 		this.connected_events = [];
 		
 		$('#event_categories').val('');

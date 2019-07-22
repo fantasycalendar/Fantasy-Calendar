@@ -342,63 +342,82 @@ var event_evaluator = {
 
 			this.current_event = event_evaluator.events[event_index];
 
-			var num_epochs = Object.keys(epoch_list).length;
+			if(this.current_event.data.date !== undefined && this.current_event.data.date.length === 3){
 
-			for(var epoch_index = 0; epoch_index < num_epochs; epoch_index++){
+				var epoch = evaluate_calendar_start(event_evaluator.static_data, convert_year(event_evaluator.static_data, this.current_event.data.date[0]), this.current_event.data.date[1], this.current_event.data.date[2]).epoch;
+				add_to_epoch(this.current_event, event_index, epoch);
 
-				var epoch = parseInt(Object.keys(epoch_list)[epoch_index]);
+			}else{
 
-				this.current_data = epoch_list[epoch];
+				var num_epochs = Object.keys(epoch_list).length;
 
-				var result = evaluate_event_group(this.current_event.data.conditions);
+				for(var epoch_index = 0; epoch_index < num_epochs; epoch_index++){
 
-				if(result){
-						
-					if(!event_evaluator.event_data.valid[event_index]){
-						event_evaluator.event_data.valid[event_index] = [];
-						event_evaluator.event_data.starts[event_index] = [];
-						event_evaluator.event_data.ends[event_index] = [];
-					}
+					var epoch = parseInt(Object.keys(epoch_list)[epoch_index]);
 
-					if(this.current_event.data.has_duration){
+					this.current_data = epoch_list[epoch];
 
-						if(event_evaluator.event_data.valid[event_index].indexOf(epoch) == -1 && epoch >= event_evaluator.start_epoch) {
-							event_evaluator.event_data.valid[event_index].push(epoch);
-							event_evaluator.event_data.starts[event_index].push(epoch);
+					var result = evaluate_event_group(this.current_event.data.conditions);
+
+					if(result){
+							
+						result = add_to_epoch(this.current_event, event_index, epoch);
+
+						if(result){
+							break;
 						}
 
-						if(!this.current_event.data.show_first_last){
-
-							for(var duration = 1; duration < this.current_event.data.duration; duration++)
-							{
-								if(event_evaluator.event_data.valid[event_index].indexOf(epoch+duration) == -1 && epoch+duration >= event_evaluator.start_epoch) {
-									event_evaluator.event_data.valid[event_index].push(epoch+duration);
-								}
-							}
-						}
-
-						if(event_evaluator.event_data.valid[event_index].indexOf(epoch+this.current_event.data.duration) == -1 && epoch+this.current_event.data.duration >= event_evaluator.start_epoch) {
-							event_evaluator.event_data.valid[event_index].push(epoch+this.current_event.data.duration);
-							event_evaluator.event_data.ends[event_index].push(epoch+this.current_event.data.duration);
-						}
-
-					}else{
-
-						if(epoch >= event_evaluator.start_epoch){
-							event_evaluator.event_data.valid[event_index].push(epoch);
-						}
-
-					}
-
-					if(this.current_event.data.only_happen_once){
-						event_evaluator.events_only_happen_once.push(event_index);
-						break;
 					}
 
 				}
 
 			}
 
+		}
+
+		function add_to_epoch(event, event_index, epoch){
+
+			if(!event_evaluator.event_data.valid[event_index]){
+				event_evaluator.event_data.valid[event_index] = [];
+				event_evaluator.event_data.starts[event_index] = [];
+				event_evaluator.event_data.ends[event_index] = [];
+			}
+
+			if(event.data.has_duration){
+
+				if(event_evaluator.event_data.valid[event_index].indexOf(epoch) == -1 && epoch >= event_evaluator.start_epoch) {
+					event_evaluator.event_data.valid[event_index].push(epoch);
+					event_evaluator.event_data.starts[event_index].push(epoch);
+				}
+
+				if(!event.data.show_first_last){
+
+					for(var duration = 1; duration < event.data.duration; duration++)
+					{
+						if(event_evaluator.event_data.valid[event_index].indexOf(epoch+duration) == -1 && epoch+duration >= event_evaluator.start_epoch) {
+							event_evaluator.event_data.valid[event_index].push(epoch+duration);
+						}
+					}
+				}
+
+				if(event_evaluator.event_data.valid[event_index].indexOf(epoch+event.data.duration) == -1 && epoch+event.data.duration >= event_evaluator.start_epoch) {
+					event_evaluator.event_data.valid[event_index].push(epoch+event.data.duration);
+					event_evaluator.event_data.ends[event_index].push(epoch+event.data.duration);
+				}
+
+			}else{
+
+				if(epoch >= event_evaluator.start_epoch){
+					event_evaluator.event_data.valid[event_index].push(epoch);
+				}
+
+			}
+
+			if(event.data.only_happen_once){
+				event_evaluator.events_only_happen_once.push(event_index);
+				return true;
+			}
+			return false;
 		}
 
 		if(event_id !== undefined){
