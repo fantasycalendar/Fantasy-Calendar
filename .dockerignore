@@ -7,3 +7,9 @@ vendor
 storage/framework/cache/**
 storage/framework/sessions/**
 storage/framework/views/**
+docker-compose.yml
+.gitignore
+.gitattributes
+.editorconfig
+Dockerfile
+.dockerignore
