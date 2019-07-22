@@ -16,7 +16,7 @@ class database
     public function __construct(){
 
         // Set DSN
-        $dsn = 'mysql:host=' . getenv('DB_HOST') . ';dbname=' . getenv('DB_NAME');
+        $dsn = 'mysql:host=' . env('DB_HOST') . ';dbname=' . env('DB_DATABASE');
 
         // Set options
         $options = array(
@@ -25,7 +25,7 @@ class database
         );
         // Create a new PDO instanace
         try{
-            $this->dbh = new PDO($dsn, getenv('DB_USER'), getenv('DB_PASS'), $options);
+            $this->dbh = new PDO($dsn, env('DB_USERNAME'), env('DB_PASSWORD'), $options);
         }
         // Catch any errors
         catch(PDOException $e){

@@ -1,14 +1,10 @@
 <?php
 
-function loadEnvVars($env) {
-    foreach(explode("\n", $env) as $envline) {
-        putenv(trim($envline));
-    }
-}
+require_once __DIR__ . '/../../../../vendor/autoload.php';
 
 // Now load our envvars
-$envfile = file_get_contents(__DIR__.'/server.env');
-loadEnvVars($envfile);
+$dotenv = Dotenv\Dotenv::create(__DIR__.'/../../../../');
+$dotenv->load();
 
 require_once 'c_db.php';
 require_once 'c_user.php';
