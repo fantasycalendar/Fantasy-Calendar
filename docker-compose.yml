@@ -26,7 +26,7 @@ services:
 
   fantasy-calendar-php:
     container_name: fantasy_calendar_php
-    build: ./setup/php/
+    build: .
     user: "1000:1000"
     volumes:
       - ./:/fantasy-calendar

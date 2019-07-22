@@ -15,3 +15,9 @@ RUN apt-get update && \
 WORKDIR /var/www/html
 
 RUN curl --silent --show-error https://getcomposer.org/installer | php
+
+WORKDIR /fantasy-calendar
+
+COPY . .
+
+RUN ["/usr/local/bin/php", "/var/www/html/composer.phar", "install", "-d", "/fantasy-calendar/"]
