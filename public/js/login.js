@@ -50,7 +50,7 @@ $(document).ready(function(){
 					data: {action: "login", username: $('#login_username').val(), password: $('#login_password').val(), remember: $('#login_rememberMe').is(':checked')},
 					success: function(result){
 						if(typeof result['error'] === 'undefined'){
-							form.submit();
+							location.reload();
 						}else{
 							loginValidator.showErrors({
 								"username": result['error'],

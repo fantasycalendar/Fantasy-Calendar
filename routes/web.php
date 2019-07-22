@@ -11,4 +11,4 @@
 |
 */
 
-Route::get('/', 'HomeController@home');
+Route::get('/', 'HomeController@home')->middleware('calendarauth');
