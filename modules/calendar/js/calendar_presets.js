@@ -18,7 +18,6 @@ function create_season_events(id, season_name){
 				'show_first_last': false,
 				'only_happen_once': false,
 				'connected_events': false,
-				'one_time_event': false,
 				'date': [],
 				"conditions":[
 					["Season","0",[id]],["&&"],["Season","8",["1"]]
@@ -42,7 +41,6 @@ function create_season_events(id, season_name){
 				'show_first_last': false,
 				'only_happen_once': false,
 				'connected_events': false,
-				'one_time_event': false,
 				'date': [],
 				"conditions":[
 					["Season","0",[id]],["&&"],["Season","2",["50"]]
@@ -356,10 +354,10 @@ function parse_json(json){
 
 		if(calendar.dynamic_data !== undefined){
 			var source = '2.0';
+		}else if(calendar.settings !== undefined){
+			var source = '1.0';
 		}else if(calendar.year_len){
 			var source = 'donjon';
-		}else if(calendar.month_len[0] !== undefined){
-			var source = '1.0';
 		}
 
 		switch(source){
@@ -1509,25 +1507,34 @@ function process_old_fantasycalendar(calendar, dynamic_data, static_data){
 			'shift': calendar.lunar_shf[i],
 			'granularity': get_moon_granularity(calendar.lunar_cyc[i]),
 			'color': calendar.lunar_color[i],
-			'hidden': false
+			'hidden': false,
+			'custom_phase': false
 		});
 	}
 
 	for(var i = 0; i < calendar.events.length; i++){
+
 		var event = calendar.events[i];
+
+		data = convert_old_event(event);
+
 		static_data.event_data.events.push({
 			'name': escapeHtml(event.name),
 			'description': escapeHtml(event.description),
 			'data':{
-				'length':1,
-				'show_start_end':false,
-				'show_first_last':false,
-				'conditions': convert_old_event(event)
+				'has_duration': false,
+				'duration': 0,
+				'show_first_last': false,
+				'only_happen_once': false,
+				'connected_events': [],
+				'date': data[0],
+				'conditions': data[1]
 			},
-			'category':-1,
+			'category':'-1',
 			'settings':{
 				'color':'Dark-Solid',
 				'text':'text',
+				'hide_full': false,
 				'hide': event.hide === undefined ? false : event.hide,
 				'noprint': event.noprint === undefined ? false : event.noprint
 			}
@@ -1825,7 +1832,7 @@ function process_donjon(calendar, dynamic_data, static_data){
 		if(static_data.year_data.first_day > static_data.year_data.global_week.length){
 			static_data.year_data.first_day = 1;
 		}
-		
+
 		first_day = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year)).week_day;
 
 	}
@@ -1843,149 +1850,189 @@ function convert_old_event(event){
 
 	switch(event.repeats){
 		case 'once':
-			return [
-				['Year', '0', [event.data.year]],
+			var conditions = [
+				['Year', '0', [event.data.year.toString()]],
 				['&&'],
-				['Month', '0', [event.data.month-1]],
+				['Month', '0', [(event.data.month-1).toString()]],
 				['&&'],
-				['Day', '0', [event.data.day]]
+				['Day', '0', [event.data.day.toString()]]
 			];
+			var date = [event.data.year, event.data.month-1, event.data.day];
+			return [date, conditions];
+
 		case 'daily':
-			return [
+			var conditions = [
 				['Epoch', '6', ["1", "0"]]
 			];
+			var date = [];
+			return [date, conditions];
+
 		case 'weekly':
-			return [
-				['Weekday', '0', [event.data.week_day+1]]
+			var conditions = [
+				['Weekday', '0', [(event.data.week_day+1).toString()]]
 			];
+			var date = [];
+			return [date, conditions];
 
 		case 'fortnightly':
-			return [
-				['Weekday', '0', [event.data.week_day+1]],
+			var conditions = [
+				['Weekday', '0', [(event.data.week_day+1).toString()]],
 				['&&'],
 				['Week', '13', [event.data.week_even ? '2' : '1', '0']]
 			];
+			var date = [];
+			return [date, conditions];
 
 		case 'monthly_date':
-			return [
-				['Day', '0', [event.data.day]],
+			var conditions = [
+				['Day', '0', [event.data.day.toString()]],
 			];
+			var date = [];
+			return [date, conditions];
 
 		case 'annually_date':
-			return [
-				['Month', '0', [event.data.month-1]],
+			var conditions = [
+				['Month', '0', [(event.data.month-1).toString()]],
 				['&&'],
-				['Day', '0', [event.data.day]]
+				['Day', '0', [event.data.day.toString()]]
 			];
+			var date = [];
+			return [date, conditions];
 
 		case 'monthly_weekday':
-			return [
-				['Weekday', '0', [event.data.week_day+1]],
+			var conditions = [
+				['Weekday', '0', [(event.data.week_day+1).toString()]],
 				['&&'],
-				['Week', '0', [event.data.week_day_number]]
+				['Week', '0', [event.data.week_day_number.toString()]]
 			];
+			var date = [];
+			return [date, conditions];
 
 		case 'annually_month_weekday':
-			return [
-				['Month', '0', [event.data.month-1]],
+			var conditions = [
+				['Month', '0', [(event.data.month-1).toString()]],
 				['&&'],
-				['Weekday', '0', [event.data.week_day+1]],
+				['Weekday', '0', [(event.data.week_day+1).toString()]],
 				['&&'],
-				['Week', '0', [event.data.week_day_number]]
+				['Week', '0', [event.data.week_day_number.toString()]]
 			];
+			var date = [];
+			return [date, conditions];
 
 		case 'every_x_day':
-			return [
-				['Epoch', '6', [event.data.every, event.data.modulus+1]]
+			var conditions = [
+				['Epoch', '6', [event.data.every.toString(), (event.data.modulus+1).toString()]]
 			];
+			var date = [];
+			return [date, conditions];
 
 		case 'every_x_weekday':
-			return [
-				['Weekday', '0', [event.data.week_day]],
+			var conditions = [
+				['Weekday', '0', [event.data.week_day.toString()]],
 				['&&'],
-				['Week', '20', [event.data.every, event.data.modulus+1]]
+				['Week', '20', [event.data.every.toString(), (event.data.modulus+1).toString()]]
 			];
+			var date = [];
+			return [date, conditions];
 
 		case 'every_x_monthly_date':
-			return [
-				['Day', '0', [event.data.day]],
+			var conditions = [
+				['Day', '0', [event.data.day.toString()]],
 				['&&'],
-				['Month', '13', [event.data.every, event.data.modulus+1]]
+				['Month', '13', [event.data.every.toString(), (event.data.modulus+1).toString()]]
 			];
+			var date = [];
+			return [date, conditions];
 
 		case 'every_x_monthly_weekday':
-			return [
-				['Weekday', '0', [event.data.week_day+1]],
+			var conditions = [
+				['Weekday', '0', [(event.data.week_day+1).toString()]],
 				['&&'],
-				['Week', '0', [event.data.week_day_number]],
+				['Week', '0', [event.data.week_day_number.toString()]],
 				['&&'],
-				['Month', '13', [event.data.every, event.data.modulus+1]]
+				['Month', '13', [event.data.every.toString(), (event.data.modulus+1).toString()]]
 			];
+			var date = [];
+			return [date, conditions];
 
 		case 'every_x_annually_date':
-			return [
-				['Day', '0', [event.data.day]],
+			var conditions = [
+				['Day', '0', [event.data.day.toString()]],
 				['&&'],
-				['Month', '0', [event.data.month-1]],
+				['Month', '0', [(event.data.month-1).toString()]],
 				['&&'],
-				['Year', '6', [event.data.every, event.data.modulus+1]]
+				['Year', '6', [event.data.every.toString(), (event.data.modulus+1).toString()]]
 			];
+			var date = [];
+			return [date, conditions];
 
 		case 'every_x_annually_weekday':
-			return [
-				['Weekday', '0', [event.data.week_day+1]],
+			var conditions = [
+				['Weekday', '0', [(event.data.week_day+1).toString()]],
 				['&&'],
-				['Week', '0', [event.data.week_day_number]],
+				['Week', '0', [event.data.week_day_number.toString()]],
 				['&&'],
-				['Month', '0', [event.data.month-1]],
+				['Month', '0', [(event.data.month-1).toString()]],
 				['&&'],
-				['Year', '6', [event.data.every, event.data.modulus+1]]
+				['Year', '6', [event.data.every.toString(), (event.data.modulus+1).toString()]]
 			];
-
+			var date = [];
+			return [date, conditions];
 
 		case 'moon_every':
-			return [
-				['Moons', '0', [event.data.moon_id, convert_to_granularity(event.data.moon_phase)]]
+			var conditions = [
+				['Moons', '0', [event.data.moon_id.toString(), convert_to_granularity(event.data.moon_phase).toString()]]
 			];
+			var date = [];
+			return [date, conditions];
 
 		case 'moon_monthly':
-			return [
-				['Moons', '0', [event.data.moon_id, convert_to_granularity(event.data.moon_phase)]],
+			var conditions = [
+				['Moons', '0', [event.data.moon_id.toString(), convert_to_granularity(event.data.moon_phase).toString()]],
 				['&&'],
-				['Moons', '7', [event.data.moon_id, convert_to_granularity(event.data.moon_phase_number)]]
+				['Moons', '7', [event.data.moon_id.toString(), convert_to_granularity(event.data.moon_phase_number).toString()]]
 			];
+			var date = [];
+			return [date, conditions];
 
 		case 'moon_anually':
-			return [
-				['Moons', '0', [event.data.moon_id, convert_to_granularity(event.data.moon_phase)]],
+			var conditions = [
+				['Moons', '0', [event.data.moon_id.toString(), convert_to_granularity(event.data.moon_phase).toString()]],
 				['&&'],
-				['Moons', '7', [event.data.moon_id, event.data.moon_phase_number]],
+				['Moons', '7', [event.data.moon_id.toString(), event.data.moon_phase_number]],
 				['&&'],
-				['Month', '0', [event.data.month-1]]
+				['Month', '0', [(event.data.month-1).toString()]]
 			];
+			var date = [];
+			return [date, conditions];
 
 		case 'multimoon_every':
 			var result = [];
 			for(var i = 0; i < event.data.moons.length; i++){
-				result.push(['Moons', '0', [i, convert_to_granularity(event.data.moons[i].moon_phase)]])
+				result.push(['Moons', '0', [i.toString(), convert_to_granularity(event.data.moons[i].moon_phase).toString()]])
 				if(i != event.data.moons.length-1){
 					result.push(['&&']);
 				}
 			}
-			return result;
+			var conditions = clone(result);
+			var date = [];
+			return [date, conditions];
 
 		case 'multimoon_anually':
 			var result = [];
-			result.push(['Month', '0', [event.data.month-1]]);
+			result.push(['Month', '0', [(event.data.month-1).toString()]]);
 			result.push(['&&']);
 			for(var i = 0; i < event.data.moons.length; i++){
-				result.push(['Moons', '0', [i, convert_to_granularity(event.data.moons[i].moon_phase)]])
+				result.push(['Moons', '0', [i.toString(), convert_to_granularity(event.data.moons[i].moon_phase).toString()]])
 				if(i != event.data.moons.length-1){
 					result.push(['&&']);
 				}
 			}
-			return result;
+			var conditions = clone(result);
+			var date = [];
+			return [date, conditions];
 	}
+
 }
 
 

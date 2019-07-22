@@ -226,7 +226,6 @@ var edit_event_ui = {
 				'only_happen_once': false,
 				'conditions': [],
 				'connected_events': false,
-				'one_time_event': false,
 				'date': [],
 			},
 			'settings': {
@@ -340,8 +339,6 @@ var edit_event_ui = {
 				this.date = [];
 			}
 		}
-
-		console.log(this.date)
 
 		static_data.event_data.events[this.event_id].data = {
 			has_duration: $('#has_duration').prop('checked'),

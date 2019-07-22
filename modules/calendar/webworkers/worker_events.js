@@ -46,10 +46,14 @@ var event_evaluator = {
 
 		this.start_epoch = Number(Object.keys(this.epoch_data)[0]);
 
+		execution_time.start();
+
 		this.events = clone(this.static_data.event_data.events);
 		this.categories = clone(this.static_data.event_data.categories);
 		this.evaluate_valid_events(this.pre_epoch_data, event_id);
 		this.evaluate_valid_events(this.epoch_data, event_id);
+		
+		execution_time.end();
 
 		return this.event_data;
 
@@ -345,7 +349,12 @@ var event_evaluator = {
 			if(this.current_event.data.date !== undefined && this.current_event.data.date.length === 3){
 
 				var epoch = evaluate_calendar_start(event_evaluator.static_data, convert_year(event_evaluator.static_data, this.current_event.data.date[0]), this.current_event.data.date[1], this.current_event.data.date[2]).epoch;
-				add_to_epoch(this.current_event, event_index, epoch);
+
+				if(epoch_list[Object.keys(epoch_list)[0]].year == convert_year(event_evaluator.static_data, this.current_event.data.date[0])){
+
+					add_to_epoch(this.current_event, event_index, epoch);
+
+				}
 
 			}else{
 
@@ -420,31 +429,6 @@ var event_evaluator = {
 			return false;
 		}
 
-		if(event_id !== undefined){
-
-			evaluate_event(this.events[event_id])
-
-		}else{
-
-			var num_events = this.events.length;
-
-			for(var event_index = 0; event_index < num_events; event_index++){
-				if(this.events[event_index].data.connected_events === undefined || this.events[event_index].data.connected_events.length == 0){
-					evaluate_event(event_index);
-				}
-			}
-
-			execution_time.start();
-
-			for(var event_index = 0; event_index < num_events; event_index++){
-				if(this.events[event_index].data.connected_events !== undefined && this.events[event_index].data.connected_events.length > 0){
-					check_event_chain(event_index);
-				}
-			}
-
-			execution_time.end();
-		}
-
 		function check_event_chain(id){
 
 			var current_event = event_evaluator.events[id];
@@ -465,6 +449,29 @@ var event_evaluator = {
 
 				evaluate_event(id);
 
+			}
+
+		}
+
+		if(event_id !== undefined){
+
+			evaluate_event(this.events[event_id])
+
+		}else{
+
+			var num_events = this.events.length;
+
+			for(var event_index = 0; event_index < num_events; event_index++){
+				if(this.events[event_index].data.connected_events === undefined || this.events[event_index].data.connected_events.length == 0){
+					evaluate_event(event_index);
+				}
+			}
+
+
+			for(var event_index = 0; event_index < num_events; event_index++){
+				if(this.events[event_index].data.connected_events !== undefined && this.events[event_index].data.connected_events.length > 0){
+					check_event_chain(event_index);
+				}
 			}
 
 		}
