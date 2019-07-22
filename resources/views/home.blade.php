@@ -12,6 +12,9 @@
         .changelog__content ul li {
             list-style-type: circle;
         }
+        #changelog {
+            margin-top: 40px;
+        }
     </style>
 @endpush
 
