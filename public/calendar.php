@@ -12,7 +12,7 @@ function redirect($url, $statusCode = 303)
 
 
 if(!$_SESSION['beta']){
-	redirect('403.php', 303);
+	redirect('403', 303);
 }
 
 if(isset($_GET['action']) && $_GET['action'] === "generate")
@@ -68,7 +68,7 @@ elseif(isset($_GET['id']))
 
 	}else{
 
-		include('404.php');
+		redirect('404');
 
 	}
 

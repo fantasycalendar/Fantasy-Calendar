@@ -12,3 +12,18 @@
 */
 
 Route::get('/', 'HomeController@home')->middleware('calendarauth');
+
+
+
+// Manual error page routes for the moment
+
+Route::get('/403', function() {
+    return redirect('/');
+})->middleware('calendarauth');
+
+Route::get('/404', function() {
+    return view('errors.404', [
+        'title' => 'Calendar not found',
+        'resource' => 'Calendar'
+    ]);
+})->middleware('calendarauth');

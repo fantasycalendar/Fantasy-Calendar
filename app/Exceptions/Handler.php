@@ -54,7 +54,7 @@ class Handler extends ExceptionHandler
 
             if ($exception->getStatusCode() == 403) {
                 if(Auth::check() && Auth::user()->beta_authorized == 1) {
-                    return redirect('home');
+                    return redirect('/');
                 }
 
                 return response()->view('errors.403', [
