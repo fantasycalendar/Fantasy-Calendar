@@ -110,7 +110,12 @@ var calendar_builder = {
 				if(is_leap(convert_year(this.static_data, this.dynamic_data.year), leap_day.interval, leap_day.offset)){
 
 					if(leap_day.intercalary){
-						timespan.leap_days.push(leap_day);
+						if(timespan.type === 'intercalary'){
+							timespan.length++;
+						}else{
+							timespan.leap_days.push(leap_day);
+						}
+
 					}else{
 						if(leap_day.removes_day){
 							timespan.length--;
@@ -135,6 +140,7 @@ var calendar_builder = {
 		}
 
 		return timespan;
+		
 	},
 
 

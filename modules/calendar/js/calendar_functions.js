@@ -900,7 +900,7 @@ function get_epoch(static_data, year, month, day, inclusive){
 				added_leap_day = get_leap_fraction(timespan_fraction, leap_day.interval, leap_day.offset, true);
 
 				// If we have leap days days that are intercalary (eg, do not affect the flow of the static_data, add them to the overall epoch, but remove them from the start of the year week day selection)
-				if(leap_day.intercalary){
+				if(leap_day.intercalary || timespan.type === "intercalary"){
 					intercalary += added_leap_day;
 				}
 
