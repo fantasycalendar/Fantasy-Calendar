@@ -15,16 +15,20 @@ services:
 
   fantasy-calendar:
     container_name: fantasy_calendar
-    build: ./setup/nginx/
+    build: 
+      context: .
+      dockerfile: nginx.Dockerfile
     user: "1000:1000"
     volumes:
-      - ./:/fantasy-calendar:ro
+      - ./:/fantasy-calendar
     ports:
       - "9980:8080"
 
   fantasy-calendar-php:
     container_name: fantasy_calendar_php
-    build: .
+    build:
+      context: .
+      dockerfile: php.Dockerfile
     user: "1000:1000"
     volumes:
       - ./:/fantasy-calendar
@@ -41,7 +45,9 @@ services:
       
 
   fantasy-calendar-composer-install:
-    build: .
+    build:
+      context: .
+      dockerfile: php.Dockerfile
     user: "1000:1000"
     volumes:
       - ./:/fantasy-calendar
