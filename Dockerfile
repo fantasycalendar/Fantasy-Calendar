@@ -20,4 +20,15 @@ WORKDIR /fantasy-calendar
 
 COPY . .
 
+RUN chown -R www-data:www-data /fantasy-calendar
+
+RUN chmod -R 775 /fantasy-calendar
+
+USER www-data
+
+ENV APP_NAME FantasyCalendar
+ENV DB_CONNECTION mysql
+ENV DB_PORT 3306
+ENV WEBADDRESS /
+
 RUN ["/usr/local/bin/php", "/var/www/html/composer.phar", "install", "-d", "/fantasy-calendar/"]

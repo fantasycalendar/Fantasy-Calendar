@@ -14,13 +14,11 @@ services:
       - "13306:3306"
 
   fantasy-calendar:
-    image: nginxinc/nginx-unprivileged
     container_name: fantasy_calendar
+    build: ./setup/nginx/
     user: "1000:1000"
     volumes:
-      - ./:/fantasy-calendar
-      - ./setup/docker.env:/fantasy-calendar/.env
-      - ./setup/nginx/fantasy-calendar.conf:/etc/nginx/conf.d/default.conf
+      - ./:/fantasy-calendar:ro
     ports:
       - "9980:8080"
 
@@ -30,14 +28,23 @@ services:
     user: "1000:1000"
     volumes:
       - ./:/fantasy-calendar
-      - ./setup/docker.env:/fantasy-calendar/.env
+    environment:
+      - "APP_ENV=local"
+      - "APP_KEY=base64:ECSIURhDQnHBdx7nRVlwGtPwBU+RZrQCQpmGHesaIUM="
+      - "APP_DEBUG=true"
+      - "APP_URL=http://fantasy-calendar.test:9980/"
+      - "COOKIEADDRESS=http://fantasy-calendar.test:9980/"
+      - "DB_HOST=fantasydb"
+      - "DB_DATABASE=fantasy-calendar"
+      - "DB_USERNAME=root"
+      - "DB_PASSWORD=root"
+      
 
   fantasy-calendar-composer-install:
-    build: ./setup/php/
+    build: .
     user: "1000:1000"
     volumes:
       - ./:/fantasy-calendar
-      - ./setup/docker.env:/fantasy-calendar/.env
     command: ["/usr/local/bin/php", "/var/www/html/composer.phar", "install", "-d", "/fantasy-calendar/"]
 
 volumes:
