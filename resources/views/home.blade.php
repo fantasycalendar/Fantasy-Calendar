@@ -33,7 +33,7 @@
                 @foreach($calendars as $calendar)
                     <div class='user_calendar'>
                         <div class='name'>
-                            <b>{{ $calendar->name }}</b><br>by {{ $calendar->user->username }}
+                            <b>{!! $calendar->name !!}</b><br>by {{ $calendar->user->username }}
                         </div>
 
                         <div class='icon_container'>                        
