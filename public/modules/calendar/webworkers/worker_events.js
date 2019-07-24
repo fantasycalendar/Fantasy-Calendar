@@ -403,15 +403,15 @@ var event_evaluator = {
 
 					for(var duration = 1; duration < event.data.duration; duration++)
 					{
-						if(event_evaluator.event_data.valid[event_index].indexOf(epoch+duration) == -1 && epoch+duration >= event_evaluator.start_epoch) {
-							event_evaluator.event_data.valid[event_index].push(epoch+duration);
+						if(event_evaluator.event_data.valid[event_index].indexOf(epoch+duration-1) == -1 && epoch+duration >= event_evaluator.start_epoch) {
+							event_evaluator.event_data.valid[event_index].push(epoch+duration-1);
 						}
 					}
 				}
 
-				if(event_evaluator.event_data.valid[event_index].indexOf(epoch+event.data.duration) == -1 && epoch+event.data.duration >= event_evaluator.start_epoch) {
-					event_evaluator.event_data.valid[event_index].push(epoch+event.data.duration);
-					event_evaluator.event_data.ends[event_index].push(epoch+event.data.duration);
+				if(event_evaluator.event_data.valid[event_index].indexOf(epoch+event.data.duration-1) == -1 && epoch+event.data.duration-1 >= event_evaluator.start_epoch) {
+					event_evaluator.event_data.valid[event_index].push(epoch+event.data.duration-1);
+					event_evaluator.event_data.ends[event_index].push(epoch+event.data.duration-1);
 				}
 
 			}else{
