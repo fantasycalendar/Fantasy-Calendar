@@ -21,7 +21,11 @@ class HomeController extends Controller
     
         $changelog = Markdown::convertToHtml(Storage::disk('base')->get('public/changelog.txt'));
 
-        $calendars = (Auth::user()->permissions == 1) ? Calendar::active()->get() : Auth::user()->calendars;
+        $calendars = null;
+
+        if (Auth::check()) {
+            $calendars = (Auth::user()->permissions == 1) ? Calendar::active()->get() : Auth::user()->calendars;
+        }
 
         return view('home', [
             'title' => "Fantasy Calendar",
