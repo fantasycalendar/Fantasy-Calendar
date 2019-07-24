@@ -11,7 +11,6 @@ var edit_event_ui = {
 		this.new_event							= false;
 		this.event_id							= null;
 		this.event_condition_sortables			= [];
-		this.current_sortable					= null;
 		this.delete_droppable					= false;
 		this.date 								= [];
 		this.connected_events					= [];
@@ -219,6 +218,7 @@ var edit_event_ui = {
 
 		var stats = {
 			'name': name !== undefined ? name : 'New event',
+			'description': '',
 			'data': {
 				'has_duration': false,
 				'duration': 0,
@@ -361,7 +361,7 @@ var edit_event_ui = {
 		}
 
 		if(edit_event_ui.new_event){
-			add_event_to_list(events_list, this.event_id, static_data.event_data.events[this.event_id]);
+			add_event_to_sortable(events_sortable, this.event_id, static_data.event_data.events[this.event_id]);
 		}
 
 		edit_event_ui.clear_ui();
@@ -404,8 +404,6 @@ var edit_event_ui = {
 		$('#event_hide_players').prop('checked', false);
 
 		$('#event_dontprint_checkbox').prop('checked',false);
-
-		reindex_events_list();
 
 		this.event_background.addClass('hidden');
 
@@ -1346,7 +1344,6 @@ var show_event_ui = {
 
 		this.event_id							= null;
 		this.event_condition_sortables			= [];
-		this.current_sortable					= null;
 		this.delete_droppable					= false;
 
 		this.event_background 					= $('#event_show_background');

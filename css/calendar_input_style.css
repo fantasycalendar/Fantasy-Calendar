@@ -543,13 +543,16 @@ flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 .open-edit-event-ui{
 	text-align: left;
 	position:relative;
-	width:91%;
+	width:78%;
 	height:100%;
 	line-height: 23px;
-	left:-7px;
+	left:0px;
 	border:0px;
 	cursor: pointer;
 	display:block;
+	order:2;
+	overflow: hidden;
+	font-size:0.8em;
 }
 
 .remove-container{

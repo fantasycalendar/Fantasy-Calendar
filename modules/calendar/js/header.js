@@ -14,11 +14,15 @@ $(document).ready(function(){
 			this.button_cancel = $('#warnings_cancel');
 
 			this.button_ok.click(function(){
-				warning_message.callback(true);
+				if(warning_message.callback){
+					warning_message.callback(true);
+				}
 				warning_message.hide();
 			});
 			this.button_cancel.click(function(){
-				warning_message.callback(false);
+				if(warning_message.callback){
+					warning_message.callback(false);
+				}
 				warning_message.hide();
 			});
 
@@ -28,7 +32,12 @@ $(document).ready(function(){
 
 		show: function(html, callback){
 
-			this.callback = callback;
+			if(callback !== undefined){
+				this.callback = callback;
+			}else{
+				this.callback = false;
+				this.button_cancel.hide();
+			}
 
 			this.content.html(html);
 
@@ -41,6 +50,8 @@ $(document).ready(function(){
 		},
 
 		hide: function(){
+
+			this.button_cancel.show();
 
 			this.background.css('display', 'none');
 

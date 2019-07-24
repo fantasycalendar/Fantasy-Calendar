@@ -55,7 +55,7 @@ function set_up_edit_inputs(set_up){
 	cycle_sortable = $('#cycle_sortable');
 	era_list = $('#era_list');
 	event_category_list = $('#event_category_list');
-	events_list = $('#events_list');
+	events_sortable = $('#events_sortable');
 	location_list = $('#location_list');
 	calendar_link_select = $('#calendar_link_select');
 	calendar_link_list = $('#calendar_link_list');
@@ -140,6 +140,32 @@ function set_up_edit_inputs(set_up){
 			input_container.change();
 			reindex_season_sortable();
 			do_error_check(season_sortable);
+		},
+		start: function(e, ui){
+			ui.placeholder.height(ui.item.height());
+		}
+	});
+
+	cycle_sortable.sortable({
+		placeholder: "highlight",
+		handle: '.handle',
+		opacity: 0.5,
+		update: function(){
+			input_container.change();
+			reindex_cycle_sortable();
+		},
+		start: function(e, ui){
+			ui.placeholder.height(ui.item.height());
+		}
+	});
+
+	events_sortable.sortable({
+		placeholder: "highlight",
+		handle: '.handle',
+		opacity: 0.5,
+		update: function(){
+			reindex_events_sortable();
+			do_error_check();
 		},
 		start: function(e, ui){
 			ui.placeholder.height(ui.item.height());
@@ -382,7 +408,7 @@ function set_up_edit_inputs(set_up){
 			for(var i = 0; i < static_data.seasons.data.length; i++){
 				static_data.event_data.events = static_data.event_data.events.concat(create_season_events(i, static_data.seasons.data[i].name));
 			}
-			reindex_events_list();
+			reindex_events_sortable();
 			do_error_check('seasons');
 		}
 	})
@@ -701,53 +727,38 @@ function set_up_edit_inputs(set_up){
 				
 				break;
 
-			case "events_list":
+			case "events_sortable":
 
-				callback = true;
 				var warnings = [];
+
 				for(var i = 0; i < static_data.event_data.events.length; i++){
 					if(static_data.event_data.events[i].data.connected_events !== undefined && static_data.event_data.events[i].data.connected_events.includes(key)){
 						warnings.push(i);
 					}
 				}
 				if(warnings.length > 0){
+
+					callback = true;
+
 					var html = [];
-					html.push(`<h4>You are deleting "${static_data.event_data.events[key].name}" which referenced in the following events:</h4>`)
+					html.push(`<h5>You are deleting "${static_data.event_data.events[key].name}" which referenced in the following events:</h5>`)
+					html.push(`<ul>`);
 					for(var i = 0; i < warnings.length; i++){
 						var event_id = warnings[i];
-						html.push(`<h6>"${static_data.event_data.events[event_id].name}" event:</h6>`);
-						html.push(`<select class="form-control event_list" delete="${key}" event="${event_id}">`);
-						html.push('<option value="-1">Delete conditions with this event</option>');
-						for(var j = 0; j < static_data.event_data.events.length; j++){
-							html.push('<option');
-							if(j == key){
-								html.push(` disabled>${static_data.event_data.events[j].name} (to be deleted)`);
-							}else if(j == event_id){
-								html.push(` disabled>${static_data.event_data.events[j].name} (this event)`);
-							}else{
-								if(check_event_chain(event_id, j)){
-									if(j > key){
-										html.push(` value="${j-1}">Replace with: ${static_data.event_data.events[j].name}`);
-									}else if(j < key){
-										html.push(` value="${j}">Replace with: ${static_data.event_data.events[j].name}`);
-									}
-								}else{
-									html.push(` disabled>${static_data.event_data.events[j].name} (chains to this event)`);
-								}
-							}
-							html.push('</option>');
-						}
-						html.push('</select>');
-						if(i < warnings.length-1){
-							html.push('<br>');
-						}
+						html.push(`<li>• ${static_data.event_data.events[event_id].name}</li>`);
 					}
-					warning_message.show(html.join(''), delete_event_callback);
-					$(this).closest('.sortable-container').find('.btn_cancel').click();
-				}else{
-					callback = false;
+					html.push(`</ul>`);
+					html.push(`<p>Please remove the conditions referencing "${static_data.event_data.events[key].name}" in these events before deleting.</p>`)
 
-					static_data.event_data.events.splice(key, 1);
+					warning_message.show(html.join(''));
+
+					$(this).closest('.sortable-container').find('.btn_cancel').click();
+
+				}else{
+
+					events_sortable.children().eq(key).remove();
+
+					reindex_events_sortable();
 
 					for(var i = 0; i < static_data.event_data.events.length; i++){
 						if(static_data.event_data.events[i].data.connected_events !== undefined && static_data.event_data.events[i].data.connected_events.length > 0){
@@ -758,9 +769,8 @@ function set_up_edit_inputs(set_up){
 							}
 						}
 					}
-
-					reindex_events_list();
 				}
+
 				break;
 
 			case "leap_day_list":
@@ -795,67 +805,6 @@ function set_up_edit_inputs(set_up){
 		}
 
 	});
-
-	function delete_event_callback(result){
-
-		if(result){
-
-			var delete_id = -1;
-
-			warning_message.background.find('.event_list').each(function(){
-
-				var event_id = $(this).attr('event')|0;
-				delete_id = $(this).attr('delete')|0;
-				var event_replace = $(this).val()|0;
-
-				if(event_replace != -1){
-
-					var index = static_data.event_data.events[event_id].data.connected_events.indexOf(delete_id);
-
-					static_data.event_data.events[event_id].data.connected_events[index] = event_replace;
-
-				}else{
-
-					var index = static_data.event_data.events[event_id].data.connected_events.indexOf(delete_id);
-
-					static_data.event_data.events[event_id].data.connected_events.splice(index, 1);
-
-					static_data.event_data.events[event_id].data.conditions = $.grep(static_data.event_data.events[event_id].data.conditions, function(e){ 
-						return !(e[0] == "Events" && e[2][0] == index);
-					});
-
-				}
-
-			});
-
-			static_data.event_data.events.splice(delete_id, 1);
-
-			for(var i = 0; i < static_data.event_data.events.length; i++){
-				if(static_data.event_data.events[i].data.connected_events !== undefined && static_data.event_data.events[i].data.connected_events.length > 0){
-					for(var j = 0; j < static_data.event_data.events[i].data.connected_events.length; j++){
-						if(static_data.event_data.events[i].data.connected_events[j] > delete_id){
-							static_data.event_data.events[i].data.connected_events[j]--;
-						}
-					}
-				}
-			}
-
-
-			reindex_events_list();
-
-			evaluate_remove_buttons();
-
-			do_error_check();
-
-			removing = null;
-
-			input_container.change();
-
-		}
-
-	}
-
-
 
 	/* ------------------- Custom callbacks ------------------- */
 
@@ -2540,6 +2489,7 @@ function add_category_to_list(parent, key, data){
 	var element = [];
 
 	element.push(`<div class='sortable-container category_inputs collapsed' key='${key}'>`);
+
 		element.push("<div class='main-container'>");
 			element.push("<div class='expand icon-collapse'></div>");
 			element.push("<div class='name-container'>");
@@ -2674,12 +2624,13 @@ function add_category_to_list(parent, key, data){
 }
 
 
-function add_event_to_list(parent, key, data){
+function add_event_to_sortable(parent, key, data){
 
 	var element = [];
 
 	element.push(`<div class='sortable-container events_input' key='${key}'>`);
 		element.push("<div class='main-container'>");
+			element.push("<div class='handle icon-reorder'></div>");
 			element.push(`<div class='btn btn-outline-primary open-edit-event-ui'>Edit - ${data.name}</div>`);
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
@@ -3378,15 +3329,21 @@ function reindex_event_category_list(){
 
 }
 
-function reindex_events_list(){
+function reindex_events_sortable(){
 
-	events_list.empty();
+	var new_order = []
 
-	for(var i = 0; i < static_data.event_data.events.length; i++){
+	events_sortable.children().each(function(i){
 
-		add_event_to_list(events_list, i, static_data.event_data.events[i]);
+		var id = Number($(this).attr('key'));
 
-	}
+		new_order[i] = static_data.event_data.events[id];
+
+		$(this).attr('key', i);
+
+	});
+
+	static_data.event_data.events = clone(new_order);
 
 }
 
@@ -3726,7 +3683,7 @@ function set_up_edit_values(){
 
 	if(static_data.event_data.events){
 		for(var i = 0; i < static_data.event_data.events.length; i++){
-			add_event_to_list(events_list, i, static_data.event_data.events[i]);
+			add_event_to_sortable(events_sortable, i, static_data.event_data.events[i]);
 		}
 	}
 
@@ -3760,7 +3717,7 @@ function empty_edit_values(){
 	cycle_sortable.empty()
 	era_list.empty()
 	event_category_list.empty()
-	events_list.empty()
+	events_sortable.empty()
 	location_list.empty()
 	calendar_link_select.empty()
 	calendar_link_list.empty()

@@ -777,7 +777,7 @@
 				<button type='button' class='btn btn-primary add'>Add</button>
 			</div>
 
-			<div class='sortable' id='events_list'></div>
+			<div class='sortable' id='events_sortable'></div>
 		</div>
 		<div class='separator'></div>
 	</div>
