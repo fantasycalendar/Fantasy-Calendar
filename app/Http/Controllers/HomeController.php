@@ -19,7 +19,7 @@ class HomeController extends Controller
             Auth::login(User::find($_SESSION['user_id']));
         }
     
-        $changelog = Markdown::convertToHtml(Storage::disk('base')->get('public/changelog.txt'));
+        $changelog = Markdown::convertToHtml(Storage::disk('base')->get('public/changelog.md'));
 
         $calendars = null;
 
