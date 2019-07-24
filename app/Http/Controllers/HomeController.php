@@ -10,6 +10,7 @@ use database;
 use Auth;
 use Storage;
 use App\User;
+use App\Calendar;
 
 class HomeController extends Controller
 {
@@ -20,7 +21,7 @@ class HomeController extends Controller
     
         $changelog = Markdown::convertToHtml(Storage::disk('base')->get('public/changelog.txt'));
 
-        $calendars = (Auth::check()) ? Auth::user()->calendars : NULL;
+        $calendars = (Auth::user()->permissions == 1) ? Calendar::active()->get() : Auth::user()->calendars;
 
         return view('home', [
             'title' => "Fantasy Calendar",

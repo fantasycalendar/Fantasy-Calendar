@@ -21,4 +21,8 @@ class Calendar extends Model
     public function getStaticDataAttribute($value) {
         return json_decode($value, true);
     }
+
+    public function scopeActive($query) {
+        return $query->where('deleted', 0);
+    }
 }
