@@ -24,7 +24,7 @@ class HomeController extends Controller
         $calendars = null;
 
         if (Auth::check()) {
-            $calendars = (Auth::user()->permissions == 1) ? Calendar::active()->get() : Auth::user()->calendars;
+            $calendars = (Auth::user()->permissions == 1) ? Calendar::active()->with('user')->get() : Auth::user()->calendars;
         }
 
         return view('home', [
