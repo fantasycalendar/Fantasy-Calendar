@@ -1125,7 +1125,7 @@ function set_up_edit_inputs(set_up){
 
 		if(offset_val === undefined || interval_val === undefined) return;
 
-		var global_regex = /[`+~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z]/g;
+		var global_regex = /[ `+~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z]/g;
 		var local_regex = /^\!+[1-9]+[0-9]{0,}$/;
 		var numbers_regex = /([1-9]+[0-9]{0,})/;
 
