@@ -1111,12 +1111,15 @@ function set_up_edit_inputs(set_up){
 
 	});
 
+    $(document).on('keyup', '.leap_day_occurance_input', function(){
+        var interval = $(this).closest('.sortable-container').find('.interval');
+        interval.val(interval.val().replace(/[ `+~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z]/g, "")); 
+    });
 
 	$(document).on('change', '.leap_day_occurance_input', function(){
 
 		var key = $(this).closest('.sortable-container').attr('key')|0;
 		var interval = $(this).closest('.sortable-container').find('.interval');
-		interval.val(interval.val().replace(/[|&;$%@"<> ()]/g, ""));
 		var interval_val = interval.val();
 		var offset = $(this).closest('.sortable-container').find('.offset');
 		var offset_val = (offset.val()|0);
