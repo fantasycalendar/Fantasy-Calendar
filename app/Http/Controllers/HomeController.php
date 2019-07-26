@@ -14,11 +14,11 @@ use App\Calendar;
 
 class HomeController extends Controller
 {
+    public function __construct() {
+        $this->middleware('calendarauth');
+    }
+
     public function home() {    
-        if(isset($_SESSION['user_id'])) {
-            Auth::login(User::find($_SESSION['user_id']));
-        }
-    
         $changelog = Markdown::convertToHtml(Storage::disk('base')->get('public/changelog.md'));
 
         $calendars = null;

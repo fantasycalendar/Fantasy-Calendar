@@ -11,8 +11,7 @@
 |
 */
 
-Route::get('/', 'HomeController@home')->middleware('calendarauth');
-
+Route::get('/', 'HomeController@home')->name('home');
 
 
 // Manual error page routes for the moment
