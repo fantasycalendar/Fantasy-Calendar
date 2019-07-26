@@ -4,6 +4,10 @@ body{
 
 /* ------------------ Sortable styles ----------------- */
 
+#presets{
+	z-index: 100;
+}
+
 input.invalid { 
 	border: 2px solid red !important;
 }
