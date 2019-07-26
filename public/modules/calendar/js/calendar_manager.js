@@ -1,8 +1,8 @@
 var utcDate1 = Date.now();
 
-const worker_calendar = new Worker('modules/calendar/webworkers/worker_calendar.js?v='+utcDate1);
-const worker_events = new Worker('modules/calendar/webworkers/worker_events.js?v='+utcDate1);
-const worker_climate = new Worker('modules/calendar/webworkers/worker_climate.js?v='+utcDate1);
+const worker_calendar = new Worker('/modules/calendar/webworkers/worker_calendar.js?v='+utcDate1);
+const worker_events = new Worker('/modules/calendar/webworkers/worker_events.js?v='+utcDate1);
+const worker_climate = new Worker('/modules/calendar/webworkers/worker_climate.js?v='+utcDate1);
 
 function sidescroll(){
 	//calculate left position

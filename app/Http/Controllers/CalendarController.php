@@ -35,7 +35,9 @@ class CalendarController extends Controller
      */
     public function create()
     {
-        // 
+        return view('calendar.create', [
+            'title' => 'New Calendar'
+        ]);
     }
 
     /**

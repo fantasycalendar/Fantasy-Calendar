@@ -267,17 +267,17 @@ function eval_clock(){
 	$('#clock').css('display', 'block');
 
 	var element = [];
-	element.push("<img src='resources/clock_arm.png' id='clock_arm'/>");
+	element.push("<img src='/resources/clock_arm.png' id='clock_arm'/>");
 	element.push("<div id='clock_hours'></div>");
-	element.push(`<img src='resources/dayhelper.png' id='dayhelper' class='SunUpDown'/>`);
-	element.push(`<img src='resources/nighthelper.png' id='nighthelper' class='SunUpDown ${!evaluated_static_data.processed_seasons ? 'hidden' : ''}'/>`);
+	element.push(`<img src='/resources/dayhelper.png' id='dayhelper' class='SunUpDown'/>`);
+	element.push(`<img src='/resources/nighthelper.png' id='nighthelper' class='SunUpDown ${!evaluated_static_data.processed_seasons ? 'hidden' : ''}'/>`);
 	element.push(`<div id='SunUp_Container' ${!evaluated_static_data.processed_seasons ? 'class="hidden"' : ''}>`);
-		element.push(`<img src='resources/startofday.png' id='StartOfDay'/>`);
+		element.push(`<img src='/resources/startofday.png' id='StartOfDay'/>`);
 	element.push(`</div>`);
 	element.push(`<div id='SunDown_Container' ${!evaluated_static_data.processed_seasons ? 'class="hidden"' : ''}>`);
-		element.push(`<img src='resources/endofday.png' id='EndOfDay' />`);
+		element.push(`<img src='/resources/endofday.png' id='EndOfDay' />`);
 	element.push(`</div>`);
-	element.push("<img src='resources/clock_base.png' id='base'/>");
+	element.push("<img src='/resources/clock_base.png' id='base'/>");
 
 	$('#clock').html(element.join(''));
 
@@ -287,7 +287,7 @@ function eval_clock(){
 		var hour = (i-static_data.clock.offset)%clock_hours;
 		hour = hour < 0 ? hour+clock_hours : hour;
 		element.push(`<div class='clock_hour_text_container' style='transform: rotate(${rotation+180}deg);'><span class='clock_hour_text' style='transform: rotate(-${rotation+180}deg);'>${hour}</span></div>`)
-		element.push(`<img class='clock_hour' src='resources/clock_hour.png' style='transform: rotate(${rotation}deg);'>`);
+		element.push(`<img class='clock_hour' src='/resources/clock_hour.png' style='transform: rotate(${rotation}deg);'>`);
 	}
 
 	$('#clock_hours').html(element.join(''));

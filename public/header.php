@@ -51,28 +51,28 @@ $jsversion = "2.0";
 		
 		</script>
 
-		<script src="js/login.js"></script>
-		<script src="js/profile.js"></script>
+		<script src="/js/login.js"></script>
+		<script src="/js/profile.js"></script>
 
-		<script src="modules/chartjs/Chart.min.js"></script>
-    	<script src="modules/trumbowyg/trumbowyg.min.js"></script>
-    	<script src="modules/jquery/jquery.ui.touch-punch.min.js"></script>
-    	<script src="modules/notifyjs/notify.min.js"></script>
-    	<script src="modules/sortable/jquery-sortable-min.js"></script>
-    	<script src="modules/spectrum/spectrum.js"></script>
-    	<script src="modules/calendar/js/header.js"></script>
-    	<script src="modules/calendar/js/calendar_ajax_functions.js"></script>
-    	<script src="modules/calendar/js/calendar_event_ui.js"></script>
-    	<script src="modules/calendar/js/calendar_functions.js"></script>
-    	<script src="modules/calendar/js/calendar_variables.js"></script>
-    	<script src="modules/calendar/js/calendar_weather_layout.js"></script>
-    	<script src="modules/calendar/js/calendar_season_generator.js"></script>
-    	<script src="modules/calendar/js/calendar_layout_builder.js"></script>
-    	<script src="modules/calendar/js/calendar_inputs_visitor.js"></script>
-    	<script src="modules/calendar/js/calendar_inputs_view.js"></script>
-    	<script src="modules/calendar/js/calendar_inputs_edit.js"></script>
-    	<script src="modules/calendar/js/calendar_manager.js"></script>
-    	<script src="modules/calendar/js/calendar_presets.js"></script>
+		<script src="/modules/chartjs/Chart.min.js"></script>
+    	<script src="/modules/trumbowyg/trumbowyg.min.js"></script>
+    	<script src="/modules/jquery/jquery.ui.touch-punch.min.js"></script>
+    	<script src="/modules/notifyjs/notify.min.js"></script>
+    	<script src="/modules/sortable/jquery-sortable-min.js"></script>
+    	<script src="/modules/spectrum/spectrum.js"></script>
+    	<script src="/modules/calendar/js/header.js"></script>
+    	<script src="/modules/calendar/js/calendar_ajax_functions.js"></script>
+    	<script src="/modules/calendar/js/calendar_event_ui.js"></script>
+    	<script src="/modules/calendar/js/calendar_functions.js"></script>
+    	<script src="/modules/calendar/js/calendar_variables.js"></script>
+    	<script src="/modules/calendar/js/calendar_weather_layout.js"></script>
+    	<script src="/modules/calendar/js/calendar_season_generator.js"></script>
+    	<script src="/modules/calendar/js/calendar_layout_builder.js"></script>
+    	<script src="/modules/calendar/js/calendar_inputs_visitor.js"></script>
+    	<script src="/modules/calendar/js/calendar_inputs_view.js"></script>
+    	<script src="/modules/calendar/js/calendar_inputs_edit.js"></script>
+    	<script src="/modules/calendar/js/calendar_manager.js"></script>
+    	<script src="/modules/calendar/js/calendar_presets.js"></script>
 
 		<link rel="stylesheet" href="css/calendar_input_style.css">
 		<link rel="stylesheet" href="css/calendar_styles.css">
@@ -92,7 +92,7 @@ $jsversion = "2.0";
 			
 			<div id="header_left_container">
 				
-				<a href="<?php echo getenv('WEBADDRESS'); ?>" id="logo"><img src="resources/calendar-logo.png" alt="Logo"/></a>
+				<a href="<?php echo getenv('WEBADDRESS'); ?>" id="logo"><img src="/resources/calendar-logo.png" alt="Logo"/></a>
 
 				<a href="calendar?action=generate"><div class="button" id="new_calendar">New Calendar</div></a>
 			</div>
