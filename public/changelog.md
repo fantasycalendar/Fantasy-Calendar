@@ -1,6 +1,5 @@
 # 2.0
 ## TBD
-* Automated build and deploy!
 * The entire UI has been overhauled with many alterations that come with the changes below.
 * REWORKED! Overhauled the clock and the sunrise-sundown system so that it can accomodate crazy times, and added offset hours which simply rotate the numbers around the clock face.
 * REWORKED! The week system has changed to support the changes in the month system. There is now a global week, which acts as the standard week in the calendar.
