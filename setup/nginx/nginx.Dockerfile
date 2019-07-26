@@ -1,6 +1,6 @@
 FROM nginxinc/nginx-unprivileged
 
-COPY setup/nginx/fantasy-calendar.conf /etc/nginx/conf.d/default.conf
+COPY setup/nginx/fantasy-calendar.dev.conf /etc/nginx/conf.d/default.conf
 
 COPY --chown=nginx:nginx . /fantasy-calendar
 

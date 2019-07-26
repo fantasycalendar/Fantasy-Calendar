@@ -13,16 +13,26 @@ services:
     ports:
       - "13306:3306"
 
+  fantasy-calendar:
+    container_name: fantasy_calendar
+    build: 
+      context: .
+      dockerfile: setup/nginx/nginx.Dockerfile
+    user: "1000:1000"
+    volumes:
+      - ./:/fantasy-calendar
+    ports:
+      - "9980:8080"
+
   fantasy-calendar-php:
     container_name: fantasy_calendar_php
     image: fc-php
     build:
       context: .
-      dockerfile: php.Dockerfile
+      dockerfile: setup/php/php.Dockerfile
     volumes:
       - ./:/fantasy-calendar
-    ports:
-      - "9980:8080"
+    user: "1000:1000"
     environment:
       - "APP_ENV=local"
       - "APP_KEY=base64:ECSIURhDQnHBdx7nRVlwGtPwBU+RZrQCQpmGHesaIUM="
