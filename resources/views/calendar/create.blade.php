@@ -130,9 +130,9 @@
                     if(calendar){
                         prev_dynamic_data = {}
                         prev_static_data = {}
-                        calendar_name = calendar.name;
-                        dynamic_data = calendar.dynamic_data;
-                        static_data = calendar.static_data;
+                        calendar_name = clone(calendar.name);
+                        dynamic_data = clone(calendar.dynamic_data);
+                        static_data = clone(calendar.static_data);
                         empty_edit_values();
                         set_up_edit_values();
                         $('#json_input').val('');
@@ -140,8 +140,9 @@
                         alert("Unrecognized JSON format.")
                     }
                 }else{
-                    dynamic_data = calendar_presets[$('#presets').val()].dynamic_data;
-                    static_data = calendar_presets[$('#presets').val()].static_data;
+                    calendar_name = clone(calendar_presets[$('#presets').val()].name);
+                    dynamic_data = clone(calendar_presets[$('#presets').val()].dynamic_data);
+                    static_data = clone(calendar_presets[$('#presets').val()].static_data);
                     empty_edit_values();
                     set_up_edit_values();
                 }
