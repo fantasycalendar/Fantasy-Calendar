@@ -10,7 +10,9 @@ use App\Calendar;
 class CalendarController extends Controller
 {
     public function __construct() {
-        $this->middleware(['calendarauth', 'auth']);
+        $this->middleware('calendarauth');
+        
+        $this->middleware('auth')->except('show');
     }
 
     /**
