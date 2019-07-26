@@ -78,7 +78,6 @@ class CalendarController extends Controller
             'title' => $calendar->name,
             'calendar' => $calendar,
             'hash' => $id,
-            'owner' => (Auth::check() && ($calendar->user->id == Auth::user()->id))
         ]);
     }
 
