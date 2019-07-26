@@ -14,7 +14,9 @@ class UsersTableAddRememberToken extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('remember_token')->nullable();
+            $table->rememberToken();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -27,6 +29,8 @@ class UsersTableAddRememberToken extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('remember_token');
+            $table->dropColumn('email_verified_at');
+            $table->dropTimestamps();
         });
     }
 }
