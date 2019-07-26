@@ -1,0 +1,1 @@
+<footer id='footer'>fantasy-calendar.com version {{ env('APP_VERSION') }} - Copyright © 2018-{{ date('Y') }} Adam Oresten - <a href='privacypolicy.php'>Privacy Policy</a> — <a href='https://twitter.com/FantasyCalendar/'>Twitter</a></footer>

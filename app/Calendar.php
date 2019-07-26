@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Auth;
 
 class Calendar extends Model
 {
@@ -32,5 +33,13 @@ class Calendar extends Model
 
     public function scopeActive($query) {
         return $query->where('deleted', 0);
+    }
+
+    public function getOwnedAttribute() {
+        if (Auth::check() && ($this->user->id == Auth::user()->id || Auth::user()->isAdmin())) {
+            return "true";
+        }
+
+        return "false";
     }
 }

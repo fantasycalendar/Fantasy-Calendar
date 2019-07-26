@@ -40,4 +40,8 @@ class User extends Authenticatable
     public function calendars() {
         return $this->hasMany('App\Calendar');
     }
+
+    public function isAdmin() {
+        return $this->permission == 1;
+    }
 }
