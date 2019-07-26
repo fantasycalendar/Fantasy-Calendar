@@ -191,8 +191,6 @@ function set_up_edit_inputs(set_up){
 	
 	/* ------------------- Dynamic and static callbacks ------------------- */
 
-	$('#calendar_name').val(unescapeHtml(calendar_name));
-
 	$('#calendar_name').change(function(){
 		calendar_name = escapeHtml($(this).val());
 		evaluate_save_button();
@@ -3561,6 +3559,8 @@ function recalculate_era_epochs(){
 }
 
 function set_up_edit_values(){
+
+	$('#calendar_name').val(unescapeHtml(calendar_name));
 
 	$('.static_input').each(function(){
 
