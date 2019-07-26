@@ -26,12 +26,12 @@
         </div>
         <div class='detail-row'>
 
-    <div class='detail-column half'>
+    <div class='detail-column @isset($changelog) half @else full @endisset'>
         <div class='index_container'>
-            @if(isset($calendars))
+            @isset($calendars)
                 <div id='user_calendar_list'>
                 @foreach($calendars as $calendar)
-                    <div class='user_calendar'>
+                    <div class='user_calendar @if(!isset($changelog)) quarter @endif'>
                         <div class='name'>
                             <b>{!! $calendar->name !!}</b><br>by {{ $calendar->user->username }}
                         </div>
@@ -44,20 +44,22 @@
                     </div>
                 @endforeach
                 </div>
-            @endif
+            @endisset
         </div>
 
     </div>
+    
+    @isset($changelog)
+        <div class='detail-column half'>
+            <div id='changelog'>
+                <h2>Changelog</h2>
 
-    <div class='detail-column half'>
-        <div id='changelog'>
-            <h2>Changelog</h2>
-
-            <div class="changelog__content">
-            {!! $changelog !!}
+                <div class="changelog__content">
+                {!! $changelog !!}
+                </div>
             </div>
         </div>
-    </div>
+    @endisset
 
     </div>
 </div>

@@ -396,7 +396,7 @@ function delete_calendar(){
 function create_calendar(){
 
 	$.ajax({
-		url:window.baseurl+"modules/calendar/ajax/ajax_calendar",
+		url:window.baseurl+"calendars",
 		type: "post",
 		dataType: 'json',
 		proccessData: false,

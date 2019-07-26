@@ -13,6 +13,7 @@
 
 Route::get('/', 'HomeController@home')->name('home');
 
+Route::resource('calendars', 'CalendarController');
 
 // Manual error page routes for the moment
 

@@ -10,6 +10,14 @@ class Calendar extends Model
 
     public $timestamps = false;
 
+    public $fillable = [
+        'user_id',
+        'name',
+        'dynamic_data',
+        'static_data',
+        'hash',
+    ];
+
     public function user() {
         return $this->belongsTo('App\User');
     }
