@@ -400,7 +400,7 @@ function create_calendar(){
 		type: "post",
 		dataType: 'json',
 		proccessData: false,
-		data: {action: 'create', name: calendar_name, dynamic_data: JSON.stringify(dynamic_data), static_data: JSON.stringify(static_data)},
+		data: {name: calendar_name, dynamic_data: JSON.stringify(dynamic_data), static_data: JSON.stringify(static_data)},
 		success: function ( result ){
 			window.location.href = window.baseurl+'calendar?action=edit&id='+result.hash;
 		},
