@@ -13,25 +13,16 @@ services:
     ports:
       - "13306:3306"
 
-  fantasy-calendar:
-    container_name: fantasy_calendar
-    build: 
+  fantasy-calendar-php:
+    container_name: fantasy_calendar_php
+    image: fc-php
+    build:
       context: .
-      dockerfile: nginx.Dockerfile
-    user: "1000:1000"
+      dockerfile: php.Dockerfile
     volumes:
       - ./:/fantasy-calendar
     ports:
       - "9980:8080"
-
-  fantasy-calendar-php:
-    container_name: fantasy_calendar_php
-    build:
-      context: .
-      dockerfile: php.Dockerfile
-    user: "1000:1000"
-    volumes:
-      - ./:/fantasy-calendar
     environment:
       - "APP_ENV=local"
       - "APP_KEY=base64:ECSIURhDQnHBdx7nRVlwGtPwBU+RZrQCQpmGHesaIUM="
@@ -45,13 +36,11 @@ services:
       
 
   fantasy-calendar-composer-install:
-    build:
-      context: .
-      dockerfile: php.Dockerfile
-    user: "1000:1000"
+    image: composer
+    user: "33:33"
     volumes:
       - ./:/fantasy-calendar
-    command: ["/usr/local/bin/php", "/var/www/html/composer.phar", "install", "-d", "/fantasy-calendar/"]
+    command: ["composer", "install", "-d", "/fantasy-calendar/"]
 
 volumes:
   fantasy-calendar-db:
