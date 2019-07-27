@@ -32,7 +32,7 @@
                             </div>
 
                             <div class='icon_container'>                        
-                                <a class='image_link' href='calendar.php?action=edit&id={{ $calendar->hash }}'>
+                                <a class='image_link' href='{{ route('calendars.edit', ['id'=> $calendar->hash ]) }}'>
                                     <img class='icon' src='{{ asset("resources/icons/edit_icon.png") }}' title="Edit"/>
                                 </a>
                             </div>

@@ -91,7 +91,13 @@ class CalendarController extends Controller
      */
     public function edit($id)
     {
-        //
+        $calendar = Calendar::where('hash',$id)->firstOrFail();
+
+        return view('calendar.edit', [
+            'title' => $calendar->name,
+            'calendar' => $calendar,
+            'hash' => $id,
+        ]);
     }
 
     /**

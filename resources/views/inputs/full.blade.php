@@ -956,7 +956,6 @@
 		<canvas class='chart' id='precipitation'></canvas>
 
 	</div>
-
+	@include('templates.footnote')
 </div>
-
 <div id='html_edit'></div>

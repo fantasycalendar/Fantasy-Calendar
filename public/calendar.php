@@ -43,7 +43,7 @@ elseif(isset($_GET['id']))
 			elseif($_GET['action'] === "edit")
 			{
 				
-				include('modules/calendar/includes/edit.php');
+				redirect("/calendars/{$_GET['id']}/edit");
 
 			}
 			elseif($_GET['action'] === "print")
