@@ -3,7 +3,7 @@
 	<div id="header_left_container">
 		
 		<a href="/" id="logo"><img src="/resources/calendar-logo.png" alt="Logo"/></a>
-
+		
 		<a href="{{ route('calendars.create') }}"><div class="button" id="new_calendar">New Calendar</div></a>
 	</div>
 

@@ -50,7 +50,7 @@ $(document).ready(function(){
 					data: {action: "login", username: $('#login_username').val(), password: $('#login_password').val(), remember: $('#login_rememberMe').is(':checked')},
 					success: function(result){
 						if(typeof result['error'] === 'undefined'){
-							location.reload();
+							window.location = '/calendars';
 						}else{
 							loginValidator.showErrors({
 								"username": result['error'],
@@ -83,7 +83,20 @@ function logout(){
 		dataType: "json",
 		data: {action: "logout"},
 		success: function(result){
-			location.reload();
+			var form = $(document.createElement('form'));
+			$(form).attr("action", "/logout");
+			$(form).attr("method", "POST");
+			$(form).css("display", "none");
+		
+		
+			var input_salary = $("<input>")
+			.attr("type", "hidden")
+			.attr("name", "_token")
+			.val($('meta[name="csrf-token"]').attr('content'));
+			$(form).append($(input_salary));
+		
+			form.appendTo( document.body );
+			$(form).submit();
 		},
 		error: function ( log )
 		{

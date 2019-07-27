@@ -2,6 +2,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="description" content="All-in-One Fantasy Calendar Generator - Creation of calendars and time-tracking in your homebrew or pre-made campaign worlds have never been easier!">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title }}</title>
 
     <link rel="apple-touch-icon" sizes="180x180" href="/resources/apple-touch-icon.png">
@@ -30,6 +31,12 @@
     <script>
 
     window.baseurl = '{{ getenv('WEBADDRESS') }}';
+
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
     
     </script>
 
