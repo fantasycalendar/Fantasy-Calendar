@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Http\Request;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -26,6 +28,20 @@ Route::get('/404', function() {
         'title' => 'Calendar not found',
         'resource' => 'Calendar'
     ]);
+});
+
+Route::get('/calendar.php', function(Request $request) {
+    if($request->get('action') == 'generate') {
+        return redirect('calendars/create');
+    }
+
+    if($request->get('action') == 'view') {
+        return redirect("calendars/{$request->get('id')}");
+    }
+
+    if($request->get('action') == 'edit') {
+        return redirect("calendars/{$request->get('id')}/edit");
+    }
 });
 
 Auth::routes();
