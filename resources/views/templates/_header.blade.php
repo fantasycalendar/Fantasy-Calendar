@@ -7,7 +7,9 @@
 		<a href="{{ route('calendars.create') }}"><div class="button" id="new_calendar">New Calendar</div></a>
 	</div>
 
-	<div id="header_center_container">{{ $title }}</div>
+	<div id="header_center_container">
+		{{ $title ?? "Fantasy Calendar" }}
+	</div>
 
 	<div id="header_right_container">
 	

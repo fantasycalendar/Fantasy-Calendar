@@ -25,8 +25,6 @@ class CalendarAuth
             }
 
             Auth::loginUsingId(session()->get('user_id'));
-        } else {
-            Auth::logout();
         }
 
         return $next($request);

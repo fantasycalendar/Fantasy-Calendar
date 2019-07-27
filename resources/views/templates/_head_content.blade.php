@@ -3,7 +3,9 @@
     <meta name="description" content="All-in-One Fantasy Calendar Generator - Creation of calendars and time-tracking in your homebrew or pre-made campaign worlds have never been easier!">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $title }}</title>
+    <title>
+        {{ $title ?? "Fantasy Calendar" }}
+    </title>
 
     <link rel="apple-touch-icon" sizes="180x180" href="/resources/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/resources/favicon-32x32.png">
