@@ -4,7 +4,7 @@
 		
 		<a href="/" id="logo"><img src="/resources/calendar-logo.png" alt="Logo"/></a>
 
-		<a href="/calendar?action=generate"><div class="button" id="new_calendar">New Calendar</div></a>
+		<a href="{{ route('calendars.create') }}"><div class="button" id="new_calendar">New Calendar</div></a>
 	</div>
 
 	<div id="header_center_container">{{ $title }}</div>

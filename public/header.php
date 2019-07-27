@@ -94,7 +94,7 @@ $jsversion = "2.0";
 				
 				<a href="<?php echo getenv('WEBADDRESS'); ?>" id="logo"><img src="/resources/calendar-logo.png" alt="Logo"/></a>
 
-				<a href="calendar?action=generate"><div class="button" id="new_calendar">New Calendar</div></a>
+				<a href="/calendar/create"><div class="button" id="new_calendar">New Calendar</div></a>
 			</div>
 
 			<div id="header_center_container"><?php echo $title; ?></div>

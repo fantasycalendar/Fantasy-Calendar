@@ -18,7 +18,7 @@ if(!$_SESSION['beta']){
 if(isset($_GET['action']) && $_GET['action'] === "generate")
 {
 
-	include('modules/calendar/includes/create.php');
+	redirect('/calendars/create', 302);
 
 }
 elseif(isset($_GET['id']))
