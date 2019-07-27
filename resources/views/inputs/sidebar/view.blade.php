@@ -61,23 +61,24 @@
 
 				</div>
 
-				<div class='separator'></div>
+				@if(Auth::check())
+					<div class='separator'></div>
 
-				<div class='detail-row'>
+					<div class='detail-row'>
 
-					<div class='detail-column fifth'>
-						<div class='detail-text right-align full'>Time:</div>
+						<div class='detail-column fifth'>
+							<div class='detail-text right-align full'>Time:</div>
+						</div>
+						<div class='detail-column fourfifths input_buttons'>
+							<button type='button' class='btn btn-sm btn-danger sub-btn adjust_hour' val='-1'><i class="clocktext">1h</i></button>
+							<button type='button' class='btn btn-sm btn-danger sub-btn adjust_minute' val='-30'><i class="clocktext">30m</i></button>
+							<input class='form-control form-control-sm' type='number' id='current_hour'>:
+							<input class='form-control form-control-sm' type='number' id='current_minute'>
+							<button type='button' class='btn btn-sm btn-success add-btn adjust_minute' val='30'><i class="clocktext">30m</i></button>
+							<button type='button' class='btn btn-sm btn-success add-btn adjust_hour' val='1'><i class="clocktext">1h</i></button>
+						</div>
+
 					</div>
-					<div class='detail-column fourfifths input_buttons'>
-						<button type='button' class='btn btn-sm btn-danger sub-btn adjust_hour' val='-1'><i class="clocktext">1h</i></button>
-						<button type='button' class='btn btn-sm btn-danger sub-btn adjust_minute' val='-30'><i class="clocktext">30m</i></button>
-						<input class='form-control form-control-sm' type='number' id='current_hour'>:
-						<input class='form-control form-control-sm' type='number' id='current_minute'>
-						<button type='button' class='btn btn-sm btn-success add-btn adjust_minute' val='30'><i class="clocktext">30m</i></button>
-						<button type='button' class='btn btn-sm btn-success add-btn adjust_hour' val='1'><i class="clocktext">1h</i></button>
-					</div>
-
-				</div>
 				
 			</div>
 
@@ -125,6 +126,7 @@
 					<button type='button' class='btn btn-sm btn-success add-btn add_day' id='add_target_day'><i class="icon-plus"></i></button>
 				</div>
 
+				@endif
 			</div>
 
 			<div class='detail-row'>
@@ -142,6 +144,7 @@
 
 	</div>
 
+	@if(Auth::check())
 	<!---------------------------------------------->
 	<!------------------ LOCATIONS ----------------->
 	<!---------------------------------------------->
@@ -164,6 +167,7 @@
 		<div class='separator'></div>
 
 	</div>
+	@endif
 
 </form>
 
@@ -175,17 +179,21 @@
 
 	<div id="top_follower">
 
-		<div class='btn_container hidden'>
-			<button class='btn btn-danger btn_preview_date hidden' disabled key='year' value='-1'>< Year</button>
-			<button class='btn btn-danger btn_preview_date hidden' disabled key='timespan' value='-1'>< Month</button>
-		</div>
+		@if(Auth::check())
+			<div class='btn_container hidden'>
+				<button class='btn btn-danger btn_preview_date hidden' disabled key='year' value='-1'>< Year</button>
+				<button class='btn btn-danger btn_preview_date hidden' disabled key='timespan' value='-1'>< Month</button>
+			</div>
+		@endif
 
 		<div id='top_follower_content'></div>
 
-		<div class='btn_container hidden'>
-			<button class='btn btn-success btn_preview_date hidden' disabled key='year' value='1'>Year ></button>
-			<button class='btn btn-success btn_preview_date hidden' disabled key='timespan' value='1'>Month ></button>
-		</div>
+		@if(Auth::check())
+			<div class='btn_container hidden'>
+				<button class='btn btn-success btn_preview_date hidden' disabled key='year' value='1'>Year ></button>
+				<button class='btn btn-success btn_preview_date hidden' disabled key='timespan' value='1'>Month ></button>
+			</div>
+		@endif
 
 	</div>
 
