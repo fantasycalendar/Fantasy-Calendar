@@ -7,9 +7,9 @@
     $(document).ready(function() {
         wizard = false;
 
-        hash = "{{ $hash }}";
+        hash = "{{ $calendar->hash }}";
 
-        calendar_name = "{{ $title }}";
+        calendar_name = "{{ $calendar->name }}";
         static_data = {!! json_encode($calendar->static_data) !!};
         dynamic_data = {!! json_encode($calendar->dynamic_data) !!};
         link_data = {

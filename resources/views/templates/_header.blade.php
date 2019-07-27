@@ -8,7 +8,7 @@
 	</div>
 
 	<div id="header_center_container">
-		{{ $title ?? "Fantasy Calendar" }}
+		{{ $title ?? $calendar->name ?? "Fantasy Calendar" }}
 	</div>
 
 	<div id="header_right_container">

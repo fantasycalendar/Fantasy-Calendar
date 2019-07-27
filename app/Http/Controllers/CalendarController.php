@@ -77,9 +77,7 @@ class CalendarController extends Controller
         $calendar = Calendar::where('hash',$id)->firstOrFail();
 
         return view('calendar.view', [
-            'title' => $calendar->name,
             'calendar' => $calendar,
-            'hash' => $id,
         ]);
     }
 
@@ -94,9 +92,7 @@ class CalendarController extends Controller
         $calendar = Calendar::where('hash',$id)->firstOrFail();
 
         return view('calendar.edit', [
-            'title' => $calendar->name,
             'calendar' => $calendar,
-            'hash' => $id,
         ]);
     }
 
@@ -121,5 +117,13 @@ class CalendarController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function print($id) {
+        $calendar = Calendar::where('hash', $id)->firstOrFail();
+
+        return view('calendar.print', [
+            'calendar' => $calendar
+        ]);
     }
 }

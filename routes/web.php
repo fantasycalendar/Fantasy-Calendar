@@ -16,19 +16,7 @@ use Illuminate\Http\Request;
 Route::get('/', 'HomeController@home')->name('home');
 
 Route::resource('calendars', 'CalendarController');
-
-// Manual error page routes for the moment
-
-Route::get('/403', function() {
-    return redirect('/');
-});
-
-Route::get('/404', function() {
-    return view('errors.404', [
-        'title' => 'Calendar not found',
-        'resource' => 'Calendar'
-    ]);
-});
+Route::get('calendars/{id}/print', 'CalendarController@print');
 
 Route::get('/calendar.php', function(Request $request) {
     if($request->get('action') == 'generate') {
@@ -45,3 +33,16 @@ Route::get('/calendar.php', function(Request $request) {
 });
 
 Auth::routes();
+
+// Manual error page routes for the moment
+
+Route::get('/403', function() {
+    return redirect('/');
+});
+
+Route::get('/404', function() {
+    return view('errors.404', [
+        'title' => 'Calendar not found',
+        'resource' => 'Calendar'
+    ]);
+});
