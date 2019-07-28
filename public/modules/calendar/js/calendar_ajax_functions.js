@@ -44,11 +44,11 @@ function getUrlParameter(sParam) {
 
 function update_name(){
 	$.ajax({
-		url:window.baseurl+"modules/calendar/ajax/ajax_calendar",
+		url:window.baseurl+"calendars/"+hash,
 		type: "post",
 		dataType: 'json',
 		proccessData: false,
-		data: {action: 'update_name', name: calendar_name, hash: hash},
+		data: {_method: 'PATCH', name: calendar_name, hash: hash},
 		success: function( result ){
 			prev_calendar_name = calendar_name;
 			evaluate_save_button();
@@ -83,11 +83,11 @@ function do_update_dynamic(){
 	//escapeAllHtml(dynamic_data);
 
 	$.ajax({
-		url:window.baseurl+"modules/calendar/ajax/ajax_calendar",
+		url:window.baseurl+"calendars/"+hash,
 		type: "post",
 		dataType: 'json',
 		proccessData: false,
-		data: {action: 'update_dynamic', dynamic_data: JSON.stringify(dynamic_data), hash: hash},
+		data: {_method: 'PATCH', dynamic_data: JSON.stringify(dynamic_data)},
 		success: function ( result ){
 
 			if(!dynamic_same){
@@ -133,11 +133,11 @@ function do_update_all(){
 	//escapeAllHtml(dynamic_data);
 	
 	$.ajax({
-		url:window.baseurl+"modules/calendar/ajax/ajax_calendar",
+		url:window.baseurl+"calendars/"+hash,
 		type: "post",
 		dataType: 'json',
 		proccessData: false,
-		data: {action: 'update_all', dynamic_data: JSON.stringify(dynamic_data), static_data: JSON.stringify(static_data), hash: hash},
+		data: {_method: 'PATCH', dynamic_data: JSON.stringify(dynamic_data), static_data: JSON.stringify(static_data)},
 		success: function(result){
 
 			if(!calendar_name_same){
@@ -167,19 +167,19 @@ function do_update_all(){
 function update_hashes(child_hash){
 
 	$.ajax({
-		url:window.baseurl+"modules/calendar/ajax/ajax_calendar",
+		url:window.baseurl+"calendars/"+hash,
 		type: "post",
 		dataType: 'json',
 		proccessData: false,
-		data: {action: 'update_children_hashes', hash: hash, children_hashes: JSON.stringify(link_data.children)},
+		data: {_method: 'PATCH', children: JSON.stringify(link_data.children)},
 		success: function( result ){
 
 			$.ajax({
-				url:window.baseurl+"modules/calendar/ajax/ajax_calendar",
+				url:window.baseurl+"calendars/"+child_hash,
 				type: "post",
 				dataType: 'json',
 				proccessData: false,
-				data: {action: 'update_master_hash', hash: child_hash, master_hash: hash},
+				data: {_method: 'PATCH', hash: child_hash, master_hash: hash},
 				success: function( result ){
 					populate_calendar_lists();
 				},
@@ -200,19 +200,19 @@ function update_hashes(child_hash){
 function remove_hashes(child_hash){
 
 	$.ajax({
-		url:window.baseurl+"modules/calendar/ajax/ajax_calendar",
+		url:window.baseurl+"calendars/"+hash,
 		type: "post",
 		dataType: 'json',
 		proccessData: false,
-		data: {action: 'update_children_hashes', hash: hash, children_hashes: JSON.stringify(link_data.children)},
+		data: {_method: 'PATCH', children: JSON.stringify(link_data.children)},
 		success: function( result ){
 
 			$.ajax({
-				url:window.baseurl+"modules/calendar/ajax/ajax_calendar",
+				url:window.baseurl+"calendars/"+child_hash,
 				type: "post",
 				dataType: 'json',
 				proccessData: false,
-				data: {action: 'remove_master_hash', hash: child_hash},
+				data: {method: 'PATCH', master_hash: ''},
 				success: function( result ){
 					populate_calendar_lists();
 				},
@@ -335,11 +335,11 @@ function update_children_dynamic_data(){
 				child_dynamic_data.epoch = converted_date.epoch;
 
 				$.ajax({
-					url:window.baseurl+"modules/calendar/ajax/ajax_calendar",
+					url:window.baseurl+"calendars/"+child_hash,
 					type: "post",
 					dataType: 'json',
 					proccessData: false,
-					data: {action: 'update_dynamic', dynamic_data: JSON.stringify(child_dynamic_data), hash: child_hash},
+					data: {_method: 'PATCH', dynamic_data: JSON.stringify(child_dynamic_data)},
 					error: function ( log )
 					{
 						console.log(log);
