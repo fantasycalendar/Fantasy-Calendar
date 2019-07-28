@@ -7,7 +7,7 @@
     $(document).ready(function(){
         wizard = false;
 
-        @include('calendar.loadcalendar')
+        @include('calendar._loadcalendar')
 
         set_up_view_inputs();
         bind_calendar_events();
