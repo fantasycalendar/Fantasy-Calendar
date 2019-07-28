@@ -548,7 +548,7 @@ var calendar_builder = {
 							if(leap_day.intercalary && leap_day.day === day){
 
 								data = {
-									'year': this.dynamic_data.year,
+									'year': year_index,
 									'era_year': era_year,
 
 									'timespan_index': undefined,
@@ -595,7 +595,7 @@ var calendar_builder = {
 					if(day > 0){
 
 						data = {
-							'year': this.dynamic_data.year,
+							'year': year_index,
 							'era_year': era_year,
 
 							'timespan_index': timespan_index,
@@ -660,7 +660,7 @@ var calendar_builder = {
 							if(leap_day.intercalary && leap_day.day === day){
 
 								data = {
-									'year': this.dynamic_data.year,
+									'year': year_index,
 									'era_year': era_year,
 
 									'timespan_index': undefined,
@@ -717,7 +717,10 @@ var calendar_builder = {
 			}
 			last_year = year_index;
 			year_day = 1;
+			era_year++;
 		}
+
+		era_year = era_year == 0 && !this.static_data.settings.year_zero_exists ? era_year+1 : era_year;
 
 
 		if(!this.static_data.settings.show_current_month){

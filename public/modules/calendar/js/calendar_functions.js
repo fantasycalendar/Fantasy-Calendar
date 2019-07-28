@@ -946,13 +946,14 @@ function evaluate_calendar_start(static_data, year, month, day){
 	var count_timespans = tmp[2];
 	var num_timespans = tmp[3];
 	var total_week_num = tmp[4];
+	var era_years = []
 
 	// For each era, check if they end the year, subtract the remaining days of that year from the epoch total so we can get proper start of the year
 	for(var era_index = 0; era_index < static_data.eras.length; era_index++){
 
 		var era = static_data.eras[era_index];
 
-		era.date.era_year = era.date.year;
+		era_years[era_index] = era.date.year;
 
 		if(era.settings.ends_year && year > convert_year(static_data, era.date.year)){
 
@@ -979,13 +980,13 @@ function evaluate_calendar_start(static_data, year, month, day){
 
 				if(prev_era.settings.restart){
 
-					era.date.era_year -= prev_era.date.era_year;
+					era_years[era_index] -= era_years[i];
 
 				}
 
 			}
 
-			era_year = era_year - era.date.era_year;
+			era_year = era_year - era_years[era_index];
 
 		}
 
