@@ -18,7 +18,7 @@ Route::get('/', 'HomeController@home')->name('home');
 Route::resource('calendars', 'CalendarController');
 Route::get('calendars/{id}/print', 'CalendarController@print');
 
-Route::get('/calendar.php', function(Request $request) {
+Route::get('/{path}', function(Request $request) {
     if($request->get('action') == 'generate') {
         return redirect('calendars/create');
     }
@@ -30,7 +30,7 @@ Route::get('/calendar.php', function(Request $request) {
     if($request->get('action') == 'edit') {
         return redirect("calendars/{$request->get('id')}/edit");
     }
-});
+})->where(['url' => 'calendar.php|calendar']);
 
 Auth::routes();
 
