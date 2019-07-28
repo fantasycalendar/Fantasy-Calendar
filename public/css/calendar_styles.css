@@ -120,6 +120,10 @@ flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 	visibility: hidden;
 	-webkit-transition: visibility .0s; /* Safari */
 	transition: visibility .0s;
+	background-image: url(../resources/icons/plus_icon_white.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 50%;
 }
 
 .timespan_day:hover .btn_create_event{

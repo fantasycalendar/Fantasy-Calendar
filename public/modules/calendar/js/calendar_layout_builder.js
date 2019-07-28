@@ -27,7 +27,7 @@ function display_events(static_data, event_data){
 				var event_group = current_event.settings.color ? " " + current_event.settings.color : "";
 				event_group += current_event.settings.text ? " " + current_event.settings.text : "";
 
-				var html = `<div class='event ${(event_group + (start ? " event_start" : (end ? " event_end" : "")))}' event_id='${event_index}' category='${category_name}'>${((start ? "Start: " : (end ? "End: " : "")) + current_event.name)}</div>`;
+				var html = `<div title='View ${current_event.name}' class='event ${(event_group + (start ? " event_start" : (end ? " event_end" : "")))}' event_id='${event_index}' category='${category_name}'>${((start ? "Start: " : (end ? "End: " : "")) + current_event.name)}</div>`;
 
 				var parent = $(`.timespan_day[epoch='${local_epoch}'] .event_container`);
 
@@ -459,7 +459,7 @@ var calendar_layouts = {
 						}
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow right'>");
-							calendar_layouts.html.push("<div class='btn_create_event btn btn-success'>+</div>");
+							calendar_layouts.html.push("<div class='btn_create_event btn btn-success' title='Create new event'></div>");
 						calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("</div>");
 					if(title){
@@ -766,7 +766,7 @@ var calendar_layouts = {
 						}
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow right'>");
-							calendar_layouts.html.push("<div class='btn_create_event btn btn-success'>+</div>");
+							calendar_layouts.html.push("<div class='btn_create_event btn btn-success' title='Create new event'></div>");
 						calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("</div>");
 					if(title){
@@ -1079,7 +1079,7 @@ var calendar_layouts = {
 							calendar_layouts.html.push("<div class='weather_icon'></div>");
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow right'>");
-							calendar_layouts.html.push("<div class='btn_create_event btn btn-success'>+</div>");
+							calendar_layouts.html.push("<div class='btn_create_event btn btn-success' title='Create new event'></div>");
 						calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("</div>");
 
