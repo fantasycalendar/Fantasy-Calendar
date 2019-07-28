@@ -18,6 +18,12 @@ class UsersTableAddRememberToken extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamps();
         });
+
+        $users = App\User::all();
+        foreach($users as $user) {
+            $user->created_at = $user->date_register;
+            $user->save();
+        }
     }
 
     /**
