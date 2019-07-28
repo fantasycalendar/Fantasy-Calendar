@@ -105,7 +105,14 @@ class CalendarController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $calendars_updated = Calendar::where('hash', $id)
+            ->update($request->only(['name', 'dynamic_data', 'static_data', 'children', 'master_hash']));
+        
+        if($calendars_updated == 0) {
+            return [ 'success' => false, 'error' => 'Error - Unable to update calendar. Please try again later.'];
+        }
+        
+        return [ 'success' => true, 'data'=> true ];
     }
 
     /**
