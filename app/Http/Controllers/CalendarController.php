@@ -105,7 +105,7 @@ class CalendarController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $calendars_updated = Calendar::where('hash', $id)
+        $calendars_updated = Calendar::where('hash', $id)->firstOrFail()
             ->update($request->only(['name', 'dynamic_data', 'static_data', 'children', 'master_hash']));
         
         if($calendars_updated == 0) {
