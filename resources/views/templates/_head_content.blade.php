@@ -3,6 +3,11 @@
     <meta name="description" content="All-in-One Fantasy Calendar Generator - Creation of calendars and time-tracking in your homebrew or pre-made campaign worlds have never been easier!">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    @if(Auth::check())
+        <meta name='api-token' content="{{ Auth::user()->api_token }}">
+    @endif
+
     <title>
         {!! ($title ?? $calendar->name ?? "Fantasy Calendar") . ' -' !!} Fantasy Calendar
     </title>
