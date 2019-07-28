@@ -329,9 +329,19 @@ function update_current_day(recalculate){
 		dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
 	}
 
-	$(`[epoch=${dynamic_data.epoch}]`).addClass('current_day');
+	var day_container = $(`[epoch=${dynamic_data.epoch}]`);
+
+	day_container.addClass('current_day');
+
 	eval_current_time();
 
+}
+
+function scroll_to_epoch(epoch){
+
+	if($(`[epoch=${epoch}]`).length){
+		$(`[epoch=${epoch}]`)[0].scrollIntoView({block: "center", inline: "nearest"});
+	}
 }
 
 var calendar_layouts = {

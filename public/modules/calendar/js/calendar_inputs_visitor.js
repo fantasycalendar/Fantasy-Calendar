@@ -228,9 +228,9 @@ function set_preview_date(year, timespan, day){
 
 	var rebuild = false;
 
-	if((preview_date.year != year || (preview_date.year == year && preview_date.year != dynamic_data.year))
+	if((preview_date.year != year || (preview_date.year == year && preview_date.year != preview_date.year))
 		||
-		(static_data.settings.show_current_month && (preview_date.timespan != timespan || (preview_date.timespan == timespan && preview_date.timespan != dynamic_data.timespan)))
+		(static_data.settings.show_current_month && (preview_date.timespan != timespan || (preview_date.timespan == timespan && preview_date.timespan != preview_date.timespan)))
 	){
 		rebuild = true;
 	}
@@ -238,13 +238,31 @@ function set_preview_date(year, timespan, day){
 	preview_date.year = year;
 	preview_date.timespan = timespan;
 	preview_date.day = day;
+	preview_date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, preview_date.year), preview_date.timespan, preview_date.day).epoch;
 
 	if(rebuild){
 		rebuild_calendar('preview', preview_date);
+	}else{
+		scroll_to_epoch(preview_date.epoch)
+		highlight_preview_date();
 	}
 
 }
 
+function highlight_preview_date(){
+
+	if(preview_date.epoch == dynamic_data.epoch) return;
+
+	if($(`[epoch=${preview_date.epoch}]`).length){
+		
+		$(`[epoch=${preview_date.epoch}]`).addClass('preview_day');
+
+		window.setTimeout(function(){
+			$(`[epoch=${preview_date.epoch}]`).removeClass('preview_day');
+		}, 2000);
+
+	}
+}
 
 function evaluate_settings(){
 
@@ -337,7 +355,7 @@ function evaluate_sun(){
 		return;
 	}
 
-	if(evaluated_static_data.processed_seasons){
+	if(evaluated_static_data.processed_seasons && evaluated_static_data.epoch_data[dynamic_data.epoch] !== undefined){
 
 		var clock_hours = static_data.clock.hours;
 

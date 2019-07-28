@@ -375,6 +375,10 @@ var set_date = debounce(function(year, timespan, day){
 
 	error_check(undefined, rebuild);
 
+	if(!rebuild){
+		scroll_to_epoch(dynamic_data.epoch)
+	}
+
 }, 200);
 
 

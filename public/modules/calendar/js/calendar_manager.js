@@ -162,7 +162,12 @@ worker_calendar.onmessage = e => {
 			if(action !== "preview"){
 				eval_clock();
 				update_current_day(false);
+				scroll_to_epoch(dynamic_data.epoch)
+			}else{
+				scroll_to_epoch(preview_date.epoch)
+				highlight_preview_date();
 			}
+
 
 			evaluate_weather_charts();
 
