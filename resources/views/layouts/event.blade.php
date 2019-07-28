@@ -13,6 +13,23 @@
 					<div class='detail-row form-control'>
 						<div class="event_desc"></div>
 					</div>
+
+					<div id='event_comment_mastercontainer' class='hidden'>
+
+						<div class='spacey_separator'></div>
+
+						<h4>Comments:</h4>
+
+						<div class='detail-row'>
+							<div id='event_comments' class='loading'></div>
+						</div>
+				
+						<div class='detail-row'>
+							<textarea class='form-control' id='event_comment_input' placeholder='Enter your comment and press submit.' autofocus=''></textarea>
+							<button type='button' class='btn btn-primary' id='submit_comment'>Submit</button>
+						</div>
+
+					</div>
 				</div>
 			</div>
 		</div>

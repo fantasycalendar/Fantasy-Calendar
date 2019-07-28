@@ -9,7 +9,7 @@
 		@include('templates._header')
 		<div id="content">
 			<div id="loading_background" class='basic-background hidden'>
-				<img src='{{ asset("resources/icons/35.png") }}'>
+				<img src='{{ asset("resources/icons/loader_white.png") }}'>
 				<div id='loading_text' class='italics-text'>Random text</div>
 			</div>
 

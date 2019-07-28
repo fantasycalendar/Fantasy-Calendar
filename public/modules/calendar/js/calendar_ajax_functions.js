@@ -411,3 +411,37 @@ function create_calendar(){
 	});
 
 }
+
+function get_event_comments(event_id, callback){
+
+	var comments = {
+
+		'0': [
+			{
+				"calendar_owner": true,
+				"comment_owner": true,
+				"date": "28/07/2019",
+				"username": "Creator",
+				"content": "Bunch of shit right here.",
+
+			},
+			{
+				"calendar_owner": false,
+				"comment_owner": false,
+				"date": "28/07/2019",
+				"username": "Aecius",
+				"content": "But what if it was MORE complex?",
+
+			}
+
+		]
+
+	}
+
+	if(comments[event_id] === undefined){
+		return callback(false)
+	}else{
+		callback(comments[event_id]);
+	}
+
+}

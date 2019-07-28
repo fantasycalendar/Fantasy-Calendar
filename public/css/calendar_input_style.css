@@ -927,6 +927,69 @@ flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 
 /* ------------------ Event forms ----------------- */
 
+#event_comment_mastercontainer .trumbowyg{
+	height: 150px;
+	max-height: 150px;
+	min-height: 150px;
+}
+
+#event_comments.loading{
+	background-image: url('../resources/icons/loader_black.png');
+	height:35px;
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+#event_comments.empty{
+	font-style: italic;
+}
+
+#event_comments{
+	display: flex;
+	flex-direction: column;
+	width:100%;
+}
+
+.event_comment{
+	margin-bottom:0.5em;
+}
+
+.event_comment.calendar_owner .username{
+	font-weight:800;
+}
+
+.event_comment.comment_owner{
+    background-color: #fffbd3;
+}
+
+.event_comment:last-child{
+	margin-bottom:0;
+}
+
+.event_comment p:first-child{
+	margin-bottom:0.5em;
+}
+
+.event_comment p{
+	margin:0;
+	padding:0;
+	line-height: 0.8;
+}
+
+.event_comment .username{
+	font-style: italic;
+	font-size:0.75em;
+}
+
+.event_comment .date{
+	font-style: italic;
+	color:rgba(0,0,0,0.5);
+	font-size:0.5em;
+}
+
+
+
 
 .event-basic-wrapper{
 	margin-top: 40px;

@@ -58,8 +58,8 @@
 
 .day_row{
 	display: -moz-inline-flex;
-display: -moz-inline-flexbox;
-display: inline-flex;
+	display: -moz-inline-flexbox;
+	display: inline-flex;
 	flex-direction: row;
 	width:calc(100% - 10px);
 	margin:0px 5px 5px 5px;
@@ -369,10 +369,13 @@ flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 	background-color: #263238;
 }
 
+
+
+
 #top_follower{
 	display: -moz-inline-flex;
-display: -moz-inline-flexbox;
-display: inline-flex;
+	display: -moz-inline-flexbox;
+	display: inline-flex;
 	flex-direction:row;
 	border:1px solid black;
 	border-top:0;
@@ -386,16 +389,15 @@ display: inline-flex;
 
 #top_follower .btn_container{
 	display: -moz-inline-flex;
-display: -moz-inline-flexbox;
-display: inline-flex;
+	display: -moz-inline-flexbox;
+	display: inline-flex;
 	flex-direction: column;
 	width:5em;
 	-webkit-box-flex: 0 1 auto;      /* OLD - iOS 6-, Safari 3.1-6 */
--moz-box-flex: 0 1 auto;         /* OLD - Firefox 19- */
-
--webkit-flex: 0 1 auto;          /* Chrome */
--ms-flex: 0 1 auto;              /* IE 10 */
-flex: 0 1 auto;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
+	-moz-box-flex: 0 1 auto;         /* OLD - Firefox 19- */
+	-webkit-flex: 0 1 auto;          /* Chrome */
+	-ms-flex: 0 1 auto;              /* IE 10 */
+	flex: 0 1 auto;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 	overflow: hidden;
 	padding:0;
 	margin:0;
@@ -419,11 +421,10 @@ flex: 0 1 auto;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 	border-radius: 0px;
 	text-align: center;
 	-webkit-box-flex: 1;      /* OLD - iOS 6-, Safari 3.1-6 */
--moz-box-flex: 1;         /* OLD - Firefox 19- */
-
--webkit-flex: 1;          /* Chrome */
--ms-flex: 1;              /* IE 10 */
-flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
+	-moz-box-flex: 1;         /* OLD - Firefox 19- */
+	-webkit-flex: 1;          /* Chrome */
+	-ms-flex: 1;              /* IE 10 */
+	flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 	padding:0;
 	position:relative;
 }
@@ -432,20 +433,18 @@ flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 	text-align: center;
 	padding:5px 0;
 	-webkit-box-flex: 1;      /* OLD - iOS 6-, Safari 3.1-6 */
--moz-box-flex: 1;         /* OLD - Firefox 19- */
-
--webkit-flex: 1;          /* Chrome */
--ms-flex: 1;              /* IE 10 */
-flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
+	-moz-box-flex: 1;         /* OLD - Firefox 19- */
+	-webkit-flex: 1;          /* Chrome */
+	-ms-flex: 1;              /* IE 10 */
+	flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 }
 
 #top_follower_content .year{
 	-webkit-box-flex: 1;      /* OLD - iOS 6-, Safari 3.1-6 */
--moz-box-flex: 1;         /* OLD - Firefox 19- */
-
--webkit-flex: 1;          /* Chrome */
--ms-flex: 1;              /* IE 10 */
-flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
+	-moz-box-flex: 1;         /* OLD - Firefox 19- */
+	-webkit-flex: 1;          /* Chrome */
+	-ms-flex: 1;              /* IE 10 */
+	flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 	flex-grow: 1;
 	width:100%;
 	font-size:14pt;
@@ -453,18 +452,14 @@ flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 
 #top_follower_content .cycle{
 	-webkit-box-flex: 1;      /* OLD - iOS 6-, Safari 3.1-6 */
--moz-box-flex: 1;         /* OLD - Firefox 19- */
-
--webkit-flex: 1;          /* Chrome */
--ms-flex: 1;              /* IE 10 */
-flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
-  flex-grow: 1;
+	-moz-box-flex: 1;         /* OLD - Firefox 19- */
+	-webkit-flex: 1;          /* Chrome */
+	-ms-flex: 1;              /* IE 10 */
+	flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
+	flex-grow: 1;
 	order:2;
 	width:100%;
 	font-size:10pt;
-}
-
-#top_follower_content .era{
 }
 
 .era.hidden{
@@ -578,8 +573,8 @@ flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 
 .calendar_moon_container{
 	display: -moz-inline-flex;
-display: -moz-inline-flexbox;
-display: inline-flex;
+	display: -moz-inline-flexbox;
+	display: inline-flex;
 	text-align: center;
 	align-content: flex-start;
 	height:100%;
@@ -620,8 +615,8 @@ display: inline-flex;
 .timespan_container.mini{
 	height:250px;
 	display: -moz-inline-flex;
-display: -moz-inline-flexbox;
-display: inline-flex;
+	display: -moz-inline-flexbox;
+	display: inline-flex;
 	flex-direction: column;
 	background-color:#f0ead0;
 	border-radius:0;
@@ -636,8 +631,8 @@ display: inline-flex;
 .timespan_container.mini .week_day_name,
 .timespan_container.mini .timespan_name{
 	display: -moz-inline-flex;
-display: -moz-inline-flexbox;
-display: inline-flex;
+	display: -moz-inline-flexbox;
+	display: inline-flex;
 	flex-direction: column;
 	justify-content: center;
 	overflow: hidden;

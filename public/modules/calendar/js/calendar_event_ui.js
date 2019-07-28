@@ -1343,6 +1343,7 @@ var show_event_ui = {
 	bind_events: function(){
 
 		this.event_id							= null;
+		this.era_id								= null;
 		this.event_condition_sortables			= [];
 		this.delete_droppable					= false;
 
@@ -1352,6 +1353,21 @@ var show_event_ui = {
 		this.event_wrapper						= this.event_background.find('.event-wrapper');
 		this.event_name							= this.event_background.find('.event_name');
 		this.event_desc							= this.event_background.find('.event_desc');
+		this.event_comments						= this.event_background.find('#event_comments');
+		this.event_comment_mastercontainer		= this.event_background.find('#event_comment_mastercontainer');
+		this.event_comment_container			= this.event_background.find('#event_comment_container');
+		this.event_comment_input				= this.event_background.find('#event_comment_input');
+
+		this.event_comment_input.trumbowyg({
+		    btns: [
+		        ['strong', 'em', 'del'],
+		        ['superscript', 'subscript'],
+		        ['link'],
+		        ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
+		        ['unorderedList', 'orderedList'],
+		        ['removeformat']
+		    ]
+		});
 
 		this.close_ui_btn.click(function(){
 			show_event_ui.clear_ui();
@@ -1369,9 +1385,11 @@ var show_event_ui = {
 
 			if($(this).hasClass('era_event')){
 				var id = $(this).attr('era_id')|0;
+				show_event_ui.era_id = id;
 				show_event_ui.set_current_event(static_data.eras[id]);
 			}else{
 				var id = $(this).attr('event_id')|0;
+				show_event_ui.event_id = id;
 				show_event_ui.set_current_event(static_data.event_data.events[id]);
 			}
 
@@ -1385,15 +1403,71 @@ var show_event_ui = {
 		
 		this.event_desc.html(unescapeHtml(event.description)).toggleClass('hidden', event.description.length == 0);
 
+		get_event_comments(this.event_id, this.add_comments);
+
 		this.event_background.removeClass('hidden');
+
+	},
+
+	add_comments: function(comments){
+
+		show_event_ui.event_comments.removeClass('loading');
+
+		show_event_ui.event_comments.toggleClass('empty', comments == false)
+
+		if(comments != false){
+
+			show_event_ui.event_comments.html('');
+			
+			for(var index = 0; index < comments.length; index++){
+
+				show_event_ui.add_comment(index, comments[index]);
+
+			}
+
+		}else{
+
+			show_event_ui.event_comments.html("No comments on this event yet... Maybe you'll be the first?")
+
+		}
+
+	},
+
+	add_comment: function(index, comment){
+
+		var content = [];
+
+		content.push(`<div class='form-control event_comment ${comment.comment_owner ? "comment_owner" : ""} ${comment.calendar_owner ? "calendar_owner" : ""}'`)
+		content.push(` date='${comment.date}' comment_id='${index}'>`)
+			content.push(`<p><span class='comment'>${unescapeHtml(comment.content)}</span></p>`)
+			content.push(`<p><span class='username'>- ${comment.username}${comment.calendar_owner ? " (owner)" : ""}</span></p>`)
+			content.push(`<p><span class='date'>${comment.date}</span></p>`)
+		content.push(`</div>`)
+
+		show_event_ui.event_comments.append(content.join(''))
 
 	},
 
 	clear_ui: function(){
 
+		if(this.event_comment_input.trumbowyg('html').length > 0){
+			if(!confirm("You haven't posted your comment yet, are you sure you want to close this event?")){
+				return;
+			}
+		}
+
+		this.event_id = -1;
+		this.era_id = -1;
+
 		this.event_name.text('');
 
+		this.event_comment_container.addClass('hidden');
+
+		this.event_comments.addClass('loading');
+
 		this.event_desc.html('').removeClass('hidden');
+
+		this.event_comment_input.trumbowyg('html', '');
 
 		this.event_background.addClass('hidden');
 

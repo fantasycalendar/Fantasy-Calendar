@@ -151,6 +151,6 @@ $jsversion = "2.0";
 		
 		<div id="content">
 			<div id="loading_background" class='basic-background hidden'>
-				<img src='resources/icons/35.png'>
+				<img src='resources/icons/loader_white.png'>
 				<div id='loading_text' class='italics-text'>Random text</div>
 			</div>
