@@ -316,11 +316,11 @@ function get_owned_calendars(output){
 function update_children_dynamic_data(){
 
 	$.ajax({
-		url:window.baseurl+"modules/calendar/ajax/ajax_calendar",
+		url:window.baseurl+"api/calendar/"+hash+"/children",
 		type: "post",
 		dataType: 'json',
 		proccessData: false,
-		data: {action: 'list_children_calendars', hash: hash},
+		data: {hash: hash},
 		success: function(result){
 
 			for(var i = 0; i < result.length; i++){
@@ -359,11 +359,11 @@ function update_children_dynamic_data(){
 
 function check_last_change(output){
 	$.ajax({
-		url:window.baseurl+"modules/calendar/ajax/ajax_calendar",
+		url:window.baseurl+"api/calendar/"+hash+"/last_changed",
 		type: "post",
 		dataType: 'json',
 		proccessData: false,
-		data: {action: 'check_last_change', hash: hash},
+		data: {},
 		success: function(result){
 			output(result);
 		},
@@ -377,7 +377,7 @@ function check_last_change(output){
 function delete_calendar(){
 
 	$.ajax({
-		url:window.baseurl+"modules/calendar/ajax/ajax_calendar",
+		url:window.baseurl+"api/calendar/"+hash+"/delete",
 		type: "post",
 		dataType: 'json',
 		proccessData: false,
