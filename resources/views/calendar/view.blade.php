@@ -7,18 +7,7 @@
     $(document).ready(function(){
         wizard = false;
 
-        hash = "{{ $hash }}";
-
-        calendar_name = "{{ $title }}";
-        static_data = {!! json_encode($calendar->static_data) !!};
-        dynamic_data = {!! json_encode($calendar->dynamic_data) !!};
-        link_data = {
-            master_hash: "{{ $calendar->master_hash }}",
-            children: {{ $calendar->children }}
-        };
-
-        last_static_change = new Date("{{ $calendar->last_static_change }}")
-        last_dynamic_change = new Date("{{ $calendar->last_dynamic_change }}")
+        @include('calendar.loadcalendar')
 
         set_up_view_inputs();
         bind_calendar_events();
