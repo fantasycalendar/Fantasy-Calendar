@@ -77,36 +77,14 @@
             children: []
         };
 
-        get_session_data(function(result){
+        $(document).ready(function(){
+            set_up_edit_inputs(false);
 
-            if(result.success){
-
-                static_data = JSON.parse(result.static_data);
-                dynamic_data = JSON.parse(result.dynamic_data);
-
-                if(!result.children){
-                    result.children = [];
-                }else{
-                    link_data.children = JSON.parse(result.children);
-                }
-
-                set_up_edit_inputs(true);
-                bind_calendar_events();
-                rebuild_calendar('calendar', dynamic_data);
-                
-            }else{
-
-                set_up_edit_inputs(false);
-                bind_calendar_events();
-
-            }
-
+            bind_calendar_events();
             edit_event_ui.bind_events();
             edit_HTML_ui.bind_events();
 
-        });
 
-        $(document).ready(function(){
             var html = [];
             for(var i = 0; i < Object.keys(calendar_presets).length; i++){
                 var name = Object.keys(calendar_presets)[i];
