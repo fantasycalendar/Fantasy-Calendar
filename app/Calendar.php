@@ -12,6 +12,13 @@ class Calendar extends Model
 
     protected $table = 'calendars_beta';
 
+    protected $with = ['event_categories'];
+
+    protected $casts = [
+        'dynamic_data' => 'array',
+        'static_data' => 'array',
+    ];
+
     public $timestamps = false;
 
     public $fillable = [
@@ -26,12 +33,16 @@ class Calendar extends Model
         return $this->belongsTo('App\User');
     }
 
-    public function getDynamicDataAttribute($value) {
-        return json_decode($value, true);
+    public function event_categories() {
+        return $this->hasMany('App\EventCategory');
     }
 
     public function getStaticDataAttribute($value) {
-        return json_decode($value, true);
+        $static_data = json_decode($value, true);
+
+        $static_data['event_data']['categories'] = $this->event_categories;
+
+        return $static_data;
     }
 
     public function scopeActive($query) {

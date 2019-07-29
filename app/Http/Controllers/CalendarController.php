@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use Auth;
 use App\Calendar;
+use App\EventCategory;
 
 class CalendarController extends Controller
 {
@@ -51,14 +52,26 @@ class CalendarController extends Controller
     public function store(Request $request)
     {
         $hash = md5(request('calendar_name').request('dynamic_data').request('static_data').(Auth::user()->id).date("D M d, Y G:i"));
+        $categories = [];
 
-        Calendar::create([
+        $static_data = json_decode(request('static_data'), true);
+        if(array_key_exists('categories', $static_data['event_data'])) {
+            $categories = $static_data['event_data']['categories'];
+            unset($static_data['event_data']['categories']);
+        }
+
+        $calendar = Calendar::create([
             'user_id' => Auth::user()->id,
             'name' => request('name'),
-            'dynamic_data' => request('dynamic_data'),
-            'static_data' => request('static_data'),
+            'dynamic_data' => json_decode(request('dynamic_data')),
+            'static_data' => $static_data,
             'hash' => $hash
         ]);
+
+        foreach($categories as $category) {
+            $category['calendar_id'] = $calendar->id;
+            $category = EventCategory::updateOrCreate($category);
+        }
 
         return [
             'success' => true,
