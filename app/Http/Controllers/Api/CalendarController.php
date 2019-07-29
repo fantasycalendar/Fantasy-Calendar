@@ -49,10 +49,16 @@ class CalendarController extends Controller
     }
 
     public function dynamic_data(Request $request, $id) {
-        return $this->userCalendar()->firstOrFail()->dynamic_data;
+        return Calendar::active()
+            ->hash($id)
+            ->user($request->user()->id)
+            ->firstOrFail()->dynamic_data;
     }
 
     public function delete(Request $request, $id) {
-        return $this->userCalendar($request)->delete();
+        return Calendar::active()
+        ->hash($id)
+        ->user($request->user()->id)
+        ->firstOrFail()->delete();
     }
 }
