@@ -35,7 +35,7 @@ class CalendarDataToEventCategories extends Migration
             unset($static_data['event_data']['categories']);
 
             $calendar->update([
-                'static_data' => json_encode($static_data)
+                'static_data' => $static_data
             ]);
         }
     }
@@ -61,7 +61,7 @@ class CalendarDataToEventCategories extends Migration
             $static_data['event_data']['categories'][] = $category_calendar_restore_data;
 
             $calendar->update([
-                'static_data' => json_encode($static_data)
+                'static_data' => $static_data
             ]);
         }
     }
