@@ -363,7 +363,7 @@ function delete_calendar(){
 		proccessData: false,
 		data: {action: 'delete', hash: hash},
 		success: function ( result ){
-			window.location.href = '';
+			window.location.href = '/calendars';
 		},
 		error: function ( log )
 		{
@@ -382,7 +382,7 @@ function create_calendar(){
 		proccessData: false,
 		data: {name: calendar_name, dynamic_data: JSON.stringify(dynamic_data), static_data: JSON.stringify(static_data)},
 		success: function ( result ){
-			window.location.href = window.baseurl+'calendar?action=edit&id='+result.hash;
+			window.location.href = window.baseurl+'calendars/'+result.hash+'/edit';
 		},
 		error: function ( log )
 		{
