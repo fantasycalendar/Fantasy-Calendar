@@ -56,7 +56,7 @@ class CalendarController extends Controller
     }
 
     public function delete(Request $request, $id) {
-        return Calendar::active()
+        return (string)Calendar::active()
         ->hash($id)
         ->user($request->user()->id)
         ->firstOrFail()->delete();
