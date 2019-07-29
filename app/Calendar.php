@@ -45,4 +45,12 @@ class Calendar extends Model
 
         return "false";
     }
+
+    public function scopeHash($query, $hash) {
+        return $query->where('hash', $hash);
+    }
+
+    public function scopeUser($query, $user_id) {
+        return $query->where('user_id', $user_id);
+    }
 }

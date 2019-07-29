@@ -233,34 +233,14 @@ function remove_hashes(child_hash){
 
 
 
-function get_session_data(output){
-
-	$.ajax({
-		url:window.baseurl+"modules/calendar/ajax/ajax_calendar",
-		type: "post",
-		dataType: 'json',
-		proccessData: false,
-		data: {action: 'session_get'},
-		success: function(result){
-			
-			output(result);
-
-		},
-		error: function ( log )
-		{
-			console.log(log);
-		}
-	});
-}
-
 function get_all_data(output){
 
 	$.ajax({
-		url:window.baseurl+"modules/calendar/ajax/ajax_calendar",
+		url:window.apiurl+hash,
 		type: "post",
 		dataType: 'json',
 		proccessData: false,
-		data: {action: 'load_all', hash: hash},
+		data: {},
 		success: function(result){
 			
 			output(result);
@@ -276,11 +256,11 @@ function get_all_data(output){
 function get_dynamic_data(output){
 
 	$.ajax({
-		url:window.baseurl+"modules/calendar/ajax/ajax_calendar",
+		url:window.apiurl+hash+"/dynamic_data",
 		type: "post",
 		dataType: 'json',
 		proccessData: false,
-		data: {action: 'load_dynamic', hash: hash},
+		data: {},
 		success: function(result){
 
 			output(result);
@@ -297,11 +277,11 @@ function get_dynamic_data(output){
 
 function get_owned_calendars(output){
 	$.ajax({
-		url:window.baseurl+"modules/calendar/ajax/ajax_calendar",
+		url:window.apiurl+"owned",
 		type: "post",
 		dataType: 'json',
 		proccessData: false,
-		data: {action: 'list'},
+		data: {},
 		success: function(result){
 			output(result);
 		},
@@ -316,7 +296,7 @@ function get_owned_calendars(output){
 function update_children_dynamic_data(){
 
 	$.ajax({
-		url:window.baseurl+"api/calendar/"+hash+"/children",
+		url:window.apiurl+hash+"/children",
 		type: "post",
 		dataType: 'json',
 		proccessData: false,
@@ -359,7 +339,7 @@ function update_children_dynamic_data(){
 
 function check_last_change(output){
 	$.ajax({
-		url:window.baseurl+"api/calendar/"+hash+"/last_changed",
+		url:window.apiurl+hash+"/last_changed",
 		type: "post",
 		dataType: 'json',
 		proccessData: false,
@@ -377,7 +357,7 @@ function check_last_change(output){
 function delete_calendar(){
 
 	$.ajax({
-		url:window.baseurl+"api/calendar/"+hash+"/delete",
+		url:window.apiurl+hash+"/delete",
 		type: "post",
 		dataType: 'json',
 		proccessData: false,

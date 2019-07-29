@@ -38,6 +38,7 @@
     <script>
 
     window.baseurl = '{{ getenv('WEBADDRESS') }}';
+    window.apiurl = '{{ getenv('WEBADDRESS') }}'+'api/calendar/';
 
     $.ajaxSetup({
         headers: {
