@@ -17,8 +17,8 @@ class TableForEventCategories extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->bigInteger('calendar_id');
-            $table->json('category_settings');
-            $table->json('event_settings');
+            $table->string('category_settings');
+            $table->string('event_settings');
             $table->timestamps();
             $table->softDeletes();
         });
