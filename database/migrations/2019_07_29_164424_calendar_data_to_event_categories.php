@@ -21,12 +21,12 @@ class CalendarDataToEventCategories extends Migration
             if(!array_key_exists('event_data', $calendar->static_data)) continue;
             if(!array_key_exists('categories', $calendar->static_data['event_data'])) continue;
 
-            $categories = $calendar->static_data['event_data']['categories'];
+            $categories = json_decode($calendar->getOriginal('static_data'), true)['event_data']['categories'];
             foreach ($categories as $category) {
                 EventCategory::create([
                     'name' => $category['name'],
-                    'category_settings' => json_encode($category['category_settings']),
-                    'event_settings' => json_encode($category['event_settings']),
+                    'category_settings' => $category['category_settings'],
+                    'event_settings' => $category['event_settings'],
                     'calendar_id' => $calendar->id
                 ]);
             }

@@ -29,6 +29,10 @@ class Calendar extends Model
         'hash',
     ];
 
+    protected $hidden = [
+        'event_categories'
+    ];
+
     public function user() {
         return $this->belongsTo('App\User');
     }
