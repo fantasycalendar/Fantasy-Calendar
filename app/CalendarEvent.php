@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CalendarEvent extends Model
 {
@@ -11,13 +12,13 @@ class CalendarEvent extends Model
     public $fillable = [
         'name',
         'calendar_id',
+        'event_category_id',
         'description',
         'data',
-        'category',
         'settings',
     ];
 
-    protected $hidden = ['deleted_at'];
+    protected $hidden = ['deleted_at', 'category', 'calendar'];
 
     protected $casts = [
         'data' => 'array',

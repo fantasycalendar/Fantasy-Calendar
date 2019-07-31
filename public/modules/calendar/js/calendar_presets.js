@@ -978,10 +978,10 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 
 		if(calendar.static_data.event_data.categories !== undefined && Array.isArray(calendar.static_data.event_data.categories)){
 
-			for(var i = 0; i < calendar.static_data.event_data.categories.length; i++){
+			for(var categoryid in calendar.static_data.event_data.categories){
 
 				var category = {};
-				var current_category = calendar.static_data.event_data.categories[i];
+				var current_category = calendar.static_data.event_data.categories[categoryid];
 
 				if(current_category.name !== undefined){
 					category.name = escapeHtml(unescapeHtml(current_category.name)).toString();
@@ -1058,10 +1058,10 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 
 		if(calendar.static_data.event_data.categories !== undefined && Array.isArray(calendar.static_data.event_data.categories)){
 
-			for(var i = 0; i < calendar.static_data.event_data.events.length; i++){
+			for(var eventId in calendar.static_data.event_data.events){
 
 				var event = {};
-				var current_event = calendar.static_data.event_data.events[i];
+				var current_event = calendar.static_data.event_data.events[eventId];
 
 				if(current_event.name !== undefined){
 					event.name = escapeHtml(unescapeHtml(current_event.name)).toString();
@@ -1075,8 +1075,8 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 					throw `${event.name} does not have valid description data!`;
 				}
 
-				if(current_event.category !== undefined && !isNaN(Number(current_event.category))){
-					event.category = Number(current_event.category);
+				if(current_event.event_category_id !== undefined && !isNaN(Number(current_event.event_category_id))){
+					event.event_category_id = Number(current_event.event_category_id);
 				}else{
 					throw `${event.name} does not have valid category data!`;
 				}

@@ -16,7 +16,7 @@ class EventCategory extends Model
         'calendar_id'
     ];
 
-    protected $hidden = ['deleted_at'];
+    protected $hidden = ['deleted_at', 'calendar'];
 
     protected $casts = [
         'category_settings' => 'array',

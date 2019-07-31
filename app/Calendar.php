@@ -12,7 +12,7 @@ class Calendar extends Model
 
     protected $table = 'calendars_beta';
 
-    protected $with = ['event_categories'];
+    protected $with = ['event_categories', 'events'];
 
     protected $casts = [
         'dynamic_data' => 'array',
@@ -30,7 +30,8 @@ class Calendar extends Model
     ];
 
     protected $hidden = [
-        'event_categories'
+        'event_categories',
+        'events'
     ];
 
     public function user() {
@@ -41,10 +42,18 @@ class Calendar extends Model
         return $this->hasMany('App\EventCategory');
     }
 
+    public function events() {
+        return $this->hasMany('App\CalendarEvent');
+    }
+
     public function getStaticDataAttribute($value) {
         $static_data = json_decode($value, true);
 
-        $static_data['event_data']['categories'] = $this->event_categories;
+        // dd($static_data);
+
+        $static_data['event_data']['categories'] = $this->event_categories->keyBy('id');
+
+        $static_data['event_data']['events'] = $this->events->keyBy('id');
 
         return $static_data;
     }

@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-use App\Calendar;
 use App\EventCategory;
 
 class CalendarDataToEventCategories extends Migration
@@ -16,9 +15,9 @@ class CalendarDataToEventCategories extends Migration
      */
     public function up()
     {
-        $calendars = Calendar::all();
+        $calendars = DB::table('calendars_beta')->get();
         foreach ($calendars as $calendar) {
-            $static_data = json_decode($calendar->getOriginal('static_data'), true);
+            $static_data = json_decode($calendar->static_data, true);
             if(!array_key_exists('event_data', $static_data)) continue;
             if(!array_key_exists('categories', $static_data['event_data'])) continue;
 
@@ -34,8 +33,8 @@ class CalendarDataToEventCategories extends Migration
 
             unset($static_data['event_data']['categories']);
 
-            $calendar->update([
-                'static_data' => $static_data
+            DB::table('calendars_beta')->where('id', $calendar->id)->update([
+                'static_data' => json_encode($static_data)
             ]);
         }
     }
@@ -47,21 +46,21 @@ class CalendarDataToEventCategories extends Migration
      */
     public function down()
     {
-        $categories = EventCategory::all();
+        $categories = DB::table('event_categories')->get();
         foreach ($categories as $category) {
-            $calendar = Calendar::find($category->calendar_id);
+            $calendar = DB::table('calendars_beta')->find($category->calendar_id);
 
             $category_calendar_restore_data = [
                 'name' => $category->name,
-                'category_settings' => $category->category_settings,
-                'event_settings' => $category->event_settings
+                'category_settings' => json_decode($category->category_settings, true),
+                'event_settings' => json_decode($category->event_settings, true)
             ];
 
-            $static_data = $category->calendar->static_data;
+            $static_data = json_decode($calendar->static_data, true);
             $static_data['event_data']['categories'][] = $category_calendar_restore_data;
 
-            $calendar->update([
-                'static_data' => $static_data
+            DB::table('calendars_beta')->where('id', $calendar->id)->update([
+                'static_data' => json_encode($static_data)
             ]);
         }
     }

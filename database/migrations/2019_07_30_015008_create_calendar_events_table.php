@@ -16,9 +16,11 @@ class CreateCalendarEventsTable extends Migration
         Schema::create('calendar_events', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
-            $table->json('data');
-            $table->bigInteger('event_category_id');
-            $table->json('settings');
+            $table->longText('data');
+            $table->longText('description');
+            $table->bigInteger('event_category_id')->nullable();
+            $table->bigInteger('calendar_id');
+            $table->longText('settings');
             $table->timestamps();
             $table->softDeletes();
         });
