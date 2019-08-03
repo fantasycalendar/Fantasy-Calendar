@@ -48,18 +48,10 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $exception)
     {
         if ($this->isHttpException($exception)) {
-            if ($exception->getStatusCode() == 404) {
-                return response()->view('errors.404', [], 404);
-            }
-
             if ($exception->getStatusCode() == 403) {
                 if(Auth::check() && Auth::user()->beta_authorized == 1) {
                     return redirect('/');
                 }
-
-                return response()->view('errors.403', [
-                    'title' => $exception->getMessage()
-                ], 403);
             }
         }
 

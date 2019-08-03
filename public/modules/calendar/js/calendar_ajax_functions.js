@@ -47,7 +47,6 @@ function update_name(){
 		url:window.baseurl+"calendars/"+hash,
 		type: "post",
 		dataType: 'json',
-		proccessData: false,
 		data: {_method: 'PATCH', name: calendar_name, hash: hash},
 		success: function( result ){
 			prev_calendar_name = calendar_name;
@@ -86,7 +85,6 @@ function do_update_dynamic(){
 		url:window.baseurl+"calendars/"+hash,
 		type: "post",
 		dataType: 'json',
-		proccessData: false,
 		data: {_method: 'PATCH', dynamic_data: JSON.stringify(dynamic_data)},
 		success: function ( result ){
 
@@ -136,7 +134,6 @@ function do_update_all(){
 		url:window.baseurl+"calendars/"+hash,
 		type: "post",
 		dataType: 'json',
-		proccessData: false,
 		data: {_method: 'PATCH', dynamic_data: JSON.stringify(dynamic_data), static_data: JSON.stringify(static_data)},
 		success: function(result){
 
@@ -170,7 +167,6 @@ function update_hashes(child_hash){
 		url:window.baseurl+"calendars/"+hash,
 		type: "post",
 		dataType: 'json',
-		proccessData: false,
 		data: {_method: 'PATCH', children: JSON.stringify(link_data.children)},
 		success: function( result ){
 
@@ -178,7 +174,6 @@ function update_hashes(child_hash){
 				url:window.baseurl+"calendars/"+child_hash,
 				type: "post",
 				dataType: 'json',
-				proccessData: false,
 				data: {_method: 'PATCH', hash: child_hash, master_hash: hash},
 				success: function( result ){
 					populate_calendar_lists();
@@ -203,7 +198,6 @@ function remove_hashes(child_hash){
 		url:window.baseurl+"calendars/"+hash,
 		type: "post",
 		dataType: 'json',
-		proccessData: false,
 		data: {_method: 'PATCH', children: JSON.stringify(link_data.children)},
 		success: function( result ){
 
@@ -211,7 +205,6 @@ function remove_hashes(child_hash){
 				url:window.baseurl+"calendars/"+child_hash,
 				type: "post",
 				dataType: 'json',
-				proccessData: false,
 				data: {method: 'PATCH', master_hash: ''},
 				success: function( result ){
 					populate_calendar_lists();
@@ -239,7 +232,6 @@ function get_all_data(output){
 		url:window.apiurl+hash,
 		type: "post",
 		dataType: 'json',
-		proccessData: false,
 		data: {},
 		success: function(result){
 			
@@ -259,7 +251,6 @@ function get_dynamic_data(output){
 		url:window.apiurl+hash+"/dynamic_data",
 		type: "post",
 		dataType: 'json',
-		proccessData: false,
 		data: {},
 		success: function(result){
 
@@ -280,7 +271,6 @@ function get_owned_calendars(output){
 		url:window.apiurl+"owned",
 		type: "post",
 		dataType: 'json',
-		proccessData: false,
 		data: {},
 		success: function(result){
 			output(result);
@@ -299,7 +289,6 @@ function update_children_dynamic_data(){
 		url:window.apiurl+hash+"/children",
 		type: "post",
 		dataType: 'json',
-		proccessData: false,
 		data: {hash: hash},
 		success: function(result){
 
@@ -318,7 +307,6 @@ function update_children_dynamic_data(){
 					url:window.baseurl+"calendars/"+child_hash,
 					type: "post",
 					dataType: 'json',
-					proccessData: false,
 					data: {_method: 'PATCH', dynamic_data: JSON.stringify(child_dynamic_data)},
 					error: function ( log )
 					{
@@ -342,7 +330,6 @@ function check_last_change(output){
 		url:window.apiurl+hash+"/last_changed",
 		type: "post",
 		dataType: 'json',
-		proccessData: false,
 		data: {},
 		success: function(result){
 			output(result);
@@ -360,7 +347,6 @@ function delete_calendar(){
 		url:window.apiurl+hash+"/delete",
 		type: "post",
 		dataType: 'json',
-		proccessData: false,
 		data: {action: 'delete', hash: hash},
 		success: function ( result ){
 			window.location.href = '/calendars';
@@ -379,7 +365,6 @@ function create_calendar(){
 		url:window.baseurl+"calendars",
 		type: "post",
 		dataType: 'json',
-		proccessData: false,
 		data: {name: calendar_name, dynamic_data: JSON.stringify(dynamic_data), static_data: JSON.stringify(static_data)},
 		success: function ( result ){
 			window.location.href = window.baseurl+'calendars/'+result.hash+'/edit';
@@ -390,6 +375,25 @@ function create_calendar(){
 		}
 	});
 
+}
+
+function create_event(list, event, callback) {
+	// event = Object.assign({_method: 'store'}, event);
+
+	$.ajax({
+		url: window.baseurl+"api/eventcategory",
+		type: "post",
+		dataType: "json",
+		data: event,
+		success: function ( result ) {
+			static_data.event_data.categories[result.id] = result;
+			repopulate_event_category_lists();
+			callback(list, result.id, result);
+		},
+		error: function ( log ) {
+			console.log(log);
+		}
+	});
 }
 
 function get_event_comments(event_id, callback){

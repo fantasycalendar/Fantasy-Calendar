@@ -597,12 +597,12 @@ function set_up_edit_inputs(set_up){
 				"text": "text",
 				"hide": false,
 				"noprint": false
-			}
+			},
+			"calendar_id": calendar_id
 		};
-		static_data.event_data.categories.push(stats);
-		add_category_to_list(event_category_list, id, stats);
+		create_event(event_category_list, stats, add_category_to_list);
 		name.val('');
-		repopulate_event_category_lists();
+		
 		do_error_check();
 
 	});
@@ -1430,7 +1430,7 @@ function set_up_edit_inputs(set_up){
 			if(data.includes('event_data.categories')){
 				var key = data.split('.')[2]|0;
 				for(var i = 0; i < static_data.event_data.events.length; i++){
-					if(static_data.event_data.events[i].category == key){
+					if(static_data.event_data.events[i].event_category_id == key){
 						static_data.event_data.events[i].settings = clone(static_data.event_data.categories[key].event_settings);
 					}
 				}				
@@ -2403,10 +2403,10 @@ function add_era_to_list(parent, key, data){
 					element.push("<div class='detail-row'>");
 						element.push("<div class='detail-text'>Event category:</div>");
 						element.push(`<select type='text' class='custom-select form-control-sm event-category-list dynamic_input' data='eras.${key}.settings' key='event_category'>`);
-							for(var i = 0; i < static_data.event_data.categories.length; i++)
+							for(var catkey in static_data.event_data.categories)
 							{
-								var name = static_data.event_data.categories[i].name;
-								element.push(`<option value="${i}" ${(i==data.settings.event_category ? "selected" : "")}>${name}</option>`);
+								var name = static_data.event_data.categories[catkey].name;
+								element.push(`<option value="${catkey}" ${(catkey==data.event_category_id ? "selected" : "")}>${name}</option>`);
 							}
 							element.push("</select>");
 					element.push("</div>");
@@ -2561,6 +2561,10 @@ function add_category_to_list(parent, key, data){
 
 			element.push("<div class='detail-row'>");
 					element.push("<div class='detail-text bold-text'>Category settings (global):</div>");
+			element.push("</div>");
+
+			element.push("<div class='detail-row'>");
+					element.push(`<input type='hidden' class='category_id' value='${key}'>`);
 			element.push("</div>");
 
 			element.push("<div class='detail-row'>");
@@ -3293,13 +3297,15 @@ function reindex_event_category_list(){
 
 	event_category_list.children().each(function(i){
 
+		var key = $(this).find('.category_id').val()
+
 		$('.dynamic_input', this).each(function(){
-			$(this).attr('data', $(this).attr('data').replace(/[0-9]+/g, i));
+			$(this).attr('data', $(this).attr('data').replace(/[0-9]+/g, key));
 		});
 
-		$(this).attr('key', i);
+		$(this).attr('key', key);
 
-		static_data.event_data.categories[i] = {
+		static_data.event_data.categories[key] = {
 			'name': escapeHtml($(this).find('.name-input').val()),
 			'category_settings': {
 				'hide': $(this).find('.global_hide').is(':checked'),
@@ -3310,7 +3316,8 @@ function reindex_event_category_list(){
 				'noprint': $(this).find('.noprint').is(':checked'),
 				'color': $(this).find('.color_display').val(),
 				'text': $(this).find('.text_display').val()
-			}
+			},
+			"id": $(this).find('.category_id').val()
 		};
 
 	});
@@ -3318,10 +3325,10 @@ function reindex_event_category_list(){
 	$('.event-category-list').each(function(){
 		var element = [];
 		var selected = $('.event-category-list').val();
-		for(var i = 0; i < static_data.event_data.categories.length; i++)
+		for(var key in static_data.event_data.categories)
 		{
-			var name = static_data.event_data.categories[i].name;
-			element.push(`<option value="${i}" ${(i==selected ? "selected" : "")}>${name}</option>`);
+			var name = static_data.event_data.categories[key].name;
+			element.push(`<option value="${key}" ${(key==selected ? "selected" : "")}>${name}</option>`);
 		}
 		$(this).html(element.join(""));
 	});
@@ -3522,9 +3529,9 @@ function repopulate_event_category_lists(){
 
 	var html = [];
 	html.push("<option selected value='-1'>None</option>")
-	for(var i = 0; i < static_data.event_data.categories.length; i++){
-		var category = static_data.event_data.categories[i];
-		html.push(`<option value='${i}'>`)
+	for(var categoryId in static_data.event_data.categories){
+		var category = static_data.event_data.categories[categoryId];
+		html.push(`<option value='${categoryId}'>`)
 		html.push(category.name)
 		html.push("</option>")
 	}
@@ -3678,15 +3685,16 @@ function set_up_edit_values(){
 		})
 	}
 
+
 	if(static_data.event_data.categories){
-		for(var i = 0; i < static_data.event_data.categories.length; i++){
-			add_category_to_list(event_category_list, i, static_data.event_data.categories[i]);
+		for(var key in static_data.event_data.categories){
+			add_category_to_list(event_category_list, key, static_data.event_data.categories[key]);
 		}
 	}
 
 	if(static_data.event_data.events){
-		for(var i = 0; i < static_data.event_data.events.length; i++){
-			add_event_to_sortable(events_sortable, i, static_data.event_data.events[i]);
+		for(var eventId in static_data.event_data.events){
+			add_event_to_sortable(events_sortable, eventId, static_data.event_data.events[eventId]);
 		}
 	}
 

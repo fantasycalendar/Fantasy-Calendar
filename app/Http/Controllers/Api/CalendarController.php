@@ -17,21 +17,18 @@ class CalendarController extends Controller
     public function get(Request $request, $id) {
         return Calendar::active()
             ->hash($id)
-            ->user($request->user()->id)
             ->firstOrFail();
     }
 
     public function children(Request $request, $id) {
         return Calendar::active()
             ->hash($id)
-            ->user($request->user()->id)
             ->firstOrFail()->children;
     }
 
     public function last_changed(Request $request, $id) {
         $calendar = Calendar::active()
             ->hash($id)
-            ->user($request->user()->id)
             ->firstOrFail();
 
         $last_changed = [

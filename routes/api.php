@@ -24,6 +24,8 @@ Route::any('/calendar/{id}/last_changed', 'Api\CalendarController@last_changed')
 Route::any('/calendar/{id}/dynamic_data', 'Api\CalendarController@dynamic_data');
 Route::any('/calendar/{id}/delete', 'Api\CalendarController@delete');
 
+Route::apiResource('eventcategory', 'Api\EventCategoryController');
+
 Route::fallback(function(){
     return response()->json([
         'message' => 'Page Not Found.'], 404);

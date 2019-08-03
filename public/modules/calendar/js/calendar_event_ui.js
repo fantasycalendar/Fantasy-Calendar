@@ -263,8 +263,8 @@ var edit_event_ui = {
 
 		this.evaluate_condition_selects(this.event_conditions_container);
 		
-		if(static_data.event_data.events[this.event_id].category !== undefined){
-			$('#event_categories').val(static_data.event_data.events[this.event_id].category);
+		if(static_data.event_data.events[this.event_id].event_category_id !== undefined){
+			$('#event_categories').val(static_data.event_data.events[this.event_id].event_category_id);
 		}else{
 			$('#event_categories').val(-1);
 		}
@@ -298,6 +298,8 @@ var edit_event_ui = {
 		name = name !== '' ? name : "Unnamed Event";
 
 		static_data.event_data.events[this.event_id].name = name;
+
+		static_data.event_data.events[this.event_id].id = this.event_id;
 
 		static_data.event_data.events[this.event_id].description = escapeHtml(this.trumbowyg.trumbowyg('html'));
 
@@ -350,7 +352,7 @@ var edit_event_ui = {
 			date: this.date,
 		};
 
-		static_data.event_data.events[this.event_id].category = $('#event_categories').val();
+		static_data.event_data.events[this.event_id].event_category_id = $('#event_categories').val();
 
 		static_data.event_data.events[this.event_id].settings = {
 			color: $('#color_style').val(),
