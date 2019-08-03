@@ -26,9 +26,9 @@ Route::any('/calendar/{id}/delete', 'Api\CalendarController@delete');
 
 Route::apiResource('eventcategory', 'Api\EventCategoryController');
 
-Route::apiResource('eventcomment', 'Api\EventCommentController');
 Route::any('/eventcomment/event/{id}', 'Api\EventCommentController@forEvent');
 Route::any('/eventcomment/calendar/{id}', 'Api\EventCommentController@forCalendar');
+Route::apiResource('eventcomment', 'Api\EventCommentController');
 
 Route::fallback(function(){
     return response()->json([
