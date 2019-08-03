@@ -11,7 +11,7 @@ use App\Calendar;
 class CalendarController extends Controller
 {
     public function __construct() {
-        $this->middleware('auth:api');
+        $this->middleware('auth:api')->except('last_changed', 'children');
     }
 
     public function get(Request $request, $id) {
