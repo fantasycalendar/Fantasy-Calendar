@@ -1421,7 +1421,7 @@ var show_event_ui = {
 
 			show_event_ui.event_comments.html('');
 			
-			for(var index = 0; index < comments.length; index++){
+			for(var index in comments){
 
 				show_event_ui.add_comment(index, comments[index]);
 

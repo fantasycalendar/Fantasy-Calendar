@@ -14,7 +14,7 @@
 						<div class="event_desc"></div>
 					</div>
 
-					<div id='event_comment_mastercontainer' class='hidden'>
+					<div id='event_comment_mastercontainer'>
 
 						<div class='spacey_separator'></div>
 
@@ -26,7 +26,6 @@
 				
 						<div class='detail-row'>
 							<textarea class='form-control' id='event_comment_input' placeholder='Enter your comment and press submit.' autofocus=''></textarea>
-							<button type='button' class='btn btn-primary' id='submit_comment'>Submit</button>
 						</div>
 
 					</div>
