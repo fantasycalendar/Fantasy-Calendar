@@ -411,3 +411,23 @@ function get_event_comments(event_id, callback){
 	});
 
 }
+
+function create_event_comment(content, event_id, callback) {
+	$.ajax({
+		url: window.baseurl+"api/eventcomment",
+		type: 'POST',
+		dataType: "json",
+		data: {
+			calendar_id: calendar_id,
+			content: content,
+			event_id: event_id
+		},
+		success: function (result) {
+			console.log(result);
+			callback(result['data'].id,result['data']);
+		},
+		error: function(log) {
+			console.log(log)
+		}
+	});
+}

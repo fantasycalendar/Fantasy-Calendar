@@ -23,10 +23,12 @@
 						<div class='detail-row'>
 							<div id='event_comments' class='loading'></div>
 						</div>
-				
-						<div class='detail-row'>
-							<textarea class='form-control' id='event_comment_input' placeholder='Enter your comment and press submit.' autofocus=''></textarea>
-						</div>
+						@if(Auth::check())
+							<div class='detail-row'>
+								<textarea class='form-control' id='event_comment_input' placeholder='Enter your comment and press submit.' autofocus=''></textarea>
+								<button type='button' class='btn btn-primary' style="z-index: 200" id='submit_comment'>Submit</button>
+							</div>
+						@endif
 
 					</div>
 				</div>

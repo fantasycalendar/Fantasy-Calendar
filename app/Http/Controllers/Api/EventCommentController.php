@@ -44,7 +44,11 @@ class EventCommentController extends Controller
             'content' => $request->get('content')
         ];
 
-        return CalendarEventComment::create($commentData);
+        $comment = CalendarEventComment::create($commentData);
+
+        $resource = new Item($comment, new EventCommentTransformer);
+
+        return $this->manager->createData($resource)->toArray();
     }
 
     /**

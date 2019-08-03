@@ -1359,6 +1359,7 @@ var show_event_ui = {
 		this.event_comment_mastercontainer		= this.event_background.find('#event_comment_mastercontainer');
 		this.event_comment_container			= this.event_background.find('#event_comment_container');
 		this.event_comment_input				= this.event_background.find('#event_comment_input');
+		this.event_save_btn						= this.event_background.find('#submit_comment');
 
 		this.event_comment_input.trumbowyg({
 		    btns: [
@@ -1381,6 +1382,11 @@ var show_event_ui = {
 
 		this.event_background.mousedown(function(){
 			show_event_ui.clear_ui();
+		});
+
+		this.event_save_btn.click(function(){
+			create_event_comment(show_event_ui.event_comment_input.trumbowyg('html'), show_event_ui.event_id, show_event_ui.add_comment);
+			show_event_ui.event_comment_input.trumbowyg('empty');
 		});
 
 		$(document).on('click', '.event:not(.event-text-output)', function(){

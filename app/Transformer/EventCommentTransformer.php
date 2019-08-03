@@ -10,8 +10,10 @@ use Auth;
 class EventCommentTransformer extends Fractal\TransformerAbstract {
     public function transform(CalendarEventComment $comment) {
         $username = $comment->user->username;
+        $calendar_owner = false;
         if($comment->calendar->user->id == $comment->user_id) {
-            $username .= " (Owner)";
+            $username;
+            $calendar_owner = true;
         }
 
         return [
@@ -22,7 +24,7 @@ class EventCommentTransformer extends Fractal\TransformerAbstract {
             'content' => $comment->content,
             'date' => date('Y-m-d H:i:s', strtotime($comment->created_at)),
             'comment_owner' => (auth('api')->check() && $comment->user->id == auth('api')->user()->id),
-            'calendar_owner' => (auth('api')->check() && $comment->calendar->user->id == auth('api')->user()->id),
+            'calendar_owner' => $calendar_owner,
         ];
     }
 }
