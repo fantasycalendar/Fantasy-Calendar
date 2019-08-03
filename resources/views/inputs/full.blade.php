@@ -256,7 +256,7 @@
 
 					<div class='detail-column half'>
 						<div class='detail-text'>
-							Minutes per day:
+							Minutes per hour:
 						</div>
 					</div>
 
