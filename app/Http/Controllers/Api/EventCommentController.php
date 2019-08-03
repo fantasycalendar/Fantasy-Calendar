@@ -38,7 +38,7 @@ class EventCommentController extends Controller
     public function store(Request $request)
     {
         $commentData = [
-            'user_id' => Auth::user()->id,
+            'user_id' => auth('api')->user()->id,
             'event_id' => $request->get('event_id'),
             'calendar_id' => $request->get('calendar_id'),
             'content' => $request->get('content')
