@@ -6,6 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class CalendarEventComment extends Model
 {
+    protected $fillable = [
+        'user_id',
+        'event_id',
+        'calendar_id',
+        'content'
+    ];
+
     public function calendar() {
         return $this->belongsTo('App\Calendar');
     }
