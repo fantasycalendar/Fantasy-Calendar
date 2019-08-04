@@ -20,6 +20,7 @@ docker-compose up
 ```
 
 That will create four running containers: 
+
 |Container|Purpose|
 |---|-------|
 | `fc-mariadb`| MySQL-compatible database, configured to import `/setup/database.sql` .|
