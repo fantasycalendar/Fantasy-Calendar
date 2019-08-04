@@ -190,7 +190,7 @@ class CalendarController extends Controller
             return [ 'success' => false, 'error' => 'Error - Unable to update calendar. Please try again later.'];
         }
          
-        return [ 'success' => true, 'data'=> true , 'categoryids' => $eventids];
+        return [ 'success' => true, 'data'=> true ];
 
     }
 
