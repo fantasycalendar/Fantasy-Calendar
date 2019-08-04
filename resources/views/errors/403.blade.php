@@ -7,6 +7,6 @@
 			<div class="bee-sketch blue"></div>
 		</div>
 
-		<h1><small>{{ $title }}</small></h1>
+		<h1><small>{{ $title ?? "Unauthorized" }}</small></h1>
 	</div>
 @endsection

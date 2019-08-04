@@ -5,6 +5,8 @@ namespace App\Exceptions;
 use Exception;
 use Auth;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Auth\Access\AuthorizationException as AuthorizationException;
+use Illuminate\Auth\Access\AuthenticationException as AuthenticationException;
 
 class Handler extends ExceptionHandler
 {
@@ -47,7 +49,26 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if($this->isApiCall($request)) {
+            return response()->json(['error'=>true, 'message'=>$exception->getMessage()]);
+        }
+
+        if($exception instanceof AuthorizationException || $exception instanceof AuthenticationException) {
+            // dd($exception);
+            if($request->is('calendars/*/edit')) {
+                return redirect(str_replace('/edit','', $request->path()));
+            }
+        }
+
         if ($this->isHttpException($exception)) {
+            if($exception->getStatusCode() == 404) {
+                if($exception instanceof ModelNotFoundException) {
+                    return view('errors.404', [
+                        'title' => 'Calendar not found'
+                    ]);
+                }
+            }
+
             if ($exception->getStatusCode() == 403) {
                 if(Auth::check() && Auth::user()->beta_authorized == 1) {
                     return redirect('/');
@@ -56,5 +77,10 @@ class Handler extends ExceptionHandler
         }
 
         return parent::render($request, $exception);
+    }
+
+    protected function isApiCall($request)
+    {
+        return strpos($request->getUri(), '/api/') !== false;
     }
 }

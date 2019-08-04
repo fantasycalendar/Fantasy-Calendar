@@ -15,6 +15,8 @@ class CalendarController extends Controller
         $this->middleware('calendarauth');
         
         $this->middleware('auth')->except('show');
+
+        $this->authorizeResource(Calendar::class, 'calendar');
     }
 
     /**
@@ -101,10 +103,8 @@ class CalendarController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Calendar $calendar)
     {
-        $calendar = Calendar::where('hash',$id)->firstOrFail();
-
         return view('calendar.view', [
             'calendar' => $calendar,
         ]);
@@ -116,10 +116,8 @@ class CalendarController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Calendar $calendar)
     {
-        $calendar = Calendar::where('hash',$id)->firstOrFail();
-
         return view('calendar.edit', [
             'calendar' => $calendar,
         ]);
@@ -132,10 +130,9 @@ class CalendarController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Calendar $calendar)
     {
         $update_data = $request->only(['name', 'dynamic_data', 'static_data', 'children', 'master_hash']);
-        $calendar = Calendar::where('hash', $id)->firstOrFail();
 
         if(array_key_exists('dynamic_data', $update_data)) {
             $update_data['dynamic_data'] = json_decode($update_data['dynamic_data']);
@@ -205,9 +202,7 @@ class CalendarController extends Controller
         //
     }
 
-    public function print($id) {
-        $calendar = Calendar::where('hash', $id)->firstOrFail();
-
+    public function print(Calendar $calendar) {
         return view('calendar.print', [
             'calendar' => $calendar
         ]);

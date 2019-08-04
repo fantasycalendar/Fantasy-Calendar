@@ -27,6 +27,8 @@ class Calendar extends Model
         'dynamic_data',
         'static_data',
         'hash',
+        'children',
+        'master_hash',
     ];
 
     protected $hidden = [
@@ -76,5 +78,9 @@ class Calendar extends Model
 
     public function scopeUser($query, $user_id) {
         return $query->where('user_id', $user_id);
+    }
+
+    public function getRouteKeyName() {
+        return 'hash';
     }
 }
