@@ -14,12 +14,17 @@ class CalendarController extends Controller
         $this->middleware('auth:api')->except('last_changed', 'children');
     }
 
-    public function get(Request $request, Calendar $calendar) {
+    public function get(Request $request, $id) {
+
+        $calendar = Calendar::hash($id)->firstOrFail();
+
         return $calendar;
     }
 
-    public function children(Request $request, Calendar $calendar) {
-        return $calendar->children;
+    public function children(Request $request, $id) {
+        $calendar = Calendar::hash($id)->firstOrFail();
+
+        return $calendar->child_calendars->keyBy('id');
     }
 
     public function last_changed(Request $request, Calendar $calendar) {

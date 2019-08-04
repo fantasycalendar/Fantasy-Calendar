@@ -54,7 +54,6 @@ class Handler extends ExceptionHandler
         }
 
         if($exception instanceof AuthorizationException || $exception instanceof AuthenticationException) {
-            // dd($exception);
             if($request->is('calendars/*/edit')) {
                 return redirect(str_replace('/edit','', $request->path()));
             }

@@ -292,11 +292,13 @@ function update_children_dynamic_data(){
 		data: {hash: hash},
 		success: function(result){
 
-			for(var i = 0; i < result.length; i++){
+			console.log(result);
+
+			for(var i in result){
 
 				var child_hash = result[i].hash;
-				var child_static_data = JSON.parse(result[i].static_data);
-				var child_dynamic_data = JSON.parse(result[i].dynamic_data);
+				var child_static_data = result[i].static_data;
+				var child_dynamic_data = result[i].dynamic_data;
 				var converted_date = date_converter.get_date(static_data, child_static_data, dynamic_data.epoch);
 				child_dynamic_data.year = converted_date.year;
 				child_dynamic_data.timespan = converted_date.timespan;
