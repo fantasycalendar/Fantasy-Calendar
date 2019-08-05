@@ -438,9 +438,9 @@ function does_timespan_appear(static_data, year, timespan){
 
 	}
 
-	var offset = (this.static_data.year_data.timespans[timespan].interval-this.static_data.year_data.timespans[timespan].offset+1)%this.static_data.year_data.timespans[timespan].interval;
+	var offset = (static_data.year_data.timespans[timespan].interval-static_data.year_data.timespans[timespan].offset+1)%static_data.year_data.timespans[timespan].interval;
 
-	if((year+offset) % this.static_data.year_data.timespans[timespan].interval != 0){
+	if((year+offset) % static_data.year_data.timespans[timespan].interval != 0){
 		return {
 			result: false,
 			reason: 'leaping'
@@ -575,17 +575,11 @@ function clone(obj) {
 
 var date_converter = {
 
-	get_date: function(static_data, inc_calendar, epoch){
+	get_date_from_epoch(static_data, epoch){
 
-		this.static_data = static_data;
-		this.inc_calendar = inc_calendar;
-		this.target_epoch = epoch;
-
-		this.year = Math.floor(this.target_epoch / fract_year_length(this.inc_calendar))-5;
+		this.year = Math.floor(this.target_epoch / fract_year_length(this.inc_calendar))-2;
 		this.timespan = 0;
 		this.day = 1;
-
-		this.loops = 0;
 
 		while(true){
 
@@ -601,7 +595,6 @@ var date_converter = {
 			this.loops++;
 
 		}
-
 
 
 		while(true){
@@ -642,7 +635,6 @@ var date_converter = {
 
 		}
 
-
 		this.year = this.year >= 0 ? this.year+1 : this.year;
 		
 		return {
@@ -650,6 +642,102 @@ var date_converter = {
 			"timespan": this.timespan,
 			"day": this.day,
 			"epoch": this.suggested_epoch
+		};
+
+	},
+
+	get_date: function(static_data, inc_calendar, dynamic_data){
+
+		this.static_data = static_data;
+		this.inc_calendar = inc_calendar;
+
+		inc_minutes_per_day = this.inc_calendar.clock.hours * this.inc_calendar.clock.minutes;
+		minutes_per_day = this.static_data.clock.hours * this.static_data.clock.minutes;
+
+		time_fraction = minutes_per_day / inc_minutes_per_day;
+
+		this.target_epoch = Math.floor(dynamic_data.epoch*time_fraction);
+
+		this.year = Math.floor(this.target_epoch / fract_year_length(this.inc_calendar))-10;
+		this.timespan = 0;
+		this.day = 1;
+
+		this.loops = 0;
+
+		while(this.loops < 1000){
+
+			var first_suggested_epoch = evaluate_calendar_start(this.inc_calendar, this.year).epoch;
+
+			if(first_suggested_epoch < this.target_epoch){
+				this.year++;
+			}else{
+				this.year--;
+				break;
+			}
+
+			this.loops++;
+
+		}
+
+
+		while(this.loops < 1000){
+
+			if(!does_timespan_appear(this.inc_calendar, this.year, this.timespan).result){
+
+				this.increase_month();
+
+			}else{
+
+				this.suggested_epoch = evaluate_calendar_start(this.inc_calendar, this.year, this.timespan).epoch;
+
+				if(this.suggested_epoch < this.target_epoch){
+					this.increase_month();
+				}else{
+					this.decrease_month();
+					this.suggested_epoch = evaluate_calendar_start(this.inc_calendar, this.year, this.timespan).epoch;
+					break;
+				}
+
+			}
+
+			this.loops++;
+
+		}
+
+		while(this.loops < 1000){
+
+			this.suggested_epoch = evaluate_calendar_start(this.inc_calendar, this.year, this.timespan, this.day).epoch;
+
+			if(this.suggested_epoch != this.target_epoch){
+				this.increase_day();
+			}else{
+				break;
+			}
+
+			this.loops++;
+
+		}
+
+		this.year = this.year >= 0 ? this.year+1 : this.year;
+
+		var time = fract(dynamic_data.epoch*time_fraction);
+
+		var scaled_time = (dynamic_data.hour/this.static_data.clock.hours)+fract(dynamic_data.minute/this.static_data.clock.minutes)/this.static_data.clock.hours;
+
+		var hour = 1+this.inc_calendar.clock.hours*fract(time+hours)
+
+		var minute = Math.floor(this.inc_calendar.clock.minutes*fract(hour));
+
+		hour = Math.floor(hour);
+
+		
+		return {
+			"year": this.year,
+			"timespan": this.timespan,
+			"day": this.day,
+			"epoch": this.suggested_epoch,
+			"hour": hour,
+			"minute": minute
 		};
 
 	},

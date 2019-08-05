@@ -134,7 +134,7 @@
 
 				</div>
 
-				<div class='clock_inputs'>
+				<div id='clock_inputs'>
 
 					<div class='separator'></div>
 

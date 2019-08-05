@@ -3520,7 +3520,7 @@ function link_changed(){
 	$('#calendar_link_hide select, #calendar_link_hide button').prop('disabled', has_master);
 	$('#calendar_link_hide').toggleClass('hidden', has_master);
 
-	$("#date_inputs :input, #date_inputs :button").attr("disabled", has_master);
+	$("#date_inputs :input, #date_inputs :button").prop("disabled", has_master);
 	$(".calendar_link_explaination").toggleClass("hidden", !has_master);
 
 }
@@ -3545,8 +3545,10 @@ function repopulate_event_category_lists(){
 
 function evaluate_clock_inputs(){
 
-	$('.clock_inputs :input, .clock_inputs :button').prop('disabled', !static_data.clock.enabled);
-	$('.clock_inputs').toggleClass('hidden', !static_data.clock.enabled);
+	var has_master = link_data.master_hash !== "";
+
+	$('#clock_inputs :input, #clock_inputs :button').prop('disabled', !static_data.clock.enabled || has_master);
+	$('#clock_inputs').toggleClass('hidden', !static_data.clock.enabled);
 
 	$('.hour_input').each(function(){
 		$(this).prop('min', 0).prop('max', static_data.clock.hours).prop('disabled', !static_data.clock.enabled).toggleClass('hidden', !static_data.clock.enabled);
