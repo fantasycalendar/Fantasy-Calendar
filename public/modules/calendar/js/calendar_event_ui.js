@@ -1411,6 +1411,8 @@ var show_event_ui = {
 		
 		this.event_desc.html(unescapeHtml(event.description)).toggleClass('hidden', event.description.length == 0);
 
+		this.event_comments.html('').addClass('loading');
+
 		get_event_comments(this.event_id, this.add_comments);
 
 		this.event_background.removeClass('hidden');
@@ -1471,7 +1473,7 @@ var show_event_ui = {
 
 		this.event_comment_container.addClass('hidden');
 
-		this.event_comments.addClass('loading');
+		this.event_comments.html('').addClass('loading');
 
 		this.event_desc.html('').removeClass('hidden');
 
