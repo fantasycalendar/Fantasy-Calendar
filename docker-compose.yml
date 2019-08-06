@@ -47,7 +47,7 @@ services:
 
   fantasy-calendar-composer-install:
     image: composer
-    user: "33:33"
+    user: "1000:1000"
     volumes:
       - ./:/fantasy-calendar
     command: ["composer", "install", "-d", "/fantasy-calendar/"]
