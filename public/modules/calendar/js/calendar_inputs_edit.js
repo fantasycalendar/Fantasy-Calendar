@@ -709,13 +709,13 @@ function set_up_edit_inputs(set_up){
 				$(this).closest('.sortable-container').remove();
 				$(this).closest('.sortable-container').parent().sortable('refresh');
 
-				for(var i = 0; i < static_data.event_data.events.length; i++){
+				for(var i in static_data.event_data.events){
 					if(static_data.event_data.events[i].category == key){
 						static_data.event_data.events[i].category = -1;
 					}
 				}
 
-				for(var i = 0; i < static_data.eras.length; i++){
+				for(var i in static_data.eras){
 					if(static_data.eras[i].settings.event_category == key){
 						static_data.eras[i].settings.event_category = -1;
 					}
