@@ -55,8 +55,6 @@ class Calendar extends Model
     public function getStaticDataAttribute($value) {
         $static_data = json_decode($value, true);
 
-        // dd($static_data);
-
         $static_data['event_data']['categories'] = $this->event_categories->keyBy('id');
 
         $static_data['event_data']['events'] = $this->events->keyBy('id');
