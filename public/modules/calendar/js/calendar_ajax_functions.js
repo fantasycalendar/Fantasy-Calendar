@@ -229,7 +229,7 @@ function remove_hashes(child_hash){
 function get_all_data(output){
 
 	$.ajax({
-		url:window.apiurl+hash,
+		url:window.apiurl+"/"+hash,
 		type: "post",
 		dataType: 'json',
 		data: {},
@@ -248,7 +248,7 @@ function get_all_data(output){
 function get_dynamic_data(output){
 
 	$.ajax({
-		url:window.apiurl+hash+"/dynamic_data",
+		url:window.apiurl+"/"+hash+"/dynamic_data",
 		type: "post",
 		dataType: 'json',
 		data: {},
@@ -268,8 +268,8 @@ function get_dynamic_data(output){
 
 function get_owned_calendars(output){
 	$.ajax({
-		url:window.apiurl+"owned",
-		type: "post",
+		url:window.apiurl,
+		type: "get",
 		dataType: 'json',
 		data: {},
 		success: function(result){
@@ -286,13 +286,11 @@ function get_owned_calendars(output){
 function update_children_dynamic_data(){
 
 	$.ajax({
-		url:window.apiurl+hash+"/children",
+		url:window.apiurl+"/"+hash+"/children",
 		type: "post",
 		dataType: 'json',
 		data: {hash: hash},
 		success: function(result){
-
-			console.log(result);
 
 			for(var i in result){
 
@@ -331,7 +329,7 @@ function update_children_dynamic_data(){
 
 function check_last_change(output){
 	$.ajax({
-		url:window.apiurl+hash+"/last_changed",
+		url:window.apiurl+"/"+hash+"/last_changed",
 		type: "post",
 		dataType: 'json',
 		data: {},
@@ -348,7 +346,7 @@ function check_last_change(output){
 function delete_calendar(){
 
 	$.ajax({
-		url:window.apiurl+hash+"/delete",
+		url:window.apiurl+"/"+hash+"/delete",
 		type: "post",
 		dataType: 'json',
 		data: {action: 'delete', hash: hash},
@@ -381,8 +379,12 @@ function create_calendar(){
 
 }
 
-function create_event(list, event, callback) {
+function create_event_category(list, event, callback) {
 	// event = Object.assign({_method: 'store'}, event);
+
+	if(static_data.event_data.categories.length < 1) {
+		static_data.event_data.categories = {};
+	}
 
 	$.ajax({
 		url: window.baseurl+"api/eventcategory",

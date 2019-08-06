@@ -600,7 +600,7 @@ function set_up_edit_inputs(set_up){
 			},
 			"calendar_id": calendar_id
 		};
-		create_event(event_category_list, stats, add_category_to_list);
+		create_event_category(event_category_list, stats, add_category_to_list);
 		name.val('');
 		
 		do_error_check();
