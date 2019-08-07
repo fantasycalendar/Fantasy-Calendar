@@ -43,6 +43,14 @@ class CalendarController extends Controller
         return $last_changed;
     }
 
+    public function owned(Request $request, $id) {
+        $calendar = Calendar::hash($id)->firstOrFail();
+
+        CalendarCollection::withoutWrapping();
+
+        return new CalendarCollection($calendar->user->calendars->keyBy('hash'));
+    }
+
     public function dynamic_data(Request $request, $id) {
         return Calendar::active()
             ->hash($id)

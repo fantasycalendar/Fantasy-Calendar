@@ -268,7 +268,7 @@ function get_dynamic_data(output){
 
 function get_owned_calendars(output){
 	$.ajax({
-		url:window.apiurl,
+		url:window.apiurl+"/"+hash+"/owned",
 		type: "get",
 		dataType: 'json',
 		data: {},

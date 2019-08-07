@@ -709,19 +709,21 @@ function set_up_edit_inputs(set_up){
 				$(this).closest('.sortable-container').remove();
 				$(this).closest('.sortable-container').parent().sortable('refresh');
 
-				for(var i in static_data.event_data.events){
-					if(static_data.event_data.events[i].category == key){
-						static_data.event_data.events[i].category = -1;
+				for(var event in static_data.event_data.events){
+					console.log(event);
+					if(static_data.event_data.events[event].category == key){
+						static_data.event_data.events[event].category = -1;
 					}
 				}
 
-				for(var i in static_data.eras){
-					if(static_data.eras[i].settings.event_category == key){
-						static_data.eras[i].settings.event_category = -1;
+				for(var era in static_data.eras){
+					console.log(era);
+					if(static_data.eras[era].settings.event_category == key){
+						static_data.eras[era].settings.event_category = -1;
 					}
 				}
 
-				reindex_event_category_list();
+				delete static_data.event_data.categories[key];
 				
 				break;
 
@@ -3291,53 +3293,9 @@ function sort_era_list_by_date(){
 	});
 }
 
-function reindex_event_category_list(){
-	
-	static_data.event_data.categories = [];
-
-	event_category_list.children().each(function(i){
-
-		var key = $(this).find('.category_id').val()
-
-		$('.dynamic_input', this).each(function(){
-			$(this).attr('data', $(this).attr('data').replace(/[0-9]+/g, key));
-		});
-
-		$(this).attr('key', key);
-
-		static_data.event_data.categories[key] = {
-			'name': escapeHtml($(this).find('.name-input').val()),
-			'category_settings': {
-				'hide': $(this).find('.global_hide').is(':checked'),
-				'player_usable': $(this).find('.player_usable').is(':checked')
-			},
-			'event_settings': {
-				'hide': $(this).find('.local_hide').is(':checked'),
-				'noprint': $(this).find('.noprint').is(':checked'),
-				'color': $(this).find('.color_display').val(),
-				'text': $(this).find('.text_display').val()
-			},
-			"id": $(this).find('.category_id').val()
-		};
-
-	});
-
-	$('.event-category-list').each(function(){
-		var element = [];
-		var selected = $('.event-category-list').val();
-		for(var key in static_data.event_data.categories)
-		{
-			var name = static_data.event_data.categories[key].name;
-			element.push(`<option value="${key}" ${(key==selected ? "selected" : "")}>${name}</option>`);
-		}
-		$(this).html(element.join(""));
-	});
-
-	do_error_check();
-
-}
-
 function reindex_events_sortable(){
+
+	return;
 
 	var new_order = []
 
@@ -3473,7 +3431,7 @@ function populate_calendar_lists(){
 
 		for(var i = 0; i < link_data.children.length; i++){
 			var child = link_data.children[i];
-			var calendar = owned_calendars[owned_calendars.findIndex(e => e.hash == child)];
+			var calendar = owned_calendars[child];
 			add_link_to_list(calendar_link_list, i, calendar.name);
 		}
 
