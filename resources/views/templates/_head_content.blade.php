@@ -51,6 +51,12 @@
     $(document).ajaxError(function(event, jqxhr, settings, thrownError) {
         $.notify(thrownError + " (F12 to see more detail)");
     });
+
+    $(document).ready(function(){
+        window.onerror = function(error, url, line) {
+            $.notify("Error:\n "+error+" \nin file "+url+" \non line "+line);
+        }
+    });
     
     </script>
 
