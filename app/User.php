@@ -4,9 +4,12 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements 
+    MustVerifyEmail,
+    CanResetPassword
 {
     use Notifiable;
 
@@ -16,7 +19,12 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'email', 'password', 'username'
+        'email', 
+        'password', 
+        'username', 
+        'reg_ip', 
+        'beta_authorised',
+        'permissions',
     ];
 
     /**
@@ -43,5 +51,9 @@ class User extends Authenticatable
 
     public function isAdmin() {
         return $this->permissions == 1;
+    }
+
+    public function isVerified() {
+        return !is_null($this->email_verified_at);
     }
 }

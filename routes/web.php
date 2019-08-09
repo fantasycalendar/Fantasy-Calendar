@@ -18,7 +18,7 @@ Route::get('/', 'HomeController@home')->name('home');
 Route::get('calendars/{id}/print', 'CalendarController@print');
 Route::resource('calendars', 'CalendarController');
 
-Auth::routes();
+Auth::routes(['verify' => true]);
 
 Route::get('/{path}', function(Request $request) {
     if($request->get('action') == 'generate') {

@@ -14,10 +14,6 @@ use App\Calendar;
 
 class HomeController extends Controller
 {
-    public function __construct() {
-        $this->middleware('calendarauth');
-    }
-
     public function home() {    
         $changelog = Markdown::convertToHtml(Storage::disk('base')->get('public/changelog.md'));
 

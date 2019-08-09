@@ -12,9 +12,11 @@ use App\CalendarEvent;
 class CalendarController extends Controller
 {
     public function __construct() {
-        $this->middleware('calendarauth');
+        // $this->middleware('calendarauth');
         
         $this->middleware('auth')->except('show');
+
+        $this->middleware('verified')->only('edit');
 
         $this->authorizeResource(Calendar::class, 'calendar');
     }
