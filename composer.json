@@ -13,7 +13,8 @@
         "graham-campbell/markdown": "^11.0",
         "laravel/framework": "5.8.*",
         "laravel/tinker": "^1.0",
-        "league/fractal": "^0.18.0"
+        "league/fractal": "^0.18.0",
+        "nesbot/carbon": "^2.22"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.2",
