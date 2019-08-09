@@ -17,9 +17,9 @@
 
 	@if(Auth::check())
 		<div id="logout-button" class="button">Log Out</div>
-		<a href="profile"><div class="button">Profile</div></a>
+		<a href="/profile"><div class="button">Profile</div></a>
 	@else
-		<a href="signup"><div id="signup-show-button" class="button">Sign-up</div></a>
+		<a href="/register"><div id="signup-show-button" class="button">Sign-up</div></a>
 		<div class="button login-show-button">Log In</div>
 	@endif
 
@@ -49,7 +49,7 @@
 					<input type="checkbox" value="remember-me" id="login_rememberMe" name="rememberMe"> Remember me
 				</label>
 				<button class="btn btn-lg btn-primary btn-block" id="login_button" type="submit">Login</button>
-				<a href="forgotten_password.php"><button class="btn btn-sm btn-default btn-block" id="forgotten_password" type="button">Forgotten Password</button></a>
+				<a href="/password/reset"><button class="btn btn-sm btn-default btn-block" id="forgotten_password" type="button">Forgotten Password</button></a>
 			</form>
 		</div>
 	</div>
