@@ -56,4 +56,8 @@ class User extends Authenticatable implements
     public function isVerified() {
         return !is_null($this->email_verified_at);
     }
+
+    public function betaAccess() {
+        return $this->beta_authorised == 1;
+    }
 }

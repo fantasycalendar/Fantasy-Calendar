@@ -62,16 +62,20 @@ class Handler extends ExceptionHandler
         if ($this->isHttpException($exception)) {
             if($exception->getStatusCode() == 404) {
                 if($exception instanceof ModelNotFoundException) {
-                    return view('errors.404', [
+                    return response()->view('errors.404', [
                         'title' => 'Calendar not found'
                     ]);
                 }
             }
 
             if ($exception->getStatusCode() == 403) {
-                if(Auth::check() && Auth::user()->beta_authorized == 1) {
+                if(Auth::check() && Auth::user()->betaAccess()) {
                     return redirect('/');
                 }
+
+                return response()->view('errors.403', [
+                    'title' => $exception->getMessage()
+                ]);
             }
         }
 
