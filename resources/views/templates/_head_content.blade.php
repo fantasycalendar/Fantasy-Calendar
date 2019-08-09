@@ -61,7 +61,6 @@
     </script>
 
     <script src="/js/login.js"></script>
-    <script src="/js/profile.js"></script>
 
     <script src="/modules/chartjs/Chart.min.js"></script>
     <script src="/modules/trumbowyg/trumbowyg.min.js"></script>
