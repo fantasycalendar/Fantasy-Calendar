@@ -435,9 +435,9 @@ var event_evaluator = {
 
 			if(current_event.data.connected_events !== undefined){
 
-				for(var i = 0; i < current_event.data.connected_events.length; i++){
+				for(var connectedId in current_event.data.connected_events){
 
-					var parent_id = current_event.data.connected_events[i];
+					var parent_id = current_event.data.connected_events[connectedId];
 						
 					check_event_chain(parent_id);
 

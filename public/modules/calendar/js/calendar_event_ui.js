@@ -1065,17 +1065,17 @@ var edit_event_ui = {
 
 			html.push("<select class='event_select form-control form-control-sm'>")
 
-			for(var i = 0; i < static_data.event_data.events.length; i++){
+			for(var eventId in static_data.event_data.events){
 
-				var event = static_data.event_data.events[i];
+				var event = static_data.event_data.events[eventId];
 
-				if(i == this.event_id){
+				if(eventId == this.event_id){
 					html.push(`<option disabled>`);
 					html.push(`${event.name} (this event)`);
 					html.push("</option>");
 				}else{
-					if(check_event_chain(this.event_id|0, i)){
-						html.push(`<option value="${i}">`);
+					if(check_event_chain(this.event_id|0, eventId)){
+						html.push(`<option value="${eventId}">`);
 						html.push(event.name);
 						html.push("</option>");
 					}else{
