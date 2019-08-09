@@ -89,7 +89,9 @@ class CalendarController extends Controller
 
         foreach($events as $event) {
             $event['calendar_id'] = $calendar->id;
-            $event['event_category_id'] = ((int)$event['category'] < 0) ? NULL : $categoryidmap[(int)$event['category']];
+            if(array_key_exists('category', $event)) {
+                $event['event_category_id'] = ((int)$event['category'] < 0) ? NULL : $categoryidmap[(int)$event['category']];
+            }
             CalendarEvent::create($event);
         }
 
