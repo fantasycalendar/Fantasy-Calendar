@@ -115,9 +115,16 @@
   margin-top:5px;
 }
 
+/* ---- Login and register styles ----*/
 
+.page-register .container, 
+.page-login .container,
+.page-password-request .container {
+  padding: 20px 0;
+}
 
-
-
-
-
+.page-register .card-body, 
+.page-login .card-body,
+.page-password-request .card-body {
+  padding: 20px 0;
+}

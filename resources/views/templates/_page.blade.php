@@ -4,7 +4,7 @@
 
     @include('templates._head_content')
 
-	<body>
+	<body class="page-{{ str_replace('.', '-', Route::currentRouteName()) }}">
 	
 		@include('templates._header')
 		<div id="content">
