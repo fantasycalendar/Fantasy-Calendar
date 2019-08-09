@@ -15,8 +15,10 @@ use Illuminate\Http\Request;
 
 Route::get('/', 'HomeController@home')->name('home');
 
-Route::resource('calendars', 'CalendarController');
 Route::get('calendars/{id}/print', 'CalendarController@print');
+Route::resource('calendars', 'CalendarController');
+
+Auth::routes();
 
 Route::get('/{path}', function(Request $request) {
     if($request->get('action') == 'generate') {
@@ -31,8 +33,6 @@ Route::get('/{path}', function(Request $request) {
         return redirect("calendars/{$request->get('id')}/edit");
     }
 })->where(['url' => 'calendar.php|calendar']);
-
-Auth::routes();
 
 // Manual error page routes for the moment
 

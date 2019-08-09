@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+
+use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class LoginController extends Controller
@@ -35,5 +37,26 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    /**
+     * User username instead of email to login
+     * 
+     * @return string
+     */
+    public function username() {
+        return 'username';
+    }
+    
+    public function authenticated(Request $request, $user) {
+        if($request->wantsJson()) {
+            return ['success' => true, 'message' => 'User is authenticated.'];
+        }
+    }
+
+    public function loggedOut(Request $request) {
+        if($request->wantsJson()) {
+            return ['success' => true, 'message' => 'User is logged out.'];
+        }
     }
 }

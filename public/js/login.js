@@ -44,23 +44,20 @@ $(document).ready(function(){
 			submitHandler: function(form){
 				$('#login_button').attr("disabled","disabled");
 				$.ajax({
-					url:window.baseurl+"modules/calendar/ajax/ajax_user",
+					url:window.baseurl+"login",
 					type: "post",
 					dataType: 'json',
-					data: {action: "login", username: $('#login_username').val(), password: $('#login_password').val(), remember: $('#login_rememberMe').is(':checked')},
+					data: {username: $('#login_username').val(), password: $('#login_password').val(), remember: $('#login_rememberMe').is(':checked')},
 					success: function(result){
-						if(typeof result['error'] === 'undefined'){
-							window.location = '/calendars';
-						}else{
-							loginValidator.showErrors({
-								"username": result['error'],
-							});
-							$('#login_button').removeAttr('disabled');
-						}
+						location.reload();
 					},
 					error: function ( log )
 					{
-						console.log(log.responseText);
+						console.log(log);
+						loginValidator.showErrors(
+							log.responseJSON.errors
+						);
+						$('#login_button').removeAttr('disabled');
 					}
 				});
 			}
@@ -78,25 +75,12 @@ $(document).ready(function(){
 
 function logout(){
 	$.ajax({
-		url:window.baseurl+"modules/calendar/ajax/ajax_user",
+		url:window.baseurl+"logout",
 		type: "post",
 		dataType: "json",
 		data: {action: "logout"},
 		success: function(result){
-			var form = $(document.createElement('form'));
-			$(form).attr("action", "/logout");
-			$(form).attr("method", "POST");
-			$(form).css("display", "none");
-		
-		
-			var input_salary = $("<input>")
-			.attr("type", "hidden")
-			.attr("name", "_token")
-			.val($('meta[name="csrf-token"]').attr('content'));
-			$(form).append($(input_salary));
-		
-			form.appendTo( document.body );
-			$(form).submit();
+			self.location = '/';
 		},
 		error: function ( log )
 		{
