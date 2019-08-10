@@ -16,7 +16,7 @@ class SortEventCategories extends Migration
         $calendars = DB::table('calendars_beta')->get();
         foreach($calendars as $calendar) {
             $sortby = 0;
-            $categories = DB::table('event_categories')->where('calendar_id', $calendar->id)->get();
+            $categories = DB::table('event_categories')->where('calendar_id', $calendar->id)->whereNull('deleted_at')->get();
             foreach($categories as $category) {
                 DB::table('event_categories')->where('id', $category->id)->update([
                     'sort_by' => $sortby

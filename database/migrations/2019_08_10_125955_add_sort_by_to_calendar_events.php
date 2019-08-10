@@ -14,7 +14,7 @@ class AddSortByToCalendarEvents extends Migration
     public function up()
     {
         Schema::table('calendar_events', function (Blueprint $table) {
-            $table->bigInteger('sort_by');
+            $table->bigInteger('sort_by')->nullable();
         });
     }
 

@@ -14,7 +14,7 @@ class AddSortByToEventCategories extends Migration
     public function up()
     {
         Schema::table('event_categories', function (Blueprint $table) {
-            $table->bigInteger('sort_by');
+            $table->bigInteger('sort_by')->nullable();
         });
     }
 
