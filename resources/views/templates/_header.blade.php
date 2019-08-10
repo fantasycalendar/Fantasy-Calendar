@@ -13,7 +13,7 @@
 
 	<div id="header_right_container">
 	
-	<a href='donate'><div id='donate-button' class='button'>Donate</div></a>
+	<a href='/donate'><div id='donate-button' class='button'>Donate</div></a>
 
 	@if(Auth::check())
 		<div id="logout-button" class="button">Log Out</div>

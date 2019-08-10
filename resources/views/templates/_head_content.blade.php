@@ -62,25 +62,25 @@
 
     <script src="/js/login.js"></script>
 
-    <script src="/modules/chartjs/Chart.min.js"></script>
-    <script src="/modules/trumbowyg/trumbowyg.min.js"></script>
-    <script src="/modules/jquery/jquery.ui.touch-punch.min.js"></script>
-    <script src="/modules/notifyjs/notify.min.js"></script>
-    <script src="/modules/sortable/jquery-sortable-min.js"></script>
-    <script src="/modules/spectrum/spectrum.js"></script>
-    <script src="/modules/calendar/js/header.js"></script>
-    <script src="/modules/calendar/js/calendar_ajax_functions.js"></script>
-    <script src="/modules/calendar/js/calendar_event_ui.js"></script>
-    <script src="/modules/calendar/js/calendar_functions.js"></script>
-    <script src="/modules/calendar/js/calendar_variables.js"></script>
-    <script src="/modules/calendar/js/calendar_weather_layout.js"></script>
-    <script src="/modules/calendar/js/calendar_season_generator.js"></script>
-    <script src="/modules/calendar/js/calendar_layout_builder.js"></script>
-    <script src="/modules/calendar/js/calendar_inputs_visitor.js"></script>
-    <script src="/modules/calendar/js/calendar_inputs_view.js"></script>
-    <script src="/modules/calendar/js/calendar_inputs_edit.js"></script>
-    <script src="/modules/calendar/js/calendar_manager.js"></script>
-    <script src="/modules/calendar/js/calendar_presets.js"></script>
+    <script src="/js/vendor/chartjs/Chart.min.js"></script>
+    <script src="/js/vendor/trumbowyg/trumbowyg.min.js"></script>
+    <script src="/js/vendor/jquery/jquery.ui.touch-punch.min.js"></script>
+    <script src="/js/vendor/notifyjs/notify.min.js"></script>
+    <script src="/js/vendor/sortable/jquery-sortable-min.js"></script>
+    <script src="/js/vendor/spectrum/spectrum.js"></script>
+    <script src="/js/calendar/header.js"></script>
+    <script src="/js/calendar/calendar_ajax_functions.js"></script>
+    <script src="/js/calendar/calendar_event_ui.js"></script>
+    <script src="/js/calendar/calendar_functions.js"></script>
+    <script src="/js/calendar/calendar_variables.js"></script>
+    <script src="/js/calendar/calendar_weather_layout.js"></script>
+    <script src="/js/calendar/calendar_season_generator.js"></script>
+    <script src="/js/calendar/calendar_layout_builder.js"></script>
+    <script src="/js/calendar/calendar_inputs_visitor.js"></script>
+    <script src="/js/calendar/calendar_inputs_view.js"></script>
+    <script src="/js/calendar/calendar_inputs_edit.js"></script>
+    <script src="/js/calendar/calendar_manager.js"></script>
+    <script src="/js/calendar/calendar_presets.js"></script>
 
     <link rel="stylesheet" href="/css/calendar_input_style.css">
     <link rel="stylesheet" href="/css/calendar_styles.css">
@@ -89,8 +89,8 @@
     <link rel="stylesheet" href="/css/login_style.css">
     <link rel="stylesheet" href="/css/header_style.css">
     <link rel="stylesheet" href="/css/text_styles.css">
-    <link rel="stylesheet" href="/modules/spectrum/spectrum.css">
-    <link rel="stylesheet" href="/modules/trumbowyg/ui/trumbowyg.min.css">
+    <link rel="stylesheet" href="/js/vendor/spectrum/spectrum.css">
+    <link rel="stylesheet" href="/js/vendor/trumbowyg/ui/trumbowyg.min.css">
 
     @stack('head')
 </head>

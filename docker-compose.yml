@@ -15,6 +15,8 @@ services:
 
   fantasy-calendar:
     container_name: fantasy_calendar
+    depends_on: 
+      - fantasy-calendar-php
     build: 
       context: .
       dockerfile: setup/nginx/nginx.Dockerfile
@@ -43,7 +45,14 @@ services:
       - "DB_DATABASE=fantasy-calendar"
       - "DB_USERNAME=root"
       - "DB_PASSWORD=root"
+      - "REDIS_HOST=fcredis"
+      - "SESSION_DRIVER=redis"
       
+  fcredis:
+    image: redis
+    container_name: fcredis
+    depends_on: 
+      - fantasy-calendar-php
 
   fantasy-calendar-composer-install:
     image: composer

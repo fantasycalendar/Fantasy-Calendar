@@ -14,6 +14,11 @@ use Illuminate\Http\Request;
 */
 
 Route::get('/', 'HomeController@home')->name('home');
+Route::get('/donate', function(){
+    return view('pages.donate', [
+        'title'=>'Support the site'
+    ]);
+});
 
 Route::get('calendars/{id}/print', 'CalendarController@print');
 Route::resource('calendars', 'CalendarController');
