@@ -1,5 +1,5 @@
-importScripts('../js/calendar_functions.js');
-importScripts('../js/calendar_variables.js');
+importScripts('/js/calendar/calendar_functions.js');
+importScripts('/js/calendar/calendar_variables.js');
 
 
 onmessage = e => {

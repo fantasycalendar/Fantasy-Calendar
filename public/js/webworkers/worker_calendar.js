@@ -4,9 +4,9 @@
 
 var utcDate1 = Date.now();
 
-importScripts('../js/calendar_functions.js?version='+utcDate1);
-importScripts('../js/calendar_variables.js?version='+utcDate1);
-importScripts('../js/calendar_season_generator.js?version='+utcDate1);
+importScripts('/js/calendar/calendar_functions.js?version='+utcDate1);
+importScripts('/js/calendar/calendar_variables.js?version='+utcDate1);
+importScripts('/js/calendar/calendar_season_generator.js?version='+utcDate1);
 
 var calendar_builder = {
 

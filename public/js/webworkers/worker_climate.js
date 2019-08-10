@@ -1,8 +1,8 @@
 var utcDate1 = Date.now();
 
-importScripts('../js/calendar_functions.js?v='+utcDate1);
-importScripts('../js/calendar_variables.js?v='+utcDate1);
-importScripts('../js/calendar_season_generator.js?v='+utcDate1);
+importScripts('/js/calendar/calendar_functions.js?v='+utcDate1);
+importScripts('/js/calendar/calendar_variables.js?v='+utcDate1);
+importScripts('/js/calendar/calendar_season_generator.js?v='+utcDate1);
 
 onmessage = e => {
 	
