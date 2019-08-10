@@ -724,7 +724,7 @@ var date_converter = {
 
 		var scaled_time = (dynamic_data.hour/this.static_data.clock.hours)+fract(dynamic_data.minute/this.static_data.clock.minutes)/this.static_data.clock.hours;
 
-		var hour = 1+this.inc_calendar.clock.hours*fract(time+hours)
+		var hour = 1+this.inc_calendar.clock.hours*fract(time+this.static_data.clock.hours)
 
 		var minute = Math.floor(this.inc_calendar.clock.minutes*fract(hour));
 
