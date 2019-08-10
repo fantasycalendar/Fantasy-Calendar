@@ -151,15 +151,19 @@ class CalendarController extends Controller
             $categoryids = [];
             foreach($categories as $sort_by => $category) {
                 $category['sort_by'] = $sort_by;
-                if(array_key_exists('id', $category)) {
+                if(array_key_exists('id', $category) && is_numeric($category['id'])) {
                     $categoryids[] = $category['id'];
                     $category['category_settings'] = json_encode($category['category_settings']);
                     $category['event_settings'] = json_encode($category['event_settings']);
                     EventCategory::where('id', $category['id'])->update($category);
                 } else {
                     $category['calendar_id'] = $calendar->id;
+                    $stringid = $category['id'];
+                    unset($category['id']);
+
                     $category = EventCategory::Create($category);
-                    $categoryids[] = $category->id;
+
+                    $categoryids[$stringid] = $category->id;
                 }
             }
             EventCategory::where('calendar_id', $calendar->id)->whereNotIn('id', $categoryids)->delete();
@@ -171,6 +175,9 @@ class CalendarController extends Controller
 
             $eventids = [];
             foreach($events as $sort_by => $event) {
+                if(!empty($event['event_category_id']) && !is_numeric($event['event_category_id'])) {
+                    $event['event_category_id'] = $categoryids[$event['event_category_id']];
+                }
                 if($event['event_category_id'] < 0) $event['event_category_id'] = null;
                 $event['sort_by'] = $sort_by;
                 if(array_key_exists('id', $event)) {
