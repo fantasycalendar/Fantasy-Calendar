@@ -582,8 +582,6 @@ function set_up_edit_inputs(set_up){
 
 	$('.form-inline.event_categories .add').click(function(){
 
-		var id = event_category_list.children().length;
-
 		var name = $(this).prev();
 		
 		var stats = {
@@ -609,8 +607,31 @@ function set_up_edit_inputs(set_up){
 
 
 	$('.form-inline.events .add').click(function(){
-		
-		edit_event_ui.create_new_event(escapeHtml($(this).prev().val()));
+		var name = escapeHtml($(this).prev().val());
+
+		var stats = {
+			'name': name !== undefined ? name : 'New event',
+			'description': 'A new event.',
+			'data': {
+				'has_duration': false,
+				'duration': 0,
+				'show_first_last': false,
+				'only_happen_once': false,
+				'conditions': [],
+				'connected_events': [],
+				'date': [],
+			},
+			'settings': {
+				'color': 'Dark-Solid',
+				'text': 'text',
+				'hide': false,
+				'noprint': false,
+				'hide_full': false
+			},
+			'calendar_id': calendar_id
+		};
+
+		create_event(stats);
 		$(this).prev().val('');
 
 	});
@@ -731,9 +752,9 @@ function set_up_edit_inputs(set_up){
 
 				var warnings = [];
 
-				for(var i = 0; i < static_data.event_data.events.length; i++){
-					if(static_data.event_data.events[i].data.connected_events !== undefined && static_data.event_data.events[i].data.connected_events.includes(key)){
-						warnings.push(i);
+				for(var eventId in static_data.event_data.events){
+					if(static_data.event_data.events[eventId].data.connected_events !== undefined && static_data.event_data.events[eventId].data.connected_events.includes(key)){
+						warnings.push(eventId);
 					}
 				}
 				if(warnings.length > 0){
@@ -756,19 +777,11 @@ function set_up_edit_inputs(set_up){
 
 				}else{
 
-					events_sortable.children().eq(key).remove();
+					events_sortable.children("[key='"+key+"']").remove();
 
-					reindex_events_sortable();
+					delete static_data.event_data.events[key];
 
-					for(var i = 0; i < static_data.event_data.events.length; i++){
-						if(static_data.event_data.events[i].data.connected_events !== undefined && static_data.event_data.events[i].data.connected_events.length > 0){
-							for(var j = 0; j < static_data.event_data.events[i].data.connected_events.length; j++){
-								if(static_data.event_data.events[i].data.connected_events[j] > key){
-									static_data.event_data.events[i].data.connected_events[j]--;
-								}
-							}
-						}
-					}
+
 				}
 
 				break;

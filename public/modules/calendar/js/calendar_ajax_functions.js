@@ -379,7 +379,7 @@ function create_calendar(){
 
 }
 
-function create_event_category(list, event, callback) {
+function create_event_category(list, category, callback) {
 	// event = Object.assign({_method: 'store'}, event);
 
 	if(static_data.event_data.categories.length < 1) {
@@ -390,11 +390,35 @@ function create_event_category(list, event, callback) {
 		url: window.baseurl+"api/eventcategory",
 		type: "post",
 		dataType: "json",
-		data: event,
+		data: category,
 		success: function ( result ) {
 			static_data.event_data.categories[result.id] = result;
 			repopulate_event_category_lists();
 			callback(list, result.id, result);
+		},
+		error: function ( log ) {
+			console.log(log);
+		}
+	});
+}
+
+function create_event(event) {
+	// event = Object.assign({_method: 'store'}, event);
+
+	if(static_data.event_data.events.length < 1) {
+		static_data.event_data.events = {};
+	}
+
+	console.log(event);
+
+	$.ajax({
+		url: window.baseurl+"api/event",
+		type: "post",
+		dataType: "json",
+		contentType: "application/json",
+		data: JSON.stringify(event),
+		success: function ( result ) {
+			edit_event_ui.create_new_event(result);
 		},
 		error: function ( log ) {
 			console.log(log);

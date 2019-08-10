@@ -61,7 +61,7 @@ var edit_event_ui = {
 			}
 
 			if(edit_event_ui.new_event){
-				delete static_data.event_data.events.pop();
+				delete static_data.event_data.events[edit_event_ui.event_id];
 			}
 
 			edit_event_ui.clear_ui();
@@ -212,34 +212,15 @@ var edit_event_ui = {
 
 	},
 
-	create_new_event: function(name){
+	create_new_event: function(event){
+		
+		console.log(event);
 
 		edit_event_ui.new_event = true;
 
-		var stats = {
-			'name': name !== undefined ? name : 'New event',
-			'description': '',
-			'data': {
-				'has_duration': false,
-				'duration': 0,
-				'show_first_last': false,
-				'only_happen_once': false,
-				'conditions': [],
-				'connected_events': false,
-				'date': [],
-			},
-			'settings': {
-				'color': 'Dark-Solid',
-				'text': 'text',
-				'hide': false,
-				'noprint': false,
-				'hide_full': false
-			}
-		};
+		static_data.event_data.events[event.id] = event;
 
-		static_data.event_data.events.push(stats);
-
-		this.set_current_event(static_data.event_data.events.length-1)
+		this.set_current_event(event.id)
 
 	},
 

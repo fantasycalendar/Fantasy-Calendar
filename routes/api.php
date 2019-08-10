@@ -30,6 +30,8 @@ Route::any('/eventcomment/event/{id}', 'Api\EventCommentController@forEvent');
 Route::any('/eventcomment/calendar/{id}', 'Api\EventCommentController@forCalendar');
 Route::apiResource('eventcomment', 'Api\EventCommentController');
 
+Route::apiResource('event', 'Api\CalendarEventController');
+
 Route::fallback(function(){
     return response()->json([
         'message' => 'Page Not Found.'], 404);
