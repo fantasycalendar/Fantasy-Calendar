@@ -19,7 +19,7 @@ class SortCalendarEvents extends Migration
             $events = DB::table('calendar_events')->where('calendar_id', $calendar->id)->get();
             foreach($events as $event) {
                 DB::table('calendar_events')->where('id', $event->id)->update([
-                    'order_by' => $sortby
+                    'sort_by' => $sortby
                 ]);
 
                 $sortby++;
@@ -34,8 +34,6 @@ class SortCalendarEvents extends Migration
      */
     public function down()
     {
-        DB::table('calendar_events')->where('deleted_at', NULL)->update([
-            'order_by' => NULL
-        ]);
+        //
     }
 }

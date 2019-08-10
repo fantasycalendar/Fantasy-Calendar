@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddOrderByToEventCategories extends Migration
+class AddSortByToCalendarEvents extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddOrderByToEventCategories extends Migration
      */
     public function up()
     {
-        Schema::table('event_categories', function (Blueprint $table) {
-            $table->bigInteger('order_by');
+        Schema::table('calendar_events', function (Blueprint $table) {
+            $table->bigInteger('sort_by');
         });
     }
 
@@ -25,8 +25,8 @@ class AddOrderByToEventCategories extends Migration
      */
     public function down()
     {
-        Schema::table('event_categories', function (Blueprint $table) {
-            $table->dropColumn('order_by');
+        Schema::table('calendar_events', function (Blueprint $table) {
+            $table->dropColumn('sort_by');
         });
     }
 }
