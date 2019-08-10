@@ -759,6 +759,7 @@ function set_up_edit_inputs(set_up){
 
 					delete static_data.event_data.events[key];
 
+					reindex_events_sortable();
 
 				}
 
@@ -3285,8 +3286,6 @@ function sort_era_list_by_date(){
 }
 
 function reindex_events_sortable(){
-
-	return;
 
 	var new_order = []
 
