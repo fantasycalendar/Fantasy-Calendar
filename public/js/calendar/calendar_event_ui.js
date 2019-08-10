@@ -154,12 +154,15 @@ var edit_event_ui = {
 
 		$("#event_categories").change(function(){
 			if($(this).val() != -1){
-				var category = static_data.event_data.categories[$(this).val()].event_settings;
-				$('#color_style').val(category.color);
-				$('#text_style').val(category.text).change();
-				$('#event_hide_players').prop('checked', category.hide);
-				$('#event_dontprint_checkbox').prop('checked', category.noprint);
-				$('#event_hide_full').prop('checked', category.hide_full);
+				slug = $(this).val();
+				var category = get_category(slug);
+
+				
+				$('#color_style').val(category.event_settings.color);
+				$('#text_style').val(category.event_settings.text).change();
+				$('#event_hide_players').prop('checked', category.event_settings.hide);
+				$('#event_dontprint_checkbox').prop('checked', category.event_settings.noprint);
+				$('#event_hide_full').prop('checked', category.event_settings.hide_full);
 			}
 		});
 
@@ -234,10 +237,10 @@ var edit_event_ui = {
 				'hide': false,
 				'noprint': false,
 				'hide_full': false
-			}
+			},
 		};
 
-		eventId = static_data.event_data.events.length;
+		eventId = Object.keys(static_data.event_data.events).length;
 
 		static_data.event_data.events[eventId] = stats;
 
@@ -257,36 +260,41 @@ var edit_event_ui = {
 
 		this.event_id = event_id;
 
-		this.event_background.find('.event_name').val(unescapeHtml(static_data.event_data.events[this.event_id].name));
+		var event = static_data.event_data.events[this.event_id];
 
-		this.trumbowyg.trumbowyg('html', unescapeHtml(static_data.event_data.events[this.event_id].description));
+		this.event_background.find('.event_name').val(unescapeHtml(event.name));
 
-		this.create_conditions(static_data.event_data.events[this.event_id].data.conditions, this.event_conditions_container);
+		this.trumbowyg.trumbowyg('html', unescapeHtml(event.description));
+
+		this.create_conditions(event.data.conditions, this.event_conditions_container);
 
 		this.evaluate_condition_selects(this.event_conditions_container);
 		
-		if(static_data.event_data.events[this.event_id].event_category_id !== undefined){
-			$('#event_categories').val(static_data.event_data.events[this.event_id].event_category_id);
+		if(typeof event.event_category_id !== 'undefined' && event.event_category_id !== null){
+			var category_id = event.event_category_id;
+			var category = get_category(category_id);
+
+			$('#event_categories').val(category.id);
 		}else{
 			$('#event_categories').val(-1);
 		}
 
-		$('#color_style').val(static_data.event_data.events[this.event_id].settings.color);
-		$('#text_style').val(static_data.event_data.events[this.event_id].settings.text).change();
+		$('#color_style').val(event.settings.color);
+		$('#text_style').val(event.settings.text).change();
 
-		$('#event_hide_players').prop('checked', static_data.event_data.events[this.event_id].settings.hide);
+		$('#event_hide_players').prop('checked', event.settings.hide);
 
-		$('#event_hide_full').prop('checked', static_data.event_data.events[this.event_id].settings.hide_full);
+		$('#event_hide_full').prop('checked', event.settings.hide_full);
 
-		$('#event_dontprint_checkbox').prop('checked', static_data.event_data.events[this.event_id].settings.noprint);
+		$('#event_dontprint_checkbox').prop('checked', event.settings.noprint);
 		
-		$('#only_happen_once').prop('checked', static_data.event_data.events[this.event_id].data.only_happen_once);
+		$('#only_happen_once').prop('checked', event.data.only_happen_once);
 
-		this.event_background.find('.duration_settings').toggleClass('hidden', !static_data.event_data.events[this.event_id].data.has_duration);
+		this.event_background.find('.duration_settings').toggleClass('hidden', !event.data.has_duration);
 
-		$('#duration').val(static_data.event_data.events[this.event_id].data.duration);
+		$('#duration').val(event.data.duration);
 
-		$('#show_first_last').prop('checked', static_data.event_data.events[this.event_id].data.show_first_last);
+		$('#show_first_last').prop('checked', event.data.show_first_last);
 
 		this.event_background.removeClass('hidden');
 
@@ -294,12 +302,16 @@ var edit_event_ui = {
 
 	save_current_event: function(){
 
+		var eventid = static_data.event_data.events[this.event_id].id;
+
 		static_data.event_data.events[this.event_id] = {};
 
 		var name = escapeHtml(this.event_background.find('.event_name').val());
 		name = name !== '' ? name : "Unnamed Event";
 
 		static_data.event_data.events[this.event_id].name = name;
+
+		static_data.event_data.events[this.event_id].id = eventid;
 
 		static_data.event_data.events[this.event_id].description = escapeHtml(this.trumbowyg.trumbowyg('html'));
 

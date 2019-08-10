@@ -583,6 +583,8 @@ function set_up_edit_inputs(set_up){
 	$('.form-inline.event_categories .add').click(function(){
 
 		var name = $(this).prev();
+
+		var slug = slugify(name.val());
 		
 		var stats = {
 			"name": escapeHtml(name.val()),
@@ -596,9 +598,18 @@ function set_up_edit_inputs(set_up){
 				"hide": false,
 				"noprint": false
 			},
-			"calendar_id": calendar_id
+			"calendar_id": calendar_id,
+			"id": slug
 		};
-		create_event_category(event_category_list, stats, add_category_to_list);
+
+		sort_by = static_data.event_data.categories.length;
+
+		add_category_to_list(event_category_list, sort_by, stats);
+
+		static_data.event_data.categories[sort_by] = stats;
+
+		repopulate_event_category_lists();
+
 		name.val('');
 		
 		do_error_check();
@@ -708,21 +719,23 @@ function set_up_edit_inputs(set_up){
 				$(this).closest('.sortable-container').remove();
 				$(this).closest('.sortable-container').parent().sortable('refresh');
 
+				var category = static_data.event_data.categories[key];
+
 				for(var event in static_data.event_data.events){
-					console.log(event);
-					if(static_data.event_data.events[event].category == key){
+					if(static_data.event_data.events[event].category == category.id){
 						static_data.event_data.events[event].category = -1;
 					}
 				}
 
 				for(var era in static_data.eras){
-					console.log(era);
 					if(static_data.eras[era].settings.event_category == key){
 						static_data.eras[era].settings.event_category = -1;
 					}
 				}
 
-				delete static_data.event_data.categories[key];
+				reindex_event_category_list();
+				static_data.event_data.categories = static_data.event_data.categories.filter(function(category) { return category; });
+				repopulate_event_category_lists();
 				
 				break;
 
@@ -1388,6 +1401,7 @@ function set_up_edit_inputs(set_up){
 
 			}else{
 
+
 				if(type.length > 1){
 					current_calendar_data = current_calendar_data[type[type.length-1]];
 				}
@@ -1421,13 +1435,15 @@ function set_up_edit_inputs(set_up){
 				}
 			}
 
+
 			if(data.includes('event_data.categories')){
 				var key = data.split('.')[2]|0;
-				for(var i = 0; i < static_data.event_data.events.length; i++){
-					if(static_data.event_data.events[i].event_category_id == key){
-						static_data.event_data.events[i].settings = clone(static_data.event_data.categories[key].event_settings);
+				for(var eventkey in static_data.event_data.events){
+					if(static_data.event_data.events[eventkey].event_category_id == static_data.event_data.categories[key].id){
+						static_data.event_data.events[eventkey].settings = clone(static_data.event_data.categories[key].event_settings);
 					}
-				}				
+				}
+				repopulate_event_category_lists();
 			}
 
 			var refresh = target.attr('refresh') === "true" || refresh === undefined;
@@ -1448,6 +1464,7 @@ function set_up_edit_inputs(set_up){
 			}
 
 		}else if(target.attr('class') !== undefined && target.attr('class').indexOf('static_input') > -1){
+
 
 			var type = target.attr('data').split('.');
 
@@ -1487,6 +1504,7 @@ function set_up_edit_inputs(set_up){
 				do_error_check(type[0]);
 			}
 		}
+
 	});
 }
 
@@ -2488,7 +2506,7 @@ function add_category_to_list(parent, key, data){
 		element.push("<div class='main-container'>");
 			element.push("<div class='expand icon-collapse'></div>");
 			element.push("<div class='name-container'>");
-				element.push(`<input type='text' value='${data.name}' name='name_input' class='form-control name-input small-input dynamic_input_self' data='event_data.categories.${key}' tabindex='${(700+key)}'/>`);
+				element.push(`<input type='text' value='${data.name}' name='name_input' key='name' class='form-control name-input small-input dynamic_input_self' data='event_data.categories.${key}' tabindex='${(700+key)}'/>`);
 			element.push("</div>");
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
@@ -3285,6 +3303,28 @@ function sort_era_list_by_date(){
 	});
 }
 
+function reindex_event_category_list(){
+
+	var new_order = [];
+
+	event_category_list.children().each(function(i){
+		var key = $(this).attr('key');
+
+		if(isNaN(key)) {
+			$(this).attr('key', key);
+		} else {
+			$(this).attr('key', i);
+		}
+
+		new_order[key] = static_data.event_data.categories[key];
+
+	});
+
+	static_data.event_data.categories = clone(new_order);
+
+	return;
+}
+
 function reindex_events_sortable(){
 
 	var new_order = []
@@ -3477,9 +3517,16 @@ function repopulate_event_category_lists(){
 
 	var html = [];
 	html.push("<option selected value='-1'>None</option>")
+
 	for(var categoryId in static_data.event_data.categories){
 		var category = static_data.event_data.categories[categoryId];
-		html.push(`<option value='${categoryId}'>`)
+
+		if(typeof category.id !== "undefined") {
+			slug = category.id;
+		} else {
+			slug = slugify(category.name);
+		}
+		html.push(`<option value='${slug}'>`)
 		html.push(category.name)
 		html.push("</option>")
 	}
@@ -3638,7 +3685,9 @@ function set_up_edit_values(){
 
 	if(static_data.event_data.categories){
 		for(var key in static_data.event_data.categories){
-			add_category_to_list(event_category_list, key, static_data.event_data.categories[key]);
+			var category = static_data.event_data.categories[key];
+			var catkey = (typeof category.sort_by !== "undefined") ? category.sort_by : slugify(category.name);
+			add_category_to_list(event_category_list, catkey, category);
 		}
 	}
 
@@ -3666,6 +3715,11 @@ function set_up_edit_values(){
 
 }
 
+function get_category(search) {
+	return static_data.event_data.categories.filter(function(element) {
+		return element.id == search;
+	})[0]
+}
 
 function empty_edit_values(){
 
