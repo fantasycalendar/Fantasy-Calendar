@@ -169,8 +169,9 @@ class CalendarController extends Controller
             unset($static_data['event_data']['events']);
 
             $eventids = [];
-            foreach($events as $event) {
+            foreach($events as $sort_by => $event) {
                 if($event['event_category_id'] < 0) $event['event_category_id'] = null;
+                $event['sort_by'] = $sort_by;
                 if(array_key_exists('id', $event)) {
                     $eventids[] = $event['id'];
                     $event['data'] = json_encode($event['data']);

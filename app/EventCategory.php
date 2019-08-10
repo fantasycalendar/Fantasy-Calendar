@@ -13,7 +13,8 @@ class EventCategory extends Model
         'name',
         'category_settings',
         'event_settings',
-        'calendar_id'
+        'calendar_id',
+        'sort_by',
     ];
 
     protected $hidden = ['deleted_at', 'calendar'];

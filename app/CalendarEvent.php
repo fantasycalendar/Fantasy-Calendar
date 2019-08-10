@@ -16,6 +16,7 @@ class CalendarEvent extends Model
         'description',
         'data',
         'settings',
+        'sort_by',
     ];
 
     protected $hidden = ['deleted_at', 'category', 'calendar'];

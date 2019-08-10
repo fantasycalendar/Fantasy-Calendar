@@ -402,29 +402,6 @@ function create_event_category(list, category, callback) {
 	});
 }
 
-function create_event(event) {
-	// event = Object.assign({_method: 'store'}, event);
-
-	if(static_data.event_data.events.length < 1) {
-		static_data.event_data.events = {};
-	}
-
-	console.log(event);
-
-	$.ajax({
-		url: window.baseurl+"api/event",
-		type: "post",
-		dataType: "json",
-		contentType: "application/json",
-		data: JSON.stringify(event),
-		success: function ( result ) {
-			edit_event_ui.create_new_event(result);
-		},
-		error: function ( log ) {
-			console.log(log);
-		}
-	});
-}
 
 function get_event_comments(event_id, callback){
 

@@ -609,29 +609,7 @@ function set_up_edit_inputs(set_up){
 	$('.form-inline.events .add').click(function(){
 		var name = escapeHtml($(this).prev().val());
 
-		var stats = {
-			'name': name !== undefined ? name : 'New event',
-			'description': 'A new event.',
-			'data': {
-				'has_duration': false,
-				'duration': 0,
-				'show_first_last': false,
-				'only_happen_once': false,
-				'conditions': [],
-				'connected_events': [],
-				'date': [],
-			},
-			'settings': {
-				'color': 'Dark-Solid',
-				'text': 'text',
-				'hide': false,
-				'noprint': false,
-				'hide_full': false
-			},
-			'calendar_id': calendar_id
-		};
-
-		create_event(stats);
+		edit_event_ui.create_new_event(name);
 		$(this).prev().val('');
 
 	});

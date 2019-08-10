@@ -212,15 +212,36 @@ var edit_event_ui = {
 
 	},
 
-	create_new_event: function(event){
+	create_new_event: function(name){
 		
-		console.log(event);
-
 		edit_event_ui.new_event = true;
 
-		static_data.event_data.events[event.id] = event;
+		var stats = {
+			'name': name !== undefined ? name : 'New event',
+			'description': '',
+			'data': {
+				'has_duration': false,
+				'duration': 0,
+				'show_first_last': false,
+				'only_happen_once': false,
+				'conditions': [],
+				'connected_events': false,
+				'date': [],
+			},
+			'settings': {
+				'color': 'Dark-Solid',
+				'text': 'text',
+				'hide': false,
+				'noprint': false,
+				'hide_full': false
+			}
+		};
 
-		this.set_current_event(event.id)
+		eventId = static_data.event_data.events.length;
+
+		static_data.event_data.events[eventId] = stats;
+
+		this.set_current_event(eventId)
 
 	},
 
@@ -279,8 +300,6 @@ var edit_event_ui = {
 		name = name !== '' ? name : "Unnamed Event";
 
 		static_data.event_data.events[this.event_id].name = name;
-
-		static_data.event_data.events[this.event_id].id = this.event_id;
 
 		static_data.event_data.events[this.event_id].description = escapeHtml(this.trumbowyg.trumbowyg('html'));
 
