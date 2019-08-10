@@ -379,30 +379,6 @@ function create_calendar(){
 
 }
 
-function create_event_category(list, category, callback) {
-	// event = Object.assign({_method: 'store'}, event);
-
-	if(static_data.event_data.categories.length < 1) {
-		static_data.event_data.categories = {};
-	}
-
-	$.ajax({
-		url: window.baseurl+"api/eventcategory",
-		type: "post",
-		dataType: "json",
-		data: category,
-		success: function ( result ) {
-			static_data.event_data.categories[result.id] = result;
-			repopulate_event_category_lists();
-			callback(list, result.id, result);
-		},
-		error: function ( log ) {
-			console.log(log);
-		}
-	});
-}
-
-
 function get_event_comments(event_id, callback){
 
 	$.ajax({
