@@ -3716,9 +3716,15 @@ function set_up_edit_values(){
 }
 
 function get_category(search) {
-	return static_data.event_data.categories.filter(function(element) {
+	var results = static_data.event_data.categories.filter(function(element) {
 		return element.id == search;
-	})[0]
+	});
+
+	if(results.length < 1) {
+		return {id: -1};
+	}
+
+	return results;
 }
 
 function empty_edit_values(){

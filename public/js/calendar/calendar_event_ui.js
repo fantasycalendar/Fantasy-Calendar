@@ -364,7 +364,7 @@ var edit_event_ui = {
 			date: this.date,
 		};
 
-		static_data.event_data.events[this.event_id].event_category_id = $('#event_categories').val();
+		static_data.event_data.events[this.event_id].event_category_id = get_category($('#event_categories').val()).id;
 
 		static_data.event_data.events[this.event_id].settings = {
 			color: $('#color_style').val(),
