@@ -9,6 +9,9 @@ use App\Calendar;
 use App\EventCategory;
 use App\CalendarEvent;
 
+use App\Jobs\SaveEventCategories;
+use App\Jobs\SaveCalendarEvents;
+
 class CalendarController extends Controller
 {
     public function __construct() {
@@ -57,7 +60,6 @@ class CalendarController extends Controller
     public function store(Request $request)
     {
         $hash = md5(request('calendar_name').request('dynamic_data').request('static_data').(Auth::user()->id).date("D M d, Y G:i"));
-        $categories = [];
 
         $static_data = json_decode(request('static_data'), true);
         if(array_key_exists('categories', $static_data['event_data'])) {
@@ -67,7 +69,7 @@ class CalendarController extends Controller
 
         if(array_key_exists('events', $static_data['event_data'])) {
             $events = $static_data['event_data']['events'];
-            unset($static_data['event_data']['events']);
+            unset($static_data['event_data']);
         }
 
         $calendar = Calendar::create([
@@ -78,22 +80,12 @@ class CalendarController extends Controller
             'hash' => $hash
         ]);
 
-        $categoryidmap = [];
-        $categoryId = 0;
+        // Split out Categories first
+        $categoryids = SaveEventCategories::dispatchNow($categories, $calendar->id);
 
-        foreach($categories as $category) {
-            $category['calendar_id'] = $calendar->id;
-            $newCategory = EventCategory::create($category);
-            $categoryidmap[] = $newCategory->id;
-        }
 
-        foreach($events as $event) {
-            $event['calendar_id'] = $calendar->id;
-            if(array_key_exists('category', $event)) {
-                $event['event_category_id'] = ((int)$event['category'] < 0) ? NULL : $categoryidmap[(int)$event['category']];
-            }
-            CalendarEvent::create($event);
-        }
+        // Now split out events
+        $eventids = SaveCalendarEvents::dispatchNow($events, $categoryids, $calendar->id);
 
         return [
             'success' => true,
@@ -143,56 +135,18 @@ class CalendarController extends Controller
         }
 
         if(array_key_exists('static_data', $update_data)) {
-            // Split out Categories first
             $static_data = json_decode($update_data['static_data'], true);
-            $categories = $static_data['event_data']['categories'];
-            unset($static_data['event_data']['categories']);
 
-            $categoryids = [];
-            foreach($categories as $sort_by => $category) {
-                $category['sort_by'] = $sort_by;
-                if(array_key_exists('id', $category) && is_numeric($category['id'])) {
-                    $categoryids[] = $category['id'];
-                    $category['category_settings'] = json_encode($category['category_settings']);
-                    $category['event_settings'] = json_encode($category['event_settings']);
-                    EventCategory::where('id', $category['id'])->update($category);
-                } else {
-                    $category['calendar_id'] = $calendar->id;
-                    $stringid = $category['id'];
-                    unset($category['id']);
-
-                    $category = EventCategory::Create($category);
-
-                    $categoryids[$stringid] = $category->id;
-                }
-            }
-            EventCategory::where('calendar_id', $calendar->id)->whereNotIn('id', $categoryids)->delete();
+            // Split out Categories first
+            $categoryids = SaveEventCategories::dispatchNow($static_data['event_data']['categories'], $calendar->id);
 
             // Now split out events
-            $events = $static_data['event_data']['events'];
-            $update_data['static_data'] = $static_data;
-            unset($static_data['event_data']['events']);
+            SaveCalendarEvents::dispatchNow($static_data['event_data']['events'], $categoryids, $calendar->id);
 
-            $eventids = [];
-            foreach($events as $sort_by => $event) {
-                if(!empty($event['event_category_id']) && !is_numeric($event['event_category_id'])) {
-                    $event['event_category_id'] = $categoryids[$event['event_category_id']];
-                }
-                if($event['event_category_id'] < 0) $event['event_category_id'] = null;
-                $event['sort_by'] = $sort_by;
-                if(array_key_exists('id', $event)) {
-                    $eventids[] = $event['id'];
-                    $event['data'] = json_encode($event['data']);
-                    $event['settings'] = json_encode($event['settings']);
-                    CalendarEvent::where('id', $event['id'])->update($event);
-                } else {
-                    $event['calendar_id'] = $calendar->id;
-                    $event = CalendarEvent::Create($event);
-                    $eventids[] = $event->id;
-                }
-            }
-            CalendarEvent::where('calendar_id', $calendar->id)->whereNotIn('id', $eventids)->delete();
+            unset($static_data['event_data']);
+            $update_data['static_data'] = $static_data;
         }
+
 
         $calendar_was_updated = $calendar->update($update_data);
 
