@@ -53,7 +53,7 @@
 	display:inline-block;
 	min-width:240px;
 }
-	
+
 #header_left_container{
 	float:left;
 	text-align:left;
@@ -176,7 +176,7 @@ body{
 
 #header::before {
 	content: "";
-	background-image: url('../resources/warning.png');
+	background-image: url('../../public/resources/warning.png');
 	opacity: 0.3;
 	top: 0;
 	left: 0;
@@ -184,7 +184,7 @@ body{
 	right: 0;
 	position: absolute;
 	z-index: -1;
-	pointer-events: none;   
+	pointer-events: none;
 }
 
 #content{

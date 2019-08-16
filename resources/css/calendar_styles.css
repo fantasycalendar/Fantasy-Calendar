@@ -120,7 +120,7 @@ flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 	visibility: hidden;
 	-webkit-transition: visibility .0s; /* Safari */
 	transition: visibility .0s;
-	background-image: url(../resources/icons/plus_icon_white.png);
+	background-image: url(../../public/resources/icons/plus_icon_white.png);
     background-position: center;
     background-repeat: no-repeat;
     background-size: 50%;
@@ -140,7 +140,7 @@ flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 }
 
 .weather_icon{
-	background: url('../resources/icons/weather_icon.png');
+	background: url('../../public/resources/icons/weather_icon.png');
 	background-size: contain;
 	width:20px !important;
 	height:20px !important;
@@ -474,7 +474,7 @@ flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 
 
 .lunar { position:absolute; left:0px; top:0px; display: block; width: 100%; height: 100%; z-index: 10;
-  background: url('../resources/moon_sprites_newest.png');
+  background: url('../../public/resources/moon_sprites_newest.png');
   text-indent: -1000px; }
 .lunar.gran-4.phase-0	{ background-position:  0px 0px; }
 .lunar.gran-4.phase-1	{ background-position: -256px 0px; }
@@ -595,7 +595,7 @@ flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 
 .moon_container.plus{
 	padding:2px;
-	background: url('../resources/icons/plus_icon.png') no-repeat scroll right center;
+	background: url('../../public/resources/icons/plus_icon.png') no-repeat scroll right center;
 	background-origin: content-box;
 	background-size: cover;
 }
@@ -1162,7 +1162,7 @@ flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 }
 
 .clock_hour{
-	background-image: url("../resources/clock_hour.png");
+	background-image: url("../../public/resources/clock_hour.png");
 	background-size: cover;
 	height:100%;
 	position:absolute;

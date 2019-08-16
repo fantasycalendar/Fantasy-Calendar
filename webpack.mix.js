@@ -11,5 +11,18 @@ const mix = require('laravel-mix');
  |
  */
 
+mix.copyDirectory('resources/js/calendar', 'public/js/calendar');
+mix.copyDirectory('resources/js/components', 'public/js/components');
+mix.copyDirectory('resources/js/vendor', 'public/js/vendor');
+mix.copyDirectory('resources/js/webworkers', 'public/js/webworkers');
+
 mix.js('resources/js/app.js', 'public/js')
-    .sass('resources/sass/app.scss', 'public/css');
+
+    .sass('resources/sass/app.scss', 'public/css')
+    .sass('resources/sass/calendar_input_style.scss', 'public/css')
+    .sass('resources/sass/calendar_styles.scss', 'public/css')
+    .sass('resources/sass/header_style.scss', 'public/css')
+    .sass('resources/sass/index_style.scss', 'public/css')
+    .sass('resources/sass/login_style.scss', 'public/css')
+    .sass('resources/sass/text_styles.scss', 'public/css')
+    .sass('resources/sass/_variables.scss', 'public/css');
