@@ -69,7 +69,7 @@ function update_dynamic(){
 
 			alert('The calendar was updated before your data was saved. Refreshing now.');
 			location.reload();
-			
+
 		}*/
 
 		do_update_dynamic();
@@ -129,7 +129,7 @@ function update_all(){
 function do_update_all(){
 
 	//escapeAllHtml(dynamic_data);
-	
+
 	$.ajax({
 		url:window.baseurl+"calendars/"+hash,
 		type: "post",
@@ -221,7 +221,7 @@ function remove_hashes(child_hash){
 			console.log(log);
 		}
 	});
-	
+
 }
 
 
@@ -234,7 +234,7 @@ function get_all_data(output){
 		dataType: 'json',
 		data: {},
 		success: function(result){
-			
+
 			output(result);
 
 		},
@@ -346,10 +346,9 @@ function check_last_change(output){
 function delete_calendar(){
 
 	$.ajax({
-		url:window.apiurl+"/"+hash+"/delete",
-		type: "post",
+		url:window.apiurl+"/"+hash,
+		type: "delete",
 		dataType: 'json',
-		data: {action: 'delete', hash: hash},
 		success: function ( result ){
 			window.location.href = '/calendars';
 		},

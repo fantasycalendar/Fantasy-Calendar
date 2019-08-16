@@ -58,10 +58,7 @@ class CalendarController extends Controller
             ->firstOrFail()->dynamic_data;
     }
 
-    public function destroy(Request $request, $id) {
-        return (string)Calendar::active()
-        ->hash($id)
-        ->user($request->user()->id)
-        ->firstOrFail()->delete();
+    public function destroy(Request $request, Calendar $calendar) {
+        return (string)$calendar->delete();
     }
 }
