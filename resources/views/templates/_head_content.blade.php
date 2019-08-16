@@ -35,6 +35,7 @@
     <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" />
     <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/3.2.1/css/font-awesome.min.css">
 
     <script>
 
@@ -68,27 +69,27 @@
     <script src="/js/vendor/notifyjs/notify.min.js"></script>
     <script src="/js/vendor/sortable/jquery-sortable-min.js"></script>
     <script src="/js/vendor/spectrum/spectrum.js"></script>
-    <script src="/js/calendar/header.js"></script>
-    <script src="/js/calendar/calendar_ajax_functions.js"></script>
-    <script src="/js/calendar/calendar_event_ui.js"></script>
-    <script src="/js/calendar/calendar_functions.js"></script>
-    <script src="/js/calendar/calendar_variables.js"></script>
-    <script src="/js/calendar/calendar_weather_layout.js"></script>
-    <script src="/js/calendar/calendar_season_generator.js"></script>
-    <script src="/js/calendar/calendar_layout_builder.js"></script>
-    <script src="/js/calendar/calendar_inputs_visitor.js"></script>
-    <script src="/js/calendar/calendar_inputs_view.js"></script>
-    <script src="/js/calendar/calendar_inputs_edit.js"></script>
-    <script src="/js/calendar/calendar_manager.js"></script>
-    <script src="/js/calendar/calendar_presets.js"></script>
 
-    <link rel="stylesheet" href="/css/calendar_input_style.css">
-    <link rel="stylesheet" href="/css/calendar_styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/3.2.1/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/css/index_style.css">
-    <link rel="stylesheet" href="/css/login_style.css">
-    <link rel="stylesheet" href="/css/header_style.css">
-    <link rel="stylesheet" href="/css/text_styles.css">
+    <script src="{{ mix('/js/calendar/header.js') }}"></script>
+    <script src="{{ mix('/js/calendar/calendar_ajax_functions.js') }}"></script>
+    <script src="{{ mix('/js/calendar/calendar_event_ui.js') }}"></script>
+    <script src="{{ mix('/js/calendar/calendar_functions.js') }}"></script>
+    <script src="{{ mix('/js/calendar/calendar_variables.js') }}"></script>
+    <script src="{{ mix('/js/calendar/calendar_weather_layout.js') }}"></script>
+    <script src="{{ mix('/js/calendar/calendar_season_generator.js') }}"></script>
+    <script src="{{ mix('/js/calendar/calendar_layout_builder.js') }}"></script>
+    <script src="{{ mix('/js/calendar/calendar_inputs_visitor.js') }}"></script>
+    <script src="{{ mix('/js/calendar/calendar_inputs_view.js') }}"></script>
+    <script src="{{ mix('/js/calendar/calendar_inputs_edit.js') }}"></script>
+    <script src="{{ mix('/js/calendar/calendar_manager.js') }}"></script>
+    <script src="{{ mix('/js/calendar/calendar_presets.js') }}"></script>
+
+    <link rel="stylesheet" href="{{ mix('/css/calendar_input_style.css') }}">
+    <link rel="stylesheet" href="{{ mix('/css/calendar_styles.css') }}">
+    <link rel="stylesheet" href="{{ mix('/css/index_style.css') }}">
+    <link rel="stylesheet" href="{{ mix('/css/login_style.css') }}">
+    <link rel="stylesheet" href="{{ mix('/css/header_style.css') }}">
+    <link rel="stylesheet" href="{{ mix('/css/text_styles.css') }}">
     <link rel="stylesheet" href="/js/vendor/spectrum/spectrum.css">
     <link rel="stylesheet" href="/js/vendor/trumbowyg/ui/trumbowyg.min.css">
 
