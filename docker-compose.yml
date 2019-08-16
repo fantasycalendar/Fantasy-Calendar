@@ -15,9 +15,9 @@ services:
 
   fantasy-calendar:
     container_name: fantasy_calendar
-    depends_on: 
+    depends_on:
       - fantasy-calendar-php
-    build: 
+    build:
       context: .
       dockerfile: setup/nginx/nginx.Dockerfile
     user: "1000:1000"
@@ -47,11 +47,11 @@ services:
       - "DB_PASSWORD=root"
       - "REDIS_HOST=fcredis"
       - "SESSION_DRIVER=redis"
-      
+
   fcredis:
     image: redis
     container_name: fcredis
-    depends_on: 
+    depends_on:
       - fantasy-calendar-php
 
   fantasy-calendar-composer-install:
@@ -60,6 +60,14 @@ services:
     volumes:
       - ./:/fantasy-calendar
     command: ["composer", "install", "-d", "/fantasy-calendar/"]
+
+  fantasy-calendar-npm-install:
+    image: node
+    user: "1000:1000"
+    working_dir: "/fantasy-calendar"
+    volumes:
+      - ./:/fantasy-calendar
+    command: ["npm", "run", "dev-install-watch"]
 
 volumes:
   fantasy-calendar-db:
