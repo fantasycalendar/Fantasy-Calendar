@@ -1,7 +1,10 @@
 FROM php:7-fpm
 
 RUN apt-get update -y \
-    && apt-get install -y nginx
+    && apt-get install -y nginx curl gnupg
+
+RUN curl -sL https://deb.nodesource.com/setup_11.x  | bash -
+RUN apt-get -y install nodejs
 
 RUN apt-get update && apt-get install -y \
         libfreetype6-dev \
@@ -28,6 +31,7 @@ COPY setup/entrypoint.sh /etc/entrypoint.sh
 RUN chmod +x /etc/entrypoint.sh
 
 RUN chown -R www-data:www-data /fantasy-calendar
+RUN chown -R www-data:www-data /var/www/
 
 RUN chmod -R 775 /fantasy-calendar
 
@@ -38,9 +42,13 @@ ENV WEBADDRESS /
 
 USER www-data
 
+RUN npm install
+
+RUN npm run production
+
 RUN ["/usr/local/bin/php", "/var/www/html/composer.phar", "install", "-d", "/fantasy-calendar/"]
 
-USER root 
+USER root
 
 EXPOSE 80
 
