@@ -19,3 +19,4 @@ psysh
 *.css.map
 *.sass.map
 *.scss.map
+/resources/sass/*.css
