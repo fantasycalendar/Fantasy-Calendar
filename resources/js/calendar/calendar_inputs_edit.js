@@ -1206,7 +1206,13 @@ function set_up_edit_inputs(set_up){
 			varvalues = values.reverse();
 			sorted = sorted.reverse();
 
-			offset.val(Number(values[0]) == 1 ? 0 : offset.val());
+			if(values.length == 1 && Number(values[0]) == 1){
+				offset.val(0).prop('disabled', true);
+			}else{
+				offset.prop('disabled', false);
+			}
+
+			console.log("test")
 
 			var timespan_item = timespan_sortable.children().eq(timespan_val);
 			var timespan_interval = timespan_item.find('.interval').val()|0;

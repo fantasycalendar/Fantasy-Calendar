@@ -99,7 +99,7 @@ function do_update_dynamic(){
 		},
 		error: function ( log )
 		{
-			console.log(log);
+			console.log(log);z``
 		}
 	});
 

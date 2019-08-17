@@ -426,17 +426,18 @@ label{
 }
 
 .input_buttons{
-		display: inline-flex;
+	display: inline-flex;
 	flex-direction: row;
 	flex-wrap: nowrap;
 }
 
 .input_buttons select, .input_buttons input{
--webkit-flex: 0 1 auto;          /* Chrome */
--ms-flex: 0 1 auto;              /* IE 10 */
-flex: 0 1 auto;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
+	-webkit-flex: 0 1 auto;          /* Chrome */
+	-ms-flex: 0 1 auto;              /* IE 10 */
+	flex: 0 1 auto;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 	margin:0 2px;
 	height:100%;
+	width:74%;
 }
 
 .half.input_buttons select, .half.input_buttons input{
