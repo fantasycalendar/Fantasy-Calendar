@@ -21,7 +21,7 @@ class SaveCalendarEvents implements ShouldQueue
      */
     public function __construct($events, $categoryids, $calendarId)
     {
-        $this->events = $events;
+        $this->events = ($events ?? []);
         $this->categoryids = $categoryids;
         $this->calendarId = $calendarId;
     }
