@@ -55,7 +55,7 @@ var edit_event_ui = {
 		})
 
 		edit_event_ui.close_ui_btn.click(function(){
-			
+
 			if(!confirm('This event will not be saved! Are you sure you want to close the event UI?')){
 				return;
 			}
@@ -157,7 +157,6 @@ var edit_event_ui = {
 				slug = $(this).val();
 				var category = get_category(slug);
 
-				
 				$('#color_style').val(category.event_settings.color);
 				$('#text_style').val(category.event_settings.text).change();
 				$('#event_hide_players').prop('checked', category.event_settings.hide);
@@ -216,7 +215,7 @@ var edit_event_ui = {
 	},
 
 	create_new_event: function(name){
-		
+
 		edit_event_ui.new_event = true;
 
 		var stats = {
@@ -269,7 +268,7 @@ var edit_event_ui = {
 		this.create_conditions(event.data.conditions, this.event_conditions_container);
 
 		this.evaluate_condition_selects(this.event_conditions_container);
-		
+
 		if(typeof event.event_category_id !== 'undefined' && event.event_category_id !== null){
 			var category_id = event.event_category_id;
 			var category = get_category(category_id);
@@ -287,7 +286,7 @@ var edit_event_ui = {
 		$('#event_hide_full').prop('checked', event.settings.hide_full);
 
 		$('#event_dontprint_checkbox').prop('checked', event.settings.noprint);
-		
+
 		$('#only_happen_once').prop('checked', event.data.only_happen_once);
 
 		this.event_background.find('.duration_settings').toggleClass('hidden', !event.data.has_duration);
@@ -409,7 +408,7 @@ var edit_event_ui = {
 		this.date = [];
 
 		this.connected_events = [];
-		
+
 		$('#event_categories').val('');
 
 		$('#color_style').val('');
@@ -1018,7 +1017,7 @@ var edit_event_ui = {
 					html.push(`<option value='${i+1}'>`);
 					html.push(static_data.year_data.global_week[i]);
 					html.push("</option>");
-					
+
 				}
 
 				html.push("</optgroup>");
@@ -1096,7 +1095,7 @@ var edit_event_ui = {
 						html.push("</option>");
 					}
 				}
-				
+
 			}
 
 			html.push("</select>");
@@ -1331,7 +1330,7 @@ function check_event_chain(child, parent_id){
 	if(static_data.event_data.events[parent_id].data.connected_events !== undefined && static_data.event_data.events[parent_id].data.connected_events.length > 0){
 
 		if(static_data.event_data.events[parent_id].data.connected_events.includes(child)){
-			
+
 			return false;
 
 		}else{
@@ -1420,7 +1419,7 @@ var show_event_ui = {
 	set_current_event: function(event){
 
 		this.event_name.text(unescapeHtml(event.name));
-		
+
 		this.event_desc.html(unescapeHtml(event.description)).toggleClass('hidden', event.description.length == 0);
 
 		this.event_comments.html('').addClass('loading');
@@ -1440,7 +1439,7 @@ var show_event_ui = {
 		if(comments != false){
 
 			show_event_ui.event_comments.html('');
-			
+
 			for(var index in comments){
 
 				show_event_ui.add_comment(index, comments[index]);
