@@ -1,0 +1,108 @@
+#clock{
+    position:relative;
+    overflow:hidden;
+    display:none;
+    width:360px;
+    height:360px;
+    z-index:-100;
+}
+
+.SunUpDown{
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    z-index:100;
+}
+
+#SunUp_Container{
+    height: 100%;
+    width: calc(100% + 1px);
+    right: calc(50% - 1px);
+    transform-origin: right center;
+    position: absolute;
+    display: inline-block;
+    overflow: hidden;
+    z-index: 110;
+}
+
+#SunUp_Container #StartOfDay{
+    height: 100%;
+    transform-origin: right center;
+    right:0;
+    position:absolute;
+    display:inline-block;
+}
+
+#SunDown_Container{
+    height: 100%;
+    width: calc(100% + 1px);
+    left: calc(50% - 1px);
+    transform-origin: left center;
+    position: absolute;
+    display: inline-block;
+    overflow: hidden;
+    z-index: 110;
+}
+
+#SunDown_Container #EndOfDay{
+    height: 100%;
+    transform-origin: left center;
+    left:0;
+    position:absolute;
+    display:inline-block;
+}
+
+#clock_arm{
+    height:100%;
+    position:absolute;
+    display:inline-block;
+    z-index:300;
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    transform: rotate(0deg);
+}
+
+#clock_hours{
+    height:100%;
+    width:100%;
+    position:absolute;
+    display:inline-block;
+    z-index:200;
+}
+
+#base{
+    top:0;
+    height:100%;
+    position:absolute;
+    display:inline-block;
+    z-index:500;
+}
+
+.clock_hour_text_container{
+    display:inline-block;
+    height:75%;
+    top:12.5%;
+    width:30px;
+    position:absolute;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    vertical-align:bottom;
+}
+
+.clock_hour_text
+{
+    width:100%;
+    display:inline-block;
+    position:absolute;
+    text-align:center;
+}
+
+.clock_hour{
+    background-image: url("../../public/resources/clock_hour.png");
+    background-size: cover;
+    height:100%;
+    position:absolute;
+    display:inline-block;
+}

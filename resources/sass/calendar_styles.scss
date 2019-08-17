@@ -1,4 +1,11 @@
+// Variables
+@import 'variables';
+
 /* ------------------ Overall Layout ----------------- */
+
+#calendar {
+    color: #70767c;
+}
 
 .timespan_container:first-child{
 	margin-top:10px;
@@ -30,17 +37,12 @@
 	min-height:75px;
 }
 
-
-.grid .timespan_intercalary{
-	border-top:0 !important;
-}
-
 .timespan_intercalary:not(:first-child){
-	border-left:1px solid black;
+	border-left:1px solid $calendar-border-color;
 }
 
 .timespan_row.intercalary{
-	border-top:1px solid black;
+	border-top:1px solid $calendar-border-color;
 }
 
 .timespan_row.intercalary .tall{
@@ -101,11 +103,10 @@ flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 .day_row .title{
 	text-align:center;
 	-webkit-box-flex: 1;      /* OLD - iOS 6-, Safari 3.1-6 */
--moz-box-flex: 1;         /* OLD - Firefox 19- */
-
--webkit-flex: 1;          /* Chrome */
--ms-flex: 1;              /* IE 10 */
-flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
+    -moz-box-flex: 1;         /* OLD - Firefox 19- */
+    -webkit-flex: 1;          /* Chrome */
+    -ms-flex: 1;              /* IE 10 */
+    flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 }
 
 .btn_create_event{
@@ -118,7 +119,7 @@ flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 	visibility: hidden;
 	-webkit-transition: visibility .0s; /* Safari */
 	transition: visibility .0s;
-	background-image: url(../../public/resources/icons/plus_icon_white.png);
+	background-image: url('../../public/resources/icons/plus_icon_white.png');
     background-position: center;
     background-repeat: no-repeat;
     background-size: 50%;
@@ -187,420 +188,21 @@ flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 	color: #ffffff;
 }
 
-/* ------------ Dark Red ----------- */
-.event.Dark-Solid.dot::before,
-.event.Dark-Solid.text{
-	color: #000000;
-}
-.event.Dark-Solid.background{
-	background-color: #000000;
-}
-.event.Dark-Solid.background:hover{
-	background-color: #424242;
-}
-
-/* ------------ Red ----------- */
-.event.Red.dot::before,
-.event.Red.text{
-	color: #D50000;
-}
-.event.Red.background{
-	background-color: #D50000;
-}
-.event.Red.background:hover{
-	background-color: #B71C1C;
-}
-
-/* ----------- Pink */
-.event.Pink.dot::before,
-.event.Pink.text{
-	color: #880E4F;
-}
-.event.Pink.background{
-	background-color: #C2185B;
-}
-.event.Pink.background:hover{
-	background-color: #880E4F;
-}
-
-/* ------------ Purple ----------- */
-.event.Purple.dot::before,
-.event.Purple.text{
-	color: #4A148C;
-}
-.event.Purple.background{
-	background-color: #7B1FA2;
-}
-.event.Purple.background:hover{
-	background-color: #4A148C;
-}
-
-/* ----------- Deep Purple ----------- */
-.event.Deep-Purple.dot::before,
-.event.Deep-Purple.text{
-	color: #311B92;
-}
-.event.Deep-Purple.background{
-	background-color: #512DA8;
-}
-.event.Deep-Purple.background:hover{
-	background-color: #311B92;
-}
-
-/* ------------ Blue ----------- */
-.event.Blue.dot::before,
-.event.Blue.text{
-	color: #0D47A1;
-}
-.event.Blue.background{
-	background-color: #1976D2;
-}
-.event.Blue.background:hover{
-	background-color: #0D47A1;
-}
-
-/* ----------- Light-Blue ----------- */
-.event.Light-Blue.dot::before,
-.event.Light-Blue.text{
-	color: #0288D1;
-}
-.event.Light-Blue.background{
-	background-color: #039BE5;
-}
-.event.Light-Blue.background:hover{
-	background-color: #0288D1;
-}
-
-/* ------------ Cyan ----------- */
-.event.Cyan.dot::before,
-.event.Cyan.text{
-	color: #006064;
-}
-.event.Cyan.background{
-	background-color: #0097A7;
-}
-.event.Cyan.background:hover{
-	background-color: #006064;
-}
-
-/* ----------- Teal ----------- */
-.event.Teal.dot::before,
-.event.Teal.text{
-	color: #004D40;
-}
-.event.Teal.background{
-	background-color: #00796B;
-}
-.event.Teal.background:hover{
-	background-color: #004D40;
-}
-
-/* ------------ Green ----------- */
-.event.Green.dot::before,
-.event.Green.text{
-	color: #2E7D32;
-}
-.event.Green.background{
-	background-color: #388E3C;
-}
-.event.Green.background:hover{
-	background-color: #2E7D32;
-}
-
-/* ----------- Light-Green ----------- */
-.event.Light-Green.dot::before,
-.event.Light-Green.text{
-	color: #7CB342;
-}
-.event.Light-Green.background{
-	background-color: #689F38;
-}
-.event.Light-Green.background:hover{
-	background-color: #7CB342;
-}
-
-/* ----------- Lime ----------- */
-.event.Lime.dot::before,
-.event.Lime.text{
-	color: #9E9D24;
-}
-.event.Lime.background{
-	background-color: #AFB42B;
-}
-.event.Lime.background:hover{
-	background-color: #827717;
-}
-
-/* ------------ Yellow ----------- */
-.event.Yellow.dot::before{
-	color: #FFEB3B;
-}
-.event.Yellow.text{
-	color: #FFEB3B;
-}
-.event.Yellow.background{
-	background-color: #FFFF00;
-	color: #000000;
-}
-.event.Yellow.background:hover{
-	background-color: #FFD600;
-}
-
-/* ------------ Orange ----------- */
-.event.Orange.dot::before,
-.event.Orange.text{
-	color: #FF9100;
-}
-.event.Orange.background{
-	background-color: #FF9100;
-	color: #000000;
-}
-.event.Orange.background:hover{
-	background-color: #FF6D00;
-}
-
-/* ------------ Blue-Grey ----------- */
-.event.Blue-Grey.dot::before,
-.event.Blue-Grey.text{
-	color: #455A64;
-}
-.event.Blue-Grey.background{
-	background-color: #455A64;
-}
-.event.Blue-Grey.background:hover{
-	background-color: #263238;
-}
-
-
-
-
-#top_follower{
-	display: inline-flex;
-	flex-direction:row;
-	border:1px solid black;
-	border-top:0;
-	border-bottom-left-radius: 10px;
-	border-bottom-right-radius: 10px;
-	background-color: white;
-	width:100%;
-	z-index: 99;
-	position: relative;
-}
-
-#top_follower .btn_container{
-	display: inline-flex;
-	flex-direction: column;
-	width:5em;
-	-webkit-flex: 0 1 auto;          /* Chrome */
-	-ms-flex: 0 1 auto;              /* IE 10 */
-	flex: 0 1 auto;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
-	overflow: hidden;
-	padding:0;
-	margin:0;
-	border-right:1px solid black;
-	border-bottom-left-radius: 9px;
-}
-
-#top_follower .btn_container:last-child{
-	position:relative;
-	right:-2px;
-	border-left:1px solid black;
-	border-bottom-left-radius: 0;
-	border-bottom-right-radius: 9px;
-}
-
-#top_follower .btn:last-child{
-	border-top:1px solid black;
-}
-
-#top_follower .btn{
-	border-radius: 0;
-	text-align: center;
-	-webkit-box-flex: 1;      /* OLD - iOS 6-, Safari 3.1-6 */
-	-moz-box-flex: 1;         /* OLD - Firefox 19- */
-	-webkit-flex: 1;          /* Chrome */
-	-ms-flex: 1;              /* IE 10 */
-	flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
-	padding:0;
-	position:relative;
-}
-
-#top_follower_content{
-	text-align: center;
-	padding:5px 0;
-	-webkit-box-flex: 1;      /* OLD - iOS 6-, Safari 3.1-6 */
-	-moz-box-flex: 1;         /* OLD - Firefox 19- */
-	-webkit-flex: 1;          /* Chrome */
-	-ms-flex: 1;              /* IE 10 */
-	flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
-}
-
-#top_follower_content .year{
-	-webkit-box-flex: 1;      /* OLD - iOS 6-, Safari 3.1-6 */
-	-moz-box-flex: 1;         /* OLD - Firefox 19- */
-	-webkit-flex: 1;          /* Chrome */
-	-ms-flex: 1;              /* IE 10 */
-	flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
-    width:100%;
-	font-size:14pt;
-}
-
-#top_follower_content .cycle{
-	-webkit-box-flex: 1;      /* OLD - iOS 6-, Safari 3.1-6 */
-	-moz-box-flex: 1;         /* OLD - Firefox 19- */
-	-webkit-flex: 1;          /* Chrome */
-	-ms-flex: 1;              /* IE 10 */
-	flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
-    order:2;
-	width:100%;
-	font-size:10pt;
-}
-
 .era.hidden{
 	visibility: hidden;
 }
 
-
-
-
-.lunar { position:absolute; left:0; top:0; display: block; width: 100%; height: 100%; z-index: 10;
-  background: url('../../public/resources/moon_sprites_newest.png');
-  text-indent: -1000px; }
-.lunar.gran-4.phase-0	{ background-position:  0 0; }
-.lunar.gran-4.phase-1	{ background-position: -256px 0px; }
-.lunar.gran-4.phase-2	{ background-position: -512px 0px; }
-.lunar.gran-4.phase-3	{ background-position: -768px 0px; }
-
-.lunar.gran-8.phase-0	{ background-position:  0 0; }
-.lunar.gran-8.phase-1	{ background-position: -128px 0px; }
-.lunar.gran-8.phase-2	{ background-position: -256px 0px; }
-.lunar.gran-8.phase-3	{ background-position: -384px 0px; }
-.lunar.gran-8.phase-4	{ background-position: -512px 0px; }
-.lunar.gran-8.phase-5	{ background-position: -640px 0px; }
-.lunar.gran-8.phase-6	{ background-position: -768px 0px; }
-.lunar.gran-8.phase-7	{ background-position: -896px 0px; }
-
-.lunar.gran-16.phase-0	{ background-position:  0 0; }
-.lunar.gran-16.phase-1	{ background-position: -64px 0px; }
-.lunar.gran-16.phase-2	{ background-position: -128px 0px; }
-.lunar.gran-16.phase-3	{ background-position: -192px 0px; }
-.lunar.gran-16.phase-4	{ background-position: -256px 0px; }
-.lunar.gran-16.phase-5	{ background-position: -320px 0px; }
-.lunar.gran-16.phase-6	{ background-position: -384px 0px; }
-.lunar.gran-16.phase-7	{ background-position: -448px 0px; }
-.lunar.gran-16.phase-8	{ background-position: -512px 0px; }
-.lunar.gran-16.phase-9	{ background-position: -576px 0px; }
-.lunar.gran-16.phase-10	{ background-position: -640px 0px; }
-.lunar.gran-16.phase-11	{ background-position: -704px 0px; }
-.lunar.gran-16.phase-12	{ background-position: -768px 0px; }
-.lunar.gran-16.phase-13	{ background-position: -832px 0px; }
-.lunar.gran-16.phase-14	{ background-position: -896px 0px; }
-.lunar.gran-16.phase-15	{ background-position: -960px 0px; }
-
-.lunar.gran-24.phase-0	{ background-position:  0 0; }
-.lunar.gran-24.phase-1	{ background-position: -32px 0px; }
-.lunar.gran-24.phase-2	{ background-position: -64px 0px; }
-.lunar.gran-24.phase-3	{ background-position: -128px 0px; }
-.lunar.gran-24.phase-4	{ background-position: -160px 0px; }
-.lunar.gran-24.phase-5	{ background-position: -192px 0px; }
-.lunar.gran-24.phase-6	{ background-position: -256px 0px; }
-.lunar.gran-24.phase-7	{ background-position: -288px 0px; }
-.lunar.gran-24.phase-8	{ background-position: -320px 0px; }
-.lunar.gran-24.phase-9	{ background-position: -384px 0px; }
-.lunar.gran-24.phase-10	{ background-position: -416px 0px; }
-.lunar.gran-24.phase-11	{ background-position: -448px 0px; }
-.lunar.gran-24.phase-12	{ background-position: -512px 0px; }
-.lunar.gran-24.phase-13	{ background-position: -544px 0px; }
-.lunar.gran-24.phase-14	{ background-position: -576px 0px; }
-.lunar.gran-24.phase-15	{ background-position: -608px 0px; }
-.lunar.gran-24.phase-16	{ background-position: -640px 0px; }
-.lunar.gran-24.phase-17	{ background-position: -672px 0px; }
-.lunar.gran-24.phase-18	{ background-position: -704px 0px; }
-.lunar.gran-24.phase-19	{ background-position: -768px 0px; }
-.lunar.gran-24.phase-20	{ background-position: -800px 0px; }
-.lunar.gran-24.phase-21	{ background-position: -832px 0px; }
-.lunar.gran-24.phase-22	{ background-position: -896px 0px; }
-.lunar.gran-24.phase-23	{ background-position: -928px 0px; }
-.lunar.gran-24.phase-24	{ background-position: -960px 0px; }
-
-.lunar.gran-32.phase-0	{ background-position:  0 0; }
-.lunar.gran-32.phase-1	{ background-position: -32px 0px; }
-.lunar.gran-32.phase-2	{ background-position: -64px 0px; }
-.lunar.gran-32.phase-3	{ background-position: -96px 0px; }
-.lunar.gran-32.phase-4	{ background-position: -128px 0px; }
-.lunar.gran-32.phase-5	{ background-position: -160px 0px; }
-.lunar.gran-32.phase-6	{ background-position: -192px 0px; }
-.lunar.gran-32.phase-7	{ background-position: -224px 0px; }
-.lunar.gran-32.phase-8	{ background-position: -256px 0px; }
-.lunar.gran-32.phase-9	{ background-position: -288px 0px; }
-.lunar.gran-32.phase-10	{ background-position: -320px 0px; }
-.lunar.gran-32.phase-11	{ background-position: -352px 0px; }
-.lunar.gran-32.phase-12	{ background-position: -384px 0px; }
-.lunar.gran-32.phase-13	{ background-position: -416px 0px; }
-.lunar.gran-32.phase-14	{ background-position: -448px 0px; }
-.lunar.gran-32.phase-15	{ background-position: -480px 0px; }
-.lunar.gran-32.phase-16	{ background-position: -512px 0px; }
-.lunar.gran-32.phase-17	{ background-position: -544px 0px; }
-.lunar.gran-32.phase-18	{ background-position: -576px 0px; }
-.lunar.gran-32.phase-19	{ background-position: -608px 0px; }
-.lunar.gran-32.phase-20	{ background-position: -640px 0px; }
-.lunar.gran-32.phase-21	{ background-position: -672px 0px; }
-.lunar.gran-32.phase-22	{ background-position: -704px 0px; }
-.lunar.gran-32.phase-23	{ background-position: -736px 0px; }
-.lunar.gran-32.phase-24	{ background-position: -768px 0px; }
-.lunar.gran-32.phase-25	{ background-position: -800px 0px; }
-.lunar.gran-32.phase-26	{ background-position: -832px 0px; }
-.lunar.gran-32.phase-27	{ background-position: -864px 0px; }
-.lunar.gran-32.phase-28	{ background-position: -896px 0px; }
-.lunar.gran-32.phase-29	{ background-position: -928px 0px; }
-.lunar.gran-32.phase-30	{ background-position: -960px 0px; }
-.lunar.gran-32.phase-31	{ background-position: -992px 0px; }
-
-.lunar_background{
-	height: 20px;
-	width: 20px;
-	border-radius: 50%;
-	display: inline-block;
-	position:relative;
-	top:-26.5px;
+.timespan_overflow {
+    color: rgba(#98a0a6, 0.6);
+    background-color: #ffffff;
+    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23f9f9fa' fill-opacity='1' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");
+    cursor: not-allowed;
 }
 
-.calendar_moon_container{
-	display: inline-flex;
-	text-align: center;
-	align-content: flex-start;
-	height:100%;
-	width:100%;
+.grid .timespan_overflow:not(.intercalary) {
+    border-left: 1px solid $calendar-border-color;
+    padding-left: 0;
 }
-
-.moon_container{
-	width:32px;
-	height:32px;
-	overflow:hidden;
-	max-height: 999999px;
-	border-radius:5px;
-}
-
-.moon_container.plus{
-	padding:2px;
-	background: url('../../public/resources/icons/plus_icon.png') no-repeat scroll right center;
-	background-origin: content-box;
-	background-size: cover;
-}
-
-.moon_container.plus:hover{
-	background-color: lightgrey;
-	cursor: pointer;
-}
-
-.calendar_moon{
-	position:relative;
-	margin-left:auto;
-	margin-right:auto;
-	float:left;
-}
-
-
 
 /* --------------- Minimalistic Layout --------------- */
 
@@ -658,17 +260,22 @@ flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 
 
 .timespan_container.grid{
-	background-color:lightgrey;
+	background-color:white;
 	border-radius:10px;
-	border:1px solid black;
+	margin: 30px 20px;
 	overflow:hidden;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
 }
 
 .grid .timespan_name{
 	text-align: center;
-	border-bottom:1px solid black;
+	border-bottom:1px solid $calendar-border-color;
 	font-size:22pt;
 	height:50px;
+}
+
+.grid .timespan_intercalary{
+    border-top:0 !important;
 }
 
 body .grid .timespan_number{
@@ -688,7 +295,7 @@ body.hide_timespan_number .timespan_number{
 }
 
 .grid .week_day_name:not(:first-child){
-	border-left:1px solid black;
+	border-left:1px solid $calendar-border-color;
 }
 
 
@@ -699,15 +306,15 @@ body.hide_timespan_number .timespan_number{
 	flex-direction: column;
 	min-height:150px;
 	-webkit-box-flex: 1;      /* OLD - iOS 6-, Safari 3.1-6 */
--moz-box-flex: 1;         /* OLD - Firefox 19- */
-
--webkit-flex: 1;          /* Chrome */
--ms-flex: 1;              /* IE 10 */
-flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
+    -moz-box-flex: 1;         /* OLD - Firefox 19- */
+    -webkit-flex: 1;          /* Chrome */
+    -ms-flex: 1;              /* IE 10 */
+    flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 }
 
 .current_day{
-	background-color:#BF6347;
+	background-color:#fef0db;
+    border-bottom: 5px solid #fdb44d;
 }
 
 
@@ -737,8 +344,7 @@ body.hide_year_day .year_day_number{
 }
 
 .grid .timespan_overflow.firstlast{
-	border-left:1px solid black;
-	padding-left:1px;
+	border-left:1px solid $calendar-border-color;
 }
 
 .grid .timespan_overflow.last{
@@ -746,15 +352,15 @@ body.hide_year_day .year_day_number{
 }
 
 .grid .timespan_day{
-	border-top:1px solid black;
+	border-top:1px solid $calendar-border-color;
 }
 
 .grid .timespan_day:not(:first-child){
-	border-left:1px solid black;
+	border-left:1px solid $calendar-border-color;
 }
 
 .grid .timespan_overflow{
-	border-top:1px solid black;
+	border-top:1px solid $calendar-border-color;
 	padding-left:1px;
 }
 
@@ -779,7 +385,7 @@ flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 .timespan_container.wide{
 	background-color:lightgrey;
 	border-radius:10px;
-	border:1px solid black;
+	border:1px solid $calendar-border-color;
 	overflow-x: scroll;
 -webkit-flex: 1 0 auto;          /* Chrome */
 -ms-flex: 1 0 auto;              /* IE 10 */
@@ -801,7 +407,7 @@ flex: 1 0 auto;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 	border-bottom-left-radius: 10px;
 	border-bottom-right-radius: 10px;
 	width: calc(100% - 5px);
-	border-top:1px solid black;
+	border-top:1px solid $calendar-border-color;
 }
 
 .timespan_container::-webkit-scrollbar-thumb
@@ -819,7 +425,7 @@ flex: 1 0 auto;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 
 .wide .timespan_name{
 	text-align: center;
-	border-bottom:1px solid black;
+	border-bottom:1px solid $calendar-border-color;
 	font-size:22pt;
 	height:50px;
 	width:100%;
@@ -836,7 +442,7 @@ flex: 1 0 auto;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 }
 
 .wide .week_day_name:not(:first-child){
-	border-left:1px solid black;
+	border-left:1px solid $calendar-border-color;
 }
 
 
@@ -860,7 +466,7 @@ flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 }
 
 .wide .timespan_overflow.firstlast{
-	border-left:1px solid black;
+	border-left:1px solid $calendar-border-color;
 	padding-left:1px;
 }
 
@@ -869,15 +475,15 @@ flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 }
 
 .wide .timespan_day{
-	border-top:1px solid black;
+	border-top:1px solid $calendar-border-color;
 }
 
 .wide .timespan_day:not(:first-child){
-	border-left:1px solid black;
+	border-left:1px solid $calendar-border-color;
 }
 
 .wide .timespan_overflow{
-	border-top:1px solid black;
+	border-top:1px solid $calendar-border-color;
 	padding-left:1px;
 }
 
@@ -905,7 +511,7 @@ flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 .timespan_container.vertical{
 	background-color:lightgrey;
 	border-radius:10px;
-	border:1px solid black;
+	border:1px solid $calendar-border-color;
 	overflow:hidden;
 	text-align: center;
 }
@@ -918,7 +524,7 @@ flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 
 .vertical .timespan_name{
 	text-align: center;
-	border-bottom:1px solid black;
+	border-bottom:1px solid $calendar-border-color;
 	font-size:22pt;
 	height:50px;
 }
@@ -943,7 +549,7 @@ flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 
 .vertical .timespan_day{
 	border-left:0;
-	border-top:1px solid black;
+	border-top:1px solid $calendar-border-color;
 }
 
 .vertical .timespan_day:first-child{
@@ -982,170 +588,12 @@ flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 	align-content: center;
 }
 
-/* ------------------ Weather tooltip Layout ----------------- */
+@import 'calendar/weather';
 
-#weather_tooltip_box {
-	position: absolute;
-	background: #FFF;
-	border: 1px solid #AAA;
-	top:0;
-	width:240px;
-	height:110px;
-	border-radius: 7px;
-	padding:10px;
-	font-size:9pt;
-	display:none;
-	z-index: 1500;
-	-webkit-box-shadow: 0 0 28px 3px rgba(0,0,0,0.36);
-	-moz-box-shadow: 0 0 28px 3px rgba(0,0,0,0.36);
-	box-shadow: 0 0 28px 3px rgba(0,0,0,0.36);
-}
+@import 'calendar/clock';
 
-#weather_tooltip_box:after, #weather_tooltip_box:before {
-	top: 100%;
-	left: 50%;
-	border: solid transparent;
-	content: " ";
-	height: 0;
-	width: 0;
-	position: absolute;
-	pointer-events: none;
-}
+@import 'calendar/event_colors';
 
-#weather_tooltip_box:after {
-	border-color: rgba(255, 255, 255, 0);
-	border-top-color: #FFF;
-	border-width: 10px;
-	margin-left: -10px;
-}
-#weather_tooltip_box:before {
-	border-color: rgba(170, 170, 170, 0);
-	border-top-color: #AAA;
-	border-width: 11px;
-	margin-left: -11px;
-}
+@import 'calendar/top_follower';
 
-#weather_tooltip_box div{
-	float:left;
-	text-align:center;
-	width:100%;
-}
-
-#weather_tooltip_box .newline{
-	width:100%;
-	display: inline-block;
-}
-
-
-
-
-
-
-#clock{
-	position:relative;
-	overflow:hidden;
-	display:none;
-	width:360px;
-	height:360px;
-	z-index:-100;
-}
-
-.SunUpDown{
-	height: 100%;
-	width: 100%;
-	position: absolute;
-	z-index:100;
-}
-
-#SunUp_Container{
-	height: 100%;
-	width: calc(100% + 1px);
-	right: calc(50% - 1px);
-	transform-origin: right center;
-	position: absolute;
-	display: inline-block;
-	overflow: hidden;
-	z-index: 110;
-}
-
-#SunUp_Container #StartOfDay{
-	height: 100%;
-	transform-origin: right center;
-	right:0;
-	position:absolute;
-	display:inline-block;
-}
-
-#SunDown_Container{
-	height: 100%;
-	width: calc(100% + 1px);
-	left: calc(50% - 1px);
-	transform-origin: left center;
-	position: absolute;
-	display: inline-block;
-	overflow: hidden;
-	z-index: 110;
-}
-
-#SunDown_Container #EndOfDay{
-	height: 100%;
-	transform-origin: left center;
-	left:0;
-	position:absolute;
-	display:inline-block;
-}
-
-#clock_arm{
-	height:100%;
-	position:absolute;
-	display:inline-block;
-	z-index:300;
-	-webkit-transform: rotate(0deg);
-	-moz-transform: rotate(0deg);
-	transform: rotate(0deg);
-}
-
-#clock_hours{
-	height:100%;
-	width:100%;
-	position:absolute;
-	display:inline-block;
-	z-index:200;
-}
-
-#base{
-	top:0;
-	height:100%;
-	position:absolute;
-	display:inline-block;
-	z-index:500;
-}
-
-.clock_hour_text_container{
-	display:inline-block;
-	height:75%;
-	top:12.5%;
-	width:30px;
-	position:absolute;
-	left: 0;
-	right: 0;
-	margin-left: auto;
-	margin-right: auto;
-	vertical-align:bottom;
-}
-
-.clock_hour_text
-{
-	width:100%;
-	display:inline-block;
-	position:absolute;
-	text-align:center;
-}
-
-.clock_hour{
-	background-image: url("../../public/resources/clock_hour.png");
-	background-size: cover;
-	height:100%;
-	position:absolute;
-	display:inline-block;
-}
+@import 'calendar/moon';

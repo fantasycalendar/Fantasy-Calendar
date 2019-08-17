@@ -1,3 +1,6 @@
+// Variables
+@import 'variables';
+
 #loading_background{
 	display: flex;
 	flex-direction: column;
@@ -190,7 +193,7 @@ body{
 #content{
 	position:relative;
 	top:40px;
-	height: calc(100vh - 60px);
+	height: calc(100vh - 50px);
 }
 
 #footer{
@@ -203,20 +206,8 @@ body{
 	order:10000;
 }
 
-#footer a:link{
-	color:blue;
-	text-decoration: underline;
-}
-#footer a:visited{
-	color:blue;
-	text-decoration: underline;
-}
-#footer a:hover{
-	color:blue;
-	text-decoration: underline;
-}
-#footer a:active{
-	color:blue;
+#footer a {
+	color: $blue;
 	text-decoration: underline;
 }
 
