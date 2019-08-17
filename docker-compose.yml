@@ -69,6 +69,8 @@ services:
     volumes:
       - ./:/fantasy-calendar
     command: ["npm", "run", "dev-install-watch"]
+    environment:
+      - "BROWSERSYNC=true"
 
 volumes:
   fantasy-calendar-db:

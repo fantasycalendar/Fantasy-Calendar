@@ -11,11 +11,13 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.browserSync({
-    proxy: 'fantasy-calendar:8080',
-    port: 9980,
-    open: false
-});
+if(process.env.BROWSERSYNC) {
+    mix.browserSync({
+        proxy: 'fantasy-calendar:8080',
+        port: 9980,
+        open: false
+    });
+}
 
 // Copy components and vendor scripts
 mix.copyDirectory('resources/js/components', 'public/js/components');
