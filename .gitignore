@@ -16,3 +16,6 @@ npm-debug.log
 yarn-error.log
 .vscode
 psysh
+*.css.map
+*.sass.map
+*.scss.map
