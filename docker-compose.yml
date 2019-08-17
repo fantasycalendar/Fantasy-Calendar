@@ -23,8 +23,6 @@ services:
     user: "1000:1000"
     volumes:
       - ./:/fantasy-calendar
-    ports:
-      - "9980:8080"
 
   fantasy-calendar-php:
     container_name: fantasy_calendar_php
@@ -64,6 +62,9 @@ services:
   fantasy-calendar-npm-install:
     image: node
     user: "1000:1000"
+    ports:
+      - "9980:9980"
+      - "3001:3001"
     working_dir: "/fantasy-calendar"
     volumes:
       - ./:/fantasy-calendar
