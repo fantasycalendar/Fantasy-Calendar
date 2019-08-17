@@ -59,7 +59,7 @@ function set_up_edit_inputs(set_up){
 	location_list = $('#location_list');
 	calendar_link_select = $('#calendar_link_select');
 	calendar_link_list = $('#calendar_link_list');
-	
+
 	var previous_view_type = 'owner';
 	var first_switch = true;
 	view_type = 'owner';
@@ -188,7 +188,7 @@ function set_up_edit_inputs(set_up){
 	if(set_up){
 		set_up_edit_values();
 	}
-	
+
 	/* ------------------- Dynamic and static callbacks ------------------- */
 
 	$('#calendar_name').change(function(){
@@ -296,7 +296,7 @@ function set_up_edit_inputs(set_up){
 			'interval': '1',
 			'offset': 0
 		};
-		
+
 		if(!static_data.year_data.leap_days){
 			static_data.year_data.leap_days = [];
 		}
@@ -361,7 +361,7 @@ function set_up_edit_inputs(set_up){
 
 		var name = $(this).prev();
 		var id = season_sortable.children().length;
-	
+
 		stats = {
 			"name": escapeHtml(name.val()),
 			"time": {
@@ -394,7 +394,7 @@ function set_up_edit_inputs(set_up){
 		reindex_location_list();
 		name.val("");
 		do_error_check();
-		
+
 		$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0);
 
 	});
@@ -415,7 +415,7 @@ function set_up_edit_inputs(set_up){
 
 		var name = $(this).prev();
 		var id = location_list.children().length;
-	
+
 		stats = {
 			"name": escapeHtml(name.val()),
 			"seasons": [],
@@ -585,7 +585,7 @@ function set_up_edit_inputs(set_up){
 		var name = $(this).prev();
 
 		var slug = slugify(name.val());
-		
+
 		var stats = {
 			"name": escapeHtml(name.val()),
 			"category_settings":{
@@ -611,7 +611,7 @@ function set_up_edit_inputs(set_up){
 		repopulate_event_category_lists();
 
 		name.val('');
-		
+
 		do_error_check();
 
 	});
@@ -736,7 +736,7 @@ function set_up_edit_inputs(set_up){
 				reindex_event_category_list();
 				static_data.event_data.categories = static_data.event_data.categories.filter(function(category) { return category; });
 				repopulate_event_category_lists();
-				
+
 				break;
 
 			case "events_sortable":
@@ -845,7 +845,7 @@ function set_up_edit_inputs(set_up){
 
 			delete static_data.moons[key].cycle;
 			delete static_data.moons[key].shift;
-			
+
 			$(this).closest('.sortable-container').find('.custom_cycle').val(value).change();
 
 		}else{
@@ -853,7 +853,7 @@ function set_up_edit_inputs(set_up){
 			var strings = $(this).closest('.sortable-container').find('.custom_cycle').val().split(',');
 
 			var value = (strings[strings.length-1]|0)+1;
-			
+
 			$(this).closest('.sortable-container').find('.cycle').val(value).change();
 			$(this).closest('.sortable-container').find('.shift').val(0).change();
 
@@ -873,7 +873,7 @@ function set_up_edit_inputs(set_up){
 	$(document).on('change', '.custom_cycle', function(e){
 
 		$(this).val($(this).val().replace(/[`!+~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z ]/g,'').replace(/,{2,}/g,","));
-		
+
 		var value = $(this).val();
 
 		var key = $(this).closest('.sortable-container').attr('key')|0;
@@ -1107,9 +1107,9 @@ function set_up_edit_inputs(set_up){
 		}else{
 			offset.prop('disabled', true).val(0);
 		}
-		
+
 		text +=  ".";
-		
+
 		$(this).closest('.sortable-container').find('.timespan_variance_output').html(text);
 
 		$('.leap_day_occurance_input').change();
@@ -1118,7 +1118,7 @@ function set_up_edit_inputs(set_up){
 
     $(document).on('keyup', '.leap_day_occurance_input', function(){
         var interval = $(this).closest('.sortable-container').find('.interval');
-        interval.val(interval.val().replace(/[ `+~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z]/g, "")); 
+        interval.val(interval.val().replace(/[ `+~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z]/g, ""));
     });
 
 	$(document).on('change', '.leap_day_occurance_input', function(){
@@ -1240,7 +1240,7 @@ function set_up_edit_inputs(set_up){
 					}else{
 						text += ` ${ordinal_suffix_of(sorted[i])} ${timespan_name}`;
 					}
-						
+
 					text += ` (year ${total_offset}, ${(total_offset+sorted[i]*timespan_interval)}, ${total_offset+sorted[i]*2*timespan_interval}...)`;
 
 				}
@@ -1369,9 +1369,9 @@ function set_up_edit_inputs(set_up){
 	input_container.change(function(e){
 
 		if(e.originalEvent){
-			var target = $(e.originalEvent.target);	
+			var target = $(e.originalEvent.target);
 		}else{
-			var target = $(e.target);	
+			var target = $(e.target);
 		}
 
 		if(target.hasClass('invalid')){
@@ -1429,7 +1429,7 @@ function set_up_edit_inputs(set_up){
 					if(target.attr('class').indexOf('slider_input') > -1){
 						value = value/100;
 					}
-					
+
 					current_calendar_data[key] = value;
 
 				}
@@ -1553,13 +1553,13 @@ function add_timespan_to_sortable(parent, key, data){
 			element.push("<div class='btn_cancel btn btn-danger icon-remove'></div>");
 			element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
 		element.push("</div>");
-				
+
 		element.push("<div class='detail-container hidden'>");
 
 			element.push("<div class='detail-row'>");
 
 				element.push("<div class='detail-column full center-text bold-text big-text italics-text'>");
-						
+
 					element.push(data.type == "month" ? "Month" : "Intercalary month");
 
 				element.push("</div>");
@@ -1575,7 +1575,7 @@ function add_timespan_to_sortable(parent, key, data){
 							element.push("<div class='detail-row'>");
 									element.push("<div class='detail-text'>Interval:</div>");
 									element.push(`<input type='number' min='1' class='form-control timespan_occurance_input interval dynamic_input small-input' data='year_data.timespans.${key}' key='interval' value='${data.interval}' />`);
-							element.push("</div>");	
+							element.push("</div>");
 						element.push("</div>");
 
 						element.push("<div class='detail-column half'>");
@@ -1610,7 +1610,7 @@ function add_timespan_to_sortable(parent, key, data){
 							}
 
 							text +=  ".";
-							
+
 
 							element.push(text);
 
@@ -1659,9 +1659,9 @@ function add_timespan_to_sortable(parent, key, data){
 				}
 
 			element.push("</div>");
-		
+
 		element.push("</div>");
-		
+
 	parent.append(element.join(""));
 }
 
@@ -1688,7 +1688,7 @@ function add_leap_day_to_list(parent, key, data){
 			element.push("<div class='detail-row'>");
 
 				element.push("<div class='detail-column full center-text bold-text big-text italics-text'>");
-						
+
 					element.push(!data.intercalary ? "Leap day" : "Intercalary leap day");
 
 				element.push("</div>");
@@ -1700,7 +1700,7 @@ function add_leap_day_to_list(parent, key, data){
 					element.push("</div>");
 
 					element.push("<div class='date_control'>");
-										
+
 						element.push(`<input type='hidden' class='form-control-sm year-input hidden' value='0'>`);
 
 						element.push("<div class='detail-row'>");
@@ -1726,7 +1726,7 @@ function add_leap_day_to_list(parent, key, data){
 								element.push("<div class='detail-row'>");
 										element.push("<div class='detail-text'>Removes day instead: </div>");
 										element.push(`<input type='checkbox' class='form-control removes-day dynamic_input' data='year_data.leap_days.${key}' key='removes_day' ${(data.removes_day ? "checked" : "")} />`);
-								element.push("</div>");	
+								element.push("</div>");
 							element.push("</div>");
 						element.push("</div>");
 
@@ -1735,7 +1735,7 @@ function add_leap_day_to_list(parent, key, data){
 								element.push("<div class='detail-row'>");
 										element.push("<div class='detail-text'>Adds week day: </div>");
 										element.push(`<input type='checkbox' class='form-control adds-week-day dynamic_input' data='year_data.leap_days.${key}' key='adds_week_day' ${(data.adds_week_day ? "checked" : "")} />`);
-								element.push("</div>");	
+								element.push("</div>");
 							element.push("</div>");
 						element.push("</div>");
 
@@ -1756,7 +1756,7 @@ function add_leap_day_to_list(parent, key, data){
 									element.push("<div class='detail-row'>");
 											element.push("<div class='detail-text'>Removes week day: </div>");
 											element.push(`<input type='checkbox' class='form-control removes-week-day dynamic_input' data='year_data.leap_days.${key}' key='removes_week_day' ${(data.removes_week_day ? "checked" : "")} />`);
-									element.push("</div>");	
+									element.push("</div>");
 								element.push("</div>");
 							element.push("</div>");
 						element.push("</div>");
@@ -1800,7 +1800,7 @@ function add_leap_day_to_list(parent, key, data){
 							element.push("<div class='detail-row'>");
 									element.push("<div class='detail-text'>Interval:</div>");
 									element.push(`<input type='text' class='form-control leap_day_occurance_input interval dynamic_input' data='year_data.leap_days.${key}' key='interval' value='${data.interval}' />`);
-							element.push("</div>");	
+							element.push("</div>");
 						element.push("</div>");
 
 						element.push("<div class='detail-column third'>");
@@ -1830,7 +1830,7 @@ function add_leap_day_to_list(parent, key, data){
 
 						var leap_interval = sorted[i];
 						var leap_offset = data.offset;
-						
+
 						var total_offset = (((leap_interval-leap_offset)%leap_interval)*timespan_interval);
 
 						if(total_offset == 0){
@@ -1931,7 +1931,7 @@ function add_moon_to_list(parent, key, data){
 					element.push("</div>");
 				element.push("</div>");
 			element.push("</div>");
-				
+
 			element.push("<div class='separator'></div>");
 
 			element.push(`<div class='full no_custom_phase_container ${data.custom_phase ? "hidden" : ""}'>`);
@@ -1968,7 +1968,7 @@ function add_moon_to_list(parent, key, data){
 				element.push("</div>");
 				element.push(`<div class='detail-row custom_phase_text italics-text small-text'>${data.custom_phase ? `This moon has ${data.custom_cycle.split(',').length} phases, with a granularity of ${data.granularity}.` : ''}</div>`);
 			element.push("</div>");
-				
+
 			element.push("<div class='separator'></div>");
 
 			element.push("<div class='detail-row'>");
@@ -2012,7 +2012,7 @@ function add_season_to_sortable(parent, key, data){
 			element.push("<div class='btn_cancel btn btn-danger icon-remove'></div>");
 			element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
 		element.push("</div>");
-				
+
 		element.push("<div class='detail-container hidden'>");
 
 			element.push(`<div class='detail-row season-duration'>`);
@@ -2031,7 +2031,7 @@ function add_season_to_sortable(parent, key, data){
 					element.push("</div>");
 				element.push("</div>");
 			element.push("</div>");
-				
+
 			element.push("<div class='separator'></div>");
 
 			element.push("<div class='clock_inputs'>");
@@ -2068,7 +2068,7 @@ function add_season_to_sortable(parent, key, data){
 				element.push("</div>");
 			element.push("</div>");
 		element.push("</div>");
-		
+
 	parent.append(element.join(""));
 }
 
@@ -2083,7 +2083,7 @@ function add_location_to_list(parent, key, data){
 				element.push(`<input type='text' value='${data.name}' tabindex='${(500+key)}' class='name-input small-input form-control dynamic_input location-name' data='seasons.locations.${key}' key='name'/>`);
 			element.push("</div>");
 		element.push("</div>");
-				
+
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
 			element.push("<div class='btn_remove btn btn-danger icon-trash'></div>");
@@ -2197,9 +2197,9 @@ function add_location_to_list(parent, key, data){
 						element.push("</div>");
 					element.push("</div>");
 				element.push("</div>");
-				
+
 				element.push("<div class='separator'></div>");
-			
+
 			element.push("</div>");
 
 			}
@@ -2291,7 +2291,7 @@ function add_location_to_list(parent, key, data){
 			element.push("</div>");
 
 		element.push("</div>");
-		
+
 	parent.append(element.join(""));
 }
 
@@ -2326,7 +2326,7 @@ function add_cycle_to_sortable(parent, key, data){
 							element.push("<div class='detail-row'>");
 									element.push("<div class='detail-text'>Length:</div>");
 									element.push(`<input type='number' class='form-control length dynamic_input' min='1' data='cycles.${key}' key='length' value='${data.length}' />`);
-							element.push("</div>");	
+							element.push("</div>");
 						element.push("</div>");
 
 						element.push("<div class='detail-column half'>");
@@ -2603,7 +2603,7 @@ function add_category_to_list(parent, key, data){
 			element.push("</div>");
 
 			element.push("<div class='detail-row'>");
-				
+
 				element.push("<div class='detail-row'>");
 					element.push("<div class='detail-column half'>");
 						element.push("<div class='detail-text'>Fully hide event:</div>");
@@ -2612,7 +2612,7 @@ function add_category_to_list(parent, key, data){
 						element.push(`<input type='checkbox' class='form-control dynamic_input' data='event_data.categories.${key}.event_settings' key='hide_full' ${(data.event_settings.hide_full ? "checked" : "")} />`);
 					element.push("</div>");
 				element.push("</div>");
-			
+
 				element.push("<div class='detail-row'>");
 					element.push("<div class='detail-column half'>");
 						element.push("<div class='detail-text'>Hide event:</div>");
@@ -2621,7 +2621,7 @@ function add_category_to_list(parent, key, data){
 						element.push(`<input type='checkbox' class='form-control dynamic_input local_hide' data='event_data.categories.${key}.event_settings' key='hide' ${(data.event_settings.hide ? "checked" : "")} />`);
 					element.push("</div>");
 				element.push("</div>");
-			
+
 				element.push("<div class='detail-row'>");
 					element.push("<div class='detail-column half'>");
 						element.push("<div class='detail-text'>Don't print event:</div>");
@@ -2712,7 +2712,7 @@ function error_check(parent, rebuild){
 			errors.push(`Eras <i>${static_data.eras[era_i].name}</i> and <i>${static_data.eras[era_i+1].name}</i> both share the same date. One has to come after another.`);
 		}
 	}
-	
+
 	for(var season_i = 0; season_i < static_data.seasons.data.length; season_i++){
 		var season = static_data.seasons.data[season_i];
 		if(season.transition_length == 0){
@@ -2753,7 +2753,7 @@ function error_check(parent, rebuild){
 				evaluate_sun();
 			}
 		}
-		
+
 
 	}else{
 
@@ -2762,7 +2762,7 @@ function error_check(parent, rebuild){
 		$('.invalid').each(function(){
 			errors.push($(this).attr('error_msg'));
 		})
-		
+
 		text.push(`Errors:<ol>`);
 
 		for(var i = 0; i < errors.length; i++){
@@ -2823,7 +2823,7 @@ function populate_first_day_select(val){
 		if($(this).find('.unique-week-input').is(':checked')){
 			custom_week = true;
 		}
-	});	
+	});
 
 	var i = 0;
 
@@ -2848,7 +2848,7 @@ function populate_first_day_select(val){
 	var html = [];
 
 	for(var i = 0; i < week.length; i++){
-		
+
 		html.push(`<option value='${i+1}'>${escapeHtml(week[i])}</option>`);
 
 	}
@@ -2892,7 +2892,7 @@ function repopulate_weekday_select(elements){
 		}
 
 		for(var i = 0; i < week.length; i++){
-			
+
 			html.push(`<option value='${i+1}'>${escapeHtml(week[i])}</option>`);
 
 		}
@@ -2906,7 +2906,7 @@ function repopulate_weekday_select(elements){
 function reindex_timespan_sortable(){
 
 	var tabindex = 100;
-	
+
 	static_data.year_data.timespans = [];
 
 	timespan_sortable.children().each(function(i){
@@ -2952,7 +2952,7 @@ function reindex_timespan_sortable(){
 function reindex_leap_day_list(){
 
 	var tabindex = 200;
-	
+
 	static_data.year_data.leap_days = [];
 
 	leap_day_list.children().each(function(i){
@@ -2978,7 +2978,7 @@ function reindex_leap_day_list(){
 		};
 
 	});
-	
+
 	do_error_check();
 
 	evaluate_remove_buttons();
@@ -3157,7 +3157,7 @@ function reindex_location_list(){
 }
 
 function reindex_cycle_sortable(){
-	
+
 	static_data.cycles.data = [];
 
 	$('#cycle_sortable').children().each(function(i){
@@ -3185,7 +3185,7 @@ function reindex_cycle_sortable(){
 }
 
 function reindex_moon_list(){
-	
+
 	static_data.moons = [];
 
 	$('#moon_list').children().each(function(i){
@@ -3236,7 +3236,7 @@ function reindex_moon_list(){
 function reindex_era_list(){
 
 	sort_era_list_by_date();
-	
+
 	static_data.eras = [];
 
 	era_list.children().each(function(i){
@@ -3377,7 +3377,7 @@ function evaluate_season_lengths(){
 	var data = {
 		'season_length': 0
 	};
-	
+
 	var epoch_start = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year)).epoch;
 	var epoch_end = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year)+1).epoch-1;
 	var season_length = epoch_end-epoch_start;
@@ -3436,7 +3436,7 @@ function evaluate_save_button(){
 		text = static_same && dynamic_same && calendar_name_same ? "No changes to save" : "Save calendar";
 
 		create_button.prop('disabled', static_same && dynamic_same && calendar_name_same).text(text);
-		
+
 	}
 
 }
@@ -3482,7 +3482,7 @@ function populate_calendar_lists(){
 					if(owner.hash == hash){
 						owner.name = "this calendar";
 					}
-					
+
 				}else{
 
 					var owner = false;
@@ -3496,7 +3496,7 @@ function populate_calendar_lists(){
 		calendar_link_select.html(html.join(''));
 
 	});
-	
+
 	$('#link_calendar').prop('disabled', true);
 
 }
@@ -3559,7 +3559,7 @@ function recalculate_era_epochs(){
 	for(var i = 0; i < static_data.eras.length; i++){
 		static_data.eras[i].date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, static_data.eras[i].date.year), static_data.eras[i].date.timespan, static_data.eras[i].date.day).epoch;
 	}
-	
+
 }
 
 function set_up_edit_values(){
@@ -3600,7 +3600,7 @@ function set_up_edit_values(){
 	global_week_sortable.sortable('refresh');
 
 	if(static_data.year_data.timespans.length > 0){
-	
+
 		for(var i = 0; i < static_data.year_data.timespans.length; i++){
 			add_timespan_to_sortable(timespan_sortable, i, static_data.year_data.timespans[i]);
 		}
@@ -3673,9 +3673,9 @@ function set_up_edit_values(){
 		for(var i = 0; i < static_data.eras.length; i++){
 			add_era_to_list(era_list, i, static_data.eras[i])
 		}
-		
+
 		era_list.children().each(function(i){
-			
+
 			repopulate_timespan_select($(this).find('.timespan-list'), static_data.eras[i].date.timespan, false);
 			repopulate_day_select($(this).find('.timespan-day-list'), static_data.eras[i].date.day, false);
 
@@ -3708,7 +3708,7 @@ function set_up_edit_values(){
 	$('#cycle_test_input').click();
 
 	recalc_stats();
-	
+
 	$('#enable_weather').change();
 
 	set_up_view_values();
@@ -3724,7 +3724,7 @@ function get_category(search) {
 		return {id: -1};
 	}
 
-	return results;
+	return results[0];
 }
 
 function empty_edit_values(){
