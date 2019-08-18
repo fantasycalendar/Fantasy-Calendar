@@ -3599,8 +3599,8 @@ function set_up_edit_values(){
 	});
 
 	for(var i = 0; i < static_data.year_data.global_week.length; i++){
-		name = static_data.year_data.global_week[i];
-		add_weekday_to_sortable(global_week_sortable, i, name);
+		let weekdayname = static_data.year_data.global_week[i];
+		add_weekday_to_sortable(global_week_sortable, i, weekdayname);
 	}
 	populate_first_day_select(static_data.year_data.first_day);
 	global_week_sortable.sortable('refresh');
