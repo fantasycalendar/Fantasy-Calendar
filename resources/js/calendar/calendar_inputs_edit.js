@@ -1485,7 +1485,7 @@ function set_up_edit_inputs(set_up){
 
 			switch(target.attr('type')){
 				case "number":
-					var value = (target.val()|0);
+					var value = parseFloat(target.val());
 					break;
 
 				case "checkbox":

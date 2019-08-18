@@ -301,9 +301,13 @@ function eval_clock(){
 
 	element = [];
 	for(var i = 0; i < clock_hours; i++){
-		var rotation = ((360/clock_hours)*i);
+
 		var hour = (i-static_data.clock.offset)%clock_hours;
-		hour = hour < 0 ? hour+clock_hours : hour;
+
+		var rotation = ((360/clock_hours)*hour);
+
+		hour = hour < 0 ? Math.floor(hour+clock_hours) : Math.floor(hour);
+
 		element.push(`<div class='clock_hour_text_container' style='transform: rotate(${rotation+180}deg);'><span class='clock_hour_text' style='transform: rotate(-${rotation+180}deg);'>${hour}</span></div>`)
 		element.push(`<img class='clock_hour' src='/resources/clock_hour.png' style='transform: rotate(${rotation}deg);'>`);
 	}
@@ -326,6 +330,9 @@ function eval_current_time(){
 	var clock_hour = dynamic_data.hour;
 	var clock_minute = dynamic_data.minute;
 	var clock_time = clock_hour + (clock_minute/clock_minutes);
+
+	console.log(static_data.clock)
+
 	clock_time = ((clock_time+static_data.clock.offset)%clock_hours)
 	clock_time = clock_time < 0 ? clock_time+clock_hours : clock_time;
 
