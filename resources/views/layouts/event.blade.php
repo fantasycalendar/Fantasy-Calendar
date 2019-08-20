@@ -40,7 +40,7 @@
 <div id="event_edit_background" class='clickable_background hidden'>
 	<div class='event-basic-container'>
 		<div class='event-basic-wrapper'>
-			<form id="event-form" class="event-wrapper" action="post"> 
+			<form id="event-form" class="event-wrapper" action="post">
 
 				<div class='close-ui-btn-bg'></div>
 				<i class="close_ui_btn icon-remove-circle"></i>
@@ -49,7 +49,7 @@
 				<div class='detail-row'>
 					<input type='text' class='form-control event_name' name='event_name' placeholder='Event name' autofocus='' />
 				</div>
-				
+
 				<div class='detail-row'>
 					<textarea class='form-control event_desc editable' name='event_desc' placeholder='Event description' autofocus=''></textarea>
 				</div>
@@ -93,7 +93,7 @@
 					<div class='detail-row'>
 
 						<ol class='form-control group_list_root' id='event_conditions_container'>
-							
+
 						</ol>
 
 					</div>
@@ -134,7 +134,7 @@
 							</div>
 						</label>
 					</div>
-				
+
 					<div class='detail-column half'>
 						<label class='form-control checkbox'>
 							<input type='checkbox' id='show_first_last' name='show_first_last'> Show only first and last event
@@ -158,14 +158,14 @@
 					<div class='detail-row'>
 						<div class='detail-column full'>
 							<label class='form-control checkbox'>
-								<input type='checkbox' id='event_hide_full' name='event_hide_full'> Hide ENTIRELY (useful for event-based-events)  
+								<input type='checkbox' id='event_hide_full' name='event_hide_full'> Hide ENTIRELY (useful for event-based-events)
 							</label>
 						</div>
 					</div>
 
 					<div class='detail-column half'>
 						<label class='form-control checkbox'>
-							<input type='checkbox' id='event_hide_players' name='event_hide_players'> Hide from players  
+							<input type='checkbox' id='event_hide_players' name='event_hide_players'> Hide from players
 						</label>
 					</div>
 
@@ -216,13 +216,13 @@
 
 				<div class='detail-row'>
 					<div class='detail-column full'>
-						<list id='event_messagebox'></list>
+						<div id='event_messagebox'></div>
 					</div>
 				</div>
 
 				<div class='btn btn-lg btn-primary btn-block' id='btn_event_save'>Save</div>
 				<div class='btn btn-sm btn-danger btn-block' id='btn_event_delete'>Delete</div>
-				
+
 			</form>
 		</div>
 	</div>
@@ -231,13 +231,13 @@
 <div id="html_edit_background" class='clickable_background hidden'>
 	<div class='event-basic-container'>
 		<div class='event-basic-wrapper'>
-			<form id="html-form" class="event-wrapper" action="post"> 
+			<form id="html-form" class="event-wrapper" action="post">
 
 				<div class='close-ui-btn-bg'></div>
 				<i class="close_ui_btn icon-remove-circle"></i>
 
 				<h2 class='event-form-heading'>Edit HTML</h2>
-				
+
 				<div class='detail-row'>
 					<textarea class='form-control html_input editable' name='html_input' placeholder='Event description' autofocus=''></textarea>
 				</div>

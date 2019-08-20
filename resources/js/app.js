@@ -4,8 +4,6 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-require('./bootstrap');
-
 window.Vue = require('vue');
 
 /**
@@ -28,5 +26,24 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
  */
 
 const app = new Vue({
-    el: '#app',
+    el: '#content',
+    data: {
+        eventcolors: [
+            "Dark-Solid",
+            "Red",
+            "Pink",
+            "Purple",
+            "Deep-Purple",
+            "Blue",
+            "Light-Blue",
+            "Cyan",
+            "Teal",
+            "Green",
+            "Light-Green",
+            "Lime",
+            "Yellow",
+            "Orange",
+            "Blue-Grey"
+        ]
+    }
 });

@@ -1,3 +1,7 @@
+@push('head')
+    <script src="/js/app.js" defer></script>
+@endpush
+
 <form id="input_container">
 
 	@yield('label')
@@ -6,7 +10,7 @@
 		<div class="detail-row">
 			<label class="detail-column third">
 				<div class="form-check form-check-inline form-control form-control-sm">
-					<input type='radio' name='view_type' value='owner' checked> 
+					<input type='radio' name='view_type' value='owner' checked>
 					<span>
 						Owner View
 					</span>
@@ -14,7 +18,7 @@
 			</label>
 			<label class="detail-column third">
 				<div class="form-check form-check-inline form-control form-control-sm">
-					<input type='radio' name='view_type' value='player'> 
+					<input type='radio' name='view_type' value='player'>
 					<span>
 						Player View
 					</span>
@@ -22,7 +26,7 @@
 			</label>
 			<label class="detail-column third">
 				<div class="form-check form-check-inline form-control form-control-sm">
-					<input type='radio' name='view_type' value='weather'> 
+					<input type='radio' name='view_type' value='weather'>
 					<span>
 						Climate view
 					</span>
@@ -86,7 +90,7 @@
 		<input id="collapsible_date" class="toggle" type="checkbox">
 		<label for="collapsible_date" class="lbl-toggle lbl-text">Current Date & Time <a target="_blank" title='Fantasy Calendar Wiki: Date' href='https://wiki.fantasy-calendar.com/index.php?title=Date' class="wiki"><i class="icon-question-sign"></i></a></label>
 		<div class="collapsible-content">
-			
+
 			<div id='clock'></div>
 
 			<div class='detail-row date_control' id='date_inputs'>
@@ -478,7 +482,7 @@
 			</div>
 
 			<div class='detail-row sortable' id='season_sortable'></div>
-			
+
 			<div class='detail-row small-text' id='season_length_text'></div>
 
 			<div class='separator'></div>
@@ -628,10 +632,10 @@
 		<div class="collapsible-content">
 			<div class="detail-row">
 				Cycle format:
-			</div>	
+			</div>
 			<div class="detail-row">
 				<input type='text' id='cycle_format' class='form-control name static_input' data='cycles' key='format' placeholder='Cycle format'>
-			</div>	
+			</div>
 
 			<div class='separator'></div>
 
@@ -739,7 +743,7 @@
 				</label>
 
 				<label class="form-control full setting first">
-					<input type='checkbox' class='margin-right static_input' data='settings' key='show_era_abbreviation'> 
+					<input type='checkbox' class='margin-right static_input' data='settings' key='show_era_abbreviation'>
 					<span>
 						Show era abbreviation
 					</span>
@@ -747,7 +751,7 @@
 				</label>
 
 				<label class="form-control full setting last">
-					<input type='checkbox' class='margin-right static_input' data='settings' key='show_current_month'> 
+					<input type='checkbox' class='margin-right static_input' data='settings' key='show_current_month'>
 					<span>
 						Show only current month
 					</span>
@@ -759,7 +763,7 @@
 				<div class='bold-text'>Player View Settings:</div>
 
 				<label class="form-control full setting first">
-					<input type='checkbox' class='margin-right static_input' data='settings' key='allow_view'> 
+					<input type='checkbox' class='margin-right static_input' data='settings' key='allow_view'>
 					<span>
 						Allow advancing view in calendar
 					</span>
@@ -767,7 +771,7 @@
 				</label>
 
 				<label class="form-control full setting">
-					<input type='checkbox' class='margin-right static_input' data='settings' key='only_backwards'> 
+					<input type='checkbox' class='margin-right static_input' data='settings' key='only_backwards'>
 					<span>
 						Limit to only backwards view
 					</span>
@@ -775,7 +779,7 @@
 				</label>
 
 				<label class="form-control full setting last">
-					<input type='checkbox' class='margin-right static_input' data='settings' key='only_reveal_today'> 
+					<input type='checkbox' class='margin-right static_input' data='settings' key='only_reveal_today'>
 					<span>
 						Show only up to current day
 					</span>
@@ -787,7 +791,7 @@
 				<div class='bold-text'>Hiding Settings:</div>
 
 				<label class="form-control full setting first">
-					<input type='checkbox' class='margin-right static_input' data='settings' key='hide_moons'> 
+					<input type='checkbox' class='margin-right static_input' data='settings' key='hide_moons'>
 					<span>
 						Hide all moons from players
 					</span>
@@ -795,7 +799,7 @@
 				</label>
 
 				<label class="form-control full setting">
-					<input type='checkbox' class='margin-right static_input' data='settings' key='hide_clock'> 
+					<input type='checkbox' class='margin-right static_input' data='settings' key='hide_clock'>
 					<span>
 						Hide time from players
 					</span>
@@ -803,7 +807,7 @@
 				</label>
 
 				<label class="form-control full setting">
-					<input type='checkbox' class='margin-right static_input' data='settings' key='hide_events'> 
+					<input type='checkbox' class='margin-right static_input' data='settings' key='hide_events'>
 					<span>
 						Hide all events from players
 					</span>
@@ -811,7 +815,7 @@
 				</label>
 
 				<label class="form-control full setting">
-					<input type='checkbox' class='margin-right static_input' data='settings' key='hide_future_weather'> 
+					<input type='checkbox' class='margin-right static_input' data='settings' key='hide_future_weather'>
 					<span>
 						Hide future weather from players
 					</span>
@@ -819,7 +823,7 @@
 				</label>
 
 				<label class="form-control full setting">
-					<input type='checkbox' class='margin-right static_input' data='settings' key='hide_all_weather'> 
+					<input type='checkbox' class='margin-right static_input' data='settings' key='hide_all_weather'>
 					<span>
 						Hide ALL weather from players
 					</span>
@@ -827,7 +831,7 @@
 				</label>
 
 				<label class="form-control full setting last">
-					<input type='checkbox' class='margin-right static_input' data='settings' key='hide_eras'> 
+					<input type='checkbox' class='margin-right static_input' data='settings' key='hide_eras'>
 					<span>
 						Hide era from players
 					</span>
@@ -841,7 +845,7 @@
 				<div class='bold-text'>Display Settings:</div>
 
 				<label class="form-control full setting first">
-					<input type='checkbox' class='margin-right static_input' refresh='false' data='settings' key='add_month_number' onclick="setTimeout(calendar_layouts.add_month_number, 0);"> 
+					<input type='checkbox' class='margin-right static_input' refresh='false' data='settings' key='add_month_number' onclick="setTimeout(calendar_layouts.add_month_number, 0);">
 					<span>
 						Add month number to months
 					</span>
@@ -849,7 +853,7 @@
 				</label>
 
 				<label class="form-control full setting">
-					<input type='checkbox' class='margin-right static_input' refresh='false' data='settings' key='add_year_day_number' onclick="setTimeout(calendar_layouts.add_year_day_number, 0);"> 
+					<input type='checkbox' class='margin-right static_input' refresh='false' data='settings' key='add_year_day_number' onclick="setTimeout(calendar_layouts.add_year_day_number, 0);">
 					<span>
 						Add year day to each day
 					</span>
@@ -857,7 +861,7 @@
 				</label>
 
 				<label class="form-control full setting last">
-					<input type='checkbox' class='margin-right static_input' refresh='false' data='settings' key='year_zero_exists'> 
+					<input type='checkbox' class='margin-right static_input' refresh='false' data='settings' key='year_zero_exists'>
 					<span>
 						Year zero exists
 					</span>

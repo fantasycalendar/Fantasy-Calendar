@@ -5,7 +5,7 @@
     @include('templates._head_content')
 
 	<body class="page-{{ str_replace('.', '-', Route::currentRouteName()) }}">
-	
+
 		@include('templates._header')
 		<div id="content">
 			<div id="loading_background" class='basic-background hidden'>

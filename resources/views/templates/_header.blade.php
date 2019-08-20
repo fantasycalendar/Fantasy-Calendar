@@ -1,9 +1,9 @@
 <header id="header">
-			
+
 	<div id="header_left_container">
-		
+
 		<a href="/" id="logo"><img src="/resources/calendar-logo.png" alt="Logo"/></a>
-		
+
 		<a href="{{ route('calendars.create') }}"><div class="button" id="new_calendar">New Calendar</div></a>
 	</div>
 
@@ -12,7 +12,7 @@
 	</div>
 
 	<div id="header_right_container">
-	
+
 	<a href='/donate'><div id='donate-button' class='button'>Donate</div></a>
 
 	@if(Auth::check())
@@ -40,11 +40,11 @@
 <div id="login-background" class="basic-background">
 	<div class="basic-container">
 		<div class="basic-wrapper">
-			<form id="login-form" class="basic-form" method="POST">       
+			<form id="login-form" class="basic-form" method="POST">
 				<h3 class="basic-form-heading">Login</h3>
 				<input type="text" class="form-control" id="login_username" name="username" placeholder="Username" autofocus="" autocomplete="username" />
 				<input type="password" class="form-control" id="login_password" name="password" placeholder="Password" autocomplete="current-password"></input>
-				<list id="login_messagebox"></list>
+				<div id="login_messagebox"></div>
 				<label class="form-control checkbox">
 					<input type="checkbox" value="remember-me" id="login_rememberMe" name="rememberMe"> Remember me
 				</label>
