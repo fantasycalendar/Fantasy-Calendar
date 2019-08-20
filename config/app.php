@@ -166,6 +166,7 @@ return [
          * Package Service Providers...
          */
         GrahamCampbell\Markdown\MarkdownServiceProvider::class,
+        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
 
         /*
          * Application Service Providers...
