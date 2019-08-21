@@ -1,7 +1,3 @@
-@push('head')
-    <script src="/js/app.js" defer></script>
-@endpush
-
 <form id="input_container">
 
 	@yield('label')
