@@ -181,8 +181,8 @@
 
 		@if(Auth::check())
 			<div class='btn_container hidden'>
-				<button class='btn btn-danger btn_preview_date hidden' disabled key='year' value='-1'>< Year</button>
-				<button class='btn btn-danger btn_preview_date hidden' disabled key='timespan' value='-1'>< Month</button>
+				<button class='btn btn-danger btn_preview_date hidden' disabled fc-key='year' value='-1'>< Year</button>
+				<button class='btn btn-danger btn_preview_date hidden' disabled fc-key='timespan' value='-1'>< Month</button>
 			</div>
 		@endif
 
@@ -190,8 +190,8 @@
 
 		@if(Auth::check())
 			<div class='btn_container hidden'>
-				<button class='btn btn-success btn_preview_date hidden' disabled key='year' value='1'>Year ></button>
-				<button class='btn btn-success btn_preview_date hidden' disabled key='timespan' value='1'>Month ></button>
+				<button class='btn btn-success btn_preview_date hidden' disabled fc-key='year' value='1'>Year ></button>
+				<button class='btn btn-success btn_preview_date hidden' disabled fc-key='timespan' value='1'>Month ></button>
 			</div>
 		@endif
 

@@ -138,14 +138,14 @@ var eras = {
 
 					var era = static_data.eras[i];
 
-					if(era.date.epoch >= this.start_epoch && era.date.epoch < this.end_epoch){
+					if(!era.settings.starting_era && era.date.epoch >= this.start_epoch && era.date.epoch < this.end_epoch){
 						this.current_eras.push({
 							"id": i,
 							"position": 0,
 							"data": era
 						});
 					}else{
-						if(era.date.epoch < this.start_epoch){
+						if(era.settings.starting_era || era.date.epoch < this.start_epoch){
 							this.current_eras.push({
 								"id": i,
 								"position": -1000,

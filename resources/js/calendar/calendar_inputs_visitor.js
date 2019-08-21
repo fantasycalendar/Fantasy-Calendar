@@ -267,8 +267,8 @@ function highlight_preview_date(){
 function evaluate_settings(){
 
 	$('.btn_container').toggleClass('hidden', !owner && !static_data.settings.allow_view);
-	$('.btn_preview_date[key="year"]').prop('disabled', !owner && !static_data.settings.allow_view).toggleClass('hidden', !owner && !static_data.settings.allow_view);
-	$('.btn_preview_date[key="timespan"]').prop('disabled', !static_data.settings.show_current_month).toggleClass('hidden', !static_data.settings.show_current_month)
+	$('.btn_preview_date[fc-key="year"]').prop('disabled', !owner && !static_data.settings.allow_view).toggleClass('hidden', !owner && !static_data.settings.allow_view);
+	$('.btn_preview_date[fc-key="timespan"]').prop('disabled', !static_data.settings.show_current_month).toggleClass('hidden', !static_data.settings.show_current_month)
 
 }
 
@@ -330,8 +330,6 @@ function eval_current_time(){
 	var clock_hour = dynamic_data.hour;
 	var clock_minute = dynamic_data.minute;
 	var clock_time = clock_hour + (clock_minute/clock_minutes);
-
-	console.log(static_data.clock)
 
 	clock_time = ((clock_time+static_data.clock.offset)%clock_hours)
 	clock_time = clock_time < 0 ? clock_time+clock_hours : clock_time;

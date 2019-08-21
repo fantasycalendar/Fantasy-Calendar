@@ -432,7 +432,6 @@ var event_evaluator = {
 		function check_event_chain(id){
 
 			var current_event = event_evaluator.events[id];
-			console.log(current_event);
 
 			if(current_event.data.connected_events !== undefined && current_event.data.connected_events !== "false"){
 
