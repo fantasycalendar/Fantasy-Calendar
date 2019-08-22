@@ -853,10 +853,14 @@ function set_up_edit_inputs(set_up){
 
 			var strings = $(this).closest('.sortable-container').find('.custom_cycle').val().split(',');
 
-			var value = (strings[strings.length-1]|0)+1;
+			console.log(strings)
 
-			$(this).closest('.sortable-container').find('.cycle').val(value).change();
-			$(this).closest('.sortable-container').find('.shift').val(0).change();
+			var cycle = (strings.length|0);
+
+			var offset = (strings[0]|0);
+
+			$(this).closest('.sortable-container').find('.cycle').val(cycle).change();
+			$(this).closest('.sortable-container').find('.shift').val(offset).change();
 
 			delete static_data.moons[key].custom_cycle;
 		}
@@ -888,8 +892,6 @@ function set_up_edit_inputs(set_up){
 			$(this).toggleClass('invalid', invalid).attr('error_msg', invalid ? `${static_data.moons[key].name} has an invalid custom cycle. 31 is the highest possible number.` : '');
 
 		}else{
-
-			granularity = get_moon_granularity(cycle);
 
 			static_data.moons[key].granularity = granularity;
 
