@@ -39,7 +39,7 @@ You are responsible for the content ("Content") you create through the Service. 
     
 3. You must not seek to impersonate a third party or post comments which are falsely attributed to third parties.
 4. You must not use the Service for the promotion of products or services or for any purpose other than you own personal, non-commercial use.
-5. By contributing to the Service you confirm that it is your own original work and not copied from anyone else or infringing any third party’s intellectual property or other rights and complies with these Terms of Use and the Terms & Conditions.
+5. By contributing to the Service you confirm that it is your own original work and not copied from anyone else or infringing any third party’s intellectual property or other rights and complies with these Terms.
 6. By providing Content to us you grant to us a royalty free, perpetual, irrevocable, worldwide, non-exclusive licence to use, edit, moderate, copy and make the Content or any part of it available as it sees fit on the Service.
 7. We reserve the right to check, edit, moderate, and/or delete Content submitted by you. We reserve the right to prevent you from making comments if you repeatedly breach these Terms of Use. We will not enter into any discussion or correspondence with you or about you if it has decided to modify/delete your comments or to prevent you from commenting on the Service.
 
