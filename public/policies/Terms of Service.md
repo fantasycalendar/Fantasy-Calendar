@@ -26,11 +26,17 @@ We strongly advise you to read the terms and conditions and privacy policies of 
 You are responsible for the content ("Content") you create through the Service. The Content includes, but is not limited to, calendars, events, user comments, hot-linking, and image embedding.
 
 1. You may not submit Content to the Service that:
+
     a. is defamatory, offensive, sexist, homophobic, obscene, harassing, or threatening;
+    
     b. is in breach of (i) anyone’s privacy; or (ii) confidentiality;
+    
     c. infringes any third parties intellectual property rights;
+    
     d. may cause anxiety or encourage racial hatred or violence;
+    
     e. may prejudice legal proceedings.
+    
 3. You must not seek to impersonate a third party or post comments which are falsely attributed to third parties.
 4. You must not use the Service for the promotion of products or services or for any purpose other than you own personal, non-commercial use.
 5. By contributing to the Service you confirm that it is your own original work and not copied from anyone else or infringing any third party’s intellectual property or other rights and complies with these Terms of Use and the Terms & Conditions.
