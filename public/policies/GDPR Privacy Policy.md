@@ -49,8 +49,10 @@ We collect several different types of information for various purposes to provid
 #### Personal Data
 While using our Service, we may ask you to provide us with certain personally identifiable information that can be used to contact or identify you (“Personal Data”). Personally identifiable information may include, but is not limited to:
 
-#### Email address
-First name and last name
+* Email address
+* Username
+* IP Address
+
 We may use your Personal Data to contact you with newsletters, marketing or promotional materials and other information that may be of interest to you. You may opt out of receiving any, or all, of these communications from us by following the unsubscribe link or the instructions provided in any email we send.
 
 #### Usage Information
