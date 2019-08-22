@@ -14,6 +14,8 @@ function set_up_edit_inputs(set_up){
 
 	save_button.click(function(){
 
+		calendar_saving();
+
 		if(!static_same || (!static_same && !dynamic_same)){
 			update_all();
 		}else if(!dynamic_same){
@@ -316,13 +318,13 @@ function set_up_edit_inputs(set_up){
 
 	$(document).on('click', '.expand', function(){
 		if($(this).parent().parent().hasClass('collapsed')){
+			$('#calendar_container').addClass('container_collapsed');
 			$(this).parent().parent().removeClass('collapsed').addClass('expanded');
 			$(this).parent().parent().find('.detail-container').removeClass('hidden');
-			$(this).removeClass('icon-collapse').addClass('icon-collapse-top');
 		}else{
+			$('#calendar_container').removeClass('container_collapsed');
 			$(this).parent().parent().removeClass('expanded').addClass('collapsed');
 			$(this).parent().parent().find('.detail-container').addClass('hidden');
-			$(this).removeClass('icon-collapse-top').addClass('icon-collapse');
 		}
 	});
 
@@ -3476,6 +3478,34 @@ function adjustInput(element, int){
 
 }
 
+function calendar_saving(){
+
+	var text = "Saving..."
+
+	save_button.toggleClass('btn-secondary', true).toggleClass('btn-primary', false).toggleClass('btn-success', false).toggleClass('btn-warning', false).text(text);
+
+}
+
+function calendar_saved(){
+
+	calendar_name_same = calendar_name == prev_calendar_name;
+	static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
+	dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
+
+	var not_changed = static_same && dynamic_same && calendar_name_same;
+
+	if(not_changed){
+
+		var text = "Saved!"
+
+		save_button.prop('disabled', true).toggleClass('btn-secondary', false).toggleClass('btn-success', true).toggleClass('btn-primary', false).toggleClass('btn-warning', false).text(text);
+
+		setTimeout(evaluate_save_button, 3000);
+
+	}
+
+}
+
 function evaluate_save_button(){
 
 	if($('#btn_save').length){
@@ -3484,9 +3514,11 @@ function evaluate_save_button(){
 		static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
 		dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
 
-		text = static_same && dynamic_same && calendar_name_same ? "No changes to save" : "Save calendar";
+		var not_changed = static_same && dynamic_same && calendar_name_same;
 
-		save_button.prop('disabled', static_same && dynamic_same && calendar_name_same).text(text);
+		var text = static_same && dynamic_same && calendar_name_same ? "No changes to save" : "Save calendar";
+
+		save_button.prop('disabled', not_changed).toggleClass('btn-secondary', false).toggleClass('btn-success', not_changed).toggleClass('btn-primary', !not_changed).toggleClass('btn-warning', false).text(text);
 
 	}else if($('#btn_create').length){
 
@@ -3494,9 +3526,11 @@ function evaluate_save_button(){
 		static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
 		dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
 
-		text = static_same && dynamic_same && calendar_name_same ? "No changes to save" : "Save calendar";
+		var not_changed = static_same && dynamic_same && calendar_name_same;
 
-		create_button.prop('disabled', static_same && dynamic_same && calendar_name_same).text(text);
+		var text = static_same && dynamic_same && calendar_name_same ? "Cannot create yet" : "Create calendar";
+
+		create_button.prop('disabled', not_changed).toggleClass('btn-danger', not_changed).toggleClass('btn-success', !not_changed).text(text);
 
 	}
 
@@ -3630,7 +3664,7 @@ function set_up_edit_values(){
 	$('.static_input').each(function(){
 
 		var data = $(this).attr('data');
-		var key = $(this).attr('key');
+		var key = $(this).attr('fc-key');
 
 		var current_calendar_data = get_calendar_data(data);
 

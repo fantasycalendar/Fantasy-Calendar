@@ -13,7 +13,7 @@
     </div>
 
     <div class='wrap-collapsible margin-below'>
-        <button type="button" disabled id='btn_save' class='btn btn-lg btn-primary btn-block'>No changes to save</button>
+        <button type="button" disabled id='btn_save' class='btn btn-lg btn-success btn-block'>No changes to save</button>
 
         <button type="button" id='btn_delete' class='btn btn-sm btn-danger btn-block'>Delete</button>
     </div>

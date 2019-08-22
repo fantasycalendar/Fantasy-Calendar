@@ -118,12 +118,7 @@ function parse_json(json){
 				'leap_days':[]
 			},
 			'moons':[],
-			'clock':{
-				'enabled':false,
-				'hours':24,
-				'minutes':60,
-				'offset':0
-			},
+			'clock':{},
 			'seasons':{
 				'data':[],
 				'locations':[],

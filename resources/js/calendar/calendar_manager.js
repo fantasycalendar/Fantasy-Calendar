@@ -16,7 +16,7 @@ function bind_calendar_events(){
 
 	$('#input_collapse_btn').click(function(){
 		$("#input_container").toggleClass('inputs_collapsed');
-		$("#calendar").toggleClass('inputs_collapsed');
+		$("#calendar_container").toggleClass('inputs_collapsed');
 		evaluate_error_background_size();
 	})
 

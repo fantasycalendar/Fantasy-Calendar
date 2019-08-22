@@ -50,7 +50,7 @@ function update_name(){
 		data: {_method: 'PATCH', name: calendar_name, hash: hash},
 		success: function( result ){
 			prev_calendar_name = calendar_name;
-			evaluate_save_button();
+			calendar_saved();
 		},
 		error: function ( log )
 		{
@@ -92,7 +92,7 @@ function do_update_dynamic(){
 				prev_dynamic_data = clone(dynamic_data);
 			}
 
-			evaluate_save_button();
+			calendar_saved();
 
 			update_children_dynamic_data();
 
@@ -149,7 +149,7 @@ function do_update_all(){
 
 			update_children_dynamic_data();
 
-			evaluate_save_button();
+			calendar_saved();
 
 		},
 		error: function ( log )
