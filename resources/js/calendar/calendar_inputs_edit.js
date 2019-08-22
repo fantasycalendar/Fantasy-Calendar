@@ -3506,6 +3506,14 @@ function calendar_saved(){
 
 }
 
+function calendar_save_failed(){
+
+	var text = "Failed to save!"
+
+	save_button.prop('disabled', true).toggleClass('btn-secondary', false).toggleClass('btn-success', true).toggleClass('btn-primary', false).toggleClass('btn-warning', true).text(text);
+
+}
+
 function evaluate_save_button(){
 
 	if($('#btn_save').length){

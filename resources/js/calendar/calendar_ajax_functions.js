@@ -55,6 +55,7 @@ function update_name(){
 		error: function ( log )
 		{
 			console.log(log);
+			calendar_save_failed();
 		}
 	});
 }
@@ -99,7 +100,8 @@ function do_update_dynamic(){
 		},
 		error: function ( log )
 		{
-			console.log(log);z``
+			console.log(log);
+			calendar_save_failed();
 		}
 	});
 
@@ -155,6 +157,7 @@ function do_update_all(){
 		error: function ( log )
 		{
 			console.log(log);
+			calendar_save_failed();
 		}
 	});
 }
