@@ -67,7 +67,7 @@ services:
     working_dir: "/fantasy-calendar"
     volumes:
       - ./:/fantasy-calendar
-    command: ["npm", "run", "dev-install-watch"]
+    command: ["npm", "run", "dev-install-watch-poll"]
 
 volumes:
   fantasy-calendar-db:
