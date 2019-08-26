@@ -172,7 +172,7 @@ var eras = {
 					this.era = index;
 					if(owner || !static_data.settings.hide_eras){
 						var text = static_data.settings.show_era_abbreviation ? this.current_eras[this.era].data.abbreviation : this.current_eras[this.era].data.name;
-						this.internal_class.innerHTML = " - " + text;
+						this.internal_class.innerHTML = " " + text;
 					}
 				}else{
 					this.internal_class.innerHTML = "";
@@ -330,7 +330,7 @@ function update_current_day(recalculate){
 	}
 
 	var day_container = $(`[epoch=${dynamic_data.epoch}]`);
-
+	
 	day_container.addClass('current_day');
 
 	eval_current_time();
@@ -387,7 +387,7 @@ var calendar_layouts = {
 		this.timespans = data.timespans;
 		this.layout = calendar_layouts[static_data.settings.layout];
 	
-		this.layout.insert_year_follower();
+		this.insert_year_follower();
 
 		this.append_layout();
 
@@ -402,7 +402,8 @@ var calendar_layouts = {
 		this.year_data = this.data.year_data;
 		this.epoch_data = this.data.epoch_data;
 		this.timespans = this.data.timespans;
-		this.layout = calendar_layouts[static_data.settings.layout];
+		this.name_layout = static_data.settings.layout;
+		this.layout = calendar_layouts[this.name_layout];
 
 		for(var i = 0; i < Object.keys(this.timespans).length; i++){
 
@@ -426,7 +427,7 @@ var calendar_layouts = {
 
 		}
 	
-		this.layout.insert_year_follower();
+		this.insert_year_follower();
 
 		this.append_layout();
 
@@ -436,18 +437,18 @@ var calendar_layouts = {
 
 	},
 
+	insert_year_follower: function(){
+
+		var html = [];
+		html.push(`<div class='year'>Year ${calendar_layouts.year_data.era_year}`);
+		html.push("<span class='era'></span></div>");
+		html.push(`<div class='cycle'>${get_cycle(calendar_layouts.year_data.year).text}</div>`);
+
+		$('#top_follower_content').html(html.join('')).removeClass().addClass(this.name_layout);
+
+	},
+
 	grid: {
-
-		insert_year_follower: function(){
-
-			var html = [];
-			html.push(`<div class='year'>Year ${calendar_layouts.year_data.era_year}`);
-			html.push("<span class='era'></span></div>");
-			html.push(`<div class='cycle'>${get_cycle(calendar_layouts.year_data.year).text}</div>`);
-
-			$('#top_follower_content').html(html.join('')).removeClass().addClass('grid');
-
-		},
 
 		insert_day: function(epoch, weather_align, day_num, day_class, title){
 
@@ -742,18 +743,6 @@ var calendar_layouts = {
 
 	wide: {
 
-		insert_year_follower: function(){
-
-			var html = [];
-				
-			html.push(`<div class='year'>Year ${calendar_layouts.year_data.era_year}`);
-			html.push("<span class='era'></span></div>");
-			html.push(`<div class='cycle'>${get_cycle(calendar_layouts.year_data.year).text}</div>`);
-
-			$('#top_follower_content').html(html.join('')).removeClass().addClass('wide');
-
-		},
-
 		insert_day: function(epoch, weather_align, day_num, day_class, title){
 
 			if(static_data.settings.only_reveal_today && !owner && (calendar_layouts.year_data.year > dynamic_data.year || this.timespan.index > dynamic_data.timespan || (this.timespan.index == dynamic_data.timespan && this.timespan.day > dynamic_data.day))){
@@ -1045,18 +1034,6 @@ var calendar_layouts = {
 	},
 
 	vertical: {
-
-		insert_year_follower: function(){
-
-			var html = [];
-				
-			html.push(`<div class='year'>Year ${calendar_layouts.year_data.era_year}`);
-			html.push("<span class='era'></span></div>");
-			html.push(`<div class='cycle'>${get_cycle(calendar_layouts.year_data.year).text}</div>`);
-
-			$('#top_follower_content').html(html.join('')).removeClass().addClass('vertical');
-
-		},
 
 		insert_empty_day: function(day_class){
 			calendar_layouts.html.push(`<div class='empty_timespan_day ${day_class}'>`);

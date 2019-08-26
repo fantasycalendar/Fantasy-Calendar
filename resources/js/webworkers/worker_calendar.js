@@ -531,6 +531,8 @@ var calendar_builder = {
 			order.reverse();
 		}
 
+		last_year = undefined;
+
 		for(var year_i = 0; year_i < order.length; year_i++){
 
 			year_index = parseInt(order[year_i]);

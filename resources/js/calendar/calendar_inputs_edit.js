@@ -2625,7 +2625,7 @@ function add_era_to_list(parent, key, data){
 								element.push("<div class='detail-text'>Year:</div>");
 							element.push("</div>");
 							element.push("<div class='detail-column threequarter'>");
-								element.push(`<input type='number' class='form-control small-input dynamic_input threequarter year-input' refresh data='eras.${key}.date' fc-index='year' value='${data.date.year}'/>`);
+								element.push(`<input type='number' class='date form-control small-input dynamic_input threequarter year-input' refresh data='eras.${key}.date' fc-index='year' value='${data.date.year}'/>`);
 							element.push("</div>");
 						element.push("</div>");
 
@@ -2634,7 +2634,7 @@ function add_era_to_list(parent, key, data){
 								element.push("<div class='detail-text'>Timespan:</div>");
 							element.push("</div>");
 							element.push("<div class='detail-column threequarter'>");
-								element.push(`<select type='number' class='custom-select form-control-sm timespan-list dynamic_input threequarter' refresh data='eras.${key}.date' fc-index='timespan'>`);
+								element.push(`<select type='number' class='date custom-select form-control-sm timespan-list dynamic_input threequarter' refresh data='eras.${key}.date' fc-index='timespan'>`);
 								element.push("</select>");
 							element.push("</div>");
 						element.push("</div>");
@@ -2644,7 +2644,7 @@ function add_era_to_list(parent, key, data){
 								element.push("<div class='detail-text'>Day:</div>");
 							element.push("</div>");
 							element.push("<div class='detail-column threequarter'>");
-								element.push(`<select type='number' class='custom-select form-control-sm timespan-day-list dynamic_input threequarter' refresh data='eras.${key}.date' fc-index='day'>`);
+								element.push(`<select type='number' class='date custom-select form-control-sm timespan-day-list dynamic_input threequarter' refresh data='eras.${key}.date' fc-index='day'>`);
 								element.push("</select>");
 							element.push("</div>");
 						element.push("</div>");

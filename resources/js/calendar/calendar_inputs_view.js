@@ -411,9 +411,9 @@ function set_up_view_values(){
 		current_year.val(dynamic_data.year);
 		current_year.data('val', current_year.val());
 
-		repopulate_timespan_select(current_timespan, dynamic_data.timespan);
+		repopulate_timespan_select(current_timespan, dynamic_data.timespan, false);
 
-		repopulate_day_select(current_day, dynamic_data.day);
+		repopulate_day_select(current_day, dynamic_data.day, false);
 
 	}
 
