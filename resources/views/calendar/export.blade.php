@@ -39,11 +39,7 @@
 
             <div class='detail-row'>
 
-                <div id="export_container">
-
-                    { "name": "{{ $calendar->name }}", "static_data": @json($calendar->static_data),"dynamic_data": @json($calendar->dynamic_data)}
-
-                </div>
+                <textarea readonly id="export_container">{"name":"{{ $calendar->name }}","static_data":@json($calendar->static_data),"dynamic_data":@json($calendar->dynamic_data)}</textarea>
 
             </div>
 
