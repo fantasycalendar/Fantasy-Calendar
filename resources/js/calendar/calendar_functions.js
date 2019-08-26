@@ -335,62 +335,34 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object){
 		});
 	}
 
-	for(var observational_index = 0; observational_index < static_data.year_data.observationals.length; observational_index++){
-
-		var observational = static_data.year_data.observationals[observational_index];
-
-		if(year == convert_year(static_data, observational.year) && observational.timespan === timespan_index){
-
-			if(self_object && Object.compare(leap_day, self_object)){
-
-				self_object = false;
-
-			}else{
-
-				if(!observational.removes_day){
-
-					days.push({
-						text: `Day ${i}`,
-						is_there: {
-							result: true
-						}
-					});
-
-					i++;
-
-				}
-
-			}
-
-		}
-
-	}
-
 	var offset = 1;
 
-	for(var observational_index = 0; observational_index < static_data.year_data.observationals.length; observational_index++){
+	if(static_data.year_data.observationals){
+		
+		for(var observational_index = 0; observational_index < static_data.year_data.observationals.length; observational_index++){
 
-		var observational = static_data.year_data.observationals[observational_index];
+			var observational = static_data.year_data.observationals[observational_index];
 
-		if(year == convert_year(static_data, observational.year) && observational.timespan === timespan_index){
+			if(year == convert_year(static_data, observational.year) && observational.timespan === timespan_index){
 
-			if(self_object && Object.compare(leap_day, self_object)){
+				if(self_object && Object.compare(leap_day, self_object)){
 
-				self_object = false;
+					self_object = false;
 
-			}else{
+				}else{
 
-				if(observational.removes_day){
+					if(!observational.removes_day){
 
-					days[days.length-offset] = {
-						text: `Day ${i-offset}`,
-						is_there: {
-							result: false,
-							reason: "day removed"
-						}
+						days.push({
+							text: `Day ${i}`,
+							is_there: {
+								result: true
+							}
+						});
+
+						i++;
+
 					}
-
-					offset++;
 
 				}
 
@@ -398,6 +370,37 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object){
 
 		}
 
+		for(var observational_index = 0; observational_index < static_data.year_data.observationals.length; observational_index++){
+
+			var observational = static_data.year_data.observationals[observational_index];
+
+			if(year == convert_year(static_data, observational.year) && observational.timespan === timespan_index){
+
+				if(self_object && Object.compare(leap_day, self_object)){
+
+					self_object = false;
+
+				}else{
+
+					if(observational.removes_day){
+
+						days[days.length-offset] = {
+							text: `Day ${i-offset}`,
+							is_there: {
+								result: false,
+								reason: "day removed"
+							}
+						}
+
+						offset++;
+
+					}
+
+				}
+
+			}
+
+		}
 	}
 
 	var leap_days = clone(static_data.year_data.leap_days).sort((a, b) => (a.day > b.day) ? 1 : -1);
@@ -1048,18 +1051,20 @@ function get_epoch(static_data, year, month, day, inclusive){
 			num_timespans += timespan_fraction;
 		}
 
-		for(observational_index = 0; observational_index < static_data.year_data.observationals.length; observational_index++){
+		if(static_data.year_data.observationals){
+			for(observational_index = 0; observational_index < static_data.year_data.observationals.length; observational_index++){
 
-			var observational = static_data.year_data.observationals[observational_index];
+				var observational = static_data.year_data.observationals[observational_index];
 
-			if(year > convert_year(static_data, observational.year) && observational.timespan === timespan_index){
+				if(year > convert_year(static_data, observational.year) && observational.timespan === timespan_index){
 
-				if(observational.removes_day){
-					epoch--;
-				}else{
-					epoch++;
+					if(observational.removes_day){
+						epoch--;
+					}else{
+						epoch++;
+					}
+
 				}
-
 			}
 		}
 

@@ -94,18 +94,20 @@ var calendar_builder = {
 
 		timespan.week = timespan.week ? timespan.week : clone(this.static_data.year_data.global_week);
 
-		for(observational_index = 0; observational_index < this.static_data.year_data.observationals.length; observational_index++){
+		if(this.static_data.year_data.observationals){
+			for(observational_index = 0; observational_index < this.static_data.year_data.observationals.length; observational_index++){
 
-			var observational = this.static_data.year_data.observationals[observational_index];
+				var observational = this.static_data.year_data.observationals[observational_index];
 
-			if(this.dynamic_data.year == observational.year && observational.timespan === timespan_index){
+				if(this.dynamic_data.year == observational.year && observational.timespan === timespan_index){
 
-				if(observational.removes_day){
-					timespan.length--;
-				}else{
-					timespan.length++;
+					if(observational.removes_day){
+						timespan.length--;
+					}else{
+						timespan.length++;
+					}
+
 				}
-
 			}
 		}
 
