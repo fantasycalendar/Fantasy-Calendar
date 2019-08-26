@@ -336,8 +336,8 @@ function set_up_edit_inputs(set_up){
 
 		add_observational_to_list(observational_list, id, stats);
 
-		repopulate_timespan_select(observational_list.children().last().find('.timespan-list'), static_data.year_data.observationals[i].timespan, false);
-		repopulate_day_select(observational_list.children().last().find('.timespan-day-list'), static_data.year_data.observationals[i].day, false);
+		repopulate_timespan_select(observational_list.children().last().find('.timespan-list'), static_data.year_data.observationals[id].timespan, false);
+		repopulate_day_select(observational_list.children().last().find('.timespan-day-list'), static_data.year_data.observationals[id].day, false);
 
 		do_error_check();
 
