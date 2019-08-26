@@ -21,6 +21,7 @@ Route::get('/donate', function(){
 });
 
 Route::get('calendars/{id}/print', 'CalendarController@print');
+Route::get('calendars/{id}/export', 'CalendarController@export');
 Route::resource('calendars', 'CalendarController');
 
 Auth::routes(['verify' => true]);

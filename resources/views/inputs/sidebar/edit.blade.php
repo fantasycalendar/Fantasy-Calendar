@@ -19,7 +19,7 @@
     <div class='wrap-collapsible'>
         <div class='detail-row'>
             <div class='detail-column third'>
-                <a href="view" class='full'>
+                <a href="{{ route('calendars.show', ['id'=> $calendar->hash ]) }}" class='full'>
                     <button type="button" class='btn btn-sm btn-info btn-block'>Go to view</button>
                 </a>
             </div>

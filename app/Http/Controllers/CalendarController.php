@@ -120,6 +120,19 @@ class CalendarController extends Controller
     }
 
     /**
+     * Show the form for exporting the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function export(Calendar $calendar)
+    {
+        return view('calendar.export', [
+            'calendar' => $calendar,
+        ]);
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
