@@ -125,8 +125,10 @@ class CalendarController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function export(Calendar $calendar)
+    public function export($id)
     {
+        $calendar = Calendar::hash($id)->firstOrFail();
+
         return view('calendar.export', [
             'calendar' => $calendar,
         ]);

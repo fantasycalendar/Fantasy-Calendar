@@ -1,5 +1,31 @@
 @extends('templates._page')
 
+@push('head')
+
+    <script>
+
+    $(document).ready(function(){
+
+        $("#btn_export").click(function(){
+            var file = new Blob([JSON.stringify(JSON.parse($('#export_container').text()),null,4)], {type: "json"});
+            if (window.navigator.msSaveOrOpenBlob) // IE10+
+                window.navigator.msSaveOrOpenBlob(file, "calendar.json");
+            else { // Others
+                var a = document.createElement("a"),
+                url = URL.createObjectURL(file);
+                a.href = url;
+                a.download = "calendar.json";
+                document.body.appendChild(a);
+                a.click();
+            }
+        })
+
+    })
+
+    </script>
+
+@endpush
+
 @section('content')
     <div id="generator_container">
 
@@ -15,10 +41,7 @@
 
                 <div id="export_container">
 
-                    {<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;"static_data": @json($calendar->static_data, JSON_PRETTY_PRINT),<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;"dynamic_data": @json($calendar->dynamic_data, JSON_PRETTY_PRINT)<br>
-                    }
+                    { "name": "{{ $calendar->name }}", "static_data": @json($calendar->static_data),"dynamic_data": @json($calendar->dynamic_data)}
 
                 </div>
 

@@ -1,6 +1,5 @@
 @extends('inputs.full')
 
-
 @section('label')
     <div class='wrap-collapsible'>
         <div class='title-text center-text'>Edit Calendar</div>
