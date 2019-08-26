@@ -328,11 +328,7 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object){
 	var days = [];
 
 	for(var i = 1; i <= timespan.length; i++){
-		days.push({
-			text: `Day ${i}`,
-			is_there: does_day_appear(static_data, year, timespan_index, i),
-			leaping: false
-		});
+		days.push("");
 	}
 
 	var offset = 1;
@@ -353,12 +349,7 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object){
 
 					if(!observational.removes_day){
 
-						days.push({
-							text: `Day ${i}`,
-							is_there: {
-								result: true
-							}
-						});
+						days.push("");
 
 						i++;
 
@@ -384,13 +375,7 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object){
 
 					if(observational.removes_day){
 
-						days[days.length-offset] = {
-							text: `Day ${i-offset}`,
-							is_there: {
-								result: false,
-								reason: "day removed"
-							}
-						}
+						days.splice(days.length-offset, 1);
 
 						offset++;
 
@@ -401,6 +386,7 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object){
 			}
 
 		}
+
 	}
 
 	var leap_days = clone(static_data.year_data.leap_days).sort((a, b) => (a.day > b.day) ? 1 : -1);
@@ -423,21 +409,14 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object){
 
 					}else{
 
-						if(is_there.result){
-							var leaping = does_leap_day_appear(static_data, year, timespan_index, leap_day_index);
-							is_there.result = leaping;
-							if(!leaping){
-								is_there.reason = "leaping"
-							}
+						var leaping = does_leap_day_appear(static_data, year, timespan_index, leap_day_index);
+
+						if(leaping){
+
+							days.splice(leap_day.day+offset, 0, `Intercalary "${leap_day.name}"`);
+
+							offset++;
 						}
-
-						days.splice(leap_day.day+offset, 0, {
-							text: `Intercalary "${leap_day.name}"`,
-							is_there: is_there,
-							leaping: leap_day.interval > 0
-						});
-
-						offset++;
 					}
 
 
@@ -459,18 +438,11 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object){
 						
 							var leaping = does_leap_day_appear(static_data, year, timespan_index, leap_day_index);
 
-							is_there.result = leaping;
-							if(!leaping){
-								is_there.reason = "leaping"
+							if(leaping){
+
+								days.push("");
+
 							}
-
-							days.push({
-								text: `Day ${i}`,
-								is_there: is_there,
-								leaping: leap_day.interval > 0
-							});
-							i++;
-
 						}
 					}
 				}
@@ -484,7 +456,7 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object){
 
 		if(leap_day.timespan === timespan_index){
 
-			if(!leap_day.intercalary){
+			if(!leap_day.intercalary && leap_day.removes_day){
 
 				var is_there = does_day_appear(static_data, year, timespan_index, i);
 
@@ -500,13 +472,7 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object){
 
 						if(leaping){
 
-							days[days.length-offset] = {
-								text: `Day ${i-offset}`,
-								is_there: {
-									result: false,
-									reason: "day removed"
-								}
-							}
+							days.splice(days.length-offset, 1);
 
 							offset++;
 
@@ -1052,6 +1018,7 @@ function get_epoch(static_data, year, month, day, inclusive){
 		}
 
 		if(static_data.year_data.observationals){
+
 			for(observational_index = 0; observational_index < static_data.year_data.observationals.length; observational_index++){
 
 				var observational = static_data.year_data.observationals[observational_index];
@@ -1066,6 +1033,7 @@ function get_epoch(static_data, year, month, day, inclusive){
 
 				}
 			}
+
 		}
 
 		// Loop through each leap day
@@ -1087,6 +1055,10 @@ function get_epoch(static_data, year, month, day, inclusive){
 
 				if(leap_day.removes_day){
 					added_leap_day = added_leap_day * -1;
+				}
+
+				if(added_leap_day < 0){
+					added_leap_day = 0;
 				}
 
 			}

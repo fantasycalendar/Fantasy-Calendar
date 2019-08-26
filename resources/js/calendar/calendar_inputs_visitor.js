@@ -428,15 +428,7 @@ function repopulate_timespan_select(select, val, change){
 
 				var days = get_days_in_timespan(static_data, year, i);
 
-				has_days = false;
-				for(var j = 0; j < days.length; j++){
-					if(days[j].is_there.result){
-						has_days = true;
-						break;
-					}
-				}
-
-				if(!has_days){
+				if(days.length == 0){
 					is_there.result = false;
 					is_there.reason = "no days";
 				}
@@ -511,14 +503,20 @@ function repopulate_day_select(select, val, change){
 			html.push(`<option value="${0}">Before 1</option>`);
 		}
 
-		for(var i = 0, day_index = 1; i < days.length; i++){
+		for(var i = 0; i < days.length; i++){
+
 			var day = days[i];
-			html.push(`<option value='${day_index}' ${!day.is_there.result ? 'disabled' : ''}>`);
-			html.push(`${day.text} ${!day.is_there.result ? `(${day.is_there.reason})` : ''}`);
-			html.push('</option>');
-			if(day.is_there.result){
-				day_index++;
+
+			if(day != ""){
+				text = day;
+			}else{
+				text = `Day ${i+1}`;
 			}
+
+			html.push(`<option value='${i+1}'>`);
+			html.push(`${text}`);
+			html.push('</option>');
+			
 		}
 
 		if(val === undefined){
