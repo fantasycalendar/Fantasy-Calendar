@@ -94,6 +94,21 @@ var calendar_builder = {
 
 		timespan.week = timespan.week ? timespan.week : clone(this.static_data.year_data.global_week);
 
+		for(observational_index = 0; observational_index < this.static_data.year_data.observationals.length; observational_index++){
+
+			var observational = this.static_data.year_data.observationals[observational_index];
+
+			if(this.dynamic_data.year == observational.year && observational.timespan === timespan_index){
+
+				if(observational.removes_day){
+					timespan.length--;
+				}else{
+					timespan.length++;
+				}
+
+			}
+		}
+
 		timespan.leap_days = [];
 
 		var leap_day_offset = 0;
@@ -138,7 +153,7 @@ var calendar_builder = {
 				}
 			}
 		}
-
+		
 		return timespan;
 		
 	},
@@ -364,9 +379,11 @@ var calendar_builder = {
 				// Get the fraction of that month's appearances
 				var is_leaping = (convert_year(this.static_data, this.dynamic_data.year) + offset) % this.static_data.year_data.timespans[timespan].interval == 0;
 
-				if(is_leaping){
+				var timespan_data = this.create_adjusted_timespan(timespan);
 
-					this.calendar_list.timespans_to_build[timespan] = this.create_adjusted_timespan(timespan);
+				if(is_leaping && timespan_data.length > 0){
+
+					this.calendar_list.timespans_to_build[timespan] = timespan_data;
 
 					if(ending_day > 0 && timespan == num_timespans-1){
 						this.calendar_list.timespans_to_build[timespan].length = ending_day > this.calendar_list.timespans_to_build[timespan].length ? this.calendar_list.timespans_to_build[timespan].length : ending_day; 

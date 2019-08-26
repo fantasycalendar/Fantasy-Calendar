@@ -14,7 +14,8 @@
                 "overflow":false,
                 "global_week":[],
                 "timespans":[],
-                "leap_days":[]
+                "leap_days":[],
+                "observationals":[]
             },
             "moons":[],
             "clock":{

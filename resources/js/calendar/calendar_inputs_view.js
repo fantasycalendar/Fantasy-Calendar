@@ -76,7 +76,11 @@ function set_up_view_inputs(){
 
 		if(prev < 0){
 			sub_curr_timespan.click();
-			target.children('option:enabled').last().prop('selected', true).change();
+			if(target.children('option:enabled').length == 0 || target.children().length == 0){
+				$(this).click();
+			}else{
+				target.children('option:enabled').last().prop('selected', true).change();
+			}
 		}else{
 			options.eq(prev).prop('selected', true);
 			target.change();
@@ -94,7 +98,11 @@ function set_up_view_inputs(){
 
 		if(prev < 0){
 			sub_curr_year.click();
-			target.children('option:enabled').last().prop('selected', true).change();
+			if(target.children('option:enabled').length == 0 || target.children().length == 0){
+				$(this).click();
+			}else{
+				target.children('option:enabled').last().prop('selected', true).change();
+			}
 		}else{
 			options.eq(prev).prop('selected', true);
 			target.change();
@@ -144,7 +152,11 @@ function set_up_view_inputs(){
 
 		if(next == options.length){
 			add_curr_timespan.click();
-			target.children('option:enabled').first().prop('selected', true).change();
+			if(target.children('option:enabled').length == 0 || target.children().length == 0){
+				$(this).click()
+			}else{
+				target.children('option:enabled').first().prop('selected', true).change();
+			}
 		}else{
 			options.eq(next).prop('selected', true);
 			target.change();
@@ -162,7 +174,11 @@ function set_up_view_inputs(){
 
 		if(next == options.length){
 			add_curr_year.click();
-			target.children('option:enabled').first().prop('selected', true).change();
+			if(target.children('option:enabled').length == 0 || target.children().length == 0){
+				$(this).click()
+			}else{
+				target.children('option:enabled').first().prop('selected', true).change();
+			}
 		}else{
 			options.eq(next).prop('selected', true);
 			target.change();
@@ -232,8 +248,6 @@ function set_up_view_inputs(){
 		target_day.val(curr_day);
 		set_date(curr_year, curr_timespan, curr_day);
 	});
-
-
 
 	$('.adjust_hour').click(function(){
 
@@ -380,6 +394,14 @@ var set_date = debounce(function(year, timespan, day){
 	}
 
 }, 200);
+
+
+
+function fix_date(){
+	if(current_day.children('option:enabled').length == 0){
+		sub_curr_day.click();
+	}
+}
 
 
 function set_up_view_values(){

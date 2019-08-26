@@ -298,7 +298,7 @@ function update_children_dynamic_data(){
 				var child_hash = result[i].hash;
 				var child_static_data = result[i].static_data;
 				var child_dynamic_data = result[i].dynamic_data;
-				var converted_date = date_converter.get_date(static_data, child_static_data, dynamic_data);
+				var converted_date = date_converter.get_date(static_data, child_static_data, dynamic_data, child_dynamic_data);
 				child_dynamic_data.year = converted_date.year;
 				child_dynamic_data.timespan = converted_date.timespan;
 				child_dynamic_data.day = converted_date.day;

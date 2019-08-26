@@ -317,7 +317,9 @@ function convert_year(static_data, year){
 }
 
 
-function get_days_in_timespan(static_data, year, timespan_index, exclusive){
+function get_days_in_timespan(static_data, year, timespan_index, self_object){
+
+	self_object = self_object !== undefined ? self_object : false;
 
 	var timespan = clone(static_data.year_data.timespans[timespan_index]);
 
@@ -333,7 +335,70 @@ function get_days_in_timespan(static_data, year, timespan_index, exclusive){
 		});
 	}
 
-	var offset = 0;
+	for(var observational_index = 0; observational_index < static_data.year_data.observationals.length; observational_index++){
+
+		var observational = static_data.year_data.observationals[observational_index];
+
+		if(year == convert_year(static_data, observational.year) && observational.timespan === timespan_index){
+
+			if(self_object && Object.compare(leap_day, self_object)){
+
+				self_object = false;
+
+			}else{
+
+				if(!observational.removes_day){
+
+					days.push({
+						text: `Day ${i}`,
+						is_there: {
+							result: true
+						}
+					});
+
+					i++;
+
+				}
+
+			}
+
+		}
+
+	}
+
+	var offset = 1;
+
+	for(var observational_index = 0; observational_index < static_data.year_data.observationals.length; observational_index++){
+
+		var observational = static_data.year_data.observationals[observational_index];
+
+		if(year == convert_year(static_data, observational.year) && observational.timespan === timespan_index){
+
+			if(self_object && Object.compare(leap_day, self_object)){
+
+				self_object = false;
+
+			}else{
+
+				if(observational.removes_day){
+
+					days[days.length-offset] = {
+						text: `Day ${i-offset}`,
+						is_there: {
+							result: false,
+							reason: "day removed"
+						}
+					}
+
+					offset++;
+
+				}
+
+			}
+
+		}
+
+	}
 
 	var leap_days = clone(static_data.year_data.leap_days).sort((a, b) => (a.day > b.day) ? 1 : -1);
 
@@ -348,44 +413,102 @@ function get_days_in_timespan(static_data, year, timespan_index, exclusive){
 				var is_there = does_day_appear(static_data, year, timespan_index, leap_day.day-1);
 
 				if(is_there.result){
-					var leaping = does_leap_day_appear(static_data, year, timespan_index, leap_day_index);
-					is_there.result = leaping;
-					if(!leaping){
-						is_there.reason = "leaping"
+
+					if(self_object && Object.compare(leap_day, self_object)){
+
+						self_object = false;
+
+					}else{
+
+						if(is_there.result){
+							var leaping = does_leap_day_appear(static_data, year, timespan_index, leap_day_index);
+							is_there.result = leaping;
+							if(!leaping){
+								is_there.reason = "leaping"
+							}
+						}
+
+						days.splice(leap_day.day+offset, 0, {
+							text: `Intercalary "${leap_day.name}"`,
+							is_there: is_there,
+							leaping: leap_day.interval > 0
+						});
+
+						offset++;
 					}
-				}
 
-				if(exclusive && is_there.result){
-
-					days.splice(leap_day.day+offset, 0, {
-						text: `Intercalary "${leap_day.name}"`,
-						is_there: is_there,
-						leaping: leap_day.interval > 0
-					});
-
-					offset++;
 
 				}
 
 			}else{
 
+				if(!leap_day.removes_day){
+
+					var is_there = does_day_appear(static_data, year, timespan_index, i);
+
+					if(is_there.result){
+
+						if(self_object && Object.compare(leap_day, self_object)){
+
+							self_object = false;
+
+						}else{
+						
+							var leaping = does_leap_day_appear(static_data, year, timespan_index, leap_day_index);
+
+							is_there.result = leaping;
+							if(!leaping){
+								is_there.reason = "leaping"
+							}
+
+							days.push({
+								text: `Day ${i}`,
+								is_there: is_there,
+								leaping: leap_day.interval > 0
+							});
+							i++;
+
+						}
+					}
+				}
+			}
+		}
+	}
+
+	for(var leap_day_index = 0; leap_day_index < leap_days.length; leap_day_index++){
+
+		var leap_day = leap_days[leap_day_index];
+
+		if(leap_day.timespan === timespan_index){
+
+			if(!leap_day.intercalary){
+
 				var is_there = does_day_appear(static_data, year, timespan_index, i);
 
-				if(exclusive && is_there.result){
+				if(is_there.result){
+
+					if(self_object && Object.compare(leap_day, self_object)){
+
+						self_object = false;
+
+					}else{
 					
-					var leaping = does_leap_day_appear(static_data, year, timespan_index, leap_day_index);
+						var leaping = does_leap_day_appear(static_data, year, timespan_index, leap_day_index);
 
-					is_there.result = leaping;
-					if(!leaping){
-						is_there.reason = "leaping"
+						if(leaping){
+
+							days[days.length-offset] = {
+								text: `Day ${i-offset}`,
+								is_there: {
+									result: false,
+									reason: "day removed"
+								}
+							}
+
+							offset++;
+
+						}
 					}
-
-					days.push({
-						text: `Day ${i}`,
-						is_there: is_there,
-						leaping: leap_day.interval > 0
-					});
-					i++;
 				}
 			}
 		}
@@ -395,7 +518,7 @@ function get_days_in_timespan(static_data, year, timespan_index, exclusive){
 
 }
 
-function get_timespans_in_year(static_data, year, exclusive){
+function get_timespans_in_year(static_data, year, inclusive){
 
 	var results = [];
 
@@ -405,7 +528,7 @@ function get_timespans_in_year(static_data, year, exclusive){
 
 		appears.id = timespan_index;
 			
-		if(appears.result && exclusive){
+		if(appears.result && inclusive){
 
 			results.push(appears);
 
@@ -441,10 +564,12 @@ function does_timespan_appear(static_data, year, timespan){
 	var offset = (static_data.year_data.timespans[timespan].interval-static_data.year_data.timespans[timespan].offset+1)%static_data.year_data.timespans[timespan].interval;
 
 	if((year+offset) % static_data.year_data.timespans[timespan].interval != 0){
+
 		return {
 			result: false,
 			reason: 'leaping'
 		}
+
 	}else{
 
 		return {
@@ -575,90 +700,49 @@ function clone(obj) {
 
 var date_converter = {
 
-	get_date_from_epoch(static_data, epoch){
-
-		this.year = Math.floor(this.target_epoch / fract_year_length(this.inc_calendar))-2;
-		this.timespan = 0;
-		this.day = 1;
-
-		while(true){
-
-			var first_suggested_epoch = evaluate_calendar_start(this.inc_calendar, this.year).epoch;
-
-			if(first_suggested_epoch < this.target_epoch){
-				this.year++;
-			}else{
-				this.year--;
-				break;
-			}
-
-			this.loops++;
-
-		}
-
-
-		while(true){
-
-			if(!does_timespan_appear(this.inc_calendar, this.year, this.timespan).result){
-
-				this.increase_month();
-
-			}else{
-
-				this.suggested_epoch = evaluate_calendar_start(this.inc_calendar, this.year, this.timespan).epoch;
-
-				if(this.suggested_epoch < this.target_epoch){
-					this.increase_month();
-				}else{
-					this.decrease_month();
-					this.suggested_epoch = evaluate_calendar_start(this.inc_calendar, this.year, this.timespan).epoch;
-					break;
-				}
-
-			}
-
-			this.loops++;
-
-		}
-
-		while(true){
-
-			this.suggested_epoch = evaluate_calendar_start(this.inc_calendar, this.year, this.timespan, this.day).epoch;
-
-			if(this.suggested_epoch != this.target_epoch){
-				this.increase_day();
-			}else{
-				break;
-			}
-
-			this.loops++;
-
-		}
-
-		this.year = this.year >= 0 ? this.year+1 : this.year;
-		
-		return {
-			"year": this.year,
-			"timespan": this.timespan,
-			"day": this.day,
-			"epoch": this.suggested_epoch
-		};
-
-	},
-
-	get_date: function(static_data, inc_calendar, dynamic_data){
+	get_date: function(static_data, inc_static_data, dynamic_data, inc_dynamic_data){
 
 		this.static_data = static_data;
-		this.inc_calendar = inc_calendar;
+		this.inc_static_data = inc_static_data;
 
-		inc_minutes_per_day = this.inc_calendar.clock.hours * this.inc_calendar.clock.minutes;
+		inc_minutes_per_day = this.inc_static_data.clock.hours * this.inc_static_data.clock.minutes;
 		minutes_per_day = this.static_data.clock.hours * this.static_data.clock.minutes;
 
 		time_fraction = minutes_per_day / inc_minutes_per_day;
 
 		this.target_epoch = Math.floor(dynamic_data.epoch*time_fraction);
 
-		this.year = Math.floor(this.target_epoch / fract_year_length(this.inc_calendar))-10;
+
+		var time = fract(this.target_epoch*time_fraction);
+
+		var scaled_time = (dynamic_data.hour/this.static_data.clock.hours)+fract(dynamic_data.minute/this.static_data.clock.minutes)/this.static_data.clock.hours;
+
+		var hour = 1+this.inc_static_data.clock.hours*fract(time+this.static_data.clock.hours)
+
+		var minute = Math.floor(this.inc_static_data.clock.minutes*fract(hour));
+
+		if(inc_dynamic_data.custom_location){
+			var location = inc_tatic_data.seasons.locations[inc_dynamic_data.location];
+
+			hour += location.settings.timezone.hour;
+			minute += location.settings.timezone.minute;
+
+			if(minute > inc_static_data.clock.minutes){
+				hour += Math.floor(minute/inc_static_data.clock.minutes);
+				minute = Math.floor(inc_static_data.clock.minutes*fract(Math.floor(minute/inc_static_data.clock.minutes)));
+			}
+
+			if(hour > inc_static_data.clock.hours){
+
+				this.target_epoch += Math.floor(hour/inc_static_data.clock.hours);
+				hour = Math.floor(inc_static_data.clock.hours*fract(Math.floor(hour/inc_static_data.clock.hours)));
+
+			}
+
+		}
+
+
+		this.year = Math.floor(this.target_epoch / fract_year_length(this.inc_static_data))-10;
 		this.timespan = 0;
 		this.day = 1;
 
@@ -666,7 +750,7 @@ var date_converter = {
 
 		while(this.loops < 1000){
 
-			var first_suggested_epoch = evaluate_calendar_start(this.inc_calendar, this.year).epoch;
+			var first_suggested_epoch = evaluate_calendar_start(this.inc_static_data, this.year).epoch;
 
 			if(first_suggested_epoch < this.target_epoch){
 				this.year++;
@@ -682,19 +766,19 @@ var date_converter = {
 
 		while(this.loops < 1000){
 
-			if(!does_timespan_appear(this.inc_calendar, this.year, this.timespan).result){
+			if(!does_timespan_appear(this.inc_static_data, this.year, this.timespan).result){
 
 				this.increase_month();
 
 			}else{
 
-				this.suggested_epoch = evaluate_calendar_start(this.inc_calendar, this.year, this.timespan).epoch;
+				this.suggested_epoch = evaluate_calendar_start(this.inc_static_data, this.year, this.timespan).epoch;
 
 				if(this.suggested_epoch < this.target_epoch){
 					this.increase_month();
 				}else{
 					this.decrease_month();
-					this.suggested_epoch = evaluate_calendar_start(this.inc_calendar, this.year, this.timespan).epoch;
+					this.suggested_epoch = evaluate_calendar_start(this.inc_static_data, this.year, this.timespan).epoch;
 					break;
 				}
 
@@ -706,7 +790,7 @@ var date_converter = {
 
 		while(this.loops < 1000){
 
-			this.suggested_epoch = evaluate_calendar_start(this.inc_calendar, this.year, this.timespan, this.day).epoch;
+			this.suggested_epoch = evaluate_calendar_start(this.inc_static_data, this.year, this.timespan, this.day).epoch;
 
 			if(this.suggested_epoch != this.target_epoch){
 				this.increase_day();
@@ -719,17 +803,6 @@ var date_converter = {
 		}
 
 		this.year = this.year >= 0 ? this.year+1 : this.year;
-
-		var time = fract(dynamic_data.epoch*time_fraction);
-
-		var scaled_time = (dynamic_data.hour/this.static_data.clock.hours)+fract(dynamic_data.minute/this.static_data.clock.minutes)/this.static_data.clock.hours;
-
-		var hour = 1+this.inc_calendar.clock.hours*fract(time+this.static_data.clock.hours)
-
-		var minute = Math.floor(this.inc_calendar.clock.minutes*fract(hour));
-
-		hour = Math.floor(hour);
-
 		
 		return {
 			"year": this.year,
@@ -763,18 +836,18 @@ var date_converter = {
 
 		this.timespan++;
 
-		if(this.timespan == this.inc_calendar.year_data.timespans.length){
+		if(this.timespan == this.inc_static_data.year_data.timespans.length){
 
 			this.year++;
 			this.timespan = 0;
 
 		}
 
-		if(!does_timespan_appear(this.inc_calendar, this.year, this.timespan).result){
+		if(!does_timespan_appear(this.inc_static_data, this.year, this.timespan).result){
 			this.increase_month();
 		}
 
-		this.timespan_length = get_days_in_timespan(this.inc_calendar, this.year, this.timespan);
+		this.timespan_length = get_days_in_timespan(this.inc_static_data, this.year, this.timespan);
 
 	},
 
@@ -785,15 +858,15 @@ var date_converter = {
 		if(this.timespan < 0){
 
 			this.year--;
-			this.timespan = this.inc_calendar.year_data.timespans.length-1;
+			this.timespan = this.inc_static_data.year_data.timespans.length-1;
 
 		}
 
-		if(!does_timespan_appear(this.inc_calendar, this.year, this.timespan).result){
+		if(!does_timespan_appear(this.inc_static_data, this.year, this.timespan).result){
 			this.decrease_month();
 		}
 
-		this.timespan_length = get_days_in_timespan(this.inc_calendar, this.year, this.timespan);
+		this.timespan_length = get_days_in_timespan(this.inc_static_data, this.year, this.timespan);
 
 	}
 
@@ -935,17 +1008,17 @@ function get_epoch(static_data, year, month, day, inclusive){
 	var total_week_num = 1;
 
 	// Loop through each month
-	for(month_index = 0; month_index < static_data.year_data.timespans.length; month_index++){
+	for(timespan_index = 0; timespan_index < static_data.year_data.timespans.length; timespan_index++){
 
 		// If the month index is lower than the month parameter, add a year so we can get the exact epoch for a month within a year
-		if(month_index < month){
+		if(timespan_index < month){
 			year = actual_year+1;
 		}else{
 			year = actual_year;
 		}
 
 		// Get the current timespan's data
-		var timespan = static_data.year_data.timespans[month_index];
+		var timespan = static_data.year_data.timespans[timespan_index];
 
 		var offset = (timespan.interval-timespan.offset)%timespan.interval;
 
@@ -962,7 +1035,7 @@ function get_epoch(static_data, year, month, day, inclusive){
 		}
 
 		// Count the number of times each month has appeared
-		count_timespans[month_index] = Math.abs(timespan_fraction);
+		count_timespans[timespan_index] = Math.abs(timespan_fraction);
  
 		// Add the month's length to the epoch, adjusted by its interval
 		epoch += timespan.length * timespan_fraction;
@@ -975,15 +1048,30 @@ function get_epoch(static_data, year, month, day, inclusive){
 			num_timespans += timespan_fraction;
 		}
 
+		for(observational_index = 0; observational_index < static_data.year_data.observationals.length; observational_index++){
+
+			var observational = static_data.year_data.observationals[observational_index];
+
+			if(year > convert_year(static_data, observational.year) && observational.timespan === timespan_index){
+
+				if(observational.removes_day){
+					epoch--;
+				}else{
+					epoch++;
+				}
+
+			}
+		}
+
 		// Loop through each leap day
 		for(leap_day_index = 0; leap_day_index < static_data.year_data.leap_days.length; leap_day_index++){
 
 			// Get the current leap day data
-			leap_day = static_data.year_data.leap_days[leap_day_index];
+			var leap_day = static_data.year_data.leap_days[leap_day_index];
 
-			added_leap_day = 0;
+			var added_leap_day = 0;
 
-			if(month_index === leap_day.timespan){
+			if(timespan_index === leap_day.timespan){
 
 				added_leap_day = get_leap_fraction(timespan_fraction, leap_day.interval, leap_day.offset, true);
 
