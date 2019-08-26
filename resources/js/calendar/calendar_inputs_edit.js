@@ -914,9 +914,9 @@ function set_up_edit_inputs(set_up){
 
 		var index = $(this).closest('.sortable-container').attr('index')|0;
 
-		var granularity = Math.max.apply(null, value.split(','))+1;
+		var cycle = Math.max.apply(null, value.split(','))+1;
 
-		if(granularity > 32){
+		if(cycle > 32){
 
 			invalid = true;
 
@@ -924,9 +924,9 @@ function set_up_edit_inputs(set_up){
 
 			invalid = false;
 
-			static_data.moons[index].granularity = granularity;
+			static_data.moons[index].granularity = get_moon_granularity(cycle);
 
-			$(this).closest('.sortable-container').find('.custom_phase_text').text(`This moon has ${value.split(',').length} phases, with a granularity of ${granularity}.`);
+			$(this).closest('.sortable-container').find('.custom_phase_text').text(`This moon has ${value.split(',').length} phases, with a granularity of ${static_data.moons[index].granularity}.`);
 
 			do_error_check();
 
