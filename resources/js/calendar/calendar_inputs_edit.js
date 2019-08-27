@@ -2535,6 +2535,7 @@ function add_cycle_to_sortable(parent, key, data){
 	element.push("</div>");
 
 	parent.append(element.join(""));
+	console.log("LOL")
 }
 
 function add_era_to_list(parent, key, data){

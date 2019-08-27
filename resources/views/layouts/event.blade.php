@@ -54,7 +54,7 @@
 					<textarea class='form-control event_desc editable' name='event_desc' placeholder='Event description' autofocus=''></textarea>
 				</div>
 
-				<div class='detail-row'>
+				<div class='detail-row hidden'>
 
 					<label for="condition_presets">Condition presets:</label>
 					<select class="form-control" id="condition_presets">

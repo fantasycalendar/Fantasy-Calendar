@@ -31,7 +31,7 @@ var edit_event_ui = {
 
 		$(document).on('click', '.open-edit-event-ui', function(){
 
-			var index = $(this).closest('.sortable-container').attr('key');
+			var index = $(this).closest('.sortable-container').attr('index');
 
 			edit_event_ui.edit_event(index);
 
@@ -397,6 +397,7 @@ var edit_event_ui = {
 		this.condition_presets.children().eq(0).prop('selected', true);
 		this.preset_buttons.toggleClass('hidden', true);
 		this.non_preset_buttons.toggleClass('hidden', false);
+		this.condition_presets.parent().toggleClass('hidden', true);
 		this.update_every_nth_presets();
 
 		this.event_conditions_container.empty();
@@ -439,7 +440,7 @@ var edit_event_ui = {
 
 		var repeat_value = this.repeat_input.val()|0;
 
-		if(repeat_value < 0){
+		if(!repeat_value){
 			repeat_value = 'nth';
 		}
 
@@ -1519,7 +1520,7 @@ var edit_HTML_ui = {
 
 		$(document).on('click', '.html_edit', function(){
 			var data = $(this).attr('data');
-			edit_HTML_ui.key = $(this).attr('key');
+			edit_HTML_ui.key = $(this).attr('index');
 			edit_HTML_ui.data = get_calendar_data(data);
 			edit_HTML_ui.value = clone(edit_HTML_ui.data[edit_HTML_ui.key]);
 			edit_HTML_ui.set_html();
