@@ -931,7 +931,7 @@ function set_up_edit_inputs(set_up){
 			do_error_check();
 
 		}
-		
+
 		$(this).toggleClass('invalid', invalid).attr('error_msg', invalid ? `${static_data.moons[index].name} has an invalid custom cycle. 31 is the highest possible number.` : '');
 
 	});
@@ -3479,7 +3479,7 @@ function sort_era_list_by_date(){
 						comp.insertBefore(curr);
 					}
 				}
-			
+
 			}
 		});
 	});
@@ -3684,33 +3684,33 @@ function populate_calendar_lists(){
 
 	get_owned_calendars(function(owned_calendars){
 
-		for(var i = 0; i < owned_calendars.length; i++){
-			if(owned_calendars[i].children != ""){
-				owned_calendars[i].children = JSON.parse(owned_calendars[i].children);
+		for(var calendar in owned_calendars){
+			if(owned_calendars[calendar].children != ""){
+				owned_calendars[calendar].children = JSON.parse(owned_calendars[calendar].children);
 			}
 		}
 
 		calendar_link_list.html('');
 
-		for(var i = 0; i < link_data.children.length; i++){
-			var child = link_data.children[i];
+		for(var calendar in link_data.children){
+			var child = link_data.children[calendar];
 			var calendar = owned_calendars[child];
-			add_link_to_list(calendar_link_list, i, calendar.name);
+			add_link_to_list(calendar_link_list, calendar, calendar.name);
 		}
 
 		var html = [];
 
 		html.push(`<option>None</option>`);
 
-		for(var i = 0; i < owned_calendars.length; i++){
+		for(var calendarhash in owned_calendars){
 
-			var calendar = owned_calendars[i];
+			var calendar = owned_calendars[calendarhash];
 
 			if(calendar.hash != hash){
 
 				if(calendar.master_hash){
 
-					var owner = clone(owned_calendars[owned_calendars.findIndex(c => c.children.indexOf(calendar.hash) != -1)]);
+					var owner = clone(owned_calendars[calendar.hash]);
 
 					if(owner.hash == hash){
 						owner.name = "this calendar";
