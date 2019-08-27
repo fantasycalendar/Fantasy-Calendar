@@ -206,7 +206,7 @@ function remove_hashes(child_hash){
 				url:window.baseurl+"calendars/"+child_hash,
 				type: "post",
 				dataType: 'json',
-				data: {method: 'PATCH', master_hash: ''},
+				data: {_method: 'PATCH', master_hash: ''},
 				success: function( result ){
 					populate_calendar_lists();
 				},
