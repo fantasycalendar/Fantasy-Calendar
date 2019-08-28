@@ -3707,11 +3707,9 @@ function populate_calendar_lists(){
 
 			var calendar = owned_calendars[calendarhash];
 
-			let maincalendar = owned_calendars[hash];
-
 			if(calendar.hash != hash){
 
-				if(calendar.master_hash && maincalendar.children.includes(calendar.hash)){
+				if(calendar.master_hash){
 
                     var owner = clone(owned_calendars[calendar.hash]);
 
@@ -3978,6 +3976,10 @@ function set_up_edit_values(){
 }
 
 function get_category(search) {
+    if(static_data.event_data.categories.length) {
+        return {id: -1};
+    }
+
 	var results = static_data.event_data.categories.filter(function(element) {
 		return element.id == search;
 	});
