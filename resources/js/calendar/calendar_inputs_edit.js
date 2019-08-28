@@ -3957,7 +3957,9 @@ function set_up_edit_values(){
 		}
 	}
 
-	populate_calendar_lists();
+	if(window.location.pathname != '/calendars/create') {
+        populate_calendar_lists();
+    }
 
 	evaluate_clock_inputs();
 

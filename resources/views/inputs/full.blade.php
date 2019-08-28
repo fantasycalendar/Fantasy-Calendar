@@ -86,7 +86,7 @@
 		<input id="collapsible_date" class="toggle" type="checkbox">
 		<label for="collapsible_date" class="lbl-toggle lbl-text">Current Date & Time <a target="_blank" title='Fantasy Calendar Wiki: Date' href='https://wiki.fantasy-calendar.com/index.php?title=Date' class="wiki"><i class="icon-question-sign"></i></a></label>
 		<div class="collapsible-content">
-			
+
 			<div id='clock'></div>
 
 			<div class='detail-row date_control' id='date_inputs'>
@@ -152,7 +152,7 @@
 					</div>
 
 				</div>
-				
+
 			</div>
 
 			<div class='separator'></div>
@@ -199,7 +199,7 @@
 						<select class='form-control form-control-sm timespan-day-list inclusive date' id='target_day'></select>
 						<button type='button' class='btn btn-sm btn-success add-btn add_day' id='add_target_day'><i class="icon-plus"></i></button>
 					</div>
-					
+
 				</div>
 
 				<div class='detail-row'>
@@ -418,7 +418,7 @@
 	<!---------------------------------------------->
 	<!---------- Observational Adjustments --------->
 	<!---------------------------------------------->
-	
+
 	<div class='wrap-collapsible'>
 		<input id="collapsible_observationaladjustments" class="toggle" type="checkbox">
 		<label for="collapsible_observationaladjustments" class="lbl-toggle lbl-text">Observational Adjustments <a target="_blank" title='Fantasy Calendar Wiki: Observational Adjustments' href='https://wiki.fantasy-calendar.com/index.php?title=Observational_Adjustments' class="wiki"><i class="icon-question-sign"></i></a></label>
@@ -437,7 +437,7 @@
 		</div>
 		<div class='separator'></div>
 	</div>
-	
+
 
 	<!---------------------------------------------->
 	<!------------------- MOONS -------------------->
@@ -870,39 +870,40 @@
 	<!---------------------------------------------->
 	<!------------------ LINKING ------------------->
 	<!---------------------------------------------->
+    @if(request()->is('calendars/*/edit'))
+        <div class='wrap-collapsible'>
+            <input id="collapsible_linking" class="toggle" type="checkbox">
+            <label for="collapsible_linking" class="lbl-toggle lbl-text">Calendar Linking <a target="_blank" title='Fantasy Calendar Wiki: Calendar Linking' href='https://wiki.fantasy-calendar.com/index.php?title=Calendar_Linking' class="wiki"><i class="icon-question-sign"></i></a></label>
+            <div class="collapsible-content">
 
-	<div class='wrap-collapsible'>
-		<input id="collapsible_linking" class="toggle" type="checkbox">
-		<label for="collapsible_linking" class="lbl-toggle lbl-text">Calendar Linking <a target="_blank" title='Fantasy Calendar Wiki: Calendar Linking' href='https://wiki.fantasy-calendar.com/index.php?title=Calendar_Linking' class="wiki"><i class="icon-question-sign"></i></a></label>
-		<div class="collapsible-content">
+                <div class='detail-row center-text hidden calendar_link_explaination'>
+                    This calendar is already linked to another calendar. Before linking any calendars to this one, you must unlink it from the master.
+                </div>
 
-			<div class='detail-row center-text hidden calendar_link_explaination'>
-				This calendar is already linked to another calendar. Before linking any calendars to this one, you must unlink it from the master.
-			</div>
+                <div id='calendar_link_hide'>
 
-			<div id='calendar_link_hide'>
+                    <div class='detail-row'>
+                        <select class='form-control form-control' id='calendar_link_select'></select>
+                    </div>
+                    <div class='detail-row'>
+                        <button type='button' class='btn btn-sm btn-secondary full' id='refresh_calendar_list_select'>Refresh</button>
+                    </div>
+                    <div class='detail-row'>
+                        <button type='button' class='btn btn-primary full' id='link_calendar'>Link</button>
+                    </div>
 
-				<div class='detail-row'>
-					<select class='form-control form-control' id='calendar_link_select'></select>
-				</div>
-				<div class='detail-row'>
-					<button type='button' class='btn btn-sm btn-secondary full' id='refresh_calendar_list_select'>Refresh</button>
-				</div>
-				<div class='detail-row'>
-					<button type='button' class='btn btn-primary full' id='link_calendar'>Link</button>
-				</div>
+                    <div class='sortable' id='calendar_link_list'></div>
 
-				<div class='sortable' id='calendar_link_list'></div>
+                </div>
 
-			</div>
-
-		</div>
-
-
+            </div>
 
 
-		<div class='separator'></div>
-	</div>
+
+
+            <div class='separator'></div>
+        </div>
+    @endif
 </form>
 
 <div id='input_collapse_btn' class="btn btn-outline-primary"></div>
