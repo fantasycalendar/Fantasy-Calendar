@@ -101,21 +101,24 @@ var edit_event_ui = {
 
 		$(document).on('change', '.event-text-input', function(){
 
-			if($(this).closest('#event-form').length){
-				var parent = $(this).closest('#event-form');
-			}else{
+			if($(this).closest('.sortable-container').length){
 				var parent = $(this).closest('.sortable-container');
+			}else{
+				var parent = $(this).closest('#event-form');
 			}
 
-			var classes = parent.find('.event-text-output').attr('class').split(' ');
+			var output = parent.find('.event-text-output');
+			var input = parent.find('.event-text-input');
+
+			var classes = output.attr('class').split(' ');
 			classes.length = 3;
 
 			classes.push($(this).val());
-			classes.push(parent.find('.event-text-input').not(this).val());
+			classes.push(input.not(this).val());
 
 			classes = classes.join(' ');
 
-			parent.find('.event-text-output').prop('class', classes);
+			output.prop('class', classes);
 
 		});
 
@@ -1402,6 +1405,8 @@ var show_event_ui = {
 		});
 
 		$(document).on('click', '.event:not(.event-text-output)', function(){
+
+			console.log($(this))
 
 			if($(this).hasClass('era_event')){
 				var id = $(this).attr('era_id')|0;
