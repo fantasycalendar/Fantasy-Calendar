@@ -115,12 +115,13 @@ select.invalid {
 
 .view_type{
     font-size:0.75em;
-    padding-top:7px;
+    padding: 7px;
+    display: flex;
+    align-items: center;
 }
 
-.view_type span{
-    position:relative;
-    bottom:3px;
+.view_type span {
+    padding-left: 4px;
 }
 
 #calendar_container{
@@ -742,9 +743,8 @@ label{
     width:100%;
     border: 0;
     height: 1px;
-    background: #333;
-    margin: 5px 0;
-    background: linear-gradient(to left, hsla(0,0%,0%,0) 0%, hsla(0,0%,0%,.75) 50%, hsla(0,0%,0%,0) 100%);
+    background: rgba(166, 168, 179, 0.32);
+    margin-top: 5px;
 }
 
 .spacey_separator{
@@ -753,6 +753,7 @@ label{
 
 .wrap-collapsible{
     width: 350px;
+    margin-bottom: 5px;
 }
 
 .wrap-collapsible.detail-row{
@@ -810,6 +811,7 @@ label{
     vertical-align: middle;
     margin-right: .7rem;
     transform: translateY(-2px);
+    transition: all 0.3s ease;
 }
 
 .toggle:checked + .lbl-toggle::before {
@@ -1178,6 +1180,10 @@ ol.example li.placeholder:before {
 
 .dragged > select{
     display:none;
+}
+
+#event_conditions_container {
+    height: auto;
 }
 
 #event_conditions_container .handle{

@@ -58,11 +58,8 @@ mix.copy('resources/js/login.js', 'public/js');
 mix.js('resources/js/app.js', 'public/js')
 
     .sass('resources/sass/app.scss', 'public/css')
-    .sass('resources/sass/calendar_styles.scss', 'public/css')
-    .sass('resources/sass/home.scss', 'public/css')
-    .sass('resources/sass/login.scss', 'public/css')
-    .sass('resources/sass/text_styles.scss', 'public/css')
-    .sass('resources/sass/_variables.scss', 'public/css');
+    .sass('resources/sass/calendar.scss', 'public/css')
+    .sass('resources/sass/home.scss', 'public/css');
 
 if (mix.inProduction()) {
     mix.version();

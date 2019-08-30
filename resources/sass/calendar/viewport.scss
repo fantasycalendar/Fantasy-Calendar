@@ -119,7 +119,7 @@
     visibility: hidden;
     -webkit-transition: visibility .0s; /* Safari */
     transition: visibility .0s;
-    background-image: url('../../public/resources/icons/plus_icon_white.png');
+    background-image: url('../../../public/resources/icons/plus_icon_white.png');
     background-position: center;
     background-repeat: no-repeat;
     background-size: 50%;
@@ -139,7 +139,7 @@
 }
 
 .weather_icon{
-    background: url('../../public/resources/icons/weather_icon.png');
+    background: url('../../../public/resources/icons/weather_icon.png');
     background-size: contain;
     width:20px !important;
     height:20px !important;
@@ -154,16 +154,18 @@
 }
 
 .event{
-    font-size:10pt;
+    font-size:14px;
     word-break: break-word;
-    padding-bottom:2px;
-    padding-left:2px;
-    margin:2px;
+    padding: 8px 12px;
+    margin:5px;
+    border-left: 4px solid white;
+    font-family: 'Montserrat';
 }
 
 .event:hover{
     cursor: pointer;
     background-color: lightgrey;
+    border-color: #737373;
 }
 
 .event.Dark{
@@ -171,7 +173,7 @@
 }
 
 .event.Light{
-    color: #000000;
+    color: #404040;
 }
 
 .event.dot::before{
