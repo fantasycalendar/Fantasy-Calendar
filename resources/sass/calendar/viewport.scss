@@ -1,0 +1,589 @@
+// Variables
+@import 'variables';
+
+/* ------------------ Overall Layout ----------------- */
+
+#calendar {
+    color: #70767c;
+}
+
+.timespan_container:first-child{
+    margin-top:10px;
+}
+
+.timespan_container{
+    margin-bottom:10px;
+    position:relative;
+}
+
+.timespan_row_container{
+    display: flex;
+    flex-direction: column;
+}
+
+.timespan_row,
+.timespan_row_names{
+    display: flex;
+    flex-direction: row;
+}
+
+.timespan_day,
+.timespan_intercalary{
+    background-color:white;
+}
+
+.timespan_day.empty_timespan_day{
+    background-color:grey;
+    min-height:75px;
+}
+
+.timespan_intercalary:not(:first-child){
+    border-left:1px solid $calendar-border-color;
+}
+
+.timespan_row.intercalary{
+    border-top:1px solid $calendar-border-color;
+}
+
+.timespan_row.intercalary .tall{
+    margin:0;
+}
+
+
+.day_column{
+    flex-direction: column;
+    min-width:32px;
+    max-width:50%;
+    flex-grow: 1;
+    height:100px;
+}
+
+.day_row{
+    display: inline-flex;
+    flex-direction: row;
+    width:calc(100% - 10px);
+    margin:0 5px 5px 5px;
+}
+
+.day_row:last-child{
+    margin-top:auto;
+}
+
+.toprow{
+    display: flex;
+    -webkit-box-flex: 1;      /* OLD - iOS 6-, Safari 3.1-6 */
+    -moz-box-flex: 1;         /* OLD - Firefox 19- */
+
+    -webkit-flex: 1;          /* Chrome */
+    -ms-flex: 1;              /* IE 10 */
+    flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
+}
+
+.toprow.left{
+    justify-content: flex-start;
+}
+
+.toprow.center{
+    justify-content: center;
+}
+
+.toprow.right{
+    justify-content: flex-end;
+}
+
+.toprow{
+    text-align: left;
+}
+
+.toprow .number{
+    margin-right:5px;
+    padding-right:5px;
+}
+
+.day_row .title{
+    text-align:center;
+    -webkit-box-flex: 1;      /* OLD - iOS 6-, Safari 3.1-6 */
+    -moz-box-flex: 1;         /* OLD - Firefox 19- */
+    -webkit-flex: 1;          /* Chrome */
+    -ms-flex: 1;              /* IE 10 */
+    flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
+}
+
+.btn_create_event{
+    position:relative;
+    width:20px !important;
+    height:20px !important;
+    padding:1px !important;
+    font-size:9pt;
+    margin-top:5px;
+    visibility: hidden;
+    -webkit-transition: visibility .0s; /* Safari */
+    transition: visibility .0s;
+    background-image: url('../../public/resources/icons/plus_icon_white.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 50%;
+}
+
+.timespan_day:hover .btn_create_event{
+    visibility: visible;
+}
+
+.btn_create_event:hover{
+    cursor: pointer;
+}
+
+.day_row .weather{
+    font-size:10pt;
+    padding-left:2px;
+}
+
+.weather_icon{
+    background: url('../../public/resources/icons/weather_icon.png');
+    background-size: contain;
+    width:20px !important;
+    height:20px !important;
+    top:0;
+    left:0;
+    margin-top:5px;
+    visibility: hidden;
+}
+
+.timespan_day:hover .weather_icon{
+    visibility: visible;
+}
+
+.event{
+    font-size:10pt;
+    word-break: break-word;
+    padding-bottom:2px;
+    padding-left:2px;
+    margin:2px;
+}
+
+.event:hover{
+    cursor: pointer;
+    background-color: lightgrey;
+}
+
+.event.Dark{
+    color: #ffffff;
+}
+
+.event.Light{
+    color: #000000;
+}
+
+.event.dot::before{
+    line-height: 0;
+    content: "• ";
+    font-weight: 900;
+}
+
+.event.dot{
+    color: #000000;
+}
+
+.event.background{
+    color: #ffffff;
+}
+
+.era.hidden{
+    visibility: hidden;
+}
+
+.timespan_overflow {
+    color: rgba(#98a0a6, 0.6);
+    background-color: #ffffff;
+    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23f9f9fa' fill-opacity='1' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");
+    cursor: not-allowed;
+}
+
+.grid .timespan_overflow:not(.intercalary) {
+    border-left: 1px solid $calendar-border-color;
+    padding-left: 0;
+}
+
+/* --------------- Minimalistic Layout --------------- */
+
+.timespan_container.mini{
+    height:250px;
+    display: inline-flex;
+    flex-direction: column;
+    background-color:#f0ead0;
+    border-radius:0;
+    border:0;
+    overflow:hidden;
+    font-size:10pt;
+}
+
+.timespan_container.mini .timespan_day,
+.timespan_container.mini .timespan_intercalary,
+.timespan_container.mini .timespan_overflow,
+.timespan_container.mini .week_day_name,
+.timespan_container.mini .timespan_name{
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+    text-align:center;
+    flex: 1 0;
+    height:25px;
+    margin:0.5px;
+}
+
+
+.timespan_container.mini .timespan_day,
+.timespan_container.mini .timespan_intercalary,
+.timespan_container.mini .timespan_overflow{
+    width:25px;
+    border:0 !important;
+    margin:0.5px;
+}
+
+.timespan_container.mini .week_day_name,
+.timespan_container.mini .timespan_name{
+    background-color: #e7debd;
+}
+
+.timespan_container.mini .timespan_row:nth-child(even) .timespan_day{
+    background-color: #f7f4e1;
+}
+.timespan_container.mini .timespan_row:nth-child(odd) .timespan_day{
+    background-color: #e7debd;
+}
+
+
+
+/* -------------------- Grid layout ------------------ */
+
+
+
+.timespan_container.grid{
+    background-color:white;
+    border-radius:10px;
+    margin: 30px 20px;
+    overflow:hidden;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+}
+
+.grid .timespan_name{
+    text-align: center;
+    border-bottom:1px solid $calendar-border-color;
+    font-size:22pt;
+    height:50px;
+}
+
+.grid .timespan_intercalary{
+    border-top:0 !important;
+}
+
+body .grid .timespan_number{
+    display:inline-block;
+    margin-left:0.22222em;
+}
+body.hide_timespan_number .timespan_number{
+    display:none;
+}
+
+
+.grid .week_day_name{
+    flex: 1 0;
+    text-align:center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.grid .week_day_name:not(:first-child){
+    border-left:1px solid $calendar-border-color;
+}
+
+
+.grid .timespan_day,
+.grid .timespan_intercalary,
+.grid .timespan_overflow{
+    display: flex;
+    flex-direction: column;
+    min-height:150px;
+    -webkit-box-flex: 1;      /* OLD - iOS 6-, Safari 3.1-6 */
+    -moz-box-flex: 1;         /* OLD - Firefox 19- */
+    -webkit-flex: 1;          /* Chrome */
+    -ms-flex: 1;              /* IE 10 */
+    flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
+}
+
+.current_day{
+    background-color:#fef0db;
+    border-bottom: 5px solid #fdb44d;
+}
+
+
+@keyframes shadow-pulse
+{
+    0% {
+        box-shadow: inset 0 0 0 0 rgba(191.0, 99.0, 71.0, 1.0);
+    }
+    100% {
+        box-shadow: inset 0 0 0 20px rgba(191.0, 99.0, 71.0, 0);
+    }
+}
+
+.preview_day{
+    animation: shadow-pulse 2s 1;
+}
+
+body .year_day_number{
+    display:block;
+}
+body.hide_year_day .year_day_number{
+    display:none;
+}
+
+.grid .timespan_overflow.first{
+    padding-left:0;
+}
+
+.grid .timespan_overflow.firstlast{
+    border-left:1px solid $calendar-border-color;
+}
+
+.grid .timespan_overflow.last{
+    padding-left:0;
+}
+
+.grid .timespan_day{
+    border-top:1px solid $calendar-border-color;
+}
+
+.grid .timespan_day:not(:first-child){
+    border-left:1px solid $calendar-border-color;
+}
+
+.grid .timespan_overflow{
+    border-top:1px solid $calendar-border-color;
+    padding-left:1px;
+}
+
+.grid .timespan_overflow.intercalary{
+    border-top:0;
+}
+
+.grid .event_container{
+    align-self: center;
+    -webkit-box-flex: 1;      /* OLD - iOS 6-, Safari 3.1-6 */
+    -moz-box-flex: 1;         /* OLD - Firefox 19- */
+
+    -webkit-flex: 1;          /* Chrome */
+    -ms-flex: 1;              /* IE 10 */
+    flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
+    width: 100%;
+}
+
+
+/* -------------------- Wide layout ------------------ */
+
+.timespan_container.wide{
+    background-color:lightgrey;
+    border-radius:10px;
+    border:1px solid $calendar-border-color;
+    overflow-x: scroll;
+    -webkit-flex: 1 0 auto;          /* Chrome */
+    -ms-flex: 1 0 auto;              /* IE 10 */
+    flex: 1 0 auto;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
+}
+
+.timespan_container::-webkit-scrollbar-track
+{
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    background-color: #F5F5F5;
+}
+
+.timespan_container::-webkit-scrollbar
+{
+    height: 12px;
+    background-color: #F5F5F5;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    width: calc(100% - 5px);
+    border-top:1px solid $calendar-border-color;
+}
+
+.timespan_container::-webkit-scrollbar-thumb
+{
+    border-bottom-left-radius: 9px;
+    border-bottom-right-radius: 9px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    background-color: #D62929;
+}
+
+
+.wide .timespan_row_container:last-child{
+    padding-bottom:1px;
+}
+
+.wide .timespan_name{
+    text-align: center;
+    border-bottom:1px solid $calendar-border-color;
+    font-size:22pt;
+    height:50px;
+    width:100%;
+    position:relative;
+}
+
+
+.wide .week_day_name{
+    flex: 1 0;
+    text-align:center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width:150px;
+}
+
+.wide .week_day_name:not(:first-child){
+    border-left:1px solid $calendar-border-color;
+}
+
+
+.wide .timespan_day,
+.wide .timespan_intercalary,
+.wide .timespan_overflow{
+    display: flex;
+    flex-direction: column;
+    min-height:150px;
+    min-width:150px;
+    -webkit-box-flex: 1;      /* OLD - iOS 6-, Safari 3.1-6 */
+    -moz-box-flex: 1;         /* OLD - Firefox 19- */
+
+    -webkit-flex: 1;          /* Chrome */
+    -ms-flex: 1;              /* IE 10 */
+    flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
+}
+
+.wide .timespan_overflow.first{
+    padding-left:0;
+}
+
+.wide .timespan_overflow.firstlast{
+    border-left:1px solid $calendar-border-color;
+    padding-left:1px;
+}
+
+.wide .timespan_overflow.last{
+    padding-left:0;
+}
+
+.wide .timespan_day{
+    border-top:1px solid $calendar-border-color;
+}
+
+.wide .timespan_day:not(:first-child){
+    border-left:1px solid $calendar-border-color;
+}
+
+.wide .timespan_overflow{
+    border-top:1px solid $calendar-border-color;
+    padding-left:1px;
+}
+
+.wide .timespan_overflow.intercalary{
+    border-top:0;
+}
+
+.wide .event_container{
+    align-self: center;
+    -webkit-box-flex: 1;      /* OLD - iOS 6-, Safari 3.1-6 */
+    -moz-box-flex: 1;         /* OLD - Firefox 19- */
+
+    -webkit-flex: 1;          /* Chrome */
+    -ms-flex: 1;              /* IE 10 */
+    flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
+    width: 100%;
+}
+
+
+
+
+
+/* ---------------- Vertical layout ------------------ */
+
+.timespan_container.vertical{
+    background-color:lightgrey;
+    border-radius:10px;
+    border:1px solid $calendar-border-color;
+    overflow:hidden;
+    text-align: center;
+}
+
+.vertical .timespan_row_container{
+    display: inline-flex;
+    flex-direction: column;
+    width:100%;
+}
+
+.vertical .timespan_name{
+    text-align: center;
+    border-bottom:1px solid $calendar-border-color;
+    font-size:22pt;
+    height:50px;
+}
+
+.vertical .day_row:first-child{
+    justify-content: space-between;
+}
+
+.vertical .timespan_day{
+    display:block;
+    text-align:left;
+}
+
+
+.vertical .toprow{
+    padding-top:3px;
+}
+
+.vertical .number{
+    border-right:1px solid lightgrey;
+}
+
+.vertical .timespan_day{
+    border-left:0;
+    border-top:1px solid $calendar-border-color;
+}
+
+.vertical .timespan_day:first-child{
+    border-top:0;
+}
+
+.vertical .weekday{
+    text-align:center;
+}
+
+.vertical .event_container{
+    align-self: flex-start;
+    width:100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.vertical .event{
+    flex: 1 1 calc(25% - 4px);
+    max-width:calc(25% - 4px);
+}
+
+
+.vertical .day_row{
+    display: flex;
+}
+
+
+.grid .calendar_moon_container{
+    flex-flow: row wrap;
+    justify-content: center;
+}
+
+.vertical .day_row.moons{
+    justify-content: flex-end;
+    align-content: center;
+}

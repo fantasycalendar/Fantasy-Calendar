@@ -58,11 +58,9 @@ mix.copy('resources/js/login.js', 'public/js');
 mix.js('resources/js/app.js', 'public/js')
 
     .sass('resources/sass/app.scss', 'public/css')
-    .sass('resources/sass/calendar_input_style.scss', 'public/css')
     .sass('resources/sass/calendar_styles.scss', 'public/css')
-    .sass('resources/sass/header_style.scss', 'public/css')
-    .sass('resources/sass/index_style.scss', 'public/css')
-    .sass('resources/sass/login_style.scss', 'public/css')
+    .sass('resources/sass/home.scss', 'public/css')
+    .sass('resources/sass/login.scss', 'public/css')
     .sass('resources/sass/text_styles.scss', 'public/css')
     .sass('resources/sass/_variables.scss', 'public/css');
 

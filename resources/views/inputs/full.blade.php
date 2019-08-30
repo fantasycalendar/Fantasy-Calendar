@@ -906,7 +906,7 @@
     @endif
 </form>
 
-<div id='input_collapse_btn' class="btn btn-outline-primary"></div>
+<div id='input_collapse_btn' class="btn btn-secondary"></div>
 
 <div id="warnings_background">
 	<div id="warnings">

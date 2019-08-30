@@ -20,8 +20,6 @@
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-
     @if(getenv('APP_ENV') == "production")
         <script src="//d2wy8f7a9ursnm.cloudfront.net/v6/bugsnag.min.js"></script>
         <script>window.bugsnagClient = bugsnag('98440cbeef759631f3d987ab45b26a79')</script>
@@ -36,11 +34,22 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
 
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" />
     <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/3.2.1/css/font-awesome.min.css">
+
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/simplebar@latest/dist/simplebar.css"
+    />
+    <script src="https://unpkg.com/simplebar@latest/dist/simplebar.min.js"></script>
+    <!-- or -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/simplebar@latest/dist/simplebar.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/simplebar@latest/dist/simplebar.min.js"></script>
 
     <script>
 
@@ -89,12 +98,7 @@
     <script src="{{ mix('/js/calendar/calendar_manager.js') }}"></script>
     <script src="{{ mix('/js/calendar/calendar_presets.js') }}"></script>
 
-    <link rel="stylesheet" href="{{ mix('/css/calendar_input_style.css') }}">
-    <link rel="stylesheet" href="{{ mix('/css/calendar_styles.css') }}">
-    <link rel="stylesheet" href="{{ mix('/css/index_style.css') }}">
-    <link rel="stylesheet" href="{{ mix('/css/login_style.css') }}">
-    <link rel="stylesheet" href="{{ mix('/css/header_style.css') }}">
-    <link rel="stylesheet" href="{{ mix('/css/text_styles.css') }}">
+    <link rel="stylesheet" href="{{ mix('/css/app.css') }}">
     <link rel="stylesheet" href="/js/vendor/spectrum/spectrum.css">
     <link rel="stylesheet" href="/js/vendor/trumbowyg/ui/trumbowyg.min.css">
 
