@@ -6,8 +6,8 @@
 
     $(document).ready(function(){
 
-        $("#btn_export").click(function(){
-            var file = new Blob([JSON.stringify(JSON.parse($('#export_container').text()),null,4)], {type: "json"});
+        $("#btn_save").click(function(){
+            var file = new Blob([JSON.stringify(JSON.parse($('#export_container').text()))], {type: "json"});
             if (window.navigator.msSaveOrOpenBlob) // IE10+
                 window.navigator.msSaveOrOpenBlob(file, "calendar.json");
             else { // Others
@@ -18,7 +18,17 @@
                 document.body.appendChild(a);
                 a.click();
             }
-        })
+        });
+
+        $('#btn_copy').click(function(){
+            var copyText = document.querySelector("#export_container");
+            copyText.select();
+            document.execCommand("copy");
+            $.notify(
+                "Copied to clipboard!",
+                "success"
+            );
+        });
 
     })
 
@@ -33,7 +43,23 @@
 
             <div class='detail-row'>
 
-                <button type='button' class='btn btn-bg btn-primary btn-block' id='btn_export'>Export</button>
+                <div class='detail-column half'>
+                    
+                    <div class='detail-row'>
+                        <button type='button' class='btn btn-bg btn-primary btn-block' id='btn_save'>Save to file</button>
+                    </div>
+
+                </div>
+
+                <div class='detail-column half'>
+                    
+                    <div class='detail-row'>
+
+                        <button type='button' class='btn btn-bg btn-success btn-block' id='btn_copy'>Copy to clipboard</button>
+                   
+                    </div>
+                    
+                </div>
 
             </div>
 
