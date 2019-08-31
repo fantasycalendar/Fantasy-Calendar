@@ -23,7 +23,7 @@
         @isset($calendars)
                 <div class='row'>
                     @foreach($calendars as $calendar)
-                        <div class="col col-sm-6 col-md-4 col-lg-3">
+                        <div class="col-sm-6 col-md-4 col-lg-3">
                             <div class='user_calendar card text-center'>
                                 <div class="card-header">
                                     <h5 class="calendar__list-name">{!! $calendar->name !!}</h5>
