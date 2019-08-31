@@ -61,6 +61,6 @@ mix.js('resources/js/app.js', 'public/js')
     .sass('resources/sass/calendar.scss', 'public/css')
     .sass('resources/sass/home.scss', 'public/css');
 
-if (mix.inProduction()) {
+if (mix.inProduction() || process.env.MIXVERSION) {
     mix.version();
 }
