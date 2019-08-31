@@ -1,9 +1,5 @@
 @import 'calendar/variables';
 
-.container {
-    margin-top: 3rem;
-}
-
 .user_calendar {
 	border-bottom-right-radius: 10px;
     border-bottom-left-radius: 10px;
@@ -22,7 +18,6 @@
 	overflow:auto;
 	text-align:center;
 }
-
 
 .calendar_action i {
     width: 3rem;
@@ -44,4 +39,8 @@
 
 .calendar_action:hover i {
 	color: black;
+}
+
+.calendar__list {
+    padding-top: 3rem;
 }

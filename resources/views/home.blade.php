@@ -19,7 +19,7 @@
 @endpush
 
 @section('content')
-    <div class="container">
+    <div class="container calendar__list">
         @isset($calendars)
                 <div class='row'>
                     @foreach($calendars as $calendar)
@@ -46,16 +46,10 @@
         @endisset
 
         @isset($changelog)
-            <div class="detail-row">
-                <div class='detail-column full'>
-                    <div id='changelog'>
-                        <h2>Changelog</h2>
+            <h2>Changelog</h2>
 
-                        <div class="changelog__content">
-                        {!! $changelog !!}
-                        </div>
-                    </div>
-                </div>
+            <div class="changelog__content">
+            {!! $changelog !!}
             </div>
         @endisset
     </div>
