@@ -2,6 +2,18 @@
 /** Big containers - Body, header, content **/
 /********************************************/
 
+html {
+    font-size: 14px;
+
+    @media screen and (min-width: 900px) {
+        font-size: 16px;
+    }
+
+    @media screen and (min-width: 1200px) {
+        font-size: 18px;
+    }
+}
+
 body{
     display: flex;
     flex-direction: column;
