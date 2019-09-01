@@ -7,48 +7,62 @@
     color: #70767c;
 }
 
-.timespan_container:first-child{
-    margin-top:10px;
-}
+.timespan {
+    &_container{
+        margin-bottom:10px;
+        position:relative;
+    }
 
-.timespan_container{
-    margin-bottom:10px;
-    position:relative;
-}
+    &_container:first-child{
+        margin-top:10px;
+    }
 
-.timespan_row_container{
-    display: flex;
-    flex-direction: column;
-}
+    &_row_container{
+        display: flex;
+        flex-direction: column;
+    }
 
-.timespan_row,
-.timespan_row_names{
-    display: flex;
-    flex-direction: row;
-}
+    &_row,
+    &_row_names{
+        display: flex;
+        flex-direction: row;
+    }
 
-.timespan_day,
-.timespan_intercalary{
-    background-color:white;
-}
+    &_day,
+    &_intercalary{
+        background-color:white;
+    }
 
-.timespan_day.empty_timespan_day{
-    background-color:grey;
-    min-height:75px;
-}
+    &_day.empty_timespan_day{
+        background-color:grey;
+        min-height:75px;
+    }
 
-.timespan_intercalary:not(:first-child){
-    border-left:1px solid $calendar-border-color;
-}
+    &_intercalary:not(.first){
+        border-left:1px solid $calendar-border-color;
+    }
 
-.timespan_row.intercalary{
-    border-top:1px solid $calendar-border-color;
-}
+    &_row.intercalary{
+        border-top:1px solid $calendar-border-color;
+    }
 
-.timespan_row.intercalary .tall{
-    margin:0;
-}
+    &_row.intercalary .tall{
+        margin:0;
+    }
 
+    &_day:hover {
+        .btn_create_event, .weather_icon {
+            visibility: visible;
+        }
+    }
+
+    &_overflow {
+        color: rgba(#98a0a6, 0.6);
+        background-color: #ffffff;
+        background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23f9f9fa' fill-opacity='1' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");
+        cursor: not-allowed;
+    }
+}
 
 .day_column{
     flex-direction: column;
@@ -77,28 +91,27 @@
     -webkit-flex: 1;          /* Chrome */
     -ms-flex: 1;              /* IE 10 */
     flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
-}
-
-.toprow.left{
-    justify-content: flex-start;
-}
-
-.toprow.center{
-    justify-content: center;
-}
-
-.toprow.right{
-    justify-content: flex-end;
-}
-
-.toprow{
     text-align: left;
+
+    &.left{
+        justify-content: flex-start;
+    }
+
+    &.center{
+        justify-content: center;
+    }
+
+    &.right{
+        justify-content: flex-end;
+    }
+
+    & .number{
+        margin-right:5px;
+        padding-right:5px;
+    }
+
 }
 
-.toprow .number{
-    margin-right:5px;
-    padding-right:5px;
-}
 
 .day_row .title{
     text-align:center;
@@ -125,10 +138,6 @@
     background-size: 50%;
 }
 
-.timespan_day:hover .btn_create_event{
-    visibility: visible;
-}
-
 .btn_create_event:hover{
     cursor: pointer;
 }
@@ -147,10 +156,6 @@
     left:0;
     margin-top:5px;
     visibility: hidden;
-}
-
-.timespan_day:hover .weather_icon{
-    visibility: visible;
 }
 
 .event{
@@ -194,14 +199,7 @@
     visibility: hidden;
 }
 
-.timespan_overflow {
-    color: rgba(#98a0a6, 0.6);
-    background-color: #ffffff;
-    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23f9f9fa' fill-opacity='1' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");
-    cursor: not-allowed;
-}
-
-.grid .timespan_overflow:not(.intercalary) {
+.grid .timespan_overflow:not(.intercalary):not(.first) {
     border-left: 1px solid $calendar-border-color;
     padding-left: 0;
 }
