@@ -403,6 +403,49 @@ function fix_date(){
 	}
 }
 
+function repopulate_location_select_list(){
+
+	$(location_select).prop('disabled', static_data.seasons.data.length == 0).closest('.wrap-collapsible').toggleClass('hidden', static_data.seasons.data.length == 0);
+
+	if(static_data.seasons.data.length > 0){
+
+		var html = [];
+		if(static_data.seasons.locations.length > 0){
+
+			html.push('<optgroup label="Custom" value="custom">');
+			for(var i = 0; i < static_data.seasons.locations.length; i++){
+				html.push(`<option value='${i}'>${static_data.seasons.locations[i].name}</option>`);
+			}
+			html.push('</optgroup>');
+
+		}
+
+		if(static_data.seasons.global_settings.enabled_weather){
+
+			html.push('<optgroup label="Presets" value="preset">');
+			for(var i = 0; i < Object.keys(climate_generator.presets).length; i++){
+				html.push(`<option>${Object.keys(climate_generator.presets)[i]}</option>`);
+			}
+			html.push('</optgroup>');
+
+		}
+
+		location_select.html(html.join('')).val(dynamic_data.location);
+
+		if(location_select.val() === null){
+			location_select.find('option').first().prop('selected', true);
+			dynamic_data.location = location_select.val();
+			dynamic_data.custom_location = location_select.find('option:selected').parent().attr('value') === 'custom';
+		}
+
+	}else{
+
+		location_select.html('');
+
+	}
+
+}
+
 
 function set_up_view_values(){
 
@@ -424,11 +467,7 @@ function set_up_view_values(){
 
 	}
 
-	if(static_data.seasons.locations){
-
-		repopulate_location_select_list();
-
-	}
+	repopulate_location_select_list();
 
 	set_up_preview_values();
 

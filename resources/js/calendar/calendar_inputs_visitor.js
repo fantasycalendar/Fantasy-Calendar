@@ -549,30 +549,6 @@ function repopulate_day_select(select, val, change){
 	
 }
 
-function repopulate_location_select_list(){
-	var html = [];
-	if(static_data.seasons.locations.length > 0){
-		html.push('<optgroup label="Custom" value="custom">');
-		for(var i = 0; i < static_data.seasons.locations.length; i++){
-			html.push(`<option value='${i}'>${static_data.seasons.locations[i].name}</option>`);
-		}
-		html.push('</optgroup>');
-	}
-	html.push('<optgroup label="Presets" value="preset">');
-	for(var i = 0; i < Object.keys(climate_generator.presets).length; i++){
-		html.push(`<option>${Object.keys(climate_generator.presets)[i]}</option>`);
-	}
-	html.push('</optgroup>');
-
-	location_select.html(html.join('')).val(dynamic_data.location);
-
-	if(location_select.val() === null){
-		location_select.find('option').first().prop('selected', true);
-		dynamic_data.location = location_select.val();
-		dynamic_data.custom_location = location_select.find('option:selected').parent().attr('value') === 'custom';
-	}
-}
-
 function set_up_preview_values(){
 
 	preview_date = clone(dynamic_data);
