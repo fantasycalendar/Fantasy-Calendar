@@ -89,6 +89,8 @@ function do_update_dynamic(){
 		data: {_method: 'PATCH', dynamic_data: JSON.stringify(dynamic_data)},
 		success: function ( result ){
 
+			print(result)
+
 			if(!dynamic_same){
 				prev_dynamic_data = clone(dynamic_data);
 			}
@@ -231,7 +233,7 @@ function get_all_data(output){
 
 	$.ajax({
 		url:window.apiurl+"/"+hash,
-		type: "post",
+		type: "get",
 		dataType: 'json',
 		data: {},
 		success: function(result){
@@ -250,11 +252,11 @@ function get_dynamic_data(output){
 
 	$.ajax({
 		url:window.apiurl+"/"+hash+"/dynamic_data",
-		type: "post",
+		type: "get",
 		dataType: 'json',
 		data: {},
 		success: function(result){
-
+			
 			output(result);
 
 		},

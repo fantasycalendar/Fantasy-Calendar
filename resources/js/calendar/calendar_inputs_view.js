@@ -308,9 +308,11 @@ function set_up_view_inputs(){
 			var prev_location = climate_generator.presets[dynamic_data.location];
 		}
 
-		dynamic_data.custom_location = $(this).find('option:selected').parent().attr('value') === "custom";
+		dynamic_data.custom_location = location_select.find('option:selected').parent().attr('value') === "custom";
 
-		dynamic_data.location = $(this).val();
+		dynamic_data.location = location_select.val();
+
+		location_select.val()
 
 		if(dynamic_data.custom_location){
 			var location = static_data.seasons.locations[dynamic_data.location];
@@ -405,11 +407,16 @@ function fix_date(){
 
 function repopulate_location_select_list(){
 
-	$(location_select).prop('disabled', static_data.seasons.data.length == 0).closest('.wrap-collapsible').toggleClass('hidden', static_data.seasons.data.length == 0);
+	var show_location_select = static_data.seasons.data.length > 0 && static_data.seasons.locations.length > 0;
 
-	if(static_data.seasons.data.length > 0){
+	var is_edit = location_select.closest('.wrap-collapsible').find('.form-inline.locations').length > 0;
+
+	$(location_select).prop('disabled', !show_location_select).closest('.wrap-collapsible').toggleClass('hidden', !show_location_select && !is_edit);
+
+	if(show_location_select){
 
 		var html = [];
+
 		if(static_data.seasons.locations.length > 0){
 
 			html.push('<optgroup label="Custom" value="custom">');

@@ -50,7 +50,7 @@ var climate_generator = {
 
 		}else{
 
-			this.current_location = this.presets[this.dynamic_data.location];
+			this.current_location = this.presets[this.dynamic_data.location] ? this.presets[this.dynamic_data.location] : this.presets['Equatorial'];
 
 			for(var i = 0; i < this.static_data.seasons.data.length; i++){
 

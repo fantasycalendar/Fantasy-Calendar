@@ -53,10 +53,10 @@
 
         if(new_static_change > last_static_change){
 
-            get_all_data(function(output){
+            get_all_data(function(result){
 
-                static_data = JSON.parse(result.static_data);
-                dynamic_data = JSON.parse(result.dynamic_data);
+                static_data = clone(result.static_data);
+                dynamic_data = clone(result.dynamic_data);
 
                 last_static_change = new Date(result.last_static_change)
                 last_dynamic_change = new Date(result.last_dynamic_change)
@@ -69,9 +69,9 @@
 
         }else if(new_dynamic_change > last_dynamic_change){
 
-            get_dynamic_data(function(output){
+            get_dynamic_data(function(result){
 
-                dynamic_data = JSON.parse(output.dynamic_data);
+                dynamic_data = clone(result);
 
                 last_dynamic_change = new_dynamic_change;
         

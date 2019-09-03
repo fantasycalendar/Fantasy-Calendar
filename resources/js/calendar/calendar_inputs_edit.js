@@ -3324,6 +3324,13 @@ function reindex_location_list(){
 
 	});
 
+	if(static_data.seasons.locations.length == 0){
+		dynamic_data.location = "Equatorial";
+		dynamic_data.custom_location = false;
+	}
+
+	console.log(static_data.seasons.locations.length, dynamic_data)
+
 	location_list.empty();
 
 	for(var i = 0; i < static_data.seasons.locations.length; i++){
@@ -3686,7 +3693,7 @@ function populate_calendar_lists(){
 	get_owned_calendars(function(owned_calendars){
 
 		for(var calendar in owned_calendars){
-			if(owned_calendars[calendar].children != ""){
+			if(owned_calendars[calendar].children == ""){
 				owned_calendars[calendar].children = JSON.parse(owned_calendars[calendar].children);
 			}
 		}
@@ -3956,6 +3963,10 @@ function set_up_edit_values(){
 			add_event_to_sortable(events_sortable, eventId, static_data.event_data.events[eventId]);
 		}
 	}
+
+
+	$('#weather_inputs').toggleClass('hidden', !static_data.seasons.global_settings.enable_weather);
+	$('#weather_inputs').find('select, input').prop('disabled', !static_data.seasons.global_settings.enable_weather);
 
 	if(window.location.pathname != '/calendars/create') {
         populate_calendar_lists();
