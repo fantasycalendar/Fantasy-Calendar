@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  fantasydb:
+    image: mariadb:10.3
+    container_name: fc-mariadb
+    volumes:
+      - fantasy-calendar-db:/var/lib/mysql
+      - ./setup/database.sql:/docker-entrypoint-initdb.d/dump.sql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: fantasy-calendar
+    ports:
+      - "13306:3306"
+
+  fantasy-calendar-php:
+    container_name: fantasy_calendar_php
+    image: fc-php
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "9980:8080"
+    environment:
+      - "APP_ENV=local"
+      - "APP_KEY=base64:ECSIURhDQnHBdx7nRVlwGtPwBU+RZrQCQpmGHesaIUM="
+      - "APP_DEBUG=true"
+      - "APP_URL=http://fantasy-calendar.test:9980/"
+      - "COOKIEADDRESS=http://fantasy-calendar.test:9980/"
+      - "DB_HOST=fantasydb"
+      - "DB_DATABASE=fantasy-calendar"
+      - "DB_USERNAME=root"
+      - "DB_PASSWORD=root"
+      - "REDIS_HOST=fcredis"
+      - "SESSION_DRIVER=redis"
+
+  fcredis:
+    image: redis
+    container_name: fcredis
+    depends_on:
+      - fantasy-calendar-php
+
+volumes:
+  fantasy-calendar-db:
