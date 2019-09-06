@@ -31,8 +31,8 @@
                                 <b>{!! $calendar->name !!}</b><br>by {{ $calendar->user->username }}
                             </div>
 
-                            <div class='icon_container'>                        
-                                <a class='image_link' href='{{ route('calendars.edit', ['id'=> $calendar->hash ]) }}'>
+                            <div class='icon_container'>
+                                <a class='image_link' href='{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}'>
                                     <img class='icon' src='{{ asset("resources/icons/edit_icon.png") }}' title="Edit"/>
                                 </a>
                             </div>
@@ -43,7 +43,7 @@
             </div>
 
         </div>
-        
+
         @isset($changelog)
             <div class='detail-column half'>
                 <div id='changelog'>
