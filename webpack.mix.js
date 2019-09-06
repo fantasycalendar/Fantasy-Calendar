@@ -15,7 +15,15 @@ if(process.env.BROWSERSYNC) {
     mix.browserSync({
         proxy: 'fantasy-calendar:8080',
         port: 9980,
-        open: false
+        open: false,
+        snippetOptions: {
+            rule: {
+                match: /<\/body>/i,
+                fn: function(snippet, match) {
+                    return snippet + match;
+                }
+            }
+        }
     });
 }
 
