@@ -74,7 +74,8 @@ body{
     display: flex;
 
     .navbar {
-        padding: 0;
+        max-height: 4vh;
+        height: 4vh;
 
         &-brand {
             padding: 0 0.5rem;
@@ -87,9 +88,96 @@ body{
     }
 
     #content {
-        flex-grow: 1;
+        height: 96vh;
     }
 }
+
+
+/*************/
+/** General **/
+/*************/
+
+#generator_container{
+    display: flex;
+    width: 100%;
+    margin:0;
+    max-height: 96vh;
+}
+
+#input_container{
+    position: relative;
+    overflow-y: auto;
+    order:1;
+    padding: 0 20px 0 15px;
+    transition: all 0.5s ease;
+    max-height: 100%;
+}
+
+#input_container.inputs_collapsed{
+    width: 0;
+    overflow: hidden;
+    padding: 0;
+}
+
+#input_collapse_btn:focus {
+    outline: 0 !important;
+}
+
+#input_collapse_btn {
+    background-color: $accent-color;
+    position: fixed;
+    width: 4.5rem;
+    height: 4.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 3rem;
+    bottom: 3rem;
+    left: 0;
+    z-index: 10;
+    border-radius: 50%;
+    box-shadow: 0 5px 6px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    margin-left: 3rem;
+    transition: 0.7s left ease;
+}
+
+#input_collapse_btn.is-active {
+    left: $sidebar-width;
+}
+
+#preset_container{
+    display: flex;
+    margin-top:10px;
+}
+
+#preset_container #json_apply{
+    margin-left:5px;
+}
+
+#preset_container #json_apply:disabled{
+    display: none;
+}
+
+#json_container{
+    margin-top:10px;
+}
+
+#calendar_container{
+    order:3;
+    padding:0 10px 0 10px;
+    flex-grow: 1;
+    transition: width 0.5s ease;
+    overflow-y: auto;
+    max-height: 100%;
+}
+
+#calendar{
+    margin-bottom:5px;
+    width: 100%;
+}
+
 
 /************/
 /** Footer **/

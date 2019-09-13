@@ -6,6 +6,10 @@
 @import '~@fortawesome/fontawesome-free/scss/fontawesome';
 @import '~@fortawesome/fontawesome-free/scss/solid';
 
+$hamburger-layer-color      :#FFF;
+$hamburger-hover-opacity    :1;
+@import '~hamburgers/_sass/hamburgers/hamburgers';
+
 // Variables
 @import 'calendar/variables';
 

@@ -3,7 +3,6 @@
 #weather_tooltip_box {
     position: absolute;
     background: #FFF;
-    border: 1px solid #AAA;
     top:0;
     width:240px;
     height:110px;
@@ -12,33 +11,7 @@
     font-size:9pt;
     display:none;
     z-index: 1500;
-    -webkit-box-shadow: 0 0 28px 3px rgba(0,0,0,0.36);
-    -moz-box-shadow: 0 0 28px 3px rgba(0,0,0,0.36);
-    box-shadow: 0 0 28px 3px rgba(0,0,0,0.36);
-}
-
-#weather_tooltip_box:after, #weather_tooltip_box:before {
-    top: 100%;
-    left: 50%;
-    border: solid transparent;
-    content: " ";
-    height: 0;
-    width: 0;
-    position: absolute;
-    pointer-events: none;
-}
-
-#weather_tooltip_box:after {
-    border-color: rgba(255, 255, 255, 0);
-    border-top-color: #FFF;
-    border-width: 10px;
-    margin-left: -10px;
-}
-#weather_tooltip_box:before {
-    border-color: rgba(170, 170, 170, 0);
-    border-top-color: #AAA;
-    border-width: 11px;
-    margin-left: -11px;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
 }
 
 #weather_tooltip_box div{

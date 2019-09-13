@@ -17,11 +17,13 @@ function bind_calendar_events(){
 	$('#input_collapse_btn').click(function(){
 		$("#input_container").toggleClass('inputs_collapsed');
 		$("#calendar_container").toggleClass('inputs_collapsed');
+
+		$(this).toggleClass('is-active');
 		evaluate_error_background_size();
 	})
 
 	calendar_weather.tooltip.set_up();
-	
+
 	$(document).on('mouseenter', '.weather_icon', function(){
 		calendar_weather.tooltip.show($(this));
 	});
@@ -126,7 +128,7 @@ worker_climate.onmessage = e => {
 	}else{
 
 		evaluate_weather_charts();
-		
+
 		eval_current_time();
 
 	}
@@ -180,7 +182,7 @@ worker_calendar.onmessage = e => {
 	}else{
 
 		var text = [];
-		
+
 		text.push(`Errors:<ol>`);
 
 		for(var i = 0; i < evaluated_static_data.errors.length; i++){

@@ -1805,7 +1805,7 @@ function add_leap_day_to_list(parent, key, data){
 						element.push("</div>");
 
 						element.push(`<div class='detail-row removes_day_container ${(!data.adds_week_day && !data.intercalary ? "" : "hidden")}'>`);
-							element.push("<div class='detail-column twothird'>");
+							element.push("<div class='detail-column'>");
 								element.push("<div class='detail-row'>");
 										element.push("<div class='detail-text'>Removes day instead: </div>");
 										element.push(`<input type='checkbox' class='form-control removes-day dynamic_input' data='year_data.leap_days.${key}' fc-index='removes_day' ${(data.removes_day ? "checked" : "")} />`);
@@ -2691,7 +2691,7 @@ function add_category_to_list(parent, key, data){
 
 	var element = [];
 
-	element.push(`<div class='sortable-container category_inputs collapsed' index='${key}'>`);
+	element.push(`<div class='sortable-container list-group-item category_inputs collapsed' index='${key}'>`);
 
 		element.push("<div class='main-container'>");
 			element.push("<div class='expand icon-collapse'></div>");
