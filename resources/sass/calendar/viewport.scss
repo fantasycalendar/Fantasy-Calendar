@@ -132,7 +132,7 @@
     visibility: hidden;
     -webkit-transition: visibility .0s; /* Safari */
     transition: visibility .0s;
-    background-image: url('../../../public/resources/icons/plus_icon_white.png');
+    background-image: url('/resources/icons/plus_icon_white.png');
     background-position: center;
     background-repeat: no-repeat;
     background-size: 50%;
@@ -148,7 +148,7 @@
 }
 
 .weather_icon{
-    background: url('../../../public/resources/icons/weather_icon.png');
+    background: url('/resources/icons/weather_icon.png');
     background-size: contain;
     width:20px !important;
     height:20px !important;
