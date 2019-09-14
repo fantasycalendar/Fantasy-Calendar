@@ -30,6 +30,7 @@ if(process.env.BROWSERSYNC) {
 // Copy components and vendor scripts
 mix.copyDirectory('resources/js/components', 'public/js/components');
 mix.copyDirectory('resources/js/vendor', 'public/js/vendor');
+mix.copyDirectory('resources/images', 'public/resources');
 
 // Calendar scripts
 mix.copy('resources/js/calendar/header.js', 'public/js/calendar');
