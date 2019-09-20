@@ -74,9 +74,6 @@ body{
     display: flex;
 
     .navbar {
-        max-height: 4vh;
-        height: 4vh;
-
         &-brand {
             padding: 0 0.5rem;
             margin-right: 0.75rem;
@@ -84,6 +81,11 @@ body{
 
         .nav-link {
             padding: 0 0.5rem;
+        }
+
+        @media screen and (min-width: 992px) {
+            max-height: 4vh;
+            height: 4vh;
         }
     }
 
@@ -111,6 +113,7 @@ body{
     padding: 0 20px 0 15px;
     transition: all 0.5s ease;
     max-height: 100%;
+    width: $sidebar-width;
 }
 
 #input_container.inputs_collapsed{
@@ -126,8 +129,8 @@ body{
 #input_collapse_btn {
     background-color: $accent-color;
     position: fixed;
-    width: 4.5rem;
-    height: 4.5rem;
+    width: 5rem;
+    height: 5rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -135,16 +138,19 @@ body{
     font-size: 3rem;
     bottom: 3rem;
     left: 0;
-    z-index: 10;
+    z-index: 12;
     border-radius: 50%;
     box-shadow: 0 5px 6px rgba(0, 0, 0, 0.3);
     cursor: pointer;
     margin-left: 3rem;
-    transition: 0.5s left ease;
+    transition: 0.5s all ease;
 }
 
 #input_collapse_btn.is-active {
-    left: $sidebar-width;
+    @media screen and (min-width: 992px) {
+        left: $sidebar-width;
+        margin-left: 0;
+    }
 }
 
 #preset_container{

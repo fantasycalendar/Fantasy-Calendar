@@ -92,10 +92,10 @@
 
                     <div class='detail-row'>
 
-                        <div class='detail-column fifth'>
+                        <div class='detail-column quarter'>
                             <div class='detail-text right-align full'>Year:</div>
                         </div>
-                        <div class='detail-column fourfifths input_buttons' value='current'>
+                        <div class='detail-column threequarter input_buttons' value='current'>
                             <button type='button' class='btn btn-sm btn-danger sub-btn sub_year' id='sub_current_year'><i class="icon-minus"></i></button>
                             <input class='form-control form-control-sm year-input' id='current_year' type='number'>
                             <button type='button' class='btn btn-sm btn-success add-btn add_year' id='add_current_year'><i class="icon-plus"></i></button>
@@ -105,10 +105,10 @@
                     <div class='detail-row'>
 
 
-                        <div class='detail-column fifth'>
+                        <div class='detail-column quarter'>
                             <div class='detail-text right-align full'>Month:</div>
                         </div>
-                        <div class='detail-column fourfifths input_buttons' value='current'>
+                        <div class='detail-column threequarter input_buttons' value='current'>
                             <button type='button' class='btn btn-sm btn-danger sub-btn sub_timespan' id='sub_current_timespan'><i class="icon-minus"></i></button>
                             <select class='form-control form-control-sm timespan-list inclusive date' id='current_timespan'></select>
                             <button type='button' class='btn btn-sm btn-success add-btn add_timespan' id='add_current_timespan'><i class="icon-plus"></i></button>
@@ -119,10 +119,10 @@
                     <div class='detail-row'>
 
 
-                        <div class='detail-column fifth'>
+                        <div class='detail-column quarter'>
                             <div class='detail-text right-align full'>Day:</div>
                         </div>
-                        <div class='detail-column fourfifths input_buttons' value='current'>
+                        <div class='detail-column threequarter input_buttons' value='current'>
                             <button type='button' class='btn btn-sm btn-danger sub-btn sub_day' id='sub_current_day'><i class="icon-minus"></i></button>
                             <select class='form-control form-control-sm timespan-day-list inclusive date' id='current_day'></select>
                             <button type='button' class='btn btn-sm btn-success add-btn add_day' id='add_current_day'><i class="icon-plus"></i></button>
@@ -133,10 +133,10 @@
 
                     <div class='detail-row'>
 
-                        <div class='detail-column fifth'>
+                        <div class='detail-column quarter'>
                             <div class='detail-text right-align full'>Time:</div>
                         </div>
-                        <div class='detail-column fourfifths input_buttons'>
+                        <div class='detail-column threequarter input_buttons'>
                             <button type='button' class='btn btn-sm btn-danger sub-btn adjust_hour' val='-1'><i class="clocktext">1h</i></button>
                             <button type='button' class='btn btn-sm btn-danger sub-btn adjust_minute' val='-30'><i class="clocktext">30m</i></button>
                             <input class='form-control form-control-sm' type='number' id='current_hour'>:
@@ -157,10 +157,10 @@
                 <div class='date_control'>
                     <div class='detail-row'>
 
-                        <div class='detail-column fifth' value='target'>
+                        <div class='detail-column quarter' value='target'>
                             <div class='detail-text right-align full'>Year:</div>
                         </div>
-                        <div class='detail-column fourfifths input_buttons'>
+                        <div class='detail-column threequarter input_buttons'>
                             <button type='button' class='btn btn-sm btn-danger sub-btn sub_year' id='sub_target_year'><i class="icon-minus"></i></button>
                             <input class='form-control form-control-sm year-input' id='target_year' type='number'>
                             <button type='button' class='btn btn-sm btn-success add-btn add_year' id='add_target_year'><i class="icon-plus"></i></button>
@@ -170,10 +170,10 @@
                     <div class='detail-row'>
 
 
-                        <div class='detail-column fifth'>
+                        <div class='detail-column quarter'>
                             <div class='detail-text right-align full'>Month:</div>
                         </div>
-                        <div class='detail-column fourfifths input_buttons' value='target'>
+                        <div class='detail-column threequarter input_buttons' value='target'>
                             <button type='button' class='btn btn-sm btn-danger sub-btn sub_timespan' id='sub_target_timespan'><i class="icon-minus"></i></button>
                             <select class='form-control form-control-sm timespan-list inclusive date' id='target_timespan'></select>
                             <button type='button' class='btn btn-sm btn-success add-btn add_timespan' id='add_target_timespan'><i class="icon-plus"></i></button>
@@ -184,10 +184,10 @@
                     <div class='detail-row'>
 
 
-                        <div class='detail-column fifth'>
+                        <div class='detail-column quarter'>
                             <div class='detail-text right-align full'>Day:</div>
                         </div>
-                        <div class='detail-column fourfifths input_buttons' value='target'>
+                        <div class='detail-column threequarter input_buttons' value='target'>
                             <button type='button' class='btn btn-sm btn-danger sub-btn sub_day' id='sub_target_day'><i class="icon-minus"></i></button>
                             <select class='form-control form-control-sm timespan-day-list inclusive date' id='target_day'></select>
                             <button type='button' class='btn btn-sm btn-success add-btn add_day' id='add_target_day'><i class="icon-plus"></i></button>
@@ -384,7 +384,7 @@
 
                 <div class='form-inline leap'>
 
-                    <input type='text' class='form-control name' placeholder='Leap day name'>
+                    <input type='text' class='form-control name' placeholder='Name'>
 
                     <select class='custom-select type'>
                         <option selected value='leap-day'>Normal day</option>
@@ -455,7 +455,7 @@
 
                 <div class='form-inline seasons'>
                     <input type='text' class='form-control name' placeholder='Season name'>
-                    <input type='button' value='Add season' class='btn btn-primary add'>
+                    <button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
                 </div>
 
                 <div class='detail-row sortable' id='season_sortable'></div>
@@ -551,11 +551,9 @@
 
                     <div class='detail-row'>
                         <div class='detail-row'>Weather generation seed:</div>
-                        <div class='detail-column half'>
+                        <div class='detail-row'>
                             <input type='number' id='seasons_seed' class='form-control static_input' data='seasons.global_settings' fc-index='seed' />
-                        </div>
-                        <div class='detail-column half'>
-                            <div class='btn btn-primary full' id='reseed_seasons'>Generate new seed</div>
+                            <div class='btn btn-primary' id='reseed_seasons'><i class="fa fa-redo"></i></div>
                         </div>
                     </div>
                 </div>
@@ -574,7 +572,7 @@
 
                 <div class='form-inline locations'>
                     <input type='text' class='form-control name' placeholder='Location name'>
-                    <input type='button' value='Add location' class='btn btn-primary add'>
+                    <button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
                 </div>
 
                 <div class='detail-row detail-select-container'>

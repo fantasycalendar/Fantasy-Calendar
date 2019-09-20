@@ -1606,6 +1606,7 @@ function add_weekday_to_sortable(parent, key, name){
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' value='${name}' class='form-control name-input small-input dynamic_input' data='year_data.global_week' index='${key}' tabindex='${(key+1)}'/>`);
 			element.push("</div>");
+			element.push("<div class='remove-spacer'></div>");
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
@@ -1629,6 +1630,7 @@ function add_timespan_to_sortable(parent, key, data){
 				element.push(`<input type='text' value='${data.name}' tabindex='${(100+key)}'class='name-input small-input form-control dynamic_input' data='year_data.timespans.${key}' fc-index='name'/>`);
 			element.push("</div>");
 			element.push(`<div class='length_input'><input type='number' min='1' class='length-input form-control dynamic_input timespan_length' data='year_data.timespans.${key}' fc-index='length' tabindex='${(100+key)}' value='${data.length}'/></div>`);
+			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
@@ -1758,6 +1760,7 @@ function add_leap_day_to_list(parent, key, data){
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' value='${data.name}' class='name-input small-input form-control dynamic_input' data='year_data.leap_days.${key}' fc-index='name' tabindex='${(200+key)}'/>`);
 			element.push("</div>");
+            element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
@@ -2008,6 +2011,7 @@ function add_observational_to_list(parent, key, data){
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' value='${data.name}' class='name-input small-input form-control dynamic_input' data='year_data.observationals.${key}' fc-index='name' tabindex='${(200+key)}'/>`);
 			element.push("</div>");
+            element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
@@ -2084,6 +2088,7 @@ function add_moon_to_list(parent, key, data){
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' value='${data.name}' class='form-control name-input small-input dynamic_input' data='moons.${key}' fc-index='name' tabindex='${(300+key)}'/>`);
 			element.push("</div>");
+            element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
@@ -2178,6 +2183,7 @@ function add_season_to_sortable(parent, key, data){
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' value='${data.name}' tabindex='${(400+key)}'class='name-input small-input form-control dynamic_input' data='seasons.data.${key}' fc-index='name'/>`);
 			element.push("</div>");
+            element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
@@ -2255,6 +2261,7 @@ function add_location_to_list(parent, key, data){
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' value='${data.name}' tabindex='${(500+key)}' class='name-input small-input form-control dynamic_input location-name' data='seasons.locations.${key}' fc-index='name'/>`);
 			element.push("</div>");
+            element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 
 		element.push("<div class='remove-container'>");
@@ -2477,6 +2484,7 @@ function add_cycle_to_sortable(parent, key, data){
 			element.push("<div class='handle icon-reorder'></div>");
 			element.push("<div class='expand icon-collapse'></div>");
 			element.push(`<div class='detail-text'>Cycle number ${(key+1)} - Using $${(key+1)}</div>`);
+            element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
@@ -2548,6 +2556,7 @@ function add_era_to_list(parent, key, data){
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' value='${data.name}' class='form-control name-input small-input dynamic_input' data='eras.${key}' fc-index='name' tabindex='${(800+key)}'/>`);
 			element.push("</div>");
+            element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
@@ -2698,6 +2707,7 @@ function add_category_to_list(parent, key, data){
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' value='${data.name}' name='name_input' fc-index='name' class='form-control name-input small-input dynamic_input_self' data='event_data.categories.${key}' tabindex='${(700+key)}'/>`);
 			element.push("</div>");
+            element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
@@ -2839,6 +2849,7 @@ function add_event_to_sortable(parent, key, data){
 		element.push("<div class='main-container'>");
 			element.push("<div class='handle icon-reorder'></div>");
 			element.push(`<div class='btn btn-outline-primary open-edit-event-ui'>Edit - ${data.name}</div>`);
+            element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
@@ -2861,6 +2872,7 @@ function add_link_to_list(parent, key, calendar_name){
 	element.push(`<div class='sortable-container events_input' index='${key}'>`);
 		element.push("<div class='main-container'>");
 			element.push(`<div>${calendar_name}</div>`);
+            element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to unlink this?</div>");

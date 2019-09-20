@@ -38,7 +38,7 @@
         min-height:75px;
     }
 
-    &_intercalary:not(.first){
+    &_intercalary:not(:first-child){
         border-left:1px solid $calendar-border-color;
     }
 
