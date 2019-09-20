@@ -9,9 +9,11 @@
 
     <div class="collapse navbar-collapse" id="collapsemenu">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="{{ route('calendars.index') }}">My Calendars</a>
-            </li>
+            @auth
+                <li class="nav-item active">
+                    <a class="nav-link" href="{{ route('calendars.index') }}">My Calendars</a>
+                </li>
+            @endauth
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('calendars.create') }}">New Calendar</a>
             </li>

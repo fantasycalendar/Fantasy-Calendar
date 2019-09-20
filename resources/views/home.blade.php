@@ -31,10 +31,10 @@
                                 </div>
                                 <div class="card-body">
                                     <div class='icon_container'>
-                                        <a class='calendar_action' href='{{ route('calendars.edit', ['id'=> $calendar->hash ]) }}'>
+                                        <a class='calendar_action' href='{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}'>
                                             <i class="fa fa-edit"></i>
                                         </a>
-                                        <a class='calendar_action' href='{{ route('calendars.show', ['id'=> $calendar->hash ]) }}'>
+                                        <a class='calendar_action' href='{{ route('calendars.show', ['calendar'=> $calendar->hash ]) }}'>
                                             <i class="fa fa-eye"></i>
                                         </a>
                                     </div>

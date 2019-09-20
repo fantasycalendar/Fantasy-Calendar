@@ -620,12 +620,16 @@ label{
 
 .wrap-collapsible{
     width: 100%;
+
 }
 
 @media screen and (max-width: 600px) {
     #input_container {
         width: 100vw;
-        padding-bottom: 16vh;
+
+        & .accordion {
+            padding-bottom: 22vh;
+        }
     }
     #calendar_container:not(.inputs_collapsed) {
         width: 0;
