@@ -158,11 +158,10 @@ select.invalid {
 .main-container > .handle, .main-container > .expand{
     margin:0 2% 0 0;
     font-size:15pt;
-    padding-top:10px;
-    height:100%;
     min-width:20px;
     text-align:center;
     cursor: move;
+    display: block;
 }
 
 .main-container > .expand{
