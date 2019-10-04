@@ -38,6 +38,14 @@ if (token) {
 }
 
 /**
+ * Sweet Alert provides rich alerts that are much nicer than is provided by
+ * most browsers. swalert Prompts nicer both visually and in the exposed
+ * API, allowing confirmations and very much more. (sweetalert.js.org)
+ */
+
+require('sweetalert');
+
+/**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting
  * allows your team to easily build robust real-time web applications.

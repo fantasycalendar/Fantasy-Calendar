@@ -75,8 +75,7 @@
 .day_row{
     display: inline-flex;
     flex-direction: row;
-    width:calc(100% - 10px);
-    margin:0 5px 5px 5px;
+    margin:0 0.2rem 0.2rem 0.2rem;
 }
 
 .day_row:last-child{
@@ -159,12 +158,12 @@
 }
 
 .event{
-    font-size:14px;
+    font-size: 0.8rem;
     word-break: break-word;
-    padding: 8px 12px;
-    margin:5px;
-    border-left: 4px solid white;
-    font-family: 'Montserrat';
+    padding: 0.4rem 0.3rem;
+    margin: 0.3rem 0;
+    border-left: 0.2rem solid white;
+    font-family: "Montserrat";
 }
 
 .event:hover{
@@ -269,9 +268,9 @@
 
 .grid .timespan_name{
     text-align: center;
-    border-bottom:1px solid $calendar-border-color;
-    font-size:22pt;
-    height:50px;
+    border-bottom: 1px solid $calendar-border-color;
+    font-size: 1.4rem;
+    line-height: 2.2rem;
 }
 
 .grid .timespan_intercalary{
@@ -304,11 +303,7 @@ body.hide_timespan_number .timespan_number{
 .grid .timespan_overflow{
     display: flex;
     flex-direction: column;
-    min-height:150px;
-    -webkit-box-flex: 1;      /* OLD - iOS 6-, Safari 3.1-6 */
-    -moz-box-flex: 1;         /* OLD - Firefox 19- */
-    -webkit-flex: 1;          /* Chrome */
-    -ms-flex: 1;              /* IE 10 */
+    min-height:8rem;
     flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 }
 

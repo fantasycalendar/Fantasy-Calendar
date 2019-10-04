@@ -2,9 +2,16 @@ $(document).ready(function(){
 
 	$('.image_link').click(function(e){
 		if($(this).children().first().attr('title') == 'Duplicate'){
-			if(!confirm("Are you sure you want to duplicate this calendar?")){
-    			e.preventDefault();
-    		}
+		    swal({
+                title: "Are you sure?",
+                text: "Are you sure you want to duplicate this calendar?",
+                icon: "warning",
+                buttons: true,
+            }).then((willDuplicate) => {
+                if(!willDuplicate) {
+                    e.preventDefault();
+                }
+            });
 		}
 	});
 

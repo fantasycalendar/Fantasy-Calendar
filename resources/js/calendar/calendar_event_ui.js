@@ -56,16 +56,21 @@ var edit_event_ui = {
 
 		edit_event_ui.close_ui_btn.click(function(){
 
-			if(!confirm('This event will not be saved! Are you sure you want to close the event UI?')){
-				return;
-			}
+			swal({
+                title: "Are you sure?",
+                text: 'This event will not be saved! Are you sure you want to close the event UI?',
+			    dangerMode: true,
+                buttons: true,
+                icon: "warning",
+            }).then((willDelete) => {
+                if(willDelete) {
+                    if(edit_event_ui.new_event){
+                        delete static_data.event_data.events[edit_event_ui.event_id];
+                    }
 
-			if(edit_event_ui.new_event){
-				delete static_data.event_data.events[edit_event_ui.event_id];
-			}
-
-			edit_event_ui.clear_ui();
-
+                    edit_event_ui.clear_ui();
+                }
+            });
 		});
 
 
@@ -1388,7 +1393,21 @@ var show_event_ui = {
 		});
 
 		this.close_ui_btn.click(function(){
-			show_event_ui.clear_ui();
+		    if(show_event_ui.event_comment_input.trumbowyg('html').length > 0) {
+                swal({
+                    title: "Cancel comment?",
+                    text: "You haven't posted your comment yet, are you sure you want to close this event?",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                }).then((willCancel) => {
+                    if(willCancel) {
+                        show_event_ui.clear_ui();
+                    }
+                });
+            } else {
+                show_event_ui.clear_ui();
+            }
 		});
 
 		this.event_wrapper.mousedown(function(event){
@@ -1476,12 +1495,6 @@ var show_event_ui = {
 	},
 
 	clear_ui: function(){
-
-		if(this.event_comment_input.trumbowyg('html').length > 0){
-			if(!confirm("You haven't posted your comment yet, are you sure you want to close this event?")){
-				return;
-			}
-		}
 
 		this.event_id = -1;
 		this.era_id = -1;

@@ -435,13 +435,22 @@ function set_up_edit_inputs(set_up){
 	$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0);
 
 	$('#create_season_events').click(function(){
-		if(confirm('Are you sure you want to create seasonal events? If you already have created them, you might get doubling.')){
-			for(var i = 0; i < static_data.seasons.data.length; i++){
-				static_data.event_data.events = static_data.event_data.events.concat(create_season_events(i, static_data.seasons.data[i].name));
-			}
-			reindex_events_sortable();
-			do_error_check('seasons');
-		}
+	    swal({
+            title: "Are you sure?",
+            text: 'Are you sure you want to create seasonal events? If you already have created them, you might get doubling.',
+            buttons: true,
+            icon: "info",
+            dangerMode: true,
+        })
+        .then((willCreate) => {
+            if(willCreate) {
+                for(var i = 0; i < static_data.seasons.data.length; i++){
+                    static_data.event_data.events = static_data.event_data.events.concat(create_season_events(i, static_data.seasons.data[i].name));
+                }
+                reindex_events_sortable();
+                do_error_check('seasons');
+            }
+        });
 	})
 
 	$('.form-inline.locations .add').click(function(){
