@@ -45,12 +45,6 @@
         href="https://unpkg.com/simplebar@latest/dist/simplebar.css"
     />
     <script src="https://unpkg.com/simplebar@latest/dist/simplebar.min.js"></script>
-    <!-- or -->
-    <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/simplebar@latest/dist/simplebar.css"
-    />
-    <script src="https://cdn.jsdelivr.net/npm/simplebar@latest/dist/simplebar.min.js"></script>
 
     <script>
 

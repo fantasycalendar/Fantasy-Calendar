@@ -177,7 +177,7 @@
 </form>
 
 
-<div id='input_collapse_btn' class="btn btn-outline-primary hamburger hamburger--arrowturn is-active">
+<div id='input_collapse_btn' class="hamburger hamburger--arrowturn is-active">
     <span class="hamburger-box">
         <div class="hambuger-inner"></div>
     </span>
