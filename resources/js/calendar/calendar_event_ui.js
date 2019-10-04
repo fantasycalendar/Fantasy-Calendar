@@ -1483,7 +1483,7 @@ var show_event_ui = {
 
 		var content = [];
 
-		content.push(`<div class='form-control event_comment ${comment.comment_owner ? "comment_owner" : ""} ${comment.calendar_owner ? "calendar_owner" : ""}'`)
+		content.push(`<div class='event_comment ${comment.comment_owner ? "comment_owner" : ""} ${comment.calendar_owner ? "calendar_owner" : ""}'`)
 		content.push(` date='${comment.date}' comment_id='${index}'>`)
 			content.push(`<p><span class='comment'>${unescapeHtml(comment.content)}</span></p>`)
 			content.push(`<p><span class='username'>- ${comment.username}${comment.calendar_owner ? " (owner)" : ""}</span></p>`)

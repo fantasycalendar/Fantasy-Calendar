@@ -792,6 +792,8 @@ label{
 
 .event_comment{
     margin-bottom:0.5em;
+    padding: 1rem;
+    border: 1px solid $calendar-border-color;
 }
 
 .event_comment.calendar_owner .username{
@@ -811,9 +813,10 @@ label{
 }
 
 .event_comment p{
-    margin:0;
-    padding:0;
-    line-height: 0.8;
+    margin: 0;
+    padding: 0;
+    line-height: 1.2rem;
+    font-size: 1.1rem;
 }
 
 .event_comment .username{
@@ -823,8 +826,8 @@ label{
 
 .event_comment .date{
     font-style: italic;
-    color:rgba(0,0,0,0.5);
-    font-size:0.5em;
+    color: rgba(0,0,0,.5);
+    font-size: .7rem;
 }
 
 

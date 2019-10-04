@@ -10,7 +10,7 @@
 					<div class='detail-row italics-text'>
 						Description:
 					</div>
-					<div class='detail-row form-control'>
+					<div class='detail-row'>
 						<div class="event_desc"></div>
 					</div>
 
