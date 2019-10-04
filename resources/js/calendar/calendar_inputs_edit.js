@@ -2552,7 +2552,6 @@ function add_cycle_to_sortable(parent, key, data){
 	element.push("</div>");
 
 	parent.append(element.join(""));
-	console.log("LOL")
 }
 
 function add_era_to_list(parent, key, data){
@@ -3349,8 +3348,6 @@ function reindex_location_list(){
 		dynamic_data.location = "Equatorial";
 		dynamic_data.custom_location = false;
 	}
-
-	console.log(static_data.seasons.locations.length, dynamic_data)
 
 	location_list.empty();
 

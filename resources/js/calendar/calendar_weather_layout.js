@@ -43,8 +43,6 @@ var calendar_weather = {
 
 		show: function(icon){
 
-		    console.log(icon);
-
 			if(!calendar_weather.processed_weather) return;
 
 			var height = 0;
