@@ -40,7 +40,7 @@
 	</div>
 </div>
 
-@unless(Auth::check())
+@guest
 <div id="login-background" class="basic-background">
 	<div class="basic-container">
 		<div class="basic-wrapper">
@@ -58,4 +58,4 @@
 		</div>
 	</div>
 </div>
-@endif
+@endguest
