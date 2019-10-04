@@ -1,8 +1,20 @@
 // Fonts
-@import url('https://fonts.googleapis.com/css?family=Nunito');
+@import url('https://fonts.googleapis.com/css?family=Montserrat:regular,600');
+
+@import '~bootstrap/scss/bootstrap';
+
+@import '~@fortawesome/fontawesome-free/scss/fontawesome';
+@import '~@fortawesome/fontawesome-free/scss/solid';
+
+$hamburger-layer-color      :#FFF;
+$hamburger-hover-opacity    :1;
+@import '~hamburgers/_sass/hamburgers/hamburgers';
 
 // Variables
-@import 'variables';
+@import 'calendar/variables';
 
-// Bootstrap
-@import '~bootstrap/scss/bootstrap';
+// Legacy calendar parts
+@import 'home';
+
+// Calendar parts
+@import 'calendar';

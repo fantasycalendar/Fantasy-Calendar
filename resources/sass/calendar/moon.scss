@@ -1,0 +1,149 @@
+/* Moon phases */
+
+.lunar {
+    position:absolute;
+    left:0;
+    top:0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    background: url('/resources/moon_sprites_newest.png');
+    text-indent: -1000px;
+    opacity: 0.8;
+
+
+    &.gran-4.phase-0	{ background-position:  0 0; }
+    &.gran-4.phase-1	{ background-position: -256px 0px; }
+    &.gran-4.phase-2	{ background-position: -512px 0px; }
+    &.gran-4.phase-3	{ background-position: -768px 0px; }
+
+    &.gran-8.phase-0	{ background-position:  0 0; }
+    &.gran-8.phase-1	{ background-position: -128px 0px; }
+    &.gran-8.phase-2	{ background-position: -256px 0px; }
+    &.gran-8.phase-3	{ background-position: -384px 0px; }
+    &.gran-8.phase-4	{ background-position: -512px 0px; }
+    &.gran-8.phase-5	{ background-position: -640px 0px; }
+    &.gran-8.phase-6	{ background-position: -768px 0px; }
+    &.gran-8.phase-7	{ background-position: -896px 0px; }
+
+    &.gran-16.phase-0	{ background-position:  0 0; }
+    &.gran-16.phase-1	{ background-position: -64px 0px; }
+    &.gran-16.phase-2	{ background-position: -128px 0px; }
+    &.gran-16.phase-3	{ background-position: -192px 0px; }
+    &.gran-16.phase-4	{ background-position: -256px 0px; }
+    &.gran-16.phase-5	{ background-position: -320px 0px; }
+    &.gran-16.phase-6	{ background-position: -384px 0px; }
+    &.gran-16.phase-7	{ background-position: -448px 0px; }
+    &.gran-16.phase-8	{ background-position: -512px 0px; }
+    &.gran-16.phase-9	{ background-position: -576px 0px; }
+    &.gran-16.phase-10	{ background-position: -640px 0px; }
+    &.gran-16.phase-11	{ background-position: -704px 0px; }
+    &.gran-16.phase-12	{ background-position: -768px 0px; }
+    &.gran-16.phase-13	{ background-position: -832px 0px; }
+    &.gran-16.phase-14	{ background-position: -896px 0px; }
+    &.gran-16.phase-15	{ background-position: -960px 0px; }
+
+    &.gran-24.phase-0	{ background-position:  0 0; }
+    &.gran-24.phase-1	{ background-position: -32px 0px; }
+    &.gran-24.phase-2	{ background-position: -64px 0px; }
+    &.gran-24.phase-3	{ background-position: -128px 0px; }
+    &.gran-24.phase-4	{ background-position: -160px 0px; }
+    &.gran-24.phase-5	{ background-position: -192px 0px; }
+    &.gran-24.phase-6	{ background-position: -256px 0px; }
+    &.gran-24.phase-7	{ background-position: -288px 0px; }
+    &.gran-24.phase-8	{ background-position: -320px 0px; }
+    &.gran-24.phase-9	{ background-position: -384px 0px; }
+    &.gran-24.phase-10	{ background-position: -416px 0px; }
+    &.gran-24.phase-11	{ background-position: -448px 0px; }
+    &.gran-24.phase-12	{ background-position: -512px 0px; }
+    &.gran-24.phase-13	{ background-position: -544px 0px; }
+    &.gran-24.phase-14	{ background-position: -576px 0px; }
+    &.gran-24.phase-15	{ background-position: -608px 0px; }
+    &.gran-24.phase-16	{ background-position: -640px 0px; }
+    &.gran-24.phase-17	{ background-position: -672px 0px; }
+    &.gran-24.phase-18	{ background-position: -704px 0px; }
+    &.gran-24.phase-19	{ background-position: -768px 0px; }
+    &.gran-24.phase-20	{ background-position: -800px 0px; }
+    &.gran-24.phase-21	{ background-position: -832px 0px; }
+    &.gran-24.phase-22	{ background-position: -896px 0px; }
+    &.gran-24.phase-23	{ background-position: -928px 0px; }
+    &.gran-24.phase-24	{ background-position: -960px 0px; }
+
+    &.gran-32.phase-0	{ background-position:  0 0; }
+    &.gran-32.phase-1	{ background-position: -32px 0px; }
+    &.gran-32.phase-2	{ background-position: -64px 0px; }
+    &.gran-32.phase-3	{ background-position: -96px 0px; }
+    &.gran-32.phase-4	{ background-position: -128px 0px; }
+    &.gran-32.phase-5	{ background-position: -160px 0px; }
+    &.gran-32.phase-6	{ background-position: -192px 0px; }
+    &.gran-32.phase-7	{ background-position: -224px 0px; }
+    &.gran-32.phase-8	{ background-position: -256px 0px; }
+    &.gran-32.phase-9	{ background-position: -288px 0px; }
+    &.gran-32.phase-10	{ background-position: -320px 0px; }
+    &.gran-32.phase-11	{ background-position: -352px 0px; }
+    &.gran-32.phase-12	{ background-position: -384px 0px; }
+    &.gran-32.phase-13	{ background-position: -416px 0px; }
+    &.gran-32.phase-14	{ background-position: -448px 0px; }
+    &.gran-32.phase-15	{ background-position: -480px 0px; }
+    &.gran-32.phase-16	{ background-position: -512px 0px; }
+    &.gran-32.phase-17	{ background-position: -544px 0px; }
+    &.gran-32.phase-18	{ background-position: -576px 0px; }
+    &.gran-32.phase-19	{ background-position: -608px 0px; }
+    &.gran-32.phase-20	{ background-position: -640px 0px; }
+    &.gran-32.phase-21	{ background-position: -672px 0px; }
+    &.gran-32.phase-22	{ background-position: -704px 0px; }
+    &.gran-32.phase-23	{ background-position: -736px 0px; }
+    &.gran-32.phase-24	{ background-position: -768px 0px; }
+    &.gran-32.phase-25	{ background-position: -800px 0px; }
+    &.gran-32.phase-26	{ background-position: -832px 0px; }
+    &.gran-32.phase-27	{ background-position: -864px 0px; }
+    &.gran-32.phase-28	{ background-position: -896px 0px; }
+    &.gran-32.phase-29	{ background-position: -928px 0px; }
+    &.gran-32.phase-30	{ background-position: -960px 0px; }
+    &.gran-32.phase-31	{ background-position: -992px 0px; }
+}
+
+.lunar_background{
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    display: inline-block;
+    position:relative;
+    top:-26.5px;
+}
+
+.calendar_moon_container{
+    display: inline-flex;
+    text-align: center;
+    align-content: flex-start;
+    height:100%;
+    width:100%;
+}
+
+.moon_container{
+    width:32px;
+    height:32px;
+    overflow:hidden;
+    max-height: 999999px;
+    border-radius:5px;
+    &.plus{
+        padding:2px;
+        background: url('/resources/icons/plus_icon.png') no-repeat scroll right center;
+        background-origin: content-box;
+        background-size: cover;
+    }
+
+    &.plus:hover{
+        background-color: lightgrey;
+        cursor: pointer;
+    }
+
+}
+
+.calendar_moon{
+    position:relative;
+    margin-left:auto;
+    margin-right:auto;
+    float:left;
+}

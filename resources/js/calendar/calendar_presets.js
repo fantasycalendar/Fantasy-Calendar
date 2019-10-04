@@ -1053,8 +1053,6 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 
 		}
 
-		console.log(calendar.static_data.event_data.events);
-
 		if(calendar.static_data.event_data.events !== undefined && Array.isArray(calendar.static_data.event_data.events)){
 			for(var eventId in calendar.static_data.event_data.events){
 

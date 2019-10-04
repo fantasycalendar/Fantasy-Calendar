@@ -1,0 +1,253 @@
+/********************************************/
+/** Big containers - Body, header, content **/
+/********************************************/
+
+@import '_variables';
+
+.bg-accent {
+    background-color: $accent-color;
+}
+
+html {
+    font-size: 14px;
+
+    @media screen and (min-width: 900px) {
+        font-size: 12px;
+    }
+
+    @media screen and (min-width: 1200px) {
+        font-size: 13px;
+    }
+
+    @media screen and (min-width: 1400px) {
+        font-size: 15px;
+    }
+
+    @media screen and (min-width: 1600px) {
+        font-size: 20px;
+    }
+}
+
+body{
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    min-height: 100vh;
+    max-height: 100vh;
+    font-family:'Fira Sans', sans-serif;
+}
+
+::-webkit-scrollbar
+{
+    width: 8px;  /* for vertical scrollbars */
+    height: 12px; /* for horizontal scrollbars */
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-track
+{
+    background: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb
+{
+    background: rgba(0, 0, 0, 0.3);
+}
+
+
+#loading_background{
+    display: flex;
+    flex-direction: column;
+
+    img, div{
+        display: inline-flex;
+        align-self: center;
+        position:relative;
+        top:45vh;
+        padding-top:10px;
+        color:white;
+    }
+}
+
+
+/************/
+/** Header **/
+/************/
+
+.navbar-logo {
+    max-height: 2rem;
+}
+
+.page-calendars-edit {
+    display: flex;
+
+    .navbar {
+        &-brand {
+            padding: 0 0.5rem;
+            margin-right: 0.75rem;
+        }
+
+        .nav-link {
+            padding: 0 0.5rem;
+        }
+
+        @media screen and (min-width: 992px) {
+            max-height: 4vh;
+            height: 4vh;
+        }
+    }
+
+    #content {
+        height: 96vh;
+    }
+}
+
+
+/*************/
+/** General **/
+/*************/
+
+#generator_container{
+    display: flex;
+    width: 100%;
+    margin:0;
+    max-height: 96vh;
+}
+
+#input_container{
+    position: relative;
+    overflow-y: auto;
+    order:1;
+    padding: 0 20px 0 15px;
+    transition: all 0.5s ease;
+    max-height: 100%;
+    width: $sidebar-width;
+    max-width: 600px;
+}
+
+#input_container.inputs_collapsed{
+    width: 0;
+    overflow: hidden;
+    padding: 0;
+}
+
+#input_collapse_btn:focus {
+    outline: 0 !important;
+}
+
+#input_collapse_btn {
+    background-color: $accent-color;
+    position: fixed;
+    width: 5rem;
+    height: 5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 3rem;
+    bottom: 3rem;
+    left: 0;
+    z-index: 12;
+    border-radius: 50%;
+    box-shadow: 0 5px 6px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    margin-left: 3rem;
+    transition: 0.5s all ease;
+}
+
+#input_collapse_btn.is-active {
+    @media screen and (min-width: 992px) {
+        left: $sidebar-width;
+        margin-left: 0;
+    }
+}
+
+#preset_container{
+    display: flex;
+    margin-top:10px;
+}
+
+#preset_container #json_apply{
+    margin-left:5px;
+}
+
+#preset_container #json_apply:disabled{
+    display: none;
+}
+
+#json_container{
+    margin-top:10px;
+}
+
+#calendar_container{
+    order:3;
+    padding:0 10px 0 10px;
+    flex-grow: 1;
+    transition: width 0.5s ease;
+    overflow-y: auto;
+    max-height: 100%;
+}
+
+#calendar{
+    margin-bottom:5px;
+    width: 100%;
+}
+
+
+/************/
+/** Footer **/
+/************/
+
+#footer{
+    position:relative;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    z-index:100;
+    order:10000;
+
+    a {
+        color: $blue;
+        text-decoration: underline;
+    }
+}
+
+/*****************/
+/** Alert boxes **/
+/*****************/
+
+#alert_background{
+    width:100%;
+    height:100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10000;
+    position:fixed;
+    align-items: center;
+    display:none;
+}
+
+#alert {
+    padding: 20px;
+    background-color: #f44336; /* Red */
+    color: white;
+    width:50%;
+    position:relative;
+    margin:auto;
+    z-index: 10000;
+}
+
+#alert_closebtn {
+    margin-left: 15px;
+    color: white;
+    font-weight: bold;
+    float: right;
+    font-size: 22px;
+    line-height: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+
+    &:hover {
+        color: black;
+    }
+}

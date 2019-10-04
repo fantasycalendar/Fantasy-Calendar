@@ -13,9 +13,9 @@ HTMLElement.prototype.pseudoStyle = function(element,prop,value){
 	var _sheet = document.getElementById(_sheetId) || document.createElement('style');
 	_sheet.id = _sheetId;
 	var className = "pseudoStyle" + UID.getNew();
-	
-	_this.className +=  " "+className; 
-	
+
+	_this.className +=  " "+className;
+
 	_sheet.innerHTML += " ."+className+":"+element+"{"+prop+":"+value+"}";
 	_head.appendChild(_sheet);
 	return this;
@@ -109,12 +109,12 @@ var calendar_weather = {
 			}
 
 			var combined = position+val == "0" ? "" : position+val;
-			
+
 			this.weather_tooltip_box.position({
 				my: "center"+combined,
-				at: `top-${this.base_height+height/2}`,
-				of: icon.parent().parent(),
-				collision: "none"
+				at: `top-${this.base_height-45}`,
+				of: icon,
+				collision: "flipfit"
 			});
 
 			position = position == "+" ? "-" : "+";
@@ -141,7 +141,7 @@ var calendar_weather = {
 			this.weather_clouds.each(function(){
 				$(this).text(weather.clouds);
 			});
-			
+
 			this.weather_tooltip_box.show();
 		},
 
@@ -313,7 +313,7 @@ function evaluate_weather_charts(){
 				}
 			});
 		}
-		
+
 		if(temperature_chart !== undefined){
 			removeData(temperature_chart);
 			addData(temperature_chart, labels, temperature_datasets);

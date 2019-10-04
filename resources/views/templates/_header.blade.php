@@ -1,31 +1,35 @@
-<header id="header">
+<nav class="navbar navbar-expand-lg navbar-dark bg-accent">
+    <a class="navbar-brand" href="{{ route('home') }}">
+        <img class="navbar-logo mr-2" src="{{ asset('resources/calendar-logo-white.png') }}">
+        Fantasy Calendar
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsemenu" aria-controls="collapsemenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
 
-	<div id="header_left_container">
+    <div class="collapse navbar-collapse" id="collapsemenu">
+        <ul class="navbar-nav mr-auto">
+            @auth
+                <li class="nav-item active">
+                    <a class="nav-link" href="{{ route('calendars.index') }}">My Calendars</a>
+                </li>
+            @endauth
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('calendars.create') }}">New Calendar</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav">
+            @auth
+                <li class="nav-item"><a href="javascript:" id="logout-button" class="nav-link">Logout</a></li>
+                <li class="nav-item"><a href="/profile" class="nav-link">Profile</a></li>
+            @else
+                <li class="nav-item"><a href="javascript:" id="login-show-button" class="nav-link">Login</a></li>
+                <li class="nav-item"><a href="{{ route('register') }}" class="nav-link">Register</a></li>
+            @endauth
 
-		<a href="/" id="logo"><img src="/resources/calendar-logo.png" alt="Logo"/></a>
-
-		<a href="{{ route('calendars.create') }}"><div class="button" id="new_calendar">New Calendar</div></a>
-	</div>
-
-	<div id="header_center_container">
-		{!! $title ?? $calendar->name ?? "Fantasy Calendar" !!}
-	</div>
-
-	<div id="header_right_container">
-
-	<a href='/donate'><div id='donate-button' class='button'>Donate</div></a>
-
-	@if(Auth::check())
-		<div id="logout-button" class="button">Log Out</div>
-		<a href="/profile"><div class="button">Profile</div></a>
-	@else
-		<a href="/register"><div id="signup-show-button" class="button">Sign-up</div></a>
-		<div class="button login-show-button">Log In</div>
-	@endif
-
-	</div>
-
-</header>
+        </ul>
+    </div>
+</nav>
 
 <div id="alert_background">
 	<div id="alert">

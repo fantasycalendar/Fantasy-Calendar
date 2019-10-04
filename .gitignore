@@ -4,6 +4,8 @@
 /public/js
 /public/mix-manifest.json
 /public/css
+/public/fonts
+/public/resources
 /storage/*.key
 /storage/
 /vendor
@@ -20,3 +22,4 @@ psysh
 *.sass.map
 *.scss.map
 /resources/sass/*.css
+/resources/sass/calendar/*.css

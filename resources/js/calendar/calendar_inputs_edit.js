@@ -435,13 +435,22 @@ function set_up_edit_inputs(set_up){
 	$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0);
 
 	$('#create_season_events').click(function(){
-		if(confirm('Are you sure you want to create seasonal events? If you already have created them, you might get doubling.')){
-			for(var i = 0; i < static_data.seasons.data.length; i++){
-				static_data.event_data.events = static_data.event_data.events.concat(create_season_events(i, static_data.seasons.data[i].name));
-			}
-			reindex_events_sortable();
-			do_error_check('seasons');
-		}
+	    swal({
+            title: "Are you sure?",
+            text: 'Are you sure you want to create seasonal events? If you already have created them, you might get doubling.',
+            buttons: true,
+            icon: "info",
+            dangerMode: true,
+        })
+        .then((willCreate) => {
+            if(willCreate) {
+                for(var i = 0; i < static_data.seasons.data.length; i++){
+                    static_data.event_data.events = static_data.event_data.events.concat(create_season_events(i, static_data.seasons.data[i].name));
+                }
+                reindex_events_sortable();
+                do_error_check('seasons');
+            }
+        });
 	})
 
 	$('.form-inline.locations .add').click(function(){
@@ -1606,6 +1615,7 @@ function add_weekday_to_sortable(parent, key, name){
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' value='${name}' class='form-control name-input small-input dynamic_input' data='year_data.global_week' index='${key}' tabindex='${(key+1)}'/>`);
 			element.push("</div>");
+			element.push("<div class='remove-spacer'></div>");
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
@@ -1629,6 +1639,7 @@ function add_timespan_to_sortable(parent, key, data){
 				element.push(`<input type='text' value='${data.name}' tabindex='${(100+key)}'class='name-input small-input form-control dynamic_input' data='year_data.timespans.${key}' fc-index='name'/>`);
 			element.push("</div>");
 			element.push(`<div class='length_input'><input type='number' min='1' class='length-input form-control dynamic_input timespan_length' data='year_data.timespans.${key}' fc-index='length' tabindex='${(100+key)}' value='${data.length}'/></div>`);
+			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
@@ -1758,6 +1769,7 @@ function add_leap_day_to_list(parent, key, data){
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' value='${data.name}' class='name-input small-input form-control dynamic_input' data='year_data.leap_days.${key}' fc-index='name' tabindex='${(200+key)}'/>`);
 			element.push("</div>");
+            element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
@@ -1805,7 +1817,7 @@ function add_leap_day_to_list(parent, key, data){
 						element.push("</div>");
 
 						element.push(`<div class='detail-row removes_day_container ${(!data.adds_week_day && !data.intercalary ? "" : "hidden")}'>`);
-							element.push("<div class='detail-column twothird'>");
+							element.push("<div class='detail-column'>");
 								element.push("<div class='detail-row'>");
 										element.push("<div class='detail-text'>Removes day instead: </div>");
 										element.push(`<input type='checkbox' class='form-control removes-day dynamic_input' data='year_data.leap_days.${key}' fc-index='removes_day' ${(data.removes_day ? "checked" : "")} />`);
@@ -2008,6 +2020,7 @@ function add_observational_to_list(parent, key, data){
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' value='${data.name}' class='name-input small-input form-control dynamic_input' data='year_data.observationals.${key}' fc-index='name' tabindex='${(200+key)}'/>`);
 			element.push("</div>");
+            element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
@@ -2084,6 +2097,7 @@ function add_moon_to_list(parent, key, data){
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' value='${data.name}' class='form-control name-input small-input dynamic_input' data='moons.${key}' fc-index='name' tabindex='${(300+key)}'/>`);
 			element.push("</div>");
+            element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
@@ -2178,6 +2192,7 @@ function add_season_to_sortable(parent, key, data){
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' value='${data.name}' tabindex='${(400+key)}'class='name-input small-input form-control dynamic_input' data='seasons.data.${key}' fc-index='name'/>`);
 			element.push("</div>");
+            element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
@@ -2255,6 +2270,7 @@ function add_location_to_list(parent, key, data){
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' value='${data.name}' tabindex='${(500+key)}' class='name-input small-input form-control dynamic_input location-name' data='seasons.locations.${key}' fc-index='name'/>`);
 			element.push("</div>");
+            element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 
 		element.push("<div class='remove-container'>");
@@ -2477,6 +2493,7 @@ function add_cycle_to_sortable(parent, key, data){
 			element.push("<div class='handle icon-reorder'></div>");
 			element.push("<div class='expand icon-collapse'></div>");
 			element.push(`<div class='detail-text'>Cycle number ${(key+1)} - Using $${(key+1)}</div>`);
+            element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
@@ -2535,7 +2552,6 @@ function add_cycle_to_sortable(parent, key, data){
 	element.push("</div>");
 
 	parent.append(element.join(""));
-	console.log("LOL")
 }
 
 function add_era_to_list(parent, key, data){
@@ -2548,6 +2564,7 @@ function add_era_to_list(parent, key, data){
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' value='${data.name}' class='form-control name-input small-input dynamic_input' data='eras.${key}' fc-index='name' tabindex='${(800+key)}'/>`);
 			element.push("</div>");
+            element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
@@ -2626,7 +2643,7 @@ function add_era_to_list(parent, key, data){
 								element.push("<div class='detail-text'>Year:</div>");
 							element.push("</div>");
 							element.push("<div class='detail-column threequarter'>");
-								element.push(`<input type='number' class='date form-control small-input dynamic_input threequarter year-input' refresh data='eras.${key}.date' fc-index='year' value='${data.date.year}'/>`);
+								element.push(`<input type='number' class='date form-control small-input dynamic_input year-input' refresh data='eras.${key}.date' fc-index='year' value='${data.date.year}'/>`);
 							element.push("</div>");
 						element.push("</div>");
 
@@ -2635,7 +2652,7 @@ function add_era_to_list(parent, key, data){
 								element.push("<div class='detail-text'>Timespan:</div>");
 							element.push("</div>");
 							element.push("<div class='detail-column threequarter'>");
-								element.push(`<select type='number' class='date custom-select form-control-sm timespan-list dynamic_input threequarter' refresh data='eras.${key}.date' fc-index='timespan'>`);
+								element.push(`<select type='number' class='date custom-select form-control-sm timespan-list dynamic_input' refresh data='eras.${key}.date' fc-index='timespan'>`);
 								element.push("</select>");
 							element.push("</div>");
 						element.push("</div>");
@@ -2645,7 +2662,7 @@ function add_era_to_list(parent, key, data){
 								element.push("<div class='detail-text'>Day:</div>");
 							element.push("</div>");
 							element.push("<div class='detail-column threequarter'>");
-								element.push(`<select type='number' class='date custom-select form-control-sm timespan-day-list dynamic_input threequarter' refresh data='eras.${key}.date' fc-index='day'>`);
+								element.push(`<select type='number' class='date custom-select form-control-sm timespan-day-list dynamic_input' refresh data='eras.${key}.date' fc-index='day'>`);
 								element.push("</select>");
 							element.push("</div>");
 						element.push("</div>");
@@ -2691,13 +2708,14 @@ function add_category_to_list(parent, key, data){
 
 	var element = [];
 
-	element.push(`<div class='sortable-container category_inputs collapsed' index='${key}'>`);
+	element.push(`<div class='sortable-container list-group-item category_inputs collapsed' index='${key}'>`);
 
 		element.push("<div class='main-container'>");
 			element.push("<div class='expand icon-collapse'></div>");
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' value='${data.name}' name='name_input' fc-index='name' class='form-control name-input small-input dynamic_input_self' data='event_data.categories.${key}' tabindex='${(700+key)}'/>`);
 			element.push("</div>");
+            element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
@@ -2839,6 +2857,7 @@ function add_event_to_sortable(parent, key, data){
 		element.push("<div class='main-container'>");
 			element.push("<div class='handle icon-reorder'></div>");
 			element.push(`<div class='btn btn-outline-primary open-edit-event-ui'>Edit - ${data.name}</div>`);
+            element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
@@ -2861,6 +2880,7 @@ function add_link_to_list(parent, key, calendar_name){
 	element.push(`<div class='sortable-container events_input' index='${key}'>`);
 		element.push("<div class='main-container'>");
 			element.push(`<div>${calendar_name}</div>`);
+            element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to unlink this?</div>");
@@ -3328,8 +3348,6 @@ function reindex_location_list(){
 		dynamic_data.location = "Equatorial";
 		dynamic_data.custom_location = false;
 	}
-
-	console.log(static_data.seasons.locations.length, dynamic_data)
 
 	location_list.empty();
 

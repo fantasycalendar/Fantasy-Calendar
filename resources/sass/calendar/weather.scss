@@ -1,0 +1,26 @@
+/* ------------------ Weather tooltip Layout ----------------- */
+
+#weather_tooltip_box {
+    position: absolute;
+    background: #FFF;
+    top:0;
+    width:240px;
+    height:110px;
+    border-radius: 7px;
+    padding:10px;
+    font-size:9pt;
+    display:none;
+    z-index: 1500;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+}
+
+#weather_tooltip_box div{
+    float:left;
+    text-align:center;
+    width:100%;
+}
+
+#weather_tooltip_box .newline{
+    width:100%;
+    display: inline-block;
+}

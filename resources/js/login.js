@@ -2,33 +2,40 @@ $(document).ready(function(){
 
 	$('.image_link').click(function(e){
 		if($(this).children().first().attr('title') == 'Duplicate'){
-			if(!confirm("Are you sure you want to duplicate this calendar?")){
-    			e.preventDefault();
-    		}
+		    swal({
+                title: "Are you sure?",
+                text: "Are you sure you want to duplicate this calendar?",
+                icon: "warning",
+                buttons: true,
+            }).then((willDuplicate) => {
+                if(!willDuplicate) {
+                    e.preventDefault();
+                }
+            });
 		}
 	});
-	
+
 	if($("#login-form").length)
 	{
 		// Login buttons and events
 		$(".basic-container").click(function(e){
 			e.stopPropagation();
 		});
-		
-		$(".login-show-button").click(function(){
+
+		$("#login-show-button").click(function(){
 			$("#login-background").fadeIn(150);
 			$("#login_username").focus();
 		});
-		
+
 		$("#login-background").click(function(){
 			$("#login-background").fadeOut(150);
 			loginValidator.resetForm();
 		});
-		
+
 		jQuery.validator.addClassRules('#login_password', {
 			required: true
 		});
-		
+
 		var loginValidator = $("#login-form").validate({
 			errorLabelContainer: "#login_messagebox",
 			wrapper: "div",
@@ -62,15 +69,15 @@ $(document).ready(function(){
 				});
 			}
 		});
-		
+
 		$("#login-form").form(function(e){
 			e.stopPropagation();
 		});
-	
+
 	}
-	
+
 	$('#logout-button').click(logout);
-	
+
 });
 
 function logout(){

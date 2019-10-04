@@ -1,0 +1,51 @@
+@import 'calendar/variables';
+
+.user_calendar {
+	border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1.5rem;
+}
+
+.user_calendar .card-header {
+    background-color: $accent-color;
+    color: white;
+}
+
+.icon_container
+{
+	position:relative;
+	overflow:auto;
+	text-align:center;
+}
+
+.calendar_action {
+    display: inline-block;
+    margin: 1rem 0;
+}
+
+.calendar_action i {
+    width: 3rem;
+    height: 3rem;
+    line-height: 3rem;
+    font-size: 1.6rem;
+    margin: 0 5px;
+	opacity: 0.70;
+    background-color: #cbd5e0;
+    border-radius: 50%;
+    color: rgba(0, 0, 0, 0.7);
+    vertical-align: middle;
+    text-align: center;
+}
+
+.calendar_action:hover {
+    text-decoration: none;
+}
+
+.calendar_action:hover i {
+	color: black;
+}
+
+.calendar__list {
+    padding-top: 3rem;
+}

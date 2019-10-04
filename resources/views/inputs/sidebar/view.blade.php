@@ -12,7 +12,7 @@
 		<input id="collapsible_date" class="toggle" type="checkbox" checked disabled>
 		<label for="collapsible_date" class="lbl-toggle lbl-text">Current Date & Time <a target="_blank" title='Fantasy Calendar Wiki: Date' href='https://wiki.fantasy-calendar.com/index.php?title=Date' class="wiki"><i class="icon-question-sign"></i></a></label>
 		<div class="collapsible-content">
-			
+
 			<div id='clock'></div>
 
 
@@ -81,7 +81,7 @@
 						</div>
 
 					</div>
-					
+
 				</div>
 
 				<div class='separator'></div>
@@ -177,7 +177,11 @@
 </form>
 
 
-<div id='input_collapse_btn' class="btn btn-outline-primary"></div>
+<div id='input_collapse_btn' class="hamburger hamburger--arrowturn is-active">
+    <span class="hamburger-box">
+        <div class="hambuger-inner"></div>
+    </span>
+</div>
 
 
 <div id="calendar_container">

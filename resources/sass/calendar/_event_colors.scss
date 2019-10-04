@@ -1,0 +1,209 @@
+/* ------------ Dark Red ----------- */
+.event.Dark-Solid.dot::before,
+.event.Dark-Solid.text{
+    color: #000000;
+}
+.event.Dark-Solid.background{
+    background-color: #000000;
+}
+.event.Dark-Solid.background:hover{
+    background-color: #424242;
+}
+
+/* ------------ Red ----------- */
+.event.Red.dot::before,
+.event.Red.text{
+    color: #9b2c2c;
+}
+.event.Red.background{
+    background-color: #fed7d7;
+    border-color: #9b2c2c;
+    color: #9b2c2c;
+}
+.event.Red.background:hover{
+    background-color: #fc8181;
+}
+
+/* ----------- Pink */
+.event.Pink.dot::before,
+.event.Pink.text{
+    color: #880E4F;
+}
+.event.Pink.background{
+    border-color: #97266d;
+    color: #97266d;
+    background-color: #fed7e2;
+}
+.event.Pink.background:hover{
+    background-color: #f687b3;
+}
+
+/* ------------ Purple ----------- */
+.event.Purple.dot::before,
+.event.Purple.text{
+    color: #4A148C;
+}
+.event.Purple.background{
+    border-color: #553c9a;
+    color: #553c9a;
+    background-color: #e9d8fd;
+}
+.event.Purple.background:hover{
+    background-color: #b794f4;
+}
+
+/* ----------- Deep Purple ----------- */
+.event.Deep-Purple.dot::before,
+.event.Deep-Purple.text{
+    color: #311B92;
+}
+.event.Deep-Purple.background{
+    border-color: #391690;
+    color: #391690;
+    background-color: #b5b0ff;
+}
+.event.Deep-Purple.background:hover{
+    background-color: #716ec9;
+}
+
+/* ------------ Blue ----------- */
+.event.Blue.dot::before,
+.event.Blue.text{
+    color: #0D47A1;
+}
+.event.Blue.background{
+    border-color: #2c5282;
+    color: #2c5282;
+    background-color: #bee3f8;
+}
+.event.Blue.background:hover{
+    background-color: #63b3ed;
+}
+
+/* ----------- Light-Blue ----------- */
+.event.Light-Blue.dot::before,
+.event.Light-Blue.text{
+    color: #0288D1;
+}
+.event.Light-Blue.background{
+    border-color: #026A98;
+    color: #026A98;
+    background-color: #acd9ff;
+}
+.event.Light-Blue.background:hover{
+    background-color: #4fb1e2;
+}
+
+/* ------------ Cyan ----------- */
+.event.Cyan.dot::before,
+.event.Cyan.text{
+    color: #006064;
+}
+.event.Cyan.background{
+    border-color: #007783;
+    color: #007783;
+    background-color: #acd8d9;
+}
+.event.Cyan.background:hover{
+    background-color: #5db0b6;
+}
+
+/* ----------- Teal ----------- */
+.event.Teal.dot::before,
+.event.Teal.text{
+    color: #004D40;
+}
+.event.Teal.background{
+    border-color: #285e61;
+    color: #285e61;
+    background-color: #b2f5ea;
+}
+.event.Teal.background:hover{
+    background-color: #4fd1c5;
+}
+
+/* ------------ Green ----------- */
+.event.Green.dot::before,
+.event.Green.text{
+    color: #2E7D32;
+}
+.event.Green.background{
+    border-color: #276749;
+    color: #276749;
+    background-color: #c6f6d5;
+}
+.event.Green.background:hover{
+    background-color: #68d391;
+}
+
+/* ----------- Light-Green ----------- */
+.event.Light-Green.dot::before,
+.event.Light-Green.text{
+    color: #7CB342;
+}
+.event.Light-Green.background{
+    border-color: #477C18;
+    color: #477C18;
+    background-color: #c5ffa3;
+}
+.event.Light-Green.background:hover{
+    background-color: #7CB342;
+}
+
+/* ----------- Lime ----------- */
+.event.Lime.dot::before,
+.event.Lime.text{
+    color: #9E9D24;
+}
+.event.Lime.background{
+    border-color: #648500;
+    color: #648500;
+    background-color: #d6edae;
+}
+.event.Lime.background:hover{
+    background-color: #aad46d;
+}
+
+/* ------------ Yellow ----------- */
+.event.Yellow.dot::before{
+    color: #FFEB3B;
+}
+.event.Yellow.text{
+    color: #FFEB3B;
+}
+.event.Yellow.background{
+    border-color: #975a16;
+    background-color: #fefcbf;
+    color: #975a16;
+}
+.event.Yellow.background:hover{
+    background-color: #f6e05e;
+}
+
+/* ------------ Orange ----------- */
+.event.Orange.dot::before,
+.event.Orange.text{
+    color: #FF9100;
+}
+.event.Orange.background{
+    border-color: #9c4221;
+    color: #9c4221;
+    background-color: #feebc8;
+}
+.event.Orange.background:hover{
+    background-color: #f6ad55;
+}
+
+/* ------------ Blue-Grey ----------- */
+.event.Blue-Grey.dot::before,
+.event.Blue-Grey.text{
+    color: #455A64;
+}
+.event.Blue-Grey.background{
+    border-color: #2d3748;
+    color: #2d3748;
+    background-color: #edf2f7;
+}
+.event.Blue-Grey.background:hover{
+    background-color: #cbd5e0;
+}

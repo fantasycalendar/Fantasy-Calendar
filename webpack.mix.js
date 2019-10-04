@@ -30,6 +30,7 @@ if(process.env.BROWSERSYNC) {
 // Copy components and vendor scripts
 mix.copyDirectory('resources/js/components', 'public/js/components');
 mix.copyDirectory('resources/js/vendor', 'public/js/vendor');
+mix.copyDirectory('resources/images', 'public/resources');
 
 // Calendar scripts
 mix.copy('resources/js/calendar/header.js', 'public/js/calendar');
@@ -58,14 +59,9 @@ mix.copy('resources/js/login.js', 'public/js');
 mix.js('resources/js/app.js', 'public/js')
 
     .sass('resources/sass/app.scss', 'public/css')
-    .sass('resources/sass/calendar_input_style.scss', 'public/css')
-    .sass('resources/sass/calendar_styles.scss', 'public/css')
-    .sass('resources/sass/header_style.scss', 'public/css')
-    .sass('resources/sass/index_style.scss', 'public/css')
-    .sass('resources/sass/login_style.scss', 'public/css')
-    .sass('resources/sass/text_styles.scss', 'public/css')
-    .sass('resources/sass/_variables.scss', 'public/css');
+    .sass('resources/sass/calendar.scss', 'public/css')
+    .sass('resources/sass/home.scss', 'public/css');
 
-if (mix.inProduction()) {
+if (mix.inProduction() || process.env.MIXVERSION) {
     mix.version();
 }
