@@ -114,7 +114,7 @@ var calendar_weather = {
 
 			this.weather_tooltip_box.position({
 				my: "center"+combined,
-				at: `top-${this.base_height-10}`,
+				at: `top-${this.base_height-45}`,
 				of: icon,
 				collision: "flipfit"
 			});

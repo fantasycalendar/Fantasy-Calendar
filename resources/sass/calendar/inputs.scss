@@ -622,9 +622,10 @@ label{
 
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 768px) {
     #input_container {
         width: 100vw;
+        max-width: initial;
 
         & .accordion {
             padding-bottom: 22vh;
