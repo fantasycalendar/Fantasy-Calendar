@@ -46,6 +46,10 @@ ENV WEBADDRESS /
 
 USER www-data
 
+RUN mkdir -p /fantasy-calendar/storage/framework/sessions
+RUN mkdir -p /fantasy-calendar/storage/framework/views
+RUN mkdir -p /fantasy-calendar/storage/framework/cache
+
 RUN npm install
 
 RUN npm run production
