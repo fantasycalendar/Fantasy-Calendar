@@ -2,11 +2,9 @@
 /*---------------- CALCULATION FUNCTIONS  ----------------*/
 /*--------------------------------------------------------*/
 
-var utcDate1 = Date.now();
-
-importScripts('/js/calendar/calendar_functions.js?version='+utcDate1);
-importScripts('/js/calendar/calendar_variables.js?version='+utcDate1);
-importScripts('/js/calendar/calendar_season_generator.js?version='+utcDate1);
+importScripts('/js/calendar/calendar_functions.js');
+importScripts('/js/calendar/calendar_variables.js');
+importScripts('/js/calendar/calendar_season_generator.js');
 
 var calendar_builder = {
 

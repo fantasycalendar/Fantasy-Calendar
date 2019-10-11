@@ -459,14 +459,11 @@ var event_evaluator = {
 
 		}else{
 
-			var num_events = this.events.length;
-
 			for(var event_index in this.events){
 				if(this.events[event_index].data.connected_events === undefined || this.events[event_index].data.connected_events.length == 0){
 					evaluate_event(event_index);
 				}
 			}
-
 
 			for(var event_index in this.events){
 				if(this.events[event_index].data.connected_events !== undefined && this.events[event_index].data.connected_events.length > 0){
