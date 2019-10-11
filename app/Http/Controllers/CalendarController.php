@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\PrepCalendarForExport;
 use Illuminate\Http\Request;
 
 use Auth;
@@ -16,7 +17,7 @@ class CalendarController extends Controller
 {
     public function __construct() {
         // $this->middleware('calendarauth');
-        
+
         $this->middleware('auth')->except('show');
 
         $this->middleware('verified')->only('edit');
@@ -127,7 +128,7 @@ class CalendarController extends Controller
      */
     public function export($id)
     {
-        $calendar = Calendar::hash($id)->firstOrFail();
+        $calendar = PrepCalendarForExport::dispatchNow(Calendar::hash($id)->firstOrFail());
 
         return view('calendar.export', [
             'calendar' => $calendar,
@@ -168,7 +169,7 @@ class CalendarController extends Controller
         if($calendar_was_updated == 0) {
             return [ 'success' => false, 'error' => 'Error - Unable to update calendar. Please try again later.'];
         }
-         
+
         return [ 'success' => true, 'data'=> true ];
 
     }
