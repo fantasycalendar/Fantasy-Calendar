@@ -29,7 +29,7 @@ class PrepCalendarForExport implements ShouldQueue
     /**
      * Execute the job.
      *
-     * @return App\Calendar
+     * @return array
      */
     public function handle()
     {
@@ -55,6 +55,10 @@ class PrepCalendarForExport implements ShouldQueue
             $this->calendar->events[$key] = $event;
         }
 
-        return $this->calendar;
+        return [
+            'name' => $this->calendar->name,
+            'static_data' => $this->calendar->static_data,
+            'dynamic_data' => $this->calendar->dynamic_data,
+        ];
     }
 }

@@ -128,10 +128,10 @@ class CalendarController extends Controller
      */
     public function export($id)
     {
-        $calendar = PrepCalendarForExport::dispatchNow(Calendar::hash($id)->firstOrFail());
+        $exportdata = PrepCalendarForExport::dispatchNow(Calendar::hash($id)->firstOrFail());
 
         return view('calendar.export', [
-            'calendar' => $calendar,
+            'exportdata' => $exportdata,
         ]);
     }
 

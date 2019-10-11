@@ -49,7 +49,7 @@
 
         <div class='row'>
             <div class="col-sm-12">
-                <textarea readonly class="form-control export-body">{"name":"{{ $calendar->name }}","static_data":@json($calendar->static_data),"dynamic_data":@json($calendar->dynamic_data)}</textarea>
+                <textarea readonly class="form-control export-body">@json($exportdata)</textarea>
             </div>
         </div>
     </div>
