@@ -15,6 +15,14 @@ var execution_time = {
 	}
 }
 
+
+/**
+ * This function crawls through a string to find a reference
+ *
+ * @param  {string}     data        A string that points to a location inside of the static_data object
+ *                                  Formatted like: "static_data.year_data.timespans.1.interval"
+ * @return {object}                 Returns a reference to the object found
+ */
 function get_calendar_data(data){
 	data = data.split('.')
 	if(data[0] !== ""){
@@ -28,6 +36,8 @@ function get_calendar_data(data){
 	return current_calendar_data;
 }
 
+
+
 var entityMap1 = {
 	"&": "&amp;",
 	"<": "&lt;",
@@ -37,18 +47,37 @@ var entityMap1 = {
 	"/": '&#x2F;'
 };
 
+/**
+ * This function escapes any string given to it and returns an escaped string
+ *
+ * @param  {string}     input       String to be sanitized
+ * @return {string}                 Sanitized string
+ */
 function escapeHtml(string) {
 	return String(string).replace(/[&<>"'\/]/g, function (s) {
 		return entityMap1[s];
 	});
 }
 
+/**
+ * This function unescapes any string given to it and returns a HTML ready string
+ *
+ * @param  {string}     input       String to be desanitized
+ * @return {string}                 Desanitized string
+ */
 function unescapeHtml(input){
 	var e = document.createElement('textarea');
 	e.innerHTML = input;
 	return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
 }
 
+/**
+ * This function is used to compare two javascript objects by iterating through its content.
+ *
+ * @param  {function}   func        The function to be called
+ * @param  {int}        wait        The amount of time to wait in seconds
+ * @param  {bool}       immediate   Whether the function should be called immediately (right now)
+ */
 function debounce(func, wait, immediate) {
 	var timeout;
 	return function() {
@@ -64,6 +93,13 @@ function debounce(func, wait, immediate) {
 	};
 };
 
+
+/**
+ * This function is used to compare two javascript objects by iterating through its content.
+ *
+ * @param  {object}     obj     A javascript object
+ * @return {object}             An object with all of its strings HTML escaped
+ */
 function escapeAllHtml(obj)
 {
 	for (var k in obj)
@@ -76,6 +112,13 @@ function escapeAllHtml(obj)
 	}
 }
 
+/**
+ * This function is used to compare two javascript objects by iterating through its content.
+ *
+ * @param  {object}     obj1    A javascript object
+ * @param  {object}     obj2    A javascript object
+ * @return {bool}               A boolean indicating whether the two javascript objects are the same
+ */
 Object.compare = function (obj1, obj2) {
 	//Loop through properties in object 1
 	for (var p in obj1) {
@@ -108,6 +151,12 @@ function capitalizeFirstLetter(string) {
 	return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+/**
+ * This function is used to create a sting such as "1st", "3rd", "932nd", etc
+ *
+ * @param  {int}     i      An integer to turn into a string
+ * @return {string}         A string of the number and "st", "nd", "rd", or "th"
+ */
 function ordinal_suffix_of(i){
 	var j = i % 10,
 	k = i % 100;
@@ -128,28 +177,71 @@ function replaceAt(string, index, replacement) {
 }
 
 
+/**
+ * This class is used to generate a pseudo-random number based on a seed
+ *
+ * @param  {int}    seed    An int that initializes the pseudo-random generator
+ */
 class random {
 
 	constructor(seed){
 		this.seed = seed;
 	}
-
+    
+    /**
+     * This function returns a float between -1.0 and 1.0, based on the index you give it
+     *
+     * @param  {int}     idx    The index in the pseudo-random sequence
+     * @return {float}          A pseudo-random value
+     */
 	rndUNorm(idx){
 		return fract(43758.5453 * Math.sin(this.seed + (78.233 * idx)));
 	}
-
+    
+    /**
+     * This function returns a float between 0.0 and 1.0, based on the index you give it
+     *
+     * @param  {int}     idx    The index in the pseudo-random sequence
+     * @return {float}          A pseudo-random value
+     */
 	rndSNorm(idx){
 		return this.rndUNorm(idx) * 2.0 - 1.0;
 	}
 
+    
+    /**
+     * This function returns an integer between minimum and maximum, based on the index you give it
+     *
+     * @param  {int}     idx    The index in the pseudo-random sequence
+     * @param  {int}     min    The minimum value
+     * @param  {int}     max    The maximmum value
+     * @return {int}            A pseudo-random value
+     */
 	random_int_between(idx, min, max){
 		return Math.round(this.rndUNorm(idx) * (max - min) + min);  
 	}
 
+    
+    /**
+     * This function returns a float between minimum and maximum, based on the index you give it
+     *
+     * @param  {int}     idx    The index in the pseudo-random sequence
+     * @param  {float}   min    The minimum value
+     * @param  {float}   max    The maximmum value
+     * @return {float}          A pseudo-random value
+     */
 	random_float_between(idx, min, max){
 		return this.rndUNorm(idx) * (max - min) + min;  
 	}
-
+    
+    /**
+     * This function returns an int depending on the dice formula you gave it, based on the index you give it
+     * The forumla must be "ydx" where y and x are any absolute numbers above 0
+     *
+     * @param  {int}     idx            The index in the pseudo-random sequence
+     * @param  {string}  dice_formula   The dice formula (eg. 2d6, 1d10, 2d20)
+     * @return {float}                  A pseudo-random value
+     */
 	roll_dice(idx, dice_formula){
 		var dice_amount = (dice_formula.split('d')[0]|0);
 		var dice_size = (dice_formula.split('d')[1]|0);
@@ -160,7 +252,16 @@ class random {
 		}
 		return result;
 	}
-
+    
+    /**
+     * This function returns a float between -1.0 and 1.0, along a noise curve set by the parameters below
+     *
+     * @param  {int}     pos            The position in the pseudo-random sequence
+     * @param  {float}   phase          
+     * @param  {float}   frequency      
+     * @param  {float}   amplitude      
+     * @return {float}                  A pseudo-random value
+     */
 	noise(pos, phase, frequency, amplitude){
 
 		// Generate a random curve moving horizontally and oscillating vertically. Curve consists of
@@ -208,42 +309,116 @@ function  bezierCubic(p0, p1, p2, p3, t)
 	);
 }
 
+
+/**
+ * This function is used to clamp a floating point's fraction to a certain number of digits
+ *
+ * @param  {float}  number      The float to be precisio-rounded
+ * @param  {int}    precision   An int to determine how many digits to keep in the fraction of the number
+ * @return {float}              The precisio-rounded value
+ */
 function precisionRound(number, precision) {
 	var factor = Math.pow(10, precision);
 	return Math.round(number * factor) / factor;
 }
 
+
+/**
+ * This function clamps a value between a min and a max
+ *
+ * @param  {float}  t       The value to be clamped
+ * @param  {float}  pin     Minimum value
+ * @param  {float}  max     Maximum value
+ * @return {float}          The clamped value
+ */
 function clamp(t, min, max){
 	return Math.min(Math.max(t, min), max);
 }
 
+
+/**
+ * This function returns a value that has been lineraly interpolated between p0 and p1
+ *
+ * @param  {float}  p0      The first float
+ * @param  {float}  p1      The second float
+ * @param  {float}  t       A normalized value between 0.0 and 1.0, 0.0 returning p0 and 1.0 returning p1
+ * @return {float}          The interpolated value
+ */
 function lerp(p0, p1, t){
 	return p0 + t*(p1 - p0);
 }
 
+
+/**
+ * This function returns the fraction of any given float.
+ *
+ * @param  {float}    float     The float
+ * @return {float}              The fraction of that value
+ */
 function fract(float){
 	return float - Math.floor(float);
 }
 
+
+/**
+ * This function gets the middle value of the two given value
+ *
+ * @param  {float}    p0    The first value
+ * @param  {float}    p1    The second value
+ * @return {float}          The middle value
+ */
 function mid(p0, p1){
 	return (p0+p1)/2;
 }
 
+
+/**
+ * This function normalizes a value (v) between min and max
+ *
+ * @param  {float}  v       The value to be normalized
+ * @param  {float}  min     The minimum value
+ * @param  {float}  max     The maximum value
+ * @return {float}          The normalized value 
+ */
 function norm(v, min, max)
 {
 	return (v - min) / (max - min);
 }
 
+
+/**
+ * Greatest common divisor is the largest positive integer that divides each of the integers.
+ *
+ * @param  {int}    x   The first number
+ * @param  {int}    y   The second number
+ * @return {int}        The greatest common divisor
+ */
 function gcd(k, n){
 	return k ? gcd(n % k, k) : n;
 }
 
+
+/**
+ * Least Common Multiple is the smallest positive integer that is divisible by both x and y.
+ *
+ * @param  {int}    x   The first number
+ * @param  {int}    y   The second number
+ * @return {int}        The least common multiple
+ */
 function lcm(x, y){
 	if ((typeof x !== 'number') || (typeof y !== 'number')) 
 		return false;
 	return (!x || !y) ? 0 : Math.abs((x * y) / gcd(x, y));
 }
 
+
+/**
+ * This function is used to calculate the suggested granularity for a given moon cycle.
+ * The granularity is used to select the number of sprites that will be shown for that moon.
+ *
+ * @param  {float}  cycle   The cycle of a moon
+ * @return {int}            The given level of granularity suggested for that cycle
+ */
 function get_moon_granularity(cycle){
 	if(cycle >= 32){
 		return 32;
@@ -258,6 +433,15 @@ function get_moon_granularity(cycle){
 	}
 }
 
+
+/**
+ * This function is used to calculate the current cycle that the calendar is in on any given year.
+ *
+ * @param  {int}    year    A number of a year passed through the convert_year function.
+ * @return {object}         Object containing:
+ *                              "text" - The text to be displayed at the top of the calendar
+ *                              "array" - An array containing each index (ints) that indicates which part of the cycle each of them is in
+ */
 function get_cycle(year){
 
 	var text = '';
@@ -298,6 +482,15 @@ function get_cycle(year){
 }
 
 
+/**
+ * This function is used to determine if a leap day appears on a given year.
+ *
+ * @param  {object}     static_data     A calendar static data object
+ * @param  {int}        year            A number of a year passed through the convert_year function.
+ * @param  {int}        Timespan        The index of the timespan
+ * @param  {int}        leap_day        The index of the leap day
+ * @return {bool}                       A boolean, indicating if the leap day appears on that month
+ */
 function does_leap_day_appear(static_data, year, timespan, leap_day){
 
 	var timespan_appears = does_timespan_appear(static_data, year, timespan).result;
@@ -308,6 +501,15 @@ function does_leap_day_appear(static_data, year, timespan, leap_day){
 
 }
 
+
+/**
+ * This function is used to convert a year to an absolute year, meaning that it will be converted to a mathematically safe number to be used in sensitive epoch calculations.
+ * Most of the time, this means if the year is above 1, it will be subtracted by 1. If it's below 0, it will not be touched.
+ *
+ * @param  {object}     static_data     A calendar static data object
+ * @param  {int}        year            The a number of a year
+ * @return {int}                        The absolute year
+ */
 function convert_year(static_data, year){
 	if(static_data.settings.year_zero_exists){
 		return year;
@@ -317,6 +519,16 @@ function convert_year(static_data, year){
 }
 
 
+
+/**
+ * This function is an experiment to see if I could solve the multi-offset LCM problem.
+ *
+ * @param  {object}     static_data     A calendar static data object
+ * @param  {int}        year            The number of a year passed through the convert_year function.
+ * @param  {int}        Timespan_index  The index of a timespan
+ * @param  {obj}        self_object     Not sure what this is for anymore, but I believe this was to be able to target specific objects like observationals or leap days.
+ * @return {array}                      An array containing strings for each day
+ */
 function get_days_in_timespan(static_data, year, timespan_index, self_object){
 
 	self_object = self_object !== undefined ? self_object : false;
@@ -487,6 +699,17 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object){
 
 }
 
+
+/**
+ * This is used to get all of the timespans on a specific year to be used in timespan selection dropdowns.
+ *
+ * @param  {object}     static_data     A calendar static data object
+ * @param  {int}        year            The number of a year passed through the convert_year function.
+ * @param  {bool}       inclusive       Whether to still include timespans that aren't there (for use in timespan selection dropdowns)
+ * @return {array}                      An array of objects, each object containing:
+ *                                          result - boolean, true if the timespan appears on the given date
+ *                                          reason - reason for the timespan to gone, only present if result is false
+ */
 function get_timespans_in_year(static_data, year, inclusive){
 
 	var results = [];
@@ -509,6 +732,17 @@ function get_timespans_in_year(static_data, year, inclusive){
 }
 
 
+/**
+ * This function is used to determine whether a specific timespan appears that year and timespan, as it may be gone due to an era or it may be leaping.
+ * Used primarily in timespan dropdown lists to disable selection of those timespans and show that they are not present.
+ *
+ * @param  {object}     static_data     A calendar static data object
+ * @param  {int}        year            The number of a year passed through the convert_year function.
+ * @param  {int}        Timespan        The index of the timespan
+ * @return {object}                     An object containing:
+ *                                          result - boolean, true if the timespan appears on the given date
+ *                                          reason - reason for the timespan to gone, only present if result is false
+ */
 function does_timespan_appear(static_data, year, timespan){
 
 	for(var era_index = 0; era_index < static_data.eras.length; era_index++){
@@ -550,10 +784,19 @@ function does_timespan_appear(static_data, year, timespan){
 }
 
 
-
+/**
+ * This function is used to determine whether a specific day appears that year and timespan, as it may be gone due to an era.
+ * Used primarily in day dropdown lists to disable selection of those days and show that they are not present.
+ *
+ * @param  {object}     static_data     A calendar static data object
+ * @param  {int}        year            The number of a year passed through the convert_year function.
+ * @param  {int}        Timespan        The index of the timespan
+ * @param  {int}        day             The day in that timespan
+ * @return {object}                     An object containing:
+ *                                          result - boolean, true if the day appears on the given date
+ *                                          reason - reason for the day to gone, only present if result is false
+ */
 function does_day_appear(static_data, year, timespan, day){
-
-
 
 	for(var era_index = 0; era_index < static_data.eras.length; era_index++){
 
@@ -577,6 +820,12 @@ function does_day_appear(static_data, year, timespan, day){
 }
 
 
+/**
+ * This function is used to calculate the average length of a year in the current calendar.
+ *
+ * @param  {object}     obj     A calendar static data object
+ * @return {float}              The current calendar's average year length
+ */
 function fract_year_length(static_data){
 
 	var length = 0;
@@ -601,7 +850,13 @@ function fract_year_length(static_data){
 
 }
 
-
+/**
+ * This function is used to calculate the average length of all of the months in the current calendar.
+ * This is only used to display it to the user, mostly as a means for them to deduct the a moon's cycle length.
+ *
+ * @param  {object}     obj     A calendar static data object
+ * @return {float}              The current calendar's average month length
+ */
 function avg_month_length(static_data){
 
 	var length = 0;
@@ -632,6 +887,12 @@ function avg_month_length(static_data){
 
 }
 
+/**
+ * This function is used when you need to clone a javascript object and leave no references tied to the original object
+ *
+ * @param  {object}     obj     A javascript object
+ * @return {object}             An identical javascript object with no references tied to the incoming object
+ */
 function clone(obj) {
 	var copy;
 
@@ -666,9 +927,21 @@ function clone(obj) {
 	throw new Error("Unable to copy obj! Its type isn't supported.");
 }
 
-
+/**
+ * This object is used when calculating the difference between two calendar's dates.
+ */
 var date_converter = {
-
+    
+   /**
+     * This function is used when you want to calculate the difference between two calendars' dates.
+     *
+     * @param  {object}     static_data         A calendar static data object, primary, to be used to calculate the secondary calendar's date
+     * @param  {object}     inc_static_data     A calendar static data object, secondary, to be used to calculate its new date
+     * @param  {object}     dynamic_data        A calendar dynamic data object, primary, to be used to calculate the secondary calendar's date 
+     * @param  {object}     inc_dynamic_data    A calendar dynamic data object, secondary, used only to adjust the outgoing date's timezone
+     * @return {object}                         A calendar dynamic data object, adjusted from the primary calendar to be used on the secondary calendar
+     */
+    
 	get_date: function(static_data, inc_static_data, dynamic_data, inc_dynamic_data){
 
 		this.static_data = static_data;
@@ -841,7 +1114,14 @@ var date_converter = {
 
 }
 
-
+/**
+ * This function is used when you need to calculate if a leap day or a leap month has happened on any given year.
+ *
+ * @param  {int}    year        The number of a year passed through the convert_year function.
+ * @param  {string} intervals   A formatted string of ints, in this format: 400,!100,4 - Large to small, comma separating the intervals, ! in front of the int indicating an exclusive interval (subtracting). Could include a single number.
+ * @param  {int}    offsets     An int used to offset the contextual starting point of the intervals - Interval of 10 and offset of 5 means this interval starts at 5, continuing to 15, 25, 35.
+ * @return {bool}               A boolean determining whether this interval happens on the year
+ */
 function is_leap(year, intervals, offsets){
 
 	var intervals = intervals.split(',');
@@ -906,6 +1186,16 @@ function is_leap(year, intervals, offsets){
 }
 
 
+/**
+ * This function is used when you need to calculate how often a leap day has appeared, which the function will return as float indicating the number of days.
+ * The fractional part of the value may be used to calculate the average year length.
+ *
+ * @param  {int}    year        The number of a year passed through the convert_year function.
+ * @param  {string} intervals   A formatted string of ints, in this format: 400,!100,4 - Large to small, comma separating the intervals, ! in front of the int indicating an exclusive interval (subtracting). Could include a single number.
+ * @param  {int}    offsets     An int used to offset the contextual starting point of the intervals - Interval of 10 and offset of 5 means this interval starts at 5, continuing to 15, 25, 35.
+ * @param  {bool}   floor       Whether to floor the result before returning it (should be done outside of function call instead)
+ * @return {float}              A float indicating how many times these intervals add up to
+ */
 function get_leap_fraction(year, intervals, offsets, floor){
 
 	// The intervals parameter is a string with numbers seperated by commas, usually in the format of:
@@ -964,7 +1254,22 @@ function get_leap_fraction(year, intervals, offsets, floor){
 
 }
 
-function get_epoch(static_data, year, month, day, inclusive){
+
+/**
+ * This function is the backbone of the calendar.
+ *
+ * @param  {object}     static_data     The calendar's static_data object.
+ * @param  {int}        year            The number of a year passed through the convert_year function.
+ * @param  {int}        month           The index of a timespan
+ * @param  {int}        day             The day of a that timespan
+ * @return {array}                      An array containing:
+ *                                          0: Epoch - The number of days since year 1
+ *                                          1: Intercalary - The number of intercalary days since year 1
+ *                                          2: count_timespans - The amount of times each timespans has appeared year 1
+ *                                          3: num_timespans - The total number of timespans since year 1
+ *                                          4: total_week_num - The number of weeks since year 1
+ */
+function get_epoch(static_data, year, month, day){
 
 	// Set up variables
 	var epoch = 0;
@@ -1080,6 +1385,21 @@ function get_epoch(static_data, year, month, day, inclusive){
 }
 
 
+/**
+ * Further expands on the spine of the calendar calculation. It calculates how many days there has been since day 1, and returns a complex data object. 
+ *
+ * @param  {object}     static_data     The calendar's static_data object.
+ * @param  {int}        year            The number of a year passed through the convert_year function.
+ * @param  {int}        month           The index of a timespan
+ * @param  {int}        day             The day of a that timespan
+ * @return {object}                     An object containing:
+ *                                          "epoch" - The number of days since year 1
+ *                                          "era_year" - The current era year, if the year count has been reset by eras terminating the year
+ *                                          "week_day" - The weekday of that specific date
+ *                                          "count_timespans" - The amount of times each timespans has appeared year 1
+ *                                          "num_timespans" - The total number of timespans since year 1
+ *                                          "total_week_num" - The number of weeks since year 1
+ */
 function evaluate_calendar_start(static_data, year, month, day){
 
 	//Initiatlize variables
@@ -1174,6 +1494,13 @@ function evaluate_calendar_start(static_data, year, month, day){
 }
 
 
+/**
+ * This simple function returns a bool whether any given year has an era that ends it. Used to prevent users to create two eras that end years in one year.
+ *
+ * @param  {object}     static_data     The calendar's static_data object.
+ * @param  {int}        year            The number of a year passed through the convert_year function.
+ * @return {bool}                       A boolean to indicate whether that year has been terminated by an era or not
+ */
 function has_year_ending_era(static_data, year){
 
 	for(var era_index = 0; era_index < static_data.eras.length; era_index++){
