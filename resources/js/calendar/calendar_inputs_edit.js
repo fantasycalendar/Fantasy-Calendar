@@ -787,10 +787,13 @@ function set_up_edit_inputs(set_up){
 				var warnings = [];
 
 				for(var eventId in static_data.event_data.events){
-					if(static_data.event_data.events[eventId].data.connected_events !== undefined && static_data.event_data.events[eventId].data.connected_events.includes(index)){
-						warnings.push(eventId);
+					if(static_data.event_data.events[eventId].data.connected_events !== undefined){
+						if(static_data.event_data.events[eventId].data.connected_events.includes(index)){
+							warnings.push(eventId);
+						}
 					}
 				}
+
 				if(warnings.length > 0){
 
 					callback = true;
@@ -812,6 +815,17 @@ function set_up_edit_inputs(set_up){
 				}else{
 
 					events_sortable.children("[index='"+index+"']").remove();
+
+					for(var eventId in static_data.event_data.events){
+						if(static_data.event_data.events[eventId].data.connected_events !== undefined){
+							for(connectedId in static_data.event_data.events[eventId].data.connected_events){
+								var number = Number(static_data.event_data.events[eventId].data.connected_events[connectedId])
+								if(Number(static_data.event_data.events[eventId].data.connected_events[connectedId]) > index){
+									static_data.event_data.events[eventId].data.connected_events[connectedId] = String(number-1)
+								}
+							}
+						}
+					}
 
 					delete static_data.event_data.events[index];
 
