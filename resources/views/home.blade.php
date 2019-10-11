@@ -20,37 +20,17 @@
 
 @section('content')
     <div class="container calendar__list">
-        @if(count($calendars) > 0)
-                <div class='row'>
-                    @foreach($calendars as $calendar)
-                        <div class="col-sm-6 col-md-4 col-lg-3">
-                            <div class='user_calendar card text-center'>
-                                <div class="card-header">
-                                    <h5 class="calendar__list-name">{!! $calendar->name !!}</h5>
-                                    <span class="calendar__list-username">{{ $calendar->user->username }}</span>
-                                </div>
-                                <div class="card-body">
-                                    <div class='icon_container'>
-                                        <a class='calendar_action' href='{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}'>
-                                            <i class="fa fa-edit"></i>
-                                        </a>
-                                        <a class='calendar_action' href='{{ route('calendars.show', ['calendar'=> $calendar->hash ]) }}'>
-                                            <i class="fa fa-eye"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-        @else
+        @empty($calendars)
             <div class="row">
                 <div class="col-3"></div>
                 <div class="col-6">
-                    <div class="user_calendar card text-center">
+                    <div class="card text-center">
                         <div class="card-header">
                             <h5 class="calendar__list-name">You don't have any calendars!</h5>
-                            <span class="calendar__list-username">No worries though, create one below.</span>
+                            <span class="calendar__list-username">No worries though, create one below.</span><br>
+                            @guest
+                                <span class="calendar__list-username">(You'll need to <a href="{{ route('register') }}">register</a> in order to save it)</span>
+                            @endguest
                         </div>
                         <div class="card-body">
                             <div class="icon_container">
@@ -63,7 +43,30 @@
                 </div>
                 <div class="col-3"></div>
             </div>
-        @endif
+        @else
+            <div class='row'>
+                @foreach($calendars as $calendar)
+                    <div class="col-sm-6 col-md-4 col-lg-3">
+                        <div class='user_calendar card text-center'>
+                            <div class="card-header">
+                                <h5 class="calendar__list-name">{!! $calendar->name !!}</h5>
+                                <span class="calendar__list-username">{{ $calendar->user->username }}</span>
+                            </div>
+                            <div class="card-body">
+                                <div class='icon_container'>
+                                    <a class='calendar_action' href='{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}'>
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    <a class='calendar_action' href='{{ route('calendars.show', ['calendar'=> $calendar->hash ]) }}'>
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @endempty
 
         @isset($changelog)
             <h2>Changelog</h2>
