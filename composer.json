@@ -15,7 +15,8 @@
         "laravel/framework": "^6.0",
         "laravel/tinker": "^1.0",
         "league/fractal": "^0.18.0",
-        "nesbot/carbon": "^2.22"
+        "nesbot/carbon": "^2.22",
+        "ext-json": "*"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.2",
