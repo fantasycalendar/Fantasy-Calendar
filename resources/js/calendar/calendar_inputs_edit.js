@@ -444,11 +444,19 @@ function set_up_edit_inputs(set_up){
         })
         .then((willCreate) => {
             if(willCreate) {
+
                 for(var i = 0; i < static_data.seasons.data.length; i++){
-                    static_data.event_data.events = static_data.event_data.events.concat(create_season_events(i, static_data.seasons.data[i].name));
+
+                    var solstice_equinox = create_season_events(i, static_data.seasons.data[i].name);
+
+                    for(index in solstice_equinox){
+                    	static_data.event_data.events.push(solstice_equinox[index])
+                    	add_event_to_sortable(events_sortable, static_data.event_data.events.length-1, static_data.event_data.events[static_data.event_data.events.length-1]);
+                    }
+
                 }
-                reindex_events_sortable();
-                do_error_check('seasons');
+
+                do_error_check();
             }
         });
 	})
