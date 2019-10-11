@@ -3638,7 +3638,7 @@ function calendar_saving(){
 
 	var text = "Saving..."
 
-	save_button.toggleClass('btn-secondary', true).toggleClass('btn-primary', false).toggleClass('btn-success', false).toggleClass('btn-warning', false).text(text);
+	save_button.prop('disabled', true).toggleClass('btn-secondary', true).toggleClass('btn-primary', false).toggleClass('btn-success', false).toggleClass('btn-warning', false).text(text);
 
 }
 
