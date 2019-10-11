@@ -80,6 +80,7 @@
 
         $(document).ready(function(){
             set_up_edit_inputs(false);
+            set_up_edit_values();
 
             bind_calendar_events();
             edit_event_ui.bind_events();
