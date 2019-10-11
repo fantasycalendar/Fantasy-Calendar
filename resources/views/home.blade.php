@@ -60,6 +60,9 @@
                                     <a class='calendar_action' href='{{ route('calendars.show', ['calendar'=> $calendar->hash ]) }}'>
                                         <i class="fa fa-eye"></i>
                                     </a>
+                                    <a class="calendar_action" href="{{ route('calendars.export', ['calendar' => $calendar->hash]) }}" >
+                                        <i class="fa fa-file-export"></i>
+                                    </a>
                                 </div>
                             </div>
                         </div>

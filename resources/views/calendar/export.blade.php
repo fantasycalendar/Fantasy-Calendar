@@ -1,13 +1,14 @@
 @extends('templates._page')
 
-@push('head')
+@push('page-class', 'page-export')
 
+@push('head')
     <script>
 
     $(document).ready(function(){
 
-        $("#btn_save").click(function(){
-            var file = new Blob([JSON.stringify(JSON.parse($('#export_container').text()))], {type: "json"});
+        $("#btn_export_save").click(function(){
+            var file = new Blob([JSON.stringify(JSON.parse($('.export-body').text()))], {type: "json"});
             if (window.navigator.msSaveOrOpenBlob) // IE10+
                 window.navigator.msSaveOrOpenBlob(file, "calendar.json");
             else { // Others
@@ -20,8 +21,8 @@
             }
         });
 
-        $('#btn_copy').click(function(){
-            var copyText = document.querySelector("#export_container");
+        $('#btn_export_copy').click(function(){
+            var copyText = document.querySelector(".export-body");
             copyText.select();
             document.execCommand("copy");
             $.notify(
@@ -33,43 +34,23 @@
     })
 
     </script>
-
 @endpush
 
 @section('content')
-    <div id="generator_container">
-
-        <div class='detail-column full margin-above'>
-
-            <div class='detail-row'>
-
-                <div class='detail-column half'>
-                    
-                    <div class='detail-row'>
-                        <button type='button' class='btn btn-bg btn-primary btn-block' id='btn_save'>Save to file</button>
-                    </div>
-
-                </div>
-
-                <div class='detail-column half'>
-                    
-                    <div class='detail-row'>
-
-                        <button type='button' class='btn btn-bg btn-success btn-block' id='btn_copy'>Copy to clipboard</button>
-                   
-                    </div>
-                    
-                </div>
-
+    <div class="container">
+        <div class='row py-4'>
+            <div class='col-sm-6'>
+                <button type='button' class='btn btn-bg btn-primary btn-block' id='btn_export_save'>Save to file</button>
             </div>
-
-            <div class='detail-row'>
-
-                <textarea readonly id="export_container">{"name":"{{ $calendar->name }}","static_data":@json($calendar->static_data),"dynamic_data":@json($calendar->dynamic_data)}</textarea>
-
+            <div class='col-sm-6'>
+                <button type='button' class='btn btn-bg btn-success btn-block' id='btn_export_copy'>Copy to clipboard</button>
             </div>
-
         </div>
 
+        <div class='row'>
+            <div class="col-sm-12">
+                <textarea readonly class="form-control export-body">{"name":"{{ $calendar->name }}","static_data":@json($calendar->static_data),"dynamic_data":@json($calendar->dynamic_data)}</textarea>
+            </div>
+        </div>
     </div>
 @endsection
