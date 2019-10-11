@@ -1231,7 +1231,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 		throw `Calendar has invalid timespan!`;
 	}
 
-	if(calendar.dynamic_data.day !== undefined && !isNaN(Number(calendar.dynamic_data.day)) && Number(calendar.dynamic_data.day) > 1){
+	if(calendar.dynamic_data.day !== undefined && !isNaN(Number(calendar.dynamic_data.day)) && Number(calendar.dynamic_data.day) >= 1){
 		dynamic_data.day = Number(calendar.dynamic_data.day)
 	}else{
 		throw `Calendar has invalid day!`;

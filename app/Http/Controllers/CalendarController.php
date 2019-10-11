@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\PrepCalendarForExport;
 use Illuminate\Http\Request;
 
 use Auth;
@@ -16,7 +17,7 @@ class CalendarController extends Controller
 {
     public function __construct() {
         // $this->middleware('calendarauth');
-        
+
         $this->middleware('auth')->except('show');
 
         $this->middleware('verified')->only('edit');
@@ -120,6 +121,21 @@ class CalendarController extends Controller
     }
 
     /**
+     * Show the form for exporting the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function export($id)
+    {
+        $exportdata = PrepCalendarForExport::dispatchNow(Calendar::hash($id)->firstOrFail());
+
+        return view('calendar.export', [
+            'exportdata' => $exportdata,
+        ]);
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -153,7 +169,7 @@ class CalendarController extends Controller
         if($calendar_was_updated == 0) {
             return [ 'success' => false, 'error' => 'Error - Unable to update calendar. Please try again later.'];
         }
-         
+
         return [ 'success' => true, 'data'=> true ];
 
     }
