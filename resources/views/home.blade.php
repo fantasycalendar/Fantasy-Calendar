@@ -20,7 +20,7 @@
 
 @section('content')
     <div class="container calendar__list">
-        @isset($calendars)
+        @if(count($calendars) > 0)
                 <div class='row'>
                     @foreach($calendars as $calendar)
                         <div class="col-sm-6 col-md-4 col-lg-3">
@@ -43,7 +43,27 @@
                         </div>
                     @endforeach
                 </div>
-        @endisset
+        @else
+            <div class="row">
+                <div class="col-3"></div>
+                <div class="col-6">
+                    <div class="user_calendar card text-center">
+                        <div class="card-header">
+                            <h5 class="calendar__list-name">You don't have any calendars!</h5>
+                            <span class="calendar__list-username">No worries though, create one below.</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="icon_container">
+                                <a href="{{ route('calendars.create') }}" class="calendar_action">
+                                    <i class="fa fa-plus"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3"></div>
+            </div>
+        @endif
 
         @isset($changelog)
             <h2>Changelog</h2>
