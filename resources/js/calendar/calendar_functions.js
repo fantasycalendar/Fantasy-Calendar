@@ -6,6 +6,18 @@ function sorter(a, b) {
 	return 0; // equal values MUST yield zero
 }
 
+class execution{
+
+	start(){
+		this.starttime = performance.now();
+	}
+
+	get end(){
+		return `${precisionRound(performance.now() - this.starttime, 7)}ms`;
+	}
+
+}
+
 var execution_time = {
 	start: function(){
 		this.starttime = performance.now();

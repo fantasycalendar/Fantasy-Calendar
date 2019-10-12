@@ -318,6 +318,315 @@ var calendar_builder = {
 		this.pre_data.epochs[epoch] = data;
 	},
 
+	evaluate_future_calendar_data: function(start_year, end_year){
+
+		if(this.static_data.year_data.timespans.length === 0 || this.static_data.year_data.global_week.length === 0){
+			
+			var result = {
+				success: false,
+				errors: []
+			};
+
+			if(this.static_data.year_data.timespans.length === 0){
+				result.errors.push("You need at least one month.")
+			}
+
+			if(this.static_data.year_data.global_week.length === 0){
+				result.errors.push("You need at least one week day.")
+			}
+
+			return result;
+
+		}
+
+		for(var i = 0; i < this.static_data.eras.length; i++){
+			if(this.static_data.eras[i].settings.starting_era) continue;
+			this.static_data.eras[i].date.epoch = evaluate_calendar_start(this.static_data, convert_year(this.static_data, this.static_data.eras[i].date.year), this.static_data.eras[i].date.timespan, this.static_data.eras[i].date.day).epoch;
+		}
+
+		this.calendar_list = {
+			timespans_to_evaluate: {},
+			timespans_to_build: {}
+		}
+
+		timespan = parseInt(Object.keys(this.calendar_list.timespans_to_build)[0]);
+		start_year = convert_year(this.static_data, start_year);
+		end_year = convert_year(this.static_data, end_year);
+
+		for(year = start_year; year < end_year; year++){
+
+			this.calendar_list.timespans_to_evaluate[year] = {};
+
+			for(timespan = 0; timespan < this.static_data.year_data.timespans.length; timespan++){
+
+				var offset = (this.static_data.year_data.timespans[timespan].interval-this.static_data.year_data.timespans[timespan].offset+1)%this.static_data.year_data.timespans[timespan].interval;
+
+				// Get the fraction of that month's appearances
+				var is_leaping = (year + offset) % this.static_data.year_data.timespans[timespan].interval == 0;
+
+				if(is_leaping){
+
+					this.calendar_list.timespans_to_evaluate[year][timespan] = this.create_adjusted_timespan(timespan);
+
+				}
+
+			}
+
+		}
+
+		this.set_up_repititions();
+
+		first_eval_year = parseInt(Object.keys(this.calendar_list.timespans_to_evaluate)[0]);
+
+		for(var i = 0; i < Object.keys(this.calendar_list.timespans_to_evaluate).length; i++){
+
+			curr_year = parseInt(Object.keys(this.calendar_list.timespans_to_evaluate)[i]);
+
+			if(first_eval_year > curr_year){
+				first_eval_year = curr_year;
+			}
+
+		}
+
+		first_eval_month = parseInt(Object.keys(this.calendar_list.timespans_to_evaluate[first_eval_year])[0]);
+
+		year_start_data = evaluate_calendar_start(this.static_data, first_eval_year, first_eval_month);
+		era_year = year_start_data.era_year;
+		count_timespans = year_start_data.count_timespans;
+		num_timespans = year_start_data.num_timespans;
+		total_week_num = year_start_data.total_week_num;
+
+		epoch = year_start_data.epoch;
+
+		var current_era = false;
+
+		for(var i = 0; i < this.static_data.eras.length; i++){
+			if(epoch >= this.static_data.eras[i].date.epoch){
+				current_era = i;
+			}
+		}
+
+		year_day = 1+year_start_data.epoch-evaluate_calendar_start(this.static_data, first_eval_year).epoch;
+
+		week_day = year_start_data.week_day;
+
+		order = Object.keys(this.calendar_list.timespans_to_evaluate);
+
+		if(order[0] > order[order.length-1]){
+			order.reverse();
+		}
+
+		last_year = undefined;
+
+		for(var year_i = 0; year_i < order.length; year_i++){
+
+			year_index = parseInt(order[year_i]);
+
+			timespan_list = this.calendar_list.timespans_to_evaluate[year_index];
+
+			current_cycle = this.get_cycle(year_index)
+
+			year_week_num = 1;
+
+			for(var i = 0; i < Object.keys(timespan_list).length; i++){
+
+				timespan_index = parseInt(Object.keys(timespan_list)[i]);
+
+				count_timespans[timespan_index]++;
+				num_timespans++;
+
+				current_timespan = timespan_list[timespan_index];
+
+				month_week_num = 1;
+
+				if(!this.static_data.year_data.overflow){
+					week_day = 1;
+				}
+
+				for(day = 0; day <= current_timespan.length; day++){
+
+					moon_data = [];
+
+					if(day == 0){
+						for(leap_day_index = 0; leap_day_index < current_timespan.leap_days.length; leap_day_index++){
+							leap_day = current_timespan.leap_days[leap_day_index];
+							if(leap_day.intercalary && leap_day.day === day){
+
+								data = {
+									'year': year_index,
+									'era_year': era_year,
+
+									'timespan_index': undefined,
+									'timespan_number': undefined,
+									'timespan_count': undefined,
+									'num_timespans': undefined,
+									'timespan_name': undefined,
+
+									'epoch': epoch, 
+									'day': day,
+									'year_day': year_day,
+									'week_day': undefined,
+									'week_day_name': undefined,
+
+									'month_week_num': undefined,
+									'year_week_num': undefined,
+									'total_week_num': undefined,
+
+									'moon_phase': [],
+									'moon_phase_num_epoch': [],
+									'moon_phase_num_month': [],
+									'moon_phase_num_year': [],
+
+									'season': climate_generator.get_season_data(epoch),
+
+									'cycle': current_cycle.array,
+									'intercalary': true,
+									'leap_day': leap_day.index,
+
+									'era': current_era
+
+								}
+
+								data = this.add_moon_pre_data(epoch, data, year_index, timespan_index);
+
+								this.add_epoch_pre_data(epoch, data);
+
+								epoch++;
+								year_day++;
+							}
+						}
+					}
+
+					if(day > 0){
+
+						data = {
+							'year': year_index,
+							'era_year': era_year,
+
+							'timespan_index': timespan_index,
+							'timespan_number': i,
+							'timespan_count': count_timespans[timespan_index],
+							'num_timespans': num_timespans,
+							'timespan_name': current_timespan.name,
+
+							'epoch': epoch, 
+							'day': day,
+							'year_day': year_day,
+							'week_day': current_timespan.type !== "intercalary" ? week_day : undefined,
+							'week_day_name': current_timespan.type !== "intercalary" ? current_timespan.week[week_day-1] : undefined,
+
+							'month_week_num': current_timespan.type !== "intercalary" ? month_week_num : undefined,
+							'year_week_num': current_timespan.type !== "intercalary" ? year_week_num : undefined,
+							'total_week_num': current_timespan.type !== "intercalary" ? total_week_num : undefined,
+
+							
+
+							'moon_phase': [],
+							'moon_phase_num_epoch': [],
+							'moon_phase_num_month': [],
+							'moon_phase_num_year': [],
+
+							'cycle': current_cycle.array,
+							'intercalary': false,
+
+							'season': climate_generator.get_season_data(epoch),
+
+							'era': current_era
+						}
+
+						if(current_timespan.type !== "intercalary"){
+
+							this.pre_data.repititions.week_days[year_index][data.timespan_index][data.week_day]++;
+							data.week_day_num = this.pre_data.repititions.week_days[year_index][data.timespan_index][data.week_day];
+
+						}
+
+						data = this.add_moon_pre_data(epoch, data, year_index, timespan_index);
+
+						this.add_epoch_pre_data(epoch, data);
+						epoch++;
+						year_day++;
+
+						if(current_timespan.type !== "intercalary"){
+
+							week_day++;
+
+							if(week_day > current_timespan.week.length){
+								week_day = 1;
+								month_week_num++;
+								year_week_num++;
+								total_week_num++;
+							}
+
+						}
+
+						for(leap_day_index = 0; leap_day_index < current_timespan.leap_days.length; leap_day_index++){
+							leap_day = current_timespan.leap_days[leap_day_index];
+							if(leap_day.intercalary && leap_day.day === day){
+
+								data = {
+									'year': year_index,
+									'era_year': era_year,
+
+									'timespan_index': undefined,
+									'timespan_number': undefined,
+									'timespan_count': undefined,
+									'num_timespans': undefined,
+									'timespan_name': undefined,
+
+									'epoch': epoch, 
+									'day': day,
+									'year_day': year_day,
+									'week_day': undefined,
+									'week_day_name': undefined,
+
+									'month_week_num': undefined,
+									'year_week_num': undefined,
+									'total_week_num': undefined,
+
+									'moon_phase': [],
+									'moon_phase_num_epoch': [],
+									'moon_phase_num_month': [],
+									'moon_phase_num_year': [],
+
+									'cycle': current_cycle.array,
+									
+									'intercalary': true,
+									'leap_day': leap_day.index,
+
+									'season': climate_generator.get_season_data(epoch),
+
+									'era': current_era
+								}
+
+								data = this.add_moon_pre_data(epoch, data, year_index, timespan_index);
+
+								this.add_epoch_pre_data(epoch, data);
+								epoch++;
+								year_day++;
+							}
+						}
+					}
+
+					if(this.static_data.eras[current_era+1] && epoch >= this.static_data.eras[current_era+1].date.epoch){
+						current_era++;
+					}
+				}
+
+				if(!this.static_data.year_data.overflow){
+					year_week_num++;
+					total_week_num++;
+				}
+			}
+			last_year = year_index;
+			year_day = 1;
+			era_year++;
+		}
+		
+		return this.pre_data.epochs;
+
+	},
+
 	evaluate_calendar_data: function(){
 
 		if(this.static_data.year_data.timespans.length === 0 || this.static_data.year_data.global_week.length === 0){
@@ -1045,13 +1354,17 @@ var calendar_builder = {
 }
 
 onmessage = e => {
+
 	calendar_builder.calendar_name = e.data.calendar_name;
 	calendar_builder.static_data = e.data.static_data;
 	calendar_builder.dynamic_data = e.data.dynamic_data;
 	calendar_builder.owner = e.data.owner;
 
-
-	data = calendar_builder.evaluate_calendar_data();
+	if(e.data.action != "future"){
+		data = calendar_builder.evaluate_calendar_data();
+	}else{
+		data = calendar_builder.evaluate_future_calendar_data(e.data.start_year, e.data.end_year);
+	}
 	
 	postMessage({
 		processed_data: data,

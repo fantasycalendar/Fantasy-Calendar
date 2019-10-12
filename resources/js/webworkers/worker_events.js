@@ -26,19 +26,17 @@ var event_evaluator = {
 		this.pre_epoch_data = pre_epoch_data;
 		this.epoch_data = epoch_data;
 
+		this.event_data = {
+			valid: {},
+			starts: {},
+			ends: {},
+		}
+
 		if(event_id !== undefined){
 
 			this.event_data.valid[event_id] = [];
 			this.event_data.starts[event_id] = [];
 			this.event_data.ends[event_id] = [];
-
-		}else{
-
-			this.event_data = {
-				valid: {},
-				starts: {},
-				ends: {},
-			}
 
 		}
 
@@ -46,14 +44,14 @@ var event_evaluator = {
 
 		this.start_epoch = Number(Object.keys(this.epoch_data)[0]);
 
-		execution_time.start();
+		//execution_time.start();
 
 		this.events = clone(this.static_data.event_data.events);
 		this.categories = clone(this.static_data.event_data.categories);
 		this.evaluate_valid_events(this.pre_epoch_data, event_id);
 		this.evaluate_valid_events(this.epoch_data, event_id);
 		
-		execution_time.end();
+		//execution_time.end();
 
 		return this.event_data;
 
@@ -455,7 +453,7 @@ var event_evaluator = {
 
 		if(event_id !== undefined){
 
-			evaluate_event(this.events[event_id])
+			evaluate_event(event_id)
 
 		}else{
 
