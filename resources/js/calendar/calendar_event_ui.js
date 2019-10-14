@@ -24,6 +24,7 @@ var edit_event_ui = {
 		this.non_preset_buttons					= $('#non_preset_buttons');
 		this.save_btn							= this.event_background.find('#btn_event_save');
 		this.close_ui_btn						= this.event_background.find('.close_ui_btn');
+		this.test_event_btn						= this.event_background.find('.test_event_btn');
 		this.trumbowyg							= this.event_background.find('.event_desc');
 
 
@@ -57,22 +58,27 @@ var edit_event_ui = {
 		edit_event_ui.close_ui_btn.click(function(){
 
 			swal({
-                title: "Are you sure?",
-                text: 'This event will not be saved! Are you sure you want to close the event UI?',
-			    dangerMode: true,
-                buttons: true,
-                icon: "warning",
-            }).then((willDelete) => {
-                if(willDelete) {
-                    if(edit_event_ui.new_event){
-                        delete static_data.event_data.events[edit_event_ui.event_id];
-                    }
+				title: "Are you sure?",
+				text: 'This event will not be saved! Are you sure you want to close the event UI?',
+				dangerMode: true,
+				buttons: true,
+				icon: "warning",
+			}).then((willDelete) => {
+				if(willDelete) {
+					if(edit_event_ui.new_event){
+						delete static_data.event_data.events[edit_event_ui.event_id];
+					}
 
-                    edit_event_ui.clear_ui();
-                }
-            });
+					edit_event_ui.clear_ui();
+				}
+			});
 		});
 
+		this.test_event_btn.click(function(){
+
+			edit_event_ui.test_event(Number($(this).attr('years')))
+
+		});
 
 		this.condition_presets.change(function(){
 
@@ -1330,7 +1336,92 @@ var edit_event_ui = {
 				});
 			}
 		}
+	},
+
+
+	test_event: function(years){
+
+		if(years >= 50){
+			swal({
+				title: "Warning!",
+				text: "Simulating more than 50 years of days and testing the event against those days might take several minutes. Are you sure you want to continue?",
+				icon: "warning",
+				buttons: true,
+				dangerMode: true,
+			}).then((will_simulate) => {
+
+				if(will_simulate) {
+					this.run_test_event(years);
+				}
+
+			});
+		}else{
+			this.run_test_event(years);
+		}
+
+	},
+
+	run_test_event: function(years){
+
+		edit_event_ui.worker_future_calendar = new Worker('/js/webworkers/worker_calendar.js');
+
+		edit_event_ui.worker_future_calendar.postMessage({
+			calendar_name: calendar_name,
+			static_data: static_data,
+			dynamic_data: dynamic_data,
+			action: "future",
+			owner: owner,
+			start_year: dynamic_data.year+1,
+			end_year: dynamic_data.year+1+years
+		});
+
+		edit_event_ui.worker_future_calendar.onmessage = e => {
+
+			var processed_data = e.data.processed_data;
+
+			edit_event_ui.worker_future_events = new Worker('/js/webworkers/worker_events.js');
+
+			edit_event_ui.worker_future_events.postMessage({
+				static_data: static_data,
+				pre_epoch_data: {},
+				epoch_data: processed_data,
+				event_id: edit_event_ui.event_id,
+				callback: true
+			});
+
+			edit_event_ui.worker_future_events.onmessage = e => {
+
+				if(e.data.callback){
+
+					var percentage = (e.data.count[0]/e.data.count[1])*100
+
+				}else{
+
+					console.log(e.data.event_data.valid[edit_event_ui.event_id].length)
+
+					hide_loading_screen();
+
+					edit_event_ui.worker_future_calendar.terminate()
+					edit_event_ui.worker_future_events.terminate()
+
+				}
+
+			}
+
+			show_loading_screen(true, cancel_event_test);
+
+		}
+
 	}
+
+}
+
+function cancel_event_test(){
+
+	edit_event_ui.worker_future_calendar.terminate()
+	edit_event_ui.worker_future_events.terminate()
+	hide_loading_screen();
+
 }
 
 
@@ -1382,32 +1473,32 @@ var show_event_ui = {
 		this.event_save_btn						= this.event_background.find('#submit_comment');
 
 		this.event_comment_input.trumbowyg({
-		    btns: [
-		        ['strong', 'em', 'del'],
-		        ['superscript', 'subscript'],
-		        ['link'],
-		        ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
-		        ['unorderedList', 'orderedList'],
-		        ['removeformat']
-		    ]
+			btns: [
+				['strong', 'em', 'del'],
+				['superscript', 'subscript'],
+				['link'],
+				['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
+				['unorderedList', 'orderedList'],
+				['removeformat']
+			]
 		});
 
 		this.close_ui_btn.click(function(){
-		    if(show_event_ui.event_comment_input.trumbowyg('html').length > 0) {
-                swal({
-                    title: "Cancel comment?",
-                    text: "You haven't posted your comment yet, are you sure you want to close this event?",
-                    icon: "warning",
-                    buttons: true,
-                    dangerMode: true,
-                }).then((willCancel) => {
-                    if(willCancel) {
-                        show_event_ui.clear_ui();
-                    }
-                });
-            } else {
-                show_event_ui.clear_ui();
-            }
+			if(show_event_ui.event_comment_input.trumbowyg('html').length > 0) {
+				swal({
+					title: "Cancel comment?",
+					text: "You haven't posted your comment yet, are you sure you want to close this event?",
+					icon: "warning",
+					buttons: true,
+					dangerMode: true,
+				}).then((willCancel) => {
+					if(willCancel) {
+						show_event_ui.clear_ui();
+					}
+				});
+			} else {
+				show_event_ui.clear_ui();
+			}
 		});
 
 		this.event_wrapper.mousedown(function(event){
@@ -1424,8 +1515,6 @@ var show_event_ui = {
 		});
 
 		$(document).on('click', '.event:not(.event-text-output)', function(){
-
-			console.log($(this))
 
 			if($(this).hasClass('era_event')){
 				var id = $(this).attr('era_id')|0;

@@ -87,7 +87,7 @@ function rebuild_events(event_id){
 
 worker_events.onmessage = e => {
 
-	display_events(static_data, e.data)
+	display_events(static_data, e.data.event_data)
 
 	hide_loading_screen();
 

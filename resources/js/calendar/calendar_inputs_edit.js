@@ -4029,55 +4029,6 @@ function set_up_edit_values(){
 }
 
 
-/*
-console.log(dynamic_data)
-
-timer = new execution()
-
-timer.start()
-
-worker_future_calendar.postMessage({
-	calendar_name: calendar_name,
-	static_data: static_data,
-	dynamic_data: dynamic_data,
-	action: "future",
-	owner: owner,
-	start_year: dynamic_data.year,
-	end_year: dynamic_data.year+70
-});
-
-var worker_future_calendar = new Worker('/js/webworkers/worker_calendar.js');
-var worker_future_events = new Worker('/js/webworkers/worker_events.js?');
-
-worker_future_calendar.onmessage = e => {
-
-	//console.log(Object.keys(e.data.processed_data).length)
-
-	worker_future_events.postMessage({
-		static_data: static_data,
-		pre_epoch_data: {},
-		epoch_data: e.data.processed_data,
-		event_id: 1
-	});
-
-	worker_future_calendar.terminate()
-
-}
-
-worker_future_events.onmessage = e => {
-
-	var event_id = Object.keys(e.data.valid)[0]
-
-	console.log(e.data.valid[event_id].length)
-
-	console.log(timer.end)
-
-	worker_future_events.terminate()
-
-}
-*/
-
-
 function get_category(search) {
     if(static_data.event_data.categories.length == 0){
         return {id: -1};

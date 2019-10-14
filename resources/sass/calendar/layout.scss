@@ -62,6 +62,7 @@ body{
 #loading_background{
     display: flex;
     flex-direction: column;
+    z-index:2000;
 
     img, div{
         display: inline-flex;
@@ -70,6 +71,16 @@ body{
         top:45vh;
         padding-top:10px;
         color:white;
+    }
+
+    .loading_cancel_button_container {
+
+        display: inline-flex;
+        align-self: center;
+        position:relative;
+        padding-top:10px;
+        width:30vw;
+
     }
 }
 

@@ -130,13 +130,20 @@ var loading_screen_texts = [
 	`Figuring out issues with Easter...`,
 ];
 
-function show_loading_screen(){
+function show_loading_screen(loading_bar, cancel_button_callback){
 	$('#loading_text').text(loading_screen_texts[Math.floor(Math.random()*loading_screen_texts.length)]);
 	$('#loading_background').removeClass('hidden');
+
+	if(cancel_button_callback !== undefined){
+		$('.loading_cancel_button').removeClass('hidden').click(function(){
+			cancel_button_callback();
+		});
+	}
 }
 
 function hide_loading_screen(){
 	$('#loading_background').addClass('hidden');
+	$('.loading_cancel_button').addClass('hidden');
 }
 
 function slugify(string) {
