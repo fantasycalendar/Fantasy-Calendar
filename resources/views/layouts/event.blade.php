@@ -102,9 +102,9 @@
 					</div>
 				</div>
 
-				<div class='event_occurances hidden'>
+				<div class='event_occurrences hidden'>
 					<div class='detail-row'>
-						<h5 class='event-form-heading full'>Test event occurances for the next:</h5>
+						<h5 class='event-form-heading full'>Test event occurrences for the next:</h5>
 						<div class='detail-row'>
 							<button type='button' class='btn btn-info quarter test_event_btn' years="1">1 year</button>
 							<button type='button' class='btn btn-info quarter test_event_btn' years="10">10 years</button>
@@ -118,8 +118,6 @@
 						<div class='list hidden detail-row'>
 							<ul class='detail-column half col1'></ul>
 							<ul class='detail-column half col2'></ul>
-						</div>
-						<div class='detail-row buttons hidden'>
 							<button type='button' class='btn btn-info half prev' disabled>Previous</button>
 							<button type='button' class='btn btn-info half next' disabled>Next</button>
 						</div>
