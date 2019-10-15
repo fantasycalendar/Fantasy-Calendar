@@ -1428,7 +1428,7 @@ var edit_event_ui = {
 			edit_event_ui.worker_future_events.onmessage = e => {
 
 				if(e.data.callback){
-					
+
 					update_loading_bar(e.data.count[0] / e.data.count[1]);
 
 				}else{
@@ -1444,7 +1444,7 @@ var edit_event_ui = {
 
 					if(edit_event_ui.new_event){
 
-						delete static_data.event_data.events[edit_event_ui.event_id];
+						static_data.event_data.events.splice(edit_event_ui.event_id, 1);
 
 					}else{
 
