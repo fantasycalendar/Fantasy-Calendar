@@ -344,6 +344,69 @@ var edit_event_ui = {
 
 		static_data.event_data.events[this.event_id].description = escapeHtml(this.trumbowyg.trumbowyg('html'));
 
+		static_data.event_data.events[this.event_id].data = this.create_event_data();
+
+		static_data.event_data.events[this.event_id].event_category_id = get_category($('#event_categories').val()).id;
+
+		static_data.event_data.events[this.event_id].settings = {
+			color: $('#color_style').val(),
+			text: $('#text_style').val(),
+			hide: $('#event_hide_players').prop('checked'),
+			hide_full: $('#event_hide_full').prop('checked'),
+			noprint: $('#event_dontprint_checkbox').prop('checked')
+		}
+
+		if(edit_event_ui.new_event){
+			add_event_to_sortable(events_sortable, this.event_id, static_data.event_data.events[this.event_id]);
+		}
+
+		edit_event_ui.clear_ui();
+
+		error_check();
+
+		rebuild_events();
+
+	},
+
+	clear_ui: function(){
+
+		this.event_id = null;
+
+		this.event_background.find('.event_name').val('');
+
+		this.trumbowyg.trumbowyg('html', '');
+
+		this.repeat_input.val('1').parent().toggleClass('hidden', true);
+		this.condition_presets.children().eq(0).prop('selected', true);
+		this.condition_presets.parent().toggleClass('hidden', true);
+		this.update_every_nth_presets();
+
+		this.event_conditions_container.empty();
+
+		this.data = {};
+
+		this.new_event = false;
+
+		this.date = [];
+
+		this.connected_events = [];
+
+		$('#event_categories').val('');
+
+		$('#color_style').val('');
+		$('#text_style').val('');
+
+		$('#event_hide_players').prop('checked', false);
+
+		$('#event_dontprint_checkbox').prop('checked',false);
+
+		this.event_background.addClass('hidden');
+
+
+	},
+
+	create_event_data: function(){
+
 		var conditions = this.create_condition_array(edit_event_ui.event_conditions_container);
 
 		this.date = []
@@ -383,7 +446,7 @@ var edit_event_ui = {
 			}
 		}
 
-		static_data.event_data.events[this.event_id].data = {
+		return {
 			has_duration: $('#has_duration').prop('checked'),
 			duration: $('#duration').val()|0,
 			show_first_last: $('#show_first_last').prop('checked'),
@@ -392,65 +455,6 @@ var edit_event_ui = {
 			connected_events: this.connected_events,
 			date: this.date,
 		};
-
-		static_data.event_data.events[this.event_id].event_category_id = get_category($('#event_categories').val()).id;
-
-		static_data.event_data.events[this.event_id].settings = {
-			color: $('#color_style').val(),
-			text: $('#text_style').val(),
-			hide: $('#event_hide_players').prop('checked'),
-			hide_full: $('#event_hide_full').prop('checked'),
-			noprint: $('#event_dontprint_checkbox').prop('checked')
-		}
-
-		if(edit_event_ui.new_event){
-			add_event_to_sortable(events_sortable, this.event_id, static_data.event_data.events[this.event_id]);
-		}
-
-		edit_event_ui.clear_ui();
-
-		error_check();
-
-		rebuild_events();
-
-	},
-
-	clear_ui: function(){
-
-		this.event_id = null;
-
-		this.event_background.find('.event_name').val('');
-
-		this.trumbowyg.trumbowyg('html', '');
-
-		this.repeat_input.val('1').parent().toggleClass('hidden', true);
-		this.condition_presets.children().eq(0).prop('selected', true);
-		this.preset_buttons.toggleClass('hidden', true);
-		this.non_preset_buttons.toggleClass('hidden', false);
-		this.condition_presets.parent().toggleClass('hidden', true);
-		this.update_every_nth_presets();
-
-		this.event_conditions_container.empty();
-
-		this.data = {};
-
-		this.new_event = false;
-
-		this.date = [];
-
-		this.connected_events = [];
-
-		$('#event_categories').val('');
-
-		$('#color_style').val('');
-		$('#text_style').val('');
-
-		$('#event_hide_players').prop('checked', false);
-
-		$('#event_dontprint_checkbox').prop('checked',false);
-
-		this.event_background.addClass('hidden');
-
 
 	},
 
@@ -1360,7 +1364,7 @@ var edit_event_ui = {
 		if(years >= 50){
 			swal({
 				title: "Warning!",
-				text: "Simulating more than 50 years of days and testing the event against those days might take several minutes. Are you sure you want to continue?",
+				text: "Simulating more than 50 years might take several minutes! Are you sure you want to continue?",
 				icon: "warning",
 				buttons: true,
 				dangerMode: true,
@@ -1378,6 +1382,22 @@ var edit_event_ui = {
 	},
 
 	run_test_event: function(years){
+
+		show_loading_screen(true, cancel_event_test);
+
+		if(edit_event_ui.new_event){
+
+			static_data.event_data.events[edit_event_ui.event_id] = {}
+
+			static_data.event_data.events[edit_event_ui.event_id].data = edit_event_ui.create_event_data();
+
+		}else{
+
+			edit_event_ui.backup_event_data = clone(static_data.event_data.events[edit_event_ui.event_id].data);
+
+			static_data.event_data.events[edit_event_ui.event_id].data = edit_event_ui.create_event_data();
+
+		}
 
 		edit_event_ui.worker_future_calendar = new Worker('/js/webworkers/worker_calendar.js');
 
@@ -1408,24 +1428,35 @@ var edit_event_ui = {
 			edit_event_ui.worker_future_events.onmessage = e => {
 
 				if(e.data.callback){
-
-					var percentage = (e.data.count[0]/e.data.count[1])*100
+					
+					update_loading_bar(e.data.count[0] / e.data.count[1]);
 
 				}else{
 
-					console.log(e.data.event_data.valid[edit_event_ui.event_id].length)
+					var event_appearances = e.data.event_data.valid[edit_event_ui.event_id].length;
+
+					$('.event_appearances_text').html(`This event will appear <span class='bold-text'>${event_appearances}</span> times in the next ${years} ${years > 1 ? 'years' : 'year'}.`)
 
 					hide_loading_screen();
 
 					edit_event_ui.worker_future_calendar.terminate()
 					edit_event_ui.worker_future_events.terminate()
 
+					if(edit_event_ui.new_event){
+
+						delete static_data.event_data.events[edit_event_ui.event_id];
+
+					}else{
+
+						static_data.event_data.events[edit_event_ui.event_id].data = clone(edit_event_ui.backup_event_data)
+						edit_event_ui.backup_event_data = {}
+
+					}
+
+
 				}
 
 			}
-
-			show_loading_screen(true, cancel_event_test);
-
 		}
 
 	}

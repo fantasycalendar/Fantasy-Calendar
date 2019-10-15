@@ -104,13 +104,17 @@
 
 				<div class='detail-row'>
 					<h5 class='event-form-heading full'>Test event appearances for the next:</h5>
+					<div class='detail-row'>
+						<button type='button' class='btn btn-info quarter test_event_btn' years="1">1 year</button>
+						<button type='button' class='btn btn-info quarter test_event_btn' years="10">10 years</button>
+						<button type='button' class='btn btn-info quarter test_event_btn' years="50">50 years</button>
+						<button type='button' class='btn btn-info quarter test_event_btn' years="100">100 years</button>
+					</div>
 				</div>
 
-				<div class='detail-row space_below'>
-					<button type='button' class='btn btn-info quarter test_event_btn' years="1">1 year</button>
-					<button type='button' class='btn btn-info quarter test_event_btn' years="10">10 years</button>
-					<button type='button' class='btn btn-info quarter test_event_btn' years="50">50 years</button>
-					<button type='button' class='btn btn-info quarter test_event_btn' years="100">100 years</button>
+				<div class='detail-row event_appearances_container'>
+					<div class='event_appearances_text'></div>
+					<div class='event_appearances_list'></div>
 				</div>
 
 				<div class='spacey_separator'></div>

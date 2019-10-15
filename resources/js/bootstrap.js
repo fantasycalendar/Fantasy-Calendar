@@ -45,6 +45,16 @@ if (token) {
 
 require('sweetalert');
 
+
+/**
+ * With ProgressBar.js, it's easy to create responsive and stylish progress
+ * bars for the web. Animations perform well even on mobile devices. It provides
+ * a few built‑in shapes like Line, Circle and SemiCircle but you can also create
+ * custom shaped progress bars with any vector graphic editor.
+ */
+
+window.ProgressBar = require('progressbar.js')
+
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting
