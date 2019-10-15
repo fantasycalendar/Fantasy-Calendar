@@ -26,6 +26,35 @@ var edit_event_ui = {
 		this.test_event_btn						= this.event_background.find('.test_event_btn');
 		this.trumbowyg							= this.event_background.find('.event_desc');
 
+		this.event_occurances_page = 1;
+		this.processed_event_data = false;
+		this.event_occurances = false;
+
+		this.event_occurances_container			= $('.event_occurances');
+		this.event_occurances_list_container	= $('.event_occurances .list_container');
+		this.event_occurances_text				= $('.event_occurances .list_container .text');
+		this.event_occurances_list				= $('.event_occurances .list_container .list');
+		this.event_occurances_list_col1			= $('.event_occurances .list_container .list .col1');
+		this.event_occurances_list_col2			= $('.event_occurances .list_container .list .col2');
+		this.event_occurances_buttons			= $('.event_occurances .list_container .buttons');
+		this.event_occurances_button_prev		= $('.event_occurances .list_container .buttons .prev');
+		this.event_occurances_button_next		= $('.event_occurances .list_container .buttons .next');
+
+
+		$(document).on('click', '.show_event_dates', function(e){
+			e.preventDefault();
+			edit_event_ui.show_event_dates();
+		});
+
+		this.event_occurances_button_prev.click(function(e){
+			edit_event_ui.event_occurances_page--;
+			edit_event_ui.show_event_dates();
+		});
+
+		this.event_occurances_button_next.click(function(e){
+			edit_event_ui.event_occurances_page++;
+			edit_event_ui.show_event_dates();
+		});
 
 		this.trumbowyg.trumbowyg();
 
@@ -149,7 +178,7 @@ var edit_event_ui = {
 
 		});
 
-		edit_event_ui.event_conditions_container.nestedSortable({
+		this.event_conditions_container.nestedSortable({
 			handle: ".handle",
 			containerSelector: ".group_list_root, .group_list",
 			onDragStart: function (item, container, _super, event) {
@@ -176,6 +205,10 @@ var edit_event_ui = {
 			tolerance: -5
 		});
 
+		this.event_conditions_container.change(function(){
+			edit_event_ui.event_occurances_container.toggleClass('hidden', edit_event_ui.event_conditions_container.length == 0);
+		})
+
 		$('#remove_dropped').mouseover(function(){
 			edit_event_ui.delete_droppable = true;
 		}).mouseout(function(){
@@ -195,7 +228,7 @@ var edit_event_ui = {
 			}
 		});
 
-		edit_event_ui.evaluate_condition_selects(edit_event_ui.event_conditions_container);
+		this.evaluate_condition_selects(edit_event_ui.event_conditions_container);
 
 		$('#add_event_condition_group').click(function(){
 			edit_event_ui.add_group(edit_event_ui.event_conditions_container, "normal");
@@ -297,6 +330,8 @@ var edit_event_ui = {
 
 		this.create_conditions(event.data.conditions, this.event_conditions_container);
 
+		this.event_occurances_container.toggleClass('hidden', edit_event_ui.event_conditions_container.length == 0);
+
 		this.evaluate_condition_selects(this.event_conditions_container);
 
 		if(typeof event.event_category_id !== 'undefined' && event.event_category_id !== null){
@@ -380,6 +415,11 @@ var edit_event_ui = {
 		this.condition_presets.children().eq(0).prop('selected', true);
 		this.condition_presets.parent().toggleClass('hidden', true);
 		this.update_every_nth_presets();
+
+		this.event_occurances_container.addClass('hidden');
+		this.event_occurances_list.addClass('hidden');
+		this.event_occurances_list_container.addClass('hidden');
+		this.event_occurances_buttons.removeClass('hidden');
 
 		this.event_conditions_container.empty();
 
@@ -1383,6 +1423,10 @@ var edit_event_ui = {
 
 	run_test_event: function(years){
 
+		this.event_occurances_list_col1.empty();
+		this.event_occurances_list_col2.empty();
+		this.event_occurances_text.empty();
+
 		show_loading_screen(true, cancel_event_test);
 
 		if(edit_event_ui.new_event){
@@ -1413,14 +1457,14 @@ var edit_event_ui = {
 
 		edit_event_ui.worker_future_calendar.onmessage = e => {
 
-			var processed_data = e.data.processed_data;
+			edit_event_ui.processed_event_data = e.data.processed_data;
 
 			edit_event_ui.worker_future_events = new Worker('/js/webworkers/worker_events.js');
 
 			edit_event_ui.worker_future_events.postMessage({
 				static_data: static_data,
 				pre_epoch_data: {},
-				epoch_data: processed_data,
+				epoch_data: edit_event_ui.processed_event_data,
 				event_id: edit_event_ui.event_id,
 				callback: true
 			});
@@ -1433,11 +1477,13 @@ var edit_event_ui = {
 
 				}else{
 
-					var event_appearances = e.data.event_data.valid[edit_event_ui.event_id].length;
+					edit_event_ui.event_occurances = e.data.event_data.valid[edit_event_ui.event_id];
 
-					$('.event_appearances_text').html(`This event will appear <span class='bold-text'>${event_appearances}</span> times in the next ${years} ${years > 1 ? 'years' : 'year'}.`)
+					edit_event_ui.event_occurances_text.html(`This event will appear <span class='bold-text'>${edit_event_ui.event_occurances.length}</span> times in the next ${years} ${years > 1 ? 'years' : 'year'}. <a href="#" class="show_event_dates">Click here to see which dates!</a>`);
 
 					hide_loading_screen();
+
+					edit_event_ui.event_occurances_list_container.removeClass('hidden');
 
 					edit_event_ui.worker_future_calendar.terminate()
 					edit_event_ui.worker_future_events.terminate()
@@ -1458,6 +1504,64 @@ var edit_event_ui = {
 
 			}
 		}
+
+	},
+
+	show_event_dates: function(){
+
+		this.event_occurances_list.removeClass('hidden');
+		this.event_occurances_buttons.removeClass('hidden');
+
+		var html_col1 = []
+		var html_col2 = []
+
+		var length = this.event_occurances_page*10;
+
+		for(var i = (this.event_occurances_page-1)*10; i < length; i++){
+
+			if(edit_event_ui.event_occurances[i]){
+
+				var epoch = edit_event_ui.event_occurances[i];
+				var epoch_data = edit_event_ui.processed_event_data[epoch];
+
+				var text = `<li class='event_occurance'>The ${ordinal_suffix_of(epoch_data.day)} of ${epoch_data.timespan_name}, ${epoch_data.year}</li>`
+
+				if(i-((this.event_occurances_page-1)*10) < 5){
+					html_col1.push(text);
+				}else{
+					html_col2.push(text);
+				}
+
+			}else{
+				break;
+			}
+
+		}
+
+		if(i != length || i == edit_event_ui.event_occurances.length){
+			
+			this.event_occurances_button_next.prop('disabled', true);
+
+			if(this.event_occurances_page == 1){
+				this.event_occurances_button_prev.prop('disabled', true);
+			}else{
+				this.event_occurances_button_prev.prop('disabled', false);
+			}
+
+		}else{
+
+			if(this.event_occurances_page == 1){
+				this.event_occurances_button_prev.prop('disabled', true);
+			}else{
+				this.event_occurances_button_prev.prop('disabled', false);
+			}
+
+			this.event_occurances_button_next.prop('disabled', false);
+
+		}
+
+		this.event_occurances_list_col1.html(html_col1.join(''))
+		this.event_occurances_list_col2.html(html_col2.join(''))
 
 	}
 

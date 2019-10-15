@@ -1099,6 +1099,22 @@ ol.example li.placeholder:before {
     margin:0;
 }
 
+
+.event_occurances{
+
+    .col1, .col2{
+        margin-top:0.5rem;
+        margin-bottom:0.5rem;
+    }
+
+    .event_occurance{
+        list-style-type: initial;
+        list-style-position: inside;
+        margin-bottom:5px;
+    }
+
+}
+
 /* ------------------ Condition styles ----------------- */
 
 
