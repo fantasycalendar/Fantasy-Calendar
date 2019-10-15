@@ -146,6 +146,13 @@ function hide_loading_screen(){
 	$('.loading_cancel_button').addClass('hidden');
 }
 
+
+function update_loading_bar(current, target){
+
+	var percentage = current / target;
+
+}
+
 function slugify(string) {
 	const a = 'àáäâãåăæąçćčđďèéěėëêęğǵḧìíïîįłḿǹńňñòóöôœøṕŕřßşśšșťțùúüûǘůűūųẃẍÿýźžż·/_,:;'
 	const b = 'aaaaaaaaacccddeeeeeeegghiiiiilmnnnnooooooprrsssssttuuuuuuuuuwxyyzzz------'

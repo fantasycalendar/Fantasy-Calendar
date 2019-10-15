@@ -20,7 +20,6 @@ var edit_event_ui = {
 		this.event_conditions_container			= $('#event_conditions_container');
 		this.condition_presets					= $('#condition_presets');
 		this.repeat_input						= $('#repeat_input');
-		this.preset_buttons						= $('#preset_buttons');
 		this.non_preset_buttons					= $('#non_preset_buttons');
 		this.save_btn							= this.event_background.find('#btn_event_save');
 		this.close_ui_btn						= this.event_background.find('.close_ui_btn');
@@ -80,34 +79,51 @@ var edit_event_ui = {
 
 		});
 
-		this.condition_presets.change(function(){
+		this.condition_presets.change(function(e){
 
 			var selected = edit_event_ui.condition_presets.children(':selected')[0].hasAttribute('nth');
 			edit_event_ui.repeat_input.prop('disabled', !selected).parent().toggleClass('hidden', !selected);
 			edit_event_ui.update_every_nth_presets();
 
-			edit_event_ui.preset_buttons.toggleClass('hidden', edit_event_ui.condition_presets.children(':selected').val() == "None");
-			edit_event_ui.non_preset_buttons.toggleClass('hidden', edit_event_ui.condition_presets.children(':selected').val() != "None");
+			if(edit_event_ui.event_conditions_container.children().length > 0 && e.originalEvent){
+				swal({
+					title: "Warning!",
+					text: "This will override all of your conditions, are you sure you want to do that?",
+					icon: "warning",
+					buttons: true,
+					dangerMode: true,
+				}).then((override) => {
+
+					if(override) {
+
+						var preset = edit_event_ui.condition_presets.val();
+						var repeats = edit_event_ui.repeat_input.val()|0;
+
+						edit_event_ui.update_every_nth_presets();
+
+						edit_event_ui.event_conditions_container.empty();
+						edit_event_ui.add_preset_conditions(preset, repeats);
+
+					}
+
+				});
+			}else{
+
+				var preset = edit_event_ui.condition_presets.val();
+				var repeats = edit_event_ui.repeat_input.val()|0;
+
+				edit_event_ui.update_every_nth_presets();
+
+				edit_event_ui.event_conditions_container.empty();
+				edit_event_ui.add_preset_conditions(preset, repeats);
+
+			}
 
 		});
 
-		edit_event_ui.repeat_input.change(function(){
+		this.repeat_input.change(function(){
 			edit_event_ui.update_every_nth_presets();
-		});
-
-		$('#add_event_preset').click(function(){
-
-			var preset = edit_event_ui.condition_presets.val();
-			var repeats = edit_event_ui.repeat_input.val()|0;
-
-			edit_event_ui.repeat_input.val('1').parent().toggleClass('hidden', true);
-			edit_event_ui.condition_presets.children().eq(0).prop('selected', true);
-			edit_event_ui.preset_buttons.toggleClass('hidden', true);
-			edit_event_ui.non_preset_buttons.toggleClass('hidden', false);
-			edit_event_ui.update_every_nth_presets();
-
-			edit_event_ui.add_preset_conditions(preset, repeats);
-
+			edit_event_ui.condition_presets.change();
 		});
 
 		$(document).on('change', '.event-text-input', function(){
