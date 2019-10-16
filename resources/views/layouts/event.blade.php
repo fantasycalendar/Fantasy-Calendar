@@ -7,9 +7,6 @@
 					<i class="close_ui_btn icon-remove-circle"></i>
 
 					<h2 class='event_name event-form-heading'></h2>
-					<div class='detail-row italics-text'>
-						Description:
-					</div>
 					<div class='detail-row'>
 						<div class="event_desc"></div>
 					</div>

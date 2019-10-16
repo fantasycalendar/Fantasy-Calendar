@@ -488,8 +488,53 @@ var edit_event_ui = {
 			only_happen_once: $('#only_happen_once').prop('checked'),
 			conditions: conditions,
 			connected_events: this.connected_events,
-			date: this.date,
+			date: this.date
 		};
+
+	},
+
+	event_is_one_time: function(){
+
+		var date = []
+
+		var conditions = this.create_condition_array(edit_event_ui.event_conditions_container);
+
+		if(conditions.length == 5){
+
+			var year = false;
+			var month = false;
+			var day = false
+			var ands = 0
+
+			for(var i = 0; i < conditions.length; i++){
+				if(conditions[i].length == 3){
+					if(conditions[i][0] == "Year" && Number(conditions[i][1]) == 0){
+						year = true;
+						date[0] = Number(conditions[i][2][0])
+					}
+
+					if(conditions[i][0] == "Month" && Number(conditions[i][1]) == 0){
+						month = true;
+						date[1] = Number(conditions[i][2][0])
+					}
+
+					if(conditions[i][0] == "Day" && Number(conditions[i][1]) == 0){
+						day = true;
+						date[2] = Number(conditions[i][2][0])
+					}
+				}else if(conditions[i].length == 1){
+					if(conditions[i][0] == "&&"){
+						ands++;
+					}
+				}
+			}
+
+			if(!(year && month && day && ands == 2)){
+				date = [];
+			}
+		}
+
+		return date.length > 0;
 
 	},
 
@@ -1396,22 +1441,34 @@ var edit_event_ui = {
 
 	test_event: function(years){
 
-		if(years >= 50){
+		if(this.event_is_one_time()){
+
 			swal({
-				title: "Warning!",
-				text: "Simulating more than 50 years might take several minutes! Are you sure you want to continue?",
-				icon: "warning",
-				buttons: true,
-				dangerMode: true,
-			}).then((will_simulate) => {
-
-				if(will_simulate) {
-					this.run_test_event(years);
-				}
-
+				title: "Uh...",
+				text: "This event is an one time event (year, month, day), I'm pretty sure you know the answer to this test.",
+				icon: "warning"
 			});
+
 		}else{
-			this.run_test_event(years);
+
+			if(years >= 50){
+				swal({
+					title: "Warning!",
+					text: "Simulating more than 50 years might take several minutes! Are you sure you want to continue?",
+					icon: "warning",
+					buttons: true,
+					dangerMode: true,
+				}).then((will_simulate) => {
+
+					if(will_simulate) {
+						this.run_test_event(years);
+					}
+
+				});
+			}else{
+				this.run_test_event(years);
+			}
+			
 		}
 
 	},
