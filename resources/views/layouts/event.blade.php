@@ -118,6 +118,7 @@
 						<div class='list hidden detail-row'>
 							<ul class='detail-column half col1'></ul>
 							<ul class='detail-column half col2'></ul>
+							<div class='full page_number'></div>
 							<button type='button' class='btn btn-info half prev' disabled>Previous</button>
 							<button type='button' class='btn btn-info half next' disabled>Next</button>
 						</div>

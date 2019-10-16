@@ -32,6 +32,7 @@ var edit_event_ui = {
 
 		this.event_occurrences_container		= $('.event_occurrences');
 		this.event_occurrences_list_container	= $('.event_occurrences .list_container');
+		this.event_occurrences_page_number		= $('.event_occurrences .list_container .page_number');
 		this.event_occurrences_text				= $('.event_occurrences .list_container .text');
 		this.event_occurrences_list				= $('.event_occurrences .list_container .list');
 		this.event_occurrences_list_col1		= $('.event_occurrences .list_container .list .col1');
@@ -359,16 +360,19 @@ var edit_event_ui = {
 
 	save_current_event: function(){
 
-		var eventid = static_data.event_data.events[this.event_id].id;
+		if(static_data.event_data.events[this.event_id]){
+			var eventid = static_data.event_data.events[this.event_id].id;
+			static_data.event_data.events[this.event_id] = {};
+			static_data.event_data.events[this.event_id].id = eventid;
+		}else{
+			static_data.event_data.events[this.event_id] = {};
+		}
 
-		static_data.event_data.events[this.event_id] = {};
 
 		var name = escapeHtml(this.event_background.find('.event_name').val());
 		name = name !== '' ? name : "Unnamed Event";
 
 		static_data.event_data.events[this.event_id].name = name;
-
-		static_data.event_data.events[this.event_id].id = eventid;
 
 		static_data.event_data.events[this.event_id].description = escapeHtml(this.trumbowyg.trumbowyg('html'));
 
@@ -1518,7 +1522,11 @@ var edit_event_ui = {
 				var epoch = edit_event_ui.event_occurrences[i];
 				var epoch_data = edit_event_ui.processed_event_data[epoch];
 
-				var text = `<li class='event_occurance'>The ${ordinal_suffix_of(epoch_data.day)} of ${epoch_data.timespan_name}, ${epoch_data.year}</li>`
+				if(epoch_data.intercalary){
+					var text = `<li class='event_occurance'>${ordinal_suffix_of(epoch_data.day)} intercalary day of ${epoch_data.timespan_name}, ${epoch_data.era_year}</li>`
+				}else{
+					var text = `<li class='event_occurance'>${ordinal_suffix_of(epoch_data.day)} of ${epoch_data.timespan_name}, ${epoch_data.era_year}</li>`
+				}
 
 				if(i-((this.event_occurrences_page-1)*10) < 5){
 					html_col1.push(text);
@@ -1531,6 +1539,8 @@ var edit_event_ui = {
 			}
 
 		}
+
+		this.event_occurrences_page_number.text(`${this.event_occurrences_page} / ${Math.ceil(edit_event_ui.event_occurrences.length/10)}`)
 
 		this.event_occurrences_button_prev.prop('disabled', this.event_occurrences_page == 1);
 		this.event_occurrences_button_next.prop('disabled', i != length || i == edit_event_ui.event_occurrences.length);

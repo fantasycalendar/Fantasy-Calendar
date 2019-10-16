@@ -527,7 +527,7 @@ var calendar_builder = {
 							'moon_phase_num_year': [],
 
 							'cycle': current_cycle.array,
-							'intercalary': false,
+							'intercalary': current_timespan.type === "intercalary",
 
 							'season': climate_generator.get_season_data(epoch),
 
@@ -949,7 +949,7 @@ var calendar_builder = {
 							'moon_phase_num_year': [],
 
 							'cycle': current_cycle.array,
-							'intercalary': false,
+							'intercalary': current_timespan.type === "intercalary",
 
 							'season': climate_generator.get_season_data(epoch),
 
@@ -1194,7 +1194,7 @@ var calendar_builder = {
 						'moon_phase_num_year': [],
 
 						'cycle': current_cycle.array,
-						'intercalary': false,
+						'intercalary': current_timespan.type === "intercalary",
 
 						'season': climate_generator.get_season_data(epoch),
 
