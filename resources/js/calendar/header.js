@@ -154,7 +154,7 @@ var loading_screen_texts = [
 	`Removing donkeys from swamp`,
 	`Cleaning up the adventurers' mess... again`,
 	`Disbarring rules lawyers`,
-	`Preparing obscure historical anecdotes`
+	`Preparing obscure historical anecdotes`,
 	`Aligning moons`,
 	`Deterministically simulating galactic impracticalities`,
 	`Railroading adventure beats`,
