@@ -177,7 +177,7 @@ var loading_screen_texts = [
 	`Measuring voltage of current year`,
 	`Reclassifying Fantasy Calendar as a dating app`,
 	`Finding you some dates`,
-	`Sorting dates by color`,
+	`Sorting events by color`,
 	`Asking party members their birthdays`,
 	`Determining whether it's Thursday yet`,
 	`Telling days they're numbered`,
