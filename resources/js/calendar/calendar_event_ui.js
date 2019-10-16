@@ -1548,7 +1548,7 @@ var edit_HTML_ui = {
 
 	set_html: function(){
 
-		this.trumbowyg.trumbowyg('html', this.value);
+		this.trumbowyg.trumbowyg('html', unescapeHtml(this.value));
 
 		this.html_edit_background.removeClass('hidden');
 
@@ -1556,7 +1556,7 @@ var edit_HTML_ui = {
 
 	save_html: function(){
 
-		this.data[this.key] = this.trumbowyg.trumbowyg('html');
+		this.data[this.key] = escapeHtml(this.trumbowyg.trumbowyg('html'));
 
 		edit_HTML_ui.key = null;
 		edit_HTML_ui.data = null;
