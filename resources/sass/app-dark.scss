@@ -1,0 +1,22 @@
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Montserrat:regular,600');
+
+@import '~bootswatch/dist/darkly/variables';
+@import '~bootstrap/scss/bootstrap';
+@import '~bootswatch/dist/darkly/bootswatch';
+
+@import '~@fortawesome/fontawesome-free/scss/fontawesome';
+@import '~@fortawesome/fontawesome-free/scss/solid';
+
+$hamburger-layer-color      :#FFF;
+$hamburger-hover-opacity    :1;
+@import '~hamburgers/_sass/hamburgers/hamburgers';
+
+// Variables
+@import 'calendar/variables-dark';
+
+// Legacy calendar parts
+@import 'home';
+
+// Calendar parts
+@import 'calendar';
