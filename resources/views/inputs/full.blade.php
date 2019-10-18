@@ -471,7 +471,7 @@
                 </div>
 
                 <div class='detail-row'>
-                    <button type='button' class='btn btn-secondary full' id='create_season_events'>Create seasonsal events</button>
+                    <button type='button' class='btn btn-secondary full' id='create_season_events'>Create seasonal events</button>
                     <a target="_blank" title='Makes the calendar only show the current month' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
                 </div>
             </div>
