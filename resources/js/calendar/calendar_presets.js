@@ -46,7 +46,7 @@ function create_season_events(id, season_name){
 					["Season","0",[id]],["&&"],["Season","2",["50"]]
 				]
 			},
-			"category":"-1",
+			"event_category_id":"-1",
 			"settings":{
 				"color":"Green",
 				"text":"text",
