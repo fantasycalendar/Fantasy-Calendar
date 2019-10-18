@@ -796,7 +796,7 @@ function set_up_edit_inputs(set_up){
 
 				for(var eventId in static_data.event_data.events){
 					if(static_data.event_data.events[eventId].data.connected_events !== undefined){
-						if(static_data.event_data.events[eventId].data.connected_events.includes(index)){
+						if(static_data.event_data.events[eventId].data.connected_events.includes(String(index))){
 							warnings.push(eventId);
 						}
 					}
@@ -835,9 +835,11 @@ function set_up_edit_inputs(set_up){
 						}
 					}
 
-					delete static_data.event_data.events[index];
+					static_data.event_data.events.splice(index, 1);
 
-					reindex_events_sortable();
+					events_sortable.children().each(function(i){
+						$(this).attr('index', i);
+					});
 
 				}
 
