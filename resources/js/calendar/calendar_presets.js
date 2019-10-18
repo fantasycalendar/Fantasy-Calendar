@@ -17,13 +17,13 @@ function create_season_events(id, season_name){
 				'duration': 0,
 				'show_first_last': false,
 				'only_happen_once': false,
-				'connected_events': false,
+				'connected_events': [],
 				'date': [],
 				"conditions":[
 					["Season","0",[id]],["&&"],["Season","8",["1"]]
 				]
 			},
-			"category":"-1",
+			"event_category_id":"-1",
 			"settings":{
 				"color":"Green",
 				"text":"text",
@@ -40,7 +40,7 @@ function create_season_events(id, season_name){
 				'duration': 0,
 				'show_first_last': false,
 				'only_happen_once': false,
-				'connected_events': false,
+				'connected_events': [],
 				'date': [],
 				"conditions":[
 					["Season","0",[id]],["&&"],["Season","2",["50"]]
