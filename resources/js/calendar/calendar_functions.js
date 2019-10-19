@@ -432,12 +432,10 @@ function lcm(x, y){
  * @return {int}            The given level of granularity suggested for that cycle
  */
 function get_moon_granularity(cycle){
-	if(cycle >= 32){
-		return 32;
+	if(cycle >= 40){
+		return 40;
 	}else if(cycle >= 24){
 		return 24;
-	}else if(cycle >= 16){
-		return 16;
 	}else if(cycle >= 8){
 		return 8;
 	}else{

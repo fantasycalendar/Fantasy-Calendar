@@ -949,7 +949,7 @@ function set_up_edit_inputs(set_up){
 
 		var cycle = Math.max.apply(null, value.split(','))+1;
 
-		if(cycle > 32){
+		if(cycle > 40){
 
 			invalid = true;
 
@@ -1662,7 +1662,7 @@ function add_timespan_to_sortable(parent, key, data){
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' value='${data.name}' tabindex='${(100+key)}'class='name-input small-input form-control dynamic_input' data='year_data.timespans.${key}' fc-index='name'/>`);
 			element.push("</div>");
-			element.push(`<div class='length_input'><input type='number' min='1' class='length-input form-control dynamic_input timespan_length' data='year_data.timespans.${key}' fc-index='length' tabindex='${(100+key)}' value='${data.length}'/></div>`);
+			element.push(`<div class='length_input'><input type='number' step="1.0" min='1' class='length-input form-control dynamic_input timespan_length' data='year_data.timespans.${key}' fc-index='length' tabindex='${(100+key)}' value='${data.length}'/></div>`);
 			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
@@ -1692,14 +1692,14 @@ function add_timespan_to_sortable(parent, key, data){
 						element.push("<div class='detail-column half'>");
 							element.push("<div class='detail-row'>");
 									element.push("<div class='detail-text'>Interval:</div>");
-									element.push(`<input type='number' min='1' class='form-control timespan_occurance_input interval dynamic_input small-input' data='year_data.timespans.${key}' fc-index='interval' value='${data.interval}' />`);
+									element.push(`<input type='number' step="1.0" min='1' class='form-control timespan_occurance_input interval dynamic_input small-input' data='year_data.timespans.${key}' fc-index='interval' value='${data.interval}' />`);
 							element.push("</div>");
 						element.push("</div>");
 
 						element.push("<div class='detail-column half'>");
 							element.push("<div class='detail-row'>");
 								element.push("<div class='detail-text'>Offset:</div>");
-								element.push(`<input type='number' class='form-control timespan_occurance_input offset dynamic_input small-input' min='0' data='year_data.timespans.${key}' fc-index='offset' value='${data.offset}'`);
+								element.push(`<input type='number' step="1.0" class='form-control timespan_occurance_input offset dynamic_input small-input' min='0' data='year_data.timespans.${key}' fc-index='offset' value='${data.offset}'`);
 								element.push(data.interval === 1 ? " disabled" : "");
 								element.push("/>");
 							element.push("</div>");
@@ -1757,7 +1757,7 @@ function add_timespan_to_sortable(parent, key, data){
 						element.push("<div class='detail-column half'>");
 							element.push("<div class='detail-row'>");
 								element.push("<div class='detail-text'>Length:</div>");
-								element.push(`<input type='number' class='form-control week-length small-input' ${(!data.week ? "disabled" : "")} value='${(data.week ? data.week.length : 0)}'/>`);
+								element.push(`<input type='number' step="1.0" class='form-control week-length small-input' ${(!data.week ? "disabled" : "")} value='${(data.week ? data.week.length : 0)}'/>`);
 							element.push("</div>");
 						element.push("</div>");
 					element.push("</div>");
@@ -1939,7 +1939,7 @@ function add_leap_day_to_list(parent, key, data){
 						element.push("<div class='detail-column third'>");
 							element.push("<div class='detail-row'>");
 								element.push("<div class='detail-text'>Offset:</div>");
-								element.push(`<input type='number' class='form-control leap_day_occurance_input offset dynamic_input' min='0' data='year_data.leap_days.${key}' fc-index='offset' value='${data.offset}'`);
+								element.push(`<input type='number' step="1.0" class='form-control leap_day_occurance_input offset dynamic_input' min='0' data='year_data.leap_days.${key}' fc-index='offset' value='${data.offset}'`);
 								element.push(data.interval === "1" ? " disabled" : "");
 								element.push("/>");
 							element.push("</div>");
@@ -2072,7 +2072,7 @@ function add_observational_to_list(parent, key, data){
 										element.push("<div class='detail-text'>Year: </div>");
 									element.push("</div>");
 									element.push("<div class='detail-column'>");
-										element.push(`<input type='number' class='form-control small-input year-input dynamic_input full' data='year_data.observationals.${key}' fc-index='year' value='${data.year}'>`);
+										element.push(`<input type='number' step="1.0" class='form-control small-input year-input dynamic_input full' data='year_data.observationals.${key}' fc-index='year' value='${data.year}'>`);
 									element.push("</div>");
 								element.push("</div>");
 							element.push("</div>");
@@ -2150,13 +2150,13 @@ function add_moon_to_list(parent, key, data){
 					element.push("<div class='detail-column half'>");
 						element.push("<div class='detail-row'>");
 							element.push("<div class='detail-text'>Cycle:</div>");
-							element.push(`<input type='number' class='form-control dynamic_input cycle' data='moons.${key}' fc-index='cycle' value='${!data.custom_phase ? data.cycle : ''}' />`);
+							element.push(`<input type='number' step="any" class='form-control dynamic_input cycle' data='moons.${key}' fc-index='cycle' value='${!data.custom_phase ? data.cycle : ''}' />`);
 						element.push("</div>");
 					element.push("</div>");
 					element.push("<div class='detail-column half'>");
 						element.push("<div class='detail-row'>");
 							element.push("<div class='detail-text'>Shift:</div>");
-							element.push(`<input type='number' class='form-control dynamic_input shift' data='moons.${key}' fc-index='shift' value='${!data.custom_phase ? data.shift : ''}' />`);
+							element.push(`<input type='number' step="any" class='form-control dynamic_input shift' data='moons.${key}' fc-index='shift' value='${!data.custom_phase ? data.shift : ''}' />`);
 						element.push("</div>");
 					element.push("</div>");
 				element.push("</div>");
@@ -2254,11 +2254,11 @@ function add_season_to_sortable(parent, key, data){
 						element.push("</div>");
 						element.push("<div class='detail-row'>");
 							element.push("<div class='detail-column clock-input'>");
-								element.push(`<input type='number' class='form-control full dynamic_input' clocktype='sunrise_hour' data='seasons.data.${key}.time.sunrise' fc-index='hour' value='${data.time.sunrise.hour}' />`);
+								element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunrise_hour' data='seasons.data.${key}.time.sunrise' fc-index='hour' value='${data.time.sunrise.hour}' />`);
 							element.push("</div>");
 							element.push("<div class='detail-column'>:</div>");
 							element.push("<div class='detail-column float clock-input'>");
-								element.push(`<input type='number' class='form-control full dynamic_input' clocktype='sunrise_minute' data='seasons.data.${key}.time.sunrise' fc-index='minute' value='${data.time.sunrise.minute}' />`);
+								element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunrise_minute' data='seasons.data.${key}.time.sunrise' fc-index='minute' value='${data.time.sunrise.minute}' />`);
 							element.push("</div>");
 						element.push("</div>");
 					element.push("</div>");
@@ -2269,11 +2269,11 @@ function add_season_to_sortable(parent, key, data){
 						element.push("</div>");
 						element.push("<div class='detail-row'>");
 							element.push("<div class='detail-column clock-input'>");
-								element.push(`<input type='number' class='form-control full dynamic_input' clocktype='sunset_hour' data='seasons.data.${key}.time.sunset' fc-index='hour' value='${data.time.sunset.hour}' />`);
+								element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunset_hour' data='seasons.data.${key}.time.sunset' fc-index='hour' value='${data.time.sunset.hour}' />`);
 							element.push("</div>");
 							element.push("<div class='detail-column'>:</div>");
 							element.push("<div class='detail-column float clock-input'>");
-								element.push(`<input type='number' class='form-control full dynamic_input' clocktype='sunset_minute' data='seasons.data.${key}.time.sunset' fc-index='minute' value='${data.time.sunset.minute}' />`);
+								element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunset_minute' data='seasons.data.${key}.time.sunset' fc-index='minute' value='${data.time.sunset.minute}' />`);
 							element.push("</div>");
 						element.push("</div>");
 					element.push("</div>");
@@ -2345,10 +2345,10 @@ function add_location_to_list(parent, key, data){
 					element.push("</div>");
 					element.push("<div class='detail-row'>");
 						element.push("<div class='detail-column half'>");
-							element.push(`<input type='number' class='form-control full dynamic_input' data='seasons.locations.${key}.seasons.${i}.weather' fc-index='temp_low' value='${data.seasons[i].weather.temp_low}'>`);
+							element.push(`<input type='number' step="any" class='form-control full dynamic_input' data='seasons.locations.${key}.seasons.${i}.weather' fc-index='temp_low' value='${data.seasons[i].weather.temp_low}'>`);
 						element.push("</div>");
 						element.push("<div class='detail-column half'>");
-							element.push(`<input type='number' class='form-control full dynamic_input' data='seasons.locations.${key}.seasons.${i}.weather' fc-index='temp_high' value='${data.seasons[i].weather.temp_high}'>`);
+							element.push(`<input type='number' step="any" class='form-control full dynamic_input' data='seasons.locations.${key}.seasons.${i}.weather' fc-index='temp_high' value='${data.seasons[i].weather.temp_high}'>`);
 						element.push("</div>");
 					element.push("</div>");
 
@@ -2360,7 +2360,7 @@ function add_location_to_list(parent, key, data){
 							element.push("<div class='slider_percentage'></div>");
 						element.push("</div>");
 						element.push("<div class='detail-column quarter'>");
-							element.push(`<input type='number' class='form-control form-control-sm full dynamic_input slider_input' data='seasons.locations.${key}.seasons.${i}.weather' fc-index='precipitation' value='${data.seasons[i].weather.precipitation*100}'>`);
+							element.push(`<input type='number' step="any" class='form-control form-control-sm full dynamic_input slider_input' data='seasons.locations.${key}.seasons.${i}.weather' fc-index='precipitation' value='${data.seasons[i].weather.precipitation*100}'>`);
 						element.push("</div>");
 					element.push("</div>");
 
@@ -2372,7 +2372,7 @@ function add_location_to_list(parent, key, data){
 							element.push("<div class='slider_percentage'></div>");
 						element.push("</div>");
 						element.push("<div class='detail-column quarter'>");
-							element.push(`<input type='number' class='form-control form-control-sm full dynamic_input slider_input' data='seasons.locations.${key}.seasons.${i}.weather' fc-index='precipitation_intensity' value='${data.seasons[i].weather.precipitation_intensity*100}'>`);
+							element.push(`<input type='number' step="any" class='form-control form-control-sm full dynamic_input slider_input' data='seasons.locations.${key}.seasons.${i}.weather' fc-index='precipitation_intensity' value='${data.seasons[i].weather.precipitation_intensity*100}'>`);
 						element.push("</div>");
 					element.push("</div>");
 
@@ -2384,11 +2384,11 @@ function add_location_to_list(parent, key, data){
 								element.push("</div>");
 								element.push("<div class='detail-row'>");
 									element.push("<div class='detail-column clock-input'>");
-										element.push(`<input type='number' class='form-control full dynamic_input' clocktype='sunrise_hour' data='seasons.locations.${key}.seasons.${i}.time.sunrise' fc-index='hour' value='${data.seasons[i].time.sunrise.hour}' />`);
+										element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunrise_hour' data='seasons.locations.${key}.seasons.${i}.time.sunrise' fc-index='hour' value='${data.seasons[i].time.sunrise.hour}' />`);
 									element.push("</div>");
 									element.push("<div class='detail-column'>:</div>");
 									element.push("<div class='detail-column float clock-input'>");
-										element.push(`<input type='number' class='form-control full dynamic_input' clocktype='sunrise_minute' data='seasons.locations.${key}.seasons.${i}.time.sunrise' fc-index='minute' value='${data.seasons[i].time.sunrise.minute}' />`);
+										element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunrise_minute' data='seasons.locations.${key}.seasons.${i}.time.sunrise' fc-index='minute' value='${data.seasons[i].time.sunrise.minute}' />`);
 									element.push("</div>");
 								element.push("</div>");
 							element.push("</div>");
@@ -2399,11 +2399,11 @@ function add_location_to_list(parent, key, data){
 								element.push("</div>");
 								element.push("<div class='detail-row'>");
 									element.push("<div class='detail-column clock-input'>");
-										element.push(`<input type='number' class='form-control full dynamic_input' clocktype='sunset_hour' data='seasons.locations.${key}.seasons.${i}.time.sunset' fc-index='hour' value='${data.seasons[i].time.sunset.hour}' />`);
+										element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunset_hour' data='seasons.locations.${key}.seasons.${i}.time.sunset' fc-index='hour' value='${data.seasons[i].time.sunset.hour}' />`);
 									element.push("</div>");
 									element.push("<div class='detail-column'>:</div>");
 									element.push("<div class='detail-column float clock-input'>");
-										element.push(`<input type='number' class='form-control full dynamic_input' clocktype='sunset_minute' data='seasons.locations.${key}.seasons.${i}.time.sunset' fc-index='minute' value='${data.seasons[i].time.sunset.minute}' />`);
+										element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunset_minute' data='seasons.locations.${key}.seasons.${i}.time.sunset' fc-index='minute' value='${data.seasons[i].time.sunset.minute}' />`);
 									element.push("</div>");
 								element.push("</div>");
 							element.push("</div>");
@@ -2433,11 +2433,11 @@ function add_location_to_list(parent, key, data){
 							element.push("</div>");
 							element.push("<div class='detail-row'>");
 								element.push("<div class='detail-column clock-input'>");
-									element.push(`<input type='number' class='form-control form-control-sm full dynamic_input' data='seasons.locations.${key}.settings.timezone' clocktype='timezone_hour' fc-index='hour' value='${data.settings.timezone.hour}' />`);
+									element.push(`<input type='number' step="1.0" class='form-control form-control-sm full dynamic_input' data='seasons.locations.${key}.settings.timezone' clocktype='timezone_hour' fc-index='hour' value='${data.settings.timezone.hour}' />`);
 								element.push("</div>");
 								element.push("<div class='detail-column'>:</div>");
 								element.push("<div class='detail-column float clock-input'>");
-									element.push(`<input type='number' class='form-control form-control-sm full dynamic_input' data='seasons.locations.${key}.settings.timezone' clocktype='timezone_minute' fc-index='minute' value='${data.settings.timezone.minute}' />`);
+									element.push(`<input type='number' step="1.0" class='form-control form-control-sm full dynamic_input' data='seasons.locations.${key}.settings.timezone' clocktype='timezone_minute' fc-index='minute' value='${data.settings.timezone.minute}' />`);
 								element.push("</div>");
 							element.push("</div>");
 						element.push("</div>");
@@ -2539,14 +2539,14 @@ function add_cycle_to_sortable(parent, key, data){
 						element.push("<div class='detail-column half'>");
 							element.push("<div class='detail-row'>");
 									element.push("<div class='detail-text'>Length:</div>");
-									element.push(`<input type='number' class='form-control length dynamic_input' min='1' data='cycles.${key}' fc-index='length' value='${data.length}' />`);
+									element.push(`<input type='number' step="1.0" class='form-control length dynamic_input' min='1' data='cycles.${key}' fc-index='length' value='${data.length}' />`);
 							element.push("</div>");
 						element.push("</div>");
 
 						element.push("<div class='detail-column half'>");
 							element.push("<div class='detail-row'>");
 								element.push("<div class='detail-text'>Offset:</div>");
-								element.push(`<input type='number' class='form-control offset dynamic_input' min='0' data='cycles.${key}' fc-index='offset' value='${data.offset}'/>`);
+								element.push(`<input type='number' step="1.0" class='form-control offset dynamic_input' min='0' data='cycles.${key}' fc-index='offset' value='${data.offset}'/>`);
 							element.push("</div>");
 						element.push("</div>");
 					element.push("</div>");
@@ -2555,7 +2555,7 @@ function add_cycle_to_sortable(parent, key, data){
 						element.push("<div class='detail-column full'>");
 							element.push("<div class='detail-row'>");
 								element.push("<div class='detail-text'>Number of names:</div>");
-								element.push(`<input type='number' class='form-control cycle-name-length' value='${data.names.length}' fc-index='${key}'/>`);
+								element.push(`<input type='number' step="1.0" class='form-control cycle-name-length' value='${data.names.length}' fc-index='${key}'/>`);
 							element.push("</div>");
 						element.push("</div>");
 					element.push("</div>");
@@ -2667,7 +2667,7 @@ function add_era_to_list(parent, key, data){
 								element.push("<div class='detail-text'>Year:</div>");
 							element.push("</div>");
 							element.push("<div class='detail-column threequarter'>");
-								element.push(`<input type='number' class='date form-control small-input dynamic_input year-input' refresh data='eras.${key}.date' fc-index='year' value='${data.date.year}'/>`);
+								element.push(`<input type='number' step="1.0" class='date form-control small-input dynamic_input year-input' refresh data='eras.${key}.date' fc-index='year' value='${data.date.year}'/>`);
 							element.push("</div>");
 						element.push("</div>");
 
