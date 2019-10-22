@@ -66,6 +66,8 @@
         window.onerror = function(error, url, line) {
             $.notify("Error:\n "+error+" \nin file "+url+" \non line "+line);
         }
+
+        window.Perms = new Perms("{{ $_GET['authlevel'] ?? 'superadmin' }}");
     });
 
     </script>

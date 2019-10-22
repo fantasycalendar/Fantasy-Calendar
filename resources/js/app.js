@@ -5,3 +5,5 @@
  */
 
 require('./bootstrap');
+
+window.Perms = require('./perms');
