@@ -427,6 +427,12 @@ var edit_event_ui = {
 
 		$('#event_dontprint_checkbox').prop('checked',false);
 
+		$('#has_duration').prop('checked', false);
+
+		$('#duration').val('');
+		
+		edit_event_ui.event_background.find('.duration_settings').toggleClass('hidden', true);
+
 		this.event_background.addClass('hidden');
 
 
