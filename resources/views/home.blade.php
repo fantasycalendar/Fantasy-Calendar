@@ -16,6 +16,56 @@
             margin-top: 40px;
         }
     </style>
+    <script>
+        $(document).ready(function() {
+            $('.delete_button').click(function() {
+                let calendar_hash = $(this).attr('data-hash');
+                let calendar_name = $(this).attr('data-name');
+
+                swal({
+                    text: "If you're sure about deleting this calendar, please type '" + calendar_name + "' below:",
+                    content: "input",
+                    dangerMode: true,
+                    buttons: [
+                        true,
+                        {
+                            text: "Delete",
+                            closeModal: false,
+                        }
+                    ]
+                })
+                .then(name => {
+                    if (name !== calendar_name) throw "Sorry! " + name + " isn't the same as " + calendar_name;
+
+                    return axios.delete('/api/calendar/' + calendar_hash);
+                })
+                .then(results => {
+                    if(results.data.error) {
+                        throw "Error: " + results.data.message;
+                    }
+
+                    swal({
+                        icon: "success",
+                        title: "Deleted!",
+                        text: "The calendar " + calendar_name + " has been deleted.",
+                        button: true
+                    })
+                    .then(success => {
+                        location.reload();
+                    })
+                })
+                .catch(err => {
+                    if(err) {
+                        console.log(err);
+                        swal("Oh no!", err, "error");
+                    } else {
+                        swal.stopLoading();
+                        swal.close();
+                    }
+                });
+            });
+        });
+    </script>
 @endpush
 
 @section('content')
@@ -62,6 +112,9 @@
                                     </a>
                                     <a class="calendar_action" href="{{ route('calendars.export', ['calendar' => $calendar->hash]) }}" >
                                         <i class="fa fa-file-export"></i>
+                                    </a>
+                                    <a class="calendar_action delete_button" href="javascript:" data-hash="{{ $calendar->hash }}" data-name="{{ $calendar->name }}">
+                                        <i class="fa fa-calendar-times"></i>
                                     </a>
                                 </div>
                             </div>
