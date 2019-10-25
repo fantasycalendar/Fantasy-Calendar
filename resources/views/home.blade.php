@@ -22,47 +22,7 @@
                 let calendar_hash = $(this).attr('data-hash');
                 let calendar_name = $(this).attr('data-name');
 
-                swal({
-                    text: "If you're sure about deleting this calendar, please type '" + calendar_name + "' below:",
-                    content: "input",
-                    dangerMode: true,
-                    buttons: [
-                        true,
-                        {
-                            text: "Delete",
-                            closeModal: false,
-                        }
-                    ]
-                })
-                .then(name => {
-                    if (name !== calendar_name) throw "Sorry! " + name + " isn't the same as " + calendar_name;
-
-                    return axios.delete('/api/calendar/' + calendar_hash);
-                })
-                .then(results => {
-                    if(results.data.error) {
-                        throw "Error: " + results.data.message;
-                    }
-
-                    swal({
-                        icon: "success",
-                        title: "Deleted!",
-                        text: "The calendar " + calendar_name + " has been deleted.",
-                        button: true
-                    })
-                    .then(success => {
-                        location.reload();
-                    })
-                })
-                .catch(err => {
-                    if(err) {
-                        console.log(err);
-                        swal("Oh no!", err, "error");
-                    } else {
-                        swal.stopLoading();
-                        swal.close();
-                    }
-                });
+                delete_calendar(calendar_hash, calendar_name, function() {location.reload();});
             });
         });
     </script>

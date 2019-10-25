@@ -37,11 +37,8 @@ function set_up_edit_inputs(set_up){
 	delete_button = $('#btn_delete');
 
 	delete_button.click(function(){
-		var input = prompt('To delete this calendar, please type DELETE into the field:');
-		if(input === "DELETE"){
-			delete_calendar();
-		}
-	})
+        delete_calendar(hash, calendar_name, function(){self.location = '/'});
+	});
 
 	calendar_container = $('#calendar');
 	weather_contrainer = $('#weather_container');
