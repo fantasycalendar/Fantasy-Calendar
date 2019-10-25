@@ -383,6 +383,8 @@ var edit_event_ui = {
 
 		if(edit_event_ui.new_event){
 			add_event_to_sortable(events_sortable, this.event_id, static_data.event_data.events[this.event_id]);
+		}else{
+			$(`.events_input[index="${this.event_id}"]`).find(".event_name").text(`Edit - ${name}`);
 		}
 
 		edit_event_ui.clear_ui();
