@@ -1010,6 +1010,7 @@ ol.example li.placeholder:before {
 }
 
 .condition{
+
     margin-bottom:5px;
 }
 
@@ -1029,6 +1030,11 @@ ol.example li.placeholder:before {
     margin-bottom:5px;
     min-height: 34px;
     background-color:white;
+
+    .select2{
+        order:3;
+        min-width:60%;
+    }
 }
 
 .placeholder{
@@ -1055,11 +1061,6 @@ ol.example li.placeholder:before {
 #event_conditions_container .handle{
     padding:6px;
     order:1;
-}
-
-.condition_container .condition_type{
-    order:3;
-    max-width:75%;
 }
 
 .condition_container .moon_select{

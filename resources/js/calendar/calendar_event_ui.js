@@ -1253,6 +1253,9 @@ var edit_event_ui = {
 
 		var condition = $(html.join(''));
 		parent.append(condition);
+
+		condition.find('.condition_type').select2();
+
 		return condition;
 
 	},
