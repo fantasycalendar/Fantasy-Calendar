@@ -299,6 +299,8 @@ var edit_event_ui = {
 
 		this.event_background.find('.duration_settings').toggleClass('hidden', !event.data.has_duration);
 
+		$('#has_duration').prop('checked', event.data.has_duration);
+
 		$('#duration').val(event.data.duration);
 
 		$('#show_first_last').prop('checked', event.data.show_first_last);
