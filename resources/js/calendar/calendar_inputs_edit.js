@@ -8,6 +8,25 @@ function set_up_edit_inputs(set_up){
 	static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
 	dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
 
+	window.addEventListener("beforeunload", function(e){
+
+		calendar_name_same = calendar_name == prev_calendar_name;
+		static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
+		dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
+
+		var not_changed = static_same && dynamic_same && calendar_name_same;
+
+		if(!not_changed){
+
+			var confirmationMessage = "It looks like you have unsaved changes, are you sure you want to navigate away from this page?";
+
+			(e || window.event).returnValue = confirmationMessage; //Gecko + IE
+	        return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+
+		}
+
+	});
+
 	set_up_view_inputs();
 
 	save_button = $('#btn_save');
