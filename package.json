@@ -29,6 +29,7 @@
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.10.2",
+        "fuzzysort": "^1.1.4",
         "hamburgers": "^1.1.3",
         "select2": "^4.0.11",
         "sweetalert": "^2.1.2"

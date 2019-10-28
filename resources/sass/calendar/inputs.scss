@@ -1034,6 +1034,21 @@ ol.example li.placeholder:before {
     .select2{
         order:3;
         min-width:60%;
+
+        .select2-selection{
+
+            height: calc(1.5em + 0.5rem - 2px);
+
+            border-radius: 0.2rem;
+
+            border: 1px solid #ced4da;
+
+            span{
+                font-size: 0.875rem;
+                line-height: 2.25;
+                height:100%;
+            }
+        }
     }
 }
 

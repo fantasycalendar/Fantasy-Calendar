@@ -800,7 +800,11 @@ var edit_event_ui = {
 
 				condition = edit_event_ui.add_condition(parent, element[0]);
 
-				condition.find('.condition_type').find(`optgroup[label='${element[0]}']`).find(`option[value='${element[1]}']`).prop('selected', true);
+				condition.find('.condition_type').select2({
+					matcher: matcher
+				});
+
+				condition.find('.condition_type').find(`optgroup[label='${element[0]}']`).find(`option[value='${element[1]}']`).prop('selected', true).trigger('change');
 
 				if(element[0] === "Moons"){
 					condition.find('.moon_select').val(element[2][0])
@@ -1253,8 +1257,6 @@ var edit_event_ui = {
 
 		var condition = $(html.join(''));
 		parent.append(condition);
-
-		condition.find('.condition_type').select2();
 
 		return condition;
 

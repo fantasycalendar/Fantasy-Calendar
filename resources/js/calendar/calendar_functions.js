@@ -27,6 +27,60 @@ var execution_time = {
 	}
 }
 
+function matcher(params, data){
+
+    // If there are no search terms, return all of the data
+    if ($.trim(params.term) === '') {
+		return data;	
+    }
+
+    var terms = params.term.toUpperCase().split(" ")
+
+    var children = [];
+
+    for(var child_index in data.children){
+
+    	var child = data.children[child_index];
+
+    	var include = true;
+
+    	term_loop:
+    	for(var term_id in terms){
+
+    		var term = terms[term_id];
+
+    		var text = child.text.toUpperCase();
+
+    		if(text.indexOf(term) == -1 && data.text.indexOf(term) == -1){
+    			include = false;
+    			break term_loop;
+    		}
+
+    	}
+
+    	if(include){
+
+    		children.push(child)
+
+    	}
+
+    }
+
+    
+    if(children.length > 0){
+
+		var modifiedData = $.extend({}, data, true);
+
+		modifiedData.children = children;
+
+		return modifiedData;
+
+    }
+
+    // Return `null` if the term should not be displayed
+    return null;
+}
+
 
 /**
  * This function crawls through a string to find a reference
