@@ -1336,7 +1336,7 @@ function set_up_edit_inputs(set_up){
 
 						if(values[i].indexOf('+') != -1){
 
-							text += ` (year ${sorted[i]}, ${sorted[i]*2}, ${sorted[i]*3}...)`;
+							text += ` (year ${sorted[i]}, ${sorted[i]*2*timespan_interval}, ${sorted[i]*3*timespan_interval}...)`;
 
 						}else{
 
@@ -1355,7 +1355,7 @@ function set_up_edit_inputs(set_up){
 
 						if(values[i].indexOf('+') != -1){
 
-							text += ` (year ${sorted[i]}, ${sorted[i]*2}, ${sorted[i]*3}...)`;
+							text += ` (year ${sorted[i]}, ${sorted[i]*2*timespan_interval}, ${sorted[i]*3*timespan_interval}...)`;
 
 						}else{
 
