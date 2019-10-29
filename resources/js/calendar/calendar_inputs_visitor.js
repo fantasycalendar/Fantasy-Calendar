@@ -482,11 +482,8 @@ function repopulate_day_select(select, val, change){
 		var exclude_self = $(this).hasClass('exclude_self');
 
 		if(exclude_self){
-			if($(this).closest('.sortable-container').hasClass('observational')){
-				self_object = get_calendar_data($(this).attr('data'));
-			}else if($(this).closest('.sortable-container').hasClass('leap-day')){
-				self_object = get_calendar_data($(this).attr('data'));
-			}
+
+			self_object = get_calendar_data($(this).attr('data'));
 
 			if(self_object){
 				var days = get_days_in_timespan(static_data, year, timespan, self_object);

@@ -400,30 +400,6 @@
         </div>
 
 
-
-        <!---------------------------------------------->
-        <!---------- Observational Adjustments --------->
-        <!---------------------------------------------->
-
-        <div class='wrap-collapsible card'>
-            <input id="collapsible_observationaladjustments" class="toggle" type="checkbox">
-            <label for="collapsible_observationaladjustments" class="lbl-toggle card-header lbl-text">Observational Adjustments <a target="_blank" title='Fantasy Calendar Wiki: Observational Adjustments' href='https://wiki.fantasy-calendar.com/index.php?title=Observational_Adjustments' class="wiki"><i class="icon-question-sign"></i></a></label>
-            <div class="collapsible-content card-body">
-
-                <div class='form-inline observational'>
-
-                    <input type='text' class='form-control name' placeholder='Observational name'>
-
-                    <button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
-
-                </div>
-
-                <div class='sortable' id='observational_list'></div>
-
-            </div>
-        </div>
-
-
         <!---------------------------------------------->
         <!------------------- MOONS -------------------->
         <!---------------------------------------------->
