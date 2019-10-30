@@ -418,6 +418,8 @@ var calendar_builder = {
 
 		last_year = undefined;
 
+		climate_generator.set_up(this.calendar_name, this.static_data, this.dynamic_data, epoch);
+
 		for(var year_i = 0; year_i < order.length; year_i++){
 
 			year_index = parseInt(order[year_i]);
