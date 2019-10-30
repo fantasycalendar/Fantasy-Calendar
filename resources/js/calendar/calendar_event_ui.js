@@ -392,6 +392,8 @@ var edit_event_ui = {
 
 		if(edit_event_ui.new_event){
 			add_event_to_sortable(events_sortable, this.event_id, static_data.event_data.events[this.event_id]);
+		}else{
+			$(`.events_input[index="${this.event_id}"]`).find(".event_name").text(`Edit - ${name}`);
 		}
 
 		edit_event_ui.clear_ui();
@@ -497,28 +499,6 @@ var edit_event_ui = {
 			connected_events: this.connected_events,
 			date: this.date
 		};
-
-		static_data.event_data.events[this.event_id].event_category_id = get_category($('#event_categories').val()).id;
-
-		static_data.event_data.events[this.event_id].settings = {
-			color: $('#color_style').val(),
-			text: $('#text_style').val(),
-			hide: $('#event_hide_players').prop('checked'),
-			hide_full: $('#event_hide_full').prop('checked'),
-			noprint: $('#event_dontprint_checkbox').prop('checked')
-		}
-
-		if(edit_event_ui.new_event){
-			add_event_to_sortable(events_sortable, this.event_id, static_data.event_data.events[this.event_id]);
-		}else{
-			$(`.events_input[index="${this.event_id}"]`).find(".event_name").text(`Edit - ${name}`);
-		}
-
-		edit_event_ui.clear_ui();
-
-		error_check();
-
-		rebuild_events();
     
 	},
 
