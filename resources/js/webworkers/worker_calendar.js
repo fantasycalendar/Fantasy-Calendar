@@ -418,6 +418,8 @@ var calendar_builder = {
 
 		last_year = undefined;
 
+		climate_generator.set_up(this.calendar_name, this.static_data, this.dynamic_data, epoch);
+
 		for(var year_i = 0; year_i < order.length; year_i++){
 
 			year_index = parseInt(order[year_i]);
@@ -527,7 +529,7 @@ var calendar_builder = {
 							'moon_phase_num_year': [],
 
 							'cycle': current_cycle.array,
-							'intercalary': false,
+							'intercalary': current_timespan.type === "intercalary",
 
 							'season': climate_generator.get_season_data(epoch),
 
@@ -949,7 +951,7 @@ var calendar_builder = {
 							'moon_phase_num_year': [],
 
 							'cycle': current_cycle.array,
-							'intercalary': false,
+							'intercalary': current_timespan.type === "intercalary",
 
 							'season': climate_generator.get_season_data(epoch),
 
@@ -1194,7 +1196,7 @@ var calendar_builder = {
 						'moon_phase_num_year': [],
 
 						'cycle': current_cycle.array,
-						'intercalary': false,
+						'intercalary': current_timespan.type === "intercalary",
 
 						'season': climate_generator.get_season_data(epoch),
 

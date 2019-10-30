@@ -7,9 +7,6 @@
 					<i class="close_ui_btn icon-remove-circle"></i>
 
 					<h2 class='event_name event-form-heading'></h2>
-					<div class='detail-row italics-text'>
-						Description:
-					</div>
 					<div class='detail-row'>
 						<div class="event_desc"></div>
 					</div>
@@ -81,7 +78,7 @@
 					<input type='number' class='form-control' id='repeat_input' name='repeat_input' value='1' min='1' placeholder='Every nth' />
 				</div>
 
-				<div class='detail-row'>
+				<div>
 					<h5 class='event-form-heading'>Conditions:</h5>
 					<div class='detail-row' id='non_preset_buttons'>
 						<button type='button' id='add_event_condition' class='btn btn-primary half'>Add condition</button>
@@ -98,7 +95,30 @@
 
 					</div>
 					<div class='detail-row'>
-						<button type='button' id='remove_dropped' class='btn btn-danger full hidden space_below'>DROP TO REMOVE</button>
+						<button type='button' id='remove_dropped' class='btn btn-danger full hidden'>DROP TO REMOVE</button>
+					</div>
+				</div>
+
+				<div class='event_occurrences hidden'>
+					<div class='detail-row'>
+						<h5 class='event-form-heading full'>Test event occurrences for the next:</h5>
+						<div class='detail-row'>
+							<button type='button' class='btn btn-info quarter test_event_btn' years="1">1 year</button>
+							<button type='button' class='btn btn-info quarter test_event_btn' years="10">10 years</button>
+							<button type='button' class='btn btn-info quarter test_event_btn' years="50">50 years</button>
+							<button type='button' class='btn btn-info quarter test_event_btn' years="100">100 years</button>
+						</div>
+					</div>
+
+					<div class='detail-row list_container hidden'>
+						<div class='text'></div>
+						<div class='list hidden detail-row'>
+							<ul class='detail-column half col1'></ul>
+							<ul class='detail-column half col2'></ul>
+							<div class='full page_number'></div>
+							<button type='button' class='btn btn-info half prev' disabled>Previous</button>
+							<button type='button' class='btn btn-info half next' disabled>Next</button>
+						</div>
 					</div>
 				</div>
 
