@@ -63,14 +63,6 @@ require('select2');
 
 
 /**
- * Fast SublimeText-like fuzzy search for JavaScript. Sublime's fuzzy search is... sublime.
- * I wish everything used it. So here's an open source js version.
- */
-
-window.fuzzysort = require('fuzzysort')
-
-
-/**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting
  * allows your team to easily build robust real-time web applications.
