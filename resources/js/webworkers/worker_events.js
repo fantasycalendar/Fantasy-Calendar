@@ -362,9 +362,14 @@ var event_evaluator = {
 					if(event_evaluator.callback){
 
 						postMessage({
-							count: [epoch_index+1, num_epochs],
+							count: [
+								event_evaluator.number_of_epochs,
+								num_epochs*event_evaluator.number_of_events
+							],
 							callback: true
 						})
+
+						event_evaluator.number_of_epochs++;
 
 					}
 
@@ -459,7 +464,38 @@ var event_evaluator = {
 
 		}
 
+		function get_number_of_events(id){
+
+			var current_event = event_evaluator.events[id];
+
+			if(current_event.data.connected_events !== undefined && current_event.data.connected_events !== "false"){
+
+				for(var connectedId in current_event.data.connected_events){
+
+					var parent_id = current_event.data.connected_events[connectedId];
+						
+					get_number_of_events(parent_id);
+
+					event_evaluator.number_of_events++;
+
+				}
+
+			}
+
+		}
+
 		if(event_id !== undefined){
+
+			if(event_evaluator.callback !== undefined){
+
+				event_evaluator.number_of_events = 1;
+				event_evaluator.number_of_epochs = 1;
+
+				get_number_of_events(event_id);
+
+				console.log(event_evaluator.number_of_events)
+
+			}
 
 			if(this.events[event_id].data.connected_events !== undefined && this.events[event_id].data.connected_events.length > 0){
 				check_event_chain(event_id);
