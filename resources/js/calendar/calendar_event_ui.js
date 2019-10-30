@@ -1459,23 +1459,19 @@ var edit_event_ui = {
 
 		}else{
 
-			if(years >= 50){
-				swal({
-					title: "Warning!",
-					text: "Simulating more than 50 years might take several minutes! Are you sure you want to continue?",
-					icon: "warning",
-					buttons: true,
-					dangerMode: true,
-				}).then((will_simulate) => {
+			swal({
+				title: "Warning!",
+				text: "Simulating events may take a loooong time, depending on many factors! If your event is based on other events, we need to simulate those too!",
+				icon: "warning",
+				buttons: true,
+				dangerMode: true,
+			}).then((will_simulate) => {
 
-					if(will_simulate) {
-						this.run_test_event(years);
-					}
+				if(will_simulate) {
+					this.run_test_event(years);
+				}
 
-				});
-			}else{
-				this.run_test_event(years);
-			}
+			});
 			
 		}
 

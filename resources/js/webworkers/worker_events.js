@@ -37,17 +37,11 @@ var event_evaluator = {
 			ends: {},
 		}
 
-		if(event_id !== undefined){
-
-			this.event_data.valid[event_id] = [];
-			this.event_data.starts[event_id] = [];
-			this.event_data.ends[event_id] = [];
-
-		}
-
 		this.events_only_happen_once = [];
 
 		this.start_epoch = Number(Object.keys(this.epoch_data)[0]);
+
+		this.event_id = event_id;
 
 		//execution_time.start();
 
@@ -467,19 +461,25 @@ var event_evaluator = {
 
 		if(event_id !== undefined){
 
-			evaluate_event(event_id)
+			if(this.events[event_id].data.connected_events !== undefined && this.events[event_id].data.connected_events.length > 0){
+				check_event_chain(event_id);
+			}
+
+			if(this.events[event_id].data.connected_events === undefined || this.events[event_id].data.connected_events.length == 0){
+				evaluate_event(event_id);
+			}
 
 		}else{
 
 			for(var event_index in this.events){
-				if(this.events[event_index].data.connected_events === undefined || this.events[event_index].data.connected_events.length == 0){
-					evaluate_event(event_index);
+				if(this.events[event_index].data.connected_events !== undefined && this.events[event_index].data.connected_events.length > 0){
+					check_event_chain(event_index);
 				}
 			}
 
 			for(var event_index in this.events){
-				if(this.events[event_index].data.connected_events !== undefined && this.events[event_index].data.connected_events.length > 0){
-					check_event_chain(event_index);
+				if(this.events[event_index].data.connected_events === undefined || this.events[event_index].data.connected_events.length == 0){
+					evaluate_event(event_index);
 				}
 			}
 
