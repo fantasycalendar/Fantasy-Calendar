@@ -8,7 +8,7 @@ function set_up_edit_inputs(set_up){
 	static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
 	dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
 
-	window.addEventListener("beforeunload", function(e){
+	window.onbeforeunload = function(e){
 
 		calendar_name_same = calendar_name == prev_calendar_name;
 		static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
@@ -25,7 +25,7 @@ function set_up_edit_inputs(set_up){
 
 		}
 
-	});
+	};
 
 	set_up_view_inputs();
 
@@ -48,6 +48,9 @@ function set_up_edit_inputs(set_up){
 	create_button = $('#btn_create');
 
 	create_button.click(function(){
+
+		// Unhook before unload
+		window.onbeforeunload = function () {}
 
 		create_calendar();
 
