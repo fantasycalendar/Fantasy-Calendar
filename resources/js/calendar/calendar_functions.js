@@ -849,7 +849,7 @@ function avg_month_length(static_data){
 
 		var leap_day = static_data.year_data.leap_days[i];
 
-		length += get_interval_fractions(1, leap_day.interval, leap_day.offsets)
+		length += get_interval_fractions(1, leap_day.interval, leap_day.offset)
 
 	}
 
@@ -1163,9 +1163,10 @@ function is_leap(year, intervals, offsets){
  * @param  {int}    _year       The number of a year passed through the convert_year function.
  * @param  {string} _intervals  A formatted string of ints, in this format: 400,!100,4 - Large to small, comma separating the intervals, + in front of the int indicating an interval not using the offset (defaulting to 0), ! in front of the int indicating an exclusive interval (subtracting). Could include a single number.
  * @param  {int}    _offset     An int used to offset the contextual starting point of the intervals. Interval of 10 and offset of 5 means this interval starts at 5, continuing to 15, 25, 35.
+ * @param  {bool}   floor		Whether the fraction should be floored during addition and subtraction of the total, meaning the final result is expected to be an accurate representation of how many occurrences there has been
  * @return {float}              A float indicating how many times these intervals add up to
  */
-function get_interval_fractions(_year, _intervals, _offset){
+function get_interval_fractions(_year, _intervals, _offset, floor){
 
 	var intervals = _intervals.split(",");
 
@@ -1183,7 +1184,9 @@ function get_interval_fractions(_year, _intervals, _offset){
 
 		var interval = Number(interval.replace("+",""))
 
-		fraction += ((_year+offset) / interval);
+		var data = ((_year+offset) / interval);
+
+		fraction += floor ? Math.floor(data) : data;
 
 	}
 
@@ -1191,30 +1194,29 @@ function get_interval_fractions(_year, _intervals, _offset){
 
 		var interval_1 = intervals[outer_index]
 		var offset_1 = interval_1.indexOf("+") > -1 ? 0 : _offset;
-		var m1 = interval_1.indexOf("!") > -1;
+		var m1 = interval_1.indexOf("!") == -1;
 		var interval_1 = Number(interval_1.replace("+","").replace("!",""))
 
 		for(var inner_index = outer_index+1; inner_index < intervals.length; inner_index++){
 
 			var interval_2 = intervals[inner_index]
 			var offset_2 = interval_2.indexOf("+") > -1 ? 0 : _offset;
-			var m2 = interval_2.indexOf("!") > -1;
+			var m2 = interval_2.indexOf("!") == -1;
 			var interval_2 = Number(interval_2.replace("+","").replace("!",""))
 
 			var data = lcmo(interval_1, interval_2, offset_1, offset_2);
 
 			if(data){
 
-				if(!m1 && m2){
-					fraction += ((_year+data.offset) / data.interval);
+				data = ((_year+data.offset) / data.interval)
+
+				if(m1 && !m2){
+					fraction += floor ? Math.floor(data) : data;
 				}else{
-					fraction -= ((_year+data.offset) / data.interval);
+					fraction -= floor ? Math.floor(data) : data;
 				}
-
 			}
-
 		}
-
 	}
 
 	return fraction;
@@ -1299,7 +1301,7 @@ function get_epoch(static_data, year, month, day){
 
 			if(timespan_index === leap_day.timespan){
 
-				added_leap_day = Math.floor(get_interval_fractions(timespan_fraction, leap_day.interval, leap_day.offset));
+				added_leap_day = Math.floor(get_interval_fractions(timespan_fraction, leap_day.interval, leap_day.offset, true));
 
 				// If we have leap days days that are intercalary (eg, do not affect the flow of the static_data, add them to the overall epoch, but remove them from the start of the year week day selection)
 				if(leap_day.intercalary || timespan.type === "intercalary"){
