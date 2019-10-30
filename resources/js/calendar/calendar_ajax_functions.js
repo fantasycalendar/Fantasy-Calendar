@@ -256,7 +256,7 @@ function get_dynamic_data(output){
 		dataType: 'json',
 		data: {},
 		success: function(result){
-			
+
 			output(result);
 
 		},
@@ -346,20 +346,50 @@ function check_last_change(output){
 	});
 }
 
-function delete_calendar(){
+function delete_calendar(calendar_hash, calendar_name, callback){
 
-	$.ajax({
-		url:window.apiurl+"/"+hash,
-		type: "delete",
-		dataType: 'json',
-		success: function ( result ){
-			window.location.href = '/calendars';
-		},
-		error: function ( log )
-		{
-			console.log(log);
-		}
-	});
+    swal({
+        text: "If you're sure about deleting this calendar, please type '" + calendar_name + "' below:",
+        content: "input",
+        dangerMode: true,
+        buttons: [
+            true,
+            {
+                text: "Delete",
+                closeModal: false,
+            }
+        ]
+    })
+        .then(name => {
+            if (!name) throw null;
+            if (name !== calendar_name) throw "Sorry! " + name + " isn't the same as " + calendar_name;
+
+            return axios.delete('/api/calendar/' + calendar_hash);
+        })
+        .then(results => {
+            if(results.data.error) {
+                throw "Error: " + results.data.message;
+            }
+
+            swal({
+                icon: "success",
+                title: "Deleted!",
+                text: "The calendar " + calendar_name + " has been deleted.",
+                button: true
+            })
+                .then(success => {
+                    callback();
+                })
+        })
+        .catch(err => {
+            if(err) {
+                console.log(err);
+                swal("Oh no!", err, "error");
+            } else {
+                swal.stopLoading();
+                swal.close();
+            }
+        });
 
 }
 

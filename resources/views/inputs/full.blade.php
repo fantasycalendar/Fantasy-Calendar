@@ -471,7 +471,7 @@
                 </div>
 
                 <div class='detail-row'>
-                    <button type='button' class='btn btn-secondary full' id='create_season_events'>Create seasonsal events</button>
+                    <button type='button' class='btn btn-secondary full' id='create_season_events'>Create seasonal events</button>
                     <a target="_blank" title='Makes the calendar only show the current month' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
                 </div>
             </div>
@@ -808,7 +808,7 @@
                     <div class='bold-text'>Display Settings:</div>
 
                     <label class="form-control full setting first">
-                        <input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='add_month_number' onclick="setTimeout(calendar_layouts.add_month_number, 0);">
+                        <input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='add_month_number' onclick="setTimeout(calendar_layouts.add_month_number, 10);">
                         <span>
                             Add month number to months
                         </span>
@@ -816,7 +816,7 @@
                     </label>
 
                     <label class="form-control full setting">
-                        <input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='add_year_day_number' onclick="setTimeout(calendar_layouts.add_year_day_number, 0);">
+                        <input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='add_year_day_number' onclick="setTimeout(calendar_layouts.add_year_day_number, 10);">
                         <span>
                             Add year day to each day
                         </span>

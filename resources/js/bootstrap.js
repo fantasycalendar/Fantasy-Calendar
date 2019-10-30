@@ -37,6 +37,14 @@ if (token) {
     console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
 }
 
+let authorization = document.head.querySelector('meta[name="api-token"]');
+
+if (authorization) {
+    window.axios.defaults.headers.common['Authorization'] = 'Bearer ' + authorization.content;
+} else {
+    console.error('No API token.');
+}
+
 /**
  * Sweet Alert provides rich alerts that are much nicer than is provided by
  * most browsers. swalert Prompts nicer both visually and in the exposed

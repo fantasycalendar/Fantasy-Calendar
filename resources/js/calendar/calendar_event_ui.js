@@ -350,6 +350,8 @@ var edit_event_ui = {
 
 		this.event_background.find('.duration_settings').toggleClass('hidden', !event.data.has_duration);
 
+		$('#has_duration').prop('checked', event.data.has_duration);
+
 		$('#duration').val(event.data.duration);
 
 		$('#show_first_last').prop('checked', event.data.show_first_last);
@@ -434,9 +436,14 @@ var edit_event_ui = {
 		$('#event_hide_players').prop('checked', false);
 
 		$('#event_dontprint_checkbox').prop('checked',false);
+		
+		edit_event_ui.event_background.find('.duration_settings').toggleClass('hidden', true);
+    
+		$('#has_duration').prop('checked', false);
+
+		$('#duration').val('');
 
 		this.event_background.addClass('hidden');
-
 
 	},
 
@@ -491,6 +498,28 @@ var edit_event_ui = {
 			date: this.date
 		};
 
+		static_data.event_data.events[this.event_id].event_category_id = get_category($('#event_categories').val()).id;
+
+		static_data.event_data.events[this.event_id].settings = {
+			color: $('#color_style').val(),
+			text: $('#text_style').val(),
+			hide: $('#event_hide_players').prop('checked'),
+			hide_full: $('#event_hide_full').prop('checked'),
+			noprint: $('#event_dontprint_checkbox').prop('checked')
+		}
+
+		if(edit_event_ui.new_event){
+			add_event_to_sortable(events_sortable, this.event_id, static_data.event_data.events[this.event_id]);
+		}else{
+			$(`.events_input[index="${this.event_id}"]`).find(".event_name").text(`Edit - ${name}`);
+		}
+
+		edit_event_ui.clear_ui();
+
+		error_check();
+
+		rebuild_events();
+    
 	},
 
 	event_is_one_time: function(){
@@ -1438,7 +1467,6 @@ var edit_event_ui = {
 		}
 	},
 
-
 	test_event: function(years){
 
 		if(this.event_is_one_time()){
@@ -1830,7 +1858,7 @@ var edit_HTML_ui = {
 
 	set_html: function(){
 
-		this.trumbowyg.trumbowyg('html', this.value);
+		this.trumbowyg.trumbowyg('html', unescapeHtml(this.value));
 
 		this.html_edit_background.removeClass('hidden');
 
@@ -1838,7 +1866,7 @@ var edit_HTML_ui = {
 
 	save_html: function(){
 
-		this.data[this.key] = this.trumbowyg.trumbowyg('html');
+		this.data[this.key] = escapeHtml(this.trumbowyg.trumbowyg('html'));
 
 		edit_HTML_ui.key = null;
 		edit_HTML_ui.data = null;

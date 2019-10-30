@@ -709,7 +709,7 @@ var calendar_builder = {
 
 		backtrack_days = 0;
 		for(event_index = 0; event_index < this.static_data.event_data.events.length; event_index++){
-			event = this.static_data.event_data.events[event_index];
+			var event = this.static_data.event_data.events[event_index];
 			backtrack_days = event.data.duration > backtrack_days ? event.data.duration : backtrack_days;
 		}
 

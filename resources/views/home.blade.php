@@ -16,6 +16,16 @@
             margin-top: 40px;
         }
     </style>
+    <script>
+        $(document).ready(function() {
+            $('.delete_button').click(function() {
+                let calendar_hash = $(this).attr('data-hash');
+                let calendar_name = $(this).attr('data-name');
+
+                delete_calendar(calendar_hash, calendar_name, function() {location.reload();});
+            });
+        });
+    </script>
 @endpush
 
 @section('content')
@@ -62,6 +72,9 @@
                                     </a>
                                     <a class="calendar_action" href="{{ route('calendars.export', ['calendar' => $calendar->hash]) }}" >
                                         <i class="fa fa-file-export"></i>
+                                    </a>
+                                    <a class="calendar_action delete_button" href="javascript:" data-hash="{{ $calendar->hash }}" data-name="{{ $calendar->name }}">
+                                        <i class="fa fa-calendar-times"></i>
                                     </a>
                                 </div>
                             </div>

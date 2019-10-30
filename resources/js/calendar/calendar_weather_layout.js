@@ -94,33 +94,12 @@ var calendar_weather = {
 
 			this.weather_tooltip_box.css('height', `${this.base_height+height}px`)
 
-			var position = '';
-
-			var val = 0;
-			if(day_container.innerWidth() < 190){
-				if(icon.attr('align') != ""){
-					val = clamp(190-day_container.innerWidth(), 0, 70);
-					if(icon.attr('align') === "start"){
-						position = "+"
-					}else{
-						position = "-"
-					}
-				}
-			}
-
-			var combined = position+val == "0" ? "" : position+val;
-
 			this.weather_tooltip_box.position({
-				my: "center"+combined,
-				at: `top-${this.base_height-45}`,
+				my: "center",
+				at: `top-${this.base_height-10}`,
 				of: icon,
 				collision: "flipfit"
 			});
-
-			position = position == "+" ? "-" : "+";
-			var tooltip_box = document.getElementById("weather_tooltip_box");
-			tooltip_box.pseudoStyle("before", "left", "calc(50% "+position+" "+val+"px) !important");
-			tooltip_box.pseudoStyle("after", "left", "calc(50% "+position+" "+val+"px)  !important");
 
 			this.weather_temp_desc.each(function(){
 				$(this).text(desc);
