@@ -3576,6 +3576,7 @@ function reindex_event_category_list(){
 			$(this).attr('index', i);
 		}
 
+
 		new_order[index] = static_data.event_data.categories[index];
 
 	});
@@ -3588,18 +3589,36 @@ function reindex_event_category_list(){
 function reindex_events_sortable(){
 
 	var new_order = []
+	var new_events = []
 
 	events_sortable.children().each(function(i){
 
 		var id = Number($(this).attr('index'));
 
-		new_order[i] = static_data.event_data.events[id];
+		new_order[id] = i;
+		new_events[i] = static_data.event_data.events[id];
 
 		$(this).attr('index', i);
 
 	});
 
-	static_data.event_data.events = clone(new_order);
+	for(var event_id in static_data.event_data.events){
+
+		var event = static_data.event_data.events[event_id];
+
+		if(event.data.connected_events.length > 0){
+
+			for(var connected_id in event.data.connected_events){
+
+				event.data.connected_events[connected_id] = new_order[event.data.connected_events[connected_id]];
+
+			}
+
+		}
+
+	}
+
+	static_data.event_data.events = clone(new_events);
 
 }
 
