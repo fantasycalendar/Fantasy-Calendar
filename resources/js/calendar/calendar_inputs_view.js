@@ -407,7 +407,7 @@ function fix_date(){
 
 function repopulate_location_select_list(){
 
-	var show_location_select = static_data.seasons.data.length > 0 && static_data.seasons.locations.length > 0;
+	var show_location_select = static_data.seasons.data.length > 0;
 
 	var is_edit = location_select.closest('.wrap-collapsible').find('.form-inline.locations').length > 0;
 
@@ -427,7 +427,7 @@ function repopulate_location_select_list(){
 
 		}
 
-		if(static_data.seasons.global_settings.enabled_weather){
+		if(static_data.seasons.global_settings.enable_weather){
 
 			html.push('<optgroup label="Presets" value="preset">');
 			for(var i = 0; i < Object.keys(climate_generator.presets).length; i++){
