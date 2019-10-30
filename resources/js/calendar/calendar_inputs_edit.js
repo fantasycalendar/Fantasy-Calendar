@@ -306,7 +306,6 @@ function set_up_edit_inputs(set_up){
 			'name': escapeHtml(name.val()),
 			'intercalary': type.val() == 'intercalary',
 			'timespan': 0,
-			'removes_week_day': false,
 			'adds_week_day': false,
 			'day': 0,
 			'week_day': '',
@@ -987,7 +986,6 @@ function set_up_edit_inputs(set_up){
 
 
 	$(document).on('change', '.leap-day .timespan-list', function(){
-		var removes_week_day = $(this).closest('.sortable-container').find('.removes-day').is(':checked');
 		repopulate_weekday_select($(this).closest('.sortable-container').find('.week-day-select'));
 	});
 
@@ -1003,27 +1001,6 @@ function set_up_edit_inputs(set_up){
 		if(checked){
 			$('#month_overflow').prop('checked', true);
 		}
-		repopulate_weekday_select($(this).closest('.sortable-container').find('.week-day-select'));
-	});
-
-	$(document).on('change', '.removes-day', function(){
-		var container = $(this).closest('.sortable-container');
-		var checked = $(this).is(':checked');
-		container.find('.removes_week_day_data_container').toggleClass('hidden', !checked);
-		container.find('.adds_week_day_data_container').toggleClass('hidden', true);
-		container.find('.adds_week_day_data_container input, .adds_week_day_data_container select').prop('disabled', true);
-		container.find('.adds_week_day_container').toggleClass('hidden', checked);
-		if(container.find('.adds_week_day_container input').is(':checked')){
-			container.find('.adds_week_day_container input').prop('checked', false);
-		}
-		repopulate_weekday_select($(this).closest('.sortable-container').find('.week-day-select'));
-	});
-
-	$(document).on('change', '.removes-week-day', function(){
-		var container = $(this).closest('.sortable-container');
-		var checked = $(this).is(':checked');
-		container.find('.week-day-select').toggleClass('inclusive', !checked);
-		container.find('.week_day_select_container').toggleClass('hidden', !checked).prop('disabled', !checked);
 		repopulate_weekday_select($(this).closest('.sortable-container').find('.week-day-select'));
 	});
 
@@ -1860,18 +1837,7 @@ function add_leap_day_to_list(parent, key, data){
 							element.push("</div>");
 						element.push("</div>");
 
-						element.push(`<div class='removes_week_day_data_container ${(!data.adds_week_day && !data.intercalary ? "" : "hidden")}'>`);
-							element.push(`<div class='detail-row'>`);
-								element.push("<div class='detail-column twothird'>");
-									element.push("<div class='detail-row'>");
-											element.push("<div class='detail-text'>Removes week day: </div>");
-											element.push(`<input type='checkbox' class='form-control removes-week-day dynamic_input' data='year_data.leap_days.${key}' fc-index='removes_week_day' ${(data.removes_week_day ? "checked" : "")} />`);
-									element.push("</div>");
-								element.push("</div>");
-							element.push("</div>");
-						element.push("</div>");
-
-						element.push(`<div class='detail-row week_day_select_container ${(!data.intercalary || (!data.removes_week_day && !data.adds_week_day)) ? "hidden" : ""}'>`);
+						element.push(`<div class='detail-row week_day_select_container ${(!data.intercalary && data.adds_week_day) ? "hidden" : ""}'>`);
 							element.push("<div class='detail-column full'>");
 								element.push("<div class='detail-row'>");
 									element.push(`<div class='detail-text'>Select weekday: </div>`);
@@ -3116,7 +3082,6 @@ function reindex_leap_day_list(){
 			'name': escapeHtml($(this).find('.name-input').val()),
 			'intercalary': $(this).attr('type') == 'intercalary',
 			'timespan': Number($(this).find('.timespan-list').val()),
-			'removes_week_day': $(this).find('.removes-week-day').is(':checked'),
 			'adds_week_day': $(this).find('.adds-week-day').is(':checked'),
 			'day': Number($(this).find('.week-day-select').val()),
 			'week_day': escapeHtml($(this).find('.internal-list-name').val()),
@@ -3852,7 +3817,7 @@ function set_up_edit_values(){
 
 			var leap_day = clone(static_data.year_data.leap_days[i]);
 
-			if(!leap_day.intercalary && (leap_day.removes_week_day || leap_day.adds_week_day)){
+			if(!leap_day.intercalary && leap_day.adds_week_day){
 				repopulate_weekday_select($(this).find('.week-day-select'), leap_day.day, false);
 			}
 			if(leap_day.intercalary){
