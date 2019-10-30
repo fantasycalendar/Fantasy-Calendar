@@ -279,14 +279,6 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 				}
 			}
 
-			if(current_leap_day.removes_week_day !== undefined){
-				if(typeof current_leap_day.removes_week_day === "boolean"){
-					leap_day.removes_week_day = current_leap_day.removes_week_day
-				}else{
-					throw `${leap_day.name} has invalid remove week day setting!`;
-				}
-			}
-
 			if(current_leap_day.day !== undefined){
 				if(!isNaN(Number(current_leap_day.day))){
 					leap_day.day = Number(current_leap_day.day)
@@ -1354,7 +1346,6 @@ function process_old_fantasycalendar(calendar, dynamic_data, static_data){
 			'name': 'Leap day',
 			'intercalary': false,
 			'timespan': calendar.month_leap-1,
-			'removes_week_day': false,
 			'adds_week_day': false,
 			'day': 0,
 			'week_day': '',
