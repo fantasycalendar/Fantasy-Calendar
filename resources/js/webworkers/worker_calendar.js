@@ -84,7 +84,7 @@ var calendar_builder = {
 
 	},
 
-	create_adjusted_timespan: function(timespan_index){
+	create_adjusted_timespan: function(year, timespan_index){
 
 		var timespan = clone(this.static_data.year_data.timespans[timespan_index]);
 
@@ -105,7 +105,7 @@ var calendar_builder = {
 
 				leap_day.index = leap_day_index;
 
-				if(is_leap(convert_year(this.static_data, this.dynamic_data.year), leap_day.interval, leap_day.offset)){
+				if(is_leap(year, leap_day.interval, leap_day.offset)){
 
 					if(leap_day.intercalary){
 						if(timespan.type === 'intercalary'){
@@ -349,7 +349,7 @@ var calendar_builder = {
 
 				if(is_leaping){
 
-					this.calendar_list.timespans_to_evaluate[year][timespan] = this.create_adjusted_timespan(timespan);
+					this.calendar_list.timespans_to_evaluate[year][timespan] = this.create_adjusted_timespan(year, timespan);
 
 				}
 
@@ -646,7 +646,7 @@ var calendar_builder = {
 		// If the setting is on, only select the current month to be calculated
 		if(this.static_data.settings.show_current_month){
 
-			this.calendar_list.timespans_to_build[this.dynamic_data.timespan] = this.create_adjusted_timespan(this.dynamic_data.timespan);
+			this.calendar_list.timespans_to_build[this.dynamic_data.timespan] = this.create_adjusted_timespan(convert_year(this.static_data, this.dynamic_data.year), this.dynamic_data.timespan);
 
 		}else{
 
@@ -673,7 +673,7 @@ var calendar_builder = {
 				// Get the fraction of that month's appearances
 				var is_leaping = (convert_year(this.static_data, this.dynamic_data.year) + offset) % this.static_data.year_data.timespans[timespan].interval == 0;
 
-				var timespan_data = this.create_adjusted_timespan(timespan);
+				var timespan_data = this.create_adjusted_timespan(convert_year(this.static_data, this.dynamic_data.year), timespan);
 
 				if(is_leaping && timespan_data.length > 0){
 
@@ -748,7 +748,7 @@ var calendar_builder = {
 
 					if(is_leaping){
 
-						this.calendar_list.timespans_to_evaluate[year][timespan] = this.create_adjusted_timespan(timespan);
+						this.calendar_list.timespans_to_evaluate[year][timespan] = this.create_adjusted_timespan(year, timespan);
 
 						if(ending_day > 0 && timespan == num_timespans){
 							this.calendar_list.timespans_to_evaluate[year][timespan].length = ending_day > this.calendar_list.timespans_to_evaluate[year][timespan].length ? this.calendar_list.timespans_to_evaluate[year][timespan].length : ending_day; 
