@@ -1545,7 +1545,12 @@ function set_up_edit_inputs(set_up){
 
 					switch(target.attr('type')){
 						case "number":
-							var value = parseFloat(target.val());
+							if(target.attr('step') === "any"){
+								var value = parseFloat(target.val());
+							}else{
+								var value = parseInt(target.val().split('.')[0]);
+							}
+							target.val(value);
 							break;
 
 						case "checkbox":
@@ -1679,9 +1684,9 @@ function add_timespan_to_sortable(parent, key, data){
 			element.push("<div class='handle icon-reorder'></div>");
 			element.push("<div class='expand icon-collapse'></div>");
 			element.push("<div class='name-container'>");
-				element.push(`<input type='text' value='${data.name}' tabindex='${(100+key)}'class='name-input small-input form-control dynamic_input' data='year_data.timespans.${key}' fc-index='name'/>`);
+				element.push(`<input type='text' value='${data.name}' step='1.0' tabindex='${(100+key)}'class='name-input small-input form-control dynamic_input' data='year_data.timespans.${key}' fc-index='name'/>`);
 			element.push("</div>");
-			element.push(`<div class='length_input'><input type='number' step="1.0" min='1' class='length-input form-control dynamic_input timespan_length' data='year_data.timespans.${key}' fc-index='length' tabindex='${(100+key)}' value='${data.length}'/></div>`);
+			element.push(`<div class='length_input'><input type='number' min='1' class='length-input form-control dynamic_input timespan_length' data='year_data.timespans.${key}' fc-index='length' tabindex='${(100+key)}' value='${data.length}'/></div>`);
 			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
@@ -1711,14 +1716,14 @@ function add_timespan_to_sortable(parent, key, data){
 						element.push("<div class='detail-column half'>");
 							element.push("<div class='detail-row'>");
 									element.push("<div class='detail-text'>Interval:</div>");
-									element.push(`<input type='number' step="1.0" min='1' class='form-control timespan_occurance_input interval dynamic_input small-input' data='year_data.timespans.${key}' fc-index='interval' value='${data.interval}' />`);
+									element.push(`<input type='number' step="1" min='1' class='form-control timespan_occurance_input interval dynamic_input small-input' data='year_data.timespans.${key}' fc-index='interval' value='${data.interval}' />`);
 							element.push("</div>");
 						element.push("</div>");
 
 						element.push("<div class='detail-column half'>");
 							element.push("<div class='detail-row'>");
 								element.push("<div class='detail-text'>Offset:</div>");
-								element.push(`<input type='number' step="1.0" class='form-control timespan_occurance_input offset dynamic_input small-input' min='0' data='year_data.timespans.${key}' fc-index='offset' value='${data.offset}'`);
+								element.push(`<input type='number' step="1" class='form-control timespan_occurance_input offset dynamic_input small-input' min='0' data='year_data.timespans.${key}' fc-index='offset' value='${data.offset}'`);
 								element.push(data.interval === 1 ? " disabled" : "");
 								element.push("/>");
 							element.push("</div>");
@@ -1776,7 +1781,7 @@ function add_timespan_to_sortable(parent, key, data){
 						element.push("<div class='detail-column half'>");
 							element.push("<div class='detail-row'>");
 								element.push("<div class='detail-text'>Length:</div>");
-								element.push(`<input type='number' step="1.0" class='form-control week-length small-input' ${(!data.week ? "disabled" : "")} value='${(data.week ? data.week.length : 0)}'/>`);
+								element.push(`<input type='number' step="1" class='form-control week-length small-input' ${(!data.week ? "disabled" : "")} value='${(data.week ? data.week.length : 0)}'/>`);
 							element.push("</div>");
 						element.push("</div>");
 					element.push("</div>");
@@ -1958,7 +1963,7 @@ function add_leap_day_to_list(parent, key, data){
 						element.push("<div class='detail-column third'>");
 							element.push("<div class='detail-row'>");
 								element.push("<div class='detail-text'>Offset:</div>");
-								element.push(`<input type='number' step="1.0" class='form-control leap_day_occurance_input offset dynamic_input' min='0' data='year_data.leap_days.${key}' fc-index='offset' value='${data.offset}'`);
+								element.push(`<input type='number' step="1" class='form-control leap_day_occurance_input offset dynamic_input' min='0' data='year_data.leap_days.${key}' fc-index='offset' value='${data.offset}'`);
 								element.push(data.interval === "1" ? " disabled" : "");
 								element.push("/>");
 							element.push("</div>");
