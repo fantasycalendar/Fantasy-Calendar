@@ -265,8 +265,12 @@ var edit_event_ui = {
 			edit_event_ui.evaluate_condition_selects(edit_event_ui.event_conditions_container);
 		})
 
+		$('#limited_repeat').change(function(){
+			edit_event_ui.event_background.find('#limited_repeat_num').prop('disabled', !$(this).prop('checked'));
+		});
+
 		$('#has_duration').change(function(){
-			edit_event_ui.event_background.find('.duration_settings').toggleClass('hidden', !$(this).prop('checked'));
+			edit_event_ui.event_background.find('#duration').prop('disabled', !$(this).prop('checked'));
 		});
 
 	},
@@ -280,9 +284,10 @@ var edit_event_ui = {
 			'description': '',
 			'data': {
 				'has_duration': false,
-				'duration': 0,
+				'duration': 1,
 				'show_first_last': false,
-				'only_happen_once': false,
+				'limited_repeat': false,
+				'limited_repeat_num': 1,
 				'conditions': [],
 				'connected_events': false,
 				'date': [],
@@ -346,13 +351,11 @@ var edit_event_ui = {
 
 		$('#event_dontprint_checkbox').prop('checked', event.settings.noprint);
 
-		$('#only_happen_once').prop('checked', event.data.only_happen_once);
-
-		this.event_background.find('.duration_settings').toggleClass('hidden', !event.data.has_duration);
+		$('#limited_repeat').prop('checked', event.data.limited_repeat);
+		$('#limited_repeat_num').prop('disabled', !event.data.limited_repeat).val(event.data.limited_repeat_num);
 
 		$('#has_duration').prop('checked', event.data.has_duration);
-
-		$('#duration').val(event.data.duration);
+		$('#duration').prop('disabled', !event.data.has_duration).val(event.data.duration);
 
 		$('#show_first_last').prop('checked', event.data.show_first_last);
 
@@ -437,13 +440,16 @@ var edit_event_ui = {
 
 		$('#event_hide_players').prop('checked', false);
 
-		$('#event_dontprint_checkbox').prop('checked',false);
-		
-		edit_event_ui.event_background.find('.duration_settings').toggleClass('hidden', true);
-    
-		$('#has_duration').prop('checked', false);
+		$('#event_hide_full').prop('checked', false);
 
-		$('#duration').val('');
+		$('#event_dontprint_checkbox').prop('checked', false);
+
+		$('#limited_repeat').prop('checked', false);
+		$('#limited_repeat_num').prop('disabled', true).val(1);
+
+		$('#has_duration').prop('checked', false);
+		$('#duration').prop('disabled', true).val(1);
+		$('#show_first_last').prop('checked', false);
 
 		this.event_background.addClass('hidden');
 
@@ -494,7 +500,8 @@ var edit_event_ui = {
 			has_duration: $('#has_duration').prop('checked'),
 			duration: $('#duration').val()|0,
 			show_first_last: $('#show_first_last').prop('checked'),
-			only_happen_once: $('#only_happen_once').prop('checked'),
+			limited_repeat: $('#limited_repeat').prop('checked'),
+			limited_repeat_num: $('#limited_repeat_num').val()|0,
 			conditions: conditions,
 			connected_events: this.connected_events,
 			date: this.date
@@ -1531,7 +1538,7 @@ var edit_event_ui = {
 
 				if(e.data.callback){
 
-					update_loading_bar(e.data.count[0] / e.data.count[1]);
+					update_loading_bar(e.data.count[0] / e.data.count[1], e.data.text);
 
 				}else{
 

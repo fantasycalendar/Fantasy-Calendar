@@ -337,10 +337,6 @@ var event_evaluator = {
 
 		function evaluate_event(event_index){
 
-			if(event_evaluator.events_only_happen_once.indexOf(event_index) != -1){
-				return;
-			}
-
 			this.current_event = event_evaluator.events[event_index];
 
 			if(this.current_event.data.date !== undefined && this.current_event.data.date.length === 3){
@@ -359,6 +355,8 @@ var event_evaluator = {
 
 				for(var epoch_index = 0; epoch_index < num_epochs; epoch_index++){
 
+					var epoch = parseInt(Object.keys(epoch_list)[epoch_index]);
+
 					if(event_evaluator.callback){
 
 						postMessage({
@@ -366,6 +364,7 @@ var event_evaluator = {
 								event_evaluator.number_of_epochs,
 								num_epochs*event_evaluator.number_of_events
 							],
+							text: `Testing '${this.current_event.name}' on day ${event_evaluator.number_of_epochs}...`,
 							callback: true
 						})
 
@@ -373,18 +372,26 @@ var event_evaluator = {
 
 					}
 
-					var epoch = parseInt(Object.keys(epoch_list)[epoch_index]);
+					add_event = true
+					if(this.current_event.data.limited_repeat){
+						for(var i = 1; i <= this.current_event.data.limited_repeat_num; i++){
+							if(event_evaluator.event_data.valid[event_index] && event_evaluator.event_data.valid[event_index].includes(epoch-i)){
+								add_event = false
+								break;
+							}
+						}
+					}
 
 					this.current_data = epoch_list[epoch];
 
-					var result = evaluate_event_group(this.current_event.data.conditions);
+					if(add_event){
 
-					if(result){
-							
-						result = add_to_epoch(this.current_event, event_index, epoch);
+						var result = evaluate_event_group(this.current_event.data.conditions);
 
 						if(result){
-							break;
+								
+							add_to_epoch(this.current_event, event_index, epoch);
+
 						}
 
 					}
@@ -433,11 +440,6 @@ var event_evaluator = {
 
 			}
 
-			if(event.data.only_happen_once){
-				event_evaluator.events_only_happen_once.push(event_index);
-				return true;
-			}
-			return false;
 		}
 
 		function check_event_chain(id){
@@ -488,12 +490,11 @@ var event_evaluator = {
 
 			if(event_evaluator.callback !== undefined){
 
+				event_evaluator.current_event_number = 1;
 				event_evaluator.number_of_events = 1;
 				event_evaluator.number_of_epochs = 1;
 
 				get_number_of_events(event_id);
-
-				console.log(event_evaluator.number_of_events)
 
 			}
 

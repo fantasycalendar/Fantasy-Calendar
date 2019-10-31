@@ -76,6 +76,8 @@ $(document).ready(function(){
 		}
 	});
 
+	loading_bar_text = $('.loading_bar_text');
+
 });
 
 function evaluate_error_background_size(){
@@ -220,6 +222,7 @@ function show_loading_screen(loading_bar, cancel_button_callback){
 	if(loading_bar !== undefined){
 		$('.loading_spinner').addClass('hidden');
 		$('.loading_bar').removeClass('hidden');
+		$('.loading_bar_text').removeClass('hidden');
 	}
 
 	if(cancel_button_callback !== undefined){
@@ -236,6 +239,7 @@ function hide_loading_screen(){
 	$('#loading_background').addClass('hidden');
 	$('.loading_spinner').removeClass('hidden');
 	$('.loading_bar').addClass('hidden');
+	$('.loading_bar_text').addClass('hidden');
 	$('.loading_cancel_button').addClass('hidden');
 }
 
@@ -258,9 +262,10 @@ function set_loading_screen_text(array){
 }
 
 
-function update_loading_bar(percentage){
+function update_loading_bar(percentage, text){
 
 	loading_bar.set(percentage)
+	loading_bar_text.text(text)
 
 }
 
