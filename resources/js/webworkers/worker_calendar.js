@@ -426,8 +426,6 @@ var calendar_builder = {
 
 		}
 
-		console.log(this.calendar_list.timespans_to_evaluate)
-
 		this.set_up_repititions();
 
 		first_eval_year = parseInt(Object.keys(this.calendar_list.timespans_to_evaluate)[0]);
