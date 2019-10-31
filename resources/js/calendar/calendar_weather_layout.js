@@ -38,10 +38,44 @@ var calendar_weather = {
 			this.weather_wind = $('.weather_wind');
 			this.weather_precip = $('.weather_precip');
 			this.weather_clouds = $('.weather_clouds');
+			this.stop_hide = false;
+			this.sticky_icon = false;
+
+		},
+
+		sticky: function(icon){
+
+			this.sticky_icon = icon;
+
+			this.sticky_icon.addClass('sticky');
+
+			this.stop_hide = true;
+
+			registered_click_callbacks['sticky_weather_ui'] = this.sticky_callback;
+
+		},
+
+		sticky_callback: function(event){
+
+			if($(event.target).closest('#weather_tooltip_box').length == 0 && $(event.target).closest('.weather_icon').length == 0){
+
+				calendar_weather.tooltip.stop_hide = false;
+
+				calendar_weather.tooltip.hide();
+
+			}
 
 		},
 
 		show: function(icon){
+
+			if(registered_click_callbacks['sticky_weather_ui']){
+				delete registered_click_callbacks['sticky_weather_ui'];
+				this.sticky_icon.removeClass('sticky');
+			}
+
+			this.stop_hide = false;
+			this.sticky_icon = false;
 
 			if(!calendar_weather.processed_weather) return;
 
@@ -125,9 +159,14 @@ var calendar_weather = {
 		},
 
 		hide: function(){
-			this.weather_tooltip_box.hide();
-			this.weather_tooltip_box.css({"top":"", "left":""});
-			this.weather_tooltip_box.removeClass();
+
+			document.removeEventListener('click', function(){});
+
+			if(!this.stop_hide){
+				this.weather_tooltip_box.hide();
+				this.weather_tooltip_box.css({"top":"", "left":""});
+				this.weather_tooltip_box.removeClass();
+			}
 		}
 
 	}

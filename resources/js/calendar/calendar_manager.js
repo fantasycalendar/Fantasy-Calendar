@@ -12,7 +12,19 @@ function sidescroll(){
 
 }
 
+var registered_click_callbacks = {}
+
 function bind_calendar_events(){
+
+	document.addEventListener('click', function(event){
+
+		for(var callback_id in registered_click_callbacks){
+
+			registered_click_callbacks[callback_id](event);
+
+		}
+		
+	});
 
 	$('#input_collapse_btn').click(function(){
 		$("#input_container").toggleClass('inputs_collapsed');
@@ -23,6 +35,10 @@ function bind_calendar_events(){
 	})
 
 	calendar_weather.tooltip.set_up();
+
+	$(document).on('click', '.weather_icon', function(){
+		calendar_weather.tooltip.sticky($(this));
+	});
 
 	$(document).on('mouseenter', '.weather_icon', function(){
 		calendar_weather.tooltip.show($(this));
