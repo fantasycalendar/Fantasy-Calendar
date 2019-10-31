@@ -71,7 +71,6 @@ function set_up_edit_inputs(set_up){
 	first_day = $('#first_day');
 	global_week_sortable = $('#global_week_sortable');
 	leap_day_list = $('#leap_day_list');
-	observational_list = $('#observational_list');
 	moon_list = $('#moon_list');
 	season_sortable = $('#season_sortable');
 	cycle_sortable = $('#cycle_sortable');
@@ -310,8 +309,6 @@ function set_up_edit_inputs(set_up){
 			'name': escapeHtml(name.val()),
 			'intercalary': type.val() == 'intercalary',
 			'timespan': 0,
-			'removes_day': false,
-			'removes_week_day': false,
 			'adds_week_day': false,
 			'day': 0,
 			'week_day': '',
@@ -331,32 +328,6 @@ function set_up_edit_inputs(set_up){
 		}else{
 			repopulate_day_select(leap_day_list.children().last().find('.week-day-select'), static_data.year_data.leap_days[id].day, false);
 		}
-
-		do_error_check();
-
-		name.val("");
-		set_up_view_values();
-
-	});
-
-	$('.form-inline.observational .add').click(function(){
-		var name = $(this).prev();
-		var id = observational_list.children().length;
-		stats = {
-			'name': escapeHtml(name.val()),
-			'timespan': 0,
-			'removes_day': false
-		};
-
-		if(!static_data.year_data.observationals){
-			static_data.year_data.observationals = [];
-		}
-		static_data.year_data.observationals.push(stats);
-
-		add_observational_to_list(observational_list, id, stats);
-
-		repopulate_timespan_select(observational_list.children().last().find('.timespan-list'), static_data.year_data.observationals[id].timespan, false);
-		repopulate_day_select(observational_list.children().last().find('.timespan-day-list'), static_data.year_data.observationals[id].day, false);
 
 		do_error_check();
 
@@ -1018,7 +989,6 @@ function set_up_edit_inputs(set_up){
 
 
 	$(document).on('change', '.leap-day .timespan-list', function(){
-		var removes_week_day = $(this).closest('.sortable-container').find('.removes-day').is(':checked');
 		repopulate_weekday_select($(this).closest('.sortable-container').find('.week-day-select'));
 	});
 
@@ -1029,38 +999,11 @@ function set_up_edit_inputs(set_up){
 		container.find('.week_day_select_container').toggleClass('hidden', !checked);
 		container.find('.adds_week_day_data_container').toggleClass('hidden', !checked);
 		container.find('.adds_week_day_data_container input, .adds_week_day_data_container select').prop('disabled', !checked);
-		container.find('.removes_day_container').toggleClass('hidden', checked);
 		container.find('.week-day-select').toggleClass('inclusive', checked);
-		if(container.find('.removes_day_container input').is(':checked')){
-			container.find('.removes_day_container input').prop('checked', false)
-			container.find('.removes_week_day_data_container').toggleClass('hidden', true);
-			container.find('.removes_week_day_data_container input').prop('checked', false);
-		}
 		$('#overflow_explanation').toggleClass('hidden', !checked);
 		if(checked){
 			$('#month_overflow').prop('checked', true);
 		}
-		repopulate_weekday_select($(this).closest('.sortable-container').find('.week-day-select'));
-	});
-
-	$(document).on('change', '.removes-day', function(){
-		var container = $(this).closest('.sortable-container');
-		var checked = $(this).is(':checked');
-		container.find('.removes_week_day_data_container').toggleClass('hidden', !checked);
-		container.find('.adds_week_day_data_container').toggleClass('hidden', true);
-		container.find('.adds_week_day_data_container input, .adds_week_day_data_container select').prop('disabled', true);
-		container.find('.adds_week_day_container').toggleClass('hidden', checked);
-		if(container.find('.adds_week_day_container input').is(':checked')){
-			container.find('.adds_week_day_container input').prop('checked', false);
-		}
-		repopulate_weekday_select($(this).closest('.sortable-container').find('.week-day-select'));
-	});
-
-	$(document).on('change', '.removes-week-day', function(){
-		var container = $(this).closest('.sortable-container');
-		var checked = $(this).is(':checked');
-		container.find('.week-day-select').toggleClass('inclusive', !checked);
-		container.find('.week_day_select_container').toggleClass('hidden', !checked).prop('disabled', !checked);
 		repopulate_weekday_select($(this).closest('.sortable-container').find('.week-day-select'));
 	});
 
@@ -1229,7 +1172,7 @@ function set_up_edit_inputs(set_up){
 
     $(document).on('keyup', '.leap_day_occurance_input', function(){
         var interval = $(this).closest('.sortable-container').find('.interval');
-        interval.val(interval.val().replace(/[ `+~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z]/g, ""));
+        interval.val(interval.val().replace(/[ `~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z]/g, ""));
     });
 
 	$(document).on('change', '.leap_day_occurance_input', function(){
@@ -1244,8 +1187,8 @@ function set_up_edit_inputs(set_up){
 
 		if(offset_val === undefined || interval_val === undefined) return;
 
-		var global_regex = /[ `+~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z]/g;
-		var local_regex = /^\!+[1-9]+[0-9]{0,}$/;
+		var global_regex = /[ `~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z]/g;
+		var local_regex = /^\+*\!*[1-9]+[0-9]{0,}$/;
 		var numbers_regex = /([1-9]+[0-9]{0,})/;
 
 		var invalid = global_regex.test(interval_val);
@@ -1263,7 +1206,6 @@ function set_up_edit_inputs(set_up){
 						break;
 					}
 				}
-
 			}
 
 			if(!invalid){
@@ -1370,7 +1312,17 @@ function set_up_edit_inputs(set_up){
 							text += `<br>• but not every ${ordinal_suffix_of(sorted[i])} ${timespan_name}`;
 						}
 
-						text += ` (year ${total_offset}, ${total_offset+sorted[i]*timespan_interval}, ${total_offset+sorted[i]*2*timespan_interval}...)`;
+
+
+						if(values[i].indexOf('+') != -1){
+
+							text += ` (year ${sorted[i]}, ${sorted[i]*2*timespan_interval}, ${sorted[i]*3*timespan_interval}...)`;
+
+						}else{
+
+							text += ` (year ${total_offset}, ${total_offset+sorted[i]*timespan_interval}, ${total_offset+sorted[i]*2*timespan_interval}...)`;
+
+						}
 
 
 					}else{
@@ -1381,7 +1333,16 @@ function set_up_edit_inputs(set_up){
 							text += `<br>• but also every ${ordinal_suffix_of(sorted[i])} ${timespan_name}`;
 						}
 
-						text += ` (year ${total_offset}, ${total_offset+sorted[i]*timespan_interval}, ${total_offset+sorted[i]*2*timespan_interval}...)`;
+						if(values[i].indexOf('+') != -1){
+
+							text += ` (year ${sorted[i]}, ${sorted[i]*2*timespan_interval}, ${sorted[i]*3*timespan_interval}...)`;
+
+						}else{
+
+							text += ` (year ${total_offset}, ${total_offset+sorted[i]*timespan_interval}, ${total_offset+sorted[i]*2*timespan_interval}...)`;
+
+						}
+
 
 					}
 
@@ -1419,7 +1380,7 @@ function set_up_edit_inputs(set_up){
 	});
 
 
-	$(document).on('change', '.sortable-container.leap-day, .sortable-container.observational', function(){
+	$(document).on('change', '.sortable-container.leap-day', function(){
 
 		var changed_timespan = $(this).find('.timespan-list');
 		var changed_days = $(this).find('.timespan-day-list');
@@ -1864,16 +1825,7 @@ function add_leap_day_to_list(parent, key, data){
 							element.push("</div>");
 						element.push("</div>");
 
-						element.push(`<div class='detail-row removes_day_container ${(!data.adds_week_day && !data.intercalary ? "" : "hidden")}'>`);
-							element.push("<div class='detail-column'>");
-								element.push("<div class='detail-row'>");
-										element.push("<div class='detail-text'>Removes day instead: </div>");
-										element.push(`<input type='checkbox' class='form-control removes-day dynamic_input' data='year_data.leap_days.${key}' fc-index='removes_day' ${(data.removes_day ? "checked" : "")} />`);
-								element.push("</div>");
-							element.push("</div>");
-						element.push("</div>");
-
-						element.push(`<div class='detail-row adds_week_day_container ${(!data.removes_day && !data.intercalary ? "" : "hidden")}'>`);
+						element.push(`<div class='detail-row adds_week_day_container ${(!data.intercalary ? "" : "hidden")}'>`);
 							element.push("<div class='detail-column half'>");
 								element.push("<div class='detail-row'>");
 										element.push("<div class='detail-text'>Adds week day: </div>");
@@ -1882,7 +1834,7 @@ function add_leap_day_to_list(parent, key, data){
 							element.push("</div>");
 						element.push("</div>");
 
-						element.push(`<div class='adds_week_day_data_container ${(!data.removes_day && data.adds_week_day && !data.intercalary ? "" : "hidden")}'>`);
+						element.push(`<div class='adds_week_day_data_container ${(data.adds_week_day && !data.intercalary ? "" : "hidden")}'>`);
 							element.push(`<div class='detail-row'>`);
 								element.push("<div class='detail-column'>");
 									element.push("<div class='detail-row'>");
@@ -1893,18 +1845,7 @@ function add_leap_day_to_list(parent, key, data){
 							element.push("</div>");
 						element.push("</div>");
 
-						element.push(`<div class='removes_week_day_data_container ${(data.removes_day && !data.adds_week_day && !data.intercalary ? "" : "hidden")}'>`);
-							element.push(`<div class='detail-row'>`);
-								element.push("<div class='detail-column twothird'>");
-									element.push("<div class='detail-row'>");
-											element.push("<div class='detail-text'>Removes week day: </div>");
-											element.push(`<input type='checkbox' class='form-control removes-week-day dynamic_input' data='year_data.leap_days.${key}' fc-index='removes_week_day' ${(data.removes_week_day ? "checked" : "")} />`);
-									element.push("</div>");
-								element.push("</div>");
-							element.push("</div>");
-						element.push("</div>");
-
-						element.push(`<div class='detail-row week_day_select_container ${(!data.intercalary || (!data.removes_week_day && !data.adds_week_day)) ? "hidden" : ""}'>`);
+						element.push(`<div class='detail-row week_day_select_container ${(!data.intercalary && data.adds_week_day) ? "hidden" : ""}'>`);
 							element.push("<div class='detail-column full'>");
 								element.push("<div class='detail-row'>");
 									element.push(`<div class='detail-text'>Select weekday: </div>`);
@@ -2048,85 +1989,6 @@ function add_leap_day_to_list(parent, key, data){
 					element.push("<div class='detail-row'>");
 						element.push(`<div class='detail-text italics-text leap_day_variance_output'>${text}</div>`);
 					element.push("</div>");
-				element.push("</div>");
-			element.push("</div>");
-		element.push("</div>");
-	element.push("</div>");
-
-	parent.append(element.join(""));
-
-}
-
-
-function add_observational_to_list(parent, key, data){
-
-	var element = [];
-
-	element.push(`<div class='sortable-container observational' index='${key}' collapsed'>`);
-		element.push("<div class='main-container'>");
-			element.push("<div class='expand icon-collapse'></div>");
-			element.push("<div class='name-container'>");
-				element.push(`<input type='text' value='${data.name}' class='name-input small-input form-control dynamic_input' data='year_data.observationals.${key}' fc-index='name' tabindex='${(200+key)}'/>`);
-			element.push("</div>");
-            element.push('<div class="remove-spacer"></div>');
-		element.push("</div>");
-		element.push("<div class='remove-container'>");
-			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
-			element.push("<div class='btn_remove btn btn-danger icon-trash'></div>");
-			element.push("<div class='btn_cancel btn btn-danger icon-remove'></div>");
-			element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
-		element.push("</div>");
-
-		element.push("<div class='detail-container'>");
-
-			element.push("<div class='detail-row'>");
-
-				element.push("<div class='detail-column full'>");
-
-					element.push("<div class='detail-row'>");
-							element.push("<div class='detail-text bold-text'>Observational adjustment</div>");
-					element.push("</div>");
-
-					element.push("<div class='date_control'>");
-
-						element.push("<div class='detail-row'>");
-							element.push("<div class='detail-column'>");
-								element.push("<div class='detail-row'>");
-									element.push("<div class='detail-column'>");
-										element.push("<div class='detail-text'>Year: </div>");
-									element.push("</div>");
-									element.push("<div class='detail-column'>");
-										element.push(`<input type='number' step="1.0" class='form-control small-input year-input dynamic_input full' data='year_data.observationals.${key}' fc-index='year' value='${data.year}'>`);
-									element.push("</div>");
-								element.push("</div>");
-							element.push("</div>");
-						element.push("</div>");
-
-						element.push("<div class='detail-row'>");
-							element.push("<div class='detail-column'>");
-								element.push("<div class='detail-row'>");
-									element.push("<div class='detail-column'>");
-										element.push("<div class='detail-text'>Timespan: </div>");
-									element.push("</div>");
-									element.push("<div class='detail-column'>");
-										element.push(`<select type='number' class='custom-select form-control-sm timespan-list dynamic_input full timespan_special' data='year_data.observationals.${key}' fc-index='timespan'>`);
-										element.push("</select>");
-									element.push("</div>");
-								element.push("</div>");
-							element.push("</div>");
-						element.push("</div>");
-
-					element.push("</div>");
-
-					element.push(`<div class='detail-row'>`);
-						element.push("<div class='detail-column twothird'>");
-							element.push("<div class='detail-row'>");
-								element.push("<div class='detail-text'>Removes day: </div>");
-								element.push(`<input type='checkbox' class='form-control dynamic_input' data='year_data.observationals.${key}' fc-index='removes_day' ${(data.removes_day ? "checked" : "")} />`);
-							element.push("</div>");
-						element.push("</div>");
-					element.push("</div>");
-
 				element.push("</div>");
 			element.push("</div>");
 		element.push("</div>");
@@ -3228,8 +3090,6 @@ function reindex_leap_day_list(){
 			'name': escapeHtml($(this).find('.name-input').val()),
 			'intercalary': $(this).attr('type') == 'intercalary',
 			'timespan': Number($(this).find('.timespan-list').val()),
-			'removes_day': $(this).find('.removes-day').is(':checked'),
-			'removes_week_day': $(this).find('.removes-week-day').is(':checked'),
 			'adds_week_day': $(this).find('.adds-week-day').is(':checked'),
 			'day': Number($(this).find('.week-day-select').val()),
 			'week_day': escapeHtml($(this).find('.internal-list-name').val()),
@@ -3984,31 +3844,13 @@ function set_up_edit_values(){
 
 			var leap_day = clone(static_data.year_data.leap_days[i]);
 
-			if(!leap_day.intercalary && (leap_day.removes_week_day || leap_day.adds_week_day)){
+			if(!leap_day.intercalary && leap_day.adds_week_day){
 				repopulate_weekday_select($(this).find('.week-day-select'), leap_day.day, false);
 			}
 			if(leap_day.intercalary){
 				repopulate_day_select($(this).find('.timespan-day-list'), leap_day.day, false);
 			}
 		})
-	}
-
-	if(static_data.year_data.observationals){
-
-		for(var i = 0; i < static_data.year_data.observationals.length; i++){
-
-			var observational = clone(static_data.year_data.observationals[i]);
-
-			add_observational_to_list(observational_list, i, observational);
-
-		}
-
-		observational_list.children().each(function(i){
-
-			repopulate_timespan_select($(this).find('.timespan-list'), static_data.year_data.observationals[i].timespan, false);
-			repopulate_day_select($(this).find('.timespan-day-list'), static_data.year_data.observationals[i].day, false);
-
-		});
 	}
 
 	$('#leap_day_explaination').prop('disabled', static_data.year_data.timespans.length == 0).toggleClass('hidden', static_data.year_data.timespans.length > 0);
