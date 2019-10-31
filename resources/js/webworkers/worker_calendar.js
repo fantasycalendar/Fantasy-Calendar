@@ -115,22 +115,12 @@ var calendar_builder = {
 						}
 
 					}else{
-						if(leap_day.removes_day){
-							timespan.length--;
-							if(leap_day.removes_week_day){
-								var location = ((leap_day.day-leap_day_offset-1)%timespan.week.length);
-								if(location < 0) location = 0;
-								timespan.week.splice(location, 1)
-								leap_day_offset--;
-							}
-						}else{
-							timespan.length++;
-							if(leap_day.adds_week_day){
-								var location = ((leap_day.day-leap_day_offset-1)%timespan.week.length);
-								if(location < 0) location = 0;
-								timespan.week.splice(location, 0, leap_day.week_day)
-								leap_day_offset++;
-							}
+						timespan.length++;
+						if(leap_day.adds_week_day){
+							var location = ((leap_day.day-leap_day_offset-1)%timespan.week.length);
+							if(location < 0) location = 0;
+							timespan.week.splice(location, 0, leap_day.week_day)
+							leap_day_offset++;
 						}
 					}
 				}
@@ -138,7 +128,7 @@ var calendar_builder = {
 		}
 		
 		return timespan;
-		
+	
 	},
 
 
@@ -356,6 +346,87 @@ var calendar_builder = {
 			}
 
 		}
+
+
+		backtrack_days = 0;
+		for(event_index = 0; event_index < this.static_data.event_data.events.length; event_index++){
+			var event = this.static_data.event_data.events[event_index];
+			backtrack_days = event.data.duration > backtrack_days ? event.data.duration : backtrack_days;
+			backtrack_days = event.data.limited_repeat_num > backtrack_days ? event.data.limited_repeat_num : backtrack_days;
+		}
+
+		days = 0;
+		timespan = parseInt(Object.keys(this.calendar_list.timespans_to_build)[0]);
+		year = start_year;
+
+		if(backtrack_days != 1){
+
+			while(days < backtrack_days){
+
+				ending_day = 0;
+
+				if(this.static_data.settings.show_current_month && days == 0){
+
+					num_timespans = timespan-1;
+					if(num_timespans < 0){
+						year--;
+						num_timespans = this.static_data.year_data.timespans.length-1;
+					}
+					
+				}else{
+
+					year--;
+
+					num_timespans = this.static_data.year_data.timespans.length-1;
+
+				}
+
+				for(var era_index = 0; era_index < this.static_data.eras.length; era_index++){
+
+					era = this.static_data.eras[era_index];
+
+					if(era.settings.ends_year && year == convert_year(this.static_data, era.date.year) && era.date.timespan < num_timespans){
+
+						num_timespans = era.date.timespan;
+						ending_day = era.date.day;
+
+
+					}
+
+				}
+
+				this.calendar_list.timespans_to_evaluate[year] = {};
+
+				for(timespan = num_timespans; timespan >= 0; timespan--){
+
+					var offset = (this.static_data.year_data.timespans[timespan].interval-this.static_data.year_data.timespans[timespan].offset+1)%this.static_data.year_data.timespans[timespan].interval;
+
+					// Get the fraction of that month's appearances
+					var is_leaping = (year + offset) % this.static_data.year_data.timespans[timespan].interval == 0;
+
+					if(is_leaping){
+
+						this.calendar_list.timespans_to_evaluate[year][timespan] = this.create_adjusted_timespan(year, timespan);
+
+						if(ending_day > 0 && timespan == num_timespans){
+							this.calendar_list.timespans_to_evaluate[year][timespan].length = ending_day > this.calendar_list.timespans_to_evaluate[year][timespan].length ? this.calendar_list.timespans_to_evaluate[year][timespan].length : ending_day; 
+						}
+
+						days += this.calendar_list.timespans_to_evaluate[year][timespan].length;
+
+						if(days >= backtrack_days){
+							break;
+						}
+
+					}
+
+				}
+
+			}
+
+		}
+
+		console.log(this.calendar_list.timespans_to_evaluate)
 
 		this.set_up_repititions();
 
@@ -694,6 +765,7 @@ var calendar_builder = {
 		for(event_index = 0; event_index < this.static_data.event_data.events.length; event_index++){
 			var event = this.static_data.event_data.events[event_index];
 			backtrack_days = event.data.duration > backtrack_days ? event.data.duration : backtrack_days;
+			backtrack_days = event.data.limited_repeat_num > backtrack_days ? event.data.limited_repeat_num : backtrack_days;
 		}
 
 
