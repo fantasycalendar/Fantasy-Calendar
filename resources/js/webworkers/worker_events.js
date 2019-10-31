@@ -364,7 +364,6 @@ var event_evaluator = {
 								event_evaluator.number_of_epochs,
 								num_epochs*event_evaluator.number_of_events
 							],
-							text: `Testing '${this.current_event.name}' on day ${event_evaluator.number_of_epochs}...`,
 							callback: true
 						})
 

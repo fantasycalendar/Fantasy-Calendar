@@ -1538,7 +1538,7 @@ var edit_event_ui = {
 
 				if(e.data.callback){
 
-					update_loading_bar(e.data.count[0] / e.data.count[1], e.data.text);
+					update_loading_bar(e.data.count[0] / e.data.count[1]);
 
 				}else{
 

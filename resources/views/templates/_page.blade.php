@@ -13,7 +13,6 @@
 				<div id='loading_text' class='italics-text'>Random text</div>
 
 				<div class="loading_bar hidden"></div>
-				<div class="loading_bar_text hidden"></div>
 
 				<div class='loading_cancel_button_container'>
 					<button type='button' class='btn btn-danger full loading_cancel_button hidden'>Cancel</button>
