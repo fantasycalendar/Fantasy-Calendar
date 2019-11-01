@@ -216,7 +216,7 @@
 
 				<div class='detail-row'>
 					<div class='detail-column half'>
-						<h5 class='event-form-heading'>Text color:</h5>
+						<h5 class='event-form-heading'>Color:</h5>
 						<select id="color_style" name='color_style' class='form-control event-text-input color_display' key='color_display'>
 							<option class="event background Dark-Solid">Dark-Solid</option>
 							<option class="event background Red">Red</option>
@@ -237,7 +237,7 @@
 					</div>
 
 					<div class='detail-column half'>
-						<h5 class='event-form-heading'>Text style:</h5>
+						<h5 class='event-form-heading'>Display:</h5>
 						<select id="text_style" name='text_style' class='form-control event-text-input text_display'>
 							<option class="event Dark-Solid text" value="text">Just text</option>
 							<option class="event Dark-Solid dot" value="dot">• Dot with text</option>
