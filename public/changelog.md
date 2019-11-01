@@ -1,10 +1,12 @@
 # 2.0
 ## TBD
-* Automated build system
+
+This update has a **lot** of changes. If anything confuses you, check out the [comprehensive wiki](https://wiki.fantasy-calendar.com/) for detailed information on each topic. You can also click on the little question marks that are shown when hovering over a menu item while creating your calendar.
+
 * The entire UI has been overhauled with many alterations that come with the changes below.
 * NEW FEATURES!
      * **Intercalary timespans** - Similar to months, but these timespans do not affect the week flow within a calendar, and simply acts as days without being attached to a month.
-     * **Leap Days** - You can now have multiple leap days! This can also be a normal day that gets added to a month, or act as an intercalary leap day where it interrupts the month, inserts a day outside of the month and then continues the month as if nothing happened. Leap days can either add a day, remove a day, or add a week day to the month (again, roman styled calendars).
+     * **Leap Days** - You can now have multiple leap days! This can also be a normal day that gets added to a month, or act as an intercalary leap day where it interrupts the month, inserts a day outside of the month and then continues the month as if nothing happened. Leap days can also add a week day to the month.
      * **Seasons** - Completely overhauled! Instead of being attached to specific days in the year, it now has a static length. This also means that your seasons can drift if the average year length and the season length don't match.
      * **Cycles** - You can now create zodiac years like in the Chinese calendar with the brand new cycle system!
      * **Eras** - They work like A.D. and B.C. in the Gregorian calendar, where each era has a start date and lasts until a new era begins. Eras can also reset the year prematurely like in the Japanese calendar, and resetting the year count can also happen with this.
@@ -21,6 +23,7 @@
      * **Locations** - The location system has been reworked, and each location can now have their own sunrise and sunset times per season, and timezone adjustments when active. Weather is also directly tied to the location now, with precipitation chance and percipitation intensity becoming two different parameters.
      * **Events** - Events now support full markdown editing, and in-calendar display settings such as color and text styles.
      * **Settings** - Multiple settings have been brought up to speed with the rest of the calendar systems.
+
 
 # 1.6a
 ## May 1, 2019
