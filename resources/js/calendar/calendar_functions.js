@@ -530,7 +530,7 @@ function get_cycle(year){
 			var cycle = static_data.cycles.data[index];
 
 			// Get the cycle length from the year
-			var cycle_year = Math.floor((year + cycle.offset) / cycle.names.length);
+			var cycle_year = Math.floor((year + cycle.offset) / cycle.length);
 
 			// Store the cycle index
 			var cycle_index = cycle_year % cycle.names.length;

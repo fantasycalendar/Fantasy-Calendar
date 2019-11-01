@@ -1487,7 +1487,7 @@ function set_up_edit_inputs(set_up){
 
 			var key = target.attr('fc-index');
 
-			if(data.includes('cycles') && data.includes('names')){
+			if(type.includes('cycles') && type.includes('names')){
 
 				current_calendar_data[type[type.length-1]] = [];
 
@@ -1496,11 +1496,6 @@ function set_up_edit_inputs(set_up){
 				});
 
 			}else{
-
-
-				if(type.length > 1){
-					current_calendar_data = current_calendar_data[type[type.length-1]];
-				}
 
 				if(!target.is(':disabled')){
 
@@ -1529,6 +1524,10 @@ function set_up_edit_inputs(set_up){
 
 					if(target.attr('class').indexOf('slider_input') > -1){
 						value = value/100;
+					}
+
+					if(type.length > 1){
+						current_calendar_data = current_calendar_data[type[type.length-1]];
 					}
 
 					current_calendar_data[key] = value;
@@ -2425,14 +2424,14 @@ function add_cycle_to_sortable(parent, key, data){
 						element.push("<div class='detail-column half'>");
 							element.push("<div class='detail-row'>");
 									element.push("<div class='detail-text'>Length:</div>");
-									element.push(`<input type='number' step="1.0" class='form-control length dynamic_input' min='1' data='cycles.${key}' fc-index='length' value='${data.length}' />`);
+									element.push(`<input type='number' step="1.0" class='form-control length dynamic_input' min='1' data='cycles.data.${key}' fc-index='length' value='${data.length}' />`);
 							element.push("</div>");
 						element.push("</div>");
 
 						element.push("<div class='detail-column half'>");
 							element.push("<div class='detail-row'>");
 								element.push("<div class='detail-text'>Offset:</div>");
-								element.push(`<input type='number' step="1.0" class='form-control offset dynamic_input' min='0' data='cycles.${key}' fc-index='offset' value='${data.offset}'/>`);
+								element.push(`<input type='number' step="1.0" class='form-control offset dynamic_input' min='0' data='cycles.data.${key}' fc-index='offset' value='${data.offset}'/>`);
 							element.push("</div>");
 						element.push("</div>");
 					element.push("</div>");
