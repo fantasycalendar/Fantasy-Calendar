@@ -422,7 +422,7 @@ function copy_calendar(calendar_hash, calendar_name, callback){
             if(name === false) throw null;
 
             if (!name) {
-                new_calendar_name = calendar_name;
+                new_calendar_name = calendar_name  + " (clone)";
             } else {
                 new_calendar_name = name;
             }
@@ -431,7 +431,7 @@ function copy_calendar(calendar_hash, calendar_name, callback){
                 method: 'post',
                 url: '/api/calendar/' + calendar_hash + "/clone",
                 data: {
-                    new_calendar_name: new_calendar_name + " (clone)"
+                    new_calendar_name: new_calendar_name
                 }
             });
         })
