@@ -16,18 +16,19 @@
 {
     display: flex;
     justify-content: space-evenly;
+    flex-wrap: wrap;
 }
 
 .calendar_action {
     display: inline-block;
-    margin: 1rem 0;
+    margin: .4rem 0;
 }
 
 .calendar_action i {
-    width: 2.4rem;
-    height: 2.4rem;
-    line-height: 2.4rem;
-    font-size: 1.4rem;
+    width: 1.8rem;
+    height: 1.8rem;
+    line-height: 1.8rem;
+    font-size: 1.1rem;
     margin: 0 5px;
 	opacity: 0.70;
     background-color: #cbd5e0;

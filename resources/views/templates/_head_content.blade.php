@@ -66,6 +66,16 @@
         window.onerror = function(error, url, line) {
             $.notify("Error:\n "+error+" \nin file "+url+" \non line "+line);
         }
+
+        $.protip({
+            defaults: {
+                "delay-in": 2000,
+                position: 'bottom',
+                scheme: 'leaf',
+                classes: 'box-shadow accent-bg-color',
+                animate: 'bounceIn'
+            }
+        });
     });
 
     </script>
