@@ -89,8 +89,6 @@ function do_update_dynamic(){
 		data: {_method: 'PATCH', dynamic_data: JSON.stringify(dynamic_data)},
 		success: function ( result ){
 
-			print(result)
-
 			if(!dynamic_same){
 				prev_dynamic_data = clone(dynamic_data);
 			}
