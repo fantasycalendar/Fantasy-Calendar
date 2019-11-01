@@ -301,9 +301,11 @@ function eval_clock(){
 	element = [];
 	for(var i = 0; i < clock_hours; i++){
 
-		var hour = (i-static_data.clock.offset)%clock_hours;
+		var hour = i%clock_hours;
 
 		var rotation = ((360/clock_hours)*hour);
+
+		hour -= static_data.clock.offset;
 
 		hour = hour < 0 ? Math.floor(hour+clock_hours) : Math.floor(hour);
 
