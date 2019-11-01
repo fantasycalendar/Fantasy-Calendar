@@ -127,21 +127,18 @@
 				<div class='detail-row'>
 					<h5 class='event-form-heading full'>Display settings:</h5>
 
-					<div class='detail-column full'>
+					<div class='detail-column half'>
 						<label class='form-control checkbox'>
 							<input type='checkbox' id='limited_repeat' name='limited_repeat'> Limit repetitions
 						</label>
 					</div>
 
-				</div>
-				
-				<div class='detail-row'>
-					<div class='detail-column full'>
+					<div class='detail-column half'>
 						<label class='form-control '>
 							<div class='detail-column'>
 								 Limit for
 							</div>
-							<div class='detail-column quarter'>
+							<div class='detail-column third'>
 								 <input type='number' min='1' value='1' class='form-control form-control-sm' id='limited_repeat_num' name='limited_repeat_num'>
 							</div>
 							<div class='detail-column'>
@@ -155,20 +152,18 @@
 
 					<h5 class='event-form-heading full'>Duration settings:</h5>
 
-					<div class='detail-column full'>
+					<div class='detail-column half'>
 						<label class='form-control checkbox'>
 							<input type='checkbox' id='has_duration' name='has_duration'> Has duration
 						</label>
 					</div>
-				</div>
 
-				<div class='detail-row'>
-					<div class='detail-column full'>
+					<div class='detail-column half'>
 						<label class='form-control '>
 							<div class='detail-column'>
 								 Lasts for
 							</div>
-							<div class='detail-column quarter'>
+							<div class='detail-column third'>
 								 <input type='number' min='1' value='1' class='form-control form-control-sm' id='duration' name='duration'>
 							</div>
 							<div class='detail-column'>
