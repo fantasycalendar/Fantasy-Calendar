@@ -18,7 +18,7 @@ This update has a **lot** of changes. If anything confuses you, check out the [c
      * **Clock** - Overhauled the clock and the sunrise-sundown system so that it can accomodate crazy times, and added offset hours which simply rotate the numbers around the clock face.
      * **Weeks** - The week system has changed to support the changes in the month system. There is now a global week, which acts as the standard week in the calendar.
      * **Months** - Months can now leap! You can control this through the interval in the month itself. Months can now also have an overriding week, for use in roman-styled calendars.
-     * **Moons** - They can now have a custom phase count, read up on the fantasy calendar wiki to understand how that works. Now you can also hide individual moons from your viewers.
+     * **Moons** - They can now have a custom phase count, read up on the [fantasy calendar wiki](https://wiki.fantasy-calendar.com/index.php?title=Moons#Custom_phase_count) to understand how that works. Now you can also hide individual moons from your viewers.
      * **Weather Generation** - Completely overhauled the weather generation system. It support offseting the weather from the season so that the coldest day doesn't always fall on the winter solstice, for example.
      * **Locations** - The location system has been reworked, and each location can now have their own sunrise and sunset times per season, and timezone adjustments when active. Weather is also directly tied to the location now, with precipitation chance and percipitation intensity becoming two different parameters.
      * **Events** - Events now support full markdown editing, and in-calendar display settings such as color and text styles.
