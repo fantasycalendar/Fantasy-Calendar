@@ -382,7 +382,6 @@ body.hide_year_day .year_day_number{
 /* -------------------- Wide layout ------------------ */
 
 .timespan_container.wide{
-    background-color:lightgrey;
     border-radius:10px;
     border:1px solid $calendar-border-color;
     overflow-x: scroll;
@@ -414,7 +413,7 @@ body.hide_year_day .year_day_number{
     border-bottom-left-radius: 9px;
     border-bottom-right-radius: 9px;
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-    background-color: #D62929;
+    background-color: $accent-color;
 }
 
 
