@@ -364,6 +364,7 @@ function set_up_edit_inputs(set_up){
 			'shift': shift.val(),
 			'granularity': granularity,
 			'color': '#ffffff',
+			'shadow_color': '#292b4a',
 			'hidden': false
 		};
 		if(static_data.moons === undefined){
@@ -2070,12 +2071,26 @@ function add_moon_to_list(parent, key, data){
 			element.push("<div class='detail-row'>");
 				element.push("<div class='detail-column half'>");
 					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text'>Color:</div>");
+						element.push("<div class='detail-text'>Moon color:</div>");
+					element.push("</div>");
+					element.push("<div class='detail-row'>");
 						element.push("<div class='moon_color'>");
 							element.push(`<input type='color' class='dynamic_input color' data='moons.${key}' fc-index='color'/>`);
 						element.push("</div>");
 					element.push("</div>");
 				element.push("</div>");
+				element.push("<div class='detail-column half'>");
+					element.push("<div class='detail-row'>");
+						element.push("<div class='detail-text'>Shadow color:</div>");
+					element.push("</div>");
+					element.push("<div class='detail-row'>");
+						element.push("<div class='moon_color'>");
+							element.push(`<input type='color' class='dynamic_input shadow_color' data='moons.${key}' fc-index='shadow_color'/>`);
+						element.push("</div>");
+					element.push("</div>");
+				element.push("</div>");
+			element.push("</div>");
+			element.push("<div class='detail-row'>");
 				element.push("<div class='detail-column half'>");
 					element.push("<div class='detail-row'>");
 						element.push("<div class='detail-text'>Hide from players: </div>");
@@ -3507,8 +3522,15 @@ function recreate_moon_colors(){
 		showInput: true
 	});
 
+	$('.moon_inputs .shadow_color').spectrum({
+		color: "#292b4a",
+		preferredFormat: "hex",
+		showInput: true
+	});
+
 	$('#moon_list').children().each(function(i){
-		$(this).find('.color').spectrum("set", static_data.moons[i].color);
+		$(this).find('.color').spectrum("set", static_data.moons[i].color ? static_data.moons[i].color : "#FFFFFF");
+		$(this).find('.shadow_color').spectrum("set", static_data.moons[i].shadow_color ? static_data.moons[i].shadow_color : "#292b4a");
 	});
 
 }

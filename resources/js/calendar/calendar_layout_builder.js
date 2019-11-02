@@ -40,7 +40,7 @@ function display_events(static_data, event_data){
 
 function insert_moons(data){
 
-	var moon_text = '<div class="calendar_moon_container">';
+	var moon_text = ['<div class="calendar_moon_container">'];
 
 	if(owner || !static_data.settings.hide_moons){
 
@@ -52,10 +52,17 @@ function insert_moons(data){
 
 				var name_array = moon_phases[moon.granularity];
 
-				moon_text += "<div class='moon_container'>";
-					moon_text += `<div title='${moon.name}, ${name_array[data.moon_phase[moon_index]]}' class='calendar_moon lunar gran-${moon.granularity} phase-${data.moon_phase[moon_index]}'></div>`;
-					moon_text += `<div class='lunar_background' moon_id='${moon_index}'></div>`;
-				moon_text += "</div>";
+				moon_text.push(`<div class='moon_container' moon_id="${moon_index}" title='${moon.name}, ${name_array[data.moon_phase[moon_index]]}' >`);
+
+					moon_text.push(`<svg width="24" height="24" viewBox="0 0 64 64">`);
+						moon_text.push(`<g>`);
+							moon_text.push(`<circle cx="32" cy="32" r="23" class="lunar_background"/>`);
+							moon_text.push(svg_moon_shadows[Math.floor((svg_moon_shadows.length/moon.granularity)*data.moon_phase[moon_index])]); 
+							moon_text.push(`<circle cx="32" cy="32" r="23" class="lunar_border"/>`);
+						moon_text.push(`</g>`);
+					moon_text.push("</svg>");
+
+				moon_text.push("</div>");
 
 			}
 
@@ -63,9 +70,9 @@ function insert_moons(data){
 
 	}
 
-	moon_text += "</div>";
+	moon_text.push("</div>");
 
-	return moon_text;
+	return moon_text.join('');
 }
 
 
@@ -80,7 +87,9 @@ function update_moon_colors(){
 	for(var index = 0; index < static_data.moons.length; index++){
 
 		let color = static_data.moons[index].color ? static_data.moons[index].color : '#ffffff';
-		html.push(`.lunar_background[moon_id='${index}']{ background-color:${color}; }\n`);
+		let shadow_color = static_data.moons[index].shadow_color ? static_data.moons[index].shadow_color : '#292b4a';
+		html.push(`.moon_container[moon_id='${index}'] .lunar_background { fill:${color}; }\n`);
+		html.push(`.moon_container[moon_id='${index}'] .lunar_shadow { fill:${shadow_color}; }\n`);
 
 		if(color == '#ffffff') {
 		    color = '#dfdfdf';
