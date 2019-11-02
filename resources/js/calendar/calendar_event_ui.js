@@ -1544,6 +1544,8 @@ var edit_event_ui = {
 
 					edit_event_ui.event_occurrences = e.data.event_data.valid[edit_event_ui.event_id];
 
+					edit_event_ui.event_occurrences = edit_event_ui.event_occurrences.length ? edit_event_ui.event_occurrences : [];
+
 					edit_event_ui.event_occurrences_text.html(`This event will appear <span class='bold-text'>${edit_event_ui.event_occurrences.length}</span> times in the next ${years} ${years > 1 ? 'years' : 'year'}.`);
 
 					edit_event_ui.event_occurrences_list_container.removeClass('hidden');
