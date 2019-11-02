@@ -143,6 +143,7 @@ body{
     transition: all 0.5s ease;
     max-height: 100%;
     width: $sidebar-width;
+    min-width: $sidebar-width;
     max-width: 600px;
 }
 
