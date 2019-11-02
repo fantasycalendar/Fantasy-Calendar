@@ -620,10 +620,6 @@ label{
     #input_container {
         width: 100vw;
         max-width: initial;
-
-        & .accordion {
-            padding-bottom: 22vh;
-        }
     }
     #calendar_container:not(.inputs_collapsed) {
         width: 0;
