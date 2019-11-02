@@ -601,7 +601,10 @@ var calendar_layouts = {
 				calendar_layouts.html.push("<div class='timespan_container grid'>");
 
 					calendar_layouts.html.push("<div class='timespan_name'>");
-						calendar_layouts.html.push(timespan.name + (static_data.settings.add_month_number ? " - Month " + (timespan.index+1) : ""));
+						calendar_layouts.html.push(timespan.name);
+						calendar_layouts.html.push("<span class='timespan_number'>");
+							calendar_layouts.html.push(` - Month ${timespan.index+1}`);
+						calendar_layouts.html.push("</span>");
 					calendar_layouts.html.push("</div>");
 
 					calendar_layouts.html.push("<div class='timespan_row_container'>");
@@ -706,7 +709,10 @@ var calendar_layouts = {
 
 					calendar_layouts.html.push("<div class='timespan_container grid'>");
 					calendar_layouts.html.push("<div class='timespan_name'>");
-						calendar_layouts.html.push(timespan.name + (static_data.settings.add_month_number ? " - Month " + (timespan.index+1) : ""));
+						calendar_layouts.html.push(timespan.name);
+						calendar_layouts.html.push("<span class='timespan_number'>");
+							calendar_layouts.html.push(` - Month ${timespan.index+1}`);
+						calendar_layouts.html.push("</span>");
 					calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("<div class='timespan_row_container'>");
 					calendar_layouts.html.push("<div class='timespan_row_names'>");
@@ -825,7 +831,10 @@ var calendar_layouts = {
 				calendar_layouts.html.push("<div class='timespan_container wide' onscroll='sidescroll()'>");
 
 				calendar_layouts.html.push("<div class='timespan_name'>");
-					calendar_layouts.html.push(timespan.name + (static_data.settings.add_month_number ? " - Month " + (timespan.index+1) : ""));
+					calendar_layouts.html.push(timespan.name);
+					calendar_layouts.html.push("<span class='timespan_number'>");
+						calendar_layouts.html.push(` - Month ${timespan.index+1}`);
+					calendar_layouts.html.push("</span>");
 				calendar_layouts.html.push("</div>");
 
 
@@ -894,7 +903,10 @@ var calendar_layouts = {
 				calendar_layouts.html.push("<div class='timespan_container wide' onscroll='sidescroll()'>");
 
 					calendar_layouts.html.push("<div class='timespan_name'>");
-						calendar_layouts.html.push(timespan.name + (static_data.settings.add_month_number ? " - Month " + (timespan.index+1) : ""));
+						calendar_layouts.html.push(timespan.name);
+						calendar_layouts.html.push("<span class='timespan_number'>");
+							calendar_layouts.html.push(` - Month ${timespan.index+1}`);
+						calendar_layouts.html.push("</span>");
 					calendar_layouts.html.push("</div>");
 
 					calendar_layouts.html.push("<div class='timespan_row_container'>");
@@ -999,7 +1011,10 @@ var calendar_layouts = {
 
 					calendar_layouts.html.push("<div class='timespan_container wide'>");
 					calendar_layouts.html.push("<div class='timespan_name'>");
-						calendar_layouts.html.push(timespan.name + (static_data.settings.add_month_number ? " - Month " + (timespan.index+1) : ""));
+						calendar_layouts.html.push(timespan.name);
+						calendar_layouts.html.push("<span class='timespan_number'>");
+							calendar_layouts.html.push(` - Month ${timespan.index+1}`);
+						calendar_layouts.html.push("</span>");
 					calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("<div class='timespan_row_container'>");
 					calendar_layouts.html.push("<div class='timespan_row_names'>");
@@ -1158,7 +1173,10 @@ var calendar_layouts = {
 				calendar_layouts.html.push("<div class='timespan_container vertical'>");
 
 				calendar_layouts.html.push("<div class='timespan_name'>");
-					calendar_layouts.html.push(timespan.name + (static_data.settings.add_month_number ? " - Month " + (timespan.index+1) : ""));
+					calendar_layouts.html.push(timespan.name);
+					calendar_layouts.html.push("<span class='timespan_number'>");
+						calendar_layouts.html.push(` - Month ${timespan.index+1}`);
+					calendar_layouts.html.push("</span>");
 				calendar_layouts.html.push("</div>");
 
 
@@ -1192,9 +1210,12 @@ var calendar_layouts = {
 			}else if(timespan.type === 'intercalary'){
 
 				calendar_layouts.html.push("<div class='timespan_container vertical'>");
-
+				
 					calendar_layouts.html.push("<div class='timespan_name'>");
-						calendar_layouts.html.push(timespan.name + (static_data.settings.add_month_number ? " - Month " + (timespan.index+1) : ""));
+						calendar_layouts.html.push(timespan.name);
+						calendar_layouts.html.push("<span class='timespan_number'>");
+							calendar_layouts.html.push(` - Month ${timespan.index+1}`);
+						calendar_layouts.html.push("</span>");
 					calendar_layouts.html.push("</div>");
 
 					calendar_layouts.html.push("<div class='timespan_row_container'>");
@@ -1265,7 +1286,10 @@ var calendar_layouts = {
 
 					calendar_layouts.html.push("<div class='timespan_container vertical'>");
 					calendar_layouts.html.push("<div class='timespan_name'>");
-						calendar_layouts.html.push(timespan.name + (static_data.settings.add_month_number ? " - Month " + (timespan.index+1) : ""));
+						calendar_layouts.html.push(timespan.name);
+						calendar_layouts.html.push("<span class='timespan_number'>");
+							calendar_layouts.html.push(` - Month ${timespan.index+1}`);
+						calendar_layouts.html.push("</span>");
 					calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("<div class='timespan_row_container'>");
 
