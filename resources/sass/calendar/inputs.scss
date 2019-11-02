@@ -398,13 +398,10 @@ label{
 
 .remove-container{
     width:100%;
-    height:100%;
     z-index:10;
     pointer-events: none;
     display: flex;
     align-items: center;
-    top: 0px;
-    position: absolute;
 }
 
 .remove-container-text{
