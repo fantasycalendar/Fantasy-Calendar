@@ -516,7 +516,7 @@ function get_cycle(year){
 	var index_array = [];
 
 	// If cycles are enabled
-	if(static_data.cycles && year >= 0){
+	if(static_data.cycles){
 
 		// Define the index array
 		var index_array = [];
@@ -530,10 +530,12 @@ function get_cycle(year){
 			var cycle = static_data.cycles.data[index];
 
 			// Get the cycle length from the year
-			var cycle_year = Math.floor((year + cycle.offset) / cycle.length);
+			var cycle_year = Math.floor(year / cycle.length);
+
+			if (cycle_year < 0) cycle_year += Math.ceil(Math.abs(year) / cycle.names.length) * cycle.names.length;
 
 			// Store the cycle index
-			var cycle_index = cycle_year % cycle.names.length;
+			var cycle_index = (cycle_year + Math.floor(cycle.offset/cycle.length)) % cycle.names.length;
 
 			// Get the name for this cycle
 			var cycle_name = cycle.names[cycle_index];

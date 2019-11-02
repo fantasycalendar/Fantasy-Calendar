@@ -123,7 +123,7 @@ function set_up_edit_inputs(set_up){
 
 	});
 
-	$(document).on('change, click', cycle_sortable, function(){
+	$(document).on('change', cycle_sortable, function(){
 		update_cycle_example_text();
 	});
 
