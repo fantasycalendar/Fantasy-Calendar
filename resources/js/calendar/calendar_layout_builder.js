@@ -448,7 +448,7 @@ var calendar_layouts = {
 		var html = [];
 		html.push(`<div class='year'>Year ${calendar_layouts.year_data.era_year}`);
 		html.push("<span class='era'></span></div>");
-		html.push(`<div class='cycle'>${get_cycle(calendar_layouts.year_data.year).text}</div>`);
+		html.push(`<div class='cycle'>${get_cycle(convert_year(static_data, calendar_layouts.year_data.era_year)).text}</div>`);
 
 		$('#top_follower_content').html(html.join('')).removeClass().addClass(this.name_layout);
 

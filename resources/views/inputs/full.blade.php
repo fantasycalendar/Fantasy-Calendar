@@ -800,7 +800,7 @@
                     </label>
 
                     <label class="form-control full setting last">
-                        <input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='year_zero_exists'>
+                        <input type='checkbox' class='margin-right static_input' refresh='true' data='settings' fc-index='year_zero_exists'>
                         <span>
                             Year zero exists
                         </span>
