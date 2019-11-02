@@ -262,7 +262,7 @@
 
 
 
-.timespan_container.grid{
+.timespan_container{
     background-color:white;
     border-radius:10px;
     margin: 30px 20px;
@@ -382,12 +382,8 @@ body.hide_year_day .year_day_number{
 /* -------------------- Wide layout ------------------ */
 
 .timespan_container.wide{
-    border-radius:10px;
-    border:1px solid $calendar-border-color;
     overflow-x: scroll;
-    -webkit-flex: 1 0 auto;          /* Chrome */
-    -ms-flex: 1 0 auto;              /* IE 10 */
-    flex: 1 0 auto;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
+    flex: 1 0 auto;
 }
 
 .timespan_container::-webkit-scrollbar-track
