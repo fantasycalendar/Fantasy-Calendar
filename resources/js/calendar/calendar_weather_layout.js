@@ -126,14 +126,15 @@ var calendar_weather = {
 				height += 17;
 			}
 
-			this.weather_tooltip_box.css('height', `${this.base_height+height}px`)
-
-			this.weather_tooltip_box.position({
-				my: "center",
-				at: `top-${this.base_height-10}`,
-				of: icon,
-				collision: "flipfit"
-			});
+			this.popper = new Popper(icon, this.weather_tooltip_box, {
+			    placement: 'top',
+                modifiers: {
+			        offset: {
+			            enabled: true,
+                        offset: '0, 14px'
+                    }
+                }
+            });
 
 			this.weather_temp_desc.each(function(){
 				$(this).text(desc);
