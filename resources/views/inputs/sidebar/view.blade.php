@@ -177,11 +177,11 @@
 </form>
 
 
-<div id='input_collapse_btn' class="hamburger hamburger--arrowturn is-active">
+<button id='input_collapse_btn' class="hamburger hamburger--arrowturn is-active" type="button">
     <span class="hamburger-box">
-        <div class="hambuger-inner"></div>
+        <span class="hamburger-inner"></span>
     </span>
-</div>
+</button>
 
 
 <div id="calendar_container">
