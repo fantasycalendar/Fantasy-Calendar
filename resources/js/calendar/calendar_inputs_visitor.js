@@ -368,13 +368,16 @@ function evaluate_sun(){
 		var sunset = evaluated_static_data.epoch_data[dynamic_data.epoch].season.sunset[0];
 		var sunrise = evaluated_static_data.epoch_data[dynamic_data.epoch].season.sunrise[0];
 
-		sunset = (sunset-static_data.clock.offset)%clock_hours;
-		sunrise = (sunrise-static_data.clock.offset)%clock_hours;
-		sunset = sunset < 0 ? sunset + clock_hours : sunset;
-		sunrise = sunrise < 0 ? sunrise + clock_hours : sunrise;
+		sunset = sunset%clock_hours;
+		sunrise = sunrise%clock_hours;
 
-		sunrise = (360/clock_hours)*(sunrise-clock_hours/4);
-		sunset = (360/clock_hours)*(sunset+clock_hours/4)-360;
+		sunset = sunset > clock_hours ? sunset - clock_hours : sunset;
+		sunrise = sunrise > clock_hours ? sunrise - clock_hours : sunrise;
+
+		sunrise = (360/clock_hours)*((static_data.clock.offset+sunrise)-clock_hours/4);
+		sunset = (360/clock_hours)*((static_data.clock.offset+sunset)+clock_hours/4)-360;
+
+		console.log(sunset, sunrise)
 
 		if(Math.abs(sunset-sunrise) < 220){
 
