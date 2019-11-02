@@ -1,3 +1,23 @@
+@push('head')
+    <script>
+
+    $(document).ready(function(){
+
+        $('#btn_share').click(function(){
+            var copyText = document.querySelector(".share-body");
+            copyText.select();
+            document.execCommand("copy");
+            $.notify(
+                "Copied to clipboard!",
+                "success"
+            );
+        });
+
+    })
+
+    </script>
+@endpush
+
 <form id="input_container">
 
 	<div class='wrap-collapsible'>
@@ -16,7 +36,25 @@
 			<div id='clock'></div>
 
 
+			<div class='detail-row'>
+	            <div class='detail-column quarter'>
+                    <button id="btn_share" type="button" class='btn btn-sm btn-info btn-block'>Share</button>
+	            </div>
+	            <div class='detail-column threequarter'>
+	                <input type="text" class="form-control form-control-sm share-body" readonly value="{{ url()->current() }}"/>
+	            </div>
+            </div>
+
+
 			@if(Auth::check())
+
+				<div class='detail-row'>
+		            <div class='detail-column'>
+		                <a href="{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}" class='full'>
+		                    <button type="button" class='btn btn-sm btn-success btn-block'>Edit Mode</button>
+		                </a>
+		            </div>
+	            </div>
 
 				<div class='detail-row date_control' id='date_inputs'>
 

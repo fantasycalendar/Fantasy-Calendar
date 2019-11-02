@@ -829,6 +829,7 @@ function set_up_edit_inputs(set_up){
 					static_data.event_data.events.splice(index, 1);
 
 					events_sortable.children().each(function(i){
+						static_data.event_data.events[i].id = i;
 						$(this).attr('index', i);
 					});
 
