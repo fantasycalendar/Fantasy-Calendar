@@ -52,12 +52,12 @@ function insert_moons(data){
 
 				var name_array = moon_phases[moon.granularity];
 
-				moon_text.push(`<div class='moon_container' moon_id="${moon_index}" title='${moon.name}, ${name_array[data.moon_phase[moon_index]]}' >`);
+				moon_text.push(`<div class='moon_container protip' moon_id="${moon_index}" data-pt-position="top" data-pt-title='${moon.name}, ${name_array[data.moon_phase[moon_index]]}' >`);
 
 					moon_text.push(`<svg width="24" height="24" viewBox="0 0 64 64">`);
 						moon_text.push(`<g>`);
 							moon_text.push(`<circle cx="32" cy="32" r="23" class="lunar_background"/>`);
-							moon_text.push(svg_moon_shadows[Math.floor((svg_moon_shadows.length/moon.granularity)*data.moon_phase[moon_index])]); 
+							moon_text.push(svg_moon_shadows[Math.floor((svg_moon_shadows.length/moon.granularity)*data.moon_phase[moon_index])]);
 							moon_text.push(`<circle cx="32" cy="32" r="23" class="lunar_border"/>`);
 						moon_text.push(`</g>`);
 					moon_text.push("</svg>");
