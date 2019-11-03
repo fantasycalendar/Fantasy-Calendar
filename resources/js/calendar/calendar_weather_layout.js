@@ -221,7 +221,11 @@ function evaluate_weather_charts(){
 
 			if(epoch.weather){
 
-				labels.push([keys[i], ordinal_suffix_of(epoch.day) + " of " + unescapeHtml(epoch.timespan_name)]);
+				var day = ordinal_suffix_of(epoch.day)
+				var month_name = unescapeHtml(epoch.timespan_name)
+				var year = epoch.year != epoch.era_year ? `era year ${epoch.era_year} (absolute year ${epoch_data.year})` : `year ${epoch.year}`;
+
+				labels.push([`${day} of ${month_name}, ${year}`]);
 
 				temperature[0].push({x: keys[i], y: precisionRound(epoch.weather.temperature[temp_sys].value[0], 5)});
 				temperature[1].push({x: keys[i], y: precisionRound(epoch.weather.temperature[temp_sys].value[1], 5)});
