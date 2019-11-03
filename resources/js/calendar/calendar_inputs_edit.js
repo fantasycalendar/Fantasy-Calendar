@@ -829,7 +829,7 @@ function set_up_edit_inputs(set_up){
 					static_data.event_data.events.splice(index, 1);
 
 					events_sortable.children().each(function(i){
-						static_data.event_data.events[i].sort_by = i;
+						static_data.event_data.events[i].sort_by = i;i;
 						$(this).attr('index', i);
 					});
 
@@ -1846,7 +1846,7 @@ function add_leap_day_to_list(parent, key, data){
 							element.push("</div>");
 						element.push("</div>");
 
-						element.push(`<div class='detail-row week_day_select_container ${(!data.intercalary && data.adds_week_day) ? "hidden" : ""}'>`);
+						element.push(`<div class='detail-row week_day_select_container ${(data.adds_week_day && !data.intercalary) ? "" : "hidden"}'>`);
 							element.push("<div class='detail-column full'>");
 								element.push("<div class='detail-row'>");
 									element.push(`<div class='detail-text'>Select weekday: </div>`);
@@ -3475,6 +3475,7 @@ function reindex_events_sortable(){
 
 		new_order[id] = i;
 		new_events[i] = static_data.event_data.events[id];
+		new_events[i].sort_by = i;
 
 		$(this).attr('index', i);
 

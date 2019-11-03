@@ -433,7 +433,7 @@ var event_evaluator = {
 
 			}else{
 
-				if(epoch >= event_evaluator.start_epoch){
+				if(epoch >= event_evaluator.start_epoch && event_evaluator.event_data.valid[event_index].indexOf(epoch) == -1){
 					event_evaluator.event_data.valid[event_index].push(epoch);
 				}
 
