@@ -1542,9 +1542,19 @@ var edit_event_ui = {
 
 				}else{
 
-					edit_event_ui.event_occurrences = e.data.event_data.valid[edit_event_ui.event_id];
+					event_occurrences = e.data.event_data.valid[edit_event_ui.event_id] ? e.data.event_data.valid[edit_event_ui.event_id] : [];
+					edit_event_ui.event_occurrences = []
 
-					edit_event_ui.event_occurrences = edit_event_ui.event_occurrences.length ? edit_event_ui.event_occurrences : [];
+					for(event_occurrence in event_occurrences){
+
+						var epoch = event_occurrences[event_occurrence];
+						var epoch_data = edit_event_ui.processed_event_data[epoch];
+
+						if(epoch_data.year >= dynamic_data.year){
+							edit_event_ui.event_occurrences.push(event_occurrences[event_occurrence])
+						}
+
+					}
 
 					edit_event_ui.event_occurrences_text.html(`This event will appear <span class='bold-text'>${edit_event_ui.event_occurrences.length}</span> times in the next ${years} ${years > 1 ? 'years' : 'year'}.`);
 
@@ -1592,20 +1602,16 @@ var edit_event_ui = {
 				var epoch = edit_event_ui.event_occurrences[i];
 				var epoch_data = edit_event_ui.processed_event_data[epoch];
 
-				if(epoch_data.era_year > dynamic_data.year){
+				if(epoch_data.intercalary){
+					var text = `<li class='event_occurance'>${ordinal_suffix_of(epoch_data.day)} intercalary day of ${epoch_data.timespan_name}, ${epoch_data.era_year}</li>`
+				}else{
+					var text = `<li class='event_occurance'>${ordinal_suffix_of(epoch_data.day)} of ${epoch_data.timespan_name}, ${epoch_data.era_year}</li>`
+				}
 
-					if(epoch_data.intercalary){
-						var text = `<li class='event_occurance'>${ordinal_suffix_of(epoch_data.day)} intercalary day of ${epoch_data.timespan_name}, ${epoch_data.era_year}</li>`
-					}else{
-						var text = `<li class='event_occurance'>${ordinal_suffix_of(epoch_data.day)} of ${epoch_data.timespan_name}, ${epoch_data.era_year}</li>`
-					}
-
-					if(i-((this.event_occurrences_page-1)*10) < 5){
-						html_col1.push(text);
-					}else{
-						html_col2.push(text);
-					}
-					
+				if(i-((this.event_occurrences_page-1)*10) < 5){
+					html_col1.push(text);
+				}else{
+					html_col2.push(text);
 				}
 
 			}else{
