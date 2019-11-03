@@ -1093,51 +1093,52 @@ var calendar_layouts = {
 							calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow center'>");
-							calendar_layouts.html.push("<div class='weather_icon'></div>");
+						if(calendar_layouts.epoch_data[epoch].weather && calendar_layouts.data.processed_weather){
+							calendar_layouts.html.push(`<div class='weather_icon' align=''></div>`);
+						}
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow right'>");
 							calendar_layouts.html.push("<div class='btn_create_event btn btn-success' title='Create new event'></div>");
 						calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("</div>");
 
-					/*calendar_layouts.html.push("<div class='day_row weather'>");
+					/*if(calendar_layouts.epoch_data[epoch].weather && calendar_layouts.data.processed_weather){
+
+						calendar_layouts.html.push("<div class='day_row weather'>");
 
 						weather = calendar_layouts.epoch_data[epoch].weather;
 
-						temp = "";
-						switch(static_data.climate.global_settings.temp_sys){
-							case "metric":
-								temp = weather.temperature_m+"°C";
-								break
+						var temp_sys = static_data.seasons.global_settings.temp_sys;
 
-							case "imperial":
-								temp = weather.temperature_i+"°F";
-								break
-
-							case "cinematic":
-								temp = weather.temperature_c;
-								break
+						if(temp_sys == 'imperial'){
+							temp_symbol = '°F';
+							var temp = `${precisionRound(weather.temperature[temp_sys].value[0], 1).toString()+temp_symbol} to ${precisionRound(weather.temperature[temp_sys].value[1], 1).toString()+temp_symbol}`;
+						}else if(temp_sys == 'metric'){
+							temp_symbol = '°C';
+							var temp = `${precisionRound(weather.temperature[temp_sys].value[0], 1).toString()+temp_symbol} to ${precisionRound(weather.temperature[temp_sys].value[1], 1).toString()+temp_symbol}`;
+						}else{
+							var temp_f = `${precisionRound(weather.temperature['imperial'].value[0], 1).toString()}°F to ${precisionRound(weather.temperature['imperial'].value[1], 1).toString()}°F`;
+							var temp_c = `${precisionRound(weather.temperature['metric'].value[0], 1).toString()}°C to ${precisionRound(weather.temperature['metric'].value[1], 1).toString()}°C`;
+							var temp = `${temp_f} | ${temp_c}`;
 						}
 
-						wind = weather.wind_speed_desc + " (${weather.wind_direction})";
+						var wind_sys = static_data.seasons.global_settings.wind_sys;
 
-						if(weather.wind_velocity_m !== undefined && weather.wind_velocity_i !== undefined){
-							wind += " (";
-							switch(static_data.climate.global_settings.wind_sys){
-								case "metric":
-									wind += weather.wind_velocity_m+" KPH";
-									break
-
-								case "imperial":
-									wind += weather.wind_velocity_i+" MPH";
-									break
-							}
-							wind += ")";
+						if(wind_sys == 'imperial'){
+							var wind_symbol = "MPH";
+							var wind_text = `${weather.wind_speed} (${weather.wind_direction}) (${weather.wind_velocity[wind_sys]} ${wind_symbol})`;
+						}else if(wind_sys == 'metric'){
+							var wind_symbol = "KPH";
+							var wind_text = `${weather.wind_speed} (${weather.wind_direction}) (${weather.wind_velocity[wind_sys]} ${wind_symbol})`;
+						}else{
+							var wind_text = `${weather.wind_speed} (${weather.wind_direction}) (${weather.wind_velocity.imperial} MPH | ${weather.wind_velocity.metric} KPH)`;
 						}
 
-						calendar_layouts.html.push(temp + " | ${weather.precipitation} | ${weather.clouds} | " + wind);
+						calendar_layouts.html.push(`${temp} | ${weather.precipitation.key} | ${weather.clouds} | ${wind_text}`);
 
-					calendar_layouts.html.push("</div>");*/
+						calendar_layouts.html.push("</div>");
+
+					}*/
 
 					calendar_layouts.html.push("<div class='day_row'>");
 						calendar_layouts.html.push(insert_moons(calendar_layouts.epoch_data[epoch]));

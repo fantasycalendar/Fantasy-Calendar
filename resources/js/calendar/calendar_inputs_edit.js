@@ -3570,6 +3570,7 @@ function recalc_stats(){
 	$('#fract_year_length').prop('title', year_length);
 	$('#avg_month_length').text(month_length);
 	$('#avg_month_length').prop('title', month_length);
+	evaluate_season_lengths();
 }
 
 
