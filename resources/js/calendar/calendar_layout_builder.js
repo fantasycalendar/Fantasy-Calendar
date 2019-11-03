@@ -400,7 +400,7 @@ var calendar_layouts = {
 
 		this.epoch_data = data.epoch_data;
 		this.timespans = data.timespans;
-		this.layout = calendar_layouts[static_data.settings.layout];
+		this.layout = (deviceType() == "Mobile Phone") ? 'vertical' : 'grid';
 
 		this.insert_year_follower();
 
@@ -417,7 +417,7 @@ var calendar_layouts = {
 		this.year_data = this.data.year_data;
 		this.epoch_data = this.data.epoch_data;
 		this.timespans = this.data.timespans;
-		this.name_layout = static_data.settings.layout;
+		this.name_layout = (deviceType() == "Mobile Phone") ? 'vertical' : static_data.settings.layout;
 		this.layout = calendar_layouts[this.name_layout];
 
 		for(var i = 0; i < Object.keys(this.timespans).length; i++){

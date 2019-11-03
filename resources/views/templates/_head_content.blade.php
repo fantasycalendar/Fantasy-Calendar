@@ -51,6 +51,25 @@
     window.baseurl = '{{ getenv('WEBADDRESS') }}';
     window.apiurl = '{{ getenv('WEBADDRESS') }}'+'api/calendar';
 
+    function isMobile() {
+        try{ document.createEvent("TouchEvent"); return true; }
+        catch(e){ return false; }
+    }
+
+    function deviceType() {
+        var width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+        var height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0),screenType;
+        if (isMobile()){
+            if ((width <= 650 && height <= 900) || (width <= 900 && height <= 650))
+                screenType = "Mobile Phone";
+            else
+                screenType = "Tablet";
+        }
+        else
+            screenType = "Desktop";
+        return screenType;
+    }
+
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
@@ -77,7 +96,7 @@
             }
         });
 
-        if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+        if( deviceType() == "Mobile Phone" ) {
             $("#input_container").toggleClass('inputs_collapsed');
             $("#calendar_container").toggleClass('inputs_collapsed');
 
