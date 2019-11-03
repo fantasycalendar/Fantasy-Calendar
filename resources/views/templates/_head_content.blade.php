@@ -76,6 +76,14 @@
                 animate: 'bounceIn'
             }
         });
+
+        if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+            $("#input_container").toggleClass('inputs_collapsed');
+            $("#calendar_container").toggleClass('inputs_collapsed');
+
+            $("#input_collapse_btn").toggleClass('is-active');
+            evaluate_error_background_size();
+        }
     });
 
     </script>
