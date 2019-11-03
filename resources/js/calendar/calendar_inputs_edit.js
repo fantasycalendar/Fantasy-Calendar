@@ -1364,8 +1364,10 @@ function set_up_edit_inputs(set_up){
 
 	$('#enable_weather').change(function(){
 		var checked = $(this).prop('checked');
+		static_data.seasons.global_settings.enable_weather = checked;
 		$('#weather_inputs').toggleClass('hidden', !checked);
 		$('#weather_inputs').find('select, input').prop('disabled', !checked);
+		repopulate_location_select_list();
 	});
 
 	$(document).on('change', '.year-input', function(){
