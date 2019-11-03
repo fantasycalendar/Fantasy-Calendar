@@ -787,7 +787,8 @@ function set_up_edit_inputs(set_up){
 
 				for(var eventId in static_data.event_data.events){
 					if(static_data.event_data.events[eventId].data.connected_events !== undefined){
-						if(static_data.event_data.events[eventId].data.connected_events.includes(String(index))){
+						var connected_events = static_data.event_data.events[eventId].data.connected_events;
+						if(connected_events.includes(String(index)) || connected_events.includes(index)){
 							warnings.push(eventId);
 						}
 					}
@@ -997,7 +998,6 @@ function set_up_edit_inputs(set_up){
 	$(document).on('change', '.adds-week-day', function(){
 		var container = $(this).closest('.sortable-container');
 		var checked = $(this).is(':checked');
-		container.find('.internal-list-name').change();
 		container.find('.week_day_select_container').toggleClass('hidden', !checked);
 		container.find('.adds_week_day_data_container').toggleClass('hidden', !checked);
 		container.find('.adds_week_day_data_container input, .adds_week_day_data_container select').prop('disabled', !checked);
@@ -1007,6 +1007,7 @@ function set_up_edit_inputs(set_up){
 			$('#month_overflow').prop('checked', true);
 		}
 		repopulate_weekday_select($(this).closest('.sortable-container').find('.week-day-select'));
+		container.find('.internal-list-name').change();
 	});
 
 	$(document).on('change', '.unique-week-input', function(){
