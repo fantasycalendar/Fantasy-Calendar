@@ -437,7 +437,15 @@ function repopulate_location_select_list(){
 
 		}
 
-		location_select.html(html.join('')).val(dynamic_data.location);
+		if(html.length > 0){
+
+			location_select.prop('disabled', false).html(html.join('')).val(dynamic_data.location);
+
+		}else{
+
+			location_select.prop('disabled', false).html(html.join(''));
+
+		}
 
 		if(location_select.val() === null){
 			location_select.find('option').first().prop('selected', true);
