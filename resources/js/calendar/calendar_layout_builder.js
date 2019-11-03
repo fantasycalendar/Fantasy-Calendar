@@ -828,7 +828,7 @@ var calendar_layouts = {
 
 				this.insert_intercalary_day(timespan, filtered_leap_days_beforestart, timespan.length, true);
 
-				calendar_layouts.html.push("<div class='timespan_container wide' onscroll='sidescroll()'>");
+				calendar_layouts.html.push("<div class='timespan_container wide'>");
 
 				calendar_layouts.html.push("<div class='timespan_name'>");
 					calendar_layouts.html.push(timespan.name);
@@ -900,7 +900,7 @@ var calendar_layouts = {
 
 			}else if(timespan.type === 'intercalary'){
 
-				calendar_layouts.html.push("<div class='timespan_container wide' onscroll='sidescroll()'>");
+				calendar_layouts.html.push("<div class='timespan_container wide'>");
 
 					calendar_layouts.html.push("<div class='timespan_name'>");
 						calendar_layouts.html.push(timespan.name);
@@ -1210,7 +1210,7 @@ var calendar_layouts = {
 			}else if(timespan.type === 'intercalary'){
 
 				calendar_layouts.html.push("<div class='timespan_container vertical'>");
-				
+
 					calendar_layouts.html.push("<div class='timespan_name'>");
 						calendar_layouts.html.push(timespan.name);
 						calendar_layouts.html.push("<span class='timespan_number'>");

@@ -4,14 +4,6 @@ const worker_calendar = new Worker('/js/webworkers/worker_calendar.js?v='+utcDat
 const worker_events = new Worker('/js/webworkers/worker_events.js?v='+utcDate1);
 const worker_climate = new Worker('/js/webworkers/worker_climate.js?v='+utcDate1);
 
-function sidescroll(){
-	//calculate left position
-	var left = $(this.event.target).scrollLeft();
-	//apply to header in negative
-	$(this.event.target).children().first().css('left', left);
-
-}
-
 var registered_click_callbacks = {}
 
 function bind_calendar_events(){
@@ -23,7 +15,7 @@ function bind_calendar_events(){
 			registered_click_callbacks[callback_id](event);
 
 		}
-		
+
 	});
 
 	$('#input_collapse_btn').click(function(){
