@@ -846,6 +846,7 @@ label{
     border-radius:7px;
 }
 
+
 .close-ui-btn-bg{
     position:absolute;
     right: -20px;
@@ -867,6 +868,44 @@ label{
 
 .close_ui_btn:hover{
     color:#B71C1C;
+}
+
+@media screen and (max-width: 768px) {
+    .clickable_background {
+        width: auto;
+        display: flex;
+        align-items: center;
+    }
+
+    .event-basic-wrapper {
+        margin: 0;
+    }
+
+    .close-ui-btn-bg {
+        top: 0;
+        right: 0;
+        border-radius: 0;
+        background-color: transparent;
+    }
+
+    .close_ui_btn {
+        top: 4.5px;
+        right: 6px;
+    }
+
+    .event-wrapper {
+        position:relative;
+        max-width: 100vw;
+        min-width: 100vw;
+        padding: 0.5rem;
+        margin: 0 auto;
+        background-color: #fff;
+        border: none;
+
+        .form-control {
+            height: auto;
+        }
+    }
 }
 
 .event-form-heading{
