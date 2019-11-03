@@ -96,6 +96,8 @@
             }
         });
 
+        $.trumbowyg.svgPath = '/images/icons.svg';
+
         if( deviceType() == "Mobile Phone" ) {
             $("#input_container").toggleClass('inputs_collapsed');
             $("#calendar_container").toggleClass('inputs_collapsed');
@@ -109,10 +111,7 @@
 
     <script src="/js/login.js"></script>
 
-    <script src="/js/vendor/chartjs/Chart.min.js"></script>
-    <script src="/js/vendor/trumbowyg/trumbowyg.min.js"></script>
     <script src="/js/vendor/jquery/jquery.ui.touch-punch.min.js"></script>
-    <script src="/js/vendor/notifyjs/notify.min.js"></script>
     <script src="/js/vendor/sortable/jquery-sortable-min.js"></script>
     <script src="/js/vendor/spectrum/spectrum.js"></script>
 
@@ -132,7 +131,6 @@
 
     <link rel="stylesheet" href="{{ mix('/css/app.css') }}">
     <link rel="stylesheet" href="/js/vendor/spectrum/spectrum.css">
-    <link rel="stylesheet" href="/js/vendor/trumbowyg/ui/trumbowyg.min.css">
 
     @stack('head')
 </head>

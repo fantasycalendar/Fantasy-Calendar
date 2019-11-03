@@ -10,6 +10,18 @@ try {
     window.Popper = require('popper.js').default;
     window.$ = window.jQuery = require('jquery');
 
+    require('chart.js');
+    require('trumbowyg');
+    require('notifyjs');
+
+    /**
+     * Protip is a tooltip solution that works well with jQuery, but takes a modern
+     * approach to the way you actually create tooltips. In this case that means
+     * using attributes on elements in HTML, not direct javascript controls.
+     */
+    require('protip');
+
+
     require('bootstrap');
 } catch (e) {}
 
@@ -52,14 +64,6 @@ if (authorization) {
  */
 
 require('sweetalert');
-
-
-/**
- * Protip is a tooltip solution that works well with jQuery, but takes a modern
- * approach to the way you actually create tooltips. In this case that means
- * using attributes on elements in HTML, not direct javascript controls.
- */
-require('protip');
 
 
 /**

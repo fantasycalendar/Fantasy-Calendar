@@ -29,9 +29,13 @@
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.10.2",
+        "chart.js": "^2.9.2",
         "hamburgers": "^1.1.3",
+        "notifyjs": "^3.0.0",
         "progressbar.js": "^1.0.1",
         "protip": "^1.4.21",
-        "sweetalert": "^2.1.2"
+        "sortable": "^2.0.0",
+        "sweetalert": "^2.1.2",
+        "trumbowyg": "^2.19.1"
     }
 }

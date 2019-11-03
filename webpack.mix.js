@@ -55,6 +55,9 @@ mix.copy('resources/js/webworkers/worker_events.js', 'public/js/webworkers');
 // Misc
 mix.copy('resources/js/login.js', 'public/js');
 
+// Vendor
+mix.copy('node_modules/trumbowyg/dist/ui/icons.svg', 'public/images');
+
 // Compiled assets
 mix.js('resources/js/app.js', 'public/js')
 
