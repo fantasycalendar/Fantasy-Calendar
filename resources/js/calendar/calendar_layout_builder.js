@@ -1143,13 +1143,12 @@ var calendar_layouts = {
 						calendar_layouts.html.push(insert_moons(calendar_layouts.epoch_data[epoch]));
 					calendar_layouts.html.push("</div>");
 
-
-					calendar_layouts.html.push("<div class='day_row year_day_number'>");
-						calendar_layouts.html.push(calendar_layouts.year_data.year_day);
-					calendar_layouts.html.push("</div>");
-
 					calendar_layouts.html.push("<div class='day_row'>");
 						calendar_layouts.html.push("<div class='event_container'></div>");
+					calendar_layouts.html.push("</div>");
+
+					calendar_layouts.html.push("<div class='day_row year_day_number_parent'>");
+						calendar_layouts.html.push(`<div class='year_day_number'>${calendar_layouts.year_data.year_day}</div>`);
 					calendar_layouts.html.push("</div>");
 
 				calendar_layouts.html.push("</div>");

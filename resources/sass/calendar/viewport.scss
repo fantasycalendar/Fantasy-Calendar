@@ -425,7 +425,6 @@
     }
 
     .timespan_day{
-        display:block;
         text-align:left;
     }
 
@@ -468,13 +467,18 @@
 }
 
 body {
+
     &.hide_timespan_number .timespan_number,
-    &.hide_year_day .year_day_number{
+    &.hide_year_day .year_day_number_parent{
         display:none;
     }
 
-    .year_day_number{
-        display:block;
+    .year_day_number_parent{
+        display: flex;
+        flex-wrap: wrap;
+        flex-grow:1;
+        justify-content: end;
+        flex-direction: column;
     }
 
 }
