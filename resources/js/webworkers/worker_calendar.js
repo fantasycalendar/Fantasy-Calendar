@@ -1374,17 +1374,6 @@ var calendar_builder = {
 		if(!this.static_data.settings.show_current_month){
 			year_day = 1;
 		}
-
-		/*console.log('Year: ' + this.dynamic_data.year)
-		console.log(`Synced epoch: ${this.stored_epoch == first_epoch}`)
-		console.log(`Synced week day: ${this.stored_week_day == first_week_day}`)
-		console.log(`Year length: ${epoch-1-first_epoch}`)
-		console.log(`Start epoch: ${first_epoch}, End epoch: ${epoch-1}`)
-		console.log(`Start weekday: ${first_week_day}, End weekday: ${week_day}`)
-		console.log('-------------------------------------')*/
-
-		this.stored_epoch = epoch;
-		this.stored_week_day = week_day;
 		
 		return {
 			success: true,
