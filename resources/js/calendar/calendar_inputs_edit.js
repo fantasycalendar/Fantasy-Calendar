@@ -3749,9 +3749,7 @@ function repopulate_event_category_lists(){
 
 function evaluate_clock_inputs(){
 
-	var has_master = link_data.master_hash !== "";
-
-	$('#clock_inputs :input, #clock_inputs :button').prop('disabled', !static_data.clock.enabled || has_master);
+	$('#clock_inputs :input, #clock_inputs :button').prop('disabled', !static_data.clock.enabled);
 	$('#clock_inputs').toggleClass('hidden', !static_data.clock.enabled);
 
 	$('.hour_input').each(function(){

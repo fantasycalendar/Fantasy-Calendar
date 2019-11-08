@@ -615,7 +615,6 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object){
 
 	var offset = 1;
 
-
 	var leap_days = clone(static_data.year_data.leap_days).sort((a, b) => (a.day > b.day) ? 1 : -1);
 
 	for(var leap_day_index = 0; leap_day_index < leap_days.length; leap_day_index++){
@@ -919,42 +918,25 @@ var date_converter = {
 		this.static_data = static_data;
 		this.inc_static_data = inc_static_data;
 
-		inc_minutes_per_day = this.inc_static_data.clock.hours * this.inc_static_data.clock.minutes;
-		minutes_per_day = this.static_data.clock.hours * this.static_data.clock.minutes;
+		var inc_minutes_per_day = this.inc_static_data.clock.hours * this.inc_static_data.clock.minutes;
+		var minutes_per_day = this.static_data.clock.hours * this.static_data.clock.minutes;
 
-		time_fraction = minutes_per_day / inc_minutes_per_day;
+		var time_scale = minutes_per_day / inc_minutes_per_day;
+		
+		this.target_epoch = Math.floor(dynamic_data.epoch*time_scale);
 
-		this.target_epoch = Math.floor(dynamic_data.epoch*time_fraction);
+		var current_minute = dynamic_data.hour*this.static_data.clock.minutes+dynamic_data.minute;
 
+		var inc_current_hours = current_minute / this.inc_static_data.clock.minutes;
 
-		var time = fract(this.target_epoch*time_fraction);
-
-		var scaled_time = (dynamic_data.hour/this.static_data.clock.hours)+fract(dynamic_data.minute/this.static_data.clock.minutes)/this.static_data.clock.hours;
-
-		var hour = 1+this.inc_static_data.clock.hours*fract(time+this.static_data.clock.hours)
-
-		var minute = Math.floor(this.inc_static_data.clock.minutes*fract(hour));
-
-		if(inc_dynamic_data.custom_location){
-			var location = inc_tatic_data.seasons.locations[inc_dynamic_data.location];
-
-			hour += location.settings.timezone.hour;
-			minute += location.settings.timezone.minute;
-
-			if(minute > inc_static_data.clock.minutes){
-				hour += Math.floor(minute/inc_static_data.clock.minutes);
-				minute = Math.floor(inc_static_data.clock.minutes*fract(Math.floor(minute/inc_static_data.clock.minutes)));
-			}
-
-			if(hour > inc_static_data.clock.hours){
-
-				this.target_epoch += Math.floor(hour/inc_static_data.clock.hours);
-				hour = Math.floor(inc_static_data.clock.hours*fract(Math.floor(hour/inc_static_data.clock.hours)));
-
-			}
-
+		if(inc_current_hours >= this.inc_static_data.clock.hours){
+			this.target_epoch++;
+			inc_current_hours -= this.inc_static_data.clock.hours;
 		}
 
+		var hour = Math.floor(inc_current_hours);
+
+		var minute = Math.floor(this.inc_static_data.clock.minutes*fract(inc_current_hours))
 
 		this.year = Math.floor(this.target_epoch / fract_year_length(this.inc_static_data))-10;
 		this.timespan = 0;
@@ -1038,10 +1020,6 @@ var date_converter = {
 			this.increase_month();
 			this.day = 1;
 
-		}
-
-		if(!this.timespan_length[this.day-1].is_there.result){
-			this.day++;
 		}
 
 	},
