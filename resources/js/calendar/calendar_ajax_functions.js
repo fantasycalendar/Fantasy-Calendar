@@ -227,6 +227,42 @@ function remove_hashes(child_hash){
 
 
 
+function get_all_master_data(output){
+
+	$.ajax({
+		url:window.apiurl+"/"+link_data.master_hash,
+		type: "get",
+		dataType: 'json',
+		data: {},
+		success: function(result){
+
+			output(result);
+
+		},
+		error: function ( log )
+		{
+			console.log(log);
+		}
+	});
+}
+
+
+function check_last_master_change(output){
+	$.ajax({
+		url:window.apiurl+"/"+link_data.master_hash+"/last_changed",
+		type: "post",
+		dataType: 'json',
+		data: {},
+		success: function(result){
+			output(result);
+		},
+		error: function ( log )
+		{
+			console.log(log);
+		}
+	});
+}
+
 function get_all_data(output){
 
 	$.ajax({

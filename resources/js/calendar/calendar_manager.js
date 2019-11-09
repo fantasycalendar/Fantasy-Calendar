@@ -57,6 +57,58 @@ function rebuild_calendar(action, dynamic_data){
 
 	show_loading_screen();
 
+    if(link_data.master_hash !== ''){
+
+    	check_last_master_change(function(change_result){
+
+    		new_dynamic_change = new Date(change_result.last_dynamic_change)
+    		new_static_change = new Date(change_result.last_static_change)
+
+			if(new_dynamic_change > master_last_dynamic_change || new_static_change > master_last_static_change){
+
+				get_all_master_data(function(data_result){
+
+					master_static_data = data_result.static_data;
+					master_dynamic_data = data_result.dynamic_data;
+					master_last_dynamic_change = new Date(data_result.last_dynamic_change);
+					master_last_static_change = new Date(data_result.last_static_change);
+
+					do_rebuild(action, dynamic_data)
+
+				})
+
+			}else{
+
+				do_rebuild(action, dynamic_data);
+
+			}
+
+    	})
+
+	}else{
+
+		do_rebuild(action, dynamic_data);
+
+	}
+
+}
+
+function do_rebuild(action, dynamic_data, master_date){
+
+	if(link_data.master_hash !== ''){
+
+		var converted_date = date_converter.get_date(master_static_data, static_data, master_dynamic_data, dynamic_data);
+		dynamic_data.year = converted_date.year;
+		dynamic_data.timespan = converted_date.timespan;
+		dynamic_data.day = converted_date.day;
+		dynamic_data.epoch = converted_date.epoch;
+		dynamic_data.hour = converted_date.hour;
+		dynamic_data.minute = converted_date.minute;
+
+		set_up_view_values();
+
+	}
+
 	worker_calendar.postMessage({
 		calendar_name: calendar_name,
 		static_data: static_data,
@@ -64,6 +116,7 @@ function rebuild_calendar(action, dynamic_data){
 		action: action,
 		owner: owner
 	});
+
 }
 
 function rebuild_climate(){

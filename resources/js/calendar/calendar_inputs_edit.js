@@ -3917,7 +3917,22 @@ function set_up_edit_values(){
 	$('#weather_inputs').find('select, input').prop('disabled', !static_data.seasons.global_settings.enable_weather);
 
 	if(window.location.pathname != '/calendars/create') {
+
         populate_calendar_lists();
+
+        if(link_data.master_hash !== ''){
+
+    		get_all_master_data(function(result){
+
+        		master_static_data = result.static_data;
+        		master_dynamic_data = result.dynamic_data;
+        		master_last_dynamic_change = new Date(result.last_dynamic_change);
+        		master_last_static_change = new Date(result.last_static_change);
+
+        	})
+
+        }
+
     }
 
 	evaluate_clock_inputs();

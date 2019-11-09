@@ -997,7 +997,7 @@ var date_converter = {
 			this.loops++;
 
 		}
-
+		
 		this.year = this.year >= 0 ? this.year+1 : this.year;
 		
 		return {
