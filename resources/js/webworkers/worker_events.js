@@ -376,6 +376,8 @@ var event_evaluator = {
 						for(var i = 1; i <= this.current_event.data.limited_repeat_num; i++){
 							if(event_evaluator.event_data.valid[event_index] && event_evaluator.event_data.valid[event_index].includes(epoch-i)){
 								add_event = false
+								epoch_index += this.current_event.data.limited_repeat_num-1;
+								event_evaluator.number_of_epochs += this.current_event.data.limited_repeat_num-1;
 								break;
 							}
 						}
@@ -489,7 +491,6 @@ var event_evaluator = {
 
 			if(event_evaluator.callback !== undefined){
 
-				event_evaluator.current_event_number = 1;
 				event_evaluator.number_of_events = 1;
 				event_evaluator.number_of_epochs = 1;
 
