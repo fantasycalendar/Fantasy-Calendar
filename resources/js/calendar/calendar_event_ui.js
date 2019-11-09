@@ -79,21 +79,29 @@ var edit_event_ui = {
 
 		edit_event_ui.close_ui_btn.click(function(){
 
-			swal({
-				title: "Are you sure?",
-				text: 'This event will not be saved! Are you sure you want to close the event UI?',
-				dangerMode: true,
-				buttons: true,
-				icon: "warning",
-			}).then((willDelete) => {
-				if(willDelete) {
-					if(edit_event_ui.new_event){
-						delete static_data.event_data.events[edit_event_ui.event_id];
-					}
+			if(edit_event_ui.has_changed()){
 
-					edit_event_ui.clear_ui();
-				}
-			});
+				swal({
+					title: "Are you sure?",
+					text: 'This event will not be saved! Are you sure you want to close the event UI?',
+					dangerMode: true,
+					buttons: true,
+					icon: "warning",
+				}).then((willDelete) => {
+					if(willDelete) {
+						if(edit_event_ui.new_event){
+							delete static_data.event_data.events[edit_event_ui.event_id];
+						}
+
+						edit_event_ui.clear_ui();
+					}
+				});
+
+			}else{
+
+				edit_event_ui.clear_ui();
+
+			}
 		});
 
 		this.test_event_btn.click(function(){
@@ -551,6 +559,45 @@ var edit_event_ui = {
 		}
 
 		return date.length > 0;
+
+	},
+
+	has_changed: function(){
+
+		if(static_data.event_data.events[this.event_id]){
+
+			var event_check = clone(static_data.event_data.events[this.event_id])
+
+			var eventid = static_data.event_data.events[this.event_id].id;
+
+			event_check.id = eventid;
+
+			var name = escapeHtml(this.event_background.find('.event_name').val());
+			name = name !== '' ? name : "Unnamed Event";
+
+			event_check.name = name;
+
+			event_check.description = escapeHtml(this.trumbowyg.trumbowyg('html'));
+
+			event_check.data = this.create_event_data();
+
+			event_check.event_category_id = get_category($('#event_categories').val()).id;
+
+			event_check.settings = {
+				color: $('#color_style').val(),
+				text: $('#text_style').val(),
+				hide: $('#event_hide_players').prop('checked'),
+				hide_full: $('#event_hide_full').prop('checked'),
+				noprint: $('#event_dontprint_checkbox').prop('checked')
+			}
+
+			return !Object.compare(event_check, static_data.event_data.events[this.event_id])
+
+		}else{
+
+			return false;
+
+		}
 
 	},
 
