@@ -127,14 +127,12 @@ var eras = {
 		if(static_data.eras.length > 0){
 
 			this.current_eras = [];
-			this.internal_class = '';
 			this.prev_era = -1;
 			this.current_era = 0;
 			this.next_era = 1;
 			this.start_epoch = start_epoch;
 			this.end_epoch = end_epoch;
 			this.era = undefined;
-			this.internal_class = document.getElementsByClassName('era')[0];
 
 			// If the last era shift was behind us, then it is the last era
 			if(static_data.eras[static_data.eras.length-1].date.epoch < this.start_epoch){
@@ -174,6 +172,9 @@ var eras = {
 				this.current_eras.reverse();
 
 			}
+
+			calendar_layouts.update_year_follower();
+
 		}
 	},
 
@@ -185,17 +186,12 @@ var eras = {
 			if(this.era != index){
 				if(index >= 0){
 					this.era = index;
-					if(owner || !static_data.settings.hide_eras){
-						var text = static_data.settings.show_era_abbreviation ? this.current_eras[this.era].data.abbreviation : this.current_eras[this.era].data.name;
-						this.internal_class.innerHTML = " " + text;
-					}
-				}else{
-					this.internal_class.innerHTML = "";
 				}
 			}
-		}else{
-			this.internal_class.innerHTML = "";
 		}
+
+		calendar_layouts.update_year_follower();
+
 	},
 
 	// This just sets up the starting era, in case the user refreshed and isn't at the top of the page
@@ -402,7 +398,7 @@ var calendar_layouts = {
 		this.timespans = data.timespans;
 		this.layout = (deviceType() == "Mobile Phone") ? 'vertical' : 'grid';
 
-		this.insert_year_follower();
+		this.update_year_follower();
 
 		this.append_layout();
 
@@ -442,8 +438,6 @@ var calendar_layouts = {
 
 		}
 
-		this.insert_year_follower();
-
 		this.append_layout();
 
 		this.add_year_day_number();
@@ -452,12 +446,41 @@ var calendar_layouts = {
 
 	},
 
-	insert_year_follower: function(){
+	update_year_follower: function(){
+
+		var year_text = `${calendar_layouts.year_data.era_year}`
+
+		if(eras.era !== undefined && (!static_data.settings.hide_eras || owner)){
+
+			var era = eras.current_eras[eras.era].data;
+
+			if(era.settings.use_custom_format && era.formatting){
+
+				year_text = Mustache.render(
+					era.formatting,
+					{
+						"year": calendar_layouts.year_data.year,
+						"era_year": calendar_layouts.year_data.era_year,
+						"era_name": era.name
+					}
+				);
+
+			}else{
+
+				year_text += ` - ${era.name}`
+
+			}
+
+		}
+
+		var cycle_text = get_cycle(convert_year(static_data, calendar_layouts.year_data.era_year)).text;
+
+
+
 
 		var html = [];
-		html.push(`<div class='year'>Year ${calendar_layouts.year_data.era_year}`);
-		html.push("<span class='era'></span></div>");
-		html.push(`<div class='cycle'>${get_cycle(convert_year(static_data, calendar_layouts.year_data.era_year)).text}</div>`);
+		html.push(`<div class='year'>${year_text}</div>`);
+		html.push(`<div class='cycle'>${cycle_text}</div>`);
 
 		$('#top_follower_content').html(html.join('')).removeClass().addClass(this.name_layout);
 

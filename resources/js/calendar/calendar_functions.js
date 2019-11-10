@@ -523,6 +523,8 @@ function get_cycle(year){
 
 		// Get the format
 		text = static_data.cycles.format;
+		
+		var replace = {}
 
 		// Loop through each cycle
 		for(var index = 0; index < static_data.cycles.data.length; index++){
@@ -540,13 +542,21 @@ function get_cycle(year){
 			// Get the name for this cycle
 			var cycle_name = cycle.names[cycle_index];
 
-			// Replace the part of the text that has the current index's place
-			text = text.replace('$'+(index+1), cycle_name);
+			replace[(index+1).toString()] = cycle_name;
 
 			// Record the cycle index to the array
 			index_array.push(cycle_index)
 		}
+
+		// Replace the indexes with the text
+		text = Mustache.render(
+			text,
+			replace
+		);
+
 	}
+
+
 	return {'text': text,
 			'array': index_array};
 }
