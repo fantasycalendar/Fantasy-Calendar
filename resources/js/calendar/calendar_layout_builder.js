@@ -448,7 +448,7 @@ var calendar_layouts = {
 
 	update_year_follower: function(){
 
-		var year_text = `${calendar_layouts.year_data.era_year}`
+		var year_text = `Year ${calendar_layouts.year_data.era_year}`
 
 		if(eras.era !== undefined && (!static_data.settings.hide_eras || owner)){
 
