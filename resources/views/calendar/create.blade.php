@@ -40,7 +40,6 @@
             "settings":{
                 "layout":"grid",
                 "show_current_month":false,
-                "show_era_abbreviation":false,
                 "allow_view":false,
                 "only_backwards":false,
                 "only_reveal_today":false,
