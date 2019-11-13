@@ -473,12 +473,10 @@ var calendar_layouts = {
 
 		}
 
-		var cycle_text = get_cycle(convert_year(static_data, calendar_layouts.year_data.era_year)).text;
-
-
-
+		var cycle_text = get_cycle(static_data, convert_year(static_data, calendar_layouts.year_data.era_year)).text;
 
 		var html = [];
+    
 		html.push(`<div class='year'>${year_text}</div>`);
 		html.push(`<div class='cycle'>${cycle_text}</div>`);
 

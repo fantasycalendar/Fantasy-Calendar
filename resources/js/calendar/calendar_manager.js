@@ -86,7 +86,6 @@ function rebuild_events(event_id){
 
 	worker_events.postMessage({
 		static_data: static_data,
-		pre_epoch_data: evaluated_static_data.pre_epoch_data,
 		epoch_data: evaluated_static_data.epoch_data,
 		event_id: event_id
 	});
