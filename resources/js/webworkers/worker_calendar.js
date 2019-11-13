@@ -1013,8 +1013,10 @@ var calendar_builder = {
 
 						if(current_timespan.type !== "intercalary"){
 
-							this.data.repititions.week_days[data.timespan_index][data.week_day]++;
-							data.week_day_num = this.data.repititions.week_days[data.timespan_index][data.week_day];
+							if(this.data.repititions.week_days[data.timespan_index]){
+								this.data.repititions.week_days[data.timespan_index][data.week_day]++;
+								data.week_day_num = this.data.repititions.week_days[data.timespan_index][data.week_day];
+							}
 
 						}
 

@@ -25,6 +25,7 @@
 
         edit_event_ui.bind_events();
         edit_HTML_ui.bind_events();
+
     })
     </script>
 @endpush
