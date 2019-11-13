@@ -2919,7 +2919,7 @@ function error_check(parent, rebuild){
 
 
 function update_cycle_example_text(){
-	$('#cycle_test_result').text(get_cycle(($('#cycle_test_input').val()|0)).text);
+	$('#cycle_test_result').text(get_cycle(static_data, ($('#cycle_test_input').val()|0)).text);
 }
 
 function evaluate_remove_buttons(){

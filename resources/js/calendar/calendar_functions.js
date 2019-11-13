@@ -510,7 +510,7 @@ function get_moon_granularity(cycle){
  *                              "text" - The text to be displayed at the top of the calendar
  *                              "array" - An array containing each index (ints) that indicates which part of the cycle each of them is in
  */
-function get_cycle(year){
+function get_cycle(static_data, year){
 
 	var text = '';
 	var index_array = [];

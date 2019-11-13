@@ -14,6 +14,7 @@ var edit_event_ui = {
 		this.delete_droppable					= false;
 		this.date 								= [];
 		this.connected_events					= [];
+		this.search_distance					= 0;
 		this.prev_version_event					= {};
 
 		this.event_background 					= $('#event_edit_background');
@@ -299,6 +300,7 @@ var edit_event_ui = {
 				'conditions': [],
 				'connected_events': false,
 				'date': [],
+				'search_distance': 0
 			},
 			'settings': {
 				'color': 'Dark-Solid',
@@ -338,6 +340,8 @@ var edit_event_ui = {
 		this.create_conditions(event.data.conditions, this.event_conditions_container);
 
 		this.event_occurrences_container.toggleClass('hidden', edit_event_ui.event_conditions_container.length == 0);
+
+		this.search_distance = 0;
 
 		this.evaluate_condition_selects(this.event_conditions_container);
 
@@ -512,7 +516,8 @@ var edit_event_ui = {
 			limited_repeat_num: $('#limited_repeat_num').val()|0,
 			conditions: conditions,
 			connected_events: this.connected_events,
-			date: this.date
+			date: this.date,
+			search_distance: this.search_distance
 		};
     
 	},
@@ -852,6 +857,8 @@ var edit_event_ui = {
 					}
 					values.push(val);
 
+					edit_event_ui.search_distance = Number(val) > edit_event_ui.search_distance ? Number(val) : edit_event_ui.search_distance;
+
 				}else{
 
 					$(this).find('.input_container').children().each(function(){
@@ -977,6 +984,9 @@ var edit_event_ui = {
 				}else if(element[0] === "Events"){
 					condition.find('.event_select').val(static_data.event_data.events[this.event_id].data.connected_events[element[2][0]])
 					condition.find('.input_container').children().eq(1).val(element[2][1]);
+
+					edit_event_ui.search_distance = Number(element[2][1]) > edit_event_ui.search_distance ? Number(element[2][1]) : edit_event_ui.search_distance;
+
 				}else{
 					condition.find('.input_container').children().each(function(i){
 						$(this).val(element[2][i]);
@@ -1564,19 +1574,18 @@ var edit_event_ui = {
 			action: "future",
 			owner: owner,
 			start_year: dynamic_data.year+1,
-			end_year: dynamic_data.year+1+years
+			end_year: dynamic_data.year+2+years
 		});
 
 		edit_event_ui.worker_future_calendar.onmessage = e => {
 
-			edit_event_ui.processed_event_data = e.data.processed_data;
+			edit_event_ui.event_data = e.data.processed_data.epoch_data;
 
 			edit_event_ui.worker_future_events = new Worker('/js/webworkers/worker_events.js');
 
 			edit_event_ui.worker_future_events.postMessage({
 				static_data: static_data,
-				pre_epoch_data: {},
-				epoch_data: edit_event_ui.processed_event_data,
+				epoch_data: edit_event_ui.event_data,
 				event_id: edit_event_ui.event_id,
 				callback: true
 			});
@@ -1595,9 +1604,9 @@ var edit_event_ui = {
 					for(event_occurrence in event_occurrences){
 
 						var epoch = event_occurrences[event_occurrence];
-						var epoch_data = edit_event_ui.processed_event_data[epoch];
+						var epoch_data = edit_event_ui.event_data[epoch];
 
-						if(epoch_data.year >= dynamic_data.year){
+						if(convert_year(static_data, epoch_data.year) > dynamic_data.year){
 							edit_event_ui.event_occurrences.push(event_occurrences[event_occurrence])
 						}
 
@@ -1647,12 +1656,12 @@ var edit_event_ui = {
 			if(edit_event_ui.event_occurrences[i]){
 
 				var epoch = edit_event_ui.event_occurrences[i];
-				var epoch_data = edit_event_ui.processed_event_data[epoch];
+				var epoch_data = edit_event_ui.event_data[epoch];
 
 				if(epoch_data.intercalary){
-					var text = `<li class='event_occurance'>${ordinal_suffix_of(epoch_data.day)} intercalary day of ${epoch_data.timespan_name}, ${epoch_data.era_year}</li>`
+					var text = `<li class='event_occurance'>${ordinal_suffix_of(epoch_data.day)} intercalary day of ${epoch_data.timespan_name}, ${epoch_data.year}</li>`
 				}else{
-					var text = `<li class='event_occurance'>${ordinal_suffix_of(epoch_data.day)} of ${epoch_data.timespan_name}, ${epoch_data.era_year}</li>`
+					var text = `<li class='event_occurance'>${ordinal_suffix_of(epoch_data.day)} of ${epoch_data.timespan_name}, ${epoch_data.year}</li>`
 				}
 
 				if(i-((this.event_occurrences_page-1)*10) < 5){
