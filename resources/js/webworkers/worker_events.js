@@ -3,7 +3,7 @@ importScripts('/js/calendar/calendar_variables.js');
 
 
 onmessage = e => {
-	data = event_evaluator.init(e.data.static_data, e.data.pre_epoch_data, e.data.epoch_data, e.data.event_id, e.data.callback);
+	data = event_evaluator.init(e.data.static_data, e.data.epoch_data, e.data.event_id, e.data.callback);
 	postMessage({
 		event_data: data,
 		callback: false
@@ -18,15 +18,13 @@ var event_evaluator = {
 	start_epoch: 0,
 
 	static_data: {},
-	pre_epoch_data: {},
 	epoch_data: {},
 
 	current_data: {},
 
-	init: function(static_data, pre_epoch_data, epoch_data, event_id, callback){
+	init: function(static_data, epoch_data, event_id, callback){
 
 		this.static_data = static_data;
-		this.pre_epoch_data = pre_epoch_data;
 		this.epoch_data = epoch_data;
 
 		this.callback = callback;
@@ -47,7 +45,6 @@ var event_evaluator = {
 
 		this.events = clone(this.static_data.event_data.events);
 		this.categories = clone(this.static_data.event_data.categories);
-		this.evaluate_valid_events(this.pre_epoch_data, event_id);
 		this.evaluate_valid_events(this.epoch_data, event_id);
 		
 		//execution_time.end();
