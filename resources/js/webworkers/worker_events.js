@@ -340,11 +340,7 @@ var event_evaluator = {
 
 				var epoch = evaluate_calendar_start(event_evaluator.static_data, convert_year(event_evaluator.static_data, this.current_event.data.date[0]), this.current_event.data.date[1], this.current_event.data.date[2]).epoch;
 
-				if(epoch_list[Object.keys(epoch_list)[0]].year == this.current_event.data.date[0]){
-
-					add_to_epoch(this.current_event, event_index, epoch);
-
-				}
+				add_to_epoch(this.current_event, event_index, epoch);
 
 			}else{
 
@@ -432,7 +428,7 @@ var event_evaluator = {
 
 			}else{
 
-				if(epoch >= event_evaluator.start_epoch && event_evaluator.event_data.valid[event_index].indexOf(epoch) == -1){
+				if(event_evaluator.event_data.valid[event_index].indexOf(epoch) == -1){
 					event_evaluator.event_data.valid[event_index].push(epoch);
 				}
 
@@ -516,6 +512,8 @@ var event_evaluator = {
 					evaluate_event(event_index);
 				}
 			}
+
+			console.log(event_evaluator.event_data.valid)
 
 		}
 

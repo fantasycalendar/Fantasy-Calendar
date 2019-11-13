@@ -341,7 +341,7 @@ var edit_event_ui = {
 
 		this.event_occurrences_container.toggleClass('hidden', edit_event_ui.event_conditions_container.length == 0);
 
-		this.search_distance = 0;
+		this.search_distance = event.data.search_distance;
 
 		this.evaluate_condition_selects(this.event_conditions_container);
 
@@ -384,7 +384,6 @@ var edit_event_ui = {
 		}else{
 			static_data.event_data.events[this.event_id] = {};
 		}
-
 
 		var name = escapeHtml(this.event_background.find('.event_name').val());
 		name = name !== '' ? name : "Unnamed Event";
