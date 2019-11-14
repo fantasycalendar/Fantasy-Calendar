@@ -15,8 +15,6 @@ var event_evaluator = {
 	events: [],
 	categories: [],
 
-	start_epoch: 0,
-
 	static_data: {},
 	epoch_data: {},
 
@@ -341,7 +339,7 @@ var event_evaluator = {
 
 				var epoch = evaluate_calendar_start(event_evaluator.static_data, convert_year(event_evaluator.static_data, this.current_event.data.date[0]), this.current_event.data.date[1], this.current_event.data.date[2]).epoch;
 
-				if(epoch >= this.start_epoch && epoch <= this.end_epoch){
+				if(epoch >= event_evaluator.start_epoch && epoch <= event_evaluator.end_epoch){
 
 					add_to_epoch(this.current_event, event_index, epoch);
 
