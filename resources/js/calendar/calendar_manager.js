@@ -76,6 +76,8 @@ function rebuild_climate(){
 		dynamic_data: dynamic_data,
 		preview_date: preview_date,
 		evaluated_static_data: evaluated_static_data.epoch_data,
+		start_epoch: evaluated_static_data.year_data.start_epoch,
+		end_epoch: evaluated_static_data.year_data.end_epoch,
 		owner: owner
 	});
 }
@@ -87,7 +89,9 @@ function rebuild_events(event_id){
 	worker_events.postMessage({
 		static_data: static_data,
 		epoch_data: evaluated_static_data.epoch_data,
-		event_id: event_id
+		event_id: event_id,
+		start_epoch: evaluated_static_data.year_data.start_epoch,
+		end_epoch: evaluated_static_data.year_data.end_epoch
 	});
 }
 
@@ -159,8 +163,8 @@ worker_calendar.onmessage = e => {
 			calendar_weather.epoch_data = evaluated_static_data.epoch_data;
 			calendar_weather.processed_weather = evaluated_static_data.processed_weather;
 
-			var start_epoch = Number(Object.keys(evaluated_static_data.epoch_data)[0]);
-			var end_epoch = Number(Object.keys(evaluated_static_data.epoch_data)[Object.keys(evaluated_static_data.epoch_data).length-1]);
+			var start_epoch = evaluated_static_data.start_epoch;
+			var end_epoch = evaluated_static_data.end_epoch;
 
 			eras.evaluate_current_era(static_data, start_epoch, end_epoch);
 			eras.set_up_position();

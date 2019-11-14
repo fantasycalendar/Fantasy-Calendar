@@ -516,9 +516,21 @@ var edit_event_ui = {
 			conditions: conditions,
 			connected_events: this.connected_events,
 			date: this.date,
-			search_distance: this.search_distance
+			search_distance: this.get_search_distance()
 		};
     
+	},
+
+	get_search_distance: function(){
+
+		var event = static_data.event_data.events[this.event_id];
+
+		var search_distance = $('#duration').val()|0 > search_distance ? $('#duration').val()|0 : search_distance;
+		var search_distance = $('#limited_repeat_num').val()|0 > search_distance ? $('#limited_repeat_num').val()|0 : search_distance;
+		var search_distance = this.search_distance > search_distance ? this.search_distance : search_distance;
+
+		return search_distance;
+
 	},
 
 	event_is_one_time: function(){
@@ -1586,6 +1598,8 @@ var edit_event_ui = {
 				static_data: static_data,
 				epoch_data: edit_event_ui.event_data,
 				event_id: edit_event_ui.event_id,
+				start_epoch: e.data.processed_data.start_epoch,
+				end_epoch: e.data.processed_data.end_epoch,
 				callback: true
 			});
 
@@ -1611,7 +1625,9 @@ var edit_event_ui = {
 
 					}
 
-					edit_event_ui.event_occurrences_text.html(`This event will appear <span class='bold-text'>${edit_event_ui.event_occurrences.length}</span> times in the next ${years} ${years > 1 ? 'years' : 'year'}.`);
+					var num = edit_event_ui.event_occurrences.length;
+
+					edit_event_ui.event_occurrences_text.html(`This event will appear <span class='bold-text'>${num}</span> time${num > 1 ? "s" : ""} in the next ${years} year${years > 1 ? 's' : ''}.`);
 
 					edit_event_ui.event_occurrences_list_container.removeClass('hidden');
 

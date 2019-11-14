@@ -415,6 +415,7 @@ var calendar_layouts = {
 
 		this.data = clone(data)
 		this.year_data = this.data.year_data;
+		this.year_data.epoch = this.year_data.start_epoch;
 		this.epoch_data = this.data.epoch_data;
 		this.timespans = this.data.timespans;
 		this.name_layout = (deviceType() == "Mobile Phone") ? 'vertical' : static_data.settings.layout;
