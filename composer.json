@@ -15,10 +15,12 @@
         "fideloper/proxy": "^4.0",
         "graham-campbell/markdown": "^11.0",
         "guzzlehttp/guzzle": "^6.5",
+        "laravel/cashier": "^10.5",
         "laravel/framework": "^7.0",
         "laravel/tinker": "^2.2.0",
         "laravel/ui": "^2.0",
         "league/fractal": "^0.18.0",
+        "nesbot/carbon": "^2.22"
         "mews/purifier": "3.2.0",
         "nesbot/carbon": "^2.31"
     },
@@ -57,14 +59,8 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
-        "pre-install-cmd": [
-            "@php -r \"file_exists('storage/framework/cache') || mkdir('storage/framework/cache');\"",
-            "@php -r \"file_exists('storage/framework/sessions') || mkdir('storage/framework/sessions');\"",
-            "@php -r \"file_exists('storage/framework/views') || mkdir('storage/framework/views');\""
-        ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan vendor:publish --provider='Code16\\Sharp\\SharpServiceProvider' --tag=assets --force",
             "@php artisan package:discover --ansi"
         ],
         "post-root-package-install": [
