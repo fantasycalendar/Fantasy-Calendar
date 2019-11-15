@@ -114,6 +114,8 @@ worker_climate.onmessage = e => {
 	calendar_weather.epoch_data = clone(evaluated_static_data.epoch_data);
 	calendar_weather.processed_seasons = clone(e.data.processed_seasons);
 	calendar_weather.processed_weather = clone(e.data.processed_weather);
+	calendar_weather.start_epoch = evaluated_static_data.year_data.start_epoch;
+	calendar_weather.end_epoch = evaluated_static_data.year_data.end_epoch;
 
 	if(prev_seasons != calendar_weather.processed_seasons || prev_weather != calendar_weather.processed_weather){
 
@@ -162,6 +164,8 @@ worker_calendar.onmessage = e => {
 
 			calendar_weather.epoch_data = evaluated_static_data.epoch_data;
 			calendar_weather.processed_weather = evaluated_static_data.processed_weather;
+			calendar_weather.start_epoch = evaluated_static_data.year_data.start_epoch;
+			calendar_weather.end_epoch = evaluated_static_data.year_data.end_epoch;
 
 			var start_epoch = evaluated_static_data.start_epoch;
 			var end_epoch = evaluated_static_data.end_epoch;
