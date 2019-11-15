@@ -8,8 +8,10 @@ use Illuminate\Http\Request;
 class SubscriptionController extends Controller
 {
     public function subscribe(Request $request) {
+        $intent = (Auth::check()) ? Auth::user()->createSetupIntent() : false;
+
         return view('subscriptions.subscribe',[
-            'intent' => Auth::user()->createSetupIntent()
+            'intent' => $intent
         ]);
     }
 
