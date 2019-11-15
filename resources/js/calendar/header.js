@@ -63,6 +63,19 @@ $(document).ready(function(){
 
 	warning_message.init();
 
+	loading_bar = new ProgressBar.Line('.loading_bar', {
+		strokeWidth: 2,
+		easing: 'easeInOut',
+		color: '#FFEA82',
+		trailColor: '#eee',
+		trailWidth: 1,
+		from: {color: '#FFEA82'},
+		to: {color: '#ED6A5A'},
+		step: (state, bar) => {
+			bar.path.setAttribute('stroke', state.color);
+		}
+	});
+
 });
 
 function evaluate_error_background_size(){
@@ -194,13 +207,60 @@ var loading_screen_texts = [
 	`Skipping a beat and breaking time`
 ];
 
-function show_loading_screen(){
-	$('#loading_text').text(loading_screen_texts[Math.floor(Math.random()*loading_screen_texts.length)] + "...");
+
+var loading_screen_text_timer;
+
+function show_loading_screen(loading_bar, cancel_button_callback){
+
 	$('#loading_background').removeClass('hidden');
+
+	clearTimeout(loading_screen_text_timer)
+	set_loading_screen_text(loading_screen_texts.slice(0));
+
+	if(loading_bar !== undefined){
+		$('.loading_spinner').addClass('hidden');
+		$('.loading_bar').removeClass('hidden');
+	}
+
+	if(cancel_button_callback !== undefined){
+		$('.loading_cancel_button').removeClass('hidden').click(function(){
+			cancel_button_callback();
+		});
+	}
 }
 
 function hide_loading_screen(){
+	clearTimeout(loading_screen_text_timer)
+	loading_screen_text_timer = undefined;
+	loading_bar.set(0)
 	$('#loading_background').addClass('hidden');
+	$('.loading_spinner').removeClass('hidden');
+	$('.loading_bar').addClass('hidden');
+	$('.loading_cancel_button').addClass('hidden');
+}
+
+function set_loading_screen_text(array){
+
+	if(array.length == 0){
+		array = loading_screen_texts.slice(0);
+	}
+
+	var int = Math.floor(Math.random()*array.length)
+	var text = array[int];
+	array.splice(int, 1);
+
+	$('#loading_text').text(text+"...")
+
+	loading_screen_text_timer = setTimeout(function(){
+		set_loading_screen_text(array)
+	}, 6000)
+
+}
+
+
+function update_loading_bar(percentage){
+
+	loading_bar.set(percentage)
 }
 
 function slugify(string) {
@@ -209,11 +269,11 @@ function slugify(string) {
 	const p = new RegExp(a.split('').join('|'), 'g')
 
 	return string.toString().toLowerCase()
-	  .replace(/\s+/g, '-') // Replace spaces with -
-	  .replace(p, c => b.charAt(a.indexOf(c))) // Replace special characters
-	  .replace(/&/g, '-and-') // Replace & with 'and'
-	  .replace(/[^\w\-]+/g, '') // Remove all non-word characters
-	  .replace(/\-\-+/g, '-') // Replace multiple - with single -
-	  .replace(/^-+/, '') // Trim - from start of text
-	  .replace(/-+$/, '') // Trim - from end of text
+		.replace(/\s+/g, '-') // Replace spaces with -
+		.replace(p, c => b.charAt(a.indexOf(c))) // Replace special characters
+		.replace(/&/g, '-and-') // Replace & with 'and'
+		.replace(/[^\w\-]+/g, '') // Remove all non-word characters
+		.replace(/\-\-+/g, '-') // Replace multiple - with single -
+		.replace(/^-+/, '') // Trim - from start of text
+		.replace(/-+$/, '') // Trim - from end of text
 }

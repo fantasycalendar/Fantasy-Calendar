@@ -301,9 +301,11 @@ function eval_clock(){
 	element = [];
 	for(var i = 0; i < clock_hours; i++){
 
-		var hour = (i-static_data.clock.offset)%clock_hours;
+		var hour = i%clock_hours;
 
 		var rotation = ((360/clock_hours)*hour);
+
+		hour -= static_data.clock.offset;
 
 		hour = hour < 0 ? Math.floor(hour+clock_hours) : Math.floor(hour);
 
@@ -366,13 +368,14 @@ function evaluate_sun(){
 		var sunset = evaluated_static_data.epoch_data[dynamic_data.epoch].season.sunset[0];
 		var sunrise = evaluated_static_data.epoch_data[dynamic_data.epoch].season.sunrise[0];
 
-		sunset = (sunset-static_data.clock.offset)%clock_hours;
-		sunrise = (sunrise-static_data.clock.offset)%clock_hours;
-		sunset = sunset < 0 ? sunset + clock_hours : sunset;
-		sunrise = sunrise < 0 ? sunrise + clock_hours : sunrise;
+		sunset = sunset%clock_hours;
+		sunrise = sunrise%clock_hours;
 
-		sunrise = (360/clock_hours)*(sunrise-clock_hours/4);
-		sunset = (360/clock_hours)*(sunset+clock_hours/4)-360;
+		sunset = sunset > clock_hours ? sunset - clock_hours : sunset;
+		sunrise = sunrise > clock_hours ? sunrise - clock_hours : sunrise;
+
+		sunrise = (360/clock_hours)*((static_data.clock.offset+sunrise)-clock_hours/4);
+		sunset = (360/clock_hours)*((static_data.clock.offset+sunset)+clock_hours/4)-360;
 
 		if(Math.abs(sunset-sunrise) < 220){
 
@@ -482,11 +485,8 @@ function repopulate_day_select(select, val, change){
 		var exclude_self = $(this).hasClass('exclude_self');
 
 		if(exclude_self){
-			if($(this).closest('.sortable-container').hasClass('observational')){
-				self_object = get_calendar_data($(this).attr('data'));
-			}else if($(this).closest('.sortable-container').hasClass('leap-day')){
-				self_object = get_calendar_data($(this).attr('data'));
-			}
+
+			self_object = get_calendar_data($(this).attr('data'));
 
 			if(self_object){
 				var days = get_days_in_timespan(static_data, year, timespan, self_object);

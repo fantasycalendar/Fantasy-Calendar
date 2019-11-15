@@ -38,10 +38,44 @@ var calendar_weather = {
 			this.weather_wind = $('.weather_wind');
 			this.weather_precip = $('.weather_precip');
 			this.weather_clouds = $('.weather_clouds');
+			this.stop_hide = false;
+			this.sticky_icon = false;
+
+		},
+
+		sticky: function(icon){
+
+			this.sticky_icon = icon;
+
+			this.sticky_icon.addClass('sticky');
+
+			this.stop_hide = true;
+
+			registered_click_callbacks['sticky_weather_ui'] = this.sticky_callback;
+
+		},
+
+		sticky_callback: function(event){
+
+			if($(event.target).closest('#weather_tooltip_box').length == 0 && $(event.target).closest('.weather_icon').length == 0){
+
+				calendar_weather.tooltip.stop_hide = false;
+
+				calendar_weather.tooltip.hide();
+
+			}
 
 		},
 
 		show: function(icon){
+
+			if(registered_click_callbacks['sticky_weather_ui']){
+				delete registered_click_callbacks['sticky_weather_ui'];
+				this.sticky_icon.removeClass('sticky');
+			}
+
+			this.stop_hide = false;
+			this.sticky_icon = false;
 
 			if(!calendar_weather.processed_weather) return;
 
@@ -92,14 +126,15 @@ var calendar_weather = {
 				height += 17;
 			}
 
-			this.weather_tooltip_box.css('height', `${this.base_height+height}px`)
-
-			this.weather_tooltip_box.position({
-				my: "center",
-				at: `top-${this.base_height-10}`,
-				of: icon,
-				collision: "flipfit"
-			});
+			this.popper = new Popper(icon, this.weather_tooltip_box, {
+			    placement: 'top',
+                modifiers: {
+			        offset: {
+			            enabled: true,
+                        offset: '0, 14px'
+                    }
+                }
+            });
 
 			this.weather_temp_desc.each(function(){
 				$(this).text(desc);
@@ -125,9 +160,14 @@ var calendar_weather = {
 		},
 
 		hide: function(){
-			this.weather_tooltip_box.hide();
-			this.weather_tooltip_box.css({"top":"", "left":""});
-			this.weather_tooltip_box.removeClass();
+
+			document.removeEventListener('click', function(){});
+
+			if(!this.stop_hide){
+				this.weather_tooltip_box.hide();
+				this.weather_tooltip_box.css({"top":"", "left":""});
+				this.weather_tooltip_box.removeClass();
+			}
 		}
 
 	}
@@ -181,7 +221,11 @@ function evaluate_weather_charts(){
 
 			if(epoch.weather){
 
-				labels.push([keys[i], ordinal_suffix_of(epoch.day) + " of " + unescapeHtml(epoch.timespan_name)]);
+				var day = ordinal_suffix_of(epoch.day)
+				var month_name = unescapeHtml(epoch.timespan_name)
+				var year = epoch.year != epoch.era_year ? `era year ${epoch.era_year} (absolute year ${epoch_data.year})` : `year ${epoch.year}`;
+
+				labels.push([`${day} of ${month_name}, ${year}`]);
 
 				temperature[0].push({x: keys[i], y: precisionRound(epoch.weather.temperature[temp_sys].value[0], 5)});
 				temperature[1].push({x: keys[i], y: precisionRound(epoch.weather.temperature[temp_sys].value[1], 5)});

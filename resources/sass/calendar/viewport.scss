@@ -3,64 +3,156 @@
 
 /* ------------------ Overall Layout ----------------- */
 
+@keyframes shadow-pulse
+{
+    0% {
+        box-shadow: inset 0 0 0 0 rgba(191.0, 99.0, 71.0, 1.0);
+    }
+    100% {
+        box-shadow: inset 0 0 0 20px rgba(191.0, 99.0, 71.0, 0);
+    }
+}
+
+.preview_day{
+    animation: shadow-pulse 2s 1;
+}
+
 #calendar {
     color: #70767c;
 }
 
 .timespan {
     &_container{
-        margin-bottom:10px;
         position:relative;
-    }
-
-    &_container:first-child{
-        margin-top:10px;
-    }
-
-    &_row_container{
-        display: flex;
-        flex-direction: column;
-    }
-
-    &_row,
-    &_row_names{
-        display: flex;
-        flex-direction: row;
-    }
-
-    &_day,
-    &_intercalary{
         background-color:white;
-    }
+        border-radius:10px;
+        margin: 30px 20px;
+        overflow:hidden;
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
 
-    &_day.empty_timespan_day{
-        background-color:grey;
-        min-height:75px;
-    }
+        .week_day_name{
+            flex: 1 0;
+            text-align:center;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
-    &_intercalary:not(:first-child){
-        border-left:1px solid $calendar-border-color;
-    }
-
-    &_row.intercalary{
-        border-top:1px solid $calendar-border-color;
-    }
-
-    &_row.intercalary .tall{
-        margin:0;
-    }
-
-    &_day:hover {
-        .btn_create_event, .weather_icon {
-            visibility: visible;
+        .week_day_name:not(:first-child){
+            border-left:1px solid $calendar-border-color;
         }
     }
 
+    &_name {
+        text-align: center;
+        border-bottom: 1px solid $calendar-border-color;
+        font-size: 1.4rem;
+        line-height: 2.2rem;
+    }
+
+    &_intercalary {
+        border-top:0 !important;
+    }
+
+    &_row {
+        display: flex;
+        flex-direction: row;
+
+        &.intercalary{
+            border-top:1px solid $calendar-border-color;
+
+            .tall{
+                margin:0;
+            }
+        }
+
+        &_names{
+            display: flex;
+            flex-direction: row;
+        }
+
+        &_container{
+            display: flex;
+            flex-direction: column;
+
+            &:first-child{
+                margin-top:10px;
+            }
+        }
+    }
+
+    &_day {
+        border-top:1px solid $calendar-border-color;
+        display: flex;
+        flex-direction: column;
+        min-height:8rem;
+        flex: 1;
+        background-color:white;
+
+        &.empty_timespan_day{
+            background-color:grey;
+            min-height:75px;
+        }
+
+        &:not(:first-child){
+            border-left:1px solid $calendar-border-color;
+        }
+
+        &:hover {
+            .btn_create_event, .weather_icon {
+                visibility: visible;
+            }
+        }
+    }
+
+    &_intercalary{
+        background-color:white;
+        display: flex;
+        flex-direction: column;
+        min-height:8rem;
+        flex: 1;
+
+        &:not(:first-child){
+            border-left:1px solid $calendar-border-color;
+        }
+    }
+
+    &_number{
+        display:inline-block;
+        margin-left:0.22222em;
+    }
+
     &_overflow {
+        display: flex;
+        flex-direction: column;
+        min-height:8rem;
+        flex: 1;
         color: rgba(#98a0a6, 0.6);
         background-color: #ffffff;
         background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23f9f9fa' fill-opacity='1' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");
         cursor: not-allowed;
+        border-top:1px solid $calendar-border-color;
+        padding-left:1px;
+
+        &.first{
+            padding-left:0;
+        }
+
+        &.firstlast{
+            border-left:1px solid $calendar-border-color;
+        }
+
+        &.last{
+            padding-left:0;
+        }
+
+        &.intercalary{
+            border-top:0;
+        }
+
+        &:not(.intercalary):not(.first) {
+            border-left: 1px solid $calendar-border-color;
+            padding-left: 0;
+        }
     }
 }
 
@@ -157,6 +249,10 @@
     visibility: hidden;
 }
 
+.weather_icon.sticky{
+    visibility: visible;
+}
+
 .event{
     font-size: 0.8rem;
     word-break: break-word;
@@ -164,43 +260,44 @@
     margin: 0.3rem 0;
     border-left: 0.2rem solid white;
     font-family: "Montserrat";
-}
 
-.event:hover{
-    cursor: pointer;
-    background-color: lightgrey;
-    border-color: #737373;
-}
+    &_container{
+        align-self: center;
+        flex: 1;
+        width: 100%;
+    }
 
-.event.Dark{
-    color: #ffffff;
-}
+    &:hover{
+        cursor: pointer;
+        background-color: lightgrey;
+        border-color: #737373;
+    }
 
-.event.Light{
-    color: #404040;
-}
+    &.Dark{
+        color: #ffffff;
+    }
 
-.event.dot::before{
-    line-height: 0;
-    content: "• ";
-    font-weight: 900;
-}
+    &.Light{
+        color: #404040;
+    }
 
-.event.dot{
-    color: #000000;
-}
+    &.dot{
+        color: #000000;
 
-.event.background{
-    color: #ffffff;
+        &::before{
+            line-height: 0;
+            content: "• ";
+            font-weight: 900;
+        }
+    }
+
+    &.background{
+        color: #ffffff;
+    }
 }
 
 .era.hidden{
     visibility: hidden;
-}
-
-.grid .timespan_overflow:not(.intercalary):not(.first) {
-    border-left: 1px solid $calendar-border-color;
-    padding-left: 0;
 }
 
 /* --------------- Minimalistic Layout --------------- */
@@ -253,250 +350,56 @@
 }
 
 
-
-/* -------------------- Grid layout ------------------ */
-
-
-
-.timespan_container.grid{
-    background-color:white;
-    border-radius:10px;
-    margin: 30px 20px;
-    overflow:hidden;
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-}
-
-.grid .timespan_name{
-    text-align: center;
-    border-bottom: 1px solid $calendar-border-color;
-    font-size: 1.4rem;
-    line-height: 2.2rem;
-}
-
-.grid .timespan_intercalary{
-    border-top:0 !important;
-}
-
-body .grid .timespan_number{
-    display:inline-block;
-    margin-left:0.22222em;
-}
-body.hide_timespan_number .timespan_number{
-    display:none;
-}
-
-
-.grid .week_day_name{
-    flex: 1 0;
-    text-align:center;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.grid .week_day_name:not(:first-child){
-    border-left:1px solid $calendar-border-color;
-}
-
-
-.grid .timespan_day,
-.grid .timespan_intercalary,
-.grid .timespan_overflow{
-    display: flex;
-    flex-direction: column;
-    min-height:8rem;
-    flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
-}
-
-.current_day{
-    background-color:#fef0db;
-    border-bottom: 5px solid #fdb44d;
-}
-
-
-@keyframes shadow-pulse
-{
-    0% {
-        box-shadow: inset 0 0 0 0 rgba(191.0, 99.0, 71.0, 1.0);
-    }
-    100% {
-        box-shadow: inset 0 0 0 20px rgba(191.0, 99.0, 71.0, 0);
-    }
-}
-
-.preview_day{
-    animation: shadow-pulse 2s 1;
-}
-
-body .year_day_number{
-    display:block;
-}
-body.hide_year_day .year_day_number{
-    display:none;
-}
-
-.grid .timespan_overflow.first{
-    padding-left:0;
-}
-
-.grid .timespan_overflow.firstlast{
-    border-left:1px solid $calendar-border-color;
-}
-
-.grid .timespan_overflow.last{
-    padding-left:0;
-}
-
-.grid .timespan_day{
-    border-top:1px solid $calendar-border-color;
-}
-
-.grid .timespan_day:not(:first-child){
-    border-left:1px solid $calendar-border-color;
-}
-
-.grid .timespan_overflow{
-    border-top:1px solid $calendar-border-color;
-    padding-left:1px;
-}
-
-.grid .timespan_overflow.intercalary{
-    border-top:0;
-}
-
-.grid .event_container{
-    align-self: center;
-    -webkit-box-flex: 1;      /* OLD - iOS 6-, Safari 3.1-6 */
-    -moz-box-flex: 1;         /* OLD - Firefox 19- */
-
-    -webkit-flex: 1;          /* Chrome */
-    -ms-flex: 1;              /* IE 10 */
-    flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
-    width: 100%;
-}
-
-
 /* -------------------- Wide layout ------------------ */
 
-.timespan_container.wide{
-    background-color:lightgrey;
-    border-radius:10px;
-    border:1px solid $calendar-border-color;
-    overflow-x: scroll;
-    -webkit-flex: 1 0 auto;          /* Chrome */
-    -ms-flex: 1 0 auto;              /* IE 10 */
-    flex: 1 0 auto;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
+.timespan_container.wide {
+    overflow-x: auto;
+    flex: 1 0 auto;
+
+    &::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.15);
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        background-color: #F5F5F5;
+    }
+
+    &::-webkit-scrollbar {
+        height: 12px;
+        background-color: #F5F5F5;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        width: calc(100% - 5px);
+        border-top: 1px solid $calendar-border-color;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        border-bottom-left-radius: 9px;
+        border-bottom-right-radius: 9px;
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .15);
+        background-color: $accent-color;
+    }
+
+
+    .timespan_row_container:last-child {
+        padding-bottom: 1px;
+    }
+
+    .timespan_name {
+        position: sticky;
+        left: 0;
+    }
+
+
+    .week_day_name {
+        min-width: 150px;
+    }
+
+    .timespan_day,
+    .timespan_intercalary,
+    .timespan_overflow {
+        min-width: 150px;
+    }
 }
-
-.timespan_container::-webkit-scrollbar-track
-{
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-    background-color: #F5F5F5;
-}
-
-.timespan_container::-webkit-scrollbar
-{
-    height: 12px;
-    background-color: #F5F5F5;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-    width: calc(100% - 5px);
-    border-top:1px solid $calendar-border-color;
-}
-
-.timespan_container::-webkit-scrollbar-thumb
-{
-    border-bottom-left-radius: 9px;
-    border-bottom-right-radius: 9px;
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-    background-color: #D62929;
-}
-
-
-.wide .timespan_row_container:last-child{
-    padding-bottom:1px;
-}
-
-.wide .timespan_name{
-    text-align: center;
-    border-bottom:1px solid $calendar-border-color;
-    font-size:22pt;
-    height:50px;
-    width:100%;
-    position:relative;
-}
-
-
-.wide .week_day_name{
-    flex: 1 0;
-    text-align:center;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    min-width:150px;
-}
-
-.wide .week_day_name:not(:first-child){
-    border-left:1px solid $calendar-border-color;
-}
-
-
-.wide .timespan_day,
-.wide .timespan_intercalary,
-.wide .timespan_overflow{
-    display: flex;
-    flex-direction: column;
-    min-height:150px;
-    min-width:150px;
-    -webkit-box-flex: 1;      /* OLD - iOS 6-, Safari 3.1-6 */
-    -moz-box-flex: 1;         /* OLD - Firefox 19- */
-
-    -webkit-flex: 1;          /* Chrome */
-    -ms-flex: 1;              /* IE 10 */
-    flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
-}
-
-.wide .timespan_overflow.first{
-    padding-left:0;
-}
-
-.wide .timespan_overflow.firstlast{
-    border-left:1px solid $calendar-border-color;
-    padding-left:1px;
-}
-
-.wide .timespan_overflow.last{
-    padding-left:0;
-}
-
-.wide .timespan_day{
-    border-top:1px solid $calendar-border-color;
-}
-
-.wide .timespan_day:not(:first-child){
-    border-left:1px solid $calendar-border-color;
-}
-
-.wide .timespan_overflow{
-    border-top:1px solid $calendar-border-color;
-    padding-left:1px;
-}
-
-.wide .timespan_overflow.intercalary{
-    border-top:0;
-}
-
-.wide .event_container{
-    align-self: center;
-    -webkit-box-flex: 1;      /* OLD - iOS 6-, Safari 3.1-6 */
-    -moz-box-flex: 1;         /* OLD - Firefox 19- */
-
-    -webkit-flex: 1;          /* Chrome */
-    -ms-flex: 1;              /* IE 10 */
-    flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
-    width: 100%;
-}
-
 
 
 
@@ -504,81 +407,88 @@ body.hide_year_day .year_day_number{
 /* ---------------- Vertical layout ------------------ */
 
 .timespan_container.vertical{
-    background-color:lightgrey;
     border-radius:10px;
-    border:1px solid $calendar-border-color;
     overflow:hidden;
     text-align: center;
+
+    .timespan_row_container{
+        display: inline-flex;
+        width:100%;
+    }
+
+    .timespan_name{
+        font-weight: bold;
+    }
+
+    .day_row:first-child{
+        justify-content: space-between;
+    }
+
+    .timespan_day{
+        text-align:left;
+    }
+
+    .toprow{
+        padding-top:3px;
+    }
+
+    .number{
+        border-right:1px solid lightgrey;
+    }
+
+    .timespan_day:first-child{
+        border-top:0;
+    }
+
+    .weekday{
+        text-align:center;
+    }
+
+    .event_container{
+        align-self: flex-start;
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .event{
+        flex: 1 1 50%;
+    }
+
+
+    .day_row{
+        display: flex;
+    }
+
+    .day_row.moons{
+        justify-content: flex-end;
+        align-content: center;
+    }
+
 }
 
-.vertical .timespan_row_container{
-    display: inline-flex;
-    flex-direction: column;
-    width:100%;
+body {
+
+    &.hide_timespan_number .timespan_number,
+    &.hide_year_day .year_day_number_parent{
+        display:none;
+    }
+
+    .year_day_number_parent{
+        display: flex;
+        flex-wrap: wrap;
+        flex-grow:1;
+        justify-content: end;
+        flex-direction: column;
+    }
+
 }
 
-.vertical .timespan_name{
-    text-align: center;
-    border-bottom:1px solid $calendar-border-color;
-    font-size:22pt;
-    height:50px;
-}
-
-.vertical .day_row:first-child{
-    justify-content: space-between;
-}
-
-.vertical .timespan_day{
-    display:block;
-    text-align:left;
-}
-
-
-.vertical .toprow{
-    padding-top:3px;
-}
-
-.vertical .number{
-    border-right:1px solid lightgrey;
-}
-
-.vertical .timespan_day{
-    border-left:0;
-    border-top:1px solid $calendar-border-color;
-}
-
-.vertical .timespan_day:first-child{
-    border-top:0;
-}
-
-.vertical .weekday{
-    text-align:center;
-}
-
-.vertical .event_container{
-    align-self: flex-start;
-    width:100%;
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.vertical .event{
-    flex: 1 1 calc(25% - 4px);
-    max-width:calc(25% - 4px);
-}
-
-
-.vertical .day_row{
-    display: flex;
-}
-
-
-.grid .calendar_moon_container{
+.calendar_moon_container{
     flex-flow: row wrap;
     justify-content: center;
 }
 
-.vertical .day_row.moons{
-    justify-content: flex-end;
-    align-content: center;
+.current_day{
+    background-color:#fef0db;
+    border-bottom: 5px solid #fdb44d;
 }

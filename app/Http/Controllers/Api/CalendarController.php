@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Jobs\CloneCalendar;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CalendarCollection;
@@ -24,6 +25,10 @@ class CalendarController extends Controller
 
     public function show(Request $request, Calendar $calendar) {
         return $calendar;
+    }
+
+    public function clone(Request $request, $id) {
+        return $this->dispatchNow(new CloneCalendar($id, $request->get('new_calendar_name')));
     }
 
     public function children(Request $request, $id) {

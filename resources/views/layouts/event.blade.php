@@ -7,9 +7,6 @@
 					<i class="close_ui_btn icon-remove-circle"></i>
 
 					<h2 class='event_name event-form-heading'></h2>
-					<div class='detail-row italics-text'>
-						Description:
-					</div>
 					<div class='detail-row'>
 						<div class="event_desc"></div>
 					</div>
@@ -81,7 +78,7 @@
 					<input type='number' class='form-control' id='repeat_input' name='repeat_input' value='1' min='1' placeholder='Every nth' />
 				</div>
 
-				<div class='detail-row'>
+				<div>
 					<h5 class='event-form-heading'>Conditions:</h5>
 					<div class='detail-row' id='non_preset_buttons'>
 						<button type='button' id='add_event_condition' class='btn btn-primary half'>Add condition</button>
@@ -98,7 +95,30 @@
 
 					</div>
 					<div class='detail-row'>
-						<button type='button' id='remove_dropped' class='btn btn-danger full hidden space_below'>DROP TO REMOVE</button>
+						<button type='button' id='remove_dropped' class='btn btn-danger full hidden'>DROP TO REMOVE</button>
+					</div>
+				</div>
+
+				<div class='event_occurrences hidden'>
+					<div class='detail-row'>
+						<h5 class='event-form-heading full'>Test event occurrences for the next:</h5>
+						<div class='detail-row'>
+							<button type='button' class='btn btn-info quarter test_event_btn' years="1">1 year</button>
+							<button type='button' class='btn btn-info quarter test_event_btn' years="10">10 years</button>
+							<button type='button' class='btn btn-info quarter test_event_btn' years="50">50 years</button>
+							<button type='button' class='btn btn-info quarter test_event_btn' years="100">100 years</button>
+						</div>
+					</div>
+
+					<div class='detail-row list_container hidden'>
+						<div class='text'></div>
+						<div class='list hidden detail-row'>
+							<ul class='detail-column half col1'></ul>
+							<ul class='detail-column half col2'></ul>
+							<div class='full page_number'></div>
+							<button type='button' class='btn btn-info half prev' disabled>Previous</button>
+							<button type='button' class='btn btn-info half next' disabled>Next</button>
+						</div>
 					</div>
 				</div>
 
@@ -109,38 +129,56 @@
 
 					<div class='detail-column half'>
 						<label class='form-control checkbox'>
-							<input type='checkbox' id='only_happen_once' name='only_happen_once'> Only happens once in view
+							<input type='checkbox' id='limited_repeat' name='limited_repeat'> Limit repetitions
 						</label>
 					</div>
+
+					<div class='detail-column half'>
+						<label class='form-control '>
+							<div class='detail-column'>
+								 Limit for
+							</div>
+							<div class='detail-column third'>
+								 <input type='number' min='1' value='1' class='form-control form-control-sm' id='limited_repeat_num' name='limited_repeat_num'>
+							</div>
+							<div class='detail-column'>
+								 days.
+							</div>
+						</label>
+					</div>
+				</div>
+
+				<div class='detail-row'>
+
+					<h5 class='event-form-heading full'>Duration settings:</h5>
 
 					<div class='detail-column half'>
 						<label class='form-control checkbox'>
 							<input type='checkbox' id='has_duration' name='has_duration'> Has duration
 						</label>
 					</div>
-				</div>
-
-				<div class='detail-row duration_settings hidden'>
-
-					<h5 class='event-form-heading full'>Duration settings:</h5>
 
 					<div class='detail-column half'>
-						<label class='form-control'>
-							<div class='detail-column third'>
-								 Duration:
+						<label class='form-control '>
+							<div class='detail-column'>
+								 Lasts for
 							</div>
-							<div class='detail-column twothird'>
+							<div class='detail-column third'>
 								 <input type='number' min='1' value='1' class='form-control form-control-sm' id='duration' name='duration'>
+							</div>
+							<div class='detail-column'>
+								 days.
 							</div>
 						</label>
 					</div>
+				</div>
 
-					<div class='detail-column half'>
+				<div class='detail-row'>
+					<div class='detail-column'>
 						<label class='form-control checkbox'>
 							<input type='checkbox' id='show_first_last' name='show_first_last'> Show only first and last event
 						</label>
 					</div>
-
 				</div>
 
 				<div class='spacey_separator'></div>
@@ -178,32 +216,32 @@
 
 				<div class='detail-row'>
 					<div class='detail-column half'>
-						<h5 class='event-form-heading'>Text color:</h5>
+						<h5 class='event-form-heading'>Color:</h5>
 						<select id="color_style" name='color_style' class='form-control event-text-input color_display' key='color_display'>
-							<option class="event background Dark-Solid">Dark-Solid</option>
-							<option class="event background Red">Red</option>
-							<option class="event background Pink">Pink</option>
-							<option class="event background Purple">Purple</option>
-							<option class="event background Deep-Purple">Deep-Purple</option>
-							<option class="event background Blue">Blue</option>
-							<option class="event background Light-Blue">Light-Blue</option>
-							<option class="event background Cyan">Cyan</option>
-							<option class="event background Teal">Teal</option>
-							<option class="event background Green">Green</option>
-							<option class="event background Light-Green">Light-Green</option>
-							<option class="event background Lime">Lime</option>
-							<option class="event background Yellow">Yellow</option>
-							<option class="event background Orange">Orange</option>
-							<option class="event background Blue-Grey">Blue-Grey</option>
+							<option>Dark-Solid</option>
+							<option>Red</option>
+							<option>Pink</option>
+							<option>Purple</option>
+							<option>Deep-Purple</option>
+							<option>Blue</option>
+							<option>Light-Blue</option>
+							<option>Cyan</option>
+							<option>Teal</option>
+							<option>Green</option>
+							<option>Light-Green</option>
+							<option>Lime</option>
+							<option>Yellow</option>
+							<option>Orange</option>
+							<option>Blue-Grey</option>
 						</select>
 					</div>
 
 					<div class='detail-column half'>
-						<h5 class='event-form-heading'>Text style:</h5>
+						<h5 class='event-form-heading'>Display:</h5>
 						<select id="text_style" name='text_style' class='form-control event-text-input text_display'>
-							<option class="event Dark-Solid text" value="text">Just text</option>
-							<option class="event Dark-Solid dot" value="dot">• Dot with text</option>
-							<option class="event Dark-Solid background" value="background">Background</option>
+							<option value="text">Just text</option>
+							<option value="dot">• Dot with text</option>
+							<option value="background">Background</option>
 						</select>
 					</div>
 				</div>

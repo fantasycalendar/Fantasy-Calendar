@@ -51,6 +51,25 @@
     window.baseurl = '{{ getenv('WEBADDRESS') }}';
     window.apiurl = '{{ getenv('WEBADDRESS') }}'+'api/calendar';
 
+    function isMobile() {
+        try{ document.createEvent("TouchEvent"); return true; }
+        catch(e){ return false; }
+    }
+
+    function deviceType() {
+        var width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+        var height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0),screenType;
+        if (isMobile()){
+            if ((width <= 650 && height <= 900) || (width <= 900 && height <= 650))
+                screenType = "Mobile Phone";
+            else
+                screenType = "Tablet";
+        }
+        else
+            screenType = "Desktop";
+        return screenType;
+    }
+
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
@@ -66,16 +85,33 @@
         window.onerror = function(error, url, line) {
             $.notify("Error:\n "+error+" \nin file "+url+" \non line "+line);
         }
+
+        $.protip({
+            defaults: {
+                "delay-in": 2000,
+                position: 'bottom',
+                scheme: 'leaf',
+                classes: 'box-shadow accent-bg-color',
+                animate: 'bounceIn'
+            }
+        });
+
+        $.trumbowyg.svgPath = '/images/icons.svg';
+
+        if( deviceType() == "Mobile Phone" ) {
+            $("#input_container").toggleClass('inputs_collapsed');
+            $("#calendar_container").toggleClass('inputs_collapsed');
+
+            $("#input_collapse_btn").toggleClass('is-active');
+            evaluate_error_background_size();
+        }
     });
 
     </script>
 
     <script src="/js/login.js"></script>
 
-    <script src="/js/vendor/chartjs/Chart.min.js"></script>
-    <script src="/js/vendor/trumbowyg/trumbowyg.min.js"></script>
     <script src="/js/vendor/jquery/jquery.ui.touch-punch.min.js"></script>
-    <script src="/js/vendor/notifyjs/notify.min.js"></script>
     <script src="/js/vendor/sortable/jquery-sortable-min.js"></script>
     <script src="/js/vendor/spectrum/spectrum.js"></script>
 
@@ -95,7 +131,6 @@
 
     <link rel="stylesheet" href="{{ mix('/css/app.css') }}">
     <link rel="stylesheet" href="/js/vendor/spectrum/spectrum.css">
-    <link rel="stylesheet" href="/js/vendor/trumbowyg/ui/trumbowyg.min.css">
 
     @stack('head')
 </head>

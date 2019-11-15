@@ -459,8 +459,8 @@ function norm(v, min, max)
  * @param  {int}    y   The second number
  * @return {int}        The greatest common divisor
  */
-function gcd(k, n){
-	return k ? gcd(n % k, k) : n;
+function gcd(x, y){
+	return x ? gcd(y % x, x) : y;
 }
 
 
@@ -475,6 +475,64 @@ function lcm(x, y){
 	if ((typeof x !== 'number') || (typeof y !== 'number')) 
 		return false;
 	return (!x || !y) ? 0 : Math.abs((x * y) / gcd(x, y));
+}
+
+/**
+ * Least Common Multiple Offset (bool) will calculate whether two intervals with individual offsets will ever collide
+ *
+ * @param  {int}    x   The first interval
+ * @param  {int}    y   The second interval
+ * @param  {int}    a   The first interval's offset
+ * @param  {int}    b   The second interval's offset
+ * @return {bool}       Whether these two intervals will ever collide
+ */
+function lcmo_bool(x, y, a, b){
+	return Math.abs(a - b) == 0 || Math.abs(a - b) % gcd(x, y) == 0;
+}
+
+/**
+ * Least Common Multiple Offset will calculate whether two intervals with individual offsets will ever collide,
+ * and return an object containing the starting point of their repitition and how often they repeat
+ *
+ * @param  {int}    x   The first interval
+ * @param  {int}    y   The second interval
+ * @param  {int}    a   The first interval's offset
+ * @param  {int}    b   The second interval's offset
+ * @return {object}		An object with the interval's  starting point and LCM
+ */
+function lcmo(x, y, a, b){
+
+	// If they never repeat, return false
+	if(!lcmo_bool(x, y, a, b)){
+		return false;
+	}
+
+	// Store the respective interval's starting points
+	x_start = (Math.abs(x + a) % x)
+	y_start = (Math.abs(y + b) % y)
+
+	// If the starts aren't the same, then we need to search for the first instance the intervals' starting points line up
+	if(x_start != y_start){
+
+		// Until the starting points line up, keep increasing them until they do
+		while(x_start != y_start){
+
+			while(x_start < y_start){						
+				x_start += x;
+			}
+
+			while(y_start < x_start){
+				y_start += y;
+			}
+
+		}
+	}
+
+	return {
+		"offset": x_start,
+		"interval": lcm(x, y)
+	}
+
 }
 
 
@@ -506,13 +564,13 @@ function get_moon_granularity(cycle){
  *                              "text" - The text to be displayed at the top of the calendar
  *                              "array" - An array containing each index (ints) that indicates which part of the cycle each of them is in
  */
-function get_cycle(year){
+function get_cycle(static_data, year){
 
 	var text = '';
 	var index_array = [];
 
 	// If cycles are enabled
-	if(static_data.cycles && year >= 0){
+	if(static_data.cycles){
 
 		// Define the index array
 		var index_array = [];
@@ -526,10 +584,12 @@ function get_cycle(year){
 			var cycle = static_data.cycles.data[index];
 
 			// Get the cycle length from the year
-			var cycle_year = Math.floor((year + cycle.offset) / cycle.names.length);
+			var cycle_year = Math.floor(year / cycle.length);
+
+			if (cycle_year < 0) cycle_year += Math.ceil(Math.abs(year) / cycle.names.length) * cycle.names.length;
 
 			// Store the cycle index
-			var cycle_index = cycle_year % cycle.names.length;
+			var cycle_index = (cycle_year + Math.floor(cycle.offset/cycle.length)) % cycle.names.length;
 
 			// Get the name for this cycle
 			var cycle_name = cycle.names[cycle_index];
@@ -590,7 +650,7 @@ function convert_year(static_data, year){
  * @param  {object}     static_data     A calendar static data object
  * @param  {int}        year            The number of a year passed through the convert_year function.
  * @param  {int}        Timespan_index  The index of a timespan
- * @param  {obj}        self_object     Not sure what this is for anymore, but I believe this was to be able to target specific objects like observationals or leap days.
+ * @param  {obj}        self_object     Not sure what this is for anymore, but I believe this was to be able to target specific leap days.
  * @return {array}                      An array containing strings for each day
  */
 function get_days_in_timespan(static_data, year, timespan_index, self_object){
@@ -609,61 +669,6 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object){
 
 	var offset = 1;
 
-	if(static_data.year_data.observationals){
-		
-		for(var observational_index = 0; observational_index < static_data.year_data.observationals.length; observational_index++){
-
-			var observational = static_data.year_data.observationals[observational_index];
-
-			if(year == convert_year(static_data, observational.year) && observational.timespan === timespan_index){
-
-				if(self_object && Object.compare(leap_day, self_object)){
-
-					self_object = false;
-
-				}else{
-
-					if(!observational.removes_day){
-
-						days.push("");
-
-						i++;
-
-					}
-
-				}
-
-			}
-
-		}
-
-		for(var observational_index = 0; observational_index < static_data.year_data.observationals.length; observational_index++){
-
-			var observational = static_data.year_data.observationals[observational_index];
-
-			if(year == convert_year(static_data, observational.year) && observational.timespan === timespan_index){
-
-				if(self_object && Object.compare(leap_day, self_object)){
-
-					self_object = false;
-
-				}else{
-
-					if(observational.removes_day){
-
-						days.splice(days.length-offset, 1);
-
-						offset++;
-
-					}
-
-				}
-
-			}
-
-		}
-
-	}
 
 	var leap_days = clone(static_data.year_data.leap_days).sort((a, b) => (a.day > b.day) ? 1 : -1);
 
@@ -700,40 +705,6 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object){
 
 			}else{
 
-				if(!leap_day.removes_day){
-
-					var is_there = does_day_appear(static_data, year, timespan_index, i);
-
-					if(is_there.result){
-
-						if(self_object && Object.compare(leap_day, self_object)){
-
-							self_object = false;
-
-						}else{
-						
-							var leaping = does_leap_day_appear(static_data, year, timespan_index, leap_day_index);
-
-							if(leaping){
-
-								days.push("");
-
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	for(var leap_day_index = 0; leap_day_index < leap_days.length; leap_day_index++){
-
-		var leap_day = leap_days[leap_day_index];
-
-		if(leap_day.timespan === timespan_index){
-
-			if(!leap_day.intercalary && leap_day.removes_day){
-
 				var is_there = does_day_appear(static_data, year, timespan_index, i);
 
 				if(is_there.result){
@@ -748,9 +719,7 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object){
 
 						if(leaping){
 
-							days.splice(days.length-offset, 1);
-
-							offset++;
+							days.push("");
 
 						}
 					}
@@ -902,11 +871,7 @@ function fract_year_length(static_data){
 
 		var leap_day = static_data.year_data.leap_days[i];
 
-		if(leap_day.removes_day){
-			length -= get_leap_fraction(1, leap_day.interval, 0, false)
-		}else{
-			length += get_leap_fraction(1, leap_day.interval, 0, false)
-		}
+		length += get_interval_fractions(leap_day.interval, leap_day.offset)
 		
 	}
 
@@ -940,11 +905,8 @@ function avg_month_length(static_data){
 
 		var leap_day = static_data.year_data.leap_days[i];
 
-		if(leap_day.removes_day){
-			length -= get_leap_fraction(1, leap_day.interval, 0)
-		}else{
-			length += get_leap_fraction(1, leap_day.interval, 0)
-		}
+		length += get_interval_fractions(leap_day.interval, leap_day.offset)
+
 	}
 
 	return precisionRound(length/num_months, 10);
@@ -1181,143 +1143,243 @@ var date_converter = {
 /**
  * This function is used when you need to calculate if a leap day or a leap month has happened on any given year.
  *
+ * @param  {string} intervals   A formatted string of ints, in this format: 400,!100,4 - Large to small, comma separating the intervals, ! in front of the int indicating an exclusive interval (subtracting). Could include a single number.
+ * @param  {int}    offsets     An int used to offset the contextual starting point of the intervals - Interval of 10 and offset of 5 means this interval starts at 5, continuing to 15, 25, 35.
+ * @return {object}             An object containing the leap days that are left over after stripping unessecary ones (100,10 would strip away 100, because 10 fits in that)
+ */
+function strip_intervals(_intervals, _offset){
+
+	var intervals = _intervals.split(',')
+	var processed = _intervals.split(',');
+
+	// Remove all negators at the end of the intervals as they won't affect the overall interval occurrence
+	while(processed[processed.length-1].indexOf("!") > -1){
+		processed.splice(processed.length-1, 1)
+		intervals.splice(intervals.length-1, 1)
+	}
+
+	for(var outer_index = 0; outer_index < intervals.length; outer_index++){
+
+		var outer_interval_raw = intervals[outer_index];
+		var outer_offset = outer_interval_raw.indexOf('+') > -1 ? 0 : _offset ;
+		var outer_negator = outer_interval_raw.indexOf('!') > -1;
+		var outer_interval = Number(outer_interval_raw.replace('!','').replace('+',''));
+		outer_offset = outer_interval == 1 ? 0 : (outer_interval+outer_offset)%outer_interval;
+
+		for(var inner_index = outer_index+1; inner_index < intervals.length; inner_index++){
+
+			var inner_interval_raw = intervals[inner_index];
+			var inner_offset = inner_interval_raw.indexOf('+') > -1 ? 0 : _offset;
+			var inner_negator = inner_interval_raw.indexOf('!') > -1;
+			var inner_interval = Number(inner_interval_raw.replace('!','').replace('+',''));
+			inner_offset = inner_interval == 1 ? 0 : (inner_interval+inner_offset)%inner_interval;
+
+			// Magic
+			var data = lcmo(outer_interval, inner_interval, outer_offset, inner_offset);
+
+			// If the intervals actually will meet at some point
+			if(data){
+
+				// But if the outer interval has the same LCM as the inner one, remove the outer interval, provided if neither or both are negators.
+				if(outer_interval == data.interval && outer_offset == data.offset && ((!outer_negator && !inner_negator) || (outer_negator && inner_negator))){
+					if(processed.indexOf(outer_interval_raw) > -1){
+						processed.splice(processed.indexOf(outer_interval_raw), 1)
+					}
+					break;
+				}
+
+				// If they match, but the next 
+				if(outer_negator ^ inner_negator){
+					break;
+				}
+
+			}else{
+
+				// If the outer interval did not match the inner interval, and it is a negator, and there are no more intervals, remove this interval
+				if(outer_index+2 >= intervals.length && outer_negator){
+
+					if(processed.indexOf(outer_interval_raw) > -1){
+						processed.splice(processed.indexOf(outer_interval_raw), 1)
+					}
+
+					break;
+				}
+			}
+		}
+	}
+
+	var new_intervals = [];
+
+	for(index in processed){
+
+		var interval_raw = processed[index];
+		var offset = interval_raw.indexOf('+') > -1 ? 0 : _offset;
+		var negator = interval_raw.indexOf('!') > -1;
+		var interval = Number(interval_raw.replace('!','').replace('+',''));
+		offset = interval == 1 ? 0 : (interval+offset)%interval;
+
+		new_intervals.push({
+			interval: interval,
+			offset: offset,
+			negator: negator
+		});
+
+	}
+
+	return new_intervals;
+
+}
+
+
+
+/**
+ * This function is used when you need to calculate if a leap day or a leap month has happened on any given year.
+ *
  * @param  {int}    year        The number of a year passed through the convert_year function.
  * @param  {string} intervals   A formatted string of ints, in this format: 400,!100,4 - Large to small, comma separating the intervals, ! in front of the int indicating an exclusive interval (subtracting). Could include a single number.
  * @param  {int}    offsets     An int used to offset the contextual starting point of the intervals - Interval of 10 and offset of 5 means this interval starts at 5, continuing to 15, 25, 35.
  * @return {bool}               A boolean determining whether this interval happens on the year
  */
-function is_leap(year, intervals, offsets){
+function is_leap(_year, _intervals, _offset) {
 
-	var intervals = intervals.split(',');
+	var intervals = strip_intervals(_intervals, _offset);
 
-	if(intervals.length == 0){
+	for(index in intervals){
 
-		var interval = interval[0];
+		var i = intervals[index];
 
-		var offset = (interval-offsets+1)%interval;
+		var year = _year >= 0 ? _year+1 : _year;
 
-		return (year + offset) % interval == 0;
-
-	}
-
-	var appears = false;
-	var hard = false;
-
-	for(var i = 0; i < intervals.length; i++){
-
-		var offset = clone(offsets);
-
-		var interval = intervals[i];
-
-		if(interval.includes('!')){
-
-			if(interval.includes('+')){
-				var interval = Number(interval.slice(2));
-				var offset = 1;
-			}else{
-				var interval = Number(interval.slice(1));
-				var offset = (interval-offset+1)%interval;
-			}
-
-			if((year + offset) % interval == 0){
-				hard = true;
-			}
-
-		}else{
-
-			if(interval.includes('+')){
-				var interval = Number(interval.slice(1));
-				var offset = 1;
-			}else{
-				var interval = Number(interval);
-				var offset = (interval-offset+1)%interval;
-			}
-
-			if((year + offset) % interval == 0){
-				appears = true;
-			}
-
-		}
-		
-		if(appears || hard){
-			break;
+		if((year-i.offset) % i.interval == 0){
+			return !i.negator;
 		}
 
 	}
 
-	return appears;
+	return false;
 
 }
 
 
 /**
- * This function is used when you need to calculate how often a leap day has appeared, which the function will return as float indicating the number of days.
- * The fractional part of the value may be used to calculate the average year length.
+ * This function is used when you need to calculate the fraction of an interval
  *
- * @param  {int}    year        The number of a year passed through the convert_year function.
- * @param  {string} intervals   A formatted string of ints, in this format: 400,!100,4 - Large to small, comma separating the intervals, ! in front of the int indicating an exclusive interval (subtracting). Could include a single number.
- * @param  {int}    offsets     An int used to offset the contextual starting point of the intervals - Interval of 10 and offset of 5 means this interval starts at 5, continuing to 15, 25, 35.
- * @param  {bool}   floor       Whether to floor the result before returning it (should be done outside of function call instead)
- * @return {float}              A float indicating how many times these intervals add up to
+ * @param  {string} _intervals  A formatted string of ints, in this format: 400,!100,4 - Large to small, comma separating the intervals, + in front of the int indicating an interval not using the offset (defaulting to 0), ! in front of the int indicating an exclusive interval (subtracting). Could include a single number.
+ * @param  {int}    _offset     An int used to offset the contextual starting point of the intervals. Interval of 10 and offset of 5 means this interval starts at 5, continuing to 15, 25, 35
+ * @return {float}              A float of the fraction of days this interval will add up to each day
  */
-function get_leap_fraction(year, intervals, offsets, floor){
+function get_interval_fractions(_intervals, _offset){
 
-	// The intervals parameter is a string with numbers seperated by commas, usually in the format of:
-	// 400,!100,4
-	// Every fourth, except if divisible by 100, disregarding the previous rule every 400th year
-	intervals = intervals.split(',').reverse();
-		
-	var base_interval = intervals[0]|0;
+	var intervals = strip_intervals(_intervals, _offset);
 
-	var offset = (base_interval-offsets)%base_interval;
+	var occurrences = 0;
 
-	if(floor){
-		var fraction = Math.floor((year+offset) / base_interval);
-	}else{
-		var fraction = (year+offset) / base_interval;
-	}
+	for(var outer_index = 0; outer_index < intervals.length; outer_index++){
 
-	if(intervals.length == 1){
-		return fraction;
-	}
+		var outer = intervals[outer_index];
 
-	// Get the base fraction, which we will add to or subtract based on its following rules
-	for(var i = 1; i < intervals.length; i++){
+		if(!outer.negator){
 
-		var interval = intervals[i];
+			occurrences += 1 / outer.interval;
 
-		// If it is a negator, subtract it from the total
-		if(interval.includes('!')){
+		}
 
-			var interval = interval.slice(1)|0;
-			offset = (interval-offsets)%interval;
+		for(var inner_index = outer_index+1; inner_index < intervals.length; inner_index++){
 
-			if(floor){
-				fraction -= Math.floor((year+offset) / lcm(base_interval, interval));
-			}else{
-				fraction -= (year+offset) / lcm(base_interval, interval);
+			var inner = intervals[inner_index];
+
+			var data = lcmo(outer.interval, inner.interval, outer.offset, inner.offset);
+
+			if(data){
+
+				if((outer.negator && !inner.negator) || (!outer.negator && !inner.negator)){
+
+					occurrences -= 1 / data.interval;
+
+				}else{
+
+					occurrences += 1 / data.interval;
+
+				}
 			}
+		}
+	}
 
-		// If it is inclusive
-		}else{
+	return occurrences;
 
-			var interval = interval|0;
-			offset = (interval-offsets)%interval;
+}
 
-			if(floor){
-				fraction += Math.floor((year+offset) / lcm(base_interval, interval));
-			}else{
-				fraction += (year+offset) / lcm(base_interval, interval);
+
+/**
+ * This function is used when you need to calculate how often a leap day has appeared,
+ * which the function will return as float indicating the number of days. The fractional
+ * part of the value may be used to calculate the average year length.
+ *
+ * @param  {int}    _year       The number of a year passed through the convert_year function.
+ * @param  {string} _intervals  A formatted string of ints, in this format: 400,!100,4 - Large to small, comma separating the intervals, + in front of the int indicating an interval not using the offset (defaulting to 0), ! in front of the int indicating an exclusive interval (subtracting). Could include a single number.
+ * @param  {int}    _offset     An int used to offset the contextual starting point of the intervals. Interval of 10 and offset of 5 means this interval starts at 5, continuing to 15, 25, 35
+ * @return {int}                An int of how many days this interval has added up to before that year
+ */
+function get_interval_occurrences(_year, _intervals, _offset){
+
+	var intervals = strip_intervals(_intervals, _offset);
+
+	var occurrences = 0;
+
+	// If it is year 0, there has been no leap 
+	if(_year == 0){
+		return 0;
+	}
+
+	for(var outer_index = 0; outer_index < intervals.length; outer_index++){
+
+		var outer = intervals[outer_index];
+
+		if(!outer.negator){
+
+			var year = outer.offset > 0 ? _year-outer.offset+outer.interval : _year;
+
+			var result = year / outer.interval;
+
+			result = _year < 0 ? Math.ceil(result) : Math.floor(result);
+
+			occurrences += result;
+
+		}
+
+		for(var inner_index = outer_index+1; inner_index < intervals.length; inner_index++){
+
+			var inner = intervals[inner_index];
+
+			var data = lcmo(outer.interval, inner.interval, outer.offset, inner.offset);
+
+			if(data){
+
+				var year = data.offset > 0 ? _year-data.offset+data.interval : _year;
+
+				var result = year / data.interval;
+
+				result = _year < 0 ? Math.ceil(result) : Math.floor(result);
+
+				if((outer.negator && !inner.negator) || (!outer.negator && !inner.negator)){
+
+					occurrences -= result;
+
+				}else{
+
+					occurrences += result;
+
+				}
+
 			}
 
 		}
 
 	}
 
-	return fraction;
+	return occurrences;
 
 }
-
 
 /**
  * This function is the backbone of the calendar.
@@ -1386,25 +1448,6 @@ function get_epoch(static_data, year, month, day){
 			num_timespans += timespan_fraction;
 		}
 
-		if(static_data.year_data.observationals){
-
-			for(observational_index = 0; observational_index < static_data.year_data.observationals.length; observational_index++){
-
-				var observational = static_data.year_data.observationals[observational_index];
-
-				if(year > convert_year(static_data, observational.year) && observational.timespan === timespan_index){
-
-					if(observational.removes_day){
-						epoch--;
-					}else{
-						epoch++;
-					}
-
-				}
-			}
-
-		}
-
 		// Loop through each leap day
 		for(leap_day_index = 0; leap_day_index < static_data.year_data.leap_days.length; leap_day_index++){
 
@@ -1415,19 +1458,11 @@ function get_epoch(static_data, year, month, day){
 
 			if(timespan_index === leap_day.timespan){
 
-				added_leap_day = get_leap_fraction(timespan_fraction, leap_day.interval, leap_day.offset, true);
+				added_leap_day = get_interval_occurrences(timespan_fraction, leap_day.interval, leap_day.offset);
 
 				// If we have leap days days that are intercalary (eg, do not affect the flow of the static_data, add them to the overall epoch, but remove them from the start of the year week day selection)
 				if(leap_day.intercalary || timespan.type === "intercalary"){
 					intercalary += added_leap_day;
-				}
-
-				if(leap_day.removes_day){
-					added_leap_day = added_leap_day * -1;
-				}
-
-				if(added_leap_day < 0){
-					added_leap_day = 0;
 				}
 
 			}

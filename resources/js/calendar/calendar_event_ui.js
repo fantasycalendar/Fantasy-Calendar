@@ -14,18 +14,42 @@ var edit_event_ui = {
 		this.delete_droppable					= false;
 		this.date 								= [];
 		this.connected_events					= [];
+		this.search_distance					= 0;
 		this.prev_version_event					= {};
 
 		this.event_background 					= $('#event_edit_background');
 		this.event_conditions_container			= $('#event_conditions_container');
 		this.condition_presets					= $('#condition_presets');
 		this.repeat_input						= $('#repeat_input');
-		this.preset_buttons						= $('#preset_buttons');
 		this.non_preset_buttons					= $('#non_preset_buttons');
 		this.save_btn							= this.event_background.find('#btn_event_save');
 		this.close_ui_btn						= this.event_background.find('.close_ui_btn');
+		this.test_event_btn						= this.event_background.find('.test_event_btn');
 		this.trumbowyg							= this.event_background.find('.event_desc');
 
+		this.event_occurrences_page = 1;
+		this.processed_event_data = false;
+		this.event_occurrences = false;
+
+		this.event_occurrences_container		= $('.event_occurrences');
+		this.event_occurrences_list_container	= $('.event_occurrences .list_container');
+		this.event_occurrences_page_number		= $('.event_occurrences .list_container .page_number');
+		this.event_occurrences_text				= $('.event_occurrences .list_container .text');
+		this.event_occurrences_list				= $('.event_occurrences .list_container .list');
+		this.event_occurrences_list_col1		= $('.event_occurrences .list_container .list .col1');
+		this.event_occurrences_list_col2		= $('.event_occurrences .list_container .list .col2');
+		this.event_occurrences_button_prev		= $('.event_occurrences .list_container .prev');
+		this.event_occurrences_button_next		= $('.event_occurrences .list_container .next');
+
+		this.event_occurrences_button_prev.click(function(e){
+			edit_event_ui.event_occurrences_page--;
+			edit_event_ui.show_event_dates();
+		});
+
+		this.event_occurrences_button_next.click(function(e){
+			edit_event_ui.event_occurrences_page++;
+			edit_event_ui.show_event_dates();
+		});
 
 		this.trumbowyg.trumbowyg();
 
@@ -56,52 +80,82 @@ var edit_event_ui = {
 
 		edit_event_ui.close_ui_btn.click(function(){
 
-			swal({
-                title: "Are you sure?",
-                text: 'This event will not be saved! Are you sure you want to close the event UI?',
-			    dangerMode: true,
-                buttons: true,
-                icon: "warning",
-            }).then((willDelete) => {
-                if(willDelete) {
-                    if(edit_event_ui.new_event){
-                        delete static_data.event_data.events[edit_event_ui.event_id];
-                    }
+			if(edit_event_ui.has_changed()){
 
-                    edit_event_ui.clear_ui();
-                }
-            });
+				swal({
+					title: "Are you sure?",
+					text: 'This event will not be saved! Are you sure you want to close the event UI?',
+					dangerMode: true,
+					buttons: true,
+					icon: "warning",
+				}).then((willDelete) => {
+					if(willDelete) {
+						if(edit_event_ui.new_event){
+							delete static_data.event_data.events[edit_event_ui.event_id];
+						}
+
+						edit_event_ui.clear_ui();
+					}
+				});
+
+			}else{
+
+				edit_event_ui.clear_ui();
+
+			}
 		});
 
+		this.test_event_btn.click(function(){
 
-		this.condition_presets.change(function(){
+			edit_event_ui.test_event(Number($(this).attr('years')))
+
+		});
+
+		this.condition_presets.change(function(e){
 
 			var selected = edit_event_ui.condition_presets.children(':selected')[0].hasAttribute('nth');
 			edit_event_ui.repeat_input.prop('disabled', !selected).parent().toggleClass('hidden', !selected);
 			edit_event_ui.update_every_nth_presets();
 
-			edit_event_ui.preset_buttons.toggleClass('hidden', edit_event_ui.condition_presets.children(':selected').val() == "None");
-			edit_event_ui.non_preset_buttons.toggleClass('hidden', edit_event_ui.condition_presets.children(':selected').val() != "None");
+			if(edit_event_ui.event_conditions_container.children().length > 0 && e.originalEvent){
+				swal({
+					title: "Warning!",
+					text: "This will override all of your conditions, are you sure you want to do that?",
+					icon: "warning",
+					buttons: true,
+					dangerMode: true,
+				}).then((override) => {
+
+					if(override) {
+
+						var preset = edit_event_ui.condition_presets.val();
+						var repeats = edit_event_ui.repeat_input.val()|0;
+
+						edit_event_ui.update_every_nth_presets();
+
+						edit_event_ui.event_conditions_container.empty();
+						edit_event_ui.add_preset_conditions(preset, repeats);
+
+					}
+
+				});
+			}else{
+
+				var preset = edit_event_ui.condition_presets.val();
+				var repeats = edit_event_ui.repeat_input.val()|0;
+
+				edit_event_ui.update_every_nth_presets();
+
+				edit_event_ui.event_conditions_container.empty();
+				edit_event_ui.add_preset_conditions(preset, repeats);
+
+			}
 
 		});
 
-		edit_event_ui.repeat_input.change(function(){
+		this.repeat_input.change(function(){
 			edit_event_ui.update_every_nth_presets();
-		});
-
-		$('#add_event_preset').click(function(){
-
-			var preset = edit_event_ui.condition_presets.val();
-			var repeats = edit_event_ui.repeat_input.val()|0;
-
-			edit_event_ui.repeat_input.val('1').parent().toggleClass('hidden', true);
-			edit_event_ui.condition_presets.children().eq(0).prop('selected', true);
-			edit_event_ui.preset_buttons.toggleClass('hidden', true);
-			edit_event_ui.non_preset_buttons.toggleClass('hidden', false);
-			edit_event_ui.update_every_nth_presets();
-
-			edit_event_ui.add_preset_conditions(preset, repeats);
-
+			edit_event_ui.condition_presets.change();
 		});
 
 		$(document).on('change', '.event-text-input', function(){
@@ -127,7 +181,7 @@ var edit_event_ui = {
 
 		});
 
-		edit_event_ui.event_conditions_container.nestedSortable({
+		this.event_conditions_container.nestedSortable({
 			handle: ".handle",
 			containerSelector: ".group_list_root, .group_list",
 			onDragStart: function (item, container, _super, event) {
@@ -154,6 +208,10 @@ var edit_event_ui = {
 			tolerance: -5
 		});
 
+		this.event_conditions_container.change(function(){
+			edit_event_ui.event_occurrences_container.toggleClass('hidden', edit_event_ui.event_conditions_container.length == 0);
+		})
+
 		$('#remove_dropped').mouseover(function(){
 			edit_event_ui.delete_droppable = true;
 		}).mouseout(function(){
@@ -173,7 +231,7 @@ var edit_event_ui = {
 			}
 		});
 
-		edit_event_ui.evaluate_condition_selects(edit_event_ui.event_conditions_container);
+		this.evaluate_condition_selects(edit_event_ui.event_conditions_container);
 
 		$('#add_event_condition_group').click(function(){
 			edit_event_ui.add_group(edit_event_ui.event_conditions_container, "normal");
@@ -216,8 +274,12 @@ var edit_event_ui = {
 			edit_event_ui.evaluate_condition_selects(edit_event_ui.event_conditions_container);
 		})
 
+		$('#limited_repeat').change(function(){
+			edit_event_ui.event_background.find('#limited_repeat_num').prop('disabled', !$(this).prop('checked'));
+		});
+
 		$('#has_duration').change(function(){
-			edit_event_ui.event_background.find('.duration_settings').toggleClass('hidden', !$(this).prop('checked'));
+			edit_event_ui.event_background.find('#duration').prop('disabled', !$(this).prop('checked'));
 		});
 
 	},
@@ -231,12 +293,14 @@ var edit_event_ui = {
 			'description': '',
 			'data': {
 				'has_duration': false,
-				'duration': 0,
+				'duration': 1,
 				'show_first_last': false,
-				'only_happen_once': false,
+				'limited_repeat': false,
+				'limited_repeat_num': 1,
 				'conditions': [],
 				'connected_events': false,
 				'date': [],
+				'search_distance': 0
 			},
 			'settings': {
 				'color': 'Dark-Solid',
@@ -275,6 +339,10 @@ var edit_event_ui = {
 
 		this.create_conditions(event.data.conditions, this.event_conditions_container);
 
+		this.event_occurrences_container.toggleClass('hidden', edit_event_ui.event_conditions_container.length == 0);
+
+		this.search_distance = event.data.search_distance;
+
 		this.evaluate_condition_selects(this.event_conditions_container);
 
 		if(typeof event.event_category_id !== 'undefined' && event.event_category_id !== null){
@@ -295,11 +363,11 @@ var edit_event_ui = {
 
 		$('#event_dontprint_checkbox').prop('checked', event.settings.noprint);
 
-		$('#only_happen_once').prop('checked', event.data.only_happen_once);
+		$('#limited_repeat').prop('checked', event.data.limited_repeat);
+		$('#limited_repeat_num').prop('disabled', !event.data.limited_repeat).val(event.data.limited_repeat_num);
 
-		this.event_background.find('.duration_settings').toggleClass('hidden', !event.data.has_duration);
-
-		$('#duration').val(event.data.duration);
+		$('#has_duration').prop('checked', event.data.has_duration);
+		$('#duration').prop('disabled', !event.data.has_duration).val(event.data.duration);
 
 		$('#show_first_last').prop('checked', event.data.show_first_last);
 
@@ -309,18 +377,96 @@ var edit_event_ui = {
 
 	save_current_event: function(){
 
-		var eventid = static_data.event_data.events[this.event_id].id;
-
-		static_data.event_data.events[this.event_id] = {};
+		if(static_data.event_data.events[this.event_id]){
+			var eventid = static_data.event_data.events[this.event_id].id;
+			static_data.event_data.events[this.event_id] = {};
+			static_data.event_data.events[this.event_id].id = eventid;
+		}else{
+			static_data.event_data.events[this.event_id] = {};
+		}
 
 		var name = escapeHtml(this.event_background.find('.event_name').val());
 		name = name !== '' ? name : "Unnamed Event";
 
 		static_data.event_data.events[this.event_id].name = name;
 
-		static_data.event_data.events[this.event_id].id = eventid;
-
 		static_data.event_data.events[this.event_id].description = escapeHtml(this.trumbowyg.trumbowyg('html'));
+
+		static_data.event_data.events[this.event_id].data = this.create_event_data();
+
+		static_data.event_data.events[this.event_id].event_category_id = get_category($('#event_categories').val()).id;
+
+		static_data.event_data.events[this.event_id].settings = {
+			color: $('#color_style').val(),
+			text: $('#text_style').val(),
+			hide: $('#event_hide_players').prop('checked'),
+			hide_full: $('#event_hide_full').prop('checked'),
+			noprint: $('#event_dontprint_checkbox').prop('checked')
+		}
+
+		if(edit_event_ui.new_event){
+			add_event_to_sortable(events_sortable, this.event_id, static_data.event_data.events[this.event_id]);
+		}else{
+			$(`.events_input[index="${this.event_id}"]`).find(".event_name").text(`Edit - ${name}`);
+		}
+
+		edit_event_ui.clear_ui();
+
+		error_check();
+
+		rebuild_events();
+
+	},
+
+	clear_ui: function(){
+
+		this.event_id = null;
+
+		this.event_background.find('.event_name').val('');
+
+		this.trumbowyg.trumbowyg('html', '');
+
+		this.repeat_input.val('1').parent().toggleClass('hidden', true);
+		this.condition_presets.children().eq(0).prop('selected', true);
+		this.condition_presets.parent().toggleClass('hidden', true);
+		this.update_every_nth_presets();
+
+		this.event_occurrences_container.addClass('hidden');
+		this.event_occurrences_list_container.addClass('hidden');
+
+		this.event_conditions_container.empty();
+
+		this.data = {};
+
+		this.new_event = false;
+
+		this.date = [];
+
+		this.connected_events = [];
+
+		$('#event_categories').val('');
+
+		$('#color_style').val('');
+		$('#text_style').val('');
+
+		$('#event_hide_players').prop('checked', false);
+
+		$('#event_hide_full').prop('checked', false);
+
+		$('#event_dontprint_checkbox').prop('checked', false);
+
+		$('#limited_repeat').prop('checked', false);
+		$('#limited_repeat_num').prop('disabled', true).val(1);
+
+		$('#has_duration').prop('checked', false);
+		$('#duration').prop('disabled', true).val(1);
+		$('#show_first_last').prop('checked', false);
+
+		this.event_background.addClass('hidden');
+
+	},
+
+	create_event_data: function(){
 
 		var conditions = this.create_condition_array(edit_event_ui.event_conditions_container);
 
@@ -361,82 +507,113 @@ var edit_event_ui = {
 			}
 		}
 
-		static_data.event_data.events[this.event_id].data = {
+		return {
 			has_duration: $('#has_duration').prop('checked'),
 			duration: $('#duration').val()|0,
 			show_first_last: $('#show_first_last').prop('checked'),
-			only_happen_once: $('#only_happen_once').prop('checked'),
+			limited_repeat: $('#limited_repeat').prop('checked'),
+			limited_repeat_num: $('#limited_repeat_num').val()|0,
 			conditions: conditions,
 			connected_events: this.connected_events,
 			date: this.date,
+			search_distance: this.get_search_distance()
 		};
+    
+	},
 
-		static_data.event_data.events[this.event_id].event_category_id = get_category($('#event_categories').val()).id;
+	get_search_distance: function(){
 
-		static_data.event_data.events[this.event_id].settings = {
-			color: $('#color_style').val(),
-			text: $('#text_style').val(),
-			hide: $('#event_hide_players').prop('checked'),
-			hide_full: $('#event_hide_full').prop('checked'),
-			noprint: $('#event_dontprint_checkbox').prop('checked')
-		}
+		var event = static_data.event_data.events[this.event_id];
 
-		if(edit_event_ui.new_event){
-			add_event_to_sortable(events_sortable, this.event_id, static_data.event_data.events[this.event_id]);
-		}else{
-			$(`.events_input[index="${this.event_id}"]`).find(".event_name").text(`Edit - ${name}`);
-		}
+		var search_distance = $('#duration').val()|0 > search_distance ? $('#duration').val()|0 : search_distance;
+		var search_distance = $('#limited_repeat_num').val()|0 > search_distance ? $('#limited_repeat_num').val()|0 : search_distance;
+		var search_distance = this.search_distance > search_distance ? this.search_distance : search_distance;
 
-		edit_event_ui.clear_ui();
-
-		error_check();
-
-		rebuild_events();
+		return search_distance;
 
 	},
 
-	clear_ui: function(){
+	event_is_one_time: function(){
 
-		this.event_id = null;
+		var date = []
 
-		this.event_background.find('.event_name').val('');
+		var conditions = this.create_condition_array(edit_event_ui.event_conditions_container);
 
-		this.trumbowyg.trumbowyg('html', '');
+		if(conditions.length == 5){
 
-		this.repeat_input.val('1').parent().toggleClass('hidden', true);
-		this.condition_presets.children().eq(0).prop('selected', true);
-		this.preset_buttons.toggleClass('hidden', true);
-		this.non_preset_buttons.toggleClass('hidden', false);
-		this.condition_presets.parent().toggleClass('hidden', true);
-		this.update_every_nth_presets();
+			var year = false;
+			var month = false;
+			var day = false
+			var ands = 0
 
-		this.event_conditions_container.empty();
+			for(var i = 0; i < conditions.length; i++){
+				if(conditions[i].length == 3){
+					if(conditions[i][0] == "Year" && Number(conditions[i][1]) == 0){
+						year = true;
+						date[0] = Number(conditions[i][2][0])
+					}
 
-		this.data = {};
+					if(conditions[i][0] == "Month" && Number(conditions[i][1]) == 0){
+						month = true;
+						date[1] = Number(conditions[i][2][0])
+					}
 
-		this.new_event = false;
+					if(conditions[i][0] == "Day" && Number(conditions[i][1]) == 0){
+						day = true;
+						date[2] = Number(conditions[i][2][0])
+					}
+				}else if(conditions[i].length == 1){
+					if(conditions[i][0] == "&&"){
+						ands++;
+					}
+				}
+			}
 
-		this.date = [];
+			if(!(year && month && day && ands == 2)){
+				date = [];
+			}
+		}
 
-		this.connected_events = [];
+		return date.length > 0;
 
-		$('#event_categories').val('');
+	},
 
-		$('#color_style').val('');
-		$('#text_style').val('');
+	has_changed: function(){
 
-		$('#event_hide_players').prop('checked', false);
+		if(static_data.event_data.events[this.event_id]){
 
-		$('#event_dontprint_checkbox').prop('checked',false);
+			var event_check = clone(static_data.event_data.events[this.event_id])
 
-		$('#has_duration').prop('checked', false);
+			var eventid = static_data.event_data.events[this.event_id].id;
 
-		$('#duration').val('');
-		
-		edit_event_ui.event_background.find('.duration_settings').toggleClass('hidden', true);
+			event_check.id = eventid;
 
-		this.event_background.addClass('hidden');
+			var name = escapeHtml(this.event_background.find('.event_name').val());
+			name = name !== '' ? name : "Unnamed Event";
 
+			event_check.name = name;
+
+			event_check.description = escapeHtml(this.trumbowyg.trumbowyg('html'));
+
+			event_check.data = this.create_event_data();
+
+			event_check.event_category_id = get_category($('#event_categories').val()).id;
+
+			event_check.settings = {
+				color: $('#color_style').val(),
+				text: $('#text_style').val(),
+				hide: $('#event_hide_players').prop('checked'),
+				hide_full: $('#event_hide_full').prop('checked'),
+				noprint: $('#event_dontprint_checkbox').prop('checked')
+			}
+
+			return !Object.compare(event_check, static_data.event_data.events[this.event_id])
+
+		}else{
+
+			return false;
+
+		}
 
 	},
 
@@ -691,6 +868,8 @@ var edit_event_ui = {
 					}
 					values.push(val);
 
+					edit_event_ui.search_distance = Number(val) > edit_event_ui.search_distance ? Number(val) : edit_event_ui.search_distance;
+
 				}else{
 
 					$(this).find('.input_container').children().each(function(){
@@ -820,6 +999,9 @@ var edit_event_ui = {
 				}else if(element[0] === "Events"){
 					condition.find('.event_select').val(static_data.event_data.events[this.event_id].data.connected_events[element[2][0]])
 					condition.find('.input_container').children().eq(1).val(element[2][1]);
+
+					edit_event_ui.search_distance = Number(element[2][1]) > edit_event_ui.search_distance ? Number(element[2][1]) : edit_event_ui.search_distance;
+
 				}else{
 					condition.find('.input_container').children().each(function(i){
 						$(this).val(element[2][i]);
@@ -1343,7 +1525,195 @@ var edit_event_ui = {
 				});
 			}
 		}
+	},
+
+	test_event: function(years){
+
+		if(this.event_is_one_time()){
+
+			swal({
+				title: "Uh...",
+				text: "This event is an one time event (year, month, day), I'm pretty sure you know the answer to this test.",
+				icon: "warning"
+			});
+
+		}else{
+
+			swal({
+				title: "Warning!",
+				text: "Simulating events may take a loooong time, depending on many factors! If your event is based on other events, we need to simulate those too!",
+				icon: "warning",
+				buttons: true,
+				dangerMode: true,
+			}).then((will_simulate) => {
+
+				if(will_simulate) {
+					this.run_test_event(years);
+				}
+
+			});
+			
+		}
+
+	},
+
+	run_test_event: function(years){
+
+		this.event_occurrences_list_col1.empty();
+		this.event_occurrences_list_col2.empty();
+		this.event_occurrences_text.empty();
+
+		this.event_occurrences_list_container.addClass('hidden');
+
+		show_loading_screen(true, cancel_event_test);
+
+		if(edit_event_ui.new_event){
+
+			static_data.event_data.events[edit_event_ui.event_id] = {}
+
+			static_data.event_data.events[edit_event_ui.event_id].data = edit_event_ui.create_event_data();
+
+		}else{
+
+			edit_event_ui.backup_event_data = clone(static_data.event_data.events[edit_event_ui.event_id].data);
+
+			static_data.event_data.events[edit_event_ui.event_id].data = edit_event_ui.create_event_data();
+
+		}
+
+		edit_event_ui.worker_future_calendar = new Worker('/js/webworkers/worker_calendar.js');
+
+		edit_event_ui.worker_future_calendar.postMessage({
+			calendar_name: calendar_name,
+			static_data: static_data,
+			dynamic_data: dynamic_data,
+			action: "future",
+			owner: owner,
+			start_year: dynamic_data.year+1,
+			end_year: dynamic_data.year+2+years
+		});
+
+		edit_event_ui.worker_future_calendar.onmessage = e => {
+
+			edit_event_ui.event_data = e.data.processed_data.epoch_data;
+
+			edit_event_ui.worker_future_events = new Worker('/js/webworkers/worker_events.js');
+
+			edit_event_ui.worker_future_events.postMessage({
+				static_data: static_data,
+				epoch_data: edit_event_ui.event_data,
+				event_id: edit_event_ui.event_id,
+				start_epoch: e.data.processed_data.start_epoch,
+				end_epoch: e.data.processed_data.end_epoch,
+				callback: true
+			});
+
+			edit_event_ui.worker_future_events.onmessage = e => {
+
+				if(e.data.callback){
+
+					update_loading_bar(e.data.count[0] / e.data.count[1]);
+
+				}else{
+
+					event_occurrences = e.data.event_data.valid[edit_event_ui.event_id] ? e.data.event_data.valid[edit_event_ui.event_id] : [];
+					edit_event_ui.event_occurrences = []
+
+					for(event_occurrence in event_occurrences){
+
+						var epoch = event_occurrences[event_occurrence];
+						var epoch_data = edit_event_ui.event_data[epoch];
+
+						if(convert_year(static_data, epoch_data.year) > dynamic_data.year){
+							edit_event_ui.event_occurrences.push(event_occurrences[event_occurrence])
+						}
+
+					}
+
+					var num = edit_event_ui.event_occurrences.length;
+
+					edit_event_ui.event_occurrences_text.html(`This event will appear <span class='bold-text'>${num}</span> time${num > 1 ? "s" : ""} in the next ${years} year${years > 1 ? 's' : ''}.`);
+
+					edit_event_ui.event_occurrences_list_container.removeClass('hidden');
+
+					edit_event_ui.worker_future_calendar.terminate()
+					edit_event_ui.worker_future_events.terminate()
+
+					edit_event_ui.event_occurrences_page = 1;
+					edit_event_ui.show_event_dates();
+
+					if(edit_event_ui.new_event){
+
+						static_data.event_data.events.splice(edit_event_ui.event_id, 1);
+
+					}else{
+
+						static_data.event_data.events[edit_event_ui.event_id].data = clone(edit_event_ui.backup_event_data)
+						edit_event_ui.backup_event_data = {}
+
+					}
+					
+					hide_loading_screen();
+
+				}
+
+			}
+		}
+
+	},
+
+	show_event_dates: function(){
+
+		this.event_occurrences_list.toggleClass('hidden', edit_event_ui.event_occurrences.length == 0);
+
+		var html_col1 = []
+		var html_col2 = []
+
+		var length = this.event_occurrences_page*10;
+
+		for(var i = (this.event_occurrences_page-1)*10; i < length; i++){
+
+			if(edit_event_ui.event_occurrences[i]){
+
+				var epoch = edit_event_ui.event_occurrences[i];
+				var epoch_data = edit_event_ui.event_data[epoch];
+
+				if(epoch_data.intercalary){
+					var text = `<li class='event_occurance'>${ordinal_suffix_of(epoch_data.day)} intercalary day of ${epoch_data.timespan_name}, ${epoch_data.year}</li>`
+				}else{
+					var text = `<li class='event_occurance'>${ordinal_suffix_of(epoch_data.day)} of ${epoch_data.timespan_name}, ${epoch_data.year}</li>`
+				}
+
+				if(i-((this.event_occurrences_page-1)*10) < 5){
+					html_col1.push(text);
+				}else{
+					html_col2.push(text);
+				}
+
+			}else{
+				break;
+			}
+
+		}
+
+		this.event_occurrences_page_number.text(`${this.event_occurrences_page} / ${Math.ceil(edit_event_ui.event_occurrences.length/10)}`)
+
+		this.event_occurrences_button_prev.prop('disabled', this.event_occurrences_page == 1);
+		this.event_occurrences_button_next.prop('disabled', i != length || i == edit_event_ui.event_occurrences.length);
+
+		this.event_occurrences_list_col1.html(html_col1.join(''))
+		this.event_occurrences_list_col2.html(html_col2.join(''))
+
 	}
+
+}
+
+function cancel_event_test(){
+
+	edit_event_ui.worker_future_calendar.terminate()
+	edit_event_ui.worker_future_events.terminate()
+	hide_loading_screen();
+
 }
 
 
@@ -1395,32 +1765,32 @@ var show_event_ui = {
 		this.event_save_btn						= this.event_background.find('#submit_comment');
 
 		this.event_comment_input.trumbowyg({
-		    btns: [
-		        ['strong', 'em', 'del'],
-		        ['superscript', 'subscript'],
-		        ['link'],
-		        ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
-		        ['unorderedList', 'orderedList'],
-		        ['removeformat']
-		    ]
+			btns: [
+				['strong', 'em', 'del'],
+				['superscript', 'subscript'],
+				['link'],
+				['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
+				['unorderedList', 'orderedList'],
+				['removeformat']
+			]
 		});
 
 		this.close_ui_btn.click(function(){
-		    if(show_event_ui.event_comment_input.trumbowyg('html').length > 0) {
-                swal({
-                    title: "Cancel comment?",
-                    text: "You haven't posted your comment yet, are you sure you want to close this event?",
-                    icon: "warning",
-                    buttons: true,
-                    dangerMode: true,
-                }).then((willCancel) => {
-                    if(willCancel) {
-                        show_event_ui.clear_ui();
-                    }
-                });
-            } else {
-                show_event_ui.clear_ui();
-            }
+			if(show_event_ui.event_comment_input.trumbowyg('html').length > 0) {
+				swal({
+					title: "Cancel comment?",
+					text: "You haven't posted your comment yet, are you sure you want to close this event?",
+					icon: "warning",
+					buttons: true,
+					dangerMode: true,
+				}).then((willCancel) => {
+					if(willCancel) {
+						show_event_ui.clear_ui();
+					}
+				});
+			} else {
+				show_event_ui.clear_ui();
+			}
 		});
 
 		this.event_wrapper.mousedown(function(event){
@@ -1437,8 +1807,6 @@ var show_event_ui = {
 		});
 
 		$(document).on('click', '.event:not(.event-text-output)', function(){
-
-			console.log($(this))
 
 			if($(this).hasClass('era_event')){
 				var id = $(this).attr('era_id')|0;

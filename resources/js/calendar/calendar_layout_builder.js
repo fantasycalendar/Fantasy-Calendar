@@ -40,7 +40,7 @@ function display_events(static_data, event_data){
 
 function insert_moons(data){
 
-	var moon_text = '<div class="calendar_moon_container">';
+	var moon_text = ['<div class="calendar_moon_container">'];
 
 	if(owner || !static_data.settings.hide_moons){
 
@@ -52,10 +52,17 @@ function insert_moons(data){
 
 				var name_array = moon_phases[moon.granularity];
 
-				moon_text += "<div class='moon_container'>";
-					moon_text += `<div title='${moon.name}, ${name_array[data.moon_phase[moon_index]]}' class='calendar_moon lunar gran-${moon.granularity} phase-${data.moon_phase[moon_index]}'></div>`;
-					moon_text += `<div class='lunar_background' moon_id='${moon_index}'></div>`;
-				moon_text += "</div>";
+				moon_text.push(`<div class='moon_container protip' moon_id="${moon_index}" data-pt-position="top" data-pt-title='${moon.name}, ${name_array[data.moon_phase[moon_index]]}' >`);
+
+					moon_text.push(`<svg width="24" height="24" viewBox="0 0 64 64">`);
+						moon_text.push(`<g>`);
+							moon_text.push(`<circle cx="32" cy="32" r="23" class="lunar_background"/>`);
+							moon_text.push(svg_moon_shadows[Math.floor((svg_moon_shadows.length/moon.granularity)*data.moon_phase[moon_index])]);
+							moon_text.push(`<circle cx="32" cy="32" r="23" class="lunar_border"/>`);
+						moon_text.push(`</g>`);
+					moon_text.push("</svg>");
+
+				moon_text.push("</div>");
 
 			}
 
@@ -63,9 +70,9 @@ function insert_moons(data){
 
 	}
 
-	moon_text += "</div>";
+	moon_text.push("</div>");
 
-	return moon_text;
+	return moon_text.join('');
 }
 
 
@@ -80,7 +87,9 @@ function update_moon_colors(){
 	for(var index = 0; index < static_data.moons.length; index++){
 
 		let color = static_data.moons[index].color ? static_data.moons[index].color : '#ffffff';
-		html.push(`.lunar_background[moon_id='${index}']{ background-color:${color}; }\n`);
+		let shadow_color = static_data.moons[index].shadow_color ? static_data.moons[index].shadow_color : '#292b4a';
+		html.push(`.moon_container[moon_id='${index}'] .lunar_background { fill:${color}; }\n`);
+		html.push(`.moon_container[moon_id='${index}'] .lunar_shadow { fill:${shadow_color}; }\n`);
 
 		if(color == '#ffffff') {
 		    color = '#dfdfdf';
@@ -391,7 +400,7 @@ var calendar_layouts = {
 
 		this.epoch_data = data.epoch_data;
 		this.timespans = data.timespans;
-		this.layout = calendar_layouts[static_data.settings.layout];
+		this.layout = (deviceType() == "Mobile Phone") ? 'vertical' : 'grid';
 
 		this.insert_year_follower();
 
@@ -406,9 +415,10 @@ var calendar_layouts = {
 
 		this.data = clone(data)
 		this.year_data = this.data.year_data;
+		this.year_data.epoch = this.year_data.start_epoch;
 		this.epoch_data = this.data.epoch_data;
 		this.timespans = this.data.timespans;
-		this.name_layout = static_data.settings.layout;
+		this.name_layout = (deviceType() == "Mobile Phone") ? 'vertical' : static_data.settings.layout;
 		this.layout = calendar_layouts[this.name_layout];
 
 		for(var i = 0; i < Object.keys(this.timespans).length; i++){
@@ -448,7 +458,7 @@ var calendar_layouts = {
 		var html = [];
 		html.push(`<div class='year'>Year ${calendar_layouts.year_data.era_year}`);
 		html.push("<span class='era'></span></div>");
-		html.push(`<div class='cycle'>${get_cycle(calendar_layouts.year_data.year).text}</div>`);
+		html.push(`<div class='cycle'>${get_cycle(static_data, convert_year(static_data, calendar_layouts.year_data.era_year)).text}</div>`);
 
 		$('#top_follower_content').html(html.join('')).removeClass().addClass(this.name_layout);
 
@@ -592,7 +602,10 @@ var calendar_layouts = {
 				calendar_layouts.html.push("<div class='timespan_container grid'>");
 
 					calendar_layouts.html.push("<div class='timespan_name'>");
-						calendar_layouts.html.push(timespan.name + (static_data.settings.add_month_number ? " - Month " + (timespan.index+1) : ""));
+						calendar_layouts.html.push(timespan.name);
+						calendar_layouts.html.push("<span class='timespan_number'>");
+							calendar_layouts.html.push(` - Month ${timespan.index+1}`);
+						calendar_layouts.html.push("</span>");
 					calendar_layouts.html.push("</div>");
 
 					calendar_layouts.html.push("<div class='timespan_row_container'>");
@@ -611,7 +624,7 @@ var calendar_layouts = {
 									weather_align = "end";
 								}
 
-								this.insert_day(calendar_layouts.year_data.epoch, weather_align, '', "timespan_day timespan_intercalary");
+								this.insert_day(calendar_layouts.year_data.epoch, weather_align, intercalary_day, "timespan_day timespan_intercalary");
 
 								if(intercalary_week_day < timespan.week.length){
 									intercalary_week_day++;
@@ -673,7 +686,7 @@ var calendar_layouts = {
 					if(intercalary_week == timespan.week.length){
 						weather_align = "end";
 					}
-					this.insert_day(calendar_layouts.year_data.epoch, weather_align, '', "timespan_day timespan_intercalary", feature.name);
+					this.insert_day(calendar_layouts.year_data.epoch, weather_align, index+1, "timespan_day timespan_intercalary", feature.name);
 
 					if(intercalary_week == timespan.week.length){
 						calendar_layouts.html.push("</div>");
@@ -697,7 +710,10 @@ var calendar_layouts = {
 
 					calendar_layouts.html.push("<div class='timespan_container grid'>");
 					calendar_layouts.html.push("<div class='timespan_name'>");
-						calendar_layouts.html.push(timespan.name + (static_data.settings.add_month_number ? " - Month " + (timespan.index+1) : ""));
+						calendar_layouts.html.push(timespan.name);
+						calendar_layouts.html.push("<span class='timespan_number'>");
+							calendar_layouts.html.push(` - Month ${timespan.index+1}`);
+						calendar_layouts.html.push("</span>");
 					calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("<div class='timespan_row_container'>");
 					calendar_layouts.html.push("<div class='timespan_row_names'>");
@@ -813,10 +829,13 @@ var calendar_layouts = {
 
 				this.insert_intercalary_day(timespan, filtered_leap_days_beforestart, timespan.length, true);
 
-				calendar_layouts.html.push("<div class='timespan_container wide' onscroll='sidescroll()'>");
+				calendar_layouts.html.push("<div class='timespan_container wide'>");
 
 				calendar_layouts.html.push("<div class='timespan_name'>");
-					calendar_layouts.html.push(timespan.name + (static_data.settings.add_month_number ? " - Month " + (timespan.index+1) : ""));
+					calendar_layouts.html.push(timespan.name);
+					calendar_layouts.html.push("<span class='timespan_number'>");
+						calendar_layouts.html.push(` - Month ${timespan.index+1}`);
+					calendar_layouts.html.push("</span>");
 				calendar_layouts.html.push("</div>");
 
 
@@ -882,10 +901,13 @@ var calendar_layouts = {
 
 			}else if(timespan.type === 'intercalary'){
 
-				calendar_layouts.html.push("<div class='timespan_container wide' onscroll='sidescroll()'>");
+				calendar_layouts.html.push("<div class='timespan_container wide'>");
 
 					calendar_layouts.html.push("<div class='timespan_name'>");
-						calendar_layouts.html.push(timespan.name + (static_data.settings.add_month_number ? " - Month " + (timespan.index+1) : ""));
+						calendar_layouts.html.push(timespan.name);
+						calendar_layouts.html.push("<span class='timespan_number'>");
+							calendar_layouts.html.push(` - Month ${timespan.index+1}`);
+						calendar_layouts.html.push("</span>");
 					calendar_layouts.html.push("</div>");
 
 					calendar_layouts.html.push("<div class='timespan_row_container'>");
@@ -904,7 +926,7 @@ var calendar_layouts = {
 									weather_align = "end";
 								}
 
-								this.insert_day(calendar_layouts.year_data.epoch, weather_align, '', "timespan_day timespan_intercalary");
+								this.insert_day(calendar_layouts.year_data.epoch, weather_align, intercalary_day, "timespan_day timespan_intercalary");
 
 								if(intercalary_week_day <= timespan.week.length){
 									intercalary_week_day++;
@@ -966,7 +988,7 @@ var calendar_layouts = {
 						weather_align = "end";
 					}
 
-					this.insert_day(calendar_layouts.year_data.epoch, weather_align, '', "timespan_day timespan_intercalary", feature.name);
+					this.insert_day(calendar_layouts.year_data.epoch, weather_align, index+1, "timespan_day timespan_intercalary", feature.name);
 
 					if(intercalary_week == timespan.week.length){
 						calendar_layouts.html.push("</div>");
@@ -990,7 +1012,10 @@ var calendar_layouts = {
 
 					calendar_layouts.html.push("<div class='timespan_container wide'>");
 					calendar_layouts.html.push("<div class='timespan_name'>");
-						calendar_layouts.html.push(timespan.name + (static_data.settings.add_month_number ? " - Month " + (timespan.index+1) : ""));
+						calendar_layouts.html.push(timespan.name);
+						calendar_layouts.html.push("<span class='timespan_number'>");
+							calendar_layouts.html.push(` - Month ${timespan.index+1}`);
+						calendar_layouts.html.push("</span>");
 					calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("<div class='timespan_row_container'>");
 					calendar_layouts.html.push("<div class='timespan_row_names'>");
@@ -1069,63 +1094,63 @@ var calendar_layouts = {
 							calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow center'>");
-							calendar_layouts.html.push("<div class='weather_icon'></div>");
+						if(calendar_layouts.epoch_data[epoch].weather && calendar_layouts.data.processed_weather){
+							calendar_layouts.html.push(`<div class='weather_icon' align=''></div>`);
+						}
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow right'>");
 							calendar_layouts.html.push("<div class='btn_create_event btn btn-success' title='Create new event'></div>");
 						calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("</div>");
 
-					/*calendar_layouts.html.push("<div class='day_row weather'>");
+					/*if(calendar_layouts.epoch_data[epoch].weather && calendar_layouts.data.processed_weather){
+
+						calendar_layouts.html.push("<div class='day_row weather'>");
 
 						weather = calendar_layouts.epoch_data[epoch].weather;
 
-						temp = "";
-						switch(static_data.climate.global_settings.temp_sys){
-							case "metric":
-								temp = weather.temperature_m+"°C";
-								break
+						var temp_sys = static_data.seasons.global_settings.temp_sys;
 
-							case "imperial":
-								temp = weather.temperature_i+"°F";
-								break
-
-							case "cinematic":
-								temp = weather.temperature_c;
-								break
+						if(temp_sys == 'imperial'){
+							temp_symbol = '°F';
+							var temp = `${precisionRound(weather.temperature[temp_sys].value[0], 1).toString()+temp_symbol} to ${precisionRound(weather.temperature[temp_sys].value[1], 1).toString()+temp_symbol}`;
+						}else if(temp_sys == 'metric'){
+							temp_symbol = '°C';
+							var temp = `${precisionRound(weather.temperature[temp_sys].value[0], 1).toString()+temp_symbol} to ${precisionRound(weather.temperature[temp_sys].value[1], 1).toString()+temp_symbol}`;
+						}else{
+							var temp_f = `${precisionRound(weather.temperature['imperial'].value[0], 1).toString()}°F to ${precisionRound(weather.temperature['imperial'].value[1], 1).toString()}°F`;
+							var temp_c = `${precisionRound(weather.temperature['metric'].value[0], 1).toString()}°C to ${precisionRound(weather.temperature['metric'].value[1], 1).toString()}°C`;
+							var temp = `${temp_f} | ${temp_c}`;
 						}
 
-						wind = weather.wind_speed_desc + " (${weather.wind_direction})";
+						var wind_sys = static_data.seasons.global_settings.wind_sys;
 
-						if(weather.wind_velocity_m !== undefined && weather.wind_velocity_i !== undefined){
-							wind += " (";
-							switch(static_data.climate.global_settings.wind_sys){
-								case "metric":
-									wind += weather.wind_velocity_m+" KPH";
-									break
-
-								case "imperial":
-									wind += weather.wind_velocity_i+" MPH";
-									break
-							}
-							wind += ")";
+						if(wind_sys == 'imperial'){
+							var wind_symbol = "MPH";
+							var wind_text = `${weather.wind_speed} (${weather.wind_direction}) (${weather.wind_velocity[wind_sys]} ${wind_symbol})`;
+						}else if(wind_sys == 'metric'){
+							var wind_symbol = "KPH";
+							var wind_text = `${weather.wind_speed} (${weather.wind_direction}) (${weather.wind_velocity[wind_sys]} ${wind_symbol})`;
+						}else{
+							var wind_text = `${weather.wind_speed} (${weather.wind_direction}) (${weather.wind_velocity.imperial} MPH | ${weather.wind_velocity.metric} KPH)`;
 						}
 
-						calendar_layouts.html.push(temp + " | ${weather.precipitation} | ${weather.clouds} | " + wind);
+						calendar_layouts.html.push(`${temp} | ${weather.precipitation.key} | ${weather.clouds} | ${wind_text}`);
 
-					calendar_layouts.html.push("</div>");*/
+						calendar_layouts.html.push("</div>");
+
+					}*/
 
 					calendar_layouts.html.push("<div class='day_row'>");
 						calendar_layouts.html.push(insert_moons(calendar_layouts.epoch_data[epoch]));
 					calendar_layouts.html.push("</div>");
 
-
-					calendar_layouts.html.push("<div class='day_row year_day_number'>");
-						calendar_layouts.html.push(calendar_layouts.year_data.year_day);
-					calendar_layouts.html.push("</div>");
-
 					calendar_layouts.html.push("<div class='day_row'>");
 						calendar_layouts.html.push("<div class='event_container'></div>");
+					calendar_layouts.html.push("</div>");
+
+					calendar_layouts.html.push("<div class='day_row year_day_number_parent'>");
+						calendar_layouts.html.push(`<div class='year_day_number'>${calendar_layouts.year_data.year_day}</div>`);
 					calendar_layouts.html.push("</div>");
 
 				calendar_layouts.html.push("</div>");
@@ -1149,7 +1174,10 @@ var calendar_layouts = {
 				calendar_layouts.html.push("<div class='timespan_container vertical'>");
 
 				calendar_layouts.html.push("<div class='timespan_name'>");
-					calendar_layouts.html.push(timespan.name + (static_data.settings.add_month_number ? " - Month " + (timespan.index+1) : ""));
+					calendar_layouts.html.push(timespan.name);
+					calendar_layouts.html.push("<span class='timespan_number'>");
+						calendar_layouts.html.push(` - Month ${timespan.index+1}`);
+					calendar_layouts.html.push("</span>");
 				calendar_layouts.html.push("</div>");
 
 
@@ -1185,7 +1213,10 @@ var calendar_layouts = {
 				calendar_layouts.html.push("<div class='timespan_container vertical'>");
 
 					calendar_layouts.html.push("<div class='timespan_name'>");
-						calendar_layouts.html.push(timespan.name + (static_data.settings.add_month_number ? " - Month " + (timespan.index+1) : ""));
+						calendar_layouts.html.push(timespan.name);
+						calendar_layouts.html.push("<span class='timespan_number'>");
+							calendar_layouts.html.push(` - Month ${timespan.index+1}`);
+						calendar_layouts.html.push("</span>");
 					calendar_layouts.html.push("</div>");
 
 					calendar_layouts.html.push("<div class='timespan_row_container'>");
@@ -1194,7 +1225,7 @@ var calendar_layouts = {
 
 						for(intercalary_day = 1; intercalary_day <= timespan.length; intercalary_day++, calendar_layouts.year_data.year_day++, calendar_layouts.year_data.epoch++, this.timespan.day++){
 
-							this.insert_day(calendar_layouts.year_data.epoch, '', "timespan_day timespan_intercalary");
+							this.insert_day(calendar_layouts.year_data.epoch, intercalary_day, "timespan_day timespan_intercalary");
 
 							if(intercalary_week_day <= timespan.week.length){
 								intercalary_week_day++;
@@ -1238,7 +1269,7 @@ var calendar_layouts = {
 
 					feature = filtered_features[index];
 
-					this.insert_day(calendar_layouts.year_data.epoch, '', "timespan_day timespan_intercalary", feature.name, true);
+					this.insert_day(calendar_layouts.year_data.epoch, index+1, "timespan_day timespan_intercalary", feature.name, true);
 
 					if(intercalary_week == timespan.week.length){
 						intercalary_week = 1;
@@ -1256,7 +1287,10 @@ var calendar_layouts = {
 
 					calendar_layouts.html.push("<div class='timespan_container vertical'>");
 					calendar_layouts.html.push("<div class='timespan_name'>");
-						calendar_layouts.html.push(timespan.name + (static_data.settings.add_month_number ? " - Month " + (timespan.index+1) : ""));
+						calendar_layouts.html.push(timespan.name);
+						calendar_layouts.html.push("<span class='timespan_number'>");
+							calendar_layouts.html.push(` - Month ${timespan.index+1}`);
+						calendar_layouts.html.push("</span>");
 					calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("<div class='timespan_row_container'>");
 

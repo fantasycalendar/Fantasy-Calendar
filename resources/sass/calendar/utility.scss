@@ -78,3 +78,10 @@
     display:none !important;
 }
 
+.box-shadow {
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.6);
+}
+
+.accent-bg-color {
+    background-color: $accent-color !important;
+}

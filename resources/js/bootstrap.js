@@ -10,6 +10,18 @@ try {
     window.Popper = require('popper.js').default;
     window.$ = window.jQuery = require('jquery');
 
+    require('chart.js');
+    require('trumbowyg');
+    require('notifyjs');
+
+    /**
+     * Protip is a tooltip solution that works well with jQuery, but takes a modern
+     * approach to the way you actually create tooltips. In this case that means
+     * using attributes on elements in HTML, not direct javascript controls.
+     */
+    require('protip');
+
+
     require('bootstrap');
 } catch (e) {}
 
@@ -53,7 +65,6 @@ if (authorization) {
 
 require('sweetalert');
 
-
 /**
  * Select2 is a jQuery-based replacement for select boxes. It supports searching,
  * remote data sets, and pagination of results.
@@ -61,6 +72,14 @@ require('sweetalert');
  
 require('select2');
 
+/**
+ * With ProgressBar.js, it's easy to create responsive and stylish progress
+ * bars for the web. Animations perform well even on mobile devices. It provides
+ * a few built‑in shapes like Line, Circle and SemiCircle but you can also create
+ * custom shaped progress bars with any vector graphic editor.
+ */
+
+window.ProgressBar = require('progressbar.js')
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening

@@ -4,15 +4,19 @@ const worker_calendar = new Worker('/js/webworkers/worker_calendar.js?v='+utcDat
 const worker_events = new Worker('/js/webworkers/worker_events.js?v='+utcDate1);
 const worker_climate = new Worker('/js/webworkers/worker_climate.js?v='+utcDate1);
 
-function sidescroll(){
-	//calculate left position
-	var left = $(this.event.target).scrollLeft();
-	//apply to header in negative
-	$(this.event.target).children().first().css('left', left);
-
-}
+var registered_click_callbacks = {}
 
 function bind_calendar_events(){
+
+	document.addEventListener('click', function(event){
+
+		for(var callback_id in registered_click_callbacks){
+
+			registered_click_callbacks[callback_id](event);
+
+		}
+
+	});
 
 	$('#input_collapse_btn').click(function(){
 		$("#input_container").toggleClass('inputs_collapsed');
@@ -23,6 +27,10 @@ function bind_calendar_events(){
 	})
 
 	calendar_weather.tooltip.set_up();
+
+	$(document).on('click', '.weather_icon', function(){
+		calendar_weather.tooltip.sticky($(this));
+	});
 
 	$(document).on('mouseenter', '.weather_icon', function(){
 		calendar_weather.tooltip.show($(this));
@@ -68,6 +76,8 @@ function rebuild_climate(){
 		dynamic_data: dynamic_data,
 		preview_date: preview_date,
 		evaluated_static_data: evaluated_static_data.epoch_data,
+		start_epoch: evaluated_static_data.year_data.start_epoch,
+		end_epoch: evaluated_static_data.year_data.end_epoch,
 		owner: owner
 	});
 }
@@ -78,16 +88,17 @@ function rebuild_events(event_id){
 
 	worker_events.postMessage({
 		static_data: static_data,
-		pre_epoch_data: evaluated_static_data.pre_epoch_data,
 		epoch_data: evaluated_static_data.epoch_data,
-		event_id: event_id
+		event_id: event_id,
+		start_epoch: evaluated_static_data.year_data.start_epoch,
+		end_epoch: evaluated_static_data.year_data.end_epoch
 	});
 }
 
 
 worker_events.onmessage = e => {
 
-	display_events(static_data, e.data)
+	display_events(static_data, e.data.event_data)
 
 	hide_loading_screen();
 
@@ -152,8 +163,8 @@ worker_calendar.onmessage = e => {
 			calendar_weather.epoch_data = evaluated_static_data.epoch_data;
 			calendar_weather.processed_weather = evaluated_static_data.processed_weather;
 
-			var start_epoch = Number(Object.keys(evaluated_static_data.epoch_data)[0]);
-			var end_epoch = Number(Object.keys(evaluated_static_data.epoch_data)[Object.keys(evaluated_static_data.epoch_data).length-1]);
+			var start_epoch = evaluated_static_data.start_epoch;
+			var end_epoch = evaluated_static_data.end_epoch;
 
 			eras.evaluate_current_era(static_data, start_epoch, end_epoch);
 			eras.set_up_position();

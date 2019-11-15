@@ -24,6 +24,13 @@
 
                 delete_calendar(calendar_hash, calendar_name, function() {location.reload();});
             });
+
+            $('.copy_button').click(function() {
+                let calendar_hash = $(this).attr('data-hash');
+                let calendar_name = $(this).attr('data-name');
+
+                copy_calendar(calendar_hash, calendar_name, function() {location.reload();});
+            })
         });
     </script>
 @endpush
@@ -64,16 +71,19 @@
                             </div>
                             <div class="card-body">
                                 <div class='icon_container'>
-                                    <a class='calendar_action' href='{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}'>
+                                    <a class='calendar_action action-edit protip' data-pt-delay-in="500" data-pt-title="Edit '{{ $calendar->name }}'" href='{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}'>
                                         <i class="fa fa-edit"></i>
                                     </a>
-                                    <a class='calendar_action' href='{{ route('calendars.show', ['calendar'=> $calendar->hash ]) }}'>
+                                    <a class='calendar_action action-show protip' data-pt-delay-in="500" data-pt-title="View '{{ $calendar->name }}'" href='{{ route('calendars.show', ['calendar'=> $calendar->hash ]) }}'>
                                         <i class="fa fa-eye"></i>
                                     </a>
-                                    <a class="calendar_action" href="{{ route('calendars.export', ['calendar' => $calendar->hash]) }}" >
+                                    <a class="calendar_action copy_button action-copy protip" data-pt-delay-in="500" data-pt-title="Copy '{{ $calendar->name }}'" href="javascript:" data-hash="{{ $calendar->hash }}" data-name="{{ $calendar->name }}">
+                                        <i class="fa fa-copy"></i>
+                                    </a>
+                                    <a class="calendar_action action-export protip" data-pt-delay-in="500" data-pt-title="Export '{{ $calendar->name }}'" href="{{ route('calendars.export', ['calendar' => $calendar->hash]) }}" >
                                         <i class="fa fa-file-export"></i>
                                     </a>
-                                    <a class="calendar_action delete_button" href="javascript:" data-hash="{{ $calendar->hash }}" data-name="{{ $calendar->name }}">
+                                    <a class="calendar_action delete_button action-delete protip" data-pt-delay-in="500" data-pt-title="Delete '{{ $calendar->name }}'" href="javascript:" data-hash="{{ $calendar->hash }}" data-name="{{ $calendar->name }}">
                                         <i class="fa fa-calendar-times"></i>
                                     </a>
                                 </div>

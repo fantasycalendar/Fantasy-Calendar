@@ -89,8 +89,6 @@ function do_update_dynamic(){
 		data: {_method: 'PATCH', dynamic_data: JSON.stringify(dynamic_data)},
 		success: function ( result ){
 
-			print(result)
-
 			if(!dynamic_same){
 				prev_dynamic_data = clone(dynamic_data);
 			}
@@ -375,6 +373,75 @@ function delete_calendar(calendar_hash, calendar_name, callback){
                 icon: "success",
                 title: "Deleted!",
                 text: "The calendar " + calendar_name + " has been deleted.",
+                button: true
+            })
+                .then(success => {
+                    callback();
+                })
+        })
+        .catch(err => {
+            if(err) {
+                console.log(err);
+                swal("Oh no!", err, "error");
+            } else {
+                swal.stopLoading();
+                swal.close();
+            }
+        });
+
+}
+
+function copy_calendar(calendar_hash, calendar_name, callback){
+
+    swal({
+        text: "What would you like to call your new copy of '" + calendar_name + "'?",
+        content: {
+            element: "input",
+            attributes: {
+                placeholder: calendar_name + " (clone)"
+            }
+        },
+        buttons: {
+            cancel: {
+                text:"Cancel",
+                value: false,
+                closeModal: true,
+                visible: true
+            },
+            confirm: {
+                text: "Clone",
+                closeModal: false,
+            }
+        }
+    })
+        .then(name => {
+            let new_calendar_name = "";
+
+            if(name === false) throw null;
+
+            if (!name) {
+                new_calendar_name = calendar_name  + " (clone)";
+            } else {
+                new_calendar_name = name;
+            }
+
+            return axios({
+                method: 'post',
+                url: '/api/calendar/' + calendar_hash + "/clone",
+                data: {
+                    new_calendar_name: new_calendar_name
+                }
+            });
+        })
+        .then(results => {
+            if(results.data.error) {
+                throw "Error: " + results.data.message;
+            }
+
+            swal({
+                icon: "success",
+                title: "Copied!",
+                text: "The calendar " + calendar_name + " has been cloned.",
                 button: true
             })
                 .then(success => {
