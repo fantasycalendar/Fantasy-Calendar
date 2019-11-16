@@ -362,7 +362,7 @@ var event_evaluator = {
 				var begin_epoch = event_evaluator.start_epoch-lookback;
 				var last_epoch = event_evaluator.end_epoch+lookahead;
 
-				for(var epoch = begin_epoch; epoch < last_epoch; epoch++){
+				for(var epoch = begin_epoch; epoch < last_epoch-1; epoch++){
 
 					if(event_evaluator.callback){
 
