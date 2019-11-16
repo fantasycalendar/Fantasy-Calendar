@@ -14,6 +14,10 @@ onmessage = e => {
 
 	var preview_date = e.data.preview_date;
 
+	var start_epoch = e.data.start_epoch;
+
+	var end_epoch = e.data.end_epoch;
+
 	if(dynamic_data.year != preview_date.year || dynamic_data.timespan != preview_date.timespan || dynamic_data.day != preview_date.day){
 		dynamic_data.year = preview_date.year;
 		dynamic_data.timespan = preview_date.timespan;
@@ -28,11 +32,8 @@ onmessage = e => {
 
 	if(climate_generator.process_seasons){
 
-		var keys = Object.keys(epoch_data);
-		var length = keys.length;
+		for(var epoch = start_epoch; epoch < end_epoch; epoch++){
 
-		for(var i = 0; i < length; i++){
-			var epoch = keys[i]|0;
 			epoch_data[epoch].season = climate_generator.get_season_data(epoch);
 			if((static_data.settings.hide_all_weather && !owner) || (static_data.settings.hide_future_weather && !owner && (timespan_index > dynamic_data.timespan || (timespan_index == dynamic_data.timespan && total_day > dynamic_data.day)))){
 				epoch_data[epoch].weather = false;

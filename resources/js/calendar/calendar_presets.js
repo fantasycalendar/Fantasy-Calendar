@@ -190,11 +190,11 @@ function parse_json(json){
 
 function process_fantasycalendar(calendar, dynamic_data, static_data){
 
-	var calendar_name = escapeHtml(unescapeHtml(calendar.name));
+	var calendar_name = calendar.name;
 
 	if(calendar.static_data.year_data.global_week !== undefined){
 		for(var i = 0; i < calendar.static_data.year_data.global_week.length; i++){
-			static_data.year_data.global_week.push(escapeHtml(unescapeHtml(calendar.static_data.year_data.global_week[i])).toString());
+			static_data.year_data.global_week.push(calendar.static_data.year_data.global_week[i].toString());
 		}
 	}
 
@@ -207,13 +207,13 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 
 
 			if(current_timespan.name !== undefined){
-				timespan.name = escapeHtml(unescapeHtml(current_timespan.name)).toString();
+				timespan.name = current_timespan.name.toString();
 			}else{
 				throw `Timespan ${i+1} does not have name data!`;
 			}
 
 			if(current_timespan.type === 'month' || current_timespan.type === 'intercalary'){
-				timespan.type = escapeHtml(unescapeHtml(current_timespan.type).toString())
+				timespan.type = current_timespan.type.toString();
 			}else{
 				throw `${timespan.name} has invalid type!`;
 			}
@@ -238,7 +238,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 
 			if(current_timespan.week !== undefined && Array.isArray(current_timespan.week)){
 				for(var j = 0; j < current_timespan.week.length; j++){
-					timespan.push(escapeHtml(current_timespan.week[j]))
+					timespan.push(current_timespan.week[j])
 				}
 			}
 
@@ -256,7 +256,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 			var current_leap_day = calendar.static_data.year_data.leap_days[i];
 
 			if(current_leap_day.name !== undefined){
-				leap_day.name = escapeHtml(unescapeHtml(current_leap_day.name)).toString();
+				leap_day.name = current_leap_day.name.toString();
 			}else{
 				throw `Leap day ${i+1} does not have name data!`;
 			}
@@ -321,7 +321,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 			var current_moon = calendar.static_data.moons[i];
 
 			if(current_moon.name !== undefined){
-				moon.name = escapeHtml(unescapeHtml(current_moon.name)).toString();
+				moon.name = current_moon.name.toString();
 			}else{
 				throw `Moon ${i+1} does not have name data!`;
 			}
@@ -429,7 +429,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 				var current_season = calendar.static_data.seasons.data[i];
 
 				if(current_season.name !== undefined){
-					season.name = escapeHtml(unescapeHtml(current_season.name)).toString();
+					season.name = current_season.name.toString();
 				}else{
 					throw `Season ${i+1} does not have name data!`;
 				}
@@ -513,7 +513,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 				var current_location = calendar.static_data.seasons.locations.data[i];
 
 				if(current_location.name !== undefined){
-					location.name = escapeHtml(unescapeHtml(current_location.name)).toString();
+					location.name = current_location.name.toString();
 				}else{
 					throw `Location ${i+1} does not have name data!`;
 				}
@@ -748,19 +748,19 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 				var current_era = calendar.static_data.eras[i];
 
 				if(current_era.name !== undefined){
-					era.name = escapeHtml(unescapeHtml(current_era.name)).toString();
+					era.name = current_era.name.toString();
 				}else{
 					throw `Era ${i+1} does not have name data!`;
 				}
 
 				if(current_era.format !== undefined){
-					era.format = escapeHtml(unescapeHtml(current_era.format)).toString();
+					era.format = current_era.format.toString();
 				}else{
 					throw `${era.name} does not have format data!`;
 				}
 
 				if(current_era.description !== undefined){
-					era.description = escapeHtml(unescapeHtml(current_era.description)).toString();
+					era.description = current_era.description.toString();
 				}else{
 					throw `${era.name} does not have description data!`;
 				}
@@ -921,7 +921,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 	if(calendar.static_data.cycles !== undefined){
 
 		if(calendar.static_data.cycles.format !== undefined){
-			static_data.cycles.format = escapeHtml(unescapeHtml(calendar.static_data.cycles.format)).toString();
+			static_data.cycles.format = calendar.static_data.cycles.format.toString();
 		}else{
 			throw `Cycles has invalid format!`;
 		}
@@ -939,7 +939,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 
 					for(var j = 0; j < current_cycle.names.length; j++){
 
-						cycle.names.push(escapeHtml(unescapeHtml(current_cycle.names[j])).toString());
+						cycle.names.push(current_cycle.names[j].toString());
 
 					}
 
@@ -975,7 +975,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 				category.id = slugify(current_category.name);
 
 				if(current_category.name !== undefined){
-					category.name = escapeHtml(unescapeHtml(current_category.name)).toString();
+					category.name = current_category.name.toString();
 				}else{
 					throw `Event category ${i+1} does not have name data!`;
 				}
@@ -1005,13 +1005,13 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 					category.event_settings = {};
 
 					if(current_category.event_settings.color !== undefined){
-						category.event_settings.color = escapeHtml(unescapeHtml(current_category.event_settings.color)).toString();
+						category.event_settings.color = current_category.event_settings.color.toString();
 					}else{
 						throw `${category.name} does not have color event settings!`;
 					}
 
 					if(current_category.event_settings.text !== undefined){
-						category.event_settings.text = escapeHtml(unescapeHtml(current_category.event_settings.text)).toString();
+						category.event_settings.text = current_category.event_settings.text.toString();
 					}else{
 						throw `${category.name} does not have text event settings!`;
 					}
@@ -1034,7 +1034,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 
 
 				if(current_category.name !== undefined){
-					category.name = escapeHtml(unescapeHtml(current_category.name)).toString();
+					category.name = current_category.name.toString();
 				}else{
 					throw `Event category ${i+1} does not have name data!`;
 				}
@@ -1054,13 +1054,13 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 				var current_event = calendar.static_data.event_data.events[eventId];
 
 				if(current_event.name !== undefined){
-					event.name = escapeHtml(unescapeHtml(current_event.name)).toString();
+					event.name = current_event.name.toString();
 				}else{
 					throw `Event ${i+1} does not have name data!`;
 				}
 
 				if(current_event.description !== undefined){
-					event.description = escapeHtml(unescapeHtml(current_event.description)).toString();
+					event.description =current_event.description.toString();
 				}else{
 					throw `${event.name} does not have valid description data!`;
 				}
@@ -1076,13 +1076,13 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 					event.settings = {};
 
 					if(current_event.settings.color !== undefined){
-						event.settings.color = escapeHtml(unescapeHtml(current_event.settings.color)).toString();
+						event.settings.color =current_event.settings.color.toString();
 					}else{
 						throw `${event.name} does not have valid color settings!`;
 					}
 
 					if(current_event.settings.text !== undefined){
-						event.settings.text = escapeHtml(unescapeHtml(current_event.settings.text)).toString();
+						event.settings.text =current_event.settings.text.toString();
 					}else{
 						throw `${event.name} does not have valid text settings!`;
 					}
@@ -1280,7 +1280,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 
 function process_old_fantasycalendar(calendar, dynamic_data, static_data){
 
-	var calendar_name = escapeHtml(unescapeHtml(calendar.name));
+	var calendar_name = calendar.name;
 
 	dynamic_data.year = calendar.year;
 	dynamic_data.timespan = calendar.month-1;
@@ -1294,7 +1294,7 @@ function process_old_fantasycalendar(calendar, dynamic_data, static_data){
 
 	for(var i = 0; i < calendar.months.length; i++){
 		static_data.year_data.timespans.push({
-			'name': escapeHtml(calendar.months[i]),
+			'name': calendar.months[i],
 			'type': 'month',
 			'interval': 1,
 			'offset': 0,
@@ -1304,7 +1304,7 @@ function process_old_fantasycalendar(calendar, dynamic_data, static_data){
 
 	for(var i = 0; i < calendar.moons.length; i++){
 		static_data.moons.push({
-			'name': escapeHtml( calendar.moons[i]),
+			'name':  calendar.moons[i],
 			'cycle': calendar.lunar_cyc[i],
 			'shift': calendar.lunar_shf[i],
 			'granularity': get_moon_granularity(calendar.lunar_cyc[i]),
@@ -1321,8 +1321,8 @@ function process_old_fantasycalendar(calendar, dynamic_data, static_data){
 		data = convert_old_event(event);
 
 		static_data.event_data.events.push({
-			'name': escapeHtml(event.name),
-			'description': escapeHtml(event.description),
+			'name': event.name,
+			'description': event.description,
 			'data':{
 				'has_duration': false,
 				'duration': 0,
@@ -1580,7 +1580,7 @@ function process_donjon(calendar, dynamic_data, static_data){
 	if(calendar.n_months !== undefined && !isNaN(Number(calendar.n_months))){
 
 		for(var i = 0; i < calendar.n_months; i++){
-			var name = calendar.months[i] ? escapeHtml(unescapeHtml(calendar.months[i])) : `Month ${i+1}`;
+			var name = calendar.months[i] ? calendar.months[i] : `Month ${i+1}`;
 			static_data.year_data.timespans.push({
 				'name': name,
 				'type': 'month',
@@ -1597,7 +1597,7 @@ function process_donjon(calendar, dynamic_data, static_data){
 	if(calendar.n_moons !== undefined && !isNaN(Number(calendar.n_moons))){
 
 		for(var i = 0; i < calendar.n_moons; i++){
-			var name = calendar.moons[i] ? escapeHtml(unescapeHtml(calendar.moons[i])) : `Moon ${i+1}`;
+			var name = calendar.moons[i] ? calendar.moons[i] : `Moon ${i+1}`;
 			static_data.moons.push({
 				'name': name,
 				'cycle': calendar.lunar_cyc[name] ? calendar.lunar_cyc[name] : calendar.lunar_cyc[i],

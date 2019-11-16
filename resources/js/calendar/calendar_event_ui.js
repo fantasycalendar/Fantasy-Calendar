@@ -333,15 +333,15 @@ var edit_event_ui = {
 
 		var event = static_data.event_data.events[this.event_id];
 
-		this.event_background.find('.event_name').val(unescapeHtml(event.name));
+		this.event_background.find('.event_name').val(event.name);
 
-		this.trumbowyg.trumbowyg('html', unescapeHtml(event.description));
+		this.trumbowyg.trumbowyg('html', event.description);
 
 		this.create_conditions(event.data.conditions, this.event_conditions_container);
 
 		this.event_occurrences_container.toggleClass('hidden', edit_event_ui.event_conditions_container.length == 0);
 
-		this.search_distance = 0;
+		this.search_distance = event.data.search_distance;
 
 		this.evaluate_condition_selects(this.event_conditions_container);
 
@@ -385,13 +385,12 @@ var edit_event_ui = {
 			static_data.event_data.events[this.event_id] = {};
 		}
 
-
-		var name = escapeHtml(this.event_background.find('.event_name').val());
+		var name = this.event_background.find('.event_name').val();
 		name = name !== '' ? name : "Unnamed Event";
 
 		static_data.event_data.events[this.event_id].name = name;
 
-		static_data.event_data.events[this.event_id].description = escapeHtml(this.trumbowyg.trumbowyg('html'));
+		static_data.event_data.events[this.event_id].description = this.trumbowyg.trumbowyg('html');
 
 		static_data.event_data.events[this.event_id].data = this.create_event_data();
 
@@ -517,9 +516,21 @@ var edit_event_ui = {
 			conditions: conditions,
 			connected_events: this.connected_events,
 			date: this.date,
-			search_distance: this.search_distance
+			search_distance: this.get_search_distance()
 		};
     
+	},
+
+	get_search_distance: function(){
+
+		var event = static_data.event_data.events[this.event_id];
+
+		var search_distance = $('#duration').val()|0 > search_distance ? $('#duration').val()|0 : search_distance;
+		var search_distance = $('#limited_repeat_num').val()|0 > search_distance ? $('#limited_repeat_num').val()|0 : search_distance;
+		var search_distance = this.search_distance > search_distance ? this.search_distance : search_distance;
+
+		return search_distance;
+
 	},
 
 	event_is_one_time: function(){
@@ -577,12 +588,12 @@ var edit_event_ui = {
 
 			event_check.id = eventid;
 
-			var name = escapeHtml(this.event_background.find('.event_name').val());
+			var name = this.event_background.find('.event_name').val();
 			name = name !== '' ? name : "Unnamed Event";
 
 			event_check.name = name;
 
-			event_check.description = escapeHtml(this.trumbowyg.trumbowyg('html'));
+			event_check.description = this.trumbowyg.trumbowyg('html');
 
 			event_check.data = this.create_event_data();
 
@@ -1587,6 +1598,8 @@ var edit_event_ui = {
 				static_data: static_data,
 				epoch_data: edit_event_ui.event_data,
 				event_id: edit_event_ui.event_id,
+				start_epoch: e.data.processed_data.start_epoch,
+				end_epoch: e.data.processed_data.end_epoch,
 				callback: true
 			});
 
@@ -1612,7 +1625,9 @@ var edit_event_ui = {
 
 					}
 
-					edit_event_ui.event_occurrences_text.html(`This event will appear <span class='bold-text'>${edit_event_ui.event_occurrences.length}</span> times in the next ${years} ${years > 1 ? 'years' : 'year'}.`);
+					var num = edit_event_ui.event_occurrences.length;
+
+					edit_event_ui.event_occurrences_text.html(`This event will appear <span class='bold-text'>${num}</span> time${num > 1 ? "s" : ""} in the next ${years} year${years > 1 ? 's' : ''}.`);
 
 					edit_event_ui.event_occurrences_list_container.removeClass('hidden');
 
@@ -1804,9 +1819,9 @@ var show_event_ui = {
 
 	set_current_event: function(event){
 
-		this.event_name.text(unescapeHtml(event.name));
+		this.event_name.text(event.name);
 
-		this.event_desc.html(unescapeHtml(event.description)).toggleClass('hidden', event.description.length == 0);
+		this.event_desc.html(event.description).toggleClass('hidden', event.description.length == 0);
 
 		this.event_comments.html('').addClass('loading');
 
@@ -1846,7 +1861,7 @@ var show_event_ui = {
 
 		content.push(`<div class='event_comment ${comment.comment_owner ? "comment_owner" : ""} ${comment.calendar_owner ? "calendar_owner" : ""}'`)
 		content.push(` date='${comment.date}' comment_id='${index}'>`)
-			content.push(`<p><span class='comment'>${unescapeHtml(comment.content)}</span></p>`)
+			content.push(`<p><span class='comment'>${comment.content}</span></p>`)
 			content.push(`<p><span class='username'>- ${comment.username}${comment.calendar_owner ? " (owner)" : ""}</span></p>`)
 			content.push(`<p><span class='date'>${comment.date}</span></p>`)
 		content.push(`</div>`)
@@ -1909,7 +1924,7 @@ var edit_HTML_ui = {
 
 	set_html: function(){
 
-		this.trumbowyg.trumbowyg('html', unescapeHtml(this.value));
+		this.trumbowyg.trumbowyg('html', this.value);
 
 		this.html_edit_background.removeClass('hidden');
 
@@ -1917,7 +1932,7 @@ var edit_HTML_ui = {
 
 	save_html: function(){
 
-		this.data[this.key] = escapeHtml(this.trumbowyg.trumbowyg('html'));
+		this.data[this.key] = this.trumbowyg.trumbowyg('html');
 
 		edit_HTML_ui.key = null;
 		edit_HTML_ui.data = null;
