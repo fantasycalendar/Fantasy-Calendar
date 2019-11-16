@@ -333,9 +333,9 @@ var edit_event_ui = {
 
 		var event = static_data.event_data.events[this.event_id];
 
-		this.event_background.find('.event_name').val(unescapeHtml(event.name));
+		this.event_background.find('.event_name').val(event.name);
 
-		this.trumbowyg.trumbowyg('html', unescapeHtml(event.description));
+		this.trumbowyg.trumbowyg('html', event.description);
 
 		this.create_conditions(event.data.conditions, this.event_conditions_container);
 
@@ -385,12 +385,12 @@ var edit_event_ui = {
 			static_data.event_data.events[this.event_id] = {};
 		}
 
-		var name = escapeHtml(this.event_background.find('.event_name').val());
+		var name = this.event_background.find('.event_name').val();
 		name = name !== '' ? name : "Unnamed Event";
 
 		static_data.event_data.events[this.event_id].name = name;
 
-		static_data.event_data.events[this.event_id].description = escapeHtml(this.trumbowyg.trumbowyg('html'));
+		static_data.event_data.events[this.event_id].description = this.trumbowyg.trumbowyg('html');
 
 		static_data.event_data.events[this.event_id].data = this.create_event_data();
 
@@ -588,12 +588,12 @@ var edit_event_ui = {
 
 			event_check.id = eventid;
 
-			var name = escapeHtml(this.event_background.find('.event_name').val());
+			var name = this.event_background.find('.event_name').val();
 			name = name !== '' ? name : "Unnamed Event";
 
 			event_check.name = name;
 
-			event_check.description = escapeHtml(this.trumbowyg.trumbowyg('html'));
+			event_check.description = this.trumbowyg.trumbowyg('html');
 
 			event_check.data = this.create_event_data();
 
@@ -1819,9 +1819,9 @@ var show_event_ui = {
 
 	set_current_event: function(event){
 
-		this.event_name.text(unescapeHtml(event.name));
+		this.event_name.text(event.name);
 
-		this.event_desc.html(unescapeHtml(event.description)).toggleClass('hidden', event.description.length == 0);
+		this.event_desc.html(event.description).toggleClass('hidden', event.description.length == 0);
 
 		this.event_comments.html('').addClass('loading');
 
@@ -1861,7 +1861,7 @@ var show_event_ui = {
 
 		content.push(`<div class='event_comment ${comment.comment_owner ? "comment_owner" : ""} ${comment.calendar_owner ? "calendar_owner" : ""}'`)
 		content.push(` date='${comment.date}' comment_id='${index}'>`)
-			content.push(`<p><span class='comment'>${unescapeHtml(comment.content)}</span></p>`)
+			content.push(`<p><span class='comment'>${comment.content}</span></p>`)
 			content.push(`<p><span class='username'>- ${comment.username}${comment.calendar_owner ? " (owner)" : ""}</span></p>`)
 			content.push(`<p><span class='date'>${comment.date}</span></p>`)
 		content.push(`</div>`)
@@ -1924,7 +1924,7 @@ var edit_HTML_ui = {
 
 	set_html: function(){
 
-		this.trumbowyg.trumbowyg('html', unescapeHtml(this.value));
+		this.trumbowyg.trumbowyg('html', this.value);
 
 		this.html_edit_background.removeClass('hidden');
 
@@ -1932,7 +1932,7 @@ var edit_HTML_ui = {
 
 	save_html: function(){
 
-		this.data[this.key] = escapeHtml(this.trumbowyg.trumbowyg('html'));
+		this.data[this.key] = this.trumbowyg.trumbowyg('html');
 
 		edit_HTML_ui.key = null;
 		edit_HTML_ui.data = null;

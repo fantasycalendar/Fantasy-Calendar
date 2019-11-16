@@ -9,6 +9,8 @@
 
         @include('calendar._loadcalendar')
 
+        console.log(static_data.year_data.timespans)
+
         for(var moon_index in static_data.moons){
             var moon = static_data.moons[moon_index];
 

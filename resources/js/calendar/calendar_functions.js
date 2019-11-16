@@ -60,30 +60,6 @@ var entityMap1 = {
 };
 
 /**
- * This function escapes any string given to it and returns an escaped string
- *
- * @param  {string}     input       String to be sanitized
- * @return {string}                 Sanitized string
- */
-function escapeHtml(string) {
-	return String(string).replace(/[&<>"'\/]/g, function (s) {
-		return entityMap1[s];
-	});
-}
-
-/**
- * This function unescapes any string given to it and returns a HTML ready string
- *
- * @param  {string}     input       String to be desanitized
- * @return {string}                 Desanitized string
- */
-function unescapeHtml(input){
-	var e = document.createElement('textarea');
-	e.innerHTML = input;
-	return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
-}
-
-/**
  * This function is used to compare two javascript objects by iterating through its content.
  *
  * @param  {function}   func        The function to be called
@@ -104,25 +80,6 @@ function debounce(func, wait, immediate) {
 		if (callNow) func.apply(context, args);
 	};
 };
-
-
-/**
- * This function is used to compare two javascript objects by iterating through its content.
- *
- * @param  {object}     obj     A javascript object
- * @return {object}             An object with all of its strings HTML escaped
- */
-function escapeAllHtml(obj)
-{
-	for (var k in obj)
-	{
-		if (typeof obj[k] == "object" && obj[k] !== null){
-			escapeAllHtml(obj[k]);
-		}else{
-			obj[k] = escapeHtml(obj[k]);
-		}
-	}
-}
 
 /**
  * This function is used to compare two javascript objects by iterating through its content.
