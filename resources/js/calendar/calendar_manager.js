@@ -119,13 +119,15 @@ worker_climate.onmessage = e => {
 
 	if(prev_seasons != calendar_weather.processed_seasons || prev_weather != calendar_weather.processed_weather){
 
-		var start_epoch = Number(Object.keys(evaluated_static_data.epoch_data)[0]);
-		var end_epoch = Number(Object.keys(evaluated_static_data.epoch_data)[Object.keys(evaluated_static_data.epoch_data).length-1]);
+		var start_epoch = evaluated_static_data.year_data.start_epoch;
+		var end_epoch = evaluated_static_data.year_data.end_epoch;
 
 		calendar_layouts.insert_calendar(evaluated_static_data);
 
 		calendar_weather.epoch_data = evaluated_static_data.epoch_data;
 		calendar_weather.processed_weather = evaluated_static_data.processed_weather;
+		calendar_weather.start_epoch = start_epoch;
+		calendar_weather.end_epoch = end_epoch;
 
 		eras.evaluate_current_era(static_data, start_epoch, end_epoch);
 		eras.set_up_position();
@@ -162,17 +164,17 @@ worker_calendar.onmessage = e => {
 
 			calendar_layouts.insert_calendar(evaluated_static_data);
 
-			calendar_weather.epoch_data = evaluated_static_data.epoch_data;
-			calendar_weather.processed_weather = evaluated_static_data.processed_weather;
-			calendar_weather.start_epoch = evaluated_static_data.year_data.start_epoch;
-			calendar_weather.end_epoch = evaluated_static_data.year_data.end_epoch;
-
-			var start_epoch = evaluated_static_data.start_epoch;
-			var end_epoch = evaluated_static_data.end_epoch;
+			var start_epoch = evaluated_static_data.year_data.start_epoch;
+			var end_epoch = evaluated_static_data.year_data.end_epoch;
 
 			eras.evaluate_current_era(static_data, start_epoch, end_epoch);
 			eras.set_up_position();
 			eras.display_era_events(static_data);
+
+			calendar_weather.epoch_data = evaluated_static_data.epoch_data;
+			calendar_weather.processed_weather = evaluated_static_data.processed_weather;
+			calendar_weather.start_epoch = start_epoch;
+			calendar_weather.end_epoch = end_epoch;
 
 			rebuild_events();
 
