@@ -1564,9 +1564,7 @@ function set_up_edit_inputs(set_up){
 				repopulate_location_select_list();
 			}
 
-			if(refresh || refresh === undefined){
-				do_error_check(type[0]);
-			}
+			do_error_check(type[0], refresh);
 
 		}else if(target.attr('class') !== undefined && target.attr('class').indexOf('static_input') > -1){
 
@@ -1605,9 +1603,8 @@ function set_up_edit_inputs(set_up){
 			var refresh = target.attr('refresh');
 			refresh = refresh === "true" || refresh === undefined;
 
-			if(refresh || refresh === undefined){
-				do_error_check(type[0]);
-			}
+			do_error_check(type[0], refresh);
+
 		}
 
 	});

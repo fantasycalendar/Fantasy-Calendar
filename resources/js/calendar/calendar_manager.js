@@ -68,14 +68,12 @@ function rebuild_calendar(action, dynamic_data){
 
 function rebuild_climate(){
 
-	show_loading_screen();
-
 	worker_climate.postMessage({
 		calendar_name: calendar_name,
 		static_data: static_data,
 		dynamic_data: dynamic_data,
 		preview_date: preview_date,
-		evaluated_static_data: evaluated_static_data.epoch_data,
+		epoch_data: evaluated_static_data.epoch_data,
 		start_epoch: evaluated_static_data.year_data.start_epoch,
 		end_epoch: evaluated_static_data.year_data.end_epoch,
 		owner: owner
@@ -112,7 +110,6 @@ worker_climate.onmessage = e => {
 	evaluated_static_data.epoch_data = e.data.epoch_data;
 	evaluated_static_data.processed_weather = e.data.processed_weather;
 	calendar_weather.epoch_data = clone(evaluated_static_data.epoch_data);
-	calendar_weather.processed_seasons = clone(e.data.processed_seasons);
 	calendar_weather.processed_weather = clone(e.data.processed_weather);
 	calendar_weather.start_epoch = evaluated_static_data.year_data.start_epoch;
 	calendar_weather.end_epoch = evaluated_static_data.year_data.end_epoch;

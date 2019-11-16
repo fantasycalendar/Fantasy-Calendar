@@ -24,24 +24,29 @@ onmessage = e => {
 		dynamic_data.day = preview_date.day;
 	}
 	
-	var epoch_data = e.data.evaluated_static_data;
+	var epoch_data = e.data.epoch_data;
 
-	var first_epoch = Object.keys(epoch_data)[0]|0;
+	var first_epoch = Number(Object.keys(epoch_data)[0]);
 	
 	climate_generator.set_up(calendar_name, static_data, dynamic_data, first_epoch);
 
 	if(climate_generator.process_seasons){
 
-		for(var epoch = start_epoch; epoch < end_epoch; epoch++){
+		for(var epoch in epoch_data){
+
+			var epoch = Number(epoch);
 
 			epoch_data[epoch].season = climate_generator.get_season_data(epoch);
-			if((static_data.settings.hide_all_weather && !owner) || (static_data.settings.hide_future_weather && !owner && (timespan_index > dynamic_data.timespan || (timespan_index == dynamic_data.timespan && total_day > dynamic_data.day)))){
-				epoch_data[epoch].weather = false;
-			}else{
-				if(climate_generator.process_weather){
-					epoch_data[epoch].weather = climate_generator.get_weather_data(epoch);
-				}else{
+
+			if(epoch >= start_epoch && epoch <= end_epoch){
+				if((static_data.settings.hide_all_weather && !owner) || (static_data.settings.hide_future_weather && !owner && (timespan_index > dynamic_data.timespan || (timespan_index == dynamic_data.timespan && total_day > dynamic_data.day)))){
 					epoch_data[epoch].weather = false;
+				}else{
+					if(climate_generator.process_weather){
+						epoch_data[epoch].weather = climate_generator.get_weather_data(epoch);
+					}else{
+						epoch_data[epoch].weather = false;
+					}
 				}
 			}
 		}

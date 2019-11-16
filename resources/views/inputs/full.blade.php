@@ -469,7 +469,7 @@
                     <div class='detail-column'>Enable weather:</div>
                     <div class='detail-column float'>
                         <label class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input static_input" id='enable_weather' data='seasons.global_settings' fc-index='enable_weather'>
+                            <input type="checkbox" class="custom-control-input static_input" id='enable_weather' refresh='false' data='seasons.global_settings' fc-index='enable_weather'>
                             <span class="custom-control-indicator"></span>
                         </label>
                     </div>
@@ -485,7 +485,7 @@
                     <div class='detail-row'>
                         <div class='detail-column'>Weather offset (days):</div>
                         <div class='detail-column float'>
-                            <input class='form-control form-control-sm static_input' type='number' data='seasons.global_settings' fc-index='weather_offset'/>
+                            <input class='form-control form-control-sm static_input' type='number' refresh='false' data='seasons.global_settings' fc-index='weather_offset'/>
                         </div>
                     </div>
 
@@ -493,7 +493,7 @@
                         <div class='detail-column half'>
                             <div class='detail-row'>Temperature system:</div>
                             <div class='detail-row'>
-                                <select class='custom-select type full static_input' id='temp_sys' data='seasons.global_settings' fc-index='temp_sys'>
+                                <select class='custom-select type full static_input' id='temp_sys' refresh='false' data='seasons.global_settings' fc-index='temp_sys'>
                                     <option selected value='metric'>Metric</option>
                                     <option value='imperial'>Imperial</option>
                                     <option value='both_m'>Both (inputs metric)</option>
@@ -505,7 +505,7 @@
                         <div class='detail-column half'>
                             <div class='detail-row'>Wind speed system:</div>
                             <div class='detail-row'>
-                                <select class='custom-select type full static_input' data='seasons.global_settings' fc-index='wind_sys'>
+                                <select class='custom-select type full static_input' refresh='false' data='seasons.global_settings' fc-index='wind_sys'>
                                     <option selected value='metric'>Metric</option>
                                     <option value='imperial'>Imperial</option>
                                     <option value='both'>Both</option>
@@ -518,7 +518,7 @@
                         <div class='detail-column'>Cinematic temperature description:</div>
                         <div class='detail-column float'>
                             <label class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input static_input" data='seasons.global_settings' fc-index='cinematic'>
+                                <input type="checkbox" class="custom-control-input static_input" refresh='false' data='seasons.global_settings' fc-index='cinematic'>
                                 <span class="custom-control-indicator"></span>
                             </label>
                         </div>
@@ -528,7 +528,7 @@
                     <div class='detail-row'>
                         <div class='detail-row'>Weather generation seed:</div>
                         <div class='detail-row'>
-                            <input type='number' id='seasons_seed' class='form-control static_input' data='seasons.global_settings' fc-index='seed' />
+                            <input type='number' id='seasons_seed' class='form-control static_input' refresh='false' data='seasons.global_settings' fc-index='seed' />
                             <div class='btn btn-primary' id='reseed_seasons'><i class="fa fa-redo"></i></div>
                         </div>
                     </div>
