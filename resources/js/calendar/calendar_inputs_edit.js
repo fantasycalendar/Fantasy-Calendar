@@ -3929,8 +3929,6 @@ function set_up_edit_values(){
 
 	recalc_stats();
 
-	$('#enable_weather').change();
-
 	set_up_view_values();
 
 }
