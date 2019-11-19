@@ -42,9 +42,31 @@ Route::get('/donate', function(){
     ]);
 });
 
+
+
 // Subscription management
-Route::get('/subscription', 'SubscriptionController@subscribe')->name('subscription.subscribemonthly');
-Route::post('/subscription-update', 'SubscriptionController@update')->name('subscription.update');
+// Pricing page
+Route::get('/pricing', 'SubscriptionController@pricing')->name('subscription.pricing');
+
+// List current subscription
+Route::get('/subscription', 'SubscriptionController@index')->name('subscription.index');
+
+// They want to subscribe!
+Route::get('/subscription/subscribe/{level}', 'SubscriptionController@subscribe')->name('subscription.subscribe');
+Route::post('/subscription/subscribe', 'SubscriptionController@createsubscription')->name('subscription.create');
+
+// They want to cancel =(
+Route::get('/subscription/cancel', 'SubscriptionController@cancellation')->name('subscription.cancel');
+Route::post('/subscription/cancel/{level}', 'SubscriptionController@cancel')->name('subscription.cancel');
+
+// They want to resume! =)
+Route::get('/subscription/resume/{level}', 'SubscriptionController@resume')->name('subscription.resume');
+
+// They want to upgrade
+Route::post('/subscription/update/{level}', 'SubscriptionController@update')->name('subscription.update');
+
+
+
 
 // Manual error page routes for the moment
 Route::get('/403', function() {

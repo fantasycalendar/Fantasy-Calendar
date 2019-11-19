@@ -1,48 +1,6 @@
 @extends('templates._page')
 
 @push('head')
-    @if(Auth::check() && !Auth::user()->subscribed('Timekeeper') && !Auth::user()->subscribed('Worldbuilder'))
-        <script>
-            $(document).ready(function(){
-                const stripe = Stripe('{{ env('STRIPE_KEY') }}');
-
-                const elements = stripe.elements();
-                const cardElement = elements.create('card');
-
-                cardElement.mount('#card-element');
-
-                const cardHolderName = document.getElementById('card-holder-name');
-                const cardButton = document.getElementById('card-button');
-                const clientSecret = cardButton.dataset.secret;
-
-                cardButton.addEventListener('click', async (e) => {
-                    const { setupIntent, error } = await stripe.handleCardSetup(
-                        clientSecret, cardElement, {
-                            payment_method_data: {
-                                billing_details: { name: cardHolderName.value }
-                            }
-                        }
-                    );
-
-                    if (error) {
-                        swal("Oops", "Something went wrong: " + error, "error");
-                    } else {
-                        axios.post('{{ route('subscription.update') }}', {
-                            token: setupIntent.payment_method
-                        })
-                        .then(function (response) {
-                            console.log(setupIntent);
-                            console.log(response);
-                        })
-                        .catch(function(error) {
-                            console.log(error);
-                        });
-                    }
-                });
-            });
-        </script>
-    @endif
-
     <script>
         $(document).ready(function(){
             $('.subscribe').click(function() {
@@ -127,7 +85,7 @@
                     @guest
                         <a href="{{ route('register') }}" class="btn btn-primary">Register now</a>
                     @else
-                        <a href="javascript:" class="btn btn-secondary btn-secondary disabled">You have this!</a>
+                        <a href="#" class="btn btn-secondary btn-secondary disabled">You have this!</a>
                     @endguest
                 </div>
             </div>
@@ -144,9 +102,9 @@
                         <li>Subscriber-only Discord channel</li>
                     </ul>
                     @if(Auth::check() && Auth::user()->subscribed('Timekeeper'))
-                        <a href="javascript:" class="btn btn-secondary disabled">You have this!</a>
+                        <a href="#" class="btn btn-secondary disabled">You have this!</a>
                     @else
-                        <a href="javascript:" class="btn btn-primary subscribe">Subscribe Now</a>
+                        <a href="{{ route('subscription.subscribe', ['level' => 'Timekeeper']) }}" class="btn btn-primary subscribe">Subscribe Now</a>
                     @endif
                 </div>
             </div>
@@ -159,15 +117,15 @@
                         <li><strong>Full</strong> calendar functionality</li>
                         <li><strong>Unlimited</strong> number of calendars</li>
                         <li>Icon next to your username</li>
-                        <li>Timekeeper Discord role</li>
+                        <li>Worldbuilder Discord role</li>
                         <li>Subscriber-only Discord channel</li>
                         <li>Calendar <strong>co-ownership</strong> <p class="small">Co-owners can comment on events, create events, and change the current date.</p></li>
                         <li>Add <strong>users</strong> to your calendars <p class="small">Users can comment on events and view provided information</p> </li>
                     </ul>
                     @if(Auth::check() && Auth::user()->subscribed('Worldbuilder'))
-                        <a href="javascript:" class="btn btn-secondary disabled">You have this!</a>
+                        <a href="#" class="btn btn-secondary disabled">You have this!</a>
                     @else
-                        <a href="javascript:" class="btn btn-primary subscribe">Subscribe Now</a>
+                        <a href="{{ route('subscription.subscribe', ['level' => 'Worldbuilder']) }}" class="btn btn-primary subscribe">Subscribe Now</a>
                     @endif
                 </div>
             </div>
