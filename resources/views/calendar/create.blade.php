@@ -115,7 +115,7 @@
                         empty_edit_values();
                         set_up_edit_values();
                         $('#json_input').val('');
-                        rebuild_calendar('calendar', dynamic_data);
+                        error_check('calendar', true);
                     }else{
                         alert("Unrecognized JSON format.")
                     }
@@ -125,7 +125,7 @@
                     static_data = clone(calendar_presets[$('#presets').val()].static_data);
                     empty_edit_values();
                     set_up_edit_values();
-                    rebuild_calendar('calendar', dynamic_data);
+                    error_check('calendar', true);
                 }
             });
 
