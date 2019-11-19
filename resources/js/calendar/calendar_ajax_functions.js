@@ -80,8 +80,6 @@ function update_dynamic(){
 
 function do_update_dynamic(){
 
-	//escapeAllHtml(dynamic_data);
-
 	$.ajax({
 		url:window.baseurl+"calendars/"+hash,
 		type: "post",

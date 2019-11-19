@@ -213,7 +213,7 @@ function set_up_edit_inputs(set_up){
 	/* ------------------- Dynamic and static callbacks ------------------- */
 
 	$('#calendar_name').change(function(){
-		calendar_name = escapeHtml($(this).val());
+		calendar_name = $(this).val();
 		evaluate_save_button();
 	});
 
@@ -271,8 +271,8 @@ function set_up_edit_inputs(set_up){
 	$('.form-inline.global_week .add').click(function(){
 		var name = $(this).prev();
 		var id = global_week_sortable.children().length;
-		add_weekday_to_sortable(global_week_sortable, id, escapeHtml(name.val()))
-		static_data.year_data.global_week.push(escapeHtml(name.val()));
+		add_weekday_to_sortable(global_week_sortable, id, name.val())
+		static_data.year_data.global_week.push(name.val());
 		global_week_sortable.sortable('refresh');
 		reindex_weekday_sortable();
 		name.val("");
@@ -284,7 +284,7 @@ function set_up_edit_inputs(set_up){
 		var type = $(this).prev();
 		var id = timespan_sortable.children().length;
 		stats = {
-			'name': escapeHtml(name.val()),
+			'name': name.val(),
 			'type': type.val(),
 			'length': 1,
 			'interval': 1,
@@ -306,7 +306,7 @@ function set_up_edit_inputs(set_up){
 		var type = $(this).prev();
 		var id = leap_day_list.children().length;
 		stats = {
-			'name': escapeHtml(name.val()),
+			'name': name.val(),
 			'intercalary': type.val() == 'intercalary',
 			'timespan': 0,
 			'adds_week_day': false,
@@ -359,7 +359,7 @@ function set_up_edit_inputs(set_up){
 		var granularity = get_moon_granularity(cycle_val);
 
 		stats = {
-			'name': escapeHtml(name.val()),
+			'name': name.val(),
 			'cycle': cycle.val(),
 			'shift': shift.val(),
 			'granularity': granularity,
@@ -387,7 +387,7 @@ function set_up_edit_inputs(set_up){
 		var id = season_sortable.children().length;
 
 		stats = {
-			"name": escapeHtml(name.val()),
+			"name": name.val(),
 			"time": {
 				"sunrise": {
 					"hour": 9,
@@ -458,7 +458,7 @@ function set_up_edit_inputs(set_up){
 		var id = location_list.children().length;
 
 		stats = {
-			"name": escapeHtml(name.val()),
+			"name": name.val(),
 			"seasons": [],
 			"custom_dates": {},
 
@@ -521,7 +521,7 @@ function set_up_edit_inputs(set_up){
 	$('#copy_location_data').click(function(){
 
 		var type = location_select.find('option:selected').parent().attr('value');
-		var location = escapeHtml(location_select.val());
+		var location = location_select.val();
 
 		if(type === "custom"){
 			var stats = static_data.seasons.locations[location];
@@ -573,7 +573,7 @@ function set_up_edit_inputs(set_up){
 		};
 		if(static_data.cycles === undefined){
 			static_data.cycles = {
-				format: escapeHtml($('#cycle_format').val()),
+				format: $('#cycle_format').val(),
 				data: []
 			};
 		}
@@ -591,7 +591,7 @@ function set_up_edit_inputs(set_up){
 		var name = $(this).prev();
 
 		var stats = {
-			"name": escapeHtml(name.val()),
+			"name": name.val(),
 			"abbreviation": "",
 			"description": "",
 			"settings": {
@@ -629,7 +629,7 @@ function set_up_edit_inputs(set_up){
 		var slug = slugify(name.val());
 
 		var stats = {
-			"name": escapeHtml(name.val()),
+			"name": name.val(),
 			"category_settings":{
 				"hide": false,
 				"player_usable": false
@@ -660,7 +660,7 @@ function set_up_edit_inputs(set_up){
 
 
 	$('.form-inline.events .add').click(function(){
-		var name = escapeHtml($(this).prev().val());
+		var name = $(this).prev().val();
 
 		edit_event_ui.create_new_event(name);
 		$(this).prev().val('');
@@ -1017,8 +1017,8 @@ function set_up_edit_inputs(set_up){
 			element.push("<div class='week_list'>");
 				static_data.year_data.timespans[index].week = [];
 				for(index = 0; index < static_data.year_data.global_week.length; index++){
-					static_data.year_data.timespans[index].week.push(escapeHtml(static_data.year_data.global_week[index]));
-					element.push(`<input type='text' class='detail-row form-control internal-list-name dynamic_input custom_week_day' data='year_data.timespans.${index}.week' fc-index='${index}' value='${escapeHtml(static_data.year_data.global_week[index])}'/>`);
+					static_data.year_data.timespans[index].week.push(static_data.year_data.global_week[index]);
+					element.push(`<input type='text' class='detail-row form-control internal-list-name dynamic_input custom_week_day' data='year_data.timespans.${index}.week' fc-index='${index}' value='${static_data.year_data.global_week[index]}'/>`);
 				}
 			element.push("</div>");
 			$(this).parent().parent().parent().parent().find(".detail-row.collapsible-content").append(element.join(""));
@@ -1270,7 +1270,7 @@ function set_up_edit_inputs(set_up){
 
 			var timespan_item = timespan_sortable.children().eq(timespan_val);
 			var timespan_interval = timespan_item.find('.interval').val()|0;
-			var timespan_name = escapeHtml(timespan_item.find('.name-input').val());
+			var timespan_name = timespan_item.find('.name-input').val();
 
 			var text = "This leap day will appear every";
 
@@ -1497,7 +1497,7 @@ function set_up_edit_inputs(set_up){
 				current_calendar_data[type[type.length-1]] = [];
 
 				target.closest('.cycle_list').children().each(function(i){
-					current_calendar_data[type[type.length-1]][i] = escapeHtml($(this).val());
+					current_calendar_data[type[type.length-1]][i] = $(this).val();
 				});
 
 			}else{
@@ -1523,7 +1523,7 @@ function set_up_edit_inputs(set_up){
 							break;
 
 						default:
-							var value = escapeHtml(target.val());
+							var value = target.val();
 							break;
 					}
 
@@ -1564,9 +1564,7 @@ function set_up_edit_inputs(set_up){
 				repopulate_location_select_list();
 			}
 
-			if(refresh || refresh === undefined){
-				do_error_check(type[0]);
-			}
+			do_error_check(type[0], refresh);
 
 		}else if(target.attr('class') !== undefined && target.attr('class').indexOf('static_input') > -1){
 
@@ -1596,7 +1594,7 @@ function set_up_edit_inputs(set_up){
 					break;
 
 				default:
-					value = escapeHtml(target.val());
+					value = target.val();
 					break;
 			}
 
@@ -1605,9 +1603,8 @@ function set_up_edit_inputs(set_up){
 			var refresh = target.attr('refresh');
 			refresh = refresh === "true" || refresh === undefined;
 
-			if(refresh || refresh === undefined){
-				do_error_check(type[0]);
-			}
+			do_error_check(type[0], refresh);
+
 		}
 
 	});
@@ -1865,10 +1862,10 @@ function add_leap_day_to_list(parent, key, data){
 											}
 										}
 										if(data.adds_week_day){
-											element.push(`<option ${data.day == 0 ? 'selected' : ''} value='0'>Before ${escapeHtml(week[0])}</option>`);
+											element.push(`<option ${data.day == 0 ? 'selected' : ''} value='0'>Before ${week[0]}</option>`);
 										}
 										for(var i = 0; i < week.length; i++){
-											element.push(`<option ${data.day == i ? 'selected' : ''} value='${i+1}'>${escapeHtml(week[i])}</option>`);
+											element.push(`<option ${data.day == i ? 'selected' : ''} value='${i+1}'>${week[i]}</option>`);
 										}
 
 									element.push("</select>");
@@ -2955,7 +2952,7 @@ function reindex_weekday_sortable(){
 		$(this).find(".name-input").prop("tabindex", tabindex)
 		tabindex++;
 
-		static_data.year_data.global_week[i] = escapeHtml($(this).find('.name-input').val());
+		static_data.year_data.global_week[i] = $(this).find('.name-input').val();
 
 	});
 
@@ -2999,7 +2996,7 @@ function populate_first_day_select(val){
 
 	for(var i = 0; i < week.length; i++){
 
-		html.push(`<option value='${i+1}'>${escapeHtml(week[i])}</option>`);
+		html.push(`<option value='${i+1}'>${week[i]}</option>`);
 
 	}
 
@@ -3038,12 +3035,12 @@ function repopulate_weekday_select(elements){
 		var html = [];
 
 		if(inclusive){
-			html.push(`<option value='0'>Before ${escapeHtml(week[0])}</option>`);
+			html.push(`<option value='0'>Before ${week[0]}</option>`);
 		}
 
 		for(var i = 0; i < week.length; i++){
 
-			html.push(`<option value='${i+1}'>${escapeHtml(week[i])}</option>`);
+			html.push(`<option value='${i+1}'>${week[i]}</option>`);
 
 		}
 
@@ -3073,7 +3070,7 @@ function reindex_timespan_sortable(){
 		$(this).find('.lbl-toggle').prop('for', 'collapsible_week_'+i)
 
 		static_data.year_data.timespans[i] = {
-			'name': escapeHtml($(this).find('.name-input').val()),
+			'name': $(this).find('.name-input').val(),
 			'type': $(this).attr('type'),
 			'length': Number($(this).find('.length-input').val()),
 			'interval': Number($(this).find('.interval').val()),
@@ -3083,7 +3080,7 @@ function reindex_timespan_sortable(){
 		if($(this).find('.unique-week-input').is(':checked')){
 			static_data.year_data.timespans[i].week = [];
 			$(this).find('.collapsible-content').children().first().children().each(function(j){
-				static_data.year_data.timespans[i].week[j] = escapeHtml($(this).val());
+				static_data.year_data.timespans[i].week[j] = $(this).val();
 			});
 		}
 
@@ -3115,12 +3112,12 @@ function reindex_leap_day_list(){
 		tabindex++;
 
 		static_data.year_data.leap_days[i] = {
-			'name': escapeHtml($(this).find('.name-input').val()),
+			'name': $(this).find('.name-input').val(),
 			'intercalary': $(this).attr('type') == 'intercalary',
 			'timespan': Number($(this).find('.timespan-list').val()),
 			'adds_week_day': $(this).find('.adds-week-day').is(':checked'),
 			'day': Number($(this).find('.week-day-select').val()),
-			'week_day': escapeHtml($(this).find('.internal-list-name').val()),
+			'week_day': $(this).find('.internal-list-name').val(),
 			'interval': $(this).find('.interval').val(),
 			'offset': Number($(this).find('.offset').val())
 		};
@@ -3166,7 +3163,7 @@ function reindex_season_sortable(key){
 		tabindex++;
 
 		static_data.seasons.data[i] = {
-			"name": escapeHtml($(this).find('.name-input').val()),
+			"name": $(this).find('.name-input').val(),
 			"time": {
 				"sunrise": {
 					"hour": ($(this).find('input[clocktype="sunrise_hour"]').val()|0),
@@ -3207,7 +3204,7 @@ function reindex_location_list(){
 		tabindex++;
 
 		data = {
-			"name": escapeHtml($(this).find(".name-input").val()),
+			"name": $(this).find(".name-input").val(),
 			"seasons": [],
 			"settings": {
 				"timezone": {
@@ -3251,7 +3248,7 @@ function reindex_location_list(){
 			data.seasons[j].custom_name = $(this).find('input[fc-index="custom_name"]').prop('checked');
 
 			if(data.seasons[j].custom_name){
-				data.seasons[j].name = escapeHtml($(this).find('input[fc-index="name"]').val());
+				data.seasons[j].name = $(this).find('input[fc-index="name"]').val();
 			}
 
 		});
@@ -3327,7 +3324,7 @@ function reindex_cycle_sortable(){
 		};
 
 		$(this).find('.collapsible-content').children().first().children().each(function(j){
-			static_data.cycles.data[i].names[j] = escapeHtml($(this).val());
+			static_data.cycles.data[i].names[j] = $(this).val();
 		});
 
 	});
@@ -3350,11 +3347,11 @@ function reindex_moon_list(){
 		$(this).attr('key', i);
 
 		static_data.moons[i] = {
-			'name': escapeHtml($(this).find('.name-input').val()),
+			'name': $(this).find('.name-input').val(),
 			'custom_phase': $(this).find('.custom_phase').is(':checked'),
 			'color': $(this).find('.color').spectrum('get', 'hex').toString(),
 			'hidden': $(this).find('.moon-hidden').is(':checked'),
-			'custom_cycle': escapeHtml($(this).find('.custom_cycle').val()),
+			'custom_cycle': $(this).find('.custom_cycle').val(),
 			'cycle': ($(this).find('.cycle').val()|0),
 			'shift': ($(this).find('.shift').val()|0),
 
@@ -3390,8 +3387,8 @@ function reindex_era_list(){
 		$(this).attr('key', i);
 
 		static_data.eras[i] = {
-			'name': escapeHtml($(this).find('.name-input').val()),
-			'abbreviation': escapeHtml($(this).find('.era_abbreviation').val()),
+			'name': $(this).find('.name-input').val(),
+			'abbreviation': $(this).find('.era_abbreviation').val(),
 			'description': $(this).find('.era_description').attr('value'),
 			'settings': {
 				'show_as_event': $(this).find('.show_as_event').is(':checked'),
@@ -3788,7 +3785,7 @@ function recalculate_era_epochs(){
 
 function set_up_edit_values(){
 
-	$('#calendar_name').val(unescapeHtml(calendar_name));
+	$('#calendar_name').val(calendar_name);
 
 	$('.static_input').each(function(){
 
@@ -3947,7 +3944,7 @@ function set_up_edit_values(){
 
 	recalc_stats();
 
-	$('#enable_weather').change();
+	set_up_view_values();
 
 }
 

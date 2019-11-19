@@ -3,7 +3,7 @@ importScripts('/js/calendar/calendar_variables.js');
 
 
 onmessage = e => {
-	data = event_evaluator.init(e.data.static_data, e.data.epoch_data, e.data.event_id, e.data.callback);
+	data = event_evaluator.init(e.data.static_data, e.data.epoch_data, e.data.event_id, e.data.start_epoch, e.data.end_epoch, e.data.callback);
 	postMessage({
 		event_data: data,
 		callback: false
@@ -15,17 +15,18 @@ var event_evaluator = {
 	events: [],
 	categories: [],
 
-	start_epoch: 0,
-
 	static_data: {},
 	epoch_data: {},
 
 	current_data: {},
 
-	init: function(static_data, epoch_data, event_id, callback){
+	init: function(static_data, epoch_data, event_id, start_epoch, end_epoch, callback){
 
 		this.static_data = static_data;
 		this.epoch_data = epoch_data;
+
+		this.start_epoch =  start_epoch;
+		this.end_epoch = end_epoch;
 
 		this.callback = callback;
 
@@ -36,8 +37,6 @@ var event_evaluator = {
 		}
 
 		this.events_only_happen_once = [];
-
-		this.start_epoch = Number(Object.keys(this.epoch_data)[0]);
 
 		this.event_id = event_id;
 
@@ -340,7 +339,7 @@ var event_evaluator = {
 
 				var epoch = evaluate_calendar_start(event_evaluator.static_data, convert_year(event_evaluator.static_data, this.current_event.data.date[0]), this.current_event.data.date[1], this.current_event.data.date[2]).epoch;
 
-				if(epoch_list[Object.keys(epoch_list)[0]].year == this.current_event.data.date[0]){
+				if(epoch >= event_evaluator.start_epoch && epoch <= event_evaluator.end_epoch){
 
 					add_to_epoch(this.current_event, event_index, epoch);
 
@@ -348,23 +347,34 @@ var event_evaluator = {
 
 			}else{
 
-				var num_epochs = Object.keys(epoch_list).length;
+				var lookback = 0;
 
-				for(var epoch_index = 0; epoch_index < num_epochs; epoch_index++){
+				if(this.current_event.data.limited_repeat){
+					lookback = this.current_event.data.limited_repeat_num;
+				}
 
-					var epoch = parseInt(Object.keys(epoch_list)[epoch_index]);
+				if(this.current_event.data.search_distance && this.current_event.data.search_distance > lookback){
+					lookback = this.current_event.data.search_distance;
+				}
+
+				var lookahead = this.current_event.data.search_distance ? this.current_event.data.search_distance : 0;
+
+				var begin_epoch = event_evaluator.start_epoch-lookback;
+				var last_epoch = event_evaluator.end_epoch+lookahead;
+
+				for(var epoch = begin_epoch; epoch < last_epoch-1; epoch++){
 
 					if(event_evaluator.callback){
 
 						postMessage({
 							count: [
-								event_evaluator.number_of_epochs,
-								num_epochs*event_evaluator.number_of_events
+								event_evaluator.current_number_of_epochs,
+								event_evaluator.total_number_of_epochs
 							],
 							callback: true
 						})
 
-						event_evaluator.number_of_epochs++;
+						event_evaluator.current_number_of_epochs++;
 
 					}
 
@@ -373,14 +383,14 @@ var event_evaluator = {
 						for(var i = 1; i <= this.current_event.data.limited_repeat_num; i++){
 							if(event_evaluator.event_data.valid[event_index] && event_evaluator.event_data.valid[event_index].includes(epoch-i)){
 								add_event = false
-								epoch_index += this.current_event.data.limited_repeat_num-1;
-								event_evaluator.number_of_epochs += this.current_event.data.limited_repeat_num-1;
+								epoch += this.current_event.data.limited_repeat_num-1;
+								event_evaluator.current_number_of_epochs += this.current_event.data.limited_repeat_num-1;
 								break;
 							}
 						}
 					}
 
-					this.current_data = epoch_list[epoch];
+					this.current_data = event_evaluator.epoch_data[epoch];
 
 					if(add_event){
 
@@ -432,7 +442,7 @@ var event_evaluator = {
 
 			}else{
 
-				if(epoch >= event_evaluator.start_epoch && event_evaluator.event_data.valid[event_index].indexOf(epoch) == -1){
+				if(event_evaluator.event_data.valid[event_index].indexOf(epoch) == -1){
 					event_evaluator.event_data.valid[event_index].push(epoch);
 				}
 
@@ -470,15 +480,33 @@ var event_evaluator = {
 
 			if(current_event.data.connected_events !== undefined && current_event.data.connected_events !== "false"){
 
+				var begin_epoch = event_evaluator.start_epoch;
+				var last_epoch = event_evaluator.end_epoch;
+
 				for(var connectedId in current_event.data.connected_events){
 
 					var parent_id = current_event.data.connected_events[connectedId];
 						
 					get_number_of_events(parent_id);
 
-					event_evaluator.number_of_events++;
+					var lookback = 0;
+
+					if(current_event.data.limited_repeat){
+						lookback = current_event.data.limited_repeat_num;
+					}
+
+					if(current_event.data.search_distance && current_event.data.search_distance > lookback){
+						lookback = current_event.data.search_distance;
+					}
+
+					var lookahead = current_event.data.search_distance ? current_event.data.search_distance : 0;
+
+					begin_epoch -= lookback;
+					last_epoch += lookahead;
 
 				}
+
+				event_evaluator.total_number_of_epochs += (last_epoch-begin_epoch);
 
 			}
 
@@ -488,8 +516,8 @@ var event_evaluator = {
 
 			if(event_evaluator.callback !== undefined){
 
-				event_evaluator.number_of_events = 1;
-				event_evaluator.number_of_epochs = 1;
+				event_evaluator.total_number_of_epochs = 0;
+				event_evaluator.current_number_of_epochs = 0;
 
 				get_number_of_events(event_id);
 

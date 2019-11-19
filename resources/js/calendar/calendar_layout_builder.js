@@ -175,6 +175,7 @@ var eras = {
 
 			}
 		}
+
 	},
 
 	// This simply sets the new era
@@ -415,6 +416,7 @@ var calendar_layouts = {
 
 		this.data = clone(data)
 		this.year_data = this.data.year_data;
+		this.year_data.epoch = this.year_data.start_epoch;
 		this.epoch_data = this.data.epoch_data;
 		this.timespans = this.data.timespans;
 		this.name_layout = (deviceType() == "Mobile Phone") ? 'vertical' : static_data.settings.layout;
@@ -623,7 +625,7 @@ var calendar_layouts = {
 									weather_align = "end";
 								}
 
-								this.insert_day(calendar_layouts.year_data.epoch, weather_align, '', "timespan_day timespan_intercalary");
+								this.insert_day(calendar_layouts.year_data.epoch, weather_align, intercalary_day, "timespan_day timespan_intercalary");
 
 								if(intercalary_week_day < timespan.week.length){
 									intercalary_week_day++;
@@ -685,7 +687,7 @@ var calendar_layouts = {
 					if(intercalary_week == timespan.week.length){
 						weather_align = "end";
 					}
-					this.insert_day(calendar_layouts.year_data.epoch, weather_align, '', "timespan_day timespan_intercalary", feature.name);
+					this.insert_day(calendar_layouts.year_data.epoch, weather_align, index+1, "timespan_day timespan_intercalary", feature.name);
 
 					if(intercalary_week == timespan.week.length){
 						calendar_layouts.html.push("</div>");
@@ -925,7 +927,7 @@ var calendar_layouts = {
 									weather_align = "end";
 								}
 
-								this.insert_day(calendar_layouts.year_data.epoch, weather_align, '', "timespan_day timespan_intercalary");
+								this.insert_day(calendar_layouts.year_data.epoch, weather_align, intercalary_day, "timespan_day timespan_intercalary");
 
 								if(intercalary_week_day <= timespan.week.length){
 									intercalary_week_day++;
@@ -987,7 +989,7 @@ var calendar_layouts = {
 						weather_align = "end";
 					}
 
-					this.insert_day(calendar_layouts.year_data.epoch, weather_align, '', "timespan_day timespan_intercalary", feature.name);
+					this.insert_day(calendar_layouts.year_data.epoch, weather_align, index+1, "timespan_day timespan_intercalary", feature.name);
 
 					if(intercalary_week == timespan.week.length){
 						calendar_layouts.html.push("</div>");
@@ -1224,7 +1226,7 @@ var calendar_layouts = {
 
 						for(intercalary_day = 1; intercalary_day <= timespan.length; intercalary_day++, calendar_layouts.year_data.year_day++, calendar_layouts.year_data.epoch++, this.timespan.day++){
 
-							this.insert_day(calendar_layouts.year_data.epoch, '', "timespan_day timespan_intercalary");
+							this.insert_day(calendar_layouts.year_data.epoch, intercalary_day, "timespan_day timespan_intercalary");
 
 							if(intercalary_week_day <= timespan.week.length){
 								intercalary_week_day++;
@@ -1268,7 +1270,7 @@ var calendar_layouts = {
 
 					feature = filtered_features[index];
 
-					this.insert_day(calendar_layouts.year_data.epoch, '', "timespan_day timespan_intercalary", feature.name, true);
+					this.insert_day(calendar_layouts.year_data.epoch, index+1, "timespan_day timespan_intercalary", feature.name, true);
 
 					if(intercalary_week == timespan.week.length){
 						intercalary_week = 1;

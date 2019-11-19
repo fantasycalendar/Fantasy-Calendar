@@ -230,7 +230,7 @@ function set_up_view_inputs(){
 			evaluate_dynamic_change()
 		}
 
-		do_error_check('seasons');
+		do_error_check('seasons', day_adjust != 0);
 
 	});
 

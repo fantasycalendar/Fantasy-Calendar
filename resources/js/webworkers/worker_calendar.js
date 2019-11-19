@@ -519,7 +519,8 @@ var calendar_builder = {
 		num_timespans = year_start_data.num_timespans;
 		total_week_num = year_start_data.total_week_num;
 
-		epoch = year_start_data.epoch;
+		epoch = year_start_data.epoch+1;
+		start_epoch = epoch+1;
 
 		var current_era = false;
 
@@ -991,9 +992,13 @@ var calendar_builder = {
 			year_day = 1;
 			era_year++;
 		}
+
+		end_epoch = epoch-1;
 		
 		return {
 			epoch_data: this.data.epochs,
+			start_epoch: start_epoch,
+			end_epoch: end_epoch
 		};
 
 	},
@@ -1085,6 +1090,7 @@ var calendar_builder = {
 			pre_search = event.data.limited_repeat_num > pre_search ? event.data.limited_repeat_num : pre_search;
 			pre_search = event.data.search_distance > pre_search ? event.data.search_distance : pre_search;
 			post_search = event.data.search_distance > post_search ? event.data.search_distance : post_search;
+			this.static_data.event_data.events[event_index].data.search_distance = pre_search > post_search ? pre_search : post_search;
 		}
 
 
@@ -1804,8 +1810,8 @@ var calendar_builder = {
 		}
 
 		var calendar_era_year = era_year;
-		var calendar_first_epoch = first_epoch;
-		var calendar_epoch = epoch;
+		var calendar_start_epoch = first_epoch;
+		var calendar_end_epoch = epoch;
 		var calendar_first_week_day = first_week_day;
 		var calendar_year_day = year_day;
 
@@ -2031,6 +2037,8 @@ var calendar_builder = {
 			era_year++;
 		}
 
+		end_epoch = epoch-1;
+
 		if(!this.static_data.settings.show_current_month){
 			year_day = 1;
 		}
@@ -2040,11 +2048,11 @@ var calendar_builder = {
 			static_data: this.static_data,
 			year_data: {
 				year: this.dynamic_data.year,
-				era_year: era_year,
-				epoch: first_epoch,
-				last_epoch: epoch,
-				week_day: first_week_day,
-				year_day: year_day
+				era_year: calendar_era_year,
+				start_epoch: calendar_start_epoch,
+				end_epoch: calendar_end_epoch,
+				week_day: calendar_first_week_day,
+				year_day: calendar_year_day
 			},
 			timespans: this.calendar_list.timespans_to_build,
 			epoch_data: this.data.epochs,
