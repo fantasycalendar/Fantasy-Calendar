@@ -436,15 +436,11 @@ function set_up_edit_inputs(set_up){
         .then((willCreate) => {
             if(willCreate) {
 
-                for(var i = 0; i < static_data.seasons.data.length; i++){
+                var events = create_season_events();
 
-                    var solstice_equinox = create_season_events(i, static_data.seasons.data[i].name);
-
-                    for(index in solstice_equinox){
-                    	static_data.event_data.events.push(solstice_equinox[index])
-                    	add_event_to_sortable(events_sortable, static_data.event_data.events.length-1, static_data.event_data.events[static_data.event_data.events.length-1]);
-                    }
-
+                for(index in events){
+                	static_data.event_data.events.push(events[index])
+                	add_event_to_sortable(events_sortable, static_data.event_data.events.length-1, static_data.event_data.events[static_data.event_data.events.length-1]);
                 }
 
                 do_error_check();
@@ -526,7 +522,7 @@ function set_up_edit_inputs(set_up){
 		if(type === "custom"){
 			var stats = static_data.seasons.locations[location];
 		}else{
-			var stats = climate_generator.presets[location];
+			var stats = climate_generator.presets[static_data.seasons.data.length][location];
 			stats.settings = climate_generator.preset_curves;
 			stats.custom_dates = {};
 
@@ -559,6 +555,126 @@ function set_up_edit_inputs(set_up){
 		});
 
 		do_error_check();
+
+	});
+
+	$(document).on('click', '.location_middle_btn', function(){
+
+		var container = $(this).closest('.sortable-container');
+
+		var current_season = $(this).closest('.location_season');
+
+		var season_id = current_season.attr('fc-index')|0;
+
+		var location_id = container.attr('index')|0;
+
+		var prev_id = (season_id-1)%static_data.seasons.data.length
+		if(prev_id < 0) prev_id += static_data.seasons.data.length
+
+		var prev_season = static_data.seasons.locations[location_id].seasons[prev_id];
+		var next_season = static_data.seasons.locations[location_id].seasons[(season_id+1)%static_data.seasons.data.length];
+
+		if(static_data.clock.enabled){
+
+			var sunrise_h = mid(prev_season.time.sunrise.hour, next_season.time.sunrise.hour)
+			var sunrise_m = mid(prev_season.time.sunrise.minute, next_season.time.sunrise.minute)
+
+			var sunrise = sunrise_h+sunrise_m/static_data.clock.minutes;
+			console.log(sunrise)
+			var sunrise_h = Math.floor(sunrise)
+			var sunrise_m = fract(sunrise)*static_data.clock.minutes
+
+			current_season.find("input[clocktype='sunrise_hour']").val(sunrise_h)
+			current_season.find("input[clocktype='sunrise_minute']").val(sunrise_m)
+
+			static_data.seasons.locations[location_id].seasons[season_id].time.sunrise.hour = sunrise_h;
+			static_data.seasons.locations[location_id].seasons[season_id].time.sunrise.minute = sunrise_m;
+
+
+			var sunset_h = mid(prev_season.time.sunset.hour, next_season.time.sunset.hour)
+			var sunset_m = mid(prev_season.time.sunset.minute, next_season.time.sunset.minute)
+
+			var sunset = sunset_h+sunset_m/static_data.clock.minutes;
+			console.log(sunset)
+			var sunset_h = Math.floor(sunset)
+			var sunset_m = fract(sunset)*static_data.clock.minutes
+
+			current_season.find("input[clocktype='sunset_hour']").val(sunset_h)
+			current_season.find("input[clocktype='sunset_minute']").val(sunset_m)
+
+			static_data.seasons.locations[location_id].seasons[season_id].time.sunset.hour = sunset_h;
+			static_data.seasons.locations[location_id].seasons[season_id].time.sunset.minute = sunset_m;
+
+		}
+
+		if(static_data.seasons.global_settings.enable_weather){
+
+			var temp_low = mid(prev_season.weather.temp_low, next_season.weather.temp_low)
+			var temp_high = mid(prev_season.weather.temp_high, next_season.weather.temp_high)
+			var precipitation = mid(prev_season.weather.precipitation, next_season.weather.precipitation)
+			var precipitation_intensity = mid(prev_season.weather.precipitation_intensity, next_season.weather.precipitation_intensity)
+
+			current_season.find("input[fc-index='precipitation']").val(precipitation).parent().parent().find('.slider_input').val(precipitation)
+			current_season.find("input[fc-index='precipitation_intensity']").val(precipitation_intensity).parent().parent().find('.slider_input').val(precipitation_intensity)
+
+			current_season.find("input[fc-index='temp_high']").val(temp_high)
+			current_season.find("input[fc-index='temp_low']").val(temp_low)
+
+			static_data.seasons.locations[location_id].seasons[season_id].weather.temp_low = temp_low;
+			static_data.seasons.locations[location_id].seasons[season_id].weather.temp_high = temp_high;
+			static_data.seasons.locations[location_id].seasons[season_id].weather.precipitation = precipitation;
+			static_data.seasons.locations[location_id].seasons[season_id].weather.precipitation_intensity = precipitation_intensity;
+
+		}
+
+		do_error_check('seasons');
+
+	});
+
+	$(document).on('click', '.season_middle_btn', function(){
+
+		var container = $(this).closest('.sortable-container');
+
+		var season_id = container.attr('index')|0;
+
+		var prev_id = (season_id-1)%static_data.seasons.data.length
+		if(prev_id < 0) prev_id += static_data.seasons.data.length
+
+		var prev_season = static_data.seasons.data[prev_id];
+		var next_season = static_data.seasons.data[(season_id+1)%static_data.seasons.data.length];
+
+		if(static_data.clock.enabled){
+
+			var sunrise_h = mid(prev_season.time.sunrise.hour, next_season.time.sunrise.hour)
+			var sunrise_m = mid(prev_season.time.sunrise.minute, next_season.time.sunrise.minute)
+
+			var sunrise = sunrise_h+sunrise_m/static_data.clock.minutes;
+			var sunrise_h = Math.floor(sunrise)
+			var sunrise_m = fract(sunrise)*static_data.clock.minutes
+
+			container.find("input[clocktype='sunrise_hour']").val(sunrise_h)
+			container.find("input[clocktype='sunrise_minute']").val(sunrise_m)
+
+			static_data.seasons.data[season_id].time.sunrise.hour = sunrise_h;
+			static_data.seasons.data[season_id].time.sunrise.minute = sunrise_m;
+
+
+			var sunset_h = mid(prev_season.time.sunset.hour, next_season.time.sunset.hour)
+			var sunset_m = mid(prev_season.time.sunset.minute, next_season.time.sunset.minute)
+
+			var sunset = sunset_h+sunset_m/static_data.clock.minutes;
+			var sunset_h = Math.floor(sunset)
+			var sunset_m = fract(sunset)*static_data.clock.minutes
+
+			container.find("input[clocktype='sunset_hour']").val(sunset_h)
+			container.find("input[clocktype='sunset_minute']").val(sunset_m)
+
+			static_data.seasons.data[season_id].time.sunset.hour = sunset_h;
+			static_data.seasons.data[season_id].time.sunset.minute = sunset_m;
+
+		}
+
+		do_error_check('seasons');
 
 	});
 
@@ -1449,7 +1565,6 @@ function set_up_edit_inputs(set_up){
 		rebuild_climate();
 	});
 
-
 	$('#refresh_calendar_list_select').click(function(){
 		populate_calendar_lists();
 	});
@@ -2128,19 +2243,23 @@ function add_season_to_sortable(parent, key, data){
 
 		element.push("<div class='detail-container hidden'>");
 
-			element.push(`<div class='detail-row season-duration'>`);
-				element.push("<div class='detail-column half'>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text'>Peak duration:</div>");
-						var duration = data.duration == '' || data.duration == undefined ? 0 : data.duration;
-						element.push(`<input type='number' step='any' class='form-control dynamic_input duration' data='seasons.data.${key}' fc-index='duration' min='0' value='${duration}' />`);
+			element.push(`<div class='season-duration'>`);
+				element.push(`<div class='detail-row'>`);
+					element.push("<div class='detail-column'>");
+						element.push("<div class='detail-row'>");
+							element.push("<div class='detail-text'>Duration:</div>");
+							var transition_length = data.transition_length == '' || data.transition_length == undefined ? 90 : data.transition_length;
+							element.push(`<input type='number' step='any' class='form-control dynamic_input transition_length' data='seasons.data.${key}' fc-index='transition_length' min='1' value='${transition_length}' />`);
+						element.push("</div>");
 					element.push("</div>");
 				element.push("</div>");
-				element.push("<div class='detail-column half'>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text'>Duration:</div>");
-						var transition_length = data.transition_length == '' || data.transition_length == undefined ? 90 : data.transition_length;
-						element.push(`<input type='number' step='any' class='form-control dynamic_input transition_length' data='seasons.data.${key}' fc-index='transition_length' min='1' value='${transition_length}' />`);
+				element.push(`<div class='detail-row'>`);
+					element.push("<div class='detail-column'>");
+						element.push("<div class='detail-row'>");
+							element.push("<div class='detail-text'>Peak duration:</div>");
+							var duration = data.duration == '' || data.duration == undefined ? 0 : data.duration;
+							element.push(`<input type='number' step='any' class='form-control dynamic_input duration' data='seasons.data.${key}' fc-index='duration' min='0' value='${duration}'/>`);
+						element.push("</div>");
 					element.push("</div>");
 				element.push("</div>");
 			element.push("</div>");
@@ -2149,13 +2268,13 @@ function add_season_to_sortable(parent, key, data){
 
 			element.push("<div class='clock_inputs'>");
 				element.push("<div class='detail-row'>");
-					element.push("<div class='detail-column half'>");
+					element.push("<div class='detail-column full'>");
 						element.push("<div class='detail-row no-margin'>");
 							element.push("<div class='detail-text'>Sunrise:</div>");
 						element.push("</div>");
 						element.push("<div class='detail-row'>");
 							element.push("<div class='detail-column clock-input'>");
-								element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunrise_hour' data='seasons.data.${key}.time.sunrise' fc-index='hour' value='${data.time.sunrise.hour}' />`);
+								element.push(`<input type='number' step="1.0" class='form-control full dynamic_input hour_input' clocktype='sunrise_hour' data='seasons.data.${key}.time.sunrise' fc-index='hour' value='${data.time.sunrise.hour}' />`);
 							element.push("</div>");
 							element.push("<div class='detail-column'>:</div>");
 							element.push("<div class='detail-column float clock-input'>");
@@ -2163,14 +2282,15 @@ function add_season_to_sortable(parent, key, data){
 							element.push("</div>");
 						element.push("</div>");
 					element.push("</div>");
-
-					element.push("<div class='detail-column half'>");
+				element.push("</div>");
+				element.push("<div class='detail-row'>");
+					element.push("<div class='detail-column full'>");
 						element.push("<div class='detail-row no-margin'>");
 							element.push("<div class='detail-text'>Sunset:</div>");
 						element.push("</div>");
 						element.push("<div class='detail-row'>");
 							element.push("<div class='detail-column clock-input'>");
-								element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunset_hour' data='seasons.data.${key}.time.sunset' fc-index='hour' value='${data.time.sunset.hour}' />`);
+								element.push(`<input type='number' step="1.0" class='form-control full dynamic_input hour_input' clocktype='sunset_hour' data='seasons.data.${key}.time.sunset' fc-index='hour' value='${data.time.sunset.hour}' />`);
 							element.push("</div>");
 							element.push("<div class='detail-column'>:</div>");
 							element.push("<div class='detail-column float clock-input'>");
@@ -2179,7 +2299,13 @@ function add_season_to_sortable(parent, key, data){
 						element.push("</div>");
 					element.push("</div>");
 				element.push("</div>");
+					
+				element.push("<div class='detail-row'>");
+					element.push(`<button type="button" class="btn btn-info season_middle_btn full protip" data-pt-delay-in="100" data-pt-title="Use the median values from the previous and next seasons' time data. This season will act as a transition between the two, similar to Spring or Autumn">Interpolate sunrise & sunset from surrounding seasons</button>`);
+				element.push("</div>");
+
 			element.push("</div>");
+
 		element.push("</div>");
 
 	parent.append(element.join(""));
@@ -2253,6 +2379,8 @@ function add_location_to_list(parent, key, data){
 						element.push("</div>");
 					element.push("</div>");
 
+					element.push("<div class='separator'></div>");
+
 					element.push("<div class='detail-row'>");
 						element.push("<div class='detail-row'>");
 							element.push("Precipitation chance: (%)");
@@ -2277,9 +2405,11 @@ function add_location_to_list(parent, key, data){
 						element.push("</div>");
 					element.push("</div>");
 
+					element.push("<div class='separator'></div>");
+
 					element.push("<div class='clock_inputs'>");
 						element.push("<div class='detail-row'>");
-							element.push("<div class='detail-column half'>");
+							element.push("<div class='detail-column'>");
 								element.push("<div class='detail-row no-margin'>");
 									element.push("<div class='detail-text'>Sunrise:</div>");
 								element.push("</div>");
@@ -2293,8 +2423,9 @@ function add_location_to_list(parent, key, data){
 									element.push("</div>");
 								element.push("</div>");
 							element.push("</div>");
-
-							element.push("<div class='detail-column half'>");
+						element.push("</div>");
+						element.push("<div class='detail-row'>");
+							element.push("<div class='detail-column'>");
 								element.push("<div class='detail-row no-margin'>");
 									element.push("<div class='detail-text'>Sunset:</div>");
 								element.push("</div>");
@@ -2310,6 +2441,12 @@ function add_location_to_list(parent, key, data){
 							element.push("</div>");
 						element.push("</div>");
 					element.push("</div>");
+					
+					element.push("<div class='detail-row'>");
+						element.push(`<button type="button" class="btn btn-info location_middle_btn full protip" data-pt-delay-in="100" data-pt-title="Use the median values from the previous and next seasons' weather and time data. This season will act as a transition between the two, similar to Spring or Autumn">Interpolate data from surrounding seasons</button>`);
+					element.push("</div>");
+
+
 				element.push("</div>");
 
 				element.push("<div class='separator'></div>");
@@ -2869,6 +3006,8 @@ function error_check(parent, rebuild){
 		evaluate_save_button();
 
 		close_error_message();
+
+		console.log(parent, rebuild)
 
 		if(parent === "eras"){
 			recalculate_era_epochs();

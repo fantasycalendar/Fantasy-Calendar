@@ -427,11 +427,11 @@ function repopulate_location_select_list(){
 
 		}
 
-		if(static_data.seasons.global_settings.enable_weather){
+		if(static_data.seasons.global_settings.enable_weather && (static_data.seasons.data.length == 2 || static_data.seasons.data.length == 4)){
 
 			html.push('<optgroup label="Presets" value="preset">');
-			for(var i = 0; i < Object.keys(climate_generator.presets).length; i++){
-				html.push(`<option>${Object.keys(climate_generator.presets)[i]}</option>`);
+			for(var i = 0; i < Object.keys(climate_generator.presets[static_data.seasons.data.length]).length; i++){
+				html.push(`<option>${Object.keys(climate_generator.presets[static_data.seasons.data.length])[i]}</option>`);
 			}
 			html.push('</optgroup>');
 

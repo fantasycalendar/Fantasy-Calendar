@@ -60,15 +60,15 @@ var climate_generator = {
 
 		this.random = new random(this.static_data.seasons.global_settings.seed);
 
-		if(this.dynamic_data.custom_location === false && (this.seasons.length == 2 || this.seasons.length == 4)){
+		if(this.dynamic_data.custom_location === false && (static_data.seasons.data.length == 2 || static_data.seasons.data.length == 4)){
 
-			this.current_location = this.presets[this.seasons.length][this.dynamic_data.location] ? this.presets[this.seasons.length][this.dynamic_data.location] : this.presets[this.seasons.length]['Equatorial'];
+			this.current_location = this.presets[static_data.seasons.data.length][this.dynamic_data.location] ? this.presets[static_data.seasons.data.length][this.dynamic_data.location] : this.presets[static_data.seasons.data.length]['Equatorial'];
 
 			for(var i = 0; i < this.static_data.seasons.data.length; i++){
 
-				this.current_location.seasons.push(this.current_location.seasons[i])
-
-				this.current_location.seasons[i].time = clone(this.static_data.seasons.data[i].time);
+				this.current_location.seasons[i].time = {}
+				this.current_location.seasons[i].time.sunset = clone(this.static_data.seasons.data[i].time.sunset);
+				this.current_location.seasons[i].time.sunrise = clone(this.static_data.seasons.data[i].time.sunrise);
 
 			}
 
@@ -79,6 +79,34 @@ var climate_generator = {
 		}else if(this.dynamic_data.custom_location === true){
 
 			this.current_location = clone(this.static_data.seasons.locations[this.dynamic_data.location]);
+
+		}
+
+		if(this.static_data.clock.enabled){
+
+			this.shortest_day_time = Infinity;
+			this.longest_day_time = 0;
+
+			for(var season_index in this.current_location.seasons){
+
+				var season = this.current_location.seasons[season_index];
+
+				var sunrise = season.time.sunrise.hour+season.time.sunrise.minute/this.static_data.clock.minutes;
+				var sunset = season.time.sunset.hour+season.time.sunset.minute/this.static_data.clock.minutes;
+
+				var length = sunset-sunrise;
+
+				if(this.shortest_day_time > length){
+					this.shortest_day_time = length;
+				}
+
+				if(this.longest_day_time < length){
+					this.longest_day_time = length;
+				}
+
+			}
+
+			this.middle_day_time = mid(this.shortest_day_time, this.longest_day_time);
 
 		}
 
@@ -96,7 +124,7 @@ var climate_generator = {
 
 		}
 
-		this.season.day = (fract(epoch/this.season_length)*this.season_length)
+		this.season.day = (fract((epoch+0)/this.season_length)*this.season_length)
 		this.season.day -= this.settings.season_offset;
 
 		/* -------------------------------------------------------------------------------------------------------------*/
@@ -130,9 +158,11 @@ var climate_generator = {
 			}
 		}
 
+		this.season.rising = null;
+
 		/* -------------------------------------------------------------------------------------------------------------*/
 
-		this.weather.day = (fract(epoch/this.season_length)*this.season_length)
+		this.weather.day = (fract((epoch+0)/this.season_length)*this.season_length)
 
 		this.weather.day -= this.settings.season_offset;
 		this.weather.day -= this.settings.weather_offset;
@@ -171,51 +201,11 @@ var climate_generator = {
 
 	},
 
-	get_season_time: function(season_percentage){
-
-		sunrise = false;
-		sunset = false;
-
-		if(this.static_data.clock.enabled){
-
-			var sunrise_minute = Math.round(lerp(this.season.current.time.sunrise.minute, this.season.next.time.sunrise.minute, season_percentage));
-			var sunrise_hour = lerp(this.season.current.time.sunrise.hour, this.season.next.time.sunrise.hour, season_percentage);
-			var sunrise = sunrise_hour+sunrise_minute/this.static_data.clock.minutes;
-
-			var sunset_minute = Math.round(lerp(this.season.current.time.sunset.minute, this.season.next.time.sunset.minute, season_percentage));
-			var sunset_hour = lerp(this.season.current.time.sunset.hour, this.season.next.time.sunset.hour, season_percentage);
-			var sunset = sunset_hour+sunset_minute/this.static_data.clock.minutes;
-
-			var sunrise_m = (Math.round(fract(sunrise)*this.static_data.clock.minutes)).toString().length < 2 ? "0"+(Math.round(fract(sunrise)*this.static_data.clock.minutes)).toString() : (Math.round(fract(sunrise)*this.static_data.clock.minutes));
-			var sunset_m = (Math.round(fract(sunset)*this.static_data.clock.minutes)).toString().length < 2 ? "0"+(Math.round(fract(sunset)*this.static_data.clock.minutes)).toString() : (Math.round(fract(sunset)*this.static_data.clock.minutes));
-
-			var sunrise_s = Math.floor(sunrise)+":"+sunrise_m;
-			var sunset_s = Math.floor(sunset)+":"+sunset_m;
-
-			sunrise = {
-				data: sunrise,
-				string: sunrise_s
-			}
-			
-			sunset = {
-				data: sunset,
-				string: sunset_s
-			}
-
-		}
-
-		return {
-			'sunrise': sunrise,
-			'sunset': sunset
-		}
-
-	},
-
 	get_season_data: function(epoch){
 
 		if(!this.process_seasons) return;
 
-		this.season.day = (fract(epoch/this.season_length)*this.season_length)
+		this.season.day = (fract((epoch+0)/this.season_length)*this.season_length)
 
 		this.season.day -= this.settings.season_offset;
 
@@ -227,22 +217,78 @@ var climate_generator = {
 
 		this.season.day++;
 
-        this.season.season_day = this.seasons[this.season.current_index].length+this.season.day-this.season.total_day
+        this.season.season_day = this.seasons[this.season.current_index].length+this.season.day-this.season.total_day-1;
 
 		this.season.perc = clamp((this.season.season_day)/this.seasons[this.season.current_index].transition_length, 0.0, 1.0);
 
-        this.season.season_day = Math.floor(this.season.season_day)
+		this.season.round_perc = Math.floor(this.season.perc*100)/100;
+
+        this.season.season_day = Math.ceil(this.season.season_day)
 
 		/* -------------------------------------------------------------------------------------------------------------*/
 
-		var time = this.get_season_time(this.season.perc)
+		var time = {
+			sunrise: false,
+			sunset: false
+		}
+
+		rising_equinox = false;
+		falling_equinox = false;
+		high_solstice = false;
+		low_solstice = false;
+
+		if(this.static_data.clock.enabled){
+
+			var curr_sunrise = this.current_location.seasons[this.season.current_index].time.sunrise;
+			var next_sunrise = this.current_location.seasons[this.season.next_index].time.sunrise;
+			var curr_sunset = this.current_location.seasons[this.season.current_index].time.sunset;
+			var next_sunset = this.current_location.seasons[this.season.next_index].time.sunset;
+
+			var sunrise_minute = Math.round(lerp(curr_sunrise.minute, next_sunrise.minute, this.season.round_perc));
+			var sunrise_hour = lerp(curr_sunrise.hour, next_sunrise.hour, this.season.round_perc);
+			var sunrise = sunrise_hour+sunrise_minute/this.static_data.clock.minutes;
+
+			var sunset_minute = Math.round(lerp(curr_sunset.minute, next_sunset.minute, this.season.round_perc));
+			var sunset_hour = lerp(curr_sunset.hour, next_sunset.hour, this.season.round_perc);
+			var sunset = sunset_hour+sunset_minute/this.static_data.clock.minutes;
+
+			var sunrise_m = (Math.round(fract(sunrise)*this.static_data.clock.minutes)).toString().length < 2 ? "0"+(Math.round(fract(sunrise)*this.static_data.clock.minutes)).toString() : (Math.round(fract(sunrise)*this.static_data.clock.minutes));
+			var sunset_m = (Math.round(fract(sunset)*this.static_data.clock.minutes)).toString().length < 2 ? "0"+(Math.round(fract(sunset)*this.static_data.clock.minutes)).toString() : (Math.round(fract(sunset)*this.static_data.clock.minutes));
+
+			var sunrise_s = Math.floor(sunrise)+":"+sunrise_m;
+			var sunset_s = Math.floor(sunset)+":"+sunset_m;
+
+			rising_equinox = this.middle_day_time == (sunset-sunrise) && this.season.rising && this.season.rising !== null;
+			falling_equinox = this.middle_day_time == (sunset-sunrise) && !this.season.rising && this.season.rising !== null;
+			high_solstice = this.longest_day_time == (sunset-sunrise);
+			low_solstice = this.shortest_day_time == (sunset-sunrise);
+
+			this.season.rising = (sunset-sunrise) > this.season.prev_time;
+
+			this.season.prev_time = (sunset-sunrise);
+
+			time.sunrise = {
+				data: sunrise,
+				string: sunrise_s
+			}
+			
+			time.sunset = {
+				data: sunset,
+				string: sunset_s
+			}
+
+		}
 
 		var data = {
 			season_name: this.seasons[this.season.current_index].name,
 			season_index: this.season.current_index,
-			season_perc: Math.ceil(this.season.perc*100)/100,
-			season_day: Math.ceil(this.season.season_day),
-			time: time
+			season_perc: this.season.round_perc+1,
+			season_day: this.season.season_day,
+			time: time,
+			rising_equinox: rising_equinox,
+			falling_equinox: falling_equinox,
+			high_solstice: high_solstice,
+			low_solstice: low_solstice
 		}
 
 		/* -------------------------------------------------------------------------------------------------------------*/
@@ -271,7 +317,7 @@ var climate_generator = {
 
 		if(!this.process_weather) return;
 
-		this.weather.day = (fract(epoch/this.season_length)*this.season_length)
+		this.weather.day = (fract((epoch+0)/this.season_length)*this.season_length)
 
 		this.weather.day -= this.settings.season_offset;
 		this.weather.day -= this.settings.weather_offset;
@@ -288,7 +334,7 @@ var climate_generator = {
 
         if(Math.ceil(this.weather.season_day) > this.seasons[this.weather.current_index].duration){
 
-			this.weather.perc = (this.weather.season_day-this.seasons[this.weather.current_index].duration)/this.seasons[this.weather.current_index].transition_length;
+			this.weather.perc = clamp((this.weather.season_day-this.seasons[this.weather.current_index].duration)/this.seasons[this.weather.current_index].transition_length, 0.0, 1.0);
 
 		}else{
 
@@ -300,91 +346,25 @@ var climate_generator = {
 
 		/* -------------------------------------------------------------------------------------------------------------*/
 
-		var start = this.weather.current.start;
-		var end = this.weather.current.end;
-		var middle = Math.floor((end/2)+(start/2));
-
-		var curve = {
-			both: norm(bezierCubic(start, start, end, end, this.weather.perc), start, end),
-			start: norm(bezierCubic(start, start, middle, end, this.weather.perc), start, end),
-			end: norm(bezierCubic(start, middle, end, end, this.weather.perc), start, end)
-		}
 
 		var curr_season_data = this.current_location.seasons[this.weather.current_index];
 		var next_season_data = this.current_location.seasons[this.weather.next_index];
 
-		if(!curr_season_data.weather.temp_transitional && next_season_data.weather.temp_transitional){
+		var low = lerp(curr_season_data.weather.temp_low, next_season_data.weather.temp_low, this.weather.perc);
+		var high = lerp(curr_season_data.weather.temp_high, next_season_data.weather.temp_high, this.weather.perc);
+		var middle = mid(low, high);
 
-			var next_next = (this.weather.current_index+2)%this.seasons.length;
-
-			var temp_curve = curve.start;
-			var curr_temp_low = curr_season_data.weather.temp_low;
-			var curr_temp_high = curr_season_data.weather.temp_high;
-			var next_temp_low = mid(curr_season_data.weather.temp_low, this.current_location.seasons[next_next].weather.temp_low);
-			var next_temp_high = mid(curr_season_data.weather.temp_high, this.current_location.seasons[next_next].weather.temp_high);
-
-		}else if(curr_season_data.weather.temp_transitional && !next_season_data.weather.temp_transitional){
-
-			var prev_prev = (this.weather.current_index-1)%this.seasons.length;
-
-			var temp_curve = curve.end;
-			var curr_temp_low = mid(this.current_location.seasons[prev_prev].weather.temp_low, next_season_data.weather.temp_low);
-			var curr_temp_high = mid(this.current_location.seasons[prev_prev].weather.temp_high, next_season_data.weather.temp_high);
-			var next_temp_low = next_season_data.weather.temp_low;
-			var next_temp_high = next_season_data.weather.temp_high;
-
-		}else{
-
-			var temp_curve = curve.both;
-			var curr_temp_low = curr_season_data.weather.temp_low;
-			var curr_temp_high = curr_season_data.weather.temp_high;
-			var next_temp_low = next_season_data.weather.temp_low;
-			var next_temp_high = next_season_data.weather.temp_high;
-
-		}
-
-		if(!curr_season_data.weather.precipitation_transitional && next_season_data.weather.precipitation_transitional){
-			
-			var next_next = (this.weather.current_index+2)%this.seasons.length;
-
-			var precipitation_curve = curve.start;
-			var curr_precipitation = curr_season_data.weather.precipitation;
-			var curr_precipitation_intensity = curr_season_data.weather.precipitation_intensity;
-			var next_precipitation = mid(curr_season_data.weather.precipitation, this.current_location.seasons[next_next].weather.precipitation);
-			var next_precipitation_intensity = mid(curr_season_data.weather.precipitation_intensity, this.current_location.seasons[next_next].weather.precipitation_intensity);
-
-		}else if(curr_season_data.weather.precipitation_transitional && !next_season_data.weather.precipitation_transitional){
-
-			var prev_prev = (this.weather.current_index-1)%this.seasons.length;
-
-			var precipitation_curve = curve.end;
-			var curr_precipitation = mid(this.current_location.seasons[prev_prev].weather.precipitation, next_season_data.weather.precipitation);
-			var curr_precipitation_intensity = mid(this.current_location.seasons[prev_prev].weather.precipitation_intensity, next_season_data.weather.precipitation_intensity);
-			var next_precipitation = next_season_data.weather.precipitation;
-			var next_precipitation_intensity = next_season_data.weather.precipitation_intensity;
-
-		}else{
-
-			var precipitation_curve = curve.both;
-			var curr_precipitation = curr_season_data.weather.precipitation;
-			var curr_precipitation_intensity = curr_season_data.weather.precipitation_intensity;
-			var next_precipitation = next_season_data.weather.precipitation;
-			var next_precipitation_intensity = next_season_data.weather.precipitation_intensity;
-
-		}
-
-		var low = lerp(curr_temp_low, next_temp_low, temp_curve);
-		var high = lerp(curr_temp_high, next_temp_high, temp_curve);
-
-		var range_low = low+Math.abs(this.random.noise(epoch, 1.0, this.current_location.settings.large_noise_frequency, this.current_location.settings.large_noise_amplitude));
-		range_low += Math.abs(this.random.noise(epoch+this.season_length, 1.0, this.current_location.settings.medium_noise_frequency, this.current_location.settings.medium_noise_amplitude));
-		range_low += Math.abs(this.random.noise(epoch+this.season_length*2, 1.0, this.current_location.settings.small_noise_frequency, this.current_location.settings.small_noise_amplitude));
-		range_low += Math.abs((this.random.noise(epoch+this.season_length*4, 0.5, 0.3, 1.5))*(high-low)*0.6);
+		var range_low = mid(low, middle);
+		var large = this.random.noise(epoch, 1.0, this.current_location.settings.large_noise_frequency, this.current_location.settings.large_noise_amplitude)*0.5;
+		var medium = this.random.noise(epoch+this.season_length, 1.0, this.current_location.settings.medium_noise_frequency, this.current_location.settings.medium_noise_amplitude)*0.8;
+		var small = this.random.noise(epoch+this.season_length*2, 1.0, this.current_location.settings.small_noise_frequency, this.current_location.settings.small_noise_amplitude);
+		range_low = range_low-large+medium-small;
 	
-		var range_high = high-Math.abs(this.random.noise(epoch-this.season_length, 1.0, this.current_location.settings.large_noise_frequency, this.current_location.settings.large_noise_amplitude));
-		range_high -= Math.abs(this.random.noise(epoch-this.season_length*2, 1.0, this.current_location.settings.medium_noise_frequency, this.current_location.settings.medium_noise_amplitude));
-		range_high -= Math.abs(this.random.noise(epoch-this.season_length*3, 1.0, this.current_location.settings.small_noise_frequency, this.current_location.settings.small_noise_amplitude));
-		range_high -= Math.abs((this.random.noise(epoch+this.season_length*3, 1.0, 0.3, 1.5))*(high-low)*0.6);
+		var range_high = mid(middle, high);
+		var large = this.random.noise(epoch+this.season_length*1.5, 1.0, this.current_location.settings.large_noise_frequency, this.current_location.settings.large_noise_amplitude)*0.5;
+		var medium = this.random.noise(epoch+this.season_length*2.5, 1.0, this.current_location.settings.medium_noise_frequency, this.current_location.settings.medium_noise_amplitude)*0.8;
+		var small = this.random.noise(epoch+this.season_length*3.5, 1.0, this.current_location.settings.small_noise_frequency, this.current_location.settings.small_noise_amplitude);
+		range_high = range_high-large+medium-small;
 
 		// If the low value happened to go over the high, swap 'em
 		if(range_low > range_high){
@@ -409,12 +389,12 @@ var climate_generator = {
 			var percipitation_table = temp > 0 ? "warm" : "cold";
 		}
 
-		var precipitation_chance = lerp(curr_precipitation, next_precipitation, precipitation_curve);
-		var precipitation_intensity = lerp(curr_precipitation_intensity, next_precipitation_intensity, precipitation_curve);
+		var precipitation_chance = lerp(curr_season_data.weather.precipitation, next_season_data.weather.precipitation, this.weather.perc);
+		var precipitation_intensity = lerp(curr_season_data.weather.precipitation_intensity, next_season_data.weather.precipitation_intensity, this.weather.perc);
 
 
-		var precipitation_chance = lerp(curr_precipitation, next_precipitation, precipitation_curve);
-		var precipitation_intensity = lerp(curr_precipitation_intensity, next_precipitation_intensity, precipitation_curve);
+		var precipitation_chance = lerp(curr_season_data.weather.precipitation, next_season_data.weather.precipitation, this.weather.perc);
+		var precipitation_intensity = lerp(curr_season_data.weather.precipitation_intensity, next_season_data.weather.precipitation_intensity, this.weather.perc);
 
 		var chance = clamp(0.5+this.random.noise(epoch+this.season_length*4, 5.0, 0.35, 0.5), 0.0, 1.0);
 
@@ -880,13 +860,13 @@ var climate_generator = {
 		},
 
 		"large_noise_frequency": 0.015,
-		"large_noise_amplitude": 5.0,
+		"large_noise_amplitude": 10.0,
 
 		"medium_noise_frequency": 0.3,
-		"medium_noise_amplitude": 2.0,
+		"medium_noise_amplitude": 4.0,
 
 		"small_noise_frequency": 0.8,
-		"small_noise_amplitude": 3.0
+		"small_noise_amplitude": 5.0
 
 	},
 
@@ -901,10 +881,8 @@ var climate_generator = {
 						'weather': {
 							'temp_low': 60,
 							'temp_high': 100,
-							'temp_transitional': false,
 							'precipitation': 0.5,
-							'precipitation_intensity': 0.3,
-							'precipitation_transitional': false
+							'precipitation_intensity': 0.3
 						}
 					},
 					{
@@ -913,10 +891,8 @@ var climate_generator = {
 						'weather': {
 							'temp_low': 60,
 							'temp_high': 100,
-							'temp_transitional': false,
 							'precipitation': 0.6,
-							'precipitation_intensity': 0.7,
-							'precipitation_transitional': false
+							'precipitation_intensity': 0.7
 						}
 					}
 				]
@@ -930,10 +906,8 @@ var climate_generator = {
 						'weather': {
 							'temp_low': 70,
 							'temp_high': 120,
-							'temp_transitional': false,
 							'precipitation': 0.15,
-							'precipitation_intensity': 0.1,
-							'precipitation_transitional': false
+							'precipitation_intensity': 0.1
 						}
 					},
 					{
@@ -942,10 +916,8 @@ var climate_generator = {
 						'weather': {
 							'temp_low': 70,
 							'temp_high': 120,
-							'temp_transitional': false,
 							'precipitation': 0.9,
-							'precipitation_intensity': 0.8,
-							'precipitation_transitional': false
+							'precipitation_intensity': 0.8
 						}
 					}
 				],
@@ -959,10 +931,8 @@ var climate_generator = {
 						'weather': {
 							'temp_low': 55,
 							'temp_high': 70,
-							'temp_transitional': false,
 							'precipitation': 0.05,
-							'precipitation_intensity': 0.1,
-							'precipitation_transitional': false
+							'precipitation_intensity': 0.1
 						}
 					},
 					{
@@ -971,10 +941,8 @@ var climate_generator = {
 						'weather': {
 							'temp_low': 65,
 							'temp_high': 110,
-							'temp_transitional': false,
 							'precipitation': 0.05,
-							'precipitation_intensity': 0.8,
-							'precipitation_transitional': false
+							'precipitation_intensity': 0.8
 						}
 					}
 				]
@@ -988,10 +956,8 @@ var climate_generator = {
 						'weather': {
 							'temp_low': 75,
 							'temp_high': 115,
-							'temp_transitional': false,
 							'precipitation': 0.1,
-							'precipitation_intensity': 0.1,
-							'precipitation_transitional': false
+							'precipitation_intensity': 0.1
 						}
 					},
 					{
@@ -1000,10 +966,8 @@ var climate_generator = {
 						'weather': {
 							'temp_low': 75,
 							'temp_high': 115,
-							'temp_transitional': false,
 							'precipitation': 0.85,
-							'precipitation_intensity': 0.2,
-							'precipitation_transitional': false
+							'precipitation_intensity': 0.2
 						}
 					}
 				],
@@ -1017,10 +981,8 @@ var climate_generator = {
 						'weather': {
 							'temp_low': 35,
 							'temp_high': 50,
-							'temp_transitional': false,
 							'precipitation': 0.2,
-							'precipitation_intensity': 0.3,
-							'precipitation_transitional': false
+							'precipitation_intensity': 0.3
 						}
 					},
 					{
@@ -1029,10 +991,8 @@ var climate_generator = {
 						'weather': {
 							'temp_low': 70,
 							'temp_high': 115,
-							'temp_transitional': false,
 							'precipitation': 0.05,
-							'precipitation_intensity': 0.3,
-							'precipitation_transitional': false
+							'precipitation_intensity': 0.3
 						}
 					}
 				]
@@ -1046,10 +1006,8 @@ var climate_generator = {
 						'weather': {
 							'temp_low': 10,
 							'temp_high': 50,
-							'temp_transitional': false,
 							'precipitation': 0.4,
-							'precipitation_intensity': 0.5,
-							'precipitation_transitional': false
+							'precipitation_intensity': 0.5
 						}
 					},
 					{
@@ -1058,10 +1016,8 @@ var climate_generator = {
 						'weather': {
 							'temp_low': 50,
 							'temp_high': 85,
-							'temp_transitional': false,
 							'precipitation': 0.4,
-							'precipitation_intensity': 0.6,
-							'precipitation_transitional': false
+							'precipitation_intensity': 0.6
 						}
 					}
 				]
@@ -1075,10 +1031,8 @@ var climate_generator = {
 						'weather': {
 							'temp_low': 10,
 							'temp_high': 60,
-							'temp_transitional': false,
 							'precipitation': 0.3,
-							'precipitation_intensity': 0.6,
-							'precipitation_transitional': false
+							'precipitation_intensity': 0.6
 						}
 					},
 					{
@@ -1087,10 +1041,8 @@ var climate_generator = {
 						'weather': {
 							'temp_low': 60,
 							'temp_high': 95,
-							'temp_transitional': false,
 							'precipitation': 0.1,
-							'precipitation_intensity': 0.2,
-							'precipitation_transitional': false
+							'precipitation_intensity': 0.2
 						}
 					}
 				]
@@ -1104,10 +1056,8 @@ var climate_generator = {
 						'weather': {
 							'temp_low': 32,
 							'temp_high': 50,
-							'temp_transitional': false,
 							'precipitation': 0.15,
-							'precipitation_intensity': 0.2,
-							'precipitation_transitional': false
+							'precipitation_intensity': 0.2
 						}
 					},
 					{
@@ -1116,10 +1066,8 @@ var climate_generator = {
 						'weather': {
 							'temp_low': 70,
 							'temp_high': 110,
-							'temp_transitional': false,
 							'precipitation': 0.45,
-							'precipitation_intensity': 0.6,
-							'precipitation_transitional': false
+							'precipitation_intensity': 0.6
 						}
 					}
 				]
@@ -1133,10 +1081,8 @@ var climate_generator = {
 						'weather': {
 							'temp_low': 5,
 							'temp_high': 40,
-							'temp_transitional': false,
 							'precipitation': 0.35,
-							'precipitation_intensity': 0.6,
-							'precipitation_transitional': false
+							'precipitation_intensity': 0.6
 						}
 					},
 					{
@@ -1145,10 +1091,8 @@ var climate_generator = {
 						'weather': {
 							'temp_low': 60,
 							'temp_high': 85,
-							'temp_transitional': false,
 							'precipitation': 0.35,
-							'precipitation_intensity': 0.6,
-							'precipitation_transitional': false
+							'precipitation_intensity': 0.6
 						}
 					}
 				]
@@ -1162,10 +1106,8 @@ var climate_generator = {
 						'weather': {
 							'temp_low': 5,
 							'temp_high': 40,
-							'temp_transitional': false,
 							'precipitation': 0.1,
-							'precipitation_intensity': 0.1,
-							'precipitation_transitional': false
+							'precipitation_intensity': 0.1
 						}
 					},
 					{
@@ -1174,10 +1116,8 @@ var climate_generator = {
 						'weather': {
 							'temp_low': 60,
 							'temp_high': 85,
-							'temp_transitional': false,
 							'precipitation': 0.35,
-							'precipitation_intensity': 0.75,
-							'precipitation_transitional': false
+							'precipitation_intensity': 0.75
 						}
 					}
 				]
@@ -1191,10 +1131,8 @@ var climate_generator = {
 						'weather': {
 							'temp_low': -35,
 							'temp_high': -15,
-							'temp_transitional': false,
 							'precipitation': 0.1,
-							'precipitation_intensity': 0.1,
-							'precipitation_transitional': false
+							'precipitation_intensity': 0.1
 						}
 					},
 					{
@@ -1203,10 +1141,8 @@ var climate_generator = {
 						'weather': {
 							'temp_low': 35,
 							'temp_high': 55,
-							'temp_transitional': false,
 							'precipitation': 0.1,
-							'precipitation_intensity': 0.1,
-							'precipitation_transitional': false
+							'precipitation_intensity': 0.1
 						}
 					}
 				]
@@ -1220,10 +1156,8 @@ var climate_generator = {
 						'weather': {
 							'temp_low': -20,
 							'temp_high': -10,
-							'temp_transitional': false,
 							'precipitation': 0.1,
-							'precipitation_intensity': 0.1,
-							'precipitation_transitional': false
+							'precipitation_intensity': 0.1
 						}
 					},
 					{
@@ -1232,10 +1166,8 @@ var climate_generator = {
 						'weather': {
 							'temp_low': 50,
 							'temp_high': 70,
-							'temp_transitional': false,
 							'precipitation': 0.3,
-							'precipitation_intensity': 0.1,
-							'precipitation_transitional': false
+							'precipitation_intensity': 0.1
 						}
 					}
 				]
@@ -1249,10 +1181,8 @@ var climate_generator = {
 						'weather': {
 							'temp_low': -81,
 							'temp_high': -65,
-							'temp_transitional': false,
 							'precipitation': 0.1,
-							'precipitation_intensity': 0.1,
-							'precipitation_transitional': false
+							'precipitation_intensity': 0.1
 						}
 					},
 					{
@@ -1261,758 +1191,641 @@ var climate_generator = {
 						'weather': {
 							'temp_low': -22,
 							'temp_high': -15,
-							'temp_transitional': false,
 							'precipitation': 0.1,
-							'precipitation_intensity': 0.1,
-							'precipitation_transitional': false
+							'precipitation_intensity': 0.1
 						}
 					}
 				]
 			}
 		},
 
-
-
-
 		"4": {
-			'Equatorial': {
-				'name': 'Equatorial',
-				'seasons': [
+			"Equatorial":{
+				"name":"Equatorial",
+				"seasons":[
 					{
-						'name': 'Winter',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 57,
-							'temp_high': 70,
-							'temp_transitional': false,
-							'precipitation': 0.2,
-							'precipitation_intensity': 0.2,
-							'precipitation_transitional': false
+						"name":"Winter",
+						"custom_name":true,
+						"weather":{
+							"temp_low":57,
+							"temp_high":70,
+							"precipitation":0.2,
+							"precipitation_intensity":0.2
 						}
 					},
 					{
-						'name': 'Spring',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 56,
-							'temp_high': 68,
-							'temp_transitional': true,
-							'precipitation': 0.475,
-							'precipitation_intensity': 0.4,
-							'precipitation_transitional': true
+						"name":"Spring",
+						"custom_name":true,
+						"weather":{
+							"temp_low":56.0,
+							"temp_high":68.0,
+							"precipitation":0.45,
+							"precipitation_intensity":0.4
 						}
 					},
 					{
-						'name': 'Summer',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 55,
-							'temp_high': 66,
-							'temp_transitional': false,
-							'precipitation': 0.7,
-							'precipitation_intensity': 0.6,
-							'precipitation_transitional': false
+						"name":"Summer",
+						"custom_name":true,
+						"weather":{
+							"temp_low":55,
+							"temp_high":66,
+							"precipitation":0.7,
+							"precipitation_intensity":0.6
 						}
 					},
 					{
-						'name': 'Autumn',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 56,
-							'temp_high': 68,
-							'temp_transitional': true,
-							'precipitation': 0.475,
-							'precipitation_intensity': 0.4,
-							'precipitation_transitional': true
+						"name":"Autumn",
+						"custom_name":true,
+						"weather":{
+							"temp_low":56.0,
+							"temp_high":68.0,
+							"precipitation":0.45,
+							"precipitation_intensity":0.4
 						}
 					}
 				]
 			},
-			'Monsoon': {
-				'name': 'Monsoon',
-				'seasons': [
+			"Monsoon":{
+				"name":"Monsoon",
+				"seasons":[
 					{
-						'name': 'Winter',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 70,
-							'temp_high': 90,
-							'temp_transitional': false,
-							'precipitation': 0.1,
-							'precipitation_intensity': 0.1,
-							'precipitation_transitional': false
+						"name":"Winter",
+						"custom_name":true,
+						"weather":{
+							"temp_low":70,
+							"temp_high":90,
+							"precipitation":0.1,
+							"precipitation_intensity":0.1
 						}
 					},
 					{
-						'name': 'Spring',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 70,
-							'temp_high': 90,
-							'temp_transitional': true,
-							'precipitation': 0.2,
-							'precipitation_intensity': 0.1,
-							'precipitation_transitional': true
+						"name":"Spring",
+						"custom_name":true,
+						"weather":{
+							"temp_low":70.0,
+							"temp_high":90.0,
+							"precipitation":0.5,
+							"precipitation_intensity":0.45
 						}
 					},
 					{
-						'name': 'Summer',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 70,
-							'temp_high': 90,
-							'temp_transitional': false,
-							'precipitation': 0.9,
-							'precipitation_intensity': 0.8,
-							'precipitation_transitional': false
+						"name":"Summer",
+						"custom_name":true,
+						"weather":{
+							"temp_low":70,
+							"temp_high":90,
+							"precipitation":0.9,
+							"precipitation_intensity":0.8
 						}
 					},
 					{
-						'name': 'Autumn',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 70,
-							'temp_high': 90,
-							'temp_transitional': true,
-							'precipitation': 0.5,
-							'precipitation_intensity': 0.3,
-							'precipitation_transitional': true
-						}
-					}
-				],
-			},
-			'Warm Desert': {
-				'name': 'Warm Desert',
-				'seasons': [
-					{
-						'name': 'Winter',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 55,
-							'temp_high': 70,
-							'temp_transitional': false,
-							'precipitation': 0.05,
-							'precipitation_intensity': 0.1,
-							'precipitation_transitional': false
-						}
-					},
-					{
-						'name': 'Spring',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 60,
-							'temp_high': 90,
-							'temp_transitional': true,
-							'precipitation': 0.05,
-							'precipitation_intensity': 0.1,
-							'precipitation_transitional': true
-						}
-					},
-					{
-						'name': 'Summer',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 65,
-							'temp_high': 110,
-							'temp_transitional': false,
-							'precipitation': 0.05,
-							'precipitation_intensity': 0.1,
-							'precipitation_transitional': false
-						}
-					},
-					{
-						'name': 'Winter',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 60,
-							'temp_high': 90,
-							'temp_transitional': true,
-							'precipitation': 0.05,
-							'precipitation_intensity': 0.1,
-							'precipitation_transitional': true
+						"name":"Autumn",
+						"custom_name":true,
+						"weather":{
+							"temp_low":70.0,
+							"temp_high":90.0,
+							"precipitation":0.5,
+							"precipitation_intensity":0.45
 						}
 					}
 				]
 			},
-			'Cold Desert': {
-				'name': 'Cold Desert',
-				'seasons': [
+			"Warm Desert":{
+				"name":"Warm Desert",
+				"seasons":[
 					{
-						'name': 'Winter',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 7,
-							'temp_high': 25,
-							'temp_transitional': false,
-							'precipitation': 0.2,
-							'precipitation_intensity': 0.1,
-							'precipitation_transitional': false
+						"name":"Winter",
+						"custom_name":true,
+						"weather":{
+							"temp_low":55,
+							"temp_high":70,
+							"precipitation":0.05,
+							"precipitation_intensity":0.1
 						}
 					},
 					{
-						'name': 'Spring',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 22,
-							'temp_high': 51,
-							'temp_transitional': true,
-							'precipitation': 0.2,
-							'precipitation_intensity': 0.1,
-							'precipitation_transitional': true
+						"name":"Spring",
+						"custom_name":true,
+						"weather":{
+							"temp_low":60.0,
+							"temp_high":90.0,
+							"precipitation":0.05,
+							"precipitation_intensity":0.1
 						}
 					},
 					{
-						'name': 'Summer',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 52,
-							'temp_high': 77,
-							'temp_transitional': false,
-							'precipitation': 0.3,
-							'precipitation_intensity': 0.15,
-							'precipitation_transitional': false
+						"name":"Summer",
+						"custom_name":true,
+						"weather":{
+							"temp_low":65,
+							"temp_high":110,
+							"precipitation":0.05,
+							"precipitation_intensity":0.1
 						}
 					},
 					{
-						'name': 'Autumn',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 22,
-							'temp_high': 51,
-							'temp_transitional': true,
-							'precipitation': 0.2,
-							'precipitation_intensity': 0.1,
-							'precipitation_transitional': true
+						"name":"Winter",
+						"custom_name":true,
+						"weather":{
+							"temp_low":60.0,
+							"temp_high":90.0,
+							"precipitation":0.05,
+							"precipitation_intensity":0.1
 						}
 					}
 				]
 			},
-			'Tropical Savanna': {
-				'name': 'Tropical Savanna',
-				'seasons': [
+			"Cold Desert":{
+				"name":"Cold Desert",
+				"seasons":[
 					{
-						'name': 'Winter',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 75,
-							'temp_high': 115,
-							'temp_transitional': false,
-							'precipitation': 0.1,
-							'precipitation_intensity': 0.1,
-							'precipitation_transitional': false
+						"name":"Winter",
+						"custom_name":true,
+						"weather":{
+							"temp_low":7,
+							"temp_high":25,
+							"precipitation":0.2,
+							"precipitation_intensity":0.1
 						}
 					},
 					{
-						'name': 'Autumn',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 75,
-							'temp_high': 115,
-							'temp_transitional': true,
-							'precipitation': 0.42,
-							'precipitation_intensity': 0.15,
-							'precipitation_transitional': true
+						"name":"Spring",
+						"custom_name":true,
+						"weather":{
+							"temp_low":29.5,
+							"temp_high":51.0,
+							"precipitation":0.25,
+							"precipitation_intensity":0.125
 						}
 					},
 					{
-						'name': 'Summer',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 75,
-							'temp_high': 115,
-							'temp_transitional': false,
-							'precipitation': 0.85,
-							'precipitation_intensity': 0.2,
-							'precipitation_transitional': false
+						"name":"Summer",
+						"custom_name":true,
+						"weather":{
+							"temp_low":52,
+							"temp_high":77,
+							"precipitation":0.3,
+							"precipitation_intensity":0.15
 						}
 					},
 					{
-						'name': 'Autumn',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 75,
-							'temp_high': 115,
-							'temp_transitional': true,
-							'precipitation': 0.42,
-							'precipitation_intensity': 0.15,
-							'precipitation_transitional': true
-						}
-					}
-				],
-			},
-			'Steppes': {
-				'name': 'Steppes',
-				'seasons': [
-					{
-						'name': 'Winter',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 35,
-							'temp_high': 50,
-							'temp_transitional': false,
-							'precipitation': 0.2,
-							'precipitation_intensity': 0.3,
-							'precipitation_transitional': false
-						}
-					},
-					{
-						'name': 'Spring',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 52,
-							'temp_high': 82,
-							'temp_transitional': true,
-							'precipitation': 0.13,
-							'precipitation_intensity': 0.3,
-							'precipitation_transitional': true
-						}
-					},
-					{
-						'name': 'Summer',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 70,
-							'temp_high': 115,
-							'temp_transitional': false,
-							'precipitation': 0.05,
-							'precipitation_intensity': 0.3,
-							'precipitation_transitional': false
-						}
-					},
-					{
-						'name': 'Autumn',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 52,
-							'temp_high': 82,
-							'temp_transitional': true,
-							'precipitation': 0.13,
-							'precipitation_intensity': 0.3,
-							'precipitation_transitional': true
+						"name":"Autumn",
+						"custom_name":true,
+						"weather":{
+							"temp_low":29.5,
+							"temp_high":51.0,
+							"precipitation":0.25,
+							"precipitation_intensity":0.125
 						}
 					}
 				]
 			},
-			'Warm and Rainy': {
-				'name': 'Warm and Rainy',
-				'seasons': [
+			"Tropical Savanna":{
+				"name":"Tropical Savanna",
+				"seasons":[
 					{
-						'name': 'Winter',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 10,
-							'temp_high': 50,
-							'temp_transitional': false,
-							'precipitation': 0.4,
-							'precipitation_intensity': 0.5,
-							'precipitation_transitional': false
+						"name":"Winter",
+						"custom_name":true,
+						"weather":{
+							"temp_low":75,
+							"temp_high":115,
+							"precipitation":0.1,
+							"precipitation_intensity":0.1
 						}
 					},
 					{
-						'name': 'Spring',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 30,
-							'temp_high': 57,
-							'temp_transitional': true,
-							'precipitation': 0.4,
-							'precipitation_intensity': 0.55,
-							'precipitation_transitional': true
+						"name":"Autumn",
+						"custom_name":true,
+						"weather":{
+							"temp_low":75.0,
+							"temp_high":115.0,
+							"precipitation":0.475,
+							"precipitation_intensity":0.15
 						}
 					},
 					{
-						'name': 'Summer',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 50,
-							'temp_high': 85,
-							'temp_transitional': false,
-							'precipitation': 0.4,
-							'precipitation_intensity': 0.6,
-							'precipitation_transitional': false
+						"name":"Summer",
+						"custom_name":true,
+						"weather":{
+							"temp_low":75,
+							"temp_high":115,
+							"precipitation":0.85,
+							"precipitation_intensity":0.2
 						}
 					},
 					{
-						'name': 'Autumn',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 30,
-							'temp_high': 57,
-							'temp_transitional': true,
-							'precipitation': 0.4,
-							'precipitation_intensity': 0.55,
-							'precipitation_transitional': true
+						"name":"Autumn",
+						"custom_name":true,
+						"weather":{
+							"temp_low":75.0,
+							"temp_high":115.0,
+							"precipitation":0.475,
+							"precipitation_intensity":0.15
 						}
 					}
 				]
 			},
-			'Warm with Dry Summer': {
-				'name': 'Warm with Dry Summer',
-				'seasons': [
+			"Steppes":{
+				"name":"Steppes",
+				"seasons":[
 					{
-						'name': 'Winter',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 10,
-							'temp_high': 60,
-							'temp_transitional': false,
-							'precipitation': 0.3,
-							'precipitation_intensity': 0.6,
-							'precipitation_transitional': false
+						"name":"Winter",
+						"custom_name":true,
+						"weather":{
+							"temp_low":35,
+							"temp_high":50,
+							"precipitation":0.2,
+							"precipitation_intensity":0.3
 						}
 					},
 					{
-						'name': 'Spring',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 40,
-							'temp_high': 77,
-							'temp_transitional': true,
-							'precipitation': 0.2,
-							'precipitation_intensity': 0.4,
-							'precipitation_transitional': true
+						"name":"Spring",
+						"custom_name":true,
+						"weather":{
+							"temp_low":52.5,
+							"temp_high":82.5,
+							"precipitation":0.125,
+							"precipitation_intensity":0.3
 						}
 					},
 					{
-						'name': 'Summer',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 60,
-							'temp_high': 95,
-							'temp_transitional': false,
-							'precipitation': 0.1,
-							'precipitation_intensity': 0.2,
-							'precipitation_transitional': false
+						"name":"Summer",
+						"custom_name":true,
+						"weather":{
+							"temp_low":70,
+							"temp_high":115,
+							"precipitation":0.05,
+							"precipitation_intensity":0.3
 						}
 					},
 					{
-						'name': 'Autumn',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 40,
-							'temp_high': 77,
-							'temp_transitional': true,
-							'precipitation': 0.2,
-							'precipitation_intensity': 0.4,
-							'precipitation_transitional': true
+						"name":"Autumn",
+						"custom_name":true,
+						"weather":{
+							"temp_low":52.5,
+							"temp_high":82.5,
+							"precipitation":0.125,
+							"precipitation_intensity":0.3
 						}
 					}
 				]
 			},
-			'Warm with Dry Winter': {
-				'name': 'Warm with Dry Winter',
-				'seasons': [
+			"Warm and Rainy":{
+				"name":"Warm and Rainy",
+				"seasons":[
 					{
-						'name': 'Winter',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 32,
-							'temp_high': 50,
-							'temp_transitional': false,
-							'precipitation': 0.15,
-							'precipitation_intensity': 0.2,
-							'precipitation_transitional': false
+						"name":"Winter",
+						"custom_name":true,
+						"weather":{
+							"temp_low":10,
+							"temp_high":50,
+							"precipitation":0.4,
+							"precipitation_intensity":0.5
 						}
 					},
 					{
-						'name': 'Spring',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 51,
-							'temp_high': 80,
-							'temp_transitional': true,
-							'precipitation': 0.30,
-							'precipitation_intensity': 0.4,
-							'precipitation_transitional': true
+						"name":"Spring",
+						"custom_name":true,
+						"weather":{
+							"temp_low":30.0,
+							"temp_high":67.5,
+							"precipitation":0.4,
+							"precipitation_intensity":0.55
 						}
 					},
 					{
-						'name': 'Summer',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 70,
-							'temp_high': 110,
-							'temp_transitional': false,
-							'precipitation': 0.45,
-							'precipitation_intensity': 0.6,
-							'precipitation_transitional': false
+						"name":"Summer",
+						"custom_name":true,
+						"weather":{
+							"temp_low":50,
+							"temp_high":85,
+							"precipitation":0.4,
+							"precipitation_intensity":0.6
 						}
 					},
 					{
-						'name': 'Autumn',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 51,
-							'temp_high': 80,
-							'temp_transitional': true,
-							'precipitation': 0.30,
-							'precipitation_intensity': 0.4,
-							'precipitation_transitional': true
+						"name":"Autumn",
+						"custom_name":true,
+						"weather":{
+							"temp_low":30.0,
+							"temp_high":67.5,
+							"precipitation":0.4,
+							"precipitation_intensity":0.55
 						}
 					}
 				]
 			},
-			'Cool and Rainy': {
-				'name': 'Cool and Rainy',
-				'seasons': [
+			"Warm with Dry Summer":{
+				"name":"Warm with Dry Summer",
+				"seasons":[
 					{
-						'name': 'Winter',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 5,
-							'temp_high': 40,
-							'temp_transitional': false,
-							'precipitation': 0.35,
-							'precipitation_intensity': 0.6,
-							'precipitation_transitional': false
+						"name":"Winter",
+						"custom_name":true,
+						"weather":{
+							"temp_low":10,
+							"temp_high":60,
+							"precipitation":0.3,
+							"precipitation_intensity":0.6
 						}
 					},
 					{
-						'name': 'Spring',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 32,
-							'temp_high': 62,
-							'temp_transitional': true,
-							'precipitation': 0.35,
-							'precipitation_intensity': 0.6,
-							'precipitation_transitional': true
+						"name":"Spring",
+						"custom_name":true,
+						"weather":{
+							"temp_low":35.0,
+							"temp_high":77.5,
+							"precipitation":0.2,
+							"precipitation_intensity":0.4
 						}
 					},
 					{
-						'name': 'Summer',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 60,
-							'temp_high': 85,
-							'temp_transitional': false,
-							'precipitation': 0.35,
-							'precipitation_intensity': 0.6,
-							'precipitation_transitional': false
+						"name":"Summer",
+						"custom_name":true,
+						"weather":{
+							"temp_low":60,
+							"temp_high":95,
+							"precipitation":0.1,
+							"precipitation_intensity":0.2
 						}
 					},
 					{
-						'name': 'Autumn',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 32,
-							'temp_high': 62,
-							'temp_transitional': true,
-							'precipitation': 0.35,
-							'precipitation_intensity': 0.6,
-							'precipitation_transitional': true
+						"name":"Autumn",
+						"custom_name":true,
+						"weather":{
+							"temp_low":35.0,
+							"temp_high":77.5,
+							"precipitation":0.2,
+							"precipitation_intensity":0.4
 						}
 					}
 				]
 			},
-			'Cool with Dry Winter': {
-				'name': 'Cool with Dry Winter',
-				'seasons': [
+			"Warm with Dry Winter":{
+				"name":"Warm with Dry Winter",
+				"seasons":[
 					{
-						'name': 'Winter',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 5,
-							'temp_high': 40,
-							'temp_transitional': false,
-							'precipitation': 0.1,
-							'precipitation_intensity': 0.1,
-							'precipitation_transitional': false
+						"name":"Winter",
+						"custom_name":true,
+						"weather":{
+							"temp_low":32,
+							"temp_high":50,
+							"precipitation":0.15,
+							"precipitation_intensity":0.2
 						}
 					},
 					{
-						'name': 'Spring',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 32,
-							'temp_high': 62,
-							'temp_transitional': true,
-							'precipitation': 0.22,
-							'precipitation_intensity': 0.42,
-							'precipitation_transitional': true
+						"name":"Spring",
+						"custom_name":true,
+						"weather":{
+							"temp_low":51.0,
+							"temp_high":80.0,
+							"precipitation":0.3,
+							"precipitation_intensity":0.4
 						}
 					},
 					{
-						'name': 'Summer',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 60,
-							'temp_high': 85,
-							'temp_transitional': false,
-							'precipitation': 0.35,
-							'precipitation_intensity': 0.75,
-							'precipitation_transitional': false
+						"name":"Summer",
+						"custom_name":true,
+						"weather":{
+							"temp_low":70,
+							"temp_high":110,
+							"precipitation":0.45,
+							"precipitation_intensity":0.6
 						}
 					},
 					{
-						'name': 'Autumn',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 32,
-							'temp_high': 62,
-							'temp_transitional': true,
-							'precipitation': 0.22,
-							'precipitation_intensity': 0.42,
-							'precipitation_transitional': true
+						"name":"Autumn",
+						"custom_name":true,
+						"weather":{
+							"temp_low":51.0,
+							"temp_high":80.0,
+							"precipitation":0.3,
+							"precipitation_intensity":0.4
 						}
 					}
 				]
 			},
-			'Tundra': {
-				'name': 'Tundra',
-				'seasons': [
+			"Cool and Rainy":{
+				"name":"Cool and Rainy",
+				"seasons":[
 					{
-						'name': 'Winter',
-						'custom_name': true,
-						'weather': {
-							'temp_low': -35,
-							'temp_high': -15,
-							'temp_transitional': false,
-							'precipitation': 0.1,
-							'precipitation_intensity': 0.1,
-							'precipitation_transitional': false
+						"name":"Winter",
+						"custom_name":true,
+						"weather":{
+							"temp_low":5,
+							"temp_high":40,
+							"precipitation":0.35,
+							"precipitation_intensity":0.6
 						}
 					},
 					{
-						'name': 'Spring',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 0,
-							'temp_high': 20,
-							'temp_transitional': true,
-							'precipitation': 0.1,
-							'precipitation_intensity': 0.1,
-							'precipitation_transitional': true
+						"name":"Spring",
+						"custom_name":true,
+						"weather":{
+							"temp_low":32.5,
+							"temp_high":62.5,
+							"precipitation":0.35,
+							"precipitation_intensity":0.6
 						}
 					},
 					{
-						'name': 'Summer',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 35,
-							'temp_high': 55,
-							'temp_transitional': false,
-							'precipitation': 0.1,
-							'precipitation_intensity': 0.1,
-							'precipitation_transitional': false
+						"name":"Summer",
+						"custom_name":true,
+						"weather":{
+							"temp_low":60,
+							"temp_high":85,
+							"precipitation":0.35,
+							"precipitation_intensity":0.6
 						}
 					},
 					{
-						'name': 'Autumn',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 0,
-							'temp_high': 20,
-							'temp_transitional': true,
-							'precipitation': 0.1,
-							'precipitation_intensity': 0.1,
-							'precipitation_transitional': true
+						"name":"Autumn",
+						"custom_name":true,
+						"weather":{
+							"temp_low":32.5,
+							"temp_high":62.5,
+							"precipitation":0.35,
+							"precipitation_intensity":0.6
 						}
 					}
 				]
 			},
-			'Polar: Arctic': {
-				'name': 'Arctic',
-				'seasons': [
+			"Cool with Dry Winter":{
+				"name":"Cool with Dry Winter",
+				"seasons":[
 					{
-						'name': 'Winter',
-						'custom_name': true,
-						'weather': {
-							'temp_low': -20,
-							'temp_high': -10,
-							'temp_transitional': false,
-							'precipitation': 0.1,
-							'precipitation_intensity': 0.1,
-							'precipitation_transitional': false
+						"name":"Winter",
+						"custom_name":true,
+						"weather":{
+							"temp_low":5,
+							"temp_high":40,
+							"precipitation":0.1,
+							"precipitation_intensity":0.1
 						}
 					},
 					{
-						'name': 'Spring',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 15,
-							'temp_high': 30,
-							'temp_transitional': true,
-							'precipitation': 0.2,
-							'precipitation_intensity': 0.1,
-							'precipitation_transitional': true
+						"name":"Spring",
+						"custom_name":true,
+						"weather":{
+							"temp_low":32.5,
+							"temp_high":62.5,
+							"precipitation":0.225,
+							"precipitation_intensity":0.425
 						}
 					},
 					{
-						'name': 'Summer',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 50,
-							'temp_high': 70,
-							'temp_transitional': false,
-							'precipitation': 0.3,
-							'precipitation_intensity': 0.1,
-							'precipitation_transitional': false
+						"name":"Summer",
+						"custom_name":true,
+						"weather":{
+							"temp_low":60,
+							"temp_high":85,
+							"precipitation":0.35,
+							"precipitation_intensity":0.75
 						}
 					},
 					{
-						'name': 'Autumn',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 15,
-							'temp_high': 30,
-							'temp_transitional': true,
-							'precipitation': 0.2,
-							'precipitation_intensity': 0.1,
-							'precipitation_transitional': true
+						"name":"Autumn",
+						"custom_name":true,
+						"weather":{
+							"temp_low":32.5,
+							"temp_high":62.5,
+							"precipitation":0.225,
+							"precipitation_intensity":0.425
 						}
 					}
 				]
 			},
-			'Polar: Antarctic': {
-				'name': 'Antarctic',
-				'seasons': [
+			"Tundra":{
+				"name":"Tundra",
+				"seasons":[
 					{
-						'name': 'Winter',
-						'custom_name': true,
-						'weather': {
-							'temp_low': -81,
-							'temp_high': -65,
-							'temp_transitional': false,
-							'precipitation': 0.1,
-							'precipitation_intensity': 0.1,
-							'precipitation_transitional': false
+						"name":"Winter",
+						"custom_name":true,
+						"weather":{
+							"temp_low":-35,
+							"temp_high":-15,
+							"precipitation":0.1,
+							"precipitation_intensity":0.1
 						}
 					},
 					{
-						'name': 'Spring',
-						'custom_name': true,
-						'weather': {
-							'temp_low': -51,
-							'temp_high': -40,
-							'temp_transitional': true,
-							'precipitation': 0.1,
-							'precipitation_intensity': 0.1,
-							'precipitation_transitional': true
+						"name":"Spring",
+						"custom_name":true,
+						"weather":{
+							"temp_low":0.0,
+							"temp_high":20.0,
+							"precipitation":0.1,
+							"precipitation_intensity":0.1
 						}
 					},
 					{
-						'name': 'Summer',
-						'custom_name': true,
-						'weather': {
-							'temp_low': -22,
-							'temp_high': -15,
-							'temp_transitional': false,
-							'precipitation': 0.1,
-							'precipitation_intensity': 0.1,
-							'precipitation_transitional': false
+						"name":"Summer",
+						"custom_name":true,
+						"weather":{
+							"temp_low":35,
+							"temp_high":55,
+							"precipitation":0.1,
+							"precipitation_intensity":0.1
 						}
 					},
 					{
-						'name': 'Autumn',
-						'custom_name': true,
-						'weather': {
-							'temp_low': -51,
-							'temp_high': -40,
-							'temp_transitional': true,
-							'precipitation': 0.1,
-							'precipitation_intensity': 0.1,
-							'precipitation_transitional': true
+						"name":"Autumn",
+						"custom_name":true,
+						"weather":{
+							"temp_low":0.0,
+							"temp_high":20.0,
+							"precipitation":0.1,
+							"precipitation_intensity":0.1
+						}
+					}
+				]
+			},
+			"Polar: Arctic":{
+				"name":"Arctic",
+				"seasons":[
+					{
+						"name":"Winter",
+						"custom_name":true,
+						"weather":{
+							"temp_low":-20,
+							"temp_high":-10,
+							"precipitation":0.1,
+							"precipitation_intensity":0.1
+						}
+					},
+					{
+						"name":"Spring",
+						"custom_name":true,
+						"weather":{
+							"temp_low":15.0,
+							"temp_high":30.0,
+							"precipitation":0.2,
+							"precipitation_intensity":0.1
+						}
+					},
+					{
+						"name":"Summer",
+						"custom_name":true,
+						"weather":{
+							"temp_low":50,
+							"temp_high":70,
+							"precipitation":0.3,
+							"precipitation_intensity":0.1
+						}
+					},
+					{
+						"name":"Autumn",
+						"custom_name":true,
+						"weather":{
+							"temp_low":15.0,
+							"temp_high":30.0,
+							"precipitation":0.2,
+							"precipitation_intensity":0.1
+						}
+					}
+				]
+			},
+			"Polar: Antarctic":{
+				"name":"Antarctic",
+				"seasons":[
+					{
+						"name":"Winter",
+						"custom_name":true,
+						"weather":{
+							"temp_low":-81,
+							"temp_high":-65,
+							"precipitation":0.1,
+							"precipitation_intensity":0.1
+						}
+					},
+					{
+						"name":"Spring",
+						"custom_name":true,
+						"weather":{
+							"temp_low":-51.5,
+							"temp_high":-40.0,
+							"precipitation":0.1,
+							"precipitation_intensity":0.1
+						}
+					},
+					{
+						"name":"Summer",
+						"custom_name":true,
+						"weather":{
+							"temp_low":-22,
+							"temp_high":-15,
+							"precipitation":0.1,
+							"precipitation_intensity":0.1
+						}
+					},
+					{
+						"name":"Autumn",
+						"custom_name":true,
+						"weather":{
+							"temp_low":-51.5,
+							"temp_high":-40.0,
+							"precipitation":0.1,
+							"precipitation_intensity":0.1
 						}
 					}
 				]
