@@ -2874,8 +2874,23 @@ function error_check(parent, rebuild){
 			recalculate_era_epochs();
 		}
 		if(rebuild === undefined || rebuild){
-			rebuild_calendar('calendar', dynamic_data);
-			update_current_day(true);
+
+			if(!preview_date.follow){
+
+				update_preview_calendar();
+
+				rebuild_calendar('preview', preview_date);
+
+			}else{
+
+				rebuild_calendar('calendar', dynamic_data);
+				
+				update_current_day(true);
+
+				preview_date_follow();
+
+			}
+
 		}else{
 
 			if(parent !== undefined && (parent === "seasons")){
