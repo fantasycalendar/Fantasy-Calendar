@@ -108,6 +108,12 @@ var climate_generator = {
 
 			this.middle_day_time = mid(this.shortest_day_time, this.longest_day_time);
 
+			this.high_appeared = false;
+			this.low_appeared = false;
+			this.rising_appeared = false;
+			this.falling_appeared = false;
+			this.all_appear = true;
+
 		}
 
 
@@ -271,14 +277,33 @@ var climate_generator = {
 			var sunrise_s = Math.floor(sunrise)+":"+sunrise_m;
 			var sunset_s = Math.floor(sunset)+":"+sunset_m;
 
-			rising_equinox = this.middle_day_time == (sunset-sunrise) && this.season.rising && this.season.rising !== null;
-			falling_equinox = this.middle_day_time == (sunset-sunrise) && !this.season.rising && this.season.rising !== null;
-			high_solstice = this.longest_day_time == (sunset-sunrise);
-			low_solstice = this.shortest_day_time == (sunset-sunrise);
+			if((this.low_appeared && !this.rising_appeared) || this.all_appear){
+				rising_equinox = this.middle_day_time == (sunset-sunrise);
+				this.low_appeared = false;
+				this.rising_appeared = true;
+				this.all_appear = false;
+			}
 
-			this.season.rising = (sunset_exact-sunrise_exact) > this.season.prev_time;
+			if((this.falling_appeared && !this.low_appeared) || this.all_appear){
+				low_solstice = this.shortest_day_time == (sunset-sunrise);
+				this.falling_appeared = false;
+				this.low_appeared = true;
+				this.all_appear = false;
+			}
 
-			this.season.prev_time = (sunset_exact-sunrise_exact);
+			if((this.high_appeared && !this.falling_appeared) || this.all_appear){
+				falling_equinox = this.middle_day_time == (sunset-sunrise);
+				this.high_appeared = false;
+				this.falling_appeared = true;
+				this.all_appear = false;
+			}
+
+			if((this.rising_appeared && !this.high_appeared) || this.all_appear){
+				high_solstice = this.longest_day_time == (sunset-sunrise);
+				this.rising_appeared = false;
+				this.high_appeared = true;
+				this.all_appear = false;
+			}
 
 			time.sunrise = {
 				data: sunrise_exact,

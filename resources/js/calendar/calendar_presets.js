@@ -6,10 +6,10 @@ function create_season_events(){
 			"description":"At the summer solstice, the Sun travels the longest path through the sky, and that day therefore has the most daylight.",
 			"data":{
 				'has_duration': false,
-				'duration': 1,
+				'duration': 0,
 				'show_first_last': false,
-				'limited_repeat': true,
-				'limited_repeat_num': 5,
+				'limited_repeat': false,
+				'limited_repeat_num': 0,
 				'connected_events': [],
 				'date': [],
 				"conditions":[
@@ -30,10 +30,10 @@ function create_season_events(){
 			"description":"The winter solstice marks the shortest day and longest night of the year, when the sun is at its lowest arc in the sky.",
 			"data":{
 				'has_duration': false,
-				'duration': 1,
+				'duration': 0,
 				'show_first_last': false,
-				'limited_repeat': true,
-				'limited_repeat_num': 5,
+				'limited_repeat': false,
+				'limited_repeat_num': 0,
 				'connected_events': [],
 				'date': [],
 				"conditions":[
@@ -54,10 +54,10 @@ function create_season_events(){
 			"description":"The spring equinox marks the day and the night is equally as long, and from here on out the days get longer.",
 			"data":{
 				'has_duration': false,
-				'duration': 1,
+				'duration': 0,
 				'show_first_last': false,
-				'limited_repeat': true,
-				'limited_repeat_num': 5,
+				'limited_repeat': false,
+				'limited_repeat_num': 0,
 				'connected_events': [],
 				'date': [],
 				"conditions":[
@@ -78,10 +78,10 @@ function create_season_events(){
 			"description":"The autumn equinox marks the day and the night is equally as long, but from here on out the days will only get shorter.",
 			"data":{
 				'has_duration': false,
-				'duration': 1,
+				'duration': 0,
 				'show_first_last': false,
-				'limited_repeat': true,
-				'limited_repeat_num': 5,
+				'limited_repeat': false,
+				'limited_repeat_num': 0,
 				'connected_events': [],
 				'date': [],
 				"conditions":[
