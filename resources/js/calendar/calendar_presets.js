@@ -8,8 +8,8 @@ function create_season_events(){
 				'has_duration': false,
 				'duration': 1,
 				'show_first_last': false,
-				'limited_repeat': false,
-				'limited_repeat_num': 1,
+				'limited_repeat': true,
+				'limited_repeat_num': 5,
 				'connected_events': [],
 				'date': [],
 				"conditions":[
@@ -32,8 +32,8 @@ function create_season_events(){
 				'has_duration': false,
 				'duration': 1,
 				'show_first_last': false,
-				'limited_repeat': false,
-				'limited_repeat_num': 1,
+				'limited_repeat': true,
+				'limited_repeat_num': 5,
 				'connected_events': [],
 				'date': [],
 				"conditions":[
@@ -56,8 +56,8 @@ function create_season_events(){
 				'has_duration': false,
 				'duration': 1,
 				'show_first_last': false,
-				'limited_repeat': false,
-				'limited_repeat_num': 1,
+				'limited_repeat': true,
+				'limited_repeat_num': 5,
 				'connected_events': [],
 				'date': [],
 				"conditions":[
@@ -80,8 +80,8 @@ function create_season_events(){
 				'has_duration': false,
 				'duration': 1,
 				'show_first_last': false,
-				'limited_repeat': false,
-				'limited_repeat_num': 1,
+				'limited_repeat': true,
+				'limited_repeat_num': 5,
 				'connected_events': [],
 				'date': [],
 				"conditions":[
