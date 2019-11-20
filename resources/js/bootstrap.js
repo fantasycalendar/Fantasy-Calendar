@@ -65,6 +65,12 @@ if (authorization) {
 
 require('sweetalert');
 
+/**
+ * Select2 is a jQuery-based replacement for select boxes. It supports searching,
+ * remote data sets, and pagination of results.
+ */
+ 
+require('select2');
 
 /**
  * With ProgressBar.js, it's easy to create responsive and stylish progress

@@ -1051,6 +1051,38 @@ ol.example li.placeholder:before {
     margin-bottom:5px;
     min-height: 34px;
     background-color:white;
+
+    .select2{
+
+        order:3;
+        min-width:60%;
+
+        .select2-selection{
+
+            height: calc(1.5em + 0.5rem - 2px);
+
+            border-radius: 0.2rem;
+
+            border: 1px solid #ced4da;
+
+            span{
+                font-size: 0.875rem;
+                line-height: 2.25;
+                height:100%;
+            }
+        }
+    }
+}
+
+.select2-results{
+
+    font-size:0.875rem;
+    max-height:400px;
+
+}
+
+.select2-container--default .select2-results > .select2-results__options{
+    max-height:400px !important;        
 }
 
 .placeholder{
@@ -1077,11 +1109,6 @@ ol.example li.placeholder:before {
 #event_conditions_container .handle{
     padding:6px;
     order:1;
-}
-
-.condition_container .condition_type{
-    order:3;
-    max-width:75%;
 }
 
 .condition_container .moon_select{
