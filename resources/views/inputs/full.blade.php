@@ -681,14 +681,6 @@
                         </select>
                     </label>
 
-                    <label class="form-control full setting first">
-                        <input type='checkbox' class='margin-right static_input' data='settings' fc-index='show_era_abbreviation'>
-                        <span>
-                            Show era abbreviation
-                        </span>
-                        <a target="_blank" title='Instead of showing the full era name, only the abbreviation will be shown, if it has one' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
-                    </label>
-
                     <label class="form-control full setting last">
                         <input type='checkbox' class='margin-right static_input' data='settings' fc-index='show_current_month'>
                         <span>

@@ -82,6 +82,15 @@ require('select2');
 window.ProgressBar = require('progressbar.js')
 
 /**
+ * mustache.js is an implementation of the mustache template system in JavaScript.
+ * Mustache is a logic-less template syntax. It can be used for HTML, config files,
+ * source code - anything. It works by expanding tags in a template using values
+ * provided in a hash or object.
+ */
+
+window.Mustache = require('mustache')
+
+/**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting
  * allows your team to easily build robust real-time web applications.
