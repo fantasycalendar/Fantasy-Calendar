@@ -73,7 +73,6 @@ var climate_generator = {
 			}
 
 			this.current_location.settings = clone(this.preset_curves);
-			this.current_location.settings.timezone = 0;
 
 		}else if(this.dynamic_data.custom_location === true){
 
@@ -97,6 +96,7 @@ var climate_generator = {
 						"precipitation_intensity": 0
 					}
 				});
+
 				this.current_location.seasons[i].time.sunset = clone(this.static_data.seasons.data[i].time.sunset);
 				this.current_location.seasons[i].time.sunrise = clone(this.static_data.seasons.data[i].time.sunrise);
 

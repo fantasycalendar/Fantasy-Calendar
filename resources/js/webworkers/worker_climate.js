@@ -14,10 +14,6 @@ onmessage = e => {
 
 	var preview_date = e.data.preview_date;
 
-	var start_epoch = e.data.start_epoch;
-
-	var end_epoch = e.data.end_epoch;
-
 	if(dynamic_data.year != preview_date.year || dynamic_data.timespan != preview_date.timespan || dynamic_data.day != preview_date.day){
 		dynamic_data.year = preview_date.year;
 		dynamic_data.timespan = preview_date.timespan;

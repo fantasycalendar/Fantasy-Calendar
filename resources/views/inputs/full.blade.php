@@ -553,10 +553,10 @@
 
                 <div class='detail-row detail-select-container'>
                     <div class='detail-label'>Location:</div>
-                    <div class='detail-select'>
-                        <select class='form-control' id='location_select'>
-                        </select>
-                    </div>
+                </div>
+                <div class='detail-row'>
+                    <select class='form-control' id='location_select'>
+                    </select>
                 </div>
                 <div class='detail-row'>
                     <input type='button' value='Copy location data' class='btn btn-info full add' id='copy_location_data'>
