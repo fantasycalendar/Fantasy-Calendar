@@ -580,7 +580,6 @@ function set_up_edit_inputs(set_up){
 			var sunrise_m = mid(prev_season.time.sunrise.minute, next_season.time.sunrise.minute)
 
 			var sunrise = sunrise_h+sunrise_m/static_data.clock.minutes;
-			console.log(sunrise)
 			var sunrise_h = Math.floor(sunrise)
 			var sunrise_m = fract(sunrise)*static_data.clock.minutes
 
@@ -595,7 +594,6 @@ function set_up_edit_inputs(set_up){
 			var sunset_m = mid(prev_season.time.sunset.minute, next_season.time.sunset.minute)
 
 			var sunset = sunset_h+sunset_m/static_data.clock.minutes;
-			console.log(sunset)
 			var sunset_h = Math.floor(sunset)
 			var sunset_m = fract(sunset)*static_data.clock.minutes
 
@@ -3006,8 +3004,6 @@ function error_check(parent, rebuild){
 		evaluate_save_button();
 
 		close_error_message();
-
-		console.log(parent, rebuild)
 
 		if(parent === "eras"){
 			recalculate_era_epochs();

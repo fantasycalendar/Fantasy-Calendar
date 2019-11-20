@@ -124,18 +124,22 @@ var climate_generator = {
 
 		}
 
-		this.season.day = (fract((epoch+0)/this.season_length)*this.season_length)
-		this.season.day -= this.settings.season_offset;
 
 		/* -------------------------------------------------------------------------------------------------------------*/
+
+		this.season.day = (fract(epoch/this.season_length)*this.season_length)
+
+		this.season.day -= this.settings.season_offset;
 
 		if(this.season.day < 0){
 			this.season.day += this.season_length
 		}else if(this.season.day > this.season_length){
-			this.season.day -= this.season_length;
+			this.season.day = this.season.day%this.season_length;
 		}
 
 		this.season.day++;
+
+		this.season.prev_day = -Infinity;
 
 		for(var season_index in this.seasons){
 
@@ -161,19 +165,21 @@ var climate_generator = {
 		this.season.rising = null;
 
 		/* -------------------------------------------------------------------------------------------------------------*/
-
-		this.weather.day = (fract((epoch+0)/this.season_length)*this.season_length)
+	
+		this.weather.day = (fract(epoch/this.season_length)*this.season_length)
 
 		this.weather.day -= this.settings.season_offset;
 		this.weather.day -= this.settings.weather_offset;
 
 		if(this.weather.day < 0){
-			this.weather.day += this.season_length
-		}else if(this.weather.day > this.season_length){
-			this.weather.day -= this.season_length;
+			this.weather.day += this.season_length;
+		}else if(this.weather.day >= this.season_length){
+			this.weather.day = this.weather.day%this.season_length;
 		}
 
 		this.weather.day++;
+
+		this.weather.prev_day = -Infinity;
 
 		for(var season_index in this.seasons){
 
@@ -188,6 +194,7 @@ var climate_generator = {
 				this.weather.next = this.seasons[this.weather.next_index];
 
 				this.weather.total_day += season.length;
+
 				break;
 
 			}else{
@@ -205,21 +212,44 @@ var climate_generator = {
 
 		if(!this.process_seasons) return;
 
-		this.season.day = (fract((epoch+0)/this.season_length)*this.season_length)
+		this.season.day = (fract(epoch/this.season_length)*this.season_length)
 
 		this.season.day -= this.settings.season_offset;
 
 		if(this.season.day < 0){
 			this.season.day += this.season_length
 		}else if(this.season.day > this.season_length){
-			this.season.day -= this.season_length;
+			this.season.day = this.season.day%this.season_length;
 		}
 
-		this.season.day++;
+		if(this.season.day > this.season.total_day || this.season.day < this.season.prev_day){
+			
+			this.season.current_index = (this.season.current_index+1)%this.seasons.length;
+			this.season.next_index = (this.season.current_index+1)%this.seasons.length;
 
-        this.season.season_day = this.seasons[this.season.current_index].length+this.season.day-this.season.total_day-1;
+			this.season.current = this.seasons[this.season.current_index];
+			this.season.next = this.seasons[this.season.next_index];
+			
+			this.season.total_day += this.seasons[this.season.current_index].length;
+			if(this.season.total_day > this.season_length){
+				this.season.total_day = this.seasons[this.season.current_index].length;
+			}
 
-		this.season.perc = clamp((this.season.season_day)/this.seasons[this.season.current_index].transition_length, 0.0, 1.0);
+		}
+
+		this.season.prev_day = this.season.day;
+
+        this.season.season_day = this.seasons[this.season.current_index].length+this.season.day-this.season.total_day;
+
+        if(Math.ceil(this.season.season_day) > this.seasons[this.season.current_index].duration){
+
+			this.season.perc = clamp((this.season.season_day-this.seasons[this.season.current_index].duration)/this.seasons[this.season.current_index].transition_length, 0.0, 1.0);
+
+		}else{
+
+			this.season.perc = 0.0;
+
+		}
 
 		this.season.round_perc = Math.floor(this.season.perc*100)/100;
 
@@ -244,6 +274,14 @@ var climate_generator = {
 			var curr_sunset = this.current_location.seasons[this.season.current_index].time.sunset;
 			var next_sunset = this.current_location.seasons[this.season.next_index].time.sunset;
 
+			var sunrise_exact_minute = Math.round(lerp(curr_sunrise.minute, next_sunrise.minute, this.season.perc));
+			var sunrise_exact_hour = lerp(curr_sunrise.hour, next_sunrise.hour, this.season.perc);
+			var sunrise_exact = sunrise_exact_hour+sunrise_exact_minute/this.static_data.clock.minutes;
+
+			var sunset_exact_minute = Math.round(lerp(curr_sunset.minute, next_sunset.minute, this.season.perc));
+			var sunset_exact_hour = lerp(curr_sunset.hour, next_sunset.hour, this.season.perc);
+			var sunset_exact = sunset_exact_hour+sunset_exact_minute/this.static_data.clock.minutes;
+
 			var sunrise_minute = Math.round(lerp(curr_sunrise.minute, next_sunrise.minute, this.season.round_perc));
 			var sunrise_hour = lerp(curr_sunrise.hour, next_sunrise.hour, this.season.round_perc);
 			var sunrise = sunrise_hour+sunrise_minute/this.static_data.clock.minutes;
@@ -263,17 +301,17 @@ var climate_generator = {
 			high_solstice = this.longest_day_time == (sunset-sunrise);
 			low_solstice = this.shortest_day_time == (sunset-sunrise);
 
-			this.season.rising = (sunset-sunrise) > this.season.prev_time;
+			this.season.rising = (sunset_exact-sunrise_exact) > this.season.prev_time;
 
-			this.season.prev_time = (sunset-sunrise);
+			this.season.prev_time = (sunset_exact-sunrise_exact);
 
 			time.sunrise = {
-				data: sunrise,
+				data: sunrise_exact,
 				string: sunrise_s
 			}
 			
 			time.sunset = {
-				data: sunset,
+				data: sunset_exact,
 				string: sunset_s
 			}
 
@@ -291,23 +329,6 @@ var climate_generator = {
 			low_solstice: low_solstice
 		}
 
-		/* -------------------------------------------------------------------------------------------------------------*/
-
-		if(this.season.day > this.season.total_day){
-			
-			this.season.current_index = (this.season.current_index+1)%this.seasons.length;
-			this.season.next_index = (this.season.current_index+1)%this.seasons.length;
-
-			this.season.current = this.seasons[this.season.current_index];
-			this.season.next = this.seasons[this.season.next_index];
-			
-			this.season.total_day += this.seasons[this.season.current_index].length;
-			if(this.season.total_day > this.season_length){
-				this.season.total_day = this.seasons[this.season.current_index].length;
-			}
-
-		}
-
 		return data;
 
 
@@ -317,7 +338,7 @@ var climate_generator = {
 
 		if(!this.process_weather) return;
 
-		this.weather.day = (fract((epoch+0)/this.season_length)*this.season_length)
+		this.weather.day = (fract(epoch/this.season_length)*this.season_length)
 
 		this.weather.day -= this.settings.season_offset;
 		this.weather.day -= this.settings.weather_offset;
@@ -325,12 +346,26 @@ var climate_generator = {
 		if(this.weather.day < 0){
 			this.weather.day += this.season_length
 		}else if(this.weather.day > this.season_length){
-			this.weather.day -= this.season_length;
+			this.weather.day = this.weather.day%this.season_length;
 		}
 
-		this.weather.day++;
+		if(this.weather.day > this.weather.total_day || this.weather.day < this.weather.prev_day){
+			
+			this.weather.current_index = (this.weather.current_index+1)%this.seasons.length;
+			this.weather.next_index = (this.weather.current_index+1)%this.seasons.length;
 
-        this.weather.season_day = this.seasons[this.weather.current_index].length+this.weather.day-this.weather.total_day
+			this.weather.current = this.seasons[this.weather.current_index];
+			this.weather.next = this.seasons[this.weather.next_index];
+			
+			this.weather.total_day += this.seasons[this.weather.current_index].length;
+			if(this.weather.total_day > this.season_length){
+				this.weather.total_day = this.seasons[this.weather.current_index].length;
+			}
+
+		}
+		this.weather.prev_day = this.weather.day;
+
+        this.weather.season_day = this.seasons[this.weather.current_index].length+this.weather.day-this.weather.total_day;
 
         if(Math.ceil(this.weather.season_day) > this.seasons[this.weather.current_index].duration){
 
@@ -542,23 +577,6 @@ var climate_generator = {
 				metric: wind_velocity_m
 			},
 			wind_direction: wind_direction
-		}
-
-		/* -------------------------------------------------------------------------------------------------------------*/
-
-		if(this.weather.day > this.weather.total_day){
-			
-			this.weather.current_index = (this.weather.current_index+1)%this.seasons.length;
-			this.weather.next_index = (this.weather.current_index+1)%this.seasons.length;
-
-			this.weather.current = this.seasons[this.weather.current_index];
-			this.weather.next = this.seasons[this.weather.next_index];
-			
-			this.weather.total_day += this.seasons[this.weather.current_index].length;
-			if(this.weather.total_day > this.season_length){
-				this.weather.total_day = this.seasons[this.weather.current_index].length;
-			}
-
 		}
 
 		/* -------------------------------------------------------------------------------------------------------------*/
