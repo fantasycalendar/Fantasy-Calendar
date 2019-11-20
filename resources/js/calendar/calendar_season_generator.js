@@ -112,7 +112,14 @@ var climate_generator = {
 			this.low_appeared = false;
 			this.rising_appeared = false;
 			this.falling_appeared = false;
+
 			this.all_appear = true;
+
+			this.solstices_appear = true;
+
+			if(this.shortest_day_time == this.longest_day_time){
+				this.solstices_appear = false;
+			}
 
 		}
 
@@ -243,10 +250,10 @@ var climate_generator = {
 			sunset: false
 		}
 
-		rising_equinox = false;
-		falling_equinox = false;
-		high_solstice = false;
-		low_solstice = false;
+		var rising_equinox = false;
+		var falling_equinox = false;
+		var high_solstice = false;
+		var low_solstice = false;
 
 		if(this.static_data.clock.enabled){
 
@@ -277,33 +284,68 @@ var climate_generator = {
 			var sunrise_s = Math.floor(sunrise)+":"+sunrise_m;
 			var sunset_s = Math.floor(sunset)+":"+sunset_m;
 
-			if((this.low_appeared && !this.rising_appeared) || this.all_appear){
-				rising_equinox = this.middle_day_time == (sunset-sunrise);
-				this.low_appeared = false;
-				this.rising_appeared = true;
-				this.all_appear = false;
+			if(this.solstices_appear){
+
+				if(this.all_appear){
+
+					var temp_sunrise_minute = Math.round(lerp(curr_sunrise.minute, next_sunrise.minute, this.season.perc-0.1));
+					var temp_sunrise_hour = lerp(curr_sunrise.hour, next_sunrise.hour, this.season.perc-0.1);
+					var temp_sunrise = temp_sunrise_hour+temp_sunrise_minute/this.static_data.clock.minutes;
+
+					var temp_sunset_minute = Math.round(lerp(curr_sunset.minute, next_sunset.minute, this.season.perc-0.1));
+					var temp_sunset_hour = lerp(curr_sunset.hour, next_sunset.hour, this.season.perc-0.1);
+					var temp_sunset = temp_sunset_hour+temp_sunset_minute/this.static_data.clock.minutes;
+
+					if(this.shortest_day_time == (sunset-sunrise)){
+						this.falling_appeared = true;
+					}else if(this.longest_day_time == (sunset-sunrise)){
+						this.rising_appeared = true;
+					}
+
+					if(this.middle_day_time == (sunset-sunrise)){
+						if((temp_sunset-temp_sunrise) < (sunset-sunrise)){
+							this.low_appeared = true;
+						}else if((temp_sunset-temp_sunrise) > (sunset-sunrise)){
+							this.high_appeared = true;
+						}
+					}
+
+					this.all_appear = !(this.low_appeared || this.rising_appeared || this.high_appeared || this.falling_appeared)
+				}
+
+				if(!this.all_appear && this.falling_appeared && !this.low_appeared){
+					low_solstice = this.shortest_day_time == (sunset-sunrise);
+					if(low_solstice){
+						this.falling_appeared = false;
+						this.low_appeared = true;
+					}
+				}
+
+				if(!this.all_appear && this.low_appeared && !this.rising_appeared){
+					rising_equinox = this.middle_day_time == (sunset-sunrise);
+					if(rising_equinox){
+						this.low_appeared = false;
+						this.rising_appeared = true;
+					}
+				}
+
+				if(!this.all_appear && this.rising_appeared && !this.high_appeared){
+					high_solstice = this.longest_day_time == (sunset-sunrise);
+					if(high_solstice){
+						this.rising_appeared = false;
+						this.high_appeared = true;
+					}
+				}
+
+				if(!this.all_appear && this.high_appeared && !this.falling_appeared){
+					falling_equinox = this.middle_day_time == (sunset-sunrise);
+					if(falling_equinox){
+						this.high_appeared = false;
+						this.falling_appeared = true;
+					}
+				}
 			}
 
-			if((this.falling_appeared && !this.low_appeared) || this.all_appear){
-				low_solstice = this.shortest_day_time == (sunset-sunrise);
-				this.falling_appeared = false;
-				this.low_appeared = true;
-				this.all_appear = false;
-			}
-
-			if((this.high_appeared && !this.falling_appeared) || this.all_appear){
-				falling_equinox = this.middle_day_time == (sunset-sunrise);
-				this.high_appeared = false;
-				this.falling_appeared = true;
-				this.all_appear = false;
-			}
-
-			if((this.rising_appeared && !this.high_appeared) || this.all_appear){
-				high_solstice = this.longest_day_time == (sunset-sunrise);
-				this.rising_appeared = false;
-				this.high_appeared = true;
-				this.all_appear = false;
-			}
 
 			time.sunrise = {
 				data: sunrise_exact,
