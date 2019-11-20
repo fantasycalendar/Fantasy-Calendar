@@ -456,7 +456,6 @@ function set_up_edit_inputs(set_up){
 		stats = {
 			"name": name.val(),
 			"seasons": [],
-			"custom_dates": {},
 
 			"settings": {
 				"timezone": {
@@ -491,7 +490,6 @@ function set_up_edit_inputs(set_up){
 
 		add_location_to_list(location_list, id, stats);
 		reindex_location_list();
-		repopulate_location_select_list();
 		name.val('');
 
 		$('.slider_percentage').slider({
@@ -524,7 +522,6 @@ function set_up_edit_inputs(set_up){
 		}else{
 			var stats = climate_generator.presets[static_data.seasons.data.length][location];
 			stats.settings = climate_generator.preset_curves;
-			stats.custom_dates = {};
 
 			for(var i = 0; i < static_data.seasons.data.length; i++){
 				stats.seasons[i].time = static_data.seasons.data[i].time;
@@ -536,7 +533,6 @@ function set_up_edit_inputs(set_up){
 
 		add_location_to_list(location_list, id, stats);
 		reindex_location_list();
-		repopulate_location_select_list();
 
 		$('.slider_percentage').slider({
 			min: 0,
@@ -850,7 +846,6 @@ function set_up_edit_inputs(set_up){
 				$(this).closest('.sortable-container').parent().sortable('refresh');
 				type = 'seasons';
 				reindex_location_list();
-				repopulate_location_select_list();
 				break;
 
 			case "cycle_sortable":
@@ -3340,8 +3335,7 @@ function reindex_location_list(){
 
 				"small_noise_frequency": Number($(this).find("input[fc-index='small_noise_frequency']").val()),
 				"small_noise_amplitude": Number($(this).find("input[fc-index='small_noise_amplitude']").val())
-			},
-			"custom_dates": {}
+			}
 		};
 
 		$(this).find('.location_season').each(function(j){
@@ -3423,6 +3417,8 @@ function reindex_location_list(){
 	$('.slider_percentage').each(function(){
 		$(this).slider('option', 'value', parseInt($(this).parent().parent().find('.slider_input').val()));
 	});
+
+	repopulate_location_select_list();
 
 }
 

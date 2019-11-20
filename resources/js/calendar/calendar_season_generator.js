@@ -74,11 +74,33 @@ var climate_generator = {
 
 			this.current_location.settings = clone(this.preset_curves);
 			this.current_location.settings.timezone = 0;
-			this.current_location.custom_dates = {};
 
 		}else if(this.dynamic_data.custom_location === true){
 
 			this.current_location = clone(this.static_data.seasons.locations[this.dynamic_data.location]);
+
+		}else{
+
+			this.current_location = {
+				"seasons": [],
+				"settings": clone(this.preset_curves)
+			};
+
+			for(var i = 0; i < this.static_data.seasons.data.length; i++){
+
+				this.current_location.seasons.push({
+					"time":{},
+					"weather":{
+						"temp_low": 0,
+						"temp_high": 0,
+						"precipitation": 0,
+						"precipitation_intensity": 0
+					}
+				});
+				this.current_location.seasons[i].time.sunset = clone(this.static_data.seasons.data[i].time.sunset);
+				this.current_location.seasons[i].time.sunrise = clone(this.static_data.seasons.data[i].time.sunrise);
+
+			}
 
 		}
 
@@ -544,45 +566,6 @@ var climate_generator = {
 		var wind_velocity_m = wind_info['mph'].replace( /(\d+)/g, function(a, b){
 			return Math.round(b*1.60934,2);
 		});
-
-		if(Object.keys(this.current_location.custom_dates).indexOf(epoch.toString()) !== -1){
-
-			var custom_weather = this.current_location.custom_dates[epoch];
-
-			if(custom_weather.temperature[0] === "i"){
-				var temperature_i = custom_weather.temperature[1];
-				var temperature_m = [this.fahrenheit_to_celcius(temperature_i[0]), this.fahrenheit_to_celcius(temperature_i[1])];
-			}else{
-				var temperature_m = custom_weather.temperature[1];
-				var temperature_i = [this.celcius_to_fahrenheit(temperature_m[0]), this.celcius_to_fahrenheit(temperature_m[1])];
-			}
-			var temperature_c = this.pick_from_table(mid(temperature_i[0], temperature_i[1]), this.temperature_gauge, false).key;
-
-			precipitation.key = custom_weather.precipitation !== undefined ? custom_weather.precipitation : precipitation.key;
-
-			clouds = custom_weather.clouds !== undefined ? custom_weather.clouds : clouds;
-
-			feature = custom_weather.feature !== undefined ? custom_weather.feature : feature;
-
-			wind_speed.key = custom_weather.wind_speed !== undefined ? custom_weather.wind_speed : wind_speed.key;
-
-			wind_info.desciption = custom_weather.wind_speed_desc !== undefined ? custom_weather.wind_speed_desc : wind_info.desciption;
-
-			if(custom_weather.wind_velocity[0] === "i"){
-				var wind_velocity_i = custom_weather.wind_velocity[1];
-				var wind_velocity_m = custom_weather.wind_velocity[1].replace( /(\d+)/g, function(a, b){
-					return Math.round(b*1.60934,2);
-				});
-			}else{
-				var wind_velocity_m = custom_weather.wind_velocity[1];
-				var wind_velocity_i = custom_weather.wind_velocity[1].replace( /(\d+)/g, function(a, b){
-					return Math.round(b*0.62137,2);
-				});
-			}
-
-			wind_direction = custom_weather.wind_direction !== undefined ? custom_weather.wind_direction : wind_direction;
-
-		}
 
 		var return_data = {
 			temperature: {
