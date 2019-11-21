@@ -27,6 +27,60 @@ var execution_time = {
 	}
 }
 
+function matcher(params, data){
+
+    // If there are no search terms, return all of the data
+    if ($.trim(params.term) === '') {
+		return data;	
+    }
+
+    var terms = params.term.toUpperCase().split(" ")
+
+    var children = [];
+
+    for(var child_index in data.children){
+
+    	var child = data.children[child_index];
+
+    	var include = true;
+
+    	term_loop:
+    	for(var term_id in terms){
+
+    		var term = terms[term_id];
+
+    		var text = child.text.toUpperCase();
+
+    		if(text.indexOf(term) == -1 && data.text.indexOf(term) == -1){
+    			include = false;
+    			break term_loop;
+    		}
+
+    	}
+
+    	if(include){
+
+    		children.push(child)
+
+    	}
+
+    }
+
+    
+    if(children.length > 0){
+
+		var modifiedData = $.extend({}, data, true);
+
+		modifiedData.children = children;
+
+		return modifiedData;
+
+    }
+
+    // Return `null` if the term should not be displayed
+    return null;
+}
+
 
 /**
  * This function crawls through a string to find a reference
@@ -459,6 +513,188 @@ function get_moon_granularity(cycle){
 }
 
 
+class date_manager {
+
+	constructor(year, timespan, day){
+
+		this._year = convert_year(static_data, year);
+
+		this._timespan = timespan;
+
+		this._day = day;
+
+		this.timespans_in_year = get_timespans_in_year(static_data, this.year, true);
+
+	}
+
+	compare(dynamic_data){
+
+		var rebuild = dynamic_data.year != this.adjusted_year || (static_data.settings.show_current_month && dynamic_data != this.timespan);
+
+		return {
+			year: this.adjusted_year,
+			timespan: this.timespan,
+			day: this.day,
+			epoch: this.epoch,
+			rebuild: rebuild
+		}
+	}
+
+
+	get epoch(){
+
+		return evaluate_calendar_start(static_data, this.year, this.timespan, this.day).epoch;
+
+	}
+
+	get adjusted_year(){
+
+		return !static_data.settings.year_zero_exists && this._year >= 0 ? this._year+1 : this._year;
+
+	}
+
+	get year(){
+		return this._year;
+	}
+
+	set year(year){
+
+		if(this.year == year) return;
+
+		if(get_timespans_in_year(static_data, year, false).length != 0){
+			this._year = year;
+			this.timespans_in_year = get_timespans_in_year(static_data, this.year, true);
+			this.cap_timespan();
+		}else{
+			if(year < this.year){
+				this.year = year-1;
+			}else if(year > this.year){
+				this.year = year+1;
+			}
+		}
+
+	}
+
+	cap_timespan(){
+
+		if(!this.timespans_in_year[this.timespan].result){
+			this.add_timespan();
+		}
+
+	}
+
+	get last_timespan(){
+
+
+		for(var i = this.timespans_in_year.length-1; i >= 0; i--){
+			if(this.timespans_in_year[i].result){
+				return this.timespans_in_year[i].id
+			}
+		}
+
+	}
+
+	get first_timespan(){
+
+		for(var i = 0; i < this.timespans_in_year.length-1; i++){
+			if(this.timespans_in_year[i].result){
+				return this.timespans_in_year[i].id
+			}
+		}
+
+	}
+
+	set timespan(timespan){
+
+		if(timespan < 0){
+
+			this.subtract_year();
+			this.timespan = this.last_timespan;
+
+		}else if(timespan > this.last_timespan){
+
+			this.add_year()
+			this.timespan = this.first_timespan;
+
+		}else if(!this.timespans_in_year[timespan].result){
+
+			if(timespan > this._timespan){
+				this.timespan = timespan+1;
+			}else if(timespan < this._timespan){
+				this.timespan = timespan-1;
+			}
+
+		}else{
+			this._timespan = timespan;
+			this.cap_day();
+		}
+
+	}
+
+	get timespan(){
+		return this._timespan;
+	}
+
+
+	cap_day(){
+		if(this.day > this.num_days){
+			this.day = this.num_days;
+		}
+	}
+
+	get num_days(){
+		return get_days_in_timespan(static_data, this.year, this.timespan).length;
+	}
+
+	get day(){
+		return this._day;
+	}
+
+	set day(day){
+
+		this._day = day;
+
+		if(this._day < 1){
+			this.subtract_timespan()
+			this._day = this.num_days;
+		}else if(this._day > this.num_days){
+			this.add_timespan()
+			this._day = 1;
+		}
+
+	}
+
+	add_year(){
+		this.year++;
+	}
+
+	subtract_year(){
+		this.year--;
+	}
+
+
+	add_timespan(){
+		this.timespan++;
+	}
+
+	subtract_timespan(){
+		this.timespan--;
+	}
+
+
+	add_day(){
+		this.day++;
+	}
+
+	subtract_day(){
+		this.day--;
+	}
+
+}
+
+
+
+
 /**
  * This function is used to calculate the current cycle that the calendar is in on any given year.
  *
@@ -480,6 +716,8 @@ function get_cycle(static_data, year){
 
 		// Get the format
 		text = static_data.cycles.format;
+		
+		var replace = {}
 
 		// Loop through each cycle
 		for(var index = 0; index < static_data.cycles.data.length; index++){
@@ -497,13 +735,21 @@ function get_cycle(static_data, year){
 			// Get the name for this cycle
 			var cycle_name = cycle.names[cycle_index];
 
-			// Replace the part of the text that has the current index's place
-			text = text.replace('$'+(index+1), cycle_name);
+			replace[(index+1).toString()] = cycle_name;
 
 			// Record the cycle index to the array
 			index_array.push(cycle_index)
 		}
+
+		// Replace the indexes with the text
+		text = Mustache.render(
+			text,
+			replace
+		);
+
 	}
+
+
 	return {'text': text,
 			'array': index_array};
 }
@@ -656,7 +902,7 @@ function get_timespans_in_year(static_data, year, inclusive){
 
 		appears.id = timespan_index;
 			
-		if(appears.result && inclusive){
+		if(appears.result || inclusive){
 
 			results.push(appears);
 

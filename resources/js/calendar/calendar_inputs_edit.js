@@ -702,10 +702,11 @@ function set_up_edit_inputs(set_up){
 
 		var stats = {
 			"name": name.val(),
-			"abbreviation": "",
+			"formatting": "",
 			"description": "",
 			"settings": {
 				"show_as_event": false,
+				"use_custom_format": false,
 				"starting_era": false,
 				"event_category": -1,
 				"ends_year": false,
@@ -1156,6 +1157,17 @@ function set_up_edit_inputs(set_up){
 			$(this).parent().parent().parent().next().addClass('hidden');
 			$(this).parent().parent().parent().next().find('.dynamic_input').prop('disabled', true).change();
 			delete static_data.eras[index].settings.event_category;
+		}
+	});
+
+	$(document).on('change', '.use_custom_format', function(){
+		var index = $(this).closest('.sortable-container').attr('index')|0;
+		if($(this).is(':checked')){
+			$(this).parent().parent().parent().next().removeClass('hidden');
+			$(this).parent().parent().parent().next().find('.dynamic_input').prop('disabled', false).val('Year {{year}} - {{era_name}}').change();
+		}else{
+			$(this).parent().parent().parent().next().addClass('hidden');
+			$(this).parent().parent().parent().next().find('.dynamic_input').prop('disabled', true).val('').change();
 		}
 	});
 
@@ -2547,7 +2559,7 @@ function add_cycle_to_sortable(parent, key, data){
 		element.push("<div class='main-container'>");
 			element.push("<div class='handle icon-reorder'></div>");
 			element.push("<div class='expand icon-collapse'></div>");
-			element.push(`<div class='detail-text'>Cycle number ${(key+1)} - Using $${(key+1)}</div>`);
+			element.push(`<div class='detail-text'>Cycle #${(key+1)} - Using {{${(key+1)}}}</div>`);
             element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
@@ -2629,14 +2641,26 @@ function add_era_to_list(parent, key, data){
 		element.push("</div>");
 
 		element.push("<div class='detail-container'>");
+
 			element.push("<div class='detail-row'>");
-				element.push("<div class='detail-column full'>");
+				element.push("<div class='detail-column half'>");
 					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text'>Abbreviation:</div>");
-						element.push(`<input type='text' class='form-control small-input dynamic_input era_abbreviation' data='eras.${key}' fc-index='abbreviation' value='${data.abbreviation}' />`);
+						element.push("<div class='detail-text'>Custom year header formatting:</div>");
+						element.push(`<input type='checkbox' class='form-control dynamic_input use_custom_format' data='eras.${key}.settings' fc-index='use_custom_format' ${(data.settings.use_custom_format ? "checked" : "")} />`);
 					element.push("</div>");
 				element.push("</div>");
 			element.push("</div>");
+
+			element.push(`<div class='detail-row ${(!data.settings.use_custom_format ? "hidden" : "")}'>`);
+				element.push("<div class='detail-column full'>");
+					element.push("<div class='detail-row'>");
+						element.push("<div class='detail-text'>Format:</div>");
+						element.push(`<input type='text' class='form-control small-input dynamic_input era_formatting' data='eras.${key}' fc-index='formatting' value='${data.formatting}' />`);
+							element.push("</select>");
+					element.push("</div>");
+				element.push("</div>");
+			element.push("</div>");
+
 			element.push("<div class='detail-row'>");
 				element.push("<div class='detail-column full'>");
 					element.push(`<div class='btn btn-outline-primary full era_description html_edit' value='${data.description}' data='eras.${key}' fc-index='description'>Edit event description</div>`);
@@ -2683,7 +2707,6 @@ function add_era_to_list(parent, key, data){
 					element.push("</div>");
 				element.push("</div>");
 			element.push("</div>");
-
 
 			element.push(`<div class='${data.settings.starting_era ? "hidden" : ""}'>`);
 
@@ -3004,8 +3027,23 @@ function error_check(parent, rebuild){
 			recalculate_era_epochs();
 		}
 		if(rebuild === undefined || rebuild){
-			rebuild_calendar('calendar', dynamic_data);
-			update_current_day(true);
+
+			if(!preview_date.follow){
+
+				update_preview_calendar();
+
+				rebuild_calendar('preview', preview_date);
+
+			}else{
+
+				rebuild_calendar('calendar', dynamic_data);
+				
+				update_current_day(true);
+
+				preview_date_follow();
+
+			}
+
 		}else{
 
 			if(parent !== undefined && (parent === "seasons")){
@@ -3431,7 +3469,7 @@ function reindex_cycle_sortable(){
 			$(this).attr('data', $(this).attr('data').replace(/[0-9]+/g, i));
 		});
 		$(this).attr('key', i);
-		$(this).find('.main-container').find('.detail-text').text(`Cycle number ${i+1} - Using \$${i+1}`)
+		$(this).find('.main-container').find('.detail-text').text(`Cycle #${i+1} - Using {{${i+1}}}`)
 
 		static_data.cycles.data[i] = {
 			'length': ($(this).find('.length').val()|0),
@@ -3504,9 +3542,10 @@ function reindex_era_list(){
 
 		static_data.eras[i] = {
 			'name': $(this).find('.name-input').val(),
-			'abbreviation': $(this).find('.era_abbreviation').val(),
+			'formatting': escapeHtml($(this).find('.era_formatting').val()),
 			'description': $(this).find('.era_description').attr('value'),
 			'settings': {
+				'use_custom_format': $(this).find('.use_custom_format').is(':checked'),
 				'show_as_event': $(this).find('.show_as_event').is(':checked'),
 				'starting_era': $(this).find('.starting_era').is(':checked'),
 				'event_category': $(this).find('.event-category-list').val(),

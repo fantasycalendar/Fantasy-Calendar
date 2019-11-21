@@ -65,6 +65,12 @@ if (authorization) {
 
 require('sweetalert');
 
+/**
+ * Select2 is a jQuery-based replacement for select boxes. It supports searching,
+ * remote data sets, and pagination of results.
+ */
+ 
+require('select2');
 
 /**
  * With ProgressBar.js, it's easy to create responsive and stylish progress
@@ -74,6 +80,15 @@ require('sweetalert');
  */
 
 window.ProgressBar = require('progressbar.js')
+
+/**
+ * mustache.js is an implementation of the mustache template system in JavaScript.
+ * Mustache is a logic-less template syntax. It can be used for HTML, config files,
+ * source code - anything. It works by expanding tags in a template using values
+ * provided in a hash or object.
+ */
+
+window.Mustache = require('mustache')
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening

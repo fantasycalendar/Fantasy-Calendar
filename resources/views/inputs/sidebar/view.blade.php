@@ -174,7 +174,7 @@
 
 			<div class='detail-row'>
 				<div class='detail-column half'>
-					<div class='btn btn-danger full' id='reset_preview_date'>Base date</div>
+					<div class='btn btn-danger full' id='reset_preview_date' disabled>Base date</div>
 				</div>
 				<div class='detail-column half'>
 					<div class='btn btn-success full' id='go_to_preview_date'>Preview date</div>

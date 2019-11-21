@@ -197,7 +197,7 @@
 
                     <div class='detail-row'>
                         <div class='detail-column half'>
-                            <div class='btn btn-danger full' id='reset_preview_date'>Base date</div>
+                            <div class='btn btn-danger full' id='reset_preview_date' disabled>Base date</div>
                         </div>
                         <div class='detail-column half'>
                             <div class='btn btn-success full' id='go_to_preview_date'>Preview date</div>
@@ -679,14 +679,6 @@
                             <option value='vertical'>Vertical style</option>
                             <!--<option value='mini'>Minimalistic style</option>-->
                         </select>
-                    </label>
-
-                    <label class="form-control full setting first">
-                        <input type='checkbox' class='margin-right static_input' data='settings' fc-index='show_era_abbreviation'>
-                        <span>
-                            Show era abbreviation
-                        </span>
-                        <a target="_blank" title='Instead of showing the full era name, only the abbreviation will be shown, if it has one' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
                     </label>
 
                     <label class="form-control full setting last">

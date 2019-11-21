@@ -1421,7 +1421,7 @@ var calendar_builder = {
 						}
 
 						if(current_timespan.type !== "intercalary"){
-
+              
 							this.pre_data.repititions.week_days[year_index][data.timespan_index][data.week_day]++;
 							data.week_day_num = this.pre_data.repititions.week_days[year_index][data.timespan_index][data.week_day];
 
