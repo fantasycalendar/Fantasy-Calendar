@@ -106,6 +106,7 @@ function do_rebuild(action, dynamic_data, master_date){
 		dynamic_data.minute = converted_date.minute;
 
 		set_up_view_values();
+		update_current_day(true);
 
 	}
 
