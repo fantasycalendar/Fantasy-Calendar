@@ -106,11 +106,11 @@ function do_rebuild(action, dynamic_data, master_date){
 		dynamic_data.minute = converted_date.minute;
 
 		set_up_view_values();
-		update_current_day(true);
-
 	}
 
-	worker_calendar.postMessage({
+    update_current_day(true);
+
+    worker_calendar.postMessage({
 		calendar_name: calendar_name,
 		static_data: static_data,
 		dynamic_data: dynamic_data,
