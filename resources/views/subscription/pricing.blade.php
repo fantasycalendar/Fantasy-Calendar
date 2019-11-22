@@ -1,14 +1,6 @@
 @extends('templates._page')
 
 @push('head')
-    <script>
-        $(document).ready(function(){
-            $('.subscribe').click(function() {
-                swal("Wow!", "Thanks for your interest. Fantasy Calendar isn't currently able to accept money.", "info");
-            });
-        });
-    </script>
-
     <style>
         .subscription-option {
             padding-top: 20px;
@@ -37,7 +29,7 @@
             padding: .5rem 0;
         }
         h5 {
-            font-size: 0.9rem;
+            font-size: 0.7rem;
             color: #757575;
             min-height: 3.5rem;
             display: inline-block;
@@ -65,12 +57,32 @@
         .container {
             padding-top: 3rem;
         }
+        .custom-checkbox {
+            display: inline-block;
+        }
+        .subscription-option:not(.yearly) .yearly {
+            display: none;
+        }
+        .subscription-option.yearly .monthly {
+            display: none;
+        }
     </style>
 @endpush
 
 @section('content')
     <div class="container">
         <h1 class="center-text">Subscribe to Fantasy Calendar</h1>
+
+        <div class="row">
+            <div class="col-12 center-text py-4">
+                <span>Monthly</span>
+                <label class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input static_input" id="#interval_selection" onclick="$('.subscription-option').toggleClass('yearly');">
+                    <span class="custom-control-indicator"></span>
+                </label>
+                <span>Yearly</span>
+            </div>
+        </div>
 
         <div class="row">
             <div class="col-12 col-lg-4 subscription-option">
@@ -85,7 +97,11 @@
                     @guest
                         <a href="{{ route('register') }}" class="btn btn-primary">Register now</a>
                     @else
-                        <a href="#" class="btn btn-secondary btn-secondary disabled">You have this!</a>
+                        @unless($subscribed)
+                            <a href="#" class="btn btn-secondary disabled">You already have this!</a>
+                        @else
+                            <a href="{{ route('subscription.cancel') }}" class="btn btn-danger">Cancel Subscription</a>
+                        @endunless
                     @endguest
                 </div>
             </div>
@@ -93,7 +109,8 @@
                 <div class="inner">
                     <h2>Timekeeper</h2>
                     <h5>For users who need to keep track of multiple timelines, universes, or games.</h5>
-                    <h3 class="bg-grey">$1.49 / month</h3>
+                    <h3 class="bg-grey monthly">$1.49 / month</h3>
+                    <h3 class="bg-grey yearly">$14.99 / month<br><p class="small">Month and a half free!</p class=small></h3>
                     <ul class="features">
                         <li><strong>Full</strong> calendar functionality</li>
                         <li><strong>Unlimited</strong> number of calendars</li>
@@ -101,18 +118,29 @@
                         <li>Timekeeper Discord role</li>
                         <li>Subscriber-only Discord channel</li>
                     </ul>
-                    @if(Auth::check() && Auth::user()->subscribed('Timekeeper'))
-                        <a href="#" class="btn btn-secondary disabled">You have this!</a>
+                    @guest
+                        <a href="{{ route('user.register') }}">Register to subscribe</a>
                     @else
-                        <a href="{{ route('subscription.subscribe', ['level' => 'Timekeeper']) }}" class="btn btn-primary subscribe">Subscribe Now</a>
-                    @endif
+                        @if(Auth::user()->subscribedToPlan('timekeeper_monthly', 'Timekeeper'))
+                            <a href="#" class="btn btn-secondary disabled monthly">You have this!</a>
+                        @else
+                            <a @unless($subscribed) href="{{ route('subscription.subscribe', ['level' => 'Timekeeper', 'interval' => 'monthly']) }}" @else href="javascript:" @endunless @if($subscribed) onclick="swal('info','This doesn\'t work yet', 'info')" @endif class="btn btn-primary subscribe monthly">{{ $subscribed ? 'Switch to' : 'Subscribe' }} Monthly</a>
+                        @endif
+
+                        @if(Auth::user()->subscribedToPlan('timekeeper_yearly', 'Timekeeper'))
+                            <a href="#" class="btn btn-secondary disabled yearly">You have this!</a>
+                        @else
+                            <a @unless($subscribed) href="{{ route('subscription.subscribe', ['level' => 'Timekeeper', 'interval' => 'yearly']) }}" @else href="javascript:" @endunless @if($subscribed) onclick="swal('info','This doesn\'t work yet', 'info')" @endif class="btn btn-primary subscribe yearly">{{ $subscribed ? 'Switch to' : 'Subscribe' }} Yearly</a>
+                        @endif
+                    @endguest
                 </div>
             </div>
             <div class="col-12 col-lg-4 subscription-option">
                 <div class="inner">
                     <h2>Worldbuilder</h2>
                     <h5>For power users who want to collaborate using the greatest multi-user fantasy calendar tool on the market.</h5>
-                    <h3 class="bg-grey">$2.99 / month</h3>
+                    <h3 class="bg-grey monthly">$2.99 / month</h3>
+                    <h3 class="bg-grey yearly">$29.99 / year<br><p class="small">Two months free!</p class=small></h3>
                     <ul class="features">
                         <li><strong>Full</strong> calendar functionality</li>
                         <li><strong>Unlimited</strong> number of calendars</li>
@@ -122,11 +150,21 @@
                         <li>Calendar <strong>co-ownership</strong> <p class="small">Co-owners can comment on events, create events, and change the current date.</p></li>
                         <li>Add <strong>users</strong> to your calendars <p class="small">Users can comment on events and view provided information</p> </li>
                     </ul>
-                    @if(Auth::check() && Auth::user()->subscribed('Worldbuilder'))
-                        <a href="#" class="btn btn-secondary disabled">You have this!</a>
+                    @guest
+                        <a href="{{ route('user.register') }}">Register to subscribe</a>
                     @else
-                        <a href="{{ route('subscription.subscribe', ['level' => 'Worldbuilder']) }}" class="btn btn-primary subscribe">Subscribe Now</a>
-                    @endif
+                        @if(Auth::user()->subscribedToPlan('worldbuilder_monthly', 'Worldbuilder'))
+                            <a href="#" class="btn btn-secondary disabled monthly">You have this!</a>
+                        @else
+                            <a @unless($subscribed) href="{{ route('subscription.subscribe', ['level' => 'Worldbuilder', 'interval' => 'monthly']) }}" @else href="javascript:" @endunless @if($subscribed) onclick="swal('info','This doesn\'t work yet', 'info')" @endif class="btn btn-primary subscribe monthly">{{ $subscribed ? 'Switch to' : 'Subscribe' }} Monthly</a>
+                        @endif
+
+                        @if(Auth::user()->subscribedToPlan('worldbuilder_yearly', 'Worldbuilder'))
+                            <a href="#" class="btn btn-secondary disabled yearly">You have this!</a>
+                        @else
+                            <a @unless($subscribed) href="{{ route('subscription.subscribe', ['level' => 'Worldbuilder', 'interval' => 'yearly']) }}" @else href="javascript:" @endunless @if($subscribed) onclick="swal('info','This doesn\'t work yet', 'info')" @endif class="btn btn-primary subscribe yearly">{{ $subscribed ? 'Switch to' : 'Subscribe' }} Yearly</a>
+                        @endif
+                    @endguest
                 </div>
             </div>
         </div>

@@ -52,20 +52,28 @@ Route::get('/pricing', 'SubscriptionController@pricing')->name('subscription.pri
 Route::get('/subscription', 'SubscriptionController@index')->name('subscription.index');
 
 // They want to subscribe!
-Route::get('/subscription/subscribe/{level}', 'SubscriptionController@subscribe')->name('subscription.subscribe');
+Route::get('/subscription/subscribe/{level}/{interval}', 'SubscriptionController@subscribe')->name('subscription.subscribe');
 Route::post('/subscription/subscribe', 'SubscriptionController@createsubscription')->name('subscription.create');
 
 // They want to cancel =(
 Route::get('/subscription/cancel', 'SubscriptionController@cancellation')->name('subscription.cancel');
-Route::post('/subscription/cancel/{level}', 'SubscriptionController@cancel')->name('subscription.cancel');
+Route::post('/subscription/cancel', 'SubscriptionController@cancel')->name('subscription.cancel');
 
 // They want to resume! =)
 Route::get('/subscription/resume/{level}', 'SubscriptionController@resume')->name('subscription.resume');
 
 // They want to upgrade
-Route::post('/subscription/update/{level}', 'SubscriptionController@update')->name('subscription.update');
+Route::post('/subscription/update/{level}/{plan}', 'SubscriptionController@update')->name('subscription.update');
 
 
+// User profile
+Route::get('/profile', function() {
+    return view('pages.profile', [
+        'user' => Auth::user(),
+        'subscription' => Auth::user()->subscriptions()->active()->first(),
+        'invoices' => Auth::user()->invoices()
+    ]);
+})->middleware('auth')->name('profile');
 
 
 // Manual error page routes for the moment

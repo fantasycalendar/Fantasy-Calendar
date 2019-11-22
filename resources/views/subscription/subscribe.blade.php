@@ -26,7 +26,7 @@
                 if (error) {
                     swal("Oops", "Something went wrong: " + error, "error");
                 } else {
-                    axios.post('{{ route('subscription.update', ['level' => $level]) }}', {
+                    axios.post('{{ route('subscription.update', ['level' => $level, 'plan' => $plan]) }}', {
                         token: setupIntent.payment_method
                     })
                     .then(function (response) {
@@ -39,24 +39,33 @@
             });
         });
     </script>
+
+    <style>
+    </style>
 @endpush
 
 @section('content')
     <div class="container">
         <div class="row">
-            <div class="col-12">
-                <h1>Subscribe to {{ $level }} on a {{ $plan }} basis.</h1>
-                <h3>Don't worry, your card information never touches our servers! It's safely handled by Stripe.</h3>
+            <div class="col-12 py-5">
+                <div class="card">
+                    <h5 class="card-header">Subscribe to {{ $level }} on a {{ $interval }} basis.</h5>
+                    <div class="card-body">
+                        <div class="card-text">
+                            <p class="small">Don't worry, your card information never touches our servers! It's safely handled by Stripe.</p>
 
-                <div class="paymentbox">
-                    <input class="form-control" id="card-holder-name" type="text">
+                            <div class="paymentbox">
+                                <input class="form-control" id="card-holder-name" type="text" placeholder="Cardholder Name">
 
-                    <!-- Stripe Elements Placeholder -->
-                    <div id="card-element" class="my-4"></div>
+                                <!-- Stripe Elements Placeholder -->
+                                <div id="card-element" class="my-2 py-2"></div>
 
-                    <button id="card-button" data-secret="{{ $intent->client_secret }}">
-                        Get subscribed
-                    </button>
+                                <button id="card-button" class="btn btn-primary" data-secret="{{ $intent->client_secret }}">
+                                    Get subscribed
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

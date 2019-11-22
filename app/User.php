@@ -90,4 +90,16 @@ class User extends Authenticatable implements
 
         return $this;
     }
+
+    public function paymentLevel() {
+        if ($this->subscribed('Timekeeper')) {
+            return 'Timekeeper';
+        }
+
+        if ($this->subscribed('Worldbuilder')) {
+            return 'Worldbuilder';
+        }
+
+        return 'Free';
+    }
 }

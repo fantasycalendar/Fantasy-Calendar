@@ -41,7 +41,7 @@ select.invalid {
     color: $calendar-border-color;
 }
 
-.card-body {
+.toggle:not(:checked) + .lbl-toggle + .collapsible-content.card-body {
     padding: 0;
     min-height: initial;
 }
