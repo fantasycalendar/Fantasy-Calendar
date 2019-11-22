@@ -845,6 +845,13 @@ label{
     border-radius:7px;
 }
 
+.event_desc {
+    overflow-x: auto;
+}
+
+.event_desc * {
+    max-width: 100%;
+}
 
 .close-ui-btn-bg{
     position:absolute;
@@ -1082,7 +1089,7 @@ ol.example li.placeholder:before {
 }
 
 .select2-container--default .select2-results > .select2-results__options{
-    max-height:400px !important;        
+    max-height:400px !important;
 }
 
 .placeholder{
