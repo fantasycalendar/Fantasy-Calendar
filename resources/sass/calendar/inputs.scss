@@ -845,6 +845,14 @@ label{
     border-radius:7px;
 }
 
+.event_desc {
+    overflow-x: auto;
+}
+
+.event_desc * {
+    max-width: 100%;
+}
+
 
 .close-ui-btn-bg{
     position:absolute;
