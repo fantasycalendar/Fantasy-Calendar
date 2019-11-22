@@ -2955,7 +2955,14 @@ function error_check(parent, rebuild){
 
 
 function update_cycle_example_text(){
-	$('#cycle_test_result').text(get_cycle(static_data, ($('#cycle_test_input').val()|0)).text);
+
+	var year = ($('#cycle_test_input').val()|0);
+
+	var cycle_text = get_cycle(static_data, year).text;
+
+	var text = Mustache.render(static_data.cycles.format, cycle_text);
+
+	$('#cycle_test_result').text(text);
 }
 
 function evaluate_remove_buttons(){
@@ -3887,6 +3894,7 @@ function set_up_edit_values(){
 		for(var i = 0; i < static_data.cycles.data.length; i++){
 			add_cycle_to_sortable(cycle_sortable, i, static_data.cycles.data[i]);
 		}
+		update_cycle_example_text();
 	}
 
 	if(static_data.year_data.leap_days){

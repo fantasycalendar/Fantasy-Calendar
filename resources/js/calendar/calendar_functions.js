@@ -705,7 +705,7 @@ class date_manager {
  */
 function get_cycle(static_data, year){
 
-	var text = '';
+	var text = {};
 	var index_array = [];
 
 	// If cycles are enabled
@@ -715,9 +715,6 @@ function get_cycle(static_data, year){
 		var index_array = [];
 
 		// Get the format
-		text = static_data.cycles.format;
-
-		var replace = {}
 
 		// Loop through each cycle
 		for(var index = 0; index < static_data.cycles.data.length; index++){
@@ -735,14 +732,12 @@ function get_cycle(static_data, year){
 			// Get the name for this cycle
 			var cycle_name = cycle.names[cycle_index];
 
-			replace[(index+1).toString()] = cycle_name;
-
 			// Record the cycle index to the array
 			index_array.push(cycle_index)
+			text[(index+1).toString()] = cycle_name;
 		}
 
 	}
-
 
 	return {'text': text,
 			'array': index_array};

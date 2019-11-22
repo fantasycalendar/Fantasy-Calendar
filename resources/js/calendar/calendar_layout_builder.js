@@ -475,7 +475,7 @@ var calendar_layouts = {
 
 		}
 
-		var cycle_text = get_cycle(static_data, convert_year(static_data, calendar_layouts.year_data.era_year)).text;
+		var cycle_text = Mustache.render(static_data.cycles.format, get_cycle(static_data, convert_year(static_data, calendar_layouts.year_data.era_year)).text);
 
 		var html = [];
 
