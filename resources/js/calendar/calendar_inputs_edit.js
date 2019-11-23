@@ -3216,6 +3216,8 @@ function reindex_season_sortable(key){
 		location_list.find(`.location_season[fc-index="${key}"]`).remove();
 	}
 
+	eval_clock();
+
 	do_error_check('seasons');
 
 }

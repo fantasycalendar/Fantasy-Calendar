@@ -10,6 +10,7 @@ class Clock{
 		crowding,
 		hour,
 		minute,
+		has_sun,
 		sunrise,
 		sunset
 	){
@@ -33,6 +34,7 @@ class Clock{
 		this._crowding = crowding;
 		this._hour = hour;
 		this._minute = minute;
+		this._has_sun = has_sun;
 
 		this._sunrise = sunrise;
 		var time = this.sunrise%this.hours;
@@ -52,10 +54,11 @@ class Clock{
 		this.pointer_thickness_tip = 0.75
 		this.pointer_thickness_base = 2.5
 		this.pointer_length = 7.7
-		this.dark_color = "#4c51bf";
-		this.mid_color = "#572c74";
-		this.light_color = "#f6e05e";
 
+		this.dark_color = "#4c51bf";
+		this.mid_color = "#725496";
+		this.mid_secondary_color = "#362847";
+		this.light_color = "#f6e05e";
 
 		this.face_font_color = 'black';
 		this.face_font_size = 6;
@@ -71,7 +74,9 @@ class Clock{
 	draw(){
 
 		this.clear()
-		this.draw_sunsrise_sunset()
+		if(this._has_sun){
+			this.draw_sunsrise_sunset()
+		}
 		this.draw_background()
 		this.draw_border()
 		this.draw_numbers()
@@ -146,12 +151,27 @@ class Clock{
 		this.sun_ctx.fill();
 		this.sun_ctx.closePath();
 
+		this.sun_ctx.globalCompositeOperation = "source-over";
+
 		this.sun_ctx.beginPath();
-		this.sun_ctx.moveTo(this.degrees_to_x(sunrise_degree), this.degrees_to_y(sunrise_degree));
+		this.sun_ctx.moveTo(0,0)
+		this.sun_ctx.lineTo(this.degrees_to_x(sunrise_degree+8)*1.5, this.degrees_to_y(sunrise_degree+8)*1.5);
+		this.sun_ctx.lineTo(this.degrees_to_x(sunrise_degree-8)*1.5, this.degrees_to_y(sunrise_degree-8)*1.5);
 		this.sun_ctx.lineTo(0,0)
-		this.sun_ctx.lineTo(this.degrees_to_x(sunset_degree), this.degrees_to_y(sunset_degree));
-		this.sun_ctx.strokeStyle = this.mid_color;
-		this.sun_ctx.lineWidth = this.radius*0.03;
+		this.sun_ctx.lineTo(this.degrees_to_x(sunset_degree+8)*1.5, this.degrees_to_y(sunset_degree+8)*1.5);
+		this.sun_ctx.lineTo(this.degrees_to_x(sunset_degree-8)*1.5, this.degrees_to_y(sunset_degree-8)*1.5);
+		this.sun_ctx.fillStyle = this.mid_color;
+		this.sun_ctx.fill();
+		this.sun_ctx.closePath();
+
+		this.sun_ctx.filter = "blur(5px)";
+
+		this.sun_ctx.beginPath();
+		this.sun_ctx.moveTo(this.degrees_to_x(sunrise_degree)*1.5, this.degrees_to_y(sunrise_degree)*1.5);
+		this.sun_ctx.lineTo(0,0)
+		this.sun_ctx.lineTo(this.degrees_to_x(sunset_degree)*1.5, this.degrees_to_y(sunset_degree)*1.5);
+		this.sun_ctx.strokeStyle = this.mid_secondary_color;
+		this.sun_ctx.lineWidth = this.radius*0.01;
 		this.sun_ctx.lineJoin = 'miter';
 		this.sun_ctx.miterLimit = 1;
 		this.sun_ctx.stroke();

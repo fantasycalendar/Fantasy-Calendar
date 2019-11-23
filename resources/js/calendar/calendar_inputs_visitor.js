@@ -262,38 +262,35 @@ function eval_clock(){
 		return;
 	}
 
-	if(!window.Clock){
+	var clock_face_canvas = document.getElementById("clock_face");
+	var clock_sun_canvas = document.getElementById("clock_sun");
+	var clock_background_canvas = document.getElementById("clock_background");
 
-		var clock_face_canvas = document.getElementById("clock_face");
-		var clock_sun_canvas = document.getElementById("clock_sun");
-		var clock_background_canvas = document.getElementById("clock_background");
+	clock_face_canvas.width = $('#clock').width()
+	clock_face_canvas.height = $('#clock').width()
 
-		clock_face_canvas.width = $('#clock').width()
-		clock_face_canvas.height = $('#clock').width()
+	clock_sun_canvas.width = $('#clock').width()
+	clock_sun_canvas.height = $('#clock').width()
 
-		clock_sun_canvas.width = $('#clock').width()
-		clock_sun_canvas.height = $('#clock').width()
+	clock_background_canvas.width = $('#clock').width()
+	clock_background_canvas.height = $('#clock').width()
 
-		clock_background_canvas.width = $('#clock').width()
-		clock_background_canvas.height = $('#clock').width()
+	window.Clock = new CalendarClock(
+		clock_face_canvas,
+		clock_sun_canvas,
+		clock_background_canvas,
+		hours		= static_data.clock.hours,
+		minutes		= static_data.clock.minutes,
+		offset		= static_data.clock.offset,
+		crowding	= 0,
+		hour		= dynamic_data.hour,
+		minute		= dynamic_data.minute,
+		has_sun		= evaluated_static_data.processed_seasons,
+		sunrise		= 6,
+		sunset		= 18
+	);
 
-		window.Clock = new CalendarClock(
-			clock_face_canvas,
-			clock_sun_canvas,
-			clock_background_canvas,
-			hours		= static_data.clock.hours,
-			minutes		= static_data.clock.minutes,
-			offset		= static_data.clock.offset,
-			crowding	= 0,
-			hour		= dynamic_data.hour,
-			minute		= dynamic_data.minute,
-			sunrise		= 6,
-			sunset		= 18
-		);
-
-		$('#clock').css('display', 'block');
-
-	}
+	$('#clock').css('display', 'block');
 
 	eval_current_time();
 
