@@ -5,3 +5,5 @@
  */
 
 require('./bootstrap');
+
+window.Clock = require('./clock')
