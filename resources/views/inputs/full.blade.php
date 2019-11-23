@@ -438,7 +438,6 @@
 
                 <div class='detail-row small-text' id='season_length_text'></div>
 
-
                 <div class='detail-row'>
                     <div class='detail-column'>Season offset (days):</div>
                     <div class='detail-column float'>
@@ -447,8 +446,7 @@
                 </div>
 
                 <div class='detail-row'>
-                    <button type='button' class='btn btn-secondary full' id='create_season_events'>Create seasonal events</button>
-                    <a target="_blank" title='Makes the calendar only show the current month' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
+                    <button type='button' class='btn btn-secondary full' id='create_season_events'>Create solstice and equinox events</button>
                 </div>
             </div>
 

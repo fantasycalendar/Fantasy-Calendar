@@ -387,10 +387,10 @@ function set_up_edit_inputs(set_up){
 		var id = season_sortable.children().length;
 
 		stats = {
-			"name": name.val(),
+			"name": name.val() != "" ? name.val() : `Season ${id+1}`,
 			"time": {
 				"sunrise": {
-					"hour": 9,
+					"hour": 6,
 					"minute": 0
 				},
 				"sunset": {
@@ -403,10 +403,12 @@ function set_up_edit_inputs(set_up){
 		if(season_sortable.children().length == 0){
 			stats.transition_length = fract_year_len;
 		}else{
-			if(season_sortable.children().length == 1){
-				season_sortable.children().eq(0).find('.transition_length').val(fract_year_len/2);
+			if(season_sortable.children().length > 0){
+				season_sortable.children().each(function(){
+					$(this).find('.transition_length').val(fract_year_len / (season_sortable.children().length+1));
+				})
 			}
-			stats.transition_length = fract_year_len/2;
+			stats.transition_length = fract_year_len / (season_sortable.children().length+1);
 		}
 
 		stats.duration = 0;
@@ -2254,7 +2256,7 @@ function add_season_to_sortable(parent, key, data){
 						element.push("<div class='detail-row'>");
 							element.push("<div class='detail-text'>Duration:</div>");
 							var transition_length = data.transition_length == '' || data.transition_length == undefined ? 90 : data.transition_length;
-							element.push(`<input type='number' step='any' class='form-control dynamic_input transition_length' data='seasons.data.${key}' fc-index='transition_length' min='1' value='${transition_length}' />`);
+							element.push(`<input type='number' step='any' class='form-control dynamic_input transition_length protip' data='seasons.data.${key}' fc-index='transition_length' min='1' value='${transition_length}' data-pt-position="right" data-pt-title='How many days until this season ends, and the next begins.'/>`);
 						element.push("</div>");
 					element.push("</div>");
 				element.push("</div>");
@@ -2263,7 +2265,7 @@ function add_season_to_sortable(parent, key, data){
 						element.push("<div class='detail-row'>");
 							element.push("<div class='detail-text'>Peak duration:</div>");
 							var duration = data.duration == '' || data.duration == undefined ? 0 : data.duration;
-							element.push(`<input type='number' step='any' class='form-control dynamic_input duration' data='seasons.data.${key}' fc-index='duration' min='0' value='${duration}'/>`);
+							element.push(`<input type='number' step='any' class='form-control dynamic_input duration protip' data='seasons.data.${key}' fc-index='duration' min='0' value='${duration}' data-pt-position="right" data-pt-title='If the duration is the path up a mountain, the peak duration is a flat summit. This is how many days the season will pause before going down the other side of the mountain.'/>`);
 						element.push("</div>");
 					element.push("</div>");
 				element.push("</div>");
@@ -3717,6 +3719,12 @@ function recreate_moon_colors(){
 
 function evaluate_season_lengths(){
 
+	$('#season_length_text').toggleClass('hidden', static_data.seasons.data.length == 0);
+
+	if(static_data.seasons.data.length == 0){
+		return;
+	}
+
 	var data = {
 		'season_length': 0
 	};
@@ -3733,8 +3741,16 @@ function evaluate_season_lengths(){
 
 	data.season_offset = static_data.seasons.global_settings.offset;
 
-	$('#season_length_text').removeClass('hidden');
-	$('#season_length_text').text(`Season length: ${data.season_length} / ${fract_year_length(static_data)} (year length)`);
+	var equal = fract_year_length(static_data) == data.season_length;
+
+	var html = []
+	html.push(`<div class='detail-row'>`)
+	html.push(equal ? '<i class="detail-column fas fa-check-circle"></i>' : '<i class="detail-column fas fa-exclamation-circle"></i>');
+	html.push(`<div class='detail-column'>Season length: ${data.season_length} / ${fract_year_length(static_data)} (year length)</div></div>`)
+	html.push(`<div class='detail-row'>${equal ? "The season length and year length are the same, and will not drift away from each other." : "The season length and year length at not the same, and will diverge over time. Use with caution."}</div>`)
+
+	$('#season_length_text').toggleClass('warning', !equal).toggleClass('valid', equal);
+	$('#season_length_text').html(html.join(''));
 
 }
 

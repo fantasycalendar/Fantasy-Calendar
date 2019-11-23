@@ -125,7 +125,7 @@ var event_evaluator = {
 					var cond_1 = values[subcon[2]]|0;
 					var cond_2 = values[subcon[3]] ? values[subcon[3]]|0 : undefined;
 
-				}else if(array[0] === "Season"){
+				}else if(array[0] === "Season" && this.current_data["season"]){
 
 					var selected = this.current_data["season"][selector];
 					var cond_1 = values[subcon[2]]|0;
