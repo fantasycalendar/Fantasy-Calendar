@@ -31,7 +31,7 @@ function matcher(params, data){
 
     // If there are no search terms, return all of the data
     if ($.trim(params.term) === '') {
-		return data;	
+		return data;
     }
 
     var terms = params.term.toUpperCase().split(" ")
@@ -66,7 +66,7 @@ function matcher(params, data){
 
     }
 
-    
+
     if(children.length > 0){
 
 		var modifiedData = $.extend({}, data, true);
@@ -147,7 +147,7 @@ Object.compare = function (obj1, obj2) {
 	for (var p in obj1) {
 		//Check property exists on both objects
 		if (obj1.hasOwnProperty(p) !== obj2.hasOwnProperty(p)) return false;
- 
+
 		switch (typeof (obj1[p])) {
 			//Deep compare objects
 			case 'object':
@@ -162,7 +162,7 @@ Object.compare = function (obj1, obj2) {
 				if (obj1[p] != obj2[p]) return false;
 		}
 	}
- 
+
 	//Check object 2 for any extra properties
 	for (var p in obj2) {
 		if (typeof (obj1[p]) == 'undefined') return false;
@@ -210,7 +210,7 @@ class random {
 	constructor(seed){
 		this.seed = seed;
 	}
-    
+
     /**
      * This function returns a float between -1.0 and 1.0, based on the index you give it
      *
@@ -220,7 +220,7 @@ class random {
 	rndUNorm(idx){
 		return fract(43758.5453 * Math.sin(this.seed + (78.233 * idx)));
 	}
-    
+
     /**
      * This function returns a float between 0.0 and 1.0, based on the index you give it
      *
@@ -231,7 +231,7 @@ class random {
 		return this.rndUNorm(idx) * 2.0 - 1.0;
 	}
 
-    
+
     /**
      * This function returns an integer between minimum and maximum, based on the index you give it
      *
@@ -241,10 +241,10 @@ class random {
      * @return {int}            A pseudo-random value
      */
 	random_int_between(idx, min, max){
-		return Math.round(this.rndUNorm(idx) * (max - min) + min);  
+		return Math.round(this.rndUNorm(idx) * (max - min) + min);
 	}
 
-    
+
     /**
      * This function returns a float between minimum and maximum, based on the index you give it
      *
@@ -254,9 +254,9 @@ class random {
      * @return {float}          A pseudo-random value
      */
 	random_float_between(idx, min, max){
-		return this.rndUNorm(idx) * (max - min) + min;  
+		return this.rndUNorm(idx) * (max - min) + min;
 	}
-    
+
     /**
      * This function returns an int depending on the dice formula you gave it, based on the index you give it
      * The forumla must be "ydx" where y and x are any absolute numbers above 0
@@ -275,14 +275,14 @@ class random {
 		}
 		return result;
 	}
-    
+
     /**
      * This function returns a float between -1.0 and 1.0, along a noise curve set by the parameters below
      *
      * @param  {int}     pos            The position in the pseudo-random sequence
-     * @param  {float}   phase          
-     * @param  {float}   frequency      
-     * @param  {float}   amplitude      
+     * @param  {float}   phase
+     * @param  {float}   frequency
+     * @param  {float}   amplitude
      * @return {float}                  A pseudo-random value
      */
 	noise(pos, phase, frequency, amplitude){
@@ -401,7 +401,7 @@ function mid(p0, p1){
  * @param  {float}  v       The value to be normalized
  * @param  {float}  min     The minimum value
  * @param  {float}  max     The maximum value
- * @return {float}          The normalized value 
+ * @return {float}          The normalized value
  */
 function norm(v, min, max)
 {
@@ -429,7 +429,7 @@ function gcd(x, y){
  * @return {int}        The least common multiple
  */
 function lcm(x, y){
-	if ((typeof x !== 'number') || (typeof y !== 'number')) 
+	if ((typeof x !== 'number') || (typeof y !== 'number'))
 		return false;
 	return (!x || !y) ? 0 : Math.abs((x * y) / gcd(x, y));
 }
@@ -474,7 +474,7 @@ function lcmo(x, y, a, b){
 		// Until the starting points line up, keep increasing them until they do
 		while(x_start != y_start){
 
-			while(x_start < y_start){						
+			while(x_start < y_start){
 				x_start += x;
 			}
 
@@ -705,7 +705,7 @@ class date_manager {
  */
 function get_cycle(static_data, year){
 
-	var text = '';
+	var text = {};
 	var index_array = [];
 
 	// If cycles are enabled
@@ -715,9 +715,6 @@ function get_cycle(static_data, year){
 		var index_array = [];
 
 		// Get the format
-		text = static_data.cycles.format;
-		
-		var replace = {}
 
 		// Loop through each cycle
 		for(var index = 0; index < static_data.cycles.data.length; index++){
@@ -735,20 +732,12 @@ function get_cycle(static_data, year){
 			// Get the name for this cycle
 			var cycle_name = cycle.names[cycle_index];
 
-			replace[(index+1).toString()] = cycle_name;
-
 			// Record the cycle index to the array
 			index_array.push(cycle_index)
+			text[(index+1).toString()] = cycle_name;
 		}
 
-		// Replace the indexes with the text
-		text = Mustache.render(
-			text,
-			replace
-		);
-
 	}
-
 
 	return {'text': text,
 			'array': index_array};
@@ -863,7 +852,7 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object){
 						self_object = false;
 
 					}else{
-					
+
 						var leaping = does_leap_day_appear(static_data, year, timespan_index, leap_day_index);
 
 						if(leaping){
@@ -901,12 +890,12 @@ function get_timespans_in_year(static_data, year, inclusive){
 		var appears = does_timespan_appear(static_data, year, timespan_index);
 
 		appears.id = timespan_index;
-			
+
 		if(appears.result || inclusive){
 
 			results.push(appears);
 
-		}	
+		}
 	}
 
 	return results;
@@ -1021,7 +1010,7 @@ function fract_year_length(static_data){
 		var leap_day = static_data.year_data.leap_days[i];
 
 		length += get_interval_fractions(leap_day.interval, leap_day.offset)
-		
+
 	}
 
 	return precisionRound(length, 10);
@@ -1106,17 +1095,17 @@ function clone(obj) {
  * This object is used when calculating the difference between two calendar's dates.
  */
 var date_converter = {
-    
+
    /**
      * This function is used when you want to calculate the difference between two calendars' dates.
      *
      * @param  {object}     static_data         A calendar static data object, primary, to be used to calculate the secondary calendar's date
      * @param  {object}     inc_static_data     A calendar static data object, secondary, to be used to calculate its new date
-     * @param  {object}     dynamic_data        A calendar dynamic data object, primary, to be used to calculate the secondary calendar's date 
+     * @param  {object}     dynamic_data        A calendar dynamic data object, primary, to be used to calculate the secondary calendar's date
      * @param  {object}     inc_dynamic_data    A calendar dynamic data object, secondary, used only to adjust the outgoing date's timezone
      * @return {object}                         A calendar dynamic data object, adjusted from the primary calendar to be used on the secondary calendar
      */
-    
+
 	get_date: function(static_data, inc_static_data, dynamic_data, inc_dynamic_data){
 
 		this.static_data = static_data;
@@ -1220,7 +1209,7 @@ var date_converter = {
 		}
 
 		this.year = this.year >= 0 ? this.year+1 : this.year;
-		
+
 		return {
 			"year": this.year,
 			"timespan": this.timespan,
@@ -1337,7 +1326,7 @@ function strip_intervals(_intervals, _offset){
 					break;
 				}
 
-				// If they match, but the next 
+				// If they match, but the next
 				if(outer_negator ^ inner_negator){
 					break;
 				}
@@ -1475,7 +1464,7 @@ function get_interval_occurrences(_year, _intervals, _offset){
 
 	var occurrences = 0;
 
-	// If it is year 0, there has been no leap 
+	// If it is year 0, there has been no leap
 	if(_year == 0){
 		return 0;
 	}
@@ -1585,7 +1574,7 @@ function get_epoch(static_data, year, month, day){
 
 		// Count the number of times each month has appeared
 		count_timespans[timespan_index] = Math.abs(timespan_fraction);
- 
+
 		// Add the month's length to the epoch, adjusted by its interval
 		epoch += timespan.length * timespan_fraction;
 
@@ -1634,7 +1623,7 @@ function get_epoch(static_data, year, month, day){
 
 
 /**
- * Further expands on the spine of the calendar calculation. It calculates how many days there has been since day 1, and returns a complex data object. 
+ * Further expands on the spine of the calendar calculation. It calculates how many days there has been since day 1, and returns a complex data object.
  *
  * @param  {object}     static_data     The calendar's static_data object.
  * @param  {int}        year            The number of a year passed through the convert_year function.

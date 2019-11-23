@@ -109,8 +109,9 @@
                         prev_dynamic_data = {}
                         prev_static_data = {}
                         calendar_name = clone(calendar.name);
-                        dynamic_data = clone(calendar.dynamic_data);
                         static_data = clone(calendar.static_data);
+                        dynamic_data = clone(calendar.dynamic_data);
+                        dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
                         empty_edit_values();
                         set_up_edit_values();
                         $('#json_input').val('');
@@ -120,8 +121,9 @@
                     }
                 }else{
                     calendar_name = clone(calendar_presets[$('#presets').val()].name);
-                    dynamic_data = clone(calendar_presets[$('#presets').val()].dynamic_data);
                     static_data = clone(calendar_presets[$('#presets').val()].static_data);
+                    dynamic_data = clone(calendar_presets[$('#presets').val()].dynamic_data);
+                    dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
                     empty_edit_values();
                     set_up_edit_values();
                     error_check('calendar', true);

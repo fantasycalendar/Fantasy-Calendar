@@ -708,7 +708,7 @@ function set_up_edit_inputs(set_up){
 				"show_as_event": false,
 				"use_custom_format": false,
 				"starting_era": false,
-				"event_category": -1,
+				"event_category_id": -1,
 				"ends_year": false,
 				"restart": false
 			},
@@ -880,8 +880,8 @@ function set_up_edit_inputs(set_up){
 				}
 
 				for(var era in static_data.eras){
-					if(static_data.eras[era].settings.event_category == index){
-						static_data.eras[era].settings.event_category = -1;
+					if(static_data.eras[era].settings.event_category_id == index){
+						static_data.eras[era].settings.event_category_id = -1;
 					}
 				}
 
@@ -1156,7 +1156,7 @@ function set_up_edit_inputs(set_up){
 		}else{
 			$(this).parent().parent().parent().next().addClass('hidden');
 			$(this).parent().parent().parent().next().find('.dynamic_input').prop('disabled', true).change();
-			delete static_data.eras[index].settings.event_category;
+			delete static_data.eras[index].settings.event_category_id;
 		}
 	});
 
@@ -2684,11 +2684,12 @@ function add_era_to_list(parent, key, data){
 				element.push("<div class='detail-column full'>");
 					element.push("<div class='detail-row'>");
 						element.push("<div class='detail-text'>Event category:</div>");
-						element.push(`<select type='text' class='custom-select form-control-sm event-category-list dynamic_input' data='eras.${key}.settings' fc-index='event_category'>`);
+						element.push(`<select type='text' class='custom-select form-control-sm event-category-list dynamic_input' data='eras.${key}.settings' fc-index='event_category_id'>`);
 							for(var catkey in static_data.event_data.categories)
 							{
 								var name = static_data.event_data.categories[catkey].name;
-								element.push(`<option value="${catkey}" ${(catkey==data.event_category_id ? "selected" : "")}>${name}</option>`);
+								var id = static_data.event_data.categories[catkey].id;
+								element.push(`<option value="${id}" ${(catkey==data.event_category_id ? "selected" : "")}>${name}</option>`);
 							}
 							element.push("</select>");
 					element.push("</div>");
@@ -3037,7 +3038,7 @@ function error_check(parent, rebuild){
 			}else{
 
 				rebuild_calendar('calendar', dynamic_data);
-				
+
 				update_current_day(true);
 
 				preview_date_follow();
@@ -3084,7 +3085,14 @@ function error_check(parent, rebuild){
 
 
 function update_cycle_example_text(){
-	$('#cycle_test_result').text(get_cycle(static_data, ($('#cycle_test_input').val()|0)).text);
+
+	var year = ($('#cycle_test_input').val()|0);
+
+	var cycle_text = get_cycle(static_data, year).text;
+
+	var text = Mustache.render(static_data.cycles.format, cycle_text);
+
+	$('#cycle_test_result').text(text);
 }
 
 function evaluate_remove_buttons(){
@@ -3542,13 +3550,13 @@ function reindex_era_list(){
 
 		static_data.eras[i] = {
 			'name': $(this).find('.name-input').val(),
-			'formatting': escapeHtml($(this).find('.era_formatting').val()),
+			'formatting': $(this).find('.era_formatting').val(),
 			'description': $(this).find('.era_description').attr('value'),
 			'settings': {
 				'use_custom_format': $(this).find('.use_custom_format').is(':checked'),
 				'show_as_event': $(this).find('.show_as_event').is(':checked'),
 				'starting_era': $(this).find('.starting_era').is(':checked'),
-				'event_category': $(this).find('.event-category-list').val(),
+				'event_category_id': $(this).find('.event-category-list').val(),
 				'ends_year': $(this).find('.ends_year').is(':checked'),
 				'restart': $(this).find('.restart').is(':checked')
 			},
@@ -4017,6 +4025,7 @@ function set_up_edit_values(){
 		for(var i = 0; i < static_data.cycles.data.length; i++){
 			add_cycle_to_sortable(cycle_sortable, i, static_data.cycles.data[i]);
 		}
+		update_cycle_example_text();
 	}
 
 	if(static_data.year_data.leap_days){

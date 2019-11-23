@@ -22,7 +22,7 @@ function display_events(static_data, event_data){
 				var start = event_data.starts[event_index].indexOf(local_epoch) != -1;
 				var end = event_data.ends[event_index].indexOf(local_epoch) != -1;
 
-				var category_name = current_event.category && current_event.category > -1 ? static_data.event_data.categories[current_event.category].name : "";
+				var category_name = current_event.event_category_id && current_event.event_category_id > -1 ?  get_category(current_event.event_category_id).name : "";
 
 				var event_group = current_event.settings.color ? " " + current_event.settings.color : "";
 				event_group += current_event.settings.text ? " " + current_event.settings.text : "";
@@ -475,10 +475,10 @@ var calendar_layouts = {
 
 		}
 
-		var cycle_text = get_cycle(static_data, convert_year(static_data, calendar_layouts.year_data.era_year)).text;
+		var cycle_text = Mustache.render(static_data.cycles.format, get_cycle(static_data, convert_year(static_data, calendar_layouts.year_data.era_year)).text);
 
 		var html = [];
-    
+
 		html.push(`<div class='year'>${year_text}</div>`);
 		html.push(`<div class='cycle'>${cycle_text}</div>`);
 

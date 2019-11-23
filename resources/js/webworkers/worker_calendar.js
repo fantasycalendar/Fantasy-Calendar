@@ -550,7 +550,7 @@ var calendar_builder = {
 
 			timespan_list = this.calendar_list.pre_timespans_to_evaluate[year_index];
 
-			current_cycle = get_cycle(this.static_data, year_index)
+			current_cycle = get_cycle(this.static_data, year_index).array;
 
 			year_week_num = 1;
 
@@ -605,7 +605,7 @@ var calendar_builder = {
 
 									'season': climate_generator.get_season_data(epoch),
 
-									'cycle': current_cycle.array,
+									'cycle': current_cycle,
 									'intercalary': true,
 									'leap_day': leap_day.index,
 
@@ -657,7 +657,7 @@ var calendar_builder = {
 							'moon_phase_num_month': [],
 							'moon_phase_num_year': [],
 
-							'cycle': current_cycle.array,
+							'cycle': current_cycle,
 							'intercalary': current_timespan.type === "intercalary",
 
 							'season': climate_generator.get_season_data(epoch),
@@ -725,7 +725,7 @@ var calendar_builder = {
 									'moon_phase_num_month': [],
 									'moon_phase_num_year': [],
 
-									'cycle': current_cycle.array,
+									'cycle': current_cycle,
 									
 									'intercalary': true,
 									'leap_day': leap_day.index,
@@ -779,7 +779,7 @@ var calendar_builder = {
 
 			timespan_list = this.calendar_list.post_timespans_to_evaluate[year_index];
 
-			current_cycle = get_cycle(this.static_data, year_index)
+			current_cycle = get_cycle(this.static_data, year_index).array;
 
 			year_week_num = 1;
 
@@ -834,7 +834,7 @@ var calendar_builder = {
 
 									'season': climate_generator.get_season_data(epoch),
 
-									'cycle': current_cycle.array,
+									'cycle': current_cycle,
 									'intercalary': true,
 									'leap_day': leap_day.index,
 
@@ -886,7 +886,7 @@ var calendar_builder = {
 							'moon_phase_num_month': [],
 							'moon_phase_num_year': [],
 
-							'cycle': current_cycle.array,
+							'cycle': current_cycle,
 							'intercalary': current_timespan.type === "intercalary",
 
 							'season': climate_generator.get_season_data(epoch),
@@ -954,7 +954,7 @@ var calendar_builder = {
 									'moon_phase_num_month': [],
 									'moon_phase_num_year': [],
 
-									'cycle': current_cycle.array,
+									'cycle': current_cycle,
 									
 									'intercalary': true,
 									'leap_day': leap_day.index,
@@ -1304,7 +1304,7 @@ var calendar_builder = {
 
 			timespan_list = this.calendar_list.pre_timespans_to_evaluate[year_index];
 
-			current_cycle = get_cycle(this.static_data, year_index)
+			current_cycle = get_cycle(this.static_data, year_index).array;
 
 			year_week_num = 1;
 
@@ -1359,7 +1359,7 @@ var calendar_builder = {
 
 									'season': climate_generator.get_season_data(epoch),
 
-									'cycle': current_cycle.array,
+									'cycle': current_cycle,
 									'intercalary': true,
 									'leap_day': leap_day.index,
 
@@ -1412,7 +1412,7 @@ var calendar_builder = {
 							'moon_phase_num_month': [],
 							'moon_phase_num_year': [],
 
-							'cycle': current_cycle.array,
+							'cycle': current_cycle,
 							'intercalary': current_timespan.type === "intercalary",
 
 							'season': climate_generator.get_season_data(epoch),
@@ -1480,7 +1480,7 @@ var calendar_builder = {
 									'moon_phase_num_month': [],
 									'moon_phase_num_year': [],
 
-									'cycle': current_cycle.array,
+									'cycle': current_cycle,
 									
 									'intercalary': true,
 									'leap_day': leap_day.index,
@@ -1531,7 +1531,7 @@ var calendar_builder = {
 
 		climate_generator.set_up(this.calendar_name, this.static_data, this.dynamic_data, first_epoch, this.calendar_list.timespans_to_build);
 
-		current_cycle = get_cycle(this.static_data, convert_year(this.static_data, this.dynamic_data.year))
+		current_cycle = get_cycle(this.static_data, convert_year(this.static_data, this.dynamic_data.year)).array;
 
 		for(var i = 0; i < Object.keys(this.calendar_list.timespans_to_build).length; i++){
 
@@ -1601,7 +1601,7 @@ var calendar_builder = {
 								'moon_phase_num_month': [],
 								'moon_phase_num_year': [],
 
-								'cycle': current_cycle.array,
+								'cycle': current_cycle,
 								
 								'intercalary': true,
 								'leap_day': leap_day.index,
@@ -1672,7 +1672,7 @@ var calendar_builder = {
 						'moon_phase_num_month': [],
 						'moon_phase_num_year': [],
 
-						'cycle': current_cycle.array,
+						'cycle': current_cycle,
 						'intercalary': current_timespan.type === "intercalary",
 
 						'season': climate_generator.get_season_data(epoch),
@@ -1753,7 +1753,7 @@ var calendar_builder = {
 								'moon_phase_num_month': [],
 								'moon_phase_num_year': [],
 
-								'cycle': current_cycle.array,
+								'cycle': current_cycle,
 								
 								'intercalary': true,
 								'leap_day': leap_day.index,
@@ -1823,7 +1823,7 @@ var calendar_builder = {
 
 			timespan_list = this.calendar_list.post_timespans_to_evaluate[year_index];
 
-			current_cycle = get_cycle(this.static_data, year_index)
+			current_cycle = get_cycle(this.static_data, year_index).array;
 
 			year_week_num = 1;
 
@@ -1878,7 +1878,7 @@ var calendar_builder = {
 
 									'season': climate_generator.get_season_data(epoch),
 
-									'cycle': current_cycle.array,
+									'cycle': current_cycle,
 									'intercalary': true,
 									'leap_day': leap_day.index,
 
@@ -1930,7 +1930,7 @@ var calendar_builder = {
 							'moon_phase_num_month': [],
 							'moon_phase_num_year': [],
 
-							'cycle': current_cycle.array,
+							'cycle': current_cycle,
 							'intercalary': current_timespan.type === "intercalary",
 
 							'season': climate_generator.get_season_data(epoch),
@@ -1998,7 +1998,7 @@ var calendar_builder = {
 									'moon_phase_num_month': [],
 									'moon_phase_num_year': [],
 
-									'cycle': current_cycle.array,
+									'cycle': current_cycle,
 									
 									'intercalary': true,
 									'leap_day': leap_day.index,
