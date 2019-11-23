@@ -115,7 +115,7 @@
                         empty_edit_values();
                         set_up_edit_values();
                         $('#json_input').val('');
-                        rebuild_calendar('calendar', dynamic_data);
+                        error_check('calendar', true);
                     }else{
                         alert("Unrecognized JSON format.")
                     }
@@ -126,7 +126,7 @@
                     dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
                     empty_edit_values();
                     set_up_edit_values();
-                    rebuild_calendar('calendar', dynamic_data);
+                    error_check('calendar', true);
                 }
             });
 

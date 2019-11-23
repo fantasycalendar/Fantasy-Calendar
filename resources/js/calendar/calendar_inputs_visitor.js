@@ -262,34 +262,38 @@ function eval_clock(){
 		return;
 	}
 
-	var clock_face_canvas = document.getElementById("clock_face");
-	var clock_sun_canvas = document.getElementById("clock_sun");
-	var clock_background_canvas = document.getElementById("clock_background");
+	if(!window.Clock){
 
-	clock_face_canvas.width = $('#clock').width()
-	clock_face_canvas.height = $('#clock').width()
+		var clock_face_canvas = document.getElementById("clock_face");
+		var clock_sun_canvas = document.getElementById("clock_sun");
+		var clock_background_canvas = document.getElementById("clock_background");
 
-	clock_sun_canvas.width = $('#clock').width()
-	clock_sun_canvas.height = $('#clock').width()
+		clock_face_canvas.width = $('#clock').width()
+		clock_face_canvas.height = $('#clock').width()
 
-	clock_background_canvas.width = $('#clock').width()
-	clock_background_canvas.height = $('#clock').width()
+		clock_sun_canvas.width = $('#clock').width()
+		clock_sun_canvas.height = $('#clock').width()
 
-	window.clock = new Clock(
-		clock_face_canvas,
-		clock_sun_canvas,
-		clock_background_canvas,
-		hours		= static_data.clock.hours,
-		minutes		= static_data.clock.minutes,
-		offset		= static_data.clock.offset,
-		crowding	= 0,
-		hour		= dynamic_data.hour,
-		minute		= dynamic_data.minute,
-		sunrise		= 6,
-		sunset		= 18
-	);
+		clock_background_canvas.width = $('#clock').width()
+		clock_background_canvas.height = $('#clock').width()
 
-	$('#clock').css('display', 'block');
+		window.Clock = new CalendarClock(
+			clock_face_canvas,
+			clock_sun_canvas,
+			clock_background_canvas,
+			hours		= static_data.clock.hours,
+			minutes		= static_data.clock.minutes,
+			offset		= static_data.clock.offset,
+			crowding	= 0,
+			hour		= dynamic_data.hour,
+			minute		= dynamic_data.minute,
+			sunrise		= 6,
+			sunset		= 18
+		);
+
+		$('#clock').css('display', 'block');
+
+	}
 
 	eval_current_time();
 
@@ -297,13 +301,17 @@ function eval_clock(){
 
 function eval_current_time(){
 
+	if(!window.Clock){
+		eval_clock();
+	}
+
 	if(!static_data.clock.enabled || isNaN(static_data.clock.hours) || isNaN(static_data.clock.minutes) || isNaN(static_data.clock.offset)){
 		$('#clock').css('display', 'none');
 		return;
 	}
 
-	window.clock.set_time(dynamic_data.hour, dynamic_data.minute)
-
+	window.Clock.set_time(dynamic_data.hour, dynamic_data.minute);
+	
 	evaluate_sun();
 
 }
@@ -323,8 +331,8 @@ function evaluate_sun(){
 		var sunrise = evaluated_static_data.epoch_data[dynamic_data.epoch].season.sunrise[0];
 
 
-		window.clock.sunrise = sunrise;
-		window.clock.sunset = sunset;
+		window.Clock.sunrise = sunrise;
+		window.Clock.sunset = sunset;
 		
 	}
 
