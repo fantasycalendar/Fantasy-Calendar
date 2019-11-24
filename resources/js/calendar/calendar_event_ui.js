@@ -120,13 +120,16 @@ var edit_event_ui = {
     		
     		var prev = $(this).data('val');
 
-			var selected = edit_event_ui.condition_presets.children(':selected')[0].hasAttribute('nth');
+			var selected = edit_event_ui.condition_presets.children(':selected');
 
-			if(selected == prev){
+			if(selected.val() == prev){
 				return;
 			}
 
-			edit_event_ui.repeat_input.prop('disabled', !selected).parent().toggleClass('hidden', !selected);
+			var nth = selected[0].hasAttribute('nth');
+							
+			edit_event_ui.repeat_input.prop('disabled', !nth).parent().toggleClass('hidden', !nth);
+
 			edit_event_ui.update_every_nth_presets();
 
 			if(edit_event_ui.event_conditions_container.children().length > 0 && e.originalEvent){
@@ -154,6 +157,10 @@ var edit_event_ui = {
 						}else{
 
 							$(this).val(prev);
+
+							var nth = $(this).find(`option[value="${prev}"]`)[0].hasAttribute('nth');
+							
+							edit_event_ui.repeat_input.prop('disabled', !nth).parent().toggleClass('hidden', !nth);
 
 						}
 
