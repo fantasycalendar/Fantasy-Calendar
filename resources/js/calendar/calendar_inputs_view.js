@@ -131,10 +131,10 @@ function set_up_view_inputs(){
 		curr_hour = curr_hour + adjust;
 
 		if(curr_hour < 0){
-			sub_curr_day.click();
+			sub_current_day.click();
 			curr_hour = static_data.clock.hours-1;
 		}else if(curr_hour >= static_data.clock.hours){
-			add_curr_day.click();
+			add_current_day.click();
 			curr_hour = 0;
 		}
 
