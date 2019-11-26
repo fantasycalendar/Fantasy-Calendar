@@ -164,7 +164,7 @@ var climate_generator = {
 
 		var season_epoch = epoch - this.settings.season_offset;
 
-		this.season.prev_day = Math.floor(fract((season_epoch-1)/this.season_length)*this.season_length);
+		this.season.prev_day = -Infinity;
 		this.season.day = Math.floor(fract(season_epoch/this.season_length)*this.season_length);
 
 		for(var season_index in this.seasons){
@@ -194,7 +194,7 @@ var climate_generator = {
 	
 		var weather_epoch = epoch - this.settings.season_offset - this.settings.weather_offset;
 
-		this.weather.prev_day = Math.floor(fract((weather_epoch-1)/this.season_length)*this.season_length);
+		this.weather.prev_day = -Infinity;
 		this.weather.day = Math.floor(fract(weather_epoch/this.season_length)*this.season_length)
 
 		for(var season_index in this.seasons){
@@ -279,9 +279,17 @@ var climate_generator = {
 
 		if(this.static_data.clock.enabled){
 
+			var prev_index = this.season.current_index-1;
+
+			if(prev_index < 0) prev_index += this.current_location.seasons.length;
+
+			var prev_sunrise = this.current_location.seasons[prev_index].time.sunrise;
+			var prev_sunset = this.current_location.seasons[prev_index].time.sunset;
+
 			var curr_sunrise = this.current_location.seasons[this.season.current_index].time.sunrise;
-			var next_sunrise = this.current_location.seasons[this.season.next_index].time.sunrise;
 			var curr_sunset = this.current_location.seasons[this.season.current_index].time.sunset;
+
+			var next_sunrise = this.current_location.seasons[this.season.next_index].time.sunrise;
 			var next_sunset = this.current_location.seasons[this.season.next_index].time.sunset;
 
 			var sunrise_exact_minute = Math.round(lerp(curr_sunrise.minute, next_sunrise.minute, this.season.perc));
@@ -310,13 +318,8 @@ var climate_generator = {
 
 				if(this.all_appear){
 
-					var temp_sunrise_minute = Math.round(lerp(curr_sunrise.minute, next_sunrise.minute, this.season.perc-0.1));
-					var temp_sunrise_hour = lerp(curr_sunrise.hour, next_sunrise.hour, this.season.perc-0.1);
-					var temp_sunrise = temp_sunrise_hour+temp_sunrise_minute/this.static_data.clock.minutes;
-
-					var temp_sunset_minute = Math.round(lerp(curr_sunset.minute, next_sunset.minute, this.season.perc-0.1));
-					var temp_sunset_hour = lerp(curr_sunset.hour, next_sunset.hour, this.season.perc-0.1);
-					var temp_sunset = temp_sunset_hour+temp_sunset_minute/this.static_data.clock.minutes;
+					var temp_sunrise = prev_sunrise.hour+prev_sunrise.minute/this.static_data.clock.minutes;
+					var temp_sunset = prev_sunset.hour+prev_sunset.minute/this.static_data.clock.minutes;
 
 					if(this.shortest_day_time == (sunset-sunrise)){
 						this.falling_appeared = true;
