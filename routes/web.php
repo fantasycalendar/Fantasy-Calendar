@@ -68,10 +68,16 @@ Route::post('/subscription/update/{level}/{plan}', 'SubscriptionController@updat
 
 // User profile
 Route::get('/profile', function() {
+    $invoices = null;
+
+    if (Auth::user()->hasStripeId()) {
+        $invoices = Auth::user()->invoices();
+    }
+
     return view('pages.profile', [
         'user' => Auth::user(),
         'subscription' => Auth::user()->subscriptions()->active()->first(),
-        'invoices' => Auth::user()->invoices()
+        'invoices' => $invoices
     ]);
 })->middleware('auth')->name('profile');
 
