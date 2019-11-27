@@ -183,7 +183,7 @@ function set_up_view_inputs(){
 			var prev_location = climate_generator.presets[dynamic_data.location];
 		}
 
-		dynamic_data.custom_location = location_select.find('option:selected').parent().attr('value') === "custom";
+		dynamic_data.custom_location = location_select.find('option:selected').parent().attr('value') === "custom" && !location_select.find('option:selected').prop('disabled');
 
 		dynamic_data.location = location_select.val();
 
@@ -282,11 +282,11 @@ function repopulate_location_select_list(){
 
 	var is_edit = location_select.closest('.wrap-collapsible').find('.form-inline.locations').length > 0;
 
-	$(location_select).prop('disabled', !show_location_select).closest('.wrap-collapsible').toggleClass('hidden', !show_location_select && !is_edit);
+	location_select.closest('.wrap-collapsible').toggleClass('hidden', !show_location_select && !is_edit);
+
+	var html = [];
 
 	if(show_location_select){
-
-		var html = [];
 
 		if(static_data.seasons.locations.length > 0){
 
@@ -299,23 +299,17 @@ function repopulate_location_select_list(){
 		}
 
 		if(static_data.seasons.global_settings.enable_weather){
-
-			html.push('<optgroup label="Presets" value="preset">');
-			for(var i = 0; i < Object.keys(climate_generator.presets).length; i++){
-				html.push(`<option>${Object.keys(climate_generator.presets)[i]}</option>`);
+			if((static_data.seasons.data.length == 2 || static_data.seasons.data.length == 4)){
+				html.push('<optgroup label="Presets" value="preset">');
+				for(var i = 0; i < Object.keys(climate_generator.presets[static_data.seasons.data.length]).length; i++){
+					html.push(`<option>${Object.keys(climate_generator.presets[static_data.seasons.data.length])[i]}</option>`);
+				}
+				html.push('</optgroup>');
+			}else{
+				html.push('<optgroup label="Presets" value="preset">');
+				html.push(`<option disabled>Presets require two or four seasons.</option>`);
+				html.push('</optgroup>');
 			}
-			html.push('</optgroup>');
-
-		}
-
-		if(html.length > 0){
-
-			location_select.prop('disabled', false).html(html.join('')).val(dynamic_data.location);
-
-		}else{
-
-			location_select.prop('disabled', false).html(html.join(''));
-
 		}
 
 		if(location_select.val() === null){
@@ -324,9 +318,15 @@ function repopulate_location_select_list(){
 			dynamic_data.custom_location = location_select.find('option:selected').parent().attr('value') === 'custom';
 		}
 
+	}
+
+	if(html.length > 0){
+
+		location_select.prop('disabled', false).html(html.join('')).val(dynamic_data.location);
+
 	}else{
 
-		location_select.html('');
+		location_select.prop('disabled', true).html(html.join(''));
 
 	}
 

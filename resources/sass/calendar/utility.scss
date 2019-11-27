@@ -2,6 +2,10 @@
     width: 100% !important;
 }
 
+.nomax{
+    max-width: 100% !important;
+}
+
 .half{
     width: 49% !important;
 }
@@ -43,11 +47,11 @@
 }
 
 .small-text{
-    font-size: 9pt;
+    font-size: 0.65rem;
 }
 
 .big-text {
-    font-size: 14pt;
+    font-size: 1.5rem;
 }
 
 .float{
@@ -84,4 +88,13 @@
 
 .accent-bg-color {
     background-color: $accent-color !important;
+}
+
+
+.warning {
+    color: #dd6b20;
+}
+
+.valid {
+    color: #0B6623;
 }

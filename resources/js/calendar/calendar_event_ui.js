@@ -1064,10 +1064,12 @@ var edit_event_ui = {
 		this.conditions_changed = true;
 
 		var selected_option = element.find('.condition_type').find(":selected");
-
 		var type = selected_option.parent().attr('label');
 		var selected = selected_option.val();
 		var condition_selected = condition_mapping[type][selected][2];
+
+		element.find('.input_container').toggleClass('hidden', condition_selected[0] == "boolean");
+		element.find('.condition_type').toggleClass('full', condition_selected[0] == "boolean").toggleClass('nomax', condition_selected[0] == "boolean");
 
 		var html = [];
 
@@ -1204,7 +1206,6 @@ var edit_event_ui = {
 
 		}else if(type == "Season"){
 
-
 			if(condition_selected[0] == "select"){
 				html.push("<select class='form-control form-control-sm'>")
 				for(var i = 0; i < static_data.seasons.data.length; i++){
@@ -1214,6 +1215,10 @@ var edit_event_ui = {
 				}
 
 				html.push("</select>")
+
+			}else if(condition_selected[0] == "boolean"){
+
+				html.push(`<input type='hidden' value='1'>`);
 
 			}else{
 

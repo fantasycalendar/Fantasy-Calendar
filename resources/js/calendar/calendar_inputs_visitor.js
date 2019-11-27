@@ -348,8 +348,8 @@ function evaluate_sun(){
 
 		var clock_hours = static_data.clock.hours;
 
-		var sunset = evaluated_static_data.epoch_data[dynamic_data.epoch].season.sunset[0];
-		var sunrise = evaluated_static_data.epoch_data[dynamic_data.epoch].season.sunrise[0];
+		var sunset = evaluated_static_data.epoch_data[dynamic_data.epoch].season.time.sunset[0];
+		var sunrise = evaluated_static_data.epoch_data[dynamic_data.epoch].season.time.sunrise[0];
 
 		sunset = sunset%clock_hours;
 		sunrise = sunrise%clock_hours;

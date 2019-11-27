@@ -159,6 +159,7 @@ var condition_mapping = {
 	"Season": [
 		["Season is exactly", 						[["season_index", "==", 0]], 	[["select"]]],
 		["Season is not", 							[["season_index", "!=", 0]], 	[["select"]]],
+
 		["Season percent is exactly", 				[["season_perc", "==", 0]],		[["number", "Number", "Enter percentage of season", "1", "1", "100"]]],
 		["Season percent is not", 					[["season_perc", "!=", 0]],		[["number", "Number", "Enter percentage of season", "1", "1", "100"]]],
 		["Season percent is or later than", 		[["season_perc", ">=", 0]],		[["number", "Number", "Enter percentage of season", "1", "1", "100"]]],
@@ -172,7 +173,12 @@ var condition_mapping = {
 		["Season day is or earlier than",			[["season_day", "<=", 0]],		[["number", "Number", "Enter day in season", "1", "1"]]],
 		["Season day is later than",				[["season_day", ">", 0]],		[["number", "Number", "Enter day in season", "1", "1"]]],
 		["Season day is earlier than",				[["season_day", "<", 0]],		[["number", "Number", "Enter day in season", "1", "1"]]],
-		["Every nth season day",					[["season_day", "%", 0, 1]],	[["number", "nth", "Enter day in season interval", "1", "1"], ["number", "offset", "Enter offset for interval", "0", "0"]]]
+		["Every nth season day",					[["season_day", "%", 0, 1]],	[["number", "nth", "Enter day in season interval", "1", "1"], ["number", "offset", "Enter offset for interval", "0", "0"]]],
+
+		["It is the longest day",	 							[["high_solstice", "==", 0]], 	[["boolean"]]],
+		["It is the shortest day",	 							[["low_solstice", "==", 0]], 	[["boolean"]]],
+		["It is the rising equinox day (spring-like)", 			[["rising_equinox", "==", 0]], 	[["boolean"]]],
+		["It is the falling equinox day (autumn-like)",			[["falling_equinox", "==", 0]], [["boolean"]]],
 	],
 
 	"Random": [
