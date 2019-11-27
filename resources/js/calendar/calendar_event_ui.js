@@ -12,6 +12,7 @@ var edit_event_ui = {
 		this.event_id							= null;
 		this.event_condition_sortables			= [];
 		this.delete_droppable					= false;
+		this.conditions_changed					= false;
 		this.date 								= [];
 		this.connected_events					= [];
 		this.search_distance					= 0;
@@ -67,9 +68,9 @@ var edit_event_ui = {
 
 			edit_event_ui.data = clone(evaluated_static_data.epoch_data[epoch]);
 
-			edit_event_ui.populate_condition_presets();
-
 			edit_event_ui.create_new_event();
+
+			edit_event_ui.populate_condition_presets();
 
 		});
 
@@ -111,34 +112,71 @@ var edit_event_ui = {
 
 		});
 
-		this.condition_presets.change(function(e){
+		this.condition_presets.on('focusin', function(){
+			$(this).data('val', $(this).val());
+		});
 
-			var selected = edit_event_ui.condition_presets.children(':selected')[0].hasAttribute('nth');
-			edit_event_ui.repeat_input.prop('disabled', !selected).parent().toggleClass('hidden', !selected);
+		this.condition_presets.change(function(e){
+    		
+    		var prev = $(this).data('val');
+
+			var selected = edit_event_ui.condition_presets.children(':selected');
+
+			if(selected.val() == prev){
+				return;
+			}
+
+			var nth = selected[0].hasAttribute('nth');
+							
+			edit_event_ui.repeat_input.prop('disabled', !nth).parent().toggleClass('hidden', !nth);
+
 			edit_event_ui.update_every_nth_presets();
 
 			if(edit_event_ui.event_conditions_container.children().length > 0 && e.originalEvent){
-				swal({
-					title: "Warning!",
-					text: "This will override all of your conditions, are you sure you want to do that?",
-					icon: "warning",
-					buttons: true,
-					dangerMode: true,
-				}).then((override) => {
 
-					if(override) {
+				if(edit_event_ui.conditions_changed){
 
-						var preset = edit_event_ui.condition_presets.val();
-						var repeats = edit_event_ui.repeat_input.val()|0;
+					swal({
+						title: "Warning!",
+						text: "This will override all of your conditions, are you sure you want to do that?",
+						icon: "warning",
+						buttons: true,
+						dangerMode: true,
+					}).then((override) => {
 
-						edit_event_ui.update_every_nth_presets();
+						if(override) {
 
-						edit_event_ui.event_conditions_container.empty();
-						edit_event_ui.add_preset_conditions(preset, repeats);
+							var preset = edit_event_ui.condition_presets.val();
+							var repeats = edit_event_ui.repeat_input.val()|0;
 
-					}
+							edit_event_ui.update_every_nth_presets();
 
-				});
+							edit_event_ui.event_conditions_container.empty();
+							edit_event_ui.add_preset_conditions(preset, repeats);
+
+						}else{
+
+							$(this).val(prev);
+
+							var nth = $(this).find(`option[value="${prev}"]`)[0].hasAttribute('nth');
+							
+							edit_event_ui.repeat_input.prop('disabled', !nth).parent().toggleClass('hidden', !nth);
+
+						}
+
+					});
+
+				}else{
+
+					var preset = edit_event_ui.condition_presets.val();
+					var repeats = edit_event_ui.repeat_input.val()|0;
+
+					edit_event_ui.update_every_nth_presets();
+
+					edit_event_ui.event_conditions_container.empty();
+					edit_event_ui.add_preset_conditions(preset, repeats);
+				}
+
 			}else{
 
 				var preset = edit_event_ui.condition_presets.val();
@@ -627,6 +665,9 @@ var edit_event_ui = {
 		this.condition_presets.find('option[value="monthly_weekday"]').text(`Monthly on the ${ordinal_suffix_of(edit_event_ui.data.month_week_num)} ${edit_event_ui.data.week_day_name}`);
 		this.condition_presets.find('option[value="annually_date"]').text(`Annually on the ${ordinal_suffix_of(edit_event_ui.data.day)} of ${edit_event_ui.data.timespan_name}`);
 		this.condition_presets.find('option[value="annually_month_weekday"]').text(`Annually on the ${ordinal_suffix_of(edit_event_ui.data.month_week_num)} ${edit_event_ui.data.week_day_name} in ${edit_event_ui.data.timespan_name}`);
+
+		this.condition_presets.children().eq(1).prop('selected', true).change();
+
 	},
 
 	update_every_nth_presets: function(){
@@ -815,6 +856,8 @@ var edit_event_ui = {
 		this.create_conditions(result, edit_event_ui.event_conditions_container);
 		this.evaluate_condition_selects(edit_event_ui.event_conditions_container);
 
+		this.conditions_changed = false;
+
 	},
 
 	// This function creates an array for the conditions so that it may be stored
@@ -948,6 +991,10 @@ var edit_event_ui = {
 	// This function takes an array of conditions, and the parent which to attach the conditions UI
 	create_conditions: function(array, parent, group_type){
 
+		if(!array){
+			return;
+		}
+
 		var increment = group_type === "num" ? 1 : 2;
 
 		for(var i = 0; i < array.length; i+=increment){
@@ -1013,6 +1060,8 @@ var edit_event_ui = {
 
 	// This function evaluates what inputs should be connected to any given condition based on its input
 	evaluate_inputs: function(element){
+
+		this.conditions_changed = true;
 
 		var selected_option = element.find('.condition_type').find(":selected");
 		var type = selected_option.parent().attr('label');
