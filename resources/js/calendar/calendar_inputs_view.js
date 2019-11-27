@@ -267,6 +267,8 @@ function evaluate_dynamic_change(){
 
 	update_current_day(false);
 
+	evaluate_save_button();
+
 }
 
 

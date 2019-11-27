@@ -26,7 +26,7 @@ var event_evaluator = {
 		this.epoch_data = epoch_data;
 
 		this.start_epoch =  start_epoch;
-		this.end_epoch = end_epoch;
+		this.end_epoch = end_epoch+1;
 
 		this.callback = callback;
 
