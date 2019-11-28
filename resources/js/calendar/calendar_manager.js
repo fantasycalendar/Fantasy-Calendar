@@ -204,7 +204,7 @@ worker_calendar.onmessage = e => {
 		}
 		text.push(`</ol>`);
 
-		calendar_error_message(text.join(''));
+		error_message(text.join(''));
 
 	}
 
