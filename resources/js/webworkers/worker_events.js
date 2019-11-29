@@ -1,5 +1,7 @@
-importScripts('/js/calendar/calendar_functions.js');
-importScripts('/js/calendar/calendar_variables.js');
+var version = new Date().getTime();
+
+importScripts('/js/calendar/calendar_functions.js?v='+version);
+importScripts('/js/calendar/calendar_variables.js?v='+version);
 
 
 onmessage = e => {
