@@ -56,6 +56,9 @@ function set_up_edit_inputs(set_up){
 
 	});
 
+	save_button.prop('disabled', true);
+	create_button.prop('disabled', true);
+
 	delete_button = $('#btn_delete');
 
 	delete_button.click(function(){
@@ -421,11 +424,11 @@ function set_up_edit_inputs(set_up){
 		name.val("");
 		do_error_check();
 
-		$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0);
+		$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 && static_data.clock.enabled);
 
 	});
 
-	$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0);
+	$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 && static_data.clock.enabled);
 
 	$('#create_season_events').click(function(){
 	    swal({
@@ -522,8 +525,8 @@ function set_up_edit_inputs(set_up){
 		if(type === "custom"){
 			var stats = static_data.seasons.locations[location];
 		}else{
-			var stats = climate_generator.presets[static_data.seasons.data.length][location];
-			stats.settings = climate_generator.preset_curves;
+			var stats = preset_data.locations[static_data.seasons.data.length][location];
+			stats.settings = preset_data.curves;
 
 			for(var i = 0; i < static_data.seasons.data.length; i++){
 				stats.seasons[i].time = static_data.seasons.data[i].time;
@@ -551,6 +554,8 @@ function set_up_edit_inputs(set_up){
 		$('.slider_percentage').each(function(){
 			$(this).slider('option', 'value', parseInt($(this).parent().parent().find('.slider_input').val()));
 		});
+
+		location_select.find('optgroup[value="custom"]').children().eq(id).prop('selected', true).change();
 
 		do_error_check();
 
@@ -1537,7 +1542,7 @@ function set_up_edit_inputs(set_up){
 
 				var val = $(this).val()|0;
 
-				$(this).val(precisionRound(climate_generator.fahrenheit_to_celcius(val), 4));
+				$(this).val(precisionRound(fahrenheit_to_celcius(val), 4));
 
 			}).change();
 
@@ -1547,7 +1552,7 @@ function set_up_edit_inputs(set_up){
 
 				var val = $(this).val()|0;
 
-				$(this).val(precisionRound(climate_generator.celcius_to_fahrenheit(val), 4)).change;
+				$(this).val(precisionRound(celcius_to_fahrenheit(val), 4)).change;
 
 			}).change();
 
@@ -3951,6 +3956,8 @@ function evaluate_clock_inputs(){
 	$('.minute_input').each(function(){
 		$(this).prop('min', 1).prop('max', static_data.clock.minutes-1).prop('disabled', !static_data.clock.enabled).toggleClass('hidden', !static_data.clock.enabled);
 	});
+
+	$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 && static_data.clock.enabled);
 
 }
 

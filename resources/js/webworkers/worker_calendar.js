@@ -542,8 +542,6 @@ var calendar_builder = {
 
 		last_year = undefined;
 
-		climate_generator.set_up(this.calendar_name, this.static_data, this.dynamic_data, epoch);
-
 		for(var year_i = 0; year_i < order.length; year_i++){
 
 			year_index = parseInt(order[year_i]);
@@ -603,8 +601,6 @@ var calendar_builder = {
 									'moon_phase_num_month': [],
 									'moon_phase_num_year': [],
 
-									'season': climate_generator.get_season_data(epoch),
-
 									'cycle': current_cycle,
 									'intercalary': true,
 									'leap_day': leap_day.index,
@@ -659,8 +655,6 @@ var calendar_builder = {
 
 							'cycle': current_cycle,
 							'intercalary': current_timespan.type === "intercalary",
-
-							'season': climate_generator.get_season_data(epoch),
 
 							'era': current_era
 						}
@@ -729,8 +723,6 @@ var calendar_builder = {
 									
 									'intercalary': true,
 									'leap_day': leap_day.index,
-
-									'season': climate_generator.get_season_data(epoch),
 
 									'era': current_era
 								}
@@ -832,8 +824,6 @@ var calendar_builder = {
 									'moon_phase_num_month': [],
 									'moon_phase_num_year': [],
 
-									'season': climate_generator.get_season_data(epoch),
-
 									'cycle': current_cycle,
 									'intercalary': true,
 									'leap_day': leap_day.index,
@@ -888,8 +878,6 @@ var calendar_builder = {
 
 							'cycle': current_cycle,
 							'intercalary': current_timespan.type === "intercalary",
-
-							'season': climate_generator.get_season_data(epoch),
 
 							'era': current_era
 						}
@@ -959,8 +947,6 @@ var calendar_builder = {
 									'intercalary': true,
 									'leap_day': leap_day.index,
 
-									'season': climate_generator.get_season_data(epoch),
-
 									'era': current_era
 								}
 
@@ -993,7 +979,9 @@ var calendar_builder = {
 			era_year++;
 		}
 
-		end_epoch = epoch-1;
+		end_epoch = epoch;
+
+		climate_generator = new Climate(this.data.epochs, this.static_data, this.dynamic_data, calendar_start_epoch, calendar_end_epoch);
 		
 		return {
 			epoch_data: this.data.epochs,
@@ -1284,8 +1272,6 @@ var calendar_builder = {
 			}
 		}
 
-		climate_generator.set_up(this.calendar_name, this.static_data, this.dynamic_data, epoch);
-
 		year_day = 1+year_start_data.epoch-evaluate_calendar_start(this.static_data, first_eval_year).epoch;
 
 		week_day = year_start_data.week_day;
@@ -1357,8 +1343,6 @@ var calendar_builder = {
 									'moon_phase_num_month': [],
 									'moon_phase_num_year': [],
 
-									'season': climate_generator.get_season_data(epoch),
-
 									'cycle': current_cycle,
 									'intercalary': true,
 									'leap_day': leap_day.index,
@@ -1414,8 +1398,6 @@ var calendar_builder = {
 
 							'cycle': current_cycle,
 							'intercalary': current_timespan.type === "intercalary",
-
-							'season': climate_generator.get_season_data(epoch),
 
 							'era': current_era
 						}
@@ -1485,8 +1467,6 @@ var calendar_builder = {
 									'intercalary': true,
 									'leap_day': leap_day.index,
 
-									'season': climate_generator.get_season_data(epoch),
-
 									'era': current_era
 								}
 
@@ -1528,8 +1508,6 @@ var calendar_builder = {
 		first_epoch = epoch;
 		first_week_day = week_day;
 		year_week_num = 1;
-
-		climate_generator.set_up(this.calendar_name, this.static_data, this.dynamic_data, first_epoch, this.calendar_list.timespans_to_build);
 
 		current_cycle = get_cycle(this.static_data, convert_year(this.static_data, this.dynamic_data.year)).array;
 
@@ -1606,20 +1584,8 @@ var calendar_builder = {
 								'intercalary': true,
 								'leap_day': leap_day.index,
 
-								'season': climate_generator.get_season_data(epoch),
-
 								'era': current_era
 								
-							}
-
-							if((this.static_data.settings.hide_all_weather && !this.owner) || (this.static_data.settings.hide_future_weather && !this.owner && (timespan_index > this.dynamic_data.timespan || (timespan_index == this.dynamic_data.timespan && total_day > this.dynamic_data.day)))){
-								data.weather = false;
-							}else{
-								if(climate_generator.process_weather){
-									data.weather = climate_generator.get_weather_data(epoch);
-								}else{
-									data.weather = false;
-								}
 							}
 
 							data = this.add_moon_data(
@@ -1675,8 +1641,6 @@ var calendar_builder = {
 						'cycle': current_cycle,
 						'intercalary': current_timespan.type === "intercalary",
 
-						'season': climate_generator.get_season_data(epoch),
-
 						'era': current_era
 
 					}
@@ -1686,14 +1650,6 @@ var calendar_builder = {
 						this.data.repititions.week_days[data.timespan_index][data.week_day]++;
 						data.week_day_num = this.data.repititions.week_days[data.timespan_index][data.week_day];
 
-					}
-
-					if((this.static_data.settings.hide_all_weather && !this.owner) || (this.static_data.settings.hide_future_weather && !this.owner && (timespan_index > this.dynamic_data.timespan || (timespan_index == this.dynamic_data.timespan && total_day > this.dynamic_data.day)))){
-						data.weather = false;
-					}else{
-						if(climate_generator.process_weather){
-							data.weather = climate_generator.get_weather_data(epoch);
-						}
 					}
 
 					data = this.add_moon_data(
@@ -1758,17 +1714,7 @@ var calendar_builder = {
 								'intercalary': true,
 								'leap_day': leap_day.index,
 
-								'season': climate_generator.get_season_data(epoch),
-
 								'era': current_era
-							}
-
-							if((this.static_data.settings.hide_all_weather && !this.owner) || (this.static_data.settings.hide_future_weather && !this.owner && (timespan_index > this.dynamic_data.timespan || (timespan_index == this.dynamic_data.timespan && total_day > this.dynamic_data.day)))){
-								data.weather = false;
-							}else{
-								if(climate_generator.process_weather){
-									data.weather = climate_generator.get_weather_data(epoch);
-								}
 							}
 
 							data = this.add_moon_data(
@@ -1876,8 +1822,6 @@ var calendar_builder = {
 									'moon_phase_num_month': [],
 									'moon_phase_num_year': [],
 
-									'season': climate_generator.get_season_data(epoch),
-
 									'cycle': current_cycle,
 									'intercalary': true,
 									'leap_day': leap_day.index,
@@ -1932,8 +1876,6 @@ var calendar_builder = {
 
 							'cycle': current_cycle,
 							'intercalary': current_timespan.type === "intercalary",
-
-							'season': climate_generator.get_season_data(epoch),
 
 							'era': current_era
 						}
@@ -2003,8 +1945,6 @@ var calendar_builder = {
 									'intercalary': true,
 									'leap_day': leap_day.index,
 
-									'season': climate_generator.get_season_data(epoch),
-
 									'era': current_era
 								}
 
@@ -2037,7 +1977,8 @@ var calendar_builder = {
 			era_year++;
 		}
 
-		end_epoch = epoch-1;
+		climate_generator = new Climate(this.data.epochs, this.static_data, this.dynamic_data, calendar_start_epoch, calendar_end_epoch);
+		climate_generator.generate();
 
 		if(!this.static_data.settings.show_current_month){
 			year_day = 1;

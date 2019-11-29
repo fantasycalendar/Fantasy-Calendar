@@ -27,6 +27,43 @@ var execution_time = {
 	}
 }
 
+function fahrenheit_to_celcius(temp){
+
+	return precisionRound((temp-32)*(5/9), 4);
+
+}
+
+function celcius_to_fahrenheit(temp){
+
+	return precisionRound((temp*9/5)+32, 4);
+
+}
+
+function pick_from_table(chance, array, grow){
+
+	var grow = grow !== undefined ? grow : false;
+	var keys = Object.keys(array);
+	var values = array;
+	var target = 0;
+	var index = 0;
+	for(var index = 0; index < keys.length; index++){
+		if(grow){
+			target += values[keys[index]];
+		}else{
+			target = values[keys[index]];
+		}
+		if(chance <= target){
+			return {
+				'index': index,
+				'key': keys[index],
+				'value': values[keys[index]]
+			};
+		}
+	}
+	return false;
+
+}
+
 function matcher(params, data){
 
     // If there are no search terms, return all of the data

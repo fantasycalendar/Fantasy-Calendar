@@ -439,14 +439,17 @@
                 <div class='detail-row small-text' id='season_length_text'></div>
 
                 <div class='detail-row'>
-                    <div class='detail-column'>Season offset (days):</div>
-                    <div class='detail-column float'>
+                    <div class='detail-row'>
+                        Season offset (days):
+                    </div>
+                    <div class='detail-row margin-below'>
                         <input class='form-control form-control-sm static_input' type='number' data='seasons.global_settings' fc-index='season_offset'/>
                     </div>
                 </div>
 
                 <div class='detail-row'>
                     <button type='button' class='btn btn-secondary full' id='create_season_events'>Create solstice and equinox events</button>
+                    <i class='center-text full'>(requires clock enabled)</i>
                 </div>
             </div>
 

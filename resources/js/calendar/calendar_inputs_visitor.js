@@ -344,12 +344,12 @@ function evaluate_sun(){
 		return;
 	}
 
-	if(evaluated_static_data.processed_seasons && evaluated_static_data.epoch_data[dynamic_data.epoch] !== undefined){
+	if(evaluated_static_data.processed_seasons && evaluated_static_data.epoch_data[preview_date.epoch] !== undefined){
 
 		var clock_hours = static_data.clock.hours;
 
-		var sunset = evaluated_static_data.epoch_data[dynamic_data.epoch].season.time.sunset[0];
-		var sunrise = evaluated_static_data.epoch_data[dynamic_data.epoch].season.time.sunrise[0];
+		var sunset = evaluated_static_data.epoch_data[preview_date.epoch].season.time.sunset[0];
+		var sunrise = evaluated_static_data.epoch_data[preview_date.epoch].season.time.sunrise[0];
 
 		sunset = sunset%clock_hours;
 		sunrise = sunrise%clock_hours;

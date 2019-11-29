@@ -6,43 +6,21 @@ onmessage = e => {
 	
 	var calendar_name = e.data.calendar_name;
 
-	var owner = e.data.owner;
-
 	var static_data = e.data.static_data;
 	
 	var dynamic_data = e.data.dynamic_data;
 
 	var preview_date = e.data.preview_date;
-
-	if(dynamic_data.year != preview_date.year || dynamic_data.timespan != preview_date.timespan || dynamic_data.day != preview_date.day){
-		dynamic_data.year = preview_date.year;
-		dynamic_data.timespan = preview_date.timespan;
-		dynamic_data.day = preview_date.day;
-	}
 	
+	var start_epoch = e.data.start_epoch;
+
+	var end_epoch = e.data.end_epoch;
+
 	var epoch_data = e.data.epoch_data;
 
-	var first_epoch = Number(Object.keys(epoch_data)[0]);
-	
-	climate_generator.set_up(calendar_name, static_data, dynamic_data, first_epoch);
+	climate_generator = new Climate(epoch_data, static_data, dynamic_data, start_epoch, end_epoch);
 
-	if(climate_generator.process_seasons){
-
-		for(var epoch in epoch_data){
-
-			var epoch = Number(epoch);
-
-			epoch_data[epoch].season = climate_generator.get_season_data(epoch);
-
-			if(climate_generator.process_weather){
-				epoch_data[epoch].weather = climate_generator.get_weather_data(epoch);
-			}else{
-				epoch_data[epoch].weather = false;
-			}
-			
-		}
-
-	}
+	epoch_data = climate_generator.generate();
 	
 	postMessage({
 		epoch_data: epoch_data,

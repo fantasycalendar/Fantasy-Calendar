@@ -180,7 +180,7 @@ function set_up_view_inputs(){
 		if(prev_location_type){
 			var prev_location = static_data.seasons.locations[dynamic_data.location];
 		}else{
-			var prev_location = climate_generator.presets[dynamic_data.location];
+			var prev_location = preset_data.locations[dynamic_data.location];
 		}
 
 		dynamic_data.custom_location = location_select.find('option:selected').parent().attr('value') === "custom" && !location_select.find('option:selected').prop('disabled');
@@ -192,7 +192,7 @@ function set_up_view_inputs(){
 		if(dynamic_data.custom_location){
 			var location = static_data.seasons.locations[dynamic_data.location];
 		}else{
-			var location = climate_generator.presets[dynamic_data.location];
+			var location = preset_data.locations[dynamic_data.location];
 		}
 
 		if(prev_location_type){
@@ -303,8 +303,8 @@ function repopulate_location_select_list(){
 		if(static_data.seasons.global_settings.enable_weather){
 			if((static_data.seasons.data.length == 2 || static_data.seasons.data.length == 4)){
 				html.push('<optgroup label="Presets" value="preset">');
-				for(var i = 0; i < Object.keys(climate_generator.presets[static_data.seasons.data.length]).length; i++){
-					html.push(`<option>${Object.keys(climate_generator.presets[static_data.seasons.data.length])[i]}</option>`);
+				for(var i = 0; i < Object.keys(preset_data.locations[static_data.seasons.data.length]).length; i++){
+					html.push(`<option>${Object.keys(preset_data.locations[static_data.seasons.data.length])[i]}</option>`);
 				}
 				html.push('</optgroup>');
 			}else{

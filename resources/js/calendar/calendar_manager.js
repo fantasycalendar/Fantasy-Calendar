@@ -74,7 +74,8 @@ function rebuild_climate(){
 		dynamic_data: dynamic_data,
 		preview_date: preview_date,
 		epoch_data: evaluated_static_data.epoch_data,
-		owner: owner
+		start_epoch: evaluated_static_data.year_data.start_epoch,
+		end_epoch: evaluated_static_data.year_data.end_epoch
 	});
 }
 
