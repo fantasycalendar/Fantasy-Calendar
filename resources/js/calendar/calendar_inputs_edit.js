@@ -577,14 +577,21 @@ function set_up_edit_inputs(set_up){
 		var prev_season = static_data.seasons.locations[location_id].seasons[prev_id];
 		var next_season = static_data.seasons.locations[location_id].seasons[(season_id+1)%static_data.seasons.data.length];
 
+		var season_length = static_data.seasons.data[prev_id].duration+static_data.seasons.data[prev_id].transition_length+static_data.seasons.data[season_id].duration+static_data.seasons.data[season_id].transition_length;
+		var target = static_data.seasons.data[prev_id].duration+static_data.seasons.data[prev_id].transition_length;
+		var perc = target/season_length;
+
+		console.log(perc)
+
 		if(static_data.clock.enabled){
 
-			var sunrise_h = mid(prev_season.time.sunrise.hour, next_season.time.sunrise.hour)
-			var sunrise_m = mid(prev_season.time.sunrise.minute, next_season.time.sunrise.minute)
+			var prev_sunrise = prev_season.time.sunrise.hour+(prev_season.time.sunrise.minute/static_data.clock.minutes);
+			var next_sunrise = next_season.time.sunrise.hour+(next_season.time.sunrise.minute/static_data.clock.minutes);
 
-			var sunrise = sunrise_h+sunrise_m/static_data.clock.minutes;
-			var sunrise_h = Math.floor(sunrise)
-			var sunrise_m = Math.floor(fract(sunrise)*static_data.clock.minutes)
+			var middle = lerp(prev_sunrise, next_sunrise, perc)
+
+			var sunrise_h = Math.floor(middle)
+			var sunrise_m = Math.floor(fract(middle)*static_data.clock.minutes)
 
 			current_season.find("input[clocktype='sunrise_hour']").val(sunrise_h)
 			current_season.find("input[clocktype='sunrise_minute']").val(sunrise_m)
@@ -593,12 +600,13 @@ function set_up_edit_inputs(set_up){
 			static_data.seasons.locations[location_id].seasons[season_id].time.sunrise.minute = sunrise_m;
 
 
-			var sunset_h = mid(prev_season.time.sunset.hour, next_season.time.sunset.hour)
-			var sunset_m = mid(prev_season.time.sunset.minute, next_season.time.sunset.minute)
+			var prev_sunset = prev_season.time.sunset.hour+(prev_season.time.sunset.minute/static_data.clock.minutes);
+			var next_sunset = next_season.time.sunset.hour+(next_season.time.sunset.minute/static_data.clock.minutes);
 
-			var sunset = sunset_h+sunset_m/static_data.clock.minutes;
-			var sunset_h = Math.floor(sunset)
-			var sunset_m = Math.floor(fract(sunset)*static_data.clock.minutes);
+			var middle = lerp(prev_sunset, next_sunset, perc)
+
+			var sunset_h = Math.floor(middle)
+			var sunset_m = Math.floor(fract(middle)*static_data.clock.minutes)
 
 			current_season.find("input[clocktype='sunset_hour']").val(sunset_h)
 			current_season.find("input[clocktype='sunset_minute']").val(sunset_m)
@@ -610,10 +618,10 @@ function set_up_edit_inputs(set_up){
 
 		if(static_data.seasons.global_settings.enable_weather){
 
-			var temp_low = mid(prev_season.weather.temp_low, next_season.weather.temp_low)
-			var temp_high = mid(prev_season.weather.temp_high, next_season.weather.temp_high)
-			var precipitation = mid(prev_season.weather.precipitation, next_season.weather.precipitation)
-			var precipitation_intensity = mid(prev_season.weather.precipitation_intensity, next_season.weather.precipitation_intensity)
+			var temp_low = precisionRound(lerp(prev_season.weather.temp_low, next_season.weather.temp_low, perc),2);
+			var temp_high = precisionRound(lerp(prev_season.weather.temp_high, next_season.weather.temp_high, perc),2);
+			var precipitation = precisionRound(lerp(prev_season.weather.precipitation, next_season.weather.precipitation, perc),2);
+			var precipitation_intensity = precisionRound(lerp(prev_season.weather.precipitation_intensity, next_season.weather.precipitation_intensity, perc),2);
 
 			current_season.find("input[fc-index='precipitation']").val(precipitation).parent().parent().find('.slider_input').val(precipitation)
 			current_season.find("input[fc-index='precipitation_intensity']").val(precipitation_intensity).parent().parent().find('.slider_input').val(precipitation_intensity)
@@ -644,14 +652,19 @@ function set_up_edit_inputs(set_up){
 		var prev_season = static_data.seasons.data[prev_id];
 		var next_season = static_data.seasons.data[(season_id+1)%static_data.seasons.data.length];
 
+		var season_length = static_data.seasons.data[prev_id].duration+static_data.seasons.data[prev_id].transition_length+static_data.seasons.data[season_id].duration+static_data.seasons.data[season_id].transition_length;
+		var target = static_data.seasons.data[prev_id].duration+static_data.seasons.data[prev_id].transition_length;
+		var perc = target/season_length;
+
 		if(static_data.clock.enabled){
 
-			var sunrise_h = mid(prev_season.time.sunrise.hour, next_season.time.sunrise.hour)
-			var sunrise_m = mid(prev_season.time.sunrise.minute, next_season.time.sunrise.minute)
+			var prev_sunrise = prev_season.time.sunrise.hour+(prev_season.time.sunrise.minute/static_data.clock.minutes);
+			var next_sunrise = next_season.time.sunrise.hour+(next_season.time.sunrise.minute/static_data.clock.minutes);
 
-			var sunrise = sunrise_h+sunrise_m/static_data.clock.minutes;
-			var sunrise_h = Math.floor(sunrise);
-			var sunrise_m = Math.floor(fract(sunrise)*static_data.clock.minutes);
+			var middle = lerp(prev_sunrise, next_sunrise, perc)
+
+			var sunrise_h = Math.floor(middle)
+			var sunrise_m = Math.floor(fract(middle)*static_data.clock.minutes)
 
 			container.find("input[clocktype='sunrise_hour']").val(sunrise_h)
 			container.find("input[clocktype='sunrise_minute']").val(sunrise_m)
@@ -660,12 +673,13 @@ function set_up_edit_inputs(set_up){
 			static_data.seasons.data[season_id].time.sunrise.minute = sunrise_m;
 
 
-			var sunset_h = mid(prev_season.time.sunset.hour, next_season.time.sunset.hour)
-			var sunset_m = mid(prev_season.time.sunset.minute, next_season.time.sunset.minute)
+			var prev_sunset = prev_season.time.sunset.hour+(prev_season.time.sunset.minute/static_data.clock.minutes);
+			var next_sunset = next_season.time.sunset.hour+(next_season.time.sunset.minute/static_data.clock.minutes);
 
-			var sunset = sunset_h+sunset_m/static_data.clock.minutes;
-			var sunset_h = Math.floor(sunset);
-			var sunset_m = Math.floor(fract(sunset)*static_data.clock.minutes);
+			var middle = lerp(prev_sunset, next_sunset, perc)
+
+			var sunset_h = Math.floor(middle)
+			var sunset_m = Math.floor(fract(middle)*static_data.clock.minutes)
 
 			container.find("input[clocktype='sunset_hour']").val(sunset_h)
 			container.find("input[clocktype='sunset_minute']").val(sunset_m)
