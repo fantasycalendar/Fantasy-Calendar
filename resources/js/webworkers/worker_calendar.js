@@ -983,7 +983,7 @@ var calendar_builder = {
 
 		end_epoch = epoch;
 
-		climate_generator = new Climate(this.data.epochs, this.static_data, this.dynamic_data, calendar_start_epoch, calendar_end_epoch);
+		climate_generator = new Climate(this.data.epochs, this.static_data, this.dynamic_data, start_epoch, end_epoch);
 		this.data.epochs = climate_generator.generate()
 		
 		return {

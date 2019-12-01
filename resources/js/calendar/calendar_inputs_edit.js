@@ -581,8 +581,6 @@ function set_up_edit_inputs(set_up){
 		var target = static_data.seasons.data[prev_id].duration+static_data.seasons.data[prev_id].transition_length;
 		var perc = target/season_length;
 
-		console.log(perc)
-
 		if(static_data.clock.enabled){
 
 			var prev_sunrise = prev_season.time.sunrise.hour+(prev_season.time.sunrise.minute/static_data.clock.minutes);

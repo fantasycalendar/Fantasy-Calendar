@@ -120,19 +120,21 @@ var edit_event_ui = {
     		
     		var prev = $(this).data('val');
 
-			var selected = edit_event_ui.condition_presets.children(':selected');
+			var selected = edit_event_ui.condition_presets.find(':selected');
 
 			if(selected.val() == prev){
 				return;
 			}
 
 			var nth = selected[0].hasAttribute('nth');
+
+			edit_event_ui.data.moon_id = selected.attr('moon');
 							
 			edit_event_ui.repeat_input.prop('disabled', !nth).parent().toggleClass('hidden', !nth);
 
 			edit_event_ui.update_every_nth_presets();
 
-			if(edit_event_ui.event_conditions_container.children().length > 0 && e.originalEvent){
+			if(e.originalEvent){
 
 				if(edit_event_ui.conditions_changed){
 
@@ -153,6 +155,8 @@ var edit_event_ui = {
 
 							edit_event_ui.event_conditions_container.empty();
 							edit_event_ui.add_preset_conditions(preset, repeats);
+				
+							$(this).data('val', $(this).val());
 
 						}else{
 
@@ -168,6 +172,7 @@ var edit_event_ui = {
 
 				}else{
 
+
 					var preset = edit_event_ui.condition_presets.val();
 					var repeats = edit_event_ui.repeat_input.val()|0;
 
@@ -175,6 +180,9 @@ var edit_event_ui = {
 
 					edit_event_ui.event_conditions_container.empty();
 					edit_event_ui.add_preset_conditions(preset, repeats);
+				
+					$(this).data('val', $(this).val());
+
 				}
 
 			}else{
@@ -186,6 +194,8 @@ var edit_event_ui = {
 
 				edit_event_ui.event_conditions_container.empty();
 				edit_event_ui.add_preset_conditions(preset, repeats);
+				
+				$(this).data('val', $(this).val());
 
 			}
 
@@ -666,6 +676,30 @@ var edit_event_ui = {
 		this.condition_presets.find('option[value="annually_date"]').text(`Annually on the ${ordinal_suffix_of(edit_event_ui.data.day)} of ${edit_event_ui.data.timespan_name}`);
 		this.condition_presets.find('option[value="annually_month_weekday"]').text(`Annually on the ${ordinal_suffix_of(edit_event_ui.data.month_week_num)} ${edit_event_ui.data.week_day_name} in ${edit_event_ui.data.timespan_name}`);
 
+		var html = [];
+
+		var moon_phase_collection = ''
+
+		for(moon_index in static_data.moons){
+
+			var moon = static_data.moons[moon_index];
+
+			var moon_phase_name = moon_phases[moon.granularity][edit_event_ui.data.moon_phase[moon_index]];
+
+			moon_phase_collection += `${moon.name} is ${moon_phase_name}, `
+
+			html.push(`<option moon="${moon_index}" value="moon_every">${moon.name} - Every ${moon_phase_name}</option>`);
+			html.push(`<option moon="${moon_index}" value="moon_n_every">${moon.name} - Every ${ordinal_suffix_of(edit_event_ui.data.moon_phase_num_month[moon_index])} ${moon_phase_name}</option>`);
+			html.push(`<option moon="${moon_index}" value="moon_annually">${moon.name} - Annually every ${moon_phase_name} in ${edit_event_ui.data.timespan_name}</option>`);
+			html.push(`<option moon="${moon_index}" value="moon_n_annually">${moon.name} - Annually every ${ordinal_suffix_of(edit_event_ui.data.moon_phase_num_month[moon_index])} ${moon_phase_name} in ${edit_event_ui.data.timespan_name}</option>`);
+			html.push(`<option moon="${moon_index}" value="moon_yearly">${moon.name} - Every ${ordinal_suffix_of(edit_event_ui.data.moon_phase_num_year[moon_index])} ${moon_phase_name} in the year</option>`);
+
+		}
+
+		html.push(`<option value="multimoon_every" title="${moon_phase_collection.substring(0, moon_phase_collection.length-2)}">When the moons are all in this alignment.</option>`);
+
+		this.condition_presets.find('optgroup[value="moons"]').html(html.join('')).toggleClass('hidden', html.length == 0);
+
 		this.condition_presets.children().eq(1).prop('selected', true).change();
 
 	},
@@ -690,6 +724,11 @@ var edit_event_ui = {
 	add_preset_conditions: function(preset, repeats){
 
 		switch(preset){
+
+			case 'none':
+				var result = [];
+				break;
+
 			case 'once':
 				var result = [
 					['Year', '0', [edit_event_ui.data.year]],
@@ -806,51 +845,56 @@ var edit_event_ui = {
 				];
 				break;
 
-			/*case 'moon_every':
+			case 'moon_every':
 				var result = [
-					['Moons', '0', [edit_event_ui.data.moon_id, convert_to_granularity(edit_event_ui.data.moon_phase)]]
+					['Moons', '0', [edit_event_ui.data.moon_id, edit_event_ui.data.moon_phase[edit_event_ui.data.moon_id]]]
 				];
 				break;
 
-			case 'moon_monthly':
+			case 'moon_n_every':
 				var result = [
-					['Moons', '0', [edit_event_ui.data.moon_id, convert_to_granularity(edit_event_ui.data.moon_phase)]],
+					['Moons', '0', [edit_event_ui.data.moon_id, edit_event_ui.data.moon_phase[edit_event_ui.data.moon_id]]],
 					['&&'],
-					['Moons', '7', [edit_event_ui.data.moon_id, convert_to_granularity(edit_event_ui.data.moon_phase_number)]]
+					['Moons', '7', [edit_event_ui.data.moon_id, edit_event_ui.data.moon_phase_num_month[edit_event_ui.data.moon_id]]]
 				];
 				break;
 
-			case 'moon_anually':
+			case 'moon_annually':
 				var result = [
-					['Moons', '0', [edit_event_ui.data.moon_id, convert_to_granularity(edit_event_ui.data.moon_phase)]],
-					['&&'],
-					['Moons', '7', [edit_event_ui.data.moon_id, edit_event_ui.data.moon_phase_number]],
+					['Moons', '0', [edit_event_ui.data.moon_id, edit_event_ui.data.moon_phase[edit_event_ui.data.moon_id]]],
 					['&&'],
 					['Month', '0', [edit_event_ui.data.timespan_index]]
 				];
 				break;
 
+			case 'moon_n_annually':
+				var result = [
+					['Moons', '0', [edit_event_ui.data.moon_id, edit_event_ui.data.moon_phase[edit_event_ui.data.moon_id]]],
+					['&&'],
+					['Moons', '7', [edit_event_ui.data.moon_id, edit_event_ui.data.moon_phase_num_month[edit_event_ui.data.moon_id]]],
+					['&&'],
+					['Month', '0', [edit_event_ui.data.timespan_index]]
+				];
+				break;
+
+			case 'moon_yearly':
+				var result = [
+					['Moons', '0', [edit_event_ui.data.moon_id, edit_event_ui.data.moon_phase[edit_event_ui.data.moon_id]]],
+					['&&'],
+					['Moons', '14', [edit_event_ui.data.moon_id, edit_event_ui.data.moon_phase_num_year[edit_event_ui.data.moon_id]]]
+				];
+				break;
+
 			case 'multimoon_every':
 				var result = [];
-				for(var i = 0; i < edit_event_ui.data.moons.length; i++){
-					result.push(['Moons', '0', [i, convert_to_granularity(edit_event_ui.data.moons[i].moon_phase)]])
-					if(i != edit_event_ui.data.moons.length-1){
+				for(var i = 0; i < static_data.moons.length; i++){
+					result.push(['Moons', '0', [i, edit_event_ui.data.moon_phase[i]]])
+					if(i != static_data.moons.length-1){
 						result.push(['&&']);
 					}
 				}
 				break;
 
-			case 'multimoon_anually':
-				var result = [];
-				result.push(['Month', '0', [edit_event_ui.data.timespan_index]]);
-				result.push(['&&']);
-				for(var i = 0; i < edit_event_ui.data.moons.length; i++){
-					result.push(['Moons', '0', [i, convert_to_granularity(edit_event_ui.data.moons[i].moon_phase)]])
-					if(i != edit_event_ui.data.moons.length-1){
-						result.push(['&&']);
-					}
-				}
-				break;*/
 		}
 
 		this.create_conditions(result, edit_event_ui.event_conditions_container);
@@ -1637,14 +1681,17 @@ var edit_event_ui = {
 
 		edit_event_ui.worker_future_calendar = new Worker('/js/webworkers/worker_calendar.js');
 
+		start_year = dynamic_data.year+1;
+		end_year = dynamic_data.year+1+years;
+
 		edit_event_ui.worker_future_calendar.postMessage({
 			calendar_name: calendar_name,
 			static_data: static_data,
 			dynamic_data: dynamic_data,
 			action: "future",
 			owner: owner,
-			start_year: dynamic_data.year+1,
-			end_year: dynamic_data.year+2+years
+			start_year: start_year,
+			end_year: end_year
 		});
 
 		edit_event_ui.worker_future_calendar.onmessage = e => {
@@ -1678,7 +1725,7 @@ var edit_event_ui = {
 						var epoch = event_occurrences[event_occurrence];
 						var epoch_data = edit_event_ui.event_data[epoch];
 
-						if(convert_year(static_data, epoch_data.year) > dynamic_data.year){
+						if(epoch_data.year >= start_year && epoch_data.year < end_year){
 							edit_event_ui.event_occurrences.push(event_occurrences[event_occurrence])
 						}
 
