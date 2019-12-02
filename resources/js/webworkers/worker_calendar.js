@@ -71,7 +71,7 @@ var calendar_builder = {
 
 				leap_day.index = leap_day_index;
 
-				if(is_leap(year, leap_day.interval, leap_day.offset)){
+				if(is_leap(this.static_data, year, leap_day.interval, leap_day.offset)){
 
 					if(leap_day.intercalary){
 						if(timespan.type === 'intercalary'){
@@ -521,8 +521,8 @@ var calendar_builder = {
 		num_timespans = year_start_data.num_timespans;
 		total_week_num = year_start_data.total_week_num;
 
-		epoch = year_start_data.epoch+1;
-		start_epoch = epoch+1;
+		epoch = year_start_data.epoch;
+		start_epoch = epoch;
 
 		var current_era = false;
 

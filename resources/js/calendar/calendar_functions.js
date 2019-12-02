@@ -586,7 +586,7 @@ class date_manager {
 
 	get adjusted_year(){
 
-		return !static_data.settings.year_zero_exists && this._year >= 0 ? this._year+1 : this._year;
+		return unconvert_year(static_data, this.year);
 
 	}
 
@@ -796,7 +796,7 @@ function does_leap_day_appear(static_data, year, timespan, leap_day){
 
 	var leap_day = static_data.year_data.leap_days[leap_day];
 
-	return timespan_appears && is_leap(year, leap_day.interval, leap_day.offset);
+	return timespan_appears && is_leap(static_data, year, leap_day.interval, leap_day.offset);
 
 }
 
@@ -814,6 +814,23 @@ function convert_year(static_data, year){
 		return year;
 	}else{
 		return year > 0 ? year-1 : year;
+	}
+}
+
+
+/**
+ * This function is used to convert a year to an absolute year, meaning that it will be converted to a mathematically safe number to be used in sensitive epoch calculations.
+ * Most of the time, this means if the year is above 1, it will be subtracted by 1. If it's below 0, it will not be touched.
+ *
+ * @param  {object}     static_data     A calendar static data object
+ * @param  {int}        year            The a number of a year
+ * @return {int}                        The absolute year
+ */
+function unconvert_year(static_data, year){
+	if(static_data.settings.year_zero_exists){
+		return year;
+	}else{
+		return year >= 0 ? year+1 : year;
 	}
 }
 
@@ -1415,7 +1432,7 @@ function strip_intervals(_intervals, _offset){
  * @param  {int}    offsets     An int used to offset the contextual starting point of the intervals - Interval of 10 and offset of 5 means this interval starts at 5, continuing to 15, 25, 35.
  * @return {bool}               A boolean determining whether this interval happens on the year
  */
-function is_leap(_year, _intervals, _offset) {
+function is_leap(static_data, _year, _intervals, _offset) {
 
 	var intervals = strip_intervals(_intervals, _offset);
 
@@ -1423,7 +1440,7 @@ function is_leap(_year, _intervals, _offset) {
 
 		var i = intervals[index];
 
-		var year = _year >= 0 ? _year+1 : _year;
+		var year = unconvert_year(static_data, _year);
 
 		if((year-i.offset) % i.interval == 0){
 			return !i.negator;
@@ -1681,11 +1698,7 @@ function evaluate_calendar_start(static_data, year, month, day){
 	var month = !isNaN(month) ? (month|0) : 0;
 	var day = !isNaN(day) ? (day|0)-1 : 0;
 
-	if(static_data.settings.year_zero_exists){
-		var era_year = year;
-	}else{
-		var era_year = year >= 0 ? year+1 : year;
-	}
+	var era_year = unconvert_year(static_data, year);
 
 	tmp = get_epoch(static_data, year, month, day);
 	var epoch = tmp[0];
