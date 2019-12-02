@@ -1681,13 +1681,13 @@ var edit_event_ui = {
 
 		edit_event_ui.worker_future_calendar = new Worker('/js/webworkers/worker_calendar.js');
 
-		start_year = dynamic_data.year;
-		end_year = dynamic_data.year+years;
+		start_year = preview_date.year;
+		end_year = preview_date.year+years;
 
 		edit_event_ui.worker_future_calendar.postMessage({
 			calendar_name: calendar_name,
 			static_data: static_data,
-			dynamic_data: dynamic_data,
+			dynamic_data: preview_date,
 			action: "future",
 			owner: owner,
 			start_year: start_year,

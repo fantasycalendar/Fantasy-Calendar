@@ -302,9 +302,9 @@ var calendar_builder = {
 			post_timespans_to_evaluate: {}
 		}
 
-		start_year = convert_year(this.static_data, start_year);
-		end_year = convert_year(this.static_data, end_year);
-		adjusted_year = start_year;
+		var start_year = convert_year(this.static_data, start_year);
+		var end_year = convert_year(this.static_data, end_year);
+		var adjusted_year = start_year;
 
 		for(year = start_year; year <= end_year; year++){
 
@@ -335,8 +335,8 @@ var calendar_builder = {
 		}
 
 
-		pre_search = 0;
-		post_search = 0;
+		var pre_search = 0;
+		var post_search = 0;
 		for(event_index = 0; event_index < this.static_data.event_data.events.length; event_index++){
 			var event = this.static_data.event_data.events[event_index];
 			pre_search = event.data.duration > pre_search ? event.data.duration : pre_search;
@@ -346,10 +346,10 @@ var calendar_builder = {
 		}
 
 
-		days = 0;
+		var days = 0;
 
-		pre_year = adjusted_year;
-		pre_timespan = Object.keys(this.calendar_list.post_timespans_to_evaluate[adjusted_year])[0];
+		var pre_year = adjusted_year;
+		var pre_timespan = Object.keys(this.calendar_list.post_timespans_to_evaluate[adjusted_year])[0];
 
 		if(pre_search != 0){
 
@@ -420,8 +420,8 @@ var calendar_builder = {
 
 		days = 0;
 
-		post_year = end_year;
-		post_timespan = timespan;
+		var post_year = end_year;
+		var post_timespan = timespan;
 
 		if(post_search != 0){
 
@@ -515,14 +515,14 @@ var calendar_builder = {
 
 		}
 
-		year_start_data = evaluate_calendar_start(this.static_data, first_eval_year, first_eval_month);
-		era_year = year_start_data.era_year;
-		count_timespans = year_start_data.count_timespans;
-		num_timespans = year_start_data.num_timespans;
-		total_week_num = year_start_data.total_week_num;
+		var year_start_data = evaluate_calendar_start(this.static_data, first_eval_year, first_eval_month);
+		var era_year = year_start_data.era_year;
+		var count_timespans = year_start_data.count_timespans;
+		var num_timespans = year_start_data.num_timespans;
+		var total_week_num = year_start_data.total_week_num;
 
-		epoch = year_start_data.epoch;
-		start_epoch = epoch;
+		var epoch = year_start_data.epoch;
+		var start_epoch = epoch;
 
 		var current_era = false;
 
@@ -532,17 +532,17 @@ var calendar_builder = {
 			}
 		}
 
-		year_day = 1+year_start_data.epoch-evaluate_calendar_start(this.static_data, first_eval_year).epoch;
+		var year_day = 1+year_start_data.epoch-evaluate_calendar_start(this.static_data, first_eval_year).epoch;
 
-		week_day = year_start_data.week_day;
+		var week_day = year_start_data.week_day;
 
-		order = Object.keys(this.calendar_list.pre_timespans_to_evaluate);
+		var order = Object.keys(this.calendar_list.pre_timespans_to_evaluate);
 
 		if(order[0] > order[order.length-1]){
 			order.reverse();
 		}
 
-		last_year = undefined;
+		var last_year = undefined;
 
 		for(var year_i = 0; year_i < order.length; year_i++){
 
@@ -981,9 +981,9 @@ var calendar_builder = {
 			era_year++;
 		}
 
-		end_epoch = epoch;
+		var end_epoch = epoch;
 
-		climate_generator = new Climate(this.data.epochs, this.static_data, this.dynamic_data, start_epoch, end_epoch);
+		var climate_generator = new Climate(this.data.epochs, this.static_data, this.dynamic_data, start_epoch, end_epoch);
 		this.data.epochs = climate_generator.generate()
 		
 		return {
