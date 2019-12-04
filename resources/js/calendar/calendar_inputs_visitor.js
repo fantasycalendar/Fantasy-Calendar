@@ -132,7 +132,7 @@ function set_up_visitor_inputs(){
 		go_to_preview_date();
 	});
 
-	$('#reset_preview_date').click(function(){
+	$('.reset_preview_date').click(function(){
 		if($(this).prop('disabled')) return;
 		go_to_dynamic_date();
 	});
@@ -178,11 +178,9 @@ function update_preview_calendar(){
 }
 
 
-function go_to_preview_date(){
+function go_to_preview_date(rebuild){
 
 	preview_date.follow = false
-
-	$('#reset_preview_date').prop("disabled", preview_date.follow).toggleClass('disabled', preview_date.follow);
 
 	var data = preview_date_manager.compare(preview_date)
 
@@ -191,24 +189,37 @@ function go_to_preview_date(){
 	preview_date.day = data.day;
 	preview_date.epoch = data.epoch;
 
-	if(data.rebuild){
-		rebuild_calendar('preview', preview_date)
+	if(preview_date_manager.epoch < dynamic_date_manager.epoch){
+		$('.reset_preview_date_container.right .reset_preview_date').prop("disabled", preview_date.follow).toggleClass('hidden', preview_date.follow);
+	}else if(preview_date_manager.epoch > dynamic_date_manager.epoch){
+		$('.reset_preview_date_container.left .reset_preview_date').prop("disabled", preview_date.follow).toggleClass('hidden', preview_date.follow);
+	}
+
+	rebuild = rebuild !== undefined ? rebuild : data.rebuild;
+
+	if(preview_date.year == dynamic_data.year && preview_date.timespan == dynamic_data.timespan && preview_date.day == dynamic_data.day){
+		go_to_dynamic_date(rebuild);
 	}else{
-		highlight_preview_date()
-		scroll_to_epoch(preview_date.epoch)
+		if(rebuild){
+			rebuild_calendar('preview', preview_date)
+		}else{
+			highlight_preview_date()
+			scroll_to_epoch(preview_date.epoch)
+		}
 	}
 
 }
 
-function go_to_dynamic_date(){
+function go_to_dynamic_date(rebuild){
 
 	preview_date.follow = true
-
-	$('#reset_preview_date').prop("disabled", preview_date.follow).toggleClass('disabled', preview_date.follow);
 
 	preview_date_manager.year = dynamic_date_manager.year;
 	preview_date_manager.timespan = dynamic_date_manager.timespan;
 	preview_date_manager.day = dynamic_date_manager.day;
+
+	$('.reset_preview_date_container.right .reset_preview_date').prop("disabled", preview_date.follow).toggleClass('hidden', preview_date.follow);
+	$('.reset_preview_date_container.left .reset_preview_date').prop("disabled", preview_date.follow).toggleClass('hidden', preview_date.follow);
 
 	evaluate_preview_change();
 
@@ -219,7 +230,9 @@ function go_to_dynamic_date(){
 	preview_date.day = data.day;
 	preview_date.epoch = data.epoch;
 
-	if(data.rebuild){
+	rebuild = rebuild !== undefined ? rebuild : data.rebuild;
+
+	if(rebuild){
 		rebuild_calendar('preview', dynamic_data)
 	}else{
 		update_current_day(false)
@@ -540,7 +553,8 @@ function set_up_preview_values(){
 
 		preview_date.follow = true
 
-		$('#reset_preview_date').prop("disabled", preview_date.follow).toggleClass('disabled', preview_date.follow);
+		$('.reset_preview_date_container.right .reset_preview_date').prop("disabled", preview_date.follow).toggleClass('hidden', preview_date.follow);
+		$('.reset_preview_date_container.left .reset_preview_date').prop("disabled", preview_date.follow).toggleClass('hidden', preview_date.follow);
 
 		preview_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
 

@@ -234,6 +234,67 @@ function set_up_view_inputs(){
 
 	});
 
+
+
+	$('#current_date_btn').click(function(){
+		increment_date_units(true);
+	});
+
+	$('#preview_date_btn').click(function(){
+		increment_date_units(false);
+	});
+
+
+	$('#unit_years').val("");
+	$('#unit_months').val("");
+	$('#unit_days').val("");
+
+}
+
+
+function increment_date_units(current){
+
+	var unit_years = $('#unit_years').val()|0;
+	var unit_months = $('#unit_months').val()|0;
+	var unit_days = $('#unit_days').val()|0;
+
+	if(current){
+		var manager = dynamic_date_manager;
+	}else{
+		var manager = preview_date_manager;
+	}
+
+	for(var years = 1; years <= Math.abs(unit_years); years++){
+		if(unit_years < 0){
+			manager.subtract_year();
+		}else if(unit_years > 0){
+			manager.add_year();
+		}
+	}
+
+	for(var months = 1; months <= Math.abs(unit_months); months++){
+		if(unit_months < 0){
+			manager.subtract_timespan();
+		}else if(unit_months > 0){
+			manager.add_timespan();
+		}
+	}
+
+	for(var days = 1; days <= Math.abs(unit_days); days++){
+		if(unit_days < 0){
+			manager.subtract_day();
+		}else if(unit_days > 0){
+			manager.add_day();
+		}
+	}
+
+	if(current){
+		evaluate_dynamic_change();
+	}else{
+		evaluate_preview_change();
+		go_to_preview_date();
+	}
+
 }
 
 function evaluate_dynamic_change(){
