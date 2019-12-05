@@ -134,6 +134,7 @@ function set_up_visitor_inputs(){
 
 	$('.reset_preview_date').click(function(){
 		if($(this).prop('disabled')) return;
+        $(this).protipHide();
 		go_to_dynamic_date();
 	});
 
