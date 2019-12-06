@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Auth;
 use Illuminate\Http\Request;
+use Laravel\Cashier\Exceptions\IncompletePayment;
 use Redirect;
 
 class SubscriptionController extends Controller
@@ -48,15 +49,23 @@ class SubscriptionController extends Controller
             'intent' => $intent,
             'level' => $level,
             'plan' => $plan,
-            'interval' => $interval
+            'interval' => $interval,
+            'user' => Auth::user()
         ]);
     }
 
     public function update(Request $request, $level, $plan) {
         $user = Auth::user();
 
-        $user->newSubscription($level, $plan)->create($request->input('token'));
-
+        try {
+            $user->newSubscription($level, $plan)->create($request->input('token'));
+        } catch (IncompletePayment $exception) {
+            
+            return redirect()->route(
+                'cashier.payment',
+                [$exception->payment->id, 'redirect' => route('profile')]
+            );
+        }
         return ['success' => true, 'message' => 'Subscribed'];
     }
 
@@ -91,6 +100,6 @@ class SubscriptionController extends Controller
 
         $subscription->resume();
 
-        return Redirect::route('subscription.index');
+        return Redirect::route('profile');
     }
 }

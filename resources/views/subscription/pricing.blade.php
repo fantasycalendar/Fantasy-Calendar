@@ -97,7 +97,7 @@
                     @guest
                         <a href="{{ route('register') }}" class="btn btn-primary">Register now</a>
                     @else
-                        @unless($subscribed)
+                        @unless($subscribed && !Auth::user()->subscriptions->first()->onGracePeriod())
                             <a href="#" class="btn btn-secondary disabled">You already have this!</a>
                         @else
                             <a href="{{ route('subscription.cancel') }}" class="btn btn-danger">Cancel Subscription</a>
@@ -110,7 +110,7 @@
                     <h2>Timekeeper</h2>
                     <h5>For users who need to keep track of multiple timelines, universes, or games.</h5>
                     <h3 class="bg-grey monthly">$1.49 / month</h3>
-                    <h3 class="bg-grey yearly">$14.99 / month<br><p class="small">Month and a half free!</p class=small></h3>
+                    <h3 class="bg-grey yearly">$14.99 / year<br><p class="small">Month and a half free!</p class=small></h3>
                     <ul class="features">
                         <li><strong>Full</strong> calendar functionality</li>
                         <li><strong>Unlimited</strong> number of calendars</li>
@@ -122,15 +122,23 @@
                         <a href="{{ route('user.register') }}">Register to subscribe</a>
                     @else
                         @if(Auth::user()->subscribedToPlan('timekeeper_monthly', 'Timekeeper'))
-                            <a href="#" class="btn btn-secondary disabled monthly">You have this!</a>
+                            @if(Auth::user()->subscriptions->first()->onGracePeriod())
+                                <a href="{{ route('subscription.resume', ['level' => 'Timekeeper']) }}" class="btn btn-info monthly">Resume monthly</a>
+                            @else
+                                <a href="#" class="btn btn-secondary disabled monthly">You have this!</a>
+                            @endif
                         @else
-                            <a @unless($subscribed) href="{{ route('subscription.subscribe', ['level' => 'Timekeeper', 'interval' => 'monthly']) }}" @else href="javascript:" @endunless @if($subscribed) onclick="swal('info','This doesn\'t work yet', 'info')" @endif class="btn btn-primary subscribe monthly">{{ $subscribed ? 'Switch to' : 'Subscribe' }} Monthly</a>
+                            <a @unless($subscribed) href="{{ route('subscription.subscribe', ['level' => 'Timekeeper', 'interval' => 'monthly']) }}" @else href="javascript:" @endunless @if($subscribed) onclick="swal('info','This doesn\'t work yet, you\'ll need to cancel and re-subscribe to change plans.', 'info')" @endif class="btn btn-primary subscribe monthly">{{ $subscribed ? 'Switch to' : 'Subscribe' }} Monthly</a>
                         @endif
 
                         @if(Auth::user()->subscribedToPlan('timekeeper_yearly', 'Timekeeper'))
-                            <a href="#" class="btn btn-secondary disabled yearly">You have this!</a>
+                                @if(Auth::user()->subscriptions->first()->onGracePeriod())
+                                    <a href="{{ route('subscription.resume', ['level' => 'Timekeeper']) }}" class="btn btn-info yearly">Resume yearly</a>
+                                @else
+                                    <a href="#" class="btn btn-secondary disabled monthly">You have this!</a>
+                                @endif
                         @else
-                            <a @unless($subscribed) href="{{ route('subscription.subscribe', ['level' => 'Timekeeper', 'interval' => 'yearly']) }}" @else href="javascript:" @endunless @if($subscribed) onclick="swal('info','This doesn\'t work yet', 'info')" @endif class="btn btn-primary subscribe yearly">{{ $subscribed ? 'Switch to' : 'Subscribe' }} Yearly</a>
+                            <a @unless($subscribed) href="{{ route('subscription.subscribe', ['level' => 'Timekeeper', 'interval' => 'yearly']) }}" @else href="javascript:" @endunless @if($subscribed) onclick="swal('info','This doesn\'t work yet, you\'ll need to cancel and re-subscribe to change plans.', 'info')" @endif class="btn btn-primary subscribe yearly">{{ $subscribed ? 'Switch to' : 'Subscribe' }} Yearly</a>
                         @endif
                     @endguest
                 </div>
@@ -154,15 +162,23 @@
                         <a href="{{ route('user.register') }}">Register to subscribe</a>
                     @else
                         @if(Auth::user()->subscribedToPlan('worldbuilder_monthly', 'Worldbuilder'))
-                            <a href="#" class="btn btn-secondary disabled monthly">You have this!</a>
+                            @if(Auth::user()->subscriptions->first()->onGracePeriod())
+                                <a href="{{ route('subscription.resume', ['level' => 'Worldbuilder']) }}" class="btn btn-info monthly">Resume monthly</a>
+                            @else
+                                <a href="#" class="btn btn-secondary disabled monthly">You have this!</a>
+                            @endif
                         @else
-                            <a @unless($subscribed) href="{{ route('subscription.subscribe', ['level' => 'Worldbuilder', 'interval' => 'monthly']) }}" @else href="javascript:" @endunless @if($subscribed) onclick="swal('info','This doesn\'t work yet', 'info')" @endif class="btn btn-primary subscribe monthly">{{ $subscribed ? 'Switch to' : 'Subscribe' }} Monthly</a>
+                            <a @unless($subscribed) href="{{ route('subscription.subscribe', ['level' => 'Worldbuilder', 'interval' => 'monthly']) }}" @else href="javascript:" @endunless @if($subscribed) onclick="swal('info','This doesn\'t work yet, you\'ll need to cancel and re-subscribe to change plans.', 'info')" @endif class="btn btn-primary subscribe monthly">{{ $subscribed ? 'Switch to' : 'Subscribe' }} Monthly</a>
                         @endif
 
                         @if(Auth::user()->subscribedToPlan('worldbuilder_yearly', 'Worldbuilder'))
-                            <a href="#" class="btn btn-secondary disabled yearly">You have this!</a>
+                                @if(Auth::user()->subscriptions->first()->onGracePeriod())
+                                    <a href="{{ route('subscription.resume', ['level' => 'Worldbuilder']) }}" class="btn btn-info yearly">Resume yearly</a>
+                                @else
+                                    <a href="#" class="btn btn-secondary disabled monthly">You have this!</a>
+                                @endif
                         @else
-                            <a @unless($subscribed) href="{{ route('subscription.subscribe', ['level' => 'Worldbuilder', 'interval' => 'yearly']) }}" @else href="javascript:" @endunless @if($subscribed) onclick="swal('info','This doesn\'t work yet', 'info')" @endif class="btn btn-primary subscribe yearly">{{ $subscribed ? 'Switch to' : 'Subscribe' }} Yearly</a>
+                            <a @unless($subscribed) href="{{ route('subscription.subscribe', ['level' => 'Worldbuilder', 'interval' => 'yearly']) }}" @else href="javascript:" @endunless @if($subscribed) onclick="swal('info','This doesn\'t work yet, you\'ll need to cancel and re-subscribe to change plans.', 'info')" @endif class="btn btn-primary subscribe yearly">{{ $subscribed ? 'Switch to' : 'Subscribe' }} Yearly</a>
                         @endif
                     @endguest
                 </div>
