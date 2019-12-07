@@ -200,13 +200,46 @@
                     </div>
 
                     <div class='detail-row'>
-                        <div class='detail-column half'>
-                            <div class='btn btn-danger full' id='reset_preview_date' disabled>Base date</div>
-                        </div>
-                        <div class='detail-column half'>
-                            <div class='btn btn-success full' id='go_to_preview_date'>Preview date</div>
-                        </div>
+                        <div class='btn btn-success full' id='go_to_preview_date'>Preview date</div>
                     </div>
+
+                </div>
+
+                <div class='wrap-collapsible card mt-2'>
+                    <input id="collapsible_add_units" class="toggle" type="checkbox">
+                    <label for="collapsible_add_units" class="lbl-toggle card-header small-lbl-text center-text">Add or subtract fixed units to calendar</label>
+                    <div class="collapsible-content card-body">
+
+                        <div class='row mb-2'>
+
+                            <div class='col px-1'>
+                                <input type='number' class="form-control form-control-sm full" id='unit_years' placeholder="Years"> 
+                            </div>
+
+                            <div class='col px-1'>
+                                <input type='number' class="form-control form-control-sm full" id='unit_months' placeholder="Months"> 
+                            </div>
+
+                            <div class='col px-1'>
+                                <input type='number' class="form-control form-control-sm full" id='unit_days' placeholder="Days"> 
+                            </div>
+
+                        </div>
+
+                        <div class='row'>
+
+                            <div class='col px-1'>
+                                <button type="button" step="1.0" class="btn btn-primary btn-sm full" id='current_date_btn'>To current date</button>
+                            </div>
+
+                            <div class='col px-1'>
+                                <button type="button" step="1.0" class="btn btn-secondary btn-sm full" id='preview_date_btn'>To preview date</button>
+                            </div>
+
+                        </div>
+
+                    </div>
+
                 </div>
 
             </div>
@@ -442,17 +475,18 @@
 
                 <div class='detail-row small-text' id='season_length_text'></div>
 
-
                 <div class='detail-row'>
-                    <div class='detail-column'>Season offset (days):</div>
-                    <div class='detail-column float'>
+                    <div class='detail-row'>
+                        Season offset (days):
+                    </div>
+                    <div class='detail-row margin-below'>
                         <input class='form-control form-control-sm static_input' type='number' data='seasons.global_settings' fc-index='season_offset'/>
                     </div>
                 </div>
 
                 <div class='detail-row'>
-                    <button type='button' class='btn btn-secondary full' id='create_season_events'>Create seasonal events</button>
-                    <a target="_blank" title='Makes the calendar only show the current month' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
+                    <button type='button' class='btn btn-secondary full' id='create_season_events'>Create solstice and equinox events</button>
+                    <i class='center-text full'>(requires clock enabled)</i>
                 </div>
             </div>
 
@@ -557,10 +591,10 @@
 
                 <div class='detail-row detail-select-container'>
                     <div class='detail-label'>Location:</div>
-                    <div class='detail-select'>
-                        <select class='form-control' id='location_select'>
-                        </select>
-                    </div>
+                </div>
+                <div class='detail-row'>
+                    <select class='form-control' id='location_select'>
+                    </select>
                 </div>
                 <div class='detail-row'>
                     <input type='button' value='Copy location data' class='btn btn-info full add' id='copy_location_data'>
@@ -879,8 +913,15 @@
 			<button class='btn btn-danger btn_preview_date hidden' disabled fc-index='timespan' value='-1'>< Month</button>
 		</div>
 
+        <div class='reset_preview_date_container left'>
+            <button type='button' class='btn btn-info hidden reset_preview_date protip' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >< Current</button>
+        </div>
+
 		<div id='top_follower_content'></div>
 
+        <div class='reset_preview_date_container right'>
+            <button type='button' class='btn btn-info hidden reset_preview_date protip' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >Current ></button>
+        </div>
 		<div class='btn_container hidden'>
 			<button class='btn btn-success btn_preview_date hidden' disabled fc-index='year' value='1'>Year ></button>
 			<button class='btn btn-success btn_preview_date hidden' disabled fc-index='timespan' value='1'>Month ></button>

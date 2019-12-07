@@ -131,10 +131,10 @@ function set_up_view_inputs(){
 		curr_hour = curr_hour + adjust;
 
 		if(curr_hour < 0){
-			sub_curr_day.click();
+			sub_current_day.click();
 			curr_hour = static_data.clock.hours-1;
 		}else if(curr_hour >= static_data.clock.hours){
-			add_curr_day.click();
+			add_current_day.click();
 			curr_hour = 0;
 		}
 
@@ -180,10 +180,10 @@ function set_up_view_inputs(){
 		if(prev_location_type){
 			var prev_location = static_data.seasons.locations[dynamic_data.location];
 		}else{
-			var prev_location = climate_generator.presets[dynamic_data.location];
+			var prev_location = preset_data.locations[dynamic_data.location];
 		}
 
-		dynamic_data.custom_location = location_select.find('option:selected').parent().attr('value') === "custom";
+		dynamic_data.custom_location = location_select.find('option:selected').parent().attr('value') === "custom" && !location_select.find('option:selected').prop('disabled');
 
 		dynamic_data.location = location_select.val();
 
@@ -192,7 +192,7 @@ function set_up_view_inputs(){
 		if(dynamic_data.custom_location){
 			var location = static_data.seasons.locations[dynamic_data.location];
 		}else{
-			var location = climate_generator.presets[dynamic_data.location];
+			var location = preset_data.locations[dynamic_data.location];
 		}
 
 		if(prev_location_type){
@@ -234,6 +234,67 @@ function set_up_view_inputs(){
 
 	});
 
+
+
+	$('#current_date_btn').click(function(){
+		increment_date_units(true);
+	});
+
+	$('#preview_date_btn').click(function(){
+		increment_date_units(false);
+	});
+
+
+	$('#unit_years').val("");
+	$('#unit_months').val("");
+	$('#unit_days').val("");
+
+}
+
+
+function increment_date_units(current){
+
+	var unit_years = $('#unit_years').val()|0;
+	var unit_months = $('#unit_months').val()|0;
+	var unit_days = $('#unit_days').val()|0;
+
+	if(current){
+		var manager = dynamic_date_manager;
+	}else{
+		var manager = preview_date_manager;
+	}
+
+	for(var years = 1; years <= Math.abs(unit_years); years++){
+		if(unit_years < 0){
+			manager.subtract_year();
+		}else if(unit_years > 0){
+			manager.add_year();
+		}
+	}
+
+	for(var months = 1; months <= Math.abs(unit_months); months++){
+		if(unit_months < 0){
+			manager.subtract_timespan();
+		}else if(unit_months > 0){
+			manager.add_timespan();
+		}
+	}
+
+	for(var days = 1; days <= Math.abs(unit_days); days++){
+		if(unit_days < 0){
+			manager.subtract_day();
+		}else if(unit_days > 0){
+			manager.add_day();
+		}
+	}
+
+	if(current){
+		evaluate_dynamic_change();
+	}else{
+		evaluate_preview_change();
+		go_to_preview_date();
+	}
+
 }
 
 function evaluate_dynamic_change(){
@@ -267,6 +328,8 @@ function evaluate_dynamic_change(){
 
 	update_current_day(false);
 
+	evaluate_save_button();
+
 }
 
 
@@ -282,11 +345,11 @@ function repopulate_location_select_list(){
 
 	var is_edit = location_select.closest('.wrap-collapsible').find('.form-inline.locations').length > 0;
 
-	$(location_select).prop('disabled', !show_location_select).closest('.wrap-collapsible').toggleClass('hidden', !show_location_select && !is_edit);
+	location_select.closest('.wrap-collapsible').toggleClass('hidden', !show_location_select && !is_edit);
+
+	var html = [];
 
 	if(show_location_select){
-
-		var html = [];
 
 		if(static_data.seasons.locations.length > 0){
 
@@ -299,23 +362,17 @@ function repopulate_location_select_list(){
 		}
 
 		if(static_data.seasons.global_settings.enable_weather){
-
-			html.push('<optgroup label="Presets" value="preset">');
-			for(var i = 0; i < Object.keys(climate_generator.presets).length; i++){
-				html.push(`<option>${Object.keys(climate_generator.presets)[i]}</option>`);
+			if((static_data.seasons.data.length == 2 || static_data.seasons.data.length == 4)){
+				html.push('<optgroup label="Presets" value="preset">');
+				for(var i = 0; i < Object.keys(preset_data.locations[static_data.seasons.data.length]).length; i++){
+					html.push(`<option>${Object.keys(preset_data.locations[static_data.seasons.data.length])[i]}</option>`);
+				}
+				html.push('</optgroup>');
+			}else{
+				html.push('<optgroup label="Presets" value="preset">');
+				html.push(`<option disabled>Presets require two or four seasons.</option>`);
+				html.push('</optgroup>');
 			}
-			html.push('</optgroup>');
-
-		}
-
-		if(html.length > 0){
-
-			location_select.prop('disabled', false).html(html.join('')).val(dynamic_data.location);
-
-		}else{
-
-			location_select.prop('disabled', false).html(html.join(''));
-
 		}
 
 		if(location_select.val() === null){
@@ -324,9 +381,15 @@ function repopulate_location_select_list(){
 			dynamic_data.custom_location = location_select.find('option:selected').parent().attr('value') === 'custom';
 		}
 
+	}
+
+	if(html.length > 0){
+
+		location_select.prop('disabled', false).html(html.join('')).val(dynamic_data.location);
+
 	}else{
 
-		location_select.html('');
+		location_select.prop('disabled', true).html(html.join(''));
 
 	}
 

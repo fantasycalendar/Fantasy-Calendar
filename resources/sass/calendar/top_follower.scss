@@ -22,6 +22,7 @@
     -ms-flex: 0 1 auto;              /* IE 10 */
     flex: 0 1 auto;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
     overflow: hidden;
+    order:1;
     padding:0;
     margin:0;
     border-right: 1px solid $calendar-border-color;
@@ -31,16 +32,17 @@
 #top_follower .btn_container:last-child{
     position:relative;
     right:-2px;
+    order:5;
     border-left:1px solid $calendar-border-color;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 9px;
 }
 
-#top_follower .btn:last-child{
+#top_follower .btn_container .btn:last-child{
     border-top:1px solid $calendar-border-color;
 }
 
-#top_follower .btn{
+#top_follower .btn_container .btn{
     border-radius: 0;
     text-align: center;
     -webkit-box-flex: 1;      /* OLD - iOS 6-, Safari 3.1-6 */
@@ -52,9 +54,41 @@
     position:relative;
 }
 
+.reset_preview_date_container{
+
+    flex:0 1 auto;
+
+    width:8rem;
+
+    padding:0.3rem;
+
+}
+
+.reset_preview_date_container.left{
+    order:2;
+}
+
+.reset_preview_date_container.right{
+    order:4;
+}
+
+.reset_preview_date {
+
+    font-size:0.9rem;
+
+    width:100%;
+    height:100%;
+
+    padding:0.25rem;
+
+    text-align: center;
+
+}
+
 #top_follower_content{
     text-align: center;
     padding:5px 0;
+    order:3;
     -webkit-box-flex: 1;      /* OLD - iOS 6-, Safari 3.1-6 */
     -moz-box-flex: 1;         /* OLD - Firefox 19- */
     -webkit-flex: 1;          /* Chrome */
@@ -69,7 +103,7 @@
     -ms-flex: 1;              /* IE 10 */
     flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
     width:100%;
-    font-size:14pt;
+    font-size:1.5rem;
 }
 
 #top_follower_content .cycle{
@@ -80,5 +114,5 @@
     flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
     order:2;
     width:100%;
-    font-size:10pt;
+    font-size:1rem;
 }

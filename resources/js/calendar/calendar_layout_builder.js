@@ -442,6 +442,8 @@ var calendar_layouts = {
 
 		this.append_layout();
 
+		this.update_year_follower();
+
 		this.add_year_day_number();
 
 		this.add_month_number();

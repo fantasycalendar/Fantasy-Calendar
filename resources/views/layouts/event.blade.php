@@ -70,6 +70,7 @@
 						<option nth value='every_x_monthly_weekday'>Every x month on the 3rd Wednesday</option>
 						<option nth value='every_x_annually_date'>Every x year on the 3rd of June</option>
 						<option nth value='every_x_annually_weekday'>Every x year on the 3rd Wednesday in June</option>
+						<optgroup value='moons' label='Moons' class='hidden'></optgroup>
 					</select>
 
 				</div>

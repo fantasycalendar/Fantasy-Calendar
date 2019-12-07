@@ -75,8 +75,7 @@ function rebuild_climate(){
 		preview_date: preview_date,
 		epoch_data: evaluated_static_data.epoch_data,
 		start_epoch: evaluated_static_data.year_data.start_epoch,
-		end_epoch: evaluated_static_data.year_data.end_epoch,
-		owner: owner
+		end_epoch: evaluated_static_data.year_data.end_epoch
 	});
 }
 
@@ -206,7 +205,7 @@ worker_calendar.onmessage = e => {
 		}
 		text.push(`</ol>`);
 
-		calendar_error_message(text.join(''));
+		error_message(text.join(''));
 
 	}
 
