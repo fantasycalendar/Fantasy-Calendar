@@ -28,8 +28,6 @@ function set_up_visitor_inputs(){
 
 	});
 
-	set_up_preview_values();
-
 	sub_target_year = $('#sub_target_year');
 	add_target_year = $('#add_target_year');
 
@@ -335,11 +333,8 @@ function evaluate_sun(){
 
 	if(evaluated_static_data.processed_seasons && evaluated_static_data.epoch_data[preview_date.epoch] !== undefined){
 
-		var clock_hours = static_data.clock.hours;
-
-		var sunset = evaluated_static_data.epoch_data[preview_date.epoch].season.time.sunset[0];
-		var sunrise = evaluated_static_data.epoch_data[preview_date.epoch].season.time.sunrise[0];
-
+		var sunset = evaluated_static_data.epoch_data[preview_date.epoch].season.time.sunset.data;
+		var sunrise = evaluated_static_data.epoch_data[preview_date.epoch].season.time.sunrise.data;
 
 		window.Clock.sunrise = sunrise;
 		window.Clock.sunset = sunset;
@@ -490,11 +485,9 @@ function repopulate_day_select(select, val, change){
 	
 }
 
-function set_up_preview_values(){
+function set_up_visitor_values(){
 
 	if(dynamic_data){
-
-		preview_date = clone(dynamic_data)
 
 		preview_date.follow = true
 

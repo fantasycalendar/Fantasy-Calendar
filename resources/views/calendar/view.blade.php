@@ -20,6 +20,8 @@
         }
 
         set_up_view_inputs();
+        set_up_view_values();
+        set_up_visitor_values();
         bind_calendar_events();
         rebuild_calendar('calendar', dynamic_data);
 

@@ -184,6 +184,44 @@
 				</div>
 			</div>
 
+			<div class='wrap-collapsible card mt-2'>
+                <input id="collapsible_add_units" class="toggle" type="checkbox">
+                <label for="collapsible_add_units" class="lbl-toggle card-header small-lbl-text center-text">Add or subtract fixed units to calendar</label>
+                <div class="collapsible-content card-body">
+
+                    <div class='row mb-2'>
+
+                        <div class='col px-1'>
+                            <input type='number' class="form-control form-control-sm full" id='unit_years' placeholder="Years"> 
+                        </div>
+
+                        <div class='col px-1'>
+                            <input type='number' class="form-control form-control-sm full" id='unit_months' placeholder="Months"> 
+                        </div>
+
+                        <div class='col px-1'>
+                            <input type='number' class="form-control form-control-sm full" id='unit_days' placeholder="Days"> 
+                        </div>
+
+                    </div>
+
+                    <div class='row'>
+
+                        <div class='col px-1'>
+                            <button type="button" step="1.0" class="btn btn-primary btn-sm full" id='current_date_btn'>To current date</button>
+                        </div>
+
+                        <div class='col px-1'>
+                            <button type="button" step="1.0" class="btn btn-secondary btn-sm full" id='preview_date_btn'>To preview date</button>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
 		</div>
 
 		<div class='separator'></div>
