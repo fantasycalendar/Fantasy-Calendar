@@ -18,6 +18,10 @@
                 moon.granularity = 24;
             }
         }
+
+        if(static_data.seasons.global_settings.dynamic_seasons === undefined){
+            static_data.seasons.global_settings.dynamic_seasons = true;
+        }
         
         set_up_edit_inputs(true);
         bind_calendar_events();

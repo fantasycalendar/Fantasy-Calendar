@@ -303,6 +303,7 @@ class random {
      * @return {float}                  A pseudo-random value
      */
 	roll_dice(idx, dice_formula){
+
 		var dice_amount = (dice_formula.split('d')[0]|0);
 		var dice_size = (dice_formula.split('d')[1]|0);
 

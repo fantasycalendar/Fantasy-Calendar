@@ -462,16 +462,28 @@
             <label for="collapsible_seasons" class="lbl-toggle card-header lbl-text">Seasons<a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Seasons' href='https://wiki.fantasy-calendar.com/index.php?title=Seasons' class="wiki protip"><i class="icon-question-sign"></i></a></label>
             <div class="collapsible-content card-body">
 
-                <div class='form-inline seasons'>
-                    <input type='text' class='form-control name' placeholder='Season name'>
-                    <button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
+                <div class='detail-row protip' data-pt-position="right" data-pt-title='This toggles between having seasons starting on specific dates, or having the seasons last an exact duration with the potential to overflow years.'>
+                    <div class='detail-column'>
+                        Dynamic season length:
+                    </div>
+                    <div class='detail-column float'>
+                        <label class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id='dynamic_seasons_checkbox'>
+                            <span class="custom-control-indicator"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class='form-inline seasons row'>
+                    <input type='text' class='form-control name col-10' placeholder='Season name'>
+                    <button type='button' class='btn btn-primary add col'><i class="fa fa-plus"></i></button>
                 </div>
 
                 <div class='detail-row sortable' id='season_sortable'></div>
 
                 <div class='detail-row small-text' id='season_length_text'></div>
 
-                <div class='detail-row'>
+                <div class='detail-row season_offset_container'>
                     <div class='detail-row'>
                         Season offset (days):
                     </div>
