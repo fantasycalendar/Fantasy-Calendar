@@ -846,9 +846,10 @@ function unconvert_year(static_data, year){
  * @param  {obj}        self_object     Not sure what this is for anymore, but I believe this was to be able to target specific leap days.
  * @return {array}                      An array containing strings for each day
  */
-function get_days_in_timespan(static_data, year, timespan_index, self_object){
+function get_days_in_timespan(static_data, year, timespan_index, self_object, no_leaps){
 
 	self_object = self_object !== undefined ? self_object : false;
+	no_leaps = no_leaps !== undefined ? no_leaps : false;
 
 	var timespan = clone(static_data.year_data.timespans[timespan_index]);
 
@@ -860,8 +861,11 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object){
 		days.push("");
 	}
 
-	var offset = 1;
+	if(no_leaps){
+		return days;
+	}
 
+	var offset = 1;
 
 	var leap_days = clone(static_data.year_data.leap_days).sort((a, b) => (a.day > b.day) ? 1 : -1);
 

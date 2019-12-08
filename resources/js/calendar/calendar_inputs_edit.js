@@ -390,6 +390,25 @@ function set_up_edit_inputs(set_up){
 		var dynamic = $(this).prop('checked');
 		$(this).prop('checked', !dynamic);
 
+		var ends_year = false;
+		for(var era_index in static_data.eras){
+			var era = static_data.eras[era_index];
+			if(era.settings.ends_year){
+				ends_year = true;
+				break;
+			}
+		}
+
+		if(ends_year){
+			swal({
+			title: "Error!",
+				text: `You have eras that end years - you cannot switch to static seasons with year-ending eras as the dates might disappear, and that kinda defeats the whole purpose.`,
+				icon: "error",
+				dangerMode: true
+			});
+			return;
+		}
+
 		swal({
 			title: "Are you sure?",
 			text: `Are you sure you want to switch to ${dynamic ? "DYNAMIC" : "STATIC"} seasons? Your current seasons will be deleted so you can re-create them.`,
@@ -404,7 +423,13 @@ function set_up_edit_inputs(set_up){
 				static_data.seasons.data = []
 				evaluate_season_lengths();
 				static_data.seasons.global_settings.dynamic_seasons = dynamic;
+
 				$('.season_offset_container').prop('disabled', !dynamic).toggleClass('hidden', !dynamic);
+
+				era_list.children().each(function(){
+					$(this).find('.ends_year').prop('disabled', !dynamic).toggleClass('protip');
+				});
+
 				error_check("calendar", true);
 			}
 		});
@@ -458,8 +483,8 @@ function set_up_edit_inputs(set_up){
 
 		if(!static_data.seasons.global_settings.dynamic_seasons){
 
-			repopulate_timespan_select(season_sortable.children().last().find('.timespan-list'), stats.timespan, false);
-			repopulate_day_select(season_sortable.children().last().find('.timespan-day-list'), stats.day, false);
+			repopulate_timespan_select(season_sortable.children().last().find('.timespan-list'), stats.timespan, false, true);
+			repopulate_day_select(season_sortable.children().last().find('.timespan-day-list'), stats.day, false, true);
 			sort_list_by_partial_date(season_sortable);
 
 		}
@@ -2854,7 +2879,7 @@ function add_era_to_list(parent, key, data){
 								element.push("<div class='detail-text'>Ends year:</div>");
 							element.push("</div>");
 							element.push("<div class='detail-column half'>");
-								element.push(`<input type='checkbox' class='form-control dynamic_input ends_year' data='eras.${key}.settings' fc-index='ends_year' ${(data.settings.ends_year ? "checked" : "")} />`);
+							element.push(`<input type='checkbox' class='form-control dynamic_input ends_year ${!static_data.seasons.global_settings.dynamic_seasons ? " protip' disabled" : "'"} data-pt-position="right" data-pt-title='This is disabled because static seasons cannot support eras that end years, as months disappear and seasons require the assigned months.' disabled data='eras.${key}.settings' fc-index='ends_year' ${(data.settings.ends_year ? "checked" : "")} />`);
 							element.push("</div>");
 						element.push("</div>");
 
@@ -3101,8 +3126,14 @@ function error_check(parent, rebuild){
 
 	for(var season_i = 0; season_i < static_data.seasons.data.length; season_i++){
 		var season = static_data.seasons.data[season_i];
-		if(season.transition_length == 0){
-			errors.push(`Season <i>${season.name}</i> can't have 0 transition length.`);
+		if(static_data.seasons.global_settings.dynamic_seasons){
+			if(season.transition_length == 0){
+				errors.push(`Season <i>${season.name}</i> can't have 0 transition length.`);
+			}
+		}else{
+			if(static_data.year_data.timespans[season.timespan].interval != 1){
+				errors.push(`Season <i>${season.name}</i> can't be on a leaping month.`);
+			}
 		}
 	}
 
@@ -4155,8 +4186,8 @@ function set_up_edit_values(){
 		for(var i = 0; i < static_data.seasons.data.length; i++){
 			add_season_to_sortable(season_sortable, i, static_data.seasons.data[i]);
 
-			repopulate_timespan_select(season_sortable.children().last().find('.timespan-list'), static_data.seasons.data[i].timespan, false);
-			repopulate_day_select(season_sortable.children().last().find('.timespan-day-list'), static_data.seasons.data[i].day, false);
+			repopulate_timespan_select(season_sortable.children().last().find('.timespan-list'), static_data.seasons.data[i].timespan, false, true);
+			repopulate_day_select(season_sortable.children().last().find('.timespan-day-list'), static_data.seasons.data[i].day, false, true);
 		}
 
 		$('.season_offset_container').prop('disabled', !static_data.seasons.global_settings.dynamic_seasons).toggleClass('hidden', !static_data.seasons.global_settings.dynamic_seasons);

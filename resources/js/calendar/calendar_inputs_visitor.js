@@ -469,15 +469,16 @@ function repopulate_timespan_select(select, val, change){
 
 }
 
-function repopulate_day_select(select, val, change){
+function repopulate_day_select(select, val, change, no_leaps){
 
 	var change = change === undefined ? true : change;
+	var no_leaps = no_leaps === undefined ? false : no_leaps;
 
 	select.each(function(){
 
 		var year = convert_year(static_data, $(this).closest('.date_control').find('.year-input').val()|0);
 		var timespan = $(this).closest('.date_control').find('.timespan-list').val()|0;
-		
+
 		var exclude_self = $(this).hasClass('exclude_self');
 
 		if(exclude_self){
@@ -485,11 +486,11 @@ function repopulate_day_select(select, val, change){
 			self_object = get_calendar_data($(this).attr('data'));
 
 			if(self_object){
-				var days = get_days_in_timespan(static_data, year, timespan, self_object);
+				var days = get_days_in_timespan(static_data, year, timespan, self_object, no_leaps);
 			}
 
 		}else{
-			var days = get_days_in_timespan(static_data, year, timespan);
+			var days = get_days_in_timespan(static_data, year, timespan, undefined, no_leaps);
 		}
 
 
