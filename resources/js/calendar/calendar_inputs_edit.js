@@ -464,7 +464,10 @@ function set_up_edit_inputs(set_up){
 			}else{
 				if(season_sortable.children().length > 0){
 					season_sortable.children().each(function(){
-						$(this).find('.transition_length').val(fract_year_len / (season_sortable.children().length+1));
+						var val = $(this).find('.transition_length').val()
+						if(val == fract_year_len / (season_sortable.children().length)){
+							$(this).find('.transition_length').val(fract_year_len / (season_sortable.children().length+1));
+						}
 					})
 				}
 				stats.transition_length = fract_year_len / (season_sortable.children().length+1);
@@ -474,8 +477,17 @@ function set_up_edit_inputs(set_up){
 
 		}else{
 
-			stats.timespan = 0;
-			stats.day = 1;
+			if(season_sortable.children().length == 0){
+				
+				stats.timespan = 0;
+				stats.day = 1;
+
+			}else{
+
+				stats.timespan = Math.floor(static_data.year_data.timespans.length/(season_sortable.children().length+1))
+				stats.day = 1;
+
+			}
 
 		}
 
@@ -3133,6 +3145,16 @@ function error_check(parent, rebuild){
 		}else{
 			if(static_data.year_data.timespans[season.timespan].interval != 1){
 				errors.push(`Season <i>${season.name}</i> can't be on a leaping month.`);
+			}
+		}
+	}
+
+	if(!static_data.seasons.global_settings.dynamic_seasons){
+		for(var season_i = 0; season_i < static_data.seasons.data.length-1; season_i++){
+			var curr_season = static_data.seasons.data[season_i];
+			var next_season = static_data.seasons.data[season_i+1];
+			if(curr_season.timespan == next_season.timespan && curr_season.day == next_season.day){
+				errors.push(`Season <i>${curr_season.name}</i> and <i>${next_season.name}</i> cannot be on the same month and day.`);
 			}
 		}
 	}
