@@ -33,8 +33,11 @@
 		<label for="collapsible_date" class="lbl-toggle lbl-text">Current Date & Time <a target="_blank" title='Fantasy Calendar Wiki: Date' href='https://wiki.fantasy-calendar.com/index.php?title=Date' class="wiki"><i class="icon-question-sign"></i></a></label>
 		<div class="collapsible-content">
 
-			<div id='clock'></div>
-
+            <div id='clock'>
+                <canvas style="z-index: 2;" id="clock_face"></canvas>
+                <canvas style="z-index: 1;" id="clock_sun"></canvas>
+                <canvas style="z-index: 0;" id="clock_background"></canvas>
+            </div>
 
 			<div class='detail-row'>
 	            <div class='detail-column quarter'>
@@ -180,6 +183,44 @@
 					<div class='btn btn-success full' id='go_to_preview_date'>Preview date</div>
 				</div>
 			</div>
+
+			<div class='wrap-collapsible card mt-2'>
+                <input id="collapsible_add_units" class="toggle" type="checkbox">
+                <label for="collapsible_add_units" class="lbl-toggle card-header small-lbl-text center-text">Add or subtract fixed units to calendar</label>
+                <div class="collapsible-content card-body">
+
+                    <div class='row mb-2'>
+
+                        <div class='col px-1'>
+                            <input type='number' class="form-control form-control-sm full" id='unit_years' placeholder="Years"> 
+                        </div>
+
+                        <div class='col px-1'>
+                            <input type='number' class="form-control form-control-sm full" id='unit_months' placeholder="Months"> 
+                        </div>
+
+                        <div class='col px-1'>
+                            <input type='number' class="form-control form-control-sm full" id='unit_days' placeholder="Days"> 
+                        </div>
+
+                    </div>
+
+                    <div class='row'>
+
+                        <div class='col px-1'>
+                            <button type="button" step="1.0" class="btn btn-primary btn-sm full" id='current_date_btn'>To current date</button>
+                        </div>
+
+                        <div class='col px-1'>
+                            <button type="button" step="1.0" class="btn btn-secondary btn-sm full" id='preview_date_btn'>To preview date</button>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
 
 		</div>
 

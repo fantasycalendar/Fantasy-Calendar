@@ -84,7 +84,6 @@
             edit_event_ui.bind_events();
             edit_HTML_ui.bind_events();
 
-
             var html = [];
             for(var i = 0; i < Object.keys(calendar_presets).length; i++){
                 var name = Object.keys(calendar_presets)[i];
@@ -114,6 +113,8 @@
                         dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
                         empty_edit_values();
                         set_up_edit_values();
+                        set_up_view_values();
+                        set_up_visitor_values();
                         $('#json_input').val('');
                         error_check('calendar', true);
                     }else{
@@ -126,6 +127,8 @@
                     dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
                     empty_edit_values();
                     set_up_edit_values();
+                    set_up_view_values();
+                    set_up_visitor_values();
                     error_check('calendar', true);
                 }
             });

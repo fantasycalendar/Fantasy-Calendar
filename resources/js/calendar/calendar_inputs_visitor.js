@@ -28,8 +28,6 @@ function set_up_visitor_inputs(){
 
 	});
 
-	set_up_preview_values();
-
 	sub_target_year = $('#sub_target_year');
 	add_target_year = $('#add_target_year');
 
@@ -276,41 +274,35 @@ function eval_clock(){
 		return;
 	}
 
-	var clock_hours = static_data.clock.hours;
+	var clock_face_canvas = document.getElementById("clock_face");
+	var clock_sun_canvas = document.getElementById("clock_sun");
+	var clock_background_canvas = document.getElementById("clock_background");
+
+	clock_face_canvas.width = $('#clock').width()
+	clock_face_canvas.height = $('#clock').width()
+
+	clock_sun_canvas.width = $('#clock').width()
+	clock_sun_canvas.height = $('#clock').width()
+
+	clock_background_canvas.width = $('#clock').width()
+	clock_background_canvas.height = $('#clock').width()
+
+	window.Clock = new CalendarClock(
+		clock_face_canvas,
+		clock_sun_canvas,
+		clock_background_canvas,
+		hours		= static_data.clock.hours,
+		minutes		= static_data.clock.minutes,
+		offset		= static_data.clock.offset,
+		crowding	= 0,
+		hour		= dynamic_data.hour,
+		minute		= dynamic_data.minute,
+		has_sun		= evaluated_static_data.processed_seasons,
+		sunrise		= 6,
+		sunset		= 18
+	);
 
 	$('#clock').css('display', 'block');
-
-	var element = [];
-	element.push("<img src='/resources/clock_arm.png' id='clock_arm'/>");
-	element.push("<div id='clock_hours'></div>");
-	element.push(`<img src='/resources/dayhelper.png' id='dayhelper' class='SunUpDown'/>`);
-	element.push(`<img src='/resources/nighthelper.png' id='nighthelper' class='SunUpDown ${!evaluated_static_data.processed_seasons ? 'hidden' : ''}'/>`);
-	element.push(`<div id='SunUp_Container' ${!evaluated_static_data.processed_seasons ? 'class="hidden"' : ''}>`);
-		element.push(`<img src='/resources/startofday.png' id='StartOfDay'/>`);
-	element.push(`</div>`);
-	element.push(`<div id='SunDown_Container' ${!evaluated_static_data.processed_seasons ? 'class="hidden"' : ''}>`);
-		element.push(`<img src='/resources/endofday.png' id='EndOfDay' />`);
-	element.push(`</div>`);
-	element.push("<img src='/resources/clock_base.png' id='base'/>");
-
-	$('#clock').html(element.join(''));
-
-	element = [];
-	for(var i = 0; i < clock_hours; i++){
-
-		var hour = i%clock_hours;
-
-		var rotation = ((360/clock_hours)*hour);
-
-		hour -= static_data.clock.offset;
-
-		hour = hour < 0 ? Math.floor(hour+clock_hours) : Math.floor(hour);
-
-		element.push(`<div class='clock_hour_text_container' style='transform: rotate(${rotation+180}deg);'><span class='clock_hour_text' style='transform: rotate(-${rotation+180}deg);'>${hour}</span></div>`)
-		element.push(`<img class='clock_hour' src='/resources/clock_hour.png' style='transform: rotate(${rotation}deg);'>`);
-	}
-
-	$('#clock_hours').html(element.join(''));
 
 	eval_current_time();
 
@@ -318,35 +310,17 @@ function eval_clock(){
 
 function eval_current_time(){
 
+	if(!window.Clock){
+		eval_clock();
+	}
+
 	if(!static_data.clock.enabled || isNaN(static_data.clock.hours) || isNaN(static_data.clock.minutes) || isNaN(static_data.clock.offset)){
 		$('#clock').css('display', 'none');
 		return;
 	}
 
-	var clock_hours = static_data.clock.hours;
-	var clock_minutes = static_data.clock.minutes;
-	var clock_hour = dynamic_data.hour;
-	var clock_minute = dynamic_data.minute;
-	var clock_time = clock_hour + (clock_minute/clock_minutes);
-
-	clock_time = ((clock_time+static_data.clock.offset)%clock_hours)
-	clock_time = clock_time < 0 ? clock_time+clock_hours : clock_time;
-
-	var clock_fraction_time = clock_time/clock_hours;
-
-	var rotation = (360/clock_hours)*clock_time;
-
-	if(clock_time >= clock_hours)
-	{
-		rotation = 360+(360/clock_hours)*clock_time;
-	}
-	else if(clock_time < 0)
-	{
-		rotation = (360/clock_hours)*clock_time;
-	}
-
-	rotate_element($('#clock_arm'), rotation);
-
+	window.Clock.set_time(dynamic_data.hour, dynamic_data.minute);
+	
 	evaluate_sun();
 
 }
@@ -360,48 +334,14 @@ function evaluate_sun(){
 
 	if(evaluated_static_data.processed_seasons && evaluated_static_data.epoch_data[preview_date.epoch] !== undefined){
 
-		var clock_hours = static_data.clock.hours;
+		var sunset = evaluated_static_data.epoch_data[preview_date.epoch].season.time.sunset.data;
+		var sunrise = evaluated_static_data.epoch_data[preview_date.epoch].season.time.sunrise.data;
 
-		var sunset = evaluated_static_data.epoch_data[preview_date.epoch].season.time.sunset[0];
-		var sunrise = evaluated_static_data.epoch_data[preview_date.epoch].season.time.sunrise[0];
-
-		sunset = sunset%clock_hours;
-		sunrise = sunrise%clock_hours;
-
-		sunset = sunset > clock_hours ? sunset - clock_hours : sunset;
-		sunrise = sunrise > clock_hours ? sunrise - clock_hours : sunrise;
-
-		sunrise = (360/clock_hours)*((static_data.clock.offset+sunrise)-clock_hours/4);
-		sunset = (360/clock_hours)*((static_data.clock.offset+sunset)+clock_hours/4)-360;
-
-		if(Math.abs(sunset-sunrise) < 220){
-
-			var rotate_parent = mid(sunrise, sunset);
-
-			if(sunset-sunrise > 0){
-				$('#dayhelper').css('display', 'block');
-				$('#nighthelper').css('display', 'none');
-			}else{
-				$('#nighthelper').css('display', 'block');
-				$('#dayhelper').css('display', 'none');
-			}
-
-			rotate_element($('#StartOfDay'), sunrise-rotate_parent);
-			rotate_element($('#SunUp_Container'), rotate_parent);
-
-			rotate_element($('#EndOfDay'), sunset-rotate_parent);
-			rotate_element($('#SunDown_Container'), rotate_parent);
-
-		}
+		window.Clock.sunrise = sunrise;
+		window.Clock.sunset = sunset;
 		
 	}
 
-}
-
-function rotate_element(element, rotation){
-	element.css('-webkit-transform','rotate('+rotation+'deg)'); 
-	element.css('-moz-transform', 'rotate('+rotation+'deg)');
-	element.css('transform', 'rotate('+rotation+'deg)');
 }
 
 function repopulate_timespan_select(select, val, change){
@@ -546,11 +486,9 @@ function repopulate_day_select(select, val, change){
 	
 }
 
-function set_up_preview_values(){
+function set_up_visitor_values(){
 
 	if(dynamic_data){
-
-		preview_date = clone(dynamic_data)
 
 		preview_date.follow = true
 

@@ -82,7 +82,11 @@
             <label for="collapsible_date" class="lbl-toggle card-header lbl-text">Current Date & Time <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Date' href='https://wiki.fantasy-calendar.com/index.php?title=Date' class="wiki protip"><i class="icon-question-sign"></i></a></label>
             <div class="collapsible-content card-body">
 
-                <div id='clock'></div>
+                <div id='clock'>
+                    <canvas style="z-index: 2;" id="clock_face"></canvas>
+                    <canvas style="z-index: 1;" id="clock_sun"></canvas>
+                    <canvas style="z-index: 0;" id="clock_background"></canvas>
+                </div>
 
                 <div class='detail-row date_control' id='date_inputs'>
 
