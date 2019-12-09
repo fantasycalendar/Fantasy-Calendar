@@ -3499,7 +3499,9 @@ function reindex_season_sortable(key){
 
 	});
 
-	sort_list_by_partial_date(season_sortable);
+	if(!static_data.seasons.global_settings.dynamic_seasons){
+		sort_list_by_partial_date(season_sortable);
+	}
 
 	if(key !== undefined){
 		location_list.find(`.location_season[fc-index="${key}"]`).remove();
