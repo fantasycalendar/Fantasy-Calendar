@@ -17,8 +17,6 @@ function set_up_view_inputs(){
 
 	link_changed();
 
-	set_up_view_values();
-
 	sub_current_year = $('#sub_current_year');
 	add_current_year = $('#add_current_year');
 
@@ -398,6 +396,10 @@ function repopulate_location_select_list(){
 function set_up_view_values(){
 
 	if(dynamic_data){
+
+        preview_date = clone(dynamic_data);
+
+        preview_date.follow = true;
 
 		dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
 

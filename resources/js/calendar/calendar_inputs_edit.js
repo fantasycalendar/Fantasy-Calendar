@@ -1,4 +1,4 @@
-function set_up_edit_inputs(set_up){
+function set_up_edit_inputs(){
 
 	prev_calendar_name = clone(calendar_name);
 	prev_dynamic_data = clone(dynamic_data);
@@ -209,10 +209,6 @@ function set_up_edit_inputs(set_up){
 			ui.placeholder.height(ui.item.height());
 		}
 	});
-
-	if(set_up){
-		set_up_edit_values();
-	}
 
 	/* ------------------- Dynamic and static callbacks ------------------- */
 
@@ -3208,7 +3204,6 @@ function error_check(parent, rebuild){
 			}
 		}
 
-
 	}else{
 
 		var text = [];
@@ -3509,6 +3504,8 @@ function reindex_season_sortable(key){
 	if(key !== undefined){
 		location_list.find(`.location_season[fc-index="${key}"]`).remove();
 	}
+
+	eval_clock();
 
 	do_error_check('seasons');
 
@@ -4328,8 +4325,6 @@ function set_up_edit_values(){
 	$('#cycle_test_input').click();
 
 	recalc_stats();
-
-	set_up_view_values();
 
 }
 

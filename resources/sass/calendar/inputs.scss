@@ -44,6 +44,7 @@ select.invalid {
 
 .card-body {
     padding: 0;
+    min-height: initial;
 }
 
 #seasons_seed {
@@ -615,14 +616,15 @@ label{
 }
 
 .wrap-collapsible{
-    width: 100%;
-
+    width: 94%;
+    margin: auto;
 }
 
 @media screen and (max-width: 768px) {
     #input_container {
         width: 100vw;
         max-width: initial;
+        min-width: initial;
     }
     #calendar_container:not(.inputs_collapsed) {
         width: 0;

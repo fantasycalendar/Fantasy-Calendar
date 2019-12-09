@@ -57,7 +57,13 @@ class Calendar extends Model
 
         $static_data['event_data']['categories'] = $this->event_categories->sortBy('sort_by')->values();
 
-        $static_data['event_data']['events'] = $this->events->sortBy('sort_by')->values();
+        if(Auth::check() && ($this->user->id == Auth::user()->id || Auth::user()->isAdmin())) {
+            $static_data['event_data']['events'] = $this->events->sortBy('sort_by')->values();
+        } else {
+            $static_data['event_data']['events'] = $this->events->filter(function($value, $key){
+                return !$value->settings['hide'];
+            })->sortBy('sort_by')->values();
+        }
 
         return $static_data;
     }

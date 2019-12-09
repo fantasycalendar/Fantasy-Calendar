@@ -35,6 +35,7 @@
             text-align:center;
             overflow: hidden;
             text-overflow: ellipsis;
+            min-width: 5rem;
         }
 
         .week_day_name:not(:first-child){
@@ -73,6 +74,7 @@
         &_container{
             display: flex;
             flex-direction: column;
+            overflow-x: auto;
 
             &:first-child{
                 margin-top:10px;
@@ -87,6 +89,7 @@
         min-height:8rem;
         flex: 1;
         background-color:white;
+        min-width: 5rem;
 
         &.empty_timespan_day{
             background-color:grey;
@@ -110,6 +113,7 @@
         flex-direction: column;
         min-height:8rem;
         flex: 1;
+        min-width: 5rem;
 
         &:not(:first-child){
             border-left:1px solid $calendar-border-color;
@@ -132,6 +136,7 @@
         cursor: not-allowed;
         border-top:1px solid $calendar-border-color;
         padding-left:1px;
+        min-width: 5rem;
 
         &.first{
             padding-left:0;

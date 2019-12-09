@@ -5,3 +5,5 @@
  */
 
 require('./bootstrap');
+
+window.CalendarClock = require('./clock')

@@ -1,4 +1,4 @@
-@extends('templates._page')
+@extends('templates._calendar')
 
 @push('head')
     <script>
@@ -22,8 +22,12 @@
         if(static_data.seasons.global_settings.dynamic_seasons === undefined){
             static_data.seasons.global_settings.dynamic_seasons = true;
         }
+
+        set_up_edit_inputs();
+        set_up_edit_values();
+        set_up_view_values();
+        set_up_visitor_values();
         
-        set_up_edit_inputs(true);
         bind_calendar_events();
         rebuild_calendar('calendar', dynamic_data);
 
