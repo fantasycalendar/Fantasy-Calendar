@@ -1,4 +1,4 @@
-@extends('templates._page')
+@extends('templates._calendar')
 
 @push('head')
     <script>
@@ -18,7 +18,7 @@
                 moon.granularity = 24;
             }
         }
-        
+
         set_up_edit_inputs();
         set_up_edit_values();
         set_up_view_values();

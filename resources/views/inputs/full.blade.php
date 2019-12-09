@@ -1,5 +1,17 @@
 <form id="input_container">
 
+    <nav class="navbar-expand navbar-dark bg-accent">
+        <div class="collapse navbar-collapse" id="collapsemenu">
+            <ul class="navbar-nav">
+                @auth
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{{ route('calendars.index') }}"><i class="fa fa-arrow-left"></i> Return to Calendars</a>
+                    </li>
+                @endauth
+            </ul>
+        </div>
+    </nav>
+
 	@yield('label')
 
 	<div class='wrap-collapsible'>
@@ -213,15 +225,15 @@
                         <div class='row mb-2'>
 
                             <div class='col px-1'>
-                                <input type='number' class="form-control form-control-sm full" id='unit_years' placeholder="Years"> 
+                                <input type='number' class="form-control form-control-sm full" id='unit_years' placeholder="Years">
                             </div>
 
                             <div class='col px-1'>
-                                <input type='number' class="form-control form-control-sm full" id='unit_months' placeholder="Months"> 
+                                <input type='number' class="form-control form-control-sm full" id='unit_months' placeholder="Months">
                             </div>
 
                             <div class='col px-1'>
-                                <input type='number' class="form-control form-control-sm full" id='unit_days' placeholder="Days"> 
+                                <input type='number' class="form-control form-control-sm full" id='unit_days' placeholder="Days">
                             </div>
 
                         </div>
