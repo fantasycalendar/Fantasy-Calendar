@@ -343,17 +343,21 @@
 
 
         <!---------------------------------------------->
-        <!----------------- GLOBAL WEEK ---------------->
+        <!------------------- WEEKDAYS ----------------->
         <!---------------------------------------------->
 
         <div class='wrap-collapsible card'>
             <input id="collapsible_globalweek" class="toggle" type="checkbox">
-            <label for="collapsible_globalweek" class="lbl-toggle card-header lbl-text">Global Week <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Global week' href='https://wiki.fantasy-calendar.com/index.php?title=Global_week' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+            <label for="collapsible_globalweek" class="lbl-toggle card-header lbl-text">Weekdays <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Weekdays' href='https://wiki.fantasy-calendar.com/index.php?title=Global_week' class="wiki protip"><i class="icon-question-sign"></i></a></label>
             <div class="collapsible-content card-body">
 
-                <div class='detail-text bold-text'>First week day:</div>
+                <div id='first_week_day_container'>
 
-                <select type='number' class='form-control static_input' id='first_day' data='year_data' fc-index='first_day'></select>
+                    <div class='detail-text bold-text'>First week day:</div>
+
+                    <select type='number' class='form-control static_input' id='first_day' data='year_data' fc-index='first_day'></select>
+
+                </div>
 
 
                 <div class='form-inline global_week'>
@@ -837,14 +841,6 @@
                         <input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='add_year_day_number' onclick="setTimeout(calendar_layouts.add_year_day_number, 10);">
                         <span>
                             Add year day to each day
-                        </span>
-                        <a target="_blank" title='' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
-                    </label>
-
-                    <label class="form-control full setting last">
-                        <input type='checkbox' class='margin-right static_input' refresh='true' data='settings' fc-index='year_zero_exists'>
-                        <span>
-                            Year zero exists
                         </span>
                         <a target="_blank" title='' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
                     </label>

@@ -810,11 +810,7 @@ function does_leap_day_appear(static_data, year, timespan, leap_day){
  * @return {int}                        The absolute year
  */
 function convert_year(static_data, year){
-	if(static_data.settings.year_zero_exists){
-		return year;
-	}else{
-		return year > 0 ? year-1 : year;
-	}
+	return year > 0 ? year-1 : year;
 }
 
 
@@ -827,11 +823,7 @@ function convert_year(static_data, year){
  * @return {int}                        The absolute year
  */
 function unconvert_year(static_data, year){
-	if(static_data.settings.year_zero_exists){
-		return year;
-	}else{
-		return year >= 0 ? year+1 : year;
-	}
+	return year >= 0 ? year+1 : year;
 }
 
 
