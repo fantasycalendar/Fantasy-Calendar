@@ -13,7 +13,7 @@ function display_events(static_data, event_data){
 
 			$(`[event_id='${event_index}']`).remove();
 
-			if(current_event.settings.hide_full) continue;
+			if(current_event.settings.hide_full || (!owner && current_event.settings.hide)) continue;
 
 			for(var epoch_index = 0; event_data.valid[event_index] && epoch_index < event_data.valid[event_index].length; epoch_index++){
 
@@ -48,23 +48,21 @@ function insert_moons(data){
 
 			var moon = static_data.moons[moon_index];
 
-			if(owner || !moon.hidden){
+			if(!owner && moon.hidden) continue;
 
-				var name_array = moon_phases[moon.granularity];
+			var name_array = moon_phases[moon.granularity];
 
-				moon_text.push(`<div class='moon_container protip' moon_id="${moon_index}" data-pt-position="top" data-pt-title='${moon.name}, ${name_array[data.moon_phase[moon_index]]}' >`);
+			moon_text.push(`<div class='moon_container protip' moon_id="${moon_index}" data-pt-position="top" data-pt-title='${moon.name}, ${name_array[data.moon_phase[moon_index]]}' >`);
 
-					moon_text.push(`<svg width="24" height="24" viewBox="0 0 64 64">`);
-						moon_text.push(`<g>`);
-							moon_text.push(`<circle cx="32" cy="32" r="23" class="lunar_background"/>`);
-							moon_text.push(svg_moon_shadows[Math.floor((svg_moon_shadows.length/moon.granularity)*data.moon_phase[moon_index])]);
-							moon_text.push(`<circle cx="32" cy="32" r="23" class="lunar_border"/>`);
-						moon_text.push(`</g>`);
-					moon_text.push("</svg>");
+				moon_text.push(`<svg width="24" height="24" viewBox="0 0 64 64">`);
+					moon_text.push(`<g>`);
+						moon_text.push(`<circle cx="32" cy="32" r="23" class="lunar_background"/>`);
+						moon_text.push(svg_moon_shadows[Math.floor((svg_moon_shadows.length/moon.granularity)*data.moon_phase[moon_index])]);
+						moon_text.push(`<circle cx="32" cy="32" r="23" class="lunar_border"/>`);
+					moon_text.push(`</g>`);
+				moon_text.push("</svg>");
 
-				moon_text.push("</div>");
-
-			}
+			moon_text.push("</div>");
 
 		}
 

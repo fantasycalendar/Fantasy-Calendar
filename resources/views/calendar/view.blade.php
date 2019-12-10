@@ -2,7 +2,7 @@
 
 @push('head')
     <script>
-    const owner = "{{ $calendar->owned }}";
+    const owner = {{ $calendar->owned }};
     
     $(document).ready(function(){
         wizard = false;

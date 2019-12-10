@@ -1211,12 +1211,18 @@ function set_up_edit_inputs(){
 		container.find('.adds_week_day_data_container').toggleClass('hidden', !checked);
 		container.find('.adds_week_day_data_container input, .adds_week_day_data_container select').prop('disabled', !checked);
 		container.find('.week-day-select').toggleClass('inclusive', checked);
+		$('#first_week_day_container').toggleClass('hidden', !checked).find('select').prop('disabled', !checked);
 		$('#overflow_explanation').toggleClass('hidden', !checked);
 		if(checked){
 			$('#month_overflow').prop('checked', true);
 		}
 		repopulate_weekday_select($(this).closest('.sortable-container').find('.week-day-select'));
 		container.find('.internal-list-name').change();
+	});
+
+	$('#month_overflow').change(function(){
+		var checked = $(this).is(':checked');
+		$('#first_week_day_container').toggleClass('hidden', !checked).find('select').prop('disabled', !checked);
 	});
 
 	$(document).on('change', '.unique-week-input', function(){
@@ -4191,6 +4197,7 @@ function set_up_edit_values(){
 		add_weekday_to_sortable(global_week_sortable, i, weekdayname);
 	}
 	populate_first_day_select(static_data.year_data.first_day);
+	$('#first_week_day_container').toggleClass('hidden', !static_data.year_data.overflow).find('select').prop('disabled', !static_data.year_data.overflow);
 	global_week_sortable.sortable('refresh');
 
 	if(static_data.year_data.timespans.length > 0){
