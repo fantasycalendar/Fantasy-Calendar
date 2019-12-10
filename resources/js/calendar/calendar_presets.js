@@ -1404,6 +1404,8 @@ function process_old_fantasycalendar(calendar, dynamic_data, static_data){
 		dynamic_data.minute = calendar.minute;
 	}
 
+
+
 	if(calendar.solstice_enabled){
 
 		static_data.seasons.global_settings = {
@@ -1412,85 +1414,78 @@ function process_old_fantasycalendar(calendar, dynamic_data, static_data){
 			seed: calendar.weather.weather_seed,
 			temp_sys: calendar.weather.weather_temp_sys,
 			wind_sys: calendar.weather.weather_wind_sys,
-			cinematic: calendar.weather.weather_cinematic
+			cinematic: calendar.weather.weather_cinematic,
+			dynamic_seasons: false
 		}
 
 		if(calendar.winter_month > calendar.summer_month){
-
-			var avg_length = fract_year_length(static_data)
-
-			var summer_epoch = evaluate_calendar_start(static_data, 0, calendar.summer_month-1, calendar.summer_day).epoch;
-
-			var winter_epoch = evaluate_calendar_start(static_data, 0, calendar.winter_month-1, calendar.winter_day).epoch;
-
-			if(winter_epoch > summer_epoch){
-				var first_season = {
-					'name': 'Summer',
-					'epoch': summer_epoch,
-					'rise': calendar.summer_rise,
-					'set': calendar.summer_set
-				}
-				var second_season = {
-					'name': 'Winter',
-					'epoch': winter_epoch,
-					'rise': calendar.winter_rise,
-					'set': calendar.winter_set
-				}
-			}else{
-				var first_season = {
-					'name': 'Winter',
-					'epoch': winter_epoch,
-					'rise': calendar.winter_rise,
-					'set': calendar.winter_set
-				}
-				var second_season = {
-					'name': 'Summer',
-					'epoch': summer_epoch,
-					'rise': calendar.summer_rise,
-					'set': calendar.summer_set
-				}
+			var first_season = {
+				'name': 'Summer',
+				'epoch': summer_epoch,
+				'rise': calendar.summer_rise,
+				'set': calendar.summer_set,
+				'timespan': calendar.summer_month,
+				'day': calendar.summer_day
 			}
-
-			first_season.length = second_season.epoch - first_season.epoch
-
-			second_season.length = avg_length + second_season.epoch - first_season.epoch
-
-			offset = first_season.epoch;
-
-			static_data.seasons.data = [
-				{
-					'Name': first_season.name,
-					'transition_length': first_season.length,
-					'duration': 0,
-					'time': {
-						'sunrise': {
-							'hour': first_season.rise,
-							'minute': 0
-						},
-						'sunset': {
-							'hour': first_season.set,
-							'minute': 0
-						}
-					}
-				},
-				{
-					'Name': second_season.name,
-					'transition_length': second_season.length,
-					'duration': 0,
-					'time': {
-						'sunrise': {
-							'hour': second_season.rise,
-							'minute': 0
-						},
-						'sunset': {
-							'hour': second_season.set,
-							'minute': 0
-						}
-					}
-				}
-			];
+			var second_season = {
+				'name': 'Winter',
+				'epoch': winter_epoch,
+				'rise': calendar.winter_rise,
+				'set': calendar.winter_set,
+				'timespan': calendar.winter_month,
+				'day': calendar.winter_day
+			}
+		}else{
+			var first_season = {
+				'name': 'Winter',
+				'epoch': winter_epoch,
+				'rise': calendar.winter_rise,
+				'set': calendar.winter_set,
+				'timespan': calendar.winter_month,
+				'day': calendar.winter_day
+			}
+			var second_season = {
+				'name': 'Summer',
+				'epoch': summer_epoch,
+				'rise': calendar.summer_rise,
+				'set': calendar.summer_set,
+				'timespan': calendar.summer_month,
+				'day': calendar.summer_day
+			}
 		}
 
+		static_data.seasons.data = [
+			{
+				'Name': first_season.name,
+				'timespan': first_season.timespan,
+				'day': first_season.day,
+				'time': {
+					'sunrise': {
+						'hour': first_season.rise,
+						'minute': 0
+					},
+					'sunset': {
+						'hour': first_season.set,
+						'minute': 0
+					}
+				}
+			},
+			{
+				'Name': second_season.name,
+				'timespan': second_season.timespan,
+				'day': second_season.day,
+				'time': {
+					'sunrise': {
+						'hour': second_season.rise,
+						'minute': 0
+					},
+					'sunset': {
+						'hour': second_season.set,
+						'minute': 0
+					}
+				}
+			}
+		];
 	}
 
 	if(calendar.weather_enabled){
