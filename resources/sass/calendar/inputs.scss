@@ -47,6 +47,21 @@ select.invalid {
     min-height: initial;
 }
 
+.season_text {
+
+    font-style:italic;
+    font-weight:normal;
+
+}
+
+.active {
+
+    font-style: normal !important;
+    font-weight: bold !important;
+    
+}
+
+
 #seasons_seed {
     flex-grow: 1;
     width: auto;
@@ -282,10 +297,6 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
 .detail-select{
     line-height: 28px;
     flex: 1 1 auto;
-}
-
-label{
-    margin-bottom:0 !important;
 }
 
 .detail-text{
@@ -715,7 +726,6 @@ label{
     padding-left: 0;
     margin-right: 0;
     cursor: pointer;
-    margin-top:3px;
 }
 .custom-checkbox .custom-control-indicator {
     content: "";

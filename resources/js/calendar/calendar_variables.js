@@ -177,7 +177,8 @@ var condition_mapping = {
 
 		["It is the longest day",	 							[["high_solstice", "==", 0]], 	[["boolean"]]],
 		["It is the shortest day",	 							[["low_solstice", "==", 0]], 	[["boolean"]]],
-		["It is the equinox", 									[["equinox", "==", 0]], 		[["boolean"]]],
+		["It is the rising equinox (spring-like)",				[["rising_equinox", "==", 0]], 	[["boolean"]]],
+		["It is the falling equinox (autumn-like)",				[["falling_equinox", "==", 0]], [["boolean"]]],
 	],
 
 	"Random": [

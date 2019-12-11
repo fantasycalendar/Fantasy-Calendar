@@ -19,10 +19,15 @@
             }
         }
 
+        if(static_data.seasons.global_settings.periodic_seasons === undefined){
+            static_data.seasons.global_settings.periodic_seasons = true;
+        }
+
         set_up_edit_inputs();
         set_up_edit_values();
         set_up_view_values();
         set_up_visitor_values();
+        
         bind_calendar_events();
         rebuild_calendar('calendar', dynamic_data);
 

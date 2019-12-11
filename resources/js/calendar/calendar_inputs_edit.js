@@ -21,7 +21,7 @@ function set_up_edit_inputs(){
 			var confirmationMessage = "It looks like you have unsaved changes, are you sure you want to navigate away from this page?";
 
 			(e || window.event).returnValue = confirmationMessage; //Gecko + IE
-	        return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+			return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
 
 		}
 
@@ -62,7 +62,7 @@ function set_up_edit_inputs(){
 	delete_button = $('#btn_delete');
 
 	delete_button.click(function(){
-        delete_calendar(hash, calendar_name, function(){self.location = '/'});
+		delete_calendar(hash, calendar_name, function(){self.location = '/'});
 	});
 
 	calendar_container = $('#calendar');
@@ -75,6 +75,7 @@ function set_up_edit_inputs(){
 	global_week_sortable = $('#global_week_sortable');
 	leap_day_list = $('#leap_day_list');
 	moon_list = $('#moon_list');
+	periodic_seasons_checkbox = $('#periodic_seasons_checkbox');
 	season_sortable = $('#season_sortable');
 	cycle_sortable = $('#cycle_sortable');
 	era_list = $('#era_list');
@@ -247,6 +248,8 @@ function set_up_edit_inputs(){
 
 		evaluate_clock_inputs();
 
+		$('#create_season_events').prop('disabled', !static_data.clock.enabled);
+
 	});
 
 	$('#collapsible_clock').change(function(){
@@ -378,6 +381,60 @@ function set_up_edit_inputs(){
 		do_error_check();
 	});
 
+	periodic_seasons_checkbox.change(function(){
+
+		var checked = $(this).prop('checked');
+		$(this).prop('checked', !checked);
+
+		var ends_year = false;
+		for(var era_index in static_data.eras){
+			var era = static_data.eras[era_index];
+			if(era.settings.ends_year){
+				ends_year = true;
+				break;
+			}
+		}
+
+		if(ends_year){
+			swal({
+			title: "Error!",
+				text: `You have eras that end years - you cannot switch to dated seasons with year-ending eras as the dates might disappear, and that kinda defeats the whole purpose.`,
+				icon: "error",
+				dangerMode: true
+			});
+			return;
+		}
+
+		swal({
+			title: "Are you sure?",
+			text: `Are you sure you want to switch to ${checked ? "PERIODIC" : "DATED"} seasons? Your current seasons will be deleted so you can re-create them.`,
+			buttons: true,
+			icon: "warning",
+			dangerMode: true,
+		})
+		.then((doSwitch) => {
+			if(doSwitch) {
+				$(this).prop('checked', checked);
+				season_sortable.empty();
+				static_data.seasons.data = []
+				evaluate_season_lengths();
+				static_data.seasons.global_settings.periodic_seasons = checked;
+
+				$('.season_text.dated').toggleClass('active', !checked);
+				$('.season_text.periodic').toggleClass('active', checked);
+
+				$('.season_offset_container').prop('disabled', !checked).toggleClass('hidden', !checked);
+
+				era_list.children().each(function(){
+					$(this).find('.ends_year').prop('disabled', !checked).toggleClass('protip');
+				});
+
+				error_check("calendar", true);
+			}
+		});
+
+	});
+
 	$('.form-inline.seasons .add').click(function(){
 
 		var fract_year_len = fract_year_length(static_data);
@@ -399,20 +456,50 @@ function set_up_edit_inputs(){
 			}
 		};
 
-		if(season_sortable.children().length == 0){
-			stats.transition_length = fract_year_len;
-		}else{
-			if(season_sortable.children().length > 0){
-				season_sortable.children().each(function(){
-					$(this).find('.transition_length').val(fract_year_len / (season_sortable.children().length+1));
-				})
+		if(static_data.seasons.global_settings.periodic_seasons){
+
+			if(season_sortable.children().length == 0){
+				stats.transition_length = fract_year_len;
+			}else{
+				if(season_sortable.children().length > 0){
+					season_sortable.children().each(function(){
+						var val = $(this).find('.transition_length').val()
+						if(val == fract_year_len / (season_sortable.children().length)){
+							$(this).find('.transition_length').val(fract_year_len / (season_sortable.children().length+1));
+						}
+					})
+				}
+				stats.transition_length = fract_year_len / (season_sortable.children().length+1);
 			}
-			stats.transition_length = fract_year_len / (season_sortable.children().length+1);
+
+			stats.duration = 0;
+
+		}else{
+
+			if(season_sortable.children().length == 0){
+				
+				stats.timespan = 0;
+				stats.day = 1;
+
+			}else{
+
+				stats.timespan = Math.floor(static_data.year_data.timespans.length/(season_sortable.children().length+1))
+				stats.day = 1;
+
+			}
+
 		}
 
-		stats.duration = 0;
-
 		add_season_to_sortable(season_sortable, id, stats);
+
+		if(!static_data.seasons.global_settings.periodic_seasons){
+
+			repopulate_timespan_select(season_sortable.children().last().find('.timespan-list'), stats.timespan, false, true);
+			repopulate_day_select(season_sortable.children().last().find('.timespan-day-list'), stats.day, false, true);
+			sort_list_by_partial_date(season_sortable);
+
+		}
+
 		season_sortable.sortable('refresh');
 		reindex_season_sortable();
 		evaluate_season_lengths();
@@ -427,26 +514,26 @@ function set_up_edit_inputs(){
 	$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 && static_data.clock.enabled);
 
 	$('#create_season_events').click(function(){
-	    swal({
-            title: "Are you sure?",
-            text: 'Are you sure you want to create seasonal events? If you already have created them, you might get doubling.',
-            buttons: true,
-            icon: "info",
-            dangerMode: true,
-        })
-        .then((willCreate) => {
-            if(willCreate) {
+		swal({
+			title: "Are you sure?",
+			text: 'Are you sure you want to create seasonal events? If you already have created them, you might get doubling.',
+			buttons: true,
+			icon: "info",
+			dangerMode: true,
+		})
+		.then((willCreate) => {
+			if(willCreate) {
 
-                var events = create_season_events();
+				var events = create_season_events();
 
-                for(index in events){
-                	static_data.event_data.events.push(events[index])
-                	add_event_to_sortable(events_sortable, static_data.event_data.events.length-1, static_data.event_data.events[static_data.event_data.events.length-1]);
-                }
+				for(index in events){
+					static_data.event_data.events.push(events[index])
+					add_event_to_sortable(events_sortable, static_data.event_data.events.length-1, static_data.event_data.events[static_data.event_data.events.length-1]);
+				}
 
-                do_error_check();
-            }
-        });
+				do_error_check();
+			}
+		});
 	})
 
 	$('.form-inline.locations .add').click(function(){
@@ -1220,6 +1307,10 @@ function set_up_edit_inputs(){
 		eras.evaluate_position();
 	});
 
+	$(document).on('change', '#season_sortable .date_control', function(){
+		reindex_season_sortable();
+	});
+
 	$(document).on('change', '.week-length', function(){
 		var index = $(this).parent().parent().parent().find('.unique-week-input').attr('index');
 		var new_val = ($(this).val()|0);
@@ -1315,10 +1406,10 @@ function set_up_edit_inputs(){
 
 	});
 
-    $(document).on('keyup', '.leap_day_occurance_input', function(){
-        var interval = $(this).closest('.sortable-container').find('.interval');
-        interval.val(interval.val().replace(/[ `~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z]/g, ""));
-    });
+	$(document).on('keyup', '.leap_day_occurance_input', function(){
+		var interval = $(this).closest('.sortable-container').find('.interval');
+		interval.val(interval.val().replace(/[ `~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z]/g, ""));
+	});
 
 	$(document).on('change', '.leap_day_occurance_input', function(){
 
@@ -1920,7 +2011,7 @@ function add_leap_day_to_list(parent, key, data){
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' value='${data.name}' class='name-input small-input form-control dynamic_input' data='year_data.leap_days.${key}' fc-index='name' tabindex='${(200+key)}'/>`);
 			element.push("</div>");
-            element.push('<div class="remove-spacer"></div>');
+			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
@@ -2149,7 +2240,7 @@ function add_moon_to_list(parent, key, data){
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' value='${data.name}' class='form-control name-input small-input dynamic_input' data='moons.${key}' fc-index='name' tabindex='${(300+key)}'/>`);
 			element.push("</div>");
-            element.push('<div class="remove-spacer"></div>');
+			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
@@ -2253,12 +2344,14 @@ function add_season_to_sortable(parent, key, data){
 	var element = [];
 	element.push(`<div class='sortable-container season collapsed' index='${key}'>`);
 		element.push("<div class='main-container'>");
-			element.push("<div class='handle icon-reorder'></div>");
+			if(static_data.seasons.global_settings.periodic_seasons){
+				element.push("<div class='handle icon-reorder'></div>");
+			}
 			element.push("<div class='expand icon-collapse'></div>");
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' value='${data.name}' tabindex='${(400+key)}'class='name-input small-input form-control dynamic_input' data='seasons.data.${key}' fc-index='name'/>`);
 			element.push("</div>");
-            element.push('<div class="remove-spacer"></div>');
+			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
@@ -2269,28 +2362,56 @@ function add_season_to_sortable(parent, key, data){
 
 		element.push("<div class='detail-container hidden'>");
 
-			element.push(`<div class='season-duration'>`);
-				element.push(`<div class='detail-row'>`);
-					element.push("<div class='detail-column'>");
-						element.push("<div class='detail-row'>");
-							element.push("<div class='detail-text'>Duration:</div>");
-							var transition_length = data.transition_length == '' || data.transition_length == undefined ? 90 : data.transition_length;
-							element.push(`<input type='number' step='any' class='form-control dynamic_input transition_length protip' data='seasons.data.${key}' fc-index='transition_length' min='1' value='${transition_length}' data-pt-position="right" data-pt-title='How many days until this season ends, and the next begins.'/>`);
-						element.push("</div>");
-					element.push("</div>");
-				element.push("</div>");
-				element.push(`<div class='detail-row'>`);
-					element.push("<div class='detail-column'>");
-						element.push("<div class='detail-row'>");
-							element.push("<div class='detail-text'>Peak duration:</div>");
-							var duration = data.duration == '' || data.duration == undefined ? 0 : data.duration;
-							element.push(`<input type='number' step='any' class='form-control dynamic_input duration protip' data='seasons.data.${key}' fc-index='duration' min='0' value='${duration}' data-pt-position="right" data-pt-title='If the duration is the path up a mountain, the peak duration is a flat summit. This is how many days the season will pause before going down the other side of the mountain.'/>`);
-						element.push("</div>");
-					element.push("</div>");
-				element.push("</div>");
-			element.push("</div>");
+			if(static_data.seasons.global_settings.periodic_seasons){
 
-			element.push("<div class='separator'></div>");
+				element.push(`<div class='season-duration'>`);
+					element.push(`<div class='detail-row'>`);
+						element.push("<div class='detail-column'>");
+							element.push("<div class='detail-row'>");
+								element.push("<div class='detail-text'>Duration:</div>");
+								var transition_length = data.transition_length == '' || data.transition_length == undefined ? 90 : data.transition_length;
+								element.push(`<input type='number' step='any' class='form-control dynamic_input transition_length protip' data='seasons.data.${key}' fc-index='transition_length' min='1' value='${transition_length}' data-pt-position="right" data-pt-title='How many days until this season ends, and the next begins.'/>`);
+							element.push("</div>");
+						element.push("</div>");
+					element.push("</div>");
+					element.push(`<div class='detail-row'>`);
+						element.push("<div class='detail-column'>");
+							element.push("<div class='detail-row'>");
+								element.push("<div class='detail-text'>Peak duration:</div>");
+								var duration = data.duration == '' || data.duration == undefined ? 0 : data.duration;
+								element.push(`<input type='number' step='any' class='form-control dynamic_input duration protip' data='seasons.data.${key}' fc-index='duration' min='0' value='${duration}' data-pt-position="right" data-pt-title='If the duration is the path up a mountain, the peak duration is a flat summit. This is how many days the season will pause before going down the other side of the mountain.'/>`);
+							element.push("</div>");
+						element.push("</div>");
+					element.push("</div>");
+				element.push("</div>");
+
+			}else{
+
+				element.push(`<div class='date_control season-date full'>`);
+
+					element.push("<div class='row my-1'>");
+						element.push("<div class='col-5'>");
+							element.push("<div class='detail-text'>Timespan:</div>");
+						element.push("</div>");
+						element.push("<div class='col'>");
+							element.push(`<select type='number' class='date form-control form-control-sm timespan-list dynamic_input' data='seasons.data.${key}' fc-index='timespan'>`);
+							element.push("</select>");
+						element.push("</div>");
+					element.push("</div>");
+
+					element.push("<div class='row my-1'>");
+						element.push("<div class='col-5'>");
+							element.push("<div class='detail-text'>Day:</div>");
+						element.push("</div>");
+						element.push("<div class='col'>");
+							element.push(`<select type='number' class='date form-control form-control-sm timespan-day-list dynamic_input' data='seasons.data.${key}' fc-index='day'>`);
+							element.push("</select>");
+						element.push("</div>");
+					element.push("</div>");
+
+				element.push("</div>");
+
+			}
 
 			element.push("<div class='clock_inputs'>");
 				element.push("<div class='detail-row'>");
@@ -2327,7 +2448,7 @@ function add_season_to_sortable(parent, key, data){
 				element.push("</div>");
 					
 				element.push("<div class='detail-row'>");
-					element.push(`<button type="button" class="btn btn-info season_middle_btn full protip" data-pt-delay-in="100" data-pt-title="Use the median values from the previous and next seasons' time data. This season will act as a transition between the two, similar to Spring or Autumn">Interpolate sunrise & sunset from surrounding seasons</button>`);
+					element.push(`<button type="button" class="btn btn-sm btn-info season_middle_btn full protip" data-pt-delay-in="100" data-pt-title="Use the median values from the previous and next seasons' time data. This season will act as a transition between the two, similar to Spring or Autumn">Interpolate sunrise & sunset from surrounding seasons</button>`);
 				element.push("</div>");
 
 			element.push("</div>");
@@ -2347,7 +2468,7 @@ function add_location_to_list(parent, key, data){
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' value='${data.name}' tabindex='${(500+key)}' class='name-input small-input form-control dynamic_input location-name' data='seasons.locations.${key}' fc-index='name'/>`);
 			element.push("</div>");
-            element.push('<div class="remove-spacer"></div>');
+			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 
 		element.push("<div class='remove-container'>");
@@ -2469,7 +2590,7 @@ function add_location_to_list(parent, key, data){
 					element.push("</div>");
 					
 					element.push("<div class='detail-row'>");
-						element.push(`<button type="button" class="btn btn-info location_middle_btn full protip" data-pt-delay-in="100" data-pt-title="Use the median values from the previous and next seasons' weather and time data. This season will act as a transition between the two, similar to Spring or Autumn">Interpolate data from surrounding seasons</button>`);
+						element.push(`<button type="button" class="btn btn-sm btn-info location_middle_btn full protip" data-pt-delay-in="100" data-pt-title="Use the median values from the previous and next seasons' weather and time data. This season will act as a transition between the two, similar to Spring or Autumn">Interpolate data from surrounding seasons</button>`);
 					element.push("</div>");
 
 
@@ -2581,7 +2702,7 @@ function add_cycle_to_sortable(parent, key, data){
 			element.push("<div class='handle icon-reorder'></div>");
 			element.push("<div class='expand icon-collapse'></div>");
 			element.push(`<div class='detail-text'>Cycle #${(key+1)} - Using {{${(key+1)}}}</div>`);
-            element.push('<div class="remove-spacer"></div>');
+			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
@@ -2652,7 +2773,7 @@ function add_era_to_list(parent, key, data){
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' value='${data.name}' class='form-control name-input small-input dynamic_input' data='eras.${key}' fc-index='name' tabindex='${(800+key)}'/>`);
 			element.push("</div>");
-            element.push('<div class="remove-spacer"></div>');
+			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
@@ -2775,7 +2896,7 @@ function add_era_to_list(parent, key, data){
 								element.push("<div class='detail-text'>Ends year:</div>");
 							element.push("</div>");
 							element.push("<div class='detail-column half'>");
-								element.push(`<input type='checkbox' class='form-control dynamic_input ends_year' data='eras.${key}.settings' fc-index='ends_year' ${(data.settings.ends_year ? "checked" : "")} />`);
+							element.push(`<input type='checkbox' class='form-control dynamic_input ends_year ${!static_data.seasons.global_settings.periodic_seasons ? " protip' disabled" : "'"} data-pt-position="right" data-pt-title='This is disabled because static seasons cannot support eras that end years, as months disappear and seasons require the assigned months.' disabled data='eras.${key}.settings' fc-index='ends_year' ${(data.settings.ends_year ? "checked" : "")} />`);
 							element.push("</div>");
 						element.push("</div>");
 
@@ -2815,7 +2936,7 @@ function add_category_to_list(parent, key, data){
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' value='${data.name}' name='name_input' fc-index='name' class='form-control name-input small-input dynamic_input_self' data='event_data.categories.${key}' tabindex='${(700+key)}'/>`);
 			element.push("</div>");
-            element.push('<div class="remove-spacer"></div>');
+			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
@@ -2952,7 +3073,7 @@ function add_event_to_sortable(parent, key, data){
 		element.push("<div class='main-container'>");
 			element.push("<div class='handle icon-reorder'></div>");
 			element.push(`<div class='btn btn-outline-primary open-edit-event-ui event_name'>Edit - ${data.name}</div>`);
-            element.push('<div class="remove-spacer"></div>');
+			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
@@ -2975,7 +3096,7 @@ function add_link_to_list(parent, key, calendar_name){
 	element.push(`<div class='sortable-container events_input' index='${key}'>`);
 		element.push("<div class='main-container'>");
 			element.push(`<div>${calendar_name}</div>`);
-            element.push('<div class="remove-spacer"></div>');
+			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to unlink this?</div>");
@@ -3022,8 +3143,24 @@ function error_check(parent, rebuild){
 
 	for(var season_i = 0; season_i < static_data.seasons.data.length; season_i++){
 		var season = static_data.seasons.data[season_i];
-		if(season.transition_length == 0){
-			errors.push(`Season <i>${season.name}</i> can't have 0 transition length.`);
+		if(static_data.seasons.global_settings.periodic_seasons){
+			if(season.transition_length == 0){
+				errors.push(`Season <i>${season.name}</i> can't have 0 transition length.`);
+			}
+		}else{
+			if(static_data.year_data.timespans[season.timespan].interval != 1){
+				errors.push(`Season <i>${season.name}</i> can't be on a leaping month.`);
+			}
+		}
+	}
+
+	if(!static_data.seasons.global_settings.periodic_seasons){
+		for(var season_i = 0; season_i < static_data.seasons.data.length-1; season_i++){
+			var curr_season = static_data.seasons.data[season_i];
+			var next_season = static_data.seasons.data[season_i+1];
+			if(curr_season.timespan == next_season.timespan && curr_season.day == next_season.day){
+				errors.push(`Season <i>${curr_season.name}</i> and <i>${next_season.name}</i> cannot be on the same month and day.`);
+			}
 		}
 	}
 
@@ -3357,10 +3494,23 @@ function reindex_season_sortable(key){
 			}
 		};
 
-		static_data.seasons.data[i].transition_length = parseFloat($(this).find('.transition_length').val());
-		static_data.seasons.data[i].duration = parseFloat($(this).find('.duration').val());
+		if(static_data.seasons.global_settings.periodic_seasons){
+
+			static_data.seasons.data[i].transition_length = parseFloat($(this).find('.transition_length').val());
+			static_data.seasons.data[i].duration = parseFloat($(this).find('.duration').val());
+
+		}else{
+
+			static_data.seasons.data[i].timespan = ($(this).find('.timespan-list').val()|0);
+			static_data.seasons.data[i].day = ($(this).find('.timespan-day-list').val()|0);
+
+		}
 
 	});
+
+	if(!static_data.seasons.global_settings.periodic_seasons){
+		sort_list_by_partial_date(season_sortable);
+	}
 
 	if(key !== undefined){
 		location_list.find(`.location_season[fc-index="${key}"]`).remove();
@@ -3371,6 +3521,7 @@ function reindex_season_sortable(key){
 	do_error_check('seasons');
 
 }
+
 
 function reindex_location_list(){
 
@@ -3558,7 +3709,17 @@ function reindex_moon_list(){
 
 function reindex_era_list(){
 
-	sort_era_list_by_date();
+	sort_list_by_date(era_list);
+
+	era_list.children().each(function(){
+
+		var starting_era = $(this).find('.starting_era').is(':checked');
+
+		if(starting_era){
+			$(this).insertBefore(era_list.children().eq(0))
+		}
+
+	});
 
 	static_data.eras = [];
 
@@ -3597,16 +3758,16 @@ function reindex_era_list(){
 
 }
 
-function sort_era_list_by_date(){
+function sort_list_by_date(list){
 
-	era_list.children().each(function(){
+	list.children().each(function(){
 
 		var curr = $(this);
 		var curr_year = (curr.find('.year-input').val()|0);
 		var curr_timespan = (curr.find('.timespan-list').val()|0);
 		var curr_day = (curr.find('.timespan-day-list').val()|0);
 
-		era_list.children().each(function(){
+		list.children().each(function(){
 
 			var comp = $(this);
 			var comp_year = (comp.find('.year-input').val()|0);
@@ -3627,17 +3788,35 @@ function sort_era_list_by_date(){
 			}
 		});
 	});
+}
 
-	era_list.children().each(function(){
+function sort_list_by_partial_date(list){
 
-		var starting_era = $(this).find('.starting_era').is(':checked');
+	list.children().each(function(){
 
-		if(starting_era){
-			$(this).insertBefore(era_list.children().eq(0))
-		}
+		var curr = $(this);
+		var curr_timespan = (curr.find('.timespan-list').val()|0);
+		var curr_day = (curr.find('.timespan-day-list').val()|0);
+
+		list.children().each(function(){
+
+			var comp = $(this);
+			var comp_timespan = (comp.find('.timespan-list').val()|0);
+			var comp_day = (comp.find('.timespan-day-list').val()|0);
+
+			if(curr_timespan > comp_timespan){
+				comp.insertBefore(curr);
+			}else if(curr_timespan == comp_timespan){
+				if(curr_day >= comp_day){
+					comp.insertBefore(curr);
+				}
+			}
+
+		});
 
 	});
 
+	list.change();
 }
 
 function reindex_event_category_list(){
@@ -3739,9 +3918,11 @@ function recreate_moon_colors(){
 
 function evaluate_season_lengths(){
 
-	$('#season_length_text').toggleClass('hidden', static_data.seasons.data.length == 0);
+	var disable = static_data.seasons.data.length == 0 || (!static_data.seasons.global_settings.periodic_seasons && static_data.seasons.global_settings.periodic_seasons !== undefined);
 
-	if(static_data.seasons.data.length == 0){
+	$('#season_length_text').toggleClass('hidden', disable).empty();
+
+	if(disable){
 		return;
 	}
 
@@ -3897,7 +4078,7 @@ function populate_calendar_lists(){
 
 				if(calendar.master_hash){
 
-                    var owner = clone(owned_calendars[calendar.hash]);
+					var owner = clone(owned_calendars[calendar.hash]);
 
 					if(owner.hash == hash){
 						owner.name = "this calendar";
@@ -4035,12 +4216,23 @@ function set_up_edit_values(){
 
 		for(var i = 0; i < static_data.seasons.data.length; i++){
 			add_season_to_sortable(season_sortable, i, static_data.seasons.data[i]);
+
+			repopulate_timespan_select(season_sortable.children().last().find('.timespan-list'), static_data.seasons.data[i].timespan, false, true);
+			repopulate_day_select(season_sortable.children().last().find('.timespan-day-list'), static_data.seasons.data[i].day, false, true);
 		}
+
+		$('.season_offset_container').prop('disabled', !static_data.seasons.global_settings.periodic_seasons).toggleClass('hidden', !static_data.seasons.global_settings.periodic_seasons);
+
+		$('.season_text.dated').toggleClass('active', !static_data.seasons.global_settings.periodic_seasons);
+		$('.season_text.periodic').toggleClass('active', static_data.seasons.global_settings.periodic_seasons);
+
 		evaluate_season_lengths();
 
 		for(var i = 0; i < static_data.seasons.locations.length; i++){
 			add_location_to_list(location_list, i, static_data.seasons.locations[i]);
 		}
+
+		periodic_seasons_checkbox.prop("checked", static_data.seasons.global_settings.periodic_seasons);
 
 		$('.slider_percentage').slider({
 			min: 0,
@@ -4059,6 +4251,8 @@ function set_up_edit_values(){
 		});
 
 	}
+
+	$('#create_season_events').prop('disabled', !static_data.clock.enabled);
 
 	if(static_data.cycles){
 		for(var i = 0; i < static_data.cycles.data.length; i++){
@@ -4134,8 +4328,8 @@ function set_up_edit_values(){
 	$('#weather_inputs').find('select, input').prop('disabled', !static_data.seasons.global_settings.enable_weather);
 
 	if(window.location.pathname != '/calendars/create') {
-        populate_calendar_lists();
-    }
+		populate_calendar_lists();
+	}
 
 	evaluate_clock_inputs();
 
@@ -4151,9 +4345,9 @@ function set_up_edit_values(){
 
 
 function get_category(search) {
-    if(static_data.event_data.categories.length == 0){
-        return {id: -1};
-    }
+	if(static_data.event_data.categories.length == 0){
+		return {id: -1};
+	}
 
 	var results = static_data.event_data.categories.filter(function(element) {
 		return element.id == search;

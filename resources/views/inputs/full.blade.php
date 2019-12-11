@@ -482,16 +482,35 @@
             <label for="collapsible_seasons" class="lbl-toggle card-header lbl-text">Seasons<a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Seasons' href='https://wiki.fantasy-calendar.com/index.php?title=Seasons' class="wiki protip"><i class="icon-question-sign"></i></a></label>
             <div class="collapsible-content card-body">
 
-                <div class='form-inline seasons'>
-                    <input type='text' class='form-control name' placeholder='Season name'>
-                    <button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
+                <div class='row m-1 p-1 bold-text'>
+                    Season type:
+                </div>
+
+                <div class='row mb-1 protip' data-pt-position="right" data-pt-title='This toggles between having seasons starting on specific dates, or having the seasons last an exact duration with the potential to overflow years.'>
+                    <div class='col-3 p-0 text-right season_text dated'>
+                        Dated
+                    </div>
+                    <div class='col-2 p-0'>
+                        <label class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id='periodic_seasons_checkbox'>
+                            <span class="custom-control-indicator"></span>
+                        </label>
+                    </div>
+                    <div class='col-4 p-0 season_text periodic'>
+                        Periodic
+                    </div>
+                </div>
+
+                <div class='form-inline seasons row'>
+                    <input type='text' class='form-control name col-10' placeholder='Season name'>
+                    <button type='button' class='btn btn-primary add col'><i class="fa fa-plus"></i></button>
                 </div>
 
                 <div class='detail-row sortable' id='season_sortable'></div>
 
                 <div class='detail-row small-text' id='season_length_text'></div>
 
-                <div class='detail-row'>
+                <div class='detail-row season_offset_container'>
                     <div class='detail-row'>
                         Season offset (days):
                     </div>
