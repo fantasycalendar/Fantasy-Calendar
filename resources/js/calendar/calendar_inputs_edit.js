@@ -75,7 +75,7 @@ function set_up_edit_inputs(){
 	global_week_sortable = $('#global_week_sortable');
 	leap_day_list = $('#leap_day_list');
 	moon_list = $('#moon_list');
-	dynamic_seasons_checkbox = $('#dynamic_seasons_checkbox');
+	periodic_seasons_checkbox = $('#periodic_seasons_checkbox');
 	season_sortable = $('#season_sortable');
 	cycle_sortable = $('#cycle_sortable');
 	era_list = $('#era_list');
@@ -381,10 +381,10 @@ function set_up_edit_inputs(){
 		do_error_check();
 	});
 
-	dynamic_seasons_checkbox.change(function(){
+	periodic_seasons_checkbox.change(function(){
 
-		var dynamic = $(this).prop('checked');
-		$(this).prop('checked', !dynamic);
+		var checked = $(this).prop('checked');
+		$(this).prop('checked', !checked);
 
 		var ends_year = false;
 		for(var era_index in static_data.eras){
@@ -398,7 +398,7 @@ function set_up_edit_inputs(){
 		if(ends_year){
 			swal({
 			title: "Error!",
-				text: `You have eras that end years - you cannot switch to static seasons with year-ending eras as the dates might disappear, and that kinda defeats the whole purpose.`,
+				text: `You have eras that end years - you cannot switch to dated seasons with year-ending eras as the dates might disappear, and that kinda defeats the whole purpose.`,
 				icon: "error",
 				dangerMode: true
 			});
@@ -407,23 +407,26 @@ function set_up_edit_inputs(){
 
 		swal({
 			title: "Are you sure?",
-			text: `Are you sure you want to switch to ${dynamic ? "DYNAMIC" : "STATIC"} seasons? Your current seasons will be deleted so you can re-create them.`,
+			text: `Are you sure you want to switch to ${checked ? "PERIODIC" : "DATED"} seasons? Your current seasons will be deleted so you can re-create them.`,
 			buttons: true,
 			icon: "warning",
 			dangerMode: true,
 		})
 		.then((doSwitch) => {
 			if(doSwitch) {
-				$(this).prop('checked', dynamic);
+				$(this).prop('checked', checked);
 				season_sortable.empty();
 				static_data.seasons.data = []
 				evaluate_season_lengths();
-				static_data.seasons.global_settings.dynamic_seasons = dynamic;
+				static_data.seasons.global_settings.periodic_seasons = checked;
 
-				$('.season_offset_container').prop('disabled', !dynamic).toggleClass('hidden', !dynamic);
+				$('.season_text.dated').toggleClass('active', !checked);
+				$('.season_text.periodic').toggleClass('active', checked);
+
+				$('.season_offset_container').prop('disabled', !checked).toggleClass('hidden', !checked);
 
 				era_list.children().each(function(){
-					$(this).find('.ends_year').prop('disabled', !dynamic).toggleClass('protip');
+					$(this).find('.ends_year').prop('disabled', !checked).toggleClass('protip');
 				});
 
 				error_check("calendar", true);
@@ -453,7 +456,7 @@ function set_up_edit_inputs(){
 			}
 		};
 
-		if(static_data.seasons.global_settings.dynamic_seasons){
+		if(static_data.seasons.global_settings.periodic_seasons){
 
 			if(season_sortable.children().length == 0){
 				stats.transition_length = fract_year_len;
@@ -489,7 +492,7 @@ function set_up_edit_inputs(){
 
 		add_season_to_sortable(season_sortable, id, stats);
 
-		if(!static_data.seasons.global_settings.dynamic_seasons){
+		if(!static_data.seasons.global_settings.periodic_seasons){
 
 			repopulate_timespan_select(season_sortable.children().last().find('.timespan-list'), stats.timespan, false, true);
 			repopulate_day_select(season_sortable.children().last().find('.timespan-day-list'), stats.day, false, true);
@@ -2341,7 +2344,7 @@ function add_season_to_sortable(parent, key, data){
 	var element = [];
 	element.push(`<div class='sortable-container season collapsed' index='${key}'>`);
 		element.push("<div class='main-container'>");
-			if(static_data.seasons.global_settings.dynamic_seasons){
+			if(static_data.seasons.global_settings.periodic_seasons){
 				element.push("<div class='handle icon-reorder'></div>");
 			}
 			element.push("<div class='expand icon-collapse'></div>");
@@ -2359,7 +2362,7 @@ function add_season_to_sortable(parent, key, data){
 
 		element.push("<div class='detail-container hidden'>");
 
-			if(static_data.seasons.global_settings.dynamic_seasons){
+			if(static_data.seasons.global_settings.periodic_seasons){
 
 				element.push(`<div class='season-duration'>`);
 					element.push(`<div class='detail-row'>`);
@@ -2893,7 +2896,7 @@ function add_era_to_list(parent, key, data){
 								element.push("<div class='detail-text'>Ends year:</div>");
 							element.push("</div>");
 							element.push("<div class='detail-column half'>");
-							element.push(`<input type='checkbox' class='form-control dynamic_input ends_year ${!static_data.seasons.global_settings.dynamic_seasons ? " protip' disabled" : "'"} data-pt-position="right" data-pt-title='This is disabled because static seasons cannot support eras that end years, as months disappear and seasons require the assigned months.' disabled data='eras.${key}.settings' fc-index='ends_year' ${(data.settings.ends_year ? "checked" : "")} />`);
+							element.push(`<input type='checkbox' class='form-control dynamic_input ends_year ${!static_data.seasons.global_settings.periodic_seasons ? " protip' disabled" : "'"} data-pt-position="right" data-pt-title='This is disabled because static seasons cannot support eras that end years, as months disappear and seasons require the assigned months.' disabled data='eras.${key}.settings' fc-index='ends_year' ${(data.settings.ends_year ? "checked" : "")} />`);
 							element.push("</div>");
 						element.push("</div>");
 
@@ -3140,7 +3143,7 @@ function error_check(parent, rebuild){
 
 	for(var season_i = 0; season_i < static_data.seasons.data.length; season_i++){
 		var season = static_data.seasons.data[season_i];
-		if(static_data.seasons.global_settings.dynamic_seasons){
+		if(static_data.seasons.global_settings.periodic_seasons){
 			if(season.transition_length == 0){
 				errors.push(`Season <i>${season.name}</i> can't have 0 transition length.`);
 			}
@@ -3151,7 +3154,7 @@ function error_check(parent, rebuild){
 		}
 	}
 
-	if(!static_data.seasons.global_settings.dynamic_seasons){
+	if(!static_data.seasons.global_settings.periodic_seasons){
 		for(var season_i = 0; season_i < static_data.seasons.data.length-1; season_i++){
 			var curr_season = static_data.seasons.data[season_i];
 			var next_season = static_data.seasons.data[season_i+1];
@@ -3491,7 +3494,7 @@ function reindex_season_sortable(key){
 			}
 		};
 
-		if(static_data.seasons.global_settings.dynamic_seasons){
+		if(static_data.seasons.global_settings.periodic_seasons){
 
 			static_data.seasons.data[i].transition_length = parseFloat($(this).find('.transition_length').val());
 			static_data.seasons.data[i].duration = parseFloat($(this).find('.duration').val());
@@ -3505,7 +3508,7 @@ function reindex_season_sortable(key){
 
 	});
 
-	if(!static_data.seasons.global_settings.dynamic_seasons){
+	if(!static_data.seasons.global_settings.periodic_seasons){
 		sort_list_by_partial_date(season_sortable);
 	}
 
@@ -3915,7 +3918,7 @@ function recreate_moon_colors(){
 
 function evaluate_season_lengths(){
 
-	var disable = static_data.seasons.data.length == 0 || (!static_data.seasons.global_settings.dynamic_seasons && static_data.seasons.global_settings.dynamic_seasons !== undefined);
+	var disable = static_data.seasons.data.length == 0 || (!static_data.seasons.global_settings.periodic_seasons && static_data.seasons.global_settings.periodic_seasons !== undefined);
 
 	$('#season_length_text').toggleClass('hidden', disable).empty();
 
@@ -4218,7 +4221,10 @@ function set_up_edit_values(){
 			repopulate_day_select(season_sortable.children().last().find('.timespan-day-list'), static_data.seasons.data[i].day, false, true);
 		}
 
-		$('.season_offset_container').prop('disabled', !static_data.seasons.global_settings.dynamic_seasons).toggleClass('hidden', !static_data.seasons.global_settings.dynamic_seasons);
+		$('.season_offset_container').prop('disabled', !static_data.seasons.global_settings.periodic_seasons).toggleClass('hidden', !static_data.seasons.global_settings.periodic_seasons);
+
+		$('.season_text.dated').toggleClass('active', !static_data.seasons.global_settings.periodic_seasons);
+		$('.season_text.periodic').toggleClass('active', static_data.seasons.global_settings.periodic_seasons);
 
 		evaluate_season_lengths();
 
@@ -4226,7 +4232,7 @@ function set_up_edit_values(){
 			add_location_to_list(location_list, i, static_data.seasons.locations[i]);
 		}
 
-		dynamic_seasons_checkbox.prop("checked", static_data.seasons.global_settings.dynamic_seasons);
+		periodic_seasons_checkbox.prop("checked", static_data.seasons.global_settings.periodic_seasons);
 
 		$('.slider_percentage').slider({
 			min: 0,

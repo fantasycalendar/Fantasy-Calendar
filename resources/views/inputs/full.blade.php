@@ -482,15 +482,22 @@
             <label for="collapsible_seasons" class="lbl-toggle card-header lbl-text">Seasons<a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Seasons' href='https://wiki.fantasy-calendar.com/index.php?title=Seasons' class="wiki protip"><i class="icon-question-sign"></i></a></label>
             <div class="collapsible-content card-body">
 
-                <div class='detail-row protip' data-pt-position="right" data-pt-title='This toggles between having seasons starting on specific dates, or having the seasons last an exact duration with the potential to overflow years.'>
-                    <div class='detail-column'>
-                        Dynamic season length:
+                <div class='row m-1 p-1 bold-text'>
+                    Season type:
+                </div>
+
+                <div class='row mb-1 protip' data-pt-position="right" data-pt-title='This toggles between having seasons starting on specific dates, or having the seasons last an exact duration with the potential to overflow years.'>
+                    <div class='col-3 p-0 text-right season_text dated'>
+                        Dated
                     </div>
-                    <div class='detail-column float'>
+                    <div class='col-2 p-0'>
                         <label class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id='dynamic_seasons_checkbox'>
+                            <input type="checkbox" class="custom-control-input" id='periodic_seasons_checkbox'>
                             <span class="custom-control-indicator"></span>
                         </label>
+                    </div>
+                    <div class='col-4 p-0 season_text periodic'>
+                        Periodic
                     </div>
                 </div>
 

@@ -143,7 +143,7 @@ class Climate{
 
 		if(this._season_length === undefined){
 
-			if(this.settings.dynamic_seasons){
+			if(this.settings.periodic_seasons){
 
 				this._season_length = 0;
 
@@ -179,9 +179,9 @@ class Climate{
 		this.set_up_location_seasons();
 		this.set_up_solstice_equinox();
 
-		if(this.settings.dynamic_seasons){
+		if(this.settings.periodic_seasons){
 
-			this.generate_dynamic_seasons();
+			this.generate_periodic_seasons();
 
 		}else{
 
@@ -447,7 +447,7 @@ class Climate{
 	}
 
 
-	generate_dynamic_seasons(){
+	generate_periodic_seasons(){
 
 		var season_epoch = this.start_epoch - this.settings.season_offset;
 
