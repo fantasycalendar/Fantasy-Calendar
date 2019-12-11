@@ -4036,6 +4036,8 @@ function evaluate_save_button(){
 
 		var text = static_same && dynamic_same && calendar_name_same ? "Cannot create yet" : "Create calendar";
 
+		autosave();
+
 		create_button.prop('disabled', not_changed).toggleClass('btn-danger', not_changed).toggleClass('btn-success', !not_changed).text(text);
 
 	}
@@ -4375,5 +4377,66 @@ function empty_edit_values(){
 	location_list.empty()
 	calendar_link_select.empty()
 	calendar_link_list.empty()
+
+}
+
+
+function autosave(){
+
+	var saved_data = JSON.stringify({
+		calendar_name: calendar_name,
+		static_data: static_data,
+		dynamic_data: dynamic_data
+	})
+
+	localStorage.setItem('autosave', saved_data);
+
+}
+
+function autoload(){
+
+	var saved_data = localStorage.getItem('autosave')
+
+	if(saved_data){
+
+		swal({
+			title: "Auto-load?",
+			text: `We see you didn't save your last calendar, do you want to load that?`,
+			buttons: true,
+			icon: "info",
+			dangerMode: true,
+		})
+		.then((load) => {
+			if(load) {
+				
+				var data = JSON.parse(saved_data);
+                prev_dynamic_data = {}
+                prev_static_data = {}
+                calendar_name = data.calendar_name;
+                static_data = data.static_data;
+                dynamic_data = data.dynamic_data;
+                dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+                empty_edit_values();
+                set_up_edit_values();
+                set_up_view_values();
+                set_up_visitor_values();
+
+				error_check("calendar", true);
+
+                localStorage.clear();
+
+			}
+		}).then((load) => {
+
+            swal({
+                icon: "success",
+                title: "Loaded!",
+                text: "The calendar " + calendar_name + " has been loaded.",
+                button: true
+            })
+
+		});
+
+	}
 
 }
