@@ -466,6 +466,7 @@ function create_calendar(){
 		dataType: 'json',
 		data: {name: calendar_name, dynamic_data: JSON.stringify(dynamic_data), static_data: JSON.stringify(static_data)},
 		success: function ( result ){
+			localStorage.clear();
 			window.location.href = window.baseurl+'calendars/'+result.hash+'/edit';
 		},
 		error: function ( log )

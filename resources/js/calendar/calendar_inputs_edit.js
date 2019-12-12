@@ -4403,10 +4403,10 @@ function autoload(){
 			title: "Auto-load?",
 			text: `We see you didn't save your last calendar, do you want to load that?`,
 			buttons: true,
-			icon: "info",
-			dangerMode: true,
+			icon: "info"
 		})
 		.then((load) => {
+
 			if(load) {
 				
 				var data = JSON.parse(saved_data);
@@ -4423,10 +4423,9 @@ function autoload(){
 
 				error_check("calendar", true);
 
-                localStorage.clear();
-
 			}
-		}).then((load) => {
+
+		}).then(function(){
 
             swal({
                 icon: "success",
