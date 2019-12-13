@@ -918,7 +918,7 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
         min-width: 100vw;
         padding: 0.5rem;
         margin: 0 auto;
-        background-color: #fff;
+        background-color: $card-bg-color;
         border: none;
 
         .form-control {
