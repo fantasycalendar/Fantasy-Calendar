@@ -21,5 +21,6 @@
 
 			@yield('content')
 		</div>
+        <div id="protip_container"></div>
     </body>
 </html>

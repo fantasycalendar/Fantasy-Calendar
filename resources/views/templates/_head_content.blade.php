@@ -92,7 +92,8 @@
                 position: 'bottom',
                 scheme: 'leaf',
                 classes: 'box-shadow accent-bg-color',
-                animate: 'bounceIn'
+                animate: 'bounceIn',
+                target: '#protip_container'
             }
         });
 
