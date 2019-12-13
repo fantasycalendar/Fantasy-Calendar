@@ -6,8 +6,9 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use mysql_xdevapi\Exception;
 
-class User extends Authenticatable implements 
+class User extends Authenticatable implements
     MustVerifyEmail,
     CanResetPassword
 {
@@ -19,10 +20,10 @@ class User extends Authenticatable implements
      * @var array
      */
     protected $fillable = [
-        'email', 
-        'password', 
-        'username', 
-        'reg_ip', 
+        'email',
+        'password',
+        'username',
+        'reg_ip',
         'beta_authorised',
         'permissions',
     ];
@@ -43,6 +44,7 @@ class User extends Authenticatable implements
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'settings' => 'json',
     ];
 
     public function calendars() {
@@ -59,5 +61,32 @@ class User extends Authenticatable implements
 
     public function betaAccess() {
         return $this->beta_authorised == 1;
+    }
+
+    public function setSetting($setting, $value) {
+        $settings = $this->settings;
+
+        $settings[$setting] = $value;
+    }
+
+    public function setting($setting) {
+        if(Arr::has($this->settings, $setting)) {
+            return $this->settings[$setting];
+        }
+
+        return null;
+    }
+
+    public function setSettings($settings) {
+        $userSettings = $this->settings;
+
+        foreach($settings as $setting => $value) {
+            $userSettings[$setting] = $value;
+        }
+
+        $this->settings = $userSettings;
+        $this->save();
+
+        return $this;
     }
 }
