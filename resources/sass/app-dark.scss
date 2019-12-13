@@ -1,0 +1,86 @@
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Montserrat:regular,600');
+
+@import '~bootswatch/dist/darkly/variables';
+@import '~bootstrap/scss/bootstrap';
+@import '~bootswatch/dist/darkly/bootswatch';
+
+@import '~@fortawesome/fontawesome-free/scss/fontawesome';
+@import '~@fortawesome/fontawesome-free/scss/solid';
+
+$hamburger-layer-color      :#FFF;
+$hamburger-hover-opacity    :1;
+$hamburger-layer-width      :1.9rem;
+$hamburger-layer-height     :0.2rem;
+$hamburger-layer-spacing    :0.26rem;
+$hamburger-padding-y        :1rem;
+@import '~hamburgers/_sass/hamburgers/hamburgers';
+
+@import '~trumbowyg/dist/ui/sass/trumbowyg';
+
+@import '~protip/css/protip';
+
+// Variables
+@import 'calendar/variables-dark';
+
+// Legacy calendar parts
+@import 'home';
+
+// Calendar parts
+@import 'calendar';
+
+@import 'calendar/event_colors-dark';
+
+// select2
+@import '~select2';
+@import '~select2-bootstrap-theme/dist/select2-bootstrap';
+
+// Overrides
+.form-control {
+    background-color: $card-bg-color;
+    color: white;
+}
+
+.weather_icon {
+    filter: invert(100%);
+}
+
+.protip-skin-default--scheme-leaf[data-pt-position=top-left] .protip-arrow,
+.protip-skin-default--scheme-leaf[data-pt-position=top] .protip-arrow,
+.protip-skin-default--scheme-leaf[data-pt-position=top-right] .protip-arrow {
+    border-top-color: $accent-color !important;
+}
+
+.protip-skin-default--scheme-leaf[data-pt-position=bottom-left] .protip-arrow,
+.protip-skin-default--scheme-leaf[data-pt-position=bottom] .protip-arrow,
+.protip-skin-default--scheme-leaf[data-pt-position=bottom-right] .protip-arrow {
+    border-bottom-color: $accent-color !important;
+}
+
+.protip-skin-default--scheme-leaf[data-pt-position=left-top] .protip-arrow,
+.protip-skin-default--scheme-leaf[data-pt-position=left] .protip-arrow,
+.protip-skin-default--scheme-leaf[data-pt-position=left-bottom] .protip-arrow {
+    border-left-color: $accent-color !important;
+}
+
+.protip-skin-default--scheme-leaf[data-pt-position=right-top] .protip-arrow,
+.protip-skin-default--scheme-leaf[data-pt-position=right] .protip-arrow,
+.protip-skin-default--scheme-leaf[data-pt-position=right-bottom] .protip-arrow {
+    border-right-color: $accent-color !important;
+}
+
+.protip-skin-default--scheme-leaf[data-pt-position=top-left-corner] .protip-arrow {
+    border-right-color: $accent-color !important;
+}
+
+.protip-skin-default--scheme-leaf[data-pt-position=top-right-corner] .protip-arrow {
+    border-top-color: $accent-color !important;
+}
+
+.protip-skin-default--scheme-leaf[data-pt-position=bottom-left-corner] .protip-arrow {
+    border-bottom-color: $accent-color !important;
+}
+
+.protip-skin-default--scheme-leaf[data-pt-position=bottom-right-corner] .protip-arrow {
+    border-left-color: $accent-color !important;
+}

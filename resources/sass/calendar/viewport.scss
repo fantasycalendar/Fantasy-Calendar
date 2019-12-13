@@ -1,6 +1,3 @@
-// Variables
-@import 'variables';
-
 /* ------------------ Overall Layout ----------------- */
 
 @keyframes shadow-pulse
@@ -18,13 +15,13 @@
 }
 
 #calendar {
-    color: #70767c;
+    color: $main-text-color;
 }
 
 .timespan {
     &_container{
         position:relative;
-        background-color:white;
+        background-color: $card-bg-color;
         border-radius:10px;
         margin: 30px 20px;
         overflow:hidden;
@@ -88,7 +85,7 @@
         flex-direction: column;
         min-height:8rem;
         flex: 1;
-        background-color:white;
+        background-color: $card-bg-color;
         min-width: 5rem;
 
         &.empty_timespan_day{
@@ -108,7 +105,7 @@
     }
 
     &_intercalary{
-        background-color:white;
+        background-color: $card-bg-color;
         display: flex;
         flex-direction: column;
         min-height:8rem;
@@ -131,8 +128,7 @@
         min-height:8rem;
         flex: 1;
         color: rgba(#98a0a6, 0.6);
-        background-color: #ffffff;
-        background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23f9f9fa' fill-opacity='1' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");
+        background-image: $disabled-crosshatch;
         cursor: not-allowed;
         border-top:1px solid $calendar-border-color;
         padding-left:1px;
@@ -494,6 +490,6 @@ body {
 }
 
 .current_day{
-    background-color:#fef0db;
+    background-color: $current-day-color;
     border-bottom: 5px solid #fdb44d;
 }

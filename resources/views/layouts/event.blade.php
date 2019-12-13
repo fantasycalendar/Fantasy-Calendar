@@ -140,7 +140,7 @@
 								 Limit for
 							</div>
 							<div class='detail-column third'>
-								 <input type='number' min='1' value='1' class='form-control form-control-sm' id='limited_repeat_num' name='limited_repeat_num'>
+								 <input type='number' min='1' value='1' class='form-control form-control' id='limited_repeat_num' name='limited_repeat_num'>
 							</div>
 							<div class='detail-column'>
 								 days.
@@ -165,7 +165,7 @@
 								 Lasts for
 							</div>
 							<div class='detail-column third'>
-								 <input type='number' min='1' value='1' class='form-control form-control-sm' id='duration' name='duration'>
+								 <input type='number' min='1' value='1' class='form-control form-control' id='duration' name='duration'>
 							</div>
 							<div class='detail-column'>
 								 days.

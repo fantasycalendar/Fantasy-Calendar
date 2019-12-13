@@ -26,6 +26,9 @@ Route::resource('calendars', 'CalendarController');
 
 Auth::routes(['verify' => true]);
 
+Route::get('/settings', 'SettingsController@index')->name('settings')->middleware('auth');
+Route::post('/settings', 'SettingsController@update')->name('settings.update')->middleware('auth');
+
 Route::get('/{path}', function(Request $request) {
     if($request->get('action') == 'generate') {
         return redirect('calendars/create');

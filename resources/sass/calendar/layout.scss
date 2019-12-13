@@ -2,10 +2,12 @@
 /** Big containers - Body, header, content **/
 /********************************************/
 
-@import '_variables';
-
 .bg-accent {
     background-color: $accent-color;
+}
+
+.accent-bg-color {
+    background-color: $accent-color !important;
 }
 
 html {
@@ -25,7 +27,7 @@ html {
     }
 
     @media screen and (min-width: 1600px) {
-        font-size: 20px;
+        font-size: 18px;
     }
 }
 
@@ -38,7 +40,7 @@ body{
     font-family:'Fira Sans', sans-serif;
 
     a {
-        color: $accent-color;
+        color: $accent-color-light;
     }
 }
 
@@ -148,7 +150,7 @@ body{
     min-width: 0;
 }
 
-#input_container .wrap-collapsible:last-child {
+#input_container > .accordion > .wrap-collapsible:last-child {
     margin-bottom: 9rem;
 }
 

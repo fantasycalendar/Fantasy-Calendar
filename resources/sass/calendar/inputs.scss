@@ -1,7 +1,5 @@
 /* ------------------ Sortable styles ----------------- */
 
-@import '_variables';
-
 #presets{
     z-index: 100;
 }
@@ -14,9 +12,6 @@ select.invalid {
 }
 
 .sortable{
-    padding:2px;
-    border:1px solid rgba(0,0,0,0.25);
-    border-radius: 5px;
     overflow:hidden;
 }
 
@@ -58,7 +53,7 @@ select.invalid {
 
     font-style: normal !important;
     font-weight: bold !important;
-    
+
 }
 
 
@@ -127,10 +122,6 @@ select.invalid {
     transition: height 0.2s ease;
 }
 
-.sortable-container:not(:last-child) {
-    border-bottom: 1px solid $calendar-border-color;
-}
-
 .inter-month-container{
     width:100%;
     margin-bottom: 5px;
@@ -151,7 +142,7 @@ select.invalid {
 
 .sortable-container.intercalary,
 .sortable-container.intercalary .visible{
-    background-color:#e4e4e4;
+    background-color: $gray-secondary;
 }
 
 .sortable-container.moon_inputs{
@@ -184,7 +175,6 @@ select.invalid {
     user-select: none;
     -moz-user-select: none;
     -webkit-user-select: none;
-    color: #495057;
 }
 
 input[type=number]::-webkit-inner-spin-button:not(.spinner),
@@ -405,6 +395,12 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     display:block;
     overflow: hidden;
     font-size:0.8em;
+    color: $accent-color-light;
+
+    &:hover {
+        color: white;
+        background-color: $accent-color-light;
+    }
 }
 
 .remove-container{
@@ -688,12 +684,12 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
 
 .wiki, .setting-question{
     float: right;
-    color: rgba(0,0,0,0.2);
+    color: $wiki-link-color;
     text-decoration: none; /* no underline */
 }
 
 .wiki:hover, .setting-question:hover{
-    color: black;
+    color: $wiki-link-hover-color;
     text-decoration: none; /* no underline */
 }
 
@@ -859,7 +855,7 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     min-width: 650px;
     padding: 15px 35px 45px;
     margin: 0 auto;
-    background-color: #fff;
+    background-color: $card-bg-color;
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius:7px;
 }
@@ -879,7 +875,7 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     width:60px;
     height:60px;
     border-radius: 30px;
-    background-color: white;
+    background-color: $card-bg-color;
 }
 
 .close_ui_btn{
@@ -922,7 +918,7 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
         min-width: 100vw;
         padding: 0.5rem;
         margin: 0 auto;
-        background-color: #fff;
+        background-color: $card-bg-color;
         border: none;
 
         .form-control {
@@ -1076,7 +1072,7 @@ ol.example li.placeholder:before {
     padding:5px;
     margin-bottom:5px;
     min-height: 34px;
-    background-color:white;
+    background-color: $action-bg-color;
 
     .select2{
 
@@ -1085,7 +1081,7 @@ ol.example li.placeholder:before {
 
         .select2-selection{
 
-            height: calc(1.5em + 0.5rem - 2px);
+            height: initial;
 
             border-radius: 0.2rem;
 
@@ -1098,6 +1094,18 @@ ol.example li.placeholder:before {
             }
         }
     }
+}
+
+.select2-dropdown {
+    background-color: $card-bg-color !important;
+}
+
+.select2-container--default .select2-results__option[aria-selected=true] {
+    background-color: $action-bg-color !important;
+}
+
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: $accent-color;
 }
 
 .select2-results{
@@ -1172,8 +1180,25 @@ ol.example li.placeholder:before {
 
 .trumbowyg-box{
     margin:0;
+    border: 1px solid $calendar-border-color;
 }
 
+.trumbowyg-button-pane {
+    background: $card-bg-color;
+    border-bottom: 1px solid $calendar-border-color;
+}
+
+.trumbowyg-button-pane .trumbowyg-button-group::after, .trumbowyg-button-pane::after{
+    background: $calendar-border-color;
+}
+
+.trumbowyg-box svg, .trumbowyg-modal svg {
+    fill: $main-text-color;
+}
+
+.trumbowyg-button-pane button:not(.trumbowyg-disable):hover, .trumbowyg-button-pane button:not(.trumbowyg-disable):focus, .trumbowyg-button-pane button.trumbowyg-active {
+    background: $action-bg-color;
+}
 
 .event_occurrences{
 

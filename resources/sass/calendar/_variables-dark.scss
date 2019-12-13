@@ -1,0 +1,35 @@
+// Body
+$body-bg: #121212;
+
+// Typography
+$font-family-sans-serif: 'Nunito', sans-serif;
+$font-size-base: 0.9rem;
+$line-height-base: 1.6;
+
+// Colors
+$blue: #3490dc;
+$indigo: #6574cd;
+$purple: #9561e2;
+$pink: #f66d9b;
+$red: #e3342f;
+$orange: #f6993f;
+$yellow: #ffed4a;
+$green: #38c172;
+$teal: #4dc0b5;
+$cyan: #6cb2eb;
+
+$calendar-border-color: rgba(0,0,0, 0.5);
+$current-day-color: #655a4f;
+$calendar-bg-color: $gray-600;
+$card-bg-color: #303030;
+$accent-color: #1d472d;
+$accent-color-light: #2f855a;
+$sidebar-width: 27vw;
+$wiki-link-color: rgba(255,255,255,0.2);
+$wiki-link-hover-color: white;
+$main-text-color: rgba(255, 255, 255, 0.8);
+$gray-secondary: #717171;
+$action-bg-color: rgba(166, 168, 179, 0.32);
+$action-icon-color: white;
+
+$disabled-crosshatch: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%233d3d3d' fill-opacity='0.3' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");

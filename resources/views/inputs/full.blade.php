@@ -17,7 +17,7 @@
 	<div class='wrap-collapsible'>
 		<div class="detail-row">
 			<label class="detail-column third">
-				<div class="form-check form-check-inline form-control form-control-sm view_type">
+				<div class="form-check form-check-inline form-control form-control view_type">
 					<input type='radio' name='view_type' value='owner' checked>
 					<span>
 						Owner View
@@ -25,7 +25,7 @@
 				</div>
 			</label>
 			<label class="detail-column third">
-				<div class="form-check form-check-inline form-control form-control-sm view_type">
+				<div class="form-check form-check-inline form-control form-control view_type">
 					<input type='radio' name='view_type' value='player'>
 					<span>
 						Player View
@@ -33,7 +33,7 @@
 				</div>
 			</label>
 			<label class="detail-column third">
-				<div class="form-check form-check-inline form-control form-control-sm view_type">
+				<div class="form-check form-check-inline form-control form-control view_type">
 					<input type='radio' name='view_type' value='weather'>
 					<span>
 						Climate view
@@ -113,7 +113,7 @@
                         </div>
                         <div class='detail-column threequarter input_buttons' value='current'>
                             <button type='button' class='btn btn-sm btn-danger sub-btn sub_year' id='sub_current_year'><i class="icon-minus"></i></button>
-                            <input class='form-control form-control-sm year-input' id='current_year' type='number'>
+                            <input class='form-control form-control year-input' id='current_year' type='number'>
                             <button type='button' class='btn btn-sm btn-success add-btn add_year' id='add_current_year'><i class="icon-plus"></i></button>
                         </div>
                     </div>
@@ -126,7 +126,7 @@
                         </div>
                         <div class='detail-column threequarter input_buttons' value='current'>
                             <button type='button' class='btn btn-sm btn-danger sub-btn sub_timespan' id='sub_current_timespan'><i class="icon-minus"></i></button>
-                            <select class='form-control form-control-sm timespan-list inclusive date' id='current_timespan'></select>
+                            <select class='form-control form-control timespan-list inclusive date' id='current_timespan'></select>
                             <button type='button' class='btn btn-sm btn-success add-btn add_timespan' id='add_current_timespan'><i class="icon-plus"></i></button>
                         </div>
 
@@ -140,7 +140,7 @@
                         </div>
                         <div class='detail-column threequarter input_buttons' value='current'>
                             <button type='button' class='btn btn-sm btn-danger sub-btn sub_day' id='sub_current_day'><i class="icon-minus"></i></button>
-                            <select class='form-control form-control-sm timespan-day-list inclusive date' id='current_day'></select>
+                            <select class='form-control form-control timespan-day-list inclusive date' id='current_day'></select>
                             <button type='button' class='btn btn-sm btn-success add-btn add_day' id='add_current_day'><i class="icon-plus"></i></button>
                         </div>
 
@@ -155,8 +155,8 @@
                         <div class='detail-column threequarter input_buttons'>
                             <button type='button' class='btn btn-sm btn-danger sub-btn adjust_hour' val='-1'><i class="clocktext">1h</i></button>
                             <button type='button' class='btn btn-sm btn-danger sub-btn adjust_minute' val='-30'><i class="clocktext">30m</i></button>
-                            <input class='form-control form-control-sm' type='number' id='current_hour'>:
-                            <input class='form-control form-control-sm' type='number' id='current_minute'>
+                            <input class='form-control form-control' type='number' id='current_hour'>:
+                            <input class='form-control form-control' type='number' id='current_minute'>
                             <button type='button' class='btn btn-sm btn-success add-btn adjust_minute' val='30'><i class="clocktext">30m</i></button>
                             <button type='button' class='btn btn-sm btn-success add-btn adjust_hour' val='1'><i class="clocktext">1h</i></button>
                         </div>
@@ -178,7 +178,7 @@
                         </div>
                         <div class='detail-column threequarter input_buttons'>
                             <button type='button' class='btn btn-sm btn-danger sub-btn sub_year' id='sub_target_year'><i class="icon-minus"></i></button>
-                            <input class='form-control form-control-sm year-input' id='target_year' type='number'>
+                            <input class='form-control form-control year-input' id='target_year' type='number'>
                             <button type='button' class='btn btn-sm btn-success add-btn add_year' id='add_target_year'><i class="icon-plus"></i></button>
                         </div>
                     </div>
@@ -191,7 +191,7 @@
                         </div>
                         <div class='detail-column threequarter input_buttons' value='target'>
                             <button type='button' class='btn btn-sm btn-danger sub-btn sub_timespan' id='sub_target_timespan'><i class="icon-minus"></i></button>
-                            <select class='form-control form-control-sm timespan-list inclusive date' id='target_timespan'></select>
+                            <select class='form-control form-control timespan-list inclusive date' id='target_timespan'></select>
                             <button type='button' class='btn btn-sm btn-success add-btn add_timespan' id='add_target_timespan'><i class="icon-plus"></i></button>
                         </div>
 
@@ -205,7 +205,7 @@
                         </div>
                         <div class='detail-column threequarter input_buttons' value='target'>
                             <button type='button' class='btn btn-sm btn-danger sub-btn sub_day' id='sub_target_day'><i class="icon-minus"></i></button>
-                            <select class='form-control form-control-sm timespan-day-list inclusive date' id='target_day'></select>
+                            <select class='form-control form-control timespan-day-list inclusive date' id='target_day'></select>
                             <button type='button' class='btn btn-sm btn-success add-btn add_day' id='add_target_day'><i class="icon-plus"></i></button>
                         </div>
 
@@ -225,15 +225,15 @@
                         <div class='row mb-2'>
 
                             <div class='col px-1'>
-                                <input type='number' class="form-control form-control-sm full" id='unit_years' placeholder="Years">
+                                <input type='number' class="form-control form-control full" id='unit_years' placeholder="Years">
                             </div>
 
                             <div class='col px-1'>
-                                <input type='number' class="form-control form-control-sm full" id='unit_months' placeholder="Months">
+                                <input type='number' class="form-control form-control full" id='unit_months' placeholder="Months">
                             </div>
 
                             <div class='col px-1'>
-                                <input type='number' class="form-control form-control-sm full" id='unit_days' placeholder="Days">
+                                <input type='number' class="form-control form-control full" id='unit_days' placeholder="Days">
                             </div>
 
                         </div>
@@ -302,13 +302,13 @@
 
                         <div class='detail-column half input_buttons'>
                             <button type='button' class='btn btn-sm btn-danger sub-btn' onclick='adjustInput(this, -1);'><i class="icon-minus"></i></button>
-                            <input class='form-control form-control-sm static_input' data='clock' fc-index='hours' type='number'>
+                            <input class='form-control form-control static_input' data='clock' fc-index='hours' type='number'>
                             <button type='button' class='btn btn-sm btn-success add-btn' onclick='adjustInput(this, +1);'><i class="icon-plus"></i></button>
                         </div>
 
                         <div class='detail-column half input_buttons'>
                             <button type='button' class='btn btn-sm btn-danger sub-btn' onclick='adjustInput(this, -1);'><i class="icon-minus"></i></button>
-                            <input class='form-control form-control-sm static_input' data='clock' fc-index='minutes' type='number'>
+                            <input class='form-control form-control static_input' data='clock' fc-index='minutes' type='number'>
                             <button type='button' class='btn btn-sm btn-success add-btn' onclick='adjustInput(this, +1);'><i class="icon-plus"></i></button>
                         </div>
 
@@ -327,7 +327,7 @@
 
                         <div class='detail-column half input_buttons'>
                             <button type='button' class='btn btn-sm btn-danger sub-btn' onclick='adjustInput(this, -1);'><i class="icon-minus"></i></button>
-                            <input class='form-control form-control-sm static_input' data='clock' fc-index='offset' type='number'>
+                            <input class='form-control form-control static_input' data='clock' fc-index='offset' type='number'>
                             <button type='button' class='btn btn-sm btn-success add-btn' onclick='adjustInput(this, +1);'><i class="icon-plus"></i></button>
                         </div>
 
@@ -365,7 +365,7 @@
                     <button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
                 </div>
 
-                <div class='sortable' id='global_week_sortable'></div>
+                <div class='sortable list-group' id='global_week_sortable'></div>
 
             </div>
 
@@ -405,7 +405,7 @@
 
                     <input type='text' class='form-control name' placeholder='Name'>
 
-                    <select class='custom-select type'>
+                    <select class='custom-select form-control type'>
                         <option selected value='month'>Month</option>
                         <option value='intercalary'>Intercalary</option>
                     </select>
@@ -413,7 +413,7 @@
                     <button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
                 </div>
 
-                <div class='sortable' id='timespan_sortable'></div>
+                <div class='sortable list-group' id='timespan_sortable'></div>
 
             </div>
 
@@ -439,7 +439,7 @@
 
                     <input type='text' class='form-control name' placeholder='Name'>
 
-                    <select class='custom-select type'>
+                    <select class='custom-select form-control type'>
                         <option selected value='leap-day'>Normal day</option>
                         <option value='intercalary'>Intercalary</option>
                     </select>
@@ -515,7 +515,7 @@
                         Season offset (days):
                     </div>
                     <div class='detail-row margin-below'>
-                        <input class='form-control form-control-sm static_input' type='number' data='seasons.global_settings' fc-index='season_offset'/>
+                        <input class='form-control form-control static_input' type='number' data='seasons.global_settings' fc-index='season_offset'/>
                     </div>
                 </div>
 
@@ -558,7 +558,7 @@
                     <div class='detail-row'>
                         <div class='detail-column'>Weather offset (days):</div>
                         <div class='detail-column float'>
-                            <input class='form-control form-control-sm static_input' type='number' refresh='false' data='seasons.global_settings' fc-index='weather_offset'/>
+                            <input class='form-control form-control static_input' type='number' refresh='false' data='seasons.global_settings' fc-index='weather_offset'/>
                         </div>
                     </div>
 
@@ -566,7 +566,7 @@
                         <div class='detail-column half'>
                             <div class='detail-row'>Temperature system:</div>
                             <div class='detail-row'>
-                                <select class='custom-select type full static_input' id='temp_sys' refresh='false' data='seasons.global_settings' fc-index='temp_sys'>
+                                <select class='custom-select form-control type full static_input' id='temp_sys' refresh='false' data='seasons.global_settings' fc-index='temp_sys'>
                                     <option selected value='metric'>Metric</option>
                                     <option value='imperial'>Imperial</option>
                                     <option value='both_m'>Both (inputs metric)</option>
@@ -578,7 +578,7 @@
                         <div class='detail-column half'>
                             <div class='detail-row'>Wind speed system:</div>
                             <div class='detail-row'>
-                                <select class='custom-select type full static_input' refresh='false' data='seasons.global_settings' fc-index='wind_sys'>
+                                <select class='custom-select form-control type full static_input' refresh='false' data='seasons.global_settings' fc-index='wind_sys'>
                                     <option selected value='metric'>Metric</option>
                                     <option value='imperial'>Imperial</option>
                                     <option value='both'>Both</option>
@@ -724,7 +724,7 @@
                     <button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
                 </div>
 
-                <div class='sortable' id='events_sortable'></div>
+                <div class='sortable list-group' id='events_sortable'></div>
             </div>
         </div>
 

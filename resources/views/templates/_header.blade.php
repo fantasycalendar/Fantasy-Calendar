@@ -20,8 +20,9 @@
         </ul>
         <ul class="navbar-nav">
             @auth
-                <li class="nav-item"><a href="javascript:" id="logout-button" class="nav-link">Logout</a></li>
+                <li class="nav-item"><a href="{{ route('settings') }}" class="nav-link">Settings</a></li>
                 <li class="nav-item"><a href="/profile" class="nav-link">Profile</a></li>
+                <li class="nav-item"><a href="javascript:" id="logout-button" class="nav-link">Logout</a></li>
             @else
                 <li class="nav-item"><a href="javascript:" id="login-show-button" class="nav-link">Login</a></li>
                 <li class="nav-item"><a href="{{ route('register') }}" class="nav-link">Register</a></li>
@@ -47,13 +48,13 @@
 			<form id="login-form" class="basic-form" method="POST">
 				<h3 class="basic-form-heading">Login</h3>
 				<input type="text" class="form-control" id="login_username" name="username" placeholder="Username" autofocus="" autocomplete="username" />
-				<input type="password" class="form-control" id="login_password" name="password" placeholder="Password" autocomplete="current-password"></input>
+				<input type="password" class="form-control" id="login_password" name="password" placeholder="Password" autocomplete="current-password" />
 				<div id="login_messagebox"></div>
 				<label class="form-control checkbox">
 					<input type="checkbox" value="remember-me" id="login_rememberMe" name="rememberMe"> Remember me
 				</label>
-				<button class="btn btn-lg btn-primary btn-block" id="login_button" type="submit">Login</button>
-				<a href="/password/reset"><button class="btn btn-sm btn-default btn-block" id="forgotten_password" type="button">Forgotten Password</button></a>
+				<button class="btn btn-lg btn-primary btn-block mt-2" id="login_button" type="submit">Login</button>
+				<a href="/password/reset"><button class="btn btn-sm btn-secondary btn-block" id="forgotten_password" type="button">Forgotten Password</button></a>
 			</form>
 		</div>
 	</div>
