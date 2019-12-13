@@ -14,11 +14,11 @@
 @endpush
 
 @section('content')
-    <div class="container">
+    <div class="container py-4">
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                    <h1 class="card-header">User settings</h1>
+                    <h2 class="card-header">User settings</h2>
                     <div class="card-body">
                         <div class="card-text p-4">
                             <form id="settings" method="post">
@@ -32,10 +32,6 @@
 
                                 <button class="btn btn-primary">Save Settings</button>
                             </form>
-
-                            @foreach($settings as $setting => $value)
-                                <p>{{ $setting }}: {{ $value }}</p>
-                            @endforeach
                         </div>
                     </div>
                 </div>
