@@ -38,3 +38,7 @@ $hamburger-padding-y        :1rem;
     background-color: $month-bg-color;
     color: white;
 }
+
+.weather_icon {
+    filter: invert(100%);
+}
