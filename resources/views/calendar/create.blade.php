@@ -1,4 +1,4 @@
-@extends('templates._page')
+@extends('templates._calendar')
 
 @push('head')
     <script>
