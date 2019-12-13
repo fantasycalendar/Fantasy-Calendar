@@ -129,7 +129,11 @@
     <script src="{{ mix('/js/calendar/calendar_manager.js') }}"></script>
     <script src="{{ mix('/js/calendar/calendar_presets.js') }}"></script>
 
-    <link rel="stylesheet" href="{{ mix('/css/app-dark.css') }}">
+    @if(Auth::check() && Auth::user()->setting('dark_theme'))
+        <link rel="stylesheet" href="{{ mix('/css/app-dark.css') }}">
+    @else
+        <link rel="stylesheet" href="{{ mix('/css/app.css') }}">
+    @endif
     <link rel="stylesheet" href="/js/vendor/spectrum/spectrum.css">
 
     @stack('head')
