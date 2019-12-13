@@ -477,7 +477,7 @@ function set_up_edit_inputs(){
 		}else{
 
 			if(season_sortable.children().length == 0){
-				
+
 				stats.timespan = 0;
 				stats.day = 1;
 
@@ -2446,7 +2446,7 @@ function add_season_to_sortable(parent, key, data){
 						element.push("</div>");
 					element.push("</div>");
 				element.push("</div>");
-					
+
 				element.push("<div class='detail-row'>");
 					element.push(`<button type="button" class="btn btn-sm btn-info season_middle_btn full protip" data-pt-delay-in="100" data-pt-title="Use the median values from the previous and next seasons' time data. This season will act as a transition between the two, similar to Spring or Autumn">Interpolate sunrise & sunset from surrounding seasons</button>`);
 				element.push("</div>");
@@ -2588,7 +2588,7 @@ function add_location_to_list(parent, key, data){
 							element.push("</div>");
 						element.push("</div>");
 					element.push("</div>");
-					
+
 					element.push("<div class='detail-row'>");
 						element.push(`<button type="button" class="btn btn-sm btn-info location_middle_btn full protip" data-pt-delay-in="100" data-pt-title="Use the median values from the previous and next seasons' weather and time data. This season will act as a transition between the two, similar to Spring or Autumn">Interpolate data from surrounding seasons</button>`);
 					element.push("</div>");
@@ -4400,15 +4400,26 @@ function autoload(){
 	if(saved_data){
 
 		swal({
-			title: "Auto-load?",
-			text: `We see you didn't save your last calendar, do you want to load that?`,
-			buttons: true,
+			title: "Load unsaved calendar?",
+			text: "It looks like you started a new calendar and didn't save it. Would you like to continue where you left off?",
+            buttons: {
+                cancel: {
+                    text:"Start Over",
+                    value: false,
+                    closeModal: true,
+                    visible: true
+                },
+                confirm: {
+                    text: "Continue",
+                    closeModal: false,
+                }
+            },
 			icon: "info"
 		})
 		.then((load) => {
 
 			if(load) {
-				
+
 				var data = JSON.parse(saved_data);
                 prev_dynamic_data = {}
                 prev_static_data = {}
@@ -4423,17 +4434,13 @@ function autoload(){
 
 				error_check("calendar", true);
 
-			}
-
-		}).then(function(){
-
-            swal({
-                icon: "success",
-                title: "Loaded!",
-                text: "The calendar " + calendar_name + " has been loaded.",
-                button: true
-            })
-
+                swal({
+                    icon: "success",
+                    title: "Loaded!",
+                    text: "The calendar " + calendar_name + " has been loaded.",
+                    button: true
+                })
+            }
 		});
 
 	}
