@@ -1,7 +1,5 @@
 /* ------------------ Sortable styles ----------------- */
 
-@import '_variables';
-
 #presets{
     z-index: 100;
 }
@@ -14,9 +12,6 @@ select.invalid {
 }
 
 .sortable{
-    padding:2px;
-    border:1px solid rgba(0,0,0,0.25);
-    border-radius: 5px;
     overflow:hidden;
 }
 
@@ -58,7 +53,7 @@ select.invalid {
 
     font-style: normal !important;
     font-weight: bold !important;
-    
+
 }
 
 
@@ -127,10 +122,6 @@ select.invalid {
     transition: height 0.2s ease;
 }
 
-.sortable-container:not(:last-child) {
-    border-bottom: 1px solid $calendar-border-color;
-}
-
 .inter-month-container{
     width:100%;
     margin-bottom: 5px;
@@ -151,7 +142,7 @@ select.invalid {
 
 .sortable-container.intercalary,
 .sortable-container.intercalary .visible{
-    background-color:#e4e4e4;
+    background-color: $gray-secondary;
 }
 
 .sortable-container.moon_inputs{
@@ -184,7 +175,6 @@ select.invalid {
     user-select: none;
     -moz-user-select: none;
     -webkit-user-select: none;
-    color: #495057;
 }
 
 input[type=number]::-webkit-inner-spin-button:not(.spinner),
@@ -688,7 +678,7 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
 
 .wiki, .setting-question{
     float: right;
-    color: rgba(0,0,0,0.2);
+    color: $wiki-color;
     text-decoration: none; /* no underline */
 }
 

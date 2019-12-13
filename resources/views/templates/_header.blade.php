@@ -47,13 +47,13 @@
 			<form id="login-form" class="basic-form" method="POST">
 				<h3 class="basic-form-heading">Login</h3>
 				<input type="text" class="form-control" id="login_username" name="username" placeholder="Username" autofocus="" autocomplete="username" />
-				<input type="password" class="form-control" id="login_password" name="password" placeholder="Password" autocomplete="current-password"></input>
+				<input type="password" class="form-control" id="login_password" name="password" placeholder="Password" autocomplete="current-password" />
 				<div id="login_messagebox"></div>
 				<label class="form-control checkbox">
 					<input type="checkbox" value="remember-me" id="login_rememberMe" name="rememberMe"> Remember me
 				</label>
-				<button class="btn btn-lg btn-primary btn-block" id="login_button" type="submit">Login</button>
-				<a href="/password/reset"><button class="btn btn-sm btn-default btn-block" id="forgotten_password" type="button">Forgotten Password</button></a>
+				<button class="btn btn-lg btn-primary btn-block mt-2" id="login_button" type="submit">Login</button>
+				<a href="/password/reset"><button class="btn btn-sm btn-secondary btn-block" id="forgotten_password" type="button">Forgotten Password</button></a>
 			</form>
 		</div>
 	</div>

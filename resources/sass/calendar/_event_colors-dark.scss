@@ -1,0 +1,213 @@
+.event.text, .event.era_event {
+    background-color: rgba(255, 255, 255, 0.6);
+}
+
+/* ------------ Dark Red ----------- */
+.event.Dark-Solid.dot::before,
+.event.Dark-Solid.text{
+    color: #000000;
+}
+.event.Dark-Solid.background{
+    background-color: rgba(#000000, 0.6);
+}
+.event.Dark-Solid.background:hover{
+    background-color: rgba(255, 255, 255, 0.6);
+}
+
+/* ------------ Red ----------- */
+.event.Red.dot::before,
+.event.Red.text{
+    color: #9b2c2c;
+}
+.event.Red.background{
+    background-color: rgba(#fed7d7, 0.6);
+    border-color: #9b2c2c;
+    color: #9b2c2c;
+}
+.event.Red.background:hover{
+    background-color: rgba(#fc8181, 0.6);
+}
+
+/* ----------- Pink */
+.event.Pink.dot::before,
+.event.Pink.text{
+    color: #880E4F;
+}
+.event.Pink.background{
+    border-color: #97266d;
+    color: #97266d;
+    background-color: rgba(#fed7e2, 0.6);
+}
+.event.Pink.background:hover{
+    background-color: rgba(#f687b3, 0.6);
+}
+
+/* ------------ Purple ----------- */
+.event.Purple.dot::before,
+.event.Purple.text{
+    color: #4A148C;
+}
+.event.Purple.background{
+    border-color: #553c9a;
+    color: #553c9a;
+    background-color: rgba(#e9d8fd, 0.6);
+}
+.event.Purple.background:hover{
+    background-color: rgba(#b794f4, 0.6);
+}
+
+/* ----------- Deep Purple ----------- */
+.event.Deep-Purple.dot::before,
+.event.Deep-Purple.text{
+    color: #311B92;
+}
+.event.Deep-Purple.background{
+    border-color: #391690;
+    color: #391690;
+    background-color: rgba(#b5b0ff, 0.6);
+}
+.event.Deep-Purple.background:hover{
+    background-color: rgba(#716ec9, 0.6);
+}
+
+/* ------------ Blue ----------- */
+.event.Blue.dot::before,
+.event.Blue.text{
+    color: #0D47A1;
+}
+.event.Blue.background{
+    border-color: #2c5282;
+    color: #2c5282;
+    background-color: rgba(#bee3f8, 0.6);
+}
+.event.Blue.background:hover{
+    background-color: rgba(#63b3ed, 0.6);
+}
+
+/* ----------- Light-Blue ----------- */
+.event.Light-Blue.dot::before,
+.event.Light-Blue.text{
+    color: #0288D1;
+}
+.event.Light-Blue.background{
+    border-color: #026A98;
+    color: #026A98;
+    background-color: rgba(#acd9ff, 0.6);
+}
+.event.Light-Blue.background:hover{
+    background-color: rgba(#4fb1e2, 0.6);
+}
+
+/* ------------ Cyan ----------- */
+.event.Cyan.dot::before,
+.event.Cyan.text{
+    color: #006064;
+}
+.event.Cyan.background{
+    border-color: #007783;
+    color: #007783;
+    background-color: rgba(#acd8d9, 0.6);
+}
+.event.Cyan.background:hover{
+    background-color: rgba(#5db0b6, 0.6);
+}
+
+/* ----------- Teal ----------- */
+.event.Teal.dot::before,
+.event.Teal.text{
+    color: #004D40;
+}
+.event.Teal.background{
+    border-color: #285e61;
+    color: #285e61;
+    background-color: rgba(#b2f5ea, 0.6);
+}
+.event.Teal.background:hover{
+    background-color: rgba(#4fd1c5, 0.6);
+}
+
+/* ------------ Green ----------- */
+.event.Green.dot::before,
+.event.Green.text{
+    color: #2E7D32;
+}
+.event.Green.background{
+    border-color: #276749;
+    color: #276749;
+    background-color: rgba(#c6f6d5, 0.6);
+}
+.event.Green.background:hover{
+    background-color: rgba(#68d391, 0.6);
+}
+
+/* ----------- Light-Green ----------- */
+.event.Light-Green.dot::before,
+.event.Light-Green.text{
+    color: #7CB342;
+}
+.event.Light-Green.background{
+    border-color: #477C18;
+    color: #477C18;
+    background-color: rgba(#c5ffa3, 0.6);
+}
+.event.Light-Green.background:hover{
+    background-color: rgba(#7CB342, 0.6);
+}
+
+/* ----------- Lime ----------- */
+.event.Lime.dot::before,
+.event.Lime.text{
+    color: #9E9D24;
+}
+.event.Lime.background{
+    border-color: #648500;
+    color: #648500;
+    background-color: rgba(#d6edae, 0.6);
+}
+.event.Lime.background:hover{
+    background-color: rgba(#aad46d, 0.6);
+}
+
+/* ------------ Yellow ----------- */
+.event.Yellow.dot::before{
+    color: #FFEB3B;
+}
+.event.Yellow.text{
+    color: #FFEB3B;
+}
+.event.Yellow.background{
+    border-color: #975a16;
+    background-color: rgba(#fefcbf, 0.6);
+    color: #975a16;
+}
+.event.Yellow.background:hover{
+    background-color: rgba(#f6e05e, 0.6);
+}
+
+/* ------------ Orange ----------- */
+.event.Orange.dot::before,
+.event.Orange.text{
+    color: #FF9100;
+}
+.event.Orange.background{
+    border-color: #9c4221;
+    color: #9c4221;
+    background-color: rgba(#feebc8, 0.6);
+}
+.event.Orange.background:hover{
+    background-color: rgba(#f6ad55, 0.6);
+}
+
+/* ------------ Blue-Grey ----------- */
+.event.Blue-Grey.dot::before,
+.event.Blue-Grey.text{
+    color: #455A64;
+}
+.event.Blue-Grey.background{
+    border-color: #2d3748;
+    color: #2d3748;
+    background-color: rgba(#edf2f7, 0.6);
+}
+.event.Blue-Grey.background:hover{
+    background-color: rgba(#cbd5e0, 0.6);
+}

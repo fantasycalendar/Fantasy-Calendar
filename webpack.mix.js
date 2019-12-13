@@ -62,8 +62,7 @@ mix.copy('node_modules/trumbowyg/dist/ui/icons.svg', 'public/images');
 mix.js('resources/js/app.js', 'public/js')
 
     .sass('resources/sass/app.scss', 'public/css')
-    .sass('resources/sass/calendar.scss', 'public/css')
-    .sass('resources/sass/home.scss', 'public/css');
+    .sass('resources/sass/app-dark.scss', 'public/css');
 
 if (mix.inProduction() || process.env.MIXVERSION) {
     mix.version();

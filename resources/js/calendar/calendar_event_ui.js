@@ -117,7 +117,7 @@ var edit_event_ui = {
 		});
 
 		this.condition_presets.change(function(e){
-    		
+
     		var prev = $(this).data('val');
 
 			var selected = edit_event_ui.condition_presets.find(':selected');
@@ -129,7 +129,7 @@ var edit_event_ui = {
 			var nth = selected[0].hasAttribute('nth');
 
 			edit_event_ui.data.moon_id = selected.attr('moon');
-							
+
 			edit_event_ui.repeat_input.prop('disabled', !nth).parent().toggleClass('hidden', !nth);
 
 			edit_event_ui.update_every_nth_presets();
@@ -155,7 +155,7 @@ var edit_event_ui = {
 
 							edit_event_ui.event_conditions_container.empty();
 							edit_event_ui.add_preset_conditions(preset, repeats);
-				
+
 							$(this).data('val', $(this).val());
 
 						}else{
@@ -163,7 +163,7 @@ var edit_event_ui = {
 							$(this).val(prev);
 
 							var nth = $(this).find(`option[value="${prev}"]`)[0].hasAttribute('nth');
-							
+
 							edit_event_ui.repeat_input.prop('disabled', !nth).parent().toggleClass('hidden', !nth);
 
 						}
@@ -180,7 +180,7 @@ var edit_event_ui = {
 
 					edit_event_ui.event_conditions_container.empty();
 					edit_event_ui.add_preset_conditions(preset, repeats);
-				
+
 					$(this).data('val', $(this).val());
 
 				}
@@ -194,7 +194,7 @@ var edit_event_ui = {
 
 				edit_event_ui.event_conditions_container.empty();
 				edit_event_ui.add_preset_conditions(preset, repeats);
-				
+
 				$(this).data('val', $(this).val());
 
 			}
@@ -566,7 +566,7 @@ var edit_event_ui = {
 			date: this.date,
 			search_distance: this.get_search_distance()
 		};
-    
+
 	},
 
 	get_search_distance: function(){
@@ -1122,7 +1122,7 @@ var edit_event_ui = {
 			var next_start = 0;
 
 			if(condition_selected[0] == "select"){
-				html.push("<select class='form-control form-control-sm'>")
+				html.push("<select class='form-control form-control'>")
 
 				for(var i = 0; i < static_data.year_data.timespans.length; i++){
 					html.push(`<option value='${i}'>`);
@@ -1143,7 +1143,7 @@ var edit_event_ui = {
 				var min = condition_selected[i][4];
 				var max = condition_selected[i][5];
 
-				html.push(`<input type='${type}' placeholder='${placeholder}' class='form-control form-control-sm ${placeholder}'`);
+				html.push(`<input type='${type}' placeholder='${placeholder}' class='form-control form-control ${placeholder}'`);
 
 				if(typeof alt !== 'undefined'){
 					html.push(` alt='${alt}'`)
@@ -1175,7 +1175,7 @@ var edit_event_ui = {
 
 				selected_moon = selected_moon ? selected_moon : 0;
 
-				html.push("<select class='form-control form-control-sm'>")
+				html.push("<select class='form-control form-control'>")
 
 				for(var i = 0; i < moon_phases[static_data.moons[selected_moon].granularity].length; i++){
 					html.push(`<option value='${i}'>`);
@@ -1198,7 +1198,7 @@ var edit_event_ui = {
 				var min = condition_selected[i][4];
 				var max = condition_selected[i][5];
 
-				html.push(`<input type='${type}' placeholder='${placeholder}' class='form-control form-control-sm ${placeholder}'`);
+				html.push(`<input type='${type}' placeholder='${placeholder}' class='form-control form-control ${placeholder}'`);
 
 				if(typeof alt !== 'undefined'){
 					html.push(` alt='${alt}'`)
@@ -1222,7 +1222,7 @@ var edit_event_ui = {
 
 		}else if(type == "Cycle"){
 
-			html.push("<select class='form-control form-control-sm'>")
+			html.push("<select class='form-control form-control'>")
 
 			for(var i = 0; i < static_data.cycles.data.length; i++){
 				html.push(`<optgroup label='${ordinal_suffix_of(i+1)} cycle group' value='${i}'>`);
@@ -1238,7 +1238,7 @@ var edit_event_ui = {
 
 		}else if(type == "Era"){
 
-			html.push("<select class='form-control form-control-sm'>");
+			html.push("<select class='form-control form-control'>");
 
 			for(var i = 0; i < static_data.eras.length; i++){
 				html.push(`<option value='${i}'>`);
@@ -1251,7 +1251,7 @@ var edit_event_ui = {
 		}else if(type == "Season"){
 
 			if(condition_selected[0] == "select"){
-				html.push("<select class='form-control form-control-sm'>")
+				html.push("<select class='form-control form-control'>")
 				for(var i = 0; i < static_data.seasons.data.length; i++){
 					html.push(`<option value='${i}'>`);
 					html.push(static_data.seasons.data[i].name);
@@ -1275,7 +1275,7 @@ var edit_event_ui = {
 					var min = condition_selected[i][4];
 					var max = condition_selected[i][5];
 
-					html.push(`<input type='${type}' placeholder='${placeholder}' class='form-control form-control-sm ${placeholder}'`);
+					html.push(`<input type='${type}' placeholder='${placeholder}' class='form-control form-control ${placeholder}'`);
 
 					if(typeof alt !== 'undefined'){
 						html.push(` alt='${alt}'`)
@@ -1305,7 +1305,7 @@ var edit_event_ui = {
 
 			if(condition_selected[0] == "select"){
 
-				html.push("<select class='form-control form-control-sm'>")
+				html.push("<select class='form-control form-control'>")
 
 				html.push(`<optgroup label='Global week' value='global_week'>`);
 
@@ -1347,7 +1347,7 @@ var edit_event_ui = {
 
 			for(var i = next_start; i < condition_selected.length; i++){
 
-				html.push(`<input type='${condition_selected[i][0]}' placeholder='${condition_selected[i][1]}' class='form-control form-control-sm ${condition_selected[i][1]}'`);
+				html.push(`<input type='${condition_selected[i][0]}' placeholder='${condition_selected[i][1]}' class='form-control form-control ${condition_selected[i][1]}'`);
 
 				if(condition_selected[i][2]){
 					html.push(` alt='${condition_selected[i][2]}'`)
@@ -1371,7 +1371,7 @@ var edit_event_ui = {
 
 		}else if(type == "Events"){
 
-			html.push("<select class='event_select form-control form-control-sm'>")
+			html.push("<select class='event_select form-control form-control'>")
 
 			for(var eventId in static_data.event_data.events){
 
@@ -1406,7 +1406,7 @@ var edit_event_ui = {
 				var min = condition_selected[i][4];
 				var max = condition_selected[i][5];
 
-				html.push(`<input type='${type}' placeholder='${placeholder}' class='form-control form-control-sm ${placeholder}'`);
+				html.push(`<input type='${type}' placeholder='${placeholder}' class='form-control form-control ${placeholder}'`);
 
 				if(typeof alt !== 'undefined'){
 					html.push(` alt='${alt}'`)
@@ -1439,7 +1439,7 @@ var edit_event_ui = {
 				var min = condition_selected[i][4];
 				var max = condition_selected[i][5];
 
-				html.push(`<input type='${type}' placeholder='${placeholder}' class='form-control form-control-sm ${placeholder}'`);
+				html.push(`<input type='${type}' placeholder='${placeholder}' class='form-control form-control ${placeholder}'`);
 
 				if(typeof alt !== 'undefined'){
 					html.push(` alt='${alt}'`)
@@ -1474,14 +1474,14 @@ var edit_event_ui = {
 		html.push("<li class='condition'>");
 			html.push(`<div class='condition_container ${type}'>`);
 				html.push("<div class='handle icon-reorder'></div>");
-				html.push("<select class='form-control form-control-sm moon_select'>");
+				html.push("<select class='form-control form-control moon_select'>");
 					for(var i = 0; i < static_data.moons.length; i++){
 						html.push(`<option value='${i}'>`);
 						html.push(static_data.moons[i].name);
 						html.push("</option>");
 					}
 				html.push("</select>");
-				html.push("<select class='form-control form-control-sm condition_type'>");
+				html.push("<select class='form-control form-control condition_type'>");
 
 					var keys = Object.keys(condition_mapping);
 
@@ -1555,7 +1555,7 @@ var edit_event_ui = {
 					html.push(`<label><input type='radio' ${(group_class === "not" ? "checked" : "")} name=''>NOT</label>`);
 				html.push("</div>");
 				html.push("<div class='num'>");
-					html.push(`<label><input type='radio' ${(group_class === "num" ? "checked" : "")} name=''>AT LEAST</label><input type='number' class='form-control form-control-sm num_group_con' disabled>`);
+					html.push(`<label><input type='radio' ${(group_class === "num" ? "checked" : "")} name=''>AT LEAST</label><input type='number' class='form-control form-control num_group_con' disabled>`);
 				html.push("</div>");
 			html.push("</div>");
 			html.push("<div class='handle icon-reorder'></div>");
@@ -1650,7 +1650,7 @@ var edit_event_ui = {
 				}
 
 			});
-			
+
 		}
 
 	},
@@ -1753,7 +1753,7 @@ var edit_event_ui = {
 						edit_event_ui.backup_event_data = {}
 
 					}
-					
+
 					hide_loading_screen();
 
 				}

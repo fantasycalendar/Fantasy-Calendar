@@ -1,7 +1,9 @@
 // Fonts
 @import url('https://fonts.googleapis.com/css?family=Montserrat:regular,600');
 
+@import '~bootswatch/dist/darkly/variables';
 @import '~bootstrap/scss/bootstrap';
+@import '~bootswatch/dist/darkly/bootswatch';
 
 @import '~@fortawesome/fontawesome-free/scss/fontawesome';
 @import '~@fortawesome/fontawesome-free/scss/solid';
@@ -19,7 +21,7 @@ $hamburger-padding-y        :1rem;
 @import '~protip/css/protip';
 
 // Variables
-@import 'calendar/variables';
+@import 'calendar/variables-dark';
 
 // Legacy calendar parts
 @import 'home';
@@ -27,7 +29,12 @@ $hamburger-padding-y        :1rem;
 // Calendar parts
 @import 'calendar';
 
-@import 'calendar/event_colors';
+@import 'calendar/event_colors-dark';
 
 // select2
 @import '~select2';
+
+.form-control {
+    background-color: $month-bg-color;
+    color: white;
+}
