@@ -314,17 +314,23 @@ function evaluate_dynamic_change(){
 
 	if(preview_date.follow){
 
+		preview_date.year		= data.year;
+		preview_date.timespan	= data.timespan;
+		preview_date.day		= data.day;
+		preview_date.epoch		= data.epoch;
+
 		if(data.rebuild){
 			rebuild_calendar('calendar', dynamic_data)
 		}else{
 			scroll_to_epoch(dynamic_data.epoch)
+			update_current_day(false);
 		}
 
 		preview_date_follow();
 
+	}else{
+		update_current_day(false);
 	}
-
-	update_current_day(false);
 
 	evaluate_save_button();
 

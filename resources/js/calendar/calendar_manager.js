@@ -150,6 +150,7 @@ worker_climate.onmessage = e => {
 
 worker_calendar.onmessage = e => {
 
+	evaluated_static_data = {}
 	evaluated_static_data = e.data.processed_data;
 	var static_data = evaluated_static_data.static_data;
 	var action = e.data.action;
@@ -175,7 +176,6 @@ worker_calendar.onmessage = e => {
 			rebuild_events();
 
 			if(action !== "preview"){
-				eval_clock();
 				scroll_to_epoch(dynamic_data.epoch)
 			}else{
 				scroll_to_epoch(preview_date.epoch)
