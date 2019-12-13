@@ -477,7 +477,7 @@ function set_up_edit_inputs(){
 		}else{
 
 			if(season_sortable.children().length == 0){
-				
+
 				stats.timespan = 0;
 				stats.day = 1;
 
@@ -2446,7 +2446,7 @@ function add_season_to_sortable(parent, key, data){
 						element.push("</div>");
 					element.push("</div>");
 				element.push("</div>");
-					
+
 				element.push("<div class='detail-row'>");
 					element.push(`<button type="button" class="btn btn-sm btn-info season_middle_btn full protip" data-pt-delay-in="100" data-pt-title="Use the median values from the previous and next seasons' time data. This season will act as a transition between the two, similar to Spring or Autumn">Interpolate sunrise & sunset from surrounding seasons</button>`);
 				element.push("</div>");
@@ -2588,7 +2588,7 @@ function add_location_to_list(parent, key, data){
 							element.push("</div>");
 						element.push("</div>");
 					element.push("</div>");
-					
+
 					element.push("<div class='detail-row'>");
 						element.push(`<button type="button" class="btn btn-sm btn-info location_middle_btn full protip" data-pt-delay-in="100" data-pt-title="Use the median values from the previous and next seasons' weather and time data. This season will act as a transition between the two, similar to Spring or Autumn">Interpolate data from surrounding seasons</button>`);
 					element.push("</div>");
@@ -4036,6 +4036,8 @@ function evaluate_save_button(){
 
 		var text = static_same && dynamic_same && calendar_name_same ? "Cannot create yet" : "Create calendar";
 
+		autosave();
+
 		create_button.prop('disabled', not_changed).toggleClass('btn-danger', not_changed).toggleClass('btn-success', !not_changed).text(text);
 
 	}
@@ -4375,5 +4377,72 @@ function empty_edit_values(){
 	location_list.empty()
 	calendar_link_select.empty()
 	calendar_link_list.empty()
+
+}
+
+
+function autosave(){
+
+	var saved_data = JSON.stringify({
+		calendar_name: calendar_name,
+		static_data: static_data,
+		dynamic_data: dynamic_data
+	})
+
+	localStorage.setItem('autosave', saved_data);
+
+}
+
+function autoload(){
+
+	var saved_data = localStorage.getItem('autosave')
+
+	if(saved_data){
+
+		swal({
+			title: "Load unsaved calendar?",
+			text: "It looks like you started a new calendar and didn't save it. Would you like to continue where you left off?",
+            buttons: {
+                cancel: {
+                    text:"Start Over",
+                    value: false,
+                    closeModal: true,
+                    visible: true
+                },
+                confirm: {
+                    text: "Continue",
+                    closeModal: false,
+                }
+            },
+			icon: "info"
+		})
+		.then((load) => {
+
+			if(load) {
+
+				var data = JSON.parse(saved_data);
+                prev_dynamic_data = {}
+                prev_static_data = {}
+                calendar_name = data.calendar_name;
+                static_data = data.static_data;
+                dynamic_data = data.dynamic_data;
+                dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+                empty_edit_values();
+                set_up_edit_values();
+                set_up_view_values();
+                set_up_visitor_values();
+
+				error_check("calendar", true);
+
+                swal({
+                    icon: "success",
+                    title: "Loaded!",
+                    text: "The calendar " + calendar_name + " has been loaded.",
+                    button: true
+                })
+            }
+		});
+
+	}
 
 }

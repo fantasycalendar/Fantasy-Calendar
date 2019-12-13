@@ -85,6 +85,8 @@
             edit_event_ui.bind_events();
             edit_HTML_ui.bind_events();
 
+            autoload();
+
             var html = [];
             for(var i = 0; i < Object.keys(calendar_presets).length; i++){
                 var name = Object.keys(calendar_presets)[i];
