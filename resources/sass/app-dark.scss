@@ -10,13 +10,24 @@
 
 $hamburger-layer-color      :#FFF;
 $hamburger-hover-opacity    :1;
+$hamburger-layer-width      :1.9rem;
+$hamburger-layer-height     :0.2rem;
+$hamburger-layer-spacing    :0.26rem;
+$hamburger-padding-y        :1rem;
 @import '~hamburgers/_sass/hamburgers/hamburgers';
 
+@import '~trumbowyg/dist/ui/sass/trumbowyg';
+
+@import '~protip/css/protip';
+
 // Variables
-@import 'calendar/variables-dark';
+@import 'calendar/variables';
 
 // Legacy calendar parts
 @import 'home';
 
 // Calendar parts
 @import 'calendar';
+
+// select2
+@import '~select2';

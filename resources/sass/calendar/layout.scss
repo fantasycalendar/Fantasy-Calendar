@@ -8,6 +8,10 @@
     background-color: $accent-color;
 }
 
+.accent-bg-color {
+    background-color: $accent-color !important;
+}
+
 html {
     font-size: 20px;
     overflow-x: hidden;
