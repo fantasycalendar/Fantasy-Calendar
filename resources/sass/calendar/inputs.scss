@@ -1072,7 +1072,7 @@ ol.example li.placeholder:before {
     padding:5px;
     margin-bottom:5px;
     min-height: 34px;
-    background-color:white;
+    background-color: $gray-secondary;
 
     .select2{
 
@@ -1081,7 +1081,7 @@ ol.example li.placeholder:before {
 
         .select2-selection{
 
-            height: calc(1.5em + 0.5rem - 2px);
+            height: initial;
 
             border-radius: 0.2rem;
 
@@ -1094,6 +1094,18 @@ ol.example li.placeholder:before {
             }
         }
     }
+}
+
+.select2-dropdown {
+    background-color: $card-bg-color !important;
+}
+
+.select2-container--default .select2-results__option[aria-selected=true] {
+    background-color: $action-bg-color !important;
+}
+
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: $accent-color;
 }
 
 .select2-results{
@@ -1168,8 +1180,25 @@ ol.example li.placeholder:before {
 
 .trumbowyg-box{
     margin:0;
+    border: 1px solid $calendar-border-color;
 }
 
+.trumbowyg-button-pane {
+    background: $card-bg-color;
+    border-bottom: 1px solid $calendar-border-color;
+}
+
+.trumbowyg-button-pane .trumbowyg-button-group::after, .trumbowyg-button-pane::after{
+    background: $calendar-border-color;
+}
+
+.trumbowyg-box svg, .trumbowyg-modal svg {
+    fill: $main-text-color;
+}
+
+.trumbowyg-button-pane button:not(.trumbowyg-disable):hover, .trumbowyg-button-pane button:not(.trumbowyg-disable):focus, .trumbowyg-button-pane button.trumbowyg-active {
+    background: $action-bg-color;
+}
 
 .event_occurrences{
 

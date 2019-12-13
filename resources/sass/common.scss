@@ -1,8 +1,6 @@
 // Fonts
 @import url('https://fonts.googleapis.com/css?family=Montserrat:regular,600');
 
-@import '~bootstrap/scss/bootstrap';
-
 @import '~@fortawesome/fontawesome-free/scss/fontawesome';
 @import '~@fortawesome/fontawesome-free/scss/solid';
 
@@ -18,17 +16,12 @@ $hamburger-padding-y        :1rem;
 
 @import '~protip/css/protip';
 
-// Variables
-@import 'calendar/variables';
+// select2
+@import '~select2';
+@import '~select2-bootstrap-theme/dist/select2-bootstrap';
 
 // Legacy calendar parts
 @import 'home';
 
 // Calendar parts
 @import 'calendar';
-
-@import 'calendar/event_colors';
-
-// select2
-@import '~select2';
-@import '~select2-bootstrap-theme/dist/select2-bootstrap';
