@@ -34,6 +34,8 @@ $hamburger-padding-y        :1rem;
 // select2
 @import '~select2';
 
+
+// Overrides
 .form-control {
     background-color: $card-bg-color;
     color: white;
@@ -41,4 +43,44 @@ $hamburger-padding-y        :1rem;
 
 .weather_icon {
     filter: invert(100%);
+}
+
+.protip-skin-default--scheme-leaf[data-pt-position=top-left] .protip-arrow,
+.protip-skin-default--scheme-leaf[data-pt-position=top] .protip-arrow,
+.protip-skin-default--scheme-leaf[data-pt-position=top-right] .protip-arrow {
+    border-top-color: $accent-color !important;
+}
+
+.protip-skin-default--scheme-leaf[data-pt-position=bottom-left] .protip-arrow,
+.protip-skin-default--scheme-leaf[data-pt-position=bottom] .protip-arrow,
+.protip-skin-default--scheme-leaf[data-pt-position=bottom-right] .protip-arrow {
+    border-bottom-color: $accent-color !important;
+}
+
+.protip-skin-default--scheme-leaf[data-pt-position=left-top] .protip-arrow,
+.protip-skin-default--scheme-leaf[data-pt-position=left] .protip-arrow,
+.protip-skin-default--scheme-leaf[data-pt-position=left-bottom] .protip-arrow {
+    border-left-color: $accent-color !important;
+}
+
+.protip-skin-default--scheme-leaf[data-pt-position=right-top] .protip-arrow,
+.protip-skin-default--scheme-leaf[data-pt-position=right] .protip-arrow,
+.protip-skin-default--scheme-leaf[data-pt-position=right-bottom] .protip-arrow {
+    border-right-color: $accent-color !important;
+}
+
+.protip-skin-default--scheme-leaf[data-pt-position=top-left-corner] .protip-arrow {
+    border-right-color: $accent-color !important;
+}
+
+.protip-skin-default--scheme-leaf[data-pt-position=top-right-corner] .protip-arrow {
+    border-top-color: $accent-color !important;
+}
+
+.protip-skin-default--scheme-leaf[data-pt-position=bottom-left-corner] .protip-arrow {
+    border-bottom-color: $accent-color !important;
+}
+
+.protip-skin-default--scheme-leaf[data-pt-position=bottom-right-corner] .protip-arrow {
+    border-left-color: $accent-color !important;
 }

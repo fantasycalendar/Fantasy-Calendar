@@ -684,12 +684,12 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
 
 .wiki, .setting-question{
     float: right;
-    color: $wiki-color;
+    color: $wiki-link-color;
     text-decoration: none; /* no underline */
 }
 
 .wiki:hover, .setting-question:hover{
-    color: black;
+    color: $wiki-link-hover-color;
     text-decoration: none; /* no underline */
 }
 

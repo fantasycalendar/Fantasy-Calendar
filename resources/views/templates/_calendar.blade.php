@@ -6,6 +6,8 @@
 
 <body class="page-{{ str_replace('.', '-', Route::currentRouteName()) }} @stack('page-class')">
 
+<div id="protip_container"></div>
+
 <div id="content">
     <div id="loading_background" class='basic-background hidden'>
         <img class='loading_spinner' src='{{ asset("resources/icons/loader_white.png") }}'>
