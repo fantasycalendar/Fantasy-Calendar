@@ -3069,7 +3069,7 @@ function add_event_to_sortable(parent, key, data){
 
 	var element = [];
 
-	element.push(`<div class='sortable-container events_input' index='${key}'>`);
+	element.push(`<div class='sortable-container events_input list-group-item' index='${key}'>`);
 		element.push("<div class='main-container'>");
 			element.push("<div class='handle icon-reorder'></div>");
 			element.push(`<div class='btn btn-outline-primary open-edit-event-ui event_name'>Edit - ${data.name}</div>`);

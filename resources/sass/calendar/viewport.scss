@@ -21,7 +21,7 @@
 .timespan {
     &_container{
         position:relative;
-        background-color: $month-bg-color;
+        background-color: $card-bg-color;
         border-radius:10px;
         margin: 30px 20px;
         overflow:hidden;
@@ -85,7 +85,7 @@
         flex-direction: column;
         min-height:8rem;
         flex: 1;
-        background-color: $month-bg-color;
+        background-color: $card-bg-color;
         min-width: 5rem;
 
         &.empty_timespan_day{
@@ -105,7 +105,7 @@
     }
 
     &_intercalary{
-        background-color: $month-bg-color;
+        background-color: $card-bg-color;
         display: flex;
         flex-direction: column;
         min-height:8rem;
@@ -490,6 +490,6 @@ body {
 }
 
 .current_day{
-    background-color: #8b7d6e;
+    background-color: $current-day-color;
     border-bottom: 5px solid #fdb44d;
 }

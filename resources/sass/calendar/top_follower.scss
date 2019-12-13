@@ -3,6 +3,7 @@
 #top_follower{
     display: inline-flex;
     flex-direction:row;
+    background-color: $card-bg-color;
     border:1px solid $calendar-border-color;
     border-top:0;
     border-bottom-left-radius: 10px;

@@ -724,7 +724,7 @@
                     <button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
                 </div>
 
-                <div class='sortable' id='events_sortable'></div>
+                <div class='sortable list-group' id='events_sortable'></div>
             </div>
         </div>
 
