@@ -221,7 +221,7 @@ class Climate{
 		}
 
 		var season = clone(this.seasons[index]);
-		season.epoch = evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch;
+		season.epoch = evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch-1;
 		season.index = index;
 
 		this.season.local_seasons.push(season)
@@ -235,7 +235,7 @@ class Climate{
 			}
 
 			var season = clone(this.seasons[index]);
-			season.epoch = evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch;
+			season.epoch = evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch-1;
 			season.index = index;
 
 			this.season.local_seasons.push(season)
@@ -250,7 +250,7 @@ class Climate{
 		var index = 0;
 
 		var season = clone(this.seasons[index]);
-		season.epoch = evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch;
+		season.epoch = evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch-1;
 		season.index = index;
 
 		this.season.local_seasons.push(season)
@@ -264,7 +264,7 @@ class Climate{
 			}
 
 			var season = clone(this.seasons[index]);
-			season.epoch = evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch;
+			season.epoch = evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch-1;
 			season.index = index;
 
 			this.season.local_seasons.push(season)
@@ -280,7 +280,7 @@ class Climate{
 			}
 
 			var season = clone(this.seasons[index]);
-			season.epoch = evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch;
+			season.epoch = evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch-1;
 			season.index = index;
 
 			this.season.local_seasons.push(season)
@@ -300,7 +300,9 @@ class Climate{
 
 	get_static_season_data(epoch){
 
-		if(epoch > this.season.next_season.epoch){
+		epoch = epoch-1;
+
+		if(epoch >= this.season.next_season.epoch){
 			
 			this.season.local_current_index++;
 			this.season.local_next_index++;
@@ -313,13 +315,15 @@ class Climate{
 
 		}
 
-		this.season.season_day = epoch - this.season.current_season.epoch;
+		this.season.season_day = epoch - this.season.current_season.epoch + 1;
 
-		this.season.perc = norm(epoch, this.season.current_season.epoch, this.season.next_season.epoch);
+		this.season.perc = 1-norm(epoch, this.season.current_season.epoch, this.season.next_season.epoch);
 
-		this.season.high_perc = clamp(Math.floor(this.season.perc*100), 1, 100);
+		this.season.high_perc = clamp(Math.ceil(this.season.perc*100), 1, 100);
 
-		return this.evaluate_season_data(epoch);
+		var data = this.evaluate_season_data(epoch);
+
+		return data;
 
 	}
 
@@ -335,7 +339,7 @@ class Climate{
 		}
 
 		var season = clone(this.seasons[index]);
-		season.epoch = evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch;
+		season.epoch = evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch-1;
 		season.epoch += this.settings.weather_offset;
 		season.index = index;
 
@@ -350,7 +354,7 @@ class Climate{
 			}
 
 			var season = clone(this.seasons[index]);
-			season.epoch = evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch;
+			season.epoch = evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch-1;
 			season.epoch += this.settings.weather_offset;
 			season.index = index;
 
@@ -366,7 +370,7 @@ class Climate{
 		var index = 0;
 
 		var season = clone(this.seasons[index]);
-		season.epoch = evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch;
+		season.epoch = evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch-1;
 		season.epoch += this.settings.weather_offset;
 		season.index = index;
 
@@ -381,7 +385,7 @@ class Climate{
 			}
 
 			var season = clone(this.seasons[index]);
-			season.epoch = evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch;
+			season.epoch = evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch-1;
 			season.epoch += this.settings.weather_offset;
 			season.index = index;
 
@@ -398,7 +402,7 @@ class Climate{
 			}
 
 			var season = clone(this.seasons[index]);
-			season.epoch = evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch;
+			season.epoch = evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch-1;
 			season.epoch += this.settings.weather_offset;
 			season.index = index;
 
@@ -421,6 +425,8 @@ class Climate{
 
 	get_static_weather_data(epoch){
 
+		epoch = epoch-1;
+
 		if(epoch > this.weather.next_season.epoch){
 			
 			this.weather.local_current_index++;
@@ -436,11 +442,11 @@ class Climate{
 
 		}
 
-		this.weather.season_day = epoch - this.weather.current_season.epoch;
+		this.weather.season_day = epoch - this.weather.current_season.epoch + 1;
 
-		this.weather.perc = norm(epoch, this.weather.current_season.epoch, this.weather.next_season.epoch);
+		this.weather.perc = 1-norm(epoch, this.weather.current_season.epoch, this.weather.next_season.epoch);
 
-		this.weather.high_perc = clamp(Math.floor(this.weather.perc*100), 1, 100);
+		this.weather.high_perc = clamp(Math.ceil(this.weather.perc*100), 1, 100);
 
 		return this.evaluate_weather_data(epoch);
 
@@ -544,9 +550,9 @@ class Climate{
 			this.next_season();
 		}
 
-        this.season.season_day = Math.floor(this.seasons[this.season.current_index].length+this.season.day-this.season.total_day);
+		this.season.season_day = Math.floor(this.seasons[this.season.current_index].length+this.season.day-this.season.total_day);
 
-        if(this.season.season_day > this.seasons[this.season.current_index].duration){
+		if(this.season.season_day > this.seasons[this.season.current_index].duration){
 
 			this.season.perc = 1-((this.season.season_day-this.seasons[this.season.current_index].duration)/this.seasons[this.season.current_index].transition_length);
 
@@ -599,9 +605,9 @@ class Climate{
 			this.next_weather_season();
 		}
 
-        this.weather.season_day = Math.floor(this.seasons[this.weather.current_index].length+this.weather.day-this.weather.total_day)+1;
+		this.weather.season_day = Math.floor(this.seasons[this.weather.current_index].length+this.weather.day-this.weather.total_day)+1;
 
-        if(this.weather.season_day > this.seasons[this.weather.current_index].duration){
+		if(this.weather.season_day > this.seasons[this.weather.current_index].duration){
 
 			this.weather.perc = 1-((this.weather.season_day-this.seasons[this.weather.current_index].duration-1)/this.seasons[this.weather.current_index].transition_length);
 
@@ -624,8 +630,6 @@ class Climate{
 		return data;
 
 	}
-
-
 
 	evaluate_season_data(epoch){
 
@@ -728,11 +732,29 @@ class Climate{
 
 		if(this.static_data.clock.enabled){
 
+			var first_epoch_data = this.epoch_data[this.start_epoch].season;
+
+			var curr_sunrise = this.current_location.seasons[first_epoch_data.season_index].time.sunrise;
+			var curr_sunset = this.current_location.seasons[first_epoch_data.season_index].time.sunset;
+
+			var next_season = (first_epoch_data.season_index+1)%this.current_location.seasons.length;
+
+			var next_sunrise = this.current_location.seasons[next_season].time.sunrise;
+			var next_sunset = this.current_location.seasons[next_season].time.sunset;
+
+			var sunrise_minute = Math.round(lerp(next_sunrise.minute, curr_sunrise.minute, first_epoch_data.season_precise_perc));
+			var sunrise_hour = lerp(next_sunrise.hour, curr_sunrise.hour, first_epoch_data.season_precise_perc);
+			var sunrise = sunrise_hour+sunrise_minute/this.static_data.clock.minutes;
+
+			var sunset_minute = Math.round(lerp(next_sunset.minute, curr_sunset.minute, first_epoch_data.season_precise_perc));
+			var sunset_hour = lerp(next_sunset.hour, curr_sunset.hour, first_epoch_data.season_precise_perc);
+			var sunset = sunset_hour+sunset_minute/this.static_data.clock.minutes;
+
 			if(this.low_solstice_epochs[0] > this.high_solstice_epochs[0]){
 				var falling_equinox = false;
-				var rising_equinox = true;
+				var rising_equinox = (sunset-sunrise) < this.middle_day_time;
 			}else{
-				var falling_equinox = true;
+				var falling_equinox = (sunset-sunrise) > this.middle_day_time;
 				var rising_equinox = false;
 			}
 
@@ -757,25 +779,21 @@ class Climate{
 				var sunset = sunset_hour+sunset_minute/this.static_data.clock.minutes;
 
 				if(epoch_data.high_solstice){
-					var high_solstice = true;
-					var low_solstice = false;
-					rising_equinox = false;
-					falling_equinox = false;
+					var rising_equinox = false;
+					var falling_equinox = true;
 				}
 				if(epoch_data.low_solstice){
-					var high_solstice = false;
-					var low_solstice = true;
-					rising_equinox = false;
-					falling_equinox = false;
+					var rising_equinox = true;
+					var falling_equinox = false;
 				}
 
-				if(!falling_equinox && !rising_equinox && (sunset-sunrise) >= this.middle_day_time && low_solstice && !high_solstice){
-					rising_equinox = true;
+				if(rising_equinox && (sunset-sunrise) >= this.middle_day_time){
+					rising_equinox = false;
 					this.epoch_data[epoch].season.rising_equinox = true;
 				}
 
-				if(!rising_equinox && !falling_equinox && (sunset-sunrise) <= this.middle_day_time && !low_solstice && high_solstice){
-					falling_equinox = true;
+				if(falling_equinox && (sunset-sunrise) <= this.middle_day_time){
+					falling_equinox = false;
 					this.epoch_data[epoch].season.falling_equinox = true;
 				}
 

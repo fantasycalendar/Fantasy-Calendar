@@ -446,6 +446,19 @@ function norm(v, min, max)
 	return (v - min) / (max - min);
 }
 
+/**
+ * This function normalizes a value (v) between min and max
+ *
+ * @param  {float}  v       The value to be normalized
+ * @param  {float}  min     The minimum value
+ * @param  {float}  max     The maximum value
+ * @return {float}          The normalized value
+ */
+function inv_norm(v, min, max)
+{
+	return (max - v) / (max - min);
+}
+
 
 /**
  * Greatest common divisor is the largest positive integer that divides each of the integers.
@@ -555,7 +568,7 @@ class date_manager {
 
 	constructor(year, timespan, day){
 
-		this._year = convert_year(static_data, year);
+		this._year = convert_year(year);
 
 		this._timespan = timespan;
 
@@ -587,7 +600,7 @@ class date_manager {
 
 	get adjusted_year(){
 
-		return unconvert_year(static_data, this.year);
+		return unconvert_year(this.year);
 
 	}
 
@@ -810,7 +823,7 @@ function does_leap_day_appear(static_data, year, timespan, leap_day){
  * @param  {int}        year            The a number of a year
  * @return {int}                        The absolute year
  */
-function convert_year(static_data, year){
+function convert_year(year){
 	return year > 0 ? year-1 : year;
 }
 
@@ -823,7 +836,7 @@ function convert_year(static_data, year){
  * @param  {int}        year            The a number of a year
  * @return {int}                        The absolute year
  */
-function unconvert_year(static_data, year){
+function unconvert_year(year){
 	return year >= 0 ? year+1 : year;
 }
 
@@ -971,7 +984,7 @@ function does_timespan_appear(static_data, year, timespan){
 
 		var era = static_data.eras[era_index];
 
-		if(era.settings.ends_year && year == convert_year(static_data, era.date.year)-1){
+		if(era.settings.ends_year && year == convert_year(era.date.year)-1){
 
 			if(timespan > era.date.timespan){
 
@@ -1024,7 +1037,7 @@ function does_day_appear(static_data, year, timespan, day){
 
 		var era = static_data.eras[era_index];
 
-		if(era.settings.ends_year && year == convert_year(static_data, era.date.year)-1 && timespan == era.date.timespan && day > era.date.day){
+		if(era.settings.ends_year && year == convert_year(era.date.year)-1 && timespan == era.date.timespan && day > era.date.day){
 
 			return {
 				result: false,
@@ -1437,7 +1450,7 @@ function is_leap(static_data, _year, _intervals, _offset) {
 
 		var i = intervals[index];
 
-		var year = unconvert_year(static_data, _year);
+		var year = unconvert_year(_year);
 
 		if((year-i.offset) % i.interval == 0){
 			return !i.negator;
@@ -1695,7 +1708,9 @@ function evaluate_calendar_start(static_data, year, month, day){
 	var month = !isNaN(month) ? (month|0) : 0;
 	var day = !isNaN(day) ? (day|0)-1 : 0;
 
-	var era_year = unconvert_year(static_data, year);
+	var era_year = unconvert_year(year);
+
+	//console.log(era_year)
 
 	tmp = get_epoch(static_data, year, month, day);
 	var epoch = tmp[0];
@@ -1712,10 +1727,10 @@ function evaluate_calendar_start(static_data, year, month, day){
 
 		era_years[era_index] = era.date.year;
 
-		if(era.settings.ends_year && year > convert_year(static_data, era.date.year)){
+		if(era.settings.ends_year && year > convert_year(era.date.year)){
 
-			era_epoch = get_epoch(static_data, convert_year(static_data, era.date.year), era.date.timespan, era.date.day);
-			normal_epoch_during_era = get_epoch(static_data, convert_year(static_data, era.date.year)+1);
+			era_epoch = get_epoch(static_data, convert_year(era.date.year), era.date.timespan, era.date.day);
+			normal_epoch_during_era = get_epoch(static_data, convert_year(era.date.year)+1);
 
 			epoch -= (normal_epoch_during_era[0] - era_epoch[0]);
 
@@ -1729,7 +1744,7 @@ function evaluate_calendar_start(static_data, year, month, day){
 
 		}
 
-		if(era.settings.restart && year > convert_year(static_data, era.date.year)){
+		if(era.settings.restart && year > convert_year(era.date.year)){
 
 			for(var i = 0; i < era_index; i++){
 
@@ -1749,6 +1764,9 @@ function evaluate_calendar_start(static_data, year, month, day){
 
 
 	}
+
+	//console.log(era_year)
+	//console.log("-----")
 
 	epoch = year < 0 ? epoch+1 : epoch;
 
@@ -1791,7 +1809,7 @@ function has_year_ending_era(static_data, year){
 
 		var era = static_data.eras[era_index];
 
-		if(era.settings.ends_year && year == convert_year(static_data, era.date.year)){
+		if(era.settings.ends_year && year == convert_year(era.date.year)){
 
 			return true;
 

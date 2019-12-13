@@ -90,7 +90,7 @@ function set_up_visitor_inputs(){
 	target_year.change(function(e){
 
 		if(e.originalEvent){
-			preview_date_manager.year = convert_year(static_data, $(this).val()|0);
+			preview_date_manager.year = convert_year($(this).val()|0);
 		}
 
 		var year = $(this).val()|0;
@@ -350,7 +350,7 @@ function repopulate_timespan_select(select, val, change){
 
 	select.each(function(){
 
-		var year = convert_year(static_data, $(this).closest('.date_control').find('.year-input').val()|0);
+		var year = convert_year($(this).closest('.date_control').find('.year-input').val()|0);
 
 		var special = $(this).hasClass('timespan_special');
 
@@ -417,7 +417,7 @@ function repopulate_day_select(select, val, change, no_leaps){
 
 	select.each(function(){
 
-		var year = convert_year(static_data, $(this).closest('.date_control').find('.year-input').val()|0);
+		var year = convert_year($(this).closest('.date_control').find('.year-input').val()|0);
 		var timespan = $(this).closest('.date_control').find('.timespan-list').val()|0;
 
 		var exclude_self = $(this).hasClass('exclude_self');
