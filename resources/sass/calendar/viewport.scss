@@ -1,6 +1,3 @@
-// Variables
-@import 'variables';
-
 /* ------------------ Overall Layout ----------------- */
 
 @keyframes shadow-pulse
@@ -18,7 +15,7 @@
 }
 
 #calendar {
-    color: #70767c;
+    color: $main-text-color;
 }
 
 .timespan {
@@ -493,6 +490,6 @@ body {
 }
 
 .current_day{
-    background-color:#fef0db;
+    background-color: #8b7d6e;
     border-bottom: 5px solid #fdb44d;
 }

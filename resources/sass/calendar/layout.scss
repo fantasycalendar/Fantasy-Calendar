@@ -2,8 +2,6 @@
 /** Big containers - Body, header, content **/
 /********************************************/
 
-@import '_variables';
-
 .bg-accent {
     background-color: $accent-color;
 }
@@ -152,7 +150,7 @@ body{
     min-width: 0;
 }
 
-#input_container .wrap-collapsible:last-child {
+#input_container > .accordion > .wrap-collapsible:last-child {
     margin-bottom: 9rem;
 }
 

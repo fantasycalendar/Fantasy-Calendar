@@ -27,5 +27,7 @@ $hamburger-padding-y        :1rem;
 // Calendar parts
 @import 'calendar';
 
+@import 'calendar/event_colors';
+
 // select2
 @import '~select2';

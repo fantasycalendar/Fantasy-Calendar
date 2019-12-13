@@ -21,7 +21,7 @@ $hamburger-padding-y        :1rem;
 @import '~protip/css/protip';
 
 // Variables
-@import 'calendar/variables';
+@import 'calendar/variables-dark';
 
 // Legacy calendar parts
 @import 'home';
@@ -29,5 +29,12 @@ $hamburger-padding-y        :1rem;
 // Calendar parts
 @import 'calendar';
 
+@import 'calendar/event_colors-dark';
+
 // select2
 @import '~select2';
+
+.form-control {
+    background-color: $month-bg-color;
+    color: white;
+}
