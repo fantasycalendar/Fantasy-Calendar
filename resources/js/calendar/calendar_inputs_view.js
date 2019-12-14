@@ -169,8 +169,6 @@ function set_up_view_inputs(){
 		eval_current_time();
 	});
 
-
-
 	location_select.change(function(){
 
 		var prev_location_type = dynamic_data.custom_location;
@@ -184,8 +182,6 @@ function set_up_view_inputs(){
 		dynamic_data.custom_location = location_select.find('option:selected').parent().attr('value') === "custom" && !location_select.find('option:selected').prop('disabled');
 
 		dynamic_data.location = location_select.val();
-
-		location_select.val()
 
 		if(dynamic_data.custom_location){
 			var location = static_data.seasons.locations[dynamic_data.location];
@@ -224,8 +220,12 @@ function set_up_view_inputs(){
 		current_minute.val(dynamic_data.minute);
 
 		if(day_adjust != 0){
-			dynamic_date_manager.day = dynamic_date_manager.day+day_adjust;
-			evaluate_dynamic_change()
+			if(day_adjust > 0){
+				dynamic_date_manager.add_day();
+			}else{
+				dynamic_date_manager.subtract_day();
+			}
+			evaluate_dynamic_change();
 		}
 
 		do_error_check('seasons', day_adjust != 0);
@@ -377,25 +377,29 @@ function repopulate_location_select_list(){
 				html.push(`<option disabled>Presets require two or four seasons.</option>`);
 				html.push('</optgroup>');
 			}
+
 		}
 
+		if(html.length > 0){
+
+			location_select.prop('disabled', false).html(html.join('')).val(dynamic_data.location);
+
+		}else{
+
+			location_select.prop('disabled', true).html(html.join(''));
+
+		}
+
+		console.log(dynamic_data.location)
+
 		if(location_select.val() === null){
-			location_select.find('option').first().prop('selected', true);
+			location_select.children().find('option').first().prop('selected', true);
 			dynamic_data.location = location_select.val();
 			dynamic_data.custom_location = location_select.find('option:selected').parent().attr('value') === 'custom';
 		}
 
 	}
 
-	if(html.length > 0){
-
-		location_select.prop('disabled', false).html(html.join('')).val(dynamic_data.location);
-
-	}else{
-
-		location_select.prop('disabled', true).html(html.join(''));
-
-	}
 
 }
 
