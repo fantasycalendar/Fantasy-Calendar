@@ -127,10 +127,6 @@ function set_up_edit_inputs(){
 
 	});
 
-	$(document).on('change', cycle_sortable, function(){
-		update_cycle_example_text();
-	});
-
 	global_week_sortable.sortable({
 		placeholder: "highlight",
 		handle: '.handle',
@@ -1367,14 +1363,23 @@ function set_up_edit_inputs(){
 	});
 
 	$(document).on('click', '.cycle_quick_add', function(){
-		swal({
-			title: "An input!",
-			text: "Write something interesting:",
-			type: "input",
-			showCancelButton: true,
-			closeOnConfirm: false,
-			inputPlaceholder: "Write something"
-		});
+
+		var container = $(this).closest('.sortable-container');
+
+		var id = (container.attr('index')|0);
+
+		var cycle = static_data.cycles.data[id];
+
+		var text = "test,test2,test3,test5";
+
+		var names = text.split(',');
+
+		container.find('.cycle-name-length').val(names.length).change();
+
+		container.find('.cycle_list').children().each(function(i){
+			$(this).val(names[i])
+		}).change();
+
 	});
 
 
@@ -2708,7 +2713,7 @@ function add_cycle_to_sortable(parent, key, data){
 
 	var element = [];
 
-	element.push("<div class='sortable-container cycle_inputs collapsed' index='${key}'>");
+	element.push(`<div class='sortable-container cycle_inputs collapsed' index='${key}'>`);
 		element.push("<div class='main-container'>");
 			element.push("<div class='handle icon-reorder'></div>");
 			element.push("<div class='expand icon-collapse'></div>");
@@ -3272,20 +3277,6 @@ function error_check(parent, rebuild){
 
 }
 
-
-
-function update_cycle_example_text(){
-
-	/*var year = ($('#cycle_test_input').val()|0);
-
-	var cycle_text = get_cycle(static_data, year).text;
-
-	var text = Mustache.render(static_data.cycles.format, cycle_text);
-
-	$('#cycle_test_result').text(text);*/
-
-}
-
 function evaluate_remove_buttons(){
 	$('.month .btn_remove, .week_day .btn_remove').each(function(){
 		$(this).toggleClass('disabled', $(this).closest('.sortable').children().length == 1);
@@ -3700,7 +3691,6 @@ function reindex_cycle_sortable(){
 
 	do_error_check();
 
-	update_cycle_example_text();
 }
 
 function reindex_moon_list(){
@@ -4294,7 +4284,6 @@ function set_up_edit_values(){
 		for(var i = 0; i < static_data.cycles.data.length; i++){
 			add_cycle_to_sortable(cycle_sortable, i, static_data.cycles.data[i]);
 		}
-		update_cycle_example_text();
 	}
 
 	if(static_data.year_data.leap_days){

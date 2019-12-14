@@ -120,6 +120,7 @@ select.invalid {
     flex-direction: row;
     flex-wrap: wrap;
     transition: height 0.2s ease;
+    border: 1px solid $gray-secondary;
 }
 
 .inter-month-container{
@@ -559,22 +560,6 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     margin-top:1%;
 }
 
-.form-inline.cycle .cycle_test_container{
-    order: 3;
-    width:100%;
-    margin-top:1%;
-}
-
-.form-inline.cycle #cycle_test_result{
-    order: 4;
-    width:100%;
-    margin-top:1%;
-}
-
-.form-inline.cycle #cycle_test_input{
-    width:25%;
-    margin-top:1%;
-}
 
 .form-inline.global_week .name{
     order:2;
