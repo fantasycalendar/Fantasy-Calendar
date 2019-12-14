@@ -396,24 +396,25 @@ function set_up_edit_inputs(){
 		}
 
 		if(ends_year){
-			swal({
+			swal.fire({
 			title: "Error!",
 				text: `You have eras that end years - you cannot switch to dated seasons with year-ending eras as the dates might disappear, and that kinda defeats the whole purpose.`,
-				icon: "error",
-				dangerMode: true
+				icon: "error"
 			});
 			return;
 		}
 
-		swal({
+		swal.fire({
 			title: "Are you sure?",
 			text: `Are you sure you want to switch to ${checked ? "PERIODIC" : "DATED"} seasons? Your current seasons will be deleted so you can re-create them.`,
-			buttons: true,
+			showCancelButton: true,
+			confirmButtonColor: '#d33',
+			cancelButtonColor: '#3085d6',
+			confirmButtonText: 'Close',
 			icon: "warning",
-			dangerMode: true,
 		})
-		.then((doSwitch) => {
-			if(doSwitch) {
+		.then((result) => {
+			if(!result.dismiss) {
 				$(this).prop('checked', checked);
 				season_sortable.empty();
 				static_data.seasons.data = []
@@ -514,15 +515,17 @@ function set_up_edit_inputs(){
 	$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 && static_data.clock.enabled);
 
 	$('#create_season_events').click(function(){
-		swal({
+		swal.fire({
 			title: "Are you sure?",
 			text: 'Are you sure you want to create seasonal events? If you already have created them, you might get doubling.',
-			buttons: true,
+			showCancelButton: true,
+			confirmButtonColor: '#d33',
+			cancelButtonColor: '#3085d6',
+			confirmButtonText: 'Close',
 			icon: "info",
-			dangerMode: true,
 		})
-		.then((willCreate) => {
-			if(willCreate) {
+		.then((result) => {
+			if(!result.dismiss) {
 
 				var events = create_season_events();
 
@@ -4399,53 +4402,45 @@ function autoload(){
 
 	if(saved_data){
 
-		swal({
+		swal.fire({
 			title: "Load unsaved calendar?",
 			text: "It looks like you started a new calendar and didn't save it. Would you like to continue where you left off?",
-            buttons: {
-                cancel: {
-                    text:"Start Over",
-                    value: false,
-                    closeModal: true,
-                    visible: true
-                },
-                confirm: {
-                    text: "Continue",
-                    closeModal: false,
-                }
-            },
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Continue',
+			cancelButtonText: 'Start Over',
 			icon: "info"
 		})
-		.then((load) => {
+		.then((result) => {
 
-			if(load) {
+			if(!result.dismiss) {
 
 				var data = JSON.parse(saved_data);
-                prev_dynamic_data = {}
-                prev_static_data = {}
-                calendar_name = data.calendar_name;
-                static_data = data.static_data;
-                dynamic_data = data.dynamic_data;
-                dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
-                empty_edit_values();
-                set_up_edit_values();
-                set_up_view_values();
-                set_up_visitor_values();
+				prev_dynamic_data = {}
+				prev_static_data = {}
+				calendar_name = data.calendar_name;
+				static_data = data.static_data;
+				dynamic_data = data.dynamic_data;
+				dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+				empty_edit_values();
+				set_up_edit_values();
+				set_up_view_values();
+				set_up_visitor_values();
 
 				error_check("calendar", true);
 
-                swal({
-                    icon: "success",
-                    title: "Loaded!",
-                    text: "The calendar " + calendar_name + " has been loaded.",
-                    button: true
-                });
+				swal.fire({
+					icon: "success",
+					title: "Loaded!",
+					text: "The calendar " + calendar_name + " has been loaded."
+				});
 
-            }else{
+			}else{
 
-            	localStorage.clear();
+				localStorage.clear();
 
-            }
+			}
 
 		});
 
