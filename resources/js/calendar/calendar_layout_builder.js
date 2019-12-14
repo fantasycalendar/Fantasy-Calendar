@@ -358,9 +358,13 @@ function scroll_to_epoch(epoch){
 
 function update_cycle_text(){
 
-	var cycle_text = Mustache.render(static_data.cycles.format, get_cycle(static_data, evaluated_static_data.epoch_data[preview_date.epoch]).text);
+	if(evaluated_static_data.epoch_data){
 
-	$('#top_follower_content .cycle').text(cycle_text);
+		var cycle_text = Mustache.render(static_data.cycles.format, get_cycle(static_data, evaluated_static_data.epoch_data[preview_date.epoch]).text);
+
+		$('#top_follower_content .cycle').text(cycle_text);
+
+	}
 
 }
 
@@ -491,8 +495,6 @@ var calendar_layouts = {
 		html.push(`<div class='cycle'></div>`);
 
 		$('#top_follower_content').html(html.join('')).removeClass().addClass(this.name_layout);
-
-		update_cycle_text();
 
 	},
 

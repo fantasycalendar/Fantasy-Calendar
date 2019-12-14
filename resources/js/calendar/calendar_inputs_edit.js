@@ -1349,13 +1349,13 @@ function set_up_edit_inputs(){
 
 
 	$(document).on('change', '.cycle-name-length', function(){
-		var index = $(this).attr('index');
+		var cycle_index = $(this).closest('.sortable-container').attr('index');
 		var new_val = ($(this).val()|0);
 		var current_val = ($(this).parent().parent().parent().parent().find(".cycle_list").children().length|0);
 		if(new_val > current_val){
 			var element = [];
 			for(index = current_val; index < new_val; index++){
-				element.push(`<input type='text' class='form-control internal-list-name dynamic_input' data='cycles.data.${index}.names' fc-index='${index}' value='Cycle name ${(index+1)}'/>`);
+				element.push(`<input type='text' class='form-control internal-list-name dynamic_input' data='cycles.data.${cycle_index}.names' fc-index='${index}' value='Cycle name ${(index+1)}'/>`);
 			}
 			$(this).parent().parent().parent().parent().find(".cycle_list").append(element.join(""));
 			$(this).parent().parent().parent().parent().find(".cycle_list").find(".internal-list-name").first().change();
@@ -1368,20 +1368,52 @@ function set_up_edit_inputs(){
 	$(document).on('click', '.cycle_quick_add', function(){
 
 		var container = $(this).closest('.sortable-container');
+		var cycle_name_list = container.find('.cycle_list');
 
 		var id = (container.attr('index')|0);
 
 		var cycle = static_data.cycles.data[id];
 
-		var text = "test,test2,test3,test5";
+		swal.fire({
+			title: "Cycle Names",
+			text: "Each line entered below creates one name in the cycle list.",
+			input: "textarea",
+			inputValue: cycle.names.join('\n'),
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'OK',
+			icon: "info"
+		}).then((result) => {
 
-		var names = text.split(',');
+			if(result.dismiss) return;
 
-		container.find('.cycle-name-length').val(names.length).change();
+			if(result.value === ""){
+				swal.fire({
+					title: "Error",
+					text: "You didn't enter any values!",
+					icon: "warning"
+				});
+			}
 
-		container.find('.cycle_list').children().each(function(i){
-			$(this).val(names[i])
-		}).change();
+			var names = result.value.split('\n');
+
+			cycle.names = names;
+
+			container.find('.cycle-name-length').val(names.length);
+
+			cycle_name_list.empty();
+
+			var element = [];
+			for(i = 0; i < cycle.names.length; i++){
+				element.push(`<input type='text' class='form-control internal-list-name dynamic_input' data='cycles.data.${index}.names' fc-index='${i}' value='${cycle.names[i]}'/>`);
+			}
+
+			cycle_name_list.append(element.join(""));
+
+			do_error_check('calendar');
+
+		});
 
 	});
 
@@ -3237,8 +3269,6 @@ function error_check(parent, rebuild){
 			}else{
 
 				rebuild_calendar('calendar', dynamic_data);
-
-				update_current_day(true);
 
 				preview_date_follow();
 
