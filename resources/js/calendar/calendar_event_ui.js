@@ -83,16 +83,18 @@ var edit_event_ui = {
 
 			if(edit_event_ui.has_changed()){
 
-				swal({
+				swal.fire({
 					title: "Are you sure?",
 					text: 'This event will not be saved! Are you sure you want to close the event UI?',
-					dangerMode: true,
-					buttons: true,
+					showCancelButton: true,
+					confirmButtonColor: '#d33',
+					cancelButtonColor: '#3085d6',
+					confirmButtonText: 'Close',
 					icon: "warning",
-				}).then((willDelete) => {
-					if(willDelete) {
+				}).then((result) => {
+					if(!result.dismiss) {
 						if(edit_event_ui.new_event){
-							delete static_data.event_data.events[edit_event_ui.event_id];
+							static_data.event_data.events.splice(edit_event_ui.event_id, 1);
 						}
 
 						edit_event_ui.clear_ui();
@@ -138,15 +140,17 @@ var edit_event_ui = {
 
 				if(edit_event_ui.conditions_changed){
 
-					swal({
+					swal.fire({
 						title: "Warning!",
 						text: "This will override all of your conditions, are you sure you want to do that?",
+						showCancelButton: true,
+						confirmButtonColor: '#d33',
+						cancelButtonColor: '#3085d6',
+						confirmButtonText: 'OK',
 						icon: "warning",
-						buttons: true,
-						dangerMode: true,
-					}).then((override) => {
+					}).then((result) => {
 
-						if(override) {
+						if(!result.dismiss) {
 
 							var preset = edit_event_ui.condition_presets.val();
 							var repeats = edit_event_ui.repeat_input.val()|0;
@@ -1629,7 +1633,7 @@ var edit_event_ui = {
 
 		if(this.event_is_one_time()){
 
-			swal({
+			swal.fire({
 				title: "Uh...",
 				text: "This event is an one time event (year, month, day), I'm pretty sure you know the answer to this test.",
 				icon: "warning"
@@ -1637,15 +1641,17 @@ var edit_event_ui = {
 
 		}else{
 
-			swal({
+			swal.fire({
 				title: "Warning!",
 				text: "Simulating events may take a loooong time, depending on many factors! If your event is based on other events, we need to simulate those too!",
+				showCancelButton: true,
+				confirmButtonColor: '#d33',
+				cancelButtonColor: '#3085d6',
+				confirmButtonText: 'OK',
 				icon: "warning",
-				buttons: true,
-				dangerMode: true,
-			}).then((will_simulate) => {
+			}).then((result) => {
 
-				if(will_simulate) {
+				if(!result.dismiss) {
 					this.run_test_event(years);
 				}
 
@@ -1878,14 +1884,16 @@ var show_event_ui = {
 
 		this.close_ui_btn.click(function(){
 			if(show_event_ui.event_comment_input.trumbowyg('html').length > 0) {
-				swal({
+				swal.fire({
 					title: "Cancel comment?",
 					text: "You haven't posted your comment yet, are you sure you want to close this event?",
 					icon: "warning",
-					buttons: true,
-					dangerMode: true,
-				}).then((willCancel) => {
-					if(willCancel) {
+					showCancelButton: true,
+					confirmButtonColor: '#d33',
+					cancelButtonColor: '#3085d6',
+					confirmButtonText: 'OK',
+				}).then((result) => {
+					if(!result.dismiss) {
 						show_event_ui.clear_ui();
 					}
 				});
