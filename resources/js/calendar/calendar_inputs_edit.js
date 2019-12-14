@@ -4351,8 +4351,6 @@ function set_up_edit_values(){
         	})
 
         }
-
-    }
   
 		populate_calendar_lists();
   
