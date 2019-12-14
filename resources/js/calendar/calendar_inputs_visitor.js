@@ -138,6 +138,7 @@ function set_up_visitor_inputs(){
 
 }
 
+
 function preview_date_follow(){
 
 	if(preview_date.follow){
@@ -240,9 +241,6 @@ function go_to_dynamic_date(rebuild){
 
 }
 
-
-
-
 function highlight_preview_date(){
 
 	if(preview_date.epoch == dynamic_data.epoch) return;
@@ -278,19 +276,11 @@ function eval_clock(){
 	var clock_sun_canvas = document.getElementById("clock_sun");
 	var clock_background_canvas = document.getElementById("clock_background");
 
-	clock_face_canvas.width = $('#clock').width()
-	clock_face_canvas.height = $('#clock').width()
-
-	clock_sun_canvas.width = $('#clock').width()
-	clock_sun_canvas.height = $('#clock').width()
-
-	clock_background_canvas.width = $('#clock').width()
-	clock_background_canvas.height = $('#clock').width()
-
 	window.Clock = new CalendarClock(
 		clock_face_canvas,
 		clock_sun_canvas,
 		clock_background_canvas,
+		width       = $('#clock').width(),
 		hours		= static_data.clock.hours,
 		minutes		= static_data.clock.minutes,
 		offset		= static_data.clock.offset,

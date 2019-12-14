@@ -250,6 +250,8 @@ function set_up_edit_inputs(){
 
 		$('#create_season_events').prop('disabled', !static_data.clock.enabled);
 
+		eval_clock();
+
 	});
 
 	$('#collapsible_clock').change(function(){
@@ -4261,6 +4263,12 @@ function set_up_edit_values(){
 			add_cycle_to_sortable(cycle_sortable, i, static_data.cycles.data[i]);
 		}
 		update_cycle_example_text();
+	}
+
+	if($('#collapsible_clock').is(':checked')){
+		$('#clock').prependTo($('#collapsible_clock').parent().children('.collapsible-content'));
+	}else{
+		$('#clock').prependTo($('#collapsible_date').parent().children('.collapsible-content'));
 	}
 
 	if(static_data.year_data.leap_days){

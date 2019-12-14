@@ -4,6 +4,7 @@ class Clock{
 		clock_face_canvas,
 		clock_sun_canvas,
 		clock_background_canvas,
+		size,
 		hours,
 		minutes,
 		offset,
@@ -18,6 +19,15 @@ class Clock{
 		this.clock_face_canvas = clock_face_canvas;
 		this.clock_sun_canvas = clock_sun_canvas;
 		this.clock_background_canvas = clock_background_canvas;
+
+		this._size = size;
+
+		this.clock_face_canvas.width = this.size;
+		this.clock_face_canvas.height = this.size;
+		this.clock_sun_canvas.width = this.size;
+		this.clock_sun_canvas.height = this.size;
+		this.clock_background_canvas.width = this.size;
+		this.clock_background_canvas.height = this.size;
 
 		this.face_ctx = this.clock_face_canvas.getContext("2d");
 		this.sun_ctx = this.clock_sun_canvas.getContext("2d");
@@ -67,6 +77,36 @@ class Clock{
 		this.face_font_stroke_size = 5;
 
 		this.draw()
+
+	}
+
+	get size(){
+
+		return this._size;
+
+	}
+
+	set size(size){
+
+		if(this._size != size){
+
+			this._size = size;
+
+			this.clock_face_canvas.width = this.size;
+			this.clock_face_canvas.height = this.size;
+			this.clock_sun_canvas.width = this.size;
+			this.clock_sun_canvas.height = this.size;
+			this.clock_background_canvas.width = this.size;
+			this.clock_background_canvas.height = this.size;
+
+			this.width = this.clock_background_canvas.width;
+			this.outer_radius = this.width / 2;
+
+			this.radius = this.outer_radius * 0.90
+
+			this.draw();
+
+		}
 
 	}
 

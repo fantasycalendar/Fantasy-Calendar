@@ -19,10 +19,15 @@ function bind_calendar_events(){
 	});
 
 	$('#input_collapse_btn').click(function(){
+
 		$("#input_container").toggleClass('inputs_collapsed');
 		$("#calendar_container").toggleClass('inputs_collapsed');
-
 		$(this).toggleClass('is-active');
+		
+		if(static_data.clock.enabled && !isNaN(static_data.clock.hours) && !isNaN(static_data.clock.minutes) && !isNaN(static_data.clock.offset)){
+			window.Clock.size = $('#clock').width();
+		}
+
 		evaluate_error_background_size();
 	})
 
