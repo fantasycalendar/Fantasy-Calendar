@@ -1,4 +1,4 @@
-function set_up_edit_inputs(set_up){
+function set_up_edit_inputs(){
 
 	prev_calendar_name = clone(calendar_name);
 	prev_dynamic_data = clone(dynamic_data);
@@ -21,7 +21,7 @@ function set_up_edit_inputs(set_up){
 			var confirmationMessage = "It looks like you have unsaved changes, are you sure you want to navigate away from this page?";
 
 			(e || window.event).returnValue = confirmationMessage; //Gecko + IE
-	        return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+			return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
 
 		}
 
@@ -56,10 +56,13 @@ function set_up_edit_inputs(set_up){
 
 	});
 
+	save_button.prop('disabled', true);
+	create_button.prop('disabled', true);
+
 	delete_button = $('#btn_delete');
 
 	delete_button.click(function(){
-        delete_calendar(hash, calendar_name, function(){self.location = '/'});
+		delete_calendar(hash, calendar_name, function(){self.location = '/'});
 	});
 
 	calendar_container = $('#calendar');
@@ -72,6 +75,7 @@ function set_up_edit_inputs(set_up){
 	global_week_sortable = $('#global_week_sortable');
 	leap_day_list = $('#leap_day_list');
 	moon_list = $('#moon_list');
+	periodic_seasons_checkbox = $('#periodic_seasons_checkbox');
 	season_sortable = $('#season_sortable');
 	cycle_sortable = $('#cycle_sortable');
 	era_list = $('#era_list');
@@ -206,14 +210,10 @@ function set_up_edit_inputs(set_up){
 		}
 	});
 
-	if(set_up){
-		set_up_edit_values();
-	}
-
 	/* ------------------- Dynamic and static callbacks ------------------- */
 
 	$('#calendar_name').change(function(){
-		calendar_name = escapeHtml($(this).val());
+		calendar_name = $(this).val();
 		evaluate_save_button();
 	});
 
@@ -248,6 +248,10 @@ function set_up_edit_inputs(set_up){
 
 		evaluate_clock_inputs();
 
+		$('#create_season_events').prop('disabled', !static_data.clock.enabled);
+
+		eval_clock();
+
 	});
 
 	$('#collapsible_clock').change(function(){
@@ -271,8 +275,8 @@ function set_up_edit_inputs(set_up){
 	$('.form-inline.global_week .add').click(function(){
 		var name = $(this).prev();
 		var id = global_week_sortable.children().length;
-		add_weekday_to_sortable(global_week_sortable, id, escapeHtml(name.val()))
-		static_data.year_data.global_week.push(escapeHtml(name.val()));
+		add_weekday_to_sortable(global_week_sortable, id, name.val())
+		static_data.year_data.global_week.push(name.val());
 		global_week_sortable.sortable('refresh');
 		reindex_weekday_sortable();
 		name.val("");
@@ -284,7 +288,7 @@ function set_up_edit_inputs(set_up){
 		var type = $(this).prev();
 		var id = timespan_sortable.children().length;
 		stats = {
-			'name': escapeHtml(name.val()),
+			'name': name.val(),
 			'type': type.val(),
 			'length': 1,
 			'interval': 1,
@@ -306,7 +310,7 @@ function set_up_edit_inputs(set_up){
 		var type = $(this).prev();
 		var id = leap_day_list.children().length;
 		stats = {
-			'name': escapeHtml(name.val()),
+			'name': name.val(),
 			'intercalary': type.val() == 'intercalary',
 			'timespan': 0,
 			'adds_week_day': false,
@@ -359,7 +363,7 @@ function set_up_edit_inputs(set_up){
 		var granularity = get_moon_granularity(cycle_val);
 
 		stats = {
-			'name': escapeHtml(name.val()),
+			'name': name.val(),
 			'cycle': cycle.val(),
 			'shift': shift.val(),
 			'granularity': granularity,
@@ -379,6 +383,60 @@ function set_up_edit_inputs(set_up){
 		do_error_check();
 	});
 
+	periodic_seasons_checkbox.change(function(){
+
+		var checked = $(this).prop('checked');
+		$(this).prop('checked', !checked);
+
+		var ends_year = false;
+		for(var era_index in static_data.eras){
+			var era = static_data.eras[era_index];
+			if(era.settings.ends_year){
+				ends_year = true;
+				break;
+			}
+		}
+
+		if(ends_year){
+			swal({
+			title: "Error!",
+				text: `You have eras that end years - you cannot switch to dated seasons with year-ending eras as the dates might disappear, and that kinda defeats the whole purpose.`,
+				icon: "error",
+				dangerMode: true
+			});
+			return;
+		}
+
+		swal({
+			title: "Are you sure?",
+			text: `Are you sure you want to switch to ${checked ? "PERIODIC" : "DATED"} seasons? Your current seasons will be deleted so you can re-create them.`,
+			buttons: true,
+			icon: "warning",
+			dangerMode: true,
+		})
+		.then((doSwitch) => {
+			if(doSwitch) {
+				$(this).prop('checked', checked);
+				season_sortable.empty();
+				static_data.seasons.data = []
+				evaluate_season_lengths();
+				static_data.seasons.global_settings.periodic_seasons = checked;
+
+				$('.season_text.dated').toggleClass('active', !checked);
+				$('.season_text.periodic').toggleClass('active', checked);
+
+				$('.season_offset_container').prop('disabled', !checked).toggleClass('hidden', !checked);
+
+				era_list.children().each(function(){
+					$(this).find('.ends_year').prop('disabled', !checked).toggleClass('protip');
+				});
+
+				error_check("calendar", true);
+			}
+		});
+
+	});
+
 	$('.form-inline.seasons .add').click(function(){
 
 		var fract_year_len = fract_year_length(static_data);
@@ -387,10 +445,10 @@ function set_up_edit_inputs(set_up){
 		var id = season_sortable.children().length;
 
 		stats = {
-			"name": escapeHtml(name.val()),
+			"name": name.val() != "" ? name.val() : `Season ${id+1}`,
 			"time": {
 				"sunrise": {
-					"hour": 9,
+					"hour": 6,
 					"minute": 0
 				},
 				"sunset": {
@@ -400,18 +458,50 @@ function set_up_edit_inputs(set_up){
 			}
 		};
 
-		if(season_sortable.children().length == 0){
-			stats.transition_length = fract_year_len;
-		}else{
-			if(season_sortable.children().length == 1){
-				season_sortable.children().eq(0).find('.transition_length').val(fract_year_len/2);
+		if(static_data.seasons.global_settings.periodic_seasons){
+
+			if(season_sortable.children().length == 0){
+				stats.transition_length = fract_year_len;
+			}else{
+				if(season_sortable.children().length > 0){
+					season_sortable.children().each(function(){
+						var val = $(this).find('.transition_length').val()
+						if(val == fract_year_len / (season_sortable.children().length)){
+							$(this).find('.transition_length').val(fract_year_len / (season_sortable.children().length+1));
+						}
+					})
+				}
+				stats.transition_length = fract_year_len / (season_sortable.children().length+1);
 			}
-			stats.transition_length = fract_year_len/2;
+
+			stats.duration = 0;
+
+		}else{
+
+			if(season_sortable.children().length == 0){
+
+				stats.timespan = 0;
+				stats.day = 1;
+
+			}else{
+
+				stats.timespan = Math.floor(static_data.year_data.timespans.length/(season_sortable.children().length+1))
+				stats.day = 1;
+
+			}
+
 		}
 
-		stats.duration = 0;
-
 		add_season_to_sortable(season_sortable, id, stats);
+
+		if(!static_data.seasons.global_settings.periodic_seasons){
+
+			repopulate_timespan_select(season_sortable.children().last().find('.timespan-list'), stats.timespan, false, true);
+			repopulate_day_select(season_sortable.children().last().find('.timespan-day-list'), stats.day, false, true);
+			sort_list_by_partial_date(season_sortable);
+
+		}
+
 		season_sortable.sortable('refresh');
 		reindex_season_sortable();
 		evaluate_season_lengths();
@@ -419,37 +509,33 @@ function set_up_edit_inputs(set_up){
 		name.val("");
 		do_error_check();
 
-		$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0);
+		$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 && static_data.clock.enabled);
 
 	});
 
-	$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0);
+	$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 && static_data.clock.enabled);
 
 	$('#create_season_events').click(function(){
-	    swal({
-            title: "Are you sure?",
-            text: 'Are you sure you want to create seasonal events? If you already have created them, you might get doubling.',
-            buttons: true,
-            icon: "info",
-            dangerMode: true,
-        })
-        .then((willCreate) => {
-            if(willCreate) {
+		swal({
+			title: "Are you sure?",
+			text: 'Are you sure you want to create seasonal events? If you already have created them, you might get doubling.',
+			buttons: true,
+			icon: "info",
+			dangerMode: true,
+		})
+		.then((willCreate) => {
+			if(willCreate) {
 
-                for(var i = 0; i < static_data.seasons.data.length; i++){
+				var events = create_season_events();
 
-                    var solstice_equinox = create_season_events(i, static_data.seasons.data[i].name);
+				for(index in events){
+					static_data.event_data.events.push(events[index])
+					add_event_to_sortable(events_sortable, static_data.event_data.events.length-1, static_data.event_data.events[static_data.event_data.events.length-1]);
+				}
 
-                    for(index in solstice_equinox){
-                    	static_data.event_data.events.push(solstice_equinox[index])
-                    	add_event_to_sortable(events_sortable, static_data.event_data.events.length-1, static_data.event_data.events[static_data.event_data.events.length-1]);
-                    }
-
-                }
-
-                do_error_check();
-            }
-        });
+				do_error_check();
+			}
+		});
 	})
 
 	$('.form-inline.locations .add').click(function(){
@@ -458,9 +544,8 @@ function set_up_edit_inputs(set_up){
 		var id = location_list.children().length;
 
 		stats = {
-			"name": escapeHtml(name.val()),
+			"name": name.val(),
 			"seasons": [],
-			"custom_dates": {},
 
 			"settings": {
 				"timezone": {
@@ -495,7 +580,6 @@ function set_up_edit_inputs(set_up){
 
 		add_location_to_list(location_list, id, stats);
 		reindex_location_list();
-		repopulate_location_select_list();
 		name.val('');
 
 		$('.slider_percentage').slider({
@@ -521,14 +605,13 @@ function set_up_edit_inputs(set_up){
 	$('#copy_location_data').click(function(){
 
 		var type = location_select.find('option:selected').parent().attr('value');
-		var location = escapeHtml(location_select.val());
+		var location = location_select.val();
 
 		if(type === "custom"){
 			var stats = static_data.seasons.locations[location];
 		}else{
-			var stats = climate_generator.presets[location];
-			stats.settings = climate_generator.preset_curves;
-			stats.custom_dates = {};
+			var stats = preset_data.locations[static_data.seasons.data.length][location];
+			stats.settings = preset_data.curves;
 
 			for(var i = 0; i < static_data.seasons.data.length; i++){
 				stats.seasons[i].time = static_data.seasons.data[i].time;
@@ -540,7 +623,6 @@ function set_up_edit_inputs(set_up){
 
 		add_location_to_list(location_list, id, stats);
 		reindex_location_list();
-		repopulate_location_select_list();
 
 		$('.slider_percentage').slider({
 			min: 0,
@@ -558,7 +640,139 @@ function set_up_edit_inputs(set_up){
 			$(this).slider('option', 'value', parseInt($(this).parent().parent().find('.slider_input').val()));
 		});
 
+		location_select.find('optgroup[value="custom"]').children().eq(id).prop('selected', true).change();
+
 		do_error_check();
+
+	});
+
+	$(document).on('click', '.location_middle_btn', function(){
+
+		var container = $(this).closest('.sortable-container');
+
+		var current_season = $(this).closest('.location_season');
+
+		var season_id = current_season.attr('fc-index')|0;
+
+		var location_id = container.attr('index')|0;
+
+		var prev_id = (season_id-1)%static_data.seasons.data.length
+		if(prev_id < 0) prev_id += static_data.seasons.data.length
+
+		var prev_season = static_data.seasons.locations[location_id].seasons[prev_id];
+		var next_season = static_data.seasons.locations[location_id].seasons[(season_id+1)%static_data.seasons.data.length];
+
+		var season_length = static_data.seasons.data[prev_id].duration+static_data.seasons.data[prev_id].transition_length+static_data.seasons.data[season_id].duration+static_data.seasons.data[season_id].transition_length;
+		var target = static_data.seasons.data[prev_id].duration+static_data.seasons.data[prev_id].transition_length;
+		var perc = target/season_length;
+
+		if(static_data.clock.enabled){
+
+			var prev_sunrise = prev_season.time.sunrise.hour+(prev_season.time.sunrise.minute/static_data.clock.minutes);
+			var next_sunrise = next_season.time.sunrise.hour+(next_season.time.sunrise.minute/static_data.clock.minutes);
+
+			var middle = lerp(prev_sunrise, next_sunrise, perc)
+
+			var sunrise_h = Math.floor(middle)
+			var sunrise_m = Math.floor(fract(middle)*static_data.clock.minutes)
+
+			current_season.find("input[clocktype='sunrise_hour']").val(sunrise_h)
+			current_season.find("input[clocktype='sunrise_minute']").val(sunrise_m)
+
+			static_data.seasons.locations[location_id].seasons[season_id].time.sunrise.hour = sunrise_h;
+			static_data.seasons.locations[location_id].seasons[season_id].time.sunrise.minute = sunrise_m;
+
+
+			var prev_sunset = prev_season.time.sunset.hour+(prev_season.time.sunset.minute/static_data.clock.minutes);
+			var next_sunset = next_season.time.sunset.hour+(next_season.time.sunset.minute/static_data.clock.minutes);
+
+			var middle = lerp(prev_sunset, next_sunset, perc)
+
+			var sunset_h = Math.floor(middle)
+			var sunset_m = Math.floor(fract(middle)*static_data.clock.minutes)
+
+			current_season.find("input[clocktype='sunset_hour']").val(sunset_h)
+			current_season.find("input[clocktype='sunset_minute']").val(sunset_m)
+
+			static_data.seasons.locations[location_id].seasons[season_id].time.sunset.hour = sunset_h;
+			static_data.seasons.locations[location_id].seasons[season_id].time.sunset.minute = sunset_m;
+
+		}
+
+		if(static_data.seasons.global_settings.enable_weather){
+
+			var temp_low = precisionRound(lerp(prev_season.weather.temp_low, next_season.weather.temp_low, perc),2);
+			var temp_high = precisionRound(lerp(prev_season.weather.temp_high, next_season.weather.temp_high, perc),2);
+			var precipitation = precisionRound(lerp(prev_season.weather.precipitation, next_season.weather.precipitation, perc),2);
+			var precipitation_intensity = precisionRound(lerp(prev_season.weather.precipitation_intensity, next_season.weather.precipitation_intensity, perc),2);
+
+			current_season.find("input[fc-index='precipitation']").val(precipitation).parent().parent().find('.slider_input').val(precipitation)
+			current_season.find("input[fc-index='precipitation_intensity']").val(precipitation_intensity).parent().parent().find('.slider_input').val(precipitation_intensity)
+
+			current_season.find("input[fc-index='temp_high']").val(temp_high)
+			current_season.find("input[fc-index='temp_low']").val(temp_low)
+
+			static_data.seasons.locations[location_id].seasons[season_id].weather.temp_low = temp_low;
+			static_data.seasons.locations[location_id].seasons[season_id].weather.temp_high = temp_high;
+			static_data.seasons.locations[location_id].seasons[season_id].weather.precipitation = precipitation;
+			static_data.seasons.locations[location_id].seasons[season_id].weather.precipitation_intensity = precipitation_intensity;
+
+		}
+
+		do_error_check('seasons');
+
+	});
+
+	$(document).on('click', '.season_middle_btn', function(){
+
+		var container = $(this).closest('.sortable-container');
+
+		var season_id = container.attr('index')|0;
+
+		var prev_id = (season_id-1)%static_data.seasons.data.length
+		if(prev_id < 0) prev_id += static_data.seasons.data.length
+
+		var prev_season = static_data.seasons.data[prev_id];
+		var next_season = static_data.seasons.data[(season_id+1)%static_data.seasons.data.length];
+
+		var season_length = static_data.seasons.data[prev_id].duration+static_data.seasons.data[prev_id].transition_length+static_data.seasons.data[season_id].duration+static_data.seasons.data[season_id].transition_length;
+		var target = static_data.seasons.data[prev_id].duration+static_data.seasons.data[prev_id].transition_length;
+		var perc = target/season_length;
+
+		if(static_data.clock.enabled){
+
+			var prev_sunrise = prev_season.time.sunrise.hour+(prev_season.time.sunrise.minute/static_data.clock.minutes);
+			var next_sunrise = next_season.time.sunrise.hour+(next_season.time.sunrise.minute/static_data.clock.minutes);
+
+			var middle = lerp(prev_sunrise, next_sunrise, perc)
+
+			var sunrise_h = Math.floor(middle)
+			var sunrise_m = Math.floor(fract(middle)*static_data.clock.minutes)
+
+			container.find("input[clocktype='sunrise_hour']").val(sunrise_h)
+			container.find("input[clocktype='sunrise_minute']").val(sunrise_m)
+
+			static_data.seasons.data[season_id].time.sunrise.hour = sunrise_h;
+			static_data.seasons.data[season_id].time.sunrise.minute = sunrise_m;
+
+
+			var prev_sunset = prev_season.time.sunset.hour+(prev_season.time.sunset.minute/static_data.clock.minutes);
+			var next_sunset = next_season.time.sunset.hour+(next_season.time.sunset.minute/static_data.clock.minutes);
+
+			var middle = lerp(prev_sunset, next_sunset, perc)
+
+			var sunset_h = Math.floor(middle)
+			var sunset_m = Math.floor(fract(middle)*static_data.clock.minutes)
+
+			container.find("input[clocktype='sunset_hour']").val(sunset_h)
+			container.find("input[clocktype='sunset_minute']").val(sunset_m)
+
+			static_data.seasons.data[season_id].time.sunset.hour = sunset_h;
+			static_data.seasons.data[season_id].time.sunset.minute = sunset_m;
+
+		}
+
+		do_error_check('seasons');
 
 	});
 
@@ -573,7 +787,7 @@ function set_up_edit_inputs(set_up){
 		};
 		if(static_data.cycles === undefined){
 			static_data.cycles = {
-				format: escapeHtml($('#cycle_format').val()),
+				format: $('#cycle_format').val(),
 				data: []
 			};
 		}
@@ -591,13 +805,14 @@ function set_up_edit_inputs(set_up){
 		var name = $(this).prev();
 
 		var stats = {
-			"name": escapeHtml(name.val()),
-			"abbreviation": "",
+			"name": name.val(),
+			"formatting": "",
 			"description": "",
 			"settings": {
 				"show_as_event": false,
+				"use_custom_format": false,
 				"starting_era": false,
-				"event_category": -1,
+				"event_category_id": -1,
 				"ends_year": false,
 				"restart": false
 			},
@@ -629,7 +844,7 @@ function set_up_edit_inputs(set_up){
 		var slug = slugify(name.val());
 
 		var stats = {
-			"name": escapeHtml(name.val()),
+			"name": name.val(),
 			"category_settings":{
 				"hide": false,
 				"player_usable": false
@@ -660,7 +875,7 @@ function set_up_edit_inputs(set_up){
 
 
 	$('.form-inline.events .add').click(function(){
-		var name = escapeHtml($(this).prev().val());
+		var name = $(this).prev().val();
 
 		edit_event_ui.create_new_event(name);
 		$(this).prev().val('');
@@ -736,7 +951,6 @@ function set_up_edit_inputs(set_up){
 				$(this).closest('.sortable-container').parent().sortable('refresh');
 				type = 'seasons';
 				reindex_location_list();
-				repopulate_location_select_list();
 				break;
 
 			case "cycle_sortable":
@@ -770,8 +984,8 @@ function set_up_edit_inputs(set_up){
 				}
 
 				for(var era in static_data.eras){
-					if(static_data.eras[era].settings.event_category == index){
-						static_data.eras[era].settings.event_category = -1;
+					if(static_data.eras[era].settings.event_category_id == index){
+						static_data.eras[era].settings.event_category_id = -1;
 					}
 				}
 
@@ -1002,12 +1216,18 @@ function set_up_edit_inputs(set_up){
 		container.find('.adds_week_day_data_container').toggleClass('hidden', !checked);
 		container.find('.adds_week_day_data_container input, .adds_week_day_data_container select').prop('disabled', !checked);
 		container.find('.week-day-select').toggleClass('inclusive', checked);
+		$('#first_week_day_container').toggleClass('hidden', !checked).find('select').prop('disabled', !checked);
 		$('#overflow_explanation').toggleClass('hidden', !checked);
 		if(checked){
 			$('#month_overflow').prop('checked', true);
 		}
 		repopulate_weekday_select($(this).closest('.sortable-container').find('.week-day-select'));
 		container.find('.internal-list-name').change();
+	});
+
+	$('#month_overflow').change(function(){
+		var checked = $(this).is(':checked');
+		$('#first_week_day_container').toggleClass('hidden', !checked).find('select').prop('disabled', !checked);
 	});
 
 	$(document).on('change', '.unique-week-input', function(){
@@ -1017,8 +1237,8 @@ function set_up_edit_inputs(set_up){
 			element.push("<div class='week_list'>");
 				static_data.year_data.timespans[index].week = [];
 				for(index = 0; index < static_data.year_data.global_week.length; index++){
-					static_data.year_data.timespans[index].week.push(escapeHtml(static_data.year_data.global_week[index]));
-					element.push(`<input type='text' class='detail-row form-control internal-list-name dynamic_input custom_week_day' data='year_data.timespans.${index}.week' fc-index='${index}' value='${escapeHtml(static_data.year_data.global_week[index])}'/>`);
+					static_data.year_data.timespans[index].week.push(static_data.year_data.global_week[index]);
+					element.push(`<input type='text' class='detail-row form-control internal-list-name dynamic_input custom_week_day' data='year_data.timespans.${index}.week' fc-index='${index}' value='${static_data.year_data.global_week[index]}'/>`);
 				}
 			element.push("</div>");
 			$(this).parent().parent().parent().parent().find(".detail-row.collapsible-content").append(element.join(""));
@@ -1046,7 +1266,18 @@ function set_up_edit_inputs(set_up){
 		}else{
 			$(this).parent().parent().parent().next().addClass('hidden');
 			$(this).parent().parent().parent().next().find('.dynamic_input').prop('disabled', true).change();
-			delete static_data.eras[index].settings.event_category;
+			delete static_data.eras[index].settings.event_category_id;
+		}
+	});
+
+	$(document).on('change', '.use_custom_format', function(){
+		var index = $(this).closest('.sortable-container').attr('index')|0;
+		if($(this).is(':checked')){
+			$(this).parent().parent().parent().next().removeClass('hidden');
+			$(this).parent().parent().parent().next().find('.dynamic_input').prop('disabled', false).val('Year {{year}} - {{era_name}}').change();
+		}else{
+			$(this).parent().parent().parent().next().addClass('hidden');
+			$(this).parent().parent().parent().next().find('.dynamic_input').prop('disabled', true).val('').change();
 		}
 	});
 
@@ -1076,6 +1307,10 @@ function set_up_edit_inputs(set_up){
 	$(document).on('change', '#era_list .date_control', function(){
 		reindex_era_list();
 		eras.evaluate_position();
+	});
+
+	$(document).on('change', '#season_sortable .date_control', function(){
+		reindex_season_sortable();
 	});
 
 	$(document).on('change', '.week-length', function(){
@@ -1173,10 +1408,10 @@ function set_up_edit_inputs(set_up){
 
 	});
 
-    $(document).on('keyup', '.leap_day_occurance_input', function(){
-        var interval = $(this).closest('.sortable-container').find('.interval');
-        interval.val(interval.val().replace(/[ `~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z]/g, ""));
-    });
+	$(document).on('keyup', '.leap_day_occurance_input', function(){
+		var interval = $(this).closest('.sortable-container').find('.interval');
+		interval.val(interval.val().replace(/[ `~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z]/g, ""));
+	});
 
 	$(document).on('change', '.leap_day_occurance_input', function(){
 
@@ -1270,7 +1505,7 @@ function set_up_edit_inputs(set_up){
 
 			var timespan_item = timespan_sortable.children().eq(timespan_val);
 			var timespan_interval = timespan_item.find('.interval').val()|0;
-			var timespan_name = escapeHtml(timespan_item.find('.name-input').val());
+			var timespan_name = timespan_item.find('.name-input').val();
 
 			var text = "This leap day will appear every";
 
@@ -1414,7 +1649,7 @@ function set_up_edit_inputs(set_up){
 
 				var val = $(this).val()|0;
 
-				$(this).val(precisionRound(climate_generator.fahrenheit_to_celcius(val), 4));
+				$(this).val(precisionRound(fahrenheit_to_celcius(val), 4));
 
 			}).change();
 
@@ -1424,7 +1659,7 @@ function set_up_edit_inputs(set_up){
 
 				var val = $(this).val()|0;
 
-				$(this).val(precisionRound(climate_generator.celcius_to_fahrenheit(val), 4)).change;
+				$(this).val(precisionRound(celcius_to_fahrenheit(val), 4)).change;
 
 			}).change();
 
@@ -1448,7 +1683,6 @@ function set_up_edit_inputs(set_up){
 		evaluate_season_lengths();
 		rebuild_climate();
 	});
-
 
 	$('#refresh_calendar_list_select').click(function(){
 		populate_calendar_lists();
@@ -1497,7 +1731,7 @@ function set_up_edit_inputs(set_up){
 				current_calendar_data[type[type.length-1]] = [];
 
 				target.closest('.cycle_list').children().each(function(i){
-					current_calendar_data[type[type.length-1]][i] = escapeHtml($(this).val());
+					current_calendar_data[type[type.length-1]][i] = $(this).val();
 				});
 
 			}else{
@@ -1523,7 +1757,7 @@ function set_up_edit_inputs(set_up){
 							break;
 
 						default:
-							var value = escapeHtml(target.val());
+							var value = target.val();
 							break;
 					}
 
@@ -1564,9 +1798,7 @@ function set_up_edit_inputs(set_up){
 				repopulate_location_select_list();
 			}
 
-			if(refresh || refresh === undefined){
-				do_error_check(type[0]);
-			}
+			do_error_check(type[0], refresh);
 
 		}else if(target.attr('class') !== undefined && target.attr('class').indexOf('static_input') > -1){
 
@@ -1596,7 +1828,7 @@ function set_up_edit_inputs(set_up){
 					break;
 
 				default:
-					value = escapeHtml(target.val());
+					value = target.val();
 					break;
 			}
 
@@ -1605,9 +1837,8 @@ function set_up_edit_inputs(set_up){
 			var refresh = target.attr('refresh');
 			refresh = refresh === "true" || refresh === undefined;
 
-			if(refresh || refresh === undefined){
-				do_error_check(type[0]);
-			}
+			do_error_check(type[0], refresh);
+
 		}
 
 	});
@@ -1622,7 +1853,7 @@ function add_weekday_to_sortable(parent, key, name){
 
 	var element = [];
 
-	element.push("<div class='sortable-container week_day'>");
+	element.push("<div class='sortable-container list-group-item week_day'>");
 		element.push("<div class='main-container'>");
 			element.push("<div class='handle icon-reorder'></div>");
 			element.push("<div class='name-container'>");
@@ -1644,7 +1875,7 @@ function add_weekday_to_sortable(parent, key, name){
 
 function add_timespan_to_sortable(parent, key, data){
 	var element = [];
-	element.push(`<div class='sortable-container ${data.type} collapsed' type='${data.type}' index='${key}'>`);
+	element.push(`<div class='sortable-container list-group-item ${data.type} collapsed' type='${data.type}' index='${key}'>`);
 		element.push("<div class='main-container'>");
 			element.push("<div class='handle icon-reorder'></div>");
 			element.push("<div class='expand icon-collapse'></div>");
@@ -1782,7 +2013,7 @@ function add_leap_day_to_list(parent, key, data){
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' value='${data.name}' class='name-input small-input form-control dynamic_input' data='year_data.leap_days.${key}' fc-index='name' tabindex='${(200+key)}'/>`);
 			element.push("</div>");
-            element.push('<div class="remove-spacer"></div>');
+			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
@@ -1809,7 +2040,7 @@ function add_leap_day_to_list(parent, key, data){
 
 					element.push("<div class='date_control'>");
 
-						element.push(`<input type='hidden' class='form-control-sm year-input hidden' value='0'>`);
+						element.push(`<input type='hidden' class='form-control year-input hidden' value='0'>`);
 
 						element.push("<div class='detail-row'>");
 							element.push("<div class='detail-column'>");
@@ -1818,7 +2049,7 @@ function add_leap_day_to_list(parent, key, data){
 										element.push("<div class='detail-text'>Timespan: </div>");
 									element.push("</div>");
 									element.push("<div class='detail-column'>");
-										element.push(`<select type='number' class='custom-select form-control-sm leap_day_occurance_input timespan-list dynamic_input full timespan_special' data='year_data.leap_days.${key}' fc-index='timespan'>`);
+										element.push(`<select type='number' class='custom-select form-control leap_day_occurance_input timespan-list dynamic_input full timespan_special' data='year_data.leap_days.${key}' fc-index='timespan'>`);
 										for(var j = 0; j < static_data.year_data.timespans.length; j++)
 										{
 											element.push(`<option value="${j}" ${(j==data.timespan ? "selected" : "")}>${static_data.year_data.timespans[j].name}</option>`);
@@ -1855,7 +2086,7 @@ function add_leap_day_to_list(parent, key, data){
 									element.push(`<div class='detail-text'>Select weekday: </div>`);
 								element.push("</div>");
 								element.push("<div class='detail-row'>");
-									element.push(`<select type='number' class='custom-select form-control-sm dynamic_input full week-day-select ${(data.adds_week_day ? "inclusive" : "")}' data='year_data.leap_days.${key}' fc-index='day'>`);
+									element.push(`<select type='number' class='custom-select form-control dynamic_input full week-day-select ${(data.adds_week_day ? "inclusive" : "")}' data='year_data.leap_days.${key}' fc-index='day'>`);
 
 										if(data.timespan === undefined){
 											var week = static_data.year_data.global_week;
@@ -1865,10 +2096,10 @@ function add_leap_day_to_list(parent, key, data){
 											}
 										}
 										if(data.adds_week_day){
-											element.push(`<option ${data.day == 0 ? 'selected' : ''} value='0'>Before ${escapeHtml(week[0])}</option>`);
+											element.push(`<option ${data.day == 0 ? 'selected' : ''} value='0'>Before ${week[0]}</option>`);
 										}
 										for(var i = 0; i < week.length; i++){
-											element.push(`<option ${data.day == i ? 'selected' : ''} value='${i+1}'>${escapeHtml(week[i])}</option>`);
+											element.push(`<option ${data.day == i ? 'selected' : ''} value='${i+1}'>${week[i]}</option>`);
 										}
 
 									element.push("</select>");
@@ -1882,7 +2113,7 @@ function add_leap_day_to_list(parent, key, data){
 									element.push(`<div class='detail-text'>Select after which day: </div>`);
 								element.push("</div>");
 								element.push("<div class='detail-row'>");
-									element.push(`<select type='number' class='custom-select form-control-sm dynamic_input full timespan-day-list exclude_self' data='year_data.leap_days.${key}' fc-index='day'>`);
+									element.push(`<select type='number' class='custom-select form-control dynamic_input full timespan-day-list exclude_self' data='year_data.leap_days.${key}' fc-index='day'>`);
 									element.push("</select>");
 								element.push("</div>");
 							element.push("</div>");
@@ -2011,7 +2242,7 @@ function add_moon_to_list(parent, key, data){
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' value='${data.name}' class='form-control name-input small-input dynamic_input' data='moons.${key}' fc-index='name' tabindex='${(300+key)}'/>`);
 			element.push("</div>");
-            element.push('<div class="remove-spacer"></div>');
+			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
@@ -2061,7 +2292,7 @@ function add_moon_to_list(parent, key, data){
 						element.push("<button type='button' class='btn btn-sm btn-danger moon_shift_back'><</button>");
 					element.push("</div>");
 					element.push("<div class='detail-column detail-grow'>");
-						element.push(`<input type='text' class='form-control form-control-sm dynamic_input custom_cycle full' data='moons.${key}' fc-index='custom_cycle' value='${data.custom_phase ? data.custom_cycle : ''}' />`);
+						element.push(`<input type='text' class='form-control form-control dynamic_input custom_cycle full' data='moons.${key}' fc-index='custom_cycle' value='${data.custom_phase ? data.custom_cycle : ''}' />`);
 					element.push("</div>");
 					element.push("<div class='detail-column detail-shrink'>");
 						element.push("<button type='button' class='btn btn-sm btn-success moon_shift_forward'>></button>");
@@ -2115,12 +2346,14 @@ function add_season_to_sortable(parent, key, data){
 	var element = [];
 	element.push(`<div class='sortable-container season collapsed' index='${key}'>`);
 		element.push("<div class='main-container'>");
-			element.push("<div class='handle icon-reorder'></div>");
+			if(static_data.seasons.global_settings.periodic_seasons){
+				element.push("<div class='handle icon-reorder'></div>");
+			}
 			element.push("<div class='expand icon-collapse'></div>");
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' value='${data.name}' tabindex='${(400+key)}'class='name-input small-input form-control dynamic_input' data='seasons.data.${key}' fc-index='name'/>`);
 			element.push("</div>");
-            element.push('<div class="remove-spacer"></div>');
+			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
@@ -2131,34 +2364,66 @@ function add_season_to_sortable(parent, key, data){
 
 		element.push("<div class='detail-container hidden'>");
 
-			element.push(`<div class='detail-row season-duration'>`);
-				element.push("<div class='detail-column half'>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text'>Peak duration:</div>");
-						var duration = data.duration == '' || data.duration == undefined ? 0 : data.duration;
-						element.push(`<input type='number' step='any' class='form-control dynamic_input duration' data='seasons.data.${key}' fc-index='duration' min='0' value='${duration}' />`);
-					element.push("</div>");
-				element.push("</div>");
-				element.push("<div class='detail-column half'>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text'>Duration:</div>");
-						var transition_length = data.transition_length == '' || data.transition_length == undefined ? 90 : data.transition_length;
-						element.push(`<input type='number' step='any' class='form-control dynamic_input transition_length' data='seasons.data.${key}' fc-index='transition_length' min='1' value='${transition_length}' />`);
-					element.push("</div>");
-				element.push("</div>");
-			element.push("</div>");
+			if(static_data.seasons.global_settings.periodic_seasons){
 
-			element.push("<div class='separator'></div>");
+				element.push(`<div class='season-duration'>`);
+					element.push(`<div class='detail-row'>`);
+						element.push("<div class='detail-column'>");
+							element.push("<div class='detail-row'>");
+								element.push("<div class='detail-text'>Duration:</div>");
+								var transition_length = data.transition_length == '' || data.transition_length == undefined ? 90 : data.transition_length;
+								element.push(`<input type='number' step='any' class='form-control dynamic_input transition_length protip' data='seasons.data.${key}' fc-index='transition_length' min='1' value='${transition_length}' data-pt-position="right" data-pt-title='How many days until this season ends, and the next begins.'/>`);
+							element.push("</div>");
+						element.push("</div>");
+					element.push("</div>");
+					element.push(`<div class='detail-row'>`);
+						element.push("<div class='detail-column'>");
+							element.push("<div class='detail-row'>");
+								element.push("<div class='detail-text'>Peak duration:</div>");
+								var duration = data.duration == '' || data.duration == undefined ? 0 : data.duration;
+								element.push(`<input type='number' step='any' class='form-control dynamic_input duration protip' data='seasons.data.${key}' fc-index='duration' min='0' value='${duration}' data-pt-position="right" data-pt-title='If the duration is the path up a mountain, the peak duration is a flat summit. This is how many days the season will pause before going down the other side of the mountain.'/>`);
+							element.push("</div>");
+						element.push("</div>");
+					element.push("</div>");
+				element.push("</div>");
+
+			}else{
+
+				element.push(`<div class='date_control season-date full'>`);
+
+					element.push("<div class='row my-1'>");
+						element.push("<div class='col-5'>");
+							element.push("<div class='detail-text'>Timespan:</div>");
+						element.push("</div>");
+						element.push("<div class='col'>");
+							element.push(`<select type='number' class='date form-control form-control timespan-list dynamic_input' data='seasons.data.${key}' fc-index='timespan'>`);
+							element.push("</select>");
+						element.push("</div>");
+					element.push("</div>");
+
+					element.push("<div class='row my-1'>");
+						element.push("<div class='col-5'>");
+							element.push("<div class='detail-text'>Day:</div>");
+						element.push("</div>");
+						element.push("<div class='col'>");
+							element.push(`<select type='number' class='date form-control form-control timespan-day-list dynamic_input' data='seasons.data.${key}' fc-index='day'>`);
+							element.push("</select>");
+						element.push("</div>");
+					element.push("</div>");
+
+				element.push("</div>");
+
+			}
 
 			element.push("<div class='clock_inputs'>");
 				element.push("<div class='detail-row'>");
-					element.push("<div class='detail-column half'>");
+					element.push("<div class='detail-column full'>");
 						element.push("<div class='detail-row no-margin'>");
 							element.push("<div class='detail-text'>Sunrise:</div>");
 						element.push("</div>");
 						element.push("<div class='detail-row'>");
 							element.push("<div class='detail-column clock-input'>");
-								element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunrise_hour' data='seasons.data.${key}.time.sunrise' fc-index='hour' value='${data.time.sunrise.hour}' />`);
+								element.push(`<input type='number' step="1.0" class='form-control full dynamic_input hour_input' clocktype='sunrise_hour' data='seasons.data.${key}.time.sunrise' fc-index='hour' value='${data.time.sunrise.hour}' />`);
 							element.push("</div>");
 							element.push("<div class='detail-column'>:</div>");
 							element.push("<div class='detail-column float clock-input'>");
@@ -2166,14 +2431,15 @@ function add_season_to_sortable(parent, key, data){
 							element.push("</div>");
 						element.push("</div>");
 					element.push("</div>");
-
-					element.push("<div class='detail-column half'>");
+				element.push("</div>");
+				element.push("<div class='detail-row'>");
+					element.push("<div class='detail-column full'>");
 						element.push("<div class='detail-row no-margin'>");
 							element.push("<div class='detail-text'>Sunset:</div>");
 						element.push("</div>");
 						element.push("<div class='detail-row'>");
 							element.push("<div class='detail-column clock-input'>");
-								element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunset_hour' data='seasons.data.${key}.time.sunset' fc-index='hour' value='${data.time.sunset.hour}' />`);
+								element.push(`<input type='number' step="1.0" class='form-control full dynamic_input hour_input' clocktype='sunset_hour' data='seasons.data.${key}.time.sunset' fc-index='hour' value='${data.time.sunset.hour}' />`);
 							element.push("</div>");
 							element.push("<div class='detail-column'>:</div>");
 							element.push("<div class='detail-column float clock-input'>");
@@ -2182,7 +2448,13 @@ function add_season_to_sortable(parent, key, data){
 						element.push("</div>");
 					element.push("</div>");
 				element.push("</div>");
+
+				element.push("<div class='detail-row'>");
+					element.push(`<button type="button" class="btn btn-sm btn-info season_middle_btn full protip" data-pt-delay-in="100" data-pt-title="Use the median values from the previous and next seasons' time data. This season will act as a transition between the two, similar to Spring or Autumn">Interpolate sunrise & sunset from surrounding seasons</button>`);
+				element.push("</div>");
+
 			element.push("</div>");
+
 		element.push("</div>");
 
 	parent.append(element.join(""));
@@ -2198,7 +2470,7 @@ function add_location_to_list(parent, key, data){
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' value='${data.name}' tabindex='${(500+key)}' class='name-input small-input form-control dynamic_input location-name' data='seasons.locations.${key}' fc-index='name'/>`);
 			element.push("</div>");
-            element.push('<div class="remove-spacer"></div>');
+			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 
 		element.push("<div class='remove-container'>");
@@ -2226,9 +2498,9 @@ function add_location_to_list(parent, key, data){
 					element.push("<div class='detail-row'>");
 						element.push("<div class='detail-column twothird'>");
 							if(data.seasons[i].custom_name){
-								element.push(`<input type='text' class='form-control form-control-sm full dynamic_input' data='seasons.locations.${key}.seasons.${i}' fc-index='name' value='${data.seasons[i].name}'>`);
+								element.push(`<input type='text' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.seasons.${i}' fc-index='name' value='${data.seasons[i].name}'>`);
 							}else{
-								element.push(`<input type='text' class='form-control form-control-sm full dynamic_input' data='seasons.locations.${key}.seasons.${i}' fc-index='name' value='${static_data.seasons.data[i].name}' disabled>`);
+								element.push(`<input type='text' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.seasons.${i}' fc-index='name' value='${static_data.seasons.data[i].name}' disabled>`);
 							}
 						element.push("</div>");
 						element.push("<div class='detail-column third'>");
@@ -2256,6 +2528,8 @@ function add_location_to_list(parent, key, data){
 						element.push("</div>");
 					element.push("</div>");
 
+					element.push("<div class='separator'></div>");
+
 					element.push("<div class='detail-row'>");
 						element.push("<div class='detail-row'>");
 							element.push("Precipitation chance: (%)");
@@ -2264,7 +2538,7 @@ function add_location_to_list(parent, key, data){
 							element.push("<div class='slider_percentage'></div>");
 						element.push("</div>");
 						element.push("<div class='detail-column quarter'>");
-							element.push(`<input type='number' step="any" class='form-control form-control-sm full dynamic_input slider_input' data='seasons.locations.${key}.seasons.${i}.weather' fc-index='precipitation' value='${data.seasons[i].weather.precipitation*100}'>`);
+							element.push(`<input type='number' step="any" class='form-control form-control full dynamic_input slider_input' data='seasons.locations.${key}.seasons.${i}.weather' fc-index='precipitation' value='${data.seasons[i].weather.precipitation*100}'>`);
 						element.push("</div>");
 					element.push("</div>");
 
@@ -2276,13 +2550,15 @@ function add_location_to_list(parent, key, data){
 							element.push("<div class='slider_percentage'></div>");
 						element.push("</div>");
 						element.push("<div class='detail-column quarter'>");
-							element.push(`<input type='number' step="any" class='form-control form-control-sm full dynamic_input slider_input' data='seasons.locations.${key}.seasons.${i}.weather' fc-index='precipitation_intensity' value='${data.seasons[i].weather.precipitation_intensity*100}'>`);
+							element.push(`<input type='number' step="any" class='form-control form-control full dynamic_input slider_input' data='seasons.locations.${key}.seasons.${i}.weather' fc-index='precipitation_intensity' value='${data.seasons[i].weather.precipitation_intensity*100}'>`);
 						element.push("</div>");
 					element.push("</div>");
 
+					element.push("<div class='separator'></div>");
+
 					element.push("<div class='clock_inputs'>");
 						element.push("<div class='detail-row'>");
-							element.push("<div class='detail-column half'>");
+							element.push("<div class='detail-column'>");
 								element.push("<div class='detail-row no-margin'>");
 									element.push("<div class='detail-text'>Sunrise:</div>");
 								element.push("</div>");
@@ -2296,8 +2572,9 @@ function add_location_to_list(parent, key, data){
 									element.push("</div>");
 								element.push("</div>");
 							element.push("</div>");
-
-							element.push("<div class='detail-column half'>");
+						element.push("</div>");
+						element.push("<div class='detail-row'>");
+							element.push("<div class='detail-column'>");
 								element.push("<div class='detail-row no-margin'>");
 									element.push("<div class='detail-text'>Sunset:</div>");
 								element.push("</div>");
@@ -2313,6 +2590,12 @@ function add_location_to_list(parent, key, data){
 							element.push("</div>");
 						element.push("</div>");
 					element.push("</div>");
+
+					element.push("<div class='detail-row'>");
+						element.push(`<button type="button" class="btn btn-sm btn-info location_middle_btn full protip" data-pt-delay-in="100" data-pt-title="Use the median values from the previous and next seasons' weather and time data. This season will act as a transition between the two, similar to Spring or Autumn">Interpolate data from surrounding seasons</button>`);
+					element.push("</div>");
+
+
 				element.push("</div>");
 
 				element.push("<div class='separator'></div>");
@@ -2337,11 +2620,11 @@ function add_location_to_list(parent, key, data){
 							element.push("</div>");
 							element.push("<div class='detail-row'>");
 								element.push("<div class='detail-column clock-input'>");
-									element.push(`<input type='number' step="1.0" class='form-control form-control-sm full dynamic_input' data='seasons.locations.${key}.settings.timezone' clocktype='timezone_hour' fc-index='hour' value='${data.settings.timezone.hour}' />`);
+									element.push(`<input type='number' step="1.0" class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings.timezone' clocktype='timezone_hour' fc-index='hour' value='${data.settings.timezone.hour}' />`);
 								element.push("</div>");
 								element.push("<div class='detail-column'>:</div>");
 								element.push("<div class='detail-column float clock-input'>");
-									element.push(`<input type='number' step="1.0" class='form-control form-control-sm full dynamic_input' data='seasons.locations.${key}.settings.timezone' clocktype='timezone_minute' fc-index='minute' value='${data.settings.timezone.minute}' />`);
+									element.push(`<input type='number' step="1.0" class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings.timezone' clocktype='timezone_minute' fc-index='minute' value='${data.settings.timezone.minute}' />`);
 								element.push("</div>");
 							element.push("</div>");
 						element.push("</div>");
@@ -2364,10 +2647,10 @@ function add_location_to_list(parent, key, data){
 				element.push("</div>");
 				element.push("<div class='detail-row'>");
 					element.push("<div class='detail-column half'>");
-						element.push(`<input type='float' class='form-control form-control-sm full dynamic_input' data='seasons.locations.${key}.settings' fc-index='large_noise_frequency' value='${data.settings.large_noise_frequency}' />`);
+						element.push(`<input type='float' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='large_noise_frequency' value='${data.settings.large_noise_frequency}' />`);
 					element.push("</div>");
 					element.push("<div class='detail-column half'>");
-						element.push(`<input type='float' class='form-control form-control-sm full dynamic_input' data='seasons.locations.${key}.settings' fc-index='large_noise_amplitude' value='${data.settings.large_noise_amplitude}'>`);
+						element.push(`<input type='float' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='large_noise_amplitude' value='${data.settings.large_noise_amplitude}'>`);
 					element.push("</div>");
 				element.push("</div>");
 
@@ -2381,10 +2664,10 @@ function add_location_to_list(parent, key, data){
 				element.push("</div>");
 				element.push("<div class='detail-row'>");
 					element.push("<div class='detail-column half'>");
-						element.push(`<input type='float' class='form-control form-control-sm full dynamic_input' data='seasons.locations.${key}.settings' fc-index='medium_noise_frequency' value='${data.settings.medium_noise_frequency}' />`);
+						element.push(`<input type='float' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='medium_noise_frequency' value='${data.settings.medium_noise_frequency}' />`);
 					element.push("</div>");
 					element.push("<div class='detail-column half'>");
-						element.push(`<input type='float' class='form-control form-control-sm full dynamic_input' data='seasons.locations.${key}.settings' fc-index='medium_noise_amplitude' value='${data.settings.medium_noise_amplitude}'>`);
+						element.push(`<input type='float' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='medium_noise_amplitude' value='${data.settings.medium_noise_amplitude}'>`);
 					element.push("</div>");
 				element.push("</div>");
 
@@ -2398,10 +2681,10 @@ function add_location_to_list(parent, key, data){
 				element.push("</div>");
 				element.push("<div class='detail-row'>");
 					element.push("<div class='detail-column half'>");
-						element.push(`<input type='float' class='form-control form-control-sm full dynamic_input' data='seasons.locations.${key}.settings' fc-index='small_noise_frequency' value='${data.settings.small_noise_frequency}' />`);
+						element.push(`<input type='float' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='small_noise_frequency' value='${data.settings.small_noise_frequency}' />`);
 					element.push("</div>");
 					element.push("<div class='detail-column half'>");
-						element.push(`<input type='float' class='form-control form-control-sm full dynamic_input' data='seasons.locations.${key}.settings' fc-index='small_noise_amplitude' value='${data.settings.small_noise_amplitude}'>`);
+						element.push(`<input type='float' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='small_noise_amplitude' value='${data.settings.small_noise_amplitude}'>`);
 					element.push("</div>");
 				element.push("</div>");
 
@@ -2420,8 +2703,8 @@ function add_cycle_to_sortable(parent, key, data){
 		element.push("<div class='main-container'>");
 			element.push("<div class='handle icon-reorder'></div>");
 			element.push("<div class='expand icon-collapse'></div>");
-			element.push(`<div class='detail-text'>Cycle number ${(key+1)} - Using $${(key+1)}</div>`);
-            element.push('<div class="remove-spacer"></div>');
+			element.push(`<div class='detail-text'>Cycle #${(key+1)} - Using {{${(key+1)}}}</div>`);
+			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
@@ -2492,7 +2775,7 @@ function add_era_to_list(parent, key, data){
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' value='${data.name}' class='form-control name-input small-input dynamic_input' data='eras.${key}' fc-index='name' tabindex='${(800+key)}'/>`);
 			element.push("</div>");
-            element.push('<div class="remove-spacer"></div>');
+			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
@@ -2502,14 +2785,26 @@ function add_era_to_list(parent, key, data){
 		element.push("</div>");
 
 		element.push("<div class='detail-container'>");
+
 			element.push("<div class='detail-row'>");
-				element.push("<div class='detail-column full'>");
+				element.push("<div class='detail-column half'>");
 					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text'>Abbreviation:</div>");
-						element.push(`<input type='text' class='form-control small-input dynamic_input era_abbreviation' data='eras.${key}' fc-index='abbreviation' value='${data.abbreviation}' />`);
+						element.push("<div class='detail-text'>Custom year header formatting:</div>");
+						element.push(`<input type='checkbox' class='form-control dynamic_input use_custom_format' data='eras.${key}.settings' fc-index='use_custom_format' ${(data.settings.use_custom_format ? "checked" : "")} />`);
 					element.push("</div>");
 				element.push("</div>");
 			element.push("</div>");
+
+			element.push(`<div class='detail-row ${(!data.settings.use_custom_format ? "hidden" : "")}'>`);
+				element.push("<div class='detail-column full'>");
+					element.push("<div class='detail-row'>");
+						element.push("<div class='detail-text'>Format:</div>");
+						element.push(`<input type='text' class='form-control small-input dynamic_input era_formatting' data='eras.${key}' fc-index='formatting' value='${data.formatting}' />`);
+							element.push("</select>");
+					element.push("</div>");
+				element.push("</div>");
+			element.push("</div>");
+
 			element.push("<div class='detail-row'>");
 				element.push("<div class='detail-column full'>");
 					element.push(`<div class='btn btn-outline-primary full era_description html_edit' value='${data.description}' data='eras.${key}' fc-index='description'>Edit event description</div>`);
@@ -2533,11 +2828,12 @@ function add_era_to_list(parent, key, data){
 				element.push("<div class='detail-column full'>");
 					element.push("<div class='detail-row'>");
 						element.push("<div class='detail-text'>Event category:</div>");
-						element.push(`<select type='text' class='custom-select form-control-sm event-category-list dynamic_input' data='eras.${key}.settings' fc-index='event_category'>`);
+						element.push(`<select type='text' class='custom-select form-control event-category-list dynamic_input' data='eras.${key}.settings' fc-index='event_category_id'>`);
 							for(var catkey in static_data.event_data.categories)
 							{
 								var name = static_data.event_data.categories[catkey].name;
-								element.push(`<option value="${catkey}" ${(catkey==data.event_category_id ? "selected" : "")}>${name}</option>`);
+								var id = static_data.event_data.categories[catkey].id;
+								element.push(`<option value="${id}" ${(catkey==data.event_category_id ? "selected" : "")}>${name}</option>`);
 							}
 							element.push("</select>");
 					element.push("</div>");
@@ -2556,7 +2852,6 @@ function add_era_to_list(parent, key, data){
 					element.push("</div>");
 				element.push("</div>");
 			element.push("</div>");
-
 
 			element.push(`<div class='${data.settings.starting_era ? "hidden" : ""}'>`);
 
@@ -2580,7 +2875,7 @@ function add_era_to_list(parent, key, data){
 								element.push("<div class='detail-text'>Timespan:</div>");
 							element.push("</div>");
 							element.push("<div class='detail-column threequarter'>");
-								element.push(`<select type='number' class='date custom-select form-control-sm timespan-list dynamic_input' refresh data='eras.${key}.date' fc-index='timespan'>`);
+								element.push(`<select type='number' class='date custom-select form-control timespan-list dynamic_input' refresh data='eras.${key}.date' fc-index='timespan'>`);
 								element.push("</select>");
 							element.push("</div>");
 						element.push("</div>");
@@ -2590,7 +2885,7 @@ function add_era_to_list(parent, key, data){
 								element.push("<div class='detail-text'>Day:</div>");
 							element.push("</div>");
 							element.push("<div class='detail-column threequarter'>");
-								element.push(`<select type='number' class='date custom-select form-control-sm timespan-day-list dynamic_input' refresh data='eras.${key}.date' fc-index='day'>`);
+								element.push(`<select type='number' class='date custom-select form-control timespan-day-list dynamic_input' refresh data='eras.${key}.date' fc-index='day'>`);
 								element.push("</select>");
 							element.push("</div>");
 						element.push("</div>");
@@ -2603,7 +2898,7 @@ function add_era_to_list(parent, key, data){
 								element.push("<div class='detail-text'>Ends year:</div>");
 							element.push("</div>");
 							element.push("<div class='detail-column half'>");
-								element.push(`<input type='checkbox' class='form-control dynamic_input ends_year' data='eras.${key}.settings' fc-index='ends_year' ${(data.settings.ends_year ? "checked" : "")} />`);
+							element.push(`<input type='checkbox' class='form-control dynamic_input ends_year ${!static_data.seasons.global_settings.periodic_seasons ? " protip' disabled" : "'"} data-pt-position="right" data-pt-title='This is disabled because static seasons cannot support eras that end years, as months disappear and seasons require the assigned months.' disabled data='eras.${key}.settings' fc-index='ends_year' ${(data.settings.ends_year ? "checked" : "")} />`);
 							element.push("</div>");
 						element.push("</div>");
 
@@ -2643,7 +2938,7 @@ function add_category_to_list(parent, key, data){
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' value='${data.name}' name='name_input' fc-index='name' class='form-control name-input small-input dynamic_input_self' data='event_data.categories.${key}' tabindex='${(700+key)}'/>`);
 			element.push("</div>");
-            element.push('<div class="remove-spacer"></div>');
+			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
@@ -2721,7 +3016,7 @@ function add_category_to_list(parent, key, data){
 							element.push("<div class='detail-text'>Color:</div>");
 						element.push("</div>");
 						element.push("<div class='detail-column'>");
-							element.push(`<select class='custom-select form-control-sm dynamic_input event-text-input color_display' data='event_data.categories.${key}.event_settings' fc-index='color'>`);
+							element.push(`<select class='custom-select form-control dynamic_input event-text-input color_display' data='event_data.categories.${key}.event_settings' fc-index='color'>`);
 								element.push(`<option ${(data.event_settings.color == 'Dark-Solid' ? ' selected' : '')}>Dark-Solid</option>`);
 								element.push(`<option ${(data.event_settings.color == 'Red' ? ' selected' : '')}>Red</option>`);
 								element.push(`<option ${(data.event_settings.color == 'Pink' ? ' selected' : '')}>Pink</option>`);
@@ -2748,7 +3043,7 @@ function add_category_to_list(parent, key, data){
 							element.push("<div class='detail-text'>Display:</div>");
 						element.push("</div>");
 						element.push("<div class='detail-column threequarter float'>");
-							element.push(`<select class='custom-select form-control-sm dynamic_input event-text-input text_display' data='event_data.categories.${key}.event_settings' fc-index='text'>`);
+							element.push(`<select class='custom-select form-control dynamic_input event-text-input text_display' data='event_data.categories.${key}.event_settings' fc-index='text'>`);
 								element.push(`<option value="text"${(data.event_settings.text == 'text' ? ' selected' : '')}>Just text</option>`);
 								element.push(`<option value="dot"${(data.event_settings.text == 'dot' ? ' selected' : '')}>• Dot with text</option>`);
 								element.push(`<option value="background"${(data.event_settings.text == 'background' ? ' selected' : '')}>Background</option>`);
@@ -2776,11 +3071,11 @@ function add_event_to_sortable(parent, key, data){
 
 	var element = [];
 
-	element.push(`<div class='sortable-container events_input' index='${key}'>`);
+	element.push(`<div class='sortable-container events_input list-group-item' index='${key}'>`);
 		element.push("<div class='main-container'>");
 			element.push("<div class='handle icon-reorder'></div>");
 			element.push(`<div class='btn btn-outline-primary open-edit-event-ui event_name'>Edit - ${data.name}</div>`);
-            element.push('<div class="remove-spacer"></div>');
+			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
@@ -2803,7 +3098,7 @@ function add_link_to_list(parent, key, calendar_name){
 	element.push(`<div class='sortable-container events_input' index='${key}'>`);
 		element.push("<div class='main-container'>");
 			element.push(`<div>${calendar_name}</div>`);
-            element.push('<div class="remove-spacer"></div>');
+			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
 			element.push("<div class='remove-container-text'>Are you sure you want to unlink this?</div>");
@@ -2827,7 +3122,7 @@ function error_check(parent, rebuild){
 	for(var era_i = 0; era_i < static_data.eras.length; era_i++){
 		var era = static_data.eras[era_i];
 		if(static_data.year_data.timespans[era.date.timespan]){
-			if(!does_timespan_appear(static_data, convert_year(static_data, era.date.year), era.date.timespan).result){
+			if(!does_timespan_appear(static_data, convert_year(era.date.year), era.date.timespan).result){
 				errors.push(`Era <i>${era.name}</i> is currently on a leaping month. Please move it to another month.`);
 			}
 		}else{
@@ -2850,8 +3145,24 @@ function error_check(parent, rebuild){
 
 	for(var season_i = 0; season_i < static_data.seasons.data.length; season_i++){
 		var season = static_data.seasons.data[season_i];
-		if(season.transition_length == 0){
-			errors.push(`Season <i>${season.name}</i> can't have 0 transition length.`);
+		if(static_data.seasons.global_settings.periodic_seasons){
+			if(season.transition_length == 0){
+				errors.push(`Season <i>${season.name}</i> can't have 0 transition length.`);
+			}
+		}else{
+			if(static_data.year_data.timespans[season.timespan].interval != 1){
+				errors.push(`Season <i>${season.name}</i> can't be on a leaping month.`);
+			}
+		}
+	}
+
+	if(!static_data.seasons.global_settings.periodic_seasons){
+		for(var season_i = 0; season_i < static_data.seasons.data.length-1; season_i++){
+			var curr_season = static_data.seasons.data[season_i];
+			var next_season = static_data.seasons.data[season_i+1];
+			if(curr_season.timespan == next_season.timespan && curr_season.day == next_season.day){
+				errors.push(`Season <i>${curr_season.name}</i> and <i>${next_season.name}</i> cannot be on the same month and day.`);
+			}
 		}
 	}
 
@@ -2877,8 +3188,23 @@ function error_check(parent, rebuild){
 			recalculate_era_epochs();
 		}
 		if(rebuild === undefined || rebuild){
-			rebuild_calendar('calendar', dynamic_data);
-			update_current_day(true);
+
+			if(!preview_date.follow){
+
+				update_preview_calendar();
+
+				rebuild_calendar('preview', preview_date);
+
+			}else{
+
+				rebuild_calendar('calendar', dynamic_data);
+
+				update_current_day(true);
+
+				preview_date_follow();
+
+			}
+
 		}else{
 
 			if(parent !== undefined && (parent === "seasons")){
@@ -2888,7 +3214,6 @@ function error_check(parent, rebuild){
 				evaluate_sun();
 			}
 		}
-
 
 	}else{
 
@@ -2919,7 +3244,14 @@ function error_check(parent, rebuild){
 
 
 function update_cycle_example_text(){
-	$('#cycle_test_result').text(get_cycle(($('#cycle_test_input').val()|0)).text);
+
+	var year = ($('#cycle_test_input').val()|0);
+
+	var cycle_text = get_cycle(static_data, year).text;
+
+	var text = Mustache.render(static_data.cycles.format, cycle_text);
+
+	$('#cycle_test_result').text(text);
 }
 
 function evaluate_remove_buttons(){
@@ -2940,7 +3272,7 @@ function reindex_weekday_sortable(){
 		$(this).find(".name-input").prop("tabindex", tabindex)
 		tabindex++;
 
-		static_data.year_data.global_week[i] = escapeHtml($(this).find('.name-input').val());
+		static_data.year_data.global_week[i] = $(this).find('.name-input').val();
 
 	});
 
@@ -2984,7 +3316,7 @@ function populate_first_day_select(val){
 
 	for(var i = 0; i < week.length; i++){
 
-		html.push(`<option value='${i+1}'>${escapeHtml(week[i])}</option>`);
+		html.push(`<option value='${i+1}'>${week[i]}</option>`);
 
 	}
 
@@ -3023,12 +3355,12 @@ function repopulate_weekday_select(elements){
 		var html = [];
 
 		if(inclusive){
-			html.push(`<option value='0'>Before ${escapeHtml(week[0])}</option>`);
+			html.push(`<option value='0'>Before ${week[0]}</option>`);
 		}
 
 		for(var i = 0; i < week.length; i++){
 
-			html.push(`<option value='${i+1}'>${escapeHtml(week[i])}</option>`);
+			html.push(`<option value='${i+1}'>${week[i]}</option>`);
 
 		}
 
@@ -3058,7 +3390,7 @@ function reindex_timespan_sortable(){
 		$(this).find('.lbl-toggle').prop('for', 'collapsible_week_'+i)
 
 		static_data.year_data.timespans[i] = {
-			'name': escapeHtml($(this).find('.name-input').val()),
+			'name': $(this).find('.name-input').val(),
 			'type': $(this).attr('type'),
 			'length': Number($(this).find('.length-input').val()),
 			'interval': Number($(this).find('.interval').val()),
@@ -3068,7 +3400,7 @@ function reindex_timespan_sortable(){
 		if($(this).find('.unique-week-input').is(':checked')){
 			static_data.year_data.timespans[i].week = [];
 			$(this).find('.collapsible-content').children().first().children().each(function(j){
-				static_data.year_data.timespans[i].week[j] = escapeHtml($(this).val());
+				static_data.year_data.timespans[i].week[j] = $(this).val();
 			});
 		}
 
@@ -3100,12 +3432,12 @@ function reindex_leap_day_list(){
 		tabindex++;
 
 		static_data.year_data.leap_days[i] = {
-			'name': escapeHtml($(this).find('.name-input').val()),
+			'name': $(this).find('.name-input').val(),
 			'intercalary': $(this).attr('type') == 'intercalary',
 			'timespan': Number($(this).find('.timespan-list').val()),
 			'adds_week_day': $(this).find('.adds-week-day').is(':checked'),
 			'day': Number($(this).find('.week-day-select').val()),
-			'week_day': escapeHtml($(this).find('.internal-list-name').val()),
+			'week_day': $(this).find('.internal-list-name').val(),
 			'interval': $(this).find('.interval').val(),
 			'offset': Number($(this).find('.offset').val())
 		};
@@ -3151,7 +3483,7 @@ function reindex_season_sortable(key){
 		tabindex++;
 
 		static_data.seasons.data[i] = {
-			"name": escapeHtml($(this).find('.name-input').val()),
+			"name": $(this).find('.name-input').val(),
 			"time": {
 				"sunrise": {
 					"hour": ($(this).find('input[clocktype="sunrise_hour"]').val()|0),
@@ -3164,18 +3496,34 @@ function reindex_season_sortable(key){
 			}
 		};
 
-		static_data.seasons.data[i].transition_length = parseFloat($(this).find('.transition_length').val());
-		static_data.seasons.data[i].duration = parseFloat($(this).find('.duration').val());
+		if(static_data.seasons.global_settings.periodic_seasons){
+
+			static_data.seasons.data[i].transition_length = parseFloat($(this).find('.transition_length').val());
+			static_data.seasons.data[i].duration = parseFloat($(this).find('.duration').val());
+
+		}else{
+
+			static_data.seasons.data[i].timespan = ($(this).find('.timespan-list').val()|0);
+			static_data.seasons.data[i].day = ($(this).find('.timespan-day-list').val()|0);
+
+		}
 
 	});
+
+	if(!static_data.seasons.global_settings.periodic_seasons){
+		sort_list_by_partial_date(season_sortable);
+	}
 
 	if(key !== undefined){
 		location_list.find(`.location_season[fc-index="${key}"]`).remove();
 	}
 
+	eval_clock();
+
 	do_error_check('seasons');
 
 }
+
 
 function reindex_location_list(){
 
@@ -3192,7 +3540,7 @@ function reindex_location_list(){
 		tabindex++;
 
 		data = {
-			"name": escapeHtml($(this).find(".name-input").val()),
+			"name": $(this).find(".name-input").val(),
 			"seasons": [],
 			"settings": {
 				"timezone": {
@@ -3208,8 +3556,7 @@ function reindex_location_list(){
 
 				"small_noise_frequency": Number($(this).find("input[fc-index='small_noise_frequency']").val()),
 				"small_noise_amplitude": Number($(this).find("input[fc-index='small_noise_amplitude']").val())
-			},
-			"custom_dates": {}
+			}
 		};
 
 		$(this).find('.location_season').each(function(j){
@@ -3236,7 +3583,7 @@ function reindex_location_list(){
 			data.seasons[j].custom_name = $(this).find('input[fc-index="custom_name"]').prop('checked');
 
 			if(data.seasons[j].custom_name){
-				data.seasons[j].name = escapeHtml($(this).find('input[fc-index="name"]').val());
+				data.seasons[j].name = $(this).find('input[fc-index="name"]').val();
 			}
 
 		});
@@ -3292,6 +3639,8 @@ function reindex_location_list(){
 		$(this).slider('option', 'value', parseInt($(this).parent().parent().find('.slider_input').val()));
 	});
 
+	repopulate_location_select_list();
+
 }
 
 function reindex_cycle_sortable(){
@@ -3303,7 +3652,7 @@ function reindex_cycle_sortable(){
 			$(this).attr('data', $(this).attr('data').replace(/[0-9]+/g, i));
 		});
 		$(this).attr('key', i);
-		$(this).find('.main-container').find('.detail-text').text(`Cycle number ${i+1} - Using \$${i+1}`)
+		$(this).find('.main-container').find('.detail-text').text(`Cycle #${i+1} - Using {{${i+1}}}`)
 
 		static_data.cycles.data[i] = {
 			'length': ($(this).find('.length').val()|0),
@@ -3312,7 +3661,7 @@ function reindex_cycle_sortable(){
 		};
 
 		$(this).find('.collapsible-content').children().first().children().each(function(j){
-			static_data.cycles.data[i].names[j] = escapeHtml($(this).val());
+			static_data.cycles.data[i].names[j] = $(this).val();
 		});
 
 	});
@@ -3335,11 +3684,11 @@ function reindex_moon_list(){
 		$(this).attr('key', i);
 
 		static_data.moons[i] = {
-			'name': escapeHtml($(this).find('.name-input').val()),
+			'name': $(this).find('.name-input').val(),
 			'custom_phase': $(this).find('.custom_phase').is(':checked'),
 			'color': $(this).find('.color').spectrum('get', 'hex').toString(),
 			'hidden': $(this).find('.moon-hidden').is(':checked'),
-			'custom_cycle': escapeHtml($(this).find('.custom_cycle').val()),
+			'custom_cycle': $(this).find('.custom_cycle').val(),
 			'cycle': ($(this).find('.cycle').val()|0),
 			'shift': ($(this).find('.shift').val()|0),
 
@@ -3362,7 +3711,17 @@ function reindex_moon_list(){
 
 function reindex_era_list(){
 
-	sort_era_list_by_date();
+	sort_list_by_date(era_list);
+
+	era_list.children().each(function(){
+
+		var starting_era = $(this).find('.starting_era').is(':checked');
+
+		if(starting_era){
+			$(this).insertBefore(era_list.children().eq(0))
+		}
+
+	});
 
 	static_data.eras = [];
 
@@ -3375,13 +3734,14 @@ function reindex_era_list(){
 		$(this).attr('key', i);
 
 		static_data.eras[i] = {
-			'name': escapeHtml($(this).find('.name-input').val()),
-			'abbreviation': escapeHtml($(this).find('.era_abbreviation').val()),
+			'name': $(this).find('.name-input').val(),
+			'formatting': $(this).find('.era_formatting').val(),
 			'description': $(this).find('.era_description').attr('value'),
 			'settings': {
+				'use_custom_format': $(this).find('.use_custom_format').is(':checked'),
 				'show_as_event': $(this).find('.show_as_event').is(':checked'),
 				'starting_era': $(this).find('.starting_era').is(':checked'),
-				'event_category': $(this).find('.event-category-list').val(),
+				'event_category_id': $(this).find('.event-category-list').val(),
 				'ends_year': $(this).find('.ends_year').is(':checked'),
 				'restart': $(this).find('.restart').is(':checked')
 			},
@@ -3392,7 +3752,7 @@ function reindex_era_list(){
 			}
 		};
 
-		static_data.eras[i].date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, static_data.eras[i].date.year), static_data.eras[i].date.timespan, static_data.eras[i].date.day).epoch;
+		static_data.eras[i].date.epoch = evaluate_calendar_start(static_data, convert_year(static_data.eras[i].date.year), static_data.eras[i].date.timespan, static_data.eras[i].date.day).epoch;
 
 	});
 
@@ -3400,16 +3760,16 @@ function reindex_era_list(){
 
 }
 
-function sort_era_list_by_date(){
+function sort_list_by_date(list){
 
-	era_list.children().each(function(){
+	list.children().each(function(){
 
 		var curr = $(this);
 		var curr_year = (curr.find('.year-input').val()|0);
 		var curr_timespan = (curr.find('.timespan-list').val()|0);
 		var curr_day = (curr.find('.timespan-day-list').val()|0);
 
-		era_list.children().each(function(){
+		list.children().each(function(){
 
 			var comp = $(this);
 			var comp_year = (comp.find('.year-input').val()|0);
@@ -3430,17 +3790,35 @@ function sort_era_list_by_date(){
 			}
 		});
 	});
+}
 
-	era_list.children().each(function(){
+function sort_list_by_partial_date(list){
 
-		var starting_era = $(this).find('.starting_era').is(':checked');
+	list.children().each(function(){
 
-		if(starting_era){
-			$(this).insertBefore(era_list.children().eq(0))
-		}
+		var curr = $(this);
+		var curr_timespan = (curr.find('.timespan-list').val()|0);
+		var curr_day = (curr.find('.timespan-day-list').val()|0);
+
+		list.children().each(function(){
+
+			var comp = $(this);
+			var comp_timespan = (comp.find('.timespan-list').val()|0);
+			var comp_day = (comp.find('.timespan-day-list').val()|0);
+
+			if(curr_timespan > comp_timespan){
+				comp.insertBefore(curr);
+			}else if(curr_timespan == comp_timespan){
+				if(curr_day >= comp_day){
+					comp.insertBefore(curr);
+				}
+			}
+
+		});
 
 	});
 
+	list.change();
 }
 
 function reindex_event_category_list(){
@@ -3542,12 +3920,20 @@ function recreate_moon_colors(){
 
 function evaluate_season_lengths(){
 
+	var disable = static_data.seasons.data.length == 0 || (!static_data.seasons.global_settings.periodic_seasons && static_data.seasons.global_settings.periodic_seasons !== undefined);
+
+	$('#season_length_text').toggleClass('hidden', disable).empty();
+
+	if(disable){
+		return;
+	}
+
 	var data = {
 		'season_length': 0
 	};
 
-	var epoch_start = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year)).epoch;
-	var epoch_end = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year)+1).epoch-1;
+	var epoch_start = evaluate_calendar_start(static_data, convert_year(dynamic_data.year)).epoch;
+	var epoch_end = evaluate_calendar_start(static_data, convert_year(dynamic_data.year)+1).epoch-1;
 	var season_length = epoch_end-epoch_start;
 
 	for(var i = 0; i < static_data.seasons.data.length; i++){
@@ -3558,8 +3944,16 @@ function evaluate_season_lengths(){
 
 	data.season_offset = static_data.seasons.global_settings.offset;
 
-	$('#season_length_text').removeClass('hidden');
-	$('#season_length_text').text(`Season length: ${data.season_length} / ${fract_year_length(static_data)} (year length)`);
+	var equal = fract_year_length(static_data) == data.season_length;
+
+	var html = []
+	html.push(`<div class='detail-row'>`)
+	html.push(equal ? '<i class="detail-column fas fa-check-circle"></i>' : '<i class="detail-column fas fa-exclamation-circle"></i>');
+	html.push(`<div class='detail-column'>Season length: ${data.season_length} / ${fract_year_length(static_data)} (year length)</div></div>`)
+	html.push(`<div class='detail-row'>${equal ? "The season length and year length are the same, and will not drift away from each other." : "The season length and year length at not the same, and will diverge over time. Use with caution."}</div>`)
+
+	$('#season_length_text').toggleClass('warning', !equal).toggleClass('valid', equal);
+	$('#season_length_text').html(html.join(''));
 
 }
 
@@ -3644,6 +4038,8 @@ function evaluate_save_button(){
 
 		var text = static_same && dynamic_same && calendar_name_same ? "Cannot create yet" : "Create calendar";
 
+		autosave();
+
 		create_button.prop('disabled', not_changed).toggleClass('btn-danger', not_changed).toggleClass('btn-success', !not_changed).text(text);
 
 	}
@@ -3686,7 +4082,7 @@ function populate_calendar_lists(){
 
 				if(calendar.master_hash){
 
-                    var owner = clone(owned_calendars[calendar.hash]);
+					var owner = clone(owned_calendars[calendar.hash]);
 
 					if(owner.hash == hash){
 						owner.name = "this calendar";
@@ -3759,19 +4155,21 @@ function evaluate_clock_inputs(){
 		$(this).prop('min', 1).prop('max', static_data.clock.minutes-1).prop('disabled', !static_data.clock.enabled).toggleClass('hidden', !static_data.clock.enabled);
 	});
 
+	$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 && static_data.clock.enabled);
+
 }
 
 function recalculate_era_epochs(){
 
 	for(var i = 0; i < static_data.eras.length; i++){
-		static_data.eras[i].date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, static_data.eras[i].date.year), static_data.eras[i].date.timespan, static_data.eras[i].date.day).epoch;
+		static_data.eras[i].date.epoch = evaluate_calendar_start(static_data, convert_year(static_data.eras[i].date.year), static_data.eras[i].date.timespan, static_data.eras[i].date.day).epoch;
 	}
 
 }
 
 function set_up_edit_values(){
 
-	$('#calendar_name').val(unescapeHtml(calendar_name));
+	$('#calendar_name').val(calendar_name);
 
 	$('.static_input').each(function(){
 
@@ -3804,6 +4202,7 @@ function set_up_edit_values(){
 		add_weekday_to_sortable(global_week_sortable, i, weekdayname);
 	}
 	populate_first_day_select(static_data.year_data.first_day);
+	$('#first_week_day_container').toggleClass('hidden', !static_data.year_data.overflow).find('select').prop('disabled', !static_data.year_data.overflow);
 	global_week_sortable.sortable('refresh');
 
 	if(static_data.year_data.timespans.length > 0){
@@ -3819,12 +4218,23 @@ function set_up_edit_values(){
 
 		for(var i = 0; i < static_data.seasons.data.length; i++){
 			add_season_to_sortable(season_sortable, i, static_data.seasons.data[i]);
+
+			repopulate_timespan_select(season_sortable.children().last().find('.timespan-list'), static_data.seasons.data[i].timespan, false, true);
+			repopulate_day_select(season_sortable.children().last().find('.timespan-day-list'), static_data.seasons.data[i].day, false, true);
 		}
+
+		$('.season_offset_container').prop('disabled', !static_data.seasons.global_settings.periodic_seasons).toggleClass('hidden', !static_data.seasons.global_settings.periodic_seasons);
+
+		$('.season_text.dated').toggleClass('active', !static_data.seasons.global_settings.periodic_seasons);
+		$('.season_text.periodic').toggleClass('active', static_data.seasons.global_settings.periodic_seasons);
+
 		evaluate_season_lengths();
 
 		for(var i = 0; i < static_data.seasons.locations.length; i++){
 			add_location_to_list(location_list, i, static_data.seasons.locations[i]);
 		}
+
+		periodic_seasons_checkbox.prop("checked", static_data.seasons.global_settings.periodic_seasons);
 
 		$('.slider_percentage').slider({
 			min: 0,
@@ -3844,10 +4254,19 @@ function set_up_edit_values(){
 
 	}
 
+	$('#create_season_events').prop('disabled', !static_data.clock.enabled);
+
 	if(static_data.cycles){
 		for(var i = 0; i < static_data.cycles.data.length; i++){
 			add_cycle_to_sortable(cycle_sortable, i, static_data.cycles.data[i]);
 		}
+		update_cycle_example_text();
+	}
+
+	if($('#collapsible_clock').is(':checked')){
+		$('#clock').prependTo($('#collapsible_clock').parent().children('.collapsible-content'));
+	}else{
+		$('#clock').prependTo($('#collapsible_date').parent().children('.collapsible-content'));
 	}
 
 	if(static_data.year_data.leap_days){
@@ -3934,6 +4353,10 @@ function set_up_edit_values(){
         }
 
     }
+  
+		populate_calendar_lists();
+  
+	}
 
 	evaluate_clock_inputs();
 
@@ -3945,17 +4368,13 @@ function set_up_edit_values(){
 
 	recalc_stats();
 
-	$('#enable_weather').change();
-
-	set_up_view_values();
-
 }
 
 
 function get_category(search) {
-    if(static_data.event_data.categories.length == 0){
-        return {id: -1};
-    }
+	if(static_data.event_data.categories.length == 0){
+		return {id: -1};
+	}
 
 	var results = static_data.event_data.categories.filter(function(element) {
 		return element.id == search;
@@ -3983,5 +4402,78 @@ function empty_edit_values(){
 	location_list.empty()
 	calendar_link_select.empty()
 	calendar_link_list.empty()
+
+}
+
+
+function autosave(){
+
+	var saved_data = JSON.stringify({
+		calendar_name: calendar_name,
+		static_data: static_data,
+		dynamic_data: dynamic_data
+	})
+
+	localStorage.setItem('autosave', saved_data);
+
+}
+
+function autoload(){
+
+	var saved_data = localStorage.getItem('autosave')
+
+	if(saved_data){
+
+		swal({
+			title: "Load unsaved calendar?",
+			text: "It looks like you started a new calendar and didn't save it. Would you like to continue where you left off?",
+            buttons: {
+                cancel: {
+                    text:"Start Over",
+                    value: false,
+                    closeModal: true,
+                    visible: true
+                },
+                confirm: {
+                    text: "Continue",
+                    closeModal: false,
+                }
+            },
+			icon: "info"
+		})
+		.then((load) => {
+
+			if(load) {
+
+				var data = JSON.parse(saved_data);
+                prev_dynamic_data = {}
+                prev_static_data = {}
+                calendar_name = data.calendar_name;
+                static_data = data.static_data;
+                dynamic_data = data.dynamic_data;
+                dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+                empty_edit_values();
+                set_up_edit_values();
+                set_up_view_values();
+                set_up_visitor_values();
+
+				error_check("calendar", true);
+
+                swal({
+                    icon: "success",
+                    title: "Loaded!",
+                    text: "The calendar " + calendar_name + " has been loaded.",
+                    button: true
+                });
+
+            }else{
+
+            	localStorage.clear();
+
+            }
+
+		});
+
+	}
 
 }

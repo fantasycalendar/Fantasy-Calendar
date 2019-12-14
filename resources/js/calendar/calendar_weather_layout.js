@@ -25,6 +25,9 @@ var calendar_weather = {
 
 	epoch_data: {},
 
+	start_epoch: null,
+	end_epoch: null,
+
 	processed_weather: true,
 
 	tooltip: {
@@ -197,10 +200,9 @@ function evaluate_weather_charts(){
 		return;
 	}
 
-	var epoch_data = calendar_weather.epoch_data;
-
-	var keys = Object.keys(epoch_data);
-	var length = keys.length;
+	if(!calendar_weather.epoch_data[calendar_weather.start_epoch].weather){
+		return;
+	}
 
 	var temperature = [[],[],[],[]];
 	var precipitation = [[], [], []];
@@ -213,169 +215,165 @@ function evaluate_weather_charts(){
 		var temp_sys = "metric";
 	}
 
-	if(epoch_data[keys[0]].weather){
+	for(var epoch = calendar_weather.start_epoch, i = 0; epoch < calendar_weather.end_epoch; epoch++, i++){
 
-		for(var i = 0; i < length; i++){
+		var epoch_data = calendar_weather.epoch_data[epoch];
 
-			var epoch = epoch_data[keys[i]];
+		if(epoch_data.weather){
 
-			if(epoch.weather){
+			var day = ordinal_suffix_of(epoch_data.day)
+			var month_name = epoch_data.timespan_name;
+			var year = epoch_data.year != epoch_data.era_year ? `era year ${epoch_data.era_year} (absolute year ${epoch_data.year})` : `year ${epoch_data.year}`;
 
-				var day = ordinal_suffix_of(epoch.day)
-				var month_name = unescapeHtml(epoch.timespan_name)
-				var year = epoch.year != epoch.era_year ? `era year ${epoch.era_year} (absolute year ${epoch_data.year})` : `year ${epoch.year}`;
+			labels.push([`${day} of ${month_name}, ${year}`]);
 
-				labels.push([`${day} of ${month_name}, ${year}`]);
+			temperature[0].push({x: epoch_data, y: precisionRound(epoch_data.weather.temperature[temp_sys].value[0], 5)});
+			temperature[1].push({x: epoch_data, y: precisionRound(epoch_data.weather.temperature[temp_sys].value[1], 5)});
+			temperature[2].push({x: epoch_data, y: precisionRound(epoch_data.weather.temperature[temp_sys].high, 5)});
+			temperature[3].push({x: epoch_data, y: precisionRound(epoch_data.weather.temperature[temp_sys].low, 5)});
 
-				temperature[0].push({x: keys[i], y: precisionRound(epoch.weather.temperature[temp_sys].value[0], 5)});
-				temperature[1].push({x: keys[i], y: precisionRound(epoch.weather.temperature[temp_sys].value[1], 5)});
-				temperature[2].push({x: keys[i], y: precisionRound(epoch.weather.temperature[temp_sys].high, 5)});
-				temperature[3].push({x: keys[i], y: precisionRound(epoch.weather.temperature[temp_sys].low, 5)});
-
-				precipitation[0].push({x: keys[i], y: precisionRound(epoch.weather.precipitation.chance*100, 5)});
-				precipitation[1].push({x: keys[i], y: precisionRound(epoch.weather.precipitation.intensity*100, 5)});
-				precipitation[2].push({x: keys[i], y: precisionRound(epoch.weather.precipitation.actual*100, 5)});
-
-			}
+			precipitation[0].push({x: epoch_data, y: precisionRound(epoch_data.weather.precipitation.chance*100, 5)});
+			precipitation[1].push({x: epoch_data, y: precisionRound(epoch_data.weather.precipitation.intensity*100, 5)});
+			precipitation[2].push({x: epoch_data, y: precisionRound(epoch_data.weather.precipitation.actual*100, 5)});
 
 		}
 
+	}
 
-		var temperature_datasets = [
-			{
-				label: `Temperature High (${temp_sys})`,
-				fill: false,
-				data: temperature[1],
-				borderColor: 'rgba(0, 255, 0, 0.5)',
-				fillBetweenSet: 0,
-				fillBetweenColor: "rgba(5,5,255, 0.2)"
-			},
-			{
-				label: `Temperature Low (${temp_sys})`,
-				fill: false,
-				data: temperature[0],
-				borderColor: 'rgba(0, 255, 0, 0.5)',
-				fillBetweenSet: 0,
-				fillBetweenColor: "rgba(5,5,255, 0.2)"
-			},
-			{
-				label: 'Season High',
-				fill: false,
-				data: temperature[2],
-				borderColor: 'rgba(255, 0, 0, 0.5)'
-			},
-			{
-				label: 'Season Low',
-				fill: false,
-				data: temperature[3],
-				borderColor: 'rgba(0, 0, 255, 0.5)'
-			}
-		];
 
-		var precipitation_datasets = [
-			{
-				label: 'Intensity of precipitation',
-				fill: false,
-				data: precipitation[1],
-				borderColor: 'rgba(0, 0, 255, 0.5)'
-			},
-			{
-				label: 'Chance of precipitation',
-				fill: false,
-				data: precipitation[0],
-				borderColor: 'rgba(255, 0, 0, 0.5)'
-			},
-			{
-				label: 'Actual precipitation',
-				data: precipitation[2],
-				borderColor: 'rgba(0, 255, 0, 0.5)'
-			}
-		];
+	var temperature_datasets = [
+		{
+			label: `Temperature High (${temp_sys})`,
+			fill: false,
+			data: temperature[1],
+			borderColor: 'rgba(0, 255, 0, 0.5)',
+			fillBetweenSet: 0,
+			fillBetweenColor: "rgba(5,5,255, 0.2)"
+		},
+		{
+			label: `Temperature Low (${temp_sys})`,
+			fill: false,
+			data: temperature[0],
+			borderColor: 'rgba(0, 255, 0, 0.5)',
+			fillBetweenSet: 0,
+			fillBetweenColor: "rgba(5,5,255, 0.2)"
+		},
+		{
+			label: 'Season High',
+			fill: false,
+			data: temperature[2],
+			borderColor: 'rgba(255, 0, 0, 0.5)'
+		},
+		{
+			label: 'Season Low',
+			fill: false,
+			data: temperature[3],
+			borderColor: 'rgba(0, 0, 255, 0.5)'
+		}
+	];
 
-		if(precipitation_chart !== undefined){
-			removeData(precipitation_chart);
-			addData(precipitation_chart, labels, precipitation_datasets);
-		}else{
-			var ctx = $('#precipitation')[0].getContext('2d');
-			precipitation_chart = new Chart(ctx, {
-				type: 'line',
-				data: {
-					labels: labels,
-					datasets: precipitation_datasets
+	var precipitation_datasets = [
+		{
+			label: 'Intensity of precipitation',
+			fill: false,
+			data: precipitation[1],
+			borderColor: 'rgba(0, 0, 255, 0.5)'
+		},
+		{
+			label: 'Chance of precipitation',
+			fill: false,
+			data: precipitation[0],
+			borderColor: 'rgba(255, 0, 0, 0.5)'
+		},
+		{
+			label: 'Actual precipitation',
+			data: precipitation[2],
+			borderColor: 'rgba(0, 255, 0, 0.5)'
+		}
+	];
+
+	if(precipitation_chart !== undefined){
+		removeData(precipitation_chart);
+		addData(precipitation_chart, labels, precipitation_datasets);
+	}else{
+		var ctx = $('#precipitation')[0].getContext('2d');
+		precipitation_chart = new Chart(ctx, {
+			type: 'line',
+			data: {
+				labels: labels,
+				datasets: precipitation_datasets
+			},
+			options: {
+				tooltips: {
+					mode: 'index',
+					intersect: false
 				},
-				options: {
-					tooltips: {
-						mode: 'index',
-						intersect: false
-					},
-					hover: {
-						mode: 'index',
-						intersect: false
-					},
-					scales: {
-						xAxes: [{
-							display: false,
-							ticks: {
-								callback: function(value, index, values){
-									return value[1];
-								}
+				hover: {
+					mode: 'index',
+					intersect: false
+				},
+				scales: {
+					xAxes: [{
+						display: false,
+						ticks: {
+							callback: function(value, index, values){
+								return value[1];
 							}
-						}],
-						yAxes: [{
-							ticks: {
-								suggestedMin: 0,
-								suggestedMax: 100
-							}
-						}]
-					},
-					elements: {
-						point:{
-							radius: 0
 						}
+					}],
+					yAxes: [{
+						ticks: {
+							suggestedMin: 0,
+							suggestedMax: 100
+						}
+					}]
+				},
+				elements: {
+					point:{
+						radius: 0
 					}
 				}
-			});
-		}
+			}
+		});
+	}
 
-		if(temperature_chart !== undefined){
-			removeData(temperature_chart);
-			addData(temperature_chart, labels, temperature_datasets);
-		}else{
-			var ctx = $('#temperature')[0].getContext('2d');
-			temperature_chart = new Chart(ctx, {
-				type: 'line',
-				data: {
-					labels: labels,
-					datasets: temperature_datasets
+	if(temperature_chart !== undefined){
+		removeData(temperature_chart);
+		addData(temperature_chart, labels, temperature_datasets);
+	}else{
+		var ctx = $('#temperature')[0].getContext('2d');
+		temperature_chart = new Chart(ctx, {
+			type: 'line',
+			data: {
+				labels: labels,
+				datasets: temperature_datasets
+			},
+			options: {
+				tooltips: {
+					mode: 'index',
+					intersect: false
 				},
-				options: {
-					tooltips: {
-						mode: 'index',
-						intersect: false
-					},
-					hover: {
-						mode: 'index',
-						intersect: false
-					},
-					scales: {
-						xAxes: [{
-							display: false,
-							ticks: {
-								callback: function(value, index, values){
-									return value[1];
-								}
+				hover: {
+					mode: 'index',
+					intersect: false
+				},
+				scales: {
+					xAxes: [{
+						display: false,
+						ticks: {
+							callback: function(value, index, values){
+								return value[1];
 							}
-						}]
-					},
-					elements: {
-						point:{
-							radius: 0
 						}
+					}]
+				},
+				elements: {
+					point:{
+						radius: 0
 					}
 				}
-			});
-		}
-
+			}
+		});
 	}
 
 }

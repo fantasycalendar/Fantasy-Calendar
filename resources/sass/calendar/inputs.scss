@@ -1,7 +1,5 @@
 /* ------------------ Sortable styles ----------------- */
 
-@import '_variables';
-
 #presets{
     z-index: 100;
 }
@@ -14,9 +12,6 @@ select.invalid {
 }
 
 .sortable{
-    padding:2px;
-    border:1px solid rgba(0,0,0,0.25);
-    border-radius: 5px;
     overflow:hidden;
 }
 
@@ -44,7 +39,23 @@ select.invalid {
 
 .card-body {
     padding: 0;
+    min-height: initial;
 }
+
+.season_text {
+
+    font-style:italic;
+    font-weight:normal;
+
+}
+
+.active {
+
+    font-style: normal !important;
+    font-weight: bold !important;
+
+}
+
 
 #seasons_seed {
     flex-grow: 1;
@@ -111,10 +122,6 @@ select.invalid {
     transition: height 0.2s ease;
 }
 
-.sortable-container:not(:last-child) {
-    border-bottom: 1px solid $calendar-border-color;
-}
-
 .inter-month-container{
     width:100%;
     margin-bottom: 5px;
@@ -135,7 +142,7 @@ select.invalid {
 
 .sortable-container.intercalary,
 .sortable-container.intercalary .visible{
-    background-color:#e4e4e4;
+    background-color: $gray-secondary;
 }
 
 .sortable-container.moon_inputs{
@@ -168,7 +175,6 @@ select.invalid {
     user-select: none;
     -moz-user-select: none;
     -webkit-user-select: none;
-    color: #495057;
 }
 
 input[type=number]::-webkit-inner-spin-button:not(.spinner),
@@ -283,10 +289,6 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     flex: 1 1 auto;
 }
 
-label{
-    margin-bottom:0 !important;
-}
-
 .detail-text{
     line-height: 28px;
     margin-right:1%;
@@ -393,6 +395,12 @@ label{
     display:block;
     overflow: hidden;
     font-size:0.8em;
+    color: $accent-color-light;
+
+    &:hover {
+        color: white;
+        background-color: $accent-color-light;
+    }
 }
 
 .remove-container{
@@ -519,6 +527,11 @@ label{
     order: 2;
 }
 
+#location_select{
+    width:100%;
+    font-size:0.85rem;
+}
+
 #copy_location_data{
     margin-bottom:10px;
 }
@@ -600,10 +613,9 @@ label{
 
 .separator, .spacey_separator{
     width:100%;
-    border: 0;
+    border: 0.5px solid rgba(166, 168, 179, 0.32);
     height: 1px;
-    background: rgba(166, 168, 179, 0.32);
-    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 .spacey_separator{
@@ -611,14 +623,15 @@ label{
 }
 
 .wrap-collapsible{
-    width: 100%;
-
+    width: 94%;
+    margin: auto;
 }
 
 @media screen and (max-width: 768px) {
     #input_container {
         width: 100vw;
         max-width: initial;
+        min-width: initial;
     }
     #calendar_container:not(.inputs_collapsed) {
         width: 0;
@@ -645,6 +658,10 @@ label{
     font-weight: bold;
     font-size: 1.1rem;
 }
+.small-lbl-text{
+    font-weight: italics;
+    font-size: 0.9rem;
+}
 
 .lbl-toggle {
     display: block;
@@ -666,14 +683,13 @@ label{
 }
 
 .wiki, .setting-question{
-    display: none;
     float: right;
-    color: #adb5bd;
+    color: $wiki-link-color;
     text-decoration: none; /* no underline */
 }
 
 .wiki:hover, .setting-question:hover{
-    color: black;
+    color: $wiki-link-hover-color;
     text-decoration: none; /* no underline */
 }
 
@@ -706,7 +722,6 @@ label{
     padding-left: 0;
     margin-right: 0;
     cursor: pointer;
-    margin-top:3px;
 }
 .custom-checkbox .custom-control-indicator {
     content: "";
@@ -840,11 +855,18 @@ label{
     min-width: 650px;
     padding: 15px 35px 45px;
     margin: 0 auto;
-    background-color: #fff;
+    background-color: $card-bg-color;
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius:7px;
 }
 
+.event_desc {
+    overflow-x: auto;
+}
+
+.event_desc * {
+    max-width: 100%;
+}
 
 .close-ui-btn-bg{
     position:absolute;
@@ -853,7 +875,7 @@ label{
     width:60px;
     height:60px;
     border-radius: 30px;
-    background-color: white;
+    background-color: $card-bg-color;
 }
 
 .close_ui_btn{
@@ -896,7 +918,7 @@ label{
         min-width: 100vw;
         padding: 0.5rem;
         margin: 0 auto;
-        background-color: #fff;
+        background-color: $card-bg-color;
         border: none;
 
         .form-control {
@@ -1050,7 +1072,51 @@ ol.example li.placeholder:before {
     padding:5px;
     margin-bottom:5px;
     min-height: 34px;
-    background-color:white;
+    background-color: $action-bg-color;
+
+    .select2{
+
+        order:3;
+        min-width:60%;
+
+        .select2-selection{
+
+            height: initial;
+
+            border-radius: 0.2rem;
+
+            border: 1px solid #ced4da;
+
+            span{
+                font-size: 0.875rem;
+                line-height: 2.25;
+                height:100%;
+            }
+        }
+    }
+}
+
+.select2-dropdown {
+    background-color: $card-bg-color !important;
+}
+
+.select2-container--default .select2-results__option[aria-selected=true] {
+    background-color: $action-bg-color !important;
+}
+
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: $accent-color;
+}
+
+.select2-results{
+
+    font-size:0.875rem;
+    max-height:400px;
+
+}
+
+.select2-container--default .select2-results > .select2-results__options{
+    max-height:400px !important;
 }
 
 .placeholder{
@@ -1077,11 +1143,6 @@ ol.example li.placeholder:before {
 #event_conditions_container .handle{
     padding:6px;
     order:1;
-}
-
-.condition_container .condition_type{
-    order:3;
-    max-width:75%;
 }
 
 .condition_container .moon_select{
@@ -1119,8 +1180,25 @@ ol.example li.placeholder:before {
 
 .trumbowyg-box{
     margin:0;
+    border: 1px solid $calendar-border-color;
 }
 
+.trumbowyg-button-pane {
+    background: $card-bg-color;
+    border-bottom: 1px solid $calendar-border-color;
+}
+
+.trumbowyg-button-pane .trumbowyg-button-group::after, .trumbowyg-button-pane::after{
+    background: $calendar-border-color;
+}
+
+.trumbowyg-box svg, .trumbowyg-modal svg {
+    fill: $main-text-color;
+}
+
+.trumbowyg-button-pane button:not(.trumbowyg-disable):hover, .trumbowyg-button-pane button:not(.trumbowyg-disable):focus, .trumbowyg-button-pane button.trumbowyg-active {
+    background: $action-bg-color;
+}
 
 .event_occurrences{
 

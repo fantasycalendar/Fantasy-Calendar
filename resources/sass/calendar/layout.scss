@@ -2,10 +2,12 @@
 /** Big containers - Body, header, content **/
 /********************************************/
 
-@import '_variables';
-
 .bg-accent {
     background-color: $accent-color;
+}
+
+.accent-bg-color {
+    background-color: $accent-color !important;
 }
 
 html {
@@ -25,7 +27,7 @@ html {
     }
 
     @media screen and (min-width: 1600px) {
-        font-size: 20px;
+        font-size: 18px;
     }
 }
 
@@ -38,7 +40,7 @@ body{
     font-family:'Fira Sans', sans-serif;
 
     a {
-        color: $accent-color;
+        color: $accent-color-light;
     }
 }
 
@@ -112,15 +114,10 @@ body{
         .nav-link {
             padding: 0 0.5rem;
         }
-
-        @media screen and (min-width: 992px) {
-            max-height: 4vh;
-            height: 4vh;
-        }
     }
 
     #content {
-        height: 96vh;
+        height: 100vh;
     }
 }
 
@@ -133,14 +130,13 @@ body{
     display: flex;
     width: 100%;
     margin:0;
-    max-height: 96vh;
+    max-height: 100vh;
 }
 
 #input_container{
     position: relative;
     overflow-y: auto;
     order:1;
-    padding: 0 1rem 9rem 1rem;
     max-height: 100%;
     width: $sidebar-width;
     min-width: $sidebar-width;
@@ -152,6 +148,10 @@ body{
     overflow: hidden;
     padding: 0;
     min-width: 0;
+}
+
+#input_container > .accordion > .wrap-collapsible:last-child {
+    margin-bottom: 9rem;
 }
 
 #input_collapse_btn:focus {

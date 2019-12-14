@@ -92,7 +92,8 @@
                 position: 'bottom',
                 scheme: 'leaf',
                 classes: 'box-shadow accent-bg-color',
-                animate: 'bounceIn'
+                animate: 'bounceIn',
+                target: '#protip_container'
             }
         });
 
@@ -129,7 +130,11 @@
     <script src="{{ mix('/js/calendar/calendar_manager.js') }}"></script>
     <script src="{{ mix('/js/calendar/calendar_presets.js') }}"></script>
 
-    <link rel="stylesheet" href="{{ mix('/css/app.css') }}">
+    @if(Auth::check() && Auth::user()->setting('dark_theme'))
+        <link rel="stylesheet" href="{{ mix('/css/app-dark.css') }}">
+    @else
+        <link rel="stylesheet" href="{{ mix('/css/app.css') }}">
+    @endif
     <link rel="stylesheet" href="/js/vendor/spectrum/spectrum.css">
 
     @stack('head')

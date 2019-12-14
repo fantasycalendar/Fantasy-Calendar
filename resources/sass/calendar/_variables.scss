@@ -19,5 +19,17 @@ $teal: #4dc0b5;
 $cyan: #6cb2eb;
 
 $calendar-border-color: rgba(166, 168, 179, 0.32);
+$calendar-bg-color: white;
+$card-bg-color: white;
+$current-day-color: #fef0db;
 $accent-color: #2f855a;
-$sidebar-width: 27vw;
+$accent-color-light: $accent-color;
+$sidebar-width: 500px;
+$wiki-link-color: rgba(0,0,0,0.2);
+$wiki-link-hover-color: black;
+$main-text-color: #444;
+$gray-secondary: #e4e4e4;
+$action-bg-color: #cbd5e0;
+$action-icon-color: rgba(0, 0, 0, 0.7);
+
+$disabled-crosshatch: url("data:image/svg+xml;charset=utf-8,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 40L40 0H20L0 20m40 20V20L20 40' fill='%23f9f9fa' fill-rule='evenodd'/%3E%3C/svg%3E");

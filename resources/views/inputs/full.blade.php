@@ -1,11 +1,23 @@
 <form id="input_container">
 
+    <nav class="navbar-expand navbar-dark bg-accent">
+        <div class="collapse navbar-collapse" id="collapsemenu">
+            <ul class="navbar-nav">
+                @auth
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{{ route('calendars.index') }}"><i class="fa fa-arrow-left"></i> Return to Calendars</a>
+                    </li>
+                @endauth
+            </ul>
+        </div>
+    </nav>
+
 	@yield('label')
 
 	<div class='wrap-collapsible'>
 		<div class="detail-row">
 			<label class="detail-column third">
-				<div class="form-check form-check-inline form-control form-control-sm view_type">
+				<div class="form-check form-check-inline form-control form-control view_type">
 					<input type='radio' name='view_type' value='owner' checked>
 					<span>
 						Owner View
@@ -13,7 +25,7 @@
 				</div>
 			</label>
 			<label class="detail-column third">
-				<div class="form-check form-check-inline form-control form-control-sm view_type">
+				<div class="form-check form-check-inline form-control form-control view_type">
 					<input type='radio' name='view_type' value='player'>
 					<span>
 						Player View
@@ -21,7 +33,7 @@
 				</div>
 			</label>
 			<label class="detail-column third">
-				<div class="form-check form-check-inline form-control form-control-sm view_type">
+				<div class="form-check form-check-inline form-control form-control view_type">
 					<input type='radio' name='view_type' value='weather'>
 					<span>
 						Climate view
@@ -82,7 +94,11 @@
             <label for="collapsible_date" class="lbl-toggle card-header lbl-text">Current Date & Time <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Date' href='https://wiki.fantasy-calendar.com/index.php?title=Date' class="wiki protip"><i class="icon-question-sign"></i></a></label>
             <div class="collapsible-content card-body">
 
-                <div id='clock'></div>
+                <div id='clock'>
+                    <canvas style="z-index: 2;" id="clock_face"></canvas>
+                    <canvas style="z-index: 1;" id="clock_sun"></canvas>
+                    <canvas style="z-index: 0;" id="clock_background"></canvas>
+                </div>
 
                 <div class='detail-row date_control' id='date_inputs'>
 
@@ -97,7 +113,7 @@
                         </div>
                         <div class='detail-column threequarter input_buttons' value='current'>
                             <button type='button' class='btn btn-sm btn-danger sub-btn sub_year' id='sub_current_year'><i class="icon-minus"></i></button>
-                            <input class='form-control form-control-sm year-input' id='current_year' type='number'>
+                            <input class='form-control form-control year-input' id='current_year' type='number'>
                             <button type='button' class='btn btn-sm btn-success add-btn add_year' id='add_current_year'><i class="icon-plus"></i></button>
                         </div>
                     </div>
@@ -110,7 +126,7 @@
                         </div>
                         <div class='detail-column threequarter input_buttons' value='current'>
                             <button type='button' class='btn btn-sm btn-danger sub-btn sub_timespan' id='sub_current_timespan'><i class="icon-minus"></i></button>
-                            <select class='form-control form-control-sm timespan-list inclusive date' id='current_timespan'></select>
+                            <select class='form-control form-control timespan-list inclusive date' id='current_timespan'></select>
                             <button type='button' class='btn btn-sm btn-success add-btn add_timespan' id='add_current_timespan'><i class="icon-plus"></i></button>
                         </div>
 
@@ -124,7 +140,7 @@
                         </div>
                         <div class='detail-column threequarter input_buttons' value='current'>
                             <button type='button' class='btn btn-sm btn-danger sub-btn sub_day' id='sub_current_day'><i class="icon-minus"></i></button>
-                            <select class='form-control form-control-sm timespan-day-list inclusive date' id='current_day'></select>
+                            <select class='form-control form-control timespan-day-list inclusive date' id='current_day'></select>
                             <button type='button' class='btn btn-sm btn-success add-btn add_day' id='add_current_day'><i class="icon-plus"></i></button>
                         </div>
 
@@ -139,8 +155,8 @@
                         <div class='detail-column threequarter input_buttons'>
                             <button type='button' class='btn btn-sm btn-danger sub-btn adjust_hour' val='-1'><i class="clocktext">1h</i></button>
                             <button type='button' class='btn btn-sm btn-danger sub-btn adjust_minute' val='-30'><i class="clocktext">30m</i></button>
-                            <input class='form-control form-control-sm' type='number' id='current_hour'>:
-                            <input class='form-control form-control-sm' type='number' id='current_minute'>
+                            <input class='form-control form-control' type='number' id='current_hour'>:
+                            <input class='form-control form-control' type='number' id='current_minute'>
                             <button type='button' class='btn btn-sm btn-success add-btn adjust_minute' val='30'><i class="clocktext">30m</i></button>
                             <button type='button' class='btn btn-sm btn-success add-btn adjust_hour' val='1'><i class="clocktext">1h</i></button>
                         </div>
@@ -162,7 +178,7 @@
                         </div>
                         <div class='detail-column threequarter input_buttons'>
                             <button type='button' class='btn btn-sm btn-danger sub-btn sub_year' id='sub_target_year'><i class="icon-minus"></i></button>
-                            <input class='form-control form-control-sm year-input' id='target_year' type='number'>
+                            <input class='form-control form-control year-input' id='target_year' type='number'>
                             <button type='button' class='btn btn-sm btn-success add-btn add_year' id='add_target_year'><i class="icon-plus"></i></button>
                         </div>
                     </div>
@@ -175,7 +191,7 @@
                         </div>
                         <div class='detail-column threequarter input_buttons' value='target'>
                             <button type='button' class='btn btn-sm btn-danger sub-btn sub_timespan' id='sub_target_timespan'><i class="icon-minus"></i></button>
-                            <select class='form-control form-control-sm timespan-list inclusive date' id='target_timespan'></select>
+                            <select class='form-control form-control timespan-list inclusive date' id='target_timespan'></select>
                             <button type='button' class='btn btn-sm btn-success add-btn add_timespan' id='add_target_timespan'><i class="icon-plus"></i></button>
                         </div>
 
@@ -189,20 +205,53 @@
                         </div>
                         <div class='detail-column threequarter input_buttons' value='target'>
                             <button type='button' class='btn btn-sm btn-danger sub-btn sub_day' id='sub_target_day'><i class="icon-minus"></i></button>
-                            <select class='form-control form-control-sm timespan-day-list inclusive date' id='target_day'></select>
+                            <select class='form-control form-control timespan-day-list inclusive date' id='target_day'></select>
                             <button type='button' class='btn btn-sm btn-success add-btn add_day' id='add_target_day'><i class="icon-plus"></i></button>
                         </div>
 
                     </div>
 
                     <div class='detail-row'>
-                        <div class='detail-column half'>
-                            <div class='btn btn-danger full' id='reset_preview_date'>Base date</div>
-                        </div>
-                        <div class='detail-column half'>
-                            <div class='btn btn-success full' id='go_to_preview_date'>Preview date</div>
-                        </div>
+                        <div class='btn btn-success full' id='go_to_preview_date'>Preview date</div>
                     </div>
+
+                </div>
+
+                <div class='wrap-collapsible card mt-2'>
+                    <input id="collapsible_add_units" class="toggle" type="checkbox">
+                    <label for="collapsible_add_units" class="lbl-toggle card-header small-lbl-text center-text">Add or subtract fixed units to calendar</label>
+                    <div class="collapsible-content card-body">
+
+                        <div class='row mb-2'>
+
+                            <div class='col px-1'>
+                                <input type='number' class="form-control form-control full" id='unit_years' placeholder="Years">
+                            </div>
+
+                            <div class='col px-1'>
+                                <input type='number' class="form-control form-control full" id='unit_months' placeholder="Months">
+                            </div>
+
+                            <div class='col px-1'>
+                                <input type='number' class="form-control form-control full" id='unit_days' placeholder="Days">
+                            </div>
+
+                        </div>
+
+                        <div class='row'>
+
+                            <div class='col px-1'>
+                                <button type="button" step="1.0" class="btn btn-primary btn-sm full" id='current_date_btn'>To current date</button>
+                            </div>
+
+                            <div class='col px-1'>
+                                <button type="button" step="1.0" class="btn btn-secondary btn-sm full" id='preview_date_btn'>To preview date</button>
+                            </div>
+
+                        </div>
+
+                    </div>
+
                 </div>
 
             </div>
@@ -253,13 +302,13 @@
 
                         <div class='detail-column half input_buttons'>
                             <button type='button' class='btn btn-sm btn-danger sub-btn' onclick='adjustInput(this, -1);'><i class="icon-minus"></i></button>
-                            <input class='form-control form-control-sm static_input' data='clock' fc-index='hours' type='number'>
+                            <input class='form-control form-control static_input' data='clock' fc-index='hours' type='number'>
                             <button type='button' class='btn btn-sm btn-success add-btn' onclick='adjustInput(this, +1);'><i class="icon-plus"></i></button>
                         </div>
 
                         <div class='detail-column half input_buttons'>
                             <button type='button' class='btn btn-sm btn-danger sub-btn' onclick='adjustInput(this, -1);'><i class="icon-minus"></i></button>
-                            <input class='form-control form-control-sm static_input' data='clock' fc-index='minutes' type='number'>
+                            <input class='form-control form-control static_input' data='clock' fc-index='minutes' type='number'>
                             <button type='button' class='btn btn-sm btn-success add-btn' onclick='adjustInput(this, +1);'><i class="icon-plus"></i></button>
                         </div>
 
@@ -278,7 +327,7 @@
 
                         <div class='detail-column half input_buttons'>
                             <button type='button' class='btn btn-sm btn-danger sub-btn' onclick='adjustInput(this, -1);'><i class="icon-minus"></i></button>
-                            <input class='form-control form-control-sm static_input' data='clock' fc-index='offset' type='number'>
+                            <input class='form-control form-control static_input' data='clock' fc-index='offset' type='number'>
                             <button type='button' class='btn btn-sm btn-success add-btn' onclick='adjustInput(this, +1);'><i class="icon-plus"></i></button>
                         </div>
 
@@ -294,17 +343,21 @@
 
 
         <!---------------------------------------------->
-        <!----------------- GLOBAL WEEK ---------------->
+        <!------------------- WEEKDAYS ----------------->
         <!---------------------------------------------->
 
         <div class='wrap-collapsible card'>
             <input id="collapsible_globalweek" class="toggle" type="checkbox">
-            <label for="collapsible_globalweek" class="lbl-toggle card-header lbl-text">Global Week <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Global week' href='https://wiki.fantasy-calendar.com/index.php?title=Global_week' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+            <label for="collapsible_globalweek" class="lbl-toggle card-header lbl-text">Weekdays <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Weekdays' href='https://wiki.fantasy-calendar.com/index.php?title=Global_week' class="wiki protip"><i class="icon-question-sign"></i></a></label>
             <div class="collapsible-content card-body">
 
-                <div class='detail-text bold-text'>First week day:</div>
+                <div id='first_week_day_container'>
 
-                <select type='number' class='form-control static_input' id='first_day' data='year_data' fc-index='first_day'></select>
+                    <div class='detail-text bold-text'>First week day:</div>
+
+                    <select type='number' class='form-control static_input' id='first_day' data='year_data' fc-index='first_day'></select>
+
+                </div>
 
 
                 <div class='form-inline global_week'>
@@ -312,7 +365,7 @@
                     <button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
                 </div>
 
-                <div class='sortable' id='global_week_sortable'></div>
+                <div class='sortable list-group' id='global_week_sortable'></div>
 
             </div>
 
@@ -352,7 +405,7 @@
 
                     <input type='text' class='form-control name' placeholder='Name'>
 
-                    <select class='custom-select type'>
+                    <select class='custom-select form-control type'>
                         <option selected value='month'>Month</option>
                         <option value='intercalary'>Intercalary</option>
                     </select>
@@ -360,7 +413,7 @@
                     <button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
                 </div>
 
-                <div class='sortable' id='timespan_sortable'></div>
+                <div class='sortable list-group' id='timespan_sortable'></div>
 
             </div>
 
@@ -386,7 +439,7 @@
 
                     <input type='text' class='form-control name' placeholder='Name'>
 
-                    <select class='custom-select type'>
+                    <select class='custom-select form-control type'>
                         <option selected value='leap-day'>Normal day</option>
                         <option value='intercalary'>Intercalary</option>
                     </select>
@@ -429,26 +482,46 @@
             <label for="collapsible_seasons" class="lbl-toggle card-header lbl-text">Seasons<a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Seasons' href='https://wiki.fantasy-calendar.com/index.php?title=Seasons' class="wiki protip"><i class="icon-question-sign"></i></a></label>
             <div class="collapsible-content card-body">
 
-                <div class='form-inline seasons'>
-                    <input type='text' class='form-control name' placeholder='Season name'>
-                    <button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
+                <div class='row m-1 p-1 bold-text'>
+                    Season type:
+                </div>
+
+                <div class='row mb-1 protip' data-pt-position="right" data-pt-title='This toggles between having seasons starting on specific dates, or having the seasons last an exact duration with the potential to overflow years.'>
+                    <div class='col-3 p-0 text-right season_text dated'>
+                        Date Based
+                    </div>
+                    <div class='col-2 p-0'>
+                        <label class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id='periodic_seasons_checkbox'>
+                            <span class="custom-control-indicator"></span>
+                        </label>
+                    </div>
+                    <div class='col-4 p-0 season_text periodic'>
+                        Length Based
+                    </div>
+                </div>
+
+                <div class='form-inline seasons row'>
+                    <input type='text' class='form-control name col-10' placeholder='Season name'>
+                    <button type='button' class='btn btn-primary add col'><i class="fa fa-plus"></i></button>
                 </div>
 
                 <div class='detail-row sortable' id='season_sortable'></div>
 
                 <div class='detail-row small-text' id='season_length_text'></div>
 
-
-                <div class='detail-row'>
-                    <div class='detail-column'>Season offset (days):</div>
-                    <div class='detail-column float'>
-                        <input class='form-control form-control-sm static_input' type='number' data='seasons.global_settings' fc-index='season_offset'/>
+                <div class='detail-row season_offset_container'>
+                    <div class='detail-row'>
+                        Season offset (days):
+                    </div>
+                    <div class='detail-row margin-below'>
+                        <input class='form-control form-control static_input' type='number' data='seasons.global_settings' fc-index='season_offset'/>
                     </div>
                 </div>
 
                 <div class='detail-row'>
-                    <button type='button' class='btn btn-secondary full' id='create_season_events'>Create seasonal events</button>
-                    <a target="_blank" title='Makes the calendar only show the current month' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
+                    <button type='button' class='btn btn-secondary full' id='create_season_events'>Create solstice and equinox events</button>
+                    <i class='center-text full'>(requires clock enabled)</i>
                 </div>
             </div>
 
@@ -469,7 +542,7 @@
                     <div class='detail-column'>Enable weather:</div>
                     <div class='detail-column float'>
                         <label class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input static_input" id='enable_weather' data='seasons.global_settings' fc-index='enable_weather'>
+                            <input type="checkbox" class="custom-control-input static_input" id='enable_weather' refresh='false' data='seasons.global_settings' fc-index='enable_weather'>
                             <span class="custom-control-indicator"></span>
                         </label>
                     </div>
@@ -485,7 +558,7 @@
                     <div class='detail-row'>
                         <div class='detail-column'>Weather offset (days):</div>
                         <div class='detail-column float'>
-                            <input class='form-control form-control-sm static_input' type='number' data='seasons.global_settings' fc-index='weather_offset'/>
+                            <input class='form-control form-control static_input' type='number' refresh='false' data='seasons.global_settings' fc-index='weather_offset'/>
                         </div>
                     </div>
 
@@ -493,7 +566,7 @@
                         <div class='detail-column half'>
                             <div class='detail-row'>Temperature system:</div>
                             <div class='detail-row'>
-                                <select class='custom-select type full static_input' id='temp_sys' data='seasons.global_settings' fc-index='temp_sys'>
+                                <select class='custom-select form-control type full static_input' id='temp_sys' refresh='false' data='seasons.global_settings' fc-index='temp_sys'>
                                     <option selected value='metric'>Metric</option>
                                     <option value='imperial'>Imperial</option>
                                     <option value='both_m'>Both (inputs metric)</option>
@@ -505,7 +578,7 @@
                         <div class='detail-column half'>
                             <div class='detail-row'>Wind speed system:</div>
                             <div class='detail-row'>
-                                <select class='custom-select type full static_input' data='seasons.global_settings' fc-index='wind_sys'>
+                                <select class='custom-select form-control type full static_input' refresh='false' data='seasons.global_settings' fc-index='wind_sys'>
                                     <option selected value='metric'>Metric</option>
                                     <option value='imperial'>Imperial</option>
                                     <option value='both'>Both</option>
@@ -518,7 +591,7 @@
                         <div class='detail-column'>Cinematic temperature description:</div>
                         <div class='detail-column float'>
                             <label class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input static_input" data='seasons.global_settings' fc-index='cinematic'>
+                                <input type="checkbox" class="custom-control-input static_input" refresh='false' data='seasons.global_settings' fc-index='cinematic'>
                                 <span class="custom-control-indicator"></span>
                             </label>
                         </div>
@@ -528,7 +601,7 @@
                     <div class='detail-row'>
                         <div class='detail-row'>Weather generation seed:</div>
                         <div class='detail-row'>
-                            <input type='number' id='seasons_seed' class='form-control static_input' data='seasons.global_settings' fc-index='seed' />
+                            <input type='number' id='seasons_seed' class='form-control static_input' refresh='false' data='seasons.global_settings' fc-index='seed' />
                             <div class='btn btn-primary' id='reseed_seasons'><i class="fa fa-redo"></i></div>
                         </div>
                     </div>
@@ -553,10 +626,10 @@
 
                 <div class='detail-row detail-select-container'>
                     <div class='detail-label'>Location:</div>
-                    <div class='detail-select'>
-                        <select class='form-control' id='location_select'>
-                        </select>
-                    </div>
+                </div>
+                <div class='detail-row'>
+                    <select class='form-control' id='location_select'>
+                    </select>
                 </div>
                 <div class='detail-row'>
                     <input type='button' value='Copy location data' class='btn btn-info full add' id='copy_location_data'>
@@ -651,7 +724,7 @@
                     <button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
                 </div>
 
-                <div class='sortable' id='events_sortable'></div>
+                <div class='sortable list-group' id='events_sortable'></div>
             </div>
         </div>
 
@@ -679,14 +752,6 @@
                             <option value='vertical'>Vertical style</option>
                             <!--<option value='mini'>Minimalistic style</option>-->
                         </select>
-                    </label>
-
-                    <label class="form-control full setting first">
-                        <input type='checkbox' class='margin-right static_input' data='settings' fc-index='show_era_abbreviation'>
-                        <span>
-                            Show era abbreviation
-                        </span>
-                        <a target="_blank" title='Instead of showing the full era name, only the abbreviation will be shown, if it has one' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
                     </label>
 
                     <label class="form-control full setting last">
@@ -799,14 +864,6 @@
                         <a target="_blank" title='' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
                     </label>
 
-                    <label class="form-control full setting last">
-                        <input type='checkbox' class='margin-right static_input' refresh='true' data='settings' fc-index='year_zero_exists'>
-                        <span>
-                            Year zero exists
-                        </span>
-                        <a target="_blank" title='' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
-                    </label>
-
                 </div>
             </div>
         </div>
@@ -883,8 +940,15 @@
 			<button class='btn btn-danger btn_preview_date hidden' disabled fc-index='timespan' value='-1'>< Month</button>
 		</div>
 
+        <div class='reset_preview_date_container left'>
+            <button type='button' class='btn btn-info hidden reset_preview_date protip' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >< Current</button>
+        </div>
+
 		<div id='top_follower_content'></div>
 
+        <div class='reset_preview_date_container right'>
+            <button type='button' class='btn btn-info hidden reset_preview_date protip' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >Current ></button>
+        </div>
 		<div class='btn_container hidden'>
 			<button class='btn btn-success btn_preview_date hidden' disabled fc-index='year' value='1'>Year ></button>
 			<button class='btn btn-success btn_preview_date hidden' disabled fc-index='timespan' value='1'>Month ></button>

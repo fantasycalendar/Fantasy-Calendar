@@ -80,8 +80,6 @@ function update_dynamic(){
 
 function do_update_dynamic(){
 
-	//escapeAllHtml(dynamic_data);
-
 	$.ajax({
 		url:window.baseurl+"calendars/"+hash,
 		type: "post",
@@ -504,6 +502,7 @@ function create_calendar(){
 		dataType: 'json',
 		data: {name: calendar_name, dynamic_data: JSON.stringify(dynamic_data), static_data: JSON.stringify(static_data)},
 		success: function ( result ){
+			localStorage.clear();
 			window.location.href = window.baseurl+'calendars/'+result.hash+'/edit';
 		},
 		error: function ( log )

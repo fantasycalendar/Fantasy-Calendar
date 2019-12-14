@@ -1,4 +1,4 @@
-@extends('templates._page')
+@extends('templates._calendar')
 
 @push('head')
     <script>
@@ -33,14 +33,14 @@
                     "temp_sys":"metric",
                     "wind_sys":"metric",
                     "cinematic":false,
-                    "enable_weather":false
+                    "enable_weather":false,
+                    "periodic_seasons":false
                 }
             },
             "eras":[],
             "settings":{
                 "layout":"grid",
                 "show_current_month":false,
-                "show_era_abbreviation":false,
                 "allow_view":false,
                 "only_backwards":false,
                 "only_reveal_today":false,
@@ -85,6 +85,7 @@
             edit_event_ui.bind_events();
             edit_HTML_ui.bind_events();
 
+            autoload();
 
             var html = [];
             for(var i = 0; i < Object.keys(calendar_presets).length; i++){
@@ -110,20 +111,28 @@
                         prev_dynamic_data = {}
                         prev_static_data = {}
                         calendar_name = clone(calendar.name);
-                        dynamic_data = clone(calendar.dynamic_data);
                         static_data = clone(calendar.static_data);
+                        dynamic_data = clone(calendar.dynamic_data);
+                        dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
                         empty_edit_values();
                         set_up_edit_values();
+                        set_up_view_values();
+                        set_up_visitor_values();
                         $('#json_input').val('');
+                        error_check('calendar', true);
                     }else{
                         alert("Unrecognized JSON format.")
                     }
                 }else{
                     calendar_name = clone(calendar_presets[$('#presets').val()].name);
-                    dynamic_data = clone(calendar_presets[$('#presets').val()].dynamic_data);
                     static_data = clone(calendar_presets[$('#presets').val()].static_data);
+                    dynamic_data = clone(calendar_presets[$('#presets').val()].dynamic_data);
+                    dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
                     empty_edit_values();
                     set_up_edit_values();
+                    set_up_view_values();
+                    set_up_visitor_values();
+                    error_check('calendar', true);
                 }
             });
 

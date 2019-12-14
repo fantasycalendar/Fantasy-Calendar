@@ -48,7 +48,7 @@ var condition_mapping = {
 	],
 
 	"Epoch": [
-		["Epoch is", 					[["epoch","==", 0]],		[["number", "Number", "Enter epoch number", "1"]]],
+		["Epoch is exactly", 			[["epoch","==", 0]],		[["number", "Number", "Enter epoch number", "1"]]],
 		["Epoch is not", 				[["epoch","!=", 0]],		[["number", "Number", "Enter epoch number", "1"]]],
 		["Epoch is or later than", 		[["epoch",">=", 0]],		[["number", "Number", "Enter epoch number", "1"]]],
 		["Epoch is or earlier than", 	[["epoch","<=", 0]],		[["number", "Number", "Enter epoch number", "1"]]],
@@ -101,39 +101,39 @@ var condition_mapping = {
 	],
 
 	"Moons": [
-		["Phase is exactly", 				[["moon_phase", "==", 1]], [["select"]]],
-		["Phase is not", 					[["moon_phase", "!=", 1]], [["select"]]],
-		["Phase is or later than", 			[["moon_phase", ">=", 1]], [["select"]]],
-		["Phase is or earlier than", 		[["moon_phase", "<=", 1]], [["select"]]],
-		["Phase is later than", 			[["moon_phase", ">", 1]], [["select"]]],
-		["Phase is earlier than", 			[["moon_phase", "<", 1]], [["select"]]],
-		["Every nth phase",					[["moon_phase", "==", 1],
-											 ["moon_phase_num_epoch", "%", 2, 3]],	[["select"], ["number", "nth", "Enter moon phase interval", "1", "1"], ["number", "offset", "Enter offset for interval", "0", "0"]]],
+		["Moon phase is exactly", 						[["moon_phase", "==", 1]], [["select"]]],
+		["Moon phase is not", 							[["moon_phase", "!=", 1]], [["select"]]],
+		["Moon phase is or later than", 				[["moon_phase", ">=", 1]], [["select"]]],
+		["Moon phase is or earlier than", 				[["moon_phase", "<=", 1]], [["select"]]],
+		["Moon phase is later than", 					[["moon_phase", ">", 1]], [["select"]]],
+		["Moon phase is earlier than", 					[["moon_phase", "<", 1]], [["select"]]],
+		["Every nth moon phase",						[["moon_phase", "==", 1],
+											 			["moon_phase_num_epoch", "%", 2, 3]],	[["select"], ["number", "nth", "Enter moon phase interval", "1", "1"], ["number", "offset", "Enter offset for interval", "0", "0"]]],
 		
-		["Month-phase count is exactly", 			[["moon_phase_num_month", "==", 1]], [["number", "Number", "Enter moon phase count in month", "1", "1"]]],
-		["Month-phase count is not", 				[["moon_phase_num_month", "!=", 1]], [["number", "Number", "Enter moon phase count in month", "1", "1"]]],
-		["Month-phase count is or later than",		[["moon_phase_num_month", ">=", 1]], [["number", "Number", "Enter moon phase count in month", "1", "1"]]],
-		["Month-phase count is or earlier than", 	[["moon_phase_num_month", "<=", 1]], [["number", "Number", "Enter moon phase count in month", "1", "1"]]],
-		["Month-phase count is later than", 		[["moon_phase_num_month", ">", 1]], [["number", "Number", "Enter moon phase count in month", "1", "1"]]],
-		["Month-phase count is earlier than", 		[["moon_phase_num_month", "<", 1]], [["number", "Number", "Enter moon phase count in month", "1", "1"]]],
-		["Every nth month-phase count", 			[["moon_phase_num_month", "%", 1, 2]],	[["number", "nth", "Enter moon phase count in month interval", "1", "1"], ["number", "offset", "Enter offset for interval", "0", "0"]]],
+		["Moon month-phase count is exactly", 			[["moon_phase_num_month", "==", 1]], [["number", "Number", "Enter moon phase count in month", "1", "1"]]],
+		["Moon month-phase count is not", 				[["moon_phase_num_month", "!=", 1]], [["number", "Number", "Enter moon phase count in month", "1", "1"]]],
+		["Moon month-phase count is or later than",		[["moon_phase_num_month", ">=", 1]], [["number", "Number", "Enter moon phase count in month", "1", "1"]]],
+		["Moon month-phase count is or earlier than", 	[["moon_phase_num_month", "<=", 1]], [["number", "Number", "Enter moon phase count in month", "1", "1"]]],
+		["Moon month-phase count is later than", 		[["moon_phase_num_month", ">", 1]], [["number", "Number", "Enter moon phase count in month", "1", "1"]]],
+		["Moon month-phase count is earlier than", 		[["moon_phase_num_month", "<", 1]], [["number", "Number", "Enter moon phase count in month", "1", "1"]]],
+		["Every nth moon month-phase count", 			[["moon_phase_num_month", "%", 1, 2]],	[["number", "nth", "Enter moon phase count in month interval", "1", "1"], ["number", "offset", "Enter offset for interval", "0", "0"]]],
 
 
-		["Year-phase count is exactly", 			[["moon_phase_num_year", "==", 1]], [["number", "Number", "Enter moon phase count in year", "1", "1"]]],
-		["Year-phase count is not", 				[["moon_phase_num_year", "!=", 1]], [["number", "Number", "Enter moon phase count in year", "1", "1"]]],
-		["Year-phase count is or later than", 		[["moon_phase_num_year", ">=", 1]], [["number", "Number", "Enter moon phase count in year", "1", "1"]]],
-		["Year-phase count is or earlier than", 	[["moon_phase_num_year", "<=", 1]], [["number", "Number", "Enter moon phase count in year", "1", "1"]]],
-		["Year-phase count is later than", 			[["moon_phase_num_year", ">", 1]], [["number", "Number", "Enter moon phase count in year", "1", "1"]]],
-		["Year-phase count is earlier than", 		[["moon_phase_num_year", "<", 1]], [["number", "Number", "Enter moon phase count in year", "1", "1"]]],
-		["Every nth year-phase count", 				[["moon_phase_num_year", "%", 1, 2]],	[["number", "nth", "Enter moon phase count in year interval", "1", "1"], ["number", "offset", "Enter offset for interval", "0", "0"]]],
+		["Moon year-phase count is exactly", 			[["moon_phase_num_year", "==", 1]], [["number", "Number", "Enter moon phase count in year", "1", "1"]]],
+		["Moon year-phase count is not", 				[["moon_phase_num_year", "!=", 1]], [["number", "Number", "Enter moon phase count in year", "1", "1"]]],
+		["Moon year-phase count is or later than", 		[["moon_phase_num_year", ">=", 1]], [["number", "Number", "Enter moon phase count in year", "1", "1"]]],
+		["Moon year-phase count is or earlier than", 	[["moon_phase_num_year", "<=", 1]], [["number", "Number", "Enter moon phase count in year", "1", "1"]]],
+		["Moon year-phase count is later than", 		[["moon_phase_num_year", ">", 1]], [["number", "Number", "Enter moon phase count in year", "1", "1"]]],
+		["Moon year-phase count is earlier than", 		[["moon_phase_num_year", "<", 1]], [["number", "Number", "Enter moon phase count in year", "1", "1"]]],
+		["Every nth moon year-phase count", 			[["moon_phase_num_year", "%", 1, 2]],	[["number", "nth", "Enter moon phase count in year interval", "1", "1"], ["number", "offset", "Enter offset for interval", "0", "0"]]],
 
-		["Epoch-phase count is exactly", 			[["moon_phase_num_epoch", "==", 1]], [["number", "Number", "Enter overall moon phase count", "1", "1"]]],
-		["Epoch-phase count is not", 				[["moon_phase_num_epoch", "!=", 1]], [["number", "Number", "Enter overall moon phase count", "1", "1"]]],
-		["Epoch-phase count is or later than", 		[["moon_phase_num_epoch", ">=", 1]], [["number", "Number", "Enter overall moon phase count", "1", "1"]]],
-		["Epoch-phase count is or earlier than", 	[["moon_phase_num_epoch", "<=", 1]], [["number", "Number", "Enter overall moon phase count", "1", "1"]]],
-		["Epoch-phase count is later than", 		[["moon_phase_num_epoch", ">", 1]], [["number", "Number", "Enter overall moon phase count", "1", "1"]]],
-		["Epoch-phase count is earlier than", 		[["moon_phase_num_epoch", "<", 1]], [["number", "Number", "Enter overall moon phase count", "1", "1"]]],
-		["Every nth epoch-phase count", 			[["moon_phase_num_epoch", "%", 1, 2]],	[["number", "nth", "Enter overall moon phase count interval", "1", "1"], ["number", "offset", "Enter offset for interval", "0", "0"]]]
+		["Moon epoch-phase count is exactly", 			[["moon_phase_num_epoch", "==", 1]], [["number", "Number", "Enter overall moon phase count", "1", "1"]]],
+		["Moon epoch-phase count is not", 				[["moon_phase_num_epoch", "!=", 1]], [["number", "Number", "Enter overall moon phase count", "1", "1"]]],
+		["Moon epoch-phase count is or later than", 	[["moon_phase_num_epoch", ">=", 1]], [["number", "Number", "Enter overall moon phase count", "1", "1"]]],
+		["Moon epoch-phase count is or earlier than", 	[["moon_phase_num_epoch", "<=", 1]], [["number", "Number", "Enter overall moon phase count", "1", "1"]]],
+		["Moon epoch-phase count is later than", 		[["moon_phase_num_epoch", ">", 1]], [["number", "Number", "Enter overall moon phase count", "1", "1"]]],
+		["Moon epoch-phase count is earlier than", 		[["moon_phase_num_epoch", "<", 1]], [["number", "Number", "Enter overall moon phase count", "1", "1"]]],
+		["Every nth epoch-phase count", 				[["moon_phase_num_epoch", "%", 1, 2]],	[["number", "nth", "Enter overall moon phase count interval", "1", "1"], ["number", "offset", "Enter offset for interval", "0", "0"]]]
 	],
 
 	"Cycle": [
@@ -159,6 +159,7 @@ var condition_mapping = {
 	"Season": [
 		["Season is exactly", 						[["season_index", "==", 0]], 	[["select"]]],
 		["Season is not", 							[["season_index", "!=", 0]], 	[["select"]]],
+
 		["Season percent is exactly", 				[["season_perc", "==", 0]],		[["number", "Number", "Enter percentage of season", "1", "1", "100"]]],
 		["Season percent is not", 					[["season_perc", "!=", 0]],		[["number", "Number", "Enter percentage of season", "1", "1", "100"]]],
 		["Season percent is or later than", 		[["season_perc", ">=", 0]],		[["number", "Number", "Enter percentage of season", "1", "1", "100"]]],
@@ -172,7 +173,12 @@ var condition_mapping = {
 		["Season day is or earlier than",			[["season_day", "<=", 0]],		[["number", "Number", "Enter day in season", "1", "1"]]],
 		["Season day is later than",				[["season_day", ">", 0]],		[["number", "Number", "Enter day in season", "1", "1"]]],
 		["Season day is earlier than",				[["season_day", "<", 0]],		[["number", "Number", "Enter day in season", "1", "1"]]],
-		["Every nth season day",					[["season_day", "%", 0, 1]],	[["number", "nth", "Enter day in season interval", "1", "1"], ["number", "offset", "Enter offset for interval", "0", "0"]]]
+		["Every nth season day",					[["season_day", "%", 0, 1]],	[["number", "nth", "Enter day in season interval", "1", "1"], ["number", "offset", "Enter offset for interval", "0", "0"]]],
+
+		["It is the longest day",	 							[["high_solstice", "==", 0]], 	[["boolean"]]],
+		["It is the shortest day",	 							[["low_solstice", "==", 0]], 	[["boolean"]]],
+		["It is the rising equinox (spring-like)",				[["rising_equinox", "==", 0]], 	[["boolean"]]],
+		["It is the falling equinox (autumn-like)",				[["falling_equinox", "==", 0]], [["boolean"]]],
 	],
 
 	"Random": [
@@ -331,3 +337,1238 @@ var svg_moon_shadows = [
 	'<path class="lunar_shadow" transform="translate(-2944)" d="M2976.000,53.437 C2973.620,53.437 2971.339,53.034 2969.200,52.318 C2964.467,50.038 2959.000,44.666 2959.000,32.000 C2959.000,19.334 2964.467,13.962 2969.200,11.682 C2971.339,10.966 2973.620,10.563 2976.000,10.563 C2987.840,10.563 2997.437,20.160 2997.437,32.000 C2997.437,43.840 2987.840,53.437 2976.000,53.437 Z"/>',
 	'<path class="lunar_shadow" transform="translate(-3008)" d="M3040.000,53.437 C3037.343,53.437 3034.810,52.932 3032.463,52.048 C3027.532,49.627 3022.000,44.197 3022.000,32.000 C3022.000,19.803 3027.532,14.373 3032.463,11.952 C3034.810,11.068 3037.343,10.563 3040.000,10.563 C3051.840,10.563 3061.438,20.160 3061.438,32.000 C3061.438,43.840 3051.840,53.437 3040.000,53.437 Z"/>'
 ];
+
+
+var preset_data = {
+
+	temperature_gauge: {
+		'Polar': -40,
+		'Bone-chilling': -22,
+		'Bitter cold': -4,
+		'Biting': 5,
+		'Frigid': 14,
+		'Crisp': 23,
+		'Freezing': 32,
+		'Cold': 41,
+		'Chilly': 50,
+		'Cool': 59,
+		'Mild': 68,
+		'Warm': 77,
+		'Hot': 86,
+		'Very Hot': 95,
+		'Sweltering': 104,
+		'Blistering': 113,
+		'Burning': 140,
+		'Blazing': 176,
+		'Infernal': 212
+	},
+
+	clouds: [
+		'A few clouds',
+		'Mostly cloudy',
+		'Gray, slightly overcast',
+		'Gray, highly overcast',
+		'Dark storm clouds',
+		'Dark storm clouds'
+	],
+
+	precipitation: {
+		'warm': {
+			'Light mist': 0.2,
+			'Drizzle': 0.175,
+			'Steady rainfall': 0.175,
+			'Strong rainfall': 0.15,
+			'Pounding rain': 0.15,
+			'Downpour': 0.15
+		},
+		'cold': {
+			'A few flakes': 0.2,
+			'A dusting of snow': 0.175,
+			'Flurries': 0.175,
+			'Moderate snowfall': 0.15,
+			'Heavy snowfall': 0.15,
+			'Blizzard': 0.15
+		}
+	},
+
+	wind: {
+
+		type: [
+			'1d4',
+			'1d6',
+			'2d4',
+			'2d6',
+			'2d8',
+			'2d10'
+		],
+
+		speed: {
+			'Calm': 1,
+			'Light air': 2,
+			'Light breeze': 2,
+			'Gentle breeze': 2,
+			'Moderate breeze': 2,
+			'Fresh breeze': 2,
+			'Strong breeze': 2,
+			'Moderate gale': 2,
+			'Fresh gale': 2,
+			'Strong gale': 1,
+			'Storm': 1,
+			'Violent storm': 19,
+			'Hurricane': 2
+		},
+
+		info: {
+			'Calm': {
+				'mph': '<1',
+				'desciption': 'Smoke rises vertically'
+			},
+			'Light air': {
+				'mph': '1-3',
+				'desciption': 'Wind direction shown by smoke but not wind vanes'
+			},
+			'Light breeze': {
+				'mph': '4-7',
+				'desciption': 'Wind felt on face, leaves rustle, vanes move'
+			},
+			'Gentle breeze': {
+				'mph': '8-12',
+				'desciption': 'Leaves and small twigs sway and banners flap'
+			},
+			'Moderate breeze': {
+				'mph': '13-18',
+				'desciption': 'Small branches move, and dust and small branches are raised'
+			},
+			'Fresh breeze': {
+				'mph': '19-24',
+				'desciption': 'Small trees sway and small waves form on inland waters'
+			},
+			'Strong breeze': {
+				'mph': '25-31',
+				'desciption': 'Large branches move'
+			},
+			'Moderate gale': {
+				'mph': '32-38',
+				'desciption': 'Whole trees sway and walking against wind takes some effort'
+			},
+			'Fresh gale': {
+				'mph': '39-46',
+				'desciption': 'Twigs break off trees and general progress is impeded'
+			},
+			'Strong gale': {
+				'mph': '47-54',
+				'desciption': 'Slight structural damage occurs'
+			},
+			'Storm': {
+				'mph': '55-63',
+				'desciption': 'Trees are uprooted and considerable structural damage occurs'
+			},
+			'Violent storm': {
+				'mph': '64-72',
+				'desciption': 'Widespread damage occurs'
+			},
+			'Hurricane': {
+				'mph': '73-136',
+				'desciption': 'Widespread devastation occurs'
+			}
+		},
+
+		direction_table: {
+			'N': {
+				'N': 0.31,
+				'NW': 0.14,
+				'W': 0.105,
+				'NE': 0.14,
+				'E': 0.105,
+				'SW': 0.075,
+				'SE': 0.075,
+				'S': 0.05
+			},
+			'NE': {
+				'NE': 0.31,
+				'N': 0.14,
+				'E': 0.14,
+				'W': 0.075,
+				'S': 0.075,
+				'NW': 0.105,
+				'SE': 0.105,
+				'SW': 0.05
+			},
+			'E': {
+				'E': 0.31,
+				'NE': 0.14,
+				'SE': 0.14,
+				'N': 0.105,
+				'S': 0.105,
+				'NW': 0.075,
+				'SW': 0.075,
+				'W': 0.05
+			},
+			'SE': {
+				'SE': 0.31,
+				'E': 0.14,
+				'S': 0.14,
+				'NE': 0.105,
+				'SW': 0.105,
+				'N': 0.075,
+				'W': 0.075,
+				'NW': 0.05
+			},
+			'S': {
+				'S': 0.31,
+				'SE': 0.14,
+				'SW': 0.14,
+				'E': 0.105,
+				'W': 0.105,
+				'NE': 0.075,
+				'NW': 0.075,
+				'N': 0.05
+			},
+			'SW': {
+				'SW': 0.31,
+				'S': 0.14,
+				'W': 0.14,
+				'SE': 0.105,
+				'NW': 0.105,
+				'E': 0.075,
+				'N': 0.075,
+				'NE': 0.05
+			},
+			'W': {
+				'W': 0.31,
+				'SW': 0.14,
+				'NW': 0.14,
+				'S': 0.105,
+				'N': 0.105,
+				'SE': 0.075,
+				'NE': 0.075,
+				'E': 0.05
+			},
+			'NW': {
+				'NW': 0.31,
+				'W': 0.14,
+				'N': 0.14,
+				'SW': 0.105,
+				'NE': 0.105,
+				'S': 0.075,
+				'E': 0.075,
+				'SE': 0.05
+			}
+		}
+	},
+
+	feature_table: {
+		'Rain':{
+			'warm': {
+				'None': 0.5,
+				'Fog': 1.0
+			},
+			'cold': {
+				'None': 0.75,
+				'Hail': 1.0
+			}
+		},
+		'Storm': {
+			'warm': {
+				'None': 0.5,
+				'Lightning': 1.0
+			},
+			'cold': {
+				'None': 0.8,
+				'Hail': 0.2
+			}
+		},
+		'Windy': {
+			'warm': {
+				'None': 0.5,
+				'Dust Storm': 0.3,
+				'Tornado': 0.2
+			},
+			'cold': {
+				'None': 0.8,
+				'Tornado': 0.2
+			}
+		}
+	},
+
+	curves: {
+
+		"timezone": {
+			"hour": 0,
+			"minute": 0
+		},
+
+		"large_noise_frequency": 0.015,
+		"large_noise_amplitude": 10.0,
+
+		"medium_noise_frequency": 0.3,
+		"medium_noise_amplitude": 4.0,
+
+		"small_noise_frequency": 0.8,
+		"small_noise_amplitude": 5.0
+
+	},
+
+	locations: {
+		"2": {
+			'Equatorial': {
+				'name': 'Equatorial',
+				'seasons': [
+					{
+						'name': 'Dry',
+						'custom_name': true,
+						'weather': {
+							'temp_low': 60,
+							'temp_high': 100,
+							'precipitation': 0.5,
+							'precipitation_intensity': 0.3
+						}
+					},
+					{
+						'name': 'Wet',
+						'custom_name': true,
+						'weather': {
+							'temp_low': 60,
+							'temp_high': 100,
+							'precipitation': 0.6,
+							'precipitation_intensity': 0.7
+						}
+					}
+				]
+			},
+			'Monsoon': {
+				'name': 'Monsoon',
+				'seasons': [
+					{
+						'name': 'Dry',
+						'custom_name': true,
+						'weather': {
+							'temp_low': 70,
+							'temp_high': 120,
+							'precipitation': 0.15,
+							'precipitation_intensity': 0.1
+						}
+					},
+					{
+						'name': 'Wet',
+						'custom_name': true,
+						'weather': {
+							'temp_low': 70,
+							'temp_high': 120,
+							'precipitation': 0.9,
+							'precipitation_intensity': 0.8
+						}
+					}
+				],
+			},
+			'Desert': {
+				'name': 'Desert',
+				'seasons': [
+					{
+						'name': 'Dry',
+						'custom_name': true,
+						'weather': {
+							'temp_low': 55,
+							'temp_high': 70,
+							'precipitation': 0.05,
+							'precipitation_intensity': 0.1
+						}
+					},
+					{
+						'name': 'Wet',
+						'custom_name': true,
+						'weather': {
+							'temp_low': 65,
+							'temp_high': 110,
+							'precipitation': 0.05,
+							'precipitation_intensity': 0.8
+						}
+					}
+				]
+			},
+			'Tropical Savannah': {
+				'name': 'Tropical Savannah',
+				'seasons': [
+					{
+						'name': 'Dry',
+						'custom_name': true,
+						'weather': {
+							'temp_low': 75,
+							'temp_high': 115,
+							'precipitation': 0.1,
+							'precipitation_intensity': 0.1
+						}
+					},
+					{
+						'name': 'Wet',
+						'custom_name': true,
+						'weather': {
+							'temp_low': 75,
+							'temp_high': 115,
+							'precipitation': 0.85,
+							'precipitation_intensity': 0.2
+						}
+					}
+				],
+			},
+			'Steppes': {
+				'name': 'Steppes',
+				'seasons': [
+					{
+						'name': 'Winter',
+						'custom_name': true,
+						'weather': {
+							'temp_low': 35,
+							'temp_high': 50,
+							'precipitation': 0.2,
+							'precipitation_intensity': 0.3
+						}
+					},
+					{
+						'name': 'Summer',
+						'custom_name': true,
+						'weather': {
+							'temp_low': 70,
+							'temp_high': 115,
+							'precipitation': 0.05,
+							'precipitation_intensity': 0.3
+						}
+					}
+				]
+			},
+			'Warm and Rainy': {
+				'name': 'Warm and Rainy',
+				'seasons': [
+					{
+						'name': 'Winter',
+						'custom_name': true,
+						'weather': {
+							'temp_low': 10,
+							'temp_high': 50,
+							'precipitation': 0.4,
+							'precipitation_intensity': 0.5
+						}
+					},
+					{
+						'name': 'Summer',
+						'custom_name': true,
+						'weather': {
+							'temp_low': 50,
+							'temp_high': 85,
+							'precipitation': 0.4,
+							'precipitation_intensity': 0.6
+						}
+					}
+				]
+			},
+			'Warm with Dry Summer': {
+				'name': 'Warm with Dry Summer',
+				'seasons': [
+					{
+						'name': 'Winter',
+						'custom_name': true,
+						'weather': {
+							'temp_low': 10,
+							'temp_high': 60,
+							'precipitation': 0.3,
+							'precipitation_intensity': 0.6
+						}
+					},
+					{
+						'name': 'Summer',
+						'custom_name': true,
+						'weather': {
+							'temp_low': 60,
+							'temp_high': 95,
+							'precipitation': 0.1,
+							'precipitation_intensity': 0.2
+						}
+					}
+				]
+			},
+			'Warm with Dry Winter': {
+				'name': 'Warm with Dry Winter',
+				'seasons': [
+					{
+						'name': 'Winter',
+						'custom_name': true,
+						'weather': {
+							'temp_low': 32,
+							'temp_high': 50,
+							'precipitation': 0.15,
+							'precipitation_intensity': 0.2
+						}
+					},
+					{
+						'name': 'Summer',
+						'custom_name': true,
+						'weather': {
+							'temp_low': 70,
+							'temp_high': 110,
+							'precipitation': 0.45,
+							'precipitation_intensity': 0.6
+						}
+					}
+				]
+			},
+			'Cool and Rainy': {
+				'name': 'Cool and Rainy',
+				'seasons': [
+					{
+						'name': 'Winter',
+						'custom_name': true,
+						'weather': {
+							'temp_low': 5,
+							'temp_high': 40,
+							'precipitation': 0.35,
+							'precipitation_intensity': 0.6
+						}
+					},
+					{
+						'name': 'Summer',
+						'custom_name': true,
+						'weather': {
+							'temp_low': 60,
+							'temp_high': 85,
+							'precipitation': 0.35,
+							'precipitation_intensity': 0.6
+						}
+					}
+				]
+			},
+			'Cool with Dry Winter': {
+				'name': 'Cool with Dry Winter',
+				'seasons': [
+					{
+						'name': 'Winter',
+						'custom_name': true,
+						'weather': {
+							'temp_low': 5,
+							'temp_high': 40,
+							'precipitation': 0.1,
+							'precipitation_intensity': 0.1
+						}
+					},
+					{
+						'name': 'Summer',
+						'custom_name': true,
+						'weather': {
+							'temp_low': 60,
+							'temp_high': 85,
+							'precipitation': 0.35,
+							'precipitation_intensity': 0.75
+						}
+					}
+				]
+			},
+			'Tundra': {
+				'name': 'Tundra',
+				'seasons': [
+					{
+						'name': 'Winter',
+						'custom_name': true,
+						'weather': {
+							'temp_low': -35,
+							'temp_high': -15,
+							'precipitation': 0.1,
+							'precipitation_intensity': 0.1
+						}
+					},
+					{
+						'name': 'Summer',
+						'custom_name': true,
+						'weather': {
+							'temp_low': 35,
+							'temp_high': 55,
+							'precipitation': 0.1,
+							'precipitation_intensity': 0.1
+						}
+					}
+				]
+			},
+			'Polar: Arctic': {
+				'name': 'Polar: Arctic',
+				'seasons': [
+					{
+						'name': 'Winter',
+						'custom_name': true,
+						'weather': {
+							'temp_low': -20,
+							'temp_high': -10,
+							'precipitation': 0.1,
+							'precipitation_intensity': 0.1
+						}
+					},
+					{
+						'name': 'Summer',
+						'custom_name': true,
+						'weather': {
+							'temp_low': 50,
+							'temp_high': 70,
+							'precipitation': 0.3,
+							'precipitation_intensity': 0.1
+						}
+					}
+				]
+			},
+			'Polar: Antarctic': {
+				'name': 'Polar: Antarctic',
+				'seasons': [
+					{
+						'name': 'Winter',
+						'custom_name': true,
+						'weather': {
+							'temp_low': -81,
+							'temp_high': -65,
+							'precipitation': 0.1,
+							'precipitation_intensity': 0.1
+						}
+					},
+					{
+						'name': 'Summer',
+						'custom_name': true,
+						'weather': {
+							'temp_low': -22,
+							'temp_high': -15,
+							'precipitation': 0.1,
+							'precipitation_intensity': 0.1
+						}
+					}
+				]
+			}
+		},
+
+		"4": {
+			"Equatorial":{
+				"name":"Equatorial",
+				"seasons":[
+					{
+						"name":"Winter",
+						"custom_name":true,
+						"weather":{
+							"temp_low":57,
+							"temp_high":70,
+							"precipitation":0.2,
+							"precipitation_intensity":0.2
+						}
+					},
+					{
+						"name":"Spring",
+						"custom_name":true,
+						"weather":{
+							"temp_low":56.0,
+							"temp_high":68.0,
+							"precipitation":0.45,
+							"precipitation_intensity":0.4
+						}
+					},
+					{
+						"name":"Summer",
+						"custom_name":true,
+						"weather":{
+							"temp_low":55,
+							"temp_high":66,
+							"precipitation":0.7,
+							"precipitation_intensity":0.6
+						}
+					},
+					{
+						"name":"Autumn",
+						"custom_name":true,
+						"weather":{
+							"temp_low":56.0,
+							"temp_high":68.0,
+							"precipitation":0.45,
+							"precipitation_intensity":0.4
+						}
+					}
+				]
+			},
+			"Monsoon":{
+				"name":"Monsoon",
+				"seasons":[
+					{
+						"name":"Winter",
+						"custom_name":true,
+						"weather":{
+							"temp_low":70,
+							"temp_high":90,
+							"precipitation":0.1,
+							"precipitation_intensity":0.1
+						}
+					},
+					{
+						"name":"Spring",
+						"custom_name":true,
+						"weather":{
+							"temp_low":70.0,
+							"temp_high":90.0,
+							"precipitation":0.5,
+							"precipitation_intensity":0.45
+						}
+					},
+					{
+						"name":"Summer",
+						"custom_name":true,
+						"weather":{
+							"temp_low":70,
+							"temp_high":90,
+							"precipitation":0.9,
+							"precipitation_intensity":0.8
+						}
+					},
+					{
+						"name":"Autumn",
+						"custom_name":true,
+						"weather":{
+							"temp_low":70.0,
+							"temp_high":90.0,
+							"precipitation":0.5,
+							"precipitation_intensity":0.45
+						}
+					}
+				]
+			},
+			"Warm Desert":{
+				"name":"Warm Desert",
+				"seasons":[
+					{
+						"name":"Winter",
+						"custom_name":true,
+						"weather":{
+							"temp_low":55,
+							"temp_high":70,
+							"precipitation":0.05,
+							"precipitation_intensity":0.1
+						}
+					},
+					{
+						"name":"Spring",
+						"custom_name":true,
+						"weather":{
+							"temp_low":60.0,
+							"temp_high":90.0,
+							"precipitation":0.05,
+							"precipitation_intensity":0.1
+						}
+					},
+					{
+						"name":"Summer",
+						"custom_name":true,
+						"weather":{
+							"temp_low":65,
+							"temp_high":110,
+							"precipitation":0.05,
+							"precipitation_intensity":0.1
+						}
+					},
+					{
+						"name":"Winter",
+						"custom_name":true,
+						"weather":{
+							"temp_low":60.0,
+							"temp_high":90.0,
+							"precipitation":0.05,
+							"precipitation_intensity":0.1
+						}
+					}
+				]
+			},
+			"Cold Desert":{
+				"name":"Cold Desert",
+				"seasons":[
+					{
+						"name":"Winter",
+						"custom_name":true,
+						"weather":{
+							"temp_low":7,
+							"temp_high":25,
+							"precipitation":0.2,
+							"precipitation_intensity":0.1
+						}
+					},
+					{
+						"name":"Spring",
+						"custom_name":true,
+						"weather":{
+							"temp_low":29.5,
+							"temp_high":51.0,
+							"precipitation":0.25,
+							"precipitation_intensity":0.125
+						}
+					},
+					{
+						"name":"Summer",
+						"custom_name":true,
+						"weather":{
+							"temp_low":52,
+							"temp_high":77,
+							"precipitation":0.3,
+							"precipitation_intensity":0.15
+						}
+					},
+					{
+						"name":"Autumn",
+						"custom_name":true,
+						"weather":{
+							"temp_low":29.5,
+							"temp_high":51.0,
+							"precipitation":0.25,
+							"precipitation_intensity":0.125
+						}
+					}
+				]
+			},
+			"Tropical Savanna":{
+				"name":"Tropical Savanna",
+				"seasons":[
+					{
+						"name":"Winter",
+						"custom_name":true,
+						"weather":{
+							"temp_low":75,
+							"temp_high":115,
+							"precipitation":0.1,
+							"precipitation_intensity":0.1
+						}
+					},
+					{
+						"name":"Autumn",
+						"custom_name":true,
+						"weather":{
+							"temp_low":75.0,
+							"temp_high":115.0,
+							"precipitation":0.475,
+							"precipitation_intensity":0.15
+						}
+					},
+					{
+						"name":"Summer",
+						"custom_name":true,
+						"weather":{
+							"temp_low":75,
+							"temp_high":115,
+							"precipitation":0.85,
+							"precipitation_intensity":0.2
+						}
+					},
+					{
+						"name":"Autumn",
+						"custom_name":true,
+						"weather":{
+							"temp_low":75.0,
+							"temp_high":115.0,
+							"precipitation":0.475,
+							"precipitation_intensity":0.15
+						}
+					}
+				]
+			},
+			"Steppes":{
+				"name":"Steppes",
+				"seasons":[
+					{
+						"name":"Winter",
+						"custom_name":true,
+						"weather":{
+							"temp_low":35,
+							"temp_high":50,
+							"precipitation":0.2,
+							"precipitation_intensity":0.3
+						}
+					},
+					{
+						"name":"Spring",
+						"custom_name":true,
+						"weather":{
+							"temp_low":52.5,
+							"temp_high":82.5,
+							"precipitation":0.125,
+							"precipitation_intensity":0.3
+						}
+					},
+					{
+						"name":"Summer",
+						"custom_name":true,
+						"weather":{
+							"temp_low":70,
+							"temp_high":115,
+							"precipitation":0.05,
+							"precipitation_intensity":0.3
+						}
+					},
+					{
+						"name":"Autumn",
+						"custom_name":true,
+						"weather":{
+							"temp_low":52.5,
+							"temp_high":82.5,
+							"precipitation":0.125,
+							"precipitation_intensity":0.3
+						}
+					}
+				]
+			},
+			"Warm and Rainy":{
+				"name":"Warm and Rainy",
+				"seasons":[
+					{
+						"name":"Winter",
+						"custom_name":true,
+						"weather":{
+							"temp_low":10,
+							"temp_high":50,
+							"precipitation":0.4,
+							"precipitation_intensity":0.5
+						}
+					},
+					{
+						"name":"Spring",
+						"custom_name":true,
+						"weather":{
+							"temp_low":30.0,
+							"temp_high":67.5,
+							"precipitation":0.4,
+							"precipitation_intensity":0.55
+						}
+					},
+					{
+						"name":"Summer",
+						"custom_name":true,
+						"weather":{
+							"temp_low":50,
+							"temp_high":85,
+							"precipitation":0.4,
+							"precipitation_intensity":0.6
+						}
+					},
+					{
+						"name":"Autumn",
+						"custom_name":true,
+						"weather":{
+							"temp_low":30.0,
+							"temp_high":67.5,
+							"precipitation":0.4,
+							"precipitation_intensity":0.55
+						}
+					}
+				]
+			},
+			"Warm with Dry Summer":{
+				"name":"Warm with Dry Summer",
+				"seasons":[
+					{
+						"name":"Winter",
+						"custom_name":true,
+						"weather":{
+							"temp_low":10,
+							"temp_high":60,
+							"precipitation":0.3,
+							"precipitation_intensity":0.6
+						}
+					},
+					{
+						"name":"Spring",
+						"custom_name":true,
+						"weather":{
+							"temp_low":35.0,
+							"temp_high":77.5,
+							"precipitation":0.2,
+							"precipitation_intensity":0.4
+						}
+					},
+					{
+						"name":"Summer",
+						"custom_name":true,
+						"weather":{
+							"temp_low":60,
+							"temp_high":95,
+							"precipitation":0.1,
+							"precipitation_intensity":0.2
+						}
+					},
+					{
+						"name":"Autumn",
+						"custom_name":true,
+						"weather":{
+							"temp_low":35.0,
+							"temp_high":77.5,
+							"precipitation":0.2,
+							"precipitation_intensity":0.4
+						}
+					}
+				]
+			},
+			"Warm with Dry Winter":{
+				"name":"Warm with Dry Winter",
+				"seasons":[
+					{
+						"name":"Winter",
+						"custom_name":true,
+						"weather":{
+							"temp_low":32,
+							"temp_high":50,
+							"precipitation":0.15,
+							"precipitation_intensity":0.2
+						}
+					},
+					{
+						"name":"Spring",
+						"custom_name":true,
+						"weather":{
+							"temp_low":51.0,
+							"temp_high":80.0,
+							"precipitation":0.3,
+							"precipitation_intensity":0.4
+						}
+					},
+					{
+						"name":"Summer",
+						"custom_name":true,
+						"weather":{
+							"temp_low":70,
+							"temp_high":110,
+							"precipitation":0.45,
+							"precipitation_intensity":0.6
+						}
+					},
+					{
+						"name":"Autumn",
+						"custom_name":true,
+						"weather":{
+							"temp_low":51.0,
+							"temp_high":80.0,
+							"precipitation":0.3,
+							"precipitation_intensity":0.4
+						}
+					}
+				]
+			},
+			"Cool and Rainy":{
+				"name":"Cool and Rainy",
+				"seasons":[
+					{
+						"name":"Winter",
+						"custom_name":true,
+						"weather":{
+							"temp_low":5,
+							"temp_high":40,
+							"precipitation":0.35,
+							"precipitation_intensity":0.6
+						}
+					},
+					{
+						"name":"Spring",
+						"custom_name":true,
+						"weather":{
+							"temp_low":32.5,
+							"temp_high":62.5,
+							"precipitation":0.35,
+							"precipitation_intensity":0.6
+						}
+					},
+					{
+						"name":"Summer",
+						"custom_name":true,
+						"weather":{
+							"temp_low":60,
+							"temp_high":85,
+							"precipitation":0.35,
+							"precipitation_intensity":0.6
+						}
+					},
+					{
+						"name":"Autumn",
+						"custom_name":true,
+						"weather":{
+							"temp_low":32.5,
+							"temp_high":62.5,
+							"precipitation":0.35,
+							"precipitation_intensity":0.6
+						}
+					}
+				]
+			},
+			"Cool with Dry Winter":{
+				"name":"Cool with Dry Winter",
+				"seasons":[
+					{
+						"name":"Winter",
+						"custom_name":true,
+						"weather":{
+							"temp_low":5,
+							"temp_high":40,
+							"precipitation":0.1,
+							"precipitation_intensity":0.1
+						}
+					},
+					{
+						"name":"Spring",
+						"custom_name":true,
+						"weather":{
+							"temp_low":32.5,
+							"temp_high":62.5,
+							"precipitation":0.225,
+							"precipitation_intensity":0.425
+						}
+					},
+					{
+						"name":"Summer",
+						"custom_name":true,
+						"weather":{
+							"temp_low":60,
+							"temp_high":85,
+							"precipitation":0.35,
+							"precipitation_intensity":0.75
+						}
+					},
+					{
+						"name":"Autumn",
+						"custom_name":true,
+						"weather":{
+							"temp_low":32.5,
+							"temp_high":62.5,
+							"precipitation":0.225,
+							"precipitation_intensity":0.425
+						}
+					}
+				]
+			},
+			"Tundra":{
+				"name":"Tundra",
+				"seasons":[
+					{
+						"name":"Winter",
+						"custom_name":true,
+						"weather":{
+							"temp_low":-35,
+							"temp_high":-15,
+							"precipitation":0.1,
+							"precipitation_intensity":0.1
+						}
+					},
+					{
+						"name":"Spring",
+						"custom_name":true,
+						"weather":{
+							"temp_low":0.0,
+							"temp_high":20.0,
+							"precipitation":0.1,
+							"precipitation_intensity":0.1
+						}
+					},
+					{
+						"name":"Summer",
+						"custom_name":true,
+						"weather":{
+							"temp_low":35,
+							"temp_high":55,
+							"precipitation":0.1,
+							"precipitation_intensity":0.1
+						}
+					},
+					{
+						"name":"Autumn",
+						"custom_name":true,
+						"weather":{
+							"temp_low":0.0,
+							"temp_high":20.0,
+							"precipitation":0.1,
+							"precipitation_intensity":0.1
+						}
+					}
+				]
+			},
+			"Polar: Arctic":{
+				"name":"Polar: Arctic",
+				"seasons":[
+					{
+						"name":"Winter",
+						"custom_name":true,
+						"weather":{
+							"temp_low":-20,
+							"temp_high":-10,
+							"precipitation":0.1,
+							"precipitation_intensity":0.1
+						}
+					},
+					{
+						"name":"Spring",
+						"custom_name":true,
+						"weather":{
+							"temp_low":15.0,
+							"temp_high":30.0,
+							"precipitation":0.2,
+							"precipitation_intensity":0.1
+						}
+					},
+					{
+						"name":"Summer",
+						"custom_name":true,
+						"weather":{
+							"temp_low":50,
+							"temp_high":70,
+							"precipitation":0.3,
+							"precipitation_intensity":0.1
+						}
+					},
+					{
+						"name":"Autumn",
+						"custom_name":true,
+						"weather":{
+							"temp_low":15.0,
+							"temp_high":30.0,
+							"precipitation":0.2,
+							"precipitation_intensity":0.1
+						}
+					}
+				]
+			},
+			"Polar: Antarctic":{
+				"name":"Polar: Antarctic",
+				"seasons":[
+					{
+						"name":"Winter",
+						"custom_name":true,
+						"weather":{
+							"temp_low":-81,
+							"temp_high":-65,
+							"precipitation":0.1,
+							"precipitation_intensity":0.1
+						}
+					},
+					{
+						"name":"Spring",
+						"custom_name":true,
+						"weather":{
+							"temp_low":-51.5,
+							"temp_high":-40.0,
+							"precipitation":0.1,
+							"precipitation_intensity":0.1
+						}
+					},
+					{
+						"name":"Summer",
+						"custom_name":true,
+						"weather":{
+							"temp_low":-22,
+							"temp_high":-15,
+							"precipitation":0.1,
+							"precipitation_intensity":0.1
+						}
+					},
+					{
+						"name":"Autumn",
+						"custom_name":true,
+						"weather":{
+							"temp_low":-51.5,
+							"temp_high":-40.0,
+							"precipitation":0.1,
+							"precipitation_intensity":0.1
+						}
+					}
+				]
+			}
+		}
+	}
+}

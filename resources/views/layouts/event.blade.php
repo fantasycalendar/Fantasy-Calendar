@@ -70,6 +70,7 @@
 						<option nth value='every_x_monthly_weekday'>Every x month on the 3rd Wednesday</option>
 						<option nth value='every_x_annually_date'>Every x year on the 3rd of June</option>
 						<option nth value='every_x_annually_weekday'>Every x year on the 3rd Wednesday in June</option>
+						<optgroup value='moons' label='Moons' class='hidden'></optgroup>
 					</select>
 
 				</div>
@@ -139,7 +140,7 @@
 								 Limit for
 							</div>
 							<div class='detail-column third'>
-								 <input type='number' min='1' value='1' class='form-control form-control-sm' id='limited_repeat_num' name='limited_repeat_num'>
+								 <input type='number' min='1' value='1' class='form-control form-control' id='limited_repeat_num' name='limited_repeat_num'>
 							</div>
 							<div class='detail-column'>
 								 days.
@@ -164,7 +165,7 @@
 								 Lasts for
 							</div>
 							<div class='detail-column third'>
-								 <input type='number' min='1' value='1' class='form-control form-control-sm' id='duration' name='duration'>
+								 <input type='number' min='1' value='1' class='form-control form-control' id='duration' name='duration'>
 							</div>
 							<div class='detail-column'>
 								 days.

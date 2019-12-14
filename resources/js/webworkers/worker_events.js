@@ -1,9 +1,11 @@
-importScripts('/js/calendar/calendar_functions.js');
-importScripts('/js/calendar/calendar_variables.js');
+var version = new Date().getTime();
+
+importScripts('/js/calendar/calendar_functions.js?v='+version);
+importScripts('/js/calendar/calendar_variables.js?v='+version);
 
 
 onmessage = e => {
-	data = event_evaluator.init(e.data.static_data, e.data.pre_epoch_data, e.data.epoch_data, e.data.event_id, e.data.callback);
+	data = event_evaluator.init(e.data.static_data, e.data.epoch_data, e.data.event_id, e.data.start_epoch, e.data.end_epoch, e.data.callback);
 	postMessage({
 		event_data: data,
 		callback: false
@@ -15,19 +17,18 @@ var event_evaluator = {
 	events: [],
 	categories: [],
 
-	start_epoch: 0,
-
 	static_data: {},
-	pre_epoch_data: {},
 	epoch_data: {},
 
 	current_data: {},
 
-	init: function(static_data, pre_epoch_data, epoch_data, event_id, callback){
+	init: function(static_data, epoch_data, event_id, start_epoch, end_epoch, callback){
 
 		this.static_data = static_data;
-		this.pre_epoch_data = pre_epoch_data;
 		this.epoch_data = epoch_data;
+
+		this.start_epoch =  start_epoch;
+		this.end_epoch = end_epoch+1;
 
 		this.callback = callback;
 
@@ -39,15 +40,12 @@ var event_evaluator = {
 
 		this.events_only_happen_once = [];
 
-		this.start_epoch = Number(Object.keys(this.epoch_data)[0]);
-
 		this.event_id = event_id;
 
 		//execution_time.start();
 
 		this.events = clone(this.static_data.event_data.events);
 		this.categories = clone(this.static_data.event_data.categories);
-		this.evaluate_valid_events(this.pre_epoch_data, event_id);
 		this.evaluate_valid_events(this.epoch_data, event_id);
 		
 		//execution_time.end();
@@ -100,9 +98,7 @@ var event_evaluator = {
 			}
 		}
 
-		function evaluate_condition(array){
-
-			data_value = []
+		function evaluate_condition(epoch_data, array){
 
 			var category = array[0];
 			var type = array[1];
@@ -118,20 +114,20 @@ var event_evaluator = {
 
 				if(array[0] === "Epoch"){
 
-					var selected = this.current_data[selector];
+					var selected = epoch_data[selector];
 					var cond_1 = Number(values[subcon[2]]) != NaN ? Number(values[subcon[2]]) : values[subcon[2]];
 					var cond_2 = values[subcon[3]] ? values[subcon[3]] : undefined;
 					cond_2 = Number(cond_2) != NaN ? Number(cond_2) : cond_2;
 
 				}else if(array[0] === "Moons"){
-
-					var selected = this.current_data[selector][values[0]];
+					
+					var selected = epoch_data[selector][values[0]];
 					var cond_1 = values[subcon[2]]|0;
 					var cond_2 = values[subcon[3]] ? values[subcon[3]]|0 : undefined;
 
-				}else if(array[0] === "Season"){
+				}else if(array[0] === "Season" && epoch_data["season"]){
 
-					var selected = this.current_data["season"][selector];
+					var selected = epoch_data["season"][selector];
 					var cond_1 = values[subcon[2]]|0;
 					var cond_2 = values[subcon[3]] ? values[subcon[3]]|0 : undefined;
 
@@ -139,7 +135,7 @@ var event_evaluator = {
 
 					var cond_1 = values[subcon[2]]|0;
 					var cond_2 = values[subcon[3]] ? values[subcon[3]]|0 : undefined;
-					var selected = fract(43758.5453 * Math.sin(cond_2 + (78.233 * this.current_data.epoch)))*100;
+					var selected = fract(43758.5453 * Math.sin(cond_2 + (78.233 * epoch_data.epoch)))*100;
 
 				}else if(array[0] === "Events"){
 
@@ -155,7 +151,7 @@ var event_evaluator = {
 
 						for(var j = 0; j < event_evaluator.event_data.valid[cond_1].length; j++){
 
-							var result = this.current_data.epoch == event_evaluator.event_data.valid[cond_1][j]+cond_2
+							var result = epoch_data.epoch == event_evaluator.event_data.valid[cond_1][j]+cond_2
 
 							if(result) break;
 
@@ -165,7 +161,7 @@ var event_evaluator = {
 
 						for(var j = 0; j < event_evaluator.event_data.valid[cond_1].length; j++){
 
-							var result = this.current_data.epoch == event_evaluator.event_data.valid[cond_1][j]-cond_2
+							var result = epoch_data.epoch == event_evaluator.event_data.valid[cond_1][j]-cond_2
 
 							if(result) break;
 
@@ -175,7 +171,7 @@ var event_evaluator = {
 
 						for(var j = 0; j < event_evaluator.event_data.valid[cond_1].length; j++){
 
-							var result = this.current_data.epoch >= event_evaluator.event_data.valid[cond_1][j]-cond_2 && event_evaluator.event_data.valid[cond_1][j] > this.current_data.epoch
+							var result = epoch_data.epoch >= event_evaluator.event_data.valid[cond_1][j]-cond_2 && event_evaluator.event_data.valid[cond_1][j] > epoch_data.epoch
 
 							if(result) break;
 
@@ -185,7 +181,7 @@ var event_evaluator = {
 
 						for(var j = 0; j < event_evaluator.event_data.valid[cond_1].length; j++){
 
-							var result = this.current_data.epoch <= event_evaluator.event_data.valid[cond_1][j]+cond_2 && event_evaluator.event_data.valid[cond_1][j] < this.current_data.epoch
+							var result = epoch_data.epoch <= event_evaluator.event_data.valid[cond_1][j]+cond_2 && event_evaluator.event_data.valid[cond_1][j] < epoch_data.epoch
 
 							if(result) break;
 
@@ -195,7 +191,7 @@ var event_evaluator = {
 
 						for(var j = 0; j < event_evaluator.event_data.valid[cond_1].length; j++){
 
-							var result = this.current_data.epoch >= event_evaluator.event_data.valid[cond_1][j]-cond_2 && event_evaluator.event_data.valid[cond_1][j] >= this.current_data.epoch
+							var result = epoch_data.epoch >= event_evaluator.event_data.valid[cond_1][j]-cond_2 && event_evaluator.event_data.valid[cond_1][j] >= epoch_data.epoch
 
 							if(result) break;
 
@@ -205,7 +201,7 @@ var event_evaluator = {
 
 						for(var j = 0; j < event_evaluator.event_data.valid[cond_1].length; j++){
 
-							var result = this.current_data.epoch <= event_evaluator.event_data.valid[cond_1][j]+cond_2 && event_evaluator.event_data.valid[cond_1][j] <= this.current_data.epoch
+							var result = epoch_data.epoch <= event_evaluator.event_data.valid[cond_1][j]+cond_2 && event_evaluator.event_data.valid[cond_1][j] <= epoch_data.epoch
 
 							if(result) break;
 
@@ -215,7 +211,7 @@ var event_evaluator = {
 
 				}else{
 
-					var selected = this.current_data[selector];
+					var selected = epoch_data[selector];
 					var cond_1 = Number(values[subcon[2]]) != NaN ? Number(values[subcon[2]]) : values[subcon[2]];
 					var cond_2 = values[subcon[3]] ? values[subcon[3]] : undefined;
 					cond_2 = Number(cond_2) != NaN ? Number(cond_2) : cond_2;
@@ -241,7 +237,7 @@ var event_evaluator = {
 			return result;
 		}
 
-		function evaluate_event_num_group(array, num){
+		function evaluate_event_num_group(epoch_data, array, num){
 
 			var result = false;
 
@@ -259,11 +255,11 @@ var event_evaluator = {
 
 					if(is_count){
 
-						var new_result = evaluate_event_num_group(condition[1], Number(condition[0]));
+						var new_result = evaluate_event_num_group(epoch_data, condition[1], Number(condition[0]));
 
 					}else{
 
-						var new_result = evaluate_event_group(condition[1]);
+						var new_result = evaluate_event_group(epoch_data, condition[1]);
 
 						new_result = condition[0] === "!" ? !new_result : new_result;
 
@@ -271,7 +267,7 @@ var event_evaluator = {
 
 				}else{
 
-					var new_result = evaluate_condition(condition);
+					var new_result = evaluate_condition(epoch_data, condition);
 
 				}
 
@@ -287,7 +283,7 @@ var event_evaluator = {
 
 		}
 
-		function evaluate_event_group(array){
+		function evaluate_event_group(epoch_data, array){
 
 			var result = false;
 
@@ -303,11 +299,11 @@ var event_evaluator = {
 
 					if(is_count){
 
-						var new_result = evaluate_event_num_group(condition[1], Number(condition[0]));
+						var new_result = evaluate_event_num_group(epoch_data, condition[1], Number(condition[0]));
 
 					}else{
 
-						var new_result = evaluate_event_group(condition[1]);
+						var new_result = evaluate_event_group(epoch_data, condition[1]);
 
 						new_result = condition[0] === "!" ? !new_result : new_result;
 
@@ -315,7 +311,7 @@ var event_evaluator = {
 
 				}else{
 
-					var new_result = evaluate_condition(condition);
+					var new_result = evaluate_condition(epoch_data, condition);
 
 				}
 
@@ -341,9 +337,9 @@ var event_evaluator = {
 
 			if(this.current_event.data.date !== undefined && this.current_event.data.date.length === 3){
 
-				var epoch = evaluate_calendar_start(event_evaluator.static_data, convert_year(event_evaluator.static_data, this.current_event.data.date[0]), this.current_event.data.date[1], this.current_event.data.date[2]).epoch;
+				var epoch = evaluate_calendar_start(event_evaluator.static_data, convert_year(this.current_event.data.date[0]), this.current_event.data.date[1], this.current_event.data.date[2]).epoch;
 
-				if(epoch_list[Object.keys(epoch_list)[0]].year == this.current_event.data.date[0]){
+				if(epoch >= event_evaluator.start_epoch && epoch <= event_evaluator.end_epoch){
 
 					add_to_epoch(this.current_event, event_index, epoch);
 
@@ -351,23 +347,34 @@ var event_evaluator = {
 
 			}else{
 
-				var num_epochs = Object.keys(epoch_list).length;
+				var lookback = 0;
 
-				for(var epoch_index = 0; epoch_index < num_epochs; epoch_index++){
+				if(this.current_event.data.limited_repeat){
+					lookback = this.current_event.data.limited_repeat_num;
+				}
 
-					var epoch = parseInt(Object.keys(epoch_list)[epoch_index]);
+				if(this.current_event.data.search_distance && this.current_event.data.search_distance > lookback){
+					lookback = this.current_event.data.search_distance;
+				}
+
+				var lookahead = this.current_event.data.search_distance ? this.current_event.data.search_distance : 0;
+
+				var begin_epoch = event_evaluator.start_epoch-lookback;
+				var last_epoch = event_evaluator.end_epoch+lookahead;
+
+				for(var epoch = begin_epoch; epoch < last_epoch-1; epoch++){
 
 					if(event_evaluator.callback){
 
 						postMessage({
 							count: [
-								event_evaluator.number_of_epochs,
-								num_epochs*event_evaluator.number_of_events
+								event_evaluator.current_number_of_epochs,
+								event_evaluator.total_number_of_epochs
 							],
 							callback: true
 						})
 
-						event_evaluator.number_of_epochs++;
+						event_evaluator.current_number_of_epochs++;
 
 					}
 
@@ -376,20 +383,24 @@ var event_evaluator = {
 						for(var i = 1; i <= this.current_event.data.limited_repeat_num; i++){
 							if(event_evaluator.event_data.valid[event_index] && event_evaluator.event_data.valid[event_index].includes(epoch-i)){
 								add_event = false
+								epoch += this.current_event.data.limited_repeat_num-1;
+								event_evaluator.current_number_of_epochs += this.current_event.data.limited_repeat_num-1;
 								break;
 							}
 						}
 					}
 
-					this.current_data = epoch_list[epoch];
-
 					if(add_event){
 
-						var result = evaluate_event_group(this.current_event.data.conditions);
+						if(event_evaluator.epoch_data[epoch] !== undefined){
 
-						if(result){
-								
-							add_to_epoch(this.current_event, event_index, epoch);
+							var result = evaluate_event_group(event_evaluator.epoch_data[epoch], this.current_event.data.conditions);
+
+							if(result){
+									
+								add_to_epoch(this.current_event, event_index, epoch);
+
+							}
 
 						}
 
@@ -433,7 +444,7 @@ var event_evaluator = {
 
 			}else{
 
-				if(epoch >= event_evaluator.start_epoch && event_evaluator.event_data.valid[event_index].indexOf(epoch) == -1){
+				if(event_evaluator.event_data.valid[event_index].indexOf(epoch) == -1){
 					event_evaluator.event_data.valid[event_index].push(epoch);
 				}
 
@@ -471,15 +482,33 @@ var event_evaluator = {
 
 			if(current_event.data.connected_events !== undefined && current_event.data.connected_events !== "false"){
 
+				var begin_epoch = event_evaluator.start_epoch;
+				var last_epoch = event_evaluator.end_epoch;
+
 				for(var connectedId in current_event.data.connected_events){
 
 					var parent_id = current_event.data.connected_events[connectedId];
 						
 					get_number_of_events(parent_id);
 
-					event_evaluator.number_of_events++;
+					var lookback = 0;
+
+					if(current_event.data.limited_repeat){
+						lookback = current_event.data.limited_repeat_num;
+					}
+
+					if(current_event.data.search_distance && current_event.data.search_distance > lookback){
+						lookback = current_event.data.search_distance;
+					}
+
+					var lookahead = current_event.data.search_distance ? current_event.data.search_distance : 0;
+
+					begin_epoch -= lookback;
+					last_epoch += lookahead;
 
 				}
+
+				event_evaluator.total_number_of_epochs += (last_epoch-begin_epoch);
 
 			}
 
@@ -489,9 +518,8 @@ var event_evaluator = {
 
 			if(event_evaluator.callback !== undefined){
 
-				event_evaluator.current_event_number = 1;
-				event_evaluator.number_of_events = 1;
-				event_evaluator.number_of_epochs = 1;
+				event_evaluator.total_number_of_epochs = 0;
+				event_evaluator.current_number_of_epochs = 0;
 
 				get_number_of_events(event_id);
 

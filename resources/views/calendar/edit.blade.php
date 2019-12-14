@@ -1,8 +1,8 @@
-@extends('templates._page')
+@extends('templates._calendar')
 
 @push('head')
     <script>
-    owner = "{{ $calendar->owned }}";
+    owner = {{ $calendar->owned }};
 
     $(document).ready(function(){
         wizard = false;
@@ -18,13 +18,22 @@
                 moon.granularity = 24;
             }
         }
+
+        if(static_data.seasons.global_settings.periodic_seasons === undefined){
+            static_data.seasons.global_settings.periodic_seasons = true;
+        }
+
+        set_up_edit_inputs();
+        set_up_edit_values();
+        set_up_view_values();
+        set_up_visitor_values();
         
-        set_up_edit_inputs(true);
         bind_calendar_events();
         rebuild_calendar('calendar', dynamic_data);
 
         edit_event_ui.bind_events();
         edit_HTML_ui.bind_events();
+
     })
     </script>
 @endpush
