@@ -356,7 +356,9 @@ function delete_calendar(calendar_hash, calendar_name, callback){
     })
         .then(result => {
 
-        	if(result.dismiss || !result.value) throw null;
+        	if(result.dismiss) throw null;
+
+            if (!result.value) throw `Sorry! You have to enter "${calendar_name}"`;
 
             if (result.value !== calendar_name) throw `Sorry! "${result.value}" isn't the same as "${calendar_name}"`;
 

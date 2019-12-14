@@ -408,9 +408,9 @@ function set_up_edit_inputs(){
 			title: "Are you sure?",
 			text: `Are you sure you want to switch to ${checked ? "PERIODIC" : "DATED"} seasons? Your current seasons will be deleted so you can re-create them.`,
 			showCancelButton: true,
-			confirmButtonColor: '#d33',
-			cancelButtonColor: '#3085d6',
-			confirmButtonText: 'Close',
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'OK',
 			icon: "warning",
 		})
 		.then((result) => {
@@ -519,9 +519,9 @@ function set_up_edit_inputs(){
 			title: "Are you sure?",
 			text: 'Are you sure you want to create seasonal events? If you already have created them, you might get doubling.',
 			showCancelButton: true,
-			confirmButtonColor: '#d33',
-			cancelButtonColor: '#3085d6',
-			confirmButtonText: 'Close',
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'OK',
 			icon: "info",
 		})
 		.then((result) => {

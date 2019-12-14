@@ -144,8 +144,8 @@ var edit_event_ui = {
 						title: "Warning!",
 						text: "This will override all of your conditions, are you sure you want to do that?",
 						showCancelButton: true,
-						confirmButtonColor: '#d33',
-						cancelButtonColor: '#3085d6',
+						confirmButtonColor: '#3085d6',
+						cancelButtonColor: '#d33',
 						confirmButtonText: 'OK',
 						icon: "warning",
 					}).then((result) => {
@@ -478,7 +478,7 @@ var edit_event_ui = {
 
 		this.trumbowyg.trumbowyg('html', '');
 
-		this.repeat_input.val('1').parent().toggleClass('hidden', true);
+		this.repeat_input.val('').parent().toggleClass('hidden', true);
 		this.condition_presets.children().eq(0).prop('selected', true);
 		this.condition_presets.parent().toggleClass('hidden', true);
 		this.update_every_nth_presets();
@@ -1645,8 +1645,8 @@ var edit_event_ui = {
 				title: "Warning!",
 				text: "Simulating events may take a loooong time, depending on many factors! If your event is based on other events, we need to simulate those too!",
 				showCancelButton: true,
-				confirmButtonColor: '#d33',
-				cancelButtonColor: '#3085d6',
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
 				confirmButtonText: 'OK',
 				icon: "warning",
 			}).then((result) => {
@@ -1988,6 +1988,8 @@ var show_event_ui = {
 
 		this.event_id = -1;
 		this.era_id = -1;
+
+		this.conditions_changed = false;
 
 		this.event_name.text('');
 
