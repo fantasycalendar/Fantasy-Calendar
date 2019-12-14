@@ -4439,8 +4439,14 @@ function autoload(){
                     title: "Loaded!",
                     text: "The calendar " + calendar_name + " has been loaded.",
                     button: true
-                })
+                });
+
+            }else{
+
+            	localStorage.clear();
+
             }
+
 		});
 
 	}
