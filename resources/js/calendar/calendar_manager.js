@@ -5,17 +5,34 @@ const worker_events = new Worker('/js/webworkers/worker_events.js?v='+utcDate1);
 const worker_climate = new Worker('/js/webworkers/worker_climate.js?v='+utcDate1);
 
 var registered_click_callbacks = {}
+var registered_onfocus_callbacks = {}
+var registered_onblur_callbacks = {}
+var registered_mousemove_callbacks = {}
 
 function bind_calendar_events(){
 
 	document.addEventListener('click', function(event){
-
 		for(var callback_id in registered_click_callbacks){
-
 			registered_click_callbacks[callback_id](event);
-
 		}
+	});
 
+	window.onfocus = function(event){
+		for(var callback_id in registered_onfocus_callbacks){
+			registered_onfocus_callbacks[callback_id](event);
+		}
+	};
+
+	window.onblur = function(event){
+		for(var callback_id in registered_onblur_callbacks){
+			registered_onblur_callbacks[callback_id](event);
+		}
+	};
+
+	window.addEventListener('mousemove', function(event){
+		for(var callback_id in registered_mousemove_callbacks){
+			registered_mousemove_callbacks[callback_id](event);
+		}
 	});
 
 	$('#input_collapse_btn').click(function(){
@@ -64,6 +81,9 @@ function rebuild_calendar(action, dynamic_data){
 
     if(link_data.master_hash !== ''){
 
+		$('.master_button_container').addClass('hidden');
+		$('#rebuild_calendar_btn').prop('disabled', true);
+
     	check_last_master_change(function(change_result){
 
     		new_dynamic_change = new Date(change_result.last_dynamic_change)
@@ -78,7 +98,15 @@ function rebuild_calendar(action, dynamic_data){
 					master_last_dynamic_change = new Date(data_result.last_dynamic_change);
 					master_last_static_change = new Date(data_result.last_static_change);
 
-					do_rebuild(action, dynamic_data)
+					var converted_date = date_converter.get_date(master_static_data, static_data, master_dynamic_data, dynamic_data);
+					dynamic_data.year = converted_date.year;
+					dynamic_data.timespan = converted_date.timespan;
+					dynamic_data.day = converted_date.day;
+					dynamic_data.epoch = converted_date.epoch;
+					dynamic_data.hour = converted_date.hour;
+					dynamic_data.minute = converted_date.minute;
+
+					do_rebuild(action, dynamic_data);
 
 				})
 
@@ -98,9 +126,18 @@ function rebuild_calendar(action, dynamic_data){
 
 }
 
-function do_rebuild(action, dynamic_data, master_date){
 
-	if(link_data.master_hash !== ''){
+function check_rebuild(action){
+
+	$('.master_button_container').addClass('hidden');
+	$('#rebuild_calendar_btn').prop('disabled', true);
+
+	get_all_master_data(function(data_result){
+
+		master_static_data = data_result.static_data;
+		master_dynamic_data = data_result.dynamic_data;
+		master_last_dynamic_change = new Date(data_result.last_dynamic_change);
+		master_last_static_change = new Date(data_result.last_static_change);
 
 		var converted_date = date_converter.get_date(master_static_data, static_data, master_dynamic_data, dynamic_data);
 		dynamic_data.year = converted_date.year;
@@ -110,10 +147,22 @@ function do_rebuild(action, dynamic_data, master_date){
 		dynamic_data.hour = converted_date.hour;
 		dynamic_data.minute = converted_date.minute;
 
-		set_up_view_values();
-	}
+		var data = dynamic_date_manager.compare(dynamic_data)
 
-    update_current_day(true);
+		if(data.rebuild){
+			show_loading_screen();
+			do_rebuild('calendar', dynamic_data)
+		}else{
+			update_current_day(false)
+			scroll_to_epoch(dynamic_data.epoch)
+		}
+
+	});
+
+}
+
+
+function do_rebuild(action, dynamic_data){
 
     worker_calendar.postMessage({
 		calendar_name: calendar_name,

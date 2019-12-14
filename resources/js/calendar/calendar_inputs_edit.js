@@ -262,6 +262,11 @@ function set_up_edit_inputs(){
 		}
 	});
 
+	$('#rebuild_calendar_btn').click(function(){
+		check_rebuild('calendar');
+		poll_timer = setTimeout(check_master_update, 5000);
+	});
+
 
 	/* ------------------- Layout callbacks ------------------- */
 
@@ -4348,11 +4353,11 @@ function set_up_edit_values(){
         		master_last_dynamic_change = new Date(result.last_dynamic_change);
         		master_last_static_change = new Date(result.last_static_change);
 
-        	})
+        		bind_master_update();
+
+        	});
 
         }
-  
-		populate_calendar_lists();
   
 	}
 
@@ -4365,6 +4370,53 @@ function set_up_edit_values(){
 	$('#cycle_test_input').click();
 
 	recalc_stats();
+
+}
+
+var poll_timer;
+var last_mouse_move = Date.now();
+
+function bind_master_update(){
+
+	registered_mousemove_callbacks['master_update'] = function(){
+		last_mouse_move = Date.now();
+	}
+
+	check_master_update();
+
+}
+
+function check_master_update(){
+
+	if(document.hasFocus() && (Date.now() - last_mouse_move) < 10000){
+
+	    if(link_data.master_hash !== ''){
+
+	    	check_last_master_change(function(change_result){
+
+	    		new_dynamic_change = new Date(change_result.last_dynamic_change)
+	    		new_static_change = new Date(change_result.last_static_change)
+
+				if(new_dynamic_change > master_last_dynamic_change || new_static_change > master_last_static_change){
+
+					$('.master_button_container').removeClass('hidden');
+					$('#rebuild_calendar_btn').prop('disabled', false);
+
+				}else{
+
+					poll_timer = setTimeout(check_master_update, 5000);
+
+				}
+
+			});
+
+	    }
+
+    }else{
+
+		poll_timer = setTimeout(check_master_update, 5000);
+
+    }
 
 }
 
