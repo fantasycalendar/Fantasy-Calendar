@@ -625,7 +625,7 @@
                 </div>
 
                 <div class='detail-row detail-select-container'>
-                    <div class='detail-label'>Location:</div>
+                    <div class='detail-label'>Current location:</div>
                 </div>
                 <div class='detail-row'>
                     <select class='form-control' id='location_select'>

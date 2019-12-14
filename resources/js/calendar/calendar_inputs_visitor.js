@@ -207,6 +207,8 @@ function go_to_preview_date(rebuild){
 		}
 	}
 
+	update_cycle_text();
+
 }
 
 function go_to_dynamic_date(rebuild){

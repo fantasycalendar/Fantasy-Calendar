@@ -1366,6 +1366,17 @@ function set_up_edit_inputs(){
 		}
 	});
 
+	$(document).on('click', '.cycle_quick_add', function(){
+		swal({
+			title: "An input!",
+			text: "Write something interesting:",
+			type: "input",
+			showCancelButton: true,
+			closeOnConfirm: false,
+			inputPlaceholder: "Write something"
+		});
+	});
+
 
 	$(document).on('change', '.timespan_occurance_input', function(){
 
@@ -2723,6 +2734,22 @@ function add_cycle_to_sortable(parent, key, data){
 					element.push("<div class='detail-row'>");
 						element.push("<div class='detail-column half'>");
 							element.push("<div class='detail-row'>");
+									element.push("<div class='detail-text'>Cycle is based on:</div>");
+									element.push(`<select class='form-control dynamic_input cycle_type' data='cycles.data.${key}' fc-index='type'>`);
+										element.push(`<option value='year'>Year</option>`);
+										element.push(`<option value='era_year'>Era year</option>`);
+										element.push(`<option value='timespan_index'>Month</option>`);
+										element.push(`<option value='day'>Day in month</option>`);
+										element.push(`<option value='year_day'>Year day</option>`);
+										element.push(`<option value='epoch'>Epoch (days since 1/1/1)</option>`);
+									element.push(`</select>`);
+							element.push("</div>");
+						element.push("</div>");
+					element.push("</div>");
+
+					element.push("<div class='detail-row'>");
+						element.push("<div class='detail-column half'>");
+							element.push("<div class='detail-row'>");
 									element.push("<div class='detail-text'>Length:</div>");
 									element.push(`<input type='number' step="1.0" class='form-control length dynamic_input' min='1' data='cycles.data.${key}' fc-index='length' value='${data.length}' />`);
 							element.push("</div>");
@@ -2737,11 +2764,16 @@ function add_cycle_to_sortable(parent, key, data){
 					element.push("</div>");
 
 					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-column full'>");
+						element.push("<div class='detail-text'>Number of names:</div>");
+					element.push("</div>");
+					element.push("<div class='detail-row'>");
+						element.push("<div class='detail-column half'>");
 							element.push("<div class='detail-row'>");
-								element.push("<div class='detail-text'>Number of names:</div>");
 								element.push(`<input type='number' step="1.0" class='form-control cycle-name-length' value='${data.names.length}' fc-index='${key}'/>`);
 							element.push("</div>");
+						element.push("</div>");
+						element.push("<div class='detail-column half'>");
+							element.push("<button type='button' class='full btn btn-primary cycle_quick_add'>Quick add</button>");
 						element.push("</div>");
 					element.push("</div>");
 					element.push("<div class='detail-row cycle-container wrap-collapsible'>");
@@ -2761,6 +2793,7 @@ function add_cycle_to_sortable(parent, key, data){
 	element.push("</div>");
 
 	parent.append(element.join(""));
+
 }
 
 function add_era_to_list(parent, key, data){
@@ -3243,13 +3276,14 @@ function error_check(parent, rebuild){
 
 function update_cycle_example_text(){
 
-	var year = ($('#cycle_test_input').val()|0);
+	/*var year = ($('#cycle_test_input').val()|0);
 
 	var cycle_text = get_cycle(static_data, year).text;
 
 	var text = Mustache.render(static_data.cycles.format, cycle_text);
 
-	$('#cycle_test_result').text(text);
+	$('#cycle_test_result').text(text);*/
+
 }
 
 function evaluate_remove_buttons(){

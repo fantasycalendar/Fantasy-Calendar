@@ -345,6 +345,8 @@ function update_current_day(recalculate){
 
 	eval_current_time();
 
+	update_cycle_text();
+
 }
 
 function scroll_to_epoch(epoch){
@@ -352,6 +354,14 @@ function scroll_to_epoch(epoch){
 	if($(`[epoch=${epoch}]`).length){
 		$(`[epoch=${epoch}]`)[0].scrollIntoView({block: "center", inline: "nearest"});
 	}
+}
+
+function update_cycle_text(){
+
+	var cycle_text = Mustache.render(static_data.cycles.format, get_cycle(static_data, evaluated_static_data.epoch_data[preview_date.epoch]).text);
+
+	$('#top_follower_content .cycle').text(cycle_text);
+
 }
 
 var calendar_layouts = {
@@ -475,14 +485,14 @@ var calendar_layouts = {
 
 		}
 
-		var cycle_text = Mustache.render(static_data.cycles.format, get_cycle(static_data, convert_year(calendar_layouts.year_data.era_year)).text);
-
 		var html = [];
 
 		html.push(`<div class='year'>${year_text}</div>`);
-		html.push(`<div class='cycle'>${cycle_text}</div>`);
+		html.push(`<div class='cycle'></div>`);
 
 		$('#top_follower_content').html(html.join('')).removeClass().addClass(this.name_layout);
+
+		update_cycle_text();
 
 	},
 
