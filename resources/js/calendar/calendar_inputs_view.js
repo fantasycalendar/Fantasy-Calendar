@@ -390,8 +390,6 @@ function repopulate_location_select_list(){
 
 		}
 
-		console.log(dynamic_data.location)
-
 		if(location_select.val() === null){
 			location_select.children().find('option').first().prop('selected', true);
 			dynamic_data.location = location_select.val();
