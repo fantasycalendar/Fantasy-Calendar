@@ -1709,9 +1709,7 @@ function evaluate_calendar_start(static_data, year, month, day){
 	var day = !isNaN(day) ? (day|0)-1 : 0;
 
 	var era_year = unconvert_year(year);
-
-	//console.log(era_year)
-
+	
 	tmp = get_epoch(static_data, year, month, day);
 	var epoch = tmp[0];
 	var intercalary = tmp[1];
@@ -1764,9 +1762,6 @@ function evaluate_calendar_start(static_data, year, month, day){
 
 
 	}
-
-	//console.log(era_year)
-	//console.log("-----")
 
 	epoch = year < 0 ? epoch+1 : epoch;
 

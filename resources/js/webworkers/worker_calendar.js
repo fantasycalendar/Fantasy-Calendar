@@ -1756,7 +1756,7 @@ var calendar_builder = {
 			year_day = 1;
 		}
 
-		var calendar_era_year = unconvert_year(era_year);
+		var calendar_era_year = era_year == 0 ? 1 : era_year;
 		var calendar_start_epoch = first_epoch;
 		var calendar_end_epoch = epoch;
 		var calendar_first_week_day = first_week_day;
