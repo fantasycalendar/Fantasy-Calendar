@@ -327,8 +327,6 @@ worker_calendar.onmessage = e => {
 
 	}
 
-	evaluate_settings();
-
 	hide_loading_screen();
 
 };

@@ -129,11 +129,13 @@
 
 			@endif
 
-			<div class='detail-row'>
-				<h4>Preview date:</h4>
-			</div>
 
-			<div class='date_control'>
+			<div class='date_control hidden'>
+
+				<div class='detail-row'>
+					<h4>Preview date:</h4>
+				</div>
+
 				<div class='detail-row'>
 
 					<div class='detail-column fifth' value='target'>
@@ -173,11 +175,13 @@
 					</div>
 
 				</div>
+
+				<div class='detail-row'>
+					<div class='btn btn-success full' id='go_to_preview_date'>Preview date</div>
+				</div>
+
 			</div>
 
-			<div class='detail-row'>
-				<div class='btn btn-success full' id='go_to_preview_date'>Preview date</div>
-			</div>
 
 			<div class='wrap-collapsible card mt-2'>
                 <input id="collapsible_add_units" class="toggle" type="checkbox">

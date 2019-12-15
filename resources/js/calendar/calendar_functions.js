@@ -569,10 +569,12 @@ class date_manager {
 	constructor(year, timespan, day){
 
 		this._year = convert_year(year);
-
 		this._timespan = timespan;
-
 		this._day = day;
+
+		this._max_year = false;
+		this._max_timespan = false;
+		this._max_day = false;
 
 		this.timespans_in_year = get_timespans_in_year(static_data, this.year, true);
 
@@ -608,9 +610,98 @@ class date_manager {
 		return this._year;
 	}
 
+	set max_year(year){
+		this._max_year = convert_year(year);
+	}
+
+	get max_year(){
+		return this._max_year;
+	}
+
+	check_max_year(year){
+
+		if(this.max_year === false){
+			return true;
+		}
+
+		return this.max_year >= year;
+	}
+
+	set max_timespan(timespan){
+		this._max_timespan = timespan;
+	}
+
+	get max_timespan(){
+		return this._max_timespan;
+	}
+
+	check_max_timespan(timespan){
+
+		if(this.max_timespan === false){
+			return true;
+		}
+
+		if(this.max_year > this.year){
+			return true;
+		}
+
+		return this.max_timespan >= timespan;
+	}
+
+	set max_day(day){
+		this._max_day = day;
+	}
+
+	get max_day(){
+		return this._max_day;
+	}
+
+	check_max_day(day){
+
+		if(this.max_day === false){
+			return true;
+		}
+
+		if(this.max_year > this.year || (this.max_year == this.year && this.max_timespan > this.timespan)){
+			return true;
+		}
+
+		return this.max_day >= day;
+	}
+
+	get last_valid_year(){
+
+		if(this.max_year){
+			return unconvert_year(this.max_year);
+		}else{
+			return false;
+		}
+
+	}
+
+	get last_valid_timespan(){
+
+		if(this.max_year > this.year){
+			return Infinity;
+		}else{
+			return this.max_timespan;
+		}
+
+	}
+
+	get last_valid_day(){
+
+		if(this.max_year > this.year || (this.max_year == this.year && this.max_timespan > this.timespan)){
+			return Infinity;
+		}else{
+			return this.max_day;
+		}
+
+	}
+
 	set year(year){
 
-		if(this.year == year) return;
+		if(this.year == year || !this.check_max_year(year)) return;
 
 		if(get_timespans_in_year(static_data, year, false).length != 0){
 			this._year = year;
@@ -628,14 +719,15 @@ class date_manager {
 
 	cap_timespan(){
 
-		if(!this.timespans_in_year[this.timespan].result){
+		if(!this.check_max_timespan(this.timespan)){
+			this.timespan = this.last_valid_timespan;
+		}else if(!this.timespans_in_year[this.timespan].result){
 			this.add_timespan();
 		}
 
 	}
 
 	get last_timespan(){
-
 
 		for(var i = this.timespans_in_year.length-1; i >= 0; i--){
 			if(this.timespans_in_year[i].result){
@@ -657,6 +749,8 @@ class date_manager {
 
 	set timespan(timespan){
 
+		if(!this.check_max_timespan(timespan)) return;
+
 		if(timespan < 0){
 
 			this.subtract_year();
@@ -664,7 +758,7 @@ class date_manager {
 
 		}else if(timespan > this.last_timespan){
 
-			this.add_year()
+			this.add_year();
 			this.timespan = this.first_timespan;
 
 		}else if(!this.timespans_in_year[timespan].result){
@@ -688,7 +782,9 @@ class date_manager {
 
 
 	cap_day(){
-		if(this.day > this.num_days){
+		if(!this.check_max_day(this.day)){
+			this.day = this.max_day;
+		}else if(this.day > this.num_days){
 			this.day = this.num_days;
 		}
 	}
@@ -703,13 +799,15 @@ class date_manager {
 
 	set day(day){
 
+		if(!this.check_max_day(day)) return;
+
 		this._day = day;
 
 		if(this._day < 1){
 			this.subtract_timespan()
 			this._day = this.num_days;
 		}else if(this._day > this.num_days){
-			this.add_timespan()
+			this.add_timespan();
 			this._day = 1;
 		}
 
