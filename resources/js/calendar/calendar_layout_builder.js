@@ -343,7 +343,7 @@ function update_current_day(recalculate){
 
 	day_container.addClass('current_day');
 
-	eval_current_time();
+	evaluate_sun();
 
 }
 

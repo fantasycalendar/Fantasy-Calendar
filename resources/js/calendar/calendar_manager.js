@@ -187,6 +187,8 @@ worker_calendar.onmessage = e => {
 				highlight_preview_date();
 			}
 
+			eval_clock();
+
 			update_current_day(false);
 
 			evaluate_weather_charts();

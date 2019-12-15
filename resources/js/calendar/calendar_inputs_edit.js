@@ -1703,6 +1703,8 @@ function set_up_edit_inputs(){
 
 	input_container.change(function(e){
 
+		if(block_inputs) return;
+
 		if(e.originalEvent){
 			var target = $(e.originalEvent.target);
 		}else{
@@ -3199,8 +3201,6 @@ function error_check(parent, rebuild){
 
 				rebuild_calendar('calendar', dynamic_data);
 
-				update_current_day(true);
-
 				preview_date_follow();
 
 			}
@@ -4169,7 +4169,11 @@ function recalculate_era_epochs(){
 
 }
 
+var block_inputs = false;
+
 function set_up_edit_values(){
+
+	block_inputs = true;
 
 	$('#calendar_name').val(calendar_name);
 
@@ -4350,6 +4354,8 @@ function set_up_edit_values(){
 	$('#cycle_test_input').click();
 
 	recalc_stats();
+
+	block_inputs = false;
 
 }
 
