@@ -935,7 +935,7 @@
 
 	<div id="top_follower">
 
-        <div class='master_button_container'>
+        <div class='master_button_container hidden'>
             <div class='container d-flex h-100 p-0'>
                 <div class='col justify-content-center align-self-center full'>
                     <button class='btn btn-danger full' disabled id='rebuild_calendar_btn'>Master data changed - reload</button>

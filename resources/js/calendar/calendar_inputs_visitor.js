@@ -197,7 +197,7 @@ function go_to_preview_date(rebuild){
 		go_to_dynamic_date(rebuild);
 	}else{
 		if(rebuild){
-			rebuild_calendar('preview', preview_date)
+			do_rebuild('preview', preview_date)
 		}else{
 			highlight_preview_date()
 			scroll_to_epoch(preview_date.epoch)
@@ -209,8 +209,8 @@ function go_to_preview_date(rebuild){
 function display_preview_back_button(){
 
 	if(preview_date_manager.epoch != dynamic_date_manager.epoch){
-		$('.reset_preview_date_container.right .reset_preview_date').prop("disabled", preview_date_manager.epoch < dynamic_date_manager.epoch).toggleClass('hidden', preview_date_manager.epoch < dynamic_date_manager.epoch);
-		$('.reset_preview_date_container.left .reset_preview_date').prop("disabled", preview_date_manager.epoch > dynamic_date_manager.epoch).toggleClass('hidden', preview_date_manager.epoch > dynamic_date_manager.epoch);
+		$('.reset_preview_date_container.right .reset_preview_date').prop("disabled", preview_date_manager.epoch > dynamic_date_manager.epoch).toggleClass('hidden', preview_date_manager.epoch > dynamic_date_manager.epoch);
+		$('.reset_preview_date_container.left .reset_preview_date').prop("disabled", preview_date_manager.epoch < dynamic_date_manager.epoch).toggleClass('hidden', preview_date_manager.epoch < dynamic_date_manager.epoch);
 	}else{
 		$('.reset_preview_date_container.right .reset_preview_date').prop("disabled", preview_date.follow).toggleClass('hidden', preview_date.follow);
 		$('.reset_preview_date_container.left .reset_preview_date').prop("disabled", preview_date.follow).toggleClass('hidden', preview_date.follow);
@@ -240,7 +240,7 @@ function go_to_dynamic_date(rebuild){
 	rebuild = rebuild !== undefined ? rebuild : data.rebuild;
 
 	if(rebuild){
-		rebuild_calendar('preview', dynamic_data)
+		do_rebuild('preview', dynamic_data)
 	}else{
 		update_current_day(false)
 		scroll_to_epoch(dynamic_data.epoch)
@@ -267,7 +267,7 @@ function evaluate_settings(){
 
 	$('.btn_container').toggleClass('hidden', !owner && !static_data.settings.allow_view);
 	$('.btn_preview_date[fc-index="year"]').prop('disabled', !owner && !static_data.settings.allow_view).toggleClass('hidden', !owner && !static_data.settings.allow_view);
-	$('.btn_preview_date[fc-index="timespan"]').prop('disabled', !static_data.settings.show_current_month).toggleClass('hidden', !static_data.settings.show_current_month)
+	$('.btn_preview_date[fc-index="timespan"]').prop('disabled', !static_data.settings.show_current_month).toggleClass('hidden', !static_data.settings.show_current_month);
 
 }
 
