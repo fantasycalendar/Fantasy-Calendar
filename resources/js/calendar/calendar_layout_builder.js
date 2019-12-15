@@ -421,7 +421,7 @@ var calendar_layouts = {
 			var timespan_index = Object.keys(this.timespans)[i]
 
 			if(static_data.settings.only_reveal_today && !owner &&
-				this.year_data.year > dynamic_data.year || (this.year_data.year == dynamic_data.year && timespan_index > dynamic_data.timespan)){
+				(this.year_data.year > dynamic_data.year || (this.year_data.year == dynamic_data.year && timespan_index > dynamic_data.timespan))){
 
 				continue;
 
@@ -491,11 +491,11 @@ var calendar_layouts = {
 
 		insert_day: function(epoch, weather_align, day_num, day_class, title){
 
-			if(static_data.settings.only_reveal_today && !owner &&
+			if(static_data.settings.only_reveal_today && !owner && (
 				calendar_layouts.year_data.year > dynamic_data.year ||
 				(calendar_layouts.year_data.year == dynamic_data.year && this.timespan.index > dynamic_data.timespan ||
 					(calendar_layouts.year_data.year == dynamic_data.year && this.timespan.index == dynamic_data.timespan && this.timespan.day > dynamic_data.day)
-				)
+				))
 			)
 			{
 
