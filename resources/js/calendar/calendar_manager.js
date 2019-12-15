@@ -147,9 +147,19 @@ function check_rebuild(action){
 		dynamic_data.hour = converted_date.hour;
 		dynamic_data.minute = converted_date.minute;
 
-		var data = dynamic_date_manager.compare(dynamic_data)
+		var data = dynamic_date_manager.compare(dynamic_data);
 
-		if(data.rebuild){
+		dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
+
+		current_year.val(dynamic_data.year);
+
+		repopulate_timespan_select(current_timespan, dynamic_data.timespan, false);
+
+		repopulate_day_select(current_day, dynamic_data.day, false);
+
+		display_preview_back_button();
+
+		if(data.rebuild && preview_date.follow){
 			show_loading_screen();
 			do_rebuild('calendar', dynamic_data)
 		}else{

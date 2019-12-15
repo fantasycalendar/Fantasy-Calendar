@@ -189,11 +189,7 @@ function go_to_preview_date(rebuild){
 	preview_date.day = data.day;
 	preview_date.epoch = data.epoch;
 
-	if(preview_date_manager.epoch < dynamic_date_manager.epoch){
-		$('.reset_preview_date_container.right .reset_preview_date').prop("disabled", preview_date.follow).toggleClass('hidden', preview_date.follow);
-	}else if(preview_date_manager.epoch > dynamic_date_manager.epoch){
-		$('.reset_preview_date_container.left .reset_preview_date').prop("disabled", preview_date.follow).toggleClass('hidden', preview_date.follow);
-	}
+	display_preview_back_button();
 
 	rebuild = rebuild !== undefined ? rebuild : data.rebuild;
 
@@ -210,6 +206,18 @@ function go_to_preview_date(rebuild){
 
 }
 
+function display_preview_back_button(){
+
+	if(preview_date_manager.epoch != dynamic_date_manager.epoch){
+		$('.reset_preview_date_container.right .reset_preview_date').prop("disabled", preview_date_manager.epoch < dynamic_date_manager.epoch).toggleClass('hidden', preview_date_manager.epoch < dynamic_date_manager.epoch);
+		$('.reset_preview_date_container.left .reset_preview_date').prop("disabled", preview_date_manager.epoch > dynamic_date_manager.epoch).toggleClass('hidden', preview_date_manager.epoch > dynamic_date_manager.epoch);
+	}else{
+		$('.reset_preview_date_container.right .reset_preview_date').prop("disabled", preview_date.follow).toggleClass('hidden', preview_date.follow);
+		$('.reset_preview_date_container.left .reset_preview_date').prop("disabled", preview_date.follow).toggleClass('hidden', preview_date.follow);
+	}
+
+}
+
 function go_to_dynamic_date(rebuild){
 
 	preview_date.follow = true
@@ -218,8 +226,7 @@ function go_to_dynamic_date(rebuild){
 	preview_date_manager.timespan = dynamic_date_manager.timespan;
 	preview_date_manager.day = dynamic_date_manager.day;
 
-	$('.reset_preview_date_container.right .reset_preview_date').prop("disabled", preview_date.follow).toggleClass('hidden', preview_date.follow);
-	$('.reset_preview_date_container.left .reset_preview_date').prop("disabled", preview_date.follow).toggleClass('hidden', preview_date.follow);
+	display_preview_back_button();
 
 	evaluate_preview_change();
 
