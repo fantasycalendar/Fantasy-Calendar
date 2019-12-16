@@ -582,7 +582,7 @@ class date_manager {
 
 	compare(dynamic_data){
 
-		var rebuild = dynamic_data.year != this.adjusted_year || (static_data.settings.show_current_month && dynamic_data != this.timespan);
+		var rebuild = dynamic_data.year != this.adjusted_year || (static_data.settings.show_current_month && dynamic_data.timespan != this.timespan);
 
 		return {
 			year: this.adjusted_year,

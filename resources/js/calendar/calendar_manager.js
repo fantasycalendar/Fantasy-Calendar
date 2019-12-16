@@ -77,7 +77,7 @@ var evaluated_static_data = {};
 
 function rebuild_calendar(action, dynamic_data){
 
-	show_loading_screen();
+	show_loading_screen_buffered();
 
     if(link_data.master_hash !== ''){
 
@@ -160,11 +160,11 @@ function check_rebuild(action){
 		display_preview_back_button();
 
 		if(data.rebuild && preview_date.follow){
-			show_loading_screen();
+			show_loading_screen_buffered();
 			do_rebuild('calendar', dynamic_data)
 		}else{
-			update_current_day(false)
-			scroll_to_epoch(dynamic_data.epoch)
+			update_current_day(false);
+			scroll_to_epoch();
 		}
 
 	});
@@ -199,7 +199,7 @@ function rebuild_climate(){
 
 function rebuild_events(event_id){
 
-	show_loading_screen();
+	show_loading_screen_buffered();
 
 	worker_events.postMessage({
 		static_data: static_data,
@@ -293,12 +293,7 @@ worker_calendar.onmessage = e => {
 
 			rebuild_events();
 
-			if(action !== "preview"){
-				scroll_to_epoch(dynamic_data.epoch)
-			}else{
-				scroll_to_epoch(preview_date.epoch)
-				highlight_preview_date();
-			}
+			scroll_to_epoch();
 
 			update_current_day(false);
 

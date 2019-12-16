@@ -12,7 +12,7 @@ use App\Calendar;
 class CalendarController extends Controller
 {
     public function __construct() {
-        $this->middleware('auth:api')->except('last_changed', 'children');
+        $this->middleware('auth:api')->except('last_changed', 'children', 'dynamic_data');
 
         $this->authorizeResource(Calendar::class, 'calendar');
     }
@@ -59,7 +59,6 @@ class CalendarController extends Controller
     public function dynamic_data(Request $request, $id) {
         return Calendar::active()
             ->hash($id)
-            ->user($request->user()->id)
             ->firstOrFail()->dynamic_data;
     }
 

@@ -322,7 +322,7 @@ function evaluate_dynamic_change(){
 		if(data.rebuild){
 			rebuild_calendar('calendar', dynamic_data)
 		}else{
-			scroll_to_epoch(dynamic_data.epoch)
+			scroll_to_epoch();
 			update_current_day(false);
 		}
 

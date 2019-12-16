@@ -208,10 +208,17 @@ var loading_screen_texts = [
 ];
 
 
+var loading_screen_timer;
 var loading_screen_text_timer;
 
-function show_loading_screen(loading_bar, cancel_button_callback){
+function show_loading_screen_buffered(loading_bar, cancel_button_callback){
+	loading_screen_timer = setTimeout(function(){
+		show_loading_screen(loading_bar, cancel_button_callback)
+	}, 50);
+}
 
+function show_loading_screen(loading_bar, cancel_button_callback){
+	
 	$('#loading_background').removeClass('hidden');
 
 	clearTimeout(loading_screen_text_timer)
@@ -227,10 +234,13 @@ function show_loading_screen(loading_bar, cancel_button_callback){
 			cancel_button_callback();
 		});
 	}
+
 }
 
 function hide_loading_screen(){
-	clearTimeout(loading_screen_text_timer)
+	clearTimeout(loading_screen_timer);
+	loading_screen_timer = undefined;
+	clearTimeout(loading_screen_text_timer);
 	loading_screen_text_timer = undefined;
 	loading_bar.set(0)
 	$('#loading_background').addClass('hidden');

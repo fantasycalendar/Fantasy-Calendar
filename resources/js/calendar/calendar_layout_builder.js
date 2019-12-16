@@ -334,6 +334,7 @@ function weather_overlay(data, show){
 function update_current_day(recalculate){
 
 	$('.current_day').removeClass('current_day');
+	$(`.preview_day`).removeClass('preview_day');
 
 	if(recalculate){
 		dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
@@ -343,14 +344,21 @@ function update_current_day(recalculate){
 
 	day_container.addClass('current_day');
 
+	if(preview_date.epoch != dynamic_data.epoch){
+		preview_day_container = $(`[epoch=${preview_date.epoch}]`);
+		preview_day_container.addClass('preview_day');
+	}
+
 	eval_current_time();
 
 }
 
-function scroll_to_epoch(epoch){
+function scroll_to_epoch(){
 
-	if($(`[epoch=${epoch}]`).length){
-		$(`[epoch=${epoch}]`)[0].scrollIntoView({block: "center", inline: "nearest"});
+	if($(`[epoch=${preview_date.epoch}]`).length){
+		$(`[epoch=${preview_date.epoch}]`)[0].scrollIntoView({block: "center", inline: "nearest"});
+	}else if($(`[epoch=${dynamic_data.epoch}]`).length){
+		$(`[epoch=${dynamic_data.epoch}]`)[0].scrollIntoView({block: "center", inline: "nearest"});
 	}
 }
 

@@ -57,6 +57,10 @@
 
                     get_all_data(function(result){
 
+                        if(result.error){
+                            throw result.message;
+                        }
+
                         static_data = clone(result.static_data);
                         static_datadynamic_data = clone(result.dynamic_data);
 
@@ -71,6 +75,10 @@
                     last_dynamic_change = new_dynamic_change
 
                     get_dynamic_data(function(result){
+
+                        if(result.error){
+                            throw result.message;
+                        }
 
                         dynamic_data = clone(result);
 
@@ -101,6 +109,12 @@
 
         dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
 
+        if(preview_date.follow){
+            preview_date = clone(dynamic_data);
+            preview_date.follow = true;
+            preview_date_manager = new date_manager(preview_date.year, preview_date.timespan, preview_date.day);
+        }
+
         current_year.val(dynamic_data.year);
 
         repopulate_timespan_select(current_timespan, dynamic_data.timespan, false);
@@ -109,12 +123,12 @@
 
         display_preview_back_button();
 
-        if(data.rebuild && preview_date.follow){
-            show_loading_screen();
+        if((data.rebuild || static_data.settings.only_reveal_today) && preview_date.follow){
+            show_loading_screen_buffered();
             do_rebuild('calendar', dynamic_data)
         }else{
-            update_current_day(false)
-            scroll_to_epoch(dynamic_data.epoch)
+            update_current_day(false);
+            scroll_to_epoch();
         }
 
     }

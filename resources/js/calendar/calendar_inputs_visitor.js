@@ -235,8 +235,8 @@ function go_to_preview_date(rebuild){
 		if(rebuild){
 			do_rebuild('preview', preview_date)
 		}else{
-			highlight_preview_date()
-			scroll_to_epoch(preview_date.epoch)
+			update_current_day();
+			scroll_to_epoch();
 		}
 	}
 
@@ -244,9 +244,9 @@ function go_to_preview_date(rebuild){
 
 function display_preview_back_button(){
 
-	if(preview_date_manager.epoch != dynamic_date_manager.epoch){
-		$('.reset_preview_date_container.right .reset_preview_date').prop("disabled", preview_date_manager.epoch > dynamic_date_manager.epoch).toggleClass('hidden', preview_date_manager.epoch > dynamic_date_manager.epoch);
-		$('.reset_preview_date_container.left .reset_preview_date').prop("disabled", preview_date_manager.epoch < dynamic_date_manager.epoch).toggleClass('hidden', preview_date_manager.epoch < dynamic_date_manager.epoch);
+	if(preview_date.epoch != dynamic_data.epoch){
+		$('.reset_preview_date_container.right .reset_preview_date').prop("disabled", preview_date.epoch > dynamic_data.epoch).toggleClass('hidden', preview_date.epoch > dynamic_data.epoch);
+		$('.reset_preview_date_container.left .reset_preview_date').prop("disabled", preview_date.epoch < dynamic_data.epoch).toggleClass('hidden', preview_date.epoch < dynamic_data.epoch);
 	}else{
 		$('.reset_preview_date_container.right .reset_preview_date').prop("disabled", preview_date.follow).toggleClass('hidden', preview_date.follow);
 		$('.reset_preview_date_container.left .reset_preview_date').prop("disabled", preview_date.follow).toggleClass('hidden', preview_date.follow);
@@ -279,24 +279,9 @@ function go_to_dynamic_date(rebuild){
 		do_rebuild('preview', dynamic_data)
 	}else{
 		update_current_day(false)
-		scroll_to_epoch(dynamic_data.epoch)
+		scroll_to_epoch();
 	}
 
-}
-
-function highlight_preview_date(){
-
-	if(preview_date.epoch == dynamic_data.epoch) return;
-
-	if($(`[epoch=${preview_date.epoch}]`).length){
-		
-		$(`[epoch=${preview_date.epoch}]`).addClass('preview_day');
-
-		window.setTimeout(function(){
-			$(`[epoch=${preview_date.epoch}]`).removeClass('preview_day');
-		}, 2000);
-
-	}
 }
 
 function evaluate_settings(){
