@@ -295,6 +295,8 @@ worker_calendar.onmessage = e => {
 
 			scroll_to_epoch();
 
+			eval_clock();
+
 			update_current_day(false);
 
 			evaluate_weather_charts();

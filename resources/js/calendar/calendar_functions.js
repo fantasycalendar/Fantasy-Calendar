@@ -970,11 +970,18 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object, no
 
 	var offset = 1;
 
-	var leap_days = clone(static_data.year_data.leap_days).sort((a, b) => (a.day > b.day) ? 1 : -1);
+	var leap_days = clone(static_data.year_data.leap_days);
 
 	for(var leap_day_index = 0; leap_day_index < leap_days.length; leap_day_index++){
+		leap_days[leap_day_index].index = leap_day_index;
+	}
 
-		var leap_day = leap_days[leap_day_index];
+	leap_days.sort((a, b) => (a.day > b.day) ? 1 : -1);
+
+	for(var index = 0; index < leap_days.length; index++){
+
+		var leap_day = leap_days[index];
+		var leap_day_index = leap_day.index;
 
 		if(leap_day.timespan === timespan_index){
 

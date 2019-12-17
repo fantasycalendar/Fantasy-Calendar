@@ -354,10 +354,6 @@ function eval_clock(){
 
 function eval_current_time(){
 
-	if(!window.Clock){
-		eval_clock();
-	}
-
 	if(!static_data.clock.enabled || isNaN(static_data.clock.hours) || isNaN(static_data.clock.minutes) || isNaN(static_data.clock.offset)){
 		$('#clock').css('display', 'none');
 		return;

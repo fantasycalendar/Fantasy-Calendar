@@ -348,8 +348,8 @@ function update_current_day(recalculate){
 		preview_day_container = $(`[epoch=${preview_date.epoch}]`);
 		preview_day_container.addClass('preview_day');
 	}
-
-	eval_current_time();
+  
+	evaluate_sun();
 
 }
 
