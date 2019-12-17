@@ -501,8 +501,8 @@ function set_up_edit_inputs(){
 
 		if(!static_data.seasons.global_settings.periodic_seasons){
 
-			repopulate_timespan_select(season_sortable.children().last().find('.timespan-list'), stats.timespan, false, true);
-			repopulate_day_select(season_sortable.children().last().find('.timespan-day-list'), stats.day, false, true);
+			repopulate_timespan_select(season_sortable.children().last().find('.timespan-list'), stats.timespan, false, false);
+			repopulate_day_select(season_sortable.children().last().find('.timespan-day-list'), stats.day, false, false);
 			sort_list_by_partial_date(season_sortable);
 
 		}
@@ -4228,8 +4228,8 @@ function set_up_edit_values(){
 		for(var i = 0; i < static_data.seasons.data.length; i++){
 			add_season_to_sortable(season_sortable, i, static_data.seasons.data[i]);
 
-			repopulate_timespan_select(season_sortable.children().last().find('.timespan-list'), static_data.seasons.data[i].timespan, false, true);
-			repopulate_day_select(season_sortable.children().last().find('.timespan-day-list'), static_data.seasons.data[i].day, false, true);
+			repopulate_timespan_select(season_sortable.children().last().find('.timespan-list'), static_data.seasons.data[i].timespan, false, false);
+			repopulate_day_select(season_sortable.children().last().find('.timespan-day-list'), static_data.seasons.data[i].day, false, false);
 		}
 
 		$('.season_offset_container').prop('disabled', !static_data.seasons.global_settings.periodic_seasons).toggleClass('hidden', !static_data.seasons.global_settings.periodic_seasons);
