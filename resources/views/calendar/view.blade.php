@@ -38,7 +38,7 @@
     });
 
     var do_update_dynamic = debounce(function(type){
-        update_dynamic();
+        update_view_dynamic();
     }, 250);
     
     function check_dates(){
@@ -62,7 +62,7 @@
                         }
 
                         static_data = clone(result.static_data);
-                        static_datadynamic_data = clone(result.dynamic_data);
+                        dynamic_data = clone(result.dynamic_data);
 
                         check_update();
                         evaluate_settings();
