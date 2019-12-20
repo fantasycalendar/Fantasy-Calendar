@@ -33,4 +33,8 @@ class CalendarEvent extends Model
     public function calendar() {
         return $this->belongsTo('App\Calendar');
     }
+
+    public function getDescriptionAttribute($value) {
+        return html_entity_decode($value);
+    }
 }

@@ -438,7 +438,7 @@ var edit_event_ui = {
 
 		static_data.event_data.events[this.event_id].name = name;
 
-		static_data.event_data.events[this.event_id].description = this.trumbowyg.trumbowyg('html');
+		static_data.event_data.events[this.event_id].description = sanitizeHtml(this.trumbowyg.trumbowyg('html'));
 
 		static_data.event_data.events[this.event_id].data = this.create_event_data();
 
