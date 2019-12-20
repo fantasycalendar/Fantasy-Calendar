@@ -112,7 +112,6 @@
 
     <script src="/js/login.js"></script>
 
-    <script src="/js/vendor/jquery/jquery.ui.touch-punch.min.js"></script>
     <script src="/js/vendor/sortable/jquery-sortable-min.js"></script>
     <script src="/js/vendor/spectrum/spectrum.js"></script>
 
