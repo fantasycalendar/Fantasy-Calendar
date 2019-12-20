@@ -198,7 +198,7 @@ var eras = {
 
 		if(static_data.eras.length > 0){
 
-			var position = $("#calendar").scrollTop();
+			var position = $("#calendar_container").scrollTop();
 
 			for(var i = 0; i < eras.current_eras.length; i++){
 				if($(`[epoch=${eras.current_eras[i].data.date.epoch}]`).length){
@@ -222,9 +222,11 @@ var eras = {
 				for(var i = 0; i < this.current_eras.length; i++){
 					var current_era = this.current_eras[i];
 					if(position > current_era.position && i < this.current_eras.length-1){
-						this.prev_era++;
-						this.current_era++;
-						this.next_era++;
+						if(current_era.position != -1000){
+							this.prev_era++;
+							this.current_era++;
+							this.next_era++;
+						}
 					}
 				}
 				eras.set_current_era(this.current_era);
@@ -238,7 +240,7 @@ var eras = {
 
 		if(static_data.eras.length > 0){
 
-			var position = $("#calendar").scrollTop();
+			var position = $("#calendar_container").scrollTop();
 
 			// If there's only one era, don't do anything
 			if(this.current_eras.length == 0){
@@ -462,6 +464,7 @@ var calendar_layouts = {
 					era.formatting,
 					{
 						"year": calendar_layouts.year_data.year,
+						"abs_year": Math.abs(calendar_layouts.year_data.year),
 						"era_year": calendar_layouts.year_data.era_year,
 						"era_name": era.name
 					}

@@ -385,8 +385,6 @@ function set_up_edit_inputs(){
 
 	periodic_seasons_checkbox.change(function(){
 
-		console.log('lol')
-
 		var checked = $(this).prop('checked');
 		$(this).prop('checked', !checked);
 
@@ -831,8 +829,9 @@ function set_up_edit_inputs(){
 
 		static_data.eras.push(stats);
 		var era = add_era_to_list(era_list, id, stats);
-		repopulate_timespan_select(era.find('.timespan-list'), dynamic_data.timespan);
-		repopulate_day_select(era.find('.timespan-day-list'), dynamic_data.day);
+		repopulate_timespan_select(era.find('.timespan-list'), dynamic_data.timespan, false);
+		repopulate_day_select(era.find('.timespan-day-list'), dynamic_data.day, false);
+		sort_list_by_date(era_list);
 		name.val("");
 		do_error_check();
 
@@ -1276,11 +1275,17 @@ function set_up_edit_inputs(){
 		var index = $(this).closest('.sortable-container').attr('index')|0;
 		if($(this).is(':checked')){
 			$(this).parent().parent().parent().next().removeClass('hidden');
-			$(this).parent().parent().parent().next().find('.dynamic_input').prop('disabled', false).val('Year {{year}} - {{era_name}}').change();
+			if(static_data.eras[index].settings.restart){
+				var text = 'Era year {{era_year}} (year {{year}}) - {{era_name}}';
+			}else{
+				var text = 'Year {{year}} - {{era_name}}';
+			}
+			$(this).parent().parent().parent().next().find('.dynamic_input').prop('disabled', false).val(text).change();
 		}else{
 			$(this).parent().parent().parent().next().addClass('hidden');
 			$(this).parent().parent().parent().next().find('.dynamic_input').prop('disabled', true).val('').change();
 		}
+
 	});
 
 	$(document).on('change', '.starting_era', function(){
@@ -2773,7 +2778,7 @@ function add_era_to_list(parent, key, data){
 
 	var element = [];
 
-	element.push("<div class='sortable-container era_inputs collapsed' index='${key}'>");
+	element.push(`<div class='sortable-container era_inputs collapsed' index='${key}'>`);
 		element.push("<div class='main-container'>");
 			element.push("<div class='expand icon-collapse'></div>");
 			element.push("<div class='name-container'>");
@@ -2925,7 +2930,9 @@ function add_era_to_list(parent, key, data){
 
 	element.push("</div>");
 
-	var element = parent.append(element.join(""));
+	var element = $(element.join(""));
+
+	parent.append(element);
 
 	return element;
 
