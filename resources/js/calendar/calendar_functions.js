@@ -1736,7 +1736,7 @@ function evaluate_calendar_start(static_data, year, month, day){
 		era_years[era_index] = era.date.year;
 
 
-		if(era.settings.ends_year && year >= convert_year(era.date.year)){
+		if(era.settings.ends_year && year > convert_year(era.date.year)){
 
 			era_epoch = get_epoch(static_data, convert_year(era.date.year), era.date.timespan, era.date.day);
 			normal_epoch_during_era = get_epoch(static_data, convert_year(era.date.year)+1);
