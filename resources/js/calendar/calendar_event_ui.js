@@ -438,7 +438,7 @@ var edit_event_ui = {
 
 		static_data.event_data.events[this.event_id].name = name;
 
-		static_data.event_data.events[this.event_id].description = sanitizeHtml(this.trumbowyg.trumbowyg('html'));
+		static_data.event_data.events[this.event_id].description = sanitizeHtml(this.trumbowyg.trumbowyg('html'), {allowedTags: [ 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'a', 'ul', 'ol', 'nl', 'li', 'b', 'i', 'strong', 'em', 'strike', 'code', 'hr', 'br', 'div', 'table', 'thead', 'caption', 'tbody', 'tr', 'th', 'td', 'pre', 'img' ]});
 
 		static_data.event_data.events[this.event_id].data = this.create_event_data();
 
