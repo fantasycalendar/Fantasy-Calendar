@@ -410,7 +410,7 @@ function repopulate_day_select(select, val, change, no_leaps){
 
 		if(exclude_self){
 
-			self_object = get_calendar_data($(this).attr('data'));
+			var self_object = get_calendar_data($(this).attr('data'));
 
 			if(self_object){
 				var days = get_days_in_timespan(static_data, year, timespan, self_object, no_leaps);

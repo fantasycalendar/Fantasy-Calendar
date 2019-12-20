@@ -885,10 +885,14 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object, no
 
 	for(var index = 0; index < leap_days.length; index++){
 
-		var leap_day = leap_days[index];
-		var leap_day_index = leap_day.index;
+		var leap_day_index = leap_days[index].index;
+		var leap_day = static_data.year_data.leap_days[leap_day_index];
 
-		if(leap_day.timespan === timespan_index){
+		if(self_object && Object.compare(leap_day, self_object)){
+
+			self_object = false;
+
+		}else if(leap_day.timespan === timespan_index){
 
 			if(leap_day.intercalary){
 
@@ -896,22 +900,14 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object, no
 
 				if(is_there.result){
 
-					if(self_object && Object.compare(leap_day, self_object)){
+					var leaping = does_leap_day_appear(static_data, year, timespan_index, leap_day_index);
 
-						self_object = false;
+					if(leaping){
 
-					}else{
+						days.splice(leap_day.day+offset, 0, `Intercalary "${leap_day.name}"`);
 
-						var leaping = does_leap_day_appear(static_data, year, timespan_index, leap_day_index);
-
-						if(leaping){
-
-							days.splice(leap_day.day+offset, 0, `Intercalary "${leap_day.name}"`);
-
-							offset++;
-						}
+						offset++;
 					}
-
 
 				}
 
@@ -921,19 +917,12 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object, no
 
 				if(is_there.result){
 
-					if(self_object && Object.compare(leap_day, self_object)){
+					var leaping = does_leap_day_appear(static_data, year, timespan_index, leap_day_index);
 
-						self_object = false;
+					if(leaping){
 
-					}else{
+						days.push("");
 
-						var leaping = does_leap_day_appear(static_data, year, timespan_index, leap_day_index);
-
-						if(leaping){
-
-							days.push("");
-
-						}
 					}
 				}
 			}

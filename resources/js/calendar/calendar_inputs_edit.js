@@ -2016,7 +2016,7 @@ function add_leap_day_to_list(parent, key, data){
 
 	var element = [];
 
-	element.push(`<div class='sortable-container ${(data.intercalary ? 'intercalary leap-day' : 'leap-day')} index='${key}' collapsed'>`);
+	element.push(`<div class='sortable-container ${(data.intercalary ? 'intercalary leap-day' : 'leap-day')} collapsed' index='${key}'>`);
 		element.push("<div class='main-container'>");
 			element.push("<div class='expand icon-collapse'></div>");
 			element.push("<div class='name-container'>");
