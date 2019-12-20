@@ -318,7 +318,7 @@ function evaluate_sun(){
 		return;
 	}
 
-	if(evaluated_static_data.processed_seasons && evaluated_static_data.epoch_data[preview_date.epoch] !== undefined){
+	if(evaluated_static_data.processed_seasons && evaluated_static_data.epoch_data[preview_date.epoch] !== undefined && evaluated_static_data.epoch_data[preview_date.epoch].season !== undefined){
 
 		var sunset = evaluated_static_data.epoch_data[preview_date.epoch].season.time.sunset.data;
 		var sunrise = evaluated_static_data.epoch_data[preview_date.epoch].season.time.sunrise.data;
@@ -432,7 +432,7 @@ function repopulate_day_select(select, val, change, no_leaps){
 			var day = days[i];
 
 			if(day != ""){
-				text = day;
+				text = `day`;
 			}else{
 				text = `Day ${i+1}`;
 			}

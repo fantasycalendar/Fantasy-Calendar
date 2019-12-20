@@ -863,7 +863,10 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object, no
 	var days = [];
 
 	for(var i = 1; i <= timespan.length; i++){
-		days.push("");
+		var appears = does_day_appear(static_data, year, timespan_index, i);
+		if(appears.result){
+			days.push("");
+		}
 	}
 
 	if(no_leaps){
@@ -1044,7 +1047,7 @@ function does_day_appear(static_data, year, timespan, day){
 
 		var era = static_data.eras[era_index];
 
-		if(era.settings.ends_year && year == convert_year(era.date.year)-1 && timespan == era.date.timespan && day > era.date.day){
+		if(era.settings.ends_year && year == convert_year(era.date.year) && timespan == era.date.timespan && day > era.date.day){
 
 			return {
 				result: false,
@@ -1732,7 +1735,7 @@ function evaluate_calendar_start(static_data, year, month, day){
 
 		era_years[era_index] = era.date.year;
 
-		if(era.settings.ends_year && year > convert_year(era.date.year)){
+		if(era.settings.ends_year && year >= convert_year(era.date.year)){
 
 			era_epoch = get_epoch(static_data, convert_year(era.date.year), era.date.timespan, era.date.day);
 			normal_epoch_during_era = get_epoch(static_data, convert_year(era.date.year)+1);
@@ -1749,7 +1752,7 @@ function evaluate_calendar_start(static_data, year, month, day){
 
 		}
 
-		if(era.settings.restart && year > convert_year(era.date.year)){
+		if(era.settings.restart && year >= convert_year(era.date.year)){
 
 			for(var i = 0; i < era_index; i++){
 
