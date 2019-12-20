@@ -202,7 +202,7 @@ var eras = {
 
 			for(var i = 0; i < eras.current_eras.length; i++){
 				if($(`[epoch=${eras.current_eras[i].data.date.epoch}]`).length){
-					eras.current_eras[i].position = eras.current_eras[i].position + position + $(`[epoch=${eras.current_eras[i].data.date.epoch}]`).offset().top - 175;
+					eras.current_eras[i].position = eras.current_eras[i].position + position + $(`[epoch=${eras.current_eras[i].data.date.epoch}]`).offset().top - 150;
 				}
 			}
 
