@@ -873,7 +873,7 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object, no
 		return days;
 	}
 
-	var offset = 1;
+	var offset = 0;
 
 	var leap_days = clone(static_data.year_data.leap_days);
 
@@ -904,7 +904,7 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object, no
 
 					if(leaping){
 
-						days.splice(leap_day.day+offset, 0, `Intercalary "${leap_day.name}"`);
+						days.splice(leap_day.day+offset, 0, `${leap_day.name}`);
 
 						offset++;
 					}

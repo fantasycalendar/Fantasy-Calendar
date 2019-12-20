@@ -427,14 +427,15 @@ function repopulate_day_select(select, val, change, no_leaps){
 			html.push(`<option value="${0}">Before 1</option>`);
 		}
 
-		for(var i = 0; i < days.length; i++){
+		for(var i = 0, day_number = 1; i < days.length; i++){
 
 			var day = days[i];
 
 			if(day != ""){
-				text = `day`;
+				text = day;
 			}else{
-				text = `Day ${i+1}`;
+				text = `Day ${day_number}`;
+				day_number++;
 			}
 
 			html.push(`<option value='${i+1}'>`);

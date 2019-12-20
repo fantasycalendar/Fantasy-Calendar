@@ -551,7 +551,7 @@ var calendar_layouts = {
 					return features.intercalary && features.day === 0;
 				});
 
-				this.insert_intercalary_day(timespan, filtered_leap_days_beforestart, timespan.length, true);
+				this.insert_intercalary_day(timespan, filtered_leap_days_beforestart, timespan.length, false);
 
 				calendar_layouts.html.push("<div class='timespan_container grid'>");
 
@@ -852,7 +852,7 @@ var calendar_layouts = {
 					return features.intercalary && features.day === 0;
 				});
 
-				this.insert_intercalary_day(timespan, filtered_leap_days_beforestart, timespan.length, true);
+				this.insert_intercalary_day(timespan, filtered_leap_days_beforestart, timespan.length, false);
 
 				calendar_layouts.html.push("<div class='timespan_container wide'>");
 
@@ -1194,7 +1194,7 @@ var calendar_layouts = {
 					return features.intercalary && features.day === 0;
 				});
 
-				this.insert_intercalary_day(timespan, filtered_leap_days_beforestart, timespan.length, true);
+				this.insert_intercalary_day(timespan, filtered_leap_days_beforestart, timespan.length, false);
 
 				calendar_layouts.html.push("<div class='timespan_container vertical'>");
 
