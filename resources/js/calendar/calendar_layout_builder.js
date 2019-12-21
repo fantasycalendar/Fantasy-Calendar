@@ -464,8 +464,11 @@ var calendar_layouts = {
 					era.formatting,
 					{
 						"year": calendar_layouts.year_data.year,
+						"nth_year": ordinal_suffix_of(calendar_layouts.year_data.year),
 						"abs_year": Math.abs(calendar_layouts.year_data.year),
+						"abs_nth_year": ordinal_suffix_of(Math.abs(calendar_layouts.year_data.year)),
 						"era_year": calendar_layouts.year_data.era_year,
+						"era_nth_year": ordinal_suffix_of(calendar_layouts.year_data.era_year),
 						"era_name": era.name
 					}
 				);
