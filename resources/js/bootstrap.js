@@ -69,7 +69,7 @@ window.swal = require('sweetalert2')
  * Select2 is a jQuery-based replacement for select boxes. It supports searching,
  * remote data sets, and pagination of results.
  */
- 
+
 require('select2');
 
 /**
@@ -79,7 +79,7 @@ require('select2');
  * custom shaped progress bars with any vector graphic editor.
  */
 
-window.ProgressBar = require('progressbar.js')
+window.ProgressBar = require('progressbar.js');
 
 /**
  * mustache.js is an implementation of the mustache template system in JavaScript.
@@ -88,7 +88,13 @@ window.ProgressBar = require('progressbar.js')
  * provided in a hash or object.
  */
 
-window.Mustache = require('mustache')
+window.Mustache = require('mustache');
+
+/**
+ * Sanitize HTML inputs browser-side using sanitize-html!
+ */
+
+window.sanitizeHtml = require('sanitize-html');
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening

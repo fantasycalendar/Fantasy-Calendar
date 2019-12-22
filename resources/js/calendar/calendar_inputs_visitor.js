@@ -138,6 +138,7 @@ function set_up_visitor_inputs(){
 
 }
 
+
 function preview_date_follow(){
 
 	if(preview_date.follow){
@@ -242,9 +243,6 @@ function go_to_dynamic_date(rebuild){
 
 }
 
-
-
-
 function highlight_preview_date(){
 
 	if(preview_date.epoch == dynamic_data.epoch) return;
@@ -280,19 +278,11 @@ function eval_clock(){
 	var clock_sun_canvas = document.getElementById("clock_sun");
 	var clock_background_canvas = document.getElementById("clock_background");
 
-	clock_face_canvas.width = $('#clock').width()
-	clock_face_canvas.height = $('#clock').width()
-
-	clock_sun_canvas.width = $('#clock').width()
-	clock_sun_canvas.height = $('#clock').width()
-
-	clock_background_canvas.width = $('#clock').width()
-	clock_background_canvas.height = $('#clock').width()
-
 	window.Clock = new CalendarClock(
 		clock_face_canvas,
 		clock_sun_canvas,
 		clock_background_canvas,
+		width       = $('#clock').width(),
 		hours		= static_data.clock.hours,
 		minutes		= static_data.clock.minutes,
 		offset		= static_data.clock.offset,
@@ -312,10 +302,6 @@ function eval_clock(){
 
 function eval_current_time(){
 
-	if(!window.Clock){
-		eval_clock();
-	}
-
 	if(!static_data.clock.enabled || isNaN(static_data.clock.hours) || isNaN(static_data.clock.minutes) || isNaN(static_data.clock.offset)){
 		$('#clock').css('display', 'none');
 		return;
@@ -334,7 +320,7 @@ function evaluate_sun(){
 		return;
 	}
 
-	if(evaluated_static_data.processed_seasons && evaluated_static_data.epoch_data[preview_date.epoch] !== undefined){
+	if(evaluated_static_data.processed_seasons && evaluated_static_data.epoch_data[preview_date.epoch] !== undefined && evaluated_static_data.epoch_data[preview_date.epoch].season !== undefined){
 
 		var sunset = evaluated_static_data.epoch_data[preview_date.epoch].season.time.sunset.data;
 		var sunrise = evaluated_static_data.epoch_data[preview_date.epoch].season.time.sunrise.data;
@@ -426,7 +412,7 @@ function repopulate_day_select(select, val, change, no_leaps){
 
 		if(exclude_self){
 
-			self_object = get_calendar_data($(this).attr('data'));
+			var self_object = get_calendar_data($(this).attr('data'));
 
 			if(self_object){
 				var days = get_days_in_timespan(static_data, year, timespan, self_object, no_leaps);
@@ -443,14 +429,15 @@ function repopulate_day_select(select, val, change, no_leaps){
 			html.push(`<option value="${0}">Before 1</option>`);
 		}
 
-		for(var i = 0; i < days.length; i++){
+		for(var i = 0, day_number = 1; i < days.length; i++){
 
 			var day = days[i];
 
 			if(day != ""){
 				text = day;
 			}else{
-				text = `Day ${i+1}`;
+				text = `Day ${day_number}`;
+				day_number++;
 			}
 
 			html.push(`<option value='${i+1}'>`);

@@ -229,12 +229,6 @@ function set_up_edit_inputs(){
 		}
 	});
 
-	$("input[data='clock']").change(function(){
-
-		evaluate_clock_inputs();
-
-	});
-
 	$('#enable_clock').change(function(){
 
 		static_data.clock.enabled = $(this).is(':checked');
@@ -245,6 +239,8 @@ function set_up_edit_inputs(){
 		evaluate_clock_inputs();
 
 		$('#create_season_events').prop('disabled', !static_data.clock.enabled);
+
+		eval_clock();
 
 	});
 
@@ -826,8 +822,9 @@ function set_up_edit_inputs(){
 
 		static_data.eras.push(stats);
 		var era = add_era_to_list(era_list, id, stats);
-		repopulate_timespan_select(era.find('.timespan-list'), dynamic_data.timespan);
-		repopulate_day_select(era.find('.timespan-day-list'), dynamic_data.day);
+		repopulate_timespan_select(era.find('.timespan-list'), dynamic_data.timespan, false);
+		repopulate_day_select(era.find('.timespan-day-list'), dynamic_data.day, false);
+		sort_list_by_date(era_list);
 		name.val("");
 		do_error_check();
 
@@ -1271,11 +1268,17 @@ function set_up_edit_inputs(){
 		var index = $(this).closest('.sortable-container').attr('index')|0;
 		if($(this).is(':checked')){
 			$(this).parent().parent().parent().next().removeClass('hidden');
-			$(this).parent().parent().parent().next().find('.dynamic_input').prop('disabled', false).val('Year {{year}} - {{era_name}}').change();
+			if(static_data.eras[index].settings.restart){
+				var text = 'Era year {{era_year}} (year {{year}}) - {{era_name}}';
+			}else{
+				var text = 'Year {{year}} - {{era_name}}';
+			}
+			$(this).parent().parent().parent().next().find('.dynamic_input').prop('disabled', false).val(text).change();
 		}else{
 			$(this).parent().parent().parent().next().addClass('hidden');
 			$(this).parent().parent().parent().next().find('.dynamic_input').prop('disabled', true).val('').change();
 		}
+
 	});
 
 	$(document).on('change', '.starting_era', function(){
@@ -1752,6 +1755,8 @@ function set_up_edit_inputs(){
 
 	input_container.change(function(e){
 
+		if(block_inputs) return;
+
 		if(e.originalEvent){
 			var target = $(e.originalEvent.target);
 		}else{
@@ -1885,6 +1890,10 @@ function set_up_edit_inputs(){
 
 			var refresh = target.attr('refresh');
 			refresh = refresh === "true" || refresh === undefined;
+
+			if(type.includes('clock')){
+				evaluate_clock_inputs();
+			}
 
 			do_error_check(type[0], refresh);
 
@@ -2056,7 +2065,7 @@ function add_leap_day_to_list(parent, key, data){
 
 	var element = [];
 
-	element.push(`<div class='sortable-container ${(data.intercalary ? 'intercalary leap-day' : 'leap-day')} index='${key}' collapsed'>`);
+	element.push(`<div class='sortable-container ${(data.intercalary ? 'intercalary leap-day' : 'leap-day')} collapsed' index='${key}'>`);
 		element.push("<div class='main-container'>");
 			element.push("<div class='expand icon-collapse'></div>");
 			element.push("<div class='name-container'>");
@@ -2669,11 +2678,11 @@ function add_location_to_list(parent, key, data){
 							element.push("</div>");
 							element.push("<div class='detail-row'>");
 								element.push("<div class='detail-column clock-input'>");
-									element.push(`<input type='number' step="1.0" class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings.timezone' clocktype='timezone_hour' fc-index='hour' value='${data.settings.timezone.hour}' />`);
+									element.push(`<input type='number' step="1.0" min='${static_data.clock.hours*-0.5}' max='${static_data.clock.hours*0.5}' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings.timezone' clocktype='timezone_hour' fc-index='hour' value='${data.settings.timezone.hour}' />`);
 								element.push("</div>");
 								element.push("<div class='detail-column'>:</div>");
 								element.push("<div class='detail-column float clock-input'>");
-									element.push(`<input type='number' step="1.0" class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings.timezone' clocktype='timezone_minute' fc-index='minute' value='${data.settings.timezone.minute}' />`);
+									element.push(`<input type='number' step="1.0" min='${static_data.clock.minutes*-0.5}' max='${static_data.clock.minutes*0.5}' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings.timezone' clocktype='timezone_minute' fc-index='minute' value='${data.settings.timezone.minute}' />`);
 								element.push("</div>");
 							element.push("</div>");
 						element.push("</div>");
@@ -2840,7 +2849,7 @@ function add_era_to_list(parent, key, data){
 
 	var element = [];
 
-	element.push("<div class='sortable-container era_inputs collapsed' index='${key}'>");
+	element.push(`<div class='sortable-container era_inputs collapsed' index='${key}'>`);
 		element.push("<div class='main-container'>");
 			element.push("<div class='expand icon-collapse'></div>");
 			element.push("<div class='name-container'>");
@@ -2969,7 +2978,7 @@ function add_era_to_list(parent, key, data){
 								element.push("<div class='detail-text'>Ends year:</div>");
 							element.push("</div>");
 							element.push("<div class='detail-column half'>");
-							element.push(`<input type='checkbox' class='form-control dynamic_input ends_year ${!static_data.seasons.global_settings.periodic_seasons ? " protip' disabled" : "'"} data-pt-position="right" data-pt-title='This is disabled because static seasons cannot support eras that end years, as months disappear and seasons require the assigned months.' disabled data='eras.${key}.settings' fc-index='ends_year' ${(data.settings.ends_year ? "checked" : "")} />`);
+							element.push(`<input type='checkbox' class='form-control dynamic_input ends_year ${!static_data.seasons.global_settings.periodic_seasons ? " protip' disabled" : "'"} data-pt-position="right" data-pt-title='This is disabled because static seasons cannot support eras that end years, as months disappear and seasons require the assigned months.' data='eras.${key}.settings' fc-index='ends_year' ${(data.settings.ends_year ? "checked" : "")} />`);
 							element.push("</div>");
 						element.push("</div>");
 
@@ -2992,7 +3001,9 @@ function add_era_to_list(parent, key, data){
 
 	element.push("</div>");
 
-	var element = parent.append(element.join(""));
+	var element = $(element.join(""));
+
+	parent.append(element);
 
 	return element;
 
@@ -4212,6 +4223,13 @@ function evaluate_clock_inputs(){
 		$(this).prop('min', 1).prop('max', static_data.clock.minutes-1).prop('disabled', !static_data.clock.enabled).toggleClass('hidden', !static_data.clock.enabled);
 	});
 
+	$('input[clocktype="timezone_hour"]').each(function(){
+		$(this).prop('min', static_data.clock.hours*-0.5).prop('max', static_data.clock.hours*0.5).prop('disabled', !static_data.clock.enabled).toggleClass('hidden', !static_data.clock.enabled);
+	});
+	$('input[clocktype="timezone_minute"]').each(function(){
+		$(this).prop('min', static_data.clock.minutes*-0.5).prop('max', static_data.clock.minutes*0.5).prop('disabled', !static_data.clock.enabled).toggleClass('hidden', !static_data.clock.enabled);
+	});
+
 	$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 && static_data.clock.enabled);
 
 }
@@ -4224,7 +4242,11 @@ function recalculate_era_epochs(){
 
 }
 
+var block_inputs = false;
+
 function set_up_edit_values(){
+
+	block_inputs = true;
 
 	$('#calendar_name').val(calendar_name);
 
@@ -4319,6 +4341,12 @@ function set_up_edit_values(){
 		}
 	}
 
+	if($('#collapsible_clock').is(':checked')){
+		$('#clock').prependTo($('#collapsible_clock').parent().children('.collapsible-content'));
+	}else{
+		$('#clock').prependTo($('#collapsible_date').parent().children('.collapsible-content'));
+	}
+
 	if(static_data.year_data.leap_days){
 
 		for(var i = 0; i < static_data.year_data.leap_days.length; i++){
@@ -4398,6 +4426,8 @@ function set_up_edit_values(){
 	$('#cycle_test_input').click();
 
 	recalc_stats();
+
+	block_inputs = false;
 
 }
 

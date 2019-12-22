@@ -37,17 +37,60 @@
 
 @section('content')
     <div class="container calendar__list">
+        <div class='row'>
         @empty($calendars)
-            <div class="row">
-                <div class="col-3"></div>
-                <div class="col-6">
-                    <div class="card text-center">
+            <div class="col-12 text-center">
+                <h1 class="calendar__list-name">You don't have any calendars!</h1>
+                <h2>To get started, create one below.</h2>
+            </div>
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <div class="card user_calendar text-center" style="cursor: pointer;" onclick="self.location = '{{ route('calendars.create') }}'">
+                    <div class="card-header">
+                        <h5>New Calendar</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="icon_container">
+                            <a href="{{ route('calendars.create') }}" class="calendar_action">
+                                <i class="fa fa-plus"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @else
+            @foreach($calendars as $calendar)
+                <div class="col-sm-6 col-md-4 col-lg-3">
+                    <div class='user_calendar card text-center'>
                         <div class="card-header">
-                            <h5 class="calendar__list-name">You don't have any calendars!</h5>
-                            <span class="calendar__list-username">No worries though, create one below.</span><br>
-                            @guest
-                                <span class="calendar__list-username">(You'll need to <a href="{{ route('register') }}">register</a> in order to save it)</span>
-                            @endguest
+                            <h5 class="calendar__list-name">{!! $calendar->name !!}</h5>
+                            <span class="calendar__list-username">{{ $calendar->user->username }}</span>
+                        </div>
+                        <div class="card-body">
+                            <div class='icon_container'>
+                                <a class='calendar_action action-edit protip' data-pt-delay-in="500" data-pt-title="Edit '{{ $calendar->name }}'" href='{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}'>
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                                <a class='calendar_action action-show protip' data-pt-delay-in="500" data-pt-title="View '{{ $calendar->name }}'" href='{{ route('calendars.show', ['calendar'=> $calendar->hash ]) }}'>
+                                    <i class="fa fa-eye"></i>
+                                </a>
+                                <a class="calendar_action copy_button action-copy protip" data-pt-delay-in="500" data-pt-title="Copy '{{ $calendar->name }}'" href="javascript:" data-hash="{{ $calendar->hash }}" data-name="{{ $calendar->name }}">
+                                    <i class="fa fa-copy"></i>
+                                </a>
+                                <a class="calendar_action action-export protip" data-pt-delay-in="500" data-pt-title="Export '{{ $calendar->name }}'" href="{{ route('calendars.export', ['calendar' => $calendar->hash]) }}" >
+                                    <i class="fa fa-file-export"></i>
+                                </a>
+                                <a class="calendar_action delete_button action-delete protip" data-pt-delay-in="500" data-pt-title="Delete '{{ $calendar->name }}'" href="javascript:" data-hash="{{ $calendar->hash }}" data-name="{{ $calendar->name }}">
+                                    <i class="fa fa-calendar-times"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+                <div class="col-sm-6 col-md-4 col-lg-3">
+                    <div class="card user_calendar text-center" style="cursor: pointer;" onclick="self.location = '{{ route('calendars.create') }}'">
+                        <div class="card-header">
+                            <h5>New Calendar</h5>
                         </div>
                         <div class="card-body">
                             <div class="icon_container">
@@ -58,42 +101,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-3"></div>
-            </div>
-        @else
-            <div class='row'>
-                @foreach($calendars as $calendar)
-                    <div class="col-sm-6 col-md-4 col-lg-3">
-                        <div class='user_calendar card text-center'>
-                            <div class="card-header">
-                                <h5 class="calendar__list-name">{!! $calendar->name !!}</h5>
-                                <span class="calendar__list-username">{{ $calendar->user->username }}</span>
-                            </div>
-                            <div class="card-body">
-                                <div class='icon_container'>
-                                    <a class='calendar_action action-edit protip' data-pt-delay-in="500" data-pt-title="Edit '{{ $calendar->name }}'" href='{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}'>
-                                        <i class="fa fa-edit"></i>
-                                    </a>
-                                    <a class='calendar_action action-show protip' data-pt-delay-in="500" data-pt-title="View '{{ $calendar->name }}'" href='{{ route('calendars.show', ['calendar'=> $calendar->hash ]) }}'>
-                                        <i class="fa fa-eye"></i>
-                                    </a>
-                                    <a class="calendar_action copy_button action-copy protip" data-pt-delay-in="500" data-pt-title="Copy '{{ $calendar->name }}'" href="javascript:" data-hash="{{ $calendar->hash }}" data-name="{{ $calendar->name }}">
-                                        <i class="fa fa-copy"></i>
-                                    </a>
-                                    <a class="calendar_action action-export protip" data-pt-delay-in="500" data-pt-title="Export '{{ $calendar->name }}'" href="{{ route('calendars.export', ['calendar' => $calendar->hash]) }}" >
-                                        <i class="fa fa-file-export"></i>
-                                    </a>
-                                    <a class="calendar_action delete_button action-delete protip" data-pt-delay-in="500" data-pt-title="Delete '{{ $calendar->name }}'" href="javascript:" data-hash="{{ $calendar->hash }}" data-name="{{ $calendar->name }}">
-                                        <i class="fa fa-calendar-times"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        @endempty
-
+            @endempty
+        </div>
         @isset($changelog)
             <h2>Changelog</h2>
 

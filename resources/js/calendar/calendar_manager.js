@@ -19,10 +19,15 @@ function bind_calendar_events(){
 	});
 
 	$('#input_collapse_btn').click(function(){
+
 		$("#input_container").toggleClass('inputs_collapsed');
 		$("#calendar_container").toggleClass('inputs_collapsed');
-
 		$(this).toggleClass('is-active');
+		
+		if(static_data.clock.enabled && !isNaN(static_data.clock.hours) && !isNaN(static_data.clock.minutes) && !isNaN(static_data.clock.offset)){
+			window.Clock.size = $('#clock').width();
+		}
+
 		evaluate_error_background_size();
 	})
 
@@ -40,15 +45,19 @@ function bind_calendar_events(){
 		calendar_weather.tooltip.hide();
 	});
 
-	$('#calendar').on('scroll', function(){
+	$('#calendar_container').on('scroll', function(){
 		calendar_weather.tooltip.hide();
 	});
 
-	$('#calendar').scroll(function(){
-		eras.evaluate_position();
+	$('#calendar_container').scroll(function(){
+		evaluate_era_position();
 	});
 
 }
+
+var evaluate_era_position = debounce(function(){
+	eras.evaluate_position();
+}, 50);
 
 
 var evaluated_static_data = {};
@@ -181,6 +190,8 @@ worker_calendar.onmessage = e => {
 				scroll_to_epoch(preview_date.epoch)
 				highlight_preview_date();
 			}
+
+			eval_clock();
 
 			update_current_day(false);
 

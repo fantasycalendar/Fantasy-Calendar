@@ -6,6 +6,7 @@ This update has a **lot** of changes. If anything confuses you, check out the [c
 * The entire UI has been overhauled with many alterations that come with the changes below.
 * NEW FEATURES!
      * **Mobile device support** - Fantasy-Calendar now supports mobile devices!
+     * **Dark theme** - Just go to "Settings" and turn it on. Ahhh, comfy retinas.
      * **Intercalary timespans** - Similar to months, but these timespans do not affect the week flow within a calendar, and simply acts as days without being attached to a month.
      * **Leap Days** - You can now have multiple leap days! This can also be a normal day that gets added to a month, or act as an intercalary leap day where it interrupts the month, inserts a day outside of the month and then continues the month as if nothing happened. Leap days can also add a week day to the month.
      * **Seasons** - Completely overhauled! Instead of being attached to specific days in the year, it now has a static length. This also means that your seasons can drift if the average year length and the season length don't match.
