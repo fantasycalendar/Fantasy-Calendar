@@ -233,12 +233,6 @@ function set_up_edit_inputs(){
 		}
 	});
 
-	$("input[data='clock']").change(function(){
-
-		evaluate_clock_inputs();
-
-	});
-
 	$('#enable_clock').change(function(){
 
 		static_data.clock.enabled = $(this).is(':checked');
@@ -1846,6 +1840,10 @@ function set_up_edit_inputs(){
 			var refresh = target.attr('refresh');
 			refresh = refresh === "true" || refresh === undefined;
 
+			if(type.includes('clock')){
+				evaluate_clock_inputs();
+			}
+
 			do_error_check(type[0], refresh);
 
 		}
@@ -2629,11 +2627,11 @@ function add_location_to_list(parent, key, data){
 							element.push("</div>");
 							element.push("<div class='detail-row'>");
 								element.push("<div class='detail-column clock-input'>");
-									element.push(`<input type='number' step="1.0" class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings.timezone' clocktype='timezone_hour' fc-index='hour' value='${data.settings.timezone.hour}' />`);
+									element.push(`<input type='number' step="1.0" min='${static_data.clock.hours*-0.5}' max='${static_data.clock.hours*0.5}' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings.timezone' clocktype='timezone_hour' fc-index='hour' value='${data.settings.timezone.hour}' />`);
 								element.push("</div>");
 								element.push("<div class='detail-column'>:</div>");
 								element.push("<div class='detail-column float clock-input'>");
-									element.push(`<input type='number' step="1.0" class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings.timezone' clocktype='timezone_minute' fc-index='minute' value='${data.settings.timezone.minute}' />`);
+									element.push(`<input type='number' step="1.0" min='${static_data.clock.minutes*-0.5}' max='${static_data.clock.minutes*0.5}' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings.timezone' clocktype='timezone_minute' fc-index='minute' value='${data.settings.timezone.minute}' />`);
 								element.push("</div>");
 							element.push("</div>");
 						element.push("</div>");
@@ -4164,6 +4162,13 @@ function evaluate_clock_inputs(){
 	});
 	$('.minute_input').each(function(){
 		$(this).prop('min', 1).prop('max', static_data.clock.minutes-1).prop('disabled', !static_data.clock.enabled).toggleClass('hidden', !static_data.clock.enabled);
+	});
+
+	$('input[clocktype="timezone_hour"]').each(function(){
+		$(this).prop('min', static_data.clock.hours*-0.5).prop('max', static_data.clock.hours*0.5).prop('disabled', !static_data.clock.enabled).toggleClass('hidden', !static_data.clock.enabled);
+	});
+	$('input[clocktype="timezone_minute"]').each(function(){
+		$(this).prop('min', static_data.clock.minutes*-0.5).prop('max', static_data.clock.minutes*0.5).prop('disabled', !static_data.clock.enabled).toggleClass('hidden', !static_data.clock.enabled);
 	});
 
 	$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 && static_data.clock.enabled);
