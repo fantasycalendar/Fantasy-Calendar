@@ -128,7 +128,7 @@
                 }else if($('#presets').val() == 'Random'){
 
                     calendar_name = "Random Calendar";
-                    static_data = randomizer.randomize();
+                    static_data = randomizer.randomize(static_data);
                     dynamic_data = {
                         "year": 1,
                         "timespan": 0,
