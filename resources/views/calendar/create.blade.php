@@ -63,6 +63,8 @@
             }
         };
 
+        randomizer = new RandomCalendar();
+
         dynamic_data = {
             "year": 1,
             "timespan": 0,
@@ -123,6 +125,24 @@
                     }else{
                         alert("Unrecognized JSON format.")
                     }
+                }else if($('#presets').val() == 'Random'){
+
+                    calendar_name = "Random Calendar";
+                    static_data = randomizer.randomize();
+                    dynamic_data = {
+                        "year": 1,
+                        "timespan": 0,
+                        "day": 1,
+                        "epoch": 0,
+                        "custom_location": false,
+                        "location": "Equatorial"
+                    };
+                    empty_edit_values();
+                    set_up_edit_values();
+                    set_up_view_values();
+                    set_up_visitor_values();
+                    error_check('calendar', true);
+
                 }else{
                     calendar_name = clone(calendar_presets[$('#presets').val()].name);
                     static_data = clone(calendar_presets[$('#presets').val()].static_data);
