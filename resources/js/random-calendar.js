@@ -16,8 +16,9 @@ class RandomCalendar{
 
 		var weekdays	= this.random_int_between(5, 10);
 		var months		= this.random_int_between(6, 18);
-		var leap_days	= this.random_int_between(0, 3);
+		var leap_days	= this.random_int_between(0, 1);
 		var moons		= this.random_int_between(1, 5);
+		var seasons		= this.random_int_between(1, 2)*2;
 
 		var longest_moon_cycle = 0
 		var longest_moon_index = 0
@@ -66,7 +67,7 @@ class RandomCalendar{
 
 		static_data.year_data.leap_days = [];
 		for(var i = 0; i < leap_days; i++){
-			var interval = this.random_int_between(2, 8);
+			var interval = 2*this.random_int_between(1, 4);
 			year_length += 1/interval;
 			static_data.year_data.leap_days.push({
 				'name': `Leap day ${i+1}`,
@@ -82,6 +83,85 @@ class RandomCalendar{
 
 		static_data.moons[longest_moon_index].cycle = year_length/months;
 		static_data.moons[longest_moon_index].granularity = get_moon_granularity(year_length/months);
+
+
+		static_data.seasons.global_settings.periodic_seasons = true;
+
+		static_data.seasons.data = [];
+
+		static_data.seasons.data.push({
+			"name": "Winter",
+			"time": {
+				"sunrise": {
+					"hour": 6,
+					"minute": 0
+				},
+				"sunset": {
+					"hour": 18,
+					"minute": 0
+				}
+			},
+			"transition_length": year_length / seasons,
+			"duration": 0
+		});
+
+		if(seasons == 4){
+
+			static_data.seasons.data.push({
+				"name": "Spring",
+				"time": {
+					"sunrise": {
+						"hour": 6,
+						"minute": 0
+					},
+					"sunset": {
+						"hour": 18,
+						"minute": 0
+					}
+				},
+				"transition_length": year_length / seasons,
+				"duration": 0
+			});
+
+		}
+
+		static_data.seasons.data.push({
+			"name": "Summer",
+			"time": {
+				"sunrise": {
+					"hour": 6,
+					"minute": 0
+				},
+				"sunset": {
+					"hour": 18,
+					"minute": 0
+				}
+			},
+			"transition_length": year_length / seasons,
+			"duration": 0
+		});
+
+		if(seasons == 4){
+
+			static_data.seasons.data.push({
+				"name": "Autumn",
+				"time": {
+					"sunrise": {
+						"hour": 6,
+						"minute": 0
+					},
+					"sunset": {
+						"hour": 18,
+						"minute": 0
+					}
+				},
+				"transition_length": year_length / seasons,
+				"duration": 0
+			});
+
+		}
+
+		static_data.seasons.global_settings.season_offset = Math.floor(0-static_data.year_data.timespans[static_data.year_data.timespans.length-1].length/3);
 
 		return static_data;
 
