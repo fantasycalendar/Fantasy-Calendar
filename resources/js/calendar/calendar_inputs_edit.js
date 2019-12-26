@@ -537,8 +537,11 @@ function set_up_edit_inputs(){
 		var name = $(this).prev();
 		var id = location_list.children().length;
 
+
+		var name_value = name.val();
+
 		stats = {
-			"name": name.val(),
+			"name": name_value,
 			"seasons": [],
 
 			"settings": {
@@ -592,7 +595,7 @@ function set_up_edit_inputs(){
 			$(this).slider('option', 'value', parseInt($(this).parent().parent().find('.slider_input').val()));
 		});
 
-		do_error_check();
+		location_list.find(`option[value=${name_value}]`).prop('selected', true).change();
 
 	});
 
