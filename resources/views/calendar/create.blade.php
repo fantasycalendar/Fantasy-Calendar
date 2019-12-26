@@ -136,8 +136,8 @@
                         confirmButtonText: 'Generate',
                         icon: "warning",
                     })
-                    .then((generate) => {
-                        if(generate) {
+                    .then((result) => {
+                        if(result.value) {
 
                             static_data = randomizer.randomize(static_data);
                             dynamic_data = {
