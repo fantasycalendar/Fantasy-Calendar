@@ -14,14 +14,13 @@ class RandomCalendar{
 		this.seed = Math.abs((Math.random().toString().substr(7)|0));
 		this.idx = 0;
 
-		var weekdays	= this.random_int_between(5, 10);
 		var months		= this.random_int_between(6, 18);
 		var leap_days	= this.random_int_between(0, 1);
 		var moons		= this.random_int_between(1, 5);
 		var seasons		= this.random_int_between(1, 2)*2;
 
-		var longest_moon_cycle = 0
-		var longest_moon_index = 0
+		var longest_moon_cycle = 0;
+		var longest_moon_index = 0;
 
 		static_data.moons = [];
 		for(var i = 0; i < moons; i++){
@@ -46,10 +45,14 @@ class RandomCalendar{
 
 		static_data.moons[longest_moon_index].shift = 0;
 
+		var weekdays	= longest_moon_cycle/4 > 8 ? Math.floor(longest_moon_cycle/5) : Math.floor(longest_moon_cycle/4);
+
 		static_data.year_data.global_week = [];
 		for(var i = 0; i < weekdays; i++){
 			static_data.year_data.global_week.push(`Weekday ${i+1}`)			
 		}
+
+		static_data.year_data.overflow = true;
 
 		var year_length = 0;
 		var total_year_length = longest_moon_cycle*months;
