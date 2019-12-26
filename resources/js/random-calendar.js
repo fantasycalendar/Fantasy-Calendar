@@ -60,7 +60,6 @@ class RandomCalendar{
 		for(var i = 0; i < months; i++){
 			var length = this.random_int_between(longest_moon_cycle-2, longest_moon_cycle+2);
 			if(total_year_length-length < 0){
-				console.log(total_year_length-length)
 				length = total_year_length;
 			}
 			year_length += length;
