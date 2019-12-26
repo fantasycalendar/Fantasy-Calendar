@@ -52,10 +52,16 @@ class RandomCalendar{
 		}
 
 		var year_length = 0;
+		var total_year_length = longest_moon_cycle*months;
 		static_data.year_data.timespans = [];
 		for(var i = 0; i < months; i++){
 			var length = this.random_int_between(longest_moon_cycle-2, longest_moon_cycle+2);
+			if(total_year_length-length < 0){
+				console.log(total_year_length-length)
+				length = total_year_length;
+			}
 			year_length += length;
+			total_year_length -= length;
 			static_data.year_data.timespans.push({
 				"name": `Month ${i+1}`,
 				'type': 'month',
