@@ -30,7 +30,7 @@ class RandomCalendar{
 			static_data.moons.push({
 				'name':  `Moon ${i+1}`,
 				'cycle': cycle,
-				'shift': this.random_int_between(4, 48),
+				'shift': this.random_int_between(0, cycle),
 				'granularity': get_moon_granularity(cycle),
 				'color': '#FFFFFF',
 				'hidden': false,
