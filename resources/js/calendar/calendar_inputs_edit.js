@@ -2851,7 +2851,8 @@ function add_cycle_to_sortable(parent, key, data){
 									element.push(`<select class='form-control dynamic_input cycle_type' data='cycles.data.${key}' fc-index='type'>`);
 										element.push(`<option value='year'>Year</option>`);
 										element.push(`<option value='era_year'>Era year</option>`);
-										element.push(`<option value='timespan_index'>Month</option>`);
+										element.push(`<option value='timespan_index'>Month in year</option>`);
+										element.push(`<option value='num_timespans'>Month count (since 1/1/1)</option>`);
 										element.push(`<option value='day'>Day in month</option>`);
 										element.push(`<option value='year_day'>Year day</option>`);
 										element.push(`<option value='epoch'>Epoch (days since 1/1/1)</option>`);

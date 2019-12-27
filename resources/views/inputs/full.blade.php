@@ -939,7 +939,7 @@
             <button type='button' class='btn btn-info hidden reset_preview_date protip' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >< Current</button>
         </div>
 
-		<div id='top_follower_content'></div>
+		<div id='top_follower_content'><div class='year'></div><div class='cycle'></div></div>
 
         <div class='reset_preview_date_container right'>
             <button type='button' class='btn btn-info hidden reset_preview_date protip' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >Current ></button>
