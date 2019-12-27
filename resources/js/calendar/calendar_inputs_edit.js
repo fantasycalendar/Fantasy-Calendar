@@ -4082,7 +4082,9 @@ function populate_calendar_lists(){
 		for(var calendar in link_data.children){
 			var child = link_data.children[calendar];
 			var calendar = owned_calendars[child];
-			add_link_to_list(calendar_link_list, calendar, calendar.name);
+			if(calendar){
+				add_link_to_list(calendar_link_list, calendar, calendar.name);
+			}
 		}
 
 		var html = [];
@@ -4093,7 +4095,7 @@ function populate_calendar_lists(){
 
 			var calendar = owned_calendars[calendarhash];
 
-			if(calendar.hash != hash){
+			if(calendar && calendar.hash != hash){
 
 				if(calendar.master_hash){
 
