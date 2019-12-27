@@ -59,9 +59,15 @@ class Calendar extends Model
 
         $static_data['event_data']['events'] = $this->events->sortBy('sort_by')->values();
 
-        if(!Auth::check() || !($this->user->id == Auth::user()->id || Auth::user()->isAdmin())) {
+        if(!Auth::check() || Auth::user()->can('update', $this)) {
             foreach($static_data['event_data']['events'] as $event){
-                if($event['settings']['hide'] || (isset($event['settings']['hide_full']) && $event['settings']['hide_full'])){
+                if(
+                    // We have two different ways to hide things.
+                    (array_key_exists('hide', $event['settings']) && $event['settings']['hide'])
+
+                    // We gotta check whether they exist before we can check them
+                    || (array_key_exists('hide_full', $event['settings']) && $event['settings']['hide_full'])
+                ){
                     $event['name'] = "Sneaky, sneaky...";
                     $event['description'] = "You shouldn't be here...";
                 }
