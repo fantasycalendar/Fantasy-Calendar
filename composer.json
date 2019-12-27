@@ -11,6 +11,7 @@
         "php": "^7.2",
         "ext-json": "*",
         "barryvdh/laravel-ide-helper": "^2.6",
+        "code16/sharp": "^4.2",
         "fideloper/proxy": "^4.0",
         "graham-campbell/markdown": "^11.0",
         "laravel/framework": "^6.0",
@@ -56,6 +57,7 @@
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan vendor:publish --provider=Code16\\Sharp\\SharpServiceProvider --tag=assets --force",
             "@php artisan package:discover --ansi"
         ],
         "post-root-package-install": [
