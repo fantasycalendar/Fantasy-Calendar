@@ -417,6 +417,8 @@ var calendar_layouts = {
 
 		this.append_layout();
 
+		this.update_year_follower();
+
 	},
 
 	insert_calendar: function(data){
@@ -459,6 +461,8 @@ var calendar_layouts = {
 		this.add_year_day_number();
 
 		this.add_month_number();
+
+		this.update_year_follower();
 
 	},
 
