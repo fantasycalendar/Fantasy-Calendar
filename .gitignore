@@ -6,6 +6,7 @@
 /public/css
 /public/fonts
 /public/resources
+/public/vendor
 /storage/*.key
 /storage/
 /vendor
