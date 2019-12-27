@@ -2090,9 +2090,9 @@ function add_timespan_to_sortable(parent, key, data){
 					element.push("<div class='container'>");
 						element.push("<div class='row'>");
 							element.push("<div class='col p-0'>");
+								element.push("Length:");
 							element.push("</div>");
 							element.push("<div class='col p-0'>");
-								element.push("Length:");
 							element.push("</div>");
 						element.push("</div>");
 					element.push("</div>");
