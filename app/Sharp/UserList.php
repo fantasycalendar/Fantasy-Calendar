@@ -35,6 +35,9 @@ class UserList extends SharpEntityList
             EntityListDataContainer::make('created_at')
                 ->setLabel('Created At')
                 ->setSortable()
+        )->addDataContainer(
+            EntityListDataContainer::make('email_verified_at')
+                ->setLabel("Email verified")
         );
     }
 
@@ -47,10 +50,11 @@ class UserList extends SharpEntityList
     public function buildListLayout()
     {
         $this->addColumn('username', 2, 6);
-        $this->addColumn('email', 3, 6);
+        $this->addColumn('email', 4, 6);
         $this->addColumn('permissions', 1, 6);
         $this->addColumn('beta_authorised', 1,6);
         $this->addColumn('created_at', 2,6);
+        $this->addColumn('email_verified_at', 2, 6);
     }
 
     /**
@@ -74,12 +78,24 @@ class UserList extends SharpEntityList
     */
     public function getListData(EntityListQueryParams $params)
     {
-        $user_model = new User();
+        $user_model = User::query();
+
+        if ($params->hasSearch()) {
+            foreach ($params->searchWords() as $word) {
+                $user_model->where('username', 'like', $word)
+                        ->orWhere('email', 'like', $word);
+            }
+        }
 
         return $this->setCustomTransformer(
             "beta_authorised",
             function($beta_authorized, $user, $attribute) {
                 return ($beta_authorized ? "Yes" : "No");
+            }
+        )->setCustomTransformer(
+            "permissions",
+            function($permissions) {
+                return ($permissions == 1 ? "Admin" : "User");
             }
         )->transform($user_model->paginate(20));
     }
