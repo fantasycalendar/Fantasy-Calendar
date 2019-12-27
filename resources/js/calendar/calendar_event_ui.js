@@ -75,7 +75,6 @@ var edit_event_ui = {
 		});
 
 		this.save_btn.click(function(){
-			edit_event_ui.event_background.scrollTop = 0;
 			edit_event_ui.save_current_event();
 		})
 
@@ -363,6 +362,9 @@ var edit_event_ui = {
 
 		static_data.event_data.events[eventId] = stats;
 
+		edit_event_ui.event_conditions_container.empty();
+		edit_event_ui.add_preset_conditions("once", false);
+
 		this.set_current_event(eventId)
 
 	},
@@ -438,7 +440,7 @@ var edit_event_ui = {
 
 		static_data.event_data.events[this.event_id].name = name;
 
-		static_data.event_data.events[this.event_id].description = this.trumbowyg.trumbowyg('html');
+		static_data.event_data.events[this.event_id].description = sanitizeHtml(this.trumbowyg.trumbowyg('html'), {allowedTags: [ 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'a', 'ul', 'ol', 'nl', 'li', 'b', 'i', 'strong', 'em', 'strike', 'code', 'hr', 'br', 'div', 'table', 'thead', 'caption', 'tbody', 'tr', 'th', 'td', 'pre', 'img' ]});
 
 		static_data.event_data.events[this.event_id].data = this.create_event_data();
 
@@ -509,6 +511,8 @@ var edit_event_ui = {
 		$('#has_duration').prop('checked', false);
 		$('#duration').prop('disabled', true).val(1);
 		$('#show_first_last').prop('checked', false);
+
+		this.event_background.scrollTop(0);
 
 		this.event_background.addClass('hidden');
 

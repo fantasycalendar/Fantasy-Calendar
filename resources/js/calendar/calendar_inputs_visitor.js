@@ -372,7 +372,7 @@ function evaluate_sun(){
 		return;
 	}
 
-	if(evaluated_static_data.processed_seasons && evaluated_static_data.epoch_data[preview_date.epoch] !== undefined){
+	if(evaluated_static_data.processed_seasons && evaluated_static_data.epoch_data[preview_date.epoch] !== undefined && evaluated_static_data.epoch_data[preview_date.epoch].season !== undefined){
 
 		var sunset = evaluated_static_data.epoch_data[preview_date.epoch].season.time.sunset.data;
 		var sunrise = evaluated_static_data.epoch_data[preview_date.epoch].season.time.sunrise.data;
@@ -468,7 +468,7 @@ function repopulate_day_select(select, val, change, no_leaps, max){
 
 		if(exclude_self){
 
-			self_object = get_calendar_data($(this).attr('data'));
+			var self_object = get_calendar_data($(this).attr('data'));
 
 			if(self_object){
 				var days = get_days_in_timespan(static_data, year, timespan, self_object, no_leaps);
@@ -485,14 +485,15 @@ function repopulate_day_select(select, val, change, no_leaps, max){
 			html.push(`<option value="${0}">Before 1</option>`);
 		}
 
-		for(var i = 0; i < days.length; i++){
+		for(var i = 0, day_number = 1; i < days.length; i++){
 
 			var day = days[i];
 
 			if(day != ""){
 				text = day;
 			}else{
-				text = `Day ${i+1}`;
+				text = `Day ${day_number}`;
+				day_number++;
 			}
 
 			if(max && i >= max) break;

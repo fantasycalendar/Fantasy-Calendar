@@ -961,14 +961,17 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object, no
 	var days = [];
 
 	for(var i = 1; i <= timespan.length; i++){
-		days.push("");
+		var appears = does_day_appear(static_data, year, timespan_index, i);
+		if(appears.result){
+			days.push("");
+		}
 	}
 
 	if(no_leaps){
 		return days;
 	}
 
-	var offset = 1;
+	var offset = 0;
 
 	var leap_days = clone(static_data.year_data.leap_days);
 
@@ -980,10 +983,14 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object, no
 
 	for(var index = 0; index < leap_days.length; index++){
 
-		var leap_day = leap_days[index];
-		var leap_day_index = leap_day.index;
+		var leap_day_index = leap_days[index].index;
+		var leap_day = static_data.year_data.leap_days[leap_day_index];
 
-		if(leap_day.timespan === timespan_index){
+		if(self_object && Object.compare(leap_day, self_object)){
+
+			self_object = false;
+
+		}else if(leap_day.timespan === timespan_index){
 
 			if(leap_day.intercalary){
 
@@ -991,22 +998,14 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object, no
 
 				if(is_there.result){
 
-					if(self_object && Object.compare(leap_day, self_object)){
+					var leaping = does_leap_day_appear(static_data, year, timespan_index, leap_day_index);
 
-						self_object = false;
+					if(leaping){
 
-					}else{
+						days.splice(leap_day.day+offset, 0, `${leap_day.name}`);
 
-						var leaping = does_leap_day_appear(static_data, year, timespan_index, leap_day_index);
-
-						if(leaping){
-
-							days.splice(leap_day.day+offset, 0, `Intercalary "${leap_day.name}"`);
-
-							offset++;
-						}
+						offset++;
 					}
-
 
 				}
 
@@ -1016,19 +1015,12 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object, no
 
 				if(is_there.result){
 
-					if(self_object && Object.compare(leap_day, self_object)){
+					var leaping = does_leap_day_appear(static_data, year, timespan_index, leap_day_index);
 
-						self_object = false;
+					if(leaping){
 
-					}else{
+						days.push("");
 
-						var leaping = does_leap_day_appear(static_data, year, timespan_index, leap_day_index);
-
-						if(leaping){
-
-							days.push("");
-
-						}
 					}
 				}
 			}
@@ -1142,7 +1134,7 @@ function does_day_appear(static_data, year, timespan, day){
 
 		var era = static_data.eras[era_index];
 
-		if(era.settings.ends_year && year == convert_year(era.date.year)-1 && timespan == era.date.timespan && day > era.date.day){
+		if(era.settings.ends_year && year == convert_year(era.date.year) && timespan == era.date.timespan && day > era.date.day){
 
 			return {
 				result: false,
@@ -1826,7 +1818,7 @@ function evaluate_calendar_start(static_data, year, month, day){
 
 		}
 
-		if(era.settings.restart && year > convert_year(era.date.year)){
+		if(era.settings.restart && year >= convert_year(era.date.year)){
 
 			for(var i = 0; i < era_index; i++){
 

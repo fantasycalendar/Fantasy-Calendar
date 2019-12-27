@@ -8,6 +8,8 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
+use Mews\Purifier\Facades\Purifier;
+
 use App\CalendarEvent;
 
 class SaveCalendarEvents implements ShouldQueue
@@ -42,6 +44,8 @@ class SaveCalendarEvents implements ShouldQueue
             }
 
             if($event['event_category_id'] < 0) $event['event_category_id'] = null;
+
+            $event['description'] = Purifier::clean($event['description']);
 
             if(array_key_exists('id', $event)) {
                 $eventids[] = $event['id'];

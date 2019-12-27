@@ -345,7 +345,7 @@ function fix_date(){
 
 function repopulate_location_select_list(){
 
-	var show_location_select = static_data.seasons.data.length > 0;
+	var show_location_select = static_data.seasons.data.length > 0 || static_data.seasons.locations.length > 0;
 
 	var is_edit = location_select.closest('.wrap-collapsible').find('.form-inline.locations').length > 0;
 
@@ -365,20 +365,16 @@ function repopulate_location_select_list(){
 
 		}
 
-		if(static_data.seasons.global_settings.enable_weather){
-			if((static_data.seasons.data.length == 2 || static_data.seasons.data.length == 4)){
-				html.push('<optgroup label="Presets" value="preset">');
-				for(var i = 0; i < Object.keys(preset_data.locations[static_data.seasons.data.length]).length; i++){
-					html.push(`<option>${Object.keys(preset_data.locations[static_data.seasons.data.length])[i]}</option>`);
-				}
-				html.push('</optgroup>');
-			}else{
-				html.push('<optgroup label="Presets" value="preset">');
-				html.push(`<option disabled>Presets require two or four seasons.</option>`);
-				html.push('</optgroup>');
+		html.push('<optgroup label="Presets" value="preset">');
+		if((static_data.seasons.data.length == 2 || static_data.seasons.data.length == 4) && static_data.seasons.global_settings.enable_weather){
+			for(var i = 0; i < Object.keys(preset_data.locations[static_data.seasons.data.length]).length; i++){
+				html.push(`<option>${Object.keys(preset_data.locations[static_data.seasons.data.length])[i]}</option>`);
 			}
-
+		}else{
+			html.push(`<option disabled>Presets require two or four seasons and weather enabled.</option>`);
 		}
+		html.push('</optgroup>');
+
 
 		if(html.length > 0){
 

@@ -26,6 +26,7 @@
         <select class='form-control' id='presets'>
             <option>Presets</option>
             <option>Custom JSON</option>
+            <option>Random</option>
         </select>
         
         <button id='json_apply' disabled type='button' class='btn btn-warning btn-sm' >Apply</button>
