@@ -344,30 +344,31 @@ function check_last_change(output){
 
 function delete_calendar(calendar_hash, calendar_name, callback){
 
-    swal({
+    swal.fire({
         text: "If you're sure about deleting this calendar, please type '" + calendar_name + "' below:",
-        content: "input",
-        dangerMode: true,
-        buttons: [
-            true,
-            {
-                text: "Delete",
-                closeModal: false,
-            }
-        ]
+        input: "text",
+        icon: "warning",
+		showCancelButton: true,
+		confirmButtonColor: '#d33',
+		cancelButtonColor: '#3085d6',
+		confirmButtonText: 'Delete',
+        dangerMode: true
     })
-        .then(name => {
-            if (!name) throw null;
-            if (name !== calendar_name) throw "Sorry! " + name + " isn't the same as " + calendar_name;
+        .then(result => {
+
+        	if(result.dismiss || !result.value) throw null;
+
+            if (result.value !== calendar_name) throw `Sorry! "${result.value}" isn't the same as "${calendar_name}"`;
 
             return axios.delete('/api/calendar/' + calendar_hash);
+
         })
         .then(results => {
             if(results.data.error) {
                 throw "Error: " + results.data.message;
             }
 
-            swal({
+            swal.fire({
                 icon: "success",
                 title: "Deleted!",
                 text: "The calendar " + calendar_name + " has been deleted.",
@@ -380,9 +381,9 @@ function delete_calendar(calendar_hash, calendar_name, callback){
         .catch(err => {
             if(err) {
                 console.log(err);
-                swal("Oh no!", err, "error");
+                swal.fire("Oh no!", err, "error");
             } else {
-                swal.stopLoading();
+                swal.hideLoading();
                 swal.close();
             }
         });
@@ -391,31 +392,20 @@ function delete_calendar(calendar_hash, calendar_name, callback){
 
 function copy_calendar(calendar_hash, calendar_name, callback){
 
-    swal({
+    swal.fire({
         text: "What would you like to call your new copy of '" + calendar_name + "'?",
-        content: {
-            element: "input",
-            attributes: {
-                placeholder: calendar_name + " (clone)"
-            }
-        },
-        buttons: {
-            cancel: {
-                text:"Cancel",
-                value: false,
-                closeModal: true,
-                visible: true
-            },
-            confirm: {
-                text: "Clone",
-                closeModal: false,
-            }
-        }
+        input: "text",
+		inputPlaceholder: calendar_name + " (clone)",
+		showCancelButton: true,
+		confirmButtonText: 'Clone',
     })
-        .then(name => {
-            let new_calendar_name = "";
+        .then(result => {
 
-            if(name === false) throw null;
+        	if(result.dismiss || result.value === false) throw null;
+
+        	var name = result.value;
+
+            let new_calendar_name = "";
 
             if (!name) {
                 new_calendar_name = calendar_name  + " (clone)";
@@ -432,11 +422,12 @@ function copy_calendar(calendar_hash, calendar_name, callback){
             });
         })
         .then(results => {
+
             if(results.data.error) {
                 throw "Error: " + results.data.message;
             }
 
-            swal({
+            swal.fire({
                 icon: "success",
                 title: "Copied!",
                 text: "The calendar " + calendar_name + " has been cloned.",
@@ -449,9 +440,9 @@ function copy_calendar(calendar_hash, calendar_name, callback){
         .catch(err => {
             if(err) {
                 console.log(err);
-                swal("Oh no!", err, "error");
+                swal.fire("Oh no!", err, "error");
             } else {
-                swal.stopLoading();
+                swal.hideLoading();
                 swal.close();
             }
         });

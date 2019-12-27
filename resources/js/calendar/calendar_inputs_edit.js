@@ -127,10 +127,6 @@ function set_up_edit_inputs(){
 
 	});
 
-	$(document).on('change', cycle_sortable, function(){
-		update_cycle_example_text();
-	});
-
 	global_week_sortable.sortable({
 		placeholder: "highlight",
 		handle: '.handle',
@@ -392,24 +388,25 @@ function set_up_edit_inputs(){
 		}
 
 		if(ends_year){
-			swal({
+			swal.fire({
 			title: "Error!",
 				text: `You have eras that end years - you cannot switch to dated seasons with year-ending eras as the dates might disappear, and that kinda defeats the whole purpose.`,
-				icon: "error",
-				dangerMode: true
+				icon: "error"
 			});
 			return;
 		}
 
-		swal({
+		swal.fire({
 			title: "Are you sure?",
 			text: `Are you sure you want to switch to ${checked ? "PERIODIC" : "DATED"} seasons? Your current seasons will be deleted so you can re-create them.`,
-			buttons: true,
+			showCancelButton: true,
+			confirmButtonColor: '#d33',
+			cancelButtonColor: '#3085d6',
+			confirmButtonText: 'Close',
 			icon: "warning",
-			dangerMode: true,
 		})
-		.then((doSwitch) => {
-			if(doSwitch) {
+		.then((result) => {
+			if(!result.dismiss) {
 				$(this).prop('checked', checked);
 				season_sortable.empty();
 				static_data.seasons.data = []
@@ -510,15 +507,17 @@ function set_up_edit_inputs(){
 	$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 && static_data.clock.enabled);
 
 	$('#create_season_events').click(function(){
-		swal({
+		swal.fire({
 			title: "Are you sure?",
 			text: 'Are you sure you want to create seasonal events? If you already have created them, you might get doubling.',
-			buttons: true,
+			showCancelButton: true,
+			confirmButtonColor: '#d33',
+			cancelButtonColor: '#3085d6',
+			confirmButtonText: 'Close',
 			icon: "info",
-			dangerMode: true,
 		})
-		.then((willCreate) => {
-			if(willCreate) {
+		.then((result) => {
+			if(!result.dismiss) {
 
 				var events = create_season_events();
 
@@ -1229,30 +1228,79 @@ function set_up_edit_inputs(){
 	});
 
 	$(document).on('change', '.unique-week-input', function(){
-		var index = $(this).attr('index');
+		var timespan_index = $(this).attr('index');
+		var parent = $(this).closest('.sortable-container');
 		if($(this).is(':checked')){
 			var element = [];
-			element.push("<div class='week_list'>");
-				static_data.year_data.timespans[index].week = [];
-				for(index = 0; index < static_data.year_data.global_week.length; index++){
-					static_data.year_data.timespans[index].week.push(static_data.year_data.global_week[index]);
-					element.push(`<input type='text' class='detail-row form-control internal-list-name dynamic_input custom_week_day' data='year_data.timespans.${index}.week' fc-index='${index}' value='${static_data.year_data.global_week[index]}'/>`);
-				}
-			element.push("</div>");
-			$(this).parent().parent().parent().parent().find(".detail-row.collapsible-content").append(element.join(""));
-			$(this).parent().parent().next().find(".week-length").prop('disabled', false).val(static_data.year_data.global_week.length);
-			$(this).parent().parent().parent().parent().find(".toggle").removeClass('hidden').prop('checked', true);
-			$(this).parent().parent().parent().parent().find(".lbl-toggle").removeClass('hidden');
+			static_data.year_data.timespans[timespan_index].week = [];
+			for(index = 0; index < static_data.year_data.global_week.length; index++){
+				static_data.year_data.timespans[timespan_index].week.push(static_data.year_data.global_week[index]);
+				element.push(`<input type='text' class='detail-row form-control internal-list-name dynamic_input custom_week_day' data='year_data.timespans.${timespan_index}.week' fc-index='${index}' value='${static_data.year_data.global_week[index]}'/>`);
+			}
+			parent.find(".week_list").html(element.join("")).parent().removeClass('hidden');
+			parent.find(".week-length").prop('disabled', false).val(static_data.year_data.global_week.length);
+			parent.find(".weekday_quick_add").prop('disabled', false);
 		}else{
-			$(this).parent().parent().next().find(".week-length").prop('disabled', true).val(0);
-			$(this).parent().parent().parent().parent().find(".detail-row.collapsible-content").html("");
-			$(this).parent().parent().parent().parent().find(".toggle").addClass('hidden');
-			$(this).parent().parent().parent().parent().find(".lbl-toggle").addClass('hidden');
-			delete static_data.year_data.timespans[index].week;
+			parent.find(".week_list").html('').parent().addClass('hidden');
+			parent.find(".week-length").prop('disabled', true).val(0);
+			parent.find(".weekday_quick_add").prop('disabled', true);
+			delete static_data.year_data.timespans[timespan_index].week;
 			do_error_check();
 		}
 
 		evaluate_custom_weeks();
+
+	});
+
+	$(document).on('click', '.weekday_quick_add', function(){
+
+		var container = $(this).closest('.sortable-container');
+		var week_day_list = container.find('.week_list');
+
+		var id = (container.attr('index')|0);
+
+		var timespan = static_data.year_data.timespans[id];
+
+		swal.fire({
+			title: "Cycle Names",
+			text: "Each line entered below creates one week day in this month.",
+			input: "textarea",
+			inputValue: timespan.week.join('\n'),
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'OK',
+			icon: "info"
+		}).then((result) => {
+
+			if(result.dismiss) return;
+
+			if(result.value === ""){
+				swal.fire({
+					title: "Error",
+					text: "You didn't enter any values!",
+					icon: "warning"
+				});
+			}
+
+			var weekdays = result.value.split('\n');
+
+			timespan.week = weekdays;
+
+			container.find('.week-length').val(weekdays.length);
+
+			week_day_list.empty();
+
+			var element = [];
+			for(i = 0; i < timespan.week.length; i++){
+				element.push(`<input type='text' class='detail-row form-control internal-list-name custom_week_day dynamic_input' data='year_data.timespans.${index}.week' fc-index='${i}' value='${timespan.week[i]}'/>`);
+			}
+
+			week_day_list.append(element.join(""));
+
+			do_error_check('calendar');
+
+		});
 
 	});
 
@@ -1318,30 +1366,27 @@ function set_up_edit_inputs(){
 	});
 
 	$(document).on('change', '.week-length', function(){
-		var index = $(this).parent().parent().parent().find('.unique-week-input').attr('index');
+
+		var parent = $(this).closest('.sortable-container');
+		var timespan_index = parent.attr('index');
 		var new_val = ($(this).val()|0);
 		var current_val = ($(this).parent().parent().parent().parent().find(".week_list").children().length|0);
+
+		if(new_val < 1){
+			$(this).val(current_val);
+			return;
+		}
+
 		if(new_val > current_val){
 			var element = [];
 			for(index = current_val; index < new_val; index++){
-				static_data.year_data.timespans[index].week.push(`Week day ${(index+1)}`);
+				static_data.year_data.timespans[timespan_index].week.push(`Week day ${(index+1)}`);
 				element.push(`<input type='text' class='detail-row form-control internal-list-name custom_week_day dynamic_input' data='year_data.timespans.${index}.week' fc-index='${index}' value='Week day ${(index+1)}'/>`);
 			}
 			$(this).parent().parent().parent().parent().find(".week_list").append(element.join(""));
 		}else if(new_val < current_val){
-			static_data.year_data.timespans[index].week = static_data.year_data.timespans[index].week.slice(0, new_val);
+			static_data.year_data.timespans[timespan_index].week = static_data.year_data.timespans[timespan_index].week.slice(0, new_val);
 			$(this).parent().parent().parent().parent().find(".week_list").children().slice(new_val).remove();
-		}
-
-		if(new_val == 0){
-			$(this).parent().parent().parent().parent().find(".toggle").addClass('hidden');
-			$(this).parent().parent().parent().parent().find(".lbl-toggle").addClass('hidden');
-			delete static_data.year_data.timespans[index].week;
-			do_error_check();
-
-		}else{
-			$(this).parent().parent().parent().parent().find(".toggle").removeClass('hidden');
-			$(this).parent().parent().parent().parent().find(".lbl-toggle").removeClass('hidden');
 		}
 
 		evaluate_custom_weeks();
@@ -1356,20 +1401,74 @@ function set_up_edit_inputs(){
 
 
 	$(document).on('change', '.cycle-name-length', function(){
-		var index = $(this).attr('index');
+		var parent = $(this).closest('.sortable-container');
+		var cycle_index = parent.attr('index');
+		var cycle_list = parent.find(".cycle_list");
 		var new_val = ($(this).val()|0);
-		var current_val = ($(this).parent().parent().parent().parent().find(".cycle_list").children().length|0);
+		var current_val = (parent.find(".cycle_list").children().length|0);
 		if(new_val > current_val){
 			var element = [];
 			for(index = current_val; index < new_val; index++){
-				element.push(`<input type='text' class='form-control internal-list-name dynamic_input' data='cycles.data.${index}.names' fc-index='${index}' value='Cycle name ${(index+1)}'/>`);
+				element.push(`<input type='text' class='form-control internal-list-name dynamic_input' data='cycles.data.${cycle_index}.names' fc-index='${index}' value='Cycle name ${(index+1)}'/>`);
 			}
-			$(this).parent().parent().parent().parent().find(".cycle_list").append(element.join(""));
-			$(this).parent().parent().parent().parent().find(".cycle_list").find(".internal-list-name").first().change();
+			cycle_list.append(element.join(""));
+			cycle_list.find(".internal-list-name").first().change();
 		}else if(new_val < current_val){
-			$(this).parent().parent().parent().parent().find(".cycle_list").children().slice(new_val).remove();
-			$(this).parent().parent().parent().parent().find(".cycle_list").find(".internal-list-name").first().change();
+			cycle_list.children().slice(new_val).remove();
+			cycle_list.find(".internal-list-name").first().change();
 		}
+	});
+
+	$(document).on('click', '.cycle_quick_add', function(){
+
+		var container = $(this).closest('.sortable-container');
+		var cycle_name_list = container.find('.cycle_list');
+
+		var id = (container.attr('index')|0);
+
+		var cycle = static_data.cycles.data[id];
+
+		swal.fire({
+			title: "Cycle Names",
+			text: "Each line entered below creates one name in the cycle list.",
+			input: "textarea",
+			inputValue: cycle.names.join('\n'),
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'OK',
+			icon: "info"
+		}).then((result) => {
+
+			if(result.dismiss) return;
+
+			if(result.value === ""){
+				swal.fire({
+					title: "Error",
+					text: "You didn't enter any values!",
+					icon: "warning"
+				});
+			}
+
+			var names = result.value.split('\n');
+
+			cycle.names = names;
+
+			container.find('.cycle-name-length').val(names.length);
+
+			cycle_name_list.empty();
+
+			var element = [];
+			for(i = 0; i < cycle.names.length; i++){
+				element.push(`<input type='text' class='form-control internal-list-name dynamic_input' data='cycles.data.${index}.names' fc-index='${i}' value='${cycle.names[i]}'/>`);
+			}
+
+			cycle_name_list.append(element.join(""));
+
+			do_error_check('calendar');
+
+		});
+
 	});
 
 
@@ -1975,31 +2074,44 @@ function add_timespan_to_sortable(parent, key, data){
 						element.push("<div class='detail-text center-text bold-text'>Week settings</div>");
 					element.push("</div>");
 
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-column half'>");
-							element.push("<div class='detail-row'>");
-								element.push("<div class='detail-text'>Use custom week:</div>");
+					element.push("<div class='container'>");
+						element.push("<div class='row'>");
+							element.push("<div class='col p-0'>");
+								element.push("Use custom week:");
+							element.push("</div>");
+							element.push("<div class='col p-0'>");
 								element.push(`<input type='checkbox' class='unique-week-input' index='${key}'`);
 								element.push(data.week ? "checked" : "");
 								element.push("/>");
 							element.push("</div>");
 						element.push("</div>");
-						element.push("<div class='detail-column half'>");
-							element.push("<div class='detail-row'>");
-								element.push("<div class='detail-text'>Length:</div>");
-								element.push(`<input type='number' step="1" class='form-control week-length small-input' ${(!data.week ? "disabled" : "")} value='${(data.week ? data.week.length : 0)}'/>`);
+					element.push("</div>");
+
+					element.push("<div class='container'>");
+						element.push("<div class='row'>");
+							element.push("<div class='col p-0'>");
+							element.push("</div>");
+							element.push("<div class='col p-0'>");
+								element.push("Length:");
 							element.push("</div>");
 						element.push("</div>");
 					element.push("</div>");
-					element.push("<div class='detail-row custom-week-container wrap-collapsible'>");
-						element.push(`<input id='collapsible_week_${key}' class='toggle${(data.week ? "" : " hidden")}' type='checkbox' checked>`);
-						element.push(`<label for='collapsible_week_${key}' class='lbl-toggle${(data.week ? "" : " hidden")}'>Week</label>`);
-						element.push("<div class='detail-row collapsible-content'>");
+					element.push("<div class='detail-row'>");
+						element.push("<div class='detail-column half'>");
+							element.push("<div class='detail-row'>");
+								element.push(`<input type='number' min='1' step="1" class='form-control week-length small-input' ${(!data.week ? "disabled" : "")} value='${(data.week ? data.week.length : 0)}'/>`);
+							element.push("</div>");
+						element.push("</div>");
+						element.push("<div class='detail-column half'>");
+							element.push(`<button type='button' class='full btn btn-primary weekday_quick_add' ${(!data.week ? "disabled" : "")}>Quick add</button>`);
+						element.push("</div>");
+					element.push("</div>");
+					element.push(`<div class='detail-row custom-week-container ${(!data.week ? "hidden" : "")}'>`);
+						element.push("<div class='week_list'>");
 						if(data.week){
-							element.push("<div class='week_list'>");
-								for(index = 0; index < data.week.length; index++){
-									element.push(`<input type='text' class='form-control internal-list-name dynamic_input custom_week_day' data='year_data.timespans.${key}.week' fc-index='${index}' value='${data.week[index]}'/>`);
-								}
+							for(index = 0; index < data.week.length; index++){
+								element.push(`<input type='text' class='form-control internal-list-name dynamic_input custom_week_day' data='year_data.timespans.${key}.week' fc-index='${index}' value='${data.week[index]}'/>`);
+							}
 						}
 						element.push("</div>");
 					element.push("</div>");
@@ -2709,7 +2821,7 @@ function add_cycle_to_sortable(parent, key, data){
 
 	var element = [];
 
-	element.push("<div class='sortable-container cycle_inputs collapsed' index='${key}'>");
+	element.push(`<div class='sortable-container cycle_inputs collapsed' index='${key}'>`);
 		element.push("<div class='main-container'>");
 			element.push("<div class='handle icon-reorder'></div>");
 			element.push("<div class='expand icon-collapse'></div>");
@@ -2735,6 +2847,22 @@ function add_cycle_to_sortable(parent, key, data){
 					element.push("<div class='detail-row'>");
 						element.push("<div class='detail-column half'>");
 							element.push("<div class='detail-row'>");
+									element.push("<div class='detail-text'>Cycle is based on:</div>");
+									element.push(`<select class='form-control dynamic_input cycle_type' data='cycles.data.${key}' fc-index='type'>`);
+										element.push(`<option value='year'>Year</option>`);
+										element.push(`<option value='era_year'>Era year</option>`);
+										element.push(`<option value='timespan_index'>Month</option>`);
+										element.push(`<option value='day'>Day in month</option>`);
+										element.push(`<option value='year_day'>Year day</option>`);
+										element.push(`<option value='epoch'>Epoch (days since 1/1/1)</option>`);
+									element.push(`</select>`);
+							element.push("</div>");
+						element.push("</div>");
+					element.push("</div>");
+
+					element.push("<div class='detail-row'>");
+						element.push("<div class='detail-column half'>");
+							element.push("<div class='detail-row'>");
 									element.push("<div class='detail-text'>Length:</div>");
 									element.push(`<input type='number' step="1.0" class='form-control length dynamic_input' min='1' data='cycles.data.${key}' fc-index='length' value='${data.length}' />`);
 							element.push("</div>");
@@ -2749,22 +2877,23 @@ function add_cycle_to_sortable(parent, key, data){
 					element.push("</div>");
 
 					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-column full'>");
+						element.push("<div class='detail-text'>Number of names:</div>");
+					element.push("</div>");
+					element.push("<div class='detail-row'>");
+						element.push("<div class='detail-column half'>");
 							element.push("<div class='detail-row'>");
-								element.push("<div class='detail-text'>Number of names:</div>");
 								element.push(`<input type='number' step="1.0" class='form-control cycle-name-length' value='${data.names.length}' fc-index='${key}'/>`);
 							element.push("</div>");
 						element.push("</div>");
+						element.push("<div class='detail-column half'>");
+							element.push("<button type='button' class='full btn btn-primary cycle_quick_add'>Quick add</button>");
+						element.push("</div>");
 					element.push("</div>");
-					element.push("<div class='detail-row cycle-container wrap-collapsible'>");
-						element.push(`<input id='collapsible_cycle_${key}' class='toggle' type='checkbox'>`);
-						element.push(`<label for='collapsible_cycle_${key}' class='lbl-toggle'>Cycle names</label>`);
-						element.push("<div class='detail-column collapsible-content'>");
-							element.push("<div class='cycle_list'>");
-								for(index = 0; index < data.names.length; index++){
-									element.push(`<input type='text' class='form-control internal-list-name dynamic_input' data='cycles.data.${key}.names' fc-index='${index}' value='${data.names[index]}'/>`);
-								}
-							element.push("</div>");
+					element.push("<div class='detail-row cycle-container'>");
+						element.push("<div class='cycle_list'>");
+							for(index = 0; index < data.names.length; index++){
+								element.push(`<input type='text' class='form-control internal-list-name dynamic_input' data='cycles.data.${key}.names' fc-index='${index}' value='${data.names[index]}'/>`);
+							}
 						element.push("</div>");
 					element.push("</div>");
 			element.push("</div>");
@@ -2773,6 +2902,7 @@ function add_cycle_to_sortable(parent, key, data){
 	element.push("</div>");
 
 	parent.append(element.join(""));
+
 }
 
 function add_era_to_list(parent, key, data){
@@ -3251,19 +3381,6 @@ function error_check(parent, rebuild){
 
 }
 
-
-
-function update_cycle_example_text(){
-
-	var year = ($('#cycle_test_input').val()|0);
-
-	var cycle_text = get_cycle(static_data, year).text;
-
-	var text = Mustache.render(static_data.cycles.format, cycle_text);
-
-	$('#cycle_test_result').text(text);
-}
-
 function evaluate_remove_buttons(){
 	$('.month .btn_remove, .week_day .btn_remove').each(function(){
 		$(this).toggleClass('disabled', $(this).closest('.sortable').children().length == 1);
@@ -3678,7 +3795,6 @@ function reindex_cycle_sortable(){
 
 	do_error_check();
 
-	update_cycle_example_text();
 }
 
 function reindex_moon_list(){
@@ -4283,7 +4399,6 @@ function set_up_edit_values(){
 		for(var i = 0; i < static_data.cycles.data.length; i++){
 			add_cycle_to_sortable(cycle_sortable, i, static_data.cycles.data[i]);
 		}
-		update_cycle_example_text();
 	}
 
 	if($('#collapsible_clock').is(':checked')){
@@ -4430,53 +4545,45 @@ function autoload(){
 
 	if(saved_data){
 
-		swal({
+		swal.fire({
 			title: "Load unsaved calendar?",
 			text: "It looks like you started a new calendar and didn't save it. Would you like to continue where you left off?",
-            buttons: {
-                cancel: {
-                    text:"Start Over",
-                    value: false,
-                    closeModal: true,
-                    visible: true
-                },
-                confirm: {
-                    text: "Continue",
-                    closeModal: false,
-                }
-            },
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Continue',
+			cancelButtonText: 'Start Over',
 			icon: "info"
 		})
-		.then((load) => {
+		.then((result) => {
 
-			if(load) {
+			if(!result.dismiss) {
 
 				var data = JSON.parse(saved_data);
-                prev_dynamic_data = {}
-                prev_static_data = {}
-                calendar_name = data.calendar_name;
-                static_data = data.static_data;
-                dynamic_data = data.dynamic_data;
-                dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
-                empty_edit_values();
-                set_up_edit_values();
-                set_up_view_values();
-                set_up_visitor_values();
+				prev_dynamic_data = {}
+				prev_static_data = {}
+				calendar_name = data.calendar_name;
+				static_data = data.static_data;
+				dynamic_data = data.dynamic_data;
+				dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+				empty_edit_values();
+				set_up_edit_values();
+				set_up_view_values();
+				set_up_visitor_values();
 
 				error_check("calendar", true);
 
-                swal({
-                    icon: "success",
-                    title: "Loaded!",
-                    text: "The calendar " + calendar_name + " has been loaded.",
-                    button: true
-                });
+				swal.fire({
+					icon: "success",
+					title: "Loaded!",
+					text: "The calendar " + calendar_name + " has been loaded."
+				});
 
-            }else{
+			}else{
 
-            	localStorage.clear();
+				localStorage.clear();
 
-            }
+			}
 
 		});
 
