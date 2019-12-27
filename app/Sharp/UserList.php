@@ -66,7 +66,7 @@ class UserList extends SharpEntityList
     {
         $this->setInstanceIdAttribute('id')
             ->setSearchable()
-            ->setDefaultSort('name', 'asc')
+            ->setDefaultSort('created_at', 'desc')
             ->setPaginated();
     }
 
@@ -85,6 +85,10 @@ class UserList extends SharpEntityList
                 $user_model->where('username', 'like', $word)
                         ->orWhere('email', 'like', $word);
             }
+        }
+
+        if($params->sortedBy()) {
+            $user_model->orderBy($params->sortedBy(), $params->sortedDir());
         }
 
         return $this->setCustomTransformer(
