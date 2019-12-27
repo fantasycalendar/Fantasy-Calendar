@@ -67,7 +67,9 @@ class UserList extends SharpEntityList
         $this->setInstanceIdAttribute('id')
             ->setSearchable()
             ->setDefaultSort('created_at', 'desc')
-            ->setPaginated();
+            ->setPaginated()
+            ->addInstanceCommand("elevate", GiveUserBetaAccess::class)
+            ->addInstanceCommand("revoke", RevokeUserBetaAccess::class);
     }
 
     /**
