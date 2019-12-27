@@ -4190,9 +4190,7 @@ function populate_calendar_lists(){
 		for(var calendar in link_data.children){
 			var child = link_data.children[calendar];
 			var calendar = owned_calendars[child];
-			if(calendar){
-				add_link_to_list(calendar_link_list, calendar, calendar.name);
-			}
+			add_link_to_list(calendar_link_list, calendar, calendar.name);
 		}
 
 		var html = [];

@@ -1307,6 +1307,10 @@ var date_converter = {
 
 		}
 
+		if(!this.timespan_length[this.day-1].is_there.result){
+			this.day++;
+		}
+
 	},
 
 	increase_month: function(){
