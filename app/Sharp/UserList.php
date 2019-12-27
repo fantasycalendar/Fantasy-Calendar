@@ -25,8 +25,8 @@ class UserList extends SharpEntityList
                 ->setLabel('Email Address')
                 ->setSortable()
         )->addDataContainer(
-            EntityListDataContainer::make('active')
-                ->setLabel('User active')
+            EntityListDataContainer::make('permissions')
+                ->setLabel('User permissions')
         )->addDataContainer(
             EntityListDataContainer::make('beta_authorised')
                 ->setLabel('Beta Access')
@@ -48,7 +48,7 @@ class UserList extends SharpEntityList
     {
         $this->addColumn('username', 2, 6);
         $this->addColumn('email', 3, 6);
-        $this->addColumn('active', 1, 6);
+        $this->addColumn('permissions', 1, 6);
         $this->addColumn('beta_authorised', 1,6);
         $this->addColumn('created_at', 2,6);
     }
@@ -74,8 +74,13 @@ class UserList extends SharpEntityList
     */
     public function getListData(EntityListQueryParams $params)
     {
-        $user = new User();
+        $user_model = new User();
 
-        return $this->transform($user->paginate(20));
+        return $this->setCustomTransformer(
+            "beta_authorised",
+            function($beta_authorized, $user, $attribute) {
+                return ($beta_authorized ? "Yes" : "No");
+            }
+        )->transform($user_model->paginate(20));
     }
 }

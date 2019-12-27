@@ -7,6 +7,6 @@ use Code16\Sharp\Auth\SharpAuthenticationCheckHandler;
 class SharpCheckHandler implements SharpAuthenticationCheckHandler {
     public function check($user): bool
     {
-        return $user->permissions == 6;
+        return $user->permissions == 1;
     }
 }
