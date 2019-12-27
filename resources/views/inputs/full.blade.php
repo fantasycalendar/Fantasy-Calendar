@@ -745,7 +745,7 @@
                             <option value='grid'>Grid style</option>
                             <option value='wide'>Wide style</option>
                             <option value='vertical'>Vertical style</option>
-                            <!--<option value='mini'>Minimalistic style</option>-->
+                            <option value='minimalistic'>Minimalistic style</option>
                         </select>
                     </label>
 

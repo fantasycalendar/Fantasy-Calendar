@@ -57,6 +57,7 @@ var calendar_builder = {
 		timespan.index = timespan_index;
 
 		timespan.week = timespan.week ? timespan.week : clone(this.static_data.year_data.global_week);
+		timespan.truncated_week = truncate_weekdays(timespan.week);
 
 		timespan.leap_days = [];
 

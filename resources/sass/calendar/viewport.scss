@@ -343,13 +343,6 @@
     background-color: #e7debd;
 }
 
-.timespan_container.mini .timespan_row:nth-child(even) .timespan_day{
-    background-color: #f7f4e1;
-}
-.timespan_container.mini .timespan_row:nth-child(odd) .timespan_day{
-    background-color: #e7debd;
-}
-
 
 /* -------------------- Wide layout ------------------ */
 
@@ -465,6 +458,48 @@
         align-content: center;
     }
 
+}
+
+
+/* ---------------- Minimalistic layout ------------------ */
+
+.timespan_container.minimalistic{
+
+    text-align: center;
+    display: inline-flex;
+    flex-direction: column;
+    border-radius:5;
+    border:0;
+    overflow:hidden;
+    font-size:0.75rem;
+    margin: 15px 10px;
+
+    .week_day_name, .timespan_day, .timespan_overflow{
+        display: inline-flex;
+        flex-direction: column;
+        justify-content: center;
+        overflow: hidden;
+        text-align:center;
+        flex: 1 0;
+        min-height:1.5rem;
+        min-width:1.5rem;
+    }
+
+    .has_event{
+        font-weight: bold;
+    }
+
+    .timespan_row:nth-child(even) .timespan_day{
+        background-color: #f7f4e1;
+    }
+    .timespan_row:nth-child(odd) .timespan_day{
+        background-color: #e7debd;
+    }
+
+    .current_day{
+        background-color: #fdb44d !important;
+        border-bottom: 0;
+    }
 }
 
 body {

@@ -118,6 +118,18 @@ function matcher(params, data){
     return null;
 }
 
+function truncate_weekdays(weekday_array){
+
+	var new_array = [];
+
+	for(var index in weekday_array){
+		new_array.push(weekday_array[index].substring(0,2));
+	}
+
+	return new_array;
+
+}
+
 
 /**
  * This function crawls through a string to find a reference
