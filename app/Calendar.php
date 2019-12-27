@@ -61,7 +61,7 @@ class Calendar extends Model
 
         if(!Auth::check() || !($this->user->id == Auth::user()->id || Auth::user()->isAdmin())) {
             foreach($static_data['event_data']['events'] as $event){
-                if($event['settings']['hide'] || (isset($event['settings']['hide_full']) && $event['settings']['hide_full'])){
+                if($event['settings']['hide'] || $event['settings']['full_hide']){
                     $event['name'] = "Sneaky, sneaky...";
                     $event['description'] = "You shouldn't be here...";
                 }
