@@ -82,7 +82,7 @@ function set_up_view_inputs(){
 	current_year.change(function(e){
 
 		if(e.originalEvent){
-			dynamic_date_manager.year = convert_year($(this).val()|0);
+			dynamic_date_manager.year = convert_year(static_data, $(this).val()|0);
 			evaluate_dynamic_change();
 		}
 

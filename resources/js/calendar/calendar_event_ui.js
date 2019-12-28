@@ -1790,9 +1790,9 @@ var edit_event_ui = {
 				var epoch_data = edit_event_ui.event_data[epoch];
 
 				if(epoch_data.intercalary){
-					var text = `<li class='event_occurance'>${ordinal_suffix_of(epoch_data.day)} intercalary day of ${epoch_data.timespan_name}, ${unconvert_year(epoch_data.year)}</li>`
+					var text = `<li class='event_occurance'>${ordinal_suffix_of(epoch_data.day)} intercalary day of ${epoch_data.timespan_name}, ${unconvert_year(static_data, epoch_data.year)}</li>`
 				}else{
-					var text = `<li class='event_occurance'>${ordinal_suffix_of(epoch_data.day)} of ${epoch_data.timespan_name}, ${unconvert_year(epoch_data.year)}</li>`
+					var text = `<li class='event_occurance'>${ordinal_suffix_of(epoch_data.day)} of ${epoch_data.timespan_name}, ${unconvert_year(static_data, epoch_data.year)}</li>`
 				}
 
 				if(i-((this.event_occurrences_page-1)*10) < 5){

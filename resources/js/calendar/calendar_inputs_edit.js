@@ -3265,7 +3265,7 @@ function error_check(parent, rebuild){
 	for(var era_i = 0; era_i < static_data.eras.length; era_i++){
 		var era = static_data.eras[era_i];
 		if(static_data.year_data.timespans[era.date.timespan]){
-			if(!does_timespan_appear(static_data, convert_year(era.date.year), era.date.timespan).result){
+			if(!does_timespan_appear(static_data, convert_year(static_data, era.date.year), era.date.timespan).result){
 				errors.push(`Era <i>${era.name}</i> is currently on a leaping month. Please move it to another month.`);
 			}
 		}else{
@@ -3879,7 +3879,7 @@ function reindex_era_list(){
 			}
 		};
 
-		static_data.eras[i].date.epoch = evaluate_calendar_start(static_data, convert_year(static_data.eras[i].date.year), static_data.eras[i].date.timespan, static_data.eras[i].date.day).epoch;
+		static_data.eras[i].date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, static_data.eras[i].date.year), static_data.eras[i].date.timespan, static_data.eras[i].date.day).epoch;
 
 	});
 
@@ -4059,8 +4059,8 @@ function evaluate_season_lengths(){
 		'season_length': 0
 	};
 
-	var epoch_start = evaluate_calendar_start(static_data, convert_year(dynamic_data.year)).epoch;
-	var epoch_end = evaluate_calendar_start(static_data, convert_year(dynamic_data.year)+1).epoch-1;
+	var epoch_start = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year)).epoch;
+	var epoch_end = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year)+1).epoch-1;
 	var season_length = epoch_end-epoch_start;
 
 	for(var i = 0; i < static_data.seasons.data.length; i++){
@@ -4298,7 +4298,7 @@ function evaluate_clock_inputs(){
 function recalculate_era_epochs(){
 
 	for(var i = 0; i < static_data.eras.length; i++){
-		static_data.eras[i].date.epoch = evaluate_calendar_start(static_data, convert_year(static_data.eras[i].date.year), static_data.eras[i].date.timespan, static_data.eras[i].date.day).epoch;
+		static_data.eras[i].date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, static_data.eras[i].date.year), static_data.eras[i].date.timespan, static_data.eras[i].date.day).epoch;
 	}
 
 }
@@ -4566,7 +4566,7 @@ function autoload(){
 				calendar_name = data.calendar_name;
 				static_data = data.static_data;
 				dynamic_data = data.dynamic_data;
-				dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+				dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
 				empty_edit_values();
 				set_up_edit_values();
 				set_up_view_values();
