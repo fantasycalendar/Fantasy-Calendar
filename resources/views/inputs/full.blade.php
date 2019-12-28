@@ -749,6 +749,14 @@
                         </select>
                     </label>
 
+                    <label class="form-control full setting first">
+                        <input type='checkbox' class='margin-right static_input' data='settings' fc-index='year_zero_exists'>
+                        <span>
+                            Year zero exists
+                        </span>
+                        <a target="_blank" title='' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
+                    </label>
+
                     <label class="form-control full setting last">
                         <input type='checkbox' class='margin-right static_input' data='settings' fc-index='show_current_month'>
                         <span>
@@ -851,18 +859,10 @@
                         <a target="_blank" title='' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
                     </label>
 
-                    <label class="form-control full setting">
+                    <label class="form-control full setting last">
                         <input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='add_year_day_number' onclick="setTimeout(calendar_layouts.add_year_day_number, 10);">
                         <span>
                             Add year day to each day
-                        </span>
-                        <a target="_blank" title='' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
-                    </label>
-
-                    <label class="form-control full setting">
-                        <input type='checkbox' class='margin-right static_input' data='settings' fc-index='year_zero_exists'>
-                        <span>
-                            Year zero exists
                         </span>
                         <a target="_blank" title='' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
                     </label>
