@@ -15,11 +15,25 @@
 }
 
 #calendar {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    margin-bottom:5px;
+    width: 100%;
     color: $main-text-color;
+    min-height: 85%;
 }
 
 .timespan {
+
     &_container{
+
+        align-self: flex-start;
+        text-align: center;
+        display: inline-flex;
+        flex-direction: column;
+        flex:1 0 auto;
         position:relative;
         background-color: $card-bg-color;
         border-radius:10px;
@@ -301,54 +315,15 @@
     visibility: hidden;
 }
 
-/* --------------- Minimalistic Layout --------------- */
-
-.timespan_container.mini{
-    height:250px;
-    display: inline-flex;
-    flex-direction: column;
-    background-color:#f0ead0;
-    border-radius:0;
-    border:0;
-    overflow:hidden;
-    font-size:10pt;
-}
-
-.timespan_container.mini .timespan_day,
-.timespan_container.mini .timespan_intercalary,
-.timespan_container.mini .timespan_overflow,
-.timespan_container.mini .week_day_name,
-.timespan_container.mini .timespan_name{
-    display: inline-flex;
-    flex-direction: column;
-    justify-content: center;
-    overflow: hidden;
-    text-align:center;
-    flex: 1 0;
-    height:25px;
-    margin:0.5px;
-}
-
-
-.timespan_container.mini .timespan_day,
-.timespan_container.mini .timespan_intercalary,
-.timespan_container.mini .timespan_overflow{
-    width:25px;
-    border:0 !important;
-    margin:0.5px;
-}
-
-.timespan_container.mini .week_day_name,
-.timespan_container.mini .timespan_name{
-    background-color: #e7debd;
-}
-
-
 /* -------------------- Wide layout ------------------ */
 
 .timespan_container.wide {
     overflow-x: auto;
     flex: 1 0 auto;
+    align-self: flex-start;
+    text-align: center;
+    display: inline-flex;
+    flex-direction: column;
 
     &::-webkit-scrollbar-track {
         -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.15);
@@ -404,6 +379,11 @@
     border-radius:10px;
     overflow:hidden;
     text-align: center;
+    align-self: flex-start;
+    text-align: center;
+    display: inline-flex;
+    flex-direction: column;
+    flex:1 0 95%;
 
     .timespan_row_container{
         display: inline-flex;
@@ -463,8 +443,25 @@
 
 /* ---------------- Minimalistic layout ------------------ */
 
+.timespan_outer_container{
+
+    align-self: flex-start;
+    text-align: center;
+    display: inline-flex;
+    flex-direction: column;
+    border:0;
+    overflow:hidden;
+    flex:1 0 auto;
+
+    .event_container{
+        font-size:0.75rem;
+    }
+
+}
+
 .timespan_container.minimalistic{
 
+    align-self: center;
     text-align: center;
     display: inline-flex;
     flex-direction: column;
@@ -473,6 +470,7 @@
     overflow:hidden;
     font-size:0.75rem;
     margin: 15px 10px;
+    flex:1 0 auto;
 
     .week_day_name, .timespan_day, .timespan_overflow{
         display: inline-flex;
@@ -490,10 +488,15 @@
     }
 
     .timespan_row:nth-child(even) .timespan_day{
-        background-color: #f7f4e1;
+        background-color: #F1FFE1;
     }
     .timespan_row:nth-child(odd) .timespan_day{
-        background-color: #e7debd;
+        background-color: #E8E7C1;
+    }
+
+    .timespan_day:hover{
+        background-color:#D4FFE9 !important;
+        cursor:pointer;
     }
 
     .current_day{
