@@ -1005,10 +1005,10 @@ var calendar_builder = {
 
 		}
 
-		/*for(var i = 0; i < this.static_data.eras.length; i++){
+		for(var i = 0; i < this.static_data.eras.length; i++){
 			if(this.static_data.eras[i].settings.starting_era) continue;
 			this.static_data.eras[i].date.epoch = evaluate_calendar_start(this.static_data, convert_year(this.static_data, this.static_data.eras[i].date.year), this.static_data.eras[i].date.timespan, this.static_data.eras[i].date.day).epoch;
-		}*/
+		}
 
 		this.calendar_list = {
 			pre_timespans_to_evaluate: {},
@@ -1969,9 +1969,16 @@ var calendar_builder = {
 			year_day = 1;
 		}
 
-		/*console.log(calendar_start_epoch)
-		console.log(calendar_end_epoch)
-		console.log("------------------------")*/
+		/*console.log(this.dynamic_data.year, calendar_era_year)
+
+		if(this.previous_epoch && this.previous_epoch != calendar_start_epoch){
+			console.log(this.previous_epoch)
+			console.log(calendar_start_epoch)
+			console.log(calendar_end_epoch)
+			console.log("------------------------")
+		}
+
+		this.previous_epoch = calendar_end_epoch;*/
 		
 		return {
 			success: true,
