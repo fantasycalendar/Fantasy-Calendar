@@ -859,6 +859,14 @@
                         <a target="_blank" title='' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
                     </label>
 
+                    <label class="form-control full setting">
+                        <input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='year_zero_exists'>
+                        <span>
+                            Year zero exists
+                        </span>
+                        <a target="_blank" title='' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
+                    </label>
+
                 </div>
             </div>
         </div>
