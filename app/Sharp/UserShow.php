@@ -19,7 +19,7 @@ class UserShow extends SharpShow
     public function find($id): array
     {
         // Replace/complete this code
-        $user = User::findOrFail(1);
+        $user = User::findOrFail($id);
 
         return $this->transform($user);
     }
