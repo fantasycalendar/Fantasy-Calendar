@@ -1427,23 +1427,25 @@ var calendar_layouts = {
 
 		add_event: function(event_data, event_index, event){
 
-			if(!event.noprint){
+			for(var epoch_index = 0; event_data.valid[event_index] && epoch_index < event_data.valid[event_index].length; epoch_index++){
 
-				for(var epoch_index = 0; event_data.valid[event_index] && epoch_index < event_data.valid[event_index].length; epoch_index++){
+				var local_epoch = event_data.valid[event_index][epoch_index];
 
-					var local_epoch = event_data.valid[event_index][epoch_index];
+				var day = $(`.timespan_day[epoch='${local_epoch}']`);
 
-					var day = $(`.timespan_day[epoch='${local_epoch}']`);
+				if(!day.length) continue;
 
-					if(!day.length) continue;
+				day.addClass('has_event');
 
-					day.addClass('has_event');
+				if(event.settings.print){
 
 					var event_container = day.closest('.timespan_outer_container').find('.event_container');
 
 					var epoch_data = calendar_layouts.epoch_data[local_epoch];
 
-					var element = $(`<div class='row mx-2' day='${epoch_data.day}'>${epoch_data.day} - ${event.name}</div>`);
+					var category_name = event.event_category_id && event.event_category_id > -1 ?  get_category(event.event_category_id).name : "";
+
+					var element = $(`<div class='row mx-2' event_id='${event_index}' category='${category_name}' day='${epoch_data.day}'>${epoch_data.day} - ${event.name}</div>`);
 
 					event_container.append(element);
 
@@ -1454,7 +1456,6 @@ var calendar_layouts = {
 					});
 
 				}
-
 			}
 
 		},

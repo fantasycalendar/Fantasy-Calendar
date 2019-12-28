@@ -850,7 +850,7 @@ function set_up_edit_inputs(){
 				"color": "Dark-Solid",
 				"text": "text",
 				"hide": false,
-				"noprint": false
+				"print": false
 			},
 			"calendar_id": typeof calendar_id != "undefined" ? calendar_id : null,
 			"id": slug
@@ -1884,7 +1884,9 @@ function set_up_edit_inputs(){
 				var key = data.split('.')[2]|0;
 				for(var eventkey in static_data.event_data.events){
 					if(static_data.event_data.events[eventkey].event_category_id == static_data.event_data.categories[key].id){
-						static_data.event_data.events[eventkey].settings = clone(static_data.event_data.categories[key].event_settings);
+						static_data.event_data.events[eventkey].settings.hide_full = static_data.event_data.categories[key].event_settings.hide_full;
+						static_data.event_data.events[eventkey].settings.print = static_data.event_data.categories[key].event_settings.print;
+						static_data.event_data.events[eventkey].settings.hide = static_data.event_data.categories[key].event_settings.hide;
 					}
 				}
 				repopulate_event_category_lists();
@@ -3144,10 +3146,10 @@ function add_category_to_list(parent, key, data){
 
 				element.push("<div class='detail-row'>");
 					element.push("<div class='detail-column half'>");
-						element.push("<div class='detail-text'>Don't print event:</div>");
+						element.push("<div class='detail-text'>Show event when printing:</div>");
 					element.push("</div>");
 					element.push("<div class='detail-column half'>");
-						element.push(`<input type='checkbox' class='form-control dynamic_input noprint' data='event_data.categories.${key}.event_settings' fc-index='noprint' ${(data.event_settings.noprint ? "checked" : "")} />`);
+						element.push(`<input type='checkbox' class='form-control dynamic_input print' data='event_data.categories.${key}.event_settings' fc-index='print' ${(data.event_settings.print ? "checked" : "")} />`);
 					element.push("</div>");
 				element.push("</div>");
 			element.push("</div>");

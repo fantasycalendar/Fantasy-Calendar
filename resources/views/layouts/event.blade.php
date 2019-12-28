@@ -204,13 +204,13 @@
 
 					<div class='detail-column half'>
 						<label class='form-control checkbox'>
-							<input type='checkbox' id='event_hide_players' name='event_hide_players'> Hide from players
+							<input type='checkbox' id='event_hide_players' name='event_hide_players'> Hide from guests view
 						</label>
 					</div>
 
 					<div class='detail-column half'>
 						<label class='form-control checkbox'>
-							<input type='checkbox' id='event_dontprint_checkbox' name='event_dontprint_checkbox'> Do not print
+							<input type='checkbox' id='event_print_checkbox' name='event_print_checkbox'> Show when printing
 						</label>
 					</div>
 				</div>
