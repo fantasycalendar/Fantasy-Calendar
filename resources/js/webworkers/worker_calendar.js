@@ -1527,16 +1527,6 @@ var calendar_builder = {
 
 			for(day = 0; day <= current_timespan.length; day++, total_day++){
 
-				if(this.static_data.settings.only_reveal_today && !this.owner && (timespan_index > this.dynamic_data.timespan || (timespan_index == this.dynamic_data.timespan && total_day > this.dynamic_data.day))){
-
-					data = {
-						processed: false
-					}
-
-					continue;
-
-				}
-
 				moon_data = [];
 
 				if(day == 0){

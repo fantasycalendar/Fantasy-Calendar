@@ -252,6 +252,11 @@ function set_up_edit_inputs(){
 		}
 	});
 
+	$('#rebuild_calendar_btn').click(function(){
+		check_rebuild('calendar');
+		poll_timer = setTimeout(check_master_update, 5000);
+	});
+
 
 	/* ------------------- Layout callbacks ------------------- */
 
@@ -487,8 +492,8 @@ function set_up_edit_inputs(){
 
 		if(!static_data.seasons.global_settings.periodic_seasons){
 
-			repopulate_timespan_select(season_sortable.children().last().find('.timespan-list'), stats.timespan, false, true);
-			repopulate_day_select(season_sortable.children().last().find('.timespan-day-list'), stats.day, false, true);
+			repopulate_timespan_select(season_sortable.children().last().find('.timespan-list'), stats.timespan, false, false);
+			repopulate_day_select(season_sortable.children().last().find('.timespan-day-list'), stats.day, false, false);
 			sort_list_by_partial_date(season_sortable);
 
 		}
@@ -4194,7 +4199,9 @@ function populate_calendar_lists(){
 		for(var calendar in link_data.children){
 			var child = link_data.children[calendar];
 			var calendar = owned_calendars[child];
-			add_link_to_list(calendar_link_list, calendar, calendar.name);
+			if(calendar){
+				add_link_to_list(calendar_link_list, calendar, calendar.name);
+			}
 		}
 
 		var html = [];
@@ -4205,7 +4212,7 @@ function populate_calendar_lists(){
 
 			var calendar = owned_calendars[calendarhash];
 
-			if(calendar.hash != hash){
+			if(calendar && calendar.hash != hash){
 
 				if(calendar.master_hash){
 
@@ -4272,9 +4279,7 @@ function repopulate_event_category_lists(){
 
 function evaluate_clock_inputs(){
 
-	var has_master = link_data.master_hash !== "";
-
-	$('#clock_inputs :input, #clock_inputs :button').prop('disabled', !static_data.clock.enabled || has_master);
+	$('#clock_inputs :input, #clock_inputs :button').prop('disabled', !static_data.clock.enabled);
 	$('#clock_inputs').toggleClass('hidden', !static_data.clock.enabled);
 
 	$('.hour_input').each(function(){
@@ -4359,8 +4364,8 @@ function set_up_edit_values(){
 		for(var i = 0; i < static_data.seasons.data.length; i++){
 			add_season_to_sortable(season_sortable, i, static_data.seasons.data[i]);
 
-			repopulate_timespan_select(season_sortable.children().last().find('.timespan-list'), static_data.seasons.data[i].timespan, false, true);
-			repopulate_day_select(season_sortable.children().last().find('.timespan-day-list'), static_data.seasons.data[i].day, false, true);
+			repopulate_timespan_select(season_sortable.children().last().find('.timespan-list'), static_data.seasons.data[i].timespan, false, false);
+			repopulate_day_select(season_sortable.children().last().find('.timespan-day-list'), static_data.seasons.data[i].day, false, false);
 		}
 
 		$('.season_offset_container').prop('disabled', !static_data.seasons.global_settings.periodic_seasons).toggleClass('hidden', !static_data.seasons.global_settings.periodic_seasons);
@@ -4475,7 +4480,24 @@ function set_up_edit_values(){
 	$('#weather_inputs').find('select, input').prop('disabled', !static_data.seasons.global_settings.enable_weather);
 
 	if(window.location.pathname != '/calendars/create') {
-		populate_calendar_lists();
+
+        populate_calendar_lists();
+
+        if(link_data.master_hash !== ''){
+
+    		get_all_master_data(function(result){
+
+        		master_static_data = result.static_data;
+        		master_dynamic_data = result.dynamic_data;
+        		master_last_dynamic_change = new Date(result.last_dynamic_change);
+        		master_last_static_change = new Date(result.last_static_change);
+
+        		bind_master_update();
+
+        	});
+
+        }
+  
 	}
 
 	evaluate_clock_inputs();
@@ -4489,6 +4511,53 @@ function set_up_edit_values(){
 	recalc_stats();
 
 	block_inputs = false;
+
+}
+
+var poll_timer;
+var last_mouse_move = Date.now();
+
+function bind_master_update(){
+
+	registered_mousemove_callbacks['master_update'] = function(){
+		last_mouse_move = Date.now();
+	}
+
+	check_master_update();
+
+}
+
+function check_master_update(){
+
+	if(document.hasFocus() && (Date.now() - last_mouse_move) < 10000){
+
+	    if(link_data.master_hash !== ''){
+
+	    	check_last_master_change(function(change_result){
+
+	    		new_dynamic_change = new Date(change_result.last_dynamic_change)
+	    		new_static_change = new Date(change_result.last_static_change)
+
+				if(new_dynamic_change > master_last_dynamic_change || new_static_change > master_last_static_change){
+
+					$('.master_button_container').removeClass('hidden');
+					$('#rebuild_calendar_btn').prop('disabled', false);
+
+				}else{
+
+					poll_timer = setTimeout(check_master_update, 5000);
+
+				}
+
+			});
+
+	    }
+
+    }else{
+
+		poll_timer = setTimeout(check_master_update, 5000);
+
+    }
 
 }
 

@@ -930,6 +930,14 @@
 
 	<div id="top_follower">
 
+        <div class='master_button_container hidden'>
+            <div class='container d-flex h-100 p-0'>
+                <div class='col justify-content-center align-self-center full'>
+                    <button class='btn btn-danger full' disabled id='rebuild_calendar_btn'>Master data changed - reload</button>
+                </div>
+            </div>
+        </div>
+
 		<div class='btn_container hidden'>
 			<button class='btn btn-danger btn_preview_date hidden' disabled fc-index='year' value='-1'>< Year</button>
 			<button class='btn btn-danger btn_preview_date hidden' disabled fc-index='timespan' value='-1'>< Month</button>

@@ -60,25 +60,26 @@ function update_name(){
 	});
 }
 
-function update_dynamic(){
+function update_view_dynamic(){
 
-	check_last_change(function(output){
-
-		/*var new_dynamic_change = new Date(output.last_dynamic_change)
-
-		if(new_dynamic_change > last_dynamic_change){
-
-			alert('The calendar was updated before your data was saved. Refreshing now.');
-			location.reload();
-
-		}*/
-
-		do_update_dynamic();
-
+	$.ajax({
+		url:window.baseurl+"calendars/"+hash,
+		type: "post",
+		dataType: 'json',
+		data: {_method: 'PATCH', dynamic_data: JSON.stringify(dynamic_data)},
+		success: function ( result ){
+			update_children_dynamic_data();
+		},
+		error: function ( log )
+		{
+			console.log(log);
+		}
 	});
+
 }
 
-function do_update_dynamic(){
+
+function update_dynamic(){
 
 	$.ajax({
 		url:window.baseurl+"calendars/"+hash,
@@ -224,6 +225,42 @@ function remove_hashes(child_hash){
 }
 
 
+
+function get_all_master_data(output){
+
+	$.ajax({
+		url:window.apiurl+"/"+link_data.master_hash,
+		type: "get",
+		dataType: 'json',
+		data: {},
+		success: function(result){
+
+			output(result);
+
+		},
+		error: function ( log )
+		{
+			console.log(log);
+		}
+	});
+}
+
+
+function check_last_master_change(output){
+	$.ajax({
+		url:window.apiurl+"/"+link_data.master_hash+"/last_changed",
+		type: "post",
+		dataType: 'json',
+		data: {},
+		success: function(result){
+			output(result);
+		},
+		error: function ( log )
+		{
+			console.log(log);
+		}
+	});
+}
 
 function get_all_data(output){
 
