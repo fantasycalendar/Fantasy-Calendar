@@ -1988,7 +1988,7 @@ function add_weekday_to_sortable(parent, key, name){
 		element.push("<div class='main-container'>");
 			element.push("<div class='handle icon-reorder'></div>");
 			element.push("<div class='name-container'>");
-				element.push(`<input type='text' value='${name}' class='form-control name-input small-input dynamic_input' data='year_data.global_week' index='${key}' tabindex='${(key+1)}'/>`);
+				element.push(`<input type='text' value='${name}' class='form-control name-input small-input dynamic_input' data='year_data.global_week' fc-index='${key}' tabindex='${(key+1)}'/>`);
 			element.push("</div>");
 			element.push("<div class='remove-spacer'></div>");
 		element.push("</div>");
