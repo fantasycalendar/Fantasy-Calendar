@@ -1220,7 +1220,9 @@ function avg_month_length(static_data){
 
 	}
 
-	return precisionRound(length/num_months, 10);
+	var result = !isNaN(precisionRound(length/num_months, 10)) ? precisionRound(length/num_months, 10) : 0;
+
+	return result;
 
 }
 
