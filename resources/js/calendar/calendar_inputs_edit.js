@@ -902,7 +902,18 @@ function set_up_edit_inputs(){
 
 		var name_val = name.val() == "" ? `New Event` : name.val();
 
-		edit_event_ui.create_new_event(name_val);
+		var epoch = undefined;
+
+
+		if(typeof preview_date !== "undefined" && preview_date.follow){
+			var epoch = dynamic_date_manager.epoch;
+		}else{
+			if(typeof preview_date_manager !== "undefined"){
+				var epoch = preview_date_manager.epoch;
+			}
+		}
+
+		edit_event_ui.create_new_event(name_val, epoch);
 
 		name.val('');
 
