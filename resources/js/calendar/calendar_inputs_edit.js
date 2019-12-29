@@ -4126,10 +4126,12 @@ function evaluate_season_lengths(){
 	var equal = fract_year_length(static_data) == data.season_length;
 
 	var html = []
-	html.push(`<div class='detail-row'>`)
-	html.push(equal ? '<i class="detail-column fas fa-check-circle"></i>' : '<i class="detail-column fas fa-exclamation-circle"></i>');
-	html.push(`<div class='detail-column'>Season length: ${data.season_length} / ${fract_year_length(static_data)} (year length)</div></div>`)
-	html.push(`<div class='detail-row'>${equal ? "The season length and year length are the same, and will not drift away from each other." : "The season length and year length at not the same, and will diverge over time. Use with caution."}</div>`)
+	html.push(`<div class='container'>`)
+	html.push(`<div class='row py-1'>`)
+	html.push(equal ? '<i class="col-md-auto px-0 mr-1 fas fa-check-circle" style="line-height:1.5;"></i>' : '<i class="col-md-auto px-0 mr-2 fas fa-exclamation-circle" style="line-height:1.5;"></i>');
+	html.push(`<div class='col px-0'>Season length: ${data.season_length} / ${fract_year_length(static_data)} (year length)</div></div>`)
+	html.push(`<div class='row'>${equal ? "The season length and year length are the same, and will not drift away from each other." : "The season length and year length at not the same, and will diverge over time. Use with caution."}</div>`)
+	html.push(`</div>`)
 
 	$('#season_length_text').toggleClass('warning', !equal).toggleClass('valid', equal);
 	$('#season_length_text').html(html.join(''));
