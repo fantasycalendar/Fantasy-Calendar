@@ -368,10 +368,22 @@ function set_up_edit_inputs(){
 
 		var granularity = get_moon_granularity(cycle_val);
 
+		var cycle_val = cycle.val();
+		var shift_val = shift.val();
+
+		if(cycle_val == ""){
+			var  len = avg_month_length(static_data);
+			cycle_val = len ? len : 32;
+		}
+
+		if(shift_val == ""){
+			shift_val = 0;
+		}
+
 		stats = {
 			'name': name_val,
-			'cycle': cycle.val(),
-			'shift': shift.val(),
+			'cycle': cycle_val,
+			'shift': shift_val,
 			'granularity': granularity,
 			'color': '#ffffff',
 			'shadow_color': '#292b4a',
@@ -2433,7 +2445,7 @@ function add_moon_to_list(parent, key, data){
 					element.push("<div class='detail-column half'>");
 						element.push("<div class='detail-row'>");
 							element.push("<div class='detail-text'>Cycle:</div>");
-							element.push(`<input type='number' step="any" class='form-control dynamic_input cycle' data='moons.${key}' fc-index='cycle' value='${!data.custom_phase ? data.cycle : ''}' />`);
+							element.push(`<input type='number' min='1' step="any" class='form-control dynamic_input cycle' data='moons.${key}' fc-index='cycle' value='${!data.custom_phase ? data.cycle : ''}' />`);
 						element.push("</div>");
 					element.push("</div>");
 					element.push("<div class='detail-column half'>");
