@@ -171,8 +171,6 @@ var eras = {
 
 			}
 
-			calendar_layouts.update_year_follower();
-
 		}
 
 	},
@@ -353,6 +351,8 @@ function update_current_day(recalculate){
   
 	evaluate_sun();
 
+	update_cycle_text();
+
 }
 
 function scroll_to_epoch(){
@@ -362,6 +362,22 @@ function scroll_to_epoch(){
 	}else if($(`[epoch=${dynamic_data.epoch}]`).length){
 		$(`[epoch=${dynamic_data.epoch}]`)[0].scrollIntoView({block: "center", inline: "nearest"});
 	}
+}
+
+function update_cycle_text(){
+
+	if(evaluated_static_data.epoch_data){
+
+		var cycle_text = Mustache.render(static_data.cycles.format, get_cycle(static_data, evaluated_static_data.epoch_data[preview_date.epoch]).text);
+
+		$('#top_follower_content .cycle').text(cycle_text).removeClass('hidden');
+
+	}else{
+
+		$('#top_follower_content .cycle').text('').addClass('hidden');
+
+	}
+
 }
 
 var calendar_layouts = {
@@ -407,9 +423,9 @@ var calendar_layouts = {
 		this.timespans = data.timespans;
 		this.layout = (deviceType() == "Mobile Phone") ? 'vertical' : 'grid';
 
-		this.update_year_follower();
-
 		this.append_layout();
+
+		this.update_year_follower();
 
 	},
 
@@ -451,11 +467,11 @@ var calendar_layouts = {
 
 		this.append_layout();
 
-		this.update_year_follower();
-
 		this.add_year_day_number();
 
 		this.add_month_number();
+
+		this.update_year_follower();
 
 	},
 
@@ -490,14 +506,7 @@ var calendar_layouts = {
 
 		}
 
-		var cycle_text = Mustache.render(static_data.cycles.format, get_cycle(static_data, convert_year(calendar_layouts.year_data.era_year)).text);
-
-		var html = [];
-
-		html.push(`<div class='year'>${year_text}</div>`);
-		html.push(`<div class='cycle'>${cycle_text}</div>`);
-
-		$('#top_follower_content').html(html.join('')).removeClass().addClass(this.name_layout);
+		$('#top_follower_content').removeClass().addClass(this.name_layout).find('.year').text(year_text);
 
 	},
 

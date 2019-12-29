@@ -852,7 +852,7 @@ class date_manager {
  *                              "text" - The text to be displayed at the top of the calendar
  *                              "array" - An array containing each index (ints) that indicates which part of the cycle each of them is in
  */
-function get_cycle(static_data, year){
+function get_cycle(static_data, epoch_data){
 
 	var text = {};
 	var index_array = [];
@@ -870,13 +870,25 @@ function get_cycle(static_data, year){
 
 			var cycle = static_data.cycles.data[index];
 
-			// Get the cycle length from the year
-			var cycle_year = Math.floor(year / cycle.length);
+			var cycle_type = cycle.type ? cycle.type : "year";
 
-			if (cycle_year < 0) cycle_year += Math.ceil(Math.abs(year) / cycle.names.length) * cycle.names.length;
+			var cycle_epoch_data = epoch_data[cycle_type];
+
+			if(cycle_type == "day"){
+				cycle_epoch_data--;				
+			}else if(cycle_type == "year day"){
+				cycle_epoch_data--;				
+			}else if(cycle_type == "year"){
+				cycle_epoch_data = cycle_epoch_data >= 0 ? cycle_epoch_data-1 : cycle_epoch_data;
+			}
+
+			// Get the cycle length from the year
+			var cycle_num = Math.floor(cycle_epoch_data / cycle.length);
+
+			if (cycle_num < 0) cycle_num += Math.ceil(Math.abs(cycle_epoch_data) / cycle.names.length) * cycle.names.length;
 
 			// Store the cycle index
-			var cycle_index = (cycle_year + Math.floor(cycle.offset/cycle.length)) % cycle.names.length;
+			var cycle_index = (cycle_num + Math.floor(cycle.offset/cycle.length)) % cycle.names.length;
 
 			// Get the name for this cycle
 			var cycle_name = cycle.names[cycle_index];

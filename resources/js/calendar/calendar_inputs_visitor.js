@@ -240,6 +240,8 @@ function go_to_preview_date(rebuild){
 		}
 	}
 
+	update_cycle_text();
+
 }
 
 function display_preview_back_button(){

@@ -550,8 +550,6 @@ var calendar_builder = {
 
 			timespan_list = this.calendar_list.pre_timespans_to_evaluate[year_index];
 
-			current_cycle = get_cycle(this.static_data, year_index).array;
-
 			year_week_num = 1;
 
 			for(var i = 0; i < Object.keys(timespan_list).length; i++){
@@ -603,13 +601,14 @@ var calendar_builder = {
 									'moon_phase_num_month': [],
 									'moon_phase_num_year': [],
 
-									'cycle': current_cycle,
 									'intercalary': true,
 									'leap_day': leap_day.index,
 
 									'era': current_era
 
 								}
+
+								data.current_cycle = get_cycle(this.static_data, data).array;
 
 								data = this.add_moon_data(
 									this.pre_data.repititions.year_moons[year_index],
@@ -655,11 +654,12 @@ var calendar_builder = {
 							'moon_phase_num_month': [],
 							'moon_phase_num_year': [],
 
-							'cycle': current_cycle,
 							'intercalary': current_timespan.type === "intercalary",
 
 							'era': current_era
 						}
+
+						data.current_cycle = get_cycle(this.static_data, data).array;
 
 						if(current_timespan.type !== "intercalary"){
 
@@ -720,8 +720,6 @@ var calendar_builder = {
 									'moon_phase_num_epoch': [],
 									'moon_phase_num_month': [],
 									'moon_phase_num_year': [],
-
-									'cycle': current_cycle,
 									
 									'intercalary': true,
 									'leap_day': leap_day.index,
@@ -729,6 +727,7 @@ var calendar_builder = {
 									'era': current_era
 								}
 
+								data.current_cycle = get_cycle(this.static_data, data).array;
 
 								data = this.add_moon_data(
 									this.pre_data.repititions.year_moons[year_index],
@@ -772,8 +771,6 @@ var calendar_builder = {
 			year_index = parseInt(order[year_i]);
 
 			timespan_list = this.calendar_list.post_timespans_to_evaluate[year_index];
-
-			current_cycle = get_cycle(this.static_data, year_index).array;
 
 			year_week_num = 1;
 
@@ -826,13 +823,14 @@ var calendar_builder = {
 									'moon_phase_num_month': [],
 									'moon_phase_num_year': [],
 
-									'cycle': current_cycle,
 									'intercalary': true,
 									'leap_day': leap_day.index,
 
 									'era': current_era
 
 								}
+
+								data.current_cycle = get_cycle(this.static_data, data).array;
 
 								data = this.add_moon_data(
 									this.post_data.repititions.year_moons[year_index],
@@ -871,18 +869,18 @@ var calendar_builder = {
 							'year_week_num': current_timespan.type !== "intercalary" ? year_week_num : undefined,
 							'total_week_num': current_timespan.type !== "intercalary" ? total_week_num : undefined,
 
-							
-
 							'moon_phase': [],
 							'moon_phase_num_epoch': [],
 							'moon_phase_num_month': [],
 							'moon_phase_num_year': [],
 
-							'cycle': current_cycle,
 							'intercalary': current_timespan.type === "intercalary",
 
 							'era': current_era
+
 						}
+
+						data.current_cycle = get_cycle(this.static_data, data).array;
 
 						if(current_timespan.type !== "intercalary"){
 
@@ -943,14 +941,14 @@ var calendar_builder = {
 									'moon_phase_num_epoch': [],
 									'moon_phase_num_month': [],
 									'moon_phase_num_year': [],
-
-									'cycle': current_cycle,
 									
 									'intercalary': true,
 									'leap_day': leap_day.index,
 
 									'era': current_era
 								}
+
+								data.current_cycle = get_cycle(this.static_data, data).array;
 
 								data = this.add_moon_data(
 									this.post_data.repititions.year_moons[year_index],
@@ -1293,8 +1291,6 @@ var calendar_builder = {
 
 			timespan_list = this.calendar_list.pre_timespans_to_evaluate[year_index];
 
-			current_cycle = get_cycle(this.static_data, year_index).array;
-
 			year_week_num = 1;
 
 			for(var i = 0; i < Object.keys(timespan_list).length; i++){
@@ -1346,7 +1342,6 @@ var calendar_builder = {
 									'moon_phase_num_month': [],
 									'moon_phase_num_year': [],
 
-									'cycle': current_cycle,
 									'intercalary': true,
 									'leap_day': leap_day.index,
 
@@ -1354,6 +1349,7 @@ var calendar_builder = {
 
 								}
 
+								data.current_cycle = get_cycle(this.static_data, data).array;
 
 								data = this.add_moon_data(
 									this.pre_data.repititions.year_moons[year_index],
@@ -1399,11 +1395,13 @@ var calendar_builder = {
 							'moon_phase_num_month': [],
 							'moon_phase_num_year': [],
 
-							'cycle': current_cycle,
 							'intercalary': current_timespan.type === "intercalary",
 
 							'era': current_era
+
 						}
+
+						data.current_cycle = get_cycle(this.static_data, data).array;
 
 						if(current_timespan.type !== "intercalary"){
               
@@ -1464,14 +1462,14 @@ var calendar_builder = {
 									'moon_phase_num_epoch': [],
 									'moon_phase_num_month': [],
 									'moon_phase_num_year': [],
-
-									'cycle': current_cycle,
 									
 									'intercalary': true,
 									'leap_day': leap_day.index,
 
 									'era': current_era
 								}
+
+								data.current_cycle = get_cycle(this.static_data, data).array;
 
 								data = this.add_moon_data(
 									this.pre_data.repititions.year_moons[year_index],
@@ -1509,8 +1507,6 @@ var calendar_builder = {
 		first_epoch = epoch;
 		first_week_day = week_day;
 		year_week_num = 1;
-
-		current_cycle = get_cycle(this.static_data, convert_year(this.dynamic_data.year)).array;
 
 		for(var i = 0; i < Object.keys(this.calendar_list.timespans_to_build).length; i++){
 
@@ -1569,8 +1565,6 @@ var calendar_builder = {
 								'moon_phase_num_epoch': [],
 								'moon_phase_num_month': [],
 								'moon_phase_num_year': [],
-
-								'cycle': current_cycle,
 								
 								'intercalary': true,
 								'leap_day': leap_day.index,
@@ -1578,6 +1572,8 @@ var calendar_builder = {
 								'era': current_era
 								
 							}
+
+							data.current_cycle = get_cycle(this.static_data, data).array;
 
 							data = this.add_moon_data(
 								this.data.repititions.year_moons,
@@ -1629,12 +1625,13 @@ var calendar_builder = {
 						'moon_phase_num_month': [],
 						'moon_phase_num_year': [],
 
-						'cycle': current_cycle,
 						'intercalary': current_timespan.type === "intercalary",
 
 						'era': current_era
 
 					}
+
+					data.current_cycle = get_cycle(this.static_data, data).array;
 
 					if(current_timespan.type !== "intercalary"){
 
@@ -1699,14 +1696,14 @@ var calendar_builder = {
 								'moon_phase_num_epoch': [],
 								'moon_phase_num_month': [],
 								'moon_phase_num_year': [],
-
-								'cycle': current_cycle,
 								
 								'intercalary': true,
 								'leap_day': leap_day.index,
 
 								'era': current_era
 							}
+
+							data.current_cycle = get_cycle(this.static_data, data).array;
 
 							data = this.add_moon_data(
 								this.data.repititions.year_moons,
@@ -1760,8 +1757,6 @@ var calendar_builder = {
 
 			timespan_list = this.calendar_list.post_timespans_to_evaluate[year_index];
 
-			current_cycle = get_cycle(this.static_data, year_index).array;
-
 			year_week_num = 1;
 
 			for(var i = 0; i < Object.keys(timespan_list).length; i++){
@@ -1813,13 +1808,14 @@ var calendar_builder = {
 									'moon_phase_num_month': [],
 									'moon_phase_num_year': [],
 
-									'cycle': current_cycle,
 									'intercalary': true,
 									'leap_day': leap_day.index,
 
 									'era': current_era
 
 								}
+
+								data.current_cycle = get_cycle(this.static_data, data).array;
 
 								data = this.add_moon_data(
 									this.post_data.repititions.year_moons[year_index],
@@ -1865,11 +1861,12 @@ var calendar_builder = {
 							'moon_phase_num_month': [],
 							'moon_phase_num_year': [],
 
-							'cycle': current_cycle,
 							'intercalary': current_timespan.type === "intercalary",
 
 							'era': current_era
 						}
+
+						data.current_cycle = get_cycle(this.static_data, data).array;
 
 						if(current_timespan.type !== "intercalary"){
 
@@ -1930,14 +1927,14 @@ var calendar_builder = {
 									'moon_phase_num_epoch': [],
 									'moon_phase_num_month': [],
 									'moon_phase_num_year': [],
-
-									'cycle': current_cycle,
 									
 									'intercalary': true,
 									'leap_day': leap_day.index,
 
 									'era': current_era
 								}
+
+								data.current_cycle = get_cycle(this.static_data, data).array;
 
 								data = this.add_moon_data(
 									this.post_data.repititions.year_moons[year_index],

@@ -63,7 +63,7 @@ if (authorization) {
  * API, allowing confirmations and very much more. (sweetalert.js.org)
  */
 
-require('sweetalert');
+window.swal = require('sweetalert2')
 
 /**
  * Select2 is a jQuery-based replacement for select boxes. It supports searching,

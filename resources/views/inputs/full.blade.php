@@ -625,7 +625,7 @@
                 </div>
 
                 <div class='detail-row detail-select-container'>
-                    <div class='detail-label'>Location:</div>
+                    <div class='detail-label'>Current location:</div>
                 </div>
                 <div class='detail-row'>
                     <select class='form-control' id='location_select'>
@@ -662,11 +662,6 @@
 
                 <div class='sortable' id='cycle_sortable'></div>
 
-
-                <div class='form-inline cycle'>
-                    <div class="cycle_test_container">Test year: <input type='number' value='1' min='1' id='cycle_test_input' class='form-control spinner'></div>
-                    <div id='cycle_test_result' class="italics-text">Test</div>
-                </div>
             </div>
 
         </div>
@@ -952,7 +947,7 @@
             <button type='button' class='btn btn-info hidden reset_preview_date protip' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >< Current</button>
         </div>
 
-		<div id='top_follower_content'></div>
+		<div id='top_follower_content'><div class='year'></div><div class='cycle'></div></div>
 
         <div class='reset_preview_date_container right'>
             <button type='button' class='btn btn-info hidden reset_preview_date protip' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >Current ></button>

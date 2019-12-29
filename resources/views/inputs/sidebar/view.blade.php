@@ -242,7 +242,7 @@
 		<div class="collapsible-content">
 
 			<div class='detail-row detail-select-container'>
-				<div class='detail-label'>Location:</div>
+				<div class='detail-label'>Current location:</div>
 				<div class='detail-select'>
 					<select class='form-control' id='location_select'>
 					</select>
