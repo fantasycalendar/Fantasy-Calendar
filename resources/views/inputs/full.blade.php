@@ -487,7 +487,7 @@
                 </div>
 
                 <div class='row mb-1 protip' data-pt-position="right" data-pt-title='This toggles between having seasons starting on specific dates, or having the seasons last an exact duration with the potential to overflow years.'>
-                    <div class='col-3 p-0 text-right season_text dated'>
+                    <div class='col-4 p-0 text-right season_text dated'>
                         Date Based
                     </div>
                     <div class='col-2 p-0'>

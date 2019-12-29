@@ -516,11 +516,11 @@ function set_up_edit_inputs(){
 		name.val("");
 		do_error_check();
 
-		$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 && static_data.clock.enabled);
+		$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 || !static_data.clock.enabled);
 
 	});
 
-	$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 && static_data.clock.enabled);
+	$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 || !static_data.clock.enabled);
 
 	$('#create_season_events').click(function(){
 		swal.fire({
@@ -4318,7 +4318,7 @@ function evaluate_clock_inputs(){
 		$(this).prop('min', static_data.clock.minutes*-0.5).prop('max', static_data.clock.minutes*0.5).prop('disabled', !static_data.clock.enabled).toggleClass('hidden', !static_data.clock.enabled);
 	});
 
-	$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 && static_data.clock.enabled);
+	$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 || !static_data.clock.enabled);
 
 }
 
