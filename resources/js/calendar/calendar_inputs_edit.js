@@ -1067,7 +1067,6 @@ function set_up_edit_inputs(){
 
 		}
 
-
 		if(!callback){
 
 			evaluate_remove_buttons();
@@ -1770,12 +1769,6 @@ function set_up_edit_inputs(){
 
 	})
 
-
-
-
-
-
-
 	$(document).on('change', '.invalid', function(){
 		if($(this).val() !== null){
 			$(this).removeClass('invalid');
@@ -1944,6 +1937,11 @@ function set_up_edit_inputs(){
 
 			if(type.includes('clock')){
 				evaluate_clock_inputs();
+			}
+
+			if(key == 'year_zero_exists'){
+				current_year.val(dynamic_date_manager.adjusted_year)
+				target_year.val(preview_date_manager.adjusted_year)
 			}
 
 			do_error_check(type[0], refresh);
