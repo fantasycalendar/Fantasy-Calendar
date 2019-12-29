@@ -794,8 +794,9 @@ function set_up_edit_inputs(){
 		var stats = {
 			'length': 1,
 			'offset': 0,
-			'names': ["Cycle name 1"]
+			'names': ["Name 1"]
 		};
+
 		if(static_data.cycles === undefined){
 			static_data.cycles = {
 				format: $('#cycle_format').val(),
@@ -805,6 +806,10 @@ function set_up_edit_inputs(){
 		static_data.cycles.data.push(stats);
 		add_cycle_to_sortable(cycle_sortable, id, stats);
 		do_error_check();
+
+		if($('#cycle_format').val() == ""){
+			$('#cycle_format').val("Cycle {{1}}").change();
+		}
 
 	});
 
@@ -1284,7 +1289,7 @@ function set_up_edit_inputs(){
 		var timespan = static_data.year_data.timespans[id];
 
 		swal.fire({
-			title: "Cycle Names",
+			title: "Weekday Names",
 			text: "Each line entered below creates one week day in this month.",
 			input: "textarea",
 			inputValue: timespan.week.join('\n'),
@@ -1431,7 +1436,7 @@ function set_up_edit_inputs(){
 		if(new_val > current_val){
 			var element = [];
 			for(index = current_val; index < new_val; index++){
-				element.push(`<input type='text' class='form-control internal-list-name dynamic_input' data='cycles.data.${cycle_index}.names' fc-index='${index}' value='Cycle name ${(index+1)}'/>`);
+				element.push(`<input type='text' class='form-control internal-list-name dynamic_input' data='cycles.data.${cycle_index}.names' fc-index='${index}' value='Name ${(index+1)}'/>`);
 			}
 			cycle_list.append(element.join(""));
 			cycle_list.find(".internal-list-name").first().change();

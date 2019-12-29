@@ -652,7 +652,7 @@
                     Cycle format:
                 </div>
                 <div class="detail-row">
-                    <input type='text' id='cycle_format' class='form-control name static_input' data='cycles' fc-index='format' placeholder='Cycle format'>
+                    <input type='text' id='cycle_format' class='form-control name static_input protip' data='cycles' fc-index='format' placeholder='Hover for info' data-pt-position="right" data-pt-title="This is the template for the cycles you have. Each cycle part has a set of names which you can add to the top of the calendar. Add one with this field empty to see how this works!">
                 </div>
 
 
