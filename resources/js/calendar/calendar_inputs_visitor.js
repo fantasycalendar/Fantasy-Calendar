@@ -169,6 +169,8 @@ function preview_date_follow(){
 
 	if(preview_date.follow){
 
+		if(typeof preview_date_manager == "undefined") set_up_visitor_values();
+
 		preview_date_manager.year = dynamic_date_manager.year;
 		preview_date_manager.timespan = dynamic_date_manager.timespan;
 		preview_date_manager.day = dynamic_date_manager.day;
@@ -539,27 +541,23 @@ function repopulate_day_select(select, val, change, no_leaps, max){
 
 function set_up_visitor_values(){
 
-	if(dynamic_data){
+	preview_date.follow = true
 
-		preview_date.follow = true
+	$('.reset_preview_date_container.right .reset_preview_date').prop("disabled", preview_date.follow).toggleClass('hidden', preview_date.follow);
+	$('.reset_preview_date_container.left .reset_preview_date').prop("disabled", preview_date.follow).toggleClass('hidden', preview_date.follow);
 
-		$('.reset_preview_date_container.right .reset_preview_date').prop("disabled", preview_date.follow).toggleClass('hidden', preview_date.follow);
-		$('.reset_preview_date_container.left .reset_preview_date').prop("disabled", preview_date.follow).toggleClass('hidden', preview_date.follow);
+	preview_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
 
-		preview_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
+	evaluate_settings();
 
-		evaluate_settings();
-
-		target_year.val(preview_date_manager.adjusted_year);
-		if(preview_date_manager.last_valid_year){
-			target_year.prop('max', preview_date_manager.last_valid_year)
-		}else{
-			target_year.removeAttr('max')
-		}
-
-		repopulate_timespan_select(target_timespan, preview_date_manager.timespan, false, preview_date_manager.last_valid_timespan);
-		repopulate_day_select(target_day, preview_date_manager.day, false, false, preview_date_manager.last_valid_day);
-
+	target_year.val(preview_date_manager.adjusted_year);
+	if(preview_date_manager.last_valid_year){
+		target_year.prop('max', preview_date_manager.last_valid_year)
+	}else{
+		target_year.removeAttr('max')
 	}
+
+	repopulate_timespan_select(target_timespan, preview_date_manager.timespan, false, preview_date_manager.last_valid_timespan);
+	repopulate_day_select(target_day, preview_date_manager.day, false, false, preview_date_manager.last_valid_day);
 
 }

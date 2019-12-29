@@ -270,8 +270,9 @@ function set_up_edit_inputs(){
 	$('.form-inline.global_week .add').click(function(){
 		var name = $(this).prev();
 		var id = global_week_sortable.children().length;
-		add_weekday_to_sortable(global_week_sortable, id, name.val())
-		static_data.year_data.global_week.push(name.val());
+		var name_val = name.val() == "" ? `Weekday ${id+1}` : name.val();
+		add_weekday_to_sortable(global_week_sortable, id, name_val)
+		static_data.year_data.global_week.push(name_val);
 		global_week_sortable.sortable('refresh');
 		reindex_weekday_sortable();
 		name.val("");
@@ -282,8 +283,13 @@ function set_up_edit_inputs(){
 		var name = $(this).prev().prev();
 		var type = $(this).prev();
 		var id = timespan_sortable.children().length;
+		if(type.val() == "month"){
+			var name_val = name.val() == "" ? `Month ${id+1}` : name.val();
+		}else{
+			var name_val = name.val() == "" ? `Intercalary Month ${id+1}` : name.val();
+		}
 		stats = {
-			'name': name.val(),
+			'name': name_val,
 			'type': type.val(),
 			'length': 1,
 			'interval': 1,
@@ -304,8 +310,9 @@ function set_up_edit_inputs(){
 		var name = $(this).prev().prev();
 		var type = $(this).prev();
 		var id = leap_day_list.children().length;
+		var name_val = name.val() == "" ? `Leap day ${id+1}` : name.val();
 		stats = {
-			'name': name.val(),
+			'name': name_val,
 			'intercalary': type.val() == 'intercalary',
 			'timespan': 0,
 			'adds_week_day': false,
@@ -355,10 +362,12 @@ function set_up_edit_inputs(){
 		var cycle_val = cycle.val()|0;
 		var id = moon_list.children().length;
 
+		var name_val = name.val() == "" ? `Moon ${id+1}` : name.val();
+
 		var granularity = get_moon_granularity(cycle_val);
 
 		stats = {
-			'name': name.val(),
+			'name': name_val,
 			'cycle': cycle.val(),
 			'shift': shift.val(),
 			'granularity': granularity,
@@ -440,8 +449,10 @@ function set_up_edit_inputs(){
 		var name = $(this).prev();
 		var id = season_sortable.children().length;
 
+		var name_val = name.val() == "" ? `Season ${id+1}` : name.val();
+
 		stats = {
-			"name": name.val() != "" ? name.val() : `Season ${id+1}`,
+			"name": name_val,
 			"time": {
 				"sunrise": {
 					"hour": 6,
@@ -541,8 +552,7 @@ function set_up_edit_inputs(){
 		var name = $(this).prev();
 		var id = location_list.children().length;
 
-
-		var name_value = name.val();
+		var name_value = name.val() == "" ? `Location ${id+1}` : name.val();
 
 		stats = {
 			"name": name_value,
@@ -805,8 +815,10 @@ function set_up_edit_inputs(){
 
 		var name = $(this).prev();
 
+		var name_val = name.val() == "" ? `Era ${id+1}` : name.val();
+
 		var stats = {
-			"name": name.val(),
+			"name": name_val,
 			"formatting": "",
 			"description": "",
 			"settings": {
@@ -845,8 +857,10 @@ function set_up_edit_inputs(){
 
 		var slug = slugify(name.val());
 
+		var name_val = name.val() == "" ? `Category ${id+1}` : name.val();
+
 		var stats = {
-			"name": name.val(),
+			"name": name_val,
 			"category_settings":{
 				"hide": false,
 				"player_usable": false
@@ -877,10 +891,13 @@ function set_up_edit_inputs(){
 
 
 	$('.form-inline.events .add').click(function(){
-		var name = $(this).prev().val();
+		var name = $(this).prev();
 
-		edit_event_ui.create_new_event(name);
-		$(this).prev().val('');
+		var name_val = name.val() == "" ? `New Event` : name.val();
+
+		edit_event_ui.create_new_event(name_val);
+
+		name.val('');
 
 	});
 

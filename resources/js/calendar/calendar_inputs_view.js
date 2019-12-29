@@ -399,21 +399,17 @@ function repopulate_location_select_list(){
 
 function set_up_view_values(){
 
-	if(dynamic_data){
+    preview_date = clone(dynamic_data);
 
-        preview_date = clone(dynamic_data);
+    preview_date.follow = true;
 
-        preview_date.follow = true;
+	dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
 
-		dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
+	current_year.val(dynamic_date_manager.adjusted_year);
 
-		current_year.val(dynamic_date_manager.adjusted_year);
+	repopulate_timespan_select(current_timespan, dynamic_data.timespan, false);
 
-		repopulate_timespan_select(current_timespan, dynamic_data.timespan, false);
-
-		repopulate_day_select(current_day, dynamic_data.day, false);
-
-	}
+	repopulate_day_select(current_day, dynamic_data.day, false);
 
 	if(static_data.clock && dynamic_data.hour !== undefined && dynamic_data.minute !== undefined){
 
