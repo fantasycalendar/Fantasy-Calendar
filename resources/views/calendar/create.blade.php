@@ -42,8 +42,8 @@
             "settings":{
                 "layout":"grid",
                 "show_current_month":false,
-                "allow_view":false,
-                "only_backwards":false,
+                "allow_view":true,
+                "only_backwards":true,
                 "only_reveal_today":false,
                 "hide_moons":false,
                 "hide_clock":false,
