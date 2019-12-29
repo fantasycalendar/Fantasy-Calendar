@@ -345,53 +345,47 @@ function fix_date(){
 
 function repopulate_location_select_list(){
 
-	var show_location_select = static_data.seasons.data.length > 0 || static_data.seasons.locations.length > 0;
-
 	var is_edit = location_select.closest('.wrap-collapsible').find('.form-inline.locations').length > 0;
 
-	location_select.closest('.wrap-collapsible').toggleClass('hidden', !show_location_select && !is_edit);
+	location_select.closest('.wrap-collapsible').toggleClass('hidden', !is_edit);
 
 	var html = [];
 
-	if(show_location_select){
+	if(static_data.seasons.locations.length > 0){
 
-		if(static_data.seasons.locations.length > 0){
-
-			html.push('<optgroup label="Custom" value="custom">');
-			for(var i = 0; i < static_data.seasons.locations.length; i++){
-				html.push(`<option value='${i}'>${static_data.seasons.locations[i].name}</option>`);
-			}
-			html.push('</optgroup>');
-
-		}
-
-		html.push('<optgroup label="Presets" value="preset">');
-		if((static_data.seasons.data.length == 2 || static_data.seasons.data.length == 4) && static_data.seasons.global_settings.enable_weather){
-			for(var i = 0; i < Object.keys(preset_data.locations[static_data.seasons.data.length]).length; i++){
-				html.push(`<option>${Object.keys(preset_data.locations[static_data.seasons.data.length])[i]}</option>`);
-			}
-		}else{
-			html.push(`<option disabled>Presets require two or four seasons and weather enabled.</option>`);
+		html.push('<optgroup label="Custom" value="custom">');
+		for(var i = 0; i < static_data.seasons.locations.length; i++){
+			html.push(`<option value='${i}'>${static_data.seasons.locations[i].name}</option>`);
 		}
 		html.push('</optgroup>');
 
+	}
 
-		if(html.length > 0){
-
-			location_select.prop('disabled', false).html(html.join('')).val(dynamic_data.location);
-
-		}else{
-
-			location_select.prop('disabled', true).html(html.join(''));
-
+	html.push('<optgroup label="Location Presets" value="preset">');
+	if((static_data.seasons.data.length == 2 || static_data.seasons.data.length == 4) && static_data.seasons.global_settings.enable_weather){
+		for(var i = 0; i < Object.keys(preset_data.locations[static_data.seasons.data.length]).length; i++){
+			html.push(`<option>${Object.keys(preset_data.locations[static_data.seasons.data.length])[i]}</option>`);
 		}
+	}else{
+		html.push(`<option disabled>Presets require two or four seasons and weather enabled.</option>`);
+	}
+	html.push('</optgroup>');
 
-		if(location_select.val() === null){
-			location_select.children().find('option').first().prop('selected', true);
-			dynamic_data.location = location_select.val();
-			dynamic_data.custom_location = location_select.find('option:selected').parent().attr('value') === 'custom';
-		}
 
+	if(html.length > 0){
+
+		location_select.prop('disabled', false).html(html.join('')).val(dynamic_data.location);
+
+	}else{
+
+		location_select.prop('disabled', true).html(html.join(''));
+
+	}
+
+	if(location_select.val() === null){
+		location_select.children().find('option').first().prop('selected', true);
+		dynamic_data.location = location_select.val();
+		dynamic_data.custom_location = location_select.find('option:selected').parent().attr('value') === 'custom';
 	}
 
 
