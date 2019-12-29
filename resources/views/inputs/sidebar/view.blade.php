@@ -107,7 +107,7 @@
 
 					<div class='separator'></div>
 
-					<div class='detail-row'>
+					<div class='detail-row clock_inputs'>
 
 						<div class='detail-column fifth'>
 							<div class='detail-text right-align full'>Time:</div>

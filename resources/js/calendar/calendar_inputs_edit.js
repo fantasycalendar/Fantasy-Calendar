@@ -232,6 +232,8 @@ function set_up_edit_inputs(){
 	$('#enable_clock').change(function(){
 
 		static_data.clock.enabled = $(this).is(':checked');
+		static_data.clock.render = $(this).is(':checked');
+		$('#render_clock').prop('checked', static_data.clock.render);
 
 		dynamic_data.hour = 0;
 		dynamic_data.minute = 0;
@@ -4301,8 +4303,8 @@ function repopulate_event_category_lists(){
 
 function evaluate_clock_inputs(){
 
-	$('#clock_inputs :input, #clock_inputs :button').prop('disabled', !static_data.clock.enabled);
-	$('#clock_inputs').toggleClass('hidden', !static_data.clock.enabled);
+	$('.clock_inputs :input, #clock_inputs :button').prop('disabled', !static_data.clock.enabled);
+	$('.clock_inputs').toggleClass('hidden', !static_data.clock.enabled);
 
 	$('.hour_input').each(function(){
 		$(this).prop('min', 0).prop('max', static_data.clock.hours).prop('disabled', !static_data.clock.enabled).toggleClass('hidden', !static_data.clock.enabled);

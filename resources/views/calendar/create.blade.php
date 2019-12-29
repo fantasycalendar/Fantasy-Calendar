@@ -19,6 +19,7 @@
             "moons":[],
             "clock":{
                 "enabled":false,
+                "render":false,
                 "hours":24,
                 "minutes":60,
                 "offset":0

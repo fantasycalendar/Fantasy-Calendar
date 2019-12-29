@@ -147,7 +147,7 @@
                     </div>
 
 
-                    <div class='detail-row'>
+                    <div class='detail-row clock_inputs'>
 
                         <div class='detail-column quarter'>
                             <div class='detail-text right-align full'>Time:</div>
@@ -270,17 +270,28 @@
             <label for="collapsible_clock" class="lbl-toggle card-header lbl-text">Clock <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Clock' href='https://wiki.fantasy-calendar.com/index.php?title=Clock' class="wiki protip"><i class="icon-question-sign"></i></a></label>
             <div class="collapsible-content card-body">
 
-                <div class='detail-row'>
-                    <div class='detail-column'>Enable clock:</div>
-                    <div class='detail-column float'>
-                        <label class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input static_input" id='enable_clock' data='clock' fc-index='enabled'>
-                            <span class="custom-control-indicator"></span>
-                        </label>
+                <div class='row'>
+                    <div class='col'>
+                        <div class='col'>Enable clock:</div>
+                        <div class='col'>
+                            <label class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input static_input" id='enable_clock' data='clock' fc-index='enabled'>
+                                <span class="custom-control-indicator"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class='col'>
+                        <div class='col'>Render clock:</div>
+                        <div class='col'>
+                            <label class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input static_input" id='render_clock' data='clock' fc-index='render'>
+                                <span class="custom-control-indicator"></span>
+                            </label>
+                        </div>
                     </div>
                 </div>
 
-                <div class='clock_inputs' id='clock_inputs'>
+                <div class='clock_inputs'>
 
                     <div class='detail-row'>
 

@@ -290,10 +290,10 @@ function go_to_dynamic_date(rebuild){
 
 function evaluate_settings(){
 
-	$('.date_control').toggleClass('hidden', (owner && !static_data.settings.allow_view)).find('select, input').prop('disabled', !owner && !static_data.settings.allow_view);
+	$('.date_control').toggleClass('hidden', (!owner && !static_data.settings.allow_view)).find('select, input').not('#current_hour, #current_minute').prop('disabled', !owner && !static_data.settings.allow_view);
 
-	follower_buttons.toggleClass('hidden', (owner && !static_data.settings.allow_view));
-	follower_year_buttons.prop('disabled', (owner && !static_data.settings.allow_view)).toggleClass('hidden', (owner && !static_data.settings.allow_view));
+	follower_buttons.toggleClass('hidden', (!owner && !static_data.settings.allow_view));
+	follower_year_buttons.prop('disabled', (!owner && !static_data.settings.allow_view)).toggleClass('hidden', (!owner && !static_data.settings.allow_view));
 	follower_timespan_buttons.prop('disabled', !static_data.settings.show_current_month).toggleClass('hidden', !static_data.settings.show_current_month);
 
 	if(!owner && static_data.settings.allow_view && static_data.settings.only_backwards){
@@ -325,7 +325,7 @@ function evaluate_settings(){
 
 function eval_clock(){
 
-	if(!static_data.clock.enabled || isNaN(static_data.clock.hours) || isNaN(static_data.clock.minutes) || isNaN(static_data.clock.offset)){
+	if(!static_data.clock.enabled || !static_data.clock.render || isNaN(static_data.clock.hours) || isNaN(static_data.clock.minutes) || isNaN(static_data.clock.offset)){
 		$('#clock').css('display', 'none');
 		return;
 	}
@@ -358,7 +358,7 @@ function eval_clock(){
 
 function eval_current_time(){
 
-	if(!static_data.clock.enabled || isNaN(static_data.clock.hours) || isNaN(static_data.clock.minutes) || isNaN(static_data.clock.offset)){
+	if(!static_data.clock.enabled || !static_data.clock.render || isNaN(static_data.clock.hours) || isNaN(static_data.clock.minutes) || isNaN(static_data.clock.offset)){
 		$('#clock').css('display', 'none');
 		return;
 	}
@@ -371,7 +371,7 @@ function eval_current_time(){
 
 function evaluate_sun(){
 
-	if(!static_data.clock.enabled || isNaN(static_data.clock.hours) || isNaN(static_data.clock.minutes) || isNaN(static_data.clock.offset)){
+	if(!static_data.clock.enabled || !static_data.clock.render || isNaN(static_data.clock.hours) || isNaN(static_data.clock.minutes) || isNaN(static_data.clock.offset)){
 		$('#clock').css('display', 'none');
 		return;
 	}

@@ -19,6 +19,14 @@
             }
         }
 
+        if(static_data.seasons.global_settings.periodic_seasons === undefined){
+            static_data.seasons.global_settings.periodic_seasons = true;
+        }
+
+        if(static_data.clock.render === undefined){
+            static_data.clock.render = static_data.clock.enable;
+        }
+
         set_up_view_inputs();
         set_up_view_values();
         set_up_visitor_values();
