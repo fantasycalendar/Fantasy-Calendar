@@ -126,13 +126,19 @@ function truncate_weekdays(weekday_array){
 
 		var name = weekday_array[index];
 
-		if(name.split(' ').length > 1){
-			name = name.split(' ')[0].substring(0,1) + name.split(' ')[1].substring(0,1);
+		if(is_roman_numeral(name)){
+
+			new_array.push(name);
+
 		}else{
-			name = name.substring(0,2);
+
+			if(name.split(' ').length > 1 && name.split(' ')[1] != ""){
+				name = name.split(' ')[0].substring(0,1) + name.split(' ')[1].substring(0,1);
+			}else{
+				name = name.substring(0,2);
+			}
+
 		}
-		
-		new_array.push(name);
 
 	}
 
@@ -140,6 +146,12 @@ function truncate_weekdays(weekday_array){
 
 }
 
+
+function is_roman_numeral(string){
+	return ["C","CC","CCC","CD","D","DC","DCC","DCCC","CM",
+           "X","XX","XXX","XL","L","LX","LXX","LXXX","XC",
+           "I","II","III","IV","V","VI","VII","VIII","IX"].indexOf(string.toUpperCase()) != -1;
+}
 
 /**
  * This function crawls through a string to find a reference

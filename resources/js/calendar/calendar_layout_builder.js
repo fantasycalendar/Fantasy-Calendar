@@ -1483,7 +1483,7 @@ var calendar_layouts = {
 
 			}else{
 
-				if(calendar_layouts.epoch_data[epoch].weather && calendar_layouts.data.processed_weather){
+				if((calendar_layouts.epoch_data[epoch].weather && calendar_layouts.data.processed_weather) || static_data.moons.length > 0){
 					day_class += " weather_popup moon_popup";
 				}
 

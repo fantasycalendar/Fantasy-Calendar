@@ -84,11 +84,11 @@ var calendar_weather = {
 			this.weather_title.addClass('hidden');
 
 			if(icon.hasClass('moon_popup')){
+
 				this.moon_title.removeClass('hidden');
 				this.moon_container.removeClass('hidden');
-				this.weather_title.removeClass('hidden');
-
 				this.moon_container.children().first().html(insert_moons(calendar_layouts.epoch_data[epoch]));
+
 			}
 
 			if(registered_click_callbacks['sticky_weather_ui']){
@@ -99,50 +99,74 @@ var calendar_weather = {
 			this.stop_hide = false;
 			this.sticky_icon = false;
 
-			if(!calendar_weather.processed_weather) return;
+			if(calendar_weather.processed_weather){
 
-			var height = 0;
+				if(static_data.seasons.global_settings.cinematic){
+					this.weather_temp_desc.parent().css('display', '');
+				}else{
+					this.weather_temp_desc.parent().css('display', 'none');
+				}
 
-			if(static_data.seasons.global_settings.cinematic){
-				this.weather_temp_desc.parent().css('display', '');
-			}else{
-				this.weather_temp_desc.parent().css('display', 'none');
-				height -= 18;
+				var weather = calendar_weather.epoch_data[epoch].weather;
+
+				var desc = weather.temperature.cinematic;
+
+				var temp_sys = static_data.seasons.global_settings.temp_sys;
+
+				if(temp_sys == 'imperial'){
+					temp_symbol = '°F';
+					var temp = `${precisionRound(weather.temperature[temp_sys].value[0], 1).toString()+temp_symbol} to ${precisionRound(weather.temperature[temp_sys].value[1], 1).toString()+temp_symbol}`;
+				}else if(temp_sys == 'metric'){
+					temp_symbol = '°C';
+					var temp = `${precisionRound(weather.temperature[temp_sys].value[0], 1).toString()+temp_symbol} to ${precisionRound(weather.temperature[temp_sys].value[1], 1).toString()+temp_symbol}`;
+				}else{
+					var temp_f = `<span class='newline'>${precisionRound(weather.temperature['imperial'].value[0], 1).toString()}°F to ${precisionRound(weather.temperature['imperial'].value[1], 1).toString()}°F</span>`;
+					var temp_c = `<span class='newline'>${precisionRound(weather.temperature['metric'].value[0], 1).toString()}°C to ${precisionRound(weather.temperature['metric'].value[1], 1).toString()}°C</span>`;
+					var temp = `${temp_f}${temp_c}`;
+				}
+				this.weather_temp.toggleClass('newline', temp_sys == 'both_i' || temp_sys == 'both_m');
+
+
+				var wind_sys = static_data.seasons.global_settings.wind_sys;
+
+				if(wind_sys == 'imperial'){
+					var wind_symbol = "MPH";
+					var wind_text = `${weather.wind_speed} (${weather.wind_direction}) (${weather.wind_velocity[wind_sys]} ${wind_symbol})`;
+				}else if(wind_sys == 'metric'){
+					var wind_symbol = "KPH";
+					var wind_text = `${weather.wind_speed} (${weather.wind_direction}) (${weather.wind_velocity[wind_sys]} ${wind_symbol})`;
+				}else{
+					var wind_text = `${weather.wind_speed} (${weather.wind_direction}) <span class='newline'>(${weather.wind_velocity.imperial} MPH | ${weather.wind_velocity.metric} KPH)</span>`;
+				}
+
+				this.weather_temp_desc.each(function(){
+					$(this).text(desc);
+				});
+
+				this.weather_temp.each(function(){
+					$(this).html(temp);
+				});
+
+				this.weather_wind.each(function(){
+					$(this).html(wind_text);
+				});
+
+				this.weather_precip.each(function(){
+					$(this).text(weather.precipitation.key);
+				});
+
+				this.weather_clouds.each(function(){
+					$(this).text(weather.clouds);
+				});
+
 			}
 
-			var weather = calendar_weather.epoch_data[epoch].weather;
-
-			var desc = weather.temperature.cinematic;
-
-			var temp_sys = static_data.seasons.global_settings.temp_sys;
-
-			if(temp_sys == 'imperial'){
-				temp_symbol = '°F';
-				var temp = `${precisionRound(weather.temperature[temp_sys].value[0], 1).toString()+temp_symbol} to ${precisionRound(weather.temperature[temp_sys].value[1], 1).toString()+temp_symbol}`;
-			}else if(temp_sys == 'metric'){
-				temp_symbol = '°C';
-				var temp = `${precisionRound(weather.temperature[temp_sys].value[0], 1).toString()+temp_symbol} to ${precisionRound(weather.temperature[temp_sys].value[1], 1).toString()+temp_symbol}`;
-			}else{
-				var temp_f = `<span class='newline'>${precisionRound(weather.temperature['imperial'].value[0], 1).toString()}°F to ${precisionRound(weather.temperature['imperial'].value[1], 1).toString()}°F</span>`;
-				var temp_c = `<span class='newline'>${precisionRound(weather.temperature['metric'].value[0], 1).toString()}°C to ${precisionRound(weather.temperature['metric'].value[1], 1).toString()}°C</span>`;
-				var temp = `${temp_f}${temp_c}`;
-				height += 37;
-			}
-			this.weather_temp.toggleClass('newline', temp_sys == 'both_i' || temp_sys == 'both_m');
-
-
-			var wind_sys = static_data.seasons.global_settings.wind_sys;
-
-			if(wind_sys == 'imperial'){
-				var wind_symbol = "MPH";
-				var wind_text = `${weather.wind_speed} (${weather.wind_direction}) (${weather.wind_velocity[wind_sys]} ${wind_symbol})`;
-			}else if(wind_sys == 'metric'){
-				var wind_symbol = "KPH";
-				var wind_text = `${weather.wind_speed} (${weather.wind_direction}) (${weather.wind_velocity[wind_sys]} ${wind_symbol})`;
-			}else{
-				var wind_text = `${weather.wind_speed} (${weather.wind_direction}) <span class='newline'>(${weather.wind_velocity.imperial} MPH | ${weather.wind_velocity.metric} KPH)</span>`;
-				height += 17;
-			}
+			this.weather_title.toggleClass('hidden', !calendar_weather.processed_weather);
+			this.weather_temp_desc.parent().toggleClass('hidden', !calendar_weather.processed_weather);
+			this.weather_temp.parent().toggleClass('hidden', !calendar_weather.processed_weather);
+			this.weather_wind.parent().toggleClass('hidden', !calendar_weather.processed_weather);
+			this.weather_precip.parent().toggleClass('hidden', !calendar_weather.processed_weather);
+			this.weather_clouds.parent().toggleClass('hidden', !calendar_weather.processed_weather);
 
 			this.popper = new Popper(icon, this.weather_tooltip_box, {
 			    placement: 'top',
@@ -156,26 +180,6 @@ var calendar_weather = {
                     }
                 }
             });
-
-			this.weather_temp_desc.each(function(){
-				$(this).text(desc);
-			});
-
-			this.weather_temp.each(function(){
-				$(this).html(temp);
-			});
-
-			this.weather_wind.each(function(){
-				$(this).html(wind_text);
-			});
-
-			this.weather_precip.each(function(){
-				$(this).text(weather.precipitation.key);
-			});
-
-			this.weather_clouds.each(function(){
-				$(this).text(weather.clouds);
-			});
 
 			this.weather_tooltip_box.show();
 		},
