@@ -123,7 +123,17 @@ function truncate_weekdays(weekday_array){
 	var new_array = [];
 
 	for(var index in weekday_array){
-		new_array.push(weekday_array[index].substring(0,2));
+
+		var name = weekday_array[index];
+
+		if(name.split(' ').length > 1){
+			name = name.split(' ')[0].substring(0,1) + name.split(' ')[1].substring(0,1);
+		}else{
+			name = name.substring(0,2);
+		}
+		
+		new_array.push(name);
+
 	}
 
 	return new_array;
