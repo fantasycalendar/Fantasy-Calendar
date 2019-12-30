@@ -61,13 +61,7 @@ class Calendar extends Model
 
         if(!Auth::check() || Auth::user()->can('update', $this)) {
             foreach($static_data['event_data']['events'] as $event){
-                if(
-                    // We have two different ways to hide things.
-                    (array_key_exists('hide', $event['settings']) && $event['settings']['hide'])
-
-                    // We gotta check whether they exist before we can check them
-                    || (array_key_exists('hide_full', $event['settings']) && $event['settings']['hide_full'])
-                ){
+                if($event['settings']['hide'] || (isset($event['settings']['full_hide']) && $event['settings']['full_hide'])){
                     $event['name'] = "Sneaky, sneaky...";
                     $event['description'] = "You shouldn't be here...";
                 }

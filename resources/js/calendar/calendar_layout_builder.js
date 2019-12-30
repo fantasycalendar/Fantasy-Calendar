@@ -319,6 +319,7 @@ function weather_overlay(data, show){
 function update_current_day(recalculate){
 
 	$('.current_day').removeClass('current_day');
+	$(`.preview_day`).removeClass('preview_day');
 
 	if(recalculate){
 		dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
@@ -328,16 +329,23 @@ function update_current_day(recalculate){
 
 	day_container.addClass('current_day');
 
+	if(preview_date.epoch != dynamic_data.epoch){
+		preview_day_container = $(`[epoch=${preview_date.epoch}]`);
+		preview_day_container.addClass('preview_day');
+	}
+  
 	evaluate_sun();
 
 	update_cycle_text();
 
 }
 
-function scroll_to_epoch(epoch){
+function scroll_to_epoch(){
 
-	if($(`[epoch=${epoch}]`).length){
-		$(`[epoch=${epoch}]`)[0].scrollIntoView({block: "center", inline: "nearest"});
+	if($(`[epoch=${preview_date.epoch}]`).length){
+		$(`[epoch=${preview_date.epoch}]`)[0].scrollIntoView({block: "center", inline: "nearest"});
+	}else if($(`[epoch=${dynamic_data.epoch}]`).length){
+		$(`[epoch=${dynamic_data.epoch}]`)[0].scrollIntoView({block: "center", inline: "nearest"});
 	}
 }
 
@@ -423,7 +431,8 @@ var calendar_layouts = {
 
 			var timespan_index = Object.keys(this.timespans)[i]
 
-			if(static_data.settings.only_reveal_today && !owner && timespan_index > dynamic_data.timespan){
+			if(static_data.settings.only_reveal_today && !owner &&
+				(this.year_data.year > dynamic_data.year || (this.year_data.year == dynamic_data.year && timespan_index > dynamic_data.timespan))){
 
 				continue;
 
@@ -514,7 +523,13 @@ var calendar_layouts = {
 
 		insert_day: function(epoch, weather_align, day_num, day_class, title){
 
-			if(static_data.settings.only_reveal_today && !owner && (calendar_layouts.year_data.year > dynamic_data.year || this.timespan.index > dynamic_data.timespan || (this.timespan.index == dynamic_data.timespan && this.timespan.day > dynamic_data.day))){
+			if(static_data.settings.only_reveal_today && !owner && (
+				calendar_layouts.year_data.year > dynamic_data.year ||
+				(calendar_layouts.year_data.year == dynamic_data.year && this.timespan.index > dynamic_data.timespan ||
+					(calendar_layouts.year_data.year == dynamic_data.year && this.timespan.index == dynamic_data.timespan && this.timespan.day > dynamic_data.day)
+				))
+			)
+			{
 
 				this.insert_empty_day(day_class);
 

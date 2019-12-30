@@ -66,11 +66,7 @@ var edit_event_ui = {
 
 			var epoch = $(this).closest('.timespan_day').attr('epoch')|0;
 
-			edit_event_ui.data = clone(evaluated_static_data.epoch_data[epoch]);
-
-			edit_event_ui.create_new_event();
-
-			edit_event_ui.populate_condition_presets();
+			edit_event_ui.create_new_event('New Event', epoch);
 
 		});
 
@@ -335,12 +331,12 @@ var edit_event_ui = {
 
 	},
 
-	create_new_event: function(name){
+	create_new_event: function(name, epoch){
 
 		edit_event_ui.new_event = true;
 
 		var stats = {
-			'name': name !== undefined ? name : 'New event',
+			'name': name,
 			'description': '',
 			'data': {
 				'has_duration': false,
@@ -366,8 +362,12 @@ var edit_event_ui = {
 
 		static_data.event_data.events[eventId] = stats;
 
-		edit_event_ui.event_conditions_container.empty();
-		edit_event_ui.add_preset_conditions("once", false);
+		if(epoch){
+			edit_event_ui.data = clone(evaluated_static_data.epoch_data[epoch]);
+			edit_event_ui.event_conditions_container.empty();
+			edit_event_ui.add_preset_conditions("once", false);
+			edit_event_ui.populate_condition_presets();
+		}
 
 		this.set_current_event(eventId)
 

@@ -29,6 +29,8 @@ Auth::routes(['verify' => true]);
 Route::get('/settings', 'SettingsController@index')->name('settings')->middleware('auth');
 Route::post('/settings', 'SettingsController@update')->name('settings.update')->middleware('auth');
 
+Route::get('/admin/loginas/{userid}', 'AdminController@loginas')->name('admin.loginas')->middleware('admin');
+
 Route::get('/{path}', function(Request $request) {
     if($request->get('action') == 'generate') {
         return redirect('calendars/create');
