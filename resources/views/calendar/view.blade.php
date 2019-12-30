@@ -34,9 +34,18 @@
         do_rebuild('calendar', dynamic_data);
        
         poll_timer = setTimeout(check_dates, 5000);
+        instapoll = false;
+
+        $(window).focus(function(){
+            check_dates();
+        })
 
         registered_mousemove_callbacks['view_update'] = function(){
             last_mouse_move = Date.now();
+            if(instapoll){
+                instapoll = false;
+                check_dates();
+            }
         }
 
         $('#current_year, #current_timespan, #current_day, #current_hour, #current_minute, #location_select').change(function(){
@@ -52,6 +61,8 @@
     function check_dates(){
 
         if(document.hasFocus() && (Date.now() - last_mouse_move) < 10000){
+
+            instapoll = false;
 
             check_last_change(function(result){
 
@@ -105,7 +116,7 @@
 
         }else{
 
-            poll_timer = setTimeout(check_dates, 5000);
+            instapoll = true;
 
         }
 

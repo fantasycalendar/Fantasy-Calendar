@@ -15,8 +15,6 @@ function set_up_view_inputs(){
 
 	location_select = $('#location_select');
 
-	link_changed();
-
 	sub_current_year = $('#sub_current_year');
 	add_current_year = $('#add_current_year');
 

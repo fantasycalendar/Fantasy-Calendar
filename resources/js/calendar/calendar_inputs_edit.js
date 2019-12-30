@@ -4229,8 +4229,6 @@ function evaluate_save_button(){
 
 function populate_calendar_lists(){
 
-	link_changed();
-
 	if(link_data.master_hash !== ""){
 		return;
 	}
@@ -4286,18 +4284,6 @@ function populate_calendar_lists(){
 	});
 
 	$('#link_calendar').prop('disabled', true);
-
-}
-
-function link_changed(){
-
-	var has_master = link_data.master_hash !== "";
-
-	$('#calendar_link_hide select, #calendar_link_hide button').prop('disabled', has_master);
-	$('#calendar_link_hide').toggleClass('hidden', has_master);
-
-	$("#date_inputs :input, #date_inputs :button").prop("disabled", has_master);
-	$(".calendar_link_explaination").toggleClass("hidden", !has_master);
 
 }
 
