@@ -13,7 +13,7 @@
     box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
 }
 
-#weather_tooltip_box div{
+#weather_tooltip_box > div{
     float:left;
     text-align:center;
     width:100%;

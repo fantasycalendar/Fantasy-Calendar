@@ -50,15 +50,15 @@ function bind_calendar_events(){
 
 	calendar_weather.tooltip.set_up();
 
-	$(document).on('click', '.weather_icon', function(){
+	$(document).on('click', '.weather_popup', function(){
 		calendar_weather.tooltip.sticky($(this));
 	});
 
-	$(document).on('mouseenter', '.weather_icon', function(){
+	$(document).on('mouseenter', '.weather_popup', function(){
 		calendar_weather.tooltip.show($(this));
 	});
 
-	$(document).on('mouseleave', '.weather_icon', function(){
+	$(document).on('mouseleave', '.weather_popup', function(){
 		calendar_weather.tooltip.hide();
 	});
 

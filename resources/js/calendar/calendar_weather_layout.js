@@ -36,6 +36,9 @@ var calendar_weather = {
 
 			this.weather_tooltip_box = $('#weather_tooltip_box');
 			this.base_height = parseInt(this.weather_tooltip_box.css('height'));
+			this.weather_title = $('.weather_title');
+			this.moon_title = $('.moon_title');
+			this.moon_container = $('.moon_container');
 			this.weather_temp_desc = $('.weather_temp_desc');
 			this.weather_temp = $('.weather_temp');
 			this.weather_wind = $('.weather_wind');
@@ -60,7 +63,7 @@ var calendar_weather = {
 
 		sticky_callback: function(event){
 
-			if($(event.target).closest('#weather_tooltip_box').length == 0 && $(event.target).closest('.weather_icon').length == 0){
+			if($(event.target).closest('#weather_tooltip_box').length == 0 && $(event.target).closest('.weather_popup').length == 0){
 
 				calendar_weather.tooltip.stop_hide = false;
 
@@ -71,6 +74,22 @@ var calendar_weather = {
 		},
 
 		show: function(icon){
+
+			var day_container = icon.closest(".timespan_day");
+
+			var epoch = day_container.attr('epoch');
+		
+			this.moon_title.addClass('hidden');
+			this.moon_container.addClass('hidden');
+			this.weather_title.addClass('hidden');
+
+			if(icon.hasClass('moon_popup')){
+				this.moon_title.removeClass('hidden');
+				this.moon_container.removeClass('hidden');
+				this.weather_title.removeClass('hidden');
+
+				this.moon_container.children().first().html(insert_moons(calendar_layouts.epoch_data[epoch]));
+			}
 
 			if(registered_click_callbacks['sticky_weather_ui']){
 				delete registered_click_callbacks['sticky_weather_ui'];
@@ -91,11 +110,7 @@ var calendar_weather = {
 				height -= 18;
 			}
 
-			var day_container = icon.closest(".timespan_day");
-
-			var weather_epoch = day_container.attr('epoch');
-
-			var weather = calendar_weather.epoch_data[weather_epoch].weather;
+			var weather = calendar_weather.epoch_data[epoch].weather;
 
 			var desc = weather.temperature.cinematic;
 
@@ -132,6 +147,9 @@ var calendar_weather = {
 			this.popper = new Popper(icon, this.weather_tooltip_box, {
 			    placement: 'top',
                 modifiers: {
+			        preventOverflow: {
+			            boundariesElement: $('#calendar')[0],
+			        },
 			        offset: {
 			            enabled: true,
                         offset: '0, 14px'

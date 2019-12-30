@@ -543,7 +543,7 @@ var calendar_layouts = {
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow center'>");
 						if(calendar_layouts.epoch_data[epoch].weather && calendar_layouts.data.processed_weather){
-							calendar_layouts.html.push(`<div class='weather_icon' align='${weather_align}'></div>`);
+							calendar_layouts.html.push(`<div class='weather_icon weather_popup' align='${weather_align}'></div>`);
 						}
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow right'>");
@@ -868,7 +868,7 @@ var calendar_layouts = {
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow center'>");
 						if(calendar_layouts.epoch_data[epoch].weather && calendar_layouts.data.processed_weather){
-							calendar_layouts.html.push(`<div class='weather_icon' align='${weather_align}'></div>`);
+							calendar_layouts.html.push(`<div class='weather_icon weather_popup' align='${weather_align}'></div>`);
 						}
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow right'>");
@@ -1204,7 +1204,7 @@ var calendar_layouts = {
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow center'>");
 						if(calendar_layouts.epoch_data[epoch].weather && calendar_layouts.data.processed_weather){
-							calendar_layouts.html.push(`<div class='weather_icon' align=''></div>`);
+							calendar_layouts.html.push(`<div class='weather_icon weather_popup' align=''></div>`);
 						}
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow right'>");
@@ -1482,6 +1482,10 @@ var calendar_layouts = {
 				this.insert_empty_day(day_class);
 
 			}else{
+
+				if(calendar_layouts.epoch_data[epoch].weather && calendar_layouts.data.processed_weather){
+					day_class += " weather_popup moon_popup";
+				}
 
 				calendar_layouts.html.push(`<div class='${day_class}' epoch='${epoch}'>`);
 					calendar_layouts.html.push(`<div class='number'>${day_num}</div>`);

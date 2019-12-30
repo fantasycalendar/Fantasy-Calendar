@@ -366,8 +366,6 @@ function set_up_edit_inputs(){
 
 		var name_val = name.val() == "" ? `Moon ${id+1}` : name.val();
 
-		var granularity = get_moon_granularity(cycle_val);
-
 		var cycle_val = cycle.val();
 		var shift_val = shift.val();
 
@@ -379,6 +377,8 @@ function set_up_edit_inputs(){
 		if(shift_val == ""){
 			shift_val = 0;
 		}
+
+		var granularity = get_moon_granularity(cycle_val);
 
 		stats = {
 			'name': name_val,
