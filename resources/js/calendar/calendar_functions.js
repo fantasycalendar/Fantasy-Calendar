@@ -1290,16 +1290,36 @@ var date_converter = {
 		var minutes_per_day = this.static_data.clock.hours * this.static_data.clock.minutes;
 
 		var time_scale = minutes_per_day / inc_minutes_per_day;
+
+		var do_scale = typeof this.inc_static_data.clock.link_scale == "undefined" || this.inc_static_data.clock.link_scale;
+
+		if(!do_scale){
+			time_scale = 1.0;
+		}
 		
 		this.target_epoch = Math.floor(dynamic_data.epoch*time_scale);
 
-		var current_minute = dynamic_data.hour*this.static_data.clock.minutes+dynamic_data.minute;
+		if(do_scale){
 
-		var inc_current_hours = current_minute / this.inc_static_data.clock.minutes;
+			var current_minute = dynamic_data.hour*this.static_data.clock.minutes+dynamic_data.minute;
 
-		if(inc_current_hours >= this.inc_static_data.clock.hours){
-			this.target_epoch++;
-			inc_current_hours -= this.inc_static_data.clock.hours;
+			var inc_current_hours = current_minute / this.inc_static_data.clock.minutes;
+
+			if(inc_current_hours >= this.inc_static_data.clock.hours){
+				this.target_epoch++;
+				inc_current_hours -= this.inc_static_data.clock.hours;
+			}
+
+		}else{
+
+			var current_minute = dynamic_data.hour*this.static_data.clock.minutes+dynamic_data.minute;
+
+			var scaled_minutes =  current_minute / minutes_per_day;
+
+			var inc_current_minutes = scaled_minutes*inc_minutes_per_day;
+
+			var inc_current_hours = inc_current_minutes / this.inc_static_data.clock.minutes;
+
 		}
 
 		var hour = Math.floor(inc_current_hours);

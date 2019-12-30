@@ -298,6 +298,9 @@ function evaluate_settings(){
 	$('#calendar_link_hide select, #calendar_link_hide button').prop('disabled', has_master);
 	$('#calendar_link_hide').toggleClass('hidden', has_master);
 
+	$('#calendar_link_show :input').prop('disabled', !has_master);
+	$('#calendar_link_show').toggleClass('hidden', !has_master);
+
 	$("#date_inputs :input, #date_inputs :button").prop("disabled", has_master);
 	$(".calendar_link_explaination").toggleClass("hidden", !has_master);
 

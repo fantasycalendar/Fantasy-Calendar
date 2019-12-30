@@ -20,6 +20,7 @@
             "clock":{
                 "enabled":false,
                 "render":false,
+                "link_scale":true,
                 "hours":24,
                 "minutes":60,
                 "offset":0

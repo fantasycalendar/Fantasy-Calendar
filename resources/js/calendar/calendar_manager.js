@@ -112,11 +112,23 @@ function rebuild_calendar(action, dynamic_data){
 
 					do_rebuild(action, dynamic_data);
 
+					refresh_view_values();
+
 				})
 
 			}else{
 
+				var converted_date = date_converter.get_date(master_static_data, static_data, master_dynamic_data, dynamic_data);
+				dynamic_data.year = converted_date.year;
+				dynamic_data.timespan = converted_date.timespan;
+				dynamic_data.day = converted_date.day;
+				dynamic_data.epoch = converted_date.epoch;
+				dynamic_data.hour = converted_date.hour;
+				dynamic_data.minute = converted_date.minute;
+
 				do_rebuild(action, dynamic_data);
+
+				refresh_view_values();
 
 			}
 

@@ -395,6 +395,13 @@ function set_up_view_values(){
 
     preview_date.follow = true;
 
+    refresh_view_values();
+
+}
+
+
+function refresh_view_values(){
+
 	dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
 
 	current_year.val(dynamic_date_manager.adjusted_year);

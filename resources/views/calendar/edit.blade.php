@@ -27,6 +27,10 @@
             static_data.clock.render = static_data.clock.enable;
         }
 
+        if(typeof static_data.clock.link_scale == "undefined"){
+            static_data.clock.link_scale = link_data.master_hash !== "";
+        }
+
         set_up_edit_inputs();
         set_up_edit_values();
         set_up_view_values();

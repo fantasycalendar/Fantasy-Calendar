@@ -271,23 +271,19 @@
             <div class="collapsible-content card-body">
 
                 <div class='row'>
-                    <div class='col'>
-                        <div class='col'>Enable clock:</div>
-                        <div class='col'>
-                            <label class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input static_input" id='enable_clock' data='clock' fc-index='enabled'>
-                                <span class="custom-control-indicator"></span>
-                            </label>
-                        </div>
+                    <div class='col-md-auto pr-0'>Enable clock:</div>
+                    <div class='col-md-auto pl-1'>
+                        <label class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input static_input" id='enable_clock' data='clock' fc-index='enabled'>
+                            <span class="custom-control-indicator"></span>
+                        </label>
                     </div>
-                    <div class='col'>
-                        <div class='col'>Render clock:</div>
-                        <div class='col'>
-                            <label class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input static_input" id='render_clock' data='clock' fc-index='render'>
-                                <span class="custom-control-indicator"></span>
-                            </label>
-                        </div>
+                    <div class='col-md-auto pr-0'>Render clock:</div>
+                    <div class='col-md-auto pl-1'>
+                        <label class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input static_input" id='render_clock' data='clock' fc-index='render'>
+                            <span class="custom-control-indicator"></span>
+                        </label>
                     </div>
                 </div>
 
@@ -885,7 +881,7 @@
                 <div class="collapsible-content card-body">
 
                     <div class='detail-row center-text hidden calendar_link_explaination'>
-                        This calendar is already linked to another calendar. Before linking any calendars to this one, you must unlink it from the master.
+                        This calendar is already linked to a master calendar. Before linking any calendars to this one, you must unlink this calendar from its master calendar.
                     </div>
 
                     <div id='calendar_link_hide'>
@@ -904,10 +900,28 @@
 
                     </div>
 
+                    <div id="calendar_link_show">
+                        <div class='row mt-3'>
+                            <div class='col-md-auto ml-4 pr-1 bold-text'>Link from master:</div>
+                        </div>
+                        <div class='row protip' data-pt-position="right" data-pt-title='If enabled, the date of this calendar will be taken from the master calendar, but scaled based on the difference in the length of day between the master and this calendar. If this calendar has 12 hours per day and the master has 24, each day counts from the master counts as two days on this one.'>
+                            <div class='col-md-auto ml-4 pr-0'>
+                                Day
+                            </div>
+                            <div class='col-md-auto p-0'>
+                                <label class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input static_input" id='link_scale' data='clock' fc-index='link_scale'>
+                                    <span class="custom-control-indicator"></span>
+                                </label>
+                            </div>
+                            <div class='col-md-auto p-0'>
+                                Minutes
+                            </div>
+                        </div>
+
+                    </div>
+
                 </div>
-
-
-
 
             </div>
         @endif
