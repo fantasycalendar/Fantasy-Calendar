@@ -17,7 +17,7 @@ services:
     container_name: fantasy_calendar_php
     image: fc-php
     build:
-      context: .
+      context: https://github.com/fantasycalendar/Fantasy-Calendar.git
       dockerfile: Dockerfile
     ports:
       - "9980:8080"
