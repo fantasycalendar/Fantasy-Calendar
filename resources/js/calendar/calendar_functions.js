@@ -139,17 +139,6 @@ function get_calendar_data(data){
 	return current_calendar_data;
 }
 
-
-
-var entityMap1 = {
-	"&": "&amp;",
-	"<": "&lt;",
-	">": "&gt;",
-	'"': '&quot;',
-	"'": '&#39;',
-	"/": '&#x2F;'
-};
-
 /**
  * This function is used to compare two javascript objects by iterating through its content.
  *

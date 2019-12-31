@@ -6,6 +6,12 @@ var edit_event_ui = {
 
 	data: {},
 
+	esc_event: function(e){
+
+		if (e.keyCode === 27) edit_event_ui.close_ui_btn.click();
+
+	},
+
 	bind_events: function(){
 
 		this.new_event							= false;
@@ -383,6 +389,8 @@ var edit_event_ui = {
 
 	set_current_event: function(event_id){
 
+		registered_keydown_callbacks['event_ui_escape'] = this.esc_event;
+
 		this.event_id = event_id;
 
 		var event = static_data.event_data.events[this.event_id];
@@ -474,7 +482,7 @@ var edit_event_ui = {
 
 	clear_ui: function(){
 
-		this.event_id = null;
+		delete registered_keydown_callbacks['event_ui_escape'];
 
 		this.event_background.find('.event_name').val('');
 

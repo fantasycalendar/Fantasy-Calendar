@@ -5,11 +5,18 @@ const worker_events = new Worker('/js/webworkers/worker_events.js?v='+utcDate1);
 const worker_climate = new Worker('/js/webworkers/worker_climate.js?v='+utcDate1);
 
 var registered_click_callbacks = {}
+var registered_keydown_callbacks = {}
 var registered_onfocus_callbacks = {}
 var registered_onblur_callbacks = {}
 var registered_mousemove_callbacks = {}
 
 function bind_calendar_events(){
+
+	document.addEventListener('keydown', function(event){
+		for(var callback_id in registered_keydown_callbacks){
+			registered_keydown_callbacks[callback_id](event);
+		}
+	});
 
 	document.addEventListener('click', function(event){
 		for(var callback_id in registered_click_callbacks){
