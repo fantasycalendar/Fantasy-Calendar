@@ -198,22 +198,28 @@ var eras = {
 
 			var position = $("#calendar_container").scrollTop();
 
-			for(var i = 0; i < eras.current_eras.length; i++){
-				if($(`[epoch=${eras.current_eras[i].data.date.epoch}]`).length){
-					eras.current_eras[i].position = eras.current_eras[i].position + position + $(`[epoch=${eras.current_eras[i].data.date.epoch}]`).offset().top - 150;
+			for(var i = 0; i < this.current_eras.length; i++){
+				if($(`[epoch=${this.current_eras[i].data.date.epoch}]`).length){
+					this.current_eras[i].position = this.current_eras[i].position + position + $(`[epoch=${this.current_eras[i].data.date.epoch}]`).offset().top - 150;
+				}
+			}
+
+			if(this.current_eras.length >= 2){
+				if(this.current_eras[0].position == -1000 && this.current_eras[1].position < 0){
+					this.current_eras.shift();
 				}
 			}
 
 			if(this.current_eras.length == 0){
 
-				eras.set_current_era(0);
+				this.set_current_era(0);
 
 			}else if(this.current_eras.length == 1){
 
 				if(position > this.current_eras[0].position || this.current_eras[0].data.date.epoch < this.start_epoch){
-					eras.set_current_era(0);
+					this.set_current_era(0);
 				}else{
-					eras.set_current_era(-1);
+					this.set_current_era(-1);
 				}
 
 			}else{
@@ -227,7 +233,7 @@ var eras = {
 						}
 					}
 				}
-				eras.set_current_era(this.current_era);
+				this.set_current_era(this.current_era);
 			}
 		}
 
@@ -243,17 +249,17 @@ var eras = {
 			// If there's only one era, don't do anything
 			if(this.current_eras.length == 0){
 
-				eras.set_current_era(0);
+				this.set_current_era(0);
 
 			}else if(this.current_eras.length == 1){
 
 				if(position > this.current_eras[0].position || this.current_eras[0].data.date.epoch < this.start_epoch){
 
-					eras.set_current_era(0);
+					this.set_current_era(0);
 
 				}else{
 
-					eras.set_current_era(-1);
+					this.set_current_era(-1);
 
 				}
 
@@ -273,7 +279,7 @@ var eras = {
 					this.prev_era--;
 				}
 
-				eras.set_current_era(this.current_era);
+				this.set_current_era(this.current_era);
 
 			}
 
@@ -476,7 +482,7 @@ var calendar_layouts = {
 	},
 
 	update_year_follower: function(){
-
+		
 		var year_text = `Year ${calendar_layouts.year_data.era_year}`
 
 		if(eras.era !== undefined && (!static_data.settings.hide_eras || owner)){
