@@ -55,6 +55,11 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
+        "pre-install-cmd": [
+            "@php -r \"file_exists('storage/framework/cache') || mkdir('storage/framework/cache');\"",
+            "@php -r \"file_exists('storage/framework/sessions') || mkdir('storage/framework/sessions');\"",
+            "@php -r \"file_exists('storage/framework/views') || mkdir('storage/framework/views');\""
+        ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan vendor:publish --provider='Code16\\Sharp\\SharpServiceProvider' --tag=assets --force",

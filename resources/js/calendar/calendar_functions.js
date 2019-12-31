@@ -1852,7 +1852,7 @@ function evaluate_calendar_start(static_data, year, month, day){
 	var month = !isNaN(month) ? (month|0) : 0;
 	var day = !isNaN(day) ? (day|0)-1 : 0;
 
-	var era_year = unconvert_year(year);
+	var era_year = year;
 	
 	tmp = get_epoch(static_data, year, month, day);
 	var epoch = tmp[0];
@@ -1867,7 +1867,7 @@ function evaluate_calendar_start(static_data, year, month, day){
 
 		var era = static_data.eras[era_index];
 
-		era_years[era_index] = era.date.year;
+		era_years[era_index] = convert_year(era.date.year);
 
 		if(era.settings.ends_year && year > convert_year(era.date.year)){
 

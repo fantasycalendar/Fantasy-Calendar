@@ -100,7 +100,15 @@
                     <canvas style="z-index: 0;" id="clock_background"></canvas>
                 </div>
 
+                <div class='detail-row center-text hidden' id='empty_calendar_explaination'>
+                    This calendar doesn't have any weekdays or months yet, so you can't change the date.
+                </div>
+
                 <div class='detail-row date_control' id='date_inputs'>
+                    
+                    <div class='detail-row'>
+                        <h4>Current date:</h4>
+                    </div>
 
                     <div class='detail-row center-text hidden calendar_link_explaination'>
                         This calendar is using a different calendar's date to calculate the current date. Only the master calendar can set the date for this calendar.
@@ -166,11 +174,12 @@
                 </div>
 
 
-                <div class='detail-row'>
-                    <h4>Preview date:</h4>
-                </div>
-
                 <div class='date_control'>
+
+                    <div class='detail-row'>
+                        <h4>Preview date:</h4>
+                    </div>
+
                     <div class='detail-row'>
 
                         <div class='detail-column quarter' value='target'>
@@ -215,37 +224,37 @@
                         <div class='btn btn-success full' id='go_to_preview_date'>Preview date</div>
                     </div>
 
-                </div>
+                    <div class='wrap-collapsible card mt-2 full'>
+                        <input id="collapsible_add_units" class="toggle" type="checkbox">
+                        <label for="collapsible_add_units" class="lbl-toggle card-header small-lbl-text center-text">Add or subtract fixed units to calendar</label>
+                        <div class="collapsible-content card-body">
 
-                <div class='wrap-collapsible card mt-2 full'>
-                    <input id="collapsible_add_units" class="toggle" type="checkbox">
-                    <label for="collapsible_add_units" class="lbl-toggle card-header small-lbl-text center-text">Add or subtract fixed units to calendar</label>
-                    <div class="collapsible-content card-body">
+                            <div class='row mb-2'>
 
-                        <div class='row mb-2'>
+                                <div class='col px-1'>
+                                    <input type='number' class="form-control form-control-sm full" id='unit_years' placeholder="Years">
+                                </div>
 
-                            <div class='col px-1'>
-                                <input type='number' class="form-control form-control-sm full" id='unit_years' placeholder="Years">
+                                <div class='col px-1'>
+                                    <input type='number' class="form-control form-control-sm full" id='unit_months' placeholder="Months">
+                                </div>
+
+                                <div class='col px-1'>
+                                    <input type='number' class="form-control form-control-sm full" id='unit_days' placeholder="Days">
+                                </div>
+
                             </div>
 
-                            <div class='col px-1'>
-                                <input type='number' class="form-control form-control-sm full" id='unit_months' placeholder="Months">
-                            </div>
+                            <div class='row'>
 
-                            <div class='col px-1'>
-                                <input type='number' class="form-control form-control-sm full" id='unit_days' placeholder="Days">
-                            </div>
+                                <div class='col px-1'>
+                                    <button type="button" step="1.0" class="btn btn-primary btn-sm full" id='current_date_btn'>To current date</button>
+                                </div>
 
-                        </div>
+                                <div class='col px-1'>
+                                    <button type="button" step="1.0" class="btn btn-secondary btn-sm full" id='preview_date_btn'>To preview date</button>
+                                </div>
 
-                        <div class='row'>
-
-                            <div class='col px-1'>
-                                <button type="button" step="1.0" class="btn btn-primary btn-sm full" id='current_date_btn'>To current date</button>
-                            </div>
-
-                            <div class='col px-1'>
-                                <button type="button" step="1.0" class="btn btn-secondary btn-sm full" id='preview_date_btn'>To preview date</button>
                             </div>
 
                         </div>

@@ -1259,7 +1259,7 @@ var calendar_builder = {
 
 
 		year_start_data = evaluate_calendar_start(this.static_data, first_eval_year, first_eval_month);
-		era_year = year_start_data.era_year;
+		era_year = unconvert_year(year_start_data.era_year);
 		count_timespans = year_start_data.count_timespans;
 		num_timespans = year_start_data.num_timespans;
 		total_week_num = year_start_data.total_week_num;
@@ -1498,7 +1498,9 @@ var calendar_builder = {
 			}
 			last_year = year_index;
 			year_day = 1;
-			era_year++;
+			if(year_index !== convert_year(this.dynamic_data.year)){
+				era_year++;
+			}
 		}
 
 		if(!this.static_data.settings.show_current_month || last_year != this.dynamic_data.year){
@@ -1744,7 +1746,7 @@ var calendar_builder = {
 			year_day = 1;
 		}
 
-		var calendar_era_year = era_year == 0 ? 1 : era_year;
+		var calendar_era_year = era_year;
 		var calendar_start_epoch = first_epoch;
 		var calendar_end_epoch = epoch;
 		var calendar_first_week_day = first_week_day;

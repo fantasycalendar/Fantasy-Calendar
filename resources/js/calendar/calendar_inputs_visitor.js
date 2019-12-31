@@ -290,6 +290,17 @@ function go_to_dynamic_date(rebuild){
 
 function evaluate_settings(){
 
+	if(static_data){
+		if(static_data.year_data.global_week.length == 0 || static_data.year_data.timespans.length == 0){
+			$('.date_control').toggleClass('hidden', true);
+			$('.date_control').find('select, input').prop('disabled', true);$
+            $('#empty_calendar_explaination').toggleClass('hidden', !(static_data.year_data.global_week.length == 0 || static_data.year_data.timespans.length == 0));
+			return;
+		}
+	}
+
+    $('#empty_calendar_explaination').toggleClass('hidden', true);
+
 	$('.date_control').toggleClass('hidden', (!owner && !static_data.settings.allow_view));
 	$('.date_control').find('select, input').not('#current_hour, #current_minute').prop('disabled', !owner && !static_data.settings.allow_view);
 
