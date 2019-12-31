@@ -606,17 +606,21 @@ var calendar_layouts = {
 
 				calendar_layouts.html.push("<div class='timespan_row_container'>");
 
-					calendar_layouts.html.push("<div class='timespan_row_names'>");
+					if(!static_data.settings.hide_weekdays){
 
-					for(day_in_week = 1; day_in_week <= timespan.week.length; day_in_week++){
+						calendar_layouts.html.push("<div class='timespan_row_names'>");
 
-						calendar_layouts.html.push("<div class='week_day_name'>");
-						calendar_layouts.html.push(timespan.week[day_in_week-1]);
+						for(day_in_week = 1; day_in_week <= timespan.week.length; day_in_week++){
+
+							calendar_layouts.html.push("<div class='week_day_name'>");
+							calendar_layouts.html.push(timespan.week[day_in_week-1]);
+							calendar_layouts.html.push("</div>");
+
+						}
+
 						calendar_layouts.html.push("</div>");
 
 					}
-
-					calendar_layouts.html.push("</div>");
 
 					calendar_layouts.html.push("<div class='timespan_row'>");
 
@@ -783,17 +787,23 @@ var calendar_layouts = {
 						calendar_layouts.html.push("</span>");
 					calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("<div class='timespan_row_container'>");
+
+					if(!static_data.settings.hide_weekdays){
+
 					calendar_layouts.html.push("<div class='timespan_row_names'>");
 
-					for(day_in_week = 1; day_in_week <= timespan.week.length; day_in_week++){
+						for(day_in_week = 1; day_in_week <= timespan.week.length; day_in_week++){
 
-						calendar_layouts.html.push("<div class='week_day_name'>");
-						calendar_layouts.html.push(timespan.week[day_in_week-1]);
+							calendar_layouts.html.push("<div class='week_day_name'>");
+							calendar_layouts.html.push(timespan.week[day_in_week-1]);
+							calendar_layouts.html.push("</div>");
+
+						}
+
 						calendar_layouts.html.push("</div>");
 
 					}
 
-					calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("<div class='timespan_row'>");
 					this.get_overflow(true, calendar_layouts.year_data.week_day-1);
 
@@ -932,17 +942,21 @@ var calendar_layouts = {
 
 				calendar_layouts.html.push("<div class='timespan_row_container'>");
 
-					calendar_layouts.html.push("<div class='timespan_row_names'>");
+					if(!static_data.settings.hide_weekdays){
 
-					for(day_in_week = 1; day_in_week <= timespan.week.length; day_in_week++){
+						calendar_layouts.html.push("<div class='timespan_row_names'>");
 
-						calendar_layouts.html.push("<div class='week_day_name'>");
-						calendar_layouts.html.push(timespan.week[day_in_week-1]);
+						for(day_in_week = 1; day_in_week <= timespan.week.length; day_in_week++){
+
+							calendar_layouts.html.push("<div class='week_day_name'>");
+							calendar_layouts.html.push(timespan.week[day_in_week-1]);
+							calendar_layouts.html.push("</div>");
+
+						}
+
 						calendar_layouts.html.push("</div>");
 
 					}
-
-					calendar_layouts.html.push("</div>");
 
 					calendar_layouts.html.push("<div class='timespan_row'>");
 
@@ -1109,18 +1123,24 @@ var calendar_layouts = {
 						calendar_layouts.html.push("</span>");
 					calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("<div class='timespan_row_container'>");
-					calendar_layouts.html.push("<div class='timespan_row_names'>");
+					
+					if(!static_data.settings.hide_weekdays){
+					
+						calendar_layouts.html.push("<div class='timespan_row_names'>");
 
-					for(day_in_week = 1; day_in_week <= timespan.week.length; day_in_week++){
+						for(day_in_week = 1; day_in_week <= timespan.week.length; day_in_week++){
 
-						calendar_layouts.html.push("<div class='week_day_name'>");
-						calendar_layouts.html.push(timespan.week[day_in_week-1]);
+							calendar_layouts.html.push("<div class='week_day_name'>");
+							calendar_layouts.html.push(timespan.week[day_in_week-1]);
+							calendar_layouts.html.push("</div>");
+
+						}
+
 						calendar_layouts.html.push("</div>");
 
 					}
 
-					calendar_layouts.html.push("</div>");
-					calendar_layouts.html.push("<div class='timespan_row'>");
+					cale1ndar_layouts.html.push("<div class='timespan_row'>");
 					this.get_overflow(true, calendar_layouts.year_data.week_day-1);
 
 				}
@@ -1533,7 +1553,9 @@ var calendar_layouts = {
 
 						calendar_layouts.html.push("<div class='timespan_row_container'>");
 
-							calendar_layouts.html.push("<div class='timespan_row_names'>");
+							if(!static_data.settings.hide_weekdays){
+
+								calendar_layouts.html.push("<div class='timespan_row_names'>");
 
 								for(day_in_week = 1; day_in_week <= timespan.week.length; day_in_week++){
 
@@ -1542,7 +1564,10 @@ var calendar_layouts = {
 									calendar_layouts.html.push("</div>");
 
 								}
-							calendar_layouts.html.push("</div>");
+
+								calendar_layouts.html.push("</div>");
+
+							}
 
 							calendar_layouts.html.push("<div class='timespan_row'>");
 
@@ -1713,17 +1738,22 @@ var calendar_layouts = {
 						calendar_layouts.html.push("</span>");
 					calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("<div class='timespan_row_container'>");
-					calendar_layouts.html.push("<div class='timespan_row_names'>");
 
-					for(day_in_week = 1; day_in_week <= timespan.week.length; day_in_week++){
+					if(!static_data.settings.hide_weekdays){
+					
+						calendar_layouts.html.push("<div class='timespan_row_names'>");
 
-						calendar_layouts.html.push("<div class='week_day_name'>");
-						calendar_layouts.html.push(timespan.week[day_in_week-1]);
+						for(day_in_week = 1; day_in_week <= timespan.week.length; day_in_week++){
+
+							calendar_layouts.html.push("<div class='week_day_name'>");
+							calendar_layouts.html.push(timespan.week[day_in_week-1]);
+							calendar_layouts.html.push("</div>");
+
+						}
+
 						calendar_layouts.html.push("</div>");
 
 					}
-
-					calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("<div class='timespan_row'>");
 					this.get_overflow(true, calendar_layouts.year_data.week_day-1);
 

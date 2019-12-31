@@ -126,7 +126,13 @@ function truncate_weekdays(weekday_array){
 
 		var name = weekday_array[index];
 
-		if(is_roman_numeral(name)){
+		console.log(is_roman_numeral(name))
+
+		if(!isNaN(Number(name))){
+
+			new_array.push(name);
+
+		}if(is_roman_numeral(name)){
 
 			new_array.push(name);
 
@@ -148,9 +154,9 @@ function truncate_weekdays(weekday_array){
 
 
 function is_roman_numeral(string){
-	return ["C","CC","CCC","CD","D","DC","DCC","DCCC","CM",
-           "X","XX","XXX","XL","L","LX","LXX","LXXX","XC",
-           "I","II","III","IV","V","VI","VII","VIII","IX"].indexOf(string.toUpperCase()) != -1;
+	var regex = /^(?=[MDCLXVI])M*(C[MD]|D?C*)(X[CL]|L?X*)(I[XV]|V?I*)$/i;
+
+	return regex.test(string.toUpperCase());
 }
 
 /**

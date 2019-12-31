@@ -875,6 +875,14 @@
                         <a target="_blank" title='' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
                     </label>
 
+                    <label class="form-control full setting">
+                        <input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_weekdays'>
+                        <span>
+                            Hide weekdays in calendar
+                        </span>
+                        <a target="_blank" title='' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
+                    </label>
+
                 </div>
             </div>
         </div>

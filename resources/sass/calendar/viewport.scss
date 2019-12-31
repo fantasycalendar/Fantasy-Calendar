@@ -54,9 +54,12 @@
         }
     }
 
+    &_row_names{
+        border-top: 1px solid $calendar-border-color;
+    }
+
     &_name {
         text-align: center;
-        border-bottom: 1px solid $calendar-border-color;
         font-size: 1.4rem;
         line-height: 2.2rem;
     }
