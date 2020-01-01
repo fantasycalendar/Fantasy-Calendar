@@ -588,6 +588,7 @@ var calendar_builder = {
 
 									'epoch': epoch, 
 									'day': day,
+									'inverse_day': 1+current_timespan.length-day,
 									'year_day': year_day,
 									'week_day': undefined,
 									'week_day_name': undefined,
@@ -639,6 +640,7 @@ var calendar_builder = {
 
 							'epoch': epoch, 
 							'day': day,
+							'inverse_day': 1+current_timespan.length-day,
 							'year_day': year_day,
 							'week_day': current_timespan.type !== "intercalary" ? week_day : undefined,
 							'week_day_name': current_timespan.type !== "intercalary" ? current_timespan.week[week_day-1] : undefined,
@@ -708,6 +710,7 @@ var calendar_builder = {
 
 									'epoch': epoch, 
 									'day': day,
+									'inverse_day': 1+current_timespan.length-day,
 									'year_day': year_day,
 									'week_day': undefined,
 									'week_day_name': undefined,
@@ -810,6 +813,7 @@ var calendar_builder = {
 
 									'epoch': epoch, 
 									'day': day,
+									'inverse_day': 1+current_timespan.length-day,
 									'year_day': year_day,
 									'week_day': undefined,
 									'week_day_name': undefined,
@@ -861,6 +865,7 @@ var calendar_builder = {
 
 							'epoch': epoch, 
 							'day': day,
+							'inverse_day': 1+current_timespan.length-day,
 							'year_day': year_day,
 							'week_day': current_timespan.type !== "intercalary" ? week_day : undefined,
 							'week_day_name': current_timespan.type !== "intercalary" ? current_timespan.week[week_day-1] : undefined,
@@ -929,6 +934,7 @@ var calendar_builder = {
 
 									'epoch': epoch, 
 									'day': day,
+									'inverse_day': 1+current_timespan.length-day,
 									'year_day': year_day,
 									'week_day': undefined,
 									'week_day_name': undefined,
@@ -1329,6 +1335,7 @@ var calendar_builder = {
 
 									'epoch': epoch, 
 									'day': day,
+									'inverse_day': 1+current_timespan.length-day,
 									'year_day': year_day,
 									'week_day': undefined,
 									'week_day_name': undefined,
@@ -1380,6 +1387,7 @@ var calendar_builder = {
 
 							'epoch': epoch, 
 							'day': day,
+							'inverse_day': 1+current_timespan.length-day,
 							'year_day': year_day,
 							'week_day': current_timespan.type !== "intercalary" ? week_day : undefined,
 							'week_day_name': current_timespan.type !== "intercalary" ? current_timespan.week[week_day-1] : undefined,
@@ -1450,6 +1458,7 @@ var calendar_builder = {
 
 									'epoch': epoch, 
 									'day': day,
+									'inverse_day': 1+current_timespan.length-day,
 									'year_day': year_day,
 									'week_day': undefined,
 									'week_day_name': undefined,
@@ -1616,6 +1625,7 @@ var calendar_builder = {
 
 						'epoch': epoch, 
 						'day': day,
+						'inverse_day': 1+current_timespan.length-day,
 						'year_day': year_day,
 						'week_day': current_timespan.type !== "intercalary" ? week_day : undefined,
 						'week_day_name': current_timespan.type !== "intercalary" ? current_timespan.week[week_day-1] : undefined,
@@ -1799,6 +1809,7 @@ var calendar_builder = {
 
 									'epoch': epoch, 
 									'day': day,
+									'inverse_day': 1+current_timespan.length-day,
 									'year_day': year_day,
 									'week_day': undefined,
 									'week_day_name': undefined,
@@ -1850,6 +1861,7 @@ var calendar_builder = {
 
 							'epoch': epoch, 
 							'day': day,
+							'inverse_day': 1+current_timespan.length-day,
 							'year_day': year_day,
 							'week_day': current_timespan.type !== "intercalary" ? week_day : undefined,
 							'week_day_name': current_timespan.type !== "intercalary" ? current_timespan.week[week_day-1] : undefined,
@@ -1919,6 +1931,7 @@ var calendar_builder = {
 
 									'epoch': epoch, 
 									'day': day,
+									'inverse_day': 1+current_timespan.length-day,
 									'year_day': year_day,
 									'week_day': undefined,
 									'week_day_name': undefined,
