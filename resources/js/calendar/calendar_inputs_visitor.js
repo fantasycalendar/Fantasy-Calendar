@@ -266,8 +266,6 @@ function go_to_dynamic_date(rebuild){
 	preview_date_manager.timespan = dynamic_date_manager.timespan;
 	preview_date_manager.day = dynamic_date_manager.day;
 
-	display_preview_back_button();
-
 	evaluate_preview_change();
 
 	var data = dynamic_date_manager.compare(preview_date)
@@ -276,6 +274,8 @@ function go_to_dynamic_date(rebuild){
 	preview_date.timespan = data.timespan;
 	preview_date.day = data.day;
 	preview_date.epoch = data.epoch;
+
+	display_preview_back_button();
 
 	rebuild = rebuild !== undefined ? rebuild : data.rebuild;
 
