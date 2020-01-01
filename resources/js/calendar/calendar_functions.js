@@ -993,7 +993,7 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object, no
 
 		}else if(leap_day.timespan === timespan_index){
 
-			if(leap_day.intercalary){
+			if(leap_day.intercalary && timespan.type != 'intercalary'){
 
 				var is_there = does_day_appear(static_data, year, timespan_index, leap_day.day-1);
 
