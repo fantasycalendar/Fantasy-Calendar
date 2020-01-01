@@ -1357,31 +1357,29 @@ function set_up_edit_inputs(){
 	});
 
 	$(document).on('change', '.show_as_event', function(){
-		var index = $(this).closest('.sortable-container').attr('index')|0;
+		var parent = $(this).closest('.sortable-container');
+		var index = parent.attr('index')|0;
 		if($(this).is(':checked')){
-			$(this).parent().parent().parent().next().removeClass('hidden');
-			$(this).parent().parent().parent().next().find('.dynamic_input').prop('disabled', false).val(-1).change();
+			parent.find('.era_description').parent().removeClass('hidden');
+			parent.find('.event-category-list').parent().parent().removeClass('hidden');
+			parent.find('.event-category-list').prop('disabled', false).val(-1).change();
 		}else{
-			$(this).parent().parent().parent().next().addClass('hidden');
-			$(this).parent().parent().parent().next().find('.dynamic_input').prop('disabled', true).change();
+			parent.find('.era_description').parent().addClass('hidden');
+			parent.find('.event-category-list').parent().parent().addClass('hidden');
+			parent.find('.event-category-list').prop('disabled', true);
 			delete static_data.eras[index].settings.event_category_id;
 		}
 	});
 
 	$(document).on('change', '.use_custom_format', function(){
-		var index = $(this).closest('.sortable-container').attr('index')|0;
-		if($(this).is(':checked')){
-			$(this).parent().parent().parent().next().removeClass('hidden');
-			if(static_data.eras[index].settings.restart){
-				var text = 'Era year {{era_year}} (year {{year}}) - {{era_name}}';
-			}else{
-				var text = 'Year {{year}} - {{era_name}}';
-			}
-			$(this).parent().parent().parent().next().find('.dynamic_input').prop('disabled', false).val(text).change();
+		var parent = $(this).closest('.sortable-container');
+		var index = parent.attr('index')|0;
+		if(static_data.eras[index].settings.restart){
+			var text = 'Era year {{era_year}} (year {{year}}) - {{era_name}}';
 		}else{
-			$(this).parent().parent().parent().next().addClass('hidden');
-			$(this).parent().parent().parent().next().find('.dynamic_input').prop('disabled', true).val('').change();
+			var text = 'Year {{year}} - {{era_name}}';
 		}
+		parent.find('.era_formatting').prop('disabled', !$(this).is(':checked')).val(text).change();
 
 	});
 
@@ -1397,10 +1395,12 @@ function set_up_edit_inputs(){
 			}
 		});
 
+		console.log(changed_era.closest('.sortable-container'))
+
 		if(changed_era.is(':checked')){
-			changed_era.parent().parent().parent().next().addClass('hidden');
+			changed_era.closest('.sortable-container').find('.date_control').parent().addClass('hidden');
 		}else{
-			changed_era.parent().parent().parent().next().removeClass('hidden');
+			changed_era.closest('.sortable-container').find('.date_control').parent().removeClass('hidden');
 		}
 
 		reindex_era_list();
@@ -2783,133 +2783,114 @@ function add_era_to_list(parent, key, data){
 			element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
 		element.push("</div>");
 
-		element.push("<div class='detail-container'>");
+		element.push("<div class='detail-container container'>");
 
-			element.push("<div class='detail-row'>");
-				element.push("<div class='detail-column half'>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text'>Custom year header formatting:</div>");
+			element.push("<div class='col-12 mb-3'>");
+
+				element.push("<div class='row my-1'>");
+					element.push("<div class='col-md-auto pl-0 pr-2 pt-2'>");
+						element.push("Custom year header formatting:");
+					element.push("</div>");
+					element.push("<div class='col-md-auto pl-1 pr-0'>");
 						element.push(`<input type='checkbox' class='form-control dynamic_input use_custom_format' data='eras.${key}.settings' fc-index='use_custom_format' ${(data.settings.use_custom_format ? "checked" : "")} />`);
 					element.push("</div>");
 				element.push("</div>");
-			element.push("</div>");
 
-			element.push(`<div class='detail-row ${(!data.settings.use_custom_format ? "hidden" : "")}'>`);
-				element.push("<div class='detail-column full'>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text'>Format:</div>");
-						element.push(`<input type='text' class='form-control small-input dynamic_input era_formatting' data='eras.${key}' fc-index='formatting' value='${data.formatting}' />`);
-							element.push("</select>");
+				element.push("<div class='row mt-1'>Format:</div>");
+				element.push("<div class='row mb-1'>");
+					var formatting = data.settings.use_custom_format ? data.formatting : 'Year {{year}} - {{era_name}}';
+					element.push(`<input type='text' class='form-control small-input dynamic_input era_formatting' data='eras.${key}' fc-index='formatting' value='${formatting}' ${!data.settings.use_custom_format ? "disabled" : ""}/>`);
+				element.push("</div>");
+
+				element.push("<div class='row my-1'>");
+					element.push("<div class='separator'></div>");
+				element.push("</div>");
+
+				element.push("<div class='row my-1'>");
+					element.push("<div class='col-md-auto pl-0 pr-2 pt-2'>");
+						element.push("Show as event:");
 					element.push("</div>");
-				element.push("</div>");
-			element.push("</div>");
-
-			element.push("<div class='detail-row'>");
-				element.push("<div class='detail-column full'>");
-					element.push(`<div class='btn btn-outline-primary full era_description html_edit' value='${data.description}' data='eras.${key}' fc-index='description'>Edit event description</div>`);
-				element.push("</div>");
-			element.push("</div>");
-
-			element.push("<div class='detail-row'>");
-				element.push("<div class='separator'></div>");
-			element.push("</div>");
-
-			element.push("<div class='detail-row'>");
-				element.push("<div class='detail-column half'>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text'>Show as event:</div>");
+					element.push("<div class='col-md-auto pl-1 pr-0'>");
 						element.push(`<input type='checkbox' class='form-control dynamic_input show_as_event' data='eras.${key}.settings' fc-index='show_as_event' ${(data.settings.show_as_event ? "checked" : "")} />`);
 					element.push("</div>");
 				element.push("</div>");
-			element.push("</div>");
 
-			element.push(`<div class='detail-row ${(!data.settings.show_as_event ? "hidden" : "")}'>`);
-				element.push("<div class='detail-column full'>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text'>Event category:</div>");
+				element.push(`<div class='row my-2 ${(!data.settings.show_as_event ? "hidden" : "")}'>`);
+					element.push(`<div class='btn btn-outline-primary full era_description html_edit' value='${data.description}' data='eras.${key}' fc-index='description'>Edit event description</div>`);
+				element.push("</div>");
+
+				element.push(`<div class='era_event_category_container ${(!data.settings.show_as_event ? "hidden" : "")}'>`);
+					element.push("<div class='row mt-2'>Event category:</div>");
+					element.push("<div class='row mb-2'>");
 						element.push(`<select type='text' class='custom-select form-control event-category-list dynamic_input' data='eras.${key}.settings' fc-index='event_category_id'>`);
-							for(var catkey in static_data.event_data.categories)
-							{
-								var name = static_data.event_data.categories[catkey].name;
-								var id = static_data.event_data.categories[catkey].id;
-								element.push(`<option value="${id}" ${(catkey==data.event_category_id ? "selected" : "")}>${name}</option>`);
-							}
-							element.push("</select>");
+						for(var catkey in static_data.event_data.categories)
+						{
+							var name = static_data.event_data.categories[catkey].name;
+							var id = static_data.event_data.categories[catkey].id;
+							element.push(`<option value="${id}" ${(catkey==data.event_category_id ? "selected" : "")}>${name}</option>`);
+						}
+						element.push("</select>");
 					element.push("</div>");
 				element.push("</div>");
-			element.push("</div>");
 
-			element.push("<div class='detail-row'>");
-				element.push("<div class='separator'></div>");
-			element.push("</div>");
+				element.push("<div class='row my-2'>");
+					element.push("<div class='separator'></div>");
+				element.push("</div>");
 
-			element.push("<div class='detail-row'>");
-				element.push("<div class='detail-column half'>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text'>Is starting era:</div>");
+				element.push("<div class='row my-1'>");
+					element.push("<div class='col-md-auto pl-0 pr-2 pt-2'>");
+						element.push("Is starting era:");
+					element.push("</div>");
+					element.push("<div class='col-md-auto pl-1 pr-0'>");
 						element.push(`<input type='checkbox' class='form-control dynamic_input starting_era' data='eras.${key}.settings' fc-index='starting_era' ${(data.settings.starting_era ? "checked" : "")} />`);
 					element.push("</div>");
 				element.push("</div>");
-			element.push("</div>");
 
-			element.push(`<div class='${data.settings.starting_era ? "hidden" : ""}'>`);
+				element.push(`<div class='${data.settings.starting_era ? "hidden" : ""}'>`);
 
-				element.push("<div class='detail-row'>");
-					element.push("<div class='detail-text bold-text'>Date:</div>");
-				element.push("</div>");
+					element.push("<div class='row my-2 bold-text'>Date:</div>");
 
-				element.push(`<div class='detail-row'>`);
-					element.push("<div class='detail-column full date_control'>");
-						element.push("<div class='detail-row'>");
-							element.push("<div class='detail-column quarter'>");
-								element.push("<div class='detail-text'>Year:</div>");
-							element.push("</div>");
-							element.push("<div class='detail-column threequarter'>");
+					element.push(`<div class='date_control'>`);
+						element.push(`<div class='row my-2'>`);
+							element.push("<div class='col-4 pl-0 pr-1'>Year:</div>");
+							element.push("<div class='col-7 pl-1 pr-0'>");
 								element.push(`<input type='number' step="1.0" class='date form-control small-input dynamic_input year-input' refresh data='eras.${key}.date' fc-index='year' value='${data.date.year}'/>`);
 							element.push("</div>");
 						element.push("</div>");
 
-						element.push("<div class='detail-row'>");
-							element.push("<div class='detail-column quarter'>");
-								element.push("<div class='detail-text'>Timespan:</div>");
-							element.push("</div>");
-							element.push("<div class='detail-column threequarter'>");
+						element.push(`<div class='row my-2'>`);
+							element.push("<div class='col-4 pl-0 pr-1'>Timespan:</div>");
+							element.push("<div class='col-7 pl-1 pr-0'>");
 								element.push(`<select type='number' class='date custom-select form-control timespan-list dynamic_input' refresh data='eras.${key}.date' fc-index='timespan'>`);
 								element.push("</select>");
 							element.push("</div>");
 						element.push("</div>");
 
-						element.push("<div class='detail-row'>");
-							element.push("<div class='detail-column quarter'>");
-								element.push("<div class='detail-text'>Day:</div>");
-							element.push("</div>");
-							element.push("<div class='detail-column threequarter'>");
+						element.push(`<div class='row my-2'>`);
+							element.push("<div class='col-4 pl-0 pr-1'>Day:</div>");
+							element.push("<div class='col-7 pl-1 pr-0'>");
 								element.push(`<select type='number' class='date custom-select form-control timespan-day-list dynamic_input' refresh data='eras.${key}.date' fc-index='day'>`);
 								element.push("</select>");
 							element.push("</div>");
 						element.push("</div>");
 					element.push("</div>");
 
-					element.push("<div class='detail-column full'>");
-
-						element.push("<div class='detail-row'>");
-							element.push("<div class='detail-column half'>");
-								element.push("<div class='detail-text'>Ends year:</div>");
-							element.push("</div>");
-							element.push("<div class='detail-column half'>");
-							element.push(`<input type='checkbox' class='form-control dynamic_input ends_year ${!static_data.seasons.global_settings.periodic_seasons ? " protip' disabled" : "'"} data-pt-position="right" data-pt-title='This is disabled because static seasons cannot support eras that end years, as months disappear and seasons require the assigned months.' data='eras.${key}.settings' fc-index='ends_year' ${(data.settings.ends_year ? "checked" : "")} />`);
-							element.push("</div>");
+					element.push("<div class='row my-1'>");
+						element.push("<div class='col-6 pl-0 pr-2 pt-2 text-right'>");
+							element.push("Restarts year count:");
 						element.push("</div>");
-
-						element.push("<div class='detail-row'>");
-							element.push("<div class='detail-column half'>");
-								element.push("<div class='detail-text'>Restarts year count:</div>");
-							element.push("</div>");
-							element.push("<div class='detail-column half'>");
+						element.push("<div class='col-md-auto pl-1 pr-0'>");
 								element.push(`<input type='checkbox' class='form-control dynamic_input restart' data='eras.${key}.settings' fc-index='restart' ${(data.settings.restart ? "checked" : "")} />`);
-							element.push("</div>");
 						element.push("</div>");
+					element.push("</div>");
 
+					element.push("<div class='row my-1'>");
+						element.push("<div class='col-6 pl-0 pr-2 pt-2 text-right'>");
+							element.push("Ends year:");
+						element.push("</div>");
+						element.push("<div class='col-md-auto pl-1 pr-0'>");
+							element.push(`<input type='checkbox' class='form-control dynamic_input ends_year ${!static_data.seasons.global_settings.periodic_seasons ? " protip' disabled" : "'"} data-pt-position="right" data-pt-title='This is disabled because static seasons cannot support eras that end years, as months disappear and seasons require the assigned months.' data='eras.${key}.settings' fc-index='ends_year' ${(data.settings.ends_year ? "checked" : "")} />`);
+						element.push("</div>");
 					element.push("</div>");
 
 				element.push("</div>");
