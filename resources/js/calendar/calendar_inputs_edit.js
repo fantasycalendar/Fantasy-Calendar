@@ -430,7 +430,7 @@ function set_up_edit_inputs(){
 			showCancelButton: true,
 			confirmButtonColor: '#d33',
 			cancelButtonColor: '#3085d6',
-			confirmButtonText: 'Close',
+			confirmButtonText: 'Okay',
 			icon: "warning",
 		})
 		.then((result) => {
