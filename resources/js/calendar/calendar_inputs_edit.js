@@ -2038,7 +2038,7 @@ function add_timespan_to_sortable(parent, key, data){
 							element.push("</div>");
 						element.push("</div>");
 
-						element.push("<div class='row mt-2 week_list'>");
+						element.push("<div class='row mt-2 week_list border'>");
 						if(data.week){
 							for(index = 0; index < data.week.length; index++){
 								element.push(`<input type='text' class='form-control internal-list-name dynamic_input custom_week_day' data='year_data.timespans.${key}.week' fc-index='${index}' value='${data.week[index]}'/>`);
@@ -2699,68 +2699,62 @@ function add_cycle_to_sortable(parent, key, data){
 			element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
 		element.push("</div>");
 
-		element.push("<div class='detail-container'>");
-			element.push("<div class='detail-row'>");
+		element.push("<div class='detail-container container'>");
 
-				element.push("<div class='detail-column full'>");
+			element.push("<div class='col-12 mb-3'>");
 
-					element.push("<div class='detail-row'>");
-							element.push("<div class='detail-text center-text bold-text'>Cycle settings</div>");
+				element.push("<div class='row my-2 center-text bold-text'>Cycle settings</div>");
+
+				element.push("<div class='row mt-2'>Cycle is based on:</div>");
+				element.push("<div class='row mb-2'>");
+					element.push(`<select class='form-control-sm dynamic_input cycle_type' data='cycles.data.${key}' fc-index='type'>`);
+						element.push(`<option value='year'>Year</option>`);
+						element.push(`<option value='era_year'>Era year</option>`);
+						element.push(`<option value='timespan_index'>Month in year</option>`);
+						element.push(`<option value='num_timespans'>Month count (since 1/1/1)</option>`);
+						element.push(`<option value='day'>Day in month</option>`);
+						element.push(`<option value='year_day'>Year day</option>`);
+						element.push(`<option value='epoch'>Epoch (days since 1/1/1)</option>`);
+					element.push(`</select>`);
+				element.push("</div>");
+
+				element.push("<div class='row mt-2'>");
+					element.push("<div class='col-6 pr-1 pl-0'>");
+						element.push("<div>Length:</div>");
 					element.push("</div>");
 
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-column half'>");
-							element.push("<div class='detail-row'>");
-									element.push("<div class='detail-text'>Cycle is based on:</div>");
-									element.push(`<select class='form-control dynamic_input cycle_type' data='cycles.data.${key}' fc-index='type'>`);
-										element.push(`<option value='year'>Year</option>`);
-										element.push(`<option value='era_year'>Era year</option>`);
-										element.push(`<option value='timespan_index'>Month in year</option>`);
-										element.push(`<option value='num_timespans'>Month count (since 1/1/1)</option>`);
-										element.push(`<option value='day'>Day in month</option>`);
-										element.push(`<option value='year_day'>Year day</option>`);
-										element.push(`<option value='epoch'>Epoch (days since 1/1/1)</option>`);
-									element.push(`</select>`);
-							element.push("</div>");
-						element.push("</div>");
+					element.push("<div class='col-6 pr-0 pl-1'>");
+						element.push("<div>Offset:</div>");
+					element.push("</div>");
+				element.push("</div>");
+
+				element.push("<div class='row mb-1'>");
+					element.push("<div class='col-6 pr-1 pl-0'>");
+						element.push(`<input type='number' step="1.0" class='form-control length dynamic_input' min='1' data='cycles.data.${key}' fc-index='length' value='${data.length}' />`);
 					element.push("</div>");
 
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-column half'>");
-							element.push("<div class='detail-row'>");
-									element.push("<div class='detail-text'>Length:</div>");
-									element.push(`<input type='number' step="1.0" class='form-control length dynamic_input' min='1' data='cycles.data.${key}' fc-index='length' value='${data.length}' />`);
-							element.push("</div>");
-						element.push("</div>");
+					element.push("<div class='col-6 pr-0 pl-1'>");
+						element.push(`<input type='number' step="1.0" class='form-control offset dynamic_input' min='0' data='cycles.data.${key}' fc-index='offset' value='${data.offset}'/>`);
+					element.push("</div>");
+				element.push("</div>");
 
-						element.push("<div class='detail-column half'>");
-							element.push("<div class='detail-row'>");
-								element.push("<div class='detail-text'>Offset:</div>");
-								element.push(`<input type='number' step="1.0" class='form-control offset dynamic_input' min='0' data='cycles.data.${key}' fc-index='offset' value='${data.offset}'/>`);
-							element.push("</div>");
-						element.push("</div>");
-					element.push("</div>");
+				element.push("<div class='row mt-3 mb-2'>Number of names:</div>");
 
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text'>Number of names:</div>");
+				element.push("<div class='row my-2'>");
+					element.push("<div class='col-6 pl-0 pr-1'>");
+						element.push(`<input type='number' step="1.0" class='form-control cycle-name-length' value='${data.names.length}' fc-index='${key}'/>`);
 					element.push("</div>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-column half'>");
-							element.push("<div class='detail-row'>");
-								element.push(`<input type='number' step="1.0" class='form-control cycle-name-length' value='${data.names.length}' fc-index='${key}'/>`);
-							element.push("</div>");
-						element.push("</div>");
-						element.push("<div class='detail-column half'>");
-							element.push("<button type='button' class='full btn btn-primary cycle_quick_add'>Quick add</button>");
-						element.push("</div>");
+					element.push("<div class='col-6 pl-1 pr-0'>");
+						element.push("<button type='button' class='full btn btn-primary cycle_quick_add'>Quick add</button>");
 					element.push("</div>");
-					element.push("<div class='detail-row cycle-container'>");
-						element.push("<div class='cycle_list'>");
-							for(index = 0; index < data.names.length; index++){
-								element.push(`<input type='text' class='form-control internal-list-name dynamic_input' data='cycles.data.${key}.names' fc-index='${index}' value='${data.names[index]}'/>`);
-							}
-						element.push("</div>");
+				element.push("</div>");
+				element.push("<div class='row my-2 cycle-container border'>");
+					element.push("<div class='cycle_list'>");
+						for(index = 0; index < data.names.length; index++){
+							element.push(`<input type='text' class='form-control internal-list-name dynamic_input' data='cycles.data.${key}.names' fc-index='${index}' value='${data.names[index]}'/>`);
+						}
 					element.push("</div>");
+				element.push("</div>");
 			element.push("</div>");
 		element.push("</div>");
 
