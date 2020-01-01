@@ -88,7 +88,6 @@
                 $('.date_control').find('select, input').prop('disabled', static_data.year_data.global_week.length == 0 || static_data.year_data.timespans.length == 0);
                 $('#empty_calendar_explaination').toggleClass('hidden', !(static_data.year_data.global_week.length == 0 || static_data.year_data.timespans.length == 0));
             }
-            console.log(!(static_data.year_data.global_week.length == 0 || static_data.year_data.timespans.length == 0))
 
             set_up_edit_inputs(false);
             set_up_edit_values();
