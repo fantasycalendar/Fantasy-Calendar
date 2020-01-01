@@ -186,15 +186,6 @@ body{
     }
 }
 
-#preset_container{
-    display: flex;
-    margin-top:10px;
-}
-
-#preset_container #json_apply{
-    margin-left:5px;
-}
-
 #preset_container #json_apply:disabled{
     display: none;
 }

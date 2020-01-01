@@ -63,18 +63,6 @@ select.invalid {
     margin-right: .25rem;
 }
 
-.statistics_text{
-    max-width: 50%;
-    overflow:hidden;
-    text-align: right;
-}
-
-.statistics_text .detail-text{
-    text-overflow: ellipsis;
-    width: 100%;
-}
-
-
 .view_type{
     font-size:0.75em;
     padding: 7px;
@@ -299,49 +287,14 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     text-align: right;
 }
 
-.input_buttons{
-    display: inline-flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-}
-
-.input_buttons select, .input_buttons input{
-    flex: 0 1 auto;
-    margin:0 2px;
-    height:100%;
-    width:74%;
-}
-
 .half.input_buttons select, .half.input_buttons input{
     width:61%;
-}
-
-.sub-btn, .add-btn{
-    flex: 1 0 auto;
-    width:29px;
-    height:29px;
-    margin: 0 2px;
-    padding:0;
 }
 
 .input_buttons i{
     position:relative;
     top:0.05em;
 }
-
-.input_buttons .clocktext{
-    font-size:0.75em;
-}
-
-.hour_input, #current_hour{
-    width:24%;
-    text-align:right;
-}
-.minute_input, #current_minute{
-    width:24%;
-    text-align:left;
-}
-
 
 .sortable-container .detail-column input, .sortable-container .detail-row input{
     order:2;
