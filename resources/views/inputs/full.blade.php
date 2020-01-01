@@ -365,7 +365,7 @@
         <div class='wrap-collapsible card'>
             <input id="collapsible_globalweek" class="toggle" type="checkbox">
             <label for="collapsible_globalweek" class="lbl-toggle card-header lbl-text">Weekdays <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Weekdays' href='https://wiki.fantasy-calendar.com/index.php?title=Global_week' class="wiki protip"><i class="icon-question-sign"></i></a></label>
-            <div class="collapsible-content card-body">
+            <div class="collapsible-content card-body content">
 
                 <div id='first_week_day_container'>
 
@@ -383,6 +383,26 @@
 
                 <div class='sortable list-group' id='global_week_sortable'></div>
 
+                <div class='row px-3 my-3'>
+                    <div class='separator'></div>
+                </div>
+
+                <div class='row center-text hidden' id='overflow_explanation'>
+                    This calendar has a custom week in some months or a leap day is adding a week-day, this will disable overflows between months, because it makes no sense for two weeks that do not go together to overflow into each other. Sorry.
+                </div>
+
+                <div class='row'>
+                    <div class='col-7 pr-1 bold-text'>
+                        Overflow month days:
+                    </div>
+                    <div class='col-5 pl-1'>
+                        <label class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input static_input" data='year_data' fc-index='overflow' id='month_overflow'>
+                            <span class="custom-control-indicator"></span>
+                        </label>
+                    </div>
+                </div>
+
             </div>
 
 
@@ -397,25 +417,6 @@
             <input id="collapsible_timespans" class="toggle" type="checkbox">
             <label for="collapsible_timespans" class="lbl-toggle card-header lbl-text">Months & Intercalaries <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Months & Intercalaries' href='https://wiki.fantasy-calendar.com/index.php?title=Months_%26_Intercalaries' class="wiki protip"><i class="icon-question-sign"></i></a></label>
             <div class="collapsible-content card-body">
-
-                <div class='detail-text bold-text big-text'>Settings:</div>
-
-                <div class='detail-row center-text hidden' id='overflow_explanation'>
-                    This calendar has a custom week in some months or a leap day is adding a week-day, this will disable overflows between months, because it makes no sense for two weeks that do not go together to overflow into each other. Sorry.
-                </div>
-
-                <div class='detail-row'>
-                    <div class='detail-column'>
-                        Overflow month days:
-                    </div>
-                    <div class='detail-column float'>
-                        <label class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input static_input" data='year_data' fc-index='overflow' id='month_overflow'>
-                            <span class="custom-control-indicator"></span>
-                        </label>
-                    </div>
-                </div>
-
 
                 <div class='form-inline timespan'>
 

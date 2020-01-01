@@ -1533,31 +1533,18 @@ function set_up_edit_inputs(){
 
 		if(interval_val === undefined || offset_val === undefined) return;
 
-		text = "This timespan will appear every";
-
 		if(interval_val > 1){
-			text += " " + ordinal_suffix_of(interval_val)
-		}
-
-		text +=  " year";
-
-		if(interval_val > 1){
-
-			var start_year = ((interval_val+offset_val)%interval_val);
-			if(start_year === 0){
-				start_year = interval_val;
-			}
-			text += ", starting year " + start_year + `. (year ${start_year}, ${interval_val+start_year}, ${(interval_val*2)+start_year}...)`;
-
 			offset.prop('disabled', false);
-
 		}else{
 			offset.prop('disabled', true).val(0);
 		}
 
-		text +=  ".";
+		var data = {
+			'interval': interval_val,
+			'offset': offset_val
+		}
 
-		$(this).closest('.sortable-container').find('.timespan_variance_output').html(text);
+		$(this).closest('.sortable-container').find('.timespan_variance_output').html(get_interval_text(true, data));
 
 		$('.leap_day_occurance_input').change();
 
@@ -1649,7 +1636,7 @@ function set_up_edit_inputs(){
 
 		if(!invalid){
 
-			varvalues = values.reverse();
+			var values = values.reverse();
 			sorted = sorted.reverse();
 
 			if(values.length == 1 && Number(values[0]) == 1){
@@ -1658,92 +1645,13 @@ function set_up_edit_inputs(){
 				offset.prop('disabled', false);
 			}
 
-			var timespan_item = timespan_sortable.children().eq(timespan_val);
-			var timespan_interval = timespan_item.find('.interval').val()|0;
-			var timespan_name = timespan_item.find('.name-input').val();
-
-			var text = "This leap day will appear every";
-
-			for(var i = 0; i < values.length; i++){
-
-				var leap_interval = sorted[i];
-				var leap_offset = offset_val;
-
-				var total_offset = ((leap_interval+leap_offset)%leap_interval);
-
-				if(total_offset == 0){
-					total_offset = sorted[i]*timespan_interval;
-				}
-
-				if(i == 0 && sorted[i] == 1){
-
-					text += " year"
-
-				}else if(i == 0){
-
-					if(values.length > 1){
-						text += ": <br>•";
-					}
-
-					if(timespan_interval == '1'){
-						text += ` ${ordinal_suffix_of(sorted[i])} year`;
-					}else{
-						text += ` ${ordinal_suffix_of(sorted[i])} ${timespan_name}`;
-					}
-
-					text += ` (year ${total_offset}, ${(total_offset+sorted[i]*timespan_interval)}, ${total_offset+sorted[i]*2*timespan_interval}...)`;
-
-				}
-
-				if(i > 0 && sorted[i] > 1){
-
-					if(values[i].indexOf('!') != -1){
-
-						if(timespan_interval == '1'){
-							text += `<br>• but not every ${ordinal_suffix_of(sorted[i])} year`;
-						}else{
-							text += `<br>• but not every ${ordinal_suffix_of(sorted[i])} ${timespan_name}`;
-						}
-
-
-
-						if(values[i].indexOf('+') != -1){
-
-							text += ` (year ${sorted[i]}, ${sorted[i]*2*timespan_interval}, ${sorted[i]*3*timespan_interval}...)`;
-
-						}else{
-
-							text += ` (year ${total_offset}, ${total_offset+sorted[i]*timespan_interval}, ${total_offset+sorted[i]*2*timespan_interval}...)`;
-
-						}
-
-
-					}else{
-
-						if(timespan_interval == '1'){
-							text += `<br>• but also every ${ordinal_suffix_of(sorted[i])} year`;
-						}else{
-							text += `<br>• but also every ${ordinal_suffix_of(sorted[i])} ${timespan_name}`;
-						}
-
-						if(values[i].indexOf('+') != -1){
-
-							text += ` (year ${sorted[i]}, ${sorted[i]*2*timespan_interval}, ${sorted[i]*3*timespan_interval}...)`;
-
-						}else{
-
-							text += ` (year ${total_offset}, ${total_offset+sorted[i]*timespan_interval}, ${total_offset+sorted[i]*2*timespan_interval}...)`;
-
-						}
-
-
-					}
-
-				}
-
+			var data = {
+				'interval': interval_val,
+				'offset': offset_val,
+				'timespan': timespan_val
 			}
 
-			$(this).closest('.sortable-container').find('.leap_day_variance_output').html(text);
+			$(this).closest('.sortable-container').find('.leap_day_variance_output').html(get_interval_text(false, data));
 
 		}
 
@@ -2053,113 +1961,84 @@ function add_timespan_to_sortable(parent, key, data){
 			element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
 		element.push("</div>");
 
-		element.push("<div class='detail-container hidden'>");
+		element.push("<div class='detail-container container hidden'>");
 
-			element.push("<div class='detail-row'>");
-
-				element.push("<div class='detail-column full center-text bold-text big-text italics-text'>");
-
+			element.push("<div class='col-12 mb-3'>");
+				element.push("<div class='row bold-text big-text italics-text'>");
 					element.push(data.type == "month" ? "Month" : "Intercalary month");
-
 				element.push("</div>");
 
-				element.push("<div class='detail-column full'>");
+					element.push("<div class='row my-1 bold-text'>Leaping settings</div>");
 
-					element.push("<div class='detail-row'>");
-							element.push("<div class='detail-text center-text bold-text'>Leaping settings</div>");
+				element.push("<div class='row mt-1'>");
+					element.push("<div class='col-6 pr-1 pl-0'>");
+						element.push("<div>Interval:</div>");
 					element.push("</div>");
 
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-column half'>");
-							element.push("<div class='detail-row'>");
-									element.push("<div class='detail-text'>Interval:</div>");
-									element.push(`<input type='number' step="1" min='1' class='form-control timespan_occurance_input interval dynamic_input small-input' data='year_data.timespans.${key}' fc-index='interval' value='${data.interval}' />`);
-							element.push("</div>");
-						element.push("</div>");
+					element.push("<div class='col-6 pr-0 pl-1'>");
+						element.push("<div>Offset:</div>");
+					element.push("</div>");
+				element.push("</div>");
 
-						element.push("<div class='detail-column half'>");
-							element.push("<div class='detail-row'>");
-								element.push("<div class='detail-text'>Offset:</div>");
-								element.push(`<input type='number' step="1" class='form-control timespan_occurance_input offset dynamic_input small-input' min='0' data='year_data.timespans.${key}' fc-index='offset' value='${data.offset}'`);
-								element.push(data.interval === 1 ? " disabled" : "");
-								element.push("/>");
-							element.push("</div>");
-						element.push("</div>");
+				element.push("<div class='row mb-1'>");
+					element.push("<div class='col-6 pr-1 pl-0'>");
+						element.push(`<input type='number' step="1" min='1' class='form-control timespan_occurance_input interval dynamic_input small-input' data='year_data.timespans.${key}' fc-index='interval' value='${data.interval}' />`);
 					element.push("</div>");
 
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text italics-text timespan_variance_output'>");
-
-							text = "This timespan will appear every";
-
-							if(data.interval > 1){
-								text += " " + ordinal_suffix_of(data.interval)
-							}
-
-							text +=  " year";
-
-							if(data.interval > 1){
-
-								var start_year = ((data.interval+data.offset)%data.interval);
-								if(start_year === 0){
-									start_year = data.interval;
-								}
-								text += ", starting year " + start_year + `. (year ${start_year}, ${data.interval+start_year}, ${(data.interval*2)+start_year}...)`;
-
-							}
-
-							text +=  ".";
-
-
-							element.push(text);
-
-						element.push("</div>");
+					element.push("<div class='col-6 pr-0 pl-1'>");
+						element.push(`<input type='number' step="1" class='form-control timespan_occurance_input offset dynamic_input small-input' min='0' data='year_data.timespans.${key}' fc-index='offset' value='${data.offset}'`);
+						element.push(data.interval === 1 ? " disabled" : "");
+						element.push("/>");
 					element.push("</div>");
+				element.push("</div>");
 
-					if(data.type == 'month'){
+				element.push("<div class='row my-1'>");
+					element.push("<div class='italics-text timespan_variance_output'>");
+						element.push(get_interval_text(true, data));
+					element.push("</div>");
+				element.push("</div>");
 
-					element.push("<div class='detail-row'>");
+				if(data.type == 'month'){
+
+					element.push("<div class='row my-1'>");
 						element.push("<div class='separator'></div>");
 					element.push("</div>");
 
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text center-text bold-text'>Week settings</div>");
+					element.push("<div class='row my-1'>");
+						element.push("<div class='bold-text'>Week settings</div>");
 					element.push("</div>");
 
-					element.push("<div class='container'>");
-						element.push("<div class='row'>");
-							element.push("<div class='col p-0'>");
-								element.push("Use custom week:");
-							element.push("</div>");
-							element.push("<div class='col p-0'>");
-								element.push(`<input type='checkbox' class='unique-week-input' index='${key}'`);
-								element.push(data.week ? "checked" : "");
-								element.push("/>");
-							element.push("</div>");
+					element.push("<div class='row my-1'>");
+						element.push("<div class='col p-0'>");
+							element.push("Use custom week:");
+						element.push("</div>");
+						element.push("<div class='col p-0 pt-1'>");
+							element.push(`<input type='checkbox' class='unique-week-input' index='${key}'`);
+							element.push(data.week ? "checked" : "");
+							element.push("/>");
 						element.push("</div>");
 					element.push("</div>");
 
-					element.push("<div class='container'>");
-						element.push("<div class='row'>");
+					element.push(`<div class='row px-3 my-2 custom-week-container ${(!data.week ? "hidden" : "")}'>`);
+
+						element.push("<div class='row my-1'>");
 							element.push("<div class='col p-0'>");
 								element.push("Length:");
 							element.push("</div>");
 							element.push("<div class='col p-0'>");
 							element.push("</div>");
 						element.push("</div>");
-					element.push("</div>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-column half'>");
-							element.push("<div class='detail-row'>");
+
+						element.push("<div class='row'>");
+							element.push("<div class='col-6 pr-1 pl-0'>");
 								element.push(`<input type='number' min='1' step="1" class='form-control week-length small-input' ${(!data.week ? "disabled" : "")} value='${(data.week ? data.week.length : 0)}'/>`);
 							element.push("</div>");
+							element.push("<div class='col-6 pr-0 pl-1'>");
+								element.push(`<button type='button' class='full btn btn-primary weekday_quick_add' ${(!data.week ? "disabled" : "")}>Quick add</button>`);
+							element.push("</div>");
 						element.push("</div>");
-						element.push("<div class='detail-column half'>");
-							element.push(`<button type='button' class='full btn btn-primary weekday_quick_add' ${(!data.week ? "disabled" : "")}>Quick add</button>`);
-						element.push("</div>");
-					element.push("</div>");
-					element.push(`<div class='detail-row custom-week-container ${(!data.week ? "hidden" : "")}'>`);
-						element.push("<div class='week_list'>");
+
+						element.push("<div class='row mt-2 week_list'>");
 						if(data.week){
 							for(index = 0; index < data.week.length; index++){
 								element.push(`<input type='text' class='form-control internal-list-name dynamic_input custom_week_day' data='year_data.timespans.${key}.week' fc-index='${index}' value='${data.week[index]}'/>`);
@@ -2196,207 +2075,107 @@ function add_leap_day_to_list(parent, key, data){
 			element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
 		element.push("</div>");
 
-		element.push("<div class='detail-container'>");
+		element.push("<div class='detail-container container'>");
 
-			element.push("<div class='detail-row'>");
+			element.push("<div class='col-12 mb-3'>");
 
-				element.push("<div class='detail-column full center-text bold-text big-text italics-text'>");
+				element.push("<div class='row my-2 bold-text big-text italics-text'>");
 
 					element.push(!data.intercalary ? "Leap day" : "Intercalary leap day");
 
 				element.push("</div>");
 
-				element.push("<div class='detail-column full'>");
+				element.push("<div class='row my-2'>");
+						element.push("<div class='detail-text bold-text'>Leap day settings</div>");
+				element.push("</div>");
 
-					element.push("<div class='detail-row'>");
-							element.push("<div class='detail-text bold-text'>Leap day settings</div>");
-					element.push("</div>");
+				element.push("<div class='date_control'>");
 
-					element.push("<div class='date_control'>");
+					element.push(`<input type='hidden' class='form-control year-input hidden' value='0'>`);
 
-						element.push(`<input type='hidden' class='form-control year-input hidden' value='0'>`);
-
-						element.push("<div class='detail-row'>");
-							element.push("<div class='detail-column'>");
-								element.push("<div class='detail-row'>");
-									element.push("<div class='detail-column'>");
-										element.push("<div class='detail-text'>Timespan: </div>");
-									element.push("</div>");
-									element.push("<div class='detail-column'>");
-										element.push(`<select type='number' class='custom-select form-control leap_day_occurance_input timespan-list dynamic_input full timespan_special' data='year_data.leap_days.${key}' fc-index='timespan'>`);
-										for(var j = 0; j < static_data.year_data.timespans.length; j++)
-										{
-											element.push(`<option value="${j}" ${(j==data.timespan ? "selected" : "")}>${static_data.year_data.timespans[j].name}</option>`);
-										}
-										element.push("</select>");
-									element.push("</div>");
-								element.push("</div>");
-							element.push("</div>");
-						element.push("</div>");
-
-						element.push(`<div class='detail-row adds_week_day_container ${(!data.intercalary ? "" : "hidden")}'>`);
-							element.push("<div class='detail-column half'>");
-								element.push("<div class='detail-row'>");
-										element.push("<div class='detail-text'>Adds week day: </div>");
-										element.push(`<input type='checkbox' class='form-control adds-week-day dynamic_input' data='year_data.leap_days.${key}' fc-index='adds_week_day' ${(data.adds_week_day ? "checked" : "")} />`);
-								element.push("</div>");
-							element.push("</div>");
-						element.push("</div>");
-
-						element.push(`<div class='adds_week_day_data_container ${(data.adds_week_day && !data.intercalary ? "" : "hidden")}'>`);
-							element.push(`<div class='detail-row'>`);
-								element.push("<div class='detail-column'>");
-									element.push("<div class='detail-row'>");
-										element.push("<div class='detail-text'>Week day name: </div>");
-										element.push(`<input type='text' class='form-control internal-list-name dynamic_input' data='year_data.leap_days.${key}' fc-index='week_day' value='${(data.week_day && !data.intercalary ? data.week_day : 'Weekday')}' ${(data.adds_week_day && !data.intercalary ? "" : "disabled")}/>`);
-									element.push("</div>");
-								element.push("</div>");
-							element.push("</div>");
-						element.push("</div>");
-
-						element.push(`<div class='detail-row week_day_select_container ${(data.adds_week_day && !data.intercalary) ? "" : "hidden"}'>`);
-							element.push("<div class='detail-column full'>");
-								element.push("<div class='detail-row'>");
-									element.push(`<div class='detail-text'>Select weekday: </div>`);
-								element.push("</div>");
-								element.push("<div class='detail-row'>");
-									element.push(`<select type='number' class='custom-select form-control dynamic_input full week-day-select ${(data.adds_week_day ? "inclusive" : "")}' data='year_data.leap_days.${key}' fc-index='day'>`);
-
-										if(data.timespan === undefined){
-											var week = static_data.year_data.global_week;
-										}else{
-											if(data.timespan <= static_data.year_data.timespans.length){
-												var week = static_data.year_data.timespans[data.timespan].week ? static_data.year_data.timespans[data.timespan].week : static_data.year_data.global_week;
-											}
-										}
-										if(data.adds_week_day){
-											element.push(`<option ${data.day == 0 ? 'selected' : ''} value='0'>Before ${week[0]}</option>`);
-										}
-										for(var i = 0; i < week.length; i++){
-											element.push(`<option ${data.day == i ? 'selected' : ''} value='${i+1}'>${week[i]}</option>`);
-										}
-
-									element.push("</select>");
-								element.push("</div>");
-							element.push("</div>");
-						element.push("</div>");
-
-						element.push(`<div class='detail-row ${(!data.intercalary ? "hidden" : "")}'>`);
-							element.push("<div class='detail-column full'>");
-								element.push("<div class='detail-row'>");
-									element.push(`<div class='detail-text'>Select after which day: </div>`);
-								element.push("</div>");
-								element.push("<div class='detail-row'>");
-									element.push(`<select type='number' class='custom-select form-control dynamic_input full timespan-day-list exclude_self' data='year_data.leap_days.${key}' fc-index='day'>`);
-									element.push("</select>");
-								element.push("</div>");
-							element.push("</div>");
+					element.push("<div class='row'>");
+						element.push("<div class='col-4 p-0'>Timespan:</div>");
+						element.push("<div class='col-8 p-0'>");
+							element.push(`<select type='number' class='custom-select form-control leap_day_occurance_input timespan-list dynamic_input full timespan_special' data='year_data.leap_days.${key}' fc-index='timespan'>`);
+							for(var j = 0; j < static_data.year_data.timespans.length; j++)
+							{
+								element.push(`<option value="${j}" ${(j==data.timespan ? "selected" : "")}>${static_data.year_data.timespans[j].name}</option>`);
+							}
+							element.push("</select>");
 						element.push("</div>");
 					element.push("</div>");
 
-					element.push("<div class='detail-row'>");
+					element.push(`<div class='row my-1 adds_week_day_container ${(!data.intercalary ? "" : "hidden")}'>`);
+						element.push("<div class='col-md-auto pt-2 pl-0 pr-2'>Adds week day:</div>");
+						element.push("<div class='col-md-auto pl-2 pr-0'>");
+							element.push(`<input type='checkbox' class='form-control adds-week-day dynamic_input' data='year_data.leap_days.${key}' fc-index='adds_week_day' ${(data.adds_week_day ? "checked" : "")} />`);
+						element.push("</div>");
+					element.push("</div>");
+
+					element.push(`<div class='adds_week_day_data_container ${(data.adds_week_day && !data.intercalary ? "" : "hidden")}'>`);
+						element.push("<div class='row mt-2'>Week day name:</div>");
+						element.push("<div class='row mb-2'>");
+							element.push(`<input type='text' class='form-control internal-list-name dynamic_input' data='year_data.leap_days.${key}' fc-index='week_day' value='${(data.week_day && !data.intercalary ? data.week_day : 'Weekday')}' ${(data.adds_week_day && !data.intercalary ? "" : "disabled")}/>`);
+						element.push("</div>");
+					element.push("</div>");
+
+					element.push(`<div class='week_day_select_container ${(data.adds_week_day && !data.intercalary) ? "" : "hidden"}'>`);
+						element.push("<div class='row mt-2'>After which weekday:</div>");
+						element.push("<div class='row mb-2'>");
+							element.push(`<select type='number' class='custom-select form-control dynamic_input full week-day-select ${(data.adds_week_day ? "inclusive" : "")}' data='year_data.leap_days.${key}' fc-index='day'>`);
+
+								if(data.timespan === undefined){
+									var week = static_data.year_data.global_week;
+								}else{
+									if(data.timespan <= static_data.year_data.timespans.length){
+										var week = static_data.year_data.timespans[data.timespan].week ? static_data.year_data.timespans[data.timespan].week : static_data.year_data.global_week;
+									}
+								}
+								if(data.adds_week_day){
+									element.push(`<option ${data.day == 0 ? 'selected' : ''} value='0'>Before ${week[0]}</option>`);
+								}
+								for(var i = 0; i < week.length; i++){
+									element.push(`<option ${data.day == i ? 'selected' : ''} value='${i+1}'>${week[i]}</option>`);
+								}
+
+							element.push("</select>");
+						element.push("</div>");
+					element.push("</div>");
+
+					element.push(`<div class='${(!data.intercalary ? "hidden" : "")}'>`);
+						element.push("<div class='row mt-2'>Select after which day: </div>");
+						element.push("<div class='row mb-2'>");
+							element.push(`<select type='number' class='custom-select form-control dynamic_input full timespan-day-list exclude_self' data='year_data.leap_days.${key}' fc-index='day'>`);
+							element.push("</select>");
+						element.push("</div>");
+					element.push("</div>");
+
+					element.push("<div class='row my-1>");
 						element.push("<div class='separator'></div>");
 					element.push("</div>");
 
-					element.push("<div class='detail-row'>");
-							element.push("<div class='detail-text bold-text'>Leaping settings</div>");
+					element.push("<div class='row my-1'>");
+							element.push("<div class='bold-text'>Leaping settings</div>");
 					element.push("</div>");
 
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-column twothird'>");
-							element.push("<div class='detail-row'>");
-									element.push("<div class='detail-text'>Interval:</div>");
-									element.push(`<input type='text' class='form-control leap_day_occurance_input interval dynamic_input' data='year_data.leap_days.${key}' fc-index='interval' value='${data.interval}' />`);
-							element.push("</div>");
-						element.push("</div>");
+					element.push("<div class='row mt-2'>");
+						element.push("<div class='col-8 p-0'>Interval:</div>");
+						element.push("<div class='col-4 p-0'>Offset:</div>");
+					element.push("</div>");
 
-						element.push("<div class='detail-column third'>");
-							element.push("<div class='detail-row'>");
-								element.push("<div class='detail-text'>Offset:</div>");
-								element.push(`<input type='number' step="1" class='form-control leap_day_occurance_input offset dynamic_input' min='0' data='year_data.leap_days.${key}' fc-index='offset' value='${data.offset}'`);
-								element.push(data.interval === "1" ? " disabled" : "");
-								element.push("/>");
-							element.push("</div>");
+					element.push("<div class='row mb-2'>");
+						element.push("<div class='col-8 p-0'>");
+							element.push(`<input type='text' class='form-control leap_day_occurance_input interval dynamic_input' data='year_data.leap_days.${key}' fc-index='interval' value='${data.interval}' />`);
+						element.push("</div>");
+						element.push("<div class='col-4 p-0'>");
+							element.push(`<input type='number' step="1" class='form-control leap_day_occurance_input offset dynamic_input' min='0' data='year_data.leap_days.${key}' fc-index='offset' value='${data.offset}'`);
+							element.push(data.interval === "1" ? " disabled" : "");
+							element.push("/>");
 						element.push("</div>");
 					element.push("</div>");
 
-					var values = data.interval.split(',').reverse();
-					var sorted = [];
-
-					var numbers_regex = /([1-9]+[0-9]*)/;
-
-					for(var i = 0; i < values.length; i++){
-						sorted.push(Number(values[i].match(numbers_regex)[0]));
-					}
-
-					var text = "This leap day will appear every";
-
-					var timespan_interval = static_data.year_data.timespans[data.timespan].interval;
-
-					for(var i = 0; i < values.length; i++){
-
-						var leap_interval = sorted[i];
-						var leap_offset = data.offset;
-
-						var total_offset = (((leap_interval-leap_offset)%leap_interval)*timespan_interval);
-
-						if(total_offset == 0){
-							total_offset = sorted[i]*timespan_interval;
-						}
-
-						if(i == 0 && sorted[i] == 1){
-
-							text += " year"
-
-						}else if(i == 0){
-
-							if(values.length > 1){
-								text += ": <br>•";
-							}
-
-							if(static_data.year_data.timespans[data.timespan].interval == 1){
-								text += ` ${ordinal_suffix_of(sorted[i])} year`;
-							}else{
-								text += ` ${ordinal_suffix_of(timespan_interval*sorted[i])} ${static_data.year_data.timespans[data.timespan].name}`;
-							}
-
-							text += ` (year ${total_offset}, ${(total_offset+sorted[i]*timespan_interval)}, ${total_offset+sorted[i]*2*timespan_interval}...)`;
-
-						}
-
-						if(i > 0 && sorted[i] > 1){
-
-							if(values[i].indexOf('!') != -1){
-								if(timespan_interval == 1){
-									text += `<br>• but not every ${ordinal_suffix_of(sorted[i])} year`;
-								}else{
-									text += `<br>• but not every ${ordinal_suffix_of(timespan_interval*sorted[i])} ${static_data.year_data.timespans[data.timespan].name}`;
-								}
-
-								if(values[i].indexOf('+') == -1){
-									text += ` (year ${total_offset}, ${total_offset+sorted[i]}, ${total_offset+sorted[i]*2}...)`;
-								}
-
-							}else{
-
-								if(timespan_interval == 1){
-									text += `<br>• but also every ${ordinal_suffix_of(sorted[i])} year`;
-								}else{
-									text += `<br>• but also every ${ordinal_suffix_of(timespan_interval*sorted[i])} ${static_data.year_data.timespans[data.timespan].name}`;
-								}
-
-								if(values[i].indexOf('+') == -1){
-									text += ` (year ${total_offset}, ${total_offset+sorted[i]}, ${total_offset+sorted[i]*2}...)`;
-								}
-
-							}
-
-						}
-
-					}
-
-					element.push("<div class='detail-row'>");
-						element.push(`<div class='detail-text italics-text leap_day_variance_output'>${text}</div>`);
+					element.push("<div class='row'>");
+						element.push(`<div class='italics-text leap_day_variance_output'>${get_interval_text(false, data)}</div>`);
 					element.push("</div>");
 				element.push("</div>");
 			element.push("</div>");
@@ -4694,4 +4473,113 @@ function autoload(){
 
 	}
 
+}
+
+
+function get_interval_text(timespan, data){
+
+	var text = "";
+
+	if(timespan){
+
+		text = "This timespan will appear every";
+
+		if(data.interval > 1){
+			text += " " + ordinal_suffix_of(data.interval)
+		}
+
+		text +=  " year";
+
+		if(data.interval > 1){
+
+			var start_year = ((data.interval+data.offset)%data.interval);
+			if(start_year === 0){
+				start_year = data.interval;
+			}
+			text += ", starting year " + start_year + `. (year ${start_year}, ${data.interval+start_year}, ${(data.interval*2)+start_year}...)`;
+
+		}
+
+		text +=  ".";
+
+	}else{
+
+		var values = data.interval.split(',').reverse();
+		var sorted = [];
+
+		var numbers_regex = /([1-9]+[0-9]*)/;
+
+		for(var i = 0; i < values.length; i++){
+			sorted.push(Number(values[i].match(numbers_regex)[0]));
+		}
+
+		text = "This leap day will appear every";
+
+		var timespan_interval = static_data.year_data.timespans[data.timespan].interval;
+
+		for(var i = 0; i < values.length; i++){
+
+			var leap_interval = sorted[i];
+			var leap_offset = data.offset;
+
+			var total_offset = (((leap_interval-leap_offset)%leap_interval)*timespan_interval);
+
+			if(total_offset == 0){
+				total_offset = sorted[i]*timespan_interval;
+			}
+
+			if(i == 0 && sorted[i] == 1){
+
+				text += " year"
+
+			}else if(i == 0){
+
+				if(values.length > 1){
+					text += ": <br>•";
+				}
+
+				if(static_data.year_data.timespans[data.timespan].interval == 1){
+					text += ` ${ordinal_suffix_of(sorted[i])} year`;
+				}else{
+					text += ` ${ordinal_suffix_of(timespan_interval*sorted[i])} ${static_data.year_data.timespans[data.timespan].name}`;
+				}
+
+				text += ` (year ${total_offset}, ${(total_offset+sorted[i]*timespan_interval)}, ${total_offset+sorted[i]*2*timespan_interval}...)`;
+
+			}
+
+			if(i > 0 && sorted[i] > 1){
+
+				if(values[i].indexOf('!') != -1){
+					if(timespan_interval == 1){
+						text += `<br>• but not every ${ordinal_suffix_of(sorted[i])} year`;
+					}else{
+						text += `<br>• but not every ${ordinal_suffix_of(timespan_interval*sorted[i])} ${static_data.year_data.timespans[data.timespan].name}`;
+					}
+
+					if(values[i].indexOf('+') == -1){
+						text += ` (year ${total_offset}, ${total_offset+sorted[i]}, ${total_offset+sorted[i]*2}...)`;
+					}
+
+				}else{
+
+					if(timespan_interval == 1){
+						text += `<br>• but also every ${ordinal_suffix_of(sorted[i])} year`;
+					}else{
+						text += `<br>• but also every ${ordinal_suffix_of(timespan_interval*sorted[i])} ${static_data.year_data.timespans[data.timespan].name}`;
+					}
+
+					if(values[i].indexOf('+') == -1){
+						text += ` (year ${total_offset}, ${total_offset+sorted[i]}, ${total_offset+sorted[i]*2}...)`;
+					}
+
+				}
+
+			}
+
+		}
+
+	}
+
+	return text;
 }
