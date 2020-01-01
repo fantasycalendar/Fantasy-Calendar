@@ -874,9 +874,11 @@ function set_up_edit_inputs(){
 
 		var name = $(this).prev();
 
-		var slug = slugify(name.val());
+		var sort_by = static_data.event_data.categories.length;
 
-		var name_val = name.val() == "" ? `Category ${id+1}` : name.val();
+		var name_val = name.val() == "" ? `Category ${sort_by+1}` : name.val();
+
+		var slug = slugify(name_val);
 
 		var stats = {
 			"name": name_val,
@@ -893,8 +895,6 @@ function set_up_edit_inputs(){
 			"calendar_id": typeof calendar_id != "undefined" ? calendar_id : null,
 			"id": slug
 		};
-
-		sort_by = static_data.event_data.categories.length;
 
 		add_category_to_list(event_category_list, sort_by, stats);
 
@@ -2930,115 +2930,112 @@ function add_category_to_list(parent, key, data){
 		element.push("</div>");
 		element.push("<div class='detail-container'>");
 
-			element.push("<div class='detail-row'>");
-					element.push("<div class='detail-text bold-text'>Category settings (global):</div>");
-			element.push("</div>");
+			element.push("<div class='col-12 mb-3'>");
 
-			element.push("<div class='detail-row'>");
-					element.push(`<input type='hidden' class='category_id' value='${key}'>`);
-			element.push("</div>");
+				element.push("<div class='row my-1 bold-text'>Category settings (global):</div>");
 
-			element.push("<div class='detail-row'>");
-				element.push("<div class='detail-column half'>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text'>Hide from viewers:</div>");
+				element.push(`<input type='hidden' class='category_id' value='${key}'>`);
+
+				element.push("<div class='row my-1'>");
+					element.push("<div class='col-6 pl-0 pr-2 pt-2 text-right'>");
+						element.push("Hide from viewers:");
+					element.push("</div>");
+					element.push("<div class='col-md-auto pl-1 pr-0'>");
 						element.push(`<input type='checkbox' class='form-control dynamic_input global_hide' data='event_data.categories.${key}.category_settings' fc-index='hide' ${(data.category_settings.hide ? "checked" : "")} />`);
 					element.push("</div>");
 				element.push("</div>");
-				element.push("<div class='detail-column half'>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text'>Usable by players:</div>");
+
+				element.push("<div class='row my-1'>");
+					element.push("<div class='col-6 pl-0 pr-2 pt-2 text-right'>");
+						element.push("Usable by players:");
+					element.push("</div>");
+					element.push("<div class='col-md-auto pl-1 pr-0'>");
 						element.push(`<input type='checkbox' class='form-control dynamic_input player_usable' data='event_data.categories.${key}.category_settings' fc-index='player_usable' ${(data.category_settings.player_usable ? "checked" : "")} />`);
 					element.push("</div>");
 				element.push("</div>");
-			element.push("</div>");
 
-			element.push("<div class='detail-row'>");
-				element.push("<div class='separator'></div>");
-			element.push("</div>");
+				element.push("<div class='row my-2'>");
+					element.push("<div class='separator'></div>");
+				element.push("</div>");
 
-			element.push("<div class='detail-row'>");
-					element.push("<div class='detail-text bold-text'>Event settings (local):</div>");
-			element.push("</div>");
+				element.push("<div class='row my-1 bold-text'>Event settings (local):</div>");
+				element.push("<div class='row my-1 small-text bold-text warning'>This will override the settings on any events using this category!</div>");
 
-			element.push("<div class='detail-row'>");
-
-				element.push("<div class='detail-row'>");
-					element.push("<div class='detail-column half'>");
-						element.push("<div class='detail-text'>Fully hide event:</div>");
+				element.push("<div class='row my-1'>");
+					element.push("<div class='col-6 pl-0 pr-2 pt-2 text-right'>");
+						element.push("Fully hide event:");
 					element.push("</div>");
-					element.push("<div class='detail-column half'>");
+					element.push("<div class='col-md-auto pl-1 pr-0'>");
 						element.push(`<input type='checkbox' class='form-control dynamic_input' data='event_data.categories.${key}.event_settings' fc-index='hide_full' ${(data.event_settings.hide_full ? "checked" : "")} />`);
 					element.push("</div>");
 				element.push("</div>");
 
-				element.push("<div class='detail-row'>");
-					element.push("<div class='detail-column half'>");
-						element.push("<div class='detail-text'>Hide event:</div>");
+				element.push("<div class='row my-1'>");
+					element.push("<div class='col-6 pl-0 pr-2 pt-2 text-right'>");
+						element.push("Hide event:");
 					element.push("</div>");
-					element.push("<div class='detail-column half'>");
-						element.push(`<input type='checkbox' class='form-control dynamic_input local_hide' data='event_data.categories.${key}.event_settings' fc-index='hide' ${(data.event_settings.hide ? "checked" : "")} />`);
-					element.push("</div>");
-				element.push("</div>");
-
-				element.push("<div class='detail-row'>");
-					element.push("<div class='detail-column half'>");
-						element.push("<div class='detail-text'>Don't print event:</div>");
-					element.push("</div>");
-					element.push("<div class='detail-column half'>");
-						element.push(`<input type='checkbox' class='form-control dynamic_input noprint' data='event_data.categories.${key}.event_settings' fc-index='noprint' ${(data.event_settings.noprint ? "checked" : "")} />`);
-					element.push("</div>");
-				element.push("</div>");
-			element.push("</div>");
-
-			element.push("<div class='detail-row'>");
-				element.push("<div class='detail-column half'>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-column'>");
-							element.push("<div class='detail-text'>Color:</div>");
-						element.push("</div>");
-						element.push("<div class='detail-column'>");
-							element.push(`<select class='custom-select form-control dynamic_input event-text-input color_display' data='event_data.categories.${key}.event_settings' fc-index='color'>`);
-								element.push(`<option ${(data.event_settings.color == 'Dark-Solid' ? ' selected' : '')}>Dark-Solid</option>`);
-								element.push(`<option ${(data.event_settings.color == 'Red' ? ' selected' : '')}>Red</option>`);
-								element.push(`<option ${(data.event_settings.color == 'Pink' ? ' selected' : '')}>Pink</option>`);
-								element.push(`<option ${(data.event_settings.color == 'Purple' ? ' selected' : '')}>Purple</option>`);
-								element.push(`<option ${(data.event_settings.color == 'Deep-Purple' ? ' selected' : '')}>Deep-Purple</option>`);
-								element.push(`<option ${(data.event_settings.color == 'Blue' ? ' selected' : '')}>Blue</option>`);
-								element.push(`<option ${(data.event_settings.color == 'Light-Blue' ? ' selected' : '')}>Light-Blue</option>`);
-								element.push(`<option ${(data.event_settings.color == 'Cyan' ? ' selected' : '')}>Cyan</option>`);
-								element.push(`<option ${(data.event_settings.color == 'Teal' ? ' selected' : '')}>Teal</option>`);
-								element.push(`<option ${(data.event_settings.color == 'Green' ? ' selected' : '')}>Green</option>`);
-								element.push(`<option ${(data.event_settings.color == 'Light-Green' ? ' selected' : '')}>Light-Green</option>`);
-								element.push(`<option ${(data.event_settings.color == 'Lime' ? ' selected' : '')}>Lime</option>`);
-								element.push(`<option ${(data.event_settings.color == 'Yellow' ? ' selected' : '')}>Yellow</option>`);
-								element.push(`<option ${(data.event_settings.color == 'Orange' ? ' selected' : '')}>Orange</option>`);
-								element.push(`<option ${(data.event_settings.color == 'Blue-Grey' ? ' selected' : '')}>Blue-Grey</option>`);
-							element.push("</select>");
-						element.push("</div>");
+					element.push("<div class='col-md-auto pl-1 pr-0'>");
+						element.push(`<input type='checkbox' class='form-control dynamic_input' data='event_data.categories.${key}.event_settings' fc-index='hide' ${(data.event_settings.hide ? "checked" : "")} />`);
 					element.push("</div>");
 				element.push("</div>");
 
-				element.push("<div class='detail-column half'>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-column'>");
-							element.push("<div class='detail-text'>Display:</div>");
-						element.push("</div>");
-						element.push("<div class='detail-column threequarter float'>");
-							element.push(`<select class='custom-select form-control dynamic_input event-text-input text_display' data='event_data.categories.${key}.event_settings' fc-index='text'>`);
-								element.push(`<option value="text"${(data.event_settings.text == 'text' ? ' selected' : '')}>Just text</option>`);
-								element.push(`<option value="dot"${(data.event_settings.text == 'dot' ? ' selected' : '')}>• Dot with text</option>`);
-								element.push(`<option value="background"${(data.event_settings.text == 'background' ? ' selected' : '')}>Background</option>`);
-							element.push("</select>");
-						element.push("</div>");
+				element.push("<div class='row my-1'>");
+					element.push("<div class='col-6 pl-0 pr-2 pt-2 text-right'>");
+						element.push("Don't print event:");
+					element.push("</div>");
+					element.push("<div class='col-md-auto pl-1 pr-0'>");
+						element.push(`<input type='checkbox' class='form-control dynamic_input' data='event_data.categories.${key}.event_settings' fc-index='noprint' ${(data.event_settings.noprint ? "checked" : "")} />`);
 					element.push("</div>");
 				element.push("</div>");
-			element.push("</div>");
 
-			element.push("<div class='detail-row'>");
-				element.push("<div class='detail-column full'>");
-					element.push(`Event display: <div class='half event-text-output event ${data.event_settings.color} ${data.event_settings.text}'>Event name</div>`);
+				element.push("<div class='row mt-1'>");
+					element.push("<div class='col-6 pr-1 pl-0'>");
+						element.push("<div>Color:</div>");
+					element.push("</div>");
+
+					element.push("<div class='col-6 pr-0 pl-1'>");
+						element.push("<div>Display:</div>");
+					element.push("</div>");
 				element.push("</div>");
+
+				element.push("<div class='row mb-1'>");
+					element.push("<div class='col-6 pr-1 pl-0'>");
+						element.push(`<select class='custom-select form-control dynamic_input event-text-input color_display' data='event_data.categories.${key}.event_settings' fc-index='color'>`);
+							element.push(`<option ${(data.event_settings.color == 'Dark-Solid' ? ' selected' : '')}>Dark-Solid</option>`);
+							element.push(`<option ${(data.event_settings.color == 'Red' ? ' selected' : '')}>Red</option>`);
+							element.push(`<option ${(data.event_settings.color == 'Pink' ? ' selected' : '')}>Pink</option>`);
+							element.push(`<option ${(data.event_settings.color == 'Purple' ? ' selected' : '')}>Purple</option>`);
+							element.push(`<option ${(data.event_settings.color == 'Deep-Purple' ? ' selected' : '')}>Deep-Purple</option>`);
+							element.push(`<option ${(data.event_settings.color == 'Blue' ? ' selected' : '')}>Blue</option>`);
+							element.push(`<option ${(data.event_settings.color == 'Light-Blue' ? ' selected' : '')}>Light-Blue</option>`);
+							element.push(`<option ${(data.event_settings.color == 'Cyan' ? ' selected' : '')}>Cyan</option>`);
+							element.push(`<option ${(data.event_settings.color == 'Teal' ? ' selected' : '')}>Teal</option>`);
+							element.push(`<option ${(data.event_settings.color == 'Green' ? ' selected' : '')}>Green</option>`);
+							element.push(`<option ${(data.event_settings.color == 'Light-Green' ? ' selected' : '')}>Light-Green</option>`);
+							element.push(`<option ${(data.event_settings.color == 'Lime' ? ' selected' : '')}>Lime</option>`);
+							element.push(`<option ${(data.event_settings.color == 'Yellow' ? ' selected' : '')}>Yellow</option>`);
+							element.push(`<option ${(data.event_settings.color == 'Orange' ? ' selected' : '')}>Orange</option>`);
+							element.push(`<option ${(data.event_settings.color == 'Blue-Grey' ? ' selected' : '')}>Blue-Grey</option>`);
+						element.push("</select>");
+					element.push("</div>");
+
+					element.push("<div class='col-6 pr-0 pl-1'>");
+						element.push(`<select class='custom-select form-control dynamic_input event-text-input text_display' data='event_data.categories.${key}.event_settings' fc-index='text'>`);
+							element.push(`<option value="text"${(data.event_settings.text == 'text' ? ' selected' : '')}>Just text</option>`);
+							element.push(`<option value="dot"${(data.event_settings.text == 'dot' ? ' selected' : '')}>• Dot with text</option>`);
+							element.push(`<option value="background"${(data.event_settings.text == 'background' ? ' selected' : '')}>Background</option>`);
+						element.push("</select>");
+					element.push("</div>");
+				element.push("</div>");
+				
+				element.push("<div class='row mt-3'>");
+					element.push(`Event display:`);
+				element.push("</div>");
+
+				element.push("<div class='row mb-3'>");
+					element.push(`<div class='half event-text-output event ${data.event_settings.color} ${data.event_settings.text}'>Event name</div>`);
+				element.push("</div>");
+
 			element.push("</div>");
 
 		element.push("</div>");
