@@ -413,6 +413,8 @@ function evaluate_sun(){
 
 function repopulate_timespan_select(select, val, change, max){
 
+	if(static_data.year_data.timespans.length == 0 || static_data.year_data.global_week.length == 0) return;
+
 	change = change === undefined ? true : change;
 	max = max === undefined ? false : max;
 
@@ -481,6 +483,8 @@ function repopulate_timespan_select(select, val, change, max){
 }
 
 function repopulate_day_select(select, val, change, no_leaps, max){
+
+	if(static_data.year_data.timespans.length == 0 || static_data.year_data.global_week.length == 0) return;
 
 	var change = change === undefined ? true : change;
 	var no_leaps = no_leaps === undefined ? false : no_leaps;
