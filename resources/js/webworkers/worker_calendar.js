@@ -1503,6 +1503,8 @@ var calendar_builder = {
 				era_year++;
 			}
 		}
+		
+		era_year = era_year == 0 ? era_year+1 : era_year;
 
 		if(!this.static_data.settings.show_current_month || last_year != this.dynamic_data.year){
 			year_day = 1;
