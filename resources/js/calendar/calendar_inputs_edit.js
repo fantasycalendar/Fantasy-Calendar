@@ -2204,92 +2204,104 @@ function add_moon_to_list(parent, key, data){
 			element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
 		element.push("</div>");
 
-		element.push("<div class='detail-container'>");
+		element.push("<div class='detail-container container'>");
 
-			element.push("<div class='detail-row'>");
-				element.push("<div class='detail-column twothird'>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text'>Custom phase count: </div>");
+			element.push("<div class='col-12 mb-3'>");
+
+				element.push("<div class='row'>");
+					element.push("<div class='col-md-auto pl-0 pr-2'>Custom phase count: </div>");
+					element.push("<div class='col-md-auto pl-2 pr-0 pt-1'>");
 						element.push(`<input type='checkbox' class='dynamic_input custom_phase' data='moons.${key}' fc-index='custom_phase'`);
 						element.push(data.custom_phase ? "checked" : "");
 						element.push("/>");
 					element.push("</div>");
 				element.push("</div>");
-			element.push("</div>");
 
-			element.push("<div class='separator'></div>");
+				element.push("<div class='row my-1'>");
+					element.push("<div class='separator'></div>");
+				element.push("</div>");
 
-			element.push(`<div class='full no_custom_phase_container ${data.custom_phase ? "hidden" : ""}'>`);
-				element.push("<div class='detail-row'>");
-					element.push("<div class='detail-column half'>");
-						element.push("<div class='detail-row'>");
-							element.push("<div class='detail-text'>Cycle:</div>");
+				element.push(`<div class='no_custom_phase_container ${data.custom_phase ? "hidden" : ""}'>`);
+
+					element.push(`<div class='row my-1'>`);
+									
+						element.push("<div class='col-7 pl-0 pr-0'>Cycle:</div>");
+
+						element.push("<div class='col-5 pl-0 pr-0'>Shift:</div>");
+
+					element.push("</div>");
+
+					element.push(`<div class='row mb-1'>`);
+									
+						element.push("<div class='col-7 pl-0 pr-1'>");
 							element.push(`<input type='number' min='1' step="any" class='form-control dynamic_input cycle' data='moons.${key}' fc-index='cycle' value='${!data.custom_phase ? data.cycle : ''}' />`);
 						element.push("</div>");
-					element.push("</div>");
-					element.push("<div class='detail-column half'>");
-						element.push("<div class='detail-row'>");
-							element.push("<div class='detail-text'>Shift:</div>");
+									
+						element.push("<div class='col-5 pl-1 pr-0'>");
 							element.push(`<input type='number' step="any" class='form-control dynamic_input shift' data='moons.${key}' fc-index='shift' value='${!data.custom_phase ? data.shift : ''}' />`);
 						element.push("</div>");
-					element.push("</div>");
-				element.push("</div>");
-			element.push("</div>");
 
-			element.push(`<div class='full custom_phase_container ${!data.custom_phase ? "hidden" : ""}'>`);
-				element.push("<div class='detail-row'>");
-					element.push("<div class='detail-text'>Custom phase:</div>");
-				element.push("</div>");
-				element.push("<div class='detail-row'>");
-					element.push("<div class='detail-column detail-shrink'>");
-						element.push("<button type='button' class='btn btn-sm btn-danger moon_shift_back'><</button>");
 					element.push("</div>");
-					element.push("<div class='detail-column detail-grow'>");
-						element.push(`<input type='text' class='form-control form-control dynamic_input custom_cycle full' data='moons.${key}' fc-index='custom_cycle' value='${data.custom_phase ? data.custom_cycle : ''}' />`);
-					element.push("</div>");
-					element.push("<div class='detail-column detail-shrink'>");
-						element.push("<button type='button' class='btn btn-sm btn-success moon_shift_forward'>></button>");
-					element.push("</div>");
-				element.push("</div>");
-				element.push(`<div class='detail-row custom_phase_text italics-text small-text'>${data.custom_phase ? `This moon has ${data.custom_cycle.split(',').length} phases, with a granularity of ${data.granularity}.` : ''}</div>`);
-			element.push("</div>");
 
-			element.push("<div class='separator'></div>");
+				element.push("</div>");
 
-			element.push("<div class='detail-row'>");
-				element.push("<div class='detail-column half'>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text'>Moon color:</div>");
-					element.push("</div>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='moon_color'>");
-							element.push(`<input type='color' class='dynamic_input color' data='moons.${key}' fc-index='color'/>`);
+				element.push(`<div class='row custom_phase_container ${!data.custom_phase ? "hidden" : ""}'>`);
+
+					element.push("<div class='my-1'>Custom phase:</div>");
+
+					element.push("<div class='input-group my-1'>");
+
+						element.push("<div class='input-group-prepend'>");
+							element.push("<button type='button' class='btn btn-sm btn-danger moon_shift_back'><</button>");
 						element.push("</div>");
-					element.push("</div>");
-				element.push("</div>");
-				element.push("<div class='detail-column half'>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text'>Shadow color:</div>");
-					element.push("</div>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='moon_color'>");
-							element.push(`<input type='color' class='dynamic_input shadow_color' data='moons.${key}' fc-index='shadow_color'/>`);
+						
+						element.push(`<input type='text' class='form-control form-control-sm dynamic_input custom_cycle full' data='moons.${key}' fc-index='custom_cycle' value='${data.custom_phase ? data.custom_cycle : ''}' />`);
+						
+						element.push("<div class='input-group-append'>");
+							element.push("<button type='button' class='btn btn-sm btn-success moon_shift_forward'>></button>");
 						element.push("</div>");
+
 					element.push("</div>");
+
+					element.push(`<div class='custom_phase_text italics-text small-text my-1'>${data.custom_phase ? `This moon has ${data.custom_cycle.split(',').length} phases, with a granularity of ${data.granularity}.` : ''}</div>`);
+
 				element.push("</div>");
-			element.push("</div>");
-			element.push("<div class='detail-row'>");
-				element.push("<div class='detail-column half'>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text'>Hide from players: </div>");
-						element.push(`<input type='checkbox' class='moon-hidden dynamic_input' data='moons.${key}' fc-index='hidden'`);
+
+				element.push("<div class='row my-2'>");
+					element.push("<div class='separator'></div>");
+				element.push("</div>");
+
+				element.push(`<div class='row mt-1'>`);
+								
+					element.push("<div class='col-6 pl-0 pr-0'>Moon color:</div>");
+
+					element.push("<div class='col-6 pl-0 pr-0'>Shadow color:</div>");
+
+				element.push("</div>");
+
+				element.push(`<div class='row mb-1'>`);
+								
+					element.push("<div class='col-6 pl-0 pr-1'>");
+						element.push(`<input type='color' class='dynamic_input color' data='moons.${key}' fc-index='color'/>`);
+					element.push("</div>");
+								
+					element.push("<div class='col-6 pl-1 pr-0'>");
+						element.push(`<input type='color' class='dynamic_input shadow_color' data='moons.${key}' fc-index='shadow_color'/>`);
+					element.push("</div>");
+
+				element.push("</div>");
+
+				element.push("<div class='row my-2'>");
+					element.push("<div class='col-md-auto pl-0 pr-2'>Hide from players:</div>");
+					element.push("<div class='col-md-auto pl-2 pr-0 pt-1'>");
+						element.push(`<input type='checkbox' class='dynamic_input moon-hidden' data='moons.${key}' fc-index='hidden'`);
 						element.push(data.hidden ? "checked" : "");
 						element.push("/>");
 					element.push("</div>");
 				element.push("</div>");
+
 			element.push("</div>");
 		element.push("</div>");
-
 	element.push("</div>");
 
 	parent.append(element.join(""));
