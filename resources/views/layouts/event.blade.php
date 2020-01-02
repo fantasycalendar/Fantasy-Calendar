@@ -34,7 +34,7 @@
 	</div>
 </div>
 
-<div id="event_edit_background" class='clickable_background'>
+<div id="event_edit_background" class='clickable_background hidden'>
 	<div class='event-basic-container'>
 		<div class='event-basic-wrapper'>
 			<form id="event-form" class="event-wrapper container" action="post">
