@@ -1287,13 +1287,13 @@ function set_up_edit_inputs(){
 			static_data.year_data.timespans[timespan_index].week = [];
 			for(index = 0; index < static_data.year_data.global_week.length; index++){
 				static_data.year_data.timespans[timespan_index].week.push(static_data.year_data.global_week[index]);
-				element.push(`<input type='text' class='detail-row form-control internal-list-name dynamic_input custom_week_day' data='year_data.timespans.${timespan_index}.week' fc-index='${index}' value='${static_data.year_data.global_week[index]}'/>`);
+				element.push(`<input type='text' class='row form-control internal-list-name dynamic_input custom_week_day' data='year_data.timespans.${timespan_index}.week' fc-index='${index}' value='${static_data.year_data.global_week[index]}'/>`);
 			}
-			parent.find(".week_list").html(element.join("")).parent().removeClass('hidden');
+			parent.find(".week_list").html(element.join("")).parent().parent().removeClass('hidden');
 			parent.find(".week-length").prop('disabled', false).val(static_data.year_data.global_week.length);
 			parent.find(".weekday_quick_add").prop('disabled', false);
 		}else{
-			parent.find(".week_list").html('').parent().addClass('hidden');
+			parent.find(".week_list").html('').parent().parent().addClass('hidden');
 			parent.find(".week-length").prop('disabled', true).val(0);
 			parent.find(".weekday_quick_add").prop('disabled', true);
 			delete static_data.year_data.timespans[timespan_index].week;
@@ -1420,9 +1420,11 @@ function set_up_edit_inputs(){
 	$(document).on('change', '.week-length', function(){
 
 		var parent = $(this).closest('.sortable-container');
+		var week_list = parent.find('.week_list');
 		var timespan_index = parent.attr('index');
+
 		var new_val = ($(this).val()|0);
-		var current_val = ($(this).parent().parent().parent().parent().find(".week_list").children().length|0);
+		var current_val = (week_list.children().length|0);
 
 		if(new_val < 1){
 			$(this).val(current_val);
@@ -1433,12 +1435,12 @@ function set_up_edit_inputs(){
 			var element = [];
 			for(index = current_val; index < new_val; index++){
 				static_data.year_data.timespans[timespan_index].week.push(`Week day ${(index+1)}`);
-				element.push(`<input type='text' class='detail-row form-control internal-list-name custom_week_day dynamic_input' data='year_data.timespans.${index}.week' fc-index='${index}' value='Week day ${(index+1)}'/>`);
+				element.push(`<input type='text' class='row form-control internal-list-name custom_week_day dynamic_input' data='year_data.timespans.${index}.week' fc-index='${index}' value='Week day ${(index+1)}'/>`);
 			}
-			$(this).parent().parent().parent().parent().find(".week_list").append(element.join(""));
+			week_list.append(element.join(""));
 		}else if(new_val < current_val){
 			static_data.year_data.timespans[timespan_index].week = static_data.year_data.timespans[timespan_index].week.slice(0, new_val);
-			$(this).parent().parent().parent().parent().find(".week_list").children().slice(new_val).remove();
+			week_list.children().slice(new_val).remove();
 		}
 
 		evaluate_custom_weeks();
@@ -2038,12 +2040,14 @@ function add_timespan_to_sortable(parent, key, data){
 							element.push("</div>");
 						element.push("</div>");
 
-						element.push("<div class='row mt-2 week_list border'>");
-						if(data.week){
-							for(index = 0; index < data.week.length; index++){
-								element.push(`<input type='text' class='form-control internal-list-name dynamic_input custom_week_day' data='year_data.timespans.${key}.week' fc-index='${index}' value='${data.week[index]}'/>`);
+						element.push("<div class='row mt-2 container p-0 border'>");
+							element.push("<div class='week_list col-12'>");
+							if(data.week){
+								for(index = 0; index < data.week.length; index++){
+									element.push(`<input type='text' class='form-control internal-list-name dynamic_input custom_week_day' data='year_data.timespans.${key}.week' fc-index='${index}' value='${data.week[index]}'/>`);
+								}
 							}
-						}
+							element.push("</div>");
 						element.push("</div>");
 					element.push("</div>");
 
