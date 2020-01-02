@@ -50,6 +50,14 @@
 
 			@if(Auth::check())
 
+			<div class='row'>
+	            <div class='col'>
+	                <a href="{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}" class='full'>
+	                    <button type="button" class='btn btn-sm btn-success btn-block'>Edit Mode</button>
+	                </a>
+	            </div>
+            </div>
+
 			<div class='date_control container' id='date_inputs'>
 				
 				<div class='row my-2'>
