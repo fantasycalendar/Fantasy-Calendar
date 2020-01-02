@@ -973,15 +973,15 @@
 			<div class='wrap-collapsible card'>
 				<input id="collapsible_linking" class="toggle" type="checkbox">
 				<label for="collapsible_linking" class="lbl-toggle card-header lbl-text">Calendar Linking <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Calendar Linking' href='https://wiki.fantasy-calendar.com/index.php?title=Calendar_Linking' class="wiki protip"><i class="icon-question-sign"></i></a></label>
-				<div class="collapsible-content card-body">
+				<div class="collapsible-content card-body container">
 
-					<div class="col-12">
+					<div id='calendar_link_hide'>
 
-						<div class='row my-1 center-text hidden calendar_link_explaination'>
-							This calendar is already linked to a master calendar. Before linking any calendars to this one, you must unlink this calendar from its master calendar.
-						</div>
+						<div class="col-12">
 
-						<div id='calendar_link_hide'>
+							<div class='row my-1 center-text hidden calendar_link_explaination'>
+								This calendar is already linked to a master calendar. Before linking any calendars to this one, you must unlink this calendar from its master calendar.
+							</div>
 
 							<div class='row my-1'>
 								<select class='form-control' id='calendar_link_select'></select>
@@ -993,29 +993,30 @@
 								<button type='button' class='btn btn-primary full' id='link_calendar'>Link</button>
 							</div>
 
-							<div class='sortable' id='calendar_link_list'></div>
-
 						</div>
 
-						<div id="calendar_link_show">
-							<div class='row mt-3'>
-								<div class='col-md-auto ml-4 pr-1 bold-text'>Link from master:</div>
-							</div>
-							<div class='row protip' data-pt-position="right" data-pt-title='If enabled, the date of this calendar will be taken from the master calendar, but scaled based on the difference in the length of day between the master and this calendar. If this calendar has 12 hours per day and the master has 24, each day counts from the master counts as two days on this one.'>
-								<div class='col-md-auto ml-4 pr-0'>
-									Day
-								</div>
-								<div class='col-md-auto p-0'>
-									<label class="custom-control custom-checkbox">
-										<input type="checkbox" class="custom-control-input static_input" id='link_scale' data='clock' fc-index='link_scale'>
-										<span class="custom-control-indicator"></span>
-									</label>
-								</div>
-								<div class='col-md-auto p-0'>
-									Minutes
-								</div>
-							</div>
+						<div class='sortable' id='calendar_link_list'></div>
 
+					</div>
+
+
+					<div id="calendar_link_show">
+						<div class='row mt-3'>
+							<div class='col-md-auto ml-4 pr-1 bold-text'>Link from master:</div>
+						</div>
+						<div class='row protip' data-pt-position="right" data-pt-title='If enabled, the date of this calendar will be taken from the master calendar, but scaled based on the difference in the length of day between the master and this calendar. If this calendar has 12 hours per day and the master has 24, each day counts from the master counts as two days on this one.'>
+							<div class='col-md-auto ml-4 pr-0'>
+								Day
+							</div>
+							<div class='col-md-auto p-0'>
+								<label class="custom-control custom-checkbox">
+									<input type="checkbox" class="custom-control-input static_input" id='link_scale' data='clock' fc-index='link_scale'>
+									<span class="custom-control-indicator"></span>
+								</label>
+							</div>
+							<div class='col-md-auto p-0'>
+								Minutes
+							</div>
 						</div>
 
 					</div>
