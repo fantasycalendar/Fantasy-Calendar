@@ -715,22 +715,22 @@
 		<div class='wrap-collapsible card'>
 			<input id="collapsible_locations" class="toggle" type="checkbox">
 			<label for="collapsible_locations" class="lbl-toggle card-header lbl-text">Locations <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Locations' href='https://wiki.fantasy-calendar.com/index.php?title=Locations' class="wiki protip"><i class="icon-question-sign"></i></a></label>
-			<div class="collapsible-content card-body">
+			<div class="collapsible-content card-body container">
 
 				<div class='form-inline locations'>
 					<input type='text' class='form-control name' placeholder='Location name'>
 					<button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
 				</div>
 
-				<div class='detail-row detail-select-container'>
+				<div class='row mt-2 detail-select-container'>
 					<div class='detail-label'>Current location:</div>
 				</div>
-				<div class='detail-row'>
+				<div class='row mb-2'>
 					<select class='form-control' id='location_select'>
 					</select>
 				</div>
-				<div class='detail-row'>
-					<input type='button' value='Copy location data' class='btn btn-info full add' id='copy_location_data'>
+				<div class='row my-2'>
+					<input type='button' value='Copy selected location to new location' class='btn btn-info full add' id='copy_location_data'>
 				</div>
 				<div class='sortable' id='location_list'></div>
 			</div>
