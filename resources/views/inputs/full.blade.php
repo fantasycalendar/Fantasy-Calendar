@@ -623,73 +623,84 @@
 		<div class='wrap-collapsible card'>
 			<input id="collapsible_weather" class="toggle" type="checkbox">
 			<label for="collapsible_weather" class="lbl-toggle card-header lbl-text">Weather<a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Weather' href='https://wiki.fantasy-calendar.com/index.php?title=Weather' class="wiki protip"><i class="icon-question-sign"></i></a></label>
-			<div class="collapsible-content card-body">
+			<div class="collapsible-content card-body content">
 
-				<div class='detail-row'>
-					<div class='detail-column'>Enable weather:</div>
-					<div class='detail-column float'>
-						<label class="custom-control custom-checkbox">
-							<input type="checkbox" class="custom-control-input static_input" id='enable_weather' refresh='false' data='seasons.global_settings' fc-index='enable_weather'>
-							<span class="custom-control-indicator"></span>
-						</label>
-					</div>
-				</div>
+				<div class='col-12'>
 
-				<div id='weather_inputs'>
-
-					<div class='detail-row small-text'>
-						Custom weather can be configured in custom locations.
-					</div>
-
-
-					<div class='detail-row'>
-						<div class='detail-column'>Weather offset (days):</div>
-						<div class='detail-column float'>
-							<input class='form-control static_input' type='number' refresh='false' data='seasons.global_settings' fc-index='weather_offset'/>
+					<div class='row'>
+						<div class='col-md-auto p-0'>Enable weather:</div>
+						<div class='col-md-auto p-0'>
+							<label class="custom-control custom-checkbox">
+								<input type="checkbox" class="custom-control-input static_input" id='enable_weather' refresh='false' data='seasons.global_settings' fc-index='enable_weather'>
+								<span class="custom-control-indicator"></span>
+							</label>
 						</div>
 					</div>
 
-					<div class='detail-row'>
-						<div class='detail-column half'>
-							<div class='detail-row'>Temperature system:</div>
-							<div class='detail-row'>
-								<select class='custom-select form-control type full static_input' id='temp_sys' refresh='false' data='seasons.global_settings' fc-index='temp_sys'>
+					<div id='weather_inputs'>
+
+						<div class='row my-2 small-text'>
+							Custom weather can be configured in custom locations.
+						</div>
+
+
+						<div class='row my-2'>
+							<div class='col-md-auto p-0'>Weather offset (days):</div>
+							<div class='col-md-auto p-0'>
+								<input class='form-control static_input' type='number' refresh='false' data='seasons.global_settings' fc-index='weather_offset'/>
+							</div>
+						</div>
+
+						<div class='row mt-2'>
+							<div class='col-6 p-0 pr-1'>
+								Temperature system:
+							</div>
+
+							<div class='col-6 p-0'>
+								Wind speed system:
+							</div>
+						</div>
+
+						<div class='row mb-2'>
+							<div class='col-6 p-0 pr-1'>
+								<select class='custom-select form-control type static_input' id='temp_sys' refresh='false' data='seasons.global_settings' fc-index='temp_sys'>
 									<option selected value='metric'>Metric</option>
 									<option value='imperial'>Imperial</option>
 									<option value='both_m'>Both (inputs metric)</option>
 									<option value='both_i'>Both (inputs imperial)</option>
 								</select>
 							</div>
-						</div>
 
-						<div class='detail-column half'>
-							<div class='detail-row'>Wind speed system:</div>
-							<div class='detail-row'>
-								<select class='custom-select form-control type full static_input' refresh='false' data='seasons.global_settings' fc-index='wind_sys'>
+							<div class='col-6 p-0'>
+								<select class='custom-select form-control type static_input' refresh='false' data='seasons.global_settings' fc-index='wind_sys'>
 									<option selected value='metric'>Metric</option>
 									<option value='imperial'>Imperial</option>
 									<option value='both'>Both</option>
 								</select>
 							</div>
 						</div>
-					</div>
 
-					<div class='detail-row'>
-						<div class='detail-column'>Cinematic temperature description:</div>
-						<div class='detail-column float'>
-							<label class="custom-control custom-checkbox">
-								<input type="checkbox" class="custom-control-input static_input" refresh='false' data='seasons.global_settings' fc-index='cinematic'>
-								<span class="custom-control-indicator"></span>
-							</label>
+						<div class='row my-2'>
+							<div class='col-md-auto p-0'>Cinematic temperature description:</div>
+							<div class='col-md-auto p-0'>
+								<label class="custom-control custom-checkbox">
+									<input type="checkbox" class="custom-control-input static_input" refresh='false' data='seasons.global_settings' fc-index='cinematic'>
+									<span class="custom-control-indicator"></span>
+								</label>
+							</div>
 						</div>
-					</div>
 
 
-					<div class='detail-row'>
-						<div class='detail-row'>Weather generation seed:</div>
-						<div class='detail-row'>
-							<input type='number' id='seasons_seed' class='form-control static_input' refresh='false' data='seasons.global_settings' fc-index='seed' />
-							<div class='btn btn-primary' id='reseed_seasons'><i class="fa fa-redo"></i></div>
+						<div class='row'>
+							<div class='col-md-auto p-0'>Weather generation seed:</div>
+						</div>
+						<div class='row'>
+							<div class='col-10 p-0'>
+								<input type='number' id='seasons_seed' class='form-control static_input full' refresh='false' data='seasons.global_settings' fc-index='seed' />
+							</div>
+							<div class='col-2 p-0'>
+								<div class='btn btn-primary' id='reseed_seasons'><i class="fa fa-redo"></i></div>
+							</div>
 						</div>
 					</div>
 				</div>
