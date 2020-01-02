@@ -721,16 +721,18 @@
 					<input type='text' class='form-control name' placeholder='Location name'>
 					<button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
 				</div>
+				<div class="col-12">
 
-				<div class='row mt-2 detail-select-container'>
-					<div class='detail-label'>Current location:</div>
-				</div>
-				<div class='row mb-2'>
-					<select class='form-control' id='location_select'>
-					</select>
-				</div>
-				<div class='row my-2'>
-					<input type='button' value='Copy selected location to new location' class='btn btn-info full add' id='copy_location_data'>
+					<div class='row mt-2 detail-select-container'>
+						<div class='detail-label'>Current location:</div>
+					</div>
+					<div class='row mb-2'>
+						<select class='form-control' id='location_select'>
+						</select>
+					</div>
+					<div class='row my-2'>
+						<input type='button' value='Copy selected location to new location' class='btn btn-info full add' id='copy_location_data'>
+					</div>
 				</div>
 				<div class='sortable' id='location_list'></div>
 			</div>
@@ -745,12 +747,14 @@
 		<div class='wrap-collapsible card'>
 			<input id="collapsible_cycles" class="toggle" type="checkbox">
 			<label for="collapsible_cycles" class="lbl-toggle card-header lbl-text">Cycles <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Cycles' href='https://wiki.fantasy-calendar.com/index.php?title=Cycles' class="wiki protip"><i class="icon-question-sign"></i></a></label>
-			<div class="collapsible-content card-body">
-				<div class="detail-row">
-					Cycle format:
-				</div>
-				<div class="detail-row">
-					<input type='text' id='cycle_format' class='form-control name static_input protip' data='cycles' fc-index='format' placeholder='Hover for info' data-pt-position="right" data-pt-title="This is the template for the cycles you have. Each cycle part has a set of names which you can add to the top of the calendar. Add one with this field empty to see how this works!">
+			<div class="collapsible-content card-body container">
+				<div class="col-12">
+					<div class="row mt-2">
+						Cycle format:
+					</div>
+					<div class="row mb-2">
+						<input type='text' id='cycle_format' class='form-control name static_input protip' data='cycles' fc-index='format' placeholder='Hover for info' data-pt-position="right" data-pt-title="This is the template for the cycles you have. Each cycle part has a set of names which you can add to the top of the calendar. Add one with this field empty to see how this works!">
+					</div>
 				</div>
 
 
