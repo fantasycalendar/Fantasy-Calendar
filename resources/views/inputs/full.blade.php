@@ -98,11 +98,11 @@
 					<canvas style="z-index: 0;" id="clock_background"></canvas>
 				</div>
 
-				<div class='detail-row center-text hidden' id='empty_calendar_explaination'>
+				<div class='center-text hidden' id='empty_calendar_explaination'>
 					This calendar doesn't have any weekdays or months yet, so you can't change the date.
 				</div>
 
-				<div class='detail-row date_control container' id='date_inputs'>
+				<div class='date_control container' id='date_inputs'>
 					
 					<div class='row my-2'>
 						<h4>Current date:</h4>
