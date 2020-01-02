@@ -41,7 +41,7 @@ class Clock{
 		this._hours = hours;
 		this._minutes = minutes;
 		this._offset = offset;
-		this._crowding = crowding;
+		this._crowding = crowding+1;
 		this._hour = hour;
 		this._minute = minute;
 		this._has_sun = has_sun;
@@ -270,12 +270,6 @@ class Clock{
 		this.face_ctx.textBaseline = "middle";
 		this.face_ctx.textAlign = "center";
 
-		if(this.hours >= 40){
-			var mod = Math.floor(this.hours/20)
-		}else{
-			var mod = 1;
-		}
-
 		for(var num = 0; num < this.hours; num++){
 
 			var ang = (num+this.hours/2+this.offset) * Math.PI / this.hours*2;
@@ -284,7 +278,7 @@ class Clock{
 			this.face_ctx.translate(0, -this.radius * 0.85);
 			this.face_ctx.rotate(-ang);
 
-			if((num+this._crowding)%mod == 0){
+			if(num%this._crowding == 0){
 
 				if(this.face_font_stroke){
 

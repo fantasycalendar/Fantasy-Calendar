@@ -324,8 +324,8 @@
 							<span class="custom-control-indicator"></span>
 						</label>
 					</div>
-					<div class='col-md-auto pr-0'>Render clock:</div>
-					<div class='col-md-auto pl-1'>
+					<div class='render_clock col-md-auto pr-0'>Render clock:</div>
+					<div class='render_clock col-md-auto pl-1'>
 						<label class="custom-control custom-checkbox">
 							<input type="checkbox" class="custom-control-input static_input" id='render_clock' data='clock' fc-index='render'>
 							<span class="custom-control-indicator"></span>
@@ -335,53 +335,84 @@
 
 				<div class='clock_inputs'>
 
-					<div class='detail-row'>
+					<div class='row mt-2'>
+						<div class='col-6'>
+							Hours per day:
+						</div>
+						<div class='col-6 pl-0'>
+							Minutes per hour:
+						</div>
+					</div>
 
-						<div class='detail-column half'>
-							<div class='detail-text'>
-								Hours per day:
+					<div class='row mb-2'>
+
+						<div class='col-6'>
+							<div class='row'>
+								<div class='col-md-auto pr-0'>
+									<button type='button' class='btn btn-sm btn-danger' onclick='adjustInput(this, "#clock_hours", -1);'><i class="icon-minus"></i></button>
+								</div>
+								<div class='col px-1'>
+									<input class='form-control form-control-sm static_input' min='1' id='clock_hours' data='clock' fc-index='hours' type='number'>
+								</div>
+								<div class='col-md-auto pl-0'>
+									<button type='button' class='btn btn-sm btn-success' onclick='adjustInput(this, "#clock_hours", +1);'><i class="icon-plus"></i></button>
+								</div>
 							</div>
 						</div>
 
-						<div class='detail-column half'>
-							<div class='detail-text'>
-								Minutes per hour:
+						<div class='col-6 pl-0'>
+							<div class='row'>
+								<div class='col-md-auto pr-0'>
+									<button type='button' class='btn btn-sm btn-danger' onclick='adjustInput(this, "#clock_minutes", -1);'><i class="icon-minus"></i></button>
+								</div>
+								<div class='col px-1'>
+									<input class='form-control form-control-sm static_input' min='1' id='clock_minutes' data='clock' fc-index='minutes' type='number'>
+								</div>
+								<div class='col-md-auto pl-0'>
+									<button type='button' class='btn btn-sm btn-success' onclick='adjustInput(this, "#clock_minutes", +1);'><i class="icon-plus"></i></button>
+								</div>
 							</div>
 						</div>
 
 					</div>
 
-					<div class='detail-row'>
-
-						<div class='detail-column half input_buttons'>
-							<button type='button' class='btn btn-sm btn-danger' onclick='adjustInput(this, -1);'><i class="icon-minus"></i></button>
-							<input class='form-control static_input' data='clock' fc-index='hours' type='number'>
-							<button type='button' class='btn btn-sm btn-success' onclick='adjustInput(this, +1);'><i class="icon-plus"></i></button>
+					<div class='row mt-2 do_render_clock'>
+						<div class='col-6'>
+							Offset hours:
 						</div>
-
-						<div class='detail-column half input_buttons'>
-							<button type='button' class='btn btn-sm btn-danger' onclick='adjustInput(this, -1);'><i class="icon-minus"></i></button>
-							<input class='form-control static_input' data='clock' fc-index='minutes' type='number'>
-							<button type='button' class='btn btn-sm btn-success' onclick='adjustInput(this, +1);'><i class="icon-plus"></i></button>
+						<div class='col-6 pl-0'>
+							Crowding:
 						</div>
-
 					</div>
 
-					<div class='detail-row'>
+					<div class='row mb-1 do_render_clock'>
 
-						<div class='detail-column half'>
-							<div class='detail-text'>
-								Offset hours:
+						<div class='col-6'>
+							<div class='row mb-1'>
+								<div class='col-md-auto pr-0'>
+									<button type='button' class='btn btn-sm btn-danger' onclick='adjustInput(this, "#clock_offset", -1);'><i class="icon-minus"></i></button>
+								</div>
+								<div class='col px-1'>
+									<input class='form-control form-control-sm static_input' id='clock_offset' data='clock' fc-index='offset' type='number'>
+								</div>
+								<div class='col-md-auto pl-0'>
+									<button type='button' class='btn btn-sm btn-success' onclick='adjustInput(this, "#clock_offset", +1);'><i class="icon-plus"></i></button>
+								</div>
 							</div>
 						</div>
 
-					</div>
-					<div class='detail-row'>
-
-						<div class='detail-column half input_buttons'>
-							<button type='button' class='btn btn-sm btn-danger' onclick='adjustInput(this, -1);'><i class="icon-minus"></i></button>
-							<input class='form-control static_input' data='clock' fc-index='offset' type='number'>
-							<button type='button' class='btn btn-sm btn-success' onclick='adjustInput(this, +1);'><i class="icon-plus"></i></button>
+						<div class='col-6 pl-0'>
+							<div class='row mb-1'>
+								<div class='col-md-auto pr-0'>
+									<button type='button' class='btn btn-sm btn-danger' onclick='adjustInput(this, "#clock_crowding", -1);'><i class="icon-minus"></i></button>
+								</div>
+								<div class='col px-1'>
+									<input class='form-control form-control-sm static_input' min='0' id='clock_crowding' data='clock' fc-index='crowding' type='number'>
+								</div>
+								<div class='col-md-auto pl-0'>
+									<button type='button' class='btn btn-sm btn-success' onclick='adjustInput(this, "#clock_crowding", +1);'><i class="icon-plus"></i></button>
+								</div>
+							</div>
 						</div>
 
 					</div>
@@ -404,9 +435,29 @@
 			<label for="collapsible_globalweek" class="lbl-toggle card-header lbl-text">Weekdays <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Weekdays' href='https://wiki.fantasy-calendar.com/index.php?title=Global_week' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body content">
 
+				<div class='row center-text hidden' id='overflow_explanation'>
+					This calendar has a custom week in some months or a leap day is adding a week-day, this will disable overflows between months, because it makes no sense for two weeks that do not go together to overflow into each other. Sorry.
+				</div>
+
+				<div class='row'>
+					<div class='col-md-auto pr-1 bold-text'>
+						Overflow weekdays:
+					</div>
+					<div class='col-md-auto pl-1'>
+						<label class="custom-control custom-checkbox">
+							<input type="checkbox" class="custom-control-input static_input" data='year_data' fc-index='overflow' id='month_overflow'>
+							<span class="custom-control-indicator"></span>
+						</label>
+					</div>
+				</div>
+
+				<div class='row px-3 my-3'>
+					<div class='separator'></div>
+				</div>
+
 				<div id='first_week_day_container'>
 
-					<div class='detail-text bold-text'>First week day:</div>
+					<div class='bold-text'>First week day:</div>
 
 					<select type='number' class='form-control static_input' id='first_day' data='year_data' fc-index='first_day'></select>
 
@@ -419,26 +470,6 @@
 				</div>
 
 				<div class='sortable list-group' id='global_week_sortable'></div>
-
-				<div class='row px-3 my-3'>
-					<div class='separator'></div>
-				</div>
-
-				<div class='row center-text hidden' id='overflow_explanation'>
-					This calendar has a custom week in some months or a leap day is adding a week-day, this will disable overflows between months, because it makes no sense for two weeks that do not go together to overflow into each other. Sorry.
-				</div>
-
-				<div class='row'>
-					<div class='col-7 pr-1 bold-text'>
-						Overflow month days:
-					</div>
-					<div class='col-5 pl-1'>
-						<label class="custom-control custom-checkbox">
-							<input type="checkbox" class="custom-control-input static_input" data='year_data' fc-index='overflow' id='month_overflow'>
-							<span class="custom-control-indicator"></span>
-						</label>
-					</div>
-				</div>
 
 			</div>
 

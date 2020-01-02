@@ -23,7 +23,8 @@
                 "link_scale":true,
                 "hours":24,
                 "minutes":60,
-                "offset":0
+                "offset":0,
+                "crowding":0,
             },
             "seasons":{
                 "data":[],

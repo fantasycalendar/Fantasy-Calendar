@@ -365,7 +365,7 @@ function eval_clock(){
 		hours		= static_data.clock.hours,
 		minutes		= static_data.clock.minutes,
 		offset		= static_data.clock.offset,
-		crowding	= 0,
+		crowding	= static_data.clock.crowding,
 		hour		= dynamic_data.hour,
 		minute		= dynamic_data.minute,
 		has_sun		= evaluated_static_data.processed_seasons,

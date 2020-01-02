@@ -3933,14 +3933,9 @@ function recalc_stats(){
 }
 
 
-function adjustInput(element, int){
-	if(int > 0){
-		var element = $(element).prev();
-	}else{
-		var element = $(element).next();
-	}
-	element.val((element.val()|0)+int).change();
-
+function adjustInput(element, target, int){
+	var target = $(target);
+	target.val((target.val()|0)+int).change();
 }
 
 function calendar_saving(){
@@ -4098,8 +4093,11 @@ function repopulate_event_category_lists(){
 
 function evaluate_clock_inputs(){
 
-	$('.clock_inputs :input, #clock_inputs :button').prop('disabled', !static_data.clock.enabled);
-	$('.clock_inputs').toggleClass('hidden', !static_data.clock.enabled);
+	$('.clock_inputs :input, .clock_inputs :button, .render_clock').prop('disabled', !static_data.clock.enabled);
+	$('.clock_inputs, .render_clock').toggleClass('hidden', !static_data.clock.enabled);
+
+	$('.do_render_clock :input, .do_render_clock :button').prop('disabled', !static_data.clock.render);
+	$('.do_render_clock').toggleClass('hidden', !static_data.clock.render);
 
 	$('.hour_input').each(function(){
 		$(this).prop('min', 0).prop('max', static_data.clock.hours).prop('disabled', !static_data.clock.enabled).toggleClass('hidden', !static_data.clock.enabled);
