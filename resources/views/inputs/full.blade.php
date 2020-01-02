@@ -514,9 +514,9 @@
 		<div class='wrap-collapsible card'>
 			<input id="collapsible_leapdays" class="toggle" type="checkbox">
 			<label for="collapsible_leapdays" class="lbl-toggle card-header lbl-text">Leap days <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Leap Days' href='https://wiki.fantasy-calendar.com/index.php?title=Leap_days' class="wiki protip"><i class="icon-question-sign"></i></a></label>
-			<div class="collapsible-content card-body">
+			<div class="collapsible-content content card-body">
 
-				<div class='detail-row center-text' id='leap_day_explaination'>
+				<div class='row center-text' id='leap_day_explaination'>
 					You need to have at least one month in order to add a leap day.
 				</div>
 
@@ -565,23 +565,25 @@
 		<div class='wrap-collapsible card'>
 			<input id="collapsible_seasons" class="toggle" type="checkbox">
 			<label for="collapsible_seasons" class="lbl-toggle card-header lbl-text">Seasons<a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Seasons' href='https://wiki.fantasy-calendar.com/index.php?title=Seasons' class="wiki protip"><i class="icon-question-sign"></i></a></label>
-			<div class="collapsible-content card-body">
+			<div class="collapsible-content content card-body">
 
-				<div class='row m-1 p-1 bold-text'>
-					Season type:
+				<div class='row bold-text'>
+					<div class='col'>
+						Season type:
+					</div>
 				</div>
 
-				<div class='row mb-1 protip' data-pt-position="right" data-pt-title='This toggles between having seasons starting on specific dates, or having the seasons last an exact duration with the potential to overflow years.'>
-					<div class='col-4 p-0 text-right season_text dated'>
+				<div class='row mb-2 protip' data-pt-position="right" data-pt-title='This toggles between having seasons starting on specific dates, or having the seasons last an exact duration with the potential to overflow years.'>
+					<div class='col-md-auto pr-0 text-right season_text dated'>
 						Date Based
 					</div>
-					<div class='col-2 p-0'>
+					<div class='col-md-auto p-0'>
 						<label class="custom-control custom-checkbox">
 							<input type="checkbox" class="custom-control-input" id='periodic_seasons_checkbox'>
 							<span class="custom-control-indicator"></span>
 						</label>
 					</div>
-					<div class='col-4 p-0 season_text periodic'>
+					<div class='col-md-auto pl-0 season_text periodic'>
 						Length Based
 					</div>
 				</div>
@@ -591,20 +593,20 @@
 					<button type='button' class='btn btn-primary add col'><i class="fa fa-plus"></i></button>
 				</div>
 
-				<div class='detail-row sortable' id='season_sortable'></div>
+				<div class='row sortable' id='season_sortable'></div>
 
-				<div class='detail-row small-text' id='season_length_text'></div>
+				<div class='row my-1 small-text' id='season_length_text'></div>
 
-				<div class='detail-row season_offset_container'>
-					<div class='detail-row'>
+				<div class='season_offset_container'>
+					<div class='row mt-2'>
 						Season offset (days):
 					</div>
-					<div class='detail-row margin-below'>
+					<div class='row mb-2'>
 						<input class='form-control static_input' type='number' data='seasons.global_settings' fc-index='season_offset'/>
 					</div>
 				</div>
 
-				<div class='detail-row'>
+				<div class='row'>
 					<button type='button' class='btn btn-secondary full' id='create_season_events'>Create solstice and equinox events</button>
 					<i class='center-text full'>(requires clock enabled)</i>
 				</div>
