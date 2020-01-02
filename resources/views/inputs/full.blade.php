@@ -175,7 +175,7 @@
 
 						<div class='row my-2 clock_inputs'>
 
-							<div class='p-0 col-3'>Time:</div>
+							<div class='col-3'>Time:</div>
 
 							<div class='col-9'>
 
@@ -211,72 +211,95 @@
 				</div>
 
 
-				<div class='date_control'>
+				<div class='date_control container'>
 
-					<div class='detail-row'>
+					<div class='row my-2'>
 						<h4>Preview date:</h4>
 					</div>
 
-					<div class='detail-row'>
+					<div class='col-12 p-0'>
 
-						<div class='detail-column quarter' value='target'>
-							<div class='detail-text right-align full'>Year:</div>
+						<div class='row my-2'>
+
+							<div class='col-3'>Year:</div>
+
+							<div class='col-9' value='target'>
+								<div class='row'>
+									<div class='p-0 col-2'>
+										<button type='button' class='btn btn-danger sub_year' id='sub_target_year'><i class="icon-minus"></i></button>
+									</div>
+									<div class='p-0 col-8 pr-2'>
+										<input class='form-control year-input' id='target_year' type='number'>
+									</div>
+									<div class='p-0 col-2'>
+										<button type='button' class='btn btn-success add_year' id='add_target_year'><i class="icon-plus"></i></button>
+									</div>
+								</div>
+							</div>
 						</div>
-						<div class='detail-column threequarter input_buttons'>
-							<button type='button' class='btn btn-sm btn-danger sub_year' id='sub_target_year'><i class="icon-minus"></i></button>
-							<input class='form-control year-input' id='target_year' type='number'>
-							<button type='button' class='btn btn-sm btn-success add_year' id='add_target_year'><i class="icon-plus"></i></button>
+
+						<div class='row my-2'>
+
+							<div class='col-3'><div class='h-100 text-center d-inline'><span class='align-middle'>Month:</span></div></div>
+
+							<div class='col-9' value='target'>
+								<div class='row'>
+									<div class='p-0 col-2'>
+										<button type='button' class='btn btn-danger sub_timespan' id='sub_target_timespan'><i class="icon-minus"></i></button>
+									</div>
+									<div class='p-0 col-8 pr-2'>
+										<select class='form-control timespan-list inclusive date' id='target_timespan'></select>
+									</div>
+									<div class='p-0 col-2'>
+										<button type='button' class='btn btn-success add_timespan' id='add_target_timespan'><i class="icon-plus"></i></button>
+									</div>
+								</div>
+							</div>
+
 						</div>
+
+						<div class='row my-2'>
+
+							<div class='col-3'><div class='h-100 text-center d-inline'><span class='align-middle'>Day:</span></div></div>
+
+							<div class='col-9' value='target'>
+								<div class='row'>
+									<div class='p-0 col-2'>
+										<button type='button' class='btn btn-danger sub_day' id='sub_target_day'><i class="icon-minus"></i></button>
+									</div>
+									<div class='p-0 col-8 pr-2'>
+										<select class='form-control timespan-day-list inclusive date' id='target_day'></select>
+									</div>
+									<div class='p-0 col-2'>
+										<button type='button' class='btn btn-success add_day' id='add_target_day'><i class="icon-plus"></i></button>
+									</div>
+								</div>
+							</div>
+
+						</div>
+
 					</div>
 
-					<div class='detail-row'>
-
-
-						<div class='detail-column quarter'>
-							<div class='detail-text right-align full'>Month:</div>
-						</div>
-						<div class='detail-column threequarter input_buttons' value='target'>
-							<button type='button' class='btn btn-sm btn-danger sub_timespan' id='sub_target_timespan'><i class="icon-minus"></i></button>
-							<select class='form-control timespan-list inclusive date' id='target_timespan'></select>
-							<button type='button' class='btn btn-sm btn-success add_timespan' id='add_target_timespan'><i class="icon-plus"></i></button>
-						</div>
-
+					<div class='row my-2'>
+						<div class='btn btn-success full' id='go_to_preview_date'>Go To Preview date</div>
 					</div>
 
-					<div class='detail-row'>
-
-
-						<div class='detail-column quarter'>
-							<div class='detail-text right-align full'>Day:</div>
-						</div>
-						<div class='detail-column threequarter input_buttons' value='target'>
-							<button type='button' class='btn btn-sm btn-danger sub_day' id='sub_target_day'><i class="icon-minus"></i></button>
-							<select class='form-control timespan-day-list inclusive date' id='target_day'></select>
-							<button type='button' class='btn btn-sm btn-success add_day' id='add_target_day'><i class="icon-plus"></i></button>
-						</div>
-
-					</div>
-
-					<div class='detail-row'>
-						<div class='btn btn-success full' id='go_to_preview_date'>Preview date</div>
-					</div>
-
-					<div class='wrap-collapsible card mt-2 full'>
+					<div class='wrap-collapsible card p-0 full'>
 						<input id="collapsible_add_units" class="toggle" type="checkbox">
 						<label for="collapsible_add_units" class="lbl-toggle card-header small-lbl-text center-text">Add or subtract fixed units to calendar</label>
-						<div class="collapsible-content card-body">
+						<div class="collapsible-content container card-body">
 
 							<div class='row mb-2'>
 
-								<div class='col px-1'>
+								<div class='col'>
 									<input type='number' class="form-control form-control-sm full" id='unit_years' placeholder="Years">
 								</div>
 
-								<div class='col px-1'>
+								<div class='col'>
 									<input type='number' class="form-control form-control-sm full" id='unit_months' placeholder="Months">
 								</div>
 
-								<div class='col px-1'>
+								<div class='col'>
 									<input type='number' class="form-control form-control-sm full" id='unit_days' placeholder="Days">
 								</div>
 
@@ -284,11 +307,11 @@
 
 							<div class='row'>
 
-								<div class='col px-1'>
+								<div class='col'>
 									<button type="button" step="1.0" class="btn btn-primary btn-sm full" id='current_date_btn'>To current date</button>
 								</div>
 
-								<div class='col px-1'>
+								<div class='col'>
 									<button type="button" step="1.0" class="btn btn-secondary btn-sm full" id='preview_date_btn'>To preview date</button>
 								</div>
 
