@@ -247,7 +247,6 @@ var edit_event_ui = {
 				var height = item.css("height");
 				container.rootGroup.placeholder.css('height', height);
 				$('#remove_dropped').removeClass('hidden');
-
 			},
 			onDrop: function (item, container, _super, event) {
 				item.removeClass(container.group.options.draggedClass).removeAttr("style");
@@ -265,9 +264,9 @@ var edit_event_ui = {
 			edit_event_ui.event_occurrences_container.toggleClass('hidden', edit_event_ui.event_conditions_container.length == 0);
 		})
 
-		$('#remove_dropped').mouseover(function(){
+		$('#remove_dropped').mouseover(function(e){
 			edit_event_ui.delete_droppable = true;
-		}).mouseout(function(){
+		}).mouseout(function(e){
 			edit_event_ui.delete_droppable = false;
 		})
 

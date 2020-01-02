@@ -104,7 +104,7 @@
 
 					</div>
 					<div class='row my-2'>
-						<button type='button' id='remove_dropped' class='btn btn-danger full hidden'>DROP TO REMOVE</button>
+						<button type='button' id='remove_dropped' class='btn btn-danger full hidden'>DROP ITEM HERE TO REMOVE</button>
 					</div>
 
 					<div class='event_occurrences hidden container p-0'>
