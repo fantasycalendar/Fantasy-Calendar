@@ -34,7 +34,7 @@
 	</div>
 </div>
 
-<div id="event_edit_background" class='clickable_background hidden'>
+<div id="event_edit_background" class='clickable_background'>
 	<div class='event-basic-container'>
 		<div class='event-basic-wrapper'>
 			<form id="event-form" class="event-wrapper container" action="post">
@@ -161,7 +161,7 @@
 									 Limit for
 								</div>
 								<div class='col-4 p-0'>
-									 <input type='number' min='1' value='1' class='form-control form-control-sm' id='limited_repeat_num' name='limited_repeat_num'>
+									 <input type='number' min='1' value='1' class='form-control form-control-sm' id='limited_repeat_num' name='limited_repeat_num' disabled>
 								</div>
 								<div class='col-md-auto pl-1 pr-0'>
 									 days.
@@ -187,7 +187,7 @@
 									 Lasts for
 								</div>
 								<div class='col-4 p-0'>
-									 <input type='number' min='1' value='1' class='form-control form-control-sm' id='duration' name='duration'>
+									 <input type='number' min='1' value='1' class='form-control form-control-sm' id='duration' name='duration' disabled>
 								</div>
 								<div class='col-md-auto pl-1 pr-0'>
 									 days.
@@ -209,30 +209,38 @@
 					</div>
 
 					<div class='row'>
-						<h5 class='event-form-heading'>Category:</h5>
-						<select class="form-control event-category-list" id="event_categories" name='event_categories' placeholder='Event Category'>
+						<div class='col-md-auto pl-0 pr-1'>
+							<h5 class='event-form-heading'>Category:</h5>
+						</div>
+						<div class='col pl-0 pl-1'>
+							<select class="form-control event-category-list" id="event_categories" name='event_categories' placeholder='Event Category'>
 
-						</select>
+							</select>
+						</div>
 					</div>
 
 					<div class='row'>
 						<h5 class='event-form-heading full'>Settings:</h5>
+					</div>
 
-						<div class='row'>
-							<div class='col full'>
-								<label class='form-control checkbox'>
-									<input type='checkbox' id='event_hide_full' name='event_hide_full'> Hide ENTIRELY (useful for event-based-events)
-								</label>
-							</div>
+					<div class='row'>
+						<div class='col p-0'>
+							<label class='form-control checkbox'>
+								<input type='checkbox' id='event_hide_full' name='event_hide_full'> Hide ENTIRELY (useful for event-based-events)
+							</label>
 						</div>
+					</div>
 
-						<div class='col half'>
+					<div class='row'>
+						<div class='col p-0'>
 							<label class='form-control checkbox'>
 								<input type='checkbox' id='event_hide_players' name='event_hide_players'> Hide from players
 							</label>
 						</div>
+					</div>
 
-						<div class='col half'>
+					<div class='row'>
+						<div class='col p-0'>
 							<label class='form-control checkbox'>
 								<input type='checkbox' id='event_dontprint_checkbox' name='event_dontprint_checkbox'> Do not print
 							</label>
@@ -240,7 +248,7 @@
 					</div>
 
 					<div class='row'>
-						<div class='col half'>
+						<div class='col p-0'>
 							<h5 class='event-form-heading'>Color:</h5>
 							<select id="color_style" name='color_style' class='form-control event-text-input color_display' key='color_display'>
 								<option>Dark-Solid</option>
@@ -261,7 +269,7 @@
 							</select>
 						</div>
 
-						<div class='col half'>
+						<div class='col p-0'>
 							<h5 class='event-form-heading'>Display:</h5>
 							<select id="text_style" name='text_style' class='form-control event-text-input text_display'>
 								<option value="text">Just text</option>
@@ -271,20 +279,24 @@
 						</div>
 					</div>
 
-					<div class='row'>
-						<div class='col full'>
-							Event look: <div class='half event-text-output event'>Event name</div>
+					<div class='row mt-3'>
+						<div class='col-4 p-0'>
+							Event look: <div class='event-text-output event'>Event name</div>
 						</div>
 					</div>
 
 					<div class='row'>
-						<div class='col full'>
+						<div class='col p-0'>
 							<div id='event_messagebox'></div>
 						</div>
 					</div>
 
-					<div class='btn btn-lg btn-primary btn-block' id='btn_event_save'>Save</div>
-					<div class='btn btn-sm btn-danger btn-block' id='btn_event_delete'>Delete</div>
+					<div class='row my-1'>
+						<div class='btn btn-lg btn-primary btn-block' id='btn_event_save'>Save</div>
+					</div>
+					<div class='row my-1'>
+						<div class='btn btn-sm btn-danger btn-block' id='btn_event_delete'>Delete</div>
+					</div>
 				</div>
 			</form>
 		</div>
