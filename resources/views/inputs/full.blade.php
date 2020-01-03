@@ -151,6 +151,7 @@
                                 </div>
 
                                 <input class='form-control form-control-sm text-right' type='number' id='current_hour'>
+                                <span class="px-1">:</span>
                                 <input class='form-control form-control-sm' type='number' id='current_minute'>
 
                                 <div class='input-group-append'>
