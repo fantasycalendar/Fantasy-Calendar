@@ -213,23 +213,6 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     display: none;
 }
 
-.detail-column{
-    display: inline-flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    flex-grow: 1;
-    padding: .25rem;
-}
-
-.detail-grow{
-    flex: 1 0 auto;
-}
-.detail-shrink{
-    flex: 0 1 auto;
-}
-
-
 .slider_percentage{
     margin:5px 10px;
     width: calc(100% - 20px);
@@ -239,41 +222,6 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     width:40% !important;
 }
 
-.detail-row, .detail-select-container{
-    display: inline-flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    margin-bottom:5px;
-    flex: 0 1 auto;
-}
-
-.detail-row.no-margin{
-    margin-bottom: 0;
-}
-
-.detail-label{
-    margin-top:0.125em;
-    font-size:1.25em;
-    flex: 1 0 auto;
-}
-
-.detail-select{
-    line-height: 28px;
-    flex: 1 1 auto;
-}
-
-.detail-text{
-    line-height: 28px;
-    margin-right:1%;
-}
-
-.detail-text.right-align{
-    text-align: right;
-}
-
 .half.input_buttons select, .half.input_buttons input{
     width:61%;
 }
@@ -281,27 +229,6 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
 .input_buttons i{
     position:relative;
     top:0.05em;
-}
-
-.sortable-container .detail-column input, .sortable-container .detail-row input{
-    order:2;
-}
-
-.sortable-container .detail-column input[type="text"], .sortable-container .detail-row input[type="text"]{
-    padding:3px;
-}
-
-.sortable-container .detail-column input[type="number"], .sortable-container .detail-row input[type="number"]{
-    padding:3px;
-}
-
-.sortable-container .detail-column input::placeholder, .sortable-container .detail-row input::placeholder{
-    font-size:0.7em;
-}
-
-.sortable-container .detail-column input[type="checkbox"], .sortable-container .detail-row input[type="checkbox"]{
-    width:18px;
-    text-align: left;
 }
 
 .sortable-container option:disabled {
@@ -565,10 +492,6 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
         flex-grow: 0;
         padding: 0;
     }
-}
-
-.wrap-collapsible.detail-row{
-    width:100%;
 }
 
 .wrap-collapsible > input[type='checkbox']{

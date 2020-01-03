@@ -1912,7 +1912,14 @@ function set_up_edit_inputs(){
 				evaluate_clock_inputs();
 			}
 
-			do_error_check(type[0], refresh);
+			console.log(target.attr('refresh'))
+
+			if(target.attr('refresh') == "clock"){
+				eval_clock();
+			}else{
+				do_error_check(type[0], refresh);
+			}
+
 
 		}
 
