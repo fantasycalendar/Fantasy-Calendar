@@ -343,7 +343,7 @@ function fix_date(){
 
 function repopulate_location_select_list(){
 
-	var is_edit = location_select.closest('.wrap-collapsible').find('.form-inline.locations').length > 0;
+	var is_edit = location_select.closest('.wrap-collapsible').find('.add_inputs.locations').length > 0;
 
 	location_select.closest('.wrap-collapsible').toggleClass('hidden', !is_edit);
 

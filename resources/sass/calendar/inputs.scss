@@ -321,80 +321,15 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     cursor: move;
 }
 
-.form-inline{
+.add_inputs{
     width:100%;
     margin:5px 0 10px 0;
-}
-
-.form-inline .name{
-    order: 1;
-    margin-right:1%;
-    flex-grow: 1;
-}
-.form-inline .type{
-    order: 2;
-    margin-right:1%;
-}
-.form-inline .add{
-    order: 3;
-}
-
-.form-inline.timespan .name {
-    margin-right: 0;
-    margin-bottom: 0.25rem;
-}
-
-.form-inline.timespan .type {
-    flex-grow: 1;
-}
-
-.form-inline.leap .name{
-    order: 1;
-    flex-grow: 2;
-    margin-right: 0;
-}
-
-.form-inline.leap .type{
-    order: 2;
-    margin-right:1%;
-    flex-grow: 2;
-}
-.form-inline.leap .add{
-    order: 3;
-}
-
-.form-inline.moon .add{
-    order: 2;
-}
-
-.form-inline.moon .cycle{
-    order: 3;
-    width:49.5%;
-    margin-right:1%;
-    margin-top:1%;
-}
-
-.form-inline.moon .shift{
-    order: 3;
-    width:49.5%;
-    margin-top:1%;
 }
 
 .moon_inputs .moon_color{
     width:0;
     order:2;
     flex:2 1 auto;
-}
-
-
-.form-inline.seasons .name{
-    order: 1;
-    margin-right:1%;
-    flex-grow: 1;
-}
-
-.form-inline.seasons .add{
-    order: 2;
 }
 
 #location_select{
@@ -404,61 +339,6 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
 
 #copy_location_data{
     margin-bottom:10px;
-}
-
-
-.form-inline.locations .name{
-    order: 1;
-    margin-right:1%;
-    flex-grow: 1;
-}
-
-.form-inline.locations .add{
-    order: 2;
-}
-
-
-.form-inline.cycle .name{
-    order: 1;
-    width: 100%;
-}
-
-.form-inline.cycle .add{
-    order: 2;
-    width: 99%;
-    margin-top:1%;
-}
-
-
-.form-inline.global_week .name{
-    order:2;
-    margin-right:1%;
-    flex-grow: 1;
-}
-
-.form-inline.eras .name, .form-inline.event_categories .name, .form-inline.events .name{
-    order:1;
-    width:79%;
-    margin-right:1%;
-}
-
-
-.form-inline .setting{
-    border-radius: 0;
-    margin-bottom:-2px !important;
-}
-
-.form-inline .setting.first{
-    border-radius: 5px 5px 0 0;
-}
-
-.form-inline .setting.last{
-    border-radius: 0 0 5px 5px;
-    margin-bottom:1em !important;
-}
-
-.form-inline label{
-    display:block !important;
 }
 
 .view_type {

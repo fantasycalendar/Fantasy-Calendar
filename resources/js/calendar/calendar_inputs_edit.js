@@ -270,14 +270,14 @@ function set_up_edit_inputs(){
 
 	/* ------------------- Layout callbacks ------------------- */
 
-	$('.form-inline').keyup(function(e){
+	$('.add_inputs').keyup(function(e){
 		if (e.keyCode == 13) {
 			$(this).find('.add').click();
 		}
 	});
 
 
-	$('.form-inline.global_week .add').click(function(){
+	$('.add_inputs.global_week .add').click(function(){
 		var name = $(this).prev();
 		var id = global_week_sortable.children().length;
 		var name_val = name.val() == "" ? `Weekday ${id+1}` : name.val();
@@ -289,7 +289,7 @@ function set_up_edit_inputs(){
 		set_up_view_values();
 	});
 
-	$('.form-inline.timespan .add').click(function(){
+	$('.add_inputs.timespan .add').click(function(){
 		var name = $(this).prev().prev();
 		var type = $(this).prev();
 		var id = timespan_sortable.children().length;
@@ -313,10 +313,10 @@ function set_up_edit_inputs(){
 		name.val("");
 		set_up_view_values();
 		$('#leap_day_explaination').prop('disabled', static_data.year_data.timespans.length == 0).toggleClass('hidden', static_data.year_data.timespans.length > 0);
-		$('.form-inline.leap input, .form-inline.leap select, .form-inline.leap button').prop('disabled', static_data.year_data.timespans.length == 0);
+		$('.add_inputs.leap input, .add_inputs.leap select, .add_inputs.leap button').prop('disabled', static_data.year_data.timespans.length == 0);
 	});
 
-	$('.form-inline.leap .add').click(function(){
+	$('.add_inputs.leap .add').click(function(){
 		var name = $(this).prev().prev();
 		var type = $(this).prev();
 		var id = leap_day_list.children().length;
@@ -361,7 +361,7 @@ function set_up_edit_inputs(){
 		}
 	});
 
-	$('.form-inline.moon .add').click(function(){
+	$('.add_inputs.moon .add').click(function(){
 		var name = $(this).prev();
 		var cycle = $(this).next();
 		var shift = $(this).next().next();
@@ -463,7 +463,7 @@ function set_up_edit_inputs(){
 
 	});
 
-	$('.form-inline.seasons .add').click(function(){
+	$('.add_inputs.seasons .add').click(function(){
 
 		var fract_year_len = fract_year_length(static_data);
 
@@ -568,7 +568,7 @@ function set_up_edit_inputs(){
 		});
 	})
 
-	$('.form-inline.locations .add').click(function(){
+	$('.add_inputs.locations .add').click(function(){
 
 		var name = $(this).prev();
 		var id = location_list.children().length;
@@ -809,7 +809,7 @@ function set_up_edit_inputs(){
 	});
 
 
-	$('.form-inline.cycle .add').click(function(){
+	$('.add_inputs.cycle .add').click(function(){
 
 		var id = cycle_sortable.children().length;
 		var stats = {
@@ -835,7 +835,7 @@ function set_up_edit_inputs(){
 	});
 
 
-	$('.form-inline.eras .add').click(function(){
+	$('.add_inputs.eras .add').click(function(){
 
 		var id = era_list.children().length;
 
@@ -877,7 +877,7 @@ function set_up_edit_inputs(){
 	});
 
 
-	$('.form-inline.event_categories .add').click(function(){
+	$('.add_inputs.event_categories .add').click(function(){
 
 		var name = $(this).prev();
 
@@ -916,7 +916,7 @@ function set_up_edit_inputs(){
 	});
 
 
-	$('.form-inline.events .add').click(function(){
+	$('.add_inputs.events .add').click(function(){
 		var name = $(this).prev();
 
 		var name_val = name.val() == "" ? `New Event` : name.val();
@@ -1225,13 +1225,13 @@ function set_up_edit_inputs(){
 
 			static_data.moons[index].granularity = get_moon_granularity(cycle);
 
-			$(this).closest('.sortable-container').find('.custom_phase_text').text(`This moon has ${value.split(',').length} phases, with a granularity of ${static_data.moons[index].granularity}.`);
+			$(this).closest('.sortable-container').find('.custom_phase_text').text(`This moon has ${value.split(',').length} phases, with a granularity of ${static_data.moons[index].granularity} moon sprites.`);
 
 			do_error_check();
 
 		}
 
-		$(this).toggleClass('invalid', invalid).attr('error_msg', invalid ? `${static_data.moons[index].name} has an invalid custom cycle. 31 is the highest possible number.` : '');
+		$(this).toggleClass('invalid', invalid).attr('error_msg', invalid ? `${static_data.moons[index].name} has an invalid custom cycle. 39 is the highest possible number.` : '');
 
 	});
 
@@ -2255,11 +2255,11 @@ function add_moon_to_list(parent, key, data){
 					element.push(`<div class='row mb-1'>`);
 
 						element.push("<div class='col-7 pl-0 pr-1'>");
-							element.push(`<input type='number' min='1' step="any" class='form-control dynamic_input cycle' data='moons.${key}' fc-index='cycle' value='${!data.custom_phase ? data.cycle : ''}' />`);
+							element.push(`<input type='number' min='1' step="any" class='form-control dynamic_input cycle protip' data-pt-position="bottom" data-pt-title='How many days it takes for this moon go from Full Moon to the next Full Moon.' data='moons.${key}' fc-index='cycle' value='${!data.custom_phase ? data.cycle : ''}' />`);
 						element.push("</div>");
 
 						element.push("<div class='col-5 pl-1 pr-0'>");
-							element.push(`<input type='number' step="any" class='form-control dynamic_input shift' data='moons.${key}' fc-index='shift' value='${!data.custom_phase ? data.shift : ''}' />`);
+							element.push(`<input type='number' step="any" class='form-control dynamic_input shift protip' data-pt-position="bottom" data-pt-title='This is how many days the cycle is offset by.' data='moons.${key}' fc-index='shift' value='${!data.custom_phase ? data.shift : ''}' />`);
 						element.push("</div>");
 
 					element.push("</div>");
@@ -2284,7 +2284,7 @@ function add_moon_to_list(parent, key, data){
 
 					element.push("</div>");
 
-					element.push(`<div class='custom_phase_text italics-text small-text my-1'>${data.custom_phase ? `This moon has ${data.custom_cycle.split(',').length} phases, with a granularity of ${data.granularity}.` : ''}</div>`);
+					element.push(`<div class='custom_phase_text italics-text small-text my-1'>${data.custom_phase ? `This moon has ${data.custom_cycle.split(',').length} phases, with a granularity of ${data.granularity} moon sprites.` : ''}</div>`);
 
 				element.push("</div>");
 
@@ -4357,7 +4357,7 @@ function set_up_edit_values(){
 	}
 
 	$('#leap_day_explaination').prop('disabled', static_data.year_data.timespans.length == 0).toggleClass('hidden', static_data.year_data.timespans.length > 0);
-	$('.form-inline.leap input, .form-inline.leap select, .form-inline.leap button').prop('disabled', static_data.year_data.timespans.length == 0);
+	$('.add_inputs.leap input, .add_inputs.leap select, .add_inputs.leap button').prop('disabled', static_data.year_data.timespans.length == 0);
 
 	if(static_data.moons){
 		for(var i = 0; i < static_data.moons.length; i++){
