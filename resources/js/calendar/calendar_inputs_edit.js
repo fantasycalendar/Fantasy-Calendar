@@ -89,10 +89,14 @@ function set_up_edit_inputs(){
 	var first_switch = true;
 	view_type = 'owner';
 
-	$('input[name="view_type"]').change(function(){
+	$('.view-tabs .btn').click(function(){
 
-		view_type = $(this).val();
+		view_type = $(this).attr('data-view-type');
 		owner = true;
+
+		$('.view-tabs .btn-primary').removeClass('btn-primary').addClass('btn-secondary');
+
+		$(this).removeClass('btn-secondary').addClass('btn-primary');
 
 		switch(view_type){
 			case "owner":
@@ -2228,7 +2232,7 @@ function add_moon_to_list(parent, key, data){
 				element.push(`<div class='no_custom_phase_container ${data.custom_phase ? "hidden" : ""}'>`);
 
 					element.push(`<div class='row my-1'>`);
-									
+
 						element.push("<div class='col-7 pl-0 pr-0'>Cycle:</div>");
 
 						element.push("<div class='col-5 pl-0 pr-0'>Shift:</div>");
@@ -2236,11 +2240,11 @@ function add_moon_to_list(parent, key, data){
 					element.push("</div>");
 
 					element.push(`<div class='row mb-1'>`);
-									
+
 						element.push("<div class='col-7 pl-0 pr-1'>");
 							element.push(`<input type='number' min='1' step="any" class='form-control dynamic_input cycle' data='moons.${key}' fc-index='cycle' value='${!data.custom_phase ? data.cycle : ''}' />`);
 						element.push("</div>");
-									
+
 						element.push("<div class='col-5 pl-1 pr-0'>");
 							element.push(`<input type='number' step="any" class='form-control dynamic_input shift' data='moons.${key}' fc-index='shift' value='${!data.custom_phase ? data.shift : ''}' />`);
 						element.push("</div>");
@@ -2258,9 +2262,9 @@ function add_moon_to_list(parent, key, data){
 						element.push("<div class='input-group-prepend'>");
 							element.push("<button type='button' class='btn btn-sm btn-danger moon_shift_back'><</button>");
 						element.push("</div>");
-						
+
 						element.push(`<input type='text' class='form-control form-control-sm dynamic_input custom_cycle full' data='moons.${key}' fc-index='custom_cycle' value='${data.custom_phase ? data.custom_cycle : ''}' />`);
-						
+
 						element.push("<div class='input-group-append'>");
 							element.push("<button type='button' class='btn btn-sm btn-success moon_shift_forward'>></button>");
 						element.push("</div>");
@@ -2276,7 +2280,7 @@ function add_moon_to_list(parent, key, data){
 				element.push("</div>");
 
 				element.push(`<div class='row mt-1'>`);
-								
+
 					element.push("<div class='col-6 pl-0 pr-0'>Moon color:</div>");
 
 					element.push("<div class='col-6 pl-0 pr-0'>Shadow color:</div>");
@@ -2284,11 +2288,11 @@ function add_moon_to_list(parent, key, data){
 				element.push("</div>");
 
 				element.push(`<div class='row mb-1'>`);
-								
+
 					element.push("<div class='col-6 pl-0 pr-1'>");
 						element.push(`<input type='color' class='dynamic_input color' data='moons.${key}' fc-index='color'/>`);
 					element.push("</div>");
-								
+
 					element.push("<div class='col-6 pl-1 pr-0'>");
 						element.push(`<input type='color' class='dynamic_input shadow_color' data='moons.${key}' fc-index='shadow_color'/>`);
 					element.push("</div>");
@@ -2332,7 +2336,7 @@ function add_season_to_sortable(parent, key, data){
 		element.push("</div>");
 
 		element.push("<div class='detail-container container hidden'>");
-			
+
 			element.push(`<div class='col-12 mb-2'>`);
 
 				if(static_data.seasons.global_settings.periodic_seasons){
@@ -2340,7 +2344,7 @@ function add_season_to_sortable(parent, key, data){
 					element.push(`<div class='season-duration'>`);
 
 						element.push(`<div class='row mt-1'>`);
-										
+
 							element.push("<div class='col-6 pl-0 pr-0'>Duration:</div>");
 
 							element.push("<div class='col-6 pl-0 pr-0'>Peak duration:</div>");
@@ -2348,12 +2352,12 @@ function add_season_to_sortable(parent, key, data){
 						element.push("</div>");
 
 						element.push(`<div class='row mb-1'>`);
-										
+
 							element.push("<div class='col-6 pl-0 pr-1'>");
 								var transition_length = data.transition_length == '' || data.transition_length == undefined ? 90 : data.transition_length;
 								element.push(`<input type='number' step='any' class='form-control dynamic_input transition_length protip' data='seasons.data.${key}' fc-index='transition_length' min='1' value='${transition_length}' data-pt-position="right" data-pt-title='How many days until this season ends, and the next begins.'/>`);
 							element.push("</div>");
-										
+
 							element.push("<div class='col-6 pl-1 pr-0'>");
 								var duration = data.duration == '' || data.duration == undefined ? 0 : data.duration;
 								element.push(`<input type='number' step='any' class='form-control dynamic_input duration protip' data='seasons.data.${key}' fc-index='duration' min='0' value='${duration}' data-pt-position="right" data-pt-title='If the duration is the path up a mountain, the peak duration is a flat summit. This is how many days the season will pause before going down the other side of the mountain.'/>`);
@@ -2394,17 +2398,17 @@ function add_season_to_sortable(parent, key, data){
 				element.push("<div class='clock_inputs'>");
 
 					element.push(`<div class='row mt-2'>`);
-									
+
 						element.push("<div class='col-12 pl-0 pr-0'>Sunrise:</div>");
 
 					element.push("</div>");
 
 					element.push(`<div class='row mb-2'>`);
-									
+
 						element.push("<div class='col-6 pl-0 pr-1 clock-input'>");
 							element.push(`<input type='number' step="1.0" class='form-control full dynamic_input hour_input' clocktype='sunrise_hour' data='seasons.data.${key}.time.sunrise' fc-index='hour' value='${data.time.sunrise.hour}' />`);
 						element.push("</div>");
-									
+
 						element.push("<div class='col-6 pl-1 pr-0 clock-input'>");
 							element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunrise_minute' data='seasons.data.${key}.time.sunrise' fc-index='minute' value='${data.time.sunrise.minute}' />`);
 						element.push("</div>");
@@ -2412,17 +2416,17 @@ function add_season_to_sortable(parent, key, data){
 					element.push("</div>");
 
 					element.push(`<div class='row mt-2'>`);
-									
+
 						element.push("<div class='col-12 pl-0 pr-0'>Sunset:</div>");
 
 					element.push("</div>");
 
 					element.push(`<div class='row mb-2'>`);
-									
+
 						element.push("<div class='col-6 pl-0 pr-1 clock-input'>");
 							element.push(`<input type='number' step="1.0" class='form-control full dynamic_input hour_input' clocktype='sunset_hour' data='seasons.data.${key}.time.sunset' fc-index='hour' value='${data.time.sunset.hour}' />`);
 						element.push("</div>");
-									
+
 						element.push("<div class='col-6 pl-1 pr-0 clock-input'>");
 							element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunset_minute' data='seasons.data.${key}.time.sunset' fc-index='minute' value='${data.time.sunset.minute}' />`);
 						element.push("</div>");
@@ -2463,7 +2467,7 @@ function add_location_to_list(parent, key, data){
 		element.push("</div>");
 
 		element.push("<div class='detail-container container hidden'>");
-			
+
 			element.push(`<div class='col-12 mb-2'>`);
 
 				for(var i = 0; i < data.seasons.length; i++){
@@ -2548,17 +2552,17 @@ function add_location_to_list(parent, key, data){
 						element.push("<div class='clock_inputs'>");
 
 							element.push(`<div class='row mt-2'>`);
-											
+
 								element.push("<div class='col-12 pl-0 pr-0'>Sunrise:</div>");
 
 							element.push("</div>");
 
 							element.push(`<div class='row mb-2'>`);
-											
+
 								element.push("<div class='col-6 pl-0 pr-1 clock-input'>");
 									element.push(`<input type='number' step="1.0" class='form-control full dynamic_input hour_input' clocktype='sunrise_hour' data='seasons.locations.${key}.seasons.time.sunrise' fc-index='hour' value='${data.seasons[i].time.sunrise.hour}' />`);
 								element.push("</div>");
-											
+
 								element.push("<div class='col-6 pl-1 pr-0 clock-input'>");
 									element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunrise_minute' data='seasons.locations.${key}.seasons.time.sunrise' fc-index='minute' value='${data.seasons[i].time.sunrise.minute}' />`);
 								element.push("</div>");
@@ -2566,17 +2570,17 @@ function add_location_to_list(parent, key, data){
 							element.push("</div>");
 
 							element.push(`<div class='row mt-2'>`);
-											
+
 								element.push("<div class='col-12 pl-0 pr-0'>Sunset:</div>");
 
 							element.push("</div>");
 
 							element.push(`<div class='row mb-2'>`);
-											
+
 								element.push("<div class='col-6 pl-0 pr-1 clock-input'>");
 									element.push(`<input type='number' step="1.0" class='form-control full dynamic_input hour_input' clocktype='sunset_hour' data='seasons.locations.${key}.seasons.time.sunset' fc-index='hour' value='${data.seasons[i].time.sunset.hour}' />`);
 								element.push("</div>");
-											
+
 								element.push("<div class='col-6 pl-1 pr-0 clock-input'>");
 									element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunset_minute' data='seasons.locations.${key}.seasons.time.sunset' fc-index='minute' value='${data.seasons[i].time.sunset.minute}' />`);
 								element.push("</div>");
@@ -2603,17 +2607,17 @@ function add_location_to_list(parent, key, data){
 				element.push("<div class='clock_inputs'>");
 
 					element.push(`<div class='row mt-2'>`);
-									
+
 						element.push("<div class='col-12 pl-0 pr-0'>Timezone:</div>");
 
 					element.push("</div>");
 
 					element.push(`<div class='row mb-2'>`);
-									
+
 						element.push("<div class='col-6 pl-0 pr-1 clock-input'>");
 							element.push(`<input type='number' step="1.0" min='${static_data.clock.hours*-0.5}' max='${static_data.clock.hours*0.5}' class='form-control form-control full dynamic_input hour_input' data='seasons.locations.${key}.settings.timezone' clocktype='timezone_hour' fc-index='hour' value='${data.settings.timezone.hour}' />`);
 						element.push("</div>");
-									
+
 						element.push("<div class='col-6 pl-1 pr-0 clock-input'>");
 							element.push(`<input type='number' step="1.0" min='${static_data.clock.minutes*-0.5}' max='${static_data.clock.minutes*0.5}' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings.timezone' clocktype='timezone_minute' fc-index='minute' value='${data.settings.timezone.minute}' />`);
 						element.push("</div>");
@@ -3031,7 +3035,7 @@ function add_category_to_list(parent, key, data){
 						element.push("</select>");
 					element.push("</div>");
 				element.push("</div>");
-				
+
 				element.push("<div class='row mt-3'>");
 					element.push(`Event display:`);
 				element.push("</div>");
@@ -4318,7 +4322,7 @@ function set_up_edit_values(){
         	});
 
         }
-  
+
 	}
 
 	evaluate_clock_inputs();

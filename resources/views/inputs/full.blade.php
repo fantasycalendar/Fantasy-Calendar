@@ -15,31 +15,10 @@
 	@yield('label')
 
 	<div class='wrap-collapsible'>
-		<div class="row">
-			<label class='col-4 mb-1 pr-0'>
-				<div class="form-check form-check-inline form-control view_type">
-					<input type='radio' name='view_type' value='owner' checked>
-					<span>
-						Owner View
-					</span>
-				</div>
-			</label>
-			<label class='col-4 px-2 mb-1'>
-				<div class="form-check form-check-inline form-control view_type">
-					<input type='radio' name='view_type' value='player'>
-					<span>
-						Player View
-					</span>
-				</div>
-			</label>
-			<label class='col-4 mb-1 pl-0'>
-				<div class="form-check form-check-inline form-control view_type">
-					<input type='radio' name='view_type' value='weather'>
-					<span>
-						Climate view
-					</span>
-				</div>
-			</label>
+		<div class="view-tabs btn-group d-flex my-2 w-100">
+            <button type="button" data-view-type='owner' class="owner w-100 btn btn-sm btn-primary">Owner View</button>
+            <button type="button" data-view-type='player' class="player w-100 btn btn-sm btn-secondary">Player View</button>
+            <button type="button" data-view-type='weather' class="weather w-100 btn btn-sm btn-secondary">Climate view</button>
 		</div>
 	</div>
 
