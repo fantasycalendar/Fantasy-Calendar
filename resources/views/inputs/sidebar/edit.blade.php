@@ -24,7 +24,7 @@
     <div class='wrap-collapsible'>
         <div class='d-flex my-2 w-100'>
             <a href="{{ route('calendars.show', ['calendar'=> $calendar->hash ]) }}" class="btn w-100 btn-sm btn-info">
-                View Mode
+                View
             </a>
             <a href="export" target="_blank" class="btn w-100 btn-sm btn-primary mx-2">
                 Export
