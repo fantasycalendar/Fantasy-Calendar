@@ -209,21 +209,8 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     margin-left:5px;
 }
 
-.collapsed > .detail-container {
+.collapsed > .collapse-container {
     display: none;
-}
-
-.detail-container{
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    width:100%;
-    margin:5px 10px 0 10px;
 }
 
 .detail-column{

@@ -147,7 +147,7 @@
 							<div class='input-group'>
                                 <div class='input-group-prepend'>
                                     <button type='button' class='btn small-text btn-danger adjust_hour' val='-1'>1hr</button>
-                                    <button type='button' class='btn small-text btn-danger adjust_minute' val='-30'>30m</button>
+                                    <button type='button' class='btn small-text border-left btn-danger adjust_minute' val='-30'>30m</button>
                                 </div>
 
                                 <input class='form-control form-control-sm text-right' type='number' id='current_hour'>
@@ -156,7 +156,7 @@
 
                                 <div class='input-group-append'>
                                     <button type='button' class='btn small-text btn-success adjust_minute' val='30'>30m</button>
-                                    <button type='button' class='btn small-text btn-success adjust_hour' val='1'>1h</button>
+                                    <button type='button' class='btn small-text border-left btn-success adjust_hour' val='1'>1h</button>
                                 </div>
 							</div>
 						</div>

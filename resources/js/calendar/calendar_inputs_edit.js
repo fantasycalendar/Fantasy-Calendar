@@ -354,14 +354,10 @@ function set_up_edit_inputs(){
 
 
 	$(document).on('click', '.expand', function(){
-		if($(this).parent().parent().hasClass('collapsed')){
-			$('#calendar_container').addClass('container_collapsed');
-			$(this).parent().parent().removeClass('collapsed').addClass('expanded');
-			$(this).parent().parent().find('.detail-container').removeClass('hidden');
+		if($(this).closest('.sortable-container').hasClass('collapsed')){
+			$(this).closest('.sortable-container').removeClass('collapsed').addClass('expanded');
 		}else{
-			$('#calendar_container').removeClass('container_collapsed');
-			$(this).parent().parent().removeClass('expanded').addClass('collapsed');
-			$(this).parent().parent().find('.detail-container').addClass('hidden');
+			$(this).closest('.sortable-container').removeClass('expanded').addClass('collapsed');
 		}
 	});
 
@@ -954,7 +950,7 @@ function set_up_edit_inputs(){
 			}
 			removing = $(this).next();
 			$(this).parent().parent().find('.main-container').addClass('hidden');
-			$(this).parent().parent().find('.detail-container').addClass('hidden');
+			$(this).parent().parent().find('.collapse-container').addClass('hidden');
 			$(this).css('display', 'none');
 			$(this).prev().css('display', 'block');
 			$(this).next().css('display', 'block');
@@ -966,7 +962,7 @@ function set_up_edit_inputs(){
 
 	$(document).on('click', '.btn_cancel', function(){
 		$(this).parent().parent().find('.main-container').removeClass('hidden');
-		$(this).parent().parent().find('.detail-container').removeClass('hidden');
+		$(this).parent().parent().find('.collapse-container').removeClass('hidden');
 		$(this).css('display', 'none');
 		$(this).prev().prev().css('display', 'none');
 		$(this).prev().css('display', 'block');
@@ -1353,7 +1349,7 @@ function set_up_edit_inputs(){
 
 			var element = [];
 			for(i = 0; i < timespan.week.length; i++){
-				element.push(`<input type='text' class='detail-row form-control internal-list-name custom_week_day dynamic_input' data='year_data.timespans.${index}.week' fc-index='${i}' value='${timespan.week[i]}'/>`);
+				element.push(`<input type='text' class='row form-control internal-list-name custom_week_day dynamic_input' data='year_data.timespans.${index}.week' fc-index='${i}' value='${timespan.week[i]}'/>`);
 			}
 
 			week_day_list.append(element.join(""));
@@ -1971,7 +1967,7 @@ function add_timespan_to_sortable(parent, key, data){
 			element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
 		element.push("</div>");
 
-		element.push("<div class='detail-container container hidden'>");
+		element.push("<div class='collapse-container container'>");
 
 			element.push("<div class='col-12 mb-3'>");
 				element.push("<div class='row bold-text big-text italics-text'>");
@@ -2087,7 +2083,7 @@ function add_leap_day_to_list(parent, key, data){
 			element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
 		element.push("</div>");
 
-		element.push("<div class='detail-container container'>");
+		element.push("<div class='collapse-container container'>");
 
 			element.push("<div class='col-12 mb-3'>");
 
@@ -2098,7 +2094,7 @@ function add_leap_day_to_list(parent, key, data){
 				element.push("</div>");
 
 				element.push("<div class='row my-2'>");
-						element.push("<div class='detail-text bold-text'>Leap day settings</div>");
+						element.push("<div class='bold-text'>Leap day settings</div>");
 				element.push("</div>");
 
 				element.push("<div class='date_control'>");
@@ -2216,7 +2212,7 @@ function add_moon_to_list(parent, key, data){
 			element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
 		element.push("</div>");
 
-		element.push("<div class='detail-container container'>");
+		element.push("<div class='collapse-container container'>");
 
 			element.push("<div class='col-12 mb-3'>");
 
@@ -2338,9 +2334,7 @@ function add_season_to_sortable(parent, key, data){
 			element.push("<div class='btn_cancel btn btn-danger icon-remove'></div>");
 			element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
 		element.push("</div>");
-
-		element.push("<div class='detail-container container hidden'>");
-
+		element.push("<div class='collapse-container container'>");
 			element.push(`<div class='col-12 mb-2'>`);
 
 				if(static_data.seasons.global_settings.periodic_seasons){
@@ -2376,20 +2370,16 @@ function add_season_to_sortable(parent, key, data){
 					element.push(`<div class='date_control season-date full'>`);
 
 						element.push("<div class='row my-1'>");
-							element.push("<div class='col-5'>");
-								element.push("<div class='detail-text'>Timespan:</div>");
-							element.push("</div>");
-							element.push("<div class='col'>");
+							element.push("<div class='col-5 px-0'>Timespan:</div>");
+							element.push("<div class='col px-0'>");
 								element.push(`<select type='number' class='date form-control form-control timespan-list dynamic_input' data='seasons.data.${key}' fc-index='timespan'>`);
 								element.push("</select>");
 							element.push("</div>");
 						element.push("</div>");
 
 						element.push("<div class='row my-1'>");
-							element.push("<div class='col-5'>");
-								element.push("<div class='detail-text'>Day:</div>");
-							element.push("</div>");
-							element.push("<div class='col'>");
+							element.push("<div class='col-5 px-0'>Day:</div>");
+							element.push("<div class='col px-0'>");
 								element.push(`<select type='number' class='date form-control form-control timespan-day-list dynamic_input' data='seasons.data.${key}' fc-index='day'>`);
 								element.push("</select>");
 							element.push("</div>");
@@ -2469,16 +2459,16 @@ function add_location_to_list(parent, key, data){
 			element.push("<div class='btn_cancel btn btn-danger icon-remove'></div>");
 			element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
 		element.push("</div>");
-
-		element.push("<div class='detail-container container hidden'>");
-
+		element.push("<div class='collapse-container container'>");
 			element.push(`<div class='col-12 mb-2'>`);
 
 				for(var i = 0; i < data.seasons.length; i++){
 
+				var name = data.seasons[i].custom_name ? data.seasons[i].name : static_data.seasons.data[i].name;
+
 				element.push(`<div class='row m-0 my-2 cycle-container wrap-collapsible location_season' fc-index='${i}'>`);
 					element.push(`<input id='collapsible_seasons_${key}_${i}' class='toggle' type='checkbox'>`);
-					element.push(`<label for='collapsible_seasons_${key}_${i}' class='lbl-toggle'>Season name: ${static_data.seasons.data[i].name}</label>`);
+					element.push(`<label for='collapsible_seasons_${key}_${i}' class='lbl-toggle'>Season name: ${name}</label>`);
 
 					element.push("<div class='col-12 pt-2 collapsible-content'>");
 
@@ -2489,7 +2479,6 @@ function add_location_to_list(parent, key, data){
 						element.push("<div class='row mb-2'>");
 
 							element.push("<div class='col-6 p-0 mr-2'>");
-								var name = data.seasons[i].custom_name ? data.seasons[i].name : static_data.seasons.data[i].name;
 								element.push(`<input type='text' class='form-control form-control-sm full dynamic_input' data='seasons.locations.${key}.seasons.${i}' fc-index='name' value='${name}' ${!data.seasons[i].custom_name ? "disabled" : ""}>`);
 							element.push("</div>");
 
@@ -2701,7 +2690,7 @@ function add_cycle_to_sortable(parent, key, data){
 		element.push("<div class='main-container'>");
 			element.push("<div class='handle icon-reorder'></div>");
 			element.push("<div class='expand icon-collapse'></div>");
-			element.push(`<div class='detail-text'>Cycle #${(key+1)} - Using {{${(key+1)}}}</div>`);
+			element.push(`<div class='cycle-text'>Cycle #${(key+1)} - Using {{${(key+1)}}}</div>`);
 			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
@@ -2711,7 +2700,7 @@ function add_cycle_to_sortable(parent, key, data){
 			element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
 		element.push("</div>");
 
-		element.push("<div class='detail-container container'>");
+		element.push("<div class='collapse-container container'>");
 
 			element.push("<div class='col-12 mb-3'>");
 
@@ -2795,7 +2784,7 @@ function add_era_to_list(parent, key, data){
 			element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
 		element.push("</div>");
 
-		element.push("<div class='detail-container container'>");
+		element.push("<div class='collapse-container container'>");
 
 			element.push("<div class='col-12 mb-3'>");
 
@@ -2940,7 +2929,7 @@ function add_category_to_list(parent, key, data){
 			element.push("<div class='btn_cancel btn btn-danger icon-remove'></div>");
 			element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
 		element.push("</div>");
-		element.push("<div class='detail-container'>");
+		element.push("<div class='collapse-container container'>");
 
 			element.push("<div class='col-12 mb-3'>");
 
@@ -3564,21 +3553,30 @@ function reindex_location_list(){
 
 		});
 
-		if($(this).find('.location_season').length != static_data.seasons.data.length){
+		var old_season_num = $(this).find('.location_season').length;
+		var new_season_num = static_data.seasons.data.length;
 
-			for(var j = $(this).find('.location_season').length; j < static_data.seasons.data.length; j++){
+		if(old_season_num != new_season_num){
 
-				data.seasons[j] = {
-					"custom_name": false,
-					"time": static_data.seasons.data[i].time,
-					"weather":{
-						"temp_low": 0,
-						"temp_high": 0,
-						"precipitation": 0,
-						"precipitation_intensity": 0
+			if(new_season_num > old_season_num){
+
+				for(var j = $(this).find('.location_season').length; j < static_data.seasons.data.length; j++){
+
+					data.seasons[j] = {
+						"custom_name": false,
+						"time": static_data.seasons.data[i].time,
+						"weather":{
+							"temp_low": 0,
+							"temp_high": 0,
+							"precipitation": 0,
+							"precipitation_intensity": 0
+						}
 					}
 				}
 
+			}else{
+
+				data.seasons.splice(static_data.seasons.data.length, $(this).find('.location_season').length);
 
 			}
 
@@ -3628,7 +3626,7 @@ function reindex_cycle_sortable(){
 			$(this).attr('data', $(this).attr('data').replace(/[0-9]+/g, i));
 		});
 		$(this).attr('key', i);
-		$(this).find('.main-container').find('.detail-text').text(`Cycle #${i+1} - Using {{${i+1}}}`)
+		$(this).find('.main-container').find('.cycle-text').text(`Cycle #${i+1} - Using {{${i+1}}}`)
 
 		static_data.cycles.data[i] = {
 			'length': ($(this).find('.length').val()|0),
