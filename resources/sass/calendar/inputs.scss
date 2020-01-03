@@ -614,6 +614,10 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     box-shadow: none !important;
 }
 
+.disabled{
+    opacity:0.5;
+}
+
 /* ------------------ Event forms ----------------- */
 
 #event_comment_mastercontainer .trumbowyg{
