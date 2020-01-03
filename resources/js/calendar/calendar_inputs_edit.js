@@ -256,7 +256,7 @@ function set_up_edit_inputs(){
 
 	$('#collapsible_clock').change(function(){
 		if($(this).is(':checked')){
-			$('#clock').prependTo($(this).parent().children('.collapsible-content'));
+			$('#clock').appendTo($(this).parent().children('.collapsible-content'));
 		}else{
 			$('#clock').prependTo($('#collapsible_date').parent().children('.collapsible-content'));
 		}
@@ -4242,7 +4242,7 @@ function set_up_edit_values(){
 	}
 
 	if($('#collapsible_clock').is(':checked')){
-		$('#clock').prependTo($('#collapsible_clock').parent().children('.collapsible-content'));
+		$('#clock').appendTo($('#collapsible_clock').parent().children('.collapsible-content'));
 	}else{
 		$('#clock').prependTo($('#collapsible_date').parent().children('.collapsible-content'));
 	}
