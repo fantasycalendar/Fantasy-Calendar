@@ -129,6 +129,10 @@ function set_up_edit_inputs(){
 
 		}
 
+        if(isMobile() && deviceType() == "Mobile Phone") {
+            toggle_sidebar();
+        }
+
 	});
 
 	global_week_sortable.sortable({
