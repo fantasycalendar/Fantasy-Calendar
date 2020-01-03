@@ -282,16 +282,16 @@
 			<div class="collapsible-content card-body">
 
 				<div class='row'>
-					<div class='col-md-auto pr-0'>Enable clock:</div>
-					<div class='col-md-auto pl-1'>
-						<label class="custom-control custom-checkbox">
+					<div class='col-6'>Enable clock:</div>
+					<div class='col-6'>
+						<label class="custom-control custom-checkbox right-text">
 							<input type="checkbox" class="custom-control-input static_input" id='enable_clock' data='clock' fc-index='enabled'>
 							<span class="custom-control-indicator"></span>
 						</label>
 					</div>
-					<div class='render_clock col-md-auto pr-0'>Render clock:</div>
-					<div class='render_clock col-md-auto pl-1'>
-						<label class="custom-control custom-checkbox">
+					<div class='render_clock col-6'>Render clock:</div>
+					<div class='render_clock col-6'>
+						<label class="custom-control custom-checkbox right-text">
 							<input type="checkbox" class="custom-control-input static_input" id='render_clock' data='clock' fc-index='render'>
 							<span class="custom-control-indicator"></span>
 						</label>
@@ -311,32 +311,24 @@
 
 					<div class='row mb-2'>
 
-						<div class='col-6'>
-							<div class='row'>
-								<div class='col-md-auto pr-0'>
-									<button type='button' class='btn btn-sm btn-danger' onclick='adjustInput(this, "#clock_hours", -1);'><i class="icon-minus"></i></button>
-								</div>
-								<div class='col px-1'>
-									<input class='form-control form-control-sm static_input' min='1' id='clock_hours' data='clock' fc-index='hours' type='number'>
-								</div>
-								<div class='col-md-auto pl-0'>
-									<button type='button' class='btn btn-sm btn-success' onclick='adjustInput(this, "#clock_hours", +1);'><i class="icon-plus"></i></button>
-								</div>
-							</div>
+						<div class='col-6 input-group'>
+                            <div class='input-group-prepend'>
+                                <button type='button' class='btn btn-sm btn-danger' onclick='adjustInput(this, "#clock_hours", -1);'><i class="icon-minus"></i></button>
+                            </div>
+                            <input class='form-control form-control-sm static_input' min='1' id='clock_hours' data='clock' fc-index='hours' type='number'>
+                            <div class='input-group-append'>
+                                <button type='button' class='btn btn-sm btn-success' onclick='adjustInput(this, "#clock_hours", +1);'><i class="icon-plus"></i></button>
+                            </div>
 						</div>
 
-						<div class='col-6 pl-0'>
-							<div class='row'>
-								<div class='col-md-auto pr-0'>
-									<button type='button' class='btn btn-sm btn-danger' onclick='adjustInput(this, "#clock_minutes", -1);'><i class="icon-minus"></i></button>
-								</div>
-								<div class='col px-1'>
-									<input class='form-control form-control-sm static_input' min='1' id='clock_minutes' data='clock' fc-index='minutes' type='number'>
-								</div>
-								<div class='col-md-auto pl-0'>
-									<button type='button' class='btn btn-sm btn-success' onclick='adjustInput(this, "#clock_minutes", +1);'><i class="icon-plus"></i></button>
-								</div>
-							</div>
+						<div class='col-6 input-group pl-0'>
+                            <div class='input-group-prepend'>
+                                <button type='button' class='btn btn-sm btn-danger' onclick='adjustInput(this, "#clock_minutes", -1);'><i class="icon-minus"></i></button>
+                            </div>
+                            <input class='form-control form-control-sm static_input' min='1' id='clock_minutes' data='clock' fc-index='minutes' type='number'>
+                            <div class='input-group-append'>
+                                <button type='button' class='btn btn-sm btn-success' onclick='adjustInput(this, "#clock_minutes", +1);'><i class="icon-plus"></i></button>
+                            </div>
 						</div>
 
 					</div>
@@ -352,32 +344,28 @@
 
 					<div class='row mb-1 do_render_clock'>
 
-						<div class='col-6'>
-							<div class='row mb-1'>
-								<div class='col-md-auto pr-0'>
-									<button type='button' class='btn btn-sm btn-danger' onclick='adjustInput(this, "#clock_offset", -1);'><i class="icon-minus"></i></button>
-								</div>
-								<div class='col px-1'>
-									<input class='form-control form-control-sm static_input' id='clock_offset' data='clock' fc-index='offset' type='number'>
-								</div>
-								<div class='col-md-auto pl-0'>
-									<button type='button' class='btn btn-sm btn-success' onclick='adjustInput(this, "#clock_offset", +1);'><i class="icon-plus"></i></button>
-								</div>
-							</div>
+						<div class='col-6 input-group'>
+                            <div class='input-group-prepend'>
+                                <button type='button' class='btn btn-sm btn-danger' onclick='adjustInput(this, "#clock_offset", -1);'><i class="icon-minus"></i></button>
+                            </div>
+
+                            <input class='form-control form-control-sm static_input' id='clock_offset' data='clock' fc-index='offset' type='number'>
+
+                            <div class='input-group-append'>
+                                <button type='button' class='btn btn-sm btn-success' onclick='adjustInput(this, "#clock_offset", +1);'><i class="icon-plus"></i></button>
+                            </div>
 						</div>
 
-						<div class='col-6 pl-0'>
-							<div class='row mb-1'>
-								<div class='col-md-auto pr-0'>
-									<button type='button' class='btn btn-sm btn-danger' onclick='adjustInput(this, "#clock_crowding", -1);'><i class="icon-minus"></i></button>
-								</div>
-								<div class='col px-1'>
-									<input class='form-control form-control-sm static_input' min='0' id='clock_crowding' data='clock' fc-index='crowding' type='number'>
-								</div>
-								<div class='col-md-auto pl-0'>
-									<button type='button' class='btn btn-sm btn-success' onclick='adjustInput(this, "#clock_crowding", +1);'><i class="icon-plus"></i></button>
-								</div>
-							</div>
+						<div class='col-6 pl-0 input-group'>
+                            <div class='input-group-prepend'>
+                                <button type='button' class='btn btn-sm btn-danger' onclick='adjustInput(this, "#clock_crowding", -1);'><i class="icon-minus"></i></button>
+                            </div>
+
+                            <input class='form-control form-control-sm static_input' min='0' id='clock_crowding' data='clock' fc-index='crowding' type='number'>
+
+                            <div class='input-group-append'>
+                                <button type='button' class='btn btn-sm btn-success' onclick='adjustInput(this, "#clock_crowding", +1);'><i class="icon-plus"></i></button>
+                            </div>
 						</div>
 
 					</div>
@@ -405,11 +393,11 @@
 				</div>
 
 				<div class='row'>
-					<div class='col-md-auto pr-1 bold-text'>
+					<div class='col-9 pr-1 bold-text'>
 						Overflow weekdays:
 					</div>
-					<div class='col-md-auto pl-1'>
-						<label class="custom-control custom-checkbox">
+					<div class='col-3 pl-1'>
+						<label class="custom-control custom-checkbox right-text">
 							<input type="checkbox" class="custom-control-input static_input" data='year_data' fc-index='overflow' id='month_overflow'>
 							<span class="custom-control-indicator"></span>
 						</label>
