@@ -2028,7 +2028,7 @@ function add_timespan_to_sortable(parent, key, data){
 					element.push("</div>");
 
 					element.push(`<label for='${key}_custom_week' class='row my-1 border rounded'>`);
-						element.push("<div class='col-md-auto pr-1 pr-0'>");
+						element.push("<div class='col-auto pr-1 pr-0'>");
 							element.push(`<input type='checkbox' id='${key}_custom_week' class='form-control unique-week-input' index='${key}'`);
 							element.push(data.week ? "checked" : "");
 							element.push("/>");
@@ -2127,7 +2127,7 @@ function add_leap_day_to_list(parent, key, data){
 					element.push("</div>");
 
 					element.push(`<label for='${key}_adds_week_day' class='row my-1 border rounded adds_week_day_container ${(!data.intercalary ? "" : "hidden")}'>`);
-						element.push("<div class='col-md-auto pr-1 pr-0'>");
+						element.push("<div class='col-auto pr-1 pr-0'>");
 							element.push(`<input type='checkbox' id='${key}_adds_week_day' class='form-control adds-week-day dynamic_input' data='year_data.leap_days.${key}' fc-index='adds_week_day' ${(data.adds_week_day ? "checked" : "")} />`);
 						element.push("</div>");
 						element.push(`<div class='col pl-0 pl-2 pt-2'>`);
@@ -2232,7 +2232,7 @@ function add_moon_to_list(parent, key, data){
 			element.push("<div class='col-12 mb-3'>");
 
 				element.push(`<label for='${key}_custom_phase_count' class='row my-1 border rounded adds_week_day_container ${(!data.intercalary ? "" : "hidden")}'>`);
-					element.push("<div class='col-md-auto pr-1 pr-0'>");
+					element.push("<div class='col-auto pr-1 pr-0'>");
 						element.push(`<input type='checkbox' id='${key}_custom_phase_count' class='form-control dynamic_input custom_phase' data='moons.${key}' fc-index='custom_phase'`);
 						element.push(data.custom_phase ? "checked" : "");
 						element.push("/>");
@@ -2255,11 +2255,11 @@ function add_moon_to_list(parent, key, data){
 					element.push(`<div class='row mb-1'>`);
 
 						element.push("<div class='col-7 pl-0 pr-1'>");
-							element.push(`<input type='number' min='1' step="any" class='form-control dynamic_input cycle protip' data-pt-position="bottom" data-pt-title='How many days it takes for this moon go from Full Moon to the next Full Moon.' data='moons.${key}' fc-index='cycle' value='${!data.custom_phase ? data.cycle : ''}' />`);
+							element.push(`<input type='number' min='1' step="any" class='form-control dynamic_input cycle protip' data-pt-position="top" data-pt-title='How many days it takes for this moon go from Full Moon to the next Full Moon.' data='moons.${key}' fc-index='cycle' value='${!data.custom_phase ? data.cycle : ''}' />`);
 						element.push("</div>");
 
 						element.push("<div class='col-5 pl-1 pr-0'>");
-							element.push(`<input type='number' step="any" class='form-control dynamic_input shift protip' data-pt-position="bottom" data-pt-title='This is how many days the cycle is offset by.' data='moons.${key}' fc-index='shift' value='${!data.custom_phase ? data.shift : ''}' />`);
+							element.push(`<input type='number' step="any" class='form-control dynamic_input shift protip' data-pt-position="top" data-pt-title='This is how many days the cycle is offset by.' data='moons.${key}' fc-index='shift' value='${!data.custom_phase ? data.shift : ''}' />`);
 						element.push("</div>");
 
 					element.push("</div>");
@@ -2313,7 +2313,7 @@ function add_moon_to_list(parent, key, data){
 				element.push("</div>");
 
 				element.push(`<label for='${key}_hidden_moon' class='row my-2 border rounded'>`);
-					element.push("<div class='col-md-auto pr-1 pr-0'>");
+					element.push("<div class='col-auto pr-1 pr-0'>");
 						element.push(`<input type='checkbox' id='${key}_hidden_moon' class='form-control dynamic_input moon-hidden' data='moons.${key}' fc-index='hidden'`);
 						element.push(data.hidden ? "checked" : "");
 						element.push("/>");
@@ -2504,7 +2504,7 @@ function add_location_to_list(parent, key, data){
 									element.push(`<label for='${key}_custom_name' class='col-6 border rounded'>`);
 
 										element.push(`<div class='row'>`);
-											element.push("<div class='col-md-auto pr-0'>");
+											element.push("<div class='col-auto pr-0'>");
 												element.push(`<input type='checkbox' id='${key}_custom_name' class='form-control form-control-sm dynamic_input disable_local_season_name' data='seasons.locations.${key}.seasons.${i}' fc-index='custom_name' ${data.seasons[i].custom_name ? 'checked' : ''}>`);
 											element.push("</div>");
 											element.push(`<div class='col p-0 pt-1'>`);
@@ -2817,7 +2817,7 @@ function add_era_to_list(parent, key, data){
 			element.push("<div class='col-12 mb-3'>");
 
 				element.push(`<label for='${key}_use_custom_format' class='row my-2 border rounded'>`);
-					element.push("<div class='col-md-auto pr-1 pr-0'>");
+					element.push("<div class='col-auto pr-1 pr-0'>");
 						element.push(`<input type='checkbox' id='${key}_use_custom_format' class='form-control dynamic_input use_custom_format' data='eras.${key}.settings' fc-index='use_custom_format' ${(data.settings.use_custom_format ? "checked" : "")} />`);
 					element.push("</div>");
 					element.push(`<div class='col pl-0 pl-2 pt-2'>`);
@@ -2836,7 +2836,7 @@ function add_era_to_list(parent, key, data){
 				element.push("</div>");
 
 				element.push(`<label for='${key}_show_as_event' class='row my-2 border rounded'>`);
-					element.push("<div class='col-md-auto pr-1 pr-0'>");
+					element.push("<div class='col-auto pr-1 pr-0'>");
 						element.push(`<input type='checkbox' id='${key}_show_as_event' class='form-control dynamic_input show_as_event' data='eras.${key}.settings' fc-index='show_as_event' ${(data.settings.show_as_event ? "checked" : "")} />`);
 					element.push("</div>");
 					element.push("<div class='col pl-0 pl-2 pt-2'>");
@@ -2867,7 +2867,7 @@ function add_era_to_list(parent, key, data){
 				element.push("</div>");
 
 				element.push(`<label id='${key}_starting_era' class='row my-2 border rounded'>`);
-					element.push("<div class='col-md-auto pr-1 pr-0'>");
+					element.push("<div class='col-auto pr-1 pr-0'>");
 						element.push(`<input type='checkbox' for='${key}_starting_era' class='form-control dynamic_input starting_era' data='eras.${key}.settings' fc-index='starting_era' ${(data.settings.starting_era ? "checked" : "")} />`);
 					element.push("</div>");
 					element.push("<div class='col pl-0 pl-2 pt-2'>");
@@ -2904,7 +2904,7 @@ function add_era_to_list(parent, key, data){
 					element.push("<div class='row my-2 bold-text'>Date settings:</div>");
 
 					element.push(`<label for='${key}_restart_year' class='row my-2 border rounded'>`);
-						element.push("<div class='col-md-auto pr-1 pr-0'>");
+						element.push("<div class='col-auto pr-1 pr-0'>");
 							element.push(`<input type='checkbox' id='${key}_restart_year' class='form-control dynamic_input restart' data='eras.${key}.settings' fc-index='restart' ${(data.settings.restart ? "checked" : "")} />`);
 						element.push("</div>");
 						element.push("<div class='col pl-0 pl-2 pt-2'>");
@@ -2913,7 +2913,7 @@ function add_era_to_list(parent, key, data){
 					element.push("</label>");
 
 					element.push(`<label for='${key}_ends_year' class='row my-2 border rounded protip ${static_data.seasons.global_settings.periodic_seasons ? "" : "disabled"}' data-pt-position='right' data-pt-title='This will end the year prematurely, causing a new year to begin directly after this era happens. If this is disabled, it's because static seasons cannot support eras that end years, as months disappear and seasons require the assigned months.'>`);
-						element.push("<div class='col-md-auto pr-1 pr-0'>");
+						element.push("<div class='col-auto pr-1 pr-0'>");
 							element.push(`<input type='checkbox' id='${key}_ends_year' class='form-control dynamic_input ends_year' ${!static_data.seasons.global_settings.periodic_seasons ? "disabled" : ""} data='eras.${key}.settings' fc-index='ends_year' ${(data.settings.ends_year ? "checked" : "")} />`);
 						element.push("</div>");
 						element.push("<div class='col pl-0 pl-2 pt-2'>");
@@ -2967,7 +2967,7 @@ function add_category_to_list(parent, key, data){
 					element.push("<div class='col-6 pl-0 pr-2 pt-2 text-right'>");
 						element.push("Hide from viewers:");
 					element.push("</div>");
-					element.push("<div class='col-md-auto pl-1 pr-0'>");
+					element.push("<div class='col-auto pl-1 pr-0'>");
 						element.push(`<input type='checkbox' id='${key}_cat_global_hide' class='form-control dynamic_input global_hide' data='event_data.categories.${key}.category_settings' fc-index='hide' ${(data.category_settings.hide ? "checked" : "")} />`);
 					element.push("</div>");
 				element.push("</label>");
@@ -2976,7 +2976,7 @@ function add_category_to_list(parent, key, data){
 					element.push("<div class='col-6 pl-0 pr-2 pt-2 text-right'>");
 						element.push("Usable by players:");
 					element.push("</div>");
-					element.push("<div class='col-md-auto pl-1 pr-0'>");
+					element.push("<div class='col-auto pl-1 pr-0'>");
 						element.push(`<input type='checkbox' id='${key}_cat_player_usable' class='form-control dynamic_input player_usable' data='event_data.categories.${key}.category_settings' fc-index='player_usable' ${(data.category_settings.player_usable ? "checked" : "")} />`);
 					element.push("</div>");
 				element.push("</label>");
@@ -2992,7 +2992,7 @@ function add_category_to_list(parent, key, data){
 					element.push("<div class='col-6 pl-0 pr-2 pt-2 text-right'>");
 						element.push("Fully hide event:");
 					element.push("</div>");
-					element.push("<div class='col-md-auto pl-1 pr-0'>");
+					element.push("<div class='col-auto pl-1 pr-0'>");
 						element.push(`<input type='checkbox' id='${key}_cat_hide_full' class='form-control dynamic_input' data='event_data.categories.${key}.event_settings' fc-index='hide_full' ${(data.event_settings.hide_full ? "checked" : "")} />`);
 					element.push("</div>");
 				element.push("</label>");
@@ -3001,7 +3001,7 @@ function add_category_to_list(parent, key, data){
 					element.push("<div class='col-6 pl-0 pr-2 pt-2 text-right'>");
 						element.push("Hide event:");
 					element.push("</div>");
-					element.push("<div class='col-md-auto pl-1 pr-0'>");
+					element.push("<div class='col-auto pl-1 pr-0'>");
 						element.push(`<input type='checkbox' id='${key}_cat_hide' class='form-control dynamic_input' data='event_data.categories.${key}.event_settings' fc-index='hide' ${(data.event_settings.hide ? "checked" : "")} />`);
 					element.push("</div>");
 				element.push("</label>");
@@ -3010,7 +3010,7 @@ function add_category_to_list(parent, key, data){
 					element.push("<div class='col-6 pl-0 pr-2 pt-2 text-right'>");
 						element.push("Don't print event:");
 					element.push("</div>");
-					element.push("<div class='col-md-auto pl-1 pr-0'>");
+					element.push("<div class='col-auto pl-1 pr-0'>");
 						element.push(`<input type='checkbox' id='${key}_cat_no_print' class='form-control dynamic_input' data='event_data.categories.${key}.event_settings' fc-index='noprint' ${(data.event_settings.noprint ? "checked" : "")} />`);
 					element.push("</div>");
 				element.push("</label>");
@@ -3948,7 +3948,7 @@ function evaluate_season_lengths(){
 	var html = []
 	html.push(`<div class='container'>`)
 	html.push(`<div class='row py-1'>`)
-	html.push(equal ? '<i class="col-md-auto px-0 mr-1 fas fa-check-circle" style="line-height:1.5;"></i>' : '<i class="col-md-auto px-0 mr-2 fas fa-exclamation-circle" style="line-height:1.5;"></i>');
+	html.push(equal ? '<i class="col-auto px-0 mr-1 fas fa-check-circle" style="line-height:1.5;"></i>' : '<i class="col-auto px-0 mr-2 fas fa-exclamation-circle" style="line-height:1.5;"></i>');
 	html.push(`<div class='col px-0'>Season length: ${data.season_length} / ${fract_year_length(static_data)} (year length)</div></div>`)
 	html.push(`<div class='row'>${equal ? "The season length and year length are the same, and will not drift away from each other." : "The season length and year length at not the same, and will diverge over time. Use with caution."}</div>`)
 	html.push(`</div>`)

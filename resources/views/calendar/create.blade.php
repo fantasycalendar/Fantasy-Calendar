@@ -116,6 +116,8 @@
                 }
             });
 
+            $('#presets').change();
+
             $('#json_apply').click(function(){
                 if($('#presets').val() == 'Custom JSON'){
                     var calendar = parse_json($('#json_input').val());

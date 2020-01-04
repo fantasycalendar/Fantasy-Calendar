@@ -15,7 +15,7 @@
 	@yield('label')
 
 	<div class='wrap-collapsible'>
-		<div class="view-tabs btn-group d-flex my-2 w-100">
+		<div class="view-tabs btn-group d-flex mb-1 w-100">
             <button type="button" data-view-type='owner' class="owner w-100 btn btn-sm btn-primary">Owner View</button>
             <button type="button" data-view-type='player' class="player w-100 btn btn-sm btn-secondary">Player View</button>
             <button type="button" data-view-type='weather' class="weather w-100 btn btn-sm btn-secondary">Climate view</button>
@@ -393,7 +393,7 @@
 					<div class='col p-0'>
 						<input type='text' class='form-control name' placeholder='Weekday name'>
 					</div>
-					<div class='col-md-auto p-0'>
+					<div class='col-auto p-0'>
 						<button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
 					</div>
 				</div>
@@ -434,7 +434,7 @@
 						</select>
 					</div>
 
-					<div class='col-md-auto p-0'>
+					<div class='col-auto p-0'>
 						<button type='button' class='btn btn-primary add full'><i class="fa fa-plus"></i></button>
 					</div>
 				</div>
@@ -479,7 +479,7 @@
 						</select>
 					</div>
 
-					<div class='col-md-auto p-0'>
+					<div class='col-auto p-0'>
 						<button type='button' class='btn btn-primary add full'><i class="fa fa-plus"></i></button>
 					</div>
 				</div>
@@ -508,7 +508,7 @@
 						<div class='col pr-0'>
 							<input type='text' class='form-control name' placeholder='Moon name'>
 						</div>
-						<div class='col-md-auto pl-0'>
+						<div class='col-auto pl-0'>
 							<button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
 						</div>
 					</div>
@@ -544,16 +544,16 @@
 
 				<div class='form-control'>
 					<div class='row mb-2 protip' data-pt-position="right" data-pt-title='This toggles between having seasons starting on specific dates, or having the seasons last an exact duration with the potential to overflow years.'>
-						<div class='col-md-auto pr-0 text-right season_text dated'>
+						<div class='col-auto pr-0 text-right season_text dated'>
 							Date Based
 						</div>
-						<div class='col-md-auto p-0'>
+						<div class='col-auto p-0'>
 							<label class="custom-control custom-checkbox">
 								<input type="checkbox" class="custom-control-input" id='periodic_seasons_checkbox'>
 								<span class="custom-control-indicator"></span>
 							</label>
 						</div>
-						<div class='col-md-auto pl-0 season_text periodic'>
+						<div class='col-auto pl-0 season_text periodic'>
 							Length Based
 						</div>
 					</div>
@@ -569,7 +569,7 @@
 					<div class='col p-0'>
 						<input type='text' class='form-control name' placeholder='Season name'>
 					</div>
-					<div class='col-md-auto p-0'>
+					<div class='col-auto p-0'>
 						<button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
 					</div>
 				</div>
@@ -609,8 +609,8 @@
 				<div class='col-12'>
 
 					<div class='row'>
-						<div class='col-md-auto p-0'>Enable weather:</div>
-						<div class='col-md-auto p-0'>
+						<div class='col-auto p-0'>Enable weather:</div>
+						<div class='col-auto p-0'>
 							<label class="custom-control custom-checkbox">
 								<input type="checkbox" class="custom-control-input static_input" id='enable_weather' refresh='false' data='seasons.global_settings' fc-index='enable_weather'>
 								<span class="custom-control-indicator"></span>
@@ -626,8 +626,8 @@
 
 
 						<div class='row my-2'>
-							<div class='col-md-auto p-0'>Weather offset (days):</div>
-							<div class='col-md-auto p-0'>
+							<div class='col-auto p-0'>Weather offset (days):</div>
+							<div class='col-auto p-0'>
 								<input class='form-control static_input' type='number' refresh='false' data='seasons.global_settings' fc-index='weather_offset'/>
 							</div>
 						</div>
@@ -662,8 +662,8 @@
 						</div>
 
 						<div class='row my-2'>
-							<div class='col-md-auto p-0'>Cinematic temperature description:</div>
-							<div class='col-md-auto p-0'>
+							<div class='col-auto p-0'>Cinematic temperature description:</div>
+							<div class='col-auto p-0'>
 								<label class="custom-control custom-checkbox">
 									<input type="checkbox" class="custom-control-input static_input" refresh='false' data='seasons.global_settings' fc-index='cinematic'>
 									<span class="custom-control-indicator"></span>
@@ -673,7 +673,7 @@
 
 
 						<div class='row'>
-							<div class='col-md-auto p-0'>Weather generation seed:</div>
+							<div class='col-auto p-0'>Weather generation seed:</div>
 						</div>
 						<div class='row'>
 							<div class='col-10 p-0'>
@@ -726,7 +726,7 @@
 					<div class="col p-0">
 						<input type='text' class='form-control name' placeholder='Location name'>
 					</div>
-					<div class="col-md-auto p-0">
+					<div class="col-auto p-0">
 						<button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
 					</div>
 				</div>
@@ -788,7 +788,7 @@
 					<div class="col p-0">
 						<input type='text' class='form-control name' placeholder='Era name'>
 					</div>
-					<div class="col-md-auto p-0">
+					<div class="col-auto p-0">
 						<button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
 					</div>
 				</div>
@@ -818,7 +818,7 @@
 					<div class="col p-0">
 						<input type='text' class='form-control name' placeholder='Event category name'>
 					</div>
-					<div class="col-md-auto p-0">
+					<div class="col-auto p-0">
 						<button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
 					</div>
 				</div>
@@ -847,7 +847,7 @@
 					<div class="col p-0">
 						<input type='text' class='form-control name' placeholder='Event name'>
 					</div>
-					<div class="col-md-auto p-0">
+					<div class="col-auto p-0">
 						<button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
 					</div>
 				</div>
@@ -1033,19 +1033,19 @@
 
 					<div id="calendar_link_show">
 						<div class='row mt-3'>
-							<div class='col-md-auto ml-4 pr-1 bold-text'>Link from master:</div>
+							<div class='col-auto ml-4 pr-1 bold-text'>Link from master:</div>
 						</div>
 						<div class='row protip' data-pt-position="right" data-pt-title='If enabled, the date of this calendar will be taken from the master calendar, but scaled based on the difference in the length of day between the master and this calendar. If this calendar has 12 hours per day and the master has 24, each day counts from the master counts as two days on this one.'>
-							<div class='col-md-auto ml-4 pr-0'>
+							<div class='col-auto ml-4 pr-0'>
 								Day
 							</div>
-							<div class='col-md-auto p-0'>
+							<div class='col-auto p-0'>
 								<label class="custom-control custom-checkbox">
 									<input type="checkbox" class="custom-control-input static_input" id='link_scale' data='clock' fc-index='link_scale'>
 									<span class="custom-control-indicator"></span>
 								</label>
 							</div>
-							<div class='col-md-auto p-0'>
+							<div class='col-auto p-0'>
 								Minutes
 							</div>
 						</div>
