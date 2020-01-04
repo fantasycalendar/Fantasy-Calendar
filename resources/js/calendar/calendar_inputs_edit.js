@@ -1355,7 +1355,7 @@ function set_up_edit_inputs(){
 
 			var element = [];
 			for(i = 0; i < timespan.week.length; i++){
-				element.push(`<input type='text' class='row form-control internal-list-name custom_week_day dynamic_input' data='year_data.timespans.${index}.week' fc-index='${i}' value='${timespan.week[i]}'/>`);
+				element.push(`<input type='text' class='form-control internal-list-name custom_week_day dynamic_input' data='year_data.timespans.${index}.week' fc-index='${i}' value='${timespan.week[i]}'/>`);
 			}
 
 			week_day_list.append(element.join(""));
@@ -1445,7 +1445,7 @@ function set_up_edit_inputs(){
 			var element = [];
 			for(index = current_val; index < new_val; index++){
 				static_data.year_data.timespans[timespan_index].week.push(`Week day ${(index+1)}`);
-				element.push(`<input type='text' class='row form-control internal-list-name custom_week_day dynamic_input' data='year_data.timespans.${index}.week' fc-index='${index}' value='Week day ${(index+1)}'/>`);
+				element.push(`<input type='text' class='form-control internal-list-name custom_week_day dynamic_input' data='year_data.timespans.${index}.week' fc-index='${index}' value='Week day ${(index+1)}'/>`);
 			}
 			week_list.append(element.join(""));
 		}else if(new_val < current_val){
@@ -2038,35 +2038,35 @@ function add_timespan_to_sortable(parent, key, data){
 						element.push("</div>");
 					element.push("</label>");
 
-					element.push(`<div class='row px-3 my-2 custom-week-container ${(!data.week ? "hidden" : "")}'>`);
+					element.push(`<div class='container p-0 my-2 custom-week-container ${(!data.week ? "hidden" : "")}'>`);
 
-						element.push("<div class='row my-1'>");
-							element.push("<div class='col p-0'>");
-								element.push("Length:");
+							element.push("<div class='row my-1'>");
+								element.push("<div class='col p-0'>");
+									element.push("Length:");
+								element.push("</div>");
+								element.push("<div class='col p-0'>");
+								element.push("</div>");
 							element.push("</div>");
-							element.push("<div class='col p-0'>");
-							element.push("</div>");
-						element.push("</div>");
 
-						element.push("<div class='row'>");
-							element.push("<div class='col-6 pr-1 pl-0'>");
-								element.push(`<input type='number' min='1' step="1" class='form-control week-length small-input' ${(!data.week ? "disabled" : "")} value='${(data.week ? data.week.length : 0)}'/>`);
+							element.push("<div class='row'>");
+								element.push("<div class='col-6 pr-1 pl-0'>");
+									element.push(`<input type='number' min='1' step="1" class='form-control week-length small-input' ${(!data.week ? "disabled" : "")} value='${(data.week ? data.week.length : 0)}'/>`);
+								element.push("</div>");
+								element.push("<div class='col-6 pr-0 pl-1'>");
+									element.push(`<button type='button' class='full btn btn-primary weekday_quick_add' ${(!data.week ? "disabled" : "")}>Quick add</button>`);
+								element.push("</div>");
 							element.push("</div>");
-							element.push("<div class='col-6 pr-0 pl-1'>");
-								element.push(`<button type='button' class='full btn btn-primary weekday_quick_add' ${(!data.week ? "disabled" : "")}>Quick add</button>`);
-							element.push("</div>");
-						element.push("</div>");
 
-						element.push("<div class='row mt-2 container p-0 border'>");
-							element.push("<div class='week_list col-12'>");
-							if(data.week){
-								for(index = 0; index < data.week.length; index++){
-									element.push(`<input type='text' class='form-control internal-list-name dynamic_input custom_week_day' data='year_data.timespans.${key}.week' fc-index='${index}' value='${data.week[index]}'/>`);
+							element.push("<div class='row mt-2 p-0 border'>");
+								element.push("<div class='week_list'>");
+								if(data.week){
+									for(index = 0; index < data.week.length; index++){
+										element.push(`<input type='text' class='form-control internal-list-name dynamic_input custom_week_day' data='year_data.timespans.${key}.week' fc-index='${index}' value='${data.week[index]}'/>`);
+									}
 								}
-							}
+								element.push("</div>");
 							element.push("</div>");
 						element.push("</div>");
-					element.push("</div>");
 
 				}
 
