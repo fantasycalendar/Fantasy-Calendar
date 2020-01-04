@@ -359,7 +359,7 @@
 				</div>
 
 				<div class='row protip' data-pt-position="right" data-pt-title='Enabling this will continue the week in the next month, and disabling overflow will restart the week so that each month starts with the first week day.'>
-					<div class='col-6 pr-1 bold-text'>
+					<div class='col-auto pr-1 bold-text'>
 						Overflow weekdays:
 					</div>
 					<div class='col-2'>
