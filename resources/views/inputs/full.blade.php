@@ -68,7 +68,7 @@
 
 		<div class='wrap-collapsible card'>
 			<input id="collapsible_date" class="toggle" type="checkbox">
-			<label for="collapsible_date" class="lbl-toggle card-header lbl-text">Current Date & Time <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Date' href='https://wiki.fantasy-calendar.com/index.php?title=Date' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+			<label for="collapsible_date" class="lbl-toggle card-header lbl-text">Current Date <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Date' href='https://wiki.fantasy-calendar.com/index.php?title=Date' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
 
 				<div id='clock'>
@@ -248,14 +248,14 @@
 			<div class="collapsible-content card-body">
 
 				<div class='row'>
-					<div class='col-4 pr-0'>Enable clock:</div>
+					<div class='col-4 pr-0'>Enable:</div>
 					<div class='col-2 pl-0'>
 						<label class="custom-control custom-checkbox right-text">
 							<input type="checkbox" class="custom-control-input static_input" id='enable_clock' data='clock' fc-index='enabled'>
 							<span class="custom-control-indicator"></span>
 						</label>
 					</div>
-					<div class='render_clock col-4 p-0'>Render clock:</div>
+					<div class='render_clock col-4 pr-0'>Render:</div>
 					<div class='render_clock col-2 pl-0'>
 						<label class="custom-control custom-checkbox right-text">
 							<input type="checkbox" class="custom-control-input static_input" id='render_clock' refresh='clock' data='clock' fc-index='render'>
@@ -268,10 +268,10 @@
 
 					<div class='row mt-2'>
 						<div class='col-6'>
-							Hours per day:
+							Hours:
 						</div>
 						<div class='col-6 pl-0'>
-							Minutes per hour:
+							Minutes:
 						</div>
 					</div>
 
@@ -412,7 +412,7 @@
 		<div class='wrap-collapsible card'>
 
 			<input id="collapsible_timespans" class="toggle" type="checkbox">
-			<label for="collapsible_timespans" class="lbl-toggle card-header lbl-text">Months & Intercalaries <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Months & Intercalaries' href='https://wiki.fantasy-calendar.com/index.php?title=Months_%26_Intercalaries' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+			<label for="collapsible_timespans" class="lbl-toggle card-header lbl-text">Months <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Months & Intercalaries' href='https://wiki.fantasy-calendar.com/index.php?title=Months_%26_Intercalaries' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body container">
 
 				<div class='row bold-text'>
@@ -423,7 +423,7 @@
 
 				<div class='add_inputs timespan row'>
 
-					<div class='col-7 p-0'>
+					<div class='col-md-7 p-0'>
 						<input type='text' class='form-control name' placeholder='Name'>
 					</div>
 
@@ -468,7 +468,7 @@
 				</div>
 
 				<div class='add_inputs leap row'>
-					<div class='col-6 p-0'>
+					<div class='col-md-6 p-0'>
 						<input type='text' class='form-control name' placeholder='Name'>
 					</div>
 
