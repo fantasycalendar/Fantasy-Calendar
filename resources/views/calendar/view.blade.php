@@ -19,34 +19,38 @@
             }
         }
 
+        if(static_data.seasons.global_settings.periodic_seasons === undefined){
+            static_data.seasons.global_settings.periodic_seasons = true;
+        }
+
+        if(static_data.clock.render === undefined){
+            static_data.clock.render = static_data.clock.enable;
+        }
+
+        if(typeof static_data.clock.link_scale == "undefined"){
+            static_data.clock.link_scale = link_data.master_hash !== "";
+        }
+
         set_up_view_inputs();
         set_up_view_values();
         set_up_visitor_values();
         bind_calendar_events();
-        rebuild_calendar('calendar', dynamic_data);
+        do_rebuild('calendar', dynamic_data);
+       
+        poll_timer = setTimeout(check_dates, 5000);
+        instapoll = false;
 
-        timer = setTimeout(function(){
-            check_last_change(function(output){
-                check_dates(output);
-            })
-        }, 100);
+        $(window).focus(function(){
+            check_dates();
+        })
 
-        $(window).focus(function() {
-            if(!timer)
-                check_last_change(function(output){
-                    check_dates(output);
-                });
-                timer = setTimeout(function(){
-                    check_last_change(function(output){
-                        check_dates(output);
-                    });
-                }, 2500);
-        });
-
-        $(window).blur(function() {
-            clearTimeout(timer);
-            timer = 0;
-        });
+        registered_mousemove_callbacks['view_update'] = function(){
+            last_mouse_move = Date.now();
+            if(instapoll){
+                instapoll = false;
+                check_dates();
+            }
+        }
 
         $('#current_year, #current_timespan, #current_day, #current_hour, #current_minute, #location_select').change(function(){
             do_update_dynamic();
@@ -55,45 +59,102 @@
     });
 
     var do_update_dynamic = debounce(function(type){
-        update_dynamic();
+        update_view_dynamic();
     }, 250);
+    
+    function check_dates(){
 
-    function check_dates(output){
+        if(document.hasFocus() && (Date.now() - last_mouse_move) < 10000){
 
-        new_static_change = new Date(output.last_static_change)
-        new_dynamic_change = new Date(output.last_dynamic_change)
+            instapoll = false;
 
-        if(new_static_change > last_static_change){
+            check_last_change(function(result){
 
-            get_all_data(function(result){
+                new_dynamic_change = new Date(result.last_dynamic_change)
+                new_static_change = new Date(result.last_static_change)
 
-                static_data = clone(result.static_data);
-                dynamic_data = clone(result.dynamic_data);
+                if(new_static_change > last_static_change){
 
-                last_static_change = new Date(result.last_static_change)
-                last_dynamic_change = new Date(result.last_dynamic_change)
-        
-                set_up_view_values();
+                    last_dynamic_change = new_dynamic_change
+                    last_static_change = new_static_change
 
-                set_date(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
+                    get_all_data(function(result){
+
+                        if(result.error){
+                            throw result.message;
+                        }
+
+                        static_data = clone(result.static_data);
+                        dynamic_data = clone(result.dynamic_data);
+
+                        check_update();
+                        evaluate_settings();
+                        poll_timer = setTimeout(check_dates, 5000);
+
+                    });
+
+                }else if(new_dynamic_change > last_dynamic_change){
+                    
+                    last_dynamic_change = new_dynamic_change
+
+                    get_dynamic_data(function(result){
+
+                        if(result.error){
+                            throw result.message;
+                        }
+
+                        dynamic_data = clone(result);
+
+                        check_update(static_data, result);
+                        poll_timer = setTimeout(check_dates, 5000);
+
+                    });
+
+                }else{
+
+                    poll_timer = setTimeout(check_dates, 5000);
+
+                }
 
             });
 
-        }else if(new_dynamic_change > last_dynamic_change){
+        }else{
 
-            get_dynamic_data(function(result){
-
-                dynamic_data = clone(result);
-
-                last_dynamic_change = new_dynamic_change;
-        
-                set_up_view_values();
-
-                set_date(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
-
-            });
+            instapoll = true;
 
         }
+
+    }
+
+    function check_update(){
+
+        var data = dynamic_date_manager.compare(dynamic_data);
+
+        dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
+
+        if(preview_date.follow){
+            preview_date = clone(dynamic_data);
+            preview_date.follow = true;
+            preview_date_manager = new date_manager(preview_date.year, preview_date.timespan, preview_date.day);
+        }
+
+        current_year.val(dynamic_data.year);
+
+        repopulate_timespan_select(current_timespan, dynamic_data.timespan, false);
+
+        repopulate_day_select(current_day, dynamic_data.day, false);
+
+        display_preview_back_button();
+
+        if((data.rebuild || static_data.settings.only_reveal_today) && preview_date.follow){
+            show_loading_screen_buffered();
+            do_rebuild('calendar', dynamic_data)
+        }else{
+            update_current_day(false);
+            scroll_to_epoch();
+        }
+        
+        refresh_view_values();
 
     }
 

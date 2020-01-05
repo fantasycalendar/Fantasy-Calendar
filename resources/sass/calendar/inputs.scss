@@ -1286,3 +1286,15 @@ ol.example li.placeholder:before {
 #errors_closebtn:hover {
     color: black;
 }
+
+.master_button_container{
+    position:absolute;
+    bottom:-3.5rem;
+    left:calc(50% - 11rem);
+    width:22rem;
+    height:3.5rem;
+    background-color: $card-bg-color;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border:1px solid $calendar-border-color;
+}

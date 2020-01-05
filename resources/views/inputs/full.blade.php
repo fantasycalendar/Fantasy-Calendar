@@ -100,7 +100,15 @@
                     <canvas style="z-index: 0;" id="clock_background"></canvas>
                 </div>
 
+                <div class='detail-row center-text hidden' id='empty_calendar_explaination'>
+                    This calendar doesn't have any weekdays or months yet, so you can't change the date.
+                </div>
+
                 <div class='detail-row date_control' id='date_inputs'>
+                    
+                    <div class='detail-row'>
+                        <h4>Current date:</h4>
+                    </div>
 
                     <div class='detail-row center-text hidden calendar_link_explaination'>
                         This calendar is using a different calendar's date to calculate the current date. Only the master calendar can set the date for this calendar.
@@ -147,7 +155,7 @@
                     </div>
 
 
-                    <div class='detail-row'>
+                    <div class='detail-row clock_inputs'>
 
                         <div class='detail-column quarter'>
                             <div class='detail-text right-align full'>Time:</div>
@@ -166,11 +174,12 @@
                 </div>
 
 
-                <div class='detail-row'>
-                    <h4>Preview date:</h4>
-                </div>
-
                 <div class='date_control'>
+
+                    <div class='detail-row'>
+                        <h4>Preview date:</h4>
+                    </div>
+
                     <div class='detail-row'>
 
                         <div class='detail-column quarter' value='target'>
@@ -215,37 +224,37 @@
                         <div class='btn btn-success full' id='go_to_preview_date'>Preview date</div>
                     </div>
 
-                </div>
+                    <div class='wrap-collapsible card mt-2 full'>
+                        <input id="collapsible_add_units" class="toggle" type="checkbox">
+                        <label for="collapsible_add_units" class="lbl-toggle card-header small-lbl-text center-text">Add or subtract fixed units to calendar</label>
+                        <div class="collapsible-content card-body">
 
-                <div class='wrap-collapsible card mt-2 full'>
-                    <input id="collapsible_add_units" class="toggle" type="checkbox">
-                    <label for="collapsible_add_units" class="lbl-toggle card-header small-lbl-text center-text">Add or subtract fixed units to calendar</label>
-                    <div class="collapsible-content card-body">
+                            <div class='row mb-2'>
 
-                        <div class='row mb-2'>
+                                <div class='col px-1'>
+                                    <input type='number' class="form-control form-control-sm full" id='unit_years' placeholder="Years">
+                                </div>
 
-                            <div class='col px-1'>
-                                <input type='number' class="form-control form-control-sm full" id='unit_years' placeholder="Years">
+                                <div class='col px-1'>
+                                    <input type='number' class="form-control form-control-sm full" id='unit_months' placeholder="Months">
+                                </div>
+
+                                <div class='col px-1'>
+                                    <input type='number' class="form-control form-control-sm full" id='unit_days' placeholder="Days">
+                                </div>
+
                             </div>
 
-                            <div class='col px-1'>
-                                <input type='number' class="form-control form-control-sm full" id='unit_months' placeholder="Months">
-                            </div>
+                            <div class='row'>
 
-                            <div class='col px-1'>
-                                <input type='number' class="form-control form-control-sm full" id='unit_days' placeholder="Days">
-                            </div>
+                                <div class='col px-1'>
+                                    <button type="button" step="1.0" class="btn btn-primary btn-sm full" id='current_date_btn'>To current date</button>
+                                </div>
 
-                        </div>
+                                <div class='col px-1'>
+                                    <button type="button" step="1.0" class="btn btn-secondary btn-sm full" id='preview_date_btn'>To preview date</button>
+                                </div>
 
-                        <div class='row'>
-
-                            <div class='col px-1'>
-                                <button type="button" step="1.0" class="btn btn-primary btn-sm full" id='current_date_btn'>To current date</button>
-                            </div>
-
-                            <div class='col px-1'>
-                                <button type="button" step="1.0" class="btn btn-secondary btn-sm full" id='preview_date_btn'>To preview date</button>
                             </div>
 
                         </div>
@@ -270,17 +279,24 @@
             <label for="collapsible_clock" class="lbl-toggle card-header lbl-text">Clock <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Clock' href='https://wiki.fantasy-calendar.com/index.php?title=Clock' class="wiki protip"><i class="icon-question-sign"></i></a></label>
             <div class="collapsible-content card-body">
 
-                <div class='detail-row'>
-                    <div class='detail-column'>Enable clock:</div>
-                    <div class='detail-column float'>
+                <div class='row'>
+                    <div class='col-md-auto pr-0'>Enable clock:</div>
+                    <div class='col-md-auto pl-1'>
                         <label class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input static_input" id='enable_clock' data='clock' fc-index='enabled'>
                             <span class="custom-control-indicator"></span>
                         </label>
                     </div>
+                    <div class='col-md-auto pr-0'>Render clock:</div>
+                    <div class='col-md-auto pl-1'>
+                        <label class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input static_input" id='render_clock' data='clock' fc-index='render'>
+                            <span class="custom-control-indicator"></span>
+                        </label>
+                    </div>
                 </div>
 
-                <div class='clock_inputs' id='clock_inputs'>
+                <div class='clock_inputs'>
 
                     <div class='detail-row'>
 
@@ -349,7 +365,7 @@
         <div class='wrap-collapsible card'>
             <input id="collapsible_globalweek" class="toggle" type="checkbox">
             <label for="collapsible_globalweek" class="lbl-toggle card-header lbl-text">Weekdays <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Weekdays' href='https://wiki.fantasy-calendar.com/index.php?title=Global_week' class="wiki protip"><i class="icon-question-sign"></i></a></label>
-            <div class="collapsible-content card-body">
+            <div class="collapsible-content card-body content">
 
                 <div id='first_week_day_container'>
 
@@ -367,6 +383,26 @@
 
                 <div class='sortable list-group' id='global_week_sortable'></div>
 
+                <div class='row px-3 my-3'>
+                    <div class='separator'></div>
+                </div>
+
+                <div class='row center-text hidden' id='overflow_explanation'>
+                    This calendar has a custom week in some months or a leap day is adding a week-day, this will disable overflows between months, because it makes no sense for two weeks that do not go together to overflow into each other. Sorry.
+                </div>
+
+                <div class='row'>
+                    <div class='col-7 pr-1 bold-text'>
+                        Overflow month days:
+                    </div>
+                    <div class='col-5 pl-1'>
+                        <label class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input static_input" data='year_data' fc-index='overflow' id='month_overflow'>
+                            <span class="custom-control-indicator"></span>
+                        </label>
+                    </div>
+                </div>
+
             </div>
 
 
@@ -381,25 +417,6 @@
             <input id="collapsible_timespans" class="toggle" type="checkbox">
             <label for="collapsible_timespans" class="lbl-toggle card-header lbl-text">Months & Intercalaries <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Months & Intercalaries' href='https://wiki.fantasy-calendar.com/index.php?title=Months_%26_Intercalaries' class="wiki protip"><i class="icon-question-sign"></i></a></label>
             <div class="collapsible-content card-body">
-
-                <div class='detail-text bold-text big-text'>Settings:</div>
-
-                <div class='detail-row center-text hidden' id='overflow_explanation'>
-                    This calendar has a custom week in some months or a leap day is adding a week-day, this will disable overflows between months, because it makes no sense for two weeks that do not go together to overflow into each other. Sorry.
-                </div>
-
-                <div class='detail-row'>
-                    <div class='detail-column'>
-                        Overflow month days:
-                    </div>
-                    <div class='detail-column float'>
-                        <label class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input static_input" data='year_data' fc-index='overflow' id='month_overflow'>
-                            <span class="custom-control-indicator"></span>
-                        </label>
-                    </div>
-                </div>
-
 
                 <div class='form-inline timespan'>
 
@@ -487,7 +504,7 @@
                 </div>
 
                 <div class='row mb-1 protip' data-pt-position="right" data-pt-title='This toggles between having seasons starting on specific dates, or having the seasons last an exact duration with the potential to overflow years.'>
-                    <div class='col-3 p-0 text-right season_text dated'>
+                    <div class='col-4 p-0 text-right season_text dated'>
                         Date Based
                     </div>
                     <div class='col-2 p-0'>
@@ -652,7 +669,7 @@
                     Cycle format:
                 </div>
                 <div class="detail-row">
-                    <input type='text' id='cycle_format' class='form-control name static_input' data='cycles' fc-index='format' placeholder='Cycle format'>
+                    <input type='text' id='cycle_format' class='form-control name static_input protip' data='cycles' fc-index='format' placeholder='Hover for info' data-pt-position="right" data-pt-title="This is the template for the cycles you have. Each cycle part has a set of names which you can add to the top of the calendar. Add one with this field empty to see how this works!">
                 </div>
 
 
@@ -882,7 +899,7 @@
                 <div class="collapsible-content card-body">
 
                     <div class='detail-row center-text hidden calendar_link_explaination'>
-                        This calendar is already linked to another calendar. Before linking any calendars to this one, you must unlink it from the master.
+                        This calendar is already linked to a master calendar. Before linking any calendars to this one, you must unlink this calendar from its master calendar.
                     </div>
 
                     <div id='calendar_link_hide'>
@@ -901,10 +918,28 @@
 
                     </div>
 
+                    <div id="calendar_link_show">
+                        <div class='row mt-3'>
+                            <div class='col-md-auto ml-4 pr-1 bold-text'>Link from master:</div>
+                        </div>
+                        <div class='row protip' data-pt-position="right" data-pt-title='If enabled, the date of this calendar will be taken from the master calendar, but scaled based on the difference in the length of day between the master and this calendar. If this calendar has 12 hours per day and the master has 24, each day counts from the master counts as two days on this one.'>
+                            <div class='col-md-auto ml-4 pr-0'>
+                                Day
+                            </div>
+                            <div class='col-md-auto p-0'>
+                                <label class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input static_input" id='link_scale' data='clock' fc-index='link_scale'>
+                                    <span class="custom-control-indicator"></span>
+                                </label>
+                            </div>
+                            <div class='col-md-auto p-0'>
+                                Minutes
+                            </div>
+                        </div>
+
+                    </div>
+
                 </div>
-
-
-
 
             </div>
         @endif
@@ -937,6 +972,14 @@
 	</div>
 
 	<div id="top_follower">
+
+        <div class='master_button_container hidden'>
+            <div class='container d-flex h-100 p-0'>
+                <div class='col justify-content-center align-self-center full'>
+                    <button class='btn btn-danger full' disabled id='rebuild_calendar_btn'>Master data changed - reload</button>
+                </div>
+            </div>
+        </div>
 
 		<div class='btn_container hidden'>
 			<button class='btn btn-danger btn_preview_date hidden' disabled fc-index='year' value='-1'>< Year</button>

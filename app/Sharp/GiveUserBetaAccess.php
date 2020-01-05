@@ -5,6 +5,7 @@ namespace App\Sharp;
 use App\User;
 use Carbon\Carbon;
 use Code16\Sharp\EntityList\Commands\InstanceCommand;
+use Str;
 
 class GiveUserBetaAccess extends InstanceCommand
 {
@@ -35,9 +36,15 @@ class GiveUserBetaAccess extends InstanceCommand
     {
         $user = User::findOrFail($instanceId);
         $user->beta_authorised = 1;
+
         if($user->email_verified_at == null) {
             $user->email_verified_at = Carbon::now();
         }
+
+        if($user->api_token == null) {
+            $user->api_token = Str::random(60);
+        }
+
         $user->save();
 
         return $this->reload();

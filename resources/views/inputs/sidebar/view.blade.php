@@ -107,7 +107,7 @@
 
 					<div class='separator'></div>
 
-					<div class='detail-row'>
+					<div class='detail-row clock_inputs'>
 
 						<div class='detail-column fifth'>
 							<div class='detail-text right-align full'>Time:</div>
@@ -129,11 +129,13 @@
 
 			@endif
 
-			<div class='detail-row'>
-				<h4>Preview date:</h4>
-			</div>
 
-			<div class='date_control'>
+			<div class='date_control hidden'>
+
+				<div class='detail-row'>
+					<h4>Preview date:</h4>
+				</div>
+
 				<div class='detail-row'>
 
 					<div class='detail-column fifth' value='target'>
@@ -173,16 +175,13 @@
 					</div>
 
 				</div>
-			</div>
 
-			<div class='detail-row'>
-				<div class='detail-column half'>
-					<div class='btn btn-danger full' id='reset_preview_date' disabled>Base date</div>
-				</div>
-				<div class='detail-column half'>
+				<div class='detail-row'>
 					<div class='btn btn-success full' id='go_to_preview_date'>Preview date</div>
 				</div>
+
 			</div>
+
 
 			<div class='wrap-collapsible card mt-2'>
                 <input id="collapsible_add_units" class="toggle" type="checkbox">
@@ -206,10 +205,14 @@
                     </div>
 
                     <div class='row'>
+                    	
+						@if(Auth::check())
 
-                        <div class='col px-1'>
-                            <button type="button" step="1.0" class="btn btn-primary btn-sm full" id='current_date_btn'>To current date</button>
-                        </div>
+	                        <div class='col px-1'>
+	                            <button type="button" step="1.0" class="btn btn-primary btn-sm full" id='current_date_btn'>To current date</button>
+	                        </div>
+
+						@endif
 
                         <div class='col px-1'>
                             <button type="button" step="1.0" class="btn btn-secondary btn-sm full" id='preview_date_btn'>To preview date</button>
@@ -266,23 +269,28 @@
 <div id="calendar_container">
 
 	<div id="top_follower">
+		
+		<div class='btn_container hidden'>
+			<button class='btn btn-danger btn_preview_date hidden' disabled fc-index='year' value='-1'>< Year</button>
+			<button class='btn btn-danger btn_preview_date hidden' disabled fc-index='timespan' value='-1'>< Month</button>
+		</div>
+		
 
-		@if(Auth::check())
-			<div class='btn_container hidden'>
-				<button class='btn btn-danger btn_preview_date hidden' disabled fc-index='year' value='-1'>< Year</button>
-				<button class='btn btn-danger btn_preview_date hidden' disabled fc-index='timespan' value='-1'>< Month</button>
-			</div>
-		@endif
+        <div class='reset_preview_date_container left'>
+            <button type='button' class='btn btn-info hidden reset_preview_date protip' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >< Current</button>
+        </div>
 
 		<div id='top_follower_content'></div>
 
-		@if(Auth::check())
-			<div class='btn_container hidden'>
-				<button class='btn btn-success btn_preview_date hidden' disabled fc-index='year' value='1'>Year ></button>
-				<button class='btn btn-success btn_preview_date hidden' disabled fc-index='timespan' value='1'>Month ></button>
-			</div>
-		@endif
-
+        <div class='reset_preview_date_container right'>
+            <button type='button' class='btn btn-info hidden reset_preview_date protip' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >Current ></button>
+        </div>
+		
+		<div class='btn_container hidden'>
+			<button class='btn btn-success btn_preview_date hidden' disabled fc-index='year' value='1'>Year ></button>
+			<button class='btn btn-success btn_preview_date hidden' disabled fc-index='timespan' value='1'>Month ></button>
+		</div>
+		
 	</div>
 
 	<div id="calendar">

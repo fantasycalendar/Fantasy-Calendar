@@ -11,7 +11,7 @@
         static_data = {
             "year_data":{
                 "first_day":1,
-                "overflow":false,
+                "overflow":true,
                 "global_week":[],
                 "timespans":[],
                 "leap_days":[]
@@ -19,6 +19,8 @@
             "moons":[],
             "clock":{
                 "enabled":false,
+                "render":false,
+                "link_scale":true,
                 "hours":24,
                 "minutes":60,
                 "offset":0
@@ -41,8 +43,8 @@
             "settings":{
                 "layout":"grid",
                 "show_current_month":false,
-                "allow_view":false,
-                "only_backwards":false,
+                "allow_view":true,
+                "only_backwards":true,
                 "only_reveal_today":false,
                 "hide_moons":false,
                 "hide_clock":false,
@@ -80,6 +82,13 @@
         };
 
         $(document).ready(function(){
+
+            if(static_data){
+                $('.date_control').toggleClass('hidden', static_data.year_data.global_week.length == 0 || static_data.year_data.timespans.length == 0);
+                $('.date_control').find('select, input').prop('disabled', static_data.year_data.global_week.length == 0 || static_data.year_data.timespans.length == 0);
+                $('#empty_calendar_explaination').toggleClass('hidden', !(static_data.year_data.global_week.length == 0 || static_data.year_data.timespans.length == 0));
+            }
+
             set_up_edit_inputs(false);
             set_up_edit_values();
 

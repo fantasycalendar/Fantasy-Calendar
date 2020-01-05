@@ -4,6 +4,8 @@ return [
     "entities" => [
         "user" => [
             "list" => \App\Sharp\UserList::class,
+            "show" => \App\Sharp\UserShow::class,
+            "form" => \App\Sharp\UserForm::class,
         ]
     ],
 
