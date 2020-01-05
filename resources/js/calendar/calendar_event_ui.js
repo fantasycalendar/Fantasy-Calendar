@@ -1517,6 +1517,8 @@ var edit_event_ui = {
 							(keys[i] === "Cycle" && static_data.cycles === undefined)
 							||
 							(keys[i] === "Events" && static_data.event_data.events.length <= 1)
+							||
+							(keys[i] === "Season" && static_data.seasons.data.length < 1)
 						){
 							continue;
 						}
