@@ -2963,21 +2963,21 @@ function add_category_to_list(parent, key, data){
 
 				element.push(`<input type='hidden' class='category_id' value='${key}'>`);
 
-				element.push(`<label for='${key}_cat_global_hide' class='row my-1'>`);
-					element.push("<div class='col-6 pl-0 pr-2 pt-2 text-right'>");
-						element.push("Hide from viewers:");
-					element.push("</div>");
-					element.push("<div class='col-auto pl-1 pr-0'>");
+				element.push(`<label for='${key}_cat_global_hide' class='row mb-2 border round'>`);
+					element.push("<div class='col-auto pr-1 pr-0'>");
 						element.push(`<input type='checkbox' id='${key}_cat_global_hide' class='form-control dynamic_input global_hide' data='event_data.categories.${key}.category_settings' fc-index='hide' ${(data.category_settings.hide ? "checked" : "")} />`);
+					element.push("</div>");
+						element.push("<div class='col pl-0 pl-2 pt-2'>");
+						element.push("Hide from viewers");
 					element.push("</div>");
 				element.push("</label>");
 
-				element.push(`<label for='${key}_cat_player_usable' class='row my-1'>`);
-					element.push("<div class='col-6 pl-0 pr-2 pt-2 text-right'>");
-						element.push("Usable by players:");
-					element.push("</div>");
-					element.push("<div class='col-auto pl-1 pr-0'>");
+				element.push(`<label for='${key}_cat_player_usable' class='row mb-2 border round'>`);
+					element.push("<div class='col-auto pr-1 pr-0'>");
 						element.push(`<input type='checkbox' id='${key}_cat_player_usable' class='form-control dynamic_input player_usable' data='event_data.categories.${key}.category_settings' fc-index='player_usable' ${(data.category_settings.player_usable ? "checked" : "")} />`);
+					element.push("</div>");
+					element.push("<div class='col pl-0 pl-2 pt-2'>");
+						element.push("Usable by players");
 					element.push("</div>");
 				element.push("</label>");
 
@@ -2985,48 +2985,39 @@ function add_category_to_list(parent, key, data){
 					element.push("<div class='separator'></div>");
 				element.push("</div>");
 
-				element.push("<div class='row my-1 bold-text'>Event settings (local):</div>");
-				element.push("<div class='row my-1 small-text bold-text warning'>This will override the settings on any events using this category!</div>");
+				element.push("<div class='row mb-2 bold-text'>Event settings (local):</div>");
+				element.push("<div class='row mb-2 small-text bold-text warning'>This will override the settings on any events using this category!</div>");
 
-				element.push(`<label for='${key}_cat_hide_full' class='row my-1'>`);
-					element.push("<div class='col-6 pl-0 pr-2 pt-2 text-right'>");
-						element.push("Fully hide event:");
-					element.push("</div>");
-					element.push("<div class='col-auto pl-1 pr-0'>");
+				element.push(`<label for='${key}_cat_hide_full' class='row mb-2 border round'>`);
+					element.push("<div class='col-auto pr-1 pr-0'>");
 						element.push(`<input type='checkbox' id='${key}_cat_hide_full' class='form-control dynamic_input' data='event_data.categories.${key}.event_settings' fc-index='hide_full' ${(data.event_settings.hide_full ? "checked" : "")} />`);
 					element.push("</div>");
+					element.push("<div class='col pl-0 pl-2 pt-2'>");
+						element.push("Fully hide event");
+					element.push("</div>");
 				element.push("</label>");
 
-				element.push(`<label for='${key}_cat_hide' class='row my-1'>`);
-					element.push("<div class='col-6 pl-0 pr-2 pt-2 text-right'>");
-						element.push("Hide event:");
-					element.push("</div>");
-					element.push("<div class='col-auto pl-1 pr-0'>");
+				element.push(`<label for='${key}_cat_hide' class='row mb-2 border round'>`);
+					element.push("<div class='col-auto pr-1 pr-0'>");
 						element.push(`<input type='checkbox' id='${key}_cat_hide' class='form-control dynamic_input' data='event_data.categories.${key}.event_settings' fc-index='hide' ${(data.event_settings.hide ? "checked" : "")} />`);
 					element.push("</div>");
+					element.push("<div class='col pl-0 pl-2 pt-2'>");
+						element.push("Hide event");
+					element.push("</div>");
 				element.push("</label>");
 
-				element.push(`<label for='${key}_cat_no_print' class='row my-1'>`);
-					element.push("<div class='col-6 pl-0 pr-2 pt-2 text-right'>");
-						element.push("Don't print event:");
-					element.push("</div>");
-					element.push("<div class='col-auto pl-1 pr-0'>");
+				element.push(`<label for='${key}_cat_no_print' class='row mb-2 border round'>`);
+					element.push("<div class='col-auto pr-1 pr-0'>");
 						element.push(`<input type='checkbox' id='${key}_cat_no_print' class='form-control dynamic_input' data='event_data.categories.${key}.event_settings' fc-index='noprint' ${(data.event_settings.noprint ? "checked" : "")} />`);
 					element.push("</div>");
+					element.push("<div class='col pl-0 pl-2 pt-2'>");
+						element.push("Don't print event");
+					element.push("</div>");
 				element.push("</label>");
 
-				element.push("<div class='row mt-1'>");
-					element.push("<div class='col-6 pr-1 pl-0'>");
+				element.push("<div class='row'>");
+					element.push("<div class='col-md-6 col-sm-12 mb-2 pr-1 pl-0'>");
 						element.push("<div>Color:</div>");
-					element.push("</div>");
-
-					element.push("<div class='col-6 pr-0 pl-1'>");
-						element.push("<div>Display:</div>");
-					element.push("</div>");
-				element.push("</div>");
-
-				element.push("<div class='row mb-1'>");
-					element.push("<div class='col-6 pr-1 pl-0'>");
 						element.push(`<select class='custom-select form-control dynamic_input event-text-input color_display' data='event_data.categories.${key}.event_settings' fc-index='color'>`);
 							element.push(`<option ${(data.event_settings.color == 'Dark-Solid' ? ' selected' : '')}>Dark-Solid</option>`);
 							element.push(`<option ${(data.event_settings.color == 'Red' ? ' selected' : '')}>Red</option>`);
@@ -3046,7 +3037,8 @@ function add_category_to_list(parent, key, data){
 						element.push("</select>");
 					element.push("</div>");
 
-					element.push("<div class='col-6 pr-0 pl-1'>");
+					element.push("<div class='col-md-6 col-sm-12 mb-2 pr-0 pl-1'>");
+						element.push("<div>Display:</div>");
 						element.push(`<select class='custom-select form-control dynamic_input event-text-input text_display' data='event_data.categories.${key}.event_settings' fc-index='text'>`);
 							element.push(`<option value="text"${(data.event_settings.text == 'text' ? ' selected' : '')}>Just text</option>`);
 							element.push(`<option value="dot"${(data.event_settings.text == 'dot' ? ' selected' : '')}>• Dot with text</option>`);
@@ -3055,7 +3047,7 @@ function add_category_to_list(parent, key, data){
 					element.push("</div>");
 				element.push("</div>");
 
-				element.push("<div class='row mt-3'>");
+				element.push("<div class='row'>");
 					element.push(`Event display:`);
 				element.push("</div>");
 
