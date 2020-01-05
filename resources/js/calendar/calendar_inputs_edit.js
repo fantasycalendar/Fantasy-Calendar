@@ -2912,7 +2912,7 @@ function add_era_to_list(parent, key, data){
 						element.push("</div>");
 					element.push("</label>");
 
-					element.push(`<label for='${key}_ends_year' class='row my-2 border rounded protip ${static_data.seasons.global_settings.periodic_seasons ? "" : "disabled"}' data-pt-position='right' data-pt-title='This will end the year prematurely, causing a new year to begin directly after this era happens. If this is disabled, it's because static seasons cannot support eras that end years, as months disappear and seasons require the assigned months.'>`);
+					element.push(`<label for='${key}_ends_year' class='row my-2 border rounded protip ${static_data.seasons.global_settings.periodic_seasons ? "" : "disabled"}' data-pt-position='right' data-pt-title="This will end the year prematurely, causing a new year to begin directly after this era happens. If this is disabled, it's because static seasons cannot support eras that end years, as months disappear and seasons require the assigned months.">`);
 						element.push("<div class='col-auto pr-1 pr-0'>");
 							element.push(`<input type='checkbox' id='${key}_ends_year' class='form-control dynamic_input ends_year' ${!static_data.seasons.global_settings.periodic_seasons ? "disabled" : ""} data='eras.${key}.settings' fc-index='ends_year' ${(data.settings.ends_year ? "checked" : "")} />`);
 						element.push("</div>");
