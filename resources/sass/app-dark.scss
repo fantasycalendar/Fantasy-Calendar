@@ -41,6 +41,10 @@ $hamburger-padding-y        :1rem;
     color: white;
 }
 
+.form-control:disabled{
+    background-color: $input-disabled-color;
+}
+
 .weather_icon {
     filter: invert(100%);
 }

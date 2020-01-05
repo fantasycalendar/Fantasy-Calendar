@@ -495,7 +495,7 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
 }
 
 .disabled{
-    opacity:0.5;
+    background-color: $input-disabled-color;
 }
 
 /* ------------------ Event forms ----------------- */
