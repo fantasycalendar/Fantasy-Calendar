@@ -546,7 +546,7 @@ var calendar_layouts = {
 
 					calendar_layouts.html.push("<div class='day_row'>");
 						calendar_layouts.html.push("<div class='toprow left'>");
-							calendar_layouts.html.push(`<div class='number'>${epoch}</div>`);
+							calendar_layouts.html.push(`<div class='number'>${day_num}</div>`);
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow center'>");
 						if(calendar_layouts.epoch_data[epoch].weather && calendar_layouts.data.processed_weather){
