@@ -2354,28 +2354,18 @@ function add_season_to_sortable(parent, key, data){
 
 				if(static_data.seasons.global_settings.periodic_seasons){
 
-					element.push(`<div class='season-duration'>`);
+					element.push(`<div class='row mt-2'>`);
 
-						element.push(`<div class='row mt-1'>`);
-
-							element.push("<div class='col-6 pl-0 pr-0'>Duration:</div>");
-
-							element.push("<div class='col-6 pl-0 pr-0'>Peak duration:</div>");
-
+						element.push("<div class='col-md-6 col-sm-12 pl-0 pr-1'>");
+							element.push("Duration:");
+							var transition_length = data.transition_length == '' || data.transition_length == undefined ? 90 : data.transition_length;
+							element.push(`<input type='number' step='any' class='form-control dynamic_input transition_length protip' data='seasons.data.${key}' fc-index='transition_length' min='1' value='${transition_length}' data-pt-position="right" data-pt-title='How many days until this season ends, and the next begins.'/>`);
 						element.push("</div>");
 
-						element.push(`<div class='row mb-1'>`);
-
-							element.push("<div class='col-6 pl-0 pr-1'>");
-								var transition_length = data.transition_length == '' || data.transition_length == undefined ? 90 : data.transition_length;
-								element.push(`<input type='number' step='any' class='form-control dynamic_input transition_length protip' data='seasons.data.${key}' fc-index='transition_length' min='1' value='${transition_length}' data-pt-position="right" data-pt-title='How many days until this season ends, and the next begins.'/>`);
-							element.push("</div>");
-
-							element.push("<div class='col-6 pl-1 pr-0'>");
-								var duration = data.duration == '' || data.duration == undefined ? 0 : data.duration;
-								element.push(`<input type='number' step='any' class='form-control dynamic_input duration protip' data='seasons.data.${key}' fc-index='duration' min='0' value='${duration}' data-pt-position="right" data-pt-title='If the duration is the path up a mountain, the peak duration is a flat summit. This is how many days the season will pause before going down the other side of the mountain.'/>`);
-							element.push("</div>");
-
+						element.push("<div class='col-md-6 col-sm-12 pl-1 pr-0'>");
+							element.push("Peak duration:");
+							var duration = data.duration == '' || data.duration == undefined ? 0 : data.duration;
+							element.push(`<input type='number' step='any' class='form-control dynamic_input duration protip' data='seasons.data.${key}' fc-index='duration' min='0' value='${duration}' data-pt-position="right" data-pt-title='If the duration is the path up a mountain, the peak duration is a flat summit. This is how many days the season will pause before going down the other side of the mountain.'/>`);
 						element.push("</div>");
 
 					element.push("</div>");
