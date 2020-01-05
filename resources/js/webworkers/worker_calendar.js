@@ -60,6 +60,14 @@ var calendar_builder = {
 
 		timespan.leap_days = [];
 
+		var offset = (timespan.interval-timespan.offset)%timespan.interval;
+
+		if(year < 0 || this.static_data.settings.year_zero_exists){
+			var timespan_fraction = Math.ceil((year + offset) / timespan.interval);
+		}else{
+			var timespan_fraction = Math.floor((year + offset) / timespan.interval);
+		}
+
 		var leap_day_offset = 0;
 
 		// Get all current leap days and check if any of them should be on this timespan
@@ -71,7 +79,7 @@ var calendar_builder = {
 
 				leap_day.index = leap_day_index;
 
-				if(is_leap(this.static_data, year, leap_day.interval, leap_day.offset)){
+				if(is_leap(this.static_data, timespan_fraction, leap_day.interval, leap_day.offset)){
 
 					if(leap_day.intercalary){
 						if(timespan.type === 'intercalary'){
@@ -1967,16 +1975,18 @@ var calendar_builder = {
 			year_day = 1;
 		}
 
-		/*console.log(this.dynamic_data.year, calendar_era_year)
+		if(debug || debugtext){
 
-		if(this.previous_epoch && this.previous_epoch != calendar_start_epoch){
-			console.log(this.previous_epoch)
-			console.log(calendar_start_epoch)
-			console.log(calendar_end_epoch)
-			console.log("------------------------")
+			console.log(this.dynamic_data.year, calendar_era_year)
+
+			if(this.previous_epoch && this.previous_epoch != calendar_start_epoch){
+				console.log(this.previous_epoch, calendar_start_epoch, calendar_end_epoch)
+				console.log("------------------------")
+			}
+			
+			this.previous_epoch = calendar_end_epoch;
+
 		}
-
-		this.previous_epoch = calendar_end_epoch;*/
 		
 		return {
 			success: true,
@@ -1999,6 +2009,9 @@ var calendar_builder = {
 
 }
 
+var debug = false;
+var debugtext = false;
+
 onmessage = e => {
 
 	calendar_builder.calendar_name = e.data.calendar_name;
@@ -2006,19 +2019,25 @@ onmessage = e => {
 	calendar_builder.dynamic_data = e.data.dynamic_data;
 	calendar_builder.owner = e.data.owner;
 
-	/*setInterval(function(){
-		calendar_builder.evaluate_calendar_data();
-		calendar_builder.dynamic_data.year++;
-	}, 1000);*/
+	if(debug){
 
-	if(e.data.action != "future"){
-		data = calendar_builder.evaluate_calendar_data();
+		setInterval(function(){
+			calendar_builder.evaluate_calendar_data();
+			calendar_builder.dynamic_data.year++;
+		}, 10);
+
 	}else{
-		data = calendar_builder.evaluate_future_calendar_data(e.data.start_year, e.data.end_year);
+
+		if(e.data.action != "future"){
+			data = calendar_builder.evaluate_calendar_data();
+		}else{
+			data = calendar_builder.evaluate_future_calendar_data(e.data.start_year, e.data.end_year);
+		}
+		
+		postMessage({
+			processed_data: data,
+			action: e.data.action
+		});
+
 	}
-	
-	postMessage({
-		processed_data: data,
-		action: e.data.action
-	});
 }

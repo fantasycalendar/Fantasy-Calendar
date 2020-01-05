@@ -1740,7 +1740,7 @@ function get_epoch(static_data, year, month, day){
 
 		var offset = (timespan.interval-timespan.offset)%timespan.interval;
 
-		if(year < 0){
+		if(year < 0 || static_data.settings.year_zero_exists){
 			var timespan_fraction = Math.ceil((year + offset) / timespan.interval);
 		}else{
 			var timespan_fraction = Math.floor((year + offset) / timespan.interval);
@@ -1780,6 +1780,8 @@ function get_epoch(static_data, year, month, day){
 			if(timespan_index === leap_day.timespan){
 
 				added_leap_day = get_interval_occurrences(static_data, timespan_fraction, leap_day.interval, leap_day.offset);
+
+				//console.log(timespan_fraction, leap_day.interval, leap_day.offset, added_leap_day)
 
 				// If we have leap days days that are intercalary (eg, do not affect the flow of the static_data, add them to the overall epoch, but remove them from the start of the year week day selection)
 				if(leap_day.intercalary || timespan.type === "intercalary"){
@@ -1882,8 +1884,6 @@ function evaluate_calendar_start(static_data, year, month, day){
 
 	}
 
-	//epoch = year < 0 ? epoch+1 : epoch;
-
 	// Calculate the start of week
 	if(static_data.year_data.overflow){
 
@@ -1896,8 +1896,6 @@ function evaluate_calendar_start(static_data, year, month, day){
 	}else{
 		var week_day = 1;
 	}
-
-	//epoch = year < 0 ? epoch-1 : epoch;
 
 	return {"epoch": epoch,
 			"era_year": era_year,
