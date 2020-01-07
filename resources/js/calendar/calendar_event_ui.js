@@ -23,8 +23,10 @@ var edit_event_ui = {
 		this.connected_events					= [];
 		this.search_distance					= 0;
 		this.prev_version_event					= {};
+		this.inputs_changed						= true;
 
 		this.event_background 					= $('#event_edit_background');
+		this.event_conditions_container			= $('#event_conditions_container');
 		this.event_conditions_container			= $('#event_conditions_container');
 		this.condition_presets					= $('#condition_presets');
 		this.repeat_input						= $('#repeat_input');
@@ -58,7 +60,14 @@ var edit_event_ui = {
 			edit_event_ui.show_event_dates();
 		});
 
-		this.trumbowyg.trumbowyg();
+		this.trumbowyg.trumbowyg().on("tbwchange", function(){
+			edit_event_ui.inputs_changed = true;
+		});
+
+		$(document).on('change', '.event_setting', function(){
+			edit_event_ui.inputs_changed = true;
+		});
+
 
 		$(document).on('click', '.open-edit-event-ui', function(){
 
@@ -217,6 +226,7 @@ var edit_event_ui = {
 				var parent = $(this).closest('.sortable-container');
 			}else{
 				var parent = $(this).closest('#event-form');
+				edit_event_ui.inputs_changed = true;
 			}
 
 			var output = parent.find('.event-text-output');
@@ -257,6 +267,7 @@ var edit_event_ui = {
 					item.remove();
 				}
 				edit_event_ui.evaluate_condition_selects(edit_event_ui.event_conditions_container);
+				edit_event_ui.inputs_changed = true;
 			},
 			tolerance: -5
 		});
@@ -339,7 +350,9 @@ var edit_event_ui = {
 
 	create_new_event: function(name, epoch){
 
-		edit_event_ui.new_event = true;
+		this.new_event = true;
+
+		this.data = clone(evaluated_static_data.epoch_data[epoch]);
 
 		var stats = {
 			'name': name,
@@ -350,9 +363,15 @@ var edit_event_ui = {
 				'show_first_last': false,
 				'limited_repeat': false,
 				'limited_repeat_num': 1,
-				'conditions': [],
+				'conditions': [
+					['Year', '0', [this.data.year]],
+					['&&'],
+					['Month', '0', [this.data.timespan_index]],
+					['&&'],
+					['Day', '0', [this.data.day]]
+				],
 				'connected_events': false,
-				'date': [],
+				'date': [this.data.year, this.data.timespan_index, this.data.day],
 				'search_distance': 0
 			},
 			'settings': {
@@ -368,14 +387,9 @@ var edit_event_ui = {
 
 		static_data.event_data.events[eventId] = stats;
 
-		if(epoch){
-			edit_event_ui.data = clone(evaluated_static_data.epoch_data[epoch]);
-			edit_event_ui.event_conditions_container.empty();
-			edit_event_ui.add_preset_conditions("once", false);
-			edit_event_ui.populate_condition_presets();
-		}
-
 		this.set_current_event(eventId)
+
+		this.inputs_changed = false;
 
 	},
 
@@ -466,13 +480,13 @@ var edit_event_ui = {
 			noprint: $('#event_dontprint_checkbox').prop('checked')
 		}
 
-		if(edit_event_ui.new_event){
+		if(this.new_event){
 			add_event_to_sortable(events_sortable, this.event_id, static_data.event_data.events[this.event_id]);
 		}else{
 			$(`.events_input[index="${this.event_id}"]`).find(".event_name").text(`Edit - ${name}`);
 		}
 
-		edit_event_ui.clear_ui();
+		this.clear_ui();
 
 		error_check();
 
@@ -589,9 +603,13 @@ var edit_event_ui = {
 
 		var event = static_data.event_data.events[this.event_id];
 
-		var search_distance = $('#duration').val()|0 > search_distance ? $('#duration').val()|0 : search_distance;
-		var search_distance = $('#limited_repeat_num').val()|0 > search_distance ? $('#limited_repeat_num').val()|0 : search_distance;
-		var search_distance = this.search_distance > search_distance ? this.search_distance : search_distance;
+		var search_distance = 0;
+
+		if($('#has_duration').prop('checked') || $('#limited_repeat').prop('checked')){
+			search_distance = $('#duration').val()|0 > search_distance ? $('#duration').val()|0 : search_distance;
+			search_distance = $('#limited_repeat_num').val()|0 > search_distance ? $('#limited_repeat_num').val()|0 : search_distance;
+			search_distance = this.search_distance > search_distance ? this.search_distance : search_distance;
+		}
 
 		return search_distance;
 
@@ -644,24 +662,24 @@ var edit_event_ui = {
 
 	has_changed: function(){
 
-		if(static_data.event_data.events[this.event_id]){
+		if(static_data.event_data.events[this.event_id] && this.inputs_changed){
 
 			var event_check = clone(static_data.event_data.events[this.event_id])
 
 			var eventid = static_data.event_data.events[this.event_id].id;
 
-			event_check.id = eventid;
+			if(eventid !== undefined){
+				event_check.id = eventid;
+			}
 
 			var name = this.event_background.find('.event_name').val();
-			name = name !== '' ? name : "Unnamed Event";
+			name = name !== '' ? name : "New Event";
 
 			event_check.name = name;
 
 			event_check.description = this.trumbowyg.trumbowyg('html');
 
 			event_check.data = this.create_event_data();
-
-			event_check.event_category_id = get_category($('#event_categories').val()).id;
 
 			event_check.settings = {
 				color: $('#color_style').val(),
@@ -738,6 +756,8 @@ var edit_event_ui = {
 	},
 
 	add_preset_conditions: function(preset, repeats){
+
+		this.inputs_changed = true;
 
 		switch(preset){
 
@@ -1121,6 +1141,7 @@ var edit_event_ui = {
 	// This function evaluates what inputs should be connected to any given condition based on its input
 	evaluate_inputs: function(element){
 
+		this.inputs_changed = true;
 		this.conditions_changed = true;
 
 		var selected_option = element.find('.condition_type').find(":selected");
@@ -1485,6 +1506,8 @@ var edit_event_ui = {
 
 	add_condition: function(parent, type){
 
+		this.inputs_changed = true;
+
 		var html = [];
 
 		html.push("<li class='condition'>");
@@ -1561,6 +1584,8 @@ var edit_event_ui = {
 	},
 
 	add_group: function(parent, group_class){
+
+		this.inputs_changed = true;
 
 		var html = [];
 

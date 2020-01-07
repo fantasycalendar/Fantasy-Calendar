@@ -130,7 +130,7 @@
 
 					<div class='detail-column half'>
 						<label class='form-control checkbox'>
-							<input type='checkbox' id='limited_repeat' name='limited_repeat'> Limit repetitions
+							<input type='checkbox' class='event_setting' id='limited_repeat' name='limited_repeat'> Limit repetitions
 						</label>
 					</div>
 
@@ -155,7 +155,7 @@
 
 					<div class='detail-column half'>
 						<label class='form-control checkbox'>
-							<input type='checkbox' id='has_duration' name='has_duration'> Has duration
+							<input type='checkbox' class='event_setting' id='has_duration' name='has_duration'> Has duration
 						</label>
 					</div>
 
@@ -177,7 +177,7 @@
 				<div class='detail-row'>
 					<div class='detail-column'>
 						<label class='form-control checkbox'>
-							<input type='checkbox' id='show_first_last' name='show_first_last'> Show only first and last event
+							<input type='checkbox' class='event_setting' id='show_first_last' name='show_first_last'> Show only first and last event
 						</label>
 					</div>
 				</div>
@@ -197,20 +197,20 @@
 					<div class='detail-row'>
 						<div class='detail-column full'>
 							<label class='form-control checkbox'>
-								<input type='checkbox' id='event_hide_full' name='event_hide_full'> Hide ENTIRELY (useful for event-based-events)
+								<input type='checkbox' class='event_setting' id='event_hide_full' name='event_hide_full'> Hide ENTIRELY (useful for event-based-events)
 							</label>
 						</div>
 					</div>
 
 					<div class='detail-column half'>
 						<label class='form-control checkbox'>
-							<input type='checkbox' id='event_hide_players' name='event_hide_players'> Hide from players
+							<input type='checkbox' class='event_setting' id='event_hide_players' name='event_hide_players'> Hide from players
 						</label>
 					</div>
 
 					<div class='detail-column half'>
 						<label class='form-control checkbox'>
-							<input type='checkbox' id='event_dontprint_checkbox' name='event_dontprint_checkbox'> Do not print
+							<input type='checkbox' class='event_setting' id='event_dontprint_checkbox' name='event_dontprint_checkbox'> Do not print
 						</label>
 					</div>
 				</div>
