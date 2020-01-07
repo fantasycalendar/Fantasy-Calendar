@@ -83,9 +83,8 @@ var calendar_builder = {
 					}else{
 						timespan.length++;
 						if(leap_day.adds_week_day){
-							var location = ((leap_day.day-leap_day_offset-1)%timespan.week.length);
-							if(location < 0) location = 0;
-							timespan.week.splice(location, 0, leap_day.week_day)
+							var location = (leap_day.day)%timespan.week.length;
+							timespan.week.splice(location+leap_day_offset, 0, leap_day.week_day)
 							leap_day_offset++;
 						}
 					}

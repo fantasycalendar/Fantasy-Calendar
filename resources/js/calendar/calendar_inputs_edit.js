@@ -3294,7 +3294,9 @@ function populate_first_day_select(val){
 
 }
 
-function repopulate_weekday_select(elements){
+function repopulate_weekday_select(elements, value, change){
+
+	change = change === undefined ? true : change;
 
 	elements.each(function(){
 
@@ -3312,7 +3314,7 @@ function repopulate_weekday_select(elements){
 
 		}
 
-		var selected = $(this).val()|0;
+		var selected = value === undefined ? $(this).val()|0 : value;
 
 		selected = selected > week.length ? week.length-1 : selected;
 
@@ -3329,6 +3331,10 @@ function repopulate_weekday_select(elements){
 		}
 
 		$(this).html(html.join('')).val(selected);
+
+		if(change){
+			$(this).change();
+		}
 
 	});
 
