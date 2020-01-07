@@ -415,6 +415,7 @@ function repopulate_timespan_select(select, val, change, max){
 
 	if(static_data.year_data.timespans.length == 0 || static_data.year_data.global_week.length == 0) return;
 
+	select = select === undefined ? $('.timespan-list') : select;
 	change = change === undefined ? true : change;
 	max = max === undefined ? false : max;
 
@@ -458,18 +459,21 @@ function repopulate_timespan_select(select, val, change, max){
 			var value = val;
 		}
 
-
 		$(this).html(html.join('')).val(value);
 		if($(this).find('option:selected').prop('disabled') || $(this).val() == null){
 			internal_loop:
-			for(var i = value, j = value+1; i >= 0 || j < $(this).children().length; i--, j++){
-				if(!$(this).children().eq(i).prop('disabled')){
-					var new_val = i;
-					break internal_loop;
-				}
-				if(!$(this).children().eq(j).prop('disabled')){
-					var new_val = j;
-					break internal_loop;
+			if(value > $(this).children().length){
+				var new_val = $(this).children().length-1;
+			}else{
+				for(var i = value, j = value+1; i >= 0 || j < $(this).children().length; i--, j++){
+					if(!$(this).children().eq(i).prop('disabled')){
+						var new_val = i;
+						break internal_loop;
+					}
+					if(!$(this).children().eq(j).prop('disabled')){
+						var new_val = j;
+						break internal_loop;
+					}
 				}
 			}
 			$(this).val(new_val);

@@ -3370,7 +3370,7 @@ function reindex_timespan_sortable(){
 
 	});
 
-	repopulate_month_lists();
+	repopulate_timespan_select();
 
 	do_error_check();
 
@@ -3843,21 +3843,6 @@ function reindex_events_sortable(){
 
 	static_data.event_data.events = clone(new_events);
 
-}
-
-
-function repopulate_month_lists(){
-	$(".timespan-list").each(function(i){
-		selected = $(this).val();
-		html = [];
-		$(this).html('');
-		for(var i = 0; i < static_data.year_data.timespans.length; i++)
-		{
-			html.push(`<option value="${i}">${static_data.year_data.timespans[i].name}</option>`);
-		}
-		$(this).append(html);
-		$(this).val(selected);
-	});
 }
 
 function recreate_moon_colors(){
