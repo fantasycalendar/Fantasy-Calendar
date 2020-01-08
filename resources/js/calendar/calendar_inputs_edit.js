@@ -865,8 +865,7 @@ function set_up_edit_inputs(){
 		repopulate_day_select(era.find('.timespan-day-list'), dynamic_data.day, false);
 		sort_list_by_date(era_list);
 		name.val("");
-		do_error_check();
-		eras.evaluate_current_era()
+		do_error_check("eras");
 
 	});
 
