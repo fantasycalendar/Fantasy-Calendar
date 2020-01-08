@@ -413,7 +413,9 @@ function update_cycle_text(){
 
 	if(evaluated_static_data.epoch_data){
 
-		var cycle_text = Mustache.render(static_data.cycles.format, get_cycle(static_data, evaluated_static_data.epoch_data[preview_date.epoch]).text);
+		var format = static_data.cycles.format.replace('{{', '{{{').replace('}}', '}}}');
+
+		var cycle_text = Mustache.render(format, get_cycle(static_data, evaluated_static_data.epoch_data[preview_date.epoch]).text);
 
 		$('#top_follower_content .cycle').text(cycle_text).removeClass('hidden');
 

@@ -1288,9 +1288,12 @@ function set_up_edit_inputs(){
 			static_data.year_data.timespans[timespan_index].week = [];
 			for(index = 0; index < static_data.year_data.global_week.length; index++){
 				static_data.year_data.timespans[timespan_index].week.push(static_data.year_data.global_week[index]);
-				element.push(`<input type='text' class='detail-row form-control internal-list-name dynamic_input custom_week_day' data='year_data.timespans.${timespan_index}.week' fc-index='${index}' value='${static_data.year_data.global_week[index]}'/>`);
+				element.push(`<input type='text' class='detail-row form-control internal-list-name dynamic_input custom_week_day' data='year_data.timespans.${timespan_index}.week' fc-index='${index}'/>`);
 			}
-			parent.find(".week_list").html(element.join("")).parent().removeClass('hidden');
+			parent.find(".week_list").html(element).parent().removeClass('hidden');
+			parent.find(".week_list").children().each(function(i){
+				$(this).val(static_data.year_data.global_week[i])
+			});
 			parent.find(".week-length").prop('disabled', false).val(static_data.year_data.global_week.length);
 			parent.find(".weekday_quick_add").prop('disabled', false);
 		}else{
@@ -1346,10 +1349,13 @@ function set_up_edit_inputs(){
 
 			var element = [];
 			for(i = 0; i < timespan.week.length; i++){
-				element.push(`<input type='text' class='detail-row form-control internal-list-name custom_week_day dynamic_input' data='year_data.timespans.${index}.week' fc-index='${i}' value='${timespan.week[i]}'/>`);
+				element.push(`<input type='text' class='detail-row form-control internal-list-name custom_week_day dynamic_input' data='year_data.timespans.${index}.week' fc-index='${i}'/>`);
 			}
 
 			week_day_list.append(element.join(""));
+			week_day_list.children().each(function(i){
+				$(this).val(timespan.week[i])
+			});
 
 			do_error_check('calendar');
 
@@ -1513,10 +1519,13 @@ function set_up_edit_inputs(){
 
 			var element = [];
 			for(i = 0; i < cycle.names.length; i++){
-				element.push(`<input type='text' class='form-control internal-list-name dynamic_input' data='cycles.data.${index}.names' fc-index='${i}' value='${cycle.names[i]}'/>`);
+				element.push(`<input type='text' class='form-control internal-list-name dynamic_input' data='cycles.data.${index}.names' fc-index='${i}'/>`);
 			}
 
 			cycle_name_list.append(element.join(""));
+			cycle_name_list.children().each(function(i){
+				$(this).val(cycle.names[i]);
+			})
 
 			do_error_check('calendar');
 
@@ -1927,7 +1936,7 @@ function add_weekday_to_sortable(parent, key, name){
 		element.push("<div class='main-container'>");
 			element.push("<div class='handle icon-reorder'></div>");
 			element.push("<div class='name-container'>");
-				element.push(`<input type='text' value='${name}' class='form-control name-input small-input dynamic_input' data='year_data.global_week' fc-index='${key}' tabindex='${(key+1)}'/>`);
+				element.push(`<input type='text' class='form-control name-input small-input dynamic_input' data='year_data.global_week' fc-index='${key}' tabindex='${(key+1)}'/>`);
 			element.push("</div>");
 			element.push("<div class='remove-spacer'></div>");
 		element.push("</div>");
@@ -1940,7 +1949,12 @@ function add_weekday_to_sortable(parent, key, name){
 
 	element.push("</div>");
 
-	parent.append(element.join(""));
+	element = $(element.join(""))
+
+	element.find('.name-input').val(name);
+
+	parent.append(element);
+
 }
 
 function add_timespan_to_sortable(parent, key, data){
@@ -2042,7 +2056,7 @@ function add_timespan_to_sortable(parent, key, data){
 						element.push("<div class='row mt-2 week_list border'>");
 						if(data.week){
 							for(index = 0; index < data.week.length; index++){
-								element.push(`<input type='text' class='form-control internal-list-name dynamic_input custom_week_day' data='year_data.timespans.${key}.week' fc-index='${index}' value='${data.week[index]}'/>`);
+								element.push(`<input type='text' class='form-control internal-list-name dynamic_input custom_week_day' data='year_data.timespans.${key}.week' fc-index='${index}/>`);
 							}
 						}
 						element.push("</div>");
@@ -2057,6 +2071,12 @@ function add_timespan_to_sortable(parent, key, data){
 	element = $(element.join(""))
 
 	element.find('.name-input').val(data.name);
+
+	if(data.week){
+		element.find('.week_list').children().each(function(i){
+			$(this).val(data.week[index]);
+		});
+	}
 
 	parent.append(element);
 }
@@ -2120,7 +2140,7 @@ function add_leap_day_to_list(parent, key, data){
 					element.push(`<div class='adds_week_day_data_container ${(data.adds_week_day && !data.intercalary ? "" : "hidden")}'>`);
 						element.push("<div class='row mt-2'>Week day name:</div>");
 						element.push("<div class='row mb-2'>");
-							element.push(`<input type='text' class='form-control internal-list-name dynamic_input' data='year_data.leap_days.${key}' fc-index='week_day' value='${(data.week_day && !data.intercalary ? data.week_day : 'Weekday')}' ${(data.adds_week_day && !data.intercalary ? "" : "disabled")}/>`);
+							element.push(`<input type='text' class='form-control internal-list-name dynamic_input' data='year_data.leap_days.${key}' fc-index='week_day' ${(data.adds_week_day && !data.intercalary ? "" : "disabled")}/>`);
 						element.push("</div>");
 					element.push("</div>");
 
@@ -2190,6 +2210,7 @@ function add_leap_day_to_list(parent, key, data){
 	element = $(element.join(""))
 
 	element.find('.name-input').val(data.name);
+	element.find('.internal-list-name').val(`${data.week_day && !data.intercalary ? data.week_day : 'Weekday'}`)
 
 	parent.append(element);
 
@@ -2494,8 +2515,7 @@ function add_location_to_list(parent, key, data){
 						element.push("<div class='row mb-2'>");
 
 							element.push("<div class='col-6 p-0 mr-2'>");
-								var name = data.seasons[i].custom_name ? data.seasons[i].name : static_data.seasons.data[i].name;
-								element.push(`<input type='text' class='form-control form-control-sm full dynamic_input' data='seasons.locations.${key}.seasons.${i}' fc-index='name' value='${name}' ${!data.seasons[i].custom_name ? "disabled" : ""}>`);
+								element.push(`<input type='text' class='form-control form-control-sm full dynamic_input' id='${key}_${i}_location_name' data='seasons.locations.${key}.seasons.${i}' fc-index='name' ${!data.seasons[i].custom_name ? "disabled" : ""}>`);
 							element.push("</div>");
 
 							element.push("<div class='col-md-auto pl-2 pr-2 pt-1'><span class='align-middle'>Custom:</span></div>");
@@ -2699,6 +2719,13 @@ function add_location_to_list(parent, key, data){
 
 	element.find('.name-input').val(data.name);
 
+	for(var i = 0; i < data.seasons.length; i++){
+
+		var name = data.seasons[i].custom_name ? data.seasons[i].name : static_data.seasons.data[i].name;
+		element.find(`#${key}_${i}_location_name`).val(name)
+
+	}
+
 	parent.append(element);
 }
 
@@ -2772,7 +2799,7 @@ function add_cycle_to_sortable(parent, key, data){
 				element.push("<div class='row my-2 cycle-container border'>");
 					element.push("<div class='cycle_list'>");
 						for(index = 0; index < data.names.length; index++){
-							element.push(`<input type='text' class='form-control internal-list-name dynamic_input' data='cycles.data.${key}.names' fc-index='${index}' value='${data.names[index]}'/>`);
+							element.push(`<input type='text' class='form-control internal-list-name dynamic_input' data='cycles.data.${key}.names' fc-index='${index}'/>`);
 						}
 					element.push("</div>");
 				element.push("</div>");
@@ -2781,7 +2808,13 @@ function add_cycle_to_sortable(parent, key, data){
 
 	element.push("</div>");
 
-	parent.append(element.join(""));
+	element = $(element.join(""));
+
+	element.find('.cycle_list').children().each(function(i){
+		$(this).val(data.names[i])
+	});
+
+	parent.append(element);
 
 }
 
@@ -2819,8 +2852,7 @@ function add_era_to_list(parent, key, data){
 
 				element.push("<div class='row mt-1'>Format:</div>");
 				element.push("<div class='row mb-1'>");
-					var formatting = data.settings.use_custom_format ? data.formatting : 'Year {{year}} - {{era_name}}';
-					element.push(`<input type='text' class='form-control small-input dynamic_input era_formatting' data='eras.${key}' fc-index='formatting' value='${formatting}' ${!data.settings.use_custom_format ? "disabled" : ""}/>`);
+					element.push(`<input type='text' class='form-control small-input dynamic_input era_formatting' data='eras.${key}' fc-index='formatting' ${!data.settings.use_custom_format ? "disabled" : ""}/>`);
 				element.push("</div>");
 
 				element.push("<div class='row my-1'>");
@@ -2925,6 +2957,9 @@ function add_era_to_list(parent, key, data){
 	var element = $(element.join(""));
 
 	element.find('.name-input').val(data.name);
+
+	var formatting = data.settings.use_custom_format ? data.formatting : 'Year {{year}} - {{era_name}}';
+	element.find('.era_formatting').val(formatting);
 
 	parent.append(element);
 
