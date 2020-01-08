@@ -199,8 +199,10 @@ var eras = {
 
 			if(era.settings.use_custom_format && era.formatting){
 
+				var format = era.formatting.replace('{{', '{{{').replace('}}', '}}}');
+
 				year_text = Mustache.render(
-					era.formatting,
+					format,
 					{
 						"year": calendar_layouts.year_data.year,
 						"nth_year": ordinal_suffix_of(calendar_layouts.year_data.year),
