@@ -199,7 +199,9 @@ var eras = {
 
 			if(era.settings.use_custom_format && era.formatting){
 
-				var format = era.formatting.replace('{{', '{{{').replace('}}', '}}}');
+				var format = era.formatting.replace(/\{\{/g, '{{{').replace(/\}\}/g, '}}}');
+
+				console.log(format)
 
 				year_text = Mustache.render(
 					format,
@@ -415,7 +417,7 @@ function update_cycle_text(){
 
 	if(evaluated_static_data.epoch_data){
 
-		var format = static_data.cycles.format.replace('{{', '{{{').replace('}}', '}}}');
+		var format = static_data.cycles.format.replace(/\{\{/g, '{{{').replace(/\}\}/g, '}}}');
 
 		var cycle_text = Mustache.render(format, get_cycle(static_data, evaluated_static_data.epoch_data[preview_date.epoch]).text);
 

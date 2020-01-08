@@ -866,6 +866,7 @@ function set_up_edit_inputs(){
 		sort_list_by_date(era_list);
 		name.val("");
 		do_error_check();
+		eras.evaluate_current_era()
 
 	});
 
