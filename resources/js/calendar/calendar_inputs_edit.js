@@ -1264,11 +1264,12 @@ function set_up_edit_inputs(){
 		container.find('.week_day_select_container').toggleClass('hidden', !checked);
 		container.find('.adds_week_day_data_container').toggleClass('hidden', !checked);
 		container.find('.adds_week_day_data_container input, .adds_week_day_data_container select').prop('disabled', !checked);
-		container.find('.week-day-select').toggleClass('inclusive', checked);
+		container.find('.week-day-select').toggleClass('inclusive', checked).prop('disabled', !checked);
 		$('#first_week_day_container').toggleClass('hidden', !checked).find('select').prop('disabled', !checked);
 		$('#overflow_explanation').toggleClass('hidden', !checked);
+		$('#overflow_container').toggleClass('hidden', checked);
 		if(checked){
-			$('#month_overflow').prop('checked', true);
+			$('#month_overflow').prop('checked', false).change();
 		}
 		repopulate_weekday_select($(this).closest('.sortable-container').find('.week-day-select'));
 		container.find('.internal-list-name').change();
@@ -2122,7 +2123,7 @@ function add_leap_day_to_list(parent, key, data){
 					element.push(`<div class='week_day_select_container ${(data.adds_week_day && !data.intercalary) ? "" : "hidden"}'>`);
 						element.push("<div class='row mt-2'>After which weekday:</div>");
 						element.push("<div class='row mb-2'>");
-							element.push(`<select type='number' class='custom-select form-control dynamic_input full week-day-select ${(data.adds_week_day ? "inclusive" : "")}' data='year_data.leap_days.${key}' fc-index='day'>`);
+							element.push(`<select type='number' class='custom-select form-control dynamic_input full week-day-select inclusive' ${(data.adds_week_day && !data.intercalary) ? "" : "disabled"} data='year_data.leap_days.${key}' fc-index='day'>`);
 
 								if(data.timespan === undefined){
 									var week = static_data.year_data.global_week;
@@ -2145,7 +2146,7 @@ function add_leap_day_to_list(parent, key, data){
 					element.push(`<div class='${(!data.intercalary ? "hidden" : "")}'>`);
 						element.push("<div class='row mt-2'>Select after which day: </div>");
 						element.push("<div class='row mb-2'>");
-							element.push(`<select type='number' class='custom-select form-control dynamic_input full timespan-day-list exclude_self' data='year_data.leap_days.${key}' fc-index='day'>`);
+							element.push(`<select type='number' class='custom-select form-control dynamic_input full timespan-day-list exclude_self' data='year_data.leap_days.${key}' ${(!data.intercalary ? "disabled" : "")} fc-index='day'>`);
 							element.push("</select>");
 						element.push("</div>");
 					element.push("</div>");
@@ -3322,6 +3323,8 @@ function repopulate_weekday_select(elements, value, change){
 
 		if(inclusive){
 			html.push(`<option value='0'>Before ${week[0]}</option>`);
+		}else{
+			selected = selected == 0 ? 1 : selected;
 		}
 
 		for(var i = 0; i < week.length; i++){
