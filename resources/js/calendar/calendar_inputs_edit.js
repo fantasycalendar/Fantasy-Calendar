@@ -1297,7 +1297,7 @@ function set_up_edit_inputs(){
 			static_data.year_data.timespans[timespan_index].week = [];
 			for(index = 0; index < static_data.year_data.global_week.length; index++){
 				static_data.year_data.timespans[timespan_index].week.push(static_data.year_data.global_week[index]);
-				element.push(`<input type='text' class='row form-control internal-list-name dynamic_input custom_week_day' data='year_data.timespans.${timespan_index}.week' fc-index='${index}' value='${static_data.year_data.global_week[index]}'/>`);
+				element.push(`<input type='text' class='form-control internal-list-name dynamic_input custom_week_day' data='year_data.timespans.${timespan_index}.week' fc-index='${index}' value='${static_data.year_data.global_week[index]}'/>`);
 			}
 			parent.find(".week_list").html(element.join("")).parent().parent().removeClass('hidden');
 			parent.find(".week-length").prop('disabled', false).val(static_data.year_data.global_week.length);
@@ -1983,82 +1983,80 @@ function add_timespan_to_sortable(parent, key, data){
 		element.push("<div class='collapse-container container'>");
 
 			element.push("<div class='col-12 mb-3'>");
-				element.push("<div class='row bold-text big-text italics-text'>");
-					element.push(data.type == "month" ? "Month" : "Intercalary month");
+				element.push("<div class='row no-gutters bold-text big-text italics-text'>");
+					element.push("<div class='col-12'>" + (data.type == "month" ? "Month" : "Intercalary month") + "</div>");
 				element.push("</div>");
 
-					element.push("<div class='row my-1 bold-text'>Leaping settings</div>");
+					element.push("<div class='row no-gutters my-1 bold-text'><div class='col-12'>Leaping settings</div></div>");
 
-				element.push("<div class='row mt-1'>");
-					element.push("<div class='col-6 pr-1 pl-0'>");
+				element.push("<div class='row no-gutters mt-1'>");
+					element.push("<div class='col-6'>");
 						element.push("<div>Interval:</div>");
 					element.push("</div>");
 
-					element.push("<div class='col-6 pr-0 pl-1'>");
+					element.push("<div class='col-6'>");
 						element.push("<div>Offset:</div>");
 					element.push("</div>");
 				element.push("</div>");
 
-				element.push("<div class='row mb-1'>");
-					element.push("<div class='col-6 pr-1 pl-0'>");
+				element.push("<div class='row no-gutters mb-1'>");
+					element.push("<div class='col-6'>");
 						element.push(`<input type='number' step="1" min='1' class='form-control timespan_occurance_input interval dynamic_input small-input' data='year_data.timespans.${key}' fc-index='interval' value='${data.interval}' />`);
 					element.push("</div>");
 
-					element.push("<div class='col-6 pr-0 pl-1'>");
+					element.push("<div class='col-6'>");
 						element.push(`<input type='number' step="1" class='form-control timespan_occurance_input offset dynamic_input small-input' min='0' data='year_data.timespans.${key}' fc-index='offset' value='${data.offset}'`);
 						element.push(data.interval === 1 ? " disabled" : "");
 						element.push("/>");
 					element.push("</div>");
 				element.push("</div>");
 
-				element.push("<div class='row my-1'>");
-					element.push("<div class='italics-text timespan_variance_output'>");
+				element.push("<div class='row no-gutters my-1'>");
+					element.push("<div class='col-12 italics-text timespan_variance_output'>");
 						element.push(get_interval_text(true, data));
 					element.push("</div>");
 				element.push("</div>");
 
 				if(data.type == 'month'){
 
-					element.push("<div class='row my-1'>");
-						element.push("<div class='separator'></div>");
+					element.push("<div class='row no-gutters my-1'>");
+						element.push("<div class='col-12'><div class='separator'></div></div>");
 					element.push("</div>");
 
-					element.push("<div class='row my-1'>");
-						element.push("<div class='bold-text'>Week settings</div>");
+					element.push("<div class='row no-gutters my-1'>");
+						element.push("<div class='col-12 bold-text'>Week settings</div>");
 					element.push("</div>");
 
-					element.push(`<label for='${key}_custom_week' class='row my-1 border rounded'>`);
-						element.push("<div class='col-auto pr-1 pr-0'>");
-							element.push(`<input type='checkbox' id='${key}_custom_week' class='form-control unique-week-input' index='${key}'`);
+					element.push(`<div class='row no-gutters my-1'>`);
+						element.push("<div class='form-check col-12 py-1 pl-4 border rounded'>");
+							element.push(`<input type='checkbox' id='${key}_custom_week' class='form-check-input unique-week-input' index='${key}'`);
 							element.push(data.week ? "checked" : "");
 							element.push("/>");
-						element.push("</div>");
-						element.push(`<div class='col pl-0 pl-2 pt-2'>`);
+						element.push(`<label for='${key}_custom_week' class='form-check-label'>`);
 							element.push("Use custom week");
+                        element.push("</div>");
 						element.push("</div>");
-					element.push("</label>");
+					element.push("</div>");
 
-					element.push(`<div class='container p-0 my-2 custom-week-container ${(!data.week ? "hidden" : "")}'>`);
+					element.push(`<div class='col-12 my-2 custom-week-container ${(!data.week ? "hidden" : "")}'>`);
 
-							element.push("<div class='row my-1'>");
-								element.push("<div class='col p-0'>");
+							element.push("<div class='row no-gutters my-1'>");
+								element.push("<div class='col-12'>");
 									element.push("Length:");
-								element.push("</div>");
-								element.push("<div class='col p-0'>");
 								element.push("</div>");
 							element.push("</div>");
 
-							element.push("<div class='row'>");
-								element.push("<div class='col-6 pr-1 pl-0'>");
+							element.push("<div class='row no-gutters'>");
+								element.push("<div class='col-6'>");
 									element.push(`<input type='number' min='1' step="1" class='form-control week-length small-input' ${(!data.week ? "disabled" : "")} value='${(data.week ? data.week.length : 0)}'/>`);
 								element.push("</div>");
-								element.push("<div class='col-6 pr-0 pl-1'>");
+								element.push("<div class='col-6'>");
 									element.push(`<button type='button' class='full btn btn-primary weekday_quick_add' ${(!data.week ? "disabled" : "")}>Quick add</button>`);
 								element.push("</div>");
 							element.push("</div>");
 
-							element.push("<div class='row mt-2 p-0 border'>");
-								element.push("<div class='week_list'>");
+							element.push("<div class='row mt-2 border'>");
+								element.push("<div class='week_list col-12 py-4'>");
 								if(data.week){
 									for(index = 0; index < data.week.length; index++){
 										element.push(`<input type='text' class='form-control internal-list-name dynamic_input custom_week_day' data='year_data.timespans.${key}.week' fc-index='${index}' value='${data.week[index]}'/>`);
