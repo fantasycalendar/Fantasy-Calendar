@@ -104,6 +104,8 @@ function set_up_visitor_inputs(){
 
 	target_year.change(function(e){
 
+		if(typeof preview_date_manager == "undefined") set_up_visitor_values();
+
 		if(e.originalEvent){
 			preview_date_manager.year = convert_year($(this).val()|0);
 		}
@@ -126,6 +128,8 @@ function set_up_visitor_inputs(){
 
 	target_timespan.change(function(e){
 
+		if(typeof preview_date_manager == "undefined") set_up_visitor_values();
+
 		if(e.originalEvent){
 			preview_date_manager.timespan = $(this).val()|0;
 		}else{
@@ -140,6 +144,8 @@ function set_up_visitor_inputs(){
 	});
 
 	target_day.change(function(e){
+
+		if(typeof preview_date_manager == "undefined") set_up_visitor_values();
 
 		if(e.originalEvent){
 			preview_date_manager.day = $(this).val()|0;
