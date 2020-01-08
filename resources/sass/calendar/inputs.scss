@@ -493,6 +493,10 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     background-color: $input-disabled-color;
 }
 
+.form-check{
+    padding-left:2rem !important;
+}
+
 /* ------------------ Event forms ----------------- */
 
 #event_comment_mastercontainer .trumbowyg{
