@@ -391,9 +391,9 @@
                     This calendar has a custom week in some months or a leap day is adding a week-day, this will disable overflows between months, because it makes no sense for two weeks that do not go together to overflow into each other. Sorry.
                 </div>
 
-                <div class='row' id='overflow_container'>
+                <div class='row protip' id='overflow_container' data-pt-position="right" data-pt-title="If this is enabled, the last weekday of the previous month will flow into the next month, offseting the start of that month's week">
                     <div class='col-7 pr-1 bold-text'>
-                        Overflow month days:
+                        Overflow weekdays:
                     </div>
                     <div class='col-5 pl-1'>
                         <label class="custom-control custom-checkbox">

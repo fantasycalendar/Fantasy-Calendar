@@ -1267,7 +1267,7 @@ function set_up_edit_inputs(){
 		container.find('.week-day-select').toggleClass('inclusive', checked).prop('disabled', !checked);
 		$('#first_week_day_container').toggleClass('hidden', !checked).find('select').prop('disabled', !checked);
 		$('#overflow_explanation').toggleClass('hidden', !checked);
-		$('#overflow_container').toggleClass('hidden', checked);
+		$('#overflow_container').toggleClass('hidden', checked).toggleClass('disabled', checked);
 		if(checked){
 			$('#month_overflow').prop('checked', false).change();
 		}
