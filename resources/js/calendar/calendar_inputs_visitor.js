@@ -468,7 +468,7 @@ function repopulate_timespan_select(select, val, change, max){
 		$(this).html(html.join('')).val(value);
 		if($(this).find('option:selected').prop('disabled') || $(this).val() == null){
 			internal_loop:
-			if(value > $(this).children().length){
+			if(value >= $(this).children().length){
 				var new_val = $(this).children().length-1;
 			}else{
 				for(var i = value, j = value+1; i >= 0 || j < $(this).children().length; i--, j++){
