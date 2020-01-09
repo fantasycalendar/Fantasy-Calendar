@@ -444,7 +444,7 @@
 			<label for="collapsible_leapdays" class="lbl-toggle card-header lbl-text">Leap days <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Leap Days' href='https://wiki.fantasy-calendar.com/index.php?title=Leap_days' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content content card-body container">
 
-				<div class='row mb-2 center-text' id='leap_day_explaination'>
+				<div class='row no-gutters mb-2 center-text' id='leap_day_explaination'>
 					You need to have at least one month in order to add a leap day.
 				</div>
 
