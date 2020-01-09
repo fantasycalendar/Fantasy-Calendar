@@ -427,7 +427,8 @@ var edit_event_ui = {
 
 			$('#event_categories').val(category.id);
 		}else{
-			$('#event_categories').val(-1);
+			var default_event_category = static_data.event_data.default_category !== undefined ? static_data.event_data.default_category : -1;
+			$('#event_categories').val(default_event_category);
 		}
 
 		$('#color_style').val(event.settings.color);

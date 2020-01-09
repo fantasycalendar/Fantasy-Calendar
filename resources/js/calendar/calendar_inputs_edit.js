@@ -4338,13 +4338,16 @@ function set_up_edit_values(){
 		})
 	}
 
-
+	repopulate_event_category_lists();
+	
 	if(static_data.event_data.categories){
 		for(var key in static_data.event_data.categories){
 			var category = static_data.event_data.categories[key];
 			var catkey = (typeof category.sort_by !== "undefined") ? category.sort_by : slugify(category.name);
 			add_category_to_list(event_category_list, catkey, category);
 		}
+		var default_event_category = static_data.event_data.default_category !== undefined ? static_data.event_data.default_category : -1;
+		$('#default_event_category').val(default_event_category);
 	}
 
 	if(static_data.event_data.events){
@@ -4381,8 +4384,6 @@ function set_up_edit_values(){
 	evaluate_clock_inputs();
 
 	evaluate_remove_buttons();
-
-	repopulate_event_category_lists();
 
 	$('#cycle_test_input').click();
 

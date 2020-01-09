@@ -718,6 +718,10 @@
                 </div>
 
                 <div class='sortable list-group' id='event_category_list'></div>
+
+                <div class='bold-text'>Default category:</div>
+                <select class='form-control event-category-list static_input' id='default_event_category' data='event_data' fc-index='default_category'></select>
+
             </div>
         </div>
 
@@ -737,6 +741,7 @@
                 </div>
 
                 <div class='sortable list-group' id='events_sortable'></div>
+
             </div>
         </div>
 
