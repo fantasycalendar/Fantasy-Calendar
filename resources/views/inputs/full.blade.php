@@ -786,8 +786,13 @@
 
 				<input type='button' value='Reorder based on date' id='reorder_eras' class='btn btn-primary full hidden'>
 
-			</div>
-		</div>
+                <div class='sortable list-group' id='event_category_list'></div>
+
+                <div class='bold-text'>Default category:</div>
+                <select class='form-control event-category-list static_input' id='default_event_category' data='event_data' fc-index='default_category'></select>
+
+            </div>
+        </div>
 
 		<!---------------------------------------------->
 		<!----------------- CATEGORIES ----------------->
@@ -815,7 +820,6 @@
 				<div class='sortable list-group' id='event_category_list'></div>
 			</div>
 		</div>
-
 
 		<!---------------------------------------------->
 		<!------------------- EVENTS ------------------->

@@ -199,8 +199,12 @@ var eras = {
 
 			if(era.settings.use_custom_format && era.formatting){
 
+				var format = era.formatting.replace(/\{\{/g, '{{{').replace(/\}\}/g, '}}}');
+
+				console.log(format)
+
 				year_text = Mustache.render(
-					era.formatting,
+					format,
 					{
 						"year": calendar_layouts.year_data.year,
 						"nth_year": ordinal_suffix_of(calendar_layouts.year_data.year),
@@ -413,7 +417,9 @@ function update_cycle_text(){
 
 	if(evaluated_static_data.epoch_data){
 
-		var cycle_text = Mustache.render(static_data.cycles.format, get_cycle(static_data, evaluated_static_data.epoch_data[preview_date.epoch]).text);
+		var format = static_data.cycles.format.replace(/\{\{/g, '{{{').replace(/\}\}/g, '}}}');
+
+		var cycle_text = Mustache.render(format, get_cycle(static_data, evaluated_static_data.epoch_data[preview_date.epoch]).text);
 
 		$('#top_follower_content .cycle').text(cycle_text).removeClass('hidden');
 
