@@ -411,11 +411,11 @@
 				<div class='add_inputs timespan row'>
 
 					<div class='col-md-7 p-0'>
-						<input type='text' class='form-control name' placeholder='Name'>
+						<input type='text' id='timespan_name_input' class='form-control name' placeholder='Name'>
 					</div>
 
 					<div class='col p-0'>
-						<select class='custom-select form-control type'>
+						<select id='timespan_type_input' class='custom-select form-control type'>
 							<option selected value='month'>Month</option>
 							<option value='intercalary'>Intercalary</option>
 						</select>
@@ -456,11 +456,11 @@
 
 				<div class='add_inputs leap row'>
 					<div class='col-md-6 p-0'>
-						<input type='text' class='form-control name' placeholder='Name'>
+						<input type='text' id='leap_day_name_input' class='form-control name' placeholder='Name'>
 					</div>
 
 					<div class='col p-0'>
-						<select class='custom-select form-control type'>
+						<select id='leap_day_type_input' class='custom-select form-control type'>
 							<option selected value='leap-day'>Normal day</option>
 							<option value='intercalary'>Intercalary</option>
 						</select>
@@ -495,7 +495,7 @@
 				<div class='add_inputs moon'>
 					<div class='row'>
 						<div class='col pr-0'>
-							<input type='text' class='form-control name' placeholder='Moon name'>
+							<input type='text' class='form-control name' id='moon_name_input' placeholder='Moon name'>
 						</div>
 						<div class='col-auto pl-0'>
 							<button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
@@ -503,10 +503,10 @@
 					</div>
 					<div class='row'>
 						<div class='col-6 pr-0'>
-							<input type='number' class='form-control cycle' min='1' placeholder='Cycle'>
+							<input type='number' class='form-control cycle' min='1' id='moon_cycle_input' placeholder='Cycle'>
 						</div>
 						<div class='col-6 pl-0'>
-							<input type='number' class='form-control shift' placeholder='Shift'>
+							<input type='number' class='form-control shift' id='moon_shift_input' placeholder='Shift'>
 						</div>
 					</div>
 				</div>
@@ -556,7 +556,7 @@
 
 				<div class='add_inputs seasons row'>
 					<div class='col p-0'>
-						<input type='text' class='form-control name' placeholder='Season name'>
+						<input type='text' class='form-control name' id='season_name_input' placeholder='Season name'>
 					</div>
 					<div class='col-auto p-0'>
 						<button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
@@ -713,7 +713,7 @@
 
 				<div class='row add_inputs locations'>
 					<div class="col p-0">
-						<input type='text' class='form-control name' placeholder='Location name'>
+						<input type='text' class='form-control name' id='location_name_input' placeholder='Location name'>
 					</div>
 					<div class="col-auto p-0">
 						<button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
@@ -775,7 +775,7 @@
 
 				<div class='add_inputs eras row'>
 					<div class="col p-0">
-						<input type='text' class='form-control name' placeholder='Era name'>
+						<input type='text' class='form-control name' id='era_name_input' placeholder='Era name'>
 					</div>
 					<div class="col-auto p-0">
 						<button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
@@ -785,11 +785,6 @@
 				<div class='sortable' id='era_list'></div>
 
 				<input type='button' value='Reorder based on date' id='reorder_eras' class='btn btn-primary full hidden'>
-
-                <div class='sortable list-group' id='event_category_list'></div>
-
-                <div class='bold-text'>Default category:</div>
-                <select class='form-control event-category-list static_input' id='default_event_category' data='event_data' fc-index='default_category'></select>
 
             </div>
         </div>
@@ -810,14 +805,18 @@
 				</div>
 				<div class='add_inputs event_categories row'>
 					<div class="col p-0">
-						<input type='text' class='form-control name' placeholder='Event category name'>
+						<input type='text' class='form-control name' id='event_category_name_input' placeholder='Event category name'>
 					</div>
 					<div class="col-auto p-0">
 						<button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
 					</div>
 				</div>
 
-				<div class='sortable list-group' id='event_category_list'></div>
+                <div class='sortable list-group' id='event_category_list'></div>
+
+                <div class='bold-text'>Default category:</div>
+                <select class='form-control event-category-list static_input' id='default_event_category' data='event_data' fc-index='default_category'></select>
+
 			</div>
 		</div>
 
@@ -838,7 +837,7 @@
 
 				<div class='add_inputs events row'>
 					<div class="col p-0">
-						<input type='text' class='form-control name' placeholder='Event name'>
+						<input type='text' class='form-control name' id='event_name_input' placeholder='Event name'>
 					</div>
 					<div class="col-auto p-0">
 						<button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>

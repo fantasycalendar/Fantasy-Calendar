@@ -290,8 +290,8 @@ function set_up_edit_inputs(){
 	});
 
 	$('.add_inputs.timespan .add').click(function(){
-		var name = $(this).prev().prev();
-		var type = $(this).prev();
+		var name = $('#timespan_name_input');
+		var type = $('#timespan_type_input');
 		var id = timespan_sortable.children().length;
 		if(type.val() == "month"){
 			var name_val = name.val() == "" ? `Month ${id+1}` : name.val();
@@ -317,8 +317,8 @@ function set_up_edit_inputs(){
 	});
 
 	$('.add_inputs.leap .add').click(function(){
-		var name = $(this).prev().prev();
-		var type = $(this).prev();
+		var name = $('#leap_day_name_input');
+		var type = $('#leap_day_type_input');
 		var id = leap_day_list.children().length;
 		var name_val = name.val() == "" ? `Leap day ${id+1}` : name.val();
 		stats = {
@@ -362,9 +362,9 @@ function set_up_edit_inputs(){
 	});
 
 	$('.add_inputs.moon .add').click(function(){
-		var name = $(this).prev();
-		var cycle = $(this).next();
-		var shift = $(this).next().next();
+		var name = $('#moon_name_input');
+		var cycle = $('#moon_cycle_input');
+		var shift = $('#moon_shift_input');
 		var cycle_val = cycle.val()|0;
 		var id = moon_list.children().length;
 
@@ -467,7 +467,7 @@ function set_up_edit_inputs(){
 
 		var fract_year_len = fract_year_length(static_data);
 
-		var name = $(this).prev();
+		var name = $("#season_name_input");
 		var id = season_sortable.children().length;
 
 		var name_val = name.val() == "" ? `Season ${id+1}` : name.val();
@@ -570,7 +570,7 @@ function set_up_edit_inputs(){
 
 	$('.add_inputs.locations .add').click(function(){
 
-		var name = $(this).prev();
+		var name = $('#location_name_input');
 		var id = location_list.children().length;
 
 		var name_value = name.val() == "" ? `Location ${id+1}` : name.val();
@@ -839,7 +839,7 @@ function set_up_edit_inputs(){
 
 		var id = era_list.children().length;
 
-		var name = $(this).prev();
+		var name = $('#era_name_input');
 
 		var name_val = name.val() == "" ? `Era ${id+1}` : name.val();
 
@@ -879,7 +879,7 @@ function set_up_edit_inputs(){
 
 	$('.add_inputs.event_categories .add').click(function(){
 
-		var name = $(this).prev();
+		var name = $('#event_category_name_input');
 
 		var sort_by = static_data.event_data.categories.length;
 
@@ -917,7 +917,7 @@ function set_up_edit_inputs(){
 
 
 	$('.add_inputs.events .add').click(function(){
-		var name = $(this).prev();
+		var name = $('#event_name_input');
 
 		var name_val = name.val() == "" ? `New Event` : name.val();
 
@@ -978,8 +978,6 @@ function set_up_edit_inputs(){
 		var parent = $(this).closest('.sortable-container').parent();
 		var type = parent.attr('id');
 		var index = $(this).closest('.sortable-container').attr('index')|0;
-
-		console.log(parent.children())
 
 		var callback = false;
 
