@@ -1298,7 +1298,7 @@ function set_up_edit_inputs(){
 				static_data.year_data.timespans[timespan_index].week.push(static_data.year_data.global_week[index]);
 				element.push(`<input type='text' class='form-control internal-list-name dynamic_input custom_week_day' data='year_data.timespans.${timespan_index}.week' fc-index='${index}'/>`);
 			}
-			parent.find(".week_list").html(element).parent().removeClass('hidden');
+			parent.find(".week_list").html(element).parent().parent().removeClass('hidden');
 			parent.find(".week_list").children().each(function(i){
 				$(this).val(static_data.year_data.global_week[i])
 			});
