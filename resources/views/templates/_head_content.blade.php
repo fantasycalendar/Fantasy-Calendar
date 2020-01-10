@@ -106,6 +106,10 @@
             $("#input_collapse_btn").toggleClass('is-active');
             evaluate_error_background_size();
         }
+        
+        if(window.navigator.userAgent.indexOf("LM-G850") > 0) {
+            $("#input_container").addClass('sidebar-mobile-half');
+        }
     });
 
     </script>

@@ -4339,7 +4339,7 @@ function set_up_edit_values(){
 	}
 
 	repopulate_event_category_lists();
-	
+
 	if(static_data.event_data.categories){
 		for(var key in static_data.event_data.categories){
 			var category = static_data.event_data.categories[key];
