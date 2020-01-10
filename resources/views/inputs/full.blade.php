@@ -532,17 +532,17 @@
 				</div>
 
 				<div class='border rounded mb-2'>
-					<div class='row protip pt-1 px-2' data-pt-position="right" data-pt-title='This toggles between having seasons starting on specific dates, or having the seasons last an exact duration with the potential to overflow years.'>
-						<div class='col-md-auto col-sm-12 pr-md-0 season_text dated'>
+					<div class='row protip py-1 px-2 flex-column flex-md-row align-items-center' data-pt-position="right" data-pt-title='This toggles between having seasons starting on specific dates, or having the seasons last an exact duration with the potential to overflow years.'>
+						<div class='col-12 col-md-5 pr-md-0 text-center season_text dated'>
 							Date Based
 						</div>
-						<div class='col-md-auto col-sm-12 px-md-0'>
-							<label class="custom-control custom-checkbox">
+						<div class='col-12 col-md-2 px-md-0 text-center'>
+							<label class="custom-control custom-checkbox flexible">
 								<input type="checkbox" class="custom-control-input" id='periodic_seasons_checkbox'>
 								<span class="custom-control-indicator"></span>
 							</label>
 						</div>
-						<div class='col-md-auto col-sm-12 pl-md-0 season_text periodic'>
+						<div class='col-12 col-md-5 pl-md-0 text-center season_text periodic'>
 							Length Based
 						</div>
 					</div>
