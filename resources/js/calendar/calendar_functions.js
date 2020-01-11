@@ -1894,7 +1894,7 @@ function toggle_sidebar() {
     $("#calendar_container").toggleClass('inputs_collapsed');
     $('#input_collapse_btn').toggleClass('is-active');
 
-    if(static_data.clock.enabled && !isNaN(static_data.clock.hours) && !isNaN(static_data.clock.minutes) && !isNaN(static_data.clock.offset)){
+    if(static_data.clock.enabled && static_data.clock.render && !isNaN(static_data.clock.hours) && !isNaN(static_data.clock.minutes) && !isNaN(static_data.clock.offset)){
         window.Clock.size = $('#clock').width();
     }
 
