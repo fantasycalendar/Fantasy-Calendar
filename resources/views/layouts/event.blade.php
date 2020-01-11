@@ -87,11 +87,11 @@
 
 				<h5 class='row no-gutters my-2 event-form-heading'>Conditions:</h5>
 				<div class='row no-gutters my-2' id='non_preset_buttons'>
-					<div class='col-6 pl-0 pr-1'>
+					<div class='col-md-6'>
 						<button type='button' id='add_event_condition' class='btn btn-primary full'>Add condition</button>
 					</div>
-					<div class='col-6 pl-1 pr-0'>
-						<button type='button' id='add_event_condition_group' class='btn btn-primary full'>Add new group</button>
+					<div class='col-md-6'>
+						<button type='button' id='add_event_condition_group' class='btn btn-secondary full'>Add new group</button>
 					</div>
 				</div>
 				<div class='row no-gutters my-2'>
@@ -105,23 +105,23 @@
 					<button type='button' id='remove_dropped' class='btn btn-danger full hidden'>DROP ITEM HERE TO REMOVE</button>
 				</div>
 
-				<div class='event_occurrences hidden container p-0'>
+				<div class='event_occurrences hidden container'>
 
 					<div class='row no-gutters mt-2'>
 						<h5 class='event-form-heading full'>Test event occurrences for the next:</h5>
 					</div>
 
 					<div class='row no-gutters'>
-						<div class='col-3 px-1'>
+						<div class='col-md-3 px-1'>
 							<button type='button' class='btn btn-info full test_event_btn' years="1">1 year</button>
 						</div>
-						<div class='col-3 px-1'>
+						<div class='col-md-3 px-1'>
 							<button type='button' class='btn btn-info full test_event_btn' years="10">10 years</button>
 						</div>
-						<div class='col-3 px-1'>
+						<div class='col-md-3 px-1'>
 							<button type='button' class='btn btn-info full test_event_btn' years="50">50 years</button>
 						</div>
-						<div class='col-3 px-1'>
+						<div class='col-md-3 px-1'>
 							<button type='button' class='btn btn-info full test_event_btn' years="100">100 years</button>
 						</div>
 					</div>
@@ -147,21 +147,21 @@
 				</div>
 
 				<div class='row no-gutters mb-2'>
-					<div class='col-6 pl-0 pr-1'>
+					<div class='col-md-6 pl-0 pr-1'>
 						<label class='form-control checkbox'>
 							<input type='checkbox' class='event_setting' id='limited_repeat' name='limited_repeat'> Limit repetitions
 						</label>
 					</div>
 
-					<div class='col-6 pl-1 pr-0 form-control'>
+					<div class='col-md-6 pl-1 pr-0 form-control'>
 						<label class='row no-gutters'>
-							<div class='col-md-auto pl-4 pr-1'>
+							<div class='col-auto pl-4 pr-1'>
 								 Limit for
 							</div>
-							<div class='col-4 p-0'>
+							<div class='col-4'>
 								 <input type='number' min='1' value='1' class='form-control form-control-sm' id='limited_repeat_num' name='limited_repeat_num' disabled>
 							</div>
-							<div class='col-md-auto pl-1 pr-0'>
+							<div class='col-auto pl-1 pr-0'>
 								 days.
 							</div>
 						</label>
@@ -173,21 +173,21 @@
 				</div>
 
 				<div class='row no-gutters mb-2'>
-					<div class='col-6 pl-0 pr-1'>
+					<div class='col-md-6 pl-0 pr-1'>
 						<label class='form-control checkbox'>
 							<input type='checkbox' class='event_setting' id='has_duration' name='has_duration'> Has duration
 						</label>
 					</div>
 
-					<div class='col-6 pl-1 pr-0 form-control'>
+					<div class='col-md-6 pl-1 pr-0 form-control'>
 						<label class='row no-gutters'>
-							<div class='col-md-auto pl-4 pr-1'>
+							<div class='col-auto pl-4 pr-1'>
 								 Lasts for
 							</div>
-							<div class='col-4 p-0'>
+							<div class='col-4'>
 								 <input type='number' min='1' value='1' class='form-control form-control-sm' id='duration' name='duration' disabled>
 							</div>
-							<div class='col-md-auto pl-1 pr-0'>
+							<div class='col-auto pl-1 pr-0'>
 								 days.
 							</div>
 						</label>
@@ -207,7 +207,7 @@
 				</div>
 
 				<div class='row no-gutters'>
-					<div class='col-md-auto pl-0 pr-1'>
+					<div class='col-auto pl-0 pr-1'>
 						<h5 class='event-form-heading'>Category:</h5>
 					</div>
 					<div class='col pl-0 pl-1'>
@@ -222,7 +222,7 @@
 				</div>
 
 				<div class='row no-gutters'>
-					<div class='col p-0'>
+					<div class='col'>
 						<label class='form-control checkbox'>
 							<input type='checkbox' class='event_setting' id='event_hide_full' name='event_hide_full'> Hide ENTIRELY (useful for event-based-events)
 						</label>
@@ -230,7 +230,7 @@
 				</div>
 
 				<div class='row no-gutters'>
-					<div class='col p-0'>
+					<div class='col'>
 						<label class='form-control checkbox'>
 							<input type='checkbox' class='event_setting' id='event_hide_players' name='event_hide_players'> Hide from players
 						</label>
@@ -238,7 +238,7 @@
 				</div>
 
 				<div class='row no-gutters'>
-					<div class='col p-0'>
+					<div class='col'>
 						<label class='form-control checkbox'>
 							<input type='checkbox' class='event_setting' id='event_dontprint_checkbox' name='event_dontprint_checkbox'> Do not print
 						</label>
@@ -246,7 +246,7 @@
 				</div>
 
 				<div class='row no-gutters'>
-					<div class='col p-0'>
+					<div class='col'>
 						<h5 class='event-form-heading'>Color:</h5>
 						<select id="color_style" name='color_style' class='form-control event-text-input color_display' key='color_display'>
 							<option>Dark-Solid</option>
@@ -267,7 +267,7 @@
 						</select>
 					</div>
 
-					<div class='col p-0'>
+					<div class='col'>
 						<h5 class='event-form-heading'>Display:</h5>
 						<select id="text_style" name='text_style' class='form-control event-text-input text_display'>
 							<option value="text">Just text</option>
@@ -278,13 +278,13 @@
 				</div>
 
 				<div class='row no-gutters mt-3'>
-					<div class='col-4 p-0'>
+					<div class='col-4'>
 						Event look: <div class='event-text-output event'>Event name</div>
 					</div>
 				</div>
 
 				<div class='row no-gutters'>
-					<div class='col p-0'>
+					<div class='col'>
 						<div id='event_messagebox'></div>
 					</div>
 				</div>
