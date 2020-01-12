@@ -250,6 +250,12 @@ function set_up_edit_inputs(){
 
 		$('#create_season_events').prop('disabled', !static_data.clock.enabled);
 
+		var no_locations = static_data.seasons.data.length == 0 && !static_data.clock.enabled;
+		$('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
+		$('#locations_warning').toggleClass('hidden', !no_locations);
+
+		$('.location_middle_btn').toggleClass('hidden', !static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled);
+
 		eval_clock();
 
 	});
@@ -452,6 +458,13 @@ function set_up_edit_inputs(){
 
 				$('.season_offset_container').prop('disabled', !checked).toggleClass('hidden', !checked);
 
+				$('#has_seasons_container').toggleClass('hidden', true).find('select, input').prop('disabled', true);
+				$('#no_seasons_container').toggleClass('hidden', false);
+
+				var no_locations = !static_data.clock.enabled;
+				$('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
+				$('#locations_warning').toggleClass('hidden', !no_locations);
+
 				era_list.children().each(function(){
 					var input = $(this).find('.ends_year');
 					var parent = input.parent().parent();
@@ -539,11 +552,15 @@ function set_up_edit_inputs(){
 		name.val("");
 		do_error_check();
 
-		$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 || !static_data.clock.enabled);
+		var no_seasons = static_data.seasons.data.length == 0;
+		$('#has_seasons_container').toggleClass('hidden', no_seasons).find('select, input').prop('disabled', no_seasons);
+		$('#no_seasons_container').toggleClass('hidden', !no_seasons);
+
+		$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 && !static_data.clock.enabled);
 
 	});
 
-	$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 || !static_data.clock.enabled);
+	$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 && !static_data.clock.enabled);
 
 	$('#create_season_events').click(function(){
 		swal.fire({
@@ -1685,8 +1702,9 @@ function set_up_edit_inputs(){
 	$('#enable_weather').change(function(){
 		var checked = $(this).prop('checked');
 		static_data.seasons.global_settings.enable_weather = checked;
-		$('#weather_inputs').toggleClass('hidden', !checked);
-		$('#weather_inputs').find('select, input').prop('disabled', !checked);
+		$('.weather_inputs').toggleClass('hidden', !checked);
+		$('.weather_inputs').find('select, input').prop('disabled', !checked);
+		$('.location_middle_btn').toggleClass('hidden', !static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled);
 		repopulate_location_select_list();
 	});
 
@@ -2540,53 +2558,56 @@ function add_location_to_list(parent, key, data){
 
 					element.push("</div>");
 
-					element.push("<div class='row no-gutters'>");
-						element.push("<div class='col-lg-6 my-1'>");
-							element.push("Temperature low:");
-							element.push(`<input type='number' step="any" class='form-control full dynamic_input' data='seasons.locations.${key}.seasons.${i}.weather' fc-index='temp_low' value='${data.seasons[i].weather.temp_low}'>`);
+					element.push(`<div class='weather_inputs ${!static_data.seasons.global_settings.enable_weather ? "hidden" : ""}'>`);
+
+						element.push("<div class='row no-gutters'>");
+							element.push("<div class='col-lg-6 my-1'>");
+								element.push("Temperature low:");
+								element.push(`<input type='number' step="any" class='form-control full dynamic_input' data='seasons.locations.${key}.seasons.${i}.weather' fc-index='temp_low' value='${data.seasons[i].weather.temp_low}'>`);
+							element.push("</div>");
+							element.push("<div class='col-lg-6 my-1'>");
+								element.push("Temperature high:");
+								element.push(`<input type='number' step="any" class='form-control full dynamic_input' data='seasons.locations.${key}.seasons.${i}.weather' fc-index='temp_high' value='${data.seasons[i].weather.temp_high}'>`);
+							element.push("</div>");
 						element.push("</div>");
-						element.push("<div class='col-lg-6 my-1'>");
-							element.push("Temperature high:");
-							element.push(`<input type='number' step="any" class='form-control full dynamic_input' data='seasons.locations.${key}.seasons.${i}.weather' fc-index='temp_high' value='${data.seasons[i].weather.temp_high}'>`);
+
+						element.push("<div class='row no-gutters my-2'>");
+							element.push("<div class='separator'></div>");
+						element.push("</div>");
+
+						element.push("<div class='row no-gutters mt-2'>");
+							element.push("Precipitation chance: (%)");
+						element.push("</div>");
+
+						element.push("<div class='row no-gutters mb-2'>");
+							element.push("<div class='col-9'>");
+								element.push("<div class='slider_percentage'></div>");
+							element.push("</div>");
+							element.push("<div class='col-3'>");
+								element.push(`<input type='number' step="any" class='form-control form-control-sm full dynamic_input slider_input' data='seasons.locations.${key}.seasons.${i}.weather' fc-index='precipitation' value='${data.seasons[i].weather.precipitation*100}'>`);
+							element.push("</div>");
+						element.push("</div>");
+
+
+						element.push("<div class='row no-gutters mt-2'>");
+							element.push("Precipitation intensity: (%)");
+						element.push("</div>");
+
+						element.push("<div class='row no-gutters mb-2'>");
+							element.push("<div class='col-9'>");
+								element.push("<div class='slider_percentage'></div>");
+							element.push("</div>");
+							element.push("<div class='col-3'>");
+								element.push(`<input type='number' step="any" class='form-control form-control-sm full dynamic_input slider_input' data='seasons.locations.${key}.seasons.${i}.weather' fc-index='precipitation_intensity' value='${data.seasons[i].weather.precipitation_intensity*100}'>`);
+							element.push("</div>");
+						element.push("</div>");
+
+						element.push("<div class='row no-gutters my-2'>");
+							element.push("<div class='separator'></div>");
 						element.push("</div>");
 					element.push("</div>");
 
-					element.push("<div class='row no-gutters my-2'>");
-						element.push("<div class='separator'></div>");
-					element.push("</div>");
-
-					element.push("<div class='row no-gutters mt-2'>");
-						element.push("Precipitation chance: (%)");
-					element.push("</div>");
-
-					element.push("<div class='row no-gutters mb-2'>");
-						element.push("<div class='col-9'>");
-							element.push("<div class='slider_percentage'></div>");
-						element.push("</div>");
-						element.push("<div class='col-3'>");
-							element.push(`<input type='number' step="any" class='form-control form-control-sm full dynamic_input slider_input' data='seasons.locations.${key}.seasons.${i}.weather' fc-index='precipitation' value='${data.seasons[i].weather.precipitation*100}'>`);
-						element.push("</div>");
-					element.push("</div>");
-
-
-					element.push("<div class='row no-gutters mt-2'>");
-						element.push("Precipitation intensity: (%)");
-					element.push("</div>");
-
-					element.push("<div class='row no-gutters mb-2'>");
-						element.push("<div class='col-9'>");
-							element.push("<div class='slider_percentage'></div>");
-						element.push("</div>");
-						element.push("<div class='col-3'>");
-							element.push(`<input type='number' step="any" class='form-control form-control-sm full dynamic_input slider_input' data='seasons.locations.${key}.seasons.${i}.weather' fc-index='precipitation_intensity' value='${data.seasons[i].weather.precipitation_intensity*100}'>`);
-						element.push("</div>");
-					element.push("</div>");
-
-					element.push("<div class='row no-gutters my-2'>");
-						element.push("<div class='separator'></div>");
-					element.push("</div>");
-
-					element.push("<div class='clock_inputs'>");
+					element.push(`<div class='clock_inputs ${!static_data.clock.enabled ? "hidden" : ""}'>`);
 
 						element.push(`<div class='row no-gutters mt-2'>`);
 
@@ -2624,9 +2645,8 @@ function add_location_to_list(parent, key, data){
 
 						element.push("</div>");
 					element.push("</div>");
-
 					element.push("<div class='row no-gutters my-2'>");
-						element.push(`<button type="button" class="btn btn-sm btn-info location_middle_btn full protip" data-pt-position="right" data-pt-title="Use the median values from the previous and next seasons' weather and time data. This season will act as a transition between the two, similar to Spring or Autumn">Interpolate data from surrounding seasons</button>`);
+						element.push(`<button type="button" class="btn btn-sm btn-info location_middle_btn full protip ${!static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled ? "hidden" : ""}" data-pt-position="right" data-pt-title="Use the median values from the previous and next seasons' weather and time data. This season will act as a transition between the two, similar to Spring or Autumn">Interpolate data from surrounding seasons</button>`);
 					element.push("</div>");
 
 				element.push("</div>");
@@ -2637,13 +2657,7 @@ function add_location_to_list(parent, key, data){
 
 			}
 
-			element.push("<div class='row my-1 no-gutters big-text'>");
-				element.push("<div class='col'>");
-					element.push("Settings:");
-				element.push("</div>");
-			element.push("</div>");
-
-			element.push("<div class='clock_inputs'>");
+			element.push(`<div class='clock_inputs ${!static_data.clock.enabled ? "hidden" : ""}'>`);
 
 				element.push(`<div class='row my-1'>`);
 					element.push("<div class='col'>Timezone:</div>");
@@ -2663,60 +2677,62 @@ function add_location_to_list(parent, key, data){
 
 			element.push("</div>");
 
-			element.push("<div class='row no-gutters my-1 big-text'>");
-				element.push("<div class='col'>");
-					element.push("Curve noise settings:");
+			element.push(`<div class='weather_inputs ${!static_data.seasons.global_settings.enable_weather ? "hidden" : ""}'>`);
+				element.push("<div class='row no-gutters my-1'>");
+					element.push("<div class='col'>");
+						element.push("Curve noise settings:");
+					element.push("</div>");
 				element.push("</div>");
-			element.push("</div>");
 
-			element.push("<div class='row no-gutters my-1'>");
-				element.push("<div class='col-6 pr-1'>");
-					element.push("Large frequency:");
+				element.push("<div class='row no-gutters my-1'>");
+					element.push("<div class='col-6 pr-1'>");
+						element.push("Large frequency:");
+					element.push("</div>");
+					element.push("<div class='col-6 pl-1'>");
+						element.push("Large amplitude:");
+					element.push("</div>");
 				element.push("</div>");
-				element.push("<div class='col-6 pl-1'>");
-					element.push("Large amplitude:");
+				element.push("<div class='row no-gutters my-1'>");
+					element.push("<div class='col-6 pr-1'>");
+						element.push(`<input type='float' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='large_noise_frequency' value='${data.settings.large_noise_frequency}' />`);
+					element.push("</div>");
+					element.push("<div class='col-6 pl-1'>");
+						element.push(`<input type='float' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='large_noise_amplitude' value='${data.settings.large_noise_amplitude}'>`);
+					element.push("</div>");
 				element.push("</div>");
-			element.push("</div>");
-			element.push("<div class='row no-gutters my-1'>");
-				element.push("<div class='col-6 pr-1'>");
-					element.push(`<input type='float' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='large_noise_frequency' value='${data.settings.large_noise_frequency}' />`);
-				element.push("</div>");
-				element.push("<div class='col-6 pl-1'>");
-					element.push(`<input type='float' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='large_noise_amplitude' value='${data.settings.large_noise_amplitude}'>`);
-				element.push("</div>");
-			element.push("</div>");
 
-			element.push("<div class='row no-gutters my-1'>");
-				element.push("<div class='col-6 pr-1'>");
-					element.push("Medium frequency:");
+				element.push("<div class='row no-gutters my-1'>");
+					element.push("<div class='col-6 pr-1'>");
+						element.push("Medium frequency:");
+					element.push("</div>");
+					element.push("<div class='col-6 pl-1'>");
+						element.push("Medium amplitude:");
+					element.push("</div>");
 				element.push("</div>");
-				element.push("<div class='col-6 pl-1'>");
-					element.push("Medium amplitude:");
+				element.push("<div class='row no-gutters my-1'>");
+					element.push("<div class='col-6 pr-1'>");
+						element.push(`<input type='float' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='medium_noise_frequency' value='${data.settings.medium_noise_frequency}' />`);
+					element.push("</div>");
+					element.push("<div class='col-6 pl-1'>");
+						element.push(`<input type='float' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='medium_noise_amplitude' value='${data.settings.medium_noise_amplitude}'>`);
+					element.push("</div>");
 				element.push("</div>");
-			element.push("</div>");
-			element.push("<div class='row no-gutters my-1'>");
-				element.push("<div class='col-6 pr-1'>");
-					element.push(`<input type='float' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='medium_noise_frequency' value='${data.settings.medium_noise_frequency}' />`);
-				element.push("</div>");
-				element.push("<div class='col-6 pl-1'>");
-					element.push(`<input type='float' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='medium_noise_amplitude' value='${data.settings.medium_noise_amplitude}'>`);
-				element.push("</div>");
-			element.push("</div>");
 
-			element.push("<div class='row no-gutters my-1'>");
-				element.push("<div class='col-6 pr-1'>");
-					element.push("Small frequency:");
+				element.push("<div class='row no-gutters my-1'>");
+					element.push("<div class='col-6 pr-1'>");
+						element.push("Small frequency:");
+					element.push("</div>");
+					element.push("<div class='col-6 pl-1'>");
+						element.push("Small amplitude:");
+					element.push("</div>");
 				element.push("</div>");
-				element.push("<div class='col-6 pl-1'>");
-					element.push("Small amplitude:");
-				element.push("</div>");
-			element.push("</div>");
-			element.push("<div class='row no-gutters my-1'>");
-				element.push("<div class='col-6 pr-1'>");
-					element.push(`<input type='float' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='small_noise_frequency' value='${data.settings.small_noise_frequency}' />`);
-				element.push("</div>");
-				element.push("<div class='col-6 pl-1'>");
-					element.push(`<input type='float' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='small_noise_amplitude' value='${data.settings.small_noise_amplitude}'>`);
+				element.push("<div class='row no-gutters my-1'>");
+					element.push("<div class='col-6 pr-1'>");
+						element.push(`<input type='float' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='small_noise_frequency' value='${data.settings.small_noise_frequency}' />`);
+					element.push("</div>");
+					element.push("<div class='col-6 pl-1'>");
+						element.push(`<input type='float' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='small_noise_amplitude' value='${data.settings.small_noise_amplitude}'>`);
+					element.push("</div>");
 				element.push("</div>");
 			element.push("</div>");
 
@@ -3587,6 +3603,14 @@ function reindex_season_sortable(key){
 
 	eval_clock();
 
+	var no_seasons = static_data.seasons.data.length == 0;
+	$('#has_seasons_container').toggleClass('hidden', no_seasons).find('select, input').prop('disabled', no_seasons);
+	$('#no_seasons_container').toggleClass('hidden', !no_seasons);
+
+	var no_locations = static_data.seasons.data.length == 0 && !static_data.clock.enabled;
+	$('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
+	$('#locations_warning').toggleClass('hidden', !no_locations);
+
 	do_error_check('seasons');
 
 }
@@ -4210,7 +4234,7 @@ function evaluate_clock_inputs(){
 		$(this).prop('min', static_data.clock.minutes*-0.5).prop('max', static_data.clock.minutes*0.5).prop('disabled', !static_data.clock.enabled).toggleClass('hidden', !static_data.clock.enabled);
 	});
 
-	$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 || !static_data.clock.enabled);
+	$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 && !static_data.clock.enabled);
 
 }
 
@@ -4286,6 +4310,14 @@ function set_up_edit_values(){
 
 		$('.season_text.dated').toggleClass('active', !static_data.seasons.global_settings.periodic_seasons);
 		$('.season_text.periodic').toggleClass('active', static_data.seasons.global_settings.periodic_seasons);
+
+		var no_seasons = static_data.seasons.data.length == 0;
+		$('#has_seasons_container').toggleClass('hidden', no_seasons).find('select, input').prop('disabled', no_seasons);
+		$('#no_seasons_container').toggleClass('hidden', !no_seasons);
+
+		var no_locations = static_data.seasons.data.length == 0 && !static_data.clock.enabled;
+		$('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
+		$('#locations_warning').toggleClass('hidden', !no_locations);
 
 		evaluate_season_lengths();
 
@@ -4393,8 +4425,10 @@ function set_up_edit_values(){
 	}
 
 
-	$('#weather_inputs').toggleClass('hidden', !static_data.seasons.global_settings.enable_weather);
-	$('#weather_inputs').find('select, input').prop('disabled', !static_data.seasons.global_settings.enable_weather);
+	$('.weather_inputs').toggleClass('hidden', !static_data.seasons.global_settings.enable_weather);
+	$('.weather_inputs').find('select, input').prop('disabled', !static_data.seasons.global_settings.enable_weather);
+
+	$('.location_middle_btn').toggleClass('hidden', !static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled);
 
 	if(window.location.pathname != '/calendars/create') {
 

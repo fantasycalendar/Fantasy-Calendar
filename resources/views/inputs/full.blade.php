@@ -599,74 +599,81 @@
 			<label for="collapsible_weather" class="lbl-toggle card-header lbl-text">Weather<a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Weather' href='https://wiki.fantasy-calendar.com/index.php?title=Weather' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
 
-				<div class='row no-gutters'>
-					<div class='col-auto mr-2'>Enable weather:</div>
-					<div class='col-auto'>
-						<label class="custom-control custom-checkbox">
-							<input type="checkbox" class="custom-control-input static_input" id='enable_weather' refresh='false' data='seasons.global_settings' fc-index='enable_weather'>
-							<span class="custom-control-indicator"></span>
-						</label>
-					</div>
-				</div>
+                <div id='no_seasons_container' class='row no-gutters'>
+                    You need at least one season for weather to function.
+                </div>
 
-				<div id='weather_inputs'>
+                <div id='has_seasons_container' class='hidden'>
 
-					<div class='row no-gutters my-2 small-text'>
-						Custom weather can be configured in custom locations.
-					</div>
+    				<div class='row no-gutters'>
+    					<div class='col-auto mr-2'>Enable weather:</div>
+    					<div class='col-auto'>
+    						<label class="custom-control custom-checkbox">
+    							<input type="checkbox" class="custom-control-input static_input" id='enable_weather' refresh='false' data='seasons.global_settings' fc-index='enable_weather'>
+    							<span class="custom-control-indicator"></span>
+    						</label>
+    					</div>
+    				</div>
 
+    				<div class='weather_inputs'>
 
-					<div class='row my-2'>
-						<div class='col'>
-                            Weather offset (days):
-							<input class='form-control static_input' type='number' refresh='false' data='seasons.global_settings' fc-index='weather_offset'/>
-						</div>
-					</div>
-
-					<div class='row no-gutters'>
-						<div class='col-md-7 my-1'>
-                            Temperature system:
-							<select class='custom-select form-control type static_input' id='temp_sys' refresh='false' data='seasons.global_settings' fc-index='temp_sys'>
-								<option selected value='metric'>Metric</option>
-								<option value='imperial'>Imperial</option>
-								<option value='both_m'>Both (inputs metric)</option>
-								<option value='both_i'>Both (inputs imperial)</option>
-							</select>
-						</div>
-
-						<div class='col-md-5 my-1'>
-                            Wind system:
-							<select class='custom-select form-control type static_input' refresh='false' data='seasons.global_settings' fc-index='wind_sys'>
-								<option selected value='metric'>Metric</option>
-								<option value='imperial'>Imperial</option>
-								<option value='both'>Both</option>
-							</select>
-						</div>
-					</div>
-
-					<div class='row no-gutters my-2'>
-						<div class='col-auto mr-2'>Cinematic temperature description:</div>
-						<div class='col-auto'>
-							<label class="custom-control custom-checkbox">
-								<input type="checkbox" class="custom-control-input static_input" refresh='false' data='seasons.global_settings' fc-index='cinematic'>
-								<span class="custom-control-indicator"></span>
-							</label>
-						</div>
-					</div>
+    					<div class='row no-gutters my-2 small-text'>
+    						Custom weather can be configured in custom locations.
+    					</div>
 
 
-					<div class='row no-gutters'>
-						<div class='col-auto'>Weather generation seed:</div>
-					</div>
-					<div class='row no-gutters'>
-						<div class='col'>
-							<input type='number' id='seasons_seed' class='form-control static_input full' refresh='false' data='seasons.global_settings' fc-index='seed' />
-						</div>
-						<div class='col-auto'>
-							<div class='btn btn-primary' id='reseed_seasons'><i class="fa fa-redo"></i></div>
-						</div>
-					</div>
-				</div>
+    					<div class='row my-2'>
+    						<div class='col'>
+                                Weather offset (days):
+    							<input class='form-control static_input' type='number' refresh='false' data='seasons.global_settings' fc-index='weather_offset'/>
+    						</div>
+    					</div>
+
+    					<div class='row no-gutters'>
+    						<div class='col-md-6 my-1'>
+                                Temperature system:
+    							<select class='custom-select form-control type static_input' id='temp_sys' refresh='false' data='seasons.global_settings' fc-index='temp_sys'>
+    								<option selected value='metric'>Metric</option>
+    								<option value='imperial'>Imperial</option>
+    								<option value='both_m'>Both (inputs metric)</option>
+    								<option value='both_i'>Both (inputs imperial)</option>
+    							</select>
+    						</div>
+
+    						<div class='col-md-6 my-1'>
+                                Wind system:
+    							<select class='custom-select form-control type static_input' refresh='false' data='seasons.global_settings' fc-index='wind_sys'>
+    								<option selected value='metric'>Metric</option>
+    								<option value='imperial'>Imperial</option>
+    								<option value='both'>Both</option>
+    							</select>
+    						</div>
+    					</div>
+
+    					<div class='row no-gutters my-2'>
+    						<div class='col-auto mr-2'>Cinematic temperature description:</div>
+    						<div class='col-auto'>
+    							<label class="custom-control custom-checkbox">
+    								<input type="checkbox" class="custom-control-input static_input" refresh='false' data='seasons.global_settings' fc-index='cinematic'>
+    								<span class="custom-control-indicator"></span>
+    							</label>
+    						</div>
+    					</div>
+
+
+    					<div class='row no-gutters'>
+    						<div class='col-auto'>Weather generation seed:</div>
+    					</div>
+    					<div class='row no-gutters'>
+    						<div class='col'>
+    							<input type='number' id='seasons_seed' class='form-control static_input full' refresh='false' data='seasons.global_settings' fc-index='seed' />
+    						</div>
+    						<div class='col-auto'>
+    							<div class='btn btn-primary' id='reseed_seasons'><i class="fa fa-redo"></i></div>
+    						</div>
+    					</div>
+				    </div>
+                </div>
 			</div>
 
 		</div>
@@ -680,38 +687,47 @@
 			<label for="collapsible_locations" class="lbl-toggle card-header lbl-text">Locations <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Locations' href='https://wiki.fantasy-calendar.com/index.php?title=Locations' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
 
-				<div class='row no-gutters bold-text'>
-					Current location:
-				</div>
-				<div class='row no-gutters mb-2'>
-					<select class='form-control' id='location_select'>
-					</select>
-				</div>
-				<div class='row no-gutters my-2'>
-					<input type='button' value='Copy selected location to new location' class='btn btn-info full add' id='copy_location_data'>
-				</div>
+                <div id='locations_warning' class='row no-gutters'>
+                    You need weather enabled (temperatures, precipitation) or the clock enabled (timezone, sunrise/sunset) for locations to function.
+                </div>
 
-				<div class='row no-gutters px-3 my-3'>
-					<div class='separator'></div>
-				</div>
+                <div id='locations_warning_hidden' class='hidden'>
 
-				<div class='row no-gutters bold-text'>
-					<div class='col'>
-						New location:
-					</div>
-				</div>
+    				<div class='row no-gutters bold-text'>
+    					Current location:
+    				</div>
+    				<div class='row no-gutters mb-2'>
+    					<select class='form-control' id='location_select'>
+    					</select>
+    				</div>
+    				<div class='row no-gutters my-2'>
+    					<input type='button' value='Copy selected location to new location' class='btn btn-info full add' id='copy_location_data'>
+    				</div>
 
-				<div class='row no-gutters add_inputs locations'>
-					<div class="col">
-						<input type='text' class='form-control name' id='location_name_input' placeholder='Location name'>
-					</div>
-					<div class="col-auto">
-						<button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
-					</div>
-				</div>
+    				<div class='row no-gutters my-2'>
+    					<div class='separator'></div>
+    				</div>
 
-				<div class='sortable' id='location_list'></div>
-			</div>
+    				<div class='row no-gutters bold-text'>
+    					<div class='col'>
+    						New location:
+    					</div>
+    				</div>
+
+    				<div class='row no-gutters add_inputs locations'>
+    					<div class="col">
+    						<input type='text' class='form-control name' id='location_name_input' placeholder='Location name'>
+    					</div>
+    					<div class="col-auto">
+    						<button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
+    					</div>
+    				</div>
+
+    				<div class='sortable' id='location_list'></div>
+
+    			</div>
+
+            </div>
 
 
 		</div>
