@@ -150,7 +150,7 @@
             border-top:0;
         }
 
-        &:not(.intercalary):not(.first) {
+        &:not(.first) {
             border-left: 1px solid $calendar-border-color;
             padding-left: 0;
         }
