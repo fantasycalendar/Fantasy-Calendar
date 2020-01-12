@@ -357,20 +357,11 @@
 					</div>
 				</div>
 
-				<div class='row px-3 my-3'>
+				<div class='row no-gutters my-2'>
 					<div class='separator'></div>
 				</div>
 
-				<div id='first_week_day_container'>
-
-					<div class='bold-text'>First week day:</div>
-
-					<select type='number' class='form-control static_input protip' data-pt-position="right" data-pt-title='This sets the first weekday of the first year.' id='first_day' data='year_data' fc-index='first_day'></select>
-
-				</div>
-
-
-				<div class='row mt-2 bold-text'>
+				<div class='row no-gutters mt-2 bold-text'>
 					<div class="col">
 						New weekday:
 					</div>
@@ -378,7 +369,7 @@
 
 				<div class='row no-gutters add_inputs global_week'>
 					<div class='col'>
-						<input type='text' class='form-control name' placeholder='Weekday name'>
+						<input type='text' class='form-control name' id='weekday_name_input' placeholder='Weekday name'>
 					</div>
 					<div class='col-auto'>
 						<button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
@@ -387,6 +378,19 @@
 
 				<div class='sortable list-group' id='global_week_sortable'></div>
 
+                <div id='first_week_day_container' class='hidden'>
+                    
+                    <div class='row no-gutters my-2'>
+                        <div class='separator'></div>
+                    </div>
+
+                    <div class='row no-gutters my-2'>
+                        <div class='col bold-text'>
+                            First week day:
+                            <select type='number' class='form-control static_input protip' data-pt-position="right" data-pt-title='This sets the first weekday of the first year.' id='first_day' data='year_data' fc-index='first_day'></select>
+                        </div>
+                    </div>
+                </div>
 			</div>
 
 

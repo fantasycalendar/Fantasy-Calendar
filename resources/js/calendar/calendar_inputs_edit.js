@@ -278,11 +278,13 @@ function set_up_edit_inputs(){
 
 
 	$('.add_inputs.global_week .add').click(function(){
-		var name = $(this).prev();
+		var name = $("#weekday_name_input");
 		var id = global_week_sortable.children().length;
 		var name_val = name.val() == "" ? `Weekday ${id+1}` : name.val();
-		add_weekday_to_sortable(global_week_sortable, id, name_val)
+		add_weekday_to_sortable(global_week_sortable, id, name_val);
 		static_data.year_data.global_week.push(name_val);
+		var hidden = !static_data.year_data.overflow || static_data.year_data.global_week.length == 0;
+		$('#first_week_day_container').toggleClass('hidden', hidden).find('select').prop('disabled', hidden);
 		global_week_sortable.sortable('refresh');
 		reindex_weekday_sortable();
 		name.val("");
@@ -2856,7 +2858,7 @@ function add_era_to_list(parent, key, data){
 			element.push("<div class='row mt-1'>");
 				element.push("<div class='col'>");
 					element.push("Format:");
-					element.push(`<input type='text' class='form-control small-input dynamic_input era_formatting' data='eras.${key}' fc-index='formatting' ${!data.settings.use_custom_format ? "disabled" : ""}/>`);
+					element.push(`<input type='text' class='form-control small-input dynamic_input era_formatting protip' data='eras.${key}' fc-index='formatting' ${!data.settings.use_custom_format ? "disabled" : ""} data-pt-position="right" data-pt-title="Check out the wiki on this by clicking on the question mark on the 'Eras' bar!"/>`);
 				element.push("</div>");
 			element.push("</div>");
 
@@ -3380,7 +3382,7 @@ function populate_first_day_select(val){
 	if(val !== undefined){
 		var selected_first_day = val;
 	}else{
-		var selected_first_day = first_day.val() ? first_day.val() : 0;
+		var selected_first_day = first_day.val() ? first_day.val() : 1;
 	}
 
 	first_day.html(html.join('')).val(selected_first_day);
@@ -4077,8 +4079,6 @@ function evaluate_save_button(){
 		static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
 		dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
 
-		console.log(static_same)
-
 		var not_changed = static_same && dynamic_same && calendar_name_same;
 
 		var text = static_same && dynamic_same && calendar_name_same ? "No changes to save" : "Save calendar";
@@ -4261,7 +4261,7 @@ function set_up_edit_values(){
 		add_weekday_to_sortable(global_week_sortable, i, weekdayname);
 	}
 	populate_first_day_select(static_data.year_data.first_day);
-	$('#first_week_day_container').toggleClass('hidden', !static_data.year_data.overflow).find('select').prop('disabled', !static_data.year_data.overflow);
+	$('#first_week_day_container').toggleClass('hidden', !static_data.year_data.overflow || static_data.year_data.global_week.length == 0).find('select').prop('disabled', !static_data.year_data.overflow || static_data.year_data.global_week.length == 0);
 	global_week_sortable.sortable('refresh');
 
 	if(static_data.year_data.timespans.length > 0){
