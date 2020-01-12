@@ -15,7 +15,7 @@
 	@yield('label')
 
 	<div class='wrap-collapsible'>
-		<div class="view-tabs btn-group d-flex mb-1 w-100">
+		<div class="view-tabs btn-group d-flex mb-2 w-100">
             <button type="button" data-view-type='owner' class="owner w-100 btn btn-sm btn-primary">Owner View</button>
             <button type="button" data-view-type='player' class="player w-100 btn btn-sm btn-secondary">Player View</button>
             <button type="button" data-view-type='weather' class="weather w-100 btn btn-sm btn-secondary">Climate view</button>
