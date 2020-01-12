@@ -980,7 +980,6 @@ var calendar_builder = {
 				}
 			}
 			last_year = year_index;
-			console.log(year_index, this.dynamic_data.year)
 			if(year_index != convert_year(this.dynamic_data.year)) year_day = 1;
 			era_year++;
 		}

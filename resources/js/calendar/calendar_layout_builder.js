@@ -201,8 +201,6 @@ var eras = {
 
 				var format = era.formatting.replace(/\{\{/g, '{{{').replace(/\}\}/g, '}}}');
 
-				console.log(format)
-
 				year_text = Mustache.render(
 					format,
 					{
