@@ -3185,7 +3185,7 @@ function add_event_to_sortable(parent, key, data){
 
 	element = $(element.join(""))
 
-	element.find('.event_name').text(`Edit - ${data.name}`);
+	element.find('.event_name').html(`Edit - ${data.name}`);
 
 	parent.append(element);
 
