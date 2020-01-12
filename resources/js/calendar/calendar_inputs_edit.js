@@ -250,7 +250,7 @@ function set_up_edit_inputs(){
 
 		$('#create_season_events').prop('disabled', !static_data.clock.enabled);
 
-		var no_locations = static_data.seasons.data.length == 0 && !static_data.clock.enabled;
+		var no_locations = (static_data.seasons.data.length == 0 || !static_data.seasons.global_settings.enable_weather) && !static_data.clock.enabled;
 		$('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
 		$('#locations_warning').toggleClass('hidden', !no_locations);
 
@@ -461,7 +461,7 @@ function set_up_edit_inputs(){
 				$('#has_seasons_container').toggleClass('hidden', true).find('select, input').prop('disabled', true);
 				$('#no_seasons_container').toggleClass('hidden', false);
 
-				var no_locations = !static_data.clock.enabled;
+				var no_locations = !static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled;
 				$('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
 				$('#locations_warning').toggleClass('hidden', !no_locations);
 
@@ -1705,6 +1705,11 @@ function set_up_edit_inputs(){
 		$('.weather_inputs').toggleClass('hidden', !checked);
 		$('.weather_inputs').find('select, input').prop('disabled', !checked);
 		$('.location_middle_btn').toggleClass('hidden', !static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled);
+		
+		var no_locations = (static_data.seasons.data.length == 0 || !static_data.seasons.global_settings.enable_weather) && !static_data.clock.enabled;
+		$('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
+		$('#locations_warning').toggleClass('hidden', !no_locations);
+
 		repopulate_location_select_list();
 	});
 
@@ -2618,10 +2623,12 @@ function add_location_to_list(parent, key, data){
 						element.push(`<div class='row no-gutters mb-2'>`);
 
 							element.push("<div class='col-6 pl-0 pr-1 clock-input'>");
-								element.push(`<input type='number' step="1.0" class='form-control full dynamic_input hour_input' clocktype='sunrise_hour' data='seasons.locations.${key}.seasons.time.sunrise' fc-index='hour' value='${data.seasons[i].time.sunrise.hour}' />`);
+								element.push(`<input type='number' step="1.0" class='form-control text-right full dynamic_input hour_input' clocktype='sunrise_hour' data='seasons.locations.${key}.seasons.time.sunrise' fc-index='hour' value='${data.seasons[i].time.sunrise.hour}' />`);
 							element.push("</div>");
 
-							element.push("<div class='col-6 pl-1 pr-0 clock-input'>");
+							element.push("<div class='col-auto pt-1'>:</div>");
+
+							element.push("<div class='col pl-1 pr-0 clock-input'>");
 								element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunrise_minute' data='seasons.locations.${key}.seasons.time.sunrise' fc-index='minute' value='${data.seasons[i].time.sunrise.minute}' />`);
 							element.push("</div>");
 
@@ -2636,10 +2643,12 @@ function add_location_to_list(parent, key, data){
 						element.push(`<div class='row no-gutters mb-2'>`);
 
 							element.push("<div class='col-6 pl-0 pr-1 clock-input'>");
-								element.push(`<input type='number' step="1.0" class='form-control full dynamic_input hour_input' clocktype='sunset_hour' data='seasons.locations.${key}.seasons.time.sunset' fc-index='hour' value='${data.seasons[i].time.sunset.hour}' />`);
+								element.push(`<input type='number' step="1.0" class='form-control text-right full dynamic_input hour_input' clocktype='sunset_hour' data='seasons.locations.${key}.seasons.time.sunset' fc-index='hour' value='${data.seasons[i].time.sunset.hour}' />`);
 							element.push("</div>");
 
-							element.push("<div class='col-6 pl-1 pr-0 clock-input'>");
+							element.push("<div class='col-auto pt-1'>:</div>");
+
+							element.push("<div class='col pl-1 pr-0 clock-input'>");
 								element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunset_minute' data='seasons.locations.${key}.seasons.time.sunset' fc-index='minute' value='${data.seasons[i].time.sunset.minute}' />`);
 							element.push("</div>");
 
@@ -2669,7 +2678,9 @@ function add_location_to_list(parent, key, data){
 						element.push(`<input type='number' step="1.0" min='${static_data.clock.hours*-0.5}' max='${static_data.clock.hours*0.5}' class='form-control right-text form-control full dynamic_input hour_input' data='seasons.locations.${key}.settings.timezone' clocktype='timezone_hour' fc-index='hour' value='${data.settings.timezone.hour}' />`);
 					element.push("</div>");
 
-					element.push("<div class='col-6 pl-1 clock-input'>");
+					element.push("<div class='col-auto pt-1'>:</div>");
+
+					element.push("<div class='col pl-1 clock-input'>");
 						element.push(`<input type='number' step="1.0" min='${static_data.clock.minutes*-0.5}' max='${static_data.clock.minutes*0.5}' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings.timezone' clocktype='timezone_minute' fc-index='minute' value='${data.settings.timezone.minute}' />`);
 					element.push("</div>");
 
@@ -3607,7 +3618,7 @@ function reindex_season_sortable(key){
 	$('#has_seasons_container').toggleClass('hidden', no_seasons).find('select, input').prop('disabled', no_seasons);
 	$('#no_seasons_container').toggleClass('hidden', !no_seasons);
 
-	var no_locations = static_data.seasons.data.length == 0 && !static_data.clock.enabled;
+	var no_locations = (static_data.seasons.data.length == 0 || !static_data.seasons.global_settings.enable_weather) && !static_data.clock.enabled;
 	$('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
 	$('#locations_warning').toggleClass('hidden', !no_locations);
 
@@ -4315,7 +4326,7 @@ function set_up_edit_values(){
 		$('#has_seasons_container').toggleClass('hidden', no_seasons).find('select, input').prop('disabled', no_seasons);
 		$('#no_seasons_container').toggleClass('hidden', !no_seasons);
 
-		var no_locations = static_data.seasons.data.length == 0 && !static_data.clock.enabled;
+		var no_locations = (static_data.seasons.data.length == 0 || !static_data.seasons.global_settings.enable_weather) && !static_data.clock.enabled;
 		$('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
 		$('#locations_warning').toggleClass('hidden', !no_locations);
 
