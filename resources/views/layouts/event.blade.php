@@ -54,7 +54,8 @@
 					<textarea class='form-control event_desc editable' name='event_desc' placeholder='Event description' autofocus=''></textarea>
 				</div>
 
-				<div class='row no-gutters mt-2'>Condition presets:</div>
+
+				<h5 class='row no-gutters mt-2 event-form-heading'>Condition presets:</h5>
 
 				<div class='row no-gutters mb-1'>
 					<select class="form-control" id="condition_presets">
@@ -86,6 +87,7 @@
 				</div>
 
 				<h5 class='row no-gutters my-2 event-form-heading'>Conditions:</h5>
+
 				<div class='row no-gutters my-2' id='non_preset_buttons'>
 					<div class='col-md-6'>
 						<button type='button' id='add_event_condition' class='btn btn-primary full'>Add condition</button>
@@ -101,11 +103,10 @@
 					</ol>
 
 				</div>
-				<div class='row no-gutters my-2'>
-					<button type='button' id='remove_dropped' class='btn btn-danger full hidden'>DROP ITEM HERE TO REMOVE</button>
-				</div>
+				
+				<button type='button' id='remove_dropped' class='row no-gutters my-2 btn btn-danger full hidden'>DROP ITEM HERE TO REMOVE</button>
 
-				<div class='event_occurrences hidden container'>
+				<div class='event_occurrences hidden'>
 
 					<div class='row no-gutters mt-2'>
 						<h5 class='event-form-heading full'>Test event occurrences for the next:</h5>
@@ -142,7 +143,7 @@
 					<div class='separator'></div>
 				</div>
 
-				<div class='row no-gutters my-2'>
+				<div class='row no-gutters mt-2'>
 					<h5 class='event-form-heading'>Display settings:</h5>
 				</div>
 
@@ -155,24 +156,20 @@
 
 					<div class='col-md-6 pl-1 pr-0 form-control'>
 						<label class='row no-gutters'>
-							<div class='col-auto pl-4 pr-1'>
-								 Limit for
-							</div>
+							<div class='col-auto pl-4 pr-1'>Limit for</div>
 							<div class='col-4'>
 								 <input type='number' min='1' value='1' class='form-control form-control-sm' id='limited_repeat_num' name='limited_repeat_num' disabled>
 							</div>
-							<div class='col-auto pl-1 pr-0'>
-								 days.
-							</div>
+							<div class='col-auto pl-1 pr-0'>days.</div>
 						</label>
 					</div>
 				</div>
 
-				<div class='row no-gutters my-2'>
+				<div class='row no-gutters mt-2'>
 					<h5 class='event-form-heading'>Duration settings:</h5>
 				</div>
 
-				<div class='row no-gutters mb-2'>
+				<div class='row no-gutters'>
 					<div class='col-md-6 pl-0 pr-1'>
 						<label class='form-control checkbox'>
 							<input type='checkbox' class='event_setting' id='has_duration' name='has_duration'> Has duration
@@ -181,15 +178,11 @@
 
 					<div class='col-md-6 pl-1 pr-0 form-control'>
 						<label class='row no-gutters'>
-							<div class='col-auto pl-4 pr-1'>
-								 Lasts for
-							</div>
+							<div class='col-auto pl-4 pr-1'>Lasts for</div>
 							<div class='col-4'>
 								 <input type='number' min='1' value='1' class='form-control form-control-sm' id='duration' name='duration' disabled>
 							</div>
-							<div class='col-auto pl-1 pr-0'>
-								 days.
-							</div>
+							<div class='col-auto pl-1 pr-0'>days.</div>
 						</label>
 					</div>
 				</div>
@@ -246,7 +239,7 @@
 				</div>
 
 				<div class='row no-gutters'>
-					<div class='col'>
+					<div class='col pr-1'>
 						<h5 class='event-form-heading'>Color:</h5>
 						<select id="color_style" name='color_style' class='form-control event-text-input color_display' key='color_display'>
 							<option>Dark-Solid</option>
@@ -267,7 +260,7 @@
 						</select>
 					</div>
 
-					<div class='col'>
+					<div class='col pl-1'>
 						<h5 class='event-form-heading'>Display:</h5>
 						<select id="text_style" name='text_style' class='form-control event-text-input text_display'>
 							<option value="text">Just text</option>
