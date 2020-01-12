@@ -1006,6 +1006,16 @@
                         </div>
                     </label>
 
+                    <label class="form-control row no-gutters setting">
+                        <div class='col'>
+                            <input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='hide_wind_velocity'>
+                            <span>
+                                Hide wind velocity from players
+                            </span>
+                            <a target="_blank" title='' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
+                        </div>
+                    </label>
+
 					<!------------------------------------------------------->
 
 					<div class='bold-text'>Display Settings:</div>
