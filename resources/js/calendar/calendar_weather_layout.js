@@ -101,20 +101,23 @@ var calendar_weather = {
 
 			var temp_sys = static_data.seasons.global_settings.temp_sys;
 
-			if(temp_sys == 'imperial'){
-				temp_symbol = '°F';
-				var temp = `${precisionRound(weather.temperature[temp_sys].value[0], 1).toString()+temp_symbol} to ${precisionRound(weather.temperature[temp_sys].value[1], 1).toString()+temp_symbol}`;
-			}else if(temp_sys == 'metric'){
-				temp_symbol = '°C';
-				var temp = `${precisionRound(weather.temperature[temp_sys].value[0], 1).toString()+temp_symbol} to ${precisionRound(weather.temperature[temp_sys].value[1], 1).toString()+temp_symbol}`;
-			}else{
-				var temp_f = `<span class='newline'>${precisionRound(weather.temperature['imperial'].value[0], 1).toString()}°F to ${precisionRound(weather.temperature['imperial'].value[1], 1).toString()}°F</span>`;
-				var temp_c = `<span class='newline'>${precisionRound(weather.temperature['metric'].value[0], 1).toString()}°C to ${precisionRound(weather.temperature['metric'].value[1], 1).toString()}°C</span>`;
-				var temp = `${temp_f}${temp_c}`;
-				height += 37;
-			}
-			this.weather_temp.toggleClass('newline', temp_sys == 'both_i' || temp_sys == 'both_m');
+			var temp = "";
 
+			if(!static_data.settings.hide_weather_temp || owner){
+				if(temp_sys == 'imperial'){
+					temp_symbol = '°F';
+					var temp = `${precisionRound(weather.temperature[temp_sys].value[0], 1).toString()+temp_symbol} to ${precisionRound(weather.temperature[temp_sys].value[1], 1).toString()+temp_symbol}`;
+				}else if(temp_sys == 'metric'){
+					temp_symbol = '°C';
+					var temp = `${precisionRound(weather.temperature[temp_sys].value[0], 1).toString()+temp_symbol} to ${precisionRound(weather.temperature[temp_sys].value[1], 1).toString()+temp_symbol}`;
+				}else{
+					var temp_f = `<span class='newline'>${precisionRound(weather.temperature['imperial'].value[0], 1).toString()}°F to ${precisionRound(weather.temperature['imperial'].value[1], 1).toString()}°F</span>`;
+					var temp_c = `<span class='newline'>${precisionRound(weather.temperature['metric'].value[0], 1).toString()}°C to ${precisionRound(weather.temperature['metric'].value[1], 1).toString()}°C</span>`;
+					var temp = `${temp_f}${temp_c}`;
+					height += 37;
+				}
+				this.weather_temp.toggleClass('newline', temp_sys == 'both_i' || temp_sys == 'both_m');
+			}
 
 			var wind_sys = static_data.seasons.global_settings.wind_sys;
 
@@ -145,7 +148,7 @@ var calendar_weather = {
 
 			this.weather_temp.each(function(){
 				$(this).html(temp);
-			});
+			}).parent().toggleClass('hidden', static_data.settings.hide_weather_temp !== undefined && static_data.settings.hide_weather_temp && !owner);
 
 			this.weather_wind.each(function(){
 				$(this).html(wind_text);

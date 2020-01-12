@@ -650,7 +650,7 @@
     						</div>
     					</div>
 
-    					<div class='row no-gutters my-2'>
+    					<div class='row no-gutters my-2 protip' data-pt-position="right" data-pt-title="In addition of the temperature being shown, you'll also see the description for the temperature of that particular day.">
     						<div class='col-auto mr-2'>Cinematic temperature description:</div>
     						<div class='col-auto'>
     							<label class="custom-control custom-checkbox">
@@ -965,26 +965,6 @@
 
 					<label class="form-control row no-gutters setting">
                         <div class='col'>
-    						<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_future_weather'>
-    						<span>
-    							Hide future weather from players
-    						</span>
-    						<a target="_blank" title='' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
-					    </div>
-                    </label>
-
-					<label class="form-control row no-gutters setting">
-                        <div class='col'>
-    						<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_all_weather'>
-    						<span>
-    							Hide ALL weather from players
-    						</span>
-    						<a target="_blank" title='' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
-					    </div>
-                    </label>
-
-					<label class="form-control row no-gutters setting">
-                        <div class='col'>
     						<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_eras'>
     						<span>
     							Hide era from players
@@ -994,6 +974,37 @@
                     </label>
 
 
+                    <div class='bold-text'>Weather Display Settings:</div>
+
+                    <label class="form-control row no-gutters setting">
+                        <div class='col'>
+                            <input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_future_weather'>
+                            <span>
+                                Hide future weather from players
+                            </span>
+                            <a target="_blank" title='' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
+                        </div>
+                    </label>
+
+                    <label class="form-control row no-gutters setting">
+                        <div class='col'>
+                            <input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_all_weather'>
+                            <span>
+                                Hide ALL weather from players
+                            </span>
+                            <a target="_blank" title='' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
+                        </div>
+                    </label>
+
+                    <label class="form-control row no-gutters setting">
+                        <div class='col'>
+                            <input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='hide_weather_temp'>
+                            <span>
+                                Hide temperature from players (use this with cinematic!)
+                            </span>
+                            <a target="_blank" title='' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
+                        </div>
+                    </label>
 
 					<!------------------------------------------------------->
 
