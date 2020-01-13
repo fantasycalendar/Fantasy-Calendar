@@ -2439,7 +2439,7 @@ function add_season_to_sortable(parent, key, data){
 				element.push(`<div class='date_control season-date full'>`);
 
 					element.push("<div class='row no-gutters my-1'>");
-						element.push("<div class='col-4'>Timespan:</div>");
+						element.push("<div class='col-4 pt-1'>Month:</div>");
 						element.push("<div class='col'>");
 							element.push(`<select type='number' class='date form-control form-control timespan-list dynamic_input' data='seasons.data.${key}' fc-index='timespan'>`);
 							element.push("</select>");
@@ -2447,7 +2447,7 @@ function add_season_to_sortable(parent, key, data){
 					element.push("</div>");
 
 					element.push("<div class='row no-gutters my-1'>");
-						element.push("<div class='col-4'>Day:</div>");
+						element.push("<div class='col-4 pt-1'>Day:</div>");
 						element.push("<div class='col'>");
 							element.push(`<select type='number' class='date form-control form-control timespan-day-list dynamic_input' data='seasons.data.${key}' fc-index='day'>`);
 							element.push("</select>");
