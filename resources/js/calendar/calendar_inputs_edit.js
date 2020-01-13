@@ -3493,7 +3493,7 @@ function reindex_timespan_sortable(){
 
 		if($(this).find('.unique-week-input').is(':checked')){
 			static_data.year_data.timespans[i].week = [];
-			$(this).find('.collapsible-content').children().first().children().each(function(j){
+			$(this).find('.week_list').children().each(function(j){
 				static_data.year_data.timespans[i].week[j] = $(this).val();
 			});
 		}
