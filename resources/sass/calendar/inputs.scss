@@ -126,6 +126,7 @@ select.invalid {
     order:0;
     padding: .25rem;
     width: 100%;
+    min-height: 3rem;
 }
 
 .sortable-container.intercalary,
@@ -173,12 +174,12 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
 
 .name-container{
     flex-grow: 1;
-    margin-right:2%;
 }
 
 .remove-spacer {
     min-width: 40px;
     flex-grow: 0;
+    margin-left:1%;
 }
 
 

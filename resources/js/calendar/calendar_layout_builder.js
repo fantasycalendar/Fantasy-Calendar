@@ -413,7 +413,7 @@ function scroll_to_epoch(){
 
 function update_cycle_text(){
 
-	if(evaluated_static_data.epoch_data){
+	if(evaluated_static_data.epoch_data && static_data.cycles.data.length > 0){
 
 		var format = static_data.cycles.format.replace(/\{\{/g, '{{{').replace(/\}\}/g, '}}}');
 

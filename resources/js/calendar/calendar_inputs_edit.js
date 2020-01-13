@@ -2771,7 +2771,7 @@ function add_cycle_to_sortable(parent, key, data){
 		element.push("<div class='main-container'>");
 			element.push("<div class='handle icon-reorder'></div>");
 			element.push("<div class='expand icon-collapse'></div>");
-			element.push(`<div class='cycle-text'>Cycle #${(key+1)} - Using {{${(key+1)}}}</div>`);
+			element.push(`<div class='name-container cycle-text center-text'>Cycle #${(key+1)} - Using {{${(key+1)}}}</div>`);
 			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
