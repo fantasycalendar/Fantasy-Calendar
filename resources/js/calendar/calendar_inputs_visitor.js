@@ -245,11 +245,9 @@ function go_to_preview_date(rebuild){
 		}else{
 			update_current_day();
 			scroll_to_epoch();
+			update_cycle_text();
 		}
 	}
-
-	update_cycle_text();
-
 }
 
 function display_preview_back_button(){
@@ -290,6 +288,7 @@ function go_to_dynamic_date(rebuild){
 	}else{
 		update_current_day(false)
 		scroll_to_epoch();
+		update_cycle_text();
 	}
 
 }
