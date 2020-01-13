@@ -245,11 +245,9 @@ function go_to_preview_date(rebuild){
 		}else{
 			update_current_day();
 			scroll_to_epoch();
+			update_cycle_text();
 		}
 	}
-
-	update_cycle_text();
-
 }
 
 function display_preview_back_button(){
@@ -290,6 +288,7 @@ function go_to_dynamic_date(rebuild){
 	}else{
 		update_current_day(false)
 		scroll_to_epoch();
+		update_cycle_text();
 	}
 
 }
@@ -371,7 +370,7 @@ function eval_clock(){
 		hours		= static_data.clock.hours,
 		minutes		= static_data.clock.minutes,
 		offset		= static_data.clock.offset,
-		crowding	= 0,
+		crowding	= static_data.clock.crowding,
 		hour		= dynamic_data.hour,
 		minute		= dynamic_data.minute,
 		has_sun		= evaluated_static_data.processed_seasons,
