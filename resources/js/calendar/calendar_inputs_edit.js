@@ -1707,7 +1707,7 @@ function set_up_edit_inputs(){
 		$('.weather_inputs').toggleClass('hidden', !checked);
 		$('.weather_inputs').find('select, input').prop('disabled', !checked);
 		$('.location_middle_btn').toggleClass('hidden', !static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled);
-		
+
 		var no_locations = (static_data.seasons.data.length == 0 || !static_data.seasons.global_settings.enable_weather) && !static_data.clock.enabled;
 		$('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
 		$('#locations_warning').toggleClass('hidden', !no_locations);
@@ -4087,7 +4087,7 @@ function calendar_saved(){
 	dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
 	invalid = static_data.year_data.timespans.length === 0 || static_data.year_data.global_week.length === 0;
 
-	var not_changed = static_same && dynamic_same && calendar_name_same && invalid;
+	var not_changed = static_same && dynamic_same && calendar_name_same && !invalid;
 
 	if(not_changed){
 
