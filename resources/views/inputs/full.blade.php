@@ -753,7 +753,7 @@
 				</div>
 
 				<div class='add_inputs cycle row no-gutters'>
-					<input type='button' value='Press to add new cycle' class='btn btn-primary full add'>
+					<input type='button' value='Add new cycle' class='btn btn-primary full add'>
 				</div>
 
 				<div class='sortable' id='cycle_sortable'></div>
