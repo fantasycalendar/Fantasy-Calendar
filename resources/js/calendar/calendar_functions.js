@@ -739,8 +739,6 @@ class date_manager {
 	set timespan(timespan){
 
 		if(!this.check_max_timespan(timespan)) return;
-		
-		this.timespans_in_year = get_timespans_in_year(static_data, this.year, true);
 
 		if(timespan < 0){
 
