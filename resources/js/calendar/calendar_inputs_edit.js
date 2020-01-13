@@ -7,14 +7,16 @@ function set_up_edit_inputs(){
 	calendar_name_same = calendar_name == prev_calendar_name;
 	static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
 	dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
+	invalid = static_data.year_data.timespans.length === 0 || static_data.year_data.global_week.length === 0;
 
 	window.onbeforeunload = function(e){
 
 		calendar_name_same = calendar_name == prev_calendar_name;
 		static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
 		dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
+		invalid = static_data.year_data.timespans.length === 0 || static_data.year_data.global_week.length === 0;
 
-		var not_changed = static_same && dynamic_same && calendar_name_same;
+		var not_changed = (static_same && dynamic_same && calendar_name_same) || invalid;
 
 		if(!not_changed){
 
@@ -4015,8 +4017,9 @@ function calendar_saved(){
 	calendar_name_same = calendar_name == prev_calendar_name;
 	static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
 	dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
+	invalid = static_data.year_data.timespans.length === 0 || static_data.year_data.global_week.length === 0;
 
-	var not_changed = static_same && dynamic_same && calendar_name_same;
+	var not_changed = static_same && dynamic_same && calendar_name_same && invalid;
 
 	if(not_changed){
 
@@ -4045,10 +4048,11 @@ function evaluate_save_button(){
 		calendar_name_same = calendar_name == prev_calendar_name;
 		static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
 		dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
+		invalid = static_data.year_data.timespans.length === 0 || static_data.year_data.global_week.length === 0;
 
-		var not_changed = static_same && dynamic_same && calendar_name_same;
+		var not_changed = (static_same && dynamic_same && calendar_name_same) || invalid;
 
-		var text = static_same && dynamic_same && calendar_name_same ? "No changes to save" : "Save calendar";
+		var text = not_changed ? "No changes to save" : "Save calendar";
 
 		save_button.prop('disabled', not_changed).toggleClass('btn-secondary', false).toggleClass('btn-success', not_changed).toggleClass('btn-primary', !not_changed).toggleClass('btn-warning', false).text(text);
 
@@ -4057,10 +4061,11 @@ function evaluate_save_button(){
 		calendar_name_same = calendar_name == prev_calendar_name;
 		static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
 		dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
+		invalid = static_data.year_data.timespans.length === 0 || static_data.year_data.global_week.length === 0;
 
-		var not_changed = static_same && dynamic_same && calendar_name_same;
+		var not_changed = (static_same && dynamic_same && calendar_name_same) || invalid;
 
-		var text = static_same && dynamic_same && calendar_name_same ? "Cannot create yet" : "Create calendar";
+		var text = not_changed ? "Cannot create yet" : "Create calendar";
 
 		autosave();
 
