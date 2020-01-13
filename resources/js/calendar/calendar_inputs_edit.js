@@ -2381,7 +2381,7 @@ function add_moon_to_list(parent, key, data){
 					element.push(data.hidden ? "checked" : "");
 					element.push("/>");
 					element.push(`<label for='${key}_hidden_moon' class='form-check-label ml-1'>`);
-						element.push("Hide from players");
+						element.push("Hide from guest viewers");
 					element.push("</label>");
 				element.push("</div>");
 			element.push("</div>");
@@ -2458,7 +2458,7 @@ function add_season_to_sortable(parent, key, data){
 
 			}
 
-			element.push("<div class='clock_inputs'>");
+			element.push(`<div class='clock_inputs ${!static_data.clock.enabled ? "hidden" : ""}'>`);
 
 				element.push(`<div class='row no-gutters mt-2'>`);
 
@@ -3054,7 +3054,7 @@ function add_category_to_list(parent, key, data){
 				element.push("</div>");
 			element.push("</div>");
 
-			element.push(`<div class='row no-gutters my-1'>`);
+			element.push(`<div class='row no-gutters my-1 hidden'>`);
 				element.push("<div class='form-check col-12 py-2 border rounded'>");
 					element.push(`<input type='checkbox' id='${key}_cat_player_usable' class='form-check-input dynamic_input player_usable' data='event_data.categories.${key}.category_settings' fc-index='player_usable' ${(data.category_settings.player_usable ? "checked" : "")} />`);
 					element.push(`<label for='${key}_cat_player_usable' class='form-check-label ml-1'>`);
