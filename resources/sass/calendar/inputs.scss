@@ -407,6 +407,10 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     }
 }
 
+.setting{
+    font-size:0.85rem;
+}
+
 .lbl-toggle:hover .wiki, .setting:hover .setting-question{
     display:inline;
 }

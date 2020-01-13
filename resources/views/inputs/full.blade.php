@@ -17,7 +17,7 @@
 	<div class='wrap-collapsible'>
 		<div class="view-tabs btn-group d-flex mb-2 w-100">
             <button type="button" data-view-type='owner' class="owner w-100 btn btn-sm btn-primary">Owner View</button>
-            <button type="button" data-view-type='player' class="player w-100 btn btn-sm btn-secondary">Player View</button>
+            <button type="button" data-view-type='player' class="player w-100 btn btn-sm btn-secondary">Guest View</button>
             <button type="button" data-view-type='weather' class="weather w-100 btn btn-sm btn-secondary">Climate view</button>
 		</div>
 	</div>
@@ -885,47 +885,43 @@
                         </div>
 					</label>
 
-					<label class="form-control row no-gutters setting">
+					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Makes the calendar only show the current month. Enhances calendar loading performance, especially with many moons.">
                         <div class='col'>
     						<input type='checkbox' class='margin-right static_input' data='settings' fc-index='show_current_month'>
     						<span>
     							Show only current month
     						</span>
-    						<a target="_blank" title='Makes the calendar only show the current month' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
 					    </div>
                     </label>
 
 					<!------------------------------------------------------->
 
-					<div class='bold-text'>Player View Settings:</div>
+					<div class='bold-text'>Guest View Settings:</div>
 
-					<label class="form-control row no-gutters setting">
+					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This will allow guest viewers to view any past or future year and months just like you can">
                         <div class='col'>
     						<input type='checkbox' class='margin-right static_input' data='settings' fc-index='allow_view'>
     						<span>
     							Allow advancing view in calendar
     						</span>
-    						<a target="_blank" title='This will allow players to view any past or future year and months like you can' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
 					    </div>
                     </label>
 
-					<label class="form-control row no-gutters setting">
+					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This will limit guest viewers to only view past years">
                         <div class='col'>
     						<input type='checkbox' class='margin-right static_input' data='settings' fc-index='only_backwards'>
     						<span>
     							Limit to only backwards view
     						</span>
-    						<a target="_blank" title='This will limit players to only view past years' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
 					    </div>
                     </label>
 
-					<label class="form-control row no-gutters setting">
+					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Guest viewers will only be able to see up to current day, future days will be greyed out">
                         <div class='col'>
     						<input type='checkbox' class='margin-right static_input' data='settings' fc-index='only_reveal_today'>
     						<span>
     							Show only up to current day
     						</span>
-    						<a target="_blank" title='Players will only be able to see up to current day, future days will be greyed out' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
 					    </div>
                     </label>
 
@@ -933,86 +929,78 @@
 
 					<div class='bold-text'>Hiding Settings:</div>
 
-					<label class="form-control row no-gutters setting">
+					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Hides all of the moons from guest viewers">
                         <div class='col'>
     						<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_moons'>
     						<span>
-    							Hide all moons from players
+    							Hide all moons from guest viewers
     						</span>
-    						<a target="_blank" title='' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
 					    </div>
                     </label>
 
-					<label class="form-control row no-gutters setting">
+					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Hides the clock from guest viewers">
                         <div class='col'>
     						<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_clock'>
     						<span>
-    							Hide time from players
+    							Hide time from guest viewers
     						</span>
-    						<a target="_blank" title='' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
 					    </div>
                     </label>
 
-					<label class="form-control row no-gutters setting">
+					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Hides all events from guest viewers">
                         <div class='col'>
     						<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_events'>
     						<span>
-    							Hide all events from players
+    							Hide all events from guest viewers
     						</span>
-    						<a target="_blank" title='' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
 					    </div>
                     </label>
 
-					<label class="form-control row no-gutters setting">
+					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Hides the era text at the top of the calendar and only shows the year instead to guest viewers">
                         <div class='col'>
     						<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_eras'>
     						<span>
-    							Hide era from players
+    							Hide era from guest viewers
     						</span>
-    						<a target="_blank" title='' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
 					    </div>
                     </label>
 
 
                     <div class='bold-text'>Weather Display Settings:</div>
 
-                    <label class="form-control row no-gutters setting">
+                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Hides any future weather from guest viewers">
                         <div class='col'>
                             <input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_future_weather'>
                             <span>
-                                Hide future weather from players
+                                Hide future weather from guest viewers
                             </span>
-                            <a target="_blank" title='' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
                         </div>
                     </label>
 
-                    <label class="form-control row no-gutters setting">
+                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Hides all the weather from guest viewers">
                         <div class='col'>
                             <input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_all_weather'>
                             <span>
-                                Hide ALL weather from players
+                                Hide ALL weather from guest viewers
                             </span>
-                            <a target="_blank" title='' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
                         </div>
                     </label>
 
-                    <label class="form-control row no-gutters setting">
+                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This hides the exact temperature from guest viewers - this is really useful with the cinematic temperature setting">
                         <div class='col'>
                             <input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='hide_weather_temp'>
                             <span>
-                                Hide temperature from players (use this with cinematic!)
+                                Hide temperature from guest viewers
                             </span>
-                            <a target="_blank" title='' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
                         </div>
                     </label>
 
-                    <label class="form-control row no-gutters setting">
+                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This hides the exact wind velocity from guest viewers">
                         <div class='col'>
                             <input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='hide_wind_velocity'>
                             <span>
-                                Hide wind velocity from players
+                                Hide wind velocity from guest viewers
                             </span>
-                            <a target="_blank" title='' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
                         </div>
                     </label>
 
@@ -1020,23 +1008,21 @@
 
 					<div class='bold-text'>Display Settings:</div>
 
-					<label class="form-control row no-gutters setting">
+					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This will add 'Month 1' and so on to each month in the calendar">
                         <div class='col'>
     						<input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='add_month_number' onclick="setTimeout(calendar_layouts.add_month_number, 10);">
     						<span>
     							Add month number to months
     						</span>
-    						<a target="_blank" title='' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
 					    </div>
                     </label>
 
-					<label class="form-control row no-gutters setting">
+					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This adds a small number at the bottom left of the days in the calendar showing which year-day it is">
                         <div class='col'>
     						<input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='add_year_day_number' onclick="setTimeout(calendar_layouts.add_year_day_number, 10);">
     						<span>
     							Add year day to each day
     						</span>
-    						<a target="_blank" title='' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
 					    </div>
                     </label>
 
