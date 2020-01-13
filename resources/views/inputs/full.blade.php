@@ -202,7 +202,7 @@
 
                 <div class='wrap-collapsible card full'>
                     <input id="collapsible_add_units" class="toggle" type="checkbox">
-                    <label for="collapsible_add_units" class="lbl-toggle card-header small-lbl-text center-text">Add or subtract fixed units to calendar</label>
+                    <label for="collapsible_add_units" class="lbl-toggle card-header small-lbl-text center-text">Add or subtract fixed units to calendar dates</label>
                     <div class="collapsible-content container card-body">
 
                         <div class='row no-gutters input-group mx-0'>
