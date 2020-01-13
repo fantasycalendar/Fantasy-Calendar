@@ -144,6 +144,7 @@
 
         &.intercalary{
             border-top:0;
+            min-width: initial;
         }
 
         &:not(.first) {

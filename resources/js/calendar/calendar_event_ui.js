@@ -381,6 +381,18 @@ var edit_event_ui = {
 				'hide_full': false
 			},
 		};
+		
+		var category_id = static_data.event_data.default_category !== undefined ? static_data.event_data.default_category : -1;
+
+		if(category_id != -1){
+			var category = get_category(category_id);
+			stats.event_category_id = category.id;
+			stats.settings.color = category.event_settings.color;
+			stats.settings.text = category.event_settings.text;
+			stats.settings.hide = category.event_settings.hide;
+			stats.settings.noprint = category.event_settings.noprint;
+			stats.settings.hide_full = category.event_settings.hide_full;
+		}
 
 		eventId = Object.keys(static_data.event_data.events).length;
 
@@ -426,8 +438,7 @@ var edit_event_ui = {
 
 			$('#event_categories').val(category.id);
 		}else{
-			var default_event_category = static_data.event_data.default_category !== undefined ? static_data.event_data.default_category : -1;
-			$('#event_categories').val(default_event_category);
+			$('#event_categories').val(-1);
 		}
 
 		$('#color_style').val(event.settings.color);

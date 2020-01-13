@@ -395,7 +395,7 @@ function update_current_day(recalculate){
 		preview_day_container = $(`[epoch=${preview_date.epoch}]`);
 		preview_day_container.addClass('preview_day');
 	}
-  
+
 	evaluate_sun();
 
 	update_cycle_text();
@@ -488,7 +488,7 @@ var calendar_layouts = {
 		this.year_data.epoch = this.year_data.start_epoch;
 		this.epoch_data = this.data.epoch_data;
 		this.timespans = this.data.timespans;
-		this.name_layout = (deviceType() == "Mobile Phone") ? 'vertical' : static_data.settings.layout;
+		this.name_layout = static_data.settings.layout;
 		this.layout = calendar_layouts[this.name_layout];
 
 		for(var i = 0; i < Object.keys(this.timespans).length; i++){
