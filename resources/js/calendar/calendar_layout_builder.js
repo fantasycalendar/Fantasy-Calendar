@@ -727,6 +727,7 @@ var calendar_layouts = {
 			if(filtered_features.length > 0){
 
 				calendar_layouts.year_data.epoch += add_subt ? 1 : 0;
+				calendar_layouts.year_data.year_day += add_subt ? 1 : 0;
 				this.timespan.day += add_subt ? 1 : 0;
 
 				if(!(filtered_features[0].day === 0) && !(filtered_features[0].day === length)){
@@ -805,6 +806,7 @@ var calendar_layouts = {
 				}
 
 				calendar_layouts.year_data.epoch -= add_subt ? 1 : 0;
+				calendar_layouts.year_data.year_day -= add_subt ? 1 : 0;
 				this.timespan.day -= add_subt ? 1 : 0;
 			}
 		},
@@ -1029,6 +1031,7 @@ var calendar_layouts = {
 			if(filtered_features.length > 0){
 
 				calendar_layouts.year_data.epoch += add_subt ? 1 : 0;
+				calendar_layouts.year_data.year_day += add_subt ? 1 : 0;
 
 				if(!(filtered_features[0].day === 0) && !(filtered_features[0].day === length)){
 
@@ -1107,6 +1110,7 @@ var calendar_layouts = {
 				}
 
 				calendar_layouts.year_data.epoch -= add_subt ? 1 : 0;
+				calendar_layouts.year_data.year_day -= add_subt ? 1 : 0;
 			}
 		},
 
@@ -1275,6 +1279,8 @@ var calendar_layouts = {
 
 							this.insert_intercalary_day(timespan, filtered_features, timespan.length, true);
 
+							this.previous_epoch = calendar_layouts.year_data.epoch;
+
 						}
 
 				calendar_layouts.html.push("</div>");
@@ -1320,6 +1326,7 @@ var calendar_layouts = {
 			if(filtered_features.length > 0){
 
 				calendar_layouts.year_data.epoch += add_subt ? 1 : 0;
+				calendar_layouts.year_data.year_day += add_subt ? 1 : 0;
 
 				if(!(filtered_features[0].day === 0) && !(filtered_features[0].day === length)){
 
@@ -1335,9 +1342,6 @@ var calendar_layouts = {
 				intercalary_week = 1;
 
 				for(index = 0; index < filtered_features.length; index++, calendar_layouts.year_data.year_day++, calendar_layouts.year_data.epoch++, this.timespan.day++){
-
-					calendar_layouts.year_data.year_day++;
-					calendar_layouts.year_data.epoch++;
 
 					feature = filtered_features[index];
 
@@ -1369,6 +1373,7 @@ var calendar_layouts = {
 				}
 
 				calendar_layouts.year_data.epoch -= add_subt ? 1 : 0;
+				calendar_layouts.year_data.year_day -= add_subt ? 1 : 0;
 			}
 		},
 
