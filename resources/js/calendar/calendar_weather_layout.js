@@ -50,6 +50,10 @@ var calendar_weather = {
 		},
 
 		sticky: function(icon){
+			
+			if(registered_click_callbacks['sticky_weather_ui']){
+				return;
+			}
 
 			this.sticky_icon = icon;
 
@@ -63,17 +67,30 @@ var calendar_weather = {
 
 		sticky_callback: function(event){
 
-			if($(event.target).closest('#weather_tooltip_box').length == 0 && $(event.target).closest('.weather_popup').length == 0){
+			if($(event.target).closest('#weather_tooltip_box').length == 0 && $(event.target).closest('.sticky').length == 0){
 
 				calendar_weather.tooltip.stop_hide = false;
 
 				calendar_weather.tooltip.hide();
+
+				delete registered_click_callbacks['sticky_weather_ui'];
+				
+				calendar_weather.tooltip.sticky_icon.removeClass('sticky');
+
+				if($(event.target).closest('.weather_popup').length != 0){
+					calendar_weather.tooltip.show($(event.target).closest('.weather_popup'));
+					calendar_weather.tooltip.sticky($(event.target).closest('.weather_popup'));
+				}
 
 			}
 
 		},
 
 		show: function(icon){
+
+			if(registered_click_callbacks['sticky_weather_ui']){
+				return;
+			}
 
 			var day_container = icon.closest(".timespan_day");
 
@@ -89,11 +106,6 @@ var calendar_weather = {
 				this.moon_container.removeClass('hidden');
 				this.moon_container.children().first().html(insert_moons(calendar_layouts.epoch_data[epoch]));
 
-			}
-
-			if(registered_click_callbacks['sticky_weather_ui']){
-				delete registered_click_callbacks['sticky_weather_ui'];
-				this.sticky_icon.removeClass('sticky');
 			}
 
 			this.stop_hide = false;
