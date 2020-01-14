@@ -460,6 +460,8 @@ var edit_event_ui = {
 
 		this.event_background.removeClass('hidden');
 
+		this.inputs_changed = false;
+
 	},
 
 	save_current_event: function(){
