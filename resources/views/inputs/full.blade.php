@@ -821,7 +821,7 @@
                 <div class='row no-gutters bold-text'>
                     <div class='col'>
                        Default category:
-                        <select class='form-control event-category-list static_input' id='default_event_category' data='event_data' fc-index='default_category'></select>
+                        <select class='form-control event-category-list static_input' id='default_event_category' data='settings' fc-index='default_category'></select>
     		      	</div>
                 </div>
             </div>

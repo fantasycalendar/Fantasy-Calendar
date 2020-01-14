@@ -382,7 +382,7 @@ var edit_event_ui = {
 			},
 		};
 		
-		var category_id = static_data.event_data.default_category !== undefined ? static_data.event_data.default_category : -1;
+		var category_id = static_data.settings.default_category !== undefined ? static_data.settings.default_category : -1;
 
 		if(category_id != -1){
 			var category = get_category(category_id);
