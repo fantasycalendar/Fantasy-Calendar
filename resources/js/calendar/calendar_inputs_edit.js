@@ -7,16 +7,14 @@ function set_up_edit_inputs(){
 	calendar_name_same = calendar_name == prev_calendar_name;
 	static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
 	dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
-	invalid = static_data.year_data.timespans.length === 0 || static_data.year_data.global_week.length === 0;
 
 	window.onbeforeunload = function(e){
 
 		calendar_name_same = calendar_name == prev_calendar_name;
 		static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
 		dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
-		invalid = static_data.year_data.timespans.length === 0 || static_data.year_data.global_week.length === 0;
 
-		var not_changed = (static_same && dynamic_same && calendar_name_same) || invalid;
+		var not_changed = static_same && dynamic_same && calendar_name_same;
 
 		if(!not_changed){
 
@@ -322,8 +320,6 @@ function set_up_edit_inputs(){
 		reindex_timespan_sortable();
 		name.val("");
 		set_up_view_values();
-		$('#leap_day_explaination').prop('disabled', static_data.year_data.timespans.length == 0).toggleClass('hidden', static_data.year_data.timespans.length > 0);
-		$('.add_inputs.leap input, .add_inputs.leap select, .add_inputs.leap button').prop('disabled', static_data.year_data.timespans.length == 0);
 	});
 
 	$('.add_inputs.leap .add').click(function(){
@@ -3216,11 +3212,9 @@ function add_link_to_list(parent, key, calendar_name){
 	parent.append(element.join(""));
 }
 
-function error_check(parent, rebuild){
+function get_errors(){
 
-	if(wizard) return;
-
-	errors = [];
+	var errors = [];
 
 	for(var era_i = 0; era_i < static_data.eras.length; era_i++){
 		var era = static_data.eras[era_i];
@@ -3281,9 +3275,19 @@ function error_check(parent, rebuild){
 
 	}
 
-	if(errors.length == 0 && $('.invalid').length == 0){
+	return errors;
 
-		evaluate_save_button();
+}
+
+function error_check(parent, rebuild){
+
+	if(wizard) return;
+
+	var errors = get_errors();
+
+	evaluate_save_button();
+
+	if(errors.length == 0 && $('.invalid').length == 0){
 
 		close_error_message();
 
@@ -3334,9 +3338,6 @@ function error_check(parent, rebuild){
 		text.push(`</ol>`);
 
 		error_message(text.join(''));
-
-		save_button.prop('disabled', true);
-		create_button.prop('disabled', true);
 
 	}
 
@@ -4082,22 +4083,11 @@ function calendar_saving(){
 
 function calendar_saved(){
 
-	calendar_name_same = calendar_name == prev_calendar_name;
-	static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
-	dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
-	invalid = static_data.year_data.timespans.length === 0 || static_data.year_data.global_week.length === 0;
+	var text = "Saved!"
 
-	var not_changed = static_same && dynamic_same && calendar_name_same && !invalid;
+	save_button.prop('disabled', true).toggleClass('btn-secondary', false).toggleClass('btn-success', true).toggleClass('btn-primary', false).toggleClass('btn-warning', false).toggleClass('btn-danger', false).text(text);
 
-	if(not_changed){
-
-		var text = "Saved!"
-
-		save_button.prop('disabled', true).toggleClass('btn-secondary', false).toggleClass('btn-success', true).toggleClass('btn-primary', false).toggleClass('btn-warning', false).text(text);
-
-		setTimeout(evaluate_save_button, 3000);
-
-	}
+	setTimeout(evaluate_save_button, 3000);
 
 }
 
@@ -4105,39 +4095,45 @@ function calendar_save_failed(){
 
 	var text = "Failed to save!"
 
-	save_button.prop('disabled', true).toggleClass('btn-secondary', false).toggleClass('btn-success', true).toggleClass('btn-primary', false).toggleClass('btn-warning', true).text(text);
+	save_button.prop('disabled', true).toggleClass('btn-secondary', false).toggleClass('btn-success', true).toggleClass('btn-primary', false).toggleClass('btn-warning', true).toggleClass('btn-danger', false).text(text);
 
 }
 
 function evaluate_save_button(){
 
+	var errors = get_errors();
+
 	if($('#btn_save').length){
 
-		calendar_name_same = calendar_name == prev_calendar_name;
-		static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
-		dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
-		invalid = static_data.year_data.timespans.length === 0 || static_data.year_data.global_week.length === 0;
+		if(errors.length > 0){
 
-		var not_changed = (static_same && dynamic_same && calendar_name_same) || invalid;
+			var text = "Calendar has errors - can't save"
 
-		var text = not_changed ? "No changes to save" : "Save calendar";
+			save_button.prop('disabled', true).toggleClass('btn-secondary', false).toggleClass('btn-success', false).toggleClass('btn-primary', false).toggleClass('btn-warning', false).toggleClass('btn-danger', true).text(text);
 
-		save_button.prop('disabled', not_changed).toggleClass('btn-secondary', false).toggleClass('btn-success', not_changed).toggleClass('btn-primary', !not_changed).toggleClass('btn-warning', false).text(text);
+		}else{
+
+			calendar_name_same = calendar_name == prev_calendar_name;
+			static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
+			dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
+
+			var not_changed = static_same && dynamic_same && calendar_name_same;
+
+			var text = not_changed ? "No changes to save" : "Save calendar";
+
+			save_button.prop('disabled', not_changed).toggleClass('btn-secondary', false).toggleClass('btn-success', not_changed).toggleClass('btn-primary', !not_changed).toggleClass('btn-warning', false).toggleClass('btn-danger', false).text(text);
+
+		}
 
 	}else if($('#btn_create').length){
 
-		calendar_name_same = calendar_name == prev_calendar_name;
-		static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
-		dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
-		invalid = static_data.year_data.timespans.length === 0 || static_data.year_data.global_week.length === 0;
+		var invalid = errors.length > 0;
 
-		var not_changed = (static_same && dynamic_same && calendar_name_same) || invalid;
-
-		var text = not_changed ? "Cannot create yet" : "Create calendar";
+		var text = invalid ? "Cannot create yet" : "Create calendar";
 
 		autosave();
 
-		create_button.prop('disabled', not_changed).toggleClass('btn-danger', not_changed).toggleClass('btn-success', !not_changed).text(text);
+		create_button.prop('disabled', invalid).toggleClass('btn-danger', invalid).toggleClass('btn-success', !invalid).text(text);
 
 	}
 
@@ -4397,9 +4393,6 @@ function set_up_edit_values(){
 			}
 		})
 	}
-
-	$('#leap_day_explaination').prop('disabled', static_data.year_data.timespans.length == 0).toggleClass('hidden', static_data.year_data.timespans.length > 0);
-	$('.add_inputs.leap input, .add_inputs.leap select, .add_inputs.leap button').prop('disabled', static_data.year_data.timespans.length == 0);
 
 	if(static_data.moons){
 		for(var i = 0; i < static_data.moons.length; i++){
