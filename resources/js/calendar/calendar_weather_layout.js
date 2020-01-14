@@ -161,8 +161,6 @@ var calendar_weather = {
 					$(this).html(temp);
 				}).parent().toggleClass('hidden', static_data.settings.hide_weather_temp !== undefined && static_data.settings.hide_weather_temp && !owner);
 
-				console.log(this.weather_temp.parent(), static_data.settings.hide_weather_temp !== undefined && static_data.settings.hide_weather_temp && !owner)
-
 				this.weather_wind.each(function(){
 					$(this).html(wind_text);
 				});
