@@ -89,10 +89,6 @@
             display: flex;
             flex-direction: column;
             overflow-x: auto;
-
-            &:first-child{
-                margin-top:10px;
-            }
         }
     }
 
@@ -165,9 +161,10 @@
 
         &.intercalary{
             border-top:0;
+            min-width: initial;
         }
 
-        &:not(.intercalary):not(.first) {
+        &:not(.first) {
             border-left: 1px solid $calendar-border-color;
             padding-left: 0;
         }
@@ -518,9 +515,9 @@ body {
     .year_day_number_parent{
         display: flex;
         flex-wrap: wrap;
-        flex-grow:1;
         justify-content: end;
         flex-direction: column;
+        font-size:0.75rem;
     }
 
 }

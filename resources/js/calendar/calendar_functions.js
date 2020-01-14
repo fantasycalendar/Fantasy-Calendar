@@ -126,8 +126,6 @@ function truncate_weekdays(weekday_array){
 
 		var name = weekday_array[index];
 
-		console.log(is_roman_numeral(name))
-
 		if(!isNaN(Number(name))){
 
 			new_array.push(name);
@@ -143,6 +141,8 @@ function truncate_weekdays(weekday_array){
 			}else{
 				name = name.substring(0,2);
 			}
+
+			new_array.push(name);
 
 		}
 
@@ -178,17 +178,6 @@ function get_calendar_data(data){
 	}
 	return current_calendar_data;
 }
-
-
-
-var entityMap1 = {
-	"&": "&amp;",
-	"<": "&lt;",
-	">": "&gt;",
-	'"': '&quot;',
-	"'": '&#39;',
-	"/": '&#x2F;'
-};
 
 /**
  * This function is used to compare two javascript objects by iterating through its content.
@@ -915,9 +904,9 @@ function get_cycle(static_data, epoch_data){
 			var cycle_epoch_data = epoch_data[cycle_type];
 
 			if(cycle_type == "day"){
-				cycle_epoch_data--;				
+				cycle_epoch_data--;
 			}else if(cycle_type == "year day"){
-				cycle_epoch_data--;				
+				cycle_epoch_data--;
 			}else if(cycle_type == "year"){
 				cycle_epoch_data = cycle_epoch_data >= 0 ? cycle_epoch_data-1 : cycle_epoch_data;
 			}
@@ -1044,7 +1033,7 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object, no
 
 		}else if(leap_day.timespan === timespan_index){
 
-			if(leap_day.intercalary){
+			if(leap_day.intercalary && timespan.type != 'intercalary'){
 
 				var is_there = does_day_appear(static_data, year, timespan_index, leap_day.day-1);
 
@@ -1336,7 +1325,7 @@ var date_converter = {
 		if(!do_scale){
 			time_scale = 1.0;
 		}
-		
+
 		this.target_epoch = Math.floor(dynamic_data.epoch*time_scale);
 
 		if(do_scale){
@@ -1425,7 +1414,7 @@ var date_converter = {
 			this.loops++;
 
 		}
-		
+
 		this.year = this.year >= 0 ? this.year+1 : this.year;
 
 		return {
@@ -1859,7 +1848,7 @@ function evaluate_calendar_start(static_data, year, month, day){
 	var day = !isNaN(day) ? (day|0)-1 : 0;
 
 	var era_year = year;
-	
+
 	tmp = get_epoch(static_data, year, month, day);
 	var epoch = tmp[0];
 	var intercalary = tmp[1];
@@ -1940,6 +1929,17 @@ function evaluate_calendar_start(static_data, year, month, day){
 
 }
 
+function toggle_sidebar() {
+    $("#input_container").toggleClass('inputs_collapsed');
+    $("#calendar_container").toggleClass('inputs_collapsed');
+    $('#input_collapse_btn').toggleClass('is-active');
+
+    if(static_data.clock.enabled && static_data.clock.render && !isNaN(static_data.clock.hours) && !isNaN(static_data.clock.minutes) && !isNaN(static_data.clock.offset)){
+        window.Clock.size = $('#clock').width();
+    }
+
+    evaluate_error_background_size();
+}
 
 /**
  * This simple function returns a bool whether any given year has an era that ends it. Used to prevent users to create two eras that end years in one year.

@@ -107,7 +107,9 @@ var eras = {
 
 	evaluate_current_era: function(static_data, start_epoch, end_epoch){
 
-		if(static_data.eras.length > 0){
+		this.static_data = static_data;
+
+		if(this.static_data.eras.length > 0){
 
 			this.current_eras = [];
 			this.prev_era = -1;
@@ -118,21 +120,21 @@ var eras = {
 			this.era = undefined;
 
 			// If the last era shift was behind us, then it is the last era
-			if(static_data.eras[static_data.eras.length-1].date.epoch < this.start_epoch){
+			if(this.static_data.eras[this.static_data.eras.length-1].date.epoch < this.start_epoch){
 
 				this.current_eras.push({
-					"id": static_data.eras.length-1,
+					"id": this.static_data.eras.length-1,
 					"position": 0,
-					"data": static_data.eras[static_data.eras.length-1]
+					"data": this.static_data.eras[this.static_data.eras.length-1]
 				});
 
 			// Otherwise, this finds the current overlapping eras with the displayed days
 			}else{
 
 				// Find eras within this year
-				for(var i = static_data.eras.length-1; i >= 0; i--){
+				for(var i = this.static_data.eras.length-1; i >= 0; i--){
 
-					var era = static_data.eras[i];
+					var era = this.static_data.eras[i];
 
 					if(!era.settings.starting_era && era.date.epoch >= this.start_epoch && era.date.epoch < this.end_epoch){
 						this.current_eras.push({
@@ -141,6 +143,7 @@ var eras = {
 							"data": era
 						});
 					}else{
+
 						if(era.settings.starting_era || era.date.epoch < this.start_epoch){
 							this.current_eras.push({
 								"id": i,
@@ -150,6 +153,7 @@ var eras = {
 							break;
 						}
 					}
+
 				}
 
 				this.current_eras.reverse();
@@ -172,7 +176,42 @@ var eras = {
 			}
 		}
 
-		calendar_layouts.update_year_follower();
+		var year_text = `Year ${calendar_layouts.year_data.era_year}`;
+
+		if(this.era !== undefined && (!this.static_data.settings.hide_eras || owner)){
+
+			var era = this.current_eras[this.era].data;
+
+			if(era.settings.use_custom_format && era.formatting){
+
+				var format = era.formatting.replace(/\{\{/g, '{{{').replace(/\}\}/g, '}}}');
+
+				year_text = Mustache.render(
+					format,
+					{
+						"year": calendar_layouts.year_data.year,
+						"nth_year": ordinal_suffix_of(calendar_layouts.year_data.year),
+						"abs_year": Math.abs(calendar_layouts.year_data.year),
+						"abs_nth_year": ordinal_suffix_of(Math.abs(calendar_layouts.year_data.year)),
+						"era_year": calendar_layouts.year_data.era_year,
+						"era_nth_year": ordinal_suffix_of(calendar_layouts.year_data.era_year),
+						"era_name": era.name
+					}
+				);
+
+			}else{
+
+				year_text += ` - ${era.name}`
+
+			}
+
+		}
+
+		if(year_text != ''){
+
+			calendar_layouts.update_year_follower(year_text);
+
+		}
 
 	},
 
@@ -184,8 +223,10 @@ var eras = {
 			var position = $("#calendar_container").scrollTop();
 
 			for(var i = 0; i < this.current_eras.length; i++){
-				if($(`[epoch=${this.current_eras[i].data.date.epoch}]`).length){
-					this.current_eras[i].position = this.current_eras[i].position + position + $(`[epoch=${this.current_eras[i].data.date.epoch}]`).offset().top - 150;
+				if(!this.current_eras[i].data.settings.starting_era){
+					if($(`[epoch=${this.current_eras[i].data.date.epoch}]`).length){
+						this.current_eras[i].position = this.current_eras[i].position + position + $(`[epoch=${this.current_eras[i].data.date.epoch}]`).offset().top - 150;
+					}
 				}
 			}
 
@@ -339,7 +380,7 @@ function update_current_day(recalculate){
 		preview_day_container = $(`[epoch=${preview_date.epoch}]`);
 		preview_day_container.addClass('preview_day');
 	}
-  
+
 	evaluate_sun();
 
 	update_cycle_text();
@@ -357,9 +398,11 @@ function scroll_to_epoch(){
 
 function update_cycle_text(){
 
-	if(evaluated_static_data.epoch_data){
+	if(evaluated_static_data.epoch_data && static_data.cycles.data.length > 0){
 
-		var cycle_text = Mustache.render(static_data.cycles.format, get_cycle(static_data, evaluated_static_data.epoch_data[preview_date.epoch]).text);
+		var format = static_data.cycles.format.replace(/\{\{/g, '{{{').replace(/\}\}/g, '}}}');
+
+		var cycle_text = Mustache.render(format, get_cycle(static_data, evaluated_static_data.epoch_data[preview_date.epoch]).text);
 
 		$('#top_follower_content .cycle').text(cycle_text).removeClass('hidden');
 
@@ -416,7 +459,7 @@ var calendar_layouts = {
 
 		this.append_layout();
 
-		this.update_year_follower();
+		this.update_year_follower(`Year ${calendar_layouts.year_data.era_year}`);
 
 	},
 
@@ -430,7 +473,7 @@ var calendar_layouts = {
 		this.year_data.epoch = this.year_data.start_epoch;
 		this.epoch_data = this.data.epoch_data;
 		this.timespans = this.data.timespans;
-		this.name_layout = (deviceType() == "Mobile Phone") ? 'vertical' : static_data.settings.layout;
+		this.name_layout = static_data.settings.layout;
 		this.layout = calendar_layouts[this.name_layout];
 
 		for(var i = 0; i < Object.keys(this.timespans).length; i++){
@@ -462,40 +505,11 @@ var calendar_layouts = {
 
 		this.add_month_number();
 
-		this.update_year_follower();
+		this.update_year_follower(`Year ${calendar_layouts.year_data.era_year}`);
 
 	},
 
-	update_year_follower: function(){
-		
-		var year_text = `Year ${calendar_layouts.year_data.era_year}`
-
-		if(eras.era !== undefined && (!static_data.settings.hide_eras || owner)){
-
-			var era = eras.current_eras[eras.era].data;
-
-			if(era.settings.use_custom_format && era.formatting){
-
-				year_text = Mustache.render(
-					era.formatting,
-					{
-						"year": calendar_layouts.year_data.year,
-						"nth_year": ordinal_suffix_of(calendar_layouts.year_data.year),
-						"abs_year": Math.abs(calendar_layouts.year_data.year),
-						"abs_nth_year": ordinal_suffix_of(Math.abs(calendar_layouts.year_data.year)),
-						"era_year": calendar_layouts.year_data.era_year,
-						"era_nth_year": ordinal_suffix_of(calendar_layouts.year_data.era_year),
-						"era_name": era.name
-					}
-				);
-
-			}else{
-
-				year_text += ` - ${era.name}`
-
-			}
-
-		}
+	update_year_follower: function(year_text){
 
 		$('#top_follower_content').removeClass().addClass(this.name_layout).find('.year').text(year_text);
 
@@ -726,6 +740,7 @@ var calendar_layouts = {
 			if(filtered_features.length > 0){
 
 				calendar_layouts.year_data.epoch += add_subt ? 1 : 0;
+				calendar_layouts.year_data.year_day += add_subt ? 1 : 0;
 				this.timespan.day += add_subt ? 1 : 0;
 
 				if(!(filtered_features[0].day === 0) && !(filtered_features[0].day === length)){
@@ -810,6 +825,7 @@ var calendar_layouts = {
 				}
 
 				calendar_layouts.year_data.epoch -= add_subt ? 1 : 0;
+				calendar_layouts.year_data.year_day -= add_subt ? 1 : 0;
 				this.timespan.day -= add_subt ? 1 : 0;
 			}
 		},
@@ -1062,6 +1078,7 @@ var calendar_layouts = {
 			if(filtered_features.length > 0){
 
 				calendar_layouts.year_data.epoch += add_subt ? 1 : 0;
+				calendar_layouts.year_data.year_day += add_subt ? 1 : 0;
 
 				if(!(filtered_features[0].day === 0) && !(filtered_features[0].day === length)){
 
@@ -1146,6 +1163,7 @@ var calendar_layouts = {
 				}
 
 				calendar_layouts.year_data.epoch -= add_subt ? 1 : 0;
+				calendar_layouts.year_data.year_day -= add_subt ? 1 : 0;
 			}
 		},
 
@@ -1338,6 +1356,8 @@ var calendar_layouts = {
 
 							this.insert_intercalary_day(timespan, filtered_features, timespan.length, true);
 
+							this.previous_epoch = calendar_layouts.year_data.epoch;
+
 						}
 
 				calendar_layouts.html.push("</div>");
@@ -1383,6 +1403,7 @@ var calendar_layouts = {
 			if(filtered_features.length > 0){
 
 				calendar_layouts.year_data.epoch += add_subt ? 1 : 0;
+				calendar_layouts.year_data.year_day += add_subt ? 1 : 0;
 
 				if(!(filtered_features[0].day === 0) && !(filtered_features[0].day === length)){
 
@@ -1398,9 +1419,6 @@ var calendar_layouts = {
 				intercalary_week = 1;
 
 				for(index = 0; index < filtered_features.length; index++, calendar_layouts.year_data.year_day++, calendar_layouts.year_data.epoch++, this.timespan.day++){
-
-					calendar_layouts.year_data.year_day++;
-					calendar_layouts.year_data.epoch++;
 
 					feature = filtered_features[index];
 
@@ -1432,6 +1450,7 @@ var calendar_layouts = {
 				}
 
 				calendar_layouts.year_data.epoch -= add_subt ? 1 : 0;
+				calendar_layouts.year_data.year_day -= add_subt ? 1 : 0;
 			}
 		},
 

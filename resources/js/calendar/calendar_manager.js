@@ -5,11 +5,18 @@ const worker_events = new Worker('/js/webworkers/worker_events.js?v='+utcDate1);
 const worker_climate = new Worker('/js/webworkers/worker_climate.js?v='+utcDate1);
 
 var registered_click_callbacks = {}
+var registered_keydown_callbacks = {}
 var registered_onfocus_callbacks = {}
 var registered_onblur_callbacks = {}
 var registered_mousemove_callbacks = {}
 
 function bind_calendar_events(){
+
+	document.addEventListener('keydown', function(event){
+		for(var callback_id in registered_keydown_callbacks){
+			registered_keydown_callbacks[callback_id](event);
+		}
+	});
 
 	document.addEventListener('click', function(event){
 		for(var callback_id in registered_click_callbacks){
@@ -36,17 +43,8 @@ function bind_calendar_events(){
 	});
 
 	$('#input_collapse_btn').click(function(){
-
-		$("#input_container").toggleClass('inputs_collapsed');
-		$("#calendar_container").toggleClass('inputs_collapsed');
-		$(this).toggleClass('is-active');
-		
-		if(static_data.clock.enabled && !isNaN(static_data.clock.hours) && !isNaN(static_data.clock.minutes) && !isNaN(static_data.clock.offset)){
-			window.Clock.size = $('#clock').width();
-		}
-
-		evaluate_error_background_size();
-	})
+	    toggle_sidebar();
+	});
 
 	calendar_weather.tooltip.set_up();
 

@@ -80,7 +80,7 @@ var event_evaluator = {
 					return a < b;
 					break;
 				case '%':
-					c = (c-1)%b;
+					c = (c)%b;
 					return (a-c)%b==0;
 					break;
 				case '&&':

@@ -104,6 +104,8 @@ function set_up_visitor_inputs(){
 
 	target_year.change(function(e){
 
+		if(typeof preview_date_manager == "undefined") set_up_visitor_values();
+
 		if(e.originalEvent){
 			preview_date_manager.year = convert_year($(this).val()|0);
 		}
@@ -126,6 +128,8 @@ function set_up_visitor_inputs(){
 
 	target_timespan.change(function(e){
 
+		if(typeof preview_date_manager == "undefined") set_up_visitor_values();
+
 		if(e.originalEvent){
 			preview_date_manager.timespan = $(this).val()|0;
 		}else{
@@ -140,6 +144,8 @@ function set_up_visitor_inputs(){
 	});
 
 	target_day.change(function(e){
+
+		if(typeof preview_date_manager == "undefined") set_up_visitor_values();
 
 		if(e.originalEvent){
 			preview_date_manager.day = $(this).val()|0;
@@ -239,11 +245,9 @@ function go_to_preview_date(rebuild){
 		}else{
 			update_current_day();
 			scroll_to_epoch();
+			update_cycle_text();
 		}
 	}
-
-	update_cycle_text();
-
 }
 
 function display_preview_back_button(){
@@ -266,8 +270,6 @@ function go_to_dynamic_date(rebuild){
 	preview_date_manager.timespan = dynamic_date_manager.timespan;
 	preview_date_manager.day = dynamic_date_manager.day;
 
-	display_preview_back_button();
-
 	evaluate_preview_change();
 
 	var data = dynamic_date_manager.compare(preview_date)
@@ -277,6 +279,8 @@ function go_to_dynamic_date(rebuild){
 	preview_date.day = data.day;
 	preview_date.epoch = data.epoch;
 
+	display_preview_back_button();
+
 	rebuild = rebuild !== undefined ? rebuild : data.rebuild;
 
 	if(rebuild){
@@ -284,6 +288,7 @@ function go_to_dynamic_date(rebuild){
 	}else{
 		update_current_day(false)
 		scroll_to_epoch();
+		update_cycle_text();
 	}
 
 }
@@ -365,7 +370,7 @@ function eval_clock(){
 		hours		= static_data.clock.hours,
 		minutes		= static_data.clock.minutes,
 		offset		= static_data.clock.offset,
-		crowding	= 0,
+		crowding	= static_data.clock.crowding,
 		hour		= dynamic_data.hour,
 		minute		= dynamic_data.minute,
 		has_sun		= evaluated_static_data.processed_seasons,
@@ -413,6 +418,9 @@ function evaluate_sun(){
 
 function repopulate_timespan_select(select, val, change, max){
 
+	if(static_data.year_data.timespans.length == 0 || static_data.year_data.global_week.length == 0) return;
+
+	select = select === undefined ? $('.timespan-list') : select;
 	change = change === undefined ? true : change;
 	max = max === undefined ? false : max;
 
@@ -456,18 +464,21 @@ function repopulate_timespan_select(select, val, change, max){
 			var value = val;
 		}
 
-
 		$(this).html(html.join('')).val(value);
 		if($(this).find('option:selected').prop('disabled') || $(this).val() == null){
 			internal_loop:
-			for(var i = value, j = value+1; i >= 0 || j < $(this).children().length; i--, j++){
-				if(!$(this).children().eq(i).prop('disabled')){
-					var new_val = i;
-					break internal_loop;
-				}
-				if(!$(this).children().eq(j).prop('disabled')){
-					var new_val = j;
-					break internal_loop;
+			if(value >= $(this).children().length){
+				var new_val = $(this).children().length-1;
+			}else{
+				for(var i = value, j = value+1; i >= 0 || j < $(this).children().length; i--, j++){
+					if(!$(this).children().eq(i).prop('disabled')){
+						var new_val = i;
+						break internal_loop;
+					}
+					if(!$(this).children().eq(j).prop('disabled')){
+						var new_val = j;
+						break internal_loop;
+					}
 				}
 			}
 			$(this).val(new_val);
@@ -481,6 +492,8 @@ function repopulate_timespan_select(select, val, change, max){
 }
 
 function repopulate_day_select(select, val, change, no_leaps, max){
+
+	if(static_data.year_data.timespans.length == 0 || static_data.year_data.global_week.length == 0) return;
 
 	var change = change === undefined ? true : change;
 	var no_leaps = no_leaps === undefined ? false : no_leaps;

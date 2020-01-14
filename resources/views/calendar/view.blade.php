@@ -31,6 +31,10 @@
             static_data.clock.link_scale = link_data.master_hash !== "";
         }
 
+        if(typeof static_data.clock.crowding == "undefined"){
+            static_data.clock.crowding = 0;
+        }
+
         set_up_view_inputs();
         set_up_view_values();
         set_up_visitor_values();

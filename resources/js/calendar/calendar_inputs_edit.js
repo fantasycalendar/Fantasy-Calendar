@@ -89,10 +89,14 @@ function set_up_edit_inputs(){
 	var first_switch = true;
 	view_type = 'owner';
 
-	$('input[name="view_type"]').change(function(){
+	$('.view-tabs .btn').click(function(){
 
-		view_type = $(this).val();
+		view_type = $(this).attr('data-view-type');
 		owner = true;
+
+		$('.view-tabs .btn-primary').removeClass('btn-primary').addClass('btn-secondary');
+
+		$(this).removeClass('btn-secondary').addClass('btn-primary');
 
 		switch(view_type){
 			case "owner":
@@ -124,6 +128,10 @@ function set_up_edit_inputs(){
 				break;
 
 		}
+
+        if(isMobile() && deviceType() == "Mobile Phone") {
+            toggle_sidebar();
+        }
 
 	});
 
@@ -220,7 +228,7 @@ function set_up_edit_inputs(){
 	$(document).on('change', '.disable_local_season_name', function(){
 		var checked = $(this).prop('checked');
 		var parent = $(this).closest('.wrap-collapsible');
-		var index = parent.attr('index');
+		var index = parent.attr('index')|0;
 		var name_input = parent.find('input[fc-index="name"]');
 		if(checked){
 			name_input.prop('disabled', false);
@@ -242,13 +250,19 @@ function set_up_edit_inputs(){
 
 		$('#create_season_events').prop('disabled', !static_data.clock.enabled);
 
+		var no_locations = (static_data.seasons.data.length == 0 || !static_data.seasons.global_settings.enable_weather) && !static_data.clock.enabled;
+		$('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
+		$('#locations_warning').toggleClass('hidden', !no_locations);
+
+		$('.location_middle_btn').toggleClass('hidden', !static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled);
+
 		eval_clock();
 
 	});
 
 	$('#collapsible_clock').change(function(){
 		if($(this).is(':checked')){
-			$('#clock').prependTo($(this).parent().children('.collapsible-content'));
+			$('#clock').appendTo($(this).parent().children('.collapsible-content'));
 		}else{
 			$('#clock').prependTo($('#collapsible_date').parent().children('.collapsible-content'));
 		}
@@ -262,28 +276,30 @@ function set_up_edit_inputs(){
 
 	/* ------------------- Layout callbacks ------------------- */
 
-	$('.form-inline').keyup(function(e){
+	$('.add_inputs').keyup(function(e){
 		if (e.keyCode == 13) {
 			$(this).find('.add').click();
 		}
 	});
 
 
-	$('.form-inline.global_week .add').click(function(){
-		var name = $(this).prev();
+	$('.add_inputs.global_week .add').click(function(){
+		var name = $("#weekday_name_input");
 		var id = global_week_sortable.children().length;
 		var name_val = name.val() == "" ? `Weekday ${id+1}` : name.val();
-		add_weekday_to_sortable(global_week_sortable, id, name_val)
+		add_weekday_to_sortable(global_week_sortable, id, name_val);
 		static_data.year_data.global_week.push(name_val);
+		var hidden = !static_data.year_data.overflow || static_data.year_data.global_week.length == 0;
+		$('#first_week_day_container').toggleClass('hidden', hidden).find('select').prop('disabled', hidden);
 		global_week_sortable.sortable('refresh');
 		reindex_weekday_sortable();
 		name.val("");
 		set_up_view_values();
 	});
 
-	$('.form-inline.timespan .add').click(function(){
-		var name = $(this).prev().prev();
-		var type = $(this).prev();
+	$('.add_inputs.timespan .add').click(function(){
+		var name = $('#timespan_name_input');
+		var type = $('#timespan_type_input');
 		var id = timespan_sortable.children().length;
 		if(type.val() == "month"){
 			var name_val = name.val() == "" ? `Month ${id+1}` : name.val();
@@ -304,13 +320,11 @@ function set_up_edit_inputs(){
 		reindex_timespan_sortable();
 		name.val("");
 		set_up_view_values();
-		$('#leap_day_explaination').prop('disabled', static_data.year_data.timespans.length == 0).toggleClass('hidden', static_data.year_data.timespans.length > 0);
-		$('.form-inline.leap input, .form-inline.leap select, .form-inline.leap button').prop('disabled', static_data.year_data.timespans.length == 0);
 	});
 
-	$('.form-inline.leap .add').click(function(){
-		var name = $(this).prev().prev();
-		var type = $(this).prev();
+	$('.add_inputs.leap .add').click(function(){
+		var name = $('#leap_day_name_input');
+		var type = $('#leap_day_type_input');
 		var id = leap_day_list.children().length;
 		var name_val = name.val() == "" ? `Leap day ${id+1}` : name.val();
 		stats = {
@@ -346,21 +360,17 @@ function set_up_edit_inputs(){
 
 
 	$(document).on('click', '.expand', function(){
-		if($(this).parent().parent().hasClass('collapsed')){
-			$('#calendar_container').addClass('container_collapsed');
-			$(this).parent().parent().removeClass('collapsed').addClass('expanded');
-			$(this).parent().parent().find('.detail-container').removeClass('hidden');
+		if($(this).closest('.sortable-container').hasClass('collapsed')){
+			$(this).closest('.sortable-container').removeClass('collapsed').addClass('expanded');
 		}else{
-			$('#calendar_container').removeClass('container_collapsed');
-			$(this).parent().parent().removeClass('expanded').addClass('collapsed');
-			$(this).parent().parent().find('.detail-container').addClass('hidden');
+			$(this).closest('.sortable-container').removeClass('expanded').addClass('collapsed');
 		}
 	});
 
-	$('.form-inline.moon .add').click(function(){
-		var name = $(this).prev();
-		var cycle = $(this).next();
-		var shift = $(this).next().next();
+	$('.add_inputs.moon .add').click(function(){
+		var name = $('#moon_name_input');
+		var cycle = $('#moon_cycle_input');
+		var shift = $('#moon_shift_input');
 		var cycle_val = cycle.val()|0;
 		var id = moon_list.children().length;
 
@@ -428,9 +438,9 @@ function set_up_edit_inputs(){
 			title: "Are you sure?",
 			text: `Are you sure you want to switch to ${checked ? "PERIODIC" : "DATED"} seasons? Your current seasons will be deleted so you can re-create them.`,
 			showCancelButton: true,
-			confirmButtonColor: '#d33',
-			cancelButtonColor: '#3085d6',
-			confirmButtonText: 'Close',
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Okay',
 			icon: "warning",
 		})
 		.then((result) => {
@@ -446,8 +456,18 @@ function set_up_edit_inputs(){
 
 				$('.season_offset_container').prop('disabled', !checked).toggleClass('hidden', !checked);
 
+				$('#has_seasons_container').toggleClass('hidden', true).find('select, input').prop('disabled', true);
+				$('#no_seasons_container').toggleClass('hidden', false);
+
+				var no_locations = !static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled;
+				$('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
+				$('#locations_warning').toggleClass('hidden', !no_locations);
+
 				era_list.children().each(function(){
-					$(this).find('.ends_year').prop('disabled', !checked).toggleClass('protip');
+					var input = $(this).find('.ends_year');
+					var parent = input.parent().parent();
+					input.prop('disabled', !checked);
+					parent.toggleClass('disabled', !checked);
 				});
 
 				error_check("calendar", true);
@@ -456,11 +476,11 @@ function set_up_edit_inputs(){
 
 	});
 
-	$('.form-inline.seasons .add').click(function(){
+	$('.add_inputs.seasons .add').click(function(){
 
 		var fract_year_len = fract_year_length(static_data);
 
-		var name = $(this).prev();
+		var name = $("#season_name_input");
 		var id = season_sortable.children().length;
 
 		var name_val = name.val() == "" ? `Season ${id+1}` : name.val();
@@ -530,20 +550,24 @@ function set_up_edit_inputs(){
 		name.val("");
 		do_error_check();
 
-		$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 || !static_data.clock.enabled);
+		var no_seasons = static_data.seasons.data.length == 0;
+		$('#has_seasons_container').toggleClass('hidden', no_seasons).find('select, input').prop('disabled', no_seasons);
+		$('#no_seasons_container').toggleClass('hidden', !no_seasons);
+
+		$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 && !static_data.clock.enabled);
 
 	});
 
-	$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 || !static_data.clock.enabled);
+	$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 && !static_data.clock.enabled);
 
 	$('#create_season_events').click(function(){
 		swal.fire({
 			title: "Are you sure?",
 			text: 'Are you sure you want to create seasonal events? If you already have created them, you might get doubling.',
 			showCancelButton: true,
-			confirmButtonColor: '#d33',
-			cancelButtonColor: '#3085d6',
-			confirmButtonText: 'Close',
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Okay',
 			icon: "info",
 		})
 		.then((result) => {
@@ -561,9 +585,9 @@ function set_up_edit_inputs(){
 		});
 	})
 
-	$('.form-inline.locations .add').click(function(){
+	$('.add_inputs.locations .add').click(function(){
 
-		var name = $(this).prev();
+		var name = $('#location_name_input');
 		var id = location_list.children().length;
 
 		var name_value = name.val() == "" ? `Location ${id+1}` : name.val();
@@ -623,7 +647,7 @@ function set_up_edit_inputs(){
 			$(this).slider('option', 'value', parseInt($(this).parent().parent().find('.slider_input').val()));
 		});
 
-		location_list.find(`option[value=${name_value}]`).prop('selected', true).change();
+		location_select.find(`option[value="${id}"]`).prop('selected', true).change();
 
 	});
 
@@ -802,7 +826,7 @@ function set_up_edit_inputs(){
 	});
 
 
-	$('.form-inline.cycle .add').click(function(){
+	$('.add_inputs.cycle .add').click(function(){
 
 		var id = cycle_sortable.children().length;
 		var stats = {
@@ -828,11 +852,11 @@ function set_up_edit_inputs(){
 	});
 
 
-	$('.form-inline.eras .add').click(function(){
+	$('.add_inputs.eras .add').click(function(){
 
 		var id = era_list.children().length;
 
-		var name = $(this).prev();
+		var name = $('#era_name_input');
 
 		var name_val = name.val() == "" ? `Era ${id+1}` : name.val();
 
@@ -865,18 +889,20 @@ function set_up_edit_inputs(){
 		repopulate_day_select(era.find('.timespan-day-list'), dynamic_data.day, false);
 		sort_list_by_date(era_list);
 		name.val("");
-		do_error_check();
+		do_error_check("eras");
 
 	});
 
 
-	$('.form-inline.event_categories .add').click(function(){
+	$('.add_inputs.event_categories .add').click(function(){
 
-		var name = $(this).prev();
+		var name = $('#event_category_name_input');
 
-		var slug = slugify(name.val());
+		var sort_by = static_data.event_data.categories.length;
 
-		var name_val = name.val() == "" ? `Category ${id+1}` : name.val();
+		var name_val = name.val() == "" ? `Category ${sort_by+1}` : name.val();
+
+		var slug = slugify(name_val);
 
 		var stats = {
 			"name": name_val,
@@ -894,8 +920,6 @@ function set_up_edit_inputs(){
 			"id": slug
 		};
 
-		sort_by = static_data.event_data.categories.length;
-
 		add_category_to_list(event_category_list, sort_by, stats);
 
 		static_data.event_data.categories[sort_by] = stats;
@@ -909,8 +933,8 @@ function set_up_edit_inputs(){
 	});
 
 
-	$('.form-inline.events .add').click(function(){
-		var name = $(this).prev();
+	$('.add_inputs.events .add').click(function(){
+		var name = $('#event_name_input');
 
 		var name_val = name.val() == "" ? `New Event` : name.val();
 
@@ -946,7 +970,7 @@ function set_up_edit_inputs(){
 			}
 			removing = $(this).next();
 			$(this).parent().parent().find('.main-container').addClass('hidden');
-			$(this).parent().parent().find('.detail-container').addClass('hidden');
+			$(this).parent().parent().find('.collapse-container').addClass('hidden');
 			$(this).css('display', 'none');
 			$(this).prev().css('display', 'block');
 			$(this).next().css('display', 'block');
@@ -958,7 +982,7 @@ function set_up_edit_inputs(){
 
 	$(document).on('click', '.btn_cancel', function(){
 		$(this).parent().parent().find('.main-container').removeClass('hidden');
-		$(this).parent().parent().find('.detail-container').removeClass('hidden');
+		$(this).parent().parent().find('.collapse-container').removeClass('hidden');
 		$(this).css('display', 'none');
 		$(this).prev().prev().css('display', 'none');
 		$(this).prev().css('display', 'block');
@@ -968,7 +992,8 @@ function set_up_edit_inputs(){
 
 	$(document).on('click', '.btn_accept', function(){
 
-		var type = $(this).closest('.sortable-container').parent().attr('id');
+		var parent = $(this).closest('.sortable-container').parent();
+		var type = parent.attr('id');
 		var index = $(this).closest('.sortable-container').attr('index')|0;
 
 		var callback = false;
@@ -1215,13 +1240,13 @@ function set_up_edit_inputs(){
 
 			static_data.moons[index].granularity = get_moon_granularity(cycle);
 
-			$(this).closest('.sortable-container').find('.custom_phase_text').text(`This moon has ${value.split(',').length} phases, with a granularity of ${static_data.moons[index].granularity}.`);
+			$(this).closest('.sortable-container').find('.custom_phase_text').text(`This moon has ${value.split(',').length} phases, with a granularity of ${static_data.moons[index].granularity} moon sprites.`);
 
 			do_error_check();
 
 		}
 
-		$(this).toggleClass('invalid', invalid).attr('error_msg', invalid ? `${static_data.moons[index].name} has an invalid custom cycle. 31 is the highest possible number.` : '');
+		$(this).toggleClass('invalid', invalid).attr('error_msg', invalid ? `${static_data.moons[index].name} has an invalid custom cycle. 39 is the highest possible number.` : '');
 
 	});
 
@@ -1264,11 +1289,12 @@ function set_up_edit_inputs(){
 		container.find('.week_day_select_container').toggleClass('hidden', !checked);
 		container.find('.adds_week_day_data_container').toggleClass('hidden', !checked);
 		container.find('.adds_week_day_data_container input, .adds_week_day_data_container select').prop('disabled', !checked);
-		container.find('.week-day-select').toggleClass('inclusive', checked);
+		container.find('.week-day-select').toggleClass('inclusive', checked).prop('disabled', !checked);
 		$('#first_week_day_container').toggleClass('hidden', !checked).find('select').prop('disabled', !checked);
 		$('#overflow_explanation').toggleClass('hidden', !checked);
+		$('#overflow_container').toggleClass('hidden', checked).toggleClass('disabled', checked);
 		if(checked){
-			$('#month_overflow').prop('checked', true);
+			$('#month_overflow').prop('checked', false).change();
 		}
 		repopulate_weekday_select($(this).closest('.sortable-container').find('.week-day-select'));
 		container.find('.internal-list-name').change();
@@ -1287,13 +1313,17 @@ function set_up_edit_inputs(){
 			static_data.year_data.timespans[timespan_index].week = [];
 			for(index = 0; index < static_data.year_data.global_week.length; index++){
 				static_data.year_data.timespans[timespan_index].week.push(static_data.year_data.global_week[index]);
-				element.push(`<input type='text' class='detail-row form-control internal-list-name dynamic_input custom_week_day' data='year_data.timespans.${timespan_index}.week' fc-index='${index}' value='${static_data.year_data.global_week[index]}'/>`);
+				element.push(`<input type='text' class='form-control internal-list-name dynamic_input custom_week_day' data='year_data.timespans.${timespan_index}.week' fc-index='${index}'/>`);
 			}
-			parent.find(".week_list").html(element.join("")).parent().removeClass('hidden');
+			parent.find(".week_list").html(element).parent().parent().removeClass('hidden');
+			parent.find(".week_list").children().each(function(i){
+				$(this).val(static_data.year_data.global_week[i])
+			});
+
 			parent.find(".week-length").prop('disabled', false).val(static_data.year_data.global_week.length);
 			parent.find(".weekday_quick_add").prop('disabled', false);
 		}else{
-			parent.find(".week_list").html('').parent().addClass('hidden');
+			parent.find(".week_list").html('').parent().parent().addClass('hidden');
 			parent.find(".week-length").prop('disabled', true).val(0);
 			parent.find(".weekday_quick_add").prop('disabled', true);
 			delete static_data.year_data.timespans[timespan_index].week;
@@ -1321,7 +1351,7 @@ function set_up_edit_inputs(){
 			showCancelButton: true,
 			confirmButtonColor: '#3085d6',
 			cancelButtonColor: '#d33',
-			confirmButtonText: 'OK',
+			confirmButtonText: 'Okay',
 			icon: "info"
 		}).then((result) => {
 
@@ -1345,10 +1375,13 @@ function set_up_edit_inputs(){
 
 			var element = [];
 			for(i = 0; i < timespan.week.length; i++){
-				element.push(`<input type='text' class='detail-row form-control internal-list-name custom_week_day dynamic_input' data='year_data.timespans.${index}.week' fc-index='${i}' value='${timespan.week[i]}'/>`);
+				element.push(`<input type='text' class='form-control internal-list-name custom_week_day dynamic_input' data='year_data.timespans.${index}.week' fc-index='${i}'/>`);
 			}
 
 			week_day_list.append(element.join(""));
+			week_day_list.children().each(function(i){
+				$(this).val(timespan.week[i])
+			});
 
 			do_error_check('calendar');
 
@@ -1357,31 +1390,29 @@ function set_up_edit_inputs(){
 	});
 
 	$(document).on('change', '.show_as_event', function(){
-		var index = $(this).closest('.sortable-container').attr('index')|0;
+		var parent = $(this).closest('.sortable-container');
+		var index = parent.attr('index')|0;
 		if($(this).is(':checked')){
-			$(this).parent().parent().parent().next().removeClass('hidden');
-			$(this).parent().parent().parent().next().find('.dynamic_input').prop('disabled', false).val(-1).change();
+			parent.find('.era_description').parent().parent().removeClass('hidden');
+			parent.find('.event-category-list').parent().parent().parent().removeClass('hidden');
+			parent.find('.event-category-list').prop('disabled', false).val(-1).change();
 		}else{
-			$(this).parent().parent().parent().next().addClass('hidden');
-			$(this).parent().parent().parent().next().find('.dynamic_input').prop('disabled', true).change();
+			parent.find('.era_description').parent().parent().addClass('hidden');
+			parent.find('.event-category-list').parent().parent().parent().addClass('hidden');
+			parent.find('.event-category-list').prop('disabled', true);
 			delete static_data.eras[index].settings.event_category_id;
 		}
 	});
 
 	$(document).on('change', '.use_custom_format', function(){
-		var index = $(this).closest('.sortable-container').attr('index')|0;
-		if($(this).is(':checked')){
-			$(this).parent().parent().parent().next().removeClass('hidden');
-			if(static_data.eras[index].settings.restart){
-				var text = 'Era year {{era_year}} (year {{year}}) - {{era_name}}';
-			}else{
-				var text = 'Year {{year}} - {{era_name}}';
-			}
-			$(this).parent().parent().parent().next().find('.dynamic_input').prop('disabled', false).val(text).change();
+		var parent = $(this).closest('.sortable-container');
+		var index = parent.attr('index')|0;
+		if(static_data.eras[index].settings.restart){
+			var text = 'Era year {{era_year}} (year {{year}}) - {{era_name}}';
 		}else{
-			$(this).parent().parent().parent().next().addClass('hidden');
-			$(this).parent().parent().parent().next().find('.dynamic_input').prop('disabled', true).val('').change();
+			var text = 'Year {{year}} - {{era_name}}';
 		}
+		parent.find('.era_formatting').prop('disabled', !$(this).is(':checked')).val(text).change();
 
 	});
 
@@ -1398,9 +1429,9 @@ function set_up_edit_inputs(){
 		});
 
 		if(changed_era.is(':checked')){
-			changed_era.parent().parent().parent().next().addClass('hidden');
+			changed_era.closest('.sortable-container').find('.date_control').parent().addClass('hidden');
 		}else{
-			changed_era.parent().parent().parent().next().removeClass('hidden');
+			changed_era.closest('.sortable-container').find('.date_control').parent().removeClass('hidden');
 		}
 
 		reindex_era_list();
@@ -1420,9 +1451,11 @@ function set_up_edit_inputs(){
 	$(document).on('change', '.week-length', function(){
 
 		var parent = $(this).closest('.sortable-container');
+		var week_list = parent.find('.week_list');
 		var timespan_index = parent.attr('index');
+
 		var new_val = ($(this).val()|0);
-		var current_val = ($(this).parent().parent().parent().parent().find(".week_list").children().length|0);
+		var current_val = (week_list.children().length|0);
 
 		if(new_val < 1){
 			$(this).val(current_val);
@@ -1433,12 +1466,12 @@ function set_up_edit_inputs(){
 			var element = [];
 			for(index = current_val; index < new_val; index++){
 				static_data.year_data.timespans[timespan_index].week.push(`Week day ${(index+1)}`);
-				element.push(`<input type='text' class='detail-row form-control internal-list-name custom_week_day dynamic_input' data='year_data.timespans.${index}.week' fc-index='${index}' value='Week day ${(index+1)}'/>`);
+				element.push(`<input type='text' class='form-control internal-list-name custom_week_day dynamic_input' data='year_data.timespans.${index}.week' fc-index='${index}' value='Week day ${(index+1)}'/>`);
 			}
-			$(this).parent().parent().parent().parent().find(".week_list").append(element.join(""));
+			week_list.append(element.join(""));
 		}else if(new_val < current_val){
 			static_data.year_data.timespans[timespan_index].week = static_data.year_data.timespans[timespan_index].week.slice(0, new_val);
-			$(this).parent().parent().parent().parent().find(".week_list").children().slice(new_val).remove();
+			week_list.children().slice(new_val).remove();
 		}
 
 		evaluate_custom_weeks();
@@ -1488,7 +1521,7 @@ function set_up_edit_inputs(){
 			showCancelButton: true,
 			confirmButtonColor: '#3085d6',
 			cancelButtonColor: '#d33',
-			confirmButtonText: 'OK',
+			confirmButtonText: 'Okay',
 			icon: "info"
 		}).then((result) => {
 
@@ -1512,10 +1545,13 @@ function set_up_edit_inputs(){
 
 			var element = [];
 			for(i = 0; i < cycle.names.length; i++){
-				element.push(`<input type='text' class='form-control internal-list-name dynamic_input' data='cycles.data.${index}.names' fc-index='${i}' value='${cycle.names[i]}'/>`);
+				element.push(`<input type='text' class='form-control internal-list-name dynamic_input' data='cycles.data.${index}.names' fc-index='${i}'/>`);
 			}
 
 			cycle_name_list.append(element.join(""));
+			cycle_name_list.children().each(function(i){
+				$(this).val(cycle.names[i]);
+			})
 
 			do_error_check('calendar');
 
@@ -1533,31 +1569,18 @@ function set_up_edit_inputs(){
 
 		if(interval_val === undefined || offset_val === undefined) return;
 
-		text = "This timespan will appear every";
-
 		if(interval_val > 1){
-			text += " " + ordinal_suffix_of(interval_val)
-		}
-
-		text +=  " year";
-
-		if(interval_val > 1){
-
-			var start_year = ((interval_val+offset_val)%interval_val);
-			if(start_year === 0){
-				start_year = interval_val;
-			}
-			text += ", starting year " + start_year + `. (year ${start_year}, ${interval_val+start_year}, ${(interval_val*2)+start_year}...)`;
-
 			offset.prop('disabled', false);
-
 		}else{
 			offset.prop('disabled', true).val(0);
 		}
 
-		text +=  ".";
+		var data = {
+			'interval': interval_val,
+			'offset': offset_val
+		}
 
-		$(this).closest('.sortable-container').find('.timespan_variance_output').html(text);
+		$(this).closest('.sortable-container').find('.timespan_variance_output').html(get_interval_text(true, data));
 
 		$('.leap_day_occurance_input').change();
 
@@ -1649,7 +1672,7 @@ function set_up_edit_inputs(){
 
 		if(!invalid){
 
-			varvalues = values.reverse();
+			var values = values.reverse();
 			sorted = sorted.reverse();
 
 			if(values.length == 1 && Number(values[0]) == 1){
@@ -1658,92 +1681,13 @@ function set_up_edit_inputs(){
 				offset.prop('disabled', false);
 			}
 
-			var timespan_item = timespan_sortable.children().eq(timespan_val);
-			var timespan_interval = timespan_item.find('.interval').val()|0;
-			var timespan_name = timespan_item.find('.name-input').val();
-
-			var text = "This leap day will appear every";
-
-			for(var i = 0; i < values.length; i++){
-
-				var leap_interval = sorted[i];
-				var leap_offset = offset_val;
-
-				var total_offset = ((leap_interval+leap_offset)%leap_interval);
-
-				if(total_offset == 0){
-					total_offset = sorted[i]*timespan_interval;
-				}
-
-				if(i == 0 && sorted[i] == 1){
-
-					text += " year"
-
-				}else if(i == 0){
-
-					if(values.length > 1){
-						text += ": <br>•";
-					}
-
-					if(timespan_interval == '1'){
-						text += ` ${ordinal_suffix_of(sorted[i])} year`;
-					}else{
-						text += ` ${ordinal_suffix_of(sorted[i])} ${timespan_name}`;
-					}
-
-					text += ` (year ${total_offset}, ${(total_offset+sorted[i]*timespan_interval)}, ${total_offset+sorted[i]*2*timespan_interval}...)`;
-
-				}
-
-				if(i > 0 && sorted[i] > 1){
-
-					if(values[i].indexOf('!') != -1){
-
-						if(timespan_interval == '1'){
-							text += `<br>• but not every ${ordinal_suffix_of(sorted[i])} year`;
-						}else{
-							text += `<br>• but not every ${ordinal_suffix_of(sorted[i])} ${timespan_name}`;
-						}
-
-
-
-						if(values[i].indexOf('+') != -1){
-
-							text += ` (year ${sorted[i]}, ${sorted[i]*2*timespan_interval}, ${sorted[i]*3*timespan_interval}...)`;
-
-						}else{
-
-							text += ` (year ${total_offset}, ${total_offset+sorted[i]*timespan_interval}, ${total_offset+sorted[i]*2*timespan_interval}...)`;
-
-						}
-
-
-					}else{
-
-						if(timespan_interval == '1'){
-							text += `<br>• but also every ${ordinal_suffix_of(sorted[i])} year`;
-						}else{
-							text += `<br>• but also every ${ordinal_suffix_of(sorted[i])} ${timespan_name}`;
-						}
-
-						if(values[i].indexOf('+') != -1){
-
-							text += ` (year ${sorted[i]}, ${sorted[i]*2*timespan_interval}, ${sorted[i]*3*timespan_interval}...)`;
-
-						}else{
-
-							text += ` (year ${total_offset}, ${total_offset+sorted[i]*timespan_interval}, ${total_offset+sorted[i]*2*timespan_interval}...)`;
-
-						}
-
-
-					}
-
-				}
-
+			var data = {
+				'interval': interval_val,
+				'offset': offset_val,
+				'timespan': timespan_val
 			}
 
-			$(this).closest('.sortable-container').find('.leap_day_variance_output').html(text);
+			$(this).closest('.sortable-container').find('.leap_day_variance_output').html(get_interval_text(false, data));
 
 		}
 
@@ -1756,8 +1700,14 @@ function set_up_edit_inputs(){
 	$('#enable_weather').change(function(){
 		var checked = $(this).prop('checked');
 		static_data.seasons.global_settings.enable_weather = checked;
-		$('#weather_inputs').toggleClass('hidden', !checked);
-		$('#weather_inputs').find('select, input').prop('disabled', !checked);
+		$('.weather_inputs').toggleClass('hidden', !checked);
+		$('.weather_inputs').find('select, input').prop('disabled', !checked);
+		$('.location_middle_btn').toggleClass('hidden', !static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled);
+
+		var no_locations = (static_data.seasons.data.length == 0 || !static_data.seasons.global_settings.enable_weather) && !static_data.clock.enabled;
+		$('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
+		$('#locations_warning').toggleClass('hidden', !no_locations);
+
 		repopulate_location_select_list();
 	});
 
@@ -2000,7 +1950,12 @@ function set_up_edit_inputs(){
 				evaluate_clock_inputs();
 			}
 
-			do_error_check(type[0], refresh);
+			if(target.attr('refresh') == "clock"){
+				eval_clock();
+				evaluate_save_button();
+			}else{
+				do_error_check(type[0], refresh);
+			}
 
 		}
 
@@ -2020,7 +1975,7 @@ function add_weekday_to_sortable(parent, key, name){
 		element.push("<div class='main-container'>");
 			element.push("<div class='handle icon-reorder'></div>");
 			element.push("<div class='name-container'>");
-				element.push(`<input type='text' value='${name}' class='form-control name-input small-input dynamic_input' data='year_data.global_week' fc-index='${key}' tabindex='${(key+1)}'/>`);
+				element.push(`<input type='text' class='form-control name-input small-input dynamic_input' data='year_data.global_week' fc-index='${key}' tabindex='${(key+1)}'/>`);
 			element.push("</div>");
 			element.push("<div class='remove-spacer'></div>");
 		element.push("</div>");
@@ -2033,7 +1988,12 @@ function add_weekday_to_sortable(parent, key, name){
 
 	element.push("</div>");
 
-	parent.append(element.join(""));
+	element = $(element.join(""))
+
+	element.find('.name-input').val(name);
+
+	parent.append(element);
+
 }
 
 function add_timespan_to_sortable(parent, key, data){
@@ -2043,7 +2003,7 @@ function add_timespan_to_sortable(parent, key, data){
 			element.push("<div class='handle icon-reorder'></div>");
 			element.push("<div class='expand icon-collapse'></div>");
 			element.push("<div class='name-container'>");
-				element.push(`<input type='text' value='${data.name}' step='1.0' tabindex='${(100+key)}'class='name-input small-input form-control dynamic_input' data='year_data.timespans.${key}' fc-index='name'/>`);
+				element.push(`<input type='text' step='1.0' tabindex='${(100+key)}'class='name-input small-input form-control dynamic_input' data='year_data.timespans.${key}' fc-index='name'/>`);
 			element.push("</div>");
 			element.push(`<div class='length_input'><input type='number' min='1' class='length-input form-control dynamic_input timespan_length' data='year_data.timespans.${key}' fc-index='length' tabindex='${(100+key)}' value='${data.length}'/></div>`);
 			element.push('<div class="remove-spacer"></div>');
@@ -2055,128 +2015,109 @@ function add_timespan_to_sortable(parent, key, data){
 			element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
 		element.push("</div>");
 
-		element.push("<div class='detail-container hidden'>");
+		element.push("<div class='collapse-container container pb-2'>");
 
-			element.push("<div class='detail-row'>");
+			element.push("<div class='row no-gutters bold-text big-text italics-text'>");
+				element.push("<div class='col-12'>" + (data.type == "month" ? "Month" : "Intercalary month") + "</div>");
+			element.push("</div>");
 
-				element.push("<div class='detail-column full center-text bold-text big-text italics-text'>");
+				element.push("<div class='row no-gutters my-1 bold-text'><div class='col-12'>Leaping settings</div></div>");
 
-					element.push(data.type == "month" ? "Month" : "Intercalary month");
-
+			element.push("<div class='row no-gutters mt-1'>");
+				element.push("<div class='col-6 pr-1'>");
+					element.push("<div>Interval:</div>");
 				element.push("</div>");
 
-				element.push("<div class='detail-column full'>");
+				element.push("<div class='col-6 pl-1'>");
+					element.push("<div>Offset:</div>");
+				element.push("</div>");
+			element.push("</div>");
 
-					element.push("<div class='detail-row'>");
-							element.push("<div class='detail-text center-text bold-text'>Leaping settings</div>");
+			element.push("<div class='row no-gutters mb-1'>");
+				element.push("<div class='col-6 pr-1'>");
+					element.push(`<input type='number' step="1" min='1' class='form-control timespan_occurance_input interval dynamic_input small-input' data='year_data.timespans.${key}' fc-index='interval' value='${data.interval}' />`);
+				element.push("</div>");
+
+				element.push("<div class='col-6 pl-1'>");
+					element.push(`<input type='number' step="1" class='form-control timespan_occurance_input offset dynamic_input small-input' min='0' data='year_data.timespans.${key}' fc-index='offset' value='${data.offset}'`);
+					element.push(data.interval === 1 ? " disabled" : "");
+					element.push("/>");
+				element.push("</div>");
+			element.push("</div>");
+
+			element.push("<div class='row no-gutters my-1'>");
+				element.push("<div class='col-12 italics-text timespan_variance_output'>");
+					element.push(get_interval_text(true, data));
+				element.push("</div>");
+			element.push("</div>");
+
+			if(data.type == 'month'){
+
+				element.push("<div class='row no-gutters my-1'>");
+					element.push("<div class='col-12'><div class='separator'></div></div>");
+				element.push("</div>");
+
+				element.push("<div class='row no-gutters my-1'>");
+					element.push("<div class='col-12 bold-text'>Week settings</div>");
+				element.push("</div>");
+
+				element.push(`<div class='row no-gutters my-1'>`);
+					element.push("<div class='form-check col-12 py-2 border rounded'>");
+						element.push(`<input type='checkbox' id='${key}_custom_week' class='form-check-input unique-week-input' index='${key}'`);
+						element.push(data.week ? "checked" : "");
+						element.push("/>");
+						element.push(`<label for='${key}_custom_week' class='form-check-label ml-1'>`);
+							element.push("Use custom week");
+						element.push("</label>");
 					element.push("</div>");
+				element.push("</div>");
 
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-column half'>");
-							element.push("<div class='detail-row'>");
-									element.push("<div class='detail-text'>Interval:</div>");
-									element.push(`<input type='number' step="1" min='1' class='form-control timespan_occurance_input interval dynamic_input small-input' data='year_data.timespans.${key}' fc-index='interval' value='${data.interval}' />`);
-							element.push("</div>");
-						element.push("</div>");
+				element.push(`<div class='custom-week-container ${(!data.week ? "hidden" : "")}'>`);
 
-						element.push("<div class='detail-column half'>");
-							element.push("<div class='detail-row'>");
-								element.push("<div class='detail-text'>Offset:</div>");
-								element.push(`<input type='number' step="1" class='form-control timespan_occurance_input offset dynamic_input small-input' min='0' data='year_data.timespans.${key}' fc-index='offset' value='${data.offset}'`);
-								element.push(data.interval === 1 ? " disabled" : "");
-								element.push("/>");
-							element.push("</div>");
-						element.push("</div>");
-					element.push("</div>");
-
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text italics-text timespan_variance_output'>");
-
-							text = "This timespan will appear every";
-
-							if(data.interval > 1){
-								text += " " + ordinal_suffix_of(data.interval)
-							}
-
-							text +=  " year";
-
-							if(data.interval > 1){
-
-								var start_year = ((data.interval+data.offset)%data.interval);
-								if(start_year === 0){
-									start_year = data.interval;
-								}
-								text += ", starting year " + start_year + `. (year ${start_year}, ${data.interval+start_year}, ${(data.interval*2)+start_year}...)`;
-
-							}
-
-							text +=  ".";
-
-
-							element.push(text);
-
-						element.push("</div>");
-					element.push("</div>");
-
-					if(data.type == 'month'){
-
-					element.push("<div class='detail-row'>");
-						element.push("<div class='separator'></div>");
-					element.push("</div>");
-
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text center-text bold-text'>Week settings</div>");
-					element.push("</div>");
-
-					element.push("<div class='container'>");
-						element.push("<div class='row'>");
-							element.push("<div class='col p-0'>");
-								element.push("Use custom week:");
-							element.push("</div>");
-							element.push("<div class='col p-0'>");
-								element.push(`<input type='checkbox' class='unique-week-input' index='${key}'`);
-								element.push(data.week ? "checked" : "");
-								element.push("/>");
-							element.push("</div>");
+					element.push("<div class='row no-gutters my-1'>");
+						element.push("<div class='col-12'>");
+							element.push("Length:");
 						element.push("</div>");
 					element.push("</div>");
 
-					element.push("<div class='container'>");
-						element.push("<div class='row'>");
-							element.push("<div class='col p-0'>");
-								element.push("Length:");
-							element.push("</div>");
-							element.push("<div class='col p-0'>");
-							element.push("</div>");
+					element.push("<div class='row no-gutters mb-1'>");
+						element.push("<div class='col-6 pr-1'>");
+							element.push(`<input type='number' min='1' step="1" class='form-control week-length small-input' ${(!data.week ? "disabled" : "")} value='${(data.week ? data.week.length : 0)}'/>`);
 						element.push("</div>");
-					element.push("</div>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-column half'>");
-							element.push("<div class='detail-row'>");
-								element.push(`<input type='number' min='1' step="1" class='form-control week-length small-input' ${(!data.week ? "disabled" : "")} value='${(data.week ? data.week.length : 0)}'/>`);
-							element.push("</div>");
-						element.push("</div>");
-						element.push("<div class='detail-column half'>");
+						element.push("<div class='col-6 pl-1'>");
 							element.push(`<button type='button' class='full btn btn-primary weekday_quick_add' ${(!data.week ? "disabled" : "")}>Quick add</button>`);
 						element.push("</div>");
 					element.push("</div>");
-					element.push(`<div class='detail-row custom-week-container ${(!data.week ? "hidden" : "")}'>`);
-						element.push("<div class='week_list'>");
+
+					element.push("<div class='row no-gutters border'>");
+						element.push("<div class='week_list col-12 p-1'>");
 						if(data.week){
 							for(index = 0; index < data.week.length; index++){
-								element.push(`<input type='text' class='form-control internal-list-name dynamic_input custom_week_day' data='year_data.timespans.${key}.week' fc-index='${index}' value='${data.week[index]}'/>`);
+								element.push(`<input type='text' class='form-control internal-list-name dynamic_input custom_week_day' data='year_data.timespans.${key}.week' fc-index='${index}/>`);
 							}
 						}
 						element.push("</div>");
 					element.push("</div>");
+				element.push("</div>");
 
-				}
-
-			element.push("</div>");
+			}
 
 		element.push("</div>");
 
-	parent.append(element.join(""));
+	element.push("</div>");
+
+	element = $(element.join(""))
+
+	element.find('.name-input').val(data.name);
+
+	if(data.week){
+		element.find('.week_list').children().each(function(i){
+			$(this).val(data.week[index]);
+		});
+	}
+
+	parent.append(element);
+
 }
 
 function add_leap_day_to_list(parent, key, data){
@@ -2187,7 +2128,7 @@ function add_leap_day_to_list(parent, key, data){
 		element.push("<div class='main-container'>");
 			element.push("<div class='expand icon-collapse'></div>");
 			element.push("<div class='name-container'>");
-				element.push(`<input type='text' value='${data.name}' class='name-input small-input form-control dynamic_input' data='year_data.leap_days.${key}' fc-index='name' tabindex='${(200+key)}'/>`);
+				element.push(`<input type='text' class='name-input small-input form-control dynamic_input' data='year_data.leap_days.${key}' fc-index='name' tabindex='${(200+key)}'/>`);
 			element.push("</div>");
 			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
@@ -2198,214 +2139,132 @@ function add_leap_day_to_list(parent, key, data){
 			element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
 		element.push("</div>");
 
-		element.push("<div class='detail-container'>");
+		element.push("<div class='collapse-container container mb-2'>");
 
-			element.push("<div class='detail-row'>");
-
-				element.push("<div class='detail-column full center-text bold-text big-text italics-text'>");
-
+			element.push("<div class='row my-2 bold-text big-text italics-text'>");
+				element.push("<div class='col'>");
 					element.push(!data.intercalary ? "Leap day" : "Intercalary leap day");
+				element.push("</div>");
+			element.push("</div>");
 
+			element.push("<div class='row my-2'>");
+				element.push("<div class='col'>");
+					element.push("<div class='bold-text'>Leap day settings</div>");
+				element.push("</div>");
+			element.push("</div>");
+
+			element.push("<div class='date_control'>");
+
+				element.push(`<input type='hidden' class='form-control year-input hidden' value='0'>`);
+
+				element.push("<div class='row no-gutters'>");
+					element.push("<div class='col-4'>Timespan:</div>");
+					element.push("<div class='col-8'>");
+						element.push(`<select type='number' class='custom-select form-control leap_day_occurance_input timespan-list dynamic_input full timespan_special' data='year_data.leap_days.${key}' fc-index='timespan'>`);
+						for(var j = 0; j < static_data.year_data.timespans.length; j++)
+						{
+							element.push(`<option value="${j}" ${(j==data.timespan ? "selected" : "")}>${static_data.year_data.timespans[j].name}</option>`);
+						}
+						element.push("</select>");
+					element.push("</div>");
 				element.push("</div>");
 
-				element.push("<div class='detail-column full'>");
-
-					element.push("<div class='detail-row'>");
-							element.push("<div class='detail-text bold-text'>Leap day settings</div>");
+				element.push(`<div class='row no-gutters my-1'>`);
+					element.push("<div class='form-check col-12 py-2 border rounded'>");
+						element.push(`<input type='checkbox' id='${key}_adds_week_day' class='form-check-input adds-week-day dynamic_input' data='year_data.leap_days.${key}' fc-index='adds_week_day' ${(data.adds_week_day ? "checked" : "")} />`);
+						element.push(`<label for='${key}_adds_week_day' class='form-check-label ml-1'>`);
+							element.push("Adds week day");
+						element.push("</label>");
 					element.push("</div>");
+				element.push("</div>");
 
-					element.push("<div class='date_control'>");
-
-						element.push(`<input type='hidden' class='form-control year-input hidden' value='0'>`);
-
-						element.push("<div class='detail-row'>");
-							element.push("<div class='detail-column'>");
-								element.push("<div class='detail-row'>");
-									element.push("<div class='detail-column'>");
-										element.push("<div class='detail-text'>Timespan: </div>");
-									element.push("</div>");
-									element.push("<div class='detail-column'>");
-										element.push(`<select type='number' class='custom-select form-control leap_day_occurance_input timespan-list dynamic_input full timespan_special' data='year_data.leap_days.${key}' fc-index='timespan'>`);
-										for(var j = 0; j < static_data.year_data.timespans.length; j++)
-										{
-											element.push(`<option value="${j}" ${(j==data.timespan ? "selected" : "")}>${static_data.year_data.timespans[j].name}</option>`);
-										}
-										element.push("</select>");
-									element.push("</div>");
-								element.push("</div>");
-							element.push("</div>");
-						element.push("</div>");
-
-						element.push(`<div class='detail-row adds_week_day_container ${(!data.intercalary ? "" : "hidden")}'>`);
-							element.push("<div class='detail-column half'>");
-								element.push("<div class='detail-row'>");
-										element.push("<div class='detail-text'>Adds week day: </div>");
-										element.push(`<input type='checkbox' class='form-control adds-week-day dynamic_input' data='year_data.leap_days.${key}' fc-index='adds_week_day' ${(data.adds_week_day ? "checked" : "")} />`);
-								element.push("</div>");
-							element.push("</div>");
-						element.push("</div>");
-
-						element.push(`<div class='adds_week_day_data_container ${(data.adds_week_day && !data.intercalary ? "" : "hidden")}'>`);
-							element.push(`<div class='detail-row'>`);
-								element.push("<div class='detail-column'>");
-									element.push("<div class='detail-row'>");
-										element.push("<div class='detail-text'>Week day name: </div>");
-										element.push(`<input type='text' class='form-control internal-list-name dynamic_input' data='year_data.leap_days.${key}' fc-index='week_day' value='${(data.week_day && !data.intercalary ? data.week_day : 'Weekday')}' ${(data.adds_week_day && !data.intercalary ? "" : "disabled")}/>`);
-									element.push("</div>");
-								element.push("</div>");
-							element.push("</div>");
-						element.push("</div>");
-
-						element.push(`<div class='detail-row week_day_select_container ${(data.adds_week_day && !data.intercalary) ? "" : "hidden"}'>`);
-							element.push("<div class='detail-column full'>");
-								element.push("<div class='detail-row'>");
-									element.push(`<div class='detail-text'>Select weekday: </div>`);
-								element.push("</div>");
-								element.push("<div class='detail-row'>");
-									element.push(`<select type='number' class='custom-select form-control dynamic_input full week-day-select ${(data.adds_week_day ? "inclusive" : "")}' data='year_data.leap_days.${key}' fc-index='day'>`);
-
-										if(data.timespan === undefined){
-											var week = static_data.year_data.global_week;
-										}else{
-											if(data.timespan <= static_data.year_data.timespans.length){
-												var week = static_data.year_data.timespans[data.timespan].week ? static_data.year_data.timespans[data.timespan].week : static_data.year_data.global_week;
-											}
-										}
-										if(data.adds_week_day){
-											element.push(`<option ${data.day == 0 ? 'selected' : ''} value='0'>Before ${week[0]}</option>`);
-										}
-										for(var i = 0; i < week.length; i++){
-											element.push(`<option ${data.day == i ? 'selected' : ''} value='${i+1}'>${week[i]}</option>`);
-										}
-
-									element.push("</select>");
-								element.push("</div>");
-							element.push("</div>");
-						element.push("</div>");
-
-						element.push(`<div class='detail-row ${(!data.intercalary ? "hidden" : "")}'>`);
-							element.push("<div class='detail-column full'>");
-								element.push("<div class='detail-row'>");
-									element.push(`<div class='detail-text'>Select after which day: </div>`);
-								element.push("</div>");
-								element.push("<div class='detail-row'>");
-									element.push(`<select type='number' class='custom-select form-control dynamic_input full timespan-day-list exclude_self' data='year_data.leap_days.${key}' fc-index='day'>`);
-									element.push("</select>");
-								element.push("</div>");
-							element.push("</div>");
+				element.push(`<div class='adds_week_day_data_container ${(data.adds_week_day && !data.intercalary ? "" : "hidden")}'>`);
+					element.push("<div class='row no-gutters mt-2'>");
+						element.push("<div class='col'>");
+							element.push("Week day name:");
+							element.push(`<input type='text' class='form-control internal-list-name dynamic_input' data='year_data.leap_days.${key}' fc-index='week_day' ${(data.adds_week_day && !data.intercalary ? "" : "disabled")}/>`);
 						element.push("</div>");
 					element.push("</div>");
+				element.push("</div>");
 
-					element.push("<div class='detail-row'>");
+				element.push(`<div class='week_day_select_container ${(data.adds_week_day && !data.intercalary) ? "" : "hidden"}'>`);
+					element.push("<div class='row no-gutters mt-2'>");
+						element.push("<div class='col'>");
+							element.push("After which weekday:");
+							element.push(`<select type='number' class='custom-select form-control dynamic_input full week-day-select inclusive' ${(data.adds_week_day && !data.intercalary) ? "" : "disabled"} data='year_data.leap_days.${key}' fc-index='day'>`);
+
+								if(data.timespan === undefined){
+									var week = static_data.year_data.global_week;
+								}else{
+									if(data.timespan <= static_data.year_data.timespans.length){
+										var week = static_data.year_data.timespans[data.timespan].week ? static_data.year_data.timespans[data.timespan].week : static_data.year_data.global_week;
+									}
+								}
+								if(data.adds_week_day){
+									element.push(`<option ${data.day == 0 ? 'selected' : ''} value='0'>Before ${week[0]}</option>`);
+								}
+								for(var i = 0; i < week.length; i++){
+									element.push(`<option ${data.day == i ? 'selected' : ''} value='${i+1}'>${week[i]}</option>`);
+								}
+
+							element.push("</select>");
+						element.push("</div>");
+					element.push("</div>");
+				element.push("</div>");
+
+				element.push(`<div class='${(!data.intercalary ? "hidden" : "")}'>`);
+					element.push("<div class='row my-1'>");
+						element.push("<div class='col'>");
+							element.push("Select after which day:");
+							element.push(`<select type='number' class='custom-select form-control dynamic_input full timespan-day-list exclude_self' data='year_data.leap_days.${key}' ${(!data.intercalary ? "disabled" : "")} fc-index='day'>`);
+							element.push("</select>");
+						element.push("</div>");
+					element.push("</div>");
+				element.push("</div>");
+
+				element.push("<div class='row no-gutters mt-2 mb-1>");
+					element.push("<div class='col'>");
 						element.push("<div class='separator'></div>");
 					element.push("</div>");
+				element.push("</div>");
 
-					element.push("<div class='detail-row'>");
-							element.push("<div class='detail-text bold-text'>Leaping settings</div>");
+				element.push("<div class='row no-gutters my-1'>");
+					element.push("<div class='col'>");
+						element.push("<div class='bold-text'>Leaping settings</div>");
 					element.push("</div>");
+				element.push("</div>");
 
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-column twothird'>");
-							element.push("<div class='detail-row'>");
-									element.push("<div class='detail-text'>Interval:</div>");
-									element.push(`<input type='text' class='form-control leap_day_occurance_input interval dynamic_input' data='year_data.leap_days.${key}' fc-index='interval' value='${data.interval}' />`);
-							element.push("</div>");
-						element.push("</div>");
+				element.push("<div class='row no-gutters mt-2'>");
+					element.push("<div class='col-8'>Interval:</div>");
+					element.push("<div class='col-4'>Offset:</div>");
+				element.push("</div>");
 
-						element.push("<div class='detail-column third'>");
-							element.push("<div class='detail-row'>");
-								element.push("<div class='detail-text'>Offset:</div>");
-								element.push(`<input type='number' step="1" class='form-control leap_day_occurance_input offset dynamic_input' min='0' data='year_data.leap_days.${key}' fc-index='offset' value='${data.offset}'`);
-								element.push(data.interval === "1" ? " disabled" : "");
-								element.push("/>");
-							element.push("</div>");
-						element.push("</div>");
+				element.push("<div class='row no-gutters mb-2'>");
+					element.push("<div class='col-8 pr-1'>");
+						element.push(`<input type='text' class='form-control leap_day_occurance_input interval dynamic_input' data='year_data.leap_days.${key}' fc-index='interval' value='${data.interval}' />`);
 					element.push("</div>");
+					element.push("<div class='col-4 pl-1 '>");
+						element.push(`<input type='number' step="1" class='form-control leap_day_occurance_input offset dynamic_input' min='0' data='year_data.leap_days.${key}' fc-index='offset' value='${data.offset}'`);
+						element.push(data.interval === "1" ? " disabled" : "");
+						element.push("/>");
+					element.push("</div>");
+				element.push("</div>");
 
-					var values = data.interval.split(',').reverse();
-					var sorted = [];
-
-					var numbers_regex = /([1-9]+[0-9]*)/;
-
-					for(var i = 0; i < values.length; i++){
-						sorted.push(Number(values[i].match(numbers_regex)[0]));
-					}
-
-					var text = "This leap day will appear every";
-
-					var timespan_interval = static_data.year_data.timespans[data.timespan].interval;
-
-					for(var i = 0; i < values.length; i++){
-
-						var leap_interval = sorted[i];
-						var leap_offset = data.offset;
-
-						var total_offset = (((leap_interval-leap_offset)%leap_interval)*timespan_interval);
-
-						if(total_offset == 0){
-							total_offset = sorted[i]*timespan_interval;
-						}
-
-						if(i == 0 && sorted[i] == 1){
-
-							text += " year"
-
-						}else if(i == 0){
-
-							if(values.length > 1){
-								text += ": <br>•";
-							}
-
-							if(static_data.year_data.timespans[data.timespan].interval == 1){
-								text += ` ${ordinal_suffix_of(sorted[i])} year`;
-							}else{
-								text += ` ${ordinal_suffix_of(timespan_interval*sorted[i])} ${static_data.year_data.timespans[data.timespan].name}`;
-							}
-
-							text += ` (year ${total_offset}, ${(total_offset+sorted[i]*timespan_interval)}, ${total_offset+sorted[i]*2*timespan_interval}...)`;
-
-						}
-
-						if(i > 0 && sorted[i] > 1){
-
-							if(values[i].indexOf('!') != -1){
-								if(timespan_interval == 1){
-									text += `<br>• but not every ${ordinal_suffix_of(sorted[i])} year`;
-								}else{
-									text += `<br>• but not every ${ordinal_suffix_of(timespan_interval*sorted[i])} ${static_data.year_data.timespans[data.timespan].name}`;
-								}
-
-								if(values[i].indexOf('+') == -1){
-									text += ` (year ${total_offset}, ${total_offset+sorted[i]}, ${total_offset+sorted[i]*2}...)`;
-								}
-
-							}else{
-
-								if(timespan_interval == 1){
-									text += `<br>• but also every ${ordinal_suffix_of(sorted[i])} year`;
-								}else{
-									text += `<br>• but also every ${ordinal_suffix_of(timespan_interval*sorted[i])} ${static_data.year_data.timespans[data.timespan].name}`;
-								}
-
-								if(values[i].indexOf('+') == -1){
-									text += ` (year ${total_offset}, ${total_offset+sorted[i]}, ${total_offset+sorted[i]*2}...)`;
-								}
-
-							}
-
-						}
-
-					}
-
-					element.push("<div class='detail-row'>");
-						element.push(`<div class='detail-text italics-text leap_day_variance_output'>${text}</div>`);
+				element.push("<div class='row no-gutters'>");
+					element.push("<div class='col'>");
+						element.push(`<div class='italics-text leap_day_variance_output'>${get_interval_text(false, data)}</div>`);
 					element.push("</div>");
 				element.push("</div>");
 			element.push("</div>");
 		element.push("</div>");
 	element.push("</div>");
 
-	parent.append(element.join(""));
+	element = $(element.join(""))
+
+	element.find('.name-input').val(data.name);
+	element.find('.internal-list-name').val(`${data.week_day && !data.intercalary ? data.week_day : 'Weekday'}`)
+
+	parent.append(element);
 
 }
 
@@ -2416,7 +2275,7 @@ function add_moon_to_list(parent, key, data){
 	element.push(`<div class='sortable-container moon_inputs expanded' index='${key}'>`);
 		element.push("<div class='main-container'>");
 			element.push("<div class='name-container'>");
-				element.push(`<input type='text' value='${data.name}' class='form-control name-input small-input dynamic_input' data='moons.${key}' fc-index='name' tabindex='${(300+key)}'/>`);
+				element.push(`<input type='text' class='form-control name-input small-input dynamic_input' data='moons.${key}' fc-index='name' tabindex='${(300+key)}'/>`);
 			element.push("</div>");
 			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
@@ -2427,95 +2286,113 @@ function add_moon_to_list(parent, key, data){
 			element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
 		element.push("</div>");
 
-		element.push("<div class='detail-container'>");
+		element.push("<div class='collapse-container container mb-2'>");
 
-			element.push("<div class='detail-row'>");
-				element.push("<div class='detail-column twothird'>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text'>Custom phase count: </div>");
-						element.push(`<input type='checkbox' class='dynamic_input custom_phase' data='moons.${key}' fc-index='custom_phase'`);
-						element.push(data.custom_phase ? "checked" : "");
-						element.push("/>");
-					element.push("</div>");
+			element.push(`<div class='row no-gutters my-1'>`);
+				element.push("<div class='form-check col-12 py-2 border rounded'>");
+					element.push(`<input type='checkbox' id='${key}_custom_phase_count' class='form-check-input dynamic_input custom_phase' data='moons.${key}' fc-index='custom_phase'`);
+					element.push(data.custom_phase ? "checked" : "");
+					element.push("/>");
+					element.push(`<label for='${key}_custom_phase_count' class='form-check-label ml-1'>`);
+						element.push("Custom phase count");
+					element.push("</label>");
 				element.push("</div>");
 			element.push("</div>");
 
-			element.push("<div class='separator'></div>");
+			element.push(`<div class='no_custom_phase_container ${data.custom_phase ? "hidden" : ""}'>`);
 
-			element.push(`<div class='full no_custom_phase_container ${data.custom_phase ? "hidden" : ""}'>`);
-				element.push("<div class='detail-row'>");
-					element.push("<div class='detail-column half'>");
-						element.push("<div class='detail-row'>");
-							element.push("<div class='detail-text'>Cycle:</div>");
-							element.push(`<input type='number' min='1' step="any" class='form-control dynamic_input cycle' data='moons.${key}' fc-index='cycle' value='${!data.custom_phase ? data.cycle : ''}' />`);
-						element.push("</div>");
+				element.push(`<div class='row no-gutters my-1'>`);
+
+					element.push("<div class='col-7'>Cycle:</div>");
+
+					element.push("<div class='col-5'>Shift:</div>");
+
+				element.push("</div>");
+
+				element.push(`<div class='row no-gutters mb-1'>`);
+
+					element.push("<div class='col-7 pr-1'>");
+						element.push(`<input type='number' min='1' step="any" class='form-control dynamic_input cycle protip' data-pt-position="top" data-pt-title='How many days it takes for this moon go from Full Moon to the next Full Moon.' data='moons.${key}' fc-index='cycle' value='${!data.custom_phase ? data.cycle : ''}' />`);
 					element.push("</div>");
-					element.push("<div class='detail-column half'>");
-						element.push("<div class='detail-row'>");
-							element.push("<div class='detail-text'>Shift:</div>");
-							element.push(`<input type='number' step="any" class='form-control dynamic_input shift' data='moons.${key}' fc-index='shift' value='${!data.custom_phase ? data.shift : ''}' />`);
-						element.push("</div>");
+
+					element.push("<div class='col-5 pl-1'>");
+						element.push(`<input type='number' step="any" class='form-control dynamic_input shift protip' data-pt-position="top" data-pt-title='This is how many days the cycle is offset by.' data='moons.${key}' fc-index='shift' value='${!data.custom_phase ? data.shift : ''}' />`);
 					element.push("</div>");
+
+				element.push("</div>");
+
+			element.push("</div>");
+
+			element.push(`<div class='row no-gutters custom_phase_container ${!data.custom_phase ? "hidden" : ""}'>`);
+
+				element.push("<div class='col'>");
+
+					element.push("<div class='my-1'>Custom phase:</div>");
+
+					element.push("<div class='input-group my-1'>");
+
+						element.push("<div class='input-group-prepend'>");
+							element.push("<button type='button' class='btn btn-sm btn-danger moon_shift_back'><</button>");
+						element.push("</div>");
+
+						element.push(`<input type='text' class='form-control form-control-sm dynamic_input custom_cycle full' data='moons.${key}' fc-index='custom_cycle' value='${data.custom_phase ? data.custom_cycle : ''}' />`);
+
+						element.push("<div class='input-group-append'>");
+							element.push("<button type='button' class='btn btn-sm btn-success moon_shift_forward'>></button>");
+						element.push("</div>");
+
+					element.push("</div>");
+
+					element.push(`<div class='custom_phase_text italics-text small-text my-1'>${data.custom_phase ? `This moon has ${data.custom_cycle.split(',').length} phases, with a granularity of ${data.granularity} moon sprites.` : ''}</div>`);
+
+				element.push("</div>");
+
+			element.push("</div>");
+
+			element.push("<div class='row no-gutters my-2'>");
+				element.push("<div class='col'>");
+					element.push("<div class='separator'></div>");
 				element.push("</div>");
 			element.push("</div>");
 
-			element.push(`<div class='full custom_phase_container ${!data.custom_phase ? "hidden" : ""}'>`);
-				element.push("<div class='detail-row'>");
-					element.push("<div class='detail-text'>Custom phase:</div>");
-				element.push("</div>");
-				element.push("<div class='detail-row'>");
-					element.push("<div class='detail-column detail-shrink'>");
-						element.push("<button type='button' class='btn btn-sm btn-danger moon_shift_back'><</button>");
-					element.push("</div>");
-					element.push("<div class='detail-column detail-grow'>");
-						element.push(`<input type='text' class='form-control form-control dynamic_input custom_cycle full' data='moons.${key}' fc-index='custom_cycle' value='${data.custom_phase ? data.custom_cycle : ''}' />`);
-					element.push("</div>");
-					element.push("<div class='detail-column detail-shrink'>");
-						element.push("<button type='button' class='btn btn-sm btn-success moon_shift_forward'>></button>");
-					element.push("</div>");
-				element.push("</div>");
-				element.push(`<div class='detail-row custom_phase_text italics-text small-text'>${data.custom_phase ? `This moon has ${data.custom_cycle.split(',').length} phases, with a granularity of ${data.granularity}.` : ''}</div>`);
+			element.push(`<div class='row no-gutters mt-1'>`);
+
+				element.push("<div class='col-6'>Moon color:</div>");
+
+				element.push("<div class='col-6'>Shadow color:</div>");
+
 			element.push("</div>");
 
-			element.push("<div class='separator'></div>");
+			element.push(`<div class='row no-gutters mb-1'>`);
 
-			element.push("<div class='detail-row'>");
-				element.push("<div class='detail-column half'>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text'>Moon color:</div>");
-					element.push("</div>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='moon_color'>");
-							element.push(`<input type='color' class='dynamic_input color' data='moons.${key}' fc-index='color'/>`);
-						element.push("</div>");
-					element.push("</div>");
+				element.push("<div class='col-6 pr-1'>");
+					element.push(`<input type='color' class='dynamic_input color' data='moons.${key}' fc-index='color'/>`);
 				element.push("</div>");
-				element.push("<div class='detail-column half'>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text'>Shadow color:</div>");
-					element.push("</div>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='moon_color'>");
-							element.push(`<input type='color' class='dynamic_input shadow_color' data='moons.${key}' fc-index='shadow_color'/>`);
-						element.push("</div>");
-					element.push("</div>");
+
+				element.push("<div class='col-6 pl-1'>");
+					element.push(`<input type='color' class='dynamic_input shadow_color' data='moons.${key}' fc-index='shadow_color'/>`);
 				element.push("</div>");
+
 			element.push("</div>");
-			element.push("<div class='detail-row'>");
-				element.push("<div class='detail-column half'>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text'>Hide from players: </div>");
-						element.push(`<input type='checkbox' class='moon-hidden dynamic_input' data='moons.${key}' fc-index='hidden'`);
-						element.push(data.hidden ? "checked" : "");
-						element.push("/>");
-					element.push("</div>");
+
+			element.push(`<div class='row no-gutters my-1'>`);
+				element.push("<div class='form-check col-12 py-2 border rounded'>");
+					element.push(`<input type='checkbox' id='${key}_hidden_moon' class='form-check-input dynamic_input moon-hidden' data='moons.${key}' fc-index='hidden'`);
+					element.push(data.hidden ? "checked" : "");
+					element.push("/>");
+					element.push(`<label for='${key}_hidden_moon' class='form-check-label ml-1'>`);
+						element.push("Hide from guest viewers");
+					element.push("</label>");
 				element.push("</div>");
 			element.push("</div>");
 		element.push("</div>");
-
 	element.push("</div>");
 
-	parent.append(element.join(""));
+	element = $(element.join(""))
+
+	element.find('.name-input').val(data.name);
+
+	parent.append(element);
 }
 
 function add_season_to_sortable(parent, key, data){
@@ -2527,7 +2404,7 @@ function add_season_to_sortable(parent, key, data){
 			}
 			element.push("<div class='expand icon-collapse'></div>");
 			element.push("<div class='name-container'>");
-				element.push(`<input type='text' value='${data.name}' tabindex='${(400+key)}'class='name-input small-input form-control dynamic_input' data='seasons.data.${key}' fc-index='name'/>`);
+				element.push(`<input type='text' tabindex='${(400+key)}'class='name-input small-input form-control dynamic_input' data='seasons.data.${key}' fc-index='name'/>`);
 			element.push("</div>");
 			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
@@ -2537,50 +2414,40 @@ function add_season_to_sortable(parent, key, data){
 			element.push("<div class='btn_cancel btn btn-danger icon-remove'></div>");
 			element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
 		element.push("</div>");
-
-		element.push("<div class='detail-container hidden'>");
+		element.push("<div class='collapse-container container mb-2'>");
 
 			if(static_data.seasons.global_settings.periodic_seasons){
 
-				element.push(`<div class='season-duration'>`);
-					element.push(`<div class='detail-row'>`);
-						element.push("<div class='detail-column'>");
-							element.push("<div class='detail-row'>");
-								element.push("<div class='detail-text'>Duration:</div>");
-								var transition_length = data.transition_length == '' || data.transition_length == undefined ? 90 : data.transition_length;
-								element.push(`<input type='number' step='any' class='form-control dynamic_input transition_length protip' data='seasons.data.${key}' fc-index='transition_length' min='1' value='${transition_length}' data-pt-position="right" data-pt-title='How many days until this season ends, and the next begins.'/>`);
-							element.push("</div>");
-						element.push("</div>");
+				element.push(`<div class='row no-gutters mt-2'>`);
+
+					element.push("<div class='col-md-6 col-sm-12 pl-0 pr-1'>");
+						element.push("Duration:");
+						var transition_length = data.transition_length == '' || data.transition_length == undefined ? 90 : data.transition_length;
+						element.push(`<input type='number' step='any' class='form-control dynamic_input transition_length protip' data='seasons.data.${key}' fc-index='transition_length' min='1' value='${transition_length}' data-pt-position="right" data-pt-title='How many days until this season ends, and the next begins.'/>`);
 					element.push("</div>");
-					element.push(`<div class='detail-row'>`);
-						element.push("<div class='detail-column'>");
-							element.push("<div class='detail-row'>");
-								element.push("<div class='detail-text'>Peak duration:</div>");
-								var duration = data.duration == '' || data.duration == undefined ? 0 : data.duration;
-								element.push(`<input type='number' step='any' class='form-control dynamic_input duration protip' data='seasons.data.${key}' fc-index='duration' min='0' value='${duration}' data-pt-position="right" data-pt-title='If the duration is the path up a mountain, the peak duration is a flat summit. This is how many days the season will pause before going down the other side of the mountain.'/>`);
-							element.push("</div>");
-						element.push("</div>");
+
+					element.push("<div class='col-md-6 col-sm-12 pl-1 pr-0'>");
+						element.push("Peak duration:");
+						var duration = data.duration == '' || data.duration == undefined ? 0 : data.duration;
+						element.push(`<input type='number' step='any' class='form-control dynamic_input duration protip' data='seasons.data.${key}' fc-index='duration' min='0' value='${duration}' data-pt-position="right" data-pt-title='If the duration is the path up a mountain, the peak duration is a flat summit. This is how many days the season will pause before going down the other side of the mountain.'/>`);
 					element.push("</div>");
+
 				element.push("</div>");
 
 			}else{
 
 				element.push(`<div class='date_control season-date full'>`);
 
-					element.push("<div class='row my-1'>");
-						element.push("<div class='col-5'>");
-							element.push("<div class='detail-text'>Timespan:</div>");
-						element.push("</div>");
+					element.push("<div class='row no-gutters my-1'>");
+						element.push("<div class='col-4 pt-1'>Month:</div>");
 						element.push("<div class='col'>");
 							element.push(`<select type='number' class='date form-control form-control timespan-list dynamic_input' data='seasons.data.${key}' fc-index='timespan'>`);
 							element.push("</select>");
 						element.push("</div>");
 					element.push("</div>");
 
-					element.push("<div class='row my-1'>");
-						element.push("<div class='col-5'>");
-							element.push("<div class='detail-text'>Day:</div>");
-						element.push("</div>");
+					element.push("<div class='row no-gutters my-1'>");
+						element.push("<div class='col-4 pt-1'>Day:</div>");
 						element.push("<div class='col'>");
 							element.push(`<select type='number' class='date form-control form-control timespan-day-list dynamic_input' data='seasons.data.${key}' fc-index='day'>`);
 							element.push("</select>");
@@ -2591,41 +2458,45 @@ function add_season_to_sortable(parent, key, data){
 
 			}
 
-			element.push("<div class='clock_inputs'>");
-				element.push("<div class='detail-row'>");
-					element.push("<div class='detail-column full'>");
-						element.push("<div class='detail-row no-margin'>");
-							element.push("<div class='detail-text'>Sunrise:</div>");
-						element.push("</div>");
-						element.push("<div class='detail-row'>");
-							element.push("<div class='detail-column clock-input'>");
-								element.push(`<input type='number' step="1.0" class='form-control full dynamic_input hour_input' clocktype='sunrise_hour' data='seasons.data.${key}.time.sunrise' fc-index='hour' value='${data.time.sunrise.hour}' />`);
-							element.push("</div>");
-							element.push("<div class='detail-column'>:</div>");
-							element.push("<div class='detail-column float clock-input'>");
-								element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunrise_minute' data='seasons.data.${key}.time.sunrise' fc-index='minute' value='${data.time.sunrise.minute}' />`);
-							element.push("</div>");
-						element.push("</div>");
-					element.push("</div>");
-				element.push("</div>");
-				element.push("<div class='detail-row'>");
-					element.push("<div class='detail-column full'>");
-						element.push("<div class='detail-row no-margin'>");
-							element.push("<div class='detail-text'>Sunset:</div>");
-						element.push("</div>");
-						element.push("<div class='detail-row'>");
-							element.push("<div class='detail-column clock-input'>");
-								element.push(`<input type='number' step="1.0" class='form-control full dynamic_input hour_input' clocktype='sunset_hour' data='seasons.data.${key}.time.sunset' fc-index='hour' value='${data.time.sunset.hour}' />`);
-							element.push("</div>");
-							element.push("<div class='detail-column'>:</div>");
-							element.push("<div class='detail-column float clock-input'>");
-								element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunset_minute' data='seasons.data.${key}.time.sunset' fc-index='minute' value='${data.time.sunset.minute}' />`);
-							element.push("</div>");
-						element.push("</div>");
-					element.push("</div>");
+			element.push(`<div class='clock_inputs ${!static_data.clock.enabled ? "hidden" : ""}'>`);
+
+				element.push(`<div class='row no-gutters mt-2'>`);
+
+					element.push("<div class='col-12'>Sunrise:</div>");
+
 				element.push("</div>");
 
-				element.push("<div class='detail-row'>");
+				element.push(`<div class='row no-gutters mb-2'>`);
+
+					element.push("<div class='col-6 pr-1 clock-input'>");
+						element.push(`<input type='number' step="1.0" class='form-control full dynamic_input hour_input' clocktype='sunrise_hour' data='seasons.data.${key}.time.sunrise' fc-index='hour' value='${data.time.sunrise.hour}' />`);
+					element.push("</div>");
+
+					element.push("<div class='col-6 pl-1 clock-input'>");
+						element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunrise_minute' data='seasons.data.${key}.time.sunrise' fc-index='minute' value='${data.time.sunrise.minute}' />`);
+					element.push("</div>");
+
+				element.push("</div>");
+
+				element.push(`<div class='row no-gutters mt-2'>`);
+
+					element.push("<div class='col-12 '>Sunset:</div>");
+
+				element.push("</div>");
+
+				element.push(`<div class='row no-gutters mb-2'>`);
+
+					element.push("<div class='col-6 pr-1 clock-input'>");
+						element.push(`<input type='number' step="1.0" class='form-control full dynamic_input hour_input' clocktype='sunset_hour' data='seasons.data.${key}.time.sunset' fc-index='hour' value='${data.time.sunset.hour}' />`);
+					element.push("</div>");
+
+					element.push("<div class='col-6 pl-1 clock-input'>");
+						element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunset_minute' data='seasons.data.${key}.time.sunset' fc-index='minute' value='${data.time.sunset.minute}' />`);
+					element.push("</div>");
+
+				element.push("</div>");
+
+				element.push("<div class='row no-gutters my-1'>");
 					element.push(`<button type="button" class="btn btn-sm btn-info season_middle_btn full protip" data-pt-delay-in="100" data-pt-title="Use the median values from the previous and next seasons' time data. This season will act as a transition between the two, similar to Spring or Autumn">Interpolate sunrise & sunset from surrounding seasons</button>`);
 				element.push("</div>");
 
@@ -2633,7 +2504,11 @@ function add_season_to_sortable(parent, key, data){
 
 		element.push("</div>");
 
-	parent.append(element.join(""));
+	element = $(element.join(""))
+
+	element.find('.name-input').val(data.name);
+
+	parent.append(element);
 }
 
 function add_location_to_list(parent, key, data){
@@ -2644,7 +2519,7 @@ function add_location_to_list(parent, key, data){
 		element.push("<div class='main-container'>");
 			element.push("<div class='expand icon-collapse'></div>");
 			element.push("<div class='name-container'>");
-				element.push(`<input type='text' value='${data.name}' tabindex='${(500+key)}' class='name-input small-input form-control dynamic_input location-name' data='seasons.locations.${key}' fc-index='name'/>`);
+				element.push(`<input type='text' tabindex='${(500+key)}' class='name-input small-input form-control dynamic_input location-name' data='seasons.locations.${key}' fc-index='name'/>`);
 			element.push("</div>");
 			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
@@ -2655,122 +2530,133 @@ function add_location_to_list(parent, key, data){
 			element.push("<div class='btn_cancel btn btn-danger icon-remove'></div>");
 			element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
 		element.push("</div>");
-
-		element.push("<div class='detail-container hidden'>");
+		element.push("<div class='collapse-container container mb-2'>");
 
 			for(var i = 0; i < data.seasons.length; i++){
 
-			element.push(`<div class='detail-row cycle-container wrap-collapsible location_season' fc-index='${i}'>`);
-				element.push(`<input id='collapsible_seasons_${key}_${i}' class='toggle' type='checkbox'>`);
-				element.push(`<label for='collapsible_seasons_${key}_${i}' class='lbl-toggle'>Season name: ${static_data.seasons.data[i].name}</label>`);
-				element.push("<div class='detail-column collapsible-content'>");
+			var name = data.seasons[i].custom_name ? data.seasons[i].name : static_data.seasons.data[i].name;
 
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-column full'>");
+			element.push(`<div class='m-0 my-2 cycle-container wrap-collapsible location_season' fc-index='${i}'>`);
+				element.push(`<input id='collapsible_seasons_${key}_${i}' class='toggle' type='checkbox'>`);
+				element.push(`<label for='collapsible_seasons_${key}_${i}' class='lbl-toggle'>Weather settings: ${name}</label>`);
+
+				element.push("<div class='collapsible-content container p-0'>");
+
+					element.push("<div class='row no-gutters mt-1 bold-text'>");
 							element.push("Overriding name:");
-						element.push("</div>");
 					element.push("</div>");
 
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-column twothird'>");
-							if(data.seasons[i].custom_name){
-								element.push(`<input type='text' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.seasons.${i}' fc-index='name' value='${data.seasons[i].name}'>`);
-							}else{
-								element.push(`<input type='text' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.seasons.${i}' fc-index='name' value='${static_data.seasons.data[i].name}' disabled>`);
-							}
+					element.push("<div class='row no-gutters'>");
+
+						element.push("<div class='col-lg-6 mb-2'>");
+							element.push(`<input type='text' class='form-control form-control-sm full dynamic_input' id='${key}_${i}_location_name' data='seasons.locations.${key}.seasons.${i}' fc-index='name' ${!data.seasons[i].custom_name ? "disabled" : ""}>`);
 						element.push("</div>");
-						element.push("<div class='detail-column third'>");
-							element.push("<div class='detail-row'>");
-								element.push("<div class='detail-text'>Custom:</div>");
-								element.push(`<input type='checkbox' class='form-control form-control-bg dynamic_input disable_local_season_name' data='seasons.locations.${key}.seasons.${i}' fc-index='custom_name' ${data.seasons[i].custom_name ? 'checked' : ''}>`);
+
+						element.push(`<div class='col-lg-6 border rounded form-check pt-1 mb-2'>`);
+
+							element.push(`<input type='checkbox' id='${key}_custom_name' class='form-check-input dynamic_input disable_local_season_name' data='seasons.locations.${key}.seasons.${i}' fc-index='custom_name' ${data.seasons[i].custom_name ? 'checked' : ''}>`);
+							element.push(`<label for='${key}_custom_name' class='form-check-label ml-1'>`);
+								element.push("Custom name");
+							element.push("</label>");
+
+						element.push("</div>");
+
+					element.push("</div>");
+
+					element.push(`<div class='weather_inputs ${!static_data.seasons.global_settings.enable_weather ? "hidden" : ""}'>`);
+
+						element.push("<div class='row no-gutters'>");
+							element.push("<div class='col-lg-6 my-1'>");
+								element.push("Temperature low:");
+								element.push(`<input type='number' step="any" class='form-control full dynamic_input' data='seasons.locations.${key}.seasons.${i}.weather' fc-index='temp_low' value='${data.seasons[i].weather.temp_low}'>`);
+							element.push("</div>");
+							element.push("<div class='col-lg-6 my-1'>");
+								element.push("Temperature high:");
+								element.push(`<input type='number' step="any" class='form-control full dynamic_input' data='seasons.locations.${key}.seasons.${i}.weather' fc-index='temp_high' value='${data.seasons[i].weather.temp_high}'>`);
 							element.push("</div>");
 						element.push("</div>");
-					element.push("</div>");
 
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-column half'>");
-							element.push("Temperature low:");
+						element.push("<div class='row no-gutters my-2'>");
+							element.push("<div class='separator'></div>");
 						element.push("</div>");
-						element.push("<div class='detail-column half'>");
-							element.push("Temperature high:");
-						element.push("</div>");
-					element.push("</div>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-column half'>");
-							element.push(`<input type='number' step="any" class='form-control full dynamic_input' data='seasons.locations.${key}.seasons.${i}.weather' fc-index='temp_low' value='${data.seasons[i].weather.temp_low}'>`);
-						element.push("</div>");
-						element.push("<div class='detail-column half'>");
-							element.push(`<input type='number' step="any" class='form-control full dynamic_input' data='seasons.locations.${key}.seasons.${i}.weather' fc-index='temp_high' value='${data.seasons[i].weather.temp_high}'>`);
-						element.push("</div>");
-					element.push("</div>");
 
-					element.push("<div class='separator'></div>");
-
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-row'>");
+						element.push("<div class='row no-gutters mt-2'>");
 							element.push("Precipitation chance: (%)");
 						element.push("</div>");
-						element.push("<div class='detail-column threequarter'>");
-							element.push("<div class='slider_percentage'></div>");
-						element.push("</div>");
-						element.push("<div class='detail-column quarter'>");
-							element.push(`<input type='number' step="any" class='form-control form-control full dynamic_input slider_input' data='seasons.locations.${key}.seasons.${i}.weather' fc-index='precipitation' value='${data.seasons[i].weather.precipitation*100}'>`);
-						element.push("</div>");
-					element.push("</div>");
 
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-row'>");
+						element.push("<div class='row no-gutters mb-2'>");
+							element.push("<div class='col-9'>");
+								element.push("<div class='slider_percentage'></div>");
+							element.push("</div>");
+							element.push("<div class='col-3'>");
+								element.push(`<input type='number' step="any" class='form-control form-control-sm full dynamic_input slider_input' data='seasons.locations.${key}.seasons.${i}.weather' fc-index='precipitation' value='${data.seasons[i].weather.precipitation*100}'>`);
+							element.push("</div>");
+						element.push("</div>");
+
+
+						element.push("<div class='row no-gutters mt-2'>");
 							element.push("Precipitation intensity: (%)");
 						element.push("</div>");
-						element.push("<div class='detail-column threequarter'>");
-							element.push("<div class='slider_percentage'></div>");
-						element.push("</div>");
-						element.push("<div class='detail-column quarter'>");
-							element.push(`<input type='number' step="any" class='form-control form-control full dynamic_input slider_input' data='seasons.locations.${key}.seasons.${i}.weather' fc-index='precipitation_intensity' value='${data.seasons[i].weather.precipitation_intensity*100}'>`);
-						element.push("</div>");
-					element.push("</div>");
 
-					element.push("<div class='separator'></div>");
-
-					element.push("<div class='clock_inputs'>");
-						element.push("<div class='detail-row'>");
-							element.push("<div class='detail-column'>");
-								element.push("<div class='detail-row no-margin'>");
-									element.push("<div class='detail-text'>Sunrise:</div>");
-								element.push("</div>");
-								element.push("<div class='detail-row'>");
-									element.push("<div class='detail-column clock-input'>");
-										element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunrise_hour' data='seasons.locations.${key}.seasons.${i}.time.sunrise' fc-index='hour' value='${data.seasons[i].time.sunrise.hour}' />`);
-									element.push("</div>");
-									element.push("<div class='detail-column'>:</div>");
-									element.push("<div class='detail-column float clock-input'>");
-										element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunrise_minute' data='seasons.locations.${key}.seasons.${i}.time.sunrise' fc-index='minute' value='${data.seasons[i].time.sunrise.minute}' />`);
-									element.push("</div>");
-								element.push("</div>");
+						element.push("<div class='row no-gutters mb-2'>");
+							element.push("<div class='col-9'>");
+								element.push("<div class='slider_percentage'></div>");
+							element.push("</div>");
+							element.push("<div class='col-3'>");
+								element.push(`<input type='number' step="any" class='form-control form-control-sm full dynamic_input slider_input' data='seasons.locations.${key}.seasons.${i}.weather' fc-index='precipitation_intensity' value='${data.seasons[i].weather.precipitation_intensity*100}'>`);
 							element.push("</div>");
 						element.push("</div>");
-						element.push("<div class='detail-row'>");
-							element.push("<div class='detail-column'>");
-								element.push("<div class='detail-row no-margin'>");
-									element.push("<div class='detail-text'>Sunset:</div>");
-								element.push("</div>");
-								element.push("<div class='detail-row'>");
-									element.push("<div class='detail-column clock-input'>");
-										element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunset_hour' data='seasons.locations.${key}.seasons.${i}.time.sunset' fc-index='hour' value='${data.seasons[i].time.sunset.hour}' />`);
-									element.push("</div>");
-									element.push("<div class='detail-column'>:</div>");
-									element.push("<div class='detail-column float clock-input'>");
-										element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunset_minute' data='seasons.locations.${key}.seasons.${i}.time.sunset' fc-index='minute' value='${data.seasons[i].time.sunset.minute}' />`);
-									element.push("</div>");
-								element.push("</div>");
-							element.push("</div>");
+
+						element.push("<div class='row no-gutters my-2'>");
+							element.push("<div class='separator'></div>");
 						element.push("</div>");
 					element.push("</div>");
 
-					element.push("<div class='detail-row'>");
-						element.push(`<button type="button" class="btn btn-sm btn-info location_middle_btn full protip" data-pt-delay-in="100" data-pt-title="Use the median values from the previous and next seasons' weather and time data. This season will act as a transition between the two, similar to Spring or Autumn">Interpolate data from surrounding seasons</button>`);
-					element.push("</div>");
+					element.push(`<div class='clock_inputs ${!static_data.clock.enabled ? "hidden" : ""}'>`);
 
+						element.push(`<div class='row no-gutters mt-2'>`);
+
+							element.push("<div class='col-12 pl-0 pr-0'>Sunrise:</div>");
+
+						element.push("</div>");
+
+						element.push(`<div class='row no-gutters mb-2'>`);
+
+							element.push("<div class='col-6 pl-0 pr-1 clock-input'>");
+								element.push(`<input type='number' step="1.0" class='form-control text-right full dynamic_input hour_input' clocktype='sunrise_hour' data='seasons.locations.${key}.seasons.time.sunrise' fc-index='hour' value='${data.seasons[i].time.sunrise.hour}' />`);
+							element.push("</div>");
+
+							element.push("<div class='col-auto pt-1'>:</div>");
+
+							element.push("<div class='col pl-1 pr-0 clock-input'>");
+								element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunrise_minute' data='seasons.locations.${key}.seasons.time.sunrise' fc-index='minute' value='${data.seasons[i].time.sunrise.minute}' />`);
+							element.push("</div>");
+
+						element.push("</div>");
+
+						element.push(`<div class='row no-gutters mt-2'>`);
+
+							element.push("<div class='col-12 pl-0 pr-0'>Sunset:</div>");
+
+						element.push("</div>");
+
+						element.push(`<div class='row no-gutters mb-2'>`);
+
+							element.push("<div class='col-6 pl-0 pr-1 clock-input'>");
+								element.push(`<input type='number' step="1.0" class='form-control text-right full dynamic_input hour_input' clocktype='sunset_hour' data='seasons.locations.${key}.seasons.time.sunset' fc-index='hour' value='${data.seasons[i].time.sunset.hour}' />`);
+							element.push("</div>");
+
+							element.push("<div class='col-auto pt-1'>:</div>");
+
+							element.push("<div class='col pl-1 pr-0 clock-input'>");
+								element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunset_minute' data='seasons.locations.${key}.seasons.time.sunset' fc-index='minute' value='${data.seasons[i].time.sunset.minute}' />`);
+							element.push("</div>");
+
+						element.push("</div>");
+					element.push("</div>");
+					element.push("<div class='row no-gutters my-2'>");
+						element.push(`<button type="button" class="btn btn-sm btn-info location_middle_btn full protip ${!static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled ? "hidden" : ""}" data-pt-position="right" data-pt-title="Use the median values from the previous and next seasons' weather and time data. This season will act as a transition between the two, similar to Spring or Autumn">Interpolate data from surrounding seasons</button>`);
+					element.push("</div>");
 
 				element.push("</div>");
 
@@ -2780,95 +2666,101 @@ function add_location_to_list(parent, key, data){
 
 			}
 
-			element.push("<div class='detail-row'>");
+			element.push(`<div class='clock_inputs ${!static_data.clock.enabled ? "hidden" : ""}'>`);
 
-				element.push("<div class='detail-row'>");
-					element.push("<div class='detail-text big-text'>");
-						element.push("Settings:");
-					element.push("</div>");
+				element.push(`<div class='row my-1'>`);
+					element.push("<div class='col'>Timezone:</div>");
 				element.push("</div>");
 
-				element.push("<div class='clock_inputs'>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-column half'>");
-							element.push("<div class='detail-row no-margin'>");
-								element.push("<div class='detail-text'>Timezone:</div>");
-							element.push("</div>");
-							element.push("<div class='detail-row'>");
-								element.push("<div class='detail-column clock-input'>");
-									element.push(`<input type='number' step="1.0" min='${static_data.clock.hours*-0.5}' max='${static_data.clock.hours*0.5}' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings.timezone' clocktype='timezone_hour' fc-index='hour' value='${data.settings.timezone.hour}' />`);
-								element.push("</div>");
-								element.push("<div class='detail-column'>:</div>");
-								element.push("<div class='detail-column float clock-input'>");
-									element.push(`<input type='number' step="1.0" min='${static_data.clock.minutes*-0.5}' max='${static_data.clock.minutes*0.5}' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings.timezone' clocktype='timezone_minute' fc-index='minute' value='${data.settings.timezone.minute}' />`);
-								element.push("</div>");
-							element.push("</div>");
-						element.push("</div>");
-					element.push("</div>");
-				element.push("</div>");
+				element.push(`<div class='row no-gutters mb-2 protip' data-pt-position="right" data-pt-title="When this location becomes active, the current time will change this much to reflect the new location.">`);
 
-				element.push("<div class='detail-row'>");
-					element.push("<div class='detail-text big-text'>");
-						element.push("Curve noise settings:");
+					element.push("<div class='col-6 pr-1 clock-input'>");
+						element.push(`<input type='number' step="1.0" min='${static_data.clock.hours*-0.5}' max='${static_data.clock.hours*0.5}' class='form-control right-text form-control full dynamic_input hour_input' data='seasons.locations.${key}.settings.timezone' clocktype='timezone_hour' fc-index='hour' value='${data.settings.timezone.hour}' />`);
 					element.push("</div>");
-				element.push("</div>");
 
-				element.push("<div class='detail-row'>");
-					element.push("<div class='detail-column half'>");
-						element.push("Large frequency:");
-					element.push("</div>");
-					element.push("<div class='detail-column half'>");
-						element.push("Large amplitude:");
-					element.push("</div>");
-				element.push("</div>");
-				element.push("<div class='detail-row'>");
-					element.push("<div class='detail-column half'>");
-						element.push(`<input type='float' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='large_noise_frequency' value='${data.settings.large_noise_frequency}' />`);
-					element.push("</div>");
-					element.push("<div class='detail-column half'>");
-						element.push(`<input type='float' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='large_noise_amplitude' value='${data.settings.large_noise_amplitude}'>`);
-					element.push("</div>");
-				element.push("</div>");
+					element.push("<div class='col-auto pt-1'>:</div>");
 
-				element.push("<div class='detail-row'>");
-					element.push("<div class='detail-column half'>");
-						element.push("Medium frequency:");
+					element.push("<div class='col pl-1 clock-input'>");
+						element.push(`<input type='number' step="1.0" min='${static_data.clock.minutes*-0.5}' max='${static_data.clock.minutes*0.5}' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings.timezone' clocktype='timezone_minute' fc-index='minute' value='${data.settings.timezone.minute}' />`);
 					element.push("</div>");
-					element.push("<div class='detail-column half'>");
-						element.push("Medium amplitude:");
-					element.push("</div>");
-				element.push("</div>");
-				element.push("<div class='detail-row'>");
-					element.push("<div class='detail-column half'>");
-						element.push(`<input type='float' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='medium_noise_frequency' value='${data.settings.medium_noise_frequency}' />`);
-					element.push("</div>");
-					element.push("<div class='detail-column half'>");
-						element.push(`<input type='float' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='medium_noise_amplitude' value='${data.settings.medium_noise_amplitude}'>`);
-					element.push("</div>");
-				element.push("</div>");
 
-				element.push("<div class='detail-row'>");
-					element.push("<div class='detail-column half'>");
-						element.push("Small frequency:");
-					element.push("</div>");
-					element.push("<div class='detail-column half'>");
-						element.push("Small amplitude:");
-					element.push("</div>");
-				element.push("</div>");
-				element.push("<div class='detail-row'>");
-					element.push("<div class='detail-column half'>");
-						element.push(`<input type='float' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='small_noise_frequency' value='${data.settings.small_noise_frequency}' />`);
-					element.push("</div>");
-					element.push("<div class='detail-column half'>");
-						element.push(`<input type='float' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='small_noise_amplitude' value='${data.settings.small_noise_amplitude}'>`);
-					element.push("</div>");
 				element.push("</div>");
 
 			element.push("</div>");
 
+			element.push(`<div class='weather_inputs ${!static_data.seasons.global_settings.enable_weather ? "hidden" : ""}'>`);
+				element.push("<div class='row no-gutters my-1'>");
+					element.push("<div class='col'>");
+						element.push("Curve noise settings:");
+					element.push("</div>");
+				element.push("</div>");
+
+				element.push("<div class='row no-gutters my-1'>");
+					element.push("<div class='col-6 pr-1'>");
+						element.push("Large frequency:");
+					element.push("</div>");
+					element.push("<div class='col-6 pl-1'>");
+						element.push("Large amplitude:");
+					element.push("</div>");
+				element.push("</div>");
+				element.push("<div class='row no-gutters my-1'>");
+					element.push("<div class='col-6 pr-1'>");
+						element.push(`<input type='float' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='large_noise_frequency' value='${data.settings.large_noise_frequency}' />`);
+					element.push("</div>");
+					element.push("<div class='col-6 pl-1'>");
+						element.push(`<input type='float' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='large_noise_amplitude' value='${data.settings.large_noise_amplitude}'>`);
+					element.push("</div>");
+				element.push("</div>");
+
+				element.push("<div class='row no-gutters my-1'>");
+					element.push("<div class='col-6 pr-1'>");
+						element.push("Medium frequency:");
+					element.push("</div>");
+					element.push("<div class='col-6 pl-1'>");
+						element.push("Medium amplitude:");
+					element.push("</div>");
+				element.push("</div>");
+				element.push("<div class='row no-gutters my-1'>");
+					element.push("<div class='col-6 pr-1'>");
+						element.push(`<input type='float' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='medium_noise_frequency' value='${data.settings.medium_noise_frequency}' />`);
+					element.push("</div>");
+					element.push("<div class='col-6 pl-1'>");
+						element.push(`<input type='float' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='medium_noise_amplitude' value='${data.settings.medium_noise_amplitude}'>`);
+					element.push("</div>");
+				element.push("</div>");
+
+				element.push("<div class='row no-gutters my-1'>");
+					element.push("<div class='col-6 pr-1'>");
+						element.push("Small frequency:");
+					element.push("</div>");
+					element.push("<div class='col-6 pl-1'>");
+						element.push("Small amplitude:");
+					element.push("</div>");
+				element.push("</div>");
+				element.push("<div class='row no-gutters my-1'>");
+					element.push("<div class='col-6 pr-1'>");
+						element.push(`<input type='float' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='small_noise_frequency' value='${data.settings.small_noise_frequency}' />`);
+					element.push("</div>");
+					element.push("<div class='col-6 pl-1'>");
+						element.push(`<input type='float' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='small_noise_amplitude' value='${data.settings.small_noise_amplitude}'>`);
+					element.push("</div>");
+				element.push("</div>");
+			element.push("</div>");
+
 		element.push("</div>");
 
-	parent.append(element.join(""));
+	element = $(element.join(""))
+
+	element.find('.name-input').val(data.name);
+
+	for(var i = 0; i < data.seasons.length; i++){
+
+		var name = data.seasons[i].custom_name ? data.seasons[i].name : static_data.seasons.data[i].name;
+		element.find(`#${key}_${i}_location_name`).val(name)
+
+	}
+
+	parent.append(element);
 }
 
 function add_cycle_to_sortable(parent, key, data){
@@ -2879,7 +2771,7 @@ function add_cycle_to_sortable(parent, key, data){
 		element.push("<div class='main-container'>");
 			element.push("<div class='handle icon-reorder'></div>");
 			element.push("<div class='expand icon-collapse'></div>");
-			element.push(`<div class='detail-text'>Cycle #${(key+1)} - Using {{${(key+1)}}}</div>`);
+			element.push(`<div class='name-container cycle-text center-text'>Cycle #${(key+1)} - Using {{${(key+1)}}}</div>`);
 			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
@@ -2889,74 +2781,74 @@ function add_cycle_to_sortable(parent, key, data){
 			element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
 		element.push("</div>");
 
-		element.push("<div class='detail-container'>");
-			element.push("<div class='detail-row'>");
+		element.push("<div class='collapse-container container'>");
 
-				element.push("<div class='detail-column full'>");
+			element.push("<div class='col-12 mb-3'>");
 
-					element.push("<div class='detail-row'>");
-							element.push("<div class='detail-text center-text bold-text'>Cycle settings</div>");
+				element.push("<div class='row my-2 center-text bold-text'>Cycle settings</div>");
+
+				element.push("<div class='row mt-2'>Cycle is based on:</div>");
+				element.push("<div class='row mb-2'>");
+					element.push(`<select class='form-control full dynamic_input cycle_type' data='cycles.data.${key}' fc-index='type'>`);
+						element.push(`<option value='year'>Year</option>`);
+						element.push(`<option value='era_year'>Era year</option>`);
+						element.push(`<option value='timespan_index'>Month in year</option>`);
+						element.push(`<option value='num_timespans'>Month count (since 1/1/1)</option>`);
+						element.push(`<option value='day'>Day in month</option>`);
+						element.push(`<option value='year_day'>Year day</option>`);
+						element.push(`<option value='epoch'>Epoch (days since 1/1/1)</option>`);
+					element.push(`</select>`);
+				element.push("</div>");
+
+				element.push("<div class='row mt-2'>");
+					element.push("<div class='col-6 pr-1 pl-0'>");
+						element.push("<div>Length:</div>");
 					element.push("</div>");
 
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-column half'>");
-							element.push("<div class='detail-row'>");
-									element.push("<div class='detail-text'>Cycle is based on:</div>");
-									element.push(`<select class='form-control dynamic_input cycle_type' data='cycles.data.${key}' fc-index='type'>`);
-										element.push(`<option value='year'>Year</option>`);
-										element.push(`<option value='era_year'>Era year</option>`);
-										element.push(`<option value='timespan_index'>Month in year</option>`);
-										element.push(`<option value='num_timespans'>Month count (since 1/1/1)</option>`);
-										element.push(`<option value='day'>Day in month</option>`);
-										element.push(`<option value='year_day'>Year day</option>`);
-										element.push(`<option value='epoch'>Epoch (days since 1/1/1)</option>`);
-									element.push(`</select>`);
-							element.push("</div>");
-						element.push("</div>");
+					element.push("<div class='col-6 pr-0 pl-1'>");
+						element.push("<div>Offset:</div>");
+					element.push("</div>");
+				element.push("</div>");
+
+				element.push("<div class='row mb-1'>");
+					element.push("<div class='col-6 pr-1 pl-0'>");
+						element.push(`<input type='number' step="1.0" class='form-control length dynamic_input' min='1' data='cycles.data.${key}' fc-index='length' value='${data.length}' />`);
 					element.push("</div>");
 
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-column half'>");
-							element.push("<div class='detail-row'>");
-									element.push("<div class='detail-text'>Length:</div>");
-									element.push(`<input type='number' step="1.0" class='form-control length dynamic_input' min='1' data='cycles.data.${key}' fc-index='length' value='${data.length}' />`);
-							element.push("</div>");
-						element.push("</div>");
+					element.push("<div class='col-6 pr-0 pl-1'>");
+						element.push(`<input type='number' step="1.0" class='form-control offset dynamic_input' min='0' data='cycles.data.${key}' fc-index='offset' value='${data.offset}'/>`);
+					element.push("</div>");
+				element.push("</div>");
 
-						element.push("<div class='detail-column half'>");
-							element.push("<div class='detail-row'>");
-								element.push("<div class='detail-text'>Offset:</div>");
-								element.push(`<input type='number' step="1.0" class='form-control offset dynamic_input' min='0' data='cycles.data.${key}' fc-index='offset' value='${data.offset}'/>`);
-							element.push("</div>");
-						element.push("</div>");
-					element.push("</div>");
+				element.push("<div class='row mt-3 mb-2'>Number of names:</div>");
 
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text'>Number of names:</div>");
+				element.push("<div class='row my-2'>");
+					element.push("<div class='col-6 pl-0 pr-1'>");
+						element.push(`<input type='number' step="1.0" class='form-control cycle-name-length' value='${data.names.length}' fc-index='${key}'/>`);
 					element.push("</div>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-column half'>");
-							element.push("<div class='detail-row'>");
-								element.push(`<input type='number' step="1.0" class='form-control cycle-name-length' value='${data.names.length}' fc-index='${key}'/>`);
-							element.push("</div>");
-						element.push("</div>");
-						element.push("<div class='detail-column half'>");
-							element.push("<button type='button' class='full btn btn-primary cycle_quick_add'>Quick add</button>");
-						element.push("</div>");
+					element.push("<div class='col-6 pl-1 pr-0'>");
+						element.push("<button type='button' class='full btn btn-primary cycle_quick_add'>Quick add</button>");
 					element.push("</div>");
-					element.push("<div class='detail-row cycle-container'>");
-						element.push("<div class='cycle_list'>");
-							for(index = 0; index < data.names.length; index++){
-								element.push(`<input type='text' class='form-control internal-list-name dynamic_input' data='cycles.data.${key}.names' fc-index='${index}' value='${data.names[index]}'/>`);
-							}
-						element.push("</div>");
+				element.push("</div>");
+				element.push("<div class='row my-2 cycle-container border'>");
+					element.push("<div class='cycle_list'>");
+						for(index = 0; index < data.names.length; index++){
+							element.push(`<input type='text' class='form-control internal-list-name dynamic_input' data='cycles.data.${key}.names' fc-index='${index}'/>`);
+						}
 					element.push("</div>");
+				element.push("</div>");
 			element.push("</div>");
 		element.push("</div>");
 
 	element.push("</div>");
 
-	parent.append(element.join(""));
+	element = $(element.join(""));
+
+	element.find('.cycle_list').children().each(function(i){
+		$(this).val(data.names[i])
+	});
+
+	parent.append(element);
 
 }
 
@@ -2968,7 +2860,7 @@ function add_era_to_list(parent, key, data){
 		element.push("<div class='main-container'>");
 			element.push("<div class='expand icon-collapse'></div>");
 			element.push("<div class='name-container'>");
-				element.push(`<input type='text' value='${data.name}' class='form-control name-input small-input dynamic_input' data='eras.${key}' fc-index='name' tabindex='${(800+key)}'/>`);
+				element.push(`<input type='text' class='form-control name-input small-input dynamic_input' data='eras.${key}' fc-index='name' tabindex='${(800+key)}'/>`);
 			element.push("</div>");
 			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
@@ -2979,135 +2871,130 @@ function add_era_to_list(parent, key, data){
 			element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
 		element.push("</div>");
 
-		element.push("<div class='detail-container'>");
+		element.push("<div class='collapse-container container mb-2'>");
 
-			element.push("<div class='detail-row'>");
-				element.push("<div class='detail-column half'>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text'>Custom year header formatting:</div>");
-						element.push(`<input type='checkbox' class='form-control dynamic_input use_custom_format' data='eras.${key}.settings' fc-index='use_custom_format' ${(data.settings.use_custom_format ? "checked" : "")} />`);
-					element.push("</div>");
+			element.push(`<div class='row no-gutters my-1'>`);
+				element.push("<div class='form-check col-12 py-2 border rounded'>");
+					element.push(`<input type='checkbox' id='${key}_use_custom_format' class='form-check-input dynamic_input use_custom_format' data='eras.${key}.settings' fc-index='use_custom_format' ${(data.settings.use_custom_format ? "checked" : "")} />`);
+					element.push(`<label for='${key}_use_custom_format' class='form-check-label ml-1'>`);
+						element.push("Custom year header formatting");
+					element.push("</label>");
 				element.push("</div>");
 			element.push("</div>");
 
-			element.push(`<div class='detail-row ${(!data.settings.use_custom_format ? "hidden" : "")}'>`);
-				element.push("<div class='detail-column full'>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text'>Format:</div>");
-						element.push(`<input type='text' class='form-control small-input dynamic_input era_formatting' data='eras.${key}' fc-index='formatting' value='${data.formatting}' />`);
-							element.push("</select>");
-					element.push("</div>");
+			element.push("<div class='row mt-1'>");
+				element.push("<div class='col'>");
+					element.push("Format:");
+					element.push(`<input type='text' class='form-control small-input dynamic_input era_formatting protip' data='eras.${key}' fc-index='formatting' ${!data.settings.use_custom_format ? "disabled" : ""} data-pt-position="right" data-pt-title="Check out the wiki on this by clicking on the question mark on the 'Eras' bar!"/>`);
 				element.push("</div>");
 			element.push("</div>");
 
-			element.push("<div class='detail-row'>");
-				element.push("<div class='detail-column full'>");
+			element.push("<div class='row my-1 no-gutters'>");
+				element.push("<div class='col'>");
+					element.push("<div class='separator'></div>");
+				element.push("</div>");
+			element.push("</div>");
+
+			element.push(`<div class='row no-gutters my-1'>`);
+				element.push("<div class='form-check col-12 py-2 border rounded'>");
+					element.push(`<input type='checkbox' id='${key}_show_as_event' class='form-check-input dynamic_input show_as_event' data='eras.${key}.settings' fc-index='show_as_event' ${(data.settings.show_as_event ? "checked" : "")} />`);
+					element.push(`<label for='${key}_show_as_event' class='form-check-label ml-1'>`);
+						element.push("Show as event");
+					element.push("</label>");
+				element.push("</div>");
+			element.push("</div>");
+
+			element.push(`<div class='row my-2 ${(!data.settings.show_as_event ? "hidden" : "")}'>`);
+				element.push("<div class='col'>");
 					element.push(`<div class='btn btn-outline-primary full era_description html_edit' value='${data.description}' data='eras.${key}' fc-index='description'>Edit event description</div>`);
 				element.push("</div>");
 			element.push("</div>");
 
-			element.push("<div class='detail-row'>");
-				element.push("<div class='separator'></div>");
-			element.push("</div>");
-
-			element.push("<div class='detail-row'>");
-				element.push("<div class='detail-column half'>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text'>Show as event:</div>");
-						element.push(`<input type='checkbox' class='form-control dynamic_input show_as_event' data='eras.${key}.settings' fc-index='show_as_event' ${(data.settings.show_as_event ? "checked" : "")} />`);
-					element.push("</div>");
-				element.push("</div>");
-			element.push("</div>");
-
-			element.push(`<div class='detail-row ${(!data.settings.show_as_event ? "hidden" : "")}'>`);
-				element.push("<div class='detail-column full'>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text'>Event category:</div>");
+			element.push(`<div class='era_event_category_container ${(!data.settings.show_as_event ? "hidden" : "")}'>`);
+				element.push("<div class='row mt-2'>");
+					element.push("<div class='col'>");
+						element.push("Event category:");
 						element.push(`<select type='text' class='custom-select form-control event-category-list dynamic_input' data='eras.${key}.settings' fc-index='event_category_id'>`);
-							for(var catkey in static_data.event_data.categories)
-							{
-								var name = static_data.event_data.categories[catkey].name;
-								var id = static_data.event_data.categories[catkey].id;
-								element.push(`<option value="${id}" ${(catkey==data.event_category_id ? "selected" : "")}>${name}</option>`);
-							}
-							element.push("</select>");
+						for(var catkey in static_data.event_data.categories)
+						{
+							var name = static_data.event_data.categories[catkey].name;
+							var id = static_data.event_data.categories[catkey].id;
+							element.push(`<option value="${id}" ${(catkey==data.event_category_id ? "selected" : "")}>${name}</option>`);
+						}
+						element.push("</select>");
 					element.push("</div>");
 				element.push("</div>");
 			element.push("</div>");
 
-			element.push("<div class='detail-row'>");
-				element.push("<div class='separator'></div>");
+			element.push("<div class='row my-1 no-gutters'>");
+				element.push("<div class='col'>");
+					element.push("<div class='separator'></div>");
+				element.push("</div>");
 			element.push("</div>");
 
-			element.push("<div class='detail-row'>");
-				element.push("<div class='detail-column half'>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text'>Is starting era:</div>");
-						element.push(`<input type='checkbox' class='form-control dynamic_input starting_era' data='eras.${key}.settings' fc-index='starting_era' ${(data.settings.starting_era ? "checked" : "")} />`);
-					element.push("</div>");
+			element.push(`<div class='row no-gutters my-1'>`);
+				element.push("<div class='form-check col-12 py-2 border rounded'>");
+					element.push(`<input type='checkbox' for='${key}_starting_era' class='form-check-input dynamic_input starting_era' data='eras.${key}.settings' fc-index='starting_era' ${(data.settings.starting_era ? "checked" : "")} />`);
+					element.push(`<label for='${key}_starting_era' class='form-check-label ml-1'>`);
+						element.push("Is starting era (like B.C.)");
+					element.push("</label>");
 				element.push("</div>");
 			element.push("</div>");
 
 			element.push(`<div class='${data.settings.starting_era ? "hidden" : ""}'>`);
 
-				element.push("<div class='detail-row'>");
-					element.push("<div class='detail-text bold-text'>Date:</div>");
+				element.push("<div class='row my-2 bold-text'>");
+
+					element.push("<div class='col'>");
+
+						element.push("Date:");
+
+						element.push(`<div class='date_control'>`);
+							element.push(`<div class='row my-2'>`);
+								element.push("<div class='col'>");
+									element.push(`<input type='number' step="1.0" class='date form-control small-input dynamic_input year-input' refresh data='eras.${key}.date' fc-index='year' value='${data.date.year}'/>`);
+								element.push("</div>");
+							element.push("</div>");
+
+							element.push(`<div class='row my-2'>`);
+								element.push("<div class='col'>");
+									element.push(`<select type='number' class='date custom-select form-control timespan-list dynamic_input' refresh data='eras.${key}.date' fc-index='timespan'>`);
+									element.push("</select>");
+								element.push("</div>");
+							element.push("</div>");
+
+							element.push(`<div class='row my-2'>`);
+								element.push("<div class='col'>");
+									element.push(`<select type='number' class='date custom-select form-control timespan-day-list dynamic_input' refresh data='eras.${key}.date' fc-index='day'>`);
+									element.push("</select>");
+								element.push("</div>");
+							element.push("</div>");
+						element.push("</div>");
+					element.push("</div>");
 				element.push("</div>");
 
-				element.push(`<div class='detail-row'>`);
-					element.push("<div class='detail-column full date_control'>");
-						element.push("<div class='detail-row'>");
-							element.push("<div class='detail-column quarter'>");
-								element.push("<div class='detail-text'>Year:</div>");
-							element.push("</div>");
-							element.push("<div class='detail-column threequarter'>");
-								element.push(`<input type='number' step="1.0" class='date form-control small-input dynamic_input year-input' refresh data='eras.${key}.date' fc-index='year' value='${data.date.year}'/>`);
-							element.push("</div>");
-						element.push("</div>");
-
-						element.push("<div class='detail-row'>");
-							element.push("<div class='detail-column quarter'>");
-								element.push("<div class='detail-text'>Timespan:</div>");
-							element.push("</div>");
-							element.push("<div class='detail-column threequarter'>");
-								element.push(`<select type='number' class='date custom-select form-control timespan-list dynamic_input' refresh data='eras.${key}.date' fc-index='timespan'>`);
-								element.push("</select>");
-							element.push("</div>");
-						element.push("</div>");
-
-						element.push("<div class='detail-row'>");
-							element.push("<div class='detail-column quarter'>");
-								element.push("<div class='detail-text'>Day:</div>");
-							element.push("</div>");
-							element.push("<div class='detail-column threequarter'>");
-								element.push(`<select type='number' class='date custom-select form-control timespan-day-list dynamic_input' refresh data='eras.${key}.date' fc-index='day'>`);
-								element.push("</select>");
-							element.push("</div>");
-						element.push("</div>");
+				element.push("<div class='row my-2 bold-text'>");
+					element.push("<div class='col'>");
+						element.push("Date settings:");
 					element.push("</div>");
+				element.push("</div>");
 
-					element.push("<div class='detail-column full'>");
-
-						element.push("<div class='detail-row'>");
-							element.push("<div class='detail-column half'>");
-								element.push("<div class='detail-text'>Ends year:</div>");
-							element.push("</div>");
-							element.push("<div class='detail-column half'>");
-							element.push(`<input type='checkbox' class='form-control dynamic_input ends_year ${!static_data.seasons.global_settings.periodic_seasons ? " protip' disabled" : "'"} data-pt-position="right" data-pt-title='This is disabled because static seasons cannot support eras that end years, as months disappear and seasons require the assigned months.' data='eras.${key}.settings' fc-index='ends_year' ${(data.settings.ends_year ? "checked" : "")} />`);
-							element.push("</div>");
-						element.push("</div>");
-
-						element.push("<div class='detail-row'>");
-							element.push("<div class='detail-column half'>");
-								element.push("<div class='detail-text'>Restarts year count:</div>");
-							element.push("</div>");
-							element.push("<div class='detail-column half'>");
-								element.push(`<input type='checkbox' class='form-control dynamic_input restart' data='eras.${key}.settings' fc-index='restart' ${(data.settings.restart ? "checked" : "")} />`);
-							element.push("</div>");
-						element.push("</div>");
-
+				element.push(`<div class='row no-gutters my-1'>`);
+					element.push("<div class='form-check col-12 py-2 border rounded'>");
+						element.push(`<input type='checkbox' id='${key}_restart_year' class='form-check-input dynamic_input restart' data='eras.${key}.settings' fc-index='restart' ${(data.settings.restart ? "checked" : "")} />`);
+						element.push(`<label for='${key}_restart_year' class='form-check-label ml-1'>`);
+							element.push("Restarts year count");
+						element.push("</label>");
 					element.push("</div>");
+				element.push("</div>");
 
+				element.push(`<div class='row no-gutters my-1'>`);
+					element.push("<div class='form-check col-12 py-2 border rounded'>");
+						element.push(`<input type='checkbox' id='${key}_ends_year' class='form-check-input dynamic_input ends_year' ${!static_data.seasons.global_settings.periodic_seasons ? "disabled" : ""} data='eras.${key}.settings' fc-index='ends_year' ${(data.settings.ends_year ? "checked" : "")} />`);
+						element.push(`<label for='${key}_ends_year' class='form-check-label ml-1'>`);
+							element.push("Ends year prematurely");
+						element.push("</label>");
+					element.push("</div>");
 				element.push("</div>");
 
 			element.push("</div>");
@@ -3117,6 +3004,11 @@ function add_era_to_list(parent, key, data){
 	element.push("</div>");
 
 	var element = $(element.join(""));
+
+	element.find('.name-input').val(data.name);
+
+	var formatting = data.settings.use_custom_format ? data.formatting : 'Year {{year}} - {{era_name}}';
+	element.find('.era_formatting').val(formatting);
 
 	parent.append(element);
 
@@ -3133,7 +3025,7 @@ function add_category_to_list(parent, key, data){
 		element.push("<div class='main-container'>");
 			element.push("<div class='expand icon-collapse'></div>");
 			element.push("<div class='name-container'>");
-				element.push(`<input type='text' value='${data.name}' name='name_input' fc-index='name' class='form-control name-input small-input dynamic_input_self' data='event_data.categories.${key}' tabindex='${(700+key)}'/>`);
+				element.push(`<input type='text' name='name_input' fc-index='name' class='form-control name-input small-input dynamic_input_self' data='event_data.categories.${key}' tabindex='${(700+key)}'/>`);
 			element.push("</div>");
 			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
@@ -3143,116 +3035,120 @@ function add_category_to_list(parent, key, data){
 			element.push("<div class='btn_cancel btn btn-danger icon-remove'></div>");
 			element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
 		element.push("</div>");
-		element.push("<div class='detail-container'>");
+		element.push("<div class='collapse-container container mb-2'>");
 
-			element.push("<div class='detail-row'>");
-					element.push("<div class='detail-text bold-text'>Category settings (global):</div>");
-			element.push("</div>");
-
-			element.push("<div class='detail-row'>");
-					element.push(`<input type='hidden' class='category_id' value='${key}'>`);
-			element.push("</div>");
-
-			element.push("<div class='detail-row'>");
-				element.push("<div class='detail-column half'>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text'>Hide from viewers:</div>");
-						element.push(`<input type='checkbox' class='form-control dynamic_input global_hide' data='event_data.categories.${key}.category_settings' fc-index='hide' ${(data.category_settings.hide ? "checked" : "")} />`);
-					element.push("</div>");
-				element.push("</div>");
-				element.push("<div class='detail-column half'>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-text'>Usable by players:</div>");
-						element.push(`<input type='checkbox' class='form-control dynamic_input player_usable' data='event_data.categories.${key}.category_settings' fc-index='player_usable' ${(data.category_settings.player_usable ? "checked" : "")} />`);
-					element.push("</div>");
+			element.push("<div class='row no-gutters my-1 bold-text'>");
+				element.push("<div class='col'>");
+					element.push("Category settings (global):");
 				element.push("</div>");
 			element.push("</div>");
 
-			element.push("<div class='detail-row'>");
-				element.push("<div class='separator'></div>");
-			element.push("</div>");
+			element.push(`<input type='hidden' class='category_id' value='${key}'>`);
 
-			element.push("<div class='detail-row'>");
-					element.push("<div class='detail-text bold-text'>Event settings (local):</div>");
-			element.push("</div>");
-
-			element.push("<div class='detail-row'>");
-
-				element.push("<div class='detail-row'>");
-					element.push("<div class='detail-column half'>");
-						element.push("<div class='detail-text'>Fully hide event:</div>");
-					element.push("</div>");
-					element.push("<div class='detail-column half'>");
-						element.push(`<input type='checkbox' class='form-control dynamic_input' data='event_data.categories.${key}.event_settings' fc-index='hide_full' ${(data.event_settings.hide_full ? "checked" : "")} />`);
-					element.push("</div>");
-				element.push("</div>");
-
-				element.push("<div class='detail-row'>");
-					element.push("<div class='detail-column half'>");
-						element.push("<div class='detail-text'>Hide event:</div>");
-					element.push("</div>");
-					element.push("<div class='detail-column half'>");
-						element.push(`<input type='checkbox' class='form-control dynamic_input local_hide' data='event_data.categories.${key}.event_settings' fc-index='hide' ${(data.event_settings.hide ? "checked" : "")} />`);
-					element.push("</div>");
-				element.push("</div>");
-
-				element.push("<div class='detail-row'>");
-					element.push("<div class='detail-column half'>");
-						element.push("<div class='detail-text'>Show event when printing:</div>");
-					element.push("</div>");
-					element.push("<div class='detail-column half'>");
-						element.push(`<input type='checkbox' class='form-control dynamic_input print' data='event_data.categories.${key}.event_settings' fc-index='print' ${(data.event_settings.print ? "checked" : "")} />`);
-					element.push("</div>");
+			element.push(`<div class='row no-gutters my-1'>`);
+				element.push("<div class='form-check col-12 py-2 border rounded'>");
+					element.push(`<input type='checkbox' id='${key}_cat_global_hide' class='form-check-input dynamic_input global_hide' data='event_data.categories.${key}.category_settings' fc-index='hide' ${(data.category_settings.hide ? "checked" : "")} />`);
+					element.push(`<label for='${key}_cat_global_hide' class='form-check-label ml-1'>`);
+						element.push("Hide from viewers");
+					element.push("</label>");
 				element.push("</div>");
 			element.push("</div>");
 
-			element.push("<div class='detail-row'>");
-				element.push("<div class='detail-column half'>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-column'>");
-							element.push("<div class='detail-text'>Color:</div>");
-						element.push("</div>");
-						element.push("<div class='detail-column'>");
-							element.push(`<select class='custom-select form-control dynamic_input event-text-input color_display' data='event_data.categories.${key}.event_settings' fc-index='color'>`);
-								element.push(`<option ${(data.event_settings.color == 'Dark-Solid' ? ' selected' : '')}>Dark-Solid</option>`);
-								element.push(`<option ${(data.event_settings.color == 'Red' ? ' selected' : '')}>Red</option>`);
-								element.push(`<option ${(data.event_settings.color == 'Pink' ? ' selected' : '')}>Pink</option>`);
-								element.push(`<option ${(data.event_settings.color == 'Purple' ? ' selected' : '')}>Purple</option>`);
-								element.push(`<option ${(data.event_settings.color == 'Deep-Purple' ? ' selected' : '')}>Deep-Purple</option>`);
-								element.push(`<option ${(data.event_settings.color == 'Blue' ? ' selected' : '')}>Blue</option>`);
-								element.push(`<option ${(data.event_settings.color == 'Light-Blue' ? ' selected' : '')}>Light-Blue</option>`);
-								element.push(`<option ${(data.event_settings.color == 'Cyan' ? ' selected' : '')}>Cyan</option>`);
-								element.push(`<option ${(data.event_settings.color == 'Teal' ? ' selected' : '')}>Teal</option>`);
-								element.push(`<option ${(data.event_settings.color == 'Green' ? ' selected' : '')}>Green</option>`);
-								element.push(`<option ${(data.event_settings.color == 'Light-Green' ? ' selected' : '')}>Light-Green</option>`);
-								element.push(`<option ${(data.event_settings.color == 'Lime' ? ' selected' : '')}>Lime</option>`);
-								element.push(`<option ${(data.event_settings.color == 'Yellow' ? ' selected' : '')}>Yellow</option>`);
-								element.push(`<option ${(data.event_settings.color == 'Orange' ? ' selected' : '')}>Orange</option>`);
-								element.push(`<option ${(data.event_settings.color == 'Blue-Grey' ? ' selected' : '')}>Blue-Grey</option>`);
-							element.push("</select>");
-						element.push("</div>");
-					element.push("</div>");
-				element.push("</div>");
-
-				element.push("<div class='detail-column half'>");
-					element.push("<div class='detail-row'>");
-						element.push("<div class='detail-column'>");
-							element.push("<div class='detail-text'>Display:</div>");
-						element.push("</div>");
-						element.push("<div class='detail-column threequarter float'>");
-							element.push(`<select class='custom-select form-control dynamic_input event-text-input text_display' data='event_data.categories.${key}.event_settings' fc-index='text'>`);
-								element.push(`<option value="text"${(data.event_settings.text == 'text' ? ' selected' : '')}>Just text</option>`);
-								element.push(`<option value="dot"${(data.event_settings.text == 'dot' ? ' selected' : '')}>• Dot with text</option>`);
-								element.push(`<option value="background"${(data.event_settings.text == 'background' ? ' selected' : '')}>Background</option>`);
-							element.push("</select>");
-						element.push("</div>");
-					element.push("</div>");
+			element.push(`<div class='row no-gutters my-1 hidden'>`);
+				element.push("<div class='form-check col-12 py-2 border rounded'>");
+					element.push(`<input type='checkbox' id='${key}_cat_player_usable' class='form-check-input dynamic_input player_usable' data='event_data.categories.${key}.category_settings' fc-index='player_usable' ${(data.category_settings.player_usable ? "checked" : "")} />`);
+					element.push(`<label for='${key}_cat_player_usable' class='form-check-label ml-1'>`);
+						element.push("Usable by players");
+					element.push("</label>");
 				element.push("</div>");
 			element.push("</div>");
 
-			element.push("<div class='detail-row'>");
-				element.push("<div class='detail-column full'>");
-					element.push(`Event display: <div class='half event-text-output event ${data.event_settings.color} ${data.event_settings.text}'>Event name</div>`);
+			element.push("<div class='row no-gutters my-2'>");
+				element.push("<div class='col'>");
+					element.push("<div class='separator'></div>");
+				element.push("</div>");
+			element.push("</div>");
+
+			element.push("<div class='row no-gutters mb-2 bold-text'>");
+				element.push("<div class='col'>");
+					element.push("Event settings (local):");
+				element.push("</div>");
+			element.push("</div>");
+
+			element.push("<div class='row no-gutters mb-2 small-text bold-text warning'>");
+				element.push("<div class='col'>");
+					element.push("This will override the settings on any events using this category!");
+				element.push("</div>");
+			element.push("</div>");
+
+			element.push(`<div class='row no-gutters my-1'>`);
+				element.push("<div class='form-check col-12 py-2 border rounded'>");
+					element.push(`<input type='checkbox' id='${key}_cat_hide_full' class='form-check-input dynamic_input' data='event_data.categories.${key}.event_settings' fc-index='hide_full' ${(data.event_settings.hide_full ? "checked" : "")} />`);
+					element.push(`<label for='${key}_cat_hide_full' class='form-check-label ml-1'>`);
+						element.push("Fully hide event");
+					element.push("</label>");
+				element.push("</div>");
+			element.push("</div>");
+
+			element.push(`<div class='row no-gutters my-1'>`);
+				element.push("<div class='form-check col-12 py-2 border rounded'>");
+					element.push(`<input type='checkbox' id='${key}_cat_hide' class='form-check-input dynamic_input' data='event_data.categories.${key}.event_settings' fc-index='hide' ${(data.event_settings.hide ? "checked" : "")} />`);
+					element.push(`<label for='${key}_cat_hide' class='form-check-label ml-1'>`);
+						element.push("Hide event");
+					element.push("</label>");
+				element.push("</div>");
+			element.push("</div>");
+
+			element.push(`<div class='row no-gutters my-1'>`);
+				element.push("<div class='form-check col-12 py-2 border rounded'>");
+					element.push(`<input type='checkbox' id='${key}_cat_no_print' class='form-check-input dynamic_input' data='event_data.categories.${key}.event_settings' fc-index='print' ${(data.event_settings.noprint ? "checked" : "")} />`);
+					element.push(`<label for='${key}_cat_no_print' class='form-check-label ml-1'>`);
+						element.push("Show event when printing");
+					element.push("</label>");
+				element.push("</div>");
+			element.push("</div>");
+
+			element.push("<div class='row no-gutters my-2'>");
+				element.push("<div class='col-md-6 col-sm-12'>");
+					element.push("<div>Color:</div>");
+					element.push(`<select class='custom-select form-control dynamic_input event-text-input color_display' data='event_data.categories.${key}.event_settings' fc-index='color'>`);
+						element.push(`<option ${(data.event_settings.color == 'Dark-Solid' ? ' selected' : '')}>Dark-Solid</option>`);
+						element.push(`<option ${(data.event_settings.color == 'Red' ? ' selected' : '')}>Red</option>`);
+						element.push(`<option ${(data.event_settings.color == 'Pink' ? ' selected' : '')}>Pink</option>`);
+						element.push(`<option ${(data.event_settings.color == 'Purple' ? ' selected' : '')}>Purple</option>`);
+						element.push(`<option ${(data.event_settings.color == 'Deep-Purple' ? ' selected' : '')}>Deep-Purple</option>`);
+						element.push(`<option ${(data.event_settings.color == 'Blue' ? ' selected' : '')}>Blue</option>`);
+						element.push(`<option ${(data.event_settings.color == 'Light-Blue' ? ' selected' : '')}>Light-Blue</option>`);
+						element.push(`<option ${(data.event_settings.color == 'Cyan' ? ' selected' : '')}>Cyan</option>`);
+						element.push(`<option ${(data.event_settings.color == 'Teal' ? ' selected' : '')}>Teal</option>`);
+						element.push(`<option ${(data.event_settings.color == 'Green' ? ' selected' : '')}>Green</option>`);
+						element.push(`<option ${(data.event_settings.color == 'Light-Green' ? ' selected' : '')}>Light-Green</option>`);
+						element.push(`<option ${(data.event_settings.color == 'Lime' ? ' selected' : '')}>Lime</option>`);
+						element.push(`<option ${(data.event_settings.color == 'Yellow' ? ' selected' : '')}>Yellow</option>`);
+						element.push(`<option ${(data.event_settings.color == 'Orange' ? ' selected' : '')}>Orange</option>`);
+						element.push(`<option ${(data.event_settings.color == 'Blue-Grey' ? ' selected' : '')}>Blue-Grey</option>`);
+					element.push("</select>");
+				element.push("</div>");
+
+				element.push("<div class='col-md-6 col-sm-12'>");
+					element.push("<div>Display:</div>");
+					element.push(`<select class='custom-select form-control dynamic_input event-text-input text_display' data='event_data.categories.${key}.event_settings' fc-index='text'>`);
+						element.push(`<option value="text"${(data.event_settings.text == 'text' ? ' selected' : '')}>Just text</option>`);
+						element.push(`<option value="dot"${(data.event_settings.text == 'dot' ? ' selected' : '')}>• Dot with text</option>`);
+						element.push(`<option value="background"${(data.event_settings.text == 'background' ? ' selected' : '')}>Background</option>`);
+					element.push("</select>");
+				element.push("</div>");
+			element.push("</div>");
+
+			element.push("<div class='row no-gutters mt-1'>");
+				element.push("<div class='col'>");
+					element.push(`What the events will look like:`);
+				element.push("</div>");
+			element.push("</div>");
+
+			element.push("<div class='row no-gutters'>");
+				element.push("<div class='col'>");
+					element.push(`<div class='half event-text-output event ${data.event_settings.color} ${data.event_settings.text}'>Event name</div>`);
 				element.push("</div>");
 			element.push("</div>");
 
@@ -3260,7 +3156,11 @@ function add_category_to_list(parent, key, data){
 
 	element.push("</div>");
 
-	parent.append(element.join(""));
+	element = $(element.join(""))
+
+	element.find('.name-input').val(data.name);
+
+	parent.append(element);
 }
 
 
@@ -3271,7 +3171,7 @@ function add_event_to_sortable(parent, key, data){
 	element.push(`<div class='sortable-container events_input list-group-item' index='${key}'>`);
 		element.push("<div class='main-container'>");
 			element.push("<div class='handle icon-reorder'></div>");
-			element.push(`<div class='btn btn-outline-primary open-edit-event-ui event_name'>Edit - ${data.name}</div>`);
+			element.push(`<div class='btn btn-outline-primary open-edit-event-ui event_name'></div>`);
 			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
@@ -3283,7 +3183,11 @@ function add_event_to_sortable(parent, key, data){
 
 	element.push("</div>");
 
-	parent.append(element.join(""));
+	element = $(element.join(""))
+
+	element.find('.event_name').html(`Edit - ${data.name}`);
+
+	parent.append(element);
 
 }
 
@@ -3310,11 +3214,9 @@ function add_link_to_list(parent, key, calendar_name){
 	parent.append(element.join(""));
 }
 
-function error_check(parent, rebuild){
+function get_errors(){
 
-	if(wizard) return;
-
-	errors = [];
+	var errors = [];
 
 	for(var era_i = 0; era_i < static_data.eras.length; era_i++){
 		var era = static_data.eras[era_i];
@@ -3375,9 +3277,19 @@ function error_check(parent, rebuild){
 
 	}
 
-	if(errors.length == 0 && $('.invalid').length == 0){
+	return errors;
 
-		evaluate_save_button();
+}
+
+function error_check(parent, rebuild){
+
+	if(wizard) return;
+
+	var errors = get_errors();
+
+	evaluate_save_button();
+
+	if(errors.length == 0 && $('.invalid').length == 0){
 
 		close_error_message();
 
@@ -3428,9 +3340,6 @@ function error_check(parent, rebuild){
 		text.push(`</ol>`);
 
 		error_message(text.join(''));
-
-		save_button.prop('disabled', true);
-		create_button.prop('disabled', true);
 
 	}
 
@@ -3505,14 +3414,16 @@ function populate_first_day_select(val){
 	if(val !== undefined){
 		var selected_first_day = val;
 	}else{
-		var selected_first_day = first_day.val() ? first_day.val() : 0;
+		var selected_first_day = first_day.val() ? first_day.val() : 1;
 	}
 
 	first_day.html(html.join('')).val(selected_first_day);
 
 }
 
-function repopulate_weekday_select(elements){
+function repopulate_weekday_select(elements, value, change){
+
+	change = change === undefined ? true : change;
 
 	elements.each(function(){
 
@@ -3530,7 +3441,7 @@ function repopulate_weekday_select(elements){
 
 		}
 
-		var selected = $(this).val()|0;
+		var selected = value === undefined ? $(this).val()|0 : value;
 
 		selected = selected > week.length ? week.length-1 : selected;
 
@@ -3538,6 +3449,8 @@ function repopulate_weekday_select(elements){
 
 		if(inclusive){
 			html.push(`<option value='0'>Before ${week[0]}</option>`);
+		}else{
+			selected = selected == 0 ? 1 : selected;
 		}
 
 		for(var i = 0; i < week.length; i++){
@@ -3547,6 +3460,10 @@ function repopulate_weekday_select(elements){
 		}
 
 		$(this).html(html.join('')).val(selected);
+
+		if(change){
+			$(this).change();
+		}
 
 	});
 
@@ -3581,14 +3498,14 @@ function reindex_timespan_sortable(){
 
 		if($(this).find('.unique-week-input').is(':checked')){
 			static_data.year_data.timespans[i].week = [];
-			$(this).find('.collapsible-content').children().first().children().each(function(j){
+			$(this).find('.week_list').children().each(function(j){
 				static_data.year_data.timespans[i].week[j] = $(this).val();
 			});
 		}
 
 	});
 
-	repopulate_month_lists();
+	repopulate_timespan_select();
 
 	do_error_check();
 
@@ -3702,6 +3619,14 @@ function reindex_season_sortable(key){
 
 	eval_clock();
 
+	var no_seasons = static_data.seasons.data.length == 0;
+	$('#has_seasons_container').toggleClass('hidden', no_seasons).find('select, input').prop('disabled', no_seasons);
+	$('#no_seasons_container').toggleClass('hidden', !no_seasons);
+
+	var no_locations = (static_data.seasons.data.length == 0 || !static_data.seasons.global_settings.enable_weather) && !static_data.clock.enabled;
+	$('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
+	$('#locations_warning').toggleClass('hidden', !no_locations);
+
 	do_error_check('seasons');
 
 }
@@ -3770,21 +3695,30 @@ function reindex_location_list(){
 
 		});
 
-		if($(this).find('.location_season').length != static_data.seasons.data.length){
+		var old_season_num = $(this).find('.location_season').length;
+		var new_season_num = static_data.seasons.data.length;
 
-			for(var j = $(this).find('.location_season').length; j < static_data.seasons.data.length; j++){
+		if(old_season_num != new_season_num){
 
-				data.seasons[j] = {
-					"custom_name": false,
-					"time": static_data.seasons.data[i].time,
-					"weather":{
-						"temp_low": 0,
-						"temp_high": 0,
-						"precipitation": 0,
-						"precipitation_intensity": 0
+			if(new_season_num > old_season_num){
+
+				for(var j = $(this).find('.location_season').length; j < static_data.seasons.data.length; j++){
+
+					data.seasons[j] = {
+						"custom_name": false,
+						"time": static_data.seasons.data[i].time,
+						"weather":{
+							"temp_low": 0,
+							"temp_high": 0,
+							"precipitation": 0,
+							"precipitation_intensity": 0
+						}
 					}
 				}
 
+			}else{
+
+				data.seasons.splice(static_data.seasons.data.length, $(this).find('.location_season').length);
 
 			}
 
@@ -3834,7 +3768,7 @@ function reindex_cycle_sortable(){
 			$(this).attr('data', $(this).attr('data').replace(/[0-9]+/g, i));
 		});
 		$(this).attr('key', i);
-		$(this).find('.main-container').find('.detail-text').text(`Cycle #${i+1} - Using {{${i+1}}}`)
+		$(this).find('.main-container').find('.cycle-text').text(`Cycle #${i+1} - Using {{${i+1}}}`)
 
 		static_data.cycles.data[i] = {
 			'length': ($(this).find('.length').val()|0),
@@ -4063,21 +3997,6 @@ function reindex_events_sortable(){
 
 }
 
-
-function repopulate_month_lists(){
-	$(".timespan-list").each(function(i){
-		selected = $(this).val();
-		html = [];
-		$(this).html('');
-		for(var i = 0; i < static_data.year_data.timespans.length; i++)
-		{
-			html.push(`<option value="${i}">${static_data.year_data.timespans[i].name}</option>`);
-		}
-		$(this).append(html);
-		$(this).val(selected);
-	});
-}
-
 function recreate_moon_colors(){
 
 	$('.moon_inputs .color').spectrum({
@@ -4130,7 +4049,7 @@ function evaluate_season_lengths(){
 	var html = []
 	html.push(`<div class='container'>`)
 	html.push(`<div class='row py-1'>`)
-	html.push(equal ? '<i class="col-md-auto px-0 mr-1 fas fa-check-circle" style="line-height:1.5;"></i>' : '<i class="col-md-auto px-0 mr-2 fas fa-exclamation-circle" style="line-height:1.5;"></i>');
+	html.push(equal ? '<i class="col-auto px-0 mr-1 fas fa-check-circle" style="line-height:1.5;"></i>' : '<i class="col-auto px-0 mr-2 fas fa-exclamation-circle" style="line-height:1.5;"></i>');
 	html.push(`<div class='col px-0'>Season length: ${data.season_length} / ${fract_year_length(static_data)} (year length)</div></div>`)
 	html.push(`<div class='row'>${equal ? "The season length and year length are the same, and will not drift away from each other." : "The season length and year length at not the same, and will diverge over time. Use with caution."}</div>`)
 	html.push(`</div>`)
@@ -4151,14 +4070,9 @@ function recalc_stats(){
 }
 
 
-function adjustInput(element, int){
-	if(int > 0){
-		var element = $(element).prev();
-	}else{
-		var element = $(element).next();
-	}
-	element.val((element.val()|0)+int).change();
-
+function adjustInput(element, target, int){
+	var target = $(target);
+	target.val((target.val()|0)+int).change();
 }
 
 function calendar_saving(){
@@ -4171,21 +4085,11 @@ function calendar_saving(){
 
 function calendar_saved(){
 
-	calendar_name_same = calendar_name == prev_calendar_name;
-	static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
-	dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
+	var text = "Saved!"
 
-	var not_changed = static_same && dynamic_same && calendar_name_same;
+	save_button.prop('disabled', true).toggleClass('btn-secondary', false).toggleClass('btn-success', true).toggleClass('btn-primary', false).toggleClass('btn-warning', false).toggleClass('btn-danger', false).text(text);
 
-	if(not_changed){
-
-		var text = "Saved!"
-
-		save_button.prop('disabled', true).toggleClass('btn-secondary', false).toggleClass('btn-success', true).toggleClass('btn-primary', false).toggleClass('btn-warning', false).text(text);
-
-		setTimeout(evaluate_save_button, 3000);
-
-	}
+	setTimeout(evaluate_save_button, 3000);
 
 }
 
@@ -4193,37 +4097,45 @@ function calendar_save_failed(){
 
 	var text = "Failed to save!"
 
-	save_button.prop('disabled', true).toggleClass('btn-secondary', false).toggleClass('btn-success', true).toggleClass('btn-primary', false).toggleClass('btn-warning', true).text(text);
+	save_button.prop('disabled', true).toggleClass('btn-secondary', false).toggleClass('btn-success', true).toggleClass('btn-primary', false).toggleClass('btn-warning', true).toggleClass('btn-danger', false).text(text);
 
 }
 
 function evaluate_save_button(){
 
+	var errors = get_errors();
+
 	if($('#btn_save').length){
 
-		calendar_name_same = calendar_name == prev_calendar_name;
-		static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
-		dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
+		if(errors.length > 0){
 
-		var not_changed = static_same && dynamic_same && calendar_name_same;
+			var text = "Calendar has errors - can't save"
 
-		var text = static_same && dynamic_same && calendar_name_same ? "No changes to save" : "Save calendar";
+			save_button.prop('disabled', true).toggleClass('btn-secondary', false).toggleClass('btn-success', false).toggleClass('btn-primary', false).toggleClass('btn-warning', false).toggleClass('btn-danger', true).text(text);
 
-		save_button.prop('disabled', not_changed).toggleClass('btn-secondary', false).toggleClass('btn-success', not_changed).toggleClass('btn-primary', !not_changed).toggleClass('btn-warning', false).text(text);
+		}else{
+
+			calendar_name_same = calendar_name == prev_calendar_name;
+			static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
+			dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
+
+			var not_changed = static_same && dynamic_same && calendar_name_same;
+
+			var text = not_changed ? "No changes to save" : "Save calendar";
+
+			save_button.prop('disabled', not_changed).toggleClass('btn-secondary', false).toggleClass('btn-success', not_changed).toggleClass('btn-primary', !not_changed).toggleClass('btn-warning', false).toggleClass('btn-danger', false).text(text);
+
+		}
 
 	}else if($('#btn_create').length){
 
-		calendar_name_same = calendar_name == prev_calendar_name;
-		static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
-		dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
+		var invalid = errors.length > 0;
 
-		var not_changed = static_same && dynamic_same && calendar_name_same;
-
-		var text = static_same && dynamic_same && calendar_name_same ? "Cannot create yet" : "Create calendar";
+		var text = invalid ? "Cannot create yet" : "Create calendar";
 
 		autosave();
 
-		create_button.prop('disabled', not_changed).toggleClass('btn-danger', not_changed).toggleClass('btn-success', !not_changed).text(text);
+		create_button.prop('disabled', invalid).toggleClass('btn-danger', invalid).toggleClass('btn-success', !invalid).text(text);
 
 	}
 
@@ -4316,8 +4228,11 @@ function repopulate_event_category_lists(){
 
 function evaluate_clock_inputs(){
 
-	$('.clock_inputs :input, #clock_inputs :button').prop('disabled', !static_data.clock.enabled);
-	$('.clock_inputs').toggleClass('hidden', !static_data.clock.enabled);
+	$('.clock_inputs :input, .clock_inputs :button, .render_clock').prop('disabled', !static_data.clock.enabled);
+	$('.clock_inputs, .render_clock').toggleClass('hidden', !static_data.clock.enabled);
+
+	$('.do_render_clock :input, .do_render_clock :button').prop('disabled', !static_data.clock.render);
+	$('.do_render_clock').toggleClass('hidden', !static_data.clock.render);
 
 	$('.hour_input').each(function(){
 		$(this).prop('min', 0).prop('max', static_data.clock.hours).prop('disabled', !static_data.clock.enabled).toggleClass('hidden', !static_data.clock.enabled);
@@ -4333,7 +4248,7 @@ function evaluate_clock_inputs(){
 		$(this).prop('min', static_data.clock.minutes*-0.5).prop('max', static_data.clock.minutes*0.5).prop('disabled', !static_data.clock.enabled).toggleClass('hidden', !static_data.clock.enabled);
 	});
 
-	$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 || !static_data.clock.enabled);
+	$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 && !static_data.clock.enabled);
 
 }
 
@@ -4384,7 +4299,7 @@ function set_up_edit_values(){
 		add_weekday_to_sortable(global_week_sortable, i, weekdayname);
 	}
 	populate_first_day_select(static_data.year_data.first_day);
-	$('#first_week_day_container').toggleClass('hidden', !static_data.year_data.overflow).find('select').prop('disabled', !static_data.year_data.overflow);
+	$('#first_week_day_container').toggleClass('hidden', !static_data.year_data.overflow || static_data.year_data.global_week.length == 0).find('select').prop('disabled', !static_data.year_data.overflow || static_data.year_data.global_week.length == 0);
 	global_week_sortable.sortable('refresh');
 
 	if(static_data.year_data.timespans.length > 0){
@@ -4409,6 +4324,14 @@ function set_up_edit_values(){
 
 		$('.season_text.dated').toggleClass('active', !static_data.seasons.global_settings.periodic_seasons);
 		$('.season_text.periodic').toggleClass('active', static_data.seasons.global_settings.periodic_seasons);
+
+		var no_seasons = static_data.seasons.data.length == 0;
+		$('#has_seasons_container').toggleClass('hidden', no_seasons).find('select, input').prop('disabled', no_seasons);
+		$('#no_seasons_container').toggleClass('hidden', !no_seasons);
+
+		var no_locations = (static_data.seasons.data.length == 0 || !static_data.seasons.global_settings.enable_weather) && !static_data.clock.enabled;
+		$('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
+		$('#locations_warning').toggleClass('hidden', !no_locations);
 
 		evaluate_season_lengths();
 
@@ -4445,7 +4368,7 @@ function set_up_edit_values(){
 	}
 
 	if($('#collapsible_clock').is(':checked')){
-		$('#clock').prependTo($('#collapsible_clock').parent().children('.collapsible-content'));
+		$('#clock').appendTo($('#collapsible_clock').parent().children('.collapsible-content'));
 	}else{
 		$('#clock').prependTo($('#collapsible_date').parent().children('.collapsible-content'));
 	}
@@ -4473,9 +4396,6 @@ function set_up_edit_values(){
 		})
 	}
 
-	$('#leap_day_explaination').prop('disabled', static_data.year_data.timespans.length == 0).toggleClass('hidden', static_data.year_data.timespans.length > 0);
-	$('.form-inline.leap input, .form-inline.leap select, .form-inline.leap button').prop('disabled', static_data.year_data.timespans.length == 0);
-
 	if(static_data.moons){
 		for(var i = 0; i < static_data.moons.length; i++){
 			add_moon_to_list(moon_list, i, static_data.moons[i]);
@@ -4497,6 +4417,7 @@ function set_up_edit_values(){
 		})
 	}
 
+	repopulate_event_category_lists();
 
 	if(static_data.event_data.categories){
 		for(var key in static_data.event_data.categories){
@@ -4504,6 +4425,8 @@ function set_up_edit_values(){
 			var catkey = (typeof category.sort_by !== "undefined") ? category.sort_by : slugify(category.name);
 			add_category_to_list(event_category_list, catkey, category);
 		}
+		var default_event_category = static_data.event_data.default_category !== undefined ? static_data.event_data.default_category : -1;
+		$('#default_event_category').val(default_event_category);
 	}
 
 	if(static_data.event_data.events){
@@ -4513,8 +4436,10 @@ function set_up_edit_values(){
 	}
 
 
-	$('#weather_inputs').toggleClass('hidden', !static_data.seasons.global_settings.enable_weather);
-	$('#weather_inputs').find('select, input').prop('disabled', !static_data.seasons.global_settings.enable_weather);
+	$('.weather_inputs').toggleClass('hidden', !static_data.seasons.global_settings.enable_weather);
+	$('.weather_inputs').find('select, input').prop('disabled', !static_data.seasons.global_settings.enable_weather);
+
+	$('.location_middle_btn').toggleClass('hidden', !static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled);
 
 	if(window.location.pathname != '/calendars/create') {
 
@@ -4534,14 +4459,12 @@ function set_up_edit_values(){
         	});
 
         }
-  
+
 	}
 
 	evaluate_clock_inputs();
 
 	evaluate_remove_buttons();
-
-	repopulate_event_category_lists();
 
 	$('#cycle_test_input').click();
 
@@ -4696,4 +4619,113 @@ function autoload(){
 
 	}
 
+}
+
+
+function get_interval_text(timespan, data){
+
+	var text = "";
+
+	if(timespan){
+
+		text = "This timespan will appear every";
+
+		if(data.interval > 1){
+			text += " " + ordinal_suffix_of(data.interval)
+		}
+
+		text +=  " year";
+
+		if(data.interval > 1){
+
+			var start_year = ((data.interval+data.offset)%data.interval);
+			if(start_year === 0){
+				start_year = data.interval;
+			}
+			text += ", starting year " + start_year + `. (year ${start_year}, ${data.interval+start_year}, ${(data.interval*2)+start_year}...)`;
+
+		}
+
+		text +=  ".";
+
+	}else{
+
+		var values = data.interval.split(',').reverse();
+		var sorted = [];
+
+		var numbers_regex = /([1-9]+[0-9]*)/;
+
+		for(var i = 0; i < values.length; i++){
+			sorted.push(Number(values[i].match(numbers_regex)[0]));
+		}
+
+		text = "This leap day will appear every";
+
+		var timespan_interval = static_data.year_data.timespans[data.timespan].interval;
+
+		for(var i = 0; i < values.length; i++){
+
+			var leap_interval = sorted[i];
+			var leap_offset = data.offset;
+
+			var total_offset = (((leap_interval-leap_offset)%leap_interval)*timespan_interval);
+
+			if(total_offset == 0){
+				total_offset = sorted[i]*timespan_interval;
+			}
+
+			if(i == 0 && sorted[i] == 1){
+
+				text += " year"
+
+			}else if(i == 0){
+
+				if(values.length > 1){
+					text += ": <br>•";
+				}
+
+				if(static_data.year_data.timespans[data.timespan].interval == 1){
+					text += ` ${ordinal_suffix_of(sorted[i])} year`;
+				}else{
+					text += ` ${ordinal_suffix_of(timespan_interval*sorted[i])} ${static_data.year_data.timespans[data.timespan].name}`;
+				}
+
+				text += ` (year ${total_offset}, ${(total_offset+sorted[i]*timespan_interval)}, ${total_offset+sorted[i]*2*timespan_interval}...)`;
+
+			}
+
+			if(i > 0 && sorted[i] > 1){
+
+				if(values[i].indexOf('!') != -1){
+					if(timespan_interval == 1){
+						text += `<br>• but not every ${ordinal_suffix_of(sorted[i])} year`;
+					}else{
+						text += `<br>• but not every ${ordinal_suffix_of(timespan_interval*sorted[i])} ${static_data.year_data.timespans[data.timespan].name}`;
+					}
+
+					if(values[i].indexOf('+') == -1){
+						text += ` (year ${total_offset}, ${total_offset+sorted[i]}, ${total_offset+sorted[i]*2}...)`;
+					}
+
+				}else{
+
+					if(timespan_interval == 1){
+						text += `<br>• but also every ${ordinal_suffix_of(sorted[i])} year`;
+					}else{
+						text += `<br>• but also every ${ordinal_suffix_of(timespan_interval*sorted[i])} ${static_data.year_data.timespans[data.timespan].name}`;
+					}
+
+					if(values[i].indexOf('+') == -1){
+						text += ` (year ${total_offset}, ${total_offset+sorted[i]}, ${total_offset+sorted[i]*2}...)`;
+					}
+
+				}
+
+			}
+
+		}
+
+	}
+
+	return text;
 }
