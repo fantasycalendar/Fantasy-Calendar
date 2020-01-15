@@ -1152,7 +1152,6 @@ function does_day_appear(static_data, year, timespan, day){
 
 }
 
-
 /**
  * This function is used to calculate the average length of a year in the current calendar.
  *
@@ -1161,18 +1160,24 @@ function does_day_appear(static_data, year, timespan, day){
  */
 function fract_year_length(static_data){
 
-	var length = 0;
+	var avg_length = 0;
 
-	for(var i = 0; i < static_data.year_data.timespans.length; i++){
-		length += static_data.year_data.timespans[i].length/static_data.year_data.timespans[i].interval;
-	}
+	for(var timespan_index = 0; timespan_index < static_data.year_data.timespans.length; timespan_index++){
+		
+		var timespan = static_data.year_data.timespans[timespan_index];
 
-	for(var i = 0; i < static_data.year_data.leap_days.length; i++){
+		avg_length += timespan.length/timespan.interval;
 
-		var leap_day = static_data.year_data.leap_days[i];
+		for(var leap_day_index = 0; leap_day_index < static_data.year_data.leap_days.length; leap_day_index++){
 
-		length += get_interval_fractions(leap_day.interval, leap_day.offset)
+			var leap_day = static_data.year_data.leap_days[leap_day_index];
 
+			if(leap_day.timespan == timespan_index){
+
+				length += get_interval_fractions(leap_day.interval, leap_day.offset)/timespan.interval;
+
+			}
+		}
 	}
 
 	return precisionRound(length, 10);

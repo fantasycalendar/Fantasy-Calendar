@@ -2156,14 +2156,20 @@ function add_leap_day_to_list(parent, key, data){
 				element.push(`<input type='hidden' class='form-control year-input hidden' value='0'>`);
 
 				element.push("<div class='row no-gutters'>");
-					element.push("<div class='col-4'>Timespan:</div>");
-					element.push("<div class='col-8'>");
+					element.push("<div class='col'>");
+						element.push("Timespan:");
 						element.push(`<select type='number' class='custom-select form-control leap_day_occurance_input timespan-list dynamic_input full timespan_special' data='year_data.leap_days.${key}' fc-index='timespan'>`);
 						for(var j = 0; j < static_data.year_data.timespans.length; j++)
 						{
 							element.push(`<option value="${j}" ${(j==data.timespan ? "selected" : "")}>${static_data.year_data.timespans[j].name}</option>`);
 						}
 						element.push("</select>");
+					element.push("</div>");
+				element.push("</div>");
+
+				element.push("<div class='row no-gutters mt-2 mb-1'>");
+					element.push("<div class='col'>");
+						element.push("<div class='separator'></div>");
 					element.push("</div>");
 				element.push("</div>");
 
@@ -2220,7 +2226,7 @@ function add_leap_day_to_list(parent, key, data){
 					element.push("</div>");
 				element.push("</div>");
 
-				element.push("<div class='row no-gutters mt-2 mb-1>");
+				element.push("<div class='row no-gutters mt-2 mb-1'>");
 					element.push("<div class='col'>");
 						element.push("<div class='separator'></div>");
 					element.push("</div>");
