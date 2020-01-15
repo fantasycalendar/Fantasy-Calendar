@@ -1087,7 +1087,6 @@ var calendar_builder = {
 			this.static_data.event_data.events[event_index].data.search_distance = pre_search > post_search ? pre_search : post_search;
 		}
 
-
 		days = 0;
 
 		timespan = parseInt(Object.keys(this.calendar_list.timespans_to_build)[0]);

@@ -621,8 +621,8 @@ var edit_event_ui = {
 		if($('#has_duration').prop('checked') || $('#limited_repeat').prop('checked')){
 			search_distance = $('#duration').val()|0 > search_distance ? $('#duration').val()|0 : search_distance;
 			search_distance = $('#limited_repeat_num').val()|0 > search_distance ? $('#limited_repeat_num').val()|0 : search_distance;
-			search_distance = this.search_distance > search_distance ? this.search_distance : search_distance;
 		}
+		search_distance = this.search_distance > search_distance ? this.search_distance : search_distance;
 
 		return search_distance;
 
