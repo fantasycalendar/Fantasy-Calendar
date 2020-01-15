@@ -4064,6 +4064,7 @@ function evaluate_season_lengths(){
 }
 
 function recalc_stats(){
+	console.log(recalc_stats.caller)
 	var year_length = fract_year_length(static_data);
 	var month_length = avg_month_length(static_data);
 	$('#fract_year_length').text(year_length);

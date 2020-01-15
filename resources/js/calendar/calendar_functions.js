@@ -1174,13 +1174,13 @@ function fract_year_length(static_data){
 
 			if(leap_day.timespan == timespan_index){
 
-				length += get_interval_fractions(leap_day.interval, leap_day.offset)/timespan.interval;
+				avg_length += get_interval_fractions(leap_day.interval, leap_day.offset)/timespan.interval;
 
 			}
 		}
 	}
 
-	return precisionRound(length, 10);
+	return precisionRound(avg_length, 10);
 
 }
 
