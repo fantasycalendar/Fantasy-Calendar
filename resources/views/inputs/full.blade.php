@@ -688,6 +688,10 @@
                 </div>
 
                 <div id='locations_warning_hidden' class='hidden'>
+               
+                    <div class='row no-gutters'>
+                        The presets work with four seasons (winter, spring, summer, autumn, in that order) or two seasons (winter, summer).
+                    </div>
 
     				<div class='row no-gutters bold-text'>
     					Current location:
