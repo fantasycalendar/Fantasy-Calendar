@@ -347,8 +347,8 @@ var event_evaluator = {
 
 			}else{
 
-				var begin_epoch = event_evaluator.start_epoch-this.current_event.lookback;
-				var last_epoch = event_evaluator.end_epoch+this.current_event.lookahead;
+				var begin_epoch = this.current_event.lookback ? event_evaluator.start_epoch-this.current_event.lookback : event_evaluator.start_epoch;
+				var last_epoch = this.current_event.lookahead ? event_evaluator.start_epochend_epoch-this.current_event.lookahead : event_evaluator.end_epoch;
 
 				for(var epoch = begin_epoch; epoch < last_epoch-1; epoch++){
 
