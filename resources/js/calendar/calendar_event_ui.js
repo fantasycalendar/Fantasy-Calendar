@@ -369,7 +369,7 @@ var edit_event_ui = {
 					['&&'],
 					['Day', '0', [this.data.day]]
 				],
-				'connected_events': false,
+				'connected_events': [],
 				'date': [this.data.year, this.data.timespan_index, this.data.day],
 				'search_distance': 0
 			},
