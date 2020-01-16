@@ -60,6 +60,14 @@ var calendar_builder = {
 
 		timespan.leap_days = [];
 
+		var offset = (timespan.interval-timespan.offset)%timespan.interval;
+
+		if(year < 0 || this.static_data.settings.year_zero_exists){
+			var timespan_fraction = Math.ceil((year + offset) / timespan.interval);
+		}else{
+			var timespan_fraction = Math.floor((year + offset) / timespan.interval);
+		}
+
 		var leap_day_offset = 0;
 
 		// Get all current leap days and check if any of them should be on this timespan
@@ -71,7 +79,7 @@ var calendar_builder = {
 
 				leap_day.index = leap_day_index;
 
-				if(is_leap(this.static_data, year, leap_day.interval, leap_day.offset)){
+				if(is_leap(this.static_data, timespan_fraction, leap_day.interval, leap_day.offset)){
 
 					if(leap_day.intercalary){
 						if(timespan.type === 'intercalary'){
