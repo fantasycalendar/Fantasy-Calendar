@@ -2027,12 +2027,14 @@ var show_event_ui = {
 
 		var content = [];
 
-		content.push(`<div class='event_comment ${comment.comment_owner ? "comment_owner" : ""} ${comment.calendar_owner ? "calendar_owner" : ""}'`)
-		content.push(` date='${comment.date}' comment_id='${index}'>`)
-			content.push(`<p><span class='comment'>${comment.content}</span></p>`)
-			content.push(`<p><span class='username'>- ${comment.username}${comment.calendar_owner ? " (owner)" : ""}</span></p>`)
-			content.push(`<p><span class='date'>${comment.date}</span></p>`)
-		content.push(`</div>`)
+		console.log(comment);
+
+		content.push(`<div class='event_comment ${comment.comment_owner ? "comment_owner" : ""} ${comment.calendar_owner ? "calendar_owner" : ""}'`);
+		content.push(` date='${comment.date}' comment_id='${index}'>`);
+			content.push(`<p><span class='username'>${comment.username}${comment.calendar_owner ? " (owner)" : ""}</span>`);
+			content.push(`<span class='date'> - ${comment.date}</span></p>`);
+        content.push(`<div class='comment'>${comment.content}</div>`);
+		content.push(`</div>`);
 
 		show_event_ui.event_comments.append(content.join(''))
 

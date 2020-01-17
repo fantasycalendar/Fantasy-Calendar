@@ -6,27 +6,31 @@
 					<div class='close-ui-btn-bg'></div>
 					<i class="close_ui_btn icon-remove-circle"></i>
 
-					<h2 class='event_name event-form-heading'></h2>
 					<div class='row'>
-						<div class="event_desc"></div>
+                        <h2 class="col-12 event_name event-form-heading"></h2>
+                    </div>
+					<div class='row'>
+						<div class="event_desc col-12"></div>
 					</div>
 
-					<div id='event_comment_mastercontainer'>
+					<div id='event_comment_mastercontainer' class="row">
 
-						<div class='spacey_separator'></div>
+                        <div class="col-12">
+                            <hr>
 
-						<h4>Comments:</h4>
+                            <h4>Comments:</h4>
 
-						<div class='row'>
-							<div id='event_comments' class='loading'></div>
-						</div>
-						@if(Auth::check())
-							<div class='row'>
-								<textarea class='form-control' id='event_comment_input' placeholder='Enter your comment and press submit.' autofocus=''></textarea>
-								<button type='button' class='btn btn-primary' style="z-index: 200" id='submit_comment'>Submit</button>
-							</div>
-						@endif
+                            <div class='row'>
+                                <div id='event_comments' class='loading col-12'></div>
+                            @if(Auth::check())
+                                <div class='col-12 mt-2'>
+                                    <textarea class='form-control' id='event_comment_input' placeholder='Enter your comment and press submit.' autofocus=''></textarea>
+                                    <button type='button' class='btn btn-primary mt-2' style="z-index: 200" id='submit_comment'>Submit</button>
+                                </div>
+                            @endif
+                            </div>
 
+                        </div>
 					</div>
 				</div>
 			</div>
@@ -103,7 +107,7 @@
 					</ol>
 
 				</div>
-				
+
 				<button type='button' id='remove_dropped' class='row no-gutters my-2 btn btn-danger full hidden'>DROP ITEM HERE TO REMOVE</button>
 
 				<div class='event_occurrences hidden'>

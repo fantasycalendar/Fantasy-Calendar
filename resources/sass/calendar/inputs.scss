@@ -554,7 +554,7 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
 }
 
 .event_comment.comment_owner{
-    background-color: $card-bg-color;
+    background-color: rgba($blue, 0.3);
 }
 
 .event_comment:last-child{
@@ -579,7 +579,7 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
 
 .event_comment .date{
     font-style: italic;
-    color: $gray-secondary;
+    color: $main-text-color;
     font-size: .7rem;
 }
 
