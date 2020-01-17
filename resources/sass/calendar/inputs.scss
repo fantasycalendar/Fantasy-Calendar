@@ -525,6 +525,10 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     min-height: 150px;
 }
 
+#event_comment_mastercontainer .trumbowyg-editor {
+    min-height: calc(100% - 37px);
+}
+
 #event_comments.loading{
     background-image: url('/resources/icons/loader_black.png');
     height:35px;
