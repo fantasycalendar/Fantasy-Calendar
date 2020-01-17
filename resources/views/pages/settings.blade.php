@@ -25,8 +25,8 @@
                                 @csrf
 
                                 <div class="form-check pb-2" onclick="toggleSetting('dark_theme')">
-                                    <input id="dark_theme" type="hidden" name="dark_theme" @isset($settings['dark_theme']) value="1" @else value="0" @endisset>
-                                    <input id="dark_theme_input" type="checkbox" class="form-check-input" id="dark_theme" @isset($settings['dark_theme']) checked="checked" @endisset>
+                                    <input id="dark_theme" type="hidden" name="dark_theme" @if(isset($settings['dark_theme']) && $settings['dark_theme']) value="1" @else value="0" @endisset>
+                                    <input id="dark_theme_input" type="checkbox" class="form-check-input" id="dark_theme" @if(isset($settings['dark_theme']) && $settings['dark_theme']) checked="checked" @endisset>
                                     <label class="form-check-label" for="dark_theme">Enable dark theme</label>
                                 </div>
 
