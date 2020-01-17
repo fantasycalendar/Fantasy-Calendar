@@ -381,7 +381,7 @@ var edit_event_ui = {
 				'hide_full': false
 			},
 		};
-		
+
 		var category_id = static_data.settings.default_category !== undefined ? static_data.settings.default_category : -1;
 
 		if(category_id != -1){
@@ -1984,6 +1984,8 @@ var show_event_ui = {
 	},
 
 	set_current_event: function(event){
+
+	    this.event_id = event.id;
 
 		this.event_name.text(event.name);
 
