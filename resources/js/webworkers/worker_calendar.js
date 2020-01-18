@@ -1975,18 +1975,27 @@ var calendar_builder = {
 
 		if(debug || debugtext){
 
-			console.log(this.dynamic_data.year, calendar_era_year)
+			var wrong = false;
+			if(this.prevous_year && this.previous_start_epoch && this.previous_end_epoch){
+				if(this.dynamic_data.year > this.prevous_year){
+					wrong = calendar_start_epoch != this.previous_end_epoch;
+				}else{
+					wrong = calendar_end_epoch != this.previous_start_epoch;
+				}
+			}
 
-			if(this.previous_epoch && ((this.dynamic_data.year < 0 && this.previous_epoch != calendar_end_epoch) || (this.dynamic_data.year >= 0 && this.previous_epoch != calendar_start_epoch))){
+			if(debugtext){
+				console.log(this.dynamic_data.year, calendar_era_year)
+			}
+
+			if(wrong){
 				console.log(this.previous_epoch, calendar_start_epoch, calendar_end_epoch)
 				console.log("------------------------")
 			}
 
-			if(this.dynamic_data.year < 0){
-				this.previous_epoch = calendar_start_epoch;
-			}else{
-				this.previous_epoch = calendar_end_epoch;
-			}
+			this.previous_end_epoch = calendar_end_epoch;
+			this.previous_start_epoch = calendar_start_epoch;
+			this.prevous_year = this.dynamic_data.year;
 
 		}
 		
@@ -2023,12 +2032,32 @@ onmessage = e => {
 
 	if(debug){
 
-		calendar_builder.dynamic_data.year = -500
+		target_loops = 2000;
+		loops = 0;
 
-		setInterval(function(){
-			calendar_builder.evaluate_calendar_data();
+		calendar_builder.dynamic_data.year = Math.floor(target_loops/2)*-1
+
+		var average_time = 0;
+
+		for(var loops; loops < target_loops; loops++){
+
+			starttime = performance.now();
+
+			data = calendar_builder.evaluate_calendar_data();
 			calendar_builder.dynamic_data.year++;
-		}, 10);
+
+			average_time += precisionRound(performance.now() - starttime, 7)
+
+		}
+
+		average_time = average_time/target_loops;
+
+		console.log(`${average_time}ms`)
+		
+		postMessage({
+			processed_data: data,
+			action: e.data.action
+		});
 
 	}else{
 
