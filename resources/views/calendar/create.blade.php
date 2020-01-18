@@ -23,7 +23,8 @@
                 "link_scale":true,
                 "hours":24,
                 "minutes":60,
-                "offset":0
+                "offset":0,
+                "crowding":0,
             },
             "seasons":{
                 "data":[],
@@ -53,7 +54,8 @@
                 "hide_all_weather":false,
                 "hide_future_weather":false,
                 "add_month_number":false,
-                "add_year_day_number":false
+                "add_year_day_number":false,
+                "default_category":-1,
             },
             "cycles":{
                 "format":"",
@@ -114,6 +116,8 @@
                     $('#json_container').toggleClass('hidden', false);
                 }
             });
+
+            $('#presets').change();
 
             $('#json_apply').click(function(){
                 if($('#presets').val() == 'Custom JSON'){

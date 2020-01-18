@@ -865,9 +865,9 @@ function get_cycle(static_data, epoch_data){
 			var cycle_epoch_data = epoch_data[cycle_type];
 
 			if(cycle_type == "day"){
-				cycle_epoch_data--;				
+				cycle_epoch_data--;
 			}else if(cycle_type == "year day"){
-				cycle_epoch_data--;				
+				cycle_epoch_data--;
 			}else if(cycle_type == "year"){
 				cycle_epoch_data = cycle_epoch_data >= 0 ? cycle_epoch_data-1 : cycle_epoch_data;
 			}
@@ -1161,7 +1161,6 @@ function does_day_appear(static_data, year, timespan, day){
 
 }
 
-
 /**
  * This function is used to calculate the average length of a year in the current calendar.
  *
@@ -1170,21 +1169,27 @@ function does_day_appear(static_data, year, timespan, day){
  */
 function fract_year_length(static_data){
 
-	var length = 0;
+	var avg_length = 0;
 
-	for(var i = 0; i < static_data.year_data.timespans.length; i++){
-		length += static_data.year_data.timespans[i].length/static_data.year_data.timespans[i].interval;
+	for(var timespan_index = 0; timespan_index < static_data.year_data.timespans.length; timespan_index++){
+		
+		var timespan = static_data.year_data.timespans[timespan_index];
+
+		avg_length += timespan.length/timespan.interval;
+
+		for(var leap_day_index = 0; leap_day_index < static_data.year_data.leap_days.length; leap_day_index++){
+
+			var leap_day = static_data.year_data.leap_days[leap_day_index];
+
+			if(leap_day.timespan == timespan_index){
+
+				avg_length += get_interval_fractions(leap_day.interval, leap_day.offset)/timespan.interval;
+
+			}
+		}
 	}
 
-	for(var i = 0; i < static_data.year_data.leap_days.length; i++){
-
-		var leap_day = static_data.year_data.leap_days[i];
-
-		length += get_interval_fractions(leap_day.interval, leap_day.offset)
-
-	}
-
-	return precisionRound(length, 10);
+	return precisionRound(avg_length, 10);
 
 }
 
@@ -1294,7 +1299,7 @@ var date_converter = {
 		if(!do_scale){
 			time_scale = 1.0;
 		}
-		
+
 		this.target_epoch = Math.floor(dynamic_data.epoch*time_scale);
 
 		if(do_scale){
@@ -1383,7 +1388,7 @@ var date_converter = {
 			this.loops++;
 
 		}
-		
+
 		this.year = this.year >= 0 ? this.year+1 : this.year;
 
 		return {
@@ -1740,7 +1745,7 @@ function get_epoch(static_data, year, month, day){
 
 		var offset = (timespan.interval-timespan.offset)%timespan.interval;
 
-		if(year < 0 || static_data.settings.year_zero_exists){
+		if(year < 0 || (static_data.settings.year_zero_exists && offset == 0)){
 			var timespan_fraction = Math.ceil((year + offset) / timespan.interval);
 		}else{
 			var timespan_fraction = Math.floor((year + offset) / timespan.interval);
@@ -1830,7 +1835,7 @@ function evaluate_calendar_start(static_data, year, month, day){
 	var day = !isNaN(day) ? (day|0)-1 : 0;
 
 	var era_year = year;
-	
+
 	tmp = get_epoch(static_data, year, month, day);
 	var epoch = tmp[0];
 	var intercalary = tmp[1];
@@ -1907,6 +1912,17 @@ function evaluate_calendar_start(static_data, year, month, day){
 
 }
 
+function toggle_sidebar() {
+    $("#input_container").toggleClass('inputs_collapsed');
+    $("#calendar_container").toggleClass('inputs_collapsed');
+    $('#input_collapse_btn').toggleClass('is-active');
+
+    if(static_data.clock.enabled && static_data.clock.render && !isNaN(static_data.clock.hours) && !isNaN(static_data.clock.minutes) && !isNaN(static_data.clock.offset)){
+        window.Clock.size = $('#clock').width();
+    }
+
+    evaluate_error_background_size();
+}
 
 /**
  * This simple function returns a bool whether any given year has an era that ends it. Used to prevent users to create two eras that end years in one year.

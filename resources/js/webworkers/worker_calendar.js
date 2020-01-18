@@ -91,9 +91,8 @@ var calendar_builder = {
 					}else{
 						timespan.length++;
 						if(leap_day.adds_week_day){
-							var location = ((leap_day.day-leap_day_offset-1)%timespan.week.length);
-							if(location < 0) location = 0;
-							timespan.week.splice(location, 0, leap_day.week_day)
+							var location = (leap_day.day)%timespan.week.length;
+							timespan.week.splice(location+leap_day_offset, 0, leap_day.week_day)
 							leap_day_offset++;
 						}
 					}
@@ -758,7 +757,7 @@ var calendar_builder = {
 				}
 			}
 			last_year = year_index;
-			year_day = 1;
+			if(year_index != convert_year(this.static_data, this.dynamic_data.year)) year_day = 1;
 			era_year++;
 		}
 
@@ -980,7 +979,7 @@ var calendar_builder = {
 				}
 			}
 			last_year = year_index;
-			year_day = 1;
+			if(year_index != convert_year(this.static_data, this.dynamic_data.year)) year_day = 1;
 			era_year++;
 		}
 
@@ -1086,14 +1085,13 @@ var calendar_builder = {
 			this.static_data.event_data.events[event_index].data.search_distance = pre_search > post_search ? pre_search : post_search;
 		}
 
-
 		days = 0;
 
 		timespan = parseInt(Object.keys(this.calendar_list.timespans_to_build)[0]);
 		year = convert_year(this.static_data, this.dynamic_data.year);
 
-		pre_year = year;
-		pre_timespan = timespan;
+		pre_year = convert_year(this.static_data, this.dynamic_data.year);
+		pre_timespan = parseInt(Object.keys(this.calendar_list.timespans_to_build)[0]);
 
 		if(pre_search != 0){
 
@@ -1133,19 +1131,17 @@ var calendar_builder = {
 
 				this.calendar_list.pre_timespans_to_evaluate[pre_year] = {};
 
-				for(timespan = num_timespans; timespan >= 0; timespan--){
-
-					var timespan_object = this.static_data.year_data.timespans[timespan]
+				for(var timespan_index = num_timespans; timespan_index >= 0; timespan_index--){
 
 					if(is_leap_simple(this.static_data, pre_year, timespan_object.interval, timespan_object.offset)){
 
-						this.calendar_list.pre_timespans_to_evaluate[pre_year][timespan] = this.create_adjusted_timespan(pre_year, timespan);
+						this.calendar_list.pre_timespans_to_evaluate[pre_year][timespan_index] = this.create_adjusted_timespan(pre_year, timespan_index);
 
-						if(ending_day > 0 && timespan == num_timespans){
-							this.calendar_list.pre_timespans_to_evaluate[pre_year][timespan].length = ending_day > this.calendar_list.pre_timespans_to_evaluate[pre_year][timespan].length ? this.calendar_list.pre_timespans_to_evaluate[pre_year][timespan].length : ending_day; 
+						if(ending_day > 0 && timespan_index == num_timespans){
+							this.calendar_list.pre_timespans_to_evaluate[pre_year][timespan_index].length = ending_day > this.calendar_list.pre_timespans_to_evaluate[pre_year][timespan_index].length ? this.calendar_list.pre_timespans_to_evaluate[pre_year][timespan].length : ending_day; 
 						}
 
-						days += this.calendar_list.pre_timespans_to_evaluate[pre_year][timespan].length;
+						days += this.calendar_list.pre_timespans_to_evaluate[pre_year][timespan_index].length;
 
 						if(days >= pre_search){
 							break;
@@ -1161,8 +1157,8 @@ var calendar_builder = {
 
 		days = 0;
 
-		post_year = year;
-		post_timespan = timespan;
+		post_year = convert_year(this.static_data, this.dynamic_data.year);
+		post_timespan = parseInt(Object.keys(this.calendar_list.timespans_to_build)[0]);
 
 		if(post_search != 0){
 
@@ -1172,10 +1168,13 @@ var calendar_builder = {
 
 				if(this.static_data.settings.show_current_month && days == 0){
 
-					num_timespans = post_timespan-1;
-					if(num_timespans < 0){
+					num_timespans = post_timespan+1;
+
+					timespans_in_year = get_timespans_in_year(this.static_data, post_year, false).length-1
+
+					if(num_timespans > timespans_in_year){
 						post_year++;
-						num_timespans = this.static_data.year_data.timespans.length-1;
+						num_timespans = timespans_in_year;
 					}
 					
 				}else{
@@ -1202,19 +1201,19 @@ var calendar_builder = {
 
 				this.calendar_list.post_timespans_to_evaluate[post_year] = {};
 
-				for(timespan = 0; timespan < num_timespans; timespan++){
+				for(var timespan_index = 0; timespan_index < num_timespans; timespan_index++){
 
 					var timespan_object = this.static_data.year_data.timespans[timespan]
 
 					if(is_leap_simple(this.static_data, post_year, timespan_object.interval, timespan_object.offset)){
 
-						this.calendar_list.post_timespans_to_evaluate[post_year][timespan] = this.create_adjusted_timespan(post_year, timespan);
+						this.calendar_list.post_timespans_to_evaluate[post_year][timespan_index] = this.create_adjusted_timespan(post_year, timespan_index);
 
-						if(ending_day > 0 && timespan == num_timespans){
-							this.calendar_list.post_timespans_to_evaluate[post_year][timespan].length = ending_day > this.calendar_list.post_timespans_to_evaluate[post_year][timespan].length ? this.calendar_list.post_timespans_to_evaluate[post_year][timespan].length : ending_day; 
+						if(ending_day > 0 && timespan_index == num_timespans){
+							this.calendar_list.post_timespans_to_evaluate[post_year][timespan_index].length = ending_day > this.calendar_list.post_timespans_to_evaluate[post_year][timespan_index].length ? this.calendar_list.post_timespans_to_evaluate[post_year][timespan].length : ending_day; 
 						}
 
-						days += this.calendar_list.post_timespans_to_evaluate[post_year][timespan].length;
+						days += this.calendar_list.post_timespans_to_evaluate[post_year][timespan_index].length;
 
 						if(days >= post_search){
 							break;
@@ -1500,16 +1499,21 @@ var calendar_builder = {
 			year_day = 1;
 			if(year_index !== convert_year(this.static_data, this.dynamic_data.year)){
 				era_year++;
+				year_day = 1;
 			}
 		}
 
-		if(!this.static_data.settings.show_current_month || last_year != this.dynamic_data.year){
+		if(!this.static_data.settings.show_current_month || last_year != convert_year(this.static_data, this.dynamic_data.year)){
 			year_day = 1;
 		}
 
 		first_epoch = epoch;
 		first_week_day = week_day;
 		year_week_num = 1;
+
+		var calendar_year_day = year_day;
+		var calendar_era_year = era_year;
+		var calendar_start_epoch = first_epoch;
 
 		for(var i = 0; i < Object.keys(this.calendar_list.timespans_to_build).length; i++){
 
@@ -1743,15 +1747,9 @@ var calendar_builder = {
 
 		}
 
-		if(!this.static_data.settings.show_current_month){
-			year_day = 1;
-		}
-
-		var calendar_start_epoch = first_epoch;
 		var calendar_end_epoch = epoch;
 		var calendar_era_year = unconvert_year(this.static_data, era_year);
 		var calendar_first_week_day = first_week_day;
-		var calendar_year_day = year_day;
 
 		order = Object.keys(this.calendar_list.post_timespans_to_evaluate);
 
@@ -1975,10 +1973,6 @@ var calendar_builder = {
 		climate_generator = new Climate(this.data.epochs, this.static_data, this.dynamic_data, calendar_start_epoch, calendar_end_epoch);
 		this.data.epochs = climate_generator.generate();
 
-		if(!this.static_data.settings.show_current_month){
-			year_day = 1;
-		}
-
 		if(debug || debugtext){
 
 			console.log(this.dynamic_data.year, calendar_era_year)
@@ -2014,7 +2008,7 @@ var calendar_builder = {
 }
 
 var debug = false;
-var debugtext = false;
+var debugtext = true;
 
 onmessage = e => {
 

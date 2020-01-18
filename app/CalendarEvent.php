@@ -34,6 +34,10 @@ class CalendarEvent extends Model
         return $this->belongsTo('App\Calendar');
     }
 
+    public function comments() {
+        return $this->hasMany('App\CalendarEventComment', 'event_id');
+    }
+
     public function getDescriptionAttribute($value) {
         return html_entity_decode($value);
     }

@@ -82,13 +82,10 @@ var calendar_weather = {
 
 			if(!calendar_weather.processed_weather) return;
 
-			var height = 0;
-
 			if(static_data.seasons.global_settings.cinematic){
 				this.weather_temp_desc.parent().css('display', '');
 			}else{
 				this.weather_temp_desc.parent().css('display', 'none');
-				height -= 18;
 			}
 
 			var day_container = icon.closest(".timespan_day");
@@ -101,32 +98,37 @@ var calendar_weather = {
 
 			var temp_sys = static_data.seasons.global_settings.temp_sys;
 
-			if(temp_sys == 'imperial'){
-				temp_symbol = '°F';
-				var temp = `${precisionRound(weather.temperature[temp_sys].value[0], 1).toString()+temp_symbol} to ${precisionRound(weather.temperature[temp_sys].value[1], 1).toString()+temp_symbol}`;
-			}else if(temp_sys == 'metric'){
-				temp_symbol = '°C';
-				var temp = `${precisionRound(weather.temperature[temp_sys].value[0], 1).toString()+temp_symbol} to ${precisionRound(weather.temperature[temp_sys].value[1], 1).toString()+temp_symbol}`;
-			}else{
-				var temp_f = `<span class='newline'>${precisionRound(weather.temperature['imperial'].value[0], 1).toString()}°F to ${precisionRound(weather.temperature['imperial'].value[1], 1).toString()}°F</span>`;
-				var temp_c = `<span class='newline'>${precisionRound(weather.temperature['metric'].value[0], 1).toString()}°C to ${precisionRound(weather.temperature['metric'].value[1], 1).toString()}°C</span>`;
-				var temp = `${temp_f}${temp_c}`;
-				height += 37;
-			}
-			this.weather_temp.toggleClass('newline', temp_sys == 'both_i' || temp_sys == 'both_m');
+			var temp = "";
 
+			if(!static_data.settings.hide_weather_temp || owner){
+				if(temp_sys == 'imperial'){
+					temp_symbol = '°F';
+					var temp = `${precisionRound(weather.temperature[temp_sys].value[0], 1).toString()+temp_symbol} to ${precisionRound(weather.temperature[temp_sys].value[1], 1).toString()+temp_symbol}`;
+				}else if(temp_sys == 'metric'){
+					temp_symbol = '°C';
+					var temp = `${precisionRound(weather.temperature[temp_sys].value[0], 1).toString()+temp_symbol} to ${precisionRound(weather.temperature[temp_sys].value[1], 1).toString()+temp_symbol}`;
+				}else{
+					var temp_f = `<span class='newline'>${precisionRound(weather.temperature['imperial'].value[0], 1).toString()}°F to ${precisionRound(weather.temperature['imperial'].value[1], 1).toString()}°F</span>`;
+					var temp_c = `<span class='newline'>${precisionRound(weather.temperature['metric'].value[0], 1).toString()}°C to ${precisionRound(weather.temperature['metric'].value[1], 1).toString()}°C</span>`;
+					var temp = `${temp_f}${temp_c}`;
+				}
+				this.weather_temp.toggleClass('newline', temp_sys == 'both_i' || temp_sys == 'both_m');
+			}
 
 			var wind_sys = static_data.seasons.global_settings.wind_sys;
 
-			if(wind_sys == 'imperial'){
-				var wind_symbol = "MPH";
-				var wind_text = `${weather.wind_speed} (${weather.wind_direction}) (${weather.wind_velocity[wind_sys]} ${wind_symbol})`;
-			}else if(wind_sys == 'metric'){
-				var wind_symbol = "KPH";
-				var wind_text = `${weather.wind_speed} (${weather.wind_direction}) (${weather.wind_velocity[wind_sys]} ${wind_symbol})`;
+			var wind_text = ""
+			if(wind_sys == 'both'){
+				wind_text = `${weather.wind_speed} (${weather.wind_direction})`;
+				if(!static_data.settings.hide_wind_velocity || owner){
+					wind_text += `<span class='newline'>(${weather.wind_velocity.imperial} MPH | ${weather.wind_velocity.metric} KPH)</span>`;
+				}
 			}else{
-				var wind_text = `${weather.wind_speed} (${weather.wind_direction}) <span class='newline'>(${weather.wind_velocity.imperial} MPH | ${weather.wind_velocity.metric} KPH)</span>`;
-				height += 17;
+				var wind_symbol = wind_sys == "imperial" ? "MPH" : "KPH";
+				wind_text = `${weather.wind_speed} (${weather.wind_direction})`
+				if(!static_data.settings.hide_wind_velocity || owner){
+					wind_text += `(${weather.wind_velocity[wind_sys]} ${wind_symbol})`;
+				}
 			}
 
 			this.popper = new Popper(icon, this.weather_tooltip_box, {
@@ -145,7 +147,7 @@ var calendar_weather = {
 
 			this.weather_temp.each(function(){
 				$(this).html(temp);
-			});
+			}).parent().toggleClass('hidden', static_data.settings.hide_weather_temp !== undefined && static_data.settings.hide_weather_temp && !owner);
 
 			this.weather_wind.each(function(){
 				$(this).html(wind_text);

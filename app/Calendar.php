@@ -59,7 +59,7 @@ class Calendar extends Model
 
         $static_data['event_data']['events'] = $this->events->sortBy('sort_by')->values();
 
-        if(!Auth::check() || Auth::user()->can('update', $this)) {
+        if(!Auth::check() || !Auth::user()->can('update', $this)) {
             foreach($static_data['event_data']['events'] as $event){
                 if($event['settings']['hide'] || (isset($event['settings']['full_hide']) && $event['settings']['full_hide'])){
                     $event['name'] = "Sneaky, sneaky...";

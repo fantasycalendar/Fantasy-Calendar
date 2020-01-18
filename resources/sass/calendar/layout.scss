@@ -143,6 +143,12 @@ body{
     max-width: 600px;
 }
 
+#input_container.sidebar-mobile-half:not(.inputs_collapsed){
+    width: 50vw;
+    max-width: 50vw;
+    min-width: 50vw;
+}
+
 #input_container.inputs_collapsed{
     width: 0;
     overflow: hidden;
@@ -186,21 +192,8 @@ body{
     }
 }
 
-#preset_container{
-    display: flex;
-    margin-top:10px;
-}
-
-#preset_container #json_apply{
-    margin-left:5px;
-}
-
 #preset_container #json_apply:disabled{
     display: none;
-}
-
-#json_container{
-    margin-top:10px;
 }
 
 #calendar_container{
