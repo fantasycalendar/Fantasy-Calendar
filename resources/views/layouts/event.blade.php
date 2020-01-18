@@ -1,3 +1,12 @@
+<div id="event_query_container">
+	<div class='container'>
+		<div class="row">
+			<button type='button' id='edit_event_button' class="col-6 btn btn-primary">Edit</button>
+			<button type='button' id='view_event_button' class="col-6 btn btn-secondary">View</button>
+		</div>
+	</div>
+</div>
+
 <div id="event_show_background" class='clickable_background hidden'>
 	<div class='event-basic-container'>
 		<div class='event-basic-wrapper'>
@@ -23,13 +32,12 @@
                             <div class='row'>
                                 <div id='event_comments' class='loading col-12'></div>
                             @if(Auth::check())
-                                <div class='col-12 mt-2'>
+                                <div class='col-12 mt-2' id='event_comment_input_container'>
                                     <textarea class='form-control' id='event_comment_input' placeholder='Enter your comment and press submit.' autofocus=''></textarea>
                                     <button type='button' class='btn btn-primary mt-2' style="z-index: 200" id='submit_comment'>Submit</button>
                                 </div>
                             @endif
                             </div>
-
                         </div>
 					</div>
 				</div>

@@ -587,7 +587,24 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     font-size: .7rem;
 }
 
+#event_query_container {
+    position: absolute;
+    background: $weather-tooltip-bg-color;
+    top:0;
+    width:180px;
+    height:auto;
+    border-radius: 7px;
+    padding:10px;
+    font-size:9pt;
+    display:none;
+    z-index: 1500;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
 
+    .btn{
+        padding:0;
+        text-align:center;
+    }
+}
 
 
 .event-basic-wrapper{

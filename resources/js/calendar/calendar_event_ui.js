@@ -130,7 +130,7 @@ var edit_event_ui = {
 
 		this.condition_presets.change(function(e){
 
-    		var prev = $(this).data('val');
+			var prev = $(this).data('val');
 
 			var selected = edit_event_ui.condition_presets.find(':selected');
 
@@ -1911,6 +1911,11 @@ var show_event_ui = {
 		this.event_condition_sortables			= [];
 		this.delete_droppable					= false;
 
+		this.event_query_container 				= $('#event_query_container');
+		this.edit_event_button 					= $('#edit_event_button');
+		this.view_event_button 					= $('#view_event_button');
+
+
 		this.event_background 					= $('#event_show_background');
 		this.close_ui_btn						= show_event_ui.event_background.find('.close_ui_btn');
 
@@ -1920,6 +1925,7 @@ var show_event_ui = {
 		this.event_comments						= this.event_background.find('#event_comments');
 		this.event_comment_mastercontainer		= this.event_background.find('#event_comment_mastercontainer');
 		this.event_comment_container			= this.event_background.find('#event_comment_container');
+		this.event_comment_input_container		= this.event_background.find('#event_comment_input_container');
 		this.event_comment_input				= this.event_background.find('#event_comment_input');
 		this.event_save_btn						= this.event_background.find('#submit_comment');
 
@@ -1968,24 +1974,83 @@ var show_event_ui = {
 		});
 
 		$(document).on('click', '.event:not(.event-text-output)', function(){
+			show_event_ui.clicked_event($(this));
+		});
 
-			if($(this).hasClass('era_event')){
-				var id = $(this).attr('era_id')|0;
-				show_event_ui.era_id = id;
-				show_event_ui.set_current_event(static_data.eras[id]);
+		this.edit_event_button.click(function(){
+			if(show_event_ui.event_id != -1){
+				edit_event_ui.edit_event(show_event_ui.event_id);
+			}
+		});
+		
+		this.view_event_button.click(function(){
+			if(show_event_ui.event_id != -1){
+				show_event_ui.set_current_event(static_data.event_data.events[show_event_ui.event_id]);
+			}
+		});
+
+	},
+
+	clicked_event: function(item){
+
+		if(item.hasClass('era_event')){
+
+			var id = item.attr('era_id')|0;
+			this.era_id = id;
+			this.set_current_event(static_data.eras[id]);
+
+		}else{
+
+			var id = item.attr('event_id')|0;
+			this.event_id = id;
+
+			if(window.location.pathname.split('/').includes('edit') || window.location.pathname.split('/').includes('create')){
+
+				this.event_query_container.show();
+
+				this.event_popper = new Popper(item, this.event_query_container, {
+					placement: 'top',
+					modifiers: {
+						offset: {
+							enabled: true,
+							offset: '0, 14px'
+						}
+					}
+				});
+
+				registered_click_callbacks['show_event_ui'] = this.clear_callback;
+
 			}else{
-				var id = $(this).attr('event_id')|0;
-				show_event_ui.event_id = id;
-				show_event_ui.set_current_event(static_data.event_data.events[id]);
+				
+				this.set_current_event(static_data.event_data.events[show_event_ui.event_id]);
+
 			}
 
-		});
+		}
+
+
+	},
+
+	clear_callback: function(e){
+
+		var target = $(e.target);
+
+		if((target.attr('event_id')|0) != show_event_ui.event_id){
+
+			delete registered_click_callbacks['show_event_ui'];
+
+			show_event_ui.event_id = -1;
+			show_event_ui.era_id = -1;
+
+			show_event_ui.event_query_container.hide();
+
+		}
 
 	},
 
 	set_current_event: function(event){
 
-	    this.event_id = event.id;
+		this.event_id = event.id;
 
 		this.event_name.text(event.name);
 
@@ -1993,7 +2058,13 @@ var show_event_ui = {
 
 		this.event_comments.html('').addClass('loading');
 
-		get_event_comments(this.event_id, this.add_comments);
+		if(event.id !== undefined){
+			get_event_comments(this.event_id, this.add_comments);
+			this.event_comment_input_container.show();
+		}else{
+			this.event_comments.html("You need to save & reload your calendar before comments can be added to this event!").removeClass('loading');
+			this.event_comment_input_container.hide();
+		}
 
 		this.event_background.removeClass('hidden');
 
@@ -2033,7 +2104,7 @@ var show_event_ui = {
 		content.push(` date='${comment.date}' comment_id='${index}'>`);
 			content.push(`<p><span class='username'>${comment.username}${comment.calendar_owner ? " (owner)" : ""}</span>`);
 			content.push(`<span class='date'> - ${comment.date}</span></p>`);
-        content.push(`<div class='comment'>${comment.content}</div>`);
+		content.push(`<div class='comment'>${comment.content}</div>`);
 		content.push(`</div>`);
 
 		show_event_ui.event_comments.append(content.join(''))
