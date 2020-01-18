@@ -60,12 +60,12 @@ var calendar_builder = {
 
 		timespan.leap_days = [];
 
-		var offset = (timespan.interval-timespan.offset)%timespan.interval;
+		var offset = timespan.offset%timespan.interval;
 
 		if(year < 0 || this.static_data.settings.year_zero_exists){
-			var timespan_fraction = Math.ceil((year + offset) / timespan.interval);
+			var timespan_fraction = Math.ceil((year - offset) / timespan.interval);
 		}else{
-			var timespan_fraction = Math.floor((year + offset) / timespan.interval);
+			var timespan_fraction = Math.floor((year - offset) / timespan.interval);
 		}
 
 		var leap_day_offset = 0;
@@ -79,7 +79,7 @@ var calendar_builder = {
 
 				leap_day.index = leap_day_index;
 
-				if(is_leap(this.static_data, timespan_fraction, leap_day.interval, leap_day.offset)){
+				if(is_leap(this.static_data, timespan_fraction, leap_day.interval, leap_day.offset, true)){
 
 					if(leap_day.intercalary){
 						if(timespan.type === 'intercalary'){
@@ -1977,12 +1977,16 @@ var calendar_builder = {
 
 			console.log(this.dynamic_data.year, calendar_era_year)
 
-			if(this.previous_epoch && this.previous_epoch != calendar_start_epoch){
+			if(this.previous_epoch && ((this.dynamic_data.year < 0 && this.previous_epoch != calendar_end_epoch) || (this.dynamic_data.year >= 0 && this.previous_epoch != calendar_start_epoch))){
 				console.log(this.previous_epoch, calendar_start_epoch, calendar_end_epoch)
 				console.log("------------------------")
 			}
 
-			this.previous_epoch = calendar_end_epoch;
+			if(this.dynamic_data.year < 0){
+				this.previous_epoch = calendar_start_epoch;
+			}else{
+				this.previous_epoch = calendar_end_epoch;
+			}
 
 		}
 		
@@ -2008,7 +2012,7 @@ var calendar_builder = {
 }
 
 var debug = false;
-var debugtext = true;
+var debugtext = false;
 
 onmessage = e => {
 

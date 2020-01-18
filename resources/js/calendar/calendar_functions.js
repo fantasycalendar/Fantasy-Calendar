@@ -1555,11 +1555,11 @@ function strip_intervals(_intervals, _offset){
  * @param  {int}    offsets     An int used to offset the contextual starting point of the intervals - Interval of 10 and offset of 5 means this interval starts at 5, continuing to 15, 25, 35.
  * @return {bool}               A boolean determining whether this interval happens on the year
  */
-function is_leap(static_data, _year, _intervals, _offset) {
+function is_leap(static_data, _parent_occurrences, _intervals, _offset, debug) {
 
 	var intervals = strip_intervals(_intervals, _offset);
 
-	var year = unconvert_year(static_data, _year);
+	var year = unconvert_year(static_data, _parent_occurrences);
 
 	for(index in intervals){
 
@@ -1578,6 +1578,8 @@ function is_leap(static_data, _year, _intervals, _offset) {
 function is_leap_simple(static_data, year, interval, offset) {
 
 	var year = unconvert_year(static_data, year);
+
+	var offset = offset%interval;
 
 	return (year-offset) % interval == 0;
 
@@ -1678,7 +1680,7 @@ function get_interval_occurrences(static_data, _parent_occurrences, _intervals, 
 
 			if(data){
 
-				var year = data.offset > 0 ? _parent_occurrences-data.offset+data.interval : _parent_occurrences;
+				var year = data.offset > 0 ? _parent_occurrences-data.offset : _parent_occurrences;
 
 				var result = year / data.interval;
 
@@ -1743,14 +1745,13 @@ function get_epoch(static_data, year, month, day){
 		// Get the current timespan's data
 		var timespan = static_data.year_data.timespans[timespan_index];
 
-		var offset = (timespan.interval-timespan.offset)%timespan.interval;
+		var offset = timespan.offset%timespan.interval;
 
-		if(year < 0 || (static_data.settings.year_zero_exists && offset == 0)){
-			var timespan_fraction = Math.ceil((year + offset) / timespan.interval);
+		if(year < 0 || static_data.settings.year_zero_exists){
+			var timespan_fraction = Math.ceil((year - offset) / timespan.interval);
 		}else{
-			var timespan_fraction = Math.floor((year + offset) / timespan.interval);
+			var timespan_fraction = Math.floor((year - offset) / timespan.interval);
 		}
-		// Get the fraction of that month's appearances
 
 		// Get the number of weeks for that month (check if it has a custom week or not)
 		if(!static_data.year_data.overflow){
