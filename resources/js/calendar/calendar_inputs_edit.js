@@ -459,6 +459,8 @@ function set_up_edit_inputs(){
 				$('#has_seasons_container').toggleClass('hidden', true).find('select, input').prop('disabled', true);
 				$('#no_seasons_container').toggleClass('hidden', false);
 
+				$('#map_seasons_to_location').prop('disabled', true).parent().toggleClass('hidden', true);
+
 				var no_locations = !static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled;
 				$('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
 				$('#locations_warning').toggleClass('hidden', !no_locations);
@@ -554,6 +556,8 @@ function set_up_edit_inputs(){
 		$('#has_seasons_container').toggleClass('hidden', no_seasons).find('select, input').prop('disabled', no_seasons);
 		$('#no_seasons_container').toggleClass('hidden', !no_seasons);
 
+		$('#map_seasons_to_location').prop('disabled', !(static_data.seasons.data.length == 2 || static_data.seasons.data.length == 4)).parent().toggleClass('hidden', !(static_data.seasons.data.length == 2 || static_data.seasons.data.length == 4));
+
 		$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 && !static_data.clock.enabled);
 
 	});
@@ -648,6 +652,120 @@ function set_up_edit_inputs(){
 		});
 
 		location_select.find(`option[value="${id}"]`).prop('selected', true).change();
+
+	});
+
+	$(document).on('focus', '.season_selector', function(){
+		$(this).prop('prev_value', $(this).val());
+	});
+
+	$(document).on('change', '.season_selector', function(){
+
+		var prev_value = $(this).prop('prev_value')
+		var new_value = $(this).val();
+
+		$('.season_selector').not($(this)).each(function(i){
+			if($(this).val() == new_value){
+				$(this).val(prev_value)
+			}
+		});
+
+		$(this).prop('prev_value', $(this).val());
+
+	});
+
+	$('#map_seasons_to_location').click(function(){
+
+		if(static_data.seasons.data.length == 2 || static_data.seasons.data.length == 4){
+
+			var html = [];
+
+			if(static_data.seasons.data.length == 2){
+				var preset_seasons = ['Winter', 'Summer']
+			}else{
+				var preset_seasons = ['Winter', 'Spring', 'Summer', 'Autumn']
+			}
+
+			html.push(`<div class='container'>`);
+
+			var valid_preset_order = static_data.seasons.global_settings.preset_order !== undefined && static_data.seasons.global_settings.preset_order.length == static_data.seasons.data.length;
+
+			for(var preset_index in preset_seasons){
+				
+				var preset_season = preset_seasons[preset_index];
+
+				html.push(`<div class='row my-1'>`);
+
+					html.push(`<div class='col-auto pr-1'>`);
+
+						html.push(`<select class='form-control season_selector season-input-${Number(preset_index)+1}'>`);
+
+						if(valid_preset_order){
+							var preset_order = static_data.seasons.global_settings.preset_order[preset_index];
+						}
+
+						for(var index in static_data.seasons.data){
+							var season = static_data.seasons.data[index];
+							if(valid_preset_order){
+								html.push(`<option ${preset_order == index ? 'selected' : ""} value='${index}'>${season.name}</option>`);
+							}else{
+								html.push(`<option ${preset_index == index ? 'selected' : ""} value='${index}'>${season.name}</option>`);
+							}
+						}
+
+						html.push(`</select>`);
+
+					html.push(`</div>`);
+
+					html.push(`<div class='col-auto pl-1 pt-2'>`);
+
+						html.push(` is equal to preset's '${preset_season}'`);
+
+					html.push(`</div>`);
+
+				html.push(`</div>`);
+
+			}
+
+			html.push(`</div>`);
+
+			swal.fire({
+				title: "Please map your seasons to the preset seasons",
+				html: html.join(''),
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				confirmButtonText: 'Okay',
+				icon: "info",
+				preConfirm: () => {
+					if(static_data.seasons.data.length == 2){
+						return [
+							Number($('.season-input-1').val()),
+							Number($('.season-input-2').val())
+						]
+					}else{
+						return [
+							Number($('.season-input-1').val()),
+							Number($('.season-input-2').val()),
+							Number($('.season-input-3').val()),
+							Number($('.season-input-4').val())
+						]
+					}
+				}
+			})
+			.then((result) => {
+
+				if(!result.dismiss) {
+
+					static_data.seasons.global_settings.preset_order = result.value;
+
+					error_check('seasons')
+
+				}
+
+			});
+			
+		}
 
 	});
 
@@ -3624,6 +3742,12 @@ function reindex_season_sortable(key){
 	$('#has_seasons_container').toggleClass('hidden', no_seasons).find('select, input').prop('disabled', no_seasons);
 	$('#no_seasons_container').toggleClass('hidden', !no_seasons);
 
+	if(no_seasons){
+		static_data.seasons.global_settings.preset_order = undefined;
+	}
+
+	$('#map_seasons_to_location').prop('disabled', !(static_data.seasons.data.length == 2 || static_data.seasons.data.length == 4)).parent().toggleClass('hidden', !(static_data.seasons.data.length == 2 || static_data.seasons.data.length == 4));
+
 	var no_locations = (static_data.seasons.data.length == 0 || !static_data.seasons.global_settings.enable_weather) && !static_data.clock.enabled;
 	$('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
 	$('#locations_warning').toggleClass('hidden', !no_locations);
@@ -4329,6 +4453,8 @@ function set_up_edit_values(){
 		var no_seasons = static_data.seasons.data.length == 0;
 		$('#has_seasons_container').toggleClass('hidden', no_seasons).find('select, input').prop('disabled', no_seasons);
 		$('#no_seasons_container').toggleClass('hidden', !no_seasons);
+
+		$('#map_seasons_to_location').prop('disabled', !(static_data.seasons.data.length == 2 || static_data.seasons.data.length == 4)).parent().toggleClass('hidden', !(static_data.seasons.data.length == 2 || static_data.seasons.data.length == 4));
 
 		var no_locations = (static_data.seasons.data.length == 0 || !static_data.seasons.global_settings.enable_weather) && !static_data.clock.enabled;
 		$('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
