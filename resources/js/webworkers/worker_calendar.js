@@ -1163,54 +1163,49 @@ var calendar_builder = {
 
 		if(post_search != 0){
 
+			if(!this.static_data.settings.show_current_month){
+				post_timespan = 0;
+				post_year++;
+			}else{
+				post_timespan++;
+				if(post_timespan > this.static_data.year_data.timespans.length-1){
+					post_timespan = 0;
+					post_year++;
+				}
+			}
+
 			while(days < post_search){
 
-				ending_day = 0;
-
-				if(this.static_data.settings.show_current_month && days == 0){
-
-					num_timespans = post_timespan+1;
-
-					timespans_in_year = get_timespans_in_year(this.static_data, post_year, false).length-1
-
-					if(num_timespans > timespans_in_year){
-						post_year++;
-						num_timespans = timespans_in_year;
-					}
-					
-				}else{
-
-					post_year++;
-
-					num_timespans = this.static_data.year_data.timespans.length-1;
-
-				}
+				var era_ended = 0;
+				var ending_day = 0;
 
 				for(var era_index = 0; era_index < this.static_data.eras.length; era_index++){
 
 					era = this.static_data.eras[era_index];
 
-					if(era.settings.ends_year && post_year == convert_year(this.static_data, era.date.year) && era.date.timespan < num_timespans){
+					if(era.settings.ends_year && post_year == convert_year(this.static_data, era.date.year)){
 
-						num_timespans = era.date.timespan;
+						era_ended = true;
 						ending_day = era.date.day;
-
+						ending_timespan = era.date.timespan;
 
 					}
 
 				}
 
-				this.calendar_list.post_timespans_to_evaluate[post_year] = {};
+				for(var timespan_index = post_timespan; timespan_index < this.static_data.year_data.timespans.length-1; timespan_index++){
 
-				for(var timespan_index = 0; timespan_index < num_timespans; timespan_index++){
-
-					var timespan_object = this.static_data.year_data.timespans[timespan]
+					var timespan_object = this.static_data.year_data.timespans[timespan_index];
 
 					if(is_leap_simple(this.static_data, post_year, timespan_object.interval, timespan_object.offset)){
 
+						if(this.calendar_list.post_timespans_to_evaluate[post_year] === undefined){
+							this.calendar_list.post_timespans_to_evaluate[post_year] = {};
+						}
+
 						this.calendar_list.post_timespans_to_evaluate[post_year][timespan_index] = this.create_adjusted_timespan(post_year, timespan_index);
 
-						if(ending_day > 0 && timespan_index == num_timespans){
+						if(era_ended && timespan_index == ending_timespan){
 							this.calendar_list.post_timespans_to_evaluate[post_year][timespan_index].length = ending_day > this.calendar_list.post_timespans_to_evaluate[post_year][timespan_index].length ? this.calendar_list.post_timespans_to_evaluate[post_year][timespan].length : ending_day; 
 						}
 
@@ -1223,6 +1218,9 @@ var calendar_builder = {
 					}
 
 				}
+
+				post_year++;
+				post_timespan = 0;
 
 			}
 
@@ -2065,6 +2063,8 @@ onmessage = e => {
 		});
 
 	}else{
+
+		console.log('wat')
 
 		if(e.data.action != "future"){
 			data = calendar_builder.evaluate_calendar_data();
