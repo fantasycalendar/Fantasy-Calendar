@@ -1989,7 +1989,11 @@ var calendar_builder = {
 			}
 
 			if(wrong){
-				console.log(this.previous_epoch, calendar_start_epoch, calendar_end_epoch)
+				if(this.dynamic_data.year > this.prevous_year){
+					console.log(this.previous_end_epoch, calendar_start_epoch, calendar_end_epoch)
+				}else{
+					console.log(calendar_start_epoch, calendar_end_epoch, this.previous_start_epoch)
+				}
 				console.log("------------------------")
 			}
 
