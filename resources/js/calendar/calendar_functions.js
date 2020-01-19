@@ -1555,7 +1555,7 @@ function strip_intervals(_intervals, _offset){
  * @param  {int}    offsets     An int used to offset the contextual starting point of the intervals - Interval of 10 and offset of 5 means this interval starts at 5, continuing to 15, 25, 35.
  * @return {bool}               A boolean determining whether this interval happens on the year
  */
-function is_leap(static_data, _parent_occurrences, _intervals, _offset, debug) {
+function is_leap(static_data, _parent_occurrences, _intervals, _offset) {
 
 	var intervals = strip_intervals(_intervals, _offset);
 
@@ -1666,9 +1666,7 @@ function get_interval_occurrences(static_data, _parent_occurrences, _intervals, 
 
 			var result = year / outer.interval;
 
-			result = _parent_occurrences < 0 || static_data.settings.year_zero_exists ? Math.ceil(result) : Math.floor(result);
-
-			occurrences += result;
+			occurrences += _parent_occurrences < 0 ? Math.ceil(result) : Math.floor(result);
 
 		}
 
@@ -1684,15 +1682,13 @@ function get_interval_occurrences(static_data, _parent_occurrences, _intervals, 
 
 				var result = year / data.interval;
 
-				result = _parent_occurrences < 0 || static_data.settings.year_zero_exists ? Math.ceil(result) : Math.floor(result);
-
 				if((outer.negator && !inner.negator) || (!outer.negator && !inner.negator)){
 
-					occurrences -= result;
+					occurrences -= _parent_occurrences < 0 ? Math.ceil(result) : Math.floor(result);
 
 				}else{
 
-					occurrences += result;
+					occurrences += _parent_occurrences < 0 ? Math.ceil(result) : Math.floor(result);
 
 				}
 
@@ -1785,9 +1781,13 @@ function get_epoch(static_data, year, month, day){
 
 			if(timespan_index === leap_day.timespan){
 
-				added_leap_day = get_interval_occurrences(static_data, timespan_fraction, leap_day.interval, leap_day.offset);
+				if(static_data.settings.year_zero_exists){
+					if(year > 0){
+						timespan_fraction--;
+					}
+				}
 
-				//console.log(timespan_fraction, leap_day.interval, leap_day.offset, added_leap_day)
+				added_leap_day = get_interval_occurrences(static_data, timespan_fraction, leap_day.interval, leap_day.offset);
 
 				// If we have leap days days that are intercalary (eg, do not affect the flow of the static_data, add them to the overall epoch, but remove them from the start of the year week day selection)
 				if(leap_day.intercalary || timespan.type === "intercalary"){

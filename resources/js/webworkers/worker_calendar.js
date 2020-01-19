@@ -79,7 +79,7 @@ var calendar_builder = {
 
 				leap_day.index = leap_day_index;
 
-				if(is_leap(this.static_data, timespan_fraction, leap_day.interval, leap_day.offset, true)){
+				if(is_leap(this.static_data, timespan_fraction, leap_day.interval, leap_day.offset)){
 
 					if(leap_day.intercalary){
 						if(timespan.type === 'intercalary'){
@@ -1975,7 +1975,7 @@ var calendar_builder = {
 		if(debug || debugtext){
 
 			var wrong = false;
-			if(this.prevous_year && this.previous_start_epoch && this.previous_end_epoch){
+			if(this.prevous_year !== undefined && this.previous_start_epoch !== undefined && this.previous_end_epoch !== undefined){
 				if(this.dynamic_data.year > this.prevous_year){
 					wrong = calendar_start_epoch != this.previous_end_epoch;
 				}else{
