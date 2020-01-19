@@ -358,10 +358,10 @@ var edit_event_ui = {
 			'description': '',
 			'data': {
 				'has_duration': false,
-				'duration': 1,
+				'duration': 0,
 				'show_first_last': false,
 				'limited_repeat': false,
-				'limited_repeat_num': 1,
+				'limited_repeat_num': 0,
 				'conditions': [
 					['Year', '0', [this.data.year]],
 					['&&'],

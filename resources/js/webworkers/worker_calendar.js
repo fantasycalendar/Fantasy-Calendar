@@ -345,12 +345,11 @@ var calendar_builder = {
 		var post_search = 0;
 		for(event_index = 0; event_index < this.static_data.event_data.events.length; event_index++){
 			var event = this.static_data.event_data.events[event_index];
-			pre_search = event.data.duration > pre_search ? event.data.duration : pre_search;
-			pre_search = event.data.limited_repeat_num > pre_search ? event.data.limited_repeat_num : pre_search;
+			pre_search = event.data.has_duration && event.data.duration > pre_search ? event.data.duration : pre_search;
+			pre_search = event.data.limited_repeat && event.data.limited_repeat_num > pre_search ? event.data.limited_repeat_num : pre_search;
 			pre_search = event.data.search_distance > pre_search ? event.data.search_distance : pre_search;
 			post_search = event.data.search_distance > post_search ? event.data.search_distance : post_search;
 		}
-
 
 		var days = 0;
 
@@ -1078,8 +1077,8 @@ var calendar_builder = {
 		post_search = 0;
 		for(event_index = 0; event_index < this.static_data.event_data.events.length; event_index++){
 			var event = this.static_data.event_data.events[event_index];
-			pre_search = event.data.duration > pre_search ? event.data.duration : pre_search;
-			pre_search = event.data.limited_repeat_num > pre_search ? event.data.limited_repeat_num : pre_search;
+			pre_search = event.data.has_duration && event.data.duration > pre_search ? event.data.duration : pre_search;
+			pre_search = event.data.limited_repeat && event.data.limited_repeat_num > pre_search ? event.data.limited_repeat_num : pre_search;
 			pre_search = event.data.search_distance > pre_search ? event.data.search_distance : pre_search;
 			post_search = event.data.search_distance > post_search ? event.data.search_distance : post_search;
 			this.static_data.event_data.events[event_index].data.search_distance = pre_search > post_search ? pre_search : post_search;
@@ -1132,6 +1131,8 @@ var calendar_builder = {
 				this.calendar_list.pre_timespans_to_evaluate[pre_year] = {};
 
 				for(var timespan_index = num_timespans; timespan_index >= 0; timespan_index--){
+
+					var timespan_object = this.static_data.year_data.timespans[timespan_index];
 
 					if(is_leap_simple(this.static_data, pre_year, timespan_object.interval, timespan_object.offset)){
 
