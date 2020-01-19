@@ -2064,8 +2064,6 @@ onmessage = e => {
 
 	}else{
 
-		console.log('wat')
-
 		if(e.data.action != "future"){
 			data = calendar_builder.evaluate_calendar_data();
 		}else{
