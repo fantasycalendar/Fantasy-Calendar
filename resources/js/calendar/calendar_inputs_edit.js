@@ -1689,7 +1689,7 @@ function set_up_edit_inputs(){
 		if(interval_val > 1){
 			offset.prop('disabled', false);
 		}else{
-			offset.prop('disabled', true).val(0);
+			offset.prop('disabled', true).val(0).change();
 		}
 
 		var data = {
@@ -1749,17 +1749,21 @@ function set_up_edit_inputs(){
 					unsorted.push(Number(values[i].match(numbers_regex)[0]));
 				}
 
-				var sorted = unsorted.slice(0).sort(sorter).reverse();
+				var sorted = unsorted.slice(0).sort().reverse();
 				var result = [];
+
 
 				for(var i = 0; i < sorted.length; i++){
 					var index = unsorted.indexOf(sorted[i]);
+					delete unsorted[i];
 					result.push(values[index]);
 				}
 
 				$(this).val(result.join(','));
 
 				values = result;
+
+				console.log(values)
 
 			}
 
@@ -1773,7 +1777,7 @@ function set_up_edit_inputs(){
 					unsorted.push(Number(values[i].match(numbers_regex)[0]));
 				}
 
-				var sorted = unsorted.slice(0).sort(sorter).reverse();
+				var sorted = unsorted.slice(0).sort().reverse();
 				var result = [];
 
 				for(var i = 0; i < sorted.length; i++){
@@ -1793,7 +1797,7 @@ function set_up_edit_inputs(){
 			sorted = sorted.reverse();
 
 			if(values.length == 1 && Number(values[0]) == 1){
-				offset.val(0).prop('disabled', true);
+				offset.val(0).prop('disabled', true).change();
 			}else{
 				offset.prop('disabled', false);
 			}

@@ -1,11 +1,5 @@
 (function(b,c){var $=b.jQuery||b.Cowboy||(b.Cowboy={}),a;$.throttle=a=function(e,f,j,i){var h,d=0;if(typeof f!=="boolean"){i=j;j=f;f=c}function g(){var o=this,m=+new Date()-d,n=arguments;function l(){d=+new Date();j.apply(o,n)}function k(){h=c}if(i&&!h){l()}h&&clearTimeout(h);if(i===c&&m>e){l()}else{if(f!==true){h=setTimeout(i?k:l,i===c?e-m:e)}}}if($.guid){g.guid=j.guid=j.guid||$.guid++}return g};$.debounce=function(d,e,f){return f===c?a(d,e,false):a(d,f,e!==false)}})(this);
 
-function sorter(a, b) {
-	if (a < b) return -1;  // any negative number works
-	if (a > b) return 1;   // any positive number works
-	return 0; // equal values MUST yield zero
-}
-
 class execution{
 
 	start(){
@@ -1541,6 +1535,86 @@ function strip_intervals(_intervals, _offset){
 
 	}
 
+	for(var outer_index = 0; outer_index < new_intervals.length; outer_index++){
+
+		var outer = new_intervals[outer_index];
+
+		outer.children = {};
+
+		for(var inner_index = outer_index+1; inner_index < new_intervals.length; inner_index++){
+
+			var inner = new_intervals[inner_index];
+
+			if((!outer.negator && inner.negator) || (outer.negator && inner.negator)){
+				continue;
+			}
+
+			var data = lcmo(outer.interval, inner.interval, outer.offset, inner.offset);
+
+			if(data){
+
+				var string = `${data.interval.toString()}-${inner.interval.toString()}-${((outer.negator && !inner.negator) || (!outer.negator && !inner.negator)).toString()}`
+
+				outer.children[string] = {
+					interval: data.interval,
+					offset: data.offset,
+					negator: ((outer.negator && !inner.negator) || (!outer.negator && !inner.negator))
+				}
+
+			}
+
+		}
+
+	}
+
+	while(true){
+
+		var loop_finish = true;
+
+		for(var outer_index = 0; outer_index < new_intervals.length; outer_index++){
+
+			var outer = new_intervals[outer_index];
+
+			for(var inner_index = outer_index+1; inner_index < new_intervals.length; inner_index++){
+
+				var inner = new_intervals[inner_index];
+
+				for(var innermost_index in inner.children){
+
+					var innermost = inner.children[innermost_index];
+
+					var data = lcmo(outer.interval, innermost.interval, outer.offset, innermost.offset);
+
+					if(data){
+
+						var string = `${data.interval.toString()}-${innermost.interval.toString()}-${((outer.negator && !innermost.negator) || (!outer.negator && !innermost.negator)).toString()}`
+
+						if(outer.children[string] === undefined){
+
+							loop_finish = false;
+
+							outer.children[string] = {
+								interval: data.interval,
+								offset: data.offset,
+								negator: ((outer.negator && !innermost.negator) || (!outer.negator && !innermost.negator))
+							}
+
+						}
+
+					}
+
+				}
+
+			}
+
+		}
+
+		if(loop_finish){
+			break;
+		}
+
+	}
+
 	return new_intervals;
 
 }
@@ -1599,35 +1673,14 @@ function get_interval_fractions(_intervals, _offset){
 
 	var occurrences = 0;
 
-	for(var outer_index = 0; outer_index < intervals.length; outer_index++){
+	for(var index = 0; index < intervals.length; index++){
 
-		var outer = intervals[outer_index];
+		var interval = intervals[index];
 
-		if(!outer.negator){
+		var result = 1 / interval.interval;
 
-			occurrences += 1 / outer.interval;
+		occurrences += interval.negator ? result*-1 : result;
 
-		}
-
-		for(var inner_index = outer_index+1; inner_index < intervals.length; inner_index++){
-
-			var inner = intervals[inner_index];
-
-			var data = lcmo(outer.interval, inner.interval, outer.offset, inner.offset);
-
-			if(data){
-
-				if((outer.negator && !inner.negator) || (!outer.negator && !inner.negator)){
-
-					occurrences -= 1 / data.interval;
-
-				}else{
-
-					occurrences += 1 / data.interval;
-
-				}
-			}
-		}
 	}
 
 	return occurrences;
@@ -1640,10 +1693,11 @@ function get_interval_fractions(_intervals, _offset){
  * which the function will return as float indicating the number of days. The fractional
  * part of the value may be used to calculate the average year length.
  *
- * @param  {int}    _year       The number of a year passed through the convert_year function.
- * @param  {string} _intervals  A formatted string of ints, in this format: 400,!100,4 - Large to small, comma separating the intervals, + in front of the int indicating an interval not using the offset (defaulting to 0), ! in front of the int indicating an exclusive interval (subtracting). Could include a single number.
- * @param  {int}    _offset     An int used to offset the contextual starting point of the intervals. Interval of 10 and offset of 5 means this interval starts at 5, continuing to 15, 25, 35
- * @return {int}                An int of how many days this interval has added up to before that year
+ * @param  {object} _static_data      		The number of a year passed through the convert_year function.
+ * @param  {int}    _parent_occurrences     The number of a year passed through the convert_year function.
+ * @param  {string} _intervals  			A formatted string of ints, in this format: 400,!100,4 - Large to small, comma separating the intervals, + in front of the int indicating an interval not using the offset (defaulting to 0), ! in front of the int indicating an exclusive interval (subtracting). Could include a single number.
+ * @param  {int}    _offset     			An int used to offset the contextual starting point of the intervals. Interval of 10 and offset of 5 means this interval starts at 5, continuing to 15, 25, 35
+ * @return {int}                			An int of how many days this interval has added up to before that year
  */
 function get_interval_occurrences(static_data, _parent_occurrences, _intervals, _offset){
 
@@ -1656,42 +1710,38 @@ function get_interval_occurrences(static_data, _parent_occurrences, _intervals, 
 		return 0;
 	}
 
-	for(var outer_index = 0; outer_index < intervals.length; outer_index++){
+	if(static_data.settings.year_zero_exists && _offset == 0 && !intervals[0].negator){
+		occurrences = _parent_occurrences < 0 ? occurrences : occurrences+1;
+	}
 
-		var outer = intervals[outer_index];
+	for(var index = 0; index < intervals.length; index++){
 
-		if(!outer.negator){
+		var interval = intervals[index];
 
-			var year = outer.offset > 0 ? _parent_occurrences-outer.offset+outer.interval : _parent_occurrences;
+		var year = interval.offset > 0 ? _parent_occurrences-interval.offset+interval.interval : _parent_occurrences;
 
-			var result = year / outer.interval;
+		year = static_data.settings.year_zero_exists && _parent_occurrences >= 0 ? year-1 : year;
 
+		var result = year / interval.interval;
+
+		if(!interval.negator){
 			occurrences += _parent_occurrences < 0 ? Math.ceil(result) : Math.floor(result);
-
 		}
 
-		for(var inner_index = outer_index+1; inner_index < intervals.length; inner_index++){
+		for(var child_index in interval.children){
 
-			var inner = intervals[inner_index];
+			var child = interval.children[child_index];
 
-			var data = lcmo(outer.interval, inner.interval, outer.offset, inner.offset);
+			var year = child.offset > 0 ? _parent_occurrences-child.offset+child.interval : _parent_occurrences;
 
-			if(data){
+			year = static_data.settings.year_zero_exists && _parent_occurrences >= 0 ? year-1 : year;
 
-				var year = data.offset > 0 ? _parent_occurrences-data.offset : _parent_occurrences;
+			var result = year / child.interval;
 
-				var result = year / data.interval;
-
-				if((outer.negator && !inner.negator) || (!outer.negator && !inner.negator)){
-
-					occurrences -= _parent_occurrences < 0 ? Math.ceil(result) : Math.floor(result);
-
-				}else{
-
-					occurrences += _parent_occurrences < 0 ? Math.ceil(result) : Math.floor(result);
-
-				}
-
+			if(_parent_occurrences < 0){
+				occurrences += child.negator ? Math.ceil(result)*-1 : Math.ceil(result);
+			}else{
+				occurrences += child.negator ? Math.floor(result)*-1 : Math.floor(result);
 			}
 
 		}
@@ -1716,7 +1766,7 @@ function get_interval_occurrences(static_data, _parent_occurrences, _intervals, 
  *                                          3: num_timespans - The total number of timespans since year 1
  *                                          4: total_week_num - The number of weeks since year 1
  */
-function get_epoch(static_data, year, month, day){
+function get_epoch(static_data, year, month, day, debug){
 
 	// Set up variables
 	var epoch = 0;
@@ -1741,12 +1791,26 @@ function get_epoch(static_data, year, month, day){
 		// Get the current timespan's data
 		var timespan = static_data.year_data.timespans[timespan_index];
 
-		var offset = timespan.offset%timespan.interval;
+		var timespan_fraction = 0;
 
-		if(year < 0 || static_data.settings.year_zero_exists){
-			var timespan_fraction = Math.ceil((year - offset) / timespan.interval);
+		if(year >= 0){
+			if(static_data.settings.year_zero_exists){
+				var offset = (timespan.interval-timespan.offset-1)%timespan.interval;
+			}else{
+				var offset = (timespan.interval-timespan.offset)%timespan.interval;
+			}
+			timespan_fraction = Math.floor((year + offset) / timespan.interval);
 		}else{
-			var timespan_fraction = Math.floor((year - offset) / timespan.interval);
+			var offset = (timespan.interval+timespan.offset)%timespan.interval;
+			timespan_fraction = Math.ceil((year - offset) / timespan.interval);
+		}
+
+		//if(debug && timespan_index == 1) console.log(timespan.name, timespan_fraction, year, offset, timespan.interval)
+
+		if(year >= 0){
+			timespan_fraction = Math.max(timespan_fraction, 0)
+		}else{
+			timespan_fraction = Math.min(timespan_fraction, 0)
 		}
 
 		// Get the number of weeks for that month (check if it has a custom week or not)
@@ -1780,12 +1844,6 @@ function get_epoch(static_data, year, month, day){
 			var added_leap_day = 0;
 
 			if(timespan_index === leap_day.timespan){
-
-				if(static_data.settings.year_zero_exists){
-					if(year > 0){
-						timespan_fraction--;
-					}
-				}
 
 				added_leap_day = get_interval_occurrences(static_data, timespan_fraction, leap_day.interval, leap_day.offset);
 
@@ -1828,7 +1886,7 @@ function get_epoch(static_data, year, month, day){
  *                                          "num_timespans" - The total number of timespans since year 1
  *                                          "total_week_num" - The number of weeks since year 1
  */
-function evaluate_calendar_start(static_data, year, month, day){
+function evaluate_calendar_start(static_data, year, month, day, debug){
 
 	//Initiatlize variables
 	var year = (year|0);
@@ -1837,7 +1895,7 @@ function evaluate_calendar_start(static_data, year, month, day){
 
 	var era_year = year;
 
-	tmp = get_epoch(static_data, year, month, day);
+	tmp = get_epoch(static_data, year, month, day, debug);
 	var epoch = tmp[0];
 	var intercalary = tmp[1];
 	var count_timespans = tmp[2];

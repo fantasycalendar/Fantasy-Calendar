@@ -1252,8 +1252,7 @@ var calendar_builder = {
 
 		}
 
-
-		year_start_data = evaluate_calendar_start(this.static_data, first_eval_year, first_eval_month);
+		year_start_data = evaluate_calendar_start(this.static_data, first_eval_year, first_eval_month, 1, true);
 		era_year = year_start_data.era_year;
 		count_timespans = year_start_data.count_timespans;
 		num_timespans = year_start_data.num_timespans;
@@ -1984,13 +1983,18 @@ var calendar_builder = {
 			}
 
 			if(debugtext){
-				console.log(this.dynamic_data.year, calendar_era_year)
+				console.log(this.dynamic_data.year, this.previous_end_epoch, calendar_start_epoch, calendar_end_epoch)
+				//console.log(this.dynamic_data.year, calendar_era_year)
 			}
 
 			if(wrong){
+				console.log("------------------------")
+				console.log("WRONG!")
 				if(this.dynamic_data.year > this.prevous_year){
+					console.log(this.dynamic_data.year, calendar_era_year)
 					console.log(this.previous_end_epoch, calendar_start_epoch, calendar_end_epoch)
 				}else{
+					console.log(this.dynamic_data.year, calendar_era_year)
 					console.log(calendar_start_epoch, calendar_end_epoch, this.previous_start_epoch)
 				}
 				console.log("------------------------")
@@ -2035,10 +2039,10 @@ onmessage = e => {
 
 	if(debug){
 
-		target_loops = 2000;
+		target_loops = 20000;
 		loops = 0;
 
-		calendar_builder.dynamic_data.year = Math.floor(target_loops/2)*-1
+		calendar_builder.dynamic_data.year = -10000;
 
 		var average_time = 0;
 
@@ -2048,6 +2052,9 @@ onmessage = e => {
 
 			data = calendar_builder.evaluate_calendar_data();
 			calendar_builder.dynamic_data.year++;
+			if(calendar_builder.dynamic_data.year == 0 && !calendar_builder.static_data.settings.year_zero_exists){
+				calendar_builder.dynamic_data.year++;
+			}
 
 			average_time += precisionRound(performance.now() - starttime, 7)
 
