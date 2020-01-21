@@ -1752,7 +1752,6 @@ function set_up_edit_inputs(){
 				var sorted = unsorted.slice(0).sort().reverse();
 				var result = [];
 
-
 				for(var i = 0; i < sorted.length; i++){
 					var index = unsorted.indexOf(sorted[i]);
 					delete unsorted[i];
@@ -2156,7 +2155,7 @@ function add_timespan_to_sortable(parent, key, data){
 				element.push("</div>");
 
 				element.push("<div class='col-6 pl-1'>");
-					element.push(`<input type='number' step="1" class='form-control timespan_occurance_input offset dynamic_input small-input' min='0' data='year_data.timespans.${key}' fc-index='offset' value='${data.offset}'`);
+					element.push(`<input type='number' step="1" class='form-control timespan_occurance_input offset dynamic_input small-input' min='0' data='year_data.timespans.${key}' fc-index='offset' value='${data.interval === 1 ? 0 : data.offset}'`);
 					element.push(data.interval === 1 ? " disabled" : "");
 					element.push("/>");
 				element.push("</div>");
@@ -2367,7 +2366,7 @@ function add_leap_day_to_list(parent, key, data){
 						element.push(`<input type='text' class='form-control leap_day_occurance_input interval dynamic_input' data='year_data.leap_days.${key}' fc-index='interval' value='${data.interval}' />`);
 					element.push("</div>");
 					element.push("<div class='col-4 pl-1 '>");
-						element.push(`<input type='number' step="1" class='form-control leap_day_occurance_input offset dynamic_input' min='0' data='year_data.leap_days.${key}' fc-index='offset' value='${data.offset}'`);
+						element.push(`<input type='number' step="1" class='form-control leap_day_occurance_input offset dynamic_input' min='0' data='year_data.leap_days.${key}' fc-index='offset' value='${data.interval === "1" ? 0 : data.offset}'`);
 						element.push(data.interval === "1" ? " disabled" : "");
 						element.push("/>");
 					element.push("</div>");
@@ -4795,7 +4794,12 @@ function get_interval_text(timespan, data){
 		text = "This leap day will appear every";
 
 		var timespan_interval = static_data.year_data.timespans[data.timespan].interval;
-		var timespan_offset = static_data.year_data.timespans[data.timespan].offset;
+		if(timespan_interval == 1){
+			var timespan_offset = 0;
+		}else{
+			var timespan_offset = static_data.year_data.timespans[data.timespan].offset;
+		}
+
 		var year_offset = timespan_offset%timespan_interval;
 
 		for(var i = 0; i < values.length; i++){
