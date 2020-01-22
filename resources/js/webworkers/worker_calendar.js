@@ -309,8 +309,8 @@ var calendar_builder = {
 			post_timespans_to_evaluate: {}
 		}
 
-		var start_year = convert_year(start_year);
-		var end_year = convert_year(end_year);
+		var start_year = start_year;
+		var end_year = end_year;
 		var adjusted_year = start_year;
 
 		for(year = start_year; year <= end_year; year++){

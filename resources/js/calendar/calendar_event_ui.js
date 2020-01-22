@@ -42,14 +42,14 @@ var edit_event_ui = {
 		this.event_occurrences = false;
 
 		this.event_occurrences_container		= $('.event_occurrences');
-		this.event_occurrences_list_container	= $('.event_occurrences .list_container');
-		this.event_occurrences_page_number		= $('.event_occurrences .list_container .page_number');
-		this.event_occurrences_text				= $('.event_occurrences .list_container .text');
-		this.event_occurrences_list				= $('.event_occurrences .list_container .list');
-		this.event_occurrences_list_col1		= $('.event_occurrences .list_container .list .col1');
-		this.event_occurrences_list_col2		= $('.event_occurrences .list_container .list .col2');
-		this.event_occurrences_button_prev		= $('.event_occurrences .list_container .prev');
-		this.event_occurrences_button_next		= $('.event_occurrences .list_container .next');
+		this.event_occurrences_list_container	= $('.event_occurrences_list_container');
+		this.event_occurrences_page_number		= $('.event_occurrences_list_container .page_number');
+		this.event_occurrences_text				= $('.event_occurrences_list_container .text');
+		this.event_occurrences_list				= $('.event_occurrences_list_container .list');
+		this.event_occurrences_list_col1		= $('.event_occurrences_list_container .list .col1');
+		this.event_occurrences_list_col2		= $('.event_occurrences_list_container .list .col2');
+		this.event_occurrences_button_prev		= $('.event_occurrences_list_container .prev');
+		this.event_occurrences_button_next		= $('.event_occurrences_list_container .next');
 
 		this.event_occurrences_button_prev.click(function(e){
 			edit_event_ui.event_occurrences_page--;
@@ -1781,6 +1781,7 @@ var edit_event_ui = {
 				}else{
 
 					event_occurrences = e.data.event_data.valid[edit_event_ui.event_id] ? e.data.event_data.valid[edit_event_ui.event_id] : [];
+
 					edit_event_ui.event_occurrences = []
 
 					for(event_occurrence in event_occurrences){
@@ -2190,8 +2191,6 @@ var show_event_ui = {
 	add_comment: function(index, comment){
 
 		var content = [];
-
-		console.log(comment);
 
 		content.push(`<div class='event_comment ${comment.comment_owner ? "comment_owner" : ""} ${comment.calendar_owner ? "calendar_owner" : ""}'`);
 		content.push(` date='${comment.date}' comment_id='${index}'>`);

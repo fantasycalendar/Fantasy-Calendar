@@ -140,14 +140,18 @@
 					</div>
 				</div>
 
-				<div class='row no-gutters mb-2 list_container hidden'>
+				<div class='event_occurrences_list_container hidden my-2'>
 					<div class='text'></div>
 					<div class='list hidden row no-gutters'>
 						<ul class='col half col1'></ul>
 						<ul class='col half col2'></ul>
 						<div class='full page_number'></div>
-						<button type='button' class='btn btn-info half prev' disabled>Previous</button>
-						<button type='button' class='btn btn-info half next' disabled>Next</button>
+						<div class='col half pr-1'>
+							<button type='button' class='btn btn-info full prev' disabled>Previous</button>
+						</div>
+						<div class='col half pl-1'>
+							<button type='button' class='btn btn-info full next' disabled>Next</button>
+						</div>
 					</div>
 				</div>
 
