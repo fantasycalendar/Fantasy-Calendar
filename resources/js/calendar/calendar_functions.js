@@ -1535,43 +1535,33 @@ function strip_intervals(_intervals, _offset){
 
 	}
 
-	for(var outer_index = 0; outer_index < new_intervals.length; outer_index++){
-
-		var outer = new_intervals[outer_index];
-
-		outer.children = [];
-
-		for(var inner_index = outer_index+1; inner_index < new_intervals.length; inner_index++){
-
-			var inner = new_intervals[inner_index];
-
-			if((!outer.negator && inner.negator) || (outer.negator && inner.negator)){
-				continue;
-			}
-
-			var data = lcmo(outer.interval, inner.interval, outer.offset, inner.offset);
-
-			if(data){
-
-				outer.children.push({
-					interval: data.interval,
-					offset: data.offset,
-					negator: ((outer.negator && !inner.negator) || (!outer.negator && !inner.negator))
-				});
-
-			}
-
-		}
-
-	}
-
 	for(var outer_index = new_intervals.length-2; outer_index >= 0; outer_index--){
 
 		var outer = new_intervals[outer_index];
 
+		if(outer.children === undefined){
+			outer.children = [];
+		}
+
 		for(var inner_index = outer_index+1; inner_index < new_intervals.length; inner_index++){
 
 			var inner = new_intervals[inner_index];
+
+			if((outer.negator && !inner.negator) || !(outer.negator && inner.negator)){
+
+				var data = lcmo(outer.interval, inner.interval, outer.offset, inner.offset);
+
+				if(data){
+
+					outer.children.push({
+						interval: data.interval,
+						offset: data.offset,
+						negator: ((outer.negator && !inner.negator) || (!outer.negator && !inner.negator))
+					});
+
+				}
+
+			}
 
 			for(var innermost_index in inner.children){
 
