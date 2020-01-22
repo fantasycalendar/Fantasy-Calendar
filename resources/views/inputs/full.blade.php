@@ -1091,15 +1091,6 @@
 	</span>
 </button>
 
-<div id="warnings_background">
-	<div id="warnings">
-		<div id='warnings_content'>
-		</div>
-		<button type='button' id='warnings_ok' class='btn btn-success half'>OK</button>
-		<button type='button' id='warnings_cancel' class='btn btn-danger half'>Cancel</button>
-	</div>
-</div>
-
 <div id="calendar_container">
 
 	<div id="errors_background">

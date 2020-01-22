@@ -1205,7 +1205,8 @@ function set_up_edit_inputs(){
 					callback = true;
 
 					var html = [];
-					html.push(`<h5>You are deleting "${static_data.event_data.events[index].name}" which referenced in the following events:</h5>`)
+					html.push(`<div class='text-left'>`)
+					html.push(`<h5>You are trying to delete "${static_data.event_data.events[index].name}" which referenced in the following events:</h5>`)
 					html.push(`<ul>`);
 					for(var i = 0; i < warnings.length; i++){
 						var event_id = warnings[i];
@@ -1213,8 +1214,16 @@ function set_up_edit_inputs(){
 					}
 					html.push(`</ul>`);
 					html.push(`<p>Please remove the conditions referencing "${static_data.event_data.events[index].name}" in these events before deleting.</p>`)
+					html.push(`</div>`)
 
-					warning_message.show(html.join(''));
+					swal.fire({
+						title: "Warning!",
+						html: html.join(''),
+						showCancelButton: false,
+						confirmButtonColor: '#3085d6',
+						confirmButtonText: 'OK',
+						icon: "warning",
+					})
 
 					$(this).closest('.sortable-container').find('.btn_cancel').click();
 
