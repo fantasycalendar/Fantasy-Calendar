@@ -551,7 +551,7 @@ class date_manager {
 
 	constructor(year, timespan, day){
 
-		this._year = convert_year(static_data, year);
+		this._year = convert_year(year);
 
 		this._timespan = timespan;
 		this._day = day;
@@ -586,7 +586,7 @@ class date_manager {
 
 	get adjusted_year(){
 
-		return unconvert_year(static_data, this.year);
+		return unconvert_year(this.year);
 
 	}
 
@@ -595,7 +595,7 @@ class date_manager {
 	}
 
 	set max_year(year){
-		this._max_year = convert_year(static_data, year);
+		this._max_year = convert_year(year);
 	}
 
 	get max_year(){
@@ -656,7 +656,7 @@ class date_manager {
 	get last_valid_year(){
 
 		if(this.max_year){
-			return unconvert_year(static_data, this.max_year);
+			return unconvert_year(this.max_year);
 		}else{
 			return false;
 		}
@@ -904,7 +904,7 @@ function does_leap_day_appear(static_data, year, timespan, leap_day){
 
 	var leap_day = static_data.year_data.leap_days[leap_day];
 
-	return timespan_appears && is_leap(static_data, year, leap_day.interval, leap_day.offset);
+	return timespan_appears && is_leap(year, leap_day.interval, leap_day.offset);
 
 }
 
@@ -917,12 +917,8 @@ function does_leap_day_appear(static_data, year, timespan, leap_day){
  * @param  {int}        year            The a number of a year
  * @return {int}                        The absolute year
  */
-function convert_year(static_data, year){
-	if(static_data.settings.year_zero_exists){
-		return year;
-	}else{
-		return year > 0 ? year-1 : year;
-	}
+function convert_year(year){
+	return year > 0 ? year-1 : year;
 }
 
 
@@ -934,12 +930,8 @@ function convert_year(static_data, year){
  * @param  {int}        year            The a number of a year
  * @return {int}                        The absolute year
  */
-function unconvert_year(static_data, year){
-	if(static_data.settings.year_zero_exists){
-		return year;
-	}else{
-		return year >= 0 ? year+1 : year;
-	}
+function unconvert_year(year){
+	return year >= 0 ? year+1 : year;
 }
 
 
@@ -1085,7 +1077,7 @@ function does_timespan_appear(static_data, year, timespan){
 
 		var era = static_data.eras[era_index];
 
-		if(era.settings.ends_year && year == convert_year(static_data, era.date.year)-1){
+		if(era.settings.ends_year && year == convert_year(era.date.year)-1){
 
 			if(timespan > era.date.timespan){
 
@@ -1102,7 +1094,7 @@ function does_timespan_appear(static_data, year, timespan){
 
 	var timespan = static_data.year_data.timespans[timespan];
 
-	if(is_leap_simple(static_data, year, timespan.interval, timespan.offset)){
+	if(is_leap_simple(year, timespan.interval, timespan.offset)){
 
 		return {
 			result: true
@@ -1138,7 +1130,7 @@ function does_day_appear(static_data, year, timespan, day){
 
 		var era = static_data.eras[era_index];
 
-		if(era.settings.ends_year && year == convert_year(static_data, era.date.year) && timespan == era.date.timespan && day > era.date.day){
+		if(era.settings.ends_year && year == convert_year(era.date.year) && timespan == era.date.timespan && day > era.date.day){
 
 			return {
 				result: false,
@@ -1525,7 +1517,7 @@ function strip_intervals(_intervals, _offset){
 		var offset = interval_raw.indexOf('+') > -1 ? 0 : _offset;
 		var negator = interval_raw.indexOf('!') > -1;
 		var interval = Number(interval_raw.replace('!','').replace('+',''));
-		offset = interval == 1 ? 0 : (interval+offset)%interval;
+		offset = interval == 1 ? 0 : offset%interval;
 
 		new_intervals.push({
 			interval: interval,
@@ -1535,33 +1527,41 @@ function strip_intervals(_intervals, _offset){
 
 	}
 
-	for(var outer_index = new_intervals.length-2; outer_index >= 0; outer_index--){
+	for(var outer_index = 0; outer_index < new_intervals.length; outer_index++){
 
 		var outer = new_intervals[outer_index];
 
-		if(outer.children === undefined){
-			outer.children = [];
-		}
+		outer.children = [];
 
 		for(var inner_index = outer_index+1; inner_index < new_intervals.length; inner_index++){
 
 			var inner = new_intervals[inner_index];
 
-			if((outer.negator && !inner.negator) || !(outer.negator && inner.negator)){
+			if((!outer.negator && inner.negator) || (outer.negator && inner.negator)){
+				continue;
+			}
 
-				var data = lcmo(outer.interval, inner.interval, outer.offset, inner.offset);
+			var data = lcmo(outer.interval, inner.interval, outer.offset, inner.offset);
 
-				if(data){
+			if(data){
 
-					outer.children.push({
-						interval: data.interval,
-						offset: data.offset,
-						negator: ((outer.negator && !inner.negator) || (!outer.negator && !inner.negator))
-					});
-
-				}
+				outer.children.push({
+					interval: data.interval,
+					offset: data.offset,
+					negator: ((outer.negator && !inner.negator) || (!outer.negator && !inner.negator))
+				});
 
 			}
+		}
+	}
+
+	for(var outer_index = new_intervals.length-2; outer_index >= 0; outer_index--){
+
+		var outer = new_intervals[outer_index];
+
+		for(var inner_index = outer_index+1; inner_index < new_intervals.length; inner_index++){
+
+			var inner = new_intervals[inner_index];
 
 			for(var innermost_index in inner.children){
 
@@ -1598,11 +1598,11 @@ function strip_intervals(_intervals, _offset){
  * @param  {int}    offsets     An int used to offset the contextual starting point of the intervals - Interval of 10 and offset of 5 means this interval starts at 5, continuing to 15, 25, 35.
  * @return {bool}               A boolean determining whether this interval happens on the year
  */
-function is_leap(static_data, _parent_occurrences, _intervals, _offset) {
+function is_leap(_parent_occurrences, _intervals, _offset) {
 
 	var intervals = strip_intervals(_intervals, _offset);
 
-	var year = unconvert_year(static_data, _parent_occurrences);
+	var year = unconvert_year(_parent_occurrences);
 
 	for(index in intervals){
 
@@ -1618,9 +1618,9 @@ function is_leap(static_data, _parent_occurrences, _intervals, _offset) {
 
 }
 
-function is_leap_simple(static_data, year, interval, offset) {
+function is_leap_simple(year, interval, offset) {
 
-	var year = unconvert_year(static_data, year);
+	var year = unconvert_year(year);
 
 	var offset = offset%interval;
 
@@ -1668,28 +1668,23 @@ function get_interval_fractions(_intervals, _offset){
  * @param  {int}    _offset     			An int used to offset the contextual starting point of the intervals. Interval of 10 and offset of 5 means this interval starts at 5, continuing to 15, 25, 35
  * @return {int}                			An int of how many days this interval has added up to before that year
  */
-function get_interval_occurrences(static_data, _parent_occurrences, _intervals, _offset){
+function get_interval_occurrences(_parent_occurrences, _intervals, _offset){
 
 	var intervals = strip_intervals(_intervals, _offset);
 	
 	var occurrences = 0;
 
-	// If it the parent occurrence hasn't happened yet, there has been no leap
 	if(_parent_occurrences == 0){
 		return 0;
 	}
 
-	if(static_data.settings.year_zero_exists && _offset == 0 && !intervals[0].negator){
-		occurrences = _parent_occurrences < 0 ? occurrences : occurrences+1;
-	}
+	occurrences = _parent_occurrences < 0 ? occurrences+1 : occurrences;
 
 	for(var index = 0; index < intervals.length; index++){
 
 		var interval = intervals[index];
 
 		var year = interval.offset > 0 ? _parent_occurrences-interval.offset+interval.interval : _parent_occurrences;
-
-		year = static_data.settings.year_zero_exists && _parent_occurrences >= 0 ? year-1 : year;
 
 		var result = year / interval.interval;
 
@@ -1702,8 +1697,6 @@ function get_interval_occurrences(static_data, _parent_occurrences, _intervals, 
 			var child = interval.children[child_index];
 
 			var year = child.offset > 0 ? _parent_occurrences-child.offset+child.interval : _parent_occurrences;
-
-			year = static_data.settings.year_zero_exists && _parent_occurrences >= 0 ? year-1 : year;
 
 			var result = year / child.interval;
 
@@ -1763,11 +1756,7 @@ function get_epoch(static_data, year, month, day){
 		var timespan_fraction = 0;
 
 		if(year >= 0){
-			if(static_data.settings.year_zero_exists){
-				var offset = (timespan.interval-timespan.offset-1)%timespan.interval;
-			}else{
-				var offset = (timespan.interval-timespan.offset)%timespan.interval;
-			}
+			var offset = (timespan.interval-timespan.offset)%timespan.interval;
 			timespan_fraction = Math.floor((year + offset) / timespan.interval);
 		}else{
 			var offset = (timespan.interval+timespan.offset)%timespan.interval;
@@ -1812,7 +1801,7 @@ function get_epoch(static_data, year, month, day){
 
 			if(timespan_index === leap_day.timespan){
 
-				added_leap_day = get_interval_occurrences(static_data, timespan_fraction, leap_day.interval, leap_day.offset);
+				added_leap_day = get_interval_occurrences(timespan_fraction, leap_day.interval, leap_day.offset);
 
 				// If we have leap days days that are intercalary (eg, do not affect the flow of the static_data, add them to the overall epoch, but remove them from the start of the year week day selection)
 				if(leap_day.intercalary || timespan.type === "intercalary"){
@@ -1875,12 +1864,12 @@ function evaluate_calendar_start(static_data, year, month, day){
 
 		var era = static_data.eras[era_index];
 
-		era_years[era_index] = convert_year(static_data, era.date.year);
+		era_years[era_index] = convert_year(era.date.year);
 
-		if(era.settings.ends_year && year > convert_year(static_data, era.date.year)){
+		if(era.settings.ends_year && year > convert_year(era.date.year)){
 
-			era_epoch = get_epoch(static_data, convert_year(static_data, era.date.year), era.date.timespan, era.date.day);
-			normal_epoch_during_era = get_epoch(static_data, convert_year(static_data, era.date.year)+1);
+			era_epoch = get_epoch(static_data, convert_year(era.date.year), era.date.timespan, era.date.day);
+			normal_epoch_during_era = get_epoch(static_data, convert_year(era.date.year)+1);
 
 			epoch -= (normal_epoch_during_era[0] - era_epoch[0]);
 
@@ -1894,7 +1883,7 @@ function evaluate_calendar_start(static_data, year, month, day){
 
 		}
 
-		if(era.settings.restart && year >= convert_year(static_data, era.date.year)){
+		if(era.settings.restart && year >= convert_year(era.date.year)){
 
 			for(var i = 0; i < era_index; i++){
 
@@ -1963,7 +1952,7 @@ function has_year_ending_era(static_data, year){
 
 		var era = static_data.eras[era_index];
 
-		if(era.settings.ends_year && year == convert_year(static_data, era.date.year)){
+		if(era.settings.ends_year && year == convert_year(era.date.year)){
 
 			return true;
 

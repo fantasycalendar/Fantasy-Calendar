@@ -891,15 +891,6 @@
 					    </div>
                     </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Normally, the year count is -2, -1, 1, 2, and so on. This makes it so that 0 exists, so -2, -1, 0, 1, 2.">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings' fc-index='year_zero_exists'>
-                            <span>
-                                Year zero exists
-                            </span>
-                        </div>
-                    </label>
-
 					<!------------------------------------------------------->
 
 					<div class='bold-text'>Guest View Settings:</div>
