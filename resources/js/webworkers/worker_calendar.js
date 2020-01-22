@@ -1252,7 +1252,7 @@ var calendar_builder = {
 
 		}
 
-		year_start_data = evaluate_calendar_start(this.static_data, first_eval_year, first_eval_month, 1, true);
+		year_start_data = evaluate_calendar_start(this.static_data, first_eval_year, first_eval_month);
 		era_year = year_start_data.era_year;
 		count_timespans = year_start_data.count_timespans;
 		num_timespans = year_start_data.num_timespans;
@@ -1983,8 +1983,8 @@ var calendar_builder = {
 			}
 
 			if(debugtext){
-				console.log(this.dynamic_data.year, this.previous_end_epoch, calendar_start_epoch, calendar_end_epoch)
-				//console.log(this.dynamic_data.year, calendar_era_year)
+				//console.log(this.dynamic_data.year, this.previous_end_epoch, calendar_start_epoch, calendar_end_epoch)
+				console.log(this.dynamic_data.year, calendar_era_year)
 			}
 
 			if(wrong){
@@ -2039,10 +2039,10 @@ onmessage = e => {
 
 	if(debug){
 
-		target_loops = 20000;
+		target_loops = 2000;
 		loops = 0;
 
-		calendar_builder.dynamic_data.year = -10000;
+		calendar_builder.dynamic_data.year = -1000;
 
 		var average_time = 0;
 

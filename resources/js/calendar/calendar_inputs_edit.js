@@ -1708,6 +1708,12 @@ function set_up_edit_inputs(){
 		interval.val(interval.val().replace(/[ `~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z]/g, ""));
 	});
 
+	function sorter(a, b) {
+		if (a < b) return -1;  // any negative number works
+		if (a > b) return 1;   // any positive number works
+		return 0; // equal values MUST yield zero
+	}
+
 	$(document).on('change', '.leap_day_occurance_input', function(){
 
 		var index = $(this).closest('.sortable-container').attr('index')|0;
@@ -1749,20 +1755,19 @@ function set_up_edit_inputs(){
 					unsorted.push(Number(values[i].match(numbers_regex)[0]));
 				}
 
-				var sorted = unsorted.slice(0).sort().reverse();
+				var sorted = unsorted.slice(0).sort(sorter).reverse();
+
 				var result = [];
 
 				for(var i = 0; i < sorted.length; i++){
 					var index = unsorted.indexOf(sorted[i]);
-					delete unsorted[i];
 					result.push(values[index]);
+					delete unsorted[index];
 				}
 
 				$(this).val(result.join(','));
 
 				values = result;
-
-				console.log(values)
 
 			}
 
@@ -1776,12 +1781,13 @@ function set_up_edit_inputs(){
 					unsorted.push(Number(values[i].match(numbers_regex)[0]));
 				}
 
-				var sorted = unsorted.slice(0).sort().reverse();
+				var sorted = unsorted.slice(0).sort(sorter).reverse();
 				var result = [];
 
 				for(var i = 0; i < sorted.length; i++){
 					var index = unsorted.indexOf(sorted[i]);
 					result.push(values[index]);
+					delete unsorted[index];
 				}
 
 				values = result;
@@ -4767,6 +4773,10 @@ function get_interval_text(timespan, data){
 		text +=  " year";
 
 		if(data.interval > 1){
+
+			if(data.interval == 1){
+				data.offset = 0;
+			}
 
 			var original_offset = ((data.interval+data.offset)%data.interval);
 			if(original_offset === 0){

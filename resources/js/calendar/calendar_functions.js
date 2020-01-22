@@ -1539,7 +1539,7 @@ function strip_intervals(_intervals, _offset){
 
 		var outer = new_intervals[outer_index];
 
-		outer.children = {};
+		outer.children = [];
 
 		for(var inner_index = outer_index+1; inner_index < new_intervals.length; inner_index++){
 
@@ -1553,13 +1553,11 @@ function strip_intervals(_intervals, _offset){
 
 			if(data){
 
-				var string = `${data.interval.toString()}-${inner.interval.toString()}-${((outer.negator && !inner.negator) || (!outer.negator && !inner.negator)).toString()}`
-
-				outer.children[string] = {
+				outer.children.push({
 					interval: data.interval,
 					offset: data.offset,
 					negator: ((outer.negator && !inner.negator) || (!outer.negator && !inner.negator))
-				}
+				});
 
 			}
 
@@ -1567,50 +1565,32 @@ function strip_intervals(_intervals, _offset){
 
 	}
 
-	while(true){
+	for(var outer_index = new_intervals.length-2; outer_index >= 0; outer_index--){
 
-		var loop_finish = true;
+		var outer = new_intervals[outer_index];
 
-		for(var outer_index = 0; outer_index < new_intervals.length; outer_index++){
+		for(var inner_index = outer_index+1; inner_index < new_intervals.length; inner_index++){
 
-			var outer = new_intervals[outer_index];
+			var inner = new_intervals[inner_index];
 
-			for(var inner_index = outer_index+1; inner_index < new_intervals.length; inner_index++){
+			for(var innermost_index in inner.children){
 
-				var inner = new_intervals[inner_index];
+				var innermost = inner.children[innermost_index];
 
-				for(var innermost_index in inner.children){
+				var data = lcmo(outer.interval, innermost.interval, outer.offset, innermost.offset);
 
-					var innermost = inner.children[innermost_index];
+				if(data){
 
-					var data = lcmo(outer.interval, innermost.interval, outer.offset, innermost.offset);
-
-					if(data){
-
-						var string = `${data.interval.toString()}-${innermost.interval.toString()}-${((outer.negator && !innermost.negator) || (!outer.negator && !innermost.negator)).toString()}`
-
-						if(outer.children[string] === undefined){
-
-							loop_finish = false;
-
-							outer.children[string] = {
-								interval: data.interval,
-								offset: data.offset,
-								negator: ((outer.negator && !innermost.negator) || (!outer.negator && !innermost.negator))
-							}
-
-						}
-
-					}
+					outer.children.push({
+						interval: data.interval,
+						offset: data.offset,
+						negator: ((outer.negator && !innermost.negator) || (!outer.negator && !innermost.negator))
+					});
 
 				}
 
 			}
 
-		}
-
-		if(loop_finish){
-			break;
 		}
 
 	}
@@ -1618,7 +1598,6 @@ function strip_intervals(_intervals, _offset){
 	return new_intervals;
 
 }
-
 
 
 /**
@@ -1766,7 +1745,7 @@ function get_interval_occurrences(static_data, _parent_occurrences, _intervals, 
  *                                          3: num_timespans - The total number of timespans since year 1
  *                                          4: total_week_num - The number of weeks since year 1
  */
-function get_epoch(static_data, year, month, day, debug){
+function get_epoch(static_data, year, month, day){
 
 	// Set up variables
 	var epoch = 0;
@@ -1804,8 +1783,6 @@ function get_epoch(static_data, year, month, day, debug){
 			var offset = (timespan.interval+timespan.offset)%timespan.interval;
 			timespan_fraction = Math.ceil((year - offset) / timespan.interval);
 		}
-
-		//if(debug && timespan_index == 1) console.log(timespan.name, timespan_fraction, year, offset, timespan.interval)
 
 		if(year >= 0){
 			timespan_fraction = Math.max(timespan_fraction, 0)
@@ -1886,7 +1863,7 @@ function get_epoch(static_data, year, month, day, debug){
  *                                          "num_timespans" - The total number of timespans since year 1
  *                                          "total_week_num" - The number of weeks since year 1
  */
-function evaluate_calendar_start(static_data, year, month, day, debug){
+function evaluate_calendar_start(static_data, year, month, day){
 
 	//Initiatlize variables
 	var year = (year|0);
@@ -1895,7 +1872,7 @@ function evaluate_calendar_start(static_data, year, month, day, debug){
 
 	var era_year = year;
 
-	tmp = get_epoch(static_data, year, month, day, debug);
+	tmp = get_epoch(static_data, year, month, day);
 	var epoch = tmp[0];
 	var intercalary = tmp[1];
 	var count_timespans = tmp[2];
