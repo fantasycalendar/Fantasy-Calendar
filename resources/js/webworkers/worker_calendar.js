@@ -2027,7 +2027,7 @@ var calendar_builder = {
 
 }
 
-var debug = true;
+var debug = false;
 var debugtext = false;
 
 onmessage = e => {
