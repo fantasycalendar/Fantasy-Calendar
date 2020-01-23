@@ -2068,7 +2068,11 @@ function set_up_edit_inputs(){
 				evaluate_clock_inputs();
 			}
 
-			if(target.attr('refresh') == "clock"){
+			if(key == 'year_zero_exists'){
+				target_year.val(preview_date_manager.adjusted_year)
+				current_year.val(dynamic_date_manager.adjusted_year).change();
+				evaluate_save_button();
+			}else if(target.attr('refresh') == "clock"){
 				eval_clock();
 				evaluate_save_button();
 			}else{
@@ -3345,7 +3349,7 @@ function get_errors(){
 	for(var era_i = 0; era_i < static_data.eras.length; era_i++){
 		var era = static_data.eras[era_i];
 		if(static_data.year_data.timespans[era.date.timespan]){
-			if(!does_timespan_appear(static_data, convert_year(era.date.year), era.date.timespan).result){
+			if(!does_timespan_appear(static_data, convert_year(static_data, era.date.year), era.date.timespan).result){
 				errors.push(`Era <i>${era.name}</i> is currently on a leaping month. Please move it to another month.`);
 			}
 		}else{
@@ -3997,7 +4001,7 @@ function reindex_era_list(){
 			}
 		};
 
-		static_data.eras[i].date.epoch = evaluate_calendar_start(static_data, convert_year(static_data.eras[i].date.year), static_data.eras[i].date.timespan, static_data.eras[i].date.day).epoch;
+		static_data.eras[i].date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, static_data.eras[i].date.year), static_data.eras[i].date.timespan, static_data.eras[i].date.day).epoch;
 
 	});
 
@@ -4162,8 +4166,8 @@ function evaluate_season_lengths(){
 		'season_length': 0
 	};
 
-	var epoch_start = evaluate_calendar_start(static_data, convert_year(dynamic_data.year)).epoch;
-	var epoch_end = evaluate_calendar_start(static_data, convert_year(dynamic_data.year)+1).epoch-1;
+	var epoch_start = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year)).epoch;
+	var epoch_end = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year)+1).epoch-1;
 	var season_length = epoch_end-epoch_start;
 
 	for(var i = 0; i < static_data.seasons.data.length; i++){
@@ -4385,7 +4389,7 @@ function evaluate_clock_inputs(){
 function recalculate_era_epochs(){
 
 	for(var i = 0; i < static_data.eras.length; i++){
-		static_data.eras[i].date.epoch = evaluate_calendar_start(static_data, convert_year(static_data.eras[i].date.year), static_data.eras[i].date.timespan, static_data.eras[i].date.day).epoch;
+		static_data.eras[i].date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, static_data.eras[i].date.year), static_data.eras[i].date.timespan, static_data.eras[i].date.day).epoch;
 	}
 
 }
@@ -4727,7 +4731,7 @@ function autoload(){
 				calendar_name = data.calendar_name;
 				static_data = data.static_data;
 				dynamic_data = data.dynamic_data;
-				dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+				dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
 				empty_edit_values();
 				set_up_edit_values();
 				set_up_view_values();
@@ -4780,7 +4784,7 @@ function get_interval_text(timespan, data){
 			}else{
 				var start_year = original_offset;
 			}
-			text += ", starting year " + start_year + `. (year ${start_year}, ${data.interval+start_year}, ${(data.interval*2)+start_year}...)`;
+			text += ", starting year " + start_year + `. (${static_data.settings.year_zero_exists && original_offset == 0 ? "year 0," : "year"} ${start_year}, ${data.interval+start_year}, ${(data.interval*2)+start_year}...)`;
 
 		}
 
@@ -4843,7 +4847,7 @@ function get_interval_text(timespan, data){
 					text += ` ${ordinal_suffix_of(timespan_interval*sorted[i])} ${static_data.year_data.timespans[data.timespan].name}`;
 				}
 
-				text += ` (year ${total_offset}, ${total_offset+sorted[i]*timespan_interval}, ${total_offset+sorted[i]*2*timespan_interval}...)`;
+				text += ` (${static_data.settings.year_zero_exists && original_offset == 0 ? `year ${year_offset},` : "year"} ${total_offset}, ${total_offset+sorted[i]*timespan_interval}, ${total_offset+sorted[i]*2*timespan_interval}...)`;
 
 			}
 
@@ -4857,7 +4861,7 @@ function get_interval_text(timespan, data){
 					}
 
 					if(values[i].indexOf('+') == -1){
-						text += ` (year ${total_offset}, ${total_offset+sorted[i]*timespan_interval}, ${total_offset+sorted[i]*2*timespan_interval}...)`;
+						text += ` (${static_data.settings.year_zero_exists && original_offset == 0 ? `year ${year_offset},` : "year"} ${total_offset}, ${total_offset+sorted[i]*timespan_interval}, ${total_offset+sorted[i]*2*timespan_interval}...)`;
 					}
 
 				}else{
@@ -4869,7 +4873,7 @@ function get_interval_text(timespan, data){
 					}
 
 					if(values[i].indexOf('+') == -1){
-						text += ` (year ${total_offset}, ${total_offset+sorted[i]*timespan_interval}, ${total_offset+sorted[i]*2*timespan_interval}...)`;
+						text += ` (${static_data.settings.year_zero_exists && original_offset == 0 ? `year ${year_offset},` : "year"} ${total_offset}, ${total_offset+sorted[i]*timespan_interval}, ${total_offset+sorted[i]*2*timespan_interval}...)`;
 					}
 
 				}

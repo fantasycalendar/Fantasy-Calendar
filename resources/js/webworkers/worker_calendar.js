@@ -62,7 +62,7 @@ var calendar_builder = {
 
 		var offset = timespan.offset%timespan.interval;
 
-		if(year < 0){
+		if(year < 0 || this.static_data.settings.year_zero_exists){
 			var timespan_fraction = Math.ceil((year - offset) / timespan.interval);
 		}else{
 			var timespan_fraction = Math.floor((year - offset) / timespan.interval);
@@ -79,7 +79,7 @@ var calendar_builder = {
 
 				leap_day.index = leap_day_index;
 
-				if(is_leap(timespan_fraction, leap_day.interval, leap_day.offset)){
+				if(is_leap(this.static_data, timespan_fraction, leap_day.interval, leap_day.offset)){
 
 					if(leap_day.intercalary){
 						if(timespan.type === 'intercalary'){
@@ -302,7 +302,7 @@ var calendar_builder = {
 
 		for(var i = 0; i < this.static_data.eras.length; i++){
 			if(this.static_data.eras[i].settings.starting_era) continue;
-			this.static_data.eras[i].date.epoch = evaluate_calendar_start(this.static_data, convert_year(this.static_data.eras[i].date.year), this.static_data.eras[i].date.timespan, this.static_data.eras[i].date.day).epoch;
+			this.static_data.eras[i].date.epoch = evaluate_calendar_start(this.static_data, convert_year(this.static_data, this.static_data.eras[i].date.year), this.static_data.eras[i].date.timespan, this.static_data.eras[i].date.day).epoch;
 		}
 
 		this.calendar_list = {
@@ -311,8 +311,8 @@ var calendar_builder = {
 			post_timespans_to_evaluate: {}
 		}
 
-		var start_year = convert_year(start_year);
-		var end_year = convert_year(end_year);
+		var start_year = convert_year(this.static_data, start_year);
+		var end_year = convert_year(this.static_data, end_year);
 		var adjusted_year = start_year;
 
 		for(year = start_year; year <= end_year; year++){
@@ -323,7 +323,7 @@ var calendar_builder = {
 
 				var timespan_object = this.static_data.year_data.timespans[timespan]
 
-				if(is_leap_simple(year, timespan_object.interval, timespan_object.offset)){
+				if(is_leap_simple(this.static_data, year, timespan_object.interval, timespan_object.offset)){
 
 					this.calendar_list.post_timespans_to_evaluate[year][timespan] = this.create_adjusted_timespan(year, timespan);
 
@@ -382,7 +382,7 @@ var calendar_builder = {
 
 					era = this.static_data.eras[era_index];
 
-					if(era.settings.ends_year && pre_year == convert_year(era.date.year) && era.date.timespan < num_timespans){
+					if(era.settings.ends_year && pre_year == convert_year(this.static_data, era.date.year) && era.date.timespan < num_timespans){
 
 						num_timespans = era.date.timespan;
 						ending_day = era.date.day;
@@ -398,7 +398,7 @@ var calendar_builder = {
 
 					var timespan_object = this.static_data.year_data.timespans[timespan]
 
-					if(is_leap_simple(pre_year, timespan_object.interval, timespan_object.offset)){
+					if(is_leap_simple(this.static_data, pre_year, timespan_object.interval, timespan_object.offset)){
 
 						this.calendar_list.pre_timespans_to_evaluate[pre_year][timespan] = this.create_adjusted_timespan(pre_year, timespan);
 
@@ -451,7 +451,7 @@ var calendar_builder = {
 
 					era = this.static_data.eras[era_index];
 
-					if(era.settings.ends_year && post_year == convert_year(era.date.year) && era.date.timespan < num_timespans){
+					if(era.settings.ends_year && post_year == convert_year(this.static_data, era.date.year) && era.date.timespan < num_timespans){
 
 						num_timespans = era.date.timespan;
 						ending_day = era.date.day;
@@ -467,7 +467,7 @@ var calendar_builder = {
 
 					var timespan_object = this.static_data.year_data.timespans[timespan]
 
-					if(is_leap_simple(post_year, timespan_object.interval, timespan_object.offset)){
+					if(is_leap_simple(this.static_data, post_year, timespan_object.interval, timespan_object.offset)){
 
 						this.calendar_list.post_timespans_to_evaluate[post_year][timespan] = this.create_adjusted_timespan(post_year, timespan);
 
@@ -515,7 +515,7 @@ var calendar_builder = {
 		}
 
 		var year_start_data = evaluate_calendar_start(this.static_data, first_eval_year, first_eval_month);
-		var era_year = unconvert_year(year_start_data.era_year);
+		var era_year = unconvert_year(this.static_data, year_start_data.era_year);
 		var count_timespans = year_start_data.count_timespans;
 		var num_timespans = year_start_data.num_timespans;
 		var total_week_num = year_start_data.total_week_num;
@@ -577,7 +577,7 @@ var calendar_builder = {
 
 								data = {
 									'year': year_index,
-									'era_year': unconvert_year(era_year),
+									'era_year': unconvert_year(this.static_data, era_year),
 
 									'timespan_index': undefined,
 									'timespan_number': undefined,
@@ -629,7 +629,7 @@ var calendar_builder = {
 
 						data = {
 							'year': year_index,
-							'era_year': unconvert_year(era_year),
+							'era_year': unconvert_year(this.static_data, era_year),
 
 							'timespan_index': timespan_index,
 							'timespan_number': i,
@@ -699,7 +699,7 @@ var calendar_builder = {
 
 								data = {
 									'year': year_index,
-									'era_year': unconvert_year(era_year),
+									'era_year': unconvert_year(this.static_data, era_year),
 
 									'timespan_index': undefined,
 									'timespan_number': undefined,
@@ -756,7 +756,7 @@ var calendar_builder = {
 				}
 			}
 			last_year = year_index;
-			if(year_index != convert_year(this.dynamic_data.year)) year_day = 1;
+			if(year_index != convert_year(this.static_data, this.dynamic_data.year)) year_day = 1;
 			era_year++;
 		}
 
@@ -800,7 +800,7 @@ var calendar_builder = {
 
 								data = {
 									'year': year_index,
-									'era_year': unconvert_year(era_year),
+									'era_year': unconvert_year(this.static_data, era_year),
 
 									'timespan_index': undefined,
 									'timespan_number': undefined,
@@ -852,7 +852,7 @@ var calendar_builder = {
 
 						data = {
 							'year': year_index,
-							'era_year': unconvert_year(era_year),
+							'era_year': unconvert_year(this.static_data, era_year),
 
 							'timespan_index': timespan_index,
 							'timespan_number': i,
@@ -921,7 +921,7 @@ var calendar_builder = {
 
 								data = {
 									'year': year_index,
-									'era_year': unconvert_year(era_year),
+									'era_year': unconvert_year(this.static_data, era_year),
 
 									'timespan_index': undefined,
 									'timespan_number': undefined,
@@ -978,7 +978,7 @@ var calendar_builder = {
 				}
 			}
 			last_year = year_index;
-			if(year_index != convert_year(this.dynamic_data.year)) year_day = 1;
+			if(year_index != convert_year(this.static_data, this.dynamic_data.year)) year_day = 1;
 			era_year++;
 		}
 
@@ -1020,7 +1020,7 @@ var calendar_builder = {
 
 		for(var i = 0; i < this.static_data.eras.length; i++){
 			if(this.static_data.eras[i].settings.starting_era) continue;
-			this.static_data.eras[i].date.epoch = evaluate_calendar_start(this.static_data, convert_year(this.static_data.eras[i].date.year), this.static_data.eras[i].date.timespan, this.static_data.eras[i].date.day).epoch;
+			this.static_data.eras[i].date.epoch = evaluate_calendar_start(this.static_data, convert_year(this.static_data, this.static_data.eras[i].date.year), this.static_data.eras[i].date.timespan, this.static_data.eras[i].date.day).epoch;
 		}
 
 		this.calendar_list = {
@@ -1032,7 +1032,7 @@ var calendar_builder = {
 		// If the setting is on, only select the current month to be calculated
 		if(this.static_data.settings.show_current_month){
 
-			this.calendar_list.timespans_to_build[this.dynamic_data.timespan] = this.create_adjusted_timespan(convert_year(this.dynamic_data.year), this.dynamic_data.timespan);
+			this.calendar_list.timespans_to_build[this.dynamic_data.timespan] = this.create_adjusted_timespan(convert_year(this.static_data, this.dynamic_data.year), this.dynamic_data.timespan);
 
 		}else{
 
@@ -1043,7 +1043,7 @@ var calendar_builder = {
 
 				era = this.static_data.eras[era_index];
 
-				if(era.settings.ends_year && convert_year(this.dynamic_data.year) == convert_year(era.date.year) && era.date.timespan < num_timespans+1){
+				if(era.settings.ends_year && convert_year(this.static_data, this.dynamic_data.year) == convert_year(this.static_data, era.date.year) && era.date.timespan < num_timespans+1){
 
 					num_timespans = era.date.timespan+1;
 					ending_day = era.date.day;
@@ -1056,9 +1056,9 @@ var calendar_builder = {
 
 				var timespan_object = this.static_data.year_data.timespans[timespan];
 
-				var timespan_data = this.create_adjusted_timespan(convert_year(this.dynamic_data.year), timespan);
+				var timespan_data = this.create_adjusted_timespan(convert_year(this.static_data, this.dynamic_data.year), timespan);
 
-				if(is_leap_simple(convert_year(this.dynamic_data.year), timespan_object.interval, timespan_object.offset) && timespan_data.length > 0){
+				if(is_leap_simple(this.static_data, convert_year(this.static_data, this.dynamic_data.year), timespan_object.interval, timespan_object.offset) && timespan_data.length > 0){
 
 					this.calendar_list.timespans_to_build[timespan] = timespan_data;
 
@@ -1087,9 +1087,9 @@ var calendar_builder = {
 		days = 0;
 
 		timespan = parseInt(Object.keys(this.calendar_list.timespans_to_build)[0]);
-		year = convert_year(this.dynamic_data.year);
+		year = convert_year(this.static_data, this.dynamic_data.year);
 
-		pre_year = convert_year(this.dynamic_data.year);
+		pre_year = convert_year(this.static_data, this.dynamic_data.year);
 		pre_timespan = parseInt(Object.keys(this.calendar_list.timespans_to_build)[0]);
 
 		if(pre_search != 0){
@@ -1118,7 +1118,7 @@ var calendar_builder = {
 
 					era = this.static_data.eras[era_index];
 
-					if(era.settings.ends_year && pre_year == convert_year(era.date.year) && era.date.timespan < num_timespans){
+					if(era.settings.ends_year && pre_year == convert_year(this.static_data, era.date.year) && era.date.timespan < num_timespans){
 
 						num_timespans = era.date.timespan;
 						ending_day = era.date.day;
@@ -1134,7 +1134,7 @@ var calendar_builder = {
 
 					var timespan_object = this.static_data.year_data.timespans[timespan_index];
 
-					if(is_leap_simple(pre_year, timespan_object.interval, timespan_object.offset)){
+					if(is_leap_simple(this.static_data, pre_year, timespan_object.interval, timespan_object.offset)){
 
 						this.calendar_list.pre_timespans_to_evaluate[pre_year][timespan_index] = this.create_adjusted_timespan(pre_year, timespan_index);
 
@@ -1158,7 +1158,7 @@ var calendar_builder = {
 
 		days = 0;
 
-		post_year = convert_year(this.dynamic_data.year);
+		post_year = convert_year(this.static_data, this.dynamic_data.year);
 		post_timespan = parseInt(Object.keys(this.calendar_list.timespans_to_build)[0]);
 
 		if(post_search != 0){
@@ -1183,7 +1183,7 @@ var calendar_builder = {
 
 					era = this.static_data.eras[era_index];
 
-					if(era.settings.ends_year && post_year == convert_year(era.date.year)){
+					if(era.settings.ends_year && post_year == convert_year(this.static_data, era.date.year)){
 
 						era_ended = true;
 						ending_day = era.date.day;
@@ -1197,7 +1197,7 @@ var calendar_builder = {
 
 					var timespan_object = this.static_data.year_data.timespans[timespan_index];
 
-					if(is_leap_simple(post_year, timespan_object.interval, timespan_object.offset)){
+					if(is_leap_simple(this.static_data, post_year, timespan_object.interval, timespan_object.offset)){
 
 						if(this.calendar_list.post_timespans_to_evaluate[post_year] === undefined){
 							this.calendar_list.post_timespans_to_evaluate[post_year] = {};
@@ -1247,7 +1247,7 @@ var calendar_builder = {
 
 		}else{
 
-			first_eval_year = convert_year(this.dynamic_data.year);
+			first_eval_year = convert_year(this.static_data, this.dynamic_data.year);
 			first_eval_month = parseInt(Object.keys(this.calendar_list.timespans_to_build)[0]);
 
 		}
@@ -1314,7 +1314,7 @@ var calendar_builder = {
 
 								data = {
 									'year': year_index,
-									'era_year': unconvert_year(era_year),
+									'era_year': unconvert_year(this.static_data, era_year),
 
 									'timespan_index': undefined,
 									'timespan_number': undefined,
@@ -1366,7 +1366,7 @@ var calendar_builder = {
 
 						data = {
 							'year': year_index,
-							'era_year': unconvert_year(era_year),
+							'era_year': unconvert_year(this.static_data, era_year),
 
 							'timespan_index': timespan_index,
 							'timespan_number': i,
@@ -1437,7 +1437,7 @@ var calendar_builder = {
 
 								data = {
 									'year': year_index,
-									'era_year': unconvert_year(era_year),
+									'era_year': unconvert_year(this.static_data, era_year),
 
 									'timespan_index': undefined,
 									'timespan_number': undefined,
@@ -1495,13 +1495,13 @@ var calendar_builder = {
 			}
 			last_year = year_index;
 			year_day = 1;
-			if(year_index !== convert_year(this.dynamic_data.year)){
+			if(year_index !== convert_year(this.static_data, this.dynamic_data.year)){
 				era_year++;
 				year_day = 1;
 			}
 		}
 
-		if(!this.static_data.settings.show_current_month || last_year != convert_year(this.dynamic_data.year)){
+		if(!this.static_data.settings.show_current_month || last_year != convert_year(this.static_data, this.dynamic_data.year)){
 			year_day = 1;
 		}
 
@@ -1546,7 +1546,7 @@ var calendar_builder = {
 
 							data = {
 								'year': this.dynamic_data.year,
-								'era_year': unconvert_year(era_year),
+								'era_year': unconvert_year(this.static_data, era_year),
 
 								'timespan_index': undefined,
 								'timespan_number': undefined,
@@ -1607,7 +1607,7 @@ var calendar_builder = {
 
 					data = {
 						'year': this.dynamic_data.year,
-						'era_year': unconvert_year(era_year),
+						'era_year': unconvert_year(this.static_data, era_year),
 
 						'timespan_index': timespan_index,
 						'timespan_number': i,
@@ -1680,7 +1680,7 @@ var calendar_builder = {
 
 							data = {
 								'year': this.dynamic_data.year,
-								'era_year': unconvert_year(era_year),
+								'era_year': unconvert_year(this.static_data, era_year),
 
 								'timespan_index': undefined,
 								'timespan_number': undefined,
@@ -1746,7 +1746,7 @@ var calendar_builder = {
 		}
 
 		var calendar_end_epoch = epoch;
-		var calendar_era_year = unconvert_year(era_year);
+		var calendar_era_year = unconvert_year(this.static_data, era_year);
 		var calendar_first_week_day = first_week_day;
 
 		order = Object.keys(this.calendar_list.post_timespans_to_evaluate);
@@ -1785,7 +1785,7 @@ var calendar_builder = {
 
 								data = {
 									'year': year_index,
-									'era_year': unconvert_year(era_year),
+									'era_year': unconvert_year(this.static_data, era_year),
 
 									'timespan_index': undefined,
 									'timespan_number': undefined,
@@ -1837,7 +1837,7 @@ var calendar_builder = {
 
 						data = {
 							'year': year_index,
-							'era_year': unconvert_year(era_year),
+							'era_year': unconvert_year(this.static_data, era_year),
 
 							'timespan_index': timespan_index,
 							'timespan_number': i,
@@ -1907,7 +1907,7 @@ var calendar_builder = {
 
 								data = {
 									'year': year_index,
-									'era_year': unconvert_year(era_year),
+									'era_year': unconvert_year(this.static_data, era_year),
 
 									'timespan_index': undefined,
 									'timespan_number': undefined,
@@ -1974,11 +1974,13 @@ var calendar_builder = {
 		if(debug || debugtext){
 
 			var wrong = false;
-			if(this.prevous_year !== undefined && this.previous_start_epoch !== undefined && this.previous_end_epoch !== undefined){
-				if(this.dynamic_data.year > this.prevous_year){
-					wrong = calendar_start_epoch != this.previous_end_epoch;
-				}else{
-					wrong = calendar_end_epoch != this.previous_start_epoch;
+			if(Math.abs(this.prevous_year-this.dynamic_data.year) == 1){
+				if(this.prevous_year !== undefined && this.previous_start_epoch !== undefined && this.previous_end_epoch !== undefined){
+					if(this.dynamic_data.year > this.prevous_year){
+						wrong = calendar_start_epoch != this.previous_end_epoch;
+					}else{
+						wrong = calendar_end_epoch != this.previous_start_epoch;
+					}
 				}
 			}
 
@@ -2052,7 +2054,7 @@ onmessage = e => {
 
 			data = calendar_builder.evaluate_calendar_data();
 			calendar_builder.dynamic_data.year++;
-			if(calendar_builder.dynamic_data.year == 0){
+			if(calendar_builder.dynamic_data.year == 0 && !calendar_builder.static_data.settings.year_zero_exists){
 				calendar_builder.dynamic_data.year++;
 			}
 
