@@ -2069,9 +2069,10 @@ function set_up_edit_inputs(){
 			}
 
 			if(key == 'year_zero_exists'){
-				target_year.val(preview_date_manager.adjusted_year)
-				current_year.val(dynamic_date_manager.adjusted_year).change();
-				evaluate_save_button();
+				error_check();
+				refresh_view_values();
+				set_up_visitor_values();
+				evaluate_dynamic_change();
 			}else if(target.attr('refresh') == "clock"){
 				eval_clock();
 				evaluate_save_button();

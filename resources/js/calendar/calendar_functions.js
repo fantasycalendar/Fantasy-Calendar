@@ -590,10 +590,6 @@ class date_manager {
 
 	}
 
-	get year(){
-		return this._year;
-	}
-
 	set max_year(year){
 		this._max_year = convert_year(static_data, year);
 	}
@@ -681,6 +677,10 @@ class date_manager {
 			return this.max_day;
 		}
 
+	}
+
+	get year(){
+		return this._year;
 	}
 
 	set year(year){
