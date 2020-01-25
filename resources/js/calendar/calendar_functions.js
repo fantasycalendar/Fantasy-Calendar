@@ -1553,7 +1553,7 @@ function strip_intervals(_intervals, _offset){
 
 					var negator = ((outer.negator && !inner.negator) || (!outer.negator && !inner.negator))
 
-					var index = outer.children.findIndex(x => x.interval == data.interval && x.negator != negator)
+					var index = outer.children.findIndex(x => x.interval == data.interval && x.offset == data.offset && x.negator != negator)
 
 					if(index > -1){
 
@@ -1584,7 +1584,7 @@ function strip_intervals(_intervals, _offset){
 
 					var negator = ((outer.negator && !innermost.negator) || (!outer.negator && !innermost.negator));
 
-					var index = outer.children.findIndex(x => x.interval == data.interval && x.negator != negator)
+					var index = outer.children.findIndex(x => x.interval == data.interval && x.offset == data.offset && x.negator != negator)
 
 					if(index > -1){
 
