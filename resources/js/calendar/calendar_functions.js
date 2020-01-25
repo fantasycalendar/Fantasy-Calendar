@@ -1551,11 +1551,23 @@ function strip_intervals(_intervals, _offset){
 
 				if(data){
 
-					outer.children.push({
-						interval: data.interval,
-						offset: data.offset,
-						negator: ((outer.negator && !inner.negator) || (!outer.negator && !inner.negator))
-					});
+					var negator = ((outer.negator && !inner.negator) || (!outer.negator && !inner.negator))
+
+					var index = outer.children.findIndex(x => x.interval == data.interval && x.negator != negator)
+
+					if(index > -1){
+
+						outer.children.splice(index, 1);
+
+					}else{
+
+						outer.children.push({
+							interval: data.interval,
+							offset: data.offset,
+							negator: negator
+						});
+
+					}
 
 				}
 
@@ -1570,11 +1582,23 @@ function strip_intervals(_intervals, _offset){
 
 				if(data){
 
-					outer.children.push({
-						interval: data.interval,
-						offset: data.offset,
-						negator: ((outer.negator && !innermost.negator) || (!outer.negator && !innermost.negator))
-					});
+					var negator = ((outer.negator && !innermost.negator) || (!outer.negator && !innermost.negator));
+
+					var index = outer.children.findIndex(x => x.interval == data.interval && x.negator != negator)
+
+					if(index > -1){
+
+						outer.children.splice(index, 1);
+
+					}else{
+
+						outer.children.push({
+							interval: data.interval,
+							offset: data.offset,
+							negator: negator
+						});
+
+					}
 
 				}
 
