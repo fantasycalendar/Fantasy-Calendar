@@ -2149,7 +2149,7 @@ function set_up_edit_inputs(){
 
 			if(key == 'year_zero_exists'){
 				prevent_default = true;
-				$('.timespan_occurance_input').change();
+				$('.timespan_occurance_input.interval').change();
 				error_check();
 				refresh_view_values();
 				set_up_visitor_values();
