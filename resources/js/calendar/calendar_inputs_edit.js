@@ -1271,7 +1271,6 @@ function set_up_edit_inputs(){
 
 		}
 
-
 		if(!callback){
 
 			evaluate_remove_buttons();
@@ -1686,7 +1685,6 @@ function set_up_edit_inputs(){
 
 	});
 
-
 	$(document).on('change', '.timespan_occurance_input', function(){
 
 		var interval = $(this).closest('.sortable-container').find('.interval');
@@ -1718,7 +1716,84 @@ function set_up_edit_inputs(){
 		interval.val(interval.val().replace(/[ `~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z]/g, ""));
 	});
 
-	$(document).on('change', '.leap_day_occurance_input', function(){
+	function sorter(a, b) {
+		if (a < b) return -1;  // any negative number works
+		if (a > b) return 1;   // any positive number works
+		return 0; // equal values MUST yield zero
+	}
+
+	prevent_default = false;
+
+	$(document).on('focus', '.leap_day_occurance_input.interval', function(e){
+		$(this).prop('prev', $(this).val());
+	});
+
+	$(document).on('change', '.leap_day_occurance_input.interval', function(e){
+
+		if(prevent_default){
+			return;
+		}
+
+		e.preventDefault();
+
+		var interval = $(this).val();
+		var values = interval.split(',');
+
+		if(values.length > 5){
+		
+			swal.fire({
+				title: "Warning!",
+				text: "You have over 5 intervals, more than this can slow down your calendar quite a lot. Are you sure you want to continue?",
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				confirmButtonText: 'Yes',
+				cancelButtonText: 'Cancel',
+				icon: "warning"
+			})
+			.then((result) => {
+
+				if(!result.dismiss){
+
+					prevent_default = true;
+					$(this).trigger('change');
+
+				}else{
+
+					$(this).val($(this).prop('prev'));
+
+				}
+
+			});
+
+		}else{
+
+			prevent_default = true;
+			$(this).trigger('change');
+
+		}
+
+	});
+
+	$(document).on('change', '.leap_day_occurance_input.offset', function(e){
+
+		if(prevent_default){
+			return;
+		}
+
+		prevent_default = true;
+		$(this).trigger('change');
+
+	});
+
+	$(document).on('change', '.leap_day_occurance_input', function(e){
+
+		if(!prevent_default){
+			e.preventDefault();
+			return;
+		}
+
+		prevent_default = false;
 
 		var index = $(this).closest('.sortable-container').attr('index')|0;
 		var interval = $(this).closest('.sortable-container').find('.interval');
@@ -1760,11 +1835,13 @@ function set_up_edit_inputs(){
 				}
 
 				var sorted = unsorted.slice(0).sort(sorter).reverse();
+
 				var result = [];
 
 				for(var i = 0; i < sorted.length; i++){
 					var index = unsorted.indexOf(sorted[i]);
 					result.push(values[index]);
+					delete unsorted[index];
 				}
 
 				$(this).val(result.join(','));
@@ -1789,6 +1866,7 @@ function set_up_edit_inputs(){
 				for(var i = 0; i < sorted.length; i++){
 					var index = unsorted.indexOf(sorted[i]);
 					result.push(values[index]);
+					delete unsorted[index];
 				}
 
 				values = result;
@@ -1898,12 +1976,6 @@ function set_up_edit_inputs(){
 		}
 
 	})
-
-
-
-
-
-
 
 	$(document).on('change', '.invalid', function(){
 		if($(this).val() !== null){
@@ -2075,7 +2147,14 @@ function set_up_edit_inputs(){
 				evaluate_clock_inputs();
 			}
 
-			if(target.attr('refresh') == "clock"){
+			if(key == 'year_zero_exists'){
+				prevent_default = true;
+				$('.timespan_occurance_input').change();
+				error_check();
+				refresh_view_values();
+				set_up_visitor_values();
+				evaluate_dynamic_change();
+			}else if(target.attr('refresh') == "clock"){
 				eval_clock();
 				evaluate_save_button();
 			}else{
@@ -2164,7 +2243,7 @@ function add_timespan_to_sortable(parent, key, data){
 				element.push("</div>");
 
 				element.push("<div class='col-6 pl-1'>");
-					element.push(`<input type='number' step="1" class='form-control timespan_occurance_input offset dynamic_input small-input' min='0' data='year_data.timespans.${key}' fc-index='offset' value='${data.offset}'`);
+					element.push(`<input type='number' step="1" min='0' class='form-control timespan_occurance_input offset dynamic_input small-input' min='0' data='year_data.timespans.${key}' fc-index='offset' value='${data.interval === 1 ? 0 : data.offset}'`);
 					element.push(data.interval === 1 ? " disabled" : "");
 					element.push("/>");
 				element.push("</div>");
@@ -2300,9 +2379,9 @@ function add_leap_day_to_list(parent, key, data){
 					element.push("</div>");
 				element.push("</div>");
 
-				element.push(`<div class='row no-gutters my-1'>`);
+				element.push(`<div class='row no-gutters my-1 ${(data.adds_week_day && !data.intercalary ? "" : "hidden")}'>`);
 					element.push("<div class='form-check col-12 py-2 border rounded'>");
-						element.push(`<input type='checkbox' id='${key}_adds_week_day' class='form-check-input adds-week-day dynamic_input' data='year_data.leap_days.${key}' fc-index='adds_week_day' ${(data.adds_week_day ? "checked" : "")} />`);
+						element.push(`<input type='checkbox' id='${key}_adds_week_day' class='form-check-input adds-week-day dynamic_input' data='year_data.leap_days.${key}' fc-index='adds_week_day' ${(data.adds_week_day && !data.intercalary ? "" : "disabled")} ${(data.adds_week_day ? "checked" : "")} />`);
 						element.push(`<label for='${key}_adds_week_day' class='form-check-label ml-1'>`);
 							element.push("Adds week day");
 						element.push("</label>");
@@ -2375,7 +2454,7 @@ function add_leap_day_to_list(parent, key, data){
 						element.push(`<input type='text' class='form-control leap_day_occurance_input interval dynamic_input' data='year_data.leap_days.${key}' fc-index='interval' value='${data.interval}' />`);
 					element.push("</div>");
 					element.push("<div class='col-4 pl-1 '>");
-						element.push(`<input type='number' step="1" class='form-control leap_day_occurance_input offset dynamic_input' min='0' data='year_data.leap_days.${key}' fc-index='offset' value='${data.offset}'`);
+						element.push(`<input type='number' step="1" class='form-control leap_day_occurance_input offset dynamic_input' min='0' data='year_data.leap_days.${key}' fc-index='offset' value='${data.interval === "1" ? 0 : data.offset}'`);
 						element.push(data.interval === "1" ? " disabled" : "");
 						element.push("/>");
 					element.push("</div>");
@@ -3352,7 +3431,7 @@ function get_errors(){
 	for(var era_i = 0; era_i < static_data.eras.length; era_i++){
 		var era = static_data.eras[era_i];
 		if(static_data.year_data.timespans[era.date.timespan]){
-			if(!does_timespan_appear(static_data, convert_year(era.date.year), era.date.timespan).result){
+			if(!does_timespan_appear(static_data, convert_year(static_data, era.date.year), era.date.timespan).result){
 				errors.push(`Era <i>${era.name}</i> is currently on a leaping month. Please move it to another month.`);
 			}
 		}else{
@@ -4004,7 +4083,7 @@ function reindex_era_list(){
 			}
 		};
 
-		static_data.eras[i].date.epoch = evaluate_calendar_start(static_data, convert_year(static_data.eras[i].date.year), static_data.eras[i].date.timespan, static_data.eras[i].date.day).epoch;
+		static_data.eras[i].date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, static_data.eras[i].date.year), static_data.eras[i].date.timespan, static_data.eras[i].date.day).epoch;
 
 	});
 
@@ -4169,8 +4248,8 @@ function evaluate_season_lengths(){
 		'season_length': 0
 	};
 
-	var epoch_start = evaluate_calendar_start(static_data, convert_year(dynamic_data.year)).epoch;
-	var epoch_end = evaluate_calendar_start(static_data, convert_year(dynamic_data.year)+1).epoch-1;
+	var epoch_start = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year)).epoch;
+	var epoch_end = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year)+1).epoch-1;
 	var season_length = epoch_end-epoch_start;
 
 	for(var i = 0; i < static_data.seasons.data.length; i++){
@@ -4392,7 +4471,7 @@ function evaluate_clock_inputs(){
 function recalculate_era_epochs(){
 
 	for(var i = 0; i < static_data.eras.length; i++){
-		static_data.eras[i].date.epoch = evaluate_calendar_start(static_data, convert_year(static_data.eras[i].date.year), static_data.eras[i].date.timespan, static_data.eras[i].date.day).epoch;
+		static_data.eras[i].date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, static_data.eras[i].date.year), static_data.eras[i].date.timespan, static_data.eras[i].date.day).epoch;
 	}
 
 }
@@ -4734,7 +4813,7 @@ function autoload(){
 				calendar_name = data.calendar_name;
 				static_data = data.static_data;
 				dynamic_data = data.dynamic_data;
-				dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+				dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
 				empty_edit_values();
 				set_up_edit_values();
 				set_up_view_values();
@@ -4777,11 +4856,17 @@ function get_interval_text(timespan, data){
 
 		if(data.interval > 1){
 
-			var start_year = ((data.interval+data.offset)%data.interval);
-			if(start_year === 0){
-				start_year = data.interval;
+			if(data.interval == 1){
+				data.offset = 0;
 			}
-			text += ", starting year " + start_year + `. (year ${start_year}, ${data.interval+start_year}, ${(data.interval*2)+start_year}...)`;
+
+			var original_offset = ((data.interval+data.offset)%data.interval);
+			if(original_offset === 0){
+				var start_year = data.interval;
+			}else{
+				var start_year = original_offset;
+			}
+			text += ", starting year " + start_year + `. (${static_data.settings.year_zero_exists && original_offset == 0 ? "year 0," : "year"} ${start_year}, ${data.interval+start_year}, ${(data.interval*2)+start_year}...)`;
 
 		}
 
@@ -4801,21 +4886,36 @@ function get_interval_text(timespan, data){
 		text = "This leap day will appear every";
 
 		var timespan_interval = static_data.year_data.timespans[data.timespan].interval;
+		if(timespan_interval == 1){
+			var timespan_offset = 0;
+		}else{
+			var timespan_offset = static_data.year_data.timespans[data.timespan].offset;
+		}
+
+		var year_offset = timespan_offset%timespan_interval;
 
 		for(var i = 0; i < values.length; i++){
 
 			var leap_interval = sorted[i];
 			var leap_offset = data.offset;
 
-			var total_offset = (((leap_interval-leap_offset)%leap_interval)*timespan_interval);
+			var original_offset = ((leap_interval+leap_offset)%leap_interval);
 
-			if(total_offset == 0){
-				total_offset = sorted[i]*timespan_interval;
+			if(original_offset == 0){
+				var total_offset = sorted[i];
+			}else{
+				var total_offset = original_offset;
 			}
+
+			total_offset = (total_offset*timespan_interval)+timespan_offset;
 
 			if(i == 0 && sorted[i] == 1){
 
-				text += " year"
+				if(timespan_interval == 1){
+					text += " year"
+				}else{
+					text += ` ${ordinal_suffix_of(timespan_interval*sorted[i])} year (leaping month)`;
+				}
 
 			}else if(i == 0){
 
@@ -4829,7 +4929,9 @@ function get_interval_text(timespan, data){
 					text += ` ${ordinal_suffix_of(timespan_interval*sorted[i])} ${static_data.year_data.timespans[data.timespan].name}`;
 				}
 
-				text += ` (year ${total_offset}, ${(total_offset+sorted[i]*timespan_interval)}, ${total_offset+sorted[i]*2*timespan_interval}...)`;
+				if(values[i].indexOf('+') == -1 || year_offset != 0){
+					text += ` (${static_data.settings.year_zero_exists && original_offset == 0 ? `year ${year_offset},` : "year"} ${total_offset}, ${total_offset+sorted[i]*timespan_interval}, ${total_offset+sorted[i]*2*timespan_interval}...)`;
+				}
 
 			}
 
@@ -4842,8 +4944,8 @@ function get_interval_text(timespan, data){
 						text += `<br>• but not every ${ordinal_suffix_of(timespan_interval*sorted[i])} ${static_data.year_data.timespans[data.timespan].name}`;
 					}
 
-					if(values[i].indexOf('+') == -1){
-						text += ` (year ${total_offset}, ${total_offset+sorted[i]}, ${total_offset+sorted[i]*2}...)`;
+					if(values[i].indexOf('+') == -1 || year_offset != 0){
+						text += ` (${static_data.settings.year_zero_exists && original_offset == 0 ? `year ${year_offset},` : "year"} ${total_offset}, ${total_offset+sorted[i]*timespan_interval}, ${total_offset+sorted[i]*2*timespan_interval}...)`;
 					}
 
 				}else{
@@ -4854,8 +4956,8 @@ function get_interval_text(timespan, data){
 						text += `<br>• but also every ${ordinal_suffix_of(timespan_interval*sorted[i])} ${static_data.year_data.timespans[data.timespan].name}`;
 					}
 
-					if(values[i].indexOf('+') == -1){
-						text += ` (year ${total_offset}, ${total_offset+sorted[i]}, ${total_offset+sorted[i]*2}...)`;
+					if(values[i].indexOf('+') == -1 || year_offset != 0){
+						text += ` (${static_data.settings.year_zero_exists && original_offset == 0 ? `year ${year_offset},` : "year"} ${total_offset}, ${total_offset+sorted[i]*timespan_interval}, ${total_offset+sorted[i]*2*timespan_interval}...)`;
 					}
 
 				}

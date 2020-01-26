@@ -363,10 +363,10 @@ var edit_event_ui = {
 			'description': '',
 			'data': {
 				'has_duration': false,
-				'duration': 1,
+				'duration': 0,
 				'show_first_last': false,
 				'limited_repeat': false,
-				'limited_repeat_num': 1,
+				'limited_repeat_num': 0,
 				'conditions': [
 					['Year', '0', [this.data.year]],
 					['&&'],
@@ -1844,9 +1844,9 @@ var edit_event_ui = {
 				var epoch_data = edit_event_ui.event_data[epoch];
 
 				if(epoch_data.intercalary){
-					var text = `<li class='event_occurance'>${ordinal_suffix_of(epoch_data.day)} intercalary day of ${epoch_data.timespan_name}, ${unconvert_year(epoch_data.year)}</li>`
+					var text = `<li class='event_occurance'>${ordinal_suffix_of(epoch_data.day)} intercalary day of ${epoch_data.timespan_name}, ${unconvert_year(static_data, epoch_data.year)}</li>`
 				}else{
-					var text = `<li class='event_occurance'>${ordinal_suffix_of(epoch_data.day)} of ${epoch_data.timespan_name}, ${unconvert_year(epoch_data.year)}</li>`
+					var text = `<li class='event_occurance'>${ordinal_suffix_of(epoch_data.day)} of ${epoch_data.timespan_name}, ${unconvert_year(static_data, epoch_data.year)}</li>`
 				}
 
 				if(i-((this.event_occurrences_page-1)*10) < 5){

@@ -384,7 +384,7 @@ function update_current_day(recalculate){
 	$(`.preview_day`).removeClass('preview_day');
 
 	if(recalculate){
-		dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+		dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
 	}
 
 	var day_container = $(`[epoch=${dynamic_data.epoch}]`);
