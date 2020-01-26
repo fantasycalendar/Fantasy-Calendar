@@ -459,6 +459,8 @@ function set_up_edit_inputs(){
 				$('#has_seasons_container').toggleClass('hidden', true).find('select, input').prop('disabled', true);
 				$('#no_seasons_container').toggleClass('hidden', false);
 
+				$('#map_seasons_to_location').prop('disabled', true).parent().toggleClass('hidden', true);
+
 				var no_locations = !static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled;
 				$('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
 				$('#locations_warning').toggleClass('hidden', !no_locations);
@@ -554,6 +556,8 @@ function set_up_edit_inputs(){
 		$('#has_seasons_container').toggleClass('hidden', no_seasons).find('select, input').prop('disabled', no_seasons);
 		$('#no_seasons_container').toggleClass('hidden', !no_seasons);
 
+		$('#map_seasons_to_location').prop('disabled', !(static_data.seasons.data.length == 2 || static_data.seasons.data.length == 4)).parent().toggleClass('hidden', !(static_data.seasons.data.length == 2 || static_data.seasons.data.length == 4));
+
 		$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 && !static_data.clock.enabled);
 
 	});
@@ -648,6 +652,120 @@ function set_up_edit_inputs(){
 		});
 
 		location_select.find(`option[value="${id}"]`).prop('selected', true).change();
+
+	});
+
+	$(document).on('focus', '.season_selector', function(){
+		$(this).prop('prev_value', $(this).val());
+	});
+
+	$(document).on('change', '.season_selector', function(){
+
+		var prev_value = $(this).prop('prev_value')
+		var new_value = $(this).val();
+
+		$('.season_selector').not($(this)).each(function(i){
+			if($(this).val() == new_value){
+				$(this).val(prev_value)
+			}
+		});
+
+		$(this).prop('prev_value', $(this).val());
+
+	});
+
+	$('#map_seasons_to_location').click(function(){
+
+		if(static_data.seasons.data.length == 2 || static_data.seasons.data.length == 4){
+
+			var html = [];
+
+			if(static_data.seasons.data.length == 2){
+				var preset_seasons = ['Winter', 'Summer']
+			}else{
+				var preset_seasons = ['Winter', 'Spring', 'Summer', 'Autumn']
+			}
+
+			html.push(`<div class='container'>`);
+
+			var valid_preset_order = static_data.seasons.global_settings.preset_order !== undefined && static_data.seasons.global_settings.preset_order.length == static_data.seasons.data.length;
+
+			for(var preset_index in preset_seasons){
+				
+				var preset_season = preset_seasons[preset_index];
+
+				html.push(`<div class='row my-1'>`);
+
+					html.push(`<div class='col-auto pr-1'>`);
+
+						html.push(`<select class='form-control season_selector season-input-${Number(preset_index)+1}'>`);
+
+						if(valid_preset_order){
+							var preset_order = static_data.seasons.global_settings.preset_order[preset_index];
+						}
+
+						for(var index in static_data.seasons.data){
+							var season = static_data.seasons.data[index];
+							if(valid_preset_order){
+								html.push(`<option ${preset_order == index ? 'selected' : ""} value='${index}'>${season.name}</option>`);
+							}else{
+								html.push(`<option ${preset_index == index ? 'selected' : ""} value='${index}'>${season.name}</option>`);
+							}
+						}
+
+						html.push(`</select>`);
+
+					html.push(`</div>`);
+
+					html.push(`<div class='col-auto pl-1 pt-2'>`);
+
+						html.push(` is equal to preset's '${preset_season}'`);
+
+					html.push(`</div>`);
+
+				html.push(`</div>`);
+
+			}
+
+			html.push(`</div>`);
+
+			swal.fire({
+				title: "Please map your seasons to the preset seasons",
+				html: html.join(''),
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				confirmButtonText: 'Okay',
+				icon: "info",
+				preConfirm: () => {
+					if(static_data.seasons.data.length == 2){
+						return [
+							Number($('.season-input-1').val()),
+							Number($('.season-input-2').val())
+						]
+					}else{
+						return [
+							Number($('.season-input-1').val()),
+							Number($('.season-input-2').val()),
+							Number($('.season-input-3').val()),
+							Number($('.season-input-4').val())
+						]
+					}
+				}
+			})
+			.then((result) => {
+
+				if(!result.dismiss) {
+
+					static_data.seasons.global_settings.preset_order = result.value;
+
+					error_check('seasons')
+
+				}
+
+			});
+			
+		}
 
 	});
 
@@ -1087,7 +1205,8 @@ function set_up_edit_inputs(){
 					callback = true;
 
 					var html = [];
-					html.push(`<h5>You are deleting "${static_data.event_data.events[index].name}" which referenced in the following events:</h5>`)
+					html.push(`<div class='text-left'>`)
+					html.push(`<h5>You are trying to delete "${static_data.event_data.events[index].name}" which referenced in the following events:</h5>`)
 					html.push(`<ul>`);
 					for(var i = 0; i < warnings.length; i++){
 						var event_id = warnings[i];
@@ -1095,8 +1214,16 @@ function set_up_edit_inputs(){
 					}
 					html.push(`</ul>`);
 					html.push(`<p>Please remove the conditions referencing "${static_data.event_data.events[index].name}" in these events before deleting.</p>`)
+					html.push(`</div>`)
 
-					warning_message.show(html.join(''));
+					swal.fire({
+						title: "Warning!",
+						html: html.join(''),
+						showCancelButton: false,
+						confirmButtonColor: '#3085d6',
+						confirmButtonText: 'OK',
+						icon: "warning",
+					})
 
 					$(this).closest('.sortable-container').find('.btn_cancel').click();
 
@@ -1143,7 +1270,6 @@ function set_up_edit_inputs(){
 				break;
 
 		}
-
 
 		if(!callback){
 
@@ -1559,7 +1685,6 @@ function set_up_edit_inputs(){
 
 	});
 
-
 	$(document).on('change', '.timespan_occurance_input', function(){
 
 		var interval = $(this).closest('.sortable-container').find('.interval');
@@ -1591,7 +1716,84 @@ function set_up_edit_inputs(){
 		interval.val(interval.val().replace(/[ `~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z]/g, ""));
 	});
 
-	$(document).on('change', '.leap_day_occurance_input', function(){
+	function sorter(a, b) {
+		if (a < b) return -1;  // any negative number works
+		if (a > b) return 1;   // any positive number works
+		return 0; // equal values MUST yield zero
+	}
+
+	prevent_default = false;
+
+	$(document).on('focus', '.leap_day_occurance_input.interval', function(e){
+		$(this).prop('prev', $(this).val());
+	});
+
+	$(document).on('change', '.leap_day_occurance_input.interval', function(e){
+
+		if(prevent_default){
+			return;
+		}
+
+		e.preventDefault();
+
+		var interval = $(this).val();
+		var values = interval.split(',');
+
+		if(values.length > 5){
+		
+			swal.fire({
+				title: "Warning!",
+				text: "You have over 5 intervals, more than this can slow down your calendar quite a lot. Are you sure you want to continue?",
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				confirmButtonText: 'Yes',
+				cancelButtonText: 'Cancel',
+				icon: "warning"
+			})
+			.then((result) => {
+
+				if(!result.dismiss){
+
+					prevent_default = true;
+					$(this).trigger('change');
+
+				}else{
+
+					$(this).val($(this).prop('prev'));
+
+				}
+
+			});
+
+		}else{
+
+			prevent_default = true;
+			$(this).trigger('change');
+
+		}
+
+	});
+
+	$(document).on('change', '.leap_day_occurance_input.offset', function(e){
+
+		if(prevent_default){
+			return;
+		}
+
+		prevent_default = true;
+		$(this).trigger('change');
+
+	});
+
+	$(document).on('change', '.leap_day_occurance_input', function(e){
+
+		if(!prevent_default){
+			e.preventDefault();
+			return;
+		}
+
+		prevent_default = false;
 
 		var index = $(this).closest('.sortable-container').attr('index')|0;
 		var interval = $(this).closest('.sortable-container').find('.interval');
@@ -1633,11 +1835,13 @@ function set_up_edit_inputs(){
 				}
 
 				var sorted = unsorted.slice(0).sort(sorter).reverse();
+
 				var result = [];
 
 				for(var i = 0; i < sorted.length; i++){
 					var index = unsorted.indexOf(sorted[i]);
 					result.push(values[index]);
+					delete unsorted[index];
 				}
 
 				$(this).val(result.join(','));
@@ -1662,6 +1866,7 @@ function set_up_edit_inputs(){
 				for(var i = 0; i < sorted.length; i++){
 					var index = unsorted.indexOf(sorted[i]);
 					result.push(values[index]);
+					delete unsorted[index];
 				}
 
 				values = result;
@@ -1771,12 +1976,6 @@ function set_up_edit_inputs(){
 		}
 
 	})
-
-
-
-
-
-
 
 	$(document).on('change', '.invalid', function(){
 		if($(this).val() !== null){
@@ -1950,7 +2149,14 @@ function set_up_edit_inputs(){
 				evaluate_clock_inputs();
 			}
 
-			if(target.attr('refresh') == "clock"){
+			if(key == 'year_zero_exists'){
+				prevent_default = true;
+				$('.timespan_occurance_input').change();
+				error_check();
+				refresh_view_values();
+				set_up_visitor_values();
+				evaluate_dynamic_change();
+			}else if(target.attr('refresh') == "clock"){
 				eval_clock();
 				evaluate_save_button();
 			}else{
@@ -2039,7 +2245,7 @@ function add_timespan_to_sortable(parent, key, data){
 				element.push("</div>");
 
 				element.push("<div class='col-6 pl-1'>");
-					element.push(`<input type='number' step="1" class='form-control timespan_occurance_input offset dynamic_input small-input' min='0' data='year_data.timespans.${key}' fc-index='offset' value='${data.offset}'`);
+					element.push(`<input type='number' step="1" min='0' class='form-control timespan_occurance_input offset dynamic_input small-input' min='0' data='year_data.timespans.${key}' fc-index='offset' value='${data.interval === 1 ? 0 : data.offset}'`);
 					element.push(data.interval === 1 ? " disabled" : "");
 					element.push("/>");
 				element.push("</div>");
@@ -2158,8 +2364,8 @@ function add_leap_day_to_list(parent, key, data){
 				element.push(`<input type='hidden' class='form-control year-input hidden' value='0'>`);
 
 				element.push("<div class='row no-gutters'>");
-					element.push("<div class='col-4'>Timespan:</div>");
-					element.push("<div class='col-8'>");
+					element.push("<div class='col'>");
+						element.push("Timespan:");
 						element.push(`<select type='number' class='custom-select form-control leap_day_occurance_input timespan-list dynamic_input full timespan_special' data='year_data.leap_days.${key}' fc-index='timespan'>`);
 						for(var j = 0; j < static_data.year_data.timespans.length; j++)
 						{
@@ -2169,9 +2375,15 @@ function add_leap_day_to_list(parent, key, data){
 					element.push("</div>");
 				element.push("</div>");
 
-				element.push(`<div class='row no-gutters my-1'>`);
+				element.push("<div class='row no-gutters mt-2 mb-1'>");
+					element.push("<div class='col'>");
+						element.push("<div class='separator'></div>");
+					element.push("</div>");
+				element.push("</div>");
+
+				element.push(`<div class='row no-gutters my-1 ${(data.adds_week_day && !data.intercalary ? "" : "hidden")}'>`);
 					element.push("<div class='form-check col-12 py-2 border rounded'>");
-						element.push(`<input type='checkbox' id='${key}_adds_week_day' class='form-check-input adds-week-day dynamic_input' data='year_data.leap_days.${key}' fc-index='adds_week_day' ${(data.adds_week_day ? "checked" : "")} />`);
+						element.push(`<input type='checkbox' id='${key}_adds_week_day' class='form-check-input adds-week-day dynamic_input' data='year_data.leap_days.${key}' fc-index='adds_week_day' ${(data.adds_week_day && !data.intercalary ? "" : "disabled")} ${(data.adds_week_day ? "checked" : "")} />`);
 						element.push(`<label for='${key}_adds_week_day' class='form-check-label ml-1'>`);
 							element.push("Adds week day");
 						element.push("</label>");
@@ -2222,7 +2434,7 @@ function add_leap_day_to_list(parent, key, data){
 					element.push("</div>");
 				element.push("</div>");
 
-				element.push("<div class='row no-gutters mt-2 mb-1>");
+				element.push("<div class='row no-gutters mt-2 mb-1'>");
 					element.push("<div class='col'>");
 						element.push("<div class='separator'></div>");
 					element.push("</div>");
@@ -2244,7 +2456,7 @@ function add_leap_day_to_list(parent, key, data){
 						element.push(`<input type='text' class='form-control leap_day_occurance_input interval dynamic_input' data='year_data.leap_days.${key}' fc-index='interval' value='${data.interval}' />`);
 					element.push("</div>");
 					element.push("<div class='col-4 pl-1 '>");
-						element.push(`<input type='number' step="1" class='form-control leap_day_occurance_input offset dynamic_input' min='0' data='year_data.leap_days.${key}' fc-index='offset' value='${data.offset}'`);
+						element.push(`<input type='number' step="1" class='form-control leap_day_occurance_input offset dynamic_input' min='0' data='year_data.leap_days.${key}' fc-index='offset' value='${data.interval === "1" ? 0 : data.offset}'`);
 						element.push(data.interval === "1" ? " disabled" : "");
 						element.push("/>");
 					element.push("</div>");
@@ -3221,7 +3433,7 @@ function get_errors(){
 	for(var era_i = 0; era_i < static_data.eras.length; era_i++){
 		var era = static_data.eras[era_i];
 		if(static_data.year_data.timespans[era.date.timespan]){
-			if(!does_timespan_appear(static_data, convert_year(era.date.year), era.date.timespan).result){
+			if(!does_timespan_appear(static_data, convert_year(static_data, era.date.year), era.date.timespan).result){
 				errors.push(`Era <i>${era.name}</i> is currently on a leaping month. Please move it to another month.`);
 			}
 		}else{
@@ -3623,6 +3835,12 @@ function reindex_season_sortable(key){
 	$('#has_seasons_container').toggleClass('hidden', no_seasons).find('select, input').prop('disabled', no_seasons);
 	$('#no_seasons_container').toggleClass('hidden', !no_seasons);
 
+	if(no_seasons){
+		static_data.seasons.global_settings.preset_order = undefined;
+	}
+
+	$('#map_seasons_to_location').prop('disabled', !(static_data.seasons.data.length == 2 || static_data.seasons.data.length == 4)).parent().toggleClass('hidden', !(static_data.seasons.data.length == 2 || static_data.seasons.data.length == 4));
+
 	var no_locations = (static_data.seasons.data.length == 0 || !static_data.seasons.global_settings.enable_weather) && !static_data.clock.enabled;
 	$('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
 	$('#locations_warning').toggleClass('hidden', !no_locations);
@@ -3867,7 +4085,7 @@ function reindex_era_list(){
 			}
 		};
 
-		static_data.eras[i].date.epoch = evaluate_calendar_start(static_data, convert_year(static_data.eras[i].date.year), static_data.eras[i].date.timespan, static_data.eras[i].date.day).epoch;
+		static_data.eras[i].date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, static_data.eras[i].date.year), static_data.eras[i].date.timespan, static_data.eras[i].date.day).epoch;
 
 	});
 
@@ -4032,8 +4250,8 @@ function evaluate_season_lengths(){
 		'season_length': 0
 	};
 
-	var epoch_start = evaluate_calendar_start(static_data, convert_year(dynamic_data.year)).epoch;
-	var epoch_end = evaluate_calendar_start(static_data, convert_year(dynamic_data.year)+1).epoch-1;
+	var epoch_start = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year)).epoch;
+	var epoch_end = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year)+1).epoch-1;
 	var season_length = epoch_end-epoch_start;
 
 	for(var i = 0; i < static_data.seasons.data.length; i++){
@@ -4255,7 +4473,7 @@ function evaluate_clock_inputs(){
 function recalculate_era_epochs(){
 
 	for(var i = 0; i < static_data.eras.length; i++){
-		static_data.eras[i].date.epoch = evaluate_calendar_start(static_data, convert_year(static_data.eras[i].date.year), static_data.eras[i].date.timespan, static_data.eras[i].date.day).epoch;
+		static_data.eras[i].date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, static_data.eras[i].date.year), static_data.eras[i].date.timespan, static_data.eras[i].date.day).epoch;
 	}
 
 }
@@ -4328,6 +4546,8 @@ function set_up_edit_values(){
 		var no_seasons = static_data.seasons.data.length == 0;
 		$('#has_seasons_container').toggleClass('hidden', no_seasons).find('select, input').prop('disabled', no_seasons);
 		$('#no_seasons_container').toggleClass('hidden', !no_seasons);
+
+		$('#map_seasons_to_location').prop('disabled', !(static_data.seasons.data.length == 2 || static_data.seasons.data.length == 4)).parent().toggleClass('hidden', !(static_data.seasons.data.length == 2 || static_data.seasons.data.length == 4));
 
 		var no_locations = (static_data.seasons.data.length == 0 || !static_data.seasons.global_settings.enable_weather) && !static_data.clock.enabled;
 		$('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
@@ -4425,7 +4645,7 @@ function set_up_edit_values(){
 			var catkey = (typeof category.sort_by !== "undefined") ? category.sort_by : slugify(category.name);
 			add_category_to_list(event_category_list, catkey, category);
 		}
-		var default_event_category = static_data.event_data.default_category !== undefined ? static_data.event_data.default_category : -1;
+		var default_event_category = static_data.settings.default_category !== undefined ? static_data.settings.default_category : -1;
 		$('#default_event_category').val(default_event_category);
 	}
 
@@ -4595,7 +4815,7 @@ function autoload(){
 				calendar_name = data.calendar_name;
 				static_data = data.static_data;
 				dynamic_data = data.dynamic_data;
-				dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+				dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
 				empty_edit_values();
 				set_up_edit_values();
 				set_up_view_values();
@@ -4638,11 +4858,17 @@ function get_interval_text(timespan, data){
 
 		if(data.interval > 1){
 
-			var start_year = ((data.interval+data.offset)%data.interval);
-			if(start_year === 0){
-				start_year = data.interval;
+			if(data.interval == 1){
+				data.offset = 0;
 			}
-			text += ", starting year " + start_year + `. (year ${start_year}, ${data.interval+start_year}, ${(data.interval*2)+start_year}...)`;
+
+			var original_offset = ((data.interval+data.offset)%data.interval);
+			if(original_offset === 0){
+				var start_year = data.interval;
+			}else{
+				var start_year = original_offset;
+			}
+			text += ", starting year " + start_year + `. (${static_data.settings.year_zero_exists && original_offset == 0 ? "year 0," : "year"} ${start_year}, ${data.interval+start_year}, ${(data.interval*2)+start_year}...)`;
 
 		}
 
@@ -4662,21 +4888,36 @@ function get_interval_text(timespan, data){
 		text = "This leap day will appear every";
 
 		var timespan_interval = static_data.year_data.timespans[data.timespan].interval;
+		if(timespan_interval == 1){
+			var timespan_offset = 0;
+		}else{
+			var timespan_offset = static_data.year_data.timespans[data.timespan].offset;
+		}
+
+		var year_offset = timespan_offset%timespan_interval;
 
 		for(var i = 0; i < values.length; i++){
 
 			var leap_interval = sorted[i];
 			var leap_offset = data.offset;
 
-			var total_offset = (((leap_interval-leap_offset)%leap_interval)*timespan_interval);
+			var original_offset = ((leap_interval+leap_offset)%leap_interval);
 
-			if(total_offset == 0){
-				total_offset = sorted[i]*timespan_interval;
+			if(original_offset == 0){
+				var total_offset = sorted[i];
+			}else{
+				var total_offset = original_offset;
 			}
+
+			total_offset = (total_offset*timespan_interval)+timespan_offset;
 
 			if(i == 0 && sorted[i] == 1){
 
-				text += " year"
+				if(timespan_interval == 1){
+					text += " year"
+				}else{
+					text += ` ${ordinal_suffix_of(timespan_interval*sorted[i])} year (leaping month)`;
+				}
 
 			}else if(i == 0){
 
@@ -4690,7 +4931,9 @@ function get_interval_text(timespan, data){
 					text += ` ${ordinal_suffix_of(timespan_interval*sorted[i])} ${static_data.year_data.timespans[data.timespan].name}`;
 				}
 
-				text += ` (year ${total_offset}, ${(total_offset+sorted[i]*timespan_interval)}, ${total_offset+sorted[i]*2*timespan_interval}...)`;
+				if(values[i].indexOf('+') == -1 || year_offset != 0){
+					text += ` (${static_data.settings.year_zero_exists && original_offset == 0 ? `year ${year_offset},` : "year"} ${total_offset}, ${total_offset+sorted[i]*timespan_interval}, ${total_offset+sorted[i]*2*timespan_interval}...)`;
+				}
 
 			}
 
@@ -4703,8 +4946,8 @@ function get_interval_text(timespan, data){
 						text += `<br>• but not every ${ordinal_suffix_of(timespan_interval*sorted[i])} ${static_data.year_data.timespans[data.timespan].name}`;
 					}
 
-					if(values[i].indexOf('+') == -1){
-						text += ` (year ${total_offset}, ${total_offset+sorted[i]}, ${total_offset+sorted[i]*2}...)`;
+					if(values[i].indexOf('+') == -1 || year_offset != 0){
+						text += ` (${static_data.settings.year_zero_exists && original_offset == 0 ? `year ${year_offset},` : "year"} ${total_offset}, ${total_offset+sorted[i]*timespan_interval}, ${total_offset+sorted[i]*2*timespan_interval}...)`;
 					}
 
 				}else{
@@ -4715,8 +4958,8 @@ function get_interval_text(timespan, data){
 						text += `<br>• but also every ${ordinal_suffix_of(timespan_interval*sorted[i])} ${static_data.year_data.timespans[data.timespan].name}`;
 					}
 
-					if(values[i].indexOf('+') == -1){
-						text += ` (year ${total_offset}, ${total_offset+sorted[i]}, ${total_offset+sorted[i]*2}...)`;
+					if(values[i].indexOf('+') == -1 || year_offset != 0){
+						text += ` (${static_data.settings.year_zero_exists && original_offset == 0 ? `year ${year_offset},` : "year"} ${total_offset}, ${total_offset+sorted[i]*timespan_interval}, ${total_offset+sorted[i]*2*timespan_interval}...)`;
 					}
 
 				}

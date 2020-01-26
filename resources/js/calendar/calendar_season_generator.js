@@ -54,13 +54,23 @@ class Climate{
 
 		if(this.dynamic_data.custom_location === false && (this.static_data.seasons.data.length == 2 || this.static_data.seasons.data.length == 4)){
 
-			this.current_location = preset_data.locations[this.static_data.seasons.data.length][this.dynamic_data.location] ? preset_data.locations[this.static_data.seasons.data.length][this.dynamic_data.location] : preset_data.locations[this.static_data.seasons.data.length]['Equatorial'];
+			this.current_location = {
+				'name': preset_data.locations[this.static_data.seasons.data.length][this.dynamic_data.location].name,
+				'seasons':[]
+			}
 
 			for(var i = 0; i < this.static_data.seasons.data.length; i++){
 
+				var index = i;
+				if(this.settings.preset_order !== undefined && this.settings.preset_order.length == this.static_data.seasons.data.length){
+					index = this.settings.preset_order[i];
+				}
+
+				this.current_location.seasons.push(clone(preset_data.locations[this.static_data.seasons.data.length][this.dynamic_data.location].seasons[index]));
+
 				this.current_location.seasons[i].time = {}
-				this.current_location.seasons[i].time.sunset = this.static_data.seasons.data[i].time.sunset;
-				this.current_location.seasons[i].time.sunrise = this.static_data.seasons.data[i].time.sunrise;
+				this.current_location.seasons[i].time.sunset = this.static_data.seasons.data[index].time.sunset;
+				this.current_location.seasons[i].time.sunrise = this.static_data.seasons.data[index].time.sunrise;
 
 			}
 
@@ -213,7 +223,7 @@ class Climate{
 
 		this.season.local_seasons = [];
 
-		var year = convert_year(this.dynamic_data.year)-1;
+		var year = convert_year(this.static_data, this.dynamic_data.year)-1;
 
 		var index = this.seasons.length-1;
 		if(index < 0){
@@ -245,7 +255,7 @@ class Climate{
 		this.season.local_seasons.reverse();
 
 
-		var year = convert_year(this.dynamic_data.year);
+		var year = convert_year(this.static_data, this.dynamic_data.year);
 
 		var index = 0;
 
@@ -331,7 +341,7 @@ class Climate{
 
 		this.weather.local_seasons = [];
 
-		var year = convert_year(this.dynamic_data.year)-1;
+		var year = convert_year(this.static_data, this.dynamic_data.year)-1;
 
 		var index = this.seasons.length-1;
 		if(index < 0){
@@ -365,7 +375,7 @@ class Climate{
 		this.weather.local_seasons.reverse();
 
 
-		var year = convert_year(this.dynamic_data.year);
+		var year = convert_year(this.static_data, this.dynamic_data.year);
 
 		var index = 0;
 

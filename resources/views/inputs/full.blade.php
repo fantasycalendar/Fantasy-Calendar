@@ -693,12 +693,15 @@
     					Current location:
     				</div>
     				<div class='row no-gutters mb-2'>
-    					<select class='form-control' id='location_select'>
+    					<select class='form-control protip' id='location_select' data-pt-position="right" data-pt-title="The presets work with four seasons (winter, spring, summer, autumn) or two seasons (winter, summer). If you call your seasons the same, the system matches them with the presets' seasons, no matter which order.">
     					</select>
     				</div>
     				<div class='row no-gutters my-2'>
-    					<input type='button' value='Copy selected location to new location' class='btn btn-info full add' id='copy_location_data'>
+    					<input type='button' value='Map preset locations to seasons' class='btn btn-secondary full protip' id='map_seasons_to_location' data-pt-position="right" data-pt-title="This will open an UI where you can map your seasons to the preset location's seasons, as your order might be different from the preset.">
     				</div>
+                    <div class='row no-gutters my-2'>
+                        <input type='button' value='Copy selected location to new location' class='btn btn-info full' id='copy_location_data'>
+                    </div>
 
     				<div class='row no-gutters my-2'>
     					<div class='separator'></div>
@@ -821,7 +824,7 @@
                 <div class='row no-gutters bold-text'>
                     <div class='col'>
                        Default category:
-                        <select class='form-control event-category-list static_input' id='default_event_category' data='event_data' fc-index='default_category'></select>
+                        <select class='form-control event-category-list static_input' id='default_event_category' data='settings' fc-index='default_category'></select>
     		      	</div>
                 </div>
             </div>
@@ -867,8 +870,6 @@
 
 				<div class='add_inputs'>
 
-					<!------------------------------------------------------->
-
 					<label class="row no-gutters setting">
                         <div class='col bold-text'>
                             Layout:
@@ -888,6 +889,15 @@
     							Show only current month
     						</span>
 					    </div>
+                    </label>
+
+                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Normally, the year count is -2, -1, 1, 2, and so on. This makes it so that 0 exists, so -2, -1, 0, 1, 2.">
+                        <div class='col'>
+                            <input type='checkbox' class='margin-right static_input' data='settings' id='year_zero_exists' fc-index='year_zero_exists'>
+                            <span>
+                                Year zero exists
+                            </span>
+                        </div>
                     </label>
 
 					<!------------------------------------------------------->
@@ -973,6 +983,14 @@
                         </div>
                     </label>
 
+<<<<<<< HEAD
+                    <label class="form-control full setting last">
+                        <input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='add_year_day_number' onclick="setTimeout(calendar_layouts.add_year_day_number, 10);">
+                        <span>
+                            Add year day to each day
+                        </span>
+                        <a target="_blank" title='' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
+=======
                     <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Hides all the weather from guest viewers">
                         <div class='col'>
                             <input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_all_weather'>
@@ -980,6 +998,7 @@
                                 Hide ALL weather from guest viewers
                             </span>
                         </div>
+>>>>>>> master
                     </label>
 
                     <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This hides the exact temperature from guest viewers - this is really useful with the cinematic temperature setting">
@@ -1093,15 +1112,6 @@
 		<span class="hamburger-inner"></span>
 	</span>
 </button>
-
-<div id="warnings_background">
-	<div id="warnings">
-		<div id='warnings_content'>
-		</div>
-		<button type='button' id='warnings_ok' class='btn btn-success half'>OK</button>
-		<button type='button' id='warnings_cancel' class='btn btn-danger half'>Cancel</button>
-	</div>
-</div>
 
 <div id="calendar_container">
 

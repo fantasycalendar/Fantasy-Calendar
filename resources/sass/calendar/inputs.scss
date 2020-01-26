@@ -525,6 +525,10 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     min-height: 150px;
 }
 
+#event_comment_mastercontainer .trumbowyg-editor {
+    min-height: calc(100% - 37px);
+}
+
 #event_comments.loading{
     background-image: url('/resources/icons/loader_black.png');
     height:35px;
@@ -554,7 +558,7 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
 }
 
 .event_comment.comment_owner{
-    background-color: #fffbd3;
+    background-color: rgba($blue, 0.3);
 }
 
 .event_comment:last-child{
@@ -579,11 +583,28 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
 
 .event_comment .date{
     font-style: italic;
-    color: rgba(0,0,0,.5);
+    color: $main-text-color;
     font-size: .7rem;
 }
 
+#event_query_container {
+    position: absolute;
+    background: $weather-tooltip-bg-color;
+    top:0;
+    width:180px;
+    height:auto;
+    border-radius: 7px;
+    padding:10px;
+    font-size:9pt;
+    display:none;
+    z-index: 1500;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
 
+    .btn{
+        padding:0;
+        text-align:center;
+    }
+}
 
 
 .event-basic-wrapper{
@@ -1008,22 +1029,17 @@ ol.example li.placeholder:before {
     background-color:#FAFAFA;
 }
 
-#errors_background, #warnings_background{
+#errors_background{
     width:100%;
     height:100%;
     background-color: rgba(0, 0, 0, 0.5);
-    z-index: 200;
+    z-index: 1050;
     position:fixed;
     align-items: center;
     display:none;
 }
 
-#warnings_content{
-    margin-bottom:10px;
-}
-
-
-#errors, #warnings {
+#errors {
     border-radius: 5px;
     padding: 20px;
     width:500px;
@@ -1035,10 +1051,6 @@ ol.example li.placeholder:before {
 #errors {
     background-color: #f44336;
     color: white;
-}
-
-#warnings {
-    background-color: #ffffff;
 }
 
 /* The close button */

@@ -214,7 +214,7 @@ var event_evaluator = {
 					var selected = epoch_data[selector];
 					var cond_1 = Number(values[subcon[2]]) != NaN ? Number(values[subcon[2]]) : values[subcon[2]];
 					var cond_2 = values[subcon[3]] ? values[subcon[3]] : undefined;
-					cond_2 = Number(cond_2) != NaN ? Number(cond_2) : cond_2;
+					cond_2 = !isNaN(Number(cond_2)) ? Number(cond_2) : cond_2;
 
 				}
 
@@ -337,7 +337,7 @@ var event_evaluator = {
 
 			if(this.current_event.data.date !== undefined && this.current_event.data.date.length === 3){
 
-				var epoch = evaluate_calendar_start(event_evaluator.static_data, convert_year(this.current_event.data.date[0]), this.current_event.data.date[1], this.current_event.data.date[2]).epoch;
+				var epoch = evaluate_calendar_start(event_evaluator.static_data, convert_year(event_evaluator.static_data, this.current_event.data.date[0]), this.current_event.data.date[1], this.current_event.data.date[2]).epoch;
 
 				if(epoch >= event_evaluator.start_epoch && epoch <= event_evaluator.end_epoch){
 
@@ -347,20 +347,8 @@ var event_evaluator = {
 
 			}else{
 
-				var lookback = 0;
-
-				if(this.current_event.data.limited_repeat){
-					lookback = this.current_event.data.limited_repeat_num;
-				}
-
-				if(this.current_event.data.search_distance && this.current_event.data.search_distance > lookback){
-					lookback = this.current_event.data.search_distance;
-				}
-
-				var lookahead = this.current_event.data.search_distance ? this.current_event.data.search_distance : 0;
-
-				var begin_epoch = event_evaluator.start_epoch-lookback;
-				var last_epoch = event_evaluator.end_epoch+lookahead;
+				var begin_epoch = this.current_event.lookback ? event_evaluator.start_epoch-this.current_event.lookback : event_evaluator.start_epoch;
+				var last_epoch = this.current_event.lookahead ? event_evaluator.end_epoch+this.current_event.lookahead : event_evaluator.end_epoch;
 
 				for(var epoch = begin_epoch; epoch < last_epoch-1; epoch++){
 
@@ -452,9 +440,28 @@ var event_evaluator = {
 
 		}
 
-		function check_event_chain(id){
+		function check_event_chain(id, lookback, lookahead){
 
 			var current_event = event_evaluator.events[id];
+
+			if(lookback === undefined && lookahead === undefined){
+
+				var lookback = 0;
+
+				if(current_event.data.limited_repeat){
+					lookback = current_event.data.limited_repeat_num;
+				}
+
+				if(current_event.data.search_distance && current_event.data.search_distance > lookback){
+					lookback = current_event.data.search_distance;
+				}
+
+				var lookahead = current_event.data.search_distance ? current_event.data.search_distance : 0;
+
+			}
+
+			current_event.lookback = lookback;
+			current_event.lookahead = lookahead;
 
 			if(current_event.data.connected_events !== undefined && current_event.data.connected_events !== "false"){
 
@@ -462,7 +469,7 @@ var event_evaluator = {
 
 					var parent_id = current_event.data.connected_events[connectedId];
 						
-					check_event_chain(parent_id);
+					check_event_chain(parent_id, current_event.lookback, current_event.lookahead);
 
 				}
 
