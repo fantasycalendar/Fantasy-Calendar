@@ -1676,7 +1676,6 @@ function set_up_edit_inputs(){
 
 	});
 
-
 	$(document).on('change', '.timespan_occurance_input', function(){
 
 		var interval = $(this).closest('.sortable-container').find('.interval');
@@ -1764,6 +1763,17 @@ function set_up_edit_inputs(){
 			$(this).trigger('change');
 
 		}
+
+	});
+
+	$(document).on('change', '.leap_day_occurance_input.offset', function(e){
+
+		if(prevent_default){
+			return;
+		}
+
+		prevent_default = true;
+		$(this).trigger('change');
 
 	});
 
@@ -2129,6 +2139,8 @@ function set_up_edit_inputs(){
 			}
 
 			if(key == 'year_zero_exists'){
+				prevent_default = true;
+				$('.timespan_occurance_input').change();
 				error_check();
 				refresh_view_values();
 				set_up_visitor_values();
@@ -2358,9 +2370,9 @@ function add_leap_day_to_list(parent, key, data){
 					element.push("</div>");
 				element.push("</div>");
 
-				element.push(`<div class='row no-gutters my-1'>`);
+				element.push(`<div class='row no-gutters my-1 ${(data.adds_week_day && !data.intercalary ? "" : "hidden")}'>`);
 					element.push("<div class='form-check col-12 py-2 border rounded'>");
-						element.push(`<input type='checkbox' id='${key}_adds_week_day' class='form-check-input adds-week-day dynamic_input' data='year_data.leap_days.${key}' fc-index='adds_week_day' ${(data.adds_week_day ? "checked" : "")} />`);
+						element.push(`<input type='checkbox' id='${key}_adds_week_day' class='form-check-input adds-week-day dynamic_input' data='year_data.leap_days.${key}' fc-index='adds_week_day' ${(data.adds_week_day && !data.intercalary ? "" : "disabled")} ${(data.adds_week_day ? "checked" : "")} />`);
 						element.push(`<label for='${key}_adds_week_day' class='form-check-label ml-1'>`);
 							element.push("Adds week day");
 						element.push("</label>");
@@ -4908,7 +4920,9 @@ function get_interval_text(timespan, data){
 					text += ` ${ordinal_suffix_of(timespan_interval*sorted[i])} ${static_data.year_data.timespans[data.timespan].name}`;
 				}
 
-				text += ` (${static_data.settings.year_zero_exists && original_offset == 0 ? `year ${year_offset},` : "year"} ${total_offset}, ${total_offset+sorted[i]*timespan_interval}, ${total_offset+sorted[i]*2*timespan_interval}...)`;
+				if(values[i].indexOf('+') == -1 || year_offset != 0){
+					text += ` (${static_data.settings.year_zero_exists && original_offset == 0 ? `year ${year_offset},` : "year"} ${total_offset}, ${total_offset+sorted[i]*timespan_interval}, ${total_offset+sorted[i]*2*timespan_interval}...)`;
+				}
 
 			}
 
@@ -4921,7 +4935,7 @@ function get_interval_text(timespan, data){
 						text += `<br>• but not every ${ordinal_suffix_of(timespan_interval*sorted[i])} ${static_data.year_data.timespans[data.timespan].name}`;
 					}
 
-					if(values[i].indexOf('+') == -1){
+					if(values[i].indexOf('+') == -1 || year_offset != 0){
 						text += ` (${static_data.settings.year_zero_exists && original_offset == 0 ? `year ${year_offset},` : "year"} ${total_offset}, ${total_offset+sorted[i]*timespan_interval}, ${total_offset+sorted[i]*2*timespan_interval}...)`;
 					}
 
@@ -4933,7 +4947,7 @@ function get_interval_text(timespan, data){
 						text += `<br>• but also every ${ordinal_suffix_of(timespan_interval*sorted[i])} ${static_data.year_data.timespans[data.timespan].name}`;
 					}
 
-					if(values[i].indexOf('+') == -1){
+					if(values[i].indexOf('+') == -1 || year_offset != 0){
 						text += ` (${static_data.settings.year_zero_exists && original_offset == 0 ? `year ${year_offset},` : "year"} ${total_offset}, ${total_offset+sorted[i]*timespan_interval}, ${total_offset+sorted[i]*2*timespan_interval}...)`;
 					}
 
