@@ -60,12 +60,20 @@ var calendar_builder = {
 
 		timespan.leap_days = [];
 
-		var offset = timespan.offset%timespan.interval;
+		if(timespan.interval == 1){
 
-		if(year < 0 || this.static_data.settings.year_zero_exists){
-			var timespan_fraction = Math.ceil((year - offset) / timespan.interval);
+			var timespan_fraction = year;
+
 		}else{
-			var timespan_fraction = Math.floor((year - offset) / timespan.interval);
+
+			var offset = timespan.offset%timespan.interval;
+
+			if(year < 0 || this.static_data.settings.year_zero_exists){
+				var timespan_fraction = Math.ceil((year - offset) / timespan.interval);
+			}else{
+				var timespan_fraction = Math.floor((year - offset) / timespan.interval);
+			}
+			
 		}
 
 		var leap_day_offset = 0;
@@ -2041,10 +2049,10 @@ onmessage = e => {
 
 	if(debug){
 
-		target_loops = 2000;
+		target_loops = 20000;
 		loops = 0;
 
-		calendar_builder.dynamic_data.year = -1000;
+		calendar_builder.dynamic_data.year = -10000;
 
 		var average_time = 0;
 

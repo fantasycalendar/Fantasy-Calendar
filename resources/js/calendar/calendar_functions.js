@@ -1830,24 +1830,20 @@ function get_epoch(static_data, year, month, day){
 		// Get the current timespan's data
 		var timespan = static_data.year_data.timespans[timespan_index];
 
-		var timespan_fraction = 0;
+		if(timespan.interval == 1){
 
-		if(year >= 0){
-			if(static_data.settings.year_zero_exists){
-				var offset = (timespan.interval-timespan.offset-1)%timespan.interval;
+			var timespan_fraction = year;
+
+		}else{
+
+			var offset = timespan.offset%timespan.interval;
+
+			if(year < 0 || static_data.settings.year_zero_exists){
+				var timespan_fraction = Math.ceil((year - offset) / timespan.interval);
 			}else{
-				var offset = (timespan.interval-timespan.offset)%timespan.interval;
+				var timespan_fraction = Math.floor((year - offset) / timespan.interval);
 			}
-			timespan_fraction = Math.floor((year + offset) / timespan.interval);
-		}else{
-			var offset = (timespan.interval+timespan.offset)%timespan.interval;
-			timespan_fraction = Math.ceil((year - offset) / timespan.interval);
-		}
-
-		if(year >= 0){
-			timespan_fraction = Math.max(timespan_fraction, 0)
-		}else{
-			timespan_fraction = Math.min(timespan_fraction, 0)
+			
 		}
 
 		// Get the number of weeks for that month (check if it has a custom week or not)

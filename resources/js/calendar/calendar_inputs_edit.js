@@ -1689,7 +1689,7 @@ function set_up_edit_inputs(){
 		if(interval_val > 1){
 			offset.prop('disabled', false);
 		}else{
-			offset.prop('disabled', true).val(0).change();
+			offset.prop('disabled', true).val(0);
 		}
 
 		var data = {
@@ -1714,7 +1714,67 @@ function set_up_edit_inputs(){
 		return 0; // equal values MUST yield zero
 	}
 
-	$(document).on('change', '.leap_day_occurance_input', function(){
+	prevent_default = false;
+
+	$(document).on('focus', '.leap_day_occurance_input.interval', function(e){
+		$(this).prop('prev', $(this).val());
+	});
+
+	$(document).on('change', '.leap_day_occurance_input.interval', function(e){
+
+		if(prevent_default){
+			return;
+		}
+
+		e.preventDefault();
+
+		var interval = $(this).val();
+		var values = interval.split(',');
+
+		if(values.length > 5){
+		
+			swal.fire({
+				title: "Warning!",
+				text: "You have over 5 intervals, more than this can slow down your calendar quite a lot. Are you sure you want to continue?",
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				confirmButtonText: 'Yes',
+				cancelButtonText: 'Cancel',
+				icon: "warning"
+			})
+			.then((result) => {
+
+				if(!result.dismiss){
+
+					prevent_default = true;
+					$(this).trigger('change');
+
+				}else{
+
+					$(this).val($(this).prop('prev'));
+
+				}
+
+			});
+
+		}else{
+
+			prevent_default = true;
+			$(this).trigger('change');
+
+		}
+
+	});
+
+	$(document).on('change', '.leap_day_occurance_input', function(e){
+
+		if(!prevent_default){
+			e.preventDefault();
+			return;
+		}
+
+		prevent_default = false;
 
 		var index = $(this).closest('.sortable-container').attr('index')|0;
 		var interval = $(this).closest('.sortable-container').find('.interval');
@@ -1802,7 +1862,7 @@ function set_up_edit_inputs(){
 			sorted = sorted.reverse();
 
 			if(values.length == 1 && Number(values[0]) == 1){
-				offset.val(0).prop('disabled', true).change();
+				offset.val(0).prop('disabled', true);
 			}else{
 				offset.prop('disabled', false);
 			}
@@ -2162,7 +2222,7 @@ function add_timespan_to_sortable(parent, key, data){
 				element.push("</div>");
 
 				element.push("<div class='col-6 pl-1'>");
-					element.push(`<input type='number' step="1" class='form-control timespan_occurance_input offset dynamic_input small-input' min='0' data='year_data.timespans.${key}' fc-index='offset' value='${data.interval === 1 ? 0 : data.offset}'`);
+					element.push(`<input type='number' step="1" min='0' class='form-control timespan_occurance_input offset dynamic_input small-input' min='0' data='year_data.timespans.${key}' fc-index='offset' value='${data.interval === 1 ? 0 : data.offset}'`);
 					element.push(data.interval === 1 ? " disabled" : "");
 					element.push("/>");
 				element.push("</div>");
