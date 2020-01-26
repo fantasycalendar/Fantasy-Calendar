@@ -32,6 +32,7 @@ var edit_event_ui = {
 		this.repeat_input						= $('#repeat_input');
 		this.non_preset_buttons					= $('#non_preset_buttons');
 		this.save_btn							= this.event_background.find('#btn_event_save');
+		this.delete_btn							= this.event_background.find('#btn_event_delete');
 		this.close_ui_btn						= this.event_background.find('.close_ui_btn');
 		this.test_event_btn						= this.event_background.find('.test_event_btn');
 		this.trumbowyg							= this.event_background.find('.event_desc');
@@ -41,14 +42,14 @@ var edit_event_ui = {
 		this.event_occurrences = false;
 
 		this.event_occurrences_container		= $('.event_occurrences');
-		this.event_occurrences_list_container	= $('.event_occurrences .list_container');
-		this.event_occurrences_page_number		= $('.event_occurrences .list_container .page_number');
-		this.event_occurrences_text				= $('.event_occurrences .list_container .text');
-		this.event_occurrences_list				= $('.event_occurrences .list_container .list');
-		this.event_occurrences_list_col1		= $('.event_occurrences .list_container .list .col1');
-		this.event_occurrences_list_col2		= $('.event_occurrences .list_container .list .col2');
-		this.event_occurrences_button_prev		= $('.event_occurrences .list_container .prev');
-		this.event_occurrences_button_next		= $('.event_occurrences .list_container .next');
+		this.event_occurrences_list_container	= $('.event_occurrences_list_container');
+		this.event_occurrences_page_number		= $('.event_occurrences_list_container .page_number');
+		this.event_occurrences_text				= $('.event_occurrences_list_container .text');
+		this.event_occurrences_list				= $('.event_occurrences_list_container .list');
+		this.event_occurrences_list_col1		= $('.event_occurrences_list_container .list .col1');
+		this.event_occurrences_list_col2		= $('.event_occurrences_list_container .list .col2');
+		this.event_occurrences_button_prev		= $('.event_occurrences_list_container .prev');
+		this.event_occurrences_button_next		= $('.event_occurrences_list_container .next');
 
 		this.event_occurrences_button_prev.click(function(e){
 			edit_event_ui.event_occurrences_page--;
@@ -87,6 +88,10 @@ var edit_event_ui = {
 
 		this.save_btn.click(function(){
 			edit_event_ui.save_current_event();
+		})
+
+		this.delete_btn.click(function(){
+			edit_event_ui.delete_current_event();
 		})
 
 		edit_event_ui.close_ui_btn.click(function(){
@@ -1776,6 +1781,7 @@ var edit_event_ui = {
 				}else{
 
 					event_occurrences = e.data.event_data.valid[edit_event_ui.event_id] ? e.data.event_data.valid[edit_event_ui.event_id] : [];
+
 					edit_event_ui.event_occurrences = []
 
 					for(event_occurrence in event_occurrences){
@@ -1862,6 +1868,90 @@ var edit_event_ui = {
 
 		this.event_occurrences_list_col1.html(html_col1.join(''))
 		this.event_occurrences_list_col2.html(html_col2.join(''))
+
+	},
+
+	delete_current_event: function(){
+
+		var warnings = [];
+
+		for(var eventId in static_data.event_data.events){
+			if(static_data.event_data.events[eventId].data.connected_events !== undefined){
+				var connected_events = static_data.event_data.events[eventId].data.connected_events;
+				if(connected_events.includes(String(this.event_id)) || connected_events.includes(this.event_id)){
+					warnings.push(eventId);
+				}
+			}
+		}
+
+		if(warnings.length > 0){
+
+			var html = [];
+			html.push(`<div class='text-left'>`)
+			html.push(`<h5>You trying to delete "${static_data.event_data.events[this.event_id].name}" which referenced in the following events:</h5>`)
+			html.push(`<ul>`);
+			for(var i = 0; i < warnings.length; i++){
+				var event_id = warnings[i];
+				html.push(`<li>• ${static_data.event_data.events[event_id].name}</li>`);
+			}
+			html.push(`</ul>`);
+			html.push(`<p>Please remove the conditions referencing "${static_data.event_data.events[this.event_id].name}" in these events before deleting.</p>`)
+			html.push(`</div>`);
+
+			swal.fire({
+				title: "Warning!",
+				html: html.join(''),
+				showCancelButton: false,
+				confirmButtonColor: '#3085d6',
+				confirmButtonText: 'OK',
+				icon: "warning",
+			})
+
+		}else{
+
+			swal.fire({
+				title: "Warning!",
+				text: "Are you sure you want to delete this event? If you change your mind, the only way to get it back is to reload the calendar and lose all of your changes.",
+				showCancelButton: true,
+				confirmButtonColor: '#d33',
+				cancelButtonColor: '#3085d6',
+				confirmButtonText: 'OK',
+				icon: "warning",
+			}).then((result) => {
+
+				if(!result.dismiss) {
+
+					events_sortable.children(`[index='${this.event_id}']`).remove();
+
+					for(var eventId in static_data.event_data.events){
+						if(static_data.event_data.events[eventId].data.connected_events !== undefined){
+							for(connectedId in static_data.event_data.events[eventId].data.connected_events){
+								var number = Number(static_data.event_data.events[eventId].data.connected_events[connectedId])
+								if(Number(static_data.event_data.events[eventId].data.connected_events[connectedId]) > this.event_id){
+									static_data.event_data.events[eventId].data.connected_events[connectedId] = String(number-1)
+								}
+							}
+						}
+					}
+
+					static_data.event_data.events.splice(this.event_id, 1);
+
+					events_sortable.children().each(function(i){
+						static_data.event_data.events[i].sort_by = i;
+						$(this).attr('index', i);
+					});
+
+					this.clear_ui();
+
+					rebuild_events();
+
+					evaluate_save_button();
+
+				}
+
+			});
+
+		}
 
 	}
 
@@ -2035,20 +2125,24 @@ var show_event_ui = {
 
 		var target = $(e.target);
 
-		if((target.attr('event_id')|0) != show_event_ui.event_id){
-
-			delete registered_click_callbacks['show_event_ui'];
-
-			show_event_ui.event_id = -1;
-			show_event_ui.era_id = -1;
-
-			show_event_ui.event_query_container.hide();
-
+		if(target.attr('event_id') === undefined || ((target.attr('event_id')|0) != show_event_ui.event_id)){
+			show_event_ui.hide_query_container();
 		}
 
 	},
 
+	hide_query_container: function(){
+
+		delete registered_click_callbacks['show_event_ui'];
+		this.event_id = -1;
+		this.era_id = -1;
+		this.event_query_container.hide();
+
+	},
+
 	set_current_event: function(event){
+
+		this.hide_query_container();
 
 		this.event_id = event.id;
 
@@ -2097,8 +2191,6 @@ var show_event_ui = {
 	add_comment: function(index, comment){
 
 		var content = [];
-
-		console.log(comment);
 
 		content.push(`<div class='event_comment ${comment.comment_owner ? "comment_owner" : ""} ${comment.calendar_owner ? "calendar_owner" : ""}'`);
 		content.push(` date='${comment.date}' comment_id='${index}'>`);

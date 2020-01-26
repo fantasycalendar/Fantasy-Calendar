@@ -4,65 +4,6 @@ $(document).ready(function(){
 		evaluate_error_background_size();
 	});
 
-	warning_message = {
-
-		background: $('#warnings_background'),
-
-		init: function(){
-
-			this.button_ok = $('#warnings_ok');
-			this.button_cancel = $('#warnings_cancel');
-
-			this.button_ok.click(function(){
-				if(warning_message.callback){
-					warning_message.callback(true);
-				}
-				warning_message.hide();
-			});
-			this.button_cancel.click(function(){
-				if(warning_message.callback){
-					warning_message.callback(false);
-				}
-				warning_message.hide();
-			});
-
-			this.content = this.background.children().first().children().first();
-
-		},
-
-		show: function(html, callback){
-
-			if(callback !== undefined){
-				this.callback = callback;
-			}else{
-				this.callback = false;
-				this.button_cancel.hide();
-			}
-
-			this.content.html(html);
-
-			var width = this.background.parent().width();
-
-			this.background.css('display', 'flex');
-
-			evaluate_error_background_size();
-
-		},
-
-		hide: function(){
-
-			this.button_cancel.show();
-
-			this.background.css('display', 'none');
-
-			this.content.html('');
-
-		}
-
-	}
-
-	warning_message.init();
-
 	loading_bar = new ProgressBar.Line('.loading_bar', {
 		strokeWidth: 2,
 		easing: 'easeInOut',
@@ -81,8 +22,6 @@ $(document).ready(function(){
 function evaluate_error_background_size(){
 	var width = $('#errors_background').parent().width();
 	$('#errors_background').width(width);
-	var width = $('#warnings_background').parent().width();
-	$('#warnings_background').width(width);
 }
 
 function error_message(message){

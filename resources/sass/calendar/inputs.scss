@@ -1029,22 +1029,17 @@ ol.example li.placeholder:before {
     background-color:#FAFAFA;
 }
 
-#errors_background, #warnings_background{
+#errors_background{
     width:100%;
     height:100%;
     background-color: rgba(0, 0, 0, 0.5);
-    z-index: 200;
+    z-index: 1050;
     position:fixed;
     align-items: center;
     display:none;
 }
 
-#warnings_content{
-    margin-bottom:10px;
-}
-
-
-#errors, #warnings {
+#errors {
     border-radius: 5px;
     padding: 20px;
     width:500px;
@@ -1056,10 +1051,6 @@ ol.example li.placeholder:before {
 #errors {
     background-color: #f44336;
     color: white;
-}
-
-#warnings {
-    background-color: #ffffff;
 }
 
 /* The close button */
