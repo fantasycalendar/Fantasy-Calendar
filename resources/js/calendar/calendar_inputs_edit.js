@@ -2147,14 +2147,15 @@ function set_up_edit_inputs(){
 				evaluate_clock_inputs();
 			}
 
-			if(key == 'year_zero_exists'){
-				prevent_default = true;
-				$('.timespan_occurance_input.interval').change();
-				error_check();
+			if(key == "year_zero_exists"){
+				refresh_interval_texts();
 				refresh_view_values();
 				set_up_visitor_values();
-				evaluate_dynamic_change();
-			}else if(target.attr('refresh') == "clock"){
+				dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+				preview_date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, preview_date.year), preview_date.timespan, preview_date.day).epoch;
+			}
+
+			if(target.attr('refresh') == "clock"){
 				eval_clock();
 				evaluate_save_button();
 			}else{
@@ -4836,6 +4837,27 @@ function autoload(){
 		});
 
 	}
+
+}
+
+function refresh_interval_texts(){
+
+	timespan_sortable.children().each(function(index){
+
+		var timespan = static_data.year_data.timespans[index];
+
+		$(this).find('.timespan_variance_output').text(get_interval_text(true, timespan));
+
+	});
+
+
+	leap_day_list.children().each(function(index){
+
+		var leap_day = static_data.year_data.leap_days[index];
+
+		$(this).find('.leap_day_variance_output').text(get_interval_text(false, leap_day));
+
+	});
 
 }
 

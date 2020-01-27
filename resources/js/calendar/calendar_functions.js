@@ -863,7 +863,7 @@ function get_cycle(static_data, epoch_data){
 			}else if(cycle_type == "year day"){
 				cycle_epoch_data--;
 			}else if(cycle_type == "year"){
-				cycle_epoch_data = cycle_epoch_data >= 0 ? cycle_epoch_data-1 : cycle_epoch_data;
+				cycle_epoch_data = convert_year(static_data, cycle_epoch_data);
 			}
 
 			// Get the cycle length from the year
