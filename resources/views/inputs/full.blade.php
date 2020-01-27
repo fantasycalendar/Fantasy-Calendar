@@ -982,15 +982,7 @@
                             </span>
                         </div>
                     </label>
-
-<<<<<<< HEAD
-                    <label class="form-control full setting last">
-                        <input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='add_year_day_number' onclick="setTimeout(calendar_layouts.add_year_day_number, 10);">
-                        <span>
-                            Add year day to each day
-                        </span>
-                        <a target="_blank" title='' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="setting-question"><i class="icon-question-sign"></i></a>
-=======
+                    
                     <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Hides all the weather from guest viewers">
                         <div class='col'>
                             <input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_all_weather'>
@@ -998,7 +990,6 @@
                                 Hide ALL weather from guest viewers
                             </span>
                         </div>
->>>>>>> master
                     </label>
 
                     <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This hides the exact temperature from guest viewers - this is really useful with the cinematic temperature setting">
