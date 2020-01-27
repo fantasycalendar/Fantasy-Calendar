@@ -26,6 +26,7 @@ function display_events(static_data, event_data){
 
 				var event_group = current_event.settings.color ? " " + current_event.settings.color : "";
 				event_group += current_event.settings.text ? " " + current_event.settings.text : "";
+				event_group += current_event.settings.hide || static_data.settings.hide_events ? " hidden_event" : "";
 
 				var html = `<div title='View ${current_event.name}' class='event ${(event_group + (start ? " event_start" : (end ? " event_end" : "")))}' event_id='${event_index}' category='${category_name}'>${((start ? "Start: " : (end ? "End: " : "")) + current_event.name)}</div>`;
 
@@ -495,8 +496,7 @@ var calendar_layouts = {
 
 			var timespan_index = Object.keys(this.timespans)[i]
 
-			if(static_data.settings.only_reveal_today && !owner &&
-				(this.year_data.year > dynamic_data.year || (this.year_data.year == dynamic_data.year && timespan_index > dynamic_data.timespan))){
+			if(static_data.settings.only_reveal_today && !owner && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, timespan_index)){
 
 				continue;
 
@@ -534,12 +534,7 @@ var calendar_layouts = {
 
 		insert_day: function(epoch, weather_align, day_num, day_class, title){
 
-			if(static_data.settings.only_reveal_today && !owner && (
-				calendar_layouts.year_data.year > dynamic_data.year ||
-				(calendar_layouts.year_data.year == dynamic_data.year && this.timespan.index > dynamic_data.timespan ||
-					(calendar_layouts.year_data.year == dynamic_data.year && this.timespan.index == dynamic_data.timespan && this.timespan.day > dynamic_data.day)
-				))
-			)
+			if(static_data.settings.only_reveal_today && !owner && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day))
 			{
 
 				this.insert_empty_day(day_class);
@@ -554,11 +549,15 @@ var calendar_layouts = {
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow center'>");
 						if(calendar_layouts.epoch_data[epoch].weather && calendar_layouts.data.processed_weather){
-							calendar_layouts.html.push(`<div class='weather_icon' align='${weather_align}'></div>`);
+							if(!(static_data.settings.hide_all_weather || (static_data.settings.hide_future_weather && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)))){
+								calendar_layouts.html.push(`<div class='weather_icon' align='${weather_align}'></div>`);
+							}
 						}
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow right'>");
-							calendar_layouts.html.push("<div class='btn_create_event btn btn-success' title='Create new event'></div>");
+							if(owner){
+								calendar_layouts.html.push("<div class='btn_create_event btn btn-success' title='Create new event'></div>");
+							}
 						calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("</div>");
 					if(title){
@@ -857,11 +856,15 @@ var calendar_layouts = {
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow center'>");
 						if(calendar_layouts.epoch_data[epoch].weather && calendar_layouts.data.processed_weather){
-							calendar_layouts.html.push(`<div class='weather_icon' align='${weather_align}'></div>`);
+							if(!(static_data.settings.hide_all_weather || (static_data.settings.hide_future_weather && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)))){
+								calendar_layouts.html.push(`<div class='weather_icon' align='${weather_align}'></div>`);
+							}
 						}
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow right'>");
-							calendar_layouts.html.push("<div class='btn_create_event btn btn-success' title='Create new event'></div>");
+							if(owner){
+								calendar_layouts.html.push("<div class='btn_create_event btn btn-success' title='Create new event'></div>");
+							}
 						calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("</div>");
 					if(title){
@@ -1171,11 +1174,15 @@ var calendar_layouts = {
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow center'>");
 						if(calendar_layouts.epoch_data[epoch].weather && calendar_layouts.data.processed_weather){
-							calendar_layouts.html.push(`<div class='weather_icon' align=''></div>`);
+							if(!(static_data.settings.hide_all_weather || (static_data.settings.hide_future_weather && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)))){
+								calendar_layouts.html.push(`<div class='weather_icon' align=''></div>`);
+							}
 						}
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow right'>");
-							calendar_layouts.html.push("<div class='btn_create_event btn btn-success' title='Create new event'></div>");
+							if(owner){
+								calendar_layouts.html.push("<div class='btn_create_event btn btn-success' title='Create new event'></div>");
+							}
 						calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("</div>");
 

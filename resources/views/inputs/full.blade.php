@@ -973,21 +973,21 @@
 
 
                     <div class='bold-text'>Weather Display Settings:</div>
-
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Hides any future weather from guest viewers">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_future_weather'>
-                            <span>
-                                Hide future weather from guest viewers
-                            </span>
-                        </div>
-                    </label>
                     
                     <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Hides all the weather from guest viewers">
                         <div class='col'>
                             <input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_all_weather'>
                             <span>
                                 Hide ALL weather from guest viewers
+                            </span>
+                        </div>
+                    </label>
+
+                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Hides any future weather from guest viewers">
+                        <div class='col'>
+                            <input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_future_weather'>
+                            <span>
+                                Hide future weather from guest viewers
                             </span>
                         </div>
                     </label>

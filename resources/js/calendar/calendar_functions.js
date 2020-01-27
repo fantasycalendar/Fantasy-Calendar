@@ -21,6 +21,27 @@ var execution_time = {
 	}
 }
 
+function is_past_current_date(dynamic_data, year, timespan, day){
+
+	if(year !== undefined && timespan !== undefined && day !== undefined){
+		return (
+			year > dynamic_data.year ||
+			(year == dynamic_data.year && timespan > dynamic_data.timespan ||
+				(year == dynamic_data.year && timespan == dynamic_data.timespan && day > dynamic_data.day)
+			)
+		)
+	}else if(year !== undefined && timespan !== undefined && day === undefined){
+
+		return (year > dynamic_data.year || (year == dynamic_data.year && timespan > dynamic_data.timespan))
+
+	}else if(year !== undefined && timespan === undefined && day === undefined){
+
+		return year > dynamic_data.year;
+
+	}
+
+}
+
 function fahrenheit_to_celcius(temp){
 
 	return precisionRound((temp-32)*(5/9), 4);

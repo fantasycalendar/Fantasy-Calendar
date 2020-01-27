@@ -85,7 +85,7 @@
         min-width: 5rem;
 
         &.empty_timespan_day{
-            background-color:grey;
+            background-color:$gray-secondary;
             min-height:75px;
         }
 
@@ -287,6 +287,10 @@
             content: "• ";
             font-weight: 900;
         }
+    }
+
+    &.hidden_event{
+        background-image:$disabled-crosshatch;
     }
 
     &.background{

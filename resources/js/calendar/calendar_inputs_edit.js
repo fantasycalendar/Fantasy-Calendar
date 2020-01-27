@@ -273,7 +273,6 @@ function set_up_edit_inputs(){
 		poll_timer = setTimeout(check_master_update, 5000);
 	});
 
-
 	/* ------------------- Layout callbacks ------------------- */
 
 	$('.add_inputs').keyup(function(e){
