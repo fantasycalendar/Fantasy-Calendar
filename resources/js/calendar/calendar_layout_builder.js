@@ -13,7 +13,11 @@ function display_events(static_data, event_data){
 
 			$(`[event_id='${event_index}']`).remove();
 
-			if(current_event.settings.hide_full || (!owner && current_event.settings.hide)) continue;
+			var category = current_event.event_category_id && current_event.event_category_id > -1 ?  get_category(current_event.event_category_id) : false;
+
+			var category_hide = category ? category.category_settings.hide : false;
+
+			if(current_event.settings.hide_full || (!owner && (current_event.settings.hide || static_data.settings.hide_events || category_hide))) continue;
 
 			for(var epoch_index = 0; event_data.valid[event_index] && epoch_index < event_data.valid[event_index].length; epoch_index++){
 
@@ -22,11 +26,11 @@ function display_events(static_data, event_data){
 				var start = event_data.starts[event_index].indexOf(local_epoch) != -1;
 				var end = event_data.ends[event_index].indexOf(local_epoch) != -1;
 
-				var category_name = current_event.event_category_id && current_event.event_category_id > -1 ?  get_category(current_event.event_category_id).name : "";
-
 				var event_group = current_event.settings.color ? " " + current_event.settings.color : "";
 				event_group += current_event.settings.text ? " " + current_event.settings.text : "";
-				event_group += current_event.settings.hide || static_data.settings.hide_events ? " hidden_event" : "";
+				event_group += current_event.settings.hide || static_data.settings.hide_events || category_hide ? " hidden_event" : "";
+
+				var category_name = category ? category.name : "";
 
 				var html = `<div title='View ${current_event.name}' class='event ${(event_group + (start ? " event_start" : (end ? " event_end" : "")))}' event_id='${event_index}' category='${category_name}'>${((start ? "Start: " : (end ? "End: " : "")) + current_event.name)}</div>`;
 
