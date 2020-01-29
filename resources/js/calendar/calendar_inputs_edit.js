@@ -631,10 +631,14 @@ function set_up_edit_inputs(){
 		}
 
 		add_location_to_list(location_list, id, stats);
-		reindex_location_list();
+
+		static_data.seasons.locations.push(stats);
+
+		repopulate_location_select_list();
+
 		name.val('');
 
-		$('.slider_percentage').slider({
+		location_list.children().last().find('.slider_percentage').slider({
 			min: 0,
 			max: 100,
 			step: 1,
@@ -646,7 +650,7 @@ function set_up_edit_inputs(){
 			}
 		});
 
-		$('.slider_percentage').each(function(){
+		location_list.children().last().find('.slider_percentage').each(function(){
 			$(this).slider('option', 'value', parseInt($(this).parent().parent().find('.slider_input').val()));
 		});
 
@@ -799,27 +803,12 @@ function set_up_edit_inputs(){
 		var id = location_list.children().length;
 
 		add_location_to_list(location_list, id, stats);
-		reindex_location_list();
 
-		$('.slider_percentage').slider({
-			min: 0,
-			max: 100,
-			step: 1,
-			change: function( event, ui ) {
-				$(this).parent().parent().find('.slider_input').val($(this).slider('value')).change();
-			},
-			slide: function( event, ui ){
-				$(this).parent().parent().find('.slider_input').val($(this).slider('value'));
-			}
-		});
+		static_data.seasons.locations.push(stats);
 
-		$('.slider_percentage').each(function(){
-			$(this).slider('option', 'value', parseInt($(this).parent().parent().find('.slider_input').val()));
-		});
+		repopulate_location_select_list();
 
 		location_select.find('optgroup[value="custom"]').children().eq(id).prop('selected', true).change();
-
-		do_error_check();
 
 	});
 
