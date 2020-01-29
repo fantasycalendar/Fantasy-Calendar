@@ -3945,7 +3945,7 @@ function reindex_location_list(){
 	});
 
 	if(static_data.seasons.locations.length == 0){
-		dynamic_data.location = "Equatorial";
+		dynamic_data.location = "";
 		dynamic_data.custom_location = false;
 	}
 

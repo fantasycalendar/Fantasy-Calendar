@@ -54,8 +54,12 @@ class Climate{
 
 		if(this.dynamic_data.custom_location === false && (this.static_data.seasons.data.length == 2 || this.static_data.seasons.data.length == 4)){
 
+			var preset_season_length = preset_data.locations[this.static_data.seasons.data.length];
+
+			var location = preset_season_length[this.dynamic_data.location] !== undefined ? preset_season_length[this.dynamic_data.location] : preset_season_length[Object.keys(preset_season_length)[0]];
+
 			this.current_location = {
-				'name': preset_data.locations[this.static_data.seasons.data.length][this.dynamic_data.location].name,
+				'name': location.name,
 				'seasons':[]
 			}
 
@@ -66,7 +70,7 @@ class Climate{
 					index = this.settings.preset_order[i];
 				}
 
-				this.current_location.seasons.push(clone(preset_data.locations[this.static_data.seasons.data.length][this.dynamic_data.location].seasons[index]));
+				this.current_location.seasons.push(clone(location.seasons[index]));
 
 				this.current_location.seasons[i].time = {}
 				this.current_location.seasons[i].time.sunset = this.static_data.seasons.data[index].time.sunset;
