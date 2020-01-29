@@ -774,13 +774,24 @@ function set_up_edit_inputs(){
 		var location = location_select.val();
 
 		if(type === "custom"){
+
 			var stats = static_data.seasons.locations[location];
+
 		}else{
+
 			var stats = preset_data.locations[static_data.seasons.data.length][location];
+
 			stats.settings = preset_data.curves;
 
 			for(var i = 0; i < static_data.seasons.data.length; i++){
 				stats.seasons[i].time = static_data.seasons.data[i].time;
+			}
+
+			if(static_data.seasons.global_settings.temp_sys === "metric" || static_data.seasons.global_settings.temp_sys === "both_m"){
+				for(var i = 0; i < static_data.seasons.data.length; i++){
+					stats.seasons[i].weather.temp_low = fahrenheit_to_celcius(stats.seasons[i].weather.temp_low);
+					stats.seasons[i].weather.temp_high = fahrenheit_to_celcius(stats.seasons[i].weather.temp_high);
+				}
 			}
 
 		}

@@ -619,6 +619,131 @@ var preset_data = {
 
 	locations: {
 		"2": {
+			'Cool and Rainy': {
+				'name': 'Cool and Rainy',
+				'seasons': [
+					{
+						'name': 'Winter',
+						'custom_name': true,
+						'weather': {
+							'temp_low': 5,
+							'temp_high': 40,
+							'precipitation': 0.35,
+							'precipitation_intensity': 0.6
+						}
+					},
+					{
+						'name': 'Summer',
+						'custom_name': true,
+						'weather': {
+							'temp_low': 60,
+							'temp_high': 85,
+							'precipitation': 0.35,
+							'precipitation_intensity': 0.6
+						}
+					}
+				]
+			},
+			'Cool with Dry Winter': {
+				'name': 'Cool with Dry Winter',
+				'seasons': [
+					{
+						'name': 'Winter',
+						'custom_name': true,
+						'weather': {
+							'temp_low': 5,
+							'temp_high': 40,
+							'precipitation': 0.1,
+							'precipitation_intensity': 0.1
+						}
+					},
+					{
+						'name': 'Summer',
+						'custom_name': true,
+						'weather': {
+							'temp_low': 60,
+							'temp_high': 85,
+							'precipitation': 0.35,
+							'precipitation_intensity': 0.75
+						}
+					}
+				]
+			},
+			'Warm and Rainy': {
+				'name': 'Warm and Rainy',
+				'seasons': [
+					{
+						'name': 'Winter',
+						'custom_name': true,
+						'weather': {
+							'temp_low': 10,
+							'temp_high': 50,
+							'precipitation': 0.4,
+							'precipitation_intensity': 0.5
+						}
+					},
+					{
+						'name': 'Summer',
+						'custom_name': true,
+						'weather': {
+							'temp_low': 50,
+							'temp_high': 85,
+							'precipitation': 0.4,
+							'precipitation_intensity': 0.6
+						}
+					}
+				]
+			},
+			'Warm with Dry Summer': {
+				'name': 'Warm with Dry Summer',
+				'seasons': [
+					{
+						'name': 'Winter',
+						'custom_name': true,
+						'weather': {
+							'temp_low': 10,
+							'temp_high': 60,
+							'precipitation': 0.3,
+							'precipitation_intensity': 0.6
+						}
+					},
+					{
+						'name': 'Summer',
+						'custom_name': true,
+						'weather': {
+							'temp_low': 60,
+							'temp_high': 95,
+							'precipitation': 0.1,
+							'precipitation_intensity': 0.2
+						}
+					}
+				]
+			},
+			'Warm with Dry Winter': {
+				'name': 'Warm with Dry Winter',
+				'seasons': [
+					{
+						'name': 'Winter',
+						'custom_name': true,
+						'weather': {
+							'temp_low': 32,
+							'temp_high': 50,
+							'precipitation': 0.15,
+							'precipitation_intensity': 0.2
+						}
+					},
+					{
+						'name': 'Summer',
+						'custom_name': true,
+						'weather': {
+							'temp_low': 70,
+							'temp_high': 110,
+							'precipitation': 0.45,
+							'precipitation_intensity': 0.6
+						}
+					}
+				]
+			},
 			'Equatorial': {
 				'name': 'Equatorial',
 				'seasons': [
@@ -744,131 +869,6 @@ var preset_data = {
 					}
 				]
 			},
-			'Warm and Rainy': {
-				'name': 'Warm and Rainy',
-				'seasons': [
-					{
-						'name': 'Winter',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 10,
-							'temp_high': 50,
-							'precipitation': 0.4,
-							'precipitation_intensity': 0.5
-						}
-					},
-					{
-						'name': 'Summer',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 50,
-							'temp_high': 85,
-							'precipitation': 0.4,
-							'precipitation_intensity': 0.6
-						}
-					}
-				]
-			},
-			'Warm with Dry Summer': {
-				'name': 'Warm with Dry Summer',
-				'seasons': [
-					{
-						'name': 'Winter',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 10,
-							'temp_high': 60,
-							'precipitation': 0.3,
-							'precipitation_intensity': 0.6
-						}
-					},
-					{
-						'name': 'Summer',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 60,
-							'temp_high': 95,
-							'precipitation': 0.1,
-							'precipitation_intensity': 0.2
-						}
-					}
-				]
-			},
-			'Warm with Dry Winter': {
-				'name': 'Warm with Dry Winter',
-				'seasons': [
-					{
-						'name': 'Winter',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 32,
-							'temp_high': 50,
-							'precipitation': 0.15,
-							'precipitation_intensity': 0.2
-						}
-					},
-					{
-						'name': 'Summer',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 70,
-							'temp_high': 110,
-							'precipitation': 0.45,
-							'precipitation_intensity': 0.6
-						}
-					}
-				]
-			},
-			'Cool and Rainy': {
-				'name': 'Cool and Rainy',
-				'seasons': [
-					{
-						'name': 'Winter',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 5,
-							'temp_high': 40,
-							'precipitation': 0.35,
-							'precipitation_intensity': 0.6
-						}
-					},
-					{
-						'name': 'Summer',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 60,
-							'temp_high': 85,
-							'precipitation': 0.35,
-							'precipitation_intensity': 0.6
-						}
-					}
-				]
-			},
-			'Cool with Dry Winter': {
-				'name': 'Cool with Dry Winter',
-				'seasons': [
-					{
-						'name': 'Winter',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 5,
-							'temp_high': 40,
-							'precipitation': 0.1,
-							'precipitation_intensity': 0.1
-						}
-					},
-					{
-						'name': 'Summer',
-						'custom_name': true,
-						'weather': {
-							'temp_low': 60,
-							'temp_high': 85,
-							'precipitation': 0.35,
-							'precipitation_intensity': 0.75
-						}
-					}
-				]
-			},
 			'Tundra': {
 				'name': 'Tundra',
 				'seasons': [
@@ -947,6 +947,231 @@ var preset_data = {
 		},
 
 		"4": {
+			"Cool and Rainy":{
+				"name":"Cool and Rainy",
+				"seasons":[
+					{
+						"name":"Winter",
+						"custom_name":true,
+						"weather":{
+							"temp_low":5,
+							"temp_high":40,
+							"precipitation":0.35,
+							"precipitation_intensity":0.6
+						}
+					},
+					{
+						"name":"Spring",
+						"custom_name":true,
+						"weather":{
+							"temp_low":32.5,
+							"temp_high":62.5,
+							"precipitation":0.35,
+							"precipitation_intensity":0.6
+						}
+					},
+					{
+						"name":"Summer",
+						"custom_name":true,
+						"weather":{
+							"temp_low":60,
+							"temp_high":85,
+							"precipitation":0.35,
+							"precipitation_intensity":0.6
+						}
+					},
+					{
+						"name":"Autumn",
+						"custom_name":true,
+						"weather":{
+							"temp_low":32.5,
+							"temp_high":62.5,
+							"precipitation":0.35,
+							"precipitation_intensity":0.6
+						}
+					}
+				]
+			},
+			"Cool with Dry Winter":{
+				"name":"Cool with Dry Winter",
+				"seasons":[
+					{
+						"name":"Winter",
+						"custom_name":true,
+						"weather":{
+							"temp_low":5,
+							"temp_high":40,
+							"precipitation":0.1,
+							"precipitation_intensity":0.1
+						}
+					},
+					{
+						"name":"Spring",
+						"custom_name":true,
+						"weather":{
+							"temp_low":32.5,
+							"temp_high":62.5,
+							"precipitation":0.225,
+							"precipitation_intensity":0.425
+						}
+					},
+					{
+						"name":"Summer",
+						"custom_name":true,
+						"weather":{
+							"temp_low":60,
+							"temp_high":85,
+							"precipitation":0.35,
+							"precipitation_intensity":0.75
+						}
+					},
+					{
+						"name":"Autumn",
+						"custom_name":true,
+						"weather":{
+							"temp_low":32.5,
+							"temp_high":62.5,
+							"precipitation":0.225,
+							"precipitation_intensity":0.425
+						}
+					}
+				]
+			},
+			"Warm and Rainy":{
+				"name":"Warm and Rainy",
+				"seasons":[
+					{
+						"name":"Winter",
+						"custom_name":true,
+						"weather":{
+							"temp_low":10,
+							"temp_high":50,
+							"precipitation":0.4,
+							"precipitation_intensity":0.5
+						}
+					},
+					{
+						"name":"Spring",
+						"custom_name":true,
+						"weather":{
+							"temp_low":30.0,
+							"temp_high":67.5,
+							"precipitation":0.4,
+							"precipitation_intensity":0.55
+						}
+					},
+					{
+						"name":"Summer",
+						"custom_name":true,
+						"weather":{
+							"temp_low":50,
+							"temp_high":85,
+							"precipitation":0.4,
+							"precipitation_intensity":0.6
+						}
+					},
+					{
+						"name":"Autumn",
+						"custom_name":true,
+						"weather":{
+							"temp_low":30.0,
+							"temp_high":67.5,
+							"precipitation":0.4,
+							"precipitation_intensity":0.55
+						}
+					}
+				]
+			},
+			"Warm with Dry Summer":{
+				"name":"Warm with Dry Summer",
+				"seasons":[
+					{
+						"name":"Winter",
+						"custom_name":true,
+						"weather":{
+							"temp_low":10,
+							"temp_high":60,
+							"precipitation":0.3,
+							"precipitation_intensity":0.6
+						}
+					},
+					{
+						"name":"Spring",
+						"custom_name":true,
+						"weather":{
+							"temp_low":35.0,
+							"temp_high":77.5,
+							"precipitation":0.2,
+							"precipitation_intensity":0.4
+						}
+					},
+					{
+						"name":"Summer",
+						"custom_name":true,
+						"weather":{
+							"temp_low":60,
+							"temp_high":95,
+							"precipitation":0.1,
+							"precipitation_intensity":0.2
+						}
+					},
+					{
+						"name":"Autumn",
+						"custom_name":true,
+						"weather":{
+							"temp_low":35.0,
+							"temp_high":77.5,
+							"precipitation":0.2,
+							"precipitation_intensity":0.4
+						}
+					}
+				]
+			},
+			"Warm with Dry Winter":{
+				"name":"Warm with Dry Winter",
+				"seasons":[
+					{
+						"name":"Winter",
+						"custom_name":true,
+						"weather":{
+							"temp_low":32,
+							"temp_high":50,
+							"precipitation":0.15,
+							"precipitation_intensity":0.2
+						}
+					},
+					{
+						"name":"Spring",
+						"custom_name":true,
+						"weather":{
+							"temp_low":51.0,
+							"temp_high":80.0,
+							"precipitation":0.3,
+							"precipitation_intensity":0.4
+						}
+					},
+					{
+						"name":"Summer",
+						"custom_name":true,
+						"weather":{
+							"temp_low":70,
+							"temp_high":110,
+							"precipitation":0.45,
+							"precipitation_intensity":0.6
+						}
+					},
+					{
+						"name":"Autumn",
+						"custom_name":true,
+						"weather":{
+							"temp_low":51.0,
+							"temp_high":80.0,
+							"precipitation":0.3,
+							"precipitation_intensity":0.4
+						}
+					}
+				]
+			},
 			"Equatorial":{
 				"name":"Equatorial",
 				"seasons":[
@@ -1213,231 +1438,6 @@ var preset_data = {
 							"temp_high":82.5,
 							"precipitation":0.125,
 							"precipitation_intensity":0.3
-						}
-					}
-				]
-			},
-			"Warm and Rainy":{
-				"name":"Warm and Rainy",
-				"seasons":[
-					{
-						"name":"Winter",
-						"custom_name":true,
-						"weather":{
-							"temp_low":10,
-							"temp_high":50,
-							"precipitation":0.4,
-							"precipitation_intensity":0.5
-						}
-					},
-					{
-						"name":"Spring",
-						"custom_name":true,
-						"weather":{
-							"temp_low":30.0,
-							"temp_high":67.5,
-							"precipitation":0.4,
-							"precipitation_intensity":0.55
-						}
-					},
-					{
-						"name":"Summer",
-						"custom_name":true,
-						"weather":{
-							"temp_low":50,
-							"temp_high":85,
-							"precipitation":0.4,
-							"precipitation_intensity":0.6
-						}
-					},
-					{
-						"name":"Autumn",
-						"custom_name":true,
-						"weather":{
-							"temp_low":30.0,
-							"temp_high":67.5,
-							"precipitation":0.4,
-							"precipitation_intensity":0.55
-						}
-					}
-				]
-			},
-			"Warm with Dry Summer":{
-				"name":"Warm with Dry Summer",
-				"seasons":[
-					{
-						"name":"Winter",
-						"custom_name":true,
-						"weather":{
-							"temp_low":10,
-							"temp_high":60,
-							"precipitation":0.3,
-							"precipitation_intensity":0.6
-						}
-					},
-					{
-						"name":"Spring",
-						"custom_name":true,
-						"weather":{
-							"temp_low":35.0,
-							"temp_high":77.5,
-							"precipitation":0.2,
-							"precipitation_intensity":0.4
-						}
-					},
-					{
-						"name":"Summer",
-						"custom_name":true,
-						"weather":{
-							"temp_low":60,
-							"temp_high":95,
-							"precipitation":0.1,
-							"precipitation_intensity":0.2
-						}
-					},
-					{
-						"name":"Autumn",
-						"custom_name":true,
-						"weather":{
-							"temp_low":35.0,
-							"temp_high":77.5,
-							"precipitation":0.2,
-							"precipitation_intensity":0.4
-						}
-					}
-				]
-			},
-			"Warm with Dry Winter":{
-				"name":"Warm with Dry Winter",
-				"seasons":[
-					{
-						"name":"Winter",
-						"custom_name":true,
-						"weather":{
-							"temp_low":32,
-							"temp_high":50,
-							"precipitation":0.15,
-							"precipitation_intensity":0.2
-						}
-					},
-					{
-						"name":"Spring",
-						"custom_name":true,
-						"weather":{
-							"temp_low":51.0,
-							"temp_high":80.0,
-							"precipitation":0.3,
-							"precipitation_intensity":0.4
-						}
-					},
-					{
-						"name":"Summer",
-						"custom_name":true,
-						"weather":{
-							"temp_low":70,
-							"temp_high":110,
-							"precipitation":0.45,
-							"precipitation_intensity":0.6
-						}
-					},
-					{
-						"name":"Autumn",
-						"custom_name":true,
-						"weather":{
-							"temp_low":51.0,
-							"temp_high":80.0,
-							"precipitation":0.3,
-							"precipitation_intensity":0.4
-						}
-					}
-				]
-			},
-			"Cool and Rainy":{
-				"name":"Cool and Rainy",
-				"seasons":[
-					{
-						"name":"Winter",
-						"custom_name":true,
-						"weather":{
-							"temp_low":5,
-							"temp_high":40,
-							"precipitation":0.35,
-							"precipitation_intensity":0.6
-						}
-					},
-					{
-						"name":"Spring",
-						"custom_name":true,
-						"weather":{
-							"temp_low":32.5,
-							"temp_high":62.5,
-							"precipitation":0.35,
-							"precipitation_intensity":0.6
-						}
-					},
-					{
-						"name":"Summer",
-						"custom_name":true,
-						"weather":{
-							"temp_low":60,
-							"temp_high":85,
-							"precipitation":0.35,
-							"precipitation_intensity":0.6
-						}
-					},
-					{
-						"name":"Autumn",
-						"custom_name":true,
-						"weather":{
-							"temp_low":32.5,
-							"temp_high":62.5,
-							"precipitation":0.35,
-							"precipitation_intensity":0.6
-						}
-					}
-				]
-			},
-			"Cool with Dry Winter":{
-				"name":"Cool with Dry Winter",
-				"seasons":[
-					{
-						"name":"Winter",
-						"custom_name":true,
-						"weather":{
-							"temp_low":5,
-							"temp_high":40,
-							"precipitation":0.1,
-							"precipitation_intensity":0.1
-						}
-					},
-					{
-						"name":"Spring",
-						"custom_name":true,
-						"weather":{
-							"temp_low":32.5,
-							"temp_high":62.5,
-							"precipitation":0.225,
-							"precipitation_intensity":0.425
-						}
-					},
-					{
-						"name":"Summer",
-						"custom_name":true,
-						"weather":{
-							"temp_low":60,
-							"temp_high":85,
-							"precipitation":0.35,
-							"precipitation_intensity":0.75
-						}
-					},
-					{
-						"name":"Autumn",
-						"custom_name":true,
-						"weather":{
-							"temp_low":32.5,
-							"temp_high":62.5,
-							"precipitation":0.225,
-							"precipitation_intensity":0.425
 						}
 					}
 				]
