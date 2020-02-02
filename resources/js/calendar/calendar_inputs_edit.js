@@ -806,6 +806,22 @@ function set_up_edit_inputs(){
 
 		static_data.seasons.locations.push(stats);
 
+		location_list.children().last().find('.slider_percentage').slider({
+			min: 0,
+			max: 100,
+			step: 1,
+			change: function( event, ui ) {
+				$(this).parent().parent().find('.slider_input').val($(this).slider('value')).change();
+			},
+			slide: function( event, ui ){
+				$(this).parent().parent().find('.slider_input').val($(this).slider('value'));
+			}
+		});
+
+		location_list.children().last().find('.slider_percentage').each(function(){
+			$(this).slider('option', 'value', parseInt($(this).parent().parent().find('.slider_input').val()));
+		});
+
 		repopulate_location_select_list();
 
 		location_select.find('optgroup[value="custom"]').children().eq(id).prop('selected', true).change();
@@ -2795,10 +2811,10 @@ function add_location_to_list(parent, key, data){
 						element.push("</div>");
 
 						element.push("<div class='row no-gutters mb-2'>");
-							element.push("<div class='col-9'>");
+							element.push("<div class='col-9 pt-1'>");
 								element.push("<div class='slider_percentage'></div>");
 							element.push("</div>");
-							element.push("<div class='col-3'>");
+							element.push("<div class='col-3 pl-1'>");
 								element.push(`<input type='number' step="any" class='form-control form-control-sm full dynamic_input slider_input' data='seasons.locations.${key}.seasons.${i}.weather' fc-index='precipitation' value='${data.seasons[i].weather.precipitation*100}'>`);
 							element.push("</div>");
 						element.push("</div>");
@@ -2809,10 +2825,10 @@ function add_location_to_list(parent, key, data){
 						element.push("</div>");
 
 						element.push("<div class='row no-gutters mb-2'>");
-							element.push("<div class='col-9'>");
+							element.push("<div class='col-9 pt-1'>");
 								element.push("<div class='slider_percentage'></div>");
 							element.push("</div>");
-							element.push("<div class='col-3'>");
+							element.push("<div class='col-3 pl-1'>");
 								element.push(`<input type='number' step="any" class='form-control form-control-sm full dynamic_input slider_input' data='seasons.locations.${key}.seasons.${i}.weather' fc-index='precipitation_intensity' value='${data.seasons[i].weather.precipitation_intensity*100}'>`);
 							element.push("</div>");
 						element.push("</div>");
