@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 
-<html lang="en">
+<html lang="en" prefix="og: http://ogp.me/ns#">
 
     @include('templates._head_content')
 

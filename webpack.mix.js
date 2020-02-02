@@ -16,6 +16,13 @@ if(process.env.BROWSERSYNC) {
         proxy: 'fantasy-calendar:8080',
         port: 9980,
         open: false,
+        files: [
+            "**/*.css",
+            "**/*.php",
+            "**/*.md",
+            "**/*.js",
+            "**/*.vue",
+        ],
         snippetOptions: {
             rule: {
                 match: /<\/body>/i,

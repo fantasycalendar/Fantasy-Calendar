@@ -298,7 +298,7 @@ function evaluate_settings(){
 	if(static_data){
 		if(static_data.year_data.global_week.length == 0 || static_data.year_data.timespans.length == 0){
 			$('.date_control').toggleClass('hidden', true);
-			$('.date_control').find('select, input').prop('disabled', true);$
+			$('.date_control').find('select, input').prop('disabled', true);
             $('#empty_calendar_explaination').toggleClass('hidden', !(static_data.year_data.global_week.length == 0 || static_data.year_data.timespans.length == 0));
 			return;
 		}

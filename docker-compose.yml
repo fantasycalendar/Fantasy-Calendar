@@ -56,8 +56,8 @@ services:
     image: composer
     user: "1000:1000"
     volumes:
-      - ./:/fantasy-calendar
-    command: ["composer", "install", "-d", "/fantasy-calendar/"]
+      - ./:/app
+    command: ["install"]
 
   fantasy-calendar-npm-install:
     image: node

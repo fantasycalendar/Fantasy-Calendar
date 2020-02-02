@@ -21,6 +21,27 @@ var execution_time = {
 	}
 }
 
+function is_past_current_date(dynamic_data, year, timespan, day){
+
+	if(year !== undefined && timespan !== undefined && day !== undefined){
+		return (
+			year > dynamic_data.year ||
+			(year == dynamic_data.year && timespan > dynamic_data.timespan ||
+				(year == dynamic_data.year && timespan == dynamic_data.timespan && day > dynamic_data.day)
+			)
+		)
+	}else if(year !== undefined && timespan !== undefined && day === undefined){
+
+		return (year > dynamic_data.year || (year == dynamic_data.year && timespan > dynamic_data.timespan))
+
+	}else if(year !== undefined && timespan === undefined && day === undefined){
+
+		return year > dynamic_data.year;
+
+	}
+
+}
+
 function fahrenheit_to_celcius(temp){
 
 	return precisionRound((temp-32)*(5/9), 4);
@@ -903,7 +924,7 @@ function get_cycle(static_data, epoch_data){
 			}else if(cycle_type == "year day"){
 				cycle_epoch_data--;
 			}else if(cycle_type == "year"){
-				cycle_epoch_data = cycle_epoch_data >= 0 ? cycle_epoch_data-1 : cycle_epoch_data;
+				cycle_epoch_data = convert_year(static_data, cycle_epoch_data);
 			}
 
 			// Get the cycle length from the year

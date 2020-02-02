@@ -395,7 +395,7 @@ var edit_event_ui = {
 			stats.settings.color = category.event_settings.color;
 			stats.settings.text = category.event_settings.text;
 			stats.settings.hide = category.event_settings.hide;
-			stats.settings.noprint = category.event_settings.noprint;
+			stats.settings.print = category.event_settings.print;
 			stats.settings.hide_full = category.event_settings.hide_full;
 		}
 
@@ -704,7 +704,7 @@ var edit_event_ui = {
 				text: $('#text_style').val(),
 				hide: $('#event_hide_players').prop('checked'),
 				hide_full: $('#event_hide_full').prop('checked'),
-				noprint: $('#event_print_checkbox').prop('checked')
+				print: $('#event_print_checkbox').prop('checked')
 			}
 
 			return !Object.compare(event_check, static_data.event_data.events[this.event_id])

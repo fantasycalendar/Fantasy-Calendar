@@ -13,9 +13,13 @@ function display_events(static_data, event_data){
 
 			$(`[event_id='${event_index}']`).remove();
 
-			if(current_event.settings.hide_full || (!owner && current_event.settings.hide)) continue;
+			var category = current_event.event_category_id && current_event.event_category_id > -1 ?  get_category(current_event.event_category_id) : false;
+
+			var category_hide = category ? category.category_settings.hide : false;
+
+			if(current_event.settings.hide_full || (!owner && (current_event.settings.hide || static_data.settings.hide_events || category_hide))) continue;
 				
-			calendar_layouts.layout.add_event(event_data, event_index, current_event);
+			calendar_layouts.layout.add_event(event_data, event_index, current_event, category_hide);
 
 		}
 
@@ -330,16 +334,16 @@ var eras = {
 
 					if(parent !== undefined){
 
-						var event_group = '';
+						var event_class = '';
 						var category = '';
 
 						if(current_era.settings.event_category && current_era.settings.event_category > -1){
 							var category = static_data.event_data.categories[current_era.settings.event_category];
-							event_group = category.color ? " " + category.color : "";
-							event_group += category.text ? " " + category.text : "";
+							event_class = category.color ? " " + category.color : "";
+							event_class += category.text ? " " + category.text : "";
 						}
 
-						var html = `<div class='event era_event ${event_group}' era_id='${era_index}' category='${category.name}'>${current_era.name}</div>`;
+						var html = `<div class='event era_event ${event_class}' era_id='${era_index}' category='${category.name}'>${current_era.name}</div>`;
 
 						parent.append(html);
 
@@ -480,8 +484,7 @@ var calendar_layouts = {
 
 			var timespan_index = Object.keys(this.timespans)[i]
 
-			if(static_data.settings.only_reveal_today && !owner &&
-				(this.year_data.year > dynamic_data.year || (this.year_data.year == dynamic_data.year && timespan_index > dynamic_data.timespan))){
+			if(static_data.settings.only_reveal_today && !owner && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, timespan_index)){
 
 				continue;
 
@@ -519,6 +522,10 @@ var calendar_layouts = {
 
 		add_event: function(event_data, event_index, event){
 
+			var category = event.event_category_id && event.event_category_id > -1 ?  get_category(event.event_category_id) : false;
+
+			var category_hide = category ? category.category_settings.hide : false;
+
 			for(var epoch_index = 0; event_data.valid[event_index] && epoch_index < event_data.valid[event_index].length; epoch_index++){
 
 				var local_epoch = event_data.valid[event_index][epoch_index];
@@ -526,12 +533,13 @@ var calendar_layouts = {
 				var start = event_data.starts[event_index].indexOf(local_epoch) != -1;
 				var end = event_data.ends[event_index].indexOf(local_epoch) != -1;
 
-				var category_name = event.event_category_id && event.event_category_id > -1 ?  get_category(event.event_category_id).name : "";
+				var event_class = event.settings.color ? " " + event.settings.color : "";
+				event_class += event.settings.text ? " " + event.settings.text : "";
+				event_class += event.settings.hide || static_data.settings.hide_events || category_hide ? " hidden_event" : "";
 
-				var event_group = event.settings.color ? " " + event.settings.color : "";
-				event_group += event.settings.text ? " " + event.settings.text : "";
+				var category_name = category ?  category.name : "";
 
-				var html = `<div title='View ${event.name}' class='event ${(event_group + (start ? " event_start" : (end ? " event_end" : "")))}' event_id='${event_index}' category='${category_name}'>${((start ? "Start: " : (end ? "End: " : "")) + event.name)}</div>`;
+				var html = `<div class='event ${(event_class + (start ? " event_start" : (end ? " event_end" : "")))}' event_id='${event_index}' category='${category_name}'>${((start ? "Start: " : (end ? "End: " : "")) + event.name)}</div>`;
 
 				var parent = $(`.timespan_day[epoch='${local_epoch}'] .event_container`);
 
@@ -543,12 +551,7 @@ var calendar_layouts = {
 
 		insert_day: function(epoch, weather_align, day_num, day_class, title){
 
-			if(static_data.settings.only_reveal_today && !owner && (
-				calendar_layouts.year_data.year > dynamic_data.year ||
-				(calendar_layouts.year_data.year == dynamic_data.year && this.timespan.index > dynamic_data.timespan ||
-					(calendar_layouts.year_data.year == dynamic_data.year && this.timespan.index == dynamic_data.timespan && this.timespan.day > dynamic_data.day)
-				))
-			)
+			if(static_data.settings.only_reveal_today && !owner && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day))
 			{
 
 				this.insert_empty_day(day_class);
@@ -563,11 +566,15 @@ var calendar_layouts = {
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow center'>");
 						if(calendar_layouts.epoch_data[epoch].weather && calendar_layouts.data.processed_weather){
-							calendar_layouts.html.push(`<div class='weather_icon weather_popup' align='${weather_align}'></div>`);
+							if(!(static_data.settings.hide_all_weather || (static_data.settings.hide_future_weather && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)))){
+								calendar_layouts.html.push(`<div class='weather_icon' align='${weather_align}'></div>`);
+							}
 						}
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow right'>");
-							calendar_layouts.html.push("<div class='btn_create_event btn btn-success' title='Create new event'></div>");
+							if(owner){
+								calendar_layouts.html.push("<div class='btn_create_event btn btn-success' title='Create new event'></div>");
+							}
 						calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("</div>");
 					if(title){
@@ -860,25 +867,7 @@ var calendar_layouts = {
 
 		add_event: function(event_data, event_index, event){
 
-			for(var epoch_index = 0; event_data.valid[event_index] && epoch_index < event_data.valid[event_index].length; epoch_index++){
-
-				var local_epoch = event_data.valid[event_index][epoch_index];
-
-				var start = event_data.starts[event_index].indexOf(local_epoch) != -1;
-				var end = event_data.ends[event_index].indexOf(local_epoch) != -1;
-
-				var category_name = event.event_category_id && event.event_category_id > -1 ?  get_category(event.event_category_id).name : "";
-
-				var event_group = event.settings.color ? " " + event.settings.color : "";
-				event_group += event.settings.text ? " " + event.settings.text : "";
-
-				var html = `<div title='View ${event.name}' class='event ${(event_group + (start ? " event_start" : (end ? " event_end" : "")))}' event_id='${event_index}' category='${category_name}'>${((start ? "Start: " : (end ? "End: " : "")) + event.name)}</div>`;
-
-				var parent = $(`.timespan_day[epoch='${local_epoch}'] .event_container`);
-
-				parent.append(html);
-
-			}
+			calendar_layouts.grid.add_event(event_data, event_index, event);
 
 		},
 
@@ -890,8 +879,6 @@ var calendar_layouts = {
 
 			}else{
 
-
-
 				calendar_layouts.html.push(`<div class='${day_class}' epoch='${epoch}'>`);
 
 					calendar_layouts.html.push("<div class='day_row'>");
@@ -900,11 +887,15 @@ var calendar_layouts = {
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow center'>");
 						if(calendar_layouts.epoch_data[epoch].weather && calendar_layouts.data.processed_weather){
-							calendar_layouts.html.push(`<div class='weather_icon weather_popup' align='${weather_align}'></div>`);
+							if(!(static_data.settings.hide_all_weather || (static_data.settings.hide_future_weather && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)))){
+								calendar_layouts.html.push(`<div class='weather_icon' align='${weather_align}'></div>`);
+							}
 						}
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow right'>");
-							calendar_layouts.html.push("<div class='btn_create_event btn btn-success' title='Create new event'></div>");
+							if(owner){
+								calendar_layouts.html.push("<div class='btn_create_event btn btn-success' title='Create new event'></div>");
+							}
 						calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("</div>");
 					if(title){
@@ -1197,25 +1188,7 @@ var calendar_layouts = {
 
 		add_event: function(event_data, event_index, event){
 
-			for(var epoch_index = 0; event_data.valid[event_index] && epoch_index < event_data.valid[event_index].length; epoch_index++){
-
-				var local_epoch = event_data.valid[event_index][epoch_index];
-
-				var start = event_data.starts[event_index].indexOf(local_epoch) != -1;
-				var end = event_data.ends[event_index].indexOf(local_epoch) != -1;
-
-				var category_name = event.event_category_id && event.event_category_id > -1 ?  get_category(event.event_category_id).name : "";
-
-				var event_group = event.settings.color ? " " + event.settings.color : "";
-				event_group += event.settings.text ? " " + event.settings.text : "";
-
-				var html = `<div title='View ${event.name}' class='event ${(event_group + (start ? " event_start" : (end ? " event_end" : "")))}' event_id='${event_index}' category='${category_name}'>${((start ? "Start: " : (end ? "End: " : "")) + event.name)}</div>`;
-
-				var parent = $(`.timespan_day[epoch='${local_epoch}'] .event_container`);
-
-				parent.append(html);
-
-			}
+			calendar_layouts.grid.add_event(event_data, event_index, event);
 
 		},
 
@@ -1248,11 +1221,15 @@ var calendar_layouts = {
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow center'>");
 						if(calendar_layouts.epoch_data[epoch].weather && calendar_layouts.data.processed_weather){
-							calendar_layouts.html.push(`<div class='weather_icon weather_popup' align=''></div>`);
+							if(!(static_data.settings.hide_all_weather || (static_data.settings.hide_future_weather && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)))){
+								calendar_layouts.html.push(`<div class='weather_icon' align=''></div>`);
+							}
 						}
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow right'>");
-							calendar_layouts.html.push("<div class='btn_create_event btn btn-success' title='Create new event'></div>");
+							if(owner){
+								calendar_layouts.html.push("<div class='btn_create_event btn btn-success' title='Create new event'></div>");
+							}
 						calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("</div>");
 
@@ -1487,6 +1464,10 @@ var calendar_layouts = {
 
 		add_event: function(event_data, event_index, event){
 
+			var category = event.event_category_id && event.event_category_id > -1 ?  get_category(event.event_category_id) : false;
+
+			var category_hide = category ? category.category_settings.hide : false;
+
 			for(var epoch_index = 0; event_data.valid[event_index] && epoch_index < event_data.valid[event_index].length; epoch_index++){
 
 				var local_epoch = event_data.valid[event_index][epoch_index];
@@ -1503,9 +1484,13 @@ var calendar_layouts = {
 
 					var epoch_data = calendar_layouts.epoch_data[local_epoch];
 
-					var category_name = event.event_category_id && event.event_category_id > -1 ?  get_category(event.event_category_id).name : "";
+					var category_name = event.event_category_id > -1 ?  category.name : "";
 
-					var element = $(`<div class='row mx-2' event_id='${event_index}' category='${category_name}' day='${epoch_data.day}'>${epoch_data.day} - ${event.name}</div>`);
+					var event_class = event.settings.color ? " " + event.settings.color : "";
+					event_class += event.settings.text ? " " + event.settings.text : "";
+					event_class += event.settings.hide || static_data.settings.hide_events || category_hide ? " hidden_event" : "";
+
+					var element = $(`<div class='mx-2 my-0 px-1 py-0 text-left event ${event_class}' event_id='${event_index}' category='${category_name}'>${event.name} (${ordinal_suffix_of(epoch_data.day)})</div>`);
 
 					event_container.append(element);
 

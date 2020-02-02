@@ -273,7 +273,6 @@ function set_up_edit_inputs(){
 		poll_timer = setTimeout(check_master_update, 5000);
 	});
 
-
 	/* ------------------- Layout callbacks ------------------- */
 
 	$('.add_inputs').keyup(function(e){
@@ -632,10 +631,14 @@ function set_up_edit_inputs(){
 		}
 
 		add_location_to_list(location_list, id, stats);
-		reindex_location_list();
+
+		static_data.seasons.locations.push(stats);
+
+		repopulate_location_select_list();
+
 		name.val('');
 
-		$('.slider_percentage').slider({
+		location_list.children().last().find('.slider_percentage').slider({
 			min: 0,
 			max: 100,
 			step: 1,
@@ -647,7 +650,7 @@ function set_up_edit_inputs(){
 			}
 		});
 
-		$('.slider_percentage').each(function(){
+		location_list.children().last().find('.slider_percentage').each(function(){
 			$(this).slider('option', 'value', parseInt($(this).parent().parent().find('.slider_input').val()));
 		});
 
@@ -775,13 +778,24 @@ function set_up_edit_inputs(){
 		var location = location_select.val();
 
 		if(type === "custom"){
-			var stats = static_data.seasons.locations[location];
+
+			var stats = clone(static_data.seasons.locations[location]);
+
 		}else{
-			var stats = preset_data.locations[static_data.seasons.data.length][location];
-			stats.settings = preset_data.curves;
+
+			var stats = clone(preset_data.locations[static_data.seasons.data.length][location]);
+
+			stats.settings = clone(preset_data.curves);
 
 			for(var i = 0; i < static_data.seasons.data.length; i++){
-				stats.seasons[i].time = static_data.seasons.data[i].time;
+				stats.seasons[i].time = clone(static_data.seasons.data[i].time);
+			}
+
+			if(static_data.seasons.global_settings.temp_sys === "metric" || static_data.seasons.global_settings.temp_sys === "both_m"){
+				for(var i = 0; i < static_data.seasons.data.length; i++){
+					stats.seasons[i].weather.temp_low = fahrenheit_to_celcius(stats.seasons[i].weather.temp_low);
+					stats.seasons[i].weather.temp_high = fahrenheit_to_celcius(stats.seasons[i].weather.temp_high);
+				}
 			}
 
 		}
@@ -789,9 +803,10 @@ function set_up_edit_inputs(){
 		var id = location_list.children().length;
 
 		add_location_to_list(location_list, id, stats);
-		reindex_location_list();
 
-		$('.slider_percentage').slider({
+		static_data.seasons.locations.push(stats);
+
+		location_list.children().last().find('.slider_percentage').slider({
 			min: 0,
 			max: 100,
 			step: 1,
@@ -803,13 +818,13 @@ function set_up_edit_inputs(){
 			}
 		});
 
-		$('.slider_percentage').each(function(){
+		location_list.children().last().find('.slider_percentage').each(function(){
 			$(this).slider('option', 'value', parseInt($(this).parent().parent().find('.slider_input').val()));
 		});
 
-		location_select.find('optgroup[value="custom"]').children().eq(id).prop('selected', true).change();
+		repopulate_location_select_list();
 
-		do_error_check();
+		location_select.find('optgroup[value="custom"]').children().eq(id).prop('selected', true).change();
 
 	});
 
@@ -2149,14 +2164,15 @@ function set_up_edit_inputs(){
 				evaluate_clock_inputs();
 			}
 
-			if(key == 'year_zero_exists'){
-				prevent_default = true;
-				$('.timespan_occurance_input').change();
-				error_check();
+			if(key == "year_zero_exists"){
+				refresh_interval_texts();
 				refresh_view_values();
 				set_up_visitor_values();
-				evaluate_dynamic_change();
-			}else if(target.attr('refresh') == "clock"){
+				dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+				preview_date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, preview_date.year), preview_date.timespan, preview_date.day).epoch;
+			}
+
+			if(target.attr('refresh') == "clock"){
 				eval_clock();
 				evaluate_save_button();
 			}else{
@@ -2797,10 +2813,10 @@ function add_location_to_list(parent, key, data){
 						element.push("</div>");
 
 						element.push("<div class='row no-gutters mb-2'>");
-							element.push("<div class='col-9'>");
+							element.push("<div class='col-9 pt-1'>");
 								element.push("<div class='slider_percentage'></div>");
 							element.push("</div>");
-							element.push("<div class='col-3'>");
+							element.push("<div class='col-3 pl-1'>");
 								element.push(`<input type='number' step="any" class='form-control form-control-sm full dynamic_input slider_input' data='seasons.locations.${key}.seasons.${i}.weather' fc-index='precipitation' value='${data.seasons[i].weather.precipitation*100}'>`);
 							element.push("</div>");
 						element.push("</div>");
@@ -2811,10 +2827,10 @@ function add_location_to_list(parent, key, data){
 						element.push("</div>");
 
 						element.push("<div class='row no-gutters mb-2'>");
-							element.push("<div class='col-9'>");
+							element.push("<div class='col-9 pt-1'>");
 								element.push("<div class='slider_percentage'></div>");
 							element.push("</div>");
-							element.push("<div class='col-3'>");
+							element.push("<div class='col-3 pl-1'>");
 								element.push(`<input type='number' step="any" class='form-control form-control-sm full dynamic_input slider_input' data='seasons.locations.${key}.seasons.${i}.weather' fc-index='precipitation_intensity' value='${data.seasons[i].weather.precipitation_intensity*100}'>`);
 							element.push("</div>");
 						element.push("</div>");
@@ -3313,8 +3329,8 @@ function add_category_to_list(parent, key, data){
 
 			element.push(`<div class='row no-gutters my-1'>`);
 				element.push("<div class='form-check col-12 py-2 border rounded'>");
-					element.push(`<input type='checkbox' id='${key}_cat_no_print' class='form-check-input dynamic_input' data='event_data.categories.${key}.event_settings' fc-index='print' ${(data.event_settings.noprint ? "checked" : "")} />`);
-					element.push(`<label for='${key}_cat_no_print' class='form-check-label ml-1'>`);
+					element.push(`<input type='checkbox' id='${key}_cat_print' class='form-check-input dynamic_input' data='event_data.categories.${key}.event_settings' fc-index='print' ${(data.event_settings.noprint ? "checked" : "")} />`);
+					element.push(`<label for='${key}_cat_print' class='form-check-label ml-1'>`);
 						element.push("Show event when printing");
 					element.push("</label>");
 				element.push("</div>");
@@ -3947,7 +3963,7 @@ function reindex_location_list(){
 	});
 
 	if(static_data.seasons.locations.length == 0){
-		dynamic_data.location = "Equatorial";
+		dynamic_data.location = "";
 		dynamic_data.custom_location = false;
 	}
 
@@ -4838,6 +4854,27 @@ function autoload(){
 		});
 
 	}
+
+}
+
+function refresh_interval_texts(){
+
+	timespan_sortable.children().each(function(index){
+
+		var timespan = static_data.year_data.timespans[index];
+
+		$(this).find('.timespan_variance_output').text(get_interval_text(true, timespan));
+
+	});
+
+
+	leap_day_list.children().each(function(index){
+
+		var leap_day = static_data.year_data.leap_days[index];
+
+		$(this).find('.leap_day_variance_output').text(get_interval_text(false, leap_day));
+
+	});
 
 }
 
