@@ -579,7 +579,7 @@ var calendar_builder = {
 
 					if(this.static_data.eras[current_era+1] && epoch > this.static_data.eras[current_era+1].date.epoch){
 						current_era++;
-						era_year = this.static_data.eras[current_era].year_data.era_year;
+						era_year = 0;
 					}
 
 					moon_data = [];
@@ -803,7 +803,7 @@ var calendar_builder = {
 
 					if(this.static_data.eras[current_era+1] && epoch > this.static_data.eras[current_era+1].date.epoch){
 						current_era++;
-						era_year = this.static_data.eras[current_era].year_data.era_year;
+						era_year = 0;
 					}
 
 					moon_data = [];
@@ -1031,8 +1031,7 @@ var calendar_builder = {
 
 		for(var i = 0; i < this.static_data.eras.length; i++){
 			if(this.static_data.eras[i].settings.starting_era) continue;
-			this.static_data.eras[i].year_data = evaluate_calendar_start(this.static_data, convert_year(this.static_data, this.static_data.eras[i].date.year), this.static_data.eras[i].date.timespan, this.static_data.eras[i].date.day);
-			this.static_data.eras[i].year_data.era_year = unconvert_year(this.static_data, this.static_data.eras[i].year_data.era_year);
+			this.static_data.eras[i].date.epoch = evaluate_calendar_start(this.static_data, convert_year(this.static_data, this.static_data.eras[i].date.year), this.static_data.eras[i].date.timespan, this.static_data.eras[i].date.day).epoch;
 		}
 
 		this.calendar_list = {
@@ -1319,7 +1318,7 @@ var calendar_builder = {
 
 					if(this.static_data.eras[current_era+1] && epoch > this.static_data.eras[current_era+1].date.epoch){
 						current_era++;
-						era_year = this.static_data.eras[current_era].year_data.era_year;
+						era_year = 0;
 					}
 
 					moon_data = [];
@@ -1550,7 +1549,7 @@ var calendar_builder = {
 
 				if(this.static_data.eras[current_era+1] && epoch > this.static_data.eras[current_era+1].date.epoch){
 					current_era++;
-					era_year = this.static_data.eras[current_era].year_data.era_year;
+					era_year = 0;
 				}
 
 				moon_data = [];
@@ -1797,7 +1796,7 @@ var calendar_builder = {
 
 					if(this.static_data.eras[current_era+1] && epoch > this.static_data.eras[current_era+1].date.epoch){
 						current_era++;
-						era_year = this.static_data.eras[current_era].year_data.era_year;
+						era_year = 0;
 					}
 
 					if(day == 0){
@@ -2031,7 +2030,7 @@ var calendar_builder = {
 			static_data: this.static_data,
 			year_data: {
 				year: this.dynamic_data.year,
-				era_year: unconvert_year(this.static_data, calendar_era_year),
+				era_year: calendar_era_year,
 				start_epoch: calendar_start_epoch,
 				end_epoch: calendar_end_epoch,
 				week_day: calendar_first_week_day,

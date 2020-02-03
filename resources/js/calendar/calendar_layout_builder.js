@@ -140,13 +140,10 @@ var eras = {
 			this.era = undefined;
 
 			// If the last era shift was behind us, then it is the last era
-			if(this.static_data.eras[this.static_data.eras.length-1].year_data.epoch < this.start_epoch){
+			if(this.static_data.eras[this.static_data.eras.length-1].date.epoch < this.start_epoch){
 
 				var era = this.static_data.eras[this.static_data.eras.length-1];
 
-				if(era.settings.restart){
-					era.year_data.era_year += convert_year(static_data, calendar_layouts.year_data.era_year);
-				}
 				this.current_eras.push({
 					"id": this.static_data.eras.length-1,
 					"position": 0,
@@ -161,7 +158,7 @@ var eras = {
 
 					var era = this.static_data.eras[i];
 
-					if(!era.settings.starting_era && era.year_data.epoch >= this.start_epoch && era.year_data.epoch < this.end_epoch){
+					if(!era.settings.starting_era && era.date.epoch >= this.start_epoch && era.date.epoch < this.end_epoch){
 						this.current_eras.push({
 							"id": i,
 							"position": 0,
@@ -169,10 +166,7 @@ var eras = {
 						});
 					}else{
 
-						if(era.settings.starting_era || era.year_data.epoch < this.start_epoch){
-							if(era.settings.restart){
-								era.year_data.era_year += convert_year(static_data, calendar_layouts.year_data.era_year);
-							}
+						if(era.settings.starting_era || era.date.epoch < this.start_epoch){
 							this.current_eras.push({
 								"id": i,
 								"position": -1000,
@@ -198,20 +192,21 @@ var eras = {
 		if(this.current_eras.length > 0){
 			// If it's not a new era, don't update the text
 			if(this.era != index){
-				if(index >= 0){
-					this.era = index;
-				}
+				this.era = index;
 			}
 		}
 
-		if(this.era !== undefined){
+		var year_text = `Year ${calendar_layouts.year_data.year}`;
+
+		if(this.era !== undefined && this.era !== -1){
 
 			var era = this.current_eras[this.era].data;
 
+			var era_year = calendar_layouts.year_data.year;
+
 			if(era.settings.restart){
-				var year_text = `Era year ${era.year_data.era_year} (year ${calendar_layouts.year_data.year})`;
-			}else{
-				var year_text = `Year ${calendar_layouts.year_data.era_year}`;
+				era_year -= era.date.year;
+				var year_text = `Era year ${unconvert_year(static_data, era_year)} (year ${calendar_layouts.year_data.year})`;
 			}
 
 			if(!this.static_data.settings.hide_eras || owner){
@@ -227,8 +222,8 @@ var eras = {
 							"nth_year": ordinal_suffix_of(calendar_layouts.year_data.year),
 							"abs_year": Math.abs(calendar_layouts.year_data.year),
 							"abs_nth_year": ordinal_suffix_of(Math.abs(calendar_layouts.year_data.year)),
-							"era_year": era.year_data.era_year,
-							"era_nth_year": ordinal_suffix_of(era.year_data.era_year),
+							"era_year": unconvert_year(static_data, era_year),
+							"era_nth_year": ordinal_suffix_of(unconvert_year(static_data, era_year)),
 							"era_name": era.name
 						}
 					);
@@ -258,8 +253,8 @@ var eras = {
 
 			for(var i = 0; i < this.current_eras.length; i++){
 				if(!this.current_eras[i].data.settings.starting_era){
-					if($(`[epoch=${this.current_eras[i].data.year_data.epoch}]`).length){
-						this.current_eras[i].position = this.current_eras[i].position + position + $(`[epoch=${this.current_eras[i].data.year_data.epoch}]`).offset().top - 150;
+					if($(`[epoch=${this.current_eras[i].data.date.epoch}]`).length){
+						this.current_eras[i].position = this.current_eras[i].position + position + $(`[epoch=${this.current_eras[i].data.date.epoch}]`).offset().top - 150;
 					}
 				}
 			}
@@ -276,7 +271,7 @@ var eras = {
 
 			}else if(this.current_eras.length == 1){
 
-				if(position > this.current_eras[0].position || this.current_eras[0].data.year_data.epoch < this.start_epoch){
+				if(position > this.current_eras[0].position || this.current_eras[0].data.date.epoch < this.start_epoch){
 					this.set_current_era(0);
 				}else{
 					this.set_current_era(-1);
@@ -313,7 +308,7 @@ var eras = {
 
 			}else if(this.current_eras.length == 1){
 
-				if(position > this.current_eras[0].position || this.current_eras[0].data.year_data.epoch < this.start_epoch){
+				if(position > this.current_eras[0].position || this.current_eras[0].data.date.epoch < this.start_epoch){
 
 					this.set_current_era(0);
 
@@ -360,7 +355,7 @@ var eras = {
 
 				if(current_era.settings.show_as_event){
 
-					var parent = $(`.timespan_day[epoch='${current_era.year_data.epoch}'] .event_container`);
+					var parent = $(`.timespan_day[epoch='${current_era.date.epoch}'] .event_container`);
 
 					if(parent !== undefined){
 
