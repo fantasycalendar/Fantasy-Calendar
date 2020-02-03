@@ -2031,7 +2031,7 @@ var calendar_builder = {
 			static_data: this.static_data,
 			year_data: {
 				year: this.dynamic_data.year,
-				era_year: calendar_era_year,
+				era_year: unconvert_year(this.static_data, calendar_era_year),
 				start_epoch: calendar_start_epoch,
 				end_epoch: calendar_end_epoch,
 				week_day: calendar_first_week_day,

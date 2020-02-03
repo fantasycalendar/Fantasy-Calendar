@@ -145,7 +145,7 @@ var eras = {
 				var era = this.static_data.eras[this.static_data.eras.length-1];
 
 				if(era.settings.restart){
-					era.year_data.era_year += calendar_layouts.year_data.era_year;
+					era.year_data.era_year += convert_year(static_data, calendar_layouts.year_data.era_year);
 				}
 				this.current_eras.push({
 					"id": this.static_data.eras.length-1,
@@ -171,7 +171,7 @@ var eras = {
 
 						if(era.settings.starting_era || era.year_data.epoch < this.start_epoch){
 							if(era.settings.restart){
-								era.year_data.era_year += calendar_layouts.year_data.era_year;
+								era.year_data.era_year += convert_year(static_data, calendar_layouts.year_data.era_year);
 							}
 							this.current_eras.push({
 								"id": i,
@@ -211,7 +211,7 @@ var eras = {
 			if(era.settings.restart){
 				var year_text = `Era year ${era.year_data.era_year} (year ${calendar_layouts.year_data.year})`;
 			}else{
-				var year_text = `Year ${unconvert_year(static_data, calendar_layouts.year_data.era_year)}`;
+				var year_text = `Year ${calendar_layouts.year_data.era_year}`;
 			}
 
 			if(!this.static_data.settings.hide_eras || owner){
@@ -493,7 +493,7 @@ var calendar_layouts = {
 
 		this.append_layout();
 
-		this.update_year_follower(`Year ${unconvert_year(static_data, calendar_layouts.year_data.era_year)}`);
+		this.update_year_follower(`Year ${unconvert_yearcalendar_layouts.year_data.era_year}`);
 
 	},
 
@@ -538,7 +538,7 @@ var calendar_layouts = {
 
 		this.add_month_number();
 
-		this.update_year_follower(`Year ${unconvert_year(static_data, calendar_layouts.year_data.era_year)}`);
+		this.update_year_follower(`Year ${calendar_layouts.year_data.era_year}`);
 
 	},
 
