@@ -144,7 +144,9 @@ var eras = {
 
 				var era = this.static_data.eras[this.static_data.eras.length-1];
 
-				era.year_data.era_year += calendar_layouts.year_data.era_year;
+				if(era.settings.restart){
+					era.year_data.era_year += calendar_layouts.year_data.era_year;
+				}
 				this.current_eras.push({
 					"id": this.static_data.eras.length-1,
 					"position": 0,
@@ -168,7 +170,9 @@ var eras = {
 					}else{
 
 						if(era.settings.starting_era || era.year_data.epoch < this.start_epoch){
-							era.year_data.era_year += calendar_layouts.year_data.era_year;
+							if(era.settings.restart){
+								era.year_data.era_year += calendar_layouts.year_data.era_year;
+							}
 							this.current_eras.push({
 								"id": i,
 								"position": -1000,
@@ -204,7 +208,11 @@ var eras = {
 
 			var era = this.current_eras[this.era].data;
 
-			var year_text = `Year ${calendar_layouts.year_data.year}`;
+			if(era.settings.restart){
+				var year_text = `Era year ${era.year_data.era_year} (year ${calendar_layouts.year_data.year})`;
+			}else{
+				var year_text = `Year ${unconvert_year(static_data, calendar_layouts.year_data.era_year)}`;
+			}
 
 			if(!this.static_data.settings.hide_eras || owner){
 
@@ -219,8 +227,8 @@ var eras = {
 							"nth_year": ordinal_suffix_of(calendar_layouts.year_data.year),
 							"abs_year": Math.abs(calendar_layouts.year_data.year),
 							"abs_nth_year": ordinal_suffix_of(Math.abs(calendar_layouts.year_data.year)),
-							"era_year": unconvert_year(static_data, era.year_data.era_year),
-							"era_nth_year": ordinal_suffix_of(unconvert_year(static_data, era.year_data.era_year)),
+							"era_year": era.year_data.era_year,
+							"era_nth_year": ordinal_suffix_of(era.year_data.era_year),
 							"era_name": era.name
 						}
 					);
@@ -485,7 +493,7 @@ var calendar_layouts = {
 
 		this.append_layout();
 
-		this.update_year_follower(`Year ${calendar_layouts.year_data.era_year}`);
+		this.update_year_follower(`Year ${unconvert_year(static_data, calendar_layouts.year_data.era_year)}`);
 
 	},
 
@@ -530,7 +538,7 @@ var calendar_layouts = {
 
 		this.add_month_number();
 
-		this.update_year_follower(`Year ${calendar_layouts.year_data.era_year}`);
+		this.update_year_follower(`Year ${unconvert_year(static_data, calendar_layouts.year_data.era_year)}`);
 
 	},
 
