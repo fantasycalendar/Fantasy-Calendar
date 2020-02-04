@@ -488,7 +488,7 @@ var calendar_layouts = {
 
 		this.append_layout();
 
-		this.update_year_follower(`Year ${unconvert_yearcalendar_layouts.year_data.era_year}`);
+		this.update_year_follower(`Year ${unconvert_year(static_data, calendar_layouts.year_data.era_year)}`);
 
 	},
 
@@ -533,7 +533,7 @@ var calendar_layouts = {
 
 		this.add_month_number();
 
-		this.update_year_follower(`Year ${calendar_layouts.year_data.era_year}`);
+		this.update_year_follower(`Year ${unconvert_year(static_data, calendar_layouts.year_data.era_year)}`);
 
 	},
 
