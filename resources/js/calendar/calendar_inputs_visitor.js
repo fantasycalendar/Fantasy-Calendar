@@ -241,16 +241,12 @@ function go_to_preview_date(rebuild){
 
 	rebuild = rebuild !== undefined ? rebuild : data.rebuild;
 
-	if(preview_date.year == dynamic_data.year && preview_date.timespan == dynamic_data.timespan && preview_date.day == dynamic_data.day){
-		go_to_dynamic_date(rebuild);
+	if(rebuild){
+		do_rebuild('preview', preview_date)
 	}else{
-		if(rebuild){
-			do_rebuild('preview', preview_date)
-		}else{
-			update_current_day();
-			scroll_to_epoch();
-			update_cycle_text();
-		}
+		update_current_day();
+		scroll_to_epoch();
+		update_cycle_text();
 	}
 }
 
@@ -260,12 +256,12 @@ function display_preview_back_button(){
 		$('.reset_preview_date_container.right .reset_preview_date').prop("disabled", preview_date.epoch > dynamic_data.epoch).toggleClass('hidden', preview_date.epoch > dynamic_data.epoch);
 		$('.reset_preview_date_container.left .reset_preview_date').prop("disabled", preview_date.epoch < dynamic_data.epoch).toggleClass('hidden', preview_date.epoch < dynamic_data.epoch);
 	}else{
-		$('.reset_preview_date_container.right .reset_preview_date').prop("disabled", preview_date.follow).toggleClass('hidden', preview_date.follow);
-		$('.reset_preview_date_container.left .reset_preview_date').prop("disabled", preview_date.follow).toggleClass('hidden', preview_date.follow);
+		$('.reset_preview_date_container.right .reset_preview_date').prop("disabled", true).toggleClass('hidden', true);
+		$('.reset_preview_date_container.left .reset_preview_date').prop("disabled", true).toggleClass('hidden', true);
 	}
 		
-	$('#go_to_preview_date').prop("disabled", preview_date.epoch != dynamic_data.epoch).toggleClass('hidden', preview_date.epoch != dynamic_data.epoch);
-	$('#reset_preview_date_button').prop("disabled", preview_date.epoch == dynamic_data.epoch).toggleClass('hidden', preview_date.epoch == dynamic_data.epoch);
+	$('#go_to_preview_date').prop("disabled", !preview_date.follow).toggleClass('hidden', !preview_date.follow);
+	$('#reset_preview_date_button').prop("disabled", preview_date.follow).toggleClass('hidden', preview_date.follow);
 
 }
 
