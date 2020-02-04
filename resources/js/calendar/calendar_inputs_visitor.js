@@ -162,7 +162,7 @@ function set_up_visitor_inputs(){
 		go_to_preview_date();
 	});
 
-	$('.reset_preview_date').click(function(){
+	$('.reset_preview_date, #reset_preview_date_button').click(function(){
 		if($(this).prop('disabled')) return;
         $(this).protipHide();
 		go_to_dynamic_date();
@@ -263,6 +263,9 @@ function display_preview_back_button(){
 		$('.reset_preview_date_container.right .reset_preview_date').prop("disabled", preview_date.follow).toggleClass('hidden', preview_date.follow);
 		$('.reset_preview_date_container.left .reset_preview_date').prop("disabled", preview_date.follow).toggleClass('hidden', preview_date.follow);
 	}
+		
+	$('#go_to_preview_date').prop("disabled", preview_date.epoch != dynamic_data.epoch).toggleClass('hidden', preview_date.epoch != dynamic_data.epoch);
+	$('#reset_preview_date_button').prop("disabled", preview_date.epoch == dynamic_data.epoch).toggleClass('hidden', preview_date.epoch == dynamic_data.epoch);
 
 }
 
