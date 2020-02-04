@@ -197,6 +197,10 @@ function evaluate_preview_change(){
 		target_day.change()
 	}
 
+	if(!preview_date.follow){
+		go_to_preview_date();
+	}
+
 }
 
 
