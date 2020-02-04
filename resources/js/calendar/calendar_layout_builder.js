@@ -126,10 +126,12 @@ var eras = {
 			// If the last era shift was behind us, then it is the last era
 			if(this.static_data.eras[this.static_data.eras.length-1].date.epoch < this.start_epoch){
 
+				var era = this.static_data.eras[this.static_data.eras.length-1];
+
 				this.current_eras.push({
 					"id": this.static_data.eras.length-1,
 					"position": 0,
-					"data": this.static_data.eras[this.static_data.eras.length-1]
+					"data": era
 				});
 
 			// Otherwise, this finds the current overlapping eras with the displayed days
@@ -174,41 +176,48 @@ var eras = {
 		if(this.current_eras.length > 0){
 			// If it's not a new era, don't update the text
 			if(this.era != index){
-				if(index >= 0){
-					this.era = index;
-				}
+				this.era = index;
 			}
 		}
 
-		var year_text = `Year ${calendar_layouts.year_data.era_year}`;
+		var year_text = `Year ${calendar_layouts.year_data.year}`;
 
-		if(this.era !== undefined && (!this.static_data.settings.hide_eras || owner)){
+		if(this.era !== undefined && this.era !== -1){
 
 			var era = this.current_eras[this.era].data;
 
-			if(era.settings.use_custom_format && era.formatting){
+			var era_year = calendar_layouts.year_data.year;
 
-				var format = era.formatting.replace(/\{\{/g, '{{{').replace(/\}\}/g, '}}}');
-
-				year_text = Mustache.render(
-					format,
-					{
-						"year": calendar_layouts.year_data.year,
-						"nth_year": ordinal_suffix_of(calendar_layouts.year_data.year),
-						"abs_year": Math.abs(calendar_layouts.year_data.year),
-						"abs_nth_year": ordinal_suffix_of(Math.abs(calendar_layouts.year_data.year)),
-						"era_year": calendar_layouts.year_data.era_year,
-						"era_nth_year": ordinal_suffix_of(calendar_layouts.year_data.era_year),
-						"era_name": era.name
-					}
-				);
-
-			}else{
-
-				year_text += ` - ${era.name}`
-
+			if(era.settings.restart){
+				era_year -= era.date.year;
+				var year_text = `Era year ${unconvert_year(static_data, era_year)} (year ${calendar_layouts.year_data.year})`;
 			}
 
+			if(!this.static_data.settings.hide_eras || owner){
+
+				if(era.settings.use_custom_format && era.formatting){
+
+					var format = era.formatting.replace(/\{\{/g, '{{{').replace(/\}\}/g, '}}}');
+
+					year_text = Mustache.render(
+						format,
+						{
+							"year": calendar_layouts.year_data.year,
+							"nth_year": ordinal_suffix_of(calendar_layouts.year_data.year),
+							"abs_year": Math.abs(calendar_layouts.year_data.year),
+							"abs_nth_year": ordinal_suffix_of(Math.abs(calendar_layouts.year_data.year)),
+							"era_year": unconvert_year(static_data, era_year),
+							"era_nth_year": ordinal_suffix_of(unconvert_year(static_data, era_year)),
+							"era_name": era.name
+						}
+					);
+
+				}else{
+
+					year_text += ` - ${era.name}`
+
+				}
+			}
 		}
 
 		if(year_text != ''){
@@ -463,7 +472,7 @@ var calendar_layouts = {
 
 		this.append_layout();
 
-		this.update_year_follower(`Year ${calendar_layouts.year_data.era_year}`);
+		this.update_year_follower(`Year ${unconvert_year(static_data, calendar_layouts.year_data.era_year)}`);
 
 	},
 
@@ -508,7 +517,7 @@ var calendar_layouts = {
 
 		this.add_month_number();
 
-		this.update_year_follower(`Year ${calendar_layouts.year_data.era_year}`);
+		this.update_year_follower(`Year ${unconvert_year(static_data, calendar_layouts.year_data.era_year)}`);
 
 	},
 

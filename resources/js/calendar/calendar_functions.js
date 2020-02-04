@@ -2021,7 +2021,7 @@ function evaluate_calendar_start(static_data, year, month, day){
 
 		}
 
-		if(era.settings.restart && year >= convert_year(static_data, era.date.year)){
+		if(era.settings.restart && year > convert_year(static_data, era.date.year)){
 
 			for(var i = 0; i < era_index; i++){
 

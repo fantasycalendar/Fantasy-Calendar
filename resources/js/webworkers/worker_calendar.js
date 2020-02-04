@@ -311,7 +311,8 @@ var calendar_builder = {
 
 		for(var i = 0; i < this.static_data.eras.length; i++){
 			if(this.static_data.eras[i].settings.starting_era) continue;
-			this.static_data.eras[i].date.epoch = evaluate_calendar_start(this.static_data, convert_year(this.static_data, this.static_data.eras[i].date.year), this.static_data.eras[i].date.timespan, this.static_data.eras[i].date.day).epoch;
+			this.static_data.eras[i].year_data = evaluate_calendar_start(this.static_data, convert_year(this.static_data, this.static_data.eras[i].date.year), this.static_data.eras[i].date.timespan, this.static_data.eras[i].date.day);
+			this.static_data.eras[i].year_data.era_year = unconvert_year(this.static_data, this.static_data.eras[i].year_data.era_year);
 		}
 
 		this.calendar_list = {
@@ -577,6 +578,11 @@ var calendar_builder = {
 
 				for(day = 0; day <= current_timespan.length; day++){
 
+					if(this.static_data.eras[current_era+1] && epoch > this.static_data.eras[current_era+1].date.epoch){
+						current_era++;
+						era_year = 0;
+					}
+
 					moon_data = [];
 
 					if(day == 0){
@@ -753,10 +759,6 @@ var calendar_builder = {
 							}
 						}
 					}
-
-					if(this.static_data.eras[current_era+1] && epoch >= this.static_data.eras[current_era+1].date.epoch){
-						current_era++;
-					}
 				}
 
 				if(!this.static_data.year_data.overflow){
@@ -799,6 +801,11 @@ var calendar_builder = {
 				}
 
 				for(day = 0; day <= current_timespan.length; day++){
+
+					if(this.static_data.eras[current_era+1] && epoch > this.static_data.eras[current_era+1].date.epoch){
+						current_era++;
+						era_year = 0;
+					}
 
 					moon_data = [];
 
@@ -974,10 +981,6 @@ var calendar_builder = {
 								year_day++;
 							}
 						}
-					}
-
-					if(this.static_data.eras[current_era+1] && epoch >= this.static_data.eras[current_era+1].date.epoch){
-						current_era++;
 					}
 				}
 
@@ -1314,6 +1317,11 @@ var calendar_builder = {
 
 				for(day = 0; day <= current_timespan.length; day++){
 
+					if(this.static_data.eras[current_era+1] && epoch > this.static_data.eras[current_era+1].date.epoch){
+						current_era++;
+						era_year = 0;
+					}
+
 					moon_data = [];
 
 					if(day == 0){
@@ -1492,9 +1500,6 @@ var calendar_builder = {
 						}
 					}
 
-					if(this.static_data.eras[current_era+1] && epoch >= this.static_data.eras[current_era+1].date.epoch){
-						current_era++;
-					}
 				}
 
 				if(!this.static_data.year_data.overflow){
@@ -1502,8 +1507,10 @@ var calendar_builder = {
 					total_week_num++;
 				}
 			}
+
 			last_year = year_index;
 			year_day = 1;
+
 			if(year_index !== convert_year(this.static_data, this.dynamic_data.year)){
 				era_year++;
 				year_day = 1;
@@ -1540,6 +1547,11 @@ var calendar_builder = {
 			}
 
 			for(day = 0; day <= current_timespan.length; day++, total_day++){
+
+				if(this.static_data.eras[current_era+1] && epoch > this.static_data.eras[current_era+1].date.epoch){
+					current_era++;
+					era_year = 0;
+				}
 
 				moon_data = [];
 
@@ -1740,6 +1752,7 @@ var calendar_builder = {
 
 					total_day--;
 				}
+
 			}
 
 
@@ -1748,14 +1761,9 @@ var calendar_builder = {
 				total_week_num++;
 			}
 
-			if(this.static_data.eras[current_era+1] && epoch >= this.static_data.eras[current_era+1].date.epoch){
-				current_era++;
-			}
-
 		}
 
 		var calendar_end_epoch = epoch;
-		var calendar_era_year = unconvert_year(this.static_data, era_year);
 		var calendar_first_week_day = first_week_day;
 
 		order = Object.keys(this.calendar_list.post_timespans_to_evaluate);
@@ -1786,6 +1794,11 @@ var calendar_builder = {
 				for(day = 0; day <= current_timespan.length; day++){
 
 					moon_data = [];
+
+					if(this.static_data.eras[current_era+1] && epoch > this.static_data.eras[current_era+1].date.epoch){
+						current_era++;
+						era_year = 0;
+					}
 
 					if(day == 0){
 						for(leap_day_index = 0; leap_day_index < current_timespan.leap_days.length; leap_day_index++){
@@ -1960,10 +1973,6 @@ var calendar_builder = {
 								year_day++;
 							}
 						}
-					}
-
-					if(this.static_data.eras[current_era+1] && epoch >= this.static_data.eras[current_era+1].date.epoch){
-						current_era++;
 					}
 				}
 

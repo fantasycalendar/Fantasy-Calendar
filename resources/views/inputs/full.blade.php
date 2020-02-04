@@ -196,6 +196,7 @@
 
 					<div class='row my-2'>
 						<div class='btn btn-success full' id='go_to_preview_date'>Go To Preview date</div>
+                        <div class='btn btn-info full hidden' id='reset_preview_date_button'>Reset Preview Date</div>
 					</div>
 
 				</div>
