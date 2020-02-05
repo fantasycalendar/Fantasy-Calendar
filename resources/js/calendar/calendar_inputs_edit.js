@@ -2397,7 +2397,7 @@ function add_leap_day_to_list(parent, key, data){
 					element.push("</div>");
 				element.push("</div>");
 
-				element.push(`<div class='row no-gutters my-1 ${(data.adds_week_day && !data.intercalary ? "" : "hidden")}'>`);
+				element.push(`<div class='row no-gutters my-1 ${!data.intercalary ? "" : "hidden"}'>`);
 					element.push("<div class='form-check col-12 py-2 border rounded'>");
 						element.push(`<input type='checkbox' id='${key}_adds_week_day' class='form-check-input adds-week-day dynamic_input' data='year_data.leap_days.${key}' fc-index='adds_week_day' ${(data.adds_week_day && !data.intercalary ? "" : "disabled")} ${(data.adds_week_day ? "checked" : "")} />`);
 						element.push(`<label for='${key}_adds_week_day' class='form-check-label ml-1'>`);
