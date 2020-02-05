@@ -106,17 +106,17 @@ var calendar_weather = {
 		
 			this.moon_title.toggleClass('hidden', !icon.hasClass('moon_popup'));
 			this.moon_container.toggleClass('hidden', !icon.hasClass('moon_popup'));
-			this.add_event_container.toggleClass('hidden', !icon.hasClass('moon_popup'));
+			this.add_event_container.toggleClass('hidden', !icon.hasClass('moon_popup') || !owner);
 
 			if(icon.hasClass('moon_popup')){
 				this.moon_container.children().first().html(insert_moons(calendar_layouts.epoch_data[epoch]));
-				this.add_event_container.find('.btn_create_event').attr('epoch', epoch);
+				this.add_event_container.find('.btn_create_event').attr('epoch', epoch).prop('disabled', !owner);
 			}
 
 			this.stop_hide = false;
 			this.sticky_icon = false;
 
-			if(calendar_weather.processed_weather){
+			if(calendar_weather.processed_weather && !icon.hasClass('noweather')){
 
 				this.weather_title.toggleClass('hidden', !icon.hasClass('moon_popup'));
 				this.weather_temp_desc.parent().toggleClass('hidden', false);
@@ -200,20 +200,24 @@ var calendar_weather = {
 				this.weather_clouds.parent().toggleClass('hidden', true);
 			}
 
-			this.popper = new Popper(icon, this.weather_tooltip_box, {
-			    placement: 'top',
-                modifiers: {
-			        preventOverflow: {
-			            boundariesElement: $('#calendar')[0],
-			        },
-			        offset: {
-			            enabled: true,
-                        offset: '0, 14px'
-                    }
-                }
-            });
+            if((calendar_weather.processed_weather && !icon.hasClass('noweather')) || icon.hasClass('moon_popup')){
 
-			this.weather_tooltip_box.show();
+				this.popper = new Popper(icon, this.weather_tooltip_box, {
+				    placement: 'top',
+	                modifiers: {
+				        preventOverflow: {
+				            boundariesElement: $('#calendar')[0],
+				        },
+				        offset: {
+				            enabled: true,
+	                        offset: '0, 14px'
+	                    }
+	                }
+	            });
+
+				this.weather_tooltip_box.show();
+
+			}
 		},
 
 		hide: function(){
