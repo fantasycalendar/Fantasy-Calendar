@@ -80,7 +80,7 @@ var edit_event_ui = {
 
 		$(document).on('click', '.btn_create_event', function(){
 
-			var epoch = $(this).closest('.timespan_day').attr('epoch')|0;
+			var epoch = $(this).attr('epoch')|0;
 
 			edit_event_ui.create_new_event('New Event', epoch);
 

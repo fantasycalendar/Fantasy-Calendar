@@ -39,6 +39,7 @@ var calendar_weather = {
 			this.weather_title = $('.weather_title');
 			this.moon_title = $('.moon_title');
 			this.moon_container = $('.moon_container');
+			this.add_event_container = $('.add_event_container');
 			this.weather_temp_desc = $('.weather_temp_desc');
 			this.weather_temp = $('.weather_temp');
 			this.weather_wind = $('.weather_wind');
@@ -46,6 +47,13 @@ var calendar_weather = {
 			this.weather_clouds = $('.weather_clouds');
 			this.stop_hide = false;
 			this.sticky_icon = false;
+
+			this.add_event_container.find('.btn_create_event').click(function(){
+				calendar_weather.tooltip.stop_hide = false;
+				calendar_weather.tooltip.hide();
+				delete registered_click_callbacks['sticky_weather_ui'];
+				calendar_weather.tooltip.sticky_icon.removeClass('sticky');
+			});
 
 		},
 
@@ -96,16 +104,13 @@ var calendar_weather = {
 
 			var epoch = day_container.attr('epoch');
 		
-			this.moon_title.addClass('hidden');
-			this.moon_container.addClass('hidden');
-			this.weather_title.addClass('hidden');
+			this.moon_title.toggleClass('hidden', !icon.hasClass('moon_popup'));
+			this.moon_container.toggleClass('hidden', !icon.hasClass('moon_popup'));
+			this.add_event_container.toggleClass('hidden', !icon.hasClass('moon_popup'));
 
 			if(icon.hasClass('moon_popup')){
-
-				this.moon_title.removeClass('hidden');
-				this.moon_container.removeClass('hidden');
 				this.moon_container.children().first().html(insert_moons(calendar_layouts.epoch_data[epoch]));
-
+				this.add_event_container.find('.btn_create_event').attr('epoch', epoch);
 			}
 
 			this.stop_hide = false;
@@ -113,7 +118,7 @@ var calendar_weather = {
 
 			if(calendar_weather.processed_weather){
 
-				this.weather_title.toggleClass('hidden', false);
+				this.weather_title.toggleClass('hidden', !icon.hasClass('moon_popup'));
 				this.weather_temp_desc.parent().toggleClass('hidden', false);
 				this.weather_temp.parent().toggleClass('hidden', false);
 				this.weather_wind.parent().toggleClass('hidden', false);
