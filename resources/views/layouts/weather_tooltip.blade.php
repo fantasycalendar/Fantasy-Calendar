@@ -1,9 +1,13 @@
 <div id='weather_tooltip_box'>
+	<div class='bold-text moon_title hidden'>Moons:</div>
+	<div class='moon_container hidden'><div class='row mb-2'></div></div>
+	<div class='weather_title bold-text'>Weather:</div>
 	<div><span class='bold-text'>Description:</span> <span class='weather_temp_desc'></span></div>
 	<div><span class='bold-text'>Temperature:</span> <span class='weather_temp'></span></div>
 	<div><span class='bold-text'>Wind:</span> <span class='weather_wind'></span></div>
 	<div><span class='bold-text'>Precipitation:</span> <span class='weather_precip'></span></div>
 	<div><span class='bold-text'>Clouds:</span> <span class='weather_clouds'></span></div>
+	<div class='add_event_container hidden mt-2'><button type='button' class='btn btn-sm btn-success w-100 btn_create_event'>Add event to day</button></div>
 </div>
 
 <div id="weather_background" class='basic-background'>

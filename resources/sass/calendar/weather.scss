@@ -4,7 +4,7 @@
     position: absolute;
     background: $weather-tooltip-bg-color;
     top:0;
-    width:240px;
+    width:180px;
     border-radius: 7px;
     padding:10px;
     font-size:9pt;
@@ -13,7 +13,7 @@
     box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
 }
 
-#weather_tooltip_box div{
+#weather_tooltip_box > div{
     float:left;
     text-align:center;
     width:100%;

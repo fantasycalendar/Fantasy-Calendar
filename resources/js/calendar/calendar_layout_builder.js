@@ -18,29 +18,13 @@ function display_events(static_data, event_data){
 			var category_hide = category ? category.category_settings.hide : false;
 
 			if(current_event.settings.hide_full || (!owner && (current_event.settings.hide || static_data.settings.hide_events || category_hide))) continue;
+				
+			calendar_layouts.layout.add_event(event_data, event_index, current_event, category_hide);
 
-			for(var epoch_index = 0; event_data.valid[event_index] && epoch_index < event_data.valid[event_index].length; epoch_index++){
-
-				var local_epoch = event_data.valid[event_index][epoch_index];
-
-				var start = event_data.starts[event_index].indexOf(local_epoch) != -1;
-				var end = event_data.ends[event_index].indexOf(local_epoch) != -1;
-
-				var event_group = current_event.settings.color ? " " + current_event.settings.color : "";
-				event_group += current_event.settings.text ? " " + current_event.settings.text : "";
-				event_group += current_event.settings.hide || static_data.settings.hide_events || category_hide ? " hidden_event" : "";
-
-				var category_name = category ? category.name : "";
-
-				var html = `<div title='View ${current_event.name}' class='event ${(event_group + (start ? " event_start" : (end ? " event_end" : "")))}' event_id='${event_index}' category='${category_name}'>${((start ? "Start: " : (end ? "End: " : "")) + current_event.name)}</div>`;
-
-				var parent = $(`.timespan_day[epoch='${local_epoch}'] .event_container`);
-
-				parent.append(html);
-
-			}
 		}
+
 	}
+
 }
 
 function insert_moons(data){
@@ -359,16 +343,16 @@ var eras = {
 
 					if(parent !== undefined){
 
-						var event_group = '';
+						var event_class = '';
 						var category = '';
 
 						if(current_era.settings.event_category && current_era.settings.event_category > -1){
 							var category = static_data.event_data.categories[current_era.settings.event_category];
-							event_group = category.color ? " " + category.color : "";
-							event_group += category.text ? " " + category.text : "";
+							event_class = category.color ? " " + category.color : "";
+							event_class += category.text ? " " + category.text : "";
 						}
 
-						var html = `<div class='event era_event ${event_group}' era_id='${era_index}' category='${category.name}'>${current_era.name}</div>`;
+						var html = `<div class='event era_event ${event_class}' era_id='${era_index}' category='${category.name}'>${current_era.name}</div>`;
 
 						parent.append(html);
 
@@ -401,7 +385,7 @@ function update_current_day(recalculate){
 		dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
 	}
 
-	var day_container = $(`[epoch=${dynamic_data.epoch}]`);
+	var day_container = $(`.timespan_day[epoch=${dynamic_data.epoch}]`);
 
 	day_container.addClass('current_day');
 
@@ -545,6 +529,35 @@ var calendar_layouts = {
 
 	grid: {
 
+		add_event: function(event_data, event_index, event){
+
+			var category = event.event_category_id && event.event_category_id > -1 ?  get_category(event.event_category_id) : false;
+
+			var category_hide = category ? category.category_settings.hide : false;
+
+			for(var epoch_index = 0; event_data.valid[event_index] && epoch_index < event_data.valid[event_index].length; epoch_index++){
+
+				var local_epoch = event_data.valid[event_index][epoch_index];
+
+				var start = event_data.starts[event_index].indexOf(local_epoch) != -1;
+				var end = event_data.ends[event_index].indexOf(local_epoch) != -1;
+
+				var event_class = event.settings.color ? " " + event.settings.color : "";
+				event_class += event.settings.text ? " " + event.settings.text : "";
+				event_class += event.settings.hide || static_data.settings.hide_events || category_hide ? " hidden_event" : "";
+
+				var category_name = category ?  category.name : "";
+
+				var html = `<div class='event ${(event_class + (start ? " event_start" : (end ? " event_end" : "")))}' event_id='${event_index}' category='${category_name}'>${((start ? "Start: " : (end ? "End: " : "")) + event.name)}</div>`;
+
+				var parent = $(`.timespan_day[epoch='${local_epoch}'] .event_container`);
+
+				parent.append(html);
+
+			}
+
+		},
+
 		insert_day: function(epoch, weather_align, day_num, day_class, title){
 
 			if(static_data.settings.only_reveal_today && !owner && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day))
@@ -562,14 +575,14 @@ var calendar_layouts = {
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow center'>");
 						if(calendar_layouts.epoch_data[epoch].weather && calendar_layouts.data.processed_weather){
-							if(!(static_data.settings.hide_all_weather || (static_data.settings.hide_future_weather && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)))){
-								calendar_layouts.html.push(`<div class='weather_icon' align='${weather_align}'></div>`);
+							if(!(static_data.settings.hide_all_weather || (!owner && static_data.settings.hide_future_weather && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)))){
+								calendar_layouts.html.push(`<div class='weather_icon weather_popup' align='${weather_align}'></div>`);
 							}
 						}
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow right'>");
 							if(owner){
-								calendar_layouts.html.push("<div class='btn_create_event btn btn-success' title='Create new event'></div>");
+								calendar_layouts.html.push(`<div epoch='${epoch}' class='btn_create_event btn_small_plus btn btn-success' title='Create new event'></div>`);
 							}
 						calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("</div>");
@@ -623,17 +636,21 @@ var calendar_layouts = {
 
 				calendar_layouts.html.push("<div class='timespan_row_container'>");
 
-					calendar_layouts.html.push("<div class='timespan_row_names'>");
+					if(!static_data.settings.hide_weekdays){
 
-					for(day_in_week = 1; day_in_week <= timespan.week.length; day_in_week++){
+						calendar_layouts.html.push("<div class='timespan_row_names'>");
 
-						calendar_layouts.html.push("<div class='week_day_name'>");
-						calendar_layouts.html.push(timespan.week[day_in_week-1]);
+						for(day_in_week = 1; day_in_week <= timespan.week.length; day_in_week++){
+
+							calendar_layouts.html.push("<div class='week_day_name'>");
+							calendar_layouts.html.push(timespan.week[day_in_week-1]);
+							calendar_layouts.html.push("</div>");
+
+						}
+
 						calendar_layouts.html.push("</div>");
 
 					}
-
-					calendar_layouts.html.push("</div>");
 
 					calendar_layouts.html.push("<div class='timespan_row'>");
 
@@ -660,9 +677,9 @@ var calendar_layouts = {
 							});
 
 							if(calendar_layouts.year_data.week_day >= timespan.week.length){
-								calendar_layouts.html.push("</div>");
 								calendar_layouts.year_data.week_day = 1;
 								if(timespan_day != timespan.length){
+									calendar_layouts.html.push("</div>");
 									calendar_layouts.html.push("<div class='timespan_row'>");
 								}
 							}else{
@@ -713,8 +730,8 @@ var calendar_layouts = {
 								if(intercalary_week_day < timespan.week.length){
 									intercalary_week_day++;
 								}else if(intercalary_week_day >= timespan.week.length){
-									calendar_layouts.html.push("</div>");
 									if(intercalary_day != timespan.length){
+										calendar_layouts.html.push("</div>");
 										calendar_layouts.html.push("<div class='timespan_row intercalary'>");
 									}
 									intercalary_week_day = 1;
@@ -801,17 +818,23 @@ var calendar_layouts = {
 						calendar_layouts.html.push("</span>");
 					calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("<div class='timespan_row_container'>");
+
+					if(!static_data.settings.hide_weekdays){
+
 					calendar_layouts.html.push("<div class='timespan_row_names'>");
 
-					for(day_in_week = 1; day_in_week <= timespan.week.length; day_in_week++){
+						for(day_in_week = 1; day_in_week <= timespan.week.length; day_in_week++){
 
-						calendar_layouts.html.push("<div class='week_day_name'>");
-						calendar_layouts.html.push(timespan.week[day_in_week-1]);
+							calendar_layouts.html.push("<div class='week_day_name'>");
+							calendar_layouts.html.push(timespan.week[day_in_week-1]);
+							calendar_layouts.html.push("</div>");
+
+						}
+
 						calendar_layouts.html.push("</div>");
 
 					}
 
-					calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("<div class='timespan_row'>");
 					this.get_overflow(true, calendar_layouts.year_data.week_day-1);
 
@@ -851,15 +874,19 @@ var calendar_layouts = {
 
 	wide: {
 
+		add_event: function(event_data, event_index, event){
+
+			calendar_layouts.grid.add_event(event_data, event_index, event);
+
+		},
+
 		insert_day: function(epoch, weather_align, day_num, day_class, title){
 
-			if(static_data.settings.only_reveal_today && !owner && (calendar_layouts.year_data.year > dynamic_data.year || this.timespan.index > dynamic_data.timespan || (this.timespan.index == dynamic_data.timespan && this.timespan.day > dynamic_data.day))){
+			if(static_data.settings.only_reveal_today && !owner && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)){
 
 				this.insert_empty_day(day_class);
 
 			}else{
-
-
 
 				calendar_layouts.html.push(`<div class='${day_class}' epoch='${epoch}'>`);
 
@@ -869,14 +896,14 @@ var calendar_layouts = {
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow center'>");
 						if(calendar_layouts.epoch_data[epoch].weather && calendar_layouts.data.processed_weather){
-							if(!(static_data.settings.hide_all_weather || (static_data.settings.hide_future_weather && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)))){
-								calendar_layouts.html.push(`<div class='weather_icon' align='${weather_align}'></div>`);
+							if(!(static_data.settings.hide_all_weather || (!owner && static_data.settings.hide_future_weather && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)))){
+								calendar_layouts.html.push(`<div class='weather_icon weather_popup' align='${weather_align}'></div>`);
 							}
 						}
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow right'>");
 							if(owner){
-								calendar_layouts.html.push("<div class='btn_create_event btn btn-success' title='Create new event'></div>");
+								calendar_layouts.html.push(`<div epoch='${epoch}' class='btn_create_event btn_small_plus btn btn-success' title='Create new event'></div>`);
 							}
 						calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("</div>");
@@ -931,17 +958,21 @@ var calendar_layouts = {
 
 				calendar_layouts.html.push("<div class='timespan_row_container'>");
 
-					calendar_layouts.html.push("<div class='timespan_row_names'>");
+					if(!static_data.settings.hide_weekdays){
 
-					for(day_in_week = 1; day_in_week <= timespan.week.length; day_in_week++){
+						calendar_layouts.html.push("<div class='timespan_row_names'>");
 
-						calendar_layouts.html.push("<div class='week_day_name'>");
-						calendar_layouts.html.push(timespan.week[day_in_week-1]);
+						for(day_in_week = 1; day_in_week <= timespan.week.length; day_in_week++){
+
+							calendar_layouts.html.push("<div class='week_day_name'>");
+							calendar_layouts.html.push(timespan.week[day_in_week-1]);
+							calendar_layouts.html.push("</div>");
+
+						}
+
 						calendar_layouts.html.push("</div>");
 
 					}
-
-					calendar_layouts.html.push("</div>");
 
 					calendar_layouts.html.push("<div class='timespan_row'>");
 
@@ -969,9 +1000,9 @@ var calendar_layouts = {
 
 
 							if(calendar_layouts.year_data.week_day >= timespan.week.length){
-								calendar_layouts.html.push("</div>");
 								calendar_layouts.year_data.week_day = 1;
 								if(timespan_day != timespan.length){
+									calendar_layouts.html.push("</div>");
 									calendar_layouts.html.push("<div class='timespan_row'>");
 								}
 							}else{
@@ -1021,8 +1052,8 @@ var calendar_layouts = {
 								if(intercalary_week_day <= timespan.week.length){
 									intercalary_week_day++;
 								}else if(intercalary_week_day > timespan.week.length){
-									calendar_layouts.html.push("</div>");
 									if(intercalary_day != timespan.length){
+										calendar_layouts.html.push("</div>");
 										calendar_layouts.html.push("<div class='timespan_row intercalary'>");
 									}
 									intercalary_week_day = 1;
@@ -1109,18 +1140,24 @@ var calendar_layouts = {
 						calendar_layouts.html.push("</span>");
 					calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("<div class='timespan_row_container'>");
-					calendar_layouts.html.push("<div class='timespan_row_names'>");
+					
+					if(!static_data.settings.hide_weekdays){
+					
+						calendar_layouts.html.push("<div class='timespan_row_names'>");
 
-					for(day_in_week = 1; day_in_week <= timespan.week.length; day_in_week++){
+						for(day_in_week = 1; day_in_week <= timespan.week.length; day_in_week++){
 
-						calendar_layouts.html.push("<div class='week_day_name'>");
-						calendar_layouts.html.push(timespan.week[day_in_week-1]);
+							calendar_layouts.html.push("<div class='week_day_name'>");
+							calendar_layouts.html.push(timespan.week[day_in_week-1]);
+							calendar_layouts.html.push("</div>");
+
+						}
+
 						calendar_layouts.html.push("</div>");
 
 					}
 
-					calendar_layouts.html.push("</div>");
-					calendar_layouts.html.push("<div class='timespan_row'>");
+					cale1ndar_layouts.html.push("<div class='timespan_row'>");
 					this.get_overflow(true, calendar_layouts.year_data.week_day-1);
 
 				}
@@ -1158,6 +1195,12 @@ var calendar_layouts = {
 
 	vertical: {
 
+		add_event: function(event_data, event_index, event){
+
+			calendar_layouts.grid.add_event(event_data, event_index, event);
+
+		},
+
 		insert_empty_day: function(day_class){
 			calendar_layouts.html.push(`<div class='empty_timespan_day ${day_class}'>`);
 			calendar_layouts.html.push("</div>");
@@ -1165,7 +1208,7 @@ var calendar_layouts = {
 
 		insert_day: function(epoch, day_num, day_class, title, intercalary){
 
-			if(static_data.settings.only_reveal_today && !owner && (calendar_layouts.year_data.year > dynamic_data.year || this.timespan.index > dynamic_data.timespan || (this.timespan.index == dynamic_data.timespan && this.timespan.day > dynamic_data.day))){
+			if(static_data.settings.only_reveal_today && !owner && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)){
 
 				this.insert_empty_day(day_class);
 
@@ -1187,14 +1230,14 @@ var calendar_layouts = {
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow center'>");
 						if(calendar_layouts.epoch_data[epoch].weather && calendar_layouts.data.processed_weather){
-							if(!(static_data.settings.hide_all_weather || (static_data.settings.hide_future_weather && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)))){
-								calendar_layouts.html.push(`<div class='weather_icon' align=''></div>`);
+							if(!(static_data.settings.hide_all_weather || (!owner && static_data.settings.hide_future_weather && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)))){
+								calendar_layouts.html.push(`<div class='weather_icon weather_popup' align=''></div>`);
 							}
 						}
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow right'>");
 							if(owner){
-								calendar_layouts.html.push("<div class='btn_create_event btn btn-success' title='Create new event'></div>");
+								calendar_layouts.html.push(`<div epoch='${epoch}' class='btn_create_event btn_small_plus btn btn-success' title='Create new event'></div>`);
 							}
 						calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("</div>");
@@ -1279,29 +1322,29 @@ var calendar_layouts = {
 
 				calendar_layouts.html.push("<div class='timespan_row_container'>");
 
-						if(!static_data.year_data.overflow){
+					if(!static_data.year_data.overflow){
+						calendar_layouts.year_data.week_day = 1;
+					}
+
+					for(timespan_day = 1; timespan_day <= timespan.length; timespan_day++, calendar_layouts.year_data.year_day++, calendar_layouts.year_data.epoch++, this.timespan.day++){
+
+						this.insert_day(calendar_layouts.year_data.epoch, timespan_day, "timespan_day");
+
+						filtered_features = timespan.leap_days.filter(function(features){
+							return features.intercalary && features.day === timespan_day && timespan.length != features.day;
+						});
+
+						if(calendar_layouts.year_data.week_day >= timespan.week.length){
 							calendar_layouts.year_data.week_day = 1;
+						}else{
+							calendar_layouts.year_data.week_day++;
 						}
 
-						for(timespan_day = 1; timespan_day <= timespan.length; timespan_day++, calendar_layouts.year_data.year_day++, calendar_layouts.year_data.epoch++, this.timespan.day++){
+						this.insert_intercalary_day(timespan, filtered_features, timespan.length, true);
 
-							this.insert_day(calendar_layouts.year_data.epoch, timespan_day, "timespan_day");
+						this.previous_epoch = calendar_layouts.year_data.epoch;
 
-							filtered_features = timespan.leap_days.filter(function(features){
-								return features.intercalary && features.day === timespan_day && timespan.length != features.day;
-							});
-
-							if(calendar_layouts.year_data.week_day >= timespan.week.length){
-								calendar_layouts.year_data.week_day = 1;
-							}else{
-								calendar_layouts.year_data.week_day++;
-							}
-
-							this.insert_intercalary_day(timespan, filtered_features, timespan.length, true);
-
-							this.previous_epoch = calendar_layouts.year_data.epoch;
-
-						}
+					}
 
 				calendar_layouts.html.push("</div>");
 				calendar_layouts.html.push("</div>");
@@ -1421,5 +1464,354 @@ var calendar_layouts = {
 
 			}
 		}
-	}
+	},
+
+	minimalistic: {
+
+		events: [],
+		event_containers: [],
+
+		add_event: function(event_data, event_index, event){
+
+			var category = event.event_category_id && event.event_category_id > -1 ?  get_category(event.event_category_id) : false;
+
+			var category_hide = category ? category.category_settings.hide : false;
+
+			for(var epoch_index = 0; event_data.valid[event_index] && epoch_index < event_data.valid[event_index].length; epoch_index++){
+
+				var local_epoch = event_data.valid[event_index][epoch_index];
+
+				var day = $(`.timespan_day[epoch='${local_epoch}']`);
+
+				if(!day.length) continue;
+
+				day.addClass('has_event');
+
+				if(event.settings.print){
+
+					var event_container = day.closest('.timespan_outer_container').find('.event_container');
+
+					var epoch_data = calendar_layouts.epoch_data[local_epoch];
+
+					var category_name = event.event_category_id > -1 ?  category.name : "";
+
+					var event_class = event.settings.color ? " " + event.settings.color : "";
+					event_class += event.settings.text ? " " + event.settings.text : "";
+					event_class += event.settings.hide || static_data.settings.hide_events || category_hide ? " hidden_event" : "";
+
+					var element = $(`<div class='mx-2 my-0 px-1 py-0 text-left event ${event_class}' event_id='${event_index}' category='${category_name}'>${event.name} (${ordinal_suffix_of(epoch_data.day)})</div>`);
+
+					event_container.append(element);
+
+					event_container.children().each(function(){
+						if($(this).attr('day')|0 > epoch_data.day){
+							$(this).insertAfter(element);
+						}
+					});
+
+				}
+			}
+
+		},
+
+		insert_day: function(epoch, weather_align, day_num, day_class, title){
+
+			if(static_data.settings.only_reveal_today && !owner && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)){
+
+				this.insert_empty_day(day_class);
+
+			}else{
+
+				if(!(!owner && (static_data.settings.hide_all_weather || (static_data.settings.hide_future_weather && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day))))){
+					day_class += " weather_popup";
+				}else{
+					day_class += " weather_popup noweather";
+				}
+
+				if(static_data.moons.length > 0 && (owner || !static_data.settings.hide_moons)){
+					day_class += " moon_popup ";
+				}
+
+				calendar_layouts.html.push(`<div class='${day_class}' epoch='${epoch}'>`);
+					calendar_layouts.html.push(`<div class='number'>${day_num}</div>`);
+				calendar_layouts.html.push("</div>");
+
+			}
+
+		},
+
+		insert_empty_day: function(day_class){
+			calendar_layouts.html.push(`<div class='empty_timespan_day ${day_class}'>`);
+			calendar_layouts.html.push("</div>");
+		},
+
+		insert_timespan: function(timespan){
+
+			this.timespan = timespan;
+
+			this.timespan.day = 1;
+
+			if(timespan.type === 'month'){
+
+				calendar_layouts.html.push("<div class='timespan_outer_container'>");
+
+					var filtered_leap_days_beforestart = timespan.leap_days.filter(function(features){
+						return features.intercalary && features.day === 0;
+					});
+
+					this.insert_intercalary_day(timespan, filtered_leap_days_beforestart, timespan.length, false);
+
+					calendar_layouts.html.push("<div class='timespan_container minimalistic'>");
+
+						calendar_layouts.html.push("<div class='timespan_name'>");
+							calendar_layouts.html.push(timespan.name);
+							calendar_layouts.html.push("<span class='timespan_number'>");
+								calendar_layouts.html.push(` - Month ${timespan.index+1}`);
+							calendar_layouts.html.push("</span>");
+						calendar_layouts.html.push("</div>");
+
+						calendar_layouts.html.push("<div class='timespan_row_container'>");
+
+							if(!static_data.settings.hide_weekdays){
+
+								calendar_layouts.html.push("<div class='timespan_row_names'>");
+
+								for(day_in_week = 1; day_in_week <= timespan.week.length; day_in_week++){
+
+									calendar_layouts.html.push("<div class='week_day_name'>");
+									calendar_layouts.html.push(timespan.truncated_week[day_in_week-1]);
+									calendar_layouts.html.push("</div>");
+
+								}
+
+								calendar_layouts.html.push("</div>");
+
+							}
+
+							calendar_layouts.html.push("<div class='timespan_row'>");
+
+								if(static_data.year_data.overflow){
+									this.get_overflow(true, calendar_layouts.year_data.week_day-1);
+								}else{
+									calendar_layouts.year_data.week_day = 1;
+								}
+
+								for(timespan_day = 1; timespan_day <= timespan.length; timespan_day++, calendar_layouts.year_data.year_day++, calendar_layouts.year_data.epoch++, this.timespan.day++){
+
+									var weather_align = "";
+									if(calendar_layouts.year_data.week_day == 1){
+										weather_align = "start";
+									}
+									if(calendar_layouts.year_data.week_day == timespan.week.length){
+										weather_align = "end";
+									}
+
+									this.insert_day(calendar_layouts.year_data.epoch, weather_align, timespan_day, "timespan_day");
+
+									filtered_features = timespan.leap_days.filter(function(features){
+										return features.intercalary && features.day === timespan_day && timespan.length != features.day;
+									});
+
+									if(calendar_layouts.year_data.week_day >= timespan.week.length){
+										calendar_layouts.year_data.week_day = 1;
+										if(timespan_day != timespan.length){
+											calendar_layouts.html.push("</div>");
+											calendar_layouts.html.push("<div class='timespan_row'>");
+										}
+									}else{
+										calendar_layouts.year_data.week_day++;
+									}
+
+									this.insert_intercalary_day(timespan, filtered_features, timespan.length, true);
+
+								}
+
+								this.get_overflow(false, ((timespan.week.length-calendar_layouts.year_data.week_day+1)%timespan.week.length));
+
+							calendar_layouts.html.push("</div>");
+
+						calendar_layouts.html.push("</div>");
+
+					calendar_layouts.html.push("</div>");
+
+					calendar_layouts.html.push("<div class='event_container d-inline-flex flex-column'></div>");
+
+				calendar_layouts.html.push("</div>");
+
+			}else if(timespan.type === 'intercalary'){
+
+				calendar_layouts.html.push("<div class='timespan_outer_container'>");
+
+					calendar_layouts.html.push("<div class='timespan_container minimalistic'>");
+
+						calendar_layouts.html.push("<div class='timespan_name'>");
+							calendar_layouts.html.push(timespan.name);
+							calendar_layouts.html.push("<span class='timespan_number'>");
+								calendar_layouts.html.push(` - Month ${timespan.index+1}`);
+							calendar_layouts.html.push("</span>");
+						calendar_layouts.html.push("</div>");
+
+						calendar_layouts.html.push("<div class='timespan_row_container'>");
+
+							calendar_layouts.html.push("<div class='timespan_row'>");
+
+								intercalary_week_day = 1;
+
+								for(intercalary_day = 1; intercalary_day <= timespan.length; intercalary_day++, calendar_layouts.year_data.year_day++, calendar_layouts.year_data.epoch++, this.timespan.day++){
+
+									var weather_align = "";
+									if(intercalary_week_day == 1){
+										weather_align = "start";
+									}
+									if(intercalary_week_day == timespan.week.length){
+										weather_align = "end";
+									}
+
+									this.insert_day(calendar_layouts.year_data.epoch, weather_align, intercalary_day, "timespan_day timespan_intercalary");
+
+									if(intercalary_week_day < timespan.week.length){
+										intercalary_week_day++;
+									}else if(intercalary_week_day >= timespan.week.length){
+										if(intercalary_day != timespan.length){
+											calendar_layouts.html.push("</div>");
+											calendar_layouts.html.push("<div class='timespan_row intercalary'>");
+										}
+										intercalary_week_day = 1;
+									}
+
+								}
+
+								this.get_overflow(false, ((timespan.week.length-intercalary_week_day+1)%timespan.week.length), "intercalary");
+
+							calendar_layouts.html.push("</div>");
+
+						calendar_layouts.html.push("</div>");
+
+					calendar_layouts.html.push("</div>");
+
+					calendar_layouts.html.push("<div class='event_container d-inline-flex flex-column'></div>");
+
+				calendar_layouts.html.push("</div>");
+
+			}
+
+		},
+
+		insert_intercalary_day: function(timespan, filtered_features, length, add_subt){
+
+			if(filtered_features.length > 0){
+
+				calendar_layouts.year_data.epoch += add_subt ? 1 : 0;
+				this.timespan.day += add_subt ? 1 : 0;
+
+				if(!(filtered_features[0].day === 0) && !(filtered_features[0].day === length)){
+
+					this.get_overflow(false, (timespan.week.length-calendar_layouts.year_data.week_day+1)%timespan.week.length);
+
+					calendar_layouts.html.push("</div>");
+					calendar_layouts.html.push("</div>");
+					calendar_layouts.html.push("</div>");
+
+				}
+
+				calendar_layouts.html.push("<div class='timespan_container minimalistic'>");
+
+				calendar_layouts.html.push("<div class='timespan_row_container intercalary'>");
+
+				calendar_layouts.html.push("<div class='timespan_row'>");
+
+				intercalary_week = 1;
+
+				for(index = 0; index < filtered_features.length; index++, calendar_layouts.year_data.year_day++, calendar_layouts.year_data.epoch++, this.timespan.day++){
+
+					feature = filtered_features[index];
+
+					var weather_align = "";
+					if(intercalary_week == 1){
+						weather_align = "start";
+					}
+					if(intercalary_week == timespan.week.length){
+						weather_align = "end";
+					}
+					this.insert_day(calendar_layouts.year_data.epoch, weather_align, index+1, "timespan_day timespan_intercalary", feature.name);
+
+					if(intercalary_week == timespan.week.length){
+						calendar_layouts.html.push("</div>");
+						calendar_layouts.html.push("<div class='timespan_row intercalary'>");
+						intercalary_week = 1;
+					}else{
+						intercalary_week++;
+					}
+
+				}
+
+				this.get_overflow(false, (timespan.week.length-intercalary_week+1) % timespan.week.length, "intercalary");
+
+				calendar_layouts.html.push("</div>");
+
+				calendar_layouts.html.push("</div>");
+
+				calendar_layouts.html.push("</div>");
+
+				if(!(filtered_features[0].day === 0) && !(filtered_features[0].day === length)){
+
+					calendar_layouts.html.push("<div class='timespan_container minimalistic'>");
+					/*calendar_layouts.html.push("<div class='timespan_name'>");
+						calendar_layouts.html.push(timespan.name);
+						calendar_layouts.html.push("<span class='timespan_number'>");
+							calendar_layouts.html.push(` - Month ${timespan.index+1}`);
+						calendar_layouts.html.push("</span>");
+					calendar_layouts.html.push("</div>");*/
+					calendar_layouts.html.push("<div class='timespan_row_container'>");
+
+					if(!static_data.settings.hide_weekdays){
+					
+						calendar_layouts.html.push("<div class='timespan_row_names'>");
+
+						for(day_in_week = 1; day_in_week <= timespan.week.length; day_in_week++){
+
+							calendar_layouts.html.push("<div class='week_day_name'>");
+							calendar_layouts.html.push(timespan.truncated_week[day_in_week-1]);
+							calendar_layouts.html.push("</div>");
+
+						}
+
+						calendar_layouts.html.push("</div>");
+
+					}
+					calendar_layouts.html.push("<div class='timespan_row'>");
+					this.get_overflow(true, calendar_layouts.year_data.week_day-1);
+
+				}
+
+				calendar_layouts.year_data.epoch -= add_subt ? 1 : 0;
+				this.timespan.day -= add_subt ? 1 : 0;
+			}
+		},
+
+		get_overflow: function(start, num, features_class){
+
+			features_class = features_class ? ' ' + features_class : '';
+
+			for(current = 0; current < num; current++){
+
+				calendar_layouts.html.push(`<div class='timespan_overflow ${features_class}`);
+
+				if(start && current === 0){
+					calendar_layouts.html.push(" first");
+				}
+
+				if(!start && current == 0){
+					calendar_layouts.html.push(" firstlast");
+				}
+
+				if(!start && current === num-1){
+					calendar_layouts.html.push(" last");
+				}
+
+				calendar_layouts.html.push("'></div>");
+
+			}
+		}
+	},
 }

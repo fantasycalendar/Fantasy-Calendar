@@ -1,25 +1,25 @@
 /* ------------------ Overall Layout ----------------- */
 
-@keyframes shadow-pulse
-{
-    0% {
-        box-shadow: inset 0 0 0 0 rgba(191.0, 99.0, 71.0, 1.0);
-    }
-    100% {
-        box-shadow: inset 0 0 0 20px rgba(191.0, 99.0, 71.0, 0);
-    }
-}
-
-.preview_day{
-    box-shadow: inset 0 0 0 10px rgba(191.0, 99.0, 71.0, 0.5);
-}
-
 #calendar {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    margin-bottom:5px;
+    width: 100%;
     color: $main-text-color;
+    min-height: 85%;
 }
 
 .timespan {
+
     &_container{
+
+        align-self: flex-start;
+        text-align: center;
+        display: inline-flex;
+        flex-direction: column;
+        flex:1 0 85%;
         position:relative;
         background-color: $card-bg-color;
         border-radius:10px;
@@ -40,9 +40,12 @@
         }
     }
 
+    &_row_names{
+        border-top: 1px solid $calendar-border-color;
+    }
+
     &_name {
         text-align: center;
-        border-bottom: 1px solid $calendar-border-color;
         font-size: 1.4rem;
         line-height: 2.2rem;
     }
@@ -211,7 +214,7 @@
     flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 }
 
-.btn_create_event{
+.btn_small_plus{
     position:relative;
     width:20px !important;
     height:20px !important;
@@ -227,7 +230,7 @@
     background-size: 50%;
 }
 
-.btn_create_event:hover{
+.btn_small_plus:hover{
     cursor: pointer;
 }
 
@@ -302,61 +305,15 @@
     visibility: hidden;
 }
 
-/* --------------- Minimalistic Layout --------------- */
-
-.timespan_container.mini{
-    height:250px;
-    display: inline-flex;
-    flex-direction: column;
-    background-color:#f0ead0;
-    border-radius:0;
-    border:0;
-    overflow:hidden;
-    font-size:10pt;
-}
-
-.timespan_container.mini .timespan_day,
-.timespan_container.mini .timespan_intercalary,
-.timespan_container.mini .timespan_overflow,
-.timespan_container.mini .week_day_name,
-.timespan_container.mini .timespan_name{
-    display: inline-flex;
-    flex-direction: column;
-    justify-content: center;
-    overflow: hidden;
-    text-align:center;
-    flex: 1 0;
-    height:25px;
-    margin:0.5px;
-}
-
-
-.timespan_container.mini .timespan_day,
-.timespan_container.mini .timespan_intercalary,
-.timespan_container.mini .timespan_overflow{
-    width:25px;
-    border:0 !important;
-    margin:0.5px;
-}
-
-.timespan_container.mini .week_day_name,
-.timespan_container.mini .timespan_name{
-    background-color: #e7debd;
-}
-
-.timespan_container.mini .timespan_row:nth-child(even) .timespan_day{
-    background-color: #f7f4e1;
-}
-.timespan_container.mini .timespan_row:nth-child(odd) .timespan_day{
-    background-color: #e7debd;
-}
-
-
 /* -------------------- Wide layout ------------------ */
 
 .timespan_container.wide {
     overflow-x: auto;
     flex: 1 0 auto;
+    align-self: flex-start;
+    text-align: center;
+    display: inline-flex;
+    flex-direction: column;
 
     &::-webkit-scrollbar-track {
         -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.15);
@@ -412,6 +369,11 @@
     border-radius:10px;
     overflow:hidden;
     text-align: center;
+    align-self: flex-start;
+    text-align: center;
+    display: inline-flex;
+    flex-direction: column;
+    flex:1 0 95%;
 
     .timespan_row_container{
         display: inline-flex;
@@ -468,6 +430,89 @@
 
 }
 
+
+/* ---------------- Minimalistic layout ------------------ */
+
+.timespan_outer_container{
+
+    align-self: flex-start;
+    text-align: center;
+    display: inline-flex;
+    flex-direction: column;
+    border:0;
+    overflow:hidden;
+    flex:1 0 auto;
+    padding:5px 0px;
+    .event_container{
+        font-size:0.75rem;
+    }
+
+}
+
+.timespan_container.minimalistic{
+
+    align-self: center;
+    text-align: center;
+    display: inline-flex;
+    flex-direction: column;
+    border-radius:5;
+    border:0;
+    overflow:hidden;
+    font-size:0.75rem;
+    margin: 3px;
+    flex:1 0 auto;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+    .timespan_name{
+        font-size:1rem;
+        word-wrap: break-word;
+        text-overflow: ellipsis;
+        max-width: 10rem;
+        align-self: center;
+    }
+
+    .week_day_name, .timespan_day, .timespan_overflow{
+        display: inline-flex;
+        flex-direction: column;
+        justify-content: center;
+        overflow: hidden;
+        text-align:center;
+        flex: 1 0;
+        min-height:1.5rem;
+        min-width:1.5rem;
+    }
+
+    .has_event{
+        font-weight: bold;
+    }
+
+    .timespan_row:nth-child(even) .timespan_day{
+        background-color: #F1FFE1;
+    }
+    .timespan_row:nth-child(odd) .timespan_day{
+        background-color: #E8E7C1;
+    }
+
+    .empty_timespan_day{
+        background-color:$gray-secondary !important;
+    }
+
+    .timespan_day:hover{
+        background-color:#D4FFE9 !important;
+        cursor:pointer;
+    }
+
+    .current_day{
+        background-color: #fdb44d !important;
+        border-bottom: 0;
+    }
+
+    .preview_day{
+        background-color: rgba(191.0, 99.0, 71.0, 0.5) !important;
+        box-shadow: none !important;
+    }
+}
+
 body {
 
     &.hide_timespan_number .timespan_number,
@@ -493,4 +538,9 @@ body {
 .current_day{
     background-color: $current-day-color;
     border-bottom: 5px solid #fdb44d;
+}
+
+
+.preview_day{
+    box-shadow: inset 0 0 0 10px rgba(191.0, 99.0, 71.0, 0.5);
 }

@@ -875,10 +875,10 @@
                         <div class='col bold-text'>
                             Layout:
     						<select class='form-control static_input' data='settings' fc-index='layout'>
-    							<option value='grid'>Grid style</option>
-    							<option value='wide'>Wide style</option>
-    							<option value='vertical'>Vertical style</option>
-    							<!--<option value='mini'>Minimalistic style</option>-->
+                                <option value='grid'>Grid style</option>
+                                <option value='wide'>Wide style</option>
+                                <option value='vertical'>Vertical style</option>
+                                <option value='minimalistic'>Minimalistic style</option>
     						</select>
                         </div>
 					</label>
@@ -1011,32 +1011,38 @@
                         </div>
                     </label>
 
-					<!------------------------------------------------------->
+                    <div class='bold-text'>Display Settings:</div>
 
-					<div class='bold-text'>Display Settings:</div>
-
-					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This will add 'Month 1' and so on to each month in the calendar">
+                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This will add 'Month 1' and so on to each month in the calendar">
                         <div class='col'>
-    						<input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='add_month_number' onclick="setTimeout(calendar_layouts.add_month_number, 10);">
-    						<span>
-    							Add month number to months
-    						</span>
-					    </div>
+                            <input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='add_month_number' onclick="setTimeout(calendar_layouts.add_month_number, 10);">
+                            <span>
+                                Add month number to months
+                            </span>
+                        </div>
                     </label>
 
-					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This adds a small number at the bottom left of the days in the calendar showing which year-day it is">
+                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This adds a small number at the bottom left of the days in the calendar showing which year-day it is">
                         <div class='col'>
-    						<input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='add_year_day_number' onclick="setTimeout(calendar_layouts.add_year_day_number, 10);">
-    						<span>
-    							Add year day to each day
-    						</span>
-					    </div>
+                            <input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='add_year_day_number' onclick="setTimeout(calendar_layouts.add_year_day_number, 10);">
+                            <span>
+                                Add year day to each day
+                            </span>
+                        </div>
                     </label>
 
-				</div>
-			</div>
-		</div>
+                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This will hide the weekday bar at the top of each month">
+                        <div class='col'>
+                            <input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_weekdays'>
+                            <span>
+                                Hide weekdays in calendar
+                            </span>
+                        </div>
+                    </label>
 
+                </div>
+            </div>
+        </div>
 
 		<!---------------------------------------------->
 		<!------------------ LINKING ------------------->

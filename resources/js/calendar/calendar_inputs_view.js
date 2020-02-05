@@ -317,7 +317,7 @@ function evaluate_dynamic_change(){
 		preview_date.day		= data.day;
 		preview_date.epoch		= data.epoch;
 
-		if(data.rebuild){
+		if(data.rebuild || (!owner && static_data.settings.only_reveal_today)){
 			rebuild_calendar('calendar', dynamic_data)
 		}else{
 			scroll_to_epoch();
@@ -327,7 +327,9 @@ function evaluate_dynamic_change(){
 		preview_date_follow();
 
 	}else{
+
 		update_current_day(false);
+
 	}
 
 	evaluate_save_button();

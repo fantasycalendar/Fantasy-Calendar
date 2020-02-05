@@ -36,6 +36,10 @@ var calendar_weather = {
 
 			this.weather_tooltip_box = $('#weather_tooltip_box');
 			this.base_height = parseInt(this.weather_tooltip_box.css('height'));
+			this.weather_title = $('.weather_title');
+			this.moon_title = $('.moon_title');
+			this.moon_container = $('.moon_container');
+			this.add_event_container = $('.add_event_container');
 			this.weather_temp_desc = $('.weather_temp_desc');
 			this.weather_temp = $('.weather_temp');
 			this.weather_wind = $('.weather_wind');
@@ -44,9 +48,20 @@ var calendar_weather = {
 			this.stop_hide = false;
 			this.sticky_icon = false;
 
+			this.add_event_container.find('.btn_create_event').click(function(){
+				calendar_weather.tooltip.stop_hide = false;
+				calendar_weather.tooltip.hide();
+				delete registered_click_callbacks['sticky_weather_ui'];
+				calendar_weather.tooltip.sticky_icon.removeClass('sticky');
+			});
+
 		},
 
 		sticky: function(icon){
+			
+			if(registered_click_callbacks['sticky_weather_ui']){
+				return;
+			}
 
 			this.sticky_icon = icon;
 
@@ -60,11 +75,20 @@ var calendar_weather = {
 
 		sticky_callback: function(event){
 
-			if($(event.target).closest('#weather_tooltip_box').length == 0 && $(event.target).closest('.weather_icon').length == 0){
+			if($(event.target).closest('#weather_tooltip_box').length == 0 && $(event.target).closest('.sticky').length == 0){
 
 				calendar_weather.tooltip.stop_hide = false;
 
 				calendar_weather.tooltip.hide();
+
+				delete registered_click_callbacks['sticky_weather_ui'];
+				
+				calendar_weather.tooltip.sticky_icon.removeClass('sticky');
+
+				if($(event.target).closest('.weather_popup').length != 0){
+					calendar_weather.tooltip.show($(event.target).closest('.weather_popup'));
+					calendar_weather.tooltip.sticky($(event.target).closest('.weather_popup'));
+				}
 
 			}
 
@@ -73,95 +97,127 @@ var calendar_weather = {
 		show: function(icon){
 
 			if(registered_click_callbacks['sticky_weather_ui']){
-				delete registered_click_callbacks['sticky_weather_ui'];
-				this.sticky_icon.removeClass('sticky');
+				return;
+			}
+
+			var day_container = icon.closest(".timespan_day");
+
+			var epoch = day_container.attr('epoch');
+		
+			this.moon_title.toggleClass('hidden', !icon.hasClass('moon_popup'));
+			this.moon_container.toggleClass('hidden', !icon.hasClass('moon_popup'));
+			this.add_event_container.toggleClass('hidden', !icon.hasClass('moon_popup') || !owner);
+
+			if(icon.hasClass('moon_popup')){
+				this.moon_container.children().first().html(insert_moons(calendar_layouts.epoch_data[epoch]));
+				this.add_event_container.find('.btn_create_event').attr('epoch', epoch).prop('disabled', !owner);
 			}
 
 			this.stop_hide = false;
 			this.sticky_icon = false;
 
-			if(!calendar_weather.processed_weather) return;
+			if(calendar_weather.processed_weather && !icon.hasClass('noweather')){
 
-			if(static_data.seasons.global_settings.cinematic){
-				this.weather_temp_desc.parent().css('display', '');
-			}else{
-				this.weather_temp_desc.parent().css('display', 'none');
-			}
+				this.weather_title.toggleClass('hidden', !icon.hasClass('moon_popup'));
+				this.weather_temp_desc.parent().toggleClass('hidden', false);
+				this.weather_temp.parent().toggleClass('hidden', false);
+				this.weather_wind.parent().toggleClass('hidden', false);
+				this.weather_precip.parent().toggleClass('hidden', false);
+				this.weather_clouds.parent().toggleClass('hidden', false);
 
-			var day_container = icon.closest(".timespan_day");
-
-			var weather_epoch = day_container.attr('epoch');
-
-			var weather = calendar_weather.epoch_data[weather_epoch].weather;
-
-			var desc = weather.temperature.cinematic;
-
-			var temp_sys = static_data.seasons.global_settings.temp_sys;
-
-			var temp = "";
-
-			if(!static_data.settings.hide_weather_temp || owner){
-				if(temp_sys == 'imperial'){
-					temp_symbol = '°F';
-					var temp = `${precisionRound(weather.temperature[temp_sys].value[0], 1).toString()+temp_symbol} to ${precisionRound(weather.temperature[temp_sys].value[1], 1).toString()+temp_symbol}`;
-				}else if(temp_sys == 'metric'){
-					temp_symbol = '°C';
-					var temp = `${precisionRound(weather.temperature[temp_sys].value[0], 1).toString()+temp_symbol} to ${precisionRound(weather.temperature[temp_sys].value[1], 1).toString()+temp_symbol}`;
+				if(static_data.seasons.global_settings.cinematic){
+					this.weather_temp_desc.parent().css('display', '');
 				}else{
-					var temp_f = `<span class='newline'>${precisionRound(weather.temperature['imperial'].value[0], 1).toString()}°F to ${precisionRound(weather.temperature['imperial'].value[1], 1).toString()}°F</span>`;
-					var temp_c = `<span class='newline'>${precisionRound(weather.temperature['metric'].value[0], 1).toString()}°C to ${precisionRound(weather.temperature['metric'].value[1], 1).toString()}°C</span>`;
-					var temp = `${temp_f}${temp_c}`;
+					this.weather_temp_desc.parent().css('display', 'none');
 				}
-				this.weather_temp.toggleClass('newline', temp_sys == 'both_i' || temp_sys == 'both_m');
-			}
 
-			var wind_sys = static_data.seasons.global_settings.wind_sys;
+				var weather = calendar_weather.epoch_data[epoch].weather;
 
-			var wind_text = ""
-			if(wind_sys == 'both'){
-				wind_text = `${weather.wind_speed} (${weather.wind_direction})`;
-				if(!static_data.settings.hide_wind_velocity || owner){
-					wind_text += `<span class='newline'>(${weather.wind_velocity.imperial} MPH | ${weather.wind_velocity.metric} KPH)</span>`;
+				var desc = weather.temperature.cinematic;
+
+				var temp_sys = static_data.seasons.global_settings.temp_sys;
+
+				var temp = "";
+				if(!static_data.settings.hide_weather_temp || owner){
+					if(temp_sys == 'imperial'){
+						temp_symbol = '°F';
+						var temp = `${precisionRound(weather.temperature[temp_sys].value[0], 1).toString()+temp_symbol} to ${precisionRound(weather.temperature[temp_sys].value[1], 1).toString()+temp_symbol}`;
+					}else if(temp_sys == 'metric'){
+						temp_symbol = '°C';
+						var temp = `${precisionRound(weather.temperature[temp_sys].value[0], 1).toString()+temp_symbol} to ${precisionRound(weather.temperature[temp_sys].value[1], 1).toString()+temp_symbol}`;
+					}else{
+						var temp_f = `<span class='newline'>${precisionRound(weather.temperature['imperial'].value[0], 1).toString()}°F to ${precisionRound(weather.temperature['imperial'].value[1], 1).toString()}°F</span>`;
+						var temp_c = `<span class='newline'>${precisionRound(weather.temperature['metric'].value[0], 1).toString()}°C to ${precisionRound(weather.temperature['metric'].value[1], 1).toString()}°C</span>`;
+						var temp = `${temp_f}${temp_c}`;
+					}
 				}
+				this.weather_temp.toggleClass('newline', (temp_sys == 'both_i' || temp_sys == 'both_m') && (!static_data.settings.hide_weather_temp || owner));
+
+
+				var wind_sys = static_data.seasons.global_settings.wind_sys;
+
+				var wind_text = ""
+				if(wind_sys == 'both'){
+					wind_text = `${weather.wind_speed} (${weather.wind_direction})`;
+					if(!static_data.settings.hide_wind_velocity || owner){
+						wind_text += `<span class='newline'>(${weather.wind_velocity.imperial} MPH | ${weather.wind_velocity.metric} KPH)</span>`;
+					}
+				}else{
+					var wind_symbol = wind_sys == "imperial" ? "MPH" : "KPH";
+					wind_text = `${weather.wind_speed} (${weather.wind_direction})`
+					if(!static_data.settings.hide_wind_velocity || owner){
+						wind_text += `(${weather.wind_velocity[wind_sys]} ${wind_symbol})`;
+					}
+				}
+
+				this.weather_temp_desc.each(function(){
+					$(this).text(desc);
+				});
+
+				this.weather_temp.each(function(){
+					$(this).html(temp);
+				}).parent().toggleClass('hidden', static_data.settings.hide_weather_temp !== undefined && static_data.settings.hide_weather_temp && !owner);
+
+				this.weather_wind.each(function(){
+					$(this).html(wind_text);
+				});
+
+				this.weather_precip.each(function(){
+					$(this).text(weather.precipitation.key);
+				});
+
+				this.weather_clouds.each(function(){
+					$(this).text(weather.clouds);
+				});
+
 			}else{
-				var wind_symbol = wind_sys == "imperial" ? "MPH" : "KPH";
-				wind_text = `${weather.wind_speed} (${weather.wind_direction})`
-				if(!static_data.settings.hide_wind_velocity || owner){
-					wind_text += `(${weather.wind_velocity[wind_sys]} ${wind_symbol})`;
-				}
+
+				this.weather_title.toggleClass('hidden', true);
+				this.weather_temp_desc.parent().toggleClass('hidden', true);
+				this.weather_temp.parent().toggleClass('hidden', true);
+				this.weather_wind.parent().toggleClass('hidden', true);
+				this.weather_precip.parent().toggleClass('hidden', true);
+				this.weather_clouds.parent().toggleClass('hidden', true);
 			}
 
-			this.popper = new Popper(icon, this.weather_tooltip_box, {
-			    placement: 'top',
-                modifiers: {
-			        offset: {
-			            enabled: true,
-                        offset: '0, 14px'
-                    }
-                }
-            });
+            if((calendar_weather.processed_weather && !icon.hasClass('noweather')) || icon.hasClass('moon_popup')){
 
-			this.weather_temp_desc.each(function(){
-				$(this).text(desc);
-			});
+				this.popper = new Popper(icon, this.weather_tooltip_box, {
+				    placement: 'top',
+	                modifiers: {
+				        preventOverflow: {
+				            boundariesElement: $('#calendar')[0],
+				        },
+				        offset: {
+				            enabled: true,
+	                        offset: '0, 14px'
+	                    }
+	                }
+	            });
 
-			this.weather_temp.each(function(){
-				$(this).html(temp);
-			}).parent().toggleClass('hidden', static_data.settings.hide_weather_temp !== undefined && static_data.settings.hide_weather_temp && !owner);
+				this.weather_tooltip_box.show();
 
-			this.weather_wind.each(function(){
-				$(this).html(wind_text);
-			});
-
-			this.weather_precip.each(function(){
-				$(this).text(weather.precipitation.key);
-			});
-
-			this.weather_clouds.each(function(){
-				$(this).text(weather.clouds);
-			});
-
-			this.weather_tooltip_box.show();
+			}
 		},
 
 		hide: function(){

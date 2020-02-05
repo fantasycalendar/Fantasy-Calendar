@@ -241,7 +241,7 @@
 				<div class='row no-gutters'>
 					<div class='col'>
 						<label class='form-control checkbox'>
-							<input type='checkbox' class='event_setting' id='event_hide_players' name='event_hide_players'> Hide from players
+							<input type='checkbox' class='event_setting' id='event_hide_players' name='event_hide_players'> Hide from guests view
 						</label>
 					</div>
 				</div>
@@ -249,7 +249,7 @@
 				<div class='row no-gutters'>
 					<div class='col'>
 						<label class='form-control checkbox'>
-							<input type='checkbox' class='event_setting' id='event_dontprint_checkbox' name='event_dontprint_checkbox'> Do not print
+							<input type='checkbox' class='event_setting' id='event_print_checkbox' name='event_print_checkbox'> Show when printing
 						</label>
 					</div>
 				</div>

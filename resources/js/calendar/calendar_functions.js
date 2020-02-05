@@ -133,6 +133,46 @@ function matcher(params, data){
     return null;
 }
 
+function truncate_weekdays(weekday_array){
+
+	var new_array = [];
+
+	for(var index in weekday_array){
+
+		var name = weekday_array[index];
+
+		if(!isNaN(Number(name))){
+
+			new_array.push(name);
+
+		}if(is_roman_numeral(name)){
+
+			new_array.push(name);
+
+		}else{
+
+			if(name.split(' ').length > 1 && name.split(' ')[1] != ""){
+				name = name.split(' ')[0].substring(0,1) + name.split(' ')[1].substring(0,1);
+			}else{
+				name = name.substring(0,2);
+			}
+
+			new_array.push(name);
+
+		}
+
+	}
+
+	return new_array;
+
+}
+
+
+function is_roman_numeral(string){
+	var regex = /^(?=[MDCLXVI])M*(C[MD]|D?C*)(X[CL]|L?X*)(I[XV]|V?I*)$/i;
+
+	return regex.test(string.toUpperCase());
+}
 
 /**
  * This function crawls through a string to find a reference

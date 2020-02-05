@@ -80,7 +80,7 @@ var edit_event_ui = {
 
 		$(document).on('click', '.btn_create_event', function(){
 
-			var epoch = $(this).closest('.timespan_day').attr('epoch')|0;
+			var epoch = $(this).attr('epoch')|0;
 
 			edit_event_ui.create_new_event('New Event', epoch);
 
@@ -294,7 +294,7 @@ var edit_event_ui = {
 				$('#color_style').val(category.event_settings.color);
 				$('#text_style').val(category.event_settings.text).change();
 				$('#event_hide_players').prop('checked', category.event_settings.hide);
-				$('#event_dontprint_checkbox').prop('checked', category.event_settings.noprint);
+				$('#event_print_checkbox').prop('checked', category.event_settings.print);
 				$('#event_hide_full').prop('checked', category.event_settings.hide_full);
 			}
 		});
@@ -382,7 +382,7 @@ var edit_event_ui = {
 				'color': 'Dark-Solid',
 				'text': 'text',
 				'hide': false,
-				'noprint': false,
+				'print': false,
 				'hide_full': false
 			},
 		};
@@ -395,7 +395,7 @@ var edit_event_ui = {
 			stats.settings.color = category.event_settings.color;
 			stats.settings.text = category.event_settings.text;
 			stats.settings.hide = category.event_settings.hide;
-			stats.settings.noprint = category.event_settings.noprint;
+			stats.settings.print = category.event_settings.print;
 			stats.settings.hide_full = category.event_settings.hide_full;
 		}
 
@@ -453,7 +453,7 @@ var edit_event_ui = {
 
 		$('#event_hide_full').prop('checked', event.settings.hide_full);
 
-		$('#event_dontprint_checkbox').prop('checked', event.settings.noprint);
+		$('#event_print_checkbox').prop('checked', event.settings.print);
 
 		$('#limited_repeat').prop('checked', event.data.limited_repeat);
 		$('#limited_repeat_num').prop('disabled', !event.data.limited_repeat).val(event.data.limited_repeat_num);
@@ -495,7 +495,7 @@ var edit_event_ui = {
 			text: $('#text_style').val(),
 			hide: $('#event_hide_players').prop('checked'),
 			hide_full: $('#event_hide_full').prop('checked'),
-			noprint: $('#event_dontprint_checkbox').prop('checked')
+			print: $('#event_print_checkbox').prop('checked')
 		}
 
 		if(this.new_event){
@@ -547,7 +547,7 @@ var edit_event_ui = {
 
 		$('#event_hide_full').prop('checked', false);
 
-		$('#event_dontprint_checkbox').prop('checked', false);
+		$('#event_print_checkbox').prop('checked', false);
 
 		$('#limited_repeat').prop('checked', false);
 		$('#limited_repeat_num').prop('disabled', true).val(1);
@@ -704,7 +704,7 @@ var edit_event_ui = {
 				text: $('#text_style').val(),
 				hide: $('#event_hide_players').prop('checked'),
 				hide_full: $('#event_hide_full').prop('checked'),
-				noprint: $('#event_dontprint_checkbox').prop('checked')
+				print: $('#event_print_checkbox').prop('checked')
 			}
 
 			return !Object.compare(event_check, static_data.event_data.events[this.event_id])

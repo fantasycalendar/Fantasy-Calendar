@@ -375,8 +375,6 @@ function set_up_edit_inputs(){
 
 		var name_val = name.val() == "" ? `Moon ${id+1}` : name.val();
 
-		var granularity = get_moon_granularity(cycle_val);
-
 		var cycle_val = cycle.val();
 		var shift_val = shift.val();
 
@@ -388,6 +386,8 @@ function set_up_edit_inputs(){
 		if(shift_val == ""){
 			shift_val = 0;
 		}
+
+		var granularity = get_moon_granularity(cycle_val);
 
 		stats = {
 			'name': name_val,
@@ -1047,7 +1047,7 @@ function set_up_edit_inputs(){
 				"color": "Dark-Solid",
 				"text": "text",
 				"hide": false,
-				"noprint": false
+				"print": false
 			},
 			"calendar_id": typeof calendar_id != "undefined" ? calendar_id : null,
 			"id": slug
@@ -2100,7 +2100,9 @@ function set_up_edit_inputs(){
 				var key = data.split('.')[2]|0;
 				for(var eventkey in static_data.event_data.events){
 					if(static_data.event_data.events[eventkey].event_category_id == static_data.event_data.categories[key].id){
-						static_data.event_data.events[eventkey].settings = clone(static_data.event_data.categories[key].event_settings);
+						static_data.event_data.events[eventkey].settings.hide_full = static_data.event_data.categories[key].event_settings.hide_full;
+						static_data.event_data.events[eventkey].settings.print = static_data.event_data.categories[key].event_settings.print;
+						static_data.event_data.events[eventkey].settings.hide = static_data.event_data.categories[key].event_settings.hide;
 					}
 				}
 				repopulate_event_category_lists();
@@ -2395,7 +2397,7 @@ function add_leap_day_to_list(parent, key, data){
 					element.push("</div>");
 				element.push("</div>");
 
-				element.push(`<div class='row no-gutters my-1 ${(data.adds_week_day && !data.intercalary ? "" : "hidden")}'>`);
+				element.push(`<div class='row no-gutters my-1 ${!data.intercalary ? "" : "hidden"}'>`);
 					element.push("<div class='form-check col-12 py-2 border rounded'>");
 						element.push(`<input type='checkbox' id='${key}_adds_week_day' class='form-check-input adds-week-day dynamic_input' data='year_data.leap_days.${key}' fc-index='adds_week_day' ${(data.adds_week_day && !data.intercalary ? "" : "disabled")} ${(data.adds_week_day ? "checked" : "")} />`);
 						element.push(`<label for='${key}_adds_week_day' class='form-check-label ml-1'>`);
@@ -3327,9 +3329,9 @@ function add_category_to_list(parent, key, data){
 
 			element.push(`<div class='row no-gutters my-1'>`);
 				element.push("<div class='form-check col-12 py-2 border rounded'>");
-					element.push(`<input type='checkbox' id='${key}_cat_no_print' class='form-check-input dynamic_input' data='event_data.categories.${key}.event_settings' fc-index='noprint' ${(data.event_settings.noprint ? "checked" : "")} />`);
-					element.push(`<label for='${key}_cat_no_print' class='form-check-label ml-1'>`);
-						element.push("Don't print event");
+					element.push(`<input type='checkbox' id='${key}_cat_print' class='form-check-input dynamic_input' data='event_data.categories.${key}.event_settings' fc-index='print' ${(data.event_settings.noprint ? "checked" : "")} />`);
+					element.push(`<label for='${key}_cat_print' class='form-check-label ml-1'>`);
+						element.push("Show event when printing");
 					element.push("</label>");
 				element.push("</div>");
 			element.push("</div>");
