@@ -2074,7 +2074,7 @@ function toggle_sidebar() {
         window.Clock.size = $('#clock').width();
     }
 
-    evaluate_error_background_size();
+    evaluate_background_size();
 }
 
 /**

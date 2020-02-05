@@ -1,8 +1,10 @@
 $(document).ready(function(){
 
 	$(window).on('resize', function(){
-		evaluate_error_background_size();
+		evaluate_background_size();
 	});
+
+	evaluate_background_size();
 
 	loading_bar = new ProgressBar.Line('.loading_bar', {
 		strokeWidth: 2,
@@ -19,9 +21,9 @@ $(document).ready(function(){
 
 });
 
-function evaluate_error_background_size(){
-	var width = $('#errors_background').parent().width();
-	$('#errors_background').width(width);
+function evaluate_background_size(){
+	var width = $('.flexible_background').first().parent().width();
+	$('.flexible_background').width(width);
 }
 
 function error_message(message){
@@ -29,19 +31,23 @@ function error_message(message){
 	var width = $('#errors_background').parent().width();
 
 	$('#error_text').empty().append(message);
-	$('#errors_background').removeClass().addClass('error').css('display', 'flex');
+	$('#errors_background').removeClass().addClass('error').addClass('flexible_background').css('display', 'flex');
 
-	evaluate_error_background_size();
+	evaluate_background_size();
 
 }
-
 
 function close_error_message(){
-
-	$('#errors_background').removeClass().css('display', 'none');
-
+	$('#errors_background').removeClass().addClass('flexible_background').css('display', 'none');
 }
 
+function show_changes_button(){
+	$('#reload_background').removeClass('hidden');
+}
+
+function hide_changes_button(){
+	$('#reload_background').addClass('hidden');
+}
 
 var loading_screen_texts = [
 	`Calculating start of the next war...`,

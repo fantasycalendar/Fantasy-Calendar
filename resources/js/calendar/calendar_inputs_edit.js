@@ -1914,7 +1914,8 @@ function set_up_edit_inputs(){
 	});
 
 	$(document).on('change', '.timespan_length', function(){
-		repopulate_day_select($('.timespan-day-list'));
+		var index = $(this).closest('.sortable-container').attr('index')|0;
+		repopulate_day_select($(`.timespan-day-list`), undefined, undefined, undefined, undefined, index);
 	});
 
 	$('#enable_weather').change(function(){
@@ -2019,6 +2020,51 @@ function set_up_edit_inputs(){
 		update_hashes(target_hash);
 		$('#link_calendar').prop('disabled', true);
 	});
+
+	$('#apply_changes_btn').click(function(){
+
+		var errors = get_errors();
+
+		if(errors.length == 0 && $('.invalid').length == 0){
+
+			hide_changes_button();
+			evaluate_save_button();
+
+			repopulate_timespan_select();
+			repopulate_day_select();
+
+			error_check('calendar', true);
+
+		}
+
+	});
+
+	$('#apply_changes_immediately').change(function(){
+
+		var checked = $(this).is(':checked');
+
+		if(checked){
+
+			hide_changes_button();
+			evaluate_save_button();
+
+			var calendar_name_same = calendar_name == prev_calendar_name;
+			var static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
+			var dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
+
+			var not_changed = static_same && dynamic_same && calendar_name_same;
+
+			if(!not_changed){
+
+				repopulate_timespan_select();
+				repopulate_day_select();
+				error_check('calendar', true);
+
+			}
+
+		}
+
+	})
 
 	input_container.change(function(e){
 
@@ -2183,11 +2229,6 @@ function set_up_edit_inputs(){
 
 	});
 }
-
-var do_error_check = debounce(function(type, rebuild){
-	error_check(type, rebuild);
-	recalc_stats();
-}, 150);
 
 function add_weekday_to_sortable(parent, key, name){
 
@@ -3509,46 +3550,23 @@ function get_errors(){
 
 }
 
-function error_check(parent, rebuild){
-
-	if(wizard) return;
+var do_error_check = debounce(function(type, rebuild){
 
 	var errors = get_errors();
-
-	evaluate_save_button();
 
 	if(errors.length == 0 && $('.invalid').length == 0){
 
 		close_error_message();
 
-		if(parent === "eras"){
-			recalculate_era_epochs();
+		var apply_changes_immediately = $('#apply_changes_immediately').is(':checked');
+	
+		if(!apply_changes_immediately){
+			show_changes_button();
+			return;
 		}
-		if(rebuild === undefined || rebuild){
 
-			if(!preview_date.follow){
-
-				update_preview_calendar();
-
-				rebuild_calendar('preview', preview_date);
-
-			}else{
-
-				rebuild_calendar('calendar', dynamic_data);
-
-				preview_date_follow();
-
-			}
-
-		}else{
-
-			if(parent !== undefined && (parent === "seasons")){
-				rebuild_climate();
-			}else{
-				update_current_day(true);
-				evaluate_sun();
-			}
-		}
+		error_check(type, rebuild);
+		recalc_stats();
 
 	}else{
 
@@ -3569,6 +3587,41 @@ function error_check(parent, rebuild){
 
 		error_message(text.join(''));
 
+	}
+
+}, 150);
+
+function error_check(parent, rebuild){
+
+	if(wizard) return;
+
+	if(parent === "eras"){
+		recalculate_era_epochs();
+	}
+	if(rebuild === undefined || rebuild){
+
+		if(!preview_date.follow){
+
+			update_preview_calendar();
+
+			rebuild_calendar('preview', preview_date);
+
+		}else{
+
+			rebuild_calendar('calendar', dynamic_data);
+
+			preview_date_follow();
+
+		}
+
+	}else{
+
+		if(parent !== undefined && (parent === "seasons")){
+			rebuild_climate();
+		}else{
+			update_current_day(true);
+			evaluate_sun();
+		}
 	}
 
 }
@@ -4357,7 +4410,25 @@ function evaluate_save_button(){
 
 			var text = not_changed ? "No changes to save" : "Save calendar";
 
-			save_button.prop('disabled', not_changed).toggleClass('btn-secondary', false).toggleClass('btn-success', not_changed).toggleClass('btn-primary', !not_changed).toggleClass('btn-warning', false).toggleClass('btn-danger', false).text(text);
+			var apply_changes_immediately = $('#apply_changes_immediately').is(':checked');
+
+			if(!apply_changes_immediately){
+
+				var text = not_changed ? "No changes to save" : "Apply changes to save";
+
+				if(not_changed){
+					save_button.prop('disabled', false);
+				}else{
+					save_button.prop('disabled', true);
+				}
+
+			}else{
+
+				save_button.prop('disabled', not_changed);
+
+			}
+
+			save_button.toggleClass('btn-secondary', false).toggleClass('btn-success', not_changed).toggleClass('btn-primary', !not_changed).toggleClass('btn-warning', false).toggleClass('btn-danger', false).text(text);
 
 		}
 
