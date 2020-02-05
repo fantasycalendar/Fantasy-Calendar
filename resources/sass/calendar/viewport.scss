@@ -493,6 +493,10 @@
         background-color: #E8E7C1;
     }
 
+    .empty_timespan_day{
+        background-color:$gray-secondary !important;
+    }
+
     .timespan_day:hover{
         background-color:#D4FFE9 !important;
         cursor:pointer;

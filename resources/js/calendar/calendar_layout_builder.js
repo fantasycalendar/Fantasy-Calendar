@@ -882,7 +882,7 @@ var calendar_layouts = {
 
 		insert_day: function(epoch, weather_align, day_num, day_class, title){
 
-			if(static_data.settings.only_reveal_today && !owner && (calendar_layouts.year_data.year > dynamic_data.year || this.timespan.index > dynamic_data.timespan || (this.timespan.index == dynamic_data.timespan && this.timespan.day > dynamic_data.day))){
+			if(static_data.settings.only_reveal_today && !owner && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)){
 
 				this.insert_empty_day(day_class);
 
@@ -1208,7 +1208,7 @@ var calendar_layouts = {
 
 		insert_day: function(epoch, day_num, day_class, title, intercalary){
 
-			if(static_data.settings.only_reveal_today && !owner && (calendar_layouts.year_data.year > dynamic_data.year || this.timespan.index > dynamic_data.timespan || (this.timespan.index == dynamic_data.timespan && this.timespan.day > dynamic_data.day))){
+			if(static_data.settings.only_reveal_today && !owner && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)){
 
 				this.insert_empty_day(day_class);
 
@@ -1516,7 +1516,7 @@ var calendar_layouts = {
 
 		insert_day: function(epoch, weather_align, day_num, day_class, title){
 
-			if(static_data.settings.only_reveal_today && !owner && (calendar_layouts.year_data.year > dynamic_data.year || this.timespan.index > dynamic_data.timespan || (this.timespan.index == dynamic_data.timespan && this.timespan.day > dynamic_data.day))){
+			if(static_data.settings.only_reveal_today && !owner && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)){
 
 				this.insert_empty_day(day_class);
 
