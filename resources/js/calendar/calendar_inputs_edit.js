@@ -2028,12 +2028,21 @@ function set_up_edit_inputs(){
 		if(errors.length == 0 && $('.invalid').length == 0){
 
 			hide_changes_button();
-			evaluate_save_button();
+			evaluate_save_button(true);
 
-			repopulate_timespan_select();
-			repopulate_day_select();
+			if(!preview_date.follow){
 
-			error_check('calendar', true);
+				update_preview_calendar();
+
+				rebuild_calendar('preview', preview_date);
+
+			}else{
+
+				rebuild_calendar('calendar', dynamic_data);
+
+				preview_date_follow();
+
+			}
 
 		}
 
@@ -2046,7 +2055,7 @@ function set_up_edit_inputs(){
 		if(checked){
 
 			hide_changes_button();
-			evaluate_save_button();
+			evaluate_save_button(true);
 
 			var calendar_name_same = calendar_name == prev_calendar_name;
 			var static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
@@ -2058,7 +2067,20 @@ function set_up_edit_inputs(){
 
 				repopulate_timespan_select();
 				repopulate_day_select();
-				error_check('calendar', true);
+
+				if(!preview_date.follow){
+
+					update_preview_calendar();
+
+					rebuild_calendar('preview', preview_date);
+
+				}else{
+
+					rebuild_calendar('calendar', dynamic_data);
+
+					preview_date_follow();
+
+				}
 
 			}
 
@@ -3561,6 +3583,7 @@ var do_error_check = debounce(function(type, rebuild){
 		var apply_changes_immediately = $('#apply_changes_immediately').is(':checked');
 	
 		if(!apply_changes_immediately){
+			evaluate_save_button();
 			show_changes_button();
 			return;
 		}
@@ -4388,7 +4411,7 @@ function calendar_save_failed(){
 
 }
 
-function evaluate_save_button(){
+function evaluate_save_button(override){
 
 	var errors = get_errors();
 
@@ -4412,15 +4435,11 @@ function evaluate_save_button(){
 
 			var apply_changes_immediately = $('#apply_changes_immediately').is(':checked');
 
-			if(!apply_changes_immediately){
+			if(!apply_changes_immediately && !override){
 
 				var text = not_changed ? "No changes to save" : "Apply changes to save";
-
-				if(not_changed){
-					save_button.prop('disabled', false);
-				}else{
-					save_button.prop('disabled', true);
-				}
+				
+				save_button.prop('disabled', true);
 
 			}else{
 
@@ -4438,9 +4457,23 @@ function evaluate_save_button(){
 
 		var text = invalid ? "Cannot create yet" : "Create calendar";
 
+		var apply_changes_immediately = $('#apply_changes_immediately').is(':checked');
+
+		if(!apply_changes_immediately && !override && !invalid){
+
+			var text = "Apply changes to create";
+			
+			create_button.prop('disabled', true);
+
+		}else{
+
+			create_button.prop('disabled', invalid);
+
+		}
+
 		autosave();
 
-		create_button.prop('disabled', invalid).toggleClass('btn-danger', invalid).toggleClass('btn-success', !invalid).text(text);
+		create_button.toggleClass('btn-danger', invalid).toggleClass('btn-success', !invalid).text(text);
 
 	}
 
