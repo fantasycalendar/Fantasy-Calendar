@@ -533,12 +533,16 @@ var calendar_builder = {
 		var epoch = year_start_data.epoch;
 		var start_epoch = epoch;
 
-		var current_era = false;
+		var current_era = -1;
 
 		for(var i = 0; i < this.static_data.eras.length; i++){
 			if(epoch >= this.static_data.eras[i].date.epoch){
 				current_era = i;
 			}
+		}
+
+		if(this.static_data.eras[current_era] && epoch >= this.static_data.eras[current_era].date.epoch && this.static_data.eras[current_era].settings.restart){
+			era_year = 0;
 		}
 
 		var year_day = 1+year_start_data.epoch-evaluate_calendar_start(this.static_data, first_eval_year).epoch;
