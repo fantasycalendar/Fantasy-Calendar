@@ -573,7 +573,7 @@ var calendar_layouts = {
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow center'>");
 						if(calendar_layouts.epoch_data[epoch].weather && calendar_layouts.data.processed_weather){
-							if(!(static_data.settings.hide_all_weather || (!owner && static_data.settings.hide_future_weather && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)))){
+							if(owner || !(static_data.settings.hide_all_weather || (static_data.settings.hide_future_weather && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)))){
 								calendar_layouts.html.push(`<div class='weather_icon weather_popup' align='${weather_align}'></div>`);
 							}
 						}
@@ -894,7 +894,7 @@ var calendar_layouts = {
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow center'>");
 						if(calendar_layouts.epoch_data[epoch].weather && calendar_layouts.data.processed_weather){
-							if(!(static_data.settings.hide_all_weather || (!owner && static_data.settings.hide_future_weather && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)))){
+							if(owner || !(static_data.settings.hide_all_weather || (static_data.settings.hide_future_weather && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)))){
 								calendar_layouts.html.push(`<div class='weather_icon weather_popup' align='${weather_align}'></div>`);
 							}
 						}
@@ -1228,7 +1228,7 @@ var calendar_layouts = {
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow center'>");
 						if(calendar_layouts.epoch_data[epoch].weather && calendar_layouts.data.processed_weather){
-							if(!(static_data.settings.hide_all_weather || (!owner && static_data.settings.hide_future_weather && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)))){
+							if(owner || !(static_data.settings.hide_all_weather || (static_data.settings.hide_future_weather && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)))){
 								calendar_layouts.html.push(`<div class='weather_icon weather_popup' align=''></div>`);
 							}
 						}
