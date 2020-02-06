@@ -145,7 +145,7 @@ function truncate_weekdays(weekday_array){
 
 			new_array.push(name);
 
-		}if(is_roman_numeral(name)){
+		}else if(is_roman_numeral(name)){
 
 			new_array.push(name);
 
