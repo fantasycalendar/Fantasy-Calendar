@@ -578,9 +578,11 @@ var calendar_builder = {
 
 				for(day = 0; day <= current_timespan.length; day++){
 
-					if(this.static_data.eras[current_era+1] && epoch > this.static_data.eras[current_era+1].date.epoch){
+					if(this.static_data.eras[current_era+1] && epoch >= this.static_data.eras[current_era+1].date.epoch){
 						current_era++;
-						era_year = 0;
+						if(this.static_data.eras[current_era].settings.restart){
+							era_year = 0;
+						}
 					}
 
 					moon_data = [];
@@ -802,9 +804,11 @@ var calendar_builder = {
 
 				for(day = 0; day <= current_timespan.length; day++){
 
-					if(this.static_data.eras[current_era+1] && epoch > this.static_data.eras[current_era+1].date.epoch){
-						current_era++;
-						era_year = 0;
+					if(this.static_data.eras[current_era+1] && epoch >= this.static_data.eras[current_era+1].date.epoch){
+						current_era++;					
+						if(this.static_data.eras[current_era].settings.restart){
+							era_year = 0;
+						}
 					}
 
 					moon_data = [];
@@ -1272,12 +1276,16 @@ var calendar_builder = {
 
 		epoch = year_start_data.epoch;
 
-		var current_era = false;
+		var current_era = -1;
 
 		for(var i = 0; i < this.static_data.eras.length; i++){
 			if(epoch >= this.static_data.eras[i].date.epoch){
 				current_era = i;
 			}
+		}
+
+		if(this.static_data.eras[current_era] && epoch >= this.static_data.eras[current_era].date.epoch && this.static_data.eras[current_era].settings.restart){
+			era_year = 0;
 		}
 
 		year_day = 1+year_start_data.epoch-evaluate_calendar_start(this.static_data, first_eval_year).epoch;
@@ -1317,9 +1325,11 @@ var calendar_builder = {
 
 				for(day = 0; day <= current_timespan.length; day++){
 
-					if(this.static_data.eras[current_era+1] && epoch > this.static_data.eras[current_era+1].date.epoch){
+					if(this.static_data.eras[current_era+1] && epoch >= this.static_data.eras[current_era+1].date.epoch){
 						current_era++;
-						era_year = 0;
+						if(this.static_data.eras[current_era].settings.restart){
+							era_year = 0;
+						}
 					}
 
 					moon_data = [];
@@ -1548,9 +1558,12 @@ var calendar_builder = {
 
 			for(day = 0; day <= current_timespan.length; day++, total_day++){
 
-				if(this.static_data.eras[current_era+1] && epoch > this.static_data.eras[current_era+1].date.epoch){
+				if(this.static_data.eras[current_era+1] && epoch >= this.static_data.eras[current_era+1].date.epoch){
 					current_era++;
-					era_year = 0;
+					if(this.static_data.eras[current_era].settings.restart){
+						era_year = 0;
+						calendar_era_year = 0;
+					}
 				}
 
 				moon_data = [];
@@ -1795,9 +1808,11 @@ var calendar_builder = {
 
 					moon_data = [];
 
-					if(this.static_data.eras[current_era+1] && epoch > this.static_data.eras[current_era+1].date.epoch){
+					if(this.static_data.eras[current_era+1] && epoch >= this.static_data.eras[current_era+1].date.epoch){
 						current_era++;
-						era_year = 0;
+						if(this.static_data.eras[current_era].settings.restart){
+							era_year = 0;
+						}
 					}
 
 					if(day == 0){
@@ -2031,7 +2046,7 @@ var calendar_builder = {
 			static_data: this.static_data,
 			year_data: {
 				year: this.dynamic_data.year,
-				era_year: calendar_era_year,
+				era_year: unconvert_year(this.static_data, calendar_era_year),
 				start_epoch: calendar_start_epoch,
 				end_epoch: calendar_end_epoch,
 				week_day: calendar_first_week_day,
