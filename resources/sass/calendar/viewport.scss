@@ -452,12 +452,9 @@
 .timespan_container.minimalistic{
 
     align-self: center;
-    text-align: center;
-    display: inline-flex;
     flex-direction: column;
-    border-radius:5;
+    border-radius:5px;
     border:0;
-    overflow:hidden;
     font-size:0.75rem;
     margin: 3px;
     flex:1 0 auto;
@@ -469,6 +466,7 @@
         text-overflow: ellipsis;
         max-width: 10rem;
         align-self: center;
+        line-height: 1.4rem;
     }
 
     .week_day_name, .timespan_day, .timespan_overflow{
