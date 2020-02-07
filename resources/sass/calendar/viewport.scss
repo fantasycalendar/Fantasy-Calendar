@@ -480,6 +480,10 @@
         min-width:1.5rem;
     }
 
+    .week_day_name {
+        border-bottom: 2px solid $calendar-border-color;
+    }
+
     .has_event{
         font-weight: bold;
     }
@@ -491,6 +495,10 @@
 
         &:nth-child(odd) .timespan_day{
             background-color: $m-odd-bg;
+        }
+
+        .timespan_overflow {
+            border: 0;
         }
 
         .timespan_day{
