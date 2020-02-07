@@ -486,30 +486,43 @@
         font-weight: bold;
     }
 
-    .timespan_row:nth-child(even) .timespan_day{
-        background-color: #F1FFE1;
-    }
-    .timespan_row:nth-child(odd) .timespan_day{
-        background-color: #E8E7C1;
-    }
+    .timespan_row{
+        &:nth-child(even) .timespan_day{
+            background-color: $m-even-bg;
+        }
 
-    .empty_timespan_day{
-        background-color:$gray-secondary !important;
-    }
+        &:nth-child(odd) .timespan_day{
+            background-color: $m-odd-bg;
+        }
 
-    .timespan_day:hover{
-        background-color:#D4FFE9 !important;
-        cursor:pointer;
-    }
+        .timespan_day{
+            &.preview_day{
+                background-color: $weather-tooltip-bg-color;
+                box-shadow: none;
+            }
 
-    .current_day{
-        background-color: #fdb44d !important;
-        border-bottom: 0;
-    }
+            &.current_day {
+                background-color: $m-current-day;
+                border-bottom: 0;
+                color: #444;
+                font-weight: bold;
 
-    .preview_day{
-        background-color: rgba(191.0, 99.0, 71.0, 0.5) !important;
-        box-shadow: none !important;
+                &:hover {
+                    cursor:pointer;
+                    background-color: $current-day-color;
+                    color: currentColor;
+                }
+            }
+
+            &.empty_timespan_day{
+                background-color:$gray-secondary;
+            }
+
+            &:hover:not(.current_day){
+                background-color: $m-day-hover;
+                cursor:pointer;
+            }
+        }
     }
 }
 
