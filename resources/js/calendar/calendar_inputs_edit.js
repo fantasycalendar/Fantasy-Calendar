@@ -2030,17 +2030,23 @@ function set_up_edit_inputs(){
 			hide_changes_button();
 			evaluate_save_button(true);
 
-			if(!preview_date.follow){
+			var not_changed = static_same && dynamic_same && calendar_name_same;
 
-				update_preview_calendar();
+			if(!not_changed){
 
-				rebuild_calendar('preview', preview_date);
+				if(!preview_date.follow){
 
-			}else{
+					update_preview_calendar();
 
-				rebuild_calendar('calendar', dynamic_data);
+					rebuild_calendar('preview', preview_date);
 
-				preview_date_follow();
+				}else{
+
+					rebuild_calendar('calendar', dynamic_data);
+
+					preview_date_follow();
+
+				}
 
 			}
 
@@ -2056,10 +2062,6 @@ function set_up_edit_inputs(){
 
 			hide_changes_button();
 			evaluate_save_button(true);
-
-			var calendar_name_same = calendar_name == prev_calendar_name;
-			var static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
-			var dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
 
 			var not_changed = static_same && dynamic_same && calendar_name_same;
 
@@ -3580,14 +3582,6 @@ var do_error_check = debounce(function(type, rebuild){
 
 		close_error_message();
 
-		var apply_changes_immediately = $('#apply_changes_immediately').is(':checked');
-	
-		if(!apply_changes_immediately){
-			evaluate_save_button();
-			show_changes_button();
-			return;
-		}
-
 		error_check(type, rebuild);
 		recalc_stats();
 
@@ -3627,11 +3621,11 @@ function error_check(parent, rebuild){
 
 			update_preview_calendar();
 
-			rebuild_calendar('preview', preview_date);
+			pre_rebuild_calendar('preview', preview_date);
 
 		}else{
 
-			rebuild_calendar('calendar', dynamic_data);
+			pre_rebuild_calendar('calendar', dynamic_data);
 
 			preview_date_follow();
 

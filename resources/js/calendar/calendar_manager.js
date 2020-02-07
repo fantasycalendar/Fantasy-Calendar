@@ -74,6 +74,36 @@ var evaluate_era_position = debounce(function(){
 	eras.evaluate_position();
 }, 50);
 
+function evaluate_apply_show_hide(){
+
+	var calendar_name_same = calendar_name == prev_calendar_name;
+	var static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
+	var dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
+
+	var not_changed = static_same && dynamic_same && calendar_name_same;
+
+	if(not_changed){
+		hide_changes_button();
+		evaluate_save_button(true);
+	}else{
+		evaluate_save_button();
+		show_changes_button();
+	}
+
+}
+
+function pre_rebuild_calendar(action, dynamic_data){
+
+	var apply_changes_immediately = $('#apply_changes_immediately').is(':checked');
+
+	if(!apply_changes_immediately){
+		evaluate_apply_show_hide();
+		return;
+	}
+
+	rebuild_calendar(action, dynamic_data);
+
+}
 
 var evaluated_static_data = {};
 
