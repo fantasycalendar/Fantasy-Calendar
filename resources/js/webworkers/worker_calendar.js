@@ -541,7 +541,7 @@ var calendar_builder = {
 			}
 		}
 
-		if(this.static_data.eras[current_era] && epoch >= this.static_data.eras[current_era].date.epoch && this.static_data.eras[current_era].settings.restart){
+		if(this.static_data.eras[current_era] && epoch == this.static_data.eras[current_era].date.epoch && this.static_data.eras[current_era].settings.restart){
 			era_year = 0;
 		}
 
@@ -1288,7 +1288,7 @@ var calendar_builder = {
 			}
 		}
 
-		if(this.static_data.eras[current_era] && epoch >= this.static_data.eras[current_era].date.epoch && this.static_data.eras[current_era].settings.restart){
+		if(this.static_data.eras[current_era] && epoch == this.static_data.eras[current_era].date.epoch && this.static_data.eras[current_era].settings.restart){
 			era_year = 0;
 		}
 
