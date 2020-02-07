@@ -160,11 +160,13 @@ function set_up_view_inputs(){
 	current_hour.change(function(){
 		dynamic_data.hour = $(this).val()|0;
 		eval_current_time();
+		evaluate_save_button();
 	});
 
 	current_minute.change(function(){
 		dynamic_data.minute = $(this).val()|0;
 		eval_current_time();
+		evaluate_save_button();
 	});
 
 	location_select.change(function(){

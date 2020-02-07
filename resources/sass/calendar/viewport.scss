@@ -452,12 +452,9 @@
 .timespan_container.minimalistic{
 
     align-self: center;
-    text-align: center;
-    display: inline-flex;
     flex-direction: column;
-    border-radius:5;
+    border-radius:5px;
     border:0;
-    overflow:hidden;
     font-size:0.75rem;
     margin: 3px;
     flex:1 0 auto;
@@ -469,6 +466,7 @@
         text-overflow: ellipsis;
         max-width: 10rem;
         align-self: center;
+        line-height: 1.4rem;
     }
 
     .week_day_name, .timespan_day, .timespan_overflow{
@@ -482,34 +480,55 @@
         min-width:1.5rem;
     }
 
+    .week_day_name {
+        border-bottom: 2px solid $calendar-border-color;
+    }
+
     .has_event{
         font-weight: bold;
     }
 
-    .timespan_row:nth-child(even) .timespan_day{
-        background-color: #F1FFE1;
-    }
-    .timespan_row:nth-child(odd) .timespan_day{
-        background-color: #E8E7C1;
-    }
+    .timespan_row{
+        &:nth-child(even) .timespan_day{
+            background-color: $m-even-bg;
+        }
 
-    .empty_timespan_day{
-        background-color:$gray-secondary !important;
-    }
+        &:nth-child(odd) .timespan_day{
+            background-color: $m-odd-bg;
+        }
 
-    .timespan_day:hover{
-        background-color:#D4FFE9 !important;
-        cursor:pointer;
-    }
+        .timespan_overflow {
+            border: 0;
+        }
 
-    .current_day{
-        background-color: #fdb44d !important;
-        border-bottom: 0;
-    }
+        .timespan_day{
+            &.preview_day{
+                background-color: $weather-tooltip-bg-color;
+                box-shadow: none;
+            }
 
-    .preview_day{
-        background-color: rgba(191.0, 99.0, 71.0, 0.5) !important;
-        box-shadow: none !important;
+            &.current_day {
+                background-color: $m-current-day;
+                border-bottom: 0;
+                color: #444;
+                font-weight: bold;
+
+                &:hover {
+                    cursor:pointer;
+                    background-color: $current-day-color;
+                    color: currentColor;
+                }
+            }
+
+            &.empty_timespan_day{
+                background-color:$gray-secondary;
+            }
+
+            &:hover:not(.current_day){
+                background-color: $m-day-hover;
+                cursor:pointer;
+            }
+        }
     }
 }
 
@@ -526,6 +545,7 @@ body {
         justify-content: end;
         flex-direction: column;
         font-size:0.75rem;
+        text-align:left;
     }
 
 }

@@ -186,13 +186,6 @@ var eras = {
 
 			var era = this.current_eras[this.era].data;
 
-			var era_year = calendar_layouts.year_data.year;
-
-			if(era.settings.restart){
-				era_year -= era.date.year;
-				var year_text = `Era year ${unconvert_year(static_data, era_year)} (year ${calendar_layouts.year_data.year})`;
-			}
-
 			if(!this.static_data.settings.hide_eras || owner){
 
 				if(era.settings.use_custom_format && era.formatting){
@@ -206,15 +199,19 @@ var eras = {
 							"nth_year": ordinal_suffix_of(calendar_layouts.year_data.year),
 							"abs_year": Math.abs(calendar_layouts.year_data.year),
 							"abs_nth_year": ordinal_suffix_of(Math.abs(calendar_layouts.year_data.year)),
-							"era_year": unconvert_year(static_data, era_year),
-							"era_nth_year": ordinal_suffix_of(unconvert_year(static_data, era_year)),
+							"era_year": calendar_layouts.year_data.era_year,
+							"era_nth_year": ordinal_suffix_of(calendar_layouts.year_data.era_year),
 							"era_name": era.name
 						}
 					);
 
 				}else{
 
-					year_text += ` - ${era.name}`
+					if(era.settings.restart){
+						var year_text = `Era year ${calendar_layouts.year_data.era_year} (year ${calendar_layouts.year_data.year})`;
+					}else{
+						year_text += ` - ${era.name}`
+					}
 
 				}
 			}
@@ -472,7 +469,7 @@ var calendar_layouts = {
 
 		this.append_layout();
 
-		this.update_year_follower(`Year ${unconvert_year(static_data, calendar_layouts.year_data.era_year)}`);
+		this.update_year_follower(`Year ${calendar_layouts.year_data.era_year}`);
 
 	},
 
@@ -517,7 +514,7 @@ var calendar_layouts = {
 
 		this.add_month_number();
 
-		this.update_year_follower(`Year ${unconvert_year(static_data, calendar_layouts.year_data.era_year)}`);
+		this.update_year_follower(`Year ${calendar_layouts.year_data.era_year}`);
 
 	},
 
@@ -572,10 +569,11 @@ var calendar_layouts = {
 					calendar_layouts.html.push("<div class='day_row'>");
 						calendar_layouts.html.push("<div class='toprow left'>");
 							calendar_layouts.html.push(`<div class='number'>${day_num}</div>`);
+							//calendar_layouts.html.push(`<div class='number'>${calendar_layouts.epoch_data[epoch].era_year}</div>`);
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow center'>");
 						if(calendar_layouts.epoch_data[epoch].weather && calendar_layouts.data.processed_weather){
-							if(!(static_data.settings.hide_all_weather || (!owner && static_data.settings.hide_future_weather && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)))){
+							if(owner || !(static_data.settings.hide_all_weather || (static_data.settings.hide_future_weather && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)))){
 								calendar_layouts.html.push(`<div class='weather_icon weather_popup' align='${weather_align}'></div>`);
 							}
 						}
@@ -896,7 +894,7 @@ var calendar_layouts = {
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow center'>");
 						if(calendar_layouts.epoch_data[epoch].weather && calendar_layouts.data.processed_weather){
-							if(!(static_data.settings.hide_all_weather || (!owner && static_data.settings.hide_future_weather && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)))){
+							if(owner || !(static_data.settings.hide_all_weather || (static_data.settings.hide_future_weather && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)))){
 								calendar_layouts.html.push(`<div class='weather_icon weather_popup' align='${weather_align}'></div>`);
 							}
 						}
@@ -1230,7 +1228,7 @@ var calendar_layouts = {
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow center'>");
 						if(calendar_layouts.epoch_data[epoch].weather && calendar_layouts.data.processed_weather){
-							if(!(static_data.settings.hide_all_weather || (!owner && static_data.settings.hide_future_weather && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)))){
+							if(owner || !(static_data.settings.hide_all_weather || (static_data.settings.hide_future_weather && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)))){
 								calendar_layouts.html.push(`<div class='weather_icon weather_popup' align=''></div>`);
 							}
 						}

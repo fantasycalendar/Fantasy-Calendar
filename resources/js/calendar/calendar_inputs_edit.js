@@ -2845,8 +2845,8 @@ function add_location_to_list(parent, key, data){
 
 						element.push(`<div class='col-lg-6 border rounded form-check pt-1 mb-2'>`);
 
-							element.push(`<input type='checkbox' id='${key}_custom_name' class='form-check-input dynamic_input disable_local_season_name' data='seasons.locations.${key}.seasons.${i}' fc-index='custom_name' ${data.seasons[i].custom_name ? 'checked' : ''}>`);
-							element.push(`<label for='${key}_custom_name' class='form-check-label ml-1'>`);
+							element.push(`<input type='checkbox' id='${key}_${i}_custom_name' class='form-check-input dynamic_input disable_local_season_name' data='seasons.locations.${key}.seasons.${i}' fc-index='custom_name' ${data.seasons[i].custom_name ? 'checked' : ''}>`);
+							element.push(`<label for='${key}_${i}_custom_name' class='form-check-label ml-1'>`);
 								element.push("Custom name");
 							element.push("</label>");
 
@@ -2914,13 +2914,13 @@ function add_location_to_list(parent, key, data){
 						element.push(`<div class='row no-gutters mb-2'>`);
 
 							element.push("<div class='col-6 pl-0 pr-1 clock-input'>");
-								element.push(`<input type='number' step="1.0" class='form-control text-right full dynamic_input hour_input' clocktype='sunrise_hour' data='seasons.locations.${key}.seasons.time.sunrise' fc-index='hour' value='${data.seasons[i].time.sunrise.hour}' />`);
+								element.push(`<input type='number' step="1.0" class='form-control text-right full dynamic_input hour_input' clocktype='sunrise_hour' data='seasons.locations.${key}.seasons.${i}.time.sunrise' fc-index='hour' value='${data.seasons[i].time.sunrise.hour}' />`);
 							element.push("</div>");
 
 							element.push("<div class='col-auto pt-1'>:</div>");
 
 							element.push("<div class='col pl-1 pr-0 clock-input'>");
-								element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunrise_minute' data='seasons.locations.${key}.seasons.time.sunrise' fc-index='minute' value='${data.seasons[i].time.sunrise.minute}' />`);
+								element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunrise_minute' data='seasons.locations.${key}.seasons.${i}.time.sunrise' fc-index='minute' value='${data.seasons[i].time.sunrise.minute}' />`);
 							element.push("</div>");
 
 						element.push("</div>");
@@ -2934,13 +2934,13 @@ function add_location_to_list(parent, key, data){
 						element.push(`<div class='row no-gutters mb-2'>`);
 
 							element.push("<div class='col-6 pl-0 pr-1 clock-input'>");
-								element.push(`<input type='number' step="1.0" class='form-control text-right full dynamic_input hour_input' clocktype='sunset_hour' data='seasons.locations.${key}.seasons.time.sunset' fc-index='hour' value='${data.seasons[i].time.sunset.hour}' />`);
+								element.push(`<input type='number' step="1.0" class='form-control text-right full dynamic_input hour_input' clocktype='sunset_hour' data='seasons.locations.${key}.seasons.${i}.time.sunset' fc-index='hour' value='${data.seasons[i].time.sunset.hour}' />`);
 							element.push("</div>");
 
 							element.push("<div class='col-auto pt-1'>:</div>");
 
 							element.push("<div class='col pl-1 pr-0 clock-input'>");
-								element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunset_minute' data='seasons.locations.${key}.seasons.time.sunset' fc-index='minute' value='${data.seasons[i].time.sunset.minute}' />`);
+								element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunset_minute' data='seasons.locations.${key}.seasons.${i}.time.sunset' fc-index='minute' value='${data.seasons[i].time.sunset.minute}' />`);
 							element.push("</div>");
 
 						element.push("</div>");
