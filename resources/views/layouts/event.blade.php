@@ -7,7 +7,7 @@
 	</div>
 </div>
 
-<div id="event_show_background" class='clickable_background hidden'>
+<div id="event_show_background" class='clickable_background blurred_background hidden'>
 	<div class='event-basic-container'>
 		<div class='event-basic-wrapper'>
 			<div class='event-basic-wrapper'>

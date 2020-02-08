@@ -1033,10 +1033,14 @@ ol.example li.placeholder:before {
     width:100%;
     height:100%;
     background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1050;
+    z-index: 11;
     position:fixed;
     align-items: center;
     display:none;
+}
+
+.blurred_background{
+    backdrop-filter: blur(3px);
 }
 
 #errors {
