@@ -1129,7 +1129,7 @@
 
     <div id="reload_background" class='flexible_background blurred_background d-flex flex-column justify-content-center align-items-center hidden'>
         <div class='p-2 text-white'>You have made changes to your calendar.</div>
-        <div class='p-2'><button type='button' class='btn btn-primary' id='apply_changes_btn'>Apply changes</button></div>
+        <div class='p-2'><button type='button' class='btn btn-primary' id='apply_changes_btn'>Update preview</button></div>
     </div>
 
 	<div id="top_follower">
