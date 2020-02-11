@@ -1,5 +1,7 @@
 function set_up_edit_inputs(){
 
+	changes_applied = true;
+
 	prev_calendar_name = clone(calendar_name);
 	prev_dynamic_data = clone(dynamic_data);
 	prev_static_data = clone(static_data);
@@ -101,10 +103,12 @@ function set_up_edit_inputs(){
 		switch(view_type){
 			case "owner":
 				if(previous_view_type !== 'owner'){
-					if(has_calendar_data_changed()){
-						rebuild_calendar('calendar', preview_date);
+					if(!preview_date.follow){
+						update_preview_calendar();
+						pre_rebuild_calendar('preview', preview_date);
 					}else{
-						pre_rebuild_calendar();
+						pre_rebuild_calendar('calendar', dynamic_data);
+						preview_date_follow();
 					}
 				}
 				calendar_container.removeClass('hidden');
@@ -115,10 +119,12 @@ function set_up_edit_inputs(){
 			case "player":
 				owner = 0;
 				if(previous_view_type !== 'player'){
-					if(has_calendar_data_changed()){
-						rebuild_calendar('calendar', preview_date);
+					if(!preview_date.follow){
+						update_preview_calendar();
+						pre_rebuild_calendar('preview', preview_date);
 					}else{
-						pre_rebuild_calendar();
+						pre_rebuild_calendar('calendar', dynamic_data);
+						preview_date_follow();
 					}
 				}
 				calendar_container.removeClass('hidden');
@@ -2034,24 +2040,19 @@ function set_up_edit_inputs(){
 
 		if(errors.length == 0 && $('.invalid').length == 0){
 
-			hide_changes_button();
-			evaluate_save_button(true);
+			changes_applied = true;
 
-			if(!has_calendar_data_changed()){
+			if(!preview_date.follow){
 
-				if(!preview_date.follow){
+				update_preview_calendar();
 
-					update_preview_calendar();
+				pre_rebuild_calendar('preview', preview_date);
 
-					rebuild_calendar('preview', preview_date);
+			}else{
 
-				}else{
+				pre_rebuild_calendar('calendar', dynamic_data);
 
-					rebuild_calendar('calendar', dynamic_data);
-
-					preview_date_follow();
-
-				}
+				preview_date_follow();
 
 			}
 
@@ -2065,27 +2066,19 @@ function set_up_edit_inputs(){
 
 		if(checked){
 
-			hide_changes_button();
-			evaluate_save_button(true);
+			changes_applied = true;
 
-			if(!has_calendar_data_changed()){
+			if(!preview_date.follow){
 
-				repopulate_timespan_select();
-				repopulate_day_select();
+				update_preview_calendar();
 
-				if(!preview_date.follow){
+				pre_rebuild_calendar('preview', preview_date);
 
-					update_preview_calendar();
+			}else{
 
-					rebuild_calendar('preview', preview_date);
+				pre_rebuild_calendar('calendar', dynamic_data);
 
-				}else{
-
-					rebuild_calendar('calendar', dynamic_data);
-
-					preview_date_follow();
-
-				}
+				preview_date_follow();
 
 			}
 
@@ -3617,6 +3610,8 @@ var do_error_check = debounce(function(type, rebuild){
 function error_check(parent, rebuild){
 
 	if(wizard) return;
+
+	changes_applied = false;
 
 	if(parent === "eras"){
 		recalculate_era_epochs();

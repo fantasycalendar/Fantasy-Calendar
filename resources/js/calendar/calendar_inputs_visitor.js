@@ -241,6 +241,8 @@ function go_to_preview_date(rebuild){
 
 	rebuild = rebuild !== undefined ? rebuild : data.rebuild;
 
+	changes_applied = false;
+
 	if(rebuild){
 		do_rebuild('preview', preview_date)
 	}else{

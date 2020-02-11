@@ -331,6 +331,8 @@ function evaluate_dynamic_change(){
 
 	var apply_changes_immediately = $('#apply_changes_immediately').is(':checked');
 
+	changes_applied = false;
+
 	if(preview_date.follow){
 
 		preview_date.year		= data.year;

@@ -74,6 +74,7 @@ var evaluate_era_position = debounce(function(){
 	eras.evaluate_position();
 }, 50);
 
+
 function has_calendar_data_changed(){
 
 	var calendar_name_same = calendar_name == prev_calendar_name;
@@ -84,25 +85,19 @@ function has_calendar_data_changed(){
 
 }
 
-function evaluate_apply_show_hide(){
-
-	if(has_calendar_data_changed()){
-		hide_changes_button();
-		evaluate_save_button(true);
-	}else{
-		evaluate_save_button();
-		show_changes_button();
-	}
-
-}
-
 function pre_rebuild_calendar(action, dynamic_data){
 
 	var apply_changes_immediately = $('#apply_changes_immediately').is(':checked');
 
 	if(!apply_changes_immediately){
-		evaluate_apply_show_hide();
-		return;
+		if(!changes_applied){
+			evaluate_save_button();
+			show_changes_button();
+			return;
+		}else{
+			hide_changes_button();
+			evaluate_save_button(true);
+		}
 	}
 
 	rebuild_calendar(action, dynamic_data);
