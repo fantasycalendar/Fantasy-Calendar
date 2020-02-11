@@ -1,18 +1,17 @@
 /* ------------ Dark Red ----------- */
-.event.Dark-Solid.dot::before,
-.event.Dark-Solid.text{
+.event.Dark-Solid{
     color: #000000;
 }
 .event.Dark-Solid.background{
-    background-color: #000000;
+    background-color: rgba(0,0,0,0.8);
+    color: white;
 }
 .event.Dark-Solid.background:hover{
-    background-color: #424242;
+    background-color: rgba(33,33,33,0.8);
 }
 
 /* ------------ Red ----------- */
-.event.Red.dot::before,
-.event.Red.text{
+.event.Red{
     color: #9b2c2c;
 }
 .event.Red.background{
@@ -25,8 +24,7 @@
 }
 
 /* ----------- Pink */
-.event.Pink.dot::before,
-.event.Pink.text{
+.event.Pink{
     color: #880E4F;
 }
 .event.Pink.background{
@@ -39,8 +37,7 @@
 }
 
 /* ------------ Purple ----------- */
-.event.Purple.dot::before,
-.event.Purple.text{
+.event.Purple{
     color: #4A148C;
 }
 .event.Purple.background{
@@ -53,8 +50,7 @@
 }
 
 /* ----------- Deep Purple ----------- */
-.event.Deep-Purple.dot::before,
-.event.Deep-Purple.text{
+.event.Deep-Purple{
     color: #311B92;
 }
 .event.Deep-Purple.background{
@@ -67,8 +63,7 @@
 }
 
 /* ------------ Blue ----------- */
-.event.Blue.dot::before,
-.event.Blue.text{
+.event.Blue{
     color: #0D47A1;
 }
 .event.Blue.background{
@@ -81,8 +76,7 @@
 }
 
 /* ----------- Light-Blue ----------- */
-.event.Light-Blue.dot::before,
-.event.Light-Blue.text{
+.event.Light-Blue{
     color: #0288D1;
 }
 .event.Light-Blue.background{
@@ -95,8 +89,7 @@
 }
 
 /* ------------ Cyan ----------- */
-.event.Cyan.dot::before,
-.event.Cyan.text{
+.event.Cyan{
     color: #006064;
 }
 .event.Cyan.background{
@@ -109,8 +102,7 @@
 }
 
 /* ----------- Teal ----------- */
-.event.Teal.dot::before,
-.event.Teal.text{
+.event.Teal{
     color: #004D40;
 }
 .event.Teal.background{
@@ -123,8 +115,7 @@
 }
 
 /* ------------ Green ----------- */
-.event.Green.dot::before,
-.event.Green.text{
+.event.Green{
     color: #2E7D32;
 }
 .event.Green.background{
@@ -137,8 +128,7 @@
 }
 
 /* ----------- Light-Green ----------- */
-.event.Light-Green.dot::before,
-.event.Light-Green.text{
+.event.Light-Green{
     color: #7CB342;
 }
 .event.Light-Green.background{
@@ -151,8 +141,7 @@
 }
 
 /* ----------- Lime ----------- */
-.event.Lime.dot::before,
-.event.Lime.text{
+.event.Lime{
     color: #9E9D24;
 }
 .event.Lime.background{
@@ -181,8 +170,7 @@
 }
 
 /* ------------ Orange ----------- */
-.event.Orange.dot::before,
-.event.Orange.text{
+.event.Orange{
     color: #FF9100;
 }
 .event.Orange.background{
@@ -195,8 +183,7 @@
 }
 
 /* ------------ Blue-Grey ----------- */
-.event.Blue-Grey.dot::before,
-.event.Blue-Grey.text{
+.event.Blue-Grey{
     color: #455A64;
 }
 .event.Blue-Grey.background{
