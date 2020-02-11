@@ -101,7 +101,11 @@ function set_up_edit_inputs(){
 		switch(view_type){
 			case "owner":
 				if(previous_view_type !== 'owner'){
-					do_error_check();
+					if(has_calendar_data_changed()){
+						rebuild_calendar('calendar', preview_date);
+					}else{
+						pre_rebuild_calendar();
+					}
 				}
 				calendar_container.removeClass('hidden');
 				weather_contrainer.addClass('hidden');
@@ -111,7 +115,11 @@ function set_up_edit_inputs(){
 			case "player":
 				owner = 0;
 				if(previous_view_type !== 'player'){
-					do_error_check();
+					if(has_calendar_data_changed()){
+						rebuild_calendar('calendar', preview_date);
+					}else{
+						pre_rebuild_calendar();
+					}
 				}
 				calendar_container.removeClass('hidden');
 				weather_contrainer.addClass('hidden');
@@ -2029,9 +2037,7 @@ function set_up_edit_inputs(){
 			hide_changes_button();
 			evaluate_save_button(true);
 
-			var not_changed = static_same && dynamic_same && calendar_name_same;
-
-			if(!not_changed){
+			if(!has_calendar_data_changed()){
 
 				if(!preview_date.follow){
 
@@ -2062,9 +2068,7 @@ function set_up_edit_inputs(){
 			hide_changes_button();
 			evaluate_save_button(true);
 
-			var not_changed = static_same && dynamic_same && calendar_name_same;
-
-			if(!not_changed){
+			if(!has_calendar_data_changed()){
 
 				repopulate_timespan_select();
 				repopulate_day_select();

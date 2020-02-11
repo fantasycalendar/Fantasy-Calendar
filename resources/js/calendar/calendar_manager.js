@@ -74,15 +74,19 @@ var evaluate_era_position = debounce(function(){
 	eras.evaluate_position();
 }, 50);
 
-function evaluate_apply_show_hide(){
+function has_calendar_data_changed(){
 
 	var calendar_name_same = calendar_name == prev_calendar_name;
 	var static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
 	var dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
 
-	var not_changed = static_same && dynamic_same && calendar_name_same;
+	return static_same && dynamic_same && calendar_name_same;
 
-	if(not_changed){
+}
+
+function evaluate_apply_show_hide(){
+
+	if(has_calendar_data_changed()){
 		hide_changes_button();
 		evaluate_save_button(true);
 	}else{
