@@ -1531,7 +1531,7 @@ var calendar_builder = {
 			}
 		}
 
-		if(!this.static_data.settings.show_current_month || last_year != convert_year(this.static_data, this.dynamic_data.year)){
+		if(!this.static_data.settings.show_current_month || (last_year !== undefined && last_year != convert_year(this.static_data, this.dynamic_data.year))){
 			year_day = 1;
 		}
 
