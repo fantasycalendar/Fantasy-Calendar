@@ -407,11 +407,17 @@ var edit_event_ui = {
 
 		this.inputs_changed = false;
 
+		this.populate_condition_presets();
+
 	},
 
 	edit_event: function(event_id){
 
 		this.prev_version_event = clone(static_data.event_data.events[event_id]);
+
+		this.repeat_input.val('1').parent().toggleClass('hidden', true);
+		this.condition_presets.children().eq(0).prop('selected', true);
+		this.condition_presets.parent().toggleClass('hidden', true);
 
 		this.set_current_event(event_id)
 
@@ -719,6 +725,8 @@ var edit_event_ui = {
 
 	populate_condition_presets: function(){
 
+		this.repeat_input.val('1').parent().toggleClass('hidden', false);
+		this.condition_presets.children().eq(0).prop('selected', true);
 		this.condition_presets.parent().toggleClass('hidden', false);
 
 		this.condition_presets.find('option[value="weekly"]').text(`Weekly on ${edit_event_ui.data.week_day_name}`);

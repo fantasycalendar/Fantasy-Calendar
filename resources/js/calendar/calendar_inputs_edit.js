@@ -1073,7 +1073,6 @@ function set_up_edit_inputs(){
 
 		var epoch = undefined;
 
-
 		if(typeof preview_date !== "undefined" && preview_date.follow){
 			var epoch = dynamic_date_manager.epoch;
 		}else{
@@ -2173,6 +2172,9 @@ function set_up_edit_inputs(){
 						static_data.event_data.events[eventkey].settings.hide_full = static_data.event_data.categories[key].event_settings.hide_full;
 						static_data.event_data.events[eventkey].settings.print = static_data.event_data.categories[key].event_settings.print;
 						static_data.event_data.events[eventkey].settings.hide = static_data.event_data.categories[key].event_settings.hide;
+						static_data.event_data.events[eventkey].settings.color = static_data.event_data.categories[key].event_settings.color;
+						static_data.event_data.events[eventkey].settings.text = static_data.event_data.categories[key].event_settings.text;
+						break;
 					}
 				}
 				repopulate_event_category_lists();

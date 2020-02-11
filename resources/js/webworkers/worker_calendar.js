@@ -555,8 +555,6 @@ var calendar_builder = {
 			order.reverse();
 		}
 
-		var last_year = undefined;
-
 		for(var year_i = 0; year_i < order.length; year_i++){
 
 			year_index = parseInt(order[year_i]);
@@ -772,7 +770,6 @@ var calendar_builder = {
 					total_week_num++;
 				}
 			}
-			last_year = year_index;
 			if(year_index != convert_year(this.static_data, this.dynamic_data.year)) year_day = 1;
 			era_year++;
 		}
@@ -997,7 +994,6 @@ var calendar_builder = {
 					total_week_num++;
 				}
 			}
-			last_year = year_index;
 			if(year_index != convert_year(this.static_data, this.dynamic_data.year)) year_day = 1;
 			era_year++;
 		}
@@ -1263,7 +1259,6 @@ var calendar_builder = {
 			}
 
 			first_eval_month = parseInt(Object.keys(this.calendar_list.pre_timespans_to_evaluate[first_eval_year])[0]);
-			last_year = first_eval_year;
 
 		}else{
 
@@ -1301,9 +1296,7 @@ var calendar_builder = {
 		if(order[0] > order[order.length-1]){
 			order.reverse();
 		}
-
-		last_year = undefined;
-
+		
 		for(var year_i = 0; year_i < order.length; year_i++){
 
 			year_index = parseInt(order[year_i]);
@@ -1522,7 +1515,6 @@ var calendar_builder = {
 				}
 			}
 
-			last_year = year_index;
 			year_day = 1;
 
 			if(year_index !== convert_year(this.static_data, this.dynamic_data.year)){
@@ -1531,7 +1523,7 @@ var calendar_builder = {
 			}
 		}
 
-		if(!this.static_data.settings.show_current_month || last_year != convert_year(this.static_data, this.dynamic_data.year)){
+		if(!this.static_data.settings.show_current_month){
 			year_day = 1;
 		}
 
@@ -2000,7 +1992,6 @@ var calendar_builder = {
 					total_week_num++;
 				}
 			}
-			last_year = year_index;
 			year_day = 1;
 			era_year++;
 		}
