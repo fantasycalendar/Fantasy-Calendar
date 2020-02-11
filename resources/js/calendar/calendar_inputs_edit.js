@@ -1081,8 +1081,6 @@ function set_up_edit_inputs(){
 			}
 		}
 
-		console.log(epoch)
-
 		edit_event_ui.create_new_event(name_val, epoch);
 
 		name.val('');
