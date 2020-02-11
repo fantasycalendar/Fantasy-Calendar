@@ -1073,7 +1073,6 @@ function set_up_edit_inputs(){
 
 		var epoch = undefined;
 
-
 		if(typeof preview_date !== "undefined" && preview_date.follow){
 			var epoch = dynamic_date_manager.epoch;
 		}else{
@@ -1081,6 +1080,8 @@ function set_up_edit_inputs(){
 				var epoch = preview_date_manager.epoch;
 			}
 		}
+
+		console.log(epoch)
 
 		edit_event_ui.create_new_event(name_val, epoch);
 

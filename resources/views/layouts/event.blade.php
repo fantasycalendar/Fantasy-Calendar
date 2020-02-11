@@ -94,10 +94,6 @@
 					<input type='number' class='form-control' id='repeat_input' name='repeat_input' value='1' min='1' placeholder='Every nth' />
 				</div>
 
-				<div class='row no-gutters' id='preset_buttons'>
-					<button type='button' id='add_event_preset' class='btn btn-info full'>Add condition preset</button>
-				</div>
-
 				<h5 class='row no-gutters my-2 event-form-heading'>Conditions:</h5>
 
 				<div class='row no-gutters my-2' id='non_preset_buttons'>
