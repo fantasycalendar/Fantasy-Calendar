@@ -2410,7 +2410,7 @@ function add_leap_day_to_list(parent, key, data){
 
 	var element = [];
 
-	element.push(`<div class='sortable-container ${(data.intercalary ? 'intercalary leap-day' : 'leap-day')} collapsed' index='${key}'>`);
+	element.push(`<div class='sortable-container list-group-item ${(data.intercalary ? 'intercalary leap-day' : 'leap-day')} collapsed' index='${key}'>`);
 		element.push("<div class='main-container'>");
 			element.push("<div class='expand icon-collapse'></div>");
 			element.push("<div class='name-container'>");
@@ -2564,7 +2564,7 @@ function add_moon_to_list(parent, key, data){
 
 	var element = [];
 
-	element.push(`<div class='sortable-container moon_inputs expanded' index='${key}'>`);
+	element.push(`<div class='sortable-container list-group-item moon_inputs expanded' index='${key}'>`);
 		element.push("<div class='main-container'>");
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' class='form-control name-input small-input dynamic_input' data='moons.${key}' fc-index='name' tabindex='${(300+key)}'/>`);
@@ -2689,7 +2689,7 @@ function add_moon_to_list(parent, key, data){
 
 function add_season_to_sortable(parent, key, data){
 	var element = [];
-	element.push(`<div class='sortable-container season collapsed' index='${key}'>`);
+	element.push(`<div class='sortable-container list-group-item season collapsed' index='${key}'>`);
 		element.push("<div class='main-container'>");
 			if(static_data.seasons.global_settings.periodic_seasons){
 				element.push("<div class='handle icon-reorder'></div>");
@@ -2807,7 +2807,7 @@ function add_location_to_list(parent, key, data){
 
 	var element = [];
 
-	element.push(`<div class='sortable-container location collapsed' index='${key}'>`);
+	element.push(`<div class='sortable-container list-group-item location collapsed' index='${key}'>`);
 		element.push("<div class='main-container'>");
 			element.push("<div class='expand icon-collapse'></div>");
 			element.push("<div class='name-container'>");
@@ -3059,7 +3059,7 @@ function add_cycle_to_sortable(parent, key, data){
 
 	var element = [];
 
-	element.push(`<div class='sortable-container cycle_inputs collapsed' index='${key}'>`);
+	element.push(`<div class='sortable-container list-group-item cycle_inputs collapsed' index='${key}'>`);
 		element.push("<div class='main-container'>");
 			element.push("<div class='handle icon-reorder'></div>");
 			element.push("<div class='expand icon-collapse'></div>");
@@ -3148,7 +3148,7 @@ function add_era_to_list(parent, key, data){
 
 	var element = [];
 
-	element.push(`<div class='sortable-container era_inputs collapsed' index='${key}'>`);
+	element.push(`<div class='sortable-container list-group-item era_inputs collapsed' index='${key}'>`);
 		element.push("<div class='main-container'>");
 			element.push("<div class='expand icon-collapse'></div>");
 			element.push("<div class='name-container'>");
@@ -3488,7 +3488,7 @@ function add_link_to_list(parent, key, calendar_name){
 
 	var element = [];
 
-	element.push(`<div class='sortable-container events_input' index='${key}'>`);
+	element.push(`<div class='sortable-container list-group-item events_input' index='${key}'>`);
 		element.push("<div class='main-container'>");
 			element.push(`<div>${calendar_name}</div>`);
 			element.push('<div class="remove-spacer"></div>');
