@@ -74,17 +74,6 @@ var evaluate_era_position = debounce(function(){
 	eras.evaluate_position();
 }, 50);
 
-
-function has_calendar_data_changed(){
-
-	var calendar_name_same = calendar_name == prev_calendar_name;
-	var static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
-	var dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
-
-	return static_same && dynamic_same && calendar_name_same;
-
-}
-
 function pre_rebuild_calendar(action, dynamic_data){
 
 	var apply_changes_immediately = $('#apply_changes_immediately').is(':checked');
