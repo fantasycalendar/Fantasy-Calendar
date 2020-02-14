@@ -28,8 +28,6 @@ function evaluate_background_size(){
 
 function error_message(message){
 
-	var width = $('#errors_background').parent().width();
-
 	$('#error_text').empty().append(message);
 	$('#errors_background').removeClass().addClass('error').addClass('flexible_background').css('display', 'flex');
 
@@ -42,11 +40,11 @@ function close_error_message(){
 }
 
 function show_changes_button(){
-	$('#reload_background').removeClass('hidden');
+	$('#reload_background').removeClass('hidden').css('display', 'flex');
 }
 
 function hide_changes_button(){
-	$('#reload_background').addClass('hidden');
+	$('#reload_background').addClass('hidden').css('display', 'none');
 }
 
 var loading_screen_texts = [

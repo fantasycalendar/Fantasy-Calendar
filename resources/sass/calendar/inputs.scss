@@ -1036,6 +1036,8 @@ ol.example li.placeholder:before {
     z-index: 11;
     position:fixed;
     align-items: center;
+    text-align:center;
+    overflow:hidden;
     display:none;
 }
 

@@ -232,7 +232,7 @@ function set_up_edit_inputs(){
 
 	$('#calendar_name').change(function(){
 		calendar_name = $(this).val();
-		evaluate_save_button();
+		do_error_check();
 	});
 
 	$(document).on('change', '.length-input, .interval, .offset', function(){
@@ -2066,17 +2066,20 @@ function set_up_edit_inputs(){
 
 		if(checked){
 
-			changes_applied = true;
+			changes_applied = false;
+
+			hide_changes_button();
+			evaluate_save_button(true);
 
 			if(!preview_date.follow){
 
 				update_preview_calendar();
 
-				pre_rebuild_calendar('preview', preview_date);
+				rebuild_calendar('preview', preview_date);
 
 			}else{
 
-				pre_rebuild_calendar('calendar', dynamic_data);
+				rebuild_calendar('calendar', dynamic_data);
 
 				preview_date_follow();
 
@@ -3569,11 +3572,19 @@ function get_errors(){
 
 	}
 
+	if(calendar_name == ""){
+
+		errors.push(`Your calendar must have a name.`)
+
+	}
+
 	return errors;
 
 }
 
 var do_error_check = debounce(function(type, rebuild){
+
+	evaluate_save_button();
 
 	var errors = get_errors();
 
