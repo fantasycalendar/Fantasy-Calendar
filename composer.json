@@ -14,6 +14,7 @@
         "code16/sharp": "^4.2",
         "fideloper/proxy": "^4.0",
         "graham-campbell/markdown": "^11.0",
+        "guzzlehttp/guzzle": "^6.5",
         "laravel/framework": "^6.0",
         "laravel/tinker": "^1.0",
         "league/fractal": "^0.18.0",
