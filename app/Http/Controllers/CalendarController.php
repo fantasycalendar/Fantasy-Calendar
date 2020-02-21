@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\PrepCalendarForExport;
+use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Http\Request;
 
 use Auth;
@@ -12,6 +13,7 @@ use App\CalendarEvent;
 
 use App\Jobs\SaveEventCategories;
 use App\Jobs\SaveCalendarEvents;
+use Illuminate\Support\Facades\Storage;
 
 class CalendarController extends Controller
 {
@@ -34,9 +36,12 @@ class CalendarController extends Controller
     {
         $calendars = (Auth::user()->permissions == 1) ? Calendar::active()->with('user')->get() : Auth::user()->calendars;
 
+        $changelog = Markdown::convertToHtml(Storage::disk('base')->get('public/changelog.md'));
+
         return view('home', [
             'title' => "Fantasy Calendar",
             'calendars' => $calendars,
+            'changelog' => $changelog
         ]);
     }
 

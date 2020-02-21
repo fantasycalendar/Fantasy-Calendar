@@ -38,7 +38,7 @@
         }
 
         section.promos h3 {
-            font-size: 26px;
+            font-size: 25px;
             min-height: 66px;
             line-height: 66px;
         }
