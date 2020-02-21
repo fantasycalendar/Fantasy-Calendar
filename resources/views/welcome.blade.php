@@ -1,12 +1,8 @@
 @extends('templates._page')
 
 @push('head')
-    <link href="https://fonts.googleapis.com/css?family=PT+Sans:400,700|Open+Sans:400,200&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,200&display=swap" rel="stylesheet">
     <style>
-        section {
-            font-family: "PT Sans", sans-serif;
-        }
-
         section.jumbotron {
             background-image: linear-gradient(to right, rgba(0, 0, 0, 0.42), rgba(0, 0, 0, 0.42)), url({{ asset('resources/jumbotron_bg.jpg') }});
             background-size: cover;
@@ -25,7 +21,7 @@
         }
 
         section.jumbotron .herotext .lead {
-            font-size: 18px;
+            font-size: 17px;
         }
 
         section.promos {
@@ -43,8 +39,8 @@
 
         section.promos h3 {
             font-size: 26px;
-            min-height: 62px;
-            line-height: 62px;
+            min-height: 66px;
+            line-height: 66px;
         }
 
         section.promos h3.lower-height {
@@ -126,10 +122,10 @@
     <section class="jumbotron jumbotron-fluid">
         <div class="container">
             <div class="row align-items-center">
-                <div class="col-3 logo">
+                <div class="col-12 col-md-3 d-none d-md-block logo text-center">
                     <img src="{{ asset('resources/jumbotron_logo.png') }}">
                 </div>
-                <div class="col-9 herotext">
+                <div class="col-12 col-md-9 herotext">
                     <h1>Fantasy Calendar</h1>
                     <p class="lead">Whether you're an RPG DM just looking to track the events of a long-running Forgotten Realms campaign, or a fanciful world-builder who likes to have wacky celestial configurations (Such as Eberron's 12 moons) with zany timekeeping systems to match, you probably need a calendar of some kind.</p>
                 </div>
@@ -141,30 +137,30 @@
     <section class="promos">
         <div class="container">
             <div class="row">
-                <div class="col-3 ml-0 pl-0 pr-1">
+                <div class="col-12 col-md-3 py-3 py-md-0 px-2 ml-md-0 pl-md-0 pr-md-1">
                     <div class="inner">
-                        <p class="text-center"><i class="fa fa-check-circle"></i></p>
+                        <p class="text-center pt-2"><i class="fa fa-check-circle"></i></p>
                         <h3 class="text-center">Easy to Use</h3>
                         <p class="small">The controls of Fantasy Calendar have been lovingly hand-crafted to <strong>make sense</strong>. With a detailed wiki to make up for the parts that don’t.</p>
                     </div>
                 </div>
-                <div class="col-3 px-1">
+                <div class="col-12 col-md-3 py-3 py-md-0 px-2 px-md-1">
                     <div class="inner">
-                        <p class="text-center"><i class="fa fa-mobile"></i></p>
+                        <p class="text-center pt-2"><i class="fa fa-mobile"></i></p>
                         <h3 class="text-center">Mobile-Friendly</h3>
                         <p class="small">Because you never know when you might have a great idea for a calendar system, or want to track events in that pick-up D&D game at the games store.</p>
                     </div>
                 </div>
-                <div class="col-3 px-1">
+                <div class="col-12 col-md-3 py-3 py-md-0 px-2 px-md-1">
                     <div class="inner">
-                        <p class="text-center"><i class="fa fa-rocket"></i></p>
+                        <p class="text-center pt-2"><i class="fa fa-rocket"></i></p>
                         <h3 class="text-center">Light &amp; Responsive</h3>
                         <p class="small">Your fantasy world’s calendar should help you keep time, not waste yours. Keep game time even on low-end computers, netbooks, or chromebooks.</p>
                     </div>
                 </div>
-                <div class="col-3 mr-0 pr-0 pl-1">
+                <div class="col-12 col-md-3 py-3 py-md-0 px-2 mr-md-0 pr-md-0 pl-md-1">
                     <div class="inner">
-                        <p class="text-center"><i class="fa fa-calendar-day"></i></p>
+                        <p class="text-center pt-2"><i class="fa fa-calendar-day"></i></p>
                         <h3 class="text-center lower-height">Powerful Calendar Engine</h3>
                         <p class="small">Intercalaries! Leap days! Moons! Seasons! Cycles! Eras!<br>
                             If those words mean anything to you, welcome to your home for keeping track of it all.</p>
@@ -185,7 +181,7 @@
     </section>
 
 
-    <section class="footer">
+    <section class="footer flex-column flex-md-row">
         <div class="logo"><img src="{{ asset('resources/header_logo.png') }}"></div>
         <div class="copyright">© Copyright {{ date('Y') }} Fantasy Calendar Ltd.</div>
     </section>
