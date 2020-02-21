@@ -20,6 +20,8 @@ Route::get('/donate', function(){
     ]);
 });
 
+Route::view('/welcome', 'welcome');
+
 Route::get('calendars/{calendar}/print', 'CalendarController@print')->name('calendars.print');
 Route::get('calendars/{calendar}/export', 'CalendarController@export')->name('calendars.export');
 Route::resource('calendars', 'CalendarController');
