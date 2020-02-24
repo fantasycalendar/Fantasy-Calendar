@@ -3,14 +3,17 @@
 namespace App\Http\Controllers;
 
 use Auth;
+use Stripe;
 use Illuminate\Http\Request;
 use Laravel\Cashier\Exceptions\IncompletePayment;
+use Stripe\Exceptions\InvalidRequestException;
 use Redirect;
+use Stripe\Coupon;
 
 class SubscriptionController extends Controller
 {
     public function __construct() {
-        $this->middleware('auth')->except(['index', 'pricing']);
+        $this->middleware('auth')->except(['index', 'pricing', 'coupon']);
     }
 
     public function pricing(Request $request) {
@@ -36,6 +39,25 @@ class SubscriptionController extends Controller
         ]);
     }
 
+    public function coupon(Request $request) {
+
+        $coupon_code = $request->input("coupon_code");
+
+        \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+        $coupons = \Stripe\Coupon::all();
+        foreach($coupons->data as $coupon){
+            if($coupon->id == $coupon_code){
+                if($coupon->valid){
+                    return ["success" => true, "percent_off" => $coupon->percent_off, "amount_off" => $coupon->amount_off];
+                }else{
+                    return ["success" => false, "message" => "Coupon has expired."];
+                }
+            }
+        }
+
+        return ["success" => false, "message" => "Invalid coupon."];
+    }
+
     public function subscribe($level, $interval) {
         // They're subscribed already, send 'em to the subscriptions list
         if(Auth::user()->subscriptions()->active()->get()->count() > 0) {
@@ -58,7 +80,9 @@ class SubscriptionController extends Controller
         $user = Auth::user();
 
         try {
+            
             $user->newSubscription($level, $plan)->create($request->input('token'));
+
         } catch (IncompletePayment $exception) {
             
             return redirect()->route(
@@ -66,6 +90,7 @@ class SubscriptionController extends Controller
                 [$exception->payment->id, 'redirect' => route('profile')]
             );
         }
+
         return ['success' => true, 'message' => 'Subscribed'];
     }
 

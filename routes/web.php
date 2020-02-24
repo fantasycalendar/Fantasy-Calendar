@@ -65,6 +65,7 @@ Route::get('/subscription/resume/{level}', 'SubscriptionController@resume')->nam
 // They want to upgrade
 Route::post('/subscription/update/{level}/{plan}', 'SubscriptionController@update')->name('subscription.update');
 
+Route::post('pricing/coupon', 'SubscriptionController@coupon');
 
 // User profile
 Route::get('/profile', function() {

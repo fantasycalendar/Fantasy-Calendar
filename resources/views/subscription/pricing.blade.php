@@ -70,14 +70,55 @@
 @endpush
 
 @section('content')
-    <div class="container">
+
+    <script>
+
+        function validate_coupon(coupon_code){
+            $.ajax({
+                url:"pricing/coupon",
+                type: "post",
+                dataType: 'json',
+                data: { coupon_code: coupon_code },
+                success: function( result ){
+                    console.log('success')
+                    console.log(result)
+                },
+                error: function ( log )
+                {
+                    swal({
+                        icon: "error",
+                        title: "Error!",
+                        text: "Invalid coupon key!",
+                        button: true
+                    })
+                }
+            });
+        }
+
+        $(document).ready(function(){
+
+            const coupon_button = document.getElementById('coupon_button');
+
+            coupon_button.addEventListener('click', function(){
+
+                var coupon_text = $('#coupon_input').val();
+
+                validate_coupon(coupon_text)
+
+            });
+
+        })
+
+    </script>
+
+    <div class="container pt-4">
         <h1 class="center-text">Subscribe to Fantasy Calendar</h1>
 
         <div class="row">
-            <div class="col-12 center-text py-4">
+            <div class="col-12 center-text py-2">
                 <span>Monthly</span>
                 <label class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input static_input" id="#interval_selection" onclick="$('.subscription-option').toggleClass('yearly');">
+                    <input type="checkbox" class="custom-control-input" id="#interval_selection" onclick="$('.subscription-option').toggleClass('yearly');">
                     <span class="custom-control-indicator"></span>
                 </label>
                 <span>Yearly</span>
@@ -182,6 +223,18 @@
                         @endif
                     @endguest
                 </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="container align-items-center d-flex flex-column pt-4 pb-6 w-100">
+        <div class="row">
+            <div class="col-6 p-0 pr-1">
+                <input type="text" placeholder="Coupon Code" class='form-control' id="coupon_input">
+            </div>
+            <div class="col-6 p-0 pl-1">
+                <button type="button" class='btn btn-secondary w-100' id='coupon_button'>Apply coupon</button>
             </div>
         </div>
     </div>
