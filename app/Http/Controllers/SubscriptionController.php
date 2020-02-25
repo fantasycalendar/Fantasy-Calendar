@@ -23,7 +23,9 @@ class SubscriptionController extends Controller
         }
 
         return view('subscription.pricing', [
-            'subscribed' => $subscribed
+            'subscribed' => $subscribed,
+            'earlySupporter' => Auth::user()->isEarlySupporter(),
+            'betaAccess' => Auth::user()->betaAccess(),
         ]);
     }
 
@@ -37,14 +39,6 @@ class SubscriptionController extends Controller
         return view('subscription.index', [
             'subscriptions' => $subscriptions
         ]);
-    }
-
-    public function coupon(Request $request) {
-
-        $coupon_code = $request->input("coupon_code");
-
-        return ["success" => false, "message" => "Invalid coupon."];
-
     }
 
     public function subscribe($level, $interval) {
@@ -69,6 +63,8 @@ class SubscriptionController extends Controller
         $user = Auth::user();
 
         try {
+
+            # If the users was registered before a certain point, apply the 25% off 
             
             $user->newSubscription($level, $plan)->create($request->input('token'));
 

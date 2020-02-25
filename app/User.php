@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Cashier\Billable;
+use Carbon\Carbon;
 use Arr;
 
 class User extends Authenticatable implements
@@ -58,6 +59,10 @@ class User extends Authenticatable implements
 
     public function isVerified() {
         return !is_null($this->email_verified_at);
+    }
+
+    public function isEarlySupporter() {
+        return $this->email_verified_at <= (new Carbon('2020-03-25'));
     }
 
     public function betaAccess() {
