@@ -43,19 +43,8 @@ class SubscriptionController extends Controller
 
         $coupon_code = $request->input("coupon_code");
 
-        \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
-        $coupons = \Stripe\Coupon::all();
-        foreach($coupons->data as $coupon){
-            if($coupon->id == $coupon_code){
-                if($coupon->valid){
-                    return ["success" => true, "percent_off" => $coupon->percent_off, "amount_off" => $coupon->amount_off];
-                }else{
-                    return ["success" => false, "message" => "Coupon has expired."];
-                }
-            }
-        }
-
         return ["success" => false, "message" => "Invalid coupon."];
+
     }
 
     public function subscribe($level, $interval) {
