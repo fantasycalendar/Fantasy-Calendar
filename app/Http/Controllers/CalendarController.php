@@ -38,7 +38,7 @@ class CalendarController extends Controller
 
         $changelog = Markdown::convertToHtml(Storage::disk('base')->get('public/changelog.md'));
 
-        return view('home', [
+        return view('calendar.list', [
             'title' => "Fantasy Calendar",
             'calendars' => $calendars,
             'changelog' => $changelog

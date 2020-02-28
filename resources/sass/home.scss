@@ -24,43 +24,52 @@
 }
 
 .calendar_action {
-    display: inline-block;
-    margin: .4rem 0;
-
-    @media screen and (min-width: 900px) {
-        margin: 1rem 0;
-    }
-
     i {
-        width: 3.25rem;
-        height: 3.25rem;
-        line-height: 3.25rem;
-        font-size: 1.8rem;
-        margin: 0 5px;
         opacity: 0.70;
-        background-color: $action-bg-color;
-        border-radius: 50%;
-        color: $action-icon-color;
-        vertical-align: middle;
-        text-align: center;
-
-        @media screen and (min-width: 900px) {
-            width: 2rem;
-            height: 2rem;
-            line-height: 2rem;
-            font-size: 1.2rem;
-        }
     }
 
-    &:hover {
+    &.btn:hover {
         text-decoration: none;
+        color: white;
+        background-color: $accent-color;
+        opacity: 1;
+    }
 
-        i {
-            color: black;
+    &.dropdown-toggle:after {
+        content: "\f142";
+        font-family: "Font Awesome 5 Free";
+        margin: 0;
+        border: 0;
+        padding: 0 0.3rem;
+        vertical-align: initial;
+    }
+
+    .dropdown-item {
+        &.action-delete {
+            color: $red;
+
+            &:hover {
+                background-color: $red;
+                color: white;
+            }
+        }
+
+        &:hover {
+            background-color: #ececec;
         }
     }
 }
 
 .calendar__list {
     padding-top: 3rem;
+}
+
+.calendar-name {
+    color: $accent-color;
+    font-weight: bold;
+
+    small {
+        color: black;
+        font-weight: normal;
+    }
 }
