@@ -34,13 +34,18 @@ class CalendarController extends Controller
      */
     public function index()
     {
-        $calendars = (Auth::user()->permissions == 1) ? Calendar::active()->with('user')->get() : Auth::user()->calendars;
+        $calendars = (Auth::user()->permissions == 1) ? Calendar::active()->with('user') : Calendar::active()->where('user_id', Auth::user()->id);
+
+        $calendarSimplePagination = $calendars->simplePaginate(10);
+        $calendars = $calendars->paginate(10);
+
 
         $changelog = Markdown::convertToHtml(Storage::disk('base')->get('public/changelog.md'));
 
         return view('calendar.list', [
             'title' => "Fantasy Calendar",
             'calendars' => $calendars,
+            'calendar_pagination' => $calendarSimplePagination,
             'changelog' => $changelog
         ]);
     }

@@ -65,11 +65,24 @@
 }
 
 .calendar-name {
-    color: $accent-color;
+    color: $accent-color-light;
     font-weight: bold;
 
     small {
-        color: black;
+        color: $wiki-link-hover-color;
         font-weight: normal;
     }
+}
+
+.page-link {
+    color: $accent-color;
+}
+
+.page-item.active .page-link {
+    background-color: $accent-color;
+    border-color: $accent-color;
+}
+
+a:hover {
+    text-decoration: none;
 }
