@@ -28,11 +28,6 @@
             margin: 72px 0;
         }
 
-        section.promos .inner {
-            background-color: #e7e7e7;
-            padding: 10px 14px;
-        }
-
         section.promos i {
             font-size: 32px;
         }
