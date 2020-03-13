@@ -19,12 +19,9 @@
         "laravel/tinker": "^2.2.0",
         "laravel/ui": "^2.0",
         "league/fractal": "^0.18.0",
-        "mews/purifier": "dev-patch-1",
+        "mews/purifier": "3.2.0",
         "nesbot/carbon": "^2.31"
     },
-    "repositories": [
-        {"type":  "git", "url":  "https://github.com/EtoileFilante/Purifier"}
-    ],
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.2",
         "facade/ignition": "^2.0",
