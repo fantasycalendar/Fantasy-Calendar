@@ -30,9 +30,17 @@ var calendar_builder = {
 
 				var moon_position_data = ((epoch - moon.shift) / moon.cycle);
 				var moon_position = (moon_position_data - Math.floor(moon_position_data));
-				var phase = Math.round(moon_position*moon.granularity)%moon.granularity;
 
-				var phase_epoch = Math.round(Math.abs(moon_position_data)+1);
+				if(moon.cycle_rounding == "floor"){
+					var phase = Math.floor(moon_position*moon.granularity)%moon.granularity;
+					var phase_epoch = Math.floor(Math.abs(moon_position_data)+1);
+				}else if(moon.cycle_rounding == "round" || moon.cycle_rounding === undefined){
+					var phase = Math.round(moon_position*moon.granularity)%moon.granularity;
+					var phase_epoch = Math.round(Math.abs(moon_position_data)+1);
+				}if(moon.cycle_rounding == "ceil"){
+					var phase = Math.ceil(moon_position*moon.granularity)%moon.granularity;
+					var phase_epoch = Math.ceil(Math.abs(moon_position_data)+1);
+				}
 
 			}
 
