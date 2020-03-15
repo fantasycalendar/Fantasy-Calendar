@@ -1515,8 +1515,6 @@ var calendar_builder = {
 				}
 			}
 
-			year_day = 1;
-
 			if(year_index !== convert_year(this.static_data, this.dynamic_data.year)){
 				era_year++;
 				year_day = 1;
