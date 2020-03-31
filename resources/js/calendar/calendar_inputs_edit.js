@@ -565,19 +565,39 @@ function set_up_edit_inputs(){
 	$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 && !static_data.clock.enabled);
 
 	$('#create_season_events').click(function(){
+
+		
+
+		var html  = '<strong><span style="color:#4D61B3;">Simple</span></strong> season events are based on the <strong>specific start dates</strong> of the seasons.<br><br>';
+
+		html     += '<strong><span style="color:#84B356;">Complex</span></strong> season events are based on the <strong>longest and shortest day</strong> of the year.<br>';
+		if(!static_data.clock.enabled){
+			html += '<span style="font-style:italic;font-size:0.8rem;">You need to enable the clock for this to be available.</span><br>';
+		}
+		html     += '<br>';
+		html     += '<span style="font-size:0.9rem;">Still unsure? <a href="https://wiki.fantasy-calendar.com/index.php?title=Seasons#Create_solstice_and_equinox_events" target="_blank">Read more on the Wiki (opens in a new window)</a>.</span><br>';
+
 		swal.fire({
-			title: "Are you sure?",
-			text: 'Are you sure you want to create seasonal events? If you already have created them, you might get doubling.',
+			title: `Simple or Complex?`,
+			html: html,
+			showCloseButton: true,
 			showCancelButton: true,
-			confirmButtonColor: '#3085d6',
-			cancelButtonColor: '#d33',
-			confirmButtonText: 'Okay',
-			icon: "info",
+			confirmButtonColor: '#4D61B3',
+			cancelButtonColor: '#84B356',
+			confirmButtonText: 'Simple',
+			cancelButtonText: 'Complex',
+			icon: "question",
+			onOpen: function(){
+				$(swal.getCancelButton()).prop("disabled", !static_data.clock.enabled);
+			}
 		})
 		.then((result) => {
-			if(!result.dismiss) {
 
-				var events = create_season_events();
+			if(result.dismiss !== "close") {
+
+				var complex = result.dismiss === "cancel";
+
+				var events = create_season_events(complex);
 
 				for(index in events){
 					static_data.event_data.events.push(events[index])

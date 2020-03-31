@@ -258,7 +258,6 @@ class Climate{
 
 		this.season.local_seasons.reverse();
 
-
 		var year = convert_year(this.static_data, this.dynamic_data.year);
 
 		var index = 0;
@@ -309,6 +308,21 @@ class Climate{
 
 		this.season.current_index = this.season.current_season.index;
 		this.season.next_index = this.season.next_season.index;
+
+		var current_epoch = evaluate_calendar_start(this.static_data, convert_year(this.static_data, this.dynamic_data.year), this.dynamic_data.timespan).epoch
+
+		while(this.season.next_season.epoch < current_epoch){
+
+			this.season.local_current_index++;
+			this.season.local_next_index++;
+
+			this.season.current_season = this.season.local_seasons[this.season.local_current_index];
+			this.season.next_season = this.season.local_seasons[this.season.local_next_index];
+
+			this.season.current_index = this.season.current_season.index;
+			this.season.next_index = this.season.next_season.index;
+
+		}
 
 	}
 
