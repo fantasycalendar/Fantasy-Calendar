@@ -572,7 +572,7 @@ function set_up_edit_inputs(){
 
 		html     += '<strong><span style="color:#84B356;">Complex</span></strong> season events are based on the <strong>longest and shortest day</strong> of the year.<br>';
 		if(!static_data.clock.enabled){
-			html += '<span style="font-style:italic;font-size:0.8rem;">You need to enable the clock for this to be available.</span><br>';
+			html += '<span style="font-style:italic;font-size:0.8rem;">You need to <strong>enable the clock</strong> for this button to be enabled.</span><br>';
 		}
 		html     += '<br>';
 		html     += '<span style="font-size:0.9rem;">Still unsure? <a href="https://wiki.fantasy-calendar.com/index.php?title=Seasons#Create_solstice_and_equinox_events" target="_blank">Read more on the Wiki (opens in a new window)</a>.</span><br>';
@@ -583,7 +583,7 @@ function set_up_edit_inputs(){
 			showCloseButton: true,
 			showCancelButton: true,
 			confirmButtonColor: '#4D61B3',
-			cancelButtonColor: '#84B356',
+			cancelButtonColor: static_data.clock.enabled ? '#84B356' : '#999999',
 			confirmButtonText: 'Simple',
 			cancelButtonText: 'Complex',
 			icon: "question",
