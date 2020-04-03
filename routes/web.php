@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::get('/', 'HomeController@home')->name('home');
+Route::view('/', 'welcome')->name('home');
 Route::get('/donate', function(){
     return view('pages.donate', [
         'title'=>'Support the site'

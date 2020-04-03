@@ -406,6 +406,7 @@ function set_up_edit_inputs(){
 		stats = {
 			'name': name_val,
 			'cycle': cycle_val,
+			'cycle_rounding': "round",
 			'shift': shift_val,
 			'granularity': granularity,
 			'color': '#ffffff',
@@ -578,19 +579,39 @@ function set_up_edit_inputs(){
 	$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 && !static_data.clock.enabled);
 
 	$('#create_season_events').click(function(){
+
+		
+
+		var html  = '<strong><span style="color:#4D61B3;">Simple</span></strong> season events are based on the <strong>specific start dates</strong> of the seasons.<br><br>';
+
+		html     += '<strong><span style="color:#84B356;">Complex</span></strong> season events are based on the <strong>longest and shortest day</strong> of the year.<br>';
+		if(!static_data.clock.enabled){
+			html += '<span style="font-style:italic;font-size:0.8rem;">You need to <strong>enable the clock</strong> for this button to be enabled.</span><br>';
+		}
+		html     += '<br>';
+		html     += '<span style="font-size:0.9rem;">Still unsure? <a href="https://wiki.fantasy-calendar.com/index.php?title=Seasons#Create_solstice_and_equinox_events" target="_blank">Read more on the Wiki (opens in a new window)</a>.</span><br>';
+
 		swal.fire({
-			title: "Are you sure?",
-			text: 'Are you sure you want to create seasonal events? If you already have created them, you might get doubling.',
+			title: `Simple or Complex?`,
+			html: html,
+			showCloseButton: true,
 			showCancelButton: true,
-			confirmButtonColor: '#3085d6',
-			cancelButtonColor: '#d33',
-			confirmButtonText: 'Okay',
-			icon: "info",
+			confirmButtonColor: '#4D61B3',
+			cancelButtonColor: static_data.clock.enabled ? '#84B356' : '#999999',
+			confirmButtonText: 'Simple',
+			cancelButtonText: 'Complex',
+			icon: "question",
+			onOpen: function(){
+				$(swal.getCancelButton()).prop("disabled", !static_data.clock.enabled);
+			}
 		})
 		.then((result) => {
-			if(!result.dismiss) {
 
-				var events = create_season_events();
+			if(result.dismiss !== "close") {
+
+				var complex = result.dismiss === "cancel";
+
+				var events = create_season_events(complex);
 
 				for(index in events){
 					static_data.event_data.events.push(events[index])
@@ -2613,6 +2634,16 @@ function add_moon_to_list(parent, key, data){
 					element.push("<div class='col-5 pl-1'>");
 						element.push(`<input type='number' step="any" class='form-control dynamic_input shift protip' data-pt-position="top" data-pt-title='This is how many days the cycle is offset by.' data='moons.${key}' fc-index='shift' value='${!data.custom_phase ? data.shift : ''}' />`);
 					element.push("</div>");
+
+				element.push("</div>");
+
+				element.push(`<div class='row no-gutters mb-1'>`);
+
+					element.push(`<select class='form-control dynamic_input protip' data-pt-position="top" data-pt-title='This determines the way this moon calculates its phases, as in which way it rounds the phase value to the closest sprite.' data='moons.${key}' fc-index='cycle_rounding'>`);
+						element.push(`<option ${data.cycle_rounding == "floor" ? "selected" : ""} value='floor'>Floor (0.7 becomes 0.0)</option>`);
+						element.push(`<option ${data.cycle_rounding == "round" || data.cycle_rounding === undefined ? "selected" : ""} value='round'>Round (< 0.49 becomes 0.0, 0.5 > becomes 1.0)</option>`);
+						element.push(`<option ${data.cycle_rounding == "ceil" ? "selected" : ""} value='ceil'>Ceiling (0.3 becomes 1.0)</option>`);
+					element.push("</select>");
 
 				element.push("</div>");
 

@@ -121,6 +121,17 @@ body{
     }
 }
 
+body.page-calendars-index {
+    .navbar .nav-item.my-calendars {
+        font-weight: bold;
+        color: white;
+
+         a {
+             color: white;
+         }
+    }
+}
+
 
 /*************/
 /** General **/
