@@ -1,5 +1,7 @@
 function set_up_edit_inputs(){
 
+	changes_applied = true;
+
 	prev_calendar_name = clone(calendar_name);
 	prev_dynamic_data = clone(dynamic_data);
 	prev_static_data = clone(static_data);
@@ -101,7 +103,13 @@ function set_up_edit_inputs(){
 		switch(view_type){
 			case "owner":
 				if(previous_view_type !== 'owner'){
-					do_error_check();
+					if(!preview_date.follow){
+						update_preview_calendar();
+						pre_rebuild_calendar('preview', preview_date);
+					}else{
+						pre_rebuild_calendar('calendar', dynamic_data);
+						preview_date_follow();
+					}
 				}
 				calendar_container.removeClass('hidden');
 				weather_contrainer.addClass('hidden');
@@ -111,7 +119,13 @@ function set_up_edit_inputs(){
 			case "player":
 				owner = 0;
 				if(previous_view_type !== 'player'){
-					do_error_check();
+					if(!preview_date.follow){
+						update_preview_calendar();
+						pre_rebuild_calendar('preview', preview_date);
+					}else{
+						pre_rebuild_calendar('calendar', dynamic_data);
+						preview_date_follow();
+					}
 				}
 				calendar_container.removeClass('hidden');
 				weather_contrainer.addClass('hidden');
@@ -218,7 +232,7 @@ function set_up_edit_inputs(){
 
 	$('#calendar_name').change(function(){
 		calendar_name = $(this).val();
-		evaluate_save_button();
+		do_error_check();
 	});
 
 	$(document).on('change', '.length-input, .interval, .offset', function(){
@@ -1934,7 +1948,8 @@ function set_up_edit_inputs(){
 	});
 
 	$(document).on('change', '.timespan_length', function(){
-		repopulate_day_select($('.timespan-day-list'));
+		var index = $(this).closest('.sortable-container').attr('index')|0;
+		repopulate_day_select($(`.timespan-day-list`), undefined, undefined, undefined, undefined, index);
 	});
 
 	$('#enable_weather').change(function(){
@@ -2039,6 +2054,61 @@ function set_up_edit_inputs(){
 		update_hashes(target_hash);
 		$('#link_calendar').prop('disabled', true);
 	});
+
+	$('#apply_changes_btn').click(function(){
+
+		var errors = get_errors();
+
+		if(errors.length == 0 && $('.invalid').length == 0){
+
+			changes_applied = true;
+
+			if(!preview_date.follow){
+
+				update_preview_calendar();
+
+				pre_rebuild_calendar('preview', preview_date);
+
+			}else{
+
+				pre_rebuild_calendar('calendar', dynamic_data);
+
+				preview_date_follow();
+
+			}
+
+		}
+
+	});
+
+	$('#apply_changes_immediately').change(function(){
+
+		var checked = $(this).is(':checked');
+
+		if(checked){
+
+			changes_applied = false;
+
+			hide_changes_button();
+			evaluate_save_button(true);
+
+			if(!preview_date.follow){
+
+				update_preview_calendar();
+
+				rebuild_calendar('preview', preview_date);
+
+			}else{
+
+				rebuild_calendar('calendar', dynamic_data);
+
+				preview_date_follow();
+
+			}
+
+		}
+
+	})
 
 	input_container.change(function(e){
 
@@ -2207,11 +2277,6 @@ function set_up_edit_inputs(){
 	});
 }
 
-var do_error_check = debounce(function(type, rebuild){
-	error_check(type, rebuild);
-	recalc_stats();
-}, 150);
-
 function add_weekday_to_sortable(parent, key, name){
 
 	var element = [];
@@ -2369,7 +2434,7 @@ function add_leap_day_to_list(parent, key, data){
 
 	var element = [];
 
-	element.push(`<div class='sortable-container ${(data.intercalary ? 'intercalary leap-day' : 'leap-day')} collapsed' index='${key}'>`);
+	element.push(`<div class='sortable-container list-group-item ${(data.intercalary ? 'intercalary leap-day' : 'leap-day')} collapsed' index='${key}'>`);
 		element.push("<div class='main-container'>");
 			element.push("<div class='expand icon-collapse'></div>");
 			element.push("<div class='name-container'>");
@@ -2523,7 +2588,7 @@ function add_moon_to_list(parent, key, data){
 
 	var element = [];
 
-	element.push(`<div class='sortable-container moon_inputs expanded' index='${key}'>`);
+	element.push(`<div class='sortable-container list-group-item moon_inputs expanded' index='${key}'>`);
 		element.push("<div class='main-container'>");
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' class='form-control name-input small-input dynamic_input' data='moons.${key}' fc-index='name' tabindex='${(300+key)}'/>`);
@@ -2658,7 +2723,7 @@ function add_moon_to_list(parent, key, data){
 
 function add_season_to_sortable(parent, key, data){
 	var element = [];
-	element.push(`<div class='sortable-container season collapsed' index='${key}'>`);
+	element.push(`<div class='sortable-container list-group-item season collapsed' index='${key}'>`);
 		element.push("<div class='main-container'>");
 			if(static_data.seasons.global_settings.periodic_seasons){
 				element.push("<div class='handle icon-reorder'></div>");
@@ -2776,7 +2841,7 @@ function add_location_to_list(parent, key, data){
 
 	var element = [];
 
-	element.push(`<div class='sortable-container location collapsed' index='${key}'>`);
+	element.push(`<div class='sortable-container list-group-item location collapsed' index='${key}'>`);
 		element.push("<div class='main-container'>");
 			element.push("<div class='expand icon-collapse'></div>");
 			element.push("<div class='name-container'>");
@@ -3028,7 +3093,7 @@ function add_cycle_to_sortable(parent, key, data){
 
 	var element = [];
 
-	element.push(`<div class='sortable-container cycle_inputs collapsed' index='${key}'>`);
+	element.push(`<div class='sortable-container list-group-item cycle_inputs collapsed' index='${key}'>`);
 		element.push("<div class='main-container'>");
 			element.push("<div class='handle icon-reorder'></div>");
 			element.push("<div class='expand icon-collapse'></div>");
@@ -3117,7 +3182,7 @@ function add_era_to_list(parent, key, data){
 
 	var element = [];
 
-	element.push(`<div class='sortable-container era_inputs collapsed' index='${key}'>`);
+	element.push(`<div class='sortable-container list-group-item era_inputs collapsed' index='${key}'>`);
 		element.push("<div class='main-container'>");
 			element.push("<div class='expand icon-collapse'></div>");
 			element.push("<div class='name-container'>");
@@ -3457,7 +3522,7 @@ function add_link_to_list(parent, key, calendar_name){
 
 	var element = [];
 
-	element.push(`<div class='sortable-container events_input' index='${key}'>`);
+	element.push(`<div class='sortable-container list-group-item events_input' index='${key}'>`);
 		element.push("<div class='main-container'>");
 			element.push(`<div>${calendar_name}</div>`);
 			element.push('<div class="remove-spacer"></div>');
@@ -3538,50 +3603,28 @@ function get_errors(){
 
 	}
 
+	if(calendar_name == ""){
+
+		errors.push(`Your calendar must have a name.`)
+
+	}
+
 	return errors;
 
 }
 
-function error_check(parent, rebuild){
-
-	if(wizard) return;
-
-	var errors = get_errors();
+var do_error_check = debounce(function(type, rebuild){
 
 	evaluate_save_button();
+
+	var errors = get_errors();
 
 	if(errors.length == 0 && $('.invalid').length == 0){
 
 		close_error_message();
 
-		if(parent === "eras"){
-			recalculate_era_epochs();
-		}
-		if(rebuild === undefined || rebuild){
-
-			if(!preview_date.follow){
-
-				update_preview_calendar();
-
-				rebuild_calendar('preview', preview_date);
-
-			}else{
-
-				rebuild_calendar('calendar', dynamic_data);
-
-				preview_date_follow();
-
-			}
-
-		}else{
-
-			if(parent !== undefined && (parent === "seasons")){
-				rebuild_climate();
-			}else{
-				update_current_day(true);
-				evaluate_sun();
-			}
-		}
+		error_check(type, rebuild);
+		recalc_stats();
 
 	}else{
 
@@ -3602,6 +3645,43 @@ function error_check(parent, rebuild){
 
 		error_message(text.join(''));
 
+	}
+
+}, 150);
+
+function error_check(parent, rebuild){
+
+	if(wizard) return;
+
+	changes_applied = false;
+
+	if(parent === "eras"){
+		recalculate_era_epochs();
+	}
+	if(rebuild === undefined || rebuild){
+
+		if(!preview_date.follow){
+
+			update_preview_calendar();
+
+			pre_rebuild_calendar('preview', preview_date);
+
+		}else{
+
+			pre_rebuild_calendar('calendar', dynamic_data);
+
+			preview_date_follow();
+
+		}
+
+	}else{
+
+		if(parent !== undefined && (parent === "seasons")){
+			rebuild_climate();
+		}else{
+			update_current_day(true);
+			evaluate_sun();
+		}
 	}
 
 }
@@ -4368,7 +4448,7 @@ function calendar_save_failed(){
 
 }
 
-function evaluate_save_button(){
+function evaluate_save_button(override){
 
 	var errors = get_errors();
 
@@ -4390,7 +4470,21 @@ function evaluate_save_button(){
 
 			var text = not_changed ? "No changes to save" : "Save calendar";
 
-			save_button.prop('disabled', not_changed).toggleClass('btn-secondary', false).toggleClass('btn-success', not_changed).toggleClass('btn-primary', !not_changed).toggleClass('btn-warning', false).toggleClass('btn-danger', false).text(text);
+			var apply_changes_immediately = $('#apply_changes_immediately').is(':checked');
+
+			if(!apply_changes_immediately && !override){
+
+				var text = not_changed ? "No changes to save" : "Apply changes to save";
+				
+				save_button.prop('disabled', true);
+
+			}else{
+
+				save_button.prop('disabled', not_changed);
+
+			}
+
+			save_button.toggleClass('btn-secondary', false).toggleClass('btn-success', not_changed).toggleClass('btn-primary', !not_changed).toggleClass('btn-warning', false).toggleClass('btn-danger', false).text(text);
 
 		}
 
@@ -4400,9 +4494,23 @@ function evaluate_save_button(){
 
 		var text = invalid ? "Cannot create yet" : "Create calendar";
 
+		var apply_changes_immediately = $('#apply_changes_immediately').is(':checked');
+
+		if(!apply_changes_immediately && !override && !invalid){
+
+			var text = "Apply changes to create";
+			
+			create_button.prop('disabled', true);
+
+		}else{
+
+			create_button.prop('disabled', invalid);
+
+		}
+
 		autosave();
 
-		create_button.prop('disabled', invalid).toggleClass('btn-danger', invalid).toggleClass('btn-success', !invalid).text(text);
+		create_button.toggleClass('btn-danger', invalid).toggleClass('btn-success', !invalid).text(text);
 
 	}
 

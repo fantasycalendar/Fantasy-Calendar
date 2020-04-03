@@ -159,12 +159,29 @@ function set_up_view_inputs(){
 
 	current_hour.change(function(){
 		dynamic_data.hour = $(this).val()|0;
+
+		var apply_changes_immediately = $('#apply_changes_immediately').is(':checked');
+
+		if(!apply_changes_immediately){
+			evaluate_apply_show_hide();
+			return;
+		}
+		
 		eval_current_time();
 		evaluate_save_button();
+
 	});
 
 	current_minute.change(function(){
 		dynamic_data.minute = $(this).val()|0;
+
+		var apply_changes_immediately = $('#apply_changes_immediately').is(':checked');
+
+		if(!apply_changes_immediately){
+			evaluate_apply_show_hide();
+			return;
+		}
+
 		eval_current_time();
 		evaluate_save_button();
 	});
@@ -312,6 +329,10 @@ function evaluate_dynamic_change(){
 	dynamic_data.day		= data.day;
 	dynamic_data.epoch		= data.epoch;
 
+	var apply_changes_immediately = $('#apply_changes_immediately').is(':checked');
+
+	changes_applied = false;
+
 	if(preview_date.follow){
 
 		preview_date.year		= data.year;
@@ -319,8 +340,8 @@ function evaluate_dynamic_change(){
 		preview_date.day		= data.day;
 		preview_date.epoch		= data.epoch;
 
-		if(data.rebuild || (!owner && static_data.settings.only_reveal_today)){
-			rebuild_calendar('calendar', dynamic_data)
+		if(data.rebuild || (!owner && static_data.settings.only_reveal_today) || !apply_changes_immediately){
+			pre_rebuild_calendar('calendar', dynamic_data)
 		}else{
 			scroll_to_epoch();
 			update_current_day(false);
@@ -330,7 +351,11 @@ function evaluate_dynamic_change(){
 
 	}else{
 
-		update_current_day(false);
+		if(!apply_changes_immediately){
+			pre_rebuild_calendar('calendar', preview_date)
+		}else{
+			update_current_day(false);
+		}
 
 	}
 

@@ -45,7 +45,7 @@
 </div>
 
 @guest
-<div id="login-background" class="basic-background">
+<div id="login-background" class="basic-background blurred_background">
 	<div class="basic-container">
 		<div class="basic-wrapper">
 			<form id="login-form" class="basic-form" method="POST">

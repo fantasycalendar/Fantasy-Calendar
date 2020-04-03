@@ -8,7 +8,7 @@
 
 		@include('templates._header')
 		<div id="content">
-			<div id="loading_background" class='basic-background hidden'>
+			<div id="loading_background" class='basic-background blurred_background hidden'>
 				<img class='loading_spinner' src='{{ asset("resources/icons/loader_white.png") }}'>
 				<div id='loading_text' class='italics-text'>Random text</div>
 
