@@ -32,9 +32,11 @@ class CalendarController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $calendars = (Auth::user()->permissions == 1) ? Calendar::active()->with('user') : Calendar::active()->where('user_id', Auth::user()->id);
+        $calendars = Calendar::active()->search($request->input('search'));
+
+        $calendars = (Auth::user()->permissions == 1) ? $calendars->with('user') : $calendars->where('user_id', Auth::user()->id);
 
         $calendarSimplePagination = $calendars->simplePaginate(10);
         $calendars = $calendars->paginate(10);
@@ -46,7 +48,8 @@ class CalendarController extends Controller
             'title' => "Fantasy Calendar",
             'calendars' => $calendars,
             'calendar_pagination' => $calendarSimplePagination,
-            'changelog' => $changelog
+            'changelog' => $changelog,
+            'search' => $request->input('search'),
         ]);
     }
 

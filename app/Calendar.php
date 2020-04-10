@@ -111,6 +111,10 @@ class Calendar extends Model
         return $this->dynamic_data['hour'] . ":" . $this->dynamic_data['minute'];
     }
 
+    public function scopeSearch($query, $search) {
+        return $query->where('name', 'like', "%$search%");
+    }
+
     public function scopeHash($query, $hash) {
         return $query->where('hash', $hash);
     }

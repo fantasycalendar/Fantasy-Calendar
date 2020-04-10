@@ -3,6 +3,10 @@
 @push('head')
     <script>
         $(document).ready(function() {
+            if($('.calendar-search-input').val().length == 0) {
+                $('.search-clear').addClass('d-none');
+            }
+
             $('.delete_button').click(function() {
                 let calendar_hash = $(this).attr('data-hash');
                 let calendar_name = $(this).attr('data-name');
@@ -15,7 +19,22 @@
                 let calendar_name = $(this).attr('data-name');
 
                 copy_calendar(calendar_hash, calendar_name, function() {location.reload();});
+            });
+
+            $('.calendar-search-input').keyup(function(){
+                $('.search-clear').toggleClass('d-none', $(this).val().length == 0);
             })
+
+            $('.search-clear').click(function() {
+                $('.calendar-search-input').val('');
+                $('.search-clear').addClass('d-none');
+
+                let searchParams = new URLSearchParams(window.location.search);
+            
+                if(searchParams.has('search') && searchParams.get('search').length > 0) {
+                    $('.calendar-search').submit();
+                }
+            });
         });
     </script>
 @endpush
@@ -23,9 +42,25 @@
 
 @section('content')
     <div class="container py-5">
-        <div class="d-flex flex-column flex-md-row justify-content-between"><h1>Calendars</h1><span class="d-none d-md-block">{{ $calendars->onEachSide(1)->links() }}</span><span class="d-block d-md-none">{{ $calendar_pagination->links() }}</span></div>
+    <h1>Calendars</h1>
+        <div class="d-flex flex-column flex-md-row justify-content-between">
+
+        <form action="{{ route('calendars.index') }}" class="calendar-search" method="get">
+            @csrf
+            <div class="form-group input-group">
+                <input type="text" class="form-control calendar-search-input" name="search" placeholder="Search..." @if($search) value="{{ $search }}" @endif>
+                <span class='search-clear'><i class="fa fa-times"></i></span>
+                <div class="input-group-append">
+                <button class="btn btn-outline-secondary">
+                    <i class="fa fa-search"></i>
+                </button>
+                </div>
+            </div>
+        </form>
+        
+        <span class="d-none d-md-block">{{ $calendars->onEachSide(1)->links() }}</span><span class="d-block d-md-none">{{ $calendar_pagination->links() }}</span></div>
         @foreach($calendars as $index => $calendar)
-            <div class="row border-top border-bottom py-3 calendar-entry list-group-item-action w-auto">
+            <div class="row border-top py-3 calendar-entry list-group-item-action w-auto">
                 <div class="col-6 col-md-4 col-lg-5">
                     <a href="{{ route('calendars.edit', ['calendar'=> $calendar->hash]) }}"><h4 class="calendar-name">{{ $calendar->name }} <br><small>{{ $calendar->user->username }}</small></h4></a>
                 </div>
@@ -42,13 +77,13 @@
                 </div>
                 <div class="col-6 col-md-4 col-lg-3 text-right">
                     <div class="btn-group">
-                        <a class='calendar_action btn btn-secondary action-edit protip' data-pt-delay-in="500" data-pt-title="Edit '{{ $calendar->name }}'" href='{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}'>
+                        <a class='calendar_action btn btn-outline-secondary action-edit protip' data-pt-delay-in="500" data-pt-title="Edit '{{ $calendar->name }}'" href='{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}'>
                             <i class="fa fa-edit"></i> <span class="d-none d-md-inline">Edit</span>
                         </a>
-                        <a class='calendar_action btn btn-secondary action-show protip' data-pt-delay-in="500" data-pt-title="View '{{ $calendar->name }}'" href='{{ route('calendars.show', ['calendar'=> $calendar->hash ]) }}'>
+                        <a class='calendar_action btn btn-outline-secondary action-show protip' data-pt-delay-in="500" data-pt-title="View '{{ $calendar->name }}'" href='{{ route('calendars.show', ['calendar'=> $calendar->hash ]) }}'>
                             <i class="fa fa-eye"></i> <span class="d-none d-md-inline">View</span>
                         </a>
-                        <button class="calendar_action btn btn-secondary dropdown-toggle dropdown-toggle-split" type="button" id="dropdownButton-{{ $calendar->hash }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                        <button class="calendar_action btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" type="button" id="dropdownButton-{{ $calendar->hash }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                         <div class="calendar_action dropdown-menu dropdown-menu-right" aria-labelledby="dropdownButton-{{ $calendar->hash }}">
                             <a class='dropdown-item action-edit protip d-md-none' data-pt-delay-in="500" data-pt-title="Edit '{{ $calendar->name }}'" href='{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}'>
                                 <i class="fa fa-edit"></i> Edit
@@ -71,7 +106,7 @@
                 </div>
             </div>
         @endforeach
-        <div class="d-flex justify-content-end pt-3"><span class="d-none d-md-block">{{ $calendars->onEachSide(1)->links() }}</span><span class="d-block d-md-none">{{ $calendar_pagination->links() }}</span></div>
+        <div class="row d-flex justify-content-end border-top pt-3"><span class="d-none d-md-block">{{ $calendars->onEachSide(1)->links() }}</span><span class="d-block d-md-none">{{ $calendar_pagination->links() }}</span></div>
         @isset($changelog)
             <h2 class="pt-5">Changelog</h2>
 

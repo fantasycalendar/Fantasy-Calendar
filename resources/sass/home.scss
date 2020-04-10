@@ -75,14 +75,32 @@
 }
 
 .page-link {
-    color: $accent-color;
+    color: $accent-color !important;
 }
 
 .page-item.active .page-link {
     background-color: $accent-color;
     border-color: $accent-color;
+    color: white !important;
 }
 
 a:hover {
     text-decoration: none;
+}
+
+.search-clear {
+    position: absolute;
+    right: 46px;
+    height: 100%;
+    width: 28px;
+    display: -webkit-box;
+    display: flex;
+    -webkit-box-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    align-items: center;
+    line-height: 42px;
+    color: #858585;
+    cursor: pointer;
+    z-index: 4;
 }
