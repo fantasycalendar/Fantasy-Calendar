@@ -22,6 +22,18 @@
 		</div>
 	</div>
 
+    <div class='wrap-collapsible'>
+        <div class="d-flex mb-2 w-100">
+            <label class="row no-gutters setting border rounded py-2 px-3 protip w-100" data-pt-position="right" data-pt-title="If unchecked, you will be prompted to apply changes after making them, instead of loading the calendar every time.">
+                <div class='col'>
+                    <input type='checkbox' class='margin-right' data='settings' id='apply_changes_immediately' checked>
+                    <span>
+                        Apply changes immediately
+                    </span>
+                </div>
+            </label>
+        </div>
+    </div>
 
 	<!---------------------------------------------->
 	<!----------------- STATISTICS ----------------->
@@ -1107,13 +1119,18 @@
 
 <div id="calendar_container">
 
-	<div id="errors_background">
+	<div id="errors_background" class='flexible_background blurred_background'>
 		<div id="errors">
 			<span id="error_text">
 				This is an alert box.
 			</span>
 		</div>
 	</div>
+
+    <div id="reload_background" class='flexible_background blurred_background d-flex flex-column justify-content-center hidden'>
+        <div class='p-2 text-white'>You have made changes to your calendar.</div>
+        <div class='p-2'><button type='button' class='btn btn-primary' id='apply_changes_btn'>Update preview</button></div>
+    </div>
 
 	<div id="top_follower">
 

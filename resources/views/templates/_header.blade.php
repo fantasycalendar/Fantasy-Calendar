@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-accent">
     <a class="navbar-brand" href="{{ route('home') }}">
-        <img class="navbar-logo mr-2" src="{{ asset('resources/calendar-logo-white.png') }}">
+        <img class="navbar-logo mr-2" src="{{ asset('resources/header_logo.png') }}">
         Fantasy Calendar
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsemenu" aria-controls="collapsemenu" aria-expanded="false" aria-label="Toggle navigation">
@@ -10,11 +10,11 @@
     <div class="collapse navbar-collapse" id="collapsemenu">
         <ul class="navbar-nav mr-auto">
             @auth
-                <li class="nav-item active">
+                <li class="nav-item my-calendars">
                     <a class="nav-link" href="{{ route('calendars.index') }}">My Calendars</a>
                 </li>
             @endauth
-            <li class="nav-item">
+            <li class="nav-item new-calendar">
                 <a class="nav-link" href="{{ route('calendars.create') }}">New Calendar</a>
             </li>
         </ul>
@@ -45,7 +45,7 @@
 </div>
 
 @guest
-<div id="login-background" class="basic-background">
+<div id="login-background" class="basic-background blurred_background">
 	<div class="basic-container">
 		<div class="basic-wrapper">
 			<form id="login-form" class="basic-form" method="POST">

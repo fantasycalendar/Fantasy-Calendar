@@ -104,3 +104,8 @@ a:hover {
     cursor: pointer;
     z-index: 4;
 }
+
+section.promos .inner {
+    background-color: $gray-secondary;
+    padding: 10px 14px;
+}

@@ -28,11 +28,6 @@
             margin: 72px 0;
         }
 
-        section.promos .inner {
-            background-color: #e7e7e7;
-            padding: 10px 14px;
-        }
-
         section.promos i {
             font-size: 32px;
         }
@@ -115,6 +110,12 @@
         section.footer * {
             opacity: 0.2;
         }
+
+        @media screen and (max-width: 768px) {
+            section.quoteblock .name {
+                right: 40px;
+            }
+        }
     </style>
 @endpush
 
@@ -138,30 +139,30 @@
         <div class="container">
             <div class="row">
                 <div class="col-12 col-md-3 py-3 py-md-0 px-2 ml-md-0 pl-md-0 pr-md-1">
-                    <div class="inner">
-                        <p class="text-center pt-2"><i class="fa fa-check-circle"></i></p>
-                        <h3 class="text-center">Easy to Use</h3>
+                    <div class="inner text-center">
+                        <p class="pt-2"><i class="fa fa-check-circle"></i></p>
+                        <h3>Easy to Use</h3>
                         <p class="small">The controls of Fantasy Calendar have been lovingly hand-crafted to <strong>make sense</strong>. With a detailed wiki to make up for the parts that don’t.</p>
                     </div>
                 </div>
                 <div class="col-12 col-md-3 py-3 py-md-0 px-2 px-md-1">
-                    <div class="inner">
-                        <p class="text-center pt-2"><i class="fa fa-mobile"></i></p>
-                        <h3 class="text-center">Mobile-Friendly</h3>
+                    <div class="inner text-center">
+                        <p class="pt-2"><i class="fa fa-mobile"></i></p>
+                        <h3>Mobile-Friendly</h3>
                         <p class="small">Because you never know when you might have a great idea for a calendar system, or want to track events in that pick-up D&D game at the games store.</p>
                     </div>
                 </div>
                 <div class="col-12 col-md-3 py-3 py-md-0 px-2 px-md-1">
-                    <div class="inner">
-                        <p class="text-center pt-2"><i class="fa fa-rocket"></i></p>
-                        <h3 class="text-center">Light &amp; Responsive</h3>
+                    <div class="inner text-center">
+                        <p class="pt-2"><i class="fa fa-rocket"></i></p>
+                        <h3>Light &amp; Responsive</h3>
                         <p class="small">Your fantasy world’s calendar should help you keep time, not waste yours. Keep game time even on low-end computers, netbooks, or chromebooks.</p>
                     </div>
                 </div>
                 <div class="col-12 col-md-3 py-3 py-md-0 px-2 mr-md-0 pr-md-0 pl-md-1">
-                    <div class="inner">
-                        <p class="text-center pt-2"><i class="fa fa-calendar-day"></i></p>
-                        <h3 class="text-center lower-height">Powerful Calendar Engine</h3>
+                    <div class="inner text-center">
+                        <p class="pt-2"><i class="fa fa-calendar-day"></i></p>
+                        <h3 class="lower-height">Powerful Calendar Engine</h3>
                         <p class="small">Intercalaries! Leap days! Moons! Seasons! Cycles! Eras!<br>
                             If those words mean anything to you, welcome to your home for keeping track of it all.</p>
                     </div>

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -40,5 +41,16 @@ class CalendarEvent extends Model
 
     public function getDescriptionAttribute($value) {
         return html_entity_decode($value);
+    }
+
+    /**
+     * Prepare a date for array / JSON serialization
+     *
+     * @param \DateTimeInterface $date
+     * @return string
+     */
+    protected function serializeDate(\DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d H:i:s');
     }
 }

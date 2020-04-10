@@ -74,6 +74,24 @@ var evaluate_era_position = debounce(function(){
 	eras.evaluate_position();
 }, 50);
 
+function pre_rebuild_calendar(action, dynamic_data){
+
+	var apply_changes_immediately = $('#apply_changes_immediately').is(':checked');
+
+	if(!apply_changes_immediately){
+		if(!changes_applied){
+			evaluate_save_button();
+			show_changes_button();
+			return;
+		}else{
+			hide_changes_button();
+			evaluate_save_button(true);
+		}
+	}
+
+	rebuild_calendar(action, dynamic_data);
+
+}
 
 var evaluated_static_data = {};
 
