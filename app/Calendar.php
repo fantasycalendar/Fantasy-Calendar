@@ -83,6 +83,38 @@ class Calendar extends Model
         return "false";
     }
 
+    public function getClockEnabledAttribute() {
+        return isset($this->static_data['clock']['enabled']) && isset($this->dynamic_data['hour']) && isset($this->dynamic_data['minute']) && $this->static_data['clock']['enabled'];
+    }
+
+    public function current_date() {
+        if(count($this->static_data['year_data']['timespans']) < 1) {
+            return "N/A";
+        }
+
+        $month_id = $this->dynamic_data['timespan'] ?? $this->dynamic_data['month'] ?? 0;
+
+
+        $year = $this->dynamic_data['year'];
+        $month = $this->static_data['year_data']['timespans'][$month_id]['name'];
+        $day = $this->dynamic_data['day'];
+
+
+        return sprintf("%s %s, %s", $day, $month, $year);
+    }
+
+    public function current_time() {
+        if(!$this->static_data['clock']['enabled']) {
+            return "N/A";
+        }
+
+        return $this->dynamic_data['hour'] . ":" . $this->dynamic_data['minute'];
+    }
+
+    public function scopeSearch($query, $search) {
+        return $query->where('name', 'like', "%$search%");
+    }
+
     public function scopeHash($query, $hash) {
         return $query->where('hash', $hash);
     }
