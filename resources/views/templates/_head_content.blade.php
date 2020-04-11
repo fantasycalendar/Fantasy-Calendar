@@ -78,7 +78,8 @@
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-            'Authorization': 'Bearer '+$('meta[name="api-token"]').attr('content')
+            'Authorization': 'Bearer '+$('meta[name="api-token"]').attr('content'),
+            'Accept': 'application/json'
         }
     });
 
