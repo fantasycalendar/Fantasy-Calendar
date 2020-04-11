@@ -20,6 +20,8 @@ services:
     build:
       context: .
       dockerfile: setup/nginx/nginx.Dockerfile
+    ports:
+      - "9981:8080"
     user: "1000:1000"
     volumes:
       - ./:/fantasy-calendar
