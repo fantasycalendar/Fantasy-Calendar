@@ -226,11 +226,13 @@ function remove_hashes(child_hash){
 
 function submit_new_event(event){
 
+    event._method = 'POST';
+
 	$.ajax({
 		url:window.apiurl+"/event",
 		type: "post",
 		dataType: 'json',
-		data: {_method: 'POST', event: event},
+		data: event,
 		success: function( result ){
 			console.log(result)
 		},
@@ -244,11 +246,13 @@ function submit_new_event(event){
 
 function submit_edit_event(event){
 
+    event._method = 'PATCH';
+
 	$.ajax({
 		url:window.apiurl+"/event/"+event.id,
 		type: "post",
 		dataType: 'json',
-		data: {_method: 'PATCH', event: event},
+		data: event,
 		success: function( result ){
 			console.log(result)
 		},
@@ -266,7 +270,7 @@ function submit_delete_event(event){
 		url:window.apiurl+"/event/"+event.id,
 		type: "post",
 		dataType: 'json',
-		data: {_method: 'DELETE', event: event},
+		data: {_method: 'DELETE'},
 		success: function( result ){
 			console.log(result)
 		},
