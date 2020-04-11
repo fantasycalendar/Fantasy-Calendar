@@ -133,13 +133,15 @@ var edit_event_ui = {
 			$(this).data('val', $(this).val());
 		});
 
+
+
 		this.condition_presets.change(function(e){
 
 			var prev = $(this).data('val');
 
 			var selected = edit_event_ui.condition_presets.find(':selected');
 
-			if(selected.val() == prev){
+			if(selected.val() == prev && e.originalEvent){
 				return;
 			}
 
@@ -189,34 +191,21 @@ var edit_event_ui = {
 
 					});
 
-				}else{
-
-
-					var preset = edit_event_ui.condition_presets.val();
-					var repeats = edit_event_ui.repeat_input.val()|0;
-
-					edit_event_ui.update_every_nth_presets();
-
-					edit_event_ui.event_conditions_container.empty();
-					edit_event_ui.add_preset_conditions(preset, repeats);
-
-					$(this).data('val', $(this).val());
+					return;
 
 				}
 
-			}else{
-
-				var preset = edit_event_ui.condition_presets.val();
-				var repeats = edit_event_ui.repeat_input.val()|0;
-
-				edit_event_ui.update_every_nth_presets();
-
-				edit_event_ui.event_conditions_container.empty();
-				edit_event_ui.add_preset_conditions(preset, repeats);
-
-				$(this).data('val', $(this).val());
-
 			}
+
+			var preset = edit_event_ui.condition_presets.val();
+			var repeats = edit_event_ui.repeat_input.val()|0;
+
+			edit_event_ui.update_every_nth_presets();
+
+			edit_event_ui.event_conditions_container.empty();
+			edit_event_ui.add_preset_conditions(preset, repeats);
+
+			$(this).data('val', $(this).val());
 
 		});
 
@@ -503,11 +492,19 @@ var edit_event_ui = {
 			hide_full: $('#event_hide_full').prop('checked'),
 			print: $('#event_print_checkbox').prop('checked')
 		}
-
-		if(this.new_event){
-			add_event_to_sortable(events_sortable, this.event_id, static_data.event_data.events[this.event_id]);
+		if($('#events_sortable').length){
+			if(this.new_event){
+				add_event_to_sortable(events_sortable, this.event_id, static_data.event_data.events[this.event_id]);
+			}else{
+				$(`.events_input[index="${this.event_id}"]`).find(".event_name").text(`Edit - ${name}`);
+			}
 		}else{
-			$(`.events_input[index="${this.event_id}"]`).find(".event_name").text(`Edit - ${name}`);
+			if(this.new_event){
+				submit_new_event(static_data.event_data.events[this.event_id]);
+			}else{
+				submit_edit_event(static_data.event_data.events[this.event_id]);
+			}
+
 		}
 
 		this.clear_ui();
@@ -725,7 +722,7 @@ var edit_event_ui = {
 
 	populate_condition_presets: function(){
 
-		this.repeat_input.val('1').parent().toggleClass('hidden', false);
+		this.repeat_input.val('1').parent().toggleClass('hidden', true);
 		this.condition_presets.children().eq(0).prop('selected', true);
 		this.condition_presets.parent().toggleClass('hidden', false);
 
@@ -772,12 +769,14 @@ var edit_event_ui = {
 			repeat_value = 'nth';
 		}
 
-		this.condition_presets.find('option[value="every_x_day"]').text(`Every ${ordinal_suffix_of(repeat_value)} day`);
-		this.condition_presets.find('option[value="every_x_weekday"]').text(`Every ${ordinal_suffix_of(repeat_value)} ${edit_event_ui.data.week_day_name}`);
-		this.condition_presets.find('option[value="every_x_monthly_date"]').text(`Every ${ordinal_suffix_of(repeat_value)} month on the ${ordinal_suffix_of(edit_event_ui.data.day)}`);
-		this.condition_presets.find('option[value="every_x_monthly_weekday"]').text(`Every ${ordinal_suffix_of(repeat_value)} month on the ${ordinal_suffix_of(edit_event_ui.data.month_week_num)} ${edit_event_ui.data.week_day_name}`);
-		this.condition_presets.find('option[value="every_x_annually_date"]').text(`Every ${ordinal_suffix_of(repeat_value)} year on the ${ordinal_suffix_of(edit_event_ui.data.day)} of ${edit_event_ui.data.timespan_name}`);
-		this.condition_presets.find('option[value="every_x_annually_weekday"]').text(`Every ${ordinal_suffix_of(repeat_value)} year on the ${ordinal_suffix_of(edit_event_ui.data.month_week_num)} ${edit_event_ui.data.week_day_name} in ${edit_event_ui.data.timespan_name}`);
+		var repeat_string = repeat_value != 1 ? `${ordinal_suffix_of(repeat_value)} ` : ""
+
+		this.condition_presets.find('option[value="every_x_day"]').text(`Every ${repeat_string}day`);
+		this.condition_presets.find('option[value="every_x_weekday"]').text(`Every ${repeat_string}${edit_event_ui.data.week_day_name}`);
+		this.condition_presets.find('option[value="every_x_monthly_date"]').text(`Every ${repeat_string}month on the ${ordinal_suffix_of(edit_event_ui.data.day)}`);
+		this.condition_presets.find('option[value="every_x_monthly_weekday"]').text(`Every ${repeat_string}month on the ${ordinal_suffix_of(edit_event_ui.data.month_week_num)} ${edit_event_ui.data.week_day_name}`);
+		this.condition_presets.find('option[value="every_x_annually_date"]').text(`Every ${repeat_string}year on the ${ordinal_suffix_of(edit_event_ui.data.day)} of ${edit_event_ui.data.timespan_name}`);
+		this.condition_presets.find('option[value="every_x_annually_weekday"]').text(`Every ${repeat_string}year on the ${ordinal_suffix_of(edit_event_ui.data.month_week_num)} ${edit_event_ui.data.week_day_name} in ${edit_event_ui.data.timespan_name}`);
 
 	},
 

@@ -224,12 +224,65 @@ function remove_hashes(child_hash){
 
 }
 
+function submit_new_event(event){
+
+	$.ajax({
+		url:window.apiurl+"/event/create",
+		type: "post",
+		dataType: 'json',
+		data: {_method: 'POST', event: event},
+		success: function( result ){
+			console.log(result)
+		},
+		error: function ( log )
+		{
+			console.log(log);
+		}
+	});
+
+}
+
+function submit_edit_event(event){
+
+	$.ajax({
+		url:window.apiurl+"/event/edit",
+		type: "post",
+		dataType: 'json',
+		data: {_method: 'PATCH', event: event},
+		success: function( result ){
+			console.log(result)
+		},
+		error: function ( log )
+		{
+			console.log(log);
+		}
+	});
+
+}
+
+function submit_delete_event(event){
+
+	$.ajax({
+		url:window.apiurl+"/event/edit",
+		type: "post",
+		dataType: 'json',
+		data: {_method: 'DELETE', event: event},
+		success: function( result ){
+			console.log(result)
+		},
+		error: function ( log )
+		{
+			console.log(log);
+		}
+	});
+
+}
 
 
 function get_all_master_data(output){
 
 	$.ajax({
-		url:window.apiurl+"/"+link_data.master_hash,
+		url:window.apiurl+"calendars/"+link_data.master_hash,
 		type: "get",
 		dataType: 'json',
 		data: {},
@@ -248,7 +301,7 @@ function get_all_master_data(output){
 
 function check_last_master_change(output){
 	$.ajax({
-		url:window.apiurl+"/"+link_data.master_hash+"/last_changed",
+		url:window.apiurl+"calendars/"+link_data.master_hash+"/last_changed",
 		type: "post",
 		dataType: 'json',
 		data: {},
@@ -265,7 +318,7 @@ function check_last_master_change(output){
 function get_all_data(output){
 
 	$.ajax({
-		url:window.apiurl+"/"+hash,
+		url:window.apiurl+"calendars/"+hash,
 		type: "get",
 		dataType: 'json',
 		data: {},
@@ -284,7 +337,7 @@ function get_all_data(output){
 function get_dynamic_data(output){
 
 	$.ajax({
-		url:window.apiurl+"/"+hash+"/dynamic_data",
+		url:window.apiurl+"calendars/"+hash+"/dynamic_data",
 		type: "get",
 		dataType: 'json',
 		data: {},
@@ -304,7 +357,7 @@ function get_dynamic_data(output){
 
 function get_owned_calendars(output){
 	$.ajax({
-		url:window.apiurl+"/"+hash+"/owned",
+		url:window.apiurl+"calendars/"+hash+"/owned",
 		type: "get",
 		dataType: 'json',
 		data: {},
@@ -322,7 +375,7 @@ function get_owned_calendars(output){
 function update_children_dynamic_data(){
 
 	$.ajax({
-		url:window.apiurl+"/"+hash+"/children",
+		url:window.apiurl+"calendars/"+hash+"/children",
 		type: "post",
 		dataType: 'json',
 		data: {hash: hash},
@@ -365,7 +418,7 @@ function update_children_dynamic_data(){
 
 function check_last_change(output){
 	$.ajax({
-		url:window.apiurl+"/"+hash+"/last_changed",
+		url:window.apiurl+"calendars/"+hash+"/last_changed",
 		type: "post",
 		dataType: 'json',
 		data: {},
