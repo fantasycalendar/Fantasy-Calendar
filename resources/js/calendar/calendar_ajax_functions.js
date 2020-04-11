@@ -44,7 +44,7 @@ function getUrlParameter(sParam) {
 
 function update_name(){
 	$.ajax({
-		url:window.baseurl+"calendar/"+hash,
+		url:window.baseurl+"calendars/"+hash,
 		type: "post",
 		dataType: 'json',
 		data: {_method: 'PATCH', name: calendar_name, hash: hash},
@@ -63,7 +63,7 @@ function update_name(){
 function update_view_dynamic(){
 
 	$.ajax({
-		url:window.baseurl+"calendar/"+hash,
+		url:window.baseurl+"calendars/"+hash,
 		type: "post",
 		dataType: 'json',
 		data: {_method: 'PATCH', dynamic_data: JSON.stringify(dynamic_data)},
@@ -82,7 +82,7 @@ function update_view_dynamic(){
 function update_dynamic(){
 
 	$.ajax({
-		url:window.baseurl+"calendar/"+hash,
+		url:window.baseurl+"calendars/"+hash,
 		type: "post",
 		dataType: 'json',
 		data: {_method: 'PATCH', dynamic_data: JSON.stringify(dynamic_data)},
@@ -130,7 +130,7 @@ function update_all(){
 function do_update_all(){
 
 	$.ajax({
-		url:window.baseurl+"calendar/"+hash,
+		url:window.baseurl+"calendars/"+hash,
 		type: "post",
 		dataType: 'json',
 		data: {_method: 'PATCH', dynamic_data: JSON.stringify(dynamic_data), static_data: JSON.stringify(static_data)},
@@ -164,14 +164,14 @@ function do_update_all(){
 function update_hashes(child_hash){
 
 	$.ajax({
-		url:window.baseurl+"calendar/"+hash,
+		url:window.baseurl+"calendars/"+hash,
 		type: "post",
 		dataType: 'json',
 		data: {_method: 'PATCH', children: JSON.stringify(link_data.children)},
 		success: function( result ){
 
 			$.ajax({
-				url:window.baseurl+"calendar/"+child_hash,
+				url:window.baseurl+"calendars/"+child_hash,
 				type: "post",
 				dataType: 'json',
 				data: {_method: 'PATCH', hash: child_hash, master_hash: hash},
@@ -195,14 +195,14 @@ function update_hashes(child_hash){
 function remove_hashes(child_hash){
 
 	$.ajax({
-		url:window.baseurl+"calendar/"+hash,
+		url:window.baseurl+"calendars/"+hash,
 		type: "post",
 		dataType: 'json',
 		data: {_method: 'PATCH', children: JSON.stringify(link_data.children)},
 		success: function( result ){
 
 			$.ajax({
-				url:window.baseurl+"calendar/"+child_hash,
+				url:window.baseurl+"calendars/"+child_hash,
 				type: "post",
 				dataType: 'json',
 				data: {_method: 'PATCH', master_hash: ''},
@@ -402,7 +402,7 @@ function update_children_dynamic_data(){
 				child_dynamic_data.minute = converted_date.minute;
 
 				$.ajax({
-					url:window.baseurl+"calendar/"+child_hash,
+					url:window.baseurl+"calendars/"+child_hash,
 					type: "post",
 					dataType: 'json',
 					data: {_method: 'PATCH', dynamic_data: JSON.stringify(child_dynamic_data)},
