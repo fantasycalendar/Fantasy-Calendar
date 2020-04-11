@@ -1918,7 +1918,7 @@ var edit_event_ui = {
 
 			swal.fire({
 				title: "Warning!",
-				text: "Are you sure you want to delete this event? If you change your mind, the only way to get it back is to reload the calendar and lose all of your changes.",
+				text: "Are you sure you want to delete this event?",
 				showCancelButton: true,
 				confirmButtonColor: '#d33',
 				cancelButtonColor: '#3085d6',
@@ -1926,27 +1926,38 @@ var edit_event_ui = {
 				icon: "warning",
 			}).then((result) => {
 
-				if(!result.dismiss) {
 
-					events_sortable.children(`[index='${this.event_id}']`).remove();
+				if(!result.dismiss) {
 
 					for(var eventId in static_data.event_data.events){
 						if(static_data.event_data.events[eventId].data.connected_events !== undefined){
 							for(connectedId in static_data.event_data.events[eventId].data.connected_events){
 								var number = Number(static_data.event_data.events[eventId].data.connected_events[connectedId])
-								if(Number(static_data.event_data.events[eventId].data.connected_events[connectedId]) > this.event_id){
+								if(number > this.event_id){
 									static_data.event_data.events[eventId].data.connected_events[connectedId] = String(number-1)
 								}
 							}
 						}
 					}
 
+					var event_id = static_data.event_data.events[this.event_id].id;
+
 					static_data.event_data.events.splice(this.event_id, 1);
 
-					events_sortable.children().each(function(i){
-						static_data.event_data.events[i].sort_by = i;
-						$(this).attr('index', i);
-					});
+					if($('#events_sortable').length){
+
+						events_sortable.children(`[index='${this.event_id}']`).remove();
+
+						events_sortable.children().each(function(i){
+							static_data.event_data.events[i].sort_by = i;
+							$(this).attr('index', i);
+						});
+
+					}else{
+
+						submit_delete_event(event_id);
+						
+					}
 
 					this.clear_ui();
 

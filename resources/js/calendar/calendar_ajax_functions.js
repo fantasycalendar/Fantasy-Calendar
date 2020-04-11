@@ -270,10 +270,10 @@ function submit_edit_event(event){
 
 }
 
-function submit_delete_event(event){
+function submit_delete_event(event_id){
 
 	$.ajax({
-		url:window.apiurl+"/event/"+event.id,
+		url:window.apiurl+"/event/"+event_id,
 		type: "post",
 		dataType: 'json',
 		data: {_method: 'DELETE'},
