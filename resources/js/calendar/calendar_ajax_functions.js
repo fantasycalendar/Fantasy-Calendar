@@ -226,7 +226,10 @@ function remove_hashes(child_hash){
 
 function submit_new_event(event){
 
+	var event = clone(event);
+
     event._method = 'POST';
+    event.calendar_id = calendar_id;
 
 	$.ajax({
 		url:window.apiurl+"/event",
@@ -246,7 +249,10 @@ function submit_new_event(event){
 
 function submit_edit_event(event){
 
+	var event = clone(event);
+
     event._method = 'PATCH';
+    event.calendar_id = calendar_id;
 
 	$.ajax({
 		url:window.apiurl+"/event/"+event.id,
