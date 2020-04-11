@@ -224,9 +224,9 @@ function remove_hashes(child_hash){
 
 }
 
-function submit_new_event(event){
+function submit_new_event(event_id, callback){
 
-	var event = clone(event);
+	var event = clone(static_data.event_data.events[event_id]);
 
     event._method = 'POST';
     event.calendar_id = calendar_id;
@@ -237,7 +237,7 @@ function submit_new_event(event){
 		dataType: 'json',
 		data: event,
 		success: function( result ){
-			console.log(result)
+			callback(event_id, result)
 		},
 		error: function ( log )
 		{
@@ -247,9 +247,9 @@ function submit_new_event(event){
 
 }
 
-function submit_edit_event(event){
+function submit_edit_event(event_id){
 
-	var event = clone(event);
+	var event = clone(static_data.event_data.events[event_id]);
 
     event._method = 'PATCH';
     event.calendar_id = calendar_id;
@@ -259,9 +259,6 @@ function submit_edit_event(event){
 		type: "post",
 		dataType: 'json',
 		data: event,
-		success: function( result ){
-			console.log(result)
-		},
 		error: function ( log )
 		{
 			console.log(log);

@@ -500,9 +500,9 @@ var edit_event_ui = {
 			}
 		}else{
 			if(this.new_event){
-				submit_new_event(static_data.event_data.events[this.event_id]);
+				submit_new_event(this.event_id, this.event_saved);
 			}else{
-				submit_edit_event(static_data.event_data.events[this.event_id]);
+				submit_edit_event(this.event_id);
 			}
 
 		}
@@ -512,6 +512,12 @@ var edit_event_ui = {
 		error_check();
 
 		rebuild_events();
+
+	},
+
+	event_saved(id, event){
+
+		static_data.event_data.events[id].id = event.id;
 
 	},
 
