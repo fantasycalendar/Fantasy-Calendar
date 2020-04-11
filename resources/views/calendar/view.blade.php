@@ -40,7 +40,7 @@
         set_up_visitor_values();
         bind_calendar_events();
         do_rebuild('calendar', dynamic_data);
-       
+
         poll_timer = setTimeout(check_dates, 5000);
         instapoll = false;
 

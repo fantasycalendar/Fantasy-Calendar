@@ -160,9 +160,9 @@ function set_up_view_inputs(){
 	current_hour.change(function(){
 		dynamic_data.hour = $(this).val()|0;
 
-		var apply_changes_immediately = $('#apply_changes_immediately').is(':checked');
+		var apply_changes_immediately = $('#apply_changes_immediately');
 
-		if(!apply_changes_immediately){
+		if(apply_changes_immediately.length > 0 && !apply_changes_immediately.is(':checked')){
 			evaluate_apply_show_hide();
 			return;
 		}
@@ -175,9 +175,9 @@ function set_up_view_inputs(){
 	current_minute.change(function(){
 		dynamic_data.minute = $(this).val()|0;
 
-		var apply_changes_immediately = $('#apply_changes_immediately').is(':checked');
+		var apply_changes_immediately = $('#apply_changes_immediately');
 
-		if(!apply_changes_immediately){
+		if(apply_changes_immediately.length > 0 && !apply_changes_immediately.is(':checked')){
 			evaluate_apply_show_hide();
 			return;
 		}
@@ -252,10 +252,16 @@ function set_up_view_inputs(){
 
 
 	$('#current_date_btn').click(function(){
+		if(!owner && !static_data.settings.allow_view){
+			return;
+		}
 		increment_date_units(true);
 	});
 
 	$('#preview_date_btn').click(function(){
+		if(!owner && !static_data.settings.allow_view){
+			return;
+		}
 		increment_date_units(false);
 	});
 
