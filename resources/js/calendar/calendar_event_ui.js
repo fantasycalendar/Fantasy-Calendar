@@ -2101,7 +2101,7 @@ var show_event_ui = {
 			var id = item.attr('event_id')|0;
 			this.event_id = id;
 
-			if(window.location.pathname.split('/').includes('edit') || window.location.pathname.split('/').includes('create')){
+			if(owner){
 
 				this.event_query_container.show();
 
