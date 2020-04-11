@@ -44,7 +44,7 @@ function getUrlParameter(sParam) {
 
 function update_name(){
 	$.ajax({
-		url:window.baseurl+"/calendars/"+hash,
+		url:window.baseurl+"calendars/"+hash,
 		type: "post",
 		dataType: 'json',
 		data: {_method: 'PATCH', name: calendar_name, hash: hash},
@@ -63,7 +63,7 @@ function update_name(){
 function update_view_dynamic(){
 
 	$.ajax({
-		url:window.baseurl+"/calendars/"+hash,
+		url:window.baseurl+"calendars/"+hash,
 		type: "post",
 		dataType: 'json',
 		data: {_method: 'PATCH', dynamic_data: JSON.stringify(dynamic_data)},
@@ -82,7 +82,7 @@ function update_view_dynamic(){
 function update_dynamic(){
 
 	$.ajax({
-		url:window.baseurl+"/calendars/"+hash,
+		url:window.baseurl+"calendars/"+hash,
 		type: "post",
 		dataType: 'json',
 		data: {_method: 'PATCH', dynamic_data: JSON.stringify(dynamic_data)},
@@ -130,7 +130,7 @@ function update_all(){
 function do_update_all(){
 
 	$.ajax({
-		url:window.baseurl+"/calendars/"+hash,
+		url:window.baseurl+"calendars/"+hash,
 		type: "post",
 		dataType: 'json',
 		data: {_method: 'PATCH', dynamic_data: JSON.stringify(dynamic_data), static_data: JSON.stringify(static_data)},
@@ -164,14 +164,14 @@ function do_update_all(){
 function update_hashes(child_hash){
 
 	$.ajax({
-		url:window.baseurl+"/calendars/"+hash,
+		url:window.baseurl+"calendars/"+hash,
 		type: "post",
 		dataType: 'json',
 		data: {_method: 'PATCH', children: JSON.stringify(link_data.children)},
 		success: function( result ){
 
 			$.ajax({
-				url:window.baseurl+"/calendars/"+child_hash,
+				url:window.baseurl+"calendars/"+child_hash,
 				type: "post",
 				dataType: 'json',
 				data: {_method: 'PATCH', hash: child_hash, master_hash: hash},
@@ -195,14 +195,14 @@ function update_hashes(child_hash){
 function remove_hashes(child_hash){
 
 	$.ajax({
-		url:window.baseurl+"/calendars/"+hash,
+		url:window.baseurl+"calendars/"+hash,
 		type: "post",
 		dataType: 'json',
 		data: {_method: 'PATCH', children: JSON.stringify(link_data.children)},
 		success: function( result ){
 
 			$.ajax({
-				url:window.baseurl+"/calendars/"+child_hash,
+				url:window.baseurl+"calendars/"+child_hash,
 				type: "post",
 				dataType: 'json',
 				data: {_method: 'PATCH', master_hash: ''},
@@ -232,7 +232,7 @@ function submit_new_event(event){
     event.calendar_id = calendar_id;
 
 	$.ajax({
-		url:window.apiurl+"/event",
+		url:window.apiurl+"event",
 		type: "post",
 		dataType: 'json',
 		data: event,
@@ -255,7 +255,7 @@ function submit_edit_event(event){
     event.calendar_id = calendar_id;
 
 	$.ajax({
-		url:window.apiurl+"/event/"+event.id,
+		url:window.apiurl+"event/"+event.id,
 		type: "post",
 		dataType: 'json',
 		data: event,
@@ -273,7 +273,7 @@ function submit_edit_event(event){
 function submit_delete_event(event_id){
 
 	$.ajax({
-		url:window.apiurl+"/event/"+event_id,
+		url:window.apiurl+"event/"+event_id,
 		type: "post",
 		dataType: 'json',
 		data: {_method: 'DELETE'},
@@ -292,7 +292,7 @@ function submit_delete_event(event_id){
 function get_all_master_data(output){
 
 	$.ajax({
-		url:window.apiurl+"/calendars/"+link_data.master_hash,
+		url:window.apiurl+"calendars/"+link_data.master_hash,
 		type: "get",
 		dataType: 'json',
 		data: {},
@@ -311,7 +311,7 @@ function get_all_master_data(output){
 
 function check_last_master_change(output){
 	$.ajax({
-		url:window.apiurl+"/calendars/"+link_data.master_hash+"/last_changed",
+		url:window.apiurl+"calendars/"+link_data.master_hash+"/last_changed",
 		type: "post",
 		dataType: 'json',
 		data: {},
@@ -328,7 +328,7 @@ function check_last_master_change(output){
 function get_all_data(output){
 
 	$.ajax({
-		url:window.apiurl+"/calendars/"+hash,
+		url:window.apiurl+"calendars/"+hash,
 		type: "get",
 		dataType: 'json',
 		data: {},
@@ -347,7 +347,7 @@ function get_all_data(output){
 function get_dynamic_data(output){
 
 	$.ajax({
-		url:window.apiurl+"/calendars/"+hash+"/dynamic_data",
+		url:window.apiurl+"calendars/"+hash+"/dynamic_data",
 		type: "get",
 		dataType: 'json',
 		data: {},
@@ -367,7 +367,7 @@ function get_dynamic_data(output){
 
 function get_owned_calendars(output){
 	$.ajax({
-		url:window.apiurl+"/calendars/"+hash+"/owned",
+		url:window.apiurl+"calendars/"+hash+"/owned",
 		type: "get",
 		dataType: 'json',
 		data: {},
@@ -385,7 +385,7 @@ function get_owned_calendars(output){
 function update_children_dynamic_data(){
 
 	$.ajax({
-		url:window.apiurl+"/calendars/"+hash+"/children",
+		url:window.apiurl+"calendars/"+hash+"/children",
 		type: "post",
 		dataType: 'json',
 		data: {hash: hash},
@@ -405,7 +405,7 @@ function update_children_dynamic_data(){
 				child_dynamic_data.minute = converted_date.minute;
 
 				$.ajax({
-					url:window.baseurl+"/calendars/"+child_hash,
+					url:window.baseurl+"calendars/"+child_hash,
 					type: "post",
 					dataType: 'json',
 					data: {_method: 'PATCH', dynamic_data: JSON.stringify(child_dynamic_data)},
@@ -428,7 +428,7 @@ function update_children_dynamic_data(){
 
 function check_last_change(output){
 	$.ajax({
-		url:window.apiurl+"/calendars/"+hash+"/last_changed",
+		url:window.apiurl+"calendars/"+hash+"/last_changed",
 		type: "post",
 		dataType: 'json',
 		data: {},

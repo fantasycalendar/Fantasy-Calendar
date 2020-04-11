@@ -54,7 +54,7 @@
     <script>
 
     window.baseurl = '{{ getenv('WEBADDRESS') }}';
-    window.apiurl = '{{ getenv('WEBADDRESS') }}'+'api';
+    window.apiurl = '{{ getenv('WEBADDRESS') }}'+'api/';
 
     function isMobile() {
         try{ document.createEvent("TouchEvent"); return true; }
