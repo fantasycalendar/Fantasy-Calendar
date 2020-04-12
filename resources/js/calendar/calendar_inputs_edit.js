@@ -3518,9 +3518,7 @@ function add_event_to_sortable(parent, key, data){
 }
 
 
-function add_link_to_list(parent, key, calendar){
-
-	console.log(calendar)
+function add_link_to_list(parent, key, data){
 
 	var element = [];
 
@@ -3528,7 +3526,7 @@ function add_link_to_list(parent, key, calendar){
 		element.push("<div class='main-container'>");
 			element.push("<div class='expand icon-collapse ml-2'></div>");
 			element.push("<div class='name-container'>");
-				element.push(`<div><a href="${window.baseurl}calendars/${calendar.hash}/edit" target="_blank">${calendar.name}</a></div>`);
+				element.push(`<div><a href="${window.baseurl}calendars/${data.hash}/edit" target="_blank">${data.name}</a></div>`);
 			element.push(`</div>`);
 			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
@@ -3541,7 +3539,7 @@ function add_link_to_list(parent, key, calendar){
 
 		element.push("<div class='collapse-container container mb-2'>");
 
-			element.push("<div class='row my-2 bold-text'>");
+			element.push("<div class='row my-1 bold-text'>");
 
 				element.push("<div class='col'>");
 
@@ -3570,8 +3568,6 @@ function add_link_to_list(parent, key, calendar){
 					element.push("</div>");
 				element.push("</div>");
 			element.push("</div>");
-
-		element.push("</div>");
 
 	element.push("</div>");
 
@@ -4575,11 +4571,17 @@ function populate_calendar_lists(){
 		calendar_link_list.html('');
 
 		for(var index in link_data.children){
+
 			var child = link_data.children[index];
 			var calendar = owned_calendars[child];
+
 			if(calendar){
-				add_link_to_list(calendar_link_list, index, calendar);
+				var link = add_link_to_list(calendar_link_list, index, calendar);
+				link.find('.year-input').val(1)
+				repopulate_timespan_select(link.find('.timespan-list'), 0, false)
+				repopulate_day_select(link.find('.timespan-day-list'), 0, false)
 			}
+			
 		}
 
 		var html = [];
