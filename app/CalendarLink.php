@@ -2,9 +2,9 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class CalendarLink extends Model
+class CalendarLink extends Pivot
 {
 
     public $fillable = [

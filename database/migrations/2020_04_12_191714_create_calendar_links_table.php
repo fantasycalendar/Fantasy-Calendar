@@ -20,7 +20,6 @@ class CreateCalendarLinksTable extends Migration
             $table->bigInteger('offset');
             $table->string('parent_start_date');
             $table->timestamps();
-            $table->softDeletes();
         });
 
         $table-unique(['master_id', 'child_id']);
