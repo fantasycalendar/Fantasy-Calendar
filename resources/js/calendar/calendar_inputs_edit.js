@@ -3518,13 +3518,18 @@ function add_event_to_sortable(parent, key, data){
 }
 
 
-function add_link_to_list(parent, key, calendar_name){
+function add_link_to_list(parent, key, calendar){
+
+	console.log(calendar)
 
 	var element = [];
 
-	element.push(`<div class='sortable-container list-group-item events_input' index='${key}'>`);
+	element.push(`<div class='sortable-container list-group-item events_input collapsed' index='${key}'>`);
 		element.push("<div class='main-container'>");
-			element.push(`<div>${calendar_name}</div>`);
+			element.push("<div class='expand icon-collapse ml-2'></div>");
+			element.push("<div class='name-container'>");
+				element.push(`<div><a href="${window.baseurl}calendars/${calendar.hash}/edit" target="_blank">${calendar.name}</a></div>`);
+			element.push(`</div>`);
 			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
 		element.push("<div class='remove-container'>");
@@ -3534,10 +3539,47 @@ function add_link_to_list(parent, key, calendar_name){
 			element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
 		element.push("</div>");
 
+		element.push("<div class='collapse-container container mb-2'>");
+
+			element.push("<div class='row my-2 bold-text'>");
+
+				element.push("<div class='col'>");
+
+					element.push("Relative Start Date:");
+
+					element.push(`<div class='date_control'>`);
+						element.push(`<div class='row my-2'>`);
+							element.push("<div class='col'>");
+								element.push(`<input type='number' step="1.0" class='date form-control small-input year-input'/>`);
+							element.push("</div>");
+						element.push("</div>");
+
+						element.push(`<div class='row my-2'>`);
+							element.push("<div class='col'>");
+								element.push(`<select type='number' class='date custom-select form-control timespan-list'>`);
+								element.push("</select>");
+							element.push("</div>");
+						element.push("</div>");
+
+						element.push(`<div class='row my-2'>`);
+							element.push("<div class='col'>");
+								element.push(`<select type='number' class='date custom-select form-control timespan-day-list'>`);
+								element.push("</select>");
+							element.push("</div>");
+						element.push("</div>");
+					element.push("</div>");
+				element.push("</div>");
+			element.push("</div>");
+
+		element.push("</div>");
+
 	element.push("</div>");
 
+	var element = $(element.join(""));
 
-	parent.append(element.join(""));
+	parent.append(element);
+
+	return element;
 }
 
 function get_errors(){
@@ -4532,11 +4574,11 @@ function populate_calendar_lists(){
 
 		calendar_link_list.html('');
 
-		for(var calendar in link_data.children){
-			var child = link_data.children[calendar];
+		for(var index in link_data.children){
+			var child = link_data.children[index];
 			var calendar = owned_calendars[child];
 			if(calendar){
-				add_link_to_list(calendar_link_list, calendar, calendar.name);
+				add_link_to_list(calendar_link_list, index, calendar);
 			}
 		}
 
@@ -4552,7 +4594,7 @@ function populate_calendar_lists(){
 
 				if(calendar.master_hash){
 
-					var owner = clone(owned_calendars[calendar.hash]);
+					var owner = clone(owned_calendars[calendar.master_hash]);
 
 					if(owner.hash == hash){
 						owner.name = "this calendar";

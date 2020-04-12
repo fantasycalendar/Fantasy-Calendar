@@ -424,8 +424,6 @@ function repopulate_timespan_select(select, val, change, max){
 	var max = max === undefined ? false : max;
 
 	select.each(function(){
-		
-		$(this).prop('disabled', false);
 
 		var year = convert_year(static_data, $(this).closest('.date_control').find('.year-input').val()|0);
 
@@ -589,8 +587,6 @@ function set_up_visitor_values(){
 
 	preview_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
 
-	evaluate_settings();
-
 	target_year.val(preview_date_manager.adjusted_year);
 	if(preview_date_manager.last_valid_year){
 		target_year.prop('max', preview_date_manager.last_valid_year)
@@ -600,5 +596,7 @@ function set_up_visitor_values(){
 
 	repopulate_timespan_select(target_timespan, preview_date_manager.timespan, false, preview_date_manager.last_valid_timespan);
 	repopulate_day_select(target_day, preview_date_manager.day, false, false, preview_date_manager.last_valid_day);
+
+	evaluate_settings();
 
 }
