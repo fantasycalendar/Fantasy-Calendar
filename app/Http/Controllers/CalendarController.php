@@ -182,9 +182,9 @@ class CalendarController extends Controller
 
         if($parent_hash_exists && $parent_link_date_exists && $parent_offset_exists) {
             $calendars = (Auth::user()->permissions == 1) ? Calendar::active()->with('user') : Calendar::active()->where('user_id', Auth::user()->id);
-            $parent_calendar_id = $calendars->where('hash', $update_data['parent_hash'])->first();
+            $parent_calendar = $calendars->where('hash', $update_data['parent_hash'])->first();
             unset($update_data['parent_hash']);
-            $update_data['parent_id'] = $parent_calendar_id->id;
+            $update_data['parent_id'] = $parent_calendar->id;
         }
 
 
