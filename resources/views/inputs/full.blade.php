@@ -1059,10 +1059,10 @@
             </div>
         </div>
 
-		<!---------------------------------------------->
-		<!------------------ LINKING ------------------->
-		<!---------------------------------------------->
 		@if(request()->is('calendars/*/edit'))
+			<!---------------------------------------------->
+			<!------------------ LINKING ------------------->
+			<!---------------------------------------------->
 			<div class='wrap-collapsible card'>
 				<input id="collapsible_linking" class="toggle" type="checkbox">
 				<label for="collapsible_linking" class="lbl-toggle card-header lbl-text">Calendar Linking <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Calendar Linking' href='https://wiki.fantasy-calendar.com/index.php?title=Calendar_Linking' class="wiki protip"><i class="icon-question-sign"></i></a></label>
@@ -1074,14 +1074,15 @@
 							This calendar is already linked to a master calendar. Before linking any calendars to this one, you must unlink this calendar from its master calendar.
 						</div>
 
+						<div class='row no-gutters my-1 center-text'>
+							<p>Calendar linking is a complex feature - we recommend you check out the <a href='https://wiki.fantasy-calendar.com/index.php?title=Calendar_Linking' target="_blank"><i class="icon-question-sign"></i> Fantasy-Calendar wiki article</a> on the feature!</p>
+						</div>
+
 						<div class='row no-gutters my-1'>
 							<select class='form-control' id='calendar_link_select'></select>
 						</div>
 						<div class='row no-gutters my-1'>
 							<button type='button' class='btn btn-sm btn-secondary full' id='refresh_calendar_list_select'>Refresh</button>
-						</div>
-						<div class='row no-gutters my-1'>
-							<button type='button' class='btn btn-primary full' id='link_calendar'>Link</button>
 						</div>
 
 						<div class='sortable' id='calendar_link_list'></div>

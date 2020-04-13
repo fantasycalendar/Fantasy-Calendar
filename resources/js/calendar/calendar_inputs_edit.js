@@ -6,6 +6,8 @@ function set_up_edit_inputs(){
 	prev_dynamic_data = clone(dynamic_data);
 	prev_static_data = clone(static_data);
 
+	owned_calendars = {};
+
 	calendar_name_same = calendar_name == prev_calendar_name;
 	static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
 	dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
@@ -2045,12 +2047,28 @@ function set_up_edit_inputs(){
 	$('#link_calendar').prop('disabled', true);
 
 	calendar_link_select.change(function(){
-		$('#link_calendar').prop('disabled', $(this).val() == "None");
+		if($(this).val() != "None"){
+			var calendar_hash = $(this).val();
+			var calendar = owned_calendars[calendar_hash];
+			add_link_to_list(calendar_link_list, calendar_link_list.children().length, false, calendar);
+		}else{
+			populate_calendar_lists();
+		}
 	});
 
-	$('#link_calendar').click(function(){
-		$('#link_calendar').prop('disabled', true);
-		update_child_calendar(populate_calendar_lists, calendar_link_select.val(), [0,0,1], 0);
+	$(document).on('click', '.link_calendar', function(){
+		var calendar_hash = $(this).attr('hash');
+
+		var year = Number($(this).closest('.collapse-container').find('.year-input').val());
+		year = convert_year(static_data, year);
+		var timespan = Number($(this).closest('.collapse-container').find('.timespan-list').val());
+		var day = Number($(this).closest('.collapse-container').find('.timespan-day-list').val());
+
+		var date = [year, timespan, day];
+
+		var epoch = evaluate_calendar_start(static_data, year, timespan, day).epoch;
+
+		update_child_calendar(populate_calendar_lists, calendar_hash, date, epoch);
 	});
 
 	$('#apply_changes_btn').click(function(){
@@ -3516,23 +3534,16 @@ function add_event_to_sortable(parent, key, data){
 }
 
 
-function add_link_to_list(parent, key, calendar){
+function add_link_to_list(parent, key, locked, calendar){
 
 	var element = [];
 
-	element.push(`<div class='sortable-container list-group-item events_input collapsed' index='${key}'>`);
+	element.push(`<div class='sortable-container list-group-item ${locked ? "collapsed" : ""}' index='${key}'>`);
 		element.push("<div class='main-container'>");
 			element.push("<div class='expand icon-collapse ml-2'></div>");
 			element.push("<div class='name-container'>");
 				element.push(`<div><a href="${window.baseurl}calendars/${calendar.hash}/edit" target="_blank">${calendar.name}</a></div>`);
 			element.push(`</div>`);
-			element.push('<div class="remove-spacer"></div>');
-		element.push("</div>");
-		element.push("<div class='remove-container'>");
-			element.push("<div class='remove-container-text'>Are you sure you want to unlink this?</div>");
-			element.push("<div class='btn_remove btn btn-danger icon-trash'></div>");
-			element.push("<div class='btn_cancel btn btn-danger icon-remove'></div>");
-			element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
 		element.push("</div>");
 
 		element.push("<div class='collapse-container container mb-2'>");
@@ -3546,20 +3557,20 @@ function add_link_to_list(parent, key, calendar){
 					element.push(`<div class='date_control'>`);
 						element.push(`<div class='row my-2'>`);
 							element.push("<div class='col'>");
-								element.push(`<input type='number' step="1.0" class='date form-control small-input year-input'/>`);
+								element.push(`<input type='number' step="1.0" class='date form-control small-input year-input' ${(locked ? 'disabled' : '')}>`);
 							element.push("</div>");
 						element.push("</div>");
 
 						element.push(`<div class='row my-2'>`);
 							element.push("<div class='col'>");
-								element.push(`<select type='number' class='date custom-select form-control timespan-list'>`);
+								element.push(`<select type='number' class='date custom-select form-control timespan-list' ${(locked ? 'disabled' : '')}>`);
 								element.push("</select>");
 							element.push("</div>");
 						element.push("</div>");
 
 						element.push(`<div class='row my-2'>`);
 							element.push("<div class='col'>");
-								element.push(`<select type='number' class='date custom-select form-control timespan-day-list'>`);
+								element.push(`<select type='number' class='date custom-select form-control timespan-day-list' ${(locked ? 'disabled' : '')}>`);
 								element.push("</select>");
 							element.push("</div>");
 						element.push("</div>");
@@ -3567,17 +3578,29 @@ function add_link_to_list(parent, key, calendar){
 				element.push("</div>");
 			element.push("</div>");
 
+			element.push("<div class='row no-gutters my-1'>");
+				if(locked){
+					element.push(`<button type='button' class='btn btn-danger full unlink_calendar' hash='${calendar.hash}'>Unlink</button>`);
+				}else{
+					element.push(`<button type='button' class='btn btn-primary full link_calendar' hash='${calendar.hash}'>Link</button>`);
+				}
+			element.push("</div>");
+
 	element.push("</div>");
 
 	var element = $(element.join(""));
 
 	parent.append(element);
-	
-	var parent_link_date = JSON.parse(calendar.parent_link_date)
 
-	element.find('.year-input').val(parent_link_date[0]);
-	repopulate_timespan_select(element.find('.timespan-list'), parent_link_date[1], false)
-	repopulate_day_select(element.find('.timespan-day-list'), parent_link_date[2], false)
+	if(locked){
+		var parent_link_date = JSON.parse(calendar.parent_link_date);
+	}else{
+		var parent_link_date = [0,0,1];
+	}
+
+	element.find('.year-input').val(unconvert_year(static_data, Number(parent_link_date[0])));
+	repopulate_timespan_select(element.find('.timespan-list'), Number(parent_link_date[1]), false)
+	repopulate_day_select(element.find('.timespan-day-list'), Number(parent_link_date[2]), false)
 
 	return element;
 }
@@ -4560,7 +4583,9 @@ function evaluate_save_button(override){
 
 function populate_calendar_lists(){
 
-	get_owned_calendars(function(owned_calendars){
+	get_owned_calendars(function(calendars){
+
+		owned_calendars = calendars;
 
 		calendar_link_list.html('');
 
@@ -4575,7 +4600,7 @@ function populate_calendar_lists(){
 					var child_hash = calendar.children[index];
 					var child = owned_calendars[child_hash];
 
-					var link = add_link_to_list(calendar_link_list, index, child);
+					add_link_to_list(calendar_link_list, index, true, child);
 
 				}
 
@@ -4593,7 +4618,7 @@ function populate_calendar_lists(){
 
 			if(calendar.hash != hash){
 
-				if(calendar.parent){
+				if(calendar.parent_hash){
 
 					var owner = clone(owned_calendars[calendar.parent_hash]);
 
@@ -4614,8 +4639,6 @@ function populate_calendar_lists(){
 		calendar_link_select.html(html.join(''));
 
 	});
-
-	$('#link_calendar').prop('disabled', true);
 
 }
 
