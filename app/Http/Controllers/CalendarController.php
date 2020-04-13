@@ -157,7 +157,7 @@ class CalendarController extends Controller
      */
     public function update(Request $request, Calendar $calendar)
     {
-        $update_data = $request->only(['name', 'dynamic_data', 'static_data']);
+        $update_data = $request->only(['name', 'dynamic_data', 'static_data', 'parent_hash', 'parent_link_date', 'parent_offset']);
 
         if(array_key_exists('dynamic_data', $update_data)) {
             $update_data['dynamic_data'] = json_decode($update_data['dynamic_data']);
@@ -174,6 +174,17 @@ class CalendarController extends Controller
 
             unset($static_data['event_data']);
             $update_data['static_data'] = $static_data;
+        }
+
+        $parent_hash_exists = array_key_exists('parent_hash', $update_data);
+        $parent_link_date_exists = array_key_exists('parent_link_date', $update_data);
+        $parent_offset_exists = array_key_exists('parent_offset', $update_data);
+
+        if($parent_hash_exists && $parent_link_date_exists && $parent_offset_exists) {
+            $calendars = (Auth::user()->permissions == 1) ? Calendar::active()->with('user') : Calendar::active()->where('user_id', Auth::user()->id);
+            $parent_calendar_id = $calendars->where('hash', $update_data['parent_hash'])->first();
+            unset($update_data['parent_hash']);
+            $update_data['parent_id'] = $parent_calendar_id->id;
         }
 
 

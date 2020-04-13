@@ -199,6 +199,28 @@ function check_last_master_change(output){
 	});
 } */
 
+function update_child_calendar(output, child_hash, parent_link_date, parent_offset){
+
+	$.ajax({
+		url:window.baseurl+"calendars/"+child_hash,
+		type: "post",
+		dataType: 'json',
+		data: {
+			_method: "PATCH",
+			parent_hash: hash,
+			parent_link_date: parent_link_date,
+			parent_offset: parent_offset,
+		},
+		success: function(result){
+			output(result)
+		},
+		error: function ( log )
+		{
+			console.log(log);
+		}
+	});
+}
+
 function get_all_data(output){
 
 	$.ajax({

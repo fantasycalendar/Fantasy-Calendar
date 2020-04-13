@@ -27,6 +27,22 @@ function display_events(static_data, event_data){
 
 }
 
+function get_category(search) {
+	if(static_data.event_data.categories.length == 0){
+		return {id: -1};
+	}
+
+	var results = static_data.event_data.categories.filter(function(element) {
+		return element.id == search;
+	});
+
+	if(results.length < 1) {
+		return {id: -1};
+	}
+
+	return results[0];
+}
+
 function insert_moons(data){
 
 	var moon_text = ['<div class="calendar_moon_container">'];

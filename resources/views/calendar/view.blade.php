@@ -39,9 +39,9 @@
         set_up_view_values();
         set_up_visitor_values();
         bind_calendar_events();
-        do_rebuild('calendar', dynamic_data);
+        rebuild_calendar('calendar', dynamic_data);
 
-        poll_timer = setTimeout(check_dates, 5000);
+        /*poll_timer = setTimeout(check_dates, 5000);
         instapoll = false;
 
         $(window).focus(function(){
@@ -54,7 +54,7 @@
                 instapoll = false;
                 check_dates();
             }
-        }
+        }*/
 
         $('#current_year, #current_timespan, #current_day, #current_hour, #current_minute, #location_select').change(function(){
             do_update_dynamic();
@@ -62,7 +62,7 @@
 
     });
 
-    var do_update_dynamic = debounce(function(type){
+    /*var do_update_dynamic = debounce(function(type){
         update_view_dynamic();
     }, 250);
     
@@ -152,7 +152,7 @@
 
         if((data.rebuild || static_data.settings.only_reveal_today) && preview_date.follow){
             show_loading_screen_buffered();
-            do_rebuild('calendar', dynamic_data)
+            rebuild_calendar('calendar', dynamic_data)
         }else{
             update_current_day(false);
             scroll_to_epoch();
@@ -160,7 +160,7 @@
         
         refresh_view_values();
 
-    }
+    }*/
 
 
 

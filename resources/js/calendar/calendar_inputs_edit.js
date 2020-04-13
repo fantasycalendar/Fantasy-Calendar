@@ -2049,10 +2049,8 @@ function set_up_edit_inputs(){
 	});
 
 	$('#link_calendar').click(function(){
-		var target_hash = calendar_link_select.val();
-		//link_data.children.push(target_hash);
-		//update_hashes(target_hash);
 		$('#link_calendar').prop('disabled', true);
+		update_child_calendar(populate_calendar_lists, calendar_link_select.val(), [0,0,1], 0);
 	});
 
 	$('#apply_changes_btn').click(function(){
@@ -4564,8 +4562,6 @@ function populate_calendar_lists(){
 
 	get_owned_calendars(function(owned_calendars){
 
-		console.log(owned_calendars)
-
 		calendar_link_list.html('');
 
 		for(var calendar_hash in owned_calendars){
@@ -4576,7 +4572,8 @@ function populate_calendar_lists(){
 
 				for(var index in calendar.children){
 
-					var child = calendar.children[index];
+					var child_hash = calendar.children[index];
+					var child = owned_calendars[child_hash];
 
 					var link = add_link_to_list(calendar_link_list, index, child);
 
@@ -4590,15 +4587,15 @@ function populate_calendar_lists(){
 
 		html.push(`<option>None</option>`);
 
-		for(var calendarhash in owned_calendars){
+		for(var calendar_hash in owned_calendars){
 
-			var calendar = owned_calendars[calendarhash];
+			var calendar = owned_calendars[calendar_hash];
 
 			if(calendar.hash != hash){
 
 				if(calendar.parent){
 
-					var owner = clone(owned_calendars[calendar.parent.hash]);
+					var owner = clone(owned_calendars[calendar.parent_hash]);
 
 					if(owner.hash == hash){
 						owner.name = "this calendar";
@@ -4895,22 +4892,6 @@ function set_up_edit_values(){
 
 	block_inputs = false;
 
-}
-
-function get_category(search) {
-	if(static_data.event_data.categories.length == 0){
-		return {id: -1};
-	}
-
-	var results = static_data.event_data.categories.filter(function(element) {
-		return element.id == search;
-	});
-
-	if(results.length < 1) {
-		return {id: -1};
-	}
-
-	return results[0];
 }
 
 function empty_edit_values(){
