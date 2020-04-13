@@ -133,7 +133,13 @@ function do_update_all(){
 		url:window.baseurl+"calendars/"+hash,
 		type: "post",
 		dataType: 'json',
-		data: {_method: 'PATCH', dynamic_data: JSON.stringify(dynamic_data), static_data: JSON.stringify(static_data)},
+		data: {
+		    _method: 'PATCH',
+            dynamic_data: JSON.stringify(dynamic_data),
+            static_data: JSON.stringify(static_data),
+            events: JSON.stringify(events),
+            event_categories: JSON.stringify(event_categories),
+        },
 		success: function(result){
 
 			if(!calendar_name_same){
@@ -492,7 +498,13 @@ function create_calendar(){
 		url:window.baseurl+"calendars",
 		type: "post",
 		dataType: 'json',
-		data: {name: calendar_name, dynamic_data: JSON.stringify(dynamic_data), static_data: JSON.stringify(static_data)},
+		data: {
+		    name: calendar_name,
+            dynamic_data: JSON.stringify(dynamic_data),
+            static_data: JSON.stringify(static_data),
+            events: JSON.stringify(events),
+            event_categories: JSON.stringify(event_categories)
+        },
 		success: function ( result ){
 			localStorage.clear();
 			window.location.href = window.baseurl+'calendars/'+result.hash+'/edit';

@@ -109,7 +109,7 @@ var edit_event_ui = {
 				}).then((result) => {
 					if(!result.dismiss) {
 						if(edit_event_ui.new_event){
-							static_data.event_data.events.splice(edit_event_ui.event_id, 1);
+							events.splice(edit_event_ui.event_id, 1);
 						}
 
 						edit_event_ui.clear_ui();
@@ -399,9 +399,9 @@ var edit_event_ui = {
 			stats.settings.hide_full = category.event_settings.hide_full;
 		}
 
-		eventId = Object.keys(static_data.event_data.events).length;
+		eventId = Object.keys(events).length;
 
-		static_data.event_data.events[eventId] = stats;
+		events[eventId] = stats;
 
 		this.set_current_event(eventId)
 
@@ -413,7 +413,7 @@ var edit_event_ui = {
 
 	edit_event: function(event_id){
 
-		this.prev_version_event = clone(static_data.event_data.events[event_id]);
+		this.prev_version_event = clone(events[event_id]);
 
 		this.repeat_input.val('1').parent().toggleClass('hidden', true);
 		this.condition_presets.children().eq(0).prop('selected', true);
@@ -429,7 +429,7 @@ var edit_event_ui = {
 
 		this.event_id = event_id;
 
-		var event = static_data.event_data.events[this.event_id];
+		var event = events[this.event_id];
 
 		this.event_background.find('.event_name').val(event.name);
 
@@ -477,26 +477,26 @@ var edit_event_ui = {
 
 	save_current_event: function(){
 
-		if(static_data.event_data.events[this.event_id]){
-			var eventid = static_data.event_data.events[this.event_id].id;
-			static_data.event_data.events[this.event_id] = {};
-			static_data.event_data.events[this.event_id].id = eventid;
+		if(events[this.event_id]){
+			var eventid = events[this.event_id].id;
+			events[this.event_id] = {};
+			events[this.event_id].id = eventid;
 		}else{
-			static_data.event_data.events[this.event_id] = {};
+			events[this.event_id] = {};
 		}
 
 		var name = this.event_background.find('.event_name').val();
 		name = name !== '' ? name : "Unnamed Event";
 
-		static_data.event_data.events[this.event_id].name = name;
+		events[this.event_id].name = name;
 
-		static_data.event_data.events[this.event_id].description = sanitizeHtml(this.trumbowyg.trumbowyg('html'), {allowedTags: [ 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'a', 'ul', 'ol', 'nl', 'li', 'b', 'i', 'strong', 'em', 'strike', 'code', 'hr', 'br', 'div', 'table', 'thead', 'caption', 'tbody', 'tr', 'th', 'td', 'pre', 'img' ]});
+		events[this.event_id].description = sanitizeHtml(this.trumbowyg.trumbowyg('html'), {allowedTags: [ 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'a', 'ul', 'ol', 'nl', 'li', 'b', 'i', 'strong', 'em', 'strike', 'code', 'hr', 'br', 'div', 'table', 'thead', 'caption', 'tbody', 'tr', 'th', 'td', 'pre', 'img' ]});
 
-		static_data.event_data.events[this.event_id].data = this.create_event_data();
+		events[this.event_id].data = this.create_event_data();
 
-		static_data.event_data.events[this.event_id].event_category_id = get_category($('#event_categories').val()).id;
+		events[this.event_id].event_category_id = get_category($('#event_categories').val()).id;
 
-		static_data.event_data.events[this.event_id].settings = {
+		events[this.event_id].settings = {
 			color: $('#color_style').val(),
 			text: $('#text_style').val(),
 			hide: $('#event_hide_players').prop('checked'),
@@ -505,7 +505,7 @@ var edit_event_ui = {
 		}
 
 		if(this.new_event){
-			add_event_to_sortable(events_sortable, this.event_id, static_data.event_data.events[this.event_id]);
+			add_event_to_sortable(events_sortable, this.event_id, events[this.event_id]);
 		}else{
 			$(`.events_input[index="${this.event_id}"]`).find(".event_name").text(`Edit - ${name}`);
 		}
@@ -625,7 +625,7 @@ var edit_event_ui = {
 
 	get_search_distance: function(){
 
-		var event = static_data.event_data.events[this.event_id];
+		var event = events[this.event_id];
 
 		var search_distance = 0;
 
@@ -686,11 +686,11 @@ var edit_event_ui = {
 
 	has_changed: function(){
 
-		if(static_data.event_data.events[this.event_id] && this.inputs_changed){
+		if(events[this.event_id] && this.inputs_changed){
 
-			var event_check = clone(static_data.event_data.events[this.event_id])
+			var event_check = clone(events[this.event_id])
 
-			var eventid = static_data.event_data.events[this.event_id].id;
+			var eventid = events[this.event_id].id;
 
 			if(eventid !== undefined){
 				event_check.id = eventid;
@@ -713,7 +713,7 @@ var edit_event_ui = {
 				print: $('#event_print_checkbox').prop('checked')
 			}
 
-			return !Object.compare(event_check, static_data.event_data.events[this.event_id])
+			return !Object.compare(event_check, events[this.event_id])
 
 		}else{
 
@@ -1146,7 +1146,7 @@ var edit_event_ui = {
 						$(this).val(element[2][i+1]);
 					})
 				}else if(element[0] === "Events"){
-					condition.find('.event_select').val(static_data.event_data.events[this.event_id].data.connected_events[element[2][0]])
+					condition.find('.event_select').val(events[this.event_id].data.connected_events[element[2][0]])
 					condition.find('.input_container').children().eq(1).val(element[2][1]);
 
 					edit_event_ui.search_distance = Number(element[2][1]) > edit_event_ui.search_distance ? Number(element[2][1]) : edit_event_ui.search_distance;
@@ -1436,9 +1436,9 @@ var edit_event_ui = {
 
 			html.push("<select class='event_select form-control'>")
 
-			for(var eventId in static_data.event_data.events){
+			for(var eventId in events){
 
-				var event = static_data.event_data.events[eventId];
+				var event = events[eventId];
 
 				if(eventId == this.event_id){
 					html.push(`<option disabled>`);
@@ -1565,7 +1565,7 @@ var edit_event_ui = {
 							||
 							(keys[i] === "Cycle" && static_data.cycles === undefined)
 							||
-							(keys[i] === "Events" && static_data.event_data.events.length <= 1)
+							(keys[i] === "Events" && events.length <= 1)
 							||
 							(keys[i] === "Season" && static_data.seasons.data.length < 1)
 						){
@@ -1738,15 +1738,15 @@ var edit_event_ui = {
 
 		if(edit_event_ui.new_event){
 
-			static_data.event_data.events[edit_event_ui.event_id] = {}
+			events[edit_event_ui.event_id] = {}
 
-			static_data.event_data.events[edit_event_ui.event_id].data = edit_event_ui.create_event_data();
+			events[edit_event_ui.event_id].data = edit_event_ui.create_event_data();
 
 		}else{
 
-			edit_event_ui.backup_event_data = clone(static_data.event_data.events[edit_event_ui.event_id].data);
+			edit_event_ui.backup_event_data = clone(events[edit_event_ui.event_id].data);
 
-			static_data.event_data.events[edit_event_ui.event_id].data = edit_event_ui.create_event_data();
+			events[edit_event_ui.event_id].data = edit_event_ui.create_event_data();
 
 		}
 
@@ -1773,6 +1773,8 @@ var edit_event_ui = {
 
 			edit_event_ui.worker_future_events.postMessage({
 				static_data: static_data,
+                events: events,
+                event_categories: event_categories,
 				epoch_data: edit_event_ui.event_data,
 				event_id: edit_event_ui.event_id,
 				start_epoch: e.data.processed_data.start_epoch,
@@ -1817,11 +1819,11 @@ var edit_event_ui = {
 
 					if(edit_event_ui.new_event){
 
-						static_data.event_data.events.splice(edit_event_ui.event_id, 1);
+						events.splice(edit_event_ui.event_id, 1);
 
 					}else{
 
-						static_data.event_data.events[edit_event_ui.event_id].data = clone(edit_event_ui.backup_event_data)
+						events[edit_event_ui.event_id].data = clone(edit_event_ui.backup_event_data)
 						edit_event_ui.backup_event_data = {}
 
 					}
@@ -1883,9 +1885,9 @@ var edit_event_ui = {
 
 		var warnings = [];
 
-		for(var eventId in static_data.event_data.events){
-			if(static_data.event_data.events[eventId].data.connected_events !== undefined){
-				var connected_events = static_data.event_data.events[eventId].data.connected_events;
+		for(var eventId in events){
+			if(events[eventId].data.connected_events !== undefined){
+				var connected_events = events[eventId].data.connected_events;
 				if(connected_events.includes(String(this.event_id)) || connected_events.includes(this.event_id)){
 					warnings.push(eventId);
 				}
@@ -1896,14 +1898,14 @@ var edit_event_ui = {
 
 			var html = [];
 			html.push(`<div class='text-left'>`)
-			html.push(`<h5>You trying to delete "${static_data.event_data.events[this.event_id].name}" which referenced in the following events:</h5>`)
+			html.push(`<h5>You trying to delete "${events[this.event_id].name}" which referenced in the following events:</h5>`)
 			html.push(`<ul>`);
 			for(var i = 0; i < warnings.length; i++){
 				var event_id = warnings[i];
-				html.push(`<li>• ${static_data.event_data.events[event_id].name}</li>`);
+				html.push(`<li>• ${events[event_id].name}</li>`);
 			}
 			html.push(`</ul>`);
-			html.push(`<p>Please remove the conditions referencing "${static_data.event_data.events[this.event_id].name}" in these events before deleting.</p>`)
+			html.push(`<p>Please remove the conditions referencing "${events[this.event_id].name}" in these events before deleting.</p>`)
 			html.push(`</div>`);
 
 			swal.fire({
@@ -1931,21 +1933,21 @@ var edit_event_ui = {
 
 					events_sortable.children(`[index='${this.event_id}']`).remove();
 
-					for(var eventId in static_data.event_data.events){
-						if(static_data.event_data.events[eventId].data.connected_events !== undefined){
-							for(connectedId in static_data.event_data.events[eventId].data.connected_events){
-								var number = Number(static_data.event_data.events[eventId].data.connected_events[connectedId])
-								if(Number(static_data.event_data.events[eventId].data.connected_events[connectedId]) > this.event_id){
-									static_data.event_data.events[eventId].data.connected_events[connectedId] = String(number-1)
+					for(var eventId in events){
+						if(events[eventId].data.connected_events !== undefined){
+							for(connectedId in events[eventId].data.connected_events){
+								var number = Number(events[eventId].data.connected_events[connectedId])
+								if(Number(events[eventId].data.connected_events[connectedId]) > this.event_id){
+									events[eventId].data.connected_events[connectedId] = String(number-1)
 								}
 							}
 						}
 					}
 
-					static_data.event_data.events.splice(this.event_id, 1);
+					events.splice(this.event_id, 1);
 
 					events_sortable.children().each(function(i){
-						static_data.event_data.events[i].sort_by = i;
+						events[i].sort_by = i;
 						$(this).attr('index', i);
 					});
 
@@ -1976,17 +1978,17 @@ function cancel_event_test(){
 
 function check_event_chain(child, parent_id){
 
-	if(static_data.event_data.events[parent_id].data.connected_events !== undefined && static_data.event_data.events[parent_id].data.connected_events.length > 0){
+	if(events[parent_id].data.connected_events !== undefined && events[parent_id].data.connected_events.length > 0){
 
-		if(static_data.event_data.events[parent_id].data.connected_events.includes(child)){
+		if(events[parent_id].data.connected_events.includes(child)){
 
 			return false;
 
 		}else{
 
-			for(var i = 0; i < static_data.event_data.events[parent_id].data.connected_events.length; i++){
+			for(var i = 0; i < events[parent_id].data.connected_events.length; i++){
 
-				var id = static_data.event_data.events[parent_id].data.connected_events[i];
+				var id = events[parent_id].data.connected_events[i];
 
 				var result = check_event_chain(child, id);
 
@@ -2080,10 +2082,10 @@ var show_event_ui = {
 				edit_event_ui.edit_event(show_event_ui.event_id);
 			}
 		});
-		
+
 		this.view_event_button.click(function(){
 			if(show_event_ui.event_id != -1){
-				show_event_ui.set_current_event(static_data.event_data.events[show_event_ui.event_id]);
+				show_event_ui.set_current_event(events[show_event_ui.event_id]);
 			}
 		});
 
@@ -2119,8 +2121,8 @@ var show_event_ui = {
 				registered_click_callbacks['show_event_ui'] = this.clear_callback;
 
 			}else{
-				
-				this.set_current_event(static_data.event_data.events[show_event_ui.event_id]);
+
+				this.set_current_event(events[show_event_ui.event_id]);
 
 			}
 

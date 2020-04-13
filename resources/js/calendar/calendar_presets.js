@@ -1173,12 +1173,12 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 
 	if(calendar.static_data.event_data !== undefined){
 
-		if(calendar.static_data.event_data.categories !== undefined && Array.isArray(calendar.static_data.event_data.categories)){
+		if(calendar.event_categories !== undefined && Array.isArray(calendar.event_categories)){
 
-			for(var categoryid in calendar.static_data.event_data.categories){
+			for(var categoryid in calendar.event_categories){
 
 				var category = {};
-				var current_category = calendar.static_data.event_data.categories[categoryid];
+				var current_category = calendar.event_categories[categoryid];
 
 				category.id = slugify(current_category.name);
 
@@ -1255,11 +1255,11 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 
 		}
 
-		if(calendar.static_data.event_data.events !== undefined && Array.isArray(calendar.static_data.event_data.events)){
-			for(var eventId in calendar.static_data.event_data.events){
+		if(calendar.events !== undefined && Array.isArray(calendar.events)){
+			for(var eventId in calendar.events){
 
 				var event = {};
-				var current_event = calendar.static_data.event_data.events[eventId];
+				var current_event = calendar.events[eventId];
 
 				if(current_event.name !== undefined){
 					event.name = current_event.name.toString();
@@ -1274,7 +1274,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 				}
 
 				if(current_event.category !== undefined && !isNaN(Number(current_event.category))){
-					event.event_category_id = calendar.static_data.event_data.categories[current_event.category].id;
+					event.event_category_id = calendar.event_categories[current_event.category].id;
 				}else{
 					throw `${event.name} does not have valid category data!`;
 				}
@@ -1528,7 +1528,7 @@ function process_old_fantasycalendar(calendar, dynamic_data, static_data){
 
 		data = convert_old_event(event);
 
-		static_data.event_data.events.push({
+		events.push({
 			'name': event.name,
 			'description': event.description,
 			'data':{

@@ -31,21 +31,16 @@ class Calendar extends Model
         'master_hash',
     ];
 
-    protected $hidden = [
-        'event_categories',
-        'events'
-    ];
-
     public function user() {
         return $this->belongsTo('App\User');
     }
 
     public function event_categories() {
-        return $this->hasMany('App\EventCategory');
+        return $this->hasMany('App\EventCategory')->orderBy('sort_by');
     }
 
     public function events() {
-        return $this->hasMany('App\CalendarEvent');
+        return $this->hasMany('App\CalendarEvent')->orderBy('sort_by');
     }
 
     public function child_calendars() {

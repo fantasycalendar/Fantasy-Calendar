@@ -5,7 +5,7 @@ importScripts('/js/calendar/calendar_variables.js?v='+version);
 
 
 onmessage = e => {
-	data = event_evaluator.init(e.data.static_data, e.data.epoch_data, e.data.event_id, e.data.start_epoch, e.data.end_epoch, e.data.callback);
+	data = event_evaluator.init(e.data.static_data, e.events, e.event_categories, e.data.epoch_data, e.data.event_id, e.data.start_epoch, e.data.end_epoch, e.data.callback);
 	postMessage({
 		event_data: data,
 		callback: false
@@ -22,9 +22,11 @@ var event_evaluator = {
 
 	current_data: {},
 
-	init: function(static_data, epoch_data, event_id, start_epoch, end_epoch, callback){
+	init: function(static_data, events, event_categories, epoch_data, event_id, start_epoch, end_epoch, callback){
 
 		this.static_data = static_data;
+		this.events = events;
+		this.categories = event_categories;
 		this.epoch_data = epoch_data;
 
 		this.start_epoch =  start_epoch;
@@ -44,10 +46,8 @@ var event_evaluator = {
 
 		//execution_time.start();
 
-		this.events = clone(this.static_data.event_data.events);
-		this.categories = clone(this.static_data.event_data.categories);
 		this.evaluate_valid_events(this.epoch_data, event_id);
-		
+
 		//execution_time.end();
 
 		return this.event_data;
@@ -105,7 +105,7 @@ var event_evaluator = {
 			var values = array[2];
 
 			var result = true;
-			
+
 			for(var i = 0; i < condition_mapping[category][type][1].length; i++){
 
 				var subcon = condition_mapping[category][type][1][i];
@@ -120,7 +120,7 @@ var event_evaluator = {
 					cond_2 = Number(cond_2) != NaN ? Number(cond_2) : cond_2;
 
 				}else if(array[0] === "Moons"){
-					
+
 					var selected = epoch_data[selector][values[0]];
 					var cond_1 = values[subcon[2]]|0;
 					var cond_2 = values[subcon[3]] ? values[subcon[3]]|0 : undefined;
@@ -316,8 +316,8 @@ var event_evaluator = {
 				}
 
 				if(array[i+1]){
-					
-					result = evaluate_operator(array[i+1][0], result, new_result); 
+
+					result = evaluate_operator(array[i+1][0], result, new_result);
 
 				}else{
 
@@ -385,7 +385,7 @@ var event_evaluator = {
 							var result = evaluate_event_group(event_evaluator.epoch_data[epoch], this.current_event.data.conditions);
 
 							if(result){
-									
+
 								add_to_epoch(this.current_event, event_index, epoch);
 
 							}
@@ -468,7 +468,7 @@ var event_evaluator = {
 				for(var connectedId in current_event.data.connected_events){
 
 					var parent_id = current_event.data.connected_events[connectedId];
-						
+
 					check_event_chain(parent_id, current_event.lookback, current_event.lookahead);
 
 				}
@@ -495,7 +495,7 @@ var event_evaluator = {
 				for(var connectedId in current_event.data.connected_events){
 
 					var parent_id = current_event.data.connected_events[connectedId];
-						
+
 					get_number_of_events(parent_id);
 
 					var lookback = 0;
