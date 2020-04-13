@@ -27,8 +27,6 @@ class Calendar extends Model
         'dynamic_data',
         'static_data',
         'hash',
-        'children',
-        'master_hash',
     ];
 
     protected $hidden = [
@@ -48,8 +46,12 @@ class Calendar extends Model
         return $this->hasMany('App\CalendarEvent');
     }
 
-    public function child_calendars() {
-        return $this->hasMany('App\Calendar', 'master_hash', 'hash');
+    public function parent() {
+        return $this->belongsTo('App\Calendar', 'parent_id');
+    }
+
+    public function children() {
+        return $this->hasMany('App\Calendar', 'parent_id');
     }
 
     public function getStaticDataAttribute($value) {

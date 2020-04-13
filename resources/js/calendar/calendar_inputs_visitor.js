@@ -238,7 +238,7 @@ function go_to_preview_date(rebuild){
 	rebuild = rebuild !== undefined ? rebuild : data.rebuild;
 
 	if(rebuild){
-		do_rebuild('preview', preview_date)
+		rebuild_calendar('preview', preview_date)
 	}else{
 		update_current_day();
 		scroll_to_epoch();
@@ -283,7 +283,7 @@ function go_to_dynamic_date(rebuild){
 	rebuild = rebuild !== undefined ? rebuild : data.rebuild;
 
 	if(rebuild){
-		do_rebuild('preview', dynamic_data)
+		rebuild_calendar('preview', dynamic_data)
 	}else{
 		update_current_day(false)
 		scroll_to_epoch();
@@ -308,16 +308,10 @@ function evaluate_settings(){
 	$('.date_control').toggleClass('hidden', (!owner && !static_data.settings.allow_view));
 	$('.date_control').find('select, input').not('#current_hour, #current_minute').prop('disabled', !owner && !static_data.settings.allow_view);
 
-	var has_master = link_data.master_hash !== "";
+	/* var has_parent = link_data.master_hash !== "";
 
-	$('#calendar_link_hide select, #calendar_link_hide button').prop('disabled', has_master);
-	$('#calendar_link_hide').toggleClass('hidden', has_master);
-
-	$('#calendar_link_show :input').prop('disabled', !has_master);
-	$('#calendar_link_show').toggleClass('hidden', !has_master);
-
-	$("#date_inputs :input, #date_inputs :button").prop("disabled", has_master);
-	$(".calendar_link_explaination").toggleClass("hidden", !has_master);
+	$("#date_inputs :input, #date_inputs :button").prop("disabled", has_parent);
+	$(".calendar_link_explaination").toggleClass("hidden", !has_parent); */
 
 	follower_buttons.toggleClass('hidden', (!owner && !static_data.settings.allow_view));
 	follower_year_buttons.prop('disabled', (!owner && !static_data.settings.allow_view)).toggleClass('hidden', (!owner && !static_data.settings.allow_view));

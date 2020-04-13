@@ -1087,27 +1087,6 @@
 						<div class='sortable' id='calendar_link_list'></div>
 
 					</div>
-
-
-					<div id="calendar_link_show">
-						<div class='row no-gutters mt-3'>
-							<div class='col-auto ml-4 pr-1 bold-text'>Link from master:</div>
-						</div>
-						<div class='row no-gutters protip' data-pt-position="right" data-pt-title='If enabled, the date of this calendar will be taken from the master calendar, but scaled based on the difference in the length of day between the master and this calendar. If this calendar has 12 hours per day and the master has 24, each day counts from the master counts as two days on this one.'>
-							<div class='col-auto ml-4 pr-0'>
-								Day
-							</div>
-							<div class='col-auto'>
-								<label class="custom-control custom-checkbox">
-									<input type="checkbox" class="custom-control-input static_input" id='link_scale' data='clock' fc-index='link_scale'>
-									<span class="custom-control-indicator"></span>
-								</label>
-							</div>
-							<div class='col-auto'>
-								Minutes
-							</div>
-						</div>
-					</div>
 				</div>
 			</div>
 		@endif

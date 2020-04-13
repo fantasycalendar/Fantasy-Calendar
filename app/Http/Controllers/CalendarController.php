@@ -157,7 +157,7 @@ class CalendarController extends Controller
      */
     public function update(Request $request, Calendar $calendar)
     {
-        $update_data = $request->only(['name', 'dynamic_data', 'static_data', 'children', 'master_hash']);
+        $update_data = $request->only(['name', 'dynamic_data', 'static_data']);
 
         if(array_key_exists('dynamic_data', $update_data)) {
             $update_data['dynamic_data'] = json_decode($update_data['dynamic_data']);

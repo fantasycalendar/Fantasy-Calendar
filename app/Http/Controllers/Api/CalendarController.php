@@ -31,12 +31,6 @@ class CalendarController extends Controller
         return $this->dispatchNow(new CloneCalendar($id, $request->get('new_calendar_name')));
     }
 
-    public function children(Request $request, $id) {
-        $calendar = Calendar::hash($id)->firstOrFail();
-
-        return $calendar->child_calendars->keyBy('id');
-    }
-
     public function last_changed(Request $request, $id) {
         $calendar = Calendar::hash($id)->firstOrFail();
 

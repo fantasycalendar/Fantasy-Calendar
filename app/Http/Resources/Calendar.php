@@ -18,8 +18,8 @@ class Calendar extends JsonResource
             'username' => $this->user->username,
             'name' => $this->name,
             'hash' => $this->hash,
-            'children' => $this->children,
-            'master_hash' => $this->master_hash
+            'parent' => $this->parent,
+            'children' => $this->children
         ];
     }
 }

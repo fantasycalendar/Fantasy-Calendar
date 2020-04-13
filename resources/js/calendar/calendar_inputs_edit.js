@@ -1313,9 +1313,9 @@ function set_up_edit_inputs(){
 			case "calendar_link_list":
 				$(this).closest('.sortable-container').remove();
 				$(this).closest('.sortable-container').parent().sortable('refresh');
-				var target_hash = link_data.children[index];
-				link_data.children.splice(index, 1);
-				remove_hashes(target_hash);
+				// var target_hash = link_data.children[index];
+				// link_data.children.splice(index, 1);
+				// remove_hashes(target_hash);
 				break;
 
 		}
@@ -2050,8 +2050,8 @@ function set_up_edit_inputs(){
 
 	$('#link_calendar').click(function(){
 		var target_hash = calendar_link_select.val();
-		link_data.children.push(target_hash);
-		update_hashes(target_hash);
+		//link_data.children.push(target_hash);
+		//update_hashes(target_hash);
 		$('#link_calendar').prop('disabled', true);
 	});
 
@@ -3518,7 +3518,7 @@ function add_event_to_sortable(parent, key, data){
 }
 
 
-function add_link_to_list(parent, key, data){
+function add_link_to_list(parent, key, calendar){
 
 	var element = [];
 
@@ -3526,7 +3526,7 @@ function add_link_to_list(parent, key, data){
 		element.push("<div class='main-container'>");
 			element.push("<div class='expand icon-collapse ml-2'></div>");
 			element.push("<div class='name-container'>");
-				element.push(`<div><a href="${window.baseurl}calendars/${data.hash}/edit" target="_blank">${data.name}</a></div>`);
+				element.push(`<div><a href="${window.baseurl}calendars/${calendar.hash}/edit" target="_blank">${calendar.name}</a></div>`);
 			element.push(`</div>`);
 			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
@@ -3574,6 +3574,12 @@ function add_link_to_list(parent, key, data){
 	var element = $(element.join(""));
 
 	parent.append(element);
+	
+	var parent_link_date = JSON.parse(calendar.parent_link_date)
+
+	element.find('.year-input').val(parent_link_date[0]);
+	repopulate_timespan_select(element.find('.timespan-list'), parent_link_date[1], false)
+	repopulate_day_select(element.find('.timespan-day-list'), parent_link_date[2], false)
 
 	return element;
 }
@@ -4556,30 +4562,26 @@ function evaluate_save_button(override){
 
 function populate_calendar_lists(){
 
-	if(link_data.master_hash !== ""){
-		return;
-	}
-
 	get_owned_calendars(function(owned_calendars){
 
-		for(var calendar in owned_calendars){
-			if(owned_calendars[calendar].children == ""){
-				owned_calendars[calendar].children = JSON.parse(owned_calendars[calendar].children);
-			}
-		}
+		console.log(owned_calendars)
 
 		calendar_link_list.html('');
 
-		for(var index in link_data.children){
+		for(var calendar_hash in owned_calendars){
 
-			var child = link_data.children[index];
-			var calendar = owned_calendars[child];
+			var calendar = owned_calendars[calendar_hash];
 
-			if(calendar){
-				var link = add_link_to_list(calendar_link_list, index, calendar);
-				link.find('.year-input').val(1)
-				repopulate_timespan_select(link.find('.timespan-list'), 0, false)
-				repopulate_day_select(link.find('.timespan-day-list'), 0, false)
+			if(calendar.hash == hash){
+
+				for(var index in calendar.children){
+
+					var child = calendar.children[index];
+
+					var link = add_link_to_list(calendar_link_list, index, child);
+
+				}
+
 			}
 			
 		}
@@ -4592,11 +4594,11 @@ function populate_calendar_lists(){
 
 			var calendar = owned_calendars[calendarhash];
 
-			if(calendar && calendar.hash != hash){
+			if(calendar.hash != hash){
 
-				if(calendar.master_hash){
+				if(calendar.parent){
 
-					var owner = clone(owned_calendars[calendar.master_hash]);
+					var owner = clone(owned_calendars[calendar.parent.hash]);
 
 					if(owner.hash == hash){
 						owner.name = "this calendar";
@@ -4866,7 +4868,7 @@ function set_up_edit_values(){
 
         populate_calendar_lists();
 
-        if(link_data.master_hash !== ''){
+        /* if(link_data.master_hash !== ''){
 
     		get_all_master_data(function(result){
 
@@ -4879,7 +4881,7 @@ function set_up_edit_values(){
 
         	});
 
-        }
+        } */
 
 	}
 
@@ -4894,54 +4896,6 @@ function set_up_edit_values(){
 	block_inputs = false;
 
 }
-
-var poll_timer;
-var last_mouse_move = Date.now();
-
-function bind_master_update(){
-
-	registered_mousemove_callbacks['master_update'] = function(){
-		last_mouse_move = Date.now();
-	}
-
-	check_master_update();
-
-}
-
-function check_master_update(){
-
-	if(document.hasFocus() && (Date.now() - last_mouse_move) < 10000){
-
-	    if(link_data.master_hash !== ''){
-
-	    	check_last_master_change(function(change_result){
-
-	    		new_dynamic_change = new Date(change_result.last_dynamic_change)
-	    		new_static_change = new Date(change_result.last_static_change)
-
-				if(new_dynamic_change > master_last_dynamic_change || new_static_change > master_last_static_change){
-
-					$('.master_button_container').removeClass('hidden');
-					$('#rebuild_calendar_btn').prop('disabled', false);
-
-				}else{
-
-					poll_timer = setTimeout(check_master_update, 5000);
-
-				}
-
-			});
-
-	    }
-
-    }else{
-
-		poll_timer = setTimeout(check_master_update, 5000);
-
-    }
-
-}
-
 
 function get_category(search) {
 	if(static_data.event_data.categories.length == 0){

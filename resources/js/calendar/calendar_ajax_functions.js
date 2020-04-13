@@ -161,72 +161,9 @@ function do_update_all(){
 	});
 }
 
-function update_hashes(child_hash){
-
-	$.ajax({
-		url:window.baseurl+"calendars/"+hash,
-		type: "post",
-		dataType: 'json',
-		data: {_method: 'PATCH', children: JSON.stringify(link_data.children)},
-		success: function( result ){
-
-			$.ajax({
-				url:window.baseurl+"calendars/"+child_hash,
-				type: "post",
-				dataType: 'json',
-				data: {_method: 'PATCH', hash: child_hash, master_hash: hash},
-				success: function( result ){
-					populate_calendar_lists();
-				},
-				error: function ( log )
-				{
-					console.log(log);
-				}
-			});
-
-		},
-		error: function ( log )
-		{
-			console.log(log);
-		}
-	});
-
-}
-function remove_hashes(child_hash){
-
-	$.ajax({
-		url:window.baseurl+"calendars/"+hash,
-		type: "post",
-		dataType: 'json',
-		data: {_method: 'PATCH', children: JSON.stringify(link_data.children)},
-		success: function( result ){
-
-			$.ajax({
-				url:window.baseurl+"calendars/"+child_hash,
-				type: "post",
-				dataType: 'json',
-				data: {_method: 'PATCH', master_hash: ''},
-				success: function( result ){
-					populate_calendar_lists();
-				},
-				error: function ( log )
-				{
-					console.log(log);
-				}
-			});
-
-		},
-		error: function ( log )
-		{
-			console.log(log);
-		}
-	});
-
-}
 
 
-
-function get_all_master_data(output){
+/* function get_all_master_data(output){
 
 	$.ajax({
 		url:window.apiurl+"/"+link_data.master_hash,
@@ -260,7 +197,7 @@ function check_last_master_change(output){
 			console.log(log);
 		}
 	});
-}
+} */
 
 function get_all_data(output){
 

@@ -19,7 +19,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::any('/calendar/{id}/clone', 'Api\CalendarController@clone');
 Route::any('/calendar/{id}/owned', 'Api\CalendarController@owned');
-Route::any('/calendar/{id}/children', 'Api\CalendarController@children');
 Route::any('/calendar/{id}/last_changed', 'Api\CalendarController@last_changed');
 Route::any('/calendar/{id}/dynamic_data', 'Api\CalendarController@dynamic_data');
 Route::apiResource('calendar', 'Api\CalendarController');

@@ -78,10 +78,10 @@
             "location": "Equatorial"
         };
 
-        link_data = {
+        /* link_data = {
             master_hash: "",
             children: []
-        };
+        }; */
 
         $(document).ready(function(){
 
