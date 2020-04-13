@@ -57,7 +57,7 @@
         }*/
 
         $('#current_year, #current_timespan, #current_day, #current_hour, #current_minute, #location_select').change(function(){
-            do_update_dynamic();
+            update_dynamic(hash);
         });
 
     });
@@ -82,7 +82,7 @@
                     last_dynamic_change = new_dynamic_change
                     last_static_change = new_static_change
 
-                    get_all_data(function(result){
+                    get_all_data(hash, function(result){
 
                         if(result.error){
                             throw result.message;
@@ -101,7 +101,7 @@
                     
                     last_dynamic_change = new_dynamic_change
 
-                    get_dynamic_data(function(result){
+                    get_dynamic_data(hash, function(result){
 
                         if(result.error){
                             throw result.message;

@@ -1332,59 +1332,42 @@ var date_converter = {
    /**
      * This function is used when you want to calculate the difference between two calendars' dates.
      *
-     * @param  {object}     static_data         A calendar static data object, primary, to be used to calculate the secondary calendar's date
-     * @param  {object}     inc_static_data     A calendar static data object, secondary, to be used to calculate its new date
-     * @param  {object}     dynamic_data        A calendar dynamic data object, primary, to be used to calculate the secondary calendar's date
-     * @param  {object}     inc_dynamic_data    A calendar dynamic data object, secondary, used only to adjust the outgoing date's timezone
-     * @return {object}                         A calendar dynamic data object, adjusted from the primary calendar to be used on the secondary calendar
+     * @param  {object}		parent_static_data 		A calendar static data object, primary, to be used to calculate the secondary calendar's date
+     * @param  {object}		child_static_data  		A calendar static data object, secondary, to be used to calculate its new date
+     * @param  {object}		parent_dynamic_data		A calendar dynamic data object, primary, to be used to calculate the secondary calendar's date
+     * @param  {object}		child_dynamic_data 		A calendar dynamic data object, secondary, used only to adjust the outgoing date's timezone
+     * @return {object}		                   		A calendar dynamic data object, adjusted from the primary calendar to be used on the secondary calendar
      */
 
-	get_date: function(static_data, inc_static_data, dynamic_data, inc_dynamic_data){
+	get_date: function(parent_static_data, child_static_data, parent_dynamic_data, child_dynamic_data, parent_offset){
 
-		this.static_data = static_data;
-		this.inc_static_data = inc_static_data;
+		this.parent_static_data = parent_static_data;
+		this.child_static_data = child_static_data;
+		
+		this.parent_dynamic_data = parent_dynamic_data;
+		this.child_dynamic_data = child_dynamic_data;
 
-		var inc_minutes_per_day = this.inc_static_data.clock.hours * this.inc_static_data.clock.minutes;
-		var minutes_per_day = this.static_data.clock.hours * this.static_data.clock.minutes;
+		var child_minutes_per_day = this.child_static_data.clock.hours * this.child_static_data.clock.minutes;
+		var parent_minutes_per_day = this.parent_static_data.clock.hours * this.parent_static_data.clock.minutes;
 
-		var time_scale = minutes_per_day / inc_minutes_per_day;
+		var time_scale = parent_minutes_per_day / child_minutes_per_day;
 
-		var do_scale = typeof this.inc_static_data.clock.link_scale == "undefined" || this.inc_static_data.clock.link_scale;
+		this.target_epoch = Math.floor((this.parent_dynamic_data.epoch-parent_offset)*time_scale);
 
-		if(!do_scale){
-			time_scale = 1.0;
+		var current_minute = this.parent_dynamic_data.hour*this.parent_static_data.clock.minutes+this.parent_dynamic_data.minute;
+
+		var child_current_hours = current_minute / this.child_static_data.clock.minutes;
+
+		if(child_current_hours >= this.child_static_data.clock.hours){
+			this.target_epoch++;
+			child_current_hours -= this.child_static_data.clock.hours;
 		}
 
-		this.target_epoch = Math.floor(dynamic_data.epoch*time_scale);
+		var hour = Math.floor(child_current_hours);
 
-		if(do_scale){
+		var minute = Math.floor(this.child_static_data.clock.minutes*fract(child_current_hours))+1
 
-			var current_minute = dynamic_data.hour*this.static_data.clock.minutes+dynamic_data.minute;
-
-			var inc_current_hours = current_minute / this.inc_static_data.clock.minutes;
-
-			if(inc_current_hours >= this.inc_static_data.clock.hours){
-				this.target_epoch++;
-				inc_current_hours -= this.inc_static_data.clock.hours;
-			}
-
-		}else{
-
-			var current_minute = dynamic_data.hour*this.static_data.clock.minutes+dynamic_data.minute;
-
-			var scaled_minutes =  current_minute / minutes_per_day;
-
-			var inc_current_minutes = scaled_minutes*inc_minutes_per_day;
-
-			var inc_current_hours = inc_current_minutes / this.inc_static_data.clock.minutes;
-
-		}
-
-		var hour = Math.floor(inc_current_hours);
-
-		var minute = Math.floor(this.inc_static_data.clock.minutes*fract(inc_current_hours))
-
-		this.year = Math.floor(this.target_epoch / fract_year_length(this.inc_static_data))-10;
+		this.year = Math.floor(this.target_epoch / fract_year_length(this.child_static_data))-10;
 		this.timespan = 0;
 		this.day = 1;
 
@@ -1392,7 +1375,7 @@ var date_converter = {
 
 		while(this.loops < 1000){
 
-			var first_suggested_epoch = evaluate_calendar_start(this.inc_static_data, this.year).epoch;
+			var first_suggested_epoch = evaluate_calendar_start(this.child_static_data, this.year).epoch;
 
 			if(first_suggested_epoch < this.target_epoch){
 				this.year++;
@@ -1408,19 +1391,19 @@ var date_converter = {
 
 		while(this.loops < 1000){
 
-			if(!does_timespan_appear(this.inc_static_data, this.year, this.timespan).result){
+			if(!does_timespan_appear(this.child_static_data, this.year, this.timespan).result){
 
 				this.increase_month();
 
 			}else{
 
-				this.suggested_epoch = evaluate_calendar_start(this.inc_static_data, this.year, this.timespan).epoch;
+				this.suggested_epoch = evaluate_calendar_start(this.child_static_data, this.year, this.timespan).epoch;
 
 				if(this.suggested_epoch < this.target_epoch){
 					this.increase_month();
 				}else{
 					this.decrease_month();
-					this.suggested_epoch = evaluate_calendar_start(this.inc_static_data, this.year, this.timespan).epoch;
+					this.suggested_epoch = evaluate_calendar_start(this.child_static_data, this.year, this.timespan).epoch;
 					break;
 				}
 
@@ -1432,7 +1415,7 @@ var date_converter = {
 
 		while(this.loops < 1000){
 
-			this.suggested_epoch = evaluate_calendar_start(this.inc_static_data, this.year, this.timespan, this.day).epoch;
+			this.suggested_epoch = evaluate_calendar_start(this.child_static_data, this.year, this.timespan, this.day).epoch;
 
 			if(this.suggested_epoch != this.target_epoch){
 				this.increase_day();
@@ -1474,18 +1457,18 @@ var date_converter = {
 
 		this.timespan++;
 
-		if(this.timespan == this.inc_static_data.year_data.timespans.length){
+		if(this.timespan == this.child_static_data.year_data.timespans.length){
 
 			this.year++;
 			this.timespan = 0;
 
 		}
 
-		if(!does_timespan_appear(this.inc_static_data, this.year, this.timespan).result){
+		if(!does_timespan_appear(this.child_static_data, this.year, this.timespan).result){
 			this.increase_month();
 		}
 
-		this.timespan_length = get_days_in_timespan(this.inc_static_data, this.year, this.timespan);
+		this.timespan_length = get_days_in_timespan(this.child_static_data, this.year, this.timespan);
 
 	},
 
@@ -1496,15 +1479,15 @@ var date_converter = {
 		if(this.timespan < 0){
 
 			this.year--;
-			this.timespan = this.inc_static_data.year_data.timespans.length-1;
+			this.timespan = this.child_static_data.year_data.timespans.length-1;
 
 		}
 
-		if(!does_timespan_appear(this.inc_static_data, this.year, this.timespan).result){
+		if(!does_timespan_appear(this.child_static_data, this.year, this.timespan).result){
 			this.decrease_month();
 		}
 
-		this.timespan_length = get_days_in_timespan(this.inc_static_data, this.year, this.timespan);
+		this.timespan_length = get_days_in_timespan(this.child_static_data, this.year, this.timespan);
 
 	}
 

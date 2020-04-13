@@ -60,10 +60,10 @@ function update_name(){
 	});
 }
 
-function update_view_dynamic(){
+function update_view_dynamic(calendar_hash){
 
 	$.ajax({
-		url:window.baseurl+"calendars/"+hash,
+		url:window.baseurl+"calendars/"+calendar_hash,
 		type: "post",
 		dataType: 'json',
 		data: {_method: 'PATCH', dynamic_data: JSON.stringify(dynamic_data)},
@@ -79,10 +79,10 @@ function update_view_dynamic(){
 }
 
 
-function update_dynamic(){
+function update_dynamic(calendar_hash){
 
 	$.ajax({
-		url:window.baseurl+"calendars/"+hash,
+		url:window.baseurl+"calendars/"+calendar_hash,
 		type: "post",
 		dataType: 'json',
 		data: {_method: 'PATCH', dynamic_data: JSON.stringify(dynamic_data)},
@@ -122,15 +122,15 @@ function update_all(){
 
 		}
 
-		do_update_all();
+		do_update_all(hash);
 
 	});
 }
 
-function do_update_all(){
+function do_update_all(calendar_hash){
 
 	$.ajax({
-		url:window.baseurl+"calendars/"+hash,
+		url:window.baseurl+"calendars/"+calendar_hash,
 		type: "post",
 		dataType: 'json',
 		data: {_method: 'PATCH', dynamic_data: JSON.stringify(dynamic_data), static_data: JSON.stringify(static_data)},
@@ -159,6 +159,45 @@ function do_update_all(){
 			calendar_save_failed();
 		}
 	});
+}
+
+function get_all_data(calendar_hash, output){
+
+	$.ajax({
+		url:window.apiurl+"/"+calendar_hash,
+		type: "get",
+		dataType: 'json',
+		data: {},
+		success: function(result){
+
+			output(result);
+
+		},
+		error: function ( log )
+		{
+			console.log(log);
+		}
+	});
+}
+
+function get_dynamic_data(calendar_hash, output){
+
+	$.ajax({
+		url:window.apiurl+"/"+calendar_hash+"/dynamic_data",
+		type: "get",
+		dataType: 'json',
+		data: {},
+		success: function(result){
+
+			output(result);
+
+		},
+		error: function ( log )
+		{
+			console.log(log);
+		}
+	});
+
 }
 
 
@@ -199,27 +238,49 @@ function check_last_master_change(output){
 	});
 } */
 
-function link_child_calendar(output, child_hash, parent_link_date, parent_offset){
+function link_child_calendar(child_hash, parent_link_date, parent_offset){
 
-	$.ajax({
-		url:window.baseurl+"calendars/"+child_hash,
-		type: "post",
-		dataType: 'json',
-		data: {
-			_method: "PATCH",
-			parent_hash: hash,
-			parent_link_date: parent_link_date,
-			parent_offset: parent_offset,
-		},
-		success: function(result){
-			output(result)
-		},
-		error: function ( log )
-		{
-			console.log(log);
-		}
+	get_all_data(child_hash, function(result){
+
+		var child_static_data = result.static_data;
+		var child_dynamic_data = result.dynamic_data;
+		var converted_date = date_converter.get_date(
+			static_data,
+			child_static_data,
+			dynamic_data,
+			child_dynamic_data,
+			parent_offset
+		);
+
+		child_dynamic_data.year = converted_date.year;
+		child_dynamic_data.timespan = converted_date.timespan;
+		child_dynamic_data.day = converted_date.day;
+		child_dynamic_data.epoch = converted_date.epoch;
+		child_dynamic_data.hour = converted_date.hour;
+		child_dynamic_data.minute = converted_date.minute;
+
+		$.ajax({
+			url:window.baseurl+"calendars/"+child_hash,
+			type: "post",
+			dataType: 'json',
+			data: {
+				_method: "PATCH",
+				parent_hash: hash,
+				parent_link_date: parent_link_date,
+				parent_offset: parent_offset,
+				dynamic_data: JSON.stringify(child_dynamic_data),
+			},
+			success: function(result){
+				populate_calendar_lists();
+			},
+			error: function ( log )
+			{
+				console.log(log);
+			}
+		});
 	});
 }
+
 function unlink_child_calendar(output, child_hash){
 
 	$.ajax({
@@ -240,45 +301,6 @@ function unlink_child_calendar(output, child_hash){
 			console.log(log);
 		}
 	});
-}
-
-function get_all_data(output){
-
-	$.ajax({
-		url:window.apiurl+"/"+hash,
-		type: "get",
-		dataType: 'json',
-		data: {},
-		success: function(result){
-
-			output(result);
-
-		},
-		error: function ( log )
-		{
-			console.log(log);
-		}
-	});
-}
-
-function get_dynamic_data(output){
-
-	$.ajax({
-		url:window.apiurl+"/"+hash+"/dynamic_data",
-		type: "get",
-		dataType: 'json',
-		data: {},
-		success: function(result){
-
-			output(result);
-
-		},
-		error: function ( log )
-		{
-			console.log(log);
-		}
-	});
-
 }
 
 
@@ -303,17 +325,28 @@ function update_children_dynamic_data(){
 
 	$.ajax({
 		url:window.apiurl+"/"+hash+"/children",
-		type: "post",
+		type: "get",
 		dataType: 'json',
 		data: {hash: hash},
 		success: function(result){
 
+			var new_dynamic_data = {};
+
 			for(var i in result){
 
 				var child_hash = result[i].hash;
+
 				var child_static_data = result[i].static_data;
+				var parent_offset = result[i].parent_offset;
 				var child_dynamic_data = result[i].dynamic_data;
-				var converted_date = date_converter.get_date(static_data, child_static_data, dynamic_data, child_dynamic_data);
+				var converted_date = date_converter.get_date(
+					static_data,
+					child_static_data,
+					dynamic_data,
+					child_dynamic_data,
+					parent_offset
+				);
+
 				child_dynamic_data.year = converted_date.year;
 				child_dynamic_data.timespan = converted_date.timespan;
 				child_dynamic_data.day = converted_date.day;
@@ -321,18 +354,20 @@ function update_children_dynamic_data(){
 				child_dynamic_data.hour = converted_date.hour;
 				child_dynamic_data.minute = converted_date.minute;
 
-				$.ajax({
-					url:window.baseurl+"calendars/"+child_hash,
-					type: "post",
-					dataType: 'json',
-					data: {_method: 'PATCH', dynamic_data: JSON.stringify(child_dynamic_data)},
-					error: function ( log )
-					{
-						console.log(log);
-					}
-				});
+				new_dynamic_data[child_hash] = child_dynamic_data;
 
 			}
+
+			$.ajax({
+				url:window.apiurl+"/"+hash+"/updatechildren",
+				type: "post",
+				dataType: 'json',
+				data: {_method: 'PATCH', data: JSON.stringify(new_dynamic_data)},
+				error: function ( log )
+				{
+					console.log(log);
+				}
+			});
 
 		},
 		error: function ( log )
@@ -341,7 +376,6 @@ function update_children_dynamic_data(){
 		}
 	});
 }
-
 
 function check_last_change(output){
 	$.ajax({

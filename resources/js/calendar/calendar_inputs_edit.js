@@ -42,7 +42,7 @@ function set_up_edit_inputs(){
 		if(!static_same || (!static_same && !dynamic_same)){
 			update_all();
 		}else if(!dynamic_same){
-			update_dynamic();
+			update_dynamic(hash);
 		}else if(!calendar_name_same){
 			update_name();
 		}
@@ -2067,9 +2067,10 @@ function set_up_edit_inputs(){
 
 		var date = [year, timespan, day];
 
-		var epoch = evaluate_calendar_start(static_data, year, timespan, day).epoch;
+		var epoch_offset = evaluate_calendar_start(static_data, year, timespan, day).epoch;
 
-		link_child_calendar(populate_calendar_lists, calendar_hash, date, epoch);
+		link_child_calendar(calendar_hash, date, epoch_offset);
+
 	});
 
 	$(document).on('click', '.unlink_calendar', function(){

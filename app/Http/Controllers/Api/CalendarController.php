@@ -42,6 +42,31 @@ class CalendarController extends Controller
         return $last_changed;
     }
 
+    public function children(Request $request, $id) {
+        $calendar = Calendar::hash($id)->firstOrFail();
+        
+        return $calendar->children;
+
+    }
+
+    public function updatechildren(Request $request){
+        
+        $request = $request->only('data');
+
+        $update_data = json_decode($request['data']);
+
+        foreach($update_data as $hash => $dynamic_data){
+            
+            $calendar = Calendar::hash($hash)->firstOrFail();
+
+            $calendar->update( ['dynamic_data' => $dynamic_data ]);
+
+        }
+
+        return [ 'success' => true, 'data' => true ];
+
+    }
+
     public function owned(Request $request, $id) {
         $calendar = Calendar::hash($id)->firstOrFail();
 
