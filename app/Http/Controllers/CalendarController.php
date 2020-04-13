@@ -181,9 +181,13 @@ class CalendarController extends Controller
         $parent_offset_exists = array_key_exists('parent_offset', $update_data);
 
         if($parent_hash_exists && $parent_link_date_exists && $parent_offset_exists) {
-            $parent_calendar = Calendar::hash($update_data['parent_hash'])->firstOrFail();
-            unset($update_data['parent_hash']);
-            $update_data['parent_id'] = $parent_calendar->id;
+            if($update_data['parent_hash'] != null){
+                $parent_calendar = Calendar::hash($update_data['parent_hash'])->firstOrFail();
+                unset($update_data['parent_hash']);
+                $update_data['parent_id'] = $parent_calendar->id;
+            }else{
+                $update_data['parent_id'] = null;
+            }
         }
 
 

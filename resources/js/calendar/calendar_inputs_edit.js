@@ -2052,6 +2052,7 @@ function set_up_edit_inputs(){
 			var calendar = owned_calendars[calendar_hash];
 			add_link_to_list(calendar_link_list, calendar_link_list.children().length, false, calendar);
 		}else{
+			calendar_link_select.prop('disabled', true);
 			populate_calendar_lists();
 		}
 	});
@@ -2068,7 +2069,12 @@ function set_up_edit_inputs(){
 
 		var epoch = evaluate_calendar_start(static_data, year, timespan, day).epoch;
 
-		update_child_calendar(populate_calendar_lists, calendar_hash, date, epoch);
+		link_child_calendar(populate_calendar_lists, calendar_hash, date, epoch);
+	});
+
+	$(document).on('click', '.unlink_calendar', function(){
+		var calendar_hash = $(this).attr('hash');
+		unlink_child_calendar(populate_calendar_lists, calendar_hash);
 	});
 
 	$('#apply_changes_btn').click(function(){
@@ -4637,6 +4643,7 @@ function populate_calendar_lists(){
 		}
 
 		calendar_link_select.html(html.join(''));
+		calendar_link_select.prop('disabled', false);
 
 	});
 

@@ -199,7 +199,7 @@ function check_last_master_change(output){
 	});
 } */
 
-function update_child_calendar(output, child_hash, parent_link_date, parent_offset){
+function link_child_calendar(output, child_hash, parent_link_date, parent_offset){
 
 	$.ajax({
 		url:window.baseurl+"calendars/"+child_hash,
@@ -213,6 +213,27 @@ function update_child_calendar(output, child_hash, parent_link_date, parent_offs
 		},
 		success: function(result){
 			output(result)
+		},
+		error: function ( log )
+		{
+			console.log(log);
+		}
+	});
+}
+function unlink_child_calendar(output, child_hash){
+
+	$.ajax({
+		url:window.baseurl+"calendars/"+child_hash,
+		type: "post",
+		dataType: 'json',
+		data: {
+			_method: "PATCH",
+			parent_hash: null,
+			parent_link_date: null,
+			parent_offset: null,
+		},
+		success: function(result){
+			output(result);
 		},
 		error: function ( log )
 		{
