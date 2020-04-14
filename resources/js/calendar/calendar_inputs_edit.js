@@ -11,14 +11,18 @@ function set_up_edit_inputs(){
 	calendar_name_same = calendar_name == prev_calendar_name;
 	static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
 	dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
+	events_same = JSON.stringify(events) === JSON.stringify(prev_events);
+	event_categories_same = JSON.stringify(event_categories) === JSON.stringify(prev_event_categories);
 
 	window.onbeforeunload = function(e){
 
 		calendar_name_same = calendar_name == prev_calendar_name;
 		static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
 		dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
+		events_same = JSON.stringify(events) === JSON.stringify(prev_events);
+		event_categories_same = JSON.stringify(event_categories) === JSON.stringify(prev_event_categories);
 
-		var not_changed = static_same && dynamic_same && calendar_name_same;
+		var not_changed = static_same && dynamic_same && calendar_name_same && events_same && event_categories_same;
 
 		if(!not_changed){
 
@@ -39,7 +43,7 @@ function set_up_edit_inputs(){
 
 		calendar_saving();
 
-		if(!static_same || (!static_same && !dynamic_same)){
+		if(!events_same || !event_categories_same || !static_same){
 			update_all();
 		}else if(!dynamic_same){
 			update_dynamic();
@@ -4467,8 +4471,10 @@ function evaluate_save_button(override){
 			calendar_name_same = calendar_name == prev_calendar_name;
 			static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
 			dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
+			events_same = JSON.stringify(events) === JSON.stringify(prev_events);
+			event_categories_same = JSON.stringify(event_categories) === JSON.stringify(prev_event_categories);
 
-			var not_changed = static_same && dynamic_same && calendar_name_same;
+			var not_changed = static_same && dynamic_same && calendar_name_same && events_same && event_categories_same;
 
 			var text = not_changed ? "No changes to save" : "Save calendar";
 
@@ -4527,7 +4533,7 @@ function populate_calendar_lists(){
 	get_owned_calendars(function(owned_calendars){
 
 		for(var calendar in owned_calendars){
-			if(owned_calendars[calendar].children == ""){
+			if(owned_calendars[calendar].children != ""){
 				owned_calendars[calendar].children = JSON.parse(owned_calendars[calendar].children);
 			}
 		}

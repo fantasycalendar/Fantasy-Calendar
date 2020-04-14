@@ -154,6 +154,14 @@ function do_update_all(){
 				prev_dynamic_data = clone(dynamic_data);
 			}
 
+			if(!event_same){
+				prev_events = clone(events);
+			}
+
+			if(!event_categories_same){
+				prev_event_categories = clone(event_categories);
+			}
+
 			update_children_dynamic_data();
 
 			calendar_saved();

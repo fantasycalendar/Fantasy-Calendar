@@ -135,6 +135,7 @@
                         set_up_visitor_values();
                         $('#json_input').val('');
                         error_check('calendar', true);
+                        evaluate_save_button();
                     }else{
                         alert("Unrecognized JSON format.")
                     }
@@ -166,6 +167,7 @@
                             set_up_view_values();
                             set_up_visitor_values();
                             error_check('calendar', true);
+                            evaluate_save_button();
                         }
                     });
 
@@ -181,6 +183,7 @@
                     set_up_view_values();
                     set_up_visitor_values();
                     error_check('calendar', true);
+                    evaluate_save_button();
                 }
             });
 

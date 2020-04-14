@@ -252,6 +252,8 @@ worker_events.onmessage = e => {
 	display_events(static_data, e.data.event_data)
 
 	hide_loading_screen();
+	
+	evaluate_save_button();
 
 }
 
