@@ -60,12 +60,12 @@
             "cycles":{
                 "format":"",
                 "data":[]
-            },
-            "event_data":{
-                "categories":[],
-                "events":[]
             }
         };
+
+        events = {};
+
+        event_categories = {};
 
         randomizer = new RandomCalendar();
 
@@ -173,6 +173,8 @@
                     calendar_name = clone(calendar_presets[$('#presets').val()].name);
                     static_data = clone(calendar_presets[$('#presets').val()].static_data);
                     dynamic_data = clone(calendar_presets[$('#presets').val()].dynamic_data);
+                    events = clone(calendar_presets[$('#presets').val()].events);
+                    event_categories = clone(calendar_presets[$('#presets').val()].event_categories);
                     dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
                     empty_edit_values();
                     set_up_edit_values();

@@ -210,6 +210,8 @@ function do_rebuild(action, dynamic_data){
 		calendar_name: calendar_name,
 		static_data: static_data,
 		dynamic_data: dynamic_data,
+        events: events,
+        event_categories: event_categories,
 		action: action,
 		owner: owner
 	});
@@ -236,6 +238,8 @@ function rebuild_events(event_id){
 	worker_events.postMessage({
 		static_data: static_data,
 		epoch_data: evaluated_static_data.epoch_data,
+        events: events,
+        event_categories: event_categories,
 		event_id: event_id,
 		start_epoch: evaluated_static_data.year_data.start_epoch,
 		end_epoch: evaluated_static_data.year_data.end_epoch

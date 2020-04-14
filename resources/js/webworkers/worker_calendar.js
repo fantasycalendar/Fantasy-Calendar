@@ -2074,6 +2074,8 @@ onmessage = e => {
 	calendar_builder.static_data = e.data.static_data;
 	calendar_builder.dynamic_data = e.data.dynamic_data;
 	calendar_builder.owner = e.data.owner;
+	calendar_builder.events = e.data.events;
+	calendar_builder.event_categories = e.data.event_categories;
 
 	if(debug){
 
