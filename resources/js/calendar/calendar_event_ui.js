@@ -108,6 +108,7 @@ var edit_event_ui = {
 					icon: "warning",
 				}).then((result) => {
 					if(!result.dismiss) {
+						
 						if(edit_event_ui.new_event){
 							events.splice(edit_event_ui.event_id, 1);
 						}
@@ -117,6 +118,10 @@ var edit_event_ui = {
 				});
 
 			}else{
+						
+				if(edit_event_ui.new_event){
+					events.splice(edit_event_ui.event_id, 1);
+				}
 
 				edit_event_ui.clear_ui();
 

@@ -233,6 +233,19 @@ function rebuild_climate(){
 
 function rebuild_events(event_id){
 
+	var apply_changes_immediately = $('#apply_changes_immediately').is(':checked');
+
+	if(!apply_changes_immediately){
+		if(!changes_applied){
+			evaluate_save_button();
+			show_changes_button();
+			return;
+		}else{
+			hide_changes_button();
+			evaluate_save_button(true);
+		}
+	}
+
 	show_loading_screen_buffered();
 
 	worker_events.postMessage({
@@ -252,8 +265,6 @@ worker_events.onmessage = e => {
 	display_events(static_data, e.data.event_data)
 
 	hide_loading_screen();
-	
-	evaluate_save_button();
 
 }
 
