@@ -74,24 +74,35 @@ var evaluate_era_position = debounce(function(){
 	eras.evaluate_position();
 }, 50);
 
-function pre_rebuild_calendar(action, dynamic_data){
+function eval_apply_changes(output){
 
-	var apply_changes_immediately = $('#apply_changes_immediately').is(':checked');
+	var apply_changes_immediately = $('#apply_changes_immediately');
 
-	if(!apply_changes_immediately){
+	if(apply_changes_immediately.length == 0){
+		output();
+	}else if(!apply_changes_immediately.is(':checked')){
 		if(!changes_applied){
 			evaluate_save_button();
 			show_changes_button();
-			return;
 		}else{
 			hide_changes_button();
 			evaluate_save_button(true);
+			output();
 		}
 	}else{
 		evaluate_save_button();
+		output();
 	}
 
-	rebuild_calendar(action, dynamic_data);
+}
+
+function pre_rebuild_calendar(action, dynamic_data){
+
+	eval_apply_changes(function(){
+
+		rebuild_calendar(action, dynamic_data);
+
+	});
 
 }
 
@@ -234,19 +245,6 @@ function rebuild_climate(){
 }
 
 function rebuild_events(event_id){
-
-	var apply_changes_immediately = $('#apply_changes_immediately').is(':checked');
-
-	if(!apply_changes_immediately){
-		if(!changes_applied){
-			evaluate_save_button();
-			show_changes_button();
-			return;
-		}else{
-			hide_changes_button();
-			evaluate_save_button(true);
-		}
-	}
 
 	show_loading_screen_buffered();
 

@@ -375,7 +375,13 @@ function weather_overlay(data, show){
 
 function pre_update_current_day(recalculate){
 
-	var apply_changes_immediately = $('#apply_changes_immediately').is(':checked');
+	var apply_changes_immediately = $('#apply_changes_immediately');
+
+	if(apply_changes_immediately.length == 0){
+		apply_changes_immediately = true;
+	}else{
+		apply_changes_immediately = apply_changes_immediately.is(':checked');
+	}
 
 	if(!apply_changes_immediately){
 		evaluate_apply_show_hide();

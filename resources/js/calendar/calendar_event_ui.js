@@ -521,7 +521,11 @@ var edit_event_ui = {
 
 		error_check();
 
-		rebuild_events();
+		eval_apply_changes(function(){
+
+			rebuild_events();
+
+		});
 
 	},
 
