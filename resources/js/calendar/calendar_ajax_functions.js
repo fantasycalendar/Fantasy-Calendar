@@ -154,7 +154,7 @@ function do_update_all(){
 				prev_dynamic_data = clone(dynamic_data);
 			}
 
-			if(!event_same){
+			if(!events_same){
 				prev_events = clone(events);
 			}
 

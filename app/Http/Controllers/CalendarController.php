@@ -169,8 +169,6 @@ class CalendarController extends Controller
             SaveCalendarEvents::dispatchNow(json_decode($update_data['events'], true), $categoryids, $calendar->id);
         }
 
-        dd($update_data);
-
         $calendar_was_updated = $calendar->update($update_data);
 
         if($calendar_was_updated == 0) {
