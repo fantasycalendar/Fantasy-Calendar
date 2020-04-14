@@ -87,6 +87,8 @@ function pre_rebuild_calendar(action, dynamic_data){
 			hide_changes_button();
 			evaluate_save_button(true);
 		}
+	}else{
+		evaluate_save_button();
 	}
 
 	rebuild_calendar(action, dynamic_data);
