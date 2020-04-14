@@ -361,6 +361,8 @@ var edit_event_ui = {
 
 		this.new_event = true;
 
+		this.delete_btn.toggleClass('hidden', true);
+
 		this.data = clone(evaluated_static_data.epoch_data[epoch]);
 
 		var stats = {
@@ -566,6 +568,8 @@ var edit_event_ui = {
 		$('#has_duration').prop('checked', false);
 		$('#duration').prop('disabled', true).val(1);
 		$('#show_first_last').prop('checked', false);
+
+		this.delete_btn.toggleClass('hidden', false);
 
 		this.event_background.scrollTop(0);
 
