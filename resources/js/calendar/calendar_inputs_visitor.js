@@ -308,10 +308,10 @@ function evaluate_settings(){
 	$('.date_control').toggleClass('hidden', (!owner && !static_data.settings.allow_view));
 	$('.date_control').find('select, input').not('#current_hour, #current_minute').prop('disabled', !owner && !static_data.settings.allow_view);
 
-	/* var has_parent = link_data.master_hash !== "";
+	console.log(has_parent)
 
 	$("#date_inputs :input, #date_inputs :button").prop("disabled", has_parent);
-	$(".calendar_link_explaination").toggleClass("hidden", !has_parent); */
+	$(".calendar_link_explaination").toggleClass("hidden", !has_parent);
 
 	follower_buttons.toggleClass('hidden', (!owner && !static_data.settings.allow_view));
 	follower_year_buttons.prop('disabled', (!owner && !static_data.settings.allow_view)).toggleClass('hidden', (!owner && !static_data.settings.allow_view));

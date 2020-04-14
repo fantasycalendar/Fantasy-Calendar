@@ -27,10 +27,6 @@
             static_data.clock.render = static_data.clock.enable;
         }
 
-        /* if(typeof static_data.clock.link_scale == "undefined"){
-            static_data.clock.link_scale = link_data.master_hash !== "";
-        } */
-
         if(typeof static_data.clock.crowding == "undefined"){
             static_data.clock.crowding = 0;
         }

@@ -2065,17 +2065,57 @@ function set_up_edit_inputs(){
 		var timespan = Number($(this).closest('.collapse-container').find('.timespan-list').val());
 		var day = Number($(this).closest('.collapse-container').find('.timespan-day-list').val());
 
-		var date = [year, timespan, day];
 
-		var epoch_offset = evaluate_calendar_start(static_data, year, timespan, day).epoch;
 
-		link_child_calendar(calendar_hash, date, epoch_offset);
+		swal.fire({
+			title: "Linking Calendar",
+			html:	"<p>Linking calendars will disable all structural inputs on both calendars (month lengths, week lengths, hours per day, minutes) so the link can be preserved.</p>"+
+					"<p>Are you sure you want link this calendar?</p>",
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Yes, link',
+			cancelButtonText: 'Leave unlinked',
+			icon: "info"
+		})
+		.then((result) => {
+
+			if(!result.dismiss) {
+
+				var date = [year, timespan, day];
+		
+				var epoch_offset = evaluate_calendar_start(static_data, year, timespan, day).epoch;
+
+				link_child_calendar(calendar_hash, date, epoch_offset);
+
+			}
+
+		})
 
 	});
 
 	$(document).on('click', '.unlink_calendar', function(){
-		var calendar_hash = $(this).attr('hash');
-		unlink_child_calendar(populate_calendar_lists, calendar_hash);
+
+		swal.fire({
+			title: "Unlinking Calendar",
+			html: "<p>Are you sure you want to break the link to this calendar?</p><p>This cannot be undone.</p>",
+			showCancelButton: true,
+			confirmButtonColor: '#d33',
+			cancelButtonColor: '#3085d6',
+			confirmButtonText: 'Yes, unlink',
+			cancelButtonText: 'Leave linked',
+			icon: "warning"
+		})
+		.then((result) => {
+
+			if(!result.dismiss) {
+
+				var calendar_hash = $(this).attr('hash');
+
+				unlink_child_calendar(populate_calendar_lists, calendar_hash);
+
+			}
+		});
 	});
 
 	$('#apply_changes_btn').click(function(){
@@ -2107,6 +2147,12 @@ function set_up_edit_inputs(){
 	$('#apply_changes_immediately').change(function(){
 
 		var checked = $(this).is(':checked');
+
+		var errors = get_errors();
+
+		if(errors.length > 0){
+			return;
+		}
 
 		if(checked){
 
