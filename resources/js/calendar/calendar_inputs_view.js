@@ -162,7 +162,13 @@ function set_up_view_inputs(){
 
 		var apply_changes_immediately = $('#apply_changes_immediately');
 
-		if(apply_changes_immediately.length > 0 && !apply_changes_immediately.is(':checked')){
+		if(apply_changes_immediately.length == 0){
+			apply_changes_immediately = true;
+		}else{
+			apply_changes_immediately = apply_changes_immediately.is(':checked');
+		}
+
+		if(!apply_changes_immediately){
 			evaluate_apply_show_hide();
 			return;
 		}
@@ -177,7 +183,13 @@ function set_up_view_inputs(){
 
 		var apply_changes_immediately = $('#apply_changes_immediately');
 
-		if(apply_changes_immediately.length > 0 && !apply_changes_immediately.is(':checked')){
+		if(apply_changes_immediately.length == 0){
+			apply_changes_immediately = true;
+		}else{
+			apply_changes_immediately = apply_changes_immediately.is(':checked');
+		}
+
+		if(!apply_changes_immediately){
 			evaluate_apply_show_hide();
 			return;
 		}
@@ -335,7 +347,13 @@ function evaluate_dynamic_change(){
 	dynamic_data.day		= data.day;
 	dynamic_data.epoch		= data.epoch;
 
-	var apply_changes_immediately = $('#apply_changes_immediately').is(':checked');
+	var apply_changes_immediately = $('#apply_changes_immediately');
+
+	if(apply_changes_immediately.length == 0){
+		apply_changes_immediately = true;
+	}else{
+		apply_changes_immediately = apply_changes_immediately.is(':checked');
+	}
 
 	changes_applied = false;
 
