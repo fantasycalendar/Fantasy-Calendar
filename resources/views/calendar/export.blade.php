@@ -1,7 +1,5 @@
 @extends('templates._page')
 
-@jsonapi('v1', JSON_PRETTY_PRINT, 250)
-
 @push('page-class', 'page-export')
 
 @push('head')
