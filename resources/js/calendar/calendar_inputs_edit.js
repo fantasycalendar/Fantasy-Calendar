@@ -94,6 +94,7 @@ function set_up_edit_inputs(){
 	location_list = $('#location_list');
 	calendar_link_select = $('#calendar_link_select');
 	calendar_link_list = $('#calendar_link_list');
+	calendar_new_link_list = $('#calendar_new_link_list');
 
 	var previous_view_type = 'owner';
 	var first_switch = true;
@@ -1318,14 +1319,6 @@ function set_up_edit_inputs(){
 				recalc_stats();
 				break;
 
-			case "calendar_link_list":
-				$(this).closest('.sortable-container').remove();
-				$(this).closest('.sortable-container').parent().sortable('refresh');
-				// var target_hash = link_data.children[index];
-				// link_data.children.splice(index, 1);
-				// remove_hashes(target_hash);
-				break;
-
 		}
 
 		if(!callback){
@@ -2053,17 +2046,18 @@ function set_up_edit_inputs(){
 	$('#link_calendar').prop('disabled', true);
 
 	calendar_link_select.change(function(){
+		calendar_new_link_list.empty();
 		if($(this).val() != "None"){
 			var calendar_hash = $(this).val();
 			var calendar = owned_calendars[calendar_hash];
-			add_link_to_list(calendar_link_list, calendar_link_list.children().length, false, calendar);
-		}else{
-			calendar_link_select.prop('disabled', true);
-			populate_calendar_lists();
+			add_link_to_list(calendar_new_link_list, calendar_new_link_list.children().length, false, calendar);
 		}
 	});
 
 	$(document).on('click', '.link_calendar', function(){
+
+		calendar_link_select.prop('disabled', true);
+		
 		var calendar_hash = $(this).attr('hash');
 
 		var year = Number($(this).closest('.collapse-container').find('.year-input').val());
@@ -2071,29 +2065,31 @@ function set_up_edit_inputs(){
 		var timespan = Number($(this).closest('.collapse-container').find('.timespan-list').val());
 		var day = Number($(this).closest('.collapse-container').find('.timespan-day-list').val());
 
-
-
 		swal.fire({
 			title: "Linking Calendar",
-			html:	"<p>Linking calendars will disable all structural inputs on both calendars (month lengths, week lengths, hours per day, minutes) so the link can be preserved.</p>"+
-					"<p>Are you sure you want link this calendar?</p>",
+			html:	"<p>Linking calendars will disable all structural inputs on both calendars (month lengths, week lengths, hours per day, minutes) so the link can be preserved. The link can be broken again at any point.</p>"+
+					"<p>Are you sure you want link and save this calendar?</p>",
 			showCancelButton: true,
 			confirmButtonColor: '#3085d6',
 			cancelButtonColor: '#d33',
-			confirmButtonText: 'Yes, link',
+			confirmButtonText: 'Yes, link and save calendar',
 			cancelButtonText: 'Leave unlinked',
 			icon: "info"
 		})
 		.then((result) => {
 
 			if(!result.dismiss) {
+		
+				calendar_new_link_list.empty();
 
 				var date = [year, timespan, day];
 		
 				var epoch_offset = evaluate_calendar_start(static_data, year, timespan, day).epoch;
-
+					
 				link_child_calendar(calendar_hash, date, epoch_offset);
 
+			}else{
+				calendar_link_select.prop('disabled', false);
 			}
 
 		})
@@ -4700,7 +4696,7 @@ function populate_calendar_lists(){
 
 	get_owned_calendars(function(calendars){
 
-    owned_calendars = calendars;
+		owned_calendars = calendars;
 
 		calendar_link_list.html('');
 
@@ -5063,6 +5059,7 @@ function empty_edit_values(){
 	location_list.empty()
 	calendar_link_select.empty()
 	calendar_link_list.empty()
+	calendar_new_link_list.empty()
 
 }
 

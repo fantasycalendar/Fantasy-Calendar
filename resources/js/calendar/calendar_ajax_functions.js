@@ -127,7 +127,7 @@ function update_all(){
 	});
 }
 
-function do_update_all(calendar_hash){
+function do_update_all(calendar_hash, output){
 
 	$.ajax({
 		url:window.baseurl+"calendars/"+calendar_hash,
@@ -162,9 +162,13 @@ function do_update_all(calendar_hash){
 				prev_event_categories = clone(event_categories);
 			}
 
-			update_children_dynamic_data();
-
 			calendar_saved();
+
+			update_children_dynamic_data(function(){
+				if(output !== undefined){
+					output();
+				}
+			});
 
 		},
 		error: function ( log )
@@ -252,68 +256,78 @@ function check_last_master_change(output){
 	});
 } */
 
-function link_child_calendar(child_hash, parent_link_date, parent_offset){
+function link_child_calendar(child_hash, parent_link_date, parent_offset, ){
 
-	get_all_data(child_hash, function(result){
+	show_loading_screen();
 
-		var child_static_data = result.static_data;
-		var child_dynamic_data = result.dynamic_data;
-		var converted_date = date_converter.get_date(
-			static_data,
-			child_static_data,
-			dynamic_data,
-			child_dynamic_data,
-			parent_offset
-		);
+	do_update_all(hash, function(){
 
-		child_dynamic_data.year = converted_date.year;
-		child_dynamic_data.timespan = converted_date.timespan;
-		child_dynamic_data.day = converted_date.day;
-		child_dynamic_data.epoch = converted_date.epoch;
-		child_dynamic_data.hour = converted_date.hour;
-		child_dynamic_data.minute = converted_date.minute;
+		get_all_data(child_hash, function(result){
 
+			var child_static_data = result.static_data;
+			var child_dynamic_data = result.dynamic_data;
+			var converted_date = date_converter.get_date(
+				static_data,
+				child_static_data,
+				dynamic_data,
+				child_dynamic_data,
+				parent_offset
+			);
+
+			child_dynamic_data.year = converted_date.year;
+			child_dynamic_data.timespan = converted_date.timespan;
+			child_dynamic_data.day = converted_date.day;
+			child_dynamic_data.epoch = converted_date.epoch;
+			child_dynamic_data.hour = converted_date.hour;
+			child_dynamic_data.minute = converted_date.minute;
+
+			$.ajax({
+				url:window.baseurl+"calendars/"+child_hash,
+				type: "post",
+				dataType: 'json',
+				data: {
+					_method: "PATCH",
+					parent_hash: hash,
+					parent_link_date: parent_link_date,
+					parent_offset: parent_offset,
+					dynamic_data: JSON.stringify(child_dynamic_data),
+				},
+				success: function(result){
+					window.location.reload();
+				},
+				error: function ( log )
+				{
+					console.log(log);
+				}
+			});
+		});
+
+	});
+}
+
+function unlink_child_calendar(output, child_hash){
+
+	show_loading_screen();
+
+	do_update_all(hash, function(){
 		$.ajax({
 			url:window.baseurl+"calendars/"+child_hash,
 			type: "post",
 			dataType: 'json',
 			data: {
 				_method: "PATCH",
-				parent_hash: hash,
-				parent_link_date: parent_link_date,
-				parent_offset: parent_offset,
-				dynamic_data: JSON.stringify(child_dynamic_data),
+				parent_hash: null,
+				parent_link_date: null,
+				parent_offset: null,
 			},
 			success: function(result){
-				populate_calendar_lists();
+				window.location.reload();
 			},
 			error: function ( log )
 			{
 				console.log(log);
 			}
 		});
-	});
-}
-
-function unlink_child_calendar(output, child_hash){
-
-	$.ajax({
-		url:window.baseurl+"calendars/"+child_hash,
-		type: "post",
-		dataType: 'json',
-		data: {
-			_method: "PATCH",
-			parent_hash: null,
-			parent_link_date: null,
-			parent_offset: null,
-		},
-		success: function(result){
-			output(result);
-		},
-		error: function ( log )
-		{
-			console.log(log);
-		}
 	});
 }
 
@@ -335,7 +349,7 @@ function get_owned_calendars(output){
 }
 
 
-function update_children_dynamic_data(){
+function update_children_dynamic_data(output){
 
 	$.ajax({
 		url:window.apiurl+"/"+hash+"/children",
@@ -377,6 +391,12 @@ function update_children_dynamic_data(){
 				type: "post",
 				dataType: 'json',
 				data: {_method: 'PATCH', data: JSON.stringify(new_dynamic_data)},
+				success: function ( result )
+				{
+					if(output !== undefined){
+						output();
+					}
+				},
 				error: function ( log )
 				{
 					console.log(log);

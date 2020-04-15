@@ -1245,6 +1245,7 @@
 						</div>
 
 						<div class='sortable' id='calendar_link_list'></div>
+						<div class='sortable mt-1' id='calendar_new_link_list'></div>
 
 					</div>
 				</div>
