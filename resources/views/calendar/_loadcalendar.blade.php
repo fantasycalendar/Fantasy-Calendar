@@ -8,6 +8,7 @@ calendar_id = "{{ $calendar->id }}";
 static_data = {!! json_encode($calendar->static_data) !!};
 dynamic_data = {!! json_encode($calendar->dynamic_data) !!};
 
+is_linked = {!! $calendar->isLinked() ? "true" : "false" !!};
 has_parent = {!! $calendar->parent == null ? "false" : "true" !!};
 
 events = {!! json_encode($calendar->events); !!}

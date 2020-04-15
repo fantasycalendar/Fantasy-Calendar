@@ -1073,7 +1073,7 @@ var calendar_builder = {
 				if(era.settings.ends_year && convert_year(this.static_data, this.dynamic_data.year) == convert_year(this.static_data, era.date.year) && era.date.timespan < num_timespans+1){
 
 					num_timespans = era.date.timespan+1;
-					ending_day = era.date.day;
+					ending_day = era.date.day-1;
 
 				}
 

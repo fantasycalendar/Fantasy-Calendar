@@ -67,6 +67,10 @@ class Calendar extends Model
 //        return $static_data;
 //    }
 
+    public function isLinked() {
+        return $this->parent()->exists() || $this->children()->count() > 0;
+    }
+
     public function scopeActive($query) {
         return $query->where('deleted', 0);
     }

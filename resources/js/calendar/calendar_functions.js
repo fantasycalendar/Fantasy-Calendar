@@ -1028,7 +1028,7 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object, no
 	for(var i = 1; i <= timespan.length; i++){
 		var appears = does_day_appear(static_data, year, timespan_index, i);
 		if(appears.result){
-			days.push("");
+			days.push(`Day ${i}`);
 		}
 	}
 
@@ -1146,7 +1146,7 @@ function does_timespan_appear(static_data, year, timespan){
 
 		var era = static_data.eras[era_index];
 
-		if(era.settings.ends_year && year == convert_year(static_data, era.date.year)-1){
+		if(era.settings.ends_year && year == convert_year(static_data, era.date.year)){
 
 			if(timespan > era.date.timespan){
 
@@ -1199,7 +1199,7 @@ function does_day_appear(static_data, year, timespan, day){
 
 		var era = static_data.eras[era_index];
 
-		if(era.settings.ends_year && year == convert_year(static_data, era.date.year) && timespan == era.date.timespan && day > era.date.day){
+		if(era.settings.ends_year && year == convert_year(static_data, era.date.year) && timespan == era.date.timespan && day >= era.date.day){
 
 			return {
 				result: false,

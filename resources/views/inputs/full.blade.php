@@ -251,16 +251,20 @@
 			<div class="collapsible-content card-body">
 
 				<div class='row'>
-					<div class='col-4 pr-0'>Enable:</div>
+					<div class='col-4 pr-0 bold-text'>Enable:</div>
 					<div class='col-2 pl-0'>
-						<label class="custom-control custom-checkbox right-text">
-							<input type="checkbox" class="custom-control-input static_input" id='enable_clock' data='clock' fc-index='enabled'>
-							<span class="custom-control-indicator"></span>
-						</label>
+						@if(request()->is('calendars/*/edit') && $calendar->isLinked())
+							{{ Arr::get($calendar->static_data, 'clock.enabled') ? "Yes" : "No" }}
+						@else
+							<label class="custom-control custom-checkbox center-text">
+								<input type="checkbox" class="custom-control-input static_input" id='enable_clock' data='clock' fc-index='enabled'>
+								<span class="custom-control-indicator"></span>
+							</label>
+						@endif
 					</div>
-					<div class='render_clock col-4 pr-0'>Render:</div>
-					<div class='render_clock col-2 pl-0'>
-						<label class="custom-control custom-checkbox right-text">
+					<div class='render_clock col-4 p-0 bold-text'>Render:</div>
+					<div class='render_clock col-2 p-0'>
+						<label class="custom-control custom-checkbox center-text">
 							<input type="checkbox" class="custom-control-input static_input" id='render_clock' refresh='clock' data='clock' fc-index='render'>
 							<span class="custom-control-indicator"></span>
 						</label>
@@ -270,43 +274,50 @@
 				<div class='clock_inputs'>
 
 					<div class='row mt-2'>
-						<div class='col-6'>
+						<div class='col-6 bold-text'>
 							Hours:
 						</div>
-						<div class='col-6 pl-0'>
+						<div class='col-6 pl-0 bold-text'>
 							Minutes:
 						</div>
 					</div>
 
 					<div class='row mb-2'>
+							<div class='col-6 input-group'>
+								@if(request()->is('calendars/*/edit') && $calendar->isLinked())
+									{{ Arr::get($calendar->static_data, 'clock.hours') }}
+								@else
+									<div class='input-group-prepend'>
+										<button type='button' class='btn btn-sm btn-danger' onclick='adjustInput(this, "#clock_hours", -1);'><i class="icon-minus"></i></button>
+									</div>
+									<input class='form-control form-control-sm static_input' min='1' id='clock_hours' data='clock' fc-index='hours' type='number'>
+									<div class='input-group-append'>
+										<button type='button' class='btn btn-sm btn-success' onclick='adjustInput(this, "#clock_hours", +1);'><i class="icon-plus"></i></button>
+									</div>
+								@endif
+							</div>
 
-						<div class='col-6 input-group'>
-                            <div class='input-group-prepend'>
-                                <button type='button' class='btn btn-sm btn-danger' onclick='adjustInput(this, "#clock_hours", -1);'><i class="icon-minus"></i></button>
-                            </div>
-                            <input class='form-control form-control-sm static_input' min='1' id='clock_hours' data='clock' fc-index='hours' type='number'>
-                            <div class='input-group-append'>
-                                <button type='button' class='btn btn-sm btn-success' onclick='adjustInput(this, "#clock_hours", +1);'><i class="icon-plus"></i></button>
-                            </div>
-						</div>
-
-						<div class='col-6 input-group pl-0'>
-                            <div class='input-group-prepend'>
-                                <button type='button' class='btn btn-sm btn-danger' onclick='adjustInput(this, "#clock_minutes", -1);'><i class="icon-minus"></i></button>
-                            </div>
-                            <input class='form-control form-control-sm static_input' min='1' id='clock_minutes' data='clock' fc-index='minutes' type='number'>
-                            <div class='input-group-append'>
-                                <button type='button' class='btn btn-sm btn-success' onclick='adjustInput(this, "#clock_minutes", +1);'><i class="icon-plus"></i></button>
-                            </div>
-						</div>
+							<div class='col-6 input-group pl-0'>
+								@if(request()->is('calendars/*/edit') && $calendar->isLinked())
+									{{ Arr::get($calendar->static_data, 'clock.minutes') }}
+								@else
+									<div class='input-group-prepend'>
+										<button type='button' class='btn btn-sm btn-danger' onclick='adjustInput(this, "#clock_minutes", -1);'><i class="icon-minus"></i></button>
+									</div>
+									<input class='form-control form-control-sm static_input' min='1' id='clock_minutes' data='clock' fc-index='minutes' type='number'>
+									<div class='input-group-append'>
+										<button type='button' class='btn btn-sm btn-success' onclick='adjustInput(this, "#clock_minutes", +1);'><i class="icon-plus"></i></button>
+									</div>
+								@endif
+							</div>
 
 					</div>
 
 					<div class='row mt-2 do_render_clock'>
-						<div class='col-6'>
+						<div class='col-6 bold-text'>
 							Offset hours:
 						</div>
-						<div class='col-6 pl-0'>
+						<div class='col-6 pl-0 bold-text'>
 							Crowding:
 						</div>
 					</div>
@@ -339,7 +350,12 @@
 
 					</div>
 
+
 				</div>
+
+				@if(request()->is('calendars/*/edit') && $calendar->isLinked())
+					<p class="mb-0 mt-3"><a onclick="linked_popup();" href='#'>Why can't I edit the clock?</a></p>
+				@endif
 
 			</div>
 
@@ -365,34 +381,60 @@
 					<div class='col-auto pr-1 bold-text'>
 						Overflow weekdays:
 					</div>
-					<div class='col-2'>
-						<label class="custom-control custom-checkbox right-text">
-							<input type="checkbox" class="custom-control-input static_input" data='year_data' fc-index='overflow' id='month_overflow'>
-							<span class="custom-control-indicator"></span>
-						</label>
-					</div>
+					@if(request()->is('calendars/*/edit') && $calendar->isLinked())
+						{{ Arr::get($calendar->static_data, 'year_data.overflow') ? "Enabled" : "Disabled" }}
+					@else
+						<div class='col-2'>
+							<label class="custom-control custom-checkbox right-text">
+								<input type="checkbox" class="custom-control-input static_input" data='year_data' fc-index='overflow' id='month_overflow'>
+								<span class="custom-control-indicator"></span>
+							</label>
+						</div>
+					@endif
 				</div>
 
 				<div class='row no-gutters my-2'>
 					<div class='separator'></div>
 				</div>
 
-				<div class='row no-gutters mt-2 bold-text'>
-					<div class="col">
-						New weekday:
+				@if(request()->is('calendars/*/edit') && !$calendar->isLinked())
+				
+					<div class='row no-gutters mt-2 bold-text'>
+						<div class="col">
+							New weekday:
+						</div>
 					</div>
-				</div>
 
-				<div class='row no-gutters add_inputs global_week'>
-					<div class='col'>
-						<input type='text' class='form-control name' id='weekday_name_input' placeholder='Weekday name'>
+					<div class='row no-gutters add_inputs global_week'>
+						<div class='col'>
+							<input type='text' class='form-control name' id='weekday_name_input' placeholder='Weekday name'>
+						</div>
+						<div class='col-auto'>
+							<button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
+						</div>
 					</div>
-					<div class='col-auto'>
-						<button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
-					</div>
-				</div>
 
-				<div class='sortable list-group' id='global_week_sortable'></div>
+				@endif
+
+				@if(request()->is('calendars/*/edit') && $calendar->isLinked())
+
+					<ul class="list-group">
+
+						@php
+						$weekdays = Arr::get($calendar->static_data, 'year_data.global_week');
+						@endphp
+
+						@foreach ($weekdays as $weekday)
+							<li class="list-group-item">{{ $weekday }}</li>
+						@endforeach
+
+					</ul>
+
+				@else
+
+					<div class='sortable list-group' id='global_week_sortable'></div>
+
+				@endif
 
                 <div id='first_week_day_container' class='hidden'>
 
@@ -401,14 +443,24 @@
                     </div>
 
                     <div class='row no-gutters my-2'>
-                        <div class='col bold-text'>
-                            First week day:
-                            <select type='number' class='form-control static_input protip' data-pt-position="right" data-pt-title='This sets the first weekday of the first year.' id='first_day' data='year_data' fc-index='first_day'></select>
+                        <div class='col'>
+                            <p class='bold-text m-0'>First week day:</p>
+							@if(request()->is('calendars/*/edit') && $calendar->isLinked())
+								<ul class="list-group">
+									<li class="list-group-item">{{ Arr::get($calendar->static_data, 'year_data.global_week')[Arr::get($calendar->static_data, 'year_data.first_day')-1] }}</li>
+								</ul>
+							@else
+								<select type='number' class='form-control static_input protip' data-pt-position="right" data-pt-title='This sets the first weekday of the first year.' id='first_day' data='year_data' fc-index='first_day'></select>
+							@endif
                         </div>
                     </div>
                 </div>
-			</div>
 
+				@if(request()->is('calendars/*/edit') && $calendar->isLinked())
+					<p class="mb-0 mt-3"><a onclick="linked_popup();" href='#'>Why can't I edit the weekdays?</a></p>
+				@endif
+
+			</div>
 
 		</div>
 
@@ -422,31 +474,81 @@
 			<label for="collapsible_timespans" class="lbl-toggle card-header lbl-text">Months <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Months & Intercalaries' href='https://wiki.fantasy-calendar.com/index.php?title=Months_%26_Intercalaries' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
 
-				<div class='row bold-text'>
-					<div class="col">
-						New month:
-					</div>
-				</div>
+				@if(request()->is('calendars/*/edit') && !$calendar->isLinked())
 
-				<div class='add_inputs timespan row no-gutters'>
-
-					<div class='col-md-6'>
-						<input type='text' id='timespan_name_input' class='form-control name' placeholder='Name'>
+					<div class='row bold-text'>
+						<div class="col">
+							New month:
+						</div>
 					</div>
 
-					<div class='col'>
-						<select id='timespan_type_input' class='custom-select form-control type'>
-							<option selected value='month'>Month</option>
-							<option value='intercalary'>Intercalary</option>
-						</select>
+					<div class='add_inputs timespan row no-gutters'>
+
+						<div class='col-md-6'>
+							<input type='text' id='timespan_name_input' class='form-control name' placeholder='Name'>
+						</div>
+
+						<div class='col'>
+							<select id='timespan_type_input' class='custom-select form-control type'>
+								<option selected value='month'>Month</option>
+								<option value='intercalary'>Intercalary</option>
+							</select>
+						</div>
+
+						<div class='col-auto'>
+							<button type='button' class='btn btn-primary add full'><i class="fa fa-plus"></i></button>
+						</div>
 					</div>
 
-					<div class='col-auto'>
-						<button type='button' class='btn btn-primary add full'><i class="fa fa-plus"></i></button>
-					</div>
-				</div>
+				@endif
 
-				<div class='sortable list-group' id='timespan_sortable'></div>
+				@if(request()->is('calendars/*/edit') && $calendar->isLinked())
+
+					<ul class="list-group">
+
+						@php
+						$timespans = Arr::get($calendar->static_data, 'year_data.timespans');
+						@endphp
+
+						@foreach ($timespans as $timespan)
+							<li class="list-group-item">
+								<div class="d-flex justify-content-between align-items-center">
+									<strong>{{ $timespan['name'] }}</strong>
+								</div>
+								@if($timespan['interval'] > 1)
+								<div class="d-flex justify-content-start align-items-center mt-2">
+									<div class='mr-4'>
+										Interval: {{ $timespan['interval'] }}
+									</div>
+									<div>
+										Offset: {{ $timespan['offset'] }}
+									</div>
+								</div>
+								@endif
+								@if(Arr::get($timespan, 'week'))
+								<div class="mt-2">
+									Custom week:
+									<ul>
+									@foreach ($timespan['week'] as $weekday)
+										<li style="list-style-type: circle; font-size:0.8rem;">{{ $weekday }}</li>
+									@endforeach
+									</ul>
+								</div>
+								@endif
+							</li>
+						@endforeach
+
+					</ul>
+				
+				@else
+
+					<div class='sortable list-group' id='timespan_sortable'></div>
+
+				@endif
+
+				@if(request()->is('calendars/*/edit') && $calendar->isLinked())
+					<p class="mb-0 mt-3"><a onclick="linked_popup();" href='#'>Why can't I edit the months?</a></p>
+				@endif
 
 			</div>
 
@@ -464,30 +566,110 @@
 			<label for="collapsible_leapdays" class="lbl-toggle card-header lbl-text">Leap days <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Leap Days' href='https://wiki.fantasy-calendar.com/index.php?title=Leap_days' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content content card-body">
 
-				<div class='row bold-text'>
-					<div class="col">
-						New leap day:
-					</div>
-				</div>
-
-				<div class='add_inputs leap row no-gutters'>
-					<div class='col-md-6'>
-						<input type='text' id='leap_day_name_input' class='form-control name' placeholder='Name'>
+				@if(request()->is('calendars/*/edit') && !$calendar->isLinked())
+					<div class='row bold-text'>
+						<div class="col">
+							New leap day:
+						</div>
 					</div>
 
+					<div class='add_inputs leap row no-gutters'>
+						<div class='col-md-6'>
+							<input type='text' id='leap_day_name_input' class='form-control name' placeholder='Name'>
+						</div>
+
+						<div class='col'>
+							<select id='leap_day_type_input' class='custom-select form-control type'>
+								<option selected value='leap-day'>Normal day</option>
+								<option value='intercalary'>Intercalary</option>
+							</select>
+						</div>
+
+						<div class='col-auto'>
+							<button type='button' class='btn btn-primary add full'><i class="fa fa-plus"></i></button>
+						</div>
+					</div>
+				@endif
+
+				@if(request()->is('calendars/*/edit') && $calendar->isLinked())
+				
+					<ul class="list-group">
+
+					@php
+					$leap_days = Arr::get($calendar->static_data, 'year_data.leap_days');
+					@endphp
+
+					@foreach ($leap_days as $leap_day)
+						<li class="list-group-item">
+							<div class="d-flex justify-content-between align-items-center">
+								<strong>{{ $leap_day['name'] }}</strong> <small>{{ $leap_day['intercalary'] ? "Intercalary" : "" }}</small>
+							</div>
+							<div class='mt-2'>
+								Interval: {{ str_replace(",", ", ", $leap_day['interval']) }}
+							</div>
+							<div>
+								Offset: {{ $leap_day['offset'] }}
+							</div>
+							@if($leap_day['intercalary'])
+								<div>
+									@if($leap_day['day'] == 0)
+										Added before day 1
+									@else
+										Added after day {{ $leap_day['day'] }}
+									@endif
+								</div>
+							@else
+								@if($leap_day['adds_week_day'])
+									<div>
+										Adds a weekday named: {{ $leap_day['week_day'] }}
+									</div>
+								@endif
+							@endif
+						</li>
+					@endforeach
+
+					</ul>
+
+				@else
+					<div id='leap_day_list'></div>
+				@endif
+
+				@if(request()->is('calendars/*/edit') && $calendar->isLinked())
+					<p class='mb-0 mt-3'><a onclick="linked_popup();" href='#'>Why can't I edit the leap days?</a></p>
+				@endif
+
+			</div>
+		</div>
+
+		<!---------------------------------------------->
+		<!-------------------- ERAS -------------------->
+		<!---------------------------------------------->
+
+		<div class='wrap-collapsible card'>
+			<input id="collapsible_eras" class="toggle" type="checkbox">
+			<label for="collapsible_eras" class="lbl-toggle card-header lbl-text">Eras <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Eras' href='https://wiki.fantasy-calendar.com/index.php?title=Eras' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+			<div class="collapsible-content card-body">
+
+				<div class='row no-gutters bold-text'>
 					<div class='col'>
-						<select id='leap_day_type_input' class='custom-select form-control type'>
-							<option selected value='leap-day'>Normal day</option>
-							<option value='intercalary'>Intercalary</option>
-						</select>
-					</div>
-
-					<div class='col-auto'>
-						<button type='button' class='btn btn-primary add full'><i class="fa fa-plus"></i></button>
+						New Era:
 					</div>
 				</div>
 
-				<div id='leap_day_list'></div>
+				<div class='add_inputs eras row no-gutters'>
+					<div class="col">
+						<input type='text' class='form-control name' id='era_name_input' placeholder='Era name'>
+					</div>
+					<div class="col-auto">
+						<button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
+					</div>
+				</div>
+
+				<div class='sortable' id='era_list'></div>
+
+				@if(request()->is('calendars/*/edit') && $calendar->isLinked())
+					<p class='mb-0 mt-3'><a onclick="linked_popup();" href='#'>Why are some era inputs missing?</a></p>
+				@endif
 
 			</div>
 		</div>
@@ -778,37 +960,6 @@
 		</div>
 
 		<!---------------------------------------------->
-		<!-------------------- ERAS -------------------->
-		<!---------------------------------------------->
-
-		<div class='wrap-collapsible card'>
-			<input id="collapsible_eras" class="toggle" type="checkbox">
-			<label for="collapsible_eras" class="lbl-toggle card-header lbl-text">Eras <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Eras' href='https://wiki.fantasy-calendar.com/index.php?title=Eras' class="wiki protip"><i class="icon-question-sign"></i></a></label>
-			<div class="collapsible-content card-body">
-
-				<div class='row no-gutters bold-text'>
-					<div class='col'>
-						New Era:
-					</div>
-				</div>
-
-				<div class='add_inputs eras row no-gutters'>
-					<div class="col">
-						<input type='text' class='form-control name' id='era_name_input' placeholder='Era name'>
-					</div>
-					<div class="col-auto">
-						<button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
-					</div>
-				</div>
-
-				<div class='sortable' id='era_list'></div>
-
-				<input type='button' value='Reorder based on date' id='reorder_eras' class='btn btn-primary full hidden'>
-
-            </div>
-        </div>
-
-		<!---------------------------------------------->
 		<!----------------- CATEGORIES ----------------->
 		<!---------------------------------------------->
 
@@ -909,12 +1060,20 @@
 
                     <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Normally, the year count is -2, -1, 1, 2, and so on. This makes it so that 0 exists, so -2, -1, 0, 1, 2.">
                         <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings' id='year_zero_exists' fc-index='year_zero_exists'>
+							@if(request()->is('calendars/*/edit') && $calendar->isLinked())
+                            	<input type='checkbox' class='margin-right' {{ Arr::get($calendar->static_data, 'settings.year_zero_exists') ? "checked" : "" }} disabled>
+							@else
+                            	<input type='checkbox' class='margin-right static_input' data='settings' id='year_zero_exists' fc-index='year_zero_exists'>
+							@endif
                             <span>
                                 Year zero exists
                             </span>
                         </div>
                     </label>
+
+					@if(request()->is('calendars/*/edit') && $calendar->isLinked())
+						<p class=""><a onclick="linked_popup();" href='#'>Why is some settings disabled?</a></p>
+					@endif
 
 					<!------------------------------------------------------->
 

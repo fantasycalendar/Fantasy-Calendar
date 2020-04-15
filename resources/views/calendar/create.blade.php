@@ -8,6 +8,8 @@
 
         calendar_name = 'New Calendar';
         owner = true;
+        has_parent = false;
+        is_linked = false;
         static_data = {
             "year_data":{
                 "first_day":1,
