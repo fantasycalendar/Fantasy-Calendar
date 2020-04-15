@@ -183,6 +183,10 @@
 					<div class='btn btn-success full' id='go_to_preview_date'>Go To Preview date</div>
 				</div>
 
+				<div class='row my-2'>
+                    <div class='btn btn-info full hidden' disabled id='reset_preview_date_button'>Go To Current Date</div>
+				</div>
+
 			</div>
 
             <div class='wrap-collapsible date_control card full'>

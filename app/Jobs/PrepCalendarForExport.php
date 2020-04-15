@@ -59,6 +59,8 @@ class PrepCalendarForExport implements ShouldQueue
             'name' => $this->calendar->name,
             'static_data' => $this->calendar->static_data,
             'dynamic_data' => $this->calendar->dynamic_data,
+            'events' => $this->calendar->events,
+            'categories' => $this->calendar->event_categories
         ];
     }
 }

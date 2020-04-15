@@ -31,45 +31,36 @@ class Calendar extends Model
         'master_hash',
     ];
 
-    protected $hidden = [
-        'event_categories',
-        'events'
-    ];
-
     public function user() {
         return $this->belongsTo('App\User');
     }
 
     public function event_categories() {
-        return $this->hasMany('App\EventCategory');
+        return $this->hasMany('App\EventCategory')->orderBy('sort_by');
     }
 
     public function events() {
-        return $this->hasMany('App\CalendarEvent');
+        return $this->hasMany('App\CalendarEvent')->orderBy('sort_by');
     }
 
     public function child_calendars() {
         return $this->hasMany('App\Calendar', 'master_hash', 'hash');
     }
 
-    public function getStaticDataAttribute($value) {
-        $static_data = json_decode($value, true);
-
-        $static_data['event_data']['categories'] = $this->event_categories->sortBy('sort_by')->values();
-
-        $static_data['event_data']['events'] = $this->events->sortBy('sort_by')->values();
-
-        if(!Auth::check() || !Auth::user()->can('update', $this)) {
-            foreach($static_data['event_data']['events'] as $event){
-                if($event['settings']['hide'] || (isset($event['settings']['full_hide']) && $event['settings']['full_hide'])){
-                    $event['name'] = "Sneaky, sneaky...";
-                    $event['description'] = "You shouldn't be here...";
-                }
-            }
-        }
-
-        return $static_data;
-    }
+//    public function getStaticDataAttribute($value) {
+//        $static_data = json_decode($value, true);
+//
+//        if(!Auth::check() || !Auth::user()->can('update', $this)) {
+//            foreach($static_data['event_data']['events'] as $event){
+//                if($event['settings']['hide'] || (isset($event['settings']['full_hide']) && $event['settings']['full_hide'])){
+//                    $event['name'] = "Sneaky, sneaky...";
+//                    $event['description'] = "You shouldn't be here...";
+//                }
+//            }
+//        }
+//
+//        return $static_data;
+//    }
 
     public function scopeActive($query) {
         return $query->where('deleted', 0);
