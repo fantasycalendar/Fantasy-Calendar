@@ -60,7 +60,7 @@
 
     /*var do_update_dynamic = debounce(function(type){
         update_view_dynamic();
-    }, 250);
+    }, 500);
     
     function check_dates(){
 

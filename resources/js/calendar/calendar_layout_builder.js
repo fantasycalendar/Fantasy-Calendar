@@ -9,7 +9,7 @@ function display_events(static_data, event_data){
 		for(var i = 0; i < num_valid_events; i++){
 
 			var event_index = Object.keys(event_data.valid)[i];
-			var current_event = static_data.event_data.events[event_index];
+			var current_event = events[event_index];
 
 			$(`[event_id='${event_index}']`).remove();
 
@@ -18,7 +18,7 @@ function display_events(static_data, event_data){
 			var category_hide = category ? category.category_settings.hide : false;
 
 			if(current_event.settings.hide_full || (!owner && (current_event.settings.hide || static_data.settings.hide_events || category_hide))) continue;
-				
+
 			calendar_layouts.layout.add_event(event_data, event_index, current_event, category_hide);
 
 		}
@@ -360,7 +360,7 @@ var eras = {
 						var category = '';
 
 						if(current_era.settings.event_category && current_era.settings.event_category > -1){
-							var category = static_data.event_data.categories[current_era.settings.event_category];
+							var category = event_categories[current_era.settings.event_category];
 							event_class = category.color ? " " + category.color : "";
 							event_class += category.text ? " " + category.text : "";
 						}
@@ -391,7 +391,13 @@ function weather_overlay(data, show){
 
 function pre_update_current_day(recalculate){
 
-	var apply_changes_immediately = $('#apply_changes_immediately').is(':checked');
+	var apply_changes_immediately = $('#apply_changes_immediately');
+
+	if(apply_changes_immediately.length == 0){
+		apply_changes_immediately = true;
+	}else{
+		apply_changes_immediately = apply_changes_immediately.is(':checked');
+	}
 
 	if(!apply_changes_immediately){
 		evaluate_apply_show_hide();
@@ -1167,9 +1173,9 @@ var calendar_layouts = {
 						calendar_layouts.html.push("</span>");
 					calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("<div class='timespan_row_container'>");
-					
+
 					if(!static_data.settings.hide_weekdays){
-					
+
 						calendar_layouts.html.push("<div class='timespan_row_names'>");
 
 						for(day_in_week = 1; day_in_week <= timespan.week.length; day_in_week++){
@@ -1792,7 +1798,7 @@ var calendar_layouts = {
 					calendar_layouts.html.push("<div class='timespan_row_container'>");
 
 					if(!static_data.settings.hide_weekdays){
-					
+
 						calendar_layouts.html.push("<div class='timespan_row_names'>");
 
 						for(day_in_week = 1; day_in_week <= timespan.week.length; day_in_week++){

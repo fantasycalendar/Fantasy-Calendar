@@ -5,20 +5,26 @@ function set_up_edit_inputs(){
 	prev_calendar_name = clone(calendar_name);
 	prev_dynamic_data = clone(dynamic_data);
 	prev_static_data = clone(static_data);
+	prev_events = clone(events);
+	prev_event_categories = clone(event_categories);
 
 	owned_calendars = {};
 
 	calendar_name_same = calendar_name == prev_calendar_name;
 	static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
 	dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
+	events_same = JSON.stringify(events) === JSON.stringify(prev_events);
+	event_categories_same = JSON.stringify(event_categories) === JSON.stringify(prev_event_categories);
 
 	window.onbeforeunload = function(e){
 
 		calendar_name_same = calendar_name == prev_calendar_name;
 		static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
 		dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
+		events_same = JSON.stringify(events) === JSON.stringify(prev_events);
+		event_categories_same = JSON.stringify(event_categories) === JSON.stringify(prev_event_categories);
 
-		var not_changed = static_same && dynamic_same && calendar_name_same;
+		var not_changed = static_same && dynamic_same && calendar_name_same && events_same && event_categories_same;
 
 		if(!not_changed){
 
@@ -39,7 +45,7 @@ function set_up_edit_inputs(){
 
 		calendar_saving();
 
-		if(!static_same || (!static_same && !dynamic_same)){
+		if(!events_same || !event_categories_same || !static_same){
 			update_all();
 		}else if(!dynamic_same){
 			update_dynamic(hash);
@@ -582,7 +588,7 @@ function set_up_edit_inputs(){
 
 	$('#create_season_events').click(function(){
 
-		
+
 
 		var html  = '<strong><span style="color:#4D61B3;">Simple</span></strong> season events are based on the <strong>specific start dates</strong> of the seasons.<br><br>';
 
@@ -616,8 +622,8 @@ function set_up_edit_inputs(){
 				var events = create_season_events(complex);
 
 				for(index in events){
-					static_data.event_data.events.push(events[index])
-					add_event_to_sortable(events_sortable, static_data.event_data.events.length-1, static_data.event_data.events[static_data.event_data.events.length-1]);
+					events.push(events[index])
+					add_event_to_sortable(events_sortable, events.length-1, events[events.length-1]);
 				}
 
 				do_error_check();
@@ -731,7 +737,7 @@ function set_up_edit_inputs(){
 			var valid_preset_order = static_data.seasons.global_settings.preset_order !== undefined && static_data.seasons.global_settings.preset_order.length == static_data.seasons.data.length;
 
 			for(var preset_index in preset_seasons){
-				
+
 				var preset_season = preset_seasons[preset_index];
 
 				html.push(`<div class='row my-1'>`);
@@ -804,7 +810,7 @@ function set_up_edit_inputs(){
 				}
 
 			});
-			
+
 		}
 
 	});
@@ -1068,7 +1074,7 @@ function set_up_edit_inputs(){
 
 		var name = $('#event_category_name_input');
 
-		var sort_by = static_data.event_data.categories.length;
+		var sort_by = event_categories.length;
 
 		var name_val = name.val() == "" ? `Category ${sort_by+1}` : name.val();
 
@@ -1092,7 +1098,7 @@ function set_up_edit_inputs(){
 
 		add_category_to_list(event_category_list, sort_by, stats);
 
-		static_data.event_data.categories[sort_by] = stats;
+		event_categories[sort_by] = stats;
 
 		repopulate_event_category_lists();
 
@@ -1218,11 +1224,11 @@ function set_up_edit_inputs(){
 				$(this).closest('.sortable-container').remove();
 				$(this).closest('.sortable-container').parent().sortable('refresh');
 
-				var category = static_data.event_data.categories[index];
+				var category = event_categories[index];
 
-				for(var event in static_data.event_data.events){
-					if(static_data.event_data.events[event].category == category.id){
-						static_data.event_data.events[event].category = -1;
+				for(var event in events){
+					if(events[event].category == category.id){
+						events[event].category = -1;
 					}
 				}
 
@@ -1233,7 +1239,7 @@ function set_up_edit_inputs(){
 				}
 
 				reindex_event_category_list();
-				static_data.event_data.categories = static_data.event_data.categories.filter(function(category) { return category; });
+				event_categories = event_categories.filter(function(category) { return category; });
 				repopulate_event_category_lists();
 
 				break;
@@ -1242,9 +1248,9 @@ function set_up_edit_inputs(){
 
 				var warnings = [];
 
-				for(var eventId in static_data.event_data.events){
-					if(static_data.event_data.events[eventId].data.connected_events !== undefined){
-						var connected_events = static_data.event_data.events[eventId].data.connected_events;
+				for(var eventId in events){
+					if(events[eventId].data.connected_events !== undefined){
+						var connected_events = events[eventId].data.connected_events;
 						if(connected_events.includes(String(index)) || connected_events.includes(index)){
 							warnings.push(eventId);
 						}
@@ -1257,14 +1263,14 @@ function set_up_edit_inputs(){
 
 					var html = [];
 					html.push(`<div class='text-left'>`)
-					html.push(`<h5>You are trying to delete "${static_data.event_data.events[index].name}" which referenced in the following events:</h5>`)
+					html.push(`<h5>You are trying to delete "${events[index].name}" which referenced in the following events:</h5>`)
 					html.push(`<ul>`);
 					for(var i = 0; i < warnings.length; i++){
 						var event_id = warnings[i];
-						html.push(`<li>• ${static_data.event_data.events[event_id].name}</li>`);
+						html.push(`<li>• ${events[event_id].name}</li>`);
 					}
 					html.push(`</ul>`);
-					html.push(`<p>Please remove the conditions referencing "${static_data.event_data.events[index].name}" in these events before deleting.</p>`)
+					html.push(`<p>Please remove the conditions referencing "${events[index].name}" in these events before deleting.</p>`)
 					html.push(`</div>`)
 
 					swal.fire({
@@ -1282,21 +1288,21 @@ function set_up_edit_inputs(){
 
 					events_sortable.children("[index='"+index+"']").remove();
 
-					for(var eventId in static_data.event_data.events){
-						if(static_data.event_data.events[eventId].data.connected_events !== undefined){
-							for(connectedId in static_data.event_data.events[eventId].data.connected_events){
-								var number = Number(static_data.event_data.events[eventId].data.connected_events[connectedId])
-								if(Number(static_data.event_data.events[eventId].data.connected_events[connectedId]) > index){
-									static_data.event_data.events[eventId].data.connected_events[connectedId] = String(number-1)
+					for(var eventId in events){
+						if(events[eventId].data.connected_events !== undefined){
+							for(connectedId in events[eventId].data.connected_events){
+								var number = Number(events[eventId].data.connected_events[connectedId])
+								if(Number(events[eventId].data.connected_events[connectedId]) > index){
+									events[eventId].data.connected_events[connectedId] = String(number-1)
 								}
 							}
 						}
 					}
 
-					static_data.event_data.events.splice(index, 1);
+					events.splice(index, 1);
 
 					events_sortable.children().each(function(i){
-						static_data.event_data.events[i].sort_by = i;
+						events[i].sort_by = i;
 						$(this).attr('index', i);
 					});
 
@@ -1791,7 +1797,7 @@ function set_up_edit_inputs(){
 		var values = interval.split(',');
 
 		if(values.length > 5){
-		
+
 			swal.fire({
 				title: "Warning!",
 				text: "You have over 5 intervals, more than this can slow down your calendar quite a lot. Are you sure you want to continue?",
@@ -2257,13 +2263,13 @@ function set_up_edit_inputs(){
 
 			if(data.includes('event_data.categories')){
 				var key = data.split('.')[2]|0;
-				for(var eventkey in static_data.event_data.events){
-					if(static_data.event_data.events[eventkey].event_category_id == static_data.event_data.categories[key].id){
-						static_data.event_data.events[eventkey].settings.hide_full = static_data.event_data.categories[key].event_settings.hide_full;
-						static_data.event_data.events[eventkey].settings.print = static_data.event_data.categories[key].event_settings.print;
-						static_data.event_data.events[eventkey].settings.hide = static_data.event_data.categories[key].event_settings.hide;
-						static_data.event_data.events[eventkey].settings.color = static_data.event_data.categories[key].event_settings.color;
-						static_data.event_data.events[eventkey].settings.text = static_data.event_data.categories[key].event_settings.text;
+				for(var eventkey in events){
+					if(events[eventkey].event_category_id == event_categories[key].id){
+						events[eventkey].settings.hide_full = event_categories[key].event_settings.hide_full;
+						events[eventkey].settings.print = event_categories[key].event_settings.print;
+						events[eventkey].settings.hide = event_categories[key].event_settings.hide;
+						events[eventkey].settings.color = event_categories[key].event_settings.color;
+						events[eventkey].settings.text = event_categories[key].event_settings.text;
 						break;
 					}
 				}
@@ -3310,10 +3316,10 @@ function add_era_to_list(parent, key, data){
 					element.push("<div class='col'>");
 						element.push("Event category:");
 						element.push(`<select type='text' class='custom-select form-control event-category-list dynamic_input' data='eras.${key}.settings' fc-index='event_category_id'>`);
-						for(var catkey in static_data.event_data.categories)
+						for(var catkey in event_categories)
 						{
-							var name = static_data.event_data.categories[catkey].name;
-							var id = static_data.event_data.categories[catkey].id;
+							var name = event_categories[catkey].name;
+							var id = event_categories[catkey].id;
 							element.push(`<option value="${id}" ${(catkey==data.event_category_id ? "selected" : "")}>${name}</option>`);
 						}
 						element.push("</select>");
@@ -4416,11 +4422,11 @@ function reindex_event_category_list(){
 		}
 
 
-		new_order[index] = static_data.event_data.categories[index];
+		new_order[index] = event_categories[index];
 
 	});
 
-	static_data.event_data.categories = clone(new_order);
+	event_categories = clone(new_order);
 
 	return;
 }
@@ -4435,16 +4441,16 @@ function reindex_events_sortable(){
 		var id = Number($(this).attr('index'));
 
 		new_order[id] = i;
-		new_events[i] = static_data.event_data.events[id];
+		new_events[i] = events[id];
 		new_events[i].sort_by = i;
 
 		$(this).attr('index', i);
 
 	});
 
-	for(var event_id in static_data.event_data.events){
+	for(var event_id in events){
 
-		var event = static_data.event_data.events[event_id];
+		var event = events[event_id];
 
 		if(event.data.connected_events.length > 0){
 
@@ -4458,7 +4464,7 @@ function reindex_events_sortable(){
 
 	}
 
-	static_data.event_data.events = clone(new_events);
+	events = clone(new_events);
 
 }
 
@@ -4583,8 +4589,10 @@ function evaluate_save_button(override){
 			calendar_name_same = calendar_name == prev_calendar_name;
 			static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
 			dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
+			events_same = JSON.stringify(events) === JSON.stringify(prev_events);
+			event_categories_same = JSON.stringify(event_categories) === JSON.stringify(prev_event_categories);
 
-			var not_changed = static_same && dynamic_same && calendar_name_same;
+			var not_changed = static_same && dynamic_same && calendar_name_same && events_same && event_categories_same;
 
 			var text = not_changed ? "No changes to save" : "Save calendar";
 
@@ -4593,7 +4601,7 @@ function evaluate_save_button(override){
 			if(!apply_changes_immediately && !override){
 
 				var text = not_changed ? "No changes to save" : "Apply changes to save";
-				
+
 				save_button.prop('disabled', true);
 
 			}else{
@@ -4617,7 +4625,7 @@ function evaluate_save_button(override){
 		if(!apply_changes_immediately && !override && !invalid){
 
 			var text = "Apply changes to create";
-			
+
 			create_button.prop('disabled', true);
 
 		}else{
@@ -4638,7 +4646,7 @@ function populate_calendar_lists(){
 
 	get_owned_calendars(function(calendars){
 
-		owned_calendars = calendars;
+    owned_calendars = calendars;
 
 		calendar_link_list.html('');
 
@@ -4701,8 +4709,8 @@ function repopulate_event_category_lists(){
 	var html = [];
 	html.push("<option selected value='-1'>None</option>")
 
-	for(var categoryId in static_data.event_data.categories){
-		var category = static_data.event_data.categories[categoryId];
+	for(var categoryId in event_categories){
+		var category = event_categories[categoryId];
 
 		if(typeof category.id !== "undefined") {
 			slug = category.id;
@@ -4916,9 +4924,9 @@ function set_up_edit_values(){
 
 	repopulate_event_category_lists();
 
-	if(static_data.event_data.categories){
-		for(var key in static_data.event_data.categories){
-			var category = static_data.event_data.categories[key];
+	if(event_categories){
+		for(var key in event_categories){
+			var category = event_categories[key];
 			var catkey = (typeof category.sort_by !== "undefined") ? category.sort_by : slugify(category.name);
 			add_category_to_list(event_category_list, catkey, category);
 		}
@@ -4926,9 +4934,9 @@ function set_up_edit_values(){
 		$('#default_event_category').val(default_event_category);
 	}
 
-	if(static_data.event_data.events){
-		for(var eventId in static_data.event_data.events){
-			add_event_to_sortable(events_sortable, eventId, static_data.event_data.events[eventId]);
+	if(events){
+		for(var eventId in events){
+			add_event_to_sortable(events_sortable, eventId, events[eventId]);
 		}
 	}
 
@@ -4971,6 +4979,21 @@ function set_up_edit_values(){
 
 }
 
+function get_category(search) {
+	if(event_categories.length == 0){
+		return {id: -1};
+	}
+
+	var results = event_categories.filter(function(element) {
+		return element.id == search;
+	});
+
+	if(results.length < 1) {
+		return {id: -1};
+	}
+
+	return results[0];
+}
 function empty_edit_values(){
 
 	timespan_sortable.empty()

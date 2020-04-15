@@ -76,15 +76,6 @@ class CalendarController extends Controller
         $hash = md5(request('calendar_name').request('dynamic_data').request('static_data').(Auth::user()->id).date("D M d, Y G:i"));
 
         $static_data = json_decode(request('static_data'), true);
-        if(array_key_exists('categories', $static_data['event_data'])) {
-            $categories = $static_data['event_data']['categories'];
-            unset($static_data['event_data']['categories']);
-        }
-
-        if(array_key_exists('events', $static_data['event_data'])) {
-            $events = $static_data['event_data']['events'];
-            unset($static_data['event_data']);
-        }
 
         $calendar = Calendar::create([
             'user_id' => Auth::user()->id,
@@ -95,11 +86,11 @@ class CalendarController extends Controller
         ]);
 
         // Split out Categories first
-        $categoryids = SaveEventCategories::dispatchNow($categories, $calendar->id);
+        $categoryids = SaveEventCategories::dispatchNow(json_decode(request('event_categories'), true), $calendar->id);
 
 
         // Now split out events
-        $eventids = SaveCalendarEvents::dispatchNow($events, $categoryids, $calendar->id);
+        $eventids = SaveCalendarEvents::dispatchNow(json_decode(request('events'), true), $categoryids, $calendar->id);
 
         return [
             'success' => true,
@@ -157,7 +148,8 @@ class CalendarController extends Controller
      */
     public function update(Request $request, Calendar $calendar)
     {
-        $update_data = $request->only(['name', 'dynamic_data', 'static_data', 'parent_hash', 'parent_link_date', 'parent_offset']);
+        $update_data = $request->only(['name', 'dynamic_data', 'static_data', 'parent_hash', 'parent_link_date', 'parent_offset', 'event_categories', 'events']);
+        $categoryids = [];
 
         if(array_key_exists('dynamic_data', $update_data)) {
             $update_data['dynamic_data'] = json_decode($update_data['dynamic_data']);
@@ -165,13 +157,6 @@ class CalendarController extends Controller
 
         if(array_key_exists('static_data', $update_data)) {
             $static_data = json_decode($update_data['static_data'], true);
-
-            // Split out Categories first
-            $categoryids = SaveEventCategories::dispatchNow($static_data['event_data']['categories'], $calendar->id);
-
-            // Now split out events
-            SaveCalendarEvents::dispatchNow($static_data['event_data']['events'], $categoryids, $calendar->id);
-
             unset($static_data['event_data']);
             $update_data['static_data'] = $static_data;
         }
@@ -190,6 +175,13 @@ class CalendarController extends Controller
             }
         }
 
+        if(array_key_exists('event_categories', $update_data)) {
+            $categoryids = SaveEventCategories::dispatchNow(json_decode($update_data['event_categories'], true), $calendar->id);
+        }
+
+        if(array_key_exists('events', $update_data)) {
+            SaveCalendarEvents::dispatchNow(json_decode($update_data['events'], true), $categoryids, $calendar->id);
+        }
 
         $calendar_was_updated = $calendar->update($update_data);
 
