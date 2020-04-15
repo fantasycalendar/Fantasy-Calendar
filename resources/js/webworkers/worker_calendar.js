@@ -363,6 +363,7 @@ var calendar_builder = {
 
 		var pre_search = 0;
 		var post_search = 0;
+		console.log(this);
 		for(event_index = 0; event_index < this.events.length; event_index++){
 			var event = this.events[event_index];
 			pre_search = event.data.has_duration && event.data.duration > pre_search ? event.data.duration : pre_search;

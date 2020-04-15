@@ -108,7 +108,7 @@ var edit_event_ui = {
 					icon: "warning",
 				}).then((result) => {
 					if(!result.dismiss) {
-						
+
 						if(edit_event_ui.new_event){
 							events.splice(edit_event_ui.event_id, 1);
 						}
@@ -118,7 +118,7 @@ var edit_event_ui = {
 				});
 
 			}else{
-						
+
 				if(edit_event_ui.new_event){
 					events.splice(edit_event_ui.event_id, 1);
 				}
@@ -1772,6 +1772,8 @@ var edit_event_ui = {
 			calendar_name: calendar_name,
 			static_data: static_data,
 			dynamic_data: preview_date,
+            events: events,
+            event_categories: event_categories,
 			action: "future",
 			owner: owner,
 			start_year: start_year,
