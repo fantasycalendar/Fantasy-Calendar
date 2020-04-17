@@ -1367,7 +1367,7 @@ var date_converter = {
 
 		var minute = Math.floor(this.child_static_data.clock.minutes*fract(child_current_hours))+1
 
-		this.year = Math.floor(this.target_epoch / fract_year_length(this.child_static_data))-10;
+		this.year = Math.floor(this.target_epoch / fract_year_length(this.child_static_data))-1;
 		this.timespan = 0;
 		this.day = 1;
 
@@ -1390,6 +1390,8 @@ var date_converter = {
 
 
 		while(this.loops < 1000){
+
+			console.log(this.year, this.timespan, this.day, this.loops)
 
 			if(!does_timespan_appear(this.child_static_data, this.year, this.timespan).result){
 
@@ -1417,8 +1419,10 @@ var date_converter = {
 
 			this.suggested_epoch = evaluate_calendar_start(this.child_static_data, this.year, this.timespan, this.day).epoch;
 
-			if(this.suggested_epoch != this.target_epoch){
+			if(this.suggested_epoch < this.target_epoch){
 				this.increase_day();
+			}else if(this.suggested_epoch > this.target_epoch){
+				this.decrease_day();
 			}else{
 				break;
 			}
@@ -1427,7 +1431,7 @@ var date_converter = {
 
 		}
 
-		this.year = this.year >= 0 ? this.year+1 : this.year;
+		this.year = convert_year(this.child_static_data, this.year);
 
 		return {
 			"year": this.year,
@@ -1453,11 +1457,24 @@ var date_converter = {
 
 	},
 
+	decrease_day: function(){
+
+		this.day--;
+
+		if(this.day < 1){
+
+			this.decrease_month();
+			this.day = this.timespan_length.length;
+
+		}
+
+	},
+
 	increase_month: function(){
 
 		this.timespan++;
 
-		if(this.timespan == this.child_static_data.year_data.timespans.length){
+		if(this.timespan >= this.child_static_data.year_data.timespans.length){
 
 			this.year++;
 			this.timespan = 0;
