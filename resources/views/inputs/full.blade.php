@@ -680,15 +680,17 @@
 						<li class="list-group-item">
 							<div class="d-flex justify-content-between align-items-center">
 								<strong>{{ $era['name'] }}</strong>
+								@if($era['settings']['starting_era'])
+									<small>Starting Era</small>
+								@endif
 							</div>
-							<div class='mt-2'>
-								Year: {{ $era['date']['year'] }}<br>
-								Month: {{ $era['date']['timespan']+1 }}<br>
-								Day: {{ $era['date']['day'] }}<br>
-							</div>
-							<div class='mt-2'>
-								Starting era: {{ $era['settings']['starting_era'] ? "Yes" : "No" }}
-							</div>
+							@if(!$era['settings']['starting_era'])
+								<div class='mt-2'>
+									Year: {{ $era['date']['year'] }}<br>
+									Month: {{ $era['date']['timespan']+1 }}<br>
+									Day: {{ $era['date']['day'] }}<br>
+								</div>
+							@endif
 						</li>
 					@endforeach
 
