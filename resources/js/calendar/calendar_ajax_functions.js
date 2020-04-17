@@ -173,8 +173,10 @@ function do_update_all(calendar_hash, output){
 		},
 		error: function ( log )
 		{
-			console.log(log);
 			calendar_save_failed();
+			if(log.responseJSON.error){
+				$.notify(log.responseJSON.error, "error");
+			}
 		}
 	});
 }
@@ -586,7 +588,6 @@ function create_event_comment(content, event_id, callback) {
 			event_id: event_id
 		},
 		success: function (result) {
-			console.log(result);
 			callback(result['data'].id,result['data']);
 		},
 		error: function(log) {

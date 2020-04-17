@@ -3329,29 +3329,14 @@ function add_era_to_list(parent, key, data){
 				element.push("</div>");
 			element.push("</div>");
 
-			if(is_linked && data.settings.ends_year){
-
-				element.push(`<div class='row no-gutters my-1'>`);
-				element.push("<div class='col-12 py-2 border rounded pl-2'>");
-					element.push(`<label class='form-check-label'>`);
-						element.push(`Is starting era (like B.C.): ${data.settings.starting_era ? "Enabled" : "Disabled"}`);
+			element.push(`<div class='row no-gutters my-1'>`);
+				element.push("<div class='form-check col-12 py-2 border rounded'>");
+					element.push(`<input type='checkbox' for='${key}_starting_era' class='form-check-input dynamic_input starting_era' data='eras.${key}.settings' fc-index='starting_era' ${(data.settings.starting_era ? "checked" : "")} />`);
+					element.push(`<label for='${key}_starting_era' class='form-check-label ml-1'>`);
+						element.push("Is starting era (like B.C.)");
 					element.push("</label>");
 				element.push("</div>");
-				element.push("</div>");
-				element.push(`<input type='hidden' class='starting_era' value='${(data.settings.starting_era ? "1" : "0")}' />`);
-
-			}else{
-
-				element.push(`<div class='row no-gutters my-1'>`);
-					element.push("<div class='form-check col-12 py-2 border rounded'>");
-						element.push(`<input type='checkbox' for='${key}_starting_era' class='form-check-input dynamic_input starting_era' data='eras.${key}.settings' fc-index='starting_era' ${(data.settings.starting_era ? "checked" : "")} />`);
-						element.push(`<label for='${key}_starting_era' class='form-check-label ml-1'>`);
-							element.push("Is starting era (like B.C.)");
-						element.push("</label>");
-					element.push("</div>");
-				element.push("</div>");
-
-			}
+			element.push("</div>");
 
 			element.push(`<div class='${data.settings.starting_era ? "hidden" : ""}'>`);
 
@@ -3359,52 +3344,29 @@ function add_era_to_list(parent, key, data){
 
 					element.push("<div class='col'>");
 						
-						if(is_linked && data.settings.ends_year){
+						element.push("<strong>Date:</strong>");
 
-							var timespan_id = get_timespans_in_year(static_data, data.date.year, data.date.timespan)[data.date.timespan].id;
-							var timespan_name = static_data.year_data.timespans[timespan_id].name;
-
-							var day_name = get_days_in_timespan(static_data, convert_year(static_data, data.date.year), data.date.timespan)[data.date.day-1];
-
-							element.push(`<ul class="list-group-item border-0 p-0">`);
-								element.push(`<li class="list-group-item"><strong>Year:</strong> ${data.date.year}</li>`);
-								element.push(`<li class="list-group-item"><strong>Month:</strong> ${timespan_name}</li>`);
-								element.push(`<li class="list-group-item"><strong>Day:</strong> ${day_name}</li>`);
-							element.push(`</ul>`);
-
-							element.push(`<div class='date_control m-0 hidden'>`);
-								element.push(`<input type='hidden' step="1.0" class='year-input' value='${data.date.year}'/>`);
-								element.push(`<input type='hidden' step="1.0" class='timespan-list' value='${data.date.timespan}'/>`);
-								element.push(`<input type='hidden' step="1.0" class='timespan-day-list' value='${data.date.day}'/>`);
-							element.push("</div>");
-
-						}else{
-
-							element.push("<strong>Date:</strong>");
-
-							element.push(`<div class='date_control'>`);
-								element.push(`<div class='row my-2'>`);
-									element.push("<div class='col'>");
-										element.push(`<input type='number' step="1.0" class='date form-control small-input dynamic_input year-input' refresh data='eras.${key}.date' fc-index='year' value='${data.date.year}'/>`);
-									element.push("</div>");
-								element.push("</div>");
-
-								element.push(`<div class='row my-2'>`);
-									element.push("<div class='col'>");
-										element.push(`<select type='number' class='date custom-select form-control timespan-list dynamic_input' refresh data='eras.${key}.date' fc-index='timespan'>`);
-										element.push("</select>");
-									element.push("</div>");
-								element.push("</div>");
-
-								element.push(`<div class='row my-2'>`);
-									element.push("<div class='col'>");
-										element.push(`<select type='number' class='date custom-select form-control timespan-day-list dynamic_input' refresh data='eras.${key}.date' fc-index='day'>`);
-										element.push("</select>");
-									element.push("</div>");
+						element.push(`<div class='date_control'>`);
+							element.push(`<div class='row my-2'>`);
+								element.push("<div class='col'>");
+									element.push(`<input type='number' step="1.0" class='date form-control small-input dynamic_input year-input' refresh data='eras.${key}.date' fc-index='year' value='${data.date.year}'/>`);
 								element.push("</div>");
 							element.push("</div>");
 
-						}
+							element.push(`<div class='row my-2'>`);
+								element.push("<div class='col'>");
+									element.push(`<select type='number' class='date custom-select form-control timespan-list dynamic_input' refresh data='eras.${key}.date' fc-index='timespan'>`);
+									element.push("</select>");
+								element.push("</div>");
+							element.push("</div>");
+
+							element.push(`<div class='row my-2'>`);
+								element.push("<div class='col'>");
+									element.push(`<select type='number' class='date custom-select form-control timespan-day-list dynamic_input' refresh data='eras.${key}.date' fc-index='day'>`);
+									element.push("</select>");
+								element.push("</div>");
+							element.push("</div>");
+						element.push("</div>");
 
 					element.push("</div>");
 				element.push("</div>");
@@ -3424,29 +3386,14 @@ function add_era_to_list(parent, key, data){
 					element.push("</div>");
 				element.push("</div>");
 
-				if(is_linked){
-
-					element.push(`<div class='row no-gutters my-1'>`);
-						element.push("<div class='col-12 py-2 border rounded pl-2'>");
-							element.push(`<label class='form-check-label'>`);
-								element.push(`Ends year prematurely: ${data.settings.ends_year ? "Enabled" : "Disabled"}`);
-							element.push("</label>");
-						element.push("</div>");
+				element.push(`<div class='row no-gutters my-1'>`);
+					element.push("<div class='form-check col-12 py-2 border rounded'>");
+						element.push(`<input type='checkbox' id='${key}_ends_year' class='form-check-input dynamic_input ends_year' ${!static_data.seasons.global_settings.periodic_seasons ? "disabled" : ""} data='eras.${key}.settings' fc-index='ends_year' ${(data.settings.ends_year ? "checked" : "")} />`);
+						element.push(`<label for='${key}_ends_year' class='form-check-label ml-1'>`);
+							element.push("Ends year prematurely");
+						element.push("</label>");
 					element.push("</div>");
-					element.push(`<input type='hidden' class='ends_year' value='${(data.settings.ends_year ? "1" : "0")}' />`);
-
-				}else{
-
-					element.push(`<div class='row no-gutters my-1'>`);
-						element.push("<div class='form-check col-12 py-2 border rounded'>");
-							element.push(`<input type='checkbox' id='${key}_ends_year' class='form-check-input dynamic_input ends_year' ${!static_data.seasons.global_settings.periodic_seasons ? "disabled" : ""} data='eras.${key}.settings' fc-index='ends_year' ${(data.settings.ends_year ? "checked" : "")} />`);
-							element.push(`<label for='${key}_ends_year' class='form-check-label ml-1'>`);
-								element.push("Ends year prematurely");
-							element.push("</label>");
-						element.push("</div>");
-					element.push("</div>");
-
-				}
+				element.push("</div>");
 
 			element.push("</div>");
 
@@ -5285,7 +5232,7 @@ function linked_popup(){
 
 	var html = [];
 	html.push("<p>As you've noticed, some options are missing. Nothing is broken! We promise. This calendar just has its date <strong>linked with another.</strong></p>");
-	html.push("<p>Things like month lengths, weekdays, leap days, hours and minutes, and year-ending eras are structural to a calendar, and changing them while two calendars are linked would be like changing the wheels on a moving car.</p>");
+	html.push("<p>Things like month lengths, weekdays, leap days, hours, minutes, and eras are structural to a calendar, and changing them while two calendars are linked would be like changing the wheels on a moving car.</p>");
 	html.push("<p>To change this calendar's structure, simply unlink it from any other calendar(s).</p>");
 
 	swal.fire({

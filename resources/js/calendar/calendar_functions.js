@@ -1391,8 +1391,6 @@ var date_converter = {
 
 		while(this.loops < 1000){
 
-			console.log(this.year, this.timespan, this.day, this.loops)
-
 			if(!does_timespan_appear(this.child_static_data, this.year, this.timespan).result){
 
 				this.increase_month();

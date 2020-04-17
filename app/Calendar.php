@@ -67,6 +67,37 @@ class Calendar extends Model
 //        return $static_data;
 //    }
 
+
+    public function structureWouldBeModified($static_data){
+
+        if(!$this->isLinked()){
+            return false;
+        }
+
+        if($this->static_data['clock']['enabled'] != $static_data['clock']['enabled']){
+            return true;
+        }
+
+        if($this->static_data['clock']['hours'] != $static_data['clock']['hours']){
+            return true;
+        }
+
+        if($this->static_data['clock']['minutes'] != $static_data['clock']['minutes']){
+            return true;
+        }
+
+        if($this->static_data['year_data'] != $static_data['year_data']){
+            return true;
+        }
+
+        if($this->static_data['eras'] != $static_data['eras']){
+            return true;
+        }
+
+        return false;
+
+    }
+
     public function isLinked() {
         return $this->parent()->exists() || $this->children()->count() > 0;
     }

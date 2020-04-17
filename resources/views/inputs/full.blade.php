@@ -650,25 +650,56 @@
 			<label for="collapsible_eras" class="lbl-toggle card-header lbl-text">Eras <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Eras' href='https://wiki.fantasy-calendar.com/index.php?title=Eras' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
 
-				<div class='row no-gutters bold-text'>
-					<div class='col'>
-						New Era:
+				@if(request()->is('calendars/*/edit') && !$calendar->isLinked())
+					<div class='row no-gutters bold-text'>
+						<div class='col'>
+							New Era:
+						</div>
 					</div>
-				</div>
 
-				<div class='add_inputs eras row no-gutters'>
-					<div class="col">
-						<input type='text' class='form-control name' id='era_name_input' placeholder='Era name'>
+					<div class='add_inputs eras row no-gutters'>
+						<div class="col">
+							<input type='text' class='form-control name' id='era_name_input' placeholder='Era name'>
+						</div>
+						<div class="col-auto">
+							<button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
+						</div>
 					</div>
-					<div class="col-auto">
-						<button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
-					</div>
-				</div>
+				@endif
 
-				<div class='sortable' id='era_list'></div>
 
 				@if(request()->is('calendars/*/edit') && $calendar->isLinked())
-					<p class='mb-0 mt-3'><a onclick="linked_popup();" href='#'>Why are some era inputs missing?</a></p>
+				
+					<ul class="list-group">
+
+					@php
+					$eras = Arr::get($calendar->static_data, 'eras');
+					@endphp
+
+					@foreach ($eras as $era)
+						<li class="list-group-item">
+							<div class="d-flex justify-content-between align-items-center">
+								<strong>{{ $era['name'] }}</strong>
+							</div>
+							<div class='mt-2'>
+								Year: {{ $era['date']['year'] }}<br>
+								Month: {{ $era['date']['timespan']+1 }}<br>
+								Day: {{ $era['date']['day'] }}<br>
+							</div>
+							<div class='mt-2'>
+								Starting era: {{ $era['settings']['starting_era'] ? "Yes" : "No" }}
+							</div>
+						</li>
+					@endforeach
+
+					</ul>
+
+				@else
+					<div class='sortable' id='era_list'></div>
+				@endif
+
+				@if(request()->is('calendars/*/edit') && $calendar->isLinked())
+					<p class='mb-0 mt-3'><a onclick="linked_popup();" href='#'>Why can't I edit the eras?</a></p>
 				@endif
 
 			</div>
