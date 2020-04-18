@@ -10,6 +10,8 @@ dynamic_data = {!! json_encode($calendar->dynamic_data) !!};
 
 is_linked = {!! $calendar->isLinked() ? "true" : "false" !!};
 has_parent = {!! $calendar->parent == null ? "false" : "true" !!};
+parent_hash = {!! $calendar->parent != null ? '"'.$calendar->parent->hash.'"' : "false" !!};
+parent_offset = {!! $calendar->parent != null ? $calendar->parent_offset : "false" !!};
 
 events = {!! json_encode($calendar->events); !!}
 event_categories = {!! json_encode($calendar->event_categories); !!}

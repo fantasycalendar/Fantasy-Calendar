@@ -291,11 +291,6 @@ function set_up_edit_inputs(){
 		}
 	});
 
-	$('#rebuild_calendar_btn').click(function(){
-		check_rebuild('calendar');
-		poll_timer = setTimeout(check_master_update, 5000);
-	});
-
 	/* ------------------- Layout callbacks ------------------- */
 
 	$('.add_inputs').keyup(function(e){
@@ -4946,21 +4941,6 @@ function set_up_edit_values(){
 	if(window.location.pathname != '/calendars/create') {
 
         populate_calendar_lists();
-
-        /* if(link_data.master_hash !== ''){
-
-    		get_all_master_data(function(result){
-
-        		master_static_data = result.static_data;
-        		master_dynamic_data = result.dynamic_data;
-        		master_last_dynamic_change = new Date(result.last_dynamic_change);
-        		master_last_static_change = new Date(result.last_static_change);
-
-        		bind_master_update();
-
-        	});
-
-        } */
 
 	}
 

@@ -1367,7 +1367,7 @@ var date_converter = {
 
 		var minute = Math.floor(this.child_static_data.clock.minutes*fract(child_current_hours))+1
 
-		this.year = Math.floor(this.target_epoch / fract_year_length(this.child_static_data))-1;
+		this.year = Math.floor(this.target_epoch / fract_year_length(this.child_static_data))-2;
 		this.timespan = 0;
 		this.day = 1;
 

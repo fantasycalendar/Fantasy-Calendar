@@ -65,7 +65,9 @@
 				</div>
 
 				<div class='row my-2 center-text hidden calendar_link_explaination'>
-					This calendar is using a different calendar's date to calculate the current date. Only the master calendar can set the date for this calendar.
+				    @if($calendar->parent != null)
+                        <p class='m-0'>This calendar is using a different calendar's date to calculate the current date. Only the <a href='/calendars/{{ $calendar->parent->hash }}' target="_blank">parent calendar</a> can set the date for this calendar.</p>
+                    @endif
 				</div>
 
                 <div class='row'>
@@ -236,6 +238,37 @@
 		</div>
 
 	</div>
+	@endif
+
+    @if(Auth::check())
+    <!---------------------------------------------->
+    <!------------------ LINKING ------------------->
+    <!---------------------------------------------->
+    <div class='wrap-collapsible card'>
+        <input id="collapsible_linking" class="toggle" type="checkbox" checked disabled>
+        <label for="collapsible_linking" class="lbl-toggle card-header lbl-text">Calendar Linking <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Calendar Linking' href='https://wiki.fantasy-calendar.com/index.php?title=Calendar_Linking' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+        <div class="collapsible-content card-body">
+
+            @if($calendar->children->count() > 0)
+
+                Calendar links:<br>
+
+                @foreach($calendar->children as $child)
+
+                    <a href='/calendars/{{ $child->hash }}' target="_blank">{{ $child->name }}</a><br>
+
+                @endforeach
+
+            @endif
+
+            @if($calendar->parent != null)
+
+                Parent Calendar: <a href='/calendars/{{ $calendar->parent->hash }}' target="_blank">{{ $calendar->parent->name }}</a>
+
+            @endif
+
+        </div>
+    </div>
 	@endif
 
 </form>

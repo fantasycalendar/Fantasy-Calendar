@@ -94,7 +94,9 @@
 					</div>
 
 					<div class='row my-2 center-text hidden calendar_link_explaination'>
-						This calendar is using a different calendar's date to calculate the current date. Only the master calendar can set the date for this calendar.
+						@if($calendar->parent != null)
+							<p class='m-0'>This calendar is using a different calendar's date to calculate the current date. Only the <a href='/calendars/{{ $calendar->parent->hash }}/edit' target="_blank">parent calendar</a> can set the date for this calendar.</p>
+						@endif
 					</div>
 
                     <div class='row'>
@@ -809,7 +811,6 @@
 
 				<div>
 					<button type='button' class='btn btn-secondary full' id='create_season_events'>Create solstice and equinox events</button>
-					<i class='center-text full'>(requires clock enabled)</i>
 				</div>
 			</div>
 
@@ -1263,7 +1264,9 @@
 					<div id='calendar_link_hide'>
 
 						<div class='row no-gutters my-1 center-text hidden calendar_link_explaination'>
-							This calendar is already linked to a master calendar. Before linking any calendars to this one, you must unlink this calendar from its master calendar.
+							@if($calendar->parent != null)
+								<p class='m-0'>This calendar is already linked to a <a href='/calendars/{{ $calendar->parent->hash }}/edit' target="_blank">parent calendar</a>. Before linking any calendars to this one, you must unlink this calendar from its parent calendar.</p>
+							@endif
 						</div>
 
 						<div class='row no-gutters my-1 center-text'>
@@ -1310,10 +1313,10 @@
 
 	<div id="top_follower">
 
-		<div class='master_button_container hidden'>
+		<div class='parent_button_container hidden'>
 			<div class='container d-flex h-100 p-0'>
 				<div class='col justify-content-center align-self-center full'>
-					<button class='btn btn-danger full' disabled id='rebuild_calendar_btn'>Master data changed - reload</button>
+					<button class='btn btn-danger full' disabled id='rebuild_calendar_btn'>Parent data changed - reload</button>
 				</div>
 			</div>
 		</div>

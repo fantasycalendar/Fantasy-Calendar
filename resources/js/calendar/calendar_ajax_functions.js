@@ -108,7 +108,7 @@ function update_dynamic(calendar_hash){
 
 function update_all(){
 
-	check_last_change(function(output){
+	check_last_change(hash, function(output){
 
 		var new_static_change = new Date(output.last_static_change)
 
@@ -219,44 +219,6 @@ function get_dynamic_data(calendar_hash, output){
 	});
 
 }
-
-
-
-/* function get_all_master_data(output){
-
-	$.ajax({
-		url:window.apiurl+"/"+link_data.master_hash,
-		type: "get",
-		dataType: 'json',
-		data: {},
-		success: function(result){
-
-			output(result);
-
-		},
-		error: function ( log )
-		{
-			console.log(log);
-		}
-	});
-}
-
-
-function check_last_master_change(output){
-	$.ajax({
-		url:window.apiurl+"/"+link_data.master_hash+"/last_changed",
-		type: "post",
-		dataType: 'json',
-		data: {},
-		success: function(result){
-			output(result);
-		},
-		error: function ( log )
-		{
-			console.log(log);
-		}
-	});
-} */
 
 function link_child_calendar(child_hash, parent_link_date, parent_offset, ){
 
@@ -413,9 +375,9 @@ function update_children_dynamic_data(output){
 	});
 }
 
-function check_last_change(output){
+function check_last_change(calendar_hash, output){
 	$.ajax({
-		url:window.apiurl+"/"+hash+"/last_changed",
+		url:window.apiurl+"/"+calendar_hash+"/last_changed",
 		type: "post",
 		dataType: 'json',
 		data: {},
