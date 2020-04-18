@@ -4123,7 +4123,7 @@ function reindex_cycle_sortable(){
 			'names': []
 		};
 
-		$(this).find('.collapsible-content').children().first().children().each(function(j){
+		$(this).find('.cycle_list').children().each(function(j){
 			static_data.cycles.data[i].names[j] = $(this).val();
 		});
 

@@ -425,13 +425,15 @@ function update_cycle_text(){
 
 		var format = static_data.cycles.format.replace(/\{\{/g, '{{{').replace(/\}\}/g, '}}}');
 
-		var cycle_text = Mustache.render(format, get_cycle(static_data, evaluated_static_data.epoch_data[preview_date.epoch]).text);
+		var view = get_cycle(static_data, evaluated_static_data.epoch_data[preview_date.epoch]).text;
 
-		$('#top_follower_content .cycle').text(cycle_text).removeClass('hidden');
+		var cycle_text = Mustache.render(format, view);
+
+		$('#top_follower_content .cycle').html(cycle_text).removeClass('hidden').toggleClass('smaller', cycle_text.includes("<br>"));
 
 	}else{
 
-		$('#top_follower_content .cycle').text('').addClass('hidden');
+		$('#top_follower_content .cycle').html('').addClass('hidden').toggleClass('smaller', false);
 
 	}
 

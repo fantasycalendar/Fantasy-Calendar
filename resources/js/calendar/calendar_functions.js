@@ -899,7 +899,10 @@ class date_manager {
  */
 function get_cycle(static_data, epoch_data){
 
-	var text = {};
+	var text = {
+		"n": "<br>"
+	};
+
 	var index_array = [];
 
 	// If cycles are enabled
@@ -907,8 +910,6 @@ function get_cycle(static_data, epoch_data){
 
 		// Define the index array
 		var index_array = [];
-
-		// Get the format
 
 		// Loop through each cycle
 		for(var index = 0; index < static_data.cycles.data.length; index++){
