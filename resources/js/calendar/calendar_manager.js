@@ -74,22 +74,35 @@ var evaluate_era_position = debounce(function(){
 	eras.evaluate_position();
 }, 50);
 
-function pre_rebuild_calendar(action, dynamic_data){
+function eval_apply_changes(output){
 
-	var apply_changes_immediately = $('#apply_changes_immediately').is(':checked');
+	var apply_changes_immediately = $('#apply_changes_immediately');
 
-	if(!apply_changes_immediately){
+	if(apply_changes_immediately.length == 0){
+		output();
+	}else if(!apply_changes_immediately.is(':checked')){
 		if(!changes_applied){
 			evaluate_save_button();
 			show_changes_button();
-			return;
 		}else{
 			hide_changes_button();
 			evaluate_save_button(true);
+			output();
 		}
+	}else{
+		evaluate_save_button();
+		output();
 	}
 
-	rebuild_calendar(action, dynamic_data);
+}
+
+function pre_rebuild_calendar(action, dynamic_data){
+
+	eval_apply_changes(function(){
+
+		rebuild_calendar(action, dynamic_data);
+
+	});
 
 }
 
@@ -210,6 +223,8 @@ function do_rebuild(action, dynamic_data){
 		calendar_name: calendar_name,
 		static_data: static_data,
 		dynamic_data: dynamic_data,
+        events: events,
+        event_categories: event_categories,
 		action: action,
 		owner: owner
 	});
@@ -236,6 +251,8 @@ function rebuild_events(event_id){
 	worker_events.postMessage({
 		static_data: static_data,
 		epoch_data: evaluated_static_data.epoch_data,
+        events: events,
+        event_categories: event_categories,
 		event_id: event_id,
 		start_epoch: evaluated_static_data.year_data.start_epoch,
 		end_epoch: evaluated_static_data.year_data.end_epoch
