@@ -128,7 +128,7 @@
                 </div>
                 <div class="col-12 col-md-9 herotext">
                     <h1>Fantasy Calendar</h1>
-                    <p class="lead">Whether you're an RPG DM just looking to track the events of a long-running Forgotten Realms campaign, or a fanciful world-builder who likes to have wacky celestial configurations (Such as Eberron's 12 moons) with zany timekeeping systems to match, you probably need a calendar of some kind.</p>
+                    <p class="lead">Whether you're a GM just looking to track the events of a long-running Forgotten Realms campaign, or a fanciful world-builder who likes to have wacky celestial configurations (such as Eberron's 12 moons), with zany timekeeping systems to match, you need a fantasy calendar!</p>
                 </div>
             </div>
         </div>
@@ -142,7 +142,7 @@
                     <div class="inner text-center">
                         <p class="pt-2"><i class="fa fa-check-circle"></i></p>
                         <h3>Easy to Use</h3>
-                        <p class="small">The controls of Fantasy Calendar have been lovingly hand-crafted to <strong>make sense</strong>. With a detailed wiki to make up for the parts that don’t.</p>
+                        <p class="small">Fantasy Calendar has been lovingly hand-crafted to make sense. With a detailed wiki to make up for the parts that don’t.</p>
                     </div>
                 </div>
                 <div class="col-12 col-md-3 py-3 py-md-0 px-2 px-md-1">
@@ -163,8 +163,7 @@
                     <div class="inner text-center">
                         <p class="pt-2"><i class="fa fa-calendar-day"></i></p>
                         <h3 class="lower-height">Powerful Calendar Engine</h3>
-                        <p class="small">Intercalaries! Leap days! Moons! Seasons! Cycles! Eras!<br>
-                            If those words mean anything to you, welcome to your home for keeping track of it all.</p>
+                        <p class="small">This flexible, customizable engine can do accommodate whatever your world needs — intercalaries, leap days, moons cycles, seasons, eras, and more!</p>
                     </div>
                 </div>
             </div>
@@ -175,9 +174,9 @@
     <section class="quoteblock">
         <div class="container">
             <div class="quote">
-                “Game time is of utmost importance. Failure to keep careful track of time expenditure by player characters will result in many anomalies in the game. The stricture of time is what makes recovery of hit points meaningful. [...] All of these demands upon game time force choices upon player characters and likewise number their days of game life…YOU CAN NOT HAVE A MEANINGFUL CAMPAIGN IF STRICT TIME RECORDS ARE NOT KEPT.”
+                “Game time is of utmost importance. Failure to keep careful track of time expenditure by player characters will result in many anomalies in the game. The stricture of time is what makes recovery of hit points meaningful. [...] All of these demands upon game time force choices upon player characters and likewise number their days of game life… You can not have a meaningful campaign if strict time records are not kept.”
             </div>
-            <div class="name">Gary Gygax</div>
+            <div class="name">- Gary Gygax</div>
         </div>
     </section>
 
