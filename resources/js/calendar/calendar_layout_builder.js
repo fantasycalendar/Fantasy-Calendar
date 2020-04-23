@@ -94,6 +94,35 @@ function update_moon_colors(){
 	}
 }
 
+function update_season_colors(){
+	season_colors = [];
+	var html = [];
+	
+
+	if($('#global_season_colors').length == 0){
+		html.push("<style type='text/css' id='global_season_colors'>");
+	}
+
+	if(static_data.seasons.global_settings.color_enabled){
+		for(var index = 0; index < static_data.seasons.data.length; index++){
+
+			let color = static_data.seasons.data[index].color ? static_data.seasons.data[index].color : '#ffffff';
+
+			html.push(`.season_color[index='${index}'] { background:${color}; }\n`);
+
+		}
+	}else{
+		html.push(`.season_color{ display:none; }\n`);
+	}
+
+	if($('#global_season_colors').length == 0){
+		html.push("</style>");
+		$(html.join('')).appendTo('head');
+	}else{
+		$('#global_season_colors').empty().append(html.join(''));
+	}
+}
+
 var eras = {
 
 	current_eras: [],
@@ -452,6 +481,7 @@ var calendar_layouts = {
 		div.innerHTML = calendar_layouts.html.join("");
 		calendar_layouts.html = [];
 		update_moon_colors();
+		update_season_colors();
 	},
 
 	html: [],
@@ -600,9 +630,7 @@ var calendar_layouts = {
 						}
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow right'>");
-							if(owner){
-								calendar_layouts.html.push(`<div epoch='${epoch}' class='btn_create_event btn_small_plus btn btn-success' title='Create new event'></div>`);
-							}
+							calendar_layouts.html.push(`<div class='season_color' title='${calendar_layouts.epoch_data[epoch].season.season_name}' index='${calendar_layouts.epoch_data[epoch].season.season_index}'></div>`);
 						calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("</div>");
 					if(title){
@@ -616,7 +644,12 @@ var calendar_layouts = {
 					calendar_layouts.html.push("<div class='day_row'>");
 						calendar_layouts.html.push("<div class='event_container'></div>");
 					calendar_layouts.html.push("</div>");
-					calendar_layouts.html.push("<div class='day_row year_day_number_parent'>");
+					calendar_layouts.html.push("<div class='day_row'>");
+					if(owner){
+						calendar_layouts.html.push(`<div epoch='${epoch}' class='btn_create_event btn btn-success full'>Create Event</div>`);
+					}
+					calendar_layouts.html.push("</div>");
+					calendar_layouts.html.push("<div class='day_row last_row'>");
 						calendar_layouts.html.push(`<div class='year_day_number'>${calendar_layouts.year_data.year_day}</div>`);
 					calendar_layouts.html.push("</div>");
 				calendar_layouts.html.push("</div>");
@@ -921,9 +954,7 @@ var calendar_layouts = {
 						}
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow right'>");
-							if(owner){
-								calendar_layouts.html.push(`<div epoch='${epoch}' class='btn_create_event btn_small_plus btn btn-success' title='Create new event'></div>`);
-							}
+							calendar_layouts.html.push(`<div class='season_color' title='${calendar_layouts.epoch_data[epoch].season.season_name}' index='${calendar_layouts.epoch_data[epoch].season.season_index}'></div>`);
 						calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("</div>");
 					if(title){
@@ -937,7 +968,12 @@ var calendar_layouts = {
 					calendar_layouts.html.push("<div class='day_row'>");
 						calendar_layouts.html.push("<div class='event_container'></div>");
 					calendar_layouts.html.push("</div>");
-					calendar_layouts.html.push("<div class='day_row year_day_number_parent'>");
+					calendar_layouts.html.push("<div class='day_row'>");
+					if(owner){
+						calendar_layouts.html.push(`<div epoch='${epoch}' class='btn_create_event btn btn-success full'>Create Event</div>`);
+					}
+					calendar_layouts.html.push("</div>");
+					calendar_layouts.html.push("<div class='day_row last_row'>");
 						calendar_layouts.html.push(`<div class='year_day_number'>${calendar_layouts.year_data.year_day}</div>`);
 					calendar_layouts.html.push("</div>");
 				calendar_layouts.html.push("</div>");
@@ -1255,9 +1291,7 @@ var calendar_layouts = {
 						}
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow right'>");
-							if(owner){
-								calendar_layouts.html.push(`<div epoch='${epoch}' class='btn_create_event btn_small_plus btn btn-success' title='Create new event'></div>`);
-							}
+							calendar_layouts.html.push(`<div class='season_color' title='${calendar_layouts.epoch_data[epoch].season.season_name}' index='${calendar_layouts.epoch_data[epoch].season.season_index}'></div>`);
 						calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("</div>");
 
@@ -1307,7 +1341,13 @@ var calendar_layouts = {
 						calendar_layouts.html.push("<div class='event_container'></div>");
 					calendar_layouts.html.push("</div>");
 
-					calendar_layouts.html.push("<div class='day_row year_day_number_parent'>");
+					calendar_layouts.html.push("<div class='day_row'>");
+					if(owner){
+						calendar_layouts.html.push(`<div epoch='${epoch}' class='btn_create_event btn btn-success full'>Create Event</div>`);
+					}
+					calendar_layouts.html.push("</div>");
+
+					calendar_layouts.html.push("<div class='day_row last_row'>");
 						calendar_layouts.html.push(`<div class='year_day_number'>${calendar_layouts.year_data.year_day}</div>`);
 					calendar_layouts.html.push("</div>");
 

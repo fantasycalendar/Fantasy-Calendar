@@ -509,6 +509,7 @@ function set_up_edit_inputs(){
 
 		stats = {
 			"name": name_val,
+			"color": "#000000",
 			"time": {
 				"sunrise": {
 					"hour": 6,
@@ -564,6 +565,8 @@ function set_up_edit_inputs(){
 			sort_list_by_partial_date(season_sortable);
 
 		}
+
+		recreate_season_colors();
 
 		season_sortable.sortable('refresh');
 		reindex_season_sortable();
@@ -1629,6 +1632,14 @@ function set_up_edit_inputs(){
 		reindex_season_sortable();
 	});
 
+	$(document).on('change', '#season_color_enabled', function(){
+		var checked = $(this).is(":checked");
+		season_sortable.children().each(function(){
+			$(this).find('.season_color_enabled').toggleClass("hidden", !checked);
+			$(this).find('.season_color_enabled input').prop("disabled", !checked);
+		});
+	});
+
 	$(document).on('change', '.week-length', function(){
 
 		var parent = $(this).closest('.sortable-container');
@@ -2174,7 +2185,7 @@ function set_up_edit_inputs(){
 							break;
 
 						default:
-							var value = target.val();
+							var value = escapeHtml(target.val());
 							break;
 					}
 
@@ -2250,7 +2261,7 @@ function set_up_edit_inputs(){
 					break;
 
 				default:
-					value = target.val();
+					value = escapeHtml(target.val());
 					break;
 			}
 
@@ -2789,6 +2800,13 @@ function add_season_to_sortable(parent, key, data){
 				element.push("</div>");
 
 			}
+
+			element.push(`<div class='row no-gutters my-1 p-2 border rounded season_color_enabled ${!static_data.seasons.global_settings.color_enabled ? "hidden" : ""}'>`);
+				element.push("<div class='col-4'>Season color:</div>");
+				element.push("<div class='col-8'>");
+					element.push(`<input type='color' class='dynamic_input color full' data='seasons.data.${key}' fc-index='color'/>`);
+				element.push("</div>");
+			element.push("</div>");
 
 			element.push(`<div class='clock_inputs ${!static_data.clock.enabled ? "hidden" : ""}'>`);
 
@@ -3930,6 +3948,7 @@ function reindex_season_sortable(key){
 
 		static_data.seasons.data[i] = {
 			"name": $(this).find('.name-input').val(),
+			"color": $(this).find('.color').spectrum('get', 'hex').toString(),
 			"time": {
 				"sunrise": {
 					"hour": ($(this).find('input[clocktype="sunrise_hour"]').val()|0),
@@ -4371,6 +4390,22 @@ function recreate_moon_colors(){
 
 }
 
+function recreate_season_colors(){
+
+	$('.season .color').spectrum({
+		color: "#FFFFFF",
+		preferredFormat: "hex",
+		showInput: true
+	});
+
+	$('#season_sortable').children().each(function(i){
+		var color = static_data.seasons.data[i].color;
+		$(this).find('.color').spectrum("set", color ? color : "#"+Math.floor(Math.random()*16777215).toString(16));
+		static_data.seasons.data[i].color = color ? color : $(this).find('.color').spectrum("get").toString();
+	});
+
+}
+
 function evaluate_season_lengths(){
 
 	var disable = static_data.seasons.data.length == 0 || (!static_data.seasons.global_settings.periodic_seasons && static_data.seasons.global_settings.periodic_seasons !== undefined);
@@ -4741,6 +4776,8 @@ function set_up_edit_values(){
 		$('.slider_percentage').each(function(){
 			$(this).slider('option', 'value', parseInt($(this).parent().parent().find('.slider_input').val()));
 		});
+
+		recreate_season_colors();
 
 	}
 
