@@ -32,8 +32,8 @@ class UpdateCalendarsBetaLinks extends Migration
     {
         //
         Schema::table('calendars_beta', function($table) {
-            $table->string('children');
-            $table->string('master_hash');
+            $table->string('children')->default('[]');
+            $table->string('master_hash')->default('');
             $table->dropColumn('parent_id');
             $table->dropColumn('parent_offset');
             $table->dropColumn('parent_link_date');
