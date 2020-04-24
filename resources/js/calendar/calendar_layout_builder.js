@@ -447,6 +447,12 @@ function update_cycle_text(){
 
 		var format = static_data.cycles.format.replace(/\{\{/g, '{{{').replace(/\}\}/g, '}}}');
 
+		var epoch = dynamic_data.epoch;
+		if(preview_date.epoch != dynamic_data.epoch){
+			preview_date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, preview_date.year), preview_date.timespan, preview_date.day).epoch;
+			epoch = preview_date.epoch;
+		}
+
 		var view = get_cycle(static_data, evaluated_static_data.epoch_data[preview_date.epoch]).text;
 
 		var cycle_text = Mustache.render(format, view);

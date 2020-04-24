@@ -3231,13 +3231,13 @@ function add_cycle_to_sortable(parent, key, data){
 				element.push("<div class='row mt-2'>Cycle is based on:</div>");
 				element.push("<div class='row mb-2'>");
 					element.push(`<select class='form-control full dynamic_input cycle_type' data='cycles.data.${key}' fc-index='type'>`);
-						element.push(`<option value='year'>Year</option>`);
-						element.push(`<option value='era_year'>Era year</option>`);
-						element.push(`<option value='timespan_index'>Month in year</option>`);
-						element.push(`<option value='num_timespans'>Month count (since 1/1/1)</option>`);
-						element.push(`<option value='day'>Day in month</option>`);
-						element.push(`<option value='year_day'>Year day</option>`);
-						element.push(`<option value='epoch'>Epoch (days since 1/1/1)</option>`);
+						element.push(`<option ${data.type == "year" ? "selected" : ""} value='year'>Year</option>`);
+						element.push(`<option ${data.type == "era_year" ? "selected" : ""} value='era_year'>Era year</option>`);
+						element.push(`<option ${data.type == "timespan_index" ? "selected" : ""} value='timespan_index'>Month in year</option>`);
+						element.push(`<option ${data.type == "num_timespans" ? "selected" : ""} value='num_timespans'>Month count (since 1/1/1)</option>`);
+						element.push(`<option ${data.type == "day" ? "selected" : ""} value='day'>Day in month</option>`);
+						element.push(`<option ${data.type == "year_day" ? "selected" : ""} value='year_day'>Year day</option>`);
+						element.push(`<option ${data.type == "epoch" ? "selected" : ""} value='epoch'>Epoch (days since 1/1/1)</option>`);
 					element.push(`</select>`);
 				element.push("</div>");
 
