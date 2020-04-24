@@ -148,17 +148,37 @@ class CalendarController extends Controller
      */
     public function update(Request $request, Calendar $calendar)
     {
-        $update_data = $request->only(['name', 'dynamic_data', 'static_data', 'children', 'master_hash', 'event_categories', 'events']);
+        $update_data = $request->only(['name', 'dynamic_data', 'static_data', 'parent_hash', 'parent_link_date', 'parent_offset', 'event_categories', 'events']);
         $categoryids = [];
 
         if(array_key_exists('dynamic_data', $update_data)) {
             $update_data['dynamic_data'] = json_decode($update_data['dynamic_data']);
         }
 
+        $parent_hash_exists = array_key_exists('parent_hash', $update_data);
+        $parent_link_date_exists = array_key_exists('parent_link_date', $update_data);
+        $parent_offset_exists = array_key_exists('parent_offset', $update_data);
+
+        if($parent_hash_exists && $parent_link_date_exists && $parent_offset_exists) {
+
+            if($update_data['parent_hash'] != null){
+                $parent_calendar = Calendar::hash($update_data['parent_hash'])->firstOrFail();
+                unset($update_data['parent_hash']);
+                $update_data['parent_id'] = $parent_calendar->id;
+            }else{
+                $update_data['parent_id'] = null;
+            }
+
+        }
+
         if(array_key_exists('static_data', $update_data)) {
+
             $static_data = json_decode($update_data['static_data'], true);
-            unset($static_data['event_data']);
             $update_data['static_data'] = $static_data;
+
+            if($calendar->isLinked() && $calendar->structureWouldBeModified($static_data)){
+                return response()->json(['error' => 'Calendar structure cannot be edited while linked.'], 403);
+            }
         }
 
         if(array_key_exists('event_categories', $update_data)) {
@@ -172,7 +192,7 @@ class CalendarController extends Controller
         $calendar_was_updated = $calendar->update($update_data);
 
         if($calendar_was_updated == 0) {
-            return [ 'success' => false, 'error' => 'Error - Unable to update calendar. Please try again later.'];
+            return [ 'success' => false, 'error' => 'Unable to update calendar. Please try again later.'];
         }
 
         return [ 'success' => true, 'data'=> true ];

@@ -53,7 +53,7 @@
 
         if(new_static_change > last_static_change){
 
-            get_all_data(function(output){
+            get_all_data(hash, function(output){
 
                 static_data = JSON.parse(result.static_data);
                 dynamic_data = JSON.parse(result.dynamic_data);
@@ -69,7 +69,7 @@
 
         }else if(new_dynamic_change > last_dynamic_change){
 
-            get_dynamic_data(function(output){
+            get_dynamic_data(hash, function(output){
 
                 dynamic_data = JSON.parse(output.dynamic_data);
 

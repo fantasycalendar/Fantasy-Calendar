@@ -8,6 +8,8 @@
 
         calendar_name = 'New Calendar';
         owner = true;
+        has_parent = false;
+        is_linked = false;
         static_data = {
             "year_data":{
                 "first_day":1,
@@ -76,11 +78,6 @@
             "epoch": 0,
             "custom_location": false,
             "location": "Equatorial"
-        };
-
-        link_data = {
-            master_hash: "",
-            children: []
         };
 
         $(document).ready(function(){

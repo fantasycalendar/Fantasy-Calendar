@@ -238,7 +238,7 @@ function go_to_preview_date(rebuild){
 	rebuild = rebuild !== undefined ? rebuild : data.rebuild;
 
 	if(rebuild){
-		do_rebuild('preview', preview_date)
+		rebuild_calendar('preview', preview_date)
 	}else{
 		update_current_day();
 		scroll_to_epoch();
@@ -283,7 +283,7 @@ function go_to_dynamic_date(rebuild){
 	rebuild = rebuild !== undefined ? rebuild : data.rebuild;
 
 	if(rebuild){
-		do_rebuild('preview', dynamic_data)
+		rebuild_calendar('preview', dynamic_data)
 	}else{
 		update_current_day(false)
 		scroll_to_epoch();
@@ -308,16 +308,8 @@ function evaluate_settings(){
 	$('.date_control').toggleClass('hidden', (!owner && !static_data.settings.allow_view));
 	$('.date_control').find('select, input').not('#current_hour, #current_minute').prop('disabled', !owner && !static_data.settings.allow_view);
 
-	var has_master = link_data.master_hash !== "";
-
-	$('#calendar_link_hide select, #calendar_link_hide button').prop('disabled', has_master);
-	$('#calendar_link_hide').toggleClass('hidden', has_master);
-
-	$('#calendar_link_show :input').prop('disabled', !has_master);
-	$('#calendar_link_show').toggleClass('hidden', !has_master);
-
-	$("#date_inputs :input, #date_inputs :button").prop("disabled", has_master);
-	$(".calendar_link_explaination").toggleClass("hidden", !has_master);
+	$("#date_inputs :input, #date_inputs :button").prop("disabled", has_parent);
+	$(".calendar_link_explaination").toggleClass("hidden", !has_parent);
 
 	follower_buttons.toggleClass('hidden', (!owner && !static_data.settings.allow_view));
 	follower_year_buttons.prop('disabled', (!owner && !static_data.settings.allow_view)).toggleClass('hidden', (!owner && !static_data.settings.allow_view));
@@ -424,8 +416,6 @@ function repopulate_timespan_select(select, val, change, max){
 	var max = max === undefined ? false : max;
 
 	select.each(function(){
-		
-		$(this).prop('disabled', false);
 
 		var year = convert_year(static_data, $(this).closest('.date_control').find('.year-input').val()|0);
 
@@ -521,30 +511,21 @@ function repopulate_day_select(select, val, change, no_leaps, max, filter_timesp
 			}else{
 				var days = get_days_in_timespan(static_data, year, timespan, undefined, no_leaps);
 			}
-
-
+		
 			var html = [];
 
 			if(!$(this).hasClass('date')){
 				html.push(`<option value="${0}">Before 1</option>`);
 			}
 
-			for(var i = 0, day_number = 1; i < days.length; i++){
+			for(var i = 0; i < days.length; i++){
 
 				var day = days[i];
 
-				if(day != ""){
-					text = day;
-				}else{
-					text = `Day ${day_number}`;
-					day_number++;
-				}
-
 				if(max && i >= max) break;
 
-
 				html.push(`<option value='${i+1}'>`);
-				html.push(`${text}`);
+				html.push(`${day}`);
 				html.push('</option>');
 
 			}
@@ -589,8 +570,6 @@ function set_up_visitor_values(){
 
 	preview_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
 
-	evaluate_settings();
-
 	target_year.val(preview_date_manager.adjusted_year);
 	if(preview_date_manager.last_valid_year){
 		target_year.prop('max', preview_date_manager.last_valid_year)
@@ -600,5 +579,7 @@ function set_up_visitor_values(){
 
 	repopulate_timespan_select(target_timespan, preview_date_manager.timespan, false, preview_date_manager.last_valid_timespan);
 	repopulate_day_select(target_day, preview_date_manager.day, false, false, preview_date_manager.last_valid_day);
+
+	evaluate_settings();
 
 }

@@ -27,10 +27,6 @@
             static_data.clock.render = static_data.clock.enable;
         }
 
-        if(typeof static_data.clock.link_scale == "undefined"){
-            static_data.clock.link_scale = link_data.master_hash !== "";
-        }
-
         if(typeof static_data.clock.crowding == "undefined"){
             static_data.clock.crowding = 0;
         }
@@ -39,8 +35,13 @@
         set_up_view_values();
         set_up_visitor_values();
         bind_calendar_events();
-        do_rebuild('calendar', dynamic_data);
+        rebuild_calendar('calendar', dynamic_data);
 
+        $('#current_year, #current_timespan, #current_day, #current_hour, #current_minute, #location_select').change(function(){
+            do_update_dynamic(hash);
+        });
+
+        last_mouse_move = Date.now();
         poll_timer = setTimeout(check_dates, 5000);
         instapoll = false;
 
@@ -56,15 +57,7 @@
             }
         }
 
-        $('#current_year, #current_timespan, #current_day, #current_hour, #current_minute, #location_select').change(function(){
-            do_update_dynamic();
-        });
-
     });
-
-    var do_update_dynamic = debounce(function(type){
-        update_view_dynamic();
-    }, 500);
     
     function check_dates(){
 
@@ -72,7 +65,7 @@
 
             instapoll = false;
 
-            check_last_change(function(result){
+            check_last_change(hash, function(result){
 
                 new_dynamic_change = new Date(result.last_dynamic_change)
                 new_static_change = new Date(result.last_static_change)
@@ -82,7 +75,7 @@
                     last_dynamic_change = new_dynamic_change
                     last_static_change = new_static_change
 
-                    get_all_data(function(result){
+                    get_all_data(hash, function(result){
 
                         if(result.error){
                             throw result.message;
@@ -91,7 +84,7 @@
                         static_data = clone(result.static_data);
                         dynamic_data = clone(result.dynamic_data);
 
-                        check_update();
+                        check_update(true);
                         evaluate_settings();
                         poll_timer = setTimeout(check_dates, 5000);
 
@@ -101,7 +94,7 @@
                     
                     last_dynamic_change = new_dynamic_change
 
-                    get_dynamic_data(function(result){
+                    get_dynamic_data(hash, function(result){
 
                         if(result.error){
                             throw result.message;
@@ -109,7 +102,7 @@
 
                         dynamic_data = clone(result);
 
-                        check_update(static_data, result);
+                        check_update(false);
                         poll_timer = setTimeout(check_dates, 5000);
 
                     });
@@ -130,7 +123,7 @@
 
     }
 
-    function check_update(){
+    function check_update(rebuild){
 
         var data = dynamic_date_manager.compare(dynamic_data);
 
@@ -150,9 +143,9 @@
 
         display_preview_back_button();
 
-        if((data.rebuild || static_data.settings.only_reveal_today) && preview_date.follow){
+        if(rebuild || ((data.rebuild || static_data.settings.only_reveal_today) && preview_date.follow)){
             show_loading_screen_buffered();
-            do_rebuild('calendar', dynamic_data)
+            rebuild_calendar('calendar', dynamic_data)
         }else{
             update_current_day(false);
             scroll_to_epoch();
@@ -161,6 +154,10 @@
         refresh_view_values();
 
     }
+
+    var do_update_dynamic = debounce(function(type){
+        update_view_dynamic(hash);
+    }, 500);
 
 
 

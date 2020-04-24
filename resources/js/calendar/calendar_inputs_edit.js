@@ -8,6 +8,8 @@ function set_up_edit_inputs(){
 	prev_events = clone(events);
 	prev_event_categories = clone(event_categories);
 
+	owned_calendars = {};
+
 	calendar_name_same = calendar_name == prev_calendar_name;
 	static_same = JSON.stringify(static_data) === JSON.stringify(prev_static_data);
 	dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
@@ -46,7 +48,7 @@ function set_up_edit_inputs(){
 		if(!events_same || !event_categories_same || !static_same){
 			update_all();
 		}else if(!dynamic_same){
-			update_dynamic();
+			update_dynamic(hash);
 		}else if(!calendar_name_same){
 			update_name();
 		}
@@ -92,6 +94,7 @@ function set_up_edit_inputs(){
 	location_list = $('#location_list');
 	calendar_link_select = $('#calendar_link_select');
 	calendar_link_list = $('#calendar_link_list');
+	calendar_new_link_list = $('#calendar_new_link_list');
 
 	var previous_view_type = 'owner';
 	var first_switch = true;
@@ -286,11 +289,6 @@ function set_up_edit_inputs(){
 		}else{
 			$('#clock').prependTo($('#collapsible_date').parent().children('.collapsible-content'));
 		}
-	});
-
-	$('#rebuild_calendar_btn').click(function(){
-		check_rebuild('calendar');
-		poll_timer = setTimeout(check_master_update, 5000);
 	});
 
 	/* ------------------- Layout callbacks ------------------- */
@@ -1319,14 +1317,6 @@ function set_up_edit_inputs(){
 				recalc_stats();
 				break;
 
-			case "calendar_link_list":
-				$(this).closest('.sortable-container').remove();
-				$(this).closest('.sortable-container').parent().sortable('refresh');
-				var target_hash = link_data.children[index];
-				link_data.children.splice(index, 1);
-				remove_hashes(target_hash);
-				break;
-
 		}
 
 		if(!callback){
@@ -2062,14 +2052,78 @@ function set_up_edit_inputs(){
 	$('#link_calendar').prop('disabled', true);
 
 	calendar_link_select.change(function(){
-		$('#link_calendar').prop('disabled', $(this).val() == "None");
+		calendar_new_link_list.empty();
+		if($(this).val() != "None"){
+			var calendar_hash = $(this).val();
+			var calendar = owned_calendars[calendar_hash];
+			add_link_to_list(calendar_new_link_list, calendar_new_link_list.children().length, false, calendar);
+		}
 	});
 
-	$('#link_calendar').click(function(){
-		var target_hash = calendar_link_select.val();
-		link_data.children.push(target_hash);
-		update_hashes(target_hash);
-		$('#link_calendar').prop('disabled', true);
+	$(document).on('click', '.link_calendar', function(){
+
+		calendar_link_select.prop('disabled', true);
+		
+		var calendar_hash = $(this).attr('hash');
+
+		var year = Number($(this).closest('.collapse-container').find('.year-input').val());
+		year = convert_year(static_data, year);
+		var timespan = Number($(this).closest('.collapse-container').find('.timespan-list').val());
+		var day = Number($(this).closest('.collapse-container').find('.timespan-day-list').val());
+
+		swal.fire({
+			title: "Linking Calendar",
+			html:	"<p>Linking calendars will disable all structural inputs on both calendars (month lengths, week lengths, hours per day, minutes) so the link can be preserved. The link can be broken again at any point.</p>"+
+					"<p>Are you sure you want link and save this calendar?</p>",
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Yes, link and save calendar',
+			cancelButtonText: 'Leave unlinked',
+			icon: "info"
+		})
+		.then((result) => {
+
+			if(!result.dismiss) {
+		
+				calendar_new_link_list.empty();
+
+				var date = [year, timespan, day];
+		
+				var epoch_offset = evaluate_calendar_start(static_data, year, timespan, day).epoch;
+					
+				link_child_calendar(calendar_hash, date, epoch_offset);
+
+			}else{
+				calendar_link_select.prop('disabled', false);
+			}
+
+		})
+
+	});
+
+	$(document).on('click', '.unlink_calendar', function(){
+
+		swal.fire({
+			title: "Unlinking Calendar",
+			html: "<p>Are you sure you want to break the link to this calendar?</p><p>This cannot be undone.</p>",
+			showCancelButton: true,
+			confirmButtonColor: '#d33',
+			cancelButtonColor: '#3085d6',
+			confirmButtonText: 'Yes, unlink',
+			cancelButtonText: 'Leave linked',
+			icon: "warning"
+		})
+		.then((result) => {
+
+			if(!result.dismiss) {
+
+				var calendar_hash = $(this).attr('hash');
+
+				unlink_child_calendar(populate_calendar_lists, calendar_hash);
+
+			}
+		});
 	});
 
 	$('#apply_changes_btn').click(function(){
@@ -2101,6 +2155,12 @@ function set_up_edit_inputs(){
 	$('#apply_changes_immediately').change(function(){
 
 		var checked = $(this).is(':checked');
+
+		var errors = get_errors();
+
+		if(errors.length > 0){
+			return;
+		}
 
 		if(checked){
 
@@ -3293,11 +3353,11 @@ function add_era_to_list(parent, key, data){
 
 			element.push(`<div class='${data.settings.starting_era ? "hidden" : ""}'>`);
 
-				element.push("<div class='row my-2 bold-text'>");
+				element.push("<div class='row my-2'>");
 
 					element.push("<div class='col'>");
-
-						element.push("Date:");
+						
+						element.push("<strong>Date:</strong>");
 
 						element.push(`<div class='date_control'>`);
 							element.push(`<div class='row my-2'>`);
@@ -3320,6 +3380,7 @@ function add_era_to_list(parent, key, data){
 								element.push("</div>");
 							element.push("</div>");
 						element.push("</div>");
+
 					element.push("</div>");
 				element.push("</div>");
 
@@ -3542,26 +3603,75 @@ function add_event_to_sortable(parent, key, data){
 }
 
 
-function add_link_to_list(parent, key, calendar_name){
+function add_link_to_list(parent, key, locked, calendar){
 
 	var element = [];
 
-	element.push(`<div class='sortable-container list-group-item events_input' index='${key}'>`);
+	element.push(`<div class='sortable-container list-group-item ${locked ? "collapsed" : ""}' index='${key}'>`);
 		element.push("<div class='main-container'>");
-			element.push(`<div>${calendar_name}</div>`);
-			element.push('<div class="remove-spacer"></div>');
+			element.push("<div class='expand icon-collapse ml-2'></div>");
+			element.push("<div class='name-container'>");
+				element.push(`<div><a href="${window.baseurl}calendars/${calendar.hash}/edit" target="_blank">${calendar.name}</a></div>`);
+			element.push(`</div>`);
 		element.push("</div>");
-		element.push("<div class='remove-container'>");
-			element.push("<div class='remove-container-text'>Are you sure you want to unlink this?</div>");
-			element.push("<div class='btn_remove btn btn-danger icon-trash'></div>");
-			element.push("<div class='btn_cancel btn btn-danger icon-remove'></div>");
-			element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
-		element.push("</div>");
+
+		element.push("<div class='collapse-container container mb-2'>");
+
+			element.push("<div class='row my-1 bold-text'>");
+
+				element.push("<div class='col'>");
+
+					element.push("Relative Start Date:");
+
+					element.push(`<div class='date_control'>`);
+						element.push(`<div class='row my-2'>`);
+							element.push("<div class='col'>");
+								element.push(`<input type='number' step="1.0" class='date form-control small-input year-input' ${(locked ? 'disabled' : '')}>`);
+							element.push("</div>");
+						element.push("</div>");
+
+						element.push(`<div class='row my-2'>`);
+							element.push("<div class='col'>");
+								element.push(`<select type='number' class='date custom-select form-control timespan-list' ${(locked ? 'disabled' : '')}>`);
+								element.push("</select>");
+							element.push("</div>");
+						element.push("</div>");
+
+						element.push(`<div class='row my-2'>`);
+							element.push("<div class='col'>");
+								element.push(`<select type='number' class='date custom-select form-control timespan-day-list' ${(locked ? 'disabled' : '')}>`);
+								element.push("</select>");
+							element.push("</div>");
+						element.push("</div>");
+					element.push("</div>");
+				element.push("</div>");
+			element.push("</div>");
+
+			element.push("<div class='row no-gutters my-1'>");
+				if(locked){
+					element.push(`<button type='button' class='btn btn-danger full unlink_calendar' hash='${calendar.hash}'>Unlink</button>`);
+				}else{
+					element.push(`<button type='button' class='btn btn-primary full link_calendar' hash='${calendar.hash}'>Link</button>`);
+				}
+			element.push("</div>");
 
 	element.push("</div>");
 
+	var element = $(element.join(""));
 
-	parent.append(element.join(""));
+	parent.append(element);
+
+	if(locked){
+		var parent_link_date = JSON.parse(calendar.parent_link_date);
+	}else{
+		var parent_link_date = [0,0,1];
+	}
+
+	element.find('.year-input').val(unconvert_year(static_data, Number(parent_link_date[0])));
+	repopulate_timespan_select(element.find('.timespan-list'), Number(parent_link_date[1]), false)
+	repopulate_day_select(element.find('.timespan-day-list'), Number(parent_link_date[2]), false)
+
+	return element;
 }
 
 function get_errors(){
@@ -4227,9 +4337,9 @@ function reindex_era_list(){
 			'settings': {
 				'use_custom_format': $(this).find('.use_custom_format').is(':checked'),
 				'show_as_event': $(this).find('.show_as_event').is(':checked'),
-				'starting_era': $(this).find('.starting_era').is(':checked'),
+				'starting_era': $(this).find('.starting_era').is(':checked') || $(this).find('.starting_era').val() == "1",
 				'event_category_id': $(this).find('.event-category-list').val(),
-				'ends_year': $(this).find('.ends_year').is(':checked'),
+				'ends_year': $(this).find('.ends_year').is(':checked') || $(this).find('.ends_year').val() == "1",
 				'restart': $(this).find('.restart').is(':checked')
 			},
 			'date': {
@@ -4561,41 +4671,44 @@ function evaluate_save_button(override){
 
 function populate_calendar_lists(){
 
-	if(link_data.master_hash !== ""){
-		return;
-	}
+	get_owned_calendars(function(calendars){
 
-	get_owned_calendars(function(owned_calendars){
-
-		for(var calendar in owned_calendars){
-			if(owned_calendars[calendar].children != ""){
-				owned_calendars[calendar].children = JSON.parse(owned_calendars[calendar].children);
-			}
-		}
+		owned_calendars = calendars;
 
 		calendar_link_list.html('');
 
-		for(var calendar in link_data.children){
-			var child = link_data.children[calendar];
-			var calendar = owned_calendars[child];
-			if(calendar){
-				add_link_to_list(calendar_link_list, calendar, calendar.name);
+		for(var calendar_hash in owned_calendars){
+
+			var calendar = owned_calendars[calendar_hash];
+
+			if(calendar.hash == hash){
+
+				for(var index in calendar.children){
+
+					var child_hash = calendar.children[index];
+					var child = owned_calendars[child_hash];
+
+					add_link_to_list(calendar_link_list, index, true, child);
+
+				}
+
 			}
+			
 		}
 
 		var html = [];
 
 		html.push(`<option>None</option>`);
 
-		for(var calendarhash in owned_calendars){
+		for(var calendar_hash in owned_calendars){
 
-			var calendar = owned_calendars[calendarhash];
+			var calendar = owned_calendars[calendar_hash];
 
-			if(calendar && calendar.hash != hash){
+			if(calendar.hash != hash){
 
-				if(calendar.master_hash){
+				if(calendar.parent_hash){
 
-					var owner = clone(owned_calendars[calendar.hash]);
+					var owner = clone(owned_calendars[calendar.parent_hash]);
 
 					if(owner.hash == hash){
 						owner.name = "this calendar";
@@ -4612,10 +4725,9 @@ function populate_calendar_lists(){
 		}
 
 		calendar_link_select.html(html.join(''));
+		calendar_link_select.prop('disabled', false);
 
 	});
-
-	$('#link_calendar').prop('disabled', true);
 
 }
 
@@ -4867,21 +4979,6 @@ function set_up_edit_values(){
 
         populate_calendar_lists();
 
-        if(link_data.master_hash !== ''){
-
-    		get_all_master_data(function(result){
-
-        		master_static_data = result.static_data;
-        		master_dynamic_data = result.dynamic_data;
-        		master_last_dynamic_change = new Date(result.last_dynamic_change);
-        		master_last_static_change = new Date(result.last_static_change);
-
-        		bind_master_update();
-
-        	});
-
-        }
-
 	}
 
 	evaluate_clock_inputs();
@@ -4895,54 +4992,6 @@ function set_up_edit_values(){
 	block_inputs = false;
 
 }
-
-var poll_timer;
-var last_mouse_move = Date.now();
-
-function bind_master_update(){
-
-	registered_mousemove_callbacks['master_update'] = function(){
-		last_mouse_move = Date.now();
-	}
-
-	check_master_update();
-
-}
-
-function check_master_update(){
-
-	if(document.hasFocus() && (Date.now() - last_mouse_move) < 10000){
-
-	    if(link_data.master_hash !== ''){
-
-	    	check_last_master_change(function(change_result){
-
-	    		new_dynamic_change = new Date(change_result.last_dynamic_change)
-	    		new_static_change = new Date(change_result.last_static_change)
-
-				if(new_dynamic_change > master_last_dynamic_change || new_static_change > master_last_static_change){
-
-					$('.master_button_container').removeClass('hidden');
-					$('#rebuild_calendar_btn').prop('disabled', false);
-
-				}else{
-
-					poll_timer = setTimeout(check_master_update, 5000);
-
-				}
-
-			});
-
-	    }
-
-    }else{
-
-		poll_timer = setTimeout(check_master_update, 5000);
-
-    }
-
-}
-
 
 function get_category(search) {
 	if(event_categories.length == 0){
@@ -4959,7 +5008,6 @@ function get_category(search) {
 
 	return results[0];
 }
-
 function empty_edit_values(){
 
 	timespan_sortable.empty()
@@ -4975,6 +5023,7 @@ function empty_edit_values(){
 	location_list.empty()
 	calendar_link_select.empty()
 	calendar_link_list.empty()
+	calendar_new_link_list.empty()
 
 }
 
@@ -5194,4 +5243,19 @@ function get_interval_text(timespan, data){
 	}
 
 	return text;
+}
+
+function linked_popup(){
+
+	var html = [];
+	html.push("<p>As you've noticed, some options are missing. Nothing is broken! We promise. This calendar just has its date <strong>linked with another.</strong></p>");
+	html.push("<p>Things like month lengths, weekdays, leap days, hours, minutes, and eras are structural to a calendar, and changing them while two calendars are linked would be like changing the wheels on a moving car.</p>");
+	html.push("<p>To change this calendar's structure, simply unlink it from any other calendar(s).</p>");
+
+	swal.fire({
+		title: "Linked Calendar",
+		html: html.join(''),
+		icon: "info"
+	});
+
 }

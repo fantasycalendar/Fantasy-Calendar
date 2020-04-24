@@ -26,9 +26,10 @@ class Calendar extends Model
         'name',
         'dynamic_data',
         'static_data',
+        'parent_id',
+        'parent_link_date',
+        'parent_offset',
         'hash',
-        'children',
-        'master_hash',
     ];
 
     public function user() {
@@ -43,8 +44,12 @@ class Calendar extends Model
         return $this->hasMany('App\CalendarEvent')->orderBy('sort_by');
     }
 
-    public function child_calendars() {
-        return $this->hasMany('App\Calendar', 'master_hash', 'hash');
+    public function parent() {
+        return $this->belongsTo('App\Calendar', 'parent_id');
+    }
+
+    public function children() {
+        return $this->hasMany('App\Calendar', 'parent_id');
     }
 
 //    public function getStaticDataAttribute($value) {
@@ -61,6 +66,41 @@ class Calendar extends Model
 //
 //        return $static_data;
 //    }
+
+
+    public function structureWouldBeModified($static_data){
+
+        if(!$this->isLinked()){
+            return false;
+        }
+
+        if($this->static_data['clock']['enabled'] != $static_data['clock']['enabled']){
+            return true;
+        }
+
+        if($this->static_data['clock']['hours'] != $static_data['clock']['hours']){
+            return true;
+        }
+
+        if($this->static_data['clock']['minutes'] != $static_data['clock']['minutes']){
+            return true;
+        }
+
+        if($this->static_data['year_data'] != $static_data['year_data']){
+            return true;
+        }
+
+        if($this->static_data['eras'] != $static_data['eras']){
+            return true;
+        }
+
+        return false;
+
+    }
+
+    public function isLinked() {
+        return $this->parent()->exists() || $this->children()->count() > 0;
+    }
 
     public function scopeActive($query) {
         return $query->where('deleted', 0);

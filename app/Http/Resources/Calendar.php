@@ -14,12 +14,26 @@ class Calendar extends JsonResource
      */
     public function toArray($request)
     {
+        $parent_hash = false;
+        $children = false;
+
+        if($this->parent){
+            $parent_hash = $this->parent->hash;
+        }
+
+        if($this->children != '[]'){
+            $children = [];
+            foreach($this->children as $child){
+                $children[] = $child->hash;
+            }
+        }
+
         return [
-            'username' => $this->user->username,
             'name' => $this->name,
             'hash' => $this->hash,
-            'children' => $this->children,
-            'master_hash' => $this->master_hash
+            'parent_hash' => $parent_hash,
+            'parent_link_date' => $this->parent_link_date,
+            'children' => $children
         ];
     }
 }
