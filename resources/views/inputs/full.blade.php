@@ -400,7 +400,7 @@
 				</div>
 
 				@if(request()->is('calendars/*/edit') && !$calendar->isLinked())
-				
+
 					<div class='row no-gutters mt-2 bold-text'>
 						<div class="col">
 							New weekday:
@@ -541,7 +541,7 @@
 						@endforeach
 
 					</ul>
-				
+
 				@else
 
 					<div class='sortable list-group' id='timespan_sortable'></div>
@@ -594,7 +594,7 @@
 				@endif
 
 				@if(request()->is('calendars/*/edit') && $calendar->isLinked())
-				
+
 					<ul class="list-group">
 
 					@php
@@ -671,7 +671,7 @@
 
 
 				@if(request()->is('calendars/*/edit') && $calendar->isLinked())
-				
+
 					<ul class="list-group">
 
 					@php
@@ -1106,7 +1106,7 @@
                     </label>
 
 					@if(request()->is('calendars/*/edit') && $calendar->isLinked())
-						<p class=""><a onclick="linked_popup();" href='#'>Why is some settings disabled?</a></p>
+						<p class=""><a onclick="linked_popup();" href='#'>Why are some settings disabled?</a></p>
 					@endif
 
 					<!------------------------------------------------------->
