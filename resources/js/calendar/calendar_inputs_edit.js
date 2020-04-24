@@ -4927,6 +4927,8 @@ function set_up_edit_values(){
 						static_data.seasons.data[i].color,
 						static_data.seasons.data[i].color
 					]
+				}else if(static_data.seasons.data[i].color === undefined){
+					static_data.seasons.data[i].color = [];
 				}
 			}
 	
