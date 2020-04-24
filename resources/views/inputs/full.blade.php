@@ -229,7 +229,9 @@
                             <input type='number' class="form-control form-control-sm full" id='unit_days' placeholder="Days">
                         </div>
 
-                        <button type="button" step="1.0" class="btn btn-primary btn-block my-2" id='current_date_btn'>To current date</button>
+						@if(request()->is('calendars/*/edit') && $calendar->parent == null)
+                        	<button type="button" step="1.0" class="btn btn-primary btn-block my-2" id='current_date_btn'>To current date</button>
+						@endif
                         <button type="button" step="1.0" class="btn btn-secondary btn-block my-2" id='preview_date_btn'>To preview date</button>
 
                     </div>

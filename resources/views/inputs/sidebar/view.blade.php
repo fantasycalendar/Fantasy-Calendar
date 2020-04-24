@@ -65,7 +65,7 @@
 				</div>
 
 				<div class='row my-2 center-text hidden calendar_link_explaination'>
-				    @if($calendar->parent != null)
+                    @if($calendar->parent != null)
                         <p class='m-0'>This calendar is using a different calendar's date to calculate the current date. Only the <a href='/calendars/{{ $calendar->parent->hash }}' target="_blank">parent calendar</a> can set the date for this calendar.</p>
                     @endif
 				</div>
@@ -202,7 +202,9 @@
                         <input type='number' class="form-control form-control-sm full" id='unit_days' placeholder="Days">
                     </div>
 
-                    <button type="button" step="1.0" class="btn btn-primary btn-block my-2" id='current_date_btn'>To current date</button>
+                    @if($calendar->parent == null)
+                        <button type="button" step="1.0" class="btn btn-primary btn-block my-2" id='current_date_btn'>To current date</button>
+                    @endif
                     <button type="button" step="1.0" class="btn btn-secondary btn-block my-2" id='preview_date_btn'>To preview date</button>
 
                 </div>
