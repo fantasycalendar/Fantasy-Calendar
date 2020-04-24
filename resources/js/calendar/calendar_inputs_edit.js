@@ -508,8 +508,8 @@ function set_up_edit_inputs(){
 		stats = {
 			"name": name_val,
 			"color": [
-				"#000000",
-				"#000000",
+				"#"+Math.floor(Math.random()*16777215).toString(16),
+				"#"+Math.floor(Math.random()*16777215).toString(16)
 			],
 			"time": {
 				"sunrise": {
@@ -567,7 +567,17 @@ function set_up_edit_inputs(){
 
 		}
 
-		recreate_season_colors();
+		season_sortable.children().last().find('.start_color').spectrum({
+			color: stats.color[0],
+			preferredFormat: "hex",
+			showInput: true
+		});
+	
+		season_sortable.children().last().find('.end_color').spectrum({
+			color: stats.color[1],
+			preferredFormat: "hex",
+			showInput: true
+		});
 
 		season_sortable.sortable('refresh');
 		reindex_season_sortable();
@@ -583,6 +593,8 @@ function set_up_edit_inputs(){
 		$('#map_seasons_to_location').prop('disabled', !(static_data.seasons.data.length == 2 || static_data.seasons.data.length == 4)).parent().toggleClass('hidden', !(static_data.seasons.data.length == 2 || static_data.seasons.data.length == 4));
 
 		$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 && !static_data.clock.enabled);
+
+		$('#season_color_enabled').prop("disabled", static_data.seasons.data.length == 0);
 
 	});
 
@@ -1195,6 +1207,10 @@ function set_up_edit_inputs(){
 				type = 'seasons';
 				reindex_season_sortable(index);
 				reindex_location_list();
+				$('#season_color_enabled').prop("disabled", static_data.seasons.data.length == 0);
+				if(static_data.seasons.data.length == 0){
+					$('#season_color_enabled').prop("checked", false).change();
+				}
 				break;
 
 			case "location_list":
@@ -1626,11 +1642,13 @@ function set_up_edit_inputs(){
 	});
 
 	$(document).on('change', '#season_color_enabled', function(){
+
 		var checked = $(this).is(":checked");
 		season_sortable.children().each(function(){
 			$(this).find('.season_color_enabled').toggleClass("hidden", !checked);
 			$(this).find('.season_color_enabled input').prop("disabled", !checked);
 		});
+
 	});
 
 	$(document).on('change', '.week-length', function(){
@@ -4516,36 +4534,6 @@ function recreate_moon_colors(){
 
 }
 
-function recreate_season_colors(){
-
-	$('.season .start_color').spectrum({
-		color: "#FFFFFF",
-		preferredFormat: "hex",
-		showInput: true
-	});
-
-	$('.season .end_color').spectrum({
-		color: "#FFFFFF",
-		preferredFormat: "hex",
-		showInput: true
-	});
-
-	$('#season_sortable').children().each(function(i){
-
-		static_data.seasons.data[i].color = !Array.isArray(static_data.seasons.data[i].color) ? [static_data.seasons.data[i].color, static_data.seasons.data[i].color] : static_data.seasons.data[i].color;
-
-		var start_color = typeof static_data.seasons.data[i].color[0] !== undefined ? static_data.seasons.data[i].color[0] : false;
-		$(this).find('.start_color').spectrum("set", start_color ? start_color : "#"+Math.floor(Math.random()*16777215).toString(16));
-		static_data.seasons.data[i].color[0] = start_color ? start_color : $(this).find('.start_color').spectrum("get").toString();
-
-		var end_color = typeof static_data.seasons.data[i].color[1] !== undefined ? static_data.seasons.data[i].color[1] : false;
-		$(this).find('.end_color').spectrum("set", end_color ? end_color : "#"+Math.floor(Math.random()*16777215).toString(16));
-		static_data.seasons.data[i].color[1] = end_color ? end_color : $(this).find('.end_color').spectrum("get").toString();
-
-	});
-
-}
-
 function evaluate_season_lengths(){
 
 	var disable = static_data.seasons.data.length == 0 || (!static_data.seasons.global_settings.periodic_seasons && static_data.seasons.global_settings.periodic_seasons !== undefined);
@@ -4919,7 +4907,33 @@ function set_up_edit_values(){
 			$(this).slider('option', 'value', parseInt($(this).parent().parent().find('.slider_input').val()));
 		});
 
-		recreate_season_colors();
+		$('.season .start_color').spectrum({
+			color: "#FFFFFF",
+			preferredFormat: "hex",
+			showInput: true
+		});
+	
+		$('.season .end_color').spectrum({
+			color: "#FFFFFF",
+			preferredFormat: "hex",
+			showInput: true
+		});
+	
+		$('#season_sortable').children().each(function(i){
+
+			if(!Array.isArray(static_data.seasons.data[i].color)){
+				if(typeof static_data.seasons.data[i].color === "string"){
+					static_data.seasons.data[i].color = [
+						static_data.seasons.data[i].color,
+						static_data.seasons.data[i].color
+					]
+				}
+			}
+	
+			$(this).find('.start_color').spectrum("set", static_data.seasons.data[i].color[0]);
+			$(this).find('.end_color').spectrum("set", static_data.seasons.data[i].color[1]);
+	
+		});
 
 	}
 
@@ -5004,6 +5018,8 @@ function set_up_edit_values(){
 	$('.weather_inputs').find('select, input').prop('disabled', !static_data.seasons.global_settings.enable_weather);
 
 	$('.location_middle_btn').toggleClass('hidden', !static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled);
+
+	$('#season_color_enabled').prop("disabled", static_data.seasons.data.length == 0);
 
 	if(window.location.pathname != '/calendars/create') {
 

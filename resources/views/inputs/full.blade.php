@@ -769,7 +769,7 @@
 
 				<div class='row no-gutters my-1'>
 					<div class='form-check col-12 py-1 border rounded'>
-						<input type='checkbox' id='season_color_enabled' class='form-check-input static_input' data="seasons.global_settings" fc-index="color_enabled"/>
+						<input type='checkbox' id='season_color_enabled' refresh="true" class='form-check-input static_input' data="seasons.global_settings" fc-index="color_enabled"/>
 						<label for='season_color_enabled' class='form-check-label ml-1' >
 							Enable season day color
 						</label>
