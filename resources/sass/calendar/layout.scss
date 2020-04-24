@@ -102,6 +102,10 @@ body{
     max-height: 2rem;
 }
 
+.navbar {
+    min-height: 3rem;
+}
+
 .page-calendars-edit {
     display: flex;
 
@@ -149,9 +153,9 @@ body.page-calendars-index {
     overflow-y: auto;
     order:1;
     max-height: 100%;
-    width: $sidebar-width;
+    width: 100%;
     min-width: $sidebar-width;
-    max-width: 600px;
+    max-width: $sidebar-width;
 }
 
 #input_container.sidebar-mobile-half:not(.inputs_collapsed){
