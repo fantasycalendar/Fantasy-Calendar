@@ -94,7 +94,7 @@
 					</div>
 
 					<div class='row my-2 center-text hidden calendar_link_explaination'>
-						@if($calendar->parent != null)
+						@if(request()->is('calendars/*/edit') && $calendar->parent != null)
 							<p class='m-0'>This calendar is using a different calendar's date to calculate the current date. Only the <a href='/calendars/{{ $calendar->parent->hash }}/edit' target="_blank">parent calendar</a> can set the date for this calendar.</p>
 						@endif
 					</div>
@@ -399,25 +399,6 @@
 					<div class='separator'></div>
 				</div>
 
-				@if(request()->is('calendars/*/edit') && !$calendar->isLinked())
-
-					<div class='row no-gutters mt-2 bold-text'>
-						<div class="col">
-							New weekday:
-						</div>
-					</div>
-
-					<div class='row no-gutters add_inputs global_week'>
-						<div class='col'>
-							<input type='text' class='form-control name' id='weekday_name_input' placeholder='Weekday name'>
-						</div>
-						<div class='col-auto'>
-							<button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
-						</div>
-					</div>
-
-				@endif
-
 				@if(request()->is('calendars/*/edit') && $calendar->isLinked())
 
 					<ul class="list-group">
@@ -433,6 +414,21 @@
 					</ul>
 
 				@else
+
+					<div class='row no-gutters mt-2 bold-text'>
+						<div class="col">
+							New weekday:
+						</div>
+					</div>
+
+					<div class='row no-gutters add_inputs global_week'>
+						<div class='col'>
+							<input type='text' class='form-control name' id='weekday_name_input' placeholder='Weekday name'>
+						</div>
+						<div class='col-auto'>
+							<button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
+						</div>
+					</div>
 
 					<div class='sortable list-group' id='global_week_sortable'></div>
 
@@ -457,7 +453,6 @@
                         </div>
                     </div>
                 </div>
-
 				@if(request()->is('calendars/*/edit') && $calendar->isLinked())
 					<p class="mb-0 mt-3"><a onclick="linked_popup();" href='#'>Why can't I edit the weekdays?</a></p>
 				@endif
@@ -475,34 +470,6 @@
 			<input id="collapsible_timespans" class="toggle" type="checkbox">
 			<label for="collapsible_timespans" class="lbl-toggle card-header lbl-text">Months <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Months & Intercalaries' href='https://wiki.fantasy-calendar.com/index.php?title=Months_%26_Intercalaries' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
-
-				@if(request()->is('calendars/*/edit') && !$calendar->isLinked())
-
-					<div class='row bold-text'>
-						<div class="col">
-							New month:
-						</div>
-					</div>
-
-					<div class='add_inputs timespan row no-gutters'>
-
-						<div class='col-md-6'>
-							<input type='text' id='timespan_name_input' class='form-control name' placeholder='Name'>
-						</div>
-
-						<div class='col'>
-							<select id='timespan_type_input' class='custom-select form-control type'>
-								<option selected value='month'>Month</option>
-								<option value='intercalary'>Intercalary</option>
-							</select>
-						</div>
-
-						<div class='col-auto'>
-							<button type='button' class='btn btn-primary add full'><i class="fa fa-plus"></i></button>
-						</div>
-					</div>
-
-				@endif
 
 				@if(request()->is('calendars/*/edit') && $calendar->isLinked())
 
@@ -542,14 +509,36 @@
 
 					</ul>
 
+					<p class="mb-0 mt-3"><a onclick="linked_popup();" href='#'>Why can't I edit the months?</a></p>
+
 				@else
+
+					<div class='row bold-text'>
+						<div class="col">
+							New month:
+						</div>
+					</div>
+
+					<div class='add_inputs timespan row no-gutters'>
+
+						<div class='col-md-6'>
+							<input type='text' id='timespan_name_input' class='form-control name' placeholder='Name'>
+						</div>
+
+						<div class='col'>
+							<select id='timespan_type_input' class='custom-select form-control type'>
+								<option selected value='month'>Month</option>
+								<option value='intercalary'>Intercalary</option>
+							</select>
+						</div>
+
+						<div class='col-auto'>
+							<button type='button' class='btn btn-primary add full'><i class="fa fa-plus"></i></button>
+						</div>
+					</div>
 
 					<div class='sortable list-group' id='timespan_sortable'></div>
 
-				@endif
-
-				@if(request()->is('calendars/*/edit') && $calendar->isLinked())
-					<p class="mb-0 mt-3"><a onclick="linked_popup();" href='#'>Why can't I edit the months?</a></p>
 				@endif
 
 			</div>
@@ -567,31 +556,6 @@
 			<input id="collapsible_leapdays" class="toggle" type="checkbox">
 			<label for="collapsible_leapdays" class="lbl-toggle card-header lbl-text">Leap days <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Leap Days' href='https://wiki.fantasy-calendar.com/index.php?title=Leap_days' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content content card-body">
-
-				@if(request()->is('calendars/*/edit') && !$calendar->isLinked())
-					<div class='row bold-text'>
-						<div class="col">
-							New leap day:
-						</div>
-					</div>
-
-					<div class='add_inputs leap row no-gutters'>
-						<div class='col-md-6'>
-							<input type='text' id='leap_day_name_input' class='form-control name' placeholder='Name'>
-						</div>
-
-						<div class='col'>
-							<select id='leap_day_type_input' class='custom-select form-control type'>
-								<option selected value='leap-day'>Normal day</option>
-								<option value='intercalary'>Intercalary</option>
-							</select>
-						</div>
-
-						<div class='col-auto'>
-							<button type='button' class='btn btn-primary add full'><i class="fa fa-plus"></i></button>
-						</div>
-					</div>
-				@endif
 
 				@if(request()->is('calendars/*/edit') && $calendar->isLinked())
 
@@ -632,12 +596,35 @@
 
 					</ul>
 
-				@else
-					<div id='leap_day_list'></div>
-				@endif
-
-				@if(request()->is('calendars/*/edit') && $calendar->isLinked())
 					<p class='mb-0 mt-3'><a onclick="linked_popup();" href='#'>Why can't I edit the leap days?</a></p>
+
+				@else
+
+					<div class='row bold-text'>
+						<div class="col">
+							New leap day:
+						</div>
+					</div>
+
+					<div class='add_inputs leap row no-gutters'>
+						<div class='col-md-6'>
+							<input type='text' id='leap_day_name_input' class='form-control name' placeholder='Name'>
+						</div>
+
+						<div class='col'>
+							<select id='leap_day_type_input' class='custom-select form-control type'>
+								<option selected value='leap-day'>Normal day</option>
+								<option value='intercalary'>Intercalary</option>
+							</select>
+						</div>
+
+						<div class='col-auto'>
+							<button type='button' class='btn btn-primary add full'><i class="fa fa-plus"></i></button>
+						</div>
+					</div>
+
+					<div id='leap_day_list'></div>
+
 				@endif
 
 			</div>
@@ -651,24 +638,6 @@
 			<input id="collapsible_eras" class="toggle" type="checkbox">
 			<label for="collapsible_eras" class="lbl-toggle card-header lbl-text">Eras <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Eras' href='https://wiki.fantasy-calendar.com/index.php?title=Eras' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
-
-				@if(request()->is('calendars/*/edit') && !$calendar->isLinked())
-					<div class='row no-gutters bold-text'>
-						<div class='col'>
-							New Era:
-						</div>
-					</div>
-
-					<div class='add_inputs eras row no-gutters'>
-						<div class="col">
-							<input type='text' class='form-control name' id='era_name_input' placeholder='Era name'>
-						</div>
-						<div class="col-auto">
-							<button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
-						</div>
-					</div>
-				@endif
-
 
 				@if(request()->is('calendars/*/edit') && $calendar->isLinked())
 
@@ -698,12 +667,27 @@
 
 					</ul>
 
-				@else
-					<div class='sortable' id='era_list'></div>
-				@endif
-
-				@if(request()->is('calendars/*/edit') && $calendar->isLinked())
 					<p class='mb-0 mt-3'><a onclick="linked_popup();" href='#'>Why can't I edit the eras?</a></p>
+
+				@else
+
+					<div class='row no-gutters bold-text'>
+						<div class='col'>
+							New Era:
+						</div>
+					</div>
+
+					<div class='add_inputs eras row no-gutters'>
+						<div class="col">
+							<input type='text' class='form-control name' id='era_name_input' placeholder='Era name'>
+						</div>
+						<div class="col-auto">
+							<button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
+						</div>
+					</div>
+
+					<div class='sortable' id='era_list'></div>
+
 				@endif
 
 			</div>
@@ -1263,7 +1247,7 @@
 
 					<div id='calendar_link_hide'>
 
-                        @if($calendar->parent != null)
+						@if(request()->is('calendars/*/edit') && $calendar->parent != null)
                             <div class='row no-gutters my-1 center-text hidden calendar_link_explaination'>
                                 <p class='m-0'>This calendar is already linked to a <a href='/calendars/{{ $calendar->parent->hash }}/edit' target="_blank">parent calendar</a>. Before linking any calendars to this one, you must unlink this calendar from its parent.</p>
                             </div>
