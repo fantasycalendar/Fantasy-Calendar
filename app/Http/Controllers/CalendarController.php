@@ -176,10 +176,8 @@ class CalendarController extends Controller
             $static_data = json_decode($update_data['static_data'], true);
             $update_data['static_data'] = $static_data;
 
-            if($calendar->isLinked()){
-                if($calendar->structureWouldBeModified($static_data)) {
-                    return response()->json(['error' => 'Calendar structure cannot be edited while linked.'], 403);
-                }
+            if($calendar->isLinked() && $calendar->structureWouldBeModified($static_data)){
+                return response()->json(['error' => 'Calendar structure cannot be edited while linked.'], 403);
             }
         }
 
