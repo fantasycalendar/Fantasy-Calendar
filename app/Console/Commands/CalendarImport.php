@@ -70,37 +70,27 @@ class CalendarImport extends Command
 
         // Loop through the categories and map an array of [beta id] => slug-name for use later
         $originalCategoryIds = [];
-        if(array_key_exists('categories', $static_data['event_data'])) {
-            $categories = $static_data['event_data']['categories'];
+        $categories = $calendar_data['event_categories'];
 
-            foreach($categories as $index => $category) {
-                $originalCategoryIds[$categories[$index]['id']] = Str::slug($category['name']);
-                $categories[$index]['id'] = Str::slug($category['name']);
-            }
-
-            // Remove category data just to make sure nothing gets strange later.
-            unset($static_data['event_data']['categories']);
+        foreach($categories as $index => $category) {
+            $originalCategoryIds[$categories[$index]['id']] = Str::slug($category['name']);
+            $categories[$index]['id'] = Str::slug($category['name']);
         }
 
 
         // Now we loop through all the events and get rid of the original event ID,
         // then set each event's category ID to the slug-name we set earlier.
-        // Then remove all our event data from the calendar's static_data
-        if(array_key_exists('events', $static_data['event_data'])) {
-            $events = $static_data['event_data']['events'];
+        $events = $calendar_data['events'];
 
-            foreach($events as $index => $event) {
-                unset($events[$index]['id']);
+        foreach($events as $index => $event) {
+            unset($events[$index]['id']);
 
-                if(is_numeric($events[$index]['event_category_id']) && $events[$index]['event_category_id'] > -1) {
-                    $events[$index]['event_category_id'] = $originalCategoryIds[$events[$index]['event_category_id']];
-                }
-
+            if(is_numeric($events[$index]['event_category_id']) && $events[$index]['event_category_id'] > -1) {
+                $events[$index]['event_category_id'] = $originalCategoryIds[$events[$index]['event_category_id']];
             }
 
-            unset($static_data['event_data']);
         }
-
+        
         // Now that we've done the above, we can create the calendar
         $calendar = Calendar::create([
             'user_id' => 1,
