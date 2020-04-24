@@ -18,6 +18,13 @@ class Climate{
 		this.clock = this.static_data.clock;
 		this.seasons = this.static_data.seasons.data;
 
+		if(this.settings.color_enabled){
+			for(var season_index in this.seasons){
+				var season = this.seasons[season_index];
+				season.gradient = new Gradient(season.color)
+			}
+		}
+
 		this.season = {}
 		this.weather = {}
 
@@ -751,7 +758,8 @@ class Climate{
 			high_solstice: high_solstice,
 			low_solstice: low_solstice,
 			falling_equinox: false,
-			rising_equinox: false
+			rising_equinox: false,
+			color: this.settings.color_enabled ? this.seasons[this.season.current_index].gradient.colorAt(1.0-this.season.perc) : undefined
 		}
 
 	}
@@ -993,4 +1001,65 @@ class Climate{
 
 	}
 
+}
+
+
+
+class Gradient{
+
+	constructor(array){
+
+		this.start = this.processHEX(array[0]);
+		this.end = this.processHEX(array[1]);
+
+	}
+
+	colorAt(number){
+
+		return this.rgbToHex(
+			Math.floor(lerp(this.start[0], this.end[0], number)),
+			Math.floor(lerp(this.start[1], this.end[1], number)),
+			Math.floor(lerp(this.start[2], this.end[2], number))
+		)
+
+	}
+
+	componentToHex(c) {
+		var hex = c.toString(16);
+		return hex.length == 1 ? "0" + hex : hex;
+	}
+
+	rgbToHex(r, g, b) {
+		return "#" + this.componentToHex(r) + this.componentToHex(g) + this.componentToHex(b);
+	}
+
+	processHEX(val) {
+		//does the hex contain extra char?
+		var hex = (val.length >6)?val.substr(1, val.length - 1):val;
+		// is it a six character hex?
+
+		if (hex.length > 3) {
+
+			//scrape out the numerics
+			var r = hex.substr(0, 2);
+			var g = hex.substr(2, 2);
+			var b = hex.substr(4, 2);
+
+			// if not six character hex,
+			// then work as if its a three character hex
+		} else {
+
+			// just concat the pieces with themselves
+			var r = hex.substr(0, 1) + hex.substr(0, 1);
+			var g = hex.substr(1, 1) + hex.substr(1, 1);
+			var b = hex.substr(2, 1) + hex.substr(2, 1);
+
+		}
+		// return our clean values
+		return [
+		parseInt(r, 16),
+		parseInt(g, 16),
+		parseInt(b, 16)
+		]
+	}
 }

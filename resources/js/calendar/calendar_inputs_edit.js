@@ -507,7 +507,10 @@ function set_up_edit_inputs(){
 
 		stats = {
 			"name": name_val,
-			"color": "#000000",
+			"color": [
+				"#000000",
+				"#000000",
+			],
 			"time": {
 				"sunrise": {
 					"hour": 6,
@@ -2860,11 +2863,21 @@ function add_season_to_sortable(parent, key, data){
 				element.push("</div>");
 
 			}
+			
+			element.push(`<div class='mt-1 p-2 border rounded season_color_enabled ${!static_data.seasons.global_settings.color_enabled ? "hidden" : ""}'>`);
 
-			element.push(`<div class='row no-gutters my-1 p-2 border rounded season_color_enabled ${!static_data.seasons.global_settings.color_enabled ? "hidden" : ""}'>`);
-				element.push("<div class='col-4'>Season color:</div>");
-				element.push("<div class='col-8'>");
-					element.push(`<input type='color' class='dynamic_input color full' data='seasons.data.${key}' fc-index='color'/>`);
+				element.push(`<div class='row no-gutters'>`);
+					element.push("<div class='col-6 pr-1'>Start color:</div>");
+					element.push("<div class='col-6 pl-1'>End color:</div>");
+				element.push("</div>");
+
+				element.push(`<div class='row no-gutters my-1'>`);
+					element.push("<div class='col-6 pr-1'>");
+						element.push(`<input type='color' class='dynamic_input start_color full' data='seasons.data.${key}.color' fc-index='0'/>`);
+					element.push("</div>")
+					element.push("<div class='col-6 pl-1'>");
+						element.push(`<input type='color' class='dynamic_input end_color full' data='seasons.data.${key}.color' fc-index='1'/>`);
+					element.push("</div>");
 				element.push("</div>");
 			element.push("</div>");
 
@@ -4058,7 +4071,10 @@ function reindex_season_sortable(key){
 
 		static_data.seasons.data[i] = {
 			"name": $(this).find('.name-input').val(),
-			"color": $(this).find('.color').spectrum('get', 'hex').toString(),
+			"color": [
+				$(this).find('.start_color').spectrum('get', 'hex').toString(),
+				$(this).find('.end_color').spectrum('get', 'hex').toString(),
+			],
 			"time": {
 				"sunrise": {
 					"hour": ($(this).find('input[clocktype="sunrise_hour"]').val()|0),
@@ -4502,16 +4518,30 @@ function recreate_moon_colors(){
 
 function recreate_season_colors(){
 
-	$('.season .color').spectrum({
+	$('.season .start_color').spectrum({
+		color: "#FFFFFF",
+		preferredFormat: "hex",
+		showInput: true
+	});
+
+	$('.season .end_color').spectrum({
 		color: "#FFFFFF",
 		preferredFormat: "hex",
 		showInput: true
 	});
 
 	$('#season_sortable').children().each(function(i){
-		var color = static_data.seasons.data[i].color;
-		$(this).find('.color').spectrum("set", color ? color : "#"+Math.floor(Math.random()*16777215).toString(16));
-		static_data.seasons.data[i].color = color ? color : $(this).find('.color').spectrum("get").toString();
+
+		static_data.seasons.data[i].color = !Array.isArray(static_data.seasons.data[i].color) ? [static_data.seasons.data[i].color, static_data.seasons.data[i].color] : static_data.seasons.data[i].color;
+
+		var start_color = typeof static_data.seasons.data[i].color[0] !== undefined ? static_data.seasons.data[i].color[0] : false;
+		$(this).find('.start_color').spectrum("set", start_color ? start_color : "#"+Math.floor(Math.random()*16777215).toString(16));
+		static_data.seasons.data[i].color[0] = start_color ? start_color : $(this).find('.start_color').spectrum("get").toString();
+
+		var end_color = typeof static_data.seasons.data[i].color[1] !== undefined ? static_data.seasons.data[i].color[1] : false;
+		$(this).find('.end_color').spectrum("set", end_color ? end_color : "#"+Math.floor(Math.random()*16777215).toString(16));
+		static_data.seasons.data[i].color[1] = end_color ? end_color : $(this).find('.end_color').spectrum("get").toString();
+
 	});
 
 }
