@@ -1092,6 +1092,9 @@ ol.example li.placeholder:before {
     height: auto !important;
 }
 
-.sp-preview {
+.moon_inputs .sp-preview {
     min-height: 30px;
+}
+.season .sp-preview {
+    min-height: 10px;
 }

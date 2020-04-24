@@ -213,29 +213,33 @@
     flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 }
 
-.btn_small_plus{
+.btn_create_event{
     position:relative;
-    width:20px !important;
-    height:20px !important;
-    padding:1px !important;
+    width:100%;
+    padding:0.1rem;
     font-size:9pt;
     margin-top:5px;
     visibility: hidden;
     -webkit-transition: visibility .0s; /* Safari */
     transition: visibility .0s;
-    background-image: url('/resources/icons/plus_icon_white.png');
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: 50%;
 }
 
-.btn_small_plus:hover{
+.btn_create_event:hover{
     cursor: pointer;
 }
 
 .day_row .weather{
     font-size:10pt;
     padding-left:2px;
+}
+
+.day_row .season_color {
+    width: 10px;
+    height: 10px;
+    margin-top: 0.3rem;
+    margin-right: 0.1rem;
+    border-radius: 50%;
+    opacity: 0.8;
 }
 
 .weather_icon{
@@ -535,11 +539,11 @@
 body {
 
     &.hide_timespan_number .timespan_number,
-    &.hide_year_day .year_day_number_parent{
+    &.hide_year_day .year_day_number{
         display:none;
     }
 
-    .year_day_number_parent{
+    .last_row{
         display: flex;
         flex-wrap: wrap;
         justify-content: end;
