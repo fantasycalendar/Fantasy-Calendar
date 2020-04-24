@@ -1263,27 +1263,26 @@
 
 					<div id='calendar_link_hide'>
 
-						<div class='row no-gutters my-1 center-text hidden calendar_link_explaination'>
-							@if($calendar->parent != null)
-								<p class='m-0'>This calendar is already linked to a <a href='/calendars/{{ $calendar->parent->hash }}/edit' target="_blank">parent calendar</a>. Before linking any calendars to this one, you must unlink this calendar from its parent calendar.</p>
-							@endif
-						</div>
+                        @if($calendar->parent != null)
+                            <div class='row no-gutters my-1 center-text hidden calendar_link_explaination'>
+                                <p class='m-0'>This calendar is already linked to a <a href='/calendars/{{ $calendar->parent->hash }}/edit' target="_blank">parent calendar</a>. Before linking any calendars to this one, you must unlink this calendar from its parent.</p>
+                            </div>
+                        @else
+                            <div class='row no-gutters my-1 center-text'>
+                                <p>Calendar linking is a complex feature - we recommend you check out the <a href='https://wiki.fantasy-calendar.com/index.php?title=Calendar_Linking' target="_blank"><i class="icon-question-sign"></i> Fantasy-Calendar wiki article</a> on the feature!</p>
+                            </div>
 
-						<div class='row no-gutters my-1 center-text'>
-							<p>Calendar linking is a complex feature - we recommend you check out the <a href='https://wiki.fantasy-calendar.com/index.php?title=Calendar_Linking' target="_blank"><i class="icon-question-sign"></i> Fantasy-Calendar wiki article</a> on the feature!</p>
-						</div>
+                            <div class='row no-gutters my-1'>
+                                <select class='form-control' id='calendar_link_select'></select>
+                            </div>
+                            <div class='row no-gutters my-1'>
+                                <button type='button' class='btn btn-sm btn-secondary full' id='refresh_calendar_list_select'>Refresh</button>
+                            </div>
 
-						<div class='row no-gutters my-1'>
-							<select class='form-control' id='calendar_link_select'></select>
-						</div>
-						<div class='row no-gutters my-1'>
-							<button type='button' class='btn btn-sm btn-secondary full' id='refresh_calendar_list_select'>Refresh</button>
-						</div>
-
-						<div class='sortable' id='calendar_link_list'></div>
-						<div class='sortable mt-1' id='calendar_new_link_list'></div>
-
-					</div>
+                            <div class='sortable' id='calendar_link_list'></div>
+                            <div class='sortable mt-1' id='calendar_new_link_list'></div>
+                        @endif
+                    </div>
 				</div>
 			</div>
 		@endif
