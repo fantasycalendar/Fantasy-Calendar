@@ -14,11 +14,11 @@ class Calendar extends JsonResource
      */
     public function toArray($request)
     {
+        $parent_hash = false;
+        $children = false;
 
         if($this->parent){
             $parent_hash = $this->parent->hash;
-        }else{
-            $parent_hash = false;
         }
 
         if($this->children != '[]'){
@@ -26,8 +26,6 @@ class Calendar extends JsonResource
             foreach($this->children as $child){
                 $children[] = $child->hash;
             }
-        }else{
-            $children = false;
         }
 
         return [
