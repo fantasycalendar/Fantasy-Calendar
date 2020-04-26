@@ -13,6 +13,10 @@ use Illuminate\Http\Request;
 |
 */
 
+route::get('/test', function(){
+    ddd(\App\OldCalendar::first()->user);
+});
+
 Route::view('/', 'welcome')->name('home');
 Route::get('/donate', function(){
     return view('pages.donate', [
