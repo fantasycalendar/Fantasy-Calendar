@@ -124,7 +124,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
             ];
 
             $winter = [
-                'Name' => 'Winter',
+                'name' => 'Winter',
                 'timespan' => $old->winter_month,
                 'day' => $old->winter_day,
                 'time' => [
@@ -136,11 +136,13 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                         'hour' => $old->winter_set,
                         'minute' => 0
                     ]
-                ]
+                ],
+                'transition_length' => $old->year_len/2,
+                'duration' => 0
             ];
 
             $summer = [
-                'Name' => 'Summer',
+                'name' => 'Summer',
                 'timespan' => $old->summer_month,
                 'day' => $old->summer_day,
                 'time' => [
@@ -152,18 +154,15 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                         'hour' => $old->summer_set,
                         'minute' => 0
                     ]
-                ]
+                ],
+                'transition_length' => $old->year_len/2,
+                'duration' => 0
             ];
 
             $static['seasons']['data'] = ($old->winter_month > $old->summer_month) ? [$summer, $winter] : [$winter, $summer];
         }
 
         if($old->weather_enabled) {
-            $static['seasons']['global_settings']["seed"] = $old->weather->weather_seed;
-            $static['seasons']['global_settings']["temp_sys"] = $old->weather->weather_temp_sys;
-            $static['seasons']['global_settings']["wind_sys"] = $old->weather->weather_wind_sys;
-            $static['seasons']['global_settings']["cinematic"] = $old->weather->weather_cinematic;
-            $static['seasons']['global_settings']['enable_weather'] = $old->weather_enabled;
 
             if($old->winter_month > $old->summer_month) {
                 $first_season = [
