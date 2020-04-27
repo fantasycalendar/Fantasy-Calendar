@@ -110,15 +110,17 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
         }
 
         if($old->solstice_enabled) {
+            $static['seasons']['locations'] = [];
+
             $static['seasons']['global_settings'] = [
                 "season_offset" => 0,
                 "weather_offset" => 0,
-                "seed" => $old->weather->weather_seed,
-                "temp_sys" => $old->weather->weather_temp_sys,
-                "wind_sys" => $old->weather->weather_wind_sys,
-                "cinematic" => $old->weather->weather_cinematic,
                 "periodic_seasons" => false,
-                'enable_weather' => $old->weather_enabled,
+                "seed" => isset($old->weather->weather_seed) ? $old->weather->weather_seed : rand(20, 200000000),
+                "temp_sys" => isset($old->weather->weather_temp_sys) ? $old->weather->weather_temp_sys : "imperial",
+                "wind_sys" => isset($old->weather->weather_wind_sys) ? $old->weather->weather_wind_sys : "imperial",
+                "cinematic" => isset($old->weather->weather_cinematic) ? $old->weather->weather_cinematic : false,
+                'enable_weather' => isset($old->weather_enabled) ? $old->weather_enabled : false,
             ];
 
             $winter = [
@@ -131,7 +133,8 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                         'minute' => 0
                     ],
                     'sunset' => [
-                        'hour' => $old->winter_set
+                        'hour' => $old->winter_set,
+                        'minute' => 0
                     ]
                 ]
             ];
@@ -146,7 +149,8 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                         'minute' => 0
                     ],
                     'sunset' => [
-                        'hour' => $old->summer_set
+                        'hour' => $old->summer_set,
+                        'minute' => 0
                     ]
                 ]
             ];
@@ -155,7 +159,11 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
         }
 
         if($old->weather_enabled) {
-            $static['seasons']['locations'] = [];
+            $static['seasons']['global_settings']["seed"] = $old->weather->weather_seed;
+            $static['seasons']['global_settings']["temp_sys"] = $old->weather->weather_temp_sys;
+            $static['seasons']['global_settings']["wind_sys"] = $old->weather->weather_wind_sys;
+            $static['seasons']['global_settings']["cinematic"] = $old->weather->weather_cinematic;
+            $static['seasons']['global_settings']['enable_weather'] = $old->weather_enabled;
 
             if($old->winter_month > $old->summer_month) {
                 $first_season = [
@@ -252,10 +260,13 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
 
             $dynamic['custom_location'] = ($old->weather->current_climate_type === 'custom');
 
-            $dynamic['location'] = ($dynamic['custom_location']) ?
-                array_search($old->weather->current_climate, array_keys(json_decode(json_encode($old->weather->custom_climates), true))) :
-                $old->weather->current_climate;
         }
+
+        $dynamic['location'] = (isset($dynamic['custom_location']) && $dynamic['custom_location']) ?
+            array_search($old->weather->current_climate, array_keys(json_decode(json_encode($old->weather->custom_climates), true))) :
+            $old->weather->current_climate ?? 'Cool and Rainy';
+
+        $dynamic['custom_location'] = $dynamic['custom_location'] ?? false;
 
         $static['settings'] = [
             'layout' => 'grid',
@@ -273,6 +284,8 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
             'add_year_day_number' => $old->settings->add_year_day_number
         ];
 
+//        dd($static);
+
         $calendar = Calendar::create([
             'user_id' => $this->old_calendar->user_id,
             'name' => $old->name,
@@ -282,6 +295,8 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
         ]);
 
         $eventids = SaveCalendarEvents::dispatchNow($events, [], $calendar->id);
+
+//        return $calendar;
 
         return view('calendar.edit', ['calendar' => $calendar]);
     }
