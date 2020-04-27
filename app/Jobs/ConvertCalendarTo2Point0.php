@@ -49,7 +49,8 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
             'first_day' => $old->first_day+1,
             'global_week' => $old->weekdays,
             'overflow' => $old->overflow,
-            'timespans' => []
+            'timespans' => [],
+            'leap_days' => [],
         ];
         $static['eras'] = [];
         $static['cycles'] = [
@@ -67,6 +68,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
             ];
         }
 
+        $this->moons = [];
         foreach($old->moons as $index => $moon) {
             $static['moons'][] = [
                 'name' => $moon,
@@ -77,10 +79,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                 'hidden' => false,
                 'custom_phase' => false
             ];
-        }
-
-        foreach($old->events as $event) {
-            $events[] = $this->convertEvent($event);
+            $this->moons[] = $this->determineMoonGranularity($old->lunar_cyc[$index]);
         }
 
         if(isset($old->year_leap) && $old->year_leap > 1) {
@@ -91,7 +90,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
 			    'adds_week_day' => false,
 			    'day' => 0,
 			    'week_day' => '',
-			    'interval' => "{$old->year_leap}",
+			    'interval' => "$old->year_leap",
 			    'offset' => 0
             ];
         }
@@ -109,7 +108,31 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
             $dynamic['minute'] = $old->minute;
         }
 
+        if($old->era != "") {
+            $static['eras'][] = [
+                "name" => $old->era,
+                "formatting" => "Year {{year}} {{era_name}}",
+                "description" => "",
+                "settings" => [
+                    "show_as_event" => false,
+                    "use_custom_format" => true,
+                    "starting_era" => true,
+                    "event_category_id" => -1,
+                    "ends_year" => false,
+                    "restart" => false
+                ],
+                "date" => [
+                    "year" => 0,
+                    "timespan" => 0,
+                    "day" => 1
+                ]
+           ];
+        }
+
         if($old->solstice_enabled) {
+
+            $inverse = $old->winter_month < $old->summer_month || ($old->winter_month == $old->summer_month && $old->winter_day < $old->summer_day);
+
             $static['seasons']['locations'] = [];
 
             $static['seasons']['global_settings'] = [
@@ -125,7 +148,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
 
             $winter = [
                 'name' => 'Winter',
-                'timespan' => $old->winter_month,
+                'timespan' => $old->winter_month-1,
                 'day' => $old->winter_day,
                 'time' => [
                     'sunrise' => [
@@ -143,7 +166,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
 
             $summer = [
                 'name' => 'Summer',
-                'timespan' => $old->summer_month,
+                'timespan' => $old->summer_month-1,
                 'day' => $old->summer_day,
                 'time' => [
                     'sunrise' => [
@@ -159,105 +182,218 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                 'duration' => 0
             ];
 
-            $static['seasons']['data'] = ($old->winter_month > $old->summer_month) ? [$summer, $winter] : [$winter, $summer];
-        }
+            $static['seasons']['data'] = $inverse ? [$winter, $summer] :  [$summer, $winter];
 
-        if($old->weather_enabled) {
+            if($old->weather_enabled) {
 
-            if($old->winter_month > $old->summer_month) {
-                $first_season = [
-                    'name' => 'summer',
-                    'rise' => $old->summer_rise,
-                    'set' => $old->summer_set,
-                    'timespan' => $old->summer_month,
-                    'day' => $old->summer_day
-                ];
-                $second_season = [
-                    'name' => 'winter',
-                    'rise' => $old->winter_rise,
-                    'set' => $old->winter_set,
-                    'timespan' => $old->winter_month,
-                    'day' => $old->winter_day
-                ];
-            }else{
-                $first_season = [
-                    'name' => 'winter',
-                    'rise' => $old->winter_rise,
-                    'set' => $old->winter_set,
-                    'timespan' => $old->winter_month,
-                    'day' => $old->winter_day
-                ];
-                $second_season = [
-                    'name' => 'summer',
-                    'rise' => $old->summer_rise,
-                    'set' => $old->summer_set,
-                    'timespan' => $old->summer_month,
-                    'day' => $old->summer_day
-                ];
-            }
+                if($inverse) {
+                    $first_season = [
+                        'name' => 'winter',
+                        'rise' => $old->winter_rise,
+                        'set' => $old->winter_set,
+                        'timespan' => $old->winter_month-1,
+                        'day' => $old->winter_day
+                    ];
+                    $second_season = [
+                        'name' => 'summer',
+                        'rise' => $old->summer_rise,
+                        'set' => $old->summer_set,
+                        'timespan' => $old->summer_month-1,
+                        'day' => $old->summer_day
+                    ];
+                }else{
+                    $first_season = [
+                        'name' => 'summer',
+                        'rise' => $old->summer_rise,
+                        'set' => $old->summer_set,
+                        'timespan' => $old->summer_month-1,
+                        'day' => $old->summer_day
+                    ];
+                    $second_season = [
+                        'name' => 'winter',
+                        'rise' => $old->winter_rise,
+                        'set' => $old->winter_set,
+                        'timespan' => $old->winter_month-1,
+                        'day' => $old->winter_day
+                    ];
+                }
 
-            foreach($old->weather->custom_climates as $name => $data) {
-                $data = json_decode(json_encode($data), true);
+                foreach($old->weather->custom_climates as $name => $data) {
+                    $data = json_decode(json_encode($data), true);
 
-                $static['seasons']['locations'][] = [
-                    'name' => $name,
-                    'seasons' => [
-                        [
-                            'name' => '',
-                            'custom_name' => false,
-                            'time' => [
-                                'sunrise' => [
-                                    'hour' => $first_season['rise'],
-                                    'minute' => 0
+                    $static['seasons']['locations'][] = [
+                        'name' => $name,
+                        'seasons' => [
+                            [
+                                'name' => '',
+                                'custom_name' => false,
+                                'time' => [
+                                    'sunrise' => [
+                                        'hour' => $first_season['rise'],
+                                        'minute' => 0
+                                    ],
+                                    'sunset' => [
+                                        'hour' => $first_season['set'],
+                                        'minute' => 0
+                                    ]
                                 ],
-                                'sunset' => [
-                                    'hour' => $first_season['set'],
-                                    'minute' => 0
+                                'weather' => [
+                                    'temp_low' => $data[$first_season['name']]['temperature']['cold'],
+                                    'temp_high' => $data[$first_season['name']]['temperature']['hot'],
+                                    'precipitation' => $data[$first_season['name']]['precipitation'],
+                                    'precipitation_intensity' => $data[$first_season['name']]['precipitation'] * 0.5
                                 ]
                             ],
-                            'weather' => [
-                                'temp_low' => $data[$first_season['name']]['temperature']['cold'],
-                                'temp_high' => $data[$first_season['name']]['temperature']['hot'],
-                                'precipitation' => $data[$first_season['name']]['precipitation'],
-                                'precipitation_intensity' => $data[$first_season['name']]['precipitation'] * 0.5
-                            ]
-                        ],
-                        [
-                            'name' => '',
-                            'custom_name' => false,
-                            'time' => [
-                                'sunrise' => [
-                                    'hour' => $second_season['rise'],
-                                    'minute' => 0
+                            [
+                                'name' => '',
+                                'custom_name' => false,
+                                'time' => [
+                                    'sunrise' => [
+                                        'hour' => $second_season['rise'],
+                                        'minute' => 0
+                                    ],
+                                    'sunset' => [
+                                        'hour' => $second_season['set'],
+                                        'minute' => 0
+                                    ]
                                 ],
-                                'sunset' => [
-                                    'hour' => $second_season['set'],
-                                    'minute' => 0
+                                'weather' => [
+                                    'temp_low' => $data[$second_season['name']]['temperature']['cold'],
+                                    'temp_high' => $data[$second_season['name']]['temperature']['hot'],
+                                    'precipitation' => $data[$second_season['name']]['precipitation'],
+                                    'precipitation_intensity' => $data[$second_season['name']]['precipitation'] * 0.5
                                 ]
                             ],
-                            'weather' => [
-                                'temp_low' => $data[$second_season['name']]['temperature']['cold'],
-                                'temp_high' => $data[$second_season['name']]['temperature']['hot'],
-                                'precipitation' => $data[$second_season['name']]['precipitation'],
-                                'precipitation_intensity' => $data[$second_season['name']]['precipitation'] * 0.5
+                        ],
+                        'settings' => [
+                            'timezone' => ['hour' => 0, 'minute' => 0],
+                            'large_noise_frequency' => $old->weather->weather_temp_scale*0.1,
+                            'large_noise_amplitude' => $old->weather->weather_temp_scale*5,
+
+                            'medium_noise_frequency' => $old->weather->weather_temp_scale*3,
+                            'medium_noise_amplitude' => $old->weather->weather_temp_scale*2,
+
+                            'small_noise_frequency' => $old->weather->weather_temp_scale*8,
+                            'small_noise_amplitude' => $old->weather->weather_temp_scale*3
+                        ]
+                    ];
+                }
+
+                $dynamic['custom_location'] = ($old->weather->current_climate_type === 'custom');
+
+                if($old->settings->auto_events){
+
+                    $events[] = [
+                        "name" => $inverse ? "Winter Solstice" : "Summer Solstice",
+                        "description" =>  '',
+                        "data" => [
+                            'has_duration' =>  false,
+                            'duration' =>  0,
+                            'show_first_last' =>  false,
+                            'limited_repeat' =>  false,
+                            'limited_repeat_num' =>  0,
+                            'connected_events' =>  [],
+                            'date' =>  [],
+                            "conditions" => [
+                                ["Season","0",[0]],
+                                ["&&"],
+                                ["Season","8",[1]],
                             ]
                         ],
-                    ],
-                    'settings' => [
-                        'timezone' => ['hour' => 0, 'minute' => 0],
-                        'large_noise_frequency' => $old->weather->weather_temp_scale*0.1,
-                        'large_noise_amplitude' => $old->weather->weather_temp_scale*5,
+                        "event_category_id" => "-1",
+                        "settings" => [
+                            "color" => "Green",
+                            "text" => "text",
+                            "hide" => false,
+                            "hide_full" => false,
+                            "print" => false
+                        ]
+                    ];
 
-                        'medium_noise_frequency' => $old->weather->weather_temp_scale*3,
-                        'medium_noise_amplitude' => $old->weather->weather_temp_scale*2,
+                    $events[] = [
+                        "name" => $inverse ? "Spring Equinox" : "Autumn Equinox",
+                        "description" =>  '',
+                        "data" => [
+                            'has_duration' =>  false,
+                            'duration' =>  0,
+                            'show_first_last' =>  false,
+                            'limited_repeat' =>  true,
+                            'limited_repeat_num' =>  5,
+                            'connected_events' =>  [],
+                            'date' =>  [],
+                            "conditions" => [
+                                ["Season","0",[0]],
+                                ["&&"],
+                                ["Season","2",[50]],
+                            ]
+                        ],
+                        "event_category_id" => "-1",
+                        "settings" => [
+                            "color" => "Green",
+                            "text" => "text",
+                            "hide" => false,
+                            "hide_full" => false,
+                            "print" => false
+                        ]
+                    ];
 
-                        'small_noise_frequency' => $old->weather->weather_temp_scale*8,
-                        'small_noise_amplitude' => $old->weather->weather_temp_scale*3
-                    ]
-                ];
+                    $events[] = [
+                        "name" => $inverse ? "Summer Solstice" : "Winter Solstice",
+                        "description" =>  '',
+                        "data" => [
+                            'has_duration' =>  false,
+                            'duration' =>  0,
+                            'show_first_last' =>  false,
+                            'limited_repeat' =>  false,
+                            'limited_repeat_num' =>  0,
+                            'connected_events' =>  [],
+                            'date' =>  [],
+                            "conditions" => [
+                                ["Season","0",[1]],
+                                ["&&"],
+                                ["Season","8",[1]],
+                            ]
+                        ],
+                        "event_category_id" => "-1",
+                        "settings" => [
+                            "color" => "Green",
+                            "text" => "text",
+                            "hide" => false,
+                            "hide_full" => false,
+                            "print" => false
+                        ]
+                    ];
+
+                    $events[] = [
+                        "name" => $inverse ? "Autumn Equinox" : "Spring Equinox",
+                        "description" =>  '',
+                        "data" => [
+                            'has_duration' =>  false,
+                            'duration' =>  0,
+                            'show_first_last' =>  false,
+                            'limited_repeat' =>  true,
+                            'limited_repeat_num' =>  5,
+                            'connected_events' =>  [],
+                            'date' =>  [],
+                            "conditions" => [
+                                ["Season","0",[1]],
+                                ["&&"],
+                                ["Season","2",[50]],
+                            ]
+                        ],
+                        "event_category_id" => "-1",
+                        "settings" => [
+                            "color" => "Green",
+                            "text" => "text",
+                            "hide" => false,
+                            "hide_full" => false,
+                            "print" => false
+                        ]
+                    ];
+
+                }
+
             }
-
-            $dynamic['custom_location'] = ($old->weather->current_climate_type === 'custom');
 
         }
 
@@ -269,6 +405,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
 
         $static['settings'] = [
             'layout' => 'grid',
+            'year_zero_exists' => true,
             'show_current_month' => $old->settings->show_current_month,
             'allow_view' => $old->settings->allow_view,
             'only_backwards' => $old->settings->only_backwards,
@@ -283,7 +420,9 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
             'add_year_day_number' => $old->settings->add_year_day_number
         ];
 
-//        dd($static);
+        foreach($old->events as $event) {
+            $events[] = $this->convertEvent($event);
+        }
 
         $calendar = Calendar::create([
             'user_id' => $this->old_calendar->user_id,
@@ -294,8 +433,6 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
         ]);
 
         $eventids = SaveCalendarEvents::dispatchNow($events, [], $calendar->id);
-
-//        return $calendar;
 
         return view('calendar.edit', ['calendar' => $calendar]);
     }
@@ -419,21 +556,21 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
 
             case 'moon_every':
                 $conditions = [
-                    ['Moons', '0', ["{$data->moon_id}", $this->determineMoonGranularity($data->moon_phase)]]
+                    ['Moons', '0', ["{$data->moon_id}", $this->convertFromGranularity($this->moons[$data->moon_id], $data->moon_phase)]]
                 ];
                 break;
 
             case 'moon_monthly':
                 $conditions = [
-                    ['Moons', '0', ["{$data->moon_id}", $this->determineMoonGranularity($data->moon_phase)]],
+                    ['Moons', '0', ["{$data->moon_id}", $this->convertFromGranularity($this->moons[$data->moon_id], $data->moon_phase)]],
                     ['&&'],
-                    ['Moons', '7', ["{$data->moon_id}", $this->determineMoonGranularity($data->moon_phase_number)]]
+                    ['Moons', '7', ["{$data->moon_id}", $this->convertFromGranularity($this->moons[$data->moon_id], $data->moon_phase_number)]]
                 ];
                 break;
 
             case 'moon_anually':
                 $conditions = [
-                    ['Moons', '0', ["{$data->moon_id}", $this->determineMoonGranularity($data->moon_phase)]],
+                    ['Moons', '0', ["{$data->moon_id}", $this->convertFromGranularity($this->moons[$data->moon_id], $data->moon_phase)]],
                     ['&&'],
                     ['Moons', '7', ["{$data->moon_id}", $data->moon_phase_number]],
                     ['&&'],
@@ -445,15 +582,17 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
             case 'multimoon_anually':
                 $conditions = ($event->repeats == 'multimoon_every') ? [] : [['Month', '0', strval($data->month-1)], ['&&']];
                 foreach($data->moons as $index => $moon) {
+
                     $conditions[] = [
                         'Moons',
                         '0',
-                        ["$index", $this->determineMoonGranularity($moon->moon_phase)]
+                        ["$index", $this->convertFromGranularity($this->moons[$index], $moon->moon_phase)]
                     ];
 
-                    if($index >= count($data->moons)) {
+                    if($index < count($data->moons)-1) {
                         $conditions[] = ['&&'];
                     }
+
                 }
                 break;
 
@@ -487,5 +626,19 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
         if($cycle >= 24) return "24";
         if($cycle >= 8) return "8";
         return "4";
+    }
+
+    public function convertFromGranularity($granularity, $cycle){
+
+        if($granularity == 40){
+            return $cycle*2;
+        }else if($granularity == 24){
+            return floor($cycle*1.5);
+        }else if($granularity == 8){
+            return floor($granularity/2);
+        }else{
+            return floor($granularity/3);
+        }
+    
     }
 }
