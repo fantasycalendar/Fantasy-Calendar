@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Calendar;
 use App\OldCalendar;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -14,15 +15,23 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    protected $old_calendar;
+
+    protected $new_calendar;
+
+    protected $conversion_batch;
+
     /**
      * Create a new job instance.
-     * @param OldCalendar $calendar
+     * @param OldCalendar $old_calendar
+     * @param int $conversion_batch
      *
      * @return void
      */
-    public function __construct(OldCalendar $calendar)
+    public function __construct(OldCalendar $old_calendar, int $conversion_batch = 0)
     {
-        $this->old_calendar = $calendar;
+        $this->old_calendar = $old_calendar;
+        $this->conversion_batch = $conversion_batch;
     }
 
     /**
@@ -34,7 +43,6 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
     {
         $old = json_decode($this->old_calendar->data);
 
-//        dd($old);
 
         $dynamic = [];
         $static = [];
@@ -75,7 +83,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                 'cycle' => $old->lunar_cyc[$index],
                 'shift' => $old->lunar_shf[$index],
                 'granularity' => $this->determineMoonGranularity($old->lunar_cyc[$index]),
-                'color' => $old->lunar_color[$index],
+                'color' => $old->lunar_color[$index] ?? '#ffffff',
                 'hidden' => false,
                 'custom_phase' => false
             ];
@@ -139,11 +147,11 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                 "season_offset" => 0,
                 "weather_offset" => 0,
                 "periodic_seasons" => false,
-                "seed" => isset($old->weather->weather_seed) ? $old->weather->weather_seed : rand(20, 200000000),
-                "temp_sys" => isset($old->weather->weather_temp_sys) ? $old->weather->weather_temp_sys : "imperial",
-                "wind_sys" => isset($old->weather->weather_wind_sys) ? $old->weather->weather_wind_sys : "imperial",
-                "cinematic" => isset($old->weather->weather_cinematic) ? $old->weather->weather_cinematic : false,
-                'enable_weather' => isset($old->weather_enabled) ? $old->weather_enabled : false,
+                "seed" => $old->weather->weather_seed ?? rand(20, 200000000),
+                "temp_sys" => $old->weather->weather_temp_sys ?? "imperial",
+                "wind_sys" => $old->weather->weather_wind_sys ?? "imperial",
+                "cinematic" => $old->weather->weather_cinematic ?? false,
+                'enable_weather' => $old->weather_enabled ?? false,
             ];
 
             $winter = [
@@ -184,7 +192,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
 
             $static['seasons']['data'] = $inverse ? [$winter, $summer] :  [$summer, $winter];
 
-            if($old->weather_enabled) {
+            if(isset($old->weather_enabled) && $old->weather_enabled) {
 
                 if($inverse) {
                     $first_season = [
@@ -406,35 +414,78 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
         $static['settings'] = [
             'layout' => 'grid',
             'year_zero_exists' => true,
-            'show_current_month' => $old->settings->show_current_month,
-            'allow_view' => $old->settings->allow_view,
-            'only_backwards' => $old->settings->only_backwards,
-            'only_reveal_today' => $old->settings->only_reveal_today,
-            'hide_moons' => $old->settings->hide_moons,
-            'hide_clock' => $old->settings->hide_clock,
-            'hide_events' => $old->settings->hide_events,
+            'show_current_month' => $old->settings->show_current_month ?? false,
+            'allow_view' => $old->settings->allow_view ?? false,
+            'only_backwards' => $old->settings->only_backwards ?? false,
+            'only_reveal_today' => $old->settings->only_reveal_today ?? false,
+            'hide_moons' => $old->settings->hide_moons ?? false,
+            'hide_clock' => $old->settings->hide_clock ?? false,
+            'hide_events' => $old->settings->hide_events ?? false,
             'hide_eras' => false,
-            'hide_all_weather' => $old->settings->hide_weather,
+            'hide_all_weather' => $old->settings->hide_weather ?? false,
             'hide_future_weather' => false,
-            'add_month_number' => $old->settings->add_month_number,
-            'add_year_day_number' => $old->settings->add_year_day_number
+            'add_month_number' => $old->settings->add_month_number ?? false,
+            'add_year_day_number' => $old->settings->add_year_day_number ?? false
         ];
 
         foreach($old->events as $event) {
             $events[] = $this->convertEvent($event);
         }
 
-        $calendar = Calendar::create([
+        $this->new_calendar = Calendar::create([
             'user_id' => $this->old_calendar->user_id,
             'name' => $old->name,
             'dynamic_data' => $dynamic,
             'static_data' => $static,
-            'hash' => $this->old_calendar->hash
+            'hash' => $this->old_calendar->hash,
+            'converted_at' => Carbon::now(),
+            'conversion_batch' => $this->conversion_batch ? $this->conversion_batch : Calendar::max('conversion_batch') + 1,
         ]);
 
-        $eventids = SaveCalendarEvents::dispatchNow($events, [], $calendar->id);
+        $eventids = SaveCalendarEvents::dispatchNow($events, [], $this->new_calendar->id);
 
-        return view('calendar.edit', ['calendar' => $calendar]);
+        $this->sanityCheck();
+
+        return $this->new_calendar;
+    }
+
+    public function sanityCheck() {
+        $this->assertSameYearLength();
+        $this->assertSameNumberOfMonths();
+        $this->assertSameGlobalWeek();
+    }
+
+    public function assertSameYearLength() {
+        $old_year_length = !json_decode($this->old_calendar->data, true)['year_len'];
+        $new_year_length = 0;
+
+        foreach($this->new_calendar->static_data['year_data']['timespans'] as $timespan) {
+            $new_year_length += $timespan['length'];
+        }
+
+        if($old_year_length == $new_year_length) {
+            throw new \Exception("Year length is not the same! Expected $old_year_length and got $new_year_length on calendar {$this->new_calendar->name}");
+        }
+
+        return true;
+    }
+
+    public function assertSameNumberOfMonths() {
+        $old_months = json_decode($this->old_calendar->data, true)['n_months'];
+        $new_months = count($this->new_calendar->static_data['year_data']['timespans']);
+
+        if($old_months !== $new_months) {
+            throw new \Exception("The new calendar has the wrong number of months! Expected $old_months and got $new_months on calendar {$this->new_calendar->name}");
+        }
+    }
+
+    public function assertSameGlobalWeek() {
+        $old_weekdays = json_decode($this->old_calendar->data, true)['weekdays'];
+        $new_weekdays = $this->new_calendar->static_data['year_data']['global_week'];
+
+        if($old_weekdays !== $new_weekdays) {
+            throw new \Exception("The new calendar has the wrong number of months! Expected $old_weekdays and got $new_weekdays on calendar {$this->new_calendar->name}");
+        }
     }
 
     public function convertEvent($event) {
@@ -442,6 +493,14 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
         $date = [];
 
         $data = $event->data;
+
+        if(isset($data->moon_name)) {
+            if(!isset($data->moons)) {
+                $data->moon_id = 0;
+            } else {
+                $data->moon_id = array_search($data->moon_name, $data->moons);
+            }
+        }
 
         switch($event->repeats) {
             case 'once':
@@ -639,6 +698,6 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
         }else{
             return floor($granularity/3);
         }
-    
+
     }
 }
