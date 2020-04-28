@@ -62,7 +62,7 @@ class ConvertAllCalendars extends Command
                     $this->info('Converted ' . $newCalendar->name);
                 } catch (\Throwable $e) {
                     if($this->option('die-on-error')) dd($e);
-                    $this->error('Error converting ' . $oldCalendar->name . ':' . $e->getMessage());
+                    $this->error('Error converting ' . $oldCalendar->name . ' ('.$oldCalendar->hash.'): ' . $e->getMessage());
                 }
             }
         });

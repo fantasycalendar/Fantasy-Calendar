@@ -43,6 +43,9 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
     {
         $old = json_decode($this->old_calendar->data);
 
+        if($old == null){
+            throw new \Exception("JSON data malformed!");
+        }
 
         $dynamic = [];
         $static = [];
@@ -429,7 +432,10 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
         ];
 
         foreach($old->events as $event) {
-            $events[] = $this->convertEvent($event);
+            $new_event_data = $this->convertEvent($event);
+            if($new_event_data){
+                $events[] = $new_event_data;
+            }
         }
 
         $this->new_calendar = Calendar::create([
@@ -445,7 +451,6 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
         $eventids = SaveCalendarEvents::dispatchNow($events, [], $this->new_calendar->id);
 
         $this->sanityCheck();
-
         return $this->new_calendar;
     }
 
@@ -492,6 +497,10 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
         $conditions = [];
         $date = [];
 
+        if(!property_exists($event, "data")){
+            return false;
+        }
+
         $data = $event->data;
 
         if(isset($data->moon_name)) {
@@ -502,159 +511,219 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
             }
         }
 
-        switch($event->repeats) {
-            case 'once':
-                $conditions = [
-                    ['Year', '0', ["{$data->year}"]],
-                    ['&&'],
-                    ['Month', '0', [strval($data->month-1)]],
-                    ['&&'],
-                    ['Day', '0', ["{$data->day}"]]
-                ];
-                $date = [$data->year, $data->month-1, $data->day];
-                break;
-            case 'daily':
-                $conditions = [
-                    ['Epoch', '6', ['1', '0']]
-                ];
-                break;
-            case 'weekly':
-                $conditions = [
-                    ['Weekday', '0', [strval($data->week_day+1)]]
-                ];
-                break;
-            case 'fortnightly':
-                $conditions = [
-                    ['Weekday', '0', [strval($data->week_day+1)]],
-                    ['&&'],
-                    ['Week', '13', [$data->week_even ? '2' : '1', '0']]
-                ];
-                break;
-            case 'monthly_date':
-                $conditions = [
-                    ['Day', '0', ["{$data->day}"]]
-                ];
-                break;
-            case 'annually_date':
-                $conditions = [
-                    ['Month', '0', [strval($data->month-1)]],
-                    ['&&'],
-                    ['Day', '0', ["{$data->day}"]]
-                ];
-                break;
-            case 'monthly_weekday':
-                $conditions = [
-                    ['Weekday', '0', [strval($data->week_day+1)]],
-                    ['&&'],
-                    ['Week', '0', ["{$data->week_day_number}"]]
-                ];
-                break;
-            case 'annually_month_weekday':
-                $conditions = [
-                    ['Month', '0', [strval($data->month-1)]],
-                    ['&&'],
-                    ['Weekday', '0', [strval($data->week_day+1)]],
-                    ['&&'],
-                    ['Week', '0', [$data->week_day_number]]
-                ];
-                break;
+        $conditions = [];
 
-            case 'every_x_day':
-                $conditions = [
-                    ['Epoch', '6', ["{$data->every}", strval($data->modulus+1)]]
-                ];
-                break;
-
-            case 'every_x_weekday':
-                $conditions = [
-                    ['Weekday', '0', ["{$data->week_day}"]],
-                    ['&&'],
-                    ['Week', '20', ["{$data->every}", strval($data->modulus+1)]]
-                ];
-                break;
-
-            case 'every_x_monthly_date':
-                $conditions = [
-                    ['Day', '0', ["{$data->day}"]],
-                    ['&&'],
-                    ['Month', '13', ["{$data->every}", strval($data->modulus+1)]]
-                ];
-                break;
-
-            case 'every_x_monthly_weekday':
-                $conditions = [
-                    ['Weekday', '0', [strval($data->week_day+1)]],
-                    ['&&'],
-                    ['Week', '0', [$data->week_day_number]],
-                    ['&&'],
-                    ['Month', '13', ["{$data->every}", strval($data->modulus+1)]]
-                ];
-                break;
-
-            case 'every_x_annually_date':
-                $conditions = [
-                    ['Day', '0', ["{$data->day}"]],
-                    ['&&'],
-                    ['Month', '0', [strval($data->month-1)]],
-                    ['&&'],
-                    ['Year', '6', ["{$data->every}", strval($data->modulus+1)]]
-                ];
-                break;
-
-            case 'every_x_annually_weekday':
-                $conditions = [
-                    ['Weekday', '0', [strval($data->week_day+1)]],
-                    ['&&'],
-                    ['Week', '0', [$data->week_day_number]],
-                    ['&&'],
-                    ['Month', '0', [strval($data->month-1)]],
-                    ['&&'],
-                    ['Year', '6', ["{$data->every}", strval($data->modulus+1)]]
-                ];
-                break;
-
-            case 'moon_every':
-                $conditions = [
-                    ['Moons', '0', ["{$data->moon_id}", $this->convertFromGranularity($this->moons[$data->moon_id], $data->moon_phase)]]
-                ];
-                break;
-
-            case 'moon_monthly':
-                $conditions = [
-                    ['Moons', '0', ["{$data->moon_id}", $this->convertFromGranularity($this->moons[$data->moon_id], $data->moon_phase)]],
-                    ['&&'],
-                    ['Moons', '7', ["{$data->moon_id}", $this->convertFromGranularity($this->moons[$data->moon_id], $data->moon_phase_number)]]
-                ];
-                break;
-
-            case 'moon_anually':
-                $conditions = [
-                    ['Moons', '0', ["{$data->moon_id}", $this->convertFromGranularity($this->moons[$data->moon_id], $data->moon_phase)]],
-                    ['&&'],
-                    ['Moons', '7', ["{$data->moon_id}", $data->moon_phase_number]],
-                    ['&&'],
-                    ['Month', '0', [strval($data->month-1)]]
-                ];
-                break;
-
-            case 'multimoon_every':
-            case 'multimoon_anually':
-                $conditions = ($event->repeats == 'multimoon_every') ? [] : [['Month', '0', strval($data->month-1)], ['&&']];
-                foreach($data->moons as $index => $moon) {
-
-                    $conditions[] = [
-                        'Moons',
-                        '0',
-                        ["$index", $this->convertFromGranularity($this->moons[$index], $moon->moon_phase)]
+        $arrayified = json_decode(json_encode($event->data),true);
+        
+        if(!empty($arrayified)){
+            switch($event->repeats) {
+                case 'once':
+                    $conditions = [
+                        ['Year', '0', ["{$data->year}"]],
+                        ['&&'],
+                        ['Month', '0', [strval($data->month-1)]],
+                        ['&&'],
+                        ['Day', '0', ["{$data->day}"]]
                     ];
+                    $date = [$data->year, $data->month-1, $data->day];
+                    break;
+                case 'daily':
+                    $conditions = [
+                        ['Epoch', '6', ['1', '0']]
+                    ];
+                    break;
+                case 'weekly':
+                    $conditions = [
+                        ['Weekday', '0', [strval($data->week_day+1)]]
+                    ];
+                    break;
+                case 'fortnightly':
+                    $conditions = [
+                        ['Weekday', '0', [strval($data->week_day+1)]],
+                        ['&&'],
+                        ['Week', '13', [$data->week_even ? '2' : '1', '0']]
+                    ];
+                    break;
+                case 'monthly_date':
+                    $conditions = [
+                        ['Day', '0', ["{$data->day}"]]
+                    ];
+                    break;
+                case 'annually_date':
+                    $conditions = [
+                        ['Month', '0', [strval($data->month-1)]],
+                        ['&&'],
+                        ['Day', '0', ["{$data->day}"]]
+                    ];
+                    break;
+                case 'monthly_weekday':
+                    $conditions = [
+                        ['Weekday', '0', [strval($data->week_day+1)]],
+                        ['&&'],
+                        ['Week', '0', ["{$data->week_day_number}"]]
+                    ];
+                    break;
+                case 'annually_month_weekday':
+                    $conditions = [
+                        ['Month', '0', [strval($data->month-1)]],
+                        ['&&'],
+                        ['Weekday', '0', [strval($data->week_day+1)]],
+                        ['&&'],
+                        ['Week', '0', [$data->week_day_number]]
+                    ];
+                    break;
 
-                    if($index < count($data->moons)-1) {
-                        $conditions[] = ['&&'];
+                case 'every_x_day':
+                    $conditions = [
+                        ['Epoch', '6', ["{$data->every}", strval($data->modulus+1)]]
+                    ];
+                    break;
+
+                case 'every_x_weekday':
+                    $conditions = [
+                        ['Weekday', '0', ["{$data->week_day}"]],
+                        ['&&'],
+                        ['Week', '20', ["{$data->every}", strval($data->modulus+1)]]
+                    ];
+                    break;
+
+                case 'every_x_monthly_date':
+                    $conditions = [
+                        ['Day', '0', ["{$data->day}"]],
+                        ['&&'],
+                        ['Month', '13', ["{$data->every}", strval($data->modulus+1)]]
+                    ];
+                    break;
+
+                case 'every_x_monthly_weekday':
+                    $conditions = [
+                        ['Weekday', '0', [strval($data->week_day+1)]],
+                        ['&&'],
+                        ['Week', '0', [$data->week_day_number]],
+                        ['&&'],
+                        ['Month', '13', ["{$data->every}", strval($data->modulus+1)]]
+                    ];
+                    break;
+
+                case 'every_x_annually_date':
+                    $conditions = [
+                        ['Day', '0', ["{$data->day}"]],
+                        ['&&'],
+                        ['Month', '0', [strval($data->month-1)]],
+                        ['&&'],
+                        ['Year', '6', ["{$data->every}", strval($data->modulus+1)]]
+                    ];
+                    break;
+
+                case 'every_x_annually_weekday':
+                    $conditions = [
+                        ['Weekday', '0', [strval($data->week_day+1)]],
+                        ['&&'],
+                        ['Week', '0', [$data->week_day_number]],
+                        ['&&'],
+                        ['Month', '0', [strval($data->month-1)]],
+                        ['&&'],
+                        ['Year', '6', ["{$data->every}", strval($data->modulus+1)]]
+                    ];
+                    break;
+
+                case 'moon_every':
+                    if(isset($this->moons[$data->moon_id])){
+                        $conditions = [
+                            ['Moons', '0', ["{$data->moon_id}", $this->convertFromGranularity($this->moons[$data->moon_id], $data->moon_phase)]]
+                        ];
                     }
+                    break;
 
-                }
-                break;
+                case 'moon_monthly':
+                    if(isset($this->moons[$data->moon_id])){
+                        $conditions = [
+                            ['Moons', '0', ["{$data->moon_id}", $this->convertFromGranularity($this->moons[$data->moon_id], $data->moon_phase)]],
+                            ['&&'],
+                            ['Moons', '7', ["{$data->moon_id}", $this->convertFromGranularity($this->moons[$data->moon_id], $data->moon_phase_number)]]
+                        ];
+                    }
+                    break;
 
+                case 'moon_anually':
+                    if(isset($this->moons[$data->moon_id])){
+                        $conditions = [
+                            ['Moons', '0', ["{$data->moon_id}", $this->convertFromGranularity($this->moons[$data->moon_id], $data->moon_phase)]],
+                            ['&&'],
+                            ['Moons', '7', ["{$data->moon_id}", $data->moon_phase_number]],
+                            ['&&'],
+                            ['Month', '0', [strval($data->month-1)]]
+                        ];
+                    }
+                    break;
+
+                case 'multimoon_every':
+                case 'multimoon_anually':
+                    
+                    $conditions = ($event->repeats == 'multimoon_every') ? [] : [['Month', '0', strval($data->month-1)], ['&&']];
+                    foreach($data->moons as $index => $moon) {
+
+                        if(isset($this->moons[$index])){
+
+                            $conditions[] = [
+                                'Moons',
+                                '0',
+                                ["$index", $this->convertFromGranularity($this->moons[$index], $moon->moon_phase)]
+                            ];
+
+                            if(count($conditions) % 2 != 0) {
+                                $conditions[] = ['&&'];
+                            }
+                                
+                        }
+                        
+                    }
+                    break;
+
+            }
+        }
+
+            
+        $group = ["", []];
+        
+        if(isset($event->from_date)){
+            
+            if(count($conditions) > 0){
+                $conditions[] = ['&&'];
+            }
+
+            $group[1][] = ['', [
+                    ['Year', '2', [strval($event->from_date->year)]],
+                    ['&&'],
+                    ['Month', '2', [strval($event->from_date->month)]],
+                    ['&&'],
+                    ['Day', '2', [strval($event->from_date->day)]]
+                ]
+            ];
+        }
+
+        if(isset($event->to_date)){
+
+            if(count($group[1]) > 0){
+                $group[1][] = ['&&'];
+            }
+
+            $group[1][] = ['', [
+                    ['Year', '3', [strval($event->to_date->year)]],
+                    ['&&'],
+                    ['Month', '3', [strval($event->to_date->month)]],
+                    ['&&'],
+                    ['Day', '3', [strval($event->to_date->day)]]
+                ]
+            ];
+
+        }
+        
+        if(isset($event->from_date) || isset($event->to_date)){
+            if(count($conditions) > 0){
+                $conditions[] = ['&&'];
+            }
+            $conditions[] = $group;
         }
 
         return [
