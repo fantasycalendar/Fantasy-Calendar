@@ -633,10 +633,10 @@ function set_up_edit_inputs(){
 
 				var complex = result.dismiss === "cancel";
 
-				var events = create_season_events(complex);
+				var season_events = create_season_events(complex);
 
-				for(index in events){
-					events.push(events[index])
+				for(index in season_events){
+					events.push(season_events[index])
 					add_event_to_sortable(events_sortable, events.length-1, events[events.length-1]);
 				}
 
