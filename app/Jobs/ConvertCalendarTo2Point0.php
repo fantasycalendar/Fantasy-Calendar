@@ -21,6 +21,8 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
 
     protected $conversion_batch;
 
+    private $created_season_events;
+
     /**
      * Create a new job instance.
      * @param OldCalendar $old_calendar
@@ -32,6 +34,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
     {
         $this->old_calendar = $old_calendar;
         $this->conversion_batch = $conversion_batch;
+        $this->created_season_events = false;
     }
 
     /**
@@ -407,6 +410,8 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                         ]
                     ];
 
+                    $this->created_season_events = true;
+
                 }
 
             }
@@ -455,14 +460,16 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
 
         $eventids = SaveCalendarEvents::dispatchNow($events, [], $this->new_calendar->id);
 
-        $this->sanityCheck();
+        $this->sanityCheck($events);
         return $this->new_calendar;
     }
 
-    public function sanityCheck() {
+    public function sanityCheck($events) {
         $this->assertSameYearLength();
         $this->assertSameNumberOfMonths();
         $this->assertSameGlobalWeek();
+        $this->assertSameMoons();
+        $this->assertSameEvents($events);
     }
 
     public function assertSameYearLength() {
@@ -481,7 +488,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
     }
 
     public function assertSameNumberOfMonths() {
-        $old_months = json_decode($this->old_calendar->data, true)['n_months'];
+        $old_months = count(json_decode($this->old_calendar->data, true)['months']);
         $new_months = count($this->new_calendar->static_data['year_data']['timespans']);
 
         if($old_months !== $new_months) {
@@ -495,6 +502,28 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
 
         if($old_weekdays !== $new_weekdays) {
             throw new \Exception("The new calendar has the wrong number of week days! Expected $old_weekdays and got $new_weekdays on calendar {$this->new_calendar->name}");
+        }
+    }
+
+    public function assertSameMoons() {
+        $old_moons = count(json_decode($this->old_calendar->data, true)['moons']);
+        $new_moons = count($this->new_calendar->static_data['moons']);
+
+        if($old_moons !== $new_moons) {
+            throw new \Exception("The new calendar has the wrong number of moons! Expected $old_weekdays and got $new_weekdays on calendar {$this->new_calendar->name}");
+        }
+    }
+
+    public function assertSameEvents($events) {
+        $old_events = count(json_decode($this->old_calendar->data, true)['events']);
+        $new_events = count($events);
+
+        if($this->created_season_events){
+            $new_events = $new_events-4;
+        }
+
+        if($old_events !== $new_events) {
+            throw new \Exception("The new calendar has the wrong number of events! Expected $old_weekdays and got $new_weekdays on calendar {$this->new_calendar->name}");
         }
     }
 
