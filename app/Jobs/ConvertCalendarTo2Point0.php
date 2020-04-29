@@ -230,7 +230,12 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                 }
 
                 foreach($old->weather->custom_climates as $name => $data) {
+
                     $data = json_decode(json_encode($data), true);
+
+                    if($data == null){
+                        throw new \Exception("Climate JSON data malformed!");
+                    }
 
                     $static['seasons']['locations'][] = [
                         'name' => $name,
@@ -489,7 +494,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
         $new_weekdays = $this->new_calendar->static_data['year_data']['global_week'];
 
         if($old_weekdays !== $new_weekdays) {
-            throw new \Exception("The new calendar has the wrong number of months! Expected $old_weekdays and got $new_weekdays on calendar {$this->new_calendar->name}");
+            throw new \Exception("The new calendar has the wrong number of week days! Expected $old_weekdays and got $new_weekdays on calendar {$this->new_calendar->name}");
         }
     }
 

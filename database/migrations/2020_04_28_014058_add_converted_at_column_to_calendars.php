@@ -15,7 +15,7 @@ class AddConvertedAtColumnToCalendars extends Migration
     {
         Schema::table('calendars_beta', function (Blueprint $table) {
             $table->date('converted_at')->nullable();
-            $table->integer('conversion_batch');
+            $table->integer('conversion_batch')->nullable();
         });
     }
 

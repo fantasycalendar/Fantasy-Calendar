@@ -58,7 +58,7 @@ class ConvertAllCalendars extends Command
                 }
 
                 try{
-                    $newCalendar = ConvertCalendarTo2Point0::dispatchNow($oldCalendar, Calendar::max('conversion_batch'));
+                    $newCalendar = ConvertCalendarTo2Point0::dispatchNow($oldCalendar, Calendar::max('conversion_batch') ?? 1);
                     $this->info('Converted ' . $newCalendar->name);
                 } catch (\Throwable $e) {
                     if($this->option('die-on-error')) dd($e);
