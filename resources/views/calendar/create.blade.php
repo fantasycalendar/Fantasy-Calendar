@@ -65,9 +65,9 @@
             }
         };
 
-        events = {};
+        events = [];
 
-        event_categories = {};
+        event_categories = [];
 
         randomizer = new RandomCalendar();
 
