@@ -164,6 +164,7 @@ var eras = {
 							"position": 0,
 							"data": era
 						});
+
 					}else{
 
 						if(era.settings.starting_era || era.date.epoch < this.start_epoch){
@@ -183,6 +184,8 @@ var eras = {
 			}
 
 		}
+
+		console.log(this.current_eras)
 
 	},
 
@@ -248,16 +251,18 @@ var eras = {
 
 			var position = $("#calendar_container").scrollTop();
 
+			var first_day = position + $(`.timespan_day`).first().offset().top;
+
 			for(var i = 0; i < this.current_eras.length; i++){
 				if(!this.current_eras[i].data.settings.starting_era){
 					if($(`[epoch=${this.current_eras[i].data.date.epoch}]`).length){
-						this.current_eras[i].position = this.current_eras[i].position + position + $(`[epoch=${this.current_eras[i].data.date.epoch}]`).offset().top - 150;
+						this.current_eras[i].position = this.current_eras[i].position + position + $(`[epoch=${this.current_eras[i].data.date.epoch}]`).offset().top - first_day;
 					}
 				}
 			}
 
 			if(this.current_eras.length >= 2){
-				if(this.current_eras[0].position == -1000 && this.current_eras[1].position < 0){
+				if(this.current_eras[0].position == -1000 && this.current_eras[1].position <= 0){
 					this.current_eras.shift();
 				}
 			}
@@ -305,7 +310,7 @@ var eras = {
 
 			}else if(this.current_eras.length == 1){
 
-				if(position > this.current_eras[0].position || this.current_eras[0].data.date.epoch < this.start_epoch){
+				if(position >= this.current_eras[0].position || this.current_eras[0].data.date.epoch < this.start_epoch){
 
 					this.set_current_era(0);
 
