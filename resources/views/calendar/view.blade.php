@@ -168,6 +168,6 @@
     <div id="generator_container">
         @include('layouts.weather_tooltip')
         @include('layouts.event')
-        @include('inputs.view')
+        @include('inputs.sidebar.view')
     </div>
 @endsection
