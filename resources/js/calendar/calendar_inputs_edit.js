@@ -1499,8 +1499,8 @@ function set_up_edit_inputs(){
 	});
 
 	$(document).on('change', '.unique-week-input', function(){
-		var timespan_index = $(this).attr('index');
 		var parent = $(this).closest('.sortable-container');
+		var timespan_index = parent.attr('index');
 		if($(this).is(':checked')){
 			var element = [];
 			static_data.year_data.timespans[timespan_index].week = [];
@@ -2471,7 +2471,7 @@ function add_timespan_to_sortable(parent, key, data){
 
 				element.push(`<div class='row no-gutters my-1'>`);
 					element.push("<div class='form-check col-12 py-2 border rounded'>");
-						element.push(`<input type='checkbox' id='${key}_custom_week' class='form-check-input unique-week-input' index='${key}'`);
+						element.push(`<input type='checkbox' id='${key}_custom_week' class='form-check-input unique-week-input'`);
 						element.push(data.week ? "checked" : "");
 						element.push("/>");
 						element.push(`<label for='${key}_custom_week' class='form-check-label ml-1'>`);
@@ -3987,12 +3987,12 @@ function reindex_timespan_sortable(){
 			$(this).attr('data', $(this).attr('data').replace(/[0-9]+/g, i));
 		});
 
+		$(this).attr('index', i);
+
 		$(this).find('.name-input').prop('tabindex', tabindex+1)
 		tabindex++;
 		$(this).find('.length-input').prop('tabindex', tabindex+1)
 		tabindex++;
-		$(this).find('.toggle').prop('id', 'collapsible_week_'+i)
-		$(this).find('.lbl-toggle').prop('for', 'collapsible_week_'+i)
 
 		static_data.year_data.timespans[i] = {
 			'name': $(this).find('.name-input').val(),
@@ -4001,6 +4001,9 @@ function reindex_timespan_sortable(){
 			'interval': Number($(this).find('.interval').val()),
 			'offset': Number($(this).find('.offset').val())
 		};
+
+		$(this).find('.unique-week-input').prop('id', i+'_custom_week')
+		$(this).find('.unique-week-input').next().prop('for', i+'_custom_week')
 
 		if($(this).find('.unique-week-input').is(':checked')){
 			static_data.year_data.timespans[i].week = [];
@@ -4083,7 +4086,12 @@ function reindex_season_sortable(key){
 
 	season_sortable.children().each(function(i){
 
-		$(this).attr("key", i);
+		$(this).attr("index", i);
+
+		$('.dynamic_input', this).each(function(){
+			$(this).attr('data', $(this).attr('data').replace(/[0-9]+/g, i));
+		});
+		
 		$(this).find(".name-input").prop("tabindex", tabindex)
 		tabindex++;
 
