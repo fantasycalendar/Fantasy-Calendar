@@ -1,4 +1,4 @@
-@extends('templates._page')
+@extends('templates._calendar')
 
 @push('head')
     <script>
@@ -168,6 +168,6 @@
     <div id="generator_container">
         @include('layouts.weather_tooltip')
         @include('layouts.event')
-        @include('inputs.sidebar.view')
+        @include('inputs.view')
     </div>
 @endsection

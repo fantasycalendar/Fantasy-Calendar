@@ -20,6 +20,8 @@
 
 <form id="input_container">
 
+    @include('inputs.sidebar.header')
+
 	<div class='wrap-collapsible'>
 		<div class='title-text center-text'>View Calendar</div>
 	</div>

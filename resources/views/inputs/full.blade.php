@@ -1,16 +1,6 @@
 <form id="input_container">
 
-	<nav class="navbar-expand navbar-dark bg-accent">
-		<div class="collapse navbar-collapse" id="collapsemenu">
-			<ul class="navbar-nav">
-				@auth
-					<li class="nav-item active">
-						<a class="nav-link" href="{{ route('calendars.index') }}"><i class="fa fa-arrow-left"></i> Return to Calendars</a>
-					</li>
-				@endauth
-			</ul>
-		</div>
-	</nav>
+	@include('inputs.sidebar.header')
 
 	@yield('label')
 
