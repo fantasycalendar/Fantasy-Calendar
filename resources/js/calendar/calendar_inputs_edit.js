@@ -323,10 +323,20 @@ function set_up_edit_inputs(){
 		}else{
 			var name_val = name.val() == "" ? `Intercalary Month ${id+1}` : name.val();
 		}
+
+		var length = 1;
+		if(static_data.year_data.timespans.length == 0){
+			if(static_data.year_data.global_week.length > 0){
+				length = static_data.year_data.global_week.length;
+			}
+		}else{
+			length = static_data.year_data.timespans[static_data.year_data.timespans.length-1].length;
+		}
+
 		stats = {
 			'name': name_val,
 			'type': type.val(),
-			'length': 1,
+			'length': length,
 			'interval': 1,
 			'offset': 0
 		};
