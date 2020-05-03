@@ -528,6 +528,11 @@
 							<button type='button' class='btn btn-primary add full'><i class="fa fa-plus"></i></button>
 						</div>
 					</div>
+					
+					<div class="row">
+						<div style='font-style: italic; margin-left:4.5rem'>Name</div>
+						<div style='font-style: italic; margin-left:10rem'>Length</div>
+					</div>
 
 					<div class='sortable list-group' id='timespan_sortable'></div>
 
@@ -613,6 +618,11 @@
 						<div class='col-auto'>
 							<button type='button' class='btn btn-primary add full'><i class="fa fa-plus"></i></button>
 						</div>
+					</div>
+
+					
+					<div class="row">
+						<div style='font-style: italic; margin-left:3.5rem'>Name</div>
 					</div>
 
 					<div id='leap_day_list'></div>
@@ -704,7 +714,7 @@
 				<div class='add_inputs moon'>
 					<div class='row no-gutters'>
 						<div class='col'>
-							<input type='text' class='form-control name' id='moon_name_input' placeholder='Moon name'>
+							<input type='text' class='form-control name protip' data-pt-position="top" data-pt-title="The moon's name." id='moon_name_input' placeholder='Moon name'>
 						</div>
 						<div class='col-auto'>
 							<button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
@@ -712,10 +722,10 @@
 					</div>
 					<div class='row no-gutters'>
 						<div class='col-6'>
-							<input type='number' class='form-control cycle' min='1' id='moon_cycle_input' placeholder='Cycle'>
+							<input type='number' class='form-control cycle protip' data-pt-position="top" data-pt-title='How many days it takes for this moon go from Full Moon to the next Full Moon.'  min='1' id='moon_cycle_input' placeholder='Cycle'>
 						</div>
 						<div class='col-6'>
-							<input type='number' class='form-control shift' id='moon_shift_input' placeholder='Shift'>
+							<input type='number' class='form-control shift protip' data-pt-position="top" data-pt-title='This is how many days the cycle is offset by.' id='moon_shift_input' placeholder='Shift'>
 						</div>
 					</div>
 				</div>
