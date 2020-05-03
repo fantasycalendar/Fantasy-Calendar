@@ -6,6 +6,7 @@
 
         hash = getUrlParameter('id');
 
+        preset_applied = false;
         calendar_name = 'New Calendar';
         owner = true;
         has_parent = false;
@@ -169,22 +170,47 @@
                     });
 
                 }else{
-                    calendar_name = clone(calendar_presets[$('#presets').val()].name);
-                    static_data = clone(calendar_presets[$('#presets').val()].static_data);
-                    dynamic_data = clone(calendar_presets[$('#presets').val()].dynamic_data);
-                    events = clone(calendar_presets[$('#presets').val()].events);
-                    event_categories = clone(calendar_presets[$('#presets').val()].event_categories);
-                    dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
-                    empty_edit_values();
-                    set_up_edit_values();
-                    set_up_view_values();
-                    set_up_visitor_values();
-                    error_check('calendar', true);
-                    evaluate_save_button();
+
+                    if(preset_applied){
+                        swal.fire({
+                            title: "Are you sure?",
+                            text: `Applying this preset will overwrite all of your current progress.`,
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Yes',
+                            icon: "warning",
+                        })
+                        .then((result) => {
+                            if(result.value) {
+
+                                apply_preset();
+
+                            }
+                        });
+                    }else{
+                        apply_preset();
+                    }
                 }
             });
 
         });
+
+        function apply_preset(){
+            preset_applied = true;
+            calendar_name = clone(calendar_presets[$('#presets').val()].name);
+            static_data = clone(calendar_presets[$('#presets').val()].static_data);
+            dynamic_data = clone(calendar_presets[$('#presets').val()].dynamic_data);
+            events = clone(calendar_presets[$('#presets').val()].events);
+            event_categories = clone(calendar_presets[$('#presets').val()].event_categories);
+            dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+            empty_edit_values();
+            set_up_edit_values();
+            set_up_view_values();
+            set_up_visitor_values();
+            error_check('calendar', true);
+            evaluate_save_button();
+        }
     </script>
 @endpush
 
