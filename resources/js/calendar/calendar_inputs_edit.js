@@ -387,11 +387,19 @@ function set_up_edit_inputs(){
 
 
 	$(document).on('click', '.expand', function(){
-		if($(this).closest('.sortable-container').hasClass('collapsed')){
-			$(this).closest('.sortable-container').removeClass('collapsed').addClass('expanded');
+		var parent = $(this).closest('.collapsible');
+		if(parent.hasClass('collapsed')){
+			$(this).removeClass('icon-expand').addClass('icon-collapse');
+			parent.removeClass('collapsed').addClass('expanded');
 		}else{
-			$(this).closest('.sortable-container').removeClass('expanded').addClass('collapsed');
+			$(this).removeClass('icon-collapse').addClass('icon-expand');
+			parent.removeClass('expanded').addClass('collapsed');
 		}
+	});
+
+	$(document).on('click', '.location_toggle', function(){
+		var checked = $(this).is(':checked');
+		$(this).parent().find('.icon').toggleClass('icon-collapse', checked).toggleClass('icon-expand', !checked);
 	});
 
 	$('.add_inputs.moon .add').click(function(){
@@ -2416,10 +2424,10 @@ function add_weekday_to_sortable(parent, key, name){
 
 function add_timespan_to_sortable(parent, key, data){
 	var element = [];
-	element.push(`<div class='sortable-container list-group-item ${data.type} collapsed' type='${data.type}' index='${key}'>`);
+	element.push(`<div class='sortable-container list-group-item ${data.type} collapsed collapsible' type='${data.type}' index='${key}'>`);
 		element.push("<div class='main-container'>");
 			element.push("<div class='handle icon-reorder'></div>");
-			element.push("<div class='expand icon-collapse'></div>");
+			element.push("<div class='expand icon-expand'></div>");
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' step='1.0' tabindex='${(100+key)}'class='name-input small-input form-control dynamic_input' data='year_data.timespans.${key}' fc-index='name'/>`);
 			element.push("</div>");
@@ -2542,9 +2550,9 @@ function add_leap_day_to_list(parent, key, data){
 
 	var element = [];
 
-	element.push(`<div class='sortable-container list-group-item ${(data.intercalary ? 'intercalary leap-day' : 'leap-day')} collapsed' index='${key}'>`);
+	element.push(`<div class='sortable-container list-group-item ${(data.intercalary ? 'intercalary leap-day' : 'leap-day')} collapsed collapsible' index='${key}'>`);
 		element.push("<div class='main-container'>");
-			element.push("<div class='expand icon-collapse'></div>");
+			element.push("<div class='expand icon-expand'></div>");
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' class='name-input small-input form-control dynamic_input' data='year_data.leap_days.${key}' fc-index='name' tabindex='${(200+key)}'/>`);
 			element.push("</div>");
@@ -2831,12 +2839,12 @@ function add_moon_to_list(parent, key, data){
 
 function add_season_to_sortable(parent, key, data){
 	var element = [];
-	element.push(`<div class='sortable-container list-group-item season collapsed' index='${key}'>`);
+	element.push(`<div class='sortable-container list-group-item season collapsed collapsible' index='${key}'>`);
 		element.push("<div class='main-container'>");
 			if(static_data.seasons.global_settings.periodic_seasons){
 				element.push("<div class='handle icon-reorder'></div>");
 			}
-			element.push("<div class='expand icon-collapse'></div>");
+			element.push("<div class='expand icon-expand'></div>");
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' tabindex='${(400+key)}'class='name-input small-input form-control dynamic_input' data='seasons.data.${key}' fc-index='name'/>`);
 			element.push("</div>");
@@ -2966,9 +2974,9 @@ function add_location_to_list(parent, key, data){
 
 	var element = [];
 
-	element.push(`<div class='sortable-container list-group-item location collapsed' index='${key}'>`);
+	element.push(`<div class='sortable-container list-group-item location collapsed collapsible' index='${key}'>`);
 		element.push("<div class='main-container'>");
-			element.push("<div class='expand icon-collapse'></div>");
+			element.push("<div class='expand icon-expand'></div>");
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' tabindex='${(500+key)}' class='name-input small-input form-control dynamic_input location-name' data='seasons.locations.${key}' fc-index='name'/>`);
 			element.push("</div>");
@@ -2988,8 +2996,8 @@ function add_location_to_list(parent, key, data){
 			var name = data.seasons[i].custom_name ? data.seasons[i].name : static_data.seasons.data[i].name;
 
 			element.push(`<div class='m-0 my-2 cycle-container wrap-collapsible location_season' fc-index='${i}'>`);
-				element.push(`<input id='collapsible_seasons_${key}_${i}' class='toggle' type='checkbox'>`);
-				element.push(`<label for='collapsible_seasons_${key}_${i}' class='lbl-toggle'>Weather settings: ${name}</label>`);
+				element.push(`<input id='collapsible_seasons_${key}_${i}' class='toggle location_toggle' type='checkbox'>`);
+				element.push(`<label for='collapsible_seasons_${key}_${i}' class='lbl-toggle location_name'><div class='icon icon-expand'></div> Weather settings: ${name}</label>`);
 
 				element.push("<div class='collapsible-content container p-0'>");
 
@@ -3218,10 +3226,10 @@ function add_cycle_to_sortable(parent, key, data){
 
 	var element = [];
 
-	element.push(`<div class='sortable-container list-group-item cycle_inputs collapsed' index='${key}'>`);
+	element.push(`<div class='sortable-container list-group-item cycle_inputs collapsed collapsible' index='${key}'>`);
 		element.push("<div class='main-container'>");
 			element.push("<div class='handle icon-reorder'></div>");
-			element.push("<div class='expand icon-collapse'></div>");
+			element.push("<div class='expand icon-expand'></div>");
 			element.push(`<div class='name-container cycle-text center-text'>Cycle #${(key+1)} - Using {{${(key+1)}}}</div>`);
 			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
@@ -3307,9 +3315,9 @@ function add_era_to_list(parent, key, data){
 
 	var element = [];
 
-	element.push(`<div class='sortable-container list-group-item era_inputs collapsed' index='${key}'>`);
+	element.push(`<div class='sortable-container list-group-item era_inputs collapsed collapsible' index='${key}'>`);
 		element.push("<div class='main-container'>");
-			element.push("<div class='expand icon-collapse'></div>");
+			element.push("<div class='expand icon-expand'></div>");
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' class='form-control name-input small-input dynamic_input' data='eras.${key}' fc-index='name' tabindex='${(800+key)}'/>`);
 			element.push("</div>");
@@ -3472,10 +3480,10 @@ function add_category_to_list(parent, key, data){
 
 	var element = [];
 
-	element.push(`<div class='sortable-container list-group-item category_inputs collapsed' index='${key}'>`);
+	element.push(`<div class='sortable-container list-group-item category_inputs collapsed collapsible' index='${key}'>`);
 
 		element.push("<div class='main-container'>");
-			element.push("<div class='expand icon-collapse'></div>");
+			element.push("<div class='expand icon-expand'></div>");
 			element.push("<div class='name-container'>");
 				element.push(`<input type='text' name='name_input' fc-index='name' class='form-control name-input small-input dynamic_input_self' data='event_data.categories.${key}' tabindex='${(700+key)}'/>`);
 			element.push("</div>");
@@ -3719,49 +3727,55 @@ function get_errors(){
 
 	var errors = [];
 
-	for(var era_i = 0; era_i < static_data.eras.length; era_i++){
-		var era = static_data.eras[era_i];
-		if(static_data.year_data.timespans[era.date.timespan]){
-			if(!does_timespan_appear(static_data, convert_year(static_data, era.date.year), era.date.timespan).result){
-				errors.push(`Era <i>${era.name}</i> is currently on a leaping month. Please move it to another month.`);
+	if(static_data.year_data.timespans.length != 0){
+		for(var era_i = 0; era_i < static_data.eras.length; era_i++){
+			var era = static_data.eras[era_i];
+			if(static_data.year_data.timespans[era.date.timespan]){
+				if(!does_timespan_appear(static_data, convert_year(static_data, era.date.year), era.date.timespan).result){
+					errors.push(`Era <i>${era.name}</i> is currently on a leaping month. Please move it to another month.`);
+				}
+			}else{
+				errors.push(`Era <i>${era.name}</i> doesn't have a valid month.`);
 			}
-		}else{
-			errors.push(`Era <i>${era.name}</i> doesn't have a valid month.`);
+		}
+
+		for(var era_i = 0; era_i < static_data.eras.length-1; era_i++){
+			var curr = static_data.eras[era_i];
+			var next = static_data.eras[era_i+1];
+			if(!curr.settings.starting_era && !next.settings.starting_era){
+				if(curr.year == next.date.year && curr.settings.ends_year && next.settings.ends_year){
+					errors.push(`Eras <i>${curr.name}</i> and <i>${next.name}</i> both end the same year. This is not possible.`);
+				}
+				if(curr.date.year == next.date.year && curr.date.timespan == next.date.timespan && curr.date.day == next.date.day){
+					errors.push(`Eras <i>${static_data.eras[era_i].name}</i> and <i>${static_data.eras[era_i+1].name}</i> both share the same date. One has to come after another.`);
+				}
+			}
 		}
 	}
 
-	for(var era_i = 0; era_i < static_data.eras.length-1; era_i++){
-		var curr = static_data.eras[era_i];
-		var next = static_data.eras[era_i+1];
-		if(!curr.settings.starting_era && !next.settings.starting_era){
-			if(curr.year == next.date.year && curr.settings.ends_year && next.settings.ends_year){
-				errors.push(`Eras <i>${curr.name}</i> and <i>${next.name}</i> both end the same year. This is not possible.`);
-			}
-			if(curr.date.year == next.date.year && curr.date.timespan == next.date.timespan && curr.date.day == next.date.day){
-				errors.push(`Eras <i>${static_data.eras[era_i].name}</i> and <i>${static_data.eras[era_i+1].name}</i> both share the same date. One has to come after another.`);
-			}
-		}
-	}
+	if(static_data.year_data.timespans.length != 0){
 
-	for(var season_i = 0; season_i < static_data.seasons.data.length; season_i++){
-		var season = static_data.seasons.data[season_i];
 		if(static_data.seasons.global_settings.periodic_seasons){
-			if(season.transition_length == 0){
-				errors.push(`Season <i>${season.name}</i> can't have 0 transition length.`);
+			for(var season_i = 0; season_i < static_data.seasons.data.length; season_i++){
+				var season = static_data.seasons.data[season_i];
+				if(static_data.seasons.global_settings.periodic_seasons){
+					if(season.transition_length == 0){
+						errors.push(`Season <i>${season.name}</i> can't have 0 transition length.`);
+					}
+				}else{
+					if(static_data.year_data.timespans[season.timespan].interval != 1){
+						errors.push(`Season <i>${season.name}</i> can't be on a leaping month.`);
+					}
+				}
 			}
 		}else{
-			if(static_data.year_data.timespans[season.timespan].interval != 1){
-				errors.push(`Season <i>${season.name}</i> can't be on a leaping month.`);
-			}
-		}
-	}
 
-	if(!static_data.seasons.global_settings.periodic_seasons){
-		for(var season_i = 0; season_i < static_data.seasons.data.length-1; season_i++){
-			var curr_season = static_data.seasons.data[season_i];
-			var next_season = static_data.seasons.data[season_i+1];
-			if(curr_season.timespan == next_season.timespan && curr_season.day == next_season.day){
-				errors.push(`Season <i>${curr_season.name}</i> and <i>${next_season.name}</i> cannot be on the same month and day.`);
+			for(var season_i = 0; season_i < static_data.seasons.data.length-1; season_i++){
+				var curr_season = static_data.seasons.data[season_i];
+				var next_season = static_data.seasons.data[season_i+1];
+				if(curr_season.timespan == next_season.timespan && curr_season.day == next_season.day){
+					errors.push(`Season <i>${curr_season.name}</i> and <i>${next_season.name}</i> cannot be on the same month and day.`);
+				}
 			}
 		}
 	}

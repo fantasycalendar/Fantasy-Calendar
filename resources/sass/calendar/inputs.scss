@@ -81,7 +81,11 @@ select.invalid {
     position: relative;
 }
 
-#timespan_sortable, #leap_day_list, #moon_list {
+#timespan_sortable, #leap_day_list{
+    overflow: auto;
+}
+
+#moon_list {
     margin-top:10px;
     overflow: auto;
 }
@@ -363,6 +367,10 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
 
 .location_season{
     width:100%;
+}
+
+.location_name{
+    font-size:1.2rem;
 }
 
 @media screen and (max-width: 768px) {
