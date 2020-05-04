@@ -185,8 +185,6 @@ var eras = {
 
 		}
 
-		console.log(this.current_eras)
-
 	},
 
 	// This simply sets the new era

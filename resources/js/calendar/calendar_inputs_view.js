@@ -396,6 +396,12 @@ function fix_date(){
 
 function repopulate_location_select_list(){
 
+	var creation_steps = get_creation_steps();
+
+	if(creation_steps.current_step <= creation_steps.steps){
+		return;
+	}
+
 	var is_edit = location_select.closest('.wrap-collapsible').find('.add_inputs.locations').length > 0;
 
 	location_select.closest('.wrap-collapsible').toggleClass('hidden', !is_edit);

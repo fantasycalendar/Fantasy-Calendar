@@ -4,7 +4,7 @@
 
 	@yield('label')
 
-	<div class='wrap-collapsible'>
+	<div class='wrap-collapsible step-hide'>
 		<div class="view-tabs btn-group d-flex mb-2 w-100">
             <button type="button" data-pt-position='top' data-pt-title='What you, the owner, will always see' data-view-type='owner' class="protip owner w-100 btn btn-sm btn-primary">Owner View</button>
             <button type="button" data-pt-position='top' data-pt-title='A simulated view of what guests with the link to this calendar will see' data-view-type='player' class="protip player w-100 btn btn-sm btn-secondary">Guest View</button>
@@ -12,7 +12,7 @@
 		</div>
 	</div>
 
-    <div class='wrap-collapsible'>
+    <div class='wrap-collapsible step-hide'>
         <div class="d-flex mb-2 w-100">
             <label class="row no-gutters setting border rounded py-2 px-3 protip w-100" data-pt-position="right" data-pt-title="If unchecked, you will be prompted to apply changes after making them, instead of loading the calendar every time.">
                 <div class='col'>
@@ -29,7 +29,7 @@
 	<!----------------- STATISTICS ----------------->
 	<!---------------------------------------------->
 	<div class="accordion">
-		<div class='wrap-collapsible card'>
+		<div class='wrap-collapsible card settings-statistics'>
 			<input id="collapsible_statistics" class="toggle" type="checkbox">
 			<label for="collapsible_statistics" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-chart-pie"></i> Statistics <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Statistics' href='https://wiki.fantasy-calendar.com/index.php?title=Statistics' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
@@ -62,7 +62,7 @@
 		<!---------------- CURRENT DATE ---------------->
 		<!---------------------------------------------->
 
-		<div class='wrap-collapsible card'>
+		<div class='wrap-collapsible card settings-current_date'>
 			<input id="collapsible_date" class="toggle" type="checkbox">
 			<label for="collapsible_date" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-hourglass-half"></i> Current Date <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Date' href='https://wiki.fantasy-calendar.com/index.php?title=Date' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
@@ -239,7 +239,7 @@
 		<!-------------------- CLOCK ------------------->
 		<!---------------------------------------------->
 
-		<div class='wrap-collapsible card'>
+		<div class='wrap-collapsible card settings-clock'>
 			<input id="collapsible_clock" class="toggle" type="checkbox">
 			<label for="collapsible_clock" class="lbl-toggle card-header lbl-text"><i class="mr-2 fa fa-clock"></i> Clock <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Clock' href='https://wiki.fantasy-calendar.com/index.php?title=Clock' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
@@ -362,7 +362,7 @@
 		<!------------------- WEEKDAYS ----------------->
 		<!---------------------------------------------->
 
-		<div class='wrap-collapsible card'>
+		<div class='wrap-collapsible card settings-weekdays step-2-step'>
 			<input id="collapsible_globalweek" class="toggle" type="checkbox">
 			<label for="collapsible_globalweek" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-calendar-week"></i> Weekdays <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Weekdays' href='https://wiki.fantasy-calendar.com/index.php?title=Global_week' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
@@ -457,7 +457,7 @@
 		<!----------------- TIMESPANS ------------------>
 		<!---------------------------------------------->
 
-		<div class='wrap-collapsible card'>
+		<div class='wrap-collapsible card settings-timespans step-3-step'>
 
 			<input id="collapsible_timespans" class="toggle" type="checkbox">
 			<label for="collapsible_timespans" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-calendar-alt"></i> Months <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Months & Intercalaries' href='https://wiki.fantasy-calendar.com/index.php?title=Months_%26_Intercalaries' class="wiki protip"><i class="icon-question-sign"></i></a></label>
@@ -549,7 +549,7 @@
 		<!------------------ LEAP DAYS ----------------->
 		<!---------------------------------------------->
 
-		<div class='wrap-collapsible card'>
+		<div class='wrap-collapsible card settings-leapdays'>
 			<input id="collapsible_leapdays" class="toggle" type="checkbox">
 			<label for="collapsible_leapdays" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-calendar-day"></i> Leap days <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Leap Days' href='https://wiki.fantasy-calendar.com/index.php?title=Leap_days' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content content card-body">
@@ -636,7 +636,7 @@
 		<!-------------------- ERAS -------------------->
 		<!---------------------------------------------->
 
-		<div class='wrap-collapsible card'>
+		<div class='wrap-collapsible card settings-eras'>
 			<input id="collapsible_eras" class="toggle" type="checkbox">
 			<label for="collapsible_eras" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-infinity"></i> Eras <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Eras' href='https://wiki.fantasy-calendar.com/index.php?title=Eras' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
@@ -700,7 +700,7 @@
 		<!------------------- MOONS -------------------->
 		<!---------------------------------------------->
 
-		<div class='wrap-collapsible card'>
+		<div class='wrap-collapsible card settings-moons'>
 			<input id="collapsible_moon" class="toggle" type="checkbox">
 			<label for="collapsible_moon" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-moon"></i> Moons <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Moons' href='https://wiki.fantasy-calendar.com/index.php?title=Moons' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
@@ -739,7 +739,7 @@
 		<!------------------- SEASONS ------------------>
 		<!---------------------------------------------->
 
-		<div class='wrap-collapsible card'>
+		<div class='wrap-collapsible card settings-seasons'>
 			<input id="collapsible_seasons" class="toggle" type="checkbox">
 			<label for="collapsible_seasons" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-globe"></i> Seasons<a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Seasons' href='https://wiki.fantasy-calendar.com/index.php?title=Seasons' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
@@ -817,7 +817,7 @@
 		<!------------------- WEATHER ------------------>
 		<!---------------------------------------------->
 
-		<div class='wrap-collapsible card'>
+		<div class='wrap-collapsible card settings-weather'>
 			<input id="collapsible_weather" class="toggle" type="checkbox">
 			<label for="collapsible_weather" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-cloud-sun-rain"></i> Weather<a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Weather' href='https://wiki.fantasy-calendar.com/index.php?title=Weather' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
@@ -905,7 +905,7 @@
 		<!------------------ LOCATIONS ----------------->
 		<!---------------------------------------------->
 
-		<div class='wrap-collapsible card'>
+		<div class='wrap-collapsible card settings-locations'>
 			<input id="collapsible_locations" class="toggle" type="checkbox">
 			<label for="collapsible_locations" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-compass"></i> Locations <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Locations' href='https://wiki.fantasy-calendar.com/index.php?title=Locations' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
@@ -962,7 +962,7 @@
 		<!------------------- CYCLES ------------------->
 		<!---------------------------------------------->
 
-		<div class='wrap-collapsible card'>
+		<div class='wrap-collapsible card settings-cycles'>
 			<input id="collapsible_cycles" class="toggle" type="checkbox">
 			<label for="collapsible_cycles" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-redo"></i> Cycles <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Cycles' href='https://wiki.fantasy-calendar.com/index.php?title=Cycles' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
@@ -992,7 +992,7 @@
 		<!----------------- CATEGORIES ----------------->
 		<!---------------------------------------------->
 
-		<div class='wrap-collapsible card'>
+		<div class='wrap-collapsible card settings-categories'>
 			<input id="collapsible_categories" class="toggle" type="checkbox">
 			<label for="collapsible_categories" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-th-list"></i> Event Categories <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Event Categories' href='https://wiki.fantasy-calendar.com/index.php?title=Event_categories' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
@@ -1030,7 +1030,7 @@
 		<!------------------- EVENTS ------------------->
 		<!---------------------------------------------->
 
-		<div class='wrap-collapsible card'>
+		<div class='wrap-collapsible card settings-events'>
 			<input id="collapsible_events" class="toggle" type="checkbox">
 			<label for="collapsible_events" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-calendar-check"></i> Events <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Events' href='https://wiki.fantasy-calendar.com/index.php?title=Events' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
@@ -1059,7 +1059,7 @@
 		<!------------------ SETTINGS ------------------>
 		<!---------------------------------------------->
 
-		<div class='wrap-collapsible card'>
+		<div class='wrap-collapsible card settings-settings'>
 			<input id="collapsible_settings" class="toggle" type="checkbox">
 			<label for="collapsible_settings" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-cog"></i> Settings <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Settings' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
@@ -1251,7 +1251,7 @@
 			<!---------------------------------------------->
 			<!------------------ LINKING ------------------->
 			<!---------------------------------------------->
-			<div class='wrap-collapsible card'>
+			<div class='wrap-collapsible card settings-linking'>
 				<input id="collapsible_linking" class="toggle" type="checkbox">
 				<label for="collapsible_linking" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-link"></i> Calendar Linking <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Calendar Linking' href='https://wiki.fantasy-calendar.com/index.php?title=Calendar_Linking' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 				<div class="collapsible-content card-body">
@@ -1292,9 +1292,9 @@
 
 <div id="calendar_container">
 
-	<div id="errors_background" class='flexible_background blurred_background'>
-		<div id="errors">
-			<span id="error_text">
+	<div id="modal_background" class='flexible_background blurred_background'>
+		<div id="modal">
+			<span id="modal_text">
 				This is an alert box.
 			</span>
 		</div>

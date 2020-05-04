@@ -1053,13 +1053,17 @@ ol.example li.placeholder:before {
     text-align:center;
     overflow:hidden;
     display:none;
+
+    &.transparent{
+        background-color: rgba(0, 0, 0, 0.0);
+    }
 }
 
 .blurred_background{
     backdrop-filter: blur(3px);
 }
 
-#errors {
+#modal {
     border-radius: 5px;
     padding: 20px;
     width:500px;
@@ -1068,27 +1072,65 @@ ol.example li.placeholder:before {
     z-index: 10000;
 }
 
-#errors {
-    background-color: #f44336;
+#modal {
     color: white;
+    
+    &.error{
+        background-color: #f44336;
+    }
+
+    &.creation{
+        background-color: $accent-color;
+    }
 }
 
-/* The close button */
-#errors_closebtn {
-    margin-left: 15px;
-    color: white;
-    font-weight: bold;
-    float: right;
-    font-size: 22px;
-    line-height: 20px;
-    cursor: pointer;
-    transition: 0.3s;
+#generator_container.step-1 {
+
+    .step-hide{
+        display:none;
+    }
+
+    .accordion {
+        .wrap-collapsible{
+            display: none;
+        }
+    }
 }
 
-/* When moving the mouse over the close button */
-#errors_closebtn:hover {
-    color: black;
+#generator_container.step-2 {
+
+    .step-hide{
+        display:none;
+    }
+
+    .accordion {
+        .wrap-collapsible:not(.step-2-step):not(.step-1-step){
+            display: none;
+        }
+
+        .wrap-collapsible.settings-weekdays {
+            border-bottom: $card-border-color 1px solid;
+        }
+    }
 }
+
+#generator_container.step-3 {
+
+    .step-hide{
+        display:none;
+    }
+
+    .accordion {
+        .wrap-collapsible:not(.step-3-step):not(.step-2-step):not(.step-1-step){
+            display: none;
+        }
+
+        .wrap-collapsible.settings-timespans {
+            border-bottom: $card-border-color 1px solid;
+        }
+    }
+}
+
 
 .parent_button_container{
     position:absolute;

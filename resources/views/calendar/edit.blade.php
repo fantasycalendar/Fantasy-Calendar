@@ -5,7 +5,6 @@
     owner = {{ $calendar->owned }};
 
     $(document).ready(function(){
-        wizard = false;
 
         @include('calendar._loadcalendar')
 

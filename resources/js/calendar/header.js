@@ -28,15 +28,26 @@ function evaluate_background_size(){
 
 function error_message(message){
 
-	$('#error_text').empty().append(message);
-	$('#errors_background').removeClass().addClass('error').addClass('flexible_background').css('display', 'flex');
+	$('#modal_text').empty().append(message);
+	$('#modal_background').removeClass().addClass('flexible_background').css('display', 'flex');
+	$('#modal').removeClass().addClass('error');
 
 	evaluate_background_size();
 
 }
 
-function close_error_message(){
-	$('#errors_background').removeClass().addClass('flexible_background').css('display', 'none');
+function creation_message(message){
+
+	$('#modal_text').empty().append(message);
+	$('#modal_background').removeClass().addClass('flexible_background transparent').css('display', 'flex');
+	$('#modal').removeClass().addClass('creation');
+
+	evaluate_background_size();
+
+}
+
+function close_message_modal(){
+	$('#modal_background').removeClass().addClass('flexible_background').css('display', 'none');
 }
 
 function show_changes_button(){

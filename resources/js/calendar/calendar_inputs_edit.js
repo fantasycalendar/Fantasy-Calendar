@@ -110,10 +110,11 @@ function set_up_edit_inputs(){
 		$(this).removeClass('btn-secondary').addClass('btn-primary');
 
 		var errors = get_errors();
+		var creation_steps = get_creation_steps();
 
 		switch(view_type){
 			case "owner":
-				if(errors.length == 0){
+				if(creation_steps.current_step <= creation_steps.steps && errors.length == 0){
 					if(previous_view_type !== 'owner'){
 						if(!preview_date.follow){
 							update_preview_calendar();
@@ -131,7 +132,7 @@ function set_up_edit_inputs(){
 
 			case "player":
 				owner = 0;
-				if(errors.length == 0){
+				if(creation_steps.current_step <= creation_steps.steps && errors.length == 0){
 					if(previous_view_type !== 'player'){
 						if(!preview_date.follow){
 							update_preview_calendar();
@@ -148,7 +149,7 @@ function set_up_edit_inputs(){
 				break;
 
 			case "weather":
-				if(errors.length == 0){
+				if(creation_steps.current_step <= creation_steps.steps && errors.length == 0){
 					if(first_switch){
 						evaluate_weather_charts();
 						first_switch = false;
@@ -3791,25 +3792,46 @@ function get_errors(){
 		}
 	}
 
-	if(static_data.year_data.timespans.length == 0){
-
-		errors.push(`You need at least one month.`);
-
-	}
-
-	if(static_data.year_data.global_week.length == 0){
-
-		errors.push(`You need at least one global week day.`);
-
-	}
-
-	if(calendar_name == ""){
-
-		errors.push(`Your calendar must have a name.`)
-
-	}
-
 	return errors;
+
+}
+
+function get_creation_steps(){
+
+	var creation = {
+		text: [],
+		current_step: 1,
+		steps: 3,
+	};
+
+	if(creation.current_step >= 1){
+		if(calendar_name == ""){
+			creation.text.push(`<i class="mr-2 fas fa-calendar"></i> Your calendar must have a name.`)
+		}else{
+			creation.text.push(`<i class="mr-2 fas fa-calendar-check"></i> Your calendar has a name!`);
+			creation.current_step++;
+		}
+	}
+	
+	if(creation.current_step >= 2){
+		if(static_data.year_data.global_week.length == 0){
+			creation.text.push(`<i class="mr-2 fas fa-calendar"></i> You need at least one week day.`);
+		}else{
+			creation.text.push(`<i class="mr-2 fas fa-calendar-check"></i> You have at least one week day!`);
+			creation.current_step++;
+		}
+	}
+	
+	if(creation.current_step >= 3){
+		if(static_data.year_data.timespans.length == 0){
+			creation.text.push(`<i class="mr-2 fas fa-calendar"></i> You need at least one month.`);
+		}else{
+			creation.text.push(`<i class="mr-2 fas fa-calendar-check"></i> You have at least one month!`);
+			creation.current_step++;
+		}
+	}
+
+	return creation;
 
 }
 
@@ -3817,41 +3839,65 @@ var do_error_check = debounce(function(type, rebuild){
 
 	evaluate_save_button();
 
-	var errors = get_errors();
+	var creation_steps = get_creation_steps();
 
-	if(errors.length == 0 && $('.invalid').length == 0){
-
-		close_error_message();
-
-		error_check(type, rebuild);
-		recalc_stats();
-
-	}else{
+	if(creation_steps.current_step <= creation_steps.steps){
 
 		var text = [];
 
-		$('.invalid').each(function(){
-			errors.push($(this).attr('error_msg'));
-		})
+		text.push(`<h3>Remaining Steps</h3><ol>`);
 
-		text.push(`Errors:<ol>`);
+		for(var i = 0; i < creation_steps.text.length; i++){
 
-		for(var i = 0; i < errors.length; i++){
-
-			text.push(`<li>${errors[i]}</li>`);
+			text.push(`<li>${creation_steps.text[i]}</li>`);
 
 		}
 		text.push(`</ol>`);
 
-		error_message(text.join(''));
+		creation_message(text.join(''));
+
+		$('#generator_container').removeClass('step-'+(creation_steps.current_step-1));
+		$('#generator_container').addClass('step-'+(creation_steps.current_step));
+
+	}else{
+		
+		var errors = get_errors();
+		
+		if(errors.length == 0 && $('.invalid').length == 0){
+
+			$('#generator_container').removeClass();
+			
+			close_message_modal();
+
+			error_check(type, rebuild);
+			recalc_stats();
+
+		}else{
+
+			var text = [];
+
+			$('.invalid').each(function(){
+				errors.push($(this).attr('error_msg'));
+			})
+
+			text.push(`Errors:<ol>`);
+
+			for(var i = 0; i < errors.length; i++){
+
+				text.push(`<li>${errors[i]}</li>`);
+
+			}
+			text.push(`</ol>`);
+
+			error_message(text.join(''));
+
+		}
 
 	}
 
 }, 150);
 
 function error_check(parent, rebuild){
-
-	if(wizard) return;
 
 	changes_applied = false;
 
@@ -4662,6 +4708,12 @@ function calendar_save_failed(){
 
 function evaluate_save_button(override){
 
+	var creation_steps = get_creation_steps();
+
+	if(creation_steps.current_step <= creation_steps.steps){
+		return;
+	}
+
 	var errors = get_errors();
 
 	if($('#btn_save').length){
@@ -5163,7 +5215,7 @@ function autoload(){
 				set_up_view_values();
 				set_up_visitor_values();
 
-				error_check("calendar", true);
+				do_error_check("calendar", true);
 
 				swal.fire({
 					icon: "success",
