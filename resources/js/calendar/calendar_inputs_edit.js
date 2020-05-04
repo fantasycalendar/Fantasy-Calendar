@@ -109,15 +109,19 @@ function set_up_edit_inputs(){
 
 		$(this).removeClass('btn-secondary').addClass('btn-primary');
 
+		var errors = get_errors();
+
 		switch(view_type){
 			case "owner":
-				if(previous_view_type !== 'owner'){
-					if(!preview_date.follow){
-						update_preview_calendar();
-						pre_rebuild_calendar('preview', preview_date);
-					}else{
-						pre_rebuild_calendar('calendar', dynamic_data);
-						preview_date_follow();
+				if(errors.length == 0){
+					if(previous_view_type !== 'owner'){
+						if(!preview_date.follow){
+							update_preview_calendar();
+							pre_rebuild_calendar('preview', preview_date);
+						}else{
+							pre_rebuild_calendar('calendar', dynamic_data);
+							preview_date_follow();
+						}
 					}
 				}
 				calendar_container.removeClass('hidden');
@@ -127,13 +131,15 @@ function set_up_edit_inputs(){
 
 			case "player":
 				owner = 0;
-				if(previous_view_type !== 'player'){
-					if(!preview_date.follow){
-						update_preview_calendar();
-						pre_rebuild_calendar('preview', preview_date);
-					}else{
-						pre_rebuild_calendar('calendar', dynamic_data);
-						preview_date_follow();
+				if(errors.length == 0){
+					if(previous_view_type !== 'player'){
+						if(!preview_date.follow){
+							update_preview_calendar();
+							pre_rebuild_calendar('preview', preview_date);
+						}else{
+							pre_rebuild_calendar('calendar', dynamic_data);
+							preview_date_follow();
+						}
 					}
 				}
 				calendar_container.removeClass('hidden');
@@ -142,9 +148,11 @@ function set_up_edit_inputs(){
 				break;
 
 			case "weather":
-				if(first_switch){
-					evaluate_weather_charts();
-					first_switch = false;
+				if(errors.length == 0){
+					if(first_switch){
+						evaluate_weather_charts();
+						first_switch = false;
+					}
 				}
 				calendar_container.addClass('hidden');
 				weather_contrainer.removeClass('hidden');
@@ -2423,6 +2431,9 @@ function add_weekday_to_sortable(parent, key, name){
 }
 
 function add_timespan_to_sortable(parent, key, data){
+
+	if(key == 0) $('.timespan_sortable_header').removeClass('hidden');
+
 	var element = [];
 	element.push(`<div class='sortable-container list-group-item ${data.type} collapsed collapsible' type='${data.type}' index='${key}'>`);
 		element.push("<div class='main-container'>");

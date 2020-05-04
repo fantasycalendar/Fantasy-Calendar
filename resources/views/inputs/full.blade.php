@@ -511,7 +511,7 @@
 						</div>
 					</div>
 
-					<div class='add_inputs timespan row no-gutters'>
+					<div class='add_inputs timespan row no-gutters mb-2'>
 
 						<div class='col-md-6'>
 							<input type='text' id='timespan_name_input' class='form-control name' placeholder='Name'>
@@ -529,9 +529,9 @@
 						</div>
 					</div>
 					
-					<div class="row">
-						<div style='font-style: italic; margin-left:4.5rem'>Name</div>
-						<div style='font-style: italic; margin-left:10rem'>Length</div>
+					<div class="row sortable-header timespan_sortable_header hidden">
+						<div class='col-6' style="padding-left:25%;">Name</div>
+						<div class='col-6' style="padding-left:20%;">Length</div>
 					</div>
 
 					<div class='sortable list-group' id='timespan_sortable'></div>
