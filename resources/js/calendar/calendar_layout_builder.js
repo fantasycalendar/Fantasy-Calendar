@@ -472,6 +472,65 @@ function update_cycle_text(){
 
 }
 
+function get_weather_icon(epoch_data){
+
+	var weather = epoch_data.weather;
+
+	if(weather.clouds == "Clear"){
+		if(weather.feature == "Fog"){
+			return `<i class="wi wi-fog"></i>`;
+		}else{
+			return `<i class="wi wi-day-sunny"></i>`;
+		}
+	}else{
+
+		if(weather.precipitation.key == "None"){
+
+			if(weather.clouds == "A few clouds"){
+				return `<i class="wi wi-day-cloudy"></i>`;
+			}else if(weather.clouds == "Mostly cloudy"){
+				return `<i class="wi wi-cloud"></i>`;
+			}else{
+				return `<i class="wi wi-cloudy"></i>`;
+			}
+
+		}else{
+
+			if(weather.temperature.metric.actual > 0){
+
+				if(weather.precipitation.actual > 0.375){
+					if(weather.feature == "Lightning"){
+						return `<i class="wi wi-thunderstorm"></i>`;
+					}else{
+						return `<i class="wi wi-rain"></i>`;
+					}
+				}else {
+					if(weather.feature == "Lightning"){
+						return `<i class="wi wi-storm-showers"></i>`;
+					}else{
+						if(weather.feature == "Fog" && weather.precipitation.actual < 0.375){
+							return `<i class="wi wi-fog"></i>`;
+						}
+						return `<i class="wi wi-showers"></i>`;
+					}
+				}
+
+			}else{
+
+				if(weather.feature == "Hail"){
+					return `<i class="wi wi-hail"></i>`;
+				}else{
+					return `<i class="wi wi-snow"></i>`;
+				}
+
+			}
+		}
+	}
+
+	return "";
+
+}
+
 var calendar_layouts = {
 
 	append_layout: function(){
@@ -623,7 +682,7 @@ var calendar_layouts = {
 						calendar_layouts.html.push("<div class='toprow center'>");
 						if(epoch_data.weather && calendar_layouts.data.processed_weather){
 							if(owner || !(static_data.settings.hide_all_weather || (static_data.settings.hide_future_weather && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)))){
-								calendar_layouts.html.push(`<div class='weather_icon weather_popup' align='${weather_align}'></div>`);
+								calendar_layouts.html.push(`<div class='weather_popup' align='${weather_align}'>${get_weather_icon(epoch_data)}</div>`);
 							}
 						}
 						calendar_layouts.html.push("</div>");

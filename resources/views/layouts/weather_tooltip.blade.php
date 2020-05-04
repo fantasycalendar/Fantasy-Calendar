@@ -7,6 +7,7 @@
 	<div><span class='bold-text'>Wind:</span> <span class='weather_wind'></span></div>
 	<div><span class='bold-text'>Precipitation:</span> <span class='weather_precip'></span></div>
 	<div><span class='bold-text'>Clouds:</span> <span class='weather_clouds'></span></div>
+	<div><span class='bold-text'>Feature:</span> <span class='weather_feature'></span></div>
 	<div class='add_event_container hidden mt-2'><button type='button' class='btn btn-sm btn-success w-100 btn_create_event'>Add event to day</button></div>
 </div>
 

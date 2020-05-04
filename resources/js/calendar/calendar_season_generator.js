@@ -873,6 +873,8 @@ class Climate{
 			var temperature_i = [range_low, range_high];
 			var temperature_m = [fahrenheit_to_celcius(temperature_i[0]), fahrenheit_to_celcius(temperature_i[1])];
 			var temperature_c = pick_from_table(temp, preset_data.temperature_gauge, false).key;
+			var temperature_actual_i = temp;
+			var temperature_actual_m = fahrenheit_to_celcius(temp);
 			var percipitation_table = temp > 32 ? "warm" : "cold";
 		}else{
 			var temperature_range_i = [celcius_to_fahrenheit(low), celcius_to_fahrenheit(high)];
@@ -880,6 +882,8 @@ class Climate{
 			var temperature_m = [range_low, range_high];
 			var temperature_i = [celcius_to_fahrenheit(temperature_m[0]), celcius_to_fahrenheit(temperature_m[1])];
 			var temperature_c = pick_from_table(celcius_to_fahrenheit(temp), preset_data.temperature_gauge, false).key;
+			var temperature_actual_m = temp;
+			var temperature_actual_i = celcius_to_fahrenheit(temp);
 			var percipitation_table = temp > 0 ? "warm" : "cold";
 		}
 
@@ -902,7 +906,7 @@ class Climate{
 
 		if(precipitation_chance > chance){
 
-			inner_chance = clamp((0.5+this.random.noise(epoch+this.season_length*5, 10, 0.3, 0.5))*precipitation_intensity, 0.0, 1.0);
+			inner_chance = clamp((0.5+this.random.noise(epoch+this.season_length*5, 10, 0.3, precipitation_intensity))*precipitation_intensity, 0.0, 1.0);
 	
 			precipitation = pick_from_table(inner_chance, preset_data.precipitation[percipitation_table], true);
 
@@ -912,7 +916,7 @@ class Climate{
 
 				var wind_type_chance = this.random.roll_dice(epoch+this.season_length, preset_data.wind.type[precipitation.index]);
 
-				if(wind_type_chance == 20){
+				if(wind_type_chance == 20 || (clouds == "Dark storm clouds" && precipitation.index >= 4)){
 					wind_type_chance += this.random.roll_dice(epoch+this.season_length*6, '1d10');
 					feature_select = 'Storm';
 				}else{
@@ -927,10 +931,13 @@ class Climate{
 
 			var clouds_chance = clamp((0.5+this.random.noise(epoch+this.season_length*7, 10, 0.4, 0.5)), 0.0, 1.0);
 
-			var another_precipitation = pick_from_table(clouds_chance-0.3, preset_data.precipitation[percipitation_table], true);
-
-			if(clouds_chance > 0.3 && another_precipitation > 0.2){
-				clouds = preset_data.clouds[another_precipitation.index];
+			var another_precipitation = pick_from_table(clouds_chance-0.25, preset_data.precipitation[percipitation_table], true);
+			
+			if(clouds_chance > 0.3 && another_precipitation.index >= 0){
+				var index = another_precipitation.index-1;
+				if(index >= 0){
+					clouds = preset_data.clouds[index];
+				}
 			}
 
 			var wind_type_chance = this.random.roll_dice(epoch+this.season_length*8, preset_data.wind.type[another_precipitation.index]);
@@ -971,11 +978,13 @@ class Climate{
 		return {
 			temperature: {
 				imperial: {
+					actual: temperature_actual_i,
 					value: temperature_i,
 					low: temperature_range_i[0],
 					high: temperature_range_i[1],
 				},
 				metric: {
+					actual: temperature_actual_m,
 					value: temperature_m,
 					low: temperature_range_m[0],
 					high: temperature_range_m[1],
