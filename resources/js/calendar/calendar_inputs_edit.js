@@ -2245,7 +2245,11 @@ function set_up_edit_inputs(){
 			var data = target.attr('data');
 			var type = data.split('.');
 
-			var current_calendar_data = static_data[type[0]];
+			if(target.hasClass('category_dynamic_input')){
+				var current_calendar_data = event_categories[type[0]];
+			}else{
+				var current_calendar_data = static_data[type[0]];
+			}
 
 			for(var i = 1; i < type.length-1; i++){
 				current_calendar_data = current_calendar_data[type[i]];
@@ -2301,9 +2305,8 @@ function set_up_edit_inputs(){
 				}
 			}
 
-
-			if(data.includes('event_data.categories')){
-				var key = data.split('.')[2]|0;
+			if(target.hasClass('category_dynamic_input')){
+				var key = type[0];
 				for(var eventkey in events){
 					if(events[eventkey].event_category_id == event_categories[key].id){
 						events[eventkey].settings.hide_full = event_categories[key].event_settings.hide_full;
@@ -2311,7 +2314,6 @@ function set_up_edit_inputs(){
 						events[eventkey].settings.hide = event_categories[key].event_settings.hide;
 						events[eventkey].settings.color = event_categories[key].event_settings.color;
 						events[eventkey].settings.text = event_categories[key].event_settings.text;
-						break;
 					}
 				}
 				repopulate_event_category_lists();
@@ -3485,7 +3487,7 @@ function add_category_to_list(parent, key, data){
 		element.push("<div class='main-container'>");
 			element.push("<div class='expand icon-expand'></div>");
 			element.push("<div class='name-container'>");
-				element.push(`<input type='text' name='name_input' fc-index='name' class='form-control name-input small-input dynamic_input_self' data='event_data.categories.${key}' tabindex='${(700+key)}'/>`);
+				element.push(`<input type='text' name='name_input' fc-index='name' class='form-control name-input small-input category_dynamic_input dynamic_input' data='${key}' tabindex='${(700+key)}'/>`);
 			element.push("</div>");
 			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
@@ -3507,7 +3509,7 @@ function add_category_to_list(parent, key, data){
 
 			element.push(`<div class='row no-gutters my-1'>`);
 				element.push("<div class='form-check col-12 py-2 border rounded'>");
-					element.push(`<input type='checkbox' id='${key}_cat_global_hide' class='form-check-input dynamic_input global_hide' data='event_data.categories.${key}.category_settings' fc-index='hide' ${(data.category_settings.hide ? "checked" : "")} />`);
+					element.push(`<input type='checkbox' id='${key}_cat_global_hide' class='form-check-input category_dynamic_input dynamic_input global_hide' data='${key}.category_settings' fc-index='hide' ${(data.category_settings.hide ? "checked" : "")} />`);
 					element.push(`<label for='${key}_cat_global_hide' class='form-check-label ml-1'>`);
 						element.push("Hide from viewers");
 					element.push("</label>");
@@ -3516,7 +3518,7 @@ function add_category_to_list(parent, key, data){
 
 			element.push(`<div class='row no-gutters my-1 hidden'>`);
 				element.push("<div class='form-check col-12 py-2 border rounded'>");
-					element.push(`<input type='checkbox' id='${key}_cat_player_usable' class='form-check-input dynamic_input player_usable' data='event_data.categories.${key}.category_settings' fc-index='player_usable' ${(data.category_settings.player_usable ? "checked" : "")} />`);
+					element.push(`<input type='checkbox' id='${key}_cat_player_usable' class='form-check-input category_dynamic_input dynamic_input player_usable' data='${key}.category_settings' fc-index='player_usable' ${(data.category_settings.player_usable ? "checked" : "")} />`);
 					element.push(`<label for='${key}_cat_player_usable' class='form-check-label ml-1'>`);
 						element.push("Usable by players");
 					element.push("</label>");
@@ -3543,7 +3545,7 @@ function add_category_to_list(parent, key, data){
 
 			element.push(`<div class='row no-gutters my-1'>`);
 				element.push("<div class='form-check col-12 py-2 border rounded'>");
-					element.push(`<input type='checkbox' id='${key}_cat_hide_full' class='form-check-input dynamic_input' data='event_data.categories.${key}.event_settings' fc-index='hide_full' ${(data.event_settings.hide_full ? "checked" : "")} />`);
+					element.push(`<input type='checkbox' id='${key}_cat_hide_full' class='form-check-input category_dynamic_input dynamic_input' data='${key}.event_settings' fc-index='hide_full' ${(data.event_settings.hide_full ? "checked" : "")} />`);
 					element.push(`<label for='${key}_cat_hide_full' class='form-check-label ml-1'>`);
 						element.push("Fully hide event");
 					element.push("</label>");
@@ -3552,7 +3554,7 @@ function add_category_to_list(parent, key, data){
 
 			element.push(`<div class='row no-gutters my-1'>`);
 				element.push("<div class='form-check col-12 py-2 border rounded'>");
-					element.push(`<input type='checkbox' id='${key}_cat_hide' class='form-check-input dynamic_input' data='event_data.categories.${key}.event_settings' fc-index='hide' ${(data.event_settings.hide ? "checked" : "")} />`);
+					element.push(`<input type='checkbox' id='${key}_cat_hide' class='form-check-input category_dynamic_input dynamic_input' data='${key}.event_settings' fc-index='hide' ${(data.event_settings.hide ? "checked" : "")} />`);
 					element.push(`<label for='${key}_cat_hide' class='form-check-label ml-1'>`);
 						element.push("Hide event");
 					element.push("</label>");
@@ -3561,7 +3563,7 @@ function add_category_to_list(parent, key, data){
 
 			element.push(`<div class='row no-gutters my-1'>`);
 				element.push("<div class='form-check col-12 py-2 border rounded'>");
-					element.push(`<input type='checkbox' id='${key}_cat_print' class='form-check-input dynamic_input' data='event_data.categories.${key}.event_settings' fc-index='print' ${(data.event_settings.noprint ? "checked" : "")} />`);
+					element.push(`<input type='checkbox' id='${key}_cat_print' class='form-check-input category_dynamic_input dynamic_input' data='${key}.event_settings' fc-index='print' ${(data.event_settings.noprint ? "checked" : "")} />`);
 					element.push(`<label for='${key}_cat_print' class='form-check-label ml-1'>`);
 						element.push("Show event when printing");
 					element.push("</label>");
@@ -3571,7 +3573,7 @@ function add_category_to_list(parent, key, data){
 			element.push("<div class='row no-gutters my-2'>");
 				element.push("<div class='col-md-6 col-sm-12'>");
 					element.push("<div>Color:</div>");
-					element.push(`<select class='custom-select form-control dynamic_input event-text-input color_display' data='event_data.categories.${key}.event_settings' fc-index='color'>`);
+					element.push(`<select class='custom-select form-control category_dynamic_input dynamic_input event-text-input color_display' data='${key}.event_settings' fc-index='color'>`);
 						element.push(`<option ${(data.event_settings.color == 'Dark-Solid' ? ' selected' : '')}>Dark-Solid</option>`);
 						element.push(`<option ${(data.event_settings.color == 'Red' ? ' selected' : '')}>Red</option>`);
 						element.push(`<option ${(data.event_settings.color == 'Pink' ? ' selected' : '')}>Pink</option>`);
@@ -3592,7 +3594,7 @@ function add_category_to_list(parent, key, data){
 
 				element.push("<div class='col-md-6 col-sm-12'>");
 					element.push("<div>Display:</div>");
-					element.push(`<select class='custom-select form-control dynamic_input event-text-input text_display' data='event_data.categories.${key}.event_settings' fc-index='text'>`);
+					element.push(`<select class='custom-select form-control category_dynamic_input dynamic_input event-text-input text_display' data='${key}.event_settings' fc-index='text'>`);
 						element.push(`<option value="text"${(data.event_settings.text == 'text' ? ' selected' : '')}>Just text</option>`);
 						element.push(`<option value="dot"${(data.event_settings.text == 'dot' ? ' selected' : '')}>• Dot with text</option>`);
 						element.push(`<option value="background"${(data.event_settings.text == 'background' ? ' selected' : '')}>Background</option>`);
