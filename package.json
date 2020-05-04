@@ -43,6 +43,7 @@
         "sortable": "^2.0.0",
         "sweetalert": "^2.1.2",
         "sweetalert2": "^9.10.10",
-        "trumbowyg": "^2.21.0"
+        "trumbowyg": "^2.21.0",
+        "weather-icons": "github:fantasycalendar/weather-icons"
     }
 }

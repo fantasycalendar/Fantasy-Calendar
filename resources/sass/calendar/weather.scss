@@ -1,5 +1,8 @@
 /* ------------------ Weather tooltip Layout ----------------- */
 
+@import '~weather-icons/css/weather-icons.css';
+@import '~weather-icons/css/weather-icons-wind.css';
+
 #weather_tooltip_box {
     position: absolute;
     background: $weather-tooltip-bg-color;
