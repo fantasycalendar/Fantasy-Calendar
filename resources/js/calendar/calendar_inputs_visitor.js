@@ -1,4 +1,73 @@
+
+function context_set_current_date(key, opt){
+
+	var epoch = $(opt.$trigger[0]).attr('epoch');
+
+	var epoch_data = calendar_layouts.epoch_data[epoch];
+
+	dynamic_date_manager.year = convert_year(static_data, epoch_data.year);
+	dynamic_date_manager.timespan = epoch_data.timespan_number;
+	dynamic_date_manager.day = epoch_data.day;
+	dynamic_date_manager.epoch = epoch_data.epoch;
+
+	evaluate_dynamic_change();
+
+}
+
+function context_set_preview_date(key, opt){
+
+	var epoch = $(opt.$trigger[0]).attr('epoch');
+
+	var epoch_data = calendar_layouts.epoch_data[epoch];
+
+	preview_date_manager.year = convert_year(static_data, epoch_data.year);
+	preview_date_manager.timespan = epoch_data.timespan_number;
+	preview_date_manager.day = epoch_data.day;
+	preview_date_manager.epoch = epoch_data.epoch;
+
+	go_to_preview_date();
+
+}
+
+function context_add_event(key, opt){
+
+	$(opt.$trigger[0]).find('.btn_create_event').click();
+
+}
+
 function set_up_visitor_inputs(){
+
+	if(owner){
+
+		$.contextMenu({
+			// define which elements trigger this menu
+			selector: ".timespan_day",
+			// define the elements of the menu
+			items: {
+				set_current_date: {name: "Set as Current Date", callback: context_set_current_date },
+				set_preview_date: {name: "Set as Preview Date", callback: context_set_preview_date },
+				add_event: {name: "Add new event", callback: context_add_event },
+			}
+			// there's more, have a look at the demos and docs...
+		});
+
+	}else{
+
+		if(static_data.settings.allow_view){
+
+			$.contextMenu({
+				// define which elements trigger this menu
+				selector: ".timespan_day",
+				// define the elements of the menu
+				items: {
+					set_preview_date: {name: "Set as Preview Date", callback: context_set_preview_date }
+				}
+				// there's more, have a look at the demos and docs...
+			});
+
+		}
+
+	}
 
 	show_event_ui.bind_events();
 	
@@ -214,9 +283,9 @@ function update_preview_calendar(){
 
 function go_to_preview_date(rebuild){
 
-	preview_date.follow = false
+	preview_date.follow = false;
 
-	var data = preview_date_manager.compare(preview_date)
+	var data = preview_date_manager.compare(preview_date);
 
 	preview_date.year = data.year;
 	preview_date.timespan = data.timespan;

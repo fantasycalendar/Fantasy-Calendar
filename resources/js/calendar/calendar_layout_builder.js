@@ -425,7 +425,7 @@ function update_current_day(recalculate){
 	day_container.addClass('current_day');
 
 	if(preview_date.epoch != dynamic_data.epoch){
-		preview_day_container = $(`[epoch=${preview_date.epoch}]`);
+		preview_day_container = $(`.timespan_day[epoch=${preview_date.epoch}]`);
 		preview_day_container.addClass('preview_day');
 	}
 
