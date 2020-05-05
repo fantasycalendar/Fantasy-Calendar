@@ -5,8 +5,8 @@ namespace App\Exceptions;
 use Throwable;
 use Auth;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Illuminate\Auth\Access\AuthorizationException as AuthorizationException;
-use Illuminate\Auth\Access\AuthenticationException as AuthenticationException;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\AuthenticationException;
 
 class Handler extends ExceptionHandler
 {
