@@ -114,7 +114,7 @@ function set_up_edit_inputs(){
 
 		switch(view_type){
 			case "owner":
-				if(creation_steps.current_step <= creation_steps.steps && errors.length == 0){
+				if(creation_steps.current_step > creation_steps.steps && errors.length == 0){
 					if(previous_view_type !== 'owner'){
 						if(!preview_date.follow){
 							update_preview_calendar();
@@ -132,7 +132,7 @@ function set_up_edit_inputs(){
 
 			case "player":
 				owner = 0;
-				if(creation_steps.current_step <= creation_steps.steps && errors.length == 0){
+				if(creation_steps.current_step > creation_steps.steps && errors.length == 0){
 					if(previous_view_type !== 'player'){
 						if(!preview_date.follow){
 							update_preview_calendar();
@@ -149,7 +149,7 @@ function set_up_edit_inputs(){
 				break;
 
 			case "weather":
-				if(creation_steps.current_step <= creation_steps.steps && errors.length == 0){
+				if(creation_steps.current_step > creation_steps.steps && errors.length == 0){
 					if(first_switch){
 						evaluate_weather_charts();
 						first_switch = false;

@@ -34,7 +34,11 @@
         set_up_view_values();
         set_up_visitor_values();
         bind_calendar_events();
-        rebuild_calendar('calendar', dynamic_data);
+
+        const queryString = window.location.search;
+        if(!evaluate_queryString(queryString)){
+            rebuild_calendar('calendar', dynamic_data);
+        }
 
         $('#current_year, #current_timespan, #current_day, #current_hour, #current_minute, #location_select').change(function(){
             do_update_dynamic(hash);
@@ -57,6 +61,41 @@
         }
 
     });
+
+    function evaluate_queryString(queryString){
+            
+        const urlParams = new URLSearchParams(queryString);
+
+        var year = Number(urlParams.get('year'));
+        var timespan = Number(urlParams.get('month'));
+        var day = Number(urlParams.get('day'));
+
+        if(!isNaN(year) && !isNaN(timespan) && !isNaN(day)){
+            if(valid_preview_date(year, timespan, day)){
+                if(year == 0 && !static_data.settings.year_zero_exists){
+                    return false;
+                }
+
+                if(timespan < 0 || timespan > preview_date_manager.last_timespan){
+                    return false;
+                }
+
+                if(day < 0 || day > preview_date_manager.num_days){
+                    return false;
+                }
+
+                preview_date_manager.year = convert_year(static_data, year);
+                preview_date_manager.timespan = timespan;
+                preview_date_manager.day = day;
+                go_to_preview_date(true);
+                refresh_preview_inputs();
+                return true;
+            }
+        }
+        
+        return false;
+        
+    }
     
     function check_dates(){
 
@@ -102,6 +141,7 @@
                         dynamic_data = clone(result);
 
                         check_update(false);
+                        evaluate_settings();
                         poll_timer = setTimeout(check_dates, 5000);
 
                     });
@@ -144,7 +184,8 @@
 
         if(rebuild || ((data.rebuild || static_data.settings.only_reveal_today) && preview_date.follow)){
             show_loading_screen_buffered();
-            rebuild_calendar('calendar', dynamic_data)
+            rebuild_calendar('calendar', dynamic_data);
+            set_up_visitor_values();
         }else{
             update_current_day(false);
             scroll_to_epoch();

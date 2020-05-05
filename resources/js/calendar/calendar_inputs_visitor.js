@@ -3,7 +3,7 @@ function context_set_current_date(key, opt){
 
 	var epoch = $(opt.$trigger[0]).attr('epoch');
 
-	var epoch_data = calendar_layouts.epoch_data[epoch];
+	var epoch_data = evaluated_static_data.epoch_data[epoch];
 
 	dynamic_date_manager.year = convert_year(static_data, epoch_data.year);
 	dynamic_date_manager.timespan = epoch_data.timespan_number;
@@ -18,7 +18,7 @@ function context_set_preview_date(key, opt){
 
 	var epoch = $(opt.$trigger[0]).attr('epoch');
 
-	var epoch_data = calendar_layouts.epoch_data[epoch];
+	var epoch_data = evaluated_static_data.epoch_data[epoch];
 
 	preview_date_manager.year = convert_year(static_data, epoch_data.year);
 	preview_date_manager.timespan = epoch_data.timespan_number;
@@ -29,45 +29,104 @@ function context_set_preview_date(key, opt){
 
 }
 
+function context_copy_link_date(element){
+
+	var epoch = element.attr('epoch')|0;
+
+	var epoch_data = evaluated_static_data.epoch_data[epoch];
+
+	var year = epoch_data.year;
+	var timespan = epoch_data.timespan_number;
+	var day = epoch_data.day;
+
+	var link = `${window.baseurl}calendars/${hash}?year=${year}&month=${timespan}&day=${day}`;
+
+	const el = document.createElement('textarea');
+	el.value = link;
+	document.body.appendChild(el);
+	el.select();
+	document.execCommand('copy');
+	document.body.removeChild(el);
+
+	element.notify(
+		"Copied to clipboard!",
+		"success"
+	);
+}
+
 function context_add_event(key, opt){
 
-	$(opt.$trigger[0]).find('.btn_create_event').click();
+	var epoch = $(opt.$trigger[0]).attr('epoch')|0;
+
+	edit_event_ui.create_new_event('New Event', epoch);
+
+}
+
+function is_disabled(element){
+
+	var epoch = element.attr('epoch')|0;
+
+	var epoch_data = evaluated_static_data.epoch_data[epoch];
+
+	var year = epoch_data.year;
+	var timespan = epoch_data.timespan_number;
+	var day = epoch_data.day;
+
+	return !valid_preview_date(year, timespan, day);
 
 }
 
 function set_up_visitor_inputs(){
 
+	var items = {};
+
 	if(owner){
 
-		$.contextMenu({
-			// define which elements trigger this menu
-			selector: ".timespan_day",
-			// define the elements of the menu
-			items: {
-				set_current_date: {name: "Set as Current Date", callback: context_set_current_date },
-				set_preview_date: {name: "Set as Preview Date", callback: context_set_preview_date },
-				add_event: {name: "Add new event", callback: context_add_event },
-			}
-			// there's more, have a look at the demos and docs...
-		});
-
-	}else{
-
-		if(static_data.settings.allow_view){
-
-			$.contextMenu({
-				// define which elements trigger this menu
-				selector: ".timespan_day",
-				// define the elements of the menu
-				items: {
-					set_preview_date: {name: "Set as Preview Date", callback: context_set_preview_date }
-				}
-				// there's more, have a look at the demos and docs...
-			});
-
+		items.set_current_date = {
+			name: "Set as Current Date",
+			callback: context_set_current_date
+		}
+		items.set_preview_date = {
+			name: "Set as Preview Date",
+			callback: context_set_preview_date
+		}
+		items.add_event = {
+			name: "Add new event",
+			callback: context_add_event
 		}
 
+	}else{
+		items.set_preview_date = {
+			name: "Set as Preview Date",
+			callback: context_set_preview_date,
+			disabled: function(){
+				return !static_data.settings.allow_view;
+			},
+			visible: function(key, opt){
+				return !is_disabled($(opt.$trigger[0]));
+			}
+		}
 	}
+
+	items.copy_link_date = {
+		name: "Copy link to date",
+		callback: function(key, opt){
+			context_copy_link_date($(opt.$trigger[0]));
+		},
+		disabled: function(key, opt){
+			return is_disabled($(opt.$trigger[0]));
+		},
+		visible: function(key, opt){
+			return !is_disabled($(opt.$trigger[0])) || owner;
+		}
+	}
+
+	$.contextMenu({
+		// define which elements trigger this menu
+		selector: ".timespan_day:not(.empty_timespan_day)",
+		// define the elements of the menu
+		items: items
+	});
 
 	show_event_ui.bind_events();
 	
@@ -268,6 +327,12 @@ function evaluate_preview_change(){
 
 }
 
+function refresh_preview_inputs(){
+	target_year.val(preview_date_manager.adjusted_year);
+	repopulate_timespan_select(target_timespan, preview_date_manager.timespan, false, preview_date_manager.last_valid_timespan);
+	repopulate_day_select(target_day, preview_date_manager.day, false, false, preview_date_manager.last_valid_day);
+}
+
 
 function update_preview_calendar(){
 
@@ -313,6 +378,7 @@ function go_to_preview_date(rebuild){
 		scroll_to_epoch();
 		update_cycle_text();
 	}
+
 }
 
 function display_preview_back_button(){
@@ -387,18 +453,26 @@ function evaluate_settings(){
 	if(!owner && static_data.settings.allow_view && static_data.settings.only_backwards){
 
 		preview_date_manager.max_year = dynamic_data.year;
-		preview_date_manager.max_timespan = dynamic_data.timespan;
-		preview_date_manager.max_day = dynamic_data.day;
+
+		if(static_data.settings.show_current_month){
+			preview_date_manager.max_timespan = dynamic_data.timespan;
+		}else{
+			preview_date_manager.max_timespan = preview_date_manager.last_timespan;
+		}
 
 		add_target_year.prop('disabled', !preview_date_manager.check_max_year(preview_date_manager.year+1));
-
-		add_target_timespan.prop('disabled', !preview_date_manager.check_max_timespan(preview_date_manager.timespan+1));
-
-		add_target_day.prop('disabled', !preview_date_manager.check_max_day(preview_date_manager.day+1));
-
 		follower_year_buttons_add.prop('disabled', !preview_date_manager.check_max_year(preview_date_manager.year+1));
 
+		add_target_timespan.prop('disabled', !preview_date_manager.check_max_timespan(preview_date_manager.timespan+1));
 		follower_timespan_buttons_add.prop('disabled', !preview_date_manager.check_max_timespan(preview_date_manager.timespan+1));
+
+		if(static_data.settings.only_reveal_today){
+			preview_date_manager.max_day = dynamic_data.day;
+		}else{
+			preview_date_manager.max_day = preview_date_manager.num_days;
+		}
+
+		add_target_day.prop('disabled', !preview_date_manager.check_max_day(preview_date_manager.day+1));
 
 	}else{
 
@@ -632,12 +706,13 @@ function repopulate_day_select(select, val, change, no_leaps, max, filter_timesp
 
 function set_up_visitor_values(){
 
-	preview_date.follow = true
+	preview_date.follow = true;
 
 	$('.reset_preview_date_container.right .reset_preview_date').prop("disabled", preview_date.follow).toggleClass('hidden', preview_date.follow);
 	$('.reset_preview_date_container.left .reset_preview_date').prop("disabled", preview_date.follow).toggleClass('hidden', preview_date.follow);
 
 	preview_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
+	
 
 	target_year.val(preview_date_manager.adjusted_year);
 	if(preview_date_manager.last_valid_year){

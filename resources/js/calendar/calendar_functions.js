@@ -647,7 +647,6 @@ class date_manager {
 		}
 	}
 
-
 	get epoch(){
 
 		return evaluate_calendar_start(static_data, this.year, this.timespan, this.day).epoch;
@@ -895,7 +894,52 @@ class date_manager {
 
 }
 
+function valid_preview_date(year, timespan, day){
 
+	if(owner){
+		return true;
+	}
+
+    if(!static_data.settings.allow_view){
+        return false;
+	}
+	
+	if(static_data.settings.only_reveal_today){
+
+		if(year > dynamic_data.year){
+			return false;
+		}
+		
+		if(year == dynamic_data.year && timespan > dynamic_data.timespan){
+			return false;
+		}
+		
+		if(year == dynamic_data.year && timespan == dynamic_data.timespan && day > dynamic_data.day){
+			return false;
+		}
+
+	}else if(static_data.settings.only_backwards){
+        
+        if(!static_data.settings.show_current_month && year > dynamic_data.year){
+
+			return false;
+			
+        }else{
+            
+            if(timespan > dynamic_data.timespan){
+                return false;
+            }
+            
+            if(timespan == dynamic_data.timespan && day > dynamic_data.day){
+                return false;
+            }
+			
+		}
+    }
+
+    return true;
+
+}
 
 
 /**
