@@ -896,10 +896,6 @@ class date_manager {
 
 function valid_preview_date(year, timespan, day){
 
-	if(owner){
-		return true;
-	}
-
     if(!static_data.settings.allow_view){
         return false;
 	}
@@ -910,12 +906,14 @@ function valid_preview_date(year, timespan, day){
 			return false;
 		}
 		
-		if(year == dynamic_data.year && timespan > dynamic_data.timespan){
-			return false;
-		}
-		
-		if(year == dynamic_data.year && timespan == dynamic_data.timespan && day > dynamic_data.day){
-			return false;
+		if(year == dynamic_data.year){
+			if(timespan > dynamic_data.timespan){
+				return false;
+			}
+			
+			if(timespan == dynamic_data.timespan && day > dynamic_data.day){
+				return false;
+			}
 		}
 
 	}else if(static_data.settings.only_backwards){
@@ -924,16 +922,14 @@ function valid_preview_date(year, timespan, day){
 
 			return false;
 			
-        }else{
+        }
             
-            if(timespan > dynamic_data.timespan){
-                return false;
-            }
-            
-            if(timespan == dynamic_data.timespan && day > dynamic_data.day){
-                return false;
-            }
-			
+		if(timespan > dynamic_data.timespan){
+			return false;
+		}
+		
+		if(timespan == dynamic_data.timespan && day > dynamic_data.day){
+			return false;
 		}
     }
 

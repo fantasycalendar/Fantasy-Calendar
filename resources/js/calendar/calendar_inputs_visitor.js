@@ -1,4 +1,3 @@
-
 function context_set_current_date(key, opt){
 
 	var epoch = $(opt.$trigger[0]).attr('epoch');
@@ -39,6 +38,38 @@ function context_copy_link_date(element){
 	var timespan = epoch_data.timespan_number;
 	var day = epoch_data.day;
 
+	if(!valid_preview_date(year, timespan, day) && !window.hide_copy_warning){
+		swal.fire({
+			title: "Date inaccessible",
+			text: "This date is not visible to guests or players, are you sure you want to copy a link to it?",
+			input: 'checkbox',
+			inputPlaceholder: 'Remember this choice',
+			inputClass: "form-control",
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Yes',
+			icon: "info"
+		})
+		.then((result) => {
+			if(!result.dismiss) {
+				copy_link(epoch_data);
+				if(result.value){
+					window.hide_copy_warning = true;
+				}
+			}
+		});
+	}else{
+		copy_link(epoch_data);
+	}
+}
+
+function copy_link(epoch_data){
+
+	var year = epoch_data.year;
+	var timespan = epoch_data.timespan_number;
+	var day = epoch_data.day;
+
 	var link = `${window.baseurl}calendars/${hash}?year=${year}&month=${timespan}&day=${day}`;
 
 	const el = document.createElement('textarea');
@@ -48,10 +79,18 @@ function context_copy_link_date(element){
 	document.execCommand('copy');
 	document.body.removeChild(el);
 
-	element.notify(
-		"Copied to clipboard!",
-		"success"
-	);
+	if(window.hide_copy_warning){
+		$.notify(
+			"Quick reminder: The copied date will not be visible to\nguests or players due to your calendar's settings.",
+			"warn"
+		);	
+	}else{
+		$.notify(
+			"Copied to clipboard!",
+			"success"
+		);
+	}
+
 }
 
 function context_add_event(key, opt){
@@ -59,20 +98,6 @@ function context_add_event(key, opt){
 	var epoch = $(opt.$trigger[0]).attr('epoch')|0;
 
 	edit_event_ui.create_new_event('New Event', epoch);
-
-}
-
-function is_disabled(element){
-
-	var epoch = element.attr('epoch')|0;
-
-	var epoch_data = evaluated_static_data.epoch_data[epoch];
-
-	var year = epoch_data.year;
-	var timespan = epoch_data.timespan_number;
-	var day = epoch_data.day;
-
-	return !valid_preview_date(year, timespan, day);
 
 }
 
@@ -96,6 +121,7 @@ function set_up_visitor_inputs(){
 		}
 
 	}else{
+
 		items.set_preview_date = {
 			name: "Set as Preview Date",
 			callback: context_set_preview_date,
@@ -103,9 +129,10 @@ function set_up_visitor_inputs(){
 				return !static_data.settings.allow_view;
 			},
 			visible: function(key, opt){
-				return !is_disabled($(opt.$trigger[0]));
+				return static_data.settings.allow_view;
 			}
 		}
+
 	}
 
 	items.copy_link_date = {
@@ -113,14 +140,14 @@ function set_up_visitor_inputs(){
 		callback: function(key, opt){
 			context_copy_link_date($(opt.$trigger[0]));
 		},
-		disabled: function(key, opt){
-			return is_disabled($(opt.$trigger[0]));
+		disabled: function(){
+			return !owner || !static_data.settings.allow_view;
 		},
 		visible: function(key, opt){
-			return !is_disabled($(opt.$trigger[0])) || owner;
+			return owner || static_data.settings.allow_view;
 		}
 	}
-
+	
 	$.contextMenu({
 		// define which elements trigger this menu
 		selector: ".timespan_day:not(.empty_timespan_day)",
