@@ -1634,15 +1634,15 @@ function set_up_edit_inputs(){
 		era_list.children().each(function(i){
 			if($(this).find('.starting_era')[0] != changed_era[0] && $(this).find('.starting_era').is(':checked')){
 				$(this).find('.starting_era').prop('checked', false);
-				$(this).find('.starting_era').parent().parent().parent().next().removeClass('hidden');
+				$(this).find('.starting_era').closest('.sortable-container').find('.date_control_container').removeClass('hidden');
 				static_data.eras[i].settings.starting_era = false;
 			}
 		});
 
 		if(changed_era.is(':checked')){
-			changed_era.closest('.sortable-container').find('.date_control').parent().addClass('hidden');
+			changed_era.closest('.sortable-container').find('.date_control_container').addClass('hidden');
 		}else{
-			changed_era.closest('.sortable-container').find('.date_control').parent().removeClass('hidden');
+			changed_era.closest('.sortable-container').find('.date_control_container').removeClass('hidden');
 		}
 
 		reindex_era_list();
@@ -3402,12 +3402,10 @@ function add_era_to_list(parent, key, data){
 				element.push("</div>");
 			element.push("</div>");
 
-			element.push(`<div class='${data.settings.starting_era ? "hidden" : ""}'>`);
+			element.push(`<div class='date_control_container ${data.settings.starting_era ? "hidden" : ""}'>`);
 
-				element.push("<div class='row my-2'>");
-
+				element.push("<div class='row my-2 '>");
 					element.push("<div class='col'>");
-						
 						element.push("<strong>Date:</strong>");
 
 						element.push(`<div class='date_control'>`);
@@ -3431,7 +3429,6 @@ function add_era_to_list(parent, key, data){
 								element.push("</div>");
 							element.push("</div>");
 						element.push("</div>");
-
 					element.push("</div>");
 				element.push("</div>");
 
