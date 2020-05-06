@@ -2521,7 +2521,7 @@ function add_timespan_to_sortable(parent, key, data){
 						element.push("<div class='week_list col-12 p-1'>");
 						if(data.week){
 							for(index = 0; index < data.week.length; index++){
-								element.push(`<input type='text' class='form-control internal-list-name dynamic_input custom_week_day' data='year_data.timespans.${key}.week' fc-index='${index}/>`);
+								element.push(`<input type='text' class='form-control internal-list-name dynamic_input custom_week_day' data='year_data.timespans.${key}.week' fc-index='${index}'/>`);
 							}
 						}
 						element.push("</div>");
@@ -2540,7 +2540,7 @@ function add_timespan_to_sortable(parent, key, data){
 
 	if(data.week){
 		element.find('.week_list').children().each(function(i){
-			$(this).val(data.week[index]);
+			$(this).val(data.week[i]);
 		});
 	}
 
@@ -4091,11 +4091,12 @@ function evaluate_custom_weeks(){
 	});
 
 	if(custom_week){
-		$('#month_overflow').prop('checked', !custom_week).change();
+		$('#month_overflow').prop('checked', !custom_week);
+		static_data.year_data.overflow = false;
 	}
 
 	$('#month_overflow').prop('disabled', custom_week);
-	$('#overflow_explanation').toggleClass('hidden', !custom_week)
+	$('#overflow_explanation').toggleClass('hidden', !custom_week);
 
 	populate_first_day_select();
 
@@ -4889,6 +4890,8 @@ function set_up_edit_values(){
 		timespan_sortable.sortable('refresh');
 
 	}
+
+	evaluate_custom_weeks();
 
 	if(static_data.seasons){
 
