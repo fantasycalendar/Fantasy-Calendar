@@ -425,6 +425,7 @@ var edit_event_ui = {
 		this.repeat_input.val('1').parent().toggleClass('hidden', true);
 		this.condition_presets.children().eq(0).prop('selected', true);
 		this.condition_presets.parent().toggleClass('hidden', true);
+		this.condition_presets.parent().prev().toggleClass('hidden', true);
 
 		this.set_current_event(event_id)
 
@@ -540,6 +541,7 @@ var edit_event_ui = {
 		this.repeat_input.val('1').parent().toggleClass('hidden', true);
 		this.condition_presets.children().eq(0).prop('selected', true);
 		this.condition_presets.parent().toggleClass('hidden', true);
+		this.condition_presets.parent().prev().toggleClass('hidden', true);
 		this.update_every_nth_presets();
 
 		this.event_occurrences_container.addClass('hidden');
@@ -741,6 +743,7 @@ var edit_event_ui = {
 		this.repeat_input.val('1').parent().toggleClass('hidden', false);
 		this.condition_presets.children().eq(0).prop('selected', true);
 		this.condition_presets.parent().toggleClass('hidden', false);
+		this.condition_presets.parent().prev().toggleClass('hidden', false);
 
 		this.condition_presets.find('option[value="weekly"]').text(`Weekly on ${edit_event_ui.data.week_day_name}`);
 		this.condition_presets.find('option[value="fortnightly"]').text(`Fortnightly on ${edit_event_ui.data.week_day_name}`);
