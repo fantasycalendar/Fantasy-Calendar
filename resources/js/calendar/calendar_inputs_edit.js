@@ -3658,9 +3658,9 @@ function add_link_to_list(parent, key, locked, calendar){
 
 	var element = [];
 
-	element.push(`<div class='sortable-container list-group-item ${locked ? "collapsed" : ""}' index='${key}'>`);
+	element.push(`<div class='sortable-container list-group-item collapsible ${locked ? "collapsed" : "expanded"}' index='${key}'>`);
 		element.push("<div class='main-container'>");
-			element.push("<div class='expand icon-collapse ml-2'></div>");
+			element.push(`<div class='expand icon-${locked ? "expand" : "collapse"} ml-2'></div>`);
 			element.push("<div class='name-container'>");
 				element.push(`<div><a href="${window.baseurl}calendars/${calendar.hash}/edit" target="_blank">${calendar.name}</a></div>`);
 			element.push(`</div>`);
