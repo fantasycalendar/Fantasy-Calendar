@@ -349,10 +349,12 @@ var edit_event_ui = {
 
 		$('#limited_repeat').change(function(){
 			edit_event_ui.event_background.find('#limited_repeat_num').prop('disabled', !$(this).prop('checked'));
+			edit_event_ui.event_background.find('.limit_for_warning').toggleClass('hidden', !$(this).prop('checked'));
 		});
-
+		
 		$('#has_duration').change(function(){
 			edit_event_ui.event_background.find('#duration').prop('disabled', !$(this).prop('checked'));
+			edit_event_ui.event_background.find('.duration_warning').toggleClass('hidden', !$(this).prop('checked'));
 		});
 
 	},

@@ -159,7 +159,7 @@
 					<h5 class='event-form-heading'>Display settings:</h5>
 				</div>
 
-				<div class='row no-gutters mb-2'>
+				<div class='row no-gutters'>
 					<div class='col-md-6 pl-0 pr-1'>
 						<label class='form-control checkbox'>
 							<input type='checkbox' class='event_setting' id='limited_repeat' name='limited_repeat'> Limit repetitions
@@ -175,6 +175,10 @@
 							<div class='col-auto pl-1 pr-0'>days.</div>
 						</label>
 					</div>
+				</div>
+
+				<div class='limit_for_warning hidden row no-gutters p-2 mb-2 border rounded'>
+					<p class='m-0'><strong>Use with caution.</strong> This setting makes the calendar simulate that many extra days to make sure the event doesn't occur across years. This can be expensive if the number is particularily high, like 50 or more.</p>
 				</div>
 
 				<div class='row no-gutters mt-2'>
@@ -197,6 +201,10 @@
 							<div class='col-auto pl-1 pr-0'>days.</div>
 						</label>
 					</div>
+				</div>
+
+				<div class='duration_warning hidden row no-gutters p-2 mb-2 border rounded'>
+					<p class='m-0'><strong>Use with caution.</strong> This setting makes the calendar simulate that many extra days to make sure the event occurrs across years. This can be expensive if the number is particularily high, like 50 or more.</p>
 				</div>
 
 				<div class='row no-gutters mb-2'>
