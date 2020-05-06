@@ -200,13 +200,19 @@ function set_up_visitor_inputs(){
 			}
 		}
 
-		$('#go_to_preview_date').click();
-
 		follower_year_buttons_add.prop('disabled', !preview_date_manager.check_max_year(preview_date_manager.year+1));
 
 		follower_timespan_buttons_add.prop('disabled', !preview_date_manager.check_max_timespan(preview_date_manager.timespan+1));
 
+		follower_eval();
+
 	});
+
+	var follower_eval = debounce(function(){
+
+		$('#go_to_preview_date').click();
+
+	}, 200);
 
 	sub_target_day.click(function(){
 
