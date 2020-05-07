@@ -579,15 +579,15 @@ class Climate{
 		this.season.year = season_epoch/this.season_length;
 		this.season.next_year = (season_epoch+1)/this.season_length;
 
-		this.season.day = Math.floor(fract(this.season.year)*this.season_length);
+		this.season.day = Math.round(fract(this.season.year)*this.season_length);
 
-		if(this.season.day > this.season.total_day){
+		if(this.season.day >= this.season.total_day){
 			this.next_season();
 		}
 
 		this.season.season_day = Math.floor(this.seasons[this.season.current_index].length+this.season.day-this.season.total_day);
 
-		if(this.season.season_day > this.seasons[this.season.current_index].duration){
+		if(this.season.season_day >= this.seasons[this.season.current_index].duration){
 
 			this.season.perc = 1-((this.season.season_day-this.seasons[this.season.current_index].duration)/this.seasons[this.season.current_index].transition_length);
 
@@ -605,7 +605,7 @@ class Climate{
 
 		var data = this.evaluate_season_data(epoch);
 
-		if(Math.floor(this.season.year) != Math.floor(this.season.next_year) && !(Math.floor(this.season.day) > this.season.total_day)){
+		if(Math.floor(this.season.year) != Math.floor(this.season.next_year) && !(Math.floor(this.season.day) >= this.season.total_day)){
 			this.next_season();
 		}
 
