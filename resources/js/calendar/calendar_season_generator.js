@@ -634,7 +634,7 @@ class Climate{
 		this.weather.year = weather_epoch/this.season_length;
 		this.weather.next_year = (weather_epoch+1)/this.season_length;
 
-		this.weather.day = Math.floor(fract(this.weather.year)*this.season_length);
+		this.weather.day = Math.round(fract(this.weather.year)*this.season_length);
 
 		if(this.weather.day > this.weather.total_day){
 			this.next_weather_season();
