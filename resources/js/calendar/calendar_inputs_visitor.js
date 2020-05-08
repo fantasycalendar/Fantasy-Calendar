@@ -166,12 +166,12 @@ function set_up_visitor_inputs(){
 		}
 		items.set_preview_date = {
 			name: "Set as Preview Date",
-			icon: "fas fa-hourglass",
+			icon: "fas fa-history",
 			callback: context_set_preview_date
 		}
 		items.add_event = {
 			name: "Add new event",
-			icon: "fas fa-calendar-check",
+			icon: "fas fa-calendar-plus",
 			callback: context_add_event
 		}
 		items.copy_link_date = {
@@ -197,6 +197,7 @@ function set_up_visitor_inputs(){
 
 		items.set_preview_date = {
 			name: "Set as Preview Date",
+			icon: "fas fa-history",
 			callback: context_set_preview_date,
 			disabled: function(){
 				return !static_data.settings.allow_view;
