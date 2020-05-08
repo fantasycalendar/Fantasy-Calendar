@@ -166,7 +166,7 @@ function set_up_visitor_inputs(){
 		}
 		items.set_preview_date = {
 			name: "Set as Preview Date",
-			icon: "fas fa-history",
+			icon: "fas fa-hourglass",
 			callback: context_set_preview_date
 		}
 		items.add_event = {
@@ -197,7 +197,7 @@ function set_up_visitor_inputs(){
 
 		items.set_preview_date = {
 			name: "Set as Preview Date",
-			icon: "fas fa-history",
+			icon: "fas fa-hourglass",
 			callback: context_set_preview_date,
 			disabled: function(){
 				return !static_data.settings.allow_view;
