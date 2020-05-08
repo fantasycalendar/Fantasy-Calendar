@@ -695,8 +695,8 @@ var calendar_builder = {
 
 						if(current_timespan.type !== "intercalary"){
 
-							this.pre_data.repititions.week_days[year_index][data.timespan_index][data.week_day]++;
-							data.week_day_num = this.pre_data.repititions.week_days[year_index][data.timespan_index][data.week_day];
+							this.pre_data.repititions.week_days[year_index][data.timespan_index][data.week_day-1]++;
+							data.week_day_num = this.pre_data.repititions.week_days[year_index][data.timespan_index][data.week_day-1];
 
 						}
 
@@ -922,8 +922,8 @@ var calendar_builder = {
 
 						if(current_timespan.type !== "intercalary"){
 
-							this.post_data.repititions.week_days[year_index][data.timespan_index][data.week_day]++;
-							data.week_day_num = this.post_data.repititions.week_days[year_index][data.timespan_index][data.week_day];
+							this.post_data.repititions.week_days[year_index][data.timespan_index][data.week_day-1]++;
+							data.week_day_num = this.post_data.repititions.week_days[year_index][data.timespan_index][data.week_day-1];
 
 						}
 
@@ -1443,8 +1443,8 @@ var calendar_builder = {
 
 						if(current_timespan.type !== "intercalary"){
 
-							this.pre_data.repititions.week_days[year_index][data.timespan_index][data.week_day]++;
-							data.week_day_num = this.pre_data.repititions.week_days[year_index][data.timespan_index][data.week_day];
+							this.pre_data.repititions.week_days[year_index][data.timespan_index][data.week_day-1]++;
+							data.week_day_num = this.pre_data.repititions.week_days[year_index][data.timespan_index][data.week_day-1];
 
 						}
 
@@ -1690,8 +1690,8 @@ var calendar_builder = {
 
 					if(current_timespan.type !== "intercalary"){
 
-						this.data.repititions.week_days[data.timespan_index][data.week_day]++;
-						data.week_day_num = this.data.repititions.week_days[data.timespan_index][data.week_day];
+						this.data.repititions.week_days[data.timespan_index][data.week_day-1]++;
+						data.week_day_num = this.data.repititions.week_days[data.timespan_index][data.week_day-1];
 
 					}
 
@@ -1928,8 +1928,8 @@ var calendar_builder = {
 
 						if(current_timespan.type !== "intercalary"){
 
-							this.post_data.repititions.week_days[year_index][data.timespan_index][data.week_day]++;
-							data.week_day_num = this.post_data.repititions.week_days[year_index][data.timespan_index][data.week_day];
+							this.post_data.repititions.week_days[year_index][data.timespan_index][data.week_day-1]++;
+							data.week_day_num = this.post_data.repititions.week_days[year_index][data.timespan_index][data.week_day-1];
 
 						}
 

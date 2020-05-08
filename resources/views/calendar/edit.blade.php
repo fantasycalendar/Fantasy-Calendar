@@ -167,6 +167,7 @@
 @section('content')
     <div id="generator_container">
         @include('layouts.weather_tooltip')
+        @include('layouts.day_data_tooltip')
         @include('layouts.event')
         @include('inputs.sidebar.edit')
     </div>

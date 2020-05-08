@@ -1,12 +1,3 @@
-<div id="event_query_container">
-	<div class='container'>
-		<div class="row">
-			<button type='button' id='edit_event_button' class="col-6 btn btn-primary">Edit</button>
-			<button type='button' id='view_event_button' class="col-6 btn btn-secondary">View</button>
-		</div>
-	</div>
-</div>
-
 <div id="event_show_background" class='clickable_background blurred_background hidden'>
 	<div class='event-basic-container'>
 		<div class='event-basic-wrapper'>

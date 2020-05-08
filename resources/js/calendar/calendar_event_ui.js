@@ -91,7 +91,7 @@ var edit_event_ui = {
 		})
 
 		this.delete_btn.click(function(){
-			edit_event_ui.delete_current_event();
+			edit_event_ui.delete_event(edit_event_ui.event_id);
 		})
 
 		edit_event_ui.close_ui_btn.click(function(){
@@ -1901,14 +1901,14 @@ var edit_event_ui = {
 
 	},
 
-	delete_current_event: function(){
+	delete_event: function(event_id){
 
 		var warnings = [];
 
 		for(var eventId in events){
 			if(events[eventId].data.connected_events !== undefined){
 				var connected_events = events[eventId].data.connected_events;
-				if(connected_events.includes(String(this.event_id)) || connected_events.includes(this.event_id)){
+				if(connected_events.includes(String(event_id)) || connected_events.includes(Number(event_id))){
 					warnings.push(eventId);
 				}
 			}
@@ -1918,14 +1918,14 @@ var edit_event_ui = {
 
 			var html = [];
 			html.push(`<div class='text-left'>`)
-			html.push(`<h5>You trying to delete "${events[this.event_id].name}" which referenced in the following events:</h5>`)
+			html.push(`<h5>You trying to delete "${events[event_id].name}" which referenced in the following events:</h5>`)
 			html.push(`<ul>`);
 			for(var i = 0; i < warnings.length; i++){
 				var event_id = warnings[i];
 				html.push(`<li>• ${events[event_id].name}</li>`);
 			}
 			html.push(`</ul>`);
-			html.push(`<p>Please remove the conditions referencing "${events[this.event_id].name}" in these events before deleting.</p>`)
+			html.push(`<p>Please remove the conditions referencing "${events[event_id].name}" in these events before deleting.</p>`)
 			html.push(`</div>`);
 
 			swal.fire({
@@ -1951,20 +1951,20 @@ var edit_event_ui = {
 
 				if(!result.dismiss) {
 
-					events_sortable.children(`[index='${this.event_id}']`).remove();
+					events_sortable.children(`[index='${event_id}']`).remove();
 
 					for(var eventId in events){
 						if(events[eventId].data.connected_events !== undefined){
 							for(connectedId in events[eventId].data.connected_events){
 								var number = Number(events[eventId].data.connected_events[connectedId])
-								if(Number(events[eventId].data.connected_events[connectedId]) > this.event_id){
+								if(Number(events[eventId].data.connected_events[connectedId]) > event_id){
 									events[eventId].data.connected_events[connectedId] = String(number-1)
 								}
 							}
 						}
 					}
 
-					events.splice(this.event_id, 1);
+					events.splice(event_id, 1);
 
 					events_sortable.children().each(function(i){
 						events[i].sort_by = i;
@@ -2031,11 +2031,6 @@ var show_event_ui = {
 		this.event_condition_sortables			= [];
 		this.delete_droppable					= false;
 
-		this.event_query_container 				= $('#event_query_container');
-		this.edit_event_button 					= $('#edit_event_button');
-		this.view_event_button 					= $('#view_event_button');
-
-
 		this.event_background 					= $('#event_show_background');
 		this.close_ui_btn						= show_event_ui.event_background.find('.close_ui_btn');
 
@@ -2097,18 +2092,6 @@ var show_event_ui = {
 			show_event_ui.clicked_event($(this));
 		});
 
-		this.edit_event_button.click(function(){
-			if(show_event_ui.event_id != -1){
-				edit_event_ui.edit_event(show_event_ui.event_id);
-			}
-		});
-
-		this.view_event_button.click(function(){
-			if(show_event_ui.event_id != -1){
-				show_event_ui.set_current_event(events[show_event_ui.event_id]);
-			}
-		});
-
 	},
 
 	clicked_event: function(item){
@@ -2123,28 +2106,7 @@ var show_event_ui = {
 
 			var id = item.attr('event_id')|0;
 			this.event_id = id;
-
-			if(window.location.pathname.split('/').includes('edit') || window.location.pathname.split('/').includes('create')){
-
-				this.event_query_container.show();
-
-				this.event_popper = new Popper(item, this.event_query_container, {
-					placement: 'top',
-					modifiers: {
-						offset: {
-							enabled: true,
-							offset: '0, 14px'
-						}
-					}
-				});
-
-				registered_click_callbacks['show_event_ui'] = this.clear_callback;
-
-			}else{
-
-				this.set_current_event(events[show_event_ui.event_id]);
-
-			}
+			this.set_current_event(events[show_event_ui.event_id]);
 
 		}
 
@@ -2163,10 +2125,8 @@ var show_event_ui = {
 
 	hide_query_container: function(){
 
-		delete registered_click_callbacks['show_event_ui'];
 		this.event_id = -1;
 		this.era_id = -1;
-		this.event_query_container.hide();
 
 	},
 

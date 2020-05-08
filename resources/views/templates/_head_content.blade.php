@@ -130,6 +130,7 @@
     <script src="{{ mix('/js/calendar/calendar_functions.js') }}"></script>
     <script src="{{ mix('/js/calendar/calendar_variables.js') }}"></script>
     <script src="{{ mix('/js/calendar/calendar_weather_layout.js') }}"></script>
+    <script src="{{ mix('/js/calendar/calendar_day_data_layout.js') }}"></script>
     <script src="{{ mix('/js/calendar/calendar_season_generator.js') }}"></script>
     <script src="{{ mix('/js/calendar/calendar_layout_builder.js') }}"></script>
     <script src="{{ mix('/js/calendar/calendar_inputs_visitor.js') }}"></script>

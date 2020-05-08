@@ -41,7 +41,7 @@ function context_copy_link_date(element){
 	if(!valid_preview_date(year, timespan, day) && !window.hide_copy_warning){
 		swal.fire({
 			title: "Date inaccessible",
-			text: "This date is not visible to guests or players, are you sure you want to copy a link to it?",
+			text: 'This date is not visible to guests or players (see calendar settings), are you sure you want to copy a link to it?',
 			input: 'checkbox',
 			inputPlaceholder: 'Remember this choice',
 			inputClass: "form-control",
@@ -101,23 +101,96 @@ function context_add_event(key, opt){
 
 }
 
+function context_open_day_data(key, opt){
+
+	var day_element = $(opt.$trigger[0]);
+	var epoch = day_element.attr('epoch')|0;
+	var epoch_data = evaluated_static_data.epoch_data[epoch];
+	day_data_tooltip.show(day_element, epoch_data);
+
+}
+
+
 function set_up_visitor_inputs(){
 
 	var items = {};
 
 	if(owner){
+		$.contextMenu({
+			// define which elements trigger this menu
+			selector: ".event:not(.event-text-output)",
+			// define the elements of the menu
+			items: {
+				view: {
+					name: "View event",
+					icon: "fas fa-eye",
+					callback: function(key, opt){
+						var element = $(opt.$trigger[0]);
+						show_event_ui.clicked_event(element)
+					}
+				},
+				edit: {
+					name: "Edit event",
+					icon: "fas fa-edit",
+					callback: function(key, opt){
+						var element = $(opt.$trigger[0]);
+						var event_id = element.attr('event_id');
+						edit_event_ui.edit_event(event_id);
+					},
+					disabled: function(key, opt){
+						var element = $(opt.$trigger[0]);
+						return element.hasClass('era_event');
+					}
+				},
+				delete: {
+					name: "Delete event",
+					icon: "fas fa-trash-alt",
+					callback: function(key, opt){
+						var element = $(opt.$trigger[0]);
+						var event_id = element.attr('event_id');
+						edit_event_ui.delete_event(event_id);
+					},
+					disabled: function(key, opt){
+						var element = $(opt.$trigger[0]);
+						return element.hasClass('era_event');
+					}
+				}
+			},
+			zIndex: 1501
+		});
 
 		items.set_current_date = {
 			name: "Set as Current Date",
+			icon: "fas fa-hourglass-half",
 			callback: context_set_current_date
 		}
 		items.set_preview_date = {
 			name: "Set as Preview Date",
+			icon: "fas fa-hourglass",
 			callback: context_set_preview_date
 		}
 		items.add_event = {
 			name: "Add new event",
+			icon: "fas fa-calendar-check",
 			callback: context_add_event
+		}
+		items.copy_link_date = {
+			name: "Copy link to date",
+			icon: "fas fa-link",
+			callback: function(key, opt){
+				context_copy_link_date($(opt.$trigger[0]));
+			},
+			disabled: function(){
+				return !owner || static_data.settings.allow_view;
+			},
+			visible: function(key, opt){
+				return owner || static_data.settings.allow_view;
+			}
+		}
+		items.day_data = {
+			name: "View advanced day info",
+			icon: "fas fa-cogs",
+			callback: context_open_day_data
 		}
 
 	}else{
@@ -133,26 +206,27 @@ function set_up_visitor_inputs(){
 			}
 		}
 
-	}
-
-	items.copy_link_date = {
-		name: "Copy link to date",
-		callback: function(key, opt){
-			context_copy_link_date($(opt.$trigger[0]));
-		},
-		disabled: function(){
-			return !owner || !static_data.settings.allow_view;
-		},
-		visible: function(key, opt){
-			return owner || static_data.settings.allow_view;
+		items.copy_link_date = {
+			name: "Copy link to date",
+			callback: function(key, opt){
+				context_copy_link_date($(opt.$trigger[0]));
+			},
+			disabled: function(){
+				return !owner || static_data.settings.allow_view;
+			},
+			visible: function(key, opt){
+				return owner || static_data.settings.allow_view;
+			}
 		}
+
 	}
 	
 	$.contextMenu({
 		// define which elements trigger this menu
 		selector: ".timespan_day:not(.empty_timespan_day)",
 		// define the elements of the menu
-		items: items
+		items: items,
+		zIndex: 1501
 	});
 
 	show_event_ui.bind_events();
