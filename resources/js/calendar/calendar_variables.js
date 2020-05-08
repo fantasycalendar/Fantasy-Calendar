@@ -66,12 +66,8 @@ var condition_mapping = {
 	],
 
 	"Weekday": [
-		["Weekday is exactly", 					[["week_day", "==", 0]],		[["select"]]],
-		["Weekday is not", 						[["week_day", "!=", 0]],		[["select"]]],
-		["Weekday is or later than", 			[["week_day", ">=", 0]],		[["select"]]],
-		["Weekday is or earlier than", 			[["week_day", "<=", 0]],		[["select"]]],
-		["Weekday is later than", 				[["week_day", ">", 0]],			[["select"]]],
-		["Weekday is earlier than", 			[["week_day", "<", 0]],			[["select"]]],
+		["Weekday is exactly", 					[["week_day_name", "==", 0]],	[["select"]]],
+		["Weekday is not", 						[["week_day_name", "!=", 0]],	[["select"]]],
 
 		["Weekday number is exactly", 			[["week_day", "==", 0]],		[["number", "Number", "Enter week day number", "1", "1"]]],
 		["Weekday number is not", 				[["week_day", "!=", 0]],		[["number", "Number", "Enter week day number", "1", "1"]]],
@@ -80,8 +76,12 @@ var condition_mapping = {
 		["Weekday number is later than", 		[["week_day", ">", 0]],			[["number", "Number", "Enter week day number", "1", "1"]]],
 		["Weekday number is earlier than", 		[["week_day", "<", 0]],			[["number", "Number", "Enter week day number", "1", "1"]]],
 
-		["Weekday name is exactly",				[["week_day_name", "==", 0]],		[["text", "Name", "Enter week day name"]]],
-		["Weekday name is not",					[["week_day_name", "!=", 0]],		[["text", "Name", "Enter week day name"]]]
+		["Weekday number in month is exactly", 			[["week_day_num", "==", 0]],		[["number", "Number", "Enter number", "1", "1"]]],
+		["Weekday number in month is not", 				[["week_day_num", "!=", 0]],		[["number", "Number", "Enter number", "1", "1"]]],
+		["Weekday number in month is or later than", 	[["week_day_num", ">=", 0]],		[["number", "Number", "Enter number", "1", "1"]]],
+		["Weekday number in month is or earlier than", 	[["week_day_num", "<=", 0]],		[["number", "Number", "Enter number", "1", "1"]]],
+		["Weekday number in month is later than", 		[["week_day_num", ">", 0]],			[["number", "Number", "Enter number", "1", "1"]]],
+		["Weekday number in month is earlier than", 	[["week_day_num", "<", 0]],			[["number", "Number", "Enter number", "1", "1"]]],
 	],
 
 	"Week":[

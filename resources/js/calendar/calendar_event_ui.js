@@ -227,7 +227,10 @@ var edit_event_ui = {
 
 		this.repeat_input.change(function(){
 			edit_event_ui.update_every_nth_presets();
-			edit_event_ui.condition_presets.change();
+			edit_event_ui.event_conditions_container.empty();
+			var preset = edit_event_ui.condition_presets.val();
+			var repeats = edit_event_ui.repeat_input.val()|0;
+			edit_event_ui.add_preset_conditions(preset, repeats);
 		});
 
 		$(document).on('change', '.event-text-input', function(){
@@ -742,12 +745,14 @@ var edit_event_ui = {
 		this.condition_presets.children().eq(0).prop('selected', true);
 		this.condition_presets.parent().toggleClass('hidden', false);
 
+		console.log(edit_event_ui.data)
+
 		this.condition_presets.find('option[value="weekly"]').text(`Weekly on ${edit_event_ui.data.week_day_name}`);
 		this.condition_presets.find('option[value="fortnightly"]').text(`Fortnightly on ${edit_event_ui.data.week_day_name}`);
 		this.condition_presets.find('option[value="monthly_date"]').text(`Monthly on the ${ordinal_suffix_of(edit_event_ui.data.day)}`);
-		this.condition_presets.find('option[value="monthly_weekday"]').text(`Monthly on the ${ordinal_suffix_of(edit_event_ui.data.month_week_num)} ${edit_event_ui.data.week_day_name}`);
+		this.condition_presets.find('option[value="monthly_weekday"]').text(`Monthly on the ${ordinal_suffix_of(edit_event_ui.data.week_day_num)} ${edit_event_ui.data.week_day_name}`);
 		this.condition_presets.find('option[value="annually_date"]').text(`Annually on the ${ordinal_suffix_of(edit_event_ui.data.day)} of ${edit_event_ui.data.timespan_name}`);
-		this.condition_presets.find('option[value="annually_month_weekday"]').text(`Annually on the ${ordinal_suffix_of(edit_event_ui.data.month_week_num)} ${edit_event_ui.data.week_day_name} in ${edit_event_ui.data.timespan_name}`);
+		this.condition_presets.find('option[value="annually_month_weekday"]').text(`Annually on the ${ordinal_suffix_of(edit_event_ui.data.week_day_num)} ${edit_event_ui.data.week_day_name} in ${edit_event_ui.data.timespan_name}`);
 
 		var html = [];
 
@@ -822,15 +827,15 @@ var edit_event_ui = {
 
 			case 'weekly':
 				var result = [
-					['Weekday', '0', [edit_event_ui.data.week_day]]
+					['Weekday', '0', [edit_event_ui.data.week_day_name]]
 				];
 				break;
 
 			case 'fortnightly':
 				var result = [
-					['Weekday', '0', [edit_event_ui.data.week_day]],
+					['Weekday', '0', [edit_event_ui.data.week_day_name]],
 					['&&'],
-					['Week', '13', [edit_event_ui.data.week_even ? '2' : '1', '0']]
+					['Week', '20', ['2', edit_event_ui.data.week_even ? '0' : '1']]
 				];
 				break;
 
@@ -850,9 +855,9 @@ var edit_event_ui = {
 
 			case 'monthly_weekday':
 				var result = [
-					['Weekday', '0', [edit_event_ui.data.week_day]],
+					['Weekday', '0', [edit_event_ui.data.week_day_name]],
 					['&&'],
-					['Weekday', '6', [edit_event_ui.data.week_day_num]]
+					['Weekday', '8', [edit_event_ui.data.week_day_num]]
 				];
 				break;
 
@@ -860,23 +865,23 @@ var edit_event_ui = {
 				var result = [
 					['Month', '0', [edit_event_ui.data.timespan_index]],
 					['&&'],
-					['Weekday', '0', [edit_event_ui.data.week_day]],
+					['Weekday', '0', [edit_event_ui.data.week_day_name]],
 					['&&'],
-					['Weekday', '6', [edit_event_ui.data.week_day_num]]
+					['Weekday', '8', [edit_event_ui.data.week_day_num]]
 				];
 				break;
 
 			case 'every_x_day':
 				var result = [
-					['Epoch', '6', [repeats, (edit_event_ui.data.epoch+1)%repeats]]
+					['Epoch', '6', [repeats, (edit_event_ui.data.epoch)%repeats]]
 				];
 				break;
 
 			case 'every_x_weekday':
 				var result = [
-					['Weekday', '0', [edit_event_ui.data.week_day]],
+					['Weekday', '0', [edit_event_ui.data.week_day_name]],
 					['&&'],
-					['Week', '20', [repeats, (edit_event_ui.data.total_week_num+1)%repeats]]
+					['Week', '20', [repeats, (edit_event_ui.data.total_week_num)%repeats]]
 				];
 				break;
 
@@ -890,9 +895,9 @@ var edit_event_ui = {
 
 			case 'every_x_monthly_weekday':
 				var result = [
-					['Weekday', '0', [edit_event_ui.data.week_day]],
+					['Weekday', '0', [edit_event_ui.data.week_day_name]],
 					['&&'],
-					['Weekday', '6', [edit_event_ui.data.week_day_num]]
+					['Weekday', '8', [edit_event_ui.data.week_day_num]]
 					['&&'],
 					['Month', '13', [repeats, (edit_event_ui.data.timespan_count+1)%repeats]]
 				];
@@ -910,9 +915,9 @@ var edit_event_ui = {
 
 			case 'every_x_annually_weekday':
 				var result = [
-					['Weekday', '0', [edit_event_ui.data.week_day]],
+					['Weekday', '0', [edit_event_ui.data.week_day_name]],
 					['&&'],
-					['Weekday', '6', [edit_event_ui.data.week_day_num]]
+					['Weekday', '8', [edit_event_ui.data.week_day_num]]
 					['&&'],
 					['Month', '0', [edit_event_ui.data.timespan_index]],
 					['&&'],
@@ -1159,10 +1164,17 @@ var edit_event_ui = {
 						$(this).val(element[2][i+1]);
 					})
 				}else if(element[0] === "Events"){
+
 					condition.find('.event_select').val(events[this.event_id].data.connected_events[element[2][0]])
 					condition.find('.input_container').children().eq(1).val(element[2][1]);
 
 					edit_event_ui.search_distance = Number(element[2][1]) > edit_event_ui.search_distance ? Number(element[2][1]) : edit_event_ui.search_distance;
+				
+				}else if(element[0] == "Weekday"){
+
+					condition.find('.input_container').children().each(function(i){
+						$(this).val(element[2][i]);
+					})
 
 				}else{
 					condition.find('.input_container').children().each(function(i){
@@ -1381,37 +1393,37 @@ var edit_event_ui = {
 
 			if(condition_selected[0] == "select"){
 
-				html.push("<select class='form-control'>")
-
-				html.push(`<optgroup label='Global week' value='global_week'>`);
+				var weekdays = [];
 
 				for(var i = 0; i < static_data.year_data.global_week.length; i++){
 
-					html.push(`<option value='${i+1}'>`);
-					html.push(static_data.year_data.global_week[i]);
-					html.push("</option>");
+					if(weekdays.indexOf(static_data.year_data.global_week[i]) == -1){
+						weekdays.push(static_data.year_data.global_week[i]);
+					}
 
 				}
-
-				html.push("</optgroup>");
 
 				for(var i = 0; i < static_data.year_data.timespans.length; i++){
 
 					if(static_data.year_data.timespans[i].week){
 
-						html.push(`<optgroup label='${static_data.year_data.timespans[i].name} (custom week)' value='${i}'>`);
-
 						for(var j = 0; j < static_data.year_data.timespans[i].week.length; j++){
 
-							html.push(`<option value='${j+1}'>`);
-							html.push(static_data.year_data.timespans[i].week[j]);
-							html.push("</option>");
-
+							if(weekdays.indexOf(static_data.year_data.timespans[i].week[j]) == -1){
+								weekdays.push(static_data.year_data.timespans[i].week[j]);
+							}
 						}
-
-						html.push("</optgroup>");
-
 					}
+				}
+
+				html.push("<select class='form-control'>")
+
+				for(var index in weekdays){
+
+					html.push(`<option>`);
+					html.push(weekdays[index]);
+					html.push("</option>");
+
 				}
 
 				html.push("</select>");
