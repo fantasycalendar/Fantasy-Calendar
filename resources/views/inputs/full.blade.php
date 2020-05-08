@@ -1320,16 +1320,16 @@
 			<button class='btn btn-danger btn_preview_date hidden' disabled fc-index='timespan' value='-1'>< Month</button>
 		</div>
 
+		<div class='reset_preview_date_container m-1 left'>
+			<button type='button' class='btn m-0 btn-info hidden reset_preview_date protip' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >< Current</button>
+		</div>
+
         <div class="follower_center">
             <div id='top_follower_content'><div class='year'></div><div class='cycle'></div></div>
-
-            <div class='reset_preview_date_container left'>
-                <button type='button' class='btn btn-info hidden reset_preview_date protip' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >< Current</button>
-            </div>
-
-            <div class='reset_preview_date_container right'>
-                <button type='button' class='btn btn-info hidden reset_preview_date protip' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >Current ></button>
-            </div>
+        </div>
+		
+		<div class='reset_preview_date_container m-1 right'>
+            <button type='button' class='btn m-0 btn-info hidden reset_preview_date protip' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >Current ></button>
         </div>
 
 		<div class='btn_container hidden'>
