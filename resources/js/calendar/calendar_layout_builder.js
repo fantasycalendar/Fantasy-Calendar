@@ -487,9 +487,9 @@ function get_weather_icon(epoch_data){
 			if(weather.clouds == "A few clouds"){
 				return `<i class="wi wi-day-cloudy"></i>`;
 			}else if(weather.clouds == "Mostly cloudy"){
-				return `<i class="wi wi-cloudy"></i>`;
-			}else{
 				return `<i class="wi wi-cloud"></i>`;
+			}else{
+				return `<i class="wi wi-cloudy"></i>`;
 			}
 
 		}else{
