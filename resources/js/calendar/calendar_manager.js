@@ -192,10 +192,12 @@ worker_climate.onmessage = e => {
 		eval_clock();
 		update_current_day(false);
 
+		evaluate_day_length_chart();
 		evaluate_weather_charts();
-
+		
 	}else{
-
+		
+		evaluate_day_length_chart();
 		evaluate_weather_charts();
 
 		eval_current_time();
@@ -239,6 +241,7 @@ worker_calendar.onmessage = e => {
 
 			update_current_day(false);
 
+			evaluate_day_length_chart();
 			evaluate_weather_charts();
 
 		}else{

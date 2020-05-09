@@ -1344,10 +1344,21 @@
 	</div>
 
 	<div id="weather_container" class="hidden">
+		
+		<div id='day_length' class='hidden'>
+			<h3 class='text-center mt-3'>Sunrise and Sunset</h3>
+			<canvas class='chart'></canvas>
+		</div>
 
-		<canvas class='chart' id='temperature'></canvas>
+		<div id='temperature' class='hidden'>
+			<h3 class='text-center mt-3'>Temperature</h3>
+			<canvas class='chart'></canvas>
+		</div>
 
-		<canvas class='chart' id='precipitation'></canvas>
+		<div id='precipitation' class='hidden'>
+			<h3 class='text-center mt-3'>Precipitation</h3>
+			<canvas class='chart'></canvas>
+		</div>
 
 	</div>
 	@include('templates.footnote')

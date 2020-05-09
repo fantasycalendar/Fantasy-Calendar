@@ -1558,6 +1558,15 @@ var date_converter = {
 
 }
 
+function time_data_to_string(static_data, time){
+
+	var minutes = (Math.round(fract(time)*this.static_data.clock.minutes)).toString().length < 2 ? "0"+(Math.round(fract(time)*this.static_data.clock.minutes)).toString() : (Math.round(fract(time)*this.static_data.clock.minutes));
+
+	return Math.floor(time)+":"+minutes;
+
+}
+
+
 /**
  * This function is used when you need to calculate if a leap day or a leap month has happened on any given year.
  *

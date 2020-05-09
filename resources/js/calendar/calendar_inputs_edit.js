@@ -151,6 +151,7 @@ function set_up_edit_inputs(){
 			case "weather":
 				if(creation_steps.current_step > creation_steps.steps && errors.length == 0){
 					if(first_switch){
+						evaluate_day_length_chart();
 						evaluate_weather_charts();
 						first_switch = false;
 					}
@@ -2393,9 +2394,9 @@ function set_up_edit_inputs(){
 			if(target.attr('refresh') == "clock"){
 				eval_clock();
 				evaluate_save_button();
-			}else{
-				do_error_check(type[0], refresh);
 			}
+			
+			do_error_check(type[0], refresh);
 
 		}
 
