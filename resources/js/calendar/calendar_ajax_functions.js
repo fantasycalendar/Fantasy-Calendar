@@ -50,6 +50,7 @@ function update_name(){
 		data: {_method: 'PATCH', name: calendar_name, hash: hash},
 		success: function( result ){
 			prev_calendar_name = calendar_name;
+			document.title = calendar_name + " - Fantasy Calendar";
 			calendar_saved();
 		},
 		error: function ( log )
@@ -144,6 +145,7 @@ function do_update_all(calendar_hash, output){
 
 			if(!calendar_name_same){
 				prev_calendar_name = clone(calendar_name);
+				document.title = calendar_name + " - Fantasy Calendar";
 			}
 
 			if(!static_same){
