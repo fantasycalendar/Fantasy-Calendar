@@ -2685,7 +2685,7 @@ function add_leap_day_to_list(parent, key, data){
 
 				element.push("<div class='row no-gutters mb-2'>");
 					element.push("<div class='col-8 pr-1'>");
-						element.push(`<input type='text' class='form-control leap_day_occurance_input interval dynamic_input' data='year_data.leap_days.${key}' fc-index='interval' value='${data.interval}' />`);
+						element.push(`<input type='text' class='form-control leap_day_occurance_input interval dynamic_input protip' data-pt-position="top" data-pt-title='Every nth year this leap day appears. Multiple intervals can be separated by commas, like the gregorian leap day: 400,!100,4. Every 4th year, unless it is divisible by 100, but again if it is divisible by 400.' data='year_data.leap_days.${key}' fc-index='interval' value='${data.interval}' />`);
 					element.push("</div>");
 					element.push("<div class='col-4 pl-1 '>");
 						element.push(`<input type='number' step="1" class='form-control leap_day_occurance_input offset dynamic_input' min='0' data='year_data.leap_days.${key}' fc-index='offset' value='${data.interval === "1" ? 0 : data.offset}'`);
