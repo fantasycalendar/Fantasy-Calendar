@@ -18,6 +18,8 @@ var edit_event_ui = {
 		this.event_id							= null;
 		this.event_condition_sortables			= [];
 		this.delete_droppable					= false;
+		this.deleting_clicked					= false;
+		this.delete_hover_element				= undefined;
 		this.conditions_changed					= false;
 		this.date 								= [];
 		this.connected_events					= [];
@@ -266,12 +268,13 @@ var edit_event_ui = {
 				$("body").addClass(container.group.options.bodyClass)
 				var height = item.css("height");
 				container.rootGroup.placeholder.css('height', height);
-				$('#remove_dropped').removeClass('hidden');
+				$('#condition_remove_button .icon').addClass('wiggle');
 			},
 			onDrop: function (item, container, _super, event) {
 				item.removeClass(container.group.options.draggedClass).removeAttr("style");
 				$("body").removeClass(container.group.options.bodyClass);
-				$('#remove_dropped').addClass('hidden');
+				$('#condition_remove_button .icon').removeClass('wiggle');
+				$('#condition_remove_button .icon').removeClass('faster');
 				if(edit_event_ui.delete_droppable){
 					item.remove();
 				}
@@ -283,12 +286,6 @@ var edit_event_ui = {
 
 		this.event_conditions_container.change(function(){
 			edit_event_ui.event_occurrences_container.toggleClass('hidden', edit_event_ui.event_conditions_container.length == 0);
-		})
-
-		$('#remove_dropped').mouseover(function(e){
-			edit_event_ui.delete_droppable = true;
-		}).mouseout(function(e){
-			edit_event_ui.delete_droppable = false;
 		})
 
 		$("#event_categories").change(function(){
@@ -357,6 +354,138 @@ var edit_event_ui = {
 			edit_event_ui.event_background.find('.duration_warning').toggleClass('hidden', !$(this).prop('checked'));
 		});
 
+
+
+
+		$(document).on('mouseenter', '.condition', function(e){
+			if(edit_event_ui.deleting_clicked){
+				edit_event_ui.set_delete_element($(this));
+			}
+		});
+
+		$(document).on('mouseleave', '.condition', function(e){
+			if(edit_event_ui.deleting_clicked){
+				if($(this).parent().hasClass('group_list')){
+					edit_event_ui.set_delete_element($(this).parent().parent());
+				}else{
+					edit_event_ui.set_delete_element();
+				}
+			}
+		});
+
+		$(document).on('mouseenter', '.group', function(e){
+			if(edit_event_ui.deleting_clicked){
+				edit_event_ui.set_delete_element($(this));
+			}
+		});
+
+		$(document).on('mouseleave', '.group', function(e){
+			if(edit_event_ui.deleting_clicked){
+				if($(this).parent().hasClass('group_list')){
+					edit_event_ui.set_delete_element($(this).parent().parent());
+				}else{
+					edit_event_ui.set_delete_element();
+				}
+			}
+		});
+
+		$(document).on('click', '.condition, .condition div, .condition select, .condition span', function(e){
+			if(edit_event_ui.deleting_clicked){
+				e.preventDefault();
+				e.stopPropagation();
+				var item = $(this).closest('.condition');
+				if(item.parent().hasClass('group_list')){
+					var parent = item.parent();
+					item.remove();
+					if(parent.children().length == 0){
+						parent.parent().remove();
+					}
+				}else{
+					item.remove();
+				}
+
+				$('#condition_remove_button').click();
+				edit_event_ui.evaluate_condition_selects(edit_event_ui.event_conditions_container);
+				edit_event_ui.inputs_changed = true;
+			}
+		});
+
+		$(document).on('click', '.group, .group .group_list', function(e){
+			if(edit_event_ui.deleting_clicked){
+				
+				e.preventDefault();
+				e.stopPropagation();
+
+				if(!$(this).hasClass('.group_list')){
+					var group_list = $(this);
+				}else{
+					var group_list = $(this).find('.group_list');
+				}
+
+				if(group_list.children().length > 0){
+					
+					swal.fire({
+						title: "Warning!",
+						text: "This group has conditions in it, are you sure you want to delete it and all of its conditions?",
+						showCancelButton: true,
+						confirmButtonColor: '#d33',
+						cancelButtonColor: '#3085d6',
+						confirmButtonText: 'Yes',
+						icon: "warning",
+					}).then((result) => {
+		
+						if(!result.dismiss) {
+							group_list.parent().remove();
+							$('#condition_remove_button').click();
+							edit_event_ui.evaluate_condition_selects(edit_event_ui.event_conditions_container);
+							edit_event_ui.inputs_changed = true;
+						}
+		
+					});
+
+				}else{
+					group_list.parent().remove();
+					$('#condition_remove_button').click();
+					edit_event_ui.evaluate_condition_selects(edit_event_ui.event_conditions_container);
+					edit_event_ui.inputs_changed = true;
+				}
+				
+				
+			}
+		});
+
+		$('#condition_remove_button').click(function(e){
+			edit_event_ui.deleting_clicked = !edit_event_ui.deleting_clicked;
+			$('#condition_remove_button .icon').toggleClass('wiggle', edit_event_ui.deleting_clicked);
+			$('#condition_remove_button .icon').removeClass('faster', false);
+			$('#event_conditions_container').toggleClass('deleting', edit_event_ui.deleting_clicked);
+			$('#add_event_condition').prop('disabled', edit_event_ui.deleting_clicked);
+			$('#add_event_condition_group').prop('disabled', edit_event_ui.deleting_clicked);
+			$('#condition_presets').prop('disabled', edit_event_ui.deleting_clicked);
+		});
+
+		$('#condition_remove_button').mouseover(function(e){
+			edit_event_ui.delete_droppable = true;
+			$(this).find('.icon').addClass('faster');
+		}).mouseout(function(e){
+			edit_event_ui.delete_droppable = false;
+			$(this).find('.icon').removeClass('faster');
+		})
+
+	},
+
+	set_delete_element(element){
+		if(this.delete_hover_element !== undefined){
+			this.delete_hover_element.removeClass('hover')
+			this.delete_hover_element.find('select').prop('disabled', false);
+			this.delete_hover_element.find('.icon-reorder').addClass('handle');
+		}
+		this.delete_hover_element = element;
+		if(this.delete_hover_element !== undefined){
+			this.delete_hover_element.addClass('hover')
+			this.delete_hover_element.find('select').prop('disabled', true);
+			this.delete_hover_element.find('.icon-reorder').removeClass('handle');
+		}
 	},
 
 	create_new_event: function(name, epoch){
@@ -559,6 +688,10 @@ var edit_event_ui = {
 
 		this.connected_events = [];
 
+		if(this.deleting_clicked){
+			$('#condition_remove_button').click();
+		}
+
 		$('#event_categories').val('');
 
 		$('#color_style').val('');
@@ -742,7 +875,7 @@ var edit_event_ui = {
 
 	populate_condition_presets: function(){
 
-		this.repeat_input.val('1').parent().toggleClass('hidden', false);
+		this.repeat_input.val('1').parent().toggleClass('hidden', true);
 		this.condition_presets.children().eq(0).prop('selected', true);
 		this.condition_presets.parent().toggleClass('hidden', false);
 		this.condition_presets.parent().prev().toggleClass('hidden', false);

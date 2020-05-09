@@ -913,9 +913,18 @@ ol.example li.placeholder:before {
     height: auto;
 }
 
-#event_conditions_container .handle{
+#event_conditions_container .icon-reorder{
     padding:6px;
     order:1;
+}
+
+#event_conditions_container.deleting{
+    & .condition.hover > .condition_container{
+        background-color:$red;
+    }
+    & .group.hover > .group_list{
+        background-color:$red;
+    }
 }
 
 .condition_container .moon_select{
@@ -949,6 +958,48 @@ ol.example li.placeholder:before {
     order:1;
     width:50%;
 }
+
+#condition_remove_button .icon.wiggle {
+    /* Start the shake animation and make the animation last for 0.5 seconds */
+    animation: wiggle_icon_rotation 2s;
+    
+    /* When the animation is finished, start again */
+    animation-iteration-count: infinite;
+    
+    &.faster{
+        animation: wiggle_icon_rotation_faster 1.2s;
+        animation-iteration-count: infinite;
+    }
+}
+
+@keyframes wiggle_icon_rotation {
+    0%      { transform: rotate(15deg); }
+    10%     { transform: rotate(-15deg); }
+    20%     { transform: rotate(15deg); }
+    30%     { transform: rotate(-15deg); }
+    40%     { transform: rotate(15deg); }
+    50%     { transform: rotate(-15deg); }
+    60%     { transform: rotate(15deg); }
+    70%     { transform: rotate(-15deg); }
+    80%     { transform: rotate(15deg); }
+    90%     { transform: rotate(-15deg); }
+    100%    { transform: rotate(15deg); }
+}
+
+@keyframes wiggle_icon_rotation_faster {
+    0%      { transform: rotate(25deg); }
+    10%     { transform: rotate(-25deg); }
+    20%     { transform: rotate(25deg); }
+    30%     { transform: rotate(-25deg); }
+    40%     { transform: rotate(25deg); }
+    50%     { transform: rotate(-25deg); }
+    60%     { transform: rotate(25deg); }
+    70%     { transform: rotate(-25deg); }
+    80%     { transform: rotate(25deg); }
+    90%     { transform: rotate(-25deg); }
+    100%    { transform: rotate(25deg); }
+}
+
 
 
 .trumbowyg-box{

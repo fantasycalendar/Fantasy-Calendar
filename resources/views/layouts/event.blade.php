@@ -88,11 +88,18 @@
 				<h5 class='row no-gutters my-2 event-form-heading'>Conditions:</h5>
 
 				<div class='row no-gutters my-2' id='non_preset_buttons'>
-					<div class='col-md-6'>
-						<button type='button' id='add_event_condition' class='btn btn-primary full'>Add condition</button>
+					<div class='col-11 pr-1'>
+						<div class='row p-0'>
+							<div class='col-6 pr-1'>
+								<button type='button' id='add_event_condition' class='btn btn-primary full'>Add condition</button>
+							</div>
+							<div class='col-6 pl-1'>
+								<button type='button' id='add_event_condition_group' class='btn btn-secondary full'>Add group</button>
+							</div>
+						</div>
 					</div>
-					<div class='col-md-6'>
-						<button type='button' id='add_event_condition_group' class='btn btn-secondary full'>Add new group</button>
+					<div class='col-1 pl-1'>
+						<button type='button' id='condition_remove_button' class='btn btn-danger full'><i class="icon fas fa-trash-alt"></i></button>
 					</div>
 				</div>
 				<div class='row no-gutters my-2'>
@@ -102,8 +109,6 @@
 					</ol>
 
 				</div>
-
-				<button type='button' id='remove_dropped' class='row no-gutters my-2 btn btn-danger full hidden'>DROP ITEM HERE TO REMOVE</button>
 
 				<div class='event_occurrences hidden'>
 
