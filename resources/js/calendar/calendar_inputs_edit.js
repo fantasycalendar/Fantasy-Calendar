@@ -116,6 +116,7 @@ function set_up_edit_inputs(){
 			case "owner":
 				if(creation_steps.current_step > creation_steps.steps && errors.length == 0){
 					if(previous_view_type !== 'owner'){
+						evaluate_settings();
 						if(!preview_date.follow){
 							update_preview_calendar();
 							pre_rebuild_calendar('preview', preview_date);
@@ -131,9 +132,10 @@ function set_up_edit_inputs(){
 				break;
 
 			case "player":
-				owner = 0;
+				owner = false;
 				if(creation_steps.current_step > creation_steps.steps && errors.length == 0){
 					if(previous_view_type !== 'player'){
+						evaluate_settings();
 						if(!preview_date.follow){
 							update_preview_calendar();
 							pre_rebuild_calendar('preview', preview_date);
@@ -2234,7 +2236,18 @@ function set_up_edit_inputs(){
 
 		}
 
-	})
+	});
+
+	$('input[fc-index="allow_view"]').change(function(){
+		var checked = $(this).is(':checked');
+		var only_backwards = $('input[fc-index="only_backwards"]');
+		only_backwards.prop('disabled', !checked);
+		only_backwards.closest('.setting').toggleClass('disabled', !checked);
+		var only_backwards_checked = only_backwards.is(':checked');
+		if(!checked && only_backwards_checked){
+			only_backwards.prop('checked', false).change();
+		}
+	});
 
 	input_container.change(function(e){
 
@@ -2395,6 +2408,8 @@ function set_up_edit_inputs(){
 				eval_clock();
 				evaluate_save_button();
 			}
+
+			evaluate_settings();
 			
 			do_error_check(type[0], refresh);
 
@@ -4937,6 +4952,9 @@ function set_up_edit_values(){
 		}
 
 	});
+
+	$('input[fc-index="only_backwards"]').prop('disabled', !static_data.settings.allow_view);
+	$('input[fc-index="only_backwards"]').closest('.setting').toggleClass('disabled', !static_data.settings.allow_view);
 
 	for(var i = 0; i < static_data.year_data.global_week.length; i++){
 		let weekdayname = static_data.year_data.global_week[i];

@@ -249,7 +249,13 @@ var eras = {
 
 			var position = $("#calendar_container").scrollTop();
 
-			var first_day = position + $(`.timespan_day`).first().offset().top;
+			var first_timespan = $(`.timespan_day`).first();
+
+			if(first_timespan.length == 0){
+				return;
+			}
+
+			var first_day = position + first_timespan.offset().top;
 
 			for(var i = 0; i < this.current_eras.length; i++){
 				if(!this.current_eras[i].data.settings.starting_era){

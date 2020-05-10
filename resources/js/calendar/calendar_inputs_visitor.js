@@ -558,7 +558,7 @@ function evaluate_settings(){
 	follower_year_buttons.prop('disabled', (!owner && !static_data.settings.allow_view)).toggleClass('hidden', (!owner && !static_data.settings.allow_view));
 	follower_timespan_buttons.prop('disabled', !static_data.settings.show_current_month).toggleClass('hidden', !static_data.settings.show_current_month);
 
-	if(!owner && static_data.settings.allow_view && static_data.settings.only_backwards){
+	if(!owner && static_data.settings.allow_view && (static_data.settings.only_backwards || static_data.settings.only_reveal_today)){
 
 		preview_date_manager.max_year = dynamic_data.year;
 

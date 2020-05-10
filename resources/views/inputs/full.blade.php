@@ -1108,7 +1108,7 @@
 
 					<div class='bold-text'>Guest View Settings:</div>
 
-					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This will allow guest viewers to view any past or future year and months just like you can">
+					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This will allow viewers to view any past or future year and months just like you can">
                         <div class='col'>
     						<input type='checkbox' class='margin-right static_input' data='settings' fc-index='allow_view'>
     						<span>
@@ -1117,16 +1117,16 @@
 					    </div>
                     </label>
 
-					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This will limit guest viewers to only view past years">
+					<label class="row no-gutters setting border rounded py-1 px-2 protip disabled" data-pt-position="right" data-pt-title="This will limit viewers to only view past dates (requires allowing advancing view)">
                         <div class='col'>
-    						<input type='checkbox' class='margin-right static_input' data='settings' fc-index='only_backwards'>
+    						<input type='checkbox' class='margin-right static_input' disabled data='settings' fc-index='only_backwards'>
     						<span>
-    							Limit to only backwards view
+    							Limit to only viewing past dates
     						</span>
 					    </div>
                     </label>
 
-					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Guest viewers will only be able to see up to current day, future days will be greyed out">
+					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Viewers will only be able to see up to current day, future days will be greyed out">
                         <div class='col'>
     						<input type='checkbox' class='margin-right static_input' data='settings' fc-index='only_reveal_today'>
     						<span>
