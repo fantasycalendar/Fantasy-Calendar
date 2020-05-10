@@ -1066,16 +1066,15 @@
 
 				<div class='add_inputs'>
 
+					<div class='bold-text'>Layout Settings:</div>
+
 					<label class="row no-gutters setting">
-                        <div class='col bold-text'>
-                            Layout:
-    						<select class='form-control static_input' data='settings' fc-index='layout'>
-                                <option value='grid'>Grid style</option>
-                                <option value='wide'>Wide style</option>
-                                <option value='vertical'>Vertical style</option>
-                                <option value='minimalistic'>Minimalistic style</option>
-    						</select>
-                        </div>
+						<select class='form-control static_input' data='settings' fc-index='layout'>
+							<option value='grid'>Grid style</option>
+							<option value='wide'>Wide style</option>
+							<option value='vertical'>Vertical style</option>
+							<option value='minimalistic'>Minimalistic style</option>
+						</select>
 					</label>
 
 					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Makes the calendar only show the current month. Enhances calendar loading performance, especially with many moons.">
@@ -1087,22 +1086,23 @@
 					    </div>
                     </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Normally, the year count is -2, -1, 1, 2, and so on. This makes it so that 0 exists, so -2, -1, 0, 1, 2.">
-                        <div class='col'>
-							@if(request()->is('calendars/*/edit') && $calendar->isLinked())
-                            	<input type='checkbox' class='margin-right' {{ Arr::get($calendar->static_data, 'settings.year_zero_exists') ? "checked" : "" }} disabled>
-							@else
-                            	<input type='checkbox' class='margin-right static_input' data='settings' id='year_zero_exists' fc-index='year_zero_exists'>
-							@endif
-                            <span>
-                                Year zero exists
-                            </span>
-                        </div>
-                    </label>
+					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This will add 'Month 1' and so on to each month in the calendar">
+						<div class='col'>
+							<input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='add_month_number' onclick="setTimeout(calendar_layouts.add_month_number, 10);">
+							<span>
+								Add month number to months
+							</span>
+						</div>
+					</label>
 
-					@if(request()->is('calendars/*/edit') && $calendar->isLinked())
-						<p class=""><a onclick="linked_popup();" href='#'>Why are some settings disabled?</a></p>
-					@endif
+					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This adds a small number at the bottom left of the days in the calendar showing which year-day it is">
+						<div class='col'>
+							<input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='add_year_day_number' onclick="setTimeout(calendar_layouts.add_year_day_number, 10);">
+							<span>
+								Add year day to each day
+							</span>
+						</div>
+					</label>
 
 					<!------------------------------------------------------->
 
@@ -1175,19 +1175,16 @@
 					    </div>
                     </label>
 
-
-                    <div class='bold-text'>Weather Display Settings:</div>
-
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Hides all the weather from guest viewers">
+                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Prevents all weather from appearing on the calendar for guest viewers">
                         <div class='col'>
                             <input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_all_weather'>
                             <span>
-                                Hide ALL weather from guest viewers
+                                Hide all weather from guest viewers
                             </span>
                         </div>
                     </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Hides any future weather from guest viewers">
+                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Prevents any future weather from appearing on the calendar for guest viewers">
                         <div class='col'>
                             <input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_future_weather'>
                             <span>
@@ -1196,7 +1193,7 @@
                         </div>
                     </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This hides the exact temperature from guest viewers - this is really useful with the cinematic temperature setting">
+                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title='This hides the exact temperature from guest viewers - this is really useful with the cinematic temperature setting as guests will only see "cold", "sweltering" and the like'>
                         <div class='col'>
                             <input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='hide_weather_temp'>
                             <span>
@@ -1214,34 +1211,33 @@
                         </div>
                     </label>
 
-                    <div class='bold-text'>Display Settings:</div>
+					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This will hide the weekday bar at the top of each month">
+						<div class='col'>
+							<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_weekdays'>
+							<span>
+								Hide weekdays in calendar
+							</span>
+						</div>
+					</label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This will add 'Month 1' and so on to each month in the calendar">
+                    <div class='bold-text'>Advanced Settings:</div>
+
+                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Normally, the year count is -2, -1, 1, 2, and so on. This makes it so that 0 exists, so -2, -1, 0, 1, 2.">
                         <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='add_month_number' onclick="setTimeout(calendar_layouts.add_month_number, 10);">
+							@if(request()->is('calendars/*/edit') && $calendar->isLinked())
+                            	<input type='checkbox' class='margin-right' {{ Arr::get($calendar->static_data, 'settings.year_zero_exists') ? "checked" : "" }} disabled>
+							@else
+                            	<input type='checkbox' class='margin-right static_input' data='settings' id='year_zero_exists' fc-index='year_zero_exists'>
+							@endif
                             <span>
-                                Add month number to months
+                                Year zero exists
                             </span>
                         </div>
                     </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This adds a small number at the bottom left of the days in the calendar showing which year-day it is">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='add_year_day_number' onclick="setTimeout(calendar_layouts.add_year_day_number, 10);">
-                            <span>
-                                Add year day to each day
-                            </span>
-                        </div>
-                    </label>
-
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This will hide the weekday bar at the top of each month">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_weekdays'>
-                            <span>
-                                Hide weekdays in calendar
-                            </span>
-                        </div>
-                    </label>
+					@if(request()->is('calendars/*/edit') && $calendar->isLinked())
+						<p class=""><a onclick="linked_popup();" href='#'>Why are some settings disabled?</a></p>
+					@endif
 
                 </div>
             </div>
