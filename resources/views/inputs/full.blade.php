@@ -927,7 +927,7 @@
     					<input type='button' value='Map preset locations to seasons' class='btn btn-secondary full protip' id='map_seasons_to_location' data-pt-position="right" data-pt-title="This will open an UI where you can map your seasons to the preset location's seasons, as your order might be different from the preset.">
     				</div>
                     <div class='row no-gutters my-2'>
-                        <input type='button' value='Copy selected location to new location' class='btn btn-info full' id='copy_location_data'>
+                        <input type='button' value='Copy current location' class='btn btn-info full' id='copy_location_data'>
                     </div>
 
     				<div class='row no-gutters my-2'>
@@ -1020,7 +1020,7 @@
                 <div class='row no-gutters bold-text'>
                     <div class='col'>
                        Default category:
-                        <select class='form-control event-category-list static_input' id='default_event_category' data='settings' fc-index='default_category'></select>
+                        <select class='form-control event-category-list static_input protip' data-pt-position="right" data-pt-title="This sets the category to be selected by default when a new event is created" id='default_event_category' data='settings' fc-index='default_category'></select>
     		      	</div>
                 </div>
             </div>
