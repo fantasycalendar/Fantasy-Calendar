@@ -39,7 +39,6 @@ var calendar_weather = {
 			this.weather_title = $('.weather_title');
 			this.moon_title = $('.moon_title');
 			this.moon_container = $('.moon_container');
-			this.add_event_container = $('.add_event_container');
 			this.weather_temp_desc = $('.weather_temp_desc');
 			this.weather_temp = $('.weather_temp');
 			this.weather_wind = $('.weather_wind');
@@ -48,13 +47,6 @@ var calendar_weather = {
 			this.weather_feature = $('.weather_feature');
 			this.stop_hide = false;
 			this.sticky_icon = false;
-
-			this.add_event_container.find('.btn_create_event').click(function(){
-				calendar_weather.tooltip.stop_hide = false;
-				calendar_weather.tooltip.hide();
-				delete registered_click_callbacks['sticky_weather_ui'];
-				calendar_weather.tooltip.sticky_icon.removeClass('sticky');
-			});
 
 		},
 
@@ -107,11 +99,9 @@ var calendar_weather = {
 		
 			this.moon_title.toggleClass('hidden', !icon.hasClass('moon_popup'));
 			this.moon_container.toggleClass('hidden', !icon.hasClass('moon_popup'));
-			this.add_event_container.toggleClass('hidden', !icon.hasClass('moon_popup') || !owner);
 
 			if(icon.hasClass('moon_popup')){
 				this.moon_container.children().first().html(insert_moons(calendar_layouts.epoch_data[epoch]));
-				this.add_event_container.find('.btn_create_event').attr('epoch', epoch).prop('disabled', !owner);
 			}
 
 			this.stop_hide = false;
