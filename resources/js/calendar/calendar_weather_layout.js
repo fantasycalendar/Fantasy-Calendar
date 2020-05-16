@@ -372,6 +372,10 @@ function evaluate_day_length_chart(){
 
 function evaluate_weather_charts(){
 
+	if($('#precipitation').length == 0 || $('#temperature').length == 0){
+		return;
+	}
+
 	if(precipitation_chart !== undefined){
 		removeData(precipitation_chart);
 	}
