@@ -4,7 +4,12 @@
 			<div class='event-basic-wrapper'>
 				<div class='event-wrapper'>
 					<div class='close-ui-btn-bg'></div>
-					<i class="close_ui_btn icon-remove-circle"></i>
+					<i class="close_ui_btn fas fa-times-circle"></i>
+
+					<div class='edit-event-btn-container'>
+						<div class='right-btn-bg'></div>
+						<i class="edit_event_btn"><i class='fas fa-pen'></i></i>
+					</div>
 
 					<div class='row'>
                         <h2 class="col-12 event_name event-form-heading"></h2>
@@ -43,7 +48,10 @@
 			<form id="event-form" class="event-wrapper container" action="post">
 
 				<div class='close-ui-btn-bg'></div>
-				<i class="close_ui_btn icon-remove-circle"></i>
+				<i class="close_ui_btn fas fa-times-circle"></i>
+
+				<div class='right-btn-bg'></div>
+				<i class="view_event_btn"><i class='fas fa-eye'></i></i>
 
 				<div class='row no-gutters my-1'>
 					<h2 class='event-form-heading'>Edit Event</h2>

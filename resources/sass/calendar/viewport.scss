@@ -499,26 +499,19 @@
             background-color: $m-odd-bg;
         }
 
-        .timespan_overflow {
-            border: 0;
-        }
-
         .timespan_day{
             &.preview_day{
-                background-color: $weather-tooltip-bg-color;
-                box-shadow: none;
+                box-shadow: inset 0 0 0 3px rgba(191.0, 99.0, 71.0, 0.5);
             }
 
             &.current_day {
                 background-color: $m-current-day;
                 border-bottom: 0;
                 color: #444;
-                font-weight: bold;
 
                 &:hover {
                     cursor:pointer;
                     background-color: $current-day-color;
-                    color: currentColor;
                 }
             }
 

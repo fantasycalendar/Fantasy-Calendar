@@ -648,8 +648,8 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
 
 .close_ui_btn{
     position:absolute;
-    right: -12px;
-    top: -12px;
+    right: -15px;
+    top: -11px;
     font-size: 50px;
     color:#E53935;
     cursor: pointer;
@@ -657,6 +657,58 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
 
 .close_ui_btn:hover{
     color:#B71C1C;
+}
+
+.right-btn-bg{
+    position:absolute;
+    left: -20px;
+    top: -16.5px;
+    width:60px;
+    height:60px;
+    border-radius: 30px;
+    background-color: $card-bg-color;
+}
+
+.edit_event_btn{
+    position:absolute;
+    left: -15px;
+    top: -11px;
+    width:50px;
+    height:50px;
+    border-radius: 25px;
+    background-color: #28a745;
+    color: $card-bg-color;
+    cursor: pointer;
+}
+
+.edit_event_btn:hover{
+    background-color:#218838;
+}
+
+.edit_event_btn > i{
+    position:absolute;
+    left: 12px;
+    top: 12px;
+    font-size: 25px;
+}
+
+.view_event_btn{
+    position:absolute;
+    left: -15px;
+    top: -11px;
+    width:50px;
+    height:50px;
+    border-radius: 25px;
+    background-color: #28a745;
+    color: $card-bg-color;
+    cursor: pointer;
+}
+
+.view_event_btn > i{
+    position:absolute;
+    left: 10.5px;
+    top: 12px;
+    font-size: 25px;
 }
 
 @media screen and (max-width: 768px) {

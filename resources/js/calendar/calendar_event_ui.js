@@ -38,6 +38,7 @@ var edit_event_ui = {
 		this.close_ui_btn						= this.event_background.find('.close_ui_btn');
 		this.test_event_btn						= this.event_background.find('.test_event_btn');
 		this.trumbowyg							= this.event_background.find('.event_desc');
+		this.view_event_btn				   		= this.event_background.find('.view_event_btn');
 
 		this.event_occurrences_page = 1;
 		this.processed_event_data = false;
@@ -96,38 +97,20 @@ var edit_event_ui = {
 			edit_event_ui.delete_event(edit_event_ui.event_id);
 		})
 
+		this.view_event_btn.click(function(){
+			edit_event_ui.callback_do_close(function(){
+				show_event_ui.show_event(edit_event_ui.event_id);
+				edit_event_ui.clear_ui();
+			});
+		});
+
 		edit_event_ui.close_ui_btn.click(function(){
-
-			if(edit_event_ui.has_changed()){
-
-				swal.fire({
-					title: "Are you sure?",
-					text: 'This event will not be saved! Are you sure you want to close the event UI?',
-					showCancelButton: true,
-					confirmButtonColor: '#d33',
-					cancelButtonColor: '#3085d6',
-					confirmButtonText: 'Close',
-					icon: "warning",
-				}).then((result) => {
-					if(!result.dismiss) {
-
-						if(edit_event_ui.new_event){
-							events.splice(edit_event_ui.event_id, 1);
-						}
-
-						edit_event_ui.clear_ui();
-					}
-				});
-
-			}else{
-
+			edit_event_ui.callback_do_close(function(){
 				if(edit_event_ui.new_event){
 					events.splice(edit_event_ui.event_id, 1);
 				}
-
 				edit_event_ui.clear_ui();
-
-			}
+			});
 		});
 
 		this.test_event_btn.click(function(){
@@ -471,6 +454,33 @@ var edit_event_ui = {
 			edit_event_ui.delete_droppable = false;
 			$(this).find('.icon').removeClass('faster');
 		})
+
+	},
+
+	callback_do_close(callback){
+
+		if(edit_event_ui.has_changed()){
+
+			swal.fire({
+				title: "Are you sure?",
+				text: 'This event will not be saved! Are you sure you want to continue?',
+				showCancelButton: true,
+				confirmButtonColor: '#d33',
+				cancelButtonColor: '#3085d6',
+				icon: "warning",
+			}).then((result) => {
+				if(!result.dismiss) {
+
+					callback();
+
+				}
+			});
+
+		}else{
+
+			callback();
+
+		}
 
 	},
 
@@ -2160,6 +2170,7 @@ var show_event_ui = {
 	bind_events: function(){
 
 		this.event_id							= null;
+		this.db_event_id						= null;
 		this.era_id								= null;
 		this.event_condition_sortables			= [];
 		this.delete_droppable					= false;
@@ -2176,6 +2187,11 @@ var show_event_ui = {
 		this.event_comment_input_container		= this.event_background.find('#event_comment_input_container');
 		this.event_comment_input				= this.event_background.find('#event_comment_input');
 		this.event_save_btn						= this.event_background.find('#submit_comment');
+		this.edit_event_btn_container   		= this.event_background.find('.edit-event-btn-container');
+		this.edit_event_btn				   		= this.event_background.find('.edit_event_btn');
+
+		this.edit_event_btn_container.toggleClass('hidden', !owner);
+		this.edit_event_btn.prop('disabled', !owner);
 
 		this.event_comment_input.trumbowyg({
 			btns: [
@@ -2189,23 +2205,9 @@ var show_event_ui = {
 		});
 
 		this.close_ui_btn.click(function(){
-			if(show_event_ui.event_comment_input.trumbowyg('html').length > 0) {
-				swal.fire({
-					title: "Cancel comment?",
-					text: "You haven't posted your comment yet, are you sure you want to close this event?",
-					icon: "warning",
-					showCancelButton: true,
-					confirmButtonColor: '#d33',
-					cancelButtonColor: '#3085d6',
-					confirmButtonText: 'OK',
-				}).then((result) => {
-					if(!result.dismiss) {
-						show_event_ui.clear_ui();
-					}
-				});
-			} else {
+			show_event_ui.callback_do_close(function(){
 				show_event_ui.clear_ui();
-			}
+			});
 		});
 
 		this.event_wrapper.mousedown(function(event){
@@ -2221,9 +2223,39 @@ var show_event_ui = {
 			show_event_ui.event_comment_input.trumbowyg('empty');
 		});
 
+		
+		this.edit_event_btn.click(function(){
+			show_event_ui.callback_do_close(function(){
+				edit_event_ui.edit_event(show_event_ui.event_id);
+				show_event_ui.clear_ui();
+			});
+		});
+
 		$(document).on('click', '.event:not(.event-text-output)', function(){
 			show_event_ui.clicked_event($(this));
 		});
+
+	},
+
+	callback_do_close: function(callback){
+
+		if(show_event_ui.event_comment_input.trumbowyg('html').length > 0) {
+			swal.fire({
+				title: "Cancel comment?",
+				text: "You haven't posted your comment yet, are you sure you want to continue?",
+				icon: "warning",
+				showCancelButton: true,
+				confirmButtonColor: '#d33',
+				cancelButtonColor: '#3085d6',
+				confirmButtonText: 'OK',
+			}).then((result) => {
+				if(!result.dismiss) {
+					callback();
+				}
+			});
+		} else {
+			callback();
+		}
 
 	},
 
@@ -2246,28 +2278,15 @@ var show_event_ui = {
 
 	},
 
-	clear_callback: function(e){
-
-		var target = $(e.target);
-
-		if(target.attr('event_id') === undefined || ((target.attr('event_id')|0) != show_event_ui.event_id)){
-			show_event_ui.hide_query_container();
-		}
-
-	},
-
-	hide_query_container: function(){
-
-		this.event_id = -1;
-		this.era_id = -1;
-
+	show_event(event_id){
+		this.event_id = event_id;
+		var event = events[event_id];
+		this.set_current_event(event);
 	},
 
 	set_current_event: function(event){
 
-		this.hide_query_container();
-
-		this.event_id = event.id;
+		this.db_event_id = event.id;
 
 		this.event_name.text(event.name);
 
@@ -2275,8 +2294,8 @@ var show_event_ui = {
 
 		this.event_comments.html('').addClass('loading');
 
-		if(event.id !== undefined){
-			get_event_comments(this.event_id, this.add_comments);
+		if(this.db_event_id !== undefined){
+			get_event_comments(this.db_event_id, this.add_comments);
 			this.event_comment_input_container.show();
 		}else{
 			this.event_comments.html("You need to save & reload your calendar before comments can be added to this event!").removeClass('loading');
@@ -2329,6 +2348,7 @@ var show_event_ui = {
 	clear_ui: function(){
 
 		this.event_id = -1;
+		this.db_event_id = -1;
 		this.era_id = -1;
 
 		this.event_name.text('');
