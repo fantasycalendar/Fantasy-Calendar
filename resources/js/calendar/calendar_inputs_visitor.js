@@ -110,6 +110,35 @@ function context_open_day_data(key, opt){
 
 }
 
+function get_events_on_day(element){
+
+	var epoch = element.attr('epoch')|0;
+	var found_events = [];
+
+	var keys = Object.keys(evaluated_event_data.valid);
+	var length = keys.length;
+
+	for(var i = 0; i < length; i++){
+		var key = keys[i];
+		if(evaluated_event_data.valid[key].indexOf(epoch) > -1){
+			found_events.push(Number(key));
+		}
+	}
+
+	return found_events;
+
+}
+
+function context_view_events(element){
+
+	var found_events = get_events_on_day(element);
+
+	if(found_events.length == 1){
+		show_event_ui.show_event(found_events[0]);
+	}
+
+}
+
 
 function set_up_visitor_inputs(){
 
@@ -209,6 +238,7 @@ function set_up_visitor_inputs(){
 
 		items.copy_link_date = {
 			name: "Copy link to date",
+			icon: "fas fa-link",
 			callback: function(key, opt){
 				context_copy_link_date($(opt.$trigger[0]));
 			},
@@ -221,13 +251,64 @@ function set_up_visitor_inputs(){
 		}
 
 	}
+
+	items.view_events = {
+		name: "View events on this date",
+		icon: "fas fa-eye",
+		callback: function(key, opt){
+			context_view_events($(opt.$trigger[0]));
+		}
+	}
+
 	
 	$.contextMenu({
 		// define which elements trigger this menu
 		selector: ".timespan_day:not(.empty_timespan_day)",
 		// define the elements of the menu
 		items: items,
-		zIndex: 1501
+		zIndex: 1501,
+		build: function($trigger, e){
+
+			if(static_data.settings.layout == "minimalistic"){
+
+				delete items.view_events['items'];
+
+				var found_events = get_events_on_day($($trigger[0]));
+
+				items.view_events.visible = found_events.length > 0;
+				items.view_events.disabled = found_events.length == 0;
+
+				if(found_events.length > 1){
+
+					items.view_events.name = "View events on this date";
+					var sub_items = {};
+					for(var i = 0; i < found_events.length; i++){
+						var event_id = found_events[i];
+						sub_items[event_id] = {
+							name: events[event_id].name,
+							id: event_id,
+							callback: function(key, opt){
+								show_event_ui.show_event(key);
+							}
+						}
+					}
+					items.view_events['items'] = sub_items;
+
+				}else if(found_events.length == 1){
+
+					items.view_events.name = `View event "${events[found_events[0]].name}"`
+
+				}
+
+			}else{
+				items.view_events.disabled = true;
+				items.view_events.visible = false;
+			}
+
+			return {
+				items: items
+			};
+		}
 	});
 
 	show_event_ui.bind_events();
