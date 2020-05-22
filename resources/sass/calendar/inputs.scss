@@ -67,6 +67,20 @@ select.invalid {
     margin-right: .25rem;
 }
 
+.season_combo_icon .fa-sun {
+    overflow: hidden;
+    width: 0.58rem;
+}
+
+.season_combo_icon .fa-snowflake {
+    overflow: hidden;
+    width: 0.54rem;
+    transform: scale(-1);
+    position: relative;
+    left: 0.1rem;
+}
+
+
 .view_type{
     font-size:0.75em;
     padding: 7px;

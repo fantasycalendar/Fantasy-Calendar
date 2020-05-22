@@ -741,7 +741,12 @@
 
 		<div class='wrap-collapsible card settings-seasons'>
 			<input id="collapsible_seasons" class="toggle" type="checkbox">
-			<label for="collapsible_seasons" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-globe"></i> Seasons<a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Seasons' href='https://wiki.fantasy-calendar.com/index.php?title=Seasons' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+			<label for="collapsible_seasons" class="lbl-toggle card-header lbl-text">
+				<i class='season_combo_icon mr-2'>
+					<i class="fas fa-sun"></i><i class="fas fa-snowflake"></i>
+				</i>
+				Seasons<a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Seasons' href='https://wiki.fantasy-calendar.com/index.php?title=Seasons' class="wiki protip"><i class="icon-question-sign"></i></a>
+			</label>
 			<div class="collapsible-content card-body">
 
 				<div class='row bold-text'>
