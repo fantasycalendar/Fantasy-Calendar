@@ -465,7 +465,7 @@ var edit_event_ui = {
 
 			swal.fire({
 				title: "Are you sure?",
-				text: 'This event will not be saved! Are you sure you want to continue?',
+				text: 'Your changes to this event will not be saved! Are you sure you want to continue?',
 				showCancelButton: true,
 				confirmButtonColor: '#d33',
 				cancelButtonColor: '#3085d6',
