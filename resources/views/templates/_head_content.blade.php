@@ -83,6 +83,10 @@
     });
 
     $(document).ajaxError(function(event, jqxhr, settings, thrownError) {
+        if(jqxhr.status === 422) {
+            return;
+        }
+
         $.notify(thrownError + " (F12 to see more detail)");
     });
 
