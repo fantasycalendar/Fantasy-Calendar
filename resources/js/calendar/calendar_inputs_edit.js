@@ -152,6 +152,7 @@ function set_up_edit_inputs(){
 
 			case "weather":
 				if(creation_steps.current_step > creation_steps.steps && errors.length == 0){
+					evaluate_settings();
 					if(first_switch){
 						evaluate_day_length_chart();
 						evaluate_weather_charts();
