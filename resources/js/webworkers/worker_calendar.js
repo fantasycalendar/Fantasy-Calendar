@@ -568,6 +568,8 @@ var calendar_builder = {
 
 		for(var year_i = 0; year_i < order.length; year_i++){
 
+			var year_start_epoch = epoch;
+
 			year_index = parseInt(order[year_i]);
 
 			timespan_list = this.calendar_list.pre_timespans_to_evaluate[year_index];
@@ -786,6 +788,10 @@ var calendar_builder = {
 			}
 			if(year_index != convert_year(this.static_data, this.dynamic_data.year)) year_day = 1;
 			era_year++;
+
+			var climate_generator = new Climate(this.data.epochs, this.static_data, this.dynamic_data, year_start_epoch, epoch);
+			this.data.epochs = climate_generator.generate()
+
 		}
 
 		if(!this.static_data.settings.show_current_month){
@@ -795,6 +801,8 @@ var calendar_builder = {
 		order = Object.keys(this.calendar_list.post_timespans_to_evaluate);
 
 		for(var year_i = 0; year_i < order.length; year_i++){
+
+			var year_start_epoch = epoch;
 
 			year_index = parseInt(order[year_i]);
 
@@ -1013,17 +1021,15 @@ var calendar_builder = {
 			}
 			if(year_index != convert_year(this.static_data, this.dynamic_data.year)) year_day = 1;
 			era_year++;
+
+			var climate_generator = new Climate(this.data.epochs, this.static_data, this.dynamic_data, year_start_epoch, epoch);
+			this.data.epochs = climate_generator.generate()
 		}
-
-		var end_epoch = epoch;
-
-		var climate_generator = new Climate(this.data.epochs, this.static_data, this.dynamic_data, start_epoch, end_epoch);
-		this.data.epochs = climate_generator.generate()
 
 		return {
 			epoch_data: this.data.epochs,
 			start_epoch: start_epoch,
-			end_epoch: end_epoch
+			end_epoch: epoch
 		};
 
 	},
