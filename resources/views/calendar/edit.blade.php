@@ -42,8 +42,6 @@
         edit_HTML_ui.bind_events();
 
         if(has_parent){
-
-            console.log(parent_offset)
             
             check_last_change(parent_hash, function(change_result){
 

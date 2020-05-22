@@ -6,11 +6,6 @@
 					<div class='close-ui-btn-bg'></div>
 					<i class="close_ui_btn fas fa-times-circle"></i>
 
-					<!-- <div class='edit-event-btn-container'>
-						<div class='right-btn-bg'></div>
-						<i class="edit_event_btn"><i class='fas fa-pen'></i></i>
-					</div> -->
-
 					<div class='row no-gutters event-form-heading'>
 						<h2><span class='event_name'>Editing Event</span> <i class="fas fa-pencil-alt edit_event_btn"></i></h2>
                     </div>
@@ -50,10 +45,6 @@
 
 				<div class='close-ui-btn-bg'></div>
 				<i class="close_ui_btn fas fa-times-circle"></i>
-
-				<!-- <div class='right-btn-bg'></div>
-				<i class="view_event_btn"><i class='fas fa-eye'></i></i> -->
-
 
 				<div class='row no-gutters mb-1 event-form-heading'>
 					<h2 class='event_action_type'><span>Editing Event</span> <i class="fas fa-eye view_event_btn"></i></h2>
@@ -145,8 +136,8 @@
 				<div class='event_occurrences_list_container hidden my-2'>
 					<div class='text'></div>
 					<div class='list hidden row no-gutters'>
-						<ul class='col half col1'></ul>
-						<ul class='col half col2'></ul>
+						<ul class='col half col1 list-unstyled'></ul>
+						<ul class='col half col2 list-unstyled'></ul>
 						<div class='full page_number'></div>
 						<div class='col half pr-1'>
 							<button type='button' class='btn btn-info full prev' disabled>Previous</button>

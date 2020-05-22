@@ -71,22 +71,22 @@
         var day = Number(urlParams.get('day'));
 
         if(!isNaN(year) && !isNaN(timespan) && !isNaN(day)){
-            if(valid_preview_date(year, timespan, day)){
+            if(valid_preview_date(year, timespan, day) || owner){
                 if(year == 0 && !static_data.settings.year_zero_exists){
                     return false;
                 }
+                preview_date_manager.year = convert_year(static_data, year);
 
                 if(timespan < 0 || timespan > preview_date_manager.last_timespan){
                     return false;
                 }
+                preview_date_manager.timespan = timespan;
 
                 if(day < 0 || day > preview_date_manager.num_days){
                     return false;
                 }
-
-                preview_date_manager.year = convert_year(static_data, year);
-                preview_date_manager.timespan = timespan;
                 preview_date_manager.day = day;
+
                 go_to_preview_date(true);
                 refresh_preview_inputs();
                 return true;

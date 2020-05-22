@@ -234,10 +234,20 @@ function set_loading_screen_text(array){
 
 }
 
+var progress = 0;
 
 function update_loading_bar(percentage){
 
-	loading_bar.set(percentage)
+	percentage = precisionRound(percentage, 1);
+
+	if(progress == percentage){
+		return;
+	}
+
+	loading_bar.set(percentage);
+
+	progress = percentage;
+
 }
 
 function slugify(string) {
