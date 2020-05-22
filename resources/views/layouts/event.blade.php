@@ -6,14 +6,16 @@
 					<div class='close-ui-btn-bg'></div>
 					<i class="close_ui_btn fas fa-times-circle"></i>
 
-					<div class='edit-event-btn-container'>
+					<!-- <div class='edit-event-btn-container'>
 						<div class='right-btn-bg'></div>
 						<i class="edit_event_btn"><i class='fas fa-pen'></i></i>
-					</div>
+					</div> -->
 
-					<div class='row'>
-                        <h2 class="col-12 event_name event-form-heading"></h2>
+					<div class='row event-form-heading'>
+                        <div class="col-auto pr-1"><button type="button" class="btn btn-outline-primary edit_event_btn">Edit</button></div>
+						<div class="col pl-1"><h2 class="event_name"></h2></div>
                     </div>
+					
 					<div class='row'>
 						<div class="event_desc col-12"></div>
 					</div>
@@ -50,11 +52,13 @@
 				<div class='close-ui-btn-bg'></div>
 				<i class="close_ui_btn fas fa-times-circle"></i>
 
-				<div class='right-btn-bg'></div>
-				<i class="view_event_btn"><i class='fas fa-eye'></i></i>
+				<!-- <div class='right-btn-bg'></div>
+				<i class="view_event_btn"><i class='fas fa-eye'></i></i> -->
 
-				<div class='row no-gutters my-1'>
-					<h2 class='event-form-heading'>Edit Event</h2>
+
+				<div class='row no-gutters mb-1 event-form-heading'>
+					<div class="col-auto pr-1"><button type="button" class="btn btn-outline-primary view_event_btn">View</button></div>
+					<div class="col pl-1"><h2 class='event_action_type'>Editing Event</h2></div>
 				</div>
 
 				<div class='row no-gutters my-1'>

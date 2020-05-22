@@ -38,7 +38,9 @@ var edit_event_ui = {
 		this.close_ui_btn						= this.event_background.find('.close_ui_btn');
 		this.test_event_btn						= this.event_background.find('.test_event_btn');
 		this.trumbowyg							= this.event_background.find('.event_desc');
+		this.event_action_type			 		= this.event_background.find('.event_action_type');
 		this.view_event_btn				   		= this.event_background.find('.view_event_btn');
+
 
 		this.event_occurrences_page = 1;
 		this.processed_event_data = false;
@@ -555,6 +557,9 @@ var edit_event_ui = {
 
 		this.inputs_changed = false;
 
+		this.event_action_type.text("Creating event");
+		this.view_event_btn.parent().hide();
+
 		this.populate_condition_presets();
 
 	},
@@ -567,6 +572,9 @@ var edit_event_ui = {
 		this.condition_presets.children().eq(0).prop('selected', true);
 		this.condition_presets.parent().toggleClass('hidden', true);
 		this.condition_presets.parent().prev().toggleClass('hidden', true);
+
+		this.event_action_type.text("Editing event");
+		this.view_event_btn.parent().show();
 
 		this.set_current_event(event_id)
 
