@@ -38,7 +38,7 @@ var edit_event_ui = {
 		this.close_ui_btn						= this.event_background.find('.close_ui_btn');
 		this.test_event_btn						= this.event_background.find('.test_event_btn');
 		this.trumbowyg							= this.event_background.find('.event_desc');
-		this.event_action_type			 		= this.event_background.find('.event_action_type');
+		this.event_action_type			 		= this.event_background.find('.event_action_type span');
 		this.view_event_btn				   		= this.event_background.find('.view_event_btn');
 
 

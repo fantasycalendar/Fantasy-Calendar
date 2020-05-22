@@ -673,6 +673,16 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     color:#B71C1C;
 }
 
+.view_event_btn, .edit_event_btn {
+    font-size:1.5rem;
+    opacity:0.35;
+    margin-left:0.5rem;
+    &:hover {
+        opacity:1.0;
+    }
+}
+
+
 @media screen and (max-width: 768px) {
     .clickable_background {
         width: auto;

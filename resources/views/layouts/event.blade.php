@@ -1,4 +1,4 @@
-<div id="event_show_background" class='clickable_background blurred_background hidden'>
+<div id="event_show_background" class='clickable_background hidden'>
 	<div class='event-basic-container'>
 		<div class='event-basic-wrapper'>
 			<div class='event-basic-wrapper'>
@@ -11,9 +11,8 @@
 						<i class="edit_event_btn"><i class='fas fa-pen'></i></i>
 					</div> -->
 
-					<div class='row event-form-heading'>
-                        <div class="col-auto pr-1"><button type="button" class="btn btn-outline-primary edit_event_btn">Edit</button></div>
-						<div class="col pl-1"><h2 class="event_name"></h2></div>
+					<div class='row no-gutters event-form-heading'>
+						<h2><span class='event_name'>Editing Event</span> <i class="fas fa-pencil-alt edit_event_btn"></i></h2>
                     </div>
 					
 					<div class='row'>
@@ -57,8 +56,7 @@
 
 
 				<div class='row no-gutters mb-1 event-form-heading'>
-					<div class="col-auto pr-1"><button type="button" class="btn btn-outline-primary view_event_btn">View</button></div>
-					<div class="col pl-1"><h2 class='event_action_type'>Editing Event</h2></div>
+					<h2 class='event_action_type'><span>Editing Event</span> <i class="fas fa-eye view_event_btn"></i></h2>
 				</div>
 
 				<div class='row no-gutters my-1'>
