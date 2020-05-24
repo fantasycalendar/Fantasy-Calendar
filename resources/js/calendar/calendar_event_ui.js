@@ -131,7 +131,7 @@ var edit_event_ui = {
 
 			var selected = edit_event_ui.condition_presets.find(':selected');
 
-			if(selected.val() == prev){
+			if(selected.val() == prev && e.originalEvent){
 				return;
 			}
 
@@ -181,34 +181,21 @@ var edit_event_ui = {
 
 					});
 
-				}else{
-
-
-					var preset = edit_event_ui.condition_presets.val();
-					var repeats = edit_event_ui.repeat_input.val()|0;
-
-					edit_event_ui.update_every_nth_presets();
-
-					edit_event_ui.event_conditions_container.empty();
-					edit_event_ui.add_preset_conditions(preset, repeats);
-
-					$(this).data('val', $(this).val());
+					return;
 
 				}
 
-			}else{
-
-				var preset = edit_event_ui.condition_presets.val();
-				var repeats = edit_event_ui.repeat_input.val()|0;
-
-				edit_event_ui.update_every_nth_presets();
-
-				edit_event_ui.event_conditions_container.empty();
-				edit_event_ui.add_preset_conditions(preset, repeats);
-
-				$(this).data('val', $(this).val());
-
 			}
+
+			var preset = edit_event_ui.condition_presets.val();
+			var repeats = edit_event_ui.repeat_input.val()|0;
+
+			edit_event_ui.update_every_nth_presets();
+
+			edit_event_ui.event_conditions_container.empty();
+			edit_event_ui.add_preset_conditions(preset, repeats);
+
+			$(this).data('val', $(this).val());
 
 		});
 
@@ -561,7 +548,7 @@ var edit_event_ui = {
 		this.inputs_changed = false;
 
 		this.event_action_type.text("Creating event");
-		this.view_event_btn.parent().hide();
+		this.view_event_btn.hide();
 
 		this.populate_condition_presets();
 
@@ -577,7 +564,7 @@ var edit_event_ui = {
 		this.condition_presets.parent().prev().toggleClass('hidden', true);
 
 		this.event_action_type.text("Editing event");
-		this.view_event_btn.parent().show();
+		this.view_event_btn.show();
 
 		this.set_current_event(event_id)
 
@@ -664,10 +651,18 @@ var edit_event_ui = {
 			print: $('#event_print_checkbox').prop('checked')
 		}
 
-		if(this.new_event){
-			add_event_to_sortable(events_sortable, this.event_id, events[this.event_id]);
+		if($('#events_sortable').length){
+			if(this.new_event){
+				add_event_to_sortable(events_sortable, this.event_id, events[this.event_id]);
+			}else{
+				$(`.events_input[index="${this.event_id}"]`).find(".event_name").text(`Edit - ${name}`);
+			}
 		}else{
-			$(`.events_input[index="${this.event_id}"]`).find(".event_name").text(`Edit - ${name}`);
+			if(this.new_event){
+				submit_new_event(this.event_id);
+			}else{
+				submit_edit_event(this.event_id);
+			}
 		}
 
 		this.clear_ui();
@@ -681,7 +676,6 @@ var edit_event_ui = {
 		});
 
 	},
-
 	clear_ui: function(){
 
 		delete registered_keydown_callbacks['event_ui_escape'];
@@ -901,8 +895,6 @@ var edit_event_ui = {
 		this.condition_presets.parent().toggleClass('hidden', false);
 		this.condition_presets.parent().prev().toggleClass('hidden', false);
 
-		console.log(edit_event_ui.data)
-
 		this.condition_presets.find('option[value="weekly"]').text(`Weekly on ${edit_event_ui.data.week_day_name}`);
 		this.condition_presets.find('option[value="fortnightly"]').text(`Fortnightly on ${edit_event_ui.data.week_day_name}`);
 		this.condition_presets.find('option[value="monthly_date"]').text(`Monthly on the ${ordinal_suffix_of(edit_event_ui.data.day)}`);
@@ -946,12 +938,14 @@ var edit_event_ui = {
 			repeat_value = 'nth';
 		}
 
-		this.condition_presets.find('option[value="every_x_day"]').text(`Every ${ordinal_suffix_of(repeat_value)} day`);
-		this.condition_presets.find('option[value="every_x_weekday"]').text(`Every ${ordinal_suffix_of(repeat_value)} ${edit_event_ui.data.week_day_name}`);
-		this.condition_presets.find('option[value="every_x_monthly_date"]').text(`Every ${ordinal_suffix_of(repeat_value)} month on the ${ordinal_suffix_of(edit_event_ui.data.day)}`);
-		this.condition_presets.find('option[value="every_x_monthly_weekday"]').text(`Every ${ordinal_suffix_of(repeat_value)} month on the ${ordinal_suffix_of(edit_event_ui.data.month_week_num)} ${edit_event_ui.data.week_day_name}`);
-		this.condition_presets.find('option[value="every_x_annually_date"]').text(`Every ${ordinal_suffix_of(repeat_value)} year on the ${ordinal_suffix_of(edit_event_ui.data.day)} of ${edit_event_ui.data.timespan_name}`);
-		this.condition_presets.find('option[value="every_x_annually_weekday"]').text(`Every ${ordinal_suffix_of(repeat_value)} year on the ${ordinal_suffix_of(edit_event_ui.data.month_week_num)} ${edit_event_ui.data.week_day_name} in ${edit_event_ui.data.timespan_name}`);
+		var repeat_string = repeat_value != 1 ? `${ordinal_suffix_of(repeat_value)} ` : "";
+		
+		this.condition_presets.find('option[value="every_x_day"]').text(`Every ${repeat_string}day`);
+		this.condition_presets.find('option[value="every_x_weekday"]').text(`Every ${repeat_string}${edit_event_ui.data.week_day_name}`);
+		this.condition_presets.find('option[value="every_x_monthly_date"]').text(`Every ${repeat_string}month on the ${ordinal_suffix_of(edit_event_ui.data.day)}`);
+		this.condition_presets.find('option[value="every_x_monthly_weekday"]').text(`Every ${repeat_string}month on the ${ordinal_suffix_of(edit_event_ui.data.month_week_num)} ${edit_event_ui.data.week_day_name}`);
+		this.condition_presets.find('option[value="every_x_annually_date"]').text(`Every ${repeat_string}year on the ${ordinal_suffix_of(edit_event_ui.data.day)} of ${edit_event_ui.data.timespan_name}`);
+		this.condition_presets.find('option[value="every_x_annually_weekday"]').text(`Every ${repeat_string}year on the ${ordinal_suffix_of(edit_event_ui.data.month_week_num)} ${edit_event_ui.data.week_day_name} in ${edit_event_ui.data.timespan_name}`);
 
 	},
 
@@ -2070,14 +2064,14 @@ var edit_event_ui = {
 
 	},
 
-	delete_event: function(event_id){
+	delete_event: function(delete_event_id){
 
 		var warnings = [];
 
 		for(var eventId in events){
 			if(events[eventId].data.connected_events !== undefined){
 				var connected_events = events[eventId].data.connected_events;
-				if(connected_events.includes(String(event_id)) || connected_events.includes(Number(event_id))){
+				if(connected_events.includes(String(delete_event_id)) || connected_events.includes(Number(delete_event_id))){
 					warnings.push(eventId);
 				}
 			}
@@ -2087,14 +2081,14 @@ var edit_event_ui = {
 
 			var html = [];
 			html.push(`<div class='text-left'>`)
-			html.push(`<h5>You trying to delete "${events[event_id].name}" which referenced in the following events:</h5>`)
+			html.push(`<h5>You trying to delete "${events[delete_event_id].name}" which referenced in the following events:</h5>`)
 			html.push(`<ul>`);
 			for(var i = 0; i < warnings.length; i++){
-				var event_id = warnings[i];
-				html.push(`<li>• ${events[event_id].name}</li>`);
+				var warning_event_id = warnings[i];
+				html.push(`<li>• ${events[warning_event_id].name}</li>`);
 			}
 			html.push(`</ul>`);
-			html.push(`<p>Please remove the conditions referencing "${events[event_id].name}" in these events before deleting.</p>`)
+			html.push(`<p>Please remove the conditions referencing "${events[delete_event_id].name}" in these events before deleting.</p>`)
 			html.push(`</div>`);
 
 			swal.fire({
@@ -2109,42 +2103,54 @@ var edit_event_ui = {
 		}else{
 
 			swal.fire({
+
 				title: "Warning!",
-				text: "Are you sure you want to delete this event? If you change your mind, the only way to get it back is to reload the calendar and lose all of your changes.",
+				text: "Are you sure you want to delete this event?",
 				showCancelButton: true,
 				confirmButtonColor: '#d33',
 				cancelButtonColor: '#3085d6',
 				confirmButtonText: 'OK',
 				icon: "warning",
+
 			}).then((result) => {
 
 				if(!result.dismiss) {
-
-					events_sortable.children(`[index='${event_id}']`).remove();
 
 					for(var eventId in events){
 						if(events[eventId].data.connected_events !== undefined){
 							for(connectedId in events[eventId].data.connected_events){
 								var number = Number(events[eventId].data.connected_events[connectedId])
-								if(Number(events[eventId].data.connected_events[connectedId]) > event_id){
+								if(number > delete_event_id){
 									events[eventId].data.connected_events[connectedId] = String(number-1)
 								}
 							}
 						}
 					}
 
-					events.splice(event_id, 1);
+					var event_id = events[delete_event_id].id;
 
-					events_sortable.children().each(function(i){
-						events[i].sort_by = i;
-						$(this).attr('index', i);
-					});
+					events.splice(delete_event_id, 1);
+
+					if($('#events_sortable').length){
+
+						events_sortable.children(`[index='${delete_event_id}']`).remove();
+
+						events_sortable.children().each(function(i){
+							events[i].sort_by = i;
+							$(this).attr('index', i);
+						});
+
+						evaluate_save_button();
+
+					}else{
+
+						submit_delete_event(event_id);
+
+					}
 
 					this.clear_ui();
 
-					rebuild_events();
-
-					evaluate_save_button();
+					$(`#calendar .event:not(.era_event)[event_id=${delete_event_id}]`).remove();
 
 				}
 
@@ -2315,8 +2321,6 @@ var show_event_ui = {
 		this.db_event_id = event.id;
 
 		this.event_name.text(event.name);
-
-		this.edit_event_btn.toggleClass('hidden', window.location.pathname.indexOf('edit') == -1).prop('disabled', window.location.pathname.indexOf('edit') == -1)
 
 		this.event_desc.html(event.description).toggleClass('hidden', event.description.length == 0);
 

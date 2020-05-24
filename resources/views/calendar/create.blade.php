@@ -208,7 +208,7 @@
             set_up_view_values();
             set_up_visitor_values();
             $('#presets').val('Presets');
-            error_check('calendar', true);
+            do_error_check('calendar', true);
             evaluate_save_button();
         }
     </script>

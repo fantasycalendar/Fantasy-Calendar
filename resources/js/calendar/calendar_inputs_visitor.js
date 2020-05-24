@@ -171,6 +171,44 @@ function set_up_visitor_inputs(){
 						return element.hasClass('era_event');
 					}
 				},
+				hide: {
+					name: "Hide event",
+					icon: "fas fa-eye-slash",
+					callback: function(key, opt){
+						var element = $(opt.$trigger[0]);
+						var event_id = Number(element.attr('event_id'));
+						submit_hide_show_event(event_id);
+					},
+					disabled: function(key, opt){
+						var element = $(opt.$trigger[0]);
+						var event_id = Number(element.attr('event_id'));
+						return element.hasClass('era_event') || events[event_id].settings.hide;
+					},
+					visible: function(key, opt){
+						var element = $(opt.$trigger[0]);
+						var event_id = Number(element.attr('event_id'));
+						return !element.hasClass('era_event') && !events[event_id].settings.hide;
+					}
+				},
+				show: {
+					name: "Show event",
+					icon: "fas fa-eye-slash",
+					callback: function(key, opt){
+						var element = $(opt.$trigger[0]);
+						var event_id = Number(element.attr('event_id'));
+						submit_hide_show_event(event_id);
+					},
+					disabled: function(key, opt){
+						var element = $(opt.$trigger[0]);
+						var event_id = Number(element.attr('event_id'));
+						return element.hasClass('era_event') || !events[event_id].settings.hide;
+					},
+					visible: function(key, opt){
+						var element = $(opt.$trigger[0]);
+						var event_id = Number(element.attr('event_id'));
+						return !element.hasClass('era_event') && events[event_id].settings.hide;
+					}
+				},
 				delete: {
 					name: "Delete event",
 					icon: "fas fa-trash-alt",

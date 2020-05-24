@@ -186,7 +186,7 @@ function do_update_all(calendar_hash, output){
 function get_all_data(calendar_hash, output){
 
 	$.ajax({
-		url:window.apiurl+"/"+calendar_hash,
+		url:window.apiurl+"/calendar/"+calendar_hash,
 		type: "get",
 		dataType: 'json',
 		data: {},
@@ -205,7 +205,7 @@ function get_all_data(calendar_hash, output){
 function get_dynamic_data(calendar_hash, output){
 
 	$.ajax({
-		url:window.apiurl+"/"+calendar_hash+"/dynamic_data",
+		url:window.apiurl+"/calendar/"+calendar_hash+"/dynamic_data",
 		type: "get",
 		dataType: 'json',
 		data: {},
@@ -297,10 +297,98 @@ function unlink_child_calendar(output, child_hash){
 	});
 }
 
+function submit_new_event(event_id){
+
+	var event = clone(events[event_id]);
+	event._method = "POST";
+	event.calendar_id = calendar_id;
+
+	$.ajax({
+		url:window.apiurl+"/event",
+		type: "post",
+		dataType: 'json',
+		data: event,
+		success: function( result ){
+			console.log(result)
+			events[event_id].id = result.id;
+		},
+		error: function ( log )
+		{
+			console.log(log);
+		}
+	});
+
+}
+
+function submit_hide_show_event(event_id){
+
+	events[event_id].settings.hide = !events[event_id].settings.hide;
+
+	var event = clone(events[event_id]);
+	event._method = "PATCH";
+	event.calendar_id = calendar_id;
+
+	$.ajax({
+		url:window.apiurl+"/event/"+event.id,
+		type: "post",
+		dataType: 'json',
+		data: event,
+		success: function( result ){
+			rebuild_events();
+			evaluate_save_button();
+		},
+		error: function ( log )
+		{
+			console.log(log);
+		}
+	});
+
+}
+
+function submit_edit_event(event_id){
+
+	var event = clone(events[event_id]);
+	event._method = "PATCH";
+	event.calendar_id = calendar_id;
+
+	$.ajax({
+		url:window.apiurl+"/event/"+event.id,
+		type: "post",
+		dataType: 'json',
+		data: event,
+		success: function( result ){
+			console.log(result)
+		},
+		error: function ( log )
+		{
+			console.log(log);
+		}
+	});
+
+}
+
+function submit_delete_event(event_id){
+
+	$.ajax({
+		url:window.apiurl+"/event/"+event_id,
+		type: "post",
+		dataType: 'json',
+		data: {_method: 'DELETE'},
+		success: function( result ){
+			console.log(result)
+		},
+		error: function ( log )
+		{
+			console.log(log);
+		}
+	});
+
+}
+
 
 function get_owned_calendars(output){
 	$.ajax({
-		url:window.apiurl+"/"+hash+"/owned",
+		url:window.apiurl+"/calendar/"+hash+"/owned",
 		type: "get",
 		dataType: 'json',
 		data: {},
@@ -318,7 +406,7 @@ function get_owned_calendars(output){
 function update_children_dynamic_data(output){
 
 	$.ajax({
-		url:window.apiurl+"/"+hash+"/children",
+		url:window.apiurl+"/calendar/"+hash+"/children",
 		type: "get",
 		dataType: 'json',
 		data: {hash: hash},
@@ -353,7 +441,7 @@ function update_children_dynamic_data(output){
 			}
 
 			$.ajax({
-				url:window.apiurl+"/"+hash+"/updatechildren",
+				url:window.apiurl+"/calendar/"+hash+"/updatechildren",
 				type: "post",
 				dataType: 'json',
 				data: {_method: 'PATCH', data: JSON.stringify(new_dynamic_data)},
@@ -379,7 +467,7 @@ function update_children_dynamic_data(output){
 
 function check_last_change(calendar_hash, output){
 	$.ajax({
-		url:window.apiurl+"/"+calendar_hash+"/last_changed",
+		url:window.apiurl+"/calendar/"+calendar_hash+"/last_changed",
 		type: "post",
 		dataType: 'json',
 		data: {},
