@@ -2316,6 +2316,8 @@ var show_event_ui = {
 
 		this.event_name.text(event.name);
 
+		this.edit_event_btn.toggleClass('hidden', window.location.pathname.indexOf('edit') == -1).prop('disabled', window.location.pathname.indexOf('edit') == -1)
+
 		this.event_desc.html(event.description).toggleClass('hidden', event.description.length == 0);
 
 		this.event_comments.html('').addClass('loading');
