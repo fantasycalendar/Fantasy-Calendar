@@ -312,20 +312,18 @@
 
 <div id="html_edit_background" class='clickable_background hidden'>
 	<div class='event-basic-container'>
-		<div class='event-basic-wrapper'>
-			<form id="html-form" class="event-wrapper" action="post">
+		<form id="html-form" class="event-wrapper" action="post">
 
-				<div class='close-ui-btn-bg'></div>
-				<i class="close_ui_btn icon-remove-circle"></i>
+			<div class='close-ui-btn-bg'></div>
+			<i class="close_ui_btn icon-remove-circle"></i>
 
-				<h2 class='event-form-heading'>Edit HTML</h2>
+			<h2 class='event-form-heading'>Edit HTML</h2>
 
-				<div class='row'>
-					<textarea class='form-control html_input editable' name='html_input' placeholder='Event description' autofocus=''></textarea>
-				</div>
+			<div class='row'>
+				<textarea class='form-control html_input editable' name='html_input' placeholder='Event description' autofocus=''></textarea>
+			</div>
 
-				<div class='btn btn-lg btn-primary btn-block' id='btn_html_save'>Save</div>
-			</form>
-		</div>
+			<div class='btn btn-lg btn-primary btn-block' id='btn_html_save'>Save</div>
+		</form>
 	</div>
 </div>
