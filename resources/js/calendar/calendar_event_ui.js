@@ -2081,14 +2081,14 @@ var edit_event_ui = {
 
 			var html = [];
 			html.push(`<div class='text-left'>`)
-			html.push(`<h5>You trying to delete "${events[delete_event_id].name}" which referenced in the following events:</h5>`)
+			html.push(`<h5>You trying to delete "${events[delete_event_id].name}" which is used in the conditions of the following events:</h5>`)
 			html.push(`<ul>`);
 			for(var i = 0; i < warnings.length; i++){
 				var warning_event_id = warnings[i];
-				html.push(`<li>• ${events[warning_event_id].name}</li>`);
+				html.push(`<li>${events[warning_event_id].name}</li>`);
 			}
 			html.push(`</ul>`);
-			html.push(`<p>Please remove the conditions referencing "${events[delete_event_id].name}" in these events before deleting.</p>`)
+			html.push(`<p>Please remove the conditions using "${events[delete_event_id].name}" in these events before trying to delete it.</p>`)
 			html.push(`</div>`);
 
 			swal.fire({
