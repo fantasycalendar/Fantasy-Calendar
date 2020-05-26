@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Resources\Calendar;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -71,7 +72,7 @@ class CalendarEventController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        return CalendarEvent::findOrFail($id)->update($request->all());
     }
 
     /**
@@ -82,6 +83,6 @@ class CalendarEventController extends Controller
      */
     public function destroy($id)
     {
-        //
+        return CalendarEvent::findOrFail($id)->delete();
     }
 }
