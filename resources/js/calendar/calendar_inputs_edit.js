@@ -4935,7 +4935,7 @@ function set_up_edit_values(){
 
 		var current_calendar_data = get_calendar_data(data);
 
-		if(current_calendar_data !== undefined){
+		if(current_calendar_data[key] !== undefined){
 
 			switch($(this).attr('type')){
 				case "checkbox":

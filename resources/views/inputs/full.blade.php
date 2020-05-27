@@ -1225,6 +1225,16 @@
 						</div>
 					</label>
 
+					<div class='bold-text'>Event Settings:</div>
+
+					<label class="row no-gutters setting py-1 protip" data-pt-position="right" data-pt-title="This will change who can comment on the events of your calendar.">
+						<select class='form-control static_input' data='settings' fc-index='comments'>
+							<option selected value='none'>Disable event commenting</option>
+							<option value='players'>Disable public commenting</option>
+							<option value='public'>Allow public commenting</option>
+						</select>
+					</label>
+
                     <div class='bold-text'>Advanced Settings:</div>
 
                     <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Normally, the year count is -2, -1, 1, 2, and so on. This makes it so that 0 exists, so -2, -1, 0, 1, 2.">

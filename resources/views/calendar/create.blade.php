@@ -45,6 +45,7 @@
             "eras":[],
             "settings":{
                 "layout":"grid",
+                "comments":"none",
                 "show_current_month":false,
                 "allow_view":true,
                 "only_backwards":true,

@@ -2235,6 +2235,9 @@ var show_event_ui = {
 				['removeformat']
 			]
 		});
+		
+		this.event_comment_input_container.hide();
+		this.event_comment_input.trumbowyg('disabled', true);
 
 		this.close_ui_btn.click(function(){
 			show_event_ui.callback_do_close(function(){
@@ -2328,10 +2331,8 @@ var show_event_ui = {
 
 		if(this.db_event_id !== undefined){
 			get_event_comments(this.db_event_id, this.add_comments);
-			this.event_comment_input_container.show();
 		}else{
-			this.event_comments.html("You need to save & reload your calendar before comments can be added to this event!").removeClass('loading');
-			this.event_comment_input_container.hide();
+			this.event_comments.html("You need to save your calendar before comments can be added to this event!").removeClass('loading');
 		}
 
 		this.event_background.removeClass('hidden');
@@ -2358,6 +2359,14 @@ var show_event_ui = {
 
 			show_event_ui.event_comments.html("No comments on this event yet... Maybe you'll be the first?")
 
+		}
+
+		if(can_comment_on_event()){
+			show_event_ui.event_comment_input_container.show().find('button').prop('disable', false);
+			show_event_ui.event_comment_input.trumbowyg('disabled', false);
+		}else{
+			show_event_ui.event_comment_input_container.hide().find('button').prop('disable', true);
+			show_event_ui.event_comment_input.trumbowyg('disabled', true);
 		}
 
 	},
@@ -2388,6 +2397,9 @@ var show_event_ui = {
 		this.event_comment_container.addClass('hidden');
 
 		this.event_comments.html('').addClass('loading');
+
+		this.event_comment_input_container.hide().find('button').prop('disable', true);
+		this.event_comment_input.trumbowyg('disabled', true);
 
 		this.event_desc.html('').removeClass('hidden');
 
@@ -2461,4 +2473,26 @@ var edit_HTML_ui = {
 		this.html_edit_background.addClass('hidden');
 
 	},
+}
+
+function can_comment_on_event(){
+
+	if(owner){
+		return true;
+	}
+
+	if(static_data.settings.comments == "none"){
+		return false;
+	}
+
+	if(static_data.settings.comments == "players"){
+		return true;
+	}
+
+	if(static_data.settings.comments == "public"){
+		return true;
+	}
+
+	return false;
+
 }
