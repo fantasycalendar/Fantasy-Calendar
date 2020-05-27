@@ -83,7 +83,7 @@
 				</div>
 
 				<div class='row no-gutters mb-1 hidden'>
-					<input type='number' class='form-control' id='repeat_input' name='repeat_input' value='1' min='1' placeholder='Every nth' />
+					<input type='number' class='form-control' id='repeat_input' name='repeat_input' value='2' min='1' placeholder='Every nth' />
 				</div>
 
 				<h5 class='row no-gutters my-2 event-form-heading'>Conditions:</h5>

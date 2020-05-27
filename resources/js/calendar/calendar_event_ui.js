@@ -684,7 +684,7 @@ var edit_event_ui = {
 
 		this.trumbowyg.trumbowyg('html', '');
 
-		this.repeat_input.val('1').parent().toggleClass('hidden', true);
+		this.repeat_input.val('2').parent().toggleClass('hidden', true);
 		this.condition_presets.children().eq(0).prop('selected', true);
 		this.condition_presets.parent().toggleClass('hidden', true);
 		this.condition_presets.parent().prev().toggleClass('hidden', true);
@@ -890,7 +890,7 @@ var edit_event_ui = {
 
 	populate_condition_presets: function(){
 
-		this.repeat_input.val('1').parent().toggleClass('hidden', true);
+		this.repeat_input.val('2').parent().toggleClass('hidden', true);
 		this.condition_presets.children().eq(0).prop('selected', true);
 		this.condition_presets.parent().toggleClass('hidden', false);
 		this.condition_presets.parent().prev().toggleClass('hidden', false);

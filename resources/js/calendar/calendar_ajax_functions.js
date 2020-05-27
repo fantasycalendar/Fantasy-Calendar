@@ -299,17 +299,17 @@ function unlink_child_calendar(output, child_hash){
 
 function submit_new_event(event_id){
 
-	var event = clone(events[event_id]);
-	event._method = "POST";
-	event.calendar_id = calendar_id;
+	var new_event = clone(events[event_id]);
+	new_event._method = "POST";
+	new_event.calendar_id = calendar_id;
+	new_event.sort_by = Object.keys(events).length;
 
 	$.ajax({
 		url:window.apiurl+"/event",
 		type: "post",
 		dataType: 'json',
-		data: event,
+		data: new_event,
 		success: function( result ){
-			console.log(result)
 			events[event_id].id = result.id;
 		},
 		error: function ( log )
@@ -322,18 +322,18 @@ function submit_new_event(event_id){
 
 function submit_hide_show_event(event_id){
 
-	events[event_id].settings.hide = !events[event_id].settings.hide;
-
-	var event = clone(events[event_id]);
-	event._method = "PATCH";
-	event.calendar_id = calendar_id;
+	var edit_event = clone(events[event_id]);
+	edit_event._method = "PATCH";
+	edit_event.calendar_id = calendar_id;
+	edit_event.settings.hide = !event.settings.hide;
 
 	$.ajax({
 		url:window.apiurl+"/event/"+event.id,
 		type: "post",
 		dataType: 'json',
-		data: event,
+		data: edit_event,
 		success: function( result ){
+			events[event_id].settings.hide = !events[event_id].settings.hide;
 			rebuild_events();
 			evaluate_save_button();
 		},
@@ -347,18 +347,15 @@ function submit_hide_show_event(event_id){
 
 function submit_edit_event(event_id){
 
-	var event = clone(events[event_id]);
-	event._method = "PATCH";
-	event.calendar_id = calendar_id;
+	var edit_event = clone(events[event_id]);
+	edit_event._method = "PATCH";
+	edit_event.calendar_id = calendar_id;
 
 	$.ajax({
 		url:window.apiurl+"/event/"+event.id,
 		type: "post",
 		dataType: 'json',
-		data: event,
-		success: function( result ){
-			console.log(result)
-		},
+		data: edit_event,
 		error: function ( log )
 		{
 			console.log(log);
@@ -374,9 +371,6 @@ function submit_delete_event(event_id){
 		type: "post",
 		dataType: 'json',
 		data: {_method: 'DELETE'},
-		success: function( result ){
-			console.log(result)
-		},
 		error: function ( log )
 		{
 			console.log(log);
