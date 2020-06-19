@@ -3,7 +3,7 @@
 @push('head')
     <script>
     const owner = {{ $calendar->owned }};
-    
+
     $(document).ready(function(){
 
         @include('calendar._loadcalendar')
@@ -39,7 +39,7 @@
         if(!evaluate_queryString(queryString)){
             rebuild_calendar('calendar', dynamic_data);
         }
-        
+
         edit_event_ui.bind_events();
 
         $('#current_year, #current_timespan, #current_day, #current_hour, #current_minute, #location_select').change(function(){
@@ -65,14 +65,17 @@
     });
 
     function evaluate_queryString(queryString){
-            
         const urlParams = new URLSearchParams(queryString);
 
-        var year = Number(urlParams.get('year'));
-        var timespan = Number(urlParams.get('month'));
-        var day = Number(urlParams.get('day'));
+        if(urlParams.has("year") && urlParams.has("timespan") && urlParams.has("day")){
+            var year = Number(urlParams.get('year'));
+            var timespan = Number(urlParams.get('month'));
+            var day = Number(urlParams.get('day'));
 
-        if(!isNaN(year) && !isNaN(timespan) && !isNaN(day)){
+            if(isNaN() || isNaN() || isNaN()) {
+                return false;
+            }
+
             if(valid_preview_date(year, timespan, day) || owner){
                 if(year == 0 && !static_data.settings.year_zero_exists){
                     return false;
@@ -94,9 +97,9 @@
                 return true;
             }
         }
-        
+
         return false;
-        
+
     }
     
     function check_dates(){
@@ -131,7 +134,7 @@
                     });
 
                 }else if(new_dynamic_change > last_dynamic_change){
-                    
+
                     last_dynamic_change = new_dynamic_change
 
                     get_dynamic_data(hash, function(result){
@@ -192,7 +195,7 @@
             update_current_day(false);
             scroll_to_epoch();
         }
-        
+
         refresh_view_values();
 
     }
