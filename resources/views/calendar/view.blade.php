@@ -68,16 +68,16 @@
         const urlParams = new URLSearchParams(queryString);
 
         if(urlParams.has("year") && urlParams.has("timespan") && urlParams.has("day")){
-            var year = Number(urlParams.get('year'));
-            var timespan = Number(urlParams.get('month'));
-            var day = Number(urlParams.get('day'));
+            let year = Number(urlParams.get('year'));
+            let timespan = Number(urlParams.get('month'));
+            let day = Number(urlParams.get('day'));
 
-            if(isNaN() || isNaN() || isNaN()) {
+            if(isNaN(year) || isNaN(timespan) || isNaN(day)) {
                 return false;
             }
 
             if(valid_preview_date(year, timespan, day) || owner){
-                if(year == 0 && !static_data.settings.year_zero_exists){
+                if(year === 0 && !static_data.settings.year_zero_exists){
                     return false;
                 }
                 preview_date_manager.year = convert_year(static_data, year);
