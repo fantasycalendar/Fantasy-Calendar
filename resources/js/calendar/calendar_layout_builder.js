@@ -709,7 +709,7 @@ var calendar_layouts = {
 					calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("<div class='day_row'>");
 					if(owner){
-						calendar_layouts.html.push(`<div epoch='${epoch}' class='btn_create_event btn btn-success full'>Create Event</div>`);
+						calendar_layouts.html.push(`<div epoch='${epoch}' class='btn_create_event btn btn-success full'><div class="event_create_label">Create Event</div></div>`);
 					}
 					calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("<div class='day_row last_row'>");
@@ -1037,7 +1037,7 @@ var calendar_layouts = {
 					calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("<div class='day_row'>");
 					if(owner){
-						calendar_layouts.html.push(`<div epoch='${epoch}' class='btn_create_event btn btn-success full'>Create Event</div>`);
+						calendar_layouts.html.push(`<div epoch='${epoch}' class='btn_create_event btn btn-success full'><div class="event_create_label">Create Event</div></div>`);
 					}
 					calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("<div class='day_row last_row'>");
@@ -1414,7 +1414,7 @@ var calendar_layouts = {
 
 					calendar_layouts.html.push("<div class='day_row'>");
 					if(owner){
-						calendar_layouts.html.push(`<div epoch='${epoch}' class='btn_create_event btn btn-success full'>Create Event</div>`);
+						calendar_layouts.html.push(`<div epoch='${epoch}' class='btn_create_event btn btn-success full'><div class="event_create_label">Create Event</div></div>`);
 					}
 					calendar_layouts.html.push("</div>");
 

@@ -168,6 +168,10 @@
     margin:0 0.2rem 0.2rem 0.2rem;
 }
 
+.day_row:nth-last-child(2) {
+    flex-grow: 1;
+}
+
 .day_row:last-child{
     margin-top:auto;
 }
@@ -212,14 +216,16 @@
 }
 
 .btn_create_event{
-    position:relative;
-    width:100%;
-    padding:0.1rem;
-    font-size:9pt;
-    margin-top:5px;
+    position: relative;
+    width: 100%;
+    padding: 0.1rem;
+    font-size: 10pt;
     visibility: hidden;
-    -webkit-transition: visibility .0s; /* Safari */
-    transition: visibility .0s;
+    transition: visibility 0s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .btn_create_event:hover{
