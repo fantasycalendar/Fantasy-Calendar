@@ -1142,6 +1142,12 @@ ol.example li.placeholder:before {
 
     &.creation{
         background-color: $accent-color;
+
+        ol {
+            list-style-type: none;
+            padding-inline-start: 0;
+            margin-top: 20px;
+        }
     }
 }
 

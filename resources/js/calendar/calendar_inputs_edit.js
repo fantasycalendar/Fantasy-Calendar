@@ -603,7 +603,7 @@ function set_up_edit_inputs(){
 			preferredFormat: "hex",
 			showInput: true
 		});
-	
+
 		season_sortable.children().last().find('.end_color').spectrum({
 			color: stats.color[1],
 			preferredFormat: "hex",
@@ -2115,7 +2115,7 @@ function set_up_edit_inputs(){
 	$(document).on('click', '.link_calendar', function(){
 
 		calendar_link_select.prop('disabled', true);
-		
+
 		var calendar_hash = $(this).attr('hash');
 
 		var year = Number($(this).closest('.collapse-container').find('.year-input').val());
@@ -2137,13 +2137,13 @@ function set_up_edit_inputs(){
 		.then((result) => {
 
 			if(!result.dismiss) {
-		
+
 				calendar_new_link_list.empty();
 
 				var date = [year, timespan, day];
-		
+
 				var epoch_offset = evaluate_calendar_start(static_data, year, timespan, day).epoch;
-					
+
 				link_child_calendar(calendar_hash, date, epoch_offset);
 
 			}else{
@@ -2413,7 +2413,7 @@ function set_up_edit_inputs(){
 			}
 
 			evaluate_settings();
-			
+
 			do_error_check(type[0], refresh);
 
 		}
@@ -2930,7 +2930,7 @@ function add_season_to_sortable(parent, key, data){
 				element.push("</div>");
 
 			}
-			
+
 			element.push(`<div class='mt-1 p-2 border rounded season_color_enabled ${!static_data.seasons.global_settings.color_enabled ? "hidden" : ""}'>`);
 
 				element.push(`<div class='row no-gutters'>`);
@@ -3822,27 +3822,28 @@ function get_creation_steps(){
 
 	if(creation.current_step >= 1){
 		if(calendar_name == ""){
-			creation.text.push(`<i class="mr-2 fas fa-calendar"></i> Your calendar must have a name.`)
+			creation.text.push(`<span><i class="mr-2 fas fa-calendar"></i> Your calendar must have a name</span>.`)
 		}else{
-			creation.text.push(`<i class="mr-2 fas fa-calendar-check"></i> Your calendar has a name!`);
+			creation.text.push(`<span style="opacity: 0.4;"><i class="mr-2 fas fa-calendar-check"></i> Your calendar has a name!</span>`);
 			creation.current_step++;
 		}
 	}
-	
+
 	if(creation.current_step >= 2){
 		if(static_data.year_data.global_week.length == 0){
-			creation.text.push(`<i class="mr-2 fas fa-calendar"></i> You need at least one week day.`);
+			creation.text.push(`<span><i class="mr-2 fas fa-calendar"></i> You need at least one week day.</span>`);
 		}else{
-			creation.text.push(`<i class="mr-2 fas fa-calendar-check"></i> You have at least one week day!`);
+			creation.text.push(`<span style="opacity: 0.4;"><i class="mr-2 fas fa-calendar-check"></i> You have at least one week day!</span>`);
 			creation.current_step++;
 		}
 	}
-	
+
 	if(creation.current_step >= 3){
 		if(static_data.year_data.timespans.length == 0){
-			creation.text.push(`<i class="mr-2 fas fa-calendar"></i> You need at least one month.`);
+			creation.text.push(`<span><i class="mr-2 fas fa-calendar"></i> You need at least one month.</span>`);
 		}else{
-			creation.text.push(`<i class="mr-2 fas fa-calendar-check"></i> You have at least one month!`);
+		    $("#collapsible_globalweek").prop("checked", false);
+			creation.text.push(`<span style="opacity: 0.4;"><i class="mr-2 fas fa-calendar-check"></i> You have at least one month!</span>`);
 			creation.current_step++;
 		}
 	}
@@ -3861,7 +3862,7 @@ var do_error_check = debounce(function(type, rebuild){
 
 		var text = [];
 
-		text.push(`<h3>Remaining Steps</h3><ol>`);
+		text.push(`<h3>Calendar Creation (${creation_steps.current_step}/${creation_steps.steps})</h3><ol>`);
 
 		for(var i = 0; i < creation_steps.text.length; i++){
 
@@ -3876,13 +3877,13 @@ var do_error_check = debounce(function(type, rebuild){
 		$('#generator_container').addClass('step-'+(creation_steps.current_step));
 
 	}else{
-		
+
 		var errors = get_errors();
-		
+
 		if(errors.length == 0 && $('.invalid').length == 0){
 
 			$('#generator_container').removeClass();
-			
+
 			close_message_modal();
 
 			error_check(type, rebuild);
@@ -4189,7 +4190,7 @@ function reindex_season_sortable(key){
 		$('.dynamic_input', this).each(function(){
 			$(this).attr('data', $(this).attr('data').replace(/[0-9]+/g, i));
 		});
-		
+
 		$(this).find(".name-input").prop("tabindex", tabindex)
 		tabindex++;
 
@@ -4823,7 +4824,7 @@ function populate_calendar_lists(){
 				}
 
 			}
-			
+
 		}
 
 		var html = [];
@@ -5029,13 +5030,13 @@ function set_up_edit_values(){
 			preferredFormat: "hex",
 			showInput: true
 		});
-	
+
 		$('.season .end_color').spectrum({
 			color: "#FFFFFF",
 			preferredFormat: "hex",
 			showInput: true
 		});
-	
+
 		$('#season_sortable').children().each(function(i){
 
 			if(!Array.isArray(static_data.seasons.data[i].color)){
@@ -5048,10 +5049,10 @@ function set_up_edit_values(){
 					static_data.seasons.data[i].color = [];
 				}
 			}
-	
+
 			$(this).find('.start_color').spectrum("set", static_data.seasons.data[i].color[0]);
 			$(this).find('.end_color').spectrum("set", static_data.seasons.data[i].color[1]);
-	
+
 		});
 
 	}
