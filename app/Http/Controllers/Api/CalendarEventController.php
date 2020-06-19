@@ -3,13 +3,22 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Resources\Calendar;
+use App\Transformer\CalendarEventTransformer;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 use App\CalendarEvent;
+use League\Fractal\Manager;
+use League\Fractal\Resource\Item;
+use League\Fractal\Serializer\DataArraySerializer;
 
 class CalendarEventController extends Controller
 {
+    public function __construct() {
+        $this->manager = new Manager();
+        $this->manager->setSerializer(new DataArraySerializer());
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -38,7 +47,11 @@ class CalendarEventController extends Controller
      */
     public function store(Request $request)
     {
-        return CalendarEvent::create($request->all());
+        $event = CalendarEvent::create(json_decode($request->getContent(), true));
+
+        $resource = new Item($event, new CalendarEventTransformer());
+
+        return $this->manager->createData($resource)->toArray();
     }
 
     /**

@@ -307,10 +307,11 @@ function submit_new_event(event_id){
 	$.ajax({
 		url:window.apiurl+"/event",
 		type: "post",
-		dataType: 'json',
-		data: new_event,
+		contentType: 'json',
+        processData: false,
+		data: JSON.stringify(new_event),
 		success: function( result ){
-			events[event_id].id = result.id;
+			events[event_id] = result['data'];
 		},
 		error: function ( log )
 		{

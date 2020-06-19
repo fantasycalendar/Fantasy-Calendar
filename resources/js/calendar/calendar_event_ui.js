@@ -323,7 +323,7 @@ var edit_event_ui = {
 			edit_event_ui.event_background.find('#limited_repeat_num').prop('disabled', !$(this).prop('checked'));
 			edit_event_ui.event_background.find('.limit_for_warning').toggleClass('hidden', !$(this).prop('checked'));
 		});
-		
+
 		$('#has_duration').change(function(){
 			edit_event_ui.event_background.find('#duration').prop('disabled', !$(this).prop('checked'));
 			edit_event_ui.event_background.find('.duration_warning').toggleClass('hidden', !$(this).prop('checked'));
@@ -387,7 +387,7 @@ var edit_event_ui = {
 
 		$(document).on('click', '.group, .group .group_list', function(e){
 			if(edit_event_ui.deleting_clicked){
-				
+
 				e.preventDefault();
 				e.stopPropagation();
 
@@ -398,7 +398,7 @@ var edit_event_ui = {
 				}
 
 				if(group_list.children().length > 0){
-					
+
 					swal.fire({
 						title: "Warning!",
 						text: "This group has conditions in it, are you sure you want to delete it and all of its conditions?",
@@ -408,14 +408,14 @@ var edit_event_ui = {
 						confirmButtonText: 'Yes',
 						icon: "warning",
 					}).then((result) => {
-		
+
 						if(!result.dismiss) {
 							group_list.parent().remove();
 							$('#condition_remove_button').click();
 							edit_event_ui.evaluate_condition_selects(edit_event_ui.event_conditions_container);
 							edit_event_ui.inputs_changed = true;
 						}
-		
+
 					});
 
 				}else{
@@ -424,8 +424,8 @@ var edit_event_ui = {
 					edit_event_ui.evaluate_condition_selects(edit_event_ui.event_conditions_container);
 					edit_event_ui.inputs_changed = true;
 				}
-				
-				
+
+
 			}
 		});
 
@@ -650,6 +650,8 @@ var edit_event_ui = {
 			hide_full: $('#event_hide_full').prop('checked'),
 			print: $('#event_print_checkbox').prop('checked')
 		}
+
+		console.log(events[this.event_id]);
 
 		if($('#events_sortable').length){
 			if(this.new_event){
@@ -939,7 +941,7 @@ var edit_event_ui = {
 		}
 
 		var repeat_string = repeat_value != 1 ? `${ordinal_suffix_of(repeat_value)} ` : "";
-		
+
 		this.condition_presets.find('option[value="every_x_day"]').text(`Every ${repeat_string}day`);
 		this.condition_presets.find('option[value="every_x_weekday"]').text(`Every ${repeat_string}${edit_event_ui.data.week_day_name}`);
 		this.condition_presets.find('option[value="every_x_monthly_date"]').text(`Every ${repeat_string}month on the ${ordinal_suffix_of(edit_event_ui.data.day)}`);
@@ -1319,7 +1321,7 @@ var edit_event_ui = {
 					condition.find('.input_container').children().eq(1).val(element[2][1]);
 
 					edit_event_ui.search_distance = Number(element[2][1]) > edit_event_ui.search_distance ? Number(element[2][1]) : edit_event_ui.search_distance;
-				
+
 				}else if(element[0] == "Weekday"){
 
 					condition.find('.input_container').children().each(function(i){
@@ -2235,7 +2237,7 @@ var show_event_ui = {
 				['removeformat']
 			]
 		});
-		
+
 		this.event_comment_input_container.hide();
 		this.event_comment_input.trumbowyg('disabled', true);
 
@@ -2258,7 +2260,7 @@ var show_event_ui = {
 			show_event_ui.event_comment_input.trumbowyg('empty');
 		});
 
-		
+
 		this.edit_event_btn.click(function(){
 			show_event_ui.callback_do_close(function(){
 				edit_event_ui.edit_event(show_event_ui.event_id);
