@@ -528,7 +528,7 @@
 							<button type='button' class='btn btn-primary add full'><i class="fa fa-plus"></i></button>
 						</div>
 					</div>
-					
+
 					<div class="row sortable-header timespan_sortable_header hidden">
 						<div class='col-6' style="padding-left:25%;">Name</div>
 						<div class='col-6' style="padding-left:20%;">Length</div>
@@ -620,7 +620,7 @@
 						</div>
 					</div>
 
-					
+
 					<div class="row">
 						<div style='font-style: italic; margin-left:3.5rem'>Name</div>
 					</div>
@@ -1316,7 +1316,7 @@
         <div class='p-2'><button type='button' class='btn btn-primary' id='apply_changes_btn'>Update preview</button></div>
     </div>
 
-	<div id="top_follower">
+	<div id="top_follower" class="step-hide">
 
 		<div class='parent_button_container hidden'>
 			<div class='container d-flex h-100 p-0'>
@@ -1338,7 +1338,7 @@
         <div class="follower_center">
             <div id='top_follower_content'><div class='year'></div><div class='cycle'></div></div>
         </div>
-		
+
 		<div class='reset_preview_date_container m-1 right'>
             <button type='button' class='btn m-0 btn-info hidden reset_preview_date protip' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >Current ></button>
         </div>
@@ -1355,7 +1355,7 @@
 	</div>
 
 	<div id="weather_container" class="hidden">
-		
+
 		<div id='day_length' class='hidden'>
 			<h3 class='text-center mt-3'>Sunrise and Sunset</h3>
 			<canvas class='chart'></canvas>

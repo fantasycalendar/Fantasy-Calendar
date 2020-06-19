@@ -3831,6 +3831,11 @@ function get_creation_steps(){
 
 	if(creation.current_step >= 2){
 		if(static_data.year_data.global_week.length == 0){
+		    $("#collapsible_globalweek").prop("checked", true);
+
+		    $("#calendar_name").blur();
+            setTimeout(function() { $('#weekday_name_input').focus() }, 200);
+
 			creation.text.push(`<span><i class="mr-2 fas fa-calendar"></i> You need at least one week day.</span>`);
 		}else{
 			creation.text.push(`<span style="opacity: 0.4;"><i class="mr-2 fas fa-calendar-check"></i> You have at least one week day!</span>`);
@@ -3840,6 +3845,8 @@ function get_creation_steps(){
 
 	if(creation.current_step >= 3){
 		if(static_data.year_data.timespans.length == 0){
+            $("#collapsible_timespans").prop("checked", true);
+
 			creation.text.push(`<span><i class="mr-2 fas fa-calendar"></i> You need at least one month.</span>`);
 		}else{
 		    $("#collapsible_globalweek").prop("checked", false);
@@ -3862,21 +3869,23 @@ var do_error_check = debounce(function(type, rebuild){
 
 		var text = [];
 
-		text.push(`<h3>Calendar Creation (${creation_steps.current_step}/${creation_steps.steps})</h3><ol>`);
+		text.push(`<h3 style="opacity: 0.7;">Calendar Creation (${creation_steps.current_step}/${creation_steps.steps})</h3><ol>`);
 
 		for(var i = 0; i < creation_steps.text.length; i++){
 
 			text.push(`<li>${creation_steps.text[i]}</li>`);
 
 		}
-		text.push(`</ol>`);
+		text.push(`</ol class="mb-4">`);
+
+		text.push(`<img class="w-100" src='/resources/calendar_create.svg'>`);
 
 		creation_message(text.join(''));
 
 		$('#generator_container').removeClass('step-'+(creation_steps.current_step-1));
 		$('#generator_container').addClass('step-'+(creation_steps.current_step));
 
-	}else{
+	} else {
 
 		var errors = get_errors();
 

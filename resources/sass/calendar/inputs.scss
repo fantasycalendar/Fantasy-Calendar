@@ -1127,7 +1127,8 @@ ol.example li.placeholder:before {
 #modal {
     border-radius: 5px;
     padding: 20px;
-    width:500px;
+    width:700px;
+    max-width: 90%;
     position:relative;
     margin:auto;
     z-index: 10000;
@@ -1141,12 +1142,14 @@ ol.example li.placeholder:before {
     }
 
     &.creation{
+        padding: 3rem;
         background-color: $accent-color;
+        font-size: 1.1rem;
 
         ol {
             list-style-type: none;
             padding-inline-start: 0;
-            margin-top: 20px;
+            margin: 20px 0;
         }
     }
 }
