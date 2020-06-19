@@ -312,33 +312,35 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     font-size:11pt;
     order: 2;
     flex-grow: 1;
+    line-height: 46px;
 }
 
 .remove-container > .btn_remove, .remove-container > .btn_cancel, .remove-container > .btn_accept{
     pointer-events: auto;
     height:40px;
     width:40px;
-    border-radius: 0;
-    padding: 7px 0 0;
-    font-size:13pt;
+    padding: 2px 0 0;
+    font-size: 22px;
     cursor: pointer;
 }
 
 .remove-container > .btn_remove {
     position: absolute;
     right: 2px;
-    top: 4px;
+    top: 3px;
 }
 
 .remove-container > .btn_cancel{
     display:none;
     order: 3;
+    margin-right: 2px;
 }
 
 .remove-container > .btn_accept{
     left:0;
     display:none;
     order: 1;
+    margin-left: 2px;
 }
 
 .remove-container > .handle{
@@ -990,10 +992,10 @@ ol.example li.placeholder:before {
 #condition_remove_button .icon.wiggle {
     /* Start the shake animation and make the animation last for 0.5 seconds */
     animation: wiggle_icon_rotation 2s;
-    
+
     /* When the animation is finished, start again */
     animation-iteration-count: infinite;
-    
+
     &.faster{
         animation: wiggle_icon_rotation_faster 1.2s;
         animation-iteration-count: infinite;
@@ -1133,7 +1135,7 @@ ol.example li.placeholder:before {
 
 #modal {
     color: white;
-    
+
     &.error{
         background-color: #f44336;
     }

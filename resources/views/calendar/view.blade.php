@@ -101,7 +101,7 @@
         return false;
 
     }
-    
+
     function check_dates(){
 
         if(document.hasFocus() && (Date.now() - last_mouse_move) < 10000){
