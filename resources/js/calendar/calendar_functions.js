@@ -1397,25 +1397,36 @@ var date_converter = {
 		this.parent_dynamic_data = parent_dynamic_data;
 		this.child_dynamic_data = child_dynamic_data;
 
-		var child_minutes_per_day = this.child_static_data.clock.hours * this.child_static_data.clock.minutes;
-		var parent_minutes_per_day = this.parent_static_data.clock.hours * this.parent_static_data.clock.minutes;
+		var hour = 0;
+		var minute = 0;
 
-		var time_scale = parent_minutes_per_day / child_minutes_per_day;
+		if(this.parent_static_data.clock.enabled && this.child_static_data.clock.enabled){
 
-		this.target_epoch = Math.floor((this.parent_dynamic_data.epoch-parent_offset)*time_scale);
+			var child_minutes_per_day = this.child_static_data.clock.hours * this.child_static_data.clock.minutes;
+			var parent_minutes_per_day = this.parent_static_data.clock.hours * this.parent_static_data.clock.minutes;
 
-		var current_minute = this.parent_dynamic_data.hour*this.parent_static_data.clock.minutes+this.parent_dynamic_data.minute;
+			var time_scale = parent_minutes_per_day / child_minutes_per_day;
 
-		var child_current_hours = current_minute / this.child_static_data.clock.minutes;
+			this.target_epoch = Math.floor((this.parent_dynamic_data.epoch-parent_offset)*time_scale);
 
-		if(child_current_hours >= this.child_static_data.clock.hours){
-			this.target_epoch++;
-			child_current_hours -= this.child_static_data.clock.hours;
+			var current_minute = this.parent_dynamic_data.hour*this.parent_static_data.clock.minutes+this.parent_dynamic_data.minute;
+
+			var child_current_hours = current_minute / this.child_static_data.clock.minutes;
+
+			if(child_current_hours >= this.child_static_data.clock.hours){
+				this.target_epoch++;
+				child_current_hours -= this.child_static_data.clock.hours;
+			}
+
+			var hour = Math.floor(child_current_hours);
+
+			var minute = Math.floor(this.child_static_data.clock.minutes*fract(child_current_hours))+1;
+
+		}else{
+
+			this.target_epoch = Math.floor((this.parent_dynamic_data.epoch-parent_offset));
+
 		}
-
-		var hour = Math.floor(child_current_hours);
-
-		var minute = Math.floor(this.child_static_data.clock.minutes*fract(child_current_hours))+1
 
 		this.year = Math.floor(this.target_epoch / fract_year_length(this.child_static_data))-2;
 		this.timespan = 0;

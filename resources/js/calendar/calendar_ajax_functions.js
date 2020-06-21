@@ -222,7 +222,7 @@ function get_dynamic_data(calendar_hash, output){
 
 }
 
-function link_child_calendar(child_hash, parent_link_date, parent_offset, ){
+function link_child_calendar(child_hash, parent_link_date, parent_offset){
 
 	show_loading_screen();
 
@@ -282,9 +282,9 @@ function unlink_child_calendar(output, child_hash){
 			dataType: 'json',
 			data: {
 				_method: "PATCH",
-				parent_hash: null,
-				parent_link_date: null,
-				parent_offset: null,
+				parent_hash: "",
+				parent_link_date: "",
+				parent_offset: "",
 			},
 			success: function(result){
 				window.location.reload();
