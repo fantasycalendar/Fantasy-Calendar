@@ -241,8 +241,11 @@ function set_up_visitor_inputs(){
 			icon: "fas fa-calendar-plus",
 			callback: context_add_event
 		}
+
+		let text = !owner || static_data.settings.allow_view ? "Copy link to date (Settings -> Allow View to enable)" : "Copy link to date";
+
 		items.copy_link_date = {
-			name: "Copy link to date",
+			name: text,
 			icon: "fas fa-link",
 			callback: function(key, opt){
 				context_copy_link_date($(opt.$trigger[0]));
