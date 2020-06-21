@@ -109,15 +109,21 @@ function set_up_edit_inputs(){
 
 		$(this).removeClass('btn-secondary').addClass('btn-primary');
 
+		var errors = get_errors();
+		var creation_steps = get_creation_steps();
+
 		switch(view_type){
 			case "owner":
-				if(previous_view_type !== 'owner'){
-					if(!preview_date.follow){
-						update_preview_calendar();
-						pre_rebuild_calendar('preview', preview_date);
-					}else{
-						pre_rebuild_calendar('calendar', dynamic_data);
-						preview_date_follow();
+				if(creation_steps.current_step > creation_steps.steps && errors.length == 0){
+					if(previous_view_type !== 'owner'){
+						evaluate_settings();
+						if(!preview_date.follow){
+							update_preview_calendar();
+							pre_rebuild_calendar('preview', preview_date);
+						}else{
+							pre_rebuild_calendar('calendar', dynamic_data);
+							preview_date_follow();
+						}
 					}
 				}
 				calendar_container.removeClass('hidden');
@@ -126,14 +132,17 @@ function set_up_edit_inputs(){
 				break;
 
 			case "player":
-				owner = 0;
-				if(previous_view_type !== 'player'){
-					if(!preview_date.follow){
-						update_preview_calendar();
-						pre_rebuild_calendar('preview', preview_date);
-					}else{
-						pre_rebuild_calendar('calendar', dynamic_data);
-						preview_date_follow();
+				owner = false;
+				if(creation_steps.current_step > creation_steps.steps && errors.length == 0){
+					if(previous_view_type !== 'player'){
+						evaluate_settings();
+						if(!preview_date.follow){
+							update_preview_calendar();
+							pre_rebuild_calendar('preview', preview_date);
+						}else{
+							pre_rebuild_calendar('calendar', dynamic_data);
+							preview_date_follow();
+						}
 					}
 				}
 				calendar_container.removeClass('hidden');
@@ -142,9 +151,13 @@ function set_up_edit_inputs(){
 				break;
 
 			case "weather":
-				if(first_switch){
-					evaluate_weather_charts();
-					first_switch = false;
+				if(creation_steps.current_step > creation_steps.steps && errors.length == 0){
+					evaluate_settings();
+					if(first_switch){
+						evaluate_day_length_chart();
+						evaluate_weather_charts();
+						first_switch = false;
+					}
 				}
 				calendar_container.addClass('hidden');
 				weather_contrainer.removeClass('hidden');
@@ -590,7 +603,7 @@ function set_up_edit_inputs(){
 			preferredFormat: "hex",
 			showInput: true
 		});
-	
+
 		season_sortable.children().last().find('.end_color').spectrum({
 			color: stats.color[1],
 			preferredFormat: "hex",
@@ -2102,7 +2115,7 @@ function set_up_edit_inputs(){
 	$(document).on('click', '.link_calendar', function(){
 
 		calendar_link_select.prop('disabled', true);
-		
+
 		var calendar_hash = $(this).attr('hash');
 
 		var year = Number($(this).closest('.collapse-container').find('.year-input').val());
@@ -2124,13 +2137,13 @@ function set_up_edit_inputs(){
 		.then((result) => {
 
 			if(!result.dismiss) {
-		
+
 				calendar_new_link_list.empty();
 
 				var date = [year, timespan, day];
-		
+
 				var epoch_offset = evaluate_calendar_start(static_data, year, timespan, day).epoch;
-					
+
 				link_child_calendar(calendar_hash, date, epoch_offset);
 
 			}else{
@@ -2224,7 +2237,18 @@ function set_up_edit_inputs(){
 
 		}
 
-	})
+	});
+
+	$('input[fc-index="allow_view"]').change(function(){
+		var checked = $(this).is(':checked');
+		var only_backwards = $('input[fc-index="only_backwards"]');
+		only_backwards.prop('disabled', !checked);
+		only_backwards.closest('.setting').toggleClass('disabled', !checked);
+		var only_backwards_checked = only_backwards.is(':checked');
+		if(!checked && only_backwards_checked){
+			only_backwards.prop('checked', false).change();
+		}
+	});
 
 	input_container.change(function(e){
 
@@ -2386,9 +2410,11 @@ function set_up_edit_inputs(){
 			if(target.attr('refresh') == "clock"){
 				eval_clock();
 				evaluate_save_button();
-			}else{
-				do_error_check(type[0], refresh);
 			}
+
+			evaluate_settings();
+
+			do_error_check(type[0], refresh);
 
 		}
 
@@ -2425,6 +2451,9 @@ function add_weekday_to_sortable(parent, key, name){
 }
 
 function add_timespan_to_sortable(parent, key, data){
+
+	if(key == 0) $('.timespan_sortable_header').removeClass('hidden');
+
 	var element = [];
 	element.push(`<div class='sortable-container list-group-item ${data.type} collapsed collapsible' type='${data.type}' index='${key}'>`);
 		element.push("<div class='main-container'>");
@@ -2675,7 +2704,7 @@ function add_leap_day_to_list(parent, key, data){
 
 				element.push("<div class='row no-gutters mb-2'>");
 					element.push("<div class='col-8 pr-1'>");
-						element.push(`<input type='text' class='form-control leap_day_occurance_input interval dynamic_input' data='year_data.leap_days.${key}' fc-index='interval' value='${data.interval}' />`);
+						element.push(`<input type='text' class='form-control leap_day_occurance_input interval dynamic_input protip' data-pt-position="top" data-pt-title='Every nth year this leap day appears. Multiple intervals can be separated by commas, like the gregorian leap day: 400,!100,4. Every 4th year, unless it is divisible by 100, but again if it is divisible by 400.' data='year_data.leap_days.${key}' fc-index='interval' value='${data.interval}' />`);
 					element.push("</div>");
 					element.push("<div class='col-4 pl-1 '>");
 						element.push(`<input type='number' step="1" class='form-control leap_day_occurance_input offset dynamic_input' min='0' data='year_data.leap_days.${key}' fc-index='offset' value='${data.interval === "1" ? 0 : data.offset}'`);
@@ -2901,7 +2930,7 @@ function add_season_to_sortable(parent, key, data){
 				element.push("</div>");
 
 			}
-			
+
 			element.push(`<div class='mt-1 p-2 border rounded season_color_enabled ${!static_data.seasons.global_settings.color_enabled ? "hidden" : ""}'>`);
 
 				element.push(`<div class='row no-gutters'>`);
@@ -3779,25 +3808,54 @@ function get_errors(){
 		}
 	}
 
-	if(static_data.year_data.timespans.length == 0){
-
-		errors.push(`You need at least one month.`);
-
-	}
-
-	if(static_data.year_data.global_week.length == 0){
-
-		errors.push(`You need at least one global week day.`);
-
-	}
-
-	if(calendar_name == ""){
-
-		errors.push(`Your calendar must have a name.`)
-
-	}
-
 	return errors;
+
+}
+
+function get_creation_steps(){
+
+	var creation = {
+		text: [],
+		current_step: 1,
+		steps: 3,
+	};
+
+	if(creation.current_step >= 1){
+		if(calendar_name == ""){
+			creation.text.push(`<span><i class="mr-2 fas fa-calendar"></i> Your calendar must have a name</span>.`)
+		}else{
+			creation.text.push(`<span style="opacity: 0.4;"><i class="mr-2 fas fa-calendar-check"></i> Your calendar has a name!</span>`);
+			creation.current_step++;
+		}
+	}
+
+	if(creation.current_step >= 2){
+		if(static_data.year_data.global_week.length == 0){
+		    $("#collapsible_globalweek").prop("checked", true);
+
+		    $("#calendar_name").blur();
+            setTimeout(function() { $('#weekday_name_input').focus() }, 200);
+
+			creation.text.push(`<span><i class="mr-2 fas fa-calendar"></i> You need at least one week day.</span>`);
+		}else{
+			creation.text.push(`<span style="opacity: 0.4;"><i class="mr-2 fas fa-calendar-check"></i> You have at least one week day!</span>`);
+			creation.current_step++;
+		}
+	}
+
+	if(creation.current_step >= 3){
+		if(static_data.year_data.timespans.length == 0){
+            $("#collapsible_timespans").prop("checked", true);
+
+			creation.text.push(`<span><i class="mr-2 fas fa-calendar"></i> You need at least one month.</span>`);
+		}else{
+		    $("#collapsible_globalweek").prop("checked", false);
+			creation.text.push(`<span style="opacity: 0.4;"><i class="mr-2 fas fa-calendar-check"></i> You have at least one month!</span>`);
+			creation.current_step++;
+		}
+	}
+
+	return creation;
 
 }
 
@@ -3805,41 +3863,67 @@ var do_error_check = debounce(function(type, rebuild){
 
 	evaluate_save_button();
 
-	var errors = get_errors();
+	var creation_steps = get_creation_steps();
 
-	if(errors.length == 0 && $('.invalid').length == 0){
-
-		close_error_message();
-
-		error_check(type, rebuild);
-		recalc_stats();
-
-	}else{
+	if(creation_steps.current_step <= creation_steps.steps){
 
 		var text = [];
 
-		$('.invalid').each(function(){
-			errors.push($(this).attr('error_msg'));
-		})
+		text.push(`<h3 style="opacity: 0.7;">Calendar Creation (${creation_steps.current_step}/${creation_steps.steps})</h3><ol>`);
 
-		text.push(`Errors:<ol>`);
+		for(var i = 0; i < creation_steps.text.length; i++){
 
-		for(var i = 0; i < errors.length; i++){
-
-			text.push(`<li>${errors[i]}</li>`);
+			text.push(`<li>${creation_steps.text[i]}</li>`);
 
 		}
-		text.push(`</ol>`);
+		text.push(`</ol class="mb-4">`);
 
-		error_message(text.join(''));
+		text.push(`<img class="w-100" src='/resources/calendar_create.svg'>`);
+
+		creation_message(text.join(''));
+
+		$('#generator_container').removeClass('step-'+(creation_steps.current_step-1));
+		$('#generator_container').addClass('step-'+(creation_steps.current_step));
+
+	} else {
+
+		var errors = get_errors();
+
+		if(errors.length == 0 && $('.invalid').length == 0){
+
+			$('#generator_container').removeClass();
+
+			close_message_modal();
+
+			error_check(type, rebuild);
+			recalc_stats();
+
+		}else{
+
+			var text = [];
+
+			$('.invalid').each(function(){
+				errors.push($(this).attr('error_msg'));
+			})
+
+			text.push(`Errors:<ol>`);
+
+			for(var i = 0; i < errors.length; i++){
+
+				text.push(`<li>${errors[i]}</li>`);
+
+			}
+			text.push(`</ol>`);
+
+			error_message(text.join(''));
+
+		}
 
 	}
 
 }, 150);
 
 function error_check(parent, rebuild){
-
-	if(wizard) return;
 
 	changes_applied = false;
 
@@ -4115,7 +4199,7 @@ function reindex_season_sortable(key){
 		$('.dynamic_input', this).each(function(){
 			$(this).attr('data', $(this).attr('data').replace(/[0-9]+/g, i));
 		});
-		
+
 		$(this).find(".name-input").prop("tabindex", tabindex)
 		tabindex++;
 
@@ -4651,6 +4735,12 @@ function calendar_save_failed(){
 
 function evaluate_save_button(override){
 
+	var creation_steps = get_creation_steps();
+
+	if(creation_steps.current_step <= creation_steps.steps){
+		return;
+	}
+
 	var errors = get_errors();
 
 	if($('#btn_save').length){
@@ -4743,7 +4833,7 @@ function populate_calendar_lists(){
 				}
 
 			}
-			
+
 		}
 
 		var html = [];
@@ -4855,7 +4945,7 @@ function set_up_edit_values(){
 
 		var current_calendar_data = get_calendar_data(data);
 
-		if(current_calendar_data !== undefined){
+		if(current_calendar_data[key] !== undefined){
 
 			switch($(this).attr('type')){
 				case "checkbox":
@@ -4873,6 +4963,9 @@ function set_up_edit_values(){
 		}
 
 	});
+
+	$('input[fc-index="only_backwards"]').prop('disabled', !static_data.settings.allow_view);
+	$('input[fc-index="only_backwards"]').closest('.setting').toggleClass('disabled', !static_data.settings.allow_view);
 
 	for(var i = 0; i < static_data.year_data.global_week.length; i++){
 		let weekdayname = static_data.year_data.global_week[i];
@@ -4946,13 +5039,13 @@ function set_up_edit_values(){
 			preferredFormat: "hex",
 			showInput: true
 		});
-	
+
 		$('.season .end_color').spectrum({
 			color: "#FFFFFF",
 			preferredFormat: "hex",
 			showInput: true
 		});
-	
+
 		$('#season_sortable').children().each(function(i){
 
 			if(!Array.isArray(static_data.seasons.data[i].color)){
@@ -4965,10 +5058,10 @@ function set_up_edit_values(){
 					static_data.seasons.data[i].color = [];
 				}
 			}
-	
+
 			$(this).find('.start_color').spectrum("set", static_data.seasons.data[i].color[0]);
 			$(this).find('.end_color').spectrum("set", static_data.seasons.data[i].color[1]);
-	
+
 		});
 
 	}
@@ -5154,7 +5247,7 @@ function autoload(){
 				set_up_view_values();
 				set_up_visitor_values();
 
-				error_check("calendar", true);
+				do_error_check("calendar", true);
 
 				swal.fire({
 					icon: "success",

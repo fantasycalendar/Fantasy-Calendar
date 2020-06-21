@@ -257,7 +257,7 @@ function set_up_view_inputs(){
 			evaluate_dynamic_change();
 		}
 
-		do_error_check('seasons', day_adjust != 0);
+		do_error_check('seasons');
 
 	});
 
@@ -395,6 +395,12 @@ function fix_date(){
 }
 
 function repopulate_location_select_list(){
+
+	var creation_steps = get_creation_steps();
+
+	if(creation_steps.current_step <= creation_steps.steps){
+		return;
+	}
 
 	var is_edit = location_select.closest('.wrap-collapsible').find('.add_inputs.locations').length > 0;
 

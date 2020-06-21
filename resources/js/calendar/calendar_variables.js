@@ -583,18 +583,18 @@ var preset_data = {
 			},
 			'cold': {
 				'None': 0.8,
-				'Hail': 0.2
+				'Hail': 1.0
 			}
 		},
 		'Windy': {
 			'warm': {
 				'None': 0.5,
-				'Dust Storm': 0.3,
-				'Tornado': 0.2
+				'Dust Storm': 0.8,
+				'Tornado': 1.0
 			},
 			'cold': {
 				'None': 0.8,
-				'Tornado': 0.2
+				'Tornado': 1.0
 			}
 		}
 	},

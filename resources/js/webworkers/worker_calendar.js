@@ -568,6 +568,8 @@ var calendar_builder = {
 
 		for(var year_i = 0; year_i < order.length; year_i++){
 
+			var year_start_epoch = epoch;
+
 			year_index = parseInt(order[year_i]);
 
 			timespan_list = this.calendar_list.pre_timespans_to_evaluate[year_index];
@@ -695,8 +697,8 @@ var calendar_builder = {
 
 						if(current_timespan.type !== "intercalary"){
 
-							this.pre_data.repititions.week_days[year_index][data.timespan_index][data.week_day]++;
-							data.week_day_num = this.pre_data.repititions.week_days[year_index][data.timespan_index][data.week_day];
+							this.pre_data.repititions.week_days[year_index][data.timespan_index][data.week_day-1]++;
+							data.week_day_num = this.pre_data.repititions.week_days[year_index][data.timespan_index][data.week_day-1];
 
 						}
 
@@ -786,6 +788,10 @@ var calendar_builder = {
 			}
 			if(year_index != convert_year(this.static_data, this.dynamic_data.year)) year_day = 1;
 			era_year++;
+
+			var climate_generator = new Climate(this.data.epochs, this.static_data, this.dynamic_data, year_start_epoch, epoch);
+			this.data.epochs = climate_generator.generate()
+
 		}
 
 		if(!this.static_data.settings.show_current_month){
@@ -795,6 +801,8 @@ var calendar_builder = {
 		order = Object.keys(this.calendar_list.post_timespans_to_evaluate);
 
 		for(var year_i = 0; year_i < order.length; year_i++){
+
+			var year_start_epoch = epoch;
 
 			year_index = parseInt(order[year_i]);
 
@@ -922,8 +930,8 @@ var calendar_builder = {
 
 						if(current_timespan.type !== "intercalary"){
 
-							this.post_data.repititions.week_days[year_index][data.timespan_index][data.week_day]++;
-							data.week_day_num = this.post_data.repititions.week_days[year_index][data.timespan_index][data.week_day];
+							this.post_data.repititions.week_days[year_index][data.timespan_index][data.week_day-1]++;
+							data.week_day_num = this.post_data.repititions.week_days[year_index][data.timespan_index][data.week_day-1];
 
 						}
 
@@ -1013,17 +1021,15 @@ var calendar_builder = {
 			}
 			if(year_index != convert_year(this.static_data, this.dynamic_data.year)) year_day = 1;
 			era_year++;
+
+			var climate_generator = new Climate(this.data.epochs, this.static_data, this.dynamic_data, year_start_epoch, epoch);
+			this.data.epochs = climate_generator.generate()
 		}
-
-		var end_epoch = epoch;
-
-		var climate_generator = new Climate(this.data.epochs, this.static_data, this.dynamic_data, start_epoch, end_epoch);
-		this.data.epochs = climate_generator.generate()
 
 		return {
 			epoch_data: this.data.epochs,
 			start_epoch: start_epoch,
-			end_epoch: end_epoch
+			end_epoch: epoch
 		};
 
 	},
@@ -1443,8 +1449,8 @@ var calendar_builder = {
 
 						if(current_timespan.type !== "intercalary"){
 
-							this.pre_data.repititions.week_days[year_index][data.timespan_index][data.week_day]++;
-							data.week_day_num = this.pre_data.repititions.week_days[year_index][data.timespan_index][data.week_day];
+							this.pre_data.repititions.week_days[year_index][data.timespan_index][data.week_day-1]++;
+							data.week_day_num = this.pre_data.repititions.week_days[year_index][data.timespan_index][data.week_day-1];
 
 						}
 
@@ -1690,8 +1696,8 @@ var calendar_builder = {
 
 					if(current_timespan.type !== "intercalary"){
 
-						this.data.repititions.week_days[data.timespan_index][data.week_day]++;
-						data.week_day_num = this.data.repititions.week_days[data.timespan_index][data.week_day];
+						this.data.repititions.week_days[data.timespan_index][data.week_day-1]++;
+						data.week_day_num = this.data.repititions.week_days[data.timespan_index][data.week_day-1];
 
 					}
 
@@ -1928,8 +1934,8 @@ var calendar_builder = {
 
 						if(current_timespan.type !== "intercalary"){
 
-							this.post_data.repititions.week_days[year_index][data.timespan_index][data.week_day]++;
-							data.week_day_num = this.post_data.repititions.week_days[year_index][data.timespan_index][data.week_day];
+							this.post_data.repititions.week_days[year_index][data.timespan_index][data.week_day-1]++;
+							data.week_day_num = this.post_data.repititions.week_days[year_index][data.timespan_index][data.week_day-1];
 
 						}
 

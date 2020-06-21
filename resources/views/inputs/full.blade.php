@@ -4,7 +4,7 @@
 
 	@yield('label')
 
-	<div class='wrap-collapsible'>
+	<div class='wrap-collapsible step-hide'>
 		<div class="view-tabs btn-group d-flex mb-2 w-100">
             <button type="button" data-pt-position='top' data-pt-title='What you, the owner, will always see' data-view-type='owner' class="protip owner w-100 btn btn-sm btn-primary">Owner View</button>
             <button type="button" data-pt-position='top' data-pt-title='A simulated view of what guests with the link to this calendar will see' data-view-type='player' class="protip player w-100 btn btn-sm btn-secondary">Guest View</button>
@@ -12,7 +12,7 @@
 		</div>
 	</div>
 
-    <div class='wrap-collapsible'>
+    <div class='wrap-collapsible step-hide'>
         <div class="d-flex mb-2 w-100">
             <label class="row no-gutters setting border rounded py-2 px-3 protip w-100" data-pt-position="right" data-pt-title="If unchecked, you will be prompted to apply changes after making them, instead of loading the calendar every time.">
                 <div class='col'>
@@ -29,9 +29,9 @@
 	<!----------------- STATISTICS ----------------->
 	<!---------------------------------------------->
 	<div class="accordion">
-		<div class='wrap-collapsible card'>
+		<div class='wrap-collapsible card settings-statistics'>
 			<input id="collapsible_statistics" class="toggle" type="checkbox">
-			<label for="collapsible_statistics" class="lbl-toggle card-header lbl-text">Statistics <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Statistics' href='https://wiki.fantasy-calendar.com/index.php?title=Statistics' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+			<label for="collapsible_statistics" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-chart-pie"></i> Statistics <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Statistics' href='https://wiki.fantasy-calendar.com/index.php?title=Statistics' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
                 <div class='row no-gutters'>
                     <div class='col-6 bold-text'>
@@ -62,9 +62,9 @@
 		<!---------------- CURRENT DATE ---------------->
 		<!---------------------------------------------->
 
-		<div class='wrap-collapsible card'>
+		<div class='wrap-collapsible card settings-current_date'>
 			<input id="collapsible_date" class="toggle" type="checkbox">
-			<label for="collapsible_date" class="lbl-toggle card-header lbl-text">Current Date <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Date' href='https://wiki.fantasy-calendar.com/index.php?title=Date' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+			<label for="collapsible_date" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-hourglass-half"></i> Current Date <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Date' href='https://wiki.fantasy-calendar.com/index.php?title=Date' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
 
 				<div id='clock' class='mb-2'>
@@ -239,9 +239,9 @@
 		<!-------------------- CLOCK ------------------->
 		<!---------------------------------------------->
 
-		<div class='wrap-collapsible card'>
+		<div class='wrap-collapsible card settings-clock'>
 			<input id="collapsible_clock" class="toggle" type="checkbox">
-			<label for="collapsible_clock" class="lbl-toggle card-header lbl-text">Clock <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Clock' href='https://wiki.fantasy-calendar.com/index.php?title=Clock' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+			<label for="collapsible_clock" class="lbl-toggle card-header lbl-text"><i class="mr-2 fa fa-clock"></i> Clock <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Clock' href='https://wiki.fantasy-calendar.com/index.php?title=Clock' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
 
 				<div class='row'>
@@ -362,9 +362,9 @@
 		<!------------------- WEEKDAYS ----------------->
 		<!---------------------------------------------->
 
-		<div class='wrap-collapsible card'>
+		<div class='wrap-collapsible card settings-weekdays step-2-step'>
 			<input id="collapsible_globalweek" class="toggle" type="checkbox">
-			<label for="collapsible_globalweek" class="lbl-toggle card-header lbl-text">Weekdays <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Weekdays' href='https://wiki.fantasy-calendar.com/index.php?title=Global_week' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+			<label for="collapsible_globalweek" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-calendar-week"></i> Weekdays <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Weekdays' href='https://wiki.fantasy-calendar.com/index.php?title=Global_week' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
 
 				<div class='row center-text hidden' id='overflow_explanation'>
@@ -457,10 +457,10 @@
 		<!----------------- TIMESPANS ------------------>
 		<!---------------------------------------------->
 
-		<div class='wrap-collapsible card'>
+		<div class='wrap-collapsible card settings-timespans step-3-step'>
 
 			<input id="collapsible_timespans" class="toggle" type="checkbox">
-			<label for="collapsible_timespans" class="lbl-toggle card-header lbl-text">Months <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Months & Intercalaries' href='https://wiki.fantasy-calendar.com/index.php?title=Months_%26_Intercalaries' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+			<label for="collapsible_timespans" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-calendar-alt"></i> Months <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Months & Intercalaries' href='https://wiki.fantasy-calendar.com/index.php?title=Months_%26_Intercalaries' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
 
 				@if(request()->is('calendars/*/edit') && $calendar->isLinked())
@@ -511,7 +511,7 @@
 						</div>
 					</div>
 
-					<div class='add_inputs timespan row no-gutters'>
+					<div class='add_inputs timespan row no-gutters mb-2'>
 
 						<div class='col-md-6'>
 							<input type='text' id='timespan_name_input' class='form-control name' placeholder='Name'>
@@ -528,10 +528,10 @@
 							<button type='button' class='btn btn-primary add full'><i class="fa fa-plus"></i></button>
 						</div>
 					</div>
-					
-					<div class="row">
-						<div style='font-style: italic; margin-left:4.5rem'>Name</div>
-						<div style='font-style: italic; margin-left:10rem'>Length</div>
+
+					<div class="row sortable-header timespan_sortable_header hidden">
+						<div class='col-6' style="padding-left:25%;">Name</div>
+						<div class='col-6' style="padding-left:20%;">Length</div>
 					</div>
 
 					<div class='sortable list-group' id='timespan_sortable'></div>
@@ -549,9 +549,9 @@
 		<!------------------ LEAP DAYS ----------------->
 		<!---------------------------------------------->
 
-		<div class='wrap-collapsible card'>
+		<div class='wrap-collapsible card settings-leapdays'>
 			<input id="collapsible_leapdays" class="toggle" type="checkbox">
-			<label for="collapsible_leapdays" class="lbl-toggle card-header lbl-text">Leap days <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Leap Days' href='https://wiki.fantasy-calendar.com/index.php?title=Leap_days' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+			<label for="collapsible_leapdays" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-calendar-day"></i> Leap days <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Leap Days' href='https://wiki.fantasy-calendar.com/index.php?title=Leap_days' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content content card-body">
 
 				@if(request()->is('calendars/*/edit') && $calendar->isLinked())
@@ -620,7 +620,7 @@
 						</div>
 					</div>
 
-					
+
 					<div class="row">
 						<div style='font-style: italic; margin-left:3.5rem'>Name</div>
 					</div>
@@ -636,9 +636,9 @@
 		<!-------------------- ERAS -------------------->
 		<!---------------------------------------------->
 
-		<div class='wrap-collapsible card'>
+		<div class='wrap-collapsible card settings-eras'>
 			<input id="collapsible_eras" class="toggle" type="checkbox">
-			<label for="collapsible_eras" class="lbl-toggle card-header lbl-text">Eras <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Eras' href='https://wiki.fantasy-calendar.com/index.php?title=Eras' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+			<label for="collapsible_eras" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-infinity"></i> Eras <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Eras' href='https://wiki.fantasy-calendar.com/index.php?title=Eras' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
 
 				@if(request()->is('calendars/*/edit') && $calendar->isLinked())
@@ -700,9 +700,9 @@
 		<!------------------- MOONS -------------------->
 		<!---------------------------------------------->
 
-		<div class='wrap-collapsible card'>
+		<div class='wrap-collapsible card settings-moons'>
 			<input id="collapsible_moon" class="toggle" type="checkbox">
-			<label for="collapsible_moon" class="lbl-toggle card-header lbl-text">Moons <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Moons' href='https://wiki.fantasy-calendar.com/index.php?title=Moons' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+			<label for="collapsible_moon" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-moon"></i> Moons <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Moons' href='https://wiki.fantasy-calendar.com/index.php?title=Moons' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
 
 				<div class='row bold-text'>
@@ -739,9 +739,14 @@
 		<!------------------- SEASONS ------------------>
 		<!---------------------------------------------->
 
-		<div class='wrap-collapsible card'>
+		<div class='wrap-collapsible card settings-seasons'>
 			<input id="collapsible_seasons" class="toggle" type="checkbox">
-			<label for="collapsible_seasons" class="lbl-toggle card-header lbl-text">Seasons<a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Seasons' href='https://wiki.fantasy-calendar.com/index.php?title=Seasons' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+			<label for="collapsible_seasons" class="lbl-toggle card-header lbl-text">
+				<i class='season_combo_icon fas mr-2'>
+					<i class="fas fa-sun"></i><i class="fas fa-snowflake"></i>
+				</i>
+				Seasons<a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Seasons' href='https://wiki.fantasy-calendar.com/index.php?title=Seasons' class="wiki protip"><i class="icon-question-sign"></i></a>
+			</label>
 			<div class="collapsible-content card-body">
 
 				<div class='row bold-text'>
@@ -817,9 +822,9 @@
 		<!------------------- WEATHER ------------------>
 		<!---------------------------------------------->
 
-		<div class='wrap-collapsible card'>
+		<div class='wrap-collapsible card settings-weather'>
 			<input id="collapsible_weather" class="toggle" type="checkbox">
-			<label for="collapsible_weather" class="lbl-toggle card-header lbl-text">Weather<a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Weather' href='https://wiki.fantasy-calendar.com/index.php?title=Weather' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+			<label for="collapsible_weather" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-cloud-sun-rain"></i> Weather<a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Weather' href='https://wiki.fantasy-calendar.com/index.php?title=Weather' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
 
                 <div id='no_seasons_container' class='row no-gutters'>
@@ -905,9 +910,9 @@
 		<!------------------ LOCATIONS ----------------->
 		<!---------------------------------------------->
 
-		<div class='wrap-collapsible card'>
+		<div class='wrap-collapsible card settings-locations'>
 			<input id="collapsible_locations" class="toggle" type="checkbox">
-			<label for="collapsible_locations" class="lbl-toggle card-header lbl-text">Locations <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Locations' href='https://wiki.fantasy-calendar.com/index.php?title=Locations' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+			<label for="collapsible_locations" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-compass"></i> Locations <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Locations' href='https://wiki.fantasy-calendar.com/index.php?title=Locations' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
 
                 <div id='locations_warning' class='row no-gutters'>
@@ -927,7 +932,7 @@
     					<input type='button' value='Map preset locations to seasons' class='btn btn-secondary full protip' id='map_seasons_to_location' data-pt-position="right" data-pt-title="This will open an UI where you can map your seasons to the preset location's seasons, as your order might be different from the preset.">
     				</div>
                     <div class='row no-gutters my-2'>
-                        <input type='button' value='Copy selected location to new location' class='btn btn-info full' id='copy_location_data'>
+                        <input type='button' value='Copy current location' class='btn btn-info full' id='copy_location_data'>
                     </div>
 
     				<div class='row no-gutters my-2'>
@@ -962,9 +967,9 @@
 		<!------------------- CYCLES ------------------->
 		<!---------------------------------------------->
 
-		<div class='wrap-collapsible card'>
+		<div class='wrap-collapsible card settings-cycles'>
 			<input id="collapsible_cycles" class="toggle" type="checkbox">
-			<label for="collapsible_cycles" class="lbl-toggle card-header lbl-text">Cycles <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Cycles' href='https://wiki.fantasy-calendar.com/index.php?title=Cycles' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+			<label for="collapsible_cycles" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-redo"></i> Cycles <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Cycles' href='https://wiki.fantasy-calendar.com/index.php?title=Cycles' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
 
 				<div class='row no-gutters bold-text'>
@@ -992,9 +997,9 @@
 		<!----------------- CATEGORIES ----------------->
 		<!---------------------------------------------->
 
-		<div class='wrap-collapsible card'>
+		<div class='wrap-collapsible card settings-categories'>
 			<input id="collapsible_categories" class="toggle" type="checkbox">
-			<label for="collapsible_categories" class="lbl-toggle card-header lbl-text">Event Categories <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Event Categories' href='https://wiki.fantasy-calendar.com/index.php?title=Event_categories' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+			<label for="collapsible_categories" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-th-list"></i> Event Categories <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Event Categories' href='https://wiki.fantasy-calendar.com/index.php?title=Event_categories' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
 
 				<div class='row no-gutters bold-text'>
@@ -1020,7 +1025,7 @@
                 <div class='row no-gutters bold-text'>
                     <div class='col'>
                        Default category:
-                        <select class='form-control event-category-list static_input' id='default_event_category' data='settings' fc-index='default_category'></select>
+                        <select class='form-control event-category-list static_input protip' data-pt-position="right" data-pt-title="This sets the category to be selected by default when a new event is created" id='default_event_category' data='settings' fc-index='default_category'></select>
     		      	</div>
                 </div>
             </div>
@@ -1030,9 +1035,9 @@
 		<!------------------- EVENTS ------------------->
 		<!---------------------------------------------->
 
-		<div class='wrap-collapsible card'>
+		<div class='wrap-collapsible card settings-events'>
 			<input id="collapsible_events" class="toggle" type="checkbox">
-			<label for="collapsible_events" class="lbl-toggle card-header lbl-text">Events <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Events' href='https://wiki.fantasy-calendar.com/index.php?title=Events' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+			<label for="collapsible_events" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-calendar-check"></i> Events <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Events' href='https://wiki.fantasy-calendar.com/index.php?title=Events' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
 
 				<div class='row no-gutters bold-text'>
@@ -1059,23 +1064,22 @@
 		<!------------------ SETTINGS ------------------>
 		<!---------------------------------------------->
 
-		<div class='wrap-collapsible card'>
+		<div class='wrap-collapsible card settings-settings'>
 			<input id="collapsible_settings" class="toggle" type="checkbox">
-			<label for="collapsible_settings" class="lbl-toggle card-header lbl-text">Settings <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Settings' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+			<label for="collapsible_settings" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-cog"></i> Settings <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Settings' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
 
 				<div class='add_inputs'>
 
+					<div class='bold-text'>Layout Settings:</div>
+
 					<label class="row no-gutters setting">
-                        <div class='col bold-text'>
-                            Layout:
-    						<select class='form-control static_input' data='settings' fc-index='layout'>
-                                <option value='grid'>Grid style</option>
-                                <option value='wide'>Wide style</option>
-                                <option value='vertical'>Vertical style</option>
-                                <option value='minimalistic'>Minimalistic style</option>
-    						</select>
-                        </div>
+						<select class='form-control static_input' data='settings' fc-index='layout'>
+							<option value='grid'>Grid style</option>
+							<option value='wide'>Wide style</option>
+							<option value='vertical'>Vertical style</option>
+							<option value='minimalistic'>Minimalistic style</option>
+						</select>
 					</label>
 
 					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Makes the calendar only show the current month. Enhances calendar loading performance, especially with many moons.">
@@ -1087,28 +1091,29 @@
 					    </div>
                     </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Normally, the year count is -2, -1, 1, 2, and so on. This makes it so that 0 exists, so -2, -1, 0, 1, 2.">
-                        <div class='col'>
-							@if(request()->is('calendars/*/edit') && $calendar->isLinked())
-                            	<input type='checkbox' class='margin-right' {{ Arr::get($calendar->static_data, 'settings.year_zero_exists') ? "checked" : "" }} disabled>
-							@else
-                            	<input type='checkbox' class='margin-right static_input' data='settings' id='year_zero_exists' fc-index='year_zero_exists'>
-							@endif
-                            <span>
-                                Year zero exists
-                            </span>
-                        </div>
-                    </label>
+					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This will add 'Month 1' and so on to each month in the calendar">
+						<div class='col'>
+							<input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='add_month_number' onclick="setTimeout(calendar_layouts.add_month_number, 10);">
+							<span>
+								Add month number to months
+							</span>
+						</div>
+					</label>
 
-					@if(request()->is('calendars/*/edit') && $calendar->isLinked())
-						<p class=""><a onclick="linked_popup();" href='#'>Why are some settings disabled?</a></p>
-					@endif
+					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This adds a small number at the bottom left of the days in the calendar showing which year-day it is">
+						<div class='col'>
+							<input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='add_year_day_number' onclick="setTimeout(calendar_layouts.add_year_day_number, 10);">
+							<span>
+								Add year day to each day
+							</span>
+						</div>
+					</label>
 
 					<!------------------------------------------------------->
 
 					<div class='bold-text'>Guest View Settings:</div>
 
-					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This will allow guest viewers to view any past or future year and months just like you can">
+					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This will allow viewers to view any past or future year and months just like you can">
                         <div class='col'>
     						<input type='checkbox' class='margin-right static_input' data='settings' fc-index='allow_view'>
     						<span>
@@ -1117,16 +1122,16 @@
 					    </div>
                     </label>
 
-					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This will limit guest viewers to only view past years">
+					<label class="row no-gutters setting border rounded py-1 px-2 protip disabled" data-pt-position="right" data-pt-title="This will limit viewers to only view past dates (requires allowing advancing view)">
                         <div class='col'>
-    						<input type='checkbox' class='margin-right static_input' data='settings' fc-index='only_backwards'>
+    						<input type='checkbox' class='margin-right static_input' disabled data='settings' fc-index='only_backwards'>
     						<span>
-    							Limit to only backwards view
+    							Limit to only viewing past dates
     						</span>
 					    </div>
                     </label>
 
-					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Guest viewers will only be able to see up to current day, future days will be greyed out">
+					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Viewers will only be able to see up to current day, future days will be greyed out">
                         <div class='col'>
     						<input type='checkbox' class='margin-right static_input' data='settings' fc-index='only_reveal_today'>
     						<span>
@@ -1175,19 +1180,16 @@
 					    </div>
                     </label>
 
-
-                    <div class='bold-text'>Weather Display Settings:</div>
-
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Hides all the weather from guest viewers">
+                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Prevents all weather from appearing on the calendar for guest viewers">
                         <div class='col'>
                             <input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_all_weather'>
                             <span>
-                                Hide ALL weather from guest viewers
+                                Hide all weather from guest viewers
                             </span>
                         </div>
                     </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Hides any future weather from guest viewers">
+                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Prevents any future weather from appearing on the calendar for guest viewers">
                         <div class='col'>
                             <input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_future_weather'>
                             <span>
@@ -1196,7 +1198,7 @@
                         </div>
                     </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This hides the exact temperature from guest viewers - this is really useful with the cinematic temperature setting">
+                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title='This hides the exact temperature from guest viewers - this is really useful with the cinematic temperature setting as guests will only see "cold", "sweltering" and the like'>
                         <div class='col'>
                             <input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='hide_weather_temp'>
                             <span>
@@ -1214,34 +1216,43 @@
                         </div>
                     </label>
 
-                    <div class='bold-text'>Display Settings:</div>
+					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This will hide the weekday bar at the top of each month">
+						<div class='col'>
+							<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_weekdays'>
+							<span>
+								Hide weekdays in calendar
+							</span>
+						</div>
+					</label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This will add 'Month 1' and so on to each month in the calendar">
+					<div class='bold-text'>Event Settings:</div>
+
+					<label class="row no-gutters setting py-1 protip" data-pt-position="right" data-pt-title="This will change who can comment on the events of your calendar.">
+						<select class='form-control static_input' data='settings' fc-index='comments'>
+							<option selected value='none'>Disable event commenting</option>
+							<option value='players'>Disable public commenting</option>
+							<option value='public'>Allow public commenting</option>
+						</select>
+					</label>
+
+                    <div class='bold-text'>Advanced Settings:</div>
+
+                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Normally, the year count is -2, -1, 1, 2, and so on. This makes it so that 0 exists, so -2, -1, 0, 1, 2.">
                         <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='add_month_number' onclick="setTimeout(calendar_layouts.add_month_number, 10);">
+							@if(request()->is('calendars/*/edit') && $calendar->isLinked())
+                            	<input type='checkbox' class='margin-right' {{ Arr::get($calendar->static_data, 'settings.year_zero_exists') ? "checked" : "" }} disabled>
+							@else
+                            	<input type='checkbox' class='margin-right static_input' data='settings' id='year_zero_exists' fc-index='year_zero_exists'>
+							@endif
                             <span>
-                                Add month number to months
+                                Year zero exists
                             </span>
                         </div>
                     </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This adds a small number at the bottom left of the days in the calendar showing which year-day it is">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='add_year_day_number' onclick="setTimeout(calendar_layouts.add_year_day_number, 10);">
-                            <span>
-                                Add year day to each day
-                            </span>
-                        </div>
-                    </label>
-
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This will hide the weekday bar at the top of each month">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_weekdays'>
-                            <span>
-                                Hide weekdays in calendar
-                            </span>
-                        </div>
-                    </label>
+					@if(request()->is('calendars/*/edit') && $calendar->isLinked())
+						<p class=""><a onclick="linked_popup();" href='#'>Why are some settings disabled?</a></p>
+					@endif
 
                 </div>
             </div>
@@ -1251,9 +1262,9 @@
 			<!---------------------------------------------->
 			<!------------------ LINKING ------------------->
 			<!---------------------------------------------->
-			<div class='wrap-collapsible card'>
+			<div class='wrap-collapsible card settings-linking'>
 				<input id="collapsible_linking" class="toggle" type="checkbox">
-				<label for="collapsible_linking" class="lbl-toggle card-header lbl-text">Calendar Linking <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Calendar Linking' href='https://wiki.fantasy-calendar.com/index.php?title=Calendar_Linking' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+				<label for="collapsible_linking" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-link"></i> Calendar Linking <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Calendar Linking' href='https://wiki.fantasy-calendar.com/index.php?title=Calendar_Linking' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 				<div class="collapsible-content card-body">
 
 					<div id='calendar_link_hide'>
@@ -1292,9 +1303,9 @@
 
 <div id="calendar_container">
 
-	<div id="errors_background" class='flexible_background blurred_background'>
-		<div id="errors">
-			<span id="error_text">
+	<div id="modal_background" class='flexible_background blurred_background'>
+		<div id="modal">
+			<span id="modal_text">
 				This is an alert box.
 			</span>
 		</div>
@@ -1305,7 +1316,7 @@
         <div class='p-2'><button type='button' class='btn btn-primary' id='apply_changes_btn'>Update preview</button></div>
     </div>
 
-	<div id="top_follower">
+	<div id="top_follower" class="step-hide">
 
 		<div class='parent_button_container hidden'>
 			<div class='container d-flex h-100 p-0'>
@@ -1320,16 +1331,16 @@
 			<button class='btn btn-danger btn_preview_date hidden' disabled fc-index='timespan' value='-1'>< Month</button>
 		</div>
 
+		<div class='reset_preview_date_container m-1 left'>
+			<button type='button' class='btn m-0 btn-info hidden reset_preview_date protip' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >< Current</button>
+		</div>
+
         <div class="follower_center">
             <div id='top_follower_content'><div class='year'></div><div class='cycle'></div></div>
+        </div>
 
-            <div class='reset_preview_date_container left'>
-                <button type='button' class='btn btn-info hidden reset_preview_date protip' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >< Current</button>
-            </div>
-
-            <div class='reset_preview_date_container right'>
-                <button type='button' class='btn btn-info hidden reset_preview_date protip' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >Current ></button>
-            </div>
+		<div class='reset_preview_date_container m-1 right'>
+            <button type='button' class='btn m-0 btn-info hidden reset_preview_date protip' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >Current ></button>
         </div>
 
 		<div class='btn_container hidden'>
@@ -1345,9 +1356,20 @@
 
 	<div id="weather_container" class="hidden">
 
-		<canvas class='chart' id='temperature'></canvas>
+		<div id='day_length' class='hidden'>
+			<h3 class='text-center mt-3'>Sunrise and Sunset</h3>
+			<canvas class='chart'></canvas>
+		</div>
 
-		<canvas class='chart' id='precipitation'></canvas>
+		<div id='temperature' class='hidden'>
+			<h3 class='text-center mt-3'>Temperature</h3>
+			<canvas class='chart'></canvas>
+		</div>
+
+		<div id='precipitation' class='hidden'>
+			<h3 class='text-center mt-3'>Precipitation</h3>
+			<canvas class='chart'></canvas>
+		</div>
 
 	</div>
 	@include('templates.footnote')

@@ -1,4 +1,356 @@
+function context_set_current_date(key, opt){
+
+	var epoch = $(opt.$trigger[0]).attr('epoch');
+
+	var epoch_data = evaluated_static_data.epoch_data[epoch];
+
+	dynamic_date_manager.year = convert_year(static_data, epoch_data.year);
+	dynamic_date_manager.timespan = epoch_data.timespan_number;
+	dynamic_date_manager.day = epoch_data.day;
+	dynamic_date_manager.epoch = epoch_data.epoch;
+
+	evaluate_dynamic_change();
+
+}
+
+function context_set_preview_date(key, opt){
+
+	var epoch = $(opt.$trigger[0]).attr('epoch');
+
+	var epoch_data = evaluated_static_data.epoch_data[epoch];
+
+	preview_date_manager.year = convert_year(static_data, epoch_data.year);
+	preview_date_manager.timespan = epoch_data.timespan_number;
+	preview_date_manager.day = epoch_data.day;
+	preview_date_manager.epoch = epoch_data.epoch;
+
+	go_to_preview_date();
+
+}
+
+function context_copy_link_date(element){
+
+	var epoch = element.attr('epoch')|0;
+
+	var epoch_data = evaluated_static_data.epoch_data[epoch];
+
+	var year = epoch_data.year;
+	var timespan = epoch_data.timespan_number;
+	var day = epoch_data.day;
+
+	if(!valid_preview_date(year, timespan, day) && !window.hide_copy_warning){
+		swal.fire({
+			title: "Date inaccessible",
+			text: 'This date is not visible to guests or players (see calendar settings), are you sure you want to copy a link to it?',
+			input: 'checkbox',
+			inputPlaceholder: 'Remember this choice',
+			inputClass: "form-control",
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Yes',
+			icon: "info"
+		})
+		.then((result) => {
+			if(!result.dismiss) {
+				copy_link(epoch_data);
+				if(result.value){
+					window.hide_copy_warning = true;
+				}
+			}
+		});
+	}else{
+		copy_link(epoch_data);
+	}
+}
+
+function copy_link(epoch_data){
+
+	var year = epoch_data.year;
+	var timespan = epoch_data.timespan_number;
+	var day = epoch_data.day;
+
+	var link = `${window.baseurl}calendars/${hash}?year=${year}&month=${timespan}&day=${day}`;
+
+	const el = document.createElement('textarea');
+	el.value = link;
+	document.body.appendChild(el);
+	el.select();
+	document.execCommand('copy');
+	document.body.removeChild(el);
+
+	if(window.hide_copy_warning){
+		$.notify(
+			"Quick reminder: The copied date will not be visible to\nguests or players due to your calendar's settings.",
+			"warn"
+		);	
+	}else{
+		$.notify(
+			"Copied to clipboard!",
+			"success"
+		);
+	}
+
+}
+
+function context_add_event(key, opt){
+
+	var epoch = $(opt.$trigger[0]).attr('epoch')|0;
+
+	edit_event_ui.create_new_event('New Event', epoch);
+
+}
+
+function context_open_day_data(key, opt){
+
+	var day_element = $(opt.$trigger[0]);
+	var epoch = day_element.attr('epoch')|0;
+	var epoch_data = evaluated_static_data.epoch_data[epoch];
+	day_data_tooltip.show(day_element, epoch_data);
+
+}
+
+function get_events_on_day(element){
+
+	var epoch = element.attr('epoch')|0;
+	var found_events = [];
+
+	var keys = Object.keys(evaluated_event_data.valid);
+	var length = keys.length;
+
+	for(var i = 0; i < length; i++){
+		var key = keys[i];
+		if(evaluated_event_data.valid[key].indexOf(epoch) > -1){
+			found_events.push(Number(key));
+		}
+	}
+
+	return found_events;
+
+}
+
+function context_view_events(element){
+
+	var found_events = get_events_on_day(element);
+
+	if(found_events.length == 1){
+		show_event_ui.show_event(found_events[0]);
+	}
+
+}
+
+
 function set_up_visitor_inputs(){
+
+	var items = {};
+
+	if(owner){
+		$.contextMenu({
+			// define which elements trigger this menu
+			selector: ".event:not(.event-text-output)",
+			// define the elements of the menu
+			items: {
+				view: {
+					name: "View event",
+					icon: "fas fa-eye",
+					callback: function(key, opt){
+						var element = $(opt.$trigger[0]);
+						show_event_ui.clicked_event(element)
+					}
+				},
+				edit: {
+					name: "Edit event",
+					icon: "fas fa-edit",
+					callback: function(key, opt){
+						var element = $(opt.$trigger[0]);
+						var event_id = element.attr('event_id');
+						edit_event_ui.edit_event(event_id);
+					},
+					disabled: function(key, opt){
+						var element = $(opt.$trigger[0]);
+						return element.hasClass('era_event');
+					}
+				},
+				hide: {
+					name: "Hide event",
+					icon: "fas fa-eye-slash",
+					callback: function(key, opt){
+						var element = $(opt.$trigger[0]);
+						var event_id = Number(element.attr('event_id'));
+						submit_hide_show_event(event_id);
+					},
+					disabled: function(key, opt){
+						var element = $(opt.$trigger[0]);
+						var event_id = Number(element.attr('event_id'));
+						return element.hasClass('era_event') || events[event_id].settings.hide;
+					},
+					visible: function(key, opt){
+						var element = $(opt.$trigger[0]);
+						var event_id = Number(element.attr('event_id'));
+						return !element.hasClass('era_event') && !events[event_id].settings.hide;
+					}
+				},
+				show: {
+					name: "Show event",
+					icon: "fas fa-eye-slash",
+					callback: function(key, opt){
+						var element = $(opt.$trigger[0]);
+						var event_id = Number(element.attr('event_id'));
+						submit_hide_show_event(event_id);
+					},
+					disabled: function(key, opt){
+						var element = $(opt.$trigger[0]);
+						var event_id = Number(element.attr('event_id'));
+						return element.hasClass('era_event') || !events[event_id].settings.hide;
+					},
+					visible: function(key, opt){
+						var element = $(opt.$trigger[0]);
+						var event_id = Number(element.attr('event_id'));
+						return !element.hasClass('era_event') && events[event_id].settings.hide;
+					}
+				},
+				delete: {
+					name: "Delete event",
+					icon: "fas fa-trash-alt",
+					callback: function(key, opt){
+						var element = $(opt.$trigger[0]);
+						var event_id = element.attr('event_id');
+						edit_event_ui.delete_event(event_id);
+					},
+					disabled: function(key, opt){
+						var element = $(opt.$trigger[0]);
+						return element.hasClass('era_event');
+					}
+				}
+			},
+			zIndex: 1501
+		});
+
+		items.set_current_date = {
+			name: "Set as Current Date",
+			icon: "fas fa-hourglass-half",
+			callback: context_set_current_date
+		}
+		items.set_preview_date = {
+			name: "Set as Preview Date",
+			icon: "fas fa-hourglass",
+			callback: context_set_preview_date
+		}
+		items.add_event = {
+			name: "Add new event",
+			icon: "fas fa-calendar-plus",
+			callback: context_add_event
+		}
+
+		let text = !owner || static_data.settings.allow_view ? "Copy link to date (Settings -> Allow View to enable)" : "Copy link to date";
+
+		items.copy_link_date = {
+			name: text,
+			icon: "fas fa-link",
+			callback: function(key, opt){
+				context_copy_link_date($(opt.$trigger[0]));
+			},
+			disabled: function(){
+				return !owner || static_data.settings.allow_view;
+			},
+			visible: function(key, opt){
+				return owner || static_data.settings.allow_view;
+			}
+		}
+		items.day_data = {
+			name: "View advanced day info",
+			icon: "fas fa-cogs",
+			callback: context_open_day_data
+		}
+
+	}else{
+
+		items.set_preview_date = {
+			name: "Set as Preview Date",
+			icon: "fas fa-hourglass",
+			callback: context_set_preview_date,
+			disabled: function(){
+				return !static_data.settings.allow_view;
+			},
+			visible: function(key, opt){
+				return static_data.settings.allow_view;
+			}
+		}
+
+		items.copy_link_date = {
+			name: "Copy link to date",
+			icon: "fas fa-link",
+			callback: function(key, opt){
+				context_copy_link_date($(opt.$trigger[0]));
+			},
+			disabled: function(){
+				return !owner || static_data.settings.allow_view;
+			},
+			visible: function(key, opt){
+				return owner || static_data.settings.allow_view;
+			}
+		}
+
+	}
+
+	items.view_events = {
+		name: "View events on this date",
+		icon: "fas fa-eye",
+		callback: function(key, opt){
+			context_view_events($(opt.$trigger[0]));
+		}
+	}
+
+	
+	$.contextMenu({
+		// define which elements trigger this menu
+		selector: ".timespan_day:not(.empty_timespan_day)",
+		// define the elements of the menu
+		items: items,
+		zIndex: 1501,
+		build: function($trigger, e){
+
+			if(static_data.settings.layout == "minimalistic"){
+
+				delete items.view_events['items'];
+
+				var found_events = get_events_on_day($($trigger[0]));
+
+				items.view_events.visible = found_events.length > 0;
+				items.view_events.disabled = found_events.length == 0;
+
+				if(found_events.length > 1){
+
+					items.view_events.name = "View events on this date";
+					var sub_items = {};
+					for(var i = 0; i < found_events.length; i++){
+						var event_id = found_events[i];
+						sub_items[event_id] = {
+							name: events[event_id].name,
+							id: event_id,
+							callback: function(key, opt){
+								show_event_ui.show_event(key);
+							}
+						}
+					}
+					items.view_events['items'] = sub_items;
+
+				}else if(found_events.length == 1){
+
+					items.view_events.name = `View event "${events[found_events[0]].name}"`
+
+				}
+
+			}else{
+				items.view_events.disabled = true;
+				items.view_events.visible = false;
+			}
+
+			return {
+				items: items
+			};
+		}
+	});
 
 	show_event_ui.bind_events();
 	
@@ -45,13 +397,19 @@ function set_up_visitor_inputs(){
 			}
 		}
 
-		$('#go_to_preview_date').click();
-
 		follower_year_buttons_add.prop('disabled', !preview_date_manager.check_max_year(preview_date_manager.year+1));
 
 		follower_timespan_buttons_add.prop('disabled', !preview_date_manager.check_max_timespan(preview_date_manager.timespan+1));
 
+		follower_eval();
+
 	});
+
+	var follower_eval = debounce(function(){
+
+		$('#go_to_preview_date').click();
+
+	}, 200);
 
 	sub_target_day.click(function(){
 
@@ -199,6 +557,12 @@ function evaluate_preview_change(){
 
 }
 
+function refresh_preview_inputs(){
+	target_year.val(preview_date_manager.adjusted_year);
+	repopulate_timespan_select(target_timespan, preview_date_manager.timespan, false, preview_date_manager.last_valid_timespan);
+	repopulate_day_select(target_day, preview_date_manager.day, false, false, preview_date_manager.last_valid_day);
+}
+
 
 function update_preview_calendar(){
 
@@ -214,9 +578,9 @@ function update_preview_calendar(){
 
 function go_to_preview_date(rebuild){
 
-	preview_date.follow = false
+	preview_date.follow = false;
 
-	var data = preview_date_manager.compare(preview_date)
+	var data = preview_date_manager.compare(preview_date);
 
 	preview_date.year = data.year;
 	preview_date.timespan = data.timespan;
@@ -244,6 +608,7 @@ function go_to_preview_date(rebuild){
 		scroll_to_epoch();
 		update_cycle_text();
 	}
+
 }
 
 function display_preview_back_button(){
@@ -315,21 +680,29 @@ function evaluate_settings(){
 	follower_year_buttons.prop('disabled', (!owner && !static_data.settings.allow_view)).toggleClass('hidden', (!owner && !static_data.settings.allow_view));
 	follower_timespan_buttons.prop('disabled', !static_data.settings.show_current_month).toggleClass('hidden', !static_data.settings.show_current_month);
 
-	if(!owner && static_data.settings.allow_view && static_data.settings.only_backwards){
+	if(!owner && static_data.settings.allow_view && (static_data.settings.only_backwards || static_data.settings.only_reveal_today)){
 
 		preview_date_manager.max_year = dynamic_data.year;
-		preview_date_manager.max_timespan = dynamic_data.timespan;
-		preview_date_manager.max_day = dynamic_data.day;
+
+		if(static_data.settings.show_current_month){
+			preview_date_manager.max_timespan = dynamic_data.timespan;
+		}else{
+			preview_date_manager.max_timespan = preview_date_manager.last_timespan;
+		}
 
 		add_target_year.prop('disabled', !preview_date_manager.check_max_year(preview_date_manager.year+1));
-
-		add_target_timespan.prop('disabled', !preview_date_manager.check_max_timespan(preview_date_manager.timespan+1));
-
-		add_target_day.prop('disabled', !preview_date_manager.check_max_day(preview_date_manager.day+1));
-
 		follower_year_buttons_add.prop('disabled', !preview_date_manager.check_max_year(preview_date_manager.year+1));
 
+		add_target_timespan.prop('disabled', !preview_date_manager.check_max_timespan(preview_date_manager.timespan+1));
 		follower_timespan_buttons_add.prop('disabled', !preview_date_manager.check_max_timespan(preview_date_manager.timespan+1));
+
+		if(static_data.settings.only_reveal_today){
+			preview_date_manager.max_day = dynamic_data.day;
+		}else{
+			preview_date_manager.max_day = preview_date_manager.num_days;
+		}
+
+		add_target_day.prop('disabled', !preview_date_manager.check_max_day(preview_date_manager.day+1));
 
 	}else{
 
@@ -563,12 +936,13 @@ function repopulate_day_select(select, val, change, no_leaps, max, filter_timesp
 
 function set_up_visitor_values(){
 
-	preview_date.follow = true
+	preview_date.follow = true;
 
 	$('.reset_preview_date_container.right .reset_preview_date').prop("disabled", preview_date.follow).toggleClass('hidden', preview_date.follow);
 	$('.reset_preview_date_container.left .reset_preview_date').prop("disabled", preview_date.follow).toggleClass('hidden', preview_date.follow);
 
 	preview_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
+	
 
 	target_year.val(preview_date_manager.adjusted_year);
 	if(preview_date_manager.last_valid_year){

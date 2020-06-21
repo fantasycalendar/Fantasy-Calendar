@@ -32,3 +32,13 @@ $hamburger-padding-y        :1rem;
 // select2
 @import '~select2';
 @import '~select2-bootstrap-theme/dist/select2-bootstrap';
+
+// contextmenu
+@import '~jquery-contextmenu/dist/jquery.contextMenu';
+// override stupid preset color
+.context-menu-icon.context-menu-icon--fa5 i{
+    color: inherit;
+}
+.context-menu-item.context-menu-hover{
+    background-color:$accent-color;
+}

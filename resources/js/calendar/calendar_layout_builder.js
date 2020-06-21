@@ -249,7 +249,13 @@ var eras = {
 
 			var position = $("#calendar_container").scrollTop();
 
-			var first_day = position + $(`.timespan_day`).first().offset().top;
+			var first_timespan = $(`.timespan_day`).first();
+
+			if(first_timespan.length == 0){
+				return;
+			}
+
+			var first_day = position + first_timespan.offset().top;
 
 			for(var i = 0; i < this.current_eras.length; i++){
 				if(!this.current_eras[i].data.settings.starting_era){
@@ -425,7 +431,7 @@ function update_current_day(recalculate){
 	day_container.addClass('current_day');
 
 	if(preview_date.epoch != dynamic_data.epoch){
-		preview_day_container = $(`[epoch=${preview_date.epoch}]`);
+		preview_day_container = $(`.timespan_day[epoch=${preview_date.epoch}]`);
 		preview_day_container.addClass('preview_day');
 	}
 
@@ -467,6 +473,65 @@ function update_cycle_text(){
 		$('#top_follower_content .cycle').html('').addClass('hidden').toggleClass('smaller', false);
 
 	}
+
+}
+
+function get_weather_icon(epoch_data){
+
+	var weather = epoch_data.weather;
+
+	if(weather.clouds == "Clear"){
+		if(weather.feature == "Fog"){
+			return `<i class="wi wi-fog"></i>`;
+		}else{
+			return `<i class="wi wi-day-sunny"></i>`;
+		}
+	}else{
+
+		if(weather.precipitation.key == "None"){
+
+			if(weather.clouds == "A few clouds"){
+				return `<i class="wi wi-day-cloudy"></i>`;
+			}else if(weather.clouds == "Mostly cloudy"){
+				return `<i class="wi wi-cloud"></i>`;
+			}else{
+				return `<i class="wi wi-cloudy"></i>`;
+			}
+
+		}else{
+
+			if(weather.temperature.metric.actual > 0){
+
+				if(weather.precipitation.actual > 0.375){
+					if(weather.feature == "Lightning"){
+						return `<i class="wi wi-thunderstorm"></i>`;
+					}else{
+						return `<i class="wi wi-rain"></i>`;
+					}
+				}else {
+					if(weather.feature == "Lightning"){
+						return `<i class="wi wi-storm-showers"></i>`;
+					}else{
+						if(weather.feature == "Fog" && weather.precipitation.actual < 0.375){
+							return `<i class="wi wi-fog"></i>`;
+						}
+						return `<i class="wi wi-showers"></i>`;
+					}
+				}
+
+			}else{
+
+				if(weather.feature == "Hail"){
+					return `<i class="wi wi-hail"></i>`;
+				}else{
+					return `<i class="wi wi-snow"></i>`;
+				}
+
+			}
+		}
+	}
+
+	return "";
 
 }
 
@@ -621,7 +686,7 @@ var calendar_layouts = {
 						calendar_layouts.html.push("<div class='toprow center'>");
 						if(epoch_data.weather && calendar_layouts.data.processed_weather){
 							if(owner || !(static_data.settings.hide_all_weather || (static_data.settings.hide_future_weather && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)))){
-								calendar_layouts.html.push(`<div class='weather_icon weather_popup' align='${weather_align}'></div>`);
+								calendar_layouts.html.push(`<div class='weather_popup' align='${weather_align}'>${get_weather_icon(epoch_data)}</div>`);
 							}
 						}
 						calendar_layouts.html.push("</div>");
@@ -644,7 +709,7 @@ var calendar_layouts = {
 					calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("<div class='day_row'>");
 					if(owner){
-						calendar_layouts.html.push(`<div epoch='${epoch}' class='btn_create_event btn btn-success full'>Create Event</div>`);
+						calendar_layouts.html.push(`<div epoch='${epoch}' class='btn_create_event btn btn-success full'><div class="event_create_label">Create Event</div></div>`);
 					}
 					calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("<div class='day_row last_row'>");
@@ -972,7 +1037,7 @@ var calendar_layouts = {
 					calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("<div class='day_row'>");
 					if(owner){
-						calendar_layouts.html.push(`<div epoch='${epoch}' class='btn_create_event btn btn-success full'>Create Event</div>`);
+						calendar_layouts.html.push(`<div epoch='${epoch}' class='btn_create_event btn btn-success full'><div class="event_create_label">Create Event</div></div>`);
 					}
 					calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("<div class='day_row last_row'>");
@@ -1349,7 +1414,7 @@ var calendar_layouts = {
 
 					calendar_layouts.html.push("<div class='day_row'>");
 					if(owner){
-						calendar_layouts.html.push(`<div epoch='${epoch}' class='btn_create_event btn btn-success full'>Create Event</div>`);
+						calendar_layouts.html.push(`<div epoch='${epoch}' class='btn_create_event btn btn-success full'><div class="event_create_label">Create Event</div></div>`);
 					}
 					calendar_layouts.html.push("</div>");
 

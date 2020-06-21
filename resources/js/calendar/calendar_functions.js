@@ -634,9 +634,9 @@ class date_manager {
 
 	}
 
-	compare(dynamic_data){
+	compare(data){
 
-		var rebuild = dynamic_data.year != this.adjusted_year || (static_data.settings.show_current_month && dynamic_data.timespan != this.timespan);
+		var rebuild = data.year != this.adjusted_year || (static_data.settings.show_current_month && data.timespan != this.timespan);
 
 		return {
 			year: this.adjusted_year,
@@ -646,7 +646,6 @@ class date_manager {
 			rebuild: rebuild
 		}
 	}
-
 
 	get epoch(){
 
@@ -895,7 +894,48 @@ class date_manager {
 
 }
 
+function valid_preview_date(year, timespan, day){
 
+    if(!static_data.settings.allow_view){
+        return false;
+	}
+	
+	if(static_data.settings.only_reveal_today){
+
+		if(year > dynamic_data.year){
+			return false;
+		}
+		
+		if(year == dynamic_data.year){
+			if(timespan > dynamic_data.timespan){
+				return false;
+			}
+			
+			if(timespan == dynamic_data.timespan && day > dynamic_data.day){
+				return false;
+			}
+		}
+
+	}else if(static_data.settings.only_backwards){
+        
+        if(!static_data.settings.show_current_month && year > dynamic_data.year){
+
+			return false;
+			
+        }
+            
+		if(timespan > dynamic_data.timespan){
+			return false;
+		}
+		
+		if(timespan == dynamic_data.timespan && day > dynamic_data.day){
+			return false;
+		}
+    }
+
+    return true;
+
+}
 
 
 /**
@@ -1357,25 +1397,36 @@ var date_converter = {
 		this.parent_dynamic_data = parent_dynamic_data;
 		this.child_dynamic_data = child_dynamic_data;
 
-		var child_minutes_per_day = this.child_static_data.clock.hours * this.child_static_data.clock.minutes;
-		var parent_minutes_per_day = this.parent_static_data.clock.hours * this.parent_static_data.clock.minutes;
+		var hour = 0;
+		var minute = 0;
 
-		var time_scale = parent_minutes_per_day / child_minutes_per_day;
+		if(this.parent_static_data.clock.enabled && this.child_static_data.clock.enabled){
 
-		this.target_epoch = Math.floor((this.parent_dynamic_data.epoch-parent_offset)*time_scale);
+			var child_minutes_per_day = this.child_static_data.clock.hours * this.child_static_data.clock.minutes;
+			var parent_minutes_per_day = this.parent_static_data.clock.hours * this.parent_static_data.clock.minutes;
 
-		var current_minute = this.parent_dynamic_data.hour*this.parent_static_data.clock.minutes+this.parent_dynamic_data.minute;
+			var time_scale = parent_minutes_per_day / child_minutes_per_day;
 
-		var child_current_hours = current_minute / this.child_static_data.clock.minutes;
+			this.target_epoch = Math.floor((this.parent_dynamic_data.epoch-parent_offset)*time_scale);
 
-		if(child_current_hours >= this.child_static_data.clock.hours){
-			this.target_epoch++;
-			child_current_hours -= this.child_static_data.clock.hours;
+			var current_minute = this.parent_dynamic_data.hour*this.parent_static_data.clock.minutes+this.parent_dynamic_data.minute;
+
+			var child_current_hours = current_minute / this.child_static_data.clock.minutes;
+
+			if(child_current_hours >= this.child_static_data.clock.hours){
+				this.target_epoch++;
+				child_current_hours -= this.child_static_data.clock.hours;
+			}
+
+			var hour = Math.floor(child_current_hours);
+
+			var minute = Math.floor(this.child_static_data.clock.minutes*fract(child_current_hours))+1;
+
+		}else{
+
+			this.target_epoch = Math.floor((this.parent_dynamic_data.epoch-parent_offset));
+
 		}
-
-		var hour = Math.floor(child_current_hours);
-
-		var minute = Math.floor(this.child_static_data.clock.minutes*fract(child_current_hours))
 
 		this.year = Math.floor(this.target_epoch / fract_year_length(this.child_static_data))-2;
 		this.timespan = 0;
@@ -1517,6 +1568,15 @@ var date_converter = {
 	}
 
 }
+
+function time_data_to_string(static_data, time){
+
+	var minutes = (Math.round(fract(time)*this.static_data.clock.minutes)).toString().length < 2 ? "0"+(Math.round(fract(time)*this.static_data.clock.minutes)).toString() : (Math.round(fract(time)*this.static_data.clock.minutes));
+
+	return Math.floor(time)+":"+minutes;
+
+}
+
 
 /**
  * This function is used when you need to calculate if a leap day or a leap month has happened on any given year.

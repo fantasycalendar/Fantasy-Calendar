@@ -107,6 +107,7 @@ function pre_rebuild_calendar(action, dynamic_data){
 }
 
 var evaluated_static_data = {};
+var evaluated_event_data = {};
 
 function rebuild_calendar(action, dynamic_data){
 
@@ -153,7 +154,9 @@ function rebuild_events(event_id){
 
 worker_events.onmessage = e => {
 
-	display_events(static_data, e.data.event_data)
+	evaluated_event_data = e.data.event_data;
+
+	display_events(static_data, evaluated_event_data);
 
 	hide_loading_screen();
 
@@ -192,12 +195,13 @@ worker_climate.onmessage = e => {
 		eval_clock();
 		update_current_day(false);
 
+		evaluate_day_length_chart();
 		evaluate_weather_charts();
-
+		
 	}else{
-
+		
+		evaluate_day_length_chart();
 		evaluate_weather_charts();
-
 		eval_current_time();
 
 	}
@@ -239,6 +243,7 @@ worker_calendar.onmessage = e => {
 
 			update_current_day(false);
 
+			evaluate_day_length_chart();
 			evaluate_weather_charts();
 
 		}else{

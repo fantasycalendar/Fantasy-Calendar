@@ -35,6 +35,20 @@ $hamburger-padding-y        :1rem;
 @import '~select2';
 @import '~select2-bootstrap-theme/dist/select2-bootstrap';
 
+// contextmenu
+@import '~jquery-contextmenu/dist/jquery.contextMenu';
+// override stupid preset color
+.context-menu-icon.context-menu-icon--fa5 i{
+    color: inherit;
+}
+.context-menu-item.context-menu-hover{
+    background-color:$accent-color;
+}
+.context-menu-list, .context-menu-item {
+    background-color: $card-bg-color;
+    color: $main-text-color;
+}
+
 // Overrides
 .form-control {
     background-color: $card-bg-color;
@@ -96,4 +110,18 @@ $hamburger-padding-y        :1rem;
 .btn-outline-secondary {
     color: #888;
     border-color: #888;
+}
+
+body #content #generator_container .btn:not(.event_name):not(#btn_event_delete):not(#btn_delete) {
+    background-color: $btn-color;
+    border-color: $btn-border;
+
+    &:not(:disabled):hover {
+        background-color: $btn-color-hover;
+        border-color: $btn-border-hover;
+    }
+
+    &:disabled {
+        opacity: 0.4;
+    }
 }

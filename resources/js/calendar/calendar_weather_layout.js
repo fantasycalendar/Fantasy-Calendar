@@ -39,21 +39,14 @@ var calendar_weather = {
 			this.weather_title = $('.weather_title');
 			this.moon_title = $('.moon_title');
 			this.moon_container = $('.moon_container');
-			this.add_event_container = $('.add_event_container');
 			this.weather_temp_desc = $('.weather_temp_desc');
 			this.weather_temp = $('.weather_temp');
 			this.weather_wind = $('.weather_wind');
 			this.weather_precip = $('.weather_precip');
 			this.weather_clouds = $('.weather_clouds');
+			this.weather_feature = $('.weather_feature');
 			this.stop_hide = false;
 			this.sticky_icon = false;
-
-			this.add_event_container.find('.btn_create_event').click(function(){
-				calendar_weather.tooltip.stop_hide = false;
-				calendar_weather.tooltip.hide();
-				delete registered_click_callbacks['sticky_weather_ui'];
-				calendar_weather.tooltip.sticky_icon.removeClass('sticky');
-			});
 
 		},
 
@@ -106,11 +99,9 @@ var calendar_weather = {
 		
 			this.moon_title.toggleClass('hidden', !icon.hasClass('moon_popup'));
 			this.moon_container.toggleClass('hidden', !icon.hasClass('moon_popup'));
-			this.add_event_container.toggleClass('hidden', !icon.hasClass('moon_popup') || !owner);
 
 			if(icon.hasClass('moon_popup')){
 				this.moon_container.children().first().html(insert_moons(calendar_layouts.epoch_data[epoch]));
-				this.add_event_container.find('.btn_create_event').attr('epoch', epoch).prop('disabled', !owner);
 			}
 
 			this.stop_hide = false;
@@ -124,6 +115,7 @@ var calendar_weather = {
 				this.weather_wind.parent().toggleClass('hidden', false);
 				this.weather_precip.parent().toggleClass('hidden', false);
 				this.weather_clouds.parent().toggleClass('hidden', false);
+				this.weather_feature.parent().toggleClass('hidden', false);
 
 				if(static_data.seasons.global_settings.cinematic){
 					this.weather_temp_desc.parent().css('display', '');
@@ -190,6 +182,12 @@ var calendar_weather = {
 					$(this).text(weather.clouds);
 				});
 
+				this.weather_feature.each(function(){
+					$(this).text(weather.feature);
+				});
+
+				this.weather_feature.parent().toggleClass('hidden', weather.feature == "" ||  weather.feature == "None");
+
 			}else{
 
 				this.weather_title.toggleClass('hidden', true);
@@ -198,6 +196,7 @@ var calendar_weather = {
 				this.weather_wind.parent().toggleClass('hidden', true);
 				this.weather_precip.parent().toggleClass('hidden', true);
 				this.weather_clouds.parent().toggleClass('hidden', true);
+				this.weather_feature.parent().toggleClass('hidden', true);
 			}
 
             if((calendar_weather.processed_weather && !icon.hasClass('noweather')) || icon.hasClass('moon_popup')){
@@ -247,18 +246,152 @@ function addData(chart, label, dataset) {
     chart.update(0);
 }
 
+var day_length_chart;
 var precipitation_chart;
 var temperature_chart;
 
-function evaluate_weather_charts(){
+function evaluate_day_length_chart(){
 
-	if(!calendar_weather.processed_weather) return;
+	if($('#day_length').length == 0){
+		return
+	}
+
+	if(day_length_chart !== undefined){
+		removeData(day_length_chart);
+	}
+
+	if(!static_data.clock.enabled){
+		$('#day_length').addClass('hidden');
+		return;
+	}
+
+	if(!calendar_weather.epoch_data[calendar_weather.start_epoch].season){
+		$('#day_length').addClass('hidden');
+		return;
+	}
+
+	if(!calendar_weather.epoch_data[calendar_weather.start_epoch].season.time.sunrise){
+		$('#day_length').addClass('hidden');
+		return;
+	}
+
+	var day_length = [[],[]];
+	var labels = [];
+
+	for(var epoch = calendar_weather.start_epoch, i = 0; epoch < calendar_weather.end_epoch; epoch++, i++){
+
+		var epoch_data = calendar_weather.epoch_data[epoch];
+
+		var day = ordinal_suffix_of(epoch_data.day)
+		var month_name = epoch_data.timespan_name;
+		var year = epoch_data.year != epoch_data.era_year ? `era year ${epoch_data.era_year} (absolute year ${epoch_data.year})` : `year ${epoch_data.year}`;
+
+		labels.push([`${day} of ${month_name}, ${year}`]);
+
+		var sunrise = epoch_data.season.time.sunrise;
+		var sunset = epoch_data.season.time.sunset;
+
+		day_length[0].push({x: epoch_data, y: precisionRound(sunrise.data, 2)});
+		day_length[1].push({x: epoch_data, y: precisionRound(sunset.data, 2)});
+
+	}
+
+	var day_length_dataset = [
+		{
+			label: 'Sunrise',
+			fill: '+1',
+			data: day_length[0],
+			borderColor: 'rgba(0, 0, 255, 0.5)',
+			backgroundColor: 'rgba(0, 0, 175, 0.1)'
+		},
+		{
+			label: 'Sunset',
+			data: day_length[1],
+			fill: false,
+			borderColor: 'rgba(0, 0, 255, 0.5)'
+		}
+	];
+
+	$('#day_length').removeClass('hidden');
+
+	if(day_length_chart !== undefined){
+		removeData(day_length_chart);
+		addData(day_length_chart, labels, day_length_dataset);
+	}else{
+		var ctx = $('#day_length').find('.chart')[0].getContext('2d');
+		day_length_chart = new Chart(ctx, {
+			type: 'line',
+			data: {
+				labels: labels,
+				datasets: day_length_dataset
+			},
+			options: {
+				tooltips: {
+					mode: 'index',
+					intersect: false,
+					callbacks: {
+						label: function(item, data) {
+							var datasetLabel = data.datasets[item.datasetIndex].label || "";
+							var dataPoint = item.yLabel;
+							return datasetLabel + ": " + time_data_to_string(static_data, dataPoint);
+						}
+					}
+				},
+				hover: {
+					mode: 'index',
+					intersect: false
+				},
+				scales: {
+					xAxes: [{
+						display: false,
+						ticks: {
+							callback: function(value, index, values){
+								return value[1];
+							}
+						}
+					}],
+					yAxes: [{
+						ticks: {
+							suggestedMax: static_data.clock.hours-1,
+							callback: function(value, index, values) {
+								return value+":00";//time_data_to_string(static_data, dataPoint);
+							}
+						}
+					}]
+				},
+				elements: {
+					point:{
+						radius: 0
+					}
+				}
+			}
+		});
+	}
+
+}
+
+function evaluate_weather_charts(){
 
 	if($('#precipitation').length == 0 || $('#temperature').length == 0){
 		return;
 	}
 
+	if(precipitation_chart !== undefined){
+		removeData(precipitation_chart);
+	}
+	if(temperature_chart !== undefined){
+		removeData(temperature_chart);
+	}
+
+	if(!calendar_weather.processed_weather){
+		$('#temperature').addClass('hidden');
+		$('#precipitation').addClass('hidden');
+		return;
+	}
+
 	if(!calendar_weather.epoch_data[calendar_weather.start_epoch].weather){
+		$('#temperature').addClass('hidden');
+		$('#precipitation').addClass('hidden');
 		return;
 	}
 
@@ -302,11 +435,11 @@ function evaluate_weather_charts(){
 	var temperature_datasets = [
 		{
 			label: `Temperature High (${temp_sys})`,
-			fill: false,
+			fill: "+1",
 			data: temperature[1],
 			borderColor: 'rgba(0, 255, 0, 0.5)',
 			fillBetweenSet: 0,
-			fillBetweenColor: "rgba(5,5,255, 0.2)"
+			backgroundColor: 'rgba(0, 175, 0, 0.1)',
 		},
 		{
 			label: `Temperature Low (${temp_sys})`,
@@ -346,15 +479,16 @@ function evaluate_weather_charts(){
 		{
 			label: 'Actual precipitation',
 			data: precipitation[2],
-			borderColor: 'rgba(0, 255, 0, 0.5)'
+			borderColor: 'rgba(0, 255, 0, 0.5)',
+			backgroundColor: 'rgba(0, 175, 0, 0.1)',
 		}
 	];
 
+	$('#precipitation').removeClass('hidden');
 	if(precipitation_chart !== undefined){
-		removeData(precipitation_chart);
 		addData(precipitation_chart, labels, precipitation_datasets);
 	}else{
-		var ctx = $('#precipitation')[0].getContext('2d');
+		var ctx = $('#precipitation').find('.chart')[0].getContext('2d');
 		precipitation_chart = new Chart(ctx, {
 			type: 'line',
 			data: {
@@ -395,11 +529,11 @@ function evaluate_weather_charts(){
 		});
 	}
 
+	$('#temperature').removeClass('hidden');
 	if(temperature_chart !== undefined){
-		removeData(temperature_chart);
 		addData(temperature_chart, labels, temperature_datasets);
 	}else{
-		var ctx = $('#temperature')[0].getContext('2d');
+		var ctx = $('#temperature').find('.chart')[0].getContext('2d');
 		temperature_chart = new Chart(ctx, {
 			type: 'line',
 			data: {

@@ -1,23 +1,15 @@
-<div id="event_query_container">
-	<div class='container'>
-		<div class="row">
-			<button type='button' id='edit_event_button' class="col-6 btn btn-primary">Edit</button>
-			<button type='button' id='view_event_button' class="col-6 btn btn-secondary">View</button>
-		</div>
-	</div>
-</div>
-
-<div id="event_show_background" class='clickable_background blurred_background hidden'>
+<div id="event_show_background" class='clickable_background hidden'>
 	<div class='event-basic-container'>
 		<div class='event-basic-wrapper'>
 			<div class='event-basic-wrapper'>
 				<div class='event-wrapper'>
 					<div class='close-ui-btn-bg'></div>
-					<i class="close_ui_btn icon-remove-circle"></i>
+					<i class="close_ui_btn fas fa-times-circle"></i>
 
-					<div class='row'>
-                        <h2 class="col-12 event_name event-form-heading"></h2>
+					<div class='row no-gutters event-form-heading'>
+						<h2><span class='event_name'>Editing Event</span> <i class="fas fa-pencil-alt edit_event_btn"></i></h2>
                     </div>
+					
 					<div class='row'>
 						<div class="event_desc col-12"></div>
 					</div>
@@ -52,10 +44,10 @@
 			<form id="event-form" class="event-wrapper container" action="post">
 
 				<div class='close-ui-btn-bg'></div>
-				<i class="close_ui_btn icon-remove-circle"></i>
+				<i class="close_ui_btn fas fa-times-circle"></i>
 
-				<div class='row no-gutters my-1'>
-					<h2 class='event-form-heading'>Edit Event</h2>
+				<div class='row no-gutters mb-1 event-form-heading'>
+					<h2 class='event_action_type'><span>Editing Event</span> <i class="fas fa-eye view_event_btn"></i></h2>
 				</div>
 
 				<div class='row no-gutters my-1'>
@@ -91,17 +83,24 @@
 				</div>
 
 				<div class='row no-gutters mb-1 hidden'>
-					<input type='number' class='form-control' id='repeat_input' name='repeat_input' value='1' min='1' placeholder='Every nth' />
+					<input type='number' class='form-control' id='repeat_input' name='repeat_input' value='2' min='1' placeholder='Every nth' />
 				</div>
 
 				<h5 class='row no-gutters my-2 event-form-heading'>Conditions:</h5>
 
 				<div class='row no-gutters my-2' id='non_preset_buttons'>
-					<div class='col-md-6'>
-						<button type='button' id='add_event_condition' class='btn btn-primary full'>Add condition</button>
+					<div class='col-11 pr-1'>
+						<div class='row p-0'>
+							<div class='col-6 pr-1'>
+								<button type='button' id='add_event_condition' class='btn btn-primary full'>Add condition</button>
+							</div>
+							<div class='col-6 pl-1'>
+								<button type='button' id='add_event_condition_group' class='btn btn-secondary full'>Add group</button>
+							</div>
+						</div>
 					</div>
-					<div class='col-md-6'>
-						<button type='button' id='add_event_condition_group' class='btn btn-secondary full'>Add new group</button>
+					<div class='col-1 pl-1'>
+						<button type='button' id='condition_remove_button' class='btn btn-danger full'><i class="icon fas fa-trash-alt"></i></button>
 					</div>
 				</div>
 				<div class='row no-gutters my-2'>
@@ -111,8 +110,6 @@
 					</ol>
 
 				</div>
-
-				<button type='button' id='remove_dropped' class='row no-gutters my-2 btn btn-danger full hidden'>DROP ITEM HERE TO REMOVE</button>
 
 				<div class='event_occurrences hidden'>
 
@@ -139,8 +136,8 @@
 				<div class='event_occurrences_list_container hidden my-2'>
 					<div class='text'></div>
 					<div class='list hidden row no-gutters'>
-						<ul class='col half col1'></ul>
-						<ul class='col half col2'></ul>
+						<ul class='col half col1 list-unstyled'></ul>
+						<ul class='col half col2 list-unstyled'></ul>
 						<div class='full page_number'></div>
 						<div class='col half pr-1'>
 							<button type='button' class='btn btn-info full prev' disabled>Previous</button>
@@ -159,7 +156,7 @@
 					<h5 class='event-form-heading'>Display settings:</h5>
 				</div>
 
-				<div class='row no-gutters mb-2'>
+				<div class='row no-gutters'>
 					<div class='col-md-6 pl-0 pr-1'>
 						<label class='form-control checkbox'>
 							<input type='checkbox' class='event_setting' id='limited_repeat' name='limited_repeat'> Limit repetitions
@@ -175,6 +172,10 @@
 							<div class='col-auto pl-1 pr-0'>days.</div>
 						</label>
 					</div>
+				</div>
+
+				<div class='limit_for_warning hidden row no-gutters p-2 mb-2 border rounded'>
+					<p class='m-0'><strong>Use with caution.</strong> This setting will simulate to check dates backward to ensure consistency across the beginning of years. That process can take a while if this number is particularly high, like 50 or more.</p>
 				</div>
 
 				<div class='row no-gutters mt-2'>
@@ -197,6 +198,10 @@
 							<div class='col-auto pl-1 pr-0'>days.</div>
 						</label>
 					</div>
+				</div>
+
+				<div class='duration_warning hidden row no-gutters p-2 mb-2 border rounded'>
+					<p class='m-0'><strong>Use with caution.</strong> This setting will simulate to check dates backward/forward to ensure consistency across the beginning/end of years. That process can take a while if this number is particularly high, like 50 or more.</p>
 				</div>
 
 				<div class='row no-gutters mb-2'>
@@ -307,20 +312,18 @@
 
 <div id="html_edit_background" class='clickable_background hidden'>
 	<div class='event-basic-container'>
-		<div class='event-basic-wrapper'>
-			<form id="html-form" class="event-wrapper" action="post">
+		<form id="html-form" class="event-wrapper" action="post">
 
-				<div class='close-ui-btn-bg'></div>
-				<i class="close_ui_btn icon-remove-circle"></i>
+			<div class='close-ui-btn-bg'></div>
+			<i class="close_ui_btn icon-remove-circle"></i>
 
-				<h2 class='event-form-heading'>Edit HTML</h2>
+			<h2 class='event-form-heading'>Edit HTML</h2>
 
-				<div class='row'>
-					<textarea class='form-control html_input editable' name='html_input' placeholder='Event description' autofocus=''></textarea>
-				</div>
+			<div class='row'>
+				<textarea class='form-control html_input editable' name='html_input' placeholder='Event description' autofocus=''></textarea>
+			</div>
 
-				<div class='btn btn-lg btn-primary btn-block' id='btn_html_save'>Save</div>
-			</form>
-		</div>
+			<div class='btn btn-lg btn-primary btn-block' id='btn_html_save'>Save</div>
+		</form>
 	</div>
 </div>

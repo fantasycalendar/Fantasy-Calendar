@@ -5,7 +5,6 @@
     owner = {{ $calendar->owned }};
 
     $(document).ready(function(){
-        wizard = false;
 
         @include('calendar._loadcalendar')
 
@@ -43,8 +42,6 @@
         edit_HTML_ui.bind_events();
 
         if(has_parent){
-
-            console.log(parent_offset)
             
             check_last_change(parent_hash, function(change_result){
 
@@ -168,6 +165,7 @@
 @section('content')
     <div id="generator_container">
         @include('layouts.weather_tooltip')
+        @include('layouts.day_data_tooltip')
         @include('layouts.event')
         @include('inputs.sidebar.edit')
     </div>

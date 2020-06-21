@@ -2,12 +2,11 @@
 
 @push('head')
     <script>
-        wizard = false;
 
         hash = getUrlParameter('id');
 
         preset_applied = false;
-        calendar_name = 'New Calendar';
+        calendar_name = '';
         owner = true;
         has_parent = false;
         is_linked = false;
@@ -46,6 +45,7 @@
             "eras":[],
             "settings":{
                 "layout":"grid",
+                "comments":"none",
                 "show_current_month":false,
                 "allow_view":true,
                 "only_backwards":true,
@@ -132,8 +132,7 @@
                         set_up_view_values();
                         set_up_visitor_values();
                         $('#json_input').val('');
-                        error_check('calendar', true);
-                        evaluate_save_button();
+                        do_error_check('calendar', true);
                     }else{
                         alert("Unrecognized JSON format.")
                     }
@@ -164,8 +163,7 @@
                             set_up_edit_values();
                             set_up_view_values();
                             set_up_visitor_values();
-                            error_check('calendar', true);
-                            evaluate_save_button();
+                            do_error_check('calendar', true);
                         }
                     });
 
@@ -194,6 +192,8 @@
                 }
             });
 
+            do_error_check();
+
         });
 
         function apply_preset(){
@@ -208,14 +208,16 @@
             set_up_edit_values();
             set_up_view_values();
             set_up_visitor_values();
-            error_check('calendar', true);
+            $('#presets').val('Presets');
+            do_error_check('calendar', true);
             evaluate_save_button();
         }
     </script>
 @endpush
 
 @section('content')
-    <div id="generator_container">
+    <div id="generator_container" class="step-1">
+        @include('layouts.day_data_tooltip')
         @include('layouts.weather_tooltip')
         @include('layouts.event')
         @include('inputs.sidebar.create')
