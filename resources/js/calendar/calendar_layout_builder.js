@@ -691,7 +691,7 @@ var calendar_layouts = {
 						}
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow right'>");
-						if(static_data.seasons.global_settings.color_enabled){
+						if(static_data.seasons.global_settings.color_enabled && epoch_data.season !== undefined && epoch_data.season.color !== undefined){
 							calendar_layouts.html.push(`<div class='season_color' style='background-color:${epoch_data.season.color};' title='${epoch_data.season.season_name}'></div>`);
 						}
 						calendar_layouts.html.push("</div>");
@@ -1019,7 +1019,7 @@ var calendar_layouts = {
 						}
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow right'>");
-						if(static_data.seasons.global_settings.color_enabled){
+						if(static_data.seasons.global_settings.color_enabled && epoch_data.season !== undefined && epoch_data.season.color !== undefined){
 							calendar_layouts.html.push(`<div class='season_color' style='background-color:${epoch_data.season.color};' title='${epoch_data.season.season_name}'></div>`);
 						}
 						calendar_layouts.html.push("</div>");
@@ -1360,7 +1360,7 @@ var calendar_layouts = {
 						}
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow right'>");
-						if(static_data.seasons.global_settings.color_enabled){
+						if(static_data.seasons.global_settings.color_enabled && epoch_data.season !== undefined && epoch_data.season.color !== undefined){
 							calendar_layouts.html.push(`<div class='season_color' style='background-color:${epoch_data.season.color};' title='${epoch_data.season.season_name}'></div>`);
 						}
 						calendar_layouts.html.push("</div>");

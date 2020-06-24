@@ -539,8 +539,8 @@ function set_up_edit_inputs(){
 		stats = {
 			"name": name_val,
 			"color": [
-				"#"+Math.floor(Math.random()*16777215).toString(16),
-				"#"+Math.floor(Math.random()*16777215).toString(16)
+				"#"+Math.floor(Math.random()*16777215).toString(16).toString(),
+				"#"+Math.floor(Math.random()*16777215).toString(16).toString()
 			],
 			"time": {
 				"sunrise": {
@@ -590,14 +590,6 @@ function set_up_edit_inputs(){
 
 		add_season_to_sortable(season_sortable, id, stats);
 
-		if(!static_data.seasons.global_settings.periodic_seasons){
-
-			repopulate_timespan_select(season_sortable.children().last().find('.timespan-list'), stats.timespan, false, false);
-			repopulate_day_select(season_sortable.children().last().find('.timespan-day-list'), stats.day, false, false);
-			sort_list_by_partial_date(season_sortable);
-
-		}
-
 		season_sortable.children().last().find('.start_color').spectrum({
 			color: stats.color[0],
 			preferredFormat: "hex",
@@ -609,6 +601,14 @@ function set_up_edit_inputs(){
 			preferredFormat: "hex",
 			showInput: true
 		});
+
+		if(!static_data.seasons.global_settings.periodic_seasons){
+
+			repopulate_timespan_select(season_sortable.children().last().find('.timespan-list'), stats.timespan, false, false);
+			repopulate_day_select(season_sortable.children().last().find('.timespan-day-list'), stats.day, false, false);
+			sort_list_by_partial_date(season_sortable);
+
+		}
 
 		season_sortable.sortable('refresh');
 		reindex_season_sortable();
@@ -1675,9 +1675,15 @@ function set_up_edit_inputs(){
 	$(document).on('change', '#season_color_enabled', function(){
 
 		var checked = $(this).is(":checked");
-		season_sortable.children().each(function(){
+		season_sortable.children().each(function(i){
 			$(this).find('.season_color_enabled').toggleClass("hidden", !checked);
 			$(this).find('.season_color_enabled input').prop("disabled", !checked);
+			if(static_data.seasons.data[i].color === undefined){
+				static_data.seasons.data[i].color =  [
+					"#"+Math.floor(Math.random()*16777215).toString(16),
+					"#"+Math.floor(Math.random()*16777215).toString(16)
+				];
+			}
 		});
 
 	});
