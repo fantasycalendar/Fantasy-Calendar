@@ -1,5 +1,3 @@
-### This is just an edit to confirm the new build pipeline is functional.
-
 # 2.0
 ## TBD
 
