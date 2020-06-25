@@ -1978,7 +1978,7 @@ function get_epoch(static_data, year, month, day){
 		// Get the number of weeks for that month (check if it has a custom week or not)
 		if(!static_data.year_data.overflow){
 			if(timespan.week){
-				total_week_num += Math.abs(Math.floor((timespan.length * timespan_fraction)/timespan.week));
+				total_week_num += Math.abs(Math.floor((timespan.length * timespan_fraction)/timespan.week.length));
 			}else{
 				total_week_num += Math.abs(Math.floor((timespan.length * timespan_fraction)/static_data.year_data.global_week.length));
 			}
@@ -1993,9 +1993,9 @@ function get_epoch(static_data, year, month, day){
 		// If the month is intercalary, add it to the variable to be subtracted when calculating first day of the year
 		if(timespan.type === "intercalary"){
 			intercalary += timespan.length * timespan_fraction;
-		}else{
-			num_timespans += timespan_fraction;
 		}
+		
+		num_timespans += timespan_fraction;
 
 		// Loop through each leap day
 		for(leap_day_index = 0; leap_day_index < static_data.year_data.leap_days.length; leap_day_index++){
