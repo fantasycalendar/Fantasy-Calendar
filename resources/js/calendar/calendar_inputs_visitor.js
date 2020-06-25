@@ -41,7 +41,7 @@ function context_copy_link_date(element){
 	if(!valid_preview_date(year, timespan, day) && !window.hide_copy_warning){
 		swal.fire({
 			title: "Date inaccessible",
-			text: 'This date is not visible to guests or players (see calendar settings), are you sure you want to copy a link to it?',
+			text: 'This date is not visible to guests or players, are you sure you want to copy a link to it? Settings such as "Allow advancing view in calendar" and "Show only up to current day" can affect this.',
 			input: 'checkbox',
 			inputPlaceholder: 'Remember this choice',
 			inputClass: "form-control",
@@ -242,16 +242,14 @@ function set_up_visitor_inputs(){
 			callback: context_add_event
 		}
 
-		let text = !owner || static_data.settings.allow_view ? "Copy link to date (Settings -> Allow View to enable)" : "Copy link to date";
-
 		items.copy_link_date = {
-			name: text,
+			name: "Copy link to date",
 			icon: "fas fa-link",
 			callback: function(key, opt){
 				context_copy_link_date($(opt.$trigger[0]));
 			},
 			disabled: function(){
-				return !owner || static_data.settings.allow_view;
+				return !owner && !static_data.settings.allow_view;
 			},
 			visible: function(key, opt){
 				return owner || static_data.settings.allow_view;

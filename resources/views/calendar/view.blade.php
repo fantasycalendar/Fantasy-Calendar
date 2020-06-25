@@ -67,7 +67,7 @@
     function evaluate_queryString(queryString){
         const urlParams = new URLSearchParams(queryString);
 
-        if(urlParams.has("year") && urlParams.has("timespan") && urlParams.has("day")){
+        if(urlParams.has("year") && urlParams.has("month") && urlParams.has("day")){
             let year = Number(urlParams.get('year'));
             let timespan = Number(urlParams.get('month'));
             let day = Number(urlParams.get('day'));
@@ -77,6 +77,7 @@
             }
 
             if(valid_preview_date(year, timespan, day) || owner){
+
                 if(year === 0 && !static_data.settings.year_zero_exists){
                     return false;
                 }
