@@ -1,0 +1,30 @@
+name: Docker
+
+on:
+  push:
+    # Publish `master` as Docker `latest` image.
+    branches:
+      - master
+
+jobs:
+  # Build and push to docker hub
+  push:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+
+    steps:
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v1.1.0
+        with:
+          # Username used to log in to a Docker registry. If not set then no login will occur
+          username: ${{ secrets.DOCKERHUB_LOGIN }}
+          # Password or personal access token used to log in to a Docker registry. If not set then no login will occur
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          # Docker repository to tag the image with
+          repository: fantasycalendar/fantasycalendar
+          # Automatically tags the built image with the git reference as per the readme
+          tag_with_ref: true
+          # Automatically tags the built image with "latest"
+          tags: latest
+          # Whether to push the image
+          push: true
