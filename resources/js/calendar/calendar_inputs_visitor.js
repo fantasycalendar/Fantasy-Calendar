@@ -70,7 +70,7 @@ function copy_link(epoch_data){
 	var timespan = epoch_data.timespan_number;
 	var day = epoch_data.day;
 
-	var link = `${window.baseurl}calendars/${hash}?year=${year}&month=${timespan}&day=${day}`;
+	var link = `${window.location.origin}/calendars/${hash}?year=${year}&month=${timespan}&day=${day}`;
 
 	const el = document.createElement('textarea');
 	el.value = link;
