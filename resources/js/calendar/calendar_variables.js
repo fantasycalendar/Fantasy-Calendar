@@ -144,6 +144,11 @@ var condition_mapping = {
 		["Every nth epoch-phase count", 				[["moon_phase_num_epoch", "%", 1, 2]],	[["number", "nth", "Enter overall moon phase count interval", "1", "1"], ["number", "offset", "Enter offset for interval", "0", "0"]]]
 	],
 
+	"Location":[
+		["Location is exactly", 					[["location", "==", 0]], [["select"]]],
+		["Location is not", 						[["location", "!=", 0]], [["select"]]],
+	],
+
 	"Cycle": [
 		["Cycle is exactly", 						[["cycle", "==", 0, 1]], [["select"]]],
 		["Cycle is not", 							[["cycle", "!=", 0, 1]], [["select"]]]

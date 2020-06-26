@@ -5,7 +5,7 @@ importScripts('/js/calendar/calendar_variables.js?v='+version);
 
 
 onmessage = e => {
-	data = event_evaluator.init(e.data.static_data, e.data.events, e.data.event_categories, e.data.epoch_data, e.data.event_id, e.data.start_epoch, e.data.end_epoch, e.data.callback);
+	data = event_evaluator.init(e.data.static_data, e.data.dynamic_data, e.data.events, e.data.event_categories, e.data.epoch_data, e.data.event_id, e.data.start_epoch, e.data.end_epoch, e.data.callback);
 	postMessage({
 		event_data: data,
 		callback: false
@@ -22,9 +22,10 @@ var event_evaluator = {
 
 	current_data: {},
 
-	init: function(static_data, events, event_categories, epoch_data, event_id, start_epoch, end_epoch, callback){
+	init: function(static_data, dynamic_data, events, event_categories, epoch_data, event_id, start_epoch, end_epoch, callback){
 
 		this.static_data = static_data;
+		this.dynamic_data = dynamic_data;
 		this.events = events;
 		this.categories = event_categories;
 		this.epoch_data = epoch_data;
@@ -136,6 +137,12 @@ var event_evaluator = {
 					var cond_1 = values[subcon[2]]|0;
 					var cond_2 = values[subcon[3]] ? values[subcon[3]]|0 : undefined;
 					var selected = fract(43758.5453 * Math.sin(cond_2 + (78.233 * epoch_data.epoch)))*100;
+
+				}else if(array[0] === "Location"){
+
+					var cond_1 = values[subcon[2]]|0;
+
+					return event_evaluator.dynamic_data.custom_location && evaluate_operator(operator, cond_1, event_evaluator.dynamic_data.location);
 
 				}else if(array[0] === "Events"){
 

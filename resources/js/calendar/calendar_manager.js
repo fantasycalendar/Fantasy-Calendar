@@ -142,6 +142,7 @@ function rebuild_events(event_id){
 
 	worker_events.postMessage({
 		static_data: static_data,
+		dynamic_data: dynamic_data,
 		epoch_data: evaluated_static_data.epoch_data,
         events: events,
         event_categories: event_categories,

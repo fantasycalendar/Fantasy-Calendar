@@ -1609,6 +1609,20 @@ var edit_event_ui = {
 
 			}
 
+		}else if(type == "Location"){
+
+			html.push("<select class='form-control'>")
+
+			for(var locationId in static_data.seasons.locations){
+
+				var location = static_data.seasons.locations[locationId]
+
+				html.push(`<option value="${locationId}">`);
+				html.push(location.name);
+				html.push("</option>");
+
+			}
+
 		}else if(type == "Events"){
 
 			html.push("<select class='event_select form-control'>")
@@ -1745,6 +1759,8 @@ var edit_event_ui = {
 							(keys[i] === "Events" && events.length <= 1)
 							||
 							(keys[i] === "Season" && static_data.seasons.data.length < 1)
+							||
+							(keys[i] === "Location" && static_data.seasons.locations.length < 1)
 						){
 							continue;
 						}
