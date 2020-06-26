@@ -54,7 +54,9 @@ day_data_tooltip = {
             if(data !== undefined){
 
                 if(key == "era"){
-                    html.push(static_data.eras[data].name);
+                    if(data > -1){
+                        html.push(static_data.eras[data].name);
+                    }
                 }else if(key.indexOf('moon') > -1){
                     for(var moon_index in data){
                         var moon = static_data.moons[moon_index];
