@@ -154,6 +154,14 @@ function set_up_visitor_inputs(){
         }
     });
 
+    $('#calendar_container').scroll(function(event) {
+        if($('#top_follower').height() < $(this).scrollTop()) {
+            $('#top_follower').addClass('follower_shadow');
+        } else {
+            $('#top_follower').removeClass('follower_shadow');
+        }
+    });
+
     var items = {};
 
 	if(owner){
