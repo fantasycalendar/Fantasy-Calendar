@@ -1678,13 +1678,15 @@ function set_up_edit_inputs(){
 		season_sortable.children().each(function(i){
 			$(this).find('.season_color_enabled').toggleClass("hidden", !checked);
 			$(this).find('.season_color_enabled input').prop("disabled", !checked);
-			if(static_data.seasons.data[i].color === undefined){
+			if(static_data.seasons.data[i].color === undefined || static_data.seasons.data[i].color.length == 0){
 				static_data.seasons.data[i].color =  [
 					"#"+Math.floor(Math.random()*16777215).toString(16),
 					"#"+Math.floor(Math.random()*16777215).toString(16)
 				];
 			}
 		});
+
+		do_error_check();
 
 	});
 
