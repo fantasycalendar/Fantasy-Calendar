@@ -316,7 +316,7 @@ class Climate{
 		this.season.current_index = this.season.current_season.index;
 		this.season.next_index = this.season.next_season.index;
 
-		var current_epoch = evaluate_calendar_start(this.static_data, convert_year(this.static_data, this.dynamic_data.year), this.dynamic_data.timespan).epoch
+		var current_epoch = evaluate_calendar_start(this.static_data, convert_year(this.static_data, this.dynamic_data.year)).epoch
 
 		while(this.season.next_season.epoch < current_epoch){
 
