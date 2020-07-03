@@ -111,14 +111,14 @@
                     <h2>Timekeeper</h2>
                     <h5>For users who need to keep track of multiple timelines, universes, or games.</h5>
                     @if($betaAccess)
-                        <h3 class="bg-grey monthly">Free<br><p class="small">Because you're awesome <3</p class=small></h3>
-                        <h3 class="bg-grey yearly">Free<br><p class="small">Because you're awesome <3</p class=small></h3>
+                        <h3 class="bg-grey monthly">Free<br><p class="small">Because you're awesome <3</p></h3>
+                        <h3 class="bg-grey yearly">Free<br><p class="small">Because you're awesome <3</p></h3>
                     @elseif($earlySupporter)
-                        <h3 class="bg-grey monthly">$1.49 / month<br><p class="small">25% off because you're an early supporter (normally $1.99)!</p class=small></h3>
-                        <h3 class="bg-grey yearly">$14.99 / year<br><p class="small">25% off because you're an early supporter (normally $19.99), as well as two months free!</p class=small></h3>
+                        <h3 class="bg-grey monthly">$1.49 / month<br><p class="small">25% off because you're an early supporter (normally $1.99)!</p></h3>
+                        <h3 class="bg-grey yearly">$14.99 / year<br><p class="small">25% off because you're an early supporter (normally $19.99), as well as two months free!</p></h3>
                     @else
                         <h3 class="bg-grey monthly">$1.99 / month<br></h3>
-                        <h3 class="bg-grey yearly">$19.99 / year<br><p class="small">Two months free (16% discount)!</p class=small></h3>
+                        <h3 class="bg-grey yearly">$19.99 / year<br><p class="small">Two months free (16% discount)!</p></h3>
                     @endif
                     <ul class="features">
                         <li><strong>Full</strong> calendar functionality</li>
@@ -160,14 +160,14 @@
                     <h2>Worldbuilder</h2>
                     <h5>For power users who want to collaborate using the greatest multi-user fantasy calendar tool on the market.</h5>
                     @if($betaAccess)
-                        <h3 class="bg-grey monthly">Free<br><p class="small">Because you're awesome <3</p class=small></h3>
-                        <h3 class="bg-grey yearly">Free<br><p class="small">Because you're awesome <3</p class=small></h3>
+                        <h3 class="bg-grey monthly">Free<br><p class="small">Because you're awesome <3</p></h3>
+                        <h3 class="bg-grey yearly">Free<br><p class="small">Because you're awesome <3</p></h3>
                     @elseif($earlySupporter)
-                        <h3 class="bg-grey monthly">$2.24 / month<br><p class="small">25% off because you're an early supporter (normally $2.99)!</p class=small></h3>
-                        <h3 class="bg-grey yearly">$22.49 / year<br><p class="small">25% off because you're an early supporter (normally $29.99), as well as two months free!</p class=small></h3>
+                        <h3 class="bg-grey monthly">$2.24 / month<br><p class="small">25% off because you're an early supporter (normally $2.99)!</p></h3>
+                        <h3 class="bg-grey yearly">$22.49 / year<br><p class="small">25% off because you're an early supporter (normally $29.99), as well as two months free!</p></h3>
                     @else
                         <h3 class="bg-grey monthly">$2.99 / month<br></h3>
-                        <h3 class="bg-grey yearly">$29.99 / year<br><p class="small">Two months free (16% discount)!</p class=small></h3>
+                        <h3 class="bg-grey yearly">$29.99 / year<br><p class="small">Two months free (16% discount)!</p></h3>
                     @endif
                     <ul class="features">
                         <li><strong>Full</strong> calendar functionality</li>
