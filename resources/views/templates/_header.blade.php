@@ -23,7 +23,6 @@
                 @if(Auth::user()->isAdmin())
                     <li class="nav-item"><a href="{{ route('code16.sharp.home') }}" class="nav-link">Admin Panel</a></li>
                 @endif
-                <li class="nav-item"><a href="{{ route('settings') }}" class="nav-link">Settings</a></li>
                 <li class="nav-item"><a href="/profile" class="nav-link">Profile</a></li>
                 <li class="nav-item"><a href="javascript:" id="logout-button" class="nav-link">Logout</a></li>
             @else

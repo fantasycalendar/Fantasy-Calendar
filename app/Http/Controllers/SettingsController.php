@@ -19,6 +19,6 @@ class SettingsController extends Controller
     public function update(StoreUserSettings $request) {
         Auth::user()->setSettings(Arr::only($request->all(), ['dark_theme']));
 
-        return redirect('settings');
+        return redirect('profile');
     }
 }
