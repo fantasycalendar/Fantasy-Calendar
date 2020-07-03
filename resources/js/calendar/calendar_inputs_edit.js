@@ -1801,7 +1801,11 @@ function set_up_edit_inputs(){
 
 	});
 
-	$(document).on('change', '.timespan_occurance_input', function(){
+	$(document).on('focusin', '.timespan_occurance_input', function(e){
+		$(this).data('prev', $(this).val());
+	});
+
+	$(document).on('change', '.timespan_occurance_input', function(e){
 
 		var interval = $(this).closest('.sortable-container').find('.interval');
 		var interval_val = interval.val()|0;
@@ -1924,7 +1928,7 @@ function set_up_edit_inputs(){
 		var global_regex = /[ `~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z]/g;
 		var local_regex = /^\+*\!*[1-9]+[0-9]{0,}$/;
 		var numbers_regex = /([1-9]+[0-9]{0,})/;
-
+		
 		var invalid = global_regex.test(interval_val);
 		var values = interval_val.split(',');
 
@@ -1964,6 +1968,10 @@ function set_up_edit_inputs(){
 
 				values = result;
 
+			}else{
+				interval_val = interval_val.replace(/,\s*$/, "");
+				$(this).val(interval_val).change();
+				return;
 			}
 
 		}else{
@@ -2261,7 +2269,7 @@ function set_up_edit_inputs(){
 	input_container.change(function(e){
 
 		if(block_inputs) return;
-
+		
 		if(e.originalEvent){
 			var target = $(e.originalEvent.target);
 		}else{
@@ -2299,14 +2307,40 @@ function set_up_edit_inputs(){
 
 			}else{
 
+				var set = true;
+
 				if(!target.is(':disabled')){
 
 					switch(target.attr('type')){
 						case "number":
 							if(target.attr('step') === "any"){
 								var value = parseFloat(target.val());
+								var min = undefined;
+								var max = undefined;
+								if(target.attr('min')){
+									var min = parseFloat(target.attr('min'));
+								}
+								if(target.attr('max')){
+									var min = parseFloat(target.attr('max'));
+								}
 							}else{
 								var value = parseInt(target.val().split('.')[0]);
+								var min = undefined;
+								var max = undefined;
+								if(target.attr('min')){
+									var min = parseInt(target.attr('min'));
+								}
+								if(target.attr('max')){
+									var min = parseInt(target.attr('max'));
+								}
+							}
+							if(value < min || value > max){
+								if(target.data('prev')){
+									target.val(target.data('prev'));
+									return;
+								}else{
+									set = false;
+								}
 							}
 							target.val(value);
 							break;
@@ -2332,7 +2366,7 @@ function set_up_edit_inputs(){
 						current_calendar_data = current_calendar_data[type[type.length-1]];
 					}
 
-					current_calendar_data[key] = value;
+					if(set) current_calendar_data[key] = value;
 
 				}
 			}
