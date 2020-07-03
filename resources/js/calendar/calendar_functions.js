@@ -754,6 +754,8 @@ class date_manager {
 
 	set year(year){
 
+		if(year === undefined) return;
+
 		if(this.year == year || !this.check_max_year(year)) return;
 
 		if(get_timespans_in_year(static_data, year, false).length != 0){
@@ -801,6 +803,8 @@ class date_manager {
 	}
 
 	set timespan(timespan){
+
+		if(timespan === undefined) return;
 
 		if(!this.check_max_timespan(timespan)) return;
 
@@ -851,6 +855,8 @@ class date_manager {
 	}
 
 	set day(day){
+
+		if(day === undefined) return;
 
 		if(!this.check_max_day(day)) return;
 
@@ -1970,7 +1976,7 @@ function get_epoch(static_data, year, month, day){
 			if(year < 0 || static_data.settings.year_zero_exists){
 				var timespan_fraction = Math.ceil((year - offset) / timespan.interval);
 			}else{
-				var timespan_fraction = Math.floor((year - offset) / timespan.interval);
+				var timespan_fraction = Math.floor((year + timespan.interval - offset) / timespan.interval);
 			}
 			
 		}
