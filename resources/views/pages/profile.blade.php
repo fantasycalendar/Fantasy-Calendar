@@ -6,9 +6,13 @@
             <p><i class="fa fa-calendar"></i> Calendars: {{ $user->calendars->count() }}</p>
         </div>
         <div class="col-6">
-            <p><i class="fa fa-layer-group"></i> Subscription: {{ $user->paymentLevel() }}</p>
+            <p><i class="fa fa-layer-group"></i> Subscription: {!! ($user->betaAccess()) ? "Worldbuilder <br><small class='pl-3'>(Free for beta participation)</small>" : $user->paymentLevel() !!}</p>
             @empty($subscription)
-                <p><a class="btn btn-primary form-control" href="{{ route('subscription.pricing') }}">Get subscribed</a></p>
+                @unless($user->betaAccess())
+                    <p><a class="btn btn-primary form-control" href="{{ route('subscription.pricing') }}">Get subscribed</a></p>
+                @else
+                    <p><a href="{{ route('subscription.pricing', ['beta_override' => '1']) }}" class="btn btn-primary form-control">Subscribe anyway</a></p>
+                @endunless
             @else
                 @if($subscription->onGracePeriod())
                     <p style="color: red;"><i class="fa fa-exclamation-triangle"></i> Cancelled, ending {{ $subscription->ends_at->format('Y-m-d') }}</p>

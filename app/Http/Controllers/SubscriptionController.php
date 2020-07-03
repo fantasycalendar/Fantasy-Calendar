@@ -22,10 +22,12 @@ class SubscriptionController extends Controller
             $subscribed = true;
         }
 
+        $betaAccess = ($request->boolean('beta_override')) ? false : Auth::user()->betaAccess();
+
         return view('subscription.pricing', [
             'subscribed' => $subscribed,
             'earlySupporter' => Auth::user()->isEarlySupporter(),
-            'betaAccess' => Auth::user()->betaAccess(),
+            'betaAccess' => $betaAccess,
         ]);
     }
 
@@ -64,12 +66,12 @@ class SubscriptionController extends Controller
 
         try {
 
-            # If the users was registered before a certain point, apply the 25% off 
-            
+            # If the users was registered before a certain point, apply the 25% off
+
             $user->newSubscription($level, $plan)->create($request->input('token'));
 
         } catch (IncompletePayment $exception) {
-            
+
             return redirect()->route(
                 'cashier.payment',
                 [$exception->payment->id, 'redirect' => route('profile')]
