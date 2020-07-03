@@ -1,3 +1,4 @@
+
 {
     "name": "laravel/laravel",
     "type": "project",
@@ -20,7 +21,6 @@
         "laravel/tinker": "^2.2.0",
         "laravel/ui": "^2.0",
         "league/fractal": "^0.18.0",
-        "nesbot/carbon": "^2.22"
         "mews/purifier": "3.2.0",
         "nesbot/carbon": "^2.31"
     },
