@@ -68,7 +68,7 @@
 
 @section('content')
 
-    <div class="container pt-4">
+    <div class="container py-4">
         <h1 class="center-text">Subscribe to Fantasy Calendar</h1>
         @if(!$betaAccess)
         <div class="row">
