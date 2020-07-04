@@ -43,11 +43,14 @@
 @section('content')
     <div class="container py-5">
         @unless(count($calendars) > 0)
-            <div class="row text-center my-5 py-4 border-bottom" style="background-image: url({{ asset('resources/calendar_list_empty.svg') }}); background-repeat: no-repeat; background-size: auto 95%; background-position: right center;">
-                <div class="col-12 text-left">
+            <div class="row text-center my-5 py-4 border-bottom">
+                <div class="col-12 col-md-6 py-5 text-left">
                     <h2>Create Your Calendar</h2>
                     <p class="mt-4">From zero to tracking your story in just a few easy steps.</p>
                     <a href="{{ route('calendars.create') }}" class="btn btn-primary my-5">Create a Calendar</a>
+                </div>
+                <div class="d-none d-md-block col-md-6 py-5" style="min-height: 100%; background-image: url({{ asset('resources/calendar_list_empty.svg') }}); background-repeat: no-repeat; background-size: contain; background-position: right center;">
+
                 </div>
             </div>
         @else
