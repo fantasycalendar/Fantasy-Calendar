@@ -1842,78 +1842,8 @@ function set_up_edit_inputs(){
 		return 0; // equal values MUST yield zero
 	}
 
-	prevent_default = false;
-
-	$(document).on('focus', '.leap_day_occurance_input.interval', function(e){
-		$(this).prop('prev', $(this).val());
-	});
-
-	$(document).on('change', '.leap_day_occurance_input.interval', function(e){
-
-		if(prevent_default){
-			return;
-		}
-
-		e.preventDefault();
-
-		var interval = $(this).val();
-		var values = interval.split(',');
-
-		if(values.length > 5){
-
-			swal.fire({
-				title: "Warning!",
-				text: "You have over 5 intervals, more than this can slow down your calendar quite a lot. Are you sure you want to continue?",
-				showCancelButton: true,
-				confirmButtonColor: '#3085d6',
-				cancelButtonColor: '#d33',
-				confirmButtonText: 'Yes',
-				cancelButtonText: 'Cancel',
-				icon: "warning"
-			})
-			.then((result) => {
-
-				if(!result.dismiss){
-
-					prevent_default = true;
-					$(this).trigger('change');
-
-				}else{
-
-					$(this).val($(this).prop('prev'));
-
-				}
-
-			});
-
-		}else{
-
-			prevent_default = true;
-			$(this).trigger('change');
-
-		}
-
-	});
-
-	$(document).on('change', '.leap_day_occurance_input.offset', function(e){
-
-		if(prevent_default){
-			return;
-		}
-
-		prevent_default = true;
-		$(this).trigger('change');
-
-	});
 
 	$(document).on('change', '.leap_day_occurance_input', function(e){
-
-		if(!prevent_default){
-			e.preventDefault();
-			return;
-		}
-
-		prevent_default = false;
 
 		var index = $(this).closest('.sortable-container').attr('index')|0;
 		var interval = $(this).closest('.sortable-container').find('.interval');
@@ -1923,7 +1853,14 @@ function set_up_edit_inputs(){
 		var timespan = $(this).closest('.sortable-container').find('.timespan-list');
 		var timespan_val = timespan.val();
 
+		interval_val = interval_val.replace(/,\s*$/, "");
+
 		if(offset_val === undefined || interval_val === undefined) return;
+
+		if(interval_val == ""){
+			$(this).toggleClass('invalid', invalid).attr('error_msg', invalid ? `${static_data.year_data.leap_days[index].name} is empty, please enter at least one number.` : '');
+			return;
+		}
 
 		var global_regex = /[ `~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z]/g;
 		var local_regex = /^\+*\!*[1-9]+[0-9]{0,}$/;
@@ -1934,91 +1871,82 @@ function set_up_edit_inputs(){
 
 		$(this).toggleClass('invalid', invalid).attr('error_msg', invalid ? `${static_data.year_data.leap_days[index].name} has an invalid interval formula.` : '');
 
+		if(invalid) return;
+
 		if($(this).hasClass('interval')){
 
-			if(!invalid){
-
-				for(var i = 0; i < values.length; i++){
-					if(!local_regex.test(values[i])){
-						invalid = true;
-						break;
-					}
+			for(var i = 0; i < values.length; i++){
+				if(!local_regex.test(values[i])){
+					invalid = true;
+					break;
 				}
 			}
 
-			if(!invalid){
+			$(this).toggleClass('invalid', invalid).attr('error_msg', invalid ? `${static_data.year_data.leap_days[index].name} has an invalid interval formula. Plus before exclamation point.` : '');
 
-				var unsorted = [];
+			if(invalid) return;
 
-				for(var i = 0; i < values.length; i++){
-					unsorted.push(Number(values[i].match(numbers_regex)[0]));
-				}
+			var unsorted = [];
 
-				var sorted = unsorted.slice(0).sort(sorter).reverse();
-
-				var result = [];
-
-				for(var i = 0; i < sorted.length; i++){
-					var index = unsorted.indexOf(sorted[i]);
-					result.push(values[index]);
-					delete unsorted[index];
-				}
-
-				$(this).val(result.join(','));
-
-				values = result;
-
-			}else{
-				interval_val = interval_val.replace(/,\s*$/, "");
-				$(this).val(interval_val).change();
-				return;
+			for(var i = 0; i < values.length; i++){
+				unsorted.push(Number(values[i].match(numbers_regex)[0]));
 			}
+
+			var sorted = unsorted.slice(0).sort(sorter).reverse();
+
+			var result = [];
+
+			for(var i = 0; i < sorted.length; i++){
+				var index = unsorted.indexOf(sorted[i]);
+				result.push(values[index]);
+				delete unsorted[index];
+			}
+
+			$(this).val(result.join(','));
+
+			values = result;
 
 		}else{
 
-			if(!invalid){
+			var unsorted = [];
 
-				var unsorted = [];
-
-				for(var i = 0; i < values.length; i++){
-					unsorted.push(Number(values[i].match(numbers_regex)[0]));
-				}
-
-				var sorted = unsorted.slice(0).sort(sorter).reverse();
-				var result = [];
-
-				for(var i = 0; i < sorted.length; i++){
-					var index = unsorted.indexOf(sorted[i]);
-					result.push(values[index]);
-					delete unsorted[index];
-				}
-
-				values = result;
-
+			for(var i = 0; i < values.length; i++){
+				unsorted.push(Number(values[i].match(numbers_regex)[0]));
 			}
+
+			var sorted = unsorted.slice(0).sort(sorter).reverse();
+			var result = [];
+
+			for(var i = 0; i < sorted.length; i++){
+				var index = unsorted.indexOf(sorted[i]);
+				result.push(values[index]);
+				delete unsorted[index];
+			}
+
+			values = result;
 
 		}
 
-		if(!invalid){
+		var values = values.reverse();
+		sorted = sorted.reverse();
 
-			var values = values.reverse();
-			sorted = sorted.reverse();
-
-			if(values.length == 1 && Number(values[0]) == 1){
-				offset.val(0).prop('disabled', true);
-			}else{
-				offset.prop('disabled', false);
-			}
-
-			var data = {
-				'interval': interval_val,
-				'offset': offset_val,
-				'timespan': timespan_val
-			}
-
-			$(this).closest('.sortable-container').find('.leap_day_variance_output').html(get_interval_text(false, data));
-
+		if(values.length == 1 && Number(values[0]) == 1){
+			offset.val(0).prop('disabled', true);
+		}else{
+			offset.prop('disabled', false);
 		}
+
+		var data = {
+			'interval': interval_val,
+			'offset': offset_val,
+			'timespan': timespan_val
+		}
+		
+		$(this).toggleClass('invalid', false).attr('error_msg', '');
+
+		$(this).closest('.sortable-container').find('.leap_day_variance_output').html(get_interval_text(false, data));
+
+		do_error_check();
 
 	});
 
