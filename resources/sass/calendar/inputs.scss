@@ -1135,10 +1135,17 @@ ol.example li.placeholder:before {
 }
 
 #modal {
+    
     color: white;
 
     &.error{
         background-color: #f44336;
+
+        ol {
+            list-style-type: none;
+            padding-inline-start: 0;
+            margin: 20px 0;
+        }
     }
 
     &.creation{
