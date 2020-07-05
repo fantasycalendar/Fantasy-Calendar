@@ -1858,7 +1858,12 @@ function set_up_edit_inputs(){
 		if(offset_val === undefined || interval_val === undefined) return;
 
 		if(interval_val == ""){
-			$(this).toggleClass('invalid', invalid).attr('error_msg', invalid ? `${static_data.year_data.leap_days[index].name} is empty, please enter at least one number.` : '');
+			interval.toggleClass('invalid', true).attr('error_msg', true ? `${static_data.year_data.leap_days[index].name} is empty, please enter at least one number.` : '');
+			return;
+		}
+
+		if(offset_val <= 0){
+			offset.toggleClass('invalid', true).attr('error_msg', true ? `${static_data.year_data.leap_days[index].name} cannot have a negative offset number.` : '');
 			return;
 		}
 
@@ -2677,9 +2682,7 @@ function add_leap_day_to_list(parent, key, data){
 						element.push(`<input type='text' class='form-control leap_day_occurance_input interval dynamic_input protip' data-pt-position="top" data-pt-title='Every nth year this leap day appears. Multiple intervals can be separated by commas, like the gregorian leap day: 400,!100,4. Every 4th year, unless it is divisible by 100, but again if it is divisible by 400.' data='year_data.leap_days.${key}' fc-index='interval' value='${data.interval}' />`);
 					element.push("</div>");
 					element.push("<div class='col-4 pl-1 '>");
-						element.push(`<input type='number' step="1" class='form-control leap_day_occurance_input offset dynamic_input' min='0' data='year_data.leap_days.${key}' fc-index='offset' value='${data.interval === "1" ? 0 : data.offset}'`);
-						element.push(data.interval === "1" ? " disabled" : "");
-						element.push("/>");
+						element.push(`<input type='number' step="1" class='form-control leap_day_occurance_input offset dynamic_input' min='0' data='year_data.leap_days.${key}' fc-index='offset' value='${data.interval == "1" ? 0 : data.offset}'/>`);
 					element.push("</div>");
 				element.push("</div>");
 
@@ -2696,6 +2699,7 @@ function add_leap_day_to_list(parent, key, data){
 
 	element.find('.name-input').val(data.name);
 	element.find('.internal-list-name').val(`${data.week_day && !data.intercalary ? data.week_day : 'Weekday'}`)
+	element.find('.leap_day_occurance_input.offset').prop('disabled', data.interval == "1" || data.interval == 1)
 
 	parent.append(element);
 

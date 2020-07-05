@@ -684,8 +684,8 @@ function evaluate_settings(){
 
 	if(static_data){
 		if(static_data.year_data.global_week.length == 0 || static_data.year_data.timespans.length == 0){
-			$('.date_control').toggleClass('hidden', true);
-			$('.date_control').find('select, input').prop('disabled', true);
+			$('.date_inputs').toggleClass('hidden', true);
+			$('.date_inputs').find('select, input').prop('disabled', true);
             $('#empty_calendar_explaination').toggleClass('hidden', !(static_data.year_data.global_week.length == 0 || static_data.year_data.timespans.length == 0));
 			return;
 		}
@@ -693,8 +693,8 @@ function evaluate_settings(){
 
     $('#empty_calendar_explaination').toggleClass('hidden', true);
 
-	$('.date_control').toggleClass('hidden', (!owner && !static_data.settings.allow_view));
-	$('.date_control').find('select, input').not('#current_hour, #current_minute').prop('disabled', !owner && !static_data.settings.allow_view);
+	$('.date_inputs').toggleClass('hidden', (!owner && !static_data.settings.allow_view));
+	$('.date_inputs').find('select, input').not('#current_hour, #current_minute').prop('disabled', !owner && !static_data.settings.allow_view);
 
 	$("#date_inputs :input, #date_inputs :button").prop("disabled", has_parent);
 	$(".calendar_link_explaination").toggleClass("hidden", !has_parent);

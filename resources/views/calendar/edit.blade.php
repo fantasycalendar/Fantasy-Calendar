@@ -38,6 +38,7 @@
         bind_calendar_events();
         rebuild_calendar('calendar', dynamic_data);
 
+
         edit_event_ui.bind_events();
         edit_HTML_ui.bind_events();
 
