@@ -4053,16 +4053,28 @@ function repopulate_weekday_select(elements, value, change){
 }
 
 function reindex_timespan_sortable(){
+	
+	console.log(reindex_timespan_sortable.caller)
 
 	var tabindex = 100;
 
+	timespan_sortable.children().each(function(i){
+
+	});
+
 	static_data.year_data.timespans = [];
+
+	var previous_indexes = [];
 
 	timespan_sortable.children().each(function(i){
 
 		$('.dynamic_input', this).each(function(){
 			$(this).attr('data', $(this).attr('data').replace(/[0-9]+/g, i));
 		});
+
+		let previous_index = $(this).attr('index');
+
+		previous_indexes.push(previous_index)
 
 		$(this).attr('index', i);
 
@@ -4092,6 +4104,12 @@ function reindex_timespan_sortable(){
 	});
 
 	repopulate_timespan_select();
+	
+	leap_day_list.children().each(function(){
+		var index = $(this).find('.timespan-list').val()|0;
+		var new_index = previous_indexes[index];
+		$(this).find('.timespan-list').val(new_index);
+	});
 
 	do_error_check();
 
