@@ -1862,7 +1862,7 @@ function set_up_edit_inputs(){
 			return;
 		}
 
-		if(offset_val <= 0){
+		if(offset_val < 0){
 			offset.toggleClass('invalid', true).attr('error_msg', true ? `${static_data.year_data.leap_days[index].name} cannot have a negative offset number.` : '');
 			return;
 		}
