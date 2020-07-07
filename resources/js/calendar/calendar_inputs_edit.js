@@ -1454,23 +1454,31 @@ function set_up_edit_inputs(){
 
 		var cycle = Math.max.apply(null, value.split(','))+1;
 
-		if(cycle > 40){
+		var invalid = cycle > 40;
 
-			invalid = true;
+		$(this).toggleClass('invalid', invalid).attr('error_msg', invalid ? `${static_data.moons[index].name} has an invalid custom cycle. 39 is the highest possible number.` : '');
 
-		}else{
+		if(!invalid){
 
-			invalid = false;
+			if(cycle <= 4){
+				var granularity = 4;
+			}else if(cycle <= 8){
+				var granularity = 8;
+			}else if(cycle <= 24){
+				var granularity = 24;
+			}else{
+				var granularity = 40;
+			}
 
-			static_data.moons[index].granularity = get_moon_granularity(cycle);
+			static_data.moons[index].granularity = granularity;
 
-			$(this).closest('.sortable-container').find('.custom_phase_text').text(`This moon has ${value.split(',').length} phases, with a granularity of ${static_data.moons[index].granularity} moon sprites.`);
+			let text = `This moon has ${value.split(',').length} phases, with a granularity of ${static_data.moons[index].granularity} moon sprites.`;
+
+			$(this).closest('.sortable-container').find('.custom_phase_text').text(text);
 
 			do_error_check();
 
 		}
-
-		$(this).toggleClass('invalid', invalid).attr('error_msg', invalid ? `${static_data.moons[index].name} has an invalid custom cycle. 39 is the highest possible number.` : '');
 
 	});
 
