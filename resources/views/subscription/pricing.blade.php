@@ -35,6 +35,7 @@
         ul.features {
             margin: 0 0 2rem 0;
             line-height: 1.5rem;
+            list-style-type: none;
         }
         a.btn {
             display: inline-block;
@@ -177,7 +178,7 @@
                         <li>Subscriber-only Discord channel</li>
                         <li><strong>User Management</strong> <p class="small">Users can comment on events and view provided information</p> </li>
                         <li>Calendar <strong>co-ownership</strong> <p class="small">Co-owners can comment on events, create events, and change the current date.</p></li>
-                        <li>Calendar Linking <p class="small">Link calendars together and drive their dates from a single master calendar!</p></li>
+                        <li>Calendar Linking <p class="small">Link calendars together and drive their dates from a single parent calendar!</p></li>
                     </ul>
                     @guest
                         <a href="{{ route('user.register') }}">Register to subscribe</a>
