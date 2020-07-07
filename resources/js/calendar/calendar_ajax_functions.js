@@ -25,7 +25,10 @@ function update_date(new_date){
 	}
 }
 
-
+function validateEmail(email) {
+	const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+	return re.test(email);
+}
 
 function getUrlParameter(sParam) {
 	var sPageURL = decodeURIComponent(window.location.search.substring(1)),
@@ -296,6 +299,34 @@ function unlink_child_calendar(output, child_hash){
 		});
 	});
 }
+
+function add_calendar_user(email, output){
+
+	console.log(`Sending email to ${email}...`)
+
+	var success = true;
+	var text = `Sent email to ${email}!`;
+	output(success, text);
+
+}
+
+function update_calendar_user(user_id, permission, output){
+
+	console.log(`Updating ${user_id}'s permission to ${permission}...`)
+
+	var success = true;
+	var text = 'Updated permissions!';
+
+	output(success, text);
+
+}
+
+function remove_calendar_user(user_id, remove_all){
+
+	console.log(`Removing user id ${user_id}. Should I delete all of their events, comments, etc as well? ${remove_all}`);
+
+}
+
 
 function submit_new_event(event_id){
 

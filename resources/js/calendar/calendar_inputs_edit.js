@@ -2186,6 +2186,111 @@ function set_up_edit_inputs(){
 		});
 	});
 
+	$('#email_input').on('keypress', function (e) {
+		if(e.which === 13){
+			$('#btn_send_invite').click();
+		}
+	});
+
+	$('#btn_send_invite').click(function(){
+
+		var email = $('#email_input').val();
+
+		let valid_email = validateEmail(email);
+
+		$('#email_input').toggleClass('invalid', !valid_email);
+		
+		if(valid_email){
+			add_calendar_user(email, function(success, text){
+				$('.email_text').text(text).parent().toggleClass('hidden', false);
+				$('#email_input').toggleClass('invalid', !success);
+				if(success){
+					$('#email_input').val('');
+				}
+			});
+		}else{
+			$('.email_text').text(!valid_email ? "This email is invalid!" : "").toggleClass('hidden', valid_email);
+		}
+			
+		setTimeout(() => {
+			$('.email_text').text("").toggleClass('hidden', true);
+		}, 5000);
+
+	});
+
+	$(document).on('change', '.user_permissions_select', function(){
+
+		var button = $(this).closest('.sortable-container').find('.update_user_permissions');
+
+		var new_value = $(this).val()|0;
+		var curr_value = button.attr('permissions_val')|0;
+
+		button.prop('disabled', new_value == curr_value)
+
+	});
+
+	$(document).on('click', '.update_user_permissions', function(){
+
+		var button = $(this);
+		var container = button.closest('.sortable-container');
+		var dropdown = container.find('.user_permissions_select');
+
+		button.prop('disabled', true);
+
+		var user_id = button.attr('user_id')|0;
+		var permissions = dropdown.val()|0;
+		
+		update_calendar_user(user_id, permissions, function(success, text){
+			
+			button.prop('disabled', success);
+			button.attr('permissions_val', permissions);
+
+			container.find('.user_permissions_text').parent().toggleClass('hidden', false);
+			container.find('.user_permissions_text').parent().toggleClass('error', !success);
+			container.find('.user_permissions_text').text(text);
+			
+			setTimeout(() => {
+				container.find('.user_permissions_text').parent().toggleClass('hidden', true);
+				container.find('.user_permissions_text').text("");
+			}, 5000);
+
+		});
+
+
+	});
+
+	$(document).on('click', '.remove_user', function(){
+
+		var user_name = $(this).attr('user_name');
+		var user_id = $(this).attr('user_id')|0;
+
+		swal.fire({
+			title: "Removing User",
+			html: `<p>Are you sure you want to remove <strong>${user_name}</strong> from this calendar?</p>`,
+			input: 'checkbox',
+			inputPlaceholder: 'Remove all of their contributions as well',
+			inputClass: "form-control",
+			showCancelButton: true,
+			confirmButtonColor: '#d33',
+			cancelButtonColor: '#3085d6',
+			confirmButtonText: 'Yes, remove',
+			cancelButtonText: 'Cancel',
+			icon: "warning"
+		})
+		.then((result) => {
+
+			if(!result.dismiss) {
+
+				var remove_all = result.value == 1;
+
+				remove_calendar_user(user_id, remove_all);
+
+			}
+		});
+
+	});
+
+
 	$('#apply_changes_btn').click(function(){
 
 		var errors = get_errors();
@@ -3759,6 +3864,61 @@ function add_link_to_list(parent, key, locked, calendar){
 	return element;
 }
 
+function add_user_to_list(parent, key, data){
+
+	var element = [];
+
+	element.push(`<div class='sortable-container list-group-item' index='${key}'>`);
+
+		element.push("<div class='collapse-container container mb-2'>");
+
+			element.push("<div class='row no-gutters my-2'>");
+				element.push("<div class='col-md'>");
+					element.push(`<h4 class='m-0'>${data.user_name}</h4>`);
+				element.push("</div>");
+				element.push("<div class='col-md-auto'>");
+					element.push(`<button type='button' class='btn btn-sm btn-danger full remove_user' user_name='${data.user_name}' user_id='${data.user_id}'><i class='fas fa-trash'></i></button>`);
+				element.push("</div>");
+			element.push("</div>");
+
+			element.push("<div class='row no-gutters my-2'>");
+				element.push("<div class='col'>");
+					element.push("<div class='separator'></div>");
+				element.push("</div>");
+			element.push("</div>");
+
+			element.push("<div class='row no-gutters mt-1'>");
+				element.push(`<p class='m-0'>Permissions:</p>`);
+			element.push("</div>");
+
+			element.push("<div class='row no-gutters mb-1'>");
+				element.push("<div class='col-md'>");
+					element.push("<select class='form-control user_permissions_select'>");
+						element.push(`<option ${data.permissions == 0 ? "selected" : ""} value='0'>Observer</option>`);
+						element.push(`<option ${data.permissions == 1 ? "selected" : ""} value='1'>Player</option>`);
+						element.push(`<option ${data.permissions == 2 ? "selected" : ""} value='2'>CO-GM</option>`);
+					element.push("</select>");
+				element.push("</div>");
+				element.push("<div class='col-md-auto'>");
+					element.push(`<button type='button' class='btn btn btn-primary full update_user_permissions' disabled permissions_val='${data.permissions}' user_id='${data.user_id}'>Update</button>`);
+				element.push("</div>");
+			element.push("</div>");
+
+			element.push("<div class='row no-gutters my-1 hidden'>");
+				element.push(`<p class='m-0 user_permissions_text'></p>`);
+			element.push("</div>");
+
+		element.push("</div>");
+
+	element.push("</div>");
+
+	var element = $(element.join(""));
+
+	parent.append(element);
+
+	return element;
+}
+
 function get_errors(){
 
 	var errors = [];
@@ -3897,7 +4057,7 @@ var do_error_check = debounce(function(type, rebuild){
 
 		var errors = get_errors();
 
-		if(errors.length == 0 && $('.invalid').length == 0){
+		if(errors.length == 0 && $('.static_input.invalid').length == 0 && $('.dynamic_input.invalid').length == 0){
 
 			$('#generator_container').removeClass();
 
@@ -3910,7 +4070,11 @@ var do_error_check = debounce(function(type, rebuild){
 
 			var text = [];
 
-			$('.invalid').each(function(){
+			$('.static_input.invalid').each(function(){
+				errors.push($(this).attr('error_msg'));
+			})
+
+			$('.dynamic_input.invalid').each(function(){
 				errors.push($(this).attr('error_msg'));
 			})
 
@@ -5174,6 +5338,8 @@ function set_up_edit_values(){
 
 	block_inputs = false;
 
+	set_up_dummy_data();
+
 }
 
 function get_category(search) {
@@ -5440,5 +5606,31 @@ function linked_popup(){
 		html: html.join(''),
 		icon: "info"
 	});
+
+}
+
+function set_up_dummy_data(){
+
+	if($('#calendar_user_list').length){
+
+		var users = [
+			{
+				user_name: "Wasp",
+				user_id: 1,
+				permissions: 0
+			},
+			{
+				user_name: "Axel",
+				user_id: 2,
+				permissions: 2
+			},
+		]
+
+		for(var index in users){
+			var user = users[index];
+			add_user_to_list($('#calendar_user_list'), index, user)
+		}
+
+	}
 
 }
