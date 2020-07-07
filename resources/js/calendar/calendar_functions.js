@@ -774,6 +774,10 @@ class date_manager {
 
 	cap_timespan(){
 
+		if(this.timespan >= this.timespans_in_year.length){
+			this.timespan = this.timespans_in_year.length-1;
+		}
+
 		if(!this.timespans_in_year[this.timespan].result){
 			while(!this.timespans_in_year[this.timespan].result){
 				this.subtract_day();
