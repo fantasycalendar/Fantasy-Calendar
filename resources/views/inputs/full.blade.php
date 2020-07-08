@@ -1264,41 +1264,46 @@
 			<!------------------ SETTINGS ------------------>
 			<!---------------------------------------------->
 			<div class='wrap-collapsible card settings-users'>
-				<input id="collapsible_users" class="toggle" checked type="checkbox">
+				<input id="collapsible_users" class="toggle" type="checkbox">
 				<label for="collapsible_users" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-user"></i> User Management <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Settings' href='https://wiki.fantasy-calendar.com/index.php?title=User_Management' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 				<div class="collapsible-content card-body">
 
-					<div class='row no-gutters my-1'>
-						<p class='m-0'>Invite your friends to collaborate on this calendar!</p>
-						<p class='m-0'><a href="{{ route('subscription.pricing') }}" target="_blank">Subscribe now</a> to unlock this feature!</p>
-					</div>
+					@if(Auth::user()->paymentLevel() === "Free")
+					
+						<div class='row no-gutters my-1'>
+							<p class='m-0'>Invite your friends to collaborate on this calendar!</p>
+							<p class='m-0'><a href="{{ route('subscription.pricing') }}" target="_blank">Subscribe now</a> to unlock this feature!</p>
+						</div>
 
-					<hr>
+					@else
 
-					<div class='row no-gutters mt-1 mb-3'>
-						<p class='m-0'>Invite your friends to collaborate on this calendar! Once they accept your invite, you'll be able to assign them a role.</p>
-					</div>
-							
-					<div class='row no-gutters my-1'>
-    					<div class="col-md">
-    						<input type='text' class='form-control' id='email_input' placeholder='Email'>
-    					</div>
-    					<div class="col-md-auto">
-    						<button type='button' class='btn full btn-primary' id='btn_send_invite'>Send Invite</button>
-    					</div>
-					</div>
-					<div class='row no-gutters mb-2'>
-						<p class='m-0 email_text hidden'></p>
-					</div>
+						<div class='row no-gutters mt-1 mb-3'>
+							<p class='m-0'>Invite your friends to collaborate on this calendar! Once they accept your invite, you'll be able to assign them a role.</p>
+						</div>
+								
+						<div class='row no-gutters my-1'>
+							<div class="col-md">
+								<input type='text' class='form-control' id='email_input' placeholder='Email'>
+							</div>
+							<div class="col-md-auto">
+								<button type='button' class='btn full btn-primary' id='btn_send_invite'>Send Invite</button>
+							</div>
+						</div>
+						<div class='row no-gutters mb-2'>
+							<p class='m-0 email_text hidden'></p>
+						</div>
 
-					<div class='sortable' id='calendar_user_list'></div>
+						<div class='sortable' id='calendar_user_list'></div>
+
+						<div class='row no-gutters my-1'>
+							<button type='button' class='btn btn-sm btn-secondary full' id='refresh_calendar_users'>Refresh</button>
+						</div>
+
+					@endif
 
 				</div>
 			</div>
 
-		@endif
-
-		@if(request()->is('calendars/*/edit'))
 			<!---------------------------------------------->
 			<!------------------ LINKING ------------------->
 			<!---------------------------------------------->
@@ -1309,7 +1314,7 @@
 
 					<div id='calendar_link_hide'>
 
-						@if(request()->is('calendars/*/edit') && $calendar->parent != null)
+						@if($calendar->parent != null)
                             <div class='row no-gutters my-1 center-text hidden calendar_link_explaination'>
                                 <p class='m-0'>This calendar is already linked to a <a href='/calendars/{{ $calendar->parent->hash }}/edit' target="_blank">parent calendar</a>. Before linking any calendars to this one, you must unlink this calendar from its parent.</p>
                             </div>

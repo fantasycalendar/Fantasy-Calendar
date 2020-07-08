@@ -300,6 +300,25 @@ function unlink_child_calendar(output, child_hash){
 	});
 }
 
+function get_calendar_users(output){
+
+	var users = [
+		{
+			user_name: "Wasp",
+			user_id: 1,
+			permissions: 0
+		},
+		{
+			user_name: "Axel",
+			user_id: 2,
+			permissions: 2
+		},
+	]
+
+	output(users);
+
+}
+
 function add_calendar_user(email, output){
 
 	console.log(`Sending email to ${email}...`)
@@ -326,7 +345,6 @@ function remove_calendar_user(user_id, remove_all){
 	console.log(`Removing user id ${user_id}. Should I delete all of their events, comments, etc as well? ${remove_all}`);
 
 }
-
 
 function submit_new_event(event_id){
 

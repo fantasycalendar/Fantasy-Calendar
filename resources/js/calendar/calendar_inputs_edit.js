@@ -2186,6 +2186,26 @@ function set_up_edit_inputs(){
 		});
 	});
 
+	opened = false;
+
+	$('#collapsible_users').change(function(){
+		if(!opened){
+			set_up_user_list();
+		}
+	});
+
+	$('#refresh_calendar_users').click(function () {
+
+		var button = $(this);
+		button.prop('disabled', true);
+		set_up_user_list();
+
+		setTimeout(() => {
+			button.prop('disabled', false);
+		}, 2000);
+		
+	});
+
 	$('#email_input').on('keypress', function (e) {
 		if(e.which === 13){
 			$('#btn_send_invite').click();
@@ -2195,6 +2215,8 @@ function set_up_edit_inputs(){
 	$('#btn_send_invite').click(function(){
 
 		var email = $('#email_input').val();
+
+		$(this).prop('disabled', true);
 
 		let valid_email = validateEmail(email);
 
@@ -2207,8 +2229,10 @@ function set_up_edit_inputs(){
 				if(success){
 					$('#email_input').val('');
 				}
+				$(this).prop('disabled', false);
 			});
 		}else{
+			$(this).prop('disabled', false);
 			$('.email_text').text(!valid_email ? "This email is invalid!" : "").toggleClass('hidden', valid_email);
 		}
 			
@@ -3896,7 +3920,7 @@ function add_user_to_list(parent, key, data){
 					element.push("<select class='form-control user_permissions_select'>");
 						element.push(`<option ${data.permissions == 0 ? "selected" : ""} value='0'>Observer</option>`);
 						element.push(`<option ${data.permissions == 1 ? "selected" : ""} value='1'>Player</option>`);
-						element.push(`<option ${data.permissions == 2 ? "selected" : ""} value='2'>CO-GM</option>`);
+						element.push(`<option ${!Perms.at_least('worldbuilder') ? "disabled" : ""} ${data.permissions == 2 ? "selected" : ""} value='2'>CO-GM${!Perms.at_least('worldbuilder') ? " (Only available to Worldbuilder tier)" : ""}</option>`);
 					element.push("</select>");
 				element.push("</div>");
 				element.push("<div class='col-md-auto'>");
@@ -5338,8 +5362,6 @@ function set_up_edit_values(){
 
 	block_inputs = false;
 
-	set_up_dummy_data();
-
 }
 
 function get_category(search) {
@@ -5609,27 +5631,20 @@ function linked_popup(){
 
 }
 
-function set_up_dummy_data(){
+function set_up_user_list(){
 
 	if($('#calendar_user_list').length){
 
-		var users = [
-			{
-				user_name: "Wasp",
-				user_id: 1,
-				permissions: 0
-			},
-			{
-				user_name: "Axel",
-				user_id: 2,
-				permissions: 2
-			},
-		]
+		$('#calendar_user_list').empty();
 
-		for(var index in users){
-			var user = users[index];
-			add_user_to_list($('#calendar_user_list'), index, user)
-		}
+		get_calendar_users(function(userlist){
+
+			for(var index in userlist){
+				var user = userlist[index];
+				add_user_to_list($('#calendar_user_list'), index, user)
+			}
+
+		});
 
 	}
 
