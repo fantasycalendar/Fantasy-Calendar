@@ -37,7 +37,7 @@
             line-height: 1.5rem;
             list-style-type: none;
         }
-        a.btn {
+        a.btn, a.register {
             display: inline-block;
             width: 95%;
             margin: auto;
@@ -142,7 +142,7 @@
                     </ul>
 
                     @guest
-                        <a href="{{ route('user.register') }}">Register to subscribe</a>
+                        <a href="{{ route('register') }}" class="register">Register to subscribe</a>
                     @else
                         @if(!$betaAccess)
                             @if(Auth::user()->subscribedToPlan('timekeeper_monthly', 'Timekeeper'))
@@ -197,7 +197,7 @@
                     </ul>
 
                     @guest
-                        <a href="{{ route('user.register') }}">Register to subscribe</a>
+                        <a href="{{ route('register') }}" class="register">Register to subscribe</a>
                     @else
                         @if(!$betaAccess && Auth::user()->paymentLevel() == "Free")
                             @if(Auth::user()->subscribedToPlan('worldbuilder_monthly', 'Worldbuilder'))
