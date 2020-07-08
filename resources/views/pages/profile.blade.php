@@ -15,10 +15,10 @@
 
 @section('profile-card')
     <div class="row">
-        <div class="col-6">
+        <div class="col-12 col-md-4 protip" data-pt-title="Test">
             <p><i class="fa fa-calendar"></i> Calendars: {{ $user->calendars->count() }}</p>
         </div>
-        <div class="col-6">
+        <div class="col-12 col-md-8">
             <p><i class="fa fa-layer-group"></i> Subscription: {!! ($user->betaAccess()) ? "Worldbuilder <br><small class='pl-3'>(Free for beta participation)</small>" : $user->paymentLevel() !!}</p>
             @empty($subscription)
                 @unless($user->betaAccess())
@@ -31,13 +31,30 @@
                     <p style="color: red;"><i class="fa fa-exclamation-triangle"></i> Cancelled, ending {{ $subscription->ends_at->format('Y-m-d') }}</p>
                 @endif
                 <p><i class="fa fa-credit-card"></i> {{ strtoupper($user->card_brand) }} (...{{ $user->card_last_four }})</p>
-                <p><a class="btn btn-primary form-control" href="{{ route('subscription.pricing') }}">Change subscription</a></p>
+                <p><button class="btn btn-outline-secondary form-control change-sub" disabled>Change subscription (Currently Unavailable)</button></p>
                 @if($subscription->onGracePeriod())
                     <p><a href="{{ route('subscription.cancel') }}" class="btn btn-danger form-control">Immediately end benefits</a></p>
                 @else
                     <p><a href="{{ route('subscription.cancel') }}" class="btn btn-danger form-control">Cancel subscription</a></p>
                 @endif
             @endunless
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-12"><h5>User Settings</h5></div>
+        <div class="col-12">
+            <form id="settings" method="post">
+                @csrf
+
+                <div class="form-check pb-2" onclick="toggleSetting('dark_theme')">
+                    <input id="dark_theme" type="hidden" name="dark_theme" @if(isset($user->settings['dark_theme']) && $user->settings['dark_theme']) value="1" @else value="0" @endisset>
+                    <input id="dark_theme_input" type="checkbox" class="form-check-input" id="dark_theme" @if(isset($user->settings['dark_theme']) && $user->settings['dark_theme']) checked="checked" @endisset>
+                    <label class="form-check-label" for="dark_theme">Enable dark theme</label>
+                </div>
+
+                <button class="btn btn-primary float-right">Save Settings</button>
+            </form>
         </div>
     </div>
 @endsection
@@ -66,24 +83,6 @@
                     <div class="card-body">
                         <div class="card-text">
                             @yield('profile-card')
-                        </div>
-                    </div>
-                </div>
-                <div class="card mt-4">
-                    <div class="card-header">User settings</div>
-                    <div class="card-body">
-                        <div class="card-text">
-                            <form id="settings" method="post">
-                                @csrf
-
-                                <div class="form-check pb-2" onclick="toggleSetting('dark_theme')">
-                                    <input id="dark_theme" type="hidden" name="dark_theme" @if(isset($user->settings['dark_theme']) && $user->settings['dark_theme']) value="1" @else value="0" @endisset>
-                                    <input id="dark_theme_input" type="checkbox" class="form-check-input" id="dark_theme" @if(isset($user->settings['dark_theme']) && $user->settings['dark_theme']) checked="checked" @endisset>
-                                    <label class="form-check-label" for="dark_theme">Enable dark theme</label>
-                                </div>
-
-                                <button class="btn btn-primary">Save Settings</button>
-                            </form>
                         </div>
                     </div>
                 </div>

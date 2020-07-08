@@ -71,7 +71,7 @@
 
     <div class="container py-4">
         <h1 class="center-text">Subscribe to Fantasy Calendar</h1>
-        @if(!$betaAccess)
+        @if(!$betaAccess || Auth::user()->paymentLevel() == "Free")
         <div class="row">
             <div class="col-12 center-text py-2">
                 <span>Monthly</span>
@@ -82,6 +82,14 @@
                 <span>Yearly</span>
             </div>
         </div>
+        @elseif(!Auth::user()->subscriptions->first()->onGracePeriod())
+            <div class="row">
+                <div class="col-12">
+                    <div class="alert alert-warning">
+                        You are already subscribed to Fantasy Calendar - You'll need to <a href="{{ route('subscription.cancel') }}">cancel your subscription</a> if you want to pick a different subscription option.
+                    </div>
+                </div>
+            </div>
         @endif
 
         <div class="row">
@@ -107,11 +115,13 @@
                     @endguest
                 </div>
             </div>
+
             <div class="col-12 col-lg-4 subscription-option">
                 <div class="inner">
                     <h2>Timekeeper</h2>
                     <h5>For users who need to keep track of multiple timelines, universes, or games.</h5>
-                    @if($betaAccess)
+
+                    @if($betaAccess && Auth::user()->paymentLevel() == "Free")
                         <h3 class="bg-grey monthly">Free<br><p class="small">Because you're awesome <3</p></h3>
                         <h3 class="bg-grey yearly">Free<br><p class="small">Because you're awesome <3</p></h3>
                     @elseif($earlySupporter)
@@ -121,6 +131,7 @@
                         <h3 class="bg-grey monthly">$1.99 / month<br></h3>
                         <h3 class="bg-grey yearly">$19.99 / year<br><p class="small">Two months free (16% discount)!</p></h3>
                     @endif
+
                     <ul class="features">
                         <li><strong>Full</strong> calendar functionality</li>
                         <li><strong>Unlimited</strong> number of calendars</li>
@@ -129,6 +140,7 @@
                         <li>Subscriber-only Discord channel</li>
                         <li><strong>User Management</strong> <p class="small">Users can comment on events and view provided information</p> </li>
                     </ul>
+
                     @guest
                         <a href="{{ route('user.register') }}">Register to subscribe</a>
                     @else
@@ -156,11 +168,13 @@
                     @endguest
                 </div>
             </div>
+
             <div class="col-12 col-lg-4 subscription-option">
                 <div class="inner">
                     <h2>Worldbuilder</h2>
                     <h5>For power users who want to collaborate using the greatest multi-user fantasy calendar tool on the market.</h5>
-                    @if($betaAccess)
+
+                    @if($betaAccess && Auth::user()->paymentLevel() == "Free")
                         <h3 class="bg-grey monthly">Free<br><p class="small">Because you're awesome <3</p></h3>
                         <h3 class="bg-grey yearly">Free<br><p class="small">Because you're awesome <3</p></h3>
                     @elseif($earlySupporter)
@@ -170,6 +184,7 @@
                         <h3 class="bg-grey monthly">$2.99 / month<br></h3>
                         <h3 class="bg-grey yearly">$29.99 / year<br><p class="small">Two months free (16% discount)!</p></h3>
                     @endif
+
                     <ul class="features">
                         <li><strong>Full</strong> calendar functionality</li>
                         <li><strong>Unlimited</strong> number of calendars</li>
@@ -180,10 +195,11 @@
                         <li>Calendar <strong>co-ownership</strong> <p class="small">Co-owners can comment on events, create events, and change the current date.</p></li>
                         <li>Calendar Linking <p class="small">Link calendars together and drive their dates from a single parent calendar!</p></li>
                     </ul>
+
                     @guest
                         <a href="{{ route('user.register') }}">Register to subscribe</a>
                     @else
-                        @if(!$betaAccess)
+                        @if(!$betaAccess && Auth::user()->paymentLevel() == "Free")
                             @if(Auth::user()->subscribedToPlan('worldbuilder_monthly', 'Worldbuilder'))
                                 @if(Auth::user()->subscriptions->first()->onGracePeriod())
                                     <a href="{{ route('subscription.resume', ['level' => 'Worldbuilder']) }}" class="btn btn-info monthly">Resume monthly</a>
@@ -209,7 +225,6 @@
                     @endguest
                 </div>
             </div>
-
         </div>
     </div>
 @endsection
