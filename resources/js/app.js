@@ -8,3 +8,4 @@ require('./bootstrap');
 
 window.CalendarClock = require('./clock')
 window.RandomCalendar = require('./random-calendar')
+window.Perms = require('./perms');

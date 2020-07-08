@@ -92,6 +92,7 @@
     });
 
     $(document).ready(function(){
+        
         window.onerror = function(error, url, line) {
             $.notify("Error:\n "+error+" \nin file "+url+" \non line "+line);
         }
@@ -120,6 +121,9 @@
         if(window.navigator.userAgent.indexOf("LM-G850") > 0) {
             $("#input_container").addClass('sidebar-mobile-half');
         }
+
+        window.Perms = new Perms("{{ $_GET['authlevel'] ?? 'superadmin' }}");
+
     });
 
     </script>
