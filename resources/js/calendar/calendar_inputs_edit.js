@@ -2564,7 +2564,7 @@ function add_leap_day_to_list(parent, key, data){
 
 	var element = [];
 
-	element.push(`<div class='sortable-container list-group-item ${(data.intercalary ? 'intercalary leap-day' : 'leap-day')} collapsed collapsible' index='${key}'>`);
+	element.push(`<div class='sortable-container list-group-item ${(data.intercalary ? 'intercalary leap-day' : 'leap-day')} collapsed collapsible' type='${(data.intercalary ? 'intercalary' : 'normal')}' index='${key}'>`);
 		element.push("<div class='main-container'>");
 			element.push("<div class='expand icon-expand'></div>");
 			element.push("<div class='name-container'>");
@@ -2617,7 +2617,7 @@ function add_leap_day_to_list(parent, key, data){
 
 				element.push(`<div class='row no-gutters my-1 ${!data.intercalary ? "" : "hidden"}'>`);
 					element.push("<div class='form-check col-12 py-2 border rounded'>");
-						element.push(`<input type='checkbox' id='${key}_adds_week_day' class='form-check-input adds-week-day dynamic_input' data='year_data.leap_days.${key}' fc-index='adds_week_day' ${(data.adds_week_day && !data.intercalary ? "" : "disabled")} ${(data.adds_week_day ? "checked" : "")} />`);
+						element.push(`<input type='checkbox' id='${key}_adds_week_day' class='form-check-input adds-week-day dynamic_input' data='year_data.leap_days.${key}' fc-index='adds_week_day' ${(!data.intercalary ? "" : "disabled")} ${(data.adds_week_day ? "checked" : "")} />`);
 						element.push(`<label for='${key}_adds_week_day' class='form-check-label ml-1'>`);
 							element.push("Adds week day");
 						element.push("</label>");
@@ -4146,12 +4146,14 @@ function reindex_leap_day_list(){
 		$(this).find('.name-input').prop('tabindex', tabindex+1)
 		tabindex++;
 
+		var intercalary = $(this).attr('type') == 'intercalary';
+
 		static_data.year_data.leap_days[i] = {
 			'name': $(this).find('.name-input').val(),
-			'intercalary': $(this).attr('type') == 'intercalary',
+			'intercalary': intercalary,
 			'timespan': Number($(this).find('.timespan-list').val()),
 			'adds_week_day': $(this).find('.adds-week-day').is(':checked'),
-			'day': Number($(this).find('.week-day-select').val()),
+			'day': intercalary ? Number($(this).find('.timespan-day-list').val()) : Number($(this).find('.week-day-select').val()),
 			'week_day': $(this).find('.internal-list-name').val(),
 			'interval': $(this).find('.interval').val(),
 			'offset': Number($(this).find('.offset').val())
