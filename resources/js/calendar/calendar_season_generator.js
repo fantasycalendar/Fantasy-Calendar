@@ -80,8 +80,8 @@ class Climate{
 				this.current_location.seasons.push(clone(location.seasons[index]));
 
 				this.current_location.seasons[i].time = {}
-				this.current_location.seasons[i].time.sunset = this.static_data.seasons.data[index].time.sunset;
-				this.current_location.seasons[i].time.sunrise = this.static_data.seasons.data[index].time.sunrise;
+				this.current_location.seasons[i].time.sunset = this.static_data.seasons.data[i].time.sunset;
+				this.current_location.seasons[i].time.sunrise = this.static_data.seasons.data[i].time.sunrise;
 
 			}
 
