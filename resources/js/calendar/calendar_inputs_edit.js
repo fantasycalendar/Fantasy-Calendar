@@ -2262,7 +2262,7 @@ function set_up_edit_inputs(){
 									var min = parseFloat(target.attr('min'));
 								}
 								if(target.attr('max')){
-									var min = parseFloat(target.attr('max'));
+									var max = parseFloat(target.attr('max'));
 								}
 							}else{
 								var value = parseInt(target.val().split('.')[0]);
@@ -2272,7 +2272,7 @@ function set_up_edit_inputs(){
 									var min = parseInt(target.attr('min'));
 								}
 								if(target.attr('max')){
-									var min = parseInt(target.attr('max'));
+									var max = parseInt(target.attr('max'));
 								}
 							}
 							if(value < min || value > max){
