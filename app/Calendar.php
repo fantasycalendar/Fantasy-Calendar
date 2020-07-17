@@ -56,21 +56,6 @@ class Calendar extends Model
         return $this->hasMany('App\Calendar', 'parent_id');
     }
 
-//    public function getStaticDataAttribute($value) {
-//        $static_data = json_decode($value, true);
-//
-//        if(!Auth::check() || !Auth::user()->can('update', $this)) {
-//            foreach($static_data['event_data']['events'] as $event){
-//                if($event['settings']['hide'] || (isset($event['settings']['full_hide']) && $event['settings']['full_hide'])){
-//                    $event['name'] = "Sneaky, sneaky...";
-//                    $event['description'] = "You shouldn't be here...";
-//                }
-//            }
-//        }
-//
-//        return $static_data;
-//    }
-
 
     public function structureWouldBeModified($static_data){
 
@@ -144,6 +129,14 @@ class Calendar extends Model
         }
 
         return $this->dynamic_data['hour'] . ":" . $this->dynamic_data['minute'];
+    }
+
+    public function setting($setting_name, $default = false) {
+        return $this->static_data['settings'][$setting_name] ?? $default;
+    }
+
+    public function setSetting($setting_name, $new_value) {
+        $this->static_data['settings'][$setting_name] = $new_value;
     }
 
     public function scopeSearch($query, $search) {

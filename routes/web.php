@@ -26,7 +26,9 @@ Route::get('/test', function(){
     return [
         'view' => $user->can('view', $calendar),
         'update' => $user->can('update', $calendar),
-        'edit' => $user->can('edit', $calendar)
+        'edit' => $user->can('edit', $calendar),
+        'attach-event' => $user->can('attach-event', $calendar),
+        'settings' => $calendar->static_data['settings']
     ];
 });
 

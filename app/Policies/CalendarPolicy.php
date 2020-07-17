@@ -30,8 +30,13 @@ class CalendarPolicy
      */
     public function view(?User $user, Calendar $calendar)
     {
-        // dd($user);
-        return true;
+        return $calendar->setting('allow_view')
+            || ($user
+            && (
+                $user->can('update', $calendar)
+                || $user->can('attach-event', $calendar)
+                || ($calendar->users->contains($user) && $calendar->users->find($user->id)->pivot->user_role == 'observer')
+            ));
     }
 
     /**
@@ -94,10 +99,6 @@ class CalendarPolicy
     public function restore(User $user, Calendar $calendar)
     {
         //
-    }
-
-    public function attachEvents(User $user, Calendar $calendar) {
-
     }
 
     /**

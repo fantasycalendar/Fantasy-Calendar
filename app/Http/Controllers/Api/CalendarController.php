@@ -44,19 +44,19 @@ class CalendarController extends Controller
 
     public function children(Request $request, $id) {
         $calendar = Calendar::hash($id)->firstOrFail();
-        
+
         return $calendar->children;
 
     }
 
     public function updatechildren(Request $request){
-        
+
         $request = $request->only('data');
 
         $update_data = json_decode($request['data']);
 
         foreach($update_data as $hash => $dynamic_data){
-            
+
             $calendar = Calendar::hash($hash)->firstOrFail();
 
             $calendar->update( ['dynamic_data' => $dynamic_data ]);
@@ -73,6 +73,12 @@ class CalendarController extends Controller
         CalendarCollection::withoutWrapping();
 
         return new CalendarCollection($calendar->user->calendars->keyBy('hash'));
+    }
+
+    public function users(Request $request, $id) {
+        return Calendar::active()
+            ->hash($id)
+            ->firstOrFail()->users;
     }
 
     public function dynamic_data(Request $request, $id) {

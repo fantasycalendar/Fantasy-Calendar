@@ -47,6 +47,10 @@ class CalendarEventController extends Controller
      */
     public function store(Request $request)
     {
+        if(Auth::user()->can('attach-event', Calendar::find($request->input('calendar_id')))) {
+            return ['success' => false, 'message' => 'access denied'];
+        }
+
         $event = CalendarEvent::create(json_decode($request->getContent(), true));
 
         $resource = new Item($event, new CalendarEventTransformer());
