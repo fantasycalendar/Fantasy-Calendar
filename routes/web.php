@@ -13,6 +13,23 @@ use Illuminate\Http\Request;
 |
 */
 
+Route::get('/test', function(){
+//
+//    return [
+//        'LoggedIn' => Auth::check(),
+//        'Payment Level' => Auth::user()->paymentLevel()
+//    ];
+
+    $calendar = App\Calendar::first();
+    $user = App\User::find(3);
+
+    return [
+        'view' => $user->can('view', $calendar),
+        'update' => $user->can('update', $calendar),
+        'edit' => $user->can('edit', $calendar)
+    ];
+});
+
 Route::view('/', 'welcome')->name('home');
 Route::get('/donate', function(){
     return view('pages.donate', [

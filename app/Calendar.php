@@ -36,6 +36,10 @@ class Calendar extends Model
         return $this->belongsTo('App\User');
     }
 
+    public function users() {
+        return $this->belongsToMany('App\User', 'calendar_user_role')->withPivot('user_role');;
+    }
+
     public function event_categories() {
         return $this->hasMany('App\EventCategory')->orderBy('sort_by');
     }

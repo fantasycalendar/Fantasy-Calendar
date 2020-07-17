@@ -71,7 +71,7 @@
                     <div class="card-header">{{ $user->username }}</div>
                     <div class="card-body">
                         <div class="card-text">
-                            <p><a href="mailto:{{ $user->email }}"><i class="fa fa-envelope"></i> {{ $user->email }}</a></p>
+                            <p><a href="mailto:{{ $user->email }}"><i class="fa fa-envelope"></i>&nbsp;{{ $user->email }}</a></p>
                             <p>Registered {{ $user->created_at->format('Y-m-d') }}</p>
                         </div>
                     </div>

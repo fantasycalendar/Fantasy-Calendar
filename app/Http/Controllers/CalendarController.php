@@ -34,20 +34,28 @@ class CalendarController extends Controller
      */
     public function index(Request $request)
     {
-        $calendars = Calendar::active()->search($request->input('search'));
+        $user_calendars = Calendar::active()->search($request->input('search'));
 
-        $calendars = (Auth::user()->permissions == 1) ? $calendars->with('user') : $calendars->where('user_id', Auth::user()->id);
+        $user_calendars = (Auth::user()->permissions == 1) ? $user_calendars->with('user') : $user_calendars->where('user_id', Auth::user()->id);
 
-        $calendarSimplePagination = $calendars->simplePaginate(10);
-        $calendars = $calendars->paginate(10);
+        $calendarSimplePagination = $user_calendars->simplePaginate(10);
+        $user_calendars = $user_calendars->paginate(10);
+
+
+        $shared_calendars = Auth::user()->related_calendars()->search($request->input('search'));
+
+        $sharedCalendarSimplePagination = $shared_calendars->simplePaginate(10);
+        $shared_calendars = $shared_calendars->paginate(10);
 
 
         $changelog = Markdown::convertToHtml(Storage::disk('base')->get('public/changelog.md'));
 
         return view('calendar.list', [
             'title' => "Fantasy Calendar",
-            'calendars' => $calendars,
+            'calendars' => $user_calendars,
             'calendar_pagination' => $calendarSimplePagination,
+            'shared_calendars' => $shared_calendars,
+            'shared_pagination' => $sharedCalendarSimplePagination,
             'changelog' => $changelog,
             'search' => $request->input('search'),
         ]);

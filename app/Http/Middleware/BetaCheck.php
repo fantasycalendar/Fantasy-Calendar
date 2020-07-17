@@ -19,7 +19,7 @@ class BetaCheck
     {
         if(Auth::check()) {
             if (!Auth::user()->betaAccess()) {
-                abort(403, 'Your account is not BETA activated, sorry.');
+//                abort(403, 'Your account is not BETA activated, sorry.');
             }
         }
 

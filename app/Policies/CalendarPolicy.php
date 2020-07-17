@@ -9,7 +9,7 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 class CalendarPolicy
 {
     use HandlesAuthorization;
-    
+
     /**
      * Determine whether the user can view any calendars.
      *
@@ -58,7 +58,14 @@ class CalendarPolicy
             return true;
         }
 
-        return $user->id === $calendar->user_id;
+        return
+            $user->id === $calendar->user_id
+
+            || (
+                $calendar->user->paymentLevel() == 'Worldbuilder'
+
+                && $calendar->users->contains($user) && $calendar->users->find($user->id)->pivot->user_role == 'co-owner'
+            );
     }
 
     /**
@@ -87,6 +94,10 @@ class CalendarPolicy
     public function restore(User $user, Calendar $calendar)
     {
         //
+    }
+
+    public function attachEvents(User $user, Calendar $calendar) {
+
     }
 
     /**

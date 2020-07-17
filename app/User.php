@@ -53,6 +53,10 @@ class User extends Authenticatable implements
         return $this->hasMany('App\Calendar');
     }
 
+    public function related_calendars() {
+        return $this->belongsToMany('App\Calendar', 'calendar_user_role')->withPivot('user_role');
+    }
+
     public function isAdmin() {
         return $this->permissions == 1;
     }
@@ -66,6 +70,7 @@ class User extends Authenticatable implements
     }
 
     public function betaAccess() {
+        return false;
         return $this->beta_authorised == 1;
     }
 
@@ -97,11 +102,11 @@ class User extends Authenticatable implements
     }
 
     public function paymentLevel() {
-        if ($this->subscribed('Timekeeper')) {
+        if ($this->subscribedToPlan(['timekeeper_monthly', 'timekeeper_yearly'],'Timekeeper')) {
             return 'Timekeeper';
         }
 
-        if ($this->subscribed('Worldbuilder')) {
+        if ($this->subscribedToPlan(['worldbuilder_monthly', 'worldbuilder_yearly'], 'Worldbuilder') || $this->betaAccess()) {
             return 'Worldbuilder';
         }
 
