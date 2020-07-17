@@ -657,6 +657,20 @@ function create_calendar(){
 
 }
 
+function get_calendar_users(callback) {
+    $.ajax({
+        url: window.baseurl+"api/calendar/"+hash+"/users",
+        type: "get",
+        dataType: "json",
+        success: function (result) {
+            callback(result);
+        },
+        error: function ( result ){
+            callback(false);
+        }
+    })
+}
+
 function get_event_comments(event_id, callback){
 
 	$.ajax({

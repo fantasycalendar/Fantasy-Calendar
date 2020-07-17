@@ -2203,7 +2203,7 @@ function set_up_edit_inputs(){
 		setTimeout(() => {
 			button.prop('disabled', false);
 		}, 2000);
-		
+
 	});
 
 	$('#email_input').on('keypress', function (e) {
@@ -2221,7 +2221,7 @@ function set_up_edit_inputs(){
 		let valid_email = validateEmail(email);
 
 		$('#email_input').toggleClass('invalid', !valid_email);
-		
+
 		if(valid_email){
 			add_calendar_user(email, function(success, text){
 				$('.email_text').text(text).parent().toggleClass('hidden', false);
@@ -2235,7 +2235,7 @@ function set_up_edit_inputs(){
 			$(this).prop('disabled', false);
 			$('.email_text').text(!valid_email ? "This email is invalid!" : "").toggleClass('hidden', valid_email);
 		}
-			
+
 		setTimeout(() => {
 			$('.email_text').text("").toggleClass('hidden', true);
 		}, 5000);
@@ -2263,16 +2263,16 @@ function set_up_edit_inputs(){
 
 		var user_id = button.attr('user_id')|0;
 		var permissions = dropdown.val()|0;
-		
+
 		update_calendar_user(user_id, permissions, function(success, text){
-			
+
 			button.prop('disabled', success);
 			button.attr('permissions_val', permissions);
 
 			container.find('.user_permissions_text').parent().toggleClass('hidden', false);
 			container.find('.user_permissions_text').parent().toggleClass('error', !success);
 			container.find('.user_permissions_text').text(text);
-			
+
 			setTimeout(() => {
 				container.find('.user_permissions_text').parent().toggleClass('hidden', true);
 				container.find('.user_permissions_text').text("");
@@ -3898,10 +3898,10 @@ function add_user_to_list(parent, key, data){
 
 			element.push("<div class='row no-gutters my-2'>");
 				element.push("<div class='col-md'>");
-					element.push(`<h4 class='m-0'>${data.user_name}</h4>`);
+					element.push(`<h4 class='m-0'>${data.username}</h4>`);
 				element.push("</div>");
 				element.push("<div class='col-md-auto'>");
-					element.push(`<button type='button' class='btn btn-sm btn-danger full remove_user' user_name='${data.user_name}' user_id='${data.user_id}'><i class='fas fa-trash'></i></button>`);
+					element.push(`<button type='button' class='btn btn-sm btn-danger full remove_user' username='${data.username}' user_id='${data.id}'><i class='fas fa-trash'></i></button>`);
 				element.push("</div>");
 			element.push("</div>");
 
@@ -3918,13 +3918,13 @@ function add_user_to_list(parent, key, data){
 			element.push("<div class='row no-gutters mb-1'>");
 				element.push("<div class='col-md'>");
 					element.push("<select class='form-control user_permissions_select'>");
-						element.push(`<option ${data.permissions == 0 ? "selected" : ""} value='0'>Observer</option>`);
-						element.push(`<option ${data.permissions == 1 ? "selected" : ""} value='1'>Player</option>`);
-						element.push(`<option ${!Perms.at_least('worldbuilder') ? "disabled" : ""} ${data.permissions == 2 ? "selected" : ""} value='2'>CO-GM${!Perms.at_least('worldbuilder') ? " (Only available to Worldbuilder tier)" : ""}</option>`);
+						element.push(`<option ${data.pivot.user_role == 'observer' ? "selected" : ""} value='observer'>Observer</option>`);
+						element.push(`<option ${data.pivot.user_role == 'player' ? "selected" : ""} value='player'>Player</option>`);
+						element.push(`<option ${!Perms.at_least('worldbuilder') ? "disabled" : ""} ${data.pivot.user_role == 'co-owner' ? "selected" : ""} value='co-owner'>CO-GM${!Perms.at_least('worldbuilder') ? " (Only available to Worldbuilder tier)" : ""}</option>`);
 					element.push("</select>");
 				element.push("</div>");
 				element.push("<div class='col-md-auto'>");
-					element.push(`<button type='button' class='btn btn btn-primary full update_user_permissions' disabled permissions_val='${data.permissions}' user_id='${data.user_id}'>Update</button>`);
+					element.push(`<button type='button' class='btn btn btn-primary full update_user_permissions' disabled permissions_val='${data.pivot.user_role}' id='${data.id}'>Update</button>`);
 				element.push("</div>");
 			element.push("</div>");
 

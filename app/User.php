@@ -50,7 +50,6 @@ class User extends Authenticatable implements
         'api_token',
         'date_update_pass',
         'date_register',
-        'id',
         'reg_ip',
         'beta_authorised',
         'settings',
