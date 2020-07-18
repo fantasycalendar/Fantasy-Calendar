@@ -516,9 +516,11 @@ function set_up_edit_inputs(){
 
 				era_list.children().each(function(){
 					var input = $(this).find('.ends_year');
+					var text = $(this).find('.ends_year_explaination');
 					var parent = input.parent().parent();
 					input.prop('disabled', !checked);
 					parent.toggleClass('disabled', !checked);
+					text.toggleClass('hidden', checked);
 				});
 
 				error_check("calendar", true);
@@ -3459,11 +3461,12 @@ function add_era_to_list(parent, key, data){
 				element.push("</div>");
 
 				element.push(`<div class='row no-gutters my-1'>`);
-					element.push("<div class='form-check col-12 py-2 border rounded'>");
+					element.push(`<div class='form-check col-12 py-2 border rounded ${!static_data.seasons.global_settings.periodic_seasons ? "disabled" : ""}'>`);
 						element.push(`<input type='checkbox' id='${key}_ends_year' class='form-check-input dynamic_input ends_year' ${!static_data.seasons.global_settings.periodic_seasons ? "disabled" : ""} data='eras.${key}.settings' fc-index='ends_year' ${(data.settings.ends_year ? "checked" : "")} />`);
 						element.push(`<label for='${key}_ends_year' class='form-check-label ml-1'>`);
 							element.push("Ends year prematurely");
 						element.push("</label>");
+						element.push(`<p class='m-0 mt-2 ends_year_explaination font-italic small-text ${static_data.seasons.global_settings.periodic_seasons ? "hidden" : ""}'>This is disabled because you have seasons based on dates - that means that the calendar cannot end its years early because some seasons could disappear.</p>`);
 					element.push("</div>");
 				element.push("</div>");
 
