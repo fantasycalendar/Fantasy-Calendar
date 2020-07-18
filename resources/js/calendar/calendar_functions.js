@@ -2058,7 +2058,7 @@ function get_epoch(static_data, year, month, day){
  *                                          "num_timespans" - The total number of timespans since year 1
  *                                          "total_week_num" - The number of weeks since year 1
  */
-function evaluate_calendar_start(static_data, year, month, day){
+function evaluate_calendar_start(static_data, year, month, day, debug){
 
 	//Initiatlize variables
 	var year = (year|0);

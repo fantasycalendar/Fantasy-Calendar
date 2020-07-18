@@ -1289,7 +1289,7 @@ var calendar_builder = {
 
 		}
 
-		year_start_data = evaluate_calendar_start(this.static_data, first_eval_year, first_eval_month);
+		year_start_data = evaluate_calendar_start(this.static_data, first_eval_year, first_eval_month, 0, true);
 		era_year = year_start_data.era_year;
 		count_timespans = year_start_data.count_timespans;
 		num_timespans = year_start_data.num_timespans;
@@ -2072,7 +2072,7 @@ var calendar_builder = {
 			static_data: this.static_data,
 			year_data: {
 				year: this.dynamic_data.year,
-				era_year: unconvert_year(this.static_data, calendar_era_year),
+				era_year: calendar_era_year,
 				start_epoch: calendar_start_epoch,
 				end_epoch: calendar_end_epoch,
 				week_day: calendar_first_week_day,
