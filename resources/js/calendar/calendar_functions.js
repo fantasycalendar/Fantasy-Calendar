@@ -775,13 +775,12 @@ class date_manager {
 	cap_timespan(){
 
 		if(this.timespan >= this.timespans_in_year.length){
-			this.timespan = this.timespans_in_year.length-1;
+			this.timespan = this.last_timespan.length-1;
 		}
 
-		if(!this.timespans_in_year[this.timespan].result){
-			while(!this.timespans_in_year[this.timespan].result){
-				this.subtract_day();
-			}
+		if(!this.timespans_in_year[this.timespan].result || this.day > this.num_days){
+			this.timespan = this.last_timespan;
+			this.day = this.num_days;
 		}
 
 	}
@@ -1259,7 +1258,7 @@ function does_day_appear(static_data, year, timespan, day){
 
 		var era = static_data.eras[era_index];
 
-		if(era.settings.ends_year && year == convert_year(static_data, era.date.year) && timespan == era.date.timespan && day >= era.date.day){
+		if(era.settings.ends_year && year == convert_year(static_data, era.date.year) && timespan == era.date.timespan && day > era.date.day){
 
 			return {
 				result: false,
@@ -2080,8 +2079,6 @@ function evaluate_calendar_start(static_data, year, month, day, debug){
 
 		var era = static_data.eras[era_index];
 
-		era_years[era_index] = convert_year(static_data, era.date.year);
-
 		if(era.settings.ends_year && year > convert_year(static_data, era.date.year)){
 
 			era_epoch = get_epoch(static_data, convert_year(static_data, era.date.year), era.date.timespan, era.date.day);
@@ -2099,6 +2096,14 @@ function evaluate_calendar_start(static_data, year, month, day, debug){
 
 		}
 
+	}
+
+	for(var era_index = 0; era_index < static_data.eras.length; era_index++){
+
+		var era = static_data.eras[era_index];
+
+		era_years[era_index] = convert_year(static_data, era.date.year);
+
 		if(era.settings.restart && year > convert_year(static_data, era.date.year)){
 
 			for(var i = 0; i < era_index; i++){
@@ -2113,10 +2118,13 @@ function evaluate_calendar_start(static_data, year, month, day, debug){
 
 			}
 
-			era_year = era_year - era_years[era_index];
+			if(era.settings.ends_year){
+				era_years[era_index]++;
+			}
+
+			era_year -= era_years[era_index];
 
 		}
-
 
 	}
 

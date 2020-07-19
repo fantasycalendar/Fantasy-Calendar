@@ -197,7 +197,7 @@ var eras = {
 			}
 		}
 
-		var year_text = `Year ${calendar_layouts.year_data.year}`;
+		var year_text = "";
 
 		if(this.era !== undefined && this.era !== -1){
 
@@ -209,15 +209,20 @@ var eras = {
 
 					var format = era.formatting.replace(/\{\{/g, '{{{').replace(/\}\}/g, '}}}');
 
+					var epoch_data = calendar_layouts.epoch_data[era.date.epoch];
+					if(epoch_data === undefined){
+						epoch_data = calendar_layouts.epoch_data[Object.keys(calendar_layouts.epoch_data)[0]];
+					}
+
 					year_text = Mustache.render(
 						format,
 						{
-							"year": calendar_layouts.year_data.year,
-							"nth_year": ordinal_suffix_of(calendar_layouts.year_data.year),
-							"abs_year": Math.abs(calendar_layouts.year_data.year),
-							"abs_nth_year": ordinal_suffix_of(Math.abs(calendar_layouts.year_data.year)),
-							"era_year": calendar_layouts.year_data.era_year,
-							"era_nth_year": ordinal_suffix_of(calendar_layouts.year_data.era_year),
+							"year": epoch_data.year,
+							"nth_year": ordinal_suffix_of(epoch_data.year),
+							"abs_year": Math.abs(epoch_data.year),
+							"abs_nth_year": ordinal_suffix_of(Math.abs(epoch_data.year)),
+							"era_year": epoch_data.era_year,
+							"era_nth_year": ordinal_suffix_of(epoch_data.era_year),
 							"era_name": era.name
 						}
 					);
@@ -225,21 +230,52 @@ var eras = {
 				}else{
 
 					if(era.settings.restart){
-						var year_text = `Era year ${calendar_layouts.year_data.era_year} (year ${calendar_layouts.year_data.year})`;
+						var format = `Era year {{era_year}} (year {{year}})`;
 					}else{
-						year_text += ` - ${era.name}`
+						var format = `Year {{year}} - {{era_name}}`
 					}
 
+					var epoch_data = calendar_layouts.epoch_data[Object.keys(calendar_layouts.epoch_data)[0]];
+
+					year_text = Mustache.render(
+						format,
+						{
+							"year": epoch_data.year,
+							"nth_year": ordinal_suffix_of(epoch_data.year),
+							"abs_year": Math.abs(epoch_data.year),
+							"abs_nth_year": ordinal_suffix_of(Math.abs(epoch_data.year)),
+							"era_year": epoch_data.era_year,
+							"era_nth_year": ordinal_suffix_of(epoch_data.era_year),
+							"era_name": era.name
+						}
+					);
 				}
 			}
-		}
-
-		if(year_text != ''){
-
-			calendar_layouts.update_year_follower(year_text);
 
 		}
 
+		if(year_text == ''){
+
+			var format = `Year {{year}}`;
+
+			var epoch_data = calendar_layouts.epoch_data[Object.keys(calendar_layouts.epoch_data)[0]];
+
+			year_text = Mustache.render(
+				format,
+				{
+					"year": epoch_data.year,
+					"nth_year": ordinal_suffix_of(epoch_data.year),
+					"abs_year": Math.abs(epoch_data.year),
+					"abs_nth_year": ordinal_suffix_of(Math.abs(epoch_data.year)),
+					"era_year": epoch_data.era_year,
+					"era_nth_year": ordinal_suffix_of(epoch_data.era_year),
+					"era_name": era.name
+				}
+			);
+
+		}
+		
+		calendar_layouts.update_year_follower(year_text);
 	},
 
 	// This just sets up the starting era, in case the user refreshed and isn't at the top of the page
@@ -277,7 +313,7 @@ var eras = {
 
 			}else if(this.current_eras.length == 1){
 
-				if(position > this.current_eras[0].position || this.current_eras[0].data.date.epoch < this.start_epoch){
+				if(position >= this.current_eras[0].position || this.current_eras[0].data.date.epoch < this.start_epoch){
 					this.set_current_era(0);
 				}else{
 					this.set_current_era(-1);

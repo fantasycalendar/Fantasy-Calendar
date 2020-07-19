@@ -265,6 +265,11 @@ function evaluate_day_length_chart(){
 		return;
 	}
 
+	if(calendar_weather.epoch_data[calendar_weather.start_epoch] === undefined){
+		$('#day_length').addClass('hidden');
+		return;
+	}
+
 	if(!calendar_weather.epoch_data[calendar_weather.start_epoch].season){
 		$('#day_length').addClass('hidden');
 		return;

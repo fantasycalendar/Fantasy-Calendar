@@ -77,7 +77,7 @@
 					This calendar doesn't have any weekdays or months yet, so you can't change the date.
 				</div>
 
-				<div class='date_inputs container' id='date_inputs'>
+				<div class='date_inputs date_control container' id='date_inputs'>
 
 					<div class='row'>
 						<h4>Current date:</h4>
@@ -151,7 +151,7 @@
 				</div>
 
 
-				<div class='date_inputs container mt-3'>
+				<div class='date_inputs date_control container mt-3'>
 
 					<div class='row'>
 						<h4 class="my-0 py-0">Preview date:</h4>
@@ -229,7 +229,6 @@
                 </div>
 
             </div>
-
 
 		</div>
 

@@ -1105,7 +1105,7 @@ var calendar_builder = {
 
 					this.calendar_list.timespans_to_build[timespan] = timespan_data;
 
-					if(ending_day >= 0 && timespan == num_timespans-1){
+					if(ending_day > 0 && timespan == num_timespans-1){
 						this.calendar_list.timespans_to_build[timespan].length = ending_day > this.calendar_list.timespans_to_build[timespan].length ? this.calendar_list.timespans_to_build[timespan].length : ending_day;
 					}
 
@@ -1293,7 +1293,7 @@ var calendar_builder = {
 
 		}
 
-		year_start_data = evaluate_calendar_start(this.static_data, first_eval_year, first_eval_month, 0, true);
+		year_start_data = evaluate_calendar_start(this.static_data, first_eval_year, first_eval_month, undefined, true);
 		era_year = year_start_data.era_year;
 		count_timespans = year_start_data.count_timespans;
 		num_timespans = year_start_data.num_timespans;
@@ -1352,8 +1352,8 @@ var calendar_builder = {
 						current_era++;
 						if(this.static_data.eras[current_era].settings.restart){
 							era_year = 0;
-
 						}
+
 					}
 
 					moon_data = [];
@@ -1518,6 +1518,7 @@ var calendar_builder = {
 									'leap_day': leap_day.index,
 
 									'era': current_era
+
 								}
 
 								data.current_cycle = get_cycle(this.static_data, data).array;
@@ -1695,7 +1696,17 @@ var calendar_builder = {
 
 						'intercalary': current_timespan.type === "intercalary",
 
-						'era': current_era
+						'era': current_era,
+
+						'year_text_data': {
+							"year": this.dynamic_data.year,
+							"nth_year": ordinal_suffix_of(this.dynamic_data.year),
+							"abs_year": Math.abs(this.dynamic_data.year),
+							"abs_nth_year": ordinal_suffix_of(Math.abs(this.dynamic_data.year)),
+							"era_year": unconvert_year(this.static_data, era_year),
+							"era_nth_year": ordinal_suffix_of(unconvert_year(this.static_data, era_year)),
+							"era_name": this.static_data.eras[current_era].name
+						}
 
 					}
 
@@ -1798,7 +1809,6 @@ var calendar_builder = {
 				}
 
 			}
-
 
 			if(!this.static_data.year_data.overflow){
 				year_week_num++;
@@ -1934,7 +1944,7 @@ var calendar_builder = {
 
 							'intercalary': current_timespan.type === "intercalary",
 
-							'era': current_era
+							'era': current_era,
 						}
 
 						data.current_cycle = get_cycle(this.static_data, data).array;

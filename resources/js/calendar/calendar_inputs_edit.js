@@ -1678,6 +1678,10 @@ function set_up_edit_inputs(){
 		eras.evaluate_position();
 	});
 
+	$(document).on('change', '#era_list .ends_year', function(){
+		evaluate_dynamic_change();
+	});
+
 	$(document).on('change', '#season_sortable .date_control', function(){
 		reindex_season_sortable();
 	});
