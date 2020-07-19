@@ -1696,17 +1696,7 @@ var calendar_builder = {
 
 						'intercalary': current_timespan.type === "intercalary",
 
-						'era': current_era,
-
-						'year_text_data': {
-							"year": this.dynamic_data.year,
-							"nth_year": ordinal_suffix_of(this.dynamic_data.year),
-							"abs_year": Math.abs(this.dynamic_data.year),
-							"abs_nth_year": ordinal_suffix_of(Math.abs(this.dynamic_data.year)),
-							"era_year": unconvert_year(this.static_data, era_year),
-							"era_nth_year": ordinal_suffix_of(unconvert_year(this.static_data, era_year)),
-							"era_name": this.static_data.eras[current_era].name
-						}
+						'era': current_era
 
 					}
 
