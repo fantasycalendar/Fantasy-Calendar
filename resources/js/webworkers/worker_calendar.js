@@ -1309,7 +1309,7 @@ var calendar_builder = {
 			}
 		}
 		
-		if(current_era == -1 && this.static_data.eras[0].settings.starting_era){
+		if(this.static_data.eras[0] && current_era == -1 && this.static_data.eras[0].settings.starting_era){
 			current_era = 0;
 		}
 
