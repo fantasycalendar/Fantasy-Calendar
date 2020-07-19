@@ -651,8 +651,6 @@ var edit_event_ui = {
 			print: $('#event_print_checkbox').prop('checked')
 		}
 
-		console.log(events[this.event_id]);
-
 		if($('#events_sortable').length){
 			if(this.new_event){
 				add_event_to_sortable(events_sortable, this.event_id, events[this.event_id]);
@@ -1720,7 +1718,7 @@ var edit_event_ui = {
 					html.push(">");
 
 				}
-				
+
 			}
 
 		}
