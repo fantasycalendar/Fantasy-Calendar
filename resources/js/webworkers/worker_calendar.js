@@ -1089,7 +1089,7 @@ var calendar_builder = {
 				if(era.settings.ends_year && convert_year(this.static_data, this.dynamic_data.year) == convert_year(this.static_data, era.date.year) && era.date.timespan < num_timespans+1){
 
 					num_timespans = era.date.timespan+1;
-					ending_day = era.date.day-1;
+					ending_day = era.date.day;
 
 				}
 
@@ -1105,7 +1105,7 @@ var calendar_builder = {
 
 					this.calendar_list.timespans_to_build[timespan] = timespan_data;
 
-					if(ending_day > 0 && timespan == num_timespans-1){
+					if(ending_day >= 0 && timespan == num_timespans-1){
 						this.calendar_list.timespans_to_build[timespan].length = ending_day > this.calendar_list.timespans_to_build[timespan].length ? this.calendar_list.timespans_to_build[timespan].length : ending_day;
 					}
 

@@ -823,7 +823,7 @@ function repopulate_timespan_select(select, val, change, max){
 
 			var is_there = does_timespan_appear(static_data, year, i);
 
-			if(special && is_there.reason != "era ended"){
+			if(special){
 
 				html.push(`<option value='${i}'>${static_data.year_data.timespans[i].name}</option>`);
 
@@ -891,6 +891,7 @@ function repopulate_day_select(select, val, change, no_leaps, max, filter_timesp
 
 		var year = convert_year(static_data, $(this).closest('.date_control').find('.year-input').val()|0);
 		var timespan = $(this).closest('.date_control').find('.timespan-list').val()|0;
+		var special = $(this).hasClass('day_special');
 
 		if(filter_timespan === undefined || timespan == filter_timespan){
 
@@ -901,11 +902,11 @@ function repopulate_day_select(select, val, change, no_leaps, max, filter_timesp
 				var self_object = get_calendar_data($(this).attr('data'));
 
 				if(self_object){
-					var days = get_days_in_timespan(static_data, year, timespan, self_object, no_leaps);
+					var days = get_days_in_timespan(static_data, year, timespan, self_object, no_leaps, special);
 				}
 
 			}else{
-				var days = get_days_in_timespan(static_data, year, timespan, undefined, no_leaps);
+				var days = get_days_in_timespan(static_data, year, timespan, undefined, no_leaps, special);
 			}
 
 			var html = [];

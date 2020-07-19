@@ -3430,14 +3430,14 @@ function add_era_to_list(parent, key, data){
 
 							element.push(`<div class='row my-2'>`);
 								element.push("<div class='col'>");
-									element.push(`<select type='number' class='date custom-select form-control timespan-list dynamic_input' refresh data='eras.${key}.date' fc-index='timespan'>`);
+									element.push(`<select type='number' class='date custom-select form-control timespan-list dynamic_input timespan_special' refresh data='eras.${key}.date' fc-index='timespan'>`);
 									element.push("</select>");
 								element.push("</div>");
 							element.push("</div>");
 
 							element.push(`<div class='row my-2'>`);
 								element.push("<div class='col'>");
-									element.push(`<select type='number' class='date custom-select form-control timespan-day-list dynamic_input' refresh data='eras.${key}.date' fc-index='day'>`);
+									element.push(`<select type='number' class='date custom-select form-control timespan-day-list dynamic_input day_special' refresh data='eras.${key}.date' fc-index='day'>`);
 									element.push("</select>");
 								element.push("</div>");
 							element.push("</div>");
@@ -3744,8 +3744,13 @@ function get_errors(){
 		for(var era_i = 0; era_i < static_data.eras.length; era_i++){
 			var era = static_data.eras[era_i];
 			if(static_data.year_data.timespans[era.date.timespan]){
-				if(!does_timespan_appear(static_data, convert_year(static_data, era.date.year), era.date.timespan).result){
-					errors.push(`Era <i>${era.name}</i> is currently on a leaping month. Please move it to another month.`);
+				var appears = does_timespan_appear(static_data, convert_year(static_data, era.date.year), era.date.timespan);
+				if(!appears.result){
+					if(appears.reason == 'era ended'){
+						errors.push(`Era <i>${era.name}</i> is on a date that doesn't exist due to a previous era ending the year. Please move it to another year.`);
+					}else{
+						errors.push(`Era <i>${era.name}</i> is currently on a leaping month. Please move it to another month.`);
+					}
 				}
 			}else{
 				errors.push(`Era <i>${era.name}</i> doesn't have a valid month.`);
@@ -3872,11 +3877,11 @@ var do_error_check = debounce(function(type, rebuild){
 
 	} else {
 
+		$('#generator_container').removeClass();
+
 		var errors = get_errors();
 
 		if(errors.length == 0 && $('.invalid').length == 0){
-
-			$('#generator_container').removeClass();
 
 			close_message_modal();
 

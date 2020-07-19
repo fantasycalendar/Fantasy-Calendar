@@ -1074,7 +1074,7 @@ function unconvert_year(static_data, year){
  * @param  {obj}        self_object     Not sure what this is for anymore, but I believe this was to be able to target specific leap days.
  * @return {array}                      An array containing strings for each day
  */
-function get_days_in_timespan(static_data, year, timespan_index, self_object, no_leaps){
+function get_days_in_timespan(static_data, year, timespan_index, self_object, no_leaps, special){
 
 	self_object = self_object !== undefined ? self_object : false;
 	no_leaps = no_leaps !== undefined ? no_leaps : false;
@@ -1087,7 +1087,7 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object, no
 
 	for(var i = 1; i <= timespan.length; i++){
 		var appears = does_day_appear(static_data, year, timespan_index, i);
-		if(appears.result){
+		if(appears.result || special){
 			days.push(`Day ${i}`);
 		}
 	}
@@ -1121,7 +1121,7 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object, no
 
 				var is_there = does_day_appear(static_data, year, timespan_index, leap_day.day-1);
 
-				if(is_there.result){
+				if(is_there.result || special){
 
 					var leaping = does_leap_day_appear(static_data, year, timespan_index, leap_day_index);
 
@@ -1138,7 +1138,7 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object, no
 
 				var is_there = does_day_appear(static_data, year, timespan_index, i);
 
-				if(is_there.result){
+				if(is_there.result || special){
 
 					var leaping = does_leap_day_appear(static_data, year, timespan_index, leap_day_index);
 
