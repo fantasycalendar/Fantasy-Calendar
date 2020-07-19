@@ -1304,7 +1304,7 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Winter",
+						"name":"Autumn",
 						"custom_name":true,
 						"weather":{
 							"temp_low":60.0,
