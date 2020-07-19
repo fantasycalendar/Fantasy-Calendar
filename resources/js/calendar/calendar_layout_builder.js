@@ -209,18 +209,15 @@ var eras = {
 
 					var format = era.formatting.replace(/\{\{/g, '{{{').replace(/\}\}/g, '}}}');
 
-					var epoch_data = calendar_layouts.epoch_data[era.date.epoch];
-					if(epoch_data === undefined){
-						epoch_data = calendar_layouts.epoch_data[Object.keys(calendar_layouts.epoch_data)[0]];
-					}
+					var epoch_data = calendar_layouts.epoch_data[this.start_epoch];
 
 					year_text = Mustache.render(
 						format,
 						{
-							"year": epoch_data.year,
-							"nth_year": ordinal_suffix_of(epoch_data.year),
-							"abs_year": Math.abs(epoch_data.year),
-							"abs_nth_year": ordinal_suffix_of(Math.abs(epoch_data.year)),
+							"year": unconvert_year(static_data, epoch_data.year),
+							"nth_year": ordinal_suffix_of(unconvert_year(static_data, epoch_data.year)),
+							"abs_year": Math.abs(unconvert_year(static_data, epoch_data.year)),
+							"abs_nth_year": ordinal_suffix_of(Math.abs(unconvert_year(static_data, epoch_data.year))),
 							"era_year": epoch_data.era_year,
 							"era_nth_year": ordinal_suffix_of(epoch_data.era_year),
 							"era_name": era.name
@@ -235,15 +232,15 @@ var eras = {
 						var format = `Year {{year}} - {{era_name}}`
 					}
 
-					var epoch_data = calendar_layouts.epoch_data[Object.keys(calendar_layouts.epoch_data)[0]];
+					var epoch_data = calendar_layouts.epoch_data[this.start_epoch];
 
 					year_text = Mustache.render(
 						format,
 						{
-							"year": epoch_data.year,
-							"nth_year": ordinal_suffix_of(epoch_data.year),
-							"abs_year": Math.abs(epoch_data.year),
-							"abs_nth_year": ordinal_suffix_of(Math.abs(epoch_data.year)),
+							"year": unconvert_year(static_data, epoch_data.year),
+							"nth_year": ordinal_suffix_of(unconvert_year(static_data, epoch_data.year)),
+							"abs_year": Math.abs(unconvert_year(static_data, epoch_data.year)),
+							"abs_nth_year": ordinal_suffix_of(Math.abs(unconvert_year(static_data, epoch_data.year))),
 							"era_year": epoch_data.era_year,
 							"era_nth_year": ordinal_suffix_of(epoch_data.era_year),
 							"era_name": era.name
@@ -258,15 +255,15 @@ var eras = {
 
 			var format = `Year {{year}}`;
 
-			var epoch_data = calendar_layouts.epoch_data[Object.keys(calendar_layouts.epoch_data)[0]];
+			var epoch_data = calendar_layouts.epoch_data[this.start_epoch];
 
 			year_text = Mustache.render(
 				format,
 				{
-					"year": epoch_data.year,
-					"nth_year": ordinal_suffix_of(epoch_data.year),
-					"abs_year": Math.abs(epoch_data.year),
-					"abs_nth_year": ordinal_suffix_of(Math.abs(epoch_data.year)),
+					"year": unconvert_year(static_data, epoch_data.year),
+					"nth_year": ordinal_suffix_of(unconvert_year(static_data, epoch_data.year)),
+					"abs_year": Math.abs(unconvert_year(static_data, epoch_data.year)),
+					"abs_nth_year": ordinal_suffix_of(Math.abs(unconvert_year(static_data, epoch_data.year))),
 					"era_year": epoch_data.era_year,
 					"era_nth_year": ordinal_suffix_of(epoch_data.era_year),
 					"era_name": era.name

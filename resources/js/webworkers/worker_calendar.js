@@ -1308,6 +1308,10 @@ var calendar_builder = {
 				current_era = i;
 			}
 		}
+		
+		if(current_era == -1 && this.static_data.eras[0].settings.starting_era){
+			current_era = 0;
+		}
 
 		if(this.static_data.eras[current_era] && epoch == this.static_data.eras[current_era].date.epoch && this.static_data.eras[current_era].settings.restart){
 			era_year = 0;
@@ -2038,6 +2042,9 @@ var calendar_builder = {
 
 		climate_generator = new Climate(this.data.epochs, this.static_data, this.dynamic_data, calendar_start_epoch, calendar_end_epoch);
 		this.data.epochs = climate_generator.generate();
+
+
+
 
 		if(debug || debugtext){
 
