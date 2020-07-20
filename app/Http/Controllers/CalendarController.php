@@ -201,6 +201,20 @@ class CalendarController extends Controller
 
     }
 
+    public function legacy(Request $request) {
+        if($request->get('action') == 'generate') {
+            return redirect('calendars/create', 301);
+        }
+
+        if($request->get('action') == 'view') {
+            return redirect("calendars/{$request->get('id')}", 301);
+        }
+
+        if($request->get('action') == 'edit') {
+            return redirect("calendars/{$request->get('id')}/edit", 301);
+        }
+    }
+
     /**
      * Remove the specified resource from storage.
      *

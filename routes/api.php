@@ -13,9 +13,7 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::middleware('auth:api')->get('/user', 'Api\UserController@user');
 
 Route::any('/calendar/{id}/clone', 'Api\CalendarController@clone');
 Route::any('/calendar/{id}/owned', 'Api\CalendarController@owned');
@@ -33,8 +31,3 @@ Route::any('/eventcomment/calendar/{id}', 'Api\EventCommentController@forCalenda
 Route::apiResource('eventcomment', 'Api\EventCommentController');
 
 Route::apiResource('event', 'Api\CalendarEventController');
-
-Route::fallback(function(){
-    return response()->json([
-        'message' => 'Page Not Found.'], 404);
-});

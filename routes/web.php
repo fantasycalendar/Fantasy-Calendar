@@ -14,11 +14,7 @@ use Illuminate\Http\Request;
 */
 
 Route::view('/', 'welcome')->name('home');
-Route::get('/donate', function(){
-    return view('pages.donate', [
-        'title'=>'Support the site'
-    ]);
-});
+Route::view('/donate', 'pages.donate', ['title'=>'Support the site']);
 
 Route::get('calendars/{calendar}/print', 'CalendarController@print')->name('calendars.print');
 Route::get('calendars/{calendar}/export', 'CalendarController@export')->name('calendars.export');
@@ -31,29 +27,13 @@ Route::post('/settings', 'SettingsController@update')->name('settings.update')->
 
 Route::get('/admin/loginas/{userid}', 'AdminController@loginas')->name('admin.loginas')->middleware('admin');
 
-Route::get('/{path}', function(Request $request) {
-    if($request->get('action') == 'generate') {
-        return redirect('calendars/create');
-    }
+Route::redirect('/403', '/');
 
-    if($request->get('action') == 'view') {
-        return redirect("calendars/{$request->get('id')}");
-    }
+Route::view('/404', 'errors.404', [
+    'title' => 'Calendar not found',
+    'resource' => 'Calendar'
+]);
 
-    if($request->get('action') == 'edit') {
-        return redirect("calendars/{$request->get('id')}/edit");
-    }
-})->where(['url' => 'calendar.php|calendar']);
+Route::get('/{path}', 'CalendarController@legacy')->where(['url' => 'calendar.php|calendar']);
 
 // Manual error page routes for the moment
-
-Route::get('/403', function() {
-    return redirect('/');
-});
-
-Route::get('/404', function() {
-    return view('errors.404', [
-        'title' => 'Calendar not found',
-        'resource' => 'Calendar'
-    ]);
-});
