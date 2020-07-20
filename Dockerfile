@@ -58,10 +58,6 @@ RUN ["/usr/local/bin/php", "/var/www/html/composer.phar", "install", "-d", "/fan
 
 RUN ["/usr/local/bin/php", "/var/www/html/composer.phar", "dump-auto", "-d", "/fantasy-calendar/"]
 
-RUN php artisan optimize
-
-RUN php artisan route:cache
-
 USER root
 
 EXPOSE 80
