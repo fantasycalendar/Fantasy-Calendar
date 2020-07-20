@@ -13,7 +13,8 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::view('/', 'welcome')->name('home');
+Route::get('/', 'WelcomeController@welcome')->name('home');
+Route::view('/welcome', 'welcome')->name('welcome');
 Route::view('/donate', 'pages.donate', ['title'=>'Support the site']);
 
 Route::get('calendars/{calendar}/print', 'CalendarController@print')->name('calendars.print');
