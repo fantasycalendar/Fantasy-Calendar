@@ -60,7 +60,7 @@ RUN ["/usr/local/bin/php", "/var/www/html/composer.phar", "dump-auto", "-d", "/f
 
 RUN php artisan optimize
 
-RUN php route:cache
+RUN php artisan route:cache
 
 USER root
 
