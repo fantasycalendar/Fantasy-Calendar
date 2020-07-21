@@ -45,6 +45,8 @@ services:
       - "DB_PASSWORD=root"
       - "REDIS_HOST=fcredis"
       - "SESSION_DRIVER=redis"
+      - "MIX_ASSET_URL=http://fantasy-calendar.test:9980"
+      - "VIEW_COMPILED_PATH=/fantasy-calendar/storage/framework/views"
 
   fcredis:
     image: redis

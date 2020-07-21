@@ -11,7 +11,7 @@
     <meta property="og:title" content="{{ $calendar->name ?? $title ?? "Fantasy Calendar" }}">
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url()->full() }}">
-    <meta property="og:image" content="{{ url('/resources/discord_logo.jpg') }}">
+    <meta property="og:image" content="{{ asset('resources/discord_logo.jpg') }}">
 
     <title>
         Welcome to Fantasy Calendar
@@ -28,9 +28,9 @@
     <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" />
     <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
 
-    <script src="{{ mix('/js/calendar/header.js') }}"></script>
+    <script src="{{ mix('js/calendar/header.js') }}"></script>
 
-    <link rel="stylesheet" href="{{ mix('/css/app.css') }}">
+    <link rel="stylesheet" href="{{ mix('css/app.css') }}">
 
     @stack('head')
 </head>

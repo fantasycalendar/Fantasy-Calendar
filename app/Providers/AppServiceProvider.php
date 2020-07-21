@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 use App\Observers\CalendarObserver;
@@ -26,6 +27,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        URL::forceRootUrl(env('APP_URL'));
+
         Calendar::observe(CalendarObserver::class);
     }
 }

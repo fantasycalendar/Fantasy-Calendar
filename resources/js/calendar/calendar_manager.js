@@ -198,9 +198,9 @@ worker_climate.onmessage = e => {
 
 		evaluate_day_length_chart();
 		evaluate_weather_charts();
-		
+
 	}else{
-		
+
 		evaluate_day_length_chart();
 		evaluate_weather_charts();
 		eval_current_time();
