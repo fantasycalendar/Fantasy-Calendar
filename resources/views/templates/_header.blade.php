@@ -25,13 +25,18 @@
                 @endif
                 <li class="nav-item"><a href="{{ route('settings') }}" class="nav-link">Settings</a></li>
                 <li class="nav-item"><a href="/profile" class="nav-link">Profile</a></li>
-                <li class="nav-item"><a href="javascript:" id="logout-button" class="nav-link">Logout</a></li>
+                @unless(request()->is('/calendar/*'))
+                        <li class="nav-item"><a href="{{ route('logout') }}" class="nav-link">Logout</a></li>
+                @else
+                        <li class="nav-item"><a href="javascript:" id="logout-button" class="nav-link">Logout</a></li>
+                @endunless
             @else
                 @unless(request()->is('/calendar/*'))
                     <li class="nav-item"><a href="{{ route('login') }}" class="nav-link">Login</a></li>
                 @else
                     <li class="nav-item"><a href="javascript:" id="login-show-button" class="nav-link">Login</a></li>
                 @endunless
+
                 <li class="nav-item"><a href="{{ route('register') }}" class="nav-link">Register</a></li>
             @endauth
 

@@ -22,6 +22,7 @@ Route::get('calendars/{calendar}/export', 'CalendarController@export')->name('ca
 Route::resource('calendars', 'CalendarController');
 
 Auth::routes(['verify' => true]);
+Route::get('/logout', 'Auth\LoginController@logout');
 
 Route::get('/settings', 'SettingsController@index')->name('settings')->middleware('auth');
 Route::post('/settings', 'SettingsController@update')->name('settings.update')->middleware('auth');
