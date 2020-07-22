@@ -114,6 +114,9 @@ class CalendarController extends Controller
      */
     public function show(Calendar $calendar)
     {
+
+        /* TODO-Alex - Disallow users from accessing a private calendar - maybe redirecting them to a new 'calendar is private' page? */
+
         return view('calendar.view', [
             'calendar' => $calendar,
         ]);

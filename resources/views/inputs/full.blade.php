@@ -1271,7 +1271,7 @@
 				<label for="collapsible_users" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-user"></i> User Management <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Settings' href='https://wiki.fantasy-calendar.com/index.php?title=User_Management' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 				<div class="collapsible-content card-body">
 
-					@if(Auth::user()->paymentLevel() === "Free")
+					@if(Auth::user()->paymentLevel() !== "Free")
 
 						<div class='row no-gutters my-1'>
 							<p class='m-0'>Invite your friends to collaborate on this calendar!</p>

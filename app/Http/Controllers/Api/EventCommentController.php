@@ -37,6 +37,8 @@ class EventCommentController extends Controller
      */
     public function store(Request $request)
     {
+        /* TODO-Alex - Double checking whether the user can add comments - I'm pretty sure we're doing this on the front end, but sneaky users could slip through... */
+
         $commentData = [
             'user_id' => auth('api')->user()->id,
             'event_id' => $request->get('event_id'),

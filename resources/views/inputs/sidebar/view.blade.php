@@ -64,6 +64,8 @@
 
 			<div class='date_control container' id='date_inputs'>
 
+                {{-- TODO-Adam - Once initial permission system is implemented, it might be worth to just not render the date inputs --}}
+
 				<div class='row mt-2'>
 					<h4>Current date:</h4>
 				</div>
