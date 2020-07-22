@@ -10,6 +10,8 @@ provider:
     environment:
       AWS_BUCKET: # environment variable for Laravel
         Ref: Assets
+      SQS_QUEUE:
+        Ref: AlertQueue
       DB_HOST: ${ssm:/fantasy-calendar/db_host}
       DB_PORT: 3306
       DB_USERNAME: ${ssm:/fantasy-calendar/db_username}
@@ -28,6 +30,14 @@ provider:
       SESSION_DRIVER: redis
       REDIS_HOST: ${ssm:/fantasy-calendar/redis_host}
       REDIS_PORT: 6379
+      MAIL_DRIVER: smtp
+      MAIL_HOST: ${ssm:/fantasy-calendar/mail_host}
+      MAIL_PORT: 587
+      MAIL_USERNAME: ${ssm:/fantasy-calendar/mail_username}
+      MAIL_PASSWORD: ${ssm:/fantasy-calendar/mail_password}
+      MAIL_FROM_ADDRESS: ${ssm:/fantasy-calendar/mail_from}
+      MAIL_FROM_NAME: Fantasy Calendar
+      MAIL_ENCRYPTION: tls
     iamRoleStatements:
       # Allow Lambda to read and write files in the S3 buckets
       -   Effect: Allow
@@ -41,7 +51,13 @@ provider:
             - "ec2:DescribeNetworkInterfaces"
             - "ec2:DetachNetworkInterface"
             - "ec2:DeleteNetworkInterface"
+            - "ses:Publish"
+            - "ses:SendEmail"
           Resource: "*"
+      -   Effect: Allow
+          Action: [sqs:SendMessage, sqs:DeleteMessage]
+          Resource:
+            Fn::GetAtt: [ AlertQueue, Arn ]
 
 package:
     # Directories to exclude from deployment
@@ -63,8 +79,7 @@ functions:
             -   http: 'ANY /'
             -   http: 'ANY /{proxy+}'
         vpc:
-          securityGroupIds:
-            - ${ssm:/fantasy-calendar/security_group_id}
+          securityGroupIds: { 'Fn::Split': [",", "${ssm:/fantasy-calendar/security_group_ids}"] }
           subnetIds: { 'Fn::Split': [",", "${ssm:/fantasy-calendar/subnet_ids}"] }
     # This function lets us run artisan commands on lambda
     artisan:
@@ -74,9 +89,21 @@ functions:
             - ${bref:layer.php-74} # PHP
             - ${bref:layer.console} # The "console" layer
         vpc:
-          securityGroupIds:
-            - ${ssm:/fantasy-calendar/security_group_id}
+          securityGroupIds: { 'Fn::Split': [",", "${ssm:/fantasy-calendar/security_group_ids}"] }
           subnetIds: { 'Fn::Split': [",", "${ssm:/fantasy-calendar/subnet_ids}"] }
+    worker:
+      handler: worker.php
+      layers:
+        - ${bref:layer.php-73}
+      events:
+        # Declares that our worker is triggered by jobs in SQS
+        -   sqs:
+              arn:
+                Fn::GetAtt: [ AlertQueue, Arn ]
+              # If you create the queue manually, the line above could be:
+              # arn: 'arn:aws:sqs:us-east-1:1234567890:my_sqs_queue'
+              # Only 1 item at a time to simplify error handling
+              batchSize: 1
 
 plugins:
     # We need to include the Bref plugin
@@ -115,6 +142,20 @@ resources:
                 Action: 's3:GetObject' # to read
                 Resource: !Join ['/', [!GetAtt Assets.Arn, '*']] # things in the bucket
               # alternatively you can write out Resource: 'arn:aws:s3:::<bucket-name>/*'
+    # The queue
+    AlertQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        RedrivePolicy:
+          maxReceiveCount: 3 # jobs will be retried up to 3 times
+          # Failed jobs (after the retries) will be moved to the other queue for storage
+          deadLetterTargetArn:
+            Fn::GetAtt: [ DeadLetterQueue, Arn ]
+    # Failed jobs will go into that SQS queue to be stored, until a developer looks at these errors
+    DeadLetterQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        MessageRetentionPeriod: 1209600 # maximum retention: 14 days
     WebsiteCDN:
       Type: AWS::CloudFront::Distribution
       Properties:
