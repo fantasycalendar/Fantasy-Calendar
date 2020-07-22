@@ -27,7 +27,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        URL::forceRootUrl(env('APP_URL'));
+        URL::forceRootUrl(config('app.url'));
+
+        \Illuminate\Pagination\AbstractPaginator::currentPathResolver(function () {
+            /** @var \Illuminate\Routing\UrlGenerator $url */
+            $url = app('url');
+            return $url->current();
+        });
 
         Calendar::observe(CalendarObserver::class);
     }
