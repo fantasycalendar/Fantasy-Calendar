@@ -346,8 +346,7 @@ function evaluate_dynamic_change(){
 	dynamic_data.timespan	 = data.timespan;
 	dynamic_data.day		 = data.day;
 	dynamic_data.epoch		 = data.epoch;
-	dynamic_data.current_era = get_current_era(static_data, dynamic_data.epoch)
-	console.log(dynamic_data);
+	dynamic_data.current_era = get_current_era(static_data, dynamic_data.epoch);
 
 	var apply_changes_immediately = $('#apply_changes_immediately');
 
