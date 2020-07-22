@@ -119,10 +119,10 @@ class Calendar extends Model
     }
 
     public function getCurrentEraValidAttribute() {
-        return count($this->static_data['eras']) > 0 && isset($this->dynamic_data['current_era']);
+        return count($this->static_data['eras']) > 0 && isset($this->dynamic_data['current_era']) && $this->dynamic_data['current_era'] > -1;
     }
 
-    public function current_date() {
+    public function getCurrentDateAttribute() {
         if(count($this->static_data['year_data']['timespans']) < 1) {
             return "N/A";
         }
@@ -136,7 +136,7 @@ class Calendar extends Model
         return sprintf("%s %s, %s", $day, $month, $year);
     }
 
-    public function current_time() {
+    public function getCurrentTimeAttribute() {
         if(!$this->static_data['clock']['enabled']) {
             return "N/A";
         }
@@ -144,7 +144,7 @@ class Calendar extends Model
         return $this->dynamic_data['hour'] . ":" . $this->dynamic_data['minute'];
     }
 
-    public function current_era() {
+    public function getCurrentEraAttribute() {
         $current_era_index = $this->dynamic_data['current_era'];
 
         $current_era = $this->static_data['eras'][$current_era_index];
