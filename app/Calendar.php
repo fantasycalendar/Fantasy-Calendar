@@ -145,6 +145,11 @@ class Calendar extends Model
     }
 
     public function getCurrentEraAttribute() {
+
+        if(!$this->current_era_valid){
+            return 'N/A';
+        }
+
         $current_era_index = $this->dynamic_data['current_era'];
 
         $current_era = $this->static_data['eras'][$current_era_index];
