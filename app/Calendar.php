@@ -119,7 +119,7 @@ class Calendar extends Model
     }
 
     public function getCurrentEraValidAttribute() {
-        return count($this->static_data['eras']) > 0 && isset($this->dynamic_data['current_era']) && $this->dynamic_data['current_era'] > -1;
+        return isset($this->static_data['eras']) && count($this->static_data['eras']) > 0 && isset($this->dynamic_data['current_era']) && $this->dynamic_data['current_era'] > -1;
     }
 
     public function getCurrentDateAttribute() {
