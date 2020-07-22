@@ -118,6 +118,10 @@ class Calendar extends Model
         return isset($this->static_data['clock']['enabled']) && isset($this->dynamic_data['hour']) && isset($this->dynamic_data['minute']) && $this->static_data['clock']['enabled'];
     }
 
+    public function getCurrentEraValidAttribute() {
+        return count($this->static_data['eras']) > 0 && isset($this->dynamic_data['current_era']);
+    }
+
     public function current_date() {
         if(count($this->static_data['year_data']['timespans']) < 1) {
             return "N/A";
@@ -125,11 +129,9 @@ class Calendar extends Model
 
         $month_id = $this->dynamic_data['timespan'] ?? $this->dynamic_data['month'] ?? 0;
 
-
         $year = $this->dynamic_data['year'];
         $month = $this->static_data['year_data']['timespans'][$month_id]['name'];
         $day = $this->dynamic_data['day'];
-
 
         return sprintf("%s %s, %s", $day, $month, $year);
     }
@@ -140,6 +142,14 @@ class Calendar extends Model
         }
 
         return $this->dynamic_data['hour'] . ":" . $this->dynamic_data['minute'];
+    }
+
+    public function current_era() {
+        $current_era_index = $this->dynamic_data['current_era'];
+
+        $current_era = $this->static_data['eras'][$current_era_index];
+
+        return $current_era['name'];
     }
 
     public function scopeSearch($query, $search) {

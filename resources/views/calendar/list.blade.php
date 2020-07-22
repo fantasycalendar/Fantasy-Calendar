@@ -79,7 +79,10 @@
                     <div style="padding-left: 33px;" class="d-none d-md-block col-md-4 col-lg-3">
                         <i class="fa fa-calendar" style="margin-left: -20px;"></i> {{ $calendar->current_date() }} <br>
                         @if($calendar->clock_enabled)
-                            <i class="fa fa-clock" style="margin-left: -20px;"></i> {{ $calendar->current_time() }}
+                            <i class="fa fa-clock" style="margin-left: -20px;"></i> {{ $calendar->current_time() }} <br>
+                        @endif
+                        @if($calendar->current_era_valid)
+                            <i class="fa fa-infinity" style="margin-left: -20px;"></i> {{ $calendar->current_era() }}
                         @endif
                     </div>
                     <div class="d-none d-lg-block col-lg-1 protip">

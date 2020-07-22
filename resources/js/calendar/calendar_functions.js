@@ -616,6 +616,36 @@ function get_moon_granularity(cycle){
 	}
 }
 
+function get_current_era(static_data, epoch){
+
+	if(static_data.eras === undefined || static_data.eras.length == 0){
+		return -1;
+	}
+
+	let current_era = -1;
+
+	// Find eras within this year
+	for(var i = static_data.eras.length-1; i >= 0; i--){
+
+		var era = static_data.eras[i];
+
+		if(!era.settings.starting_era && epoch >= era.date.epoch){
+
+			current_era = i;
+			break
+
+		}
+
+	}
+
+	if(current_era == -1 && static_data.eras[0].settings.starting_era){
+		current_era = 0;
+	}
+
+	return current_era;
+	
+}
+
 
 class date_manager {
 
