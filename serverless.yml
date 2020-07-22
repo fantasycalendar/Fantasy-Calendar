@@ -17,6 +17,8 @@ provider:
       DB_DATABASE: ${ssm:/fantasy-calendar/db_name}
       VIEW_COMPILED_PATH: /tmp/storage/framework/views
       PURIFIER_CACHE_PATH: /tmp/purifier
+      FILESYSTEM_DRIVER_PUBLIC: s3
+      FILESYSTEM_DRIVER: s3
       MIX_ASSET_URL: https://lambda.fantasy-calendar.com
       ASSET_URL: https://lambda.fantasy-calendar.com
       APP_URL: https://lambda.fantasy-calendar.com/

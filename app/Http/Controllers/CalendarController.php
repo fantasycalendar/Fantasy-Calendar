@@ -41,9 +41,7 @@ class CalendarController extends Controller
         $calendarSimplePagination = $calendars->simplePaginate(10);
         $calendars = $calendars->paginate(10);
 
-
-//        $changelog = Markdown::convertToHtml(Storage::disk(env('FILESYSTEM_DRIVER_PUBLIC', 'public'))->get('changelog.md'));
-        $changelog = '';
+        $changelog = Markdown::convertToHtml(Storage::disk('base')->get('public/changelog.md'));
 
         return view('calendar.list', [
             'title' => "Fantasy Calendar",
