@@ -191,6 +191,34 @@ class Climate{
 
 	}
 
+	adjust_times(){
+
+		if(this.static_data.clock.enabled){
+
+			for(var season_index in this.current_location.seasons){
+
+				var season = this.current_location.seasons[season_index];
+
+				var sunrise = season.time.sunrise.hour+season.time.sunrise.minute/this.static_data.clock.minutes;
+				var sunset = season.time.sunset.hour+season.time.sunset.minute/this.static_data.clock.minutes;
+
+				season.time.sunrise.exact = sunrise;
+				season.time.sunset.exact = sunset;
+
+				if(sunset < sunrise){
+					season.time.sunset.exact += this.static_data.clock.hours;
+				}
+
+				if(sunset > sunrise){
+					season.time.sunrise.exact -= this.static_data.clock.hours;
+				}
+
+			}
+
+		}
+
+	}
+
 	generate(){
 
 		if(!this.process_seasons){
@@ -198,6 +226,7 @@ class Climate{
 		}
 
 		this.set_up_location_seasons();
+		this.adjust_times();
 		this.set_up_solstice_equinox();
 
 		if(this.settings.periodic_seasons){
@@ -686,19 +715,11 @@ class Climate{
 			var next_sunrise = this.current_location.seasons[this.season.next_index].time.sunrise;
 			var next_sunset = this.current_location.seasons[this.season.next_index].time.sunset;
 
-			var sunrise_minute = Math.round(lerp(next_sunrise.minute, curr_sunrise.minute, this.season.perc));
-			var sunrise_hour = lerp(next_sunrise.hour, curr_sunrise.hour, this.season.perc);
-			var sunrise = sunrise_hour+sunrise_minute/this.static_data.clock.minutes;
+			var sunrise = lerp(next_sunrise.exact, curr_sunrise.exact, this.season.perc);
+			var sunset = lerp(next_sunset.exact, curr_sunset.exact, this.season.perc);
 
-			var sunset_minute = Math.round(lerp(next_sunset.minute, curr_sunset.minute, this.season.perc));
-			var sunset_hour = lerp(next_sunset.hour, curr_sunset.hour, this.season.perc);
-			var sunset = sunset_hour+sunset_minute/this.static_data.clock.minutes;
-
-			var sunrise_m = (Math.round(fract(sunrise)*this.static_data.clock.minutes)).toString().length < 2 ? "0"+(Math.round(fract(sunrise)*this.static_data.clock.minutes)).toString() : (Math.round(fract(sunrise)*this.static_data.clock.minutes));
-			var sunset_m = (Math.round(fract(sunset)*this.static_data.clock.minutes)).toString().length < 2 ? "0"+(Math.round(fract(sunset)*this.static_data.clock.minutes)).toString() : (Math.round(fract(sunset)*this.static_data.clock.minutes));
-
-			var sunrise_s = Math.floor(sunrise)+":"+sunrise_m;
-			var sunset_s = Math.floor(sunset)+":"+sunset_m;
+			var sunrise_s = time_data_to_string(this.static_data, sunrise);
+			var sunset_s = time_data_to_string(this.static_data, sunset);
 
 			if(this.solstices_appear){
 

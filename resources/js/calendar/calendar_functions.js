@@ -1610,7 +1610,15 @@ var date_converter = {
 
 function time_data_to_string(static_data, time){
 
-	var minutes = (Math.round(fract(time)*this.static_data.clock.minutes)).toString().length < 2 ? "0"+(Math.round(fract(time)*this.static_data.clock.minutes)).toString() : (Math.round(fract(time)*this.static_data.clock.minutes));
+	if(time > static_data.clock.hours){
+		time -= static_data.clock.hours;
+	}
+
+	if(time < 0){
+		time += static_data.clock.hours;
+	}
+
+	var minutes = (Math.round(fract(time)*static_data.clock.minutes)).toString().length < 2 ? "0"+(Math.round(fract(time)*static_data.clock.minutes)).toString() : (Math.round(fract(time)*static_data.clock.minutes));
 
 	return Math.floor(time)+":"+minutes;
 
