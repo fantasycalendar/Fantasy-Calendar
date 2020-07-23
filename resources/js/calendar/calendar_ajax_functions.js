@@ -246,6 +246,7 @@ function link_child_calendar(child_hash, parent_link_date, parent_offset){
 			child_dynamic_data.epoch = converted_date.epoch;
 			child_dynamic_data.hour = converted_date.hour;
 			child_dynamic_data.minute = converted_date.minute;
+			child_dynamic_data.current_era = get_current_era(child_static_data, child_dynamic_data.epoch);
 
 			$.ajax({
 				url:window.baseurl+"calendars/"+child_hash,

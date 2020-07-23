@@ -265,8 +265,7 @@ var eras = {
 					"abs_year": Math.abs(unconvert_year(static_data, epoch_data.year)),
 					"abs_nth_year": ordinal_suffix_of(Math.abs(unconvert_year(static_data, epoch_data.year))),
 					"era_year": epoch_data.era_year,
-					"era_nth_year": ordinal_suffix_of(epoch_data.era_year),
-					"era_name": era.name
+					"era_nth_year": ordinal_suffix_of(epoch_data.era_year)
 				}
 			);
 
