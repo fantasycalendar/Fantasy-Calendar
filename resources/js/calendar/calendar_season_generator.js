@@ -209,10 +209,6 @@ class Climate{
 					season.time.sunset.exact += this.static_data.clock.hours;
 				}
 
-				if(sunset > sunrise){
-					season.time.sunrise.exact -= this.static_data.clock.hours;
-				}
-
 			}
 
 		}
