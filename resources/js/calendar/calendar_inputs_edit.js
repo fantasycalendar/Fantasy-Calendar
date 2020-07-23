@@ -1098,7 +1098,8 @@ function set_up_edit_inputs(){
 			"date": {
 				"year": dynamic_data.year,
 				"timespan": dynamic_data.timespan,
-				"day": dynamic_data.day
+				"day": dynamic_data.day,
+				"epoch": dynamic_data.epoch
 			}
 		};
 
@@ -1110,9 +1111,10 @@ function set_up_edit_inputs(){
 		var era = add_era_to_list(era_list, id, stats);
 		repopulate_timespan_select(era.find('.timespan-list'), dynamic_data.timespan, false);
 		repopulate_day_select(era.find('.timespan-day-list'), dynamic_data.day, false);
-		sort_list_by_date(era_list);
+		reindex_era_list();
 		name.val("");
 		do_error_check("eras");
+		dynamic_data.current_era = get_current_era(static_data, dynamic_data.epoch);
 
 	});
 
@@ -1269,6 +1271,7 @@ function set_up_edit_inputs(){
 				$(this).closest('.sortable-container').remove();
 				$(this).closest('.sortable-container').parent().sortable('refresh');
 				reindex_era_list();
+				dynamic_data.current_era = get_current_era(static_data, dynamic_data.epoch);
 				break;
 
 			case "event_category_list":
@@ -1670,16 +1673,26 @@ function set_up_edit_inputs(){
 
 		reindex_era_list();
 
+		dynamic_data.current_era = get_current_era(static_data, dynamic_data.epoch);
+
 	});
 
 
 	$(document).on('change', '#era_list .date_control', function(){
 		reindex_era_list();
 		eras.evaluate_position();
+		dynamic_data.current_era = get_current_era(static_data, dynamic_data.epoch);
 	});
 
 	$(document).on('change', '#era_list .ends_year', function(){
 		evaluate_dynamic_change();
+		var index = $(this).closest('.sortable-container').attr('index')|0;
+		static_data.eras[index].settings.ends_year = $(this).is(":checked");
+		for(var i in static_data.eras){
+			var era = static_data.eras[i];
+			era.date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, era.date.year), era.date.timespan, era.date.day).epoch;
+		}
+		dynamic_data.current_era = get_current_era(static_data, dynamic_data.epoch);
 	});
 
 	$(document).on('change', '#season_sortable .date_control', function(){
@@ -4077,8 +4090,6 @@ function repopulate_weekday_select(elements, value, change){
 }
 
 function reindex_timespan_sortable(){
-	
-	console.log(reindex_timespan_sortable.caller)
 
 	var tabindex = 100;
 
@@ -4547,7 +4558,6 @@ function sort_list_by_date(list){
 						comp.insertBefore(curr);
 					}
 				}
-
 			}
 		});
 	});
