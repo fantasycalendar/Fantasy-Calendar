@@ -11,7 +11,7 @@
     <meta property="og:title" content="{{ $calendar->name ?? $title ?? "Fantasy Calendar" }}">
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url()->full() }}">
-    <meta property="og:image" content="{{ url('/resources/discord_logo.jpg') }}">
+    <meta property="og:image" content="{{ asset('resources/discord_logo.jpg') }}">
 
     <title>
         Welcome to Fantasy Calendar
@@ -25,7 +25,7 @@
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
 
-    <script src="{{ mix('/js/app.js') }}"></script>
+    <script src="{{ mix('js/app.js') }}"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
@@ -47,14 +47,14 @@
     <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" />
     <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
 
-    <script src="/js/login.js"></script>
+    <script src="{{ asset('js/login.js') }}"></script>
 
-    <script src="{{ mix('/js/calendar/header.js') }}"></script>
+    <script src="{{ mix('js/calendar/header.js') }}"></script>
 
     @if(Auth::check() && Auth::user()->setting('dark_theme') && !request()->is('/'))
-        <link rel="stylesheet" href="{{ mix('/css/app-dark.css') }}">
+        <link rel="stylesheet" href="{{ mix('css/app-dark.css') }}">
     @else
-        <link rel="stylesheet" href="{{ mix('/css/app.css') }}">
+        <link rel="stylesheet" href="{{ mix('css/app.css') }}">
     @endif
 
     @stack('head')

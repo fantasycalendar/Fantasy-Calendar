@@ -41,7 +41,6 @@ class CalendarController extends Controller
         $calendarSimplePagination = $calendars->simplePaginate(10);
         $calendars = $calendars->paginate(10);
 
-
         $changelog = Markdown::convertToHtml(Storage::disk('base')->get('public/changelog.md'));
 
         return view('calendar.list', [

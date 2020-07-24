@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 use App\Observers\CalendarObserver;
@@ -26,6 +27,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        URL::forceRootUrl(config('app.url'));
+
+        \Illuminate\Pagination\AbstractPaginator::currentPathResolver(function () {
+            /** @var \Illuminate\Routing\UrlGenerator $url */
+            $url = app('url');
+            return $url->current();
+        });
+
         Calendar::observe(CalendarObserver::class);
     }
 }
