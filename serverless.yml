@@ -96,14 +96,18 @@ functions:
       layers:
         - ${bref:layer.php-73}
       events:
-        # Declares that our worker is triggered by jobs in SQS
         -   sqs:
               arn:
                 Fn::GetAtt: [ AlertQueue, Arn ]
-              # If you create the queue manually, the line above could be:
-              # arn: 'arn:aws:sqs:us-east-1:1234567890:my_sqs_queue'
-              # Only 1 item at a time to simplify error handling
               batchSize: 1
+    hostforward:
+      handler: forwarder.handler
+      runtime: nodejs12.x
+      memorySize: 128
+      events:
+        -   cloudFront:
+              eventType: origin-request
+              origin: Website
 
 plugins:
     # We need to include the Bref plugin
@@ -156,7 +160,7 @@ resources:
       Type: AWS::SQS::Queue
       Properties:
         MessageRetentionPeriod: 1209600 # maximum retention: 14 days
-    WebsiteCDN:
+    CloudFrontDistribution:
       Type: AWS::CloudFront::Distribution
       Properties:
         DistributionConfig:
