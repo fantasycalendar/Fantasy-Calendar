@@ -629,6 +629,8 @@ function get_current_era(static_data, epoch){
 
 		var era = static_data.eras[i];
 
+		era.date.epoch = evaluate_calendar_start(static_data, era.date.year, era.date.timespans, era.date.day);
+
 		if(!era.settings.starting_era && epoch >= era.date.epoch){
 
 			current_era = i;
