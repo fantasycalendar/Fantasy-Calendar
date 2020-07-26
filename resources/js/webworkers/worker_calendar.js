@@ -593,9 +593,9 @@ var calendar_builder = {
 
 				for(day = 0, timespan_day = 1; day <= current_timespan.length; day++){
 
-					if(this.static_data.eras[current_era+1] && epoch >= this.static_data.eras[current_era+1].date.epoch){
+					if(this.static_data.eras.length > 0 && this.static_data.eras[current_era+1] && epoch >= this.static_data.eras[current_era+1].date.epoch){
 						current_era++;
-						if(this.static_data.eras[current_era].settings.restart){
+						if(current_era != -1 && this.static_data.eras[current_era].settings.restart){
 							era_year = 0;
 						}
 					}
@@ -787,7 +787,7 @@ var calendar_builder = {
 				}
 			}
 			if(year_index != convert_year(this.static_data, this.dynamic_data.year)) year_day = 1;
-			if(!this.static_data.eras[current_era].settings.restart){
+			if(this.static_data.eras.length != 0 && current_era != -1 && !this.static_data.eras.length != 0 && current_era != -1 &&this.static_data.eras.length != 0 && current_era != -1 &&  this.static_data.eras[current_era].settings.restart){
 				era_year++;
 			}
 
@@ -829,9 +829,9 @@ var calendar_builder = {
 
 				for(day = 0, timespan_day = 1; day <= current_timespan.length; day++){
 
-					if(this.static_data.eras[current_era+1] && epoch >= this.static_data.eras[current_era+1].date.epoch){
+					if(this.static_data.eras.length > 0 && this.static_data.eras[current_era+1] && epoch >= this.static_data.eras[current_era+1].date.epoch){
 						current_era++;
-						if(this.static_data.eras[current_era].settings.restart){
+						if(current_era != -1 && this.static_data.eras[current_era].settings.restart){
 							era_year = 0;
 						}
 					}
@@ -1022,7 +1022,7 @@ var calendar_builder = {
 				}
 			}
 			if(year_index != convert_year(this.static_data, this.dynamic_data.year)) year_day = 1;
-			if(!this.static_data.eras[current_era].settings.restart){
+			if(this.static_data.eras.length != 0 && current_era != -1 && !this.static_data.eras[current_era].settings.restart){
 				era_year++;
 			}
 
@@ -1551,7 +1551,7 @@ var calendar_builder = {
 			}
 
 			if(year_index !== convert_year(this.static_data, this.dynamic_data.year)){
-				if(!this.static_data.eras[current_era].settings.restart){
+				if(this.static_data.eras.length > 0 && current_era != -1 && !this.static_data.eras[current_era].settings.restart){
 					era_year++;
 				}
 				year_day = 1;
@@ -1589,9 +1589,9 @@ var calendar_builder = {
 
 			for(day = 0, timespan_day = 1; day <= current_timespan.length; day++){
 
-				if(this.static_data.eras[current_era+1] && epoch >= this.static_data.eras[current_era+1].date.epoch){
+				if(this.static_data.eras.length > 0 && this.static_data.eras[current_era+1] && epoch >= this.static_data.eras[current_era+1].date.epoch){
 					current_era++;
-					if(this.static_data.eras[current_era].settings.restart){
+					if(current_era != -1 && this.static_data.eras[current_era].settings.restart){
 						era_year = 0;
 						calendar_era_year = 0;
 					}
@@ -1843,9 +1843,9 @@ var calendar_builder = {
 
 					moon_data = [];
 
-					if(this.static_data.eras[current_era+1] && epoch >= this.static_data.eras[current_era+1].date.epoch){
+					if(this.static_data.eras.length > 0 && this.static_data.eras[current_era+1] && epoch >= this.static_data.eras[current_era+1].date.epoch){
 						current_era++;
-						if(this.static_data.eras[current_era].settings.restart){
+						if(current_era != -1 && this.static_data.eras[current_era].settings.restart){
 							era_year = 0;
 						}
 					}
@@ -2035,7 +2035,7 @@ var calendar_builder = {
 				}
 			}
 			year_day = 1;
-			if(!this.static_data.eras[current_era].settings.restart){
+			if(this.static_data.eras.length > 0 && current_era != -1 && !this.static_data.eras[current_era].settings.restart){
 				era_year++;
 			}
 		}
