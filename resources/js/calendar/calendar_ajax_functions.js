@@ -164,6 +164,8 @@ function do_update_all(calendar_hash, output){
 				prev_event_categories = clone(event_categories);
 			}
 
+			console.log(static_same)
+
 			calendar_saved();
 
 			update_children_dynamic_data(function(){
@@ -431,6 +433,7 @@ function update_children_dynamic_data(output){
 				child_dynamic_data.epoch = converted_date.epoch;
 				child_dynamic_data.hour = converted_date.hour;
 				child_dynamic_data.minute = converted_date.minute;
+				child_dynamic_data.current_era = get_current_era(child_static_data, child_dynamic_data.epoch);
 
 				new_dynamic_data[child_hash] = child_dynamic_data;
 
