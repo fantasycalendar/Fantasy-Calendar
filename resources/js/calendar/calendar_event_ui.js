@@ -83,7 +83,9 @@ var edit_event_ui = {
 
 		});
 
-		$(document).on('click', '.btn_create_event', function(){
+		$(document).on('click', 'body.page-focused .btn_create_event', function(){
+
+			console.log($('body').hasClass('page-focused'));
 
 			var epoch = $(this).attr('epoch')|0;
 
