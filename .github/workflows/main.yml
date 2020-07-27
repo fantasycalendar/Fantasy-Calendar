@@ -8,9 +8,12 @@ jobs:
     name: deploy
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@main
-    - name: npm install
-      uses: actions/npm@main
+    - uses: actions/setup-node@main
+      with:
+        node-version: '14'
+    - run: npm install
+    - name: Composer install
+      uses: docker://composer:latest
       with:
         args: install
     - name: serverless deploy
