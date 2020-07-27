@@ -551,12 +551,8 @@ var calendar_builder = {
 				current_era = i;
 			}
 		}
-
-		var exactly = epoch == this.static_data.eras[current_era].date.epoch;
-
-		var after_but_year = first_eval_year == convert_year(this.static_data, this.static_data.eras[current_era].date.year) && epoch >= this.static_data.eras[current_era].date.epoch;
-
-		if(this.static_data.eras[current_era] && (exactly || after_but_year) && this.static_data.eras[current_era].settings.restart){
+		
+		if(this.static_data.eras[current_era] && this.static_data.eras[current_era].settings.restart){
 			era_year = 0;
 		}
 
@@ -1327,15 +1323,11 @@ var calendar_builder = {
 		if(this.static_data.eras[0] && current_era == -1 && this.static_data.eras[0].settings.starting_era){
 			current_era = 0;
 		}
-
-		var exactly = epoch == this.static_data.eras[current_era].date.epoch;
-
-		var after_but_year = first_eval_year == convert_year(this.static_data, this.static_data.eras[current_era].date.year) && epoch >= this.static_data.eras[current_era].date.epoch;
-
-		if(this.static_data.eras[current_era] && (exactly || after_but_year) && this.static_data.eras[current_era].settings.restart){
+		
+		if(this.static_data.eras[current_era] && epoch == this.static_data.eras[current_era].date.epoch && this.static_data.eras[current_era].settings.restart){
 			era_year = 0;
 		}
-
+		
 		year_day = 1+year_start_data.epoch-evaluate_calendar_start(this.static_data, first_eval_year).epoch;
 
 		week_day = year_start_data.week_day;
