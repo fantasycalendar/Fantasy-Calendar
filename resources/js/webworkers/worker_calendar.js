@@ -552,7 +552,11 @@ var calendar_builder = {
 			}
 		}
 
-		if(this.static_data.eras[current_era] && epoch == this.static_data.eras[current_era].date.epoch && this.static_data.eras[current_era].settings.restart){
+		var exactly = epoch == this.static_data.eras[current_era].date.epoch;
+
+		var after_but_year = first_eval_year == convert_year(this.static_data, this.static_data.eras[current_era].date.year) && epoch >= this.static_data.eras[current_era].date.epoch;
+
+		if(this.static_data.eras[current_era] && (exactly || after_but_year) && this.static_data.eras[current_era].settings.restart){
 			era_year = 0;
 		}
 
@@ -787,8 +791,14 @@ var calendar_builder = {
 				}
 			}
 			if(year_index != convert_year(this.static_data, this.dynamic_data.year)) year_day = 1;
-			if(this.static_data.eras.length != 0 && current_era != -1 && !this.static_data.eras.length != 0 && current_era != -1 &&this.static_data.eras.length != 0 && current_era != -1 &&  this.static_data.eras[current_era].settings.restart){
-				era_year++;
+			if(this.static_data.eras.length != 0 && current_era != -1){
+				if(this.static_data.eras[current_era].settings.ends_year){
+					if(!this.static_data.eras[current_era].settings.restart){
+						era_year++;
+					}
+				}else{
+					era_year++;
+				}
 			}
 
 			var climate_generator = new Climate(this.data.epochs, this.static_data, this.dynamic_data, year_start_epoch, epoch);
@@ -1022,8 +1032,14 @@ var calendar_builder = {
 				}
 			}
 			if(year_index != convert_year(this.static_data, this.dynamic_data.year)) year_day = 1;
-			if(this.static_data.eras.length != 0 && current_era != -1 && !this.static_data.eras[current_era].settings.restart){
-				era_year++;
+			if(this.static_data.eras.length != 0 && current_era != -1){
+				if(this.static_data.eras[current_era].settings.ends_year){
+					if(!this.static_data.eras[current_era].settings.restart){
+						era_year++;
+					}
+				}else{
+					era_year++;
+				}
 			}
 
 			var climate_generator = new Climate(this.data.epochs, this.static_data, this.dynamic_data, year_start_epoch, epoch);
@@ -1292,7 +1308,6 @@ var calendar_builder = {
 			first_eval_month = parseInt(Object.keys(this.calendar_list.timespans_to_build)[0]);
 
 		}
-
 		year_start_data = evaluate_calendar_start(this.static_data, first_eval_year, first_eval_month, undefined, true);
 		era_year = year_start_data.era_year;
 		count_timespans = year_start_data.count_timespans;
@@ -1313,7 +1328,11 @@ var calendar_builder = {
 			current_era = 0;
 		}
 
-		if(this.static_data.eras[current_era] && epoch == this.static_data.eras[current_era].date.epoch && this.static_data.eras[current_era].settings.restart){
+		var exactly = epoch == this.static_data.eras[current_era].date.epoch;
+
+		var after_but_year = first_eval_year == convert_year(this.static_data, this.static_data.eras[current_era].date.year) && epoch >= this.static_data.eras[current_era].date.epoch;
+
+		if(this.static_data.eras[current_era] && (exactly || after_but_year) && this.static_data.eras[current_era].settings.restart){
 			era_year = 0;
 		}
 
@@ -1551,8 +1570,14 @@ var calendar_builder = {
 			}
 
 			if(year_index !== convert_year(this.static_data, this.dynamic_data.year)){
-				if(this.static_data.eras.length > 0 && current_era != -1 && !this.static_data.eras[current_era].settings.restart){
-					era_year++;
+				if(this.static_data.eras.length > 0 && current_era != -1){				
+					if(this.static_data.eras[current_era].settings.ends_year){
+						if(!this.static_data.eras[current_era].settings.restart){
+							era_year++;
+						}
+					}else{
+						era_year++;
+					}
 				}
 				year_day = 1;
 			}
@@ -2035,8 +2060,14 @@ var calendar_builder = {
 				}
 			}
 			year_day = 1;
-			if(this.static_data.eras.length > 0 && current_era != -1 && !this.static_data.eras[current_era].settings.restart){
-				era_year++;
+			if(this.static_data.eras.length > 0 && current_era != -1){
+				if(this.static_data.eras[current_era].settings.ends_year){
+					if(!this.static_data.eras[current_era].settings.restart){
+						era_year++;
+					}
+				}else{
+					era_year++;
+				}
 			}
 		}
 

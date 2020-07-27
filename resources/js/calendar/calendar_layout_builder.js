@@ -214,10 +214,10 @@ var eras = {
 					year_text = Mustache.render(
 						format,
 						{
-							"year": unconvert_year(static_data, epoch_data.year),
-							"nth_year": ordinal_suffix_of(unconvert_year(static_data, epoch_data.year)),
-							"abs_year": Math.abs(unconvert_year(static_data, epoch_data.year)),
-							"abs_nth_year": ordinal_suffix_of(Math.abs(unconvert_year(static_data, epoch_data.year))),
+							"year": epoch_data.year,
+							"nth_year": ordinal_suffix_of(epoch_data.year),
+							"abs_year": Math.abs(epoch_data.year),
+							"abs_nth_year": ordinal_suffix_of(Math.abs(epoch_data.year)),
 							"era_year": epoch_data.era_year,
 							"era_nth_year": ordinal_suffix_of(epoch_data.era_year),
 							"era_name": era.name
@@ -237,10 +237,10 @@ var eras = {
 					year_text = Mustache.render(
 						format,
 						{
-							"year": unconvert_year(static_data, epoch_data.year),
-							"nth_year": ordinal_suffix_of(unconvert_year(static_data, epoch_data.year)),
-							"abs_year": Math.abs(unconvert_year(static_data, epoch_data.year)),
-							"abs_nth_year": ordinal_suffix_of(Math.abs(unconvert_year(static_data, epoch_data.year))),
+							"year": epoch_data.year,
+							"nth_year": ordinal_suffix_of(epoch_data.year),
+							"abs_year": Math.abs(epoch_data.year),
+							"abs_nth_year": ordinal_suffix_of(Math.abs(epoch_data.year)),
 							"era_year": epoch_data.era_year,
 							"era_nth_year": ordinal_suffix_of(epoch_data.era_year),
 							"era_name": era.name
@@ -260,10 +260,10 @@ var eras = {
 			year_text = Mustache.render(
 				format,
 				{
-					"year": unconvert_year(static_data, epoch_data.year),
-					"nth_year": ordinal_suffix_of(unconvert_year(static_data, epoch_data.year)),
-					"abs_year": Math.abs(unconvert_year(static_data, epoch_data.year)),
-					"abs_nth_year": ordinal_suffix_of(Math.abs(unconvert_year(static_data, epoch_data.year))),
+					"year": epoch_data.year,
+					"nth_year": ordinal_suffix_of(epoch_data.year),
+					"abs_year": Math.abs(epoch_data.year),
+					"abs_nth_year": ordinal_suffix_of(Math.abs(epoch_data.year)),
 					"era_year": epoch_data.era_year,
 					"era_nth_year": ordinal_suffix_of(epoch_data.era_year)
 				}
