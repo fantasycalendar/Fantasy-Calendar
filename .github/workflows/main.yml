@@ -12,6 +12,10 @@ jobs:
     - uses: actions/setup-node@main
       with:
         node-version: '14'
+    - name: Install prestissimo
+      uses: docker://composer:latest
+      with:
+        args: global require hirak/prestissimo
     - name: Composer install
       uses: docker://composer:latest
       with:
@@ -29,16 +33,16 @@ jobs:
         EOF
     - name: Install NPM dependencies
       run: npm install
-    - name: Install NPM dependencies
+    - name: Build production assets
       run: npm run production
-    - name: Copy files to the test website with the AWS CLI
+    - name: Copy assets into S3
       run: |
-        aws s3 sync ./public s3://fantasy-calendar
-    - name: Deploy Serverless
+        aws s3 sync ./public s3://fantasy-calendar/
+    - name: Deploy web function
       run: npx serverless deploy -f web
-    - name: Deploy Serverless
+    - name: Deploy artisan function
       run: npx serverless deploy -f artisan
-    - name: Deploy Serverless
+    - name: Deploy queue worker
       run: npx serverless deploy -f worker
     - name: Actions Status Discord
       uses: sarisia/actions-status-discord@v1.5.2
