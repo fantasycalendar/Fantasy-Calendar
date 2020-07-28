@@ -16,10 +16,8 @@ jobs:
       uses: docker://composer:latest
       with:
         args: install
-    - name: Install Serverless Framework
-      run: npm install -g serverless
     - name: Serverless AWS authentication
-      run: serverless config credentials --provider aws --key ${{ secrets.AWS_ACCESS_KEY_ID }} --secret ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      run: npx serverless config credentials --provider aws --key ${{ secrets.AWS_ACCESS_KEY_ID }} --secret ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     - name: Create env file
       run: |
         cat > .env << EOF
@@ -28,4 +26,4 @@ jobs:
     - name: Install NPM dependencies
       run: npm install
     - name: Deploy Serverless
-      run: serverless deploy
+      run: npx serverless serverless deploy
