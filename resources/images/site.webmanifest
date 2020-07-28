@@ -1,19 +1,20 @@
 {
-    "name": "",
-    "short_name": "",
+    "name": "Fantasy Calendar",
+    "short_name": "Fantasy Calendar",
     "icons": [
         {
-            "src": "/android-chrome-192x192.png",
+            "src": "/resources/android-chrome-192x192.png",
             "sizes": "192x192",
             "type": "image/png"
         },
         {
-            "src": "/android-chrome-256x256.png",
+            "src": "/resources/android-chrome-256x256.png",
             "sizes": "256x256",
             "type": "image/png"
         }
     ],
-    "theme_color": "#ffffff",
-    "background_color": "#ffffff",
+    "theme_color": "#2f855a",
+    "background_color": "#2f855a",
+    "start_url": "https://beta.fantasy-calendar.com/calendars",
     "display": "standalone"
 }
