@@ -59,6 +59,8 @@
     "prefer-stable": true,
     "scripts": {
         "pre-install-cmd": [
+            "@php -r \"file_exists('storage') || mkdir('storage');\"",
+            "@php -r \"file_exists('storage/framework') || mkdir('storage/framework');\"",
             "@php -r \"file_exists('storage/framework/cache') || mkdir('storage/framework/cache');\"",
             "@php -r \"file_exists('storage/framework/sessions') || mkdir('storage/framework/sessions');\"",
             "@php -r \"file_exists('storage/framework/views') || mkdir('storage/framework/views');\""
