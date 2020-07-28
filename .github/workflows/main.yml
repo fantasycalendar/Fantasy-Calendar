@@ -29,8 +29,21 @@ jobs:
         EOF
     - name: Install NPM dependencies
       run: npm install
+    - name: Install NPM dependencies
+      run: npm run production
     - name: Copy files to the test website with the AWS CLI
       run: |
         aws s3 sync ./public s3://fantasy-calendar
     - name: Deploy Serverless
-      run: npx serverless deploy
+      run: npx serverless deploy -f web
+    - name: Deploy Serverless
+      run: npx serverless deploy -f artisan
+    - name: Deploy Serverless
+      run: npx serverless deploy -f worker
+    - name: Actions Status Discord
+      uses: sarisia/actions-status-discord@v1.5.2
+      with:
+        webhook: ${{ secrets.DISCORD_FC_BETA_WEBHOOK }}
+        description: "A new version of the beta has been deployed"
+        username: "Github"
+        avatar_url: "https://beta.fantasy-calendar.com//resources/header_logo.png"
