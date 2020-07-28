@@ -8,6 +8,7 @@ provider:
     stage: ${opt:stage, 'dev'}
     runtime: provided
     environment:
+      APP_KEY: ${ssm:/fantasy-calendar/app_key}
       AWS_BUCKET: # environment variable for Laravel
         Ref: Assets
       SQS_QUEUE:
