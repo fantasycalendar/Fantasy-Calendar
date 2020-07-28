@@ -47,3 +47,5 @@ jobs:
         description: "A new version of the beta has been deployed"
         username: "Github"
         avatar_url: "https://beta.fantasy-calendar.com//resources/header_logo.png"
+        title: "Deploy success"
+        nodetail: true
