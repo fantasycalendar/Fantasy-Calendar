@@ -12,14 +12,10 @@ jobs:
     - uses: actions/setup-node@main
       with:
         node-version: '14'
-    - name: Install prestissimo
-      uses: docker://composer:latest
+    - name: Run composer
+      uses: nick-zh/composer-php@master
       with:
-        args: global require hirak/prestissimo
-    - name: Composer install
-      uses: docker://composer:latest
-      with:
-        args: install
+        action: 'install -oa'
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
