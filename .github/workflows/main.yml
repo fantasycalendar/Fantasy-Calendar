@@ -33,7 +33,4 @@ jobs:
       run: |
         aws s3 sync ./public s3://fantasy-calendar
     - name: Deploy Serverless
-      run: npx serverless serverless deploy
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      run: npx serverless deploy
