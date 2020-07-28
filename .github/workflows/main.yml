@@ -12,6 +12,10 @@ jobs:
     - uses: actions/setup-node@main
       with:
         node-version: '14'
+    - name: Composer install
+      uses: docker://composer:latest
+      with:
+        args: install
     - name: Install Serverless Framework
       run: npm install -g serverless
     - name: Serverless AWS authentication
@@ -23,9 +27,5 @@ jobs:
         EOF
     - name: Install NPM dependencies
       run: npm install
-    - name: Composer install
-      uses: docker://composer:latest
-      with:
-        args: install
     - name: Deploy Serverless
       run: serverless deploy
