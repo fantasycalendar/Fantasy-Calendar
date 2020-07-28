@@ -17,13 +17,15 @@
         Welcome to Fantasy Calendar
     </title>
 
-    <link rel="apple-touch-icon" sizes="180x180" href="/resources/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/resources/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/resources/favicon-16x16.png">
-    <link rel="manifest" href="/resources/site.webmanifest">
-    <link rel="mask-icon" href="/resources/safari-pinned-tab.svg" color="#5bbad5">
-    <meta name="msapplication-TileColor" content="#da532c">
-    <meta name="theme-color" content="#ffffff">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('/resources/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('/resources/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('/resources/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ asset('/resources/site.webmanifest') }}">
+    <link rel="mask-icon" href="{{ asset('/resources/safari-pinned-tab.svg') }}" color="#2f855a">
+    <link rel="shortcut icon" href="{{ asset('/resources/favicon.ico') }}">
+    <meta name="msapplication-TileColor" content="#2f855a">
+    <meta name="msapplication-config" content="{{ asset("/resources/browserconfig.xml") }}">
+    <meta name="theme-color" content="#2f855a">
 
     <script src="{{ mix('js/app.js') }}"></script>
 
