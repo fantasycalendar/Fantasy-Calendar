@@ -23,9 +23,12 @@
     <link rel="manifest" href="{{ asset('/resources/site.webmanifest') }}">
     <link rel="mask-icon" href="{{ asset('/resources/safari-pinned-tab.svg') }}" color="#2f855a">
     <link rel="shortcut icon" href="{{ asset('/resources/favicon.ico') }}">
+    <meta name="apple-mobile-web-app-title" content="Fantasy Calendar">
+    <meta name="application-name" content="Fantasy Calendar">
     <meta name="msapplication-TileColor" content="#2f855a">
     <meta name="msapplication-config" content="{{ asset("/resources/browserconfig.xml") }}">
     <meta name="theme-color" content="#2f855a">
+
 
     @if(getenv('APP_ENV') == "production")
         <script src="//d2wy8f7a9ursnm.cloudfront.net/v6/bugsnag.min.js"></script>

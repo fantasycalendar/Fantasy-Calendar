@@ -8,13 +8,12 @@
             "type": "image/png"
         },
         {
-            "src": "/resources/android-chrome-256x256.png",
-            "sizes": "256x256",
+            "src": "/resources/android-chrome-512x512.png",
+            "sizes": "512x512",
             "type": "image/png"
         }
     ],
     "theme_color": "#2f855a",
     "background_color": "#2f855a",
-    "start_url": "https://beta.fantasy-calendar.com/calendars",
     "display": "standalone"
 }
