@@ -245,36 +245,36 @@
 	@endif
 
     @if(Auth::check())
-    @if($calendar->children->count() > 0 && $calendar->parent != null)
-    <!---------------------------------------------->
-    <!------------------ LINKING ------------------->
-    <!---------------------------------------------->
-    <div class='wrap-collapsible card'>
-        <input id="collapsible_linking" class="toggle" type="checkbox" checked disabled>
-        <label for="collapsible_linking" class="lbl-toggle card-header lbl-text">Calendar Linking <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Calendar Linking' href='https://wiki.fantasy-calendar.com/index.php?title=Calendar_Linking' class="wiki protip"><i class="icon-question-sign"></i></a></label>
-        <div class="collapsible-content card-body">
+        @if($calendar->children->count() > 0 || $calendar->parent != null)
+        <!---------------------------------------------->
+        <!------------------ LINKING ------------------->
+        <!---------------------------------------------->
+        <div class='wrap-collapsible card'>
+            <input id="collapsible_linking" class="toggle" type="checkbox" checked disabled>
+            <label for="collapsible_linking" class="lbl-toggle card-header lbl-text">Calendar Linking <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Calendar Linking' href='https://wiki.fantasy-calendar.com/index.php?title=Calendar_Linking' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+            <div class="collapsible-content card-body">
 
-            @if($calendar->children->count() > 0)
+                @if($calendar->children->count() > 0)
 
-                Calendar links:<br>
+                    Calendar links:<br>
 
-                @foreach($calendar->children as $child)
+                    @foreach($calendar->children as $child)
 
-                    <a href='/calendars/{{ $child->hash }}' target="_blank">{{ $child->name }}</a><br>
+                        <a href='/calendars/{{ $child->hash }}' target="_blank">{{ $child->name }}</a><br>
 
-                @endforeach
+                    @endforeach
 
-            @endif
+                @endif
 
-            @if($calendar->parent != null)
+                @if($calendar->parent != null)
 
-                Parent Calendar: <a href='/calendars/{{ $calendar->parent->hash }}' target="_blank">{{ $calendar->parent->name }}</a>
+                    Parent Calendar: <a href='/calendars/{{ $calendar->parent->hash }}' target="_blank">{{ $calendar->parent->name }}</a>
 
-            @endif
+                @endif
 
+            </div>
         </div>
-    </div>
-	@endif
+        @endif
 	@endif
 
 </form>
