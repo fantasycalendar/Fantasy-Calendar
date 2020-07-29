@@ -4,7 +4,7 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,200&display=swap" rel="stylesheet">
     <style>
         section.jumbotron {
-            background-image: linear-gradient(to right, rgba(0, 0, 0, 0.42), rgba(0, 0, 0, 0.42)), url({{ asset('resources/jumbotron_bg.jpg') }});
+            background-image: linear-gradient(to right, hsl(150 48% 35% / 0.2), hsl(150 48% 35% / 0.2)), url({{ asset('resources/jumbotron_bg.jpg') }}), linear-gradient(to right, hsl(150 48% 25% / 1), hsl(150 48% 25% / 1));
             background-size: cover;
             background-position: center center;
             min-height: 50vh;
