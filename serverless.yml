@@ -231,6 +231,26 @@ resources:
                   - 'Referer'
               ViewerProtocolPolicy: redirect-to-https
             # Assets will be served under the `/assets/` prefix
+            - PathPattern: 'favicon'
+              TargetOriginId: Assets # the static files on S3
+              AllowedMethods: [GET, HEAD]
+              ForwardedValues:
+                # No need for all that with assets
+                QueryString: 'false'
+                Cookies:
+                  Forward: none
+              ViewerProtocolPolicy: redirect-to-https
+              Compress: true # Serve files with gzip for browsers that support it (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/ServingCompressedFiles.html)
+            - PathPattern: 'robots.txt'
+              TargetOriginId: Assets # the static files on S3
+              AllowedMethods: [GET, HEAD]
+              ForwardedValues:
+                # No need for all that with assets
+                QueryString: 'false'
+                Cookies:
+                  Forward: none
+              ViewerProtocolPolicy: redirect-to-https
+              Compress: true # Serve files with gzip for browsers that support it (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/ServingCompressedFiles.html)
             - PathPattern: 'css/*'
               TargetOriginId: Assets # the static files on S3
               AllowedMethods: [GET, HEAD]
