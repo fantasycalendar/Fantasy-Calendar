@@ -1532,7 +1532,7 @@ var date_converter = {
 
 		}
 
-		this.year = convert_year(this.child_static_data, this.year);
+		this.year = unconvert_year(this.child_static_data, this.year);
 
 		return {
 			"year": this.year,
