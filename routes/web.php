@@ -13,18 +13,6 @@ use Illuminate\Http\Request;
 |
 */
 
-route::get('/test/{hash?}', function($hash = false){
-    if($hash) {
-        if(\App\Calendar::active()->hash($hash)) {
-            \App\Calendar::active()->hash($hash)->delete();
-        }
-
-        return \App\Jobs\ConvertCalendarTo2Point0::dispatchNow(\App\OldCalendar::where('hash', $hash)->first());
-    }
-
-    ddd(\App\Jobs\ConvertCalendarTo2Point0::dispatchNow(\App\OldCalendar::first()));
-});
-
 Route::view('/', 'welcome')->name('home');
 Route::get('/donate', function(){
     return view('pages.donate', [
