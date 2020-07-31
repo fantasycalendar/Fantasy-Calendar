@@ -8,35 +8,36 @@ provider:
     stage: ${opt:stage, 'dev'}
     runtime: provided
     environment:
-      APP_KEY: ${ssm:/fantasy-calendar/app_key}
+      APP_KEY: ${ssm:/${self:custom.ssm.${self:custom.stage}}/app_key}
+      APP_DEBUG: ${self:custom.environment.${self:custom.stage}.APP_DEBUG}
       AWS_BUCKET: # environment variable for Laravel
         Ref: Assets
       SQS_QUEUE:
         Ref: AlertQueue
-      DB_HOST: ${ssm:/fantasy-calendar/db_host}
+      DB_HOST: ${ssm:/${self:custom.ssm.${self:custom.stage}}/db_host}
       DB_PORT: 3306
-      DB_USERNAME: ${ssm:/fantasy-calendar/db_username}
-      DB_PASSWORD: ${ssm:/fantasy-calendar/db_password}
-      DB_DATABASE: ${ssm:/fantasy-calendar/db_name}
+      DB_USERNAME: ${ssm:/${self:custom.ssm.${self:custom.stage}}/db_username}
+      DB_PASSWORD: ${ssm:/${self:custom.ssm.${self:custom.stage}}/db_password}
+      DB_DATABASE: ${ssm:/${self:custom.ssm.${self:custom.stage}}/db_name}
       VIEW_COMPILED_PATH: /tmp/storage/framework/views
       PURIFIER_CACHE_PATH: /tmp/purifier
       FILESYSTEM_DRIVER_PUBLIC: s3
       FILESYSTEM_DRIVER: s3
-      MIX_ASSET_URL: https://lambda.fantasy-calendar.com
-      ASSET_URL: https://lambda.fantasy-calendar.com
-      APP_URL: https://lambda.fantasy-calendar.com/
-      WEBADDRESS: https://lambda.fantasy-calendar.com/
-      COOKIEADDRESS: https://lambda.fantasy-calendar.com/
+      MIX_ASSET_URL: https://${self:custom.alias}
+      ASSET_URL: https://${self:custom.alias}
+      APP_URL: ${self:custom.alias}
+      WEBADDRESS: ${self:custom.alias}
+      COOKIEADDRESS: ${self:custom.alias}
       CACHE_DRIVER: redis
       SESSION_DRIVER: redis
-      REDIS_HOST: ${ssm:/fantasy-calendar/redis_host}
+      REDIS_HOST: ${ssm:/${self:custom.ssm.${self:custom.stage}}/redis_host}
       REDIS_PORT: 6379
       MAIL_DRIVER: smtp
-      MAIL_HOST: ${ssm:/fantasy-calendar/mail_host}
+      MAIL_HOST: ${ssm:/${self:custom.ssm.${self:custom.stage}}/mail_host}
       MAIL_PORT: 587
-      MAIL_USERNAME: ${ssm:/fantasy-calendar/mail_username}
-      MAIL_PASSWORD: ${ssm:/fantasy-calendar/mail_password}
-      MAIL_FROM_ADDRESS: ${ssm:/fantasy-calendar/mail_from}
+      MAIL_USERNAME: ${ssm:/${self:custom.ssm.${self:custom.stage}}/mail_username}
+      MAIL_PASSWORD: ${ssm:/${self:custom.ssm.${self:custom.stage}}/mail_password}
+      MAIL_FROM_ADDRESS: ${ssm:/${self:custom.ssm.${self:custom.stage}}/mail_from}
       MAIL_FROM_NAME: Fantasy Calendar
       MAIL_ENCRYPTION: tls
     iamRoleStatements:
@@ -60,8 +61,27 @@ provider:
           Resource:
             Fn::GetAtt: [ AlertQueue, Arn ]
 
+custom:
+  stage: ${opt:stage, 'dev'}
+  alias: ${self:custom.domain.${self:custom.stage}}
+  domain:
+    prod: 'lambda.fantasy-calendar.com'
+    dev: 'lambda-dev.fantasy-calendar.com'
+  environment:
+    prod:
+      APP_DEBUG: 'false'
+    dev:
+      APP_DEBUG: 'true'
+  ssm:
+    prod: 'fantasy-calendar'
+    dev: 'fantasy-calendar-dev'
+  s3Sync:
+    # A simple configuration for copying static assets
+    - bucketNameKey: AssetsOutputKey
+      localDir: public # required
+      deleteRemoved: true
+
 package:
-    # Directories to exclude from deployment
     exclude:
         - node_modules/**
         - public/storage
@@ -80,8 +100,8 @@ functions:
             -   http: 'ANY /'
             -   http: 'ANY /{proxy+}'
         vpc:
-          securityGroupIds: { 'Fn::Split': [",", "${ssm:/fantasy-calendar/security_group_ids}"] }
-          subnetIds: { 'Fn::Split': [",", "${ssm:/fantasy-calendar/subnet_ids}"] }
+          securityGroupIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/security_group_ids}"] }
+          subnetIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/subnet_ids}"] }
     # This function lets us run artisan commands on lambda
     artisan:
         handler: artisan
@@ -90,8 +110,8 @@ functions:
             - ${bref:layer.php-74} # PHP
             - ${bref:layer.console} # The "console" layer
         vpc:
-          securityGroupIds: { 'Fn::Split': [",", "${ssm:/fantasy-calendar/security_group_ids}"] }
-          subnetIds: { 'Fn::Split': [",", "${ssm:/fantasy-calendar/subnet_ids}"] }
+          securityGroupIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/security_group_ids}"] }
+          subnetIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/subnet_ids}"] }
     worker:
       handler: worker.php
       layers:
@@ -102,8 +122,14 @@ functions:
                 Fn::GetAtt: [ AlertQueue, Arn ]
               batchSize: 1
     hostforward:
-      handler: forwarder.handler
+      handler: setup/lambda/${opt:stage, 'dev'}/forwarder.handler
       runtime: nodejs12.x
+      package:
+        individually: true
+        exclude:
+          - "./**"
+        include:
+          - setup/lambda/${opt:stage, 'dev'}/forwarder.js
       memorySize: 128
       events:
         -   cloudFront:
@@ -113,6 +139,7 @@ functions:
 plugins:
     # We need to include the Bref plugin
     - ./vendor/bref/bref
+    - serverless-s3-sync
 
 resources:
   Resources:
@@ -120,7 +147,7 @@ resources:
     Assets:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: fantasy-calendar
+        BucketName: fantasy-calendar-${opt:stage, 'dev'}
         # Set the CORS policy
         CorsConfiguration:
           CorsRules:
@@ -231,7 +258,7 @@ resources:
                   - 'Referer'
               ViewerProtocolPolicy: redirect-to-https
             # Assets will be served under the `/assets/` prefix
-            - PathPattern: 'favicon'
+            - PathPattern: 'favicon.ico'
               TargetOriginId: Assets # the static files on S3
               AllowedMethods: [GET, HEAD]
               ForwardedValues:
@@ -328,10 +355,24 @@ resources:
             - ErrorCode: 504
               ErrorCachingMinTTL: 0
           Aliases:
-            - lambda.fantasy-calendar.com # e.g. example.com. (This is your application's domain, not your assets' domain)
+            - ${self:custom.alias}
           ViewerCertificate:
             # ARN of the certificate created in ACM
             AcmCertificateArn: arn:aws:acm:us-east-1:187933545528:certificate/ec7b5304-fd5f-421a-b4da-c9fbf9742508
             # See https://docs.aws.amazon.com/fr_fr/cloudfront/latest/APIReference/API_ViewerCertificate.html
             SslSupportMethod: 'sni-only'
             MinimumProtocolVersion: TLSv1.1_2016
+    WebsiteDNSName:
+      Type: AWS::Route53::RecordSetGroup
+      Properties:
+        HostedZoneId: 'Z073956536B27M25YFZT6' # Taken from the AWS Console
+        RecordSets:
+          - Name: ${self:custom.alias}
+            Type: A
+            AliasTarget:
+                HostedZoneId: Z2FDTNDATAQYW2
+                DNSName: !GetAtt [CloudFrontDistribution, DomainName]
+                EvaluateTargetHealth: false
+  Outputs:
+    AssetsOutputKey:
+      Value: !Ref Assets
