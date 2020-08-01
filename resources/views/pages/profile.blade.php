@@ -15,7 +15,7 @@
 
 @section('profile-card')
     <div class="row">
-        <div class="col-12 col-md-4 protip" data-pt-title="Test">
+        <div class="col-12 col-md-4">
             <p><i class="fa fa-calendar"></i> Calendars: {{ $user->calendars->count() }}</p>
         </div>
         <div class="col-12 col-md-8">
