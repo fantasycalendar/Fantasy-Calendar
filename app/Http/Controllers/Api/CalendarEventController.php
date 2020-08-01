@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\EventCategory;
 use App\Http\Resources\Calendar;
 use App\Transformer\CalendarEventTransformer;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -14,9 +16,13 @@ use League\Fractal\Serializer\DataArraySerializer;
 
 class CalendarEventController extends Controller
 {
+    public $manager;
+
     public function __construct() {
         $this->manager = new Manager();
         $this->manager->setSerializer(new DataArraySerializer());
+
+//        $this->authorizeResource(CalendarEvent::class, 'event');
     }
 
     /**
@@ -47,19 +53,15 @@ class CalendarEventController extends Controller
      */
     public function store(Request $request)
     {
-        /* TODO-Alex - Double checking whether the user can add one-time events, or in the case of co-owners, full events */
-        /* One time events have the property of 'date' in event['data']['date'] - if it's an empty array, it's not an one-time */
-        /* Also useful to perhaps check what event category it's using, so they can't sneakily add events to an illegal category (ie, not user-usable) */
-
-        if(Auth::user()->can('attach-event', Calendar::find($request->input('calendar_id')))) {
-            return ['success' => false, 'message' => 'access denied'];
+        if(auth('api')->user()->can('attach-event', [\App\Calendar::find($request->input('calendar_id')), $request->all()])) {
+            return response()->make(['success' => false, 'message' => 'Access denied']);
         }
 
         $event = CalendarEvent::create(json_decode($request->getContent(), true));
 
         $resource = new Item($event, new CalendarEventTransformer());
 
-        return $this->manager->createData($resource)->toArray();
+        return response()->make($this->manager->createData($resource)->toArray());
     }
 
     /**

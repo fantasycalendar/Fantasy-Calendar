@@ -33,9 +33,9 @@ class CalendarPolicy
         return $calendar->setting('allow_view')
             || ($user
             && (
-                $user->can('update', $calendar)
+                $calendar->users->contains($user)
+                || $user->can('update', $calendar)
                 || $user->can('attach-event', $calendar)
-                || ($calendar->users->contains($user) && $calendar->users->find($user->id)->pivot->user_role == 'observer')
             ));
     }
 

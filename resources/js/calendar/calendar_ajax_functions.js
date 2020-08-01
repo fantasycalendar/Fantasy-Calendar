@@ -356,9 +356,8 @@ function submit_new_event(event_id){
 	$.ajax({
 		url:window.apiurl+"/event",
 		type: "post",
-		contentType: 'json',
-        processData: false,
-		data: JSON.stringify(new_event),
+		dataType: 'json',
+		data: new_event,
 		success: function( result ){
 			events[event_id] = result['data'];
 		},
