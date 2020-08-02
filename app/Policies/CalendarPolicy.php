@@ -30,13 +30,20 @@ class CalendarPolicy
      */
     public function view(?User $user, Calendar $calendar)
     {
+        $user = $user ?? auth('api')->user() ?? null;
+
         return $calendar->setting('allow_view')
-            || ($user
-            && (
-                $calendar->users->contains($user)
-                || $user->can('update', $calendar)
-                || $user->can('attach-event', $calendar)
-            ));
+            || (
+                $user
+
+                && (
+                    $user->isAdmin()
+
+                    || $user->is($calendar->user)
+
+                    || $calendar->users->contains($user)
+                )
+            );
     }
 
     /**

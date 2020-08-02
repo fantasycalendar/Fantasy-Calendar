@@ -55,6 +55,8 @@ class EventPolicy
     {
         return (
             $calendarEvent->calendar->user->is($user)
+
+            || ($calendarEvent->calendar->users->contains($user) && $calendarEvent->calendar->users->find($user)->pivot->user_role == 'co-owner')
         );
     }
 

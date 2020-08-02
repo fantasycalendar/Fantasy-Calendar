@@ -332,7 +332,7 @@ function add_calendar_user(email, output){
             }
 
             output(success, text);
-            
+
             console.log(result);
         },
         error: function (log) {
@@ -439,7 +439,7 @@ function submit_edit_event(event_id){
 	edit_event.calendar_id = calendar_id;
 
 	$.ajax({
-		url:window.apiurl+"/event/"+event.id,
+		url:window.apiurl+"/event/"+event_id,
 		type: "post",
 		dataType: 'json',
 		data: edit_event,

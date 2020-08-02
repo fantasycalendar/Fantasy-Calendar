@@ -60,7 +60,6 @@
                             </a>
                         </div>
                     </div>
-                @endcan
 
 			<div class='date_control container' id='date_inputs'>
 
@@ -136,7 +135,7 @@
                     </div>
                 </div>
 			</div>
-
+                @endcan
 			@endif
 
 

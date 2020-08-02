@@ -53,7 +53,7 @@ class CalendarEventController extends Controller
      */
     public function store(Request $request)
     {
-        if(auth('api')->user()->can('attach-event', [\App\Calendar::find($request->input('calendar_id')), $request->all()])) {
+        if(auth('api')->user()->can('attach-event', $request->all())) {
             return response()->make(['success' => false, 'message' => 'Access denied']);
         }
 
@@ -95,8 +95,15 @@ class CalendarEventController extends Controller
      */
     public function update(Request $request, $id)
     {
-        /* TODO-Alex - Double checking whether the user can edit this event - either is the owner of the event, a co-owner, or the owner of the calendar */
-        return CalendarEvent::findOrFail($id)->update($request->all());
+        $event = CalendarEvent::findOrFail($id);
+
+        if(auth('api')->user()->can('update', $event)) {
+            return response()->json(['error' => true, 'message' => 'Action not authorized.']);
+        }
+
+        dd($request->all());
+
+        return response()->json(['success' => $event->update($request->all()) > 0, 'message' => 'Event updated.']);
     }
 
     /**

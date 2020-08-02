@@ -17,7 +17,7 @@ class CreateCalendarUserRoleTable extends Migration
             $table->id();
             $table->bigInteger('user_id');
             $table->bigInteger('calendar_id');
-            $table->string('user_role')->default('player');
+            $table->string('user_role')->default('observer');
             $table->timestamps();
         });
     }

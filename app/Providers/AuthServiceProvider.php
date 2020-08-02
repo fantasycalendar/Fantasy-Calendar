@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Calendar;
 use App\EventCategory;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -27,41 +29,40 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        Gate::define('attach-event', function($user, $calendar, $event = []) {
-            dd([
-                'userId' => $user->id,
-                'Can Update' => $user->can('update', $calendar),
-                'Worldbuilder' => $calendar->user->paymentLevel() == 'Worldbuilder',
-                'Co-owner' => $calendar->users->contains($user) && $calendar->users->find($user->id)->pivot->user_role == 'co-owner',
-                'Player' => $calendar->users->contains($user) && $calendar->users->find($user->id)->pivot->user_role == 'player',
-                'Dates' => collect($event['data'] ?? [])->has('date'),
-                'CatId' => ($event['event_category_id'] ?? -1 >= 0),
-                'JSON' => EventCategory::find($event['event_category_id'] ?? -1) && EventCategory::find($event['event_category_id'] ?? -1)->setting('player_usable'),
-            ]);
+        Gate::define('attach-event', function($user, $eventData) {
+            $calendar = Calendar::findOrFail($eventData['calendar_id']);
 
             return $user->can('update', $calendar)
 
                 || ($calendar->user->paymentLevel() == 'Worldbuilder'
 
-                    && $calendar->users->contains($user) && $calendar->users->find($user->id)->pivot->user_role == 'co-owner'
-                )
+                    && $calendar->users->contains($user) && in_array($calendar->users->find($user->id)->pivot->user_role, ['player', 'co-owner'])
 
-                || ($calendar->user->paymentLevel() == 'Worldbuilder'
+                    && collect($eventData['data'] ?? [])->has('date')
 
-                    && $calendar->users->contains($user) && $calendar->users->find($user->id)->pivot->user_role == 'player'
+                    && ($eventData['event_category_id'] ?? -1 >= 0)
 
-                    && collect($event['data'] ?? [])->has('date')
+                    && EventCategory::find($eventData['event_category_id'])
 
-                    && ($event['event_category_id'] ?? -1 >= 0)
-
-                    && EventCategory::find($event['event_category_id'])
-
-                    && EventCategory::find($event['event_category_id'])->setting('player_usable')
+                    && EventCategory::find($eventData['event_category_id'])->setting('player_usable')
                 );
         });
 
+        Gate::define('add-event', function($user, $calendar) {
+            return $user->can('update', $calendar)
+
+                || ($calendar->user->paymentLevel() == 'Worldbuilder'
+
+                    && $calendar->users->contains($user) && in_array($calendar->users->find($user->id)->pivot->user_role, ['player', 'co-owner'])
+                );
+        });
+
+        Gate::define('add-users', function($user, $calendar) {
+            return $user->is($calendar->user) && $calendar->user->paymentLevel() !== 'Free';
+        });
+
         Gate::define('update-settings', function($user, $calendar) {
-            return $user->can('delete', $calendar);
+            return !empty($calendar) && $user->can('delete', $calendar);
         });
 
         Gate::define('link', function($user, $calendar) {
