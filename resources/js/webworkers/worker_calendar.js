@@ -795,6 +795,8 @@ var calendar_builder = {
 				}else{
 					era_year++;
 				}
+			}else{
+				era_year++;
 			}
 
 			var climate_generator = new Climate(this.data.epochs, this.static_data, this.dynamic_data, year_start_epoch, epoch);
@@ -1036,6 +1038,8 @@ var calendar_builder = {
 				}else{
 					era_year++;
 				}
+			}else{
+				era_year++;
 			}
 
 			var climate_generator = new Climate(this.data.epochs, this.static_data, this.dynamic_data, year_start_epoch, epoch);
@@ -1570,6 +1574,8 @@ var calendar_builder = {
 					}else{
 						era_year++;
 					}
+				}else{
+					era_year++;
 				}
 				year_day = 1;
 			}
@@ -1828,6 +1834,10 @@ var calendar_builder = {
 
 		}
 
+		if(!this.static_data.settings.show_current_month){
+			era_year++;
+		}
+
 		var calendar_end_epoch = epoch;
 		var calendar_first_week_day = first_week_day;
 
@@ -2060,6 +2070,8 @@ var calendar_builder = {
 				}else{
 					era_year++;
 				}
+			}else{
+				era_year++;
 			}
 		}
 
