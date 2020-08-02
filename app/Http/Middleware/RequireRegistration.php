@@ -14,6 +14,10 @@ class RequireRegistration extends Middleware
      */
     protected function redirectTo($request)
     {
+        if($request->has('email')) {
+            $request->session()->put('email', $request->input('email'));
+        }
+
         return route('register');
     }
 }

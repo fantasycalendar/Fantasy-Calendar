@@ -3,12 +3,17 @@
 namespace App\Http\Controllers\Api;
 
 use App\Jobs\CloneCalendar;
+use App\Jobs\InviteUser;
+use App\Notifications\CalendarInvitation;
+use App\Notifications\UnregisteredCalendarInvitation;
 use App\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CalendarCollection;
 
 use App\Calendar;
+use Illuminate\Support\Facades\Notification;
 
 class CalendarController extends Controller
 {
@@ -84,17 +89,29 @@ class CalendarController extends Controller
 
     public function inviteUser(Request $request, $id) {
         $calendar = Calendar::active()->hash($id)->firstOrFail();
+        $email = $request->input('email');
 
-        $user = User::whereEmail($request->input('email'))->first();
 
-        if($calendar->users->contains($user)) {
-            return response()->json(['error' => true, 'message' => 'This calendar already has user "'.$user->email.'"']);
+        if(!auth('api')->user()->can('add-users', $calendar)) {
+            return response()->json(['error' => true, 'message' => 'Action not authorized.'], 403);
         }
 
-        $calendar->users()->attach($user);
-        $calendar->save();
 
-        return $calendar->users;
+        try {
+            $user = User::whereEmail($email)->firstOrFail();
+
+            if($calendar->users->contains($user)) {
+                return response()->json(['error' => true, 'message' => 'This calendar already has user "'.$user->email.'"']);
+            }
+
+            $user->notify(new CalendarInvitation($calendar));
+        } catch (ModelNotFoundException $e) {
+            Notification::route('mail', $email)
+                ->notify(new UnregisteredCalendarInvitation($calendar, $email));
+        }
+
+
+        return response()->json(['error' => false, 'message' => 'Invite sent.']);
     }
 
     public function changeUserRole(Request $request, $id) {

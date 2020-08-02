@@ -14,14 +14,18 @@ class UnregisteredCalendarInvitation extends Notification
 
     private $calendar;
 
+    private $email;
+
     /**
      * Create a new notification instance.
      *
      * @param Calendar $calendar
      */
-    public function __construct(Calendar $calendar)
+    public function __construct(Calendar $calendar, $email)
     {
         $this->calendar = $calendar;
+
+        $this->email = $email;
     }
 
     /**
@@ -44,10 +48,11 @@ class UnregisteredCalendarInvitation extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->greeting("You're invited to collaborate on Fantasy Calendar!")
-                    ->line(sprintf("A user called %s has invited you as a player on their calendar '%s'! Accept below to check it out.", $this->calendar->user->name, $this->calendar->name))
-                    ->action('Register for an Account', route('invite.register', ['calendar' => $this->calendar]))
-                    ->line("Once you're signed up, you'll be given access.");
+                    ->greeting("You're invited to collaborate via Fantasy Calendar!")
+                    ->line(sprintf("A user called %s has invited you as a player on their calendar '%s'!", $this->calendar->user->username, $this->calendar->name))
+                    ->line("Get registered below to check it out.")
+                    ->action('Register for an Account', route('invite.register', ['calendar' => $this->calendar, 'email' => $this->email]))
+                    ->line(sprintf("Once you've gotten signed up, %s will be able to give you more access.", $this->calendar->user->username));
     }
 
     /**
