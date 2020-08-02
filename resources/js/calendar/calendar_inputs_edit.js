@@ -2207,6 +2207,8 @@ function set_up_edit_inputs(){
 	});
 
 	$('#email_input').on('keypress', function (e) {
+        $('#btn_send_invite').prop('disabled', false);
+
 		if(e.which === 13){
 			$('#btn_send_invite').click();
 		}
@@ -2224,32 +2226,22 @@ function set_up_edit_inputs(){
 
 		if(valid_email){
 			add_calendar_user(email, function(success, text){
-				$('.email_text').text(text).parent().toggleClass('hidden', false);
+				$('.email_text').text(text).parent().toggleClass('hidden', text.length === 0);
 				$('#email_input').toggleClass('invalid', !success);
+				$('.email_text').toggleClass('alert-danger', !success);
 				if(success){
 					$('#email_input').val('');
+                    $('#btn_send_invite').prop('disabled', false);
 				}
-				$(this).prop('disabled', false);
 			});
 		}else{
 			$(this).prop('disabled', false);
-			$('.email_text').text(!valid_email ? "This email is invalid!" : "").toggleClass('hidden', valid_email);
+			$('.email_text').text(!valid_email ? "This email is invalid!" : "").parent().toggleClass('hidden', valid_email);
 		}
 
 		setTimeout(() => {
-			$('.email_text').text("").toggleClass('hidden', true);
+			$('.email_text').text("").parent().toggleClass('hidden', true);
 		}, 5000);
-
-	});
-
-	$(document).on('change', '.user_permissions_select', function(){
-
-		var button = $(this).closest('.sortable-container').find('.update_user_permissions');
-
-		var new_value = $(this).val()|0;
-		var curr_value = button.attr('permissions_val')|0;
-
-		button.prop('disabled', new_value == curr_value)
 
 	});
 
@@ -2261,8 +2253,8 @@ function set_up_edit_inputs(){
 
 		button.prop('disabled', true);
 
-		var user_id = button.attr('user_id')|0;
-		var permissions = dropdown.val()|0;
+		var user_id = button.attr('user_id');
+		var permissions = dropdown.val();
 
 		update_calendar_user(user_id, permissions, function(success, text){
 
@@ -2308,6 +2300,8 @@ function set_up_edit_inputs(){
 				var remove_all = result.value == 1;
 
 				remove_calendar_user(user_id, remove_all);
+
+                set_up_user_list();
 
 			}
 		});
@@ -3890,6 +3884,8 @@ function add_link_to_list(parent, key, locked, calendar){
 
 function add_user_to_list(parent, key, data){
 
+    console.log(data);
+
 	var element = [];
 
 	element.push(`<div class='sortable-container list-group-item' index='${key}'>`);
@@ -3917,14 +3913,14 @@ function add_user_to_list(parent, key, data){
 
 			element.push("<div class='row no-gutters mb-1'>");
 				element.push("<div class='col-md'>");
-					element.push("<select class='form-control user_permissions_select'>");
+					element.push("<select class='form-control user_permissions_select' onchange='user_permissions_select(this)'>");
 						element.push(`<option ${data.pivot.user_role == 'observer' ? "selected" : ""} value='observer'>Observer</option>`);
 						element.push(`<option ${data.pivot.user_role == 'player' ? "selected" : ""} value='player'>Player</option>`);
 						element.push(`<option ${!Perms.at_least('worldbuilder') ? "disabled" : ""} ${data.pivot.user_role == 'co-owner' ? "selected" : ""} value='co-owner'>CO-GM${!Perms.at_least('worldbuilder') ? " (Only available to Worldbuilder tier)" : ""}</option>`);
 					element.push("</select>");
 				element.push("</div>");
 				element.push("<div class='col-md-auto'>");
-					element.push(`<button type='button' class='btn btn btn-primary full update_user_permissions' disabled permissions_val='${data.pivot.user_role}' id='${data.id}'>Update</button>`);
+					element.push(`<button type='button' class='btn btn btn-primary full update_user_permissions' disabled permissions_val='${data.pivot.user_role}' user_id='${data.id}'>Update</button>`);
 				element.push("</div>");
 			element.push("</div>");
 
@@ -5648,4 +5644,18 @@ function set_up_user_list(){
 
 	}
 
+}
+
+function user_permissions_select(select){
+    console.log(select);
+
+    var button = $(select).closest('.sortable-container').find('.update_user_permissions');
+
+    var new_value = $(select).val();
+    var curr_value = button.attr('permissions_val');
+
+    console.log(new_value);
+    console.log(curr_value);
+
+    button.prop('disabled', new_value === curr_value)
 }

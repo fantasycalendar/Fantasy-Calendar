@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Jobs\CloneCalendar;
+use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CalendarCollection;
@@ -79,6 +80,45 @@ class CalendarController extends Controller
         return Calendar::active()
             ->hash($id)
             ->firstOrFail()->users;
+    }
+
+    public function inviteUser(Request $request, $id) {
+        $calendar = Calendar::active()->hash($id)->firstOrFail();
+
+        $user = User::whereEmail($request->input('email'))->first();
+
+        if($calendar->users->contains($user)) {
+            return response()->json(['error' => true, 'message' => 'This calendar already has user "'.$user->email.'"']);
+        }
+
+        $calendar->users()->attach($user);
+        $calendar->save();
+
+        return $calendar->users;
+    }
+
+    public function changeUserRole(Request $request, $id) {
+        $calendar = Calendar::active()->hash($id)->firstOrFail();
+
+        $calendar->users()->updateExistingPivot($request->input('user_id'), $request->only(['user_role']));
+
+        $calendar->save();
+
+        return $calendar->users;
+    }
+
+    public function removeUser(Request $request, $id) {
+        $validatedData = $request->validate([
+            'user_id' => ['required', 'integer']
+        ]);
+
+        $calendar = Calendar::active()->hash($id)->firstOrFail();
+
+        $calendar->users()->detach($request->input('user_id'));
+
+        $calendar->save();
+
+        return $calendar->users;
     }
 
     public function dynamic_data(Request $request, $id) {

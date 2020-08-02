@@ -300,49 +300,87 @@ function unlink_child_calendar(output, child_hash){
 	});
 }
 
-function get_calendar_users(output){
-
-	var users = [
-		{
-			user_name: "Wasp",
-			user_id: 1,
-			permissions: 0
-		},
-		{
-			user_name: "Axel",
-			user_id: 2,
-			permissions: 2
-		},
-	]
-
-	output(users);
-
+function get_calendar_users(callback) {
+    $.ajax({
+        url: window.baseurl+"api/calendar/"+hash+"/users",
+        type: "get",
+        dataType: "json",
+        success: function (result) {
+            console.log(result);
+            callback(result);
+        },
+        error: function ( result ){
+            callback(false);
+        }
+    })
 }
 
 function add_calendar_user(email, output){
 
-	console.log(`Sending email to ${email}...`)
+    $.ajax({
+        url:window.baseurl+"api/calendar/"+hash+"/inviteUser",
+        type: "post",
+        dataType: "json",
+        data: {email: email},
+        success: function (result) {
+            var success = true;
+            var text = `Sent email to ${email}!`;
 
-	var success = true;
-	var text = `Sent email to ${email}!`;
-	output(success, text);
+            if(result.error) {
+                success = false;
+                text = result.message;
+            }
+
+            output(success, text);
+            
+            console.log(result);
+        },
+        error: function (log) {
+            console.error(log);
+        }
+    });
+
+    console.log(`Sending email to ${email}...`)
 
 }
 
 function update_calendar_user(user_id, permission, output){
 
+    $.ajax({
+        url:window.baseurl+"api/calendar/"+hash+"/changeUserRole",
+        type: "post",
+        dataType: "json",
+        data: {user_role: permission, user_id: user_id},
+        success: function (result) {
+            var text = 'Updated permissions!';
+
+            output(true, text);
+            console.log(result);
+        },
+        error: function (log) {
+            console.error(log);
+        }
+    });
+
 	console.log(`Updating ${user_id}'s permission to ${permission}...`)
-
-	var success = true;
-	var text = 'Updated permissions!';
-
-	output(success, text);
-
 }
 
 function remove_calendar_user(user_id, remove_all){
 
 	console.log(`Removing user id ${user_id}. Should I delete all of their events, comments, etc as well? ${remove_all}`);
+
+	$.ajax({
+        url:window.baseurl+"api/calendar/"+hash+"/removeUser",
+        type: "post",
+        dataType: "json",
+        data: {user_id: user_id, remove_all: remove_all},
+        success: function (result) {
+            console.log(result);
+        },
+        error: function (log) {
+            console.error(log);
+        }
+    });
 
 }
 
@@ -656,19 +694,6 @@ function create_calendar(){
 
 }
 
-function get_calendar_users(callback) {
-    $.ajax({
-        url: window.baseurl+"api/calendar/"+hash+"/users",
-        type: "get",
-        dataType: "json",
-        success: function (result) {
-            callback(result);
-        },
-        error: function ( result ){
-            callback(false);
-        }
-    })
-}
 
 function get_event_comments(event_id, callback){
 

@@ -129,7 +129,7 @@ class CalendarController extends Controller
     public function edit(Calendar $calendar)
     {
         return view('calendar.edit', [
-            'calendar' => $calendar->with(['events', 'event_categories']),
+            'calendar' => $calendar,
         ]);
     }
 

@@ -1065,7 +1065,7 @@
 		<!---------------------------------------------->
 
 
-        @can('update-settings', $calendar)
+        @can('update-settings', $calendar ?? '')
             <div class='wrap-collapsible card settings-settings'>
                 <input id="collapsible_settings" class="toggle" type="checkbox">
                 <label for="collapsible_settings" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-cog"></i> Settings <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Settings' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="wiki protip"><i class="icon-question-sign"></i></a></label>
@@ -1261,7 +1261,7 @@
             </div>
         @endcan
 
-		@if(request()->is('calendars/*/edit') && Auth::user()->can('delete', $calendar))
+		@if(request()->is('calendars/*/edit'))
 
 			<!---------------------------------------------->
 			<!------------------ SETTINGS ------------------>
@@ -1271,7 +1271,7 @@
 				<label for="collapsible_users" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-user"></i> User Management <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Settings' href='https://wiki.fantasy-calendar.com/index.php?title=User_Management' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 				<div class="collapsible-content card-body">
 
-					@if(Auth::user()->paymentLevel() !== "Free")
+					@unless(Auth::user()->can('add-users', $calendar))
 
 						<div class='row no-gutters my-1'>
 							<p class='m-0'>Invite your friends to collaborate on this calendar!</p>
@@ -1292,8 +1292,8 @@
 								<button type='button' class='btn full btn-primary' id='btn_send_invite'>Send Invite</button>
 							</div>
 						</div>
-						<div class='row no-gutters mb-2'>
-							<p class='m-0 email_text hidden'></p>
+						<div class='row no-gutters mb-2 hidden'>
+							<p class='m-0 email_text alert alert-success'></p>
 						</div>
 
 						<div class='sortable' id='calendar_user_list'></div>
@@ -1301,7 +1301,7 @@
 						<div class='row no-gutters my-1'>
 							<button type='button' class='btn btn-sm btn-secondary full' id='refresh_calendar_users'>Refresh</button>
 						</div>
-					@endif
+					@endunless
 
 				</div>
 			</div>
