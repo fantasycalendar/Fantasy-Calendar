@@ -39,6 +39,8 @@ Route::get('/donate', function(){
     ]);
 });
 
+Route::get('invite/accept', 'InviteController@accept')->name('invite.accept')->middleware(['auth']);
+Route::get('invite/register', 'InviteController@register')->name('invite.register')->middleware(['register']);
 
 // Calendar management
 Route::get('calendars/{calendar}/print', 'CalendarController@print')->name('calendars.print');
