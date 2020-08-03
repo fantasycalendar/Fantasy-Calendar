@@ -290,7 +290,8 @@ function set_up_edit_inputs(){
 		$('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
 		$('#locations_warning').toggleClass('hidden', !no_locations);
 
-		$('.location_middle_btn').toggleClass('hidden', !static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled);
+		$('.season_middle_btn').toggleClass('hidden', !static_data.clock.enabled || static_data.seasons.data.length < 3);
+		$('.location_middle_btn').toggleClass('hidden', (!static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled) || static_data.seasons.data.length < 3);
 
 		eval_clock();
 
@@ -629,13 +630,13 @@ function set_up_edit_inputs(){
 
 		$('#season_color_enabled').prop("disabled", static_data.seasons.data.length == 0);
 
+		$('.season_middle_btn').toggleClass('hidden', !static_data.clock.enabled || static_data.seasons.data.length < 3);
+
 	});
 
 	$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 && !static_data.clock.enabled);
 
 	$('#create_season_events').click(function(){
-
-
 
 		var html  = '<strong><span style="color:#4D61B3;">Simple</span></strong> season events are based on the <strong>specific start dates</strong> of the seasons.<br><br>';
 
@@ -745,6 +746,8 @@ function set_up_edit_inputs(){
 		});
 
 		location_select.find(`option[value="${id}"]`).prop('selected', true).change();
+
+		$('.location_middle_btn').toggleClass('hidden', (!static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled) || static_data.seasons.data.length < 3);
 
 	});
 
@@ -916,6 +919,8 @@ function set_up_edit_inputs(){
 
 		location_select.find('optgroup[value="custom"]').children().eq(id).prop('selected', true).change();
 
+		$('.location_middle_btn').toggleClass('hidden', (!static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled) || static_data.seasons.data.length < 3);
+
 	});
 
 	$(document).on('click', '.location_middle_btn', function(){
@@ -978,8 +983,8 @@ function set_up_edit_inputs(){
 			var precipitation = precisionRound(lerp(prev_season.weather.precipitation, next_season.weather.precipitation, perc),2);
 			var precipitation_intensity = precisionRound(lerp(prev_season.weather.precipitation_intensity, next_season.weather.precipitation_intensity, perc),2);
 
-			current_season.find("input[fc-index='precipitation']").val(precipitation).parent().parent().find('.slider_input').val(precipitation)
-			current_season.find("input[fc-index='precipitation_intensity']").val(precipitation_intensity).parent().parent().find('.slider_input').val(precipitation_intensity)
+			current_season.find("input[fc-index='precipitation']").parent().parent().find('.slider_percentage').slider('option', 'value', precipitation*100);
+			current_season.find("input[fc-index='precipitation_intensity']").parent().parent().find('.slider_percentage').slider('option', 'value', precipitation_intensity*100);
 
 			current_season.find("input[fc-index='temp_high']").val(temp_high)
 			current_season.find("input[fc-index='temp_low']").val(temp_low)
@@ -1992,7 +1997,7 @@ function set_up_edit_inputs(){
 		static_data.seasons.global_settings.enable_weather = checked;
 		$('.weather_inputs').toggleClass('hidden', !checked);
 		$('.weather_inputs').find('select, input').prop('disabled', !checked);
-		$('.location_middle_btn').toggleClass('hidden', !static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled);
+		$('.location_middle_btn').toggleClass('hidden', (!static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled) || static_data.seasons.data.length < 3);
 
 		var no_locations = (static_data.seasons.data.length == 0 || !static_data.seasons.global_settings.enable_weather) && !static_data.clock.enabled;
 		$('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
@@ -3146,7 +3151,7 @@ function add_location_to_list(parent, key, data){
 						element.push("</div>");
 					element.push("</div>");
 					element.push("<div class='row no-gutters my-2'>");
-						element.push(`<button type="button" class="btn btn-sm btn-info location_middle_btn full protip ${!static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled ? "hidden" : ""}" data-pt-position="right" data-pt-title="Use the median values from the previous and next seasons' weather and time data. This season will act as a transition between the two, similar to Spring or Autumn">Interpolate data from surrounding seasons</button>`);
+						element.push(`<button type="button" class="btn btn-sm btn-info location_middle_btn full protip" data-pt-position="right" data-pt-title="Use the median values from the previous and next seasons' weather and time data. This season will act as a transition between the two, similar to Spring or Autumn">Interpolate data from surrounding seasons</button>`);
 					element.push("</div>");
 
 				element.push("</div>");
@@ -5019,6 +5024,8 @@ function set_up_edit_values(){
 			repopulate_day_select(season_sortable.children().last().find('.timespan-day-list'), static_data.seasons.data[i].day, false, false);
 		}
 
+		$('.season_middle_btn').toggleClass('hidden', !static_data.clock.enabled || static_data.seasons.data.length < 3);
+
 		$('.season_offset_container').prop('disabled', !static_data.seasons.global_settings.periodic_seasons).toggleClass('hidden', !static_data.seasons.global_settings.periodic_seasons);
 
 		$('.season_text.dated').toggleClass('active', !static_data.seasons.global_settings.periodic_seasons);
@@ -5170,7 +5177,7 @@ function set_up_edit_values(){
 	$('.weather_inputs').toggleClass('hidden', !static_data.seasons.global_settings.enable_weather);
 	$('.weather_inputs').find('select, input').prop('disabled', !static_data.seasons.global_settings.enable_weather);
 
-	$('.location_middle_btn').toggleClass('hidden', !static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled);
+	$('.location_middle_btn').toggleClass('hidden', (!static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled) || static_data.seasons.data.length < 3);
 
 	$('#season_color_enabled').prop("disabled", static_data.seasons.data.length == 0);
 
