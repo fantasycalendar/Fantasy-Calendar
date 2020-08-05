@@ -434,7 +434,7 @@ function submit_edit_event(event_id){
 function submit_delete_event(event_id){
 
 	$.ajax({
-		url:window.apiurl+"/event/"+event_id,
+		url:window.apiurl+"/event/"+events[event_id].id,
 		type: "post",
 		dataType: 'json',
 		data: {_method: 'DELETE'},
