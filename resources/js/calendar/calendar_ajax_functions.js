@@ -384,71 +384,51 @@ function remove_calendar_user(user_id, remove_all){
 
 }
 
-function submit_new_event(event_id){
+async function submit_new_event(event_id){
 
 	var new_event = clone(events[event_id]);
-	new_event._method = "POST";
 	new_event.calendar_id = calendar_id;
 	new_event.sort_by = Object.keys(events).length;
 
-	$.ajax({
-		url:window.apiurl+"/event",
-		type: "post",
-		dataType: 'json',
-		data: new_event,
-		success: function( result ){
-			events[event_id] = result['data'];
-		},
-		error: function ( log )
-		{
-			console.log(log);
-		}
-	});
-
+	axios.post(window.apiurl+'/event', new_event)
+        .then(function (result){
+            console.log(result.data.data);
+            events[event_id] = result.data.data;
+        }).catch(function(error) {
+            console.log(error);
+    });
 }
 
 function submit_hide_show_event(event_id){
 
 	var edit_event = clone(events[event_id]);
-	edit_event._method = "PATCH";
 	edit_event.calendar_id = calendar_id;
-	edit_event.settings.hide = !event.settings.hide;
+	edit_event.settings.hide = !edit_event.settings.hide;
 
-	$.ajax({
-		url:window.apiurl+"/event/"+event.id,
-		type: "post",
-		dataType: 'json',
-		data: edit_event,
-		success: function( result ){
-			events[event_id].settings.hide = !events[event_id].settings.hide;
-			rebuild_events();
-			evaluate_save_button();
-		},
-		error: function ( log )
-		{
-			console.log(log);
-		}
-	});
+	axios.patch(window.apiurl+"/event/"+edit_event.id, edit_event)
+        .then(function(result) {
+            console.log(result.data);
 
+            console.log(events);
+            events[event_id].settings.hide = !events[event_id].settings.hide;
+            rebuild_events();
+            evaluate_save_button();
+        }).catch(function(error){
+            console.log(error);
+    });
 }
 
 function submit_edit_event(event_id){
 
 	var edit_event = clone(events[event_id]);
-	edit_event._method = "PATCH";
 	edit_event.calendar_id = calendar_id;
 
-	$.ajax({
-		url:window.apiurl+"/event/"+event_id,
-		type: "post",
-		dataType: 'json',
-		data: edit_event,
-		error: function ( log )
-		{
-			console.log(log);
-		}
-	});
-
+	axios.patch(window.apiurl+'/event/'+event_id, edit_event)
+        .then(function(result) {
+            console.log(result.data);
+        }).catch(function(error){
+            console.log(error);
+    });
 }
 
 function submit_delete_event(event_id){

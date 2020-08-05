@@ -53,11 +53,15 @@ class CalendarEventController extends Controller
      */
     public function store(Request $request)
     {
-        if(auth('api')->user()->can('attach-event', $request->all())) {
-            return response()->make(['success' => false, 'message' => 'Access denied']);
+        $event = new CalendarEvent($request->all());
+
+        if(!auth('api')->user()->can('attach-event', $event)) {
+            return response()->make(['success' => false, 'message' => "You don't have permission to make that event!"]);
         }
 
-        $event = CalendarEvent::create(json_decode($request->getContent(), true));
+        $event->creator_id = auth('api')->user()->id;
+
+        $event->save();
 
         $resource = new Item($event, new CalendarEventTransformer());
 
@@ -97,11 +101,9 @@ class CalendarEventController extends Controller
     {
         $event = CalendarEvent::findOrFail($id);
 
-        if(auth('api')->user()->can('update', $event)) {
+        if(!auth('api')->user()->can('update', $event)) {
             return response()->json(['error' => true, 'message' => 'Action not authorized.']);
         }
-
-        dd($request->all());
 
         return response()->json(['success' => $event->update($request->all()) > 0, 'message' => 'Event updated.']);
     }

@@ -161,7 +161,7 @@ function set_up_visitor_inputs(){
             $('#top_follower').removeClass('follower_shadow');
         }
 	});
-	
+
 	/* TODO-Adam - Refactor this, enable / disable some of the dropdown items depending on user permissions */
 
     var items = {};
@@ -694,7 +694,7 @@ function evaluate_settings(){
 	}
 
 	$('#empty_calendar_explaination').toggleClass('hidden', true);
-	
+
 	/* TODO-Adam - Refactor once user permissions are available */
 
 	$('.date_control').toggleClass('hidden', (!owner && !static_data.settings.allow_view));

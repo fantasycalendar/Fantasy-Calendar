@@ -17,6 +17,8 @@ services:
     container_name: fantasy_calendar
     depends_on:
       - fantasy-calendar-php
+    ports:
+      - "9987:8080"
     build:
       context: .
       dockerfile: setup/nginx/nginx.Dockerfile

@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Calendar;
 use App\CalendarEvent;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -53,10 +54,12 @@ class EventPolicy
      */
     public function update(User $user, CalendarEvent $calendarEvent)
     {
-        return (
-            $calendarEvent->calendar->user->is($user)
+        $calendar = Calendar::findOrFail($calendarEvent->calendar_id);
 
-            || ($calendarEvent->calendar->users->contains($user) && $calendarEvent->calendar->users->find($user)->pivot->user_role == 'co-owner')
+        return (
+            $calendar->user->is($user)
+
+            || ($calendar->users->contains($user) && $calendar->users->find($user)->pivot->user_role == 'co-owner')
         );
     }
 

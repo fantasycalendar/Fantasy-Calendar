@@ -708,7 +708,7 @@ var calendar_layouts = {
 						calendar_layouts.html.push("<div class='event_container'></div>");
 					calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("<div class='day_row'>");
-					if(owner){
+					if(owner || userIsPlayer){
 						calendar_layouts.html.push(`<div epoch='${epoch}' class='btn_create_event btn btn-success full'><div class="event_create_label">Create Event</div></div>`);
 					}
 					calendar_layouts.html.push("</div>");
@@ -1036,7 +1036,7 @@ var calendar_layouts = {
 						calendar_layouts.html.push("<div class='event_container'></div>");
 					calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("<div class='day_row'>");
-					if(owner){
+					if(owner || userIsPlayer){
 						calendar_layouts.html.push(`<div epoch='${epoch}' class='btn_create_event btn btn-success full'><div class="event_create_label">Create Event</div></div>`);
 					}
 					calendar_layouts.html.push("</div>");
@@ -1413,7 +1413,7 @@ var calendar_layouts = {
 					calendar_layouts.html.push("</div>");
 
 					calendar_layouts.html.push("<div class='day_row'>");
-					if(owner){
+					if(owner || userIsPlayer){
 						calendar_layouts.html.push(`<div epoch='${epoch}' class='btn_create_event btn btn-success full'><div class="event_create_label">Create Event</div></div>`);
 					}
 					calendar_layouts.html.push("</div>");

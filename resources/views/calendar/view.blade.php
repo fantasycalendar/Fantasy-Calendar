@@ -3,6 +3,11 @@
 @push('head')
     <script>
     const owner = {{ $calendar->owned }};
+    @guest
+        const userIsPlayer = false;
+    @else
+        const userIsPlayer = {{ Auth::user()->can('add-events', $calendar) }}
+    @endguest
 
     $(document).ready(function(){
 
