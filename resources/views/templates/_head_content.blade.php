@@ -122,8 +122,6 @@
             $("#input_container").addClass('sidebar-mobile-half');
         }
 
-        window.Perms = new Perms("{{ $_GET['authlevel'] ?? 'superadmin' }}");
-
     });
 
     </script>

@@ -402,10 +402,6 @@ function repopulate_location_select_list(){
 		return;
 	}
 
-	var is_edit = location_select.closest('.wrap-collapsible').find('.add_inputs.locations').length > 0;
-
-	location_select.closest('.wrap-collapsible').toggleClass('hidden', !is_edit);
-
 	var html = [];
 
 	if(static_data.seasons.locations.length > 0){

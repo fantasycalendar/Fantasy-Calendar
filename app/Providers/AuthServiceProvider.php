@@ -77,7 +77,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('link', function($user, $calendar) {
-            return $user->can('delete', $calendar);
+            return $user->is($calendar->user) && $calendar->user->paymentLevel() === 'WorldBuilder';
         });
     }
 }
