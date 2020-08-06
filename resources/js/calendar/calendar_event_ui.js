@@ -2508,11 +2508,11 @@ function can_comment_on_event(){
 	}
 
 	if(static_data.settings.comments == "players"){
-		return true;
+		return window.Perms.player_at_least('player');
 	}
 
 	if(static_data.settings.comments == "public"){
-		return true;
+		return window.Perms.player_at_least('free');
 	}
 
 	return false;
