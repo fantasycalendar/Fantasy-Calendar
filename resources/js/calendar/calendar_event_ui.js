@@ -2353,8 +2353,10 @@ var show_event_ui = {
 
 		if(this.db_event_id !== undefined){
 			get_event_comments(this.db_event_id, this.add_comments);
-		}else{
+		}else if(static_data.settings.comments != "none"){
 			this.event_comments.html("You need to save your calendar before comments can be added to this event!").removeClass('loading');
+		}else{
+			this.event_comments.removeClass("loading").addClass('hidden');
 		}
 
 		this.event_background.removeClass('hidden');
