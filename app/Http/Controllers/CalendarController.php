@@ -14,6 +14,7 @@ use App\CalendarEvent;
 use App\Jobs\SaveEventCategories;
 use App\Jobs\SaveCalendarEvents;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class CalendarController extends Controller
 {
@@ -81,7 +82,7 @@ class CalendarController extends Controller
      */
     public function store(Request $request)
     {
-        $hash = md5(request('calendar_name').request('dynamic_data').request('static_data').(Auth::user()->id).date("D M d, Y G:i"));
+        $hash = md5(request('calendar_name').request('dynamic_data').request('static_data').(Auth::user()->id).date("D M d, Y G:i").Str::random(10));
 
         $static_data = json_decode(request('static_data'), true);
 
