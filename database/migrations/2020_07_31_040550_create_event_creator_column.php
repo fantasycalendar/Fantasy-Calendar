@@ -14,7 +14,7 @@ class CreateEventCreatorColumn extends Migration
     public function up()
     {
         Schema::table('calendar_events', function (Blueprint $table) {
-            $table->integer('creator_id');
+            $table->integer('creator_id')->default(0);
         });
 
         $events = DB::table('calendar_events')->whereNull('deleted_at')->get();
@@ -29,9 +29,9 @@ class CreateEventCreatorColumn extends Migration
             ]);
         }
 
-        Schema::table('calendar_events', function(Blueprint $table) {
-            $table->foreign('creator_id')->references('id')->on('users');
-        });
+//        Schema::table('calendar_events', function(Blueprint $table) {
+//            $table->foreign('creator_id')->references('id')->on('users');
+//        });
     }
 
     /**
