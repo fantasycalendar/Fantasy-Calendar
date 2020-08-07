@@ -14,6 +14,7 @@ class CalendarEvent extends Model
     public $fillable = [
         'name',
         'calendar_id',
+        'creator_id',
         'event_category_id',
         'description',
         'data',
@@ -40,13 +41,13 @@ class CalendarEvent extends Model
         return $this->hasMany('App\CalendarEventComment', 'event_id');
     }
 
-//    public function creator() {
-//        return $this->belongsTo('App\User', 'creator_id');
-//    }
-//
-//    public function getCreatorIdAttribute($value) {
-//        return $value ?? $this->calendar->user->id;
-//    }
+    public function creator() {
+        return $this->belongsTo('App\User', 'creator_id');
+    }
+
+    public function getCreatorIdAttribute($value) {
+        return $value ?? $this->calendar->user->id;
+    }
 
     public function setting($settingName) {
         if(is_array($this->category_settings) && Arr::has($this->category_settings, $settingName)) {

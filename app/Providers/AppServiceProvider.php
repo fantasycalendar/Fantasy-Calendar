@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\CalendarEvent;
+use App\Observers\CalendarEventObserver;
 use Illuminate\Support\ServiceProvider;
 
 use App\Observers\CalendarObserver;
@@ -27,5 +29,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Calendar::observe(CalendarObserver::class);
+        CalendarEvent::observe(CalendarEventObserver::class);
     }
 }
