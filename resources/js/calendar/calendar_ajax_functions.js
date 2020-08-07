@@ -392,8 +392,13 @@ async function submit_new_event(event_id){
 
 	axios.post(window.apiurl+'/event', new_event)
         .then(function (result){
-            console.log(result.data.data);
-            events[event_id] = result.data.data;
+            console.log(result.data);
+            if(result.data.data && result.data.data.length > 0) {
+                events[event_id] = result.data.data;
+            } else {
+                console.log(result.data.message);
+                events.pop(); // Discard most recent event
+            }
         }).catch(function(error) {
             console.log(error);
     });
