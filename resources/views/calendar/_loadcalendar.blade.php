@@ -2,9 +2,9 @@
 // It's... Not permanent. I hope.
 
 @if(Auth::check() && $calendar->users->contains(Auth::user()))
-    window.Perms = new Perms({{ $calendar->users->find(Auth::user())->pivot->user_role }})
+window.Perms = new Perms('{{ $calendar->users->find(Auth::user())->pivot->user_role }}')
 @else
-    window.Perms = new Perms('observer');
+window.Perms = new Perms('observer');
 @endif
 
 hash = "{{ $calendar->hash }}";
