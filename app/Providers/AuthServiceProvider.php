@@ -51,7 +51,7 @@ class AuthServiceProvider extends ServiceProvider
 
                     && $calendar->users->contains($user) && in_array($calendar->users->find($user->id)->pivot->user_role, ['player', 'co-owner'])
 
-                    && collect($event->data ?? [])->has('date')
+                    && collect($event->data)->has('date') && $event->data['date'] != []
 
                     && ($event->event_category_id ?? -1 < 0
                         || (EventCategory::find($event->event_category_id) && EventCategory::find($event->event_category_id)->setting('player_usable'))
