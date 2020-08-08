@@ -58,7 +58,7 @@
 					<textarea class='form-control event_desc editable' name='event_desc' placeholder='Event description' autofocus=''></textarea>
 				</div>
 
-                @can('edit', $calendar)
+                @if(!isset($calendar) || Auth::user()->can('update', $calendar))
 
                     <h5 class='row no-gutters mt-2 event-form-heading'>Condition presets:</h5>
 
@@ -66,7 +66,6 @@
                         <select class="form-control" id="condition_presets">
                             <option value='none'>None</option>
                             <option value='once'>Happens once</option>
-                            @can('edit', $calendar)
                                 <option value='daily'>Daily</option>
                                 <option value='weekly'>Weekly on Wednesday</option>
                                 <option value='fortnightly'>Fortnightly on Wednesday</option>
@@ -81,7 +80,6 @@
                                 <option nth value='every_x_annually_date'>Every x year on the 3rd of June</option>
                                 <option nth value='every_x_annually_weekday'>Every x year on the 3rd Wednesday in June</option>
                                 <optgroup value='moons' label='Moons' class='hidden'></optgroup>
-                            @endcan
                         </select>
                     </div>
 
@@ -219,9 +217,9 @@
                         <div class='separator'></div>
                     </div>
 
-                @endcan
+                @endif
 
-				@if(count($calendar->event_categories))
+				@if(!isset($calendar) || count($calendar->event_categories))
                     <div class='row no-gutters'>
                         <div class='col-auto pl-0 pr-1'>
                             <h5 class='event-form-heading'>Category:</h5>
@@ -234,7 +232,9 @@
                     </div>
                 @endif
 
-                @can('edit', $calendar)
+                {{Auth::user()->can('update', $calendar) == Null}}
+
+                @if(!isset($calendar) || Auth::user()->can('update', $calendar))
                     <div class='row no-gutters'>
                         <h5 class='event-form-heading full'>Settings:</h5>
                     </div>
@@ -262,7 +262,7 @@
                             </label>
                         </div>
                     </div>
-                @endcan
+                @endif
 
 				<div class='row no-gutters'>
 					<div class='col pr-1'>
