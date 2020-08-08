@@ -392,12 +392,15 @@ async function submit_new_event(event_id){
 
 	axios.post(window.apiurl+'/event', new_event)
         .then(function (result){
-            console.log(result.data);
-            if(result.data.data && result.data.data.length > 0) {
-                events[event_id] = result.data.data;
+            if(result.data.data !== undefined) {
+				events[event_id] = result.data.data;
+				$.notify(
+					"Event created.",
+					"success"
+				);
             } else {
-                console.log(result.data.message);
-                events.pop(); // Discard most recent event
+				events.pop(); // Discard most recent event
+                throw "Error: " + results.data.message;
             }
         }).catch(function(error) {
             console.log(error);
@@ -412,14 +415,11 @@ function submit_hide_show_event(event_id){
 
 	axios.patch(window.apiurl+"/event/"+edit_event.id, edit_event)
         .then(function(result) {
-            console.log(result.data);
-
-            console.log(events);
             events[event_id].settings.hide = !events[event_id].settings.hide;
             rebuild_events();
             evaluate_save_button();
         }).catch(function(error){
-            console.log(error);
+			throw "Error: " + error;
     });
 }
 
@@ -428,21 +428,30 @@ function submit_edit_event(event_id){
 	var edit_event = clone(events[event_id]);
 	edit_event.calendar_id = calendar_id;
 
-	axios.patch(window.apiurl+'/event/'+event_id, edit_event)
+	axios.patch(window.apiurl+'/event/'+edit_event.id, edit_event)
         .then(function(result) {
-            console.log(result.data);
+			$.notify(
+				result.data.message,
+				result.data.success !== undefined ? "success" : false
+			);
         }).catch(function(error){
-            console.log(error);
+			throw "Error: " + error;
     });
 }
 
 function submit_delete_event(event_id){
 
 	$.ajax({
-		url:window.apiurl+"/event/"+events[event_id].id,
+		url:window.apiurl+"/event/"+event_id,
 		type: "post",
 		dataType: 'json',
 		data: {_method: 'DELETE'},
+		success: function(){
+			$.notify(
+				"Event deleted.",
+				"success"
+			);
+		},
 		error: function ( log )
 		{
 			console.log(log);
