@@ -5071,6 +5071,8 @@ function repopulate_event_category_lists(){
 	for(var categoryId in event_categories){
 		var category = event_categories[categoryId];
 
+		if(window.Perms.playerLevel == 'player' && !category.category_settings.player_usable) continue;
+
 		if(typeof category.id !== "undefined") {
 			slug = category.id;
 		} else {

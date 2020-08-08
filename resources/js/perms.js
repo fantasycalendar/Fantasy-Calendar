@@ -1,7 +1,7 @@
 class Perms {
     constructor(level, playerLevel = 0) {
-        this.level = level;
-        this.playerLevel = playerLevel;
+        this._level = level;
+        this._playerLevel = playerLevel;
 
         this.levels = {
             'free': 0,

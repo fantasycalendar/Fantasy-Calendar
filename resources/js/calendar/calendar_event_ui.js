@@ -627,35 +627,36 @@ var edit_event_ui = {
 	},
 
 	save_current_event: function(){
-
-		if(events[this.event_id]){
-			var eventid = events[this.event_id].id;
-			events[this.event_id] = {};
-			events[this.event_id].id = eventid;
-		}else{
-			events[this.event_id] = {};
-		}
+		
+		var eventid = events[this.event_id].id;
+		let new_event = {}
+		new_event.id = eventid;
 
 		var name = this.event_background.find('.event_name').val();
 		name = name !== '' ? name : "Unnamed Event";
 
-		events[this.event_id].name = name;
+		new_event.name = name;
 
-		events[this.event_id].description = sanitizeHtml(this.trumbowyg.trumbowyg('html'), {allowedTags: [ 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'a', 'ul', 'ol', 'nl', 'li', 'b', 'i', 'strong', 'em', 'strike', 'code', 'hr', 'br', 'div', 'table', 'thead', 'caption', 'tbody', 'tr', 'th', 'td', 'pre', 'img' ]});
+		new_event.description = sanitizeHtml(this.trumbowyg.trumbowyg('html'), {allowedTags: [ 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'a', 'ul', 'ol', 'nl', 'li', 'b', 'i', 'strong', 'em', 'strike', 'code', 'hr', 'br', 'div', 'table', 'thead', 'caption', 'tbody', 'tr', 'th', 'td', 'pre', 'img' ]});
 
-		events[this.event_id].data = this.create_event_data();
-
-		events[this.event_id].event_category_id = get_category($('#event_categories').val()).id;
-
-		events[this.event_id].settings = {
-			color: $('#color_style').val(),
-			text: $('#text_style').val(),
-			hide: $('#event_hide_players').prop('checked'),
-			hide_full: $('#event_hide_full').prop('checked'),
-			print: $('#event_print_checkbox').prop('checked')
+		if(window.Perms.playerLevel == "player"){
+			new_event.data = events[this.event_id].data;
+		}else{
+			let data = this.create_event_data();
+			new_event.data = data;
 		}
 
-		console.log(events[this.event_id]);
+		new_event.event_category_id = $('#event_categories').length > 0 ? get_category($('#event_categories').val()).id : -1;
+
+		new_event.settings = {
+			color: $('#color_style').val(),
+			text: $('#text_style').val(),
+			hide: $('#event_hide_players').length > 0 ? $('#event_hide_players').prop('checked') : false,
+			hide_full: $('#event_hide_full').length > 0 ? $('#event_hide_full').prop('checked') : false,
+			print: $('#event_print_checkbox').length > 0 ? $('#event_print_checkbox').prop('checked') : false
+		}
+
+		events[this.event_id] = new_event;
 
 		if($('#events_sortable').length){
 			if(this.new_event){
@@ -676,9 +677,7 @@ var edit_event_ui = {
 		error_check();
 
 		eval_apply_changes(function(){
-
 			rebuild_events();
-
 		});
 
 	},
@@ -781,11 +780,11 @@ var edit_event_ui = {
 		}
 
 		return {
-			has_duration: $('#has_duration').prop('checked'),
-			duration: $('#duration').val()|0,
-			show_first_last: $('#show_first_last').prop('checked'),
-			limited_repeat: $('#limited_repeat').prop('checked'),
-			limited_repeat_num: $('#limited_repeat_num').val()|0,
+			has_duration: $('#has_duration').length > 0 ? $('#has_duration').prop('checked') : false,
+			duration: $('#duration').length > 0 ? $('#duration').val()|0 : 0,
+			show_first_last: $('#show_first_last').length > 0 ? $('#show_first_last').prop('checked') : false,
+			limited_repeat: $('#limited_repeat').length > 0 ? $('#limited_repeat').prop('checked') : false,
+			limited_repeat_num: $('#limited_repeat_num').length > 0 ? $('#limited_repeat_num').val()|0 : 0,
 			conditions: conditions,
 			connected_events: this.connected_events,
 			date: this.date,
