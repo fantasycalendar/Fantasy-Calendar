@@ -169,7 +169,7 @@ function set_up_visitor_inputs(){
 				name: "View event",
 				icon: "fas fa-eye",
 				callback: function(key, opt){
-					var element = $(opt.$trigger[0]);
+					let element = $(opt.$trigger[0]);
 					show_event_ui.clicked_event(element)
 				}
 			},
@@ -177,34 +177,37 @@ function set_up_visitor_inputs(){
 				name: "Edit event",
 				icon: "fas fa-edit",
 				callback: function(key, opt){
-					var element = $(opt.$trigger[0]);
-					var event_id = element.attr('event_id');
+					let element = $(opt.$trigger[0]);
+					let event_id = element.attr('event_id');
 					edit_event_ui.edit_event(event_id);
 				},
 				disabled: function(key, opt){
-					var element = $(opt.$trigger[0]);
-					return element.hasClass('era_event') || !(owner || window.Perms.player_at_least('co-owner'));
+					let element = $(opt.$trigger[0]);
+					let event_id = element.attr('event_id');
+					return element.hasClass('era_event') || !(owner || window.Perms.player_at_least('co-owner') || window.Perms.userid == events[event_id].creator_id);
 				},
-				visible: function(){
-					return owner || window.Perms.player_at_least('co-owner');
+				visible: function(key, opt){
+					let element = $(opt.$trigger[0]);
+					let event_id = element.attr('event_id');
+					return owner || window.Perms.player_at_least('co-owner') || window.Perms.userid == events[event_id].creator_id;
 				}
 			},
 			hide: {
 				name: "Hide event",
 				icon: "fas fa-eye-slash",
 				callback: function(key, opt){
-					var element = $(opt.$trigger[0]);
-					var event_id = Number(element.attr('event_id'));
+					let element = $(opt.$trigger[0]);
+					let event_id = Number(element.attr('event_id'));
 					submit_hide_show_event(event_id);
 				},
 				disabled: function(key, opt){
-					var element = $(opt.$trigger[0]);
-					var event_id = Number(element.attr('event_id'));
+					let element = $(opt.$trigger[0]);
+					let event_id = Number(element.attr('event_id'));
 					return element.hasClass('era_event') || events[event_id].settings.hide || !(owner || window.Perms.player_at_least('co-owner'));
 				},
 				visible: function(key, opt){
-					var element = $(opt.$trigger[0]);
-					var event_id = Number(element.attr('event_id'));
+					let element = $(opt.$trigger[0]);
+					let event_id = Number(element.attr('event_id'));
 					return !element.hasClass('era_event') && !events[event_id].settings.hide && (owner || window.Perms.player_at_least('co-owner'));
 				}
 			},
@@ -212,18 +215,18 @@ function set_up_visitor_inputs(){
 				name: "Show event",
 				icon: "fas fa-eye-slash",
 				callback: function(key, opt){
-					var element = $(opt.$trigger[0]);
-					var event_id = Number(element.attr('event_id'));
+					let element = $(opt.$trigger[0]);
+					let event_id = Number(element.attr('event_id'));
 					submit_hide_show_event(event_id);
 				},
 				disabled: function(key, opt){
-					var element = $(opt.$trigger[0]);
-					var event_id = Number(element.attr('event_id'));
+					let element = $(opt.$trigger[0]);
+					let event_id = Number(element.attr('event_id'));
 					return element.hasClass('era_event') || !events[event_id].settings.hide || !(owner || window.Perms.player_at_least('co-owner'));
 				},
 				visible: function(key, opt){
-					var element = $(opt.$trigger[0]);
-					var event_id = Number(element.attr('event_id'));
+					let element = $(opt.$trigger[0]);
+					let event_id = Number(element.attr('event_id'));
 					return !element.hasClass('era_event') && events[event_id].settings.hide && (owner || window.Perms.player_at_least('co-owner'));
 				}
 			},
@@ -231,16 +234,19 @@ function set_up_visitor_inputs(){
 				name: "Delete event",
 				icon: "fas fa-trash-alt",
 				callback: function(key, opt){
-					var element = $(opt.$trigger[0]);
-					var event_id = element.attr('event_id');
+					let element = $(opt.$trigger[0]);
+					let event_id = element.attr('event_id');
 					edit_event_ui.delete_event(event_id);
 				},
 				disabled: function(key, opt){
-					var element = $(opt.$trigger[0]);
-					return element.hasClass('era_event') || !(owner || window.Perms.player_at_least('co-owner'));
+					let element = $(opt.$trigger[0]);
+					return element.hasClass('era_event') || !(owner || window.Perms.player_at_least('co-owner') || window.Perms.userid == event.creator_id);
 				},
-				visible: function(){
-					return owner || window.Perms.player_at_least('co-owner');
+				visible: function(key, opt){
+					let element = $(opt.$trigger[0]);
+					let event_id = element.attr('event_id');
+					let event = events[event_id];
+					return owner || window.Perms.player_at_least('co-owner') || window.Perms.userid == event.creator_id;
 				}
 			}
 		},
@@ -254,8 +260,8 @@ function set_up_visitor_inputs(){
 		icon: "fas fa-hourglass-half",
 		callback: context_set_current_date,
 		disabled: function(key, opt){
-			var element = $(opt.$trigger[0]);
-			var epoch = element.attr('epoch');
+			let element = $(opt.$trigger[0]);
+			let epoch = element.attr('epoch');
 			return epoch == dynamic_data.epoch || !(owner || window.Perms.player_at_least('co-owner'));
 		},
 		visible: function(){
@@ -268,8 +274,8 @@ function set_up_visitor_inputs(){
 		icon: "fas fa-hourglass",
 		callback: context_set_preview_date,
 		disabled: function(key, opt){
-			var element = $(opt.$trigger[0]);
-			var epoch = element.attr('epoch');
+			let element = $(opt.$trigger[0]);
+			let epoch = element.attr('epoch');
 			return epoch == preview_date.epoch || !static_data.settings.allow_view && !(owner || window.Perms.player_at_least('co-owner'));
 		},
 		visible: function(key, opt){

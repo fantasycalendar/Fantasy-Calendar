@@ -1,7 +1,9 @@
 class Perms {
-    constructor(level, playerLevel = 0) {
-        this._level = level;
-        this._playerLevel = playerLevel;
+    constructor(userid, level, playerLevel = 0) {
+        
+        this.userid = userid;
+        this.level = level;
+        this.playerLevel = playerLevel;
 
         this.levels = {
             'free': 0,
@@ -15,6 +17,7 @@ class Perms {
             'player': 1,
             'co-owner': 2
         }
+
     }
 
     user_at_least(level) {

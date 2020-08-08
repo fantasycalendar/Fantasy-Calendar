@@ -2240,11 +2240,9 @@ var show_event_ui = {
 		this.event_comment_input_container		= this.event_background.find('#event_comment_input_container');
 		this.event_comment_input				= this.event_background.find('#event_comment_input');
 		this.event_save_btn						= this.event_background.find('#submit_comment');
-		this.edit_event_btn_container   		= this.event_background.find('.edit-event-btn-container');
 		this.edit_event_btn				   		= this.event_background.find('.edit_event_btn');
-
-		this.edit_event_btn_container.toggleClass('hidden', !owner);
-		this.edit_event_btn.prop('disabled', !owner);
+			
+		this.event_comment_mastercontainer.toggleClass('hidden', !can_comment_on_event());
 
 		this.event_comment_input.trumbowyg({
 			btns: [
@@ -2344,6 +2342,10 @@ var show_event_ui = {
 
 		this.db_event_id = event.id;
 
+		let can_edit = owner || window.Perms.player_at_least('co-owner') || window.Perms.userid == event.creator_id;
+
+		this.edit_event_btn.prop('disabled', !can_edit).toggleClass('hidden', !can_edit);
+
 		this.event_name.text(event.name);
 
 		this.event_desc.html(event.description).toggleClass('hidden', event.description.length == 0);
@@ -2352,7 +2354,7 @@ var show_event_ui = {
 
 		if(this.db_event_id !== undefined){
 			get_event_comments(this.db_event_id, this.add_comments);
-		}else if(static_data.settings.comments != "none"){
+		}else if(can_comment_on_event()){
 			this.event_comments.html("You need to save your calendar before comments can be added to this event!").removeClass('loading');
 		}else{
 			this.event_comments.removeClass("loading").addClass('hidden');
@@ -2379,8 +2381,12 @@ var show_event_ui = {
 			}
 
 		}else{
+			
+			show_event_ui.event_comment_mastercontainer.toggleClass('hidden', !can_comment_on_event());
 
-			show_event_ui.event_comments.html("No comments on this event yet... Maybe you'll be the first?")
+			if(can_comment_on_event()){
+				show_event_ui.event_comments.html("No comments on this event yet... Maybe you'll be the first?")
+			}
 
 		}
 
