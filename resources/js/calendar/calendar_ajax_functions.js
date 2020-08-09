@@ -306,7 +306,6 @@ function get_calendar_users(callback) {
         type: "get",
         dataType: "json",
         success: function (result) {
-            console.log(result);
             callback(result);
         },
         error: function ( result ){
