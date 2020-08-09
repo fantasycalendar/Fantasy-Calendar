@@ -41,7 +41,7 @@ function context_copy_link_date(element){
 	if(!valid_preview_date(year, timespan, day) && !window.hide_copy_warning){
 		swal.fire({
 			title: "Date inaccessible",
-			text: 'This date is not visible to guests or players, are you sure you want to copy a link to it? Settings such as "Allow advancing view in calendar" and "Show only up to current day" can affect this.',
+			html: '<p>This date is not visible to guests or players, settings such as "Allow advancing view in calendar" and "Show only up to current day" can affect this.</p><p>Are you sure you want to copy a link to it?</p>',
 			input: 'checkbox',
 			inputPlaceholder: 'Remember this choice',
 			inputClass: "form-control",
