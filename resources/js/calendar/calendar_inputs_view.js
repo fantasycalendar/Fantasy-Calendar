@@ -264,14 +264,14 @@ function set_up_view_inputs(){
 
 
 	$('#current_date_btn').click(function(){
-		if(!owner && !static_data.settings.allow_view){
+		if(!window.Perms.player_at_least('co-owner') && !static_data.settings.allow_view){
 			return;
 		}
 		increment_date_units(true);
 	});
 
 	$('#preview_date_btn').click(function(){
-		if(!owner && !static_data.settings.allow_view){
+		if(!window.Perms.player_at_least('co-owner') && !static_data.settings.allow_view){
 			return;
 		}
 		increment_date_units(false);
@@ -364,7 +364,7 @@ function evaluate_dynamic_change(){
 		preview_date.day		= data.day;
 		preview_date.epoch		= data.epoch;
 
-		if(data.rebuild || (!owner && static_data.settings.only_reveal_today) || !apply_changes_immediately){
+		if(data.rebuild || (!window.Perms.owner && static_data.settings.only_reveal_today) || !apply_changes_immediately){
 			pre_rebuild_calendar('calendar', dynamic_data)
 		}else{
 			scroll_to_epoch();

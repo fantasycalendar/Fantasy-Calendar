@@ -162,6 +162,8 @@ function set_up_visitor_inputs(){
         }
 	});
 
+	window.Perms.owner = true;
+
 	$.contextMenu({
 		selector: ".event:not(.event-text-output)",
 		items: {
@@ -184,12 +186,12 @@ function set_up_visitor_inputs(){
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
 					let event_id = element.attr('event_id');
-					return element.hasClass('era_event') || !(owner || window.Perms.player_at_least('co-owner') || window.Perms.userid == events[event_id].creator_id);
+					return element.hasClass('era_event') || !(window.Perms.player_at_least('co-owner') || window.Perms.userid == events[event_id].creator_id);
 				},
 				visible: function(key, opt){
 					let element = $(opt.$trigger[0]);
 					let event_id = element.attr('event_id');
-					return owner || window.Perms.player_at_least('co-owner') || window.Perms.userid == events[event_id].creator_id;
+					return window.Perms.player_at_least('co-owner') || window.Perms.userid == events[event_id].creator_id;
 				}
 			},
 			hide: {
@@ -203,12 +205,12 @@ function set_up_visitor_inputs(){
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
 					let event_id = Number(element.attr('event_id'));
-					return element.hasClass('era_event') || events[event_id].settings.hide || !(owner || window.Perms.player_at_least('co-owner'));
+					return element.hasClass('era_event') || events[event_id].settings.hide || !window.Perms.player_at_least('co-owner');
 				},
 				visible: function(key, opt){
 					let element = $(opt.$trigger[0]);
 					let event_id = Number(element.attr('event_id'));
-					return !element.hasClass('era_event') && !events[event_id].settings.hide && (owner || window.Perms.player_at_least('co-owner'));
+					return !element.hasClass('era_event') && !events[event_id].settings.hide && (window.Perms.player_at_least('co-owner'));
 				}
 			},
 			show: {
@@ -222,12 +224,12 @@ function set_up_visitor_inputs(){
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
 					let event_id = Number(element.attr('event_id'));
-					return element.hasClass('era_event') || !events[event_id].settings.hide || !(owner || window.Perms.player_at_least('co-owner'));
+					return element.hasClass('era_event') || !events[event_id].settings.hide || !window.Perms.player_at_least('co-owner');
 				},
 				visible: function(key, opt){
 					let element = $(opt.$trigger[0]);
 					let event_id = Number(element.attr('event_id'));
-					return !element.hasClass('era_event') && events[event_id].settings.hide && (owner || window.Perms.player_at_least('co-owner'));
+					return !element.hasClass('era_event') && events[event_id].settings.hide && (window.Perms.player_at_least('co-owner'));
 				}
 			},
 			delete: {
@@ -240,13 +242,13 @@ function set_up_visitor_inputs(){
 				},
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					return element.hasClass('era_event') || !(owner || window.Perms.player_at_least('co-owner') || window.Perms.userid == event.creator_id);
+					return element.hasClass('era_event') || !(window.Perms.player_at_least('co-owner') || window.Perms.userid == event.creator_id);
 				},
 				visible: function(key, opt){
 					let element = $(opt.$trigger[0]);
 					let event_id = element.attr('event_id');
 					let event = events[event_id];
-					return owner || window.Perms.player_at_least('co-owner') || window.Perms.userid == event.creator_id;
+					return window.Perms.player_at_least('co-owner') || window.Perms.userid == event.creator_id;
 				}
 			}
 		},
@@ -262,10 +264,10 @@ function set_up_visitor_inputs(){
 		disabled: function(key, opt){
 			let element = $(opt.$trigger[0]);
 			let epoch = element.attr('epoch');
-			return epoch == dynamic_data.epoch || !(owner || window.Perms.player_at_least('co-owner'));
+			return epoch == dynamic_data.epoch || !window.Perms.player_at_least('co-owner');
 		},
 		visible: function(){
-			return owner || window.Perms.player_at_least('co-owner');
+			return window.Perms.player_at_least('co-owner');
 		}
 	}
 
@@ -276,10 +278,10 @@ function set_up_visitor_inputs(){
 		disabled: function(key, opt){
 			let element = $(opt.$trigger[0]);
 			let epoch = element.attr('epoch');
-			return epoch == preview_date.epoch || !static_data.settings.allow_view && !(owner || window.Perms.player_at_least('co-owner'));
+			return epoch == preview_date.epoch || !static_data.settings.allow_view && !window.Perms.player_at_least('co-owner');
 		},
 		visible: function(key, opt){
-			return static_data.settings.allow_view || owner || window.Perms.player_at_least('co-owner');
+			return static_data.settings.allow_view || window.Perms.player_at_least('co-owner');
 		}
 	}
 
@@ -288,10 +290,10 @@ function set_up_visitor_inputs(){
 		icon: "fas fa-calendar-plus",
 		callback: context_add_event,
 		disabled: function(){
-			return !(owner || window.Perms.player_at_least('player'));
+			return !(window.Perms.player_at_least('player'));
 		},
 		visible: function(key, opt){
-			return owner || window.Perms.player_at_least('player');
+			return window.Perms.player_at_least('player');
 		}
 	}
 
@@ -302,10 +304,10 @@ function set_up_visitor_inputs(){
 			context_copy_link_date($(opt.$trigger[0]));
 		},
 		disabled: function(){
-			return !static_data.settings.allow_view && !(owner || window.Perms.player_at_least('co-owner'));
+			return !static_data.settings.allow_view && !window.Perms.player_at_least('co-owner');
 		},
 		visible: function(key, opt){
-			return static_data.settings.allow_view || owner || window.Perms.player_at_least('co-owner');
+			return static_data.settings.allow_view || window.Perms.player_at_least('co-owner');
 		}
 	}
 	
@@ -314,10 +316,10 @@ function set_up_visitor_inputs(){
 		icon: "fas fa-cogs",
 		callback: context_open_day_data,
 		disabled: function(){
-			return !(owner || window.Perms.player_at_least('co-owner'));
+			return !window.Perms.player_at_least('co-owner');
 		},
 		visible: function(){
-			return owner || window.Perms.player_at_least('co-owner');
+			return window.Perms.player_at_least('co-owner');
 		}
 	}
 
@@ -702,17 +704,17 @@ function evaluate_settings(){
 
 	/* TODO-Adam - Refactor once user permissions are available */
 
-	$('.date_control').toggleClass('hidden', (!owner && !static_data.settings.allow_view));
-	$('.date_control').find('select, input').not('#current_hour, #current_minute').prop('disabled', !owner && !static_data.settings.allow_view);
+	$('.date_control').toggleClass('hidden', (!window.Perms.player_at_least('co-owner') && !static_data.settings.allow_view));
+	$('.date_control').find('select, input').not('#current_hour, #current_minute').prop('disabled', !window.Perms.player_at_least('co-owner') && !static_data.settings.allow_view);
 
 	$("#date_inputs :input, #date_inputs :button").prop("disabled", has_parent);
 	$(".calendar_link_explaination").toggleClass("hidden", !has_parent);
 
-	follower_buttons.toggleClass('hidden', (!owner && !static_data.settings.allow_view));
-	follower_year_buttons.prop('disabled', (!owner && !static_data.settings.allow_view)).toggleClass('hidden', (!owner && !static_data.settings.allow_view));
+	follower_buttons.toggleClass('hidden', (!window.Perms.player_at_least('co-owner') && !static_data.settings.allow_view));
+	follower_year_buttons.prop('disabled', (!window.Perms.player_at_least('co-owner') && !static_data.settings.allow_view)).toggleClass('hidden', (!window.Perms.player_at_least('co-owner') && !static_data.settings.allow_view));
 	follower_timespan_buttons.prop('disabled', !static_data.settings.show_current_month).toggleClass('hidden', !static_data.settings.show_current_month);
 
-	if(!owner && static_data.settings.allow_view && (static_data.settings.only_backwards || static_data.settings.only_reveal_today)){
+	if(!window.Perms.player_at_least('co-owner') && static_data.settings.allow_view && (static_data.settings.only_backwards || static_data.settings.only_reveal_today)){
 
 		preview_date_manager.max_year = dynamic_data.year;
 

@@ -2,7 +2,7 @@ function display_events(static_data, event_data){
 
 	$('#calendar .event:not(.era_event)').remove();
 
-	if(owner || !static_data.settings.hide_events){
+	if(window.Perms.player_at_least('owner') || !static_data.settings.hide_events){
 
 		var num_valid_events = Object.keys(event_data.valid).length;
 
@@ -17,7 +17,7 @@ function display_events(static_data, event_data){
 
 			var category_hide = category ? category.category_settings.hide : false;
 
-			if(current_event.settings.hide_full || (!owner && (current_event.settings.hide || static_data.settings.hide_events || category_hide))) continue;
+			if(current_event.settings.hide_full || (!window.Perms.player_at_least('owner') && (current_event.settings.hide || static_data.settings.hide_events || category_hide))) continue;
 
 			calendar_layouts.layout.add_event(event_data, event_index, current_event, category_hide);
 
@@ -47,13 +47,13 @@ function insert_moons(data){
 
 	var moon_text = ['<div class="calendar_moon_container">'];
 
-	if(owner || !static_data.settings.hide_moons){
+	if(window.Perms.player_at_least('owner') || !static_data.settings.hide_moons){
 
 		for(moon_index = 0; moon_index < static_data.moons.length; moon_index++){
 
 			var moon = static_data.moons[moon_index];
 
-			if(!owner && moon.hidden) continue;
+			if(!window.Perms.player_at_least('owner') && moon.hidden) continue;
 
 			var name_array = moon_phases[moon.granularity];
 
@@ -203,7 +203,7 @@ var eras = {
 
 			var era = this.current_eras[this.era].data;
 
-			if(!this.static_data.settings.hide_eras || owner){
+			if(!this.static_data.settings.hide_eras || window.Perms.player_at_least('owner')){
 
 				if(era.settings.use_custom_format && era.formatting){
 
@@ -601,7 +601,7 @@ var calendar_layouts = {
 
 			var timespan_index = Object.keys(this.timespans)[i]
 
-			if(static_data.settings.only_reveal_today && !owner && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, timespan_index)){
+			if(static_data.settings.only_reveal_today && !window.Perms.player_at_least('owner') && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, timespan_index)){
 
 				continue;
 
@@ -668,7 +668,7 @@ var calendar_layouts = {
 
 		insert_day: function(epoch, weather_align, day_num, day_class, title){
 
-			if(static_data.settings.only_reveal_today && !owner && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day))
+			if(static_data.settings.only_reveal_today && !window.Perms.player_at_least('owner') && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day))
 			{
 
 				this.insert_empty_day(day_class);
@@ -685,7 +685,7 @@ var calendar_layouts = {
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow center'>");
 						if(epoch_data.weather && calendar_layouts.data.processed_weather){
-							if(owner || !(static_data.settings.hide_all_weather || (static_data.settings.hide_future_weather && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)))){
+							if(window.Perms.player_at_least('owner') || !(static_data.settings.hide_all_weather || (static_data.settings.hide_future_weather && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)))){
 								calendar_layouts.html.push(`<div class='weather_popup' align='${weather_align}'>${get_weather_icon(epoch_data)}</div>`);
 							}
 						}
@@ -708,7 +708,7 @@ var calendar_layouts = {
 						calendar_layouts.html.push("<div class='event_container'></div>");
 					calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("<div class='day_row'>");
-					if(owner || window.Perms.player_at_least('player')){
+					if(window.Perms.player_at_least('owner') || window.Perms.player_at_least('player')){
 						calendar_layouts.html.push(`<div epoch='${epoch}' class='btn_create_event btn btn-success full'><div class="event_create_label">Create Event</div></div>`);
 					}
 					calendar_layouts.html.push("</div>");
@@ -997,7 +997,7 @@ var calendar_layouts = {
 
 		insert_day: function(epoch, weather_align, day_num, day_class, title){
 
-			if(static_data.settings.only_reveal_today && !owner && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)){
+			if(static_data.settings.only_reveal_today && !window.Perms.player_at_least('owner') && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)){
 
 				this.insert_empty_day(day_class);
 
@@ -1013,7 +1013,7 @@ var calendar_layouts = {
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow center'>");
 						if(epoch_data.weather && calendar_layouts.data.processed_weather){
-							if(owner || !(static_data.settings.hide_all_weather || (static_data.settings.hide_future_weather && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)))){
+							if(window.Perms.player_at_least('owner') || !(static_data.settings.hide_all_weather || (static_data.settings.hide_future_weather && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)))){
 								calendar_layouts.html.push(`<div class='weather_icon weather_popup' align='${weather_align}'></div>`);
 							}
 						}
@@ -1036,7 +1036,7 @@ var calendar_layouts = {
 						calendar_layouts.html.push("<div class='event_container'></div>");
 					calendar_layouts.html.push("</div>");
 					calendar_layouts.html.push("<div class='day_row'>");
-					if(owner || window.Perms.player_at_least('player')){
+					if(window.Perms.player_at_least('owner') || window.Perms.player_at_least('player')){
 						calendar_layouts.html.push(`<div epoch='${epoch}' class='btn_create_event btn btn-success full'><div class="event_create_label">Create Event</div></div>`);
 					}
 					calendar_layouts.html.push("</div>");
@@ -1330,7 +1330,7 @@ var calendar_layouts = {
 
 		insert_day: function(epoch, day_num, day_class, title, intercalary){
 
-			if(static_data.settings.only_reveal_today && !owner && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)){
+			if(static_data.settings.only_reveal_today && !window.Perms.player_at_least('owner') && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)){
 
 				this.insert_empty_day(day_class);
 
@@ -1354,7 +1354,7 @@ var calendar_layouts = {
 						calendar_layouts.html.push("</div>");
 						calendar_layouts.html.push("<div class='toprow center'>");
 						if(epoch_data.weather && calendar_layouts.data.processed_weather){
-							if(owner || !(static_data.settings.hide_all_weather || (static_data.settings.hide_future_weather && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)))){
+							if(window.Perms.player_at_least('owner') || !(static_data.settings.hide_all_weather || (static_data.settings.hide_future_weather && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)))){
 								calendar_layouts.html.push(`<div class='weather_icon weather_popup' align=''></div>`);
 							}
 						}
@@ -1413,7 +1413,7 @@ var calendar_layouts = {
 					calendar_layouts.html.push("</div>");
 
 					calendar_layouts.html.push("<div class='day_row'>");
-					if(owner || window.Perms.player_at_least('player')){
+					if(window.Perms.player_at_least('owner') || window.Perms.player_at_least('player')){
 						calendar_layouts.html.push(`<div epoch='${epoch}' class='btn_create_event btn btn-success full'><div class="event_create_label">Create Event</div></div>`);
 					}
 					calendar_layouts.html.push("</div>");
@@ -1646,19 +1646,19 @@ var calendar_layouts = {
 
 		insert_day: function(epoch, weather_align, day_num, day_class, title){
 
-			if(static_data.settings.only_reveal_today && !owner && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)){
+			if(static_data.settings.only_reveal_today && !window.Perms.player_at_least('owner') && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day)){
 
 				this.insert_empty_day(day_class);
 
 			}else{
 
-				if(!(!owner && (static_data.settings.hide_all_weather || (static_data.settings.hide_future_weather && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day))))){
+				if(!(!window.Perms.player_at_least('owner') && (static_data.settings.hide_all_weather || (static_data.settings.hide_future_weather && is_past_current_date(dynamic_data, calendar_layouts.year_data.year, this.timespan.index, this.timespan.day))))){
 					day_class += " weather_popup";
 				}else{
 					day_class += " weather_popup noweather";
 				}
 
-				if(static_data.moons.length > 0 && (owner || !static_data.settings.hide_moons)){
+				if(static_data.moons.length > 0 && (window.Perms.player_at_least('owner') || !static_data.settings.hide_moons)){
 					day_class += " moon_popup ";
 				}
 

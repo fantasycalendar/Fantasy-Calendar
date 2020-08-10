@@ -97,10 +97,10 @@ class Calendar extends Model
 
     public function getOwnedAttribute() {
         if (Auth::check() && ($this->user->id == Auth::user()->id || Auth::user()->isAdmin())) {
-            return "true";
+            return true;
         }
 
-        return "false";
+        return false;
     }
 
     public function getClockEnabledAttribute() {

@@ -7,7 +7,6 @@
 
         preset_applied = false;
         calendar_name = '';
-        owner = true;
         has_parent = false;
         is_linked = false;
         static_data = {

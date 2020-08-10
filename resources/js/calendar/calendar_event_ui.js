@@ -1958,7 +1958,7 @@ var edit_event_ui = {
             events: events,
             event_categories: event_categories,
 			action: "future",
-			owner: owner,
+			owner: window.Perms.player_at_least('co-owner'),
 			start_year: start_year,
 			end_year: end_year
 		});
@@ -2342,7 +2342,7 @@ var show_event_ui = {
 
 		this.db_event_id = event.id;
 
-		let can_edit = owner || window.Perms.player_at_least('co-owner') || window.Perms.userid == event.creator_id;
+		let can_edit = window.Perms.player_at_least('co-owner') || window.Perms.userid == event.creator_id;
 
 		this.edit_event_btn.prop('disabled', !can_edit).toggleClass('hidden', !can_edit);
 
@@ -2506,7 +2506,7 @@ var edit_HTML_ui = {
 
 function can_comment_on_event(){
 
-	if(owner){
+	if(window.Perms.player_at_least('co-owner')){
 		return true;
 	}
 

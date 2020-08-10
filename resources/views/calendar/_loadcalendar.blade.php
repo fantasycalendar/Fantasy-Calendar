@@ -2,9 +2,9 @@
 // It's... Not permanent. I hope.
 
 @if(Auth::check())
-    window.Perms = new Perms({{ Auth::user()->id }}, '{{ strtolower(Auth::user()->paymentLevel()) }}', '{{ $calendar->users->contains(Auth::user()) ? $calendar->users->find(Auth::user())->pivot->user_role : null }}')
+    window.Perms = new Perms({{ Auth::user()->id }}, {{ $calendar ? ($calendar->owned ? "true" : "false") : "true" }}, '{{ strtolower(Auth::user()->paymentLevel()) }}', '{{ $calendar->users->contains(Auth::user()) ? $calendar->users->find(Auth::user())->pivot->user_role : null }}')
 @else
-    window.Perms = new Perms({{Auth::user() ? Auth::user()->id : "null"}}, 'free', 'guest');
+    window.Perms = new Perms({{ Auth::user() ? Auth::user()->id : "null" }}, {{ $calendar ? ($calendar->owned ? "true" : "false") : "true" }}, 'free', 'guest');
 @endif
 
 hash = "{{ $calendar->hash }}";

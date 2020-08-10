@@ -103,7 +103,7 @@ function set_up_edit_inputs(){
 	$('.view-tabs .btn').click(function(){
 
 		view_type = $(this).attr('data-view-type');
-		owner = true;
+		window.Perms.owner = true;
 
 		$('.view-tabs .btn-primary').removeClass('btn-primary').addClass('btn-secondary');
 
@@ -132,7 +132,7 @@ function set_up_edit_inputs(){
 				break;
 
 			case "player":
-				owner = false;
+				window.Perms.owner = false;
 				if(creation_steps.current_step > creation_steps.steps && errors.length == 0){
 					if(previous_view_type !== 'player'){
 						evaluate_settings();
@@ -5035,25 +5035,25 @@ function populate_calendar_lists(){
 
 		for(var calendar_hash in owned_calendars){
 
-			var calendar = owned_calendars[calendar_hash];
+			var child_calendar = owned_calendars[calendar_hash];
 
-			if(calendar.hash != hash){
+			if(child_calendar.hash != hash){
 
-				if(calendar.parent_hash){
+				if(child_calendar.parent_hash){
 
-					var owner = clone(owned_calendars[calendar.parent_hash]);
+					var calendar_owner = clone(owned_calendars[child_calendar.parent_hash]);
 
-					if(owner.hash == hash){
-						owner.name = "this calendar";
+					if(calendar_owner.hash == hash){
+						calendar_owner.name = "this calendar";
 					}
 
 				}else{
 
-					var owner = false;
+					var calendar_owner = false;
 
 				}
 
-				html.push(`<option ${owner ? "disabled" : ""} value="${calendar.hash}">${calendar.name}${owner ? ` | Linked to ${owner.name}` : ""}</option>`);
+				html.push(`<option ${calendar_owner ? "disabled" : ""} value="${child_calendar.hash}">${child_calendar.name}${calendar_owner ? ` | Linked to ${calendar_owner.name}` : ""}</option>`);
 			}
 		}
 

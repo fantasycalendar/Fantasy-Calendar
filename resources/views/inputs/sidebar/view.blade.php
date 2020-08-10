@@ -50,8 +50,7 @@
 	            </div>
             </div>
 
-            
-			@if(Auth::check())
+			@if($calendar->owned)
             <div class='row'>
                 <div class='col'>
                     <a href="{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}" class='full'>
