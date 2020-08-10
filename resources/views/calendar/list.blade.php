@@ -127,7 +127,7 @@
                 @foreach($shared_calendars as $index => $calendar)
                     <div class="row border-top py-3 calendar-entry list-group-item-action w-auto">
                         <div class="col-6 col-md-4 col-lg-5">
-                            <a href="{{ Auth::user()->can('update', $calendar) ? route('calendars.edit', ['calendar'=> $calendar->hash]) : route('calendars.show', ['calendar'=> $calendar->hash]) }}"><h4 class="calendar-name">{{ $calendar->name }} <br><small>{{ $calendar->user->username }}</small></h4></a>
+                            <a href="{{ Auth::user()->can('update', $calendar) ? route('calendars.edit', ['calendar'=> $calendar->hash]) : route('calendars.show', ['calendar'=> $calendar->hash]) }}"><h4 class="calendar-name">{{ $calendar->name }} <small class="badge badge-secondary" style="font-size: 14px; position: relative; top: -4px; margin-left: 4px;">{{ $calendar->pivot->user_role }}</small> <br><small>{{ $calendar->user->username }}</small></h4></a>
                         </div>
                         <div style="padding-left: 33px;" class="d-none d-md-block col-md-4 col-lg-3">
                             <i class="fa fa-calendar" style="margin-left: -20px;"></i> {{ $calendar->current_date() }} <br>
