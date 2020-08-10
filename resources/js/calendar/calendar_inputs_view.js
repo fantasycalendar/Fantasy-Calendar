@@ -1,11 +1,11 @@
 rebuild_type = 'calendar';
 
 function set_up_view_inputs(){
-	
+
 	set_up_visitor_inputs();
 
 	calendar_container = $('#calendar');
-	
+
 	current_year = $('#current_year');
 	current_timespan = $('#current_timespan');
 	current_day = $('#current_day');
@@ -47,7 +47,7 @@ function set_up_view_inputs(){
 	sub_current_year.click(function(){
 
 		dynamic_date_manager.subtract_year();
-		
+
 		evaluate_dynamic_change();
 
 	});
@@ -71,7 +71,7 @@ function set_up_view_inputs(){
 	add_current_year.click(function(){
 
 		dynamic_date_manager.add_year();
-		
+
 		evaluate_dynamic_change();
 
 	});
@@ -172,7 +172,7 @@ function set_up_view_inputs(){
 			evaluate_apply_show_hide();
 			return;
 		}
-		
+
 		eval_current_time();
 		evaluate_save_button();
 
@@ -264,14 +264,14 @@ function set_up_view_inputs(){
 
 
 	$('#current_date_btn').click(function(){
-		if(!window.Perms.player_at_least('co-owner') && !static_data.settings.allow_view){
+		if(!Perms.player_at_least('co-owner') && !static_data.settings.allow_view){
 			return;
 		}
 		increment_date_units(true);
 	});
 
 	$('#preview_date_btn').click(function(){
-		if(!window.Perms.player_at_least('co-owner') && !static_data.settings.allow_view){
+		if(!Perms.player_at_least('co-owner') && !static_data.settings.allow_view){
 			return;
 		}
 		increment_date_units(false);
@@ -364,7 +364,7 @@ function evaluate_dynamic_change(){
 		preview_date.day		= data.day;
 		preview_date.epoch		= data.epoch;
 
-		if(data.rebuild || (!window.Perms.owner && static_data.settings.only_reveal_today) || !apply_changes_immediately){
+		if(data.rebuild || (!Perms.owner && static_data.settings.only_reveal_today) || !apply_changes_immediately){
 			pre_rebuild_calendar('calendar', dynamic_data)
 		}else{
 			scroll_to_epoch();

@@ -1,6 +1,6 @@
 class Perms {
     constructor(userid, owner, level, playerLevel) {
-        
+
         this.userid = userid;
         this.level = level;
         this.owner = owner;
@@ -27,7 +27,7 @@ class Perms {
     }
 
     player_at_least(level) {
-        return this.owner || this.playerLevels[this.level] >= this.playerLevels[level];
+        return this.owner || this.playerLevels[this.playerLevel] >= this.playerLevels[level];
     }
 }
 

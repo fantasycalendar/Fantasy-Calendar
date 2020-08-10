@@ -118,7 +118,7 @@ function rebuild_calendar(action, dynamic_data){
         events: events,
         event_categories: event_categories,
 		action: action,
-		owner: window.Perms.player_at_least('co-owner')
+		owner: Perms.player_at_least('co-owner')
 	});
 
 }
@@ -198,9 +198,9 @@ worker_climate.onmessage = e => {
 
 		evaluate_day_length_chart();
 		evaluate_weather_charts();
-		
+
 	}else{
-		
+
 		evaluate_day_length_chart();
 		evaluate_weather_charts();
 		eval_current_time();

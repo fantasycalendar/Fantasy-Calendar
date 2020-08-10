@@ -627,7 +627,7 @@ var edit_event_ui = {
 	},
 
 	save_current_event: function(){
-		
+
 		var eventid = events[this.event_id].id;
 		let new_event = {}
 		new_event.id = eventid;
@@ -639,7 +639,7 @@ var edit_event_ui = {
 
 		new_event.description = sanitizeHtml(this.trumbowyg.trumbowyg('html'), {allowedTags: [ 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'a', 'ul', 'ol', 'nl', 'li', 'b', 'i', 'strong', 'em', 'strike', 'code', 'hr', 'br', 'div', 'table', 'thead', 'caption', 'tbody', 'tr', 'th', 'td', 'pre', 'img' ]});
 
-		if(window.Perms.playerLevel == "player"){
+		if(Perms.playerLevel == "player"){
 			new_event.data = events[this.event_id].data;
 		}else{
 			let data = this.create_event_data();
@@ -1958,7 +1958,7 @@ var edit_event_ui = {
             events: events,
             event_categories: event_categories,
 			action: "future",
-			owner: window.Perms.player_at_least('co-owner'),
+			owner: Perms.player_at_least('co-owner'),
 			start_year: start_year,
 			end_year: end_year
 		});
@@ -2241,7 +2241,7 @@ var show_event_ui = {
 		this.event_comment_input				= this.event_background.find('#event_comment_input');
 		this.event_save_btn						= this.event_background.find('#submit_comment');
 		this.edit_event_btn				   		= this.event_background.find('.edit_event_btn');
-			
+
 		this.event_comment_mastercontainer.toggleClass('hidden', !can_comment_on_event());
 
 		this.event_comment_input.trumbowyg({
@@ -2342,7 +2342,7 @@ var show_event_ui = {
 
 		this.db_event_id = event.id;
 
-		let can_edit = window.Perms.player_at_least('co-owner') || (window.Perms.userid == event.creator_id && window.Perms.player_at_least('player'));
+		let can_edit = Perms.player_at_least('co-owner') || (Perms.userid == event.creator_id && Perms.player_at_least('player'));
 
 		this.edit_event_btn.prop('disabled', !can_edit).toggleClass('hidden', !can_edit);
 
@@ -2381,7 +2381,7 @@ var show_event_ui = {
 			}
 
 		}else{
-			
+
 			show_event_ui.event_comment_mastercontainer.toggleClass('hidden', !can_comment_on_event());
 
 			if(can_comment_on_event()){
@@ -2506,7 +2506,7 @@ var edit_HTML_ui = {
 
 function can_comment_on_event(){
 
-	if(window.Perms.player_at_least('co-owner')){
+	if(Perms.player_at_least('co-owner')){
 		return true;
 	}
 
@@ -2515,11 +2515,11 @@ function can_comment_on_event(){
 	}
 
 	if(static_data.settings.comments == "players"){
-		return window.Perms.player_at_least('player');
+		return Perms.player_at_least('player');
 	}
 
 	if(static_data.settings.comments == "public"){
-		return window.Perms.player_at_least('free');
+		return Perms.player_at_least('free');
 	}
 
 	return false;

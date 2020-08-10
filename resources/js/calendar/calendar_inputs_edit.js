@@ -103,7 +103,7 @@ function set_up_edit_inputs(){
 	$('.view-tabs .btn').click(function(){
 
 		view_type = $(this).attr('data-view-type');
-		window.Perms.owner = true;
+		Perms.owner = true;
 
 		$('.view-tabs .btn-primary').removeClass('btn-primary').addClass('btn-secondary');
 
@@ -132,7 +132,7 @@ function set_up_edit_inputs(){
 				break;
 
 			case "player":
-				window.Perms.owner = false;
+				Perms.owner = false;
 				if(creation_steps.current_step > creation_steps.steps && errors.length == 0){
 					if(previous_view_type !== 'player'){
 						evaluate_settings();
@@ -5072,7 +5072,7 @@ function repopulate_event_category_lists(){
 	for(var categoryId in event_categories){
 		var category = event_categories[categoryId];
 
-		if(window.Perms.playerLevel == 'player' && !category.category_settings.player_usable) continue;
+		if(Perms.playerLevel == 'player' && !category.category_settings.player_usable) continue;
 
 		if(typeof category.id !== "undefined") {
 			slug = category.id;
