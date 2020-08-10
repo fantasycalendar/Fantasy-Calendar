@@ -162,8 +162,6 @@ function set_up_visitor_inputs(){
         }
 	});
 
-	window.Perms.owner = true;
-
 	$.contextMenu({
 		selector: ".event:not(.event-text-output)",
 		items: {
