@@ -52,7 +52,7 @@
         @else
             <h1>Calendars</h1>
 
-            @if($calendars->hasPages())
+            @if($calendars->hasPages() || $search)
                 <div class="d-flex flex-column flex-md-row justify-content-between">
                     <form action="{{ route('calendars.index') }}" class="calendar-search" method="get">
                         @csrf
