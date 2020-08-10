@@ -54,7 +54,7 @@ class CalendarPolicy
      */
     public function create(User $user)
     {
-        return true;
+        return $user->calendars()->count() < 2 || $user->paymentLevel() != 'Free';
     }
 
     /**

@@ -71,7 +71,12 @@
 
     <div class="container py-4">
         <h1 class="center-text">Subscribe to Fantasy Calendar</h1>
-        @if(!$betaAccess || Auth::user()->paymentLevel() == "Free")
+
+        @if(session()->has('alert'))
+            <div class="alert alert-info py-3 m-5">{{ session('alert') }}</div>
+        @endif
+
+    @if(!$betaAccess || Auth::user()->paymentLevel() == "Free")
         <div class="row">
             <div class="col-12 center-text py-2">
                 <span>Monthly</span>
