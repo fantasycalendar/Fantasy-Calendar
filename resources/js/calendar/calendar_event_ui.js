@@ -2342,7 +2342,7 @@ var show_event_ui = {
 
 		this.db_event_id = event.id;
 
-		let can_edit = window.Perms.player_at_least('co-owner') || window.Perms.userid == event.creator_id;
+		let can_edit = window.Perms.player_at_least('co-owner') || (window.Perms.userid == event.creator_id && window.Perms.player_at_least('player'));
 
 		this.edit_event_btn.prop('disabled', !can_edit).toggleClass('hidden', !can_edit);
 
