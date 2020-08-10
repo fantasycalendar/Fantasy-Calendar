@@ -51,23 +51,25 @@
             </div>
         @else
             <h1>Calendars</h1>
-            <div class="d-flex flex-column flex-md-row justify-content-between">
 
-            <form action="{{ route('calendars.index') }}" class="calendar-search" method="get">
-                @csrf
-                <div class="form-group input-group">
-                    <input type="text" class="form-control calendar-search-input" name="search" placeholder="Search..." @if($search) value="{{ $search }}" @endif>
-                    <span class='search-clear'><i class="fa fa-times"></i></span>
-                    <div class="input-group-append">
-                    <button class="btn btn-outline-secondary">
-                        <i class="fa fa-search"></i>
-                    </button>
-                    </div>
-                </div>
-            </form>
+            @if($calendars->hasPages())
+                <div class="d-flex flex-column flex-md-row justify-content-between">
+                    <form action="{{ route('calendars.index') }}" class="calendar-search" method="get">
+                        @csrf
+                        <div class="form-group input-group">
+                            <input type="text" class="form-control calendar-search-input" name="search" placeholder="Search..." @if($search) value="{{ $search }}" @endif>
+                            <span class='search-clear'><i class="fa fa-times"></i></span>
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
 
+                    <span class="d-none d-md-block">{{ $calendars->onEachSide(1)->links() }}</span><span class="d-block d-md-none">{{ $calendar_pagination->links() }}</span></div>
+            @endif
 
-                <span class="d-none d-md-block">{{ $calendars->onEachSide(1)->links() }}</span><span class="d-block d-md-none">{{ $calendar_pagination->links() }}</span></div>
             @foreach($calendars as $index => $calendar)
                 <div class="row border-top py-3 calendar-entry list-group-item-action w-auto">
                     <div class="col-6 col-md-4 col-lg-5">
