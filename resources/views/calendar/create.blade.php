@@ -47,6 +47,7 @@
                 "layout":"grid",
                 "comments":"none",
                 "show_current_month":false,
+                "private":false,
                 "allow_view":true,
                 "only_backwards":true,
                 "only_reveal_today":false,

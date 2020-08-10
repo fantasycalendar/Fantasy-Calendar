@@ -1115,6 +1115,15 @@
 
                         <div class='bold-text'>Guest View Settings:</div>
 
+                        <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This will make this calendar private to anyone who hasn't been added to it">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings' fc-index='private'>
+                                <span>
+    							Make calendar private
+    						</span>
+                            </div>
+                        </label>
+
                         <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This will allow viewers to view any past or future year and months just like you can">
                             <div class='col'>
                                 <input type='checkbox' class='margin-right static_input' data='settings' fc-index='allow_view'>

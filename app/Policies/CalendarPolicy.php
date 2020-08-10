@@ -32,7 +32,7 @@ class CalendarPolicy
     {
         $user = $user ?? auth('api')->user() ?? null;
 
-        return $calendar->setting('allow_view')
+        return !$calendar->setting('private')
             || (
                 $user
 
