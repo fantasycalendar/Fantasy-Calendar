@@ -42,7 +42,7 @@
 
 @section('content')
     <div class="container py-5">
-        @unless(count($calendars) || count($shared_calendars) || $search)
+        @unless((count($calendars) || count($shared_calendars)) || $search)
             <div class="row text-center pb-4 border-bottom">
                 <div class="col-12">
                     <h1>You don't have any calendars yet!</h1>
