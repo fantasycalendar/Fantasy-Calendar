@@ -1,5 +1,5 @@
 class Perms {
-    constructor(userid, level, playerLevel = 0) {
+    constructor(userid, level, playerLevel) {
         
         this.userid = userid;
         this.level = level;
@@ -13,9 +13,10 @@ class Perms {
         };
 
         this.playerLevels = {
-            'observer': 0,
-            'player': 1,
-            'co-owner': 2
+            'guest': 0,
+            'observer': 1,
+            'player': 2,
+            'co-owner': 3
         }
 
     }

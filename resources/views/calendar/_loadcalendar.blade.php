@@ -1,10 +1,10 @@
 // This file is technically Javascript.
 // It's... Not permanent. I hope.
 
-@if(Auth::check() && $calendar->users->contains(Auth::user()))
-    window.Perms = new Perms({{Auth::user() ? Auth::user()->id : "null"}}, '{{ $calendar->users->find(Auth::user())->pivot->user_role }}')
+@if(Auth::check())
+    window.Perms = new Perms({{ Auth::user()->id }}, '{{ strtolower(Auth::user()->paymentLevel()) }}', '{{ $calendar->users->contains(Auth::user()) ? $calendar->users->find(Auth::user())->pivot->user_role : null }}')
 @else
-    window.Perms = new Perms({{Auth::user() ? Auth::user()->id : "null"}}, 'observer');
+    window.Perms = new Perms({{Auth::user() ? Auth::user()->id : "null"}}, 'free', 'guest');
 @endif
 
 hash = "{{ $calendar->hash }}";

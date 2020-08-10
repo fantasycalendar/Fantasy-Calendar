@@ -3916,7 +3916,8 @@ function add_user_to_list(parent, key, data){
 					element.push("<select class='form-control user_permissions_select' onchange='user_permissions_select(this)'>");
 						element.push(`<option ${data.pivot.user_role == 'observer' ? "selected" : ""} value='observer'>Observer</option>`);
 						element.push(`<option ${data.pivot.user_role == 'player' ? "selected" : ""} value='player'>Player</option>`);
-						element.push(`<option ${!Perms.at_least('worldbuilder') ? "disabled" : ""} ${data.pivot.user_role == 'co-owner' ? "selected" : ""} value='co-owner'>CO-GM${!Perms.at_least('worldbuilder') ? " (Only available to Worldbuilder tier)" : ""}</option>`);
+						console.log(Perms)
+						element.push(`<option ${!Perms.user_at_least('worldbuilder') ? "disabled" : ""} ${data.pivot.user_role == 'co-owner' ? "selected" : ""} value='co-owner'>CO-GM${!Perms.user_at_least('worldbuilder') ? " (Only available to Worldbuilder tier)" : ""}</option>`);
 					element.push("</select>");
 				element.push("</div>");
 				element.push("<div class='col-md-auto'>");
