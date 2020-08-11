@@ -2510,10 +2510,6 @@ function can_comment_on_event(){
 		return true;
 	}
 
-	if(static_data.settings.comments == "none"){
-		return false;
-	}
-
 	if(static_data.settings.comments == "players"){
 		return Perms.player_at_least('player');
 	}

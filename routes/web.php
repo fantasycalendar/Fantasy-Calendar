@@ -103,18 +103,18 @@ Route::get('/profile', function() {
     ]);
 })->middleware('auth')->name('profile');
 
-
+Route::get('/error/unavailable', 'ErrorsController@calendarUnavailable')->name('errors.calendar_unavailable');
 // Manual error page routes for the moment
 Route::get('/403', function() {
     return redirect('/');
-});
+})->name('error403');
 
 Route::get('/404', function() {
     return view('errors.404', [
         'title' => 'Calendar not found',
         'resource' => 'Calendar'
     ]);
-});
+})->name('error404');
 
 // Catch-all redirect to make sure old bookmarks and such work.
 // TODO: Add a way to warn users that this will break some day.

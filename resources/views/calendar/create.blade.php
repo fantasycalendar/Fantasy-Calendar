@@ -5,6 +5,13 @@
 
         hash = getUrlParameter('id');
 
+        window.Perms = new Perms(
+            {{ Auth::check() ? Auth::user()->id : "null" }},
+            {{ isset($calendar) ? ($calendar->owned ? "true" : "false") : "true" }},
+            'free',
+            'guest'
+        );
+
         preset_applied = false;
         calendar_name = '';
         has_parent = false;

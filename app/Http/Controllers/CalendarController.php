@@ -43,7 +43,7 @@ class CalendarController extends Controller
         $user_calendars = $user_calendars->paginate(10);
 
 
-        $shared_calendars = Auth::user()->related_calendars()->search($request->input('search'));
+        $shared_calendars = Auth::user()->related_calendars()->where('disabled', '=', 0)->search($request->input('search'));
 
         $sharedCalendarSimplePagination = $shared_calendars->simplePaginate(10);
         $shared_calendars = $shared_calendars->paginate(10);

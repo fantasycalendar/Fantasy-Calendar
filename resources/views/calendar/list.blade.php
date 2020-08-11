@@ -71,9 +71,9 @@
             @endif
 
             @foreach($calendars as $index => $calendar)
-                <div class="row border-top py-3 calendar-entry list-group-item-action w-auto">
+                <div class="row border-top py-3 calendar-entry list-group-item-action w-auto @if($calendar->disabled) calendar-disabled protip @endif" @if($calendar->disabled) data-pt-title="Free accounts are limited to two calendars. You'll need to re-subscribe to use this one." @endif>
                     <div class="col-6 col-md-4 col-lg-5">
-                        <a href="{{ route('calendars.edit', ['calendar'=> $calendar->hash]) }}"><h4 class="calendar-name">{{ $calendar->name }} <br><small>{{ $calendar->user->username }}</small></h4></a>
+                        <a href="{{ route('calendars.edit', ['calendar'=> $calendar->hash]) }}"><h4 class="calendar-name">{{ $calendar->name }} <br><span class="creator_name">{{ $calendar->user->username }}</span></h4></a>
                     </div>
                     <div style="padding-left: 33px;" class="d-none d-md-block col-md-4 col-lg-3">
                         <i class="fa fa-calendar" style="margin-left: -20px;"></i> {{ $calendar->current_date() }} <br>
@@ -129,7 +129,7 @@
                 @foreach($shared_calendars as $index => $calendar)
                     <div class="row border-top py-3 calendar-entry list-group-item-action w-auto">
                         <div class="col-6 col-md-4 col-lg-5">
-                            <a href="{{ Auth::user()->can('update', $calendar) ? route('calendars.edit', ['calendar'=> $calendar->hash]) : route('calendars.show', ['calendar'=> $calendar->hash]) }}"><h4 class="calendar-name">{{ $calendar->name }} <small class="badge badge-secondary" style="font-size: 14px; position: relative; top: -4px; margin-left: 4px;">{{ $calendar->pivot->user_role }}</small> <br><small>{{ $calendar->user->username }}</small></h4></a>
+                            <a href="{{ Auth::user()->can('update', $calendar) ? route('calendars.edit', ['calendar'=> $calendar->hash]) : route('calendars.show', ['calendar'=> $calendar->hash]) }}"><h4 class="calendar-name">{{ $calendar->name }} <small class="badge badge-secondary" style="font-size: 44%; position: relative; top: -4px; margin-left: 4px;">{{ $calendar->pivot->user_role }}</small> <br><span class="creator_name">{{ $calendar->user->username }}</span></h4></a>
                         </div>
                         <div style="padding-left: 33px;" class="d-none d-md-block col-md-4 col-lg-3">
                             <i class="fa fa-calendar" style="margin-left: -20px;"></i> {{ $calendar->current_date() }} <br>
@@ -166,10 +166,6 @@
                                         </a>
                                         <a class="dropdown-item action-export protip" data-pt-delay-in="500" data-pt-title="Export '{{ $calendar->name }}'" href="{{ route('calendars.export', ['calendar' => $calendar->hash]) }}" >
                                             <i class="fa fa-file-export"></i> Export
-                                        </a>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item delete_button action-delete protip" data-pt-delay-in="500" data-pt-title="Delete '{{ $calendar->name }}'" href="javascript:" data-hash="{{ $calendar->hash }}" data-name="{{ $calendar->name }}">
-                                            <i class="fa fa-calendar-times"></i> Delete
                                         </a>
                                     </div>
                                 @endif

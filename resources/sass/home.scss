@@ -64,13 +64,20 @@
     padding-top: 3rem;
 }
 
+.calendar-disabled {
+    pointer-events: none;
+    opacity: 0.3;
+    background-color: $calendar-bg-color;
+}
+
 .calendar-name {
     color: $accent-color-light;
     font-weight: bold;
 
-    small {
+    .creator_name {
         color: $wiki-link-hover-color;
         font-weight: normal;
+        font-size: 80%;
     }
 }
 

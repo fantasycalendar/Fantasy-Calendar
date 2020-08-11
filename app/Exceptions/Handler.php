@@ -61,6 +61,10 @@ class Handler extends ExceptionHandler
             if($request->is('calendars/create')) {
                 return redirect(route('subscription.pricing'))->with('alert', "Thanks for using Fantasy Calendar! Please subscribe to have more than two calendars active at a time.");
             }
+
+            if($request->is('calendars/*')) {
+                return redirect(route('errors.calendar_unavailable'));
+            }
         }
 
         if ($this->isHttpException($exception)) {

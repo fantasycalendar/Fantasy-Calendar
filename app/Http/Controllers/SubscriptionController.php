@@ -70,6 +70,11 @@ class SubscriptionController extends Controller
 
             $user->newSubscription($level, $plan)->create($request->input('token'));
 
+            $user->calendars()->each(function($calendar){
+                $calendar->disabled = 0;
+                $calendar->save();
+            });
+
         } catch (IncompletePayment $exception) {
 
             return redirect()->route(
