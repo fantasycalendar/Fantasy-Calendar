@@ -4998,6 +4998,24 @@ function evaluate_save_button(override){
 
 		create_button.toggleClass('btn-danger', invalid).toggleClass('btn-success', !invalid).text(text);
 
+	}else{
+
+		var invalid = errors.length > 0;
+
+		var apply_changes_immediately = $('#apply_changes_immediately').is(':checked');
+
+		if(!apply_changes_immediately && !override && !invalid){
+
+			$('.login-show-button').prop('disabled', true);
+
+		}else{
+
+			$('.login-show-button').prop('disabled', invalid);
+
+		}
+
+		autosave();
+
 	}
 
 }

@@ -19,7 +19,7 @@
                 @if(Auth::check())
                     <button type="button" disabled id='btn_create' class='btn btn-lg btn-danger btn-block'>Cannot create yet</button>
                 @else
-                    <button type='button' class='login-show-button btn btn-lg btn-info btn-block'>Log in to save</button>
+                    <button type='button' disabled class='login-show-button btn btn-lg btn-info btn-block'>Log in to save</button>
                 @endif
             </div>
         </div>
