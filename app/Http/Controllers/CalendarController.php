@@ -21,7 +21,7 @@ class CalendarController extends Controller
     public function __construct() {
         // $this->middleware('calendarauth');
 
-        $this->middleware('auth')->except('show');
+        $this->middleware('auth')->except('show', 'create');
 
         $this->middleware('verified')->only('edit');
 

@@ -53,9 +53,13 @@ class CalendarPolicy
      * @param  \App\User  $user
      * @return mixed
      */
-    public function create(User $user)
+    public function create(?User $user)
     {
-        return $user->calendars()->count() < 2 || $user->paymentLevel() != 'Free';
+        if($user) {
+            return  $user->calendars()->count() < 2 || $user->paymentLevel() != 'Free';
+        }
+
+        return true;
     }
 
     /**
