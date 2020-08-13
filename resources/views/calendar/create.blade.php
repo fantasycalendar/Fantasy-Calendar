@@ -103,7 +103,12 @@
             edit_event_ui.bind_events();
             edit_HTML_ui.bind_events();
 
-            autoload();
+            const queryString = window.location.search;
+            if(evaluate_queryString(queryString)){
+                autoload();
+            }else{
+                query_autoload();
+            }
 
             var html = [];
             for(var i = 0; i < Object.keys(calendar_presets).length; i++){
@@ -219,6 +224,13 @@
             do_error_check('calendar', true);
             evaluate_save_button();
         }
+
+        function evaluate_queryString(queryString){
+            const urlParams = new URLSearchParams(queryString);
+            return urlParams.has("resume");
+        }
+
+
     </script>
 @endpush
 

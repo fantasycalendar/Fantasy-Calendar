@@ -662,7 +662,7 @@ function copy_calendar(calendar_hash, calendar_name, callback){
 
 }
 
-function create_calendar(){
+function create_calendar(callback){
 
 	$.ajax({
 		url:window.baseurl+"calendars",

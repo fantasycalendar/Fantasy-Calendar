@@ -66,6 +66,17 @@ function set_up_edit_inputs(){
 
 	});
 
+	log_in_button = $('.login-button');
+
+	log_in_button.click(function(){
+
+		// Unhook before unload
+		window.onbeforeunload = function () {}
+
+		window.location = '/login?continue_create=true';
+
+	});
+
 	save_button.prop('disabled', true);
 	create_button.prop('disabled', true);
 
@@ -5006,11 +5017,11 @@ function evaluate_save_button(override){
 
 		if(!apply_changes_immediately && !override && !invalid){
 
-			$('.login-show-button').prop('disabled', true);
+			log_in_button.prop('disabled', true);
 
 		}else{
 
-			$('.login-show-button').prop('disabled', invalid);
+			log_in_button.prop('disabled', invalid);
 
 		}
 
@@ -5428,11 +5439,9 @@ function autosave(){
 
 }
 
-function autoload(){
+function query_autoload(){
 
-	var saved_data = localStorage.getItem('autosave')
-
-	if(saved_data){
+	if(localStorage.getItem('autosave')){
 
 		swal.fire({
 			title: "Load unsaved calendar?",
@@ -5448,25 +5457,7 @@ function autoload(){
 
 			if(!result.dismiss) {
 
-				var data = JSON.parse(saved_data);
-				prev_dynamic_data = {}
-				prev_static_data = {}
-				calendar_name = data.calendar_name;
-				static_data = data.static_data;
-				dynamic_data = data.dynamic_data;
-				dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
-				empty_edit_values();
-				set_up_edit_values();
-				set_up_view_values();
-				set_up_visitor_values();
-
-				do_error_check("calendar", true);
-
-				swal.fire({
-					icon: "success",
-					title: "Loaded!",
-					text: "The calendar " + calendar_name + " has been loaded."
-				});
+				autoload(true);
 
 			}else{
 
@@ -5475,6 +5466,38 @@ function autoload(){
 			}
 
 		});
+
+	}
+
+}
+
+function autoload(popup){
+
+	let saved_data = localStorage.getItem('autosave');
+
+	if(saved_data){
+
+		var data = JSON.parse(saved_data);
+		prev_dynamic_data = {}
+		prev_static_data = {}
+		calendar_name = data.calendar_name;
+		static_data = data.static_data;
+		dynamic_data = data.dynamic_data;
+		dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+		empty_edit_values();
+		set_up_edit_values();
+		set_up_view_values();
+		set_up_visitor_values();
+
+		do_error_check("calendar", true);
+
+		if(popup){
+			swal.fire({
+				icon: "success",
+				title: "Loaded!",
+				text: "The calendar " + calendar_name + " has been loaded."
+			});
+		}
 
 	}
 
