@@ -75,14 +75,7 @@ class CalendarPolicy
             return true;
         }
 
-        return !$calendar->disabled
-            && ($user->id === $calendar->user_id
-
-            || (
-                $calendar->user->paymentLevel() == 'Worldbuilder'
-
-                && $calendar->users->contains($user) && $calendar->users->find($user->id)->pivot->user_role == 'co-owner'
-            ));
+        return !$calendar->disabled && $user->id === $calendar->user_id;
     }
 
     /**
