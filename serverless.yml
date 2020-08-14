@@ -40,6 +40,8 @@ provider:
       MAIL_FROM_ADDRESS: ${ssm:/${self:custom.ssm.${self:custom.stage}}/mail_from}
       MAIL_FROM_NAME: Fantasy Calendar
       MAIL_ENCRYPTION: tls
+      STRIPE_KEY: ${ssm:/${self:custom.ssm.${self:custom.stage}}/stripe-key}
+      STRIPE_SECRET: ${ssm:/${self:custom.ssm.${self:custom.stage}}/stripe-secret}
     iamRoleStatements:
       # Allow Lambda to read and write files in the S3 buckets
       -   Effect: Allow
