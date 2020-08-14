@@ -135,7 +135,7 @@
                 @foreach($shared_calendars as $index => $calendar)
                     <div class="row border-top py-3 calendar-entry list-group-item-action w-auto">
                         <div class="col-6 col-md-4 col-lg-5">
-                            <a href="{{ Auth::user()->can('update', $calendar) ? route('calendars.edit', ['calendar'=> $calendar->hash]) : route('calendars.show', ['calendar'=> $calendar->hash]) }}"><h4 class="calendar-name">{{ $calendar->name }} <small class="badge badge-secondary" style="font-size: 44%; position: relative; top: -4px; margin-left: 4px;">{{ $calendar->pivot->user_role }}</small> <br><span class="creator_name">{{ $calendar->user->username }}</span></h4></a>
+                            <a href="{{ route('calendars.show', ['calendar'=> $calendar->hash]) }}"><h4 class="calendar-name">{{ $calendar->name }} <small class="badge badge-secondary" style="font-size: 44%; position: relative; top: -4px; margin-left: 4px;">{{ $calendar->pivot->user_role }}</small> <br><span class="creator_name">{{ $calendar->user->username }}</span></h4></a>
                         </div>
                         <div style="padding-left: 33px;" class="d-none d-md-block col-md-4 col-lg-3">
                             <i class="fa fa-calendar" style="margin-left: -20px;"></i> {{ $calendar->current_date }} <br>
@@ -153,28 +153,6 @@
                                 <a class='calendar_action btn btn-outline-secondary action-show protip' data-pt-delay-in="500" data-pt-title="View '{{ $calendar->name }}'" href='{{ route('calendars.show', ['calendar'=> $calendar->hash ]) }}'>
                                     <i class="fa fa-eye"></i> <span class="d-none d-md-inline">View</span>
                                 </a>
-                                @if(Auth::user()->can('update', $calendar))
-                                    <a class='calendar_action btn btn-outline-secondary action-edit protip' data-pt-delay-in="500" data-pt-title="Edit '{{ $calendar->name }}'" href='{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}'>
-                                        <i class="fa fa-edit"></i> <span class="d-none d-md-inline">Edit</span>
-                                    </a>
-
-                                    <button class="calendar_action btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" type="button" id="dropdownButton-{{ $calendar->hash }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
-
-                                    <div class="calendar_action dropdown-menu dropdown-menu-right" aria-labelledby="dropdownButton-{{ $calendar->hash }}">
-                                        <a class='dropdown-item action-edit protip d-md-none' data-pt-delay-in="500" data-pt-title="Edit '{{ $calendar->name }}'" href='{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}'>
-                                            <i class="fa fa-edit"></i> Edit
-                                        </a>
-                                        <a class='dropdown-item action-show protip d-md-none' data-pt-delay-in="500" data-pt-title="View '{{ $calendar->name }}'" href='{{ route('calendars.show', ['calendar'=> $calendar->hash ]) }}'>
-                                            <i class="fa fa-eye"></i> View
-                                        </a>
-                                        <a class="dropdown-item copy_button action-copy protip" data-pt-delay-in="500" data-pt-title="Copy '{{ $calendar->name }}'" href="javascript:" data-hash="{{ $calendar->hash }}" data-name="{{ $calendar->name }}">
-                                            <i class="fa fa-copy"></i> Copy
-                                        </a>
-                                        <a class="dropdown-item action-export protip" data-pt-delay-in="500" data-pt-title="Export '{{ $calendar->name }}'" href="{{ route('calendars.export', ['calendar' => $calendar->hash]) }}" >
-                                            <i class="fa fa-file-export"></i> Export
-                                        </a>
-                                    </div>
-                                @endif
                             </div>
                         </div>
                     </div>
