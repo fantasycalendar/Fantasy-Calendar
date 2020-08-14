@@ -104,7 +104,7 @@
             edit_HTML_ui.bind_events();
 
             const queryString = window.location.search;
-            if(evaluate_queryString(queryString)){
+            if(should_resume(queryString)){
                 autoload();
             }else{
                 query_autoload();
@@ -206,6 +206,11 @@
 
             do_error_check();
 
+            if(should_save(queryString)) {
+                window.onbeforeunload = function () {}
+                create_calendar();
+            }
+
         });
 
         function apply_preset(){
@@ -225,9 +230,14 @@
             evaluate_save_button();
         }
 
-        function evaluate_queryString(queryString){
+        function should_resume(queryString){
             const urlParams = new URLSearchParams(queryString);
             return urlParams.has("resume");
+        }
+
+        function should_save(queryString) {
+            const urlParams = new URLSearchParams(queryString);
+            return urlParams.has("save");
         }
 
 

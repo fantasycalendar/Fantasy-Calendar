@@ -100,6 +100,10 @@ class LoginController extends Controller
 
     public function redirectTo() {
         if(request()->cookie('intended_path')) {
+            if(request()->cookie('intended_path') == '/calendars/create?resume=1') {
+                return '/calendars/create?resume=1&save=1';
+            }
+
             return request()->cookie('intended_path');
         }
 
