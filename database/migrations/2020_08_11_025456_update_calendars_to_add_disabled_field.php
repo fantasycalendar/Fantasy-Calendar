@@ -14,7 +14,7 @@ class UpdateCalendarsToAddDisabledField extends Migration
     public function up()
     {
         Schema::table('calendars_beta', function (Blueprint $table) {
-            $table->boolean('disabled')->after('last_static_change');
+            $table->boolean('disabled')->default(0)->after('last_static_change');
         });
     }
 
