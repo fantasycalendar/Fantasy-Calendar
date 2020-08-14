@@ -70,7 +70,8 @@ class UserList extends SharpEntityList
             ->setPaginated()
             ->addInstanceCommand("elevate", GiveUserBetaAccess::class)
             ->addInstanceCommand("revoke", RevokeUserBetaAccess::class)
-            ->addInstanceCommand("impersonate", LoginAsUser::class);
+            ->addInstanceCommand("impersonate", LoginAsUser::class)
+            ->addInstanceCommand("reset_password", SendUserResetPassword::class);
     }
 
     /**
@@ -103,6 +104,11 @@ class UserList extends SharpEntityList
             "permissions",
             function($permissions) {
                 return ($permissions == 1 ? "Admin" : "User");
+            }
+        )->setCustomTransformer(
+            "created_at",
+            function($created_at, $user, $attribute) {
+                return $user->created_at;
             }
         )->transform($user_model->paginate(20));
     }

@@ -28,7 +28,6 @@
             "clock":{
                 "enabled":false,
                 "render":false,
-                "link_scale":true,
                 "hours":24,
                 "minutes":60,
                 "offset":0,
@@ -91,8 +90,8 @@
         $(document).ready(function(){
 
             if(static_data){
-                $('.date_control').toggleClass('hidden', static_data.year_data.global_week.length == 0 || static_data.year_data.timespans.length == 0);
-                $('.date_control').find('select, input').prop('disabled', static_data.year_data.global_week.length == 0 || static_data.year_data.timespans.length == 0);
+                $('.date_inputs').toggleClass('hidden', static_data.year_data.global_week.length == 0 || static_data.year_data.timespans.length == 0);
+                $('.date_inputs').find('select, input').prop('disabled', static_data.year_data.global_week.length == 0 || static_data.year_data.timespans.length == 0);
                 $('#empty_calendar_explaination').toggleClass('hidden', !(static_data.year_data.global_week.length == 0 || static_data.year_data.timespans.length == 0));
             }
 

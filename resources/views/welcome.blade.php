@@ -1,17 +1,21 @@
-@extends('templates._page')
+@extends('templates._welcome')
 
 @push('head')
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,200&display=swap" rel="stylesheet">
     <style>
         section.jumbotron {
-            background-image: linear-gradient(to right, rgba(0, 0, 0, 0.42), rgba(0, 0, 0, 0.42)), url({{ asset('resources/jumbotron_bg.jpg') }});
+            background-image: linear-gradient(to right, hsl(150 48% 35% / 0.2), hsl(150 48% 35% / 0.2)), url({{ asset('resources/jumbotron_bg.jpg') }}), linear-gradient(to right, hsl(150 48% 25% / 1), hsl(150 48% 25% / 1));
             background-size: cover;
             background-position: center center;
+            min-height: 50vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         section.jumbotron .container {
             background-color: rgba(255, 255, 255, 0.65);
-            padding: 25px;
+            padding: 80px 25px;
         }
 
         section.jumbotron .herotext {
@@ -21,7 +25,8 @@
         }
 
         section.jumbotron .herotext .lead {
-            font-size: 17px;
+            font-size: 18px;
+            margin: 0;
         }
 
         section.promos {
@@ -124,11 +129,16 @@
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-12 col-md-3 d-none d-md-block logo text-center">
-                    <img src="{{ asset('resources/jumbotron_logo.png') }}">
+                    <img class="w-100" src="{{ asset('resources/jumbotron_logo.png') }}">
                 </div>
-                <div class="col-12 col-md-9 herotext">
+                <div class="col-12 col-md-9 herotext text-md-center">
                     <h1>Fantasy Calendar</h1>
                     <p class="lead">Whether you're a GM just looking to track the events of a long-running Forgotten Realms campaign, or a fanciful world-builder who likes to have wacky celestial configurations (such as Eberron's 12 moons) with zany timekeeping systems to match, you need Fantasy Calendar!</p>
+                    @unless(Auth::check() && Auth::user()->calendars()->count())
+                        <a href="{{ route('calendars.create') }}" class="btn btn-primary btn-accent btn-lg">Create your first calendar</a>
+                    @else
+                        <a href="{{ route('calendars.index') }}" class="btn btn-primary btn-accent btn-lg">View your calendars</a>
+                    @endunless
                 </div>
             </div>
         </div>

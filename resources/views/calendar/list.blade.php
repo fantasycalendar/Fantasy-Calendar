@@ -43,10 +43,13 @@
 @section('content')
     <div class="container py-5">
         @unless((count($calendars) || count($shared_calendars)) || $search)
-            <div class="row text-center pb-4 border-bottom">
-                <div class="col-12">
-                    <h1>You don't have any calendars yet!</h1>
-                    <a href="{{ route('calendars.create') }}" class="btn btn-primary">Create one now to get started!</a>
+            <div class="row text-center my-5 py-4 border-bottom">
+                <div class="col-12 col-md-6 py-5 text-left">
+                    <h2>Create Your Calendar</h2>
+                    <p class="mt-4">From zero to tracking your story in just a few easy steps.</p>
+                    <a href="{{ route('calendars.create') }}" class="btn btn-primary my-5">Create a Calendar</a>
+                </div>
+                <div class="d-none d-md-block col-md-6 py-5" style="min-height: 100%; background-image: url({{ asset('resources/calendar_list_empty.svg') }}); background-repeat: no-repeat; background-size: contain; background-position: right center;">
                 </div>
             </div>
         @else
@@ -76,9 +79,12 @@
                         <a href="{{ route('calendars.edit', ['calendar'=> $calendar->hash]) }}"><h4 class="calendar-name">{{ $calendar->name }} <br><span class="creator_name">{{ $calendar->user->username }}</span></h4></a>
                     </div>
                     <div style="padding-left: 33px;" class="d-none d-md-block col-md-4 col-lg-3">
-                        <i class="fa fa-calendar" style="margin-left: -20px;"></i> {{ $calendar->current_date() }} <br>
+                        <i class="fa fa-calendar" style="margin-left: -20px;"></i> {{ $calendar->current_date }} <br>
                         @if($calendar->clock_enabled)
-                            <i class="fa fa-clock" style="margin-left: -20px;"></i> {{ $calendar->current_time() }}
+                            <i class="fa fa-clock" style="margin-left: -20px;"></i> {{ $calendar->current_time }} <br>
+                        @endif
+                        @if($calendar->current_era_valid)
+                            <i class="fa fa-infinity" style="margin-left: -20px;"></i> {{ $calendar->current_era }}
                         @endif
                     </div>
                     <div class="d-none d-lg-block col-lg-1 protip">

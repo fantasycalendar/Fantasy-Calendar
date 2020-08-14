@@ -48,7 +48,6 @@ class CalendarController extends Controller
         $sharedCalendarSimplePagination = $shared_calendars->simplePaginate(10);
         $shared_calendars = $shared_calendars->paginate(10);
 
-
         $changelog = Markdown::convertToHtml(Storage::disk('base')->get('public/changelog.md'));
 
         return view('calendar.list', [
@@ -209,6 +208,20 @@ class CalendarController extends Controller
 
         return [ 'success' => true, 'data'=> true ];
 
+    }
+
+    public function legacy(Request $request) {
+        if($request->get('action') == 'generate') {
+            return redirect('calendars/create', 301);
+        }
+
+        if($request->get('action') == 'view') {
+            return redirect("calendars/{$request->get('id')}", 301);
+        }
+
+        if($request->get('action') == 'edit') {
+            return redirect("calendars/{$request->get('id')}/edit", 301);
+        }
     }
 
     /**

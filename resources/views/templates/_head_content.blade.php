@@ -17,13 +17,18 @@
         {!! ($title ?? $calendar->name ?? "Fantasy Calendar") . ' -' !!} Fantasy Calendar
     </title>
 
-    <link rel="apple-touch-icon" sizes="180x180" href="/resources/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/resources/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/resources/favicon-16x16.png">
-    <link rel="manifest" href="/resources/site.webmanifest">
-    <link rel="mask-icon" href="/resources/safari-pinned-tab.svg" color="#5bbad5">
-    <meta name="msapplication-TileColor" content="#da532c">
-    <meta name="theme-color" content="#ffffff">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('/resources/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('/resources/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('/resources/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ asset('/resources/site.webmanifest') }}">
+    <link rel="mask-icon" href="{{ asset('/resources/safari-pinned-tab.svg') }}" color="#2f855a">
+    <link rel="shortcut icon" href="{{ asset('/resources/favicon.ico') }}">
+    <meta name="apple-mobile-web-app-title" content="Fantasy Calendar">
+    <meta name="application-name" content="Fantasy Calendar">
+    <meta name="msapplication-TileColor" content="#2f855a">
+    <meta name="msapplication-config" content="{{ asset("/resources/browserconfig.xml") }}">
+    <meta name="theme-color" content="#2f855a">
+
 
     @if(getenv('APP_ENV') == "production")
         <script src="//d2wy8f7a9ursnm.cloudfront.net/v6/bugsnag.min.js"></script>
@@ -80,6 +85,9 @@
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
             'Authorization': 'Bearer '+$('meta[name="api-token"]').attr('content')
+        },
+        data: {
+            api_token: $('meta[name="api-token"]').attr('content')
         }
     });
 
@@ -92,7 +100,7 @@
     });
 
     $(document).ready(function(){
-        
+
         window.onerror = function(error, url, line) {
             $.notify("Error:\n "+error+" \nin file "+url+" \non line "+line);
         }
@@ -121,37 +129,36 @@
         if(window.navigator.userAgent.indexOf("LM-G850") > 0) {
             $("#input_container").addClass('sidebar-mobile-half');
         }
-
     });
 
     </script>
 
-    <script src="/js/login.js"></script>
+    <script src="{{ asset("/js/login.js") }}"></script>
 
-    <script src="/js/vendor/sortable/jquery-sortable-min.js"></script>
-    <script src="/js/vendor/spectrum/spectrum.js"></script>
+    <script src="{{ asset("/js/vendor/sortable/jquery-sortable-min.js") }}"></script>
+    <script src="{{ asset("/js/vendor/spectrum/spectrum.js") }}"></script>
 
-    <script src="{{ mix('/js/calendar/header.js') }}"></script>
-    <script src="{{ mix('/js/calendar/calendar_ajax_functions.js') }}"></script>
-    <script src="{{ mix('/js/calendar/calendar_event_ui.js') }}"></script>
-    <script src="{{ mix('/js/calendar/calendar_functions.js') }}"></script>
-    <script src="{{ mix('/js/calendar/calendar_variables.js') }}"></script>
-    <script src="{{ mix('/js/calendar/calendar_weather_layout.js') }}"></script>
-    <script src="{{ mix('/js/calendar/calendar_day_data_layout.js') }}"></script>
-    <script src="{{ mix('/js/calendar/calendar_season_generator.js') }}"></script>
-    <script src="{{ mix('/js/calendar/calendar_layout_builder.js') }}"></script>
-    <script src="{{ mix('/js/calendar/calendar_inputs_visitor.js') }}"></script>
-    <script src="{{ mix('/js/calendar/calendar_inputs_view.js') }}"></script>
-    <script src="{{ mix('/js/calendar/calendar_inputs_edit.js') }}"></script>
-    <script src="{{ mix('/js/calendar/calendar_manager.js') }}"></script>
-    <script src="{{ mix('/js/calendar/calendar_presets.js') }}"></script>
+    <script src="{{ mix('js/calendar/header.js') }}"></script>
+    <script src="{{ mix('js/calendar/calendar_ajax_functions.js') }}"></script>
+    <script src="{{ mix('js/calendar/calendar_event_ui.js') }}"></script>
+    <script src="{{ mix('js/calendar/calendar_functions.js') }}"></script>
+    <script src="{{ mix('js/calendar/calendar_variables.js') }}"></script>
+    <script src="{{ mix('js/calendar/calendar_weather_layout.js') }}"></script>
+    <script src="{{ mix('js/calendar/calendar_day_data_layout.js') }}"></script>
+    <script src="{{ mix('js/calendar/calendar_season_generator.js') }}"></script>
+    <script src="{{ mix('js/calendar/calendar_layout_builder.js') }}"></script>
+    <script src="{{ mix('js/calendar/calendar_inputs_visitor.js') }}"></script>
+    <script src="{{ mix('js/calendar/calendar_inputs_view.js') }}"></script>
+    <script src="{{ mix('js/calendar/calendar_inputs_edit.js') }}"></script>
+    <script src="{{ mix('js/calendar/calendar_manager.js') }}"></script>
+    <script src="{{ mix('js/calendar/calendar_presets.js') }}"></script>
 
     @if(Auth::check() && Auth::user()->setting('dark_theme'))
-        <link rel="stylesheet" href="{{ mix('/css/app-dark.css') }}">
+        <link rel="stylesheet" href="{{ mix('css/app-dark.css') }}">
     @else
-        <link rel="stylesheet" href="{{ mix('/css/app.css') }}">
+        <link rel="stylesheet" href="{{ mix('css/app.css') }}">
     @endif
-    <link rel="stylesheet" href="/js/vendor/spectrum/spectrum.css">
+    <link rel="stylesheet" href="{{ asset("/js/vendor/spectrum/spectrum.css") }}">
 
     @stack('head')
 </head>

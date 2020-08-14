@@ -59,7 +59,11 @@ Some of our Services are offered for a fee while other Services may be free with
 **Fee Changes.** We may change our fees at any time. When applicable, we will give you advance notice of the fee changes. If you don’t agree with the fee changes, you can cancel your Paid Service.
 
 ## Intellectual Property
-The Agreement does not transfer from Fantasy Calendar Ltd to you any Fantasy Calendar Ltd or third party intellectual property, and all right, title, and interest in and to such property will remain (as between the parties) solely with Fantasy Calendar Ltd. Fantasy Calendar Ltd, Fantasy-Calendar.com, the Fantasy-Calendar.com logo, and all other trademarks, service marks, graphics, and logos used in connection with Fantasy-Calendar.com or our Services, are trademarks or registered trademarks of Fantasy Calendar Ltd or Fantasy Calendar’s Ltd licensors. Other trademarks, service marks, graphics, and logos used in connection with our Services may be the trademarks of other third parties. Your use of our Services grants you no right or license to reproduce or otherwise use any Fantasy Calendar Ltd or third party trademarks.
+The Agreement does not transfer any Fantasy Calendar Ltd or third party intellectual property to you, and all rights, titles, and interest in and to such property will remain solely with Fantasy Calendar Ltd or their respective third party owner.
+
+Fantasy Calendar Ltd, Fantasy-Calendar.com, the Fantasy-Calendar.com logo, and all other trademarks, service marks, graphics, and logos used in connection with Fantasy-Calendar.com or our Services, are trademarks or registered trademarks of Fantasy Calendar Ltd or Fantasy Calendar’s Ltd licensors.
+
+Other trademarks, service marks, graphics, and logos used in connection with our Services may be the trademarks of other third parties. Your use of our Services grants you no right or license to reproduce or otherwise use any Fantasy Calendar Ltd or third party trademarks.
 
 ## License.
 By submitting Content to Fantasy Calendar Ltd for inclusion on your calendars, you grant Fantasy Calendar Ltd a world-wide, royalty-free, and non-exclusive license to reproduce, modify, adapt, and publish the Content solely for the purpose of displaying, distributing, and promoting your calendars. This license also allows Fantasy Calendar Ltd to make any publicly-posted Content available to third parties selected by Fantasy Calendar Ltd so that these third parties can analyze and distribute (but not publicly display) the Content through their services.

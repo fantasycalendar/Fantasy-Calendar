@@ -301,7 +301,8 @@ function set_up_edit_inputs(){
 		$('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
 		$('#locations_warning').toggleClass('hidden', !no_locations);
 
-		$('.location_middle_btn').toggleClass('hidden', !static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled);
+		$('.season_middle_btn').toggleClass('hidden', !static_data.clock.enabled || static_data.seasons.data.length < 3);
+		$('.location_middle_btn').toggleClass('hidden', (!static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled) || static_data.seasons.data.length < 3);
 
 		eval_clock();
 
@@ -527,9 +528,11 @@ function set_up_edit_inputs(){
 
 				era_list.children().each(function(){
 					var input = $(this).find('.ends_year');
+					var text = $(this).find('.ends_year_explaination');
 					var parent = input.parent().parent();
 					input.prop('disabled', !checked);
 					parent.toggleClass('disabled', !checked);
+					text.toggleClass('hidden', checked);
 				});
 
 				error_check("calendar", true);
@@ -638,13 +641,13 @@ function set_up_edit_inputs(){
 
 		$('#season_color_enabled').prop("disabled", static_data.seasons.data.length == 0);
 
+		$('.season_middle_btn').toggleClass('hidden', !static_data.clock.enabled || static_data.seasons.data.length < 3);
+
 	});
 
 	$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 && !static_data.clock.enabled);
 
 	$('#create_season_events').click(function(){
-
-
 
 		var html  = '<strong><span style="color:#4D61B3;">Simple</span></strong> season events are based on the <strong>specific start dates</strong> of the seasons.<br><br>';
 
@@ -754,6 +757,8 @@ function set_up_edit_inputs(){
 		});
 
 		location_select.find(`option[value="${id}"]`).prop('selected', true).change();
+
+		$('.location_middle_btn').toggleClass('hidden', (!static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled) || static_data.seasons.data.length < 3);
 
 	});
 
@@ -925,6 +930,8 @@ function set_up_edit_inputs(){
 
 		location_select.find('optgroup[value="custom"]').children().eq(id).prop('selected', true).change();
 
+		$('.location_middle_btn').toggleClass('hidden', (!static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled) || static_data.seasons.data.length < 3);
+
 	});
 
 	$(document).on('click', '.location_middle_btn', function(){
@@ -987,8 +994,8 @@ function set_up_edit_inputs(){
 			var precipitation = precisionRound(lerp(prev_season.weather.precipitation, next_season.weather.precipitation, perc),2);
 			var precipitation_intensity = precisionRound(lerp(prev_season.weather.precipitation_intensity, next_season.weather.precipitation_intensity, perc),2);
 
-			current_season.find("input[fc-index='precipitation']").val(precipitation).parent().parent().find('.slider_input').val(precipitation)
-			current_season.find("input[fc-index='precipitation_intensity']").val(precipitation_intensity).parent().parent().find('.slider_input').val(precipitation_intensity)
+			current_season.find("input[fc-index='precipitation']").parent().parent().find('.slider_percentage').slider('option', 'value', precipitation*100);
+			current_season.find("input[fc-index='precipitation_intensity']").parent().parent().find('.slider_percentage').slider('option', 'value', precipitation_intensity*100);
 
 			current_season.find("input[fc-index='temp_high']").val(temp_high)
 			current_season.find("input[fc-index='temp_low']").val(temp_low)
@@ -1107,7 +1114,8 @@ function set_up_edit_inputs(){
 			"date": {
 				"year": dynamic_data.year,
 				"timespan": dynamic_data.timespan,
-				"day": dynamic_data.day
+				"day": dynamic_data.day,
+				"epoch": dynamic_data.epoch
 			}
 		};
 
@@ -1119,9 +1127,10 @@ function set_up_edit_inputs(){
 		var era = add_era_to_list(era_list, id, stats);
 		repopulate_timespan_select(era.find('.timespan-list'), dynamic_data.timespan, false);
 		repopulate_day_select(era.find('.timespan-day-list'), dynamic_data.day, false);
-		sort_list_by_date(era_list);
+		reindex_era_list();
 		name.val("");
 		do_error_check("eras");
+		dynamic_data.current_era = get_current_era(static_data, dynamic_data.epoch);
 
 	});
 
@@ -1278,6 +1287,7 @@ function set_up_edit_inputs(){
 				$(this).closest('.sortable-container').remove();
 				$(this).closest('.sortable-container').parent().sortable('refresh');
 				reindex_era_list();
+				dynamic_data.current_era = get_current_era(static_data, dynamic_data.epoch);
 				break;
 
 			case "event_category_list":
@@ -1465,23 +1475,31 @@ function set_up_edit_inputs(){
 
 		var cycle = Math.max.apply(null, value.split(','))+1;
 
-		if(cycle > 40){
+		var invalid = cycle > 40;
 
-			invalid = true;
+		$(this).toggleClass('invalid', invalid).attr('error_msg', invalid ? `${static_data.moons[index].name} has an invalid custom cycle. 39 is the highest possible number.` : '');
 
-		}else{
+		if(!invalid){
 
-			invalid = false;
+			if(cycle <= 4){
+				var granularity = 4;
+			}else if(cycle <= 8){
+				var granularity = 8;
+			}else if(cycle <= 24){
+				var granularity = 24;
+			}else{
+				var granularity = 40;
+			}
 
-			static_data.moons[index].granularity = get_moon_granularity(cycle);
+			static_data.moons[index].granularity = granularity;
 
-			$(this).closest('.sortable-container').find('.custom_phase_text').text(`This moon has ${value.split(',').length} phases, with a granularity of ${static_data.moons[index].granularity} moon sprites.`);
+			let text = `This moon has ${value.split(',').length} phases, with a granularity of ${static_data.moons[index].granularity} moon sprites.`;
+
+			$(this).closest('.sortable-container').find('.custom_phase_text').text(text);
 
 			do_error_check();
 
 		}
-
-		$(this).toggleClass('invalid', invalid).attr('error_msg', invalid ? `${static_data.moons[index].name} has an invalid custom cycle. 39 is the highest possible number.` : '');
 
 	});
 
@@ -1671,12 +1689,26 @@ function set_up_edit_inputs(){
 
 		reindex_era_list();
 
+		dynamic_data.current_era = get_current_era(static_data, dynamic_data.epoch);
+
 	});
 
 
 	$(document).on('change', '#era_list .date_control', function(){
 		reindex_era_list();
 		eras.evaluate_position();
+		dynamic_data.current_era = get_current_era(static_data, dynamic_data.epoch);
+	});
+
+	$(document).on('change', '#era_list .ends_year', function(){
+		evaluate_dynamic_change();
+		var index = $(this).closest('.sortable-container').attr('index')|0;
+		static_data.eras[index].settings.ends_year = $(this).is(":checked");
+		for(var i in static_data.eras){
+			var era = static_data.eras[i];
+			era.date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, era.date.year), era.date.timespan, era.date.day).epoch;
+		}
+		dynamic_data.current_era = get_current_era(static_data, dynamic_data.epoch);
 	});
 
 	$(document).on('change', '#season_sortable .date_control', function(){
@@ -1812,7 +1844,11 @@ function set_up_edit_inputs(){
 
 	});
 
-	$(document).on('change', '.timespan_occurance_input', function(){
+	$(document).on('focusin', '.timespan_occurance_input', function(e){
+		$(this).data('prev', $(this).val());
+	});
+
+	$(document).on('change', '.timespan_occurance_input', function(e){
 
 		var interval = $(this).closest('.sortable-container').find('.interval');
 		var interval_val = interval.val()|0;
@@ -1849,78 +1885,8 @@ function set_up_edit_inputs(){
 		return 0; // equal values MUST yield zero
 	}
 
-	prevent_default = false;
-
-	$(document).on('focus', '.leap_day_occurance_input.interval', function(e){
-		$(this).prop('prev', $(this).val());
-	});
-
-	$(document).on('change', '.leap_day_occurance_input.interval', function(e){
-
-		if(prevent_default){
-			return;
-		}
-
-		e.preventDefault();
-
-		var interval = $(this).val();
-		var values = interval.split(',');
-
-		if(values.length > 5){
-
-			swal.fire({
-				title: "Warning!",
-				text: "You have over 5 intervals, more than this can slow down your calendar quite a lot. Are you sure you want to continue?",
-				showCancelButton: true,
-				confirmButtonColor: '#3085d6',
-				cancelButtonColor: '#d33',
-				confirmButtonText: 'Yes',
-				cancelButtonText: 'Cancel',
-				icon: "warning"
-			})
-			.then((result) => {
-
-				if(!result.dismiss){
-
-					prevent_default = true;
-					$(this).trigger('change');
-
-				}else{
-
-					$(this).val($(this).prop('prev'));
-
-				}
-
-			});
-
-		}else{
-
-			prevent_default = true;
-			$(this).trigger('change');
-
-		}
-
-	});
-
-	$(document).on('change', '.leap_day_occurance_input.offset', function(e){
-
-		if(prevent_default){
-			return;
-		}
-
-		prevent_default = true;
-		$(this).trigger('change');
-
-	});
 
 	$(document).on('change', '.leap_day_occurance_input', function(e){
-
-		if(!prevent_default){
-			e.preventDefault();
-			return;
-		}
-
-		prevent_default = false;
 
 		var index = $(this).closest('.sortable-container').attr('index')|0;
 		var interval = $(this).closest('.sortable-container').find('.interval');
@@ -1930,98 +1896,105 @@ function set_up_edit_inputs(){
 		var timespan = $(this).closest('.sortable-container').find('.timespan-list');
 		var timespan_val = timespan.val();
 
+		interval_val = interval_val.replace(/,\s*$/, "");
+
 		if(offset_val === undefined || interval_val === undefined) return;
+
+		if(interval_val == ""){
+			interval.toggleClass('invalid', true).attr('error_msg', true ? `${static_data.year_data.leap_days[index].name} is empty, please enter at least one number.` : '');
+			return;
+		}
+
+		if(offset_val < 0){
+			offset.toggleClass('invalid', true).attr('error_msg', true ? `${static_data.year_data.leap_days[index].name} cannot have a negative offset number.` : '');
+			return;
+		}
 
 		var global_regex = /[ `~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z]/g;
 		var local_regex = /^\+*\!*[1-9]+[0-9]{0,}$/;
 		var numbers_regex = /([1-9]+[0-9]{0,})/;
-
+		
 		var invalid = global_regex.test(interval_val);
 		var values = interval_val.split(',');
 
 		$(this).toggleClass('invalid', invalid).attr('error_msg', invalid ? `${static_data.year_data.leap_days[index].name} has an invalid interval formula.` : '');
 
+		if(invalid) return;
+
 		if($(this).hasClass('interval')){
 
-			if(!invalid){
-
-				for(var i = 0; i < values.length; i++){
-					if(!local_regex.test(values[i])){
-						invalid = true;
-						break;
-					}
+			for(var i = 0; i < values.length; i++){
+				if(!local_regex.test(values[i])){
+					invalid = true;
+					break;
 				}
 			}
 
-			if(!invalid){
+			$(this).toggleClass('invalid', invalid).attr('error_msg', invalid ? `${static_data.year_data.leap_days[index].name} has an invalid interval formula. Plus before exclamation point.` : '');
 
-				var unsorted = [];
+			if(invalid) return;
 
-				for(var i = 0; i < values.length; i++){
-					unsorted.push(Number(values[i].match(numbers_regex)[0]));
-				}
+			var unsorted = [];
 
-				var sorted = unsorted.slice(0).sort(sorter).reverse();
-
-				var result = [];
-
-				for(var i = 0; i < sorted.length; i++){
-					var index = unsorted.indexOf(sorted[i]);
-					result.push(values[index]);
-					delete unsorted[index];
-				}
-
-				$(this).val(result.join(','));
-
-				values = result;
-
+			for(var i = 0; i < values.length; i++){
+				unsorted.push(Number(values[i].match(numbers_regex)[0]));
 			}
+
+			var sorted = unsorted.slice(0).sort(sorter).reverse();
+
+			var result = [];
+
+			for(var i = 0; i < sorted.length; i++){
+				var index = unsorted.indexOf(sorted[i]);
+				result.push(values[index]);
+				delete unsorted[index];
+			}
+
+			$(this).val(result.join(','));
+
+			values = result;
 
 		}else{
 
-			if(!invalid){
+			var unsorted = [];
 
-				var unsorted = [];
-
-				for(var i = 0; i < values.length; i++){
-					unsorted.push(Number(values[i].match(numbers_regex)[0]));
-				}
-
-				var sorted = unsorted.slice(0).sort(sorter).reverse();
-				var result = [];
-
-				for(var i = 0; i < sorted.length; i++){
-					var index = unsorted.indexOf(sorted[i]);
-					result.push(values[index]);
-					delete unsorted[index];
-				}
-
-				values = result;
-
+			for(var i = 0; i < values.length; i++){
+				unsorted.push(Number(values[i].match(numbers_regex)[0]));
 			}
+
+			var sorted = unsorted.slice(0).sort(sorter).reverse();
+			var result = [];
+
+			for(var i = 0; i < sorted.length; i++){
+				var index = unsorted.indexOf(sorted[i]);
+				result.push(values[index]);
+				delete unsorted[index];
+			}
+
+			values = result;
 
 		}
 
-		if(!invalid){
+		var values = values.reverse();
+		sorted = sorted.reverse();
 
-			var values = values.reverse();
-			sorted = sorted.reverse();
-
-			if(values.length == 1 && Number(values[0]) == 1){
-				offset.val(0).prop('disabled', true);
-			}else{
-				offset.prop('disabled', false);
-			}
-
-			var data = {
-				'interval': interval_val,
-				'offset': offset_val,
-				'timespan': timespan_val
-			}
-
-			$(this).closest('.sortable-container').find('.leap_day_variance_output').html(get_interval_text(false, data));
-
+		if(values.length == 1 && Number(values[0]) == 1){
+			offset.val(0).prop('disabled', true);
+		}else{
+			offset.prop('disabled', false);
 		}
+
+		var data = {
+			'interval': interval_val,
+			'offset': offset_val,
+			'timespan': timespan_val
+		}
+		
+		$(this).toggleClass('invalid', false).attr('error_msg', '');
+
+		$(this).closest('.sortable-container').find('.leap_day_variance_output').html(get_interval_text(false, data));
+
+		do_error_check();
 
 	});
 
@@ -2035,7 +2008,7 @@ function set_up_edit_inputs(){
 		static_data.seasons.global_settings.enable_weather = checked;
 		$('.weather_inputs').toggleClass('hidden', !checked);
 		$('.weather_inputs').find('select, input').prop('disabled', !checked);
-		$('.location_middle_btn').toggleClass('hidden', !static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled);
+		$('.location_middle_btn').toggleClass('hidden', (!static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled) || static_data.seasons.data.length < 3);
 
 		var no_locations = (static_data.seasons.data.length == 0 || !static_data.seasons.global_settings.enable_weather) && !static_data.clock.enabled;
 		$('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
@@ -2395,7 +2368,7 @@ function set_up_edit_inputs(){
 	input_container.change(function(e){
 
 		if(block_inputs) return;
-
+		
 		if(e.originalEvent){
 			var target = $(e.originalEvent.target);
 		}else{
@@ -2433,14 +2406,40 @@ function set_up_edit_inputs(){
 
 			}else{
 
+				var set = true;
+
 				if(!target.is(':disabled')){
 
 					switch(target.attr('type')){
 						case "number":
 							if(target.attr('step') === "any"){
 								var value = parseFloat(target.val());
+								var min = undefined;
+								var max = undefined;
+								if(target.attr('min')){
+									var min = parseFloat(target.attr('min'));
+								}
+								if(target.attr('max')){
+									var max = parseFloat(target.attr('max'));
+								}
 							}else{
 								var value = parseInt(target.val().split('.')[0]);
+								var min = undefined;
+								var max = undefined;
+								if(target.attr('min')){
+									var min = parseInt(target.attr('min'));
+								}
+								if(target.attr('max')){
+									var max = parseInt(target.attr('max'));
+								}
+							}
+							if(value < min || value > max){
+								if(target.data('prev')){
+									target.val(target.data('prev'));
+									return;
+								}else{
+									set = false;
+								}
 							}
 							target.val(value);
 							break;
@@ -2466,7 +2465,7 @@ function set_up_edit_inputs(){
 						current_calendar_data = current_calendar_data[type[type.length-1]];
 					}
 
-					current_calendar_data[key] = value;
+					if(set) current_calendar_data[key] = value;
 
 				}
 			}
@@ -2723,7 +2722,7 @@ function add_leap_day_to_list(parent, key, data){
 
 	var element = [];
 
-	element.push(`<div class='sortable-container list-group-item ${(data.intercalary ? 'intercalary leap-day' : 'leap-day')} collapsed collapsible' index='${key}'>`);
+	element.push(`<div class='sortable-container list-group-item ${(data.intercalary ? 'intercalary leap-day' : 'leap-day')} collapsed collapsible' type='${(data.intercalary ? 'intercalary' : 'normal')}' index='${key}'>`);
 		element.push("<div class='main-container'>");
 			element.push("<div class='expand icon-expand'></div>");
 			element.push("<div class='name-container'>");
@@ -2776,7 +2775,7 @@ function add_leap_day_to_list(parent, key, data){
 
 				element.push(`<div class='row no-gutters my-1 ${!data.intercalary ? "" : "hidden"}'>`);
 					element.push("<div class='form-check col-12 py-2 border rounded'>");
-						element.push(`<input type='checkbox' id='${key}_adds_week_day' class='form-check-input adds-week-day dynamic_input' data='year_data.leap_days.${key}' fc-index='adds_week_day' ${(data.adds_week_day && !data.intercalary ? "" : "disabled")} ${(data.adds_week_day ? "checked" : "")} />`);
+						element.push(`<input type='checkbox' id='${key}_adds_week_day' class='form-check-input adds-week-day dynamic_input' data='year_data.leap_days.${key}' fc-index='adds_week_day' ${(!data.intercalary ? "" : "disabled")} ${(data.adds_week_day ? "checked" : "")} />`);
 						element.push(`<label for='${key}_adds_week_day' class='form-check-label ml-1'>`);
 							element.push("Adds week day");
 						element.push("</label>");
@@ -2849,9 +2848,7 @@ function add_leap_day_to_list(parent, key, data){
 						element.push(`<input type='text' class='form-control leap_day_occurance_input interval dynamic_input protip' data-pt-position="top" data-pt-title='Every nth year this leap day appears. Multiple intervals can be separated by commas, like the gregorian leap day: 400,!100,4. Every 4th year, unless it is divisible by 100, but again if it is divisible by 400.' data='year_data.leap_days.${key}' fc-index='interval' value='${data.interval}' />`);
 					element.push("</div>");
 					element.push("<div class='col-4 pl-1 '>");
-						element.push(`<input type='number' step="1" class='form-control leap_day_occurance_input offset dynamic_input' min='0' data='year_data.leap_days.${key}' fc-index='offset' value='${data.interval === "1" ? 0 : data.offset}'`);
-						element.push(data.interval === "1" ? " disabled" : "");
-						element.push("/>");
+						element.push(`<input type='number' step="1" class='form-control leap_day_occurance_input offset dynamic_input' min='0' data='year_data.leap_days.${key}' fc-index='offset' value='${data.interval == "1" ? 0 : data.offset}'/>`);
 					element.push("</div>");
 				element.push("</div>");
 
@@ -2868,6 +2865,7 @@ function add_leap_day_to_list(parent, key, data){
 
 	element.find('.name-input').val(data.name);
 	element.find('.internal-list-name').val(`${data.week_day && !data.intercalary ? data.week_day : 'Weekday'}`)
+	element.find('.leap_day_occurance_input.offset').prop('disabled', data.interval == "1" || data.interval == 1)
 
 	parent.append(element);
 
@@ -3287,7 +3285,7 @@ function add_location_to_list(parent, key, data){
 						element.push("</div>");
 					element.push("</div>");
 					element.push("<div class='row no-gutters my-2'>");
-						element.push(`<button type="button" class="btn btn-sm btn-info location_middle_btn full protip ${!static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled ? "hidden" : ""}" data-pt-position="right" data-pt-title="Use the median values from the previous and next seasons' weather and time data. This season will act as a transition between the two, similar to Spring or Autumn">Interpolate data from surrounding seasons</button>`);
+						element.push(`<button type="button" class="btn btn-sm btn-info location_middle_btn full protip" data-pt-position="right" data-pt-title="Use the median values from the previous and next seasons' weather and time data. This season will act as a transition between the two, similar to Spring or Autumn">Interpolate data from surrounding seasons</button>`);
 					element.push("</div>");
 
 				element.push("</div>");
@@ -3588,14 +3586,14 @@ function add_era_to_list(parent, key, data){
 
 							element.push(`<div class='row my-2'>`);
 								element.push("<div class='col'>");
-									element.push(`<select type='number' class='date custom-select form-control timespan-list dynamic_input' refresh data='eras.${key}.date' fc-index='timespan'>`);
+									element.push(`<select type='number' class='date custom-select form-control timespan-list dynamic_input timespan_special' refresh data='eras.${key}.date' fc-index='timespan'>`);
 									element.push("</select>");
 								element.push("</div>");
 							element.push("</div>");
 
 							element.push(`<div class='row my-2'>`);
 								element.push("<div class='col'>");
-									element.push(`<select type='number' class='date custom-select form-control timespan-day-list dynamic_input' refresh data='eras.${key}.date' fc-index='day'>`);
+									element.push(`<select type='number' class='date custom-select form-control timespan-day-list dynamic_input day_special' refresh data='eras.${key}.date' fc-index='day'>`);
 									element.push("</select>");
 								element.push("</div>");
 							element.push("</div>");
@@ -3619,11 +3617,12 @@ function add_era_to_list(parent, key, data){
 				element.push("</div>");
 
 				element.push(`<div class='row no-gutters my-1'>`);
-					element.push("<div class='form-check col-12 py-2 border rounded'>");
+					element.push(`<div class='form-check col-12 py-2 border rounded ${!static_data.seasons.global_settings.periodic_seasons ? "disabled" : ""}'>`);
 						element.push(`<input type='checkbox' id='${key}_ends_year' class='form-check-input dynamic_input ends_year' ${!static_data.seasons.global_settings.periodic_seasons ? "disabled" : ""} data='eras.${key}.settings' fc-index='ends_year' ${(data.settings.ends_year ? "checked" : "")} />`);
 						element.push(`<label for='${key}_ends_year' class='form-check-label ml-1'>`);
 							element.push("Ends year prematurely");
 						element.push("</label>");
+						element.push(`<p class='m-0 mt-2 ends_year_explaination font-italic small-text ${static_data.seasons.global_settings.periodic_seasons ? "hidden" : ""}'>This is disabled because you have seasons based on dates - that means that the calendar cannot end its years early because some seasons could disappear.</p>`);
 					element.push("</div>");
 				element.push("</div>");
 
@@ -3959,8 +3958,13 @@ function get_errors(){
 		for(var era_i = 0; era_i < static_data.eras.length; era_i++){
 			var era = static_data.eras[era_i];
 			if(static_data.year_data.timespans[era.date.timespan]){
-				if(!does_timespan_appear(static_data, convert_year(static_data, era.date.year), era.date.timespan).result){
-					errors.push(`Era <i>${era.name}</i> is currently on a leaping month. Please move it to another month.`);
+				var appears = does_timespan_appear(static_data, convert_year(static_data, era.date.year), era.date.timespan);
+				if(!appears.result){
+					if(appears.reason == 'era ended'){
+						errors.push(`Era <i>${era.name}</i> is on a date that doesn't exist due to a previous era ending the year. Please move it to another year.`);
+					}else{
+						errors.push(`Era <i>${era.name}</i> is currently on a leaping month. Please move it to another month.`);
+					}
 				}
 			}else{
 				errors.push(`Era <i>${era.name}</i> doesn't have a valid month.`);
@@ -4087,11 +4091,11 @@ var do_error_check = debounce(function(type, rebuild){
 
 	} else {
 
+		$('#generator_container').removeClass();
+
 		var errors = get_errors();
 
 		if(errors.length == 0 && $('.static_input.invalid').length == 0 && $('.dynamic_input.invalid').length == 0){
-
-			$('#generator_container').removeClass();
 
 			close_message_modal();
 
@@ -4290,13 +4294,23 @@ function reindex_timespan_sortable(){
 
 	var tabindex = 100;
 
+	timespan_sortable.children().each(function(i){
+
+	});
+
 	static_data.year_data.timespans = [];
+
+	var previous_indexes = [];
 
 	timespan_sortable.children().each(function(i){
 
 		$('.dynamic_input', this).each(function(){
 			$(this).attr('data', $(this).attr('data').replace(/[0-9]+/g, i));
 		});
+
+		let previous_index = $(this).attr('index');
+
+		previous_indexes.push(previous_index)
 
 		$(this).attr('index', i);
 
@@ -4326,6 +4340,12 @@ function reindex_timespan_sortable(){
 	});
 
 	repopulate_timespan_select();
+	
+	leap_day_list.children().each(function(){
+		var index = $(this).find('.timespan-list').val()|0;
+		var new_index = previous_indexes[index];
+		$(this).find('.timespan-list').val(new_index);
+	});
 
 	do_error_check();
 
@@ -4350,12 +4370,14 @@ function reindex_leap_day_list(){
 		$(this).find('.name-input').prop('tabindex', tabindex+1)
 		tabindex++;
 
+		var intercalary = $(this).attr('type') == 'intercalary';
+
 		static_data.year_data.leap_days[i] = {
 			'name': $(this).find('.name-input').val(),
-			'intercalary': $(this).attr('type') == 'intercalary',
+			'intercalary': intercalary,
 			'timespan': Number($(this).find('.timespan-list').val()),
 			'adds_week_day': $(this).find('.adds-week-day').is(':checked'),
-			'day': Number($(this).find('.week-day-select').val()),
+			'day': intercalary ? Number($(this).find('.timespan-day-list').val()) : Number($(this).find('.week-day-select').val()),
 			'week_day': $(this).find('.internal-list-name').val(),
 			'interval': $(this).find('.interval').val(),
 			'offset': Number($(this).find('.offset').val())
@@ -4737,7 +4759,6 @@ function sort_list_by_date(list){
 						comp.insertBefore(curr);
 					}
 				}
-
 			}
 		});
 	});
@@ -5219,6 +5240,8 @@ function set_up_edit_values(){
 			repopulate_day_select(season_sortable.children().last().find('.timespan-day-list'), static_data.seasons.data[i].day, false, false);
 		}
 
+		$('.season_middle_btn').toggleClass('hidden', !static_data.clock.enabled || static_data.seasons.data.length < 3);
+
 		$('.season_offset_container').prop('disabled', !static_data.seasons.global_settings.periodic_seasons).toggleClass('hidden', !static_data.seasons.global_settings.periodic_seasons);
 
 		$('.season_text.dated').toggleClass('active', !static_data.seasons.global_settings.periodic_seasons);
@@ -5370,7 +5393,7 @@ function set_up_edit_values(){
 	$('.weather_inputs').toggleClass('hidden', !static_data.seasons.global_settings.enable_weather);
 	$('.weather_inputs').find('select, input').prop('disabled', !static_data.seasons.global_settings.enable_weather);
 
-	$('.location_middle_btn').toggleClass('hidden', !static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled);
+	$('.location_middle_btn').toggleClass('hidden', (!static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled) || static_data.seasons.data.length < 3);
 
 	$('#season_color_enabled').prop("disabled", static_data.seasons.data.length == 0);
 

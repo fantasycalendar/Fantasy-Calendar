@@ -42,6 +42,16 @@ function bind_calendar_events(){
 		}
 	});
 
+	$('body').addClass('page-focused').removeClass('page-unfocused');
+
+	registered_onfocus_callbacks['page_focused'] = function(){
+		setTimeout(function(){ $('body').addClass('page-focused').removeClass('page-unfocused'); }, 140);
+	}
+
+	registered_onblur_callbacks['page_unfocused'] = function(){
+		$('body').addClass('page-unfocused').removeClass('page-focused');
+	}
+
 	$('#input_collapse_btn').click(function(){
 	    toggle_sidebar();
 	});

@@ -342,10 +342,11 @@ function evaluate_dynamic_change(){
 
 	data = dynamic_date_manager.compare(dynamic_data);
 
-	dynamic_data.year		= data.year;
-	dynamic_data.timespan	= data.timespan;
-	dynamic_data.day		= data.day;
-	dynamic_data.epoch		= data.epoch;
+	dynamic_data.year		 = data.year;
+	dynamic_data.timespan	 = data.timespan;
+	dynamic_data.day		 = data.day;
+	dynamic_data.epoch		 = data.epoch;
+	dynamic_data.current_era = get_current_era(static_data, dynamic_data.epoch);
 
 	var apply_changes_immediately = $('#apply_changes_immediately');
 

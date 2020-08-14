@@ -13,31 +13,9 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::get('/test', function(){
-//
-//    return [
-//        'LoggedIn' => Auth::check(),
-//        'Payment Level' => Auth::user()->paymentLevel()
-//    ];
-
-    $calendar = App\Calendar::first();
-    $user = App\User::find(3);
-
-    return [
-        'view' => $user->can('view', $calendar),
-        'update' => $user->can('update', $calendar),
-        'edit' => $user->can('edit', $calendar),
-        'attach-event' => $user->can('attach-event', $calendar),
-        'settings' => $calendar->static_data['settings']
-    ];
-});
-
-Route::view('/', 'welcome')->name('home');
-Route::get('/donate', function(){
-    return view('pages.donate', [
-        'title'=>'Support the site'
-    ]);
-});
+Route::get('/', 'WelcomeController@welcome')->name('home');
+Route::view('/welcome', 'welcome')->name('welcome');
+Route::view('/donate', 'pages.donate', ['title'=>'Support the site']);
 
 Route::get('invite/accept', 'InviteController@accept')->name('invite.accept')->middleware(['auth']);
 Route::get('invite/register', 'InviteController@register')->name('invite.register')->middleware(['register']);
@@ -50,6 +28,7 @@ Route::resource('calendars', 'CalendarController');
 
 // User auth
 Auth::routes(['verify' => true]);
+Route::get('/logout', 'Auth\LoginController@logout');
 
 Route::get('/settings', 'SettingsController@index')->name('settings')->middleware('auth');
 Route::post('/profile', 'SettingsController@update')->name('settings.update')->middleware('auth');
@@ -105,30 +84,11 @@ Route::get('/profile', function() {
 
 Route::get('/error/unavailable', 'ErrorsController@calendarUnavailable')->name('errors.calendar_unavailable');
 // Manual error page routes for the moment
-Route::get('/403', function() {
-    return redirect('/');
-})->name('error403');
+Route::redirect('/403', '/');
 
-Route::get('/404', function() {
-    return view('errors.404', [
-        'title' => 'Calendar not found',
-        'resource' => 'Calendar'
-    ]);
-})->name('error404');
+Route::view('/404', 'errors.404', [
+    'title' => 'Calendar not found',
+    'resource' => 'Calendar'
+]);
 
-// Catch-all redirect to make sure old bookmarks and such work.
-// TODO: Add a way to warn users that this will break some day.
-// Despite telling everyone update their bookmarks, they won't.
-Route::get('/{path}', function(Request $request) {
-    if($request->get('action') == 'generate') {
-        return redirect('calendars/create');
-    }
-
-    if($request->get('action') == 'view') {
-        return redirect("calendars/{$request->get('id')}");
-    }
-
-    if($request->get('action') == 'edit') {
-        return redirect("calendars/{$request->get('id')}/edit");
-    }
-})->where(['url' => 'calendar.php|calendar']);
+Route::get('/{path}', 'CalendarController@legacy')->where(['url' => 'calendar.php|calendar']);

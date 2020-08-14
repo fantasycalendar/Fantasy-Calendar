@@ -3,7 +3,7 @@ FROM php:7-fpm
 RUN apt-get update -y \
     && apt-get install -y nginx curl gnupg
 
-RUN curl -sL https://deb.nodesource.com/setup_11.x  | bash -
+RUN curl -sL https://deb.nodesource.com/setup_14.x  | bash -
 RUN apt-get -y install nodejs
 
 RUN apt-get update && apt-get install -y \
@@ -55,6 +55,8 @@ RUN npm install
 RUN npm run production
 
 RUN ["/usr/local/bin/php", "/var/www/html/composer.phar", "install", "-d", "/fantasy-calendar/"]
+
+RUN ["/usr/local/bin/php", "/var/www/html/composer.phar", "dump-auto", "-d", "/fantasy-calendar/"]
 
 USER root
 

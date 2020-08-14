@@ -10,8 +10,9 @@
     "require": {
         "php": "^7.2",
         "ext-json": "*",
-        "code16/sharp": "^4.2.5",
         "barryvdh/laravel-ide-helper": "^2.6",
+        "bref/laravel-bridge": "^0.2.0",
+        "code16/sharp": "^4.2.5",
         "fideloper/proxy": "^4.0",
         "graham-campbell/markdown": "^11.0",
         "guzzlehttp/guzzle": "^6.5",
@@ -59,6 +60,13 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
+        "pre-install-cmd": [
+            "@php -r \"file_exists('storage') || mkdir('storage');\"",
+            "@php -r \"file_exists('storage/framework') || mkdir('storage/framework');\"",
+            "@php -r \"file_exists('storage/framework/cache') || mkdir('storage/framework/cache');\"",
+            "@php -r \"file_exists('storage/framework/sessions') || mkdir('storage/framework/sessions');\"",
+            "@php -r \"file_exists('storage/framework/views') || mkdir('storage/framework/views');\""
+        ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"

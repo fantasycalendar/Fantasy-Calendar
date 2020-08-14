@@ -543,7 +543,7 @@ body {
     .last_row{
         display: flex;
         flex-wrap: wrap;
-        justify-content: end;
+        justify-content: flex-end;
         flex-direction: column;
         font-size:0.75rem;
         text-align:left;

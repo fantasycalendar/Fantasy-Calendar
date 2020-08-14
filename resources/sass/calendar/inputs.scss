@@ -685,6 +685,7 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     margin-left:0.5rem;
     &:hover {
         opacity:1.0;
+        cursor: pointer;
     }
 }
 
@@ -1135,10 +1136,17 @@ ol.example li.placeholder:before {
 }
 
 #modal {
+
     color: white;
 
     &.error{
         background-color: #f44336;
+
+        ol {
+            list-style-type: none;
+            padding-inline-start: 0;
+            margin: 20px 0;
+        }
     }
 
     &.creation{

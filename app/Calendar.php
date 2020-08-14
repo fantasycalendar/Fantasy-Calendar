@@ -107,28 +107,47 @@ class Calendar extends Model
         return isset($this->static_data['clock']['enabled']) && isset($this->dynamic_data['hour']) && isset($this->dynamic_data['minute']) && $this->static_data['clock']['enabled'];
     }
 
-    public function current_date() {
+    public function getCurrentEraValidAttribute() {
+        return (
+            count($this->static_data['eras'] ?? []) > 0
+
+            && ($this->dynamic_data['current_era'] ?? -1) > -1
+        );
+    }
+
+    public function getCurrentDateAttribute() {
         if(count($this->static_data['year_data']['timespans']) < 1) {
             return "N/A";
         }
 
         $month_id = $this->dynamic_data['timespan'] ?? $this->dynamic_data['month'] ?? 0;
 
-
         $year = $this->dynamic_data['year'];
         $month = $this->static_data['year_data']['timespans'][$month_id]['name'];
         $day = $this->dynamic_data['day'];
 
-
         return sprintf("%s %s, %s", $day, $month, $year);
     }
 
-    public function current_time() {
+    public function getCurrentTimeAttribute() {
         if(!$this->static_data['clock']['enabled']) {
             return "N/A";
         }
 
         return $this->dynamic_data['hour'] . ":" . $this->dynamic_data['minute'];
+    }
+
+    public function getCurrentEraAttribute() {
+
+        if(!$this->current_era_valid){
+            return 'N/A';
+        }
+
+        $current_era_index = $this->dynamic_data['current_era'];
+
+        $current_era = $this->static_data['eras'][$current_era_index];
+
+        return $current_era['name'];
     }
 
     public function setting($setting_name, $default = false) {

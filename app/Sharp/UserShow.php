@@ -21,7 +21,12 @@ class UserShow extends SharpShow
         // Replace/complete this code
         $user = User::findOrFail($id);
 
-        return $this->transform($user);
+        return $this->setCustomTransformer(
+            "api_token",
+            function($api_token, $user, $attribute) {
+                return $api_token;
+            }
+        )->transform($user);
     }
 
     /**
@@ -43,6 +48,9 @@ class UserShow extends SharpShow
         )->addField(
             SharpShowTextField::make("permissions")
                 ->setLabel("Permission Level:")
+        )->addField(
+            SharpShowTextField::make('api_token')
+                ->setLabel("API Key")
         );
     }
 
@@ -64,6 +72,8 @@ class UserShow extends SharpShow
                  $column->withSingleField("beta_authorised");
              })->addColumn(6, function(ShowLayoutColumn $column) {
                  $column->withSingleField("permissions");
+             })->addColumn(12, function(ShowLayoutColumn $column) {
+                 $column->withSingleField("api_token");
              });
          });
     }

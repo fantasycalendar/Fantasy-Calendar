@@ -80,8 +80,8 @@ class Climate{
 				this.current_location.seasons.push(clone(location.seasons[index]));
 
 				this.current_location.seasons[i].time = {}
-				this.current_location.seasons[i].time.sunset = this.static_data.seasons.data[index].time.sunset;
-				this.current_location.seasons[i].time.sunrise = this.static_data.seasons.data[index].time.sunrise;
+				this.current_location.seasons[i].time.sunset = this.static_data.seasons.data[i].time.sunset;
+				this.current_location.seasons[i].time.sunrise = this.static_data.seasons.data[i].time.sunrise;
 
 			}
 
@@ -170,12 +170,15 @@ class Climate{
 
 				for(var season_index in this.seasons){
 
-					this.seasons[season_index].length = this.seasons[season_index].transition_length+this.seasons[season_index].duration;
+					let duration = this.seasons[season_index].duration ? this.seasons[season_index].duration : 0;
+					let transition_length = this.seasons[season_index].transition_length ? this.seasons[season_index].transition_length : 90;
+
+					this.seasons[season_index].length = transition_length+duration;
 
 					this.seasons[season_index].start = this._season_length;
-					this._season_length += this.seasons[season_index].transition_length;
+					this._season_length += transition_length;
 					this.seasons[season_index].end = this._season_length;
-					this._season_length += this.seasons[season_index].duration;
+					this._season_length += duration;
 
 				}
 
@@ -505,7 +508,7 @@ class Climate{
 
 			if(this.season.day >= this.season.total_day && this.season.day < this.season.total_day+season.length){
 
-				this.season.current_index = Number(season_index)
+				this.season.current_index = Number(season_index);
 				this.season.next_index = (this.season.current_index+1)%this.seasons.length;
 				
 				this.season.total_day += season.length;
@@ -514,6 +517,7 @@ class Climate{
 			}else{
 
 				this.season.total_day += season.length;
+
 			}
 		}
 

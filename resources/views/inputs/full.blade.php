@@ -77,7 +77,7 @@
 					This calendar doesn't have any weekdays or months yet, so you can't change the date.
 				</div>
 
-				<div class='date_control container' id='date_inputs'>
+				<div class='date_inputs date_control container' id='date_inputs'>
 
 					<div class='row'>
 						<h4>Current date:</h4>
@@ -151,7 +151,7 @@
 				</div>
 
 
-				<div class='date_control container mt-3'>
+				<div class='date_inputs date_control container mt-3'>
 
 					<div class='row'>
 						<h4 class="my-0 py-0">Preview date:</h4>
@@ -208,7 +208,7 @@
 
 				</div>
 
-                <div class='wrap-collapsible card full date_control'>
+                <div class='wrap-collapsible card full date_inputs'>
                     <input id="collapsible_add_units" class="toggle" type="checkbox">
                     <label for="collapsible_add_units" class="lbl-toggle card-header small-lbl-text center-text">Add or subtract fixed units to calendar dates</label>
                     <div class="collapsible-content container card-body">
@@ -229,7 +229,6 @@
                 </div>
 
             </div>
-
 
 		</div>
 

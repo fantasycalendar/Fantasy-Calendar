@@ -46,13 +46,16 @@ var condition_mapping = {
 		["Day in year is later than",		[["year_day", ">", 0]],			[["number", "Number", "Enter yearday number", "1"]]],
 		["Day in year is earlier than",		[["year_day", "<", 0]],			[["number", "Number", "Enter yearday number", "1"]]],
 		["Every nth day in year",			[["year_day", "%", 0, 1]],		[["number", "nth", "Enter yearday interval", "1", "1"], ["number", "offset", "Enter offset for interval", "0", "0"]]],
-
+		
 		["Exactly x days before the end of the month", 					[["inverse_day", "==", 0]],		[["number", "Number", "Enter day number", "1"]]],
 		["Not x days before the end of the month",						[["inverse_day", "!=", 0]],		[["number", "Number", "Enter day number", "1"]]],
 		["Exactly or later than x days before the end of the month",	[["inverse_day", ">=", 0]],		[["number", "Number", "Enter day number", "1"]]],
 		["Exactly or earlier than x days before the end of the month",	[["inverse_day", "<=", 0]],		[["number", "Number", "Enter day number", "1"]]],
 		["Later than x days before the end of the month",				[["inverse_day", ">", 0]],		[["number", "Number", "Enter day number", "1"]]],
 		["Earlier than x days before the end of the month",				[["inverse_day", "<", 0]],		[["number", "Number", "Enter day number", "1"]]],
+
+		["Day is intercalary",				[["intercalary", "==", 0]],		[["boolean"]]],
+		["Day is not intercalary",			[["intercalary", "!=", 0]],		[["boolean"]]],
 	],
 
 	"Epoch": [
@@ -1301,7 +1304,7 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Winter",
+						"name":"Autumn",
 						"custom_name":true,
 						"weather":{
 							"temp_low":60.0,

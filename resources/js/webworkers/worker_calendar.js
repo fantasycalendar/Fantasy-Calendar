@@ -551,8 +551,8 @@ var calendar_builder = {
 				current_era = i;
 			}
 		}
-
-		if(this.static_data.eras[current_era] && epoch == this.static_data.eras[current_era].date.epoch && this.static_data.eras[current_era].settings.restart){
+		
+		if(this.static_data.eras[current_era] && this.static_data.eras[current_era].settings.restart){
 			era_year = 0;
 		}
 
@@ -593,9 +593,9 @@ var calendar_builder = {
 
 				for(day = 0, timespan_day = 1; day <= current_timespan.length; day++){
 
-					if(this.static_data.eras[current_era+1] && epoch >= this.static_data.eras[current_era+1].date.epoch){
+					if(this.static_data.eras.length > 0 && this.static_data.eras[current_era+1] && epoch >= this.static_data.eras[current_era+1].date.epoch){
 						current_era++;
-						if(this.static_data.eras[current_era].settings.restart){
+						if(current_era != -1 && this.static_data.eras[current_era].settings.restart){
 							era_year = 0;
 						}
 					}
@@ -787,7 +787,17 @@ var calendar_builder = {
 				}
 			}
 			if(year_index != convert_year(this.static_data, this.dynamic_data.year)) year_day = 1;
-			era_year++;
+			if(this.static_data.eras.length != 0 && current_era != -1){
+				if(this.static_data.eras[current_era].settings.ends_year){
+					if(!this.static_data.eras[current_era].settings.restart){
+						era_year++;
+					}
+				}else{
+					era_year++;
+				}
+			}else{
+				era_year++;
+			}
 
 			var climate_generator = new Climate(this.data.epochs, this.static_data, this.dynamic_data, year_start_epoch, epoch);
 			this.data.epochs = climate_generator.generate()
@@ -827,9 +837,9 @@ var calendar_builder = {
 
 				for(day = 0, timespan_day = 1; day <= current_timespan.length; day++){
 
-					if(this.static_data.eras[current_era+1] && epoch >= this.static_data.eras[current_era+1].date.epoch){
+					if(this.static_data.eras.length > 0 && this.static_data.eras[current_era+1] && epoch >= this.static_data.eras[current_era+1].date.epoch){
 						current_era++;
-						if(this.static_data.eras[current_era].settings.restart){
+						if(current_era != -1 && this.static_data.eras[current_era].settings.restart){
 							era_year = 0;
 						}
 					}
@@ -1020,7 +1030,17 @@ var calendar_builder = {
 				}
 			}
 			if(year_index != convert_year(this.static_data, this.dynamic_data.year)) year_day = 1;
-			era_year++;
+			if(this.static_data.eras.length != 0 && current_era != -1){
+				if(this.static_data.eras[current_era].settings.ends_year){
+					if(!this.static_data.eras[current_era].settings.restart){
+						era_year++;
+					}
+				}else{
+					era_year++;
+				}
+			}else{
+				era_year++;
+			}
 
 			var climate_generator = new Climate(this.data.epochs, this.static_data, this.dynamic_data, year_start_epoch, epoch);
 			this.data.epochs = climate_generator.generate()
@@ -1085,7 +1105,7 @@ var calendar_builder = {
 				if(era.settings.ends_year && convert_year(this.static_data, this.dynamic_data.year) == convert_year(this.static_data, era.date.year) && era.date.timespan < num_timespans+1){
 
 					num_timespans = era.date.timespan+1;
-					ending_day = era.date.day-1;
+					ending_day = era.date.day;
 
 				}
 
@@ -1288,8 +1308,7 @@ var calendar_builder = {
 			first_eval_month = parseInt(Object.keys(this.calendar_list.timespans_to_build)[0]);
 
 		}
-
-		year_start_data = evaluate_calendar_start(this.static_data, first_eval_year, first_eval_month);
+		year_start_data = evaluate_calendar_start(this.static_data, first_eval_year, first_eval_month, undefined, true);
 		era_year = year_start_data.era_year;
 		count_timespans = year_start_data.count_timespans;
 		num_timespans = year_start_data.num_timespans;
@@ -1304,11 +1323,15 @@ var calendar_builder = {
 				current_era = i;
 			}
 		}
-
+		
+		if(this.static_data.eras[0] && current_era == -1 && this.static_data.eras[0].settings.starting_era){
+			current_era = 0;
+		}
+		
 		if(this.static_data.eras[current_era] && epoch == this.static_data.eras[current_era].date.epoch && this.static_data.eras[current_era].settings.restart){
 			era_year = 0;
 		}
-
+		
 		year_day = 1+year_start_data.epoch-evaluate_calendar_start(this.static_data, first_eval_year).epoch;
 
 		week_day = year_start_data.week_day;
@@ -1349,6 +1372,7 @@ var calendar_builder = {
 						if(this.static_data.eras[current_era].settings.restart){
 							era_year = 0;
 						}
+
 					}
 
 					moon_data = [];
@@ -1513,6 +1537,7 @@ var calendar_builder = {
 									'leap_day': leap_day.index,
 
 									'era': current_era
+
 								}
 
 								data.current_cycle = get_cycle(this.static_data, data).array;
@@ -1541,7 +1566,17 @@ var calendar_builder = {
 			}
 
 			if(year_index !== convert_year(this.static_data, this.dynamic_data.year)){
-				era_year++;
+				if(this.static_data.eras.length > 0 && current_era != -1){				
+					if(this.static_data.eras[current_era].settings.ends_year){
+						if(!this.static_data.eras[current_era].settings.restart){
+							era_year++;
+						}
+					}else{
+						era_year++;
+					}
+				}else{
+					era_year++;
+				}
 				year_day = 1;
 			}
 		}
@@ -1577,9 +1612,9 @@ var calendar_builder = {
 
 			for(day = 0, timespan_day = 1; day <= current_timespan.length; day++){
 
-				if(this.static_data.eras[current_era+1] && epoch >= this.static_data.eras[current_era+1].date.epoch){
+				if(this.static_data.eras.length > 0 && this.static_data.eras[current_era+1] && epoch >= this.static_data.eras[current_era+1].date.epoch){
 					current_era++;
-					if(this.static_data.eras[current_era].settings.restart){
+					if(current_era != -1 && this.static_data.eras[current_era].settings.restart){
 						era_year = 0;
 						calendar_era_year = 0;
 					}
@@ -1792,12 +1827,15 @@ var calendar_builder = {
 
 			}
 
-
 			if(!this.static_data.year_data.overflow){
 				year_week_num++;
 				total_week_num++;
 			}
 
+		}
+
+		if(!this.static_data.settings.show_current_month){
+			era_year++;
 		}
 
 		var calendar_end_epoch = epoch;
@@ -1832,9 +1870,9 @@ var calendar_builder = {
 
 					moon_data = [];
 
-					if(this.static_data.eras[current_era+1] && epoch >= this.static_data.eras[current_era+1].date.epoch){
+					if(this.static_data.eras.length > 0 && this.static_data.eras[current_era+1] && epoch >= this.static_data.eras[current_era+1].date.epoch){
 						current_era++;
-						if(this.static_data.eras[current_era].settings.restart){
+						if(current_era != -1 && this.static_data.eras[current_era].settings.restart){
 							era_year = 0;
 						}
 					}
@@ -1927,7 +1965,7 @@ var calendar_builder = {
 
 							'intercalary': current_timespan.type === "intercalary",
 
-							'era': current_era
+							'era': current_era,
 						}
 
 						data.current_cycle = get_cycle(this.static_data, data).array;
@@ -2024,11 +2062,24 @@ var calendar_builder = {
 				}
 			}
 			year_day = 1;
-			era_year++;
+			if(this.static_data.eras.length > 0 && current_era != -1){
+				if(this.static_data.eras[current_era].settings.ends_year){
+					if(!this.static_data.eras[current_era].settings.restart){
+						era_year++;
+					}
+				}else{
+					era_year++;
+				}
+			}else{
+				era_year++;
+			}
 		}
 
 		climate_generator = new Climate(this.data.epochs, this.static_data, this.dynamic_data, calendar_start_epoch, calendar_end_epoch);
 		this.data.epochs = climate_generator.generate();
+
+
+
 
 		if(debug || debugtext){
 

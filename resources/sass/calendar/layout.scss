@@ -10,6 +10,16 @@
     background-color: $accent-color !important;
 }
 
+.btn.btn-accent {
+    background-color: $accent-color;
+    border-color: $accent-color;
+
+    &:hover {
+        background-color: $accent-color-darker;
+        border-color: $accent-color;
+    }
+}
+
 html {
     font-size: 20px;
     overflow-x: hidden;
