@@ -231,5 +231,13 @@
                 </div>
             </div>
         </div>
+
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-12 col-md-8 text-center my-5 py-3 px-4 border rounded" style="opacity: 0.65;">
+                <small>Have you donated to Fantasy Calendar in the past? If so, we'd love to give you an appropriate subscription! Please <a href="mailto:contact@fantasy-calendar.com">contact us</a> with proof of your donation so we can make that happen.</small>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
     </div>
 @endsection
