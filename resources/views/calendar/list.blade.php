@@ -138,9 +138,9 @@
                             <a href="{{ Auth::user()->can('update', $calendar) ? route('calendars.edit', ['calendar'=> $calendar->hash]) : route('calendars.show', ['calendar'=> $calendar->hash]) }}"><h4 class="calendar-name">{{ $calendar->name }} <small class="badge badge-secondary" style="font-size: 44%; position: relative; top: -4px; margin-left: 4px;">{{ $calendar->pivot->user_role }}</small> <br><span class="creator_name">{{ $calendar->user->username }}</span></h4></a>
                         </div>
                         <div style="padding-left: 33px;" class="d-none d-md-block col-md-4 col-lg-3">
-                            <i class="fa fa-calendar" style="margin-left: -20px;"></i> {{ $calendar->current_date() }} <br>
+                            <i class="fa fa-calendar" style="margin-left: -20px;"></i> {{ $calendar->current_date }} <br>
                             @if($calendar->clock_enabled)
-                                <i class="fa fa-clock" style="margin-left: -20px;"></i> {{ $calendar->current_time() }}
+                                <i class="fa fa-clock" style="margin-left: -20px;"></i> {{ $calendar->current_time }}
                             @endif
                         </div>
                         <div class="d-none d-lg-block col-lg-1 protip">
