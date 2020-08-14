@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Response;
 
 class LoginController extends Controller
 {
@@ -22,12 +23,6 @@ class LoginController extends Controller
 
     use AuthenticatesUsers;
 
-    /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
-    protected $redirectTo = '/calendars';
 
     /**
      * Create a new controller instance.
@@ -52,6 +47,18 @@ class LoginController extends Controller
         request()->merge([$field => $login]);
 
         return $field;
+    }
+
+    /**
+     * Show the application's login form.
+     *
+     * @return Response
+     */
+    public function showLoginForm()
+    {
+        return response()
+            ->view('auth.login')
+            ->cookie('intended_path', request()->get('postlogin'));
     }
 
     /**
@@ -89,5 +96,13 @@ class LoginController extends Controller
         if($request->wantsJson()) {
             return ['success' => true, 'message' => 'User is logged out.'];
         }
+    }
+
+    public function redirectTo() {
+        if(request()->cookie('intended_path')) {
+            return request()->cookie('intended_path');
+        }
+
+        return '/calendars';
     }
 }

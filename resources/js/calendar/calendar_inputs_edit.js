@@ -73,7 +73,7 @@ function set_up_edit_inputs(){
 		// Unhook before unload
 		window.onbeforeunload = function () {}
 
-		window.location = '/login?continue_create=true';
+		window.location = '/login?postlogin=/calendars/create?resume=1';
 
 	});
 
@@ -83,7 +83,7 @@ function set_up_edit_inputs(){
 	delete_button = $('#btn_delete');
 
 	delete_button.click(function(){
-		delete_calendar(hash, calendar_name, function(){self.location = '/'});
+		delete_calendar(hash, calendar_name, function(){self.location = '/calendars'});
 	});
 
 	calendar_container = $('#calendar');
