@@ -5030,7 +5030,7 @@ function evaluate_save_button(override){
 
 		create_button.toggleClass('btn-danger', invalid).toggleClass('btn-success', !invalid).text(text);
 
-	}else{
+	}else if($('.login-button').length){
 
 		var invalid = errors.length > 0;
 
