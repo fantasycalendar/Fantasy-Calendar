@@ -206,7 +206,12 @@ class CalendarController extends Controller
             return [ 'success' => false, 'error' => 'Unable to update calendar. Please try again later.'];
         }
 
-        return [ 'success' => true, 'data'=> true ];
+        $last_changed = [
+            'last_dynamic_change' => $calendar->last_dynamic_change,
+            'last_static_change' => $calendar->last_static_change,
+        ];
+
+        return [ 'success' => true, 'data'=> true, 'last_changed' => $last_changed ];
 
     }
 

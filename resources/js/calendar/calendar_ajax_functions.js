@@ -72,6 +72,7 @@ function update_view_dynamic(calendar_hash){
 		dataType: 'json',
 		data: {_method: 'PATCH', dynamic_data: JSON.stringify(dynamic_data)},
 		success: function ( result ){
+			last_dynamic_change = new Date(result.last_changed.last_dynamic_change)
 			update_children_dynamic_data();
 		},
 		error: function ( log )
@@ -97,6 +98,8 @@ function update_dynamic(calendar_hash){
 			}
 
 			calendar_saved();
+
+			last_dynamic_change = new Date(result.last_changed.last_dynamic_change)
 
 			update_children_dynamic_data();
 
@@ -166,8 +169,9 @@ function do_update_all(calendar_hash, output){
 			if(!event_categories_same){
 				prev_event_categories = clone(event_categories);
 			}
-
-			console.log(static_same)
+			
+			last_dynamic_change = new Date(result.last_changed.last_dynamic_change)
+			last_static_change = new Date(result.last_changed.last_static_change)
 
 			calendar_saved();
 
