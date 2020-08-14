@@ -6,6 +6,9 @@ return [
             "list" => \App\Sharp\UserList::class,
             "show" => \App\Sharp\UserShow::class,
             "form" => \App\Sharp\UserForm::class,
+        ],
+        "env" => [
+            "list" => \App\Sharp\EnvVarsList::class,
         ]
     ],
 
@@ -19,6 +22,11 @@ return [
             "label" => "Users",
             "icon" => "fa-users",
             "entity" => "user"
+        ],
+        [
+            "label" => "Env Vars",
+            "icon" => "fa-cog",
+            "entity" => "env"
         ]
     ],
 
