@@ -406,7 +406,7 @@ async function submit_new_event(event_id){
 				);
             } else {
 				events.pop(); // Discard most recent event
-                throw "Error: " + result.data.message;
+                throw result.data.message;
             }
         }).catch(function(error) {
             console.log(error);
@@ -421,9 +421,13 @@ function submit_hide_show_event(event_id){
 
 	axios.patch(window.apiurl+"/event/"+edit_event.id, edit_event)
         .then(function(result) {
-            events[event_id].settings.hide = !events[event_id].settings.hide;
-            rebuild_events();
-            evaluate_save_button();
+            if(result.data.data !== undefined) {
+				events[event_id].settings.hide = !events[event_id].settings.hide;
+				rebuild_events();
+				evaluate_save_button();
+			}else{
+                throw result.data.message;
+			}
         }).catch(function(error){
 			throw "Error: " + error;
     });
