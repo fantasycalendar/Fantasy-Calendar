@@ -19,7 +19,7 @@ function display_events(static_data, event_data){
 
 			let hide_event = current_event.settings.hide || static_data.settings.hide_events || category_hide;
 
-			if(current_event.settings.hide_full || (hide_event && (!Perms.player_at_least('co-owner') || Perms.userid == current_event.creator_id))) continue;
+			if(current_event.settings.hide_full || (hide_event && !(Perms.player_at_least('co-owner') || Perms.userid == current_event.creator_id))) continue;
 
 			calendar_layouts.layout.add_event(event_data, event_index, current_event, category_hide);
 
