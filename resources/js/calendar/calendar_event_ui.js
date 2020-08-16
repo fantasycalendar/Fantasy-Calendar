@@ -2141,7 +2141,7 @@ var edit_event_ui = {
 			swal.fire({
 
 				title: "Warning!",
-				text: "Are you sure you want to delete this event?",
+				html: `Are you sure you want to delete the event<br>"${events[delete_event_id].name}"?`,
 				showCancelButton: true,
 				confirmButtonColor: '#d33',
 				cancelButtonColor: '#3085d6',
