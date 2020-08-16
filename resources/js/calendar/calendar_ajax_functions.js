@@ -406,7 +406,7 @@ async function submit_new_event(event_id){
 				);
             } else {
 				events.pop(); // Discard most recent event
-                throw "Error: " + results.data.message;
+                throw "Error: " + result.data.message;
             }
         }).catch(function(error) {
             console.log(error);
