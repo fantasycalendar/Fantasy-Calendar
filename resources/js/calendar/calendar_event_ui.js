@@ -277,8 +277,13 @@ var edit_event_ui = {
 				$('#color_style').val(category.event_settings.color);
 				$('#text_style').val(category.event_settings.text).change();
 				$('#event_hide_players').prop('checked', category.event_settings.hide);
-				$('#event_print_checkbox').prop('checked', category.event_settings.print);
-				$('#event_hide_full').prop('checked', category.event_settings.hide_full);
+				
+				if($('#event_print_checkbox').length){
+					$('#event_print_checkbox').prop('checked', category.event_settings.print);
+				}
+				if($('#event_hide_full').length){
+					$('#event_hide_full').prop('checked', category.event_settings.hide_full);
+				}
 			}
 		});
 
