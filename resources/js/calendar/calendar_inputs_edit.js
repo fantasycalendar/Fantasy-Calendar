@@ -5455,7 +5455,9 @@ function autosave(){
 	var saved_data = JSON.stringify({
 		calendar_name: calendar_name,
 		static_data: static_data,
-		dynamic_data: dynamic_data
+		dynamic_data: dynamic_data,
+		events: events,
+		event_categories: event_categories
 	})
 
 	localStorage.setItem('autosave', saved_data);
@@ -5501,11 +5503,16 @@ function autoload(popup){
 	if(saved_data){
 
 		var data = JSON.parse(saved_data);
-		prev_dynamic_data = {}
-		prev_static_data = {}
+		prev_calendar_name = {};
+		prev_dynamic_data = {};
+		prev_static_data = {};
+		prev_events = {};
+		prev_event_categories = {};
 		calendar_name = data.calendar_name;
 		static_data = data.static_data;
 		dynamic_data = data.dynamic_data;
+		events = data.events;
+		event_categories = data.event_categories;
 		dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
 		empty_edit_values();
 		set_up_edit_values();
