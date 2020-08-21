@@ -60,7 +60,7 @@
             </div>
             @endif
 
-            @can('update', $calendar)
+            @can('advance-date', $calendar)
 			<div class='date_control container' id='date_inputs'>
 
                 {{-- TODO-Adam - Once initial permission system is implemented, it might be worth to just not render the date inputs --}}
@@ -69,7 +69,7 @@
 					<h4>Current date:</h4>
 				</div>
 
-				<div class='row my-2 center-text hidden calendar_link_explaination'>
+				<div class='row my-2 center-text hidden calendar_link_explanation'>
                     @if($calendar->parent != null)
                         <p class='m-0'>This calendar is using a different calendar's date to calculate the current date. Only the <a href='/calendars/{{ $calendar->parent->hash }}' target="_blank">parent calendar</a> can set the date for this calendar.</p>
                     @endif

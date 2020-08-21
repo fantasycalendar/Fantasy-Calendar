@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Jobs\CloneCalendar;
-use App\Jobs\InviteUser;
 use App\Notifications\CalendarInvitation;
 use App\Notifications\UnregisteredCalendarInvitation;
 use App\User;
@@ -40,12 +39,10 @@ class CalendarController extends Controller
     public function last_changed(Request $request, $id) {
         $calendar = Calendar::hash($id)->firstOrFail();
 
-        $last_changed = [
+        return [
             'last_dynamic_change' => $calendar->last_dynamic_change,
             'last_static_change' => $calendar->last_static_change,
         ];
-
-        return $last_changed;
     }
 
     public function children(Request $request, $id) {
@@ -55,7 +52,7 @@ class CalendarController extends Controller
 
     }
 
-    public function updatechildren(Request $request){
+    public function updateChildren(Request $request){
 
         $request = $request->only('data');
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Jobs\PrepCalendarForExport;
 use GrahamCampbell\Markdown\Facades\Markdown;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 
 use Auth;
@@ -25,7 +26,7 @@ class CalendarController extends Controller
 
         $this->middleware('verified')->only('edit');
 
-        $this->authorizeResource(Calendar::class, 'calendar');
+        $this->authorizeResource(Calendar::class, 'calendar', ['except' => 'update']);
     }
 
     /**
@@ -157,6 +158,17 @@ class CalendarController extends Controller
      */
     public function update(Request $request, Calendar $calendar)
     {
+        // Yes, I know. This isn't how you're supposed to do this. but ... Well. Just look away if you need to.
+        if($request->hasAny(['name', 'static_data', 'parent_hash', 'parent_link_date', 'parent_offset', 'event_categories', 'events'])) {
+            if(!Auth::user()->can('update', $calendar)) {
+                throw new AuthorizationException('Not allowed.');
+            }
+        }
+
+        if(!Auth::user()->can('advance-date', $calendar)) {
+            throw new AuthorizationException('Not allowed.');
+        }
+
         $update_data = $request->only(['name', 'dynamic_data', 'static_data', 'parent_hash', 'parent_link_date', 'parent_offset', 'event_categories', 'events']);
         $categoryids = [];
 

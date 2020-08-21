@@ -83,7 +83,7 @@
 						<h4>Current date:</h4>
 					</div>
 
-					<div class='row my-2 center-text hidden calendar_link_explaination'>
+					<div class='row my-2 center-text hidden calendar_link_explanation'>
 						@if(request()->is('calendars/*/edit') && $calendar->parent != null)
 							<p class='m-0'>This calendar is using a different calendar's date to calculate the current date. Only the <a href='/calendars/{{ $calendar->parent->hash }}/edit' target="_blank">parent calendar</a> can set the date for this calendar.</p>
 						@endif
@@ -1335,7 +1335,7 @@
 							</div>
 
 							@if($calendar->parent != null)
-								<div class='row no-gutters my-1 center-text hidden calendar_link_explaination'>
+								<div class='row no-gutters my-1 center-text hidden calendar_link_explanation'>
 									<p class='m-0'>This calendar is already linked to a <a href='/calendars/{{ $calendar->parent->hash }}/edit' target="_blank">parent calendar</a>. Before linking any calendars to this one, you must unlink this calendar from its parent.</p>
 								</div>
 							@else

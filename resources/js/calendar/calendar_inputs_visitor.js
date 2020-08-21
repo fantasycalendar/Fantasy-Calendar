@@ -706,7 +706,7 @@ function evaluate_settings(){
 	$('.date_control').find('select, input').not('#current_hour, #current_minute').prop('disabled', !Perms.player_at_least('co-owner') && !static_data.settings.allow_view);
 
 	$("#date_inputs :input, #date_inputs :button").prop("disabled", has_parent);
-	$(".calendar_link_explaination").toggleClass("hidden", !has_parent);
+	$(".calendar_link_explanation").toggleClass("hidden", !has_parent);
 
 	follower_buttons.toggleClass('hidden', (!Perms.player_at_least('co-owner') && !static_data.settings.allow_view));
 	follower_year_buttons.prop('disabled', (!Perms.player_at_least('co-owner') && !static_data.settings.allow_view)).toggleClass('hidden', (!Perms.player_at_least('co-owner') && !static_data.settings.allow_view));

@@ -68,6 +68,15 @@ class AuthServiceProvider extends ServiceProvider
                 );
         });
 
+        Gate::define('advance-date', function($user, $calendar) {
+            return $user->can('update', $calendar)
+
+                || ($calendar->user->paymentLevel() == 'Worldbuilder'
+
+                    && $calendar->users->contains($user) && $calendar->users->find($user->id)->pivot->user_role === 'co-owner'
+                );
+        });
+
         Gate::define('add-users', function($user, $calendar) {
             return $user->is($calendar->user) && $calendar->user->paymentLevel() !== 'Free';
         });
