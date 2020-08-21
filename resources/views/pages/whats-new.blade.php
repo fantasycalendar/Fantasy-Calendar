@@ -66,7 +66,7 @@
 
 @section('content')
     <div>
-        <div class="section green-border welcome" style="background-color: #edf2f7; background-image: url({{ asset('resources/whats-new-angle-blur-transparent.png') }}); background-size: cover; background-position: center center;">
+        <div class="section green-border welcome" style="background-color: #edf2f7; background-image: url({{ asset('resources/whats-new-angle-blur-transparent.png') }}); background-size: cover; background-position: center center; background-attachment: fixed;">
             <h1>Fantasy Calendar is getting an update!</h1>
             <h2>Here is what you can expect in Fantasy Calendar 2.0.</h2>
             <h3 class="next-link" style="font-size: 40px; position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section2"><i class="fa fa-chevron-circle-down"></i> Scroll down to see more <i class="fa fa-chevron-circle-down"></i></a></h3>
