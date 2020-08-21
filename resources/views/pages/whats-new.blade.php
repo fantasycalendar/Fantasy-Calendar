@@ -73,18 +73,18 @@
         </div>
 
         <div class="section green-border comparison_image" id="section2" style="background-image: linear-gradient(to right, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url({{ asset('resources/whats-new-1-0.png') }});">
-            <h1 style="position: absolute; top: 120px; width: 100%; text-align: center; color: #2d3748;">Here's what you're used to.</h1>
-            <h2 style="position: absolute; top: 190px; width: 100%; text-align: center; color: #2d3748;">It works great! But I think we can all agree it could use some polish.</h2>
-            <img src="{{ asset('/resources/whats-new-1-0.png') }}" style="max-width: 72%; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); position: absolute;">
+            <h1 style="position: absolute; top: 8%; width: 100%; text-align: center; color: #2d3748;">Here's what you're used to.</h1>
+            <h2 style="position: absolute; top: 16%; width: 100%; text-align: center; color: #2d3748;">It works great! But I think we can all agree it could use some polish.</h2>
+            <img src="{{ asset('/resources/whats-new-1-0.png') }}" style="max-width: 72%; max-height: 50%; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); position: absolute;">
             <h3 class="next-link" style="font-size: 40px; position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section3"><i class="fa fa-chevron-circle-down"></i> Take a peek at the new look <i class="fa fa-chevron-circle-down"></i></a></h3>
             <div class="overlay"></div>
         </div>
 
         <div class="section green-border comparison_image" id="section3" style="height: 100vh; background-image: linear-gradient(to right, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url({{ asset('resources/whats-new-2-0.png') }})">
-            <h1 style="position: absolute; top: 120px; width: 100%; text-align: center; color: #2d3748;">This is Fantasy Calendar 2.0.</h1>
-            <h2 style="position: absolute; top: 190px; width: 100%; text-align: center; color: #2d3748;">Lovingly crafted to look good on any screen. Even mobile devices.</h2>
+            <h1 style="position: absolute; top: 8%; width: 100%; text-align: center; color: #2d3748;">This is Fantasy Calendar 2.0.</h1>
+            <h2 style="position: absolute; top: 16%; width: 100%; text-align: center; color: #2d3748;">Lovingly crafted to look good on any screen. Even mobile devices.</h2>
             <h3 class="next-link" style="font-size: 40px; position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section4"><i class="fa fa-chevron-circle-down"></i> Looks great! Show me more <i class="fa fa-chevron-circle-down"></i></a></h3>
-            <img src="{{ asset('/resources/whats-new-2-0.png') }}" style="max-width: 72%; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); position: absolute;">
+            <img src="{{ asset('/resources/whats-new-2-0.png') }}" style="max-width: 72%; max-height: 50%; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); position: absolute;">
             <div class="overlay"></div>
         </div>
 
