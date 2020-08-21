@@ -56,7 +56,7 @@
 
     <script src="{{ mix('js/calendar/header.js') }}"></script>
 
-    @if(Auth::check() && Auth::user()->setting('dark_theme') && !request()->is('/'))
+    @if(Auth::check() && Auth::user()->setting('dark_theme') && !request()->is('/') && !request()->is('whats-new'))
         <link rel="stylesheet" href="{{ mix('css/app-dark.css') }}">
     @else
         <link rel="stylesheet" href="{{ mix('css/app.css') }}">
