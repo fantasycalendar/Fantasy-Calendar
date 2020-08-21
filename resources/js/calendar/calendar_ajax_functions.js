@@ -390,7 +390,7 @@ function remove_calendar_user(user_id, remove_all){
 
 }
 
-async function submit_new_event(event_id){
+async function submit_new_event(event_id, callback){
 
 	var new_event = clone(events[event_id]);
 	new_event.calendar_id = calendar_id;
@@ -404,12 +404,22 @@ async function submit_new_event(event_id){
 					"Event created.",
 					"success"
 				);
+				callback(true);
             } else {
 				events.pop(); // Discard most recent event
+				callback(false);
+				$.notify(
+					"Error: " + result.data.message
+				);
                 throw result.data.message;
             }
         }).catch(function(error) {
-            console.log(error);
+			events.pop(); // Discard most recent event
+			callback(false);
+			$.notify(
+				"Error: " + error
+			);
+			throw error;
     });
 }
 
@@ -433,7 +443,7 @@ function submit_hide_show_event(event_id){
     });
 }
 
-function submit_edit_event(event_id){
+function submit_edit_event(event_id, callback){
 
 	var edit_event = clone(events[event_id]);
 	edit_event.calendar_id = calendar_id;
@@ -444,7 +454,12 @@ function submit_edit_event(event_id){
 				result.data.message,
 				result.data.success !== undefined ? "success" : false
 			);
+			callback(result.data.success !== undefined);
         }).catch(function(error){
+			callback(false);
+			$.notify(
+				"Error: " + error
+			);
 			throw "Error: " + error;
     });
 }
@@ -462,9 +477,12 @@ function submit_delete_event(event_id){
 				"success"
 			);
 		},
-		error: function ( log )
+		error: function ( error )
 		{
-			console.log(log);
+			$.notify(
+				"Error: " + error
+			);
+			throw "Error: " + error;
 		}
 	});
 

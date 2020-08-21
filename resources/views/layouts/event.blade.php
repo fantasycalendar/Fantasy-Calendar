@@ -58,7 +58,7 @@
 					<textarea class='form-control event_desc editable' name='event_desc' placeholder='Event description' autofocus=''></textarea>
 				</div>
 
-                @if(!isset($calendar) || (Auth::user() != Null && Auth::user()->can('update', $calendar)))
+                @if(!isset($calendar) || (Auth::user() != Null && Auth::user()->can('advance-date', $calendar)))
 
                     <h5 class='row no-gutters mt-2 event-form-heading'>Condition presets:</h5>
 

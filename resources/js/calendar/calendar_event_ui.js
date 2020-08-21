@@ -639,7 +639,6 @@ var edit_event_ui = {
 
 		var name = this.event_background.find('.event_name').val();
 		name = name !== '' ? name : "Unnamed Event";
-
 		new_event.name = name;
 
 		new_event.description = sanitizeHtml(this.trumbowyg.trumbowyg('html'), {allowedTags: [ 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'a', 'ul', 'ol', 'nl', 'li', 'b', 'i', 'strong', 'em', 'strike', 'code', 'hr', 'br', 'div', 'table', 'thead', 'caption', 'tbody', 'tr', 'th', 'td', 'pre', 'img' ]});
@@ -669,23 +668,35 @@ var edit_event_ui = {
 			}else{
 				$(`.events_input[index="${this.event_id}"]`).find(".event_name").text(`Edit - ${name}`);
 			}
+
+			this.submit_event_callback(true);
+
 		}else{
 			if(this.new_event){
-				submit_new_event(this.event_id);
+				submit_new_event(this.event_id, this.submit_event_callback);
 			}else{
-				submit_edit_event(this.event_id);
+				submit_edit_event(this.event_id, this.submit_event_callback);
 			}
 		}
 
-		this.clear_ui();
+	},
 
-		error_check();
+	submit_event_callback: function(success){
 
-		eval_apply_changes(function(){
-			rebuild_events();
-		});
+		edit_event_ui.clear_ui();
+
+		if(success){
+	
+			error_check();
+	
+			eval_apply_changes(function(){
+				rebuild_events();
+			});
+
+		}
 
 	},
+
 	clear_ui: function(){
 
 		delete registered_keydown_callbacks['event_ui_escape'];
