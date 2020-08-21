@@ -25,7 +25,7 @@ provider:
       FILESYSTEM_DRIVER: s3
       MIX_ASSET_URL: https://${self:custom.alias}
       ASSET_URL: https://${self:custom.alias}
-      APP_URL: ${self:custom.alias}
+      APP_URL: https://${self:custom.alias}
       WEBADDRESS: ${self:custom.alias}
       COOKIEADDRESS: ${self:custom.alias}
       CACHE_DRIVER: redis
