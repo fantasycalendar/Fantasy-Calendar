@@ -17,6 +17,7 @@ class CreateCalendarPresetsTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('source_calendar_id')->nullable();
             $table->string('name');
+            $table->string('description');
             $table->longText('dynamic_data');
             $table->longText('static_data');
         });
