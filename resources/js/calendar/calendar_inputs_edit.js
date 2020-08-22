@@ -110,13 +110,10 @@ function set_up_edit_inputs(){
 		$(this).removeClass('btn-secondary').addClass('btn-primary');
 
 		var errors = get_errors();
-		if($('#btn_create').length){
-			var creation_steps = get_creation_steps();
-		}
 
 		switch(view_type){
 			case "owner":
-				if($('#btn_create').length && creation_steps.current_step > creation_steps.steps && errors.length == 0){
+				if(creation.is_done() && errors.length == 0){
 					if(previous_view_type !== 'owner'){
 						evaluate_settings();
 						if(!preview_date.follow){
@@ -135,7 +132,7 @@ function set_up_edit_inputs(){
 
 			case "player":
 				owner = false;
-				if($('#btn_create').length && creation_steps.current_step > creation_steps.steps && errors.length == 0){
+				if(creation.is_done() && errors.length == 0){
 					if(previous_view_type !== 'player'){
 						evaluate_settings();
 						if(!preview_date.follow){
@@ -153,7 +150,7 @@ function set_up_edit_inputs(){
 				break;
 
 			case "weather":
-				if($('#btn_create').length && creation_steps.current_step > creation_steps.steps && errors.length == 0){
+				if(creation.is_done() && errors.length == 0){
 					evaluate_settings();
 					if(first_switch){
 						evaluate_day_length_chart();
@@ -3826,50 +3823,59 @@ function get_errors(){
 
 }
 
-function get_creation_steps(){
+const creation = {
 
-	var creation = {
-		text: [],
-		current_step: 1,
-		steps: 3,
-	};
+	text: [],
+	current_step: 1,
+	steps: 3,
 
-	if(creation.current_step >= 1){
-		if(calendar_name == ""){
-			creation.text.push(`<span><i class="mr-2 fas fa-calendar"></i> Your calendar must have a name</span>.`)
-		}else{
-			creation.text.push(`<span style="opacity: 0.4;"><i class="mr-2 fas fa-calendar-check"></i> Your calendar has a name!</span>`);
-			creation.current_step++;
+	is_done: function(){
+
+		if(this.current_step > this.steps){
+			return true;
 		}
-	}
 
-	if(creation.current_step >= 2){
-		if(static_data.year_data.global_week.length == 0){
-		    $("#collapsible_globalweek").prop("checked", true);
+		this.text = [];
 
-		    $("#calendar_name").blur();
-            setTimeout(function() { $('#weekday_name_input').focus() }, 200);
-
-			creation.text.push(`<span><i class="mr-2 fas fa-calendar"></i> You need at least one week day.</span>`);
-		}else{
-			creation.text.push(`<span style="opacity: 0.4;"><i class="mr-2 fas fa-calendar-check"></i> You have at least one week day!</span>`);
-			creation.current_step++;
+		if(this.current_step >= 1){
+			if(calendar_name == ""){
+				this.text.push(`<span><i class="mr-2 fas fa-calendar"></i> Your calendar must have a name</span>.`)
+				this.current_step = 1;
+			}else{
+				this.text.push(`<span style="opacity: 0.4;"><i class="mr-2 fas fa-calendar-check"></i> Your calendar has a name!</span>`);
+				this.current_step = 2;
+			}
 		}
-	}
 
-	if(creation.current_step >= 3){
-		if(static_data.year_data.timespans.length == 0){
-            $("#collapsible_timespans").prop("checked", true);
+		if(this.current_step >= 2){
+			if(static_data.year_data.global_week.length == 0){
+				$("#collapsible_globalweek").prop("checked", true);
 
-			creation.text.push(`<span><i class="mr-2 fas fa-calendar"></i> You need at least one month.</span>`);
-		}else{
-		    $("#collapsible_globalweek").prop("checked", false);
-			creation.text.push(`<span style="opacity: 0.4;"><i class="mr-2 fas fa-calendar-check"></i> You have at least one month!</span>`);
-			creation.current_step++;
+				$("#calendar_name").blur();
+				setTimeout(function() { $('#weekday_name_input').focus() }, 200);
+
+				this.text.push(`<span><i class="mr-2 fas fa-calendar"></i> You need at least one week day.</span>`);
+			}else{
+				this.text.push(`<span style="opacity: 0.4;"><i class="mr-2 fas fa-calendar-check"></i> You have at least one week day!</span>`);
+				this.current_step = 3;
+			}
 		}
-	}
 
-	return creation;
+		if(this.current_step >= 3){
+			if(static_data.year_data.timespans.length == 0){
+				$("#collapsible_timespans").prop("checked", true);
+
+				this.text.push(`<span><i class="mr-2 fas fa-calendar"></i> You need at least one month.</span>`);
+			}else{
+				$("#collapsible_globalweek").prop("checked", false);
+				this.text.push(`<span style="opacity: 0.4;"><i class="mr-2 fas fa-calendar-check"></i> You have at least one month!</span>`);
+				this.current_step = 4;
+			}
+		}
+
+		return this.current_step > this.steps;
+
+	}
 
 }
 
@@ -3877,19 +3883,15 @@ var do_error_check = debounce(function(type, rebuild){
 
 	evaluate_save_button();
 
-	if($('#btn_create').length){
-		var creation_steps = get_creation_steps();
-	}
-
-	if($('#btn_create').length && creation_steps.current_step <= creation_steps.steps){
+	if(!creation.is_done()){
 
 		var text = [];
 
-		text.push(`<h3 style="opacity: 0.7;">Calendar Creation (${creation_steps.current_step}/${creation_steps.steps})</h3><ol>`);
+		text.push(`<h3 style="opacity: 0.7;">Calendar Creation (${creation.current_step}/${creation.steps})</h3><ol>`);
 
-		for(var i = 0; i < creation_steps.text.length; i++){
+		for(var i = 0; i < creation.text.length; i++){
 
-			text.push(`<li>${creation_steps.text[i]}</li>`);
+			text.push(`<li>${creation.text[i]}</li>`);
 
 		}
 		text.push(`</ol class="mb-4">`);
@@ -3898,8 +3900,8 @@ var do_error_check = debounce(function(type, rebuild){
 
 		creation_message(text.join(''));
 
-		$('#generator_container').removeClass('step-'+(creation_steps.current_step-1));
-		$('#generator_container').addClass('step-'+(creation_steps.current_step));
+		$('#generator_container').removeClass();
+		$('#generator_container').addClass('step-'+(creation.current_step));
 
 	} else {
 
@@ -4768,15 +4770,8 @@ function calendar_save_failed(){
 
 function evaluate_save_button(override){
 
-
-	if($('#btn_create').length){
-
-		var creation_steps = get_creation_steps();
-
-		if(creation_steps.current_step <= creation_steps.steps){
-			return;
-		}
-
+	if(!creation.is_done()){
+		return;
 	}
 
 	var errors = get_errors();

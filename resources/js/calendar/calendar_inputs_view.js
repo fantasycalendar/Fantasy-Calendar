@@ -421,9 +421,7 @@ function fix_date(){
 
 function repopulate_location_select_list(){
 
-	var creation_steps = get_creation_steps();
-
-	if(creation_steps.current_step <= creation_steps.steps){
+	if(!creation.is_done()){
 		return;
 	}
 
