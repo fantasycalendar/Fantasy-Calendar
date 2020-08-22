@@ -2,6 +2,7 @@
 
 namespace App\Sharp;
 
+use App\Calendar;
 use Code16\Sharp\EntityList\Commands\InstanceCommand;
 
 class VisitExport extends InstanceCommand
@@ -21,6 +22,8 @@ class VisitExport extends InstanceCommand
      */
     public function execute($instanceId, array $data = []): array
     {
-        //
+        $calendar = Calendar::findOrFail($instanceId);
+
+        return $this->link("/calendars/" . $calendar->hash . "/export");
     }
 }
