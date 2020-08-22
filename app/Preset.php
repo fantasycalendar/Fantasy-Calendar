@@ -6,12 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Preset extends Model
 {
-
-    public $with = [
-        'events',
-        'categories'
-    ];
-
     protected $casts = [
         'dynamic_data' => 'array',
         'static_data' => 'array',
