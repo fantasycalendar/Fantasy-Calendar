@@ -8,7 +8,8 @@ return [
             "form" => \App\Sharp\UserForm::class,
         ],
         "calendars" => [
-            "list" => \App\Sharp\CalendarList::class
+            "list" => \App\Sharp\CalendarList::class,
+            "show" => \App\Sharp\CalendarShow::class
         ],
         "env" => [
             "list" => \App\Sharp\EnvVarsList::class,
