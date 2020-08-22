@@ -21,6 +21,11 @@ class PresetList extends SharpEntityList
                 ->setLabel('Name')
                 ->setSortable()
                 ->setHtml()
+        )->addDataContainer(
+            EntityListDataContainer::make('created_at')
+                ->setLabel('Created At')
+                ->setSortable()
+                ->setHtml()
         );
     }
 
@@ -32,7 +37,8 @@ class PresetList extends SharpEntityList
 
     public function buildListLayout()
     {
-        $this->addColumn('name', 12);
+        $this->addColumn('name', 4)
+            ->addColumn('created_at', 4);
     }
 
     /**
@@ -45,7 +51,9 @@ class PresetList extends SharpEntityList
         $this->setInstanceIdAttribute('id')
             ->setSearchable()
             ->setDefaultSort('name', 'asc')
-            ->setPaginated();
+            ->setPaginated()
+            ->addInstanceCommand("update", UpdatePreset::class)
+            ->addInstanceCommand("delete", DeletePreset::class);
     }
 
     /**
@@ -56,6 +64,24 @@ class PresetList extends SharpEntityList
     */
     public function getListData(EntityListQueryParams $params)
     {
-        return $this->transform(Preset::all());
+
+        $preset_model = Preset::query();
+
+        if ($params->hasSearch()) {
+            foreach ($params->searchWords() as $word) {
+                $preset_model->where('name', 'like', $word);
+            }
+        }
+
+        if($params->sortedBy()) {
+            $preset_model->orderBy($params->sortedBy(), $params->sortedDir());
+        }
+
+        return $this->setCustomTransformer(
+            "created_at",
+            function($created_at, $preset, $attribute) {
+                return $preset->created_at;
+            }
+        )->transform($preset_model->paginate(20));
     }
 }
