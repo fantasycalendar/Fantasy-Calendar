@@ -20,6 +20,8 @@ class CreatePresetsTable extends Migration
             $table->string('description');
             $table->longText('dynamic_data');
             $table->longText('static_data');
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -11,6 +11,10 @@ return [
             "list" => \App\Sharp\CalendarList::class,
             "show" => \App\Sharp\CalendarShow::class
         ],
+        "presets" => [
+            "list" => \App\Sharp\PresetList::class,
+            "show" => \App\Sharp\PresetShow::class,
+        ],
         "env" => [
             "list" => \App\Sharp\EnvVarsList::class,
         ]
@@ -31,6 +35,11 @@ return [
             "label" => "Calendars",
             "icon" => "fa-calendar",
             "entity" => "calendars"
+        ],
+        [
+            "label" => "Presets",
+            "icon" => "fa-calendar",
+            "entity" => "presets"
         ],
         [
             "label" => "Env Vars",

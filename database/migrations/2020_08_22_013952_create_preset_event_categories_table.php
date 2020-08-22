@@ -20,6 +20,8 @@ class CreatePresetEventCategoriesTable extends Migration
             $table->string('category_settings');
             $table->string('event_settings');
             $table->string('label');
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 

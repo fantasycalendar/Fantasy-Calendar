@@ -1,5 +1,9 @@
 @extends('inputs.full')
 
+@push('head')
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.6.0/dist/alpine.min.js" defer></script>
+@endpush
+
 @section('label')
     <div class='wrap-collapsible'>
         <div class='title-text center-text'>Create Calendar</div>
@@ -29,12 +33,14 @@
 
         <div class='row'>
             
-            <div class='col pr-1'>
+            <div class='col pr-1' x-data="{ presets: false }" 
+            @mouseenter.once="
+                fetch('/api/presets.html')
+                    .then(response => response.text())
+                    .then(html => { $refs.dropdown.innerHTML = html })
+            ">
 
-                <select class='form-control form-control-sm' id='presets'>
-                    <option>Presets</option>
-                    <option>Custom JSON</option>
-                    <option>Random</option>
+                <select class='form-control form-control-sm' id='preset_select' x-ref="dropdown">
                 </select>
 
             </div>

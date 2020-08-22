@@ -4,6 +4,9 @@ namespace App\Sharp;
 
 use Code16\Sharp\EntityList\Commands\InstanceCommand;
 
+use App\Calendar;
+use App\Jobs\ConvertCalendarToPreset;
+
 class PromoteToPreset extends InstanceCommand
 {
     /**
@@ -21,6 +24,8 @@ class PromoteToPreset extends InstanceCommand
      */
     public function execute($instanceId, array $data = []): array
     {
-        //
+        $results = ConvertCalendarToPreset::dispatchNow(Calendar::find($instanceId));
+
+        return $this->link('/sharp/show/presets/' . $results->id);
     }
 }

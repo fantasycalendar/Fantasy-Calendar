@@ -22,6 +22,8 @@ class CreatePresetEventsTable extends Migration
             $table->string('event_category_id');
             $table->bigInteger('preset_id');
             $table->longText('settings');
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 
