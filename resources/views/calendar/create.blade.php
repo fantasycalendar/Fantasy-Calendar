@@ -191,7 +191,7 @@
 			static_data = data.static_data;
 			dynamic_data = data.dynamic_data;
 			events = data.events;
-			event_categories = data.event_categories;
+			event_categories = data.categories;
 			dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
 			empty_edit_values();
 			set_up_edit_values();
