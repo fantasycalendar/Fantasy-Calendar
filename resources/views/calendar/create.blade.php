@@ -193,6 +193,26 @@
 			events = data.events;
 			event_categories = data.categories;
 			dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+
+			for(var index in events){
+				var event = events[index];
+				delete event.preset_event_category_id;
+				delete event.preset_id;
+				delete event.created_at;
+				delete event.updated_at;
+				delete event.deleted_at;
+			}
+			
+			for(var index in event_categories){
+				var category = event_categories[index];
+				category.id = category.label;
+				delete category.label;
+				delete category.preset_id;
+				delete category.created_at;
+				delete category.updated_at;
+				delete category.deleted_at;
+			}
+
 			empty_edit_values();
 			set_up_edit_values();
 			set_up_view_values();
