@@ -110,11 +110,13 @@ function set_up_edit_inputs(){
 		$(this).removeClass('btn-secondary').addClass('btn-primary');
 
 		var errors = get_errors();
-		var creation_steps = get_creation_steps();
+		if($('#btn_create').length){
+			var creation_steps = get_creation_steps();
+		}
 
 		switch(view_type){
 			case "owner":
-				if(creation_steps.current_step > creation_steps.steps && errors.length == 0){
+				if($('#btn_create').length && creation_steps.current_step > creation_steps.steps && errors.length == 0){
 					if(previous_view_type !== 'owner'){
 						evaluate_settings();
 						if(!preview_date.follow){
@@ -133,7 +135,7 @@ function set_up_edit_inputs(){
 
 			case "player":
 				owner = false;
-				if(creation_steps.current_step > creation_steps.steps && errors.length == 0){
+				if($('#btn_create').length && creation_steps.current_step > creation_steps.steps && errors.length == 0){
 					if(previous_view_type !== 'player'){
 						evaluate_settings();
 						if(!preview_date.follow){
@@ -151,7 +153,7 @@ function set_up_edit_inputs(){
 				break;
 
 			case "weather":
-				if(creation_steps.current_step > creation_steps.steps && errors.length == 0){
+				if($('#btn_create').length && creation_steps.current_step > creation_steps.steps && errors.length == 0){
 					evaluate_settings();
 					if(first_switch){
 						evaluate_day_length_chart();
@@ -3875,9 +3877,11 @@ var do_error_check = debounce(function(type, rebuild){
 
 	evaluate_save_button();
 
-	var creation_steps = get_creation_steps();
+	if($('#btn_create').length){
+		var creation_steps = get_creation_steps();
+	}
 
-	if(creation_steps.current_step <= creation_steps.steps){
+	if($('#btn_create').length && creation_steps.current_step <= creation_steps.steps){
 
 		var text = [];
 
@@ -4764,10 +4768,15 @@ function calendar_save_failed(){
 
 function evaluate_save_button(override){
 
-	var creation_steps = get_creation_steps();
 
-	if(creation_steps.current_step <= creation_steps.steps){
-		return;
+	if($('#btn_create').length){
+
+		var creation_steps = get_creation_steps();
+
+		if(creation_steps.current_step <= creation_steps.steps){
+			return;
+		}
+
 	}
 
 	var errors = get_errors();
