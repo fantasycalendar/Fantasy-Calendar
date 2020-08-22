@@ -12,6 +12,11 @@ class Preset extends Model
         'categories'
     ];
 
+    protected $casts = [
+        'dynamic_data' => 'array',
+        'static_data' => 'array',
+    ];
+
     public function events()
     {
         return $this->hasMany(PresetEvent::class);

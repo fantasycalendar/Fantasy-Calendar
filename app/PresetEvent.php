@@ -9,4 +9,9 @@ class PresetEvent extends Model
     public $hidden = [
         'id'
     ];
+
+    protected $casts = [
+        'data' => 'array',
+        'settings' => 'array',
+    ];
 }
