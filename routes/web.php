@@ -13,6 +13,10 @@ use Illuminate\Http\Request;
 |
 */
 
+Route::get('/test', function(){
+    return App\Preset::find(1);
+});
+
 Route::get('/', 'WelcomeController@welcome')->name('home');
 Route::view('/welcome', 'welcome')->name('welcome');
 Route::view('/donate', 'pages.donate', ['title'=>'Support the site']);

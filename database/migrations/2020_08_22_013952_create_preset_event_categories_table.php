@@ -19,6 +19,7 @@ class CreatePresetEventCategoriesTable extends Migration
             $table->bigInteger('preset_id');
             $table->string('category_settings');
             $table->string('event_settings');
+            $table->string('label');
         });
     }
 

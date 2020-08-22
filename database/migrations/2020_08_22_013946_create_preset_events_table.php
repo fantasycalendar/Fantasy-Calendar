@@ -19,6 +19,7 @@ class CreatePresetEventsTable extends Migration
             $table->longText('data');
             $table->longText('description');
             $table->bigInteger('preset_event_category_id')->nullable();
+            $table->string('event_category_id');
             $table->bigInteger('preset_id');
             $table->longText('settings');
         });
