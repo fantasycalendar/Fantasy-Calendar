@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateEventPresetsTable extends Migration
+class CreatePresetEventCategoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,12 @@ class CreateEventPresetsTable extends Migration
      */
     public function up()
     {
-        Schema::create('event_presets', function (Blueprint $table) {
+        Schema::create('preset_event_categories', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
-            $table->longText('data');
-            $table->longText('description');
-            $table->bigInteger('preset_event_category_id')->nullable();
             $table->bigInteger('preset_id');
-            $table->longText('settings');
+            $table->string('category_settings');
+            $table->string('event_settings');
         });
     }
 
@@ -31,6 +29,6 @@ class CreateEventPresetsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('event_presets');
+        Schema::dropIfExists('preset_event_categories');
     }
 }

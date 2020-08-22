@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCalendarPresetsTable extends Migration
+class CreatePresetsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateCalendarPresetsTable extends Migration
      */
     public function up()
     {
-        Schema::create('calendar_presets', function (Blueprint $table) {
+        Schema::create('presets', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('source_calendar_id')->nullable();
             $table->string('name');
@@ -30,6 +30,6 @@ class CreateCalendarPresetsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('calendar_presets');
+        Schema::dropIfExists('presets');
     }
 }
