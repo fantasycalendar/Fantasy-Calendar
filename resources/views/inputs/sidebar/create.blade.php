@@ -41,6 +41,7 @@
             ">
 
                 <select class='form-control form-control-sm' id='preset_select' x-ref="dropdown">
+                    <option>Presets</option>
                 </select>
 
             </div>

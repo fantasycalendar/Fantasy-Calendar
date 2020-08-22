@@ -16,9 +16,19 @@ class PresetController extends Controller
 
     public function listHtml(Request $request)
     {
-        return Preset::all('id','name')->map(function($preset){
+
+        $presets = '<option>Presets</option>';
+        $presets .= '<option>Random Calendar</option>';
+        $presets .= '<option>Custom JSON</option>';
+        
+        $presets .= Preset::all('id','name')->map(function($preset){
             return sprintf('<option value="%s">%s</option>', $preset->id, $preset->name);
         })->implode('');
+
+        // dd($presets);
+
+        return $presets;
+
     }
 
     public function show(Request $request, $id)
