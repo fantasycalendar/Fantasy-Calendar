@@ -126,7 +126,7 @@
 					}else{
 						alert("Unrecognized JSON format.")
 					}
-				}else if($('#preset_select').val() == 'Random'){
+				}else if($('#preset_select').val() == 'Random Calendar'){
 
 					swal.fire({
 						title: "Are you sure?",
@@ -140,6 +140,7 @@
 					.then((result) => {
 						if(result.value) {
 
+							calendar_name = "Random Calendar";
 							static_data = randomizer.randomize(static_data);
 							dynamic_data = {
 								"year": 1,
