@@ -3761,6 +3761,10 @@ function get_errors(){
 
 	var errors = [];
 
+	if(calendar_name == ""){
+		errors.push("The calendar name cannot be empty.")
+	}
+
 	if(static_data.year_data.timespans.length != 0){
 		for(var era_i = 0; era_i < static_data.eras.length; era_i++){
 			var era = static_data.eras[era_i];
