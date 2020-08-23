@@ -170,6 +170,13 @@
         dynamic_data = data.dynamic_data;
         events = data.events;
         event_categories = data.categories;
+
+        if(calendar_name.indexOf("Gregorian Calendar") > -1){
+            dynamic_data.year = new Date().getFullYear();
+            dynamic_data.timespan = new Date().getMonth();
+            dynamic_data.day = new Date().getDate();
+        }
+
         dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
 
         for(var index in events){
