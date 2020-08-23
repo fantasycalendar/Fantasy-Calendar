@@ -41,7 +41,7 @@
             loader.presets.splice(1, 0, {
                 id: 0,
                 name: "Load custom JSON",
-                description: "Input a Donjon calendar, or another Fantasy Calendar JSON string to instantly load it"
+                description: "Input a Donjon calendar, or another Fantasy Calendar JSON string to import it"
             })
 
             loader.loaded = true;
