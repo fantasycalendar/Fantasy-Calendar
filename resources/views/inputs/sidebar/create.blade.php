@@ -1,9 +1,5 @@
 @extends('inputs.full')
 
-@push('head')
-    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.6.0/dist/alpine.min.js" defer></script>
-@endpush
-
 @section('label')
     <div class='wrap-collapsible'>
         <div class='title-text center-text'>Create Calendar</div>
@@ -29,38 +25,10 @@
         </div>
     </div>
 
-    <div id='preset_container' class='wrap-collapsible mb-1'>
-
-        <div class='row'>
-            
-            <div class='col pr-1' x-data="{ presets: false }" 
-            @mouseenter.once="
-                fetch('/api/presets.html')
-                    .then(response => response.text())
-                    .then(html => { $refs.dropdown.innerHTML = html })
-            ">
-
-                <select class='form-control form-control-sm' id='preset_select' x-ref="dropdown">
-                    <option>Presets</option>
-                </select>
-
-            </div>
-
-            <div class='col-auto pl-0'>
-            
-                <button id='json_apply' disabled type='button' class='btn btn-sm btn-warning full m-0' >Apply</button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class='hidden wrap-collapsible mb-1' id='json_container'>
+    <div class='wrap-collapsible mb-1'>
         <div class='row'>
             <div class='col'>
-                <div>JSON input:</div>
-                <textarea class='form-control' id='json_input'></textarea>
+                <button id='open_presets' type='button' class='btn btn-primary full m-0' @click="load">Choose a calendar preset</button>
             </div>
         </div>
     </div>

@@ -97,141 +97,16 @@
 			edit_HTML_ui.bind_events();
 
 			autoload();
-
-			$('#preset_select').change(function(){
-				$('#json_container').toggleClass('hidden', true);
-				$('#json_input').val('');
-				$('#json_apply').prop('disabled', $(this).val() === 'Presets');
-				if($(this).val() == 'Custom JSON'){
-					$('#json_container').toggleClass('hidden', false);
-				}
-			});
-
-			$('#json_apply').click(function(){
-				if($('#preset_select').val() == 'Custom JSON'){
-					var calendar = parse_json($('#json_input').val());
-					if(calendar){
-						prev_dynamic_data = {}
-						prev_static_data = {}
-						calendar_name = clone(calendar.name);
-						static_data = clone(calendar.static_data);
-						dynamic_data = clone(calendar.dynamic_data);
-						dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
-						empty_edit_values();
-						set_up_edit_values();
-						set_up_view_values();
-						set_up_visitor_values();
-						$('#json_input').val('');
-						do_error_check('calendar', true);
-					}else{
-						alert("Unrecognized JSON format.")
-					}
-				}else if($('#preset_select').val() == 'Random Calendar'){
-
-					swal.fire({
-						title: "Are you sure?",
-						text: `This will randomly generate new weekdays, months, leap days, moons, and seasons which will override what you have, are you sure you want to do this?`,
-						showCancelButton: true,
-						confirmButtonColor: '#3085d6',
-						cancelButtonColor: '#d33',
-						confirmButtonText: 'Generate',
-						icon: "warning",
-					})
-					.then((result) => {
-						if(result.value) {
-
-							calendar_name = "Random Calendar";
-							static_data = randomizer.randomize(static_data);
-							dynamic_data = {
-								"year": 1,
-								"timespan": 0,
-								"day": 1,
-								"epoch": 0,
-								"custom_location": false,
-								"location": "Equatorial"
-							};
-							empty_edit_values();
-							set_up_edit_values();
-							set_up_view_values();
-							set_up_visitor_values();
-							do_error_check('calendar', true);
-						}
-					});
-
-				}else{
-
-					if(preset_applied){
-						swal.fire({
-							title: "Are you sure?",
-							text: `Applying this preset will overwrite all of your current progress.`,
-							showCancelButton: true,
-							confirmButtonColor: '#3085d6',
-							cancelButtonColor: '#d33',
-							confirmButtonText: 'Yes',
-							icon: "warning",
-						})
-						.then((result) => {
-							if(result.value) {
-								get_preset_data($('#preset_select').val(), apply_preset);
-							}
-						});
-					}else{
-					
-						get_preset_data($('#preset_select').val(), apply_preset);
-
-					}
-				}
-			});
-
+			
 		});
 
-		function apply_preset(data){
-			preset_applied = true;
-			calendar_name = data.name;
-			static_data = data.static_data;
-			dynamic_data = data.dynamic_data;
-			events = data.events;
-			event_categories = data.categories;
-			dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
-
-			for(var index in events){
-				var event = events[index];
-				delete event.preset_event_category_id;
-				delete event.preset_id;
-				delete event.created_at;
-				delete event.updated_at;
-				delete event.deleted_at;
-			}
-			
-			for(var index in event_categories){
-				var category = event_categories[index];
-				category.id = category.label;
-				delete category.label;
-				delete category.preset_id;
-				delete category.created_at;
-				delete category.updated_at;
-				delete category.deleted_at;
-			}
-
-			empty_edit_values();
-			set_up_edit_values();
-			set_up_view_values();
-			set_up_visitor_values();
-			$('#preset_select').val('Presets');
-			do_error_check('calendar', true);
-			evaluate_save_button();
-			do_error_check();
-			$.notify(
-				"Calendar preset loaded!",
-				"success"
-			);
-		}
-
 	</script>
+
 @endpush
 
 @section('content')
-	<div id="generator_container" class="step-1">
+	<div id="generator_container" class="step-1" x-data="preset_loader">
+		@include('layouts.presets')
 		@include('layouts.day_data_tooltip')
 		@include('layouts.weather_tooltip')
 		@include('layouts.event')

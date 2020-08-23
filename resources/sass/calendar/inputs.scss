@@ -551,6 +551,42 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     padding-left:2rem !important;
 }
 
+
+/* ------------------ Modals ----------------- */
+
+.modal-basic-wrapper{
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+.clickable_background{
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    background-color:rgba(75, 75, 75, 0.75);
+    width: 100%;
+    height:100%;
+    z-index:1000;
+    overflow-y:scroll;
+}
+
+.modal-wrapper, .preset-wrapper {
+    position:relative;
+    max-width: 40vw;
+    min-width: 650px;
+    padding: 15px 35px 45px;
+    margin: 0 auto;
+    background-color: $card-bg-color;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius:7px;
+}
+
+/* ------------------ Preset forms ----------------- */
+
+.preset-wrapper {
+    max-width: 70vw;
+}
+
 /* ------------------ Event forms ----------------- */
 
 #event_comment_mastercontainer .trumbowyg{
@@ -563,7 +599,7 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     min-height: calc(100% - 37px);
 }
 
-#event_comments.loading{
+.loading{
     background-image: url('/resources/icons/loader_black.png');
     height:35px;
     background-size: contain;
@@ -621,33 +657,6 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     font-size: .7rem;
 }
 
-.event-basic-wrapper{
-    margin-top: 40px;
-    margin-bottom: 40px;
-}
-
-.clickable_background{
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    background-color:rgba(75, 75, 75, 0.75);
-    width: 100%;
-    height:100%;
-    z-index:1000;
-    overflow-y:scroll;
-}
-
-.event-wrapper {
-    position:relative;
-    max-width: 40vw;
-    min-width: 650px;
-    padding: 15px 35px 45px;
-    margin: 0 auto;
-    background-color: $card-bg-color;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius:7px;
-}
-
 .event_desc {
     overflow-x: auto;
 }
@@ -695,7 +704,7 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
         width: auto;
     }
 
-    .event-basic-wrapper {
+    .modal-basic-wrapper {
         margin: 0;
     }
 
@@ -711,7 +720,7 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
         right: 6px;
     }
 
-    .event-wrapper {
+    .modal-wrapper {
         position:relative;
         max-width: 100vw;
         min-width: 100vw;
@@ -727,7 +736,7 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     }
 }
 
-.event-form-heading{
+.modal-form-heading{
     margin-top:10px;
 }
 
