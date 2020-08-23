@@ -30,27 +30,22 @@
         },
         populate_presets: function(loader, data){
 
-            loader.presets.push({
+            loader.presets = data;
+
+            loader.presets.splice(0, 0, {
                 id: -1,
                 name: "Random Calendar",
-                description: "This will generate a random calendar for you"
+                description: "This preset will generate a random calendar for you"
             })
 
-            loader.presets.push({
+            loader.presets.splice(1, 0, {
                 id: 0,
                 name: "Load custom JSON",
                 description: "Input a Donjon calendar, or another Fantasy Calendar JSON string to instantly load it"
             })
 
-            for(var index in data){
-                var preset = data[index];
-                loader.presets.push({
-                    id: preset.id,
-                    name: preset.name,
-                    description: preset.description ? preset.description : "Sad, no description"
-                })
-            }
             loader.loaded = true;
+
         },
         fetch_preset: function(id, name){
 
@@ -85,7 +80,6 @@
                             set_up_edit_values();
                             set_up_view_values();
                             set_up_visitor_values();
-                            $('#json_input').val('');
                             do_error_check('calendar', true);
                             this.open = false;
                             this.preset_applied = true;
@@ -140,6 +134,7 @@
                 }
 
             }else{
+
                 if(this.preset_applied){
                     swal.fire({
                         title: "Are you sure?",
@@ -169,7 +164,7 @@
     }
 
     function apply_preset(data){
-        preset_applied = true;
+        
         calendar_name = data.name;
         static_data = data.static_data;
         dynamic_data = data.dynamic_data;
@@ -207,6 +202,7 @@
             "Calendar preset loaded!",
             "success"
         );
+
     }
 
 </script>
@@ -230,8 +226,10 @@
                 <div class='row justify-content-start'>
                     
                     <template x-if="loaded" x-for="preset in presets" :key="preset.id">
-                        <div class="col-4 p-1">
-                            <button type="button" @click="fetch_preset(preset.id, preset.name)" class="full btn shadow hover:bg-indigo-100 hover:shadow-lg hover:rounded transition duration-150 ease-in-out transform hover:scale-105 p-3" x-text="preset.name">
+                        <div class="col-4 p-1 flex-grow-1">
+                            <button type="button" @click="fetch_preset(preset.id, preset.name)" class="full btn shadow p-3">
+                                <p x-text="preset.name"></p>
+                                <small x-text="preset.description"></small>
                             </button>
                         </div>
                     </template>

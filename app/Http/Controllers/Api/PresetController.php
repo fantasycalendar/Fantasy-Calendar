@@ -11,7 +11,7 @@ class PresetController extends Controller
 {
     public function list(Request $request)
     {
-        return Preset::all('id','name');
+        return Preset::all('id','name', 'description');
     }
 
     public function listHtml(Request $request)
