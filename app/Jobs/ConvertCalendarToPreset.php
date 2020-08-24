@@ -41,8 +41,9 @@ class ConvertCalendarToPreset implements ShouldQueue
             'name' => $this->calendar->name,
             'static_data' => $this->calendar->static_data,
             'dynamic_data' => $this->calendar->dynamic_data,
-            'description' => $this->calendar->name,
+            'description' => "",
             'source_calendar_id' => $this->calendar->id,
+            'creator_id' => $this->calendar->user->id
         ]);
 
         foreach ($this->calendar->event_categories as $category) {
