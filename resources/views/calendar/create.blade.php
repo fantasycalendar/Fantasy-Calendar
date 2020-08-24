@@ -105,7 +105,7 @@
 @endpush
 
 @section('content')
-	<div id="generator_container" class="step-1" x-data="preset_loader">
+	<div id="generator_container" class="step-1" x-data="CalendarPresets">
 		@include('layouts.presets')
 		@include('layouts.day_data_tooltip')
 		@include('layouts.weather_tooltip')
