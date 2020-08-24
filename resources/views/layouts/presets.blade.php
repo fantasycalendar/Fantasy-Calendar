@@ -1,7 +1,7 @@
 <div class='preset_background clickable_background' x-show='open'>
     <div class='modal-basic-container'>
         <div class='modal-basic-wrapper' @click.away="open = false">
-            <form id="preset-form" class="preset-wrapper container" action="post">
+            <form id="preset-form" class="modal-wrapper preset-wrapper container" action="post">
 
                 <div class='close-ui-btn-bg'></div>
                 <i class="close_ui_btn fas fa-times-circle" @click="open = false"></i>
@@ -21,7 +21,7 @@
                 <div class='row justify-content-start'>
                     
                     <template x-if="loaded" x-for="preset in presets" :key="preset.id">
-                        <div class="col-4 p-2">
+                        <div class="col-md-4 col-sm-12 p-2">
                             <button type="button" @click="fetch_preset(preset.id, preset.name)" class="full btn shadow p-3 preset">
                                 <p class="m-0" x-text="preset.name"></p>
                                 <p class="m-0 font-italic"><small x-text="preset.author"></small></p>

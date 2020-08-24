@@ -4,10 +4,6 @@
     z-index:300;
 }
 
-#presets{
-    z-index: 100;
-}
-
 input.invalid {
     border: 2px solid red !important;
 }
@@ -570,7 +566,7 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     overflow-y:scroll;
 }
 
-.modal-wrapper, .preset-wrapper {
+.modal-wrapper {
     position:relative;
     max-width: 40vw;
     min-width: 650px;
@@ -727,6 +723,7 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     .close_ui_btn {
         top: 4.5px;
         right: 6px;
+        z-index: 100;
     }
 
     .modal-wrapper {
