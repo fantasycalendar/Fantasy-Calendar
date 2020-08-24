@@ -33,12 +33,12 @@ class PresetsSeeder extends Seeder
             DB::table('presets')->insert([
                 'id' => $index,
                 'name' => $data['name'],
+                'creator_id' => 1,
                 'description' => $data['description'],
                 'dynamic_data' => json_encode($data['dynamic_data']),
                 'static_data' => json_encode($data['static_data']),
                 'created_at' => Carbon::now()
             ]);
-
 
             foreach($categories as $category) {
 

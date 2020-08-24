@@ -587,6 +587,15 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     max-width: 70vw;
 }
 
+.preset {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    transition: all .2s ease-in-out;
+}
+
+.preset:hover {
+    transform: scale(1.07);
+}
+
 /* ------------------ Event forms ----------------- */
 
 #event_comment_mastercontainer .trumbowyg{

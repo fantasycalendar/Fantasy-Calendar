@@ -14,7 +14,8 @@ class Preset extends Model
         'dynamic_data',
         'static_data',
         'description',
-        'source_calendar_id'
+        'source_calendar_id',
+        'creator_id'
     ];
 
     protected $casts = [
@@ -31,4 +32,15 @@ class Preset extends Model
     {
         return $this->hasMany(PresetEventCategory::class);
     }
+
+    public function source()
+    {
+        return $this->belongsTo('App\Calendar', 'source_calendar_id');
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo('App\User', 'creator_id');
+    }
+
 }

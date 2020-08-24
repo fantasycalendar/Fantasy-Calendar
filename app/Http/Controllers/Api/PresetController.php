@@ -11,7 +11,14 @@ class PresetController extends Controller
 {
     public function list(Request $request)
     {
-        return Preset::all('id','name', 'description');
+        return Preset::all()->map(function($preset){
+            return [
+                'id' => $preset->id,
+                'name' => $preset->name,
+                'description' => $preset->description,
+                'author' => $preset->creator->username
+            ];
+        });
     }
 
     public function listHtml(Request $request)
@@ -24,8 +31,6 @@ class PresetController extends Controller
         $presets .= Preset::all('id','name')->map(function($preset){
             return sprintf('<option value="%s">%s</option>', $preset->id, $preset->name);
         })->implode('');
-
-        // dd($presets);
 
         return $presets;
 
