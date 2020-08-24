@@ -35,7 +35,9 @@ class PresetShow extends SharpShow
          $this->addField(
             SharpShowTextField::make("name")
                 ->setLabel("Name:")
-        );
+        )->addField(
+            SharpShowTextField::make("description")
+       );
     }
 
     /**
@@ -45,11 +47,16 @@ class PresetShow extends SharpShow
      */
     public function buildShowLayout()
     {
-         $this->addSection('Section', function(ShowLayoutSection $section) {
-              $section->addColumn(6, function(ShowLayoutColumn $column) {
-                  $column->withSingleField("name");
-              });
-         });
+
+        $this->addSection('Calendar Info', function(ShowLayoutSection $section) {
+            $section->addColumn(6, function(ShowLayoutColumn $column) {
+                $column->withSingleField("name");
+            });
+        })->addSection('Description', function(ShowLayoutSection $section) {
+            $section->addColumn(12, function(ShowLayoutColumn $column) {
+                $column->withSingleField("description");
+            });
+        });
     }
 
     function buildShowConfig()
