@@ -21,8 +21,8 @@
                 <div class='row justify-content-start'>
                     
                     <template x-if="loaded" x-for="preset in presets" :key="preset.id">
-                        <div class="col-md-4 col-sm-12 p-2">
-                            <button type="button" @click="fetch_preset(preset.id, preset.name)" class="full btn shadow p-3 preset">
+                        <div class="col-md-4 col-sm-12 p-2 d-flex">
+                            <button type="button" @click="fetch_preset(preset.id, preset.name)" class="full btn shadow p-3 preset flex-grow">
                                 <p class="m-0" x-text="preset.name"></p>
                                 <p class="m-0 font-italic"><small x-text="preset.author"></small></p>
                                 <p class="m-0 mt-1"><small x-text="preset.description"></small></p>
