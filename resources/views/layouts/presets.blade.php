@@ -1,6 +1,6 @@
 <div class='preset_background clickable_background' x-show='open'>
     <div class='modal-basic-container'>
-        <div class='modal-basic-wrapper' @click.away="open = false">
+        <div class='modal-basic-wrapper'>
             <form id="preset-form" class="modal-wrapper preset-wrapper container" action="post">
 
                 <div class='close-ui-btn-bg'></div>
