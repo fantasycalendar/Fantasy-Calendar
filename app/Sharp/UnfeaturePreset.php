@@ -5,14 +5,14 @@ namespace App\Sharp;
 use App\Preset;
 use Code16\Sharp\EntityList\Commands\InstanceCommand;
 
-class FeaturePreset extends InstanceCommand
+class UnfeaturePreset extends InstanceCommand
 {
     /**
     * @return string
     */
     public function label(): string
     {
-        return "Make featured";
+        return "Unfeature";
     }
 
     /**
@@ -23,7 +23,7 @@ class FeaturePreset extends InstanceCommand
     public function execute($instanceId, array $data = []): array
     {
 
-        Preset::findOrFail($instanceId)->feature();
+        Preset::findOrFail($instanceId)->unFeature();
 
         return $this->link('/sharp/list/presets');
     }

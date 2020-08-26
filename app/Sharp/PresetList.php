@@ -60,7 +60,8 @@ class PresetList extends SharpEntityList
             ->setPaginated()
             ->addInstanceCommand("update", UpdatePreset::class)
             ->addInstanceCommand("delete", DeletePreset::class)
-            ->addInstanceCommand("feature", FeaturePreset::class);
+            ->addInstanceCommand("feature", FeaturePreset::class)
+            ->addInstanceCommand("unfeature", UnfeaturePreset::class);
     }
 
     /**
