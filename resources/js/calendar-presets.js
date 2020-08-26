@@ -4,6 +4,13 @@ const preset_loader = {
     loaded: false,
     preset_applied: false,
     presets: [],
+    feature: {
+        author: "",
+        name: "",
+        description: "",
+        icon: "",
+        featured: 0,
+    },
 
     load: function(){
         this.open = true;
@@ -29,26 +36,33 @@ const preset_loader = {
             });
     },
 
-    populate_presets: function(loader, data){
+    populate_presets: function(loader, presets){
 
-        for(let index in data){
-            data[index]['author'] = `Author: ${data[index]['author']}`;
+        for(let index in presets){
+            presets[index]['author'] = `Author: ${presets[index]['author']}`;
+
+            if(presets[index]['featured']) {
+                loader.feature = presets[index];
+                loader.feature.icon = "star";
+            }
         }
 
-        loader.presets = data;
+        loader.presets = presets;
 
         loader.presets.splice(0, 0, {
             id: -1,
             name: "Random Calendar",
             icon: 'random',
-            description: "This preset will generate a random calendar for you"
+            description: "This preset will generate a random calendar for you",
+            featured: 0
         })
 
         loader.presets.splice(1, 0, {
             id: 0,
             name: "Load custom JSON",
             icon: 'file-import',
-            description: "Input a Donjon calendar, or another Fantasy Calendar JSON string to import it"
+            description: "Input a Donjon calendar, or another Fantasy Calendar JSON string to import it",
+            featured: 0
         })
 
         loader.loaded = true;

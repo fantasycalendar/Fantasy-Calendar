@@ -16,7 +16,8 @@ class PresetController extends Controller
                 'id' => $preset->id,
                 'name' => $preset->name,
                 'description' => $preset->description,
-                'author' => $preset->creator->username
+                'author' => $preset->creator->username,
+                'featured' => $preset->featured
             ];
         });
     }
