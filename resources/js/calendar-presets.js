@@ -5,6 +5,7 @@ const preset_loader = {
     preset_applied: false,
     presets: [],
     featured: [],
+    search: "",
 
     load: function(){
         this.open = true;
@@ -222,6 +223,26 @@ const preset_loader = {
             "Calendar preset loaded!",
             "success"
         );
+    },
+
+    get filteredPresets() {
+        if (this.search === "") {
+            return this.presets;
+        }
+
+        return this.presets.filter((item) => {
+            return item.name
+                .toLowerCase()
+                .includes(this.search.toLowerCase())
+                ||
+                item.description
+                    .toLowerCase()
+                    .includes(this.search.toLowerCase())
+                ||
+                item.author && item.author
+                    .toLowerCase()
+                    .includes(this.search.toLowerCase());
+        });
     }
 }
 

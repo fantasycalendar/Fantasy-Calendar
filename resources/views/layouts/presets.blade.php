@@ -7,19 +7,21 @@
                 <i class="close_ui_btn fas fa-times-circle" @click="open = false"></i>
 
                 <div class='row no-gutters mb-1 modal-form-heading'>
-                    <h2 class='text-center col-12'>Calendar Presets</h2>
-                    <h4 class='text-center col-12'>Pre-made and ready to go!</h4>
+                    <div class="col-12 col-md-3" style="display: grid; place-items: center;">
+                        <input type="text" name="search" x-model="search" class="form-control" placeholder="Search...">
+                    </div>
+                    <h2 class='text-right col-12 col-md-9' style="opacity: 0.5;">Calendar Presets <br><span style="font-size: 70%; font-weight: 400; opacity: 0.6;">Pre-made and ready to go!</span></h2>
                 </div>
 
                 <div class='row'>
                     <div class='col' :class="{ 'loading': !loaded }"></div>
                 </div>
 
-                <hr x-show="featured.length">
+                <hr>
 
-                <div class="row py-2" x-show="featured.length">
+                <div class="row py-2" x-show="featured.length && !search.length">
                     <div class="col-12">
-                        <h4 class="text-center w-100">Featured by the Fantasy Calendar team</h4>
+                        <h4 class="text-center w-100" style="opacity: 0.8;">Featured by the Fantasy Calendar team</h4>
                     </div>
 
                     <template x-if="loaded && featured.length" x-for="feature in featured" :key="feature.id">
@@ -40,10 +42,10 @@
                     </template>
                 </div>
 
-                <hr class="py-2" x-show="featured.length">
+                <hr class="py-2" x-show="featured.length && !search.length">
 
                 <div class='row justify-content-start'>
-                    <template x-if="loaded" x-for="preset in presets" :key="preset.id">
+                    <template x-if="loaded" x-for="preset in filteredPresets" :key="preset.id">
                         <div class="col-12 col-md-6 pb-2 d-flex">
                             <button type="button" @click="fetch_preset(preset.id, preset.name)" class="full btn p-3 preset flex-grow text-left">
                                 <div class="icon">
