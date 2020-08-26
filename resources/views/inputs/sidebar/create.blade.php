@@ -26,8 +26,8 @@
     </div>
 
     <div class='wrap-collapsible mb-1'>
-        <div class='row'>
-            <div class='col'>
+        <div class='col-12'>
+            <div class='row'>
                 <button id='open_presets' type='button' class='btn btn-primary full m-0' @click="load">Choose a calendar preset</button>
             </div>
         </div>

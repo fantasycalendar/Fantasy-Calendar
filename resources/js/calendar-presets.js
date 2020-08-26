@@ -40,12 +40,14 @@ const preset_loader = {
         loader.presets.splice(0, 0, {
             id: -1,
             name: "Random Calendar",
+            icon: 'random',
             description: "This preset will generate a random calendar for you"
         })
 
         loader.presets.splice(1, 0, {
             id: 0,
             name: "Load custom JSON",
+            icon: 'file-import',
             description: "Input a Donjon calendar, or another Fantasy Calendar JSON string to import it"
         })
 
@@ -164,10 +166,10 @@ const preset_loader = {
                 this.preset_applied = true;
             }
         }
-    }, 
-    
+    },
+
     apply_preset: function(data){
-    
+
         calendar_name = data.name;
         static_data = data.static_data;
         dynamic_data = data.dynamic_data;
@@ -190,7 +192,7 @@ const preset_loader = {
             delete event.updated_at;
             delete event.deleted_at;
         }
-        
+
         for(var index in event_categories){
             var category = event_categories[index];
             category.id = category.label;

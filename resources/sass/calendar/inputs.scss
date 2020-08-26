@@ -579,17 +579,53 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
 
 /* ------------------ Preset forms ----------------- */
 
-.preset-wrapper {
-    max-width: 70vw;
+.preset_background .preset-wrapper {
+    max-width: 1300px;
+    width: 70vw;
+    background-color: #e2e8f0;
+
+    @media screen and (max-width: 768px) {
+        background-color: #e2e8f0;
+        min-height: 100vh;
+    }
 }
 
 .preset {
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    transition: all .2s ease-in-out;
-}
+    border: 0;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    background-color: #f7fafc;
+    position: relative;
+    padding-left: 80px !important;
+    overflow: hidden;
 
-.preset:hover {
-    transform: scale(1.07);
+
+    .icon {
+        font-size: 30px;
+        position: absolute;
+        left: 0;
+        top: -2px;
+        bottom: -2px;
+        width: 64px;
+        background-color: #a0aec0;
+        display: grid;
+        place-items: center;
+
+        i {
+            color: #f7fafc;
+        }
+    }
+
+    &:hover {
+        margin-top: -4px;
+        margin-bottom: 4px;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        background-color: white;
+
+        i {
+            color: white;
+        }
+    }
 }
 
 /* ------------------ Event forms ----------------- */
