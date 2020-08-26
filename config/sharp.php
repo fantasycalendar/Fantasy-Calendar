@@ -14,6 +14,7 @@ return [
         "presets" => [
             "list" => \App\Sharp\PresetList::class,
             "show" => \App\Sharp\PresetShow::class,
+            "form" => \App\Sharp\PresetForm::class,
         ],
         "env" => [
             "list" => \App\Sharp\EnvVarsList::class,
