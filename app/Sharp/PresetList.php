@@ -26,6 +26,11 @@ class PresetList extends SharpEntityList
                 ->setLabel('Created At')
                 ->setSortable()
                 ->setHtml()
+        )->addDataContainer(
+            EntityListDataContainer::make('featured')
+                ->setLabel('Featured')
+                ->setSortable()
+                ->setHtml()
         );
     }
 
@@ -38,7 +43,8 @@ class PresetList extends SharpEntityList
     public function buildListLayout()
     {
         $this->addColumn('name', 4)
-            ->addColumn('created_at', 4);
+            ->addColumn('created_at', 4)
+            ->addColumn('featured', 2);
     }
 
     /**
@@ -53,7 +59,8 @@ class PresetList extends SharpEntityList
             ->setDefaultSort('name', 'asc')
             ->setPaginated()
             ->addInstanceCommand("update", UpdatePreset::class)
-            ->addInstanceCommand("delete", DeletePreset::class);
+            ->addInstanceCommand("delete", DeletePreset::class)
+            ->addInstanceCommand("feature", FeaturePreset::class);
     }
 
     /**
@@ -81,6 +88,11 @@ class PresetList extends SharpEntityList
             "created_at",
             function($created_at, $preset, $attribute) {
                 return $preset->created_at;
+            }
+        )->setCustomTransformer(
+            'featured',
+            function($featured, $preset, $attribute) {
+                return $featured ? "Yes" : "No";
             }
         )->transform($preset_model->paginate(20));
     }

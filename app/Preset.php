@@ -43,4 +43,15 @@ class Preset extends Model
         return $this->belongsTo('App\User', 'creator_id');
     }
 
+    public function feature()
+    {
+        $this->featured = true;
+        $this->save();
+    }
+
+    public function unFeature()
+    {
+        $this->featured = false;
+        $this->save();
+    }
 }
