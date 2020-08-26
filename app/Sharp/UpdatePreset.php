@@ -24,8 +24,8 @@ class UpdatePreset extends InstanceCommand
     public function execute($instanceId, array $data = []): array
     {
         $results = UpdateCalendarPreset::dispatchNow(Preset::find($instanceId));
-        
-        return $this->link('/sharp/show/presets/' . $results->id);
+
+        return $this->link('/sharp/form/presets/' . $results->id);
 
     }
 }

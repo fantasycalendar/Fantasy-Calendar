@@ -25,7 +25,7 @@ class UpdateCalendarPreset implements ShouldQueue
     public function __construct($preset)
     {
         $this->preset = $preset;
-        $this->calendar = Calendar::find($this->preset->source_calendar_id);
+        $this->calendar = Calendar::findOrFail($this->preset->source_calendar_id);
     }
 
     /**
@@ -35,7 +35,9 @@ class UpdateCalendarPreset implements ShouldQueue
      */
     public function handle()
     {
+        $description = $this->preset->description;
         $this->preset->delete();
-        return ConvertCalendarToPreset::dispatchNow($this->calendar);
+
+        return ConvertCalendarToPreset::dispatchNow($this->calendar, $description);
     }
 }
