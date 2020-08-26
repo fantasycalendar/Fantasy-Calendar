@@ -23,20 +23,18 @@ class PresetsSeeder extends Seeder
         DB::delete('delete from preset_events');
         DB::delete('delete from preset_event_categories');
 
-        $index = 1;
         foreach($this->presets_to_seed as $name) {
+            $preset = $this->retrieveJson($name);
+            $events = $this->retrieveJson($name.'-events');
+            $categories = $this->retrieveJson($name.'-categories');
 
-            $data = json_decode(file_get_contents(__DIR__ . '/presets/' . $name . '.json'), true);
-            $events = json_decode(file_get_contents(__DIR__ . '/presets/' . $name . '-events.json'), true);
-            $categories = json_decode(file_get_contents(__DIR__ . '/presets/' . $name . '-categories.json'), true);
-            
             DB::table('presets')->insert([
-                'id' => $index,
-                'name' => $data['name'],
+                'id' => Arr::get($preset, 'id'),
+                'name' => Arr::get($preset, 'name'),
                 'creator_id' => 1,
-                'description' => $data['description'],
-                'dynamic_data' => json_encode($data['dynamic_data']),
-                'static_data' => json_encode($data['static_data']),
+                'description' => Arr::get($preset, 'description'),
+                'dynamic_data' => json_encode(Arr::get($preset, 'dynamic_data')),
+                'static_data' => json_encode(Arr::get($preset, 'static_data')),
                 'created_at' => Carbon::now()
             ]);
 
@@ -49,7 +47,6 @@ class PresetsSeeder extends Seeder
                 $category['created_at'] = Carbon::now();
 
                 DB::table('preset_event_categories')->insert($category);
-
             }
 
             foreach($events as $event) {
@@ -57,15 +54,16 @@ class PresetsSeeder extends Seeder
                 foreach($event as $property => $value) {
                     $event[$property] = is_array($value) ? json_encode($value) : $value;
                 }
-    
+
                 $event['created_at'] = Carbon::now();
-    
+
                 DB::table('preset_events')->insert($event);
-
             }
-
-            $index++;
-
         }
+    }
+
+    public function retrieveJson($presetName)
+    {
+        return json_decode(file_get_contents(__DIR__ . '/presets/' . $presetName . '.json'), true);
     }
 }
