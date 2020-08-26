@@ -6,6 +6,77 @@ const preset_loader = {
     presets: [],
     featured: [],
     search: "",
+    total: 0,
+    page_number: 0,
+    size: 8,
+
+    get filteredPresets() {
+
+        const start = this.page_number * this.size;
+        const end = start + this.size;
+
+        if (this.search === "") {
+            this.total = this.presets.length;
+            return this.presets.slice(start, end);
+        }
+
+        let results = this.presets.filter((item) => {
+            return item.name
+                .toLowerCase()
+                .includes(this.search.toLowerCase())
+                ||
+                item.description
+                    .toLowerCase()
+                    .includes(this.search.toLowerCase())
+                ||
+                item.author && item.author
+                    .toLowerCase()
+                    .includes(this.search.toLowerCase());
+        });
+
+        this.total = results.length;
+        
+        return results.slice(start, end);
+
+    },
+
+    get pages(){
+        return Array.from({
+            length: Math.ceil(this.total / this.size),
+        }); 
+    },
+
+    next_page: function(){
+        this.page_number++;
+    },
+
+    prev_page: function(){
+        this.page_number--;
+    },
+
+    get page_count() {
+        return Math.ceil(this.total / this.size);
+    },
+
+    //Return the start range of the paginated results
+    get start_results(){
+       return this.page_number * this.size + 1;
+    },
+
+    //Return the end range of the paginated results
+    get end_results(){
+        let resultsOnPage = (this.page_number + 1) * this.size;
+
+        if (resultsOnPage <= this.total) {
+            return resultsOnPage;
+        }
+
+        return this.total;
+    },
+
+    view_page: function(index){
+        this.page_number = index;
+    },
 
     load: function(){
         this.open = true;
@@ -186,9 +257,12 @@ const preset_loader = {
         event_categories = data.categories;
 
         if(calendar_name.indexOf("Gregorian Calendar") > -1){
-            dynamic_data.year = new Date().getFullYear();
-            dynamic_data.timespan = new Date().getMonth();
-            dynamic_data.day = new Date().getDate();
+            let current_date = new Date();
+            dynamic_data.year = current_date.getFullYear();
+            dynamic_data.timespan = current_date.getMonth();
+            dynamic_data.day = current_date.getDate();
+            dynamic_data.hour = current_date.getHours();
+            dynamic_data.minute = current_date.getMinutes();
         }
 
         dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
@@ -223,26 +297,6 @@ const preset_loader = {
             "Calendar preset loaded!",
             "success"
         );
-    },
-
-    get filteredPresets() {
-        if (this.search === "") {
-            return this.presets;
-        }
-
-        return this.presets.filter((item) => {
-            return item.name
-                .toLowerCase()
-                .includes(this.search.toLowerCase())
-                ||
-                item.description
-                    .toLowerCase()
-                    .includes(this.search.toLowerCase())
-                ||
-                item.author && item.author
-                    .toLowerCase()
-                    .includes(this.search.toLowerCase());
-        });
     }
 }
 

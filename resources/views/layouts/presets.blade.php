@@ -63,6 +63,48 @@
                     </template>
                 </div>
 
+                <div class='row mt-4 hidden' x-show="page_count > 1" :class="{ 'hidden': page_count <= 1 }">
+
+                    <div class='col'>
+                        <button
+                            type="button"
+                            x-on:click="prev_page"
+                            :disabled="page_number==0"
+                            class='btn'
+                            :class="{ 'disabled cursor-not-allowed' : page_number==0 }"
+                        >
+                            <p class='p-0 m-0'><i class='fas fa-long-arrow-alt-left'></i> Previous</p>
+                        </button>
+                    </div>
+
+                    <div class='col d-flex justify-content-center'>
+                        <template x-for="(page,index) in pages" :key="index">
+                            <button
+                                type="button"
+                                class="btn pagination-navigation px-3"
+                                :class="{
+                                        'font-bold pagination-navigation-active': index == page_number,
+                                    }"
+                                type="button"
+                                x-on:click="view_page(index)"
+                            >
+                                <span x-text="index+1"></span>
+                            </button>
+                        </template>
+                    </div>
+
+                    <div class='col d-flex justify-content-end'>
+                        <button
+                            type="button"
+                            x-on:click="next_page"
+                            :disabled="page_number >= page_count -1"
+                            class='btn'
+                            :class="{ 'disabled cursor-not-allowed' : page_number >= page_count -1 }"
+                        >
+                            <p class='p-0 m-0'>Next <i class='fas fa-long-arrow-alt-right'></i></p>
+                        </button>
+                    </div>
+                </div>
             </form>
         </div>
     </div>

@@ -628,6 +628,23 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     }
 }
 
+.pagination-navigation {
+    border-radius: 0;
+
+    &:hover{
+        background-color: $accent-color;
+    }
+
+    &:hover{
+        color: white;
+    }
+}
+
+.pagination-navigation-active {
+    border-top: 1px solid $accent-color;
+}
+
+
 /* ------------------ Event forms ----------------- */
 
 #event_comment_mastercontainer .trumbowyg{
