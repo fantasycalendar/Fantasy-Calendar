@@ -15,33 +15,34 @@
                     <div class='col' :class="{ 'loading': !loaded }"></div>
                 </div>
 
-                <hr x-show="feature.featured">
+                <hr x-show="featured.length">
 
-                <div class="row py-2" x-show="feature.featured">
-                    <div class="col-12 col-md-6" style="display: grid; place-items: center;">
-                        <h4 class="w-100">Featured by Fantasy Calendar</h4>
+                <div class="row py-2" x-show="featured.length">
+                    <div class="col-12">
+                        <h4 class="text-center w-100">Featured by the Fantasy Calendar team</h4>
                     </div>
 
-                    <div class="col-12 col-md-6">
-                        <button type="button" @click="fetch_preset(feature.id, feature.name)" class="full btn p-3 preset flex-grow text-left">
-                            <div class="icon">
-                                <i class="fa fa-globe" :class="{
+                    <template x-if="loaded && featured.length" x-for="feature in featured" :key="feature.id">
+                        <div class="col-12 col-md-6">
+                            <button type="button" @click="fetch_preset(feature.id, feature.name)" class="full btn p-3 preset flex-grow text-left">
+                                <div class="icon">
+                                    <i class="fa fa-globe" :class="{
                                     ['fa-'+feature.icon]: feature.icon != false,
                                     'fa-globe': !feature.icon
                                 }"></i>
-                            </div>
+                                </div>
 
-                            <h4 class="m-0" x-text="feature.name"></h4>
-                            <p class="m-0 small font-italic"><small x-text="feature.author"></small></p>
-                            <p class="m-0 mt-1"><small x-text="feature.description"></small></p>
-                        </button>
-                    </div>
+                                <h4 class="m-0" x-text="feature.name"></h4>
+                                <p class="m-0 small font-italic"><small x-text="feature.author"></small></p>
+                                <p class="m-0 mt-1"><small x-text="feature.description"></small></p>
+                            </button>
+                        </div>
+                    </template>
                 </div>
 
-                <hr class="py-2" x-show="feature.featured">
+                <hr class="py-2" x-show="featured.length">
 
                 <div class='row justify-content-start'>
-
                     <template x-if="loaded" x-for="preset in presets" :key="preset.id">
                         <div class="col-12 col-md-6 pb-2 d-flex">
                             <button type="button" @click="fetch_preset(preset.id, preset.name)" class="full btn p-3 preset flex-grow text-left">

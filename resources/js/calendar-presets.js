@@ -4,13 +4,7 @@ const preset_loader = {
     loaded: false,
     preset_applied: false,
     presets: [],
-    feature: {
-        author: "",
-        name: "",
-        description: "",
-        icon: "",
-        featured: 0,
-    },
+    featured: [],
 
     load: function(){
         this.open = true;
@@ -42,8 +36,8 @@ const preset_loader = {
             presets[index]['author'] = `Author: ${presets[index]['author']}`;
 
             if(presets[index]['featured']) {
-                loader.feature = presets[index];
-                loader.feature.icon = "star";
+                presets[index].icon = "star";
+                loader.featured.push(presets[index]);
             }
         }
 

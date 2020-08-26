@@ -11,7 +11,7 @@ class PresetController extends Controller
 {
     public function list(Request $request)
     {
-        return Preset::all()->map(function($preset){
+        return Preset::orderBy('name')->get()->map(function($preset){
             return [
                 'id' => $preset->id,
                 'name' => $preset->name,
