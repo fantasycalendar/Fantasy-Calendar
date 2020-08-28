@@ -35,7 +35,7 @@ const preset_loader = {
         });
 
         this.total = results.length;
-        
+
         return results.slice(start, end);
 
     },
@@ -43,7 +43,7 @@ const preset_loader = {
     get pages(){
         return Array.from({
             length: Math.ceil(this.total / this.size),
-        }); 
+        });
     },
 
     next_page: function(){

@@ -580,7 +580,7 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
 /* ------------------ Preset forms ----------------- */
 
 .preset_background .preset-wrapper {
-    max-width: 1400px;
+    max-width: 1200px;
     width: 80vw;
     background-color: $modal-bg-color;
 
@@ -592,6 +592,7 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
 
     hr {
         border-color: $modal-content-border-color;
+        margin: .5rem 0;
     }
 
     .search-empty {
@@ -634,8 +635,7 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     }
 
     &:hover {
-        margin-top: -4px;
-        margin-bottom: 4px;
+        transform: translateY(-4px);
         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         background-color: $modal-content-hover-bg-color;
 
@@ -650,6 +650,10 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
 }
 
 .pagination-navigation {
+    &.disabled {
+        background-color: transparent;
+    }
+
     &:not(.disabled):hover{
         background-color: $modal-accent-hover-background;
         color: white;
