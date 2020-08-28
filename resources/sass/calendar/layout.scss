@@ -113,7 +113,9 @@ body{
 }
 
 .navbar {
-    min-height: 3.6rem;
+    @media (min-width: 768px) and (hover: none) {
+        min-height: 3.6rem;
+    }
 }
 
 .page-calendars-edit {
