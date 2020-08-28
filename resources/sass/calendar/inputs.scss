@@ -593,6 +593,10 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
         background-color: $modal-bg-color;
         color: $modal-action-color;
         border-color: $modal-content-border-color;
+
+        @media screen and (max-width: 768px) {
+            width: calc(100% - 50px);
+        }
     }
 
     hr {
@@ -807,7 +811,7 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     }
 
     .close_ui_btn {
-        top: 4.5px;
+        top: 17px;
         right: 6px;
         z-index: 100;
     }
