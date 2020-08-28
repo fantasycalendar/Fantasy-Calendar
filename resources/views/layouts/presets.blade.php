@@ -8,6 +8,7 @@
 
                 <div class='row no-gutters mb-1 modal-form-heading'>
                     <div class="col-12 col-md-3" style="display: grid; place-items: center;">
+                        <span style="position: absolute; right: 0px; cursor: pointer; height: 50px; width: 50px; opacity: 0.8; line-height: 50px; text-align: center;" @click="search = ''" x-show="search.length"><i class="fa fa-times"></i></span>
                         <input type="text" name="search" x-model="search" class="form-control" placeholder="Search...">
                     </div>
                     <h2 class='text-right col-12 col-md-9' style="opacity: 0.5;">Calendar Presets <br><span style="font-size: 70%; font-weight: 400; opacity: 0.6;">Pre-made and ready to go!</span></h2>
@@ -43,6 +44,12 @@
                 </div>
 
                 <hr class="py-2" x-show="featured.length && !search.length">
+
+                <div class="row" x-show="!filteredPresets.length && search.length">
+                    <div class="col-12 text-center py-5 py-2" style="border: 1px solid rgba(0, 0, 0, 0.2); opacity: 0.7; border-radius: 2px;">
+                        <h2>No presets matching '<span x-text="search"></span>'</h2>
+                    </div>
+                </div>
 
                 <div class='row justify-content-start'>
                     <template x-if="loaded" x-for="preset in filteredPresets" :key="preset.id">
