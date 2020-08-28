@@ -93,7 +93,7 @@ const preset_loader = {
                     callback(loader, []);
                 } else {
                     $.notify(
-                        "Error: " + result.data.message
+                        "Error loading presets: " + result.data.message
                     );
                     throw result.data.message;
                 }
