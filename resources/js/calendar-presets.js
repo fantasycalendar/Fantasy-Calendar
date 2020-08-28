@@ -90,9 +90,7 @@ const preset_loader = {
                 if(!result.data.error && result.data != "") {
                     callback(loader, result.data);
                 } else if(result.data == ""){
-                    $.notify(
-                        "Error: Failed to load calendar presets - please try again later"
-                    );
+                    callback(loader, []);
                 } else {
                     $.notify(
                         "Error: " + result.data.message

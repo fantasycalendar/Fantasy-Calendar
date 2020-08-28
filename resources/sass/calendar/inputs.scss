@@ -1,5 +1,10 @@
 /* ------------------ Sortable styles ----------------- */
 
+div:focus, button:focus, * button.btn.btn-stock:focus {
+    outline: 0;
+    box-shadow: none;
+}
+
 #protip_container{
     z-index:300;
 }
