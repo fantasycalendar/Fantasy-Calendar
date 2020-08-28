@@ -584,6 +584,22 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     width: 80vw;
     background-color: $modal-bg-color;
 
+    input[name=search] {
+        background-color: $modal-bg-color;
+        color: $modal-action-color;
+        border-color: $modal-content-border-color;
+    }
+
+    hr {
+        border-color: $modal-content-border-color;
+    }
+
+    .search-empty {
+        border: 1px solid $modal-content-bg-color;
+        opacity: 0.7;
+        border-radius: 2px;
+    }
+
     @media screen and (max-width: 768px) {
         background-color: $modal-bg-color;
         min-height: 100vh;
@@ -598,7 +614,7 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     position: relative;
     padding-left: 80px !important;
     overflow: hidden;
-
+    color: $modal-action-color;
 
     .icon {
         font-size: 30px;
@@ -607,7 +623,7 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
         top: -2px;
         bottom: -2px;
         width: 64px;
-        background-color: $bg-gray-500;
+        background-color: $modal-accent-background;
         display: grid;
         place-items: center;
 

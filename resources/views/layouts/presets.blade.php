@@ -27,7 +27,7 @@
 
                     <template x-if="loaded && featured.length" x-for="feature in featured" :key="feature.id">
                         <div class="col-12 col-md-6">
-                            <button type="button" @click="fetch_preset(feature.id, feature.name)" class="full btn p-3 preset flex-grow text-left">
+                            <button type="button" @click="fetch_preset(feature.id, feature.name)" class="full rounded p-3 preset flex-grow text-left">
                                 <div class="icon">
                                     <i class="fa fa-globe" :class="{
                                     ['fa-'+feature.icon]: feature.icon != false,
@@ -46,7 +46,7 @@
                 <hr class="py-2" x-show="featured.length && !search.length">
 
                 <div class="row" x-show="!filteredPresets.length && search.length">
-                    <div class="col-12 text-center py-5 py-2" style="border: 1px solid rgba(0, 0, 0, 0.2); opacity: 0.7; border-radius: 2px;">
+                    <div class="col-12 text-center py-5 py-2 search-empty">
                         <h2>No presets matching '<span x-text="search"></span>'</h2>
                     </div>
                 </div>
@@ -54,7 +54,7 @@
                 <div class='row justify-content-start'>
                     <template x-if="loaded" x-for="preset in filteredPresets" :key="preset.id">
                         <div class="col-12 col-md-6 pb-2 d-flex">
-                            <button type="button" @click="fetch_preset(preset.id, preset.name)" class="full btn p-3 preset flex-grow text-left">
+                            <button type="button" @click="fetch_preset(preset.id, preset.name)" class="full rounded p-3 preset flex-grow text-left">
                                 <div class="icon">
                                     <i class="fa fa-globe" :class="{
                                         ['fa-'+preset.icon]: preset.icon != false,
