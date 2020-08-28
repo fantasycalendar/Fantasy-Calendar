@@ -31,3 +31,7 @@ Route::any('/eventcomment/calendar/{id}', 'Api\EventCommentController@forCalenda
 Route::apiResource('eventcomment', 'Api\EventCommentController');
 
 Route::apiResource('event', 'Api\CalendarEventController');
+
+Route::get('presets', Api\PresetController::class.'@list');
+Route::get('preset/{id}', Api\PresetController::class.'@show');
+Route::get('presets.html', Api\PresetController::class.'@listHtml');

@@ -1,36 +1,34 @@
 <div id="event_show_background" class='clickable_background hidden'>
-	<div class='event-basic-container'>
-		<div class='event-basic-wrapper'>
-			<div class='event-basic-wrapper'>
-				<div class='event-wrapper'>
-					<div class='close-ui-btn-bg'></div>
-					<i class="close_ui_btn fas fa-times-circle"></i>
+	<div class='modal-basic-container'>
+		<div class='modal-basic-wrapper'>
+			<div class='modal-wrapper'>
+				<div class='close-ui-btn-bg'></div>
+				<i class="close_ui_btn fas fa-times-circle"></i>
 
-					<div class='row no-gutters event-form-heading'>
-						<h2><span class='event_name'>Editing Event</span> <i class="fas fa-pencil-alt edit_event_btn"></i></h2>
-                    </div>
-					
-					<div class='row'>
-						<div class="event_desc col-12"></div>
-					</div>
+				<div class='row no-gutters modal-form-heading'>
+					<h2><span class='event_name'>Editing Event</span> <i class="fas fa-pencil-alt edit_event_btn"></i></h2>
+				</div>
+				
+				<div class='row'>
+					<div class="event_desc col-12"></div>
+				</div>
 
-					<div id='event_comment_mastercontainer' class="row">
+				<div id='event_comment_mastercontainer' class="row">
 
-                        <div class="col-12">
-                            <hr>
+					<div class="col-12">
+						<hr>
 
-                            <h4>Comments:</h4>
+						<h4>Comments:</h4>
 
-                            <div class='row'>
-                                <div id='event_comments' class='loading col-12'></div>
-                            @if(Auth::check())
-                                <div class='col-12 mt-2' id='event_comment_input_container'>
-                                    <textarea class='form-control' id='event_comment_input' placeholder='Enter your comment and press submit.' autofocus=''></textarea>
-                                    <button type='button' class='btn btn-primary mt-2' style="z-index: 200" id='submit_comment'>Submit</button>
-                                </div>
-                            @endif
-                            </div>
-                        </div>
+						<div class='row'>
+							<div id='event_comments' class='loading col-12'></div>
+						@if(Auth::check())
+							<div class='col-12 mt-2' id='event_comment_input_container'>
+								<textarea class='form-control' id='event_comment_input' placeholder='Enter your comment and press submit.' autofocus=''></textarea>
+								<button type='button' class='btn btn-primary mt-2' style="z-index: 200" id='submit_comment'>Submit</button>
+							</div>
+						@endif
+						</div>
 					</div>
 				</div>
 			</div>
@@ -39,14 +37,14 @@
 </div>
 
 <div id="event_edit_background" class='clickable_background hidden'>
-	<div class='event-basic-container'>
-		<div class='event-basic-wrapper'>
-			<form id="event-form" class="event-wrapper container" action="post">
+	<div class='modal-basic-container'>
+		<div class='modal-basic-wrapper'>
+			<form id="event-form" class="modal-wrapper container" action="post">
 
 				<div class='close-ui-btn-bg'></div>
 				<i class="close_ui_btn fas fa-times-circle"></i>
 
-				<div class='row no-gutters mb-1 event-form-heading'>
+				<div class='row no-gutters mb-1 modal-form-heading'>
 					<h2 class='event_action_type'><span>Editing Event</span> <i class="fas fa-eye view_event_btn"></i></h2>
 				</div>
 
@@ -59,7 +57,7 @@
 				</div>
 
 
-				<h5 class='row no-gutters mt-2 event-form-heading'>Condition presets:</h5>
+				<h5 class='row no-gutters mt-2 modal-form-heading'>Condition presets:</h5>
 
 				<div class='row no-gutters mb-1'>
 					<select class="form-control" id="condition_presets">
@@ -86,7 +84,7 @@
 					<input type='number' class='form-control' id='repeat_input' name='repeat_input' value='2' min='1' placeholder='Every nth' />
 				</div>
 
-				<h5 class='row no-gutters my-2 event-form-heading'>Conditions:</h5>
+				<h5 class='row no-gutters my-2 modal-form-heading'>Conditions:</h5>
 
 				<div class='row no-gutters my-2' id='non_preset_buttons'>
 					<div class='col-11 pr-1'>
@@ -114,7 +112,7 @@
 				<div class='event_occurrences hidden'>
 
 					<div class='row no-gutters mt-2'>
-						<h5 class='event-form-heading full'>Test event occurrences for the next:</h5>
+						<h5 class='modal-form-heading full'>Test event occurrences for the next:</h5>
 					</div>
 
 					<div class='row no-gutters'>
@@ -153,7 +151,7 @@
 				</div>
 
 				<div class='row no-gutters mt-2'>
-					<h5 class='event-form-heading'>Display settings:</h5>
+					<h5 class='modal-form-heading'>Display settings:</h5>
 				</div>
 
 				<div class='row no-gutters'>
@@ -179,7 +177,7 @@
 				</div>
 
 				<div class='row no-gutters mt-2'>
-					<h5 class='event-form-heading'>Duration settings:</h5>
+					<h5 class='modal-form-heading'>Duration settings:</h5>
 				</div>
 
 				<div class='row no-gutters'>
@@ -218,7 +216,7 @@
 
 				<div class='row no-gutters'>
 					<div class='col-auto pl-0 pr-1'>
-						<h5 class='event-form-heading'>Category:</h5>
+						<h5 class='modal-form-heading'>Category:</h5>
 					</div>
 					<div class='col pl-0 pl-1'>
 						<select class="form-control event-category-list" id="event_categories" name='event_categories' placeholder='Event Category'>
@@ -228,7 +226,7 @@
 				</div>
 
 				<div class='row no-gutters'>
-					<h5 class='event-form-heading full'>Settings:</h5>
+					<h5 class='modal-form-heading full'>Settings:</h5>
 				</div>
 
 				<div class='row no-gutters'>
@@ -257,7 +255,7 @@
 
 				<div class='row no-gutters'>
 					<div class='col pr-1'>
-						<h5 class='event-form-heading'>Color:</h5>
+						<h5 class='modal-form-heading'>Color:</h5>
 						<select id="color_style" name='color_style' class='form-control event-text-input color_display' key='color_display'>
 							<option>Dark-Solid</option>
 							<option>Red</option>
@@ -278,7 +276,7 @@
 					</div>
 
 					<div class='col pl-1'>
-						<h5 class='event-form-heading'>Display:</h5>
+						<h5 class='modal-form-heading'>Display:</h5>
 						<select id="text_style" name='text_style' class='form-control event-text-input text_display'>
 							<option value="text">Just text</option>
 							<option value="dot">• Dot with text</option>
@@ -311,19 +309,21 @@
 </div>
 
 <div id="html_edit_background" class='clickable_background hidden'>
-	<div class='event-basic-container'>
-		<form id="html-form" class="event-wrapper" action="post">
+	<div class='modal-basic-container'>
+		<div class='modal-basic-wrapper'>
+			<form id="html-form" class="modal-wrapper" action="post">
 
-			<div class='close-ui-btn-bg'></div>
-			<i class="close_ui_btn icon-remove-circle"></i>
+				<div class='close-ui-btn-bg'></div>
+				<i class="close_ui_btn fas fa-times-circle"></i>
 
-			<h2 class='event-form-heading'>Edit HTML</h2>
+				<h2 class='modal-form-heading'>Edit HTML</h2>
 
-			<div class='row'>
-				<textarea class='form-control html_input editable' name='html_input' placeholder='Event description' autofocus=''></textarea>
-			</div>
+				<div class='row'>
+					<textarea class='form-control html_input editable' name='html_input' placeholder='Event description' autofocus=''></textarea>
+				</div>
 
-			<div class='btn btn-lg btn-primary btn-block' id='btn_html_save'>Save</div>
-		</form>
+				<div class='btn btn-lg btn-primary btn-block' id='btn_html_save'>Save</div>
+			</form>
+		</div>
 	</div>
 </div>

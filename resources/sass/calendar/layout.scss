@@ -113,7 +113,9 @@ body{
 }
 
 .navbar {
-    min-height: 3.6rem;
+    @media (min-width: 768px) and (hover: none) {
+        min-height: 3.6rem;
+    }
 }
 
 .page-calendars-edit {
@@ -215,10 +217,6 @@ body.page-calendars-index {
     @media screen and (min-width: 992px) {
         left: calc(#{$sidebar-width} - 4rem);
     }
-}
-
-#preset_container #json_apply:disabled{
-    display: none;
 }
 
 #calendar_container{

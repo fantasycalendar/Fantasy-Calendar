@@ -646,3 +646,23 @@ function create_event_comment(content, event_id, callback) {
 		}
 	});
 }
+
+function get_preset_data(preset_id, callback){
+
+	axios.get(window.apiurl+'/preset/'+preset_id)
+		.then(function (result){
+			if(!result.data.error && result.data != "") {
+				callback(result.data);
+			} else if(result.data == ""){
+				$.notify(
+					"Error: Failed to load calendar preset - this one doesn't exist"
+				);
+			} else {
+				$.notify(
+					"Error: " + result.data.message
+				);
+				throw result.data.message;
+			}
+		});
+
+}
