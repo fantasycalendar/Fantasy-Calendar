@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 
+use Auth;
+use Cookie;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Response;
@@ -96,6 +98,20 @@ class LoginController extends Controller
         if($request->wantsJson()) {
             return ['success' => true, 'message' => 'User is logged out.'];
         }
+    }
+
+    protected function sendLoginResponse(Request $request)
+    {
+        $customRememberMeTimeInMinutes = 1440;
+        $rememberTokenCookieKey = Auth::getRecallerName();
+        Cookie::queue($rememberTokenCookieKey, Cookie::get($rememberTokenCookieKey), $customRememberMeTimeInMinutes);
+
+        $request->session()->regenerate();
+
+        $this->clearLoginAttempts($request);
+
+        return $this->authenticated($request, $this->guard()->user())
+            ?: redirect()->intended($this->redirectPath());
     }
 
     public function redirectTo() {
