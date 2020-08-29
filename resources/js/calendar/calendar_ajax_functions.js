@@ -359,9 +359,7 @@ function update_calendar_user(user_id, permission, output){
         data: {user_role: permission, user_id: user_id},
         success: function (result) {
             var text = 'Updated permissions!';
-
             output(true, text);
-            console.log(result);
         },
         error: function (log) {
             console.error(log);
