@@ -329,6 +329,7 @@ function add_calendar_user(email, output){
         dataType: "json",
         data: {email: email},
         success: function (result) {
+
             var success = true;
             var text = `Sent email to ${email}!`;
 
@@ -339,14 +340,11 @@ function add_calendar_user(email, output){
 
             output(success, text);
 
-            console.log(result);
         },
         error: function (log) {
             console.error(log);
         }
     });
-
-    console.log(`Sending email to ${email}...`)
 
 }
 
@@ -358,20 +356,24 @@ function update_calendar_user(user_id, permission, output){
         dataType: "json",
         data: {user_role: permission, user_id: user_id},
         success: function (result) {
-            var text = 'Updated permissions!';
+
+			var text = 'Updated permissions!';
+
+            if(result.error) {
+                success = false;
+                text = result.message;
+            }
+
             output(true, text);
         },
         error: function (log) {
             console.error(log);
         }
-    });
-
-	console.log(`Updating ${user_id}'s permission to ${permission}...`)
+	});
+	
 }
 
 function remove_calendar_user(user_id, remove_all){
-
-	console.log(`Removing user id ${user_id}. Should I delete all of their events, comments, etc as well? ${remove_all}`);
 
 	$.ajax({
         url:window.baseurl+"api/calendar/"+hash+"/removeUser",
@@ -379,7 +381,19 @@ function remove_calendar_user(user_id, remove_all){
         dataType: "json",
         data: {user_id: user_id, remove_all: remove_all},
         success: function (result) {
-            console.log(result);
+
+            if(result.error) {
+				$.notify(
+					"Error: " + result.message
+				);
+                throw result.message;
+            }else{
+				$.notify(
+					"User removed!",
+					"success"
+				);
+			}
+
         },
         error: function (log) {
             console.error(log);
