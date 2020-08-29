@@ -896,6 +896,7 @@ function repopulate_day_select(select, val, change, no_leaps, max, filter_timesp
 		if(filter_timespan === undefined || timespan == filter_timespan){
 
 			var exclude_self = $(this).hasClass('exclude_self');
+			var no_leaps = no_leaps || $(this).hasClass('no_leap');
 
 			if(exclude_self){
 
@@ -922,7 +923,7 @@ function repopulate_day_select(select, val, change, no_leaps, max, filter_timesp
 				if(max && i >= max) break;
 
 				html.push(`<option value='${i+1}'>`);
-				html.push(`${day}`);
+				html.push(day == "" ? `Day ${i+1}` : `Day ${i+1} (${day})`);
 				html.push('</option>');
 
 			}

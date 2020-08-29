@@ -15,8 +15,8 @@ class execution{
 		this.starttime = performance.now();
 	}
 
-	get end(){
-		return `${precisionRound(performance.now() - this.starttime, 7)}ms`;
+	end(string){
+		console.log(`${string !== undefined ? string + " " : ""}${precisionRound(performance.now() - this.starttime, 7)}ms`);
 	}
 
 }
@@ -25,8 +25,8 @@ var execution_time = {
 	start: function(){
 		this.starttime = performance.now();
 	},
-	end: function(){
-		console.log(`${precisionRound(performance.now() - this.starttime, 7)}ms`);
+	end: function(string){
+		console.log(`${string !== undefined ? string + " " : ""}${precisionRound(performance.now() - this.starttime, 7)}ms`);
 	}
 }
 
@@ -67,10 +67,11 @@ function pick_from_table(chance, array, grow){
 
 	var grow = grow !== undefined ? grow : false;
 	var keys = Object.keys(array);
+	var length = keys.length;
 	var values = array;
 	var target = 0;
 	var index = 0;
-	for(var index = 0; index < keys.length; index++){
+	for(var index = 0; index < length; index++){
 		if(grow){
 			target += values[keys[index]];
 		}else{
@@ -1117,7 +1118,7 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object, no
 	for(var i = 1; i <= timespan.length; i++){
 		var appears = does_day_appear(static_data, year, timespan_index, i);
 		if(appears.result || special){
-			days.push(`Day ${i}`);
+			days.push("");
 		}
 	}
 
@@ -1175,7 +1176,7 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object, no
 
 					if(leaping){
 
-						days.push(`Day ${day}`);
+						days.push("");
 						day++;
 
 					}
