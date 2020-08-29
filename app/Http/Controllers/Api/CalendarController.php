@@ -98,10 +98,10 @@ class CalendarController extends Controller
             $user = User::whereEmail($email)->firstOrFail();
 
             if($calendar->users->contains($user)) {
-                return response()->json(['error' => true, 'message' => 'This calendar already has user "'.$user->email.'"']);
+                return response()->json(['error' => true, 'message' => 'This calendar already has user "'.$user->username.'"']);
             }
 
-            $user->notify(new CalendarInvitation($calendar));
+            $user->notify(new CalendarInvitation($calendar, $user));
         } catch (ModelNotFoundException $e) {
             Notification::route('mail', $email)
                 ->notify(new UnregisteredCalendarInvitation($calendar, $email));

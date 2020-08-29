@@ -17,8 +17,8 @@ Route::get('/', 'WelcomeController@welcome')->name('home');
 Route::view('/welcome', 'welcome')->name('welcome');
 Route::view('/donate', 'pages.donate', ['title'=>'Support the site']);
 
-Route::get('invite/accept', 'InviteController@accept')->name('invite.accept')->middleware(['auth']);
-Route::get('invite/register', 'InviteController@register')->name('invite.register')->middleware(['register']);
+Route::get('invite/accept', 'InviteController@accept')->name('invite.accept')->middleware(['auth', 'signed']);
+Route::get('invite/register', 'InviteController@register')->name('invite.register')->middleware(['register', 'signed']);
 
 // Calendar management
 Route::get('calendars/{calendar}/print', 'CalendarController@print')->name('calendars.print');
