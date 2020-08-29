@@ -55,6 +55,7 @@
     <script src="{{ asset('js/login.js') }}"></script>
 
     <script src="{{ mix('js/calendar/header.js') }}"></script>
+    <script src="{{ mix('js/calendar/calendar_ajax_functions.js') }}"></script>
 
     @if(Auth::check() && Auth::user()->setting('dark_theme') && !request()->is('/'))
         <link rel="stylesheet" href="{{ mix('css/app-dark.css') }}">
