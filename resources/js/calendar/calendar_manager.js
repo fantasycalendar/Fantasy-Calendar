@@ -121,6 +121,8 @@ var evaluated_event_data = {};
 
 function rebuild_calendar(action, dynamic_data){
 
+	show_loading_screen_buffered();
+
 	execution_time.start()
 
     worker_calendar.postMessage({
@@ -150,10 +152,6 @@ function rebuild_climate(){
 
 function rebuild_events(event_id){
 
-	show_loading_screen_buffered();
-
-	execution_time.start()
-
 	worker_events.postMessage({
 		static_data: static_data,
 		dynamic_data: dynamic_data,
@@ -174,7 +172,6 @@ worker_events.onmessage = e => {
 	for(let event_index = 0; event_index < events.length; event_index++){
 
 		let event = events[event_index];
-		let epochs = evaluated_event_data.valid[event_index];
 
 		var category = event.event_category_id && event.event_category_id > -1 ?  get_category(event.event_category_id) : false;
 
@@ -183,6 +180,12 @@ worker_events.onmessage = e => {
 		let event_class = event.settings.color ? event.settings.color : "";
 		event_class += event.settings.text ? " " + event.settings.text : "";
 		event_class += event.settings.hide || static_data.settings.hide_events || category_hide ? " hidden_event" : "";
+
+		if(!owner && (event.settings.hide || category_hide)){
+			continue;
+		}
+		
+		let epochs = evaluated_event_data.valid[event_index];
 
 		for(let epoch_index in epochs){
 
@@ -246,14 +249,11 @@ worker_climate.onmessage = e => {
 
 	}else{
 
-		
 		climate_charts.evaluate_day_length_chart();
 		climate_charts.evaluate_weather_charts();
 		eval_current_time();
 
 	}
-
-	hide_loading_screen();
 
 }
 
@@ -264,7 +264,6 @@ worker_calendar.onmessage = e => {
 	evaluated_static_data = {}
 	evaluated_static_data = e.data.processed_data;
 	var static_data = evaluated_static_data.static_data;
-	var action = e.data.action;
 
 	if(evaluated_static_data.success){
 
@@ -288,7 +287,6 @@ worker_calendar.onmessage = e => {
 		eval_clock();
 
 		update_current_day(false);
-
 		
 		climate_charts.evaluate_day_length_chart();
 		climate_charts.evaluate_weather_charts();

@@ -5,7 +5,7 @@ importScripts('/js/calendar/calendar_variables.js?v='+version);
 
 
 onmessage = e => {
-	data = event_evaluator.init(e.data.static_data, e.data.dynamic_data, e.data.events, e.data.event_categories, e.data.epoch_data, e.data.event_id, e.data.start_epoch, e.data.end_epoch, e.data.callback);
+	data = event_evaluator.init(e.data.static_data, e.data.dynamic_data, e.data.events, e.data.event_categories, e.data.epoch_data, e.data.event_id, e.data.start_epoch, e.data.end_epoch, e.data.owner, e.data.callback);
 	postMessage({
 		event_data: data,
 		callback: false
@@ -22,7 +22,7 @@ var event_evaluator = {
 
 	current_data: {},
 
-	init: function(static_data, dynamic_data, events, event_categories, epoch_data, event_id, start_epoch, end_epoch, callback){
+	init: function(static_data, dynamic_data, events, event_categories, epoch_data, event_id, start_epoch, end_epoch, owner, callback){
 
 		this.static_data = static_data;
 		this.dynamic_data = dynamic_data;
@@ -33,6 +33,8 @@ var event_evaluator = {
 		this.start_epoch =  start_epoch;
 		this.end_epoch = end_epoch+1;
 
+		this.owner = owner;
+
 		this.callback = callback;
 
 		this.event_data = {
@@ -41,15 +43,15 @@ var event_evaluator = {
 			ends: {},
 		}
 
+		if(this.static_data.settings.hide_events && !this.owner){
+			return this.event_data;
+		}
+
 		this.events_only_happen_once = [];
 
 		this.event_id = event_id;
 
-		//execution_time.start();
-
 		this.evaluate_valid_events(this.epoch_data, event_id);
-
-		//execution_time.end();
 
 		return this.event_data;
 
