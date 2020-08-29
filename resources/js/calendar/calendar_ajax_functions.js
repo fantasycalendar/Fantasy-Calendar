@@ -358,13 +358,14 @@ function update_calendar_user(user_id, permission, output){
         success: function (result) {
 
 			var text = 'Updated permissions!';
+			var success = true;
 
             if(result.error) {
                 success = false;
                 text = result.message;
             }
 
-            output(true, text);
+            output(success, text);
         },
         error: function (log) {
             console.error(log);
