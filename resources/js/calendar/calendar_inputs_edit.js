@@ -3894,8 +3894,6 @@ function add_link_to_list(parent, key, locked, calendar){
 
 function add_user_to_list(parent, key, data){
 
-    console.log(data);
-
 	var element = [];
 
 	element.push(`<div class='sortable-container list-group-item' index='${key}'>`);
@@ -3926,7 +3924,6 @@ function add_user_to_list(parent, key, data){
 					element.push("<select class='form-control user_permissions_select' onchange='user_permissions_select(this)'>");
 						element.push(`<option ${data.pivot.user_role == 'observer' ? "selected" : ""} value='observer'>Observer</option>`);
 						element.push(`<option ${data.pivot.user_role == 'player' ? "selected" : ""} value='player'>Player</option>`);
-						console.log(Perms)
 						element.push(`<option ${!Perms.user_at_least('worldbuilder') ? "disabled" : ""} ${data.pivot.user_role == 'co-owner' ? "selected" : ""} value='co-owner'>CO-GM${!Perms.user_at_least('worldbuilder') ? " (Only available to Worldbuilder tier)" : ""}</option>`);
 					element.push("</select>");
 				element.push("</div>");
@@ -5721,15 +5718,12 @@ function set_up_user_list(){
 }
 
 function user_permissions_select(select){
-    console.log(select);
 
     var button = $(select).closest('.sortable-container').find('.update_user_permissions');
 
     var new_value = $(select).val();
     var curr_value = button.attr('permissions_val');
 
-    console.log(new_value);
-    console.log(curr_value);
-
-    button.prop('disabled', new_value === curr_value)
+	button.prop('disabled', new_value === curr_value);
+	
 }
