@@ -785,27 +785,27 @@ function set_up_edit_inputs(){
 
 			var valid_preset_order = static_data.seasons.global_settings.preset_order !== undefined && static_data.seasons.global_settings.preset_order.length == static_data.seasons.data.length;
 
-			for(var preset_index in preset_seasons){
-
-				var preset_season = preset_seasons[preset_index];
+			for(var index in static_data.seasons.data){
+				
+				var season = static_data.seasons.data[index];
 
 				html.push(`<div class='row my-1'>`);
 
 					html.push(`<div class='col-auto pr-1'>`);
 
-						html.push(`<select class='form-control season_selector season-input-${Number(preset_index)+1}'>`);
+						html.push(`<select class='form-control season_selector season-input-${Number(index)+1}'>`);
 
-						if(valid_preset_order){
-							var preset_order = static_data.seasons.global_settings.preset_order[preset_index];
-						}
+						for(var preset_index in preset_seasons){
 
-						for(var index in static_data.seasons.data){
-							var season = static_data.seasons.data[index];
+							var preset_season = preset_seasons[preset_index];
+							
 							if(valid_preset_order){
-								html.push(`<option ${preset_order == index ? 'selected' : ""} value='${index}'>${season.name}</option>`);
+								var preset_order = static_data.seasons.global_settings.preset_order[index];
+								html.push(`<option ${preset_order == preset_index ? 'selected' : ""} value='${preset_index}'>${preset_season}</option>`);
 							}else{
-								html.push(`<option ${preset_index == index ? 'selected' : ""} value='${index}'>${season.name}</option>`);
+								html.push(`<option ${preset_index == index ? 'selected' : ""} value='${preset_index}'>${preset_season}</option>`);
 							}
+
 						}
 
 						html.push(`</select>`);
@@ -814,7 +814,7 @@ function set_up_edit_inputs(){
 
 					html.push(`<div class='col-auto pl-1 pt-2'>`);
 
-						html.push(` is equal to preset's '${preset_season}'`);
+						html.push(` is equal to your season '${season.name}'`);
 
 					html.push(`</div>`);
 
@@ -825,7 +825,7 @@ function set_up_edit_inputs(){
 			html.push(`</div>`);
 
 			swal.fire({
-				title: "Please map your seasons to the preset seasons",
+				title: "Please map the preset's seasons to your seasons",
 				html: html.join(''),
 				showCancelButton: true,
 				confirmButtonColor: '#3085d6',

@@ -76,7 +76,6 @@ class Climate{
 				if(this.settings.preset_order !== undefined && this.settings.preset_order.length == this.static_data.seasons.data.length){
 					index = this.settings.preset_order[i];
 				}
-
 				this.current_location.seasons.push(clone(location.seasons[index]));
 
 				this.current_location.seasons[i].time = {}
