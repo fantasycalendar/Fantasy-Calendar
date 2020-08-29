@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Cashier\Billable;
 use Carbon\Carbon;
 use Arr;
+use Str;
 
 class User extends Authenticatable implements
     MustVerifyEmail,
@@ -66,37 +67,73 @@ class User extends Authenticatable implements
         'settings' => 'json',
     ];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function calendars() {
         return $this->hasMany('App\Calendar');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function related_calendars() {
         return $this->belongsToMany('App\Calendar', 'calendar_user_role')->withPivot('user_role');
     }
 
+    /**
+     * @return bool
+     */
     public function isAdmin() {
         return $this->permissions == 1;
     }
 
+    /**
+     * @return bool
+     */
     public function isVerified() {
         return !is_null($this->email_verified_at);
     }
 
+    /**
+     * @return bool
+     */
     public function isEarlySupporter() {
         return $this->email_verified_at <= (new Carbon('2020-03-25'));
     }
 
+    /**
+     * @return bool
+     */
     public function betaAccess() {
-        return false;
         return $this->beta_authorised == 1;
     }
 
+    /**
+     * @return $this
+     */
+    public function generateApiToken()
+    {
+        $this->api_token = Str::random(60);
+        $this->save();
+
+        return $this;
+    }
+
+    /**
+     * @param $setting
+     * @param $value
+     */
     public function setSetting($setting, $value) {
         $settings = $this->settings;
 
         $settings[$setting] = $value;
     }
 
+    /**
+     * @param $setting
+     * @return mixed|null
+     */
     public function setting($setting) {
         if(Arr::has($this->settings, $setting)) {
             return $this->settings[$setting];
@@ -105,6 +142,10 @@ class User extends Authenticatable implements
         return null;
     }
 
+    /**
+     * @param $settings
+     * @return $this
+     */
     public function setSettings($settings) {
         $userSettings = $this->settings;
 
@@ -118,6 +159,9 @@ class User extends Authenticatable implements
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function paymentLevel() {
         if ($this->subscribedToPlan(['timekeeper_monthly', 'timekeeper_yearly'],'Timekeeper')) {
             return 'Timekeeper';
