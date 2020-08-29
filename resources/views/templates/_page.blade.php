@@ -13,6 +13,10 @@
     <meta property="og:url" content="{{ url()->full() }}">
     <meta property="og:image" content="{{ asset('resources/discord_logo.jpg') }}">
 
+    @if(Auth::check())
+        <meta name='api-token' content="{{ Auth::user()->api_token }}">
+    @endif
+
     <title>
         Welcome to Fantasy Calendar
     </title>
