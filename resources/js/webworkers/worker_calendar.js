@@ -1056,8 +1056,6 @@ var calendar_builder = {
 
 	evaluate_calendar_data: function(){
 
-		execution_time.start()
-
 		if(this.static_data.year_data.timespans.length === 0 || this.static_data.year_data.global_week.length === 0){
 
 			var result = {
@@ -2086,8 +2084,6 @@ var calendar_builder = {
 			year_day: calendar_year_day
 		});
 
-		execution_time.end("Calendar data generation took:")
-
 		if(debug || debugtext){
 
 			var wrong = false;
@@ -2136,7 +2132,6 @@ var calendar_builder = {
 				week_day: calendar_first_week_day,
 				year_day: calendar_year_day
 			},
-			timespans: this.calendar_list.timespans_to_build,
 			epoch_data: this.data.epochs,
 			processed_seasons: climate_generator.process_seasons,
 			processed_weather: climate_generator.process_weather,
@@ -2261,7 +2256,8 @@ var calendar_builder = {
 			"current_epoch": this.dynamic_data.epoch,
 			"preview_epoch": this.dynamic_data.epoch,
 			"render_style": this.static_data.settings.layout,
-			"timespans": []
+			"timespans": [],
+			"event_epochs": {}
 		}
 
 		let indexes = Object.keys(this.calendar_list.timespans_to_build)
@@ -2294,7 +2290,9 @@ var calendar_builder = {
 
 				for(var leap_day_index in filtered_leap_days_beforestart){
 
-					timespan_data.days[week_index].push(this.get_day_data(epoch));
+					let day_data = this.get_day_data(epoch);
+					timespan_data.days[timespan_data.days.length-1].push(day_data);
+					render_data.event_epochs[epoch] = day_data.events;
 
 					weekday_number++;
 					epoch++;
@@ -2343,7 +2341,9 @@ var calendar_builder = {
 						
 					}else if(day_number <= timespan.length){
 
-						timespan_data.days[timespan_data.days.length-1].push(this.get_day_data(epoch));
+						let day_data = this.get_day_data(epoch);
+						timespan_data.days[timespan_data.days.length-1].push(day_data);
+						render_data.event_epochs[epoch] = day_data.events;
 
 						epoch++;
 
@@ -2372,7 +2372,9 @@ var calendar_builder = {
 
 							for(var leap_day_index in filtered_leap_days){
 
-								timespan_data.days[timespan_data.days.length-1].push(this.get_day_data(epoch));
+								let day_data = this.get_day_data(epoch);
+								timespan_data.days[timespan_data.days.length-1].push(day_data);
+								render_data.event_epochs[epoch] = day_data.events;
 
 								internal_weekday_number++;
 								epoch++;
