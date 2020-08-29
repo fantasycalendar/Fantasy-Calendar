@@ -776,18 +776,55 @@ function set_up_edit_inputs(){
 			var html = [];
 
 			if(static_data.seasons.data.length == 2){
-				var preset_seasons = ['Winter', 'Summer']
+				var preset_seasons = ['Winter', 'Summer'];
 			}else{
-				var preset_seasons = ['Winter', 'Spring', 'Summer', 'Autumn']
+				var preset_seasons = ['Winter', 'Spring', 'Summer', 'Autumn'];
 			}
 
 			html.push(`<div class='container'>`);
 
+
+			html.push(`<div class='row my-1'>`);
+				html.push(`<div class='col-auto pr-1'>`);
+					html.push(`<p>If you have differently named seasons than in our presets, we cannot match them, so this UI is for you to match our preset seasons to your seasons.</p>`);
+				html.push(`</div>`);
+			html.push(`</div>`);
+
 			var valid_preset_order = static_data.seasons.global_settings.preset_order !== undefined && static_data.seasons.global_settings.preset_order.length == static_data.seasons.data.length;
 
+			var preset_order = [];
+
+			if(!valid_preset_order){
+			
+				let season_test = [];
+				let lowercase_preset = preset_seasons.map(name => name.toLowerCase());
+				for(var index in static_data.seasons.data){
+					var season = static_data.seasons.data[index];
+					let preset_index = lowercase_preset.indexOf(season.name.toLowerCase());
+					if(season.name.toLowerCase() == "fall" && static_data.seasons.data.length == 4){
+						preset_index = 3;
+					}
+					if(preset_index > -1){
+						season_test.push(preset_index)
+					}
+				}
+
+				if(season_test.length == static_data.seasons.data.length){
+					preset_order = season_test;
+					valid_preset_order = true;
+				}
+
+			}else{
+
+				preset_order = static_data.seasons.global_settings.preset_order;
+
+			}
+			
 			for(var index in static_data.seasons.data){
 				
 				var season = static_data.seasons.data[index];
+
+				let preset_order_value = preset_order[index];
 
 				html.push(`<div class='row my-1'>`);
 
@@ -800,8 +837,7 @@ function set_up_edit_inputs(){
 							var preset_season = preset_seasons[preset_index];
 							
 							if(valid_preset_order){
-								var preset_order = static_data.seasons.global_settings.preset_order[index];
-								html.push(`<option ${preset_order == preset_index ? 'selected' : ""} value='${preset_index}'>${preset_season}</option>`);
+								html.push(`<option ${preset_order_value == preset_index ? 'selected' : ""} value='${preset_index}'>${preset_season}</option>`);
 							}else{
 								html.push(`<option ${preset_index == index ? 'selected' : ""} value='${preset_index}'>${preset_season}</option>`);
 							}
