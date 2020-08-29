@@ -97,7 +97,6 @@ function set_up_edit_inputs(){
 	calendar_new_link_list = $('#calendar_new_link_list');
 
 	var previous_view_type = 'owner';
-	var first_switch = true;
 	view_type = 'owner';
 
 	$('.view-tabs .btn').click(function(){
@@ -125,6 +124,7 @@ function set_up_edit_inputs(){
 						}
 					}
 				}
+				climate_charts.active_view = false;
 				calendar_container.removeClass('hidden');
 				weather_contrainer.addClass('hidden');
 				previous_view_type = view_type;
@@ -144,6 +144,7 @@ function set_up_edit_inputs(){
 						}
 					}
 				}
+				climate_charts.active_view = false;
 				calendar_container.removeClass('hidden');
 				weather_contrainer.addClass('hidden');
 				previous_view_type = view_type;
@@ -152,11 +153,7 @@ function set_up_edit_inputs(){
 			case "weather":
 				if(creation.is_done() && errors.length == 0){
 					evaluate_settings();
-					if(first_switch){
-						evaluate_day_length_chart();
-						evaluate_weather_charts();
-						first_switch = false;
-					}
+					climate_charts.active_view = true;
 				}
 				calendar_container.addClass('hidden');
 				weather_contrainer.removeClass('hidden');

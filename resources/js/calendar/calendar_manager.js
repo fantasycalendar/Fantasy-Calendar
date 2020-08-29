@@ -203,7 +203,7 @@ worker_events.onmessage = e => {
 		}
 	}
 
-	execution_time.end("worker_events took:")
+	execution_time.end("Event worker took:")
 
 }
 
@@ -240,13 +240,15 @@ worker_climate.onmessage = e => {
 		eval_clock();
 		update_current_day(false);
 
-		evaluate_day_length_chart();
-		evaluate_weather_charts();
+		
+		climate_charts.evaluate_day_length_chart();
+		climate_charts.evaluate_weather_charts();
 
 	}else{
 
-		evaluate_day_length_chart();
-		evaluate_weather_charts();
+		
+		climate_charts.evaluate_day_length_chart();
+		climate_charts.evaluate_weather_charts();
 		eval_current_time();
 
 	}
@@ -257,7 +259,7 @@ worker_climate.onmessage = e => {
 
 worker_calendar.onmessage = e => {
 
-	execution_time.end("Worker calendar took:")
+	execution_time.end("Calendar worker took:")
 
 	evaluated_static_data = {}
 	evaluated_static_data = e.data.processed_data;
@@ -287,8 +289,9 @@ worker_calendar.onmessage = e => {
 
 		update_current_day(false);
 
-		evaluate_day_length_chart();
-		evaluate_weather_charts();
+		
+		climate_charts.evaluate_day_length_chart();
+		climate_charts.evaluate_weather_charts();
 
 	}else{
 
