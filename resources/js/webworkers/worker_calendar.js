@@ -608,7 +608,7 @@ var calendar_builder = {
 							if(leap_day.intercalary && leap_day.day === day){
 
 								data = {
-									'year': year_index,
+									'year': unconvert_year(this.static_data, year_index),
 									'era_year': unconvert_year(this.static_data, era_year),
 
 									'timespan_index': undefined,
@@ -661,7 +661,7 @@ var calendar_builder = {
 					if(day > 0){
 
 						data = {
-							'year': year_index,
+							'year': unconvert_year(this.static_data, year_index),
 							'era_year': unconvert_year(this.static_data, era_year),
 
 							'timespan_index': timespan_index,
@@ -732,7 +732,7 @@ var calendar_builder = {
 							if(leap_day.intercalary && leap_day.day === day){
 
 								data = {
-									'year': year_index,
+									'year': unconvert_year(this.static_data, year_index),
 									'era_year': unconvert_year(this.static_data, era_year),
 
 									'timespan_index': undefined,
@@ -852,7 +852,7 @@ var calendar_builder = {
 							if(leap_day.intercalary && leap_day.day === day){
 
 								data = {
-									'year': year_index,
+									'year': unconvert_year(this.static_data, year_index),
 									'era_year': unconvert_year(this.static_data, era_year),
 
 									'timespan_index': undefined,
@@ -905,7 +905,7 @@ var calendar_builder = {
 					if(day > 0){
 
 						data = {
-							'year': year_index,
+							'year': unconvert_year(this.static_data, year_index),
 							'era_year': unconvert_year(this.static_data, era_year),
 
 							'timespan_index': timespan_index,
@@ -975,7 +975,7 @@ var calendar_builder = {
 							if(leap_day.intercalary && leap_day.day === day){
 
 								data = {
-									'year': year_index,
+									'year': unconvert_year(this.static_data, year_index),
 									'era_year': unconvert_year(this.static_data, era_year),
 
 									'timespan_index': undefined,
@@ -1308,6 +1308,7 @@ var calendar_builder = {
 			first_eval_month = parseInt(Object.keys(this.calendar_list.timespans_to_build)[0]);
 
 		}
+
 		year_start_data = evaluate_calendar_start(this.static_data, first_eval_year, first_eval_month, undefined, true);
 		era_year = year_start_data.era_year;
 		count_timespans = year_start_data.count_timespans;
@@ -1383,7 +1384,7 @@ var calendar_builder = {
 							if(leap_day.intercalary && leap_day.day === day){
 
 								data = {
-									'year': year_index,
+									'year': unconvert_year(this.static_data, year_index),
 									'era_year': unconvert_year(this.static_data, era_year),
 
 									'timespan_index': undefined,
@@ -1436,7 +1437,7 @@ var calendar_builder = {
 					if(day > 0){
 
 						data = {
-							'year': year_index,
+							'year': unconvert_year(this.static_data, year_index),
 							'era_year': unconvert_year(this.static_data, era_year),
 
 							'timespan_index': timespan_index,
@@ -1508,7 +1509,7 @@ var calendar_builder = {
 							if(leap_day.intercalary && leap_day.day === day){
 
 								data = {
-									'year': year_index,
+									'year': unconvert_year(this.static_data, year_index),
 									'era_year': unconvert_year(this.static_data, era_year),
 
 									'timespan_index': undefined,
@@ -1883,7 +1884,7 @@ var calendar_builder = {
 							if(leap_day.intercalary && leap_day.day === day){
 
 								data = {
-									'year': year_index,
+									'year': unconvert_year(this.static_data, year_index),
 									'era_year': unconvert_year(this.static_data, era_year),
 
 									'timespan_index': undefined,
@@ -1936,7 +1937,7 @@ var calendar_builder = {
 					if(day > 0){
 
 						data = {
-							'year': year_index,
+							'year': unconvert_year(this.static_data, year_index),
 							'era_year': unconvert_year(this.static_data, era_year),
 
 							'timespan_index': timespan_index,
@@ -2007,7 +2008,7 @@ var calendar_builder = {
 							if(leap_day.intercalary && leap_day.day === day){
 
 								data = {
-									'year': year_index,
+									'year': unconvert_year(this.static_data, year_index),
 									'era_year': unconvert_year(this.static_data, era_year),
 
 									'timespan_index': undefined,
