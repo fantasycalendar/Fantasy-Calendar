@@ -169,7 +169,7 @@ function do_update_all(calendar_hash, output){
 			if(!event_categories_same){
 				prev_event_categories = clone(event_categories);
 			}
-			
+
 			last_dynamic_change = new Date(result.last_changed.last_dynamic_change)
 			last_static_change = new Date(result.last_changed.last_static_change)
 
@@ -371,7 +371,7 @@ function update_calendar_user(user_id, permission, output){
             console.error(log);
         }
 	});
-	
+
 }
 
 function remove_calendar_user(user_id, remove_all){
@@ -748,22 +748,26 @@ function get_event_comments(event_id, callback){
 }
 
 function create_event_comment(content, event_id, callback) {
-	$.ajax({
-		url: window.baseurl+"api/eventcomment",
-		type: 'POST',
-		dataType: "json",
-		data: {
-			calendar_id: calendar_id,
-			content: content,
-			event_id: event_id
-		},
-		success: function (result) {
-			callback(result['data'].id,result['data']);
-		},
-		error: function(log) {
-			console.log(log)
-		}
-	});
+
+    axios.post(window.baseurl+"api/eventcomment", {
+        calendar_id: calendar_id,
+        content: content,
+        event_id: event_id
+    })
+        .then(function (result){
+            if(!result.data.error && result.data != "") {
+                callback(result.data.data.id, result.data.data);
+            } else if(result.data == ""){
+                $.notify(
+                    "Error adding comment."
+                );
+            } else {
+                $.notify(
+                    "Error: " + result.data.message
+                );
+                throw result.data.message;
+            }
+        });
 }
 
 function get_preset_data(preset_id, callback){

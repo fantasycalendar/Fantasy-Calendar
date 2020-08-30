@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use League\Fractal\Manager;
@@ -26,7 +27,7 @@ class EventCommentController extends Controller
      */
     public function index()
     {
-        
+
     }
 
     /**
@@ -37,14 +38,16 @@ class EventCommentController extends Controller
      */
     public function store(Request $request)
     {
-        /* TODO-Alex - Double checking whether the user can add comments - I'm pretty sure we're doing this on the front end, but sneaky users could slip through... */
-
         $commentData = [
             'user_id' => auth('api')->user()->id,
             'event_id' => $request->get('event_id'),
             'calendar_id' => $request->get('calendar_id'),
             'content' => $request->get('content')
         ];
+
+        if(!auth('api')->user()->can('add-comment', [$commentData])) {
+            throw new AuthorizationException("You're not authorized to comment on this event.");
+        }
 
         $comment = CalendarEventComment::create($commentData);
 
@@ -70,7 +73,7 @@ class EventCommentController extends Controller
 
     /**
      * Display all the comments for a specific event
-     * 
+     *
      * @param int $id of the event to get comments for
      * @return \Illuminate\Http\Response
      */
@@ -85,7 +88,7 @@ class EventCommentController extends Controller
 
     /**
      * Display all the comments for events on a specific calendar
-     * 
+     *
      * @param int $id of the event to get comments for
      * @return \Illuminate\Http\Response
      */

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Calendar;
+use App\CalendarEvent;
 use App\EventCategory;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Gate;
@@ -32,19 +33,6 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('attach-event', function($user, $event) {
             $calendar = Calendar::findOrFail($event->calendar_id);
 
-//            echo json_encode([
-//                'can_update' => $user->can('update', $calendar),
-//                'owner_is_wb' => $calendar->user->paymentLevel() == 'Worldbuilder',
-//                'user_in_calendar_list' => $calendar->users->contains($user),
-//                'user_is_player_or_coowner' => in_array($calendar->users->find($user->id)->pivot->user_role, ['player', 'co-owner']),
-//                'event_is_one_time' => collect($event->data ?? [])->has('date'),
-//                'event_category_sane_id' => ($event->event_category_id ?? -1 >= 0),
-//                'event_category_found' => EventCategory::find($event->event_category_id),
-////                'event_category_player_usable' => EventCategory::find($event->event_category_id)->setting('player_usable')
-//            ]);
-//
-//            die();
-
             return $user->can('update', $calendar)
 
                 || ($calendar->user->paymentLevel() == 'Worldbuilder'
@@ -57,6 +45,33 @@ class AuthServiceProvider extends ServiceProvider
                         || (EventCategory::find($event->event_category_id) && EventCategory::find($event->event_category_id)->setting('player_usable'))
                     )
                 );
+        });
+
+        Gate::define('add-comment', function($user, $data) {
+            if(!Arr::has($data, ['event_id', 'calendar_id', 'content'])) {
+                return false;
+            }
+
+            $calendar = Calendar::findOrFail(Arr::get($data, 'calendar_id'));
+            $event = CalendarEvent::findOrFail(Arr::get($data, 'event_id'));
+
+            if(!$calendar->events->contains($event)) {
+                return false;
+            }
+
+            if($calendar->user->is($user)) {
+                return true;
+            }
+
+            if($calendar->setting('comments') === 'players' && $user->can('add-events', $calendar)) {
+                return true;
+            }
+
+            if($calendar->setting('comments') === 'public') {
+                return true;
+            }
+
+            return false;
         });
 
         Gate::define('add-events', function($user, $calendar) {
