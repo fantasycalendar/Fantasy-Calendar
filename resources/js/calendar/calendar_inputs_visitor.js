@@ -702,8 +702,6 @@ function evaluate_settings(){
 
 	$('#empty_calendar_explaination').toggleClass('hidden', true);
 
-	/* TODO-Adam - Refactor once user permissions are available */
-
 	$('.date_control').toggleClass('hidden', (!Perms.player_at_least('co-owner') && !static_data.settings.allow_view));
 	$('.date_control').find('select, input').not('#current_hour, #current_minute').prop('disabled', !Perms.player_at_least('co-owner') && !static_data.settings.allow_view);
 

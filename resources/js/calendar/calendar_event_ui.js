@@ -14,10 +14,6 @@ var edit_event_ui = {
 
 	bind_events: function(){
 
-		/* TODO-Adam - Disable and hide certain inputs depending on the permissions of the current user */
-		/* Conditions and the various duration settings should be disabled for players */
-		/* Populate the event category dropdown only with the available categories */
-
 		this.new_event							= false;
 		this.event_id							= null;
 		this.event_condition_sortables			= [];
