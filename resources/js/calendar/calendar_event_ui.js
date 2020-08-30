@@ -2372,8 +2372,6 @@ var show_event_ui = {
 
 		let can_edit = Perms.player_at_least('co-owner') || (Perms.userid == event.creator_id && Perms.player_at_least('player'));
 
-		console.log(event)
-
 		this.edit_event_btn.prop('disabled', !can_edit).toggleClass('hidden', !can_edit);
 
 		this.event_name.text(event.name);
