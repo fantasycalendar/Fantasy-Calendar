@@ -1,17 +1,10 @@
 <div id="event_show_background" class='clickable_background hidden'>
 	<div class='modal-basic-container'>
 		<div class='modal-basic-wrapper'>
-			<div class='modal-basic-wrapper'>
+			<div class='modal-wrapper'>
+            
 				<div class='close-ui-btn-bg'></div>
 				<i class="close_ui_btn fas fa-times-circle"></i>
-
-				<div class='row no-gutters event-form-heading'>
-				  <h2><span class='event_name'>Editing Event</span> <i class="fas fa-pencil-alt edit_event_btn"></i></h2>
-						  </div>
-
-				<div class='row'>
-				  <div class="event_desc col-12"></div>
-				</div>
 
 				<div class='row no-gutters modal-form-heading'>
 					<h2><span class='event_name'>Editing Event</span> <i class="fas fa-pencil-alt edit_event_btn"></i></h2>
