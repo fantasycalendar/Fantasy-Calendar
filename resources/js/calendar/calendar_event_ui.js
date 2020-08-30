@@ -275,7 +275,7 @@ var edit_event_ui = {
 				$('#color_style').val(category.event_settings.color);
 				$('#text_style').val(category.event_settings.text).change();
 				$('#event_hide_players').prop('checked', category.event_settings.hide);
-				
+
 				if($('#event_print_checkbox').length){
 					$('#event_print_checkbox').prop('checked', category.event_settings.print);
 				}
@@ -690,9 +690,9 @@ var edit_event_ui = {
 		edit_event_ui.clear_ui();
 
 		if(success){
-	
+
 			error_check();
-	
+
 			eval_apply_changes(function(){
 				rebuild_events();
 			});
@@ -2301,7 +2301,7 @@ var show_event_ui = {
 		});
 
 		this.event_save_btn.click(function(){
-			create_event_comment(show_event_ui.event_comment_input.trumbowyg('html'), show_event_ui.event_id, show_event_ui.add_comment);
+			create_event_comment(show_event_ui.event_comment_input.trumbowyg('html'), show_event_ui.db_event_id, show_event_ui.add_comment);
 			show_event_ui.event_comment_input.trumbowyg('empty');
 		});
 
