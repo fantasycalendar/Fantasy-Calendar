@@ -40,14 +40,12 @@ class SaveCalendarEvents implements ShouldQueue
         foreach($this->events as $sort_by => $event) {
             $event['sort_by'] = $sort_by;
 
-            if(!empty($event['event_category_id']) && !is_numeric($event['event_category_id'])) {
-                $event['event_category_id'] = $this->categoryids[$event['event_category_id']];
-            }
-
-            if($event['event_category_id'] < 0) $event['event_category_id'] = null;
+            $event['event_category_id'] = (empty($event['event_category_id']) || is_numeric($event['event_category_id']) || $event['event_category_id'] === "-1" || $event['event_category_id'] < 0)
+                ? null
+                : $this->categoryids[$event['event_category_id']];
 
             $event['description'] = Purifier::clean($event['description']);
-
+            
             if(array_key_exists('id', $event)) {
                 $eventids[] = $event['id'];
                 $event['data'] = json_encode($event['data']);

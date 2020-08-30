@@ -2259,7 +2259,7 @@ var show_event_ui = {
 		this.event_background 					= $('#event_show_background');
 		this.close_ui_btn						= show_event_ui.event_background.find('.close_ui_btn');
 
-		this.event_wrapper						= this.event_background.find('.event-wrapper');
+		this.event_wrapper						= this.event_background.find('.modal-wrapper');
 		this.event_name							= this.event_background.find('.event_name');
 		this.event_desc							= this.event_background.find('.event_desc');
 		this.event_comments						= this.event_background.find('#event_comments');

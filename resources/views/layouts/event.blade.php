@@ -1,36 +1,42 @@
 <div id="event_show_background" class='clickable_background hidden'>
-	<div class='event-basic-container'>
-		<div class='event-basic-wrapper'>
-			<div class='event-basic-wrapper'>
-				<div class='event-wrapper'>
-					<div class='close-ui-btn-bg'></div>
-					<i class="close_ui_btn fas fa-times-circle"></i>
+	<div class='modal-basic-container'>
+		<div class='modal-basic-wrapper'>
+			<div class='modal-basic-wrapper'>
+				<div class='close-ui-btn-bg'></div>
+				<i class="close_ui_btn fas fa-times-circle"></i>
 
-					<div class='row no-gutters event-form-heading'>
-						<h2><span class='event_name'>Editing Event</span> <i class="fas fa-pencil-alt edit_event_btn"></i></h2>
-                    </div>
+				<div class='row no-gutters event-form-heading'>
+				  <h2><span class='event_name'>Editing Event</span> <i class="fas fa-pencil-alt edit_event_btn"></i></h2>
+						  </div>
 
-					<div class='row'>
-						<div class="event_desc col-12"></div>
-					</div>
+				<div class='row'>
+				  <div class="event_desc col-12"></div>
+				</div>
 
-					<div id='event_comment_mastercontainer' class="row">
+				<div class='row no-gutters modal-form-heading'>
+					<h2><span class='event_name'>Editing Event</span> <i class="fas fa-pencil-alt edit_event_btn"></i></h2>
+				</div>
+				
+				<div class='row'>
+					<div class="event_desc col-12"></div>
+				</div>
 
-                        <div class="col-12">
-                            <hr>
+				<div id='event_comment_mastercontainer' class="row">
 
-                            <h4>Comments:</h4>
+					<div class="col-12">
+						<hr>
 
-                            <div class='row'>
-                                <div id='event_comments' class='loading col-12'></div>
-                            @if(Auth::check())
-                                <div class='col-12 mt-2' id='event_comment_input_container'>
-                                    <textarea class='form-control' id='event_comment_input' placeholder='Enter your comment and press submit.' autofocus=''></textarea>
-                                    <button type='button' class='btn btn-primary mt-2' style="z-index: 200" id='submit_comment'>Submit</button>
-                                </div>
-                            @endif
-                            </div>
-                        </div>
+						<h4>Comments:</h4>
+
+						<div class='row'>
+							<div id='event_comments' class='loading col-12'></div>
+						@if(Auth::check())
+							<div class='col-12 mt-2' id='event_comment_input_container'>
+								<textarea class='form-control' id='event_comment_input' placeholder='Enter your comment and press submit.' autofocus=''></textarea>
+								<button type='button' class='btn btn-primary mt-2' style="z-index: 200" id='submit_comment'>Submit</button>
+							</div>
+						@endif
+						</div>
 					</div>
 				</div>
 			</div>
@@ -39,14 +45,14 @@
 </div>
 
 <div id="event_edit_background" class='clickable_background hidden'>
-	<div class='event-basic-container'>
-		<div class='event-basic-wrapper'>
-			<form id="event-form" class="event-wrapper container" action="post">
+	<div class='modal-basic-container'>
+		<div class='modal-basic-wrapper'>
+			<form id="event-form" class="modal-wrapper container" action="post">
 
 				<div class='close-ui-btn-bg'></div>
 				<i class="close_ui_btn fas fa-times-circle"></i>
 
-				<div class='row no-gutters mb-1 event-form-heading'>
+				<div class='row no-gutters mb-1 modal-form-heading'>
 					<h2 class='event_action_type'><span>Editing Event</span> <i class="fas fa-eye view_event_btn"></i></h2>
 				</div>
 
@@ -82,7 +88,7 @@
                                 <optgroup value='moons' label='Moons' class='hidden'></optgroup>
                         </select>
                     </div>
-
+                    
                     <div class='row no-gutters mb-1 hidden'>
                         <input type='number' class='form-control' id='repeat_input' name='repeat_input' value='2' min='1' placeholder='Every nth' />
                     </div>
@@ -105,11 +111,12 @@
                         </div>
                     </div>
                     <div class='row no-gutters my-2'>
-
                         <ol class='form-control group_list_root' id='event_conditions_container'>
-
                         </ol>
-
+                    </div>
+                    
+                    <div class='row no-gutters mt-2'>
+                      <h5 class='modal-form-heading full'>Test event occurrences for the next:</h5>
                     </div>
 
                     <div class='event_occurrences hidden'>
@@ -117,7 +124,7 @@
                         <div class='row no-gutters mt-2'>
                             <h5 class='event-form-heading full'>Test event occurrences for the next:</h5>
                         </div>
-
+                        
                         <div class='row no-gutters'>
                             <div class='col-md-3 px-1'>
                                 <button type='button' class='btn btn-info full test_event_btn' years="1">1 year</button>
@@ -152,9 +159,9 @@
                     <div class='row no-gutters mt-2'>
                         <div class='separator'></div>
                     </div>
-
+                    
                     <div class='row no-gutters mt-2'>
-                        <h5 class='event-form-heading'>Display settings:</h5>
+                      <h5 class='modal-form-heading'>Duration settings:</h5>
                     </div>
 
                     <div class='row no-gutters'>
@@ -163,7 +170,6 @@
                                 <input type='checkbox' class='event_setting' id='limited_repeat' name='limited_repeat'> Limit repetitions
                             </label>
                         </div>
-
                         <div class='col-md-6 pl-1 pr-0 form-control'>
                             <label class='row no-gutters'>
                                 <div class='col-auto pl-4 pr-1'>Limit for</div>
@@ -177,10 +183,6 @@
 
                     <div class='limit_for_warning hidden row no-gutters p-2 mb-2 border rounded'>
                         <p class='m-0'><strong>Use with caution.</strong> This setting will simulate to check dates backward to ensure consistency across the beginning of years. That process can take a while if this number is particularly high, like 50 or more.</p>
-                    </div>
-
-                    <div class='row no-gutters mt-2'>
-                        <h5 class='event-form-heading'>Duration settings:</h5>
                     </div>
 
                     <div class='row no-gutters'>
@@ -217,8 +219,12 @@
                 <div class='row no-gutters my-2'>
                     <div class='separator'></div>
                 </div>
+                
+                <div class='row no-gutters'>
+                  <h5 class='modal-form-heading full'>Settings:</h5>
+                </div>
 
-				@if(!isset($calendar) || count($calendar->event_categories))
+                @if(!isset($calendar) || count($calendar->event_categories))
                     <div class='row no-gutters'>
                         <div class='col-auto pl-0 pr-1'>
                             <h5 class='event-form-heading'>Category:</h5>
@@ -230,10 +236,6 @@
                         </div>
                     </div>
                 @endif
-
-                <div class='row no-gutters'>
-                    <h5 class='event-form-heading full'>Settings:</h5>
-                </div>
 
                 @if(!isset($calendar) || (Auth::user() != Null && Auth::user()->can('update', $calendar)))
                     <div class='row no-gutters'>
@@ -263,9 +265,13 @@
                     </div>
                 @endif
 
+				<div class='row no-gutters mt-2'>
+					<h5 class='event-form-heading'>Display settings:</h5>
+				</div>
+
 				<div class='row no-gutters'>
 					<div class='col pr-1'>
-						<h5 class='event-form-heading'>Color:</h5>
+						<h5 class='modal-form-heading'>Color:</h5>
 						<select id="color_style" name='color_style' class='form-control event-text-input color_display' key='color_display'>
 							<option>Dark-Solid</option>
 							<option>Red</option>
@@ -286,7 +292,7 @@
 					</div>
 
 					<div class='col pl-1'>
-						<h5 class='event-form-heading'>Display:</h5>
+						<h5 class='modal-form-heading'>Display:</h5>
 						<select id="text_style" name='text_style' class='form-control event-text-input text_display'>
 							<option value="text">Just text</option>
 							<option value="dot">• Dot with text</option>
@@ -319,19 +325,21 @@
 </div>
 
 <div id="html_edit_background" class='clickable_background hidden'>
-	<div class='event-basic-container'>
-		<form id="html-form" class="event-wrapper" action="post">
+	<div class='modal-basic-container'>
+		<div class='modal-basic-wrapper'>
+			<form id="html-form" class="modal-wrapper" action="post">
 
-			<div class='close-ui-btn-bg'></div>
-			<i class="close_ui_btn icon-remove-circle"></i>
+				<div class='close-ui-btn-bg'></div>
+				<i class="close_ui_btn fas fa-times-circle"></i>
 
-			<h2 class='event-form-heading'>Edit HTML</h2>
+				<h2 class='modal-form-heading'>Edit HTML</h2>
 
-			<div class='row'>
-				<textarea class='form-control html_input editable' name='html_input' placeholder='Event description' autofocus=''></textarea>
-			</div>
+				<div class='row'>
+					<textarea class='form-control html_input editable' name='html_input' placeholder='Event description' autofocus=''></textarea>
+				</div>
 
-			<div class='btn btn-lg btn-primary btn-block' id='btn_html_save'>Save</div>
-		</form>
+				<div class='btn btn-lg btn-primary btn-block' id='btn_html_save'>Save</div>
+			</form>
+		</div>
 	</div>
 </div>

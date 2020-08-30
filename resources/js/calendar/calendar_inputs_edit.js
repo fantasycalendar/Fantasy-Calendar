@@ -121,11 +121,10 @@ function set_up_edit_inputs(){
 		$(this).removeClass('btn-secondary').addClass('btn-primary');
 
 		var errors = get_errors();
-		var creation_steps = get_creation_steps();
 
 		switch(view_type){
 			case "owner":
-				if(creation_steps.current_step > creation_steps.steps && errors.length == 0){
+				if(creation.is_done() && errors.length == 0){
 					if(previous_view_type !== 'owner'){
 						evaluate_settings();
 						if(!preview_date.follow){
@@ -162,7 +161,7 @@ function set_up_edit_inputs(){
 				break;
 
 			case "weather":
-				if(creation_steps.current_step > creation_steps.steps && errors.length == 0){
+				if(creation.is_done() && errors.length == 0){
 					evaluate_settings();
 					if(first_switch){
 						evaluate_day_length_chart();
@@ -788,36 +787,72 @@ function set_up_edit_inputs(){
 			var html = [];
 
 			if(static_data.seasons.data.length == 2){
-				var preset_seasons = ['Winter', 'Summer']
+				var preset_seasons = ['Winter', 'Summer'];
 			}else{
-				var preset_seasons = ['Winter', 'Spring', 'Summer', 'Autumn']
+				var preset_seasons = ['Winter', 'Spring', 'Summer', 'Autumn'];
 			}
 
 			html.push(`<div class='container'>`);
 
+
+			html.push(`<div class='row my-1'>`);
+				html.push(`<div class='col-auto pr-1'>`);
+					html.push(`<p>If you have differently named seasons than in our presets, we cannot match them, so this UI is for you to match our preset seasons to your seasons.</p>`);
+				html.push(`</div>`);
+			html.push(`</div>`);
+
 			var valid_preset_order = static_data.seasons.global_settings.preset_order !== undefined && static_data.seasons.global_settings.preset_order.length == static_data.seasons.data.length;
 
-			for(var preset_index in preset_seasons){
+			var preset_order = [];
 
-				var preset_season = preset_seasons[preset_index];
+			if(!valid_preset_order){
+			
+				let season_test = [];
+				let lowercase_preset = preset_seasons.map(name => name.toLowerCase());
+				for(var index in static_data.seasons.data){
+					var season = static_data.seasons.data[index];
+					let preset_index = lowercase_preset.indexOf(season.name.toLowerCase());
+					if(season.name.toLowerCase() == "fall" && static_data.seasons.data.length == 4){
+						preset_index = 3;
+					}
+					if(preset_index > -1){
+						season_test.push(preset_index)
+					}
+				}
+
+				if(season_test.length == static_data.seasons.data.length){
+					preset_order = season_test;
+					valid_preset_order = true;
+				}
+
+			}else{
+
+				preset_order = static_data.seasons.global_settings.preset_order;
+
+			}
+			
+			for(var index in static_data.seasons.data){
+				
+				var season = static_data.seasons.data[index];
+
+				let preset_order_value = preset_order[index];
 
 				html.push(`<div class='row my-1'>`);
 
 					html.push(`<div class='col-auto pr-1'>`);
 
-						html.push(`<select class='form-control season_selector season-input-${Number(preset_index)+1}'>`);
+						html.push(`<select class='form-control season_selector season-input-${Number(index)+1}'>`);
 
-						if(valid_preset_order){
-							var preset_order = static_data.seasons.global_settings.preset_order[preset_index];
-						}
+						for(var preset_index in preset_seasons){
 
-						for(var index in static_data.seasons.data){
-							var season = static_data.seasons.data[index];
+							var preset_season = preset_seasons[preset_index];
+							
 							if(valid_preset_order){
-								html.push(`<option ${preset_order == index ? 'selected' : ""} value='${index}'>${season.name}</option>`);
+								html.push(`<option ${preset_order_value == preset_index ? 'selected' : ""} value='${preset_index}'>${preset_season}</option>`);
 							}else{
-								html.push(`<option ${preset_index == index ? 'selected' : ""} value='${index}'>${season.name}</option>`);
+								html.push(`<option ${preset_index == index ? 'selected' : ""} value='${preset_index}'>${preset_season}</option>`);
 							}
+
 						}
 
 						html.push(`</select>`);
@@ -826,7 +861,7 @@ function set_up_edit_inputs(){
 
 					html.push(`<div class='col-auto pl-1 pt-2'>`);
 
-						html.push(` is equal to preset's '${preset_season}'`);
+						html.push(` is equal to your season '${season.name}'`);
 
 					html.push(`</div>`);
 
@@ -837,7 +872,7 @@ function set_up_edit_inputs(){
 			html.push(`</div>`);
 
 			swal.fire({
-				title: "Please map your seasons to the preset seasons",
+				title: "Please map the preset's seasons to your seasons",
 				html: html.join(''),
 				showCancelButton: true,
 				confirmButtonColor: '#3085d6',
@@ -3951,6 +3986,10 @@ function get_errors(){
 
 	var errors = [];
 
+	if(calendar_name == ""){
+		errors.push("The calendar name cannot be empty.")
+	}
+
 	if(static_data.year_data.timespans.length != 0){
 		for(var era_i = 0; era_i < static_data.eras.length; era_i++){
 			var era = static_data.eras[era_i];
@@ -4013,50 +4052,59 @@ function get_errors(){
 
 }
 
-function get_creation_steps(){
+const creation = {
 
-	var creation = {
-		text: [],
-		current_step: 1,
-		steps: 3,
-	};
+	text: [],
+	current_step: 1,
+	steps: 3,
 
-	if(creation.current_step >= 1){
-		if(calendar_name == ""){
-			creation.text.push(`<span><i class="mr-2 fas fa-calendar"></i> Your calendar must have a name</span>.`)
-		}else{
-			creation.text.push(`<span style="opacity: 0.4;"><i class="mr-2 fas fa-calendar-check"></i> Your calendar has a name!</span>`);
-			creation.current_step++;
+	is_done: function(){
+
+		if(this.current_step > this.steps){
+			return true;
 		}
-	}
 
-	if(creation.current_step >= 2){
-		if(static_data.year_data.global_week.length == 0){
-		    $("#collapsible_globalweek").prop("checked", true);
+		this.text = [];
 
-		    $("#calendar_name").blur();
-            setTimeout(function() { $('#weekday_name_input').focus() }, 200);
-
-			creation.text.push(`<span><i class="mr-2 fas fa-calendar"></i> You need at least one week day.</span>`);
-		}else{
-			creation.text.push(`<span style="opacity: 0.4;"><i class="mr-2 fas fa-calendar-check"></i> You have at least one week day!</span>`);
-			creation.current_step++;
+		if(this.current_step >= 1){
+			if(calendar_name == ""){
+				this.text.push(`<span><i class="mr-2 fas fa-calendar"></i> Your calendar must have a name</span>.`)
+				this.current_step = 1;
+			}else{
+				this.text.push(`<span style="opacity: 0.4;"><i class="mr-2 fas fa-calendar-check"></i> Your calendar has a name!</span>`);
+				this.current_step = 2;
+			}
 		}
-	}
 
-	if(creation.current_step >= 3){
-		if(static_data.year_data.timespans.length == 0){
-            $("#collapsible_timespans").prop("checked", true);
+		if(this.current_step >= 2){
+			if(static_data.year_data.global_week.length == 0){
+				$("#collapsible_globalweek").prop("checked", true);
 
-			creation.text.push(`<span><i class="mr-2 fas fa-calendar"></i> You need at least one month.</span>`);
-		}else{
-		    $("#collapsible_globalweek").prop("checked", false);
-			creation.text.push(`<span style="opacity: 0.4;"><i class="mr-2 fas fa-calendar-check"></i> You have at least one month!</span>`);
-			creation.current_step++;
+				$("#calendar_name").blur();
+				setTimeout(function() { $('#weekday_name_input').focus() }, 200);
+
+				this.text.push(`<span><i class="mr-2 fas fa-calendar"></i> You need at least one week day.</span>`);
+			}else{
+				this.text.push(`<span style="opacity: 0.4;"><i class="mr-2 fas fa-calendar-check"></i> You have at least one week day!</span>`);
+				this.current_step = 3;
+			}
 		}
-	}
 
-	return creation;
+		if(this.current_step >= 3){
+			if(static_data.year_data.timespans.length == 0){
+				$("#collapsible_timespans").prop("checked", true);
+
+				this.text.push(`<span><i class="mr-2 fas fa-calendar"></i> You need at least one month.</span>`);
+			}else{
+				$("#collapsible_globalweek").prop("checked", false);
+				this.text.push(`<span style="opacity: 0.4;"><i class="mr-2 fas fa-calendar-check"></i> You have at least one month!</span>`);
+				this.current_step = 4;
+			}
+		}
+
+		return this.current_step > this.steps;
+
+	}
 
 }
 
@@ -4064,17 +4112,15 @@ var do_error_check = debounce(function(type, rebuild){
 
 	evaluate_save_button();
 
-	var creation_steps = get_creation_steps();
-
-	if(creation_steps.current_step <= creation_steps.steps){
+	if(!creation.is_done()){
 
 		var text = [];
 
-		text.push(`<h3 style="opacity: 0.7;">Calendar Creation (${creation_steps.current_step}/${creation_steps.steps})</h3><ol>`);
+		text.push(`<h3 style="opacity: 0.7;">Calendar Creation (${creation.current_step}/${creation.steps})</h3><ol>`);
 
-		for(var i = 0; i < creation_steps.text.length; i++){
+		for(var i = 0; i < creation.text.length; i++){
 
-			text.push(`<li>${creation_steps.text[i]}</li>`);
+			text.push(`<li>${creation.text[i]}</li>`);
 
 		}
 		text.push(`</ol class="mb-4">`);
@@ -4083,8 +4129,8 @@ var do_error_check = debounce(function(type, rebuild){
 
 		creation_message(text.join(''));
 
-		$('#generator_container').removeClass('step-'+(creation_steps.current_step-1));
-		$('#generator_container').addClass('step-'+(creation_steps.current_step));
+		$('#generator_container').removeClass();
+		$('#generator_container').addClass('step-'+(creation.current_step));
 
 	} else {
 
@@ -4957,9 +5003,7 @@ function calendar_save_failed(){
 
 function evaluate_save_button(override){
 
-	var creation_steps = get_creation_steps();
-
-	if(creation_steps.current_step <= creation_steps.steps){
+	if(!creation.is_done()){
 		return;
 	}
 

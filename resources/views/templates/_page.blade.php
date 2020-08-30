@@ -13,6 +13,10 @@
     <meta property="og:url" content="{{ url()->full() }}">
     <meta property="og:image" content="{{ asset('resources/discord_logo.jpg') }}">
 
+    @if(Auth::check())
+        <meta name='api-token' content="{{ Auth::user()->api_token }}">
+    @endif
+
     <title>
         Welcome to Fantasy Calendar
     </title>
@@ -55,6 +59,7 @@
     <script src="{{ asset('js/login.js') }}"></script>
 
     <script src="{{ mix('js/calendar/header.js') }}"></script>
+    <script src="{{ mix('js/calendar/calendar_ajax_functions.js') }}"></script>
 
     @if(Auth::check() && Auth::user()->setting('dark_theme') && !request()->is('/'))
         <link rel="stylesheet" href="{{ mix('css/app-dark.css') }}">

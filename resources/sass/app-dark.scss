@@ -21,6 +21,7 @@ $hamburger-padding-y        :1rem;
 @import '~protip/css/protip';
 
 // Variables
+@import 'calendar/colors';
 @import 'calendar/variables-dark';
 
 // Legacy calendar parts
@@ -112,7 +113,7 @@ $hamburger-padding-y        :1rem;
     border-color: #888;
 }
 
-body #content #generator_container .btn:not(.event_name):not(#btn_event_delete):not(#btn_delete) {
+body #content #generator_container .btn:not(.event_name):not(#btn_event_delete):not(#btn_delete):not(.btn-stock) {
     background-color: $btn-color;
     border-color: $btn-border;
 

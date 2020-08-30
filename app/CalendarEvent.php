@@ -30,7 +30,7 @@ class CalendarEvent extends Model
     ];
 
     public function category() {
-        return $this->belongsTo('App\EventCategory');
+        return $this->belongsTo('App\EventCategory', 'event_category_id');
     }
 
     public function calendar() {
