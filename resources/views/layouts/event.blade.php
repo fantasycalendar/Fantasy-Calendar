@@ -59,7 +59,7 @@
 
                 @if(!isset($calendar) || (Auth::user() != Null && Auth::user()->can('advance-date', $calendar)))
 
-                    <h5 class='row no-gutters mt-2 event-form-heading'>Condition presets:</h5>
+                    <h5 class='row no-gutters mt-2 modal-form-heading'>Condition presets:</h5>
 
                     <div class='row no-gutters mb-1'>
                         <select class="form-control" id="condition_presets">
@@ -86,7 +86,7 @@
                         <input type='number' class='form-control' id='repeat_input' name='repeat_input' value='2' min='1' placeholder='Every nth' />
                     </div>
 
-                    <h5 class='row no-gutters my-2 event-form-heading'>Conditions:</h5>
+                    <h5 class='row no-gutters my-2 modal-form-heading'>Conditions:</h5>
 
                     <div class='row no-gutters my-2' id='non_preset_buttons'>
                         <div class='col-11 pr-1'>
@@ -107,17 +107,13 @@
                         <ol class='form-control group_list_root' id='event_conditions_container'>
                         </ol>
                     </div>
-                    
-                    <div class='row no-gutters mt-2'>
-                      <h5 class='modal-form-heading full'>Test event occurrences for the next:</h5>
-                    </div>
 
                     <div class='event_occurrences hidden'>
-
+                    
                         <div class='row no-gutters mt-2'>
-                            <h5 class='event-form-heading full'>Test event occurrences for the next:</h5>
+                        <h5 class='modal-form-heading full'>Test event occurrences for the next:</h5>
                         </div>
-                        
+
                         <div class='row no-gutters'>
                             <div class='col-md-3 px-1'>
                                 <button type='button' class='btn btn-info full test_event_btn' years="1">1 year</button>
@@ -212,15 +208,11 @@
                 <div class='row no-gutters my-2'>
                     <div class='separator'></div>
                 </div>
-                
-                <div class='row no-gutters'>
-                  <h5 class='modal-form-heading full'>Settings:</h5>
-                </div>
 
                 @if(!isset($calendar) || count($calendar->event_categories))
-                    <div class='row no-gutters'>
+                    <div class='row mb-2 no-gutters'>
                         <div class='col-auto pl-0 pr-1'>
-                            <h5 class='event-form-heading'>Category:</h5>
+                            <h5 class='modal-form-heading'>Category:</h5>
                         </div>
                         <div class='col pl-0 pl-1'>
                             <select class="form-control event-category-list" id="event_categories" name='event_categories' placeholder='Event Category'>
@@ -257,10 +249,6 @@
                         </div>
                     </div>
                 @endif
-
-				<div class='row no-gutters mt-2'>
-					<h5 class='event-form-heading'>Display settings:</h5>
-				</div>
 
 				<div class='row no-gutters'>
 					<div class='col pr-1'>
