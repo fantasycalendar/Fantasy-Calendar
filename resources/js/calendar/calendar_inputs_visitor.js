@@ -240,6 +240,8 @@ function set_up_visitor_inputs(){
 				},
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
+					let event_id = element.attr('event_id');
+					let event = events[event_id];
 					return element.hasClass('era_event') || !(Perms.player_at_least('co-owner') || Perms.userid == event.creator_id);
 				},
 				visible: function(key, opt){
