@@ -235,7 +235,10 @@
                 <div class='row no-gutters'>
                     <div class='col'>
                         <label class='form-control checkbox'>
-                            <input type='checkbox' class='event_setting' id='event_hide_players' name='event_hide_players'> Hide from guests view
+                            <input type='checkbox' class='event_setting' id='event_hide_players' name='event_hide_players'> Hide event 
+                            @if(!isset($calendar) || (Auth::user() != Null && !Auth::user()->can('update', $calendar)))
+                                (still visible for owner and co-owners)
+                            @endif
                         </label>
                     </div>
                 </div>
