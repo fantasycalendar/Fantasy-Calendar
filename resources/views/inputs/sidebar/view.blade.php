@@ -32,7 +32,7 @@
 
 	<div class='wrap-collapsible card'>
 		<input id="collapsible_date" class="toggle" type="checkbox" checked disabled>
-		<label for="collapsible_date" class="lbl-toggle card-header lbl-text">Current Date & Time <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Date' href='https://wiki.fantasy-calendar.com/index.php?title=Date' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+		<label for="collapsible_date" class="lbl-toggle card-header lbl-text">Current Date & Time <a target="_blank" data-pt-position="right" data-pt-title='More Info: Date' href='https://helpdocs.fantasy-calendar.com/topic/current_date_and_time/' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 		<div class="collapsible-content container card-body">
 
 			<div id='clock' class='mb-2'>
@@ -224,7 +224,7 @@
 
 	<div class='wrap-collapsible'>
 		<input id="collapsible_locations" class="toggle" type="checkbox" checked disabled>
-		<label for="collapsible_locations" class="lbl-toggle lbl-text">Locations <a target="_blank" title='Fantasy Calendar Wiki: Locations' href='https://wiki.fantasy-calendar.com/index.php?title=Locations' class="wiki"><i class="icon-question-sign"></i></a></label>
+		<label for="collapsible_locations" class="lbl-toggle lbl-text">Locations <a target="_blank" title='More Info: Locations' href='https://helpdocs.fantasy-calendar.com/topic/locations' class="wiki"><i class="icon-question-sign"></i></a></label>
 		<div class="collapsible-content container">
 
 			<div class="col-12">
@@ -251,7 +251,7 @@
         <!---------------------------------------------->
         <div class='wrap-collapsible card'>
             <input id="collapsible_linking" class="toggle" type="checkbox" checked disabled>
-            <label for="collapsible_linking" class="lbl-toggle card-header lbl-text">Calendar Linking <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Calendar Linking' href='https://wiki.fantasy-calendar.com/index.php?title=Calendar_Linking' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+            <label for="collapsible_linking" class="lbl-toggle card-header lbl-text">Calendar Linking <a target="_blank" data-pt-position="right" data-pt-title='More Info: Calendar Linking' href='https://helpdocs.fantasy-calendar.com/topic/calendar_linking' class="wiki protip"><i class="icon-question-sign"></i></a></label>
             <div class="collapsible-content card-body">
 
                 @if($calendar->children->count() > 0)
