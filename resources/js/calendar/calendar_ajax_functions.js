@@ -384,9 +384,6 @@ function remove_calendar_user(user_id, remove_all){
         success: function (result) {
 
             if(result.error) {
-				$.notify(
-					"Error: " + result.message
-				);
                 throw result.message;
             }else{
 				$.notify(
@@ -421,17 +418,11 @@ async function submit_new_event(event_id, callback){
             } else {
 				events.pop(); // Discard most recent event
 				callback(false);
-				$.notify(
-					"Error: " + result.data.message
-				);
                 throw result.data.message;
             }
         }).catch(function(error) {
 			events.pop(); // Discard most recent event
 			callback(false);
-			$.notify(
-				"Error: " + error
-			);
 			throw error;
     });
 }
@@ -470,9 +461,6 @@ function submit_edit_event(event_id, callback){
 			callback(result.data.success !== undefined);
         }).catch(function(error){
 			callback(false);
-			$.notify(
-				"Error: " + error
-			);
 			throw "Error: " + error;
     });
 }
@@ -492,9 +480,6 @@ function submit_delete_event(event_id){
 		},
 		error: function ( error )
 		{
-			$.notify(
-				"Error: " + error
-			);
 			throw "Error: " + error;
 		}
 	});
@@ -762,9 +747,6 @@ function create_event_comment(content, event_id, callback) {
                     "Error adding comment."
                 );
             } else {
-                $.notify(
-                    "Error: " + result.data.message
-                );
                 throw result.data.message;
             }
         });
@@ -781,9 +763,6 @@ function get_preset_data(preset_id, callback){
 					"Error: Failed to load calendar preset - this one doesn't exist"
 				);
 			} else {
-				$.notify(
-					"Error: " + result.data.message
-				);
 				throw result.data.message;
 			}
 		});
