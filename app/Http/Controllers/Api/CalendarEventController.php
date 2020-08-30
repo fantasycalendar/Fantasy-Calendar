@@ -21,8 +21,6 @@ class CalendarEventController extends Controller
     public function __construct() {
         $this->manager = new Manager();
         $this->manager->setSerializer(new DataArraySerializer());
-
-//        $this->authorizeResource(CalendarEvent::class, 'event');
     }
 
     /**
@@ -116,7 +114,11 @@ class CalendarEventController extends Controller
      */
     public function destroy($id)
     {
-        /* TODO-Alex - Double checking whether the user can delete this event - either is the owner of the event, a co-owner, or the owner of the calendar */
-        return CalendarEvent::findOrFail($id)->delete();
+        $event = CalendarEvent::findOrFail($id);
+        if(!auth('api')->user()->can('delete', $event)) {
+            return response()->json(['error' => true, 'message' => "You're not authorized to delete that event!"]);
+        }
+
+        return $event->delete();
     }
 }

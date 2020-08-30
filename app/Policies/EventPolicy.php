@@ -60,9 +60,9 @@ class EventPolicy
             $calendar->user->is($user)
 
             || ($calendar->users->contains($user) &&
-                
+
                 ($calendarEvent->creator->is($user) ||
-                
+
                 $calendar->users->find($user)->pivot->user_role == 'co-owner'))
 
         );
@@ -77,7 +77,8 @@ class EventPolicy
      */
     public function delete(User $user, CalendarEvent $calendarEvent)
     {
-        return $user->can('delete', $calendarEvent->calendar);
+        return $user->can('delete', $calendarEvent->calendar)
+            || $calendarEvent->creator->is($user);
     }
 
     /**
