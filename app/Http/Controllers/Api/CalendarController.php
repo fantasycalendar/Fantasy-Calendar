@@ -129,8 +129,11 @@ class CalendarController extends Controller
         $calendar = Calendar::active()->hash($id)->firstOrFail();
 
         $calendar->users()->detach($request->input('user_id'));
-
         $calendar->save();
+
+        if($request->input('remove_all') === "true"){
+            $calendar->events()->where('creator_id', $request->input('user_id'))->delete();
+        }
 
         return $calendar->users;
     }
