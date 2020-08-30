@@ -35,8 +35,6 @@
     </script>
 @endpush
 
-{{-- TODO-Alex - Display calendars that the user is invited to, separate from their own calendars. Above or below their own calendars? --}}
-
 @section('content')
     <div class="container calendar__list">
         <div class='row'>
