@@ -633,9 +633,13 @@ var edit_event_ui = {
 
 	save_current_event: function(){
 
-		var eventid = events[this.event_id].id;
+		var event_id = events[this.event_id].id;
+		var creator_id = events[this.event_id].creator_id;
+		var sort_by = events[this.event_id].sort_by;
 		let new_event = {}
-		new_event.id = eventid;
+		new_event.id = event_id;
+		new_event.creator_id = creator_id;
+		new_event.sort_by = sort_by;
 
 		var name = this.event_background.find('.event_name').val();
 		name = name !== '' ? name : "Unnamed Event";
@@ -2367,6 +2371,8 @@ var show_event_ui = {
 		this.db_event_id = event.id;
 
 		let can_edit = Perms.player_at_least('co-owner') || (Perms.userid == event.creator_id && Perms.player_at_least('player'));
+
+		console.log(event)
 
 		this.edit_event_btn.prop('disabled', !can_edit).toggleClass('hidden', !can_edit);
 
