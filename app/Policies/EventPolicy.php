@@ -61,9 +61,11 @@ class EventPolicy
 
             || ($calendar->users->contains($user) &&
 
-                ($calendarEvent->creator->is($user) ||
-
-                $calendar->users->find($user)->pivot->user_role == 'co-owner'))
+                $calendar->users->find($user)->pivot->user_role == 'co-owner')
+                
+                || ($calendarEvent->creator->is($user)
+                    
+                    && $calendar->users->find($user)->pivot->user_role == 'player')
 
         );
     }
