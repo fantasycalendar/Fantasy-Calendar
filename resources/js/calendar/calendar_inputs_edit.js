@@ -5111,33 +5111,6 @@ function populate_calendar_lists(){
 
 }
 
-function repopulate_event_category_lists(){
-
-	var html = [];
-	html.push("<option selected value='-1'>None</option>")
-
-	for(var categoryId in event_categories){
-		var category = event_categories[categoryId];
-
-		if(Perms.playerLevel == 'player' && !category.category_settings.player_usable) continue;
-
-		if(typeof category.id !== "undefined") {
-			slug = category.id;
-		} else {
-			slug = slugify(category.name);
-		}
-		html.push(`<option value='${slug}'>`)
-		html.push(category.name)
-		html.push("</option>")
-	}
-
-	$('.event-category-list').each(function(){
-		var val = $(this).val();
-		$(this).html(html.join("")).val(val);
-	});
-
-}
-
 function evaluate_clock_inputs(){
 
 	$('.clock_inputs :input, .clock_inputs :button, .render_clock').prop('disabled', !static_data.clock.enabled);
@@ -5367,8 +5340,6 @@ function set_up_edit_values(){
 
 		})
 	}
-
-	repopulate_event_category_lists();
 
 	if(event_categories){
 		for(var key in event_categories){

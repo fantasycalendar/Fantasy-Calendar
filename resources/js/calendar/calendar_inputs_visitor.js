@@ -814,6 +814,34 @@ function evaluate_sun(){
 
 }
 
+function repopulate_event_category_lists(){
+
+	var html = [];
+	html.push("<option selected value='-1'>None</option>")
+
+	for(var categoryId in event_categories){
+
+		var category = event_categories[categoryId];
+
+		if(!category.category_settings.player_usable && !Perms.player_at_least('co-owner')) continue;
+
+		if(typeof category.id !== "undefined") {
+			slug = category.id;
+		} else {
+			slug = slugify(category.name);
+		}
+		html.push(`<option value='${slug}'>`)
+		html.push(category.name)
+		html.push("</option>")
+	}
+
+	$('.event-category-list').each(function(){
+		var val = $(this).val();
+		$(this).html(html.join("")).val(val);
+	});
+
+}
+
 function repopulate_timespan_select(select, val, change, max){
 
 	if(static_data.year_data.timespans.length == 0 || static_data.year_data.global_week.length == 0) return;
@@ -988,6 +1016,8 @@ function set_up_visitor_values(){
 
 	repopulate_timespan_select(target_timespan, preview_date_manager.timespan, false, preview_date_manager.last_valid_timespan);
 	repopulate_day_select(target_day, preview_date_manager.day, false, false, preview_date_manager.last_valid_day);
+
+	repopulate_event_category_lists();
 
 	evaluate_settings();
 
