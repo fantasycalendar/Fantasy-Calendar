@@ -288,9 +288,8 @@ const preset_loader = {
         set_up_edit_values();
         set_up_view_values();
         set_up_visitor_values();
-        do_error_check('calendar', true);
         evaluate_save_button();
-        do_error_check();
+        error_check();
         $.notify(
             "Calendar preset loaded!",
             "success"
