@@ -140,8 +140,8 @@
                     <ul class="features">
                         <li><strong>Full</strong> calendar functionality</li>
                         <li><strong>Unlimited</strong> number of calendars</li>
-                        <li>Timekeeper Discord role</li>
-                        <li>Subscriber-only Discord channel</li>
+                        <!-- <li>Timekeeper Discord role</li> -->
+                        <!-- <li>Subscriber-only Discord channel</li> -->
                         <li><strong>User Management</strong> <p class="small">Users can comment on events and view provided information</p> </li>
                     </ul>
 
@@ -192,8 +192,8 @@
                     <ul class="features">
                         <li><strong>Full</strong> calendar functionality</li>
                         <li><strong>Unlimited</strong> number of calendars</li>
-                        <li>Worldbuilder Discord role</li>
-                        <li>Subscriber-only Discord channel</li>
+                        <!-- <li>Worldbuilder Discord role</li> -->
+                        <!-- <li>Subscriber-only Discord channel</li> -->
                         <li><strong>User Management</strong> <p class="small">Users can comment on events and view provided information</p> </li>
                         <li>Calendar <strong>co-ownership</strong> <p class="small">Co-owners can comment on events, create events, and change the current date.</p></li>
                         <li>Calendar Linking <p class="small">Link calendars together and drive their dates from a single parent calendar!</p></li>
