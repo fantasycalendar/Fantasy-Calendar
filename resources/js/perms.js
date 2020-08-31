@@ -29,6 +29,10 @@ class Perms {
     player_at_least(level) {
         return this.owner || this.playerLevels[this.playerLevel] >= this.playerLevels[level];
     }
+
+    can_modify_event(event_id){
+        return this.player_at_least('co-owner') || (this.player_at_least('player') && this.userid == events[event_id].creator_id);
+    }
 }
 
 module.exports = Perms;

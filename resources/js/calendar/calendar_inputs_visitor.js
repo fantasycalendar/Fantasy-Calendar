@@ -184,12 +184,12 @@ function set_up_visitor_inputs(){
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
 					let event_id = element.attr('event_id');
-					return element.hasClass('era_event') || !(Perms.player_at_least('co-owner') || Perms.userid == events[event_id].creator_id);
+					return element.hasClass('era_event') || !Perms.can_modify_event(event_id);
 				},
 				visible: function(key, opt){
 					let element = $(opt.$trigger[0]);
 					let event_id = element.attr('event_id');
-					return Perms.player_at_least('co-owner') || Perms.userid == events[event_id].creator_id;
+					return Perms.can_modify_event(event_id);
 				}
 			},
 			hide: {
@@ -203,12 +203,12 @@ function set_up_visitor_inputs(){
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
 					let event_id = Number(element.attr('event_id'));
-					return element.hasClass('era_event') || events[event_id].settings.hide || !(Perms.player_at_least('co-owner') || Perms.userid == events[event_id].creator_id);
+					return element.hasClass('era_event') || events[event_id].settings.hide || !Perms.can_modify_event(event_id);
 				},
 				visible: function(key, opt){
 					let element = $(opt.$trigger[0]);
 					let event_id = Number(element.attr('event_id'));
-					return !element.hasClass('era_event') && !events[event_id].settings.hide && (Perms.player_at_least('co-owner') || Perms.userid == events[event_id].creator_id);
+					return !element.hasClass('era_event') && !events[event_id].settings.hide && Perms.can_modify_event(event_id);
 				}
 			},
 			show: {
@@ -222,12 +222,12 @@ function set_up_visitor_inputs(){
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
 					let event_id = Number(element.attr('event_id'));
-					return element.hasClass('era_event') || !events[event_id].settings.hide || !(Perms.player_at_least('co-owner') || Perms.userid == events[event_id].creator_id);
+					return element.hasClass('era_event') || !events[event_id].settings.hide || !Perms.can_modify_event(event_id);
 				},
 				visible: function(key, opt){
 					let element = $(opt.$trigger[0]);
 					let event_id = Number(element.attr('event_id'));
-					return !element.hasClass('era_event') && events[event_id].settings.hide && (Perms.player_at_least('co-owner') || Perms.userid == events[event_id].creator_id);
+					return !element.hasClass('era_event') && events[event_id].settings.hide && Perms.can_modify_event(event_id);
 				}
 			},
 			delete: {
@@ -241,14 +241,12 @@ function set_up_visitor_inputs(){
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
 					let event_id = element.attr('event_id');
-					let event = events[event_id];
-					return element.hasClass('era_event') || !(Perms.player_at_least('co-owner') || Perms.userid == event.creator_id);
+					return element.hasClass('era_event') || !Perms.can_modify_event(event_id);
 				},
 				visible: function(key, opt){
 					let element = $(opt.$trigger[0]);
 					let event_id = element.attr('event_id');
-					let event = events[event_id];
-					return Perms.player_at_least('co-owner') || Perms.userid == event.creator_id;
+					return Perms.can_modify_event(event_id);
 				}
 			}
 		},
