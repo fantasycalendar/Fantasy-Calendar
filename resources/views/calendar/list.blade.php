@@ -88,9 +88,10 @@
                         @endif
                     </div>
                     <div class="d-none d-lg-block col-lg-1 protip">
-                        <span class="protip" data-pt-delay-in="200" data-pt-title="{{ $calendar->name }} has {{ $calendar->events->count() }} events.">
-                            <i class="fa fa-calendar-check"></i> {{ $calendar->events->count() }}
-                        </span>
+                        <i class="fa fa-calendar-check"></i> {{ $calendar->events->count() }} <br>
+                        @if($calendar->users->count())
+                            <i class="fa fa-user"></i> {{ $calendar->users->count() }}
+                        @endif
                     </div>
                     <div class="col-6 col-md-4 col-lg-3 text-right">
                         <div class="btn-group">
