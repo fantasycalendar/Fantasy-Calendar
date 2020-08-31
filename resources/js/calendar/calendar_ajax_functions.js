@@ -392,7 +392,7 @@ function update_calendar_user(user_id, permission, output){
 
 }
 
-function remove_calendar_user(user_id, remove_all){
+function remove_calendar_user(user_id, remove_all, callback){
 
 	$.ajax({
         url:window.baseurl+"api/calendar/"+hash+"/removeUser",
@@ -410,6 +410,7 @@ function remove_calendar_user(user_id, remove_all){
 					"User removed!",
 					"success"
 				);
+				callback();
 			}
 
         },

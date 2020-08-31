@@ -2318,9 +2318,9 @@ function set_up_edit_inputs(){
 
 				var remove_all = result.value == 1;
 
-				remove_calendar_user(user_id, remove_all);
-
-                set_up_user_list();
+				remove_calendar_user(user_id, remove_all, function(){
+					set_up_user_list();
+				});
 
 			}
 		});
