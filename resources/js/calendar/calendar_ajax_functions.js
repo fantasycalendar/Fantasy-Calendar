@@ -511,7 +511,7 @@ function submit_delete_event(event_id, callback){
 			}
 			$.notify(
 				result.message,
-				result.success === undefined ? "success" : false
+				result.success ? "success" : false
 			);
 		},
 		error: function ( error )
