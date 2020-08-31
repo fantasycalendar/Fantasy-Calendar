@@ -70,7 +70,7 @@
         <div class="row py-5">
             <div class="col-12 col-md-4">
                 <div class="card">
-                    <div class="card-header">{{ $user->username }}</div>
+                    <div class="card-header"><img class="rounded mr-1" src="{{ Gravatar::get($user->email, ['size' => 40]) }}"> {{ $user->username }}</div>
                     <div class="card-body">
                         <div class="card-text">
                             <p><a href="mailto:{{ $user->email }}"><i class="fa fa-envelope"></i>&nbsp;{{ $user->email }}</a></p>
