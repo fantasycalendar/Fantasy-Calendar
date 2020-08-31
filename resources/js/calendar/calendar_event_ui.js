@@ -2187,15 +2187,21 @@ var edit_event_ui = {
 
 						evaluate_save_button();
 
+						this.clear_ui();
+	
+						$(`#calendar .event:not(.era_event)[event_id=${delete_event_id}]`).remove();
+
 					}else{
 
-						submit_delete_event(event_id);
+						submit_delete_event(event_id, function(){
+
+							edit_event_ui.clear_ui();
+		
+							$(`#calendar .event:not(.era_event)[event_id=${delete_event_id}]`).remove();
+
+						});
 
 					}
-
-					this.clear_ui();
-
-					$(`#calendar .event:not(.era_event)[event_id=${delete_event_id}]`).remove();
 
 				}
 
@@ -2366,9 +2372,7 @@ var show_event_ui = {
 
 		this.db_event_id = event.id;
 
-		let can_edit = Perms.player_at_least('co-owner') || (Perms.userid == event.creator_id && Perms.player_at_least('player'));
-
-		this.edit_event_btn.prop('disabled', !can_edit).toggleClass('hidden', !can_edit);
+		this.edit_event_btn.prop('disabled', !Perms.can_modify_event(this.event_id)).toggleClass('hidden', !Perms.can_modify_event(this.event_id));
 
 		this.event_name.text(event.name);
 

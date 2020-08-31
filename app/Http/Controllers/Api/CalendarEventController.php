@@ -119,6 +119,6 @@ class CalendarEventController extends Controller
             return response()->json(['error' => true, 'message' => "You're not authorized to delete that event!"]);
         }
 
-        return $event->delete();
+        return response()->json(['success' => $event->delete(), 'message' => "Event deleted."]);
     }
 }

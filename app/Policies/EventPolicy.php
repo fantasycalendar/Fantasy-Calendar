@@ -79,8 +79,7 @@ class EventPolicy
      */
     public function delete(User $user, CalendarEvent $calendarEvent)
     {
-        return $user->can('delete', $calendarEvent->calendar)
-            || $calendarEvent->creator->is($user);
+        return $user->can('update', $calendarEvent);
     }
 
     /**

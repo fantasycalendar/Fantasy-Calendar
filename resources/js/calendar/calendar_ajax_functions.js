@@ -56,9 +56,11 @@ function update_name(){
 			document.title = calendar_name + " - Fantasy Calendar";
 			calendar_saved();
 		},
-		error: function ( log )
+		error: function ( error )
 		{
-			console.log(log);
+			$.notify(
+				error
+			);
 			calendar_save_failed();
 		}
 	});
@@ -75,9 +77,11 @@ function update_view_dynamic(calendar_hash){
 			last_dynamic_change = new Date(result.last_changed.last_dynamic_change)
 			update_children_dynamic_data();
 		},
-		error: function ( log )
+		error: function ( error )
 		{
-			console.log(log);
+			$.notify(
+				error
+			);
 		}
 	});
 
@@ -104,9 +108,11 @@ function update_dynamic(calendar_hash){
 			update_children_dynamic_data();
 
 		},
-		error: function ( log )
+		error: function ( error )
 		{
-			console.log(log);
+			$.notify(
+				error
+			);
 			calendar_save_failed();
 		}
 	});
@@ -182,11 +188,11 @@ function do_update_all(calendar_hash, output){
 			});
 
 		},
-		error: function ( log )
+		error: function ( error )
 		{
 			calendar_save_failed();
-			if(log.responseJSON.error){
-				$.notify(log.responseJSON.error, "error");
+			if(error.responseJSON.error){
+				$.notify(error.responseJSON.error);
 			}
 		}
 	});
@@ -204,9 +210,11 @@ function get_all_data(calendar_hash, output){
 			output(result);
 
 		},
-		error: function ( log )
+		error: function ( error )
 		{
-			console.log(log);
+			$.notify(
+				error
+			);
 		}
 	});
 }
@@ -223,9 +231,11 @@ function get_dynamic_data(calendar_hash, output){
 			output(result);
 
 		},
-		error: function ( log )
+		error: function ( error )
 		{
-			console.log(log);
+			$.notify(
+				error
+			);
 		}
 	});
 
@@ -271,9 +281,11 @@ function link_child_calendar(child_hash, parent_link_date, parent_offset){
 				success: function(result){
 					window.location.reload();
 				},
-				error: function ( log )
+				error: function ( error )
 				{
-					console.log(log);
+					$.notify(
+						error
+					);
 				}
 			});
 		});
@@ -299,9 +311,11 @@ function unlink_child_calendar(output, child_hash){
 			success: function(result){
 				window.location.reload();
 			},
-			error: function ( log )
+			error: function ( error )
 			{
-				console.log(log);
+				$.notify(
+					error
+				);
 			}
 		});
 	});
@@ -341,8 +355,10 @@ function add_calendar_user(email, output){
             output(success, text);
 
         },
-        error: function (log) {
-            console.error(log);
+        error: function (error) {
+			$.notify(
+				error
+			);
         }
     });
 
@@ -367,8 +383,10 @@ function update_calendar_user(user_id, permission, output){
 
             output(success, text);
         },
-        error: function (log) {
-            console.error(log);
+        error: function (error) {
+			$.notify(
+				error
+			);
         }
 	});
 
@@ -384,7 +402,9 @@ function remove_calendar_user(user_id, remove_all){
         success: function (result) {
 
             if(result.error) {
-                throw result.message;
+				$.notify(
+					result.message
+				);
             }else{
 				$.notify(
 					"User removed!",
@@ -393,8 +413,10 @@ function remove_calendar_user(user_id, remove_all){
 			}
 
         },
-        error: function (log) {
-            console.error(log);
+        error: function (error) {
+			$.notify(
+				error
+			);
         }
     });
 
@@ -418,12 +440,16 @@ async function submit_new_event(event_id, callback){
             } else {
 				events.pop(); // Discard most recent event
 				callback(false);
-                throw result.data.message;
+				$.notify(
+					result.data.message
+				);
             }
         }).catch(function(error) {
 			events.pop(); // Discard most recent event
 			callback(false);
-			throw error;
+			$.notify(
+				error
+			);
     });
 }
 
@@ -435,15 +461,20 @@ function submit_hide_show_event(event_id){
 
 	axios.patch(window.apiurl+"/event/"+edit_event.id, edit_event)
         .then(function(result) {
-            if(result.data.data !== undefined) {
+            if(result.data.success) {
 				events[event_id].settings.hide = !events[event_id].settings.hide;
 				rebuild_events();
 				evaluate_save_button();
-			}else{
-                throw result.data.message;
 			}
+			$.notify(
+				result.data.message,
+				result.data.success !== undefined ? "success" : false
+			);
+			
         }).catch(function(error){
-			throw "Error: " + error;
+			$.notify(
+				error
+			);
     });
 }
 
@@ -461,26 +492,33 @@ function submit_edit_event(event_id, callback){
 			callback(result.data.success !== undefined);
         }).catch(function(error){
 			callback(false);
-			throw "Error: " + error;
+			$.notify(
+				error
+			);
     });
 }
 
-function submit_delete_event(event_id){
+function submit_delete_event(event_id, callback){
 
 	$.ajax({
 		url:window.apiurl+"/event/"+event_id,
 		type: "post",
 		dataType: 'json',
 		data: {_method: 'DELETE'},
-		success: function(){
+		success: function(result){
+			if(result.success){
+				callback();
+			}
 			$.notify(
-				"Event deleted.",
-				"success"
+				result.message,
+				result.success === undefined ? "success" : false
 			);
 		},
 		error: function ( error )
 		{
-			throw "Error: " + error;
+			$.notify(
+				error
+			);
 		}
 	});
 
@@ -496,9 +534,11 @@ function get_owned_calendars(output){
 		success: function(result){
 			output(result);
 		},
-		error: function ( log )
+		error: function ( error )
 		{
-			console.log(log);
+			$.notify(
+				error
+			);
 		}
 	});
 }
@@ -553,16 +593,20 @@ function update_children_dynamic_data(output){
 						output();
 					}
 				},
-				error: function ( log )
+				error: function ( error )
 				{
-					console.log(log);
+					$.notify(
+						error
+					);
 				}
 			});
 
 		},
-		error: function ( log )
+		error: function ( error )
 		{
-			console.log(log);
+			$.notify(
+				error
+			);
 		}
 	});
 }
@@ -576,9 +620,11 @@ function check_last_change(calendar_hash, output){
 		success: function(result){
 			output(result);
 		},
-		error: function ( log )
+		error: function ( error )
 		{
-			console.log(log);
+			$.notify(
+				error
+			);
 		}
 	});
 }
@@ -621,7 +667,6 @@ function delete_calendar(calendar_hash, calendar_name, callback){
         })
         .catch(err => {
             if(err) {
-                console.log(err);
                 swal.fire("Oh no!", err, "error");
             } else {
                 swal.hideLoading();
@@ -680,7 +725,6 @@ function copy_calendar(calendar_hash, calendar_name, callback){
         })
         .catch(err => {
             if(err) {
-                console.log(err);
                 swal.fire("Oh no!", err, "error");
             } else {
                 swal.hideLoading();
@@ -707,9 +751,11 @@ function create_calendar(callback){
 			localStorage.clear();
 			window.location.href = window.baseurl+'calendars/'+result.hash+'/edit';
 		},
-		error: function ( log )
+		error: function ( error )
 		{
-			console.log(log);
+			$.notify(
+				error
+			);
 		}
 	});
 
@@ -747,7 +793,9 @@ function create_event_comment(content, event_id, callback) {
                     "Error adding comment."
                 );
             } else {
-                throw result.data.message;
+				$.notify(
+					result.data.message
+				);
             }
         });
 }
@@ -763,7 +811,9 @@ function get_preset_data(preset_id, callback){
 					"Error: Failed to load calendar preset - this one doesn't exist"
 				);
 			} else {
-				throw result.data.message;
+				$.notify(
+					result.data.message
+				);
 			}
 		});
 
