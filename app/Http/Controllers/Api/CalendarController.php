@@ -6,6 +6,7 @@ use App\Jobs\CloneCalendar;
 use App\Notifications\CalendarInvitation;
 use App\Notifications\UnregisteredCalendarInvitation;
 use App\User;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -114,6 +115,10 @@ class CalendarController extends Controller
     public function changeUserRole(Request $request, $id) {
         $calendar = Calendar::active()->hash($id)->firstOrFail();
 
+        if(!auth('api')->user()->can('add-users', $calendar)) {
+            throw new AuthorizationException("You're not authorized to edit users on this calendar.");
+        }
+
         $calendar->users()->updateExistingPivot($request->input('user_id'), $request->only(['user_role']));
 
         $calendar->save();
@@ -127,6 +132,10 @@ class CalendarController extends Controller
         ]);
 
         $calendar = Calendar::active()->hash($id)->firstOrFail();
+
+        if(!auth('api')->user()->can('add-users', $calendar)) {
+            throw new AuthorizationException("You're not authorized to remove users from this calendar.");
+        }
 
         $calendar->users()->detach($request->input('user_id'));
         $calendar->save();
