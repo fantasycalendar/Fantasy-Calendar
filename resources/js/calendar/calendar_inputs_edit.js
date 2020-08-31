@@ -2205,10 +2205,10 @@ function set_up_edit_inputs(){
 		});
 	});
 
-	opened = false;
+	user_list_opened = false;
 
 	$('#collapsible_users').change(function(){
-		if(!opened){
+		if(!user_list_opened){
 			set_up_user_list();
 		}
 	});
@@ -5729,6 +5729,8 @@ function set_up_user_list(){
 				var user = userlist[index];
 				add_user_to_list($('#calendar_user_list'), index, user)
 			}
+
+			user_list_opened = true;
 
 		});
 
