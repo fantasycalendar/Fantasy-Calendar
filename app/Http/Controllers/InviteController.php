@@ -26,7 +26,7 @@ class InviteController extends Controller
             throw new AuthorizationException("Invitation invalid for your user account.");
         }
 
-        $calendar->users()->attach(Auth::user());
+        $calendar->users()->attach(Auth::user(), ['user_role' => 'observer']);
         $calendar->save();
 
         return view('invite.accepted', [
