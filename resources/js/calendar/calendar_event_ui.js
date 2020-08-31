@@ -96,7 +96,7 @@ var edit_event_ui = {
 		})
 
 		this.delete_btn.click(function(){
-			edit_event_ui.delete_event(edit_event_ui.event_id);
+			edit_event_ui.query_delete_event(edit_event_ui.event_id);
 		})
 
 		this.view_event_btn.click(function(){
@@ -2109,7 +2109,7 @@ var edit_event_ui = {
 
 	},
 
-	delete_event: function(delete_event_id){
+	query_delete_event: function(delete_event_id){
 
 		var warnings = [];
 
@@ -2161,22 +2161,9 @@ var edit_event_ui = {
 
 				if(!result.dismiss) {
 
-					for(var eventId in events){
-						if(events[eventId].data.connected_events !== undefined){
-							for(connectedId in events[eventId].data.connected_events){
-								var number = Number(events[eventId].data.connected_events[connectedId])
-								if(number > delete_event_id){
-									events[eventId].data.connected_events[connectedId] = String(number-1)
-								}
-							}
-						}
-					}
-
-					var event_id = events[delete_event_id].id;
-
-					events.splice(delete_event_id, 1);
-
 					if($('#events_sortable').length){
+
+						edit_event_ui.delete_event(delete_event_id);
 
 						events_sortable.children(`[index='${delete_event_id}']`).remove();
 
@@ -2187,18 +2174,12 @@ var edit_event_ui = {
 
 						evaluate_save_button();
 
-						this.clear_ui();
-	
-						$(`#calendar .event:not(.era_event)[event_id=${delete_event_id}]`).remove();
-
 					}else{
 
+						var event_id = events[delete_event_id].id;
+
 						submit_delete_event(event_id, function(){
-
-							edit_event_ui.clear_ui();
-		
-							$(`#calendar .event:not(.era_event)[event_id=${delete_event_id}]`).remove();
-
+							edit_event_ui.delete_event(delete_event_id);
 						});
 
 					}
@@ -2208,6 +2189,27 @@ var edit_event_ui = {
 			});
 
 		}
+
+	},
+
+	delete_event(delete_event_id){
+
+		for(var eventId in events){
+			if(events[eventId].data.connected_events !== undefined){
+				for(connectedId in events[eventId].data.connected_events){
+					var number = Number(events[eventId].data.connected_events[connectedId])
+					if(number > delete_event_id){
+						events[eventId].data.connected_events[connectedId] = String(number-1)
+					}
+				}
+			}
+		}
+
+		events.splice(delete_event_id, 1);
+
+		edit_event_ui.clear_ui();
+
+		$(`#calendar .event:not(.era_event)[event_id=${delete_event_id}]`).remove();
 
 	}
 

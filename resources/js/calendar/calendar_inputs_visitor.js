@@ -236,7 +236,7 @@ function set_up_visitor_inputs(){
 				callback: function(key, opt){
 					let element = $(opt.$trigger[0]);
 					let event_id = element.attr('event_id');
-					edit_event_ui.delete_event(event_id);
+					edit_event_ui.query_delete_event(event_id);
 				},
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
