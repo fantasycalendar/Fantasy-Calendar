@@ -140,7 +140,6 @@
                     <ul class="features">
                         <li><strong>Full</strong> calendar functionality</li>
                         <li><strong>Unlimited</strong> number of calendars</li>
-                        <li>Icon next to your username</li>
                         <li>Timekeeper Discord role</li>
                         <li>Subscriber-only Discord channel</li>
                         <li><strong>User Management</strong> <p class="small">Users can comment on events and view provided information</p> </li>
@@ -193,7 +192,6 @@
                     <ul class="features">
                         <li><strong>Full</strong> calendar functionality</li>
                         <li><strong>Unlimited</strong> number of calendars</li>
-                        <li>Icon next to your username</li>
                         <li>Worldbuilder Discord role</li>
                         <li>Subscriber-only Discord channel</li>
                         <li><strong>User Management</strong> <p class="small">Users can comment on events and view provided information</p> </li>
