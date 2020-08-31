@@ -75,6 +75,9 @@
                     if (error) {
                         console.log(error);
                         swal.fire("Oops", "Something went wrong: " + error.message, "error");
+                        this.errors.stripeError = error.message;
+                        this.ready = false;
+                        this.submitting = false;
                     } else {
                         axios.post('{{ route('subscription.update', ['level' => $level, 'plan' => $plan]) }}', {
                             token: setupIntent.payment_method
