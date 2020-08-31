@@ -32,10 +32,12 @@
                 @endif
                 <p><i class="fa fa-credit-card"></i> {{ strtoupper($user->card_brand) }} (...{{ $user->card_last_four }})</p>
                 <p><button class="btn btn-outline-secondary form-control change-sub" disabled>Change subscription (Currently Unavailable)</button></p>
-                @if($subscription->onGracePeriod())
-                    <p><a href="{{ route('subscription.cancel') }}" class="btn btn-danger form-control">Immediately end benefits</a></p>
-                @else
+                @unless($subscription->onGracePeriod())
                     <p><a href="{{ route('subscription.cancel') }}" class="btn btn-danger form-control">Cancel subscription</a></p>
+                @endunless
+
+                @if(env('APP_ENV') !== 'production' && $subscription->onGracePeriod())
+                        <p><a href="{{ route('subscription.cancel') }}" class="btn btn-danger form-control">Immediately end benefits</a></p>
                 @endif
             @endunless
         </div>
