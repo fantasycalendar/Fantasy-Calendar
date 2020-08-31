@@ -22,8 +22,10 @@ class SubscriptionController extends Controller
             $subscribed = true;
         }
 
-        $betaAccess = (!Auth::check() || $request->boolean('beta_override')) ? false : Auth::user()->betaAccess();
-
+        $betaAccess = (!Auth::check() || $request->get('beta_override'))
+            ? false
+            : Auth::user()->betaAccess();
+        
         return view('subscription.pricing', [
             'subscribed' => $subscribed,
             'earlySupporter' => Auth::check() && Auth::user()->isEarlySupporter(),
