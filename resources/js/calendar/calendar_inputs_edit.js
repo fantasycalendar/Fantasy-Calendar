@@ -5411,7 +5411,11 @@ function set_up_edit_values(){
 
 	if(window.location.pathname != '/calendars/create') {
 
-        populate_calendar_lists();
+		populate_calendar_lists();
+
+		if($("#collapsible_users").is(":checked")){
+			set_up_user_list();
+		}
 
 	}
 
