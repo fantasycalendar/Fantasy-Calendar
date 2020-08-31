@@ -198,11 +198,13 @@ worker_events.onmessage = e => {
 
 			let epoch_ref = CalendarRenderer.render_data.event_epochs[epoch];
 
-			epoch_ref.push({
-				"index": event_index,
-				"name": event.name,
-				"class": event_class
-			})
+			if(epoch_ref !== undefined){
+				epoch_ref.push({
+					"index": event_index,
+					"name": event.name,
+					"class": event_class
+				})
+			}
 		}
 	}
 

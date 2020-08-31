@@ -315,9 +315,7 @@
 
 	</div>
 
-	<div id="calendar">
-
-	</div>
+    @include('layouts.calendar')
 
 	@include('templates.footnote')
 

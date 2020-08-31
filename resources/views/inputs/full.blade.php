@@ -1349,9 +1349,7 @@
 
 	</div>
 
-	<div id="calendar">
-
-	</div>
+	@include('layouts.calendar')
 
 	<div id="weather_container" class="hidden">
 
