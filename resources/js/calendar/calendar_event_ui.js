@@ -85,8 +85,6 @@ var edit_event_ui = {
 
 		$(document).on('click', 'body.page-focused .btn_create_event', function(){
 
-			console.log($('body').hasClass('page-focused'));
-
 			var epoch = $(this).attr('epoch')|0;
 
 			edit_event_ui.create_new_event('New Event', epoch);
@@ -98,7 +96,7 @@ var edit_event_ui = {
 		})
 
 		this.delete_btn.click(function(){
-			edit_event_ui.delete_event(edit_event_ui.event_id);
+			edit_event_ui.query_delete_event(edit_event_ui.event_id);
 		})
 
 		this.view_event_btn.click(function(){
@@ -273,8 +271,13 @@ var edit_event_ui = {
 				$('#color_style').val(category.event_settings.color);
 				$('#text_style').val(category.event_settings.text).change();
 				$('#event_hide_players').prop('checked', category.event_settings.hide);
-				$('#event_print_checkbox').prop('checked', category.event_settings.print);
-				$('#event_hide_full').prop('checked', category.event_settings.hide_full);
+
+				if($('#event_print_checkbox').length){
+					$('#event_print_checkbox').prop('checked', category.event_settings.print);
+				}
+				if($('#event_hide_full').length){
+					$('#event_hide_full').prop('checked', category.event_settings.hide_full);
+				}
 			}
 		});
 
@@ -626,32 +629,38 @@ var edit_event_ui = {
 
 	save_current_event: function(){
 
-		if(events[this.event_id]){
-			var eventid = events[this.event_id].id;
-			events[this.event_id] = {};
-			events[this.event_id].id = eventid;
-		}else{
-			events[this.event_id] = {};
-		}
+		var event_id = events[this.event_id].id;
+		var creator_id = events[this.event_id].creator_id;
+		var sort_by = events[this.event_id].sort_by;
+		let new_event = {}
+		new_event.id = event_id;
+		new_event.creator_id = creator_id;
+		new_event.sort_by = sort_by;
 
 		var name = this.event_background.find('.event_name').val();
 		name = name !== '' ? name : "Unnamed Event";
+		new_event.name = name;
 
-		events[this.event_id].name = name;
+		new_event.description = sanitizeHtml(this.trumbowyg.trumbowyg('html'), {allowedTags: [ 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'a', 'ul', 'ol', 'nl', 'li', 'b', 'i', 'strong', 'em', 'strike', 'code', 'hr', 'br', 'div', 'table', 'thead', 'caption', 'tbody', 'tr', 'th', 'td', 'pre', 'img' ]});
 
-		events[this.event_id].description = sanitizeHtml(this.trumbowyg.trumbowyg('html'), {allowedTags: [ 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'a', 'ul', 'ol', 'nl', 'li', 'b', 'i', 'strong', 'em', 'strike', 'code', 'hr', 'br', 'div', 'table', 'thead', 'caption', 'tbody', 'tr', 'th', 'td', 'pre', 'img' ]});
+		if(Perms.playerLevel == "player"){
+			new_event.data = events[this.event_id].data;
+		}else{
+			let data = this.create_event_data();
+			new_event.data = data;
+		}
 
-		events[this.event_id].data = this.create_event_data();
+		new_event.event_category_id = $('#event_categories').length > 0 ? get_category($('#event_categories').val()).id : -1;
 
-		events[this.event_id].event_category_id = get_category($('#event_categories').val()).id;
-
-		events[this.event_id].settings = {
+		new_event.settings = {
 			color: $('#color_style').val(),
 			text: $('#text_style').val(),
-			hide: $('#event_hide_players').prop('checked'),
-			hide_full: $('#event_hide_full').prop('checked'),
-			print: $('#event_print_checkbox').prop('checked')
+			hide: $('#event_hide_players').length > 0 ? $('#event_hide_players').prop('checked') : false,
+			hide_full: $('#event_hide_full').length > 0 ? $('#event_hide_full').prop('checked') : false,
+			print: $('#event_print_checkbox').length > 0 ? $('#event_print_checkbox').prop('checked') : false
 		}
+
+		events[this.event_id] = new_event;
 
 		if($('#events_sortable').length){
 			if(this.new_event){
@@ -659,25 +668,35 @@ var edit_event_ui = {
 			}else{
 				$(`.events_input[index="${this.event_id}"]`).find(".event_name").text(`Edit - ${name}`);
 			}
+
+			this.submit_event_callback(true);
+
 		}else{
 			if(this.new_event){
-				submit_new_event(this.event_id);
+				submit_new_event(this.event_id, this.submit_event_callback);
 			}else{
-				submit_edit_event(this.event_id);
+				submit_edit_event(this.event_id, this.submit_event_callback);
 			}
 		}
 
-		this.clear_ui();
+	},
 
-		error_check();
+	submit_event_callback: function(success){
 
-		eval_apply_changes(function(){
+		edit_event_ui.clear_ui();
 
-			rebuild_events();
+		if(success){
 
-		});
+			error_check();
+
+			eval_apply_changes(function(){
+				rebuild_events();
+			});
+
+		}
 
 	},
+
 	clear_ui: function(){
 
 		delete registered_keydown_callbacks['event_ui_escape'];
@@ -777,11 +796,11 @@ var edit_event_ui = {
 		}
 
 		return {
-			has_duration: $('#has_duration').prop('checked'),
-			duration: $('#duration').val()|0,
-			show_first_last: $('#show_first_last').prop('checked'),
-			limited_repeat: $('#limited_repeat').prop('checked'),
-			limited_repeat_num: $('#limited_repeat_num').val()|0,
+			has_duration: $('#has_duration').length > 0 ? $('#has_duration').prop('checked') : false,
+			duration: $('#duration').length > 0 ? $('#duration').val()|0 : 0,
+			show_first_last: $('#show_first_last').length > 0 ? $('#show_first_last').prop('checked') : false,
+			limited_repeat: $('#limited_repeat').length > 0 ? $('#limited_repeat').prop('checked') : false,
+			limited_repeat_num: $('#limited_repeat_num').length > 0 ? $('#limited_repeat_num').val()|0 : 0,
 			conditions: conditions,
 			connected_events: this.connected_events,
 			date: this.date,
@@ -1963,7 +1982,7 @@ var edit_event_ui = {
             events: events,
             event_categories: event_categories,
 			action: "future",
-			owner: owner,
+			owner: Perms.player_at_least('co-owner'),
 			start_year: start_year,
 			end_year: end_year
 		});
@@ -2090,7 +2109,7 @@ var edit_event_ui = {
 
 	},
 
-	delete_event: function(delete_event_id){
+	query_delete_event: function(delete_event_id){
 
 		var warnings = [];
 
@@ -2131,7 +2150,7 @@ var edit_event_ui = {
 			swal.fire({
 
 				title: "Warning!",
-				text: "Are you sure you want to delete this event?",
+				html: `Are you sure you want to delete the event<br>"${events[delete_event_id].name}"?`,
 				showCancelButton: true,
 				confirmButtonColor: '#d33',
 				cancelButtonColor: '#3085d6',
@@ -2142,22 +2161,9 @@ var edit_event_ui = {
 
 				if(!result.dismiss) {
 
-					for(var eventId in events){
-						if(events[eventId].data.connected_events !== undefined){
-							for(connectedId in events[eventId].data.connected_events){
-								var number = Number(events[eventId].data.connected_events[connectedId])
-								if(number > delete_event_id){
-									events[eventId].data.connected_events[connectedId] = String(number-1)
-								}
-							}
-						}
-					}
-
-					var event_id = events[delete_event_id].id;
-
-					events.splice(delete_event_id, 1);
-
 					if($('#events_sortable').length){
+
+						edit_event_ui.delete_event(delete_event_id);
 
 						events_sortable.children(`[index='${delete_event_id}']`).remove();
 
@@ -2170,19 +2176,40 @@ var edit_event_ui = {
 
 					}else{
 
-						submit_delete_event(event_id);
+						var event_id = events[delete_event_id].id;
+
+						submit_delete_event(event_id, function(){
+							edit_event_ui.delete_event(delete_event_id);
+						});
 
 					}
-
-					this.clear_ui();
-
-					$(`#calendar .event:not(.era_event)[event_id=${delete_event_id}]`).remove();
 
 				}
 
 			});
 
 		}
+
+	},
+
+	delete_event(delete_event_id){
+
+		for(var eventId in events){
+			if(events[eventId].data.connected_events !== undefined){
+				for(connectedId in events[eventId].data.connected_events){
+					var number = Number(events[eventId].data.connected_events[connectedId])
+					if(number > delete_event_id){
+						events[eventId].data.connected_events[connectedId] = String(number-1)
+					}
+				}
+			}
+		}
+
+		events.splice(delete_event_id, 1);
+
+		edit_event_ui.clear_ui();
+
+		$(`#calendar .event:not(.era_event)[event_id=${delete_event_id}]`).remove();
 
 	}
 
@@ -2245,11 +2272,9 @@ var show_event_ui = {
 		this.event_comment_input_container		= this.event_background.find('#event_comment_input_container');
 		this.event_comment_input				= this.event_background.find('#event_comment_input');
 		this.event_save_btn						= this.event_background.find('#submit_comment');
-		this.edit_event_btn_container   		= this.event_background.find('.edit-event-btn-container');
 		this.edit_event_btn				   		= this.event_background.find('.edit_event_btn');
 
-		this.edit_event_btn_container.toggleClass('hidden', !owner);
-		this.edit_event_btn.prop('disabled', !owner);
+		this.event_comment_mastercontainer.toggleClass('hidden', !can_comment_on_event());
 
 		this.event_comment_input.trumbowyg({
 			btns: [
@@ -2280,7 +2305,7 @@ var show_event_ui = {
 		});
 
 		this.event_save_btn.click(function(){
-			create_event_comment(show_event_ui.event_comment_input.trumbowyg('html'), show_event_ui.event_id, show_event_ui.add_comment);
+			create_event_comment(show_event_ui.event_comment_input.trumbowyg('html'), show_event_ui.db_event_id, show_event_ui.add_comment);
 			show_event_ui.event_comment_input.trumbowyg('empty');
 		});
 
@@ -2349,6 +2374,8 @@ var show_event_ui = {
 
 		this.db_event_id = event.id;
 
+		this.edit_event_btn.prop('disabled', !Perms.can_modify_event(this.event_id)).toggleClass('hidden', !Perms.can_modify_event(this.event_id));
+
 		this.event_name.text(event.name);
 
 		this.event_desc.html(event.description).toggleClass('hidden', event.description.length == 0);
@@ -2357,8 +2384,10 @@ var show_event_ui = {
 
 		if(this.db_event_id !== undefined){
 			get_event_comments(this.db_event_id, this.add_comments);
-		}else{
+		}else if(can_comment_on_event()){
 			this.event_comments.html("You need to save your calendar before comments can be added to this event!").removeClass('loading');
+		}else{
+			this.event_comments.removeClass("loading").addClass('hidden');
 		}
 
 		this.event_background.removeClass('hidden');
@@ -2383,7 +2412,11 @@ var show_event_ui = {
 
 		}else{
 
-			show_event_ui.event_comments.html("No comments on this event yet... Maybe you'll be the first?")
+			show_event_ui.event_comment_mastercontainer.toggleClass('hidden', !can_comment_on_event());
+
+			if(can_comment_on_event()){
+				show_event_ui.event_comments.html("No comments on this event yet... Maybe you'll be the first?")
+			}
 
 		}
 
@@ -2503,20 +2536,16 @@ var edit_HTML_ui = {
 
 function can_comment_on_event(){
 
-	if(owner){
+	if(Perms.player_at_least('co-owner')){
 		return true;
-	}
-
-	if(static_data.settings.comments == "none"){
-		return false;
 	}
 
 	if(static_data.settings.comments == "players"){
-		return true;
+		return Perms.player_at_least('player');
 	}
 
 	if(static_data.settings.comments == "public"){
-		return true;
+		return Perms.player_at_least('free');
 	}
 
 	return false;

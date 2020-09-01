@@ -36,6 +36,10 @@ class Calendar extends Model
         return $this->belongsTo('App\User');
     }
 
+    public function users() {
+        return $this->belongsToMany('App\User', 'calendar_user_role')->withPivot('user_role');;
+    }
+
     public function event_categories() {
         return $this->hasMany('App\EventCategory')->orderBy('sort_by');
     }
@@ -51,21 +55,6 @@ class Calendar extends Model
     public function children() {
         return $this->hasMany('App\Calendar', 'parent_id');
     }
-
-//    public function getStaticDataAttribute($value) {
-//        $static_data = json_decode($value, true);
-//
-//        if(!Auth::check() || !Auth::user()->can('update', $this)) {
-//            foreach($static_data['event_data']['events'] as $event){
-//                if($event['settings']['hide'] || (isset($event['settings']['full_hide']) && $event['settings']['full_hide'])){
-//                    $event['name'] = "Sneaky, sneaky...";
-//                    $event['description'] = "You shouldn't be here...";
-//                }
-//            }
-//        }
-//
-//        return $static_data;
-//    }
 
 
     public function structureWouldBeModified($static_data){
@@ -108,10 +97,10 @@ class Calendar extends Model
 
     public function getOwnedAttribute() {
         if (Auth::check() && ($this->user->id == Auth::user()->id || Auth::user()->isAdmin())) {
-            return "true";
+            return true;
         }
 
-        return "false";
+        return false;
     }
 
     public function getClockEnabledAttribute() {
@@ -159,6 +148,14 @@ class Calendar extends Model
         $current_era = $this->static_data['eras'][$current_era_index];
 
         return $current_era['name'];
+    }
+
+    public function setting($setting_name, $default = false) {
+        return $this->static_data['settings'][$setting_name] ?? $default;
+    }
+
+    public function setSetting($setting_name, $new_value) {
+        $this->static_data['settings'][$setting_name] = $new_value;
     }
 
     public function scopeSearch($query, $search) {

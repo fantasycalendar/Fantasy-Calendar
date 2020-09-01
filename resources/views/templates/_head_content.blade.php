@@ -35,7 +35,8 @@
         <script>window.bugsnagClient = bugsnag('98440cbeef759631f3d987ab45b26a79')</script>
     @endif
 
-    <script src="{{ mix('js/app.js') }}"></script>
+    <script src="{{ mix('/js/app.js') }}"></script>
+    <script src="https://js.stripe.com/v3/"></script>
 
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
@@ -101,6 +102,7 @@
     });
 
     $(document).ready(function(){
+
         window.onerror = function(error, url, line) {
             $.notify("Error:\n "+error+" \nin file "+url+" \non line "+line);
         }

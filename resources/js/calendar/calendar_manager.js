@@ -128,7 +128,7 @@ function rebuild_calendar(action, dynamic_data){
         events: events,
         event_categories: event_categories,
 		action: action,
-		owner: owner
+		owner: Perms.player_at_least('co-owner')
 	});
 
 }

@@ -83,7 +83,7 @@
 						<h4>Current date:</h4>
 					</div>
 
-					<div class='row my-2 center-text hidden calendar_link_explaination'>
+					<div class='row my-2 center-text hidden calendar_link_explanation'>
 						@if(request()->is('calendars/*/edit') && $calendar->parent != null)
 							<p class='m-0'>This calendar is using a different calendar's date to calculate the current date. Only the <a href='/calendars/{{ $calendar->parent->hash }}/edit' target="_blank">parent calendar</a> can set the date for this calendar.</p>
 						@endif
@@ -1063,199 +1063,258 @@
 		<!------------------ SETTINGS ------------------>
 		<!---------------------------------------------->
 
-		<div class='wrap-collapsible card settings-settings'>
-			<input id="collapsible_settings" class="toggle" type="checkbox">
-			<label for="collapsible_settings" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-cog"></i> Settings <a target="_blank" data-pt-position="right" data-pt-title='More Info: Settings' href='https://helpdocs.fantasy-calendar.com/topic/settings' class="wiki protip"><i class="icon-question-sign"></i></a></label>
-			<div class="collapsible-content card-body">
+        @can('update-settings', $calendar ?? '')
+            <div class='wrap-collapsible card settings-settings'>
+                <input id="collapsible_settings" class="toggle" type="checkbox">
+                <label for="collapsible_settings" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-cog"></i> Settings <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Settings' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+                <div class="collapsible-content card-body">
 
-				<div class='add_inputs'>
+                    <div class='add_inputs'>
 
-					<div class='bold-text'>Layout Settings:</div>
+                        <div class='bold-text'>Layout Settings:</div>
 
-					<label class="row no-gutters setting">
-						<select class='form-control static_input' data='settings' fc-index='layout'>
-							<option value='grid'>Grid style</option>
-							<option value='wide'>Wide style</option>
-							<option value='vertical'>Vertical style</option>
-							<option value='minimalistic'>Minimalistic style</option>
-						</select>
-					</label>
+                        <label class="row no-gutters setting">
+                            <select class='form-control static_input' data='settings' fc-index='layout'>
+                                <option value='grid'>Grid style</option>
+                                <option value='wide'>Wide style</option>
+                                <option value='vertical'>Vertical style</option>
+                                <option value='minimalistic'>Minimalistic style</option>
+                            </select>
+                        </label>
 
-					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Makes the calendar only show the current month. Enhances calendar loading performance, especially with many moons.">
-                        <div class='col'>
-    						<input type='checkbox' class='margin-right static_input' data='settings' fc-index='show_current_month'>
-    						<span>
+                        <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Makes the calendar only show the current month. Enhances calendar loading performance, especially with many moons.">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings' fc-index='show_current_month'>
+                                <span>
     							Show only current month
     						</span>
-					    </div>
-                    </label>
+                            </div>
+                        </label>
 
-					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This will add 'Month 1' and so on to each month in the calendar">
-						<div class='col'>
-							<input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='add_month_number' onclick="setTimeout(calendar_layouts.add_month_number, 10);">
-							<span>
+                        <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This will add 'Month 1' and so on to each month in the calendar">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='add_month_number' onclick="setTimeout(calendar_layouts.add_month_number, 10);">
+                                <span>
 								Add month number to months
 							</span>
-						</div>
-					</label>
+                            </div>
+                        </label>
 
-					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This adds a small number at the bottom left of the days in the calendar showing which year-day it is">
-						<div class='col'>
-							<input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='add_year_day_number' onclick="setTimeout(calendar_layouts.add_year_day_number, 10);">
-							<span>
+                        <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This adds a small number at the bottom left of the days in the calendar showing which year-day it is">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='add_year_day_number' onclick="setTimeout(calendar_layouts.add_year_day_number, 10);">
+                                <span>
 								Add year day to each day
 							</span>
-						</div>
-					</label>
+                            </div>
+                        </label>
 
-					<!------------------------------------------------------->
+                        <!------------------------------------------------------->
 
-					<div class='bold-text'>Guest View Settings:</div>
+                        <div class='bold-text'>Guest View Settings:</div>
 
-					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This will allow viewers to view any past or future year and months just like you can">
-                        <div class='col'>
-    						<input type='checkbox' class='margin-right static_input' data='settings' fc-index='allow_view'>
-    						<span>
+                        <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This will make this calendar private to anyone who hasn't been added to it">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings' fc-index='private'>
+                                <span>
+    							Make calendar private
+    						</span>
+                            </div>
+                        </label>
+
+                        <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This will allow viewers to view any past or future year and months just like you can">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings' fc-index='allow_view'>
+                                <span>
     							Allow advancing view in calendar
     						</span>
-					    </div>
-                    </label>
+                            </div>
+                        </label>
 
-					<label class="row no-gutters setting border rounded py-1 px-2 protip disabled" data-pt-position="right" data-pt-title="This will limit viewers to only view past dates (requires allowing advancing view)">
-                        <div class='col'>
-    						<input type='checkbox' class='margin-right static_input' disabled data='settings' fc-index='only_backwards'>
-    						<span>
+                        <label class="row no-gutters setting border rounded py-1 px-2 protip disabled" data-pt-position="right" data-pt-title="This will limit viewers to only view past dates (requires allowing advancing view)">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' disabled data='settings' fc-index='only_backwards'>
+                                <span>
     							Limit to only viewing past dates
     						</span>
-					    </div>
-                    </label>
+                            </div>
+                        </label>
 
-					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Viewers will only be able to see up to current day, future days will be greyed out">
-                        <div class='col'>
-    						<input type='checkbox' class='margin-right static_input' data='settings' fc-index='only_reveal_today'>
-    						<span>
+                        <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Viewers will only be able to see up to current day, future days will be greyed out">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings' fc-index='only_reveal_today'>
+                                <span>
     							Show only up to current day
     						</span>
-					    </div>
-                    </label>
+                            </div>
+                        </label>
 
-					<!------------------------------------------------------->
+                        <!------------------------------------------------------->
 
-					<div class='bold-text'>Hiding Settings:</div>
+                        <div class='bold-text'>Hiding Settings:</div>
 
-					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Hides all of the moons from guest viewers">
-                        <div class='col'>
-    						<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_moons'>
-    						<span>
+                        <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Hides all of the moons from guest viewers">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_moons'>
+                                <span>
     							Hide all moons from guest viewers
     						</span>
-					    </div>
-                    </label>
+                            </div>
+                        </label>
 
-					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Hides the clock from guest viewers">
-                        <div class='col'>
-    						<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_clock'>
-    						<span>
+                        <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Hides the clock from guest viewers">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_clock'>
+                                <span>
     							Hide time from guest viewers
     						</span>
-					    </div>
-                    </label>
+                            </div>
+                        </label>
 
-					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Hides all events from guest viewers">
-                        <div class='col'>
-    						<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_events'>
-    						<span>
+                        <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Hides all events from guest viewers">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_events'>
+                                <span>
     							Hide all events from guest viewers
     						</span>
-					    </div>
-                    </label>
+                            </div>
+                        </label>
 
-					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Hides the era text at the top of the calendar and only shows the year instead to guest viewers">
-                        <div class='col'>
-    						<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_eras'>
-    						<span>
+                        <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Hides the era text at the top of the calendar and only shows the year instead to guest viewers">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_eras'>
+                                <span>
     							Hide era from guest viewers
     						</span>
-					    </div>
-                    </label>
+                            </div>
+                        </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Prevents all weather from appearing on the calendar for guest viewers">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_all_weather'>
-                            <span>
+                        <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Prevents all weather from appearing on the calendar for guest viewers">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_all_weather'>
+                                <span>
                                 Hide all weather from guest viewers
                             </span>
-                        </div>
-                    </label>
+                            </div>
+                        </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Prevents any future weather from appearing on the calendar for guest viewers">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_future_weather'>
-                            <span>
+                        <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Prevents any future weather from appearing on the calendar for guest viewers">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_future_weather'>
+                                <span>
                                 Hide future weather from guest viewers
                             </span>
-                        </div>
-                    </label>
+                            </div>
+                        </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title='This hides the exact temperature from guest viewers - this is really useful with the cinematic temperature setting as guests will only see "cold", "sweltering" and the like'>
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='hide_weather_temp'>
-                            <span>
+                        <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title='This hides the exact temperature from guest viewers - this is really useful with the cinematic temperature setting as guests will only see "cold", "sweltering" and the like'>
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='hide_weather_temp'>
+                                <span>
                                 Hide temperature from guest viewers
                             </span>
-                        </div>
-                    </label>
+                            </div>
+                        </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This hides the exact wind velocity from guest viewers">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='hide_wind_velocity'>
-                            <span>
+                        <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This hides the exact wind velocity from guest viewers">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='hide_wind_velocity'>
+                                <span>
                                 Hide wind velocity from guest viewers
                             </span>
-                        </div>
-                    </label>
+                            </div>
+                        </label>
 
-					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This will hide the weekday bar at the top of each month">
-						<div class='col'>
-							<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_weekdays'>
-							<span>
+                        <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This will hide the weekday bar at the top of each month">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_weekdays'>
+                                <span>
 								Hide weekdays in calendar
 							</span>
-						</div>
-					</label>
+                            </div>
+                        </label>
 
-					<div class='bold-text'>Event Settings:</div>
+                        <div class='bold-text'>Event Settings:</div>
 
-					<label class="row no-gutters setting py-1 protip" data-pt-position="right" data-pt-title="This will change who can comment on the events of your calendar.">
-						<select class='form-control static_input' data='settings' fc-index='comments'>
-							<option selected value='none'>Disable event commenting</option>
-							<option value='players'>Disable public commenting</option>
-							<option value='public'>Allow public commenting</option>
-						</select>
-					</label>
+                        <label class="row no-gutters setting py-1 protip" data-pt-position="right" data-pt-title="This will change who can comment on the events of your calendar.">
+                            <select class='form-control static_input' data='settings' fc-index='comments'>
+                                <option selected value='none'>Disable event commenting</option>
+                                <option value='players'>Disable public commenting</option>
+                                <option value='public'>Allow public commenting</option>
+                            </select>
+                        </label>
 
-                    <div class='bold-text'>Advanced Settings:</div>
+                        <div class='bold-text'>Advanced Settings:</div>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Normally, the year count is -2, -1, 1, 2, and so on. This makes it so that 0 exists, so -2, -1, 0, 1, 2.">
-                        <div class='col'>
-							@if(request()->is('calendars/*/edit') && $calendar->isLinked())
-                            	<input type='checkbox' class='margin-right' {{ Arr::get($calendar->static_data, 'settings.year_zero_exists') ? "checked" : "" }} disabled>
-							@else
-                            	<input type='checkbox' class='margin-right static_input' data='settings' id='year_zero_exists' fc-index='year_zero_exists'>
-							@endif
-                            <span>
+                        <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Normally, the year count is -2, -1, 1, 2, and so on. This makes it so that 0 exists, so -2, -1, 0, 1, 2.">
+                            <div class='col'>
+                                @if(request()->is('calendars/*/edit') && $calendar->isLinked())
+                                    <input type='checkbox' class='margin-right' {{ Arr::get($calendar->static_data, 'settings.year_zero_exists') ? "checked" : "" }} disabled>
+                                @else
+                                    <input type='checkbox' class='margin-right static_input' data='settings' id='year_zero_exists' fc-index='year_zero_exists'>
+                                @endif
+                                <span>
                                 Year zero exists
                             </span>
-                        </div>
-                    </label>
+                            </div>
+                        </label>
 
-					@if(request()->is('calendars/*/edit') && $calendar->isLinked())
-						<p class=""><a onclick="linked_popup();" href='#'>Why are some settings disabled?</a></p>
-					@endif
+                        @if(request()->is('calendars/*/edit') && $calendar->isLinked())
+                            <p class=""><a onclick="linked_popup();" href='#'>Why are some settings disabled?</a></p>
+                        @endif
 
+                    </div>
                 </div>
             </div>
-        </div>
+        @endcan
+
+		@if(request()->is('calendars/*/edit'))
+
+			<!---------------------------------------------->
+			<!------------------ SETTINGS ------------------>
+			<!---------------------------------------------->
+			<div class='wrap-collapsible card settings-users'>
+				<input id="collapsible_users" class="toggle" type="checkbox">
+				<label for="collapsible_users" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-user"></i> User Management <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Settings' href='https://wiki.fantasy-calendar.com/index.php?title=User_Management' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+				<div class="collapsible-content card-body">
+
+					@if(Auth::user()->can('add-users', $calendar))
+
+						<div class='row no-gutters mt-1 mb-3'>
+							<p class='m-0'>Invite your friends to collaborate on this calendar! Once they accept your invite, you'll be able to assign them a role.</p>
+						</div>
+
+						<div class='row no-gutters my-1'>
+							<div class="col-md">
+								<input type='text' class='form-control' id='email_input' placeholder='Email'>
+							</div>
+							<div class="col-md-auto">
+								<button type='button' class='btn full btn-primary' id='btn_send_invite'>Send Invite</button>
+							</div>
+						</div>
+						<div class='row no-gutters mb-2 hidden'>
+							<p class='m-0 email_text alert alert-success'></p>
+						</div>
+
+						<div class='sortable' id='calendar_user_list'></div>
+
+						<div class='row no-gutters my-1'>
+							<button type='button' class='btn btn-sm btn-secondary full' id='refresh_calendar_users'>Refresh</button>
+						</div>
+
+					@else
+
+						<div class='row no-gutters my-1'>
+							<p>Invite your friends to collaborate on this calendar!</p>
+							<p class='m-0'><a href="{{ route('subscription.pricing') }}" target="_blank">Subscribe now</a> to unlock this feature!</p>
+						</div>
+
+					@endif
+
+				</div>
+			</div>
+
+		@endif
 
 		@if(request()->is('calendars/*/edit'))
 			<!---------------------------------------------->
@@ -1266,28 +1325,39 @@
 				<label for="collapsible_linking" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-link"></i> Calendar Linking <a target="_blank" data-pt-position="right" data-pt-title='More Info: Calendar Linking' href='https://helpdocs.fantasy-calendar.com/topic/calendar_linking' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 				<div class="collapsible-content card-body">
 
-					<div id='calendar_link_hide'>
+					@if(Auth::user()->can('link', $calendar))
 
-						@if(request()->is('calendars/*/edit') && $calendar->parent != null)
-                            <div class='row no-gutters my-1 center-text hidden calendar_link_explaination'>
-                                <p class='m-0'>This calendar is already linked to a <a href='/calendars/{{ $calendar->parent->hash }}/edit' target="_blank">parent calendar</a>. Before linking any calendars to this one, you must unlink this calendar from its parent.</p>
-                            </div>
-                        @else
-                            <div class='row no-gutters my-1 center-text'>
-                                <p>Calendar linking is a complex feature - we recommend you check out the <a href='https://helpdocs.fantasy-calendar.com/topic/calendar_linking' target="_blank"><i class="icon-question-sign"></i> Fantasy-Calendar wiki article</a> on the feature!</p>
-                            </div>
+						<div id='calendar_link_hide'>
+							<div class='row no-gutters my-1'>
+								<p>Calendar linking is a complex feature, we recommend you check out the wiki article on <a href='https://wiki.fantasy-calendar.com/index.php?title=Calendar_Linking' target="_blank"><i class="icon-question-sign"></i> Calendar Linking</a>.</p>
+							</div>
 
-                            <div class='row no-gutters my-1'>
-                                <select class='form-control' id='calendar_link_select'></select>
-                            </div>
-                            <div class='row no-gutters my-1'>
-                                <button type='button' class='btn btn-sm btn-secondary full' id='refresh_calendar_list_select'>Refresh</button>
-                            </div>
+							@if($calendar->parent != null)
+								<div class='row no-gutters my-1 center-text hidden calendar_link_explanation'>
+									<p class='m-0'>This calendar is already linked to a <a href='/calendars/{{ $calendar->parent->hash }}/edit' target="_blank">parent calendar</a>. Before linking any calendars to this one, you must unlink this calendar from its parent.</p>
+								</div>
+							@else
 
-                            <div class='sortable' id='calendar_link_list'></div>
-                            <div class='sortable mt-1' id='calendar_new_link_list'></div>
-                        @endif
-                    </div>
+								<div class='row no-gutters my-1'>
+									<select class='form-control' id='calendar_link_select'></select>
+								</div>
+								<div class='row no-gutters my-1'>
+									<button type='button' class='btn btn-sm btn-secondary full' id='refresh_calendar_list_select'>Refresh</button>
+								</div>
+
+								<div class='sortable' id='calendar_link_list'></div>
+								<div class='sortable mt-1' id='calendar_new_link_list'></div>
+							@endif
+						</div>
+
+					@else
+
+						<div class='row no-gutters my-1'>
+							<p>Link calendars together, and make this calendar's date drive the date of other calendars!</p>
+							<p class='m-0'><a href="{{ route('subscription.pricing') }}" target="_blank">Subscribe now</a> to unlock this feature!</p>
+						</div>
+
+					@endif
 				</div>
 			</div>
 		@endif

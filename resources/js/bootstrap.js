@@ -54,7 +54,7 @@ let authorization = document.head.querySelector('meta[name="api-token"]');
 if (authorization) {
     window.axios.defaults.headers.common['Authorization'] = 'Bearer ' + authorization.content;
 } else {
-    console.error('No API token.');
+    console.log('No API token.');
 }
 
 /**

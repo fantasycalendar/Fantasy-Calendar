@@ -9,7 +9,7 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 class CalendarPolicy
 {
     use HandlesAuthorization;
-    
+
     /**
      * Determine whether the user can view any calendars.
      *
@@ -30,8 +30,21 @@ class CalendarPolicy
      */
     public function view(?User $user, Calendar $calendar)
     {
-        // dd($user);
-        return true;
+        $user = $user ?? auth('api')->user() ?? null;
+
+        return !$calendar->disabled
+            && (!$calendar->setting('private')
+            || (
+                $user
+
+                && (
+                    $user->isAdmin()
+
+                    || $user->is($calendar->user)
+
+                    || $calendar->users->contains($user)
+                )
+            ));
     }
 
     /**
@@ -40,8 +53,12 @@ class CalendarPolicy
      * @param  \App\User  $user
      * @return mixed
      */
-    public function create(User $user)
+    public function create(?User $user)
     {
+        if($user) {
+            return  $user->calendars()->count() < 2 || $user->paymentLevel() != 'Free';
+        }
+
         return true;
     }
 
@@ -58,7 +75,7 @@ class CalendarPolicy
             return true;
         }
 
-        return $user->id === $calendar->user_id;
+        return !$calendar->disabled && $user->id === $calendar->user_id;
     }
 
     /**
@@ -74,7 +91,7 @@ class CalendarPolicy
             return true;
         }
 
-        return $user->id === $calendar->user_id;
+        return !$calendar->disabled && $user->id === $calendar->user_id;
     }
 
     /**
