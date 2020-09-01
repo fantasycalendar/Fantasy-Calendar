@@ -41,14 +41,8 @@
                                              :moon_id="moon.index"
                                              data-pt-position="top"
                                              data-pt-title=''>
+                                            <i class='wi wi-moon-full'></i>
                                         </div>
-                                            <svg width="24" height="24" viewBox="0 0 64 64">
-                                                <g>
-                                                    <circle cx="32" cy="32" r="23" class="lunar_background"/>
-                                                    <!-- <path :class='moon.image.class' :transform='moon.image.transform' :d='moon.image.lines'/> -->
-                                                    <circle cx="32" cy="32" r="23" class="lunar_border"/>
-                                                </g>
-                                            </svg>
                                     </template>
                                 </div>
                             </div>
