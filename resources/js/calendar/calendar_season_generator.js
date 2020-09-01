@@ -743,8 +743,8 @@ class Climate{
 
 				if(!this.event_happened){
 				
-					high_solstice = this.longest_day_time == (sunset-sunrise);
-					low_solstice = this.shortest_day_time == (sunset-sunrise);
+					high_solstice = this.longest_day_time == precisionRound(sunset-sunrise, 1);
+					low_solstice = this.shortest_day_time == precisionRound(sunset-sunrise, 1);
 
 					if(high_solstice || low_solstice){
 						this.event_happened = true;
@@ -759,14 +759,14 @@ class Climate{
 
 				}else{
 
-					if(this.low_solstice && !this.high_solstice && this.longest_day_time == (sunset-sunrise)){
+					if(this.low_solstice && !this.high_solstice && this.longest_day_time == precisionRound(sunset-sunrise, 1)){
 						high_solstice = true;
 						this.high_solstice = true;
 						this.low_solstice = false;
 						this.high_solstice_epochs.push(epoch);
 					}
 
-					if(this.high_solstice && !this.low_solstice && this.shortest_day_time == (sunset-sunrise)){
+					if(this.high_solstice && !this.low_solstice && this.shortest_day_time == precisionRound(sunset-sunrise, 1)){
 						low_solstice = true;
 						this.low_solstice = true;
 						this.high_solstice = false;

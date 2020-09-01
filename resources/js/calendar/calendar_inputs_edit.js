@@ -655,7 +655,7 @@ function set_up_edit_inputs(){
 			html += '<span style="font-style:italic;font-size:0.8rem;">You need to <strong>enable the clock</strong> for this button to be enabled.</span><br>';
 		}
 		html     += '<br>';
-		html     += '<span style="font-size:0.9rem;">Still unsure? <a href="https://wiki.fantasy-calendar.com/index.php?title=Seasons#Create_solstice_and_equinox_events" target="_blank">Read more on the Wiki (opens in a new window)</a>.</span><br>';
+		html     += '<span style="font-size:0.9rem;">Still unsure? <a href="https://helpdocs.fantasy-calendar.com/topic/seasons#Create_solstice_and_equinox_events" target="_blank">Read more on the Wiki (opens in a new window)</a>.</span><br>';
 
 		swal.fire({
 			title: `Simple or Complex?`,
@@ -806,7 +806,7 @@ function set_up_edit_inputs(){
 			var preset_order = [];
 
 			if(!valid_preset_order){
-			
+
 				let season_test = [];
 				let lowercase_preset = preset_seasons.map(name => name.toLowerCase());
 				for(var index in static_data.seasons.data){
@@ -830,9 +830,9 @@ function set_up_edit_inputs(){
 				preset_order = static_data.seasons.global_settings.preset_order;
 
 			}
-			
+
 			for(var index in static_data.seasons.data){
-				
+
 				var season = static_data.seasons.data[index];
 
 				let preset_order_value = preset_order[index];
@@ -846,7 +846,7 @@ function set_up_edit_inputs(){
 						for(var preset_index in preset_seasons){
 
 							var preset_season = preset_seasons[preset_index];
-							
+
 							if(valid_preset_order){
 								html.push(`<option ${preset_order_value == preset_index ? 'selected' : ""} value='${preset_index}'>${preset_season}</option>`);
 							}else{
@@ -1948,7 +1948,7 @@ function set_up_edit_inputs(){
 		var global_regex = /[ `~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z]/g;
 		var local_regex = /^\+*\!*[1-9]+[0-9]{0,}$/;
 		var numbers_regex = /([1-9]+[0-9]{0,})/;
-		
+
 		var invalid = global_regex.test(interval_val);
 		var values = interval_val.split(',');
 
@@ -2024,7 +2024,7 @@ function set_up_edit_inputs(){
 			'offset': offset_val,
 			'timespan': timespan_val
 		}
-		
+
 		$(this).toggleClass('invalid', false).attr('error_msg', '');
 
 		$(this).closest('.sortable-container').find('.leap_day_variance_output').html(get_interval_text(false, data));
@@ -2403,7 +2403,7 @@ function set_up_edit_inputs(){
 	input_container.change(function(e){
 
 		if(block_inputs) return;
-		
+
 		if(e.originalEvent){
 			var target = $(e.originalEvent.target);
 		}else{
@@ -4383,7 +4383,7 @@ function reindex_timespan_sortable(){
 	});
 
 	repopulate_timespan_select();
-	
+
 	leap_day_list.children().each(function(){
 		var index = $(this).find('.timespan-list').val()|0;
 		var new_index = previous_indexes[index];
