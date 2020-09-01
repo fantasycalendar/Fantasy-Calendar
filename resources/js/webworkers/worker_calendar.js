@@ -2241,10 +2241,10 @@ var calendar_builder = {
 			"number_text": ``,
 			"text": "",
 			"type": "overflow",
-			"epoch": null,
-			"year_day": null,
-			"weather_icon": null,
-			"season_color": null,
+			"epoch": false,
+			"year_day": false,
+			"weather_icon": false,
+			"season_color": false,
 			"events": [],
 			"moons": []
 		};

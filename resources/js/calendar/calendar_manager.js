@@ -226,7 +226,8 @@ worker_climate.onmessage = e => {
 
 	if(prev_seasons != calendar_weather.processed_seasons || prev_weather != calendar_weather.processed_weather){
 
-		CalendarRenderer.render_data = evaluated_static_data.render_data;
+		var event = new CustomEvent('calendar-change', {detail: evaluated_static_data.render_data});
+		window.dispatchEvent(event);
 
 		rebuild_events();
 
@@ -269,7 +270,10 @@ worker_calendar.onmessage = e => {
 
 	if(evaluated_static_data.success){
 
-		CalendarRenderer.render_data = evaluated_static_data.render_data;
+		console.log(evaluated_static_data.render_data)
+
+		var event = new CustomEvent('calendar-change', {detail: evaluated_static_data.render_data});
+		window.dispatchEvent(event);
 
 		rebuild_events();
 

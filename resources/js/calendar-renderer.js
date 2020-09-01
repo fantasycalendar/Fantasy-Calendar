@@ -8,6 +8,11 @@ const calendar_renderer = {
         render_style: "grid",
         timespans: [],
         event_epochs: []
+    },
+
+    load_calendar: function(event){
+        this.render_data = event.detail;
+        this.loaded = true;
     }
 
 }
