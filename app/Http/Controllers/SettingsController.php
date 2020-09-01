@@ -16,6 +16,20 @@ class SettingsController extends Controller
         ]);
     }
 
+    public function profile() {
+        $invoices = null;
+
+        if (Auth::user()->hasStripeId()) {
+            $invoices = Auth::user()->invoices();
+        }
+
+        return view('pages.profile', [
+            'user' => Auth::user(),
+            'subscription' => Auth::user()->subscriptions()->active()->first(),
+            'invoices' => $invoices
+        ]);
+    }
+
     public function update(StoreUserSettings $request) {
         Auth::user()->setSettings(Arr::only($request->all(), ['dark_theme']));
 

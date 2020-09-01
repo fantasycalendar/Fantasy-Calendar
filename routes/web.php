@@ -35,14 +35,6 @@ Route::post('/profile', 'SettingsController@update')->name('settings.update')->m
 
 Route::get('/admin/loginas/{userid}', 'AdminController@loginas')->name('admin.loginas')->middleware('admin');
 
-// Donation page [LEGACY]
-Route::get('/donate', function(){
-    return view('pages.donate', [
-        'title'=>'Support the site'
-    ]);
-});
-
-
 
 // Subscription management
 // Pricing page
@@ -57,7 +49,7 @@ Route::post('/subscription/subscribe', 'SubscriptionController@createsubscriptio
 
 // They want to cancel =(
 Route::get('/subscription/cancel', 'SubscriptionController@cancellation')->name('subscription.cancel');
-Route::post('/subscription/cancel', 'SubscriptionController@cancel')->name('subscription.cancel');
+Route::post('/subscription/cancel', 'SubscriptionController@cancel')->name('subscription.cancelpost');
 
 // They want to resume! =)
 Route::get('/subscription/resume/{level}', 'SubscriptionController@resume')->name('subscription.resume');
@@ -68,19 +60,7 @@ Route::post('/subscription/update/{level}/{plan}', 'SubscriptionController@updat
 Route::post('pricing/coupon', 'SubscriptionController@coupon');
 
 // User profile
-Route::get('/profile', function() {
-    $invoices = null;
-
-    if (Auth::user()->hasStripeId()) {
-        $invoices = Auth::user()->invoices();
-    }
-
-    return view('pages.profile', [
-        'user' => Auth::user(),
-        'subscription' => Auth::user()->subscriptions()->active()->first(),
-        'invoices' => $invoices
-    ]);
-})->middleware('auth')->name('profile');
+Route::get('/profile', 'SettingsController@profile')->middleware('auth')->name('profile');
 
 Route::get('/error/unavailable', 'ErrorsController@calendarUnavailable')->name('errors.calendar_unavailable');
 // Manual error page routes for the moment
