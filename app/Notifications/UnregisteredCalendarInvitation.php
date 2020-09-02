@@ -52,7 +52,7 @@ class UnregisteredCalendarInvitation extends Notification
                     ->greeting("You're invited to collaborate via Fantasy Calendar!")
                     ->line(sprintf("A user called %s has invited you as a player on their calendar '%s'!", $this->calendar->user->username, $this->calendar->name))
                     ->line("Get registered below to check it out.")
-                    ->action('Register for an Account', env('APP_URL') . URL::signedRoute('invite.register', ['calendar' => $this->calendar, 'email' => $this->email]))
+                    ->action('Register for an Account', env('APP_URL') . URL::signedRoute('invite.register', ['calendar' => $this->calendar, 'email' => $this->email], now()->addWeek(), false))
                     ->line(sprintf("Once you've gotten signed up, %s will be able to give you more access.", $this->calendar->user->username));
     }
 
