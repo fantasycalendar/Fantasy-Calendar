@@ -2224,7 +2224,7 @@ var calendar_builder = {
 		}
 
 		return {
-			"number_text": `${epoch_data.day}`,
+			"number": `${epoch_data.day}`,
 			"text": text,
 			"type": "day",
 			"epoch": epoch,
@@ -2238,7 +2238,7 @@ var calendar_builder = {
 
 	overflow: function(){
 		return {
-			"number_text": ``,
+			"number": ``,
 			"text": "",
 			"type": "overflow",
 			"epoch": false,
@@ -2279,7 +2279,7 @@ var calendar_builder = {
 				let timespan_data = {
 					"title": "",
 					"show_title": false,
-					"month_number": index+1,
+					"number": index+1,
 					"weekdays": this.static_data.year_data.global_week,
 					"show_weekdays": false,
 					"days": [[]]
@@ -2317,7 +2317,7 @@ var calendar_builder = {
 			let timespan_data = {
 				"title": timespan.name,
 				"show_title": true,
-				"month_number": index+1,
+				"number": index+1,
 				"weekdays": timespan.week,
 				"show_weekdays": show_months,
 				"days": [[]]
@@ -2362,7 +2362,7 @@ var calendar_builder = {
 							timespan_data = {
 								"title": "",
 								"show_title": false,
-								"month_number": index+1,
+								"number": index+1,
 								"weekdays": this.static_data.year_data.global_week,
 								"show_weekdays": false,
 								"days": [[]]
@@ -2394,7 +2394,7 @@ var calendar_builder = {
 							timespan_data = {
 								"title": timespan.name,
 								"show_title": true,
-								"month_number": index+1,
+								"number": index+1,
 								"weekdays": timespan.week,
 								"show_weekdays": timespan.type === "month",
 								"days": [[]]
@@ -2437,7 +2437,7 @@ var calendar_builder = {
 				let timespan_data = {
 					"title": "",
 					"show_title": false,
-					"month_number": index+1,
+					"number": index+1,
 					"weekdays": this.static_data.year_data.global_week,
 					"show_weekdays": false,
 					"days": [[]]

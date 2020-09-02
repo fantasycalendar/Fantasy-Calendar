@@ -1092,7 +1092,7 @@
 
 					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This will add 'Month 1' and so on to each month in the calendar">
 						<div class='col'>
-							<input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='add_month_number' onclick="setTimeout(calendar_layouts.add_month_number, 10);">
+							<input type='checkbox' class='margin-right static_input' data='settings' fc-index='add_month_number' refresh='false' onclick="update_render_settings()">
 							<span>
 								Add month number to months
 							</span>
@@ -1101,7 +1101,7 @@
 
 					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This adds a small number at the bottom left of the days in the calendar showing which year-day it is">
 						<div class='col'>
-							<input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='add_year_day_number' onclick="setTimeout(calendar_layouts.add_year_day_number, 10);">
+							<input type='checkbox' class='margin-right static_input' data='settings' fc-index='add_year_day_number' refresh='false' onclick="update_render_settings()">
 							<span>
 								Add year day to each day
 							</span>
@@ -1132,7 +1132,7 @@
 
 					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Viewers will only be able to see up to current day, future days will be greyed out">
                         <div class='col'>
-    						<input type='checkbox' class='margin-right static_input' data='settings' fc-index='only_reveal_today'>
+    						<input type='checkbox' class='margin-right static_input' data='settings' fc-index='only_reveal_today' refresh='false' onclick="update_render_settings()">
     						<span>
     							Show only up to current day
     						</span>
@@ -1145,7 +1145,7 @@
 
 					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Hides all of the moons from guest viewers">
                         <div class='col'>
-    						<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_moons'>
+    						<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_moons' refresh='false' onclick="update_render_settings()">
     						<span>
     							Hide all moons from guest viewers
     						</span>
@@ -1163,7 +1163,7 @@
 
 					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Hides all events from guest viewers">
                         <div class='col'>
-    						<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_events'>
+    						<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_events' refresh='false' onclick="update_render_settings()">
     						<span>
     							Hide all events from guest viewers
     						</span>
@@ -1181,7 +1181,7 @@
 
                     <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Prevents all weather from appearing on the calendar for guest viewers">
                         <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_all_weather'>
+                            <input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_all_weather' refresh='false' onclick="update_render_settings()">
                             <span>
                                 Hide all weather from guest viewers
                             </span>
@@ -1190,7 +1190,7 @@
 
                     <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Prevents any future weather from appearing on the calendar for guest viewers">
                         <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_future_weather'>
+                            <input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_future_weather' refresh='false' onclick="update_render_settings()">
                             <span>
                                 Hide future weather from guest viewers
                             </span>
@@ -1217,7 +1217,7 @@
 
 					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This will hide the weekday bar at the top of each month">
 						<div class='col'>
-							<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_weekdays'>
+							<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_weekdays' refresh='false' onclick="update_render_settings()">
 							<span>
 								Hide weekdays in calendar
 							</span>

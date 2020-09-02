@@ -273,6 +273,7 @@ worker_calendar.onmessage = e => {
 
 	if(evaluated_static_data.success){
 
+		window.dispatchEvent(new CustomEvent('render-settings-change', {detail: static_data.settings}));
 		window.dispatchEvent(new CustomEvent('calendar-change', {detail: evaluated_static_data.render_data}));
 
 		rebuild_events();
@@ -315,3 +316,9 @@ worker_calendar.onmessage = e => {
 	}
 
 };
+
+function update_render_settings(){
+	setTimeout(function(){
+		window.dispatchEvent(new CustomEvent('render-settings-change', {detail: static_data.settings}));
+	}, 20);
+}
