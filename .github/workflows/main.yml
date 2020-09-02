@@ -25,7 +25,7 @@ jobs:
     - name: Run composer
       uses: nick-zh/composer-php@master
       with:
-        action: 'install -oa'
+        action: 'install -oa --ignore-platform-reqs'
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
