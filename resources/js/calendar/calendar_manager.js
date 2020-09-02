@@ -121,8 +121,6 @@ var evaluated_event_data = {};
 
 function rebuild_calendar(action, dynamic_data){
 
-	show_loading_screen_buffered();
-
 	execution_time.start()
 
     worker_calendar.postMessage({
@@ -152,6 +150,8 @@ function rebuild_climate(){
 
 function rebuild_events(event_id){
 
+	execution_time.start()
+
 	worker_events.postMessage({
 		static_data: static_data,
 		dynamic_data: dynamic_data,
@@ -168,6 +168,8 @@ function rebuild_events(event_id){
 worker_events.onmessage = e => {
 
 	evaluated_event_data = e.data.event_data;
+
+	let events_to_send = [];
 
 	for(let event_index = 0; event_index < events.length; event_index++){
 
@@ -191,24 +193,25 @@ worker_events.onmessage = e => {
 
 			let epoch = epochs[epoch_index];
 
+			if(events_to_send[epoch] === undefined){
+				events_to_send[epoch] = []
+			}
+
 			var start = evaluated_event_data.starts[event_index].indexOf(epoch) != -1;
 			var end = evaluated_event_data.ends[event_index].indexOf(epoch) != -1;
 
 			event_class += `${start ? ' event_start' : (end ? ' event_end' : '')}`
-
-			let epoch_ref = CalendarRenderer.render_data.event_epochs[epoch];
-
-			if(epoch_ref !== undefined){
-				epoch_ref.push({
-					"index": event_index,
-					"name": event.name,
-					"class": event_class
-				})
-			}
+			events_to_send[epoch].push({
+				"index": event_index,
+				"name": event.name,
+				"class": event_class
+			});
 		}
 	}
 
 	execution_time.end("Event worker took:")
+
+	window.dispatchEvent(new CustomEvent('events-change', {detail: events_to_send} ));
 
 }
 
@@ -270,10 +273,7 @@ worker_calendar.onmessage = e => {
 
 	if(evaluated_static_data.success){
 
-		console.log(evaluated_static_data.render_data)
-
-		var event = new CustomEvent('calendar-change', {detail: evaluated_static_data.render_data});
-		window.dispatchEvent(event);
+		window.dispatchEvent(new CustomEvent('calendar-change', {detail: evaluated_static_data.render_data}));
 
 		rebuild_events();
 
@@ -313,7 +313,5 @@ worker_calendar.onmessage = e => {
 		error_message(text.join(''));
 
 	}
-
-	hide_loading_screen();
 
 };

@@ -659,8 +659,6 @@ var edit_event_ui = {
 
 		this.clear_ui();
 
-		error_check();
-
 		eval_apply_changes(function(){
 
 			rebuild_events();

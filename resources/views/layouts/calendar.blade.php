@@ -1,8 +1,12 @@
 <div id='calendar' x-data="CalendarRenderer">
 
     <template
-        @calendar-change.window="load_calendar"
-        @event-change.window="register_event"
+        @calendar-change.window="
+            show_loading_screen_buffered();
+            load_calendar($event);
+            $nextTick(() => { post_load() });
+        "
+        @events-change.window="register_events"
         x-if='loaded'
         x-for="timespan in render_data.timespans"
     >
@@ -25,7 +29,11 @@
                 <template x-for="week in timespan.days">
                     <div class='timespan_row'>
                         <template x-for="day in week">
-                            <div :class="['timespan_' + day.type]" :epoch="day.epoch">
+                            <div :class="{
+                                'timespan_day': day.type == 'day',
+                                'timespan_overflow': day.type == 'overflow',
+                                'current_day': day.epoch == render_data.current_epoch
+                            }" :epoch="day.epoch">
                                 <div class='day_row'>
                                     <div class='toprow left'>
                                          <div class='number' x-text='day.number_text'></div>

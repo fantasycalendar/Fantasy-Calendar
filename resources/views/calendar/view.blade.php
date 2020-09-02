@@ -8,6 +8,9 @@
 
         @include('calendar._loadcalendar')
 
+        preview_date = clone(dynamic_data);
+        preview_date.follow = true;
+
         for(var moon_index in static_data.moons){
             var moon = static_data.moons[moon_index];
 
@@ -30,17 +33,17 @@
             static_data.clock.crowding = 0;
         }
 
-        set_up_view_inputs();
-        set_up_view_values();
-        set_up_visitor_values();
-        bind_calendar_events();
-
         const queryString = window.location.search;
         if(!evaluate_queryString(queryString)){
             rebuild_calendar('calendar', dynamic_data);
         }
 
         edit_event_ui.bind_events();
+
+        set_up_view_inputs();
+        set_up_view_values();
+        set_up_visitor_values();
+        bind_calendar_events();
 
         $('#current_year, #current_timespan, #current_day, #current_hour, #current_minute, #location_select').change(function(){
             do_update_dynamic(hash);
@@ -189,7 +192,6 @@
         display_preview_back_button();
 
         if(rebuild || ((data.rebuild || static_data.settings.only_reveal_today) && preview_date.follow)){
-            show_loading_screen_buffered();
             rebuild_calendar('calendar', dynamic_data);
             set_up_visitor_values();
         }else{
@@ -197,7 +199,7 @@
             scroll_to_epoch();
         }
 
-        refresh_view_values();
+        set_up_view_values();
 
     }
 

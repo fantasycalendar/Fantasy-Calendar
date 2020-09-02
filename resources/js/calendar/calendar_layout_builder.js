@@ -127,6 +127,8 @@ var eras = {
 
 	evaluate_current_era: function(static_data, start_epoch, end_epoch){
 
+		return;
+
 		this.static_data = static_data;
 
 		if(this.static_data.eras.length > 0){
@@ -189,6 +191,8 @@ var eras = {
 
 	// This simply sets the new era
 	set_current_era: function(index){
+
+		return;
 
 		if(this.current_eras.length > 0){
 			// If it's not a new era, don't update the text
@@ -277,6 +281,8 @@ var eras = {
 	// This just sets up the starting era, in case the user refreshed and isn't at the top of the page
 	set_up_position: function(){
 
+		return;
+
 		if(static_data.eras.length > 0){
 
 			var position = $("#calendar_container").scrollTop();
@@ -335,6 +341,8 @@ var eras = {
 	// This is evaluated every time the user scrolls to calculate the next era
 	evaluate_position: function(){
 
+		return;
+
 		if(static_data.eras.length > 0){
 
 			var position = $("#calendar_container").scrollTop();
@@ -382,6 +390,8 @@ var eras = {
 
 
 	display_era_events: function(static_data){
+
+		return;
 
 		if(static_data.eras.length > 0){
 

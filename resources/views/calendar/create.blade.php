@@ -64,7 +64,9 @@
 				"data":[]
 			}
 		};
-		
+
+        preview_date = clone(dynamic_data);
+        preview_date.follow = true;
 
 		events = [];
 
