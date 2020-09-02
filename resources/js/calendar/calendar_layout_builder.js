@@ -461,21 +461,14 @@ function pre_update_current_day(recalculate){
 
 function update_current_day(recalculate){
 
-	$('.current_day').removeClass('current_day');
-	$(`.preview_day`).removeClass('preview_day');
-
 	if(recalculate){
 		dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
 	}
 
-	var day_container = $(`.timespan_day[epoch=${dynamic_data.epoch}]`);
-
-	day_container.addClass('current_day');
-
-	if(preview_date.epoch != dynamic_data.epoch){
-		preview_day_container = $(`.timespan_day[epoch=${preview_date.epoch}]`);
-		preview_day_container.addClass('preview_day');
-	}
+	window.dispatchEvent(new CustomEvent('update-epochs', {detail: {
+		current_epoch: dynamic_data.epoch,
+		preview_epoch: preview_date.follow ? dynamic_data.epoch : preview_date.epoch
+	}}));
 
 	evaluate_sun();
 

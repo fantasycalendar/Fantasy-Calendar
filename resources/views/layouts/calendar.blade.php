@@ -2,11 +2,16 @@
 
     <template
         @calendar-change.window="
-            show_loading_screen_buffered();
+            pre_render();
             load_calendar($event);
-            $nextTick(() => { post_load() });
+            $nextTick(() => { post_render() });
         "
-        @events-change.window="register_events"
+        @events-change.window="
+            pre_event_load();
+            register_events($event);
+            $nextTick(() => { post_event_load() });
+        "
+        @update-epochs.window="update_epochs"
         x-if='loaded'
         x-for="timespan in render_data.timespans"
     >
@@ -32,7 +37,8 @@
                             <div :class="{
                                 'timespan_day': day.type == 'day',
                                 'timespan_overflow': day.type == 'overflow',
-                                'current_day': day.epoch == render_data.current_epoch
+                                'current_day': day.epoch == render_data.current_epoch,
+                                'preview_day': day.epoch == render_data.preview_epoch && render_data.preview_epoch != render_data.current_epoch
                             }" :epoch="day.epoch">
                                 <div class='day_row'>
                                     <div class='toprow left'>
