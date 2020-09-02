@@ -70,6 +70,7 @@
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan vendor:publish --provider='Code16\\Sharp\\SharpServiceProvider' --tag=assets --force",
             "@php artisan package:discover --ansi"
         ],
         "post-root-package-install": [
