@@ -54,6 +54,8 @@ RUN npm install
 
 RUN npm run production
 
+RUN rm -rf /fantasy-calendar/node_modules
+
 RUN ["/usr/local/bin/php", "/var/www/html/composer.phar", "install", "-d", "/fantasy-calendar/"]
 
 RUN ["/usr/local/bin/php", "/var/www/html/composer.phar", "dump-auto", "-d", "/fantasy-calendar/"]
