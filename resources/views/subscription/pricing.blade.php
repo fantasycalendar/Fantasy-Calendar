@@ -87,7 +87,15 @@
                 <span>Yearly</span>
             </div>
         </div>
-        @elseif(Auth::user()->subscriptions->first() && !Auth::user()->subscriptions->first()->onGracePeriod())
+        @elseif($betaAccess)
+            <div class="row">
+                <div class="col-12">
+                    <div class="alert alert-warning">
+                        As a beta user, you already have the Worldbuilder tier -  If you just want to show us some love, you can choose to <a href="{{ route('subscription.pricing', ['beta_override' => true]) }}"> subscribe anyway</a> for a discounted price!.
+                    </div>
+                </div>
+            </div>
+        @else
             <div class="row">
                 <div class="col-12">
                     <div class="alert alert-warning">
