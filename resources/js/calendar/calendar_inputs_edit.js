@@ -143,7 +143,7 @@ function set_up_edit_inputs(){
 
 			case "player":
 				Perms.owner = false;
-				if(creation_steps.current_step > creation_steps.steps && errors.length == 0){
+				if(creation.is_done() && errors.length == 0){
 					if(previous_view_type !== 'player'){
 						evaluate_settings();
 						if(!preview_date.follow){
