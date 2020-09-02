@@ -102,7 +102,7 @@ class LoginController extends Controller
 
     protected function sendLoginResponse(Request $request)
     {
-        $customRememberMeTimeInMinutes = 1440;
+        $customRememberMeTimeInMinutes = 35791394;
         $rememberTokenCookieKey = Auth::getRecallerName();
         Cookie::queue($rememberTokenCookieKey, Cookie::get($rememberTokenCookieKey), $customRememberMeTimeInMinutes);
 
