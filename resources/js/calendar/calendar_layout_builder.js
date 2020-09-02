@@ -222,6 +222,7 @@ var eras = {
 							"abs_nth_year": ordinal_suffix_of(Math.abs(epoch_data.year)),
 							"era_year": epoch_data.era_year,
 							"era_nth_year": ordinal_suffix_of(epoch_data.era_year),
+							"abs_era_nth_year": ordinal_suffix_of(Math.abs(epoch_data.era_year)),
 							"era_name": era.name
 						}
 					);
@@ -245,6 +246,7 @@ var eras = {
 							"abs_nth_year": ordinal_suffix_of(Math.abs(epoch_data.year)),
 							"era_year": epoch_data.era_year,
 							"era_nth_year": ordinal_suffix_of(epoch_data.era_year),
+							"abs_era_nth_year": ordinal_suffix_of(Math.abs(epoch_data.era_year)),
 							"era_name": era.name
 						}
 					);
@@ -267,7 +269,8 @@ var eras = {
 					"abs_year": Math.abs(epoch_data.year),
 					"abs_nth_year": ordinal_suffix_of(Math.abs(epoch_data.year)),
 					"era_year": epoch_data.era_year,
-					"era_nth_year": ordinal_suffix_of(epoch_data.era_year)
+					"era_nth_year": ordinal_suffix_of(epoch_data.era_year),
+					"abs_era_nth_year": ordinal_suffix_of(Math.abs(epoch_data.era_year))
 				}
 			);
 
