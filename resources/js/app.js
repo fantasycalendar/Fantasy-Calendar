@@ -9,4 +9,5 @@ require('./bootstrap');
 window.CalendarClock = require('./clock')
 window.RandomCalendar = require('./random-calendar')
 window.CalendarPresets = require('./calendar-presets')
+window.Perms = require('./perms');
 window.CalendarRenderer = require('./calendar-renderer')

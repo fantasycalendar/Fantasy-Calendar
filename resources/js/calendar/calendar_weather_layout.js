@@ -51,7 +51,7 @@ var calendar_weather = {
 		},
 
 		sticky: function(icon){
-			
+
 			if(registered_click_callbacks['sticky_weather_ui']){
 				return;
 			}
@@ -75,7 +75,7 @@ var calendar_weather = {
 				calendar_weather.tooltip.hide();
 
 				delete registered_click_callbacks['sticky_weather_ui'];
-				
+
 				calendar_weather.tooltip.sticky_icon.removeClass('sticky');
 
 				if($(event.target).closest('.weather_popup').length != 0){
@@ -96,7 +96,7 @@ var calendar_weather = {
 			var day_container = icon.closest(".timespan_day");
 
 			var epoch = day_container.attr('epoch');
-		
+
 			this.moon_title.toggleClass('hidden', !icon.hasClass('moon_popup'));
 			this.moon_container.toggleClass('hidden', !icon.hasClass('moon_popup'));
 
@@ -130,7 +130,7 @@ var calendar_weather = {
 				var temp_sys = static_data.seasons.global_settings.temp_sys;
 
 				var temp = "";
-				if(!static_data.settings.hide_weather_temp || owner){
+				if(!static_data.settings.hide_weather_temp || Perms.player_at_least('co-owner')){
 					if(temp_sys == 'imperial'){
 						temp_symbol = '°F';
 						var temp = `${precisionRound(weather.temperature[temp_sys].value[0], 1).toString()+temp_symbol} to ${precisionRound(weather.temperature[temp_sys].value[1], 1).toString()+temp_symbol}`;
@@ -143,7 +143,7 @@ var calendar_weather = {
 						var temp = `${temp_f}${temp_c}`;
 					}
 				}
-				this.weather_temp.toggleClass('newline', (temp_sys == 'both_i' || temp_sys == 'both_m') && (!static_data.settings.hide_weather_temp || owner));
+				this.weather_temp.toggleClass('newline', (temp_sys == 'both_i' || temp_sys == 'both_m') && (!static_data.settings.hide_weather_temp || Perms.player_at_least('co-owner')));
 
 
 				var wind_sys = static_data.seasons.global_settings.wind_sys;
@@ -151,13 +151,13 @@ var calendar_weather = {
 				var wind_text = ""
 				if(wind_sys == 'both'){
 					wind_text = `${weather.wind_speed} (${weather.wind_direction})`;
-					if(!static_data.settings.hide_wind_velocity || owner){
+					if(!static_data.settings.hide_wind_velocity || Perms.player_at_least('co-owner')){
 						wind_text += `<span class='newline'>(${weather.wind_velocity.imperial} MPH | ${weather.wind_velocity.metric} KPH)</span>`;
 					}
 				}else{
 					var wind_symbol = wind_sys == "imperial" ? "MPH" : "KPH";
 					wind_text = `${weather.wind_speed} (${weather.wind_direction})`
-					if(!static_data.settings.hide_wind_velocity || owner){
+					if(!static_data.settings.hide_wind_velocity || Perms.player_at_least('co-owner')){
 						wind_text += `(${weather.wind_velocity[wind_sys]} ${wind_symbol})`;
 					}
 				}
@@ -168,7 +168,7 @@ var calendar_weather = {
 
 				this.weather_temp.each(function(){
 					$(this).html(temp);
-				}).parent().toggleClass('hidden', static_data.settings.hide_weather_temp !== undefined && static_data.settings.hide_weather_temp && !owner);
+				}).parent().toggleClass('hidden', static_data.settings.hide_weather_temp !== undefined && static_data.settings.hide_weather_temp && !Perms.player_at_least('co-owner'));
 
 				this.weather_wind.each(function(){
 					$(this).html(wind_text);

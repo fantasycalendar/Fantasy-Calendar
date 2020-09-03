@@ -25,7 +25,10 @@ function update_date(new_date){
 	}
 }
 
-
+function validateEmail(email) {
+	const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+	return re.test(email);
+}
 
 function getUrlParameter(sParam) {
 	var sPageURL = decodeURIComponent(window.location.search.substring(1)),
@@ -53,9 +56,11 @@ function update_name(){
 			document.title = calendar_name + " - Fantasy Calendar";
 			calendar_saved();
 		},
-		error: function ( log )
+		error: function ( error )
 		{
-			console.log(log);
+			$.notify(
+				error
+			);
 			calendar_save_failed();
 		}
 	});
@@ -69,11 +74,14 @@ function update_view_dynamic(calendar_hash){
 		dataType: 'json',
 		data: {_method: 'PATCH', dynamic_data: JSON.stringify(dynamic_data)},
 		success: function ( result ){
+			last_dynamic_change = new Date(result.last_changed.last_dynamic_change)
 			update_children_dynamic_data();
 		},
-		error: function ( log )
+		error: function ( error )
 		{
-			console.log(log);
+			$.notify(
+				error
+			);
 		}
 	});
 
@@ -95,12 +103,16 @@ function update_dynamic(calendar_hash){
 
 			calendar_saved();
 
+			last_dynamic_change = new Date(result.last_changed.last_dynamic_change)
+
 			update_children_dynamic_data();
 
 		},
-		error: function ( log )
+		error: function ( error )
 		{
-			console.log(log);
+			$.notify(
+				error
+			);
 			calendar_save_failed();
 		}
 	});
@@ -164,7 +176,8 @@ function do_update_all(calendar_hash, output){
 				prev_event_categories = clone(event_categories);
 			}
 
-			console.log(static_same)
+			last_dynamic_change = new Date(result.last_changed.last_dynamic_change)
+			last_static_change = new Date(result.last_changed.last_static_change)
 
 			calendar_saved();
 
@@ -175,11 +188,11 @@ function do_update_all(calendar_hash, output){
 			});
 
 		},
-		error: function ( log )
+		error: function ( error )
 		{
 			calendar_save_failed();
-			if(log.responseJSON.error){
-				$.notify(log.responseJSON.error, "error");
+			if(error.responseJSON.error){
+				$.notify(error.responseJSON.error);
 			}
 		}
 	});
@@ -197,9 +210,11 @@ function get_all_data(calendar_hash, output){
 			output(result);
 
 		},
-		error: function ( log )
+		error: function ( error )
 		{
-			console.log(log);
+			$.notify(
+				error
+			);
 		}
 	});
 }
@@ -216,9 +231,11 @@ function get_dynamic_data(calendar_hash, output){
 			output(result);
 
 		},
-		error: function ( log )
+		error: function ( error )
 		{
-			console.log(log);
+			$.notify(
+				error
+			);
 		}
 	});
 
@@ -264,9 +281,11 @@ function link_child_calendar(child_hash, parent_link_date, parent_offset){
 				success: function(result){
 					window.location.reload();
 				},
-				error: function ( log )
+				error: function ( error )
 				{
-					console.log(log);
+					$.notify(
+						error
+					);
 				}
 			});
 		});
@@ -292,92 +311,215 @@ function unlink_child_calendar(output, child_hash){
 			success: function(result){
 				window.location.reload();
 			},
-			error: function ( log )
+			error: function ( error )
 			{
-				console.log(log);
+				$.notify(
+					error
+				);
 			}
 		});
 	});
 }
 
-function submit_new_event(event_id){
+function get_calendar_users(callback) {
+    $.ajax({
+        url: window.baseurl+"api/calendar/"+hash+"/users",
+        type: "get",
+        dataType: "json",
+        success: function (result) {
+            callback(result);
+        },
+        error: function ( result ){
+            callback(false);
+        }
+    })
+}
+
+function add_calendar_user(email, output){
+
+    $.ajax({
+        url:window.baseurl+"api/calendar/"+hash+"/inviteUser",
+        type: "post",
+        dataType: "json",
+        data: {email: email},
+        success: function (result) {
+
+            var success = true;
+            var text = `Sent email to ${email}!`;
+
+            if(result.error) {
+                success = false;
+                text = result.message;
+            }
+
+            output(success, text);
+
+        },
+        error: function (error) {
+			$.notify(
+				error
+			);
+        }
+    });
+
+}
+
+function update_calendar_user(user_id, permission, output){
+
+    $.ajax({
+        url:window.baseurl+"api/calendar/"+hash+"/changeUserRole",
+        type: "post",
+        dataType: "json",
+        data: {user_role: permission, user_id: user_id},
+        success: function (result) {
+
+			var text = 'Updated permissions!';
+			var success = true;
+
+            if(result.error) {
+                success = false;
+                text = result.message;
+            }
+
+            output(success, text);
+        },
+        error: function (error) {
+			$.notify(
+				error
+			);
+        }
+	});
+
+}
+
+function remove_calendar_user(user_id, remove_all, callback){
+
+	$.ajax({
+        url:window.baseurl+"api/calendar/"+hash+"/removeUser",
+        type: "post",
+        dataType: "json",
+        data: {user_id: user_id, remove_all: remove_all},
+        success: function (result) {
+
+            if(result.error) {
+				$.notify(
+					result.message
+				);
+            }else{
+				$.notify(
+					"User removed!",
+					"success"
+				);
+				callback();
+			}
+
+        },
+        error: function (error) {
+			$.notify(
+				error
+			);
+        }
+    });
+
+}
+
+async function submit_new_event(event_id, callback){
 
 	var new_event = clone(events[event_id]);
-	new_event._method = "POST";
 	new_event.calendar_id = calendar_id;
 	new_event.sort_by = Object.keys(events).length;
 
-	$.ajax({
-		url:window.apiurl+"/event",
-		type: "post",
-		contentType: 'json',
-        processData: false,
-		data: JSON.stringify(new_event),
-		success: function( result ){
-			events[event_id] = result['data'];
-		},
-		error: function ( log )
-		{
-			console.log(log);
-		}
-	});
-
+	axios.post(window.apiurl+'/event', new_event)
+        .then(function (result){
+            if(result.data.data !== undefined) {
+				events[event_id] = result.data.data;
+				$.notify(
+					"Event created.",
+					"success"
+				);
+				callback(true);
+            } else {
+				events.pop(); // Discard most recent event
+				callback(false);
+				$.notify(
+					result.data.message
+				);
+            }
+        }).catch(function(error) {
+			events.pop(); // Discard most recent event
+			callback(false);
+			$.notify(
+				error
+			);
+    });
 }
 
 function submit_hide_show_event(event_id){
 
 	var edit_event = clone(events[event_id]);
-	edit_event._method = "PATCH";
 	edit_event.calendar_id = calendar_id;
-	edit_event.settings.hide = !event.settings.hide;
+	edit_event.settings.hide = !edit_event.settings.hide;
 
-	$.ajax({
-		url:window.apiurl+"/event/"+event.id,
-		type: "post",
-		dataType: 'json',
-		data: edit_event,
-		success: function( result ){
-			events[event_id].settings.hide = !events[event_id].settings.hide;
-			rebuild_events();
-			evaluate_save_button();
-		},
-		error: function ( log )
-		{
-			console.log(log);
-		}
-	});
-
+	axios.patch(window.apiurl+"/event/"+edit_event.id, edit_event)
+        .then(function(result) {
+            if(result.data.success) {
+				events[event_id].settings.hide = !events[event_id].settings.hide;
+				rebuild_events();
+				evaluate_save_button();
+			}
+			$.notify(
+				result.data.message,
+				result.data.success !== undefined ? "success" : false
+			);
+			
+        }).catch(function(error){
+			$.notify(
+				error
+			);
+    });
 }
 
-function submit_edit_event(event_id){
+function submit_edit_event(event_id, callback){
 
 	var edit_event = clone(events[event_id]);
-	edit_event._method = "PATCH";
 	edit_event.calendar_id = calendar_id;
 
-	$.ajax({
-		url:window.apiurl+"/event/"+event.id,
-		type: "post",
-		dataType: 'json',
-		data: edit_event,
-		error: function ( log )
-		{
-			console.log(log);
-		}
-	});
-
+	axios.patch(window.apiurl+'/event/'+edit_event.id, edit_event)
+        .then(function(result) {
+			$.notify(
+				result.data.message,
+				result.data.success !== undefined ? "success" : false
+			);
+			callback(result.data.success !== undefined);
+        }).catch(function(error){
+			callback(false);
+			$.notify(
+				error
+			);
+    });
 }
 
-function submit_delete_event(event_id){
+function submit_delete_event(event_id, callback){
 
 	$.ajax({
 		url:window.apiurl+"/event/"+event_id,
 		type: "post",
 		dataType: 'json',
 		data: {_method: 'DELETE'},
-		error: function ( log )
+		success: function(result){
+			if(result.success){
+				callback();
+			}
+			$.notify(
+				result.message,
+				result.success ? "success" : false
+			);
+		},
+		error: function ( error )
 		{
-			console.log(log);
+			$.notify(
+				error
+			);
 		}
 	});
 
@@ -393,9 +535,11 @@ function get_owned_calendars(output){
 		success: function(result){
 			output(result);
 		},
-		error: function ( log )
+		error: function ( error )
 		{
-			console.log(log);
+			$.notify(
+				error
+			);
 		}
 	});
 }
@@ -450,16 +594,20 @@ function update_children_dynamic_data(output){
 						output();
 					}
 				},
-				error: function ( log )
+				error: function ( error )
 				{
-					console.log(log);
+					$.notify(
+						error
+					);
 				}
 			});
 
 		},
-		error: function ( log )
+		error: function ( error )
 		{
-			console.log(log);
+			$.notify(
+				error
+			);
 		}
 	});
 }
@@ -473,9 +621,11 @@ function check_last_change(calendar_hash, output){
 		success: function(result){
 			output(result);
 		},
-		error: function ( log )
+		error: function ( error )
 		{
-			console.log(log);
+			$.notify(
+				error
+			);
 		}
 	});
 }
@@ -518,7 +668,6 @@ function delete_calendar(calendar_hash, calendar_name, callback){
         })
         .catch(err => {
             if(err) {
-                console.log(err);
                 swal.fire("Oh no!", err, "error");
             } else {
                 swal.hideLoading();
@@ -577,7 +726,6 @@ function copy_calendar(calendar_hash, calendar_name, callback){
         })
         .catch(err => {
             if(err) {
-                console.log(err);
                 swal.fire("Oh no!", err, "error");
             } else {
                 swal.hideLoading();
@@ -587,7 +735,7 @@ function copy_calendar(calendar_hash, calendar_name, callback){
 
 }
 
-function create_calendar(){
+function create_calendar(callback){
 
 	$.ajax({
 		url:window.baseurl+"calendars",
@@ -604,13 +752,16 @@ function create_calendar(){
 			localStorage.clear();
 			window.location.href = window.baseurl+'calendars/'+result.hash+'/edit';
 		},
-		error: function ( log )
+		error: function ( error )
 		{
-			console.log(log);
+			$.notify(
+				error
+			);
 		}
 	});
 
 }
+
 
 function get_event_comments(event_id, callback){
 
@@ -629,22 +780,25 @@ function get_event_comments(event_id, callback){
 }
 
 function create_event_comment(content, event_id, callback) {
-	$.ajax({
-		url: window.baseurl+"api/eventcomment",
-		type: 'POST',
-		dataType: "json",
-		data: {
-			calendar_id: calendar_id,
-			content: content,
-			event_id: event_id
-		},
-		success: function (result) {
-			callback(result['data'].id,result['data']);
-		},
-		error: function(log) {
-			console.log(log)
-		}
-	});
+
+    axios.post(window.baseurl+"api/eventcomment", {
+        calendar_id: calendar_id,
+        content: content,
+        event_id: event_id
+    })
+        .then(function (result){
+            if(!result.data.error && result.data != "") {
+                callback(result.data.data.id, result.data.data);
+            } else if(result.data == ""){
+                $.notify(
+                    "Error adding comment."
+                );
+            } else {
+				$.notify(
+					result.data.message
+				);
+            }
+        });
 }
 
 function get_preset_data(preset_id, callback){
@@ -659,9 +813,8 @@ function get_preset_data(preset_id, callback){
 				);
 			} else {
 				$.notify(
-					"Error: " + result.data.message
+					result.data.message
 				);
-				throw result.data.message;
 			}
 		});
 

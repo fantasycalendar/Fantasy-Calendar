@@ -42,7 +42,7 @@
 
 @section('content')
     <div class="container py-5">
-        @unless(count($calendars) > 0)
+        @unless((count($calendars) || count($shared_calendars)) || $search)
             <div class="row text-center my-5 py-4 border-bottom">
                 <div class="col-12 col-md-6 py-5 text-left">
                     <h2>Create Your Calendar</h2>
@@ -50,31 +50,33 @@
                     <a href="{{ route('calendars.create') }}" class="btn btn-primary my-5">Create a Calendar</a>
                 </div>
                 <div class="d-none d-md-block col-md-6 py-5" style="min-height: 100%; background-image: url({{ asset('resources/calendar_list_empty.svg') }}); background-repeat: no-repeat; background-size: contain; background-position: right center;">
-
                 </div>
             </div>
         @else
-        <h1>Calendars</h1>
-            <div class="d-flex flex-column flex-md-row justify-content-between">
+            <h1>Calendars</h1>
 
-            <form action="{{ route('calendars.index') }}" class="calendar-search" method="get">
-                @csrf
-                <div class="form-group input-group">
-                    <input type="text" class="form-control calendar-search-input" name="search" placeholder="Search..." @if($search) value="{{ $search }}" @endif>
-                    <span class='search-clear'><i class="fa fa-times"></i></span>
-                    <div class="input-group-append">
-                    <button class="btn btn-outline-secondary">
-                        <i class="fa fa-search"></i>
-                    </button>
-                    </div>
-                </div>
-            </form>
+            @if($calendars->hasPages() || $search)
+                <div class="d-flex flex-column flex-md-row justify-content-between">
+                    <form action="{{ route('calendars.index') }}" class="calendar-search" method="get">
+                        @csrf
+                        <div class="form-group input-group">
+                            <input type="text" class="form-control calendar-search-input" name="search" placeholder="Search..." @if($search) value="{{ $search }}" @endif>
+                            <span class='search-clear'><i class="fa fa-times"></i></span>
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
 
-            <span class="d-none d-md-block">{{ $calendars->onEachSide(1)->links() }}</span><span class="d-block d-md-none">{{ $calendar_pagination->links() }}</span></div>
+                    <span class="d-none d-md-block">{{ $calendars->onEachSide(1)->links() }}</span><span class="d-block d-md-none">{{ $calendar_pagination->links() }}</span></div>
+            @endif
+
             @foreach($calendars as $index => $calendar)
-                <div class="row border-top py-3 calendar-entry list-group-item-action w-auto">
+                <div class="row border-top py-3 calendar-entry list-group-item-action w-auto @if($calendar->disabled) calendar-disabled protip @endif" @if($calendar->disabled) data-pt-title="Free accounts are limited to two calendars. You'll need to re-subscribe to use this one." @endif>
                     <div class="col-6 col-md-4 col-lg-5">
-                        <a href="{{ route('calendars.edit', ['calendar'=> $calendar->hash]) }}"><h4 class="calendar-name">{{ $calendar->name }} <br><small>{{ $calendar->user->username }}</small></h4></a>
+                        <a href="{{ route('calendars.edit', ['calendar'=> $calendar->hash]) }}"><h4 class="calendar-name">{{ $calendar->name }} <br><span class="creator_name">{{ $calendar->user->username }}</span></h4></a>
                     </div>
                     <div style="padding-left: 33px;" class="d-none d-md-block col-md-4 col-lg-3">
                         <i class="fa fa-calendar" style="margin-left: -20px;"></i> {{ $calendar->current_date }} <br>
@@ -86,9 +88,10 @@
                         @endif
                     </div>
                     <div class="d-none d-lg-block col-lg-1 protip">
-                        <span class="protip" data-pt-delay-in="200" data-pt-title="{{ $calendar->name }} has {{ $calendar->events->count() }} events.">
-                            <i class="fa fa-calendar-check"></i> {{ $calendar->events->count() }}
-                        </span>
+                        <i class="fa fa-calendar-check"></i> {{ $calendar->events->count() }} <br>
+                        @if($calendar->users->count())
+                            <i class="fa fa-user"></i> {{ $calendar->users->count() }}
+                        @endif
                     </div>
                     <div class="col-6 col-md-4 col-lg-3 text-right">
                         <div class="btn-group">
@@ -121,7 +124,41 @@
                     </div>
                 </div>
             @endforeach
-            <div class="row d-flex justify-content-end border-top pt-3"><span class="d-none d-md-block">{{ $calendars->onEachSide(1)->links() }}</span><span class="d-block d-md-none">{{ $calendar_pagination->links() }}</span></div>
+
+            @if(!count($shared_calendars) && !count($calendars) && $search)
+                <h2 class="text-center border py-4" style="opacity: 0.7;">No calendars match '{{ $search }}'</h2>
+            @endif
+
+            @if(count($shared_calendars))
+                <div class="row d-flex justify-content-end border-top pt-3"><span class="d-none d-md-block">{{ $calendars->onEachSide(1)->links() }}</span><span class="d-block d-md-none">{{ $calendar_pagination->links() }}</span></div>
+                <h2>Calendars shared with me</h2>
+
+                @foreach($shared_calendars as $index => $calendar)
+                    <div class="row border-top py-3 calendar-entry list-group-item-action w-auto">
+                        <div class="col-6 col-md-4 col-lg-5">
+                            <a href="{{ route('calendars.show', ['calendar'=> $calendar->hash]) }}"><h4 class="calendar-name">{{ $calendar->name }} <small class="badge badge-secondary" style="font-size: 44%; position: relative; top: -4px; margin-left: 4px;">{{ $calendar->pivot->user_role }}</small> <br><span class="creator_name">{{ $calendar->user->username }}</span></h4></a>
+                        </div>
+                        <div style="padding-left: 33px;" class="d-none d-md-block col-md-4 col-lg-3">
+                            <i class="fa fa-calendar" style="margin-left: -20px;"></i> {{ $calendar->current_date }} <br>
+                            @if($calendar->clock_enabled)
+                                <i class="fa fa-clock" style="margin-left: -20px;"></i> {{ $calendar->current_time }}
+                            @endif
+                        </div>
+                        <div class="d-none d-lg-block col-lg-1 protip">
+                        <span class="protip" data-pt-delay-in="200" data-pt-title="{{ $calendar->name }} has {{ $calendar->events->count() }} events.">
+                            <i class="fa fa-calendar-check"></i> {{ $calendar->events->count() }}
+                        </span>
+                        </div>
+                        <div class="col-6 col-md-4 col-lg-3 text-right">
+                            <div class="btn-group">
+                                <a class='calendar_action btn btn-outline-secondary action-show protip' data-pt-delay-in="500" data-pt-title="View '{{ $calendar->name }}'" href='{{ route('calendars.show', ['calendar'=> $calendar->hash ]) }}'>
+                                    <i class="fa fa-eye"></i> <span class="d-none d-md-inline">View</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            @endif
         @endunless
         @isset($changelog)
             <h2 class="pt-5">Changelog</h2>

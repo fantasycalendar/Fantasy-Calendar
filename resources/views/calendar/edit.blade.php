@@ -2,8 +2,6 @@
 
 @push('head')
     <script>
-    owner = {{ $calendar->owned }};
-
     $(document).ready(function(){
 
         @include('calendar._loadcalendar')

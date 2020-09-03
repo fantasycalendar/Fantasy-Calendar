@@ -38,7 +38,8 @@ class CalendarEventTransformer extends Fractal\TransformerAbstract {
             'sort_by' => (int) $event->sort_by ?? 0,
             'updated_at' => $event->updated_at,
             'created_at' => $event->created_at,
-            'id' => (int) $event->id
+            'id' => (int) $event->id,
+            'creator_id' => (int) $event->creator->id
         ];
     }
 }

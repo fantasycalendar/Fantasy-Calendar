@@ -70,13 +70,48 @@ class Climate{
 				'seasons':[]
 			}
 
+			if(this.static_data.seasons.data.length == 2){
+				var preset_seasons = ['Winter', 'Summer'];
+			}else{
+				var preset_seasons = ['Winter', 'Spring', 'Summer', 'Autumn'];
+			}
+
+			var valid_preset_order = this.static_data.seasons.global_settings.preset_order !== undefined && this.static_data.seasons.global_settings.preset_order.length == this.static_data.seasons.data.length;
+
+			var preset_order = undefined;
+
+			if(!valid_preset_order){
+			
+				let season_test = [];
+				let lowercase_preset = preset_seasons.map(name => name.toLowerCase());
+				for(var index in this.static_data.seasons.data){
+					var season = this.static_data.seasons.data[index];
+					let preset_index = lowercase_preset.indexOf(season.name.toLowerCase());
+					if(preset_index == -1 && season.name.toLowerCase() == "fall" && this.static_data.seasons.data.length == 4){
+						preset_index = 3;
+					}
+					if(preset_index > -1){
+						season_test.push(preset_index)
+					}
+				}
+
+				if(season_test.length == this.static_data.seasons.data.length){
+					preset_order = season_test;
+					valid_preset_order = true;
+				}
+
+			}else{
+
+				preset_order = this.settings.preset_order;
+
+			}
+
 			for(var i = 0; i < this.static_data.seasons.data.length; i++){
 
 				var index = i;
-				if(this.settings.preset_order !== undefined && this.settings.preset_order.length == this.static_data.seasons.data.length){
-					index = this.settings.preset_order[i];
+				if(preset_order !== undefined && preset_order.length == this.static_data.seasons.data.length){
+					index = preset_order[i];
 				}
-
 				this.current_location.seasons.push(clone(location.seasons[index]));
 
 				this.current_location.seasons[i].time = {}
@@ -707,8 +742,8 @@ class Climate{
 
 				if(!this.event_happened){
 				
-					high_solstice = this.longest_day_time == (sunset-sunrise);
-					low_solstice = this.shortest_day_time == (sunset-sunrise);
+					high_solstice = this.longest_day_time == precisionRound(sunset-sunrise, 1);
+					low_solstice = this.shortest_day_time == precisionRound(sunset-sunrise, 1);
 
 					if(high_solstice || low_solstice){
 						this.event_happened = true;
@@ -723,14 +758,14 @@ class Climate{
 
 				}else{
 
-					if(this.low_solstice && !this.high_solstice && this.longest_day_time == (sunset-sunrise)){
+					if(this.low_solstice && !this.high_solstice && this.longest_day_time == precisionRound(sunset-sunrise, 1)){
 						high_solstice = true;
 						this.high_solstice = true;
 						this.low_solstice = false;
 						this.high_solstice_epochs.push(epoch);
 					}
 
-					if(this.high_solstice && !this.low_solstice && this.shortest_day_time == (sunset-sunrise)){
+					if(this.high_solstice && !this.low_solstice && this.shortest_day_time == precisionRound(sunset-sunrise, 1)){
 						low_solstice = true;
 						this.low_solstice = true;
 						this.high_solstice = false;

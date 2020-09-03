@@ -17,9 +17,12 @@
         <div class='col-12'>
             <div class='row'>
                 @if(Auth::check())
-                    <button type="button" disabled id='btn_create' class='btn btn-lg btn-danger btn-block'>Cannot create yet</button>
+                    <button type='button' disabled id='btn_create' class='btn btn-lg btn-danger btn-block'>Cannot create yet</button>
                 @else
-                    <button type='button' class='login-show-button btn btn-lg btn-info btn-block'>Log in to save</button>
+                    <button type='button' disabled class='login-button btn btn-lg btn-info btn-block'>
+                        <p class='m-0'>Log in to save calendar</p>
+                        <small class='m-0'>Don't worry, your progress is stored</small>
+                    </button>
                 @endif
             </div>
         </div>

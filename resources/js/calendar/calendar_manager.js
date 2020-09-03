@@ -130,7 +130,7 @@ function rebuild_calendar(action, dynamic_data){
         events: events,
         event_categories: event_categories,
 		action: action,
-		owner: owner
+		owner: Perms.player_at_least('co-owner')
 	});
 
 }
@@ -160,7 +160,8 @@ function rebuild_events(event_id){
         event_categories: event_categories,
 		event_id: event_id,
 		start_epoch: evaluated_static_data.year_data.start_epoch,
-		end_epoch: evaluated_static_data.year_data.end_epoch
+		end_epoch: evaluated_static_data.year_data.end_epoch,
+		owner: Perms.player_at_least('co-owner')
 	});
 }
 
@@ -182,8 +183,8 @@ worker_events.onmessage = e => {
 		let event_class = event.settings.color ? event.settings.color : "";
 		event_class += event.settings.text ? " " + event.settings.text : "";
 		event_class += event.settings.hide || static_data.settings.hide_events || category_hide ? " hidden_event" : "";
-
-		if(!owner && (event.settings.hide || category_hide)){
+		
+		if(!Perms.player_at_least('co-owner') && (event.settings.hide || category_hide)){
 			continue;
 		}
 		

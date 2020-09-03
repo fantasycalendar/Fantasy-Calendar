@@ -2,7 +2,6 @@
 
 @push('head')
     <script>
-    const owner = {{ $calendar->owned }};
     
     $(document).ready(function(){
 

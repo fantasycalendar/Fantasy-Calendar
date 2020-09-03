@@ -32,7 +32,7 @@
 
 	<div class='wrap-collapsible card'>
 		<input id="collapsible_date" class="toggle" type="checkbox" checked disabled>
-		<label for="collapsible_date" class="lbl-toggle card-header lbl-text">Current Date & Time <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Date' href='https://wiki.fantasy-calendar.com/index.php?title=Date' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+		<label for="collapsible_date" class="lbl-toggle card-header lbl-text">Current Date & Time <a target="_blank" data-pt-position="right" data-pt-title='More Info: Date' href='https://helpdocs.fantasy-calendar.com/topic/current_date_and_time/' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 		<div class="collapsible-content container card-body">
 
 			<div id='clock' class='mb-2'>
@@ -50,23 +50,24 @@
 	            </div>
             </div>
 
-			@if(Auth::check())
-
-			<div class='row'>
-	            <div class='col'>
-	                <a href="{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}" class='full'>
-	                    <button type="button" class='btn btn-sm btn-success btn-block'>Edit Mode</button>
-	                </a>
-	            </div>
+			@if($calendar->owned)
+            <div class='row'>
+                <div class='col'>
+                    <a href="{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}" class='full'>
+                        <button type="button" class='btn btn-sm btn-success btn-block'>Edit Mode</button>
+                    </a>
+                </div>
             </div>
+            @endif
 
+            @can('advance-date', $calendar)
 			<div class='date_control container' id='date_inputs'>
 
 				<div class='row mt-2'>
 					<h4>Current date:</h4>
 				</div>
 
-				<div class='row my-2 center-text hidden calendar_link_explaination'>
+				<div class='row my-2 center-text hidden calendar_link_explanation'>
                     @if($calendar->parent != null)
                         <p class='m-0'>This calendar is using a different calendar's date to calculate the current date. Only the <a href='/calendars/{{ $calendar->parent->hash }}' target="_blank">parent calendar</a> can set the date for this calendar.</p>
                     @endif
@@ -132,8 +133,7 @@
                     </div>
                 </div>
 			</div>
-
-			@endif
+            @endcan
 
 
 			<div class='date_control container mt-3'>
@@ -198,10 +198,18 @@
                 <label for="collapsible_add_units" class="lbl-toggle card-header small-lbl-text center-text">Add or subtract fixed units to calendar dates</label>
                 <div class="collapsible-content container card-body">
 
-                    <div class='row no-gutters input-group mx-0'>
+                    <div class='row no-gutters mx-0'>
                         <input type='number' class="form-control form-control-sm full" id='unit_years' placeholder="Years">
                         <input type='number' class="form-control form-control-sm full" id='unit_months' placeholder="Months">
                         <input type='number' class="form-control form-control-sm full" id='unit_days' placeholder="Days">
+                    </div>
+                    <div class='row no-gutters mx-0 my-2'>
+                        <div class='col-md-6 col-sm-12'>
+                            <input type='number' class="form-control form-control-sm full" id='unit_hours' placeholder="Hours">
+                        </div>
+                        <div class='col-md-6 col-sm-12'>
+                            <input type='number' class="form-control form-control-sm full" id='unit_minutes' placeholder="Minutes">
+                        </div>
                     </div>
 
                     @if($calendar->parent == null)
@@ -217,32 +225,29 @@
 
 	</div>
 
-	@if(Auth::check())
+	@can('update', $calendar)
 	<!---------------------------------------------->
 	<!------------------ LOCATIONS ----------------->
 	<!---------------------------------------------->
 
-	<div class='wrap-collapsible'>
-		<input id="collapsible_locations" class="toggle" type="checkbox" checked disabled>
-		<label for="collapsible_locations" class="lbl-toggle lbl-text">Locations <a target="_blank" title='Fantasy Calendar Wiki: Locations' href='https://wiki.fantasy-calendar.com/index.php?title=Locations' class="wiki"><i class="icon-question-sign"></i></a></label>
-		<div class="collapsible-content container">
+		<div class='wrap-collapsible card settings-locations'>
+			<input id="collapsible_locations" class="toggle" type="checkbox" disabled checked>
+			<label for="collapsible_locations" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-compass"></i> Locations <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Locations' href='https://wiki.fantasy-calendar.com/index.php?title=Locations' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+			<div class="collapsible-content card-body">
 
-			<div class="col-12">
+                <div class='row no-gutters bold-text'>
+                    Current location:
+                </div>
+                <div class='row no-gutters mb-2'>
+                    <select class='form-control protip' id='location_select' data-pt-position="right" data-pt-title="The presets work with four seasons (winter, spring, summer, autumn) or two seasons (winter, summer). If you call your seasons the same, the system matches them with the presets' seasons, no matter which order.">
+                    </select>
+                </div>
 
-				<div class='row mt-2 detail-select-container'>
-					<div class='detail-label'>Current location:</div>
-				</div>
-				<div class='row mb-2'>
-					<select class='form-control' id='location_select'>
-					</select>
-				</div>
+            </div>
 
-			</div>
 
 		</div>
-
-	</div>
-	@endif
+	@endcan
 
     @if(Auth::check())
         @if($calendar->children->count() > 0 || $calendar->parent != null)
@@ -251,7 +256,7 @@
         <!---------------------------------------------->
         <div class='wrap-collapsible card'>
             <input id="collapsible_linking" class="toggle" type="checkbox" checked disabled>
-            <label for="collapsible_linking" class="lbl-toggle card-header lbl-text">Calendar Linking <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Calendar Linking' href='https://wiki.fantasy-calendar.com/index.php?title=Calendar_Linking' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+            <label for="collapsible_linking" class="lbl-toggle card-header lbl-text">Calendar Linking <a target="_blank" data-pt-position="right" data-pt-title='More Info: Calendar Linking' href='https://helpdocs.fantasy-calendar.com/topic/calendar_linking' class="wiki protip"><i class="icon-question-sign"></i></a></label>
             <div class="collapsible-content card-body">
 
                 @if($calendar->children->count() > 0)

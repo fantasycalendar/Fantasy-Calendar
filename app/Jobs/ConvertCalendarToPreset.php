@@ -70,8 +70,8 @@ class ConvertCalendarToPreset implements ShouldQueue
                 'name' => $event->name,
                 'data' => $event->data,
                 'description' => $event->description,
-                'preset_event_category_id' => $event->event_category_id,
-                'event_category_id' => Str::slug($event->category->name ?? ""),
+                'preset_event_category_id' => $event->event_category_id ?? -1,
+                'event_category_id' => ($event->category()->exists()) ? Str::slug($event->category->name) : "-1",
                 'preset_id' => $new_preset->id,
                 'settings' => $event->settings
             ]);
