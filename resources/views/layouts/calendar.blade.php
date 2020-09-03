@@ -40,7 +40,7 @@
                                 'timespan_overflow': day.type == 'overflow',
                                 'current_day': day.epoch == render_data.current_epoch,
                                 'preview_day': day.epoch == render_data.preview_epoch && render_data.preview_epoch != render_data.current_epoch,
-                                'empty_timespan_day': day.type != 'overflow' && render_settings.only_reveal_today && day.epoch > render_data.current_epoch
+                                'empty_timespan_day': !render_settings.owner && day.type != 'overflow' && render_settings.only_reveal_today && day.epoch > render_data.current_epoch
                             }" :epoch="day.epoch">
                                 <div class='day_row'>
                                     <div class='toprow left'>
@@ -50,10 +50,14 @@
                                         <template x-if="
                                             day.weather_icon
                                             &&
-                                            !(
-                                                render_settings.hide_all_weather
+                                            (
+                                                render_settings.owner
                                                 ||
-                                                (render_settings.hide_future_weather && day.epoch > render_data.current_epoch)
+                                                !(
+                                                    render_settings.hide_all_weather
+                                                    ||
+                                                    (render_settings.hide_future_weather && day.epoch > render_data.current_epoch)
+                                                )
                                             )
                                         ">
                                             <div class='weather_popup'><i x-bind:class='day.weather_icon'></i></div>
@@ -64,7 +68,7 @@
                                     </div>
                                 </div>
                                 <div class='day_row flex justify-content-center'>
-                                    <template x-for="moon in day.moons" x-if='!render_settings.hide_moons'>
+                                    <template x-for="moon in day.moons" x-if='render_settings.owner || !render_settings.hide_moons'>
                                         <div class='moon_container protip'
                                             :moon_id="moon.index"
                                             data-pt-position="top"
@@ -74,7 +78,7 @@
                                     </template>
                                 </div>
                                 <div class="day_row" x-show="day.events.length">
-                                    <template x-if="!render_settings.hide_events">
+                                    <template x-if="render_settings.owner || !render_settings.hide_events">
                                         <div class="event_container">
                                             <template x-for="calendar_event in day.events">
                                                 <div class="event" :class="calendar_event.class" x-text="calendar_event.name" :event_id="calendar_event.id"></div>

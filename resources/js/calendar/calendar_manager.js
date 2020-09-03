@@ -274,7 +274,7 @@ worker_calendar.onmessage = e => {
 
 	if(evaluated_static_data.success){
 
-		window.dispatchEvent(new CustomEvent('render-settings-change', {detail: static_data.settings}));
+		update_render_settings();
 		window.dispatchEvent(new CustomEvent('calendar-change', {detail: evaluated_static_data.render_data}));
 
 		rebuild_events();
@@ -319,7 +319,10 @@ worker_calendar.onmessage = e => {
 };
 
 function update_render_settings(){
-	setTimeout(function(){
-		window.dispatchEvent(new CustomEvent('render-settings-change', {detail: static_data.settings}));
-	}, 20);
+	window.dispatchEvent(new CustomEvent('render-settings-change', {
+		detail: {
+			settings: static_data.settings,
+			owner: Perms.player_at_least('co-owner')
+		}
+	}));
 }

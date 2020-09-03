@@ -11,6 +11,7 @@ const calendar_renderer = {
     },
 
     render_settings: {
+        owner: false,
         only_reveal_today: false,
         hide_moons: false,
         hide_events: false,
@@ -28,7 +29,9 @@ const calendar_renderer = {
 
     update_render_settings: function(event){
 
-        let settings = event.detail;
+        this.render_settings.owner = event.detail.owner;
+
+        let settings = event.detail.settings;
 
         this.render_settings.only_reveal_today   = settings.only_reveal_today   ? settings.only_reveal_today : false
         this.render_settings.hide_moons          = settings.hide_moons          ? settings.hide_moons : false
