@@ -198,10 +198,18 @@
                 <label for="collapsible_add_units" class="lbl-toggle card-header small-lbl-text center-text">Add or subtract fixed units to calendar dates</label>
                 <div class="collapsible-content container card-body">
 
-                    <div class='row no-gutters input-group mx-0'>
+                    <div class='row no-gutters mx-0'>
                         <input type='number' class="form-control form-control-sm full" id='unit_years' placeholder="Years">
                         <input type='number' class="form-control form-control-sm full" id='unit_months' placeholder="Months">
                         <input type='number' class="form-control form-control-sm full" id='unit_days' placeholder="Days">
+                    </div>
+                    <div class='row no-gutters mx-0 my-2'>
+                        <div class='col-md-6 col-sm-12'>
+                            <input type='number' class="form-control form-control-sm full" id='unit_hours' placeholder="Hours">
+                        </div>
+                        <div class='col-md-6 col-sm-12'>
+                            <input type='number' class="form-control form-control-sm full" id='unit_minutes' placeholder="Minutes">
+                        </div>
                     </div>
 
                     @if($calendar->parent == null)

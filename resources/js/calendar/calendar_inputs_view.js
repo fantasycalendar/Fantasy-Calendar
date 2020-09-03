@@ -305,6 +305,8 @@ function set_up_view_inputs(){
 	$('#unit_years').val("");
 	$('#unit_months').val("");
 	$('#unit_days').val("");
+	$('#unit_hours').val("");
+	$('#unit_minutes').val("");
 
 }
 
@@ -314,6 +316,8 @@ function increment_date_units(current){
 	var unit_years = $('#unit_years').val()|0;
 	var unit_months = $('#unit_months').val()|0;
 	var unit_days = $('#unit_days').val()|0;
+	var unit_hours = $('#unit_hours').val()|0;
+	var unit_minutes = $('#unit_minutes').val()|0;
 
 	if(current){
 		var manager = dynamic_date_manager;
@@ -337,6 +341,23 @@ function increment_date_units(current){
 		}
 	}
 
+	let extra_days = 0;
+
+	if(static_data.clock.enabled){
+
+		let extra_hours = (unit_minutes+dynamic_data.minute)/static_data.clock.minutes;
+		extra_days = (unit_hours+extra_hours+dynamic_data.hour)/static_data.clock.hours;
+
+		var new_hour = precisionRound(fract(extra_days) * static_data.clock.hours, 4);
+		var new_minute = Math.floor(fract(new_hour) * static_data.clock.minutes);
+
+		extra_days = Math.floor(extra_days);
+		new_hour = Math.floor(new_hour);
+
+	}
+
+	unit_days += extra_days;
+
 	for(var days = 1; days <= Math.abs(unit_days); days++){
 		if(unit_days < 0){
 			manager.subtract_day();
@@ -346,6 +367,17 @@ function increment_date_units(current){
 	}
 
 	if(current){
+
+		if(static_data.clock.enabled){
+			if(dynamic_data.hour != new_hour || dynamic_data.minute != new_minute){
+				dynamic_data.hour = new_hour
+				dynamic_data.minute = new_minute;
+				current_hour.val(new_hour);
+				current_minute.val(new_minute);
+				eval_clock();
+			}
+		}
+
 		evaluate_dynamic_change();
 	}else{
 		evaluate_preview_change();
