@@ -7,11 +7,7 @@ const calendar_renderer = {
         preview_epoch: 0,
         render_style: "grid",
         timespans: [],
-        event_epochs: []
-    },
-
-    render_settings: {
-        owner: false,
+        event_epochs: [],
         only_reveal_today: false,
         hide_moons: false,
         hide_events: false,
@@ -20,28 +16,6 @@ const calendar_renderer = {
         add_month_number: false,
         add_year_day_number: false,
         hide_weekdays: false
-    },
-
-    render_day(day){
-        console.log(!this.render_settings.only_reveal_today || (this.render_settings.only_reveal_today && day.epoch > this.render_data.current_epoch))
-        return !this.render_settings.only_reveal_today || (this.render_settings.only_reveal_today && day.epoch > this.render_data.current_epoch);
-    },
-
-    update_render_settings: function(event){
-
-        this.render_settings.owner = event.detail.owner;
-
-        let settings = event.detail.settings;
-
-        this.render_settings.only_reveal_today   = settings.only_reveal_today   ? settings.only_reveal_today : false
-        this.render_settings.hide_moons          = settings.hide_moons          ? settings.hide_moons : false
-        this.render_settings.hide_events         = settings.hide_events         ? settings.hide_events : false
-        this.render_settings.hide_all_weather    = settings.hide_all_weather    ? settings.hide_all_weather : false
-        this.render_settings.hide_future_weather = settings.hide_future_weather ? settings.hide_future_weather : false
-        this.render_settings.add_month_number    = settings.add_month_number    ? settings.add_month_number : false
-        this.render_settings.add_year_day_number = settings.add_year_day_number ? settings.add_year_day_number : false
-        this.render_settings.hide_weekdays       = settings.hide_weekdays       ? settings.hide_weekdays : false
-
     },
 
     get render_execution_time(){
@@ -76,13 +50,15 @@ const calendar_renderer = {
         this.event_execution_time.start();
         let event_data = event.detail;
         for(let epoch in this.render_data.event_epochs){
-            if(this.render_data.event_epochs[epoch].length > 0){
-                this.render_data.event_epochs[epoch].splice(0, this.render_data.event_epochs[epoch].length)
-            }
-            if(event_data[epoch] !== undefined){
-                for(var index in event_data[epoch]){
-                    let event = event_data[epoch][index];
-                    this.render_data.event_epochs[epoch].push(event)
+            if(this.render_data.event_epochs[epoch]){
+                if(this.render_data.event_epochs[epoch].length > 0){
+                    this.render_data.event_epochs[epoch].splice(0, this.render_data.event_epochs[epoch].length)
+                }
+                if(event_data[epoch] !== undefined){
+                    for(var index in event_data[epoch]){
+                        let event = event_data[epoch][index];
+                        this.render_data.event_epochs[epoch].push(event)
+                    }
                 }
             }
         }

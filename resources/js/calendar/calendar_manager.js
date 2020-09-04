@@ -274,10 +274,14 @@ worker_calendar.onmessage = e => {
 
 	if(evaluated_static_data.success){
 
-		update_render_settings();
-		window.dispatchEvent(new CustomEvent('calendar-change', {detail: evaluated_static_data.render_data}));
-
-		rebuild_events();
+		RenderDataGenerator.create_render_data(e.data.processed_data).then(
+			function(result){
+				window.dispatchEvent(new CustomEvent('render-data-change', {detail: result}));
+				rebuild_events();
+			}, function(err){
+				$.notify(err);
+			}
+		);
 
 		var start_epoch = evaluated_static_data.year_data.start_epoch;
 		var end_epoch = evaluated_static_data.year_data.end_epoch;
@@ -290,7 +294,6 @@ worker_calendar.onmessage = e => {
 		calendar_weather.processed_weather = evaluated_static_data.processed_weather;
 		calendar_weather.start_epoch = start_epoch;
 		calendar_weather.end_epoch = end_epoch;
-		scroll_to_epoch();
 
 		eval_clock();
 
@@ -316,13 +319,4 @@ worker_calendar.onmessage = e => {
 
 	}
 
-};
-
-function update_render_settings(){
-	window.dispatchEvent(new CustomEvent('render-settings-change', {
-		detail: {
-			settings: static_data.settings,
-			owner: Perms.player_at_least('co-owner')
-		}
-	}));
 }
