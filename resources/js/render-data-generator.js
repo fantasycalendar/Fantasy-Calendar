@@ -101,6 +101,7 @@ const render_data_generator = {
 				"number": false,
 				"text": false,
 				"type": "empty",
+                "weekday": false,
 				"epoch": false,
 				"year_day": false,
 				"weather_icon": false,
@@ -124,12 +125,13 @@ const render_data_generator = {
 			moons = this.get_moon_data(epoch_data);
 		}
 
-		let year_day = static_data.settings.add_year_day_number ? epoch_data.year_day : false;
+        let year_day = static_data.settings.add_year_day_number ? epoch_data.year_day : false;
 
 		return {
 			"number": `${epoch_data.day}`,
 			"text": text,
-			"type": "day",
+            "type": "day",
+            "weekday": epoch_data.week_day_name,
 			"epoch": epoch,
 			"year_day": year_day,
 			"weather_icon": weather_icon,
@@ -143,7 +145,8 @@ const render_data_generator = {
 		return {
 			"number": ``,
 			"text": "",
-			"type": "overflow",
+            "type": "overflow",
+            "weekday": false,
 			"epoch": false,
 			"year_day": false,
 			"weather_icon": false,
@@ -202,7 +205,6 @@ const render_data_generator = {
                 }
 
                 let weekday_number = 1;
-                let week_index = 0;
 
                 for(var leap_day_index in filtered_leap_days_beforestart){
 
@@ -215,13 +217,14 @@ const render_data_generator = {
 
                     if(weekday_number > timespan.week.length){
                         weekday_number = 1;
-                        week_index++;
-                        timespan_data.days.push([]);
+                        if(static_data.settings.layout != "vertical"){
+                            timespan_data.days.push([]);
+                        }
                     }
                 }
 
                 for(weekday_number; weekday_number <= static_data.year_data.global_week.length; weekday_number++){
-                    timespan_data.days[week_index].push(this.overflow());
+                    timespan_data.days[timespan_data.days.length-1].push(this.overflow());
                 }
 
                 render_data.timespans.push(timespan_data);
@@ -246,12 +249,14 @@ const render_data_generator = {
             for(let day_number = 1; day_number <= timespan.length;){
                 
                 if(timespan_data.days[timespan_data.days.length-1].length != 0){
-                    timespan_data.days.push([])
+                    if(static_data.settings.layout != "vertical"){
+                        timespan_data.days.push([])
+                    }
                 }
 
                 for(let weekday_number = 1; weekday_number <= timespan.week.length; weekday_number++){
 
-                    if(week_day > weekday_number && show_months){
+                    if(week_day > weekday_number && show_months && static_data.settings.layout != "vertical"){
 
                         timespan_data.days[timespan_data.days.length-1].push(this.overflow());
                         
@@ -297,7 +302,9 @@ const render_data_generator = {
 
                                 if(internal_weekday_number > timespan.week.length){
                                     internal_weekday_number = 1;
-                                    timespan_data.days.push([]);
+                                    if(static_data.settings.layout != "vertical"){
+                                        timespan_data.days.push([]);
+                                    }
                                 }
                             }
 
@@ -336,7 +343,9 @@ const render_data_generator = {
 
                     }else{
 
-                        timespan_data.days[timespan_data.days.length-1].push(this.overflow());
+                        if(static_data.settings.layout != "vertical"){
+                            timespan_data.days[timespan_data.days.length-1].push(this.overflow());
+                        }
 
                     }
                 }
@@ -360,24 +369,24 @@ const render_data_generator = {
                 }
 
                 let weekday_number = 1;
-                let week_index = 0;
 
                 for(var leap_day_index in filtered_leap_days_end){
 
-                    timespan_data.days[week_index].push(this.get_day_data(epoch));
+                    timespan_data.days[timespan_data.days.length-1].push(this.get_day_data(epoch));
 
                     weekday_number++;
                     epoch++;
 
                     if(weekday_number > timespan.week.length){
                         weekday_number = 1;
-                        week_index++;
-                        timespan_data.days.push([]);
+                        if(static_data.settings.layout != "vertical"){
+                            timespan_data.days.push([]);
+                        }
                     }
                 }
 
                 for(weekday_number; weekday_number <= static_data.year_data.global_week.length; weekday_number++){
-                    timespan_data.days[week_index].push(this.overflow());
+                    timespan_data.days[timespan_data.days.length-1].push(this.overflow());
                 }
 
                 render_data.timespans.push(timespan_data);
@@ -385,6 +394,8 @@ const render_data_generator = {
             }
 
         }
+
+        console.log(render_data)
 
         return {
             success: true,
