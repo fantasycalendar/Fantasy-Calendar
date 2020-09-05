@@ -8,6 +8,7 @@ const calendar_renderer = {
         render_style: "grid",
         timespans: [],
         event_epochs: [],
+        timespan_event_epochs: [],
         only_reveal_today: false,
         hide_moons: false,
         hide_events: false,
@@ -34,7 +35,6 @@ const calendar_renderer = {
 
     load_calendar: function(event){
         this.render_data = event.detail;
-        this.loaded = true;
     },
 
     create_event: function(epoch) {
@@ -58,6 +58,7 @@ const calendar_renderer = {
                     for(var index in event_data[epoch]){
                         let event = event_data[epoch][index];
                         this.render_data.event_epochs[epoch].push(event)
+                        this.render_data.timespan_event_epochs[epoch].push(event)
                     }
                 }
             }
@@ -72,7 +73,6 @@ const calendar_renderer = {
 
     post_render: function(){
         this.render_execution_time.end("Rendering DOM took:")
-        scroll_to_epoch();
         hide_loading_screen();
     },
 
@@ -82,6 +82,7 @@ const calendar_renderer = {
 
     post_event_load: function(){
         this.event_execution_time.end("Event DOM took:")
+        this.loaded = true;
     }
 
 }

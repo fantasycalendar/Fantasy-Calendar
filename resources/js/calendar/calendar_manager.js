@@ -230,10 +230,14 @@ worker_climate.onmessage = e => {
 
 	if(prev_seasons != calendar_weather.processed_seasons || prev_weather != calendar_weather.processed_weather){
 
-		var event = new CustomEvent('calendar-change', {detail: evaluated_static_data.render_data});
-		window.dispatchEvent(event);
-
-		rebuild_events();
+		RenderDataGenerator.create_render_data(e.data.processed_data).then(
+			function(result){
+				window.dispatchEvent(new CustomEvent('render-data-change', {detail: result}));
+				rebuild_events();
+			}, function(err){
+				$.notify(err);
+			}
+		);
 
 		var start_epoch = evaluated_static_data.year_data.start_epoch;
 		var end_epoch = evaluated_static_data.year_data.end_epoch;
@@ -282,6 +286,8 @@ worker_calendar.onmessage = e => {
 				$.notify(err);
 			}
 		);
+
+        update_moon_colors();
 
 		var start_epoch = evaluated_static_data.year_data.start_epoch;
 		var end_epoch = evaluated_static_data.year_data.end_epoch;

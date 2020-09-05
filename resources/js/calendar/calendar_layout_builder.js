@@ -93,8 +93,8 @@ function update_moon_colors(){
 
 		let color = static_data.moons[index].color ? static_data.moons[index].color : '#ffffff';
 		let shadow_color = static_data.moons[index].shadow_color ? static_data.moons[index].shadow_color : '#292b4a';
-		html.push(`.moon_container[moon_id='${index}'] .lunar_background { fill:${color}; }\n`);
-		html.push(`.moon_container[moon_id='${index}'] .lunar_shadow { fill:${shadow_color}; }\n`);
+		html.push(`.moon[moon='${index}'] .lunar_background { fill:${color}; }\n`);
+		html.push(`.moon[moon='${index}'] .lunar_shadow { fill:${shadow_color}; }\n`);
 
 		if(color == '#ffffff') {
 		    color = '#dfdfdf';

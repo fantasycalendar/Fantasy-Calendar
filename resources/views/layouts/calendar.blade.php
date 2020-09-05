@@ -16,128 +16,156 @@
         x-for="timespan in render_data.timespans"
     >
 
-        <div class="timespan_container" :class='render_data.render_style'>
+        <div :class="{'timespan_outer_container': render_data.render_style == 'minimalistic'}">
 
-            <div class='timespan_name'>
-                <span x-text='timespan.title'></span>
-                <span class='timespan_number' x-show="timespan.number" x-text='["- " + timespan.number]'></span>
-            </div>
+            <div class="timespan_container" :class='render_data.render_style'>
 
-            <div class='timespan_row_container'>
+                <template x-if='timespan.show_title'>
+                    <div class='timespan_name'>
+                        <span x-text='timespan.title'></span>
+                        <span class='timespan_number' x-show="timespan.number" x-text='["- " + timespan.number]'></span>
+                    </div>
+                </template>
 
-                <div x-show="timespan.show_weekdays && render_data.render_style != 'vertical'" class="timespan_row_names">
-                    <template x-for="weekday in timespan.weekdays">
-                        <div class="week_day_name" x-text="weekday"></div>
+                <div class='timespan_row_container'>
+
+                    <template x-if="timespan.show_weekdays && render_data.render_style != 'vertical'">
+                        <div class="timespan_row_names">
+                            <template x-for="weekday in timespan.weekdays">
+                                <div class="week_day_name" x-text="weekday"></div>
+                            </template>
+                        </div>
                     </template>
-                </div>
 
-                <template x-if="render_data.render_style != 'vertical'" x-for="week in timespan.days">
-                    <div class="timespan_row">
-                        <template x-for="day in week">
-                            <div :class="{
-                                'timespan_day': day.type == 'day',
-                                'timespan_overflow': day.type == 'overflow',
-                                'timespan_day empty_timespan_day': day.type == 'empty',
-                                'current_day': day.epoch == render_data.current_epoch,
-                                'preview_day': day.epoch == render_data.preview_epoch && render_data.preview_epoch != render_data.current_epoch,
-                            }" :epoch="day.epoch">
-                                <div class="day_row">
-                                    <div class="toprow left" x-show="day.number">
-                                        <div class="number" x-text="day.number"></div>
-                                    </div>
-                                    <div class="toprow center">
+                    <template x-if="render_data.render_style == 'grid' || render_data.render_style == 'wide'" x-for="week in timespan.days">
+                        <div class="timespan_row">
+                            <template x-for="day in week">
+                                <div :class="{
+                                    'timespan_day': day.type == 'day',
+                                    'timespan_overflow': day.type == 'overflow',
+                                    'timespan_day empty_timespan_day': day.type == 'empty',
+                                    'current_day': day.epoch == render_data.current_epoch,
+                                    'preview_day': day.epoch == render_data.preview_epoch && render_data.preview_epoch != render_data.current_epoch,
+                                }" :epoch="day.epoch">
+                                    <div class="day_row">
+                                        <div class="toprow left" x-show="day.number">
+                                            <div class="number" x-text="day.number"></div>
+                                        </div>
                                         <template x-if="day.weather_icon">
-                                            <div class="weather_popup"><i x-bind:class="day.weather_icon"></i></div>
-                                        </template>
-                                    </div>
-                                    <div class="toprow right">
-                                        <div class="season_color"></div>
-                                    </div>
-                                </div>
-                                <div x-show="day.moons" class="day_row flex justify-content-center">
-                                    <template x-if="day.moons">
-                                        <template x-for="moon in day.moons">
-                                            <div class="moon_container protip"
-                                                :moon_id="moon.index"
-                                                data-pt-position="top"
-                                                data-pt-title="">
-                                                <i class="wi wi-moon-full"></i>
+                                            <div class="toprow center">
+                                                <div class="weather_popup"><i x-bind:class="day.weather_icon"></i></div>
                                             </div>
                                         </template>
-                                    </template>
-                                </div>
-                                <div class="day_row">
-                                    <template x-if="day.events">
-                                        <div class="event_container">
-                                            <template x-for="calendar_event in day.events">
-                                                <div class="event" :class="calendar_event.class" x-text="calendar_event.name" :event_id="calendar_event.id"></div>
+                                        <div class="toprow right">
+                                            <div class="season_color"></div>
+                                        </div>
+                                    </div>
+                                    <template x-if="day.moons">
+                                        <div class="day_row flex justify-content-center flex-wrap">
+                                            <template x-for="moon in day.moons">
+                                                <svg class="moon" :moon_id="moon.index" preserveAspectRatio="xMidYMid" width="32" height="32" viewBox="0 0 32 32">
+                                                    <circle cx="16" cy="16" r="9" class="lunar_background"/>
+                                                    <path class="lunar_shadow" x-show="moon.path" :d="moon.path"/>
+                                                    <circle cx="16" cy="16" r="10" class="lunar_border"/>
+                                                </svg>
                                             </template>
                                         </div>
                                     </template>
-                                </div>
-                                <div class="day_row flex-grow" x-show="day.type === 'day'">
-                                    <button class="btn_create_event btn btn-success full" @click="create_event(day.epoch)" :epoch="day.epoch">Create event</button>
-                                </div>
-                                <div class="day_row">
-                                    <div class="year_day" x-show="day.year_day" x-text="day.year_day"></div>
-                                </div>
-                            </div>
-                        </template>
-                    </div>
-                </template>
-
-                <template x-if="render_data.render_style == 'vertical'" x-for="day in timespan.days[0]">
-                    <div :class="{
-                        'timespan_day': day.type == 'day',
-                        'timespan_overflow': day.type == 'overflow',
-                        'timespan_day empty_timespan_day': day.type == 'empty',
-                        'current_day': day.epoch == render_data.current_epoch,
-                        'preview_day': day.epoch == render_data.preview_epoch && render_data.preview_epoch != render_data.current_epoch,
-                    }" :epoch="day.epoch">
-                        <div class="day_row">
-                            <div class="toprow left" x-show="day.number">
-                                <div class="number" x-text="day.number"></div>
-                                <div class="weekday" x-text="day.weekday"></div>
-                            </div>
-                            <div class="toprow center">
-                                <template x-if="day.weather_icon">
-                                    <div class="weather_popup"><i x-bind:class="day.weather_icon"></i></div>
-                                </template>
-                            </div>
-                            <div class="toprow right">
-                                <div class="season_color"></div>
-                            </div>
-                        </div>
-                        <div x-show="day.moons" class="day_row flex justify-content-center">
-                            <template x-if="day.moons">
-                                <template x-for="moon in day.moons">
-                                    <div class="moon_container protip"
-                                        :moon_id="moon.index"
-                                        data-pt-position="top"
-                                        data-pt-title="">
-                                        <i class="wi wi-moon-full"></i>
+                                    <div class="day_row">
+                                        <template x-if="day.events">
+                                            <div class="event_container">
+                                                <template x-for="calendar_event in day.events">
+                                                    <div class="event" :class="calendar_event.class" x-text="calendar_event.name" :event_id="calendar_event.index"></div>
+                                                </template>
+                                            </div>
+                                        </template>
                                     </div>
-                                </template>
+                                    <div class="day_row flex-grow" x-show="day.type === 'day'">
+                                        <button class="btn_create_event btn btn-success full" @click="create_event(day.epoch)" :epoch="day.epoch">Create event</button>
+                                    </div>
+                                    <div class="day_row">
+                                        <div class="year_day" x-show="day.year_day" x-text="day.year_day"></div>
+                                    </div>
+                                </div>
                             </template>
                         </div>
-                        <div class="day_row">
-                            <template x-if="day.events">
-                                <div class="event_container">
-                                    <template x-for="calendar_event in day.events">
-                                        <div class="event" :class="calendar_event.class" x-text="calendar_event.name" :event_id="calendar_event.id"></div>
+                    </template>
+
+                    <template x-if="render_data.render_style == 'vertical'" x-for="day in timespan.days[0]">
+                        <div :class="{
+                            'timespan_day': day.type == 'day',
+                            'timespan_overflow': day.type == 'overflow',
+                            'timespan_day empty_timespan_day': day.type == 'empty',
+                            'current_day': day.epoch == render_data.current_epoch,
+                            'preview_day': day.epoch == render_data.preview_epoch && render_data.preview_epoch != render_data.current_epoch,
+                        }" :epoch="day.epoch">
+                            <div class="day_row">
+                                <div class="toprow left" x-show="day.number">
+                                    <div class="number" x-text="day.number"></div>
+                                    <div class="weekday" x-text="day.weekday"></div>
+                                </div>
+                                <template x-if="day.weather_icon">
+                                    <div class="toprow center">
+                                        <div class="weather_popup"><i x-bind:class="day.weather_icon"></i></div>
+                                    </div>
+                                </template>
+                                <div class="toprow right">
+                                    <div class="season_color"></div>
+                                </div>
+                            </div>
+                            <template x-if="day.moons">
+                                <div class="day_row flex justify-content-center flex-wrap">
+                                    <template x-for="moon in day.moons">
+                                        <svg class="moon" :moon_id="moon.index" preserveAspectRatio="xMidYMid" width="32" height="32" viewBox="0 0 32 32">
+                                            <circle cx="16" cy="16" r="9" class="lunar_background"/>
+                                            <path class="lunar_shadow" x-show="moon.path" :d="moon.path"/>
+                                            <circle cx="16" cy="16" r="10" class="lunar_border"/>
+                                        </svg>
                                     </template>
                                 </div>
                             </template>
+                            <div class="day_row">
+                                <template x-if="day.events">
+                                    <div class="event_container">
+                                        <template x-for="calendar_event in day.events">
+                                            <div class="event" :class="calendar_event.class" x-text="calendar_event.name" :event_id="calendar_event.index"></div>
+                                        </template>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="day_row flex-grow" x-show="day.type === 'day'">
+                                <button class="btn_create_event btn btn-success full" @click="create_event(day.epoch)" :epoch="day.epoch">Create event</button>
+                            </div>
+                            <div class="day_row">
+                                <div class="year_day" x-show="day.year_day" x-text="day.year_day"></div>
+                            </div>
                         </div>
-                        <div class="day_row flex-grow" x-show="day.type === 'day'">
-                            <button class="btn_create_event btn btn-success full" @click="create_event(day.epoch)" :epoch="day.epoch">Create event</button>
+                    </template>
+
+                    <template x-if="render_data.render_style == 'minimalistic'" x-for="week in timespan.days">
+                        <div class="timespan_row">
+                            <template x-for="day in week">
+                                <div :class="{
+                                    'timespan_day': day.type == 'day',
+                                    'timespan_overflow': day.type == 'overflow',
+                                    'timespan_day empty_timespan_day': day.type == 'empty',
+                                    'current_day': day.epoch == render_data.current_epoch,
+                                    'preview_day': day.epoch == render_data.preview_epoch && render_data.preview_epoch != render_data.current_epoch,
+                                }" :epoch="day.epoch">
+                                    <div class="number" x-text="day.number"></div>
+                                </div>
+                            </template>
                         </div>
-                        <div class="day_row">
-                            <div class="year_day" x-show="day.year_day" x-text="day.year_day"></div>
-                        </div>
-                    </div>
-                </template>
+                    </template>
+                </div>
             </div>
+            <template x-if="render_data.render_style == 'minimalistic'" x-if="timespan.events">
+                <div class="event_container d-inline-flex flex-column">
+                    <template x-for="calendar_event in timespan.events">
+                        <div class="mx-2 my-0 px-1 py-0 text-left event" :class="calendar_event.class" x-text="calendar_event.name" :event_id="calendar_event.index"></div>
+                    </template>
+                </div>
+            </template>
         </div>
     </template>
 </div>

@@ -178,17 +178,17 @@ function set_up_visitor_inputs(){
 				icon: "fas fa-edit",
 				callback: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = element.attr('event_id');
+					let event_id = element.attr('event');
 					edit_event_ui.edit_event(event_id);
 				},
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = element.attr('event_id');
+					let event_id = element.attr('event');
 					return element.hasClass('era_event') || !Perms.can_modify_event(event_id);
 				},
 				visible: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = element.attr('event_id');
+					let event_id = element.attr('event');
 					return Perms.can_modify_event(event_id);
 				}
 			},
@@ -197,17 +197,17 @@ function set_up_visitor_inputs(){
 				icon: "fas fa-eye-slash",
 				callback: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = Number(element.attr('event_id'));
+					let event_id = Number(element.attr('event'));
 					submit_hide_show_event(event_id);
 				},
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = Number(element.attr('event_id'));
+					let event_id = Number(element.attr('event'));
 					return element.hasClass('era_event') || events[event_id].settings.hide || !Perms.can_modify_event(event_id);
 				},
 				visible: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = Number(element.attr('event_id'));
+					let event_id = Number(element.attr('event'));
 					return !element.hasClass('era_event') && !events[event_id].settings.hide && Perms.can_modify_event(event_id);
 				}
 			},
@@ -216,17 +216,17 @@ function set_up_visitor_inputs(){
 				icon: "fas fa-eye-slash",
 				callback: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = Number(element.attr('event_id'));
+					let event_id = Number(element.attr('event'));
 					submit_hide_show_event(event_id);
 				},
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = Number(element.attr('event_id'));
+					let event_id = Number(element.attr('event'));
 					return element.hasClass('era_event') || !events[event_id].settings.hide || !Perms.can_modify_event(event_id);
 				},
 				visible: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = Number(element.attr('event_id'));
+					let event_id = Number(element.attr('event'));
 					return !element.hasClass('era_event') && events[event_id].settings.hide && Perms.can_modify_event(event_id);
 				}
 			},
@@ -235,17 +235,17 @@ function set_up_visitor_inputs(){
 				icon: "fas fa-trash-alt",
 				callback: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = element.attr('event_id');
+					let event_id = element.attr('event');
 					edit_event_ui.query_delete_event(event_id);
 				},
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = element.attr('event_id');
+					let event_id = element.attr('event');
 					return element.hasClass('era_event') || !Perms.can_modify_event(event_id);
 				},
 				visible: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = element.attr('event_id');
+					let event_id = element.attr('event');
 					return Perms.can_modify_event(event_id);
 				}
 			}
