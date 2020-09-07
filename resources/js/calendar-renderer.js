@@ -73,6 +73,9 @@ const calendar_renderer = {
             if(this.render_data.event_epochs[epoch].events.length > 0){
                 this.render_data.event_epochs[epoch].events.splice(0, this.render_data.event_epochs[epoch].events.length)
             }
+            if(this.render_data.timespan_event_epochs[epoch].events.length > 0){
+                this.render_data.timespan_event_epochs[epoch].events.splice(0, this.render_data.timespan_event_epochs[epoch].events.length)
+            }
             if(event_data[epoch] !== undefined){
                 for(var index in event_data[epoch]){
                     let calendar_event = event_data[epoch][index];
