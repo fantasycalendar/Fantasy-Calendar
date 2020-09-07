@@ -57,7 +57,11 @@
                                         </div>
                                         <template x-if="day.weather_icon">
                                             <div class="toprow center">
-                                                <div class="weather_popup"><i x-bind:class="day.weather_icon"></i></div>
+                                                <div class="weather_popup"
+                                                    @click="weather_click(day, $event)"
+                                                    @mouseenter="weather_mouse_enter(day, $event)"
+                                                    @mouseleave="weather_mouse_leave"
+                                                ><i x-bind:class="day.weather_icon"></i></div>
                                             </div>
                                         </template>
                                         <div class="toprow right">
@@ -110,7 +114,11 @@
                                 </div>
                                 <template x-if="day.weather_icon">
                                     <div class="toprow center">
-                                        <div class="weather_popup"><i x-bind:class="day.weather_icon"></i></div>
+                                        <div class="weather_popup"
+                                            @click="weather_click(day, $event)"
+                                            @mouseenter="weather_mouse_enter(day, $event)"
+                                            @mouseleave="weather_mouse_leave"
+                                        ><i x-bind:class="day.weather_icon"></i></div>
                                     </div>
                                 </template>
                                 <div class="toprow right">
@@ -158,7 +166,12 @@
                                     'moon_popup': day.moons,
                                     'weather_popup': day.weather_icon,
                                     'has_event': day.events.length > 0
-                                }" :epoch="day.epoch">
+                                }"
+                                :epoch="day.epoch"
+                                @click="weather_click(day, $event)"
+                                @mouseenter="weather_mouse_enter(day, $event)"
+                                @mouseleave="weather_mouse_leave"
+                                >
                                     <div class="number" x-text="day.number"></div>
                                 </div>
                             </template>

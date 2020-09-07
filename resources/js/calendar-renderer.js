@@ -45,6 +45,22 @@ const calendar_renderer = {
         show_event_ui.show_event(event_id);
     },
 
+    weather_click: function(day, event) {
+        if(day.moons.length > 0 && day.weather_icon){
+            calendar_weather.tooltip.sticky($(event.target));
+        }
+    },
+
+    weather_mouse_enter: function(day, event) {
+        if(day.moons.length > 0 && day.weather_icon){
+            calendar_weather.tooltip.show($(event.target));
+        }
+    },
+
+    weather_mouse_leave: function() {
+        calendar_weather.tooltip.hide();
+    },
+
     update_epochs: function(event){
         this.render_data.current_epoch = event.detail.current_epoch;
         this.render_data.preview_epoch = event.detail.preview_epoch;

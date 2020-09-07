@@ -58,23 +58,8 @@ function bind_calendar_events(){
 
 	calendar_weather.tooltip.set_up();
 
-	$(document).on('click', '.weather_popup', function(){
-		calendar_weather.tooltip.sticky($(this));
-	});
-
-	$(document).on('mouseenter', '.weather_popup', function(){
-		calendar_weather.tooltip.show($(this));
-	});
-
-	$(document).on('mouseleave', '.weather_popup', function(){
-		calendar_weather.tooltip.hide();
-	});
-
 	$('#calendar_container').on('scroll', function(){
 		calendar_weather.tooltip.hide();
-	});
-
-	$('#calendar_container').scroll(function(){
 		evaluate_era_position();
 	});
 

@@ -235,9 +235,11 @@ var calendar_weather = {
 
 					var name_array = moon_phases[moon.granularity];
 
+					let moon_path = moon_paths[Math.floor((svg_moon_shadows.length/moon.granularity)*epoch_data.moon_phase[moon_index])];
+
 					moon_text.push(`<svg class='moon protip' moon="${moon_index}" preserveAspectRatio="xMidYMid" width="32" height="32" viewBox="0 0 32 32" data-pt-position="top" data-pt-title='${moon.name}, ${name_array[epoch_data.moon_phase[moon_index]]}'>`);
 						moon_text.push(`<circle cx="16" cy="16" r="9" class="lunar_background"/>`);
-						moon_text.push(`<path class="lunar_shadow" d="${moon_paths[Math.floor((svg_moon_shadows.length/moon.granularity)*epoch_data.moon_phase[moon_index])]}"/>`);
+						if(moon_path) moon_text.push(`<path class="lunar_shadow" d="${moon_path}"/>`);
 						moon_text.push(`<circle cx="16" cy="16" r="10" class="lunar_border"/>`);
 					moon_text.push("</svg>");
 
