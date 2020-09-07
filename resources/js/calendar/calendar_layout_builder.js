@@ -45,41 +45,6 @@ function get_category(search) {
 	return results[0];
 }
 
-function insert_moons(data){
-
-	var moon_text = ['<div class="calendar_moon_container">'];
-
-	if(Perms.player_at_least('co-owner') || !static_data.settings.hide_moons){
-
-		for(moon_index = 0; moon_index < static_data.moons.length; moon_index++){
-
-			var moon = static_data.moons[moon_index];
-
-			if(!Perms.player_at_least('co-owner') && moon.hidden) continue;
-
-			var name_array = moon_phases[moon.granularity];
-
-			moon_text.push(`<div class='moon_container protip' moon_id="${moon_index}" data-pt-position="top" data-pt-title='${moon.name}, ${name_array[data.moon_phase[moon_index]]}' >`);
-
-				moon_text.push(`<svg width="24" height="24" viewBox="0 0 64 64">`);
-					moon_text.push(`<g>`);
-						moon_text.push(`<circle cx="32" cy="32" r="23" class="lunar_background"/>`);
-						moon_text.push(svg_moon_shadows[Math.floor((svg_moon_shadows.length/moon.granularity)*data.moon_phase[moon_index])]);
-						moon_text.push(`<circle cx="32" cy="32" r="23" class="lunar_border"/>`);
-					moon_text.push(`</g>`);
-				moon_text.push("</svg>");
-
-			moon_text.push("</div>");
-
-		}
-
-	}
-
-	moon_text.push("</div>");
-
-	return moon_text.join('');
-}
-
 
 function update_moon_colors(){
 	moon_colors = [];

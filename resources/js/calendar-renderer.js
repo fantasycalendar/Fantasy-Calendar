@@ -51,14 +51,14 @@ const calendar_renderer = {
         let event_data = event.detail;
         for(let epoch in this.render_data.event_epochs){
             if(this.render_data.event_epochs[epoch]){
-                if(this.render_data.event_epochs[epoch].length > 0){
-                    this.render_data.event_epochs[epoch].splice(0, this.render_data.event_epochs[epoch].length)
+                if(this.render_data.event_epochs[epoch].events.length > 0){
+                    this.render_data.event_epochs[epoch].events.splice(0, this.render_data.event_epochs[epoch].length)
                 }
                 if(event_data[epoch] !== undefined){
                     for(var index in event_data[epoch]){
                         let event = event_data[epoch][index];
-                        this.render_data.event_epochs[epoch].push(event)
-                        this.render_data.timespan_event_epochs[epoch].push(event)
+                        this.render_data.event_epochs[epoch].events.push(event)
+                        this.render_data.timespan_event_epochs[epoch].events.push(event)
                     }
                 }
             }

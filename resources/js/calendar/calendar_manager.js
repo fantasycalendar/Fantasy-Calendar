@@ -176,6 +176,8 @@ worker_events.onmessage = e => {
 
 		let event = events[event_index];
 
+		let event_name = event.name;
+
 		var category = event.event_category_id && event.event_category_id > -1 ?  get_category(event.event_category_id) : false;
 
 		var category_hide = category ? category.category_settings.hide : false;
@@ -202,9 +204,15 @@ worker_events.onmessage = e => {
 			var end = evaluated_event_data.ends[event_index].indexOf(epoch) != -1;
 
 			event_class += `${start ? ' event_start' : (end ? ' event_end' : '')}`
+
+			if(static_data.settings.layout == "minimalistic" && RenderDataGenerator.render_data.event_epochs[epoch] !== undefined){
+				let day = RenderDataGenerator.render_data.event_epochs[epoch];
+				event_name = `${event.name} (${ordinal_suffix_of(day.number)})`
+			}
+
 			events_to_send[epoch].push({
 				"index": event_index,
-				"name": event.name,
+				"name": event_name,
 				"class": event_class
 			});
 		}

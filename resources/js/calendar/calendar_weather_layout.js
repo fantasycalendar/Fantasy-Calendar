@@ -101,7 +101,7 @@ var calendar_weather = {
 			this.moon_container.toggleClass('hidden', !icon.hasClass('moon_popup'));
 
 			if(icon.hasClass('moon_popup')){
-				this.moon_container.children().first().html(insert_moons(calendar_layouts.epoch_data[epoch]));
+				this.moon_container.children().first().html(this.insert_moons(epoch));
 			}
 
 			this.stop_hide = false;
@@ -217,6 +217,38 @@ var calendar_weather = {
 				this.weather_tooltip_box.show();
 
 			}
+		},
+
+		insert_moons: function(epoch){
+
+			let epoch_data = calendar_weather.epoch_data[epoch];
+
+			var moon_text = ['<div class="calendar_moon_container">'];
+
+			if(Perms.player_at_least('co-owner') || !static_data.settings.hide_moons){
+
+				for(moon_index = 0; moon_index < static_data.moons.length; moon_index++){
+
+					var moon = static_data.moons[moon_index];
+
+					if(!Perms.player_at_least('co-owner') && moon.hidden) continue;
+
+					var name_array = moon_phases[moon.granularity];
+
+					moon_text.push(`<svg class='moon protip' moon="${moon_index}" preserveAspectRatio="xMidYMid" width="32" height="32" viewBox="0 0 32 32" data-pt-position="top" data-pt-title='${moon.name}, ${name_array[epoch_data.moon_phase[moon_index]]}'>`);
+						moon_text.push(`<circle cx="16" cy="16" r="9" class="lunar_background"/>`);
+						moon_text.push(`<path class="lunar_shadow" d="${moon_paths[Math.floor((svg_moon_shadows.length/moon.granularity)*epoch_data.moon_phase[moon_index])]}"/>`);
+						moon_text.push(`<circle cx="16" cy="16" r="10" class="lunar_border"/>`);
+					moon_text.push("</svg>");
+
+				}
+
+			}
+
+			moon_text.push("</div>");
+
+			return moon_text.join('');
+			
 		},
 
 		hide: function(){

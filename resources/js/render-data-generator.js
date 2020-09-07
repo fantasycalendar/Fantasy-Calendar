@@ -213,8 +213,8 @@ const render_data_generator = {
 
                     let day_data = this.get_day_data(epoch);
                     timespan_data.days[timespan_data.days.length-1].push(day_data);
-                    render_data.event_epochs[epoch] = day_data.events;
-                    render_data.timespan_event_epochs[epoch] = timespan_data.events;
+                    render_data.event_epochs[epoch] = day_data;
+                    render_data.timespan_event_epochs[epoch] = timespan_data;
 
                     weekday_number++;
                     epoch++;
@@ -242,6 +242,7 @@ const render_data_generator = {
                 "show_title": true,
                 "number": static_data.settings.add_month_number ? index+1 : false,
                 "weekdays": timespan.week,
+                "short_weekdays": timespan.truncated_week,
                 "show_weekdays": !static_data.settings.hide_weekdays ? timespan.type === "month" : false,
                 "days": [[]],
                 "events": []
@@ -269,8 +270,8 @@ const render_data_generator = {
 
                         let day_data = this.get_day_data(epoch);
                         timespan_data.days[timespan_data.days.length-1].push(day_data);
-                        render_data.event_epochs[epoch] = day_data.events;
-                        render_data.timespan_event_epochs[epoch] = timespan_data.events;
+                        render_data.event_epochs[epoch] = day_data;
+                        render_data.timespan_event_epochs[epoch] = timespan_data;
 
                         epoch++;
 
@@ -302,8 +303,8 @@ const render_data_generator = {
 
                                 let day_data = this.get_day_data(epoch);
                                 timespan_data.days[timespan_data.days.length-1].push(day_data);
-                                render_data.event_epochs[epoch] = day_data.events;
-                                render_data.timespan_event_epochs[epoch] = timespan_data.events;
+                                render_data.event_epochs[epoch] = day_data;
+                                render_data.timespan_event_epochs[epoch] = timespan_data;
 
                                 internal_weekday_number++;
                                 epoch++;
@@ -327,6 +328,7 @@ const render_data_generator = {
                                 "show_title": true,
                                 "number": static_data.settings.add_month_number ? index+1 : false,
                                 "weekdays": timespan.week,
+                                "short_weekdays": timespan.truncated_week,
                                 "show_weekdays": !static_data.settings.hide_weekdays ? timespan.type === "month" : false,
                                 "days": [[]],
                                 "events": []
@@ -404,6 +406,8 @@ const render_data_generator = {
             }
 
         }
+
+        this.render_data = render_data;
 
         return {
             success: true,

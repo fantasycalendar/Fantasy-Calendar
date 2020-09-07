@@ -23,19 +23,23 @@
                 <template x-if='timespan.show_title'>
                     <div class='timespan_name'>
                         <span x-text='timespan.title'></span>
-                        <span class='timespan_number' x-show="timespan.number" x-text='["- " + timespan.number]'></span>
+                        <span class='timespan_number' x-show="timespan.number" x-text='["- Month " + timespan.number]'></span>
                     </div>
                 </template>
 
                 <div class='timespan_row_container'>
 
-                    <template x-if="timespan.show_weekdays && render_data.render_style != 'vertical'">
-                        <div class="timespan_row_names">
-                            <template x-for="weekday in timespan.weekdays">
-                                <div class="week_day_name" x-text="weekday"></div>
-                            </template>
-                        </div>
-                    </template>
+                    <div class="timespan_row_names" x-show="timespan.show_weekdays && render_data.render_style != 'vertical' && render_data.render_style != 'minimalistic'">
+                        <template x-for="weekday in timespan.weekdays">
+                            <div class="week_day_name" x-text="weekday"></div>
+                        </template>
+                    </div>
+
+                    <div class="timespan_row_names" x-show="timespan.show_weekdays && render_data.render_style == 'minimalistic'">
+                        <template x-for="weekday in timespan.short_weekdays">
+                            <div class="week_day_name" x-text="weekday"></div>
+                        </template>
+                    </div>
 
                     <template x-if="render_data.render_style == 'grid' || render_data.render_style == 'wide'" x-for="week in timespan.days">
                         <div class="timespan_row">
@@ -63,7 +67,7 @@
                                     <template x-if="day.moons">
                                         <div class="day_row flex justify-content-center flex-wrap">
                                             <template x-for="moon in day.moons">
-                                                <svg class="moon" :moon_id="moon.index" preserveAspectRatio="xMidYMid" width="32" height="32" viewBox="0 0 32 32">
+                                                <svg class="moon protip" :moon_id="moon.index" preserveAspectRatio="xMidYMid" width="32" height="32" viewBox="0 0 32 32" data-pt-position="top" :data-pt-title='moon.name + ", " + moon.phase'>
                                                     <circle cx="16" cy="16" r="9" class="lunar_background"/>
                                                     <path class="lunar_shadow" x-show="moon.path" :d="moon.path"/>
                                                     <circle cx="16" cy="16" r="10" class="lunar_border"/>
@@ -116,7 +120,7 @@
                             <template x-if="day.moons">
                                 <div class="day_row flex justify-content-center flex-wrap">
                                     <template x-for="moon in day.moons">
-                                        <svg class="moon" :moon_id="moon.index" preserveAspectRatio="xMidYMid" width="32" height="32" viewBox="0 0 32 32">
+                                        <svg class="moon protip" :moon_id="moon.index" preserveAspectRatio="xMidYMid" width="32" height="32" viewBox="0 0 32 32" data-pt-position="top" :data-pt-title='moon.name + ", " + moon.phase'>
                                             <circle cx="16" cy="16" r="9" class="lunar_background"/>
                                             <path class="lunar_shadow" x-show="moon.path" :d="moon.path"/>
                                             <circle cx="16" cy="16" r="10" class="lunar_border"/>
@@ -151,6 +155,9 @@
                                     'timespan_day empty_timespan_day': day.type == 'empty',
                                     'current_day': day.epoch == render_data.current_epoch,
                                     'preview_day': day.epoch == render_data.preview_epoch && render_data.preview_epoch != render_data.current_epoch,
+                                    'moon_popup': day.moons,
+                                    'weather_popup': day.weather_icon,
+                                    'has_event': day.events.length > 0
                                 }" :epoch="day.epoch">
                                     <div class="number" x-text="day.number"></div>
                                 </div>
