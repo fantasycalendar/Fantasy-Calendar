@@ -169,7 +169,13 @@
             <template x-if="render_data.render_style == 'minimalistic'" x-if="timespan.events">
                 <div class="event_container d-inline-flex flex-column">
                     <template x-for="calendar_event in timespan.events">
-                        <div class="mx-2 my-0 px-1 py-0 text-left event" :class="calendar_event.class" x-text="calendar_event.name" :event_id="calendar_event.index"></div>
+                        <div class="mx-2 my-0 px-1 py-0 text-left event"
+                            x-text="calendar_event.name"
+                            x-show="calendar_event.print"
+                            :class="calendar_event.class"
+                            :event_id="calendar_event.index"
+                            @click="view_event(calendar_event.index)"
+                        ></div>
                     </template>
                 </div>
             </template>

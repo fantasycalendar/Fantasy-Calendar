@@ -2309,9 +2309,9 @@ var show_event_ui = {
 			});
 		});
 
-		$(document).on('click', '.event:not(.event-text-output)', function(){
+		/* $(document).on('click', '.event:not(.event-text-output)', function(){
 			show_event_ui.clicked_event($(this));
-		});
+		}); */
 
 	},
 

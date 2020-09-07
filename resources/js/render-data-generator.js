@@ -430,8 +430,102 @@ const render_data_generator = {
 
         });
     
-	}
+    },
+    
+    _create_event_data: function(evaluated_event_data){
 
+        if(this.processed_data === undefined){
+            return {
+                success: false,
+                message: 'No calendar data available'
+            };
+        }
+
+        if(evaluated_event_data !== undefined){
+            this.evaluated_event_data = evaluated_event_data;
+        }else if(this.evaluated_event_data === undefined){
+            return {
+                success: false,
+                message: 'No event data available'
+            };
+        }
+
+        let events_to_send = [];
+
+        for(let event_index = 0; event_index < events.length; event_index++){
+
+            let event = events[event_index];
+
+            var category = event.event_category_id && event.event_category_id > -1 ?  get_category(event.event_category_id) : false;
+
+            var category_hide = category ? category.category_settings.hide : false;
+
+            let event_class = event.settings.color ? event.settings.color : "";
+            event_class += event.settings.text ? " " + event.settings.text : "";
+            event_class += event.settings.hide || static_data.settings.hide_events || category_hide ? " hidden_event" : "";
+            
+            if(!Perms.player_at_least('co-owner') && (event.settings.hide || category_hide)){
+                continue;
+            }
+            
+            let epochs = evaluated_event_data.valid[event_index];
+
+            for(let epoch_index in epochs){
+
+                let epoch = epochs[epoch_index];
+
+                if(events_to_send[epoch] === undefined){
+                    events_to_send[epoch] = []
+                }
+
+                var start = evaluated_event_data.starts[event_index].indexOf(epoch) != -1;
+                var end = evaluated_event_data.ends[event_index].indexOf(epoch) != -1;
+
+                event_class += `${start ? ' event_start' : (end ? ' event_end' : '')}`
+
+                let event_name = event.name;
+
+                if(static_data.settings.layout == "minimalistic" && this.render_data.event_epochs[epoch] !== undefined){
+                    let day = this.render_data.event_epochs[epoch];
+                    event_name = `${ordinal_suffix_of(day.number)}: ${event_name}`
+                }
+
+                if(start){
+                    event_name = `${event_name} (start)`
+                }else if(end){
+                    event_name = `${event_name} (end)`
+                }
+
+                events_to_send[epoch].push({
+                    "index": event_index,
+                    "name": event_name,
+                    "class": event_class,
+                    "print": event.settings.print
+                });
+            }
+        }
+
+        return {
+            success: true,
+            event_data: events_to_send
+        }
+    },
+    
+	create_event_data: function(evaluated_event_data){
+
+        return new Promise(function(resolve, reject){
+
+            var result = render_data_generator._create_event_data(evaluated_event_data);
+
+            if(result.success){
+                resolve(result.event_data);
+            }else{
+                reject(result.message);
+            }
+
+        });
+    
+    }
 }
 
 module.exports = render_data_generator;

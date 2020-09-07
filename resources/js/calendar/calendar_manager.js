@@ -170,57 +170,16 @@ worker_events.onmessage = e => {
 
 	evaluated_event_data = e.data.event_data;
 
-	let events_to_send = [];
-
-	for(let event_index = 0; event_index < events.length; event_index++){
-
-		let event = events[event_index];
-
-		let event_name = event.name;
-
-		var category = event.event_category_id && event.event_category_id > -1 ?  get_category(event.event_category_id) : false;
-
-		var category_hide = category ? category.category_settings.hide : false;
-
-		let event_class = event.settings.color ? event.settings.color : "";
-		event_class += event.settings.text ? " " + event.settings.text : "";
-		event_class += event.settings.hide || static_data.settings.hide_events || category_hide ? " hidden_event" : "";
-		
-		if(!Perms.player_at_least('co-owner') && (event.settings.hide || category_hide)){
-			continue;
+	RenderDataGenerator.create_event_data(evaluated_event_data).then(
+		function(result){
+			window.dispatchEvent(new CustomEvent('events-change', {detail: result} ));
+		}, function(err){
+			$.notify(err);
 		}
-		
-		let epochs = evaluated_event_data.valid[event_index];
-
-		for(let epoch_index in epochs){
-
-			let epoch = epochs[epoch_index];
-
-			if(events_to_send[epoch] === undefined){
-				events_to_send[epoch] = []
-			}
-
-			var start = evaluated_event_data.starts[event_index].indexOf(epoch) != -1;
-			var end = evaluated_event_data.ends[event_index].indexOf(epoch) != -1;
-
-			event_class += `${start ? ' event_start' : (end ? ' event_end' : '')}`
-
-			if(static_data.settings.layout == "minimalistic" && RenderDataGenerator.render_data.event_epochs[epoch] !== undefined){
-				let day = RenderDataGenerator.render_data.event_epochs[epoch];
-				event_name = `${event.name} (${ordinal_suffix_of(day.number)})`
-			}
-
-			events_to_send[epoch].push({
-				"index": event_index,
-				"name": event_name,
-				"class": event_class
-			});
-		}
-	}
+	)
 
 	execution_time.end("Event worker took:")
 
-	window.dispatchEvent(new CustomEvent('events-change', {detail: events_to_send} ));
 
 }
 
