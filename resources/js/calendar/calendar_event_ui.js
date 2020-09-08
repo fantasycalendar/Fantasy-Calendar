@@ -2246,9 +2246,9 @@ var show_event_ui = {
 
 	bind_events: function(){
 
-		this.event_id							= null;
-		this.db_event_id						= null;
-		this.era_id								= null;
+		this.event_id							= -1;
+		this.db_event_id						= -1;
+		this.era_id								= -1;
 		this.event_condition_sortables			= [];
 		this.delete_droppable					= false;
 
@@ -2347,7 +2347,7 @@ var show_event_ui = {
 
 		}else{
 
-			var id = item.attr('event_id')|0;
+			var id = item.attr('event')|0;
 			this.event_id = id;
 			this.set_current_event(events[show_event_ui.event_id]);
 
@@ -2366,7 +2366,9 @@ var show_event_ui = {
 
 		this.db_event_id = event.id;
 
-		this.edit_event_btn.prop('disabled', !Perms.can_modify_event(this.event_id)).toggleClass('hidden', !Perms.can_modify_event(this.event_id));
+		let no_edit = !Perms.can_modify_event(this.event_id) || this.era_id > -1;
+
+		this.edit_event_btn.prop('disabled', no_edit).toggleClass('hidden', no_edit);
 
 		this.event_name.text(event.name);
 
@@ -2374,7 +2376,11 @@ var show_event_ui = {
 
 		this.event_comments.html('').addClass('loading');
 
-		if(this.db_event_id !== undefined){
+		this.event_comment_mastercontainer.removeClass('hidden');
+
+		if(this.era_id > -1){
+			this.event_comment_mastercontainer.addClass('hidden');
+		}else if(this.db_event_id !== undefined){
 			get_event_comments(this.db_event_id, this.add_comments);
 		}else if(can_comment_on_event()){
 			this.event_comments.html("You need to save your calendar before comments can be added to this event!").removeClass('loading');

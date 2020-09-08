@@ -82,7 +82,7 @@
                                         <template x-if="day.events">
                                             <div class="event_container">
                                                 <template x-for="calendar_event in day.events">
-                                                    <div class="event" :class="calendar_event.class" x-text="calendar_event.name" :event_id="calendar_event.index" @click="view_event(calendar_event.index)"></div>
+                                                    <div class="event" :class="calendar_event.class" x-text="calendar_event.name" :event_id="calendar_event.index" @click="view_event($event)"></div>
                                                 </template>
                                             </div>
                                         </template>
@@ -139,7 +139,7 @@
                                 <template x-if="day.events">
                                     <div class="event_container">
                                         <template x-for="calendar_event in day.events">
-                                            <div class="event" :class="calendar_event.class" x-text="calendar_event.name" :event_id="calendar_event.index" @click="view_event(calendar_event.index)"></div>
+                                            <div class="event" :class="calendar_event.class" x-text="calendar_event.name" :event_id="calendar_event.index" @click="view_event($event)"></div>
                                         </template>
                                     </div>
                                 </template>
@@ -186,7 +186,7 @@
                             x-show="calendar_event.print"
                             :class="calendar_event.class"
                             :event_id="calendar_event.index"
-                            @click="view_event(calendar_event.index)"
+                            @click="view_event($event)"
                         ></div>
                     </template>
                 </div>

@@ -41,8 +41,8 @@ const calendar_renderer = {
         edit_event_ui.create_new_event('New Event', epoch);
     },
 
-    view_event: function(event_id) {
-        show_event_ui.show_event(event_id);
+    view_event: function(event) {
+        show_event_ui.clicked_event($(event.target));
     },
 
     weather_click: function(day, event) {
