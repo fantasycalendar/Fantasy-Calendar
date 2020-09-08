@@ -200,7 +200,6 @@ const render_data_generator = {
                 let timespan_data = {
                     "title": "",
                     "show_title": false,
-                    "number": static_data.settings.add_month_number ? index+1 : false,
                     "weekdays": static_data.year_data.global_week,
                     "show_weekdays": false,
                     "days": [[]],
@@ -238,9 +237,8 @@ const render_data_generator = {
             let show_months = timespan.type === "month";
 
             let timespan_data = {
-                "title": timespan.name,
+                "title": static_data.settings.add_month_number ? `${timespan.name} - Month ${index+1}` : timespan.name,
                 "show_title": true,
-                "number": static_data.settings.add_month_number ? index+1 : false,
                 "weekdays": timespan.week,
                 "short_weekdays": timespan.truncated_week,
                 "show_weekdays": !static_data.settings.hide_weekdays ? timespan.type === "month" : false,
@@ -290,7 +288,6 @@ const render_data_generator = {
                             timespan_data = {
                                 "title": "",
                                 "show_title": false,
-                                "number": static_data.settings.add_month_number ? index+1 : false,
                                 "weekdays": static_data.year_data.global_week,
                                 "show_weekdays": false,
                                 "days": [[]],
@@ -324,9 +321,8 @@ const render_data_generator = {
                             render_data.timespans.push(timespan_data);
 
                             timespan_data = {
-                                "title": timespan.name,
+                                "title": static_data.settings.add_month_number ? `${timespan.name} - Month ${index+1}` : timespan.name,
                                 "show_title": true,
-                                "number": static_data.settings.add_month_number ? index+1 : false,
                                 "weekdays": timespan.week,
                                 "short_weekdays": timespan.truncated_week,
                                 "show_weekdays": !static_data.settings.hide_weekdays ? timespan.type === "month" : false,

@@ -23,7 +23,6 @@
                 <template x-if='timespan.show_title'>
                     <div class='timespan_name'>
                         <span x-text='timespan.title'></span>
-                        <span class='timespan_number' x-show="timespan.number" x-text='["- Month " + timespan.number]'></span>
                     </div>
                 </template>
 
