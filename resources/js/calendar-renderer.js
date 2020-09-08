@@ -93,8 +93,16 @@ const calendar_renderer = {
     },
 
     post_render: function(){
-        this.render_execution_time.end("Rendering DOM took:")
+        this.render_execution_time.end("Rendering DOM took:");
         hide_loading_screen();
+
+		eras.evaluate_current_era(
+            static_data,
+            evaluated_static_data.year_data.start_epoch,
+            evaluated_static_data.year_data.end_epoch
+        );
+		eras.set_up_position();
+        eras.evaluate_position();
     },
 
     pre_event_load: function(){

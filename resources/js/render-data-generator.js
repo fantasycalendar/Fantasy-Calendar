@@ -448,6 +448,41 @@ const render_data_generator = {
 
         let events_to_send = [];
 
+		if(static_data.eras.length > 0){
+
+			var num_eras = Object.keys(static_data.eras).length;
+
+			for(var era_index = 0; era_index < num_eras; era_index++){
+
+				var era = static_data.eras[era_index];
+
+				if(era.settings.show_as_event){
+
+                    let event_class = 'era_event';
+                    let print = false;
+
+                    var category = era.settings.event_category_id && era.settings.event_category_id > -1 ?  get_category(era.settings.event_category_id) : false;
+
+                    if(category){
+                        print = category.event_settings.print;
+                        event_class += category.event_settings.color ? " " + category.event_settings.color : "";
+                        event_class += category.event_settings.text ? " " + category.event_settings.text : "";
+                    }
+
+                    if(events_to_send[era.date.epoch] === undefined){
+                        events_to_send[era.date.epoch] = []
+                    }
+
+                    events_to_send[era.date.epoch].push({
+                        "index": era_index,
+                        "name": era.name,
+                        "class": event_class,
+                        "print": print
+                    });
+                }
+            }
+        }
+
         for(let event_index = 0; event_index < events.length; event_index++){
 
             let event = events[event_index];

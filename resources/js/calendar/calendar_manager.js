@@ -185,28 +185,13 @@ worker_climate.onmessage = e => {
 		RenderDataGenerator.create_render_data(e.data.processed_data).then(
 			function(result){
 				window.dispatchEvent(new CustomEvent('render-data-change', {detail: result}));
-				rebuild_events();
 			}, function(err){
 				$.notify(err);
 			}
 		);
 
-		var start_epoch = evaluated_static_data.year_data.start_epoch;
-		var end_epoch = evaluated_static_data.year_data.end_epoch;
-
-		calendar_weather.epoch_data = evaluated_static_data.epoch_data;
-		calendar_weather.processed_weather = evaluated_static_data.processed_weather;
-		calendar_weather.start_epoch = start_epoch;
-		calendar_weather.end_epoch = end_epoch;
-
-		eras.evaluate_current_era(static_data, start_epoch, end_epoch);
-		eras.set_up_position();
-		eras.display_era_events(static_data);
-
 		eval_clock();
-		update_current_day(false);
 
-		
 		climate_charts.evaluate_day_length_chart();
 		climate_charts.evaluate_weather_charts();
 
@@ -226,7 +211,6 @@ worker_calendar.onmessage = e => {
 
 	evaluated_static_data = {}
 	evaluated_static_data = e.data.processed_data;
-	var static_data = evaluated_static_data.static_data;
 
 	if(evaluated_static_data.success){
 
@@ -239,26 +223,17 @@ worker_calendar.onmessage = e => {
 			}
 		);
 
-        update_moon_colors();
-
-		var start_epoch = evaluated_static_data.year_data.start_epoch;
-		var end_epoch = evaluated_static_data.year_data.end_epoch;
-
-		eras.evaluate_current_era(static_data, start_epoch, end_epoch);
-		eras.set_up_position();
-		eras.display_era_events(static_data);
-
 		calendar_weather.epoch_data = evaluated_static_data.epoch_data;
 		calendar_weather.processed_weather = evaluated_static_data.processed_weather;
-		calendar_weather.start_epoch = start_epoch;
-		calendar_weather.end_epoch = end_epoch;
-
-		eval_clock();
-
-		update_current_day(false);
+		calendar_weather.start_epoch = evaluated_static_data.year_data.start_epoch;
+		calendar_weather.end_epoch = evaluated_static_data.year_data.end_epoch;
 		
 		climate_charts.evaluate_day_length_chart();
 		climate_charts.evaluate_weather_charts();
+
+		eval_clock();
+
+        update_moon_colors();
 
 	}else{
 

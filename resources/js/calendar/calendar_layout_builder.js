@@ -92,9 +92,9 @@ var eras = {
 
 	era: undefined,
 
-	evaluate_current_era: function(static_data, start_epoch, end_epoch){
+	year_text: '',
 
-		return;
+	evaluate_current_era: function(static_data, start_epoch, end_epoch){
 
 		this.static_data = static_data;
 
@@ -159,8 +159,6 @@ var eras = {
 	// This simply sets the new era
 	set_current_era: function(index){
 
-		return;
-
 		if(this.current_eras.length > 0){
 			// If it's not a new era, don't update the text
 			if(this.era != index){
@@ -180,7 +178,7 @@ var eras = {
 
 					var format = era.formatting.replace(/\{\{/g, '{{{').replace(/\}\}/g, '}}}');
 
-					var epoch_data = calendar_layouts.epoch_data[this.start_epoch];
+					var epoch_data = evaluated_static_data.epoch_data[this.start_epoch];
 
 					year_text = Mustache.render(
 						format,
@@ -204,7 +202,7 @@ var eras = {
 						var format = `Year {{year}} - {{era_name}}`
 					}
 
-					var epoch_data = calendar_layouts.epoch_data[this.start_epoch];
+					var epoch_data = evaluated_static_data.epoch_data[this.start_epoch];
 
 					year_text = Mustache.render(
 						format,
@@ -228,7 +226,7 @@ var eras = {
 
 			var format = `Year {{year}}`;
 
-			var epoch_data = calendar_layouts.epoch_data[this.start_epoch];
+			var epoch_data = evaluated_static_data.epoch_data[this.start_epoch];
 
 			year_text = Mustache.render(
 				format,
@@ -244,14 +242,15 @@ var eras = {
 			);
 
 		}
-		
-		calendar_layouts.update_year_follower(year_text);
+
+		if(this.year_text != year_text){
+			this.update_year_follower(year_text);
+		}
+
 	},
 
 	// This just sets up the starting era, in case the user refreshed and isn't at the top of the page
 	set_up_position: function(){
-
-		return;
 
 		if(static_data.eras.length > 0){
 
@@ -311,8 +310,6 @@ var eras = {
 	// This is evaluated every time the user scrolls to calculate the next era
 	evaluate_position: function(){
 
-		return;
-
 		if(static_data.eras.length > 0){
 
 			var position = $("#calendar_container").scrollTop();
@@ -358,42 +355,12 @@ var eras = {
 
 	},
 
+	update_year_follower: function(year_text){
 
-	display_era_events: function(static_data){
+		this.year_text = year_text;
 
-		return;
+		$('#top_follower_content').removeClass().addClass(this.name_layout).find('.year').text(year_text);
 
-		if(static_data.eras.length > 0){
-
-			var num_eras = Object.keys(static_data.eras).length;
-
-			for(var era_index = 0; era_index < num_eras; era_index++){
-
-				var current_era = static_data.eras[era_index];
-
-				if(current_era.settings.show_as_event){
-
-					var parent = $(`.timespan_day[epoch='${current_era.date.epoch}'] .event_container`);
-
-					if(parent !== undefined){
-
-						var event_class = '';
-						var category = '';
-
-						if(current_era.settings.event_category && current_era.settings.event_category > -1){
-							var category = event_categories[current_era.settings.event_category];
-							event_class = category.color ? " " + category.color : "";
-							event_class += category.text ? " " + category.text : "";
-						}
-
-						var html = `<div class='event era_event ${event_class}' era_id='${era_index}' category='${category.name}'>${current_era.name}</div>`;
-
-						parent.append(html);
-
-					}
-				}
-			}
-		}
 	},
 
 }
