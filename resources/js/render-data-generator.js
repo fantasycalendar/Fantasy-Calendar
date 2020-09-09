@@ -1,7 +1,7 @@
 const render_data_generator = {
 
 	get_weather_icon: function(epoch){
-	
+
 		let epoch_data = this.epoch_data[epoch];
 		let weather = epoch_data.weather;
 
@@ -87,14 +87,14 @@ const render_data_generator = {
 				"path": moon_paths[Math.floor((svg_moon_shadows.length/moon.granularity)*epoch_data.moon_phase[moon_index])]
             });
         }
-        
+
 
 		return moons;
 
 	},
 
 	get_day_data: function(epoch){
-	
+
 		let epoch_data = this.epoch_data[epoch];
 
 		if(static_data.settings.only_reveal_today && epoch > dynamic_data.epoch && !Perms.player_at_least('co-owner')){
@@ -120,7 +120,7 @@ const render_data_generator = {
 
 		let season_color = epoch_data.season ? (epoch_data.season.color !== undefined ? epoch_data.season.color : false) : false;
 		let weather_icon = this.get_weather_icon(epoch);
-		
+
 		let moons = false;
 		if(!static_data.settings.hide_moons || (static_data.settings.hide_moons && Perms.player_at_least('co-owner'))){
 			moons = this.get_moon_data(epoch_data);
@@ -156,7 +156,7 @@ const render_data_generator = {
 			"moons": []
 		};
     },
-    
+
     _create_render_data: function(processed_data){
 
         if(processed_data !== undefined){
@@ -196,7 +196,7 @@ const render_data_generator = {
             });
 
             if(filtered_leap_days_beforestart.length > 0){
-                    
+
                 let timespan_data = {
                     "title": "",
                     "show_title": false,
@@ -227,7 +227,7 @@ const render_data_generator = {
                 }
 
                 for(weekday_number; weekday_number <= static_data.year_data.global_week.length; weekday_number++){
-                    timespan_data.days[timespan_data.days.length-1].push(this.overflow());
+                    // timespan_data.days[timespan_data.days.length-1].push(this.overflow());
                 }
 
                 render_data.timespans.push(timespan_data);
@@ -251,7 +251,7 @@ const render_data_generator = {
             }
 
             for(let day_number = 1; day_number <= timespan.length;){
-                
+
                 if(timespan_data.days[timespan_data.days.length-1].length != 0){
                     if(static_data.settings.layout != "vertical"){
                         timespan_data.days.push([])
@@ -262,8 +262,8 @@ const render_data_generator = {
 
                     if(week_day > weekday_number && show_months && static_data.settings.layout != "vertical"){
 
-                        timespan_data.days[timespan_data.days.length-1].push(this.overflow());
-                        
+                        // timespan_data.days[timespan_data.days.length-1].push(this.overflow());
+
                     }else if(day_number <= timespan.length){
 
                         let day_data = this.get_day_data(epoch);
@@ -280,7 +280,7 @@ const render_data_generator = {
                         if(filtered_leap_days.length > 0){
 
                             for(let internal_weekday_number = week_day; internal_weekday_number < timespan.week.length; internal_weekday_number++){
-                                timespan_data.days[timespan_data.days.length-1].push(this.overflow());
+                                // timespan_data.days[timespan_data.days.length-1].push(this.overflow());
                             }
 
                             render_data.timespans.push(timespan_data);
@@ -315,7 +315,7 @@ const render_data_generator = {
                             }
 
                             for(internal_weekday_number; internal_weekday_number <= static_data.year_data.global_week.length; internal_weekday_number++){
-                                timespan_data.days[timespan_data.days.length-1].push(this.overflow());
+                                // timespan_data.days[timespan_data.days.length-1].push(this.overflow());
                             }
 
                             render_data.timespans.push(timespan_data);
@@ -332,7 +332,7 @@ const render_data_generator = {
 
                             if(week_day != timespan.week.length){
                                 for(let internal_weekday_number = 0; internal_weekday_number < week_day; internal_weekday_number++){
-                                    timespan_data.days[timespan_data.days.length-1].push(this.overflow());
+                                    // timespan_data.days[timespan_data.days.length-1].push(this.overflow());
                                 }
                             }
 
@@ -342,7 +342,7 @@ const render_data_generator = {
 
                         if(show_months){
                             week_day++;
-                            
+
                             if(week_day > timespan.week.length){
                                 week_day = 1;
                             }
@@ -351,7 +351,7 @@ const render_data_generator = {
                     }else{
 
                         if(static_data.settings.layout != "vertical"){
-                            timespan_data.days[timespan_data.days.length-1].push(this.overflow());
+                            // timespan_data.days[timespan_data.days.length-1].push(this.overflow());
                         }
 
                     }
@@ -365,7 +365,7 @@ const render_data_generator = {
             });
 
             if(filtered_leap_days_end.length > 0){
-                    
+
                 let timespan_data = {
                     "title": "",
                     "show_title": false,
@@ -394,7 +394,7 @@ const render_data_generator = {
                 }
 
                 for(weekday_number; weekday_number <= static_data.year_data.global_week.length; weekday_number++){
-                    timespan_data.days[timespan_data.days.length-1].push(this.overflow());
+                    // timespan_data.days[timespan_data.days.length-1].push(this.overflow());
                 }
 
                 render_data.timespans.push(timespan_data);
@@ -425,9 +425,9 @@ const render_data_generator = {
             }
 
         });
-    
+
     },
-    
+
     _create_event_data: function(evaluated_event_data){
 
         if(this.processed_data === undefined){
@@ -494,11 +494,11 @@ const render_data_generator = {
             let event_class = event.settings.color ? event.settings.color : "";
             event_class += event.settings.text ? " " + event.settings.text : "";
             event_class += event.settings.hide || static_data.settings.hide_events || category_hide ? " hidden_event" : "";
-            
+
             if(!Perms.player_at_least('co-owner') && (event.settings.hide || category_hide)){
                 continue;
             }
-            
+
             let epochs = evaluated_event_data.valid[event_index];
 
             for(let epoch_index in epochs){
@@ -541,7 +541,7 @@ const render_data_generator = {
             event_data: events_to_send
         }
     },
-    
+
 	create_event_data: function(evaluated_event_data){
 
         return new Promise(function(resolve, reject){
@@ -555,7 +555,7 @@ const render_data_generator = {
             }
 
         });
-    
+
     }
 }
 

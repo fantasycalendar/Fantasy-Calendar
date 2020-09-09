@@ -1,6 +1,7 @@
 const calendar_renderer = {
 
     loaded: false,
+    loading_message: "Initializing...",
 
     render_data: {
         current_epoch: 0,
@@ -34,6 +35,7 @@ const calendar_renderer = {
     },
 
     load_calendar: function(event){
+        this.loading_message = "Building calendar...";
         this.render_data = event.detail;
     },
 
@@ -62,11 +64,14 @@ const calendar_renderer = {
     },
 
     update_epochs: function(event){
+        this.loading_message = "Ordering days...";
         this.render_data.current_epoch = event.detail.current_epoch;
         this.render_data.preview_epoch = event.detail.preview_epoch;
     },
 
     register_events: function(event){
+        this.loading_message = "Collecting events...";
+
         this.event_execution_time.start();
         let event_data = event.detail;
         for(let epoch in this.render_data.event_epochs){
@@ -93,6 +98,8 @@ const calendar_renderer = {
     },
 
     post_render: function(){
+        this.loading_message = "Wrapping up rendering...";
+
         this.render_execution_time.end("Rendering DOM took:");
         hide_loading_screen();
 
