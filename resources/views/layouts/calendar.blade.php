@@ -55,7 +55,7 @@
                                         ><i :class="day.weather_icon"></i></div>
                                     </template>
 
-                                    <div class="season_color"></div>
+                                    <div class="season_color" x-show="day.season_color" :style="'background-color:'+day.season_color"></div>
                                 </div>
 
                                 <div class="day_row flex justify-content-center flex-wrap" x-show="day.moons">
