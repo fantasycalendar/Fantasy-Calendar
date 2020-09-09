@@ -136,27 +136,14 @@
         color: rgba(#98a0a6, 0.6);
         background-image: $disabled-crosshatch;
         cursor: not-allowed;
-        padding-left:1px;
         min-width: 5rem;
-
-        &.first{
-            padding-left:0;
-        }
-
-        &.firstlast{
-            border-left:1px solid $calendar-border-color;
-        }
-
-        &.last{
-            padding-left:0;
-        }
 
         &.intercalary{
             min-width: initial;
         }
 
-        &:not(.first) {
-            border-left: 1px solid $calendar-border-color;
+        &:not(:last-child) {
+            border-right: 1px solid $calendar-border-color;
             padding-left: 0;
         }
     }
