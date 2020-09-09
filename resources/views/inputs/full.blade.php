@@ -1081,14 +1081,14 @@
 
                         <div class='bold-text'>Layout Settings:</div>
 
-                        <label class="row no-gutters setting">
+                        <!-- <label class="row no-gutters setting">
                             <select class='form-control static_input' data='settings' fc-index='layout'>
                                 <option value='grid'>Grid style</option>
                                 <option value='wide'>Wide style</option>
                                 <option value='vertical'>Vertical style</option>
                                 <option value='minimalistic'>Minimalistic style</option>
                             </select>
-                        </label>
+                        </label> -->
 
                         <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Makes the calendar only show the current month. Enhances calendar loading performance, especially with many moons.">
                             <div class='col'>
