@@ -64,13 +64,13 @@ const calendar_renderer = {
     },
 
     update_epochs: function(event){
-        this.loading_message = "Ordering days...";
+        this.loading_message = "Structuring days...";
         this.render_data.current_epoch = event.detail.current_epoch;
         this.render_data.preview_epoch = event.detail.preview_epoch;
     },
 
     register_events: function(event){
-        this.loading_message = "Collecting events...";
+        this.loading_message = "Updating events...";
 
         this.event_execution_time.start();
         let event_data = event.detail;
@@ -93,6 +93,7 @@ const calendar_renderer = {
     },
 
     pre_render: function(){
+        this.loaded = false;
         this.render_execution_time.start()
         show_loading_screen_buffered();
     },
@@ -110,9 +111,11 @@ const calendar_renderer = {
         );
 		eras.set_up_position();
         eras.evaluate_position();
+        this.loaded = true;
     },
 
     pre_event_load: function(){
+        this.loaded = false;
         this.event_execution_time.start()
     },
 
