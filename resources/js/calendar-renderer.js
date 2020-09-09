@@ -70,7 +70,7 @@ const calendar_renderer = {
     },
 
     register_events: function(event){
-        this.loading_message = "Updating events...";
+        this.loading_message = "Placing events...";
 
         this.event_execution_time.start();
         let event_data = event.detail;
