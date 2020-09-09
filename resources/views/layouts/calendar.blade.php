@@ -58,7 +58,7 @@
                                     <div class="season_color" x-show="day.season_color" :style="'background-color:'+day.season_color"></div>
                                 </div>
 
-                                <div class="day_row flex justify-content-center flex-wrap" x-show="day.moons">
+                                <div class="day_row flex justify-content-center flex-wrap" x-show="day.moons.length > 0">
                                     <template x-for="moon in day.moons">
                                         <svg class="moon" :moon_id="moon.index" preserveAspectRatio="xMidYMid" width="32" height="32" viewBox="0 0 32 32" :title='moon.name + ", " + moon.phase'>
                                             <circle cx="16" cy="16" r="9" class="lunar_background"/>
@@ -74,7 +74,7 @@
                                     </template>
                                 </div>
 
-                                <button class="btn_create_event btn btn-success day_row flex-grow" @click="create_event(day.epoch)" :epoch="day.epoch" x-show="day.type === 'day'">Create event</button>
+                                <button class="btn_create_event btn btn-success day_row flex-grow" @click="create_event(day.epoch)" :epoch="day.epoch" x-show="day.show_event_button">Create event</button>
 
                                 <div class="day_row">
                                     <div class="number" x-show="day.year_day" x-text="day.year_day"></div>

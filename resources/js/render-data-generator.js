@@ -3,9 +3,9 @@ const render_data_generator = {
 	get_weather_icon: function(epoch){
 
 		let epoch_data = this.epoch_data[epoch];
-		let weather = epoch_data.weather;
+        let weather = epoch_data.weather;
 
-		if(weather === undefined ||
+        if(weather === undefined ||
 			(!Perms.player_at_least('co-owner')
 				&&
 				(
@@ -106,7 +106,8 @@ const render_data_generator = {
 				"epoch": false,
 				"year_day": false,
 				"weather_icon": false,
-				"season_color": false,
+                "season_color": false,
+                "show_event_button": false,
 				"events": [],
 				"moons": []
 			}
@@ -121,7 +122,7 @@ const render_data_generator = {
 		let season_color = epoch_data.season ? (epoch_data.season.color !== undefined ? epoch_data.season.color : false) : false;
 		let weather_icon = this.get_weather_icon(epoch);
 
-		let moons = false;
+		let moons = [];
 		if(!static_data.settings.hide_moons || (static_data.settings.hide_moons && Perms.player_at_least('co-owner'))){
 			moons = this.get_moon_data(epoch_data);
 		}
@@ -137,6 +138,7 @@ const render_data_generator = {
 			"year_day": year_day,
 			"weather_icon": weather_icon,
 			"season_color": season_color,
+            "show_event_button": Perms.player_at_least('player'),
 			"events": [],
 			"moons": moons
 		};
@@ -151,7 +153,8 @@ const render_data_generator = {
 			"epoch": false,
 			"year_day": false,
 			"weather_icon": false,
-			"season_color": false,
+            "season_color": false,
+            "show_event_button": false,
 			"events": [],
 			"moons": []
 		};
@@ -356,49 +359,58 @@ const render_data_generator = {
 
                     }
                 }
+                
             }
 
             render_data.timespans.push(timespan_data);
 
-            var filtered_leap_days_end = timespan.leap_days.filter(function(features){
-                return features.intercalary && features.day === timespan.length;
-            });
+            if(!static_data.settings.only_reveal_today || (static_data.settings.only_reveal_today && epoch > dynamic_data.epoch)){
 
-            if(filtered_leap_days_end.length > 0){
+                var filtered_leap_days_end = timespan.leap_days.filter(function(features){
+                    return features.intercalary && features.day === timespan.length;
+                });
 
-                let timespan_data = {
-                    "title": "",
-                    "show_title": false,
-                    "number": static_data.settings.add_month_number ? index+1 : false,
-                    "weekdays": static_data.year_data.global_week,
-                    "show_weekdays": false,
-                    "days": [[]],
-                    "events": []
-                }
+                if(filtered_leap_days_end.length > 0){
 
-                let weekday_number = 1;
+                    let timespan_data = {
+                        "title": "",
+                        "show_title": false,
+                        "number": static_data.settings.add_month_number ? index+1 : false,
+                        "weekdays": static_data.year_data.global_week,
+                        "show_weekdays": false,
+                        "days": [[]],
+                        "events": []
+                    }
 
-                for(var leap_day_index in filtered_leap_days_end){
+                    let weekday_number = 1;
 
-                    timespan_data.days[timespan_data.days.length-1].push(this.get_day_data(epoch));
+                    for(var leap_day_index in filtered_leap_days_end){
 
-                    weekday_number++;
-                    epoch++;
+                        timespan_data.days[timespan_data.days.length-1].push(this.get_day_data(epoch));
 
-                    if(weekday_number > timespan.week.length){
-                        weekday_number = 1;
-                        if(render_data.render_style != "vertical"){
-                            timespan_data.days.push([]);
+                        weekday_number++;
+                        epoch++;
+
+                        if(weekday_number > timespan.week.length){
+                            weekday_number = 1;
+                            if(render_data.render_style != "vertical"){
+                                timespan_data.days.push([]);
+                            }
                         }
                     }
+
+                    for(weekday_number; weekday_number <= static_data.year_data.global_week.length; weekday_number++){
+                        timespan_data.days[timespan_data.days.length-1].push(this.overflow());
+                    }
+
+                    render_data.timespans.push(timespan_data);
+
                 }
 
-                for(weekday_number; weekday_number <= static_data.year_data.global_week.length; weekday_number++){
-                    timespan_data.days[timespan_data.days.length-1].push(this.overflow());
-                }
+            }
 
-                render_data.timespans.push(timespan_data);
-
+            if(static_data.settings.only_reveal_today && epoch > dynamic_data.epoch){
+                break;
             }
 
         }

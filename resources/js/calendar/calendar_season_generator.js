@@ -497,6 +497,8 @@ class Climate{
 
 	get_static_weather_data(epoch){
 
+		if(!this.process_weather) return;
+
 		epoch = epoch-1;
 
 		if(epoch > this.weather.next_season.epoch){
