@@ -93,7 +93,6 @@ const calendar_renderer = {
     },
 
     pre_render: function(){
-        this.loaded = false;
         this.render_execution_time.start()
         show_loading_screen_buffered();
     },
@@ -111,11 +110,9 @@ const calendar_renderer = {
         );
 		eras.set_up_position();
         eras.evaluate_position();
-        this.loaded = true;
     },
 
     pre_event_load: function(){
-        this.loaded = false;
         this.event_execution_time.start()
     },
 
