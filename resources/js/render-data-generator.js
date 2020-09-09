@@ -99,16 +99,16 @@ const render_data_generator = {
 
 		if(static_data.settings.only_reveal_today && epoch > dynamic_data.epoch && !Perms.player_at_least('co-owner')){
 			return {
-				"number": false,
-				"text": false,
+				"number": "",
+				"text": "",
 				"type": "empty",
                 "weekday": false,
 				"epoch": false,
 				"year_day": false,
 				"weather_icon": false,
 				"season_color": false,
-				"events": false,
-				"moons": false
+				"events": [],
+				"moons": []
 			}
 		}
 
@@ -129,7 +129,7 @@ const render_data_generator = {
         let year_day = static_data.settings.add_year_day_number ? epoch_data.year_day : false;
 
 		return {
-			"number": `${epoch_data.day}`,
+			"number": epoch_data.day,
 			"text": text,
             "type": "day",
             "weekday": epoch_data.week_day_name,
@@ -144,7 +144,7 @@ const render_data_generator = {
 
 	overflow: function(){
 		return {
-			"number": ``,
+			"number": "",
 			"text": "",
             "type": "overflow",
             "weekday": false,
@@ -428,6 +428,23 @@ const render_data_generator = {
 
     },
 
+    event_deleted: function(event_id){
+
+        for(let epoch in render_data_generator.events_to_send){
+            let events = render_data_generator.events_to_send[epoch];
+            for(let index in events){
+                if(events[index].index == event_id){
+                    delete events[index];
+                }else if(events[index].index > event_id){
+                    events[index].index -= 1;
+                }
+            }
+        }
+
+        return render_data_generator.events_to_send;
+
+    },
+
     _create_event_data: function(evaluated_event_data){
 
         if(this.processed_data === undefined){
@@ -499,7 +516,7 @@ const render_data_generator = {
                 continue;
             }
 
-            let epochs = evaluated_event_data.valid[event_index];
+            let epochs = this.evaluated_event_data.valid[event_index];
 
             for(let epoch_index in epochs){
 
@@ -509,8 +526,8 @@ const render_data_generator = {
                     events_to_send[epoch] = []
                 }
 
-                var start = evaluated_event_data.starts[event_index].indexOf(epoch) != -1;
-                var end = evaluated_event_data.ends[event_index].indexOf(epoch) != -1;
+                var start = this.evaluated_event_data.starts[event_index].indexOf(epoch) != -1;
+                var end = this.evaluated_event_data.ends[event_index].indexOf(epoch) != -1;
 
                 event_class += `${start ? ' event_start' : (end ? ' event_end' : '')}`
 
@@ -535,6 +552,8 @@ const render_data_generator = {
                 });
             }
         }
+
+        this.events_to_send = events_to_send;
 
         return {
             success: true,

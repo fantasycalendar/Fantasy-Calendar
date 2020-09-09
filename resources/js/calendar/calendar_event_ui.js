@@ -2201,7 +2201,8 @@ var edit_event_ui = {
 
 		edit_event_ui.clear_ui();
 
-		$(`#calendar .event:not(.era_event)[event_id=${delete_event_id}]`).remove();
+		let result = RenderDataGenerator.event_deleted(delete_event_id)
+		window.dispatchEvent(new CustomEvent('events-change', {detail: result} ));
 
 	}
 
@@ -2309,10 +2310,6 @@ var show_event_ui = {
 			});
 		});
 
-		/* $(document).on('click', '.event:not(.event-text-output)', function(){
-			show_event_ui.clicked_event($(this));
-		}); */
-
 	},
 
 	callback_do_close: function(callback){
@@ -2341,7 +2338,7 @@ var show_event_ui = {
 
 		if(item.hasClass('era_event')){
 
-			var id = item.attr('era_id')|0;
+			var id = item.attr('event')|0;
 			this.era_id = id;
 			this.set_current_event(static_data.eras[id]);
 
@@ -2474,9 +2471,6 @@ var edit_HTML_ui = {
 		this.html_edit_background 				= $('#html_edit_background');
 		this.save_btn							= this.html_edit_background.find('#btn_html_save');
 		this.close_ui_btn						= this.html_edit_background.find('.close_ui_btn');
-		this.data								= null;
-		this.key								= null;
-		this.value								= null;
 		this.trumbowyg							= this.html_edit_background.find('.html_input');
 
 		this.trumbowyg.trumbowyg();
@@ -2490,18 +2484,22 @@ var edit_HTML_ui = {
 		});
 
 		$(document).on('click', '.html_edit', function(){
-			var data = $(this).attr('data');
-			edit_HTML_ui.key = $(this).attr('index');
-			edit_HTML_ui.data = get_calendar_data(data);
-			edit_HTML_ui.value = clone(edit_HTML_ui.data[edit_HTML_ui.key]);
-			edit_HTML_ui.set_html();
-		})
+			edit_HTML_ui.edit_era_description($(this).closest('.sortable-container').attr('index')|0);
+		});
+
+	},
+
+	edit_era_description: function(era_index){
+
+		this.era = static_data.eras[era_index];
+
+		this.set_html();
 
 	},
 
 	set_html: function(){
 
-		this.trumbowyg.trumbowyg('html', this.value);
+		this.trumbowyg.trumbowyg('html', this.era.description);
 
 		this.html_edit_background.removeClass('hidden');
 
@@ -2509,11 +2507,7 @@ var edit_HTML_ui = {
 
 	save_html: function(){
 
-		this.data[this.key] = this.trumbowyg.trumbowyg('html');
-
-		edit_HTML_ui.key = null;
-		edit_HTML_ui.data = null;
-		edit_HTML_ui.value = null;
+		this.era.description = this.trumbowyg.trumbowyg('html');
 
 		evaluate_save_button();
 
@@ -2524,8 +2518,6 @@ var edit_HTML_ui = {
 	clear_ui: function(){
 
 		this.trumbowyg.trumbowyg('html', '');
-
-		this.reference = null;
 
 		this.html_edit_background.addClass('hidden');
 
