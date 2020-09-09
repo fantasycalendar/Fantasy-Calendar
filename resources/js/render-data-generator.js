@@ -175,7 +175,7 @@ const render_data_generator = {
         let render_data = {
             "current_epoch": dynamic_data.epoch,
             "preview_epoch": dynamic_data.epoch,
-            "render_style": static_data.settings.layout,
+            "render_style": "grid", // static_data.settings.layout
             "timespans": [],
             "event_epochs": {},
             "timespan_event_epochs": {},
@@ -220,14 +220,14 @@ const render_data_generator = {
 
                     if(weekday_number > timespan.week.length){
                         weekday_number = 1;
-                        if(static_data.settings.layout != "vertical"){
+                        if(render_data.render_style != "vertical"){
                             timespan_data.days.push([]);
                         }
                     }
                 }
 
                 for(weekday_number; weekday_number <= static_data.year_data.global_week.length; weekday_number++){
-                    // timespan_data.days[timespan_data.days.length-1].push(this.overflow());
+                    timespan_data.days[timespan_data.days.length-1].push(this.overflow());
                 }
 
                 render_data.timespans.push(timespan_data);
@@ -253,16 +253,16 @@ const render_data_generator = {
             for(let day_number = 1; day_number <= timespan.length;){
 
                 if(timespan_data.days[timespan_data.days.length-1].length != 0){
-                    if(static_data.settings.layout != "vertical"){
+                    if(render_data.render_style != "vertical"){
                         timespan_data.days.push([])
                     }
                 }
 
                 for(let weekday_number = 1; weekday_number <= timespan.week.length; weekday_number++){
 
-                    if(week_day > weekday_number && show_months && static_data.settings.layout != "vertical"){
+                    if(week_day > weekday_number && show_months && render_data.render_style != "vertical"){
 
-                        // timespan_data.days[timespan_data.days.length-1].push(this.overflow());
+                        timespan_data.days[timespan_data.days.length-1].push(this.overflow());
 
                     }else if(day_number <= timespan.length){
 
@@ -280,7 +280,7 @@ const render_data_generator = {
                         if(filtered_leap_days.length > 0){
 
                             for(let internal_weekday_number = week_day; internal_weekday_number < timespan.week.length; internal_weekday_number++){
-                                // timespan_data.days[timespan_data.days.length-1].push(this.overflow());
+                                timespan_data.days[timespan_data.days.length-1].push(this.overflow());
                             }
 
                             render_data.timespans.push(timespan_data);
@@ -308,14 +308,14 @@ const render_data_generator = {
 
                                 if(internal_weekday_number > timespan.week.length){
                                     internal_weekday_number = 1;
-                                    if(static_data.settings.layout != "vertical"){
+                                    if(render_data.render_style != "vertical"){
                                         timespan_data.days.push([]);
                                     }
                                 }
                             }
 
                             for(internal_weekday_number; internal_weekday_number <= static_data.year_data.global_week.length; internal_weekday_number++){
-                                // timespan_data.days[timespan_data.days.length-1].push(this.overflow());
+                                timespan_data.days[timespan_data.days.length-1].push(this.overflow());
                             }
 
                             render_data.timespans.push(timespan_data);
@@ -332,7 +332,7 @@ const render_data_generator = {
 
                             if(week_day != timespan.week.length){
                                 for(let internal_weekday_number = 0; internal_weekday_number < week_day; internal_weekday_number++){
-                                    // timespan_data.days[timespan_data.days.length-1].push(this.overflow());
+                                    timespan_data.days[timespan_data.days.length-1].push(this.overflow());
                                 }
                             }
 
@@ -350,8 +350,8 @@ const render_data_generator = {
 
                     }else{
 
-                        if(static_data.settings.layout != "vertical"){
-                            // timespan_data.days[timespan_data.days.length-1].push(this.overflow());
+                        if(render_data.render_style != "vertical"){
+                            timespan_data.days[timespan_data.days.length-1].push(this.overflow());
                         }
 
                     }
@@ -387,14 +387,14 @@ const render_data_generator = {
 
                     if(weekday_number > timespan.week.length){
                         weekday_number = 1;
-                        if(static_data.settings.layout != "vertical"){
+                        if(render_data.render_style != "vertical"){
                             timespan_data.days.push([]);
                         }
                     }
                 }
 
                 for(weekday_number; weekday_number <= static_data.year_data.global_week.length; weekday_number++){
-                    // timespan_data.days[timespan_data.days.length-1].push(this.overflow());
+                    timespan_data.days[timespan_data.days.length-1].push(this.overflow());
                 }
 
                 render_data.timespans.push(timespan_data);
@@ -516,7 +516,7 @@ const render_data_generator = {
 
                 let event_name = event.name;
 
-                if(static_data.settings.layout == "minimalistic" && this.render_data.event_epochs[epoch] !== undefined){
+                if(this.render_data.render_style == "minimalistic" && this.render_data.event_epochs[epoch] !== undefined){
                     let day = this.render_data.event_epochs[epoch];
                     event_name = `${ordinal_suffix_of(day.number)}: ${event_name}`
                 }
