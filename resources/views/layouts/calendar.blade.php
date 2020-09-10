@@ -47,13 +47,12 @@
                                 <div class="day_row d-flex justify-content-between">
                                     <div class="number" x-text="day.number" x-show="day.number"></div>
 
-                                    <template x-if="day.weather_icon">
-                                        <div class="weather_popup center"
-                                            @click="weather_click(day, $event)"
-                                            @mouseenter="weather_mouse_enter(day, $event)"
-                                            @mouseleave="weather_mouse_leave"
-                                        ><i :class="day.weather_icon"></i></div>
-                                    </template>
+                                    <div class="weather_popup center"
+                                        x-show="day.weather_icon"
+                                        @click="weather_click(day, $event)"
+                                        @mouseenter="weather_mouse_enter(day, $event)"
+                                        @mouseleave="weather_mouse_leave"
+                                    ><i :class="day.weather_icon"></i></div>
 
                                     <div class="season_color" x-show="day.season_color" :style="'background-color:'+day.season_color"></div>
                                 </div>
