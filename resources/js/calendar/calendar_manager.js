@@ -182,13 +182,7 @@ worker_climate.onmessage = e => {
 
 	if(prev_seasons != calendar_weather.processed_seasons || prev_weather != calendar_weather.processed_weather){
 
-		RenderDataGenerator.create_render_data(e.data.processed_data).then(
-			function(result){
-				window.dispatchEvent(new CustomEvent('render-data-change', {detail: result}));
-			}, function(err){
-				$.notify(err);
-			}
-		);
+		rebuild_all_data(e.data.processed_data);
 
 		eval_clock();
 
@@ -252,4 +246,26 @@ worker_calendar.onmessage = e => {
 
 	}
 
+}
+
+function rebuild_all_data(processed_data){
+
+	RenderDataGenerator.create_render_data(processed_data).then(
+
+		function(result){
+
+			window.dispatchEvent(new CustomEvent('render-data-change', {detail: result}));
+
+			RenderDataGenerator.create_event_data().then(
+				function(result){
+					window.dispatchEvent(new CustomEvent('events-change', {detail: result} ));
+				}, function(err){
+					$.notify(err);
+				}
+			)
+
+		}, function(err){
+			$.notify(err);
+		}
+	);
 }

@@ -4196,17 +4196,10 @@ function error_check(parent, rebuild){
 
 	}else{
 
-		RenderDataGenerator.create_render_data().then(
-			function(result){
-				window.dispatchEvent(new CustomEvent('render-data-change', {detail: result}));
-			}, function(err){
-				$.notify(err);
-			}
-		);
-
 		if(parent !== undefined && (parent === "seasons")){
 			rebuild_climate();
 		}else{
+			rebuild_all_data();
 			update_current_day(true);
 			evaluate_sun();
 		}

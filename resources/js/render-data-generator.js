@@ -475,9 +475,16 @@ const render_data_generator = {
             };
         }
 
-        let events_to_send = [];
+        this.events_to_send = [];
 
-		if(static_data.eras.length > 0){
+        if(static_data.settings.hide_events && !Perms.player_at_least('co-owner')){
+            return {
+                success: true,
+                event_data: this.events_to_send
+            }
+        }   
+
+		if(static_data.eras.length > 0 && !static_data.settings.hide_eras){
 
 			var num_eras = Object.keys(static_data.eras).length;
 
@@ -493,16 +500,20 @@ const render_data_generator = {
                     var category = era.settings.event_category_id && era.settings.event_category_id > -1 ?  get_category(era.settings.event_category_id) : false;
 
                     if(category){
+                        if(category.event_settings.hide_full){
+                            continue;
+                        }
                         print = category.event_settings.print;
                         event_class += category.event_settings.color ? " " + category.event_settings.color : "";
                         event_class += category.event_settings.text ? " " + category.event_settings.text : "";
+                        event_class += category.event_settings.hide || category.category_settings.hide ? " hidden_event" : "";
                     }
 
-                    if(events_to_send[era.date.epoch] === undefined){
-                        events_to_send[era.date.epoch] = []
+                    if(this.events_to_send[era.date.epoch] === undefined){
+                        this.events_to_send[era.date.epoch] = []
                     }
 
-                    events_to_send[era.date.epoch].push({
+                    this.events_to_send[era.date.epoch].push({
                         "index": era_index,
                         "name": era.name,
                         "class": event_class,
@@ -515,6 +526,10 @@ const render_data_generator = {
         for(let event_index = 0; event_index < events.length; event_index++){
 
             let event = events[event_index];
+
+            if(event.settings.hide_full){
+                continue;
+            }
 
             var category = event.event_category_id && event.event_category_id > -1 ?  get_category(event.event_category_id) : false;
 
@@ -534,8 +549,8 @@ const render_data_generator = {
 
                 let epoch = epochs[epoch_index];
 
-                if(events_to_send[epoch] === undefined){
-                    events_to_send[epoch] = []
+                if(this.events_to_send[epoch] === undefined){
+                    this.events_to_send[epoch] = []
                 }
 
                 var start = this.evaluated_event_data.starts[event_index].indexOf(epoch) != -1;
@@ -556,7 +571,7 @@ const render_data_generator = {
                     event_name = `${event_name} (end)`
                 }
 
-                events_to_send[epoch].push({
+                this.events_to_send[epoch].push({
                     "index": event_index,
                     "name": event_name,
                     "class": event_class,
@@ -565,11 +580,9 @@ const render_data_generator = {
             }
         }
 
-        this.events_to_send = events_to_send;
-
         return {
             success: true,
-            event_data: events_to_send
+            event_data: this.events_to_send
         }
     },
 
