@@ -98,15 +98,15 @@ var eras = {
 
 		this.static_data = static_data;
 
-		if(this.static_data.eras.length > 0){
+		this.current_eras = [];
+		this.prev_era = -1;
+		this.current_era = 0;
+		this.next_era = 1;
+		this.start_epoch = start_epoch;
+		this.end_epoch = end_epoch;
+		this.era = undefined;
 
-			this.current_eras = [];
-			this.prev_era = -1;
-			this.current_era = 0;
-			this.next_era = 1;
-			this.start_epoch = start_epoch;
-			this.end_epoch = end_epoch;
-			this.era = undefined;
+		if(this.static_data.eras.length > 0){
 
 			// If the last era shift was behind us, then it is the last era
 			if(this.static_data.eras[this.static_data.eras.length-1].date.epoch < this.start_epoch){
