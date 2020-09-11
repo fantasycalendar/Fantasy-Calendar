@@ -20,20 +20,6 @@ const calendar_renderer = {
         hide_weekdays: false
     },
 
-    get render_execution_time(){
-        if(this._render_execution_time === undefined){
-            this._render_execution_time = new execution();
-        }
-        return this._render_execution_time;
-    },
-
-    get event_execution_time(){
-        if(this._event_execution_time === undefined){
-            this._event_execution_time = new execution();
-        }
-        return this._event_execution_time;
-    },
-
     load_calendar: function(event){
         this.loading_message = "Building calendar...";
         this.render_data = event.detail;
@@ -84,7 +70,6 @@ const calendar_renderer = {
     register_events: function(event){
         this.loading_message = "Placing events...";
 
-        this.event_execution_time.start();
         let event_data = event.detail;
         for(let epoch in this.render_data.event_epochs){
             if(this.render_data.event_epochs[epoch].events.length > 0){
@@ -101,18 +86,15 @@ const calendar_renderer = {
                 }
             }
         }
-        this.event_execution_time.end("Event registration took:")
     },
 
     pre_render: function(){
-        this.render_execution_time.start()
         show_loading_screen_buffered();
     },
 
     post_render: function(){
         this.loading_message = "Wrapping up rendering...";
 
-        this.render_execution_time.end("Rendering DOM took:");
         hide_loading_screen();
 
 		eras.evaluate_current_era(
@@ -128,11 +110,9 @@ const calendar_renderer = {
     },
 
     pre_event_load: function(){
-        this.event_execution_time.start()
     },
 
     post_event_load: function(){
-        this.event_execution_time.end("Event DOM took:")
         this.loaded = true;
     }
 

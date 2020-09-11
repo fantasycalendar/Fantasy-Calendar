@@ -329,10 +329,8 @@ var climate_charts = {
 	set active_view(active_view){
 		this._active_view = active_view;
 		if(this.data_changed){
-			execution_time.start();
 			this.evaluate_day_length_chart();
 			this.evaluate_weather_charts();
-			execution_time.end("Climate charts took:");
 		}
 	},
 

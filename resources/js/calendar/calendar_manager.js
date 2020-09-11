@@ -106,8 +106,6 @@ var evaluated_event_data = {};
 
 function rebuild_calendar(action, dynamic_data){
 
-	execution_time.start()
-
     worker_calendar.postMessage({
 		calendar_name: calendar_name,
 		static_data: static_data,
@@ -135,8 +133,6 @@ function rebuild_climate(){
 
 function rebuild_events(event_id){
 
-	execution_time.start()
-
 	worker_events.postMessage({
 		static_data: static_data,
 		dynamic_data: dynamic_data,
@@ -162,9 +158,6 @@ worker_events.onmessage = e => {
 			$.notify(err);
 		}
 	)
-
-	execution_time.end("Event worker took:")
-
 
 }
 
@@ -200,8 +193,6 @@ worker_climate.onmessage = e => {
 }
 
 worker_calendar.onmessage = e => {
-
-	execution_time.end("Calendar worker took:")
 
 	evaluated_static_data = {}
 	evaluated_static_data = e.data.processed_data;
