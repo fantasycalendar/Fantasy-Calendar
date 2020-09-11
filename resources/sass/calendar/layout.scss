@@ -295,5 +295,9 @@ body.page-calendars-index {
     .export-body {
         height: 74vh;
         background-color: $card-bg-color;
+
+        &:focus {
+            color: #f2f2f2;
+        }
     }
 }
