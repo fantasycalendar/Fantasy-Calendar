@@ -63,6 +63,18 @@ const calendar_renderer = {
         calendar_weather.tooltip.hide();
     },
 
+    moon_mouse_enter: function(moon, event){
+        let title = moon.name + ', ' + moon.phase;
+        window.dispatchEvent(new CustomEvent('moon-mouse-enter', {detail: {
+            element: event.target,
+            title: title
+        }}));
+    },
+
+    moon_mouse_leave: function(){
+        window.dispatchEvent(new CustomEvent('moon-mouse-leave'));
+    },
+
     update_epochs: function(event){
         this.loading_message = "Structuring days...";
         this.render_data.current_epoch = event.detail.current_epoch;

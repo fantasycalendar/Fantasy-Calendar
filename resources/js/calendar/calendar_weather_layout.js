@@ -21,6 +21,33 @@ HTMLElement.prototype.pseudoStyle = function(element,prop,value){
 	return this;
 };
 
+var moon_tooltip = {
+	element: false,
+	title: "",
+	show: false,
+	
+	init: function(){
+		this.tooltip_box = $('#moon_tooltip_box');
+	},
+
+	set_popper: function(){
+		if(this.element){
+			this.popper = new Popper(this.element, this.tooltip_box, {
+				placement: 'top',
+				modifiers: {
+					preventOverflow: {
+						boundariesElement: $('#calendar')[0],
+					},
+					offset: {
+						enabled: true,
+						offset: '0, 5px'
+					}
+				}
+			});
+		}
+	}
+}
+
 var calendar_weather = {
 
 	epoch_data: {},

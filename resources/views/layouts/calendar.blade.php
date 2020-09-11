@@ -59,7 +59,15 @@
 
                                 <div class="day_row flex justify-content-center flex-wrap" x-show="day.moons.length > 0">
                                     <template x-for="moon in day.moons">
-                                        <svg class="moon protip" :moon_id="moon.index" preserveAspectRatio="xMidYMid" width="32" height="32" viewBox="0 0 32 32" data-pt-position="top" :data-pt-title='moon.name + ", " + moon.phase'>
+                                        <svg class="moon"
+                                             :moon_id="moon.index"
+                                             preserveAspectRatio="xMidYMid"
+                                             width="32"
+                                             height="32"
+                                             viewBox="0 0 32 32"
+                                             @mouseenter="moon_mouse_enter(moon, $event)"
+                                             @mouseleave="moon_mouse_leave"
+                                        >
                                             <circle cx="16" cy="16" r="9" class="lunar_background"/>
                                             <path class="lunar_shadow" x-show="moon.path" :d="moon.path"/>
                                             <circle cx="16" cy="16" r="10" class="lunar_border"/>

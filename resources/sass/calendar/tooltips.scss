@@ -60,3 +60,19 @@
     }
 
 }
+
+/* ------------------ Moon tooltip Layout ----------------- */
+
+#moon_tooltip_box {
+    position: absolute;
+    background: $accent-color;
+    color: white;
+    text-align: center;
+    top:0;
+    width: fit-content;
+    border-radius: 7px;
+    padding:10px;
+    font-size:11pt;
+    z-index: 299;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+}
