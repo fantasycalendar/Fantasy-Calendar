@@ -351,6 +351,10 @@ var eras = {
 
 			}
 
+		}else{
+		
+			this.set_current_era(-1);
+
 		}
 
 	},

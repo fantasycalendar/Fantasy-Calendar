@@ -177,7 +177,7 @@ const render_data_generator = {
 
         let render_data = {
             "current_epoch": dynamic_data.epoch,
-            "preview_epoch": dynamic_data.epoch,
+            "preview_epoch": preview_date.epoch,
             "render_style": "grid", // static_data.settings.layout
             "timespans": [],
             "event_epochs": {},
