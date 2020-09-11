@@ -1,6 +1,6 @@
 <div id='calendar' x-data="CalendarRenderer">
 
-    <template x-if="!loaded">
+    <template x-if="!loaded && render_data.timespans.length">
         <div class="modal_background mt-5 pt-5">
             <div id="modal" class="creation mt-5 py-5 d-flex flex-column align-items-center justify-content-center">
                 <h3 class="text-center" x-text="loading_message"></h3>
@@ -59,7 +59,7 @@
 
                                 <div class="day_row flex justify-content-center flex-wrap" x-show="day.moons.length > 0">
                                     <template x-for="moon in day.moons">
-                                        <svg class="moon" :moon_id="moon.index" preserveAspectRatio="xMidYMid" width="32" height="32" viewBox="0 0 32 32" :title='moon.name + ", " + moon.phase'>
+                                        <svg class="moon protip" :moon_id="moon.index" preserveAspectRatio="xMidYMid" width="32" height="32" viewBox="0 0 32 32" data-pt-position="top" :data-pt-title='moon.name + ", " + moon.phase'>
                                             <circle cx="16" cy="16" r="9" class="lunar_background"/>
                                             <path class="lunar_shadow" x-show="moon.path" :d="moon.path"/>
                                             <circle cx="16" cy="16" r="10" class="lunar_border"/>

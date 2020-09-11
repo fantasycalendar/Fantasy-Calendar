@@ -638,13 +638,13 @@ function get_current_era(static_data, epoch){
 		}
 
 	}
-	
+
 	if(current_era == -1 && static_data.eras[0].settings.starting_era){
 		current_era = 0;
 	}
 
 	return current_era;
-	
+
 }
 
 
@@ -939,35 +939,35 @@ function valid_preview_date(year, timespan, day){
     if(!static_data.settings.allow_view){
         return false;
 	}
-	
+
 	if(static_data.settings.only_reveal_today){
 
 		if(year > dynamic_data.year){
 			return false;
 		}
-		
+
 		if(year == dynamic_data.year){
 			if(timespan > dynamic_data.timespan){
 				return false;
 			}
-			
+
 			if(timespan == dynamic_data.timespan && day > dynamic_data.day){
 				return false;
 			}
 		}
 
 	}else if(static_data.settings.only_backwards){
-        
+
         if(!static_data.settings.show_current_month && year > dynamic_data.year){
 
 			return false;
-			
+
         }
-            
+
 		if(timespan > dynamic_data.timespan){
 			return false;
 		}
-		
+
 		if(timespan == dynamic_data.timespan && day > dynamic_data.day){
 			return false;
 		}
@@ -1320,7 +1320,7 @@ function fract_year_length(static_data){
 	var avg_length = 0;
 
 	for(var timespan_index = 0; timespan_index < static_data.year_data.timespans.length; timespan_index++){
-		
+
 		var timespan = static_data.year_data.timespans[timespan_index];
 
 		avg_length += timespan.length/timespan.interval;
@@ -1436,7 +1436,7 @@ var date_converter = {
 
 		this.parent_static_data = parent_static_data;
 		this.child_static_data = child_static_data;
-		
+
 		this.parent_dynamic_data = parent_dynamic_data;
 		this.child_dynamic_data = child_dynamic_data;
 
@@ -1867,7 +1867,7 @@ function get_interval_fractions(_intervals, _offset){
 function get_interval_occurrences(static_data, _parent_occurrences, _intervals, _offset){
 
 	var intervals = strip_intervals(_intervals, _offset);
-	
+
 	var occurrences = 0;
 
 	if(_parent_occurrences == 0){
@@ -2021,7 +2021,7 @@ function get_epoch(static_data, year, timespan, day, debug){
 					var timespan_fraction = Math.floor(year / timespan_obj.interval);
 				}
 			}
-			
+
 		}
 
 		// Get the number of weeks for that month (check if it has a custom week or not)
@@ -2043,7 +2043,7 @@ function get_epoch(static_data, year, timespan, day, debug){
 		if(timespan_obj.type === "intercalary"){
 			intercalary += timespan_obj.length * timespan_fraction;
 		}
-		
+
 		num_timespans += timespan_fraction;
 
 		// Loop through each leap day

@@ -30,7 +30,7 @@
         if(typeof static_data.clock.crowding == "undefined"){
             static_data.clock.crowding = 0;
         }
-        
+
         rebuild_calendar('calendar', dynamic_data);
 
         bind_calendar_events();
@@ -44,7 +44,7 @@
         set_up_visitor_values();
 
         if(has_parent){
-            
+
             check_last_change(parent_hash, function(change_result){
 
                 parent_last_dynamic_change = new Date(change_result.last_dynamic_change)
@@ -77,13 +77,13 @@
         }
 
     });
-    
+
     function check_parent_update(){
 
         if(document.hasFocus() && (Date.now() - last_mouse_move) < 10000){
 
             instapoll = false;
-            
+
             check_last_change(parent_hash, function(change_result){
 
 	    		new_dynamic_change = new Date(change_result.last_dynamic_change)
