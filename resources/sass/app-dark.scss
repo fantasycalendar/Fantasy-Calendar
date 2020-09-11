@@ -56,7 +56,7 @@ $hamburger-padding-y        :1rem;
     color: white;
 }
 
-.form-control:disabled{
+.form-control:disabled, .form-control[readonly]{
     background-color: $input-disabled-color;
 }
 
