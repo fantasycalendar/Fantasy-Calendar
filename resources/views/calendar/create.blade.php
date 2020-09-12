@@ -135,6 +135,7 @@
 @section('content')
 	<div id="generator_container" class="step-1" x-data="CalendarPresets">
 		@include('layouts.presets')
+        @include('layouts.calendar-layouts')
 		@include('layouts.day_data_tooltip')
 		@include('layouts.weather_tooltip')
         @include('layouts.moon_tooltip')
