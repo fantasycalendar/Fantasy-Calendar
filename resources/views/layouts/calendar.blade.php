@@ -84,7 +84,7 @@
                                 <button class="btn_create_event btn btn-success day_row flex-grow" @click="create_event(day.epoch)" :epoch="day.epoch" x-show="day.show_event_button">Create event</button>
 
                                 <div class="day_row">
-                                    <div class="number" x-show="day.year_day" x-text="day.year_day"></div>
+                                    <div class="number year_day" x-show="day.year_day" x-text="day.year_day"></div>
                                 </div>
                             </div>
                         </template>

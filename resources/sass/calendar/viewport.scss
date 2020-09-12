@@ -165,6 +165,10 @@
     .number{
         margin-left:5px;
     }
+
+    .year_day{
+        font-size:0.75rem;
+    }
 }
 
 .day_row:nth-last-child(2) {
@@ -509,30 +513,6 @@
         }
     }
 }
-
-body {
-
-    &.hide_timespan_number .timespan_number,
-    &.hide_year_day .year_day_number{
-        display:none;
-    }
-
-    .last_row{
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: flex-end;
-        flex-direction: column;
-        font-size:0.75rem;
-        text-align:left;
-    }
-
-}
-
-.calendar_moon_container{
-    flex-flow: row wrap;
-    justify-content: center;
-}
-
 .current_day{
     background-image: linear-gradient(to right, rgba($current-day-color, 0.2), rgba($current-day-color, 0.2));
 }
