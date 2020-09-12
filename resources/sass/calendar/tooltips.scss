@@ -12,7 +12,7 @@
     padding:10px;
     font-size:9pt;
     display:none;
-    z-index: 1500;
+    z-index: 299;
     box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
 }
 
@@ -37,7 +37,7 @@
     padding:10px;
     font-size:9pt;
     display:none;
-    z-index: 1500;
+    z-index: 299;
     box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
 }
 
@@ -47,7 +47,7 @@
 }
 
 #day_data_tooltip_box > table{
-    
+
     & td{
         padding:0 0.2rem;
         &:first-child{
@@ -59,4 +59,20 @@
         border-bottom:1px solid $calendar-border-color;
     }
 
+}
+
+/* ------------------ Moon tooltip Layout ----------------- */
+
+#moon_tooltip_box {
+    position: absolute;
+    background: $accent-color;
+    color: white;
+    text-align: center;
+    top:0;
+    width: fit-content;
+    border-radius: 7px;
+    padding:10px;
+    font-size:11pt;
+    z-index: 299;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
 }

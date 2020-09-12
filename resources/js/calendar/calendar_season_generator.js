@@ -257,11 +257,10 @@ class Climate{
 		this.set_up_season_epochs();
 		this.set_up_weather_epochs();
 
-		for(var epoch = this.start_epoch; epoch < this.end_epoch; epoch++){
 
+		for(var epoch = this.start_epoch; epoch < this.end_epoch; epoch++){
 			this.epoch_data[epoch].season = this.get_static_season_data(epoch);
 			this.epoch_data[epoch].weather = this.get_static_weather_data(epoch);
-
 		}
 
 		this.evaluate_equinoxes();
@@ -497,6 +496,8 @@ class Climate{
 	}
 
 	get_static_weather_data(epoch){
+
+		if(!this.process_weather) return;
 
 		epoch = epoch-1;
 
@@ -1002,15 +1003,15 @@ class Climate{
 		}
 
 		if(!this.wind_direction){
-			this.wind_direction = this.random.random_int_between(epoch+1000, 0, Object.keys(preset_data.wind.direction_table).length-1);
-			this.wind_direction = Object.keys(preset_data.wind.direction_table)[this.wind_direction];
+			let table = Object.keys(preset_data.wind.direction_table);
+			this.wind_direction = table[this.random.random_int_between(epoch+1000, 0, table.length-1)];
 		}
 
 		var wind_chance = clamp((0.5+this.random.noise(epoch+1000, 10, 0.4, 0.5)), 0.0, 1.0);
 		this.wind_direction = pick_from_table(wind_chance, preset_data.wind.direction_table[this.wind_direction], true).key;
 		var wind_direction = this.wind_direction;
 
-		var wind_info = clone(preset_data.wind.info[wind_speed.key]);
+		var wind_info = preset_data.wind.info[wind_speed.key];
 		var wind_velocity_i = wind_info['mph'];
 		var wind_velocity_m = wind_info['mph'].replace( /(\d+)/g, function(a, b){
 			return Math.round(b*1.60934,2);

@@ -33,6 +33,10 @@ class Perms {
     can_modify_event(event_id){
         return this.player_at_least('co-owner') || (this.player_at_least('player') && this.userid == events[event_id].creator_id);
     }
+
+    user_is_owner(){
+        return this.owner;
+    }
 }
 
 module.exports = Perms;

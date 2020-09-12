@@ -1839,7 +1839,7 @@ var calendar_builder = {
 			era_year++;
 		}
 
-		var calendar_end_epoch = epoch;
+		var calendar_end_epoch = epoch-1;
 		var calendar_first_week_day = first_week_day;
 
 		order = Object.keys(this.calendar_list.post_timespans_to_evaluate);
@@ -2079,9 +2079,6 @@ var calendar_builder = {
 		climate_generator = new Climate(this.data.epochs, this.static_data, this.dynamic_data, calendar_start_epoch, calendar_end_epoch);
 		this.data.epochs = climate_generator.generate();
 
-
-
-
 		if(debug || debugtext){
 
 			var wrong = false;
@@ -2130,10 +2127,10 @@ var calendar_builder = {
 				week_day: calendar_first_week_day,
 				year_day: calendar_year_day
 			},
-			timespans: this.calendar_list.timespans_to_build,
 			epoch_data: this.data.epochs,
 			processed_seasons: climate_generator.process_seasons,
-			processed_weather: climate_generator.process_weather
+			processed_weather: climate_generator.process_weather,
+			timespans_to_build: this.calendar_list.timespans_to_build
 		}
 
 	}

@@ -1238,11 +1238,6 @@ ol.example li.placeholder:before {
     max-width: 90%;
     position:relative;
     margin:auto;
-    z-index: 10000;
-}
-
-#modal {
-
     color: white;
 
     &.error{

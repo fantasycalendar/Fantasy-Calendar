@@ -171,7 +171,7 @@ var loading_screen_text_timer;
 function show_loading_screen_buffered(loading_bar, cancel_button_callback){
 	loading_screen_timer = setTimeout(function(){
 		show_loading_screen_timed(loading_bar, cancel_button_callback)
-	}, 50);
+	}, 100);
 }
 
 function show_loading_screen_timed(loading_bar, cancel_button_callback){
