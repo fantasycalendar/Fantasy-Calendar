@@ -50,15 +50,16 @@
 	            </div>
             </div>
 
-			@if($calendar->owned)
-            <div class='row'>
-                <div class='col'>
-                    <a href="{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}" class='full'>
-                        <button type="button" class='btn btn-sm btn-success btn-block'>Edit Mode</button>
-                    </a>
-                </div>
+            <div class='d-flex my-2 w-100'>
+			    @if($calendar->owned)
+                <a href="{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}" class="btn w-100 btn-sm btn-success mr-2">
+                    Edit
+                </a>
+                @endif
+                <button type='button' onclick="print()" class="btn w-100 btn-sm btn-primary">
+                    Print
+                </a>
             </div>
-            @endif
 
             @can('advance-date', $calendar)
 			<div class='date_control container' id='date_inputs'>
