@@ -19,7 +19,7 @@
             <p><i class="fa fa-calendar"></i> Calendars: {{ $user->calendars->count() }}</p>
         </div>
         <div class="col-12 col-md-8">
-            <p><i class="fa fa-layer-group"></i> Subscription: {!! ($user->betaAccess()) ? "Worldbuilder <br><small class='pl-3'>(Free for beta participation)</small>" : $user->paymentLevel() !!}</p>
+            <p><i class="fa fa-layer-group"></i> Subscription: {!! ($user->betaAccess()) ? "Timekeeper <br><small class='pl-3'>(Free for beta participation)</small>" : $user->paymentLevel() !!}</p>
             @empty($subscription)
                 @unless($user->betaAccess())
                     <p><a class="btn btn-primary form-control" href="{{ route('subscription.pricing') }}">Get subscribed</a></p>

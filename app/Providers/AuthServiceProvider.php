@@ -35,7 +35,7 @@ class AuthServiceProvider extends ServiceProvider
 
             return $user->can('update', $calendar)
 
-                || ($calendar->user->paymentLevel() == 'Worldbuilder'
+                || ($calendar->user->paymentLevel() == 'Timekeeper'
 
                     && $calendar->users->contains($user) && in_array($calendar->users->find($user->id)->pivot->user_role, ['player', 'co-owner'])
 
@@ -77,7 +77,7 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('add-events', function($user, $calendar) {
             return $user->can('update', $calendar)
 
-                || ($calendar->user->paymentLevel() == 'Worldbuilder'
+                || ($calendar->user->paymentLevel() == 'Timekeeper'
 
                     && $calendar->users->contains($user) && in_array($calendar->users->find($user->id)->pivot->user_role, ['player', 'co-owner'])
                 );
@@ -86,7 +86,7 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('advance-date', function($user, $calendar) {
             return $user->can('update', $calendar)
 
-                || ($calendar->user->paymentLevel() == 'Worldbuilder'
+                || ($calendar->user->paymentLevel() == 'Timekeeper'
 
                     && $calendar->users->contains($user) && $calendar->users->find($user->id)->pivot->user_role === 'co-owner'
                 );
@@ -101,7 +101,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('link', function($user, $calendar) {
-            return $user->is($calendar->user) && $calendar->user->paymentLevel() === 'Worldbuilder';
+            return $user->is($calendar->user) && $calendar->user->paymentLevel() === 'Timekeeper';
         });
     }
 }

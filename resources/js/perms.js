@@ -8,7 +8,7 @@ class Perms {
 
         this.levels = {
             'free': 0,
-            'worldbuilder': 1,
+            'timekeeper': 1,
             'superadmin': 5000,
         };
 

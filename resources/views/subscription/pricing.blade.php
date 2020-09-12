@@ -91,7 +91,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="alert alert-warning">
-                        As a beta user, you already have the Worldbuilder tier -  If you just want to show us some love, you can choose to <a href="{{ route('subscription.pricing', ['beta_override' => true]) }}"> subscribe anyway</a> for a discounted price!.
+                        As a beta user, you already have the Timekeeper tier -  If you just want to show us some love, you can choose to <a href="{{ route('subscription.pricing', ['beta_override' => true]) }}"> subscribe anyway</a> for a discounted price!.
                     </div>
                 </div>
             </div>
@@ -132,76 +132,22 @@
             <div class="col-12 col-lg-4 subscription-option">
                 <div class="inner">
                     <h2>Timekeeper</h2>
-                    <h5>For users who need to keep track of multiple timelines, universes, or games.</h5>
-
-                    @if($betaAccess && Auth::user()->paymentLevel() == "Free")
-                        <h3 class="bg-grey monthly">Free<br><p class="small">Because you're awesome <3</p></h3>
-                        <h3 class="bg-grey yearly">Free<br><p class="small">Because you're awesome <3</p></h3>
-                    @elseif($earlySupporter)
-                        <h3 class="bg-grey monthly">$1.49 / month<br><p class="small">25% off because you're an early supporter (normally $1.99)!</p></h3>
-                        <h3 class="bg-grey yearly">$14.99 / year<br><p class="small">25% off because you're an early supporter (normally $19.99), as well as two months free!</p></h3>
-                    @else
-                        <h3 class="bg-grey monthly">$1.99 / month<br></h3>
-                        <h3 class="bg-grey yearly">$19.99 / year<br><p class="small">Two months free (16% discount)!</p></h3>
-                    @endif
-
-                    <ul class="features">
-                        <li><strong>Full</strong> calendar functionality</li>
-                        <li><strong>Unlimited</strong> number of calendars</li>
-                        <!-- <li>Timekeeper Discord role</li> -->
-                        <!-- <li>Subscriber-only Discord channel</li> -->
-                        <li><strong>User Management</strong> <p class="small">Users can comment on events and view provided information</p> </li>
-                    </ul>
-
-                    @guest
-                        <a href="{{ route('register') }}" class="register">Register to subscribe</a>
-                    @else
-                        @if(!$betaAccess)
-                            @if(Auth::user()->subscribedToPlan('timekeeper_monthly', 'Timekeeper'))
-                                @if(Auth::user()->subscriptions->first()->onGracePeriod())
-                                    <a href="{{ route('subscription.resume', ['level' => 'Timekeeper']) }}" class="btn btn-info monthly">Resume monthly</a>
-                                @else
-                                    <a href="{{ route('profile') }}" class="btn btn-primary monthly">View your subscription</a>
-                                @endif
-                            @else
-                                <a @unless($subscribed) href="{{ route('subscription.subscribe', ['level' => 'Timekeeper', 'interval' => 'monthly']) }}" @else href="javascript:" @endunless @if($subscribed) onclick="swal('info','This doesn\'t work yet, you\'ll need to cancel and re-subscribe to change plans.', 'info')" @endif class="btn btn-primary subscribe monthly">{{ $subscribed ? 'Switch to' : 'Subscribe' }} Monthly</a>
-                            @endif
-
-                            @if(Auth::user()->subscribedToPlan('timekeeper_yearly', 'Timekeeper'))
-                                    @if(Auth::user()->subscriptions->first()->onGracePeriod())
-                                        <a href="{{ route('subscription.resume', ['level' => 'Timekeeper']) }}" class="btn btn-info yearly">Resume yearly</a>
-                                    @else
-                                        <a href="{{ route('profile') }}" class="btn btn-primary monthly">View your subscription</a>
-                                    @endif
-                            @else
-                                <a @unless($subscribed) href="{{ route('subscription.subscribe', ['level' => 'Timekeeper', 'interval' => 'yearly']) }}" @else href="javascript:" @endunless @if($subscribed) onclick="swal('info','This doesn\'t work yet, you\'ll need to cancel and re-subscribe to change plans.', 'info')" @endif class="btn btn-primary subscribe yearly">{{ $subscribed ? 'Switch to' : 'Subscribe' }} Yearly</a>
-                            @endif
-                        @endif
-                    @endguest
-                </div>
-            </div>
-
-            <div class="col-12 col-lg-4 subscription-option">
-                <div class="inner">
-                    <h2>Worldbuilder</h2>
                     <h5>For power users who want to collaborate using the greatest multi-user fantasy calendar tool on the market.</h5>
 
                     @if($betaAccess && Auth::user()->paymentLevel() == "Free")
                         <h3 class="bg-grey monthly">Free<br><p class="small">Because you're awesome <3</p></h3>
                         <h3 class="bg-grey yearly">Free<br><p class="small">Because you're awesome <3</p></h3>
                     @elseif($earlySupporter)
-                        <h3 class="bg-grey monthly">$2.24 / month<br><p class="small">25% off because you're an early supporter (normally $2.99)!</p></h3>
-                        <h3 class="bg-grey yearly">$22.49 / year<br><p class="small">25% off because you're an early supporter (normally $29.99), as well as two months free!</p></h3>
+                        <h3 class="bg-grey monthly">$1.99 / month<br><p class="small">20% off because you're an early supporter (normally $2.49)!</p></h3>
+                        <h3 class="bg-grey yearly">$19.99 / year<br><p class="small">20% off because you're an early supporter (normally $24.99), as well as two months free!</p></h3>
                     @else
-                        <h3 class="bg-grey monthly">$2.99 / month<br></h3>
-                        <h3 class="bg-grey yearly">$29.99 / year<br><p class="small">Two months free (16% discount)!</p></h3>
+                        <h3 class="bg-grey monthly">$2.49 / month<br></h3>
+                        <h3 class="bg-grey yearly">$24.99 / year<br><p class="small">Two months free (16% discount)!</p></h3>
                     @endif
 
                     <ul class="features">
                         <li><strong>Full</strong> calendar functionality</li>
                         <li><strong>Unlimited</strong> number of calendars</li>
-                        <!-- <li>Worldbuilder Discord role</li> -->
-                        <!-- <li>Subscriber-only Discord channel</li> -->
                         <li><strong>User Management</strong> <p class="small">Users can comment on events and view provided information</p> </li>
                         <li>Calendar <strong>co-ownership</strong> <p class="small">Co-owners can comment on events, create events, and change the current date.</p></li>
                         <li>Calendar Linking <p class="small">Link calendars together and drive their dates from a single parent calendar!</p></li>
@@ -211,24 +157,24 @@
                         <a href="{{ route('register') }}" class="register">Register to subscribe</a>
                     @else
                         @if(!$betaAccess)
-                            @if(!$betaAccess && Auth::user()->subscribedToPlan('worldbuilder_monthly', 'Worldbuilder'))
+                            @if(!$betaAccess && Auth::user()->subscribedToPlan('timekeeper_monthly', 'Timekeeper'))
                                 @if(Auth::user()->subscriptions->first()->onGracePeriod())
-                                    <a href="{{ route('subscription.resume', ['level' => 'Worldbuilder']) }}" class="btn btn-info monthly">Resume monthly</a>
+                                    <a href="{{ route('subscription.resume', ['level' => 'Timekeeper']) }}" class="btn btn-info monthly">Resume monthly</a>
                                 @else
                                     <a href="{{ route('profile') }}" class="btn btn-primary monthly">View your subscription</a>
                                 @endif
                             @else
-                                <a @unless($subscribed) href="{{ route('subscription.subscribe', ['level' => 'Worldbuilder', 'interval' => 'monthly']) }}" @else href="javascript:" @endunless @if($subscribed) onclick="swal('info','This doesn\'t work yet, you\'ll need to cancel and re-subscribe to change plans.', 'info')" @endif class="btn btn-primary subscribe monthly">{{ $subscribed ? 'Switch to' : 'Subscribe' }} Monthly</a>
+                                <a @unless($subscribed) href="{{ route('subscription.subscribe', ['level' => 'Timekeeper', 'interval' => 'monthly']) }}" @else href="javascript:" @endunless @if($subscribed) onclick="swal('info','This doesn\'t work yet, you\'ll need to cancel and re-subscribe to change plans.', 'info')" @endif class="btn btn-primary subscribe monthly">{{ $subscribed ? 'Switch to' : 'Subscribe' }} Monthly</a>
                             @endif
 
-                            @if(!$betaAccess && Auth::user()->subscribedToPlan('worldbuilder_yearly', 'Worldbuilder'))
+                            @if(!$betaAccess && Auth::user()->subscribedToPlan('timekeeper_yearly', 'Timekeeper'))
                                     @if(Auth::user()->subscriptions->first()->onGracePeriod())
-                                        <a href="{{ route('subscription.resume', ['level' => 'Worldbuilder']) }}" class="btn btn-info yearly">Resume yearly</a>
+                                        <a href="{{ route('subscription.resume', ['level' => 'Timekeeper']) }}" class="btn btn-info yearly">Resume yearly</a>
                                     @else
                                         <a href="{{ route('profile') }}" class="btn btn-primary monthly">View your subscription</a>
                                     @endif
                             @else
-                                <a @unless($subscribed) href="{{ route('subscription.subscribe', ['level' => 'Worldbuilder', 'interval' => 'yearly']) }}" @else href="javascript:" @endunless @if($subscribed) onclick="swal('info','This doesn\'t work yet, you\'ll need to cancel and re-subscribe to change plans.', 'info')" @endif class="btn btn-primary subscribe yearly">{{ $subscribed ? 'Switch to' : 'Subscribe' }} Yearly</a>
+                                <a @unless($subscribed) href="{{ route('subscription.subscribe', ['level' => 'Timekeeper', 'interval' => 'yearly']) }}" @else href="javascript:" @endunless @if($subscribed) onclick="swal('info','This doesn\'t work yet, you\'ll need to cancel and re-subscribe to change plans.', 'info')" @endif class="btn btn-primary subscribe yearly">{{ $subscribed ? 'Switch to' : 'Subscribe' }} Yearly</a>
                             @endif
                         @else
                             <a href="{{ route('profile') }}" class="btn btn-primary monthly">View your subscription</a>
