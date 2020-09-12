@@ -1,17 +1,26 @@
 @media print {
 
     body {
+        display:block !important;
         height: auto !important;
         min-height: auto !important;
         max-height: auto !important;
     }
     
     #content {
+        display:block !important;
+        position: relative !important;
         height: auto !important;
     }
 
     .event, #calendar_container {
+        display:block !important;
+        position: relative !important;
         background-color: white !important;
+    }
+
+    #top_follower{
+        position:relative !important;
     }
 
     #calendar_container{
@@ -21,11 +30,13 @@
     }
 
     #calendar {
-        position: relative;
+        display:block !important;
+        position: relative !important;
     }
 
     .timespan_container {
-        position: relative;
+        display:block !important;
+        position: relative !important;
         page-break-after: always !important;
         page-break-inside: avoid !important;
         border:1px rgba(0,0,0,0.1) solid !important;
