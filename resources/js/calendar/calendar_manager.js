@@ -219,6 +219,8 @@ worker_calendar.onmessage = e => {
 		eval_clock();
 
         update_moon_colors();
+			
+		update_cycle_text();
 
 	}else{
 
