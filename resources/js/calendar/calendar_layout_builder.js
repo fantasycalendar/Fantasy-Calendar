@@ -388,7 +388,11 @@ function scroll_to_epoch(){
 
 	scroll_attempts++;
 
-	if(scroll_attempts < 10) setTimeout(scroll_to_epoch, 100);
+	if(scroll_attempts < 10){
+		setTimeout(scroll_to_epoch, 100);
+	}else{
+		scroll_attempts = 0;
+	}
 
 }
 
