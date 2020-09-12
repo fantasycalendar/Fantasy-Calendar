@@ -1,7 +1,7 @@
 <div id='calendar' x-data="CalendarRenderer">
 
     <template x-if="!loaded && render_data.timespans.length">
-        <div class="modal_background mt-5 pt-5">
+        <div class="modal_background mt-5 pt-5 w-100">
             <div id="modal" class="creation mt-5 py-5 d-flex flex-column align-items-center justify-content-center">
                 <h3 class="text-center" x-text="loading_message"></h3>
                 <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
