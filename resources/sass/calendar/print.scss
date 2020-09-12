@@ -1,0 +1,26 @@
+@media print {
+    .event, #calendar_container {
+        background-color: white !important;
+    }
+    #calendar_container{
+        max-height: auto !important;
+        padding:0 !important;
+    }
+    #content {
+        height: auto !important;
+    }
+    body {
+        height: auto !important;
+        min-height: auto !important;
+        max-height: auto !important;
+    }
+    .timespan_container {
+        page-break-after: always !important;
+        border:1px rgba(0,0,0,0.1) solid !important;
+        box-shadow: none !important;
+    }
+    #top_follower{
+        border:1px rgba(0,0,0,0.1) solid !important;
+        border-top: 0 !important;
+    }
+}

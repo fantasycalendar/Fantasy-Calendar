@@ -18,7 +18,7 @@
     </script>
 @endpush
 
-<form id="input_container">
+<form id="input_container" class="d-print-none">
 
     @include('inputs.sidebar.header')
 
@@ -285,7 +285,7 @@
 </form>
 
 
-<button id='input_collapse_btn' class="hamburger hamburger--arrowturn is-active" type="button">
+<button id='input_collapse_btn' class="hamburger hamburger--arrowturn is-active d-print-none" type="button">
     <span class="hamburger-box">
         <span class="hamburger-inner"></span>
     </span>
@@ -297,12 +297,12 @@
 	<div id="top_follower">
 
 		<div class='btn_container hidden'>
-			<button class='btn btn-danger btn_preview_date hidden' disabled fc-index='year' value='-1'>< Year</button>
-			<button class='btn btn-danger btn_preview_date hidden' disabled fc-index='timespan' value='-1'>< Month</button>
+			<button class='btn btn-danger btn_preview_date hidden d-print-none' disabled fc-index='year' value='-1'>< Year</button>
+			<button class='btn btn-danger btn_preview_date hidden d-print-none' disabled fc-index='timespan' value='-1'>< Month</button>
 		</div>
 
         <div class='reset_preview_date_container m-1 left'>
-            <button type='button' class='btn m-0 btn-info hidden reset_preview_date protip' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >< Current</button>
+            <button type='button' class='btn m-0 btn-info hidden reset_preview_date protip d-print-none' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >< Current</button>
         </div>
 
         <div class="follower_center">
@@ -310,12 +310,12 @@
         </div>
 
         <div class='reset_preview_date_container m-1 right'>
-            <button type='button' class='btn m-0 btn-info hidden reset_preview_date protip' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >Current ></button>
+            <button type='button' class='btn m-0 btn-info hidden reset_preview_date protip d-print-none' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >Current ></button>
         </div>
 
 		<div class='btn_container hidden'>
-			<button class='btn btn-success btn_preview_date hidden' disabled fc-index='year' value='1'>Year ></button>
-			<button class='btn btn-success btn_preview_date hidden' disabled fc-index='timespan' value='1'>Month ></button>
+			<button class='btn btn-success btn_preview_date hidden d-print-none' disabled fc-index='year' value='1'>Year ></button>
+			<button class='btn btn-success btn_preview_date hidden d-print-none' disabled fc-index='timespan' value='1'>Month ></button>
 		</div>
 
 	</div>

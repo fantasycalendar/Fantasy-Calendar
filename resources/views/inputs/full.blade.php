@@ -1,4 +1,4 @@
-<form id="input_container">
+<form id="input_container" class='d-print-none'>
 
 	@include('inputs.sidebar.header')
 
@@ -1370,7 +1370,7 @@
 	</form>
 </div>
 
-<button id='input_collapse_btn' class="hamburger hamburger--arrowturn is-active" type="button">
+<button id='input_collapse_btn' class="hamburger hamburger--arrowturn is-active d-print-none" type="button">
 	<span class="hamburger-box">
 		<span class="hamburger-inner"></span>
 	</span>
@@ -1386,14 +1386,14 @@
 		</div>
 	</div>
 
-    <div id="reload_background" class='flexible_background blurred_background d-flex flex-column justify-content-center hidden'>
+    <div id="reload_background" class='flexible_background blurred_background d-flex flex-column justify-content-center hidden d-print-none'>
         <div class='p-2 text-white'>You have made changes to your calendar.</div>
         <div class='p-2'><button type='button' class='btn btn-primary' id='apply_changes_btn'>Update preview</button></div>
     </div>
 
 	<div id="top_follower" class="step-hide">
 
-		<div class='parent_button_container hidden'>
+		<div class='parent_button_container hidden d-print-none'>
 			<div class='container d-flex h-100 p-0'>
 				<div class='col justify-content-center align-self-center full'>
 					<button class='btn btn-danger full' disabled id='rebuild_calendar_btn'>Parent data changed - reload</button>
@@ -1402,12 +1402,12 @@
 		</div>
 
 		<div class='btn_container hidden'>
-			<button class='btn btn-danger btn_preview_date hidden' disabled fc-index='year' value='-1'>< Year</button>
-			<button class='btn btn-danger btn_preview_date hidden' disabled fc-index='timespan' value='-1'>< Month</button>
+			<button class='btn btn-danger btn_preview_date hidden d-print-none' disabled fc-index='year' value='-1'>< Year</button>
+			<button class='btn btn-danger btn_preview_date hidden d-print-none' disabled fc-index='timespan' value='-1'>< Month</button>
 		</div>
 
 		<div class='reset_preview_date_container m-1 left'>
-			<button type='button' class='btn m-0 btn-info hidden reset_preview_date protip' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >< Current</button>
+			<button type='button' class='btn m-0 btn-info hidden reset_preview_date protip d-print-none' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >< Current</button>
 		</div>
 
         <div class="follower_center">
@@ -1415,12 +1415,12 @@
         </div>
 
 		<div class='reset_preview_date_container m-1 right'>
-            <button type='button' class='btn m-0 btn-info hidden reset_preview_date protip' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >Current ></button>
+            <button type='button' class='btn m-0 btn-info hidden reset_preview_date protip d-print-none' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >Current ></button>
         </div>
 
 		<div class='btn_container hidden'>
-			<button class='btn btn-success btn_preview_date hidden' disabled fc-index='year' value='1'>Year ></button>
-			<button class='btn btn-success btn_preview_date hidden' disabled fc-index='timespan' value='1'>Month ></button>
+			<button class='btn btn-success btn_preview_date hidden d-print-none' disabled fc-index='year' value='1'>Year ></button>
+			<button class='btn btn-success btn_preview_date hidden d-print-none' disabled fc-index='timespan' value='1'>Month ></button>
 		</div>
 
 	</div>
