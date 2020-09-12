@@ -108,7 +108,6 @@ function set_up_edit_inputs(){
 	calendar_new_link_list = $('#calendar_new_link_list');
 
 	var previous_view_type = 'owner';
-	var first_switch = true;
 	view_type = 'owner';
 
 	$('.view-tabs .btn').click(function(){
@@ -136,6 +135,7 @@ function set_up_edit_inputs(){
 						}
 					}
 				}
+				climate_charts.active_view = false;
 				calendar_container.removeClass('hidden');
 				weather_contrainer.addClass('hidden');
 				previous_view_type = view_type;
@@ -155,6 +155,7 @@ function set_up_edit_inputs(){
 						}
 					}
 				}
+				climate_charts.active_view = false;
 				calendar_container.removeClass('hidden');
 				weather_contrainer.addClass('hidden');
 				previous_view_type = view_type;
@@ -163,11 +164,7 @@ function set_up_edit_inputs(){
 			case "weather":
 				if(creation.is_done() && errors.length == 0){
 					evaluate_settings();
-					if(first_switch){
-						evaluate_day_length_chart();
-						evaluate_weather_charts();
-						first_switch = false;
-					}
+					climate_charts.active_view = true;
 				}
 				calendar_container.addClass('hidden');
 				weather_contrainer.removeClass('hidden');
@@ -2577,7 +2574,7 @@ function set_up_edit_inputs(){
 
 			if(key == "year_zero_exists"){
 				refresh_interval_texts();
-				refresh_view_values();
+				set_up_view_values();
 				set_up_visitor_values();
 				dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
 				preview_date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, preview_date.year), preview_date.timespan, preview_date.day).epoch;
@@ -2855,7 +2852,7 @@ function add_leap_day_to_list(parent, key, data){
 					element.push("<div class='row my-1'>");
 						element.push("<div class='col'>");
 							element.push("Select after which day:");
-							element.push(`<select type='number' class='custom-select form-control dynamic_input full timespan-day-list exclude_self' data='year_data.leap_days.${key}' ${(!data.intercalary ? "disabled" : "")} fc-index='day'>`);
+							element.push(`<select type='number' class='custom-select form-control dynamic_input full timespan-day-list exclude_self no_leap' data='year_data.leap_days.${key}' ${(!data.intercalary ? "disabled" : "")} fc-index='day'>`);
 							element.push("</select>");
 						element.push("</div>");
 					element.push("</div>");
@@ -4202,6 +4199,7 @@ function error_check(parent, rebuild){
 		if(parent !== undefined && (parent === "seasons")){
 			rebuild_climate();
 		}else{
+			rebuild_all_data();
 			update_current_day(true);
 			evaluate_sun();
 		}

@@ -7,6 +7,9 @@
 
         @include('calendar._loadcalendar')
 
+        preview_date = clone(dynamic_data);
+        preview_date.follow = true;
+
         for(var moon_index in static_data.moons){
             var moon = static_data.moons[moon_index];
 
@@ -29,17 +32,16 @@
             static_data.clock.crowding = 0;
         }
 
+        rebuild_calendar('calendar', dynamic_data);
+
+        edit_event_ui.bind_events();
+
         set_up_view_inputs();
         set_up_view_values();
         set_up_visitor_values();
         bind_calendar_events();
 
-        const queryString = window.location.search;
-        if(!evaluate_queryString(queryString)){
-            rebuild_calendar('calendar', dynamic_data);
-        }
-
-        edit_event_ui.bind_events();
+        evaluate_queryString(window.location.search);
 
         $('#current_year, #current_timespan, #current_day, #current_hour, #current_minute, #location_select').change(function(){
             do_update_dynamic(hash);
@@ -72,34 +74,30 @@
             let day = Number(urlParams.get('day'));
 
             if(isNaN(year) || isNaN(timespan) || isNaN(day)) {
-                return false;
+                return;
             }
 
             if(valid_preview_date(year, timespan, day) || window.Perms.player_at_least('co-owner')){
 
                 if(year === 0 && !static_data.settings.year_zero_exists){
-                    return false;
+                    return;
                 }
                 preview_date_manager.year = convert_year(static_data, year);
 
                 if(timespan < 0 || timespan > preview_date_manager.last_timespan){
-                    return false;
+                    return;
                 }
                 preview_date_manager.timespan = timespan;
 
                 if(day < 0 || day > preview_date_manager.num_days){
-                    return false;
+                    return;
                 }
                 preview_date_manager.day = day;
 
                 go_to_preview_date(true);
                 refresh_preview_inputs();
-                return true;
             }
         }
-
-        return false;
-
     }
 
     function check_dates(){
@@ -188,7 +186,6 @@
         display_preview_back_button();
 
         if(rebuild || ((data.rebuild || static_data.settings.only_reveal_today) && preview_date.follow)){
-            show_loading_screen_buffered();
             rebuild_calendar('calendar', dynamic_data);
             set_up_visitor_values();
         }else{
@@ -196,7 +193,7 @@
             scroll_to_epoch();
         }
 
-        refresh_view_values();
+        set_up_view_values();
 
     }
 
@@ -213,6 +210,7 @@
     <div id="generator_container">
         @include('layouts.weather_tooltip')
         @include('layouts.day_data_tooltip')
+        @include('layouts.moon_tooltip')
         @include('layouts.event')
         @include('inputs.sidebar.view')
     </div>
