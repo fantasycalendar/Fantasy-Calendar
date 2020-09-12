@@ -104,9 +104,8 @@ const calendar_renderer = {
         );
 		eras.set_up_position();
         eras.evaluate_position();
-
-        //This is kludgy, but ... Yuck
-        setTimeout(scroll_to_epoch, 50);
+        
+        scroll_to_epoch();
     },
 
     pre_event_load: function(){

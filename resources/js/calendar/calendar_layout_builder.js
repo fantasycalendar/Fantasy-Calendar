@@ -374,13 +374,22 @@ function update_current_day(recalculate){
 
 }
 
+scroll_attempts = 0;
+
 function scroll_to_epoch(){
 
 	if($(`[epoch=${preview_date.epoch}]`).length){
-		$(`[epoch=${preview_date.epoch}]`)[0].scrollIntoView({block: "center", inline: "nearest"});
+		scroll_attempts = 0;
+		return $(`[epoch=${preview_date.epoch}]`)[0].scrollIntoView({block: "center", inline: "nearest"});
 	}else if($(`[epoch=${dynamic_data.epoch}]`).length){
-		$(`[epoch=${dynamic_data.epoch}]`)[0].scrollIntoView({block: "center", inline: "nearest"});
+		scroll_attempts = 0;
+		return $(`[epoch=${dynamic_data.epoch}]`)[0].scrollIntoView({block: "center", inline: "nearest"});
 	}
+
+	scroll_attempts++;
+
+	if(scroll_attempts < 10) setTimeout(scroll_to_epoch, 100);
+
 }
 
 function update_cycle_text(){
