@@ -3,7 +3,7 @@
 
     $(document).ready(function(){
 
-        $('#btn_share').click(function(){
+        $('#btn_share, .share-body').click(function(){
             var copyText = document.querySelector(".share-body");
             copyText.select();
             document.execCommand("copy");
