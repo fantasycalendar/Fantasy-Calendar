@@ -494,8 +494,7 @@ const render_data_generator = {
 
 				if(era.settings.show_as_event){
 
-                    let event_class = 'era_event';
-                    let print = false;
+                    let event_class = ['era_event'];
 
                     var category = era.settings.event_category_id && era.settings.event_category_id > -1 ?  get_category(era.settings.event_category_id) : false;
 
@@ -503,10 +502,10 @@ const render_data_generator = {
                         if(category.event_settings.hide_full){
                             continue;
                         }
-                        print = category.event_settings.print;
-                        event_class += category.event_settings.color ? " " + category.event_settings.color : "";
-                        event_class += category.event_settings.text ? " " + category.event_settings.text : "";
-                        event_class += category.event_settings.hide || category.category_settings.hide ? " hidden_event" : "";
+                        event_class.push(!category.event_settings.print ? "" : "d-print-none");
+                        event_class.push(category.event_settings.color ? category.event_settings.color : "");
+                        event_class.push(category.event_settings.text ? category.event_settings.text : "");
+                        event_class.push(category.event_settings.hide || category.category_settings.hide ? "hidden_event" : "");
                     }
 
                     if(this.events_to_send[era.date.epoch] === undefined){
@@ -516,8 +515,7 @@ const render_data_generator = {
                     this.events_to_send[era.date.epoch].push({
                         "index": era_index,
                         "name": era.name,
-                        "class": event_class,
-                        "print": print
+                        "class": event_class.join(' ')
                     });
                 }
             }
@@ -534,10 +532,6 @@ const render_data_generator = {
             var category = event.event_category_id && event.event_category_id > -1 ?  get_category(event.event_category_id) : false;
 
             var category_hide = category ? category.category_settings.hide : false;
-
-            let event_class = event.settings.color ? event.settings.color : "";
-            event_class += event.settings.text ? " " + event.settings.text : "";
-            event_class += event.settings.hide || static_data.settings.hide_events || category_hide ? " hidden_event" : "";
 
             if(!Perms.player_at_least('co-owner') && (event.settings.hide || category_hide)){
                 continue;
@@ -556,7 +550,13 @@ const render_data_generator = {
                 var start = this.evaluated_event_data.starts[event_index].indexOf(epoch) != -1;
                 var end = this.evaluated_event_data.ends[event_index].indexOf(epoch) != -1;
 
-                event_class += `${start ? ' event_start' : (end ? ' event_end' : '')}`
+                let event_class = [];
+                event_class.push(!event.settings.print ? "d-print-none" : "");
+                event_class.push(event.settings.color ? event.settings.color : "");
+                event_class.push(event.settings.text ? event.settings.text : "");
+                event_class.push(event.settings.hide || static_data.settings.hide_events || category_hide ? " hidden_event" : "");
+                event_class.push(start ? "event_start" : "");
+                event_class.push(end ? "event_end" : "");
 
                 let event_name = event.name;
 
@@ -574,8 +574,7 @@ const render_data_generator = {
                 this.events_to_send[epoch].push({
                     "index": event_index,
                     "name": event_name,
-                    "class": event_class,
-                    "print": event.settings.print
+                    "class": event_class.join(' ')
                 });
             }
         }

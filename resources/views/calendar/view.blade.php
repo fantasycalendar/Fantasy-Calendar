@@ -39,6 +39,7 @@
         set_up_view_inputs();
         set_up_view_values();
         set_up_visitor_values();
+        
         bind_calendar_events();
 
         evaluate_queryString(window.location.search);
@@ -66,6 +67,7 @@
     });
 
     function evaluate_queryString(queryString){
+
         const urlParams = new URLSearchParams(queryString);
 
         if(urlParams.has("year") && urlParams.has("month") && urlParams.has("day")){
@@ -98,6 +100,11 @@
                 refresh_preview_inputs();
             }
         }
+
+        if(urlParams.has('print')){
+            window.dispatchEvent(new CustomEvent('register-render-callback', {detail: print()}));
+        }
+
     }
 
     function check_dates(){
