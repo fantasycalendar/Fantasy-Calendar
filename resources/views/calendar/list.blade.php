@@ -112,8 +112,8 @@
                                 <a class="dropdown-item copy_button action-copy protip" data-pt-delay-in="500" data-pt-title="Copy '{{ $calendar->name }}'" href="javascript:" data-hash="{{ $calendar->hash }}" data-name="{{ $calendar->name }}">
                                     <i class="fa fa-copy"></i> Copy
                                 </a>
-                                <a class="dropdown-item action-print protip" data-pt-delay-in="500" data-pt-title="Print '{{ $calendar->name }}'" href="{{ route('calendars.edit', ['calendar' => $calendar->hash, 'print' => 1]) }}" >
-                                    <i class="fa fa-file-export"></i> Print
+                                <a class="dropdown-item action-print protip" data-pt-delay-in="500" data-pt-title="Print '{{ $calendar->name }}'" href="{{ route('calendars.show', ['calendar' => $calendar->hash, 'print' => 1]) }}" >
+                                    <i class="fa fa-print"></i> Print
                                 </a>
                                 <a class="dropdown-item action-export protip" data-pt-delay-in="500" data-pt-title="Export '{{ $calendar->name }}'" href="{{ route('calendars.export', ['calendar' => $calendar->hash]) }}" >
                                     <i class="fa fa-file-export"></i> Export
