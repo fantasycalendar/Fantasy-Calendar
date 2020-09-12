@@ -1,22 +1,21 @@
 @media print {
 
     body {
-        display:block !important;
+        display: block !important;
         height: auto !important;
         min-height: auto !important;
-        max-height: auto !important;
     }
     
     #content {
-        display:block !important;
+        display: block !important;
         position: relative !important;
         height: auto !important;
     }
 
-    .event, #calendar_container {
-        display:block !important;
-        position: relative !important;
+    .event {
         background-color: white !important;
+        border: 0 !important;
+        color:black !important;
     }
 
     #top_follower{
@@ -24,27 +23,48 @@
     }
 
     #calendar_container{
+        display: block !important;
+        position: relative !important;
+        background-color: white !important;
+        border: 0 !important;
+        color:black !important;
         max-height: auto !important;
         padding:0 !important;
         overflow-y: visible;
     }
 
     #calendar {
-        display:block !important;
+        display: block !important;
         position: relative !important;
     }
 
     .timespan_container {
-        display:block !important;
+        display: block !important;
         position: relative !important;
         page-break-inside: avoid !important;
         border:1px rgba(0,0,0,0.1) solid !important;
         box-shadow: none !important;
     }
 
+    .current_day{
+        background-image: none !important;
+    }
+
+    .current_day:after{
+        height: 0px !important;
+    }
+
     #top_follower{
         border:1px rgba(0,0,0,0.1) solid !important;
         border-top: 0 !important;
+    }
+
+    .lunar_background{
+        fill: white !important;
+    }
+
+    .lunar_shadow{
+        fill: black !important;
     }
 
 }
