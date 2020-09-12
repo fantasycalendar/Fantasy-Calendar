@@ -8,8 +8,7 @@ class Perms {
 
         this.levels = {
             'free': 0,
-            'timekeeper': 1,
-            'worldbuilder': 2,
+            'worldbuilder': 1,
             'superadmin': 5000,
         };
 
@@ -22,7 +21,7 @@ class Perms {
 
     }
 
-    user_at_least(level) {
+    Timekeeper(level) {
         return this.levels[this.level] >= this.levels[level];
     }
 
