@@ -32,17 +32,17 @@
             static_data.clock.crowding = 0;
         }
 
-        const queryString = window.location.search;
-        if(!evaluate_queryString(queryString)){
-            rebuild_calendar('calendar', dynamic_data);
-        }
-
         edit_event_ui.bind_events();
 
         set_up_view_inputs();
         set_up_view_values();
         set_up_visitor_values();
         bind_calendar_events();
+
+        const queryString = window.location.search;
+        if(!evaluate_queryString(queryString)){
+            rebuild_calendar('calendar', dynamic_data);
+        }
 
         $('#current_year, #current_timespan, #current_day, #current_hour, #current_minute, #location_select').change(function(){
             do_update_dynamic(hash);
