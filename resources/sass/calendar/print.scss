@@ -1,11 +1,27 @@
 @media print {
 
+    * {
+        border-color: rgba(0,0,0,0.1) !important;
+        color:black !important;
+    }
+
+    body,
+    #calendar_container,
+    #calendar,
+    #top_follower,
+    .timespan_container,
+    .timespan_day,
+    .event
+    {
+        background-color: white !important;
+    }
+
     body {
         display: block !important;
         height: auto !important;
         min-height: auto !important;
     }
-    
+
     #content {
         display: block !important;
         position: relative !important;
@@ -13,7 +29,6 @@
     }
 
     .event {
-        background-color: white !important;
         border: 0 !important;
         color:black !important;
     }
@@ -25,10 +40,8 @@
     #calendar_container{
         display: block !important;
         position: relative !important;
-        background-color: white !important;
         border: 0 !important;
-        color:black !important;
-        max-height: auto !important;
+        max-height: initial !important;
         padding:0 !important;
         overflow-y: visible;
     }
@@ -67,4 +80,7 @@
         fill: black !important;
     }
 
+    .timespan_overflow {
+        background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 40L40 0H20L0 20m40 20V20L20 40' fill='%23f9f9fa' fill-rule='evenodd'/%3E%3C/svg%3E");
+    }
 }
