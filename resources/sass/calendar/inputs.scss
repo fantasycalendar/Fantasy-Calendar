@@ -601,7 +601,7 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
 }
 
 .active_layout {
-    background-color: rgba(250, 224, 66, .2) !important;
+    //background-color: rgba(250, 224, 66, .2) !important;
 }
 
 /* ------------------ Preset forms ----------------- */
@@ -666,7 +666,11 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
         }
     }
 
-    &:hover {
+    &.active_layout {
+        opacity: 0.6;
+    }
+
+    &:hover:not(:disabled) {
         transform: translateY(-4px);
         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         background-color: $modal-content-hover-bg-color;
@@ -682,7 +686,7 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
 }
 
 .layout {
-    padding-left: 1rem;
+    padding-left: 1rem !important;
 
     .image {
         position: relative;
@@ -697,7 +701,7 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
         top: 0;
         bottom: 0;
         width: 24px;
-        background-image: linear-gradient(to left, red, transparent);
+        background-image: linear-gradient(to left, $modal-content-bg-color, transparent);
     }
 }
 

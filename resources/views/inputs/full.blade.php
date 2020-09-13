@@ -1082,7 +1082,7 @@
 
 					@if(request()->is('calendars/*/edit'))
 					<label class="row no-gutters setting">
-						<button x-data type='button' id='btn_layouts' class='btn btn-primary full' @click="$dispatch('open-layouts-modal', {open: true})">Select Layout</button>
+						<button x-data type='button' id='btn_layouts' class='btn btn-primary full' @click="$dispatch('open-layouts-modal')">Select Layout</button>
 					</label>
 					@endif
 
