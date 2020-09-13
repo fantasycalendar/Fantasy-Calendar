@@ -33,8 +33,6 @@
 
         rebuild_calendar('calendar', dynamic_data);
 
-        bind_calendar_events();
-
         edit_event_ui.bind_events();
         edit_HTML_ui.bind_events();
 
@@ -42,6 +40,10 @@
         set_up_edit_values();
         set_up_view_values();
         set_up_visitor_values();
+
+        bind_calendar_events();
+
+        evaluate_queryString(window.location.search);
 
         if(has_parent){
 
@@ -106,6 +108,16 @@
 
             instapoll = true;
 
+        }
+
+    }
+
+    function evaluate_queryString(queryString){
+
+        const urlParams = new URLSearchParams(queryString);
+
+        if(urlParams.has('print')){
+            window.dispatchEvent(new CustomEvent('register-render-callback', {detail: print()}));
         }
 
     }

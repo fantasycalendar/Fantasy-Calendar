@@ -20,6 +20,7 @@
             register_events($event);
             $nextTick(() => { post_event_load() });
         "
+        @register-render-callback.window="render_callbacks.push($event.detail)"
         @update-epochs.window="update_epochs"
         x-if='loaded'
         x-for="timespan in render_data.timespans"
