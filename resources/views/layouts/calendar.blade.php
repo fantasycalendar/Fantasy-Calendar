@@ -67,7 +67,7 @@
                                             @mouseenter="moon_mouse_enter(moon, $event)"
                                             @mouseleave="moon_mouse_leave"
                                     >
-                                        <circle cx="16" cy="16" r="9" class="lunar_background"/>
+                                        <circle cx="16" cy="16" r="10" class="lunar_background"/>
                                         <path class="lunar_shadow" x-show="moon.path" :d="moon.path"/>
                                         <circle cx="16" cy="16" r="10" class="lunar_border"/>
                                     </svg>
@@ -83,7 +83,7 @@
                             <button class="btn_create_event btn btn-success day_row flex-grow" @click="create_event(day.epoch)" :epoch="day.epoch" x-show="day.show_event_button">Create event</button>
 
                             <div class="day_row">
-                                <div class="number" x-show="day.year_day" x-text="day.year_day"></div>
+                                <div class="number year_day" x-show="day.year_day" x-text="day.year_day"></div>
                             </div>
                         </div>
                     </template>
