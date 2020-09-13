@@ -232,7 +232,6 @@ return [
 
         // Package facades
         'Markdown' => GrahamCampbell\Markdown\Facades\Markdown::class,
-        'Gravatar' => Creativeorange\Gravatar\Facades\Gravatar::class,
     ],
 
 ];
