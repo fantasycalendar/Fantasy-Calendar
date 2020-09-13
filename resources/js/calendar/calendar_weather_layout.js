@@ -105,9 +105,9 @@ var calendar_weather = {
 
 				calendar_weather.tooltip.sticky_icon.removeClass('sticky');
 
-				if($(event.target).closest('.weather_popup').length != 0){
-					calendar_weather.tooltip.show($(event.target).closest('.weather_popup'));
-					calendar_weather.tooltip.sticky($(event.target).closest('.weather_popup'));
+				if($(event.target).closest('.has_weather_popup').length != 0){
+					calendar_weather.tooltip.show($(event.target).closest('.has_weather_popup'));
+					calendar_weather.tooltip.sticky($(event.target).closest('.has_weather_popup'));
 				}
 
 			}

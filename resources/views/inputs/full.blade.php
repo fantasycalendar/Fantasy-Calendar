@@ -1382,7 +1382,7 @@
 
 	</div>
 
-	@include('layouts.calendar')
+	@include('layouts.calendar-' . (isset($calendar) ? $calendar->setting('layout', 'grid') : 'grid'))
 
 	<div id="weather_container" class="hidden">
 

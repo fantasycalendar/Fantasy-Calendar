@@ -320,8 +320,8 @@
 
 	</div>
 
-    @include('layouts.calendar')
-
+    @include('layouts.calendar-' . (isset($calendar) ? $calendar->setting('layout', 'grid') : 'grid'))
+    
 	@include('templates.footnote')
 
 </div>
