@@ -33,11 +33,15 @@ const calendar_layouts = {
     
     apply_layout: function(layout){
         show_loading_screen();
+        let previous_layout = static_data.settings.layout;
         static_data.settings.layout = layout.name.toLowerCase();
         do_update_all(hash, function(){
             window.onbeforeunload = function () {}
             window.location.reload(false);
-        })
+        }, function(){
+            static_data.settings.layout = previous_layout;
+            hide_loading_screen();
+        });
     }
 
 }

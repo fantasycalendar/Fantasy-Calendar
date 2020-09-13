@@ -419,8 +419,6 @@ const render_data_generator = {
 
         this.render_data = render_data;
 
-        console.log(render_data)
-
         return {
             success: true,
             render_data: render_data
