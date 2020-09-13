@@ -582,6 +582,28 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     border-radius:7px;
 }
 
+/* ------------------ Layout forms ----------------- */
+
+.layout_background .layout-wrapper {
+    max-width: 1200px;
+    width: 80vw;
+    background-color: $modal-bg-color;
+
+    hr {
+        border-color: $modal-content-border-color;
+        margin: .5rem 0;
+    }
+
+    @media screen and (max-width: 768px) {
+        background-color: $modal-bg-color;
+        min-height: 100vh;
+    }
+}
+
+.active_layout {
+    //background-color: rgba(250, 224, 66, .2) !important;
+}
+
 /* ------------------ Preset forms ----------------- */
 
 .preset_background .preset-wrapper {
@@ -616,7 +638,7 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     }
 }
 
-.preset {
+.preset, .layout {
     border: 0;
     transition: all 0.3s cubic-bezier(.25,.8,.25,1);
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
@@ -644,7 +666,11 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
         }
     }
 
-    &:hover {
+    &.active_layout {
+        opacity: 0.6;
+    }
+
+    &:hover:not(:disabled) {
         transform: translateY(-4px);
         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         background-color: $modal-content-hover-bg-color;
@@ -656,6 +682,26 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
                 color: white;
             }
         }
+    }
+}
+
+.layout {
+    padding-left: 1rem !important;
+
+    .image {
+        position: relative;
+        max-width: 100%;
+        overflow: hidden;
+    }
+
+    .img_fade {
+        height: 100%;
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 24px;
+        background-image: linear-gradient(to left, $modal-content-bg-color, transparent);
     }
 }
 

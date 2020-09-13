@@ -1,7 +1,7 @@
 <div id='calendar' x-data="CalendarRenderer">
 
     <template x-if="!loaded && render_data.timespans.length">
-        <div class="modal_background mt-5 pt-5 w-100">
+        <div class="modal_background mt-5 pt-5">
             <div id="modal" class="creation mt-5 py-5 d-flex flex-column align-items-center justify-content-center">
                 <h3 class="text-center" x-text="loading_message"></h3>
                 <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
@@ -20,14 +20,15 @@
             register_events($event);
             $nextTick(() => { post_event_load() });
         "
-        @register-render-callback.window="render_callbacks.push($event.detail)"
         @update-epochs.window="update_epochs"
         x-if='loaded'
         x-for="timespan in render_data.timespans"
     >
 
         <div class="timespan_container" :class='render_data.render_style'>
+
             <div class='timespan_name'x-text='timespan.title' x-show="timespan.show_title"></div>
+            
             <div class="timespan_row_names" x-show="timespan.show_weekdays">
                 <template x-for="weekday in timespan.weekdays">
                     <div class="week_day_name" x-text="weekday"></div>

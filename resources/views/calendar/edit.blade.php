@@ -165,6 +165,7 @@
 
 @section('content')
     <div id="generator_container">
+        @include('layouts.layouts')
         @include('layouts.weather_tooltip')
         @include('layouts.day_data_tooltip')
         @include('layouts.moon_tooltip')

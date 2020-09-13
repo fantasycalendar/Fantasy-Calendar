@@ -1080,14 +1080,11 @@
 
 					<div class='bold-text'>Layout Settings:</div>
 
-					<!-- <label class="row no-gutters setting">
-						<select class='form-control static_input' data='settings' fc-index='layout'>
-							<option value='grid'>Grid style</option>
-							<option value='wide'>Wide style</option>
-							<option value='vertical'>Vertical style</option>
-							<option value='minimalistic'>Minimalistic style</option>
-						</select>
-					</label> -->
+					@if(request()->is('calendars/*/edit'))
+					<label class="row no-gutters setting">
+						<button x-data type='button' id='btn_layouts' class='btn btn-primary full' @click="$dispatch('open-layouts-modal')">Select Layout</button>
+					</label>
+					@endif
 
 					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Makes the calendar only show the current month. Enhances calendar loading performance, especially with many moons.">
 						<div class='col'>
@@ -1229,7 +1226,7 @@
 					@if(request()->is('calendars/*/edit') && $calendar->isLinked())
 						<p class=""><a onclick="linked_popup();" href='#'>Why are some settings disabled?</a></p>
 					@endif
-					
+
 				</div>
 			</div>
 		</div>
@@ -1385,7 +1382,7 @@
 
 	</div>
 
-	@include('layouts.calendar')
+	@include('layouts.calendar-' . (isset($calendar) ? $calendar->setting('layout', 'grid') : 'grid'))
 
 	<div id="weather_container" class="hidden">
 
