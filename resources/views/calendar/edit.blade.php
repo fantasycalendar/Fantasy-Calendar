@@ -43,8 +43,6 @@
 
         bind_calendar_events();
 
-        evaluate_queryString(window.location.search);
-
         if(has_parent){
 
             check_last_change(parent_hash, function(change_result){
@@ -108,16 +106,6 @@
 
             instapoll = true;
 
-        }
-
-    }
-
-    function evaluate_queryString(queryString){
-
-        const urlParams = new URLSearchParams(queryString);
-
-        if(urlParams.has('print')){
-            window.dispatchEvent(new CustomEvent('register-render-callback', {detail: print()}));
         }
 
     }
