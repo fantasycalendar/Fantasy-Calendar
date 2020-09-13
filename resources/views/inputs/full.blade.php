@@ -1082,7 +1082,7 @@
 
 					@if(request()->is('calendars/*/edit'))
 					<label class="row no-gutters setting">
-						<button type='button' id='btn_layouts' class='btn btn-primary full' @click='open_modal()'>Select Layout</button>
+						<button x-data type='button' id='btn_layouts' class='btn btn-primary full' @click="$dispatch('open-layouts-modal', {open: true})">Select Layout</button>
 					</label>
 					@endif
 
@@ -1226,7 +1226,7 @@
 					@if(request()->is('calendars/*/edit') && $calendar->isLinked())
 						<p class=""><a onclick="linked_popup();" href='#'>Why are some settings disabled?</a></p>
 					@endif
-					
+
 				</div>
 			</div>
 		</div>

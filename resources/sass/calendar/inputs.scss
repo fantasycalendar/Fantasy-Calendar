@@ -681,6 +681,26 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     }
 }
 
+.layout {
+    padding-left: 1rem;
+
+    .image {
+        position: relative;
+        max-width: 100%;
+        overflow: hidden;
+    }
+
+    .img_fade {
+        height: 100%;
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 24px;
+        background-image: linear-gradient(to left, red, transparent);
+    }
+}
+
 .pagination-navigation {
     &.disabled {
         background-color: transparent;

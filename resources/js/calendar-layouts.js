@@ -6,19 +6,22 @@ const calendar_layouts = {
     layouts: [
         {
             "name": "Grid",
-            "description": "The classic layout"
+            "description": "The classic layout",
+            "image": "/resources/layouts/light-grid.png"
         },
         {
             "name": "Vertical",
-            "description": "For when every day is important"
+            "description": "For when every day is important",
+            "image": "/resources/layouts/light-vertical.png"
         },
         {
             "name": "Minimalistic",
-            "description": "Beautiful minimalism that fits on one page"
+            "description": "Beautiful minimalism that fits on one page",
+            "image": "/resources/layouts/light-minimal.png"
         }
     ],
 
-    open_modal: function(){
+    open_modal: function($event){
 
         if(evaluate_save_button()){
             this.open = true;
@@ -30,7 +33,7 @@ const calendar_layouts = {
             )
         }
     },
-    
+
     apply_layout: function(layout){
         show_loading_screen();
         let previous_layout = static_data.settings.layout;
