@@ -164,8 +164,8 @@
 @endpush
 
 @section('content')
-    <div id="generator_container">
-        @include('layouts.calendar-layouts')
+    <div id="generator_container" x-data="CalendarLayouts">
+        @include('layouts.layouts')
         @include('layouts.weather_tooltip')
         @include('layouts.day_data_tooltip')
         @include('layouts.moon_tooltip')

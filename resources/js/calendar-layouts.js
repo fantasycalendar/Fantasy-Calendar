@@ -1,7 +1,44 @@
 const calendar_layouts = {
 
     open: false,
-    layouts: ["grid", "vertical", "minimalistic"]
+    current_layout: undefined,
+
+    layouts: [
+        {
+            "name": "Grid",
+            "description": "The classic layout"
+        },
+        {
+            "name": "Vertical",
+            "description": "For when every day is important"
+        },
+        {
+            "name": "Minimalistic",
+            "description": "Beautiful minimalism that fits on one page"
+        }
+    ],
+
+    open_modal: function(){
+
+        if(evaluate_save_button()){
+            this.open = true;
+            this.current_layout = this.layouts.find(layout => layout.name.toLowerCase() == static_data.settings.layout);
+        }else{
+            $('#btn_layouts').notify(
+                "Please save your calendar before applying a preset.",
+                { position: "top-center" }
+            )
+        }
+    },
+    
+    apply_layout: function(layout){
+        show_loading_screen();
+        static_data.settings.layout = layout.name.toLowerCase();
+        do_update_all(hash, function(){
+            window.onbeforeunload = function () {}
+            window.location.reload(false);
+        })
+    }
 
 }
 
