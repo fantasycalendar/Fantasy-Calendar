@@ -40,17 +40,13 @@ const calendar_renderer = {
     },
 
     weather_click: function(day, event) {
-        if(day.weather_icon){
-            calendar_weather.tooltip.sticky($(event.target));
-        }
+        calendar_weather.tooltip.sticky($(event.target));
     },
 
     weather_mouse_enter: function(day, event) {
-        if(day.weather_icon){
-            calendar_weather.tooltip.show($(event.target));
-        }
+        calendar_weather.tooltip.show($(event.target));
     },
-
+    
     weather_mouse_leave: function() {
         calendar_weather.tooltip.hide();
     },

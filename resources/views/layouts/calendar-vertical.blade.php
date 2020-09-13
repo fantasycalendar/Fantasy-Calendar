@@ -36,9 +36,14 @@
                     'timespan_day empty_timespan_day': day.type == 'empty',
                     'current_day': day.epoch == render_data.current_epoch,
                     'preview_day': day.epoch == render_data.preview_epoch && render_data.preview_epoch != render_data.current_epoch,
+                    [day.extra_class]: day.extra_class
                 }" :epoch="day.epoch">
                     <div class="day_row d-flex justify-content-between">
-                        <div class="number" x-text="day.number" x-show="day.number"></div>
+
+                        <div class="d-flex">
+                            <div class="number" x-text="day.number"></div>
+                            <div class="week_day_name" x-text="day.weekday"></div>
+                        </div>
 
                         <div class="weather_popup center"
                             x-show="day.weather_icon"

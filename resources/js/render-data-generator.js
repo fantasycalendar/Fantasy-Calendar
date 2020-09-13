@@ -350,6 +350,9 @@ const render_data_generator = {
 
                             if(week_day > timespan.week.length){
                                 week_day = 1;
+                                if(render_data.render_style == "vertical"){
+                                    day_data.extra_class = "week_end"
+                                }
                             }
                         }
 
