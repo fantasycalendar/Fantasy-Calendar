@@ -75,6 +75,10 @@
             display: flex;
             flex-direction: column;
             overflow-x: auto;
+            
+            &:not(.intercalary){
+                border-top: 1px solid $calendar-border-color;
+            }
         }
     }
 

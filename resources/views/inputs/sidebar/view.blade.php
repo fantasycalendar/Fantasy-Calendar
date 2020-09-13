@@ -18,7 +18,7 @@
     </script>
 @endpush
 
-<form id="input_container">
+<form id="input_container" class="d-print-none">
 
     @include('inputs.sidebar.header')
 
@@ -50,15 +50,16 @@
 	            </div>
             </div>
 
-			@if($calendar->owned)
-            <div class='row'>
-                <div class='col'>
-                    <a href="{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}" class='full'>
-                        <button type="button" class='btn btn-sm btn-success btn-block'>Edit Mode</button>
-                    </a>
-                </div>
+            <div class='d-flex my-2 w-100'>
+			    @if($calendar->owned)
+                <a href="{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}" class="btn w-100 btn-sm btn-success mr-2">
+                    Edit
+                </a>
+                @endif
+                <button type='button' onclick="print()" class="btn w-100 btn-sm btn-primary">
+                    Print
+                </a>
             </div>
-            @endif
 
             @can('advance-date', $calendar)
 			<div class='date_control container' id='date_inputs'>
@@ -285,7 +286,7 @@
 </form>
 
 
-<button id='input_collapse_btn' class="hamburger hamburger--arrowturn is-active" type="button">
+<button id='input_collapse_btn' class="hamburger hamburger--arrowturn is-active d-print-none" type="button">
     <span class="hamburger-box">
         <span class="hamburger-inner"></span>
     </span>
@@ -297,12 +298,12 @@
 	<div id="top_follower">
 
 		<div class='btn_container hidden'>
-			<button class='btn btn-danger btn_preview_date hidden' disabled fc-index='year' value='-1'>< Year</button>
-			<button class='btn btn-danger btn_preview_date hidden' disabled fc-index='timespan' value='-1'>< Month</button>
+			<button class='btn btn-danger btn_preview_date hidden d-print-none' disabled fc-index='year' value='-1'>< Year</button>
+			<button class='btn btn-danger btn_preview_date hidden d-print-none' disabled fc-index='timespan' value='-1'>< Month</button>
 		</div>
 
         <div class='reset_preview_date_container m-1 left'>
-            <button type='button' class='btn m-0 btn-info hidden reset_preview_date protip' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >< Current</button>
+            <button type='button' class='btn m-0 btn-info hidden reset_preview_date protip d-print-none' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >< Current</button>
         </div>
 
         <div class="follower_center">
@@ -310,12 +311,12 @@
         </div>
 
         <div class='reset_preview_date_container m-1 right'>
-            <button type='button' class='btn m-0 btn-info hidden reset_preview_date protip' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >Current ></button>
+            <button type='button' class='btn m-0 btn-info hidden reset_preview_date protip d-print-none' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >Current ></button>
         </div>
 
 		<div class='btn_container hidden'>
-			<button class='btn btn-success btn_preview_date hidden' disabled fc-index='year' value='1'>Year ></button>
-			<button class='btn btn-success btn_preview_date hidden' disabled fc-index='timespan' value='1'>Month ></button>
+			<button class='btn btn-success btn_preview_date hidden d-print-none' disabled fc-index='year' value='1'>Year ></button>
+			<button class='btn btn-success btn_preview_date hidden d-print-none' disabled fc-index='timespan' value='1'>Month ></button>
 		</div>
 
 	</div>

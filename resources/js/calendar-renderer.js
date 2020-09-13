@@ -3,6 +3,8 @@ const calendar_renderer = {
     loaded: false,
     loading_message: "Initializing...",
 
+    render_callbacks: [],
+
     render_data: {
         current_epoch: 0,
         preview_epoch: 0,
@@ -18,6 +20,10 @@ const calendar_renderer = {
         add_month_number: false,
         add_year_day_number: false,
         hide_weekdays: false
+    },
+
+    register_render_callback(callback){
+        this.render_callbacks.push(callback)
     },
 
     load_calendar: function(event){
@@ -106,6 +112,14 @@ const calendar_renderer = {
         eras.evaluate_position();
         
         scroll_to_epoch();
+
+        for(let index in this.render_callbacks){
+            let callback = this.render_callbacks[index];
+            if(callback){
+                callback();
+            }
+        }
+        this.render_callbacks = [];
     },
 
     pre_event_load: function(){
