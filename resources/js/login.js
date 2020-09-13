@@ -9,7 +9,7 @@ $(document).ready(function(){
 
 		$("#login-show-button").click(function(){
 			$("#login-background").fadeIn(150);
-			$("#login_username").focus();
+			$("#login_identity").focus();
 		});
 
 		$("#login-background").click(function(){
@@ -26,11 +26,11 @@ $(document).ready(function(){
 			wrapper: "div",
 			errorClass: 'alert alert-danger',
 			rules: {
-				username: "required",
+				identity: "required",
 				password: "required"
 			},
 			messages: {
-				username: "Please enter a username.",
+				identity: "Please enter a username or email.",
 				password: "Please enter a password."
 			},
 			submitHandler: function(form){
@@ -39,15 +39,24 @@ $(document).ready(function(){
 					url:window.baseurl+"login",
 					type: "post",
 					dataType: 'json',
-					data: {username: $('#login_username').val(), password: $('#login_password').val(), remember: $('#login_rememberMe').is(':checked')},
+					data: {identity: $('#login_identity').val(), password: $('#login_password').val(), remember: $('#login_rememberMe').is(':checked')},
 					success: function(result){
 						location.reload();
 					},
 					error: function ( log )
 					{
-						console.log(log);
+					    let errors = log.responseJSON.errors;
+
+						if(errors.hasOwnProperty('username')) {
+                            errors['identity'] = errors['username'];
+                            delete errors['username'];
+                        } else if (errors.hasOwnProperty('email')) {
+                            errors['identity'] = errors['email'];
+                            delete errors['email'];
+                        }
+
 						loginValidator.showErrors(
-							log.responseJSON.errors
+							errors
 						);
 						$('#login_button').removeAttr('disabled');
 					}
@@ -67,7 +76,7 @@ $(document).ready(function(){
 
 function logout(){
 	$.ajax({
-		url:window.baseurl+"logout",
+		url:"/logout",
 		type: "post",
 		dataType: "json",
 		data: {action: "logout"},

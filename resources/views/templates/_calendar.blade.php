@@ -6,7 +6,7 @@
 
 <body class="page-{{ str_replace('.', '-', Route::currentRouteName()) }} @stack('page-class')">
 
-<div id="protip_container"></div>
+<div id="protip_container" class='d-print-none'></div>
 
 <div id="content">
     <div id="loading_background" class='basic-background hidden'>

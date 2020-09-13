@@ -5,8 +5,8 @@ namespace App\Exceptions;
 use Throwable;
 use Auth;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Illuminate\Auth\Access\AuthorizationException as AuthorizationException;
-use Illuminate\Auth\Access\AuthenticationException as AuthenticationException;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\AuthenticationException;
 
 class Handler extends ExceptionHandler
 {
@@ -56,6 +56,14 @@ class Handler extends ExceptionHandler
         if($exception instanceof AuthorizationException || $exception instanceof AuthenticationException) {
             if($request->is('calendars/*/edit')) {
                 return redirect(str_replace('/edit','', $request->path()));
+            }
+
+            if($request->is('calendars/create')) {
+                return redirect(route('subscription.pricing'))->with('alert', "Thanks for using Fantasy Calendar! Please subscribe to have more than two calendars active at a time.");
+            }
+
+            if($request->is('calendars/*')) {
+                return redirect(route('errors.calendar_unavailable'));
             }
         }
 

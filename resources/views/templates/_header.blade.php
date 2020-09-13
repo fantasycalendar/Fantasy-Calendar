@@ -23,11 +23,13 @@
                 @if(Auth::user()->isAdmin())
                     <li class="nav-item"><a href="{{ route('code16.sharp.home') }}" class="nav-link">Admin Panel</a></li>
                 @endif
-                <li class="nav-item"><a href="{{ route('settings') }}" class="nav-link">Settings</a></li>
-                <li class="nav-item"><a href="/profile" class="nav-link">Profile</a></li>
-                <li class="nav-item"><a href="javascript:" id="logout-button" class="nav-link">Logout</a></li>
+
+                <li class="nav-item"><a href="{{ route('subscription.pricing') }}" class="nav-link">Pricing</a></li>
+                <li class="nav-item"><a href="{{ route('profile') }}" class="nav-link">Profile</a></li>
+                <li class="nav-item"><a href="{{ route('logout') }}" class="nav-link">Logout</a></li>
             @else
-                <li class="nav-item"><a href="javascript:" id="login-show-button" class="nav-link">Login</a></li>
+                <li class="nav-item"><a href="{{ route('subscription.pricing') }}" class="nav-link">Pricing</a></li>
+                <li class="nav-item"><a href="{{ route('login') }}" class="nav-link">Login</a></li>
                 <li class="nav-item"><a href="{{ route('register') }}" class="nav-link">Register</a></li>
             @endauth
 
@@ -50,7 +52,7 @@
 		<div class="basic-wrapper">
 			<form id="login-form" class="basic-form" method="POST">
 				<h3 class="basic-form-heading">Login</h3>
-				<input type="text" class="form-control" id="login_username" name="username" placeholder="Username" autofocus="" autocomplete="username" />
+				<input type="text" class="form-control" id="login_identity" name="identity" placeholder="Username or E-mail" autofocus="" autocomplete="username" />
 				<input type="password" class="form-control" id="login_password" name="password" placeholder="Password" autocomplete="current-password" />
 				<div id="login_messagebox"></div>
 				<label class="form-control checkbox">

@@ -10,6 +10,16 @@
     background-color: $accent-color !important;
 }
 
+.btn.btn-accent {
+    background-color: $accent-color;
+    border-color: $accent-color;
+
+    &:hover {
+        background-color: $accent-color-darker;
+        border-color: $accent-color;
+    }
+}
+
 html {
     font-size: 20px;
     overflow-x: hidden;
@@ -103,7 +113,9 @@ body{
 }
 
 .navbar {
-    min-height: 3rem;
+    @media (min-width: 768px) and (hover: none) {
+        min-height: 3.6rem;
+    }
 }
 
 .page-calendars-edit {
@@ -145,7 +157,7 @@ body.page-calendars-index {
     display: flex;
     width: 100%;
     margin:0;
-    max-height: 100vh;
+    height: 100vh;
 }
 
 #input_container{
@@ -207,10 +219,6 @@ body.page-calendars-index {
     }
 }
 
-#preset_container #json_apply:disabled{
-    display: none;
-}
-
 #calendar_container{
     order:3;
     padding:0 10px 0 10px;
@@ -219,6 +227,7 @@ body.page-calendars-index {
     overflow-y: auto;
     max-height: 100%;
     box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+    background-color: $calendar-bg-color;
 }
 
 /************/
@@ -285,5 +294,10 @@ body.page-calendars-index {
 .page-export {
     .export-body {
         height: 74vh;
+        background-color: $card-bg-color;
+
+        &:focus {
+            color: #f2f2f2;
+        }
     }
 }

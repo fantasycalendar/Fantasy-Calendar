@@ -1,13 +1,14 @@
-@extends('templates._page')
+@extends('templates._calendar')
 
 @push('head')
     <script>
-    const owner = {{ $calendar->owned }};
-    
+
     $(document).ready(function(){
-        wizard = false;
 
         @include('calendar._loadcalendar')
+
+        preview_date = clone(dynamic_data);
+        preview_date.follow = true;
 
         for(var moon_index in static_data.moons){
             var moon = static_data.moons[moon_index];
@@ -31,11 +32,17 @@
             static_data.clock.crowding = 0;
         }
 
+        rebuild_calendar('calendar', dynamic_data);
+
+        edit_event_ui.bind_events();
+
         set_up_view_inputs();
         set_up_view_values();
         set_up_visitor_values();
+        
         bind_calendar_events();
-        rebuild_calendar('calendar', dynamic_data);
+
+        evaluate_queryString(window.location.search);
 
         $('#current_year, #current_timespan, #current_day, #current_hour, #current_minute, #location_select').change(function(){
             do_update_dynamic(hash);
@@ -58,7 +65,48 @@
         }
 
     });
-    
+
+    function evaluate_queryString(queryString){
+
+        const urlParams = new URLSearchParams(queryString);
+
+        if(urlParams.has("year") && urlParams.has("month") && urlParams.has("day")){
+            let year = Number(urlParams.get('year'));
+            let timespan = Number(urlParams.get('month'));
+            let day = Number(urlParams.get('day'));
+
+            if(isNaN(year) || isNaN(timespan) || isNaN(day)) {
+                return;
+            }
+
+            if(valid_preview_date(year, timespan, day) || window.Perms.player_at_least('co-owner')){
+
+                if(year === 0 && !static_data.settings.year_zero_exists){
+                    return;
+                }
+                preview_date_manager.year = convert_year(static_data, year);
+
+                if(timespan < 0 || timespan > preview_date_manager.last_timespan){
+                    return;
+                }
+                preview_date_manager.timespan = timespan;
+
+                if(day < 0 || day > preview_date_manager.num_days){
+                    return;
+                }
+                preview_date_manager.day = day;
+
+                go_to_preview_date(true);
+                refresh_preview_inputs();
+            }
+        }
+
+        if(urlParams.has('print')){
+            window.dispatchEvent(new CustomEvent('register-render-callback', {detail: print()}));
+        }
+
+    }
+
     function check_dates(){
 
         if(document.hasFocus() && (Date.now() - last_mouse_move) < 10000){
@@ -91,7 +139,7 @@
                     });
 
                 }else if(new_dynamic_change > last_dynamic_change){
-                    
+
                     last_dynamic_change = new_dynamic_change
 
                     get_dynamic_data(hash, function(result){
@@ -103,6 +151,7 @@
                         dynamic_data = clone(result);
 
                         check_update(false);
+                        evaluate_settings();
                         poll_timer = setTimeout(check_dates, 5000);
 
                     });
@@ -144,14 +193,14 @@
         display_preview_back_button();
 
         if(rebuild || ((data.rebuild || static_data.settings.only_reveal_today) && preview_date.follow)){
-            show_loading_screen_buffered();
-            rebuild_calendar('calendar', dynamic_data)
+            rebuild_calendar('calendar', dynamic_data);
+            set_up_visitor_values();
         }else{
             update_current_day(false);
             scroll_to_epoch();
         }
-        
-        refresh_view_values();
+
+        set_up_view_values();
 
     }
 
@@ -167,6 +216,8 @@
 @section('content')
     <div id="generator_container">
         @include('layouts.weather_tooltip')
+        @include('layouts.day_data_tooltip')
+        @include('layouts.moon_tooltip')
         @include('layouts.event')
         @include('inputs.sidebar.view')
     </div>

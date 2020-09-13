@@ -19,12 +19,15 @@ $teal: #4dc0b5;
 $cyan: #6cb2eb;
 
 $calendar-border-color: rgba(0,0,0, 0.5);
-$current-day-color: #655a4f;
-$calendar-bg-color: $gray-600;
+$current-day-color: #9e6116;
+$calendar-bg-color: #222;
 $card-bg-color: #303030;
-$accent-color: #1d472d;
+$accent-color-lighter: #379e6b;
+$accent-color: #2f855a;
+$accent-color-darker: #246645;
+$accent-color-light: $accent-color;
 $accent-color-light: #2f855a;
-$sidebar-width: 32%;
+$sidebar-width: 27%;
 $wiki-link-color: rgba(255,255,255,0.2);
 $wiki-link-hover-color: white;
 $main-text-color: rgba(255, 255, 255, 0.8);
@@ -33,6 +36,22 @@ $action-bg-color: rgba(166, 168, 179, 0.32);
 $action-icon-color: white;
 $weather-tooltip-bg-color: rgba(0, 0, 0, 0.8);
 $input-disabled-color: #848484;
+
+// Modal colors
+$modal-bg-color: $bg-gray-900;
+$modal-content-bg-color: $text-gray-800;
+$modal-content-hover-bg-color: $text-gray-700;
+$modal-action-color: $text-gray-100;
+$modal-accent-background: $bg-gray-800;
+$modal-accent-hover-background: $bg-gray-800;
+$modal-content-border-color: $text-gray-800;
+
+$btn-color: #1f5f73;
+$btn-border: #1f4f5e;
+
+$btn-color-hover: #1f424d;
+$btn-border-hover: #1e4552;
+
 
 // Minimalist colors
 $m-even-bg: rgba(255, 255, 255, 0.05);

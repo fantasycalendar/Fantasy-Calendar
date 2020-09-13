@@ -5,7 +5,7 @@ importScripts('/js/calendar/calendar_variables.js?v='+version);
 
 
 onmessage = e => {
-	data = event_evaluator.init(e.data.static_data, e.data.events, e.data.event_categories, e.data.epoch_data, e.data.event_id, e.data.start_epoch, e.data.end_epoch, e.data.callback);
+	data = event_evaluator.init(e.data.static_data, e.data.dynamic_data, e.data.events, e.data.event_categories, e.data.epoch_data, e.data.event_id, e.data.start_epoch, e.data.end_epoch, e.data.owner, e.data.callback);
 	postMessage({
 		event_data: data,
 		callback: false
@@ -22,15 +22,18 @@ var event_evaluator = {
 
 	current_data: {},
 
-	init: function(static_data, events, event_categories, epoch_data, event_id, start_epoch, end_epoch, callback){
+	init: function(static_data, dynamic_data, events, event_categories, epoch_data, event_id, start_epoch, end_epoch, owner, callback){
 
 		this.static_data = static_data;
+		this.dynamic_data = dynamic_data;
 		this.events = events;
 		this.categories = event_categories;
 		this.epoch_data = epoch_data;
 
 		this.start_epoch =  start_epoch;
 		this.end_epoch = end_epoch+1;
+
+		this.owner = owner;
 
 		this.callback = callback;
 
@@ -40,15 +43,15 @@ var event_evaluator = {
 			ends: {},
 		}
 
+		if(this.static_data.settings.hide_events && !this.owner){
+			return this.event_data;
+		}
+
 		this.events_only_happen_once = [];
 
 		this.event_id = event_id;
 
-		//execution_time.start();
-
 		this.evaluate_valid_events(this.epoch_data, event_id);
-
-		//execution_time.end();
 
 		return this.event_data;
 
@@ -137,6 +140,12 @@ var event_evaluator = {
 					var cond_2 = values[subcon[3]] ? values[subcon[3]]|0 : undefined;
 					var selected = fract(43758.5453 * Math.sin(cond_2 + (78.233 * epoch_data.epoch)))*100;
 
+				}else if(array[0] === "Location"){
+
+					var cond_1 = values[subcon[2]]|0;
+
+					return event_evaluator.dynamic_data.custom_location && evaluate_operator(operator, cond_1, event_evaluator.dynamic_data.location);
+
 				}else if(array[0] === "Events"){
 
 					var cond_1 = values[subcon[2]]|0;
@@ -212,7 +221,7 @@ var event_evaluator = {
 				}else{
 
 					var selected = epoch_data[selector];
-					var cond_1 = Number(values[subcon[2]]) != NaN ? Number(values[subcon[2]]) : values[subcon[2]];
+					var cond_1 = !isNaN(Number(values[subcon[2]])) ? Number(values[subcon[2]]) : values[subcon[2]];
 					var cond_2 = values[subcon[3]] ? values[subcon[3]] : undefined;
 					cond_2 = !isNaN(Number(cond_2)) ? Number(cond_2) : cond_2;
 
@@ -347,8 +356,10 @@ var event_evaluator = {
 
 			}else{
 
-				var begin_epoch = this.current_event.lookback ? event_evaluator.start_epoch-this.current_event.lookback : event_evaluator.start_epoch;
-				var last_epoch = this.current_event.lookahead ? event_evaluator.end_epoch+this.current_event.lookahead : event_evaluator.end_epoch;
+				let search_distance = this.current_event.data.search_distance ? this.current_event.data.search_distance : 0;
+
+				var begin_epoch = this.current_event.lookback ? event_evaluator.start_epoch-this.current_event.lookback : event_evaluator.start_epoch-search_distance;
+				var last_epoch = this.current_event.lookahead ? event_evaluator.end_epoch+this.current_event.lookahead : event_evaluator.end_epoch+search_distance;
 
 				for(var epoch = begin_epoch; epoch < last_epoch-1; epoch++){
 

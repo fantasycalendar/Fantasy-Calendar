@@ -1,0 +1,58 @@
+on:
+  push:
+    branches:
+      - master
+name: Deploy master branch
+jobs:
+  deploy:
+    name: deploy
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-node@main
+      with:
+        node-version: '14'
+    - name: Get Composer Cache Directory
+      id: composer-cache-dir
+      run: |
+        echo "::set-output name=dir::$(composer config cache-files-dir)"
+    - uses: actions/cache@v2
+      with:
+        path: ${{ steps.composer-cache-dir.outputs.dir }}
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-composer-
+    - name: Run composer
+      uses: nick-zh/composer-php@master
+      with:
+        action: 'install -oa --ignore-platform-reqs'
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+    - name: Create env file
+      run: |
+        cat > .env << EOF
+        APP_ENV=production
+        EOF
+    - name: Install NPM dependencies
+      run: npm install
+    - name: Build production assets
+      run: npm run production
+    - name: Deploy web function
+      run: npx serverless deploy -f web --stage prod
+    - name: Deploy artisan function
+      run: npx serverless deploy -f artisan --stage prod
+    - name: Deploy queue worker
+      run: npx serverless deploy -f worker --stage prod
+    - name: Actions Status Discord
+      uses: sarisia/actions-status-discord@v1.5.2
+      with:
+        webhook: ${{ secrets.DISCORD_FC_BETA_WEBHOOK }}
+        description: "A new version of the beta has been deployed"
+        username: "Github"
+        avatar_url: "https://beta.fantasy-calendar.com//resources/header_logo.png"
+        title: "Deploy success"
+        nodetail: true

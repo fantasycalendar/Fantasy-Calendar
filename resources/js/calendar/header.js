@@ -28,15 +28,26 @@ function evaluate_background_size(){
 
 function error_message(message){
 
-	$('#error_text').empty().append(message);
-	$('#errors_background').removeClass().addClass('error').addClass('flexible_background').css('display', 'flex');
+	$('#modal_text').empty().append(message);
+	$('#modal_background').removeClass().addClass('flexible_background').css('display', 'flex');
+	$('#modal').removeClass().addClass('error');
 
 	evaluate_background_size();
 
 }
 
-function close_error_message(){
-	$('#errors_background').removeClass().addClass('flexible_background').css('display', 'none');
+function creation_message(message){
+
+	$('#modal_text').empty().append(message);
+	$('#modal_background').removeClass().addClass('flexible_background transparent').css('display', 'flex');
+	$('#modal').removeClass().addClass('creation');
+
+	evaluate_background_size();
+
+}
+
+function close_message_modal(){
+	$('#modal_background').removeClass().addClass('flexible_background').css('display', 'none');
 }
 
 function show_changes_button(){
@@ -160,7 +171,7 @@ var loading_screen_text_timer;
 function show_loading_screen_buffered(loading_bar, cancel_button_callback){
 	loading_screen_timer = setTimeout(function(){
 		show_loading_screen_timed(loading_bar, cancel_button_callback)
-	}, 50);
+	}, 100);
 }
 
 function show_loading_screen_timed(loading_bar, cancel_button_callback){
@@ -223,10 +234,20 @@ function set_loading_screen_text(array){
 
 }
 
+var progress = 0;
 
 function update_loading_bar(percentage){
 
-	loading_bar.set(percentage)
+	percentage = precisionRound(percentage, 1);
+
+	if(progress == percentage){
+		return;
+	}
+
+	loading_bar.set(percentage);
+
+	progress = percentage;
+
 }
 
 function slugify(string) {

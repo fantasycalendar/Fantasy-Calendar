@@ -6,6 +6,19 @@
     <script>
 
     $(document).ready(function(){
+        function copy_export(){
+            var copyText = document.querySelector(".export-body");
+            copyText.select();
+            document.execCommand("copy");
+
+            $.notify(
+                "Copied to clipboard!",
+                {
+                    className: "success",
+                    globalPosition: "right bottom"
+                }
+            );
+        }
 
         $("#btn_export_save").click(function(){
             var file = new Blob([JSON.stringify(JSON.parse($('.export-body').text()))], {type: "json"});
@@ -21,15 +34,8 @@
             }
         });
 
-        $('#btn_export_copy').click(function(){
-            var copyText = document.querySelector(".export-body");
-            copyText.select();
-            document.execCommand("copy");
-            $.notify(
-                "Copied to clipboard!",
-                "success"
-            );
-        });
+        $('#btn_export_copy').click(copy_export);
+        $('.export-body').click(copy_export);
 
     })
 

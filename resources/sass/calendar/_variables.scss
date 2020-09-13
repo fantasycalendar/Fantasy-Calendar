@@ -19,10 +19,13 @@ $teal: #4dc0b5;
 $cyan: #6cb2eb;
 
 $calendar-border-color: rgba(166, 168, 179, 0.32);
-$calendar-bg-color: white;
+$calendar-bg-color: hsla(150, 5%, 95%, 1);
 $card-bg-color: white;
-$current-day-color: #fef0db;
+$current-day-color: #ffc691;
+$preview-day-color: rgba(191.0, 99.0, 71.0, 0.5);
+$accent-color-lighter: #379e6b;
 $accent-color: #2f855a;
+$accent-color-darker: #246645;
 $accent-color-light: $accent-color;
 $sidebar-width: 27%;
 $wiki-link-color: rgba(0,0,0,0.2);
@@ -33,6 +36,15 @@ $action-bg-color: #e2e2e2;
 $action-icon-color: rgba(0, 0, 0, 0.7);
 $weather-tooltip-bg-color: white;
 $input-disabled-color: #e9ecef;
+
+// Modal colors
+$modal-bg-color: #e2e8f0;
+$modal-content-bg-color: #f7fafc;
+$modal-content-hover-bg-color: white;
+$modal-action-color: $text-gray-900;
+$modal-accent-background: $accent-color-light;
+$modal-accent-hover-background: $accent-color-lighter;
+$modal-content-border-color: 1px solid rgba(0, 0, 0, 0.1);
 
 // Minimalist colors
 $m-even-bg: #F1FFE1;

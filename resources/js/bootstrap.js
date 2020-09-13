@@ -54,7 +54,7 @@ let authorization = document.head.querySelector('meta[name="api-token"]');
 if (authorization) {
     window.axios.defaults.headers.common['Authorization'] = 'Bearer ' + authorization.content;
 } else {
-    console.error('No API token.');
+    console.log('No API token.');
 }
 
 /**
@@ -95,6 +95,15 @@ window.Mustache = require('mustache');
  */
 
 window.sanitizeHtml = require('sanitize-html');
+
+/**
+ * $.contextMenu is a management facility for - you guessed it - context menus.
+ * It was designed for an application where there are hundreds of elements that may show a context menu,
+ * so intialization speed and memory usage are kept fairly small. It also allows to register context
+ * menus without providing actual markup, as $.contextMenu generates DOMElements as needed.
+ */
+
+window.contextMenu = require('jquery-contextmenu')
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening

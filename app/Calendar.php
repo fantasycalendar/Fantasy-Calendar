@@ -38,6 +38,10 @@ class Calendar extends Model
         return $this->belongsTo('App\User');
     }
 
+    public function users() {
+        return $this->belongsToMany('App\User', 'calendar_user_role')->withPivot('user_role');;
+    }
+
     public function event_categories() {
         return $this->hasMany('App\EventCategory')->orderBy('sort_by');
     }
@@ -53,21 +57,6 @@ class Calendar extends Model
     public function children() {
         return $this->hasMany('App\Calendar', 'parent_id');
     }
-
-//    public function getStaticDataAttribute($value) {
-//        $static_data = json_decode($value, true);
-//
-//        if(!Auth::check() || !Auth::user()->can('update', $this)) {
-//            foreach($static_data['event_data']['events'] as $event){
-//                if($event['settings']['hide'] || (isset($event['settings']['full_hide']) && $event['settings']['full_hide'])){
-//                    $event['name'] = "Sneaky, sneaky...";
-//                    $event['description'] = "You shouldn't be here...";
-//                }
-//            }
-//        }
-//
-//        return $static_data;
-//    }
 
 
     public function structureWouldBeModified($static_data){
@@ -110,38 +99,65 @@ class Calendar extends Model
 
     public function getOwnedAttribute() {
         if (Auth::check() && ($this->user->id == Auth::user()->id || Auth::user()->isAdmin())) {
-            return "true";
+            return true;
         }
 
-        return "false";
+        return false;
     }
 
     public function getClockEnabledAttribute() {
         return isset($this->static_data['clock']['enabled']) && isset($this->dynamic_data['hour']) && isset($this->dynamic_data['minute']) && $this->static_data['clock']['enabled'];
     }
 
-    public function current_date() {
+    public function getCurrentEraValidAttribute() {
+        return (
+            count($this->static_data['eras'] ?? []) > 0
+
+            && ($this->dynamic_data['current_era'] ?? -1) > -1
+        );
+    }
+
+    public function getCurrentDateAttribute() {
         if(count($this->static_data['year_data']['timespans']) < 1) {
             return "N/A";
         }
 
         $month_id = $this->dynamic_data['timespan'] ?? $this->dynamic_data['month'] ?? 0;
 
-
         $year = $this->dynamic_data['year'];
         $month = $this->static_data['year_data']['timespans'][$month_id]['name'];
         $day = $this->dynamic_data['day'];
 
-
         return sprintf("%s %s, %s", $day, $month, $year);
     }
 
-    public function current_time() {
+    public function getCurrentTimeAttribute() {
         if(!$this->static_data['clock']['enabled']) {
             return "N/A";
         }
 
         return $this->dynamic_data['hour'] . ":" . $this->dynamic_data['minute'];
+    }
+
+    public function getCurrentEraAttribute() {
+
+        if(!$this->current_era_valid){
+            return 'N/A';
+        }
+
+        $current_era_index = $this->dynamic_data['current_era'];
+
+        $current_era = $this->static_data['eras'][$current_era_index];
+
+        return $current_era['name'];
+    }
+
+    public function setting($setting_name, $default = false) {
+        return $this->static_data['settings'][$setting_name] ?? $default;
+    }
+
+    public function setSetting($setting_name, $new_value) {
+        $this->static_data['settings'][$setting_name] = $new_value;
     }
 
     public function scopeSearch($query, $search) {

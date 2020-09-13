@@ -1,11 +1,11 @@
 rebuild_type = 'calendar';
 
 function set_up_view_inputs(){
-	
+
 	set_up_visitor_inputs();
 
 	calendar_container = $('#calendar');
-	
+
 	current_year = $('#current_year');
 	current_timespan = $('#current_timespan');
 	current_day = $('#current_day');
@@ -47,7 +47,7 @@ function set_up_view_inputs(){
 	sub_current_year.click(function(){
 
 		dynamic_date_manager.subtract_year();
-		
+
 		evaluate_dynamic_change();
 
 	});
@@ -71,7 +71,7 @@ function set_up_view_inputs(){
 	add_current_year.click(function(){
 
 		dynamic_date_manager.add_year();
-		
+
 		evaluate_dynamic_change();
 
 	});
@@ -138,6 +138,39 @@ function set_up_view_inputs(){
 
 	});
 
+	current_hour.change(function(){
+
+		var curr_hour = current_hour.val()|0;
+
+		if(curr_hour < 0){
+			sub_current_day.click();
+			curr_hour = static_data.clock.hours-1;
+		}else if(curr_hour >= static_data.clock.hours){
+			add_current_day.click();
+			curr_hour = 0;
+		}
+
+		dynamic_data.hour = curr_hour;
+		current_hour.val(curr_hour);
+
+		var apply_changes_immediately = $('#apply_changes_immediately');
+
+		if(apply_changes_immediately.length == 0){
+			apply_changes_immediately = true;
+		}else{
+			apply_changes_immediately = apply_changes_immediately.is(':checked');
+		}
+
+		if(!apply_changes_immediately){
+			evaluate_apply_show_hide();
+			return;
+		}
+
+		eval_current_time();
+		evaluate_save_button();
+
+	});
+
 
 	$('.adjust_minute').click(function(){
 
@@ -157,29 +190,20 @@ function set_up_view_inputs(){
 
 	});
 
-	current_hour.change(function(){
-		dynamic_data.hour = $(this).val()|0;
-
-		var apply_changes_immediately = $('#apply_changes_immediately');
-
-		if(apply_changes_immediately.length == 0){
-			apply_changes_immediately = true;
-		}else{
-			apply_changes_immediately = apply_changes_immediately.is(':checked');
-		}
-
-		if(!apply_changes_immediately){
-			evaluate_apply_show_hide();
-			return;
-		}
-		
-		eval_current_time();
-		evaluate_save_button();
-
-	});
-
 	current_minute.change(function(){
-		dynamic_data.minute = $(this).val()|0;
+
+		var curr_minute = current_minute.val()|0;
+
+		if(curr_minute < 0){
+			$('.adjust_hour[val=-1]').click();
+			curr_minute = Math.abs(static_data.clock.minutes+curr_minute);
+		}else if(curr_minute >= static_data.clock.minutes){
+			$('.adjust_hour[val=1]').click();
+			curr_minute = Math.abs(static_data.clock.minutes-curr_minute);
+		}
+
+		dynamic_data.minute = curr_minute;
+		current_minute.val(curr_minute);
 
 		var apply_changes_immediately = $('#apply_changes_immediately');
 
@@ -257,21 +281,21 @@ function set_up_view_inputs(){
 			evaluate_dynamic_change();
 		}
 
-		do_error_check('seasons', day_adjust != 0);
+		do_error_check('seasons');
 
 	});
 
 
 
 	$('#current_date_btn').click(function(){
-		if(!owner && !static_data.settings.allow_view){
+		if(!Perms.player_at_least('co-owner') && !static_data.settings.allow_view){
 			return;
 		}
 		increment_date_units(true);
 	});
 
 	$('#preview_date_btn').click(function(){
-		if(!owner && !static_data.settings.allow_view){
+		if(!Perms.player_at_least('co-owner') && !static_data.settings.allow_view){
 			return;
 		}
 		increment_date_units(false);
@@ -281,6 +305,8 @@ function set_up_view_inputs(){
 	$('#unit_years').val("");
 	$('#unit_months').val("");
 	$('#unit_days').val("");
+	$('#unit_hours').val("");
+	$('#unit_minutes').val("");
 
 }
 
@@ -290,6 +316,8 @@ function increment_date_units(current){
 	var unit_years = $('#unit_years').val()|0;
 	var unit_months = $('#unit_months').val()|0;
 	var unit_days = $('#unit_days').val()|0;
+	var unit_hours = $('#unit_hours').val()|0;
+	var unit_minutes = $('#unit_minutes').val()|0;
 
 	if(current){
 		var manager = dynamic_date_manager;
@@ -313,6 +341,23 @@ function increment_date_units(current){
 		}
 	}
 
+	let extra_days = 0;
+
+	if(static_data.clock.enabled){
+
+		let extra_hours = (unit_minutes+dynamic_data.minute)/static_data.clock.minutes;
+		extra_days = (unit_hours+extra_hours+dynamic_data.hour)/static_data.clock.hours;
+
+		var new_hour = precisionRound(fract(extra_days) * static_data.clock.hours, 4);
+		var new_minute = Math.floor(fract(new_hour) * static_data.clock.minutes);
+
+		extra_days = Math.floor(extra_days);
+		new_hour = Math.floor(new_hour);
+
+	}
+
+	unit_days += extra_days;
+
 	for(var days = 1; days <= Math.abs(unit_days); days++){
 		if(unit_days < 0){
 			manager.subtract_day();
@@ -322,6 +367,17 @@ function increment_date_units(current){
 	}
 
 	if(current){
+
+		if(static_data.clock.enabled){
+			if(dynamic_data.hour != new_hour || dynamic_data.minute != new_minute){
+				dynamic_data.hour = new_hour
+				dynamic_data.minute = new_minute;
+				current_hour.val(new_hour);
+				current_minute.val(new_minute);
+				eval_clock();
+			}
+		}
+
 		evaluate_dynamic_change();
 	}else{
 		evaluate_preview_change();
@@ -342,10 +398,11 @@ function evaluate_dynamic_change(){
 
 	data = dynamic_date_manager.compare(dynamic_data);
 
-	dynamic_data.year		= data.year;
-	dynamic_data.timespan	= data.timespan;
-	dynamic_data.day		= data.day;
-	dynamic_data.epoch		= data.epoch;
+	dynamic_data.year		 = data.year;
+	dynamic_data.timespan	 = data.timespan;
+	dynamic_data.day		 = data.day;
+	dynamic_data.epoch		 = data.epoch;
+	dynamic_data.current_era = get_current_era(static_data, dynamic_data.epoch);
 
 	var apply_changes_immediately = $('#apply_changes_immediately');
 
@@ -364,7 +421,7 @@ function evaluate_dynamic_change(){
 		preview_date.day		= data.day;
 		preview_date.epoch		= data.epoch;
 
-		if(data.rebuild || (!owner && static_data.settings.only_reveal_today) || !apply_changes_immediately){
+		if(data.rebuild || (!Perms.owner && static_data.settings.only_reveal_today) || !apply_changes_immediately){
 			pre_rebuild_calendar('calendar', dynamic_data)
 		}else{
 			scroll_to_epoch();
@@ -396,9 +453,9 @@ function fix_date(){
 
 function repopulate_location_select_list(){
 
-	var is_edit = location_select.closest('.wrap-collapsible').find('.add_inputs.locations').length > 0;
-
-	location_select.closest('.wrap-collapsible').toggleClass('hidden', !is_edit);
+	if(!creation.is_done()){
+		return;
+	}
 
 	var html = [];
 
@@ -448,13 +505,6 @@ function set_up_view_values(){
 
     preview_date.follow = true;
 
-    refresh_view_values();
-
-}
-
-
-function refresh_view_values(){
-
 	dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
 
 	current_year.val(dynamic_date_manager.adjusted_year);
@@ -465,8 +515,8 @@ function refresh_view_values(){
 
 	if(static_data.clock && dynamic_data.hour !== undefined && dynamic_data.minute !== undefined){
 
-		current_hour.val(dynamic_data.hour).prop('min', 0).prop('max', static_data.clock.hours-1);
-		current_minute.val(dynamic_data.minute).prop('min', 0).prop('max', static_data.clock.minutes-1);
+		current_hour.val(dynamic_data.hour).prop('min', -1).prop('max', static_data.clock.hours);
+		current_minute.val(dynamic_data.minute).prop('min', -1).prop('max', static_data.clock.minutes);
 
 	}
 

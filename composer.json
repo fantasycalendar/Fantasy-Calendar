@@ -10,11 +10,14 @@
     "require": {
         "php": "^7.2",
         "ext-json": "*",
-        "code16/sharp": "^4.2.5",
         "barryvdh/laravel-ide-helper": "^2.6",
+        "bref/laravel-bridge": "^0.2.0",
+        "code16/sharp": "^4.2.5",
+        "creativeorange/gravatar": "^1.0",
         "fideloper/proxy": "^4.0",
         "graham-campbell/markdown": "^11.0",
         "guzzlehttp/guzzle": "^6.5",
+        "laravel/cashier": "^10.5",
         "laravel/framework": "^7.0",
         "laravel/tinker": "^2.2.0",
         "laravel/ui": "^2.0",
@@ -26,6 +29,7 @@
         "barryvdh/laravel-debugbar": "^3.2",
         "facade/ignition": "^2.0",
         "fzaninotto/faker": "^1.4",
+        "laravel/dusk": "^6.4",
         "mockery/mockery": "^1.0",
         "nunomaduro/collision": "^4.1",
         "phpunit/phpunit": "^8.5"
@@ -58,6 +62,8 @@
     "prefer-stable": true,
     "scripts": {
         "pre-install-cmd": [
+            "@php -r \"file_exists('storage') || mkdir('storage');\"",
+            "@php -r \"file_exists('storage/framework') || mkdir('storage/framework');\"",
             "@php -r \"file_exists('storage/framework/cache') || mkdir('storage/framework/cache');\"",
             "@php -r \"file_exists('storage/framework/sessions') || mkdir('storage/framework/sessions');\"",
             "@php -r \"file_exists('storage/framework/views') || mkdir('storage/framework/views');\""

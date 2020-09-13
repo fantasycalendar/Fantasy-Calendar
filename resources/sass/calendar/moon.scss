@@ -1,29 +1,14 @@
 /* Moon phases */
 
-.lunar_shadow {
-    fill-rule: evenodd;
-    fill: #292b4a;
-}
-
 .lunar_border {
     stroke: #000;
-    stroke-width: 4px;
+    stroke-width: 2px;
     fill: none;
 }
 
-.lunar_background {
-    fill: #dfdfdf;
-}
-
-.calendar_moon_container{
-    display: inline-flex;
-    text-align: center;
-    align-content: flex-start;
-    height:100%;
-    width:100%;
-}
-
 .moon_container{
+    min-width:32px;
+    height:32px;
     overflow:hidden;
     max-height: 999999px;
     border-radius:5px;
@@ -41,9 +26,10 @@
 
 }
 
-.calendar_moon{
-    position:relative;
-    margin-left:auto;
-    margin-right:auto;
-    float:left;
+.calendar_moon_container{
+    display: inline-flex;
+    text-align: center;
+    align-content: flex-start;
+    height:100%;
+    width:100%;
 }

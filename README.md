@@ -4,12 +4,12 @@
 
 
 ## A what?
-Well, whether you're an RPG DM looking to track the events of a long-running Forgotten Realms campaign, or simply a world-builder who likes to have wacky celestial configurations (Such as Eberron's [12 moons](http://archive.wizards.com/default.asp?x=dnd/ebds/20050307a)) with zany timekeeping systems to match, you probably need a calendar of some kind.
+Well, whether you're a GM looking to track the events of a long-running Forgotten Realms campaign, an author, or simply a world-builder who likes to have wacky celestial configurations (Such as Eberron's [12 moons](http://archive.wizards.com/default.asp?x=dnd/ebds/20050307a)) with zany timekeeping systems to match, you probably need a calendar of some kind.
 
->_"Game time is of utmost importance [...] YOU CAN NOT HAVE A MEANINGFUL CAMPAIGN IF STRICT TIME RECORDS ARE NOT KEPT."_  
+>_"Game time is of utmost importance [...] you can not have a meaningful campaign if strict time records are not kept."_  
 -[Gary Gygax](http://www.creightonbroadhurst.com/gygax-on-tracking-time-in-the-campaign/)
 
-Fantasy-Calendar seeks to do it all, whether you're creating your own complicated calendar with tons of of interesting edge-cases, or using presets such as the Forgotten Realms, Eberron, or Exandria for simple time-keeping.
+Fantasy-Calendar seeks to do it all, whether you're creating your own complicated calendar with tons of interesting edge-cases, or using presets such as the Forgotten Realms, Eberron, or Exandria for simple time-keeping.
 
 This repository is for the yet-unreleased 2.0 update.
 
@@ -39,9 +39,9 @@ That will setup a basic database structure¹, as well as seed it with a developm
 
 Once your basic database is in place, copy `.env.example` to `.env`, and fill it with the appropriate data for your environment.
 
-If your database setup and `.env` information is correct, then you should be ready to run `php artisan migrate`. [More info](https://laravel.com/docs/5.8/migrations)
+If your database setup and `.env` information is correct, then you should be ready to run `php artisan migrate`. [More info](https://laravel.com/docs/7.x/migrations)
 
-You'll need all the [usual extensions](https://laravel.com/docs/5.8/installation#server-requirements) for a Laravel application, but if you're avoiding Docker then you probably already know that.
+You'll need all the [usual extensions](https://laravel.com/docs/7.x/installation#server-requirements) for a Laravel application, but if you're avoiding Docker then you probably already know that.
 
     [1] This database will still need to be brought up-to-date using Laravel migrations.
 
