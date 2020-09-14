@@ -59,7 +59,7 @@
         }
 
         h3 i {
-            font-size: 72%;
+            font-size: 125%;
         }
     </style>
 @endpush
@@ -155,37 +155,63 @@
                         <h2>And So Much More...</h2>
                     </div>
                 </div>
-                <div class="row py-5">
+                <div class="row py-3">
                     <div class="col-12 col-md-3 py-3 py-md-0 px-2 ml-md-0 pl-md-0 pr-md-1">
-                        <div class="inner text-left h-100 px-3" style="background-color: #e2e8f0;">
-                            <h5 class="pt-2"><i class="fa fa-check-circle"></i> Eras</h5>
-                            <p class="small">AD, BC, Dalereckoning, Post-Divergence, "The&nbsp;Reign of The Ashmarai" ... Whatever you call them, you can now record the eras of your world!</p>
+                        <div class="inner text-center h-100 px-3 rounded" style="background-color: #e2e8f0;">
+                            <div class="row">
+                                <h3 class="pt-4 w-100"><i class="fa fa-hourglass"></i></h3>
+                            </div>
+                            <div class="row">
+                                <h5 class="pt-2 w-100">Eras</h5>
+                            </div>
+                            <div class="row">
+                                <p class="small px-4">AD, BC, Dalereckoning, Post-Divergence, The&nbsp;Reign of The Ashmarai... Whatever you call them, you can now record the eras of your world!</p>
+                            </div>
                         </div>
                     </div>
                     <div class="col-12 col-md-3 py-3 py-md-0 px-2 px-md-1">
-                        <div class="inner text-left h-100 px-3" style="background-color: #e2e8f0;">
-                            <h5 class="pt-2"><i class="fa fa-rocket"></i> Event Categories</h5>
-                            <p class="small">Holidays, natural world events, kingdom celebrations, character birthdays, campaign notes... Organize your categories for the ways you use them.</p>
+                        <div class="inner text-center h-100 px-3 rounded" style="background-color: #e2e8f0;">
+                            <div class="row">
+                                <h3 class="pt-4 w-100"><i class="fa fa-rocket"></i></h3>
+                            </div>
+                            <div class="row">
+                                <h5 class="pt-2 w-100">Event Categories</h5>
+                            </div>
+                            <div class="row">
+                                <p class="small px-4">Religious holidays, natural world events, kingdom celebrations, character birthdays, campaign notes... Organize your events for the ways you use them.</p>
+                            </div>
                         </div>
                     </div>
                     <div class="col-12 col-md-3 py-3 py-md-0 px-2 px-md-1">
-                        <div class="inner text-left h-100 px-3" style="background-color: #e2e8f0;">
-                            <h5 class="pt-2"><i class="fa fa-mobile"></i> Collaboration</h5>
-                            <p class="small">Invite another GM to run events in your world, or let your players help you chronicle the events of the story you're telling together.</p>
+                        <div class="inner text-center h-100 px-3 rounded" style="background-color: #e2e8f0;">
+                            <div class="row">
+                                <h3 class="pt-4 w-100"><i class="fa fa-mobile"></i></h3>
+                            </div>
+                            <div class="row">
+                                <h5 class="pt-2 w-100">Collaboration</h5>
+                            </div>
+                            <div class="row">
+                                <p class="small px-4">Invite another GM to run events in your world, or let your players help you chronicle the events of the story you're telling together.</p>
+                            </div>
                         </div>
                     </div>
                     <div class="col-12 col-md-3 py-3 py-md-0 px-2 mr-md-0 pr-md-0 pl-md-1">
-                        <div class="inner text-left h-100 px-3" style="background-color: #e2e8f0;">
-                            <h5 class="pt-2"><i class="fa fa-calendar-day"></i> Engine improvements</h5>
-                            <p class="small">Various improvements under the hood:</p>
-                            <ul>
-                                <li class="small">More accurate leap days</li>
-                                <li class="small">Leap months</li>
-                                <li class="small">Intercalary months</li>
-                                <li class="small">Better weather information</li>
-                                <li class="small">Improved handling of seasons</li>
-                                <li class="small">Right-click support for quick management</li>
-                            </ul>
+                        <div class="inner text-center h-100 px-3 rounded" style="background-color: #e2e8f0;">
+                            <div class="row">
+                                <h3 class="pt-4 w-100"><i class="fa fa-calendar-day"></i></h3>
+                            </div>
+                            <div class="row">
+                                <h5 class="pt-2 w-100">Engine Improvements</h5>
+                            </div>
+                            <div class="row">
+                                <ul class="text-left pl-4">
+                                    <li class="small">More accurate leap days</li>
+                                    <li class="small">Intercalary & leap months</li>
+                                    <li class="small">Better weather generation</li>
+                                    <li class="small">Upgraded and improved seasons</li>
+                                    <li class="small">...and more!</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
