@@ -12,6 +12,11 @@
 		title = '';
 		show = false;
 	"
+	@scroll.window="
+		element = false;
+		title = '';
+		show = false;
+	"
 	id='moon_tooltip_box'
 	x-show="show"
 >
