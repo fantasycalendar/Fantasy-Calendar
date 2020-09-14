@@ -1839,7 +1839,7 @@ var calendar_builder = {
 			era_year++;
 		}
 
-		var calendar_end_epoch = epoch-1;
+		var calendar_end_epoch = epoch;
 		var calendar_first_week_day = first_week_day;
 
 		order = Object.keys(this.calendar_list.post_timespans_to_evaluate);
