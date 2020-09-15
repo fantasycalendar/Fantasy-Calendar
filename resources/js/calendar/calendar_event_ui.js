@@ -542,12 +542,12 @@ var edit_event_ui = {
 
 		this.set_current_event(eventId)
 
-		this.inputs_changed = false;
-
 		this.event_action_type.text("Creating event");
 		this.view_event_btn.hide();
 
 		this.populate_condition_presets();
+
+		this.inputs_changed = false;
 
 	},
 
