@@ -1404,7 +1404,7 @@ var calendar_builder = {
 		year_day = 1 + start_data.epoch - year_start_data.epoch;
 		year_week_num = 1 + start_data.total_week_num - year_start_data.total_week_num;
 
-		week_day = year_start_data.week_day;
+		week_day = start_data.week_day;
 
 		order = Object.keys(this.calendar_list.pre_timespans_to_evaluate);
 
