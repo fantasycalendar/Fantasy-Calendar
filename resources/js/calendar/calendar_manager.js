@@ -106,6 +106,8 @@ var evaluated_event_data = {};
 
 function rebuild_calendar(action, dynamic_data){
 
+	//execution_time.start()
+
     worker_calendar.postMessage({
 		calendar_name: calendar_name,
 		static_data: static_data,
@@ -193,6 +195,8 @@ worker_climate.onmessage = e => {
 }
 
 worker_calendar.onmessage = e => {
+
+	//execution_time.end("Calendar worker took: ")
 
 	evaluated_static_data = {}
 	evaluated_static_data = e.data.processed_data;

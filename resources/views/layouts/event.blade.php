@@ -70,14 +70,18 @@
                                 <option value='fortnightly'>Fortnightly on Wednesday</option>
                                 <option value='monthly_date'>Monthly on this date</option>
                                 <option value='monthly_weekday'>Monthly on the 1st Wednesday</option>
+                                <option value='monthly_inverse_weekday'>Monthly on the last Wednesday</option>
                                 <option value='annually_date'>Annually on this date</option>
-                                <option value='annually_month_weekday'>Annually on this date</option>
+                                <option value='annually_month_weekday'>Annually on the 1st Wednesday date</option>
+                                <option value='annually_inverse_month_weekday'>Annually on the last Wednesday</option>
                                 <option nth value='every_x_day'>Every x day</option>
                                 <option nth value='every_x_weekday'>Every x Wednesday</option>
                                 <option nth value='every_x_monthly_date'>Every x month on the 3rd</option>
                                 <option nth value='every_x_monthly_weekday'>Every x month on the 3rd Wednesday</option>
+                                <option nth value='every_x_inverse_monthly_weekday'>Every x month on the last Wednesday</option>
                                 <option nth value='every_x_annually_date'>Every x year on the 3rd of June</option>
-                                <option nth value='every_x_annually_weekday'>Every x year on the 3rd Wednesday in June</option>
+                                <option nth value='every_x_annually_weekday'>Every x month on the 3rd Wednesday</option>
+                                <option nth value='every_x_inverse_annually_weekday'>Every x year on the last Wednesday in June</option>
                                 <optgroup value='moons' label='Moons' class='hidden'></optgroup>
                         </select>
                     </div>
