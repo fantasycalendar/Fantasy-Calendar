@@ -124,6 +124,10 @@ var calendar_weather = {
 
 			var epoch = day_container.attr('epoch');
 
+			if(epoch === undefined){
+				return;
+			}
+
 			this.moon_title.toggleClass('hidden', !icon.hasClass('moon_popup'));
 			this.moon_container.toggleClass('hidden', !icon.hasClass('moon_popup'));
 
