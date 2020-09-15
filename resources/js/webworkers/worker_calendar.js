@@ -1380,8 +1380,8 @@ var calendar_builder = {
 		era_year = start_data.era_year;
 		count_timespans = start_data.count_timespans;
 		num_timespans = start_data.num_timespans;
-		total_week_num = start_data.total_week_num;
-
+		total_week_num = start_data.total_week_num
+		week_day = start_data.week_day;
 		epoch = start_data.epoch;
 
 		var current_era = -1;
@@ -1403,8 +1403,6 @@ var calendar_builder = {
 		let year_start_data = evaluate_calendar_start(this.static_data, first_eval_year);
 		year_day = 1 + start_data.epoch - year_start_data.epoch;
 		year_week_num = 1 + start_data.total_week_num - year_start_data.total_week_num;
-
-		week_day = start_data.week_day;
 
 		order = Object.keys(this.calendar_list.pre_timespans_to_evaluate);
 
