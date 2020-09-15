@@ -380,13 +380,13 @@ const render_data_generator = {
                     let timespan_data = {
                         "title": "",
                         "show_title": false,
-                        "number": static_data.settings.add_month_number ? index+1 : false,
+                        "short_weekdays": timespan.truncated_week,
                         "weekdays": static_data.year_data.global_week,
                         "show_weekdays": false,
                         "days": [[]],
                         "events": []
                     }
-
+                    
                     let weekday_number = 1;
 
                     for(var leap_day_index in filtered_leap_days_end){
