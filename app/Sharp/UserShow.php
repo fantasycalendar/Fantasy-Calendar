@@ -19,7 +19,7 @@ class UserShow extends SharpShow
     public function find($id): array
     {
         // Replace/complete this code
-        $user = User::findOrFail($id);
+        $user = User::findOrFail($id)->makeVisible(['beta_authorised', 'api_token', 'email', 'permissions']);
 
         return $this->setCustomTransformer(
             "api_token",

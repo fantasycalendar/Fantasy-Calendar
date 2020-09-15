@@ -12,7 +12,7 @@
         "ext-json": "*",
         "barryvdh/laravel-ide-helper": "^2.6",
         "bref/laravel-bridge": "^0.2.0",
-        "code16/sharp": "^4.2.5",
+        "code16/sharp": "^5.1.2",
         "fideloper/proxy": "^4.0",
         "graham-campbell/markdown": "^11.0",
         "guzzlehttp/guzzle": "^6.5",
