@@ -61,6 +61,7 @@ Route::post('pricing/coupon', 'SubscriptionController@coupon');
 
 // User profile
 Route::get('/profile', 'SettingsController@profile')->middleware('auth')->name('profile');
+Route::post('/profile/password', 'SettingsController@updatePassword')->middleware('auth');
 
 Route::get('/error/unavailable', 'ErrorsController@calendarUnavailable')->name('errors.calendar_unavailable');
 // Manual error page routes for the moment

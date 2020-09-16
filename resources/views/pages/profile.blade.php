@@ -10,6 +10,21 @@
                 document.getElementById(name+'_input').setAttribute('checked', 'checked');
             }
         }
+
+        function PasswordManager() {
+            return {
+                changing_password: false,
+                valid: false,
+                new_password: '',
+                new_password_confirmation: '',
+                was_validated: false,
+
+                confirm_password: function() {
+                    this.was_validated = true;
+                    this.valid = this.new_password.length > 7 && this.new_password !== '' && this.new_password_confirmation !== '' && this.new_password === this.new_password_confirmation
+                }
+            }
+        }
     </script>
 @endpush
 
@@ -72,9 +87,34 @@
                 <div class="card">
                     <div class="card-header"><img class="rounded mr-1" style="max-height: 40px;" src="https://unavatar.now.sh/{{ $user->email }}?fallback=http://beta.fantasy-calendar.com/resources/logo-dark.png"> {{ $user->username }}</div>
                     <div class="card-body">
-                        <div class="card-text">
+                        <div class="card-text" x-data="PasswordManager()">
                             <p><i class="fa fa-envelope"></i>&nbsp;{{ Str::limit($user->email, 26) }}</p>
                             <p>Registered {{ $user->created_at->format('Y-m-d') }}</p>
+
+                            <button class="btn btn-secondary" x-show="!changing_password" @click="changing_password = !changing_password">Change Password</button>
+                            <form action="/profile/password" method="POST" x-show="changing_password">
+                                @csrf
+
+                                <hr>
+                                <label class="mt-2" for="new_password">New Password</label>
+                                <input class="form-control required" required type="password" name="new_password" x-model="new_password" :class="{ 'is-invalid': was_validated && new_password.length < 7 }" @blur="confirm_password">
+
+                                <div class="invalid-feedback" x-show="was_validated && new_password.length < 7">Password must be 8 characters long.</div>
+
+                                <label class="mt-2" for="new_password_confirmation">Confirm New Password</label>
+                                <input
+                                    class="form-control required" required
+                                    type="password"
+                                    name="new_password_confirmation"
+                                    x-model="new_password_confirmation"
+                                    :class="{ 'is-invalid': was_validated && !valid }"
+                                    @keyup="confirm_password"
+                                    @blur="confirm_password">
+
+                                <div class="invalid-feedback" x-show="was_validated && new_password !== new_password_confirmation">Passwords do not match.</div>
+
+                                <button class="btn btn-secondary mt-3" type="submit" :disabled="!was_validated || !valid">Update</button>
+                            </form>
                         </div>
                     </div>
                 </div>
