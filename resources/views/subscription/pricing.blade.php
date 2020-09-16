@@ -2,18 +2,15 @@
 
 @push('head')
     <style>
-        .subscription-option {
-            padding-top: 20px;
-        }
         .subscription-option .inner {
-            padding: .5rem 0;
+            padding: 1.5rem .5rem;
             display: flex;
             flex-direction: column;
             position: relative;
             text-align: center;
-            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
-            border-radius: 5px;
-            height: 100%;
+            /*box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);*/
+            border-radius: 8px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
         }
         .subscription-option .inner > * {
             padding-left: 1.2rem;
@@ -54,6 +51,7 @@
         }
         .container {
             padding-top: 3rem;
+            max-width: 980px;
         }
         .custom-checkbox {
             display: inline-block;
@@ -64,29 +62,22 @@
         .subscription-option.yearly .monthly {
             display: none;
         }
+        .price-label {
+            margin: 48px 0;
+        }
     </style>
 @endpush
 
 @section('content')
 
-    <div class="container py-4">
-        <h1 class="center-text">Subscribe to Fantasy Calendar</h1>
+    <div class="container py-4 pb-md-5" x-data="{ yearly: false }">
+        <h1 class="center-text mb-4">Subscribe to Fantasy Calendar</h1>
 
         @if(session()->has('alert'))
-            <div class="alert alert-info py-3 m-5">{{ session('alert') }}</div>
+            <div class="alert alert-info py-3 m-4">{{ session('alert') }}</div>
         @endif
 
     @if(!$betaAccess || Auth::user()->paymentLevel() == "Free")
-        <div class="row">
-            <div class="col-12 center-text py-2">
-                <span>Monthly</span>
-                <label class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="#interval_selection" onclick="$('.subscription-option').toggleClass('yearly');">
-                    <span class="custom-control-indicator"></span>
-                </label>
-                <span>Yearly</span>
-            </div>
-        </div>
         @elseif($betaAccess)
             <div class="row">
                 <div class="col-12">
@@ -105,53 +96,57 @@
             </div>
         @endif
 
-        <div class="row">
-            <div class="col-12 col-lg-4 subscription-option">
-                <div class="inner">
-                    <h2>Free</h2>
-                    <h5>For users who just need to keep track of some basic stuff.</h5>
-                    <h3 class="bg-grey">Free</h3>
-                    <ul class="features">
-                        <li><strong>Full</strong> calendar functionality</li>
-                        <li>Maximum of <strong>2</strong> calendars</li>
-                    </ul>
-                    @guest
-                        <a href="{{ route('register') }}" class="btn btn-primary">Register now</a>
-                    @else
-                        @if(!$betaAccess)
-                            @unless($subscribed && !Auth::user()->subscriptions->first()->onGracePeriod())
-                                <a href="#" class="btn btn-secondary disabled">You already have this!</a>
-                            @else
-                                <a href="{{ route('subscription.cancel') }}" class="btn btn-danger">Cancel Subscription</a>
-                            @endunless
-                        @endif
-                    @endguest
-                </div>
+        <div class="row py-3 py-md-4 my-lg-4">
+            <div class="col-12 col-lg-8 d-flex flex-column justify-content-center">
+                <h3>What subscribing gets you</h3>
+
+                <ul class="text-left">
+                    <li><strong>Full</strong> calendar functionality</li>
+                    <li><strong>Unlimited</strong> calendars in list</li>
+                    <li><strong>User Management</strong> <p class="small">Users can comment on events and view provided information</p> </li>
+                    <li>Calendar <strong>co-ownership</strong> <p class="small">Co-owners can comment on events, create events, and change the current date.</p></li>
+                    <li>Calendar Linking <p class="small">Link calendars together and drive their dates from a single parent calendar!</p></li>
+                </ul>
+
             </div>
 
-            <div class="col-12 col-lg-4 subscription-option">
+
+            <div class="col-12 col-lg-4 subscription-option" :class="{yearly: yearly}">
                 <div class="inner">
-                    <h2>Timekeeper</h2>
-                    <h5>For power users who want to collaborate using the greatest multi-user fantasy calendar tool on the market.</h5>
+                    <div class="row">
+                        <div class="col-12 text-center py-2">
+                            <span>Monthly</span>
+                            <label class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="#interval_selection" @click="yearly = !yearly">
+                                <span class="custom-control-indicator"></span>
+                            </label>
+                            <span>Yearly</span>
+                        </div>
+                    </div>
 
                     @if($betaAccess && Auth::user()->paymentLevel() == "Free")
-                        <h3 class="bg-grey monthly">Free<br><p class="small">Because you're awesome <3</p></h3>
-                        <h3 class="bg-grey yearly">Free<br><p class="small">Because you're awesome <3</p></h3>
+                        <div class="price-label">
+                            <h3>Free<br></h3><p class="small">Because you're awesome <3</p>
+                        </div>
                     @elseif($earlySupporter)
-                        <h3 class="bg-grey monthly">$1.99 / month<br><p class="small">20% off because you're an early supporter (normally $2.49)!</p></h3>
-                        <h3 class="bg-grey yearly">$19.99 / year<br><p class="small">20% off because you're an early supporter (normally $24.99), as well as two months free!</p></h3>
+                        <div class="price-label" x-show="!yearly">
+                            <h2>$1.99<span class="small">/mo</span><br></h2>
+                            <p><strong>20% off</strong> early supporter discount<br>(normally $2.49)!</p>
+                        </div>
+                        <div class="price-label" x-show="yearly">
+                            <h2>$19.99<span class="small">/yr</span><br></h2>
+                            <p><strong>20% off</strong> early supporter discount<br>(normally $24.99), as well as two months free!</p>
+                        </div>
                     @else
-                        <h3 class="bg-grey monthly">$2.49 / month<br></h3>
-                        <h3 class="bg-grey yearly">$24.99 / year<br><p class="small">Two months free (16% discount)!</p></h3>
+                        <div class="price-label" x-show="!yearly">
+                            <h3>$2.49<span class="small">/mo</span><br></h3>
+                        </div>
+                        <div class="price-label" x-show="yearly">
+                            <h3>$24.99<span class="small">/yr</span><br></h3>
+                            <p>Two months free (16% discount)!</p>
+                        </div>
                     @endif
 
-                    <ul class="features">
-                        <li><strong>Full</strong> calendar functionality</li>
-                        <li><strong>Unlimited</strong> number of calendars</li>
-                        <li><strong>User Management</strong> <p class="small">Users can comment on events and view provided information</p> </li>
-                        <li>Calendar <strong>co-ownership</strong> <p class="small">Co-owners can comment on events, create events, and change the current date.</p></li>
-                        <li>Calendar Linking <p class="small">Link calendars together and drive their dates from a single parent calendar!</p></li>
-                    </ul>
 
                     @guest
                         <a href="{{ route('register') }}" class="register">Register to subscribe</a>
@@ -159,7 +154,7 @@
                         @if(!$betaAccess)
                             @if(!$betaAccess && Auth::user()->subscribedToPlan('timekeeper_monthly', 'Timekeeper'))
                                 @if(Auth::user()->subscriptions->first()->onGracePeriod())
-                                    <a href="{{ route('subscription.resume', ['level' => 'Timekeeper']) }}" class="btn btn-info monthly">Resume monthly</a>
+                                    <a href="{{ route('subscription.resume', ['level' => 'Timekeeper']) }}" class="btn btn-info" x-show="yearly">Resume monthly</a>
                                 @else
                                     <a href="{{ route('profile') }}" class="btn btn-primary monthly">View your subscription</a>
                                 @endif
@@ -169,7 +164,7 @@
 
                             @if(!$betaAccess && Auth::user()->subscribedToPlan('timekeeper_yearly', 'Timekeeper'))
                                     @if(Auth::user()->subscriptions->first()->onGracePeriod())
-                                        <a href="{{ route('subscription.resume', ['level' => 'Timekeeper']) }}" class="btn btn-info yearly">Resume yearly</a>
+                                        <a href="{{ route('subscription.resume', ['level' => 'Timekeeper']) }}" class="btn btn-info" x-show="!yearly">Resume yearly</a>
                                     @else
                                         <a href="{{ route('profile') }}" class="btn btn-primary monthly">View your subscription</a>
                                     @endif
@@ -185,11 +180,11 @@
         </div>
 
         <div class="row">
-            <div class="col-md-2"></div>
-            <div class="col-12 col-md-8 text-center my-5 py-3 px-4 border rounded" style="opacity: 0.65;">
-                <small>Have you donated to Fantasy Calendar in the past? If so, we'd love to give you an appropriate subscription! Please <a href="mailto:contact@fantasy-calendar.com">contact us</a> with proof of your donation so we can make that happen.</small>
+            <div class="col-lg-2"></div>
+            <div class="col-12 col-lg-8 text-center my-4 py-3 px-4 border rounded" style="opacity: 0.65;">
+                <small>Have you donated to Fantasy Calendar in the past? If so, we'd love to give you a subscription! Please <a href="mailto:contact@fantasy-calendar.com">contact us</a> with proof of your donation, so we can make that happen.</small>
             </div>
-            <div class="col-md-2"></div>
+            <div class="col-lg-2"></div>
         </div>
     </div>
 @endsection
