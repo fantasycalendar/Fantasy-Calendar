@@ -31,7 +31,7 @@ var event_evaluator = {
 		this.epoch_data = epoch_data;
 
 		this.start_epoch =  start_epoch;
-		this.end_epoch = end_epoch+1;
+		this.end_epoch = end_epoch;
 
 		this.owner = owner;
 
@@ -361,7 +361,7 @@ var event_evaluator = {
 				var begin_epoch = this.current_event.lookback ? event_evaluator.start_epoch-this.current_event.lookback : event_evaluator.start_epoch-search_distance;
 				var last_epoch = this.current_event.lookahead ? event_evaluator.end_epoch+this.current_event.lookahead : event_evaluator.end_epoch+search_distance;
 
-				for(var epoch = begin_epoch; epoch < last_epoch-1; epoch++){
+				for(var epoch = begin_epoch; epoch <= last_epoch; epoch++){
 
 					if(event_evaluator.callback){
 

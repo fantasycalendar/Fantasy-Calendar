@@ -500,10 +500,10 @@ var edit_event_ui = {
 			'description': '',
 			'data': {
 				'has_duration': false,
-				'duration': 0,
+				'duration': 1,
 				'show_first_last': false,
 				'limited_repeat': false,
-				'limited_repeat_num': 0,
+				'limited_repeat_num': 1,
 				'conditions': [
 					['Year', '0', [this.data.year]],
 					['&&'],
@@ -542,12 +542,12 @@ var edit_event_ui = {
 
 		this.set_current_event(eventId)
 
-		this.inputs_changed = false;
-
 		this.event_action_type.text("Creating event");
 		this.view_event_btn.hide();
 
 		this.populate_condition_presets();
+
+		this.inputs_changed = false;
 
 	},
 
@@ -675,11 +675,9 @@ var edit_event_ui = {
 
 	submit_event_callback: function(success){
 
-		edit_event_ui.clear_ui();
-
 		if(success){
 
-			error_check();
+			edit_event_ui.clear_ui();
 
 			eval_apply_changes(function(){
 				rebuild_events();
@@ -697,7 +695,7 @@ var edit_event_ui = {
 
 		this.trumbowyg.trumbowyg('html', '');
 
-		this.repeat_input.val('2').parent().toggleClass('hidden', true);
+		this.repeat_input.val('').parent().toggleClass('hidden', true);
 		this.condition_presets.children().eq(0).prop('selected', true);
 		this.condition_presets.parent().toggleClass('hidden', true);
 		this.condition_presets.parent().prev().toggleClass('hidden', true);
@@ -733,10 +731,12 @@ var edit_event_ui = {
 
 		$('#limited_repeat').prop('checked', false);
 		$('#limited_repeat_num').prop('disabled', true).val(1);
+		$('.limit_for_warning').toggleClass('hidden', true);
 
 		$('#has_duration').prop('checked', false);
 		$('#duration').prop('disabled', true).val(1);
 		$('#show_first_last').prop('checked', false);
+		$('.duration_warning').toggleClass('hidden', true);
 
 		this.delete_btn.toggleClass('hidden', false);
 
@@ -903,7 +903,7 @@ var edit_event_ui = {
 
 	populate_condition_presets: function(){
 
-		this.repeat_input.val('2').parent().toggleClass('hidden', true);
+		this.repeat_input.val('').parent().toggleClass('hidden', true);
 		this.condition_presets.children().eq(0).prop('selected', true);
 		this.condition_presets.parent().toggleClass('hidden', false);
 		this.condition_presets.parent().prev().toggleClass('hidden', false);
@@ -912,8 +912,14 @@ var edit_event_ui = {
 		this.condition_presets.find('option[value="fortnightly"]').text(`Fortnightly on ${edit_event_ui.data.week_day_name}`);
 		this.condition_presets.find('option[value="monthly_date"]').text(`Monthly on the ${ordinal_suffix_of(edit_event_ui.data.day)}`);
 		this.condition_presets.find('option[value="monthly_weekday"]').text(`Monthly on the ${ordinal_suffix_of(edit_event_ui.data.week_day_num)} ${edit_event_ui.data.week_day_name}`);
+
+		let inverse_week_day_num = edit_event_ui.data.inverse_week_day_num == 1 ? "last" : ordinal_suffix_of(edit_event_ui.data.inverse_week_day_num) + " to last";
+
+		this.condition_presets.find('option[value="monthly_inverse_weekday"]').text(`Monthly on the ${inverse_week_day_num} ${edit_event_ui.data.week_day_name}`);
+
 		this.condition_presets.find('option[value="annually_date"]').text(`Annually on the ${ordinal_suffix_of(edit_event_ui.data.day)} of ${edit_event_ui.data.timespan_name}`);
 		this.condition_presets.find('option[value="annually_month_weekday"]').text(`Annually on the ${ordinal_suffix_of(edit_event_ui.data.week_day_num)} ${edit_event_ui.data.week_day_name} in ${edit_event_ui.data.timespan_name}`);
+		this.condition_presets.find('option[value="annually_inverse_month_weekday"]').text(`Annually on the ${inverse_week_day_num} ${edit_event_ui.data.week_day_name} in ${edit_event_ui.data.timespan_name}`);
 
 		var html = [];
 
@@ -946,19 +952,19 @@ var edit_event_ui = {
 	update_every_nth_presets: function(){
 
 		var repeat_value = this.repeat_input.val()|0;
+		
+		var repeat_string = !isNaN(repeat_value) && repeat_value > 1 ? `${ordinal_suffix_of(repeat_value)} ` : (repeat_value == "" ? "nth " : "");
 
-		if(!repeat_value){
-			repeat_value = 'nth';
-		}
-
-		var repeat_string = repeat_value != 1 ? `${ordinal_suffix_of(repeat_value)} ` : "";
+		let inverse_week_day_num = edit_event_ui.data.inverse_week_day_num == 1 ? "last" : ordinal_suffix_of(edit_event_ui.data.inverse_week_day_num) + " to last";
 
 		this.condition_presets.find('option[value="every_x_day"]').text(`Every ${repeat_string}day`);
 		this.condition_presets.find('option[value="every_x_weekday"]').text(`Every ${repeat_string}${edit_event_ui.data.week_day_name}`);
 		this.condition_presets.find('option[value="every_x_monthly_date"]').text(`Every ${repeat_string}month on the ${ordinal_suffix_of(edit_event_ui.data.day)}`);
-		this.condition_presets.find('option[value="every_x_monthly_weekday"]').text(`Every ${repeat_string}month on the ${ordinal_suffix_of(edit_event_ui.data.month_week_num)} ${edit_event_ui.data.week_day_name}`);
+		this.condition_presets.find('option[value="every_x_monthly_weekday"]').text(`Every ${repeat_string}month on the ${ordinal_suffix_of(edit_event_ui.data.week_day_num)} ${edit_event_ui.data.week_day_name}`);
+		this.condition_presets.find('option[value="every_x_inverse_monthly_weekday"]').text(`Every ${repeat_string}month on the ${inverse_week_day_num} ${edit_event_ui.data.week_day_name}`);
 		this.condition_presets.find('option[value="every_x_annually_date"]').text(`Every ${repeat_string}year on the ${ordinal_suffix_of(edit_event_ui.data.day)} of ${edit_event_ui.data.timespan_name}`);
-		this.condition_presets.find('option[value="every_x_annually_weekday"]').text(`Every ${repeat_string}year on the ${ordinal_suffix_of(edit_event_ui.data.month_week_num)} ${edit_event_ui.data.week_day_name} in ${edit_event_ui.data.timespan_name}`);
+		this.condition_presets.find('option[value="every_x_annually_weekday"]').text(`Every ${repeat_string}year on the ${ordinal_suffix_of(edit_event_ui.data.week_day_num)} ${edit_event_ui.data.week_day_name} in ${edit_event_ui.data.timespan_name}`);
+		this.condition_presets.find('option[value="every_x_inverse_annually_weekday"]').text(`Every ${repeat_string}year on the ${inverse_week_day_num} ${edit_event_ui.data.week_day_name} in ${edit_event_ui.data.timespan_name}`);
 
 	},
 
@@ -1024,6 +1030,14 @@ var edit_event_ui = {
 				];
 				break;
 
+			case 'monthly_inverse_weekday':
+				var result = [
+					['Weekday', '0', [edit_event_ui.data.week_day_name]],
+					['&&'],
+					['Weekday', '14', [edit_event_ui.data.inverse_week_day_num]]
+				];
+				break;
+
 			case 'annually_month_weekday':
 				var result = [
 					['Month', '0', [edit_event_ui.data.timespan_index]],
@@ -1031,6 +1045,16 @@ var edit_event_ui = {
 					['Weekday', '0', [edit_event_ui.data.week_day_name]],
 					['&&'],
 					['Weekday', '8', [edit_event_ui.data.week_day_num]]
+				];
+				break;
+
+			case 'annually_inverse_month_weekday':
+				var result = [
+					['Month', '0', [edit_event_ui.data.timespan_index]],
+					['&&'],
+					['Weekday', '0', [edit_event_ui.data.week_day_name]],
+					['&&'],
+					['Weekday', '14', [edit_event_ui.data.inverse_week_day_num]]
 				];
 				break;
 
@@ -1066,6 +1090,16 @@ var edit_event_ui = {
 				];
 				break;
 
+			case 'every_x_inverse_monthly_weekday':
+				var result = [
+					['Weekday', '0', [edit_event_ui.data.week_day_name]],
+					['&&'],
+					['Weekday', '14', [edit_event_ui.data.inverse_week_day_num]],
+					['&&'],
+					['Month', '13', [repeats, (edit_event_ui.data.timespan_count+1)%repeats]]
+				];
+				break;
+
 			case 'every_x_annually_date':
 				var result = [
 					['Day', '0', [edit_event_ui.data.day]],
@@ -1081,6 +1115,18 @@ var edit_event_ui = {
 					['Weekday', '0', [edit_event_ui.data.week_day_name]],
 					['&&'],
 					['Weekday', '8', [edit_event_ui.data.week_day_num]]
+					['&&'],
+					['Month', '0', [edit_event_ui.data.timespan_index]],
+					['&&'],
+					['Year', '6', [repeats, (edit_event_ui.data.year+1)%repeats]]
+				];
+				break;
+
+			case 'every_x_inverse_annually_weekday':
+				var result = [
+					['Weekday', '0', [edit_event_ui.data.week_day_name]],
+					['&&'],
+					['Weekday', '14', [edit_event_ui.data.inverse_week_day_num]],
 					['&&'],
 					['Month', '0', [edit_event_ui.data.timespan_index]],
 					['&&'],
@@ -1816,6 +1862,8 @@ var edit_event_ui = {
 		condition.find('.condition_type').select2({
 			matcher: matcher
 		});
+
+		condition.find('.select2').removeAttr('style');
 
 		return condition;
 

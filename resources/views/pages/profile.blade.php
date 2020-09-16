@@ -22,9 +22,9 @@
             <p><i class="fa fa-layer-group"></i> Subscription: {!! ($user->betaAccess()) ? "Worldbuilder <br><small class='pl-3'>(Free for beta participation)</small>" : $user->paymentLevel() !!}</p>
             @empty($subscription)
                 @unless($user->betaAccess())
-                    <p><a class="btn btn-primary form-control" href="{{ route('subscription.pricing') }}">Get subscribed</a></p>
+                    <p><a class="btn btn-success form-control" href="{{ route('subscription.pricing') }}">Get subscribed</a></p>
                 @else
-                    <p><a href="{{ route('subscription.pricing', ['beta_override' => '1']) }}" class="btn btn-primary form-control">Subscribe anyway</a></p>
+                    <p><a href="{{ route('subscription.pricing', ['beta_override' => '1']) }}" class="btn btn-success form-control">Subscribe anyway</a></p>
                 @endunless
             @else
                 @if($subscription->onGracePeriod())
@@ -70,10 +70,10 @@
         <div class="row py-5">
             <div class="col-12 col-md-4">
                 <div class="card">
-                    <div class="card-header"><img class="rounded mr-1" src="{{ Gravatar::get($user->email, ['size' => 40]) }}"> {{ $user->username }}</div>
+                    <div class="card-header"><img class="rounded mr-1" style="max-height: 40px;" src="https://unavatar.now.sh/{{ $user->email }}?fallback=http://beta.fantasy-calendar.com/resources/logo-dark.png"> {{ $user->username }}</div>
                     <div class="card-body">
                         <div class="card-text">
-                            <p><a href="mailto:{{ $user->email }}"><i class="fa fa-envelope"></i>&nbsp;{{ $user->email }}</a></p>
+                            <p><i class="fa fa-envelope"></i>&nbsp;{{ Str::limit($user->email, 26) }}</p>
                             <p>Registered {{ $user->created_at->format('Y-m-d') }}</p>
                         </div>
                     </div>

@@ -1073,21 +1073,18 @@
 
 		<div class='wrap-collapsible card settings-settings'>
 			<input id="collapsible_settings" class="toggle" type="checkbox">
-			<label for="collapsible_settings" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-cog"></i> Settings <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Settings' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+			<label for="collapsible_settings" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-cog"></i> Settings <a target="_blank" data-pt-position="right" data-pt-title='More Info: Settings' href='https://helpdocs.fantasy-calendar.com/topic/settings' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
 
 				<div class='add_inputs'>
 
 					<div class='bold-text'>Layout Settings:</div>
 
-					<!-- <label class="row no-gutters setting">
-						<select class='form-control static_input' data='settings' fc-index='layout'>
-							<option value='grid'>Grid style</option>
-							<option value='wide'>Wide style</option>
-							<option value='vertical'>Vertical style</option>
-							<option value='minimalistic'>Minimalistic style</option>
-						</select>
-					</label> -->
+					@if(request()->is('calendars/*/edit'))
+					<label class="row no-gutters setting">
+						<button x-data type='button' id='btn_layouts' class='btn btn-primary full' @click="$dispatch('open-layouts-modal')">Select Layout</button>
+					</label>
+					@endif
 
 					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Makes the calendar only show the current month. Enhances calendar loading performance, especially with many moons.">
 						<div class='col'>
@@ -1229,7 +1226,7 @@
 					@if(request()->is('calendars/*/edit') && $calendar->isLinked())
 						<p class=""><a onclick="linked_popup();" href='#'>Why are some settings disabled?</a></p>
 					@endif
-					
+
 				</div>
 			</div>
 		</div>
@@ -1237,11 +1234,11 @@
 		@if(request()->is('calendars/*/edit'))
 
 			<!---------------------------------------------->
-			<!------------------ SETTINGS ------------------>
+			<!--------------- User Management -------------->
 			<!---------------------------------------------->
 			<div class='wrap-collapsible card settings-users'>
 				<input id="collapsible_users" class="toggle" type="checkbox">
-				<label for="collapsible_users" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-user"></i> User Management <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Settings' href='https://wiki.fantasy-calendar.com/index.php?title=User_Management' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+				<label for="collapsible_users" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-user"></i> User Management <a target="_blank" data-pt-position="right" data-pt-title='More Info: User Management' href='https://helpdocs.fantasy-calendar.com/topic/user_management' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 				<div class="collapsible-content card-body">
 
 					@if(Auth::user()->can('add-users', $calendar))
@@ -1295,7 +1292,7 @@
 
 						<div id='calendar_link_hide'>
 							<div class='row no-gutters my-1'>
-								<p>Calendar linking is a complex feature, we recommend you check out the wiki article on <a href='https://wiki.fantasy-calendar.com/index.php?title=Calendar_Linking' target="_blank"><i class="icon-question-sign"></i> Calendar Linking</a>.</p>
+								<p>Calendar linking is a complex feature, we recommend you check out the article on <a href='https://helpdocs.fantasy-calendar.com/topic/calendar_linking' target="_blank"><i class="icon-question-sign"></i> Calendar Linking</a>.</p>
 							</div>
 
 							@if($calendar->parent != null)
@@ -1385,7 +1382,7 @@
 
 	</div>
 
-	@include('layouts.calendar')
+	@include('layouts.calendar-' . (isset($calendar) ? $calendar->setting('layout', 'grid') : 'grid'))
 
 	<div id="weather_container" class="hidden">
 

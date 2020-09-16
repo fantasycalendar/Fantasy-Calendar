@@ -110,6 +110,6 @@ class UserList extends SharpEntityList
             function($created_at, $user, $attribute) {
                 return $user->created_at;
             }
-        )->transform($user_model->paginate(20));
+        )->transform($user_model->paginate(20)->makeVisible(['beta_authorised', 'api_token', 'email', 'permissions']));
     }
 }

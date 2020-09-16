@@ -178,7 +178,7 @@ const render_data_generator = {
         let render_data = {
             "current_epoch": dynamic_data.epoch,
             "preview_epoch": preview_date.epoch,
-            "render_style": "grid", // static_data.settings.layout
+            "render_style": static_data.settings.layout,
             "timespans": [],
             "event_epochs": {},
             "timespan_event_epochs": {},
@@ -203,6 +203,7 @@ const render_data_generator = {
                 let timespan_data = {
                     "title": "",
                     "show_title": false,
+                    "short_weekdays": timespan.truncated_week,
                     "weekdays": static_data.year_data.global_week,
                     "show_weekdays": false,
                     "days": [[]],
@@ -292,6 +293,7 @@ const render_data_generator = {
                                 "title": "",
                                 "show_title": false,
                                 "weekdays": static_data.year_data.global_week,
+                                "short_weekdays": timespan.truncated_week,
                                 "show_weekdays": false,
                                 "days": [[]],
                                 "events": []
@@ -348,6 +350,9 @@ const render_data_generator = {
 
                             if(week_day > timespan.week.length){
                                 week_day = 1;
+                                if(render_data.render_style == "vertical"){
+                                    day_data.extra_class = "week_end"
+                                }
                             }
                         }
 
@@ -375,13 +380,13 @@ const render_data_generator = {
                     let timespan_data = {
                         "title": "",
                         "show_title": false,
-                        "number": static_data.settings.add_month_number ? index+1 : false,
+                        "short_weekdays": timespan.truncated_week,
                         "weekdays": static_data.year_data.global_week,
                         "show_weekdays": false,
                         "days": [[]],
                         "events": []
                     }
-
+                    
                     let weekday_number = 1;
 
                     for(var leap_day_index in filtered_leap_days_end){

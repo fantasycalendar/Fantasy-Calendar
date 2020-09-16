@@ -1,6 +1,6 @@
 <div id='weather_tooltip_box'>
 	<div class='bold-text moon_title hidden'>Moons:</div>
-	<div class='moon_container hidden'><div class='row mb-2'></div></div>
+	<div class='moon_container hidden flex justify-content-center flex-wrap'></div>
 	<div class='weather_title bold-text'>Weather:</div>
 	<div><span class='bold-text'>Description:</span> <span class='weather_temp_desc'></span></div>
 	<div><span class='bold-text'>Temperature:</span> <span class='weather_temp'></span></div>

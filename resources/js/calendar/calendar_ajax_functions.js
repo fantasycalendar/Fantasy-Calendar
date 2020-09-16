@@ -140,7 +140,7 @@ function update_all(){
 	});
 }
 
-function do_update_all(calendar_hash, output){
+function do_update_all(calendar_hash, success_callback, failure_callback){
 
 	$.ajax({
 		url:window.baseurl+"calendars/"+calendar_hash,
@@ -182,17 +182,21 @@ function do_update_all(calendar_hash, output){
 			calendar_saved();
 
 			update_children_dynamic_data(function(){
-				if(output !== undefined){
-					output();
+				if(success_callback !== undefined){
+					success_callback();
 				}
 			});
 
 		},
 		error: function ( error )
 		{
-			calendar_save_failed();
-			if(error.responseJSON.error){
-				$.notify(error.responseJSON.error);
+			if(failure_callback !== undefined){
+				failure_callback();
+			}else{
+				calendar_save_failed();
+				if(error.responseJSON.error){
+					$.notify(error.responseJSON.error);
+				}
 			}
 		}
 	});

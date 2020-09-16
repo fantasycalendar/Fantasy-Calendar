@@ -105,9 +105,9 @@ var calendar_weather = {
 
 				calendar_weather.tooltip.sticky_icon.removeClass('sticky');
 
-				if($(event.target).closest('.weather_popup').length != 0){
-					calendar_weather.tooltip.show($(event.target).closest('.weather_popup'));
-					calendar_weather.tooltip.sticky($(event.target).closest('.weather_popup'));
+				if($(event.target).closest('.has_weather_popup').length != 0){
+					calendar_weather.tooltip.show($(event.target).closest('.has_weather_popup'));
+					calendar_weather.tooltip.sticky($(event.target).closest('.has_weather_popup'));
 				}
 
 			}
@@ -124,11 +124,15 @@ var calendar_weather = {
 
 			var epoch = day_container.attr('epoch');
 
+			if(epoch === undefined){
+				return;
+			}
+
 			this.moon_title.toggleClass('hidden', !icon.hasClass('moon_popup'));
 			this.moon_container.toggleClass('hidden', !icon.hasClass('moon_popup'));
 
 			if(icon.hasClass('moon_popup')){
-				this.moon_container.children().first().html(this.insert_moons(epoch));
+				this.moon_container.html(this.insert_moons(epoch));
 			}
 
 			this.stop_hide = false;
@@ -250,7 +254,7 @@ var calendar_weather = {
 
 			let epoch_data = calendar_weather.epoch_data[epoch];
 
-			var moon_text = ['<div class="calendar_moon_container">'];
+			var moon_text = [];
 
 			if(Perms.player_at_least('co-owner') || !static_data.settings.hide_moons){
 
@@ -273,8 +277,6 @@ var calendar_weather = {
 				}
 
 			}
-
-			moon_text.push("</div>");
 
 			return moon_text.join('');
 			

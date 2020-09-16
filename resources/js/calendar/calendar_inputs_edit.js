@@ -5043,6 +5043,8 @@ function evaluate_save_button(override){
 
 			save_button.toggleClass('btn-secondary', false).toggleClass('btn-success', not_changed).toggleClass('btn-primary', !not_changed).toggleClass('btn-warning', false).toggleClass('btn-danger', false).text(text);
 
+			return not_changed;
+
 		}
 
 	}else if($('#btn_create').length){
