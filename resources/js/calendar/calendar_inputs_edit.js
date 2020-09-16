@@ -1517,6 +1517,8 @@ function set_up_edit_inputs(){
 				var granularity = 4;
 			}else if(cycle <= 8){
 				var granularity = 8;
+			}else if(cycle <= 16){
+				var granularity = 16;
 			}else if(cycle <= 24){
 				var granularity = 24;
 			}else{

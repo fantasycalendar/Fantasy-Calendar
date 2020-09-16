@@ -929,7 +929,7 @@ var edit_event_ui = {
 
 			var moon = static_data.moons[moon_index];
 
-			var moon_phase_name = moon_phases[moon.granularity][edit_event_ui.data.moon_phase[moon_index]];
+			var moon_phase_name = Object.keys(moon_phases[moon.granularity])[edit_event_ui.data.moon_phase[moon_index]];
 
 			moon_phase_collection += `${moon.name} is ${moon_phase_name}, `
 
@@ -1474,9 +1474,11 @@ var edit_event_ui = {
 
 				html.push("<select class='form-control'>")
 
-				for(var i = 0; i < moon_phases[static_data.moons[selected_moon].granularity].length; i++){
+				let phases = Object.keys(moon_phases[static_data.moons[selected_moon].granularity]);
+
+				for(var i = 0; i < phases.length; i++){
 					html.push(`<option value='${i}'>`);
-					html.push(moon_phases[static_data.moons[selected_moon].granularity][i]);
+					html.push(phases[i]);
 					html.push("</option>");
 				}
 
