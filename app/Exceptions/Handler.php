@@ -73,6 +73,8 @@ class Handler extends ExceptionHandler
                     return response()->view('errors.404', [
                         'title' => 'Calendar not found'
                     ]);
+                } else {
+                    return redirect('/');
                 }
             }
 

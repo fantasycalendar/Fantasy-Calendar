@@ -30,9 +30,6 @@ Route::resource('calendars', 'CalendarController');
 Auth::routes(['verify' => true]);
 Route::get('/logout', 'Auth\LoginController@logout');
 
-Route::get('/settings', 'SettingsController@index')->name('settings')->middleware('auth');
-Route::post('/profile', 'SettingsController@update')->name('settings.update')->middleware('auth');
-
 Route::get('/admin/loginas/{userid}', 'AdminController@loginas')->name('admin.loginas')->middleware('admin');
 
 
@@ -61,15 +58,14 @@ Route::post('pricing/coupon', 'SubscriptionController@coupon');
 
 // User profile
 Route::get('/profile', 'SettingsController@profile')->middleware('auth')->name('profile');
+Route::post('/profile', 'SettingsController@update')->name('settings.update')->middleware('auth');
 Route::post('/profile/password', 'SettingsController@updatePassword')->middleware('auth');
 
 Route::get('/error/unavailable', 'ErrorsController@calendarUnavailable')->name('errors.calendar_unavailable');
 // Manual error page routes for the moment
-Route::redirect('/403', '/');
+Route::get('/403', 'ErrorsController@error403');
 
-Route::view('/404', 'errors.404', [
-    'title' => 'Calendar not found',
-    'resource' => 'Calendar'
-]);
+Route::get('/404', 'ErrorsController@error404');
 
 Route::get('/{path}', 'CalendarController@legacy')->where(['url' => 'calendar.php|calendar']);
+Route::get('{path}', 'ErrorsController@error404');
