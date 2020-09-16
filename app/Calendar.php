@@ -170,6 +170,31 @@ class Calendar extends Model
         return $query->where('user_id', $user_id);
     }
 
+    public function userHasPerms(User $user, $role) {
+        $roles = [
+            0 => 'invitee',
+            10 => 'observer',
+            20 => 'player',
+            30 => 'co-owner'
+        ];
+
+        if(!$this->isPremium()) {
+            return false;
+        }
+
+        if(!$this->users->contains($user)) {
+            return false;
+        }
+
+        $userRole = $this->users->find($user->id)->pivot->user_role;
+
+        return $roles[$userRole] >= $roles[$role];
+    }
+
+    public function isPremium() {
+        return $this->user->isPremium();
+    }
+
     public function getRouteKeyName() {
         return 'hash';
     }

@@ -159,11 +159,15 @@ class User extends Authenticatable implements
         return $this;
     }
 
+    public function isPremium() {
+        return $this->subscribedToPlan(['timekeeper_monthly', 'timekeeper_yearly'], 'Timekeeper') || $this->betaAccess();
+    }
+
     /**
      * @return string
      */
     public function paymentLevel() {
-        
+
         if ($this->subscribedToPlan(['timekeeper_monthly', 'timekeeper_yearly'], 'Timekeeper') || $this->betaAccess()) {
             return 'Timekeeper';
         }
