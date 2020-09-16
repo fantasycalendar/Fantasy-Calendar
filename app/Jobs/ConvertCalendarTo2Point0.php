@@ -112,7 +112,25 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
             ];
         }
 
-        $dynamic['epoch'] = calculate_epoch($static, $dynamic['year'], $dynamic['timespan'], $dynamic['day']);
+        $dynamic['epoch'] = 0;
+
+        foreach($static_data['year_data']['timespans'] as $timespan_index => $timespan){
+            
+            if($timespan_index < $month){
+                $actual_year = $year+1;
+            }else{
+                $actual_year = $year;
+            }
+
+            $dynamic['epoch'] += $timespan['length'] * $actual_year;
+
+        }
+
+        if(!empty($static_data['year_data']['leap_days'])){
+            $dynamic['epoch'] += $year / intval($static_data['year_data']['leap_days'][0]['interval']);
+        }
+
+        $dynamic['epoch'] += $day;
 
         if($old->clock_enabled) {
             $static['clock'] = [
@@ -794,30 +812,4 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
             ]
         ];
     }
-}
-
-function calculate_epoch($static_data, $year, $month, $day){
-
-    $epoch = 0;
-
-    foreach($static_data['year_data']['timespans'] as $timespan_index => $timespan){
-        
-        if($timespan_index < $month){
-            $actual_year = $year+1;
-        }else{
-            $actual_year = $year;
-        }
-
-        $epoch += $timespan['length'] * $actual_year;
-
-    }
-
-    if(!empty($static_data['year_data']['leap_days'])){
-        $epoch += $year / intval($static_data['year_data']['leap_days'][0]['interval']);
-    }
-
-    $epoch += $day;
-
-    return $epoch;
-
 }
