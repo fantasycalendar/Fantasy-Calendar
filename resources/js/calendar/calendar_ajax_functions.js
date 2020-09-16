@@ -427,6 +427,35 @@ function remove_calendar_user(user_id, remove_all, callback){
 
 }
 
+function resend_calendar_invite(id, output){
+
+    $.ajax({
+        url:window.apiurl+"/calendar/"+hash+"/resend_invite",
+        type: "post",
+        dataType: "json",
+        data: {id: id},
+        success: function (result) {
+
+			var text = 'Resent invitation!';
+			var success = true;
+
+            if(result.error) {
+                success = false;
+                text = result.message;
+            }
+
+			output(success, text);
+			
+        },
+        error: function (error) {
+			$.notify(
+				error
+			);
+        }
+	});
+
+}
+
 async function submit_new_event(event_id, callback){
 
 	var new_event = clone(events[event_id]);

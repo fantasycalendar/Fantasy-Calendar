@@ -2274,6 +2274,8 @@ function set_up_edit_inputs(){
 
 		update_calendar_user(user_id, permissions, function(success, text){
 
+			console.log(text)
+
 			button.prop('disabled', success);
 			button.attr('permissions_val', permissions);
 
@@ -2349,6 +2351,31 @@ function set_up_edit_inputs(){
 			});
 
 		}
+
+	});
+
+	$(document).on('click', '.resend_invitation', function(){
+
+		var button = $(this);
+		var container = button.closest('.sortable-container');
+		button.prop('disabled', true);
+
+		var id = button.attr('user_id');
+
+		resend_calendar_invite(id, function(success, text){
+
+			button.prop('disabled', success);
+
+			container.find('.user_permissions_text').parent().toggleClass('hidden', false);
+			container.find('.user_permissions_text').parent().toggleClass('error', !success);
+			container.find('.user_permissions_text').text(text);
+
+			setTimeout(() => {
+				container.find('.user_permissions_text').parent().toggleClass('hidden', true);
+				container.find('.user_permissions_text').text("");
+			}, 5000);
+
+		});
 
 	});
 
@@ -4001,7 +4028,7 @@ function add_user_to_list(parent, key, data){
 				element.push("</div>");
 
 				element.push("<div class='row no-gutters my-2'>");
-					element.push(`<button type="button" class="btn btn-primary">Resend invitation email</button>`);
+					element.push(`<button type="button" class="btn btn-primary resend_invitation">Resend invitation email</button>`);
 				element.push("</div>");
 
 			}
