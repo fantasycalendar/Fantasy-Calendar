@@ -90,12 +90,12 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                     'name' => $moon,
                     'cycle' => $old->lunar_cyc[$index],
                     'shift' => $old->lunar_shf[$index],
-                    'granularity' => $this->determineMoonGranularity($old->lunar_cyc[$index]),
+                    'granularity' => 16,
                     'color' => $old->lunar_color[$index] ?? '#ffffff',
                     'hidden' => false,
                     'custom_phase' => false
                 ];
-                $this->moons[] = $this->determineMoonGranularity($old->lunar_cyc[$index]);
+                $this->moons[] = 16;
             }
         }
 
@@ -112,6 +112,8 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
             ];
         }
 
+        $dynamic['epoch'] = calculate_epoch($static, $dynamic['year'], $dynamic['timespan'], $dynamic['day']);
+
         if($old->clock_enabled) {
             $static['clock'] = [
                 'enabled' => true,
@@ -119,6 +121,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                 'minutes' => 60,
                 'offset' => 0,
                 'render' => true,
+                'crowding' => 0
             ];
 
             $dynamic['hour'] = $old->hour;
@@ -673,7 +676,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                 case 'moon_every':
                     if(isset($this->moons[$data->moon_id])){
                         $conditions = [
-                            ['Moons', '0', ["{$data->moon_id}", $this->convertFromGranularity($this->moons[$data->moon_id], $data->moon_phase)]]
+                            ['Moons', '0', ["{$data->moon_id}", $data->moon_phase]]
                         ];
                     }
                     break;
@@ -681,9 +684,9 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                 case 'moon_monthly':
                     if(isset($this->moons[$data->moon_id])){
                         $conditions = [
-                            ['Moons', '0', ["{$data->moon_id}", $this->convertFromGranularity($this->moons[$data->moon_id], $data->moon_phase)]],
+                            ['Moons', '0', ["{$data->moon_id}", $data->moon_phase]],
                             ['&&'],
-                            ['Moons', '7', ["{$data->moon_id}", $this->convertFromGranularity($this->moons[$data->moon_id], $data->moon_phase_number)]]
+                            ['Moons', '7', ["{$data->moon_id}", $data->moon_phase_number]]
                         ];
                     }
                     break;
@@ -691,7 +694,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                 case 'moon_anually':
                     if(isset($this->moons[$data->moon_id])){
                         $conditions = [
-                            ['Moons', '0', ["{$data->moon_id}", $this->convertFromGranularity($this->moons[$data->moon_id], $data->moon_phase)]],
+                            ['Moons', '0', ["{$data->moon_id}", $data->moon_phase]],
                             ['&&'],
                             ['Moons', '7', ["{$data->moon_id}", $data->moon_phase_number]],
                             ['&&'],
@@ -711,7 +714,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                             $conditions[] = [
                                 'Moons',
                                 '0',
-                                ["$index", $this->convertFromGranularity($this->moons[$index], $moon->moon_phase)]
+                                ["$index", $moon->moon_phase]
                             ];
 
                             if(count($conditions) % 2 != 0) {
@@ -791,25 +794,30 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
             ]
         ];
     }
+}
 
-    public function determineMoonGranularity($cycle) {
-        if($cycle >= 40) return "40";
-        if($cycle >= 24) return "24";
-        if($cycle >= 8) return "8";
-        return "4";
-    }
+function calculate_epoch($static_data, $year, $month, $day){
 
-    public function convertFromGranularity($granularity, $cycle){
+    $epoch = 0;
 
-        if($granularity == 40){
-            return $cycle*2;
-        }else if($granularity == 24){
-            return floor($cycle*1.5);
-        }else if($granularity == 8){
-            return floor($granularity/2);
+    foreach($static_data['year_data']['timespans'] as $timespan_index => $timespan){
+        
+        if($timespan_index < $month){
+            $actual_year = $year+1;
         }else{
-            return floor($granularity/3);
+            $actual_year = $year;
         }
 
+        $epoch += $timespan['length'] * $actual_year;
+
     }
+
+    if(!empty($static_data['year_data']['leap_days'])){
+        $epoch += $year / intval($static_data['year_data']['leap_days'][0]['interval']);
+    }
+
+    $epoch += $day;
+
+    return $epoch;
+
 }
