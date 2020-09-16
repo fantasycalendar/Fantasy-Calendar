@@ -11,14 +11,6 @@
     min-height: 85%;
 }
 
-#calendar > div:not(.timespan_outer_container){
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-content: flex-start;
-    width: 100%;
-}
-
 .timespan {
 
     &_container{
@@ -83,6 +75,10 @@
             display: flex;
             flex-direction: column;
             overflow-x: auto;
+            
+            &:not(.intercalary){
+                border-top: 1px solid $calendar-border-color;
+            }
         }
     }
 
@@ -220,7 +216,7 @@
     width: 10px;
     height: 10px;
     margin-top: 0.3rem;
-    margin-right: 0.1rem;
+    margin-right: 0.3rem;
     border-radius: 50%;
     opacity: 0.8;
 }
@@ -379,6 +375,9 @@
 
     .timespan_day{
         text-align:left;
+        &.week_end {
+            border-bottom:2px solid $calendar-border-color;
+        }
     }
 
     .toprow{
@@ -387,24 +386,27 @@
 
     .number{
         border-right:1px solid lightgrey;
+        padding-right:5px;
     }
 
     .timespan_day:first-child{
         border-top:0;
     }
 
-    .weekday{
-        text-align:center;
+    .week_day_name{
+        padding-left:5px;
+        text-align: left;
     }
 
     .event_container{
         align-self: flex-start;
         display: flex;
+        flex-direction: row;
         flex-wrap: wrap;
     }
 
     .event{
-        flex: 1 1 50%;
+        flex: 0 1 50%;
     }
 
 
@@ -493,12 +495,14 @@
 
             &.current_day {
                 background-color: $m-current-day;
-                border-bottom: 0;
                 color: #444;
 
                 &:hover {
                     cursor:pointer;
                     background-color: $current-day-color;
+                }
+                &:after {
+                    height:0px;
                 }
             }
 

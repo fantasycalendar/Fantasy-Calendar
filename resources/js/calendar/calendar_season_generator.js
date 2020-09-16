@@ -258,7 +258,7 @@ class Climate{
 		this.set_up_weather_epochs();
 
 
-		for(var epoch = this.start_epoch; epoch < this.end_epoch; epoch++){
+		for(var epoch = this.start_epoch; epoch <= this.end_epoch; epoch++){
 			this.epoch_data[epoch].season = this.get_static_season_data(epoch);
 			this.epoch_data[epoch].weather = this.get_static_weather_data(epoch);
 		}
@@ -587,7 +587,7 @@ class Climate{
 			}
 		}
 
-		for(var epoch = this.start_epoch; epoch < this.end_epoch; epoch++){
+		for(var epoch = this.start_epoch; epoch <= this.end_epoch; epoch++){
 
 			this.epoch_data[epoch].season = this.get_dynamic_season_data(epoch);
 			this.epoch_data[epoch].weather = this.get_dynamic_weather_data(epoch);

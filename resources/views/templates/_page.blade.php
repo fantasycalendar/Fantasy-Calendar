@@ -91,6 +91,6 @@
 
 			@yield('content')
 		</div>
-        <div id="protip_container"></div>
+        <div id="protip_container" class='d-print-none'></div>
     </body>
 </html>
