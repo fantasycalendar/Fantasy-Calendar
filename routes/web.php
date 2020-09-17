@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 Route::get('/', 'WelcomeController@welcome')->name('home');
 Route::view('/welcome', 'welcome')->name('welcome');
 Route::view('/whats-new', 'pages.whats-new')->name('whats-new');
+Route::view('/changelog', 'pages.changelog')->name('changelog');
 Route::view('/donate', 'pages.donate', ['title'=>'Support the site']);
 
 Route::get('calendars/{calendar}/print', 'CalendarController@print')->name('calendars.print');
