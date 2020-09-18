@@ -26,8 +26,8 @@
             <a href="{{ route('calendars.show', ['calendar'=> $calendar->hash ]) }}" class="btn w-100 btn-sm btn-info">
                 View
             </a>
-            <a href="export" target="_blank" class="btn w-100 btn-sm btn-primary mx-2">
-                Export
+            <button type='button' onclick="print()" class="btn w-100 btn-sm btn-primary mx-2">
+                Print
             </a>
             <button type="button" id='btn_delete' class='btn w-100 btn-sm btn-danger btn-block'>Delete</button>
         </div>

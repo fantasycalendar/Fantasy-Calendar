@@ -1,78 +1,34 @@
-## 2.0
-### TBD
+# 2.0
+## TBD
 
-This update has a **lot** of changes. If anything confuses you, check out the [comprehensive helpdocs](https://helpdocs.fantasy-calendar.com/) for detailed information on each topic.
+This update has a **lot** of changes. If anything confuses you, check out the [comprehensive documentation](https://helpdocs.fantasy-calendar.com/) for detailed information on each topic. You can also click on the little question marks that are shown when hovering over a menu item while creating your calendar.
 
-You can also click on the question marks that are found on the sidebar in the calendar, as well as inside some of the headers.
-
-The entire UI has been overhauled with many alterations that come with the changes below.
-
-#### NEW FEATURES
-* **Mobile device support**
-     * Fantasy-Calendar now supports mobile devices!
-* **Dark theme**
-     * You can enable this in your profile. Ahhh, comfy retinas.
-* **Intercalary months**
-     * These months have days like a normal month, but their weekdays do not adhere to the normal weekday flow.
-* **Leap Days**
-     * You can now have multiple leap days!
-     * Leap days can also be intercalary, where it interrupts the month, inserts a day outside of the weekday flow, and then continues the month as if nothing happened.
-     * A leap day can also add a customly named weekday to the month - useful for Roman-styled calens and ides calendars.
-* **Seasons**
-     * Completely overhauled seasons
-     * You have a choice between static (dated) and dynamic (duration) based seasons.
-     * Static date-based seasons are as they were in 1.0, attached to specific dates on specific months, and never changing
-     * Dynamic duration-based seasons have a set length, regardless of your dates, like in our world. This means that your seasons can drift if the average year length and the season length don't match.
-* **Cycles**
-     * You can now create zodiac years like in the Chinese calendar with the brand new cycle system
-     * Cycles can be based on the year, era year, month in year, month count since the first year, day in month, day in year, epochs (days since first year)
-* **Eras**
-     * Eras work like A.D. and B.C. in the Gregorian calendar, where each era has a start date and lasts until a new era begins.
-     * You can set one era to be the "Beginning Era", meaning it's always active until a new era starts - like B.C., it was always before christ, until Christ came along
-     * Eras can reset the year prematurely like in the Japanese calendar
-     * The year count can also reset with the emergence of a new era - like as if an emperor died and now it's "1st Year of the Empress" after his successor took the throne
-* **Event conditions**
-     * Events now support multi-conditional setups, where each event can be driven by any part of the calendar to be able to be shown
-     * Parameters include year, month, day, epoch, week day, weeks, moons, cycles, eras, era year, seasons, seeded random chance, and event-based-conditions (event chaining!)
-* **Event Categories**
-     * Events can now have categories that you can use as presets when creating events
-* **Layouts**
-     * You can now display your calendar in four different ways. Styles include grid, wide, and minimalistic
-* **Calendar linking**
-     * You can now link calendars together
-     * One master calendar can influence other calendars in your world, making sure that all of them are in tandem
-     * This is a powerful feature that ensures a 1 to 1 representation between vastly different calendars
-     * **Note** -  this is a premium feature, read more on the [FAQ](https://fantasy-calendar.com/faq)
-
-#### REWORKS
-* **Clock**
-     * Overhauled the clock and the sunrise-sundown system so that it can accomodate crazy times
-     * Added offset hours which simply rotate the numbers around the clock face
-     * Added crowding - you can now remove every nth number on the face of the clock if you have too many hours in a day
-* **Weeks**
-     * The week system has changed to support the changes in the month system
-     * There is now a global week, which acts as the standard week in the calendar
-* **Months**
-     * Months can now leap! You can control this through the interval in the month itself
-     * Months can now also have an overriding week, for use in roman-styled calendars
-* **Moons**
-     * Added dynamic moon granularity, instead the static 16 sprites in 1.0. We now have support up to 40 unique moon sprites
-     * Moons can now have a custom phase count, read up on the [fantasy calendar helpdocs](https://helpdocs.fantasy-calendar.com/topic/moons/) to understand how that works
-     * Now you can also hide individual moons from your viewers
-* **Weather Generation**
-     * Completely overhauled the weather generation system
-     It support offseting the weather from the season so that the coldest day doesn't always fall on the winter solstice, for example
-* **Locations**
-     * The location system has been reworked, and each location can now have their own sunrise and sunset times per season, and timezone adjustments when active
-     * Weather is also directly tied to the location now, with precipitation chance and percipitation intensity becoming two different parameters
-* **Events**
-     * Events now support full markdown editing, and in-calendar display settings such as color and text styles
-* **Settings**
-     * Multiple settings have been brought up to speed with the rest of the calendar systems
+* The entire UI has been overhauled with many alterations that come with the changes below.
+* NEW FEATURES!
+     * **Mobile device support** - Fantasy-Calendar now supports mobile devices!
+     * **Dark theme** - Just go to "Settings" and turn it on. Ahhh, comfy retinas.
+     * **Intercalary timespans** - Similar to months, but these timespans do not affect the week flow within a calendar, and simply acts as days without being attached to a month.
+     * **Leap Days** - You can now have multiple leap days! This can also be a normal day that gets added to a month, or act as an intercalary leap day where it interrupts the month, inserts a day outside of the month and then continues the month as if nothing happened. Leap days can also add a week day to the month.
+     * **Seasons** - Completely overhauled! Instead of being attached to specific days in the year, it now has a static length. This also means that your seasons can drift if the average year length and the season length don't match.
+     * **Cycles** - You can now create zodiac years like in the Chinese calendar with the brand new cycle system!
+     * **Eras** - They work like A.D. and B.C. in the Gregorian calendar, where each era has a start date and lasts until a new era begins. Eras can also reset the year prematurely like in the Japanese calendar, and resetting the year count can also happen with this.
+     * **Event conditions** - Events now support multi-conditional setups, where each event can be driven by any part of the calendar to be able to be shown. Parameters include year, month, day, epoch, week day, weeks, moons, cycles, eras, era year, seasons, seeded random chance, and event-based-conditions (event chaining!).
+     * **Event Categories** - Events can now have categories which you can filter the current visible events, and create presets for events to use when displayed.
+     * **Layouts** - You can now display your calendar in four different ways! Styles include grid, wide, vertical, and minimalistic!
+     * **Calendar linking** - You can now link calendars together! One master calendar can influence other calendars in your world, making sure that all of them are in tandem. This is a powerful feature that ensures a 1 to 1 representation between vastly different calendars.
+* REWORKS! 
+     * **Clock** - Overhauled the clock and the sunrise-sundown system so that it can accomodate crazy times, and added offset hours which simply rotate the numbers around the clock face.
+     * **Weeks** - The week system has changed to support the changes in the month system. There is now a global week, which acts as the standard week in the calendar.
+     * **Months** - Months can now leap! You can control this through the interval in the month itself. Months can now also have an overriding week, for use in roman-styled calendars.
+     * **Moons** - They can now have a custom phase count, read up on the [fantasy calendar wiki](https://helpdocs.fantasy-calendar.com/topic/moons#Custom_phase_count) to understand how that works. Now you can also hide individual moons from your viewers.
+     * **Weather Generation** - Completely overhauled the weather generation system. It support offseting the weather from the season so that the coldest day doesn't always fall on the winter solstice, for example.
+     * **Locations** - The location system has been reworked, and each location can now have their own sunrise and sunset times per season, and timezone adjustments when active. Weather is also directly tied to the location now, with precipitation chance and percipitation intensity becoming two different parameters.
+     * **Events** - Events now support full markdown editing, and in-calendar display settings such as color and text styles.
+     * **Settings** - Multiple settings have been brought up to speed with the rest of the calendar systems.
 
 
-## 1.6a
-### May 1, 2019
+# 1.6a
+## May 1, 2019
 * Fixed - Some users not being able to log in.
 
 ## 1.6
@@ -179,7 +135,7 @@ The entire UI has been overhauled with many alterations that come with the chang
 
 ## 0.75c
 ### March 31, 2018
-* Added - Beta feature for leap years.
+* Added - Beta feature for leap years. Please report any bugs on the discord channel.
 * Added - Warning if you navigate away from an unsaved calendar.
 
 

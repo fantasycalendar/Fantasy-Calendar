@@ -83,22 +83,12 @@ var edit_event_ui = {
 
 		});
 
-		$(document).on('click', 'body.page-focused .btn_create_event', function(){
-
-			console.log($('body').hasClass('page-focused'));
-
-			var epoch = $(this).attr('epoch')|0;
-
-			edit_event_ui.create_new_event('New Event', epoch);
-
-		});
-
 		this.save_btn.click(function(){
 			edit_event_ui.save_current_event();
 		})
 
 		this.delete_btn.click(function(){
-			edit_event_ui.delete_event(edit_event_ui.event_id);
+			edit_event_ui.query_delete_event(edit_event_ui.event_id);
 		})
 
 		this.view_event_btn.click(function(){
@@ -273,8 +263,13 @@ var edit_event_ui = {
 				$('#color_style').val(category.event_settings.color);
 				$('#text_style').val(category.event_settings.text).change();
 				$('#event_hide_players').prop('checked', category.event_settings.hide);
-				$('#event_print_checkbox').prop('checked', category.event_settings.print);
-				$('#event_hide_full').prop('checked', category.event_settings.hide_full);
+
+				if($('#event_print_checkbox').length){
+					$('#event_print_checkbox').prop('checked', category.event_settings.print);
+				}
+				if($('#event_hide_full').length){
+					$('#event_hide_full').prop('checked', category.event_settings.hide_full);
+				}
 			}
 		});
 
@@ -505,10 +500,10 @@ var edit_event_ui = {
 			'description': '',
 			'data': {
 				'has_duration': false,
-				'duration': 0,
+				'duration': 1,
 				'show_first_last': false,
 				'limited_repeat': false,
-				'limited_repeat_num': 0,
+				'limited_repeat_num': 1,
 				'conditions': [
 					['Year', '0', [this.data.year]],
 					['&&'],
@@ -547,12 +542,12 @@ var edit_event_ui = {
 
 		this.set_current_event(eventId)
 
-		this.inputs_changed = false;
-
 		this.event_action_type.text("Creating event");
 		this.view_event_btn.hide();
 
 		this.populate_condition_presets();
+
+		this.inputs_changed = false;
 
 	},
 
@@ -626,32 +621,38 @@ var edit_event_ui = {
 
 	save_current_event: function(){
 
-		if(events[this.event_id]){
-			var eventid = events[this.event_id].id;
-			events[this.event_id] = {};
-			events[this.event_id].id = eventid;
-		}else{
-			events[this.event_id] = {};
-		}
+		var event_id = events[this.event_id].id;
+		var creator_id = events[this.event_id].creator_id;
+		var sort_by = events[this.event_id].sort_by;
+		let new_event = {}
+		new_event.id = event_id;
+		new_event.creator_id = creator_id;
+		new_event.sort_by = sort_by;
 
 		var name = this.event_background.find('.event_name').val();
 		name = name !== '' ? name : "Unnamed Event";
+		new_event.name = name;
 
-		events[this.event_id].name = name;
+		new_event.description = sanitizeHtml(this.trumbowyg.trumbowyg('html'), {allowedTags: [ 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'a', 'ul', 'ol', 'nl', 'li', 'b', 'i', 'strong', 'em', 'strike', 'code', 'hr', 'br', 'div', 'table', 'thead', 'caption', 'tbody', 'tr', 'th', 'td', 'pre', 'img' ]});
 
-		events[this.event_id].description = sanitizeHtml(this.trumbowyg.trumbowyg('html'), {allowedTags: [ 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'a', 'ul', 'ol', 'nl', 'li', 'b', 'i', 'strong', 'em', 'strike', 'code', 'hr', 'br', 'div', 'table', 'thead', 'caption', 'tbody', 'tr', 'th', 'td', 'pre', 'img' ]});
+		if(Perms.playerLevel == "player"){
+			new_event.data = events[this.event_id].data;
+		}else{
+			let data = this.create_event_data();
+			new_event.data = data;
+		}
 
-		events[this.event_id].data = this.create_event_data();
+		new_event.event_category_id = $('#event_categories').length > 0 ? get_category($('#event_categories').val()).id : -1;
 
-		events[this.event_id].event_category_id = get_category($('#event_categories').val()).id;
-
-		events[this.event_id].settings = {
+		new_event.settings = {
 			color: $('#color_style').val(),
 			text: $('#text_style').val(),
-			hide: $('#event_hide_players').prop('checked'),
-			hide_full: $('#event_hide_full').prop('checked'),
-			print: $('#event_print_checkbox').prop('checked')
+			hide: $('#event_hide_players').length > 0 ? $('#event_hide_players').prop('checked') : false,
+			hide_full: $('#event_hide_full').length > 0 ? $('#event_hide_full').prop('checked') : false,
+			print: $('#event_print_checkbox').length > 0 ? $('#event_print_checkbox').prop('checked') : false
 		}
+
+		events[this.event_id] = new_event;
 
 		if($('#events_sortable').length){
 			if(this.new_event){
@@ -659,25 +660,33 @@ var edit_event_ui = {
 			}else{
 				$(`.events_input[index="${this.event_id}"]`).find(".event_name").text(`Edit - ${name}`);
 			}
+
+			this.submit_event_callback(true);
+
 		}else{
 			if(this.new_event){
-				submit_new_event(this.event_id);
+				submit_new_event(this.event_id, this.submit_event_callback);
 			}else{
-				submit_edit_event(this.event_id);
+				submit_edit_event(this.event_id, this.submit_event_callback);
 			}
 		}
 
-		this.clear_ui();
+	},
 
-		error_check();
+	submit_event_callback: function(success){
 
-		eval_apply_changes(function(){
+		if(success){
 
-			rebuild_events();
+			edit_event_ui.clear_ui();
 
-		});
+			eval_apply_changes(function(){
+				rebuild_events();
+			});
+
+		}
 
 	},
+
 	clear_ui: function(){
 
 		delete registered_keydown_callbacks['event_ui_escape'];
@@ -686,7 +695,7 @@ var edit_event_ui = {
 
 		this.trumbowyg.trumbowyg('html', '');
 
-		this.repeat_input.val('2').parent().toggleClass('hidden', true);
+		this.repeat_input.val('').parent().toggleClass('hidden', true);
 		this.condition_presets.children().eq(0).prop('selected', true);
 		this.condition_presets.parent().toggleClass('hidden', true);
 		this.condition_presets.parent().prev().toggleClass('hidden', true);
@@ -722,10 +731,12 @@ var edit_event_ui = {
 
 		$('#limited_repeat').prop('checked', false);
 		$('#limited_repeat_num').prop('disabled', true).val(1);
+		$('.limit_for_warning').toggleClass('hidden', true);
 
 		$('#has_duration').prop('checked', false);
 		$('#duration').prop('disabled', true).val(1);
 		$('#show_first_last').prop('checked', false);
+		$('.duration_warning').toggleClass('hidden', true);
 
 		this.delete_btn.toggleClass('hidden', false);
 
@@ -777,11 +788,11 @@ var edit_event_ui = {
 		}
 
 		return {
-			has_duration: $('#has_duration').prop('checked'),
-			duration: $('#duration').val()|0,
-			show_first_last: $('#show_first_last').prop('checked'),
-			limited_repeat: $('#limited_repeat').prop('checked'),
-			limited_repeat_num: $('#limited_repeat_num').val()|0,
+			has_duration: $('#has_duration').length > 0 ? $('#has_duration').prop('checked') : false,
+			duration: $('#duration').length > 0 ? $('#duration').val()|0 : 0,
+			show_first_last: $('#show_first_last').length > 0 ? $('#show_first_last').prop('checked') : false,
+			limited_repeat: $('#limited_repeat').length > 0 ? $('#limited_repeat').prop('checked') : false,
+			limited_repeat_num: $('#limited_repeat_num').length > 0 ? $('#limited_repeat_num').val()|0 : 0,
 			conditions: conditions,
 			connected_events: this.connected_events,
 			date: this.date,
@@ -892,7 +903,7 @@ var edit_event_ui = {
 
 	populate_condition_presets: function(){
 
-		this.repeat_input.val('2').parent().toggleClass('hidden', true);
+		this.repeat_input.val('').parent().toggleClass('hidden', true);
 		this.condition_presets.children().eq(0).prop('selected', true);
 		this.condition_presets.parent().toggleClass('hidden', false);
 		this.condition_presets.parent().prev().toggleClass('hidden', false);
@@ -901,8 +912,14 @@ var edit_event_ui = {
 		this.condition_presets.find('option[value="fortnightly"]').text(`Fortnightly on ${edit_event_ui.data.week_day_name}`);
 		this.condition_presets.find('option[value="monthly_date"]').text(`Monthly on the ${ordinal_suffix_of(edit_event_ui.data.day)}`);
 		this.condition_presets.find('option[value="monthly_weekday"]').text(`Monthly on the ${ordinal_suffix_of(edit_event_ui.data.week_day_num)} ${edit_event_ui.data.week_day_name}`);
+
+		let inverse_week_day_num = edit_event_ui.data.inverse_week_day_num == 1 ? "last" : ordinal_suffix_of(edit_event_ui.data.inverse_week_day_num) + " to last";
+
+		this.condition_presets.find('option[value="monthly_inverse_weekday"]').text(`Monthly on the ${inverse_week_day_num} ${edit_event_ui.data.week_day_name}`);
+
 		this.condition_presets.find('option[value="annually_date"]').text(`Annually on the ${ordinal_suffix_of(edit_event_ui.data.day)} of ${edit_event_ui.data.timespan_name}`);
 		this.condition_presets.find('option[value="annually_month_weekday"]').text(`Annually on the ${ordinal_suffix_of(edit_event_ui.data.week_day_num)} ${edit_event_ui.data.week_day_name} in ${edit_event_ui.data.timespan_name}`);
+		this.condition_presets.find('option[value="annually_inverse_month_weekday"]').text(`Annually on the ${inverse_week_day_num} ${edit_event_ui.data.week_day_name} in ${edit_event_ui.data.timespan_name}`);
 
 		var html = [];
 
@@ -935,19 +952,19 @@ var edit_event_ui = {
 	update_every_nth_presets: function(){
 
 		var repeat_value = this.repeat_input.val()|0;
+		
+		var repeat_string = !isNaN(repeat_value) && repeat_value > 1 ? `${ordinal_suffix_of(repeat_value)} ` : (repeat_value == "" ? "nth " : "");
 
-		if(!repeat_value){
-			repeat_value = 'nth';
-		}
-
-		var repeat_string = repeat_value != 1 ? `${ordinal_suffix_of(repeat_value)} ` : "";
+		let inverse_week_day_num = edit_event_ui.data.inverse_week_day_num == 1 ? "last" : ordinal_suffix_of(edit_event_ui.data.inverse_week_day_num) + " to last";
 
 		this.condition_presets.find('option[value="every_x_day"]').text(`Every ${repeat_string}day`);
 		this.condition_presets.find('option[value="every_x_weekday"]').text(`Every ${repeat_string}${edit_event_ui.data.week_day_name}`);
 		this.condition_presets.find('option[value="every_x_monthly_date"]').text(`Every ${repeat_string}month on the ${ordinal_suffix_of(edit_event_ui.data.day)}`);
-		this.condition_presets.find('option[value="every_x_monthly_weekday"]').text(`Every ${repeat_string}month on the ${ordinal_suffix_of(edit_event_ui.data.month_week_num)} ${edit_event_ui.data.week_day_name}`);
+		this.condition_presets.find('option[value="every_x_monthly_weekday"]').text(`Every ${repeat_string}month on the ${ordinal_suffix_of(edit_event_ui.data.week_day_num)} ${edit_event_ui.data.week_day_name}`);
+		this.condition_presets.find('option[value="every_x_inverse_monthly_weekday"]').text(`Every ${repeat_string}month on the ${inverse_week_day_num} ${edit_event_ui.data.week_day_name}`);
 		this.condition_presets.find('option[value="every_x_annually_date"]').text(`Every ${repeat_string}year on the ${ordinal_suffix_of(edit_event_ui.data.day)} of ${edit_event_ui.data.timespan_name}`);
-		this.condition_presets.find('option[value="every_x_annually_weekday"]').text(`Every ${repeat_string}year on the ${ordinal_suffix_of(edit_event_ui.data.month_week_num)} ${edit_event_ui.data.week_day_name} in ${edit_event_ui.data.timespan_name}`);
+		this.condition_presets.find('option[value="every_x_annually_weekday"]').text(`Every ${repeat_string}year on the ${ordinal_suffix_of(edit_event_ui.data.week_day_num)} ${edit_event_ui.data.week_day_name} in ${edit_event_ui.data.timespan_name}`);
+		this.condition_presets.find('option[value="every_x_inverse_annually_weekday"]').text(`Every ${repeat_string}year on the ${inverse_week_day_num} ${edit_event_ui.data.week_day_name} in ${edit_event_ui.data.timespan_name}`);
 
 	},
 
@@ -1013,6 +1030,14 @@ var edit_event_ui = {
 				];
 				break;
 
+			case 'monthly_inverse_weekday':
+				var result = [
+					['Weekday', '0', [edit_event_ui.data.week_day_name]],
+					['&&'],
+					['Weekday', '14', [edit_event_ui.data.inverse_week_day_num]]
+				];
+				break;
+
 			case 'annually_month_weekday':
 				var result = [
 					['Month', '0', [edit_event_ui.data.timespan_index]],
@@ -1020,6 +1045,16 @@ var edit_event_ui = {
 					['Weekday', '0', [edit_event_ui.data.week_day_name]],
 					['&&'],
 					['Weekday', '8', [edit_event_ui.data.week_day_num]]
+				];
+				break;
+
+			case 'annually_inverse_month_weekday':
+				var result = [
+					['Month', '0', [edit_event_ui.data.timespan_index]],
+					['&&'],
+					['Weekday', '0', [edit_event_ui.data.week_day_name]],
+					['&&'],
+					['Weekday', '14', [edit_event_ui.data.inverse_week_day_num]]
 				];
 				break;
 
@@ -1055,6 +1090,16 @@ var edit_event_ui = {
 				];
 				break;
 
+			case 'every_x_inverse_monthly_weekday':
+				var result = [
+					['Weekday', '0', [edit_event_ui.data.week_day_name]],
+					['&&'],
+					['Weekday', '14', [edit_event_ui.data.inverse_week_day_num]],
+					['&&'],
+					['Month', '13', [repeats, (edit_event_ui.data.timespan_count+1)%repeats]]
+				];
+				break;
+
 			case 'every_x_annually_date':
 				var result = [
 					['Day', '0', [edit_event_ui.data.day]],
@@ -1070,6 +1115,18 @@ var edit_event_ui = {
 					['Weekday', '0', [edit_event_ui.data.week_day_name]],
 					['&&'],
 					['Weekday', '8', [edit_event_ui.data.week_day_num]]
+					['&&'],
+					['Month', '0', [edit_event_ui.data.timespan_index]],
+					['&&'],
+					['Year', '6', [repeats, (edit_event_ui.data.year+1)%repeats]]
+				];
+				break;
+
+			case 'every_x_inverse_annually_weekday':
+				var result = [
+					['Weekday', '0', [edit_event_ui.data.week_day_name]],
+					['&&'],
+					['Weekday', '14', [edit_event_ui.data.inverse_week_day_num]],
 					['&&'],
 					['Month', '0', [edit_event_ui.data.timespan_index]],
 					['&&'],
@@ -1806,6 +1863,8 @@ var edit_event_ui = {
 			matcher: matcher
 		});
 
+		condition.find('.select2').removeAttr('style');
+
 		return condition;
 
 	},
@@ -1963,7 +2022,7 @@ var edit_event_ui = {
             events: events,
             event_categories: event_categories,
 			action: "future",
-			owner: owner,
+			owner: Perms.player_at_least('co-owner'),
 			start_year: start_year,
 			end_year: end_year
 		});
@@ -2090,7 +2149,7 @@ var edit_event_ui = {
 
 	},
 
-	delete_event: function(delete_event_id){
+	query_delete_event: function(delete_event_id){
 
 		var warnings = [];
 
@@ -2131,7 +2190,7 @@ var edit_event_ui = {
 			swal.fire({
 
 				title: "Warning!",
-				text: "Are you sure you want to delete this event?",
+				html: `Are you sure you want to delete the event<br>"${events[delete_event_id].name}"?`,
 				showCancelButton: true,
 				confirmButtonColor: '#d33',
 				cancelButtonColor: '#3085d6',
@@ -2142,22 +2201,9 @@ var edit_event_ui = {
 
 				if(!result.dismiss) {
 
-					for(var eventId in events){
-						if(events[eventId].data.connected_events !== undefined){
-							for(connectedId in events[eventId].data.connected_events){
-								var number = Number(events[eventId].data.connected_events[connectedId])
-								if(number > delete_event_id){
-									events[eventId].data.connected_events[connectedId] = String(number-1)
-								}
-							}
-						}
-					}
-
-					var event_id = events[delete_event_id].id;
-
-					events.splice(delete_event_id, 1);
-
 					if($('#events_sortable').length){
+
+						edit_event_ui.delete_event(delete_event_id);
 
 						events_sortable.children(`[index='${delete_event_id}']`).remove();
 
@@ -2170,19 +2216,41 @@ var edit_event_ui = {
 
 					}else{
 
-						submit_delete_event(event_id);
+						var event_id = events[delete_event_id].id;
+
+						submit_delete_event(event_id, function(){
+							edit_event_ui.delete_event(delete_event_id);
+						});
 
 					}
-
-					this.clear_ui();
-
-					$(`#calendar .event:not(.era_event)[event_id=${delete_event_id}]`).remove();
 
 				}
 
 			});
 
 		}
+
+	},
+
+	delete_event(delete_event_id){
+
+		for(var eventId in events){
+			if(events[eventId].data.connected_events !== undefined){
+				for(connectedId in events[eventId].data.connected_events){
+					var number = Number(events[eventId].data.connected_events[connectedId])
+					if(number > delete_event_id){
+						events[eventId].data.connected_events[connectedId] = String(number-1)
+					}
+				}
+			}
+		}
+
+		events.splice(delete_event_id, 1);
+
+		edit_event_ui.clear_ui();
+
+		let result = RenderDataGenerator.event_deleted(delete_event_id)
+		window.dispatchEvent(new CustomEvent('events-change', {detail: result} ));
 
 	}
 
@@ -2227,16 +2295,16 @@ var show_event_ui = {
 
 	bind_events: function(){
 
-		this.event_id							= null;
-		this.db_event_id						= null;
-		this.era_id								= null;
+		this.event_id							= -1;
+		this.db_event_id						= -1;
+		this.era_id								= -1;
 		this.event_condition_sortables			= [];
 		this.delete_droppable					= false;
 
 		this.event_background 					= $('#event_show_background');
 		this.close_ui_btn						= show_event_ui.event_background.find('.close_ui_btn');
 
-		this.event_wrapper						= this.event_background.find('.event-wrapper');
+		this.event_wrapper						= this.event_background.find('.modal-wrapper');
 		this.event_name							= this.event_background.find('.event_name');
 		this.event_desc							= this.event_background.find('.event_desc');
 		this.event_comments						= this.event_background.find('#event_comments');
@@ -2245,11 +2313,9 @@ var show_event_ui = {
 		this.event_comment_input_container		= this.event_background.find('#event_comment_input_container');
 		this.event_comment_input				= this.event_background.find('#event_comment_input');
 		this.event_save_btn						= this.event_background.find('#submit_comment');
-		this.edit_event_btn_container   		= this.event_background.find('.edit-event-btn-container');
 		this.edit_event_btn				   		= this.event_background.find('.edit_event_btn');
 
-		this.edit_event_btn_container.toggleClass('hidden', !owner);
-		this.edit_event_btn.prop('disabled', !owner);
+		this.event_comment_mastercontainer.toggleClass('hidden', !can_comment_on_event());
 
 		this.event_comment_input.trumbowyg({
 			btns: [
@@ -2280,7 +2346,7 @@ var show_event_ui = {
 		});
 
 		this.event_save_btn.click(function(){
-			create_event_comment(show_event_ui.event_comment_input.trumbowyg('html'), show_event_ui.event_id, show_event_ui.add_comment);
+			create_event_comment(show_event_ui.event_comment_input.trumbowyg('html'), show_event_ui.db_event_id, show_event_ui.add_comment);
 			show_event_ui.event_comment_input.trumbowyg('empty');
 		});
 
@@ -2290,10 +2356,6 @@ var show_event_ui = {
 				edit_event_ui.edit_event(show_event_ui.event_id);
 				show_event_ui.clear_ui();
 			});
-		});
-
-		$(document).on('click', '.event:not(.event-text-output)', function(){
-			show_event_ui.clicked_event($(this));
 		});
 
 	},
@@ -2324,13 +2386,13 @@ var show_event_ui = {
 
 		if(item.hasClass('era_event')){
 
-			var id = item.attr('era_id')|0;
+			var id = item.attr('event')|0;
 			this.era_id = id;
 			this.set_current_event(static_data.eras[id]);
 
 		}else{
 
-			var id = item.attr('event_id')|0;
+			var id = item.attr('event')|0;
 			this.event_id = id;
 			this.set_current_event(events[show_event_ui.event_id]);
 
@@ -2349,16 +2411,26 @@ var show_event_ui = {
 
 		this.db_event_id = event.id;
 
+		let no_edit = !Perms.can_modify_event(this.event_id) || this.era_id > -1;
+
+		this.edit_event_btn.prop('disabled', no_edit).toggleClass('hidden', no_edit);
+
 		this.event_name.text(event.name);
 
 		this.event_desc.html(event.description).toggleClass('hidden', event.description.length == 0);
 
 		this.event_comments.html('').addClass('loading');
 
-		if(this.db_event_id !== undefined){
+		this.event_comment_mastercontainer.removeClass('hidden');
+
+		if(this.era_id > -1){
+			this.event_comment_mastercontainer.addClass('hidden');
+		}else if(this.db_event_id !== undefined){
 			get_event_comments(this.db_event_id, this.add_comments);
-		}else{
+		}else if(can_comment_on_event()){
 			this.event_comments.html("You need to save your calendar before comments can be added to this event!").removeClass('loading');
+		}else{
+			this.event_comments.removeClass("loading").addClass('hidden');
 		}
 
 		this.event_background.removeClass('hidden');
@@ -2383,7 +2455,11 @@ var show_event_ui = {
 
 		}else{
 
-			show_event_ui.event_comments.html("No comments on this event yet... Maybe you'll be the first?")
+			show_event_ui.event_comment_mastercontainer.toggleClass('hidden', !can_comment_on_event());
+
+			if(can_comment_on_event()){
+				show_event_ui.event_comments.html("No comments on this event yet... Maybe you'll be the first?")
+			}
 
 		}
 
@@ -2443,9 +2519,6 @@ var edit_HTML_ui = {
 		this.html_edit_background 				= $('#html_edit_background');
 		this.save_btn							= this.html_edit_background.find('#btn_html_save');
 		this.close_ui_btn						= this.html_edit_background.find('.close_ui_btn');
-		this.data								= null;
-		this.key								= null;
-		this.value								= null;
 		this.trumbowyg							= this.html_edit_background.find('.html_input');
 
 		this.trumbowyg.trumbowyg();
@@ -2459,18 +2532,22 @@ var edit_HTML_ui = {
 		});
 
 		$(document).on('click', '.html_edit', function(){
-			var data = $(this).attr('data');
-			edit_HTML_ui.key = $(this).attr('index');
-			edit_HTML_ui.data = get_calendar_data(data);
-			edit_HTML_ui.value = clone(edit_HTML_ui.data[edit_HTML_ui.key]);
-			edit_HTML_ui.set_html();
-		})
+			edit_HTML_ui.edit_era_description($(this).closest('.sortable-container').attr('index')|0);
+		});
+
+	},
+
+	edit_era_description: function(era_index){
+
+		this.era = static_data.eras[era_index];
+
+		this.set_html();
 
 	},
 
 	set_html: function(){
 
-		this.trumbowyg.trumbowyg('html', this.value);
+		this.trumbowyg.trumbowyg('html', this.era.description);
 
 		this.html_edit_background.removeClass('hidden');
 
@@ -2478,11 +2555,7 @@ var edit_HTML_ui = {
 
 	save_html: function(){
 
-		this.data[this.key] = this.trumbowyg.trumbowyg('html');
-
-		edit_HTML_ui.key = null;
-		edit_HTML_ui.data = null;
-		edit_HTML_ui.value = null;
+		this.era.description = this.trumbowyg.trumbowyg('html');
 
 		evaluate_save_button();
 
@@ -2494,8 +2567,6 @@ var edit_HTML_ui = {
 
 		this.trumbowyg.trumbowyg('html', '');
 
-		this.reference = null;
-
 		this.html_edit_background.addClass('hidden');
 
 	},
@@ -2503,20 +2574,16 @@ var edit_HTML_ui = {
 
 function can_comment_on_event(){
 
-	if(owner){
+	if(Perms.player_at_least('co-owner')){
 		return true;
-	}
-
-	if(static_data.settings.comments == "none"){
-		return false;
 	}
 
 	if(static_data.settings.comments == "players"){
-		return true;
+		return Perms.player_at_least('player');
 	}
 
 	if(static_data.settings.comments == "public"){
-		return true;
+		return Perms.player_at_least('free');
 	}
 
 	return false;

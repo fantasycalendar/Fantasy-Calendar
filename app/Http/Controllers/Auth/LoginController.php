@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 
+use Auth;
+use Cookie;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Response;
 
 class LoginController extends Controller
 {
@@ -22,12 +25,6 @@ class LoginController extends Controller
 
     use AuthenticatesUsers;
 
-    /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
-    protected $redirectTo = '/calendars';
 
     /**
      * Create a new controller instance.
@@ -52,6 +49,18 @@ class LoginController extends Controller
         request()->merge([$field => $login]);
 
         return $field;
+    }
+
+    /**
+     * Show the application's login form.
+     *
+     * @return Response
+     */
+    public function showLoginForm()
+    {
+        return response()
+            ->view('auth.login')
+            ->cookie('intended_path', request()->get('postlogin'));
     }
 
     /**
@@ -89,5 +98,31 @@ class LoginController extends Controller
         if($request->wantsJson()) {
             return ['success' => true, 'message' => 'User is logged out.'];
         }
+    }
+
+    protected function sendLoginResponse(Request $request)
+    {
+        $customRememberMeTimeInMinutes = 35791394;
+        $rememberTokenCookieKey = Auth::getRecallerName();
+        Cookie::queue($rememberTokenCookieKey, Cookie::get($rememberTokenCookieKey), $customRememberMeTimeInMinutes);
+
+        $request->session()->regenerate();
+
+        $this->clearLoginAttempts($request);
+
+        return $this->authenticated($request, $this->guard()->user())
+            ?: redirect()->intended($this->redirectPath());
+    }
+
+    public function redirectTo() {
+        if(request()->cookie('intended_path')) {
+            if(request()->cookie('intended_path') == '/calendars/create?resume=1') {
+                return '/calendars/create?resume=1&save=1';
+            }
+
+            return request()->cookie('intended_path');
+        }
+
+        return '/calendars';
     }
 }

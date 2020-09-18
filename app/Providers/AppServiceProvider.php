@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\CalendarEvent;
+use App\Observers\CalendarEventObserver;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
@@ -36,5 +38,6 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Calendar::observe(CalendarObserver::class);
+        CalendarEvent::observe(CalendarEventObserver::class);
     }
 }

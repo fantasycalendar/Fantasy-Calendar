@@ -1,4 +1,4 @@
-<form id="input_container">
+<form id="input_container" class='d-print-none'>
 
 	@include('inputs.sidebar.header')
 
@@ -31,7 +31,7 @@
 	<div class="accordion">
 		<div class='wrap-collapsible card settings-statistics'>
 			<input id="collapsible_statistics" class="toggle" type="checkbox">
-			<label for="collapsible_statistics" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-chart-pie"></i> Statistics <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Statistics' href='https://wiki.fantasy-calendar.com/index.php?title=Statistics' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+			<label for="collapsible_statistics" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-chart-pie"></i> Statistics <a target="_blank" data-pt-position="right" data-pt-title='More Info: Statistics' href='https://helpdocs.fantasy-calendar.com/topic/statistics' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
                 <div class='row no-gutters'>
                     <div class='col-6 bold-text'>
@@ -64,7 +64,7 @@
 
 		<div class='wrap-collapsible card settings-current_date'>
 			<input id="collapsible_date" class="toggle" type="checkbox">
-			<label for="collapsible_date" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-hourglass-half"></i> Current Date <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Date' href='https://wiki.fantasy-calendar.com/index.php?title=Date' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+			<label for="collapsible_date" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-hourglass-half"></i> Current Date <a target="_blank" data-pt-position="right" data-pt-title='More Info: Date' href='https://helpdocs.fantasy-calendar.com/topic/current_date_and_time/' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
 
 				<div id='clock' class='mb-2'>
@@ -83,7 +83,7 @@
 						<h4>Current date:</h4>
 					</div>
 
-					<div class='row my-2 center-text hidden calendar_link_explaination'>
+					<div class='row my-2 center-text hidden calendar_link_explanation'>
 						@if(request()->is('calendars/*/edit') && $calendar->parent != null)
 							<p class='m-0'>This calendar is using a different calendar's date to calculate the current date. Only the <a href='/calendars/{{ $calendar->parent->hash }}/edit' target="_blank">parent calendar</a> can set the date for this calendar.</p>
 						@endif
@@ -213,11 +213,19 @@
                     <label for="collapsible_add_units" class="lbl-toggle card-header small-lbl-text center-text">Add or subtract fixed units to calendar dates</label>
                     <div class="collapsible-content container card-body">
 
-                        <div class='row no-gutters input-group mx-0'>
-                            <input type='number' class="form-control form-control-sm full" id='unit_years' placeholder="Years">
-                            <input type='number' class="form-control form-control-sm full" id='unit_months' placeholder="Months">
-                            <input type='number' class="form-control form-control-sm full" id='unit_days' placeholder="Days">
-                        </div>
+						<div class='row no-gutters mx-0'>
+							<input type='number' class="form-control form-control-sm full" id='unit_years' placeholder="Years">
+							<input type='number' class="form-control form-control-sm full" id='unit_months' placeholder="Months">
+							<input type='number' class="form-control form-control-sm full" id='unit_days' placeholder="Days">
+						</div>
+						<div class='row no-gutters mx-0 my-2'>
+							<div class='col-md-6 col-sm-12'>
+								<input type='number' class="form-control form-control-sm full" id='unit_hours' placeholder="Hours">
+							</div>
+							<div class='col-md-6 col-sm-12'>
+								<input type='number' class="form-control form-control-sm full" id='unit_minutes' placeholder="Minutes">
+							</div>
+						</div>
 
 						@if(request()->is('calendars/*/edit') && $calendar->parent == null)
                         	<button type="button" step="1.0" class="btn btn-primary btn-block my-2" id='current_date_btn'>To current date</button>
@@ -240,7 +248,7 @@
 
 		<div class='wrap-collapsible card settings-clock'>
 			<input id="collapsible_clock" class="toggle" type="checkbox">
-			<label for="collapsible_clock" class="lbl-toggle card-header lbl-text"><i class="mr-2 fa fa-clock"></i> Clock <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Clock' href='https://wiki.fantasy-calendar.com/index.php?title=Clock' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+			<label for="collapsible_clock" class="lbl-toggle card-header lbl-text"><i class="mr-2 fa fa-clock"></i> Clock <a target="_blank" data-pt-position="right" data-pt-title='More Info: Clock' href='https://helpdocs.fantasy-calendar.com/topic/clock' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
 
 				<div class='row'>
@@ -363,7 +371,7 @@
 
 		<div class='wrap-collapsible card settings-weekdays step-2-step'>
 			<input id="collapsible_globalweek" class="toggle" type="checkbox">
-			<label for="collapsible_globalweek" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-calendar-week"></i> Weekdays <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Weekdays' href='https://wiki.fantasy-calendar.com/index.php?title=Global_week' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+			<label for="collapsible_globalweek" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-calendar-week"></i> Weekdays <a target="_blank" data-pt-position="right" data-pt-title='More Info: Weekdays' href='https://helpdocs.fantasy-calendar.com/topic/weekdays/' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
 
 				<div class='row center-text hidden' id='overflow_explanation'>
@@ -459,7 +467,7 @@
 		<div class='wrap-collapsible card settings-timespans step-3-step'>
 
 			<input id="collapsible_timespans" class="toggle" type="checkbox">
-			<label for="collapsible_timespans" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-calendar-alt"></i> Months <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Months & Intercalaries' href='https://wiki.fantasy-calendar.com/index.php?title=Months_%26_Intercalaries' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+			<label for="collapsible_timespans" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-calendar-alt"></i> Months <a target="_blank" data-pt-position="right" data-pt-title='More Info: Months & Intercalaries' href='https://helpdocs.fantasy-calendar.com/topic/months' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
 
 				@if(request()->is('calendars/*/edit') && $calendar->isLinked())
@@ -550,7 +558,7 @@
 
 		<div class='wrap-collapsible card settings-leapdays'>
 			<input id="collapsible_leapdays" class="toggle" type="checkbox">
-			<label for="collapsible_leapdays" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-calendar-day"></i> Leap days <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Leap Days' href='https://wiki.fantasy-calendar.com/index.php?title=Leap_days' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+			<label for="collapsible_leapdays" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-calendar-day"></i> Leap days <a target="_blank" data-pt-position="right" data-pt-title='More Info: Leap Days' href='https://helpdocs.fantasy-calendar.com/topic/leap_days' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content content card-body">
 
 				@if(request()->is('calendars/*/edit') && $calendar->isLinked())
@@ -637,7 +645,7 @@
 
 		<div class='wrap-collapsible card settings-eras'>
 			<input id="collapsible_eras" class="toggle" type="checkbox">
-			<label for="collapsible_eras" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-infinity"></i> Eras <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Eras' href='https://wiki.fantasy-calendar.com/index.php?title=Eras' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+			<label for="collapsible_eras" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-infinity"></i> Eras <a target="_blank" data-pt-position="right" data-pt-title='More Info: Eras' href='https://helpdocs.fantasy-calendar.com/topic/eras' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
 
 				@if(request()->is('calendars/*/edit') && $calendar->isLinked())
@@ -701,7 +709,7 @@
 
 		<div class='wrap-collapsible card settings-moons'>
 			<input id="collapsible_moon" class="toggle" type="checkbox">
-			<label for="collapsible_moon" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-moon"></i> Moons <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Moons' href='https://wiki.fantasy-calendar.com/index.php?title=Moons' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+			<label for="collapsible_moon" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-moon"></i> Moons <a target="_blank" data-pt-position="right" data-pt-title='More Info: Moons' href='https://helpdocs.fantasy-calendar.com/topic/moons' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
 
 				<div class='row bold-text'>
@@ -744,7 +752,7 @@
 				<i class='season_combo_icon fas mr-2'>
 					<i class="fas fa-sun"></i><i class="fas fa-snowflake"></i>
 				</i>
-				Seasons<a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Seasons' href='https://wiki.fantasy-calendar.com/index.php?title=Seasons' class="wiki protip"><i class="icon-question-sign"></i></a>
+				Seasons<a target="_blank" data-pt-position="right" data-pt-title='More Info: Seasons' href='https://helpdocs.fantasy-calendar.com/topic/seasons' class="wiki protip"><i class="icon-question-sign"></i></a>
 			</label>
 			<div class="collapsible-content card-body">
 
@@ -823,7 +831,7 @@
 
 		<div class='wrap-collapsible card settings-weather'>
 			<input id="collapsible_weather" class="toggle" type="checkbox">
-			<label for="collapsible_weather" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-cloud-sun-rain"></i> Weather<a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Weather' href='https://wiki.fantasy-calendar.com/index.php?title=Weather' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+			<label for="collapsible_weather" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-cloud-sun-rain"></i> Weather<a target="_blank" data-pt-position="right" data-pt-title='More Info: Weather' href='https://helpdocs.fantasy-calendar.com/topic/weather' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
 
                 <div id='no_seasons_container' class='row no-gutters'>
@@ -911,7 +919,7 @@
 
 		<div class='wrap-collapsible card settings-locations'>
 			<input id="collapsible_locations" class="toggle" type="checkbox">
-			<label for="collapsible_locations" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-compass"></i> Locations <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Locations' href='https://wiki.fantasy-calendar.com/index.php?title=Locations' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+			<label for="collapsible_locations" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-compass"></i> Locations <a target="_blank" data-pt-position="right" data-pt-title='More Info: Locations' href='https://helpdocs.fantasy-calendar.com/topic/locations' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
 
                 <div id='locations_warning' class='row no-gutters'>
@@ -968,7 +976,7 @@
 
 		<div class='wrap-collapsible card settings-cycles'>
 			<input id="collapsible_cycles" class="toggle" type="checkbox">
-			<label for="collapsible_cycles" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-redo"></i> Cycles <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Cycles' href='https://wiki.fantasy-calendar.com/index.php?title=Cycles' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+			<label for="collapsible_cycles" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-redo"></i> Cycles <a target="_blank" data-pt-position="right" data-pt-title='More Info: Cycles' href='https://helpdocs.fantasy-calendar.com/topic/cycles' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
 
 				<div class='row no-gutters bold-text'>
@@ -998,7 +1006,7 @@
 
 		<div class='wrap-collapsible card settings-categories'>
 			<input id="collapsible_categories" class="toggle" type="checkbox">
-			<label for="collapsible_categories" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-th-list"></i> Event Categories <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Event Categories' href='https://wiki.fantasy-calendar.com/index.php?title=Event_categories' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+			<label for="collapsible_categories" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-th-list"></i> Event Categories <a target="_blank" data-pt-position="right" data-pt-title='More Info: Event Categories' href='https://helpdocs.fantasy-calendar.com/topic/event_categories' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
 
 				<div class='row no-gutters bold-text'>
@@ -1036,7 +1044,7 @@
 
 		<div class='wrap-collapsible card settings-events'>
 			<input id="collapsible_events" class="toggle" type="checkbox">
-			<label for="collapsible_events" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-calendar-check"></i> Events <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Events' href='https://wiki.fantasy-calendar.com/index.php?title=Events' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+			<label for="collapsible_events" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-calendar-check"></i> Events <a target="_blank" data-pt-position="right" data-pt-title='More Info: Events' href='https://helpdocs.fantasy-calendar.com/topic/events' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
 
 				<div class='row no-gutters bold-text'>
@@ -1065,46 +1073,43 @@
 
 		<div class='wrap-collapsible card settings-settings'>
 			<input id="collapsible_settings" class="toggle" type="checkbox">
-			<label for="collapsible_settings" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-cog"></i> Settings <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Settings' href='https://wiki.fantasy-calendar.com/index.php?title=Settings' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+			<label for="collapsible_settings" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-cog"></i> Settings <a target="_blank" data-pt-position="right" data-pt-title='More Info: Settings' href='https://helpdocs.fantasy-calendar.com/topic/settings' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
 
 				<div class='add_inputs'>
 
 					<div class='bold-text'>Layout Settings:</div>
 
+					@if(request()->is('calendars/*/edit'))
 					<label class="row no-gutters setting">
-						<select class='form-control static_input' data='settings' fc-index='layout'>
-							<option value='grid'>Grid style</option>
-							<option value='wide'>Wide style</option>
-							<option value='vertical'>Vertical style</option>
-							<option value='minimalistic'>Minimalistic style</option>
-						</select>
+						<button x-data type='button' id='btn_layouts' class='btn btn-primary full' @click="$dispatch('open-layouts-modal')">Select Layout</button>
 					</label>
+					@endif
 
 					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Makes the calendar only show the current month. Enhances calendar loading performance, especially with many moons.">
-                        <div class='col'>
-    						<input type='checkbox' class='margin-right static_input' data='settings' fc-index='show_current_month'>
-    						<span>
-    							Show only current month
-    						</span>
-					    </div>
-                    </label>
+						<div class='col'>
+							<input type='checkbox' class='margin-right static_input' data='settings' fc-index='show_current_month'>
+							<span>
+							Show only current month
+						</span>
+						</div>
+					</label>
 
 					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This will add 'Month 1' and so on to each month in the calendar">
 						<div class='col'>
-							<input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='add_month_number' onclick="setTimeout(calendar_layouts.add_month_number, 10);">
+							<input type='checkbox' class='margin-right static_input' data='settings' fc-index='add_month_number' refresh='false'>
 							<span>
-								Add month number to months
-							</span>
+							Add month number to months
+						</span>
 						</div>
 					</label>
 
 					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This adds a small number at the bottom left of the days in the calendar showing which year-day it is">
 						<div class='col'>
-							<input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='add_year_day_number' onclick="setTimeout(calendar_layouts.add_year_day_number, 10);">
+							<input type='checkbox' class='margin-right static_input' data='settings' fc-index='add_year_day_number' refresh='false'>
 							<span>
-								Add year day to each day
-							</span>
+							Add year day to each day
+						</span>
 						</div>
 					</label>
 
@@ -1112,150 +1117,167 @@
 
 					<div class='bold-text'>Guest View Settings:</div>
 
-					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This will allow viewers to view any past or future year and months just like you can">
-                        <div class='col'>
-    						<input type='checkbox' class='margin-right static_input' data='settings' fc-index='allow_view'>
-    						<span>
-    							Allow advancing view in calendar
-    						</span>
-					    </div>
-                    </label>
-
-					<label class="row no-gutters setting border rounded py-1 px-2 protip disabled" data-pt-position="right" data-pt-title="This will limit viewers to only view past dates (requires allowing advancing view)">
-                        <div class='col'>
-    						<input type='checkbox' class='margin-right static_input' disabled data='settings' fc-index='only_backwards'>
-    						<span>
-    							Limit to only viewing past dates
-    						</span>
-					    </div>
-                    </label>
-
-					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Viewers will only be able to see up to current day, future days will be greyed out">
-                        <div class='col'>
-    						<input type='checkbox' class='margin-right static_input' data='settings' fc-index='only_reveal_today'>
-    						<span>
-    							Show only up to current day
-    						</span>
-					    </div>
-                    </label>
-
-					<!------------------------------------------------------->
-
-					<div class='bold-text'>Hiding Settings:</div>
-
 					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Hides all of the moons from guest viewers">
-                        <div class='col'>
-    						<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_moons'>
-    						<span>
-    							Hide all moons from guest viewers
-    						</span>
-					    </div>
-                    </label>
+						<div class='col'>
+							<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_moons' refresh='false'>
+							<span>
+							Hide all moons from guest viewers
+						</span>
+						</div>
+					</label>
 
 					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Hides the clock from guest viewers">
-                        <div class='col'>
-    						<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_clock'>
-    						<span>
-    							Hide time from guest viewers
-    						</span>
-					    </div>
-                    </label>
+						<div class='col'>
+							<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_clock' refresh='false'>
+							<span>
+							Hide time from guest viewers
+						</span>
+						</div>
+					</label>
 
 					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Hides all events from guest viewers">
-                        <div class='col'>
-    						<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_events'>
-    						<span>
-    							Hide all events from guest viewers
-    						</span>
-					    </div>
-                    </label>
+						<div class='col'>
+							<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_events' refresh='false'>
+							<span>
+							Hide all events from guest viewers
+						</span>
+						</div>
+					</label>
 
 					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Hides the era text at the top of the calendar and only shows the year instead to guest viewers">
-                        <div class='col'>
-    						<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_eras'>
-    						<span>
-    							Hide era from guest viewers
-    						</span>
-					    </div>
-                    </label>
+						<div class='col'>
+							<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_eras' refresh='false'>
+							<span>
+							Hide era from guest viewers
+						</span>
+						</div>
+					</label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Prevents all weather from appearing on the calendar for guest viewers">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_all_weather'>
-                            <span>
-                                Hide all weather from guest viewers
-                            </span>
-                        </div>
-                    </label>
+					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Prevents all weather from appearing on the calendar for guest viewers">
+						<div class='col'>
+							<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_all_weather' refresh='false'>
+							<span>
+							Hide all weather from guest viewers
+						</span>
+						</div>
+					</label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Prevents any future weather from appearing on the calendar for guest viewers">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_future_weather'>
-                            <span>
-                                Hide future weather from guest viewers
-                            </span>
-                        </div>
-                    </label>
+					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Prevents any future weather from appearing on the calendar for guest viewers">
+						<div class='col'>
+							<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_future_weather' refresh='false'>
+							<span>
+							Hide future weather from guest viewers
+						</span>
+						</div>
+					</label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title='This hides the exact temperature from guest viewers - this is really useful with the cinematic temperature setting as guests will only see "cold", "sweltering" and the like'>
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='hide_weather_temp'>
-                            <span>
-                                Hide temperature from guest viewers
-                            </span>
-                        </div>
-                    </label>
+					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title='This hides the exact temperature from guest viewers - this is really useful with the cinematic temperature setting as guests will only see "cold", "sweltering" and the like'>
+						<div class='col'>
+							<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_weather_temp' refresh='false'>
+							<span>
+							Hide temperature from guest viewers
+						</span>
+						</div>
+					</label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This hides the exact wind velocity from guest viewers">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' refresh='false' data='settings' fc-index='hide_wind_velocity'>
-                            <span>
-                                Hide wind velocity from guest viewers
-                            </span>
-                        </div>
-                    </label>
+					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This hides the exact wind velocity from guest viewers">
+						<div class='col'>
+							<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_wind_velocity' refresh='false'>
+							<span>
+							Hide wind velocity from guest viewers
+						</span>
+						</div>
+					</label>
 
 					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This will hide the weekday bar at the top of each month">
 						<div class='col'>
-							<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_weekdays'>
+							<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_weekdays' refresh='false'>
 							<span>
-								Hide weekdays in calendar
-							</span>
+							Hide weekdays in calendar
+						</span>
 						</div>
 					</label>
 
 					<div class='bold-text'>Event Settings:</div>
 
 					<label class="row no-gutters setting py-1 protip" data-pt-position="right" data-pt-title="This will change who can comment on the events of your calendar.">
-						<select class='form-control static_input' data='settings' fc-index='comments'>
+						<select class='form-control static_input' data='settings' fc-index='comments' refresh='false'>
 							<option selected value='none'>Disable event commenting</option>
 							<option value='players'>Disable public commenting</option>
 							<option value='public'>Allow public commenting</option>
 						</select>
 					</label>
 
-                    <div class='bold-text'>Advanced Settings:</div>
+					<div class='bold-text'>Advanced Settings:</div>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Normally, the year count is -2, -1, 1, 2, and so on. This makes it so that 0 exists, so -2, -1, 0, 1, 2.">
-                        <div class='col'>
+					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Normally, the year count is -2, -1, 1, 2, and so on. This makes it so that 0 exists, so -2, -1, 0, 1, 2.">
+						<div class='col'>
 							@if(request()->is('calendars/*/edit') && $calendar->isLinked())
-                            	<input type='checkbox' class='margin-right' {{ Arr::get($calendar->static_data, 'settings.year_zero_exists') ? "checked" : "" }} disabled>
+								<input type='checkbox' class='margin-right' {{ Arr::get($calendar->static_data, 'settings.year_zero_exists') ? "checked" : "" }} disabled>
 							@else
-                            	<input type='checkbox' class='margin-right static_input' data='settings' id='year_zero_exists' fc-index='year_zero_exists'>
+								<input type='checkbox' class='margin-right static_input' data='settings' id='year_zero_exists' fc-index='year_zero_exists'>
 							@endif
-                            <span>
-                                Year zero exists
-                            </span>
-                        </div>
-                    </label>
+							<span>
+							Year zero exists
+						</span>
+						</div>
+					</label>
 
 					@if(request()->is('calendars/*/edit') && $calendar->isLinked())
 						<p class=""><a onclick="linked_popup();" href='#'>Why are some settings disabled?</a></p>
 					@endif
 
-                </div>
-            </div>
-        </div>
+				</div>
+			</div>
+		</div>
+
+		@if(request()->is('calendars/*/edit'))
+
+			<!---------------------------------------------->
+			<!--------------- User Management -------------->
+			<!---------------------------------------------->
+			<div class='wrap-collapsible card settings-users'>
+				<input id="collapsible_users" class="toggle" type="checkbox">
+				<label for="collapsible_users" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-user"></i> User Management <a target="_blank" data-pt-position="right" data-pt-title='More Info: User Management' href='https://helpdocs.fantasy-calendar.com/topic/user_management' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+				<div class="collapsible-content card-body">
+
+					@if(Auth::user()->can('add-users', $calendar))
+
+						<div class='row no-gutters mt-1 mb-3'>
+							<p class='m-0'>Invite your friends to collaborate on this calendar! Once they accept your invite, you'll be able to assign them a role.</p>
+						</div>
+
+						<div class='row no-gutters my-1'>
+							<div class="col-md">
+								<input type='text' class='form-control' id='email_input' placeholder='Email'>
+							</div>
+							<div class="col-md-auto">
+								<button type='button' class='btn full btn-primary' id='btn_send_invite'>Send Invite</button>
+							</div>
+						</div>
+						<div class='row no-gutters mb-2 hidden'>
+							<p class='m-0 email_text alert alert-success'></p>
+						</div>
+
+						<div class='sortable' id='calendar_user_list'></div>
+
+						<div class='row no-gutters my-1'>
+							<button type='button' class='btn btn-sm btn-secondary full' id='refresh_calendar_users'>Refresh</button>
+						</div>
+
+					@else
+
+						<div class='row no-gutters my-1'>
+							<p>Invite your friends to collaborate on this calendar!</p>
+							<p class='m-0'><a href="{{ route('subscription.pricing') }}" target="_blank">Subscribe now</a> to unlock this feature!</p>
+						</div>
+
+					@endif
+
+				</div>
+			</div>
+
+		@endif
 
 		@if(request()->is('calendars/*/edit'))
 			<!---------------------------------------------->
@@ -1263,38 +1285,49 @@
 			<!---------------------------------------------->
 			<div class='wrap-collapsible card settings-linking'>
 				<input id="collapsible_linking" class="toggle" type="checkbox">
-				<label for="collapsible_linking" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-link"></i> Calendar Linking <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Calendar Linking' href='https://wiki.fantasy-calendar.com/index.php?title=Calendar_Linking' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+				<label for="collapsible_linking" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-link"></i> Calendar Linking <a target="_blank" data-pt-position="right" data-pt-title='More Info: Calendar Linking' href='https://helpdocs.fantasy-calendar.com/topic/calendar_linking' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 				<div class="collapsible-content card-body">
 
-					<div id='calendar_link_hide'>
+					@if(Auth::user()->can('link', $calendar))
 
-						@if(request()->is('calendars/*/edit') && $calendar->parent != null)
-                            <div class='row no-gutters my-1 center-text hidden calendar_link_explaination'>
-                                <p class='m-0'>This calendar is already linked to a <a href='/calendars/{{ $calendar->parent->hash }}/edit' target="_blank">parent calendar</a>. Before linking any calendars to this one, you must unlink this calendar from its parent.</p>
-                            </div>
-                        @else
-                            <div class='row no-gutters my-1 center-text'>
-                                <p>Calendar linking is a complex feature - we recommend you check out the <a href='https://wiki.fantasy-calendar.com/index.php?title=Calendar_Linking' target="_blank"><i class="icon-question-sign"></i> Fantasy-Calendar wiki article</a> on the feature!</p>
-                            </div>
+						<div id='calendar_link_hide'>
+							<div class='row no-gutters my-1'>
+								<p>Calendar linking is a complex feature, we recommend you check out the article on <a href='https://helpdocs.fantasy-calendar.com/topic/calendar_linking' target="_blank"><i class="icon-question-sign"></i> Calendar Linking</a>.</p>
+							</div>
 
-                            <div class='row no-gutters my-1'>
-                                <select class='form-control' id='calendar_link_select'></select>
-                            </div>
-                            <div class='row no-gutters my-1'>
-                                <button type='button' class='btn btn-sm btn-secondary full' id='refresh_calendar_list_select'>Refresh</button>
-                            </div>
+							@if($calendar->parent != null)
+								<div class='row no-gutters my-1 center-text hidden calendar_link_explanation'>
+									<p class='m-0'>This calendar is already linked to a <a href='/calendars/{{ $calendar->parent->hash }}/edit' target="_blank">parent calendar</a>. Before linking any calendars to this one, you must unlink this calendar from its parent.</p>
+								</div>
+							@else
 
-                            <div class='sortable' id='calendar_link_list'></div>
-                            <div class='sortable mt-1' id='calendar_new_link_list'></div>
-                        @endif
-                    </div>
+								<div class='row no-gutters my-1'>
+									<select class='form-control' id='calendar_link_select'></select>
+								</div>
+								<div class='row no-gutters my-1'>
+									<button type='button' class='btn btn-sm btn-secondary full' id='refresh_calendar_list_select'>Refresh</button>
+								</div>
+
+								<div class='sortable' id='calendar_link_list'></div>
+								<div class='sortable mt-1' id='calendar_new_link_list'></div>
+							@endif
+						</div>
+
+					@else
+
+						<div class='row no-gutters my-1'>
+							<p>Link calendars together, and make this calendar's date drive the date of other calendars!</p>
+							<p class='m-0'><a href="{{ route('subscription.pricing') }}" target="_blank">Subscribe now</a> to unlock this feature!</p>
+						</div>
+
+					@endif
 				</div>
 			</div>
 		@endif
 	</form>
 </div>
 
-<button id='input_collapse_btn' class="hamburger hamburger--arrowturn is-active" type="button">
+<button id='input_collapse_btn' class="hamburger hamburger--arrowturn is-active d-print-none" type="button">
 	<span class="hamburger-box">
 		<span class="hamburger-inner"></span>
 	</span>
@@ -1310,14 +1343,14 @@
 		</div>
 	</div>
 
-    <div id="reload_background" class='flexible_background blurred_background d-flex flex-column justify-content-center hidden'>
+    <div id="reload_background" class='flexible_background blurred_background d-flex flex-column justify-content-center hidden d-print-none'>
         <div class='p-2 text-white'>You have made changes to your calendar.</div>
         <div class='p-2'><button type='button' class='btn btn-primary' id='apply_changes_btn'>Update preview</button></div>
     </div>
 
 	<div id="top_follower" class="step-hide">
 
-		<div class='parent_button_container hidden'>
+		<div class='parent_button_container hidden d-print-none'>
 			<div class='container d-flex h-100 p-0'>
 				<div class='col justify-content-center align-self-center full'>
 					<button class='btn btn-danger full' disabled id='rebuild_calendar_btn'>Parent data changed - reload</button>
@@ -1326,12 +1359,12 @@
 		</div>
 
 		<div class='btn_container hidden'>
-			<button class='btn btn-danger btn_preview_date hidden' disabled fc-index='year' value='-1'>< Year</button>
-			<button class='btn btn-danger btn_preview_date hidden' disabled fc-index='timespan' value='-1'>< Month</button>
+			<button class='btn btn-danger btn_preview_date hidden d-print-none' disabled fc-index='year' value='-1'>< Year</button>
+			<button class='btn btn-danger btn_preview_date hidden d-print-none' disabled fc-index='timespan' value='-1'>< Month</button>
 		</div>
 
 		<div class='reset_preview_date_container m-1 left'>
-			<button type='button' class='btn m-0 btn-info hidden reset_preview_date protip' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >< Current</button>
+			<button type='button' class='btn m-0 btn-info hidden reset_preview_date protip d-print-none' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >< Current</button>
 		</div>
 
         <div class="follower_center">
@@ -1339,19 +1372,17 @@
         </div>
 
 		<div class='reset_preview_date_container m-1 right'>
-            <button type='button' class='btn m-0 btn-info hidden reset_preview_date protip' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >Current ></button>
+            <button type='button' class='btn m-0 btn-info hidden reset_preview_date protip d-print-none' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >Current ></button>
         </div>
 
 		<div class='btn_container hidden'>
-			<button class='btn btn-success btn_preview_date hidden' disabled fc-index='year' value='1'>Year ></button>
-			<button class='btn btn-success btn_preview_date hidden' disabled fc-index='timespan' value='1'>Month ></button>
+			<button class='btn btn-success btn_preview_date hidden d-print-none' disabled fc-index='year' value='1'>Year ></button>
+			<button class='btn btn-success btn_preview_date hidden d-print-none' disabled fc-index='timespan' value='1'>Month ></button>
 		</div>
 
 	</div>
 
-	<div id="calendar">
-
-	</div>
+	@include('layouts.calendar-' . (isset($calendar) ? $calendar->setting('layout', 'grid') : 'grid'))
 
 	<div id="weather_container" class="hidden">
 

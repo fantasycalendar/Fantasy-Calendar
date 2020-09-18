@@ -29,8 +29,7 @@
     <meta name="msapplication-config" content="{{ asset("/resources/browserconfig.xml") }}">
     <meta name="theme-color" content="#2f855a">
 
-    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
-
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.6.0/dist/alpine.min.js" defer></script>
 
     <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" />
     <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js" defer></script>
@@ -71,18 +70,10 @@
                 @endif
                 <li class="nav-item"><a href="{{ route('settings') }}" class="nav-link">Settings</a></li>
                 <li class="nav-item"><a href="/profile" class="nav-link">Profile</a></li>
-                @unless(request()->is('/calendar/*'))
-                    <li class="nav-item"><a href="{{ route('logout') }}" class="nav-link">Logout</a></li>
-                @else
-                    <li class="nav-item"><a href="javascript:" id="logout-button" class="nav-link">Logout</a></li>
-                @endunless
+                <li class="nav-item"><a href="{{ route('logout') }}" class="nav-link">Logout</a></li>
             @else
-                @unless(request()->is('/calendar/*'))
-                    <li class="nav-item"><a href="{{ route('login') }}" class="nav-link">Login</a></li>
-                @else
-                    <li class="nav-item"><a href="javascript:" id="login-show-button" class="nav-link">Login</a></li>
-                @endunless
-
+                <li class="nav-item"><a href="{{ route('subscription.pricing') }}" class="nav-link">Pricing</a></li>
+                <li class="nav-item"><a href="{{ route('login') }}" class="nav-link">Login</a></li>
                 <li class="nav-item"><a href="{{ route('register') }}" class="nav-link">Register</a></li>
             @endauth
 

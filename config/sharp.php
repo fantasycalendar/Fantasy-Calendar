@@ -7,6 +7,15 @@ return [
             "show" => \App\Sharp\UserShow::class,
             "form" => \App\Sharp\UserForm::class,
         ],
+        "calendars" => [
+            "list" => \App\Sharp\CalendarList::class,
+            "show" => \App\Sharp\CalendarShow::class
+        ],
+        "presets" => [
+            "list" => \App\Sharp\PresetList::class,
+            "show" => \App\Sharp\PresetShow::class,
+            "form" => \App\Sharp\PresetForm::class,
+        ],
         "env" => [
             "list" => \App\Sharp\EnvVarsList::class,
         ]
@@ -22,6 +31,16 @@ return [
             "label" => "Users",
             "icon" => "fa-users",
             "entity" => "user"
+        ],
+        [
+            "label" => "Calendars",
+            "icon" => "fa-calendar",
+            "entity" => "calendars"
+        ],
+        [
+            "label" => "Presets",
+            "icon" => "fa-calendar",
+            "entity" => "presets"
         ],
         [
             "label" => "Env Vars",

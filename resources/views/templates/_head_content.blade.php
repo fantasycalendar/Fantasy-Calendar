@@ -35,7 +35,8 @@
         <script>window.bugsnagClient = bugsnag('98440cbeef759631f3d987ab45b26a79')</script>
     @endif
 
-    <script src="{{ mix('js/app.js') }}"></script>
+    <script src="{{ mix('/js/app.js') }}"></script>
+    <script src="https://js.stripe.com/v3/"></script>
 
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
@@ -44,6 +45,8 @@
     <script src="https://rawgit.com/notifyjs/notifyjs/master/dist/notify.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.6.0/dist/alpine.min.js" defer></script>
 
     <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" />
     <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
@@ -99,6 +102,7 @@
     });
 
     $(document).ready(function(){
+
         window.onerror = function(error, url, line) {
             $.notify("Error:\n "+error+" \nin file "+url+" \non line "+line);
         }

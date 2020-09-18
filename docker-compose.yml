@@ -17,6 +17,8 @@ services:
     container_name: fantasy_calendar
     depends_on:
       - fantasy-calendar-php
+    ports:
+      - "9987:8080"
     build:
       context: .
       dockerfile: setup/nginx/nginx.Dockerfile
@@ -46,6 +48,12 @@ services:
       - "REDIS_HOST=fcredis"
       - "SESSION_DRIVER=redis"
       - "VIEW_COMPILED_PATH=/fantasy-calendar/storage/framework/views"
+
+  selenium:
+    image: selenium/standalone-chrome
+    shm_size: '1gb'
+    ports:
+      - "4444:4444"
 
   fcredis:
     image: redis

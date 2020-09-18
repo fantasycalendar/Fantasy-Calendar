@@ -13,6 +13,10 @@
     <meta property="og:url" content="{{ url()->full() }}">
     <meta property="og:image" content="{{ asset('resources/discord_logo.jpg') }}">
 
+    @if(Auth::check())
+        <meta name='api-token' content="{{ Auth::user()->api_token }}">
+    @endif
+
     <title>
         Welcome to Fantasy Calendar
     </title>
@@ -31,9 +35,12 @@
 
 
     <script src="{{ mix('js/app.js') }}"></script>
+    <script src="https://js.stripe.com/v3/"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://rawgit.com/notifyjs/notifyjs/master/dist/notify.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.6.0/dist/alpine.min.js" defer></script>
 
     <script>
         $(document).ready(function(){
@@ -55,6 +62,7 @@
     <script src="{{ asset('js/login.js') }}"></script>
 
     <script src="{{ mix('js/calendar/header.js') }}"></script>
+    <script src="{{ mix('js/calendar/calendar_ajax_functions.js') }}"></script>
 
     @if(Auth::check() && Auth::user()->setting('dark_theme') && !request()->is('/') && !request()->is('whats-new'))
         <link rel="stylesheet" href="{{ mix('css/app-dark.css') }}">
@@ -83,6 +91,6 @@
 
 			@yield('content')
 		</div>
-        <div id="protip_container"></div>
+        <div id="protip_container" class='d-print-none'></div>
     </body>
 </html>

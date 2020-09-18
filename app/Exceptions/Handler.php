@@ -57,6 +57,14 @@ class Handler extends ExceptionHandler
             if($request->is('calendars/*/edit')) {
                 return redirect(str_replace('/edit','', $request->path()));
             }
+
+            if($request->is('calendars/create')) {
+                return redirect(route('subscription.pricing'))->with('alert', "Thanks for using Fantasy Calendar! Please subscribe to have more than two calendars active at a time.");
+            }
+
+            if($request->is('calendars/*')) {
+                return redirect(route('errors.calendar_unavailable'));
+            }
         }
 
         if ($this->isHttpException($exception)) {
@@ -65,6 +73,8 @@ class Handler extends ExceptionHandler
                     return response()->view('errors.404', [
                         'title' => 'Calendar not found'
                     ]);
+                } else {
+                    return redirect('/');
                 }
             }
 
