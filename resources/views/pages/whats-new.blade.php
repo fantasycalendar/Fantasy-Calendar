@@ -25,15 +25,15 @@
             color: #246645;
         }
 
-        div.fullheight {
+        .fullheight {
             height: 100vh;
         }
 
-        div.green-border {
+        .green-border {
             border-bottom: 10px solid green;
         }
 
-        div.comparison_image {
+        .comparison_image {
             background-size: contain, cover;
             background-repeat: no-repeat, no-repeat;
             background-position: center center, center center;
@@ -42,6 +42,11 @@
             place-items: center;
             align-content:center;
             position: relative;
+        }
+
+        .comparison_image img {
+            max-width: 72%;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
 
         .comparison_image h1, .comparison_image h2, .comparison_image img{
@@ -64,10 +69,19 @@
         }
         img {
             max-width: 100%;
+            margin: 1.5rem 0;
         }
 
         h3 i {
-            font-size: 125%;
+            font-size: 85%;
+        }
+
+        section h3 {
+            margin-bottom: 1rem;
+        }
+
+        section h4 {
+            font-size: 1.3rem;
         }
 
         section.footer {
@@ -83,6 +97,16 @@
             opacity: 0.2;
         }
 
+        @media screen and (max-width: 768px) {
+            html {
+                font-size: 16px;
+            }
+
+            .comparison_image img {
+                max-width: 96%;
+            }
+        }
+
     </style>
 @endpush
 
@@ -91,28 +115,28 @@
         <div class="fullheight green-border welcome" style="background-color: #edf2f7; background-image: url({{ asset('resources/whats-new-angle-blur-transparent.png') }}); background-size: cover; background-position: center center; background-attachment: fixed;">
             <h1 style="width: 100%; text-align: center;">Fantasy Calendar is getting an update!</h1>
             <h2 style="width: 100%; text-align: center;">Here is what you can expect in Fantasy Calendar 2.0.</h2>
-            <h3 class="next-link" style="font-size: 40px; position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section2"><i class="fa fa-chevron-circle-down"></i> Give it a look <i class="fa fa-chevron-circle-down"></i></a></h3>
+            <h3 class="next-link" style="font-size: 2.3rem; position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section2"><i class="fa fa-chevron-circle-down"></i> Give it a look <i class="fa fa-chevron-circle-down"></i></a></h3>
             <div class="overlay"></div>
         </div>
 
         <div class="fullheight green-border comparison_image" id="section2" style="background-image: linear-gradient(to right, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url({{ asset('resources/whats-new-1-0.png') }});">
-            <h1 style="width: 100%; text-align: center; color: #2d3748; margin-bottom:1rem;">Here's what you're used to.</h1>
-            <h2 style="width: 100%; text-align: center; color: #2d3748; margin-bottom:1rem;">It works great! But I think we can all agree it could use some polish.</h2>
-            <img src="{{ asset('/resources/whats-new-1-0.png') }}" style="max-width: 72%; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);">
-            <h3 class="next-link" style="font-size: 40px; position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section3"><i class="fa fa-chevron-circle-down"></i> Take a peek at the new look <i class="fa fa-chevron-circle-down"></i></a></h3>
+            <h1 style="width: 100%; text-align: center; color: #2d3748; margin-bottom:1rem;">Here's what you're used&nbsp;to.</h1>
+            <h2 style="width: 100%; text-align: center; color: #2d3748; margin-bottom:1.4rem;">It works great! But I think we can all agree it could use some&nbsp;polish.</h2>
+            <img src="{{ asset('/resources/whats-new-1-0.png') }}">
+            <h3 class="next-link" style="font-size: 2.3rem; position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section3"><i class="fa fa-chevron-circle-down"></i> Take a peek at the new look <i class="fa fa-chevron-circle-down"></i></a></h3>
             <div class="overlay"></div>
         </div>
 
         <div class="fullheight green-border comparison_image" id="section3" style="background-image: linear-gradient(to right, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url({{ asset('resources/whats-new-2-0.png') }})">
-            <h1 style="width: 100%; text-align: center; color: #2d3748; margin-bottom: 1rem;">This is Fantasy Calendar 2.0.</h1>
-            <h2 style="width: 100%; text-align: center; color: #2d3748; margin-bottom: 1rem;">Lovingly crafted to be enjoyable.</h2>
-            <img src="{{ asset('/resources/whats-new-2-0.png') }}" style="max-width: 72%; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);">
-            <h3 class="next-link" style="font-size: 40px; position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section4"><i class="fa fa-chevron-circle-down"></i> Looks great! Show me more <i class="fa fa-chevron-circle-down"></i></a></h3>
+            <h1 style="width: 100%; text-align: center; color: #2d3748; margin-bottom: 1rem;">Enter: Fantasy&nbsp;Calendar&nbsp;2.0.</h1>
+            <h2 style="width: 100%; text-align: center; color: #2d3748; margin-bottom: 1.4rem;">Lovingly crafted to be enjoyable.</h2>
+            <img src="{{ asset('/resources/whats-new-2-0.png') }}">
+            <h3 class="next-link" style="font-size: 2.3rem; position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section4"><i class="fa fa-chevron-circle-down"></i> Looks great! Show me more <i class="fa fa-chevron-circle-down"></i></a></h3>
             <div class="overlay"></div>
         </div>
 
         <section class="comparison_both welcome" id="section4" style="background-color: #edf2f7;">
-            <div class="container my-5 pt-5">
+            <div class="container mt-5 pt-5">
                 <div class="row">
                     <div class="col-12 col-md-5 text-center text-md-left d-flex flex-column align-items-start justify-content-center">
                         <h1>A fresh, modern look</h1>
@@ -149,7 +173,6 @@
                         <h4>For a DM on the go, or for players who like to take notes during the session, Fantasy Calendar 2.0 works great on phones and tablets.</h4>
                     </div>
                     <div class="col-12 col-md-6 text-center text-md-right">
-                        {{--                    Placeholder --}}
                         <img src="{{ asset('resources/any-device.png') }}">
                     </div>
                 </div>
@@ -160,7 +183,6 @@
             <div class="container py-5">
                 <div class="row">
                     <div class="col-12 col-md-6 text-center text-md-left">
-                        {{--                    Placeholder --}}
                         <img src="{{ asset('resources/whats-new-dark.png') }}" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);">
                     </div>
                     <div class="col-12 col-md-6 text-center text-md-right d-flex flex-column align-items-end justify-content-center">
@@ -180,7 +202,6 @@
                         <h4>Your events now have support for advanced conditions. Last sunday on three specific months? Check. When all 4 moons are full? <strong>Check.</strong></h4>
                     </div>
                     <div class="col-12 col-md-6 text-center text-md-right">
-                        {{--                    Placeholder --}}
                         <img src="{{ asset('resources/whats-new-event-conditions.png') }}" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);">
                     </div>
                 </div>
@@ -198,57 +219,57 @@
                     <div class="col-12 col-md-3 py-2 py-md-0 px-2 ml-md-0 pl-md-0 pr-md-1">
                         <div class="inner text-center h-100 px-3 rounded" style="background-color: #e2e8f0;">
                             <div class="row">
-                                <h3 class="pt-4 w-100"><i class="fa fa-hourglass"></i></h3>
+                                <h3 class="pt-4 w-100"><i class="fa fa-infinity"></i></h3>
                             </div>
                             <div class="row">
                                 <h5 class="pt-2 w-100">Eras</h5>
                             </div>
                             <div class="row">
-                                <p class="small px-4">AD, BC, Dalereckoning, Post-Divergence, The&nbsp;Reign of The Ashmarai... Whatever you call them, you can now record the eras of your world!</p>
+                                <p class=" px-4">AD, BC, Dalereckoning, Post-Divergence, The&nbsp;Reign of The Ashmarai... Whatever you call them, you can now record the eras of your world!</p>
                             </div>
                         </div>
                     </div>
                     <div class="col-12 col-md-3 py-2 py-md-0 px-2 px-md-1">
                         <div class="inner text-center h-100 px-3 rounded" style="background-color: #e2e8f0;">
                             <div class="row">
-                                <h3 class="pt-4 w-100"><i class="fa fa-rocket"></i></h3>
+                                <h3 class="pt-4 w-100"><i class="fa fa-th-list"></i></h3>
                             </div>
                             <div class="row">
                                 <h5 class="pt-2 w-100">Event Categories</h5>
                             </div>
                             <div class="row">
-                                <p class="small px-4">Religious holidays, natural world events, kingdom celebrations, character birthdays, campaign notes... Organize your events for the ways you use them.</p>
+                                <p class=" px-4">Religious holidays, natural world events, kingdom celebrations, character birthdays, campaign notes... Organize your events for the ways you use them.</p>
                             </div>
                         </div>
                     </div>
                     <div class="col-12 col-md-3 py-2 py-md-0 px-2 px-md-1">
                         <div class="inner text-center h-100 px-3 rounded" style="background-color: #e2e8f0;">
                             <div class="row">
-                                <h3 class="pt-4 w-100"><i class="fa fa-mobile"></i></h3>
+                                <h3 class="pt-4 w-100"><i class="fa fa-users"></i></h3>
                             </div>
                             <div class="row">
                                 <h5 class="pt-2 w-100">Collaboration</h5>
                             </div>
                             <div class="row">
-                                <p class="small px-4">Invite another GM to run events in your world, or let your players help you chronicle the events of the story you're telling together.</p>
+                                <p class=" px-4">Invite another GM to run events in your world, or let your players help you chronicle the events of the story you're telling together.</p>
                             </div>
                         </div>
                     </div>
                     <div class="col-12 col-md-3 py-2 py-md-0 px-2 mr-md-0 pr-md-0 pl-md-1">
                         <div class="inner text-center h-100 px-3 rounded" style="background-color: #e2e8f0;">
                             <div class="row">
-                                <h3 class="pt-4 w-100"><i class="fa fa-calendar-day"></i></h3>
+                                <h3 class="pt-4 w-100"><i class="fa fa-cogs"></i></h3>
                             </div>
                             <div class="row">
                                 <h5 class="pt-2 w-100">Engine Improvements</h5>
                             </div>
                             <div class="row">
                                 <ul class="text-left pl-4">
-                                    <li class="small">More accurate leap days</li>
-                                    <li class="small">Intercalary & leap months</li>
-                                    <li class="small">Better weather generation</li>
-                                    <li class="small">Upgraded and improved seasons</li>
-                                    <li class="small">...and more!</li>
+                                    <li class="">More accurate leap days</li>
+                                    <li class="">Intercalary & leap months</li>
+                                    <li class="">Better weather generation</li>
+                                    <li class="">Upgraded and improved seasons</li>
+                                    <li class="">...and more!</li>
                                 </ul>
                             </div>
                         </div>
@@ -271,7 +292,8 @@
             <section class="container">
                 <div class="row">
                     <div class="col-12 text-center text-white">
-                        <h2>With much more to come...</h2>
+                        <h2>With much more to come!</h2>
+                        <h4>We only plan to make it better.</h4>
                     </div>
                 </div>
             </section>

@@ -17,6 +17,7 @@
             <li class="nav-item new-calendar">
                 <a class="nav-link" href="{{ route('calendars.create') }}">New Calendar</a>
             </li>
+            <li class="nav-item"><a href="{{ route('whats-new') }}" class="nav-link">What's New in 2.0</a></li>
         </ul>
         <ul class="navbar-nav">
             @auth
@@ -24,11 +25,11 @@
                     <li class="nav-item"><a href="{{ route('code16.sharp.home') }}" class="nav-link">Admin Panel</a></li>
                 @endif
 
-                <li class="nav-item"><a href="{{ route('subscription.pricing') }}" class="nav-link">Pricing</a></li>
+                <li class="nav-item"><a href="{{ route('subscription.pricing') }}" class="nav-link">Subscribe</a></li>
                 <li class="nav-item"><a href="{{ route('profile') }}" class="nav-link">Profile</a></li>
                 <li class="nav-item"><a href="{{ route('logout') }}" class="nav-link">Logout</a></li>
             @else
-                <li class="nav-item"><a href="{{ route('subscription.pricing') }}" class="nav-link">Pricing</a></li>
+                <li class="nav-item"><a href="{{ route('subscription.pricing') }}" class="nav-link">Subscribe</a></li>
                 <li class="nav-item"><a href="{{ route('login') }}" class="nav-link">Login</a></li>
                 <li class="nav-item"><a href="{{ route('register') }}" class="nav-link">Register</a></li>
             @endauth
