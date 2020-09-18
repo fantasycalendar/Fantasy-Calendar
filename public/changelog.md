@@ -22,15 +22,15 @@ The entire UI has been overhauled with many alterations that come with the chang
      * Completely overhauled seasons
      * You have a choice between static (dated) and dynamic (duration) based seasons.
      * Static date-based seasons are as they were in 1.0, attached to specific dates on specific months, and never changing
-     * Dynamic duration-based seasons have a set length, regardless of your dates, like in our world. This means that your seasons can drift if the average year length and the season length don't match.
+     * Dynamic duration-based seasons have a set length, like in our world. This means that your seasons can drift if the average year length and the season length don't match
 * **Cycles**
      * You can now create zodiac years like in the Chinese calendar with the brand new cycle system
      * Cycles can be based on the year, era year, month in year, month count since the first year, day in month, day in year, epochs (days since first year)
 * **Eras**
-     * Eras work like A.D. and B.C. in the Gregorian calendar, where each era has a start date and lasts until a new era begins.
+     * Eras work like A.D. and B.C. in the Gregorian calendar, where each era has a start date and lasts until a new era begins
      * You can set one era to be the "Beginning Era", meaning it's always active until a new era starts - like B.C., it was always before christ, until Christ came along
-     * Eras can reset the year prematurely like in the Japanese calendar
-     * The year count can also reset with the emergence of a new era - like as if an emperor died and now it's "1st Year of the Empress" after his successor took the throne
+     * Eras can reset the year prematurely like in some dynastic calendar
+     * The year count can also reset with the emergence of a new era - like if an emperor in your world died, and now it's "The 1st Year of the Empress" after his successor took the throne
 * **Event conditions**
      * Events now support multi-conditional setups, where each event can be driven by any part of the calendar to be able to be shown
      * Parameters include year, month, day, epoch, week day, weeks, moons, cycles, eras, era year, seasons, seeded random chance, and event-based-conditions (event chaining!)
@@ -39,8 +39,7 @@ The entire UI has been overhauled with many alterations that come with the chang
 * **Layouts**
      * You can now display your calendar in four different ways. Styles include grid, wide, and minimalistic
 * **Calendar linking**
-     * You can now link calendars together
-     * One master calendar can influence other calendars in your world, making sure that all of them are in tandem
+     * You can now link calendars together - one parent calendar can influence other calendars in your world, making sure that all of them are in tandem
      * This is a powerful feature that ensures a 1 to 1 representation between vastly different calendars
      * **Note** -  this is a premium feature, read more on the [FAQ](https://fantasy-calendar.com/faq)
 
@@ -61,7 +60,7 @@ The entire UI has been overhauled with many alterations that come with the chang
      * Now you can also hide individual moons from your viewers
 * **Weather Generation**
      * Completely overhauled the weather generation system
-     It support offseting the weather from the season so that the coldest day doesn't always fall on the winter solstice, for example
+     * It support offseting the weather from the season so that the coldest day doesn't always fall on the winter solstice, for example
 * **Locations**
      * The location system has been reworked, and each location can now have their own sunrise and sunset times per season, and timezone adjustments when active
      * Weather is also directly tied to the location now, with precipitation chance and percipitation intensity becoming two different parameters
