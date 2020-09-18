@@ -11,7 +11,7 @@
 @section('content')
     <div class="container">
 
-        <h1 class="pt-5">What's Changed with Fantasy Calendar</h1>
+        <h1 class="pt-5 text-center">What's Changed with Fantasy Calendar</h1>
 
         {!! Markdown::convertToHtml(Storage::disk('base')->get('public/changelog.md')); !!}
 
