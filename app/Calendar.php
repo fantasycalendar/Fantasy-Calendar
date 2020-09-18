@@ -172,10 +172,10 @@ class Calendar extends Model
 
     public function userHasPerms(User $user, $role) {
         $roles = [
-            0 => 'invitee',
-            10 => 'observer',
-            20 => 'player',
-            30 => 'co-owner'
+            'invitee' => 0,
+            'observer' => 10,
+            'player' => 20,
+            'co-owner' => 30
         ];
 
         if(!$this->isPremium()) {
