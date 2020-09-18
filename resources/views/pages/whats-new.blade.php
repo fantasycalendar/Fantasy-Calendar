@@ -69,6 +69,20 @@
         h3 i {
             font-size: 125%;
         }
+
+        section.footer {
+            display: flex;
+            background-color: #323232;
+            justify-content: space-between;
+            align-items: center;
+            padding: 40px 20px;
+            color: white;
+        }
+
+        section.footer * {
+            opacity: 0.2;
+        }
+
     </style>
 @endpush
 
@@ -97,7 +111,7 @@
             <div class="overlay"></div>
         </div>
 
-        <div class="section comparison_both welcome" id="section4" style="background-color: #edf2f7;">
+        <section class="comparison_both welcome" id="section4" style="background-color: #edf2f7;">
             <div class="container my-5 pt-5">
                 <div class="row">
                     <div class="col-12 col-md-5 text-center text-md-left d-flex flex-column align-items-start justify-content-center">
@@ -109,9 +123,9 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div class="section comparison_both welcome" id="section4" style="background-color: #edf2f7;">
+        <section class="comparison_both welcome" id="section4" style="background-color: #edf2f7;">
             <div class="container mb-5 pb-5">
                 <div class="row">
 
@@ -124,9 +138,9 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div class="section py-5" style="position: relative; overflow: hidden;">
+        <section class="py-5" style="position: relative; overflow: hidden;">
             <div class="background" style="background-image: url('{{ asset('resources/gray-cubic-bg.png') }}'); position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.25; transform: scale(2.2, 2.2)"></div>
             <div class="container py-5">
                 <div class="row">
@@ -140,9 +154,9 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div class="section py-5 darkmode" style="background-color: #222222; background-image: url('{{ asset('resources/gray-square-bg.png') }}');">
+        <section class="py-5 darkmode" style="background-color: #222222; background-image: url('{{ asset('resources/gray-square-bg.png') }}');">
             <div class="container py-5">
                 <div class="row">
                     <div class="col-12 col-md-6 text-center text-md-left">
@@ -155,9 +169,9 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div class="section py-5"  style="position: relative; overflow: hidden;">
+        <section class="py-5"  style="position: relative; overflow: hidden;">
             <div class="background" style="background-image: url('{{ asset('resources/triangle-bg.png') }}'); position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.25; transform: scale(1.5, 1.5)"></div>
             <div class="container py-5">
                 <div class="row">
@@ -171,9 +185,9 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div class="section py-5" style="background-color: #edf2f7;">
+        <section class="py-5" style="background-color: #edf2f7;">
             <div class="container" style="max-width: 1300px;">
                 <div class="row">
                     <div class="col-12 text-center">
@@ -241,17 +255,31 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div class="section py-3">
+        <section class="py-3">
             <div class="container py-3">
                 <div class="row">
                     <div class="col-12 text-center d-flex flex-column align-items-start justify-content-center">
-                        <h2 class='w-100'><a href='changelog' class='w-100'>Check out the full changelog here</a></h2>
+                        <h4 class='w-100'><a href='changelog' class='btn btn-lg btn-accent text-white my-5'>Check out the full changelog here</a></h4>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
+        <section class="py-5" style="background-color: #2f855a">
+            <section class="container">
+                <div class="row">
+                    <div class="col-12 text-center text-white">
+                        <h2>With much more to come...</h2>
+                    </div>
+                </div>
+            </section>
+        </section>
+
+        <section class="footer flex-column flex-md-row">
+            <div class="logo"><img src="{{ asset('resources/header_logo.png') }}"></div>
+            <div class="copyright">© Copyright {{ date('Y') }} Fantasy Calendar Ltd.</div>
+        </section>
     </div>
 @endsection

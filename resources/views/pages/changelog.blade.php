@@ -2,23 +2,16 @@
 
 @push('head')
     <style>
-
         html {
             scroll-behavior: smooth;
         }
-
-        .changelog__content {
-            padding: 1rem;
-        }
-
     </style>
 @endpush
 
 @section('content')
+    <div class="container">
 
-    <div class="changelog__content">
-        
-        <h1 class="pt-5">Changelog</h1>
+        <h1 class="pt-5">What's Changed with Fantasy Calendar</h1>
 
         {!! Markdown::convertToHtml(Storage::disk('base')->get('public/changelog.md')); !!}
 

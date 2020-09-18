@@ -179,7 +179,7 @@ The entire UI has been overhauled with many alterations that come with the chang
 
 ## 0.75c
 ### March 31, 2018
-* Added - Beta feature for leap years. Please report any bugs on the discord channel.
+* Added - Beta feature for leap years.
 * Added - Warning if you navigate away from an unsaved calendar.
 
 
