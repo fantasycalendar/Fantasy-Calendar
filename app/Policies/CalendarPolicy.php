@@ -56,7 +56,7 @@ class CalendarPolicy
     public function create(?User $user)
     {
         if($user) {
-            return  $user->calendars()->count() < 2 || $user->paymentLevel() != 'Free';
+            return  $user->calendars()->count() < 2 || $user->isPremium();
         }
 
         return true;

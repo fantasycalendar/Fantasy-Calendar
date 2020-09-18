@@ -48,7 +48,7 @@ Fantasy Calendar Ltd has no control over, and assumes no responsibility for, the
 We strongly advise you to read the terms and conditions and privacy policies of any third-party web sites or services that you visit.
 
 ## Payments and fees
-Some of our Services are offered for a fee while other Services may be free with optional paid upgrades, such as the Timekeeper or Worldbuilder plans (collectively, “Paid Services”). By using a Paid Service, you agree to pay the specified fees. Depending on the Paid Service, there may be a one-time fee or recurring fees. For recurring fees, we’ll bill or charge you for in regular intervals (such as monthly, annually, or biennially), on a pre-pay basis until you cancel, which you can do at any time by cancelling your plan or by contacting us by emailing billing@fantasy-calendar.com.
+Some of our Services are offered for a fee while other Services may be free with optional paid upgrades, such as the Timekeeper plan (collectively, “Paid Services”). By using a Paid Service, you agree to pay the specified fees. Depending on the Paid Service, there may be a one-time fee or recurring fees. For recurring fees, we’ll bill or charge you for in regular intervals (such as monthly, annually, or biennially), on a pre-pay basis until you cancel, which you can do at any time by cancelling your plan or by contacting us by emailing billing@fantasy-calendar.com.
 
 **Payment.** If your payment fails or Paid Services are otherwise not paid for on time, we may immediately cancel or revoke your access to the Paid Services. If you contact your bank or credit card company to decline or reverse the charge of fees for Paid Services, we may revoke your access to all of our Services until outstanding charges have been paid.
 

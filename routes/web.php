@@ -51,7 +51,7 @@ Route::get('/subscription/cancel', 'SubscriptionController@cancellation')->name(
 Route::post('/subscription/cancel', 'SubscriptionController@cancel')->name('subscription.cancelpost');
 
 // They want to resume! =)
-Route::get('/subscription/resume/{level}', 'SubscriptionController@resume')->name('subscription.resume');
+Route::get('/subscription/resume', 'SubscriptionController@resume')->name('subscription.resume');
 
 // They want to upgrade
 Route::post('/subscription/update/{level}/{plan}', 'SubscriptionController@update')->name('subscription.update');

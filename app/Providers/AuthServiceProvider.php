@@ -35,9 +35,7 @@ class AuthServiceProvider extends ServiceProvider
 
             return $user->can('update', $calendar)
 
-                || ($calendar->user->paymentLevel() == 'Worldbuilder'
-
-                    && $calendar->users->contains($user) && in_array($calendar->users->find($user->id)->pivot->user_role, ['player', 'co-owner'])
+                || ($calendar->userHasPerms($user, 'player')
 
                     && collect($event->data)->has('date') && $event->data['date'] != []
 
@@ -76,24 +74,16 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('add-events', function($user, $calendar) {
             return $user->can('update', $calendar)
-
-                || ($calendar->user->paymentLevel() == 'Worldbuilder'
-
-                    && $calendar->users->contains($user) && in_array($calendar->users->find($user->id)->pivot->user_role, ['player', 'co-owner'])
-                );
+                && $calendar->userHasPerms($user, 'player');
         });
 
         Gate::define('advance-date', function($user, $calendar) {
             return $user->can('update', $calendar)
-
-                || ($calendar->user->paymentLevel() == 'Worldbuilder'
-
-                    && $calendar->users->contains($user) && $calendar->users->find($user->id)->pivot->user_role === 'co-owner'
-                );
+                || $calendar->userHasPerms($user, 'co-owner');
         });
 
         Gate::define('add-users', function($user, $calendar) {
-            return $user->is($calendar->user) && $calendar->user->paymentLevel() !== 'Free';
+            return $user->is($calendar->user) && $calendar->isPremium();
         });
 
         Gate::define('update-settings', function($user, $calendar) {
@@ -101,7 +91,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('link', function($user, $calendar) {
-            return $user->is($calendar->user) && $calendar->user->paymentLevel() === 'Worldbuilder';
+            return $user->is($calendar->user) && $calendar->isPremium();
         });
     }
 }
