@@ -85,6 +85,9 @@ custom:
 
 package:
     exclude:
+        - .git/**
+        - .idea/**
+        - setup/**
         - node_modules/**
         - public/storage
         - resources/assets/**
