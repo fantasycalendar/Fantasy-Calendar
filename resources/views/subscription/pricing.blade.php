@@ -77,7 +77,7 @@
             <div class="alert alert-info py-3 m-4">{{ session('alert') }}</div>
         @endif
 
-    @if(!$betaAccess || Auth::user()->paymentLevel() == "Free")
+    @if(!$betaAccess || Auth::user()->isPremium())
         @elseif($betaAccess)
             <div class="row">
                 <div class="col-12">
@@ -124,7 +124,7 @@
                         </div>
                     </div>
 
-                    @if($betaAccess && Auth::user()->paymentLevel() == "Free")
+                    @if($betaAccess && Auth::user()->isPremium()))
                         <div class="price-label">
                             <h3>Free<br></h3><p class="small">Because you're awesome <3</p>
                         </div>

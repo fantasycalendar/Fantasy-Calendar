@@ -40,7 +40,7 @@ class DisableUnpaidCalendars extends Command
     {
         $users = User::chunk(100, function($users){
             foreach ($users as $user) {
-                if($user->subscriptions()->cancelled()->count() > 0 && $user->paymentLevel() == 'Free' && $user->calendars()->count() > 2) {
+                if($user->subscriptions()->cancelled()->count() > 0 && !$user->isPremium() && $user->calendars()->count() > 2) {
                     $user->calendars()->orderBy('date_created', 'ASC')->each(function($calendar, $index){
                         if($index > 1) {
                             $calendar->disabled = 1;

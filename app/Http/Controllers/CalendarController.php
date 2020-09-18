@@ -36,7 +36,7 @@ class CalendarController extends Controller
      */
     public function index(Request $request)
     {
-        $user_calendars = Calendar::active()->search($request->input('search'));
+        $user_calendars = Calendar::active()->search($request->input('search'))->orderBy('disabled');
 
         $user_calendars = (Auth::user()->permissions == 1) ? $user_calendars->with('user') : $user_calendars->where('user_id', Auth::user()->id);
 
