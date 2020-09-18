@@ -25,7 +25,7 @@ class SubscriptionController extends Controller
         $betaAccess = (!Auth::check() || $request->get('beta_override'))
             ? false
             : Auth::user()->betaAccess();
-        
+
         return view('subscription.pricing', [
             'subscribed' => $subscribed,
             'earlySupporter' => Auth::check() && Auth::user()->isEarlySupporter(),
@@ -47,7 +47,7 @@ class SubscriptionController extends Controller
 
     public function subscribe($level, $interval) {
         // They're subscribed already, send 'em to the subscriptions list
-        if(Auth::user()->subscriptions()->active()->get()->count() > 0) {
+        if(Auth::user()->subscribed('Timekeeper')) {
             return Redirect::route('profile');
         }
 
@@ -98,12 +98,12 @@ class SubscriptionController extends Controller
 
     public function cancellation() {
         return view('subscription.cancel', [
-            'subscriptions' => Auth::user()->subscriptions()->active()->get()
+            'subscription' => Auth::user()->subscription('Timekeeper')
         ]);
     }
 
     public function cancel() {
-        $subscription = Auth::user()->subscriptions()->active()->first();
+        $subscription = Auth::user()->subscription('Timekeeper');
 
         if($subscription->onGracePeriod()) {
             $subscription->cancelNow();
@@ -114,10 +114,12 @@ class SubscriptionController extends Controller
         return Redirect::route('profile');
     }
 
-    public function resume($level) {
-        $subscription = Auth::user()->subscription($level);
+    public function resume() {
+        if(!Auth::user()->subscription('Timekeeper')->onGracePeriod()) {
+            return Redirect::route('profile');
+        }
 
-        $subscription->resume();
+        Auth::user()->subscription('Timekeeper')->resume();
 
         return Redirect::route('profile');
     }

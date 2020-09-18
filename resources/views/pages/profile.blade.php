@@ -42,16 +42,17 @@
                     <p><a href="{{ route('subscription.pricing', ['beta_override' => '1']) }}" class="btn btn-success form-control">Subscribe anyway</a></p>
                 @endunless
             @else
-                @if($subscription->onGracePeriod())
-                    <p style="color: red;"><i class="fa fa-exclamation-triangle"></i> Cancelled, ending {{ $subscription->ends_at->format('Y-m-d') }}</p>
-                @endif
                 <p><i class="fa fa-credit-card"></i> {{ strtoupper($user->card_brand) }} (...{{ $user->card_last_four }})</p>
-                <p><button class="btn btn-outline-secondary form-control change-sub" disabled>Change subscription (Currently Unavailable)</button></p>
                 @unless($subscription->onGracePeriod())
                     <p><a href="{{ route('subscription.cancel') }}" class="btn btn-danger form-control">Cancel subscription</a></p>
                 @endunless
 
-                @if(env('APP_ENV') !== 'production' && $subscription->onGracePeriod())
+                @if($subscription->onGracePeriod())
+                    <p style="color: red;"><i class="fa fa-exclamation-triangle"></i> Cancelled, ending {{ $subscription->ends_at->format('Y-m-d') }}</p>
+                    <p><a href="{{ route('subscription.resume') }}" class="btn btn-primary form-control">Resume Subscription</a></p>
+                @endif
+
+            @if(env('APP_ENV') !== 'production' && $subscription->onGracePeriod())
                         <p><a href="{{ route('subscription.cancel') }}" class="btn btn-danger form-control">Immediately end benefits</a></p>
                 @endif
             @endunless
