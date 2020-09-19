@@ -46,7 +46,12 @@
                     },
                     {
                         open: false,
-                        text: "Subscriptions? Isn't Fantasy-Calendar free? What changed?",
+                        text: "The site looks different. What's new?",
+                        answer: `You can check out the "<a target='_blank' href='${window.location.origin}/whats-new'>what's new</a>" page here for broad strokes, or if you want to get into the nitty gritty, you can read over the <a target='_blank' href='${window.location.origin}/changelog'>changelog</a>.`
+                    },,
+                    {
+                        open: false,
+                        text: "Subscriptions? Isn't Fantasy-Calendar free?",
                         answer: "Fantasy-Calendar is still <strong>completely free to use</strong>! Free accounts can still create up to 2 calendars, with no other limitations. As Fantasy-Calendar has grown, so has our bills. For the last 3 years we have been happily funding the site out of our own pockets and from generous donations from some of our users, but we want Fantasy-Calendar stay online long term. That's why we added some <i>optional</i> premium features that won't hinder you from creating full-fleged calendars!"
                     },
                     {
