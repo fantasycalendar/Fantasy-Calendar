@@ -115,15 +115,15 @@
 @section('content')
     <div>
         <div class="fullheight green-border welcome" style="background-color: #edf2f7; background-image: url({{ asset('resources/whats-new-angle-blur-transparent.png') }}); background-size: cover; background-position: center center; background-attachment: fixed;">
-            <h1 style="width: 100%; text-align: center;">Fantasy Calendar is getting an update!</h1>
-            <h2 style="width: 100%; text-align: center;">Here is what you can expect in Fantasy Calendar 2.0.</h2>
+            <h1 style="width: 100%; text-align: center;">Fantasy Calendar has been updated!</h1>
+            <h2 style="width: 100%; text-align: center;">Here is a quick look at Fantasy Calendar 2.0.</h2>
             <h3 class="next-link" style="font-size: 2.3rem; position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section2"><i class="fa fa-chevron-circle-down"></i> Give it a look <i class="fa fa-chevron-circle-down"></i></a></h3>
             <div class="overlay"></div>
         </div>
 
         <div class="fullheight green-border comparison_image" id="section2" style="background-image: linear-gradient(to right, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url({{ asset('resources/whats-new-1-0.png') }});">
             <h1 style="width: 100%; text-align: center; color: #2d3748; margin-bottom:1rem;">Here's what you're used&nbsp;to.</h1>
-            <h2 style="width: 100%; text-align: center; color: #2d3748; margin-bottom:1.4rem;">It works great! But I think we can all agree it could use some&nbsp;polish.</h2>
+            <h2 style="width: 100%; text-align: center; color: #2d3748; margin-bottom:1.4rem;">It works great! But I think we can all agree it needs some&nbsp;polish.</h2>
             <img src="{{ asset('/resources/whats-new-1-0.png') }}">
             <h3 class="next-link" style="font-size: 2.3rem; position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section3"><i class="fa fa-chevron-circle-down"></i> Take a peek at the new look <i class="fa fa-chevron-circle-down"></i></a></h3>
             <div class="overlay"></div>
@@ -160,7 +160,7 @@
                     </div>
 
                     <div class="col-12 col-md-5 text-center text-md-right d-flex flex-column align-items-end justify-content-center">
-                        <h4>Make your events colorful, so you and your players can tell events apart at a glance.</h4>
+                        <h4>Make your events colorful, to help you and your players distinguish between them.</h4>
                     </div>
                 </div>
             </div>
@@ -189,7 +189,7 @@
                     </div>
                     <div class="col-12 col-md-6 text-center text-md-right d-flex flex-column align-items-end justify-content-center">
                         <h3 style="color: white;">What lives in the darkness...</h3>
-                        <h4 style="color: white;">That's probably a bit dramatic... But comfort for your retinas is here!</h4>
+                        <h4 style="color: white;">Ok, that's probably a bit dramatic. But dark mode is here!</h4>
                     </div>
                 </div>
             </div>
