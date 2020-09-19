@@ -31,6 +31,9 @@ jobs:
       run: npm install
     - name: Build production assets
       run: npm run production
+    - name: Copy assets into S3
+      run: |
+        aws s3 sync ./public s3://fantasy-calendar-prod/
     - name: Deploy web function
       run: npx serverless deploy -f web --stage prod
     - name: Deploy artisan function
