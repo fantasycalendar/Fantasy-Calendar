@@ -199,11 +199,11 @@
             <div class="container py-5">
                 <div class="row">
                     <div class="col-12 col-md-6 text-center text-md-left d-flex flex-column align-items-start justify-content-center">
-                        <h3>Event conditions for everything!</h3>
-                        <h4>Your events now have support for advanced conditions. Last sunday on three specific months? Check. When all 4 moons are full? <strong>Check.</strong></h4>
+                        <h3>Helpful Documentation</h3>
+                        <h4>Confused? Some feature doesn't make any sense? Head over to the <a href='https://helpdocs.fantasy-calendar.com/' target='_blank'>helpdocs</a> for help and information about every single feature.</h4>
                     </div>
                     <div class="col-12 col-md-6 text-center text-md-right">
-                        <img src="{{ asset('resources/whats-new-event-conditions.png') }}" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);">
+                        <img src="{{ asset('resources/whats-new-helpdocs.png') }}" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);">
                     </div>
                 </div>
             </div>
@@ -216,8 +216,8 @@
                         <h2>And So Much More...</h2>
                     </div>
                 </div>
-                <div class="row py-3">
-                    <div class="col-12 col-md-3 py-2 py-md-0 px-2 ml-md-0 pl-md-0 pr-md-1">
+                <div class="row pt-3 pb-3 justify-content-center">
+                    <div class="col-12 col-md-3 py-2 py-md-0 px-2 ml-md-0 pl-md-0 pr-md-2">
                         <div class="inner text-center h-100 px-3 rounded" style="background-color: #e2e8f0;">
                             <div class="row">
                                 <h3 class="pt-4 w-100"><i class="fa fa-infinity"></i></h3>
@@ -230,7 +230,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-3 py-2 py-md-0 px-2 px-md-1">
+                    <div class="col-12 col-md-3 py-2 py-md-0 px-2 px-md-2">
                         <div class="inner text-center h-100 px-3 rounded" style="background-color: #e2e8f0;">
                             <div class="row">
                                 <h3 class="pt-4 w-100"><i class="fa fa-th-list"></i></h3>
@@ -243,7 +243,22 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-3 py-2 py-md-0 px-2 px-md-1">
+                    <div class="col-12 col-md-3 py-2 py-md-0 px-2 pl-md-2">
+                        <div class="inner text-center h-100 px-3 rounded" style="background-color: #e2e8f0;">
+                            <div class="row">
+                                <h3 class="pt-4 w-100"><i class="fa fa-calendar-check"></i></h3>
+                            </div>
+                            <div class="row">
+                                <h5 class="pt-2 w-100">Event Conditions</h5>
+                            </div>
+                            <div class="row">
+                                <p class=" px-4">Your events now have support for advanced conditions. Last sunday on three specific months? Check. When all 4 moons are full? <strong>Check.</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row pb-1 justify-content-center">
+                    <div class="col-12 col-md-3 py-2 py-md-0 px-2 ml-md-0 pl-md-0 pr-md-2">
                         <div class="inner text-center h-100 px-3 rounded" style="background-color: #e2e8f0;">
                             <div class="row">
                                 <h3 class="pt-4 w-100"><i class="fa fa-users"></i></h3>
@@ -256,7 +271,20 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-3 py-2 py-md-0 px-2 mr-md-0 pr-md-0 pl-md-1">
+                    <div class="col-12 col-md-3 py-2 py-md-0 px-2 px-md-2">
+                        <div class="inner text-center h-100 px-3 rounded" style="background-color: #e2e8f0;">
+                            <div class="row">
+                                <h3 class="pt-4 w-100"><i class="fa fa-link"></i></h3>
+                            </div>
+                            <div class="row">
+                                <h5 class="pt-2 w-100">Calendar Linking</h5>
+                            </div>
+                            <div class="row">
+                                <p class=" px-4">Connect two calendars together, make a parent calendar drive the date of child calendars for a 1:1 date conversion in real time.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 py-2 py-md-0 px-2 pl-md-2">
                         <div class="inner text-center h-100 px-3 rounded" style="background-color: #e2e8f0;">
                             <div class="row">
                                 <h3 class="pt-4 w-100"><i class="fa fa-cogs"></i></h3>
@@ -264,13 +292,13 @@
                             <div class="row">
                                 <h5 class="pt-2 w-100">Engine Improvements</h5>
                             </div>
-                            <div class="row">
+                            <div class="row justify-content-center">
                                 <ul class="text-left pl-4">
-                                    <li class="">More accurate leap days</li>
-                                    <li class="">Intercalary & leap months</li>
-                                    <li class="">Better weather generation</li>
-                                    <li class="">Upgraded and improved seasons</li>
-                                    <li class="">...and more!</li>
+                                    <li>More accurate leap days</li>
+                                    <li>Intercalary & leap months</li>
+                                    <li>Better weather generation</li>
+                                    <li>Upgraded and improved seasons</li>
+                                    <li>...and more!</li>
                                 </ul>
                             </div>
                         </div>
@@ -293,7 +321,7 @@
             <section class="container">
                 <div class="row">
                     <div class="col-12 text-center text-white">
-                        <h2>With much more to come!</h2>
+                        <h3>With much more to come!</h3>
                         <h4>We only plan to make it better.</h4>
                     </div>
                 </div>
