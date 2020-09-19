@@ -16,6 +16,16 @@ jobs:
       id: composer-cache-dir
       run: |
         echo "::set-output name=dir::$(composer config cache-files-dir)"
+    - uses: actions/cache@v2
+      with:
+        path: ${{ steps.composer-cache-dir.outputs.dir }}
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-composer-
+    - name: Run composer
+      uses: nick-zh/composer-php@master
+      with:
+        action: 'install -oa --ignore-platform-reqs --no-dev'
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
@@ -28,7 +38,7 @@ jobs:
         APP_ENV=production
         EOF
     - name: Install NPM dependencies
-      run: npm install
+      run: npm install --only=prod
     - name: Build production assets
       run: npm run production
     - name: Deploy web function
