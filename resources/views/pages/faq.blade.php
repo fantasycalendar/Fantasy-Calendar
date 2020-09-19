@@ -48,7 +48,12 @@
                         open: false,
                         text: "The site looks different. What's new?",
                         answer: `You can check out the "<a target='_blank' href='${window.location.origin}/whats-new'>what's new</a>" page here for broad strokes, or if you want to get into the nitty gritty, you can read over the <a target='_blank' href='${window.location.origin}/changelog'>changelog</a>.`
-                    },,
+                    },
+                    {
+                        open: false,
+                        text: "Don't you have a preset like the real world calendar?",
+                        answer: "We do! The calendar we use on earth is called the 'Gregorian Calendar', and you can find it in the presets when you create a calendar."
+                    },
                     {
                         open: false,
                         text: "Subscriptions? Isn't Fantasy-Calendar free?",
