@@ -56,23 +56,23 @@
                     },
                     {
                         open: false,
-                        text: "Subscriptions? Isn't Fantasy-Calendar free?",
-                        answer: "Fantasy-Calendar is still <strong>completely free to use</strong>! Free accounts can still create up to 2 calendars, with no other limitations. As Fantasy-Calendar has grown, so has our bills. For the last 3 years we have been happily funding the site out of our own pockets and from generous donations from some of our users, but we want Fantasy-Calendar stay online long term. That's why we added some <i>optional</i> premium features that won't hinder you from creating full-fleged calendars!"
-                    },
-                    {
-                        open: false,
                         text: "I have an idea, where can I let you know?",
                         answer: "On our <a target='_blank' href='https://discord.gg/BNSM7aT'>Discord server</a>! Both of the developers are very active on there, and we're always listening to your feedback!"
                     },
                     {
                         open: false,
-                        text: "I have forgotten my username / email / password!",
-                        answer: `We got your back! Before you try to reset it, remember that you can sign in with your email address <i>or</i> your username. If you've forgotten your password, you can reset it here <a target='_blank' href='${window.location.origin}/password/reset'>here</a>. If you've forgotten your username or email, get in touch with us at <a target='_blank' href='mailto:contact@fantasy-calendar.com'>contact@fantasy-calendar.com</a> and we'll sort you out!`
+                        text: "I don't know how X feature works! Help!",
+                        answer: "Don't worry! You can find help on our <a target='_blank' href='https://helpdocs.fantasy-calendar.com/'>help docs</a>, which contains detailed information about each feature. If that doesn't solve your issues, you can always join our <a target='_blank' href='https://discord.gg/BNSM7aT'>discord server</a> and ask other Fantasy-Calendar users for a hand."
                     },
                     {
                         open: false,
-                        text: "I don't know how X feature works! Help!",
-                        answer: "Don't worry! You can find help on our <a target='_blank' href='https://helpdocs.fantasy-calendar.com/'>help docs</a>, which contains detailed information about each feature. If that doesn't solve your issues, you can always join our <a target='_blank' href='https://discord.gg/BNSM7aT'>discord server</a> and ask other Fantasy-Calendar users for a hand."
+                        text: "Subscriptions? Isn't Fantasy-Calendar free?",
+                        answer: "Fantasy-Calendar is still <strong>completely free to use</strong>! Free accounts can still create up to 2 calendars, with no other limitations. As Fantasy-Calendar has grown, so has our bills. For the last 3 years we have been happily funding the site out of our own pockets and from generous donations from some of our users, but we want Fantasy-Calendar stay online long term. That's why we added some <i>optional</i> premium features that won't hinder you from creating full-fleged calendars!"
+                    },
+                    {
+                        open: false,
+                        text: "I have forgotten my username / email / password!",
+                        answer: `We got your back! Before you try to reset it, remember that you can sign in with your email address <i>or</i> your username. If you've forgotten your password, you can reset it here <a target='_blank' href='${window.location.origin}/password/reset'>here</a>. If you've forgotten your username or email, get in touch with us at <a target='_blank' href='mailto:contact@fantasy-calendar.com'>contact@fantasy-calendar.com</a> and we'll sort you out!`
                     }
                 ]
             }
