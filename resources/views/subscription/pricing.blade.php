@@ -124,7 +124,7 @@
                         </div>
                     </div>
 
-                    @if($betaAccess && Auth::user()->isPremium()))
+                    @if($betaAccess && Auth::user()->isPremium())
                         <div class="price-label">
                             <h3>Free<br></h3><p class="small">Because you're awesome <3</p>
                         </div>
