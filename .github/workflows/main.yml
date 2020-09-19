@@ -12,16 +12,6 @@ jobs:
     - uses: actions/setup-node@main
       with:
         node-version: '14'
-    - name: Get Composer Cache Directory
-      id: composer-cache-dir
-      run: |
-        echo "::set-output name=dir::$(composer config cache-files-dir)"
-    - uses: actions/cache@v2
-      with:
-        path: ${{ steps.composer-cache-dir.outputs.dir }}
-        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-composer-
     - name: Run composer
       uses: nick-zh/composer-php@master
       with:
@@ -38,7 +28,7 @@ jobs:
         APP_ENV=production
         EOF
     - name: Install NPM dependencies
-      run: npm install --only=prod
+      run: npm install
     - name: Build production assets
       run: npm run production
     - name: Deploy web function
