@@ -70,7 +70,8 @@
                     </div>
                 </form>
 
-                <span class="d-none d-md-block">{{ $calendars->onEachSide(1)->links() }}</span><span class="d-block d-md-none">{{ $calendar_pagination->links() }}</span></div>
+                <span class="d-none d-md-block">{{ $calendars->onEachSide(1)->links() }}</span><span class="d-block d-md-none">{{ $calendar_pagination->links() }}</span>
+            </div>
         @endif
 
         @if(!count($shared_calendars) && !count($calendars) && $search)
