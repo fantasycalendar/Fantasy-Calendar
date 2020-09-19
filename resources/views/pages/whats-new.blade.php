@@ -47,6 +47,7 @@
 
         .comparison_image img {
             max-width: 72%;
+            max-height: 60vh;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
 
@@ -68,7 +69,7 @@
             width: 100%;
             z-index: 1;
         }
-        img {
+        section img {
             max-width: 100%;
             margin: 1.5rem 0;
         }
