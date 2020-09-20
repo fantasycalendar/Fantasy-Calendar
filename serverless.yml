@@ -7,6 +7,7 @@ provider:
     # The stage of the application, e.g. dev, production, staging… ('dev' is the default)
     stage: ${opt:stage, 'dev'}
     runtime: provided
+    versionFunctions: false
     environment:
       APP_KEY: ${ssm:/${self:custom.ssm.${self:custom.stage}}/app_key}
       APP_DEBUG: ${self:custom.environment.${self:custom.stage}.APP_DEBUG}
@@ -67,7 +68,7 @@ custom:
   stage: ${opt:stage, 'dev'}
   alias: ${self:custom.domain.${self:custom.stage}}
   domain:
-    prod: 'lambda.fantasy-calendar.com'
+    prod: 'app.fantasy-calendar.com'
     dev: 'lambda-dev.fantasy-calendar.com'
   environment:
     prod:
