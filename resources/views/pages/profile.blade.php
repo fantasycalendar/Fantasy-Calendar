@@ -90,7 +90,7 @@
                     <div class="card-body">
                         <div class="card-text" x-data="PasswordManager()">
                             <p><i class="fa fa-envelope"></i>&nbsp;{{ Str::limit($user->email, 26) }}</p>
-                            <p>Registered {{ $user->created_at->format('Y-m-d') }}</p>
+                            <p>Registered {{ ($user->created_at) ? $user->created_at->format('Y-m-d') : $user->date_register }}</p>
 
                             <button class="btn btn-secondary" x-show="!changing_password" @click="changing_password = !changing_password">Change Password</button>
                             <form action="/profile/password" method="POST" x-show="changing_password">
