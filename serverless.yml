@@ -11,6 +11,7 @@ provider:
     environment:
       APP_KEY: ${ssm:/${self:custom.ssm.${self:custom.stage}}/app_key}
       APP_DEBUG: ${self:custom.environment.${self:custom.stage}.APP_DEBUG}
+      APP_ENV: ${self:custom.environment.${self:custom.stage}.APP_ENV}
       AWS_BUCKET: # environment variable for Laravel
         Ref: Assets
       SQS_QUEUE:
@@ -73,8 +74,10 @@ custom:
   environment:
     prod:
       APP_DEBUG: 'false'
+      APP_ENV: 'production'
     dev:
       APP_DEBUG: 'true'
+      APP_ENV: 'development'
   ssm:
     prod: 'fantasy-calendar'
     dev: 'fantasy-calendar-dev'
