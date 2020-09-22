@@ -106,6 +106,7 @@ class User extends Authenticatable implements
      * @return bool
      */
     public function betaAccess() {
+        return false;
         return $this->beta_authorised == 1;
     }
 
