@@ -2789,7 +2789,7 @@ function add_leap_day_to_list(parent, key, data){
 
 				element.push("<div class='row no-gutters'>");
 					element.push("<div class='col'>");
-						element.push("Timespan:");
+						element.push("Month to add to:");
 						element.push(`<select type='number' class='custom-select form-control leap_day_occurance_input timespan-list dynamic_input full timespan_special' data='year_data.leap_days.${key}' fc-index='timespan'>`);
 						for(var j = 0; j < static_data.year_data.timespans.length; j++)
 						{
@@ -3128,7 +3128,19 @@ function add_season_to_sortable(parent, key, data){
 
 				element.push("</div>");
 
-				element.push(`<div class='row no-gutters mb-2'>`);
+				element.push(`<div class='row no-gutters sortable-header'>`);
+
+					element.push("<div class='col-6 pr-1'>");
+						element.push(`Hour`);
+					element.push("</div>");
+
+					element.push("<div class='col-6 pl-1'>");
+						element.push(`Minute`);
+					element.push("</div>");
+
+				element.push("</div>");
+
+				element.push(`<div class='row no-gutters mb-2 protip' data-pt-position="right" data-pt-title="What time the sun rises at the peak of this season">`);
 
 					element.push("<div class='col-6 pr-1 clock-input'>");
 						element.push(`<input type='number' step="1.0" class='form-control full dynamic_input hour_input' clocktype='sunrise_hour' data='seasons.data.${key}.time.sunrise' fc-index='hour' value='${data.time.sunrise.hour}' />`);
@@ -3146,7 +3158,19 @@ function add_season_to_sortable(parent, key, data){
 
 				element.push("</div>");
 
-				element.push(`<div class='row no-gutters mb-2'>`);
+				element.push(`<div class='row no-gutters sortable-header'>`);
+
+					element.push("<div class='col-6 pr-1'>");
+						element.push(`Hour`);
+					element.push("</div>");
+
+					element.push("<div class='col-6 pl-1'>");
+						element.push(`Minute`);
+					element.push("</div>");
+
+				element.push("</div>");
+
+				element.push(`<div class='row no-gutters mb-2 protip' data-pt-position="right" data-pt-title="What time the sun sets at the peak of this season">`);
 
 					element.push("<div class='col-6 pr-1 clock-input'>");
 						element.push(`<input type='number' step="1.0" class='form-control full dynamic_input hour_input' clocktype='sunset_hour' data='seasons.data.${key}.time.sunset' fc-index='hour' value='${data.time.sunset.hour}' />`);
@@ -3282,7 +3306,19 @@ function add_location_to_list(parent, key, data){
 
 						element.push("</div>");
 
-						element.push(`<div class='row no-gutters mb-2'>`);
+						element.push(`<div class='row no-gutters sortable-header'>`);
+		
+							element.push("<div class='col-6 pr-1'>");
+								element.push(`Hour`);
+							element.push("</div>");
+		
+							element.push("<div class='col-6 pl-1'>");
+								element.push(`Minute`);
+							element.push("</div>");
+		
+						element.push("</div>");
+
+						element.push(`<div class='row no-gutters mb-2 protip'  data-pt-position="right" data-pt-title="What time the sun rises at the peak of this season, in this location">`);
 
 							element.push("<div class='col-6 pl-0 pr-1 clock-input'>");
 								element.push(`<input type='number' step="1.0" class='form-control text-right full dynamic_input hour_input' clocktype='sunrise_hour' data='seasons.locations.${key}.seasons.${i}.time.sunrise' fc-index='hour' value='${data.seasons[i].time.sunrise.hour}' />`);
@@ -3302,7 +3338,19 @@ function add_location_to_list(parent, key, data){
 
 						element.push("</div>");
 
-						element.push(`<div class='row no-gutters mb-2'>`);
+						element.push(`<div class='row no-gutters sortable-header'>`);
+		
+							element.push("<div class='col-6 pr-1'>");
+								element.push(`Hour`);
+							element.push("</div>");
+		
+							element.push("<div class='col-6 pl-1'>");
+								element.push(`Minute`);
+							element.push("</div>");
+		
+						element.push("</div>");
+
+						element.push(`<div class='row no-gutters mb-2 protip' data-pt-position="right" data-pt-title="What time the sets rises at the peak of this season, in this location">`);
 
 							element.push("<div class='col-6 pl-0 pr-1 clock-input'>");
 								element.push(`<input type='number' step="1.0" class='form-control text-right full dynamic_input hour_input' clocktype='sunset_hour' data='seasons.locations.${key}.seasons.${i}.time.sunset' fc-index='hour' value='${data.seasons[i].time.sunset.hour}' />`);
@@ -3332,6 +3380,18 @@ function add_location_to_list(parent, key, data){
 
 				element.push(`<div class='row my-1'>`);
 					element.push("<div class='col'>Timezone:</div>");
+				element.push("</div>");
+
+				element.push(`<div class='row no-gutters sortable-header'>`);
+
+					element.push("<div class='col-6 pr-1'>");
+						element.push(`Hour`);
+					element.push("</div>");
+
+					element.push("<div class='col-6 pl-1'>");
+						element.push(`Minute`);
+					element.push("</div>");
+
 				element.push("</div>");
 
 				element.push(`<div class='row no-gutters mb-2 protip' data-pt-position="right" data-pt-title="When this location becomes active, the current time will change this much to reflect the new location.">`);

@@ -39,7 +39,7 @@ select.invalid {
 
 .sortable-header{
     font-style: italic;
-    color: $calendar-border-color;
+    color: $sortable-header-color;
 }
 
 .toggle:not(:checked) + .lbl-toggle + .collapsible-content.card-body {
