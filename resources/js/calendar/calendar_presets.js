@@ -373,12 +373,14 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 
 	var calendar_name = calendar.name;
 
+	console.log("Checking global week")
 	if(calendar.static_data.year_data.global_week !== undefined){
 		for(var i = 0; i < calendar.static_data.year_data.global_week.length; i++){
 			static_data.year_data.global_week.push(calendar.static_data.year_data.global_week[i].toString());
 		}
 	}
 
+	console.log("Checking timespans")
 	if(calendar.static_data.year_data.timespans !== undefined){
 
 		for(var i = 0; i < calendar.static_data.year_data.timespans.length; i++){
@@ -429,6 +431,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 
 	}
 
+	console.log("Checking leap days")
 	if(calendar.static_data.year_data.leap_days !== undefined){
 
 		for(var i = 0; i < calendar.static_data.year_data.leap_days.length; i++){
@@ -448,9 +451,10 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 				throw `${leap_day.name} has invalid intercalary setting!`;
 			}
 
-			if(current_leap_day.timespan && !isNaN(Number(current_leap_day.timespan))){
+			if(current_leap_day.timespan !== undefined && !isNaN(Number(current_leap_day.timespan)) && current_leap_day.timespan < static_data.year_data.timespans.length){
 				leap_day.timespan = Number(current_leap_day.timespan)
 			}else{
+				console.log(current_leap_day.timespan)
 				throw `${leap_day.name} has invalid timespan selection!`;
 			}
 
@@ -473,8 +477,8 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 			if(current_leap_day.interval !== undefined && current_leap_day.interval !== ""){
 				var local_regex = /^\!*[1-9]+[0-9]{0,}$/;
 				var intervals = current_leap_day.interval.split(',');
-				for(var i = 0; i < intervals.length; i++){
-					if(!local_regex.test(intervals[i])){
+				for(var j = 0; j < intervals.length; j++){
+					if(!local_regex.test(intervals[j])){
 						throw `${leap_day.name} has invalid interval!`;
 					}
 				}
@@ -494,6 +498,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 
 	}
 
+	console.log("Checking moons")
 	if(calendar.static_data.moons !== undefined){
 
 		for(var i = 0; i < calendar.static_data.moons.length; i++){
@@ -565,13 +570,19 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 
 	}
 
-
+	console.log("Checking clock")
 	if(calendar.static_data.clock !== undefined){
 
 		if(calendar.static_data.clock.enabled !== undefined && typeof calendar.static_data.clock.enabled === "boolean"){
 			static_data.clock.enabled = calendar.static_data.clock.enabled
 		}else{
 			throw `Clock has invalid enabled property!`;
+		}
+
+		if(calendar.static_data.clock.render !== undefined && typeof calendar.static_data.clock.render === "boolean"){
+			static_data.clock.render = calendar.static_data.clock.render
+		}else{
+			throw `Clock has invalid render property!`;
 		}
 
 		if(calendar.static_data.clock.hours !== undefined && !isNaN(Number(calendar.static_data.clock.hours))){
@@ -598,9 +609,72 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 			throw `Clock has invalid offset!`;
 		}
 
+		if(calendar.static_data.clock.crowding !== undefined && !isNaN(Number(calendar.static_data.clock.crowding))){
+			static_data.clock.crowding = Number(calendar.static_data.clock.crowding);
+		}else{
+			throw `Clock has invalid crowding!`;
+		}
+
 	}
 
+	console.log("Checking seasons")
 	if(calendar.static_data.seasons !== undefined){
+
+		if(calendar.static_data.seasons.global_settings !== undefined){
+
+			var global_settings = calendar.static_data.seasons.global_settings;
+
+			if(global_settings.season_offset !== undefined && !isNaN(Number(global_settings.season_offset))){
+				static_data.seasons.global_settings.season_offset = global_settings.season_offset;
+			}else{
+				throw `Season settings have invalid season offset!`;
+			}
+
+			if(global_settings.weather_offset !== undefined && !isNaN(Number(global_settings.weather_offset))){
+				static_data.seasons.global_settings.weather_offset = global_settings.weather_offset;
+			}else{
+				throw `Season settings have invalid weather offset!`;
+			}
+
+			if(global_settings.seed !== undefined && !isNaN(Number(global_settings.seed))){
+				static_data.seasons.global_settings.seed = global_settings.seed;
+			}else{
+				throw `Season settings have invalid seed!`;
+			}
+
+			if(global_settings.temp_sys !== undefined && ['imperial', 'metric', 'both_i', 'both_m'].includes(global_settings.temp_sys)){
+				static_data.seasons.global_settings.temp_sys = global_settings.temp_sys;
+			}else{
+				throw `Season settings have invalid temperature system!`;
+			}
+
+			if(global_settings.wind_sys !== undefined && ['imperial', 'metric', 'both'].includes(global_settings.wind_sys)){
+				static_data.seasons.global_settings.wind_sys = global_settings.wind_sys;
+			}else{
+				throw `Season settings have invalid wind system!`;
+			}
+
+			if(global_settings.cinematic !== undefined && typeof global_settings.cinematic === "boolean"){
+				static_data.seasons.global_settings.cinematic = global_settings.cinematic
+			}else{
+				throw `Season settings have invalid cinematic data!`;
+			}
+
+			if(global_settings.enable_weather !== undefined && typeof global_settings.enable_weather === "boolean"){
+				static_data.seasons.global_settings.enable_weather = global_settings.enable_weather
+			}else{
+				throw `Season settings have invalid enable weather!`;
+			}
+
+			if(global_settings.periodic_seasons !== undefined && typeof global_settings.periodic_seasons === "boolean"){
+				static_data.seasons.global_settings.periodic_seasons = global_settings.periodic_seasons
+			}else{
+				throw `Season settings have invalid periodic settings!`;
+			}
+
+		}else{
+			throw `Season settings have invalid season global settings!`;
+		}
 
 		if(calendar.static_data.seasons.data !== undefined){
 
@@ -615,16 +689,35 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 					throw `Season ${i+1} does not have name data!`;
 				}
 
-				if(current_season.transition_length !== undefined && !isNaN(Number(current_season.transition_length))){
-					season.transition_length = current_season.transition_length;
-				}else{
-					throw `${season.name} has invalid transition length!`;
-				}
+				
+				if(static_data.seasons.global_settings.periodic_seasons){
 
-				if(current_season.duration !== undefined && !isNaN(Number(current_season.duration))){
-					season.duration = current_season.duration;
+					if(current_season.transition_length !== undefined && !isNaN(Number(current_season.transition_length))){
+						season.transition_length = current_season.transition_length;
+					}else{
+						throw `${season.name} has invalid transition length!`;
+					}
+
+					if(current_season.duration !== undefined && !isNaN(Number(current_season.duration))){
+						season.duration = current_season.duration;
+					}else{
+						throw `${season.name} has invalid duration!`;
+					}
+
 				}else{
-					throw `${season.name} has invalid duration!`;
+
+					if(current_season.timespan !== undefined && !isNaN(Number(current_season.timespan))){
+						season.timespan = current_season.timespan;
+					}else{
+						throw `${season.name} has invalid transition length!`;
+					}
+
+					if(current_season.day !== undefined && !isNaN(Number(current_season.day))){
+						season.day = current_season.day;
+					}else{
+						throw `${season.name} has invalid day!`;
+					}
+
 				}
 
 				if(current_season.time !== undefined){
@@ -866,59 +959,9 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 
 		}
 
-
-		if(calendar.static_data.seasons.global_settings !== undefined){
-
-			var global_settings = calendar.static_data.seasons.global_settings;
-
-			if(global_settings.season_offset !== undefined && !isNaN(Number(global_settings.season_offset))){
-				static_data.seasons.global_settings.season_offset = global_settings.season_offset;
-			}else{
-				throw `Season settings have invalid season offset!`;
-			}
-
-			if(global_settings.weather_offset !== undefined && !isNaN(Number(global_settings.weather_offset))){
-				static_data.seasons.global_settings.weather_offset = global_settings.weather_offset;
-			}else{
-				throw `Season settings have invalid weather offset!`;
-			}
-
-			if(global_settings.seed !== undefined && !isNaN(Number(global_settings.seed))){
-				static_data.seasons.global_settings.seed = global_settings.seed;
-			}else{
-				throw `Season settings have invalid seed!`;
-			}
-
-			if(global_settings.temp_sys !== undefined && ['imperial', 'metric', 'both_i', 'both_m'].includes(global_settings.temp_sys)){
-				static_data.seasons.global_settings.temp_sys = global_settings.temp_sys;
-			}else{
-				throw `Season settings have invalid temperature system!`;
-			}
-
-			if(global_settings.wind_sys !== undefined && ['imperial', 'metric', 'both'].includes(global_settings.wind_sys)){
-				static_data.seasons.global_settings.wind_sys = global_settings.wind_sys;
-			}else{
-				throw `Season settings have invalid wind system!`;
-			}
-
-			if(global_settings.cinematic !== undefined && typeof global_settings.cinematic === "boolean"){
-				static_data.seasons.global_settings.cinematic = global_settings.cinematic
-			}else{
-				throw `Season settings have invalid cinematic data!`;
-			}
-
-			if(global_settings.enable_weather !== undefined && typeof global_settings.enable_weather === "boolean"){
-				static_data.seasons.global_settings.enable_weather = global_settings.enable_weather
-			}else{
-				throw `Season settings have invalid enable weather!`;
-			}
-
-		}else{
-			throw `Season settings have invalid season global settings!`;
-		}
-
 	}
 
+	console.log("Checking eras")
 	if(calendar.static_data.eras !== undefined){
 
 		if(Array.isArray(calendar.static_data.eras)){
@@ -1021,7 +1064,8 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 
 	}
 
-	if(calendar.static_data.settings.layout !== undefined && ['grid', 'vertical', 'wide', 'minimalistic'].includes(calendar.static_data.settings.layout)){
+	console.log("Checking settings")
+	if(calendar.static_data.settings.layout !== undefined && ['grid', 'vertical', 'minimalistic'].includes(calendar.static_data.settings.layout)){
 		static_data.settings.layout = calendar.static_data.settings.layout;
 	}else{
 		throw `Setting: layout is invalid!`;
@@ -1031,6 +1075,18 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 		static_data.settings.show_current_month = calendar.static_data.settings.show_current_month;
 	}else{
 		throw `Setting: show_current_month is invalid!`;
+	}
+
+	if(calendar.static_data.settings.add_month_number !== undefined && typeof calendar.static_data.settings.add_month_number === "boolean"){
+		static_data.settings.add_month_number = calendar.static_data.settings.add_month_number;
+	}else{
+		throw `Setting: add_month_number is invalid!`;
+	}
+
+	if(calendar.static_data.settings.add_year_day_number !== undefined && typeof calendar.static_data.settings.add_year_day_number === "boolean"){
+		static_data.settings.add_year_day_number = calendar.static_data.settings.add_year_day_number;
+	}else{
+		throw `Setting: add_year_day_number is invalid!`;
 	}
 
 	if(calendar.static_data.settings.allow_view !== undefined && typeof calendar.static_data.settings.allow_view === "boolean"){
@@ -1087,18 +1143,19 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 		throw `Setting: hide_future_weather is invalid!`;
 	}
 
-	if(calendar.static_data.settings.add_month_number !== undefined && typeof calendar.static_data.settings.add_month_number === "boolean"){
-		static_data.settings.add_month_number = calendar.static_data.settings.add_month_number;
+	if(calendar.static_data.settings.hide_future_weather !== undefined && typeof calendar.static_data.settings.hide_future_weather === "boolean"){
+		static_data.settings.hide_future_weather = calendar.static_data.settings.hide_future_weather;
 	}else{
-		throw `Setting: add_month_number is invalid!`;
+		throw `Setting: hide_future_weather is invalid!`;
 	}
 
-	if(calendar.static_data.settings.add_year_day_number !== undefined && typeof calendar.static_data.settings.add_year_day_number === "boolean"){
-		static_data.settings.add_year_day_number = calendar.static_data.settings.add_year_day_number;
+	if(calendar.static_data.settings.year_zero_exists !== undefined && typeof calendar.static_data.settings.year_zero_exists === "boolean"){
+		static_data.settings.year_zero_exists = calendar.static_data.settings.year_zero_exists;
 	}else{
-		throw `Setting: add_year_day_number is invalid!`;
+		throw `Setting: year_zero_exists is invalid!`;
 	}
 
+	console.log("Checking cycles")
 	if(calendar.static_data.cycles !== undefined){
 
 		if(calendar.static_data.cycles.format !== undefined){
@@ -1128,8 +1185,8 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 					throw `Cycle ${i+1} does not have valid names!`;
 				}
 
-				if(current_era.offset !== undefined && !isNaN(Number(current_era.offset))){
-					cycle.offset = Number(current_era.offset);
+				if(current_cycle.offset !== undefined && !isNaN(Number(current_cycle.offset))){
+					cycle.offset = Number(current_cycle.offset);
 				}else{
 					throw `Cycle ${i+1} does not have valid offset!`;
 				}
@@ -1144,12 +1201,14 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 
 	}
 
-    if(calendar.event_categories !== undefined && Array.isArray(calendar.event_categories)){
+	console.log("Checking event categories")
 
-        for(var categoryid in calendar.event_categories){
+    if(calendar.categories !== undefined && Array.isArray(calendar.categories)){
+
+        for(var categoryid in calendar.categories){
 
             var category = {};
-            var current_category = calendar.event_categories[categoryid];
+            var current_category = calendar.categories[categoryid];
 
             category.id = slugify(current_category.name);
 
@@ -1224,8 +1283,9 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 
         throw `Data has invalid event categories!`;
 
-    }
-
+	}
+	
+	console.log("Checking events")
     if(calendar.events !== undefined && Array.isArray(calendar.events)){
         for(var eventId in calendar.events){
 
@@ -1242,10 +1302,10 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
                 event.description =current_event.description.toString();
             }else{
                 throw `${event.name} does not have valid description data!`;
-            }
+			}
 
-            if(current_event.category !== undefined && !isNaN(Number(current_event.category))){
-                event.event_category_id = calendar.event_categories[current_event.category].id;
+            if((current_event.event_category !== undefined && !isNaN(Number(current_event.event_category))) || current_event.event_category == null){
+                event.event_category_id = current_event.event_category != null ? calendar.event_categories[current_event.event_category].id : -1;
             }else{
                 throw `${event.name} does not have valid category data!`;
             }
@@ -1255,13 +1315,13 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
                 event.settings = {};
 
                 if(current_event.settings.color !== undefined){
-                    event.settings.color =current_event.settings.color.toString();
+                    event.settings.color = current_event.settings.color.toString();
                 }else{
                     throw `${event.name} does not have valid color settings!`;
                 }
 
                 if(current_event.settings.text !== undefined){
-                    event.settings.text =current_event.settings.text.toString();
+                    event.settings.text = current_event.settings.text.toString();
                 }else{
                     throw `${event.name} does not have valid text settings!`;
                 }
@@ -1269,13 +1329,13 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
                 if(current_event.settings.hide !== undefined && typeof current_event.settings.hide === "boolean"){
                     event.settings.hide = current_event.settings.hide;
                 }else{
-                    throw `${event.name} does not have valid hide settings!`;
+                    event.settings.hide = false;
                 }
 
                 if(current_event.settings.hide_full !== undefined && typeof current_event.settings.hide_full === "boolean"){
                     event.settings.hide_full = current_event.settings.hide_full;
                 }else{
-                    throw `${event.name} does not have valid hide full settings!`;
+                    current_event.settings.hide_full = false;
                 }
 
                 if(current_event.settings.print !== undefined && typeof current_event.settings.print === "boolean"){
@@ -1298,16 +1358,28 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
                     throw `${event.name} does not have valid has duration data!`;
                 }
 
+                if(current_event.data.duration !== undefined && !isNaN(Number(current_event.data.duration))){
+                    event.data.duration = Number(current_event.data.duration);
+                }else{
+                    throw `${event.name} does not have valid duration data!`;
+                }
+
+                if(current_event.data.limited_repeat !== undefined && typeof current_event.data.limited_repeat === "boolean"){
+                    event.data.limited_repeat = current_event.data.limited_repeat;
+                }else{
+                    throw `${event.name} does not have valid limited repeat data!`;
+                }
+
+                if(current_event.data.limited_repeat_num !== undefined && !isNaN(Number(current_event.data.limited_repeat_num))){
+                    event.data.limited_repeat_num = Number(current_event.data.limited_repeat_num);
+                }else{
+                    throw `${event.name} does not have valid limited repeat num data!`;
+                }
+
                 if(current_event.data.show_first_last !== undefined && typeof current_event.data.show_first_last === "boolean"){
                     event.data.show_first_last = current_event.data.show_first_last;
                 }else{
                     throw `${event.name} does not have valid show first last data!`;
-                }
-
-                if(current_event.data.only_happen_once !== undefined && typeof current_event.data.only_happen_once === "boolean"){
-                    event.data.only_happen_once = current_event.data.only_happen_once;
-                }else{
-                    throw `${event.name} does not have valid only happen once data!`;
                 }
 
                 if(current_event.data.date !== undefined && Array.isArray(current_event.data.date) && (current_event.data.date.length === 3 || current_event.data.date.length === 0)){
@@ -1325,12 +1397,6 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
                     throw `${event.name} does not have valid date data!`;
                 }
 
-                if(current_event.data.duration !== undefined && !isNaN(Number(current_event.data.duration))){
-                    event.data.duration = Number(current_event.data.duration);
-                }else{
-                    throw `${event.name} does not have valid duration data!`;
-                }
-
                 if(current_event.data.connected_events !== undefined && Array.isArray(current_event.data.connected_events)){
                     event.data.connected_events = [];
                     for(var j = 0; j < current_event.data.connected_events.length; j++){
@@ -1344,7 +1410,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
                     throw `${event.name} does not have valid connected events data!`;
                 }
 
-                // CONTINUE HERE
+                /*// CONTINUE HERE
                 array = $.grep(current_event.data.conditions, function(array) {
                     if(!Array.isArray(array)){
                         return array;
@@ -1375,7 +1441,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
                     event.data.conditions = current_event.data.conditions;
                 }else{
                     throw `${event.name} has invalid event conditions!`;
-                }
+                }*/
 
             }else{
                 throw `${event.name} does not have valid data!`;
@@ -1389,7 +1455,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 
     }
 
-
+	console.log("Checking current date")
 	if(calendar.dynamic_data.year !== undefined && !isNaN(Number(calendar.dynamic_data.year))){
 		dynamic_data.year = Number(calendar.dynamic_data.year)
 	}else{
@@ -1433,10 +1499,11 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 	}
 
 	if(!dynamic_data.custom_location){
-		if(calendar.dynamic_data.location !== undefined && preset_data.locations[calendar.dynamic_data.location] !== undefined){
+		console.log(calendar.dynamic_data.location)
+		if(calendar.dynamic_data.location !== undefined && preset_data.locations[static_data.seasons.data.length][calendar.dynamic_data.location] !== undefined){
 			dynamic_data.location = calendar.dynamic_data.location;
 		}else{
-			throw `Location is invalid (preset doesn't exist)!`;
+			dynamic_data.location = "Equatorial";
 		}
 	}else{
 		if(calendar.dynamic_data.location !== undefined && !isNaN(Number(calendar.dynamic_data.location)) && Number(calendar.dynamic_data.location) >= 0 && Number(calendar.dynamic_data.location) < static_data.seasons.locations.length){
