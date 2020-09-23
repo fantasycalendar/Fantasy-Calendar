@@ -1090,8 +1090,8 @@
 						<div class='col'>
 							<input type='checkbox' class='margin-right static_input' data='settings' fc-index='show_current_month'>
 							<span>
-							Show only current month
-						</span>
+								Show only current month
+							</span>
 						</div>
 					</label>
 
@@ -1099,8 +1099,8 @@
 						<div class='col'>
 							<input type='checkbox' class='margin-right static_input' data='settings' fc-index='add_month_number' refresh='false'>
 							<span>
-							Add month number to months
-						</span>
+								Add month number to months
+							</span>
 						</div>
 					</label>
 
@@ -1108,8 +1108,8 @@
 						<div class='col'>
 							<input type='checkbox' class='margin-right static_input' data='settings' fc-index='add_year_day_number' refresh='false'>
 							<span>
-							Add year day to each day
-						</span>
+								Add year day to each day
+							</span>
 						</div>
 					</label>
 
@@ -1117,12 +1117,52 @@
 
 					<div class='bold-text'>Guest View Settings:</div>
 
+					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This makes it so that no one can view your calendar, unless you have added them as a user to the calendar">
+						<div class='col'>
+							<input type='checkbox' class='margin-right static_input' data='settings' fc-index='private' refresh='false'>
+							<span>
+								Make calendar private
+							</span>
+						</div>
+					</label>
+
+					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Allows guests viewing your calendar to check past and future dates with the preview date">
+						<div class='col'>
+							<input type='checkbox' checked class='margin-right static_input' data='settings' fc-index='allow_view' refresh='false'>
+							<span>
+								Enable previewing dates in calendar
+							</span>
+						</div>
+					</label>
+
+					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Similar to the previous setting, but this limits the viewer to only go backwards, not forwards. This setting needs Allowing advancing view in calendar to be enabled.">
+						<div class='col'>
+							<input type='checkbox' class='margin-right static_input' data='settings' fc-index='only_backwards' refresh='false'>
+							<span>
+								Limit to only backwards view
+							</span>
+						</div>
+					</label>
+
+					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Guest viewers will not be able to see past the current date. Any future days will be grayed out.">
+						<div class='col'>
+							<input type='checkbox' class='margin-right static_input' data='settings' fc-index='only_reveal_today' refresh='false'>
+							<span>
+								Show only up to current day
+							</span>
+						</div>
+					</label>
+
+					<!------------------------------------------------------->
+
+					<div class='bold-text'>Hiding Settings:</div>
+
 					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Hides all of the moons from guest viewers">
 						<div class='col'>
 							<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_moons' refresh='false'>
 							<span>
-							Hide all moons from guest viewers
-						</span>
+								Hide all moons from guest viewers
+							</span>
 						</div>
 					</label>
 
@@ -1130,8 +1170,8 @@
 						<div class='col'>
 							<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_clock' refresh='false'>
 							<span>
-							Hide time from guest viewers
-						</span>
+								Hide time from guest viewers
+							</span>
 						</div>
 					</label>
 
@@ -1139,8 +1179,8 @@
 						<div class='col'>
 							<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_events' refresh='false'>
 							<span>
-							Hide all events from guest viewers
-						</span>
+								Hide all events from guest viewers
+							</span>
 						</div>
 					</label>
 
@@ -1148,8 +1188,8 @@
 						<div class='col'>
 							<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_eras' refresh='false'>
 							<span>
-							Hide era from guest viewers
-						</span>
+								Hide era from guest viewers
+							</span>
 						</div>
 					</label>
 
@@ -1157,8 +1197,8 @@
 						<div class='col'>
 							<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_all_weather' refresh='false'>
 							<span>
-							Hide all weather from guest viewers
-						</span>
+								Hide all weather from guest viewers
+							</span>
 						</div>
 					</label>
 
@@ -1166,8 +1206,8 @@
 						<div class='col'>
 							<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_future_weather' refresh='false'>
 							<span>
-							Hide future weather from guest viewers
-						</span>
+								Hide future weather from guest viewers
+							</span>
 						</div>
 					</label>
 
@@ -1175,8 +1215,8 @@
 						<div class='col'>
 							<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_weather_temp' refresh='false'>
 							<span>
-							Hide temperature from guest viewers
-						</span>
+								Hide temperature from guest viewers
+							</span>
 						</div>
 					</label>
 
@@ -1184,8 +1224,8 @@
 						<div class='col'>
 							<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_wind_velocity' refresh='false'>
 							<span>
-							Hide wind velocity from guest viewers
-						</span>
+								Hide wind velocity from guest viewers
+							</span>
 						</div>
 					</label>
 
@@ -1193,8 +1233,8 @@
 						<div class='col'>
 							<input type='checkbox' class='margin-right static_input' data='settings' fc-index='hide_weekdays' refresh='false'>
 							<span>
-							Hide weekdays in calendar
-						</span>
+								Hide weekdays in calendar
+							</span>
 						</div>
 					</label>
 
@@ -1218,8 +1258,8 @@
 								<input type='checkbox' class='margin-right static_input' data='settings' id='year_zero_exists' fc-index='year_zero_exists'>
 							@endif
 							<span>
-							Year zero exists
-						</span>
+								Year zero exists
+							</span>
 						</div>
 					</label>
 
