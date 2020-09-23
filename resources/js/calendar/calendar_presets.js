@@ -320,6 +320,8 @@ function parse_json(json){
                 "layout":"grid",
                 "comments":"none",
                 "show_current_month":false,
+                "add_month_number":false,
+                "add_year_day_number":false,
                 "allow_view":true,
                 "only_backwards":true,
                 "only_reveal_today":false,
@@ -329,8 +331,9 @@ function parse_json(json){
                 "hide_eras":false,
                 "hide_all_weather":false,
                 "hide_future_weather":false,
-                "add_month_number":false,
-                "add_year_day_number":false,
+				"hide_weather_temp": false,
+				"hide_wind_velocity": false,
+				"hide_weekdays": false,
                 "default_category":-1
             },
             "cycles":{
@@ -342,8 +345,6 @@ function parse_json(json){
 		
 		if(calendar.dynamic_data !== undefined){
 			var source = '2.0';
-		}else if(calendar.settings !== undefined){
-			var source = '1.0';
 		}else if(calendar.year_len){
 			var source = 'donjon';
 		}
@@ -352,8 +353,6 @@ function parse_json(json){
 
 			case '2.0':
 				return process_fantasycalendar(calendar, dynamic_data, static_data);
-			case '1.0':
-				return process_old_fantasycalendar(calendar, dynamic_data, static_data);
 			case 'donjon':
 				return process_donjon(calendar, dynamic_data, static_data);
 
@@ -451,7 +450,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 			}
 
 			if(current_leap_day.intercalary !== undefined && typeof current_leap_day.intercalary === "boolean"){
-				leap_day.intercalary = current_leap_day.intercalary
+				leap_day.intercalary = current_leap_day.intercalary;
 			}else{
 				throw `${leap_day.name} has invalid intercalary setting!`;
 			}
@@ -517,37 +516,6 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 				throw `Moon ${i+1} does not have name data!`;
 			}
 
-			if(current_moon.custom_phase !== undefined && typeof current_moon.custom_phase === "boolean"){
-				if(current_moon.custom_phase){
-					var global_regex = /[`!+~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z ]/g;
-					if(global_regex.test(interval_val)){
-						throw `${moon.name} has invalid custom phases!`;
-					}
-
-					var granularity = Math.max.apply(null, current_moon.custom_cycle.split(','))+1;
-
-					if(granularity > 40){
-						throw `${moon.name} has invalid custom cycle number (numbers too high)!`;
-					}
-
-					moon.custom_cycle = current_moon.custom_cycle
-
-				}else{
-
-					if(current_moon.cycle && !isNaN(parseFloat(current_moon.cycle))){
-						moon.cycle = parseFloat(current_moon.cycle)
-					}else{
-						throw `${moon.name} has invalid cycle!`;
-					}
-				}
-			}
-
-			if(current_moon.shift && !isNaN(parseFloat(current_moon.shift))){
-				moon.shift = parseFloat(current_moon.shift)
-			}else{
-				throw `${moon.name} has invalid shift!`;
-			}
-
 			if(current_moon.granularity && !isNaN(Number(current_moon.granularity))){
 				if(current_moon.granularity > 40){
 					throw `${moon.name} has too high granularity! (40 max)`
@@ -555,6 +523,37 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 				moon.granularity = Number(current_moon.granularity)
 			}else{
 				throw `${moon.name} has invalid granularity!`;
+			}
+
+			if(current_moon.custom_phase !== undefined && typeof current_moon.custom_phase === "boolean" && current_moon.custom_phase){
+
+				var global_regex = /[`!+~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z ]/g;
+				if(global_regex.test(interval_val)){
+					throw `${moon.name} has invalid custom phases!`;
+				}
+
+				var granularity = Math.max.apply(null, current_moon.custom_cycle.split(','))+1;
+
+				if(granularity > 40){
+					throw `${moon.name} has invalid custom cycle number (numbers too high)!`;
+				}
+
+				moon.custom_cycle = current_moon.custom_cycle;
+
+			}else{
+
+				if(current_moon.cycle !== undefined && !isNaN(parseFloat(current_moon.cycle))){
+					moon.cycle = parseFloat(current_moon.cycle)
+				}else{
+					throw `${moon.name} has invalid cycle!`;
+				}
+
+				if(current_moon.shift !== undefined && !isNaN(parseFloat(current_moon.shift))){
+					moon.shift = parseFloat(current_moon.shift)
+				}else{
+					throw `${moon.name} has invalid shift!`;
+				}
+
 			}
 
 			if(current_moon.hidden !== undefined && typeof current_moon.hidden === "boolean"){
@@ -662,19 +661,25 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 			if(global_settings.cinematic !== undefined && typeof global_settings.cinematic === "boolean"){
 				static_data.seasons.global_settings.cinematic = global_settings.cinematic
 			}else{
-				throw `Season settings have invalid cinematic data!`;
+				static_data.seasons.global_settings.cinematic = false;
 			}
 
 			if(global_settings.enable_weather !== undefined && typeof global_settings.enable_weather === "boolean"){
 				static_data.seasons.global_settings.enable_weather = global_settings.enable_weather
 			}else{
-				throw `Season settings have invalid enable weather!`;
+				static_data.seasons.global_settings.enable_weather = false;
 			}
 
 			if(global_settings.periodic_seasons !== undefined && typeof global_settings.periodic_seasons === "boolean"){
 				static_data.seasons.global_settings.periodic_seasons = global_settings.periodic_seasons
 			}else{
-				throw `Season settings have invalid periodic settings!`;
+				static_data.seasons.global_settings.periodic_seasons = false;
+			}
+
+			if(global_settings.color_enabled !== undefined && typeof global_settings.color_enabled === "boolean"){
+				static_data.seasons.global_settings.color_enabled = global_settings.color_enabled
+			}else{
+				static_data.seasons.global_settings.color_enabled = false;
 			}
 
 		}else{
@@ -723,6 +728,23 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 						throw `${season.name} has invalid day!`;
 					}
 
+				}
+
+				season.color = []
+				if(current_season.color === undefined || !Array.isArray(current_season.color)){
+					current_season.color = []
+				}
+
+				if(current_season.color[0] !== undefined && isHex(current_season.color[0])){
+					season.color[0] = current_season.color[0];
+				}else{
+					season.color[0] = "#ffffff";
+				}
+
+				if(current_season.color[1] !== undefined && isHex(current_season.color[1])){
+					season.color[1] = current_season.color[1];
+				}else{
+					season.color[1] = "#ffffff";
 				}
 
 				if(current_season.time !== undefined){
@@ -989,13 +1011,13 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 				if(current_era.format !== undefined){
 					era.format = current_era.format.toString();
 				}else{
-					throw `${era.name} does not have format data!`;
+					era.format = "";
 				}
 
 				if(current_era.description !== undefined){
 					era.description = current_era.description.toString();
 				}else{
-					throw `${era.name} does not have description data!`;
+					era.description = "";
 				}
 
 				if(current_era.date !== undefined){
@@ -1040,8 +1062,8 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 						throw `${era.name} does not have valid show as event data!`;
 					}
 
-					if(current_era.settings.event_category !== undefined && !isNaN(Number(current_era.settings.event_category))){
-						era.settings.event_category = Number(current_era.settings.event_category);
+					if((current_era.settings.event_category !== undefined && !isNaN(Number(current_era.settings.event_category))) || current_era.settings.event_category == null){
+						era.settings.event_category = current_era.settings.event_category != null ? Number(current_era.settings.event_category) : -1;
 					}else{
 						throw `${era.name} does not have valid event category!`;
 					}
@@ -1075,6 +1097,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 
 	console.log("Checking settings")
 	static_data.settings.layout = "grid";
+	static_data.settings.comments = "none";
 
 	if(calendar.static_data.settings.show_current_month !== undefined && typeof calendar.static_data.settings.show_current_month === "boolean"){
 		static_data.settings.show_current_month = calendar.static_data.settings.show_current_month;
@@ -1146,6 +1169,24 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 		static_data.settings.hide_future_weather = calendar.static_data.settings.hide_future_weather;
 	}else{
 		static_data.settings.hide_future_weather = false;
+	}
+
+	if(calendar.static_data.settings.hide_weather_temp !== undefined && typeof calendar.static_data.settings.hide_weather_temp === "boolean"){
+		static_data.settings.hide_weather_temp = calendar.static_data.settings.hide_weather_temp;
+	}else{
+		static_data.settings.hide_weather_temp = false;
+	}
+
+	if(calendar.static_data.settings.hide_wind_velocity !== undefined && typeof calendar.static_data.settings.hide_wind_velocity === "boolean"){
+		static_data.settings.hide_wind_velocity = calendar.static_data.settings.hide_wind_velocity;
+	}else{
+		static_data.settings.hide_wind_velocity = false;
+	}
+
+	if(calendar.static_data.settings.hide_weekdays !== undefined && typeof calendar.static_data.settings.hide_weekdays === "boolean"){
+		static_data.settings.hide_weekdays = calendar.static_data.settings.hide_weekdays;
+	}else{
+		static_data.settings.hide_weekdays = false;
 	}
 
 	if(calendar.static_data.settings.year_zero_exists !== undefined && typeof calendar.static_data.settings.year_zero_exists === "boolean"){
@@ -1257,13 +1298,13 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
                 if(current_category.event_settings.hide !== undefined && typeof current_category.event_settings.hide === "boolean"){
                     category.event_settings.hide = current_category.event_settings.hide;
                 }else{
-                    throw `${category.name} does not have hide event settings!`;
+					category.event_settings.hide = false;
                 }
 
                 if(current_category.event_settings.print !== undefined && typeof current_category.event_settings.print === "boolean"){
                     category.event_settings.print = current_category.event_settings.print;
                 }else{
-                    throw `${category.name} does not have print event settings!`;
+                    category.event_settings.print = false;
                 }
 
             }else{
@@ -1345,7 +1386,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
                 if(current_event.settings.print !== undefined && typeof current_event.settings.print === "boolean"){
                     event.print = current_event.print;
                 }else{
-                    throw `${event.name} does not have valid print settings!`;
+                    event.print = false;
                 }
 
             }else{
@@ -1359,7 +1400,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
                 if(current_event.data.has_duration !== undefined && typeof current_event.data.has_duration === "boolean"){
                     event.data.has_duration = current_event.data.has_duration;
                 }else{
-                    throw `${event.name} does not have valid has duration data!`;
+                    event.data.has_duration = false;
                 }
 
                 if(current_event.data.duration !== undefined && !isNaN(Number(current_event.data.duration))){
@@ -1371,7 +1412,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
                 if(current_event.data.limited_repeat !== undefined && typeof current_event.data.limited_repeat === "boolean"){
                     event.data.limited_repeat = current_event.data.limited_repeat;
                 }else{
-                    throw `${event.name} does not have valid limited repeat data!`;
+                    event.data.limited_repeat = false;
                 }
 
                 if(current_event.data.limited_repeat_num !== undefined && !isNaN(Number(current_event.data.limited_repeat_num))){
@@ -1383,7 +1424,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
                 if(current_event.data.show_first_last !== undefined && typeof current_event.data.show_first_last === "boolean"){
                     event.data.show_first_last = current_event.data.show_first_last;
                 }else{
-                    throw `${event.name} does not have valid show first last data!`;
+                    event.data.show_first_last = false;
                 }
 
 				event.data.date = []
@@ -1512,43 +1553,43 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 	if(calendar.dynamic_data.year !== undefined && !isNaN(Number(calendar.dynamic_data.year))){
 		dynamic_data.year = Number(calendar.dynamic_data.year)
 	}else{
-		throw `Calendar has invalid year!`;
+		dynamic_data.year = year;
 	}
 
 	if(calendar.dynamic_data.timespan !== undefined && !isNaN(Number(calendar.dynamic_data.timespan)) && Number(calendar.dynamic_data.timespan) >= 0){
 		dynamic_data.timespan = Number(calendar.dynamic_data.timespan)
 	}else{
-		throw `Calendar has invalid timespan!`;
+		dynamic_data.timespan = timespan;
 	}
 
 	if(calendar.dynamic_data.day !== undefined && !isNaN(Number(calendar.dynamic_data.day)) && Number(calendar.dynamic_data.day) >= 1){
 		dynamic_data.day = Number(calendar.dynamic_data.day)
 	}else{
-		throw `Calendar has invalid day!`;
+		dynamic_data.day = 1;
 	}
 
 	if(calendar.dynamic_data.epoch !== undefined && !isNaN(Number(calendar.dynamic_data.epoch))){
 		dynamic_data.epoch = Number(calendar.dynamic_data.epoch)
 	}else{
-		throw `Calendar has invalid epoch!`;
+		dynamic_data.epoch = 0;
 	}
 
 	if(calendar.dynamic_data.hour !== undefined && !isNaN(Number(calendar.dynamic_data.hour)) && Number(calendar.dynamic_data.hour) >= 0){
 		dynamic_data.hour = Number(calendar.dynamic_data.hour)
 	}else{
-		throw `Calendar has invalid hour!`;
+		dynamic_data.hour = 0;
 	}
 
 	if(calendar.dynamic_data.minute !== undefined && !isNaN(Number(calendar.dynamic_data.minute)) && Number(calendar.dynamic_data.minute) >= 0){
 		dynamic_data.minute = Number(calendar.dynamic_data.minute)
 	}else{
-		throw `Calendar has invalid minute!`;
+		dynamic_data.minute = 0;
 	}
 
 	if(calendar.dynamic_data.custom_location !== undefined && typeof calendar.dynamic_data.custom_location === "boolean"){
 		dynamic_data.custom_location = calendar.dynamic_data.custom_location;
 	}else{
-		throw `Custom location boolean is invalid!`;
+		dynamic_data.custom_location = false;
 	}
 
 	if(!dynamic_data.custom_location){
@@ -1572,282 +1613,6 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 		static_data: static_data,
 		event_categories: event_categories,
 		events: events
-	}
-
-}
-
-
-function process_old_fantasycalendar(calendar, dynamic_data, static_data){
-
-	var calendar_name = calendar.name;
-
-	dynamic_data.year = calendar.year+1;
-	dynamic_data.timespan = calendar.month-1;
-	dynamic_data.day = calendar.day;
-
-	static_data.year_data.first_day = calendar.first_day+1;
-
-	static_data.year_data.global_week = calendar.weekdays;
-
-	static_data.year_data.overflow = calendar.overflow;
-
-	for(var i = 0; i < calendar.months.length; i++){
-		static_data.year_data.timespans.push({
-			'name': calendar.months[i],
-			'type': 'month',
-			'interval': 1,
-			'offset': 0,
-			'length': calendar.month_len[i]
-		});
-	}
-
-	for(var i = 0; i < calendar.moons.length; i++){
-		static_data.moons.push({
-			'name':  calendar.moons[i],
-			'cycle': calendar.lunar_cyc[i],
-			'shift': calendar.lunar_shf[i],
-			'granularity': get_moon_granularity(calendar.lunar_cyc[i]),
-			'color': calendar.lunar_color[i],
-			'hidden': false,
-			'custom_phase': false
-		});
-	}
-
-	for(var i = 0; i < calendar.events.length; i++){
-
-		var event = calendar.events[i];
-
-		data = convert_old_event(event);
-
-		events.push({
-			'name': event.name,
-			'description': event.description,
-			'data':{
-				'has_duration': false,
-				'duration': 0,
-				'show_first_last': false,
-				'only_happen_once': false,
-				'connected_events': [],
-				'date': data[0],
-				'conditions': data[1]
-			},
-			'category':'-1',
-			'settings':{
-				'color':'Dark-Solid',
-				'text':'text',
-				'hide_full': false,
-				'hide': event.hide === undefined ? false : event.hide,
-				'print': event.print === undefined ? false : event.print
-			}
-		});
-	}
-
-	if(calendar.year_leap !== undefined && calendar.year_leap > 1){
-		static_data.year_data.leap_days.push({
-			'name': 'Leap day',
-			'intercalary': false,
-			'timespan': calendar.month_leap-1,
-			'adds_week_day': false,
-			'day': 0,
-			'week_day': '',
-			'interval': calendar.year_leap.toString(),
-			'offset': 0
-		});
-	}
-
-	if(calendar.clock_enabled){
-		static_data.clock.enabled = true;
-		static_data.clock.hours = calendar.n_hours;
-		static_data.clock.minutes = 60;
-
-		dynamic_data.hour = calendar.hour;
-		dynamic_data.minute = calendar.minute;
-	}
-
-
-
-	if(calendar.solstice_enabled){
-
-		static_data.seasons.global_settings = {
-			season_offset: 0,
-			weather_offset: 0,
-			seed: calendar.weather.weather_seed,
-			temp_sys: calendar.weather.weather_temp_sys,
-			wind_sys: calendar.weather.weather_wind_sys,
-			cinematic: calendar.weather.weather_cinematic,
-			periodic_seasons: false
-		}
-
-		if(calendar.winter_month > calendar.summer_month){
-			var first_season = {
-				'name': 'Summer',
-				'epoch': summer_epoch,
-				'rise': calendar.summer_rise,
-				'set': calendar.summer_set,
-				'timespan': calendar.summer_month,
-				'day': calendar.summer_day
-			}
-			var second_season = {
-				'name': 'Winter',
-				'epoch': winter_epoch,
-				'rise': calendar.winter_rise,
-				'set': calendar.winter_set,
-				'timespan': calendar.winter_month,
-				'day': calendar.winter_day
-			}
-		}else{
-			var first_season = {
-				'name': 'Winter',
-				'epoch': winter_epoch,
-				'rise': calendar.winter_rise,
-				'set': calendar.winter_set,
-				'timespan': calendar.winter_month,
-				'day': calendar.winter_day
-			}
-			var second_season = {
-				'name': 'Summer',
-				'epoch': summer_epoch,
-				'rise': calendar.summer_rise,
-				'set': calendar.summer_set,
-				'timespan': calendar.summer_month,
-				'day': calendar.summer_day
-			}
-		}
-
-		static_data.seasons.data = [
-			{
-				'Name': first_season.name,
-				'timespan': first_season.timespan,
-				'day': first_season.day,
-				'time': {
-					'sunrise': {
-						'hour': first_season.rise,
-						'minute': 0
-					},
-					'sunset': {
-						'hour': first_season.set,
-						'minute': 0
-					}
-				}
-			},
-			{
-				'Name': second_season.name,
-				'timespan': second_season.timespan,
-				'day': second_season.day,
-				'time': {
-					'sunrise': {
-						'hour': second_season.rise,
-						'minute': 0
-					},
-					'sunset': {
-						'hour': second_season.set,
-						'minute': 0
-					}
-				}
-			}
-		];
-	}
-
-	if(calendar.weather_enabled){
-
-		var keys = Object.keys(calendar.weather.custom_climates);
-
-		for(var i = 0; i < keys.length; i++){
-
-			var location = calendar.weather.custom_climates[keys[i]];
-
-			static_data.seasons.locations.push({
-				'name': keys[i],
-				'seasons': [
-					{
-						'name': '',
-						'custom_name': false,
-						'time': {
-							'sunrise': {
-								'hour': first_season.rise,
-								'minute': 0
-							},
-							'sunset': {
-								'hour': first_season.set,
-								'minute': 0
-							}
-						},
-						'weather':{
-							'temp_low': location[first_season.name.toLowerCase()].temperature.cold,
-							'temp_high': location[first_season.name.toLowerCase()].temperature.hot,
-							'precipitation': location[first_season.name.toLowerCase()].precipitation,
-							'precipitation_intensity': location[first_season.name.toLowerCase()].precipitation*0.5
-						}
-					},
-					{
-						'name': '',
-						'custom_name': false,
-						'time': {
-							'sunrise': {
-								'hour': second_season.rise,
-								'minute': 0
-							},
-							'sunset': {
-								'hour': second_season.set,
-								'minute': 0
-							}
-						},
-						'weather':{
-							'temp_low': location[second_season.name.toLowerCase()].temperature.cold,
-							'temp_high': location[second_season.name.toLowerCase()].temperature.hot,
-							'precipitation': location[second_season.name.toLowerCase()].precipitation,
-							'precipitation_intensity': location[second_season.name.toLowerCase()].precipitation*0.5
-						}
-					}
-				],
-				'settings': {
-					'timezone': {
-						'hour': 0,
-						'minute': 0
-					},
-					'large_noise_frequency': calendar.weather.weather_temp_scale*0.1,
-					'large_noise_amplitude': calendar.weather.weather_temp_scale*5,
-
-					'medium_noise_frequency': calendar.weather.weather_temp_scale*3,
-					'medium_noise_amplitude': calendar.weather.weather_temp_scale*2,
-
-					'small_noise_frequency': calendar.weather.weather_temp_scale*8,
-					'small_noise_amplitude': calendar.weather.weather_temp_scale*3
-				}
-			});
-		}
-
-		dynamic_data.custom_location = calendar.weather.current_climate_type === 'custom';
-
-		if(dynamic_data.custom_location){
-			dynamic_data.location = keys.indexOf(calendar.weather.current_climate);
-		}else{
-			dynamic_data.location = calendar.weather.current_climate;
-		}
-
-	}
-
-	static_data.settings = {
-		layout: 'grid',
-		show_current_month: calendar.settings.show_current_month,
-		allow_view: calendar.settings.allow_view,
-		only_backwards: calendar.settings.only_backwards,
-		only_reveal_today: calendar.settings.only_reveal_today,
-		hide_moons: calendar.settings.hide_moons,
-		hide_clock: calendar.settings.hide_clock,
-		hide_events: calendar.settings.hide_events,
-		hide_eras: false,
-		hide_all_weather: calendar.settings.hide_weather,
-		hide_future_weather: false,
-		add_month_number: calendar.settings.add_month_number,
-		add_year_day_number: calendar.settings.add_year_day_number
-	}
-
-	return {
-		success: true,
-		name: calendar_name,
-		dynamic_data: dynamic_data,
-		static_data: static_data
 	}
 
 }

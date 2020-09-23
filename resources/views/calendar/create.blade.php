@@ -44,7 +44,8 @@
                     "wind_sys":"metric",
                     "cinematic":false,
                     "enable_weather":false,
-                    "periodic_seasons":false
+                    "periodic_seasons":false,
+                    "color_enabled": false
                 }
             },
             "eras":[],
