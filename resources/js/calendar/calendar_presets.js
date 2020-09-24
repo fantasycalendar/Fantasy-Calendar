@@ -432,8 +432,9 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 			}
 
 			if(current_timespan.week !== undefined && Array.isArray(current_timespan.week)){
+				timespan.week = [];
 				for(var j = 0; j < current_timespan.week.length; j++){
-					timespan.push(current_timespan.week[j])
+					timespan.week.push(current_timespan.week[j])
 				}
 			}
 
@@ -466,7 +467,6 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 			if(current_leap_day.timespan !== undefined && !isNaN(Number(current_leap_day.timespan)) && current_leap_day.timespan < static_data.year_data.timespans.length){
 				leap_day.timespan = Number(current_leap_day.timespan)
 			}else{
-				console.log(current_leap_day.timespan)
 				throw `${leap_day.name} has invalid timespan selection!`;
 			}
 
@@ -530,13 +530,9 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 				moon.custom_phase = false;
 			}
 
-			console.log(current_moon)
-
 			if(moon.custom_phase){
 
 				var global_regex = /[`!+~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z ]/g;
-
-				console.log(current_moon.custom_cycle)
 
 				if(global_regex.test(current_moon.custom_cycle)){
 					throw `${moon.name} has invalid custom phases!`;
@@ -1087,6 +1083,12 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 						era.settings.event_category = -1;
 					}
 
+					if(current_era.settings.starting_era !== undefined && typeof current_era.settings.starting_era === "boolean"){
+						era.settings.starting_era = current_era.settings.starting_era;
+					}else{
+						era.settings.starting_era = false;
+					}
+
 					if(current_era.settings.ends_year !== undefined && typeof current_era.settings.ends_year === "boolean"){
 						era.settings.ends_year = current_era.settings.ends_year;
 					}else{
@@ -1612,7 +1614,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 	}
 
 	if(!dynamic_data.custom_location){
-		if(static_data.seasons.data.length > 0 && calendar.dynamic_data.location !== undefined && preset_data.locations[static_data.seasons.data.length][calendar.dynamic_data.location] !== undefined){
+		if(static_data.seasons.data.length > 0 && calendar.dynamic_data.location !== null && calendar.dynamic_data.location !== undefined && preset_data.locations[static_data.seasons.data.length][calendar.dynamic_data.location] !== undefined){
 			dynamic_data.location = calendar.dynamic_data.location;
 		}else{
 			dynamic_data.location = "Equatorial";
