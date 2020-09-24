@@ -421,10 +421,14 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 				throw `${timespan.name} has invalid interval!`;
 			}
 
-			if(current_timespan.offset !== undefined && !isNaN(Number(current_timespan.offset))){
-				timespan.offset = Number(current_timespan.offset)
+			if(timespan.interval == 1){
+				timespan.offset = 0;
 			}else{
-				throw `${timespan.name} has invalid offset!`;
+				if(current_timespan.offset !== undefined && !isNaN(Number(current_timespan.offset))){
+					timespan.offset = Number(current_timespan.offset)
+				}else{
+					throw `${timespan.name} has invalid offset!`;
+				}
 			}
 
 			if(current_timespan.week !== undefined && Array.isArray(current_timespan.week)){
@@ -520,27 +524,31 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 				throw `Moon ${i+1} does not have name data!`;
 			}
 
-			if(current_moon.granularity && !isNaN(Number(current_moon.granularity))){
-				if(current_moon.granularity > 40){
-					throw `${moon.name} has too high granularity! (40 max)`
-				}
-				moon.granularity = Number(current_moon.granularity)
+			if(current_moon.custom_phase !== undefined && typeof current_moon.custom_phase === "boolean"){
+				moon.custom_phase = current_moon.custom_phase;
 			}else{
-				throw `${moon.name} has invalid granularity!`;
+				moon.custom_phase = false;
 			}
 
-			if(current_moon.custom_phase !== undefined && typeof current_moon.custom_phase === "boolean" && current_moon.custom_phase){
+			console.log(current_moon)
+
+			if(moon.custom_phase){
 
 				var global_regex = /[`!+~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z ]/g;
-				if(global_regex.test(interval_val)){
+
+				console.log(current_moon.custom_cycle)
+
+				if(global_regex.test(current_moon.custom_cycle)){
 					throw `${moon.name} has invalid custom phases!`;
 				}
 
-				var granularity = Math.max.apply(null, current_moon.custom_cycle.split(','))+1;
+				var highest_cycle = Math.max.apply(null, current_moon.custom_cycle.split(','))+1;
 
-				if(granularity > 40){
+				if(highest_cycle > 40){
 					throw `${moon.name} has invalid custom cycle number (numbers too high)!`;
 				}
+
+				moon.granularity = get_moon_granularity(highest_cycle);
 
 				moon.custom_cycle = current_moon.custom_cycle;
 
@@ -558,18 +566,26 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 					throw `${moon.name} has invalid shift!`;
 				}
 
+				moon.granularity = get_moon_granularity(moon.cycle);
+
 			}
 
 			if(current_moon.hidden !== undefined && typeof current_moon.hidden === "boolean"){
 				moon.hidden = current_moon.hidden
 			}else{
-				throw `${moon.name} has invalid hidden property!`;
+				moon.hidden = false;
 			}
 
 			if(current_moon.color !== undefined && isHex(current_moon.color)){
 				moon.color = current_moon.color
 			}else{
-				throw `${moon.name} has invalid color!`;
+				moon.color = "#ffffff";
+			}
+
+			if(current_moon.shadow_color !== undefined && isHex(current_moon.shadow_color)){
+				moon.shadow_color = current_moon.shadow_color
+			}else{
+				moon.shadow_color = "#292b4a";
 			}
 
 			static_data.moons.push(moon);
@@ -590,7 +606,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 		if(calendar.static_data.clock.render !== undefined && typeof calendar.static_data.clock.render === "boolean"){
 			static_data.clock.render = calendar.static_data.clock.render
 		}else{
-			static_data.clock.render = false;
+			static_data.clock.render = true;
 		}
 
 		if(calendar.static_data.clock.hours !== undefined && !isNaN(Number(calendar.static_data.clock.hours))){
@@ -677,7 +693,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 			if(global_settings.periodic_seasons !== undefined && typeof global_settings.periodic_seasons === "boolean"){
 				static_data.seasons.global_settings.periodic_seasons = global_settings.periodic_seasons
 			}else{
-				static_data.seasons.global_settings.periodic_seasons = false;
+				static_data.seasons.global_settings.periodic_seasons = true;
 			}
 
 			if(global_settings.color_enabled !== undefined && typeof global_settings.color_enabled === "boolean"){
@@ -703,7 +719,6 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 					throw `Season ${i+1} does not have name data!`;
 				}
 
-				
 				if(static_data.seasons.global_settings.periodic_seasons){
 
 					if(current_season.transition_length !== undefined && !isNaN(Number(current_season.transition_length))){
