@@ -384,6 +384,10 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 		}
 	}
 
+	if(calendar.static_data.year_data.overflow !== undefined && typeof calendar.static_data.year_data.overflow === "boolean"){
+		static_data.year_data.overflow = calendar.static_data.year_data.overflow;
+	}
+
 	console.log("Checking timespans")
 	if(calendar.static_data.year_data.timespans !== undefined){
 
@@ -1053,31 +1057,31 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 					if(current_era.settings.use_custom_format !== undefined && typeof current_era.settings.use_custom_format === "boolean"){
 						era.settings.use_custom_format = current_era.settings.use_custom_format;
 					}else{
-						throw `${era.name} does not have valid use custom format!`;
+						era.settings.use_custom_format = false;
 					}
 
 					if(current_era.settings.show_as_event !== undefined && typeof current_era.settings.show_as_event === "boolean"){
 						era.settings.show_as_event = current_era.settings.show_as_event;
 					}else{
-						throw `${era.name} does not have valid show as event data!`;
+						era.settings.show_as_event = false;
 					}
 
 					if((current_era.settings.event_category !== undefined && !isNaN(Number(current_era.settings.event_category))) || current_era.settings.event_category == null){
 						era.settings.event_category = current_era.settings.event_category != null ? Number(current_era.settings.event_category) : -1;
 					}else{
-						throw `${era.name} does not have valid event category!`;
+						era.settings.event_category = -1;
 					}
 
 					if(current_era.settings.ends_year !== undefined && typeof current_era.settings.ends_year === "boolean"){
 						era.settings.ends_year = current_era.settings.ends_year;
 					}else{
-						throw `${era.name} does not have valid ends year data!`;
+						era.settings.ends_year = false;
 					}
-
+					
 					if(current_era.settings.restart !== undefined && typeof current_era.settings.restart === "boolean"){
 						era.settings.restart = current_era.settings.restart;
 					}else{
-						throw `${era.name} does not have valid restarts year data!`;
+						era.settings.restart = false;
 					}
 
 				}else{
@@ -1593,7 +1597,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 	}
 
 	if(!dynamic_data.custom_location){
-		if(calendar.dynamic_data.location !== undefined && preset_data.locations[static_data.seasons.data.length][calendar.dynamic_data.location] !== undefined){
+		if(static_data.seasons.data.length > 0 && calendar.dynamic_data.location !== undefined && preset_data.locations[static_data.seasons.data.length][calendar.dynamic_data.location] !== undefined){
 			dynamic_data.location = calendar.dynamic_data.location;
 		}else{
 			dynamic_data.location = "Equatorial";
