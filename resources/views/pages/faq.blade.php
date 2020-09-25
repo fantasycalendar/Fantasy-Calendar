@@ -45,6 +45,20 @@
 
         function faq_page(){
             return {
+                init: function(){
+                    this.open = 0;
+                    const urlParams = new URLSearchParams(window.location.search);
+                    if(urlParams.has("question")){
+                        let question_id = Number(urlParams.get('question'));
+                        if(!isNaN(question_id)){
+                            this.open = question_id;
+                        }
+                    }
+                },
+                set_open(index){
+                    this.open = index;
+                    history.pushState({}, null, "faq?question="+this.open);
+                },
                 open: 0,
                 questions: [
                     {
@@ -89,7 +103,7 @@
 
 @section("content")
 
-    <div class="container" x-data="faq_page()">
+    <div class="container" x-data="faq_page()" x-init="init">
 
         <h2 class="text-center">Frequently Asked Questions</h2>
 
@@ -97,7 +111,7 @@
 
             <div class="border-bottom mx-1 p-3">
 
-                <div class="row question py-2" @click="open = index">
+                <div class="row question py-2" @click="set_open(index)">
 
                     <span x-text="question.text"></span>
 
