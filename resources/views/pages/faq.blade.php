@@ -49,23 +49,23 @@
                 questions: [
                     {
                         text: "What is Fantasy-Calendar?",
-                        answer: "Fantasy-Calendar is a web application that allows you to create your own custom calendars. The calendar doesn't have to be the same as the calendar in our world, it could be from any established fantastic world, or one of your own making."
+                        answer: `Fantasy-Calendar is a web application that allows you to create your own custom calendars. The calendar doesn't have to be the same as the calendar in our world, it could be from any established fantastic world, or one of your own making. <br><br> So, whether you're a GM looking to track the events of a long-running Forgotten Realms campaign, an author, or simply a world-builder who likes to have wacky celestial configurations (Such as <strong>Eberron's</strong> <a href='http://archive.wizards.com/default.asp?x=dnd/ebds/20050307a'>twelve moons</a>) with zany timekeeping systems to match, you probably need a calendar of some kind. Fantasy Calendar aims to make that easy.`
                     },
                     {
                         text: "The site looks different. What's new?",
-                        answer: `You can check out the "<a target='_blank' href='{{ route('whats-new') }}'>what's new</a>" page here for broad strokes, or if you want to get into the nitty gritty, you can read over the <a target='_blank' href='{{ route('changelog') }}'>changelog</a>.`
+                        answer: `You can check out the "<a target='_blank' href='{{ route('whats-new') }}'>what's new</a>" page to see the various updates in broad strokes, or if you want all the nitty gritty details, you can read over the <a target='_blank' href='{{ route('changelog') }}'>changelog</a>.`
                     },
                     {
-                        text: "Where is the preset for the real world calendar?",
-                        answer: "We do! The calendar we use on earth is called the 'Gregorian Calendar', and you can find it in the presets when you create a calendar."
+                        text: "How can I make a calendar like the one we use in the real world?",
+                        answer: `The calendar we use on earth is called the 'Gregorian Calendar', which is understandably confusing. You can find it right there in the presets you can choose from when <a href="{{ route('calendars.create') }}">creating a calendar</a>! Just search for "Earth" or look for "Gregorian Calendar" in the list.`
                     },
                     {
                         text: "Is there a way to track the weather in my world?",
                         answer: "Yes it can! You'll need <a target='_blank' href='{{ helplink('seasons') }}'>seasons</a> in your calendar and enable <a target='_blank' href='{{ helplink('weather') }}'>weather</a> on it. Then, you have the option to switch <a target='_blank' href='{{ helplink('locations') }}'>locations</a>, which is what actually drives the weather. Between our many preset climate locations, such as Equatorial, Tropical Savanna, Cool and Rainy, and Polar-like, you have plenty of options to simulate your location. If you want something more home-brewed, you can create your own custom locations to best suit the places in your world."
                     },
                     {
-                        text: "I have an idea, where can I let you know?",
-                        answer: "On our <a target='_blank' href='https://discord.gg/BNSM7aT'>Discord server</a>! Both of the developers are very active on there, and we're always listening to your feedback!"
+                        text: "I have an idea or a suggestion, where can I let you know?",
+                        answer: "On our <a target='_blank' href='https://discord.gg/BNSM7aT'>Discord server</a>! Both of the developers are very active over there, and we're always listening to your feedback!"
                     },
                     {
                         text: "I don't know how X feature works! Where can I find more information?",
@@ -73,11 +73,11 @@
                     },
                     {
                         text: "Subscriptions? Isn't Fantasy-Calendar free?",
-                        answer: "Fantasy-Calendar is still <strong>completely free to use</strong>! Free accounts can still create up to 2 calendars, with no other limitations. As Fantasy-Calendar has grown, so has our bills. For the last 3 years we have been happily funding the site out of our own pockets and from generous donations from some of our users, but we want Fantasy-Calendar stay online long term. That's why we added some <i>optional</i> premium features that won't hinder you from creating full-fleged calendars!"
+                        answer: "Fantasy-Calendar is still <strong>completely free to use</strong>! Free accounts can still create up to 2 calendars, with no other limitations. As Fantasy-Calendar has grown, so have our bills. For the last 3 years we have been happily funding the site out of our own pockets and from generous donations from some of our users, but we want Fantasy-Calendar stay online long term. That's why we added some <i>optional</i> premium features that won't hinder you from creating full-fledged calendars!"
                     },
                     {
                         text: "I have forgotten my username / email / password!",
-                        answer: `We got your back! Before you try to reset it, remember that you can sign in with your email address <i>or</i> your username. If you've forgotten your password, you can reset it here <a target='_blank' href='${window.location.origin}/password/reset'>here</a>. If you've forgotten your username or email, get in touch with us at <a target='_blank' href='mailto:contact@fantasy-calendar.com'>contact@fantasy-calendar.com</a> and we'll sort you out!`
+                        answer: `@auth Wait... You're <strong>already logged in, {{ Auth::user()->username }}</strong>! You can just go update your password <a href="{{ route('profile') }}">via your profile</a>  @else We've got your back. Before you try to reset it, remember that you can sign in with your email address <i>or</i> your username. If you've forgotten your password, you can reset it here <a target='_blank' href='{{ route('password.request') }}'>here</a>. If you've forgotten your username or email, get in touch with us at <a target='_blank' href='mailto:contact@fantasy-calendar.com'>contact@fantasy-calendar.com</a> and we'll sort you out! @endauth`
                     }
                 ]
             }

@@ -1,4 +1,4 @@
-@extends('templates._welcome')
+@extends('templates._page')
 
 @push('head')
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,200&display=swap" rel="stylesheet">
