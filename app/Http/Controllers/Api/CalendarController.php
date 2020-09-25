@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\CalendarInvite;
 use App\Jobs\CloneCalendar;
 use App\Notifications\CalendarInvitation;
 use App\Notifications\UnregisteredCalendarInvitation;
@@ -80,9 +81,14 @@ class CalendarController extends Controller
     }
 
     public function users(Request $request, $id) {
-        return Calendar::active()
+        $calendar = Calendar::active()
             ->hash($id)
-            ->firstOrFail()->users;
+            ->firstOrFail();
+
+        return array_merge(
+            $calendar->users->toArray(),
+            CalendarInvite::active()->where('calendar_id', $calendar->id)->get()->map(function($invite) { return $invite->transformForCalendar(); })->toArray()
+        );
     }
 
     public function inviteUser(Request $request, $id) {
@@ -102,7 +108,10 @@ class CalendarController extends Controller
                 return response()->json(['error' => true, 'message' => 'This calendar already has user "'.$user->username.'"']);
             }
 
-            $user->notify(new CalendarInvitation($calendar, $user));
+            $invitation = CalendarInvite::generate($calendar, $user->email);
+            return (new CalendarInvitation($invitation))->toMail($user->email);
+
+            $user->notify(new CalendarInvitation($invitation));
         } catch (ModelNotFoundException $e) {
             Notification::route('mail', $email)
                 ->notify(new UnregisteredCalendarInvitation($calendar, $email));

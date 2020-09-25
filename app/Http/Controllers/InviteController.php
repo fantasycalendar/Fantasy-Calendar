@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Calendar;
+use App\CalendarInvite;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,23 +15,25 @@ class InviteController extends Controller
     ];
 
     public function accept(Request $request) {
-        $calendar = Calendar::hash($request->input('calendar'))->firstOrFail();
+        $invitation = CalendarInvite::where('invite_token', $request->input('token'))->firstOrFail();
 
-        if($calendar->users->contains(Auth::user())) {
+        if($invitation->calendar->users->contains(Auth::user())) {
             return view('invite.already-accepted', [
-                'calendar' => $calendar
+                'calendar' => $invitation->calendar
             ]);
         }
 
-        if(Auth::user()->email != $request->input('email')) {
-            throw new AuthorizationException("Invitation invalid for your user account.");
+        if(
+            !$invitation->validForCalendar($request->input('calendar'))
+            || !$invitation->validForUser(Auth::user()))
+        {
+            throw new AuthorizationException("Invitation invalid.");
         }
 
-        $calendar->users()->attach(Auth::user(), ['user_role' => 'observer']);
-        $calendar->save();
+        $invitation->accept();
 
         return view('invite.accepted', [
-            'calendar' => $calendar
+            'calendar' => $invitation->calendar
         ]);
     }
 
