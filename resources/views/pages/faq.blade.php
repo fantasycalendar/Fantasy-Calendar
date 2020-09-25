@@ -17,8 +17,7 @@
             flex-direction: row;
             justify-content: space-between;
             cursor: pointer;
-            font-weight: bold;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
         }
 
         .question span {
@@ -31,6 +30,14 @@
             align-self: center;
         }
 
+        .question i.light {
+            opacity: 0.5;
+        }
+
+        .light {
+            color: #6b7280;
+        }
+
     </style>
 
 
@@ -38,44 +45,45 @@
 
         function faq_page(){
             return {
+                open: 0,
                 questions: [
                     {
-                        open: false,
+                        id: 0,
                         text: "What is Fantasy-Calendar?",
-                        answer: "Fantasy-Calendar is a web application that allows you to create your own custom calendars. The calendar doesn't have to be the same as the calendar in our world, it could be from any established fantasic world, or one of your own making."
+                        answer: "Fantasy-Calendar is a web application that allows you to create your own custom calendars. The calendar doesn't have to be the same as the calendar in our world, it could be from any established fantastic world, or one of your own making."
                     },
                     {
-                        open: false,
+                        id: 1,
                         text: "The site looks different. What's new?",
                         answer: `You can check out the "<a target='_blank' href='${window.location.origin}/whats-new'>what's new</a>" page here for broad strokes, or if you want to get into the nitty gritty, you can read over the <a target='_blank' href='${window.location.origin}/changelog'>changelog</a>.`
                     },
                     {
-                        open: false,
+                        id: 2,
                         text: "Don't you have a preset like the real world calendar?",
                         answer: "We do! The calendar we use on earth is called the 'Gregorian Calendar', and you can find it in the presets when you create a calendar."
                     },
                     {
-                        open: false,
-                        text: "I need weather in my world, can Fantasy-Calendar do that?",
+                        id: 3,
+                        text: "Is there a way to track the weather in my world?",
                         answer: "Yes it can! You'll need <a target='_blank' href='https://helpdocs.fantasy-calendar.com/topic/seasons/'>seasons</a> in your calendar and enable <a target='_blank' href='https://helpdocs.fantasy-calendar.com/topic/weather/'>weather</a> on it. Then, you have the option to switch <a target='_blank' href='https://helpdocs.fantasy-calendar.com/topic/locations/'>locations</a>, which is what actually drives the weather. Between our many preset climate locations, such as Equatorial, Tropical Savanna, Cool and Rainy, and Polar-like, you have plenty of options to simulate your location. If you want something more home-brewed, you can create your own custom locations to best suit the places in your world."
                     },
                     {
-                        open: false,
+                        id: 4,
                         text: "I have an idea, where can I let you know?",
                         answer: "On our <a target='_blank' href='https://discord.gg/BNSM7aT'>Discord server</a>! Both of the developers are very active on there, and we're always listening to your feedback!"
                     },
                     {
-                        open: false,
-                        text: "I don't know how X feature works! Help!",
+                        id: 5,
+                        text: "I don't know how X feature works! Where can I find more information?",
                         answer: "Don't worry! You can find help on our <a target='_blank' href='https://helpdocs.fantasy-calendar.com/'>help docs</a>, which contains detailed information about each feature. If that doesn't solve your issues, you can always join our <a target='_blank' href='https://discord.gg/BNSM7aT'>discord server</a> and ask other Fantasy-Calendar users for a hand."
                     },
                     {
-                        open: false,
+                        id: 6,
                         text: "Subscriptions? Isn't Fantasy-Calendar free?",
                         answer: "Fantasy-Calendar is still <strong>completely free to use</strong>! Free accounts can still create up to 2 calendars, with no other limitations. As Fantasy-Calendar has grown, so has our bills. For the last 3 years we have been happily funding the site out of our own pockets and from generous donations from some of our users, but we want Fantasy-Calendar stay online long term. That's why we added some <i>optional</i> premium features that won't hinder you from creating full-fleged calendars!"
                     },
                     {
-                        open: false,
+                        id: 7,
                         text: "I have forgotten my username / email / password!",
                         answer: `We got your back! Before you try to reset it, remember that you can sign in with your email address <i>or</i> your username. If you've forgotten your password, you can reset it here <a target='_blank' href='${window.location.origin}/password/reset'>here</a>. If you've forgotten your username or email, get in touch with us at <a target='_blank' href='mailto:contact@fantasy-calendar.com'>contact@fantasy-calendar.com</a> and we'll sort you out!`
                     }
@@ -97,19 +105,19 @@
 
             <div class="border-bottom mx-1 p-3">
 
-                <div class="row question py-2" @click="question.open = !question.open">
-                
+                <div class="row question py-2" @click="open = question.id">
+
                     <span x-text="question.text"></span>
 
                     <i class="fas" :class="{
-                        'fa-chevron-up': !question.open,
-                        'fa-chevron-down': question.open
+                        'fa-chevron-up light': open !== question.id,
+                        'fa-chevron-down': open === question.id
                     }"></i>
 
                 </div>
 
                 <div class="row mt-1 answer">
-                    <span x-html="question.answer" x-show="question.open"></span>
+                    <span class="light" x-html="question.answer" x-show="open === question.id"></span>
                 </div>
 
             </div>
