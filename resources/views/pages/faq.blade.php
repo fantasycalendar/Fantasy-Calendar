@@ -55,17 +55,17 @@
                     {
                         id: 1,
                         text: "The site looks different. What's new?",
-                        answer: `You can check out the "<a target='_blank' href='${window.location.origin}/whats-new'>what's new</a>" page here for broad strokes, or if you want to get into the nitty gritty, you can read over the <a target='_blank' href='${window.location.origin}/changelog'>changelog</a>.`
+                        answer: `You can check out the "<a target='_blank' href='{{ route('whats-new') }}'>what's new</a>" page here for broad strokes, or if you want to get into the nitty gritty, you can read over the <a target='_blank' href='{{ route('changelog') }}'>changelog</a>.`
                     },
                     {
                         id: 2,
-                        text: "Don't you have a preset like the real world calendar?",
+                        text: "Where is the preset for the real world calendar?",
                         answer: "We do! The calendar we use on earth is called the 'Gregorian Calendar', and you can find it in the presets when you create a calendar."
                     },
                     {
                         id: 3,
                         text: "Is there a way to track the weather in my world?",
-                        answer: "Yes it can! You'll need <a target='_blank' href='https://helpdocs.fantasy-calendar.com/topic/seasons/'>seasons</a> in your calendar and enable <a target='_blank' href='https://helpdocs.fantasy-calendar.com/topic/weather/'>weather</a> on it. Then, you have the option to switch <a target='_blank' href='https://helpdocs.fantasy-calendar.com/topic/locations/'>locations</a>, which is what actually drives the weather. Between our many preset climate locations, such as Equatorial, Tropical Savanna, Cool and Rainy, and Polar-like, you have plenty of options to simulate your location. If you want something more home-brewed, you can create your own custom locations to best suit the places in your world."
+                        answer: "Yes it can! You'll need <a target='_blank' href='{{ helplink('seasons') }}'>seasons</a> in your calendar and enable <a target='_blank' href='{{ helplink('weather') }}'>weather</a> on it. Then, you have the option to switch <a target='_blank' href='{{ helplink('locations') }}'>locations</a>, which is what actually drives the weather. Between our many preset climate locations, such as Equatorial, Tropical Savanna, Cool and Rainy, and Polar-like, you have plenty of options to simulate your location. If you want something more home-brewed, you can create your own custom locations to best suit the places in your world."
                     },
                     {
                         id: 4,
@@ -75,7 +75,7 @@
                     {
                         id: 5,
                         text: "I don't know how X feature works! Where can I find more information?",
-                        answer: "Don't worry! You can find help on our <a target='_blank' href='https://helpdocs.fantasy-calendar.com/'>help docs</a>, which contains detailed information about each feature. If that doesn't solve your issues, you can always join our <a target='_blank' href='https://discord.gg/BNSM7aT'>discord server</a> and ask other Fantasy-Calendar users for a hand."
+                        answer: "Don't worry! You can find help on our <a target='_blank' href='{{ helplink()  }}'>help docs</a>, which contains detailed information about each feature. If that doesn't solve your issues, you can always join our <a target='_blank' href='https://discord.gg/BNSM7aT'>discord server</a> and ask other Fantasy-Calendar users for a hand."
                     },
                     {
                         id: 6,
