@@ -47,6 +47,7 @@
 
         .comparison_image img {
             max-width: 72%;
+            max-height: 60vh;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
 
@@ -68,7 +69,7 @@
             width: 100%;
             z-index: 1;
         }
-        img {
+        section img {
             max-width: 100%;
             margin: 1.5rem 0;
         }
@@ -114,15 +115,15 @@
 @section('content')
     <div>
         <div class="fullheight green-border welcome" style="background-color: #edf2f7; background-image: url({{ asset('resources/whats-new-angle-blur-transparent.png') }}); background-size: cover; background-position: center center; background-attachment: fixed;">
-            <h1 style="width: 100%; text-align: center;">Fantasy Calendar is getting an update!</h1>
-            <h2 style="width: 100%; text-align: center;">Here is what you can expect in Fantasy Calendar 2.0.</h2>
+            <h1 style="width: 100%; text-align: center;">Fantasy Calendar has been updated!</h1>
+            <h2 style="width: 100%; text-align: center;">Here is a quick look at Fantasy Calendar 2.0.</h2>
             <h3 class="next-link" style="font-size: 2.3rem; position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section2"><i class="fa fa-chevron-circle-down"></i> Give it a look <i class="fa fa-chevron-circle-down"></i></a></h3>
             <div class="overlay"></div>
         </div>
 
         <div class="fullheight green-border comparison_image" id="section2" style="background-image: linear-gradient(to right, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url({{ asset('resources/whats-new-1-0.png') }});">
             <h1 style="width: 100%; text-align: center; color: #2d3748; margin-bottom:1rem;">Here's what you're used&nbsp;to.</h1>
-            <h2 style="width: 100%; text-align: center; color: #2d3748; margin-bottom:1.4rem;">It works great! But I think we can all agree it could use some&nbsp;polish.</h2>
+            <h2 style="width: 100%; text-align: center; color: #2d3748; margin-bottom:1.4rem;">It works great! But I think we can all agree it needs some&nbsp;polish.</h2>
             <img src="{{ asset('/resources/whats-new-1-0.png') }}">
             <h3 class="next-link" style="font-size: 2.3rem; position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section3"><i class="fa fa-chevron-circle-down"></i> Take a peek at the new look <i class="fa fa-chevron-circle-down"></i></a></h3>
             <div class="overlay"></div>
@@ -159,7 +160,7 @@
                     </div>
 
                     <div class="col-12 col-md-5 text-center text-md-right d-flex flex-column align-items-end justify-content-center">
-                        <h4>Make your events colorful, so you and your players can tell events apart at a glance.</h4>
+                        <h4>Make your events colorful, to help you and your players distinguish between them.</h4>
                     </div>
                 </div>
             </div>
@@ -188,7 +189,7 @@
                     </div>
                     <div class="col-12 col-md-6 text-center text-md-right d-flex flex-column align-items-end justify-content-center">
                         <h3 style="color: white;">What lives in the darkness...</h3>
-                        <h4 style="color: white;">That's probably a bit dramatic... But comfort for your retinas is here!</h4>
+                        <h4 style="color: white;">Ok, that's probably a bit dramatic. But dark mode is here!</h4>
                     </div>
                 </div>
             </div>
@@ -199,11 +200,11 @@
             <div class="container py-5">
                 <div class="row">
                     <div class="col-12 col-md-6 text-center text-md-left d-flex flex-column align-items-start justify-content-center">
-                        <h3>Event conditions for everything!</h3>
-                        <h4>Your events now have support for advanced conditions. Last sunday on three specific months? Check. When all 4 moons are full? <strong>Check.</strong></h4>
+                        <h3>Helpful Documentation</h3>
+                        <h4>Confused? Some feature doesn't make any sense? Head over to the <a href='https://helpdocs.fantasy-calendar.com/' target='_blank'>helpdocs</a> for help and information about every single feature.</h4>
                     </div>
                     <div class="col-12 col-md-6 text-center text-md-right">
-                        <img src="{{ asset('resources/whats-new-event-conditions.png') }}" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);">
+                        <img src="{{ asset('resources/whats-new-helpdocs.png') }}" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);">
                     </div>
                 </div>
             </div>
@@ -216,8 +217,8 @@
                         <h2>And So Much More...</h2>
                     </div>
                 </div>
-                <div class="row py-3">
-                    <div class="col-12 col-md-3 py-2 py-md-0 px-2 ml-md-0 pl-md-0 pr-md-1">
+                <div class="row pt-3 pb-3 justify-content-center">
+                    <div class="col-12 col-md-3 py-2 py-md-0 px-2 ml-md-0 pl-md-0 pr-md-2">
                         <div class="inner text-center h-100 px-3 rounded" style="background-color: #e2e8f0;">
                             <div class="row">
                                 <h3 class="pt-4 w-100"><i class="fa fa-infinity"></i></h3>
@@ -230,7 +231,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-3 py-2 py-md-0 px-2 px-md-1">
+                    <div class="col-12 col-md-3 py-2 py-md-0 px-2 px-md-2">
                         <div class="inner text-center h-100 px-3 rounded" style="background-color: #e2e8f0;">
                             <div class="row">
                                 <h3 class="pt-4 w-100"><i class="fa fa-th-list"></i></h3>
@@ -243,7 +244,22 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-3 py-2 py-md-0 px-2 px-md-1">
+                    <div class="col-12 col-md-3 py-2 py-md-0 px-2 pl-md-2">
+                        <div class="inner text-center h-100 px-3 rounded" style="background-color: #e2e8f0;">
+                            <div class="row">
+                                <h3 class="pt-4 w-100"><i class="fa fa-calendar-check"></i></h3>
+                            </div>
+                            <div class="row">
+                                <h5 class="pt-2 w-100">Event Conditions</h5>
+                            </div>
+                            <div class="row">
+                                <p class=" px-4">Your events now have support for advanced conditions. Last sunday on three specific months? Check. When all 4 moons are full? <strong>Check.</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row pb-1 justify-content-center">
+                    <div class="col-12 col-md-3 py-2 py-md-0 px-2 ml-md-0 pl-md-0 pr-md-2">
                         <div class="inner text-center h-100 px-3 rounded" style="background-color: #e2e8f0;">
                             <div class="row">
                                 <h3 class="pt-4 w-100"><i class="fa fa-users"></i></h3>
@@ -256,7 +272,20 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-3 py-2 py-md-0 px-2 mr-md-0 pr-md-0 pl-md-1">
+                    <div class="col-12 col-md-3 py-2 py-md-0 px-2 px-md-2">
+                        <div class="inner text-center h-100 px-3 rounded" style="background-color: #e2e8f0;">
+                            <div class="row">
+                                <h3 class="pt-4 w-100"><i class="fa fa-link"></i></h3>
+                            </div>
+                            <div class="row">
+                                <h5 class="pt-2 w-100">Calendar Linking</h5>
+                            </div>
+                            <div class="row">
+                                <p class=" px-4">Connect two calendars together, make a parent calendar drive the date of child calendars for a 1:1 date conversion in real time.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 py-2 py-md-0 px-2 pl-md-2">
                         <div class="inner text-center h-100 px-3 rounded" style="background-color: #e2e8f0;">
                             <div class="row">
                                 <h3 class="pt-4 w-100"><i class="fa fa-cogs"></i></h3>
@@ -264,13 +293,13 @@
                             <div class="row">
                                 <h5 class="pt-2 w-100">Engine Improvements</h5>
                             </div>
-                            <div class="row">
+                            <div class="row justify-content-center">
                                 <ul class="text-left pl-4">
-                                    <li class="">More accurate leap days</li>
-                                    <li class="">Intercalary & leap months</li>
-                                    <li class="">Better weather generation</li>
-                                    <li class="">Upgraded and improved seasons</li>
-                                    <li class="">...and more!</li>
+                                    <li>More accurate leap days</li>
+                                    <li>Intercalary & leap months</li>
+                                    <li>Better weather generation</li>
+                                    <li>Upgraded and improved seasons</li>
+                                    <li>...and more!</li>
                                 </ul>
                             </div>
                         </div>
@@ -293,7 +322,7 @@
             <section class="container">
                 <div class="row">
                     <div class="col-12 text-center text-white">
-                        <h2>With much more to come!</h2>
+                        <h3>With much more to come!</h3>
                         <h4>We only plan to make it better.</h4>
                     </div>
                 </div>

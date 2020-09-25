@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\CalendarEvent;
 use App\Observers\CalendarEventObserver;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
@@ -29,7 +30,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        URL::forceRootUrl(config('app.url'));
+        // URL::forceRootUrl(config('app.url'));
+        Paginator::useBootstrap();
 
         \Illuminate\Pagination\AbstractPaginator::currentPathResolver(function () {
             /** @var \Illuminate\Routing\UrlGenerator $url */

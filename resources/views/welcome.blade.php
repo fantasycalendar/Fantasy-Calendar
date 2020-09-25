@@ -126,7 +126,7 @@
 
 @section('content')
     <section class="jumbotron jumbotron-fluid">
-        <div class="container">
+        <div class="container rounded">
             <div class="row align-items-center">
                 <div class="col-12 col-md-3 d-none d-md-block logo text-center">
                     <img class="w-100" src="{{ asset('resources/jumbotron_logo.png') }}">
@@ -149,28 +149,28 @@
         <div class="container">
             <div class="row">
                 <div class="col-12 col-md-3 py-3 py-md-0 px-2 ml-md-0 pl-md-0 pr-md-1">
-                    <div class="inner text-center">
+                    <div class="rounded inner text-center">
                         <p class="pt-2"><i class="fa fa-check-circle"></i></p>
                         <h3>Easy to Use</h3>
                         <p class="small">Fantasy Calendar has been lovingly hand-crafted to make sense. With a detailed wiki to make up for the parts that don’t.</p>
                     </div>
                 </div>
                 <div class="col-12 col-md-3 py-3 py-md-0 px-2 px-md-1">
-                    <div class="inner text-center">
+                    <div class="rounded inner text-center">
                         <p class="pt-2"><i class="fa fa-mobile"></i></p>
                         <h3>Mobile-Friendly</h3>
                         <p class="small">Because you never know when you might have a great idea for a calendar system, or want to track events in that pick-up D&D game at the games store.</p>
                     </div>
                 </div>
                 <div class="col-12 col-md-3 py-3 py-md-0 px-2 px-md-1">
-                    <div class="inner text-center">
+                    <div class="rounded inner text-center">
                         <p class="pt-2"><i class="fa fa-rocket"></i></p>
                         <h3>Light &amp; Responsive</h3>
                         <p class="small">Your fantasy world’s calendar should help you keep time, not waste yours. Keep game time even on low-end computers, netbooks, or chromebooks.</p>
                     </div>
                 </div>
                 <div class="col-12 col-md-3 py-3 py-md-0 px-2 mr-md-0 pr-md-0 pl-md-1">
-                    <div class="inner text-center">
+                    <div class="rounded inner text-center">
                         <p class="pt-2"><i class="fa fa-calendar-day"></i></p>
                         <h3 class="lower-height">Powerful Calendar Engine</h3>
                         <p class="small">This flexible calendar engine can accommodate whatever your world needs — intercalaries, leap days, moons cycles, seasons, eras, and more!</p>
