@@ -2331,7 +2331,7 @@ var show_event_ui = {
 		this.event_save_btn						= this.event_background.find('#submit_comment');
 		this.edit_event_btn				   		= this.event_background.find('.edit_event_btn');
 
-		this.event_comment_mastercontainer.toggleClass('hidden', !can_comment_on_event());
+		this.event_comment_mastercontainer.toggleClass('hidden', !Perms.user_can_comment());
 
 		this.event_comment_input.trumbowyg({
 			btns: [
@@ -2443,7 +2443,7 @@ var show_event_ui = {
 			this.event_comment_mastercontainer.addClass('hidden');
 		}else if(this.db_event_id !== undefined){
 			get_event_comments(this.db_event_id, this.add_comments);
-		}else if(can_comment_on_event()){
+		}else if(Perms.user_can_comment()){
 			this.event_comments.html("You need to save your calendar before comments can be added to this event!").removeClass('loading');
 		}else{
 			this.event_comments.removeClass("loading").addClass('hidden');
@@ -2471,15 +2471,15 @@ var show_event_ui = {
 
 		}else{
 
-			show_event_ui.event_comment_mastercontainer.toggleClass('hidden', !can_comment_on_event());
+			show_event_ui.event_comment_mastercontainer.toggleClass('hidden', !Perms.user_can_comment());
 
-			if(can_comment_on_event()){
+			if(Perms.user_can_comment()){
 				show_event_ui.event_comments.html("No comments on this event yet... Maybe you'll be the first?")
 			}
 
 		}
 
-		if(can_comment_on_event()){
+		if(Perms.user_can_comment()){
 			show_event_ui.event_comment_input_container.show().find('button').prop('disable', false);
 			show_event_ui.event_comment_input.trumbowyg('disabled', false);
 		}else{
@@ -2586,22 +2586,4 @@ var edit_HTML_ui = {
 		this.html_edit_background.addClass('hidden');
 
 	},
-}
-
-function can_comment_on_event(){
-
-	if(Perms.player_at_least('co-owner')){
-		return true;
-	}
-
-	if(static_data.settings.comments == "players"){
-		return Perms.player_at_least('player');
-	}
-
-	if(static_data.settings.comments == "public"){
-		return Perms.player_at_least('free');
-	}
-
-	return false;
-
 }

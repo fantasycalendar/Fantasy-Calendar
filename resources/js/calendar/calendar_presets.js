@@ -331,7 +331,8 @@ function parse_json(json){
                 "hide_future_weather":false,
                 "add_month_number":false,
                 "add_year_day_number":false,
-                "default_category":-1
+                "default_category":-1,
+                "comments": false
             },
             "cycles":{
                 "format":"",

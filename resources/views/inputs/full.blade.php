@@ -1238,15 +1238,20 @@
 						</div>
 					</label>
 
+					@if(Auth::user()->can('add-users', $calendar))
+
 					<div class='bold-text'>Event Settings:</div>
 
-					<label class="row no-gutters setting py-1 protip" data-pt-position="right" data-pt-title="This will change who can comment on the events of your calendar.">
-						<select class='form-control static_input' data='settings' fc-index='comments' refresh='false'>
-							<option selected value='none'>Disable event commenting</option>
-							<option value='players'>Disable public commenting</option>
-							<option value='public'>Allow public commenting</option>
-						</select>
+					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="This will change whether users can comment on the events of your calendar. When disabled, only the owner can comment on events.">
+						<div class='col'>
+							<input type='checkbox' class='margin-right static_input' data='settings' fc-index='comments' refresh='false'>
+							<span>
+								Allow user comments on events
+							</span>
+						</div>
 					</label>
+
+					@endif
 
 					<div class='bold-text'>Advanced Settings:</div>
 
