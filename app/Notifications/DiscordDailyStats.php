@@ -11,16 +11,6 @@ use Illuminate\Notifications\Notifiable;
 use App\User;
 use Carbon\Carbon;
 
-class NotificationDiscordChannelTestNotifiable
-{
-    use Notifiable;
-
-    public function routeNotificationForDiscord()
-    {
-        return "https://discordapp.com/api/webhooks/760982858747084831/aiW4QmC-CRR0Lbi9EvoR8fjTLzJL6rLEaYNd80K7K7UeNrPR5sUtRwLUfLN5sWpVvUcF";
-    }
-}
-
 class DiscordDailyStats extends Notification
 {
     use Queueable;
