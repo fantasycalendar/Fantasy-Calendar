@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ffd4cc46a8fb015cfb6d059fd1d25fb8",
+    "content-hash": "fdf5d1b49d1c8759eb53eaf23f9298ec",
     "packages": [
         {
             "name": "async-aws/cloud-formation",
@@ -243,6 +243,61 @@
                 "sdk"
             ],
             "time": "2020-09-21T18:12:58+00:00"
+        },
+        {
+            "name": "awssat/discord-notification-channel",
+            "version": "1.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/awssat/discord-notification-channel.git",
+                "reference": "514df4bb5db48f624658240d6b1f9b8ee468a46f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/awssat/discord-notification-channel/zipball/514df4bb5db48f624658240d6b1f9b8ee468a46f",
+                "reference": "514df4bb5db48f624658240d6b1f9b8ee468a46f",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^6.0|^7.0",
+                "illuminate/notifications": "~5.8.0|^6.0|^7.0|^8.0",
+                "laravel/slack-notification-channel": "^2.0",
+                "php": "^7.1.3"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.0",
+                "phpunit/phpunit": "^7.0|^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Awssat\\Notifications\\DiscordChannelServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Awssat\\Notifications\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Bader Almutairi",
+                    "email": "phpfalcon@gmail.com"
+                }
+            ],
+            "description": "Discord Notification Channel for laravel.",
+            "keywords": [
+                "discord",
+                "laravel",
+                "notifications"
+            ],
+            "time": "2020-09-09T20:42:43+00:00"
         },
         {
             "name": "barryvdh/laravel-ide-helper",
@@ -2593,6 +2648,63 @@
                 "laravel"
             ],
             "time": "2020-09-18T21:27:11+00:00"
+        },
+        {
+            "name": "laravel/slack-notification-channel",
+            "version": "v2.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/slack-notification-channel.git",
+                "reference": "98e0fe5c8dda645e6af914285af7b742e167462a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/slack-notification-channel/zipball/98e0fe5c8dda645e6af914285af7b742e167462a",
+                "reference": "98e0fe5c8dda645e6af914285af7b742e167462a",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^6.0|^7.0",
+                "illuminate/notifications": "~5.8.0|^6.0|^7.0|^8.0",
+                "php": "^7.1.3"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.0",
+                "phpunit/phpunit": "^7.0|^8.0|^9.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.x-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "Illuminate\\Notifications\\SlackChannelServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Illuminate\\Notifications\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "Slack Notification Channel for laravel.",
+            "keywords": [
+                "laravel",
+                "notifications",
+                "slack"
+            ],
+            "time": "2020-08-25T18:21:34+00:00"
         },
         {
             "name": "laravel/tinker",
