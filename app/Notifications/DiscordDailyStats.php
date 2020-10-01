@@ -32,11 +32,9 @@ class DiscordDailyStats extends Notification
      */
     public function __construct()
     {
-        
         $total_users = User::count();
         $users_today = User::where('email_verified_at', '>', Carbon::today())->count();
         $this->users_string = "$total_users (+$users_today)";
-        //
     }
 
     /**
