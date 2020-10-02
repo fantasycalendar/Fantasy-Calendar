@@ -28,7 +28,7 @@ class CalendarInvite extends Model
     }
 
     public function isValid() {
-        return $this->expires_on > Carbon::now() && !$this->accepted;
+        return $this->expires_on > Carbon::now() && !$this->handled;
     }
 
     public function validForCalendar($hash) {
@@ -59,7 +59,7 @@ class CalendarInvite extends Model
         $this->calendar->users()->attach(User::whereEmail($this->email)->first());
         $this->calendar->save();
 
-        $this->accepted = true;
+        $this->handled = true;
         $this->save();
 
         return $this;
@@ -67,6 +67,7 @@ class CalendarInvite extends Model
 
     public function reject() {
         $this->expires_on = now();
+        $this->handled = true;
         $this->save();
 
         return $this;
@@ -96,7 +97,7 @@ class CalendarInvite extends Model
     }
 
     public function scopeActive($query) {
-        return $query->where('accepted', false)->where('expires_on', '>', Carbon::now());
+        return $query->where('handled', false)->where('expires_on', '>', Carbon::now());
     }
 
     public function scopeForUser($query, $email) {

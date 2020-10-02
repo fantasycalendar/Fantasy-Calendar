@@ -18,7 +18,7 @@ class CreateCalendarInvitesTable extends Migration
             $table->string('invite_token');
             $table->string('email');
             $table->bigInteger('calendar_id');
-            $table->boolean('accepted')->default(false);
+            $table->boolean('handled')->default(false);
             $table->timestamp('expires_on');
             $table->timestamp('resent_at')->nullable();
             $table->timestamps();
