@@ -27,7 +27,7 @@ class Statistics
         $total_users = $this->user->whereNotNull('email_verified_at')->count();
         $users_today = $this->user->where('email_verified_at', '>', today())->count();
 
-        return sprintf("%s (%s)", $total_users, (($users_today) ? $users_today: "No change"));
+        return $this->format($total_users, $users_today);
     }
 
     public function getMonthlySubscribersToday() {
@@ -35,7 +35,7 @@ class Statistics
         $total_monthly_subscriptions = $monthly_subscriptions->count();
         $monthly_subscriptions_today = $monthly_subscriptions->where('updated_at', '>', today())->count();
 
-        return sprintf("%s (%s)", $total_monthly_subscriptions, (($monthly_subscriptions_today) ? $monthly_subscriptions_today: "No change"));
+        return $this->format($total_monthly_subscriptions, $monthly_subscriptions_today);
     }
 
     public function getYearlySubscribersToday() {
@@ -43,6 +43,10 @@ class Statistics
         $total_yearly_subscriptions = $yearly_subscriptions->count();
         $yearly_subscriptions_today = $yearly_subscriptions->where('updated_at', '>', today())->count();
 
-        return sprintf("%s (%s)", $total_yearly_subscriptions, (($yearly_subscriptions_today) ? $yearly_subscriptions_today: "No change"));
+        return $this->format($total_yearly_subscriptions, $yearly_subscriptions_today);
+    }
+
+    public function format($total, $today) {
+        return sprintf("%s (%s)", $total, (($today) ? $today: "No change"));
     }
 }
