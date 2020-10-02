@@ -56,6 +56,10 @@ class Calendar extends Model
         return $this->hasMany('App\Calendar', 'parent_id');
     }
 
+    public function invitations() {
+        return $this->hasMany('App\CalendarInvite');
+    }
+
 
     public function structureWouldBeModified($static_data){
 

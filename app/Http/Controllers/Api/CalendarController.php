@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\CalendarInvite;
+use App\Http\Requests\GetCalendarUsersRequest;
+use App\Http\Requests\InviteCalendarUserRequest;
 use App\Jobs\CloneCalendar;
 use App\Notifications\CalendarInvitation;
 use App\Notifications\UnregisteredCalendarInvitation;
@@ -80,45 +82,19 @@ class CalendarController extends Controller
         return new CalendarCollection($calendar->user->calendars->keyBy('hash'));
     }
 
-    public function users(Request $request, $id) {
-        $calendar = Calendar::active()
-            ->hash($id)
-            ->firstOrFail();
-
+    public function users(GetCalendarUsersRequest $request, $id) {
         return array_merge(
-            $calendar->users->toArray(),
-            CalendarInvite::active()->where('calendar_id', $calendar->id)->get()->map(function($invite) { return $invite->transformForCalendar(); })->toArray()
+            $request->calendar->users->toArray(),
+            $request->calendar->invitations()->active()->get()->map(function($invite) { return $invite->transformForCalendar(); })->toArray()
         );
     }
 
-    public function inviteUser(Request $request, $id) {
-        $calendar = Calendar::active()->hash($id)->firstOrFail();
-        $email = $request->input('email');
+    public function inviteUser(InviteCalendarUserRequest $request) {
+        $invitation = CalendarInvite::generate($request->calendar, $request->email);
 
+        $invitation->send();
 
-        if(!auth('api')->user()->can('add-users', $calendar)) {
-            return response()->json(['error' => true, 'message' => 'Action not authorized.'], 403);
-        }
-
-
-        try {
-            $user = User::whereEmail($email)->firstOrFail();
-
-            if($calendar->users->contains($user)) {
-                return response()->json(['error' => true, 'message' => 'This calendar already has user "'.$user->username.'"']);
-            }
-
-            $invitation = CalendarInvite::generate($calendar, $user->email);
-            return (new CalendarInvitation($invitation))->toMail($user->email);
-
-            $user->notify(new CalendarInvitation($invitation));
-        } catch (ModelNotFoundException $e) {
-            Notification::route('mail', $email)
-                ->notify(new UnregisteredCalendarInvitation($calendar, $email));
-        }
-
-
-        return response()->json(['error' => false, 'message' => 'Invite sent.']);
+        return response()->json(['message' => 'Invite sent.']);
     }
 
     public function changeUserRole(Request $request, $id) {

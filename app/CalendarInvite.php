@@ -2,10 +2,13 @@
 
 namespace App;
 
+use App\Notifications\CalendarInvitation;
+use App\Notifications\UnregisteredCalendarInvitation;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 
 class CalendarInvite extends Model
@@ -80,5 +83,22 @@ class CalendarInvite extends Model
 
     public function scopeActive($query) {
         return $query->where('accepted', false)->where('expires_on', '>', Carbon::now());
+    }
+
+    public function send() {
+        if(!$this->email) {
+            throw new \Exception("what");
+        }
+
+        if(User::whereEmail($this->email)->exists()) {
+            User::whereEmail($this->email)->first()->notify(new CalendarInvitation($this));
+
+            return $this;
+        }
+
+        Notification::route('mail', $this->email)
+                ->notify(new UnregisteredCalendarInvitation($this));
+
+        return $this;
     }
 }
