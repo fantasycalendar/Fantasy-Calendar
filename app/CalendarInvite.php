@@ -70,13 +70,11 @@ class CalendarInvite extends Model
         $this->handled = true;
         $this->save();
 
+        $this->delete();
+
         return $this;
     }
-
-    public function cancel() {
-        $this->delete();
-    }
-
+    
     public function transformForCalendar() {
         return [
             'id' => Str::slug($this->email),
