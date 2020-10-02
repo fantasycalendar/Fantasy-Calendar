@@ -113,7 +113,9 @@ function set_up_edit_inputs(){
 	$('.view-tabs .btn').click(function(){
 
 		view_type = $(this).attr('data-view-type');
-		Perms.owner = true;
+		
+    
+    owner = true;
 
 		$('.view-tabs .btn-primary').removeClass('btn-primary').addClass('btn-secondary');
 
@@ -2844,7 +2846,7 @@ function add_leap_day_to_list(parent, key, data){
 
 				element.push("<div class='row no-gutters'>");
 					element.push("<div class='col'>");
-						element.push("Timespan:");
+						element.push("Month to add to:");
 						element.push(`<select type='number' class='custom-select form-control leap_day_occurance_input timespan-list dynamic_input full timespan_special' data='year_data.leap_days.${key}' fc-index='timespan'>`);
 						for(var j = 0; j < static_data.year_data.timespans.length; j++)
 						{
@@ -3183,7 +3185,19 @@ function add_season_to_sortable(parent, key, data){
 
 				element.push("</div>");
 
-				element.push(`<div class='row no-gutters mb-2'>`);
+				element.push(`<div class='row no-gutters sortable-header'>`);
+
+					element.push("<div class='col-6 pr-1'>");
+						element.push(`Hour`);
+					element.push("</div>");
+
+					element.push("<div class='col-6 pl-1'>");
+						element.push(`Minute`);
+					element.push("</div>");
+
+				element.push("</div>");
+
+				element.push(`<div class='row no-gutters mb-2 protip' data-pt-position="right" data-pt-title="What time the sun rises at the peak of this season">`);
 
 					element.push("<div class='col-6 pr-1 clock-input'>");
 						element.push(`<input type='number' step="1.0" class='form-control full dynamic_input hour_input' clocktype='sunrise_hour' data='seasons.data.${key}.time.sunrise' fc-index='hour' value='${data.time.sunrise.hour}' />`);
@@ -3201,7 +3215,19 @@ function add_season_to_sortable(parent, key, data){
 
 				element.push("</div>");
 
-				element.push(`<div class='row no-gutters mb-2'>`);
+				element.push(`<div class='row no-gutters sortable-header'>`);
+
+					element.push("<div class='col-6 pr-1'>");
+						element.push(`Hour`);
+					element.push("</div>");
+
+					element.push("<div class='col-6 pl-1'>");
+						element.push(`Minute`);
+					element.push("</div>");
+
+				element.push("</div>");
+
+				element.push(`<div class='row no-gutters mb-2 protip' data-pt-position="right" data-pt-title="What time the sun sets at the peak of this season">`);
 
 					element.push("<div class='col-6 pr-1 clock-input'>");
 						element.push(`<input type='number' step="1.0" class='form-control full dynamic_input hour_input' clocktype='sunset_hour' data='seasons.data.${key}.time.sunset' fc-index='hour' value='${data.time.sunset.hour}' />`);
@@ -3337,7 +3363,19 @@ function add_location_to_list(parent, key, data){
 
 						element.push("</div>");
 
-						element.push(`<div class='row no-gutters mb-2'>`);
+						element.push(`<div class='row no-gutters sortable-header'>`);
+		
+							element.push("<div class='col-6 pr-1'>");
+								element.push(`Hour`);
+							element.push("</div>");
+		
+							element.push("<div class='col-6 pl-1'>");
+								element.push(`Minute`);
+							element.push("</div>");
+		
+						element.push("</div>");
+
+						element.push(`<div class='row no-gutters mb-2 protip'  data-pt-position="right" data-pt-title="What time the sun rises at the peak of this season, in this location">`);
 
 							element.push("<div class='col-6 pl-0 pr-1 clock-input'>");
 								element.push(`<input type='number' step="1.0" class='form-control text-right full dynamic_input hour_input' clocktype='sunrise_hour' data='seasons.locations.${key}.seasons.${i}.time.sunrise' fc-index='hour' value='${data.seasons[i].time.sunrise.hour}' />`);
@@ -3357,7 +3395,19 @@ function add_location_to_list(parent, key, data){
 
 						element.push("</div>");
 
-						element.push(`<div class='row no-gutters mb-2'>`);
+						element.push(`<div class='row no-gutters sortable-header'>`);
+		
+							element.push("<div class='col-6 pr-1'>");
+								element.push(`Hour`);
+							element.push("</div>");
+		
+							element.push("<div class='col-6 pl-1'>");
+								element.push(`Minute`);
+							element.push("</div>");
+		
+						element.push("</div>");
+
+						element.push(`<div class='row no-gutters mb-2 protip' data-pt-position="right" data-pt-title="What time the sets rises at the peak of this season, in this location">`);
 
 							element.push("<div class='col-6 pl-0 pr-1 clock-input'>");
 								element.push(`<input type='number' step="1.0" class='form-control text-right full dynamic_input hour_input' clocktype='sunset_hour' data='seasons.locations.${key}.seasons.${i}.time.sunset' fc-index='hour' value='${data.seasons[i].time.sunset.hour}' />`);
@@ -3387,6 +3437,18 @@ function add_location_to_list(parent, key, data){
 
 				element.push(`<div class='row my-1'>`);
 					element.push("<div class='col'>Timezone:</div>");
+				element.push("</div>");
+
+				element.push(`<div class='row no-gutters sortable-header'>`);
+
+					element.push("<div class='col-6 pr-1'>");
+						element.push(`Hour`);
+					element.push("</div>");
+
+					element.push("<div class='col-6 pl-1'>");
+						element.push(`Minute`);
+					element.push("</div>");
+
 				element.push("</div>");
 
 				element.push(`<div class='row no-gutters mb-2 protip' data-pt-position="right" data-pt-title="When this location becomes active, the current time will change this much to reflect the new location.">`);
@@ -4008,13 +4070,13 @@ function add_user_to_list(parent, key, data){
 					element.push(`<p class='m-0'>Permissions:</p>`);
 				element.push("</div>");
 
-				element.push("<div class='row no-gutters mb-1'>");
-					element.push("<div class='col-md'>");
-						element.push("<select class='form-control user_permissions_select' onchange='user_permissions_select(this)'>");
-							element.push(`<option ${data.pivot.user_role == 'observer' ? "selected" : ""} value='observer'>Observer</option>`);
-							element.push(`<option ${data.pivot.user_role == 'player' ? "selected" : ""} value='player'>Player</option>`);
-							element.push(`<option ${!Perms.user_at_least('worldbuilder') ? "disabled" : ""} ${data.pivot.user_role == 'co-owner' ? "selected" : ""} value='co-owner'>CO-GM${!Perms.user_at_least('worldbuilder') ? " (Only available to Worldbuilder tier)" : ""}</option>`);
-						element.push("</select>");
+			element.push("<div class='row no-gutters mb-1'>");
+				element.push("<div class='col-md'>");
+					element.push("<select class='form-control user_permissions_select' onchange='user_permissions_select(this)'>");
+						element.push(`<option ${data.pivot.user_role == 'observer' ? "selected" : ""} value='observer'>Observer</option>`);
+						element.push(`<option ${data.pivot.user_role == 'player' ? "selected" : ""} value='player'>Player</option>`);
+						element.push(`<option ${data.pivot.user_role == 'co-owner' ? "selected" : ""} value='co-owner'>CO-GM</option>`);
+					element.push("</select>");
 					element.push("</div>");
 					element.push("<div class='col-md-auto'>");
 						element.push(`<button type='button' class='btn btn btn-primary full update_user_permissions' disabled permissions_val='${data.pivot.user_role}' user_id='${data.id}'>Update</button>`);

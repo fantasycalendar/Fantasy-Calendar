@@ -34,7 +34,7 @@
             <p><i class="fa fa-calendar"></i> Calendars: {{ $user->calendars->count() }}</p>
         </div>
         <div class="col-12 col-md-8">
-            <p><i class="fa fa-layer-group"></i> Subscription: {!! ($user->betaAccess()) ? "Worldbuilder <br><small class='pl-3'>(Free for beta participation)</small>" : $user->paymentLevel() !!}</p>
+            <p><i class="fa fa-layer-group"></i> Subscription: {!! ($user->betaAccess()) ? "Timekeeper <br><small class='pl-3'>(Free for beta participation)</small>" : $user->paymentLevel() !!}</p>
             @empty($subscription)
                 @unless($user->betaAccess())
                     <p><a class="btn btn-success form-control" href="{{ route('subscription.pricing') }}">Get subscribed</a></p>
@@ -42,16 +42,17 @@
                     <p><a href="{{ route('subscription.pricing', ['beta_override' => '1']) }}" class="btn btn-success form-control">Subscribe anyway</a></p>
                 @endunless
             @else
-                @if($subscription->onGracePeriod())
-                    <p style="color: red;"><i class="fa fa-exclamation-triangle"></i> Cancelled, ending {{ $subscription->ends_at->format('Y-m-d') }}</p>
-                @endif
                 <p><i class="fa fa-credit-card"></i> {{ strtoupper($user->card_brand) }} (...{{ $user->card_last_four }})</p>
-                <p><button class="btn btn-outline-secondary form-control change-sub" disabled>Change subscription (Currently Unavailable)</button></p>
                 @unless($subscription->onGracePeriod())
                     <p><a href="{{ route('subscription.cancel') }}" class="btn btn-danger form-control">Cancel subscription</a></p>
                 @endunless
 
-                @if(env('APP_ENV') !== 'production' && $subscription->onGracePeriod())
+                @if($subscription->onGracePeriod())
+                    <p style="color: red;"><i class="fa fa-exclamation-triangle"></i> Cancelled, ending {{ $subscription->ends_at->format('Y-m-d') }}</p>
+                    <p><a href="{{ route('subscription.resume') }}" class="btn btn-primary form-control">Resume Subscription</a></p>
+                @endif
+
+            @if(env('APP_ENV') !== 'production' && $subscription->onGracePeriod())
                         <p><a href="{{ route('subscription.cancel') }}" class="btn btn-danger form-control">Immediately end benefits</a></p>
                 @endif
             @endunless
@@ -89,7 +90,7 @@
                     <div class="card-body">
                         <div class="card-text" x-data="PasswordManager()">
                             <p><i class="fa fa-envelope"></i>&nbsp;{{ Str::limit($user->email, 26) }}</p>
-                            <p>Registered {{ $user->created_at->format('Y-m-d') }}</p>
+                            <p>Registered {{ ($user->created_at) ? $user->created_at->format('Y-m-d') : $user->date_register }}</p>
 
                             <button class="btn btn-secondary" x-show="!changing_password" @click="changing_password = !changing_password">Change Password</button>
                             <form action="/profile/password" method="POST" x-show="changing_password">

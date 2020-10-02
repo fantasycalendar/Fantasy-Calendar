@@ -32,7 +32,7 @@
 
 	<div class='wrap-collapsible card'>
 		<input id="collapsible_date" class="toggle" type="checkbox" checked disabled>
-		<label for="collapsible_date" class="lbl-toggle card-header lbl-text">Current Date & Time <a target="_blank" data-pt-position="right" data-pt-title='More Info: Date' href='https://helpdocs.fantasy-calendar.com/topic/current_date_and_time/' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+		<label for="collapsible_date" class="lbl-toggle card-header lbl-text">Current Date & Time <a target="_blank" data-pt-position="right" data-pt-title='More Info: Date' href='{{ helplink('current_date_and_time') }}' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 		<div class="collapsible-content container card-body">
 
 			<div id='clock' class='mb-2'>
@@ -233,7 +233,7 @@
 
 		<div class='wrap-collapsible card settings-locations'>
 			<input id="collapsible_locations" class="toggle" type="checkbox" disabled checked>
-			<label for="collapsible_locations" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-compass"></i> Locations <a target="_blank" data-pt-position="right" data-pt-title='More Info: Locations' href='https://helpdocs.fantasy-calendar.com/topic/locations/' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+			<label for="collapsible_locations" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-compass"></i> Locations <a target="_blank" data-pt-position="right" data-pt-title='More Info: Locations' href='{{ helplink('locations') }}' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
 
                 <div class='row no-gutters bold-text'>
@@ -257,7 +257,7 @@
         <!---------------------------------------------->
         <div class='wrap-collapsible card'>
             <input id="collapsible_linking" class="toggle" type="checkbox" checked disabled>
-            <label for="collapsible_linking" class="lbl-toggle card-header lbl-text">Calendar Linking <a target="_blank" data-pt-position="right" data-pt-title='More Info: Calendar Linking' href='https://helpdocs.fantasy-calendar.com/topic/calendar_linking' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+            <label for="collapsible_linking" class="lbl-toggle card-header lbl-text">Calendar Linking <a target="_blank" data-pt-position="right" data-pt-title='More Info: Calendar Linking' href='{{ helplink('calendar_linking') }}' class="wiki protip"><i class="icon-question-sign"></i></a></label>
             <div class="collapsible-content card-body">
 
                 @if($calendar->children->count() > 0)
@@ -322,7 +322,7 @@
 	</div>
 
     @include('layouts.calendar-' . (isset($calendar) ? $calendar->setting('layout', 'grid') : 'grid'))
-    
+
 	@include('templates.footnote')
 
 </div>

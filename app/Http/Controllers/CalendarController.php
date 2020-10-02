@@ -20,8 +20,6 @@ use Illuminate\Support\Str;
 class CalendarController extends Controller
 {
     public function __construct() {
-        // $this->middleware('calendarauth');
-
         $this->middleware('auth')->except('show', 'create');
 
         $this->middleware('verified');
@@ -36,7 +34,7 @@ class CalendarController extends Controller
      */
     public function index(Request $request)
     {
-        $user_calendars = Calendar::active()->search($request->input('search'));
+        $user_calendars = Calendar::active()->search($request->input('search'))->orderBy('disabled');
 
         $user_calendars = (Auth::user()->permissions == 1) ? $user_calendars->with('user') : $user_calendars->where('user_id', Auth::user()->id);
 
@@ -65,7 +63,7 @@ class CalendarController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
     public function create()
     {
@@ -77,8 +75,8 @@ class CalendarController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return array|\Illuminate\Http\Response
      */
     public function store(Request $request)
     {
@@ -110,8 +108,8 @@ class CalendarController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Calendar $calendar
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
     public function show(Calendar $calendar)
     {
@@ -124,8 +122,8 @@ class CalendarController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Calendar $calendar
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
     public function edit(Calendar $calendar)
     {
@@ -138,7 +136,7 @@ class CalendarController extends Controller
      * Show the form for exporting the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
     public function export($id)
     {
@@ -152,9 +150,9 @@ class CalendarController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return array|\Illuminate\Http\Response
      */
     public function update(Request $request, Calendar $calendar)
     {
@@ -227,6 +225,10 @@ class CalendarController extends Controller
 
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function legacy(Request $request) {
         if($request->get('action') == 'generate') {
             return redirect('calendars/create', 301);

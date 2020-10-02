@@ -12,20 +12,10 @@ jobs:
     - uses: actions/setup-node@main
       with:
         node-version: '14'
-    - name: Get Composer Cache Directory
-      id: composer-cache-dir
-      run: |
-        echo "::set-output name=dir::$(composer config cache-files-dir)"
-    - uses: actions/cache@v2
-      with:
-        path: ${{ steps.composer-cache-dir.outputs.dir }}
-        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-composer-
     - name: Run composer
       uses: nick-zh/composer-php@master
       with:
-        action: 'install -oa --ignore-platform-reqs'
+        action: 'install -oa --ignore-platform-reqs --no-dev'
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
@@ -41,6 +31,9 @@ jobs:
       run: npm install
     - name: Build production assets
       run: npm run production
+    - name: Copy assets into S3
+      run: |
+        aws s3 sync ./public s3://fantasy-calendar-prod/
     - name: Deploy web function
       run: npx serverless deploy -f web --stage prod
     - name: Deploy artisan function

@@ -19,6 +19,7 @@ class BetaCheck
     {
         if(Auth::check() && env('APP_ENV') == 'production') {
             if (!Auth::user()->betaAccess()) {
+                Auth::logout();
                 abort(403, 'Your account is not BETA activated, sorry.');
             }
         }

@@ -102,9 +102,9 @@ abstract class DuskTestCase extends BaseTestCase
         return $browser;
     }
 
-    public function getWorldbuilderBrowser($browser, $new = false)
+    public function getTimekeeperBrowser($browser, $new = false)
     {
-        $username = $new ? Str::random(20) : 'TestWorldbuilderUser';
+        $username = $new ? Str::random(20) : 'TestTimekeeperUser';
 
         $user = $this->getUserLike([
             'username' => $username,
@@ -115,9 +115,9 @@ abstract class DuskTestCase extends BaseTestCase
 
         $browser->loginAs($user);
 
-        if($user->paymentLevel() != 'Worldbuilder') {
-            $browser->visitRoute('subscription.subscribe', ['level' => 'Worldbuilder', 'interval' => 'monthly'])
-                ->assertSee('Subscribe to Worldbuilder on a monthly basis.')
+        if($user->paymentLevel() != 'Timekeeper') {
+            $browser->visitRoute('subscription.subscribe', ['level' => 'Timekeeper', 'interval' => 'monthly'])
+                ->assertSee('Subscribe to Timekeeper on a monthly basis.')
                 ->type('#card-holder-name', $user->username);
 
             $browser->waitFor('iframe[name=__privateStripeFrame5]');

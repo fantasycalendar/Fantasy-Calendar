@@ -15,6 +15,9 @@ use Illuminate\Http\Request;
 
 Route::get('/', 'WelcomeController@welcome')->name('home');
 Route::view('/welcome', 'welcome')->name('welcome');
+Route::view('/whats-new', 'pages.whats-new')->name('whats-new');
+Route::view('/changelog', 'pages.changelog')->name('changelog');
+Route::view('/faq', 'pages.faq')->name('faq');
 Route::view('/donate', 'pages.donate', ['title'=>'Support the site']);
 
 Route::get('invite/accept', 'InviteController@accept')->name('invite.accept')->middleware(['auth', 'signed:relative']);
@@ -49,7 +52,7 @@ Route::get('/subscription/cancel', 'SubscriptionController@cancellation')->name(
 Route::post('/subscription/cancel', 'SubscriptionController@cancel')->name('subscription.cancelpost');
 
 // They want to resume! =)
-Route::get('/subscription/resume/{level}', 'SubscriptionController@resume')->name('subscription.resume');
+Route::get('/subscription/resume', 'SubscriptionController@resume')->name('subscription.resume');
 
 // They want to upgrade
 Route::post('/subscription/update/{level}/{plan}', 'SubscriptionController@update')->name('subscription.update');
