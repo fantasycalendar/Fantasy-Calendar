@@ -26,6 +26,9 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('clean:authtokens')
                  ->everyMinute();
+
+        $schedule->command('discord:daily-stats')
+                 ->daily();
     }
 
     /**
