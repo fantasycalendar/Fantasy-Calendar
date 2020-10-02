@@ -31,8 +31,8 @@ class DiscordDailyStats extends Notification
         }else{
             $this->users_string = "$total_users (No change)";
         }
-    
-        $prev_subscriptions = DB::table('webhooks_out')->first();
+
+        $prev_subscriptions = DB::table('webhooks_sent')->first();
 
         $active_subscriptions = DB::table('subscriptions')->where("stripe_status", "=", "active");
 
