@@ -4,14 +4,8 @@ namespace App\Notifications;
 
 use App\Services\Statistics;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Awssat\Notifications\Messages\DiscordMessage;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\DB;
-use App\User;
-use Carbon\Carbon;
 
 class DiscordDailyStats extends Notification
 {
@@ -20,17 +14,17 @@ class DiscordDailyStats extends Notification
     /**
      * @string total_users
      */
-    private $total_users;
+    public $total_users;
 
     /**
      * @string monthly_subscribers
      */
-    private $monthly_subscribers;
+    public $monthly_subscribers;
 
     /**
      * @string yearly_subscribers
      */
-    private $yearly_subscribers;
+    public $yearly_subscribers;
 
     /**
      * Create a new notification instance.

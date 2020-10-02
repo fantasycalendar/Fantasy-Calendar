@@ -42,6 +42,8 @@ class SendDiscordDailyStats extends Command
         try {
             Notification::route('discord', env('DISCORD_WEBHOOK'))->notify(new DiscordDailyStats);
         } catch (\Throwable $error) {
+            $this->error($error->getMessage());
+
             return 1;
         }
 
