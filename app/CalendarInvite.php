@@ -55,25 +55,18 @@ class CalendarInvite extends Model
         return true;
     }
 
-    public function canBeResent() {
-        return $this->resent_at < now()->subMinutes(5);
-    }
-
-    public function resend() {
-        $this->resent_at = now();
-        $this->expires_on = now()->addWeek();
-        $this->save();
-
-        $this->send();
-
-        return $this;
-    }
-
     public function accept() {
         $this->calendar->users()->attach(User::whereEmail($this->email)->first());
         $this->calendar->save();
 
         $this->accepted = true;
+        $this->save();
+
+        return $this;
+    }
+
+    public function reject() {
+        $this->expires_on = now();
         $this->save();
 
         return $this;
@@ -106,6 +99,10 @@ class CalendarInvite extends Model
         return $query->where('accepted', false)->where('expires_on', '>', Carbon::now());
     }
 
+    public function scopeForUser($query, $email) {
+        return $query->where('email', $email);
+    }
+
     public function send() {
         if(!$this->email) {
             throw new \Exception("what");
@@ -121,5 +118,19 @@ class CalendarInvite extends Model
                 ->notify(new UnregisteredCalendarInvitation($this));
 
         return $this;
+    }
+
+    public function resend() {
+        $this->resent_at = now();
+        $this->expires_on = now()->addWeek();
+        $this->save();
+
+        $this->send();
+
+        return $this;
+    }
+
+    public function canBeResent() {
+        return $this->resent_at < now()->subMinutes(5);
     }
 }

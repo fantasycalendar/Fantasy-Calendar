@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\CalendarInvite;
 use App\Jobs\PrepCalendarForExport;
 use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -47,15 +48,15 @@ class CalendarController extends Controller
         $sharedCalendarSimplePagination = $shared_calendars->simplePaginate(10);
         $shared_calendars = $shared_calendars->paginate(10);
 
-        $changelog = Markdown::convertToHtml(Storage::disk('base')->get('public/changelog.md'));
+        $invitations = CalendarInvite::active()->forUser(Auth::user()->email)->get();
 
         return view('calendar.list', [
             'title' => "Fantasy Calendar",
+            'invitations' => $invitations,
             'calendars' => $user_calendars,
             'calendar_pagination' => $calendarSimplePagination,
             'shared_calendars' => $shared_calendars,
             'shared_pagination' => $sharedCalendarSimplePagination,
-            'changelog' => $changelog,
             'search' => $request->input('search'),
         ]);
     }

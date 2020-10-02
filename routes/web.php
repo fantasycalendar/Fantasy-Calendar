@@ -20,7 +20,9 @@ Route::view('/changelog', 'pages.changelog')->name('changelog');
 Route::view('/faq', 'pages.faq')->name('faq');
 Route::view('/donate', 'pages.donate', ['title'=>'Support the site']);
 
-Route::get('invite/accept', 'InviteController@accept')->name('invite.accept')->middleware(['auth', 'signed:relative']);
+Route::get('invite/accept', 'InviteController@accept')->name('invite.accept')->middleware(['auth']);
+Route::get('invite/reject', 'InviteController@showRejectConfirmation')->name('invite.reject-confirm')->middleware('auth');
+Route::post('invite/reject', 'InviteController@reject')->name('invite.reject')->middleware('auth');
 Route::get('invite/register', 'InviteController@register')->name('invite.register')->middleware(['register', 'signed:relative']);
 
 // Calendar management
