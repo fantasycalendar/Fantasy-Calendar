@@ -41,14 +41,14 @@ class DiscordDailyStats extends Notification
     {
         $statistics = new Statistics();
 
-        // Users verified today
+        // Total users and number of users registered today
         $this->total_users = $statistics->getUsersVerifiedToday();
-        dd($this->total_users);
 
-        // Total monthly subscribers
-        // Change to monthly subscribers since last time
-        // Total yearly subscribers
-        // Change to yearly subscribers since last time
+        // Monthly subscribers and total new monthly subscriptions today
+        $this->monthly_subscribers = $statistics->getMonthlySubscribersToday();
+
+        // Yearly subscribers and total new yearly subscriptions today
+        $this->yearly_subscribers = $statistics->getYearlySubscribersToday();
     }
 
     /**

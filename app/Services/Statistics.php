@@ -29,4 +29,20 @@ class Statistics
 
         return sprintf("%s (%s)", $total_users, (($users_today) ? $users_today: "No change"));
     }
+
+    public function getMonthlySubscribersToday() {
+        $monthly_subscriptions = $this->user->subscriptions()->where('stripe_plan', '=', 'timekeeper_monthly')->active();
+        $total_monthly_subscriptions = $monthly_subscriptions->count();
+        $monthly_subscriptions_today = $monthly_subscriptions->where('updated_at', '>', today())->count();
+
+        return sprintf("%s (%s)", $total_monthly_subscriptions, (($monthly_subscriptions_today) ? $monthly_subscriptions_today: "No change"));
+    }
+
+    public function getYearlySubscribersToday() {
+        $yearly_subscriptions = $this->user->subscriptions()->where('stripe_plan', '=', 'timekeeper_yearly')->active();
+        $total_yearly_subscriptions = $yearly_subscriptions->count();
+        $yearly_subscriptions_today = $yearly_subscriptions->where('updated_at', '>', today())->count();
+
+        return sprintf("%s (%s)", $total_yearly_subscriptions, (($yearly_subscriptions_today) ? $yearly_subscriptions_today: "No change"));
+    }
 }
