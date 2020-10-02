@@ -177,4 +177,17 @@ class Calendar extends Model
     public function getRouteKeyName() {
         return 'hash';
     }
+
+    public function removeUser($user, $remove_all = false) {
+        $id = ($user instanceof \App\User) ? $user->id : $user;
+
+        $this->users()->detach($id);
+        $this->save();
+
+        if($remove_all) {
+            $this->events()->where('creator_id', $id)->delete();
+        }
+
+        return $this;
+    }
 }

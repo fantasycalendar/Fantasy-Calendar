@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\CalendarInvite;
+use App\Http\Requests\ChangeUserRoleRequest;
 use App\Http\Requests\GetCalendarUsersRequest;
 use App\Http\Requests\InviteCalendarUserRequest;
+use App\Http\Requests\RemoveUserFromCalendarRequest;
 use App\Jobs\CloneCalendar;
 use App\Notifications\CalendarInvitation;
 use App\Notifications\UnregisteredCalendarInvitation;
@@ -97,39 +99,17 @@ class CalendarController extends Controller
         return response()->json(['message' => 'Invite sent.']);
     }
 
-    public function changeUserRole(Request $request, $id) {
-        $calendar = Calendar::active()->hash($id)->firstOrFail();
+    public function changeUserRole(ChangeUserRoleRequest $request, $id) {
 
-        if(!auth('api')->user()->can('add-users', $calendar)) {
-            throw new AuthorizationException("You're not authorized to edit users on this calendar.");
-        }
+        $request->calendar->users()->updateExistingPivot($request->input('user_id'), $request->only(['user_role']));
 
-        $calendar->users()->updateExistingPivot($request->input('user_id'), $request->only(['user_role']));
+        $request->calendar->save();
 
-        $calendar->save();
-
-        return $calendar->users;
+        return $request->calendar->users;
     }
 
-    public function removeUser(Request $request, $id) {
-        $validatedData = $request->validate([
-            'user_id' => ['required', 'integer']
-        ]);
-
-        $calendar = Calendar::active()->hash($id)->firstOrFail();
-
-        if(!auth('api')->user()->can('add-users', $calendar)) {
-            throw new AuthorizationException("You're not authorized to remove users from this calendar.");
-        }
-
-        $calendar->users()->detach($request->input('user_id'));
-        $calendar->save();
-
-        if($request->input('remove_all') === "true"){
-            $calendar->events()->where('creator_id', $request->input('user_id'))->delete();
-        }
-
-        return $calendar->users;
+    public function removeUser(RemoveUserFromCalendarRequest $request) {
+        return $request->calendar->removeUser($request->input('user_id'), $request->input('remove_all'))->users;
     }
 
     public function dynamic_data(Request $request, $id) {
