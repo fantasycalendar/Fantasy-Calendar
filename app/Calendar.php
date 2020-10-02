@@ -178,16 +178,24 @@ class Calendar extends Model
         return 'hash';
     }
 
-    public function removeUser($user, $remove_all = false) {
+    public function removeUser($user, $remove_all = false, $email = false) {
         $id = ($user instanceof \App\User) ? $user->id : $user;
 
-        $this->users()->detach($id);
-        $this->save();
+        if($this->users()->where('users.id', $id)->exists()) {
+            $this->users()->detach($id);
+            $this->save();
+        }
+
+        if($email) {
+            $this->invitations()->where('email', $email)->each(function($invitation) {
+                $invitation->cancel();
+            });
+        }
 
         if($remove_all) {
             $this->events()->where('creator_id', $id)->delete();
         }
 
-        return $this;
+        return true;
     }
 }

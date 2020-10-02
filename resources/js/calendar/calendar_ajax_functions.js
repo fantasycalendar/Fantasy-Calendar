@@ -360,9 +360,14 @@ function update_calendar_user(user_id, permission, output){
         });
 }
 
-function remove_calendar_user(user_id, remove_all, callback){
+function remove_calendar_user(user_id, remove_all, callback, email = null){
 
-    axios.post(window.baseurl+"api/calendar/"+hash+"/removeUser", {user_id: user_id, remove_all: remove_all})
+    let userdata = {user_id: user_id, remove_all: remove_all};
+    if(email) {
+        userdata.email = email;
+    }
+
+    axios.post(window.baseurl+"api/calendar/"+hash+"/removeUser", userdata)
         .then(function(result){
             callback();
         })
@@ -373,13 +378,14 @@ function remove_calendar_user(user_id, remove_all, callback){
         });
 }
 
-function resend_calendar_invite(id, output){
+function resend_calendar_invite(email, output){
 
-    axios.post(window.apiurl+"/calendar/"+hash+"/resend_invite", {id: id})
+    axios.post(window.apiurl+"/calendar/"+hash+"/resend_invite", {email: email})
         .then(function(result){
             output(true, 'Resent invitation');
         })
         .catch(function(error){
+            output(false, error.response.data.message);
             $.notify(
                 error.response.data.message
             );

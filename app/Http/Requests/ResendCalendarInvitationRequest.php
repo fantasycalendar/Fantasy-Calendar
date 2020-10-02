@@ -6,12 +6,20 @@ use App\Calendar;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class RemoveUserFromCalendarRequest extends FormRequest
+class ResendCalendarInvitationRequest extends FormRequest
 {
     /**
      * @var mixed
      */
     public $calendar;
+    /**
+     * @var mixed
+     */
+    public $email;
+    /**
+     * @var mixed
+     */
+    public $invitation;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -21,6 +29,8 @@ class RemoveUserFromCalendarRequest extends FormRequest
     public function authorize()
     {
         $this->calendar = Calendar::active()->hash($this->route('id'))->firstOrFail();
+        $this->email = $this->input('email');
+        $this->invitation = $this->calendar->invitations()->where('email', $this->email)->firstOrFail();
 
         return $this->user()->can('add-users', $this->calendar);
     }
@@ -33,13 +43,8 @@ class RemoveUserFromCalendarRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id' => [
-                'exclude_unless:email,null',
-                'integer',
-                Rule::in($this->calendar->users()->get()->pluck('id')->toArray()),
-            ],
             'email' => [
-                'nullable'
+                Rule::in($this->calendar->invitations()->get()->pluck('email')->toArray())
             ]
         ];
     }

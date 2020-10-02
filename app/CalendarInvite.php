@@ -6,6 +6,7 @@ use App\Notifications\CalendarInvitation;
 use App\Notifications\UnregisteredCalendarInvitation;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
@@ -13,6 +14,8 @@ use Illuminate\Support\Str;
 
 class CalendarInvite extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'invite_token',
         'expires_on',
@@ -52,6 +55,20 @@ class CalendarInvite extends Model
         return true;
     }
 
+    public function canBeResent() {
+        return $this->resent_at < now()->subMinutes(5);
+    }
+
+    public function resend() {
+        $this->resent_at = now();
+        $this->expires_on = now()->addWeek();
+        $this->save();
+
+        $this->send();
+
+        return $this;
+    }
+
     public function accept() {
         $this->calendar->users()->attach(User::whereEmail($this->email)->first());
         $this->calendar->save();
@@ -60,6 +77,10 @@ class CalendarInvite extends Model
         $this->save();
 
         return $this;
+    }
+
+    public function cancel() {
+        $this->delete();
     }
 
     public function transformForCalendar() {

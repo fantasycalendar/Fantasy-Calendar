@@ -20,7 +20,9 @@ class CreateCalendarInvitesTable extends Migration
             $table->bigInteger('calendar_id');
             $table->boolean('accepted')->default(false);
             $table->timestamp('expires_on');
+            $table->timestamp('resent_at')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

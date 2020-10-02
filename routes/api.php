@@ -20,6 +20,7 @@ Route::any('/calendar/{id}/owned', 'Api\CalendarController@owned');
 Route::any('/calendar/{id}/users', 'Api\CalendarController@users');
 Route::any('/calendar/{id}/inviteUser', 'Api\CalendarController@inviteUser');
 Route::any('/calendar/{id}/removeUser', 'Api\CalendarController@removeUser');
+Route::any('/calendar/{id}/resend_invite', 'Api\CalendarController@resend_invite');
 Route::any('/calendar/{id}/changeUserRole', 'Api\CalendarController@changeUserRole');
 Route::any('/calendar/{id}/children', 'Api\CalendarController@children');
 Route::any('/calendar/{id}/last_changed', 'Api\CalendarController@last_changed');

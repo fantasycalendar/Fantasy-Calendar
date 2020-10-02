@@ -2345,7 +2345,7 @@ function set_up_edit_inputs(){
 
 					remove_calendar_user(user_id, false, function(){
 						set_up_user_list();
-					});
+					}, user_name);
 
 				}
 			});
@@ -2360,9 +2360,9 @@ function set_up_edit_inputs(){
 		var container = button.closest('.sortable-container');
 		button.prop('disabled', true);
 
-		var id = button.attr('user_id');
+		var email = button.attr('user_email');
 
-		resend_calendar_invite(id, function(success, text){
+		resend_calendar_invite(email, function(success, text){
 
 			button.prop('disabled', success);
 
@@ -4028,7 +4028,7 @@ function add_user_to_list(parent, key, data){
 				element.push("</div>");
 
 				element.push("<div class='row no-gutters my-2'>");
-					element.push(`<button type="button" class="btn btn-primary resend_invitation">Resend invitation email</button>`);
+					element.push(`<button type="button" class="btn btn-primary resend_invitation" user_email='${data.username}'>Resend invitation email</button>`);
 				element.push("</div>");
 
 			}
@@ -5815,5 +5815,5 @@ function user_permissions_select(select){
     var curr_value = button.attr('permissions_val');
 
 	button.prop('disabled', new_value === curr_value);
-	
+
 }
