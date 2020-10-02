@@ -39,6 +39,12 @@ class SendDiscordDailyStats extends Command
      */
     public function handle()
     {
-        return Notification::route('discord', env('DISCORD_WEBHOOK'))->notify(new DiscordDailyStats);
+        try {
+            Notification::route('discord', env('DISCORD_WEBHOOK'))->notify(new DiscordDailyStats);
+        } catch (\Throwable $error) {
+            return 1;
+        }
+
+        return 0;
     }
 }
