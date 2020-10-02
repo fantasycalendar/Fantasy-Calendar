@@ -24,7 +24,7 @@ class CalendarController extends Controller
 
         $this->middleware('auth')->except('show', 'create');
 
-        $this->middleware('verified')->only('edit');
+        $this->middleware('verified');
 
         $this->authorizeResource(Calendar::class, 'calendar', ['except' => 'update']);
     }
