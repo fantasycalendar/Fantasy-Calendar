@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateWebhooksOutTable extends Migration
+class CreateWebhooksSentTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateWebhooksOutTable extends Migration
      */
     public function up()
     {
-        Schema::create('webhooks_out', function (Blueprint $table) {
+        Schema::create('webhooks_sent', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->longText('json');
@@ -28,6 +28,6 @@ class CreateWebhooksOutTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('webhooks_out');
+        Schema::dropIfExists('webhooks_sent');
     }
 }
