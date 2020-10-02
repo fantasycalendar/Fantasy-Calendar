@@ -340,91 +340,56 @@ function get_calendar_users(callback) {
 }
 
 function add_calendar_user(email, output){
-
-    $.ajax({
-        url:window.baseurl+"api/calendar/"+hash+"/inviteUser",
-        type: "post",
-        dataType: "json",
-        data: {email: email},
-        success: function (result) {
-
-            var success = true;
-            var text = `Sent email to ${email}!`;
-
-            if(result.error) {
-                success = false;
-                text = result.message;
-            }
-
-            output(success, text);
-
-        },
-        error: function (error) {
-			$.notify(
-				error
-			);
-        }
-    });
-
+    axios.post(window.baseurl+"api/calendar/"+hash+"/inviteUser", {email: email})
+        .then(function(result) {
+            output(true, `Sent email to ${email}!`);
+        })
+        .catch(function(error){
+            output(false, error.response.data.errors.email[0]);
+        });
 }
 
 function update_calendar_user(user_id, permission, output){
 
-    $.ajax({
-        url:window.baseurl+"api/calendar/"+hash+"/changeUserRole",
-        type: "post",
-        dataType: "json",
-        data: {user_role: permission, user_id: user_id},
-        success: function (result) {
-
-			var text = 'Updated permissions!';
-			var success = true;
-
-            if(result.error) {
-                success = false;
-                text = result.message;
-            }
-
-            output(success, text);
-        },
-        error: function (error) {
-			$.notify(
-				error
-			);
-        }
-	});
-
+    axios.post(window.baseurl+"api/calendar/"+hash+"/changeUserRole", {user_role: permission, user_id: user_id})
+        .then(function(result) {
+            output(true, 'Updated permissions!');
+        })
+        .catch(function(error){
+            output(false, error.response.data.message);
+        });
 }
 
-function remove_calendar_user(user_id, remove_all, callback){
+function remove_calendar_user(user_id, remove_all, callback, email = null){
 
-	$.ajax({
-        url:window.baseurl+"api/calendar/"+hash+"/removeUser",
-        type: "post",
-        dataType: "json",
-        data: {user_id: user_id, remove_all: remove_all},
-        success: function (result) {
+    let userdata = {user_id: user_id, remove_all: remove_all};
+    if(email) {
+        userdata.email = email;
+    }
 
-            if(result.error) {
-				$.notify(
-					result.message
-				);
-            }else{
-				$.notify(
-					"User removed!",
-					"success"
-				);
-				callback();
-			}
+    axios.post(window.baseurl+"api/calendar/"+hash+"/removeUser", userdata)
+        .then(function(result){
+            callback();
+        })
+        .catch(function(error){
+            $.notify(
+                error.response.data.message
+            );
+        });
+}
 
-        },
-        error: function (error) {
-			$.notify(
-				error
-			);
-        }
-    });
+function resend_calendar_invite(email, output){
 
+    axios.post(window.apiurl+"/calendar/"+hash+"/resend_invite", {email: email})
+        .then(function(result){
+            output(true, 'Resent invitation');
+        })
+        .catch(function(error){
+            output(false, error.response.data.message);
+            $.notify(
+                error.response.data.message
+            );
+        });
 }
 
 async function submit_new_event(event_id, callback){
@@ -475,7 +440,7 @@ function submit_hide_show_event(event_id){
 				result.data.message,
 				result.data.success !== undefined ? "success" : false
 			);
-			
+
         }).catch(function(error){
 			$.notify(
 				error
