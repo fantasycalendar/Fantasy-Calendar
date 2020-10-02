@@ -213,7 +213,7 @@ class Calendar extends Model
 
         if($email) {
             $this->invitations()->where('email', $email)->each(function($invitation) {
-                $invitation->cancel();
+                $invitation->reject();
             });
         }
 
