@@ -2247,14 +2247,15 @@ function set_up_edit_inputs(){
 				$('.email_text').text(text).parent().toggleClass('hidden', text.length === 0);
 				$('#email_input').toggleClass('invalid', !success);
 				$('.email_text').toggleClass('alert-danger', !success);
+				$('#btn_send_invite').prop('disabled', false);
 				if(success){
 					$('#email_input').val('');
-                    $('#btn_send_invite').prop('disabled', false);
+					set_up_user_list();
 				}
 			});
 		}else{
 			$(this).prop('disabled', false);
-			$('.email_text').text(!valid_email ? "This email is invalid!" : "").parent().toggleClass('hidden', valid_email);
+			$('.email_text').text(!valid_email ? "This email is invalid!" : "").toggleClass('alert-danger', !valid_email).parent().toggleClass('hidden', valid_email);
 		}
 
 		setTimeout(() => {
