@@ -52,7 +52,7 @@
                 <div class="alert alert-primary d-md-flex justify-content-between align-content-center">
                     <span class="py-2">You've been invited to '{{ $invitation->calendar->name }}' created by '{{ $invitation->calendar->user->username }}'.</span>
                     <hr class="d-md-none">
-                    <div>
+                    <div class="text-right text-md-left">
                         <a class="btn btn-primary" href="{{ route('invite.accept', ['token' => $invitation->invite_token]) }}">Accept invitation</a>
                         <a class="btn btn-outline-secondary" href="{{ route('invite.reject-confirm', ['token' => $invitation->invite_token]) }}"><i class="fa fa-trash"></i></a>
                     </div>
