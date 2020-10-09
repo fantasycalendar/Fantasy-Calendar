@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Listeners\NotificationSentSubscriber;
 use App\Listeners\UserEventSubscriber;
 use Illuminate\Notifications\Events\NotificationSent;
 use Illuminate\Support\Facades\Event;
@@ -20,9 +19,6 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         Registered::class => [
             SendEmailVerificationNotification::class,
-        ],
-        NotificationSent::class => [
-            NotificationSentSubscriber::class,
         ]
     ];
 

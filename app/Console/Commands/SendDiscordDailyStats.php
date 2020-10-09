@@ -2,6 +2,10 @@
 
 namespace App\Console\Commands;
 
+use App\Services\Statistics;
+use App\WebhookLog;
+use Aws\Credentials\Credentials;
+use Aws\Sns\SnsClient;
 use Illuminate\Console\Command;
 use App\Notifications\DiscordDailyStats;
 use Illuminate\Support\Facades\Notification;
@@ -39,13 +43,30 @@ class SendDiscordDailyStats extends Command
      */
     public function handle()
     {
-        try {
-            Notification::route('discord', env('DISCORD_WEBHOOK'))->notify(new DiscordDailyStats);
-        } catch (\Throwable $error) {
-            $this->error($error->getMessage());
+        $this->info('Sending stats to SNS');
 
-            return 1;
-        }
+        $statistics = new Statistics();
+        $message = json_encode([
+            'total_users' => $statistics->getUsersVerifiedToday(),
+            'monthly_subscribers' => $statistics->getMonthlySubscribersToday(),
+            'yearly_subscribers' => $statistics->getYearlySubscribersToday()
+        ]);
+
+        (new SnsClient([
+            'version' => '2010-03-31',
+            'region' => 'us-east-1',
+        ]))->publish([
+            'TopicArn' => env('SNS_TOPIC'),
+            'Message' => $message,
+            'Subject' => 'FC stats'
+        ]);
+
+        WebhookLog::create([
+            'name' => 'Discord ' . now()->format('Y-m-d'),
+            'json' => $message
+        ]);
+
+        $this->info('Stats sent to SNS.');
 
         return 0;
     }

@@ -24,8 +24,8 @@ class Statistics
     }
 
     public function getUsersVerifiedToday() {
-        $total_users = $this->user->whereNotNull('email_verified_at')->count();
-        $users_today = $this->user->where('email_verified_at', '>', today())->count();
+        $total_users = $this->user->where('active',1)->whereNotNull('date_register')->count();
+        $users_today = $this->user->where('active',1)->where('date_register', '>', today())->count();
 
         return $this->format($total_users, $users_today);
     }
