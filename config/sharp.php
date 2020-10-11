@@ -21,6 +21,12 @@ return [
         ]
     ],
 
+    "dashboards" => [
+        "statistics" => [
+            "view" => \App\Sharp\StatisticsDashboard::class
+        ]
+    ],
+
     "menu" => [
         [
             "label" => "Back to App",
@@ -41,6 +47,11 @@ return [
             "label" => "Presets",
             "icon" => "fa-calendar",
             "entity" => "presets"
+        ],
+        [
+            "label" => "Statistics",
+            "icon" => "fa-chart-bar",
+            "dashboard" => "statistics"
         ],
         [
             "label" => "Env Vars",
