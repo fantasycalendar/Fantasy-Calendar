@@ -43,15 +43,13 @@ class StatisticsDashboard extends SharpDashboard
 
         $user = new User();
 
-        $users_by_month = $user->where('active', 1)->get()
-        ->groupBy(function($user) {
-            return Carbon::parse($user->date_register)->format('Y-m');
-        });
-
-        $user_count_per_month = [];
-        foreach ($users_by_month as $key => $value) {
-            $user_count_per_month[$key] = count($value);
-        }
+        $user_count_per_month = $user->where('active', 1)->get()
+            ->groupBy(function($user) {
+                return Carbon::parse($user->date_register)->format('Y-m');
+            })->mapWithKeys(function($users, $date) {
+                return [$date => count($users)];
+            });
+    
 
         $this->addGraphDataSet(
             "users",
