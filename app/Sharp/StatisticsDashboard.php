@@ -48,7 +48,7 @@ class StatisticsDashboard extends SharpDashboard
 
         $user = new User();
 
-        $users = $user->where('active', 1)->get();
+        $users = $user->where('active', 1)->where('date_register', '<', now()->firstOfMonth())->get();
 
         $user_count_per_month = $users
             ->groupBy(function($user) {
