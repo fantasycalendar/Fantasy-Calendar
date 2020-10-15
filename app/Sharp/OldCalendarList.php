@@ -45,7 +45,8 @@ class OldCalendarList extends SharpEntityList
         $this->setInstanceIdAttribute('id')
             ->setSearchable()
             ->setDefaultSort('name', 'asc')
-            ->setPaginated();
+            ->setPaginated()
+            ->addInstanceCommand("convert", ConvertCalendarToBeta::class);
     }
 
     /**

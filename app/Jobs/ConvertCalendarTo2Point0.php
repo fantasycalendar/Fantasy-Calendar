@@ -114,23 +114,23 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
 
         $dynamic['epoch'] = 0;
 
-        foreach($static_data['year_data']['timespans'] as $timespan_index => $timespan){
-            
+        foreach($static['year_data']['timespans'] as $timespan_index => $timespan){
+
             if($timespan_index < $month){
-                $actual_year = $year+1;
+                $actual_year = $old->year+1;
             }else{
-                $actual_year = $year;
+                $actual_year = $old->year;
             }
 
             $dynamic['epoch'] += $timespan['length'] * $actual_year;
 
         }
 
-        if(!empty($static_data['year_data']['leap_days'])){
-            $dynamic['epoch'] += $year / intval($static_data['year_data']['leap_days'][0]['interval']);
+        if(!empty($static['year_data']['leap_days'])){
+            $dynamic['epoch'] += $old->year / intval($static['year_data']['leap_days'][0]['interval']);
         }
 
-        $dynamic['epoch'] += $day;
+        $dynamic['epoch'] += $old->day;
 
         if($old->clock_enabled) {
             $static['clock'] = [
@@ -578,7 +578,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
         $conditions = [];
 
         $arrayified = json_decode(json_encode($event->data),true);
-        
+
         if(!empty($arrayified)){
             switch($event->repeats) {
                 case 'once':
@@ -723,7 +723,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
 
                 case 'multimoon_every':
                 case 'multimoon_anually':
-                    
+
                     $conditions = ($event->repeats == 'multimoon_every') ? [] : [['Month', '0', strval($data->month-1)], ['&&']];
                     foreach($data->moons as $index => $moon) {
 
@@ -738,20 +738,20 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                             if(count($conditions) % 2 != 0) {
                                 $conditions[] = ['&&'];
                             }
-                                
+
                         }
-                        
+
                     }
                     break;
 
             }
         }
 
-            
+
         $group = ["", []];
-        
+
         if(isset($event->from_date)){
-            
+
             if(count($conditions) > 0){
                 $conditions[] = ['&&'];
             }
@@ -782,7 +782,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
             ];
 
         }
-        
+
         if(isset($event->from_date) || isset($event->to_date)){
             if(count($conditions) > 0){
                 $conditions[] = ['&&'];

@@ -7,6 +7,9 @@ return [
             "show" => \App\Sharp\UserShow::class,
             "form" => \App\Sharp\UserForm::class,
         ],
+        "user_calendars" => [
+            "list" => \App\Sharp\CalendarList::class,
+        ],
         "calendars" => [
             "list" => \App\Sharp\CalendarList::class,
             "show" => \App\Sharp\CalendarShow::class
