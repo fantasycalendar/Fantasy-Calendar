@@ -154,13 +154,14 @@ const preset_loader = {
                     if(result.dismiss || !result.value) return;
 
                     var calendar = parse_json(result.value);
-                    if(calendar){
-                        console.log(calendar)
+                    if(calendar.success){
                         prev_dynamic_data = {}
                         prev_static_data = {}
                         calendar_name = clone(calendar.name);
                         static_data = clone(calendar.static_data);
                         dynamic_data = clone(calendar.dynamic_data);
+                        event_categories = clone(calendar.event_categories);
+                        events = clone(calendar.events);
                         dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
                         empty_edit_values();
                         set_up_edit_values();
@@ -172,7 +173,7 @@ const preset_loader = {
                     }else{
                         swal.fire({
                             title: "Error!",
-                            text: `Unrecognized JSON format! Please try again.`,
+                            text: calendar.message,
                             icon: "warning",
                         })
                         .then(result => {

@@ -46,7 +46,7 @@ const calendar_renderer = {
     weather_mouse_enter: function(day, event) {
         calendar_weather.tooltip.show($(event.target));
     },
-    
+
     weather_mouse_leave: function() {
         calendar_weather.tooltip.hide();
     },
@@ -106,7 +106,7 @@ const calendar_renderer = {
         );
 		eras.set_up_position();
         eras.evaluate_position();
-        
+
         scroll_to_epoch();
 
         for(let index in this.render_callbacks){

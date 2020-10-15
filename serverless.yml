@@ -7,9 +7,11 @@ provider:
     # The stage of the application, e.g. dev, production, staging… ('dev' is the default)
     stage: ${opt:stage, 'dev'}
     runtime: provided
+    versionFunctions: false
     environment:
       APP_KEY: ${ssm:/${self:custom.ssm.${self:custom.stage}}/app_key}
       APP_DEBUG: ${self:custom.environment.${self:custom.stage}.APP_DEBUG}
+      APP_ENV: ${self:custom.environment.${self:custom.stage}.APP_ENV}
       AWS_BUCKET: # environment variable for Laravel
         Ref: Assets
       SQS_QUEUE:
@@ -26,7 +28,7 @@ provider:
       MIX_ASSET_URL: https://${self:custom.alias}
       ASSET_URL: https://${self:custom.alias}
       APP_URL: https://${self:custom.alias}
-      WEBADDRESS: ${self:custom.alias}
+      WEBADDRESS: https://${self:custom.alias}/
       COOKIEADDRESS: ${self:custom.alias}
       CACHE_DRIVER: redis
       SESSION_DRIVER: redis
@@ -42,6 +44,8 @@ provider:
       MAIL_ENCRYPTION: tls
       STRIPE_KEY: ${ssm:/${self:custom.ssm.${self:custom.stage}}/stripe-key}
       STRIPE_SECRET: ${ssm:/${self:custom.ssm.${self:custom.stage}}/stripe-secret}
+      DISCORD_WEBHOOK: ${ssm:/${self:custom.ssm.${self:custom.stage}}/discord-webhook}
+      SNS_TOPIC: ${ssm:/${self:custom.ssm.${self:custom.stage}}/sns-topic}
     iamRoleStatements:
       # Allow Lambda to read and write files in the S3 buckets
       -   Effect: Allow
@@ -57,6 +61,7 @@ provider:
             - "ec2:DeleteNetworkInterface"
             - "ses:Publish"
             - "ses:SendEmail"
+            - "sns:Publish"
           Resource: "*"
       -   Effect: Allow
           Action: [sqs:SendMessage, sqs:DeleteMessage]
@@ -67,13 +72,15 @@ custom:
   stage: ${opt:stage, 'dev'}
   alias: ${self:custom.domain.${self:custom.stage}}
   domain:
-    prod: 'lambda.fantasy-calendar.com'
+    prod: 'app.fantasy-calendar.com'
     dev: 'lambda-dev.fantasy-calendar.com'
   environment:
     prod:
       APP_DEBUG: 'false'
+      APP_ENV: 'production'
     dev:
       APP_DEBUG: 'true'
+      APP_ENV: 'development'
   ssm:
     prod: 'fantasy-calendar'
     dev: 'fantasy-calendar-dev'
@@ -85,6 +92,9 @@ custom:
 
 package:
     exclude:
+        - .git/**
+        - .idea/**
+        - setup/**
         - node_modules/**
         - public/storage
         - resources/assets/**
@@ -123,6 +133,22 @@ functions:
               arn:
                 Fn::GetAtt: [ AlertQueue, Arn ]
               batchSize: 1
+      vpc:
+        securityGroupIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/security_group_ids}"] }
+        subnetIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/subnet_ids}"] }
+    console:
+      timeout: 6
+      handler: artisan
+      layers:
+        - ${bref:layer.php-74} # PHP runtime
+        - ${bref:layer.console} # Console layer
+      events:
+        - schedule:
+            rate: rate(1 minute)
+            input: '"schedule:run"'
+      vpc:
+        securityGroupIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/security_group_ids}"] }
+        subnetIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/subnet_ids}"] }
     hostforward:
       handler: setup/lambda/${opt:stage, 'dev'}/forwarder.handler
       runtime: nodejs12.x

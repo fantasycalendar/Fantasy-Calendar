@@ -34,18 +34,4 @@ class CardSubscribeTest extends DuskTestCase
                 ->assertSee('Subscription: Timekeeper');
         });
     }
-
-    public function testWorldbuilderUser()
-    {
-        $this->browse(function (Browser $browser) {
-
-            $browser = $this->getWorldbuilderBrowser($browser);
-
-            $browser->screenshot('worldbuilder');
-
-            $browser->visitRoute('profile')
-                ->screenshot('worldbuilder')
-                ->assertSee('Subscription: Worldbuilder');
-        });
-    }
 }

@@ -1,9 +1,9 @@
 @extends('templates._page')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
+<div class="container pt-4">
+    <div class="row no-gutters justify-content-center">
+        <div class="col-lg-8">
             <div class="card">
                 <div class="card-header">{{ __('Login') }}</div>
 
@@ -15,7 +15,7 @@
                             <label for="identity" class="col-md-4 col-form-label text-md-right">{{ __('Username') }}</label>
 
                             <div class="col-md-6">
-                                <input id="identity" type="identity" class="form-control @error('username') is-invalid @enderror @error('email') is-invalid @enderror" name="identity" value="{{ old('username') ?? old('email') }}" required autocomplete="identity" autofocus>
+                                <input id="identity" type="text" class="form-control @error('username') is-invalid @enderror @error('email') is-invalid @enderror" name="identity" value="{{ old('username') ?? old('email') }}" required autocomplete="username" autofocus>
 
                                 @error('username')
                                     <span class="invalid-feedback" role="alert">

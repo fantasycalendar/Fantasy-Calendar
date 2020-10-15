@@ -14,7 +14,7 @@ class EventPolicy
     /**
      * Determine whether the user can view any models.
      *
-     * @param  \App\User  $user
+     * @param  User  $user
      * @return mixed
      */
     public function viewAny(User $user)
@@ -25,8 +25,8 @@ class EventPolicy
     /**
      * Determine whether the user can view the model.
      *
-     * @param  \App\User  $user
-     * @param  \App\CalendarEvent  $calendarEvent
+     * @param  User  $user
+     * @param  CalendarEvent  $calendarEvent
      * @return mixed
      */
     public function view(User $user, CalendarEvent $calendarEvent)
@@ -37,7 +37,7 @@ class EventPolicy
     /**
      * Determine whether the user can create models.
      *
-     * @param  \App\User  $user
+     * @param  User  $user
      * @return mixed
      */
     public function create(User $user)
@@ -48,8 +48,8 @@ class EventPolicy
     /**
      * Determine whether the user can update the model.
      *
-     * @param  \App\User  $user
-     * @param  \App\CalendarEvent  $calendarEvent
+     * @param  User  $user
+     * @param  CalendarEvent  $calendarEvent
      * @return mixed
      */
     public function update(User $user, CalendarEvent $calendarEvent)
@@ -59,13 +59,11 @@ class EventPolicy
         return (
             $calendar->user->is($user)
 
-            || ($calendar->users->contains($user) &&
+            || ($calendar->userHasPerms($user, 'co-owner'))
 
-                $calendar->users->find($user)->pivot->user_role == 'co-owner')
-                
                 || ($calendarEvent->creator->is($user)
-                    
-                    && $calendar->users->find($user)->pivot->user_role == 'player')
+
+                    && $calendar->userHasPerms($user, 'player'))
 
         );
     }
@@ -73,8 +71,8 @@ class EventPolicy
     /**
      * Determine whether the user can delete the model.
      *
-     * @param  \App\User  $user
-     * @param  \App\CalendarEvent  $calendarEvent
+     * @param  User  $user
+     * @param  CalendarEvent  $calendarEvent
      * @return mixed
      */
     public function delete(User $user, CalendarEvent $calendarEvent)
@@ -85,8 +83,8 @@ class EventPolicy
     /**
      * Determine whether the user can restore the model.
      *
-     * @param  \App\User  $user
-     * @param  \App\CalendarEvent  $calendarEvent
+     * @param  User  $user
+     * @param  CalendarEvent  $calendarEvent
      * @return mixed
      */
     public function restore(User $user, CalendarEvent $calendarEvent)
@@ -97,8 +95,8 @@ class EventPolicy
     /**
      * Determine whether the user can permanently delete the model.
      *
-     * @param  \App\User  $user
-     * @param  \App\CalendarEvent  $calendarEvent
+     * @param  User  $user
+     * @param  CalendarEvent  $calendarEvent
      * @return mixed
      */
     public function forceDelete(User $user, CalendarEvent $calendarEvent)

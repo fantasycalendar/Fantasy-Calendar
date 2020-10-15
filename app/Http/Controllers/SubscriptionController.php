@@ -16,6 +16,10 @@ class SubscriptionController extends Controller
         $this->middleware('auth')->except(['index', 'pricing', 'coupon']);
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function pricing(Request $request) {
         $subscribed = false;
         if(Auth::check() && Auth::user()->subscriptions()->active()->get()->count() > 0) {
@@ -25,7 +29,7 @@ class SubscriptionController extends Controller
         $betaAccess = (!Auth::check() || $request->get('beta_override'))
             ? false
             : Auth::user()->betaAccess();
-        
+
         return view('subscription.pricing', [
             'subscribed' => $subscribed,
             'earlySupporter' => Auth::check() && Auth::user()->isEarlySupporter(),
@@ -33,7 +37,7 @@ class SubscriptionController extends Controller
         ]);
     }
 
-    public function index(Request $request) {
+    public function index() {
         $subscriptions = Auth::user()->subscriptions()->active()->get();
 
         if(count($subscriptions) < 1) {
@@ -45,9 +49,14 @@ class SubscriptionController extends Controller
         ]);
     }
 
+    /**
+     * @param $level
+     * @param $interval
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     */
     public function subscribe($level, $interval) {
         // They're subscribed already, send 'em to the subscriptions list
-        if(Auth::user()->subscriptions()->active()->get()->count() > 0) {
+        if(Auth::user()->subscribed('Timekeeper')) {
             return Redirect::route('profile');
         }
 
@@ -63,6 +72,12 @@ class SubscriptionController extends Controller
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @param $level
+     * @param $plan
+     * @return array|\Illuminate\Http\RedirectResponse
+     */
     public function update(Request $request, $level, $plan) {
         $user = Auth::user();
 
@@ -88,6 +103,12 @@ class SubscriptionController extends Controller
         return ['success' => true, 'message' => 'Subscribed'];
     }
 
+    /**
+     * @param Request $request
+     * @param $level
+     * @param $plan
+     * @return array
+     */
     public function swap(Request $request, $level, $plan) {
         $user = Auth::user();
 
@@ -96,14 +117,20 @@ class SubscriptionController extends Controller
         return ['success' => true, 'message' => 'Subscribed'];
     }
 
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function cancellation() {
         return view('subscription.cancel', [
-            'subscriptions' => Auth::user()->subscriptions()->active()->get()
+            'subscription' => Auth::user()->subscription('Timekeeper')
         ]);
     }
 
+    /**
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function cancel() {
-        $subscription = Auth::user()->subscriptions()->active()->first();
+        $subscription = Auth::user()->subscription('Timekeeper');
 
         if($subscription->onGracePeriod()) {
             $subscription->cancelNow();
@@ -114,10 +141,15 @@ class SubscriptionController extends Controller
         return Redirect::route('profile');
     }
 
-    public function resume($level) {
-        $subscription = Auth::user()->subscription($level);
+    /**
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function resume() {
+        if(!Auth::user()->subscription('Timekeeper')->onGracePeriod()) {
+            return Redirect::route('profile');
+        }
 
-        $subscription->resume();
+        Auth::user()->subscription('Timekeeper')->resume();
 
         return Redirect::route('profile');
     }

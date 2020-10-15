@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Calendar;
+use App\CalendarInvite;
 use App\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -14,22 +15,19 @@ class CalendarInvitation extends Notification
 {
     use Queueable;
 
-    private $calendar;
     /**
-     * @var User
+     * @var CalendarInvite
      */
-    private $user;
+    private $invite;
 
     /**
      * Create a new notification instance.
      *
-     * @param Calendar $calendar
-     * @param User $user
+     * @param CalendarInvite $invite
      */
-    public function __construct(Calendar $calendar, User $user)
+    public function __construct(CalendarInvite $invite)
     {
-        $this->calendar = $calendar;
-        $this->user = $user;
+        $this->invite = $invite;
     }
 
     /**
@@ -52,9 +50,9 @@ class CalendarInvitation extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->greeting(sprintf('You\'ve been invited to %s!', $this->calendar->name))
-                    ->line(sprintf("A user called %s has invited you as a player on their calendar '%s'! Accept below to check it out.", $this->calendar->user->username, $this->calendar->name))
-                    ->action('Accept Invitation', env('APP_URL') . URL::signedRoute('invite.accept', ['calendar' => $this->calendar->hash, 'email' => $this->user->email], now()->addWeek(), false))
+                    ->greeting(sprintf('You\'ve been invited to %s!', $this->invite->calendar->name))
+                    ->line(sprintf("A user called %s has invited you as a player on their calendar '%s'! Accept below to check it out.", $this->invite->calendar->user->username, $this->invite->calendar->name))
+                    ->action('Accept Invitation', env('APP_URL') . URL::signedRoute('invite.accept', ['calendar' => $this->invite->calendar->hash, 'email' => $this->invite->email, 'token' => $this->invite->invite_token], now()->addWeek(), false))
                     ->line("Once you accept, the calendar's creator will be able to give you additional privileges.");
     }
 

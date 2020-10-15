@@ -42,38 +42,67 @@
 
 @section('content')
     <div class="container py-5">
-        @unless((count($calendars) || count($shared_calendars)) || $search)
-            <div class="row text-center my-5 py-4 border-bottom">
+
+        @if(session()->has('alert-warning'))
+            <div class="alert alert-warning py-3">{{ session('alert-warning') }}</div>
+        @endif
+
+        @if(count($invitations))
+            @foreach($invitations as $invitation)
+                <div class="alert alert-primary d-md-flex justify-content-between align-content-center">
+                    <span class="py-2">You've been invited to '{{ $invitation->calendar->name }}' created by '{{ $invitation->calendar->user->username }}'.</span>
+                    <hr class="d-md-none">
+                    <div class="text-right text-md-left">
+                        <a class="btn btn-primary" href="{{ route('invite.accept', ['token' => $invitation->invite_token]) }}">Accept invitation</a>
+                        <a class="btn btn-outline-secondary" href="{{ route('invite.reject-confirm', ['token' => $invitation->invite_token]) }}"><i class="fa fa-trash"></i></a>
+                    </div>
+                </div>
+            @endforeach
+        @endif
+
+        @if(count($calendars) == 0 && !$search)
+            <div class="row text-center my-5 py-4">
                 <div class="col-12 col-md-6 py-5 text-left">
-                    <h2>Create Your Calendar</h2>
+                    <h2>Create Your Own Calendar</h2>
                     <p class="mt-4">From zero to tracking your story in just a few easy steps.</p>
                     <a href="{{ route('calendars.create') }}" class="btn btn-primary my-5">Create a Calendar</a>
                 </div>
                 <div class="d-none d-md-block col-md-6 py-5" style="min-height: 100%; background-image: url({{ asset('resources/calendar_list_empty.svg') }}); background-repeat: no-repeat; background-size: contain; background-position: right center;">
                 </div>
             </div>
-        @else
-            <h1>Calendars</h1>
+        @endif
 
-            @if($calendars->hasPages() || $search)
-                <div class="d-flex flex-column flex-md-row justify-content-between">
-                    <form action="{{ route('calendars.index') }}" class="calendar-search" method="get">
-                        @csrf
-                        <div class="form-group input-group">
-                            <input type="text" class="form-control calendar-search-input" name="search" placeholder="Search..." @if($search) value="{{ $search }}" @endif>
-                            <span class='search-clear'><i class="fa fa-times"></i></span>
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-secondary">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </div>
+        @if($calendars->hasPages() || $search)
+            <div class="d-flex flex-column flex-md-row justify-content-between">
+                <form action="{{ route('calendars.index') }}" class="calendar-search" method="get">
+                    @csrf
+                    <div class="form-group input-group">
+                        <input type="text" class="form-control calendar-search-input" name="search" placeholder="Search..." @if($search) value="{{ $search }}" @endif>
+                        <span class='search-clear'><i class="fa fa-times"></i></span>
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary">
+                                <i class="fa fa-search"></i>
+                            </button>
                         </div>
-                    </form>
+                    </div>
+                </form>
 
-                    <span class="d-none d-md-block">{{ $calendars->onEachSide(1)->links() }}</span><span class="d-block d-md-none">{{ $calendar_pagination->links() }}</span></div>
+                <span class="d-none d-md-block">{{ $calendars->onEachSide(1)->links() }}</span><span class="d-block d-md-none">{{ $calendar_pagination->links() }}</span>
+            </div>
+        @endif
+
+        @if(!count($shared_calendars) && !count($calendars) && $search)
+            <h2 class="text-center border py-4" style="opacity: 0.7;">No calendars match '{{ $search }}'</h2>
+        @endif
+
+        @if(count($calendars) > 0 || count($shared_calendars) > 0)
+
+            @if(count($calendars) > 0 && !$search)
+                <h1>My Calendars</h1>
             @endif
 
             @foreach($calendars as $index => $calendar)
+
                 <div class="row border-top py-3 calendar-entry list-group-item-action w-auto @if($calendar->disabled) calendar-disabled protip @endif" @if($calendar->disabled) data-pt-title="Free accounts are limited to two calendars. You'll need to re-subscribe to use this one." @endif>
                     <div class="col-6 col-md-4 col-lg-5">
                         <a href="{{ route('calendars.edit', ['calendar'=> $calendar->hash]) }}"><h4 class="calendar-name">{{ $calendar->name }} <br><span class="creator_name">{{ $calendar->user->username }}</span></h4></a>
@@ -128,12 +157,8 @@
                 </div>
             @endforeach
 
-            @if(!count($shared_calendars) && !count($calendars) && $search)
-                <h2 class="text-center border py-4" style="opacity: 0.7;">No calendars match '{{ $search }}'</h2>
-            @endif
-
             @if(count($shared_calendars))
-                <div class="row d-flex justify-content-end border-top pt-3"><span class="d-none d-md-block">{{ $calendars->onEachSide(1)->links() }}</span><span class="d-block d-md-none">{{ $calendar_pagination->links() }}</span></div>
+                <div class="row d-flex justify-content-end pt-3"><span class="d-none d-md-block">{{ $calendars->onEachSide(1)->links() }}</span><span class="d-block d-md-none">{{ $calendar_pagination->links() }}</span></div>
                 <h2>Calendars shared with me</h2>
 
                 @foreach($shared_calendars as $index => $calendar)
@@ -162,14 +187,13 @@
                     </div>
                 @endforeach
             @endif
-        @endunless
-        @isset($changelog)
-            <h2 class="pt-5">Changelog</h2>
-
-            <div class="changelog__content">
-                {!! $changelog !!}
-            </div>
-        @endisset
+        @endif
     </div>
+
+    <section class="footer container text-center p-3 mb-3 border" style="max-width: 600px; opacity: 0.5;">
+        <div class="logo"><img src="{{ asset('resources/logo-dark.png') }}" style="opacity: 0.8; max-height: 42px; margin-bottom: 12px;"></div>
+        <span class="copyright">© Copyright {{ date('Y') }} Fantasy Calendar Ltd.</span>
+    </section>
+
 
 @endsection

@@ -3,19 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUserSettings;
+use App\Http\Requests\UpdatePasswordRequest;
 use Arr;
+use Hash;
 use Illuminate\Http\Request;
 use Auth;
 
 class SettingsController extends Controller
 {
-    public function index() {
-        return view('pages.settings', [
-            'user' => Auth::user(),
-            'settings' => Auth::user()->settings ?? []
-        ]);
-    }
-
     public function profile() {
         $invoices = null;
 
@@ -28,6 +23,13 @@ class SettingsController extends Controller
             'subscription' => Auth::user()->subscriptions()->active()->first(),
             'invoices' => $invoices
         ]);
+    }
+
+    public function updatePassword(UpdatePasswordRequest $request) {
+        Auth::user()->password = Hash::make($request->get('new_password'));
+        Auth::user()->save();
+
+        return redirect()->to(route('profile'));
     }
 
     public function update(StoreUserSettings $request) {

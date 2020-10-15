@@ -50,7 +50,16 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $exception)
     {
         if($this->isApiCall($request)) {
-            return response()->json(['error'=>true, 'message'=>$exception->getMessage()]);
+            if(property_exists($exception, 'validator')) {
+                return response()->json([
+                    'message' => 'The given data was invalid.',
+                    'errors' => $exception->validator->getMessageBag()
+                ], 422);
+            }
+
+            return response()->json([
+                'message' => $exception->getMessage()
+            ]);
         }
 
         if($exception instanceof AuthorizationException || $exception instanceof AuthenticationException) {
@@ -73,6 +82,8 @@ class Handler extends ExceptionHandler
                     return response()->view('errors.404', [
                         'title' => 'Calendar not found'
                     ]);
+                } else {
+                    return redirect('/');
                 }
             }
 

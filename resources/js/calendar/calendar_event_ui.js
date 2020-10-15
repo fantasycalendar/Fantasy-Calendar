@@ -583,8 +583,6 @@ var edit_event_ui = {
 
 		this.event_occurrences_container.toggleClass('hidden', edit_event_ui.event_conditions_container.length == 0);
 
-		this.search_distance = event.data.search_distance;
-
 		this.evaluate_condition_selects(this.event_conditions_container);
 
 		if(typeof event.event_category_id !== 'undefined' && event.event_category_id !== null){
@@ -796,12 +794,12 @@ var edit_event_ui = {
 			conditions: conditions,
 			connected_events: this.connected_events,
 			date: this.date,
-			search_distance: this.get_search_distance()
+			search_distance: this.get_search_distance(conditions)
 		};
 
 	},
 
-	get_search_distance: function(){
+	get_search_distance: function(conditions){
 
 		var event = events[this.event_id];
 
@@ -811,7 +809,29 @@ var edit_event_ui = {
 			search_distance = $('#duration').val()|0 > search_distance ? $('#duration').val()|0 : search_distance;
 			search_distance = $('#limited_repeat_num').val()|0 > search_distance ? $('#limited_repeat_num').val()|0 : search_distance;
 		}
-		search_distance = this.search_distance > search_distance ? this.search_distance : search_distance;
+
+		search_distance = this.recurse_conditions(conditions, search_distance);
+
+		return search_distance;
+
+	},
+
+	recurse_conditions: function(conditions, search_distance){
+
+		for(let index in conditions){
+
+			let new_search_distance = 0;
+
+			let condition = conditions[index];
+
+			if(condition.length == 3 && condition[0] === "Events"){
+				new_search_distance = Number(condition[2][1]);
+			}else if(condition.length == 2){
+				new_search_distance = this.recurse_conditions(condition[1], search_distance)
+			}
+			
+			search_distance = new_search_distance > search_distance ? new_search_distance : search_distance;
+		}
 
 		return search_distance;
 
@@ -1244,8 +1264,6 @@ var edit_event_ui = {
 					}
 					values.push(val);
 
-					edit_event_ui.search_distance = Number(val) > edit_event_ui.search_distance ? Number(val) : edit_event_ui.search_distance;
-
 				}else{
 
 					$(this).find('.input_container').children().each(function(){
@@ -1376,8 +1394,6 @@ var edit_event_ui = {
 
 					condition.find('.event_select').val(events[this.event_id].data.connected_events[element[2][0]])
 					condition.find('.input_container').children().eq(1).val(element[2][1]);
-
-					edit_event_ui.search_distance = Number(element[2][1]) > edit_event_ui.search_distance ? Number(element[2][1]) : edit_event_ui.search_distance;
 
 				}else if(element[0] == "Weekday"){
 

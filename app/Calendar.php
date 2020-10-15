@@ -58,6 +58,10 @@ class Calendar extends Model
         return $this->hasMany('App\Calendar', 'parent_id');
     }
 
+    public function invitations() {
+        return $this->hasMany('App\CalendarInvite');
+    }
+
 
     public function structureWouldBeModified($static_data){
 
@@ -172,7 +176,53 @@ class Calendar extends Model
         return $query->where('user_id', $user_id);
     }
 
+    public function userHasPerms(User $user, $role) {
+        $roles = [
+            'invitee' => 0,
+            'observer' => 10,
+            'player' => 20,
+            'co-owner' => 30
+        ];
+
+        if(!$this->isPremium()) {
+            return false;
+        }
+
+        if(!$this->users->contains($user)) {
+            return false;
+        }
+
+        $userRole = $this->users->find($user->id)->pivot->user_role;
+
+        return $roles[$userRole] >= $roles[$role];
+    }
+
+    public function isPremium() {
+        return $this->user->isPremium();
+    }
+
     public function getRouteKeyName() {
         return 'hash';
+    }
+
+    public function removeUser($user, $remove_all = false, $email = false) {
+        $id = ($user instanceof \App\User) ? $user->id : $user;
+
+        if($this->users()->where('users.id', $id)->exists()) {
+            $this->users()->detach($id);
+            $this->save();
+        }
+
+        if($email) {
+            $this->invitations()->where('email', $email)->each(function($invitation) {
+                $invitation->reject();
+            });
+        }
+
+        if($remove_all) {
+            $this->events()->where('creator_id', $id)->delete();
+        }
+
+        return true;
     }
 }
