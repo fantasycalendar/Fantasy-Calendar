@@ -56,6 +56,10 @@ class Calendar extends Model
         return $this->hasMany('App\Calendar', 'parent_id');
     }
 
+    public function invitations() {
+        return $this->hasMany('App\CalendarInvite');
+    }
+
 
     public function structureWouldBeModified($static_data){
 
@@ -197,5 +201,26 @@ class Calendar extends Model
 
     public function getRouteKeyName() {
         return 'hash';
+    }
+
+    public function removeUser($user, $remove_all = false, $email = false) {
+        $id = ($user instanceof \App\User) ? $user->id : $user;
+
+        if($this->users()->where('users.id', $id)->exists()) {
+            $this->users()->detach($id);
+            $this->save();
+        }
+
+        if($email) {
+            $this->invitations()->where('email', $email)->each(function($invitation) {
+                $invitation->reject();
+            });
+        }
+
+        if($remove_all) {
+            $this->events()->where('creator_id', $id)->delete();
+        }
+
+        return true;
     }
 }
