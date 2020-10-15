@@ -15,5 +15,11 @@
         <property name="yearIsDateType" value="false" />
       </driver-properties>
     </data-source>
+    <data-source source="LOCAL" name="fantasycalendar@localhost" uuid="8dd0c327-b673-4649-a02c-529dfe120d48">
+      <driver-ref>mysql.8</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://localhost:13309/fantasycalendar</jdbc-url>
+    </data-source>
   </component>
 </project>

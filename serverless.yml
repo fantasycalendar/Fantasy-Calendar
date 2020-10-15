@@ -44,6 +44,8 @@ provider:
       MAIL_ENCRYPTION: tls
       STRIPE_KEY: ${ssm:/${self:custom.ssm.${self:custom.stage}}/stripe-key}
       STRIPE_SECRET: ${ssm:/${self:custom.ssm.${self:custom.stage}}/stripe-secret}
+      DISCORD_WEBHOOK: ${ssm:/${self:custom.ssm.${self:custom.stage}}/discord-webhook}
+      SNS_TOPIC: ${ssm:/${self:custom.ssm.${self:custom.stage}}/sns-topic}
     iamRoleStatements:
       # Allow Lambda to read and write files in the S3 buckets
       -   Effect: Allow
@@ -59,6 +61,7 @@ provider:
             - "ec2:DeleteNetworkInterface"
             - "ses:Publish"
             - "ses:SendEmail"
+            - "sns:Publish"
           Resource: "*"
       -   Effect: Allow
           Action: [sqs:SendMessage, sqs:DeleteMessage]
@@ -130,6 +133,22 @@ functions:
               arn:
                 Fn::GetAtt: [ AlertQueue, Arn ]
               batchSize: 1
+      vpc:
+        securityGroupIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/security_group_ids}"] }
+        subnetIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/subnet_ids}"] }
+    console:
+      timeout: 6
+      handler: artisan
+      layers:
+        - ${bref:layer.php-74} # PHP runtime
+        - ${bref:layer.console} # Console layer
+      events:
+        - schedule:
+            rate: rate(1 minute)
+            input: '"schedule:run"'
+      vpc:
+        securityGroupIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/security_group_ids}"] }
+        subnetIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/subnet_ids}"] }
     hostforward:
       handler: setup/lambda/${opt:stage, 'dev'}/forwarder.handler
       runtime: nodejs12.x
