@@ -2,10 +2,17 @@
 
 namespace App\Sharp;
 
+use App\Calendar;
+use App\OldCalendar;
 use Code16\Sharp\EntityList\Commands\InstanceCommand;
 
 class ReconvertFromLegacy extends InstanceCommand
 {
+    public function authorizeFor($instanceId): bool
+    {
+        return OldCalendar::where('hash', Calendar::find($instanceId)->hash)->exists();
+    }
+
     /**
     * @return string
     */
