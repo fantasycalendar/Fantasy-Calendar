@@ -11,6 +11,9 @@ return [
             "list" => \App\Sharp\CalendarList::class,
             "show" => \App\Sharp\CalendarShow::class
         ],
+        "old_calendars" => [
+            "list" => \App\Sharp\OldCalendarList::class,
+        ],
         "presets" => [
             "list" => \App\Sharp\PresetList::class,
             "show" => \App\Sharp\PresetShow::class,
