@@ -30,4 +30,10 @@ class WelcomeController extends Controller
 
         return view('pages.account-migrated');
     }
+
+    public function account_migrated_acknowledge() {
+        Auth::user()->acknowledgeMigration();
+
+        return redirect(route('calendars.index'));
+    }
 }

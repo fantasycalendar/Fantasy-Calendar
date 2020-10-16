@@ -47,6 +47,10 @@
             <div class="alert alert-warning py-3">{{ session('alert-warning') }}</div>
         @endif
 
+        @if(!auth()->user()->acknowledged_migration)
+            <div class="alert alert-info"><a href="{{ route('account-migrated-acknowledge') }}" class="alert-link" style="float: right;"><i class="fa fa-times"></i></a> <strong>Welcome to Fantasy Calendar 2.0!</strong> A lot has changed. <br><br>You <a class="alert-link" href="{{ route('whats-new') }}">check out what's new</a> to see a quick overview, or click a calendar below to see for yourself!</div>
+        @endif
+
         @if(count($invitations))
             @foreach($invitations as $invitation)
                 <div class="alert alert-primary d-md-flex justify-content-between align-content-center">

@@ -174,4 +174,11 @@ class User extends Authenticatable implements
 
         return 'Free';
     }
+
+    public function acknowledgeMigration() {
+        $this->acknowledged_migration = 1;
+        $this->save();
+
+        return $this;
+    }
 }
