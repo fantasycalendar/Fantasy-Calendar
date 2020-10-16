@@ -46,6 +46,8 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
     {
         $old = json_decode($this->old_calendar->data);
 
+        Calendar::hash($this->old_calendar->hash)->delete();
+
         if($old == null){
             throw new \Exception("JSON data malformed!");
         }
