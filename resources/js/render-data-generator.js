@@ -417,7 +417,7 @@ const render_data_generator = {
 
             }
 
-            if(static_data.settings.only_reveal_today && epoch > dynamic_data.epoch){
+            if(static_data.settings.only_reveal_today && epoch > dynamic_data.epoch && !Perms.player_at_least('co-owner')){
                 break;
             }
 
