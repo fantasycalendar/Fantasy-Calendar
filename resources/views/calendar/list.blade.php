@@ -109,7 +109,7 @@
 
                 <div class="row border-top py-3 calendar-entry list-group-item-action w-auto @if($calendar->disabled) calendar-disabled protip @endif" @if($calendar->disabled) data-pt-title="Free accounts are limited to two calendars. You'll need to re-subscribe to use this one." @endif>
                     <div class="col-6 col-md-4 col-lg-5">
-                        <a href="{{ route('calendars.edit', ['calendar'=> $calendar->hash]) }}"><h4 class="calendar-name">{{ $calendar->name }} <br><span class="creator_name">{{ $calendar->user->username }}</span></h4></a>
+                        <a href="{{ route('calendars.edit', ['calendar'=> $calendar->hash]) }}"><h4 class="calendar-name">{{ $calendar->name }} @if($calendar->converted_at) <small style="font-size: 44%; position: relative; top: -4px;" class="small badge badge-secondary d-none d-md-inline">Converted {{ $calendar->converted_at }}</small> @endif <br><span class="creator_name">{{ $calendar->user->username }}</span></h4></a>
                     </div>
                     <div style="padding-left: 33px;" class="d-none d-md-block col-md-4 col-lg-3">
                         <i class="fa fa-calendar" style="margin-left: -20px;"></i> {{ $calendar->current_date }} <br>
