@@ -14,4 +14,20 @@ class WelcomeController extends Controller
 
         return view('welcome');
     }
+
+    public function account_migrated() {
+        if(!Auth::check()) {
+            return redirect('/');
+        }
+
+        if(!Auth::user()->migrated) {
+            return redirect('https://www.fantasy-calendar.com/');
+        }
+
+        if(Auth::user()->acknowledged_migration) {
+            return redirect(route('calendars.index'));
+        }
+
+        return view('pages.account-migrated');
+    }
 }
