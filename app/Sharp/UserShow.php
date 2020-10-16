@@ -94,6 +94,11 @@ class UserShow extends SharpShow
 
     function buildShowConfig()
     {
-        //
+        $this
+            ->addInstanceCommand("elevate", GiveUserAppAccess::class)
+            ->addInstanceCommand("revoke", RevokeUserAppAccess::class)
+            ->addInstanceCommand("impersonate", LoginAsUser::class)
+            ->addInstanceCommand("reset_password", SendUserResetPassword::class);
+
     }
 }

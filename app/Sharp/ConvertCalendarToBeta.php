@@ -24,6 +24,8 @@ class ConvertCalendarToBeta extends InstanceCommand
      */
     public function execute($instanceId, array $data = []): array
     {
-        ConvertCalendarTo2Point0::dispatchNow(OldCalendar::find($instanceId), Calendar::max('conversion_batch') ?? 1);
+        ConvertCalendarTo2Point0::dispatchNow(OldCalendar::find($instanceId), Calendar::max('conversion_batch') + 1 ?? 1);
+
+        return $this->reload();
     }
 }
