@@ -1135,11 +1135,11 @@
 						</div>
 					</label>
 
-					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Similar to the previous setting, but this limits the viewer to only go backwards, not forwards. This setting needs Allowing advancing view in calendar to be enabled.">
+					<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right" data-pt-title="Similar to the previous setting, but this limits the viewer to only preview backwards, not forwards. This setting needs Allowing advancing view in calendar to be enabled.">
 						<div class='col'>
 							<input type='checkbox' class='margin-right static_input' data='settings' fc-index='only_backwards' refresh='false'>
 							<span>
-								Limit to only backwards view
+								Limit previewing to only past dates
 							</span>
 						</div>
 					</label>
