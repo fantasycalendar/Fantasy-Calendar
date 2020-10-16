@@ -130,9 +130,12 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
 
         if(!empty($static['year_data']['leap_days'])){
             $dynamic['epoch'] += floor($old->year / intval($static['year_data']['leap_days'][0]['interval']));
+            if($dynamic['year'] > 0 || $dynamic['timespan'] > $static['year_data']['leap_days'][0]['timespan']){
+                $dynamic['epoch']++;
+            }
         }
 
-        $dynamic['epoch'] += $old->day;
+        $dynamic['epoch'] += $old->day - 1;
 
         if($old->clock_enabled) {
             $static['clock'] = [
