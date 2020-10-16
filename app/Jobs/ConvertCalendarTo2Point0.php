@@ -118,10 +118,10 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
 
         foreach($static['year_data']['timespans'] as $timespan_index => $timespan){
 
-            if($timespan_index < $month){
-                $actual_year = $old->year+1;
+            if($timespan_index < $dynamic['timespan']){
+                $actual_year = $dynamic['year']+1;
             }else{
-                $actual_year = $old->year;
+                $actual_year = $dynamic['year'];
             }
 
             $dynamic['epoch'] += $timespan['length'] * $actual_year;
