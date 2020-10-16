@@ -137,19 +137,17 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
 
         $dynamic['epoch'] += $old->day - 1;
 
-        if($old->clock_enabled) {
-            $static['clock'] = [
-                'enabled' => true,
-                'hours' => $old->n_hours,
-                'minutes' => 60,
-                'offset' => 0,
-                'render' => true,
-                'crowding' => 0
-            ];
+        $static['clock'] = [
+            'enabled' => $old->clock_enabled,
+            'hours' => $old->n_hours ?? 24,
+            'minutes' => 60,
+            'offset' => 0,
+            'render' => true,
+            'crowding' => 0
+        ];
 
-            $dynamic['hour'] = $old->hour;
-            $dynamic['minute'] = $old->minute;
-        }
+        $dynamic['hour'] = $old->hour ?? 0;
+        $dynamic['minute'] = $old->minute ?? 0;
 
         if($old->era != "") {
             $static['eras'][] = [
@@ -172,22 +170,26 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
            ];
         }
 
+        $static['seasons']['data'] = [];
+
+        $static['seasons']['locations'] = [];
+
+        $static['seasons']['global_settings'] = [
+            "season_offset" => 0,
+            "weather_offset" => 0,
+            "periodic_seasons" => false,
+            "seed" => $old->weather->weather_seed ?? rand(20, 200000000),
+            "temp_sys" => $old->weather->weather_temp_sys ?? "imperial",
+            "wind_sys" => $old->weather->weather_wind_sys ?? "imperial",
+            "cinematic" => $old->weather->weather_cinematic ?? false,
+            'enable_weather' => $old->weather_enabled ?? false,
+        ];
+
+        $dynamic['custom_location'] = ($old->weather->current_climate_type === 'custom');
+
         if($old->solstice_enabled) {
 
             $inverse = $old->winter_month < $old->summer_month || ($old->winter_month == $old->summer_month && $old->winter_day < $old->summer_day);
-
-            $static['seasons']['locations'] = [];
-
-            $static['seasons']['global_settings'] = [
-                "season_offset" => 0,
-                "weather_offset" => 0,
-                "periodic_seasons" => false,
-                "seed" => $old->weather->weather_seed ?? rand(20, 200000000),
-                "temp_sys" => $old->weather->weather_temp_sys ?? "imperial",
-                "wind_sys" => $old->weather->weather_wind_sys ?? "imperial",
-                "cinematic" => $old->weather->weather_cinematic ?? false,
-                'enable_weather' => $old->weather_enabled ?? false,
-            ];
 
             $winter = [
                 'name' => 'Winter',
@@ -326,8 +328,6 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                         ]
                     ];
                 }
-
-                $dynamic['custom_location'] = ($old->weather->current_climate_type === 'custom');
 
                 if($old->settings->auto_events){
 
