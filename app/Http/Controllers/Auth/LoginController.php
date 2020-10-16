@@ -98,6 +98,8 @@ class LoginController extends Controller
         if($request->wantsJson()) {
             return ['success' => true, 'message' => 'User is logged out.'];
         }
+
+        return redirect()->to('/')->withCookie(\Illuminate\Support\Facades\Cookie::forget('fantasycalendar_remember'));
     }
 
     protected function sendLoginResponse(Request $request)
