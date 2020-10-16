@@ -91,7 +91,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                 $static['moons'][] = [
                     'name' => $moon,
                     'cycle' => $old->lunar_cyc[$index],
-                    'shift' => $old->lunar_shf[$index],
+                    'shift' => $old->lunar_shf[$index]-1,
                     'granularity' => 16,
                     'color' => $old->lunar_color[$index] ?? '#ffffff',
                     'hidden' => false,
@@ -129,7 +129,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
         }
 
         if(!empty($static['year_data']['leap_days'])){
-            $dynamic['epoch'] += $old->year / intval($static['year_data']['leap_days'][0]['interval']);
+            $dynamic['epoch'] += floor($old->year / intval($static['year_data']['leap_days'][0]['interval']));
         }
 
         $dynamic['epoch'] += $old->day;
