@@ -21,7 +21,7 @@ class FantasyCalendarRememberLogin
     {
         if(!Auth::check() && Cookie::has('fantasycalendar_remember')) {
 //            dump(urldecode(Cookie::get('fantasycalendar_remember')));
-            list($user_id, $selector, $authenticator) = explode(':', urldecode(Cookie::get('fantasycalendar_remember')));
+            list($user_id, $selector, $authenticator) = explode(':', rawurldecode(Cookie::get('fantasycalendar_remember')));
 
             $result = DB::table('auth_tokens')
                 ->select(DB::raw('id, user_id, token, expires'))
