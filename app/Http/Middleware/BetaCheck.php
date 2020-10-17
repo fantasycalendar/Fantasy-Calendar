@@ -20,7 +20,7 @@ class BetaCheck
         if(Auth::check() && env('APP_ENV') == 'production') {
             if (!Auth::user()->betaAccess() && !Auth::user()->migrated) {
                 Auth::logout();
-                abort(403, 'Your account is not BETA activated, sorry.');
+                abort(redirect('https://www.fantasy-calendar.com/'));
             }
         }
 
