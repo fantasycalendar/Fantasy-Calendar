@@ -74,14 +74,12 @@ class CalendarInvite extends Model
 
         return $this;
     }
-    
+
     public function transformForCalendar() {
         return [
             'id' => Str::slug($this->email),
             'username' => $this->email,
-            'pivot' => [
-                'user_role' => 'invited'
-            ]
+            'user_role' => 'invited'
         ];
     }
 
