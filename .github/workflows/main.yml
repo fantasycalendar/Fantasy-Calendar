@@ -44,7 +44,7 @@ jobs:
       uses: sarisia/actions-status-discord@v1.5.2
       with:
         webhook: ${{ secrets.DISCORD_FC_BETA_WEBHOOK }}
-        description: "A new version of the beta has been deployed"
+        description: "A new version of Fantasy Calendar has been deployed"
         username: "Github"
         avatar_url: "https://beta.fantasy-calendar.com//resources/header_logo.png"
         title: "Deploy success"
