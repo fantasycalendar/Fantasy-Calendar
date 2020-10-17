@@ -21,5 +21,11 @@
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://localhost:13309/fantasycalendar</jdbc-url>
     </data-source>
+    <data-source source="LOCAL" name="FC Live" uuid="9b62c072-3956-4595-929f-4333611e3e8b">
+      <driver-ref>mysql_aurora</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.mariadb.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql:aurora://localhost:13309/fantasycalendar</jdbc-url>
+    </data-source>
   </component>
 </project>

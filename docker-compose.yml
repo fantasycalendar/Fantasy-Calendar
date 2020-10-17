@@ -42,7 +42,28 @@ services:
       - "APP_URL=/"
       - "COOKIEADDRESS=/"
       - "DB_HOST=fantasydb"
-      - "DB_DATABASE=fantasy-calendar"
+      - "DB_DATABASE=fc-live"
+      - "DB_USERNAME=root"
+      - "DB_PASSWORD=root"
+      - "REDIS_HOST=fcredis"
+      - "SESSION_DRIVER=redis"
+      - "VIEW_COMPILED_PATH=/fantasy-calendar/storage/framework/views"
+
+  fantasy-calendar-live:
+    container_name: fantasy_calendar_live
+    image: fc/fc-live
+    volumes:
+      - /home/axel/Git/fc-live-git:/fantasy-calendar
+    ports:
+      - "9985:8080"
+    environment:
+      - "APP_ENV=local"
+      - "APP_KEY=base64:ECSIURhDQnHBdx7nRVlwGtPwBU+RZrQCQpmGHesaIUM="
+      - "APP_DEBUG=true"
+      - "APP_URL=/"
+      - "COOKIEADDRESS=/"
+      - "DB_HOST=fantasydb"
+      - "DB_DATABASE=fc-live"
       - "DB_USERNAME=root"
       - "DB_PASSWORD=root"
       - "REDIS_HOST=fcredis"
