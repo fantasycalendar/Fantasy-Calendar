@@ -96,6 +96,10 @@ class CalendarList extends SharpEntityList
             }
         }
 
+        if($user_id = $params->filterFor('user')) {
+            $calendar_model->where('user_id', $user_id);
+        }
+
         if($params->sortedBy()) {
             $calendar_model->orderBy($params->sortedBy(), $params->sortedDir());
         }

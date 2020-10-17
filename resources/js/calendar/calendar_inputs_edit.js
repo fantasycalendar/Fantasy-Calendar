@@ -113,8 +113,8 @@ function set_up_edit_inputs(){
 	$('.view-tabs .btn').click(function(){
 
 		view_type = $(this).attr('data-view-type');
-		
-    
+
+
     owner = true;
 
 		$('.view-tabs .btn-primary').removeClass('btn-primary').addClass('btn-secondary');
@@ -1519,6 +1519,8 @@ function set_up_edit_inputs(){
 				var granularity = 4;
 			}else if(cycle <= 8){
 				var granularity = 8;
+			}else if(cycle <= 16){
+				var granularity = 16;
 			}else if(cycle <= 24){
 				var granularity = 24;
 			}else{
@@ -3365,15 +3367,15 @@ function add_location_to_list(parent, key, data){
 						element.push("</div>");
 
 						element.push(`<div class='row no-gutters sortable-header'>`);
-		
+
 							element.push("<div class='col-6 pr-1'>");
 								element.push(`Hour`);
 							element.push("</div>");
-		
+
 							element.push("<div class='col-6 pl-1'>");
 								element.push(`Minute`);
 							element.push("</div>");
-		
+
 						element.push("</div>");
 
 						element.push(`<div class='row no-gutters mb-2 protip'  data-pt-position="right" data-pt-title="What time the sun rises at the peak of this season, in this location">`);
@@ -3397,15 +3399,15 @@ function add_location_to_list(parent, key, data){
 						element.push("</div>");
 
 						element.push(`<div class='row no-gutters sortable-header'>`);
-		
+
 							element.push("<div class='col-6 pr-1'>");
 								element.push(`Hour`);
 							element.push("</div>");
-		
+
 							element.push("<div class='col-6 pl-1'>");
 								element.push(`Minute`);
 							element.push("</div>");
-		
+
 						element.push("</div>");
 
 						element.push(`<div class='row no-gutters mb-2 protip' data-pt-position="right" data-pt-title="What time the sets rises at the peak of this season, in this location">`);
@@ -4055,7 +4057,7 @@ function add_user_to_list(parent, key, data){
 					element.push(`<h4 class='m-0'>${data.username}</h4>`);
 				element.push("</div>");
 				element.push("<div class='col-md-auto'>");
-					element.push(`<button type='button' class='btn btn-sm btn-danger full remove_user' role='${data.pivot.user_role}' username='${data.username}' user_id='${data.id}'><i class='fas fa-trash'></i></button>`);
+					element.push(`<button type='button' class='btn btn-sm btn-danger full remove_user' role='${data.user_role}' username='${data.username}' user_id='${data.id}'><i class='fas fa-trash'></i></button>`);
 				element.push("</div>");
 			element.push("</div>");
 
@@ -4065,7 +4067,7 @@ function add_user_to_list(parent, key, data){
 				element.push("</div>");
 			element.push("</div>");
 
-			if(data.pivot.user_role != "invited"){
+			if(data.user_role != "invited"){
 
 				element.push("<div class='row no-gutters mt-1'>");
 					element.push(`<p class='m-0'>Permissions:</p>`);
@@ -4074,13 +4076,13 @@ function add_user_to_list(parent, key, data){
 			element.push("<div class='row no-gutters mb-1'>");
 				element.push("<div class='col-md'>");
 					element.push("<select class='form-control user_permissions_select' onchange='user_permissions_select(this)'>");
-						element.push(`<option ${data.pivot.user_role == 'observer' ? "selected" : ""} value='observer'>Observer</option>`);
-						element.push(`<option ${data.pivot.user_role == 'player' ? "selected" : ""} value='player'>Player</option>`);
-						element.push(`<option ${data.pivot.user_role == 'co-owner' ? "selected" : ""} value='co-owner'>CO-GM</option>`);
+						element.push(`<option ${data.user_role == 'observer' ? "selected" : ""} value='observer'>Observer</option>`);
+						element.push(`<option ${data.user_role == 'player' ? "selected" : ""} value='player'>Player</option>`);
+						element.push(`<option ${data.user_role == 'co-owner' ? "selected" : ""} value='co-owner'>CO-GM</option>`);
 					element.push("</select>");
 					element.push("</div>");
 					element.push("<div class='col-md-auto'>");
-						element.push(`<button type='button' class='btn btn btn-primary full update_user_permissions' disabled permissions_val='${data.pivot.user_role}' user_id='${data.id}'>Update</button>`);
+						element.push(`<button type='button' class='btn btn btn-primary full update_user_permissions' disabled permissions_val='${data.user_role}' user_id='${data.id}'>Update</button>`);
 					element.push("</div>");
 				element.push("</div>");
 

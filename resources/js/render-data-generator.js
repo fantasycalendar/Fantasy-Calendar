@@ -79,12 +79,15 @@ const render_data_generator = {
 
 		let moons = [];
 		for(let moon_index = 0; moon_index < static_data.moons.length; moon_index++){
-			let moon = static_data.moons[moon_index];
+            let moon = static_data.moons[moon_index];
+            let phase_name = Object.keys(moon_phases[moon.granularity])[epoch_data.moon_phase[moon_index]];
+            let path = moon_phases[moon.granularity][phase_name];
+            
 			moons.push({
 				"index": moon_index,
 				"name": moon.name,
-				"phase": moon_phases[moon.granularity][epoch_data.moon_phase[moon_index]],
-				"path": moon_paths[Math.floor((svg_moon_shadows.length/moon.granularity)*epoch_data.moon_phase[moon_index])]
+				"phase": phase_name,
+				"path": path
             });
         }
 
@@ -414,7 +417,7 @@ const render_data_generator = {
 
             }
 
-            if(static_data.settings.only_reveal_today && epoch > dynamic_data.epoch){
+            if(static_data.settings.only_reveal_today && epoch > dynamic_data.epoch && !Perms.player_at_least('co-owner')){
                 break;
             }
 

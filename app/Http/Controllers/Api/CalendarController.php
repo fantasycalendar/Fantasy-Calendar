@@ -11,6 +11,7 @@ use App\Http\Requests\ResendCalendarInvitationRequest;
 use App\Jobs\CloneCalendar;
 use App\Notifications\CalendarInvitation;
 use App\Notifications\UnregisteredCalendarInvitation;
+use App\Transformer\CalendarUserTransformer;
 use App\User;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -21,6 +22,10 @@ use App\Http\Resources\CalendarCollection;
 use App\Calendar;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\ValidationException;
+use League\Fractal\Manager;
+use League\Fractal\Resource\Collection;
+use League\Fractal\Resource\Item;
+use League\Fractal\Serializer\DataArraySerializer;
 
 class CalendarController extends Controller
 {
@@ -28,6 +33,9 @@ class CalendarController extends Controller
         $this->middleware('auth:api')->except('last_changed', 'children', 'show', 'dynamic_data');
 
         $this->authorizeResource(Calendar::class, 'calendar');
+
+        $this->manager = new Manager();
+        $this->manager->setSerializer(new DataArraySerializer());
     }
 
     public function index(Request $request) {
@@ -87,10 +95,16 @@ class CalendarController extends Controller
     }
 
     public function users(GetCalendarUsersRequest $request, $id) {
-        return array_merge(
-            $request->calendar->users->toArray(),
+        $users = $request->calendar->users;
+
+        $usersResource = new Collection($users, new CalendarUserTransformer());
+
+        $result = array_merge(
+            $this->manager->createData($usersResource)->toArray()['data'],
             $request->calendar->invitations()->active()->get()->map(function($invite) { return $invite->transformForCalendar(); })->toArray()
         );
+
+        return $result;
     }
 
     public function inviteUser(InviteCalendarUserRequest $request) {

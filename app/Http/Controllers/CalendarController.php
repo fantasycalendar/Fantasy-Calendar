@@ -114,7 +114,6 @@ class CalendarController extends Controller
      */
     public function show(Calendar $calendar)
     {
-
         return view('calendar.view', [
             'calendar' => $calendar,
         ]);
@@ -128,6 +127,8 @@ class CalendarController extends Controller
      */
     public function edit(Calendar $calendar)
     {
+        Auth::user()->acknowledgeMigration();
+
         return view('calendar.edit', [
             'calendar' => $calendar,
         ]);

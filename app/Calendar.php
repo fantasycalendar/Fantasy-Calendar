@@ -30,6 +30,8 @@ class Calendar extends Model
         'parent_link_date',
         'parent_offset',
         'hash',
+        'converted_at',
+        'conversion_batch'
     ];
 
     public function user() {

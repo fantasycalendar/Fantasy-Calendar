@@ -68,8 +68,8 @@ class UserList extends SharpEntityList
             ->setSearchable()
             ->setDefaultSort('created_at', 'desc')
             ->setPaginated()
-            ->addInstanceCommand("elevate", GiveUserBetaAccess::class)
-            ->addInstanceCommand("revoke", RevokeUserBetaAccess::class)
+            ->addInstanceCommand("elevate", GiveUserAppAccess::class)
+            ->addInstanceCommand("revoke", RevokeUserAppAccess::class)
             ->addInstanceCommand("impersonate", LoginAsUser::class)
             ->addInstanceCommand("reset_password", SendUserResetPassword::class);
     }
@@ -110,6 +110,6 @@ class UserList extends SharpEntityList
             function($created_at, $user, $attribute) {
                 return $user->created_at;
             }
-        )->transform($user_model->paginate(20)->makeVisible(['beta_authorised', 'api_token', 'email', 'permissions']));
+        )->transform($user_model->paginate(20));
     }
 }
