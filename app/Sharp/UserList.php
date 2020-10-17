@@ -95,8 +95,6 @@ class UserList extends SharpEntityList
             $user_model->orderBy($params->sortedBy(), $params->sortedDir());
         }
 
-        $users = $user_model->paginate(20)->getCollection()->each->makeVisible(['beta_authorised', 'api_token', 'email', 'permissions']);
-
         return $this->setCustomTransformer(
             "beta_authorised",
             function($beta_authorized, $user, $attribute) {
@@ -112,6 +110,6 @@ class UserList extends SharpEntityList
             function($created_at, $user, $attribute) {
                 return $user->created_at;
             }
-        )->transform($users);
+        )->transform($user_model->paginate(20));
     }
 }
