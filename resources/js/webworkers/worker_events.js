@@ -122,6 +122,11 @@ var event_evaluator = {
 					var cond_2 = values[subcon[3]] ? values[subcon[3]] : undefined;
 					cond_2 = Number(cond_2) != NaN ? Number(cond_2) : cond_2;
 
+				}else if(array[0] === "Date"){
+
+					var selected = epoch_data["epoch"];
+					var cond_1 = values[3];
+
 				}else if(array[0] === "Moons"){
 
 					var selected = epoch_data[selector][values[0]];

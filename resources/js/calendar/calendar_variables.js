@@ -57,6 +57,15 @@ var condition_mapping = {
 		["Day is intercalary",				[["intercalary", "==", 0]],		[["boolean"]]],
 		["Day is not intercalary",			[["intercalary", "!=", 0]],		[["boolean"]]],
 	],
+	
+	"Date": [
+		["Date is exactly", 			[["date", "==", 0, 1, 2]],		[["number", "Number", "Year", "1"], ["select"], ["number", "Number", "Day", "1"]]],
+		["Date is not", 				[["date", "!=", 0, 1, 2]],		[["number", "Number", "Year", "1"], ["select"], ["number", "Number", "Day", "1"]]],
+		["Date is or later than", 		[["date", ">=", 0, 1, 2]],		[["number", "Number", "Year", "1"], ["select"], ["number", "Number", "Day", "1"]]],
+		["Date is or earlier than", 	[["date", "<=", 0, 1, 2]],		[["number", "Number", "Year", "1"], ["select"], ["number", "Number", "Day", "1"]]],
+		["Date is is later than", 		[["date", ">",  0, 1, 2]],		[["number", "Number", "Year", "1"], ["select"], ["number", "Number", "Day", "1"]]],
+		["Date is earlier than", 		[["date", ">",  0, 1, 2]],		[["number", "Number", "Year", "1"], ["select"], ["number", "Number", "Day", "1"]]],
+	],
 
 	"Epoch": [
 		["Epoch is exactly", 			[["epoch","==", 0]],		[["number", "Number", "Enter epoch number", "1"]]],

@@ -1132,16 +1132,6 @@ ol.example li.placeholder:before {
     min-width:25%;
 }
 
-.condition_container .input_container input{
-    order:1;
-    width:100%;
-}
-
-.condition_container .input_container .nth, .condition_container .input_container .offset{
-    order:1;
-    width:50%;
-}
-
 #condition_remove_button .icon.wiggle {
     /* Start the shake animation and make the animation last for 0.5 seconds */
     animation: wiggle_icon_rotation 2s;
