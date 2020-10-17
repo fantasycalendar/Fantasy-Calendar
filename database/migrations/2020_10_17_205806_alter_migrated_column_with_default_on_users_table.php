@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddMigratedColumnToUsersTable extends Migration
+class AlterMigratedColumnWithDefaultOnUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,8 @@ class AddMigratedColumnToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->boolean('migrated');
-            $table->boolean('acknowledged_migration');
+            $table->boolean('migrated')->default(0)->change();
+            $table->boolean('acknowledged_migration')->default(0)->change();
         });
     }
 
@@ -26,9 +26,6 @@ class AddMigratedColumnToUsersTable extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('migrated');
-            $table->dropColumn('acknowledged_migration');
-        });
+        //
     }
 }
