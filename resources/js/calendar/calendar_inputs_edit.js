@@ -125,6 +125,7 @@ function set_up_edit_inputs(){
 
 		switch(view_type){
 			case "owner":
+				Perms.owner = true;
 				if(creation.is_done() && errors.length == 0){
 					if(previous_view_type !== 'owner'){
 						evaluate_settings();
