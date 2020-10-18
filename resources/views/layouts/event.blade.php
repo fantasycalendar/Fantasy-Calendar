@@ -212,8 +212,8 @@
                 <div class='row no-gutters my-2'>
                     <div class='separator'></div>
                 </div>
-
-                @if(!isset($calendar) || count($calendar->event_categories))
+                
+                @if(!isset($calendar) || count($calendar->event_categories) || (Auth::user() != Null && Auth::user()->can('update', $calendar)))
                     <div class='row mb-2 no-gutters'>
                         <div class='col-auto pl-0 pr-1'>
                             <h5 class='modal-form-heading'>Event Category:</h5>
