@@ -376,7 +376,7 @@ var edit_event_ui = {
 					item.remove();
 				}
 
-				$('#condition_remove_button').click();
+				//$('#condition_remove_button').click();
 				edit_event_ui.evaluate_condition_selects(edit_event_ui.event_conditions_container);
 				edit_event_ui.inputs_changed = true;
 			}
@@ -408,7 +408,7 @@ var edit_event_ui = {
 
 						if(!result.dismiss) {
 							group_list.parent().remove();
-							$('#condition_remove_button').click();
+							//$('#condition_remove_button').click();
 							edit_event_ui.evaluate_condition_selects(edit_event_ui.event_conditions_container);
 							edit_event_ui.inputs_changed = true;
 						}
@@ -417,7 +417,7 @@ var edit_event_ui = {
 
 				}else{
 					group_list.parent().remove();
-					$('#condition_remove_button').click();
+					//$('#condition_remove_button').click();
 					edit_event_ui.evaluate_condition_selects(edit_event_ui.event_conditions_container);
 					edit_event_ui.inputs_changed = true;
 				}
@@ -475,14 +475,16 @@ var edit_event_ui = {
 
 	set_delete_element(element){
 		if(this.delete_hover_element !== undefined){
-			this.delete_hover_element.removeClass('hover')
+			this.delete_hover_element.removeClass('hover').removeClass('cursor-pointer');
 			this.delete_hover_element.find('select').prop('disabled', false);
+			this.delete_hover_element.find('input').prop('disabled', false);
 			this.delete_hover_element.find('.icon-reorder').addClass('handle');
 		}
 		this.delete_hover_element = element;
 		if(this.delete_hover_element !== undefined){
-			this.delete_hover_element.addClass('hover')
+			this.delete_hover_element.addClass('hover').addClass('cursor-pointer');
 			this.delete_hover_element.find('select').prop('disabled', true);
+			this.delete_hover_element.find('input').prop('disabled', true);
 			this.delete_hover_element.find('.icon-reorder').removeClass('handle');
 		}
 	},
