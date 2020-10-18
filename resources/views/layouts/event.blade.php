@@ -216,7 +216,7 @@
                 @if(!isset($calendar) || count($calendar->event_categories))
                     <div class='row mb-2 no-gutters'>
                         <div class='col-auto pl-0 pr-1'>
-                            <h5 class='modal-form-heading'>Category:</h5>
+                            <h5 class='modal-form-heading'>Event Category:</h5>
                         </div>
                         <div class='col pl-0 pl-1'>
                             <select class="form-control event-category-list" id="event_categories" name='event_categories' placeholder='Event Category'>
