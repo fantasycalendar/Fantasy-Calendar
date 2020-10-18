@@ -22,6 +22,16 @@ return [
             "show" => \App\Sharp\PresetShow::class,
             "form" => \App\Sharp\PresetForm::class,
         ],
+        "agreements" => [
+            "list" => \App\Sharp\AgreementList::class,
+            "show" => \App\Sharp\AgreementShow::class,
+            "form" => \App\Sharp\AgreementForm::class,
+        ],
+        "policies" => [
+            "list" => \App\Sharp\PolicyList::class,
+            "show" => \App\Sharp\PolicyShow::class,
+            "form" => \App\Sharp\PolicyForm::class,
+        ],
         "env" => [
             "list" => \App\Sharp\EnvVarsList::class,
         ]
@@ -58,6 +68,16 @@ return [
             "label" => "Statistics",
             "icon" => "fa-chart-bar",
             "dashboard" => "statistics"
+        ],
+        [
+            "label" => "Agreements",
+            "icon" => "fa-handshake",
+            "entity" => "agreements"
+        ],
+        [
+            "label" => "Policies",
+            "icon" => "fa-file-contract",
+            "entity" => "policies"
         ],
         [
             "label" => "Env Vars",
