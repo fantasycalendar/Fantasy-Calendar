@@ -13,6 +13,9 @@
 
         <div class="py-5">
 
+            <h1>{{ $title }}</h1>
+            <p><i>{{ $date }}</i></p>
+
             {!! Markdown::convertToHtml($markdown); !!}
 
         </div>

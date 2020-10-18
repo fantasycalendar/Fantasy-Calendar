@@ -21,13 +21,4 @@ class Agreement extends Model
     protected $casts = [
         'in_effect_at' => 'datetime'
     ];
-
-    /**
-     * @return string
-     */
-    public function markdown(){
-
-        return sprintf("# Terms of Service\n\n*Last updated: %s*\n\n%s", $this->in_effect_at->format('jS \\of F, Y'), $this->content);
-
-    }
 }

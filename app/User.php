@@ -186,10 +186,20 @@ class User extends Authenticatable implements
     }
 
     public function hasAgreedToTOS() {
-        if($this->agreement){
+        // TODO Axel Adam - Review if this is needed, as we only really need to track their initial acceptance, then notify customers of ToS changes via email going forward
+        /* if($this->agreement){
             $latest_agreement = Agreement::where("in_effect_at", "<=", now())->latest()->first();
             return $this->agreed_at > $latest_agreement->in_effect_at || $latest_agreement != $this->agreement;
-        }
-        return false;
+        } */
+        return $this->agreement;
+    }
+
+    public function acceptedAgreement() {
+        $latest_agreement = Agreement::where("in_effect_at", "<=", now())->latest()->first();
+        $this->agreement_id = $latest_agreement->id;
+        $this->agreed_at = now();
+        $this->save();
+
+        return $this;
     }
 }
