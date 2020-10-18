@@ -60,6 +60,7 @@ class User extends Authenticatable implements
     protected $casts = [
         'email_verified_at' => 'datetime',
         'settings' => 'json',
+        'agreed_at' => 'datetime',
     ];
 
     /**
@@ -74,6 +75,13 @@ class User extends Authenticatable implements
      */
     public function related_calendars() {
         return $this->belongsToMany('App\Calendar', 'calendar_user_role')->withPivot('user_role');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function agreement() {
+        return $this->belongsTo('App\Agreement');
     }
 
     /**
@@ -175,5 +183,13 @@ class User extends Authenticatable implements
         $this->save();
 
         return $this;
+    }
+
+    public function hasAgreedToTOS() {
+        if($this->agreement){
+            $latest_agreement = Agreement::where("in_effect_at", "<=", now())->latest()->first();
+            return $this->agreed_at > $latest_agreement->in_effect_at || $latest_agreement != $this->agreement;
+        }
+        return false;
     }
 }
