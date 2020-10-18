@@ -23,6 +23,7 @@ Route::get('/account-migrated', 'WelcomeController@account_migrated')->name('acc
 Route::get('/account-migrated-acknowledge', 'WelcomeController@account_migrated_acknowledge')->name('account-migrated-acknowledge');
 
 Route::get('/terms-of-service', 'AgreementController@view')->name('terms-of-service');
+Route::get('/privacy-policy', 'PolicyController@view')->name('privacy-policy');
 
 Route::get('invite/accept', 'InviteController@accept')->name('invite.accept')->middleware(['auth']);
 Route::get('invite/reject', 'InviteController@showRejectConfirmation')->name('invite.reject-confirm')->middleware('auth');

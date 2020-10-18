@@ -194,10 +194,6 @@
         @endif
     </div>
 
-    <section class="footer container text-center p-3 mb-3 border" style="max-width: 600px; opacity: 0.5;">
-        <div class="logo"><img src="{{ asset('resources/logo-dark.png') }}" style="opacity: 0.8; max-height: 42px; margin-bottom: 12px;"></div>
-        <span class="copyright">© Copyright {{ date('Y') }} Fantasy Calendar Ltd.</span>
-    </section>
-
+    @include('templates.footnote')
 
 @endsection

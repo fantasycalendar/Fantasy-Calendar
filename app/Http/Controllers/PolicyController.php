@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Agreement;
+use App\Policy;
 
-class AgreementController extends Controller
+class PolicyController extends Controller
 {
     public function view() {
 
-        $tos = Agreement::where("in_effect_at", "<=", now())->latest()->first();
+        $tos = Policy::where("in_effect_at", "<=", now())->latest()->first();
 
         return view('pages.markdown', [
             'markdown' => $tos->markdown(),

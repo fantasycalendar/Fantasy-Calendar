@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Agreement extends Model
+class Policy extends Model
 {
     use HasFactory;
 
@@ -27,7 +27,7 @@ class Agreement extends Model
      */
     public function markdown(){
 
-        return sprintf("# Terms of Service\n\n*Last updated: %s*\n\n%s", $this->in_effect_at->format('jS \\of F, Y'), $this->content);
+        return sprintf("# Privacy Policy\n\n*Last updated: %s*\n\n%s", $this->in_effect_at->format('jS \\of F, Y'), $this->content);
 
     }
 }
