@@ -6,6 +6,7 @@ use Illuminate\Auth\Events\Registered;
 use Str;
 
 use App\User;
+use App\Agreement;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -75,6 +76,8 @@ class RegisterController extends Controller
             'reg_ip' => '127.0.0.1',
             'beta_authorised' => 0,
             'permissions' => 6,
+            'agreement_id' => Agreement::where("in_effect_at", "<=", now())->latest()->first()->id,
+            'agreed_at' => now()
         ]);
     }
 

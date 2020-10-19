@@ -29,6 +29,8 @@ class User extends Authenticatable implements
         'reg_ip',
         'beta_authorised',
         'permissions',
+        'agreement_id',
+        'agreed_at',
     ];
 
     /**
