@@ -24,6 +24,7 @@ class AgreementCheck
     public function handle(Request $request, Closure $next)
     {
         if(Auth::check() && !Auth::user()->hasAgreedToTOS()) {
+            $request->session()->put('intended', $request->path());
             return redirect('accept-tos');
         }
         return $next($request);

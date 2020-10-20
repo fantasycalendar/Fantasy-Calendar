@@ -27,9 +27,12 @@ class AgreementController extends Controller
         return view('pages.accept-tos', $this->get_agreement());
     }
 
-    public function agreement_accepted() {
+    public function agreement_accepted(request $request) {
         Auth::user()->acceptedAgreement();
+        
+        $intended = session('intended');
+        session()->forget('intended');
 
-        return redirect(route('calendars.index'));
+        return redirect($intended);
     }
 }
