@@ -1,6 +1,3 @@
-## Terms of Service
-*Last updated: April 12th, 2020*
-
 ## Definitions of key terms
 
 Welcome to Fantasy-Calendar! Please read these Terms of Use (“Terms”, “Terms of Service”) carefully before using the https://fantasy-calendar.com/ website (the “Service”) operated by Fantasy Calendar Ltd (“us”, “we”, or “our”).

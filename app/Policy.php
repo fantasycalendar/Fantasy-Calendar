@@ -10,7 +10,8 @@ class Policy extends Model
     use HasFactory;
 
     public $fillable = [
-        'content'
+        'content',
+        'in_effect_at'
     ];
 
     /**

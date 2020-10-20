@@ -1,5 +1,6 @@
 <?php
 
+use App\Agreement;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -19,6 +20,11 @@ class CreateAgreementsTable extends Migration
             $table->timestamps();
             $table->timestamp('in_effect_at')->nullable();
         });
+
+        Agreement::create([
+            'content' => Storage::disk('base')->get('public/policies/Terms of Service.md'),
+            'in_effect_at' => now()
+        ]);
     }
 
     /**

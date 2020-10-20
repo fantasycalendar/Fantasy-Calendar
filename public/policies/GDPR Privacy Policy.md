@@ -1,6 +1,3 @@
-# GDPR Privacy Policy
-*Last updated: April 12th, 2020*
-
 Fantasy Calendar Ltd. (“us”, “we”, or “our”) operates the https://fantasy-calendar.com website (hereinafter referred to as the “Service”).
 
 This page informs you of our policies regarding the collection, use and disclosure of personal data when you use our Service and the choices you have associated with that data.
