@@ -196,7 +196,7 @@ class User extends Authenticatable implements
         return $this->agreement;
     }
 
-    public function acceptedAgreement() {
+    public function acceptAgreement() {
         $latest_agreement = Agreement::where("in_effect_at", "<=", now())->latest()->first();
         $this->agreement_id = $latest_agreement->id;
         $this->agreed_at = now();

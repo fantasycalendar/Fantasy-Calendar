@@ -23,16 +23,16 @@ class AgreementController extends Controller
         return view('pages.markdown', $this->get_agreement());
     }
 
-    public function accept() {
-        return view('pages.accept-tos', $this->get_agreement());
+    public function show(Request $request) {
+        return view('pages.prompt-tos', array_merge(
+            $this->get_agreement(),
+            ['intended' => $request->input('intended') ?? 'calendars']
+        ));
     }
 
-    public function agreement_accepted(request $request) {
-        Auth::user()->acceptedAgreement();
-        
-        $intended = session('intended');
-        session()->forget('intended');
+    public function agreement_accepted(Request $request) {
+        Auth::user()->acceptAgreement();
 
-        return redirect($intended);
+        return redirect($request->input('intended') ?? 'calendars');
     }
 }
