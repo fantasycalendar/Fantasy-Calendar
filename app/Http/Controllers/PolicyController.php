@@ -9,7 +9,7 @@ class PolicyController extends Controller
 {
     public function view() {
 
-        $policy = Policy::where("in_effect_at", "<=", now())->latest()->first();
+        $policy = Policy::current();
 
         return view('pages.markdown', [
             'title' => "GDPR Privacy Policy",

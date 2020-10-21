@@ -188,7 +188,7 @@ class User extends Authenticatable implements
     }
 
     public function hasAgreedToTOS() {
-        return $this->agreement;
+        return $this->agreement_id !== null;
     }
 
     public function acceptAgreement() {

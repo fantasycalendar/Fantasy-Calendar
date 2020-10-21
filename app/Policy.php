@@ -22,4 +22,8 @@ class Policy extends Model
     protected $casts = [
         'in_effect_at' => 'datetime'
     ];
+
+    public static function current() {
+        return static::where("in_effect_at", "<=", now())->latest()->first();
+    }
 }
