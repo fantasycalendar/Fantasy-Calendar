@@ -1102,11 +1102,19 @@ ol.example li.placeholder:before {
 }
 
 #event_conditions_container.deleting{
+
+    border: 1px solid red;
+
+    background-image: $warning-crosshatch;
+
     & .condition.hover > .condition_container{
         background-color:$red;
     }
     & .group.hover > .group_list{
         background-color:$red;
+    }
+    & .cursor-pointer *{
+        cursor: pointer;
     }
 }
 
@@ -1132,14 +1140,8 @@ ol.example li.placeholder:before {
     min-width:25%;
 }
 
-.condition_container .input_container input{
-    order:1;
-    width:100%;
-}
-
-.condition_container .input_container .nth, .condition_container .input_container .offset{
-    order:1;
-    width:50%;
+.cursor-pointer{
+    cursor: pointer;
 }
 
 #condition_remove_button .icon.wiggle {
@@ -1281,7 +1283,7 @@ ol.example li.placeholder:before {
     border-radius: 5px;
     padding: 20px;
     width:700px;
-    max-width: 90%;
+    max-width: 90vw;
     position:relative;
     margin:auto;
     color: white;

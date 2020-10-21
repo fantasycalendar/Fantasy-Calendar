@@ -2,9 +2,16 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\CalendarInvite;
+use App\Http\Requests\ChangeUserRoleRequest;
+use App\Http\Requests\GetCalendarUsersRequest;
+use App\Http\Requests\InviteCalendarUserRequest;
+use App\Http\Requests\RemoveUserFromCalendarRequest;
+use App\Http\Requests\ResendCalendarInvitationRequest;
 use App\Jobs\CloneCalendar;
 use App\Notifications\CalendarInvitation;
 use App\Notifications\UnregisteredCalendarInvitation;
+use App\Transformer\CalendarUserTransformer;
 use App\User;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -14,6 +21,11 @@ use App\Http\Resources\CalendarCollection;
 
 use App\Calendar;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Validation\ValidationException;
+use League\Fractal\Manager;
+use League\Fractal\Resource\Collection;
+use League\Fractal\Resource\Item;
+use League\Fractal\Serializer\DataArraySerializer;
 
 class CalendarController extends Controller
 {
@@ -21,6 +33,9 @@ class CalendarController extends Controller
         $this->middleware('auth:api')->except('last_changed', 'children', 'show', 'dynamic_data');
 
         $this->authorizeResource(Calendar::class, 'calendar');
+
+        $this->manager = new Manager();
+        $this->manager->setSerializer(new DataArraySerializer());
     }
 
     public function index(Request $request) {
@@ -79,72 +94,48 @@ class CalendarController extends Controller
         return new CalendarCollection($calendar->user->calendars->keyBy('hash'));
     }
 
-    public function users(Request $request, $id) {
-        return Calendar::active()
-            ->hash($id)
-            ->firstOrFail()->users;
+    public function users(GetCalendarUsersRequest $request, $id) {
+        $users = $request->calendar->users;
+
+        $usersResource = new Collection($users, new CalendarUserTransformer());
+
+        $result = array_merge(
+            $this->manager->createData($usersResource)->toArray()['data'],
+            $request->calendar->invitations()->active()->get()->map(function($invite) { return $invite->transformForCalendar(); })->toArray()
+        );
+
+        return $result;
     }
 
-    public function inviteUser(Request $request, $id) {
-        $calendar = Calendar::active()->hash($id)->firstOrFail();
-        $email = $request->input('email');
+    public function inviteUser(InviteCalendarUserRequest $request) {
+        $invitation = CalendarInvite::generate($request->calendar, $request->email);
 
+        $invitation->send();
 
-        if(!auth('api')->user()->can('add-users', $calendar)) {
-            return response()->json(['error' => true, 'message' => 'Action not authorized.'], 403);
-        }
-
-
-        try {
-            $user = User::whereEmail($email)->firstOrFail();
-
-            if($calendar->users->contains($user)) {
-                return response()->json(['error' => true, 'message' => 'This calendar already has user "'.$user->username.'"']);
-            }
-
-            $user->notify(new CalendarInvitation($calendar, $user));
-        } catch (ModelNotFoundException $e) {
-            Notification::route('mail', $email)
-                ->notify(new UnregisteredCalendarInvitation($calendar, $email));
-        }
-
-
-        return response()->json(['error' => false, 'message' => 'Invite sent.']);
+        return response()->json(['message' => 'Invite sent.']);
     }
 
-    public function changeUserRole(Request $request, $id) {
-        $calendar = Calendar::active()->hash($id)->firstOrFail();
-
-        if(!auth('api')->user()->can('add-users', $calendar)) {
-            throw new AuthorizationException("You're not authorized to edit users on this calendar.");
+    public function resend_invite(ResendCalendarInvitationRequest $request) {
+        if(!$request->invitation->canBeResent()) {
+            return response()->json(['error' => true, 'message' => "You're doing that too much. Try again later."], 422);
         }
 
-        $calendar->users()->updateExistingPivot($request->input('user_id'), $request->only(['user_role']));
+        $request->invitation->resend();
 
-        $calendar->save();
-
-        return $calendar->users;
+        return $request->invitation->transformForCalendar();
     }
 
-    public function removeUser(Request $request, $id) {
-        $validatedData = $request->validate([
-            'user_id' => ['required', 'integer']
-        ]);
+    public function changeUserRole(ChangeUserRoleRequest $request, $id) {
 
-        $calendar = Calendar::active()->hash($id)->firstOrFail();
+        $request->calendar->users()->updateExistingPivot($request->input('user_id'), $request->only(['user_role']));
 
-        if(!auth('api')->user()->can('add-users', $calendar)) {
-            throw new AuthorizationException("You're not authorized to remove users from this calendar.");
-        }
+        $request->calendar->save();
 
-        $calendar->users()->detach($request->input('user_id'));
-        $calendar->save();
+        return $request->calendar->users;
+    }
 
-        if($request->input('remove_all') === "true"){
-            $calendar->events()->where('creator_id', $request->input('user_id'))->delete();
-        }
-
-        return $calendar->users;
+    public function removeUser(RemoveUserFromCalendarRequest $request) {
+        return $request->calendar->removeUser($request->input('user_id'), $request->input('remove_all'), $request->input('email'));
     }
 
     public function dynamic_data(Request $request, $id) {

@@ -610,6 +610,8 @@ function get_moon_granularity(cycle){
 		return 40;
 	}else if(cycle >= 24){
 		return 24;
+	}else if(cycle >= 16){
+		return 16;
 	}else if(cycle >= 8){
 		return 8;
 	}else{

@@ -30,6 +30,8 @@ class Calendar extends Model
         'parent_link_date',
         'parent_offset',
         'hash',
+        'converted_at',
+        'conversion_batch'
     ];
 
     public function user() {
@@ -54,6 +56,10 @@ class Calendar extends Model
 
     public function children() {
         return $this->hasMany('App\Calendar', 'parent_id');
+    }
+
+    public function invitations() {
+        return $this->hasMany('App\CalendarInvite');
     }
 
 
@@ -197,5 +203,26 @@ class Calendar extends Model
 
     public function getRouteKeyName() {
         return 'hash';
+    }
+
+    public function removeUser($user, $remove_all = false, $email = false) {
+        $id = ($user instanceof \App\User) ? $user->id : $user;
+
+        if($this->users()->where('users.id', $id)->exists()) {
+            $this->users()->detach($id);
+            $this->save();
+        }
+
+        if($email) {
+            $this->invitations()->where('email', $email)->each(function($invitation) {
+                $invitation->reject();
+            });
+        }
+
+        if($remove_all) {
+            $this->events()->where('creator_id', $id)->delete();
+        }
+
+        return true;
     }
 }

@@ -376,7 +376,7 @@ var edit_event_ui = {
 					item.remove();
 				}
 
-				$('#condition_remove_button').click();
+				//$('#condition_remove_button').click();
 				edit_event_ui.evaluate_condition_selects(edit_event_ui.event_conditions_container);
 				edit_event_ui.inputs_changed = true;
 			}
@@ -408,7 +408,7 @@ var edit_event_ui = {
 
 						if(!result.dismiss) {
 							group_list.parent().remove();
-							$('#condition_remove_button').click();
+							//$('#condition_remove_button').click();
 							edit_event_ui.evaluate_condition_selects(edit_event_ui.event_conditions_container);
 							edit_event_ui.inputs_changed = true;
 						}
@@ -417,7 +417,7 @@ var edit_event_ui = {
 
 				}else{
 					group_list.parent().remove();
-					$('#condition_remove_button').click();
+					//$('#condition_remove_button').click();
 					edit_event_ui.evaluate_condition_selects(edit_event_ui.event_conditions_container);
 					edit_event_ui.inputs_changed = true;
 				}
@@ -475,14 +475,16 @@ var edit_event_ui = {
 
 	set_delete_element(element){
 		if(this.delete_hover_element !== undefined){
-			this.delete_hover_element.removeClass('hover')
+			this.delete_hover_element.removeClass('hover').removeClass('cursor-pointer');
 			this.delete_hover_element.find('select').prop('disabled', false);
+			this.delete_hover_element.find('input').prop('disabled', false);
 			this.delete_hover_element.find('.icon-reorder').addClass('handle');
 		}
 		this.delete_hover_element = element;
 		if(this.delete_hover_element !== undefined){
-			this.delete_hover_element.addClass('hover')
+			this.delete_hover_element.addClass('hover').addClass('cursor-pointer');
 			this.delete_hover_element.find('select').prop('disabled', true);
+			this.delete_hover_element.find('input').prop('disabled', true);
 			this.delete_hover_element.find('.icon-reorder').removeClass('handle');
 		}
 	},
@@ -949,7 +951,7 @@ var edit_event_ui = {
 
 			var moon = static_data.moons[moon_index];
 
-			var moon_phase_name = moon_phases[moon.granularity][edit_event_ui.data.moon_phase[moon_index]];
+			var moon_phase_name = Object.keys(moon_phases[moon.granularity])[edit_event_ui.data.moon_phase[moon_index]];
 
 			moon_phase_collection += `${moon.name} is ${moon_phase_name}, `
 
@@ -1264,6 +1266,19 @@ var edit_event_ui = {
 					}
 					values.push(val);
 
+				}else if(type === "Date"){
+
+					$(this).find('.input_container').children().each(function(){
+						if($(this).val() == ""){
+							var val = 0;
+						}else{
+							var val = $(this).val();
+						}
+						values.push(val);
+					});
+
+					values.push(evaluate_calendar_start(static_data, values[0], values[1], values[2]).epoch)
+
 				}else{
 
 					$(this).find('.input_container').children().each(function(){
@@ -1435,7 +1450,7 @@ var edit_event_ui = {
 			var next_start = 0;
 
 			if(condition_selected[0] == "select"){
-				html.push("<select class='form-control'>")
+				html.push("<select class='form-control order-1'>")
 
 				for(var i = 0; i < static_data.year_data.timespans.length; i++){
 					html.push(`<option value='${i}'>`);
@@ -1456,7 +1471,7 @@ var edit_event_ui = {
 				var min = condition_selected[i][4];
 				var max = condition_selected[i][5];
 
-				html.push(`<input type='${type}' placeholder='${placeholder}' class='form-control ${placeholder}'`);
+				html.push(`<input type='${type}' placeholder='${placeholder}' class='form-control ${placeholder} order-2'`);
 
 				if(typeof alt !== 'undefined'){
 					html.push(` alt='${alt}'`)
@@ -1478,6 +1493,72 @@ var edit_event_ui = {
 
 			}
 
+		}else if(type == "Date"){
+
+			var type = condition_selected[0][0];
+			var placeholder = condition_selected[0][1];
+			var alt = condition_selected[0][0];
+			var value = dynamic_data.year;
+			var min = condition_selected[0][4];
+			var max = condition_selected[0][5];
+
+			html.push(`<input type='${type}' placeholder='${placeholder}' class='form-control ${placeholder} order-1'`);
+
+			if(typeof alt !== 'undefined'){
+				html.push(` alt='${alt}'`)
+			}
+
+			if(typeof value !== 'undefined'){
+				html.push(` value='${value}'`);
+			}
+
+			if(typeof min !== 'undefined'){
+				html.push(` min='${min}'`);
+			}
+
+			if(typeof max !== 'undefined'){
+				html.push(` max='${max}'`);
+			}
+
+			html.push(">");
+
+			html.push("<select class='form-control order-2'>")
+
+			for(var i = 0; i < static_data.year_data.timespans.length; i++){
+				html.push(`<option value='${i}' ${i == dynamic_data.timespan ? "selected" : ""}>`);
+				html.push(static_data.year_data.timespans[i].name);
+				html.push("</option>");
+			}
+
+			html.push("</select>")
+
+			var type = condition_selected[2][0];
+			var placeholder = condition_selected[2][1];
+			var alt = condition_selected[2][2];
+			var value = dynamic_data.day;
+			var min = condition_selected[2][4];
+			var max = condition_selected[2][5];
+
+			html.push(`<input type='${type}' placeholder='${placeholder}' class='form-control ${placeholder} order-3'`);
+
+			if(typeof alt !== 'undefined'){
+				html.push(` alt='${alt}'`)
+			}
+
+			if(typeof value !== 'undefined'){
+				html.push(` value='${value}'`);
+			}
+
+			if(typeof min !== 'undefined'){
+				html.push(` min='${min}'`);
+			}
+
+			if(typeof max !== 'undefined'){
+				html.push(` max='${max}'`);
+			}
+
+			html.push(">");
+
 		}else if(type == "Moons"){
 
 			var next_start = 0;
@@ -1490,9 +1571,11 @@ var edit_event_ui = {
 
 				html.push("<select class='form-control'>")
 
-				for(var i = 0; i < moon_phases[static_data.moons[selected_moon].granularity].length; i++){
+				let phases = Object.keys(moon_phases[static_data.moons[selected_moon].granularity]);
+
+				for(var i = 0; i < phases.length; i++){
 					html.push(`<option value='${i}'>`);
-					html.push(moon_phases[static_data.moons[selected_moon].granularity][i]);
+					html.push(phases[i]);
 					html.push("</option>");
 				}
 
@@ -1511,7 +1594,7 @@ var edit_event_ui = {
 				var min = condition_selected[i][4];
 				var max = condition_selected[i][5];
 
-				html.push(`<input type='${type}' placeholder='${placeholder}' class='form-control ${placeholder}'`);
+				html.push(`<input type='${type}' placeholder='${placeholder}' class='form-control ${placeholder} order-1'`);
 
 				if(typeof alt !== 'undefined'){
 					html.push(` alt='${alt}'`)
@@ -1535,7 +1618,7 @@ var edit_event_ui = {
 
 		}else if(type == "Cycle"){
 
-			html.push("<select class='form-control'>")
+			html.push("<select class='form-control order-1'>")
 
 			for(var i = 0; i < static_data.cycles.data.length; i++){
 				html.push(`<optgroup label='${ordinal_suffix_of(i+1)} cycle group' value='${i}'>`);
@@ -1551,7 +1634,7 @@ var edit_event_ui = {
 
 		}else if(type == "Era"){
 
-			html.push("<select class='form-control'>");
+			html.push("<select class='form-control order-1'>");
 
 			for(var i = 0; i < static_data.eras.length; i++){
 				html.push(`<option value='${i}'>`);
@@ -1564,7 +1647,7 @@ var edit_event_ui = {
 		}else if(type == "Season"){
 
 			if(condition_selected[0] == "select"){
-				html.push("<select class='form-control'>")
+				html.push("<select class='form-control order-1'>")
 				for(var i = 0; i < static_data.seasons.data.length; i++){
 					html.push(`<option value='${i}'>`);
 					html.push(static_data.seasons.data[i].name);
@@ -1588,7 +1671,7 @@ var edit_event_ui = {
 					var min = condition_selected[i][4];
 					var max = condition_selected[i][5];
 
-					html.push(`<input type='${type}' placeholder='${placeholder}' class='form-control ${placeholder}'`);
+					html.push(`<input type='${type}' placeholder='${placeholder}' class='form-control ${placeholder} order-1'`);
 
 					if(typeof alt !== 'undefined'){
 						html.push(` alt='${alt}'`)

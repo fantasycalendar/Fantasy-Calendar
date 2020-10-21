@@ -113,7 +113,9 @@ function set_up_edit_inputs(){
 	$('.view-tabs .btn').click(function(){
 
 		view_type = $(this).attr('data-view-type');
-		Perms.owner = true;
+
+
+    owner = true;
 
 		$('.view-tabs .btn-primary').removeClass('btn-primary').addClass('btn-secondary');
 
@@ -123,6 +125,7 @@ function set_up_edit_inputs(){
 
 		switch(view_type){
 			case "owner":
+				Perms.owner = true;
 				if(creation.is_done() && errors.length == 0){
 					if(previous_view_type !== 'owner'){
 						evaluate_settings();
@@ -1517,6 +1520,8 @@ function set_up_edit_inputs(){
 				var granularity = 4;
 			}else if(cycle <= 8){
 				var granularity = 8;
+			}else if(cycle <= 16){
+				var granularity = 16;
 			}else if(cycle <= 24){
 				var granularity = 24;
 			}else{
@@ -2245,14 +2250,15 @@ function set_up_edit_inputs(){
 				$('.email_text').text(text).parent().toggleClass('hidden', text.length === 0);
 				$('#email_input').toggleClass('invalid', !success);
 				$('.email_text').toggleClass('alert-danger', !success);
+				$('#btn_send_invite').prop('disabled', false);
 				if(success){
 					$('#email_input').val('');
-                    $('#btn_send_invite').prop('disabled', false);
+					set_up_user_list();
 				}
 			});
 		}else{
 			$(this).prop('disabled', false);
-			$('.email_text').text(!valid_email ? "This email is invalid!" : "").parent().toggleClass('hidden', valid_email);
+			$('.email_text').text(!valid_email ? "This email is invalid!" : "").toggleClass('alert-danger', !valid_email).parent().toggleClass('hidden', valid_email);
 		}
 
 		setTimeout(() => {
@@ -2274,6 +2280,8 @@ function set_up_edit_inputs(){
 
 		update_calendar_user(user_id, permissions, function(success, text){
 
+			console.log(text)
+
 			button.prop('disabled', success);
 			button.attr('permissions_val', permissions);
 
@@ -2293,33 +2301,86 @@ function set_up_edit_inputs(){
 
 	$(document).on('click', '.remove_user', function(){
 
-		var user_name = $(this).attr('user_name');
+		var user_name = $(this).attr('username');
+		var user_role = $(this).attr('role');
 		var user_id = $(this).attr('user_id')|0;
 
-		swal.fire({
-			title: "Removing User",
-			html: `<p>Are you sure you want to remove <strong>${user_name}</strong> from this calendar?</p>`,
-			input: 'checkbox',
-			inputPlaceholder: 'Remove all of their contributions as well',
-			inputClass: "form-control",
-			showCancelButton: true,
-			confirmButtonColor: '#d33',
-			cancelButtonColor: '#3085d6',
-			confirmButtonText: 'Yes, remove',
-			cancelButtonText: 'Cancel',
-			icon: "warning"
-		})
-		.then((result) => {
+		if(user_role != "invited"){
 
-			if(!result.dismiss) {
+			swal.fire({
+				title: "Removing User",
+				html: `<p>Are you sure you want to remove <strong>${user_name}</strong> from this calendar?</p>`,
+				input: 'checkbox',
+				inputPlaceholder: 'Remove all of their contributions as well',
+				inputClass: "form-control",
+				showCancelButton: true,
+				confirmButtonColor: '#d33',
+				cancelButtonColor: '#3085d6',
+				confirmButtonText: 'Yes, remove',
+				cancelButtonText: 'Cancel',
+				icon: "warning"
+			})
+			.then((result) => {
 
-				var remove_all = result.value == 1;
+				if(!result.dismiss) {
 
-				remove_calendar_user(user_id, remove_all, function(){
-					set_up_user_list();
-				});
+					var remove_all = result.value == 1;
 
-			}
+					remove_calendar_user(user_id, remove_all, function(){
+						set_up_user_list();
+					});
+
+				}
+			});
+
+		}else{
+
+			swal.fire({
+				title: "Cancel Invititation",
+				html: `<p>Are you sure you want to cancel the invitation for <strong>${user_name}</strong>?</p>`,
+				showCancelButton: true,
+				confirmButtonColor: '#d33',
+				cancelButtonColor: '#3085d6',
+				confirmButtonText: 'Yes, cancel it',
+				cancelButtonText: 'Nah, leave it',
+				icon: "warning"
+			})
+			.then((result) => {
+
+				if(!result.dismiss) {
+
+					remove_calendar_user(user_id, false, function(){
+						set_up_user_list();
+					}, user_name);
+
+				}
+			});
+
+		}
+
+	});
+
+	$(document).on('click', '.resend_invitation', function(){
+
+		var button = $(this);
+		var container = button.closest('.sortable-container');
+		button.prop('disabled', true);
+
+		var email = button.attr('user_email');
+
+		resend_calendar_invite(email, function(success, text){
+
+			button.prop('disabled', success);
+
+			container.find('.user_permissions_text').parent().toggleClass('hidden', false);
+			container.find('.user_permissions_text').parent().toggleClass('error', !success);
+			container.find('.user_permissions_text').text(text);
+
+			setTimeout(() => {
+				container.find('.user_permissions_text').parent().toggleClass('hidden', true);
+				container.find('.user_permissions_text').text("");
+			}, 5000);
+
 		});
 
 	});
@@ -3307,15 +3368,15 @@ function add_location_to_list(parent, key, data){
 						element.push("</div>");
 
 						element.push(`<div class='row no-gutters sortable-header'>`);
-		
+
 							element.push("<div class='col-6 pr-1'>");
 								element.push(`Hour`);
 							element.push("</div>");
-		
+
 							element.push("<div class='col-6 pl-1'>");
 								element.push(`Minute`);
 							element.push("</div>");
-		
+
 						element.push("</div>");
 
 						element.push(`<div class='row no-gutters mb-2 protip'  data-pt-position="right" data-pt-title="What time the sun rises at the peak of this season, in this location">`);
@@ -3339,15 +3400,15 @@ function add_location_to_list(parent, key, data){
 						element.push("</div>");
 
 						element.push(`<div class='row no-gutters sortable-header'>`);
-		
+
 							element.push("<div class='col-6 pr-1'>");
 								element.push(`Hour`);
 							element.push("</div>");
-		
+
 							element.push("<div class='col-6 pl-1'>");
 								element.push(`Minute`);
 							element.push("</div>");
-		
+
 						element.push("</div>");
 
 						element.push(`<div class='row no-gutters mb-2 protip' data-pt-position="right" data-pt-title="What time the sets rises at the peak of this season, in this location">`);
@@ -3997,7 +4058,7 @@ function add_user_to_list(parent, key, data){
 					element.push(`<h4 class='m-0'>${data.username}</h4>`);
 				element.push("</div>");
 				element.push("<div class='col-md-auto'>");
-					element.push(`<button type='button' class='btn btn-sm btn-danger full remove_user' username='${data.username}' user_id='${data.id}'><i class='fas fa-trash'></i></button>`);
+					element.push(`<button type='button' class='btn btn-sm btn-danger full remove_user' role='${data.user_role}' username='${data.username}' user_id='${data.id}'><i class='fas fa-trash'></i></button>`);
 				element.push("</div>");
 			element.push("</div>");
 
@@ -4007,22 +4068,36 @@ function add_user_to_list(parent, key, data){
 				element.push("</div>");
 			element.push("</div>");
 
-			element.push("<div class='row no-gutters mt-1'>");
-				element.push(`<p class='m-0'>Permissions:</p>`);
-			element.push("</div>");
+			if(data.user_role != "invited"){
+
+				element.push("<div class='row no-gutters mt-1'>");
+					element.push(`<p class='m-0'>Permissions:</p>`);
+				element.push("</div>");
 
 			element.push("<div class='row no-gutters mb-1'>");
 				element.push("<div class='col-md'>");
 					element.push("<select class='form-control user_permissions_select' onchange='user_permissions_select(this)'>");
-						element.push(`<option ${data.pivot.user_role == 'observer' ? "selected" : ""} value='observer'>Observer</option>`);
-						element.push(`<option ${data.pivot.user_role == 'player' ? "selected" : ""} value='player'>Player</option>`);
-						element.push(`<option ${data.pivot.user_role == 'co-owner' ? "selected" : ""} value='co-owner'>CO-GM</option>`);
+						element.push(`<option ${data.user_role == 'observer' ? "selected" : ""} value='observer'>Observer</option>`);
+						element.push(`<option ${data.user_role == 'player' ? "selected" : ""} value='player'>Player</option>`);
+						element.push(`<option ${data.user_role == 'co-owner' ? "selected" : ""} value='co-owner'>CO-GM</option>`);
 					element.push("</select>");
+					element.push("</div>");
+					element.push("<div class='col-md-auto'>");
+						element.push(`<button type='button' class='btn btn btn-primary full update_user_permissions' disabled permissions_val='${data.user_role}' user_id='${data.id}'>Update</button>`);
+					element.push("</div>");
 				element.push("</div>");
-				element.push("<div class='col-md-auto'>");
-					element.push(`<button type='button' class='btn btn btn-primary full update_user_permissions' disabled permissions_val='${data.pivot.user_role}' user_id='${data.id}'>Update</button>`);
+
+			}else{
+
+				element.push("<div class='row no-gutters my-1'>");
+					element.push(`<p class='m-0'>We've sent them an invitation to your calendar, and now we're just waiting for them to accept it!</p>`);
 				element.push("</div>");
-			element.push("</div>");
+
+				element.push("<div class='row no-gutters my-2'>");
+					element.push(`<button type="button" class="btn btn-primary resend_invitation" user_email='${data.username}'>Resend invitation email</button>`);
+				element.push("</div>");
+
+			}
 
 			element.push("<div class='row no-gutters my-1 hidden'>");
 				element.push(`<p class='m-0 user_permissions_text'></p>`);
@@ -5806,5 +5881,5 @@ function user_permissions_select(select){
     var curr_value = button.attr('permissions_val');
 
 	button.prop('disabled', new_value === curr_value);
-	
+
 }

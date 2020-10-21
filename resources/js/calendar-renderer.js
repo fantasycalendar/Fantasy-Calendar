@@ -46,7 +46,7 @@ const calendar_renderer = {
     weather_mouse_enter: function(day, event) {
         calendar_weather.tooltip.show($(event.target));
     },
-    
+
     weather_mouse_leave: function() {
         calendar_weather.tooltip.hide();
     },
@@ -74,6 +74,9 @@ const calendar_renderer = {
 
         let event_data = event.detail;
         for(let epoch in this.render_data.event_epochs){
+            if(!this.render_data.event_epochs[epoch].has_events){
+                break;
+            }
             if(this.render_data.event_epochs[epoch].events.length > 0){
                 this.render_data.event_epochs[epoch].events.splice(0, this.render_data.event_epochs[epoch].events.length)
             }
@@ -106,7 +109,7 @@ const calendar_renderer = {
         );
 		eras.set_up_position();
         eras.evaluate_position();
-        
+
         scroll_to_epoch();
 
         for(let index in this.render_callbacks){

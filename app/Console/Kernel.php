@@ -25,7 +25,10 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('clean:authtokens')
-                 ->everyMinute();
+                 ->daily()->onOneServer();
+
+        $schedule->command('discord:daily-stats')
+                 ->daily()->onOneServer();
     }
 
     /**
