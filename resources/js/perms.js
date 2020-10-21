@@ -36,6 +36,13 @@ class Perms {
     user_is_owner(){
         return this.owner;
     }
+
+    user_can_comment(){
+        if(!static_data.settings.comments){
+            return this.owner;
+        }
+        return this.player_at_least('player');
+    }
 }
 
 module.exports = Perms;

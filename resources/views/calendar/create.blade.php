@@ -66,6 +66,7 @@
                 "add_month_number":false,
                 "add_year_day_number":false,
                 "default_category":-1,
+                "comments": false
             },
             "cycles":{
                 "format":"",
