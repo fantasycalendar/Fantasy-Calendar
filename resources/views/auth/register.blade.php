@@ -95,8 +95,10 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <input type='checkbox' name="policy_acceptance" class='mr-2' x-model='agreed'> By clicking <strong>Register</strong>, I hereby agree and constent to the <a target="_blank" href="{{ route('terms-of-service') }}">Terms of Service</a>, and the <a target="_blank" href="{{ route('privacy-policy') }}">GDPR Privacy Policy</a></li>
+
+                        <div class="form-check p-2 mb-3">
+                            <input type="checkbox" class="form-check-input" name="policy_acceptance" id="policy_acceptance" x-model="agreed" required>
+                            <label class="form-check-label" for="policy_acceptance">By clicking <strong>Register</strong>, I hereby agree and constent to the <a target="_blank" href="{{ route('terms-of-service') }}">Terms of Service</a>, and the <a target="_blank" href="{{ route('privacy-policy') }}">GDPR Privacy Policy</a></label>
                         </div>
 
                         <div class="form-group row mb-0">

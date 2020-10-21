@@ -26,7 +26,7 @@ Route::get('/terms-of-service', 'AgreementController@view')->name('terms-of-serv
 Route::get('/privacy-policy', 'PolicyController@view')->name('privacy-policy');
 
 Route::get('/prompt-tos', 'AgreementController@show')->name('prompt-tos');
-Route::get('/agreement-accepted', 'AgreementController@agreement_accepted')->name('agreement-accepted');
+Route::get('/agreement-accepted', 'AgreementController@accept')->name('agreement-accepted');
 
 Route::get('invite/accept', 'InviteController@accept')->name('invite.accept')->middleware(['auth', 'agreement']);
 Route::get('invite/reject', 'InviteController@showRejectConfirmation')->name('invite.reject-confirm')->middleware(['auth', 'agreement']);

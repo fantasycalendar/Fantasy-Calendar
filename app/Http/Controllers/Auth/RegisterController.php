@@ -76,7 +76,7 @@ class RegisterController extends Controller
             'reg_ip' => '127.0.0.1',
             'beta_authorised' => 0,
             'permissions' => 6,
-            'agreement_id' => Agreement::where("in_effect_at", "<=", now())->latest()->first()->id,
+            'agreement_id' => Agreement::current()->id,
             'agreed_at' => now()
         ]);
     }
