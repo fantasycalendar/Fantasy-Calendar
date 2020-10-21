@@ -56,10 +56,8 @@ class MigrateUsers extends Command
         }
 
         if($where = $this->option('where')) {
-            $users = $userModel->where('migrated', 0)->select(DB::raw($where))->get();
-        }
-
-        if($ids = $this->option('ids')) {
+            $users = $userModel->whereRaw($where)->where('migrated', 0)->get();
+        } else if($ids = $this->option('ids')) {
             $users = $userModel->where('migrated', 0)->whereIn('id', explode(',', $ids))->get();
         }
 
@@ -78,6 +76,10 @@ class MigrateUsers extends Command
         $bar->start();
 
         foreach($users as $user) {
+            foreach(OldCalendar::where('user_id', $user->id)->where('deleted', 0)->get() as $calendar) {
+                ConvertCalendarTo2Point0::dispatch($calendar, $this->batch);
+            }
+
             $user->migrated = 1;
 
             if($user->api_token == null) {
@@ -85,10 +87,6 @@ class MigrateUsers extends Command
             }
 
             $user->save();
-
-            foreach(OldCalendar::where('user_id', $user->id)->where('deleted', 0)->get() as $calendar) {
-                ConvertCalendarTo2Point0::dispatch($calendar, $this->batch);
-            }
 
             $bar->advance();
         }
