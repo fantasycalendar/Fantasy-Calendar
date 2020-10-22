@@ -569,12 +569,13 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
         if(!empty($arrayified)){
             switch($event->repeats) {
                 case 'once':
-                    $conditions = ['Date', '0', [
+                    $conditions = [
+                        ['Date', '0', [
                             strval($data->year),
                             strval($data->month-1),
                             strval($data->day),
                             $this->get_epoch($data->year, $data->month-1, $data->day)
-                        ]
+                        ]]
                     ];
                     $date = [$data->year, $data->month-1, $data->day];
                     break;
@@ -711,7 +712,16 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                 case 'multimoon_every':
                 case 'multimoon_anually':
 
-                    $conditions = ($event->repeats == 'multimoon_every') ? [] : [['Month', '0', strval($data->month-1)], ['&&']];
+                    if($event->repeats == 'multimoon_every'){
+
+                        $conditions = [];
+
+                    }else{
+
+                        $conditions = [['Month', '0', strval($data->month-1)], ['&&']];
+
+                    }
+
                     foreach($data->moons as $index => $moon) {
 
                         if(isset($this->moons[$index])){
@@ -722,7 +732,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                                 ["$index", $moon->moon_phase]
                             ];
 
-                            if(count($conditions) % 2 != 0) {
+                            if(count($conditions) % 2 == 1 && $index != (count($data->moons)-1)) {
                                 $conditions[] = ['&&'];
                             }
 
