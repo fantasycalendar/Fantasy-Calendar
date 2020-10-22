@@ -91,7 +91,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                 $this->static['moons'][] = [
                     'name' => $moon,
                     'cycle' => $this->old->lunar_cyc[$index],
-                    'shift' => $this->old->lunar_shf[$index],
+                    'shift' => $this->old->lunar_shf[$index]-1,
                     'granularity' => 16,
                     'color' => $this->old->lunar_color[$index] ?? '#ffffff',
                     'hidden' => false,
@@ -822,7 +822,17 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
         }
 
         if(!empty($this->static['year_data']['leap_days'])){
-            $epoch += floor($this->old->year / intval($this->static['year_data']['leap_days'][0]['interval']));
+            $epoch += floor($year / intval($this->static['year_data']['leap_days'][0]['interval']));
+            $leap_month = $this->static['year_data']['leap_days'][0]['timespan'];
+            if(
+                $year > 0
+                ||
+                (
+                    $year == 0 && $month > $leap_month
+                )
+            ){
+                $epoch++;
+            }
         }
 
         $epoch += $day - 1;
