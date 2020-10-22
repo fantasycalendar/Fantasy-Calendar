@@ -1238,7 +1238,7 @@
 						</div>
 					</label>
 
-					@if(Auth::user()->can('add-users', $calendar))
+                    @if(isset($calendar) && Auth::user()->can('add-users', $calendar))
 
 					<div class='bold-text'>Event Settings:</div>
 
@@ -1427,7 +1427,7 @@
 
 	</div>
 
-	@include('layouts.calendar-' . (isset($calendar) ? $calendar->setting('layout', 'grid') : 'grid'))
+    @include('layouts.calendar-' . (isset($calendar) ? $calendar->setting('layout', 'grid') : 'grid'))
 
 	<div id="weather_container" class="hidden">
 
