@@ -2,7 +2,6 @@
 
 [Fantasy-Calendar](https://www.fantasy-calendar.com/) is a general-purpose fantasy calendar creation and tracking software.
 
-
 ## A what?
 Well, whether you're a GM looking to track the events of a long-running Forgotten Realms campaign, an author, or simply a world-builder who likes to have wacky celestial configurations (Such as Eberron's [12 moons](http://archive.wizards.com/default.asp?x=dnd/ebds/20050307a)) with zany timekeeping systems to match, you probably need a calendar of some kind.
 
