@@ -617,6 +617,8 @@ var edit_event_ui = {
 
 		this.inputs_changed = false;
 
+		this.event_background.find('.event_name').focus();
+
 	},
 
 	save_current_event: function(){
@@ -752,38 +754,48 @@ var edit_event_ui = {
 
 		this.date = []
 
-		if(conditions.length == 5){
 
-			var year = false;
-			var month = false;
-			var day = false
-			var ands = 0
+		if(conditions.length == 1 || conditions.length == 5){
 
-			for(var i = 0; i < conditions.length; i++){
-				if(conditions[i].length == 3){
-					if(conditions[i][0] == "Year" && Number(conditions[i][1]) == 0){
-						year = true;
-						this.date[0] = Number(conditions[i][2][0])
-					}
+			if(conditions.length == 1){
 
-					if(conditions[i][0] == "Month" && Number(conditions[i][1]) == 0){
-						month = true;
-						this.date[1] = Number(conditions[i][2][0])
-					}
+				if(conditions[0][0] == "Date" && conditions[0][1] == 0){
+					this.date = [Number(conditions[0][2][0]), Number(conditions[0][2][1]), Number(conditions[0][2][2])];
+				}
 
-					if(conditions[i][0] == "Day" && Number(conditions[i][1]) == 0){
-						day = true;
-						this.date[2] = Number(conditions[i][2][0])
-					}
-				}else if(conditions[i].length == 1){
-					if(conditions[i][0] == "&&"){
-						ands++;
+			}else{
+
+				var year = false;
+				var month = false;
+				var day = false
+				var ands = 0
+
+				for(var i = 0; i < conditions.length; i++){
+					if(conditions[i].length == 3){
+						if(conditions[i][0] == "Year" && Number(conditions[i][1]) == 0){
+							year = true;
+							this.date[0] = Number(conditions[i][2][0])
+						}
+
+						if(conditions[i][0] == "Month" && Number(conditions[i][1]) == 0){
+							month = true;
+							this.date[1] = Number(conditions[i][2][0])
+						}
+
+						if(conditions[i][0] == "Day" && Number(conditions[i][1]) == 0){
+							day = true;
+							this.date[2] = Number(conditions[i][2][0])
+						}
+					}else if(conditions[i].length == 1){
+						if(conditions[i][0] == "&&"){
+							ands++;
+						}
 					}
 				}
-			}
 
-			if(!(year && month && day && ands == 2)){
-				this.date = [];
+				if(!(year && month && day && ands == 2)){
+					this.date = [];
+				}
 			}
 		}
 
@@ -845,38 +857,48 @@ var edit_event_ui = {
 
 		var conditions = this.create_condition_array(edit_event_ui.event_conditions_container);
 
-		if(conditions.length == 5){
+		if(conditions.length == 1 || conditions.length == 5){
 
-			var year = false;
-			var month = false;
-			var day = false
-			var ands = 0
+			if(conditions.length == 1){
 
-			for(var i = 0; i < conditions.length; i++){
-				if(conditions[i].length == 3){
-					if(conditions[i][0] == "Year" && Number(conditions[i][1]) == 0){
-						year = true;
-						date[0] = Number(conditions[i][2][0])
-					}
+				if(conditions[0][0] == "Date" && conditions[0][1] == 0){
+					return true
+				}
 
-					if(conditions[i][0] == "Month" && Number(conditions[i][1]) == 0){
-						month = true;
-						date[1] = Number(conditions[i][2][0])
-					}
-
-					if(conditions[i][0] == "Day" && Number(conditions[i][1]) == 0){
-						day = true;
-						date[2] = Number(conditions[i][2][0])
-					}
-				}else if(conditions[i].length == 1){
-					if(conditions[i][0] == "&&"){
-						ands++;
+			}else{
+			
+				var year = false;
+				var month = false;
+				var day = false
+				var ands = 0
+	
+				for(var i = 0; i < conditions.length; i++){
+					if(conditions[i].length == 3){
+						if(conditions[i][0] == "Year" && Number(conditions[i][1]) == 0){
+							year = true;
+							date[0] = Number(conditions[i][2][0])
+						}
+	
+						if(conditions[i][0] == "Month" && Number(conditions[i][1]) == 0){
+							month = true;
+							date[1] = Number(conditions[i][2][0])
+						}
+	
+						if(conditions[i][0] == "Day" && Number(conditions[i][1]) == 0){
+							day = true;
+							date[2] = Number(conditions[i][2][0])
+						}
+					}else if(conditions[i].length == 1){
+						if(conditions[i][0] == "&&"){
+							ands++;
+						}
 					}
 				}
-			}
+	
+				if(!(year && month && day && ands == 2)){
+					date = [];
+				}
 
-			if(!(year && month && day && ands == 2)){
-				date = [];
 			}
 		}
 
@@ -1002,11 +1024,7 @@ var edit_event_ui = {
 
 			case 'once':
 				var result = [
-					['Year', '0', [edit_event_ui.data.year]],
-					['&&'],
-					['Month', '0', [edit_event_ui.data.timespan_index]],
-					['&&'],
-					['Day', '0', [edit_event_ui.data.day]]
+					['Date', '0', [edit_event_ui.data.year, edit_event_ui.data.timespan_index, edit_event_ui.data.day]]
 				];
 				break;
 
