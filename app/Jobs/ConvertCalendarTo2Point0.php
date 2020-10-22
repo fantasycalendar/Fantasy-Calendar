@@ -626,7 +626,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
 
                 case 'every_x_day':
                     $conditions = [
-                        ['Epoch', '6', ["$data->every}", strval($data->modulus+1)]]
+                        ['Epoch', '6', ["$data->every", strval($data->modulus+1)]]
                     ];
                     break;
 
@@ -634,7 +634,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                     $conditions = [
                         ['Weekday', '0', ["$data->week_day"]],
                         ['&&'],
-                        ['Week', '20', ["$data->every}", strval($data->modulus+1)]]
+                        ['Week', '20', ["$data->every", strval($data->modulus+1)]]
                     ];
                     break;
 
@@ -642,7 +642,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                     $conditions = [
                         ['Day', '0', ["$data->day"]],
                         ['&&'],
-                        ['Month', '13', ["$data->every}", strval($data->modulus+1)]]
+                        ['Month', '13', ["$data->every", strval($data->modulus+1)]]
                     ];
                     break;
 
@@ -652,7 +652,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                         ['&&'],
                         ['Week', '0', [$data->week_day_number]],
                         ['&&'],
-                        ['Month', '13', ["$data->every}", strval($data->modulus+1)]]
+                        ['Month', '13', ["$data->every", strval($data->modulus+1)]]
                     ];
                     break;
 
@@ -662,7 +662,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                         ['&&'],
                         ['Month', '0', [strval($data->month-1)]],
                         ['&&'],
-                        ['Year', '6', ["$data->every}", strval($data->modulus+1)]]
+                        ['Year', '6', ["$data->every", strval($data->modulus+1)]]
                     ];
                     break;
 
@@ -674,14 +674,14 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                         ['&&'],
                         ['Month', '0', [strval($data->month-1)]],
                         ['&&'],
-                        ['Year', '6', ["$data->every}", strval($data->modulus+1)]]
+                        ['Year', '6', ["$data->every", strval($data->modulus+1)]]
                     ];
                     break;
 
                 case 'moon_every':
                     if(isset($this->moons[$data->moon_id])){
                         $conditions = [
-                            ['Moons', '0', ["$data->moon_id}", $data->moon_phase]]
+                            ['Moons', '0', ["$data->moon_id", $data->moon_phase]]
                         ];
                     }
                     break;
@@ -689,9 +689,9 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                 case 'moon_monthly':
                     if(isset($this->moons[$data->moon_id])){
                         $conditions = [
-                            ['Moons', '0', ["$data->moon_id}", $data->moon_phase]],
+                            ['Moons', '0', ["$data->moon_id", $data->moon_phase]],
                             ['&&'],
-                            ['Moons', '7', ["$data->moon_id}", $data->moon_phase_number]]
+                            ['Moons', '7', ["$data->moon_id", $data->moon_phase_number]]
                         ];
                     }
                     break;
@@ -699,9 +699,9 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                 case 'moon_anually':
                     if(isset($this->moons[$data->moon_id])){
                         $conditions = [
-                            ['Moons', '0', ["$data->moon_id}", $data->moon_phase]],
+                            ['Moons', '0', ["$data->moon_id", $data->moon_phase]],
                             ['&&'],
-                            ['Moons', '7', ["$data->moon_id}", $data->moon_phase_number]],
+                            ['Moons', '7', ["$data->moon_id", $data->moon_phase_number]],
                             ['&&'],
                             ['Month', '0', [strval($data->month-1)]]
                         ];
