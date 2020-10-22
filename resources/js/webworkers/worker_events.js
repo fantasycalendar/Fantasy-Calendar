@@ -125,6 +125,10 @@ var event_evaluator = {
 				}else if(array[0] === "Date"){
 
 					var selected = epoch_data["epoch"];
+					if(values[3] === undefined){
+						values[3] = evaluate_calendar_start(this.static_data, values[0], values[1], values[2]).epoch
+					}
+
 					var cond_1 = values[3];
 
 				}else if(array[0] === "Moons"){

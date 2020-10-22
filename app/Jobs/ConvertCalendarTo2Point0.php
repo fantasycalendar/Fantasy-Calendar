@@ -569,12 +569,12 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
         if(!empty($arrayified)){
             switch($event->repeats) {
                 case 'once':
-                    $conditions = [
-                        ['Year', '0', ["$data->year"]],
-                        ['&&'],
-                        ['Month', '0', [strval($data->month-1)]],
-                        ['&&'],
-                        ['Day', '0', ["$data->day"]]
+                    $conditions = ['Date', '0', [
+                            strval($data->year),
+                            strval($data->month-1),
+                            strval($data->day),
+                            $this->get_epoch($data->year, $data->month-1, $data->day)
+                        ]
                     ];
                     $date = [$data->year, $data->month-1, $data->day];
                     break;
@@ -744,9 +744,9 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
 
             $group[1][] = ['Date', '2', [
                     strval($event->from_date->year),
-                    strval($event->from_date->month),
+                    strval($event->from_date->month-1),
                     strval($event->from_date->day),
-                    $this->get_epoch($event->from_date->year, $event->from_date->month, $event->from_date->day)
+                    $this->get_epoch($event->from_date->year, $event->from_date->month-1, $event->from_date->day)
                 ]
             ];
 
@@ -760,9 +760,9 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
 
             $group[1][] = ['Date', '3', [
                     strval($event->to_date->year),
-                    strval($event->to_date->month),
+                    strval($event->to_date->month-1),
                     strval($event->to_date->day),
-                    $this->get_epoch($event->to_date->year, $event->to_date->month, $event->to_date->day)
+                    $this->get_epoch($event->to_date->year, $event->to_date->month-1, $event->to_date->day)
                 ]
             ];
 
