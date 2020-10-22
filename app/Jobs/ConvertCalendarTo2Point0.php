@@ -826,15 +826,9 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
             $leap_month = $this->static['year_data']['leap_days'][0]['timespan'];
             $epoch += floor($year / $interval);
             if(
-                $year > 0
+                ($year > 0 && $year % $interval != 0)
                 ||
-                (
-                    $year == 0 && $month > $leap_month
-                )
-                ||
-                (
-                    $year % $interval == 0 && $month > $leap_month
-                )
+                ($year % $interval == 0 && $month > $leap_month)
             ){
                 $epoch++;
             }
