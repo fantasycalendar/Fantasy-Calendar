@@ -73,7 +73,7 @@ custom:
   alias: ${self:custom.domain.${self:custom.stage}}
   domain:
     prod: 'app.fantasy-calendar.com'
-    dev: 'lambda-dev.fantasy-calendar.com'
+    dev: 'beta.fantasy-calendar.com'
   environment:
     prod:
       APP_DEBUG: 'false'
