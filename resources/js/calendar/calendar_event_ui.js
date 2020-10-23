@@ -2186,7 +2186,9 @@ var edit_event_ui = {
 
 					var num = edit_event_ui.event_occurrences.length;
 
-					edit_event_ui.event_occurrences_text.html(`This event will appear <span class='bold-text'>${num}</span> time${num > 1 ? "s" : ""} in the next ${years} year${years > 1 ? 's' : ''}.`);
+					let text = years > 1 ? `the next ${years} years.` : "this year.";
+
+					edit_event_ui.event_occurrences_text.html(`This event will appear <span class='bold-text'>${num}</span> time${num > 1 ? "s" : ""} in ${text}`);
 
 					edit_event_ui.event_occurrences_list_container.removeClass('hidden');
 
@@ -2236,12 +2238,12 @@ var edit_event_ui = {
 				var timespan = epoch_data.timespan_number;
 				var day = epoch_data.day;
 
-				var link = `${window.baseurl}calendars/${hash}?year=${unconvert_year(static_data, year)}&month=${timespan}&day=${day}`;
+				var link = `${window.baseurl}calendars/${hash}?year=${year}&month=${timespan}&day=${day}`;
 
 				if(epoch_data.intercalary){
-					var text = `<li class='event_occurance'><a href='${link}' target="_blank">${ordinal_suffix_of(day)} intercalary day of ${epoch_data.timespan_name}, ${unconvert_year(static_data, year)}</a></li>`
+					var text = `<li class='event_occurance'><a href='${link}' target="_blank">${ordinal_suffix_of(day)} intercalary day of ${epoch_data.timespan_name}, ${year}</a></li>`
 				}else{
-				var text = `<li class='event_occurance'><a href='${link}' target="_blank">${ordinal_suffix_of(day)} of ${epoch_data.timespan_name}, ${unconvert_year(static_data, year)}</a></li>`
+					var text = `<li class='event_occurance'><a href='${link}' target="_blank">${ordinal_suffix_of(day)} of ${epoch_data.timespan_name}, ${year}</a></li>`
 				}
 
 				if(i-((this.event_occurrences_page-1)*10) < 5){
@@ -2256,10 +2258,10 @@ var edit_event_ui = {
 
 		}
 
-		this.event_occurrences_page_number.text(`${this.event_occurrences_page} / ${Math.ceil(edit_event_ui.event_occurrences.length/10)}`)
+		this.event_occurrences_page_number.text(`${this.event_occurrences_page} / ${Math.ceil(edit_event_ui.event_occurrences.length/10)}`).toggleClass('hidden', edit_event_ui.event_occurrences.length <= 10);
 
-		this.event_occurrences_button_prev.prop('disabled', this.event_occurrences_page == 1);
-		this.event_occurrences_button_next.prop('disabled', i != length || i == edit_event_ui.event_occurrences.length);
+		this.event_occurrences_button_prev.prop('disabled', this.event_occurrences_page == 1).parent().toggleClass('hidden', edit_event_ui.event_occurrences.length <= 10);
+		this.event_occurrences_button_next.prop('disabled', i != length || i == edit_event_ui.event_occurrences.length).parent().toggleClass('hidden', edit_event_ui.event_occurrences.length <= 10);
 
 		this.event_occurrences_list_col1.html(html_col1.join(''))
 		this.event_occurrences_list_col2.html(html_col2.join(''))
