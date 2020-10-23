@@ -874,6 +874,8 @@ function repopulate_event_category_lists(){
 		$(this).html(html.join("")).val(val);
 	});
 
+    var default_event_category = static_data.settings.default_category !== undefined ? static_data.settings.default_category : -1;
+    $('#default_event_category').val(default_event_category);
 }
 
 function repopulate_timespan_select(select, val, change, max){
