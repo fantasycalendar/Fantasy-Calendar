@@ -43,6 +43,8 @@ class Climate{
 		   this.dynamic_data.location === ''
 		   ||
 		   this.static_data.seasons.data.length == 0
+		   ||
+		   Object.keys(this.epoch_data).length == 0
 		){
 			return false;
 		}else{
