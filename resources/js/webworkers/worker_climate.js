@@ -21,7 +21,7 @@ onmessage = e => {
 
 	var epoch_data = e.data.epoch_data;
 
-	climate_generator = new Climate(epoch_data, static_data, dynamic_data, start_epoch, end_epoch);
+	climate_generator = new Climate(epoch_data, static_data, dynamic_data, dynamic_data.year, start_epoch, end_epoch);
 
 	epoch_data = climate_generator.generate();
 	

@@ -4,12 +4,14 @@ class Climate{
 		epoch_data,
 		static_data,
 		dynamic_data,
+		first_year,
 		start_epoch,
 		end_epoch
 	){
 
 		this.epoch_data = epoch_data;
 		this.dynamic_data = dynamic_data;
+		this.first_year = first_year;
 		this.static_data = static_data;
 		this.start_epoch = start_epoch;
 		this.end_epoch = end_epoch;
@@ -273,7 +275,7 @@ class Climate{
 
 		this.season.local_seasons = [];
 
-		var year = convert_year(this.static_data, this.dynamic_data.year)-1;
+		var year = convert_year(this.static_data, this.first_year)-1;
 
 		var index = this.seasons.length-1;
 		if(index < 0){
@@ -304,7 +306,7 @@ class Climate{
 
 		this.season.local_seasons.reverse();
 
-		var year = convert_year(this.static_data, this.dynamic_data.year);
+		var year = convert_year(this.static_data, this.first_year);
 
 		var index = 0;
 
@@ -355,7 +357,7 @@ class Climate{
 		this.season.current_index = this.season.current_season.index;
 		this.season.next_index = this.season.next_season.index;
 
-		var current_epoch = evaluate_calendar_start(this.static_data, convert_year(this.static_data, this.dynamic_data.year)).epoch
+		var current_epoch = evaluate_calendar_start(this.static_data, convert_year(this.static_data, this.first_year)).epoch
 
 		while(this.season.next_season.epoch < current_epoch){
 
@@ -405,7 +407,7 @@ class Climate{
 
 		this.weather.local_seasons = [];
 
-		var year = convert_year(this.static_data, this.dynamic_data.year)-1;
+		var year = convert_year(this.static_data, this.first_year)-1;
 
 		var index = this.seasons.length-1;
 		if(index < 0){
@@ -439,7 +441,7 @@ class Climate{
 		this.weather.local_seasons.reverse();
 
 
-		var year = convert_year(this.static_data, this.dynamic_data.year);
+		var year = convert_year(this.static_data, this.first_year);
 
 		var index = 0;
 

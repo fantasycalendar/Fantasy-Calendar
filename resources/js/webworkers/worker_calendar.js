@@ -834,7 +834,7 @@ var calendar_builder = {
 
 		}
 
-		var climate_generator = new Climate(this.data.epochs, this.static_data, this.dynamic_data, start_epoch, epoch-1);
+		var climate_generator = new Climate(this.data.epochs, this.static_data, this.dynamic_data, first_eval_year, start_epoch, epoch-1);
 		this.data.epochs = climate_generator.generate()
 
 		if(!this.static_data.settings.show_current_month){
@@ -1110,7 +1110,7 @@ var calendar_builder = {
 			}
 		}
 
-		var climate_generator = new Climate(this.data.epochs, this.static_data, this.dynamic_data, post_epoch, epoch-1);
+		var climate_generator = new Climate(this.data.epochs, this.static_data, this.dynamic_data, parseInt(order[0]), post_epoch, epoch-1);
 		this.data.epochs = climate_generator.generate()
 
 		return {
@@ -2225,7 +2225,7 @@ var calendar_builder = {
 
 		}
 
-		climate_generator = new Climate(this.data.epochs, this.static_data, this.dynamic_data, start_data.epoch, epoch-1);
+		climate_generator = new Climate(this.data.epochs, this.static_data, this.dynamic_data, this.dynamic_data.year, start_data.epoch, epoch-1);
 		this.data.epochs = climate_generator.generate();
 
 		if(debug || debugtext){
