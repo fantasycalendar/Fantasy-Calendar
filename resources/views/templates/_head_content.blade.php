@@ -98,6 +98,15 @@
             return;
         }
 
+        if(jqxhr.status === 503) {
+            if(jqxhr.responseJSON.message.length > 0) {
+                $.notify("Fantasy Calendar is in maintenance mode. Please try again later.\nReason: " + jqxhr.responseJSON.message);
+            } else {
+                $.notify("Fantasy Calendar is in maintenance mode. Please try that again later.");
+            }
+            return;
+        }
+
         $.notify(thrownError + " (F12 to see more detail)");
     });
 
