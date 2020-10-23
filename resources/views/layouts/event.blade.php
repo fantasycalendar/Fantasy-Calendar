@@ -120,7 +120,7 @@
 
                         <div class='row no-gutters'>
                             <div class='col-md-3 px-1'>
-                                <button type='button' class='btn btn-info full test_event_btn' years="1">1 year</button>
+                                <button type='button' class='btn btn-info full test_event_btn' years="1">This year</button>
                             </div>
                             <div class='col-md-3 px-1'>
                                 <button type='button' class='btn btn-info full test_event_btn' years="10">10 years</button>
