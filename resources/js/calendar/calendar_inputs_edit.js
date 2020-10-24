@@ -5127,11 +5127,12 @@ function calendar_saved(){
 }
 
 function calendar_save_failed(){
+    var text = "Failed to save!"
 
-	var text = "Failed to save!"
-
-	save_button.prop('disabled', true).toggleClass('btn-secondary', false).toggleClass('btn-success', true).toggleClass('btn-primary', false).toggleClass('btn-warning', true).toggleClass('btn-danger', false).text(text);
-
+    save_button.prop('disabled', true).toggleClass(['btn-secondary', 'btn-primary', 'btn-danger'], false).toggleClass(['btn-success', 'btn-warning'], true).text(text);
+    setInterval(function(){
+        evaluate_save_button(true);
+    }, 10000);
 }
 
 function evaluate_save_button(override){

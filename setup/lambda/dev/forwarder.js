@@ -6,7 +6,7 @@ exports.handler = (event, context, callback) => {
 
     headers['x-forwarded-host'] = [ {
         key: 'X-Forwarded-Host',
-        value: 'lambda-dev.fantasy-calendar.com'
+        value: 'beta.fantasy-calendar.com'
     }];
 
     callback(null, request);
