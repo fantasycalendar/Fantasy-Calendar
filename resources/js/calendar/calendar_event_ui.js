@@ -2085,12 +2085,12 @@ var edit_event_ui = {
     
 			this.build_seasons = event_checker.evaluation_has_season_event(this.event_id);
 
-			if(!this.build_seasons && years != 100){
+			if(!this.build_seasons){
 				this.run_test_event(years);
 			}else{
 				swal.fire({
 					title: "Warning!",
-					text: "Simulating events may take a loooong time, depending on many factors! If your event is based on other events, we need to simulate those too, and events based on seasons means we need to generate the seasons for all of the years we simulate.",
+					html: "Simulating events that rely on season data can be <strong>incredibly</strong> slow, as we need to generate the seasons for all of the years we simulate. If you hit OK, be prepared to wait a while. Go get a cup of coffee or two, that kind of thing.",
 					showCancelButton: true,
 					confirmButtonColor: '#d33',
 					cancelButtonColor: '#3085d6',
@@ -2141,6 +2141,8 @@ var edit_event_ui = {
 		start_year = preview_date.year;
 		end_year = preview_date.year+years;
 
+		execution_time.start()
+
 		edit_event_ui.worker_event_tester.postMessage({
 			calendar_name: calendar_name,
 			static_data: static_data,
@@ -2161,6 +2163,7 @@ var edit_event_ui = {
 				update_loading_bar(e.data.percentage);
 			}else{
 
+				execution_time.end()
 				edit_event_ui.event_occurrences = e.data.occurrences;
 				
 				var num = edit_event_ui.event_occurrences.length;

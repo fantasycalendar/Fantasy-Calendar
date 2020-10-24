@@ -126,10 +126,10 @@
                                 <button type='button' class='btn btn-info full test_event_btn' years="10">10 years</button>
                             </div>
                             <div class='col-md-3 px-1'>
-                                <button type='button' class='btn btn-info full test_event_btn' years="50">50 years</button>
+                                <button type='button' class='btn btn-info full test_event_btn' years="100">100 years</button>
                             </div>
                             <div class='col-md-3 px-1'>
-                                <button type='button' class='btn btn-info full test_event_btn' years="100">100 years</button>
+                                <button type='button' class='btn btn-info full test_event_btn' years="1000">1000 years</button>
                             </div>
                         </div>
                     </div>
