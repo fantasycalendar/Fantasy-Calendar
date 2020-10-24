@@ -12,8 +12,6 @@
             'guest'
         );
 
-        console.log("easily recognizable");
-
         preset_applied = false;
         calendar_name = '';
         has_parent = false;
