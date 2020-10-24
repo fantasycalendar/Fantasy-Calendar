@@ -154,6 +154,7 @@
     <script src="{{ mix('js/calendar/calendar_inputs_edit.js') }}"></script>
     <script src="{{ mix('js/calendar/calendar_manager.js') }}"></script>
     <script src="{{ mix('js/calendar/calendar_presets.js') }}"></script>
+    <script src="{{ mix('js/calendar/calendar_workers.js') }}"></script>
 
     @if(Auth::check() && Auth::user()->setting('dark_theme'))
         <link rel="stylesheet" href="{{ mix('css/app-dark.css') }}">

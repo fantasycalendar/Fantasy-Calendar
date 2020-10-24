@@ -238,7 +238,7 @@ var progress = 0;
 
 function update_loading_bar(percentage){
 
-	percentage = precisionRound(percentage, 1);
+	percentage = precisionRound(percentage, 3);
 
 	if(progress == percentage){
 		return;

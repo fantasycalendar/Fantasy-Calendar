@@ -54,11 +54,13 @@ mix.copy('resources/js/calendar/calendar_inputs_view.js', 'public/js/calendar');
 mix.copy('resources/js/calendar/calendar_inputs_edit.js', 'public/js/calendar');
 mix.copy('resources/js/calendar/calendar_manager.js', 'public/js/calendar');
 mix.copy('resources/js/calendar/calendar_presets.js', 'public/js/calendar');
+mix.copy('resources/js/calendar/calendar_workers.js', 'public/js/calendar');
 
 // Webworkers
 mix.copy('resources/js/webworkers/worker_calendar.js', 'public/js/webworkers');
 mix.copy('resources/js/webworkers/worker_climate.js', 'public/js/webworkers');
 mix.copy('resources/js/webworkers/worker_events.js', 'public/js/webworkers');
+mix.copy('resources/js/webworkers/worker_event_tester.js', 'public/js/webworkers');
 
 // Misc
 mix.copy('resources/js/login.js', 'public/js');
