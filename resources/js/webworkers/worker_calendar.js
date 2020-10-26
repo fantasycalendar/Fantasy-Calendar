@@ -18,11 +18,7 @@ onmessage = e => {
 	calendar_builder.events = e.data.events;
 	calendar_builder.event_categories = e.data.event_categories;
 
-	if(e.data.action != "future"){
-		data = calendar_builder.evaluate_calendar_data();
-	}else{
-		data = calendar_builder.evaluate_future_calendar_data(e.data.start_year, e.data.end_year);
-	}
+	data = calendar_builder.evaluate_calendar_data();
 
 	postMessage({
 		processed_data: data,
