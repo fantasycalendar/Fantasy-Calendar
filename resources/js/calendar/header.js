@@ -214,6 +214,7 @@ function hide_loading_screen(){
 	$('.loading_spinner').removeClass('hidden');
 	$('.loading_bar').addClass('hidden');
 	$('.loading_cancel_button').addClass('hidden');
+	$('#loading_information_text').addClass("hidden");
 }
 
 function set_loading_screen_text(array){
@@ -236,7 +237,7 @@ function set_loading_screen_text(array){
 
 var progress = 0;
 
-function update_loading_bar(percentage){
+function update_loading_bar(percentage, message){
 
 	percentage = precisionRound(percentage, 3);
 
@@ -247,6 +248,10 @@ function update_loading_bar(percentage){
 	loading_bar.set(percentage);
 
 	progress = percentage;
+
+	if(message){
+		$('#loading_information_text').text(message).removeClass("hidden");
+	}
 
 }
 

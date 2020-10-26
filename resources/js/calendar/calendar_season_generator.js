@@ -271,6 +271,7 @@ class Climate{
 				let percentage = (epoch-this.start_epoch)/(this.end_epoch-this.start_epoch)
 				postMessage({
 					percentage: percentage,
+					message: "Generating future seasonal data...",
 					callback: true
 				})
 			}

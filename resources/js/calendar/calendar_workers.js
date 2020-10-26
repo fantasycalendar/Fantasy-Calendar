@@ -169,25 +169,27 @@ var calendar_builder = {
 			},
 		};
 
-		for(var i = 0; i < Object.keys(this.calendar_list.timespans_to_build).length; i++){
+		if(this.calendar_list.timespans_to_build !== undefined){
+			for(var i = 0; i < Object.keys(this.calendar_list.timespans_to_build).length; i++){
 
-			timespan_index = parseInt(Object.keys(this.calendar_list.timespans_to_build)[i]);
+				timespan_index = parseInt(Object.keys(this.calendar_list.timespans_to_build)[i]);
 
-			this.data.repititions.week_days[timespan_index] = [];
-			for(week_day = 0; week_day < this.calendar_list.timespans_to_build[timespan_index].week.length; week_day++){
-				this.data.repititions.week_days[timespan_index][week_day] = 0;
+				this.data.repititions.week_days[timespan_index] = [];
+				for(week_day = 0; week_day < this.calendar_list.timespans_to_build[timespan_index].week.length; week_day++){
+					this.data.repititions.week_days[timespan_index][week_day] = 0;
+				}
 			}
-		}
 
-		for(var i = 0; i < Object.keys(this.calendar_list.timespans_to_build).length; i++){
+			for(var i = 0; i < Object.keys(this.calendar_list.timespans_to_build).length; i++){
 
-			timespan_index = parseInt(Object.keys(this.calendar_list.timespans_to_build)[i]);
+				timespan_index = parseInt(Object.keys(this.calendar_list.timespans_to_build)[i]);
 
-			this.data.repititions.timespan_moons[timespan_index] = [];
-			for(var moon = 0; moon < this.static_data.moons.length; moon++){
-				this.data.repititions.timespan_moons[timespan_index][moon] = [];
-				for(j = 0; j < this.static_data.moons[moon].granularity; j++){
-					this.data.repititions.timespan_moons[timespan_index][moon].push(0);
+				this.data.repititions.timespan_moons[timespan_index] = [];
+				for(var moon = 0; moon < this.static_data.moons.length; moon++){
+					this.data.repititions.timespan_moons[timespan_index][moon] = [];
+					for(j = 0; j < this.static_data.moons[moon].granularity; j++){
+						this.data.repititions.timespan_moons[timespan_index][moon].push(0);
+					}
 				}
 			}
 		}
@@ -317,7 +319,6 @@ var calendar_builder = {
 
 		this.calendar_list = {
 			pre_timespans_to_evaluate: {},
-			timespans_to_build: {},
 			post_timespans_to_evaluate: {}
 		}
 
@@ -340,6 +341,13 @@ var calendar_builder = {
 				}
 
 			}
+
+			let percentage = (year-start_year)/(end_year-start_year)
+			postMessage({
+				percentage: percentage,
+				message: "Collecting years to generate...",
+				callback: true
+			})
 
 			if(Object.keys(this.calendar_list.post_timespans_to_evaluate[year]).length == 0){
 
@@ -1082,6 +1090,14 @@ var calendar_builder = {
 					this.data.epochs[j].inverse_week_day_num = week_day_nums[this.data.epochs[j].week_day];
 
 				}
+
+				let percentage = (year_index-start_year)/(end_year-start_year)
+				postMessage({
+					percentage: percentage,
+					message: "Generating future calendar data...",
+					callback: true
+				})
+
 			}
 			if(year_index != convert_year(this.static_data, this.dynamic_data.year)) year_day = 1;
 			if(this.static_data.eras.length != 0 && current_era != -1){
@@ -2611,6 +2627,7 @@ var event_evaluator = {
         
                         postMessage({
                             percentage: percentage,
+							message: "Testing event conditions against future calendar data...",
                             callback: true
                         })
 

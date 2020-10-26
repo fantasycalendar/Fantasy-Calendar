@@ -2155,7 +2155,7 @@ var edit_event_ui = {
 
 		edit_event_ui.worker_event_tester.onmessage = e => {
 			if(e.data.callback){
-				update_loading_bar(e.data.percentage);
+				update_loading_bar(e.data.percentage, e.data.message);
 			}else{
 
 				edit_event_ui.event_occurrences = e.data.occurrences;
@@ -2376,11 +2376,13 @@ var event_checker = {
             let event = events[this.event_ids[i]];
 
             if(JSON.stringify(event.data.conditions).indexOf(`["Season",`) > -1){
+				this.event_ids = [];
                 return true;
             }
 
         }
 
+		this.event_ids = [];
         return false;
 
     },
