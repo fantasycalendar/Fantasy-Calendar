@@ -2077,7 +2077,7 @@ var edit_event_ui = {
 
 			swal.fire({
 				title: "Uh...",
-				text: "This event is an one time event (year, month, day), I'm pretty sure you know the answer to this test.",
+				text: "This event is a one time event (year, month, day), I'm pretty sure you know the answer to this test.",
 				icon: "warning"
 			});
 
@@ -2112,8 +2112,6 @@ var edit_event_ui = {
 
 	run_test_event: function(years){
 
-		execution_time.start();
-
 		this.event_occurrences_list_col1.empty();
 		this.event_occurrences_list_col2.empty();
 		this.event_occurrences_text.empty();
@@ -2141,15 +2139,12 @@ var edit_event_ui = {
 		start_year = preview_date.year;
 		end_year = preview_date.year+years;
 
-		execution_time.start()
-
 		edit_event_ui.worker_event_tester.postMessage({
 			calendar_name: calendar_name,
 			static_data: static_data,
 			dynamic_data: preview_date,
             events: events,
             event_categories: event_categories,
-			action: "future",
 			owner: Perms.player_at_least('co-owner'),
 			start_year: start_year,
 			end_year: end_year,
@@ -2163,7 +2158,6 @@ var edit_event_ui = {
 				update_loading_bar(e.data.percentage);
 			}else{
 
-				execution_time.end()
 				edit_event_ui.event_occurrences = e.data.occurrences;
 				
 				var num = edit_event_ui.event_occurrences.length;
