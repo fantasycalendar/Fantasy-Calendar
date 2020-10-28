@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Agreement;
+use GrahamCampbell\Markdown\Facades\Markdown;
 
 class AgreementController extends Controller
 {
@@ -15,9 +16,10 @@ class AgreementController extends Controller
 
         return view('pages.markdown',
             [
-                'title' => "Terms of Service",
-                'date' => sprintf("Last updated: %s", $tos->in_effect_at->format('jS \\of F, Y')),
-                'markdown' => $tos->content
+                'title' => "Terms and Conditions",
+                'date' => sprintf("Effective date: %s", $tos->in_effect_at->format('jS \\of F, Y')),
+                'version' => $tos->id,
+                'markdown' => Markdown::convertToHtml($tos->content)
             ]
         );
     }
@@ -28,9 +30,10 @@ class AgreementController extends Controller
 
         return view('pages.prompt-tos',
             [
-                'title' => "Terms of Service",
-                'date' => sprintf("Last updated: %s", $tos->in_effect_at->format('jS \\of F, Y')),
-                'markdown' => $tos->content,
+                'title' => "Terms and Conditions",
+                'date' => sprintf("Effective date: %s", $tos->in_effect_at->format('jS \\of F, Y')),
+                'version' => $tos->id,
+                'markdown' => Markdown::convertToHtml($tos->content),
                 'intended' => $request->input('intended') ?? 'calendars'
             ]
         );

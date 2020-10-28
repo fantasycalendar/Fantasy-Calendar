@@ -1,108 +1,179 @@
-## Definitions of key terms
+1. **Introduction**
+    1.  We are Fantasy Computerworks Ltd trading as “Fantasy Calendar”. Our company information is at the end of this document.
 
-Welcome to Fantasy-Calendar! Please read these Terms of Use (“Terms”, “Terms of Service”) carefully before using the https://fantasy-calendar.com/ website (the “Service”) operated by Fantasy Calendar Ltd (“us”, “we”, or “our”).
+2. **Some definitions**
+    1.  Here are some definitions which are used in this document (all capitalised):
+        1.  “Content” - all information of whatever kind (including posts, comments, chat, images, photos, audio, video, messages uploaded to our Service (including messages sent via our Service).
+        2.  “Service” –the service we offer by means of our website and any related software and services.
+        3.  “User” - persons or organisations using our Service (whether or not registered with us).
 
-Throughout these Terms, “you” applies to both individuals and entities that access or use our Services. If you are an individual using our Services on behalf of an entity, you represent and warrant that you have the authority to bind that entity to the Agreement and that by using our Service(s), you are accepting the Agreement on behalf of that entity.
-
-## Terms of Service
-
-Our Services are offered subject to your acceptance, without modification, of all of the terms and conditions contained herein and all other operating rules, policies (including, without limitation, Fantasy Calendar Ltd's Privacy Policy), and procedures that may be published from time to time by Fantasy Calendar Ltd (collectively, the “Agreement”). You agree that we may automatically upgrade our Services, and the Agreement will apply to any upgrades.
-
-Please read the Agreement carefully before accessing or using our Services. By accessing or using any part of our Services, you agree to become bound by the Agreement. If you do not agree to all the terms of the Agreement, then you may not access or use our Services.
-
-## Your Account
-Where use of our Services requires an account, you agree to provide us with complete and accurate information when you register for an account. You will be solely responsible and liable for any activity that occurs under your username. You are responsible for keeping your account information up-to-date and for keeping your password secure.
-
-You are responsible for maintaining the security of your account and any Service-related website, store, or other content, and you are fully responsible for all activities that occur under your account and any other actions taken in connection with our Services. You shall not share or misuse your access credentials. You must immediately notify us of any unauthorized uses of your account, store, or website, or of any other breach of security. We will not be liable for any acts or omissions by you, including any damages of any kind incurred as a result of such acts or omissions.
-
-## User Content
-You are responsible for the content ("Content") that you submit to the Service. The Content includes, but is not limited to, calendars, events, user comments, web-links, and image embedding.
-
-1. You may not submit Content to the Service that:
-
-    a. is defamatory, offensive, sexist, homophobic, obscene, harassing, or threatening;
+3. **What this is all about – introduction to our terms and conditions**
+    1.  These are our terms and conditions which apply to our Service. We’ve tried to make them user-friendly. Please read them carefully and save a copy as we don’t file a copy specifically for the transaction with you. They’re available in English only.
+        
+4. **Forming a contract with us**
+    1.  By registering on our **website**, you offer to enter a legal contract with us to use our Service. We accept your offer and there is a binding legal contract when we send you a confirmation email.
+        
+5. **Consumer right to cancel (“cooling off”)**
+    1.  If you live in the European Economic Area, you may have the right to cancel this contract. Please see the instructions at the end of this document.
     
-    b. is in breach of (i) anyone’s privacy; or (ii) confidentiality;
+6. **Changing our terms and conditions**
+    1.  We may change these terms and conditions by giving you at least 15 days’ notice unless a more urgent change is needed to comply with laws or regulations or to deal with an unforeseen and imminent danger. We will notify you by email and by posting the new version on our website.
+    2. If you don’t agree to the new terms, you can end this contract with effect from 15 days after our notice by emailing us within that period.
+
+7. **Your right to use our Service**
+    1.  We grant you a limited personal non-transferable right to use our Service on any applicable device owned or controlled by you subject to these terms and conditions.
+
+8. **Who can use our Service?**
+    1.  You must not use, or attempt to register on, our Service if you are below 13 years of age.
+    2.  You must not use our Service in connection with a business.
     
-    c. infringes any third parties intellectual property rights;
+9. **Acceptable use of our Service**
+    1.  You agree not to do any of the following in connection with the Service:
+        1.  breach any applicable law, regulation or code of conduct;
+        2.  upload any Content (including links or references to other content), or otherwise behave in a manner, which:
+            -   is defamatory, threatening, harassing, invasive of privacy, offensive, vulgar, racist, hateful, discriminatory, obscene, pornographic, sexually suggestive, promoting of self-harm, misleading, abusive or deceptive;
+            -   infringes any intellectual property or other rights of others;
+            -   involves phishing or scamming or similar; or
+            -   we otherwise reasonably consider to be inappropriate;
+        3.  reveal any information that enables you to be personally identified or contacted by other Users other than through the Service including last name, postal / email address or telephone number;
+        4.  upload any Content (including supplying us with someone else’s email address) which includes someone else’s personal information unless that person is 18 years or over and you have obtained that person’s explicit written consent or you are the parent/guardian of such person;
+        5.  impersonate any person or entity in order to mislead others;
+        6.  upload any Content which links to any third party websites which are unlawful or contain inappropriate Content;
+        7.  use the Service with a view to providing a similar service to third parties or helping someone else to do so;
+        8.  use the Service for junk mail, spam, pyramid or similar or fraudulent schemes;
+        9.  do anything which may have the effect of disrupting the Service including denial of service attacks, worms, viruses, software bombs or mass mailings;
+        10.  do anything which may negatively affect other Users’ enjoyment of the Service;
+        11.  gain unauthorised access to any part of the Service or equipment used to provide the Service;
+        12.  intercept or modify communications to or from the Service;
+        13.  circumvent any security or other features of the Service including features that restrict use or copying of Content; or
+        14.  attempt, encourage or assist any of the above.
+    2.  You agree to:
+        1.  comply with any rules or requirements on our Service;
+        2.  promptly comply with any reasonable request or instruction by us in connection with the Service; and
+        3.  ensure that any contact or other information which you supply to us is accurate and not misleading and you will tell us if there are any important changes.
+
+10. **If you upload Content to our Service**
+    1.  You are responsible for your Content.
+    2.  You guarantee you have (and will retain) all rights and permissions needed to enable use of your Content as contemplated by the Service and these terms and conditions.
+    3.  If you use any features on our site which enable you to share your Content with third party sites, we are not responsible for use of your Content on those third party sites.
+    4.  We reserve the right without notice or refund to reject, suspend, alter, remove or delete Content or to disclose to the police or other relevant authorities or to a complainant any Content or behaviour if it is the subject of complaint or where we have reason to believe that it breaches our terms and conditions, or that such steps are necessary to protect us or others, or that a criminal offence may have been committed, or where required by law or where requested by the police or other appropriate authorities, or if we consider that Content does not meet our quality standards. If so, you must not attempt to re-publish or re-send the relevant Content.
+    5.  It is your responsibility to decide which Content to upload (subject to these terms and conditions). We do not accept responsibility if your Content is misused by others as this is outside our reasonable control. Don’t upload any Content if you are concerned that it may be misused.
+    6.  We may place advertisements near or within your Content. If so, we retain all revenue from such advertisements.
+    7.  It is your responsibility to make your own frequent backups of Content to protect you in case of loss or damage to such material. We are not responsible for such loss or damage.
+    8.  We may irretrievably delete your Content without telling you after this agreement ends or if your account has been inactive for six  months.
     
-    d. may cause anxiety or encourage racial hatred or violence;
+11. **Dealing with other Users**
+    1.  You accept that we have no obligation to vet or monitor other Users. You deal with other Users at your own risk. We accept no legal responsibility in connection with any dealings between Users. It is your responsibility to carry out careful and detailed investigations before dealing with other Users t. You should not assume that any Content from another User is accurate and be aware that a person may not be who he or she claims to be.
+    2.  You acknowledge that in using the Service you may encounter behaviour or Content which you consider inappropriate. If so, please email us to our email address shown below  (including if you wish to give us notice of defamatory material). Please also use any available blocking mechanisms, seek relevant external help If appropriate (e.g. from law enforcement authorities) and/or stop using the Service.
+    3.  In your own interests, you should not attempt to contact, or let yourself be contacted by, any other User other than through the Service unless you are sure you already know them.
     
-    e. may prejudice legal proceedings.
+12. **Other peoples’ services / advertising / websites**
+    1.  We may display other peoples’ services, advertising and /or links to other websites. We do not recommend or endorse, nor are we legally responsible for, any of these. You use them at your own risk.
+
+13. **Guidance**
+    1.  If we ourselves provide any guidance or other general information on our Service, we do not guarantee that it is accurate or up to date and we do not accept legal responsibility for it. Before acting on such information, you must make your own appropriate and careful enquiries including as to its accuracy and suitability for your purposes. You rely on such information at your own risk.
+        
+14. **Your account**
+    1.  Unless otherwise specifically stated on our Service, your account is for your personal use only and is non-transferable. You agree not to allow any other person to use your account. You agree to take reasonable care to keep your login information confidential and to notify us immediately of any apparent breach of security such as loss, theft, misuse or unauthorised disclosure or use of a password. You are responsible for third parties who use your account or identity (unless and to the extent that we are at fault).
+
+15. **Payment**
+    1.  While parts of our Service are available to Users free of charge, certain premium features are available only to Users who subscribe. Subscriptions can be acquired at the prices, for the periods and by the payment methods specified on our Service. Payment is in advance.
+    2.  The prices shown on our website include any applicable VAT unless we say otherwise.
+    3.  If we have mis-priced any part of our Service, we are not obliged to supply the Service at that price provided we notify you. If we do notify you, then you can decide if you want to continue with the Service at the correct price.
+    4.  Where stated on our Service when you subscribed, your subscription will continue to be auto-renewed for the same subscription period which you signed up to unless you end your subscription before the renewal date by following the instructions on our Service. Ending your subscription does not entitle you to a refund (unless Consumer cooling off rights apply). You authorise us and our payment provider to charge your payment card for the relevant amounts when payments are due in accordance with this agreement.
+    5.  We may at any time change our subscription prices. The new rate takes effect if you apply for a new subscription after we post the new prices on our Service. For existing subscribers, we will give you notice by email at least one month before any price change takes effect. If you do not accept the new fee, you should end your subscription by following the instructions on our Service. Otherwise the next renewal of your subscription after the one month’s notice will be at the new price.
+    6.  You must contact us immediately with full details if you dispute any payment.
     
-3. You must not seek to impersonate a third party or post comments which are falsely attributed to third parties.
-4. You must not use the Service for the promotion of products or services or for any purpose other than you own personal, non-commercial use.
-5. By contributing to the Service you confirm that it is your own original work and not copied from anyone else or infringing any third party’s intellectual property or other rights and complies with these Terms.
-6. We reserve the right to check, edit, moderate, and/or delete Content submitted by you. We reserve the right to prevent you from making comments if you repeatedly breach these Terms of Use. We will not enter into any discussion or correspondence with you or about you if it has decided to modify/delete your comments or to prevent you from commenting on the Service.
+16. **Discount codes**
+    1.  We may offer discount codes from time to time. Such codes may only be applied to purchases made through the account in respect of which the discount code was offered and registered and are not transferrable or redeemable for cash. Unless otherwise stated: codes (1) are only available for future new orders placed online; (2) cannot be used retrospectively; (3) can only be redeemed once per customer; and (4) expire after 12 months. You cannot use more than one discount code per transaction unless we state otherwise; if we do so, the order in which the codes are to be applied is in our sole discretion.
+    2.  We reserve the right to reject any discount code if we consider that it is being used in breach of these terms. Discount codes are subject to any additional specific terms and conditions which are specified at the point of issue. We reserve the right to discontinue or otherwise modify any discount codes at any time without prior notice.
 
-As we do not have control over and assume no responsibility for any embedded images in your content, you agree to ensure that the images, should the origin of the image be altered, do not breach any of the Terms outlined above.
+17. **Functioning of our Service**
+    1.  We do not guarantee that the Service will be uninterrupted or error-free. We are entitled, without notice and without liability (a) to suspend the Service for repair, maintenance, improvement or other technical reason and (b) to make changes to the Service.
+    2.  You acknowledge that technology is not always secure and you accept the risks inherent in use of the Internet or other technology for the purpose of the Service.
+    
+18. **Ending or suspending this contract**
+    1.  You may at any time end this contract deleting your account in accordance with the instructions on our Service. (This doesn’t entitle you to a refund unless you have Consumer “cooling off” rights, explained above.)
+    2.  We are entitled at any time to end this contract or suspend part or all of our Service or impose restrictions on our Service if:
+        1.  you break this contract;
+        2.  any fees payable by you are unpaid / unjustifiably charged back;
+        3.  acting reasonably, we think that it is necessary to protect us or others;
+        4.  we are required to do so by applicable law or regulation or to comply with an order, instruction or request from a competent authority; or
+        5.  you or anyone on your behalf acts inappropriately towards our staff.
+    3.  We are entitled at any time to end this contract at any time without giving reasons. If so, we will refund in full any fees already paid which relate to the period after termination.
+    4.  We are entitled at any time to end this contract if we terminate our Service as a whole or if in our reasonable opinion it is necessary to do so for security, technical or operational reasons.
+    5.  If this contract ends:
+        1.  Your right to use our Service and all licences are terminated.
+        2.  Existing rights and liabilities are unaffected.
+        3.  All clauses in this contract which are stated or intended to continue after termination will continue to apply.
+        
+19. **Restrictions on** **our legal responsibility – very important**
+    1.  Nothing in this agreement in any way limits or excludes our liability for negligence causing death or personal injury or for fraud or fraudulent misrepresentation or for anything which may not legally be excluded or limited. In this section, any reference to us includes our employees and agents, who have the right to enforce this agreement.
+    2.  We shall not be liable for any loss or damage where:
+        1.  there is no breach of a legal duty owed to you by us;
+        2.  such loss or damage was not reasonably foreseeable (meaning it was not an obvious consequence of our breach or not contemplated by you and us at the time we entered into this contract;
+        3.  (and to the extent that) such loss or damage is your fault, for example by not complying with this agreement;  or
+        4.  such loss or damage relates to a business of yours.
+    3.  You will be liable for any reasonably foreseeable loss or damage we suffer including claims made by other people arising from your breach of this agreement or misuse of our Service (subject of course to our obligation to mitigate any losses).
+    
+20. **Intellectual property rights (e.g. copyright)**
+    1.  The intellectual property rights in all material used on or in connection with our Service are owned by us or by our partners or other Users. For your personal use only, you may view such material on your device. You must not otherwise use such material including copying, publishing, selling or adapting it or taking extracts from it without our specific prior written consent. You must not misrepresent the ownership or source of such material, for example by changing or removing any legal notices or author attributions.
+    2.  Just to be clear - you must not collect, scrape, harvest, frame or deep-link to any Content on our Service without our specific prior written consent.
+    3.  If you upload any Content to our Service, you retain ownership of the intellectual property rights. You allow us at no cost, for so long as this contract lasts, to use and adapt all or part of such material however we wish on our Service. You waive your “moral rights” in relation to such Content to the extent legally allowed.  You also allow each User to use your Content in accordance with these terms and conditions.
 
-## Links To Other Web Sites
-As noted beforehand, our Service may contain links to third-party web sites or services that are not owned or controlled by Fantasy Calendar Ltd.
+21. **Privacy**
+    1.  You acknowledge and agree that we may process your personal information in accordance with the terms of our [Privacy Policy](https://app.fantasy-calendar.com/privacy-policy)  which is subject to change from time to time.
 
-Fantasy Calendar Ltd has no control over, and assumes no responsibility for, the content, privacy policies, or practices of any third party web sites or services. You further acknowledge and agree that Fantasy Calendar Ltd shall not be responsible or liable, directly or indirectly, for any damage or loss caused or alleged to be caused by or in connection with use of or reliance on any such content, goods, or services available on or through any such web sites or services. The existence of a link to or from one of our Services does not represent or imply that we endorse such website.
+22. **Events outside our control**
+    1.  We are not liable for failure to perform or delay in performing any obligation under this agreement if the failure or delay is caused by any circumstances beyond our reasonable control including third party telecommunication failures and epidemics/pandemics.
 
-We strongly advise you to read the terms and conditions and privacy policies of any third-party web sites or services that you visit.
+23. **Transfer**
+    1.  We may transfer all or part of our rights or duties under this agreement provided we take reasonable steps to ensure that your rights under this agreement are not prejudiced. As this agreement is personal to you, you may not transfer any of your rights or duties under it without our prior written consent.
 
-## Payments and fees
-Some of our Services are offered for a fee while other Services may be free with optional paid upgrades, such as the Timekeeper plan (collectively, “Paid Services”). By using a Paid Service, you agree to pay the specified fees. Depending on the Paid Service, there may be a one-time fee or recurring fees. For recurring fees, we’ll bill or charge you for in regular intervals (such as monthly, annually, or biennially), on a pre-pay basis until you cancel, which you can do at any time by cancelling your plan or by contacting us by emailing billing@fantasy-calendar.com.
+24. **English law**
+    1.  This contract is under English law and any disputes will be decided only by the courts of the United Kingdom. If you are a Consumer, you will benefit from any mandatory provisions of the law of the country in which you are resident. Nothing in these terms and conditions affects your rights as a consumer to rely on such mandatory provisions of local law. You may be entitled to use an EU online dispute resolution service to assist with any contractual dispute you may have with us. This service can be found at [http://ec.europa.eu/consumers/odr/](http://ec.europa.eu/consumers/odr/). Our email address is at the end of this document.
 
-**Payment.** If your payment fails or Paid Services are otherwise not paid for on time, we may immediately cancel or revoke your access to the Paid Services. If you contact your bank or credit card company to decline or reverse the charge of fees for Paid Services, we may revoke your access to all of our Services until outstanding charges have been paid.
+25. **General** **but important stuff**
+    1.  We may send all notices under this agreement by email to the most recent email address you have supplied to us. You can send notices to our email address shown below. Headings used in this agreement are for information and not binding. If any part of this agreement is ineffective or unenforceable for any reason, the rest of the agreement shall continue to apply. If either of us overlooks any breach of this agreement by the other, it can still be actioned later. A person who is not a party to this agreement shall have no rights to enforce this agreement except insofar as stated otherwise. The parties are independent contractors and, except as otherwise specifically stated above, nothing in this agreement make any party as agent, employee or representative of the other.
 
-**Automatic Renewal.** To ensure uninterrupted service, recurring Paid Services are automatically renewed. This means that unless you cancel a Paid Service before the end of the applicable subscription period, it will automatically renew, and you authorize us to invoice you or use any payment mechanism we have on record for you to collect the then-applicable subscription fee (as well as any Taxes). Your Paid Services are renewed for the same interval of time. For example, if you purchase a Fantasy-Calendar.com annual plan, you will be charged each year.
+26. **Complaints**
+    1.  If you have any complaints, please contact us via the contact details shown below.
 
-**Refunds.** While you may cancel a Paid Service at any time, refunds are issued in our sole discretion, unless otherwise required by applicable law.
+27. **Company information**
+    1.  Company name: Fantasy Computerworks Ltd
+    2.  Trading name: “Fantasy Calendar”
+    3.  Country of incorporation: England and Wales.
+    4.  Registered number: 12171652
+    5.  Registered office: Brookfield Court Selby Road, Garforth, Leeds, LS25 1NB, UK.
+    6.  Main trading address: 6 Boulevard Drive, Apartment 54, Cavendish House, London, NW9 5QG, UK.
+    7.  Contact email address: contact@fantasy-calendar.com
+    8.  Other contact information: See our website.
+    9.  VAT number: **[insert]**
 
-**Fee Changes.** We may change our fees at any time. When applicable, we will give you advance notice of the fee changes. If you don’t agree with the fee changes, you can cancel your Paid Service.
 
-## Intellectual Property
-The Agreement does not transfer any Fantasy Calendar Ltd or third party intellectual property to you, and all rights, titles, and interest in and to such property will remain solely with Fantasy Calendar Ltd or their respective third party owner.
+## RIGHT TO CANCEL (“COOLING OFF”)
 
-Fantasy Calendar Ltd, Fantasy-Calendar.com, the Fantasy-Calendar.com logo, and all other trademarks, service marks, graphics, and logos used in connection with Fantasy-Calendar.com or our Services, are trademarks or registered trademarks of Fantasy Calendar Ltd or Fantasy Calendar’s Ltd licensors.
+The following applies if you have the right to cancel this contract (as explained above):
 
-Other trademarks, service marks, graphics, and logos used in connection with our Services may be the trademarks of other third parties. Your use of our Services grants you no right or license to reproduce or otherwise use any Fantasy Calendar Ltd or third party trademarks.
+_Right to cancel_
+1.  You have the right to cancel this contract within 14 days without giving any reason.
+2.  The cancellation period will expire after 14 days from the day of the conclusion of the contract.
+3.  To exercise the right to cancel, you must inform us: Fantasy Computerworks Ltd, 6 Boulevard Drive, Apartment 54, Cavendish House, London, NW9 5QG, UK (email address above) of your decision to cancel this contract by a clear statement (e.g. a letter sent by post or e-mail). You may use the model cancellation form below but it is not obligatory.
+4.  To meet the cancellation deadline, it is sufficient for you to send your communication concerning your exercise of the right to cancel before the cancellation period has expired.
 
-## License.
-By submitting Content to Fantasy Calendar Ltd for inclusion on your calendars, you grant Fantasy Calendar Ltd a world-wide, royalty-free, and non-exclusive license to reproduce, modify, adapt, and publish the Content solely for the purpose of displaying, distributing, and promoting your calendars. This license also allows Fantasy Calendar Ltd to make any publicly-posted Content available to third parties selected by Fantasy Calendar Ltd so that these third parties can analyze and distribute (but not publicly display) the Content through their services.
+_Effects of cancellation_
+1.  If you cancel this contract, we will reimburse to you all payments received from you.
+2.  We will make the reimbursement without undue delay, and not later than 14 days after the day on which we are informed about your decision to cancel this contract.
+3.  We will make the reimbursement using the same means of payment as you used for the initial transaction, unless you have expressly agreed otherwise; in any event, you will not incur any fees as a result of the reimbursement.
+4.  If you requested us to begin the performance of services during the cancellation period, you shall pay us an amount which is in proportion to what has been performed until you have communicated to us your cancellation of this contract in comparison with the full coverage of the contract.
 
-## Removing Content.
-If you delete Content, we will use reasonable efforts to remove it from public view (or in the case of a private website, from view by the authorized visitors) on Fantasy-Calendar.com, but you acknowledge that caching or references to the Content may not be made immediately unavailable.
 
-## Attribution.
-We reserve the right to display attribution text or links in your calendars footer or toolbar, attributing Fantasy-Calendar.com or the theme author, for example.
-
-## Prohibited Uses.
-Your Content must comply with Fantasy-Calendar's Usage Guidelines. You agree not to:
-
-Modify, decompile, reverse engineer or otherwise alter or seek to derive the trade secrets and other inherent intellectual property of Fantasy Calendar Ltd; or
-License, sublicense, sell, resell, rent, lease, transfer, assign, distribute, or otherwise commercially exploit or make Fantasy-Calendar available to any third party, other than your authorized users.
-
-## Copyright Infringement and DMCA Policy
-As we ask others to respect our intellectual property rights, we respect the intellectual property rights of others. If you believe that material located on or associated with an Fantasy Calendar Ltd product or service violates your copyright, please notify us in accordance with Fantasy Calendar Ltd’s Digital Millennium Copyright Act (“DMCA”) Policy. We will respond to all such notices, including as required or appropriate by removing the infringing material or disabling all links to the infringing material. We will terminate a visitor’s access to and use of the website if, under appropriate circumstances, the visitor is determined to be a repeat infringer of the copyrights or other intellectual property rights of Fantasy Calendar Ltd or others. In the case of such termination, we will have no obligation to provide a refund of any amounts previously paid to us.
-
-## Termination
-If you breach the Terms, we reserve the right to terminate or suspend your access to our Service immediately, without prior notice or liability.
-
-All provisions of the Terms which by their nature should survive termination shall survive termination, including, without limitation, ownership provisions, warranty disclaimers, indemnity and limitations of liability.
-
-If you breach the Terms, we reserve the right to terminate or suspend your account immediately, without prior notice or liability.
-
-Upon termination, your right to use the Service will immediately cease. If you wish to terminate your account, you may do so from your profile or by contacting us directly.
-
-All provisions of the Terms which by their nature should survive termination shall survive termination, including, without limitation, ownership provisions, warranty disclaimers, indemnity and limitations of liability.
-
-## Disclaimer
-Your use of the Service is at your sole risk. The Service is provided on an “AS IS” and “AS AVAILABLE” basis. The Service is provided without warranties of any kind, whether express or implied, including, but not limited to, implied warranties of merchantability, fitness for a particular purpose, non-infringement or course of performance.
-
-## Governing Law
-These Terms shall be governed and construed in accordance with the laws of the United Kingdom without regard to its conflict of law provisions.
-
-Our failure to enforce any right or provision of these Terms will not be considered a waiver of those rights. If any provision of these Terms is held to be invalid or unenforceable by a court, the remaining provisions of these Terms will remain in effect. These Terms constitute the entire agreement between us regarding our Service, and supersede and replace any prior agreements we might have between us regarding the Service.
-
-## Changes
-We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material we will try to provide at least 30 days notice prior to any new terms taking effect. What constitutes a material change will be determined at our sole discretion.
-
-By continuing to access or use our Service after those revisions become effective, you agree to be bound by the revised terms. If you do not agree to the new terms, please stop using the Service.
-
-## Contact Us
-If you have any questions about these Terms, please contact us by visiting this page on our website: https://fantasy-calendar.com/contact/
+## MODEL CANCELLATION FORM
+Complete and return this form only if you wish to cancel the contract:
+- To: Fantasy Computerworks Ltd, 6 Boulevard Drive, Apartment 54, Cavendish House, London, NW9 5QG, UK (email address above):
+- I hereby give notice that I cancel my contract for the supply of the following service,
+- Ordered on,
+- Name of consumer(_s_),
+- Address of consumer(_s_),
+- Signature of consumer(_s_) (only if this form is notified on paper),
+- Date

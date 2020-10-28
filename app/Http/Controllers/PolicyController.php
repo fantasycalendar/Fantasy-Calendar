@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Policy;
+use GrahamCampbell\Markdown\Facades\Markdown;
 
 class PolicyController extends Controller
 {
@@ -12,9 +13,10 @@ class PolicyController extends Controller
         $policy = Policy::current();
 
         return view('pages.markdown', [
-            'title' => "GDPR Privacy Policy",
-            'date' => sprintf("Last updated: %s", $policy->in_effect_at->format('jS \\of F, Y')),
-            'markdown' => $policy->content
+            'title' => "Privacy and Cookies Policy",
+            'date' => sprintf("Effective date: %s", $policy->in_effect_at->format('jS \\of F, Y')),
+            'version' => $policy->id,
+            'markdown' => Markdown::convertToHtml($policy->content),
         ]);
     }
 }

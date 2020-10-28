@@ -14,9 +14,9 @@
         <div class="py-5">
 
             <h1>{{ $title }}</h1>
-            <p><i>{{ $date }}</i></p>
+            <p><i>Version {{ $version }}.0 — {{ $date }}</i></p>
 
-            {!! Markdown::convertToHtml($markdown); !!}
+            {!! $markdown !!}
 
         </div>
 
