@@ -11,6 +11,7 @@
 <div id="content">
     <div id="loading_background" class='basic-background hidden'>
         <img class='loading_spinner' src='{{ asset("resources/icons/loader_white.png") }}'>
+        <div id='loading_information_text' class='hidden bold-text'>Informational Text</div>
         <div id='loading_text' class='italics-text'>Random text</div>
 
         <div class="loading_bar hidden"></div>

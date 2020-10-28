@@ -109,7 +109,7 @@ var loading_screen_texts = [
 	`Bothering Wasp...`,
 	`Deciding on optimal window for defenestration...`,
 	`Zapping the hamster...`,
-	`Spinning that wheel up there to look busy...`,
+	`Animating progress to look busy...`,
 	`Anti-re-un-de-scrambling the dates...`,
 	`Lacing the sloth...`,
 	`Thinking of unsolicited worldbuilding advice...`,
@@ -185,7 +185,7 @@ function show_loading_screen_timed(loading_bar, cancel_button_callback){
 }
 
 function show_loading_screen(loading_bar, cancel_button_callback){
-	
+
 	$('#loading_background').removeClass('hidden');
 
 	clearTimeout(loading_screen_text_timer)
@@ -214,6 +214,7 @@ function hide_loading_screen(){
 	$('.loading_spinner').removeClass('hidden');
 	$('.loading_bar').addClass('hidden');
 	$('.loading_cancel_button').addClass('hidden');
+	$('#loading_information_text').addClass("hidden");
 }
 
 function set_loading_screen_text(array){
@@ -236,9 +237,9 @@ function set_loading_screen_text(array){
 
 var progress = 0;
 
-function update_loading_bar(percentage){
+function update_loading_bar(percentage, message){
 
-	percentage = precisionRound(percentage, 1);
+	percentage = precisionRound(percentage, 3);
 
 	if(progress == percentage){
 		return;
@@ -247,6 +248,10 @@ function update_loading_bar(percentage){
 	loading_bar.set(percentage);
 
 	progress = percentage;
+
+	if(message){
+		$('#loading_information_text').text(message).removeClass("hidden");
+	}
 
 }
 
