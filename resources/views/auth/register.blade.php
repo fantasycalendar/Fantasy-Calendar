@@ -95,10 +95,14 @@
                             </div>
                         </div>
 
+                        <div class="form-check p-2">
+                            <input type="checkbox" class="form-check-input" name="policy_acceptance" id="policy_acceptance" x-model="agreed" required>
+                            <label class="form-check-label" for="policy_acceptance">By clicking <strong>Register</strong>, I agree to the <a target="_blank" href="{{ route('terms-and-conditions') }}">Terms and Conditions</a>, and the <a target="_blank" href="{{ route('privacy-policy') }}">Privacy and Cookies Policy</a></label>
+                        </div>
 
                         <div class="form-check p-2 mb-3">
-                            <input type="checkbox" class="form-check-input" name="policy_acceptance" id="policy_acceptance" x-model="agreed" required>
-                            <label class="form-check-label" for="policy_acceptance">By clicking <strong>Register</strong>, I hereby agree and constent to the <a target="_blank" href="{{ route('terms-of-service') }}">Terms of Service</a>, and the <a target="_blank" href="{{ route('privacy-policy') }}">GDPR Privacy Policy</a></label>
+                            <input type="checkbox" class="form-check-input" name="marketing_acceptance" id="marketing_acceptance" x-model="agreed" required>
+                            <label class="form-check-label" for="marketing_acceptance"><strong>Optional</strong> - Tick here if you would like us to send you emails about our products and special offers<br><small>You can withdraw consent at any time on your profile<small></label>
                         </div>
 
                         <div class="form-group row mb-0">

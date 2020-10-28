@@ -22,7 +22,7 @@ Route::view('/donate', 'pages.donate', ['title'=>'Support the site']);
 Route::get('/account-migrated', 'WelcomeController@account_migrated')->name('account-migrated');
 Route::get('/account-migrated-acknowledge', 'WelcomeController@account_migrated_acknowledge')->name('account-migrated-acknowledge');
 
-Route::get('/terms-of-service', 'AgreementController@view')->name('terms-of-service');
+Route::get('/terms-and-conditions', 'AgreementController@view')->name('terms-and-conditions');
 Route::get('/privacy-policy', 'PolicyController@view')->name('privacy-policy');
 
 Route::get('/prompt-tos', 'AgreementController@show')->name('prompt-tos');
