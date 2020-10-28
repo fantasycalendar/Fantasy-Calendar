@@ -8,6 +8,7 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url()->full() }}">
     <meta property="og:image" content="{{ url('/resources/discord_logo.jpg') }}">
+    <meta property="og:description" content="All-in-One Fantasy Calendar Generator - Creation of calendars and time-tracking in your homebrew or pre-made campaign worlds have never been easier!">
 
     @if(Auth::check())
         <meta name='api-token' content="{{ Auth::user()->api_token }}">
