@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Auth;
 use App\User;
+use Illuminate\Support\Facades\App;
 
 class BetaCheck
 {
@@ -17,7 +18,7 @@ class BetaCheck
      */
     public function handle($request, Closure $next)
     {
-        if(Auth::check() && env('APP_ENV') == 'production') {
+        if(Auth::check() && !App::environment('local')) {
             if (!Auth::user()->betaAccess() && !Auth::user()->migrated) {
                 Auth::logout();
                 abort(redirect('https://www.fantasy-calendar.com/'));
