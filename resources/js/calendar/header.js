@@ -109,7 +109,7 @@ var loading_screen_texts = [
 	`Bothering Wasp...`,
 	`Deciding on optimal window for defenestration...`,
 	`Zapping the hamster...`,
-	`Spinning that wheel up there to look busy...`,
+	`Animating progress to look busy...`,
 	`Anti-re-un-de-scrambling the dates...`,
 	`Lacing the sloth...`,
 	`Thinking of unsolicited worldbuilding advice...`,
@@ -185,7 +185,7 @@ function show_loading_screen_timed(loading_bar, cancel_button_callback){
 }
 
 function show_loading_screen(loading_bar, cancel_button_callback){
-	
+
 	$('#loading_background').removeClass('hidden');
 
 	clearTimeout(loading_screen_text_timer)
