@@ -157,6 +157,8 @@
 
     <p><a href="{{ route('subscription.pricing') }}" class='btn btn-secondary'><i class="fas fa-arrow-left"></i> Change plan</a></p>
 
+    <p>You can unsubscribe at any point from your <a href="{{ route('profile') }}">profile</a>.</p>
+
     <hr>
 
     <p class="small">Don't worry, your card information never touches our servers! It's safely handled by Stripe.</p>
@@ -184,7 +186,7 @@
             <div class="spinner-border text-light mr-2 hidden" :class="{ hidden: !submitting }" role="status">
                 <span class="sr-only">Loading...</span>
             </div>
-            Get subscribed
+            Pay now
         </button>
     </div>
 @endsection
