@@ -33,7 +33,7 @@
             content: "";
             counter-increment: "";
         }
-        .markdown_container ol ol ol li {
+        .markdown_container ol ol ol > li {
             list-style-type: lower-alpha;
         }
     </style>
