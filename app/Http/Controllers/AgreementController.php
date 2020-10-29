@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Agreement;
 use GrahamCampbell\Markdown\Facades\Markdown;
+use Arr;
 
 class AgreementController extends Controller
 {
@@ -41,6 +42,11 @@ class AgreementController extends Controller
 
     public function accept(Request $request) {
         Auth::user()->acceptAgreement();
+
+        // TODO Adam: Make the prompt tos into a form so we can process this
+        if(Arr::has($request->all(), 'marketing_acceptance')){
+            Auth::user()->setMarketingStatus(true);     // We're not passing false here, as we're not opting out
+        }
 
         return redirect($request->input('intended') ?? 'calendars');
     }

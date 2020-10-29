@@ -208,20 +208,16 @@ class User extends Authenticatable implements
         return $this->marketing_opt_in_at !== null && $this->marketing_opt_in_at > $this->marketing_opt_out_at;
     }
 
-    public function optInMarketing() {
-        $this->policy_id = Policy::current()->id;
-
-        $this->marketing_opt_in_at = now();
+    public function setMarketingStatus($optIn) {
+        if($optIn){
+            $this->policy_id = Policy::current()->id;
+            $this->marketing_opt_in_at = now();
+        }else{
+            $this->marketing_opt_out_at = now();
+        }
         $this->save();
-
+        
         return $this;
     }
 
-    public function optOutMarketing() {
-
-        $this->marketing_opt_out_at = now();
-        $this->save();
-
-        return $this;
-    }
 }

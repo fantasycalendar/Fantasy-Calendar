@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Auth;
 
 use Illuminate\Auth\Events\Registered;
 use Str;
+use Arr;
 
 use App\User;
 use App\Agreement;
+use App\Policy;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -77,7 +79,8 @@ class RegisterController extends Controller
             'beta_authorised' => 0,
             'permissions' => 6,
             'agreement_id' => Agreement::current()->id,
-            'agreed_at' => now()
+            'policy_id' => Policy::current()->id,
+            'marketing_opt_in_at' => Arr::has($data, 'marketing_acceptance') ? now() : Null
         ]);
     }
 

@@ -43,7 +43,7 @@
 		<h1>{{ $title }}</h1>
 		<p><i>{{ $date }}</i></p>
 		<div class="scroll_box mb-2 border p-3 rounded">{!! Markdown::convertToHtml($markdown); !!}</div>
-
+		
 		<div class="form-check border rounded p-2 mb-2">
 			<input type="checkbox" class="form-check-input" id="acknowledgement" x-model="agreed" required>
 
