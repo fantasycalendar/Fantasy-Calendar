@@ -101,8 +101,11 @@
                         </div>
 
                         <div class="form-check p-2 mb-3">
-                            <input type="checkbox" class="form-check-input" name="marketing_acceptance" id="marketing_acceptance" x-model="agreed" required>
-                            <label class="form-check-label" for="marketing_acceptance"><strong>Optional</strong> - Tick here if you would like us to send you emails about our products and special offers<br><small>You can withdraw consent at any time on your profile<small></label>
+                            <input type="checkbox" class="form-check-input" name="marketing_acceptance" id="marketing_acceptance">
+                            <label class="form-check-label" for="marketing_acceptance">
+                                <strong>Optional</strong> - Tick here if you would like us to send you emails about our products and special offers<br>
+                                <small>You can withdraw consent at any time on your profile<small>
+                            </label>
                         </div>
 
                         <div class="form-group row mb-0">

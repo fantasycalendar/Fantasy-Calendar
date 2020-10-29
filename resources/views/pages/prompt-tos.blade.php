@@ -52,7 +52,10 @@
 
 		<div class="form-check border rounded p-2 mb-2">
 			<input type="checkbox" class="form-check-input" id="marketing_agreement">
-			<label class="form-check-label" for="marketing_agreement"><strong>Optional</strong> - Tick here if you would like us to send you emails about our products and special offers<br><small>You can withdraw consent at any time on your profile<small></label>
+			<label class="form-check-label" for="marketing_agreement">
+				<strong>Optional</strong> - Tick here if you would like us to send you emails about our products and special offers<br>
+				<small>Don't worry - We won't spam you. We'll only send emails for major updates or new products we develop, and you can withdraw consent anytime on your profile.<small>
+			</label>
 		</div>
 
 		<a href="{{ route('agreement-accepted', ['intended' => $intended]) }}" class="btn btn-lg" :class="{

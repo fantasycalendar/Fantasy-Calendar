@@ -30,7 +30,10 @@ class User extends Authenticatable implements
         'beta_authorised',
         'permissions',
         'agreement_id',
+        'policy_id',
         'agreed_at',
+        'marketing_opt_in_at',
+        'marketing_opt_out_at',
     ];
 
     /**
@@ -193,7 +196,30 @@ class User extends Authenticatable implements
 
     public function acceptAgreement() {
         $this->agreement_id = Agreement::current()->id;
+        $this->policy_id = Policy::current()->id;
+
         $this->agreed_at = now();
+        $this->save();
+
+        return $this;
+    }
+
+    public function hasOptedInForMarketing() {
+        return $this->marketing_opt_in_at !== null && $this->marketing_opt_in_at > $this->marketing_opt_out_at;
+    }
+
+    public function optInMarketing() {
+        $this->policy_id = Policy::current()->id;
+
+        $this->marketing_opt_in_at = now();
+        $this->save();
+
+        return $this;
+    }
+
+    public function optOutMarketing() {
+
+        $this->marketing_opt_out_at = now();
         $this->save();
 
         return $this;

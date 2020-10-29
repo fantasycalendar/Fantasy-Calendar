@@ -59,22 +59,34 @@
         </div>
     </div>
     <hr>
-    <div class="row">
-        <div class="col-12"><h5>User Settings</h5></div>
-        <div class="col-12">
-            <form id="settings" method="post">
-                @csrf
-
+    <form id="settings" method="post">
+        @csrf
+        <div class="row">
+            <div class="col-12"><h5>User Settings</h5></div>
+            <div class="col-12">
                 <div class="form-check pb-2" onclick="toggleSetting('dark_theme')">
                     <input id="dark_theme" type="hidden" name="dark_theme" @if(isset($user->settings['dark_theme']) && $user->settings['dark_theme']) value="1" @else value="0" @endisset>
                     <input id="dark_theme_input" type="checkbox" class="form-check-input" id="dark_theme" @if(isset($user->settings['dark_theme']) && $user->settings['dark_theme']) checked="checked" @endisset>
                     <label class="form-check-label" for="dark_theme">Enable dark theme</label>
                 </div>
-
-                <button class="btn btn-primary float-right">Save Settings</button>
-            </form>
+            </div>
         </div>
-    </div>
+        <hr>
+        <div class="row">
+            <div class="col-12"><h5>Marketing Settings</h5></div>
+            <div class="col-12">
+                <div class="form-check p-2 mb-3">
+                    <input type="checkbox" class="form-check-input" name="marketing_acceptance" id="marketing_acceptance" @if($user->hasOptedInForMarketing()) checked="checked" @endisset>
+                    <label class="form-check-label" for="marketing_acceptance">
+                        <strong>Optional</strong> - Tick here if you would like us to send you emails about our products and special offers<br>
+                        <small>You can withdraw consent at any time<small>
+                    </label>
+                </div>
+
+            </div>
+        </div>
+        <button class="btn btn-primary float-right">Save Settings</button>
+    </form>
 @endsection
 
 @section('profile-card-header')
