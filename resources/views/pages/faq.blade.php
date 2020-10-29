@@ -94,7 +94,7 @@
                         answer: `@auth Wait... You're <strong>already logged in, {{ Auth::user()->username }}</strong>! You can just go update your password <a href="{{ route('profile') }}">via your profile</a>. @else We've got your back. Before you try to reset it, remember that you can sign in with your email address <i>or</i> your username. If you've forgotten your password, you can reset it here <a target='_blank' href='{{ route('password.request') }}'>here</a>. If you've forgotten your username or email, get in touch with us at <a target='_blank' href='mailto:contact@fantasy-calendar.com'>contact@fantasy-calendar.com</a> and we'll sort you out! @endauth`
                     },
                     {
-                        text: "I want to delete my account!",
+                        text: "How do I delete my account?",
                         answer: `
                             @auth
                                 <p>We're really sorry to hear that!
