@@ -118,7 +118,7 @@
 
     <div class='container my-2'>
         <div class="row">
-            <div class="col-3 p-0">
+            <div class="col-4 p-0">
                 Payment interval:
             </div>
             <div class="col p-0">
@@ -126,7 +126,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-3 p-0">
+            <div class="col-4 p-0">
                 Price:
             </div>
             <div class="col p-0">
@@ -143,11 +143,12 @@
                         $24.99
                     @endif
                 @endif
+                (price includes VAT)
             </div>
         </div>
         <div class="row">
-            <div class="col-3 p-0">
-                Renews on:
+            <div class="col-4 p-0">
+                Automatically renews on:
             </div>
             <div class="col p-0">
                 {{ $renew_at }}
@@ -186,7 +187,7 @@
             <div class="spinner-border text-light mr-2 hidden" :class="{ hidden: !submitting }" role="status">
                 <span class="sr-only">Loading...</span>
             </div>
-            Pay now
+            Subscribe {{ $interval }}
         </button>
     </div>
 @endsection

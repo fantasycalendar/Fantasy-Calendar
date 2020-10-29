@@ -130,22 +130,24 @@
                         </div>
                     @elseif($earlySupporter)
                         <div class="price-label" x-show="!yearly">
-                            <h2>$1.99<span class="small">/mo</span><br></h2>
-                            <p><strong>20% off</strong> early supporter discount<br>(normally $2.49)!</p>
+                            <h2>$1.99<span class="small"> / month</span><br></h2>
+                            <p><strong>20% off</strong> (early supporter discount - normally $2.49)!</p>
                         </div>
                         <div class="price-label" x-show="yearly">
-                            <h2>$19.99<span class="small">/yr</span><br></h2>
-                            <p><strong>20% off</strong> early supporter discount<br>(normally $24.99), as well as two months free!</p>
+                            <h2>$19.99<span class="small"> / year</span><br></h2>
+                            <p><strong>20% off</strong> (early supporter discount - normally $24.99)!</p>
                         </div>
                     @else
                         <div class="price-label" x-show="!yearly">
-                            <h3>$2.49<span class="small">/mo</span><br></h3>
+                            <h3>$2.49<span class="small"> / month</span><br></h3>
                         </div>
                         <div class="price-label" x-show="yearly">
-                            <h3>$24.99<span class="small">/yr</span><br></h3>
+                            <h3>$24.99<span class="small"> / year</span><br></h3>
                             <p>Two months free (16% discount)!</p>
                         </div>
                     @endif
+
+                    <p>All prices include VAT.</p>
 
 
                     @guest
