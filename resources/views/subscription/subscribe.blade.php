@@ -157,7 +157,7 @@
 
     <p><a href="{{ route('subscription.pricing') }}" class='btn btn-secondary'><i class="fas fa-arrow-left"></i> Change plan</a></p>
 
-    <p>You can unsubscribe at any point from your <a href="{{ route('profile') }}">profile</a>.</p>
+    <p>You can cancel your subscription at any point from your <a href="{{ route('profile') }}">profile</a>.</p>
 
     <hr>
 
