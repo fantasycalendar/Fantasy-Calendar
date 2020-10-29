@@ -3,22 +3,21 @@
 
 1. **What's the point of this policy?**
     1. It tells you what to expect when we collect your personal information via our website or otherwise. Please only use our service if you are completely happy with this policy.
-
-    1. Generally, the policy covers only information provided to us. If you give personal information to other people, such as payment providers or other websites, please check their privacy policies.
+    2. Generally, the policy covers only information provided to us. If you give personal information to other people, such as payment providers or other websites, please check their privacy policies.
 
 1. **Might the policy change?**
-    1. Yes.Please check it whenever you visit our website. We will assume you agree to the new version of the policy if you use the site after its effective date. We may also notify you of any changes by email or in-service message.
+    1. Yes. Please check it whenever you visit our website. We will assume you agree to the new version of the policy if you use the site after its effective date. We may also notify you of any changes by email or in-service message.
 
 1. **What do we collect?**
     1. Information which you upload to our service or otherwise give us such as:
-        - your name email address;
-        - someone else's email address if you invite them to collaborate on the site;
-        - details about your transactions on our service;
-        - personal information which you otherwise display on our service (we advise against this) or which you include in messages sent via our service and/or in communications with us; and
-        - contact or other information which you give or allow us to use for newsletters or other marketing.
+        1. your name email address;
+        1. someone else's email address if you invite them to collaborate on the site;
+        1. details about your transactions on our service;
+        1. personal information which you otherwise display on our service (we advise against this) or which you include in messages sent via our service and/or in communications with us; and
+        1. contact or other information which you give or allow us to use for newsletters or other marketing.
     1. Automated information about your use of our service such as: the internet protocol (IP) address used to connect your device to the internet, connection information such as browser type and version, information about your device including device-type and device identifier, operating system and platform, mobile network data, a unique reference number linked to the data you enter on our system, login details, the site from which you arrived at our service, details of your activity with date / time stamps including pages you visited and your searches / transactions.
     1. The following information about you may be provided to us by other people:
-        - Limited billing information sent to us by our payment provider for verification purposes e.g., the last four digits of your credit card number.
+        1. Limited billing information sent to us by our payment provider for verification purposes e.g., the last four digits of your credit card number.
 
 1. **What's our reason / legal basis for collecting the information?**
     1. Because it's necessary to take steps at your request to enter into a contract with you and/or to perform such a contract. This applies to initial enquiries and to contact and transaction details.
