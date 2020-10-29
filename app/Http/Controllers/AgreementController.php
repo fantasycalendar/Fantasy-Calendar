@@ -41,14 +41,14 @@ class AgreementController extends Controller
     }
 
     public function accept(Request $request) {
-        if(!Arr::has($request->all(), 'policy_acceptance')){
-            return redirect('pages.prompt-tos');
+        if(!$request->has('policy_acceptance')){
+            return redirect('prompt-tos');
         }
 
         Auth::user()->acceptAgreement();
 
-        if(Arr::has($request->all(), 'marketing_acceptance')){
-            Auth::user()->setMarketingStatus(true);     // We're not passing false here, as we're not opting out
+        if($request->has('marketing_acceptance')){
+            Auth::user()->setMarketingStatus();
         }
 
         return redirect($request->input('intended') ?? 'calendars');

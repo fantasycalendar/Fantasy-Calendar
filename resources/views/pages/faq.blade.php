@@ -97,7 +97,7 @@
                         text: "How do I delete my account?",
                         answer: `
                             @auth
-                                <p>We're really sorry to hear that!
+                                <p>We're sad to see you go!
                                 @if(Auth::user()->isPremium()) If you're just worried about your subscription, you can cancel your subscription from <a href="{{ route('profile') }}">your profile</a>. Subscribed users can have an unlimited amount of calendars, but even if you cancel your subscription, you'll still have access to at least @if(Auth::user()->isEarlySupporter()) 15 @else 2 @endif of your calendars. @endif
                                 If you're sure you want us to delete your account, you can contact us through the form available on <a href="{{ route('profile') }}">your profile</a>.</p>
                             @else

@@ -39,9 +39,9 @@ class SettingsController extends Controller
     }
 
     public function update(StoreUserSettings $request) {
-        Auth::user()->setSettings(Arr::only($request->all(), ['dark_theme']));
+        Auth::user()->setSettings($request->only(['dark_theme']));
         
-        Auth::user()->setMarketingStatus(Arr::has($request->all(), 'marketing_acceptance'));
+        Auth::user()->setMarketingStatus($request->has('marketing_acceptance'));
 
         return redirect('profile');
     }
