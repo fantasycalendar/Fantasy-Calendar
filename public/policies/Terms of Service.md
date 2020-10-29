@@ -146,10 +146,8 @@
     4.  Registered number: 12171652
     5.  Registered office: Brookfield Court Selby Road, Garforth, Leeds, LS25 1NB, UK.
     6.  Main trading address: 6 Boulevard Drive, Apartment 54, Cavendish House, London, NW9 5QG, UK.
-    7.  Contact email address: contact@fantasy-calendar.com
+    7.  Contact email address: [contact@fantasy-calendar.com](mailto:contact@fantasy-calendar.com)
     8.  Other contact information: See our website.
-    9.  VAT number: **[insert]**
-
 
 ## RIGHT TO CANCEL (“COOLING OFF”)
 

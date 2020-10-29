@@ -5,11 +5,42 @@
         html {
             scroll-behavior: smooth;
         }
+        .markdown_container ol p{
+            margin-bottom: 0rem;
+        }
+        .markdown_container div > ol > li{
+            margin-bottom: 1rem;
+        }
+        .markdown_container>/**/body ol { /* Won't be interpreted by IE6/7. */
+            counter-reset: level1;
+        }
+        .markdown_container ol {
+            padding-inline-start: 1rem;
+        }
+        .markdown_container ol li:before {
+            content: "";
+            counter-increment: level1;
+        }
+        .markdown_container ol li ol {
+            list-style-type: none;
+            counter-reset: level2;
+        }
+        .markdown_container ol li ol li:before {
+            content: counter(level1) "." counter(level2) " ";
+            counter-increment: level2;
+        }
+        .markdown_container ol ol ol li:before {
+            content: "";
+            counter-increment: "";
+        }
+        .markdown_container ol ol ol li {
+            list-style-type: lower-alpha;
+        }
     </style>
 @endpush
 
 @section('content')
-    <div class="container">
+    <div class="container markdown_container">
 
         <div class="py-5">
 
