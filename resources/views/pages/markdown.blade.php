@@ -14,9 +14,6 @@
         .markdown_container>/**/body ol { /* Won't be interpreted by IE6/7. */
             counter-reset: level1;
         }
-        .markdown_container ol {
-            padding-inline-start: 1rem;
-        }
         .markdown_container ol li:before {
             content: "";
             counter-increment: level1;
