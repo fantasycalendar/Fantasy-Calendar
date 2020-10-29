@@ -190,4 +190,7 @@
             Subscribe {{ $interval }}
         </button>
     </div>
+
+    <p class="small mt-2 mb-0">By pressing <strong>Subscribe {{ $interval }}</strong>, you verify that you are at least 13 years old and agree to the <a href="{{ route('terms-and-conditions') }}">Terms and Conditions</a> which include details of your right to withdrawal within 14 days.</p>
+
 @endsection
