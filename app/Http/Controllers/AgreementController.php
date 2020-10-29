@@ -41,9 +41,12 @@ class AgreementController extends Controller
     }
 
     public function accept(Request $request) {
+        if(!Arr::has($request->all(), 'policy_acceptance')){
+            return redirect('pages.prompt-tos');
+        }
+
         Auth::user()->acceptAgreement();
 
-        // TODO Adam: Make the prompt tos into a form so we can process this
         if(Arr::has($request->all(), 'marketing_acceptance')){
             Auth::user()->setMarketingStatus(true);     // We're not passing false here, as we're not opting out
         }
