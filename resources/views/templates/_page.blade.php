@@ -53,7 +53,20 @@
                     'Authorization': 'Bearer '+$('meta[name="api-token"]').attr('content')
                 }
             });
+
+            $.protip({
+                defaults: {
+                    "delay-in": 2000,
+                    position: 'bottom',
+                    scheme: 'leaf',
+                    classes: 'box-shadow accent-bg-color',
+                    animate: 'bounceIn',
+                    target: '#protip_container'
+                }
+            });
+
         });
+
     </script>
 
     <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" />

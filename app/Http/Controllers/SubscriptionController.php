@@ -68,7 +68,8 @@ class SubscriptionController extends Controller
             'level' => $level,
             'plan' => $plan,
             'interval' => $interval,
-            'user' => Auth::user()
+            'user' => Auth::user(),
+            'renew_at' => $interval == "yearly" ? now()->addYear()->toFormattedDateString() : now()->addMonth()->toFormattedDateString()
         ]);
     }
 

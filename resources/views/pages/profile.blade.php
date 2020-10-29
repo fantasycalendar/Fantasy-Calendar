@@ -28,6 +28,7 @@
     </script>
 @endpush
 
+
 @section('profile-card')
     <div class="row">
         <div class="col-12 col-md-4">
@@ -45,6 +46,8 @@
                 <p><i class="fa fa-credit-card"></i> {{ strtoupper($user->card_brand) }} (...{{ $user->card_last_four }})</p>
                 @unless($subscription->onGracePeriod())
                     <p><a href="{{ route('subscription.cancel') }}" class="btn btn-danger form-control">Cancel subscription</a></p>
+
+                    <p>Renews on: {{ $subscription_renews_at }}</p>
                 @endunless
 
                 @if($subscription->onGracePeriod())
@@ -62,7 +65,7 @@
     <form id="settings" method="post">
         @csrf
         <div class="row">
-            <div class="col-12"><h5>User Settings</h5></div>
+            <div class="col-12"><h5>Preferences</h5></div>
             <div class="col-12">
                 <div class="form-check pb-2" onclick="toggleSetting('dark_theme')">
                     <input id="dark_theme" type="hidden" name="dark_theme" @if(isset($user->settings['dark_theme']) && $user->settings['dark_theme']) value="1" @else value="0" @endisset>
@@ -71,18 +74,14 @@
                 </div>
             </div>
         </div>
-        <hr>
         <div class="row">
-            <div class="col-12"><h5>Marketing Settings</h5></div>
             <div class="col-12">
                 <div class="form-check p-2 mb-3">
                     <input type="checkbox" class="form-check-input" name="marketing_acceptance" id="marketing_acceptance" @if($user->hasOptedInForMarketing()) checked="checked" @endisset>
-                    <label class="form-check-label" for="marketing_acceptance">
-                        <strong>Optional</strong> - Tick here if you would like us to send you emails about our products and special offers<br>
-                        <small>You can withdraw consent at any time<small>
+                    <label class="form-check-label protip" data-pt-position="right" data-pt-title='Enabling this gives us consent to send you emails about our products and special offers - no spam! We hate inbox clutter as much as you do!' for="marketing_acceptance">
+                        Send me product updates <i class="fas fa-question-circle"></i>
                     </label>
                 </div>
-
             </div>
         </div>
         <button class="btn btn-primary float-right">Save Settings</button>
