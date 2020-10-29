@@ -5,15 +5,18 @@
         html {
             scroll-behavior: smooth;
         }
-        .markdown_container ol p{
-            margin-bottom: 0rem;
-        }
-        .markdown_container div > ol > li{
-            margin-bottom: 1rem;
-        }
-        .markdown_container>/**/body ol { /* Won't be interpreted by IE6/7. */
+        html>/**/body ol { /* Won't be interpreted by IE6/7. */
             counter-reset: level1;
         }
+
+        .markdown_container ol p {
+            margin-bottom:0rem;
+        }
+
+        .markdown_container > div > ol > li{
+            margin-bottom:1rem;
+        }
+
         .markdown_container ol li:before {
             content: "";
             counter-increment: level1;
