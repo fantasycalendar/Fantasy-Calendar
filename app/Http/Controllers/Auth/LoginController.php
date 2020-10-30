@@ -99,7 +99,8 @@ class LoginController extends Controller
             return ['success' => true, 'message' => 'User is logged out.'];
         }
 
-        return redirect()->to('/')->withCookie(\Illuminate\Support\Facades\Cookie::forget('fantasycalendar_remember'));
+        Cookie::queue(Cookie::forget('fantasycalendar_remember'));
+        return redirect()->to('/');
     }
 
     protected function sendLoginResponse(Request $request)
