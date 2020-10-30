@@ -47,6 +47,7 @@ services:
       - "DB_PASSWORD=root"
       - "REDIS_HOST=fcredis"
       - "SESSION_DRIVER=redis"
+      - "LOG_CHANNEL=docker"
 
   fcredis:
     image: redis
