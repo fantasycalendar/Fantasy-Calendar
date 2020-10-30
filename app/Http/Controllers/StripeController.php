@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Laravel\Cashier\Http\Controllers\WebhookController as CashierController;
-use App\Notifications\SubscriptionConfirmation;
+use App\Mail\SubscriptionCreated;
+use Illuminate\Support\Facades\Mail;
 use Auth;
 
 class StripeController extends CashierController
@@ -16,7 +17,6 @@ class StripeController extends CashierController
      */
     public function handleCustomerSubscriptionCreated($payload)
     {
-        Notification::route('mail', Auth::user()->email)
-            ->notify(new SubscriptionConfirmation(Auth::user()));
+        Mail::to("test@lol.com")->send(new SubscriptionCreated());
     }
 }

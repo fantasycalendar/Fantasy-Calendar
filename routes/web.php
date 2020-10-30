@@ -87,6 +87,5 @@ Route::get('/403', 'ErrorsController@error403');
 
 Route::get('/404', 'ErrorsController@error404');
 
-Route::get('/{path}', 'CalendarController@legacy')->where(['url' => 'calendar.php|calendar']);;
-
+Route::get('/{path}', 'CalendarController@legacy')->where(['url' => 'calendar.php|calendar']);
 Route::get('{path}', 'ErrorsController@error404');
