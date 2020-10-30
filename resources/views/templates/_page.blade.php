@@ -87,7 +87,7 @@
 </head>
 
 
-<body class="page-{{ str_replace('.', '-', Route::currentRouteName()) }} @stack('page-class')">
+<body class="page page-{{ str_replace('.', '-', Route::currentRouteName()) }} @stack('page-class')">
 
 		@include('templates._header')
 		<div id="content">
@@ -104,6 +104,7 @@
 
 			@yield('content')
 		</div>
+        @include('templates.footnote')
         <div id="protip_container" class='d-print-none'></div>
     </body>
 </html>
