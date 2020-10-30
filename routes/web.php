@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\StripeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -69,6 +70,12 @@ Route::post('/subscription/update/{level}/{plan}', 'SubscriptionController@updat
 
 Route::post('pricing/coupon', 'SubscriptionController@coupon');
 
+// Extended Stripe Webhook 
+Route::post(
+    'stripe/webhook',
+    [StripeController::class, 'handleWebhook']
+);
+
 // User profile
 Route::get('/profile', 'SettingsController@profile')->middleware(['auth', 'agreement'])->name('profile');
 Route::post('/profile', 'SettingsController@update')->name('settings.update')->middleware(['auth', 'agreement']);
@@ -80,5 +87,6 @@ Route::get('/403', 'ErrorsController@error403');
 
 Route::get('/404', 'ErrorsController@error404');
 
-Route::get('/{path}', 'CalendarController@legacy')->where(['url' => 'calendar.php|calendar']);
+Route::get('/{path}', 'CalendarController@legacy')->where(['url' => 'calendar.php|calendar']);;
+
 Route::get('{path}', 'ErrorsController@error404');
