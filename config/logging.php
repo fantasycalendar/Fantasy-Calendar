@@ -89,6 +89,12 @@ return [
             'driver' => 'errorlog',
             'level' => 'debug',
         ],
+
+        'docker' => [
+            'driver' => 'single',
+            'level' => 'debug',
+            'path' => 'php://stderr'
+        ],
     ],
 
 ];
