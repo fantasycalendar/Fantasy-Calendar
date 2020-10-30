@@ -51,10 +51,30 @@
 1. **What about cookies?**
     1. We and/or other companies use cookies and other tracking technologies on our website. A cookie is an identifier (a small file of letters and numbers) that is sent to your web browser. Cookies are widely used to make websites work, or work more efficiently, as well as to provide information to the website owner or others. Some are session temporary "session" cookies that remain in the cookie file of your browser only until your browser is closed. Whereas persistent cookies stay for longer (depending on the lifetime of the specific cookie). For further information on cookies, including how to use your browser to block them and how to delete existing cookies, visit: [www.allaboutcookies.org](http://www.allaboutcookies.org/). Our site's functionality will be limited if you configure your browser to reject cookies.
     2. We ourselves may place the following types of cookies:
-    | **Type of cookies** | **Purpose** |
-    | --- | --- |
-    | Logged-in status | Assess whether you are logged in to our site |
-    | "Remember me" | Remember you and speed up your login when you return to our site |
-    | Authentication | Identify and authenticate you to help you move easily through the site |
-    | Cookie notice | Store your response to our cookie notice |
+        <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th scope="col">Type of cookies</th>
+            <th scope="col">Purpose</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Logged-in status</td>
+            <td>Assess whether you are logged in to our site</td>
+          </tr>
+          <tr>
+            <td>"Remember me"</td>
+            <td>Remember you and speed up your login when you return to our site</td>
+          </tr>
+          <tr>
+            <td>Authentication</td>
+            <td>Identify and authenticate you to help you move easily through the site</td>
+          </tr>
+          <tr>
+            <td>Cookie notice</td>
+            <td>Store your response to our cookie notice</td>
+          </tr>
+        </tbody>
+        </table>
     3. Our payment provider may also place cookies if you use their payment services on our site. For more information, see Stripe's [privacy policy](https://stripe.com/gb/privacy).

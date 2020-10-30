@@ -9,6 +9,19 @@
             counter-reset: level1;
         }
 
+        li {
+            position: relative;
+            padding-bottom: 4px;
+        }
+
+        li:before {
+            position: absolute;
+            width: 34px;
+            left: -38px;
+            text-align: right;
+            font-size: 95%;
+        }
+
         .markdown_container ol p {
             margin-bottom:0rem;
         }
@@ -35,6 +48,10 @@
         }
         .markdown_container ol ol ol > li {
             list-style-type: lower-alpha;
+        }
+
+        .table {
+            margin: 4px 0;
         }
     </style>
 @endpush
