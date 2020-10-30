@@ -34,16 +34,16 @@
 
 @section("content")
 
-	
+
 
 	<div class="container p-4" x-data="agreement_form()">
 
-		<div class="alert alert-info" x-show="!dismissed"><a href="#" class="alert-link" style="float: right;" @click="dismissed = true"><i class="fa fa-times"></i></a> Sorry - a lot has changed in the <a class="alert-link" href="{{ route('whats-new') }}">2.0 update</a>, and you'll need to accept the Terms and Conditions, and the Privacy and Cookies Policy before you can continue using the site.</div>
+		<div class="alert alert-info" x-show="!dismissed"><a href="#" class="alert-link" style="float: right;" @click="dismissed = true"><i class="fa fa-times"></i></a> Sorry - a lot has changed in the <a class="alert-link" href="{{ route('whats-new') }}">2.0 update</a>, and since those changes involve collaboration and optional paid services, we had to get our lawyers involved. You'll need to accept the Terms and Conditions, and the Privacy and Cookies Policy before you can continue using the site.</div>
 
 		<h1>{{ $title }}</h1>
 		<p><i>Document Version {{ $version }}.0 — {{ $date }}</i></p>
 		<div class="scroll_box mb-2 border p-3 rounded">{!! Markdown::convertToHtml($markdown); !!}</div>
-		
+
 		<form method="GET" action="{{ route('agreement-accepted', ['intended' => $intended]) }}">
 
 			<div class="form-check border rounded p-2 mb-2">
@@ -62,7 +62,7 @@
 
 			<button
 				type="submit"
-				class="btn btn-lg" 
+				class="btn btn-lg"
 				:disabled="!agreed",
 				:class="{
 					'btn-secondary': !agreed,
@@ -71,7 +71,7 @@
 			>Agree and Continue</button>
 
 		</form>
-	
+
 	</div>
 
 
