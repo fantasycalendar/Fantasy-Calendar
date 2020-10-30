@@ -3,6 +3,7 @@
 namespace App\Sharp;
 
 use App\User;
+use Code16\Sharp\Show\Fields\SharpShowEntityListField;
 use Code16\Sharp\Show\Fields\SharpShowTextField;
 use Code16\Sharp\Show\Layout\ShowLayoutColumn;
 use Code16\Sharp\Show\Layout\ShowLayoutSection;
@@ -19,7 +20,7 @@ class UserShow extends SharpShow
     public function find($id): array
     {
         // Replace/complete this code
-        $user = User::findOrFail($id);
+        $user = User::findOrFail($id)->makeVisible(['beta_authorised', 'api_token', 'email', 'permissions']);
 
         return $this->setCustomTransformer(
             "api_token",
@@ -51,6 +52,18 @@ class UserShow extends SharpShow
         )->addField(
             SharpShowTextField::make('api_token')
                 ->setLabel("API Key")
+        )->addField(
+            SharpShowEntityListField::make('user_calendars', 'user_calendars')
+                ->setLabel('Calendars')
+                ->hideFilterWithValue("user", function($instanceId) {
+                    return $instanceId;
+                })
+        )->addField(
+            SharpShowEntityListField::make('old_calendars', 'old_calendars')
+                ->setLabel('Old Calendars')
+                ->hideFilterWithValue("user", function($instanceId) {
+                    return $instanceId;
+                })
         );
     }
 
@@ -75,11 +88,17 @@ class UserShow extends SharpShow
              })->addColumn(12, function(ShowLayoutColumn $column) {
                  $column->withSingleField("api_token");
              });
-         });
+         })->addEntityListSection('user_calendars')
+         ->addEntityListSection('old_calendars');
     }
 
     function buildShowConfig()
     {
-        //
+        $this
+            ->addInstanceCommand("elevate", GiveUserAppAccess::class)
+            ->addInstanceCommand("revoke", RevokeUserAppAccess::class)
+            ->addInstanceCommand("impersonate", LoginAsUser::class)
+            ->addInstanceCommand("reset_password", SendUserResetPassword::class);
+
     }
 }

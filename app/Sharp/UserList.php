@@ -68,8 +68,8 @@ class UserList extends SharpEntityList
             ->setSearchable()
             ->setDefaultSort('created_at', 'desc')
             ->setPaginated()
-            ->addInstanceCommand("elevate", GiveUserBetaAccess::class)
-            ->addInstanceCommand("revoke", RevokeUserBetaAccess::class)
+            ->addInstanceCommand("elevate", GiveUserAppAccess::class)
+            ->addInstanceCommand("revoke", RevokeUserAppAccess::class)
             ->addInstanceCommand("impersonate", LoginAsUser::class)
             ->addInstanceCommand("reset_password", SendUserResetPassword::class);
     }

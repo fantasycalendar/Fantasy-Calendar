@@ -20,6 +20,7 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         'calendars/*',
-        'api/*'
+        'api/*',
+        'stripe/*',
     ];
 }

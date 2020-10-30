@@ -37,6 +37,17 @@ $action-icon-color: rgba(0, 0, 0, 0.7);
 $weather-tooltip-bg-color: white;
 $input-disabled-color: #e9ecef;
 
+$sortable-header-color: rgba(166, 168, 179, 0.5);
+
+// Modal colors
+$modal-bg-color: #e2e8f0;
+$modal-content-bg-color: #f7fafc;
+$modal-content-hover-bg-color: white;
+$modal-action-color: $text-gray-900;
+$modal-accent-background: $accent-color-light;
+$modal-accent-hover-background: $accent-color-lighter;
+$modal-content-border-color: 1px solid rgba(0, 0, 0, 0.1);
+
 // Minimalist colors
 $m-even-bg: #F1FFE1;
 $m-odd-bg: #E8E7C1;
@@ -45,3 +56,4 @@ $m-current-day: #fdb44d;
 
 // SVG image data
 $disabled-crosshatch: url("data:image/svg+xml;charset=utf-8,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 40L40 0H20L0 20m40 20V20L20 40' fill='%23f9f9fa' fill-rule='evenodd'/%3E%3C/svg%3E");
+$warning-crosshatch: url("data:image/svg+xml;charset=utf-8,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 40L40 0H20L0 20m40 20V20L20 40' fill-opacity='0.3' fill='%23e3342f' fill-rule='evenodd'/%3E%3C/svg%3E");

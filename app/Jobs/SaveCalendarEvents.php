@@ -2,12 +2,15 @@
 
 namespace App\Jobs;
 
+use App\Calendar;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 use Mews\Purifier\Facades\Purifier;
 
 use App\CalendarEvent;
@@ -39,11 +42,7 @@ class SaveCalendarEvents implements ShouldQueue
         foreach($this->events as $sort_by => $event) {
             $event['sort_by'] = $sort_by;
 
-            if(!empty($event['event_category_id']) && !is_numeric($event['event_category_id'])) {
-                $event['event_category_id'] = $this->categoryids[$event['event_category_id']];
-            }
-
-            if($event['event_category_id'] < 0) $event['event_category_id'] = null;
+            $event['event_category_id'] = $this->resolveCategoryId($event['event_category_id']);
 
             $event['description'] = Purifier::clean($event['description']);
 
@@ -53,6 +52,7 @@ class SaveCalendarEvents implements ShouldQueue
                 $event['settings'] = json_encode($event['settings']);
                 CalendarEvent::where('id', $event['id'])->update($event);
             } else {
+                $event['creator_id'] = Auth::user()->id ?? auth('api')->user()->id ?? Calendar::find($this->calendarId)->user->id;
                 $event['calendar_id'] = $this->calendarId;
                 $event = CalendarEvent::Create($event);
                 $eventids[] = $event->id;
@@ -61,5 +61,21 @@ class SaveCalendarEvents implements ShouldQueue
         CalendarEvent::where('calendar_id', $this->calendarId)->whereNotIn('id', $eventids)->delete();
 
         return $eventids;
+    }
+
+    private function resolveCategoryId($value) {
+        if(empty($value) || $value === "-1" || $value < 0) {
+            return null;
+        }
+
+        if(!is_numeric($value)) {
+            return Arr::get($this->categoryids, $value, null);
+        }
+
+        if(in_array($value, $this->categoryids)) {
+            return $value;
+        }
+
+        return null;
     }
 }

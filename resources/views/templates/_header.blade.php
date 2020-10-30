@@ -17,26 +17,21 @@
             <li class="nav-item new-calendar">
                 <a class="nav-link" href="{{ route('calendars.create') }}">New Calendar</a>
             </li>
+            <li class="nav-item"><a href="{{ route('whats-new') }}" class="nav-link">What's New in 2.0</a></li>
+                <li class="nav-item"><a href="{{ route('faq') }}" class="nav-link">FAQs</a></li>
         </ul>
         <ul class="navbar-nav">
             @auth
                 @if(Auth::user()->isAdmin())
                     <li class="nav-item"><a href="{{ route('code16.sharp.home') }}" class="nav-link">Admin Panel</a></li>
                 @endif
-                <li class="nav-item"><a href="{{ route('settings') }}" class="nav-link">Settings</a></li>
-                <li class="nav-item"><a href="/profile" class="nav-link">Profile</a></li>
-                @unless(request()->is('/calendar/*'))
-                        <li class="nav-item"><a href="{{ route('logout') }}" class="nav-link">Logout</a></li>
-                @else
-                        <li class="nav-item"><a href="javascript:" id="logout-button" class="nav-link">Logout</a></li>
-                @endunless
-            @else
-                @unless(request()->is('/calendar/*'))
-                    <li class="nav-item"><a href="{{ route('login') }}" class="nav-link">Login</a></li>
-                @else
-                    <li class="nav-item"><a href="javascript:" id="login-show-button" class="nav-link">Login</a></li>
-                @endunless
 
+                <li class="nav-item"><a href="{{ route('subscription.pricing') }}" class="nav-link">Subscribe</a></li>
+                <li class="nav-item"><a href="{{ route('profile') }}" class="nav-link">Profile</a></li>
+                <li class="nav-item"><a href="{{ route('logout') }}" class="nav-link">Logout</a></li>
+            @else
+                <li class="nav-item"><a href="{{ route('subscription.pricing') }}" class="nav-link">Subscribe</a></li>
+                <li class="nav-item"><a href="{{ route('login') }}" class="nav-link">Login</a></li>
                 <li class="nav-item"><a href="{{ route('register') }}" class="nav-link">Register</a></li>
             @endauth
 

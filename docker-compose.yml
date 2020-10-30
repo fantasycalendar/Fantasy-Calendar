@@ -17,6 +17,8 @@ services:
     container_name: fantasy_calendar
     depends_on:
       - fantasy-calendar-php
+    ports:
+      - "9987:8080"
     build:
       context: .
       dockerfile: setup/nginx/nginx.Dockerfile
@@ -37,14 +39,21 @@ services:
       - "APP_ENV=local"
       - "APP_KEY=base64:ECSIURhDQnHBdx7nRVlwGtPwBU+RZrQCQpmGHesaIUM="
       - "APP_DEBUG=true"
-      - "APP_URL=http://fantasy-calendar.test:9980/"
-      - "COOKIEADDRESS=http://fantasy-calendar.test:9980/"
+      - "APP_URL=/"
+      - "COOKIEADDRESS=/"
       - "DB_HOST=fantasydb"
       - "DB_DATABASE=fantasy-calendar"
       - "DB_USERNAME=root"
       - "DB_PASSWORD=root"
       - "REDIS_HOST=fcredis"
       - "SESSION_DRIVER=redis"
+      - "VIEW_COMPILED_PATH=/fantasy-calendar/storage/framework/views"
+
+  selenium:
+    image: selenium/standalone-chrome
+    shm_size: '1gb'
+    ports:
+      - "4444:4444"
 
   fcredis:
     image: redis
@@ -64,7 +73,7 @@ services:
     user: "1000:1000"
     ports:
       - "9980:9980"
-      - "3001:3001"
+      - "9988:3001"
     working_dir: "/fantasy-calendar"
     volumes:
       - ./:/fantasy-calendar

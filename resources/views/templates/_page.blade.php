@@ -11,24 +11,37 @@
     <meta property="og:title" content="{{ $calendar->name ?? $title ?? "Fantasy Calendar" }}">
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url()->full() }}">
-    <meta property="og:image" content="{{ url('/resources/discord_logo.jpg') }}">
+    <meta property="og:image" content="{{ asset('resources/discord_logo.jpg') }}">
+    <meta property="og:description" content="All-in-One Fantasy Calendar Generator - Creation of calendars and time-tracking in your homebrew or pre-made campaign worlds have never been easier!">
+
+    @if(Auth::check())
+        <meta name='api-token' content="{{ Auth::user()->api_token }}">
+    @endif
 
     <title>
         Welcome to Fantasy Calendar
     </title>
 
-    <link rel="apple-touch-icon" sizes="180x180" href="/resources/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/resources/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/resources/favicon-16x16.png">
-    <link rel="manifest" href="/resources/site.webmanifest">
-    <link rel="mask-icon" href="/resources/safari-pinned-tab.svg" color="#5bbad5">
-    <meta name="msapplication-TileColor" content="#da532c">
-    <meta name="theme-color" content="#ffffff">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('/resources/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('/resources/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('/resources/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ asset('/resources/site.webmanifest') }}">
+    <link rel="mask-icon" href="{{ asset('/resources/safari-pinned-tab.svg') }}" color="#2f855a">
+    <link rel="shortcut icon" href="{{ asset('/resources/favicon.ico') }}">
+    <meta name="apple-mobile-web-app-title" content="Fantasy Calendar">
+    <meta name="application-name" content="Fantasy Calendar">
+    <meta name="msapplication-TileColor" content="#2f855a">
+    <meta name="msapplication-config" content="{{ asset("/resources/browserconfig.xml") }}">
+    <meta name="theme-color" content="#2f855a">
 
-    <script src="{{ mix('/js/app.js') }}"></script>
+
+    <script src="{{ mix('js/app.js') }}"></script>
+    <script src="https://js.stripe.com/v3/"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://rawgit.com/notifyjs/notifyjs/master/dist/notify.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.6.0/dist/alpine.min.js" defer></script>
 
     <script>
         $(document).ready(function(){
@@ -41,20 +54,24 @@
                     'Authorization': 'Bearer '+$('meta[name="api-token"]').attr('content')
                 }
             });
+            
+            var cookiedomain = window.location.hostname.split('.')[window.location.hostname.split('.').length-2]+'.'+window.location.hostname.split('.')[window.location.hostname.split('.').length-1];
+            document.cookie = 'fantasycalendar_remember=; Max-Age=0; path=/; domain=' + cookiedomain;
         });
     </script>
 
     <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" />
     <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
 
-    <script src="/js/login.js"></script>
+    <script src="{{ asset('js/login.js') }}"></script>
 
-    <script src="{{ mix('/js/calendar/header.js') }}"></script>
+    <script src="{{ mix('js/calendar/header.js') }}"></script>
+    <script src="{{ mix('js/calendar/calendar_ajax_functions.js') }}"></script>
 
-    @if(Auth::check() && Auth::user()->setting('dark_theme') && !request()->is('/'))
-        <link rel="stylesheet" href="{{ mix('/css/app-dark.css') }}">
+    @if(Auth::check() && Auth::user()->setting('dark_theme') && !request()->is('/') && !request()->is('whats-new') && !request()->is('faq'))
+        <link rel="stylesheet" href="{{ mix('css/app-dark.css') }}">
     @else
-        <link rel="stylesheet" href="{{ mix('/css/app.css') }}">
+        <link rel="stylesheet" href="{{ mix('css/app.css') }}">
     @endif
 
     @stack('head')
@@ -62,6 +79,15 @@
 
 
 <body class="page-{{ str_replace('.', '-', Route::currentRouteName()) }} @stack('page-class')">
+        @env(['development'])
+            <div class="alert alert-danger py-4 mb-0">
+                <div style="max-width: 1100px; margin: auto;">
+                    This is the beta deployment of Fantasy Calendar. We will often deploy things here that are incomplete, or even just broken. We recommend using a copy of any important calendars here, to avoid data loss.
+                    <hr>
+                    If you're just looking for a production-ready version of Fantasy Calendar, you should probably <a class="btn btn-outline-danger" href="https://app.fantasy-calendar.com/">go to the main Fantasy Calendar app.</a>
+                </div>
+            </div>
+        @endenv
 
 		@include('templates._header')
 		<div id="content">
@@ -78,6 +104,6 @@
 
 			@yield('content')
 		</div>
-        <div id="protip_container"></div>
+        <div id="protip_container" class='d-print-none'></div>
     </body>
 </html>

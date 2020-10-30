@@ -2,7 +2,6 @@
 
 [Fantasy-Calendar](https://www.fantasy-calendar.com/) is a general-purpose fantasy calendar creation and tracking software.
 
-
 ## A what?
 Well, whether you're a GM looking to track the events of a long-running Forgotten Realms campaign, an author, or simply a world-builder who likes to have wacky celestial configurations (Such as Eberron's [12 moons](http://archive.wizards.com/default.asp?x=dnd/ebds/20050307a)) with zany timekeeping systems to match, you probably need a calendar of some kind.
 
@@ -27,6 +26,7 @@ That will create four running containers:
 | `fantasy_calendar`                  | nginx web server, configured to appropriately handle traffic between Laravel and non-Laravel pages.|
 | `fantasy_calendar_php`              | An extended `php-fpm`  with PDO and composer installed, as well as some default environment variables for a docker setup.|
 | `fantasy-calendar-composer-install` | This is a once-run, randomly-named container that does one thing: runs `composer install` . This makes it so that running a simple `docker-compose up`  or `docker-compose up -d`  any time you pull the latest version of this repo will make sure you have the latest versions of any composer-managed packages.|
+|`selenium` | This is a headless Chrome install used for integration tests |
 
 It may take a moment to build, but once things have settled down from that, you should be able to run `docker exec -it fantasy_calendar_php php artisan migrate` and wait for the migrations to finish. Eventually this will be done automatically.
 
@@ -47,4 +47,3 @@ You'll need all the [usual extensions](https://laravel.com/docs/7.x/installation
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-

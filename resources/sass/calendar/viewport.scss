@@ -9,6 +9,7 @@
     width: 100%;
     color: $main-text-color;
     min-height: 85%;
+    justify-content: center;
 }
 
 .timespan {
@@ -36,8 +37,8 @@
             min-width: 5rem;
         }
 
-        .week_day_name:not(:first-child){
-            border-left:1px solid $calendar-border-color;
+        .week_day_name:not(:last-child){
+            border-right:1px solid $calendar-border-color;
         }
     }
 
@@ -56,7 +57,6 @@
         flex-direction: row;
 
         &.intercalary{
-            border-top:1px solid $calendar-border-color;
 
             .tall{
                 margin:0;
@@ -72,25 +72,29 @@
             display: flex;
             flex-direction: column;
             overflow-x: auto;
-            border-top: 1px solid $calendar-border-color;
+
+            &:not(.intercalary){
+                border-top: 1px solid $calendar-border-color;
+            }
         }
     }
 
     &_day {
-        border-top:1px solid $calendar-border-color;
         display: flex;
         flex-direction: column;
         min-height:8rem;
         flex: 1;
         background-color: $card-bg-color;
         min-width: 5rem;
+        position: relative;
+        border-top:1px solid $calendar-border-color;
 
         &.empty_timespan_day{
             background-color:$gray-secondary;
         }
 
-        &:not(:first-child){
-            border-left:1px solid $calendar-border-color;
+        &:not(:last-child){
+            border-right:1px solid $calendar-border-color;
         }
 
         &:hover {
@@ -126,29 +130,15 @@
         color: rgba(#98a0a6, 0.6);
         background-image: $disabled-crosshatch;
         cursor: not-allowed;
-        border-top:1px solid $calendar-border-color;
-        padding-left:1px;
         min-width: 5rem;
-
-        &.first{
-            padding-left:0;
-        }
-
-        &.firstlast{
-            border-left:1px solid $calendar-border-color;
-        }
-
-        &.last{
-            padding-left:0;
-        }
+        border-top:1px solid $calendar-border-color;
 
         &.intercalary{
-            border-top:0;
             min-width: initial;
         }
 
-        &:not(.first) {
-            border-left: 1px solid $calendar-border-color;
+        &:not(:last-child) {
+            border-right: 1px solid $calendar-border-color;
             padding-left: 0;
         }
     }
@@ -165,7 +155,15 @@
 .day_row{
     display: inline-flex;
     flex-direction: row;
-    margin:0 0.2rem 0.2rem 0.2rem;
+    margin:0 0 0.2rem 0;
+
+    .number{
+        margin-left:5px;
+    }
+
+    .year_day{
+        font-size:0.75rem;
+    }
 }
 
 .day_row:nth-last-child(2) {
@@ -176,35 +174,11 @@
     margin-top:auto;
 }
 
-.toprow{
-    display: flex;
-    -webkit-box-flex: 1;      /* OLD - iOS 6-, Safari 3.1-6 */
-    -moz-box-flex: 1;         /* OLD - Firefox 19- */
-
-    -webkit-flex: 1;          /* Chrome */
-    -ms-flex: 1;              /* IE 10 */
-    flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
-    text-align: left;
-
-    &.left{
-        justify-content: flex-start;
-    }
-
-    &.center{
-        justify-content: center;
-    }
-
-    &.right{
-        justify-content: flex-end;
-    }
-
-    & .number{
-        margin-right:5px;
-        padding-right:5px;
-    }
-
+.weather_popup {
+    position: absolute;
+    width: 28px;
+    left: calc(50% - 14px);
 }
-
 
 .day_row .title{
     text-align:center;
@@ -217,7 +191,6 @@
 
 .btn_create_event{
     position: relative;
-    width: 100%;
     padding: 0.1rem;
     font-size: 10pt;
     visibility: hidden;
@@ -226,6 +199,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    margin: 0 0.2rem;
 }
 
 .btn_create_event:hover{
@@ -241,7 +215,7 @@
     width: 10px;
     height: 10px;
     margin-top: 0.3rem;
-    margin-right: 0.1rem;
+    margin-right: 0.3rem;
     border-radius: 50%;
     opacity: 0.8;
 }
@@ -265,15 +239,17 @@
     font-size: 0.8rem;
     word-break: break-word;
     padding: 0.4rem 0.3rem;
-    margin: 0.3rem 0;
+    margin: 0.3rem 0 0;
     border-left: 0.2rem solid white;
-    font-family: "Montserrat";
+    font-family: "Montserrat", serif;
     text-align: left;
+    width: 100%;
 
     &_container{
         align-self: center;
-        flex: 1;
         width: 100%;
+        padding: 0.2rem;
+        flex-direction: column;
     }
 
     &:hover{
@@ -398,6 +374,9 @@
 
     .timespan_day{
         text-align:left;
+        &.week_end {
+            border-bottom:2px solid $calendar-border-color;
+        }
     }
 
     .toprow{
@@ -406,24 +385,27 @@
 
     .number{
         border-right:1px solid lightgrey;
+        padding-right:5px;
     }
 
     .timespan_day:first-child{
         border-top:0;
     }
 
-    .weekday{
-        text-align:center;
+    .week_day_name{
+        padding-left:5px;
+        text-align: left;
     }
 
     .event_container{
         align-self: flex-start;
         display: flex;
+        flex-direction: row;
         flex-wrap: wrap;
     }
 
     .event{
-        flex: 1 1 50%;
+        flex: 0 1 50%;
     }
 
 
@@ -449,7 +431,7 @@
     flex-direction: column;
     border:0;
     overflow:hidden;
-    flex:1 0 auto;
+    flex:0 1 auto;
     padding:5px 0px;
     .event_container{
         font-size:0.75rem;
@@ -512,12 +494,14 @@
 
             &.current_day {
                 background-color: $m-current-day;
-                border-bottom: 0;
                 color: #444;
 
                 &:hover {
                     cursor:pointer;
                     background-color: $current-day-color;
+                }
+                &:after {
+                    height:0px;
                 }
             }
 
@@ -532,30 +516,6 @@
         }
     }
 }
-
-body {
-
-    &.hide_timespan_number .timespan_number,
-    &.hide_year_day .year_day_number{
-        display:none;
-    }
-
-    .last_row{
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: flex-end;
-        flex-direction: column;
-        font-size:0.75rem;
-        text-align:left;
-    }
-
-}
-
-.calendar_moon_container{
-    flex-flow: row wrap;
-    justify-content: center;
-}
-
 .current_day{
     background-image: linear-gradient(to right, rgba($current-day-color, 0.2), rgba($current-day-color, 0.2));
 }
@@ -571,4 +531,61 @@ body {
 
 .preview_day{
     box-shadow: inset 0 0 0 10px rgba(191.0, 99.0, 71.0, 0.5);
+}
+
+/** Loading animation */
+.lds-ellipsis {
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 30px;
+}
+.lds-ellipsis div {
+    position: absolute;
+    top: 9px;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: #fff;
+    animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+.lds-ellipsis div:nth-child(1) {
+    left: 8px;
+    animation: lds-ellipsis1 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(2) {
+    left: 8px;
+    animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(3) {
+    left: 32px;
+    animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(4) {
+    left: 56px;
+    animation: lds-ellipsis3 0.6s infinite;
+}
+@keyframes lds-ellipsis1 {
+    0% {
+        transform: scale(0);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+@keyframes lds-ellipsis3 {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(0);
+    }
+}
+@keyframes lds-ellipsis2 {
+    0% {
+        transform: translate(0, 0);
+    }
+    100% {
+        transform: translate(24px, 0);
+    }
 }

@@ -8,27 +8,31 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^7.2",
+        "php": "^7.3",
         "ext-json": "*",
-        "code16/sharp": "^4.2.5",
+        "aws/aws-sdk-php": "^3.158",
         "barryvdh/laravel-ide-helper": "^2.6",
+        "bref/laravel-bridge": "^0.2.0",
+        "code16/sharp": "^5.1.2",
         "fideloper/proxy": "^4.0",
-        "graham-campbell/markdown": "^11.0",
-        "guzzlehttp/guzzle": "^6.5",
-        "laravel/framework": "^7.0",
+        "graham-campbell/markdown": "^13.1",
+        "guzzlehttp/guzzle": "^7.0.1",
+        "laravel/cashier": "^12.3.1",
+        "laravel/framework": "^8.0",
         "laravel/tinker": "^2.2.0",
-        "laravel/ui": "^2.0",
+        "laravel/ui": "^3.0",
         "league/fractal": "^0.18.0",
-        "mews/purifier": "3.2.0",
+        "mews/purifier": "3.3.0",
         "nesbot/carbon": "^2.31"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.2",
-        "facade/ignition": "^2.0",
+        "facade/ignition": "^2.3.6",
         "fzaninotto/faker": "^1.4",
+        "laravel/dusk": "^6.4",
         "mockery/mockery": "^1.0",
-        "nunomaduro/collision": "^4.1",
-        "phpunit/phpunit": "^8.5"
+        "nunomaduro/collision": "^5.0",
+        "phpunit/phpunit": "^9.0"
     },
     "config": {
         "optimize-autoloader": true,
@@ -41,13 +45,14 @@
         }
     },
     "autoload": {
+        "files": [
+            "app/helpers.php"
+        ],
         "psr-4": {
-            "App\\": "app/"
-        },
-        "classmap": [
-            "database/seeds",
-            "database/factories"
-        ]
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
+        }
     },
     "autoload-dev": {
         "psr-4": {
@@ -58,6 +63,8 @@
     "prefer-stable": true,
     "scripts": {
         "pre-install-cmd": [
+            "@php -r \"file_exists('storage') || mkdir('storage');\"",
+            "@php -r \"file_exists('storage/framework') || mkdir('storage/framework');\"",
             "@php -r \"file_exists('storage/framework/cache') || mkdir('storage/framework/cache');\"",
             "@php -r \"file_exists('storage/framework/sessions') || mkdir('storage/framework/sessions');\"",
             "@php -r \"file_exists('storage/framework/views') || mkdir('storage/framework/views');\""

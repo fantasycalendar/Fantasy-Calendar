@@ -2,6 +2,8 @@
 
 namespace App\Console;
 
+use App\Console\Commands\DownCommand;
+use App\Console\Commands\UpCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -13,7 +15,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        DownCommand::class,
+        UpCommand::class,
     ];
 
     /**
@@ -25,7 +28,10 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('clean:authtokens')
-                 ->everyMinute();
+                 ->daily()->onOneServer();
+
+        $schedule->command('discord:daily-stats')
+                 ->daily()->onOneServer();
     }
 
     /**

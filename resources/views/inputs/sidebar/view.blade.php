@@ -3,7 +3,7 @@
 
     $(document).ready(function(){
 
-        $('#btn_share').click(function(){
+        $('#btn_share, .share-body').click(function(){
             var copyText = document.querySelector(".share-body");
             copyText.select();
             document.execCommand("copy");
@@ -18,7 +18,7 @@
     </script>
 @endpush
 
-<form id="input_container">
+<form id="input_container" class="d-print-none">
 
     @include('inputs.sidebar.header')
 
@@ -32,7 +32,7 @@
 
 	<div class='wrap-collapsible card'>
 		<input id="collapsible_date" class="toggle" type="checkbox" checked disabled>
-		<label for="collapsible_date" class="lbl-toggle card-header lbl-text">Current Date & Time <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Date' href='https://wiki.fantasy-calendar.com/index.php?title=Date' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+		<label for="collapsible_date" class="lbl-toggle card-header lbl-text">Current Date & Time <a target="_blank" data-pt-position="right" data-pt-title='More Info: Date' href='{{ helplink('current_date_and_time') }}' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 		<div class="collapsible-content container card-body">
 
 			<div id='clock' class='mb-2'>
@@ -50,23 +50,25 @@
 	            </div>
             </div>
 
-			@if(Auth::check())
-
-			<div class='row'>
-	            <div class='col'>
-	                <a href="{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}" class='full'>
-	                    <button type="button" class='btn btn-sm btn-success btn-block'>Edit Mode</button>
-	                </a>
-	            </div>
+            <div class='d-flex my-2 w-100'>
+			    @if($calendar->owned)
+                <a href="{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}" class="btn w-100 btn-sm btn-success mr-2">
+                    Edit
+                </a>
+                @endif
+                <button type='button' onclick="print()" class="btn w-100 btn-sm btn-primary">
+                    Print
+                </a>
             </div>
 
+            @can('advance-date', $calendar)
 			<div class='date_control container' id='date_inputs'>
 
 				<div class='row mt-2'>
 					<h4>Current date:</h4>
 				</div>
 
-				<div class='row my-2 center-text hidden calendar_link_explaination'>
+				<div class='row my-2 center-text hidden calendar_link_explanation'>
                     @if($calendar->parent != null)
                         <p class='m-0'>This calendar is using a different calendar's date to calculate the current date. Only the <a href='/calendars/{{ $calendar->parent->hash }}' target="_blank">parent calendar</a> can set the date for this calendar.</p>
                     @endif
@@ -132,8 +134,7 @@
                     </div>
                 </div>
 			</div>
-
-			@endif
+            @endcan
 
 
 			<div class='date_control container mt-3'>
@@ -198,10 +199,18 @@
                 <label for="collapsible_add_units" class="lbl-toggle card-header small-lbl-text center-text">Add or subtract fixed units to calendar dates</label>
                 <div class="collapsible-content container card-body">
 
-                    <div class='row no-gutters input-group mx-0'>
+                    <div class='row no-gutters mx-0'>
                         <input type='number' class="form-control form-control-sm full" id='unit_years' placeholder="Years">
                         <input type='number' class="form-control form-control-sm full" id='unit_months' placeholder="Months">
                         <input type='number' class="form-control form-control-sm full" id='unit_days' placeholder="Days">
+                    </div>
+                    <div class='row no-gutters mx-0 my-2'>
+                        <div class='col-md-6 col-sm-12'>
+                            <input type='number' class="form-control form-control-sm full" id='unit_hours' placeholder="Hours">
+                        </div>
+                        <div class='col-md-6 col-sm-12'>
+                            <input type='number' class="form-control form-control-sm full" id='unit_minutes' placeholder="Minutes">
+                        </div>
                     </div>
 
                     @if($calendar->parent == null)
@@ -217,70 +226,67 @@
 
 	</div>
 
-	@if(Auth::check())
+	@can('update', $calendar)
 	<!---------------------------------------------->
 	<!------------------ LOCATIONS ----------------->
 	<!---------------------------------------------->
 
-	<div class='wrap-collapsible'>
-		<input id="collapsible_locations" class="toggle" type="checkbox" checked disabled>
-		<label for="collapsible_locations" class="lbl-toggle lbl-text">Locations <a target="_blank" title='Fantasy Calendar Wiki: Locations' href='https://wiki.fantasy-calendar.com/index.php?title=Locations' class="wiki"><i class="icon-question-sign"></i></a></label>
-		<div class="collapsible-content container">
+		<div class='wrap-collapsible card settings-locations'>
+			<input id="collapsible_locations" class="toggle" type="checkbox" disabled checked>
+			<label for="collapsible_locations" class="lbl-toggle card-header lbl-text"><i class="mr-2 fas fa-compass"></i> Locations <a target="_blank" data-pt-position="right" data-pt-title='More Info: Locations' href='{{ helplink('locations') }}' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+			<div class="collapsible-content card-body">
 
-			<div class="col-12">
+                <div class='row no-gutters bold-text'>
+                    Current location:
+                </div>
+                <div class='row no-gutters mb-2'>
+                    <select class='form-control protip' id='location_select' data-pt-position="right" data-pt-title="The presets work with four seasons (winter, spring, summer, autumn) or two seasons (winter, summer). If you call your seasons the same, the system matches them with the presets' seasons, no matter which order.">
+                    </select>
+                </div>
 
-				<div class='row mt-2 detail-select-container'>
-					<div class='detail-label'>Current location:</div>
-				</div>
-				<div class='row mb-2'>
-					<select class='form-control' id='location_select'>
-					</select>
-				</div>
+            </div>
 
-			</div>
 
 		</div>
-
-	</div>
-	@endif
+	@endcan
 
     @if(Auth::check())
-    @if($calendar->children->count() > 0 && $calendar->parent != null)
-    <!---------------------------------------------->
-    <!------------------ LINKING ------------------->
-    <!---------------------------------------------->
-    <div class='wrap-collapsible card'>
-        <input id="collapsible_linking" class="toggle" type="checkbox" checked disabled>
-        <label for="collapsible_linking" class="lbl-toggle card-header lbl-text">Calendar Linking <a target="_blank" data-pt-position="right" data-pt-title='Fantasy Calendar Wiki: Calendar Linking' href='https://wiki.fantasy-calendar.com/index.php?title=Calendar_Linking' class="wiki protip"><i class="icon-question-sign"></i></a></label>
-        <div class="collapsible-content card-body">
+        @if($calendar->children->count() > 0 || $calendar->parent != null)
+        <!---------------------------------------------->
+        <!------------------ LINKING ------------------->
+        <!---------------------------------------------->
+        <div class='wrap-collapsible card'>
+            <input id="collapsible_linking" class="toggle" type="checkbox" checked disabled>
+            <label for="collapsible_linking" class="lbl-toggle card-header lbl-text">Calendar Linking <a target="_blank" data-pt-position="right" data-pt-title='More Info: Calendar Linking' href='{{ helplink('calendar_linking') }}' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+            <div class="collapsible-content card-body">
 
-            @if($calendar->children->count() > 0)
+                @if($calendar->children->count() > 0)
 
-                Calendar links:<br>
+                    Calendar links:<br>
 
-                @foreach($calendar->children as $child)
+                    @foreach($calendar->children as $child)
 
-                    <a href='/calendars/{{ $child->hash }}' target="_blank">{{ $child->name }}</a><br>
+                        <a href='/calendars/{{ $child->hash }}' target="_blank">{{ $child->name }}</a><br>
 
-                @endforeach
+                    @endforeach
 
-            @endif
+                @endif
 
-            @if($calendar->parent != null)
+                @if($calendar->parent != null)
 
-                Parent Calendar: <a href='/calendars/{{ $calendar->parent->hash }}' target="_blank">{{ $calendar->parent->name }}</a>
+                    Parent Calendar: <a href='/calendars/{{ $calendar->parent->hash }}' target="_blank">{{ $calendar->parent->name }}</a>
 
-            @endif
+                @endif
 
+            </div>
         </div>
-    </div>
-	@endif
+        @endif
 	@endif
 
 </form>
 
 
-<button id='input_collapse_btn' class="hamburger hamburger--arrowturn is-active" type="button">
+<button id='input_collapse_btn' class="hamburger hamburger--arrowturn is-active d-print-none" type="button">
     <span class="hamburger-box">
         <span class="hamburger-inner"></span>
     </span>
@@ -290,14 +296,14 @@
 <div id="calendar_container">
 
 	<div id="top_follower">
-		
+
 		<div class='btn_container hidden'>
-			<button class='btn btn-danger btn_preview_date hidden' disabled fc-index='year' value='-1'>< Year</button>
-			<button class='btn btn-danger btn_preview_date hidden' disabled fc-index='timespan' value='-1'>< Month</button>
+			<button class='btn btn-danger btn_preview_date hidden d-print-none' disabled fc-index='year' value='-1'>< Year</button>
+			<button class='btn btn-danger btn_preview_date hidden d-print-none' disabled fc-index='timespan' value='-1'>< Month</button>
 		</div>
 
         <div class='reset_preview_date_container m-1 left'>
-            <button type='button' class='btn m-0 btn-info hidden reset_preview_date protip' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >< Current</button>
+            <button type='button' class='btn m-0 btn-info hidden reset_preview_date protip d-print-none' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >< Current</button>
         </div>
 
         <div class="follower_center">
@@ -305,19 +311,17 @@
         </div>
 
         <div class='reset_preview_date_container m-1 right'>
-            <button type='button' class='btn m-0 btn-info hidden reset_preview_date protip' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >Current ></button>
+            <button type='button' class='btn m-0 btn-info hidden reset_preview_date protip d-print-none' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >Current ></button>
         </div>
-		
+
 		<div class='btn_container hidden'>
-			<button class='btn btn-success btn_preview_date hidden' disabled fc-index='year' value='1'>Year ></button>
-			<button class='btn btn-success btn_preview_date hidden' disabled fc-index='timespan' value='1'>Month ></button>
+			<button class='btn btn-success btn_preview_date hidden d-print-none' disabled fc-index='year' value='1'>Year ></button>
+			<button class='btn btn-success btn_preview_date hidden d-print-none' disabled fc-index='timespan' value='1'>Month ></button>
 		</div>
-		
-	</div>
-
-	<div id="calendar">
 
 	</div>
+
+    @include('layouts.calendar-' . (isset($calendar) ? $calendar->setting('layout', 'grid') : 'grid'))
 
 	@include('templates.footnote')
 

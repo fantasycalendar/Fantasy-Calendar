@@ -46,7 +46,7 @@ class PrepCalendarForExport implements ShouldQueue
         }
 
         foreach($this->calendar->events as $key => $event) {
-            if($event->event_category_id) {
+            if($event->event_category_id ?? -1 >= 0) {
                 $event->event_category_id = $categorymap[$event->event_category_id];
             }
 

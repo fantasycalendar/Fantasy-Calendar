@@ -1,11 +1,12 @@
 /* ------------------ Sortable styles ----------------- */
 
-#protip_container{
-    z-index:300;
+div:focus, button:focus, * button.btn.btn-stock:focus {
+    outline: 0;
+    box-shadow: none;
 }
 
-#presets{
-    z-index: 100;
+#protip_container{
+    z-index:300;
 }
 
 input.invalid {
@@ -38,10 +39,10 @@ select.invalid {
 
 .sortable-header{
     font-style: italic;
-    color: $calendar-border-color;
+    color: $sortable-header-color;
 }
 
-.card-body {
+.toggle:not(:checked) + .lbl-toggle + .collapsible-content.card-body {
     padding: 0;
     min-height: initial;
 }
@@ -130,7 +131,7 @@ select.invalid {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    transition: height 0.2s ease;
+    transition: height 0.2s cubic-bezier(.25,.8,.25,1);
     border: 1px solid $gray-secondary;
 }
 
@@ -511,8 +512,8 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     height: 10px;
     background-color: #818181;
     border-radius: 15px;
-    -webkit-transition: background .0s ease;
-    transition: background .0s ease;
+    -webkit-transition: background .0s cubic-bezier(.25,.8,.25,1);
+    transition: background .0s cubic-bezier(.25,.8,.25,1);
     vertical-align: middle;
     box-shadow: none;
 }
@@ -527,8 +528,8 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.4);
     left: -2px;
     top: -4px;
-    -webkit-transition: left .0s ease, background .0s ease, box-shadow .1s ease;
-    transition: left .0s ease, background .0s ease, box-shadow .1s ease;
+    -webkit-transition: left .0s ease, background .0s ease, box-shadow .1s cubic-bezier(.25,.8,.25,1);
+    transition: left .0s ease, background .0s ease, box-shadow .1s cubic-bezier(.25,.8,.25,1);
 }
 .custom-checkbox .custom-control-input:checked ~ .custom-control-indicator {
     background-color: #818181;
@@ -551,6 +552,183 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     padding-left:2rem !important;
 }
 
+
+/* ------------------ Modals ----------------- */
+
+.modal-basic-wrapper{
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+.clickable_background{
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    background-color:rgba(75, 75, 75, 0.75);
+    width: 100%;
+    height:100%;
+    z-index:1000;
+    overflow-y:scroll;
+}
+
+.modal-wrapper {
+    position:relative;
+    max-width: 40vw;
+    min-width: 650px;
+    padding: 15px 35px 45px;
+    margin: 0 auto;
+    background-color: $card-bg-color;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius:7px;
+}
+
+/* ------------------ Layout forms ----------------- */
+
+.layout_background .layout-wrapper {
+    max-width: 1200px;
+    width: 80vw;
+    background-color: $modal-bg-color;
+
+    hr {
+        border-color: $modal-content-border-color;
+        margin: .5rem 0;
+    }
+
+    @media screen and (max-width: 768px) {
+        background-color: $modal-bg-color;
+        min-height: 100vh;
+    }
+}
+
+.active_layout {
+    //background-color: rgba(250, 224, 66, .2) !important;
+}
+
+/* ------------------ Preset forms ----------------- */
+
+.preset_background .preset-wrapper {
+    max-width: 1200px;
+    width: 80vw;
+    background-color: $modal-bg-color;
+
+    input[name=search] {
+        background-color: $modal-bg-color;
+        color: $modal-action-color;
+        border-color: $modal-content-border-color;
+
+        @media screen and (max-width: 768px) {
+            width: calc(100% - 50px);
+        }
+    }
+
+    hr {
+        border-color: $modal-content-border-color;
+        margin: .5rem 0;
+    }
+
+    .search-empty {
+        border: 1px solid $modal-content-bg-color;
+        opacity: 0.7;
+        border-radius: 2px;
+    }
+
+    @media screen and (max-width: 768px) {
+        background-color: $modal-bg-color;
+        min-height: 100vh;
+    }
+}
+
+.preset, .layout {
+    border: 0;
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    background-color: $modal-content-bg-color;
+    position: relative;
+    padding-left: 80px !important;
+    overflow: hidden;
+    color: $modal-action-color;
+
+    .icon {
+        font-size: 30px;
+        position: absolute;
+        left: 0;
+        top: -2px;
+        bottom: -2px;
+        width: 64px;
+        background-color: rgba($modal-accent-background, 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+
+        i {
+            color: $bg-gray-100;
+        }
+    }
+
+    &.active_layout {
+        opacity: 0.6;
+    }
+
+    &:hover:not(:disabled) {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        background-color: $modal-content-hover-bg-color;
+
+        .icon {
+            background-color: $modal-accent-hover-background;
+
+            i {
+                color: white;
+            }
+        }
+    }
+}
+
+.layout {
+    padding-left: 1rem !important;
+
+    .image {
+        position: relative;
+        max-width: 100%;
+        overflow: hidden;
+    }
+
+    .img_fade {
+        height: 100%;
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 24px;
+        background-image: linear-gradient(to left, $modal-content-bg-color, transparent);
+    }
+}
+
+.pagination-navigation {
+    &.disabled {
+        background-color: transparent;
+    }
+
+    &:not(.disabled):hover{
+        background-color: $modal-accent-hover-background;
+        color: white;
+    }
+}
+
+.pagination-number {
+    border-radius: 0;
+    border: 0;
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    background-color: transparent;
+}
+
+.pagination-number-active {
+    border-top: 4px solid $modal-accent-background;
+}
+
+
 /* ------------------ Event forms ----------------- */
 
 #event_comment_mastercontainer .trumbowyg{
@@ -563,7 +741,7 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     min-height: calc(100% - 37px);
 }
 
-#event_comments.loading{
+.loading{
     background-image: url('/resources/icons/loader_black.png');
     height:35px;
     background-size: contain;
@@ -621,33 +799,6 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     font-size: .7rem;
 }
 
-.event-basic-wrapper{
-    margin-top: 40px;
-    margin-bottom: 40px;
-}
-
-.clickable_background{
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    background-color:rgba(75, 75, 75, 0.75);
-    width: 100%;
-    height:100%;
-    z-index:1000;
-    overflow-y:scroll;
-}
-
-.event-wrapper {
-    position:relative;
-    max-width: 40vw;
-    min-width: 650px;
-    padding: 15px 35px 45px;
-    margin: 0 auto;
-    background-color: $card-bg-color;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius:7px;
-}
-
 .event_desc {
     overflow-x: auto;
 }
@@ -663,7 +814,7 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     width:60px;
     height:60px;
     border-radius: 30px;
-    background-color: $card-bg-color;
+    background-color: $modal-bg-color;
 }
 
 .close_ui_btn{
@@ -695,7 +846,7 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
         width: auto;
     }
 
-    .event-basic-wrapper {
+    .modal-basic-wrapper {
         margin: 0;
     }
 
@@ -707,11 +858,12 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     }
 
     .close_ui_btn {
-        top: 4.5px;
+        top: 17px;
         right: 6px;
+        z-index: 100;
     }
 
-    .event-wrapper {
+    .modal-wrapper {
         position:relative;
         max-width: 100vw;
         min-width: 100vw;
@@ -727,7 +879,7 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     }
 }
 
-.event-form-heading{
+.modal-form-heading{
     margin-top:10px;
 }
 
@@ -950,11 +1102,19 @@ ol.example li.placeholder:before {
 }
 
 #event_conditions_container.deleting{
+
+    border: 1px solid red;
+
+    background-image: $warning-crosshatch;
+
     & .condition.hover > .condition_container{
         background-color:$red;
     }
     & .group.hover > .group_list{
         background-color:$red;
+    }
+    & .cursor-pointer *{
+        cursor: pointer;
     }
 }
 
@@ -980,14 +1140,8 @@ ol.example li.placeholder:before {
     min-width:25%;
 }
 
-.condition_container .input_container input{
-    order:1;
-    width:100%;
-}
-
-.condition_container .input_container .nth, .condition_container .input_container .offset{
-    order:1;
-    width:50%;
+.cursor-pointer{
+    cursor: pointer;
 }
 
 #condition_remove_button .icon.wiggle {
@@ -1129,14 +1283,9 @@ ol.example li.placeholder:before {
     border-radius: 5px;
     padding: 20px;
     width:700px;
-    max-width: 90%;
+    max-width: 90vw;
     position:relative;
     margin:auto;
-    z-index: 10000;
-}
-
-#modal {
-
     color: white;
 
     &.error{

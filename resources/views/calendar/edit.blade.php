@@ -2,48 +2,27 @@
 
 @push('head')
     <script>
-    owner = {{ $calendar->owned }};
-
     $(document).ready(function(){
 
         @include('calendar._loadcalendar')
 
-        for(var moon_index in static_data.moons){
-            var moon = static_data.moons[moon_index];
+        preview_date = clone(dynamic_data);
+        preview_date.follow = true;
 
-            if(moon.granularity == 16){
-                moon.granularity = 8;
-            }else if(moon.granularity == 32){
-                moon.granularity = 24;
-            }
-        }
+        rebuild_calendar('calendar', dynamic_data);
 
-        if(static_data.seasons.global_settings.periodic_seasons === undefined){
-            static_data.seasons.global_settings.periodic_seasons = true;
-        }
-
-        if(static_data.clock.render === undefined){
-            static_data.clock.render = static_data.clock.enable;
-        }
-
-        if(typeof static_data.clock.crowding == "undefined"){
-            static_data.clock.crowding = 0;
-        }
+        edit_event_ui.bind_events();
+        edit_HTML_ui.bind_events();
 
         set_up_edit_inputs();
         set_up_edit_values();
         set_up_view_values();
         set_up_visitor_values();
-        
+
         bind_calendar_events();
-        rebuild_calendar('calendar', dynamic_data);
-
-
-        edit_event_ui.bind_events();
-        edit_HTML_ui.bind_events();
 
         if(has_parent){
-            
+
             check_last_change(parent_hash, function(change_result){
 
                 parent_last_dynamic_change = new Date(change_result.last_dynamic_change)
@@ -76,13 +55,13 @@
         }
 
     });
-    
+
     function check_parent_update(){
 
         if(document.hasFocus() && (Date.now() - last_mouse_move) < 10000){
 
             instapoll = false;
-            
+
             check_last_change(parent_hash, function(change_result){
 
 	    		new_dynamic_change = new Date(change_result.last_dynamic_change)
@@ -145,14 +124,13 @@
             display_preview_back_button();
 
             if((data.rebuild || static_data.settings.only_reveal_today) && preview_date.follow){
-                show_loading_screen_buffered();
                 pre_rebuild_calendar('calendar', dynamic_data)
             }else{
                 update_current_day(false);
                 scroll_to_epoch();
             }
 
-            refresh_view_values();
+            set_up_view_values();
 
             evaluate_save_button();
 
@@ -165,8 +143,10 @@
 
 @section('content')
     <div id="generator_container">
+        @include('layouts.layouts')
         @include('layouts.weather_tooltip')
         @include('layouts.day_data_tooltip')
+        @include('layouts.moon_tooltip')
         @include('layouts.event')
         @include('inputs.sidebar.edit')
     </div>

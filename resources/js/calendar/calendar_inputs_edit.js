@@ -66,13 +66,24 @@ function set_up_edit_inputs(){
 
 	});
 
+	log_in_button = $('.login-button');
+
+	log_in_button.click(function(){
+
+		// Unhook before unload
+		window.onbeforeunload = function () {}
+
+		window.location = '/login?postlogin=/calendars/create?resume=1';
+
+	});
+
 	save_button.prop('disabled', true);
 	create_button.prop('disabled', true);
 
 	delete_button = $('#btn_delete');
 
 	delete_button.click(function(){
-		delete_calendar(hash, calendar_name, function(){self.location = '/'});
+		delete_calendar(hash, calendar_name, function(){self.location = '/calendars'});
 	});
 
 	calendar_container = $('#calendar');
@@ -97,24 +108,25 @@ function set_up_edit_inputs(){
 	calendar_new_link_list = $('#calendar_new_link_list');
 
 	var previous_view_type = 'owner';
-	var first_switch = true;
 	view_type = 'owner';
 
 	$('.view-tabs .btn').click(function(){
 
 		view_type = $(this).attr('data-view-type');
-		owner = true;
+
+
+    owner = true;
 
 		$('.view-tabs .btn-primary').removeClass('btn-primary').addClass('btn-secondary');
 
 		$(this).removeClass('btn-secondary').addClass('btn-primary');
 
 		var errors = get_errors();
-		var creation_steps = get_creation_steps();
 
 		switch(view_type){
 			case "owner":
-				if(creation_steps.current_step > creation_steps.steps && errors.length == 0){
+				Perms.owner = true;
+				if(creation.is_done() && errors.length == 0){
 					if(previous_view_type !== 'owner'){
 						evaluate_settings();
 						if(!preview_date.follow){
@@ -126,14 +138,15 @@ function set_up_edit_inputs(){
 						}
 					}
 				}
+				climate_charts.active_view = false;
 				calendar_container.removeClass('hidden');
 				weather_contrainer.addClass('hidden');
 				previous_view_type = view_type;
 				break;
 
 			case "player":
-				owner = false;
-				if(creation_steps.current_step > creation_steps.steps && errors.length == 0){
+				Perms.owner = false;
+				if(creation.is_done() && errors.length == 0){
 					if(previous_view_type !== 'player'){
 						evaluate_settings();
 						if(!preview_date.follow){
@@ -145,19 +158,16 @@ function set_up_edit_inputs(){
 						}
 					}
 				}
+				climate_charts.active_view = false;
 				calendar_container.removeClass('hidden');
 				weather_contrainer.addClass('hidden');
 				previous_view_type = view_type;
 				break;
 
 			case "weather":
-				if(creation_steps.current_step > creation_steps.steps && errors.length == 0){
+				if(creation.is_done() && errors.length == 0){
 					evaluate_settings();
-					if(first_switch){
-						evaluate_day_length_chart();
-						evaluate_weather_charts();
-						first_switch = false;
-					}
+					climate_charts.active_view = true;
 				}
 				calendar_container.addClass('hidden');
 				weather_contrainer.removeClass('hidden');
@@ -290,7 +300,8 @@ function set_up_edit_inputs(){
 		$('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
 		$('#locations_warning').toggleClass('hidden', !no_locations);
 
-		$('.location_middle_btn').toggleClass('hidden', !static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled);
+		$('.season_middle_btn').toggleClass('hidden', !static_data.clock.enabled || static_data.seasons.data.length < 3);
+		$('.location_middle_btn').toggleClass('hidden', (!static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled) || static_data.seasons.data.length < 3);
 
 		eval_clock();
 
@@ -629,13 +640,13 @@ function set_up_edit_inputs(){
 
 		$('#season_color_enabled').prop("disabled", static_data.seasons.data.length == 0);
 
+		$('.season_middle_btn').toggleClass('hidden', !static_data.clock.enabled || static_data.seasons.data.length < 3);
+
 	});
 
 	$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 && !static_data.clock.enabled);
 
 	$('#create_season_events').click(function(){
-
-
 
 		var html  = '<strong><span style="color:#4D61B3;">Simple</span></strong> season events are based on the <strong>specific start dates</strong> of the seasons.<br><br>';
 
@@ -644,7 +655,7 @@ function set_up_edit_inputs(){
 			html += '<span style="font-style:italic;font-size:0.8rem;">You need to <strong>enable the clock</strong> for this button to be enabled.</span><br>';
 		}
 		html     += '<br>';
-		html     += '<span style="font-size:0.9rem;">Still unsure? <a href="https://wiki.fantasy-calendar.com/index.php?title=Seasons#Create_solstice_and_equinox_events" target="_blank">Read more on the Wiki (opens in a new window)</a>.</span><br>';
+		html     += '<span style="font-size:0.9rem;">Still unsure? <a href="https://helpdocs.fantasy-calendar.com/topic/seasons#Create_solstice_and_equinox_events" target="_blank">Read more on the Wiki (opens in a new window)</a>.</span><br>';
 
 		swal.fire({
 			title: `Simple or Complex?`,
@@ -746,6 +757,8 @@ function set_up_edit_inputs(){
 
 		location_select.find(`option[value="${id}"]`).prop('selected', true).change();
 
+		$('.location_middle_btn').toggleClass('hidden', (!static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled) || static_data.seasons.data.length < 3);
+
 	});
 
 	$(document).on('focus', '.season_selector', function(){
@@ -774,36 +787,72 @@ function set_up_edit_inputs(){
 			var html = [];
 
 			if(static_data.seasons.data.length == 2){
-				var preset_seasons = ['Winter', 'Summer']
+				var preset_seasons = ['Winter', 'Summer'];
 			}else{
-				var preset_seasons = ['Winter', 'Spring', 'Summer', 'Autumn']
+				var preset_seasons = ['Winter', 'Spring', 'Summer', 'Autumn'];
 			}
 
 			html.push(`<div class='container'>`);
 
+
+			html.push(`<div class='row my-1'>`);
+				html.push(`<div class='col-auto pr-1'>`);
+					html.push(`<p>If you have differently named seasons than in our presets, we cannot match them, so this UI is for you to match our preset seasons to your seasons.</p>`);
+				html.push(`</div>`);
+			html.push(`</div>`);
+
 			var valid_preset_order = static_data.seasons.global_settings.preset_order !== undefined && static_data.seasons.global_settings.preset_order.length == static_data.seasons.data.length;
 
-			for(var preset_index in preset_seasons){
+			var preset_order = [];
 
-				var preset_season = preset_seasons[preset_index];
+			if(!valid_preset_order){
+
+				let season_test = [];
+				let lowercase_preset = preset_seasons.map(name => name.toLowerCase());
+				for(var index in static_data.seasons.data){
+					var season = static_data.seasons.data[index];
+					let preset_index = lowercase_preset.indexOf(season.name.toLowerCase());
+					if(season.name.toLowerCase() == "fall" && static_data.seasons.data.length == 4){
+						preset_index = 3;
+					}
+					if(preset_index > -1){
+						season_test.push(preset_index)
+					}
+				}
+
+				if(season_test.length == static_data.seasons.data.length){
+					preset_order = season_test;
+					valid_preset_order = true;
+				}
+
+			}else{
+
+				preset_order = static_data.seasons.global_settings.preset_order;
+
+			}
+
+			for(var index in static_data.seasons.data){
+
+				var season = static_data.seasons.data[index];
+
+				let preset_order_value = preset_order[index];
 
 				html.push(`<div class='row my-1'>`);
 
 					html.push(`<div class='col-auto pr-1'>`);
 
-						html.push(`<select class='form-control season_selector season-input-${Number(preset_index)+1}'>`);
+						html.push(`<select class='form-control season_selector season-input-${Number(index)+1}'>`);
 
-						if(valid_preset_order){
-							var preset_order = static_data.seasons.global_settings.preset_order[preset_index];
-						}
+						for(var preset_index in preset_seasons){
 
-						for(var index in static_data.seasons.data){
-							var season = static_data.seasons.data[index];
+							var preset_season = preset_seasons[preset_index];
+
 							if(valid_preset_order){
-								html.push(`<option ${preset_order == index ? 'selected' : ""} value='${index}'>${season.name}</option>`);
+								html.push(`<option ${preset_order_value == preset_index ? 'selected' : ""} value='${preset_index}'>${preset_season}</option>`);
 							}else{
-								html.push(`<option ${preset_index == index ? 'selected' : ""} value='${index}'>${season.name}</option>`);
+								html.push(`<option ${preset_index == index ? 'selected' : ""} value='${preset_index}'>${preset_season}</option>`);
 							}
+
 						}
 
 						html.push(`</select>`);
@@ -812,7 +861,7 @@ function set_up_edit_inputs(){
 
 					html.push(`<div class='col-auto pl-1 pt-2'>`);
 
-						html.push(` is equal to preset's '${preset_season}'`);
+						html.push(` is equal to your season '${season.name}'`);
 
 					html.push(`</div>`);
 
@@ -823,7 +872,7 @@ function set_up_edit_inputs(){
 			html.push(`</div>`);
 
 			swal.fire({
-				title: "Please map your seasons to the preset seasons",
+				title: "Please map the preset's seasons to your seasons",
 				html: html.join(''),
 				showCancelButton: true,
 				confirmButtonColor: '#3085d6',
@@ -916,6 +965,8 @@ function set_up_edit_inputs(){
 
 		location_select.find('optgroup[value="custom"]').children().eq(id).prop('selected', true).change();
 
+		$('.location_middle_btn').toggleClass('hidden', (!static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled) || static_data.seasons.data.length < 3);
+
 	});
 
 	$(document).on('click', '.location_middle_btn', function(){
@@ -978,8 +1029,8 @@ function set_up_edit_inputs(){
 			var precipitation = precisionRound(lerp(prev_season.weather.precipitation, next_season.weather.precipitation, perc),2);
 			var precipitation_intensity = precisionRound(lerp(prev_season.weather.precipitation_intensity, next_season.weather.precipitation_intensity, perc),2);
 
-			current_season.find("input[fc-index='precipitation']").val(precipitation).parent().parent().find('.slider_input').val(precipitation)
-			current_season.find("input[fc-index='precipitation_intensity']").val(precipitation_intensity).parent().parent().find('.slider_input').val(precipitation_intensity)
+			current_season.find("input[fc-index='precipitation']").parent().parent().find('.slider_percentage').slider('option', 'value', precipitation*100);
+			current_season.find("input[fc-index='precipitation_intensity']").parent().parent().find('.slider_percentage').slider('option', 'value', precipitation_intensity*100);
 
 			current_season.find("input[fc-index='temp_high']").val(temp_high)
 			current_season.find("input[fc-index='temp_low']").val(temp_low)
@@ -1469,6 +1520,8 @@ function set_up_edit_inputs(){
 				var granularity = 4;
 			}else if(cycle <= 8){
 				var granularity = 8;
+			}else if(cycle <= 16){
+				var granularity = 16;
 			}else if(cycle <= 24){
 				var granularity = 24;
 			}else{
@@ -1897,7 +1950,7 @@ function set_up_edit_inputs(){
 		var global_regex = /[ `~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z]/g;
 		var local_regex = /^\+*\!*[1-9]+[0-9]{0,}$/;
 		var numbers_regex = /([1-9]+[0-9]{0,})/;
-		
+
 		var invalid = global_regex.test(interval_val);
 		var values = interval_val.split(',');
 
@@ -1973,7 +2026,7 @@ function set_up_edit_inputs(){
 			'offset': offset_val,
 			'timespan': timespan_val
 		}
-		
+
 		$(this).toggleClass('invalid', false).attr('error_msg', '');
 
 		$(this).closest('.sortable-container').find('.leap_day_variance_output').html(get_interval_text(false, data));
@@ -1992,7 +2045,7 @@ function set_up_edit_inputs(){
 		static_data.seasons.global_settings.enable_weather = checked;
 		$('.weather_inputs').toggleClass('hidden', !checked);
 		$('.weather_inputs').find('select, input').prop('disabled', !checked);
-		$('.location_middle_btn').toggleClass('hidden', !static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled);
+		$('.location_middle_btn').toggleClass('hidden', (!static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled) || static_data.seasons.data.length < 3);
 
 		var no_locations = (static_data.seasons.data.length == 0 || !static_data.seasons.global_settings.enable_weather) && !static_data.clock.enabled;
 		$('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
@@ -2154,6 +2207,185 @@ function set_up_edit_inputs(){
 		});
 	});
 
+	user_list_opened = false;
+
+	$('#collapsible_users').change(function(){
+		if(!user_list_opened){
+			set_up_user_list();
+		}
+	});
+
+	$('#refresh_calendar_users').click(function () {
+
+		var button = $(this);
+		button.prop('disabled', true);
+		set_up_user_list();
+
+		setTimeout(() => {
+			button.prop('disabled', false);
+		}, 2000);
+
+	});
+
+	$('#email_input').on('keypress', function (e) {
+        $('#btn_send_invite').prop('disabled', false);
+
+		if(e.which === 13){
+			$('#btn_send_invite').click();
+		}
+	});
+
+	$('#btn_send_invite').click(function(){
+
+		var email = $('#email_input').val();
+
+		$(this).prop('disabled', true);
+
+		let valid_email = validateEmail(email);
+
+		$('#email_input').toggleClass('invalid', !valid_email);
+
+		if(valid_email){
+			add_calendar_user(email, function(success, text){
+				$('.email_text').text(text).parent().toggleClass('hidden', text.length === 0);
+				$('#email_input').toggleClass('invalid', !success);
+				$('.email_text').toggleClass('alert-danger', !success);
+				$('#btn_send_invite').prop('disabled', false);
+				if(success){
+					$('#email_input').val('');
+					set_up_user_list();
+				}
+			});
+		}else{
+			$(this).prop('disabled', false);
+			$('.email_text').text(!valid_email ? "This email is invalid!" : "").toggleClass('alert-danger', !valid_email).parent().toggleClass('hidden', valid_email);
+		}
+
+		setTimeout(() => {
+			$('.email_text').text("").parent().toggleClass('hidden', true);
+		}, 5000);
+
+	});
+
+	$(document).on('click', '.update_user_permissions', function(){
+
+		var button = $(this);
+		var container = button.closest('.sortable-container');
+		var dropdown = container.find('.user_permissions_select');
+
+		button.prop('disabled', true);
+
+		var user_id = button.attr('user_id');
+		var permissions = dropdown.val();
+
+		update_calendar_user(user_id, permissions, function(success, text){
+
+			console.log(text)
+
+			button.prop('disabled', success);
+			button.attr('permissions_val', permissions);
+
+			container.find('.user_permissions_text').parent().toggleClass('hidden', false);
+			container.find('.user_permissions_text').parent().toggleClass('error', !success);
+			container.find('.user_permissions_text').text(text);
+
+			setTimeout(() => {
+				container.find('.user_permissions_text').parent().toggleClass('hidden', true);
+				container.find('.user_permissions_text').text("");
+			}, 5000);
+
+		});
+
+
+	});
+
+	$(document).on('click', '.remove_user', function(){
+
+		var user_name = $(this).attr('username');
+		var user_role = $(this).attr('role');
+		var user_id = $(this).attr('user_id')|0;
+
+		if(user_role != "invited"){
+
+			swal.fire({
+				title: "Removing User",
+				html: `<p>Are you sure you want to remove <strong>${user_name}</strong> from this calendar?</p>`,
+				input: 'checkbox',
+				inputPlaceholder: 'Remove all of their contributions as well',
+				inputClass: "form-control",
+				showCancelButton: true,
+				confirmButtonColor: '#d33',
+				cancelButtonColor: '#3085d6',
+				confirmButtonText: 'Yes, remove',
+				cancelButtonText: 'Cancel',
+				icon: "warning"
+			})
+			.then((result) => {
+
+				if(!result.dismiss) {
+
+					var remove_all = result.value == 1;
+
+					remove_calendar_user(user_id, remove_all, function(){
+						set_up_user_list();
+					});
+
+				}
+			});
+
+		}else{
+
+			swal.fire({
+				title: "Cancel Invititation",
+				html: `<p>Are you sure you want to cancel the invitation for <strong>${user_name}</strong>?</p>`,
+				showCancelButton: true,
+				confirmButtonColor: '#d33',
+				cancelButtonColor: '#3085d6',
+				confirmButtonText: 'Yes, cancel it',
+				cancelButtonText: 'Nah, leave it',
+				icon: "warning"
+			})
+			.then((result) => {
+
+				if(!result.dismiss) {
+
+					remove_calendar_user(user_id, false, function(){
+						set_up_user_list();
+					}, user_name);
+
+				}
+			});
+
+		}
+
+	});
+
+	$(document).on('click', '.resend_invitation', function(){
+
+		var button = $(this);
+		var container = button.closest('.sortable-container');
+		button.prop('disabled', true);
+
+		var email = button.attr('user_email');
+
+		resend_calendar_invite(email, function(success, text){
+
+			button.prop('disabled', success);
+
+			container.find('.user_permissions_text').parent().toggleClass('hidden', false);
+			container.find('.user_permissions_text').parent().toggleClass('error', !success);
+			container.find('.user_permissions_text').text(text);
+
+			setTimeout(() => {
+				container.find('.user_permissions_text').parent().toggleClass('hidden', true);
+				container.find('.user_permissions_text').text("");
+			}, 5000);
+
+		});
+
+	});
+
+
 	$('#apply_changes_btn').click(function(){
 
 		var errors = get_errors();
@@ -2229,7 +2461,7 @@ function set_up_edit_inputs(){
 	input_container.change(function(e){
 
 		if(block_inputs) return;
-		
+
 		if(e.originalEvent){
 			var target = $(e.originalEvent.target);
 		}else{
@@ -2403,7 +2635,7 @@ function set_up_edit_inputs(){
 
 			if(key == "year_zero_exists"){
 				refresh_interval_texts();
-				refresh_view_values();
+				set_up_view_values();
 				set_up_visitor_values();
 				dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
 				preview_date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, preview_date.year), preview_date.timespan, preview_date.day).epoch;
@@ -2618,7 +2850,7 @@ function add_leap_day_to_list(parent, key, data){
 
 				element.push("<div class='row no-gutters'>");
 					element.push("<div class='col'>");
-						element.push("Timespan:");
+						element.push("Month to add to:");
 						element.push(`<select type='number' class='custom-select form-control leap_day_occurance_input timespan-list dynamic_input full timespan_special' data='year_data.leap_days.${key}' fc-index='timespan'>`);
 						for(var j = 0; j < static_data.year_data.timespans.length; j++)
 						{
@@ -2681,7 +2913,7 @@ function add_leap_day_to_list(parent, key, data){
 					element.push("<div class='row my-1'>");
 						element.push("<div class='col'>");
 							element.push("Select after which day:");
-							element.push(`<select type='number' class='custom-select form-control dynamic_input full timespan-day-list exclude_self' data='year_data.leap_days.${key}' ${(!data.intercalary ? "disabled" : "")} fc-index='day'>`);
+							element.push(`<select type='number' class='custom-select form-control dynamic_input full timespan-day-list exclude_self no_leap' data='year_data.leap_days.${key}' ${(!data.intercalary ? "disabled" : "")} fc-index='day'>`);
 							element.push("</select>");
 						element.push("</div>");
 					element.push("</div>");
@@ -2957,7 +3189,19 @@ function add_season_to_sortable(parent, key, data){
 
 				element.push("</div>");
 
-				element.push(`<div class='row no-gutters mb-2'>`);
+				element.push(`<div class='row no-gutters sortable-header'>`);
+
+					element.push("<div class='col-6 pr-1'>");
+						element.push(`Hour`);
+					element.push("</div>");
+
+					element.push("<div class='col-6 pl-1'>");
+						element.push(`Minute`);
+					element.push("</div>");
+
+				element.push("</div>");
+
+				element.push(`<div class='row no-gutters mb-2 protip' data-pt-position="right" data-pt-title="What time the sun rises at the peak of this season">`);
 
 					element.push("<div class='col-6 pr-1 clock-input'>");
 						element.push(`<input type='number' step="1.0" class='form-control full dynamic_input hour_input' clocktype='sunrise_hour' data='seasons.data.${key}.time.sunrise' fc-index='hour' value='${data.time.sunrise.hour}' />`);
@@ -2975,7 +3219,19 @@ function add_season_to_sortable(parent, key, data){
 
 				element.push("</div>");
 
-				element.push(`<div class='row no-gutters mb-2'>`);
+				element.push(`<div class='row no-gutters sortable-header'>`);
+
+					element.push("<div class='col-6 pr-1'>");
+						element.push(`Hour`);
+					element.push("</div>");
+
+					element.push("<div class='col-6 pl-1'>");
+						element.push(`Minute`);
+					element.push("</div>");
+
+				element.push("</div>");
+
+				element.push(`<div class='row no-gutters mb-2 protip' data-pt-position="right" data-pt-title="What time the sun sets at the peak of this season">`);
 
 					element.push("<div class='col-6 pr-1 clock-input'>");
 						element.push(`<input type='number' step="1.0" class='form-control full dynamic_input hour_input' clocktype='sunset_hour' data='seasons.data.${key}.time.sunset' fc-index='hour' value='${data.time.sunset.hour}' />`);
@@ -3111,7 +3367,19 @@ function add_location_to_list(parent, key, data){
 
 						element.push("</div>");
 
-						element.push(`<div class='row no-gutters mb-2'>`);
+						element.push(`<div class='row no-gutters sortable-header'>`);
+
+							element.push("<div class='col-6 pr-1'>");
+								element.push(`Hour`);
+							element.push("</div>");
+
+							element.push("<div class='col-6 pl-1'>");
+								element.push(`Minute`);
+							element.push("</div>");
+
+						element.push("</div>");
+
+						element.push(`<div class='row no-gutters mb-2 protip'  data-pt-position="right" data-pt-title="What time the sun rises at the peak of this season, in this location">`);
 
 							element.push("<div class='col-6 pl-0 pr-1 clock-input'>");
 								element.push(`<input type='number' step="1.0" class='form-control text-right full dynamic_input hour_input' clocktype='sunrise_hour' data='seasons.locations.${key}.seasons.${i}.time.sunrise' fc-index='hour' value='${data.seasons[i].time.sunrise.hour}' />`);
@@ -3131,7 +3399,19 @@ function add_location_to_list(parent, key, data){
 
 						element.push("</div>");
 
-						element.push(`<div class='row no-gutters mb-2'>`);
+						element.push(`<div class='row no-gutters sortable-header'>`);
+
+							element.push("<div class='col-6 pr-1'>");
+								element.push(`Hour`);
+							element.push("</div>");
+
+							element.push("<div class='col-6 pl-1'>");
+								element.push(`Minute`);
+							element.push("</div>");
+
+						element.push("</div>");
+
+						element.push(`<div class='row no-gutters mb-2 protip' data-pt-position="right" data-pt-title="What time the sets rises at the peak of this season, in this location">`);
 
 							element.push("<div class='col-6 pl-0 pr-1 clock-input'>");
 								element.push(`<input type='number' step="1.0" class='form-control text-right full dynamic_input hour_input' clocktype='sunset_hour' data='seasons.locations.${key}.seasons.${i}.time.sunset' fc-index='hour' value='${data.seasons[i].time.sunset.hour}' />`);
@@ -3146,7 +3426,7 @@ function add_location_to_list(parent, key, data){
 						element.push("</div>");
 					element.push("</div>");
 					element.push("<div class='row no-gutters my-2'>");
-						element.push(`<button type="button" class="btn btn-sm btn-info location_middle_btn full protip ${!static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled ? "hidden" : ""}" data-pt-position="right" data-pt-title="Use the median values from the previous and next seasons' weather and time data. This season will act as a transition between the two, similar to Spring or Autumn">Interpolate data from surrounding seasons</button>`);
+						element.push(`<button type="button" class="btn btn-sm btn-info location_middle_btn full protip" data-pt-position="right" data-pt-title="Use the median values from the previous and next seasons' weather and time data. This season will act as a transition between the two, similar to Spring or Autumn">Interpolate data from surrounding seasons</button>`);
 					element.push("</div>");
 
 				element.push("</div>");
@@ -3161,6 +3441,18 @@ function add_location_to_list(parent, key, data){
 
 				element.push(`<div class='row my-1'>`);
 					element.push("<div class='col'>Timezone:</div>");
+				element.push("</div>");
+
+				element.push(`<div class='row no-gutters sortable-header'>`);
+
+					element.push("<div class='col-6 pr-1'>");
+						element.push(`Hour`);
+					element.push("</div>");
+
+					element.push("<div class='col-6 pl-1'>");
+						element.push(`Minute`);
+					element.push("</div>");
+
 				element.push("</div>");
 
 				element.push(`<div class='row no-gutters mb-2 protip' data-pt-position="right" data-pt-title="When this location becomes active, the current time will change this much to reflect the new location.">`);
@@ -3544,7 +3836,7 @@ function add_category_to_list(parent, key, data){
 				element.push("</div>");
 			element.push("</div>");
 
-			element.push(`<div class='row no-gutters my-1 hidden'>`);
+			element.push(`<div class='row no-gutters my-1'>`);
 				element.push("<div class='form-check col-12 py-2 border rounded'>");
 					element.push(`<input type='checkbox' id='${key}_cat_player_usable' class='form-check-input category_dynamic_input dynamic_input player_usable' data='${key}.category_settings' fc-index='player_usable' ${(data.category_settings.player_usable ? "checked" : "")} />`);
 					element.push(`<label for='${key}_cat_player_usable' class='form-check-label ml-1'>`);
@@ -3753,9 +4045,82 @@ function add_link_to_list(parent, key, locked, calendar){
 	return element;
 }
 
+function add_user_to_list(parent, key, data){
+
+	var element = [];
+
+	element.push(`<div class='sortable-container list-group-item' index='${key}'>`);
+
+		element.push("<div class='collapse-container container mb-2'>");
+
+			element.push("<div class='row no-gutters my-2'>");
+				element.push("<div class='col-md'>");
+					element.push(`<h4 class='m-0'>${data.username}</h4>`);
+				element.push("</div>");
+				element.push("<div class='col-md-auto'>");
+					element.push(`<button type='button' class='btn btn-sm btn-danger full remove_user' role='${data.user_role}' username='${data.username}' user_id='${data.id}'><i class='fas fa-trash'></i></button>`);
+				element.push("</div>");
+			element.push("</div>");
+
+			element.push("<div class='row no-gutters my-2'>");
+				element.push("<div class='col'>");
+					element.push("<div class='separator'></div>");
+				element.push("</div>");
+			element.push("</div>");
+
+			if(data.user_role != "invited"){
+
+				element.push("<div class='row no-gutters mt-1'>");
+					element.push(`<p class='m-0'>Permissions:</p>`);
+				element.push("</div>");
+
+			element.push("<div class='row no-gutters mb-1'>");
+				element.push("<div class='col-md'>");
+					element.push("<select class='form-control user_permissions_select' onchange='user_permissions_select(this)'>");
+						element.push(`<option ${data.user_role == 'observer' ? "selected" : ""} value='observer'>Observer</option>`);
+						element.push(`<option ${data.user_role == 'player' ? "selected" : ""} value='player'>Player</option>`);
+						element.push(`<option ${data.user_role == 'co-owner' ? "selected" : ""} value='co-owner'>CO-GM</option>`);
+					element.push("</select>");
+					element.push("</div>");
+					element.push("<div class='col-md-auto'>");
+						element.push(`<button type='button' class='btn btn btn-primary full update_user_permissions' disabled permissions_val='${data.user_role}' user_id='${data.id}'>Update</button>`);
+					element.push("</div>");
+				element.push("</div>");
+
+			}else{
+
+				element.push("<div class='row no-gutters my-1'>");
+					element.push(`<p class='m-0'>We've sent them an invitation to your calendar, and now we're just waiting for them to accept it!</p>`);
+				element.push("</div>");
+
+				element.push("<div class='row no-gutters my-2'>");
+					element.push(`<button type="button" class="btn btn-primary resend_invitation" user_email='${data.username}'>Resend invitation email</button>`);
+				element.push("</div>");
+
+			}
+
+			element.push("<div class='row no-gutters my-1 hidden'>");
+				element.push(`<p class='m-0 user_permissions_text'></p>`);
+			element.push("</div>");
+
+		element.push("</div>");
+
+	element.push("</div>");
+
+	var element = $(element.join(""));
+
+	parent.append(element);
+
+	return element;
+}
+
 function get_errors(){
 
 	var errors = [];
+
+	if(calendar_name == ""){
+		errors.push("The calendar name cannot be empty.")
+	}
 
 	if(static_data.year_data.timespans.length != 0){
 		for(var era_i = 0; era_i < static_data.eras.length; era_i++){
@@ -3819,50 +4184,59 @@ function get_errors(){
 
 }
 
-function get_creation_steps(){
+const creation = {
 
-	var creation = {
-		text: [],
-		current_step: 1,
-		steps: 3,
-	};
+	text: [],
+	current_step: 1,
+	steps: 3,
 
-	if(creation.current_step >= 1){
-		if(calendar_name == ""){
-			creation.text.push(`<span><i class="mr-2 fas fa-calendar"></i> Your calendar must have a name</span>.`)
-		}else{
-			creation.text.push(`<span style="opacity: 0.4;"><i class="mr-2 fas fa-calendar-check"></i> Your calendar has a name!</span>`);
-			creation.current_step++;
+	is_done: function(){
+
+		if(this.current_step > this.steps){
+			return true;
 		}
-	}
 
-	if(creation.current_step >= 2){
-		if(static_data.year_data.global_week.length == 0){
-		    $("#collapsible_globalweek").prop("checked", true);
+		this.text = [];
 
-		    $("#calendar_name").blur();
-            setTimeout(function() { $('#weekday_name_input').focus() }, 200);
-
-			creation.text.push(`<span><i class="mr-2 fas fa-calendar"></i> You need at least one week day.</span>`);
-		}else{
-			creation.text.push(`<span style="opacity: 0.4;"><i class="mr-2 fas fa-calendar-check"></i> You have at least one week day!</span>`);
-			creation.current_step++;
+		if(this.current_step >= 1){
+			if(calendar_name == ""){
+				this.text.push(`<span><i class="mr-2 fas fa-calendar"></i> Your calendar must have a name</span>.`)
+				this.current_step = 1;
+			}else{
+				this.text.push(`<span style="opacity: 0.4;"><i class="mr-2 fas fa-calendar-check"></i> Your calendar has a name!</span>`);
+				this.current_step = 2;
+			}
 		}
-	}
 
-	if(creation.current_step >= 3){
-		if(static_data.year_data.timespans.length == 0){
-            $("#collapsible_timespans").prop("checked", true);
+		if(this.current_step >= 2){
+			if(static_data.year_data.global_week.length == 0){
+				$("#collapsible_globalweek").prop("checked", true);
 
-			creation.text.push(`<span><i class="mr-2 fas fa-calendar"></i> You need at least one month.</span>`);
-		}else{
-		    $("#collapsible_globalweek").prop("checked", false);
-			creation.text.push(`<span style="opacity: 0.4;"><i class="mr-2 fas fa-calendar-check"></i> You have at least one month!</span>`);
-			creation.current_step++;
+				$("#calendar_name").blur();
+				setTimeout(function() { $('#weekday_name_input').focus() }, 200);
+
+				this.text.push(`<span><i class="mr-2 fas fa-calendar"></i> You need at least one week day.</span>`);
+			}else{
+				this.text.push(`<span style="opacity: 0.4;"><i class="mr-2 fas fa-calendar-check"></i> You have at least one week day!</span>`);
+				this.current_step = 3;
+			}
 		}
-	}
 
-	return creation;
+		if(this.current_step >= 3){
+			if(static_data.year_data.timespans.length == 0){
+				$("#collapsible_timespans").prop("checked", true);
+
+				this.text.push(`<span><i class="mr-2 fas fa-calendar"></i> You need at least one month.</span>`);
+			}else{
+				$("#collapsible_globalweek").prop("checked", false);
+				this.text.push(`<span style="opacity: 0.4;"><i class="mr-2 fas fa-calendar-check"></i> You have at least one month!</span>`);
+				this.current_step = 4;
+			}
+		}
+
+		return this.current_step > this.steps;
+
+	}
 
 }
 
@@ -3870,17 +4244,15 @@ var do_error_check = debounce(function(type, rebuild){
 
 	evaluate_save_button();
 
-	var creation_steps = get_creation_steps();
-
-	if(creation_steps.current_step <= creation_steps.steps){
+	if(!creation.is_done()){
 
 		var text = [];
 
-		text.push(`<h3 style="opacity: 0.7;">Calendar Creation (${creation_steps.current_step}/${creation_steps.steps})</h3><ol>`);
+		text.push(`<h3 style="opacity: 0.7;">Calendar Creation (${creation.current_step}/${creation.steps})</h3><ol>`);
 
-		for(var i = 0; i < creation_steps.text.length; i++){
+		for(var i = 0; i < creation.text.length; i++){
 
-			text.push(`<li>${creation_steps.text[i]}</li>`);
+			text.push(`<li>${creation.text[i]}</li>`);
 
 		}
 		text.push(`</ol class="mb-4">`);
@@ -3889,8 +4261,8 @@ var do_error_check = debounce(function(type, rebuild){
 
 		creation_message(text.join(''));
 
-		$('#generator_container').removeClass('step-'+(creation_steps.current_step-1));
-		$('#generator_container').addClass('step-'+(creation_steps.current_step));
+		$('#generator_container').removeClass();
+		$('#generator_container').addClass('step-'+(creation.current_step));
 
 	} else {
 
@@ -3898,7 +4270,7 @@ var do_error_check = debounce(function(type, rebuild){
 
 		var errors = get_errors();
 
-		if(errors.length == 0 && $('.invalid').length == 0){
+		if(errors.length == 0 && $('.static_input.invalid').length == 0 && $('.dynamic_input.invalid').length == 0){
 
 			close_message_modal();
 
@@ -3909,7 +4281,11 @@ var do_error_check = debounce(function(type, rebuild){
 
 			var text = [];
 
-			$('.invalid').each(function(){
+			$('.static_input.invalid').each(function(){
+				errors.push($(this).attr('error_msg'));
+			})
+
+			$('.dynamic_input.invalid').each(function(){
 				errors.push($(this).attr('error_msg'));
 			})
 
@@ -3958,6 +4334,7 @@ function error_check(parent, rebuild){
 		if(parent !== undefined && (parent === "seasons")){
 			rebuild_climate();
 		}else{
+			rebuild_all_data();
 			update_current_day(true);
 			evaluate_sun();
 		}
@@ -4139,7 +4516,7 @@ function reindex_timespan_sortable(){
 	});
 
 	repopulate_timespan_select();
-	
+
 	leap_day_list.children().each(function(){
 		var index = $(this).find('.timespan-list').val()|0;
 		var new_index = previous_indexes[index];
@@ -4750,18 +5127,17 @@ function calendar_saved(){
 }
 
 function calendar_save_failed(){
+    var text = "Failed to save!"
 
-	var text = "Failed to save!"
-
-	save_button.prop('disabled', true).toggleClass('btn-secondary', false).toggleClass('btn-success', true).toggleClass('btn-primary', false).toggleClass('btn-warning', true).toggleClass('btn-danger', false).text(text);
-
+    save_button.prop('disabled', true).toggleClass(['btn-secondary', 'btn-primary', 'btn-danger'], false).toggleClass(['btn-success', 'btn-warning'], true).text(text);
+    setInterval(function(){
+        evaluate_save_button(true);
+    }, 10000);
 }
 
 function evaluate_save_button(override){
 
-	var creation_steps = get_creation_steps();
-
-	if(creation_steps.current_step <= creation_steps.steps){
+	if(!creation.is_done()){
 		return;
 	}
 
@@ -4803,6 +5179,8 @@ function evaluate_save_button(override){
 
 			save_button.toggleClass('btn-secondary', false).toggleClass('btn-success', not_changed).toggleClass('btn-primary', !not_changed).toggleClass('btn-warning', false).toggleClass('btn-danger', false).text(text);
 
+			return not_changed;
+
 		}
 
 	}else if($('#btn_create').length){
@@ -4828,6 +5206,24 @@ function evaluate_save_button(override){
 		autosave();
 
 		create_button.toggleClass('btn-danger', invalid).toggleClass('btn-success', !invalid).text(text);
+
+	}else if($('.login-button').length){
+
+		var invalid = errors.length > 0;
+
+		var apply_changes_immediately = $('#apply_changes_immediately').is(':checked');
+
+		if(!apply_changes_immediately && !override && !invalid){
+
+			log_in_button.prop('disabled', true);
+
+		}else{
+
+			log_in_button.prop('disabled', invalid);
+
+		}
+
+		autosave();
 
 	}
 
@@ -4866,56 +5262,31 @@ function populate_calendar_lists(){
 
 		for(var calendar_hash in owned_calendars){
 
-			var calendar = owned_calendars[calendar_hash];
+			var child_calendar = owned_calendars[calendar_hash];
 
-			if(calendar.hash != hash){
+			if(child_calendar.hash != hash){
 
-				if(calendar.parent_hash){
+				if(child_calendar.parent_hash){
 
-					var owner = clone(owned_calendars[calendar.parent_hash]);
+					var calendar_owner = clone(owned_calendars[child_calendar.parent_hash]);
 
-					if(owner.hash == hash){
-						owner.name = "this calendar";
+					if(calendar_owner.hash == hash){
+						calendar_owner.name = "this calendar";
 					}
 
 				}else{
 
-					var owner = false;
+					var calendar_owner = false;
 
 				}
 
-				html.push(`<option ${owner ? "disabled" : ""} value="${calendar.hash}">${calendar.name}${owner ? ` | Linked to ${owner.name}` : ""}</option>`);
+				html.push(`<option ${calendar_owner ? "disabled" : ""} value="${child_calendar.hash}">${child_calendar.name}${calendar_owner ? ` | Linked to ${calendar_owner.name}` : ""}</option>`);
 			}
 		}
 
 		calendar_link_select.html(html.join(''));
 		calendar_link_select.prop('disabled', false);
 
-	});
-
-}
-
-function repopulate_event_category_lists(){
-
-	var html = [];
-	html.push("<option selected value='-1'>None</option>")
-
-	for(var categoryId in event_categories){
-		var category = event_categories[categoryId];
-
-		if(typeof category.id !== "undefined") {
-			slug = category.id;
-		} else {
-			slug = slugify(category.name);
-		}
-		html.push(`<option value='${slug}'>`)
-		html.push(category.name)
-		html.push("</option>")
-	}
-
-	$('.event-category-list').each(function(){
-		var val = $(this).val();
-		$(this).html(html.join("")).val(val);
 	});
 
 }
@@ -5018,6 +5389,8 @@ function set_up_edit_values(){
 			repopulate_timespan_select(season_sortable.children().last().find('.timespan-list'), static_data.seasons.data[i].timespan, false, false);
 			repopulate_day_select(season_sortable.children().last().find('.timespan-day-list'), static_data.seasons.data[i].day, false, false);
 		}
+
+		$('.season_middle_btn').toggleClass('hidden', !static_data.clock.enabled || static_data.seasons.data.length < 3);
 
 		$('.season_offset_container').prop('disabled', !static_data.seasons.global_settings.periodic_seasons).toggleClass('hidden', !static_data.seasons.global_settings.periodic_seasons);
 
@@ -5148,16 +5521,12 @@ function set_up_edit_values(){
 		})
 	}
 
-	repopulate_event_category_lists();
-
 	if(event_categories){
 		for(var key in event_categories){
 			var category = event_categories[key];
 			var catkey = (typeof category.sort_by !== "undefined") ? category.sort_by : slugify(category.name);
 			add_category_to_list(event_category_list, catkey, category);
 		}
-		var default_event_category = static_data.settings.default_category !== undefined ? static_data.settings.default_category : -1;
-		$('#default_event_category').val(default_event_category);
 	}
 
 	if(events){
@@ -5170,13 +5539,17 @@ function set_up_edit_values(){
 	$('.weather_inputs').toggleClass('hidden', !static_data.seasons.global_settings.enable_weather);
 	$('.weather_inputs').find('select, input').prop('disabled', !static_data.seasons.global_settings.enable_weather);
 
-	$('.location_middle_btn').toggleClass('hidden', !static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled);
+	$('.location_middle_btn').toggleClass('hidden', (!static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled) || static_data.seasons.data.length < 3);
 
 	$('#season_color_enabled').prop("disabled", static_data.seasons.data.length == 0);
 
 	if(window.location.pathname != '/calendars/create') {
 
-        populate_calendar_lists();
+		populate_calendar_lists();
+
+		if($("#collapsible_users").is(":checked")){
+			set_up_user_list();
+		}
 
 	}
 
@@ -5232,18 +5605,18 @@ function autosave(){
 	var saved_data = JSON.stringify({
 		calendar_name: calendar_name,
 		static_data: static_data,
-		dynamic_data: dynamic_data
+		dynamic_data: dynamic_data,
+		events: events,
+		event_categories: event_categories
 	})
 
 	localStorage.setItem('autosave', saved_data);
 
 }
 
-function autoload(){
+function query_autoload(){
 
-	var saved_data = localStorage.getItem('autosave')
-
-	if(saved_data){
+	if(localStorage.getItem('autosave')){
 
 		swal.fire({
 			title: "Load unsaved calendar?",
@@ -5259,25 +5632,7 @@ function autoload(){
 
 			if(!result.dismiss) {
 
-				var data = JSON.parse(saved_data);
-				prev_dynamic_data = {}
-				prev_static_data = {}
-				calendar_name = data.calendar_name;
-				static_data = data.static_data;
-				dynamic_data = data.dynamic_data;
-				dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
-				empty_edit_values();
-				set_up_edit_values();
-				set_up_view_values();
-				set_up_visitor_values();
-
-				do_error_check("calendar", true);
-
-				swal.fire({
-					icon: "success",
-					title: "Loaded!",
-					text: "The calendar " + calendar_name + " has been loaded."
-				});
+				autoload(true);
 
 			}else{
 
@@ -5286,6 +5641,43 @@ function autoload(){
 			}
 
 		});
+
+	}
+
+}
+
+function autoload(popup){
+
+	let saved_data = localStorage.getItem('autosave');
+
+	if(saved_data){
+
+		var data = JSON.parse(saved_data);
+		prev_calendar_name = {};
+		prev_dynamic_data = {};
+		prev_static_data = {};
+		prev_events = {};
+		prev_event_categories = {};
+		calendar_name = data.calendar_name;
+		static_data = data.static_data;
+		dynamic_data = data.dynamic_data;
+		events = data.events;
+		event_categories = data.event_categories;
+		dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+		empty_edit_values();
+		set_up_edit_values();
+		set_up_view_values();
+		set_up_visitor_values();
+
+		do_error_check("calendar", true);
+
+		if(popup){
+			swal.fire({
+				icon: "success",
+				title: "Loaded!",
+				text: "The calendar " + calendar_name + " has been loaded."
+			});
+		}
 
 	}
 
@@ -5456,5 +5848,37 @@ function linked_popup(){
 		html: html.join(''),
 		icon: "info"
 	});
+
+}
+
+function set_up_user_list(){
+
+	if($('#calendar_user_list').length){
+
+		$('#calendar_user_list').empty();
+
+		get_calendar_users(function(userlist){
+
+			for(var index in userlist){
+				var user = userlist[index];
+				add_user_to_list($('#calendar_user_list'), index, user)
+			}
+
+			user_list_opened = true;
+
+		});
+
+	}
+
+}
+
+function user_permissions_select(select){
+
+    var button = $(select).closest('.sortable-container').find('.update_user_permissions');
+
+    var new_value = $(select).val();
+    var curr_value = button.attr('permissions_val');
+
+	button.prop('disabled', new_value === curr_value);
 
 }
