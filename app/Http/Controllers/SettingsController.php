@@ -8,6 +8,7 @@ use Arr;
 use Hash;
 use Illuminate\Http\Request;
 use Auth;
+use Carbon\Carbon;
 
 class SettingsController extends Controller
 {
@@ -18,9 +19,14 @@ class SettingsController extends Controller
             $invoices = Auth::user()->invoices();
         }
 
+        $subscription = Auth::user()->subscriptions()->active()->first();
+        
+        $renews_at = $subscription ? (new Carbon($subscription->asStripeSubscription()->current_period_end))->toFormattedDateString() : False;
+
         return view('pages.profile', [
             'user' => Auth::user(),
-            'subscription' => Auth::user()->subscriptions()->active()->first(),
+            'subscription' => $subscription,
+            'subscription_renews_at' => $renews_at,
             'invoices' => $invoices
         ]);
     }
@@ -33,7 +39,9 @@ class SettingsController extends Controller
     }
 
     public function update(StoreUserSettings $request) {
-        Auth::user()->setSettings(Arr::only($request->all(), ['dark_theme']));
+        Auth::user()->setSettings($request->only(['dark_theme']));
+        
+        Auth::user()->setMarketingStatus($request->has('marketing_acceptance'));
 
         return redirect('profile');
     }

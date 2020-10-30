@@ -29,6 +29,11 @@ class User extends Authenticatable implements
         'reg_ip',
         'beta_authorised',
         'permissions',
+        'agreement_id',
+        'policy_id',
+        'agreed_at',
+        'marketing_opt_in_at',
+        'marketing_opt_out_at',
     ];
 
     /**
@@ -60,6 +65,7 @@ class User extends Authenticatable implements
     protected $casts = [
         'email_verified_at' => 'datetime',
         'settings' => 'json',
+        'agreed_at' => 'datetime',
     ];
 
     /**
@@ -74,6 +80,13 @@ class User extends Authenticatable implements
      */
     public function related_calendars() {
         return $this->belongsToMany('App\Calendar', 'calendar_user_role')->withPivot('user_role');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function agreement() {
+        return $this->belongsTo('App\Agreement');
     }
 
     /**
@@ -176,4 +189,35 @@ class User extends Authenticatable implements
 
         return $this;
     }
+
+    public function hasAgreedToTOS() {
+        return $this->agreement_id !== null;
+    }
+
+    public function acceptAgreement() {
+        $this->agreement_id = Agreement::current()->id;
+        $this->policy_id = Policy::current()->id;
+
+        $this->agreed_at = now();
+        $this->save();
+
+        return $this;
+    }
+
+    public function hasOptedInForMarketing() {
+        return $this->marketing_opt_in_at !== null && $this->marketing_opt_in_at > $this->marketing_opt_out_at;
+    }
+
+    public function setMarketingStatus($optIn = True) {
+        if($optIn){
+            $this->policy_id = Policy::current()->id;
+            $this->marketing_opt_in_at = now();
+        }else{
+            $this->marketing_opt_out_at = now();
+        }
+        $this->save();
+        
+        return $this;
+    }
+
 }

@@ -86,19 +86,6 @@
             font-size: 1.3rem;
         }
 
-        section.footer {
-            display: flex;
-            background-color: #323232;
-            justify-content: space-between;
-            align-items: center;
-            padding: 40px 20px;
-            color: white;
-        }
-
-        section.footer * {
-            opacity: 0.2;
-        }
-
         @media screen and (max-width: 768px) {
             html {
                 font-size: 16px;
@@ -332,11 +319,6 @@
                     </div>
                 </div>
             </section>
-        </section>
-
-        <section class="footer flex-column flex-md-row">
-            <div class="logo"><img src="{{ asset('resources/header_logo.png') }}"></div>
-            <div class="copyright">© Copyright {{ date('Y') }} Fantasy Calendar Ltd.</div>
         </section>
     </div>
 @endsection

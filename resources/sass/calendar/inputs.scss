@@ -7,6 +7,7 @@ div:focus, button:focus, * button.btn.btn-stock:focus {
 
 #protip_container{
     z-index:300;
+    position: absolute !important;
 }
 
 input.invalid {

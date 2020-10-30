@@ -109,10 +109,59 @@
 @endpush
 
 @section('profile-card-header')
-    Subscribe to {{ $level }} on a {{ $interval }} basis.
+    Subscribe to Fantasy-Calendar on a {{ $interval }} basis.
 @endsection
 
 @section('profile-card')
+
+    <h4>Plan information</h4>
+
+    <div class='container my-2'>
+        <div class="row">
+            <div class="col-4 p-0">
+                Payment interval:
+            </div>
+            <div class="col p-0">
+                {{ ucwords($interval) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4 p-0">
+                Price:
+            </div>
+            <div class="col p-0">
+                @if($user->isEarlySupporter())
+                    @if($interval == "monthly")
+                        $1.99
+                    @else
+                        $19.99
+                    @endif
+                @else
+                    @if($interval == "monthly")
+                        $2.49
+                    @else
+                        $24.99
+                    @endif
+                @endif
+                (price includes VAT)
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4 p-0">
+                Automatically renews on:
+            </div>
+            <div class="col p-0">
+                {{ $renew_at }}
+            </div>
+        </div>
+    </div>
+
+    <p><a href="{{ route('subscription.pricing') }}" class='btn btn-secondary'><i class="fas fa-arrow-left"></i> Change plan</a></p>
+
+    <p>You can cancel your subscription at any point from your <a href="{{ route('profile') }}">profile</a>.</p>
+
+    <hr>
+
     <p class="small">Don't worry, your card information never touches our servers! It's safely handled by Stripe.</p>
 
     <div class="paymentbox" x-data="subscription()" x-init="init()">
@@ -125,11 +174,23 @@
 
         <div id="card-errors" class="alert alert-danger hidden" :class="{ hidden: !errors.stripeError.length }" x-text="errors.stripeError"></div>
 
-        <button id="card-button" class="btn btn-secondary disabled" :class="{ disabled: !ready }" @click="ready && cardButtonSubmit()">
+        <button
+            id="card-button"
+            class="btn btn-secondary"
+            :class="{
+                'btn-secondary': !ready,
+                'btn-primary': ready
+            }"
+            :disabled="!ready"
+            @click="ready && cardButtonSubmit()"
+        >
             <div class="spinner-border text-light mr-2 hidden" :class="{ hidden: !submitting }" role="status">
                 <span class="sr-only">Loading...</span>
             </div>
-            Get subscribed
+            Subscribe {{ $interval }}
         </button>
     </div>
+
+    <p class="small mt-2 mb-0">By pressing <strong>Subscribe {{ $interval }}</strong>, you verify that you are at least 13 years old and agree to the <a href="{{ route('terms-and-conditions') }}">Terms and Conditions</a> which include details of your right to withdrawal within 14 days.</p>
+
 @endsection

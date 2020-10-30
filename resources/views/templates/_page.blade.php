@@ -54,10 +54,22 @@
                     'Authorization': 'Bearer '+$('meta[name="api-token"]').attr('content')
                 }
             });
-            
+
+            $.protip({
+                defaults: {
+                    "delay-in": 2000,
+                    position: 'bottom',
+                    scheme: 'leaf',
+                    classes: 'box-shadow accent-bg-color',
+                    animate: 'bounceIn',
+                    target: '#protip_container'
+                }
+            });
+
             var cookiedomain = window.location.hostname.split('.')[window.location.hostname.split('.').length-2]+'.'+window.location.hostname.split('.')[window.location.hostname.split('.').length-1];
             document.cookie = 'fantasycalendar_remember=; Max-Age=0; path=/; domain=' + cookiedomain;
         });
+
     </script>
 
     <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" />
@@ -78,7 +90,7 @@
 </head>
 
 
-<body class="page-{{ str_replace('.', '-', Route::currentRouteName()) }} @stack('page-class')">
+<body class="page page-{{ str_replace('.', '-', Route::currentRouteName()) }} @stack('page-class')">
         @env(['development'])
             <div class="alert alert-danger py-4 mb-0">
                 <div style="max-width: 1100px; margin: auto;">
@@ -104,6 +116,7 @@
 
 			@yield('content')
 		</div>
+        @include('templates.footnote')
         <div id="protip_container" class='d-print-none'></div>
     </body>
 </html>
