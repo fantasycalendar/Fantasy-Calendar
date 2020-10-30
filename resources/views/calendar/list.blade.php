@@ -194,6 +194,4 @@
         @endif
     </div>
 
-    @include('templates.footnote')
-
 @endsection
