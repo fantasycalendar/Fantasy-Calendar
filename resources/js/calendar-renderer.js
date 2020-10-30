@@ -74,6 +74,9 @@ const calendar_renderer = {
 
         let event_data = event.detail;
         for(let epoch in this.render_data.event_epochs){
+            if(!this.render_data.event_epochs[epoch].has_events){
+                break;
+            }
             if(this.render_data.event_epochs[epoch].events.length > 0){
                 this.render_data.event_epochs[epoch].events.splice(0, this.render_data.event_epochs[epoch].events.length)
             }

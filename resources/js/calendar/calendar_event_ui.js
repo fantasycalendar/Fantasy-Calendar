@@ -376,7 +376,7 @@ var edit_event_ui = {
 					item.remove();
 				}
 
-				$('#condition_remove_button').click();
+				//$('#condition_remove_button').click();
 				edit_event_ui.evaluate_condition_selects(edit_event_ui.event_conditions_container);
 				edit_event_ui.inputs_changed = true;
 			}
@@ -408,7 +408,7 @@ var edit_event_ui = {
 
 						if(!result.dismiss) {
 							group_list.parent().remove();
-							$('#condition_remove_button').click();
+							//$('#condition_remove_button').click();
 							edit_event_ui.evaluate_condition_selects(edit_event_ui.event_conditions_container);
 							edit_event_ui.inputs_changed = true;
 						}
@@ -417,7 +417,7 @@ var edit_event_ui = {
 
 				}else{
 					group_list.parent().remove();
-					$('#condition_remove_button').click();
+					//$('#condition_remove_button').click();
 					edit_event_ui.evaluate_condition_selects(edit_event_ui.event_conditions_container);
 					edit_event_ui.inputs_changed = true;
 				}
@@ -475,14 +475,16 @@ var edit_event_ui = {
 
 	set_delete_element(element){
 		if(this.delete_hover_element !== undefined){
-			this.delete_hover_element.removeClass('hover')
+			this.delete_hover_element.removeClass('hover').removeClass('cursor-pointer');
 			this.delete_hover_element.find('select').prop('disabled', false);
+			this.delete_hover_element.find('input').prop('disabled', false);
 			this.delete_hover_element.find('.icon-reorder').addClass('handle');
 		}
 		this.delete_hover_element = element;
 		if(this.delete_hover_element !== undefined){
-			this.delete_hover_element.addClass('hover')
+			this.delete_hover_element.addClass('hover').addClass('cursor-pointer');
 			this.delete_hover_element.find('select').prop('disabled', true);
+			this.delete_hover_element.find('input').prop('disabled', true);
 			this.delete_hover_element.find('.icon-reorder').removeClass('handle');
 		}
 	},
@@ -614,6 +616,8 @@ var edit_event_ui = {
 		this.event_background.removeClass('hidden');
 
 		this.inputs_changed = false;
+
+		this.event_background.find('.event_name').focus();
 
 	},
 
@@ -750,38 +754,48 @@ var edit_event_ui = {
 
 		this.date = []
 
-		if(conditions.length == 5){
 
-			var year = false;
-			var month = false;
-			var day = false
-			var ands = 0
+		if(conditions.length == 1 || conditions.length == 5){
 
-			for(var i = 0; i < conditions.length; i++){
-				if(conditions[i].length == 3){
-					if(conditions[i][0] == "Year" && Number(conditions[i][1]) == 0){
-						year = true;
-						this.date[0] = Number(conditions[i][2][0])
-					}
+			if(conditions.length == 1){
 
-					if(conditions[i][0] == "Month" && Number(conditions[i][1]) == 0){
-						month = true;
-						this.date[1] = Number(conditions[i][2][0])
-					}
+				if(conditions[0][0] == "Date" && conditions[0][1] == 0){
+					this.date = [Number(conditions[0][2][0]), Number(conditions[0][2][1]), Number(conditions[0][2][2])];
+				}
 
-					if(conditions[i][0] == "Day" && Number(conditions[i][1]) == 0){
-						day = true;
-						this.date[2] = Number(conditions[i][2][0])
-					}
-				}else if(conditions[i].length == 1){
-					if(conditions[i][0] == "&&"){
-						ands++;
+			}else{
+
+				var year = false;
+				var month = false;
+				var day = false
+				var ands = 0
+
+				for(var i = 0; i < conditions.length; i++){
+					if(conditions[i].length == 3){
+						if(conditions[i][0] == "Year" && Number(conditions[i][1]) == 0){
+							year = true;
+							this.date[0] = Number(conditions[i][2][0])
+						}
+
+						if(conditions[i][0] == "Month" && Number(conditions[i][1]) == 0){
+							month = true;
+							this.date[1] = Number(conditions[i][2][0])
+						}
+
+						if(conditions[i][0] == "Day" && Number(conditions[i][1]) == 0){
+							day = true;
+							this.date[2] = Number(conditions[i][2][0])
+						}
+					}else if(conditions[i].length == 1){
+						if(conditions[i][0] == "&&"){
+							ands++;
+						}
 					}
 				}
-			}
 
-			if(!(year && month && day && ands == 2)){
-				this.date = [];
+				if(!(year && month && day && ands == 2)){
+					this.date = [];
+				}
 			}
 		}
 
@@ -843,38 +857,48 @@ var edit_event_ui = {
 
 		var conditions = this.create_condition_array(edit_event_ui.event_conditions_container);
 
-		if(conditions.length == 5){
+		if(conditions.length == 1 || conditions.length == 5){
 
-			var year = false;
-			var month = false;
-			var day = false
-			var ands = 0
+			if(conditions.length == 1){
 
-			for(var i = 0; i < conditions.length; i++){
-				if(conditions[i].length == 3){
-					if(conditions[i][0] == "Year" && Number(conditions[i][1]) == 0){
-						year = true;
-						date[0] = Number(conditions[i][2][0])
-					}
+				if(conditions[0][0] == "Date" && conditions[0][1] == 0){
+					return true
+				}
 
-					if(conditions[i][0] == "Month" && Number(conditions[i][1]) == 0){
-						month = true;
-						date[1] = Number(conditions[i][2][0])
-					}
-
-					if(conditions[i][0] == "Day" && Number(conditions[i][1]) == 0){
-						day = true;
-						date[2] = Number(conditions[i][2][0])
-					}
-				}else if(conditions[i].length == 1){
-					if(conditions[i][0] == "&&"){
-						ands++;
+			}else{
+			
+				var year = false;
+				var month = false;
+				var day = false
+				var ands = 0
+	
+				for(var i = 0; i < conditions.length; i++){
+					if(conditions[i].length == 3){
+						if(conditions[i][0] == "Year" && Number(conditions[i][1]) == 0){
+							year = true;
+							date[0] = Number(conditions[i][2][0])
+						}
+	
+						if(conditions[i][0] == "Month" && Number(conditions[i][1]) == 0){
+							month = true;
+							date[1] = Number(conditions[i][2][0])
+						}
+	
+						if(conditions[i][0] == "Day" && Number(conditions[i][1]) == 0){
+							day = true;
+							date[2] = Number(conditions[i][2][0])
+						}
+					}else if(conditions[i].length == 1){
+						if(conditions[i][0] == "&&"){
+							ands++;
+						}
 					}
 				}
-			}
+	
+				if(!(year && month && day && ands == 2)){
+					date = [];
+				}
 
-			if(!(year && month && day && ands == 2)){
-				date = [];
 			}
 		}
 
@@ -1000,11 +1024,7 @@ var edit_event_ui = {
 
 			case 'once':
 				var result = [
-					['Year', '0', [edit_event_ui.data.year]],
-					['&&'],
-					['Month', '0', [edit_event_ui.data.timespan_index]],
-					['&&'],
-					['Day', '0', [edit_event_ui.data.day]]
+					['Date', '0', [edit_event_ui.data.year, edit_event_ui.data.timespan_index, edit_event_ui.data.day]]
 				];
 				break;
 
@@ -2057,27 +2077,34 @@ var edit_event_ui = {
 
 			swal.fire({
 				title: "Uh...",
-				text: "This event is an one time event (year, month, day), I'm pretty sure you know the answer to this test.",
+				text: "This event is a one time event (year, month, day), I'm pretty sure you know the answer to this test.",
 				icon: "warning"
 			});
 
 		}else{
+    
+			this.build_seasons = event_checker.evaluation_has_season_event(this.event_id);
 
-			swal.fire({
-				title: "Warning!",
-				text: "Simulating events may take a loooong time, depending on many factors! If your event is based on other events, we need to simulate those too!",
-				showCancelButton: true,
-				confirmButtonColor: '#d33',
-				cancelButtonColor: '#3085d6',
-				confirmButtonText: 'OK',
-				icon: "warning",
-			}).then((result) => {
+			if(!this.build_seasons){
+				this.run_test_event(years);
+			}else{
+				swal.fire({
+					title: "Warning!",
+					html: "Simulating events that rely on season data can be <strong>incredibly</strong> slow, as we need to generate the seasons for all of the years we simulate. If you hit OK, be prepared to wait a while. Go get a cup of coffee or two, that kind of thing.",
+					showCancelButton: true,
+					confirmButtonColor: '#d33',
+					cancelButtonColor: '#3085d6',
+					confirmButtonText: 'OK',
+					icon: "warning",
+				}).then((result) => {
 
-				if(!result.dismiss) {
-					this.run_test_event(years);
-				}
+					if(!result.dismiss) {
+						this.run_test_event(years);
+					}
 
-			});
+				});
+			}
+			
 
 		}
 
@@ -2107,93 +2134,60 @@ var edit_event_ui = {
 
 		}
 
-		edit_event_ui.worker_future_calendar = new Worker('/js/webworkers/worker_calendar.js');
+		edit_event_ui.worker_event_tester = new Worker('/js/webworkers/worker_event_tester.js');
 
 		start_year = preview_date.year;
 		end_year = preview_date.year+years;
 
-		edit_event_ui.worker_future_calendar.postMessage({
+		edit_event_ui.worker_event_tester.postMessage({
 			calendar_name: calendar_name,
 			static_data: static_data,
 			dynamic_data: preview_date,
             events: events,
             event_categories: event_categories,
-			action: "future",
 			owner: Perms.player_at_least('co-owner'),
 			start_year: start_year,
-			end_year: end_year
+			end_year: end_year,
+			callback: true,
+			event_id: edit_event_ui.event_id,
+			build_seasons: this.build_seasons
 		});
 
-		edit_event_ui.worker_future_calendar.onmessage = e => {
+		edit_event_ui.worker_event_tester.onmessage = e => {
+			if(e.data.callback){
+				update_loading_bar(e.data.percentage, e.data.message);
+			}else{
 
-			edit_event_ui.event_data = e.data.processed_data.epoch_data;
+				edit_event_ui.event_occurrences = e.data.occurrences;
+				
+				var num = edit_event_ui.event_occurrences.length;
 
-			edit_event_ui.worker_future_events = new Worker('/js/webworkers/worker_events.js');
+				let text = years > 1 ? `the next ${years} years.` : "this year.";
 
-			edit_event_ui.worker_future_events.postMessage({
-				static_data: static_data,
-                events: events,
-                event_categories: event_categories,
-				epoch_data: edit_event_ui.event_data,
-				event_id: edit_event_ui.event_id,
-				start_epoch: e.data.processed_data.start_epoch,
-				end_epoch: e.data.processed_data.end_epoch,
-				callback: true
-			});
+				edit_event_ui.event_occurrences_text.html(`This event will appear <span class='bold-text'>${num}</span> time${num > 1 ? "s" : ""} in ${text}`);
 
-			edit_event_ui.worker_future_events.onmessage = e => {
+				edit_event_ui.event_occurrences_list_container.removeClass('hidden');
 
-				if(e.data.callback){
+				edit_event_ui.worker_event_tester.terminate()
 
-					update_loading_bar(e.data.count[0] / e.data.count[1]);
+				edit_event_ui.event_occurrences_page = 1;
+				edit_event_ui.show_event_dates();
+
+				if(edit_event_ui.new_event){
+
+					events.splice(edit_event_ui.event_id, 1);
 
 				}else{
 
-					event_occurrences = e.data.event_data.valid[edit_event_ui.event_id] ? e.data.event_data.valid[edit_event_ui.event_id] : [];
-
-					edit_event_ui.event_occurrences = []
-
-					for(event_occurrence in event_occurrences){
-
-						var epoch = event_occurrences[event_occurrence];
-						var epoch_data = edit_event_ui.event_data[epoch];
-
-						if(epoch_data.year >= start_year && epoch_data.year < end_year){
-							edit_event_ui.event_occurrences.push(event_occurrences[event_occurrence])
-						}
-
-					}
-
-					var num = edit_event_ui.event_occurrences.length;
-
-					edit_event_ui.event_occurrences_text.html(`This event will appear <span class='bold-text'>${num}</span> time${num > 1 ? "s" : ""} in the next ${years} year${years > 1 ? 's' : ''}.`);
-
-					edit_event_ui.event_occurrences_list_container.removeClass('hidden');
-
-					edit_event_ui.worker_future_calendar.terminate()
-					edit_event_ui.worker_future_events.terminate()
-
-					edit_event_ui.event_occurrences_page = 1;
-					edit_event_ui.show_event_dates();
-
-					if(edit_event_ui.new_event){
-
-						events.splice(edit_event_ui.event_id, 1);
-
-					}else{
-
-						events[edit_event_ui.event_id].data = clone(edit_event_ui.backup_event_data)
-						edit_event_ui.backup_event_data = {}
-
-					}
-
-					hide_loading_screen();
+					events[edit_event_ui.event_id].data = clone(edit_event_ui.backup_event_data)
+					edit_event_ui.backup_event_data = {}
 
 				}
 
+				hide_loading_screen();
+
 			}
 		}
-
 	},
 
 	show_event_dates: function(){
@@ -2209,19 +2203,25 @@ var edit_event_ui = {
 
 			if(edit_event_ui.event_occurrences[i]){
 
-				var epoch = edit_event_ui.event_occurrences[i];
-				var epoch_data = edit_event_ui.event_data[epoch];
+				let occurrence = edit_event_ui.event_occurrences[i];
 
-				var year = epoch_data.year;
-				var timespan = epoch_data.timespan_number;
-				var day = epoch_data.day;
+				let year = occurrence.year;
+				let timespan = occurrence.timespan;
+				let timespan_name = static_data.year_data.timespans[occurrence.timespan].name;
+				let day = occurrence.day;
+				let intercalary = occurrence.intercalary;
 
-				var link = `${window.baseurl}calendars/${hash}?year=${unconvert_year(static_data, year)}&month=${timespan}&day=${day}`;
+				let pre = "";
+				let post = "";
+				if(window.location.pathname != '/calendars/create') {
+					pre = `<a href='${window.baseurl}calendars/${hash}?year=${year}&month=${timespan}&day=${day}' target="_blank">`;
+					post = `</a>`;
+				}
 
-				if(epoch_data.intercalary){
-					var text = `<li class='event_occurance'><a href='${link}' target="_blank">${ordinal_suffix_of(day)} intercalary day of ${epoch_data.timespan_name}, ${unconvert_year(static_data, year)}</a></li>`
+				if(intercalary){
+					var text = `<li class='event_occurance'>${pre}${ordinal_suffix_of(day)} intercalary day of ${timespan_name}, ${year}${post}</li>`
 				}else{
-				var text = `<li class='event_occurance'><a href='${link}' target="_blank">${ordinal_suffix_of(day)} of ${epoch_data.timespan_name}, ${unconvert_year(static_data, year)}</a></li>`
+					var text = `<li class='event_occurance'>${pre}${ordinal_suffix_of(day)} of ${timespan_name}, ${year}${post}</li>`
 				}
 
 				if(i-((this.event_occurrences_page-1)*10) < 5){
@@ -2236,10 +2236,10 @@ var edit_event_ui = {
 
 		}
 
-		this.event_occurrences_page_number.text(`${this.event_occurrences_page} / ${Math.ceil(edit_event_ui.event_occurrences.length/10)}`)
+		this.event_occurrences_page_number.text(`${this.event_occurrences_page} / ${Math.ceil(edit_event_ui.event_occurrences.length/10)}`).toggleClass('hidden', edit_event_ui.event_occurrences.length <= 10);
 
-		this.event_occurrences_button_prev.prop('disabled', this.event_occurrences_page == 1);
-		this.event_occurrences_button_next.prop('disabled', i != length || i == edit_event_ui.event_occurrences.length);
+		this.event_occurrences_button_prev.prop('disabled', this.event_occurrences_page == 1).parent().toggleClass('hidden', edit_event_ui.event_occurrences.length <= 10);
+		this.event_occurrences_button_next.prop('disabled', i != length || i == edit_event_ui.event_occurrences.length).parent().toggleClass('hidden', edit_event_ui.event_occurrences.length <= 10);
 
 		this.event_occurrences_list_col1.html(html_col1.join(''))
 		this.event_occurrences_list_col2.html(html_col2.join(''))
@@ -2355,10 +2355,58 @@ var edit_event_ui = {
 
 function cancel_event_test(){
 
-	edit_event_ui.worker_future_calendar.terminate()
-	edit_event_ui.worker_future_events.terminate()
+	try{
+		edit_event_ui.worker_event_tester.terminate();
+	}catch{}
+
 	hide_loading_screen();
 
+}
+
+var event_checker = {
+
+    event_ids: [],
+
+    evaluation_has_season_event: function(event_id){
+
+        this.check_event_chain(event_id)
+
+        for(var i in this.event_ids){
+
+            let event = events[this.event_ids[i]];
+
+            if(JSON.stringify(event.data.conditions).indexOf(`["Season",`) > -1){
+				this.event_ids = [];
+                return true;
+            }
+
+        }
+
+		this.event_ids = [];
+        return false;
+
+    },
+
+    check_event_chain: function(event_id){
+
+        this.event_ids.push(event_id);
+
+        var current_event = events[event_id];
+
+        if(current_event.data.connected_events !== undefined && current_event.data.connected_events !== "false"){
+
+            for(var connectedId in current_event.data.connected_events){
+
+                var parent_id = current_event.data.connected_events[connectedId];
+
+                this.check_event_chain(parent_id);
+
+            }
+
+        }
+
+    }
+    
 }
 
 
@@ -2412,7 +2460,7 @@ var show_event_ui = {
 		this.event_save_btn						= this.event_background.find('#submit_comment');
 		this.edit_event_btn				   		= this.event_background.find('.edit_event_btn');
 
-		this.event_comment_mastercontainer.toggleClass('hidden', !can_comment_on_event());
+		this.event_comment_mastercontainer.toggleClass('hidden', !Perms.user_can_comment());
 
 		this.event_comment_input.trumbowyg({
 			btns: [
@@ -2524,7 +2572,7 @@ var show_event_ui = {
 			this.event_comment_mastercontainer.addClass('hidden');
 		}else if(this.db_event_id !== undefined){
 			get_event_comments(this.db_event_id, this.add_comments);
-		}else if(can_comment_on_event()){
+		}else if(Perms.user_can_comment()){
 			this.event_comments.html("You need to save your calendar before comments can be added to this event!").removeClass('loading');
 		}else{
 			this.event_comments.removeClass("loading").addClass('hidden');
@@ -2552,15 +2600,15 @@ var show_event_ui = {
 
 		}else{
 
-			show_event_ui.event_comment_mastercontainer.toggleClass('hidden', !can_comment_on_event());
+			show_event_ui.event_comment_mastercontainer.toggleClass('hidden', !Perms.user_can_comment());
 
-			if(can_comment_on_event()){
+			if(Perms.user_can_comment()){
 				show_event_ui.event_comments.html("No comments on this event yet... Maybe you'll be the first?")
 			}
 
 		}
 
-		if(can_comment_on_event()){
+		if(Perms.user_can_comment()){
 			show_event_ui.event_comment_input_container.show().find('button').prop('disable', false);
 			show_event_ui.event_comment_input.trumbowyg('disabled', false);
 		}else{
@@ -2667,22 +2715,4 @@ var edit_HTML_ui = {
 		this.html_edit_background.addClass('hidden');
 
 	},
-}
-
-function can_comment_on_event(){
-
-	if(Perms.player_at_least('co-owner')){
-		return true;
-	}
-
-	if(static_data.settings.comments == "players"){
-		return Perms.player_at_least('player');
-	}
-
-	if(static_data.settings.comments == "public"){
-		return Perms.player_at_least('free');
-	}
-
-	return false;
-
 }

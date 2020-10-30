@@ -112,7 +112,8 @@ const render_data_generator = {
                 "season_color": '',
                 "show_event_button": false,
 				"events": [],
-				"moons": []
+                "moons": [],
+                "has_events": false
 			}
 		}
 
@@ -143,7 +144,8 @@ const render_data_generator = {
 			"season_color": season_color,
             "show_event_button": Perms.player_at_least('player'),
 			"events": [],
-			"moons": moons
+			"moons": moons,
+            "has_events": true
 		};
 	},
 
@@ -159,7 +161,8 @@ const render_data_generator = {
             "season_color": '',
             "show_event_button": false,
 			"events": [],
-			"moons": []
+			"moons": [],
+            "has_events": false
 		};
     },
 
@@ -184,7 +187,7 @@ const render_data_generator = {
             "render_style": static_data.settings.layout,
             "timespans": [],
             "event_epochs": {},
-            "timespan_event_epochs": {},
+            "timespan_event_epochs": {}
         }
 
         let indexes = Object.keys(timespans_to_build)
@@ -372,7 +375,7 @@ const render_data_generator = {
 
             render_data.timespans.push(timespan_data);
 
-            if(!static_data.settings.only_reveal_today || (static_data.settings.only_reveal_today && epoch > dynamic_data.epoch)){
+            if(Perms.player_at_least('co-owner') || !static_data.settings.only_reveal_today || (static_data.settings.only_reveal_today && epoch > dynamic_data.epoch)){
 
                 var filtered_leap_days_end = timespan.leap_days.filter(function(features){
                     return features.intercalary && features.day === timespan.length;

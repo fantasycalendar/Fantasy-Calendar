@@ -9,6 +9,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Mews\Purifier\Facades\Purifier;
 
@@ -41,9 +42,7 @@ class SaveCalendarEvents implements ShouldQueue
         foreach($this->events as $sort_by => $event) {
             $event['sort_by'] = $sort_by;
 
-            $event['event_category_id'] = (empty($event['event_category_id']) || is_numeric($event['event_category_id']) || $event['event_category_id'] === "-1" || $event['event_category_id'] < 0)
-                ? null
-                : $this->categoryids[$event['event_category_id']];
+            $event['event_category_id'] = $this->resolveCategoryId($event['event_category_id']);
 
             $event['description'] = Purifier::clean($event['description']);
 
@@ -62,5 +61,21 @@ class SaveCalendarEvents implements ShouldQueue
         CalendarEvent::where('calendar_id', $this->calendarId)->whereNotIn('id', $eventids)->delete();
 
         return $eventids;
+    }
+
+    private function resolveCategoryId($value) {
+        if(empty($value) || $value === "-1" || $value < 0) {
+            return null;
+        }
+
+        if(!is_numeric($value)) {
+            return Arr::get($this->categoryids, $value, null);
+        }
+
+        if(in_array($value, $this->categoryids)) {
+            return $value;
+        }
+
+        return null;
     }
 }

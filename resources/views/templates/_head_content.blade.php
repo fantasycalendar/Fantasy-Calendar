@@ -8,6 +8,7 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url()->full() }}">
     <meta property="og:image" content="{{ url('/resources/discord_logo.jpg') }}">
+    <meta property="og:description" content="All-in-One Fantasy Calendar Generator - Creation of calendars and time-tracking in your homebrew or pre-made campaign worlds have never been easier!">
 
     @if(Auth::check())
         <meta name='api-token' content="{{ Auth::user()->api_token }}">
@@ -98,6 +99,15 @@
             return;
         }
 
+        if(jqxhr.status === 503) {
+            if(jqxhr.responseJSON.message.length > 0) {
+                $.notify("Fantasy Calendar is in maintenance mode. Please try again later.\nReason: " + jqxhr.responseJSON.message);
+            } else {
+                $.notify("Fantasy Calendar is in maintenance mode. Please try that again later.");
+            }
+            return;
+        }
+
         $.notify(thrownError + " (F12 to see more detail)");
     });
 
@@ -154,6 +164,7 @@
     <script src="{{ mix('js/calendar/calendar_inputs_edit.js') }}"></script>
     <script src="{{ mix('js/calendar/calendar_manager.js') }}"></script>
     <script src="{{ mix('js/calendar/calendar_presets.js') }}"></script>
+    <script src="{{ mix('js/calendar/calendar_workers.js') }}"></script>
 
     @if(Auth::check() && Auth::user()->setting('dark_theme'))
         <link rel="stylesheet" href="{{ mix('css/app-dark.css') }}">

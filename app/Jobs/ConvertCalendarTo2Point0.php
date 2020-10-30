@@ -91,7 +91,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                 $this->static['moons'][] = [
                     'name' => $moon,
                     'cycle' => $this->old->lunar_cyc[$index],
-                    'shift' => $this->old->lunar_shf[$index],
+                    'shift' => $this->old->lunar_shf[$index]-1,
                     'granularity' => 16,
                     'color' => $this->old->lunar_color[$index] ?? '#ffffff',
                     'hidden' => false,
@@ -570,11 +570,12 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
             switch($event->repeats) {
                 case 'once':
                     $conditions = [
-                        ['Year', '0', ["$data->year"]],
-                        ['&&'],
-                        ['Month', '0', [strval($data->month-1)]],
-                        ['&&'],
-                        ['Day', '0', ["$data->day"]]
+                        ['Date', '0', [
+                            strval($data->year),
+                            strval($data->month-1),
+                            strval($data->day),
+                            $this->get_epoch($data->year, $data->month-1, $data->day)
+                        ]]
                     ];
                     $date = [$data->year, $data->month-1, $data->day];
                     break;
@@ -626,7 +627,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
 
                 case 'every_x_day':
                     $conditions = [
-                        ['Epoch', '6', ["$data->every}", strval($data->modulus+1)]]
+                        ['Epoch', '6', ["$data->every", strval($data->modulus+1)]]
                     ];
                     break;
 
@@ -634,7 +635,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                     $conditions = [
                         ['Weekday', '0', ["$data->week_day"]],
                         ['&&'],
-                        ['Week', '20', ["$data->every}", strval($data->modulus+1)]]
+                        ['Week', '20', ["$data->every", strval($data->modulus+1)]]
                     ];
                     break;
 
@@ -642,7 +643,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                     $conditions = [
                         ['Day', '0', ["$data->day"]],
                         ['&&'],
-                        ['Month', '13', ["$data->every}", strval($data->modulus+1)]]
+                        ['Month', '13', ["$data->every", strval($data->modulus+1)]]
                     ];
                     break;
 
@@ -652,7 +653,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                         ['&&'],
                         ['Week', '0', [$data->week_day_number]],
                         ['&&'],
-                        ['Month', '13', ["$data->every}", strval($data->modulus+1)]]
+                        ['Month', '13', ["$data->every", strval($data->modulus+1)]]
                     ];
                     break;
 
@@ -662,7 +663,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                         ['&&'],
                         ['Month', '0', [strval($data->month-1)]],
                         ['&&'],
-                        ['Year', '6', ["$data->every}", strval($data->modulus+1)]]
+                        ['Year', '6', ["$data->every", strval($data->modulus+1)]]
                     ];
                     break;
 
@@ -674,14 +675,14 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                         ['&&'],
                         ['Month', '0', [strval($data->month-1)]],
                         ['&&'],
-                        ['Year', '6', ["$data->every}", strval($data->modulus+1)]]
+                        ['Year', '6', ["$data->every", strval($data->modulus+1)]]
                     ];
                     break;
 
                 case 'moon_every':
                     if(isset($this->moons[$data->moon_id])){
                         $conditions = [
-                            ['Moons', '0', ["$data->moon_id}", $data->moon_phase]]
+                            ['Moons', '0', ["$data->moon_id", $data->moon_phase]]
                         ];
                     }
                     break;
@@ -689,9 +690,9 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                 case 'moon_monthly':
                     if(isset($this->moons[$data->moon_id])){
                         $conditions = [
-                            ['Moons', '0', ["$data->moon_id}", $data->moon_phase]],
+                            ['Moons', '0', ["$data->moon_id", $data->moon_phase]],
                             ['&&'],
-                            ['Moons', '7', ["$data->moon_id}", $data->moon_phase_number]]
+                            ['Moons', '7', ["$data->moon_id", $data->moon_phase_number]]
                         ];
                     }
                     break;
@@ -699,9 +700,9 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                 case 'moon_anually':
                     if(isset($this->moons[$data->moon_id])){
                         $conditions = [
-                            ['Moons', '0', ["$data->moon_id}", $data->moon_phase]],
+                            ['Moons', '0', ["$data->moon_id", $data->moon_phase]],
                             ['&&'],
-                            ['Moons', '7', ["$data->moon_id}", $data->moon_phase_number]],
+                            ['Moons', '7', ["$data->moon_id", $data->moon_phase_number]],
                             ['&&'],
                             ['Month', '0', [strval($data->month-1)]]
                         ];
@@ -711,7 +712,16 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                 case 'multimoon_every':
                 case 'multimoon_anually':
 
-                    $conditions = ($event->repeats == 'multimoon_every') ? [] : [['Month', '0', strval($data->month-1)], ['&&']];
+                    if($event->repeats == 'multimoon_every'){
+
+                        $conditions = [];
+
+                    }else{
+
+                        $conditions = [['Month', '0', strval($data->month-1)], ['&&']];
+
+                    }
+
                     foreach($data->moons as $index => $moon) {
 
                         if(isset($this->moons[$index])){
@@ -722,7 +732,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                                 ["$index", $moon->moon_phase]
                             ];
 
-                            if(count($conditions) % 2 != 0) {
+                            if(count($conditions) % 2 == 1 && $index != (count($data->moons)-1)) {
                                 $conditions[] = ['&&'];
                             }
 
@@ -744,9 +754,9 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
 
             $group[1][] = ['Date', '2', [
                     strval($event->from_date->year),
-                    strval($event->from_date->month),
+                    strval($event->from_date->month-1),
                     strval($event->from_date->day),
-                    $this->get_epoch($event->from_date->year, $event->from_date->month, $event->from_date->day)
+                    $this->get_epoch($event->from_date->year, $event->from_date->month-1, $event->from_date->day)
                 ]
             ];
 
@@ -760,9 +770,9 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
 
             $group[1][] = ['Date', '3', [
                     strval($event->to_date->year),
-                    strval($event->to_date->month),
+                    strval($event->to_date->month-1),
                     strval($event->to_date->day),
-                    $this->get_epoch($event->to_date->year, $event->to_date->month, $event->to_date->day)
+                    $this->get_epoch($event->to_date->year, $event->to_date->month-1, $event->to_date->day)
                 ]
             ];
 
@@ -812,7 +822,16 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
         }
 
         if(!empty($this->static['year_data']['leap_days'])){
-            $epoch += floor($this->old->year / intval($this->static['year_data']['leap_days'][0]['interval']));
+            $interval = intval($this->static['year_data']['leap_days'][0]['interval']);
+            $leap_month = $this->static['year_data']['leap_days'][0]['timespan'];
+            $epoch += floor($year / $interval);
+            if(
+                ($year > 0 && $year % $interval != 0)
+                ||
+                ($year % $interval == 0 && $month > $leap_month)
+            ){
+                $epoch++;
+            }
         }
 
         $epoch += $day - 1;

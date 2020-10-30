@@ -125,6 +125,7 @@ function set_up_edit_inputs(){
 
 		switch(view_type){
 			case "owner":
+				Perms.owner = true;
 				if(creation.is_done() && errors.length == 0){
 					if(previous_view_type !== 'owner'){
 						evaluate_settings();
@@ -5126,11 +5127,12 @@ function calendar_saved(){
 }
 
 function calendar_save_failed(){
+    var text = "Failed to save!"
 
-	var text = "Failed to save!"
-
-	save_button.prop('disabled', true).toggleClass('btn-secondary', false).toggleClass('btn-success', true).toggleClass('btn-primary', false).toggleClass('btn-warning', true).toggleClass('btn-danger', false).text(text);
-
+    save_button.prop('disabled', true).toggleClass(['btn-secondary', 'btn-primary', 'btn-danger'], false).toggleClass(['btn-success', 'btn-warning'], true).text(text);
+    setInterval(function(){
+        evaluate_save_button(true);
+    }, 10000);
 }
 
 function evaluate_save_button(override){
@@ -5525,8 +5527,6 @@ function set_up_edit_values(){
 			var catkey = (typeof category.sort_by !== "undefined") ? category.sort_by : slugify(category.name);
 			add_category_to_list(event_category_list, catkey, category);
 		}
-		var default_event_category = static_data.settings.default_category !== undefined ? static_data.settings.default_category : -1;
-		$('#default_event_category').val(default_event_category);
 	}
 
 	if(events){

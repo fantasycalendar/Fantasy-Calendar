@@ -176,7 +176,7 @@
                     </div>
                     <div class="col-12 col-md-6 text-center text-md-right d-flex flex-column align-items-end justify-content-center">
                         <h3 style="color: white;">What lives in the darkness...</h3>
-                        <h4 style="color: white;">Ok, that's probably a bit dramatic. But dark mode is here!</h4>
+                        <h4 style="color: white;">Ok, that's probably a bit dramatic. But dark mode is here! You can enable it on your profile when you are logged in.</h4>
                     </div>
                 </div>
             </div>
@@ -299,7 +299,12 @@
             <div class="container py-3">
                 <div class="row">
                     <div class="col-12 text-center d-flex flex-column align-items-start justify-content-center">
-                        <h4 class='w-100'><a href='changelog' class='btn btn-lg btn-accent text-white my-5'>Check out the full changelog here</a></h4>
+                        <h4 class='w-100'><a href='calendars' class='btn btn-lg btn-accent text-white mt-5 mb-2'>Check out your calendars now</a></h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 text-center d-flex flex-column align-items-start justify-content-center">
+                        <h4 class='w-100'><a href='changelog' class='btn btn btn-secondary text-white mb-5 mt-2'>Read the full changelog</a></h4>
                     </div>
                 </div>
             </div>

@@ -4,15 +4,19 @@ class Climate{
 		epoch_data,
 		static_data,
 		dynamic_data,
+		first_year,
 		start_epoch,
-		end_epoch
+		end_epoch,
+		callback
 	){
 
 		this.epoch_data = epoch_data;
 		this.dynamic_data = dynamic_data;
+		this.first_year = first_year;
 		this.static_data = static_data;
 		this.start_epoch = start_epoch;
 		this.end_epoch = end_epoch;
+		this.callback = callback;
 
 		this.settings = this.static_data.seasons.global_settings;
 		this.clock = this.static_data.clock;
@@ -43,6 +47,8 @@ class Climate{
 		   this.dynamic_data.location === ''
 		   ||
 		   this.static_data.seasons.data.length == 0
+		   ||
+		   Object.keys(this.epoch_data).length == 0
 		){
 			return false;
 		}else{
@@ -53,7 +59,7 @@ class Climate{
 
 	get process_weather(){
 
-		return this.process_seasons && this.static_data.seasons.global_settings.enable_weather;
+		return this.process_seasons && this.static_data.seasons.global_settings.enable_weather && !this.callback;
 
 	}
 
@@ -257,10 +263,18 @@ class Climate{
 		this.set_up_season_epochs();
 		this.set_up_weather_epochs();
 
-
 		for(var epoch = this.start_epoch; epoch <= this.end_epoch; epoch++){
 			this.epoch_data[epoch].season = this.get_static_season_data(epoch);
 			this.epoch_data[epoch].weather = this.get_static_weather_data(epoch);
+
+			if(this.callback){
+				let percentage = (epoch-this.start_epoch)/(this.end_epoch-this.start_epoch)
+				postMessage({
+					percentage: percentage,
+					message: "Generating future seasonal data...",
+					callback: true
+				})
+			}
 		}
 
 		this.evaluate_equinoxes();
@@ -271,7 +285,7 @@ class Climate{
 
 		this.season.local_seasons = [];
 
-		var year = convert_year(this.static_data, this.dynamic_data.year)-1;
+		var year = convert_year(this.static_data, this.first_year)-1;
 
 		var index = this.seasons.length-1;
 		if(index < 0){
@@ -302,7 +316,7 @@ class Climate{
 
 		this.season.local_seasons.reverse();
 
-		var year = convert_year(this.static_data, this.dynamic_data.year);
+		var year = convert_year(this.static_data, this.first_year);
 
 		var index = 0;
 
@@ -353,7 +367,7 @@ class Climate{
 		this.season.current_index = this.season.current_season.index;
 		this.season.next_index = this.season.next_season.index;
 
-		var current_epoch = evaluate_calendar_start(this.static_data, convert_year(this.static_data, this.dynamic_data.year)).epoch
+		var current_epoch = evaluate_calendar_start(this.static_data, convert_year(this.static_data, this.first_year)).epoch
 
 		while(this.season.next_season.epoch < current_epoch){
 
@@ -403,7 +417,7 @@ class Climate{
 
 		this.weather.local_seasons = [];
 
-		var year = convert_year(this.static_data, this.dynamic_data.year)-1;
+		var year = convert_year(this.static_data, this.first_year)-1;
 
 		var index = this.seasons.length-1;
 		if(index < 0){
@@ -437,7 +451,7 @@ class Climate{
 		this.weather.local_seasons.reverse();
 
 
-		var year = convert_year(this.static_data, this.dynamic_data.year);
+		var year = convert_year(this.static_data, this.first_year);
 
 		var index = 0;
 
@@ -588,10 +602,16 @@ class Climate{
 		}
 
 		for(var epoch = this.start_epoch; epoch <= this.end_epoch; epoch++){
-
 			this.epoch_data[epoch].season = this.get_dynamic_season_data(epoch);
 			this.epoch_data[epoch].weather = this.get_dynamic_weather_data(epoch);
 
+			if(this.callback){
+				let percentage = (epoch-this.start_epoch)/(this.end_epoch-this.start_epoch)
+				postMessage({
+					percentage: percentage,
+					callback: true
+				})
+			}
 		}
 
 		this.evaluate_equinoxes();

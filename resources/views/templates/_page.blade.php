@@ -12,6 +12,7 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url()->full() }}">
     <meta property="og:image" content="{{ asset('resources/discord_logo.jpg') }}">
+    <meta property="og:description" content="All-in-One Fantasy Calendar Generator - Creation of calendars and time-tracking in your homebrew or pre-made campaign worlds have never been easier!">
 
     @if(Auth::check())
         <meta name='api-token' content="{{ Auth::user()->api_token }}">
@@ -88,6 +89,15 @@
 
 
 <body class="page page-{{ str_replace('.', '-', Route::currentRouteName()) }} @stack('page-class')">
+        @env(['development'])
+            <div class="alert alert-danger py-4 mb-0">
+                <div style="max-width: 1100px; margin: auto;">
+                    This is the beta deployment of Fantasy Calendar. We will often deploy things here that are incomplete, or even just broken. We recommend using a copy of any important calendars here, to avoid data loss.
+                    <hr>
+                    If you're just looking for a production-ready version of Fantasy Calendar, you should probably <a class="btn btn-outline-danger" href="https://app.fantasy-calendar.com/">go to the main Fantasy Calendar app.</a>
+                </div>
+            </div>
+        @endenv
 
 		@include('templates._header')
 		<div id="content">

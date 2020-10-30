@@ -1102,11 +1102,19 @@ ol.example li.placeholder:before {
 }
 
 #event_conditions_container.deleting{
+
+    border: 1px solid red;
+
+    background-image: $warning-crosshatch;
+
     & .condition.hover > .condition_container{
         background-color:$red;
     }
     & .group.hover > .group_list{
         background-color:$red;
+    }
+    & .cursor-pointer *{
+        cursor: pointer;
     }
 }
 
@@ -1130,6 +1138,10 @@ ol.example li.placeholder:before {
     flex-wrap: wrap;
     flex-grow:1;
     min-width:25%;
+}
+
+.cursor-pointer{
+    cursor: pointer;
 }
 
 #condition_remove_button .icon.wiggle {
