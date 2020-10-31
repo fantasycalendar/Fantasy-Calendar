@@ -163,6 +163,20 @@ functions:
         -   cloudFront:
               eventType: origin-request
               origin: Website
+    securityheaders:
+      handler: setup/lambda/${opt:stage, 'dev'}/security_headers.handler
+      runtime: nodejs12.x
+      package:
+        individually: true
+        exclude:
+          - "./**"
+        include:
+          - setup/lambda/${opt:stage, 'dev'}/security_headers.js
+      memorySize: 128
+      events:
+        -   cloudFront:
+              eventType: origin-response
+              origin: Website
 
 plugins:
     # We need to include the Bref plugin
