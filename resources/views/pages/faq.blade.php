@@ -90,7 +90,7 @@
                         answer: "Fantasy-Calendar is still <strong>completely free to use</strong>! Free accounts can still create up to 2 calendars, with no other limitations. As Fantasy-Calendar has grown, so have our bills. For the last 3 years we have been happily funding the site out of our own pockets and from generous donations from some of our users, but we want Fantasy-Calendar stay online long term. That's why we added some <i>optional</i> premium features that won't hinder you from creating full-fledged calendars!"
                     },
                     {
-                        text: "I have forgotten my username / email / password!",
+                        text: "What do I do if I have forgotten my username / email / password?",
                         answer: `@auth Wait... You're <strong>already logged in, {{ Auth::user()->username }}</strong>! You can just go update your password <a href="{{ route('profile') }}">via your profile</a>. @else We've got your back. Before you try to reset it, remember that you can sign in with your email address <i>or</i> your username. If you've forgotten your password, you can reset it here <a target='_blank' href='{{ route('password.request') }}'>here</a>. If you've forgotten your username or email, get in touch with us at <a target='_blank' href='mailto:contact@fantasy-calendar.com'>contact@fantasy-calendar.com</a> and we'll sort you out! @endauth`
                     },
                     {

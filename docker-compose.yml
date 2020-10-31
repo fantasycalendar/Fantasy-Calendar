@@ -48,6 +48,7 @@ services:
       - "REDIS_HOST=fcredis"
       - "SESSION_DRIVER=redis"
       - "VIEW_COMPILED_PATH=/fantasy-calendar/storage/framework/views"
+      - "LOG_CHANNEL=docker"
 
   selenium:
     image: selenium/standalone-chrome
