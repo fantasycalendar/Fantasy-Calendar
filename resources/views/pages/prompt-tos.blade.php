@@ -15,7 +15,7 @@
 
 		.scroll_box{
 			overflow-y: scroll;
-			height:50vh;
+			height:45vh;
 		}
 
 	</style>

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\StripeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -68,6 +69,12 @@ Route::get('/subscription/resume', 'SubscriptionController@resume')->name('subsc
 Route::post('/subscription/update/{level}/{plan}', 'SubscriptionController@update')->name('subscription.update')->middleware('agreement');
 
 Route::post('pricing/coupon', 'SubscriptionController@coupon');
+
+// Extended Stripe Webhook 
+Route::post(
+    'stripe/webhook',
+    [StripeController::class, 'handleWebhook']
+);
 
 // User profile
 Route::get('/profile', 'SettingsController@profile')->middleware(['auth', 'agreement'])->name('profile');
