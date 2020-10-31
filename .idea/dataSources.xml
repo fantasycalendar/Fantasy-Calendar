@@ -8,11 +8,6 @@
       <jdbc-url>jdbc:mysql://localhost:13306/fantasy-calendar</jdbc-url>
       <driver-properties>
         <property name="autoReconnect" value="true" />
-        <property name="zeroDateTimeBehavior" value="CONVERT_TO_NULL" />
-        <property name="tinyInt1isBit" value="false" />
-        <property name="characterEncoding" value="utf8" />
-        <property name="characterSetResults" value="utf8" />
-        <property name="yearIsDateType" value="false" />
       </driver-properties>
     </data-source>
     <data-source source="LOCAL" name="fantasycalendar@localhost" uuid="8dd0c327-b673-4649-a02c-529dfe120d48">

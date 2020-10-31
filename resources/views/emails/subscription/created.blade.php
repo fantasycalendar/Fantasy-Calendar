@@ -3,7 +3,7 @@
 
 You have successfully subscribed to Fantasy-Calendar!
 
-We'll be charging you **$[[PRICE]]** on a **[[INTERVAL]]** basis (this price includes VAT). We will also send an actual receipt to your email.
+We'll be charging you **${{ $price }}** on a **{{ $interval }}ly** basis (this price includes VAT). You'll also be receiving a receipt separately.
 
 ---
 
