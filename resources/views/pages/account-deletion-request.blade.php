@@ -48,7 +48,7 @@
                                     </span>
                                 @enderror
 
-                                <button type="submit" class="btn btn-danger w-100 text-center">Delete Account (WARNING - THIS IS NOT REVERSIBLE)</a>
+                                <button type="submit" class="btn btn-danger w-100 text-center">Request Account Deletion</a>
 
                             </form>
                         </div>
