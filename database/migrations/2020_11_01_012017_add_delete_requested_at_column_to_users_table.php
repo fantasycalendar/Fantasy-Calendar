@@ -15,6 +15,7 @@ class AddDeleteRequestedAtColumnToUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->timestamp('delete_requested_at')->nullable();
+            $table->timestamp('deleted_at')->nullable();
         });
     }
 
@@ -27,6 +28,7 @@ class AddDeleteRequestedAtColumnToUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('delete_requested_at');
+            $table->dropColumn('deleted_at');
         });
     }
 }
