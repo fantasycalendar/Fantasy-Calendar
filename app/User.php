@@ -66,6 +66,7 @@ class User extends Authenticatable implements
         'email_verified_at' => 'datetime',
         'settings' => 'json',
         'agreed_at' => 'datetime',
+        'delete_requested_at' => 'datetime',
     ];
 
     /**

@@ -103,7 +103,7 @@
                             <p><i class="fa fa-envelope"></i>&nbsp;{{ Str::limit($user->email, 26) }}</p>
                             <p>Registered {{ ($user->created_at) ? $user->created_at->format('Y-m-d') : $user->date_register }}</p>
 
-                            <button class="btn btn-secondary" x-show="!changing_password" @click="changing_password = !changing_password">Change Password</button>
+                            <button class="btn btn-secondary w-100" x-show="!changing_password" @click="changing_password = !changing_password">Change Password</button>
                             <form action="/profile/password" method="POST" x-show="changing_password">
                                 @csrf
 
@@ -125,9 +125,14 @@
 
                                 <div class="invalid-feedback" x-show="was_validated && new_password !== new_password_confirmation">Passwords do not match.</div>
 
-                                <button class="btn btn-secondary mt-3" type="submit" :disabled="!was_validated || !valid">Update</button>
+                                <button class="btn btn-secondary mt-3 w-100" type="submit" :disabled="!was_validated || !valid">Update</button>
                             </form>
                         </div>
+                    </div>
+                </div>
+                <div class="card my-4 warning">
+                    <div class="card-body">
+                        <a href="/account-deletion-request" class="btn btn-danger w-100">Request Account Deletion</a>
                     </div>
                 </div>
             </div>
