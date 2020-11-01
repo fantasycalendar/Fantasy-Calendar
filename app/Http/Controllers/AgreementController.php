@@ -27,6 +27,10 @@ class AgreementController extends Controller
 
     public function show(Request $request) {
 
+        if(Auth::user()->hasAgreedToTOS()){
+            return redirect('/calendars');
+        }
+
         $tos = Agreement::current();
 
         return view('pages.prompt-tos',
