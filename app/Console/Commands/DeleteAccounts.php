@@ -13,7 +13,7 @@ class DeleteAccounts extends Command
      *
      * @var string
      */
-    protected $signature = 'command:delete-accounts';
+    protected $signature = 'accounts:yeet-requests';
 
     /**
      * The console command description.
