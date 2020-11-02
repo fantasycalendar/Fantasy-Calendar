@@ -16,7 +16,6 @@
 
                             <ul>
                                 <li>Username</li>
-                                <li>Email Address</li>
                                 <li>Registration IP</li>
                                 <li>All of your calendars</li>
                                 <li>All event categories on your calendars</li>
@@ -30,6 +29,7 @@
                             <p class='mb-0'>For financial reasons, we need to retain information regarding your past subscriptions:</p>
 
                             <ul>
+                                <li>Email Address</li>
                                 <li>The last used card brand</li>
                                 <li>The last four numbers of your card</li>
                             </ul>

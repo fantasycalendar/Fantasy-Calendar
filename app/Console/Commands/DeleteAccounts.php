@@ -5,6 +5,11 @@ namespace App\Console\Commands;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use App\Mail\AccountDeleted;
+use Illuminate\Support\Facades\Mail;
+
+use Str;
+use Hash;
 
 class DeleteAccounts extends Command
 {
@@ -13,7 +18,7 @@ class DeleteAccounts extends Command
      *
      * @var string
      */
-    protected $signature = 'accounts:yeet-requests';
+    protected $signature = 'accounts:yeet';
 
     /**
      * The console command description.
@@ -39,21 +44,21 @@ class DeleteAccounts extends Command
      */
     public function handle()
     {
-        User::where('delete_requested_at', '<', Carbon::now()->subDays(14))->each(function($user){
+        User::where('delete_requested_at', '<', Carbon::now()->subDays(14))->whereNull('deleted_at')->each(function($user){
             foreach($user->calendars as $key => $calendar) {
                 foreach($calendar->events as $key => $event){
-                    $event->comments->each->forceDelete();
+                    $event->comments->each->delete();
                 }
-                $calendar->events->each->forceDelete();
-                $calendar->event_categories->each->forceDelete();
-                $calendar->invitations->each->forceDelete();
+                $calendar->events->each->delete();
+                $calendar->event_categories->each->delete();
+                $calendar->invitations->each->delete();
             }
-            $user->calendars->each->forceDelete();
-            $user->username = "DELETED";
-            $user->email = "DELETED";
+            $user->calendars->each->delete();
+            $user->username = Str::limit('DELETED-' . Hash::make(now()->format('Y-m-d H:i:s')), 32);
             $user->reg_ip = "DELETED";
-            $user->deleted_at = now();
+            $user->delete();
             $user->save();
+            Mail::to($user)->send(new AccountDeleted($user));
         });
     }
 }
