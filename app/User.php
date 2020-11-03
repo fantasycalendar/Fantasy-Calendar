@@ -107,7 +107,7 @@ class User extends Authenticatable implements
      * @return bool
      */
     public function isEarlySupporter() {
-        return $this->email_verified_at <= (new Carbon('2020-03-25'));
+        return $this->email_verified_at <= (new Carbon('2020-11-01'));
     }
 
     /**
