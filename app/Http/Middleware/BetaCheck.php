@@ -18,10 +18,16 @@ class BetaCheck
      */
     public function handle($request, Closure $next)
     {
-        if(Auth::check() && !App::environment('local')) {
+        if(Auth::check() && App::environment('production')) {
             if (!Auth::user()->betaAccess() && !Auth::user()->migrated) {
                 Auth::logout();
                 abort(redirect('https://www.fantasy-calendar.com/'));
+            }
+        }
+
+        if(Auth::check() && App::environment('development')) {
+            if(!Auth::user()->betaAccess()) {
+                abort(403, "Your account is not beta authorized.");
             }
         }
 
