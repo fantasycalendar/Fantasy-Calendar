@@ -216,7 +216,7 @@ class User extends Authenticatable implements
             $this->marketing_opt_out_at = now();
         }
         $this->save();
-        
+
         return $this;
     }
 
