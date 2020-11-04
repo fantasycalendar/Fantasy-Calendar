@@ -99,11 +99,8 @@
                             @auth
                                 <p>We're sad to see you go!
                                 @if(Auth::user()->isPremium()) If you're just worried about your subscription, you can cancel your subscription from <a href="{{ route('profile') }}">your profile</a>. Subscribed users can have an unlimited amount of calendars, but even if you cancel your subscription, you'll still have access to at least @if(Auth::user()->isEarlySupporter()) 15 @else 2 @endif of your calendars. @endif
-                                If you're sure you want us to delete your account, you can contact us through the form available on <a href="{{ route('profile') }}">your profile</a>.</p>
-                            @else
-                                <p>When you sign up, you can request a full account deletion from your profile.</p>
                             @endauth
-                            <p>We typically process requests such as this within one calendar month, as per the <a href='https://gdpr-info.eu/art-17-gdpr/' target='_blank'>GDPR guidelines</a>.</p>
+                            <p>You can delete your account through your <a href="{{ route('profile') }}">profile</a>, but please refer to clause 18.1 on our <a target='_blank' href='{{ route('terms-and-conditions') }}'>Terms and Conditions</a> for more details.</p>
                         `
                     }
                 ]
