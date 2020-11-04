@@ -12,7 +12,7 @@
 
                             <p>At Fantasy-Calendar, we take your privacy seriously. If you feel the need to delete your account, we will do so as soon as possible, typically within 14 days.</p>
 
-                            <p class='mb-0'>We will delete all of the following from our servers, irreversibly removing it:</p>
+                            <p class='mb-0'>We will delete all of the following on our servers, effectively removing it:</p>
 
                             <ul>
                                 <li>Username</li>
