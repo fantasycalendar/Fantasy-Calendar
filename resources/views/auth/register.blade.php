@@ -6,8 +6,8 @@
 		function register_form(){
 			return {
                 valid_form: false,
-                username: '',
-                email: '',
+                username: "{{ old('username') }}",
+                email: "{{ old('email') ?? session('email') }}",
                 agreed: false,
 
                 password: '',
@@ -97,14 +97,15 @@
 
                         <div class="form-check p-2">
                             <input type="checkbox" class="form-check-input" name="policy_acceptance" id="policy_acceptance" x-model="agreed" required>
-                            <label class="form-check-label" for="policy_acceptance">By clicking <strong>Register</strong>, I agree to the <a target="_blank" href="{{ route('terms-and-conditions') }}">Terms and Conditions</a>, and the <a target="_blank" href="{{ route('privacy-policy') }}">Privacy and Cookies Policy</a></label>
+                            <label class="form-check-label" for="policy_acceptance">I agree to the <a target="_blank" href="{{ route('terms-and-conditions') }}">Terms and Conditions</a>, and the <a target="_blank" href="{{ route('privacy-policy') }}">Privacy and Cookies Policy</a></label>
+                            <small>Residents of the EU are legally entitled to a 14-day cool off period, as explained in the T&Cs</small>
                         </div>
 
                         <div class="form-check p-2 mb-3">
                             <input type="checkbox" class="form-check-input" name="marketing_acceptance" id="marketing_acceptance">
                             <label class="form-check-label" for="marketing_acceptance">
-                                <strong>Optional</strong> - Tick here if you would like us to send you emails about our products and special offers<br>
-                                <small>You can withdraw consent at any time on your profile<small>
+                                <strong>(Optional)</strong> I would like to receive occasional emails about products and special offers
+                                <small>(You can withdraw consent at any time on your profile)<small>
                             </label>
                         </div>
 
