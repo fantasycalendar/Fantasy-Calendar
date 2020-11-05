@@ -30,6 +30,9 @@ class Kernel extends ConsoleKernel
         $schedule->command('clean:authtokens')
                  ->daily()->onOneServer();
 
+        $schedule->command('clean:invites')
+                 ->daily()->onOneServer();
+
         $schedule->command('discord:daily-stats')
                  ->daily()->onOneServer();
     }
