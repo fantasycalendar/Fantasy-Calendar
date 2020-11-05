@@ -37,7 +37,7 @@ class CalendarController extends Controller
     {
         $user_calendars = Calendar::active()->search($request->input('search'))->orderBy('disabled');
 
-        $user_calendars = (Auth::user()->permissions == 1) ? $user_calendars->with('user') : $user_calendars->where('user_id', Auth::user()->id);
+        $user_calendars = $user_calendars->where('user_id', Auth::user()->id);
 
         $calendarSimplePagination = $user_calendars->simplePaginate(10);
         $user_calendars = $user_calendars->paginate(10);
