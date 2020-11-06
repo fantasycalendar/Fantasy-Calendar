@@ -26,7 +26,9 @@
                     <li class="nav-item"><a href="{{ route('code16.sharp.home') }}" class="nav-link">Admin Panel</a></li>
                 @endif
 
-                <li class="nav-item"><a href="{{ route('subscription.pricing') }}" class="nav-link">Subscribe</a></li>
+                @unless(Auth::user()->isPremium())
+                        <li class="nav-item"><a href="{{ route('subscription.pricing') }}" class="nav-link">Subscribe</a></li>
+                @endunless
                 <li class="nav-item"><a href="{{ route('profile') }}" class="nav-link">Profile</a></li>
                 <li class="nav-item"><a href="{{ route('logout') }}" class="nav-link">Logout</a></li>
             @else

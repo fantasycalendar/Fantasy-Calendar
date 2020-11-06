@@ -139,3 +139,38 @@ body #content #generator_container .btn:not(.event_name):not(#btn_event_delete):
     height: 5px;
     width: 100%;
 }
+
+.page-link {
+    color: $accent-color;
+    background-color: transparent;
+    border: 1px solid $accent-color-darker;
+    border-right: 0;
+
+    &:hover {
+        background-color: $accent-color-darker;
+        color: $calendar-bg-color;
+    }
+}
+
+.page-item:last-child .page-link {
+    border-right: 1px solid $accent-color-darker;
+}
+
+.page-item.disabled {
+    background-color: initial;
+
+    .page-link {
+        background-color: #444;
+        color: $calendar-bg-color
+    }
+}
+
+.page-item.active .page-link {
+    background-color: $accent-color;
+    border-color: $accent-color;
+    color: white !important;
+}
+
+.page-calendars-index .border-top {
+    border-top: 1px solid #888 !important;
+}

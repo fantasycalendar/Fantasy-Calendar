@@ -91,13 +91,21 @@ body.page #content {
 }
 
 .page-link {
-    color: $accent-color !important;
+    color: $accent-color;
 }
 
 .page-item.active .page-link {
     background-color: $accent-color;
     border-color: $accent-color;
     color: white !important;
+}
+
+.calendars-list-title {
+    font-size: 2.2rem;
+
+    @media screen and (min-width: 768px) {
+        font-size: 3rem;
+    }
 }
 
 a:hover {
