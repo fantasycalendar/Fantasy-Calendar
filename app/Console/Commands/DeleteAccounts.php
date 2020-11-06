@@ -44,7 +44,10 @@ class DeleteAccounts extends Command
      */
     public function handle()
     {
-        User::where('delete_requested_at', '<', Carbon::now()->subDays(14))->whereNull('deleted_at')->each(function($user){
+        $users = User::where('delete_requested_at', '<', Carbon::now()->subDays(14))->whereNull('deleted_at');
+        $deleted = $users->count();
+
+        $users->each(function($user){
             foreach($user->calendars as $key => $calendar) {
                 foreach($calendar->events as $key => $event){
                     $event->comments->each->delete();
@@ -54,11 +57,26 @@ class DeleteAccounts extends Command
                 $calendar->invitations->each->delete();
             }
             $user->calendars->each->delete();
-            $user->username = Str::limit('DELETED-' . Hash::make(now()->format('Y-m-d H:i:s')), 32);
+            $user->username = Str::limit('DELETED-' . Hash::make(now()->format('Y-m-d H:i:s')), 32, '');
             $user->reg_ip = "DELETED";
             $user->delete();
             $user->save();
-            Mail::to($user)->send(new AccountDeleted($user));
+
+            try {
+                Mail::to($user)->send(new AccountDeleted($user));
+            } catch (\Swift_TransportException $e) {
+                // Sleep 5 seconds and try again if there was a transportexception.
+                sleep(5);
+                Mail::to($user)->send(new AccountDeleted($user));
+            }
+
+            sleep(1);
         });
+
+        if($deleted > 0) {
+            $this->info($deleted . " user accounts deleted. =(");
+        } else {
+            $this->info("No user accounts deleted today! Hooray!");
+        }
     }
 }

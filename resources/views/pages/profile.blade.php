@@ -127,12 +127,8 @@
 
                                 <button class="btn btn-secondary mt-3 w-100" type="submit" :disabled="!was_validated || !valid">Update</button>
                             </form>
+                            <a href="/account-deletion-request" class="btn btn-outline-danger w-100 mt-2" style="border: 0;" x-show="!changing_password">Request Account Deletion</a>
                         </div>
-                    </div>
-                </div>
-                <div class="card my-4 warning">
-                    <div class="card-body">
-                        <a href="/account-deletion-request" class="btn btn-danger w-100">Request Account Deletion</a>
                     </div>
                 </div>
             </div>

@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 
 use App\User;
-use Carbon\Carbon;
 use App\Mail\AccountDeletionLastWarning;
 use Illuminate\Support\Facades\Mail;
 
@@ -42,8 +41,13 @@ class DeletionLastWarning extends Command
      */
     public function handle()
     {
-        User::where('delete_requested_at', '<', Carbon::now()->subDays(13))->whereNull('deleted_at')->each(function($user){
+        $users = User::where('delete_requested_at', '<', now()->subDays(13))->where('delete_requested_at', '>', now()->subDays(14))->whereNull('deleted_at');
+        $warned = $users->count();
+
+        $users->each(function($user){
             Mail::to($user)->send(new AccountDeletionLastWarning($user));
         });
+
+        $this->info("Account deletion warnings sent to " . $warned . " users.");
     }
 }

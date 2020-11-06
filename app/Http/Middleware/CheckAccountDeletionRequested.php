@@ -6,7 +6,7 @@ use Closure;
 use Auth;
 use Illuminate\Http\Request;
 
-class AccountDeletionRequestedCheck
+class CheckAccountDeletionRequested
 {
     /**
      * Handle an incoming request.

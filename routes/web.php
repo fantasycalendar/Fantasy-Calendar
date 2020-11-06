@@ -77,7 +77,7 @@ Route::post('/subscription/update/{level}/{plan}', 'SubscriptionController@updat
 
 Route::post('pricing/coupon', 'SubscriptionController@coupon');
 
-// Extended Stripe Webhook 
+// Extended Stripe Webhook
 Route::post(
     'stripe/webhook',
     [StripeController::class, 'handleWebhook']
