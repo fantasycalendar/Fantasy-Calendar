@@ -35,6 +35,13 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('discord:daily-stats')
                  ->daily()->onOneServer();
+
+
+        $schedule->command('accounts:yeet-warning')
+                ->daily()->onOneServer();
+
+        $schedule->command('accounts:yeet')
+                 ->daily()->onOneServer();
     }
 
     /**

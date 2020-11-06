@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\CheckAccountDeletionRequested;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -61,6 +62,7 @@ class Kernel extends HttpKernel
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
+        'account.deletion' => \App\Http\Middleware\CheckAccountDeletionRequested::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'register' => \App\Http\Middleware\RequireRegistration::class,
         'signed' => \App\Http\Middleware\ValidateRelativeSignedUrl::class,
@@ -81,6 +83,7 @@ class Kernel extends HttpKernel
         \Illuminate\Routing\Middleware\ThrottleRequests::class,
         \App\Http\Middleware\Authenticate::class,
         \Illuminate\Session\Middleware\AuthenticateSession::class,
+        \App\Http\Middleware\CheckAccountDeletionRequested::class,
         \App\Http\Middleware\AgreementCheck::class,
         \Illuminate\Routing\Middleware\SubstituteBindings::class,
         \Illuminate\Auth\Middleware\Authorize::class,

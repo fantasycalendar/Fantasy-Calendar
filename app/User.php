@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\CanResetPassword;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Cashier\Billable;
 use Carbon\Carbon;
@@ -15,7 +16,7 @@ class User extends Authenticatable implements
     MustVerifyEmail,
     CanResetPassword
 {
-    use Notifiable, Billable;
+    use Notifiable, Billable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -66,6 +67,7 @@ class User extends Authenticatable implements
         'email_verified_at' => 'datetime',
         'settings' => 'json',
         'agreed_at' => 'datetime',
+        'delete_requested_at' => 'datetime',
     ];
 
     /**
