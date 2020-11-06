@@ -5,7 +5,7 @@ On **{{ $delete_requested_at }}** we recieved a request to delete your account. 
 
 You can still cancel your request by pressing this button:
 
-@component('mail::button', ['url' => config("app.url").'cancel-account-deletion'])
+@component('mail::button', ['url' => URL::route('cancel-account-deletion')])
 Cancel Deletion Request
 @endcomponent
 

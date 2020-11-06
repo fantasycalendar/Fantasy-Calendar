@@ -17,7 +17,7 @@ use App\Http\Controllers\StripeController;
 Route::view('/account-deletion-request', 'pages.account-deletion-request')->middleware(['auth', 'account.deletion', 'agreement']);
 Route::post('/set-account-deletion', 'AccountDeletionController@set')->middleware(['auth', 'account.deletion']);
 
-Route::get('/cancel-account-deletion', 'AccountDeletionController@cancel')->middleware(['auth']);
+Route::get('/cancel-account-deletion', 'AccountDeletionController@cancel')->name('cancel-account-deletion')->middleware(['auth']);
 
 Route::get('/account-deletion-warning', 'AccountDeletionController@warning')->name('account-deletion-warning')->middleware(['auth']);
 
