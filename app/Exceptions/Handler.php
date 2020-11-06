@@ -68,7 +68,11 @@ class Handler extends ExceptionHandler
             }
 
             if($request->is('calendars/create')) {
-                return redirect(route('subscription.pricing'))->with('alert', "Thanks for using Fantasy Calendar! Please subscribe to have more than two calendars active at a time.");
+                $message = (Auth::user()->isEarlySupporter())
+                    ? "Thanks for using Fantasy Calendar! Free accounts created before Nov 1st, 2020 are limited to fifteen calendars. <br> Please subscribe if you need more than that. As an early supporter, you even get a lifetime 20% discount!"
+                    : "Thanks for using Fantasy Calendar! Please subscribe to have more than two calendars active at a time.";
+
+                return redirect(route('subscription.pricing'))->with('alert', $message);
             }
 
             if($request->is('calendars/*')) {

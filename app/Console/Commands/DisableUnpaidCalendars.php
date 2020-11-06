@@ -38,12 +38,13 @@ class DisableUnpaidCalendars extends Command
      */
     public function handle()
     {
-        $users = User::chunk(100, function($users){
+        $users = User::whereHas('subscriptions')->whereHas('calendars')->chunk(100, function($users){
             foreach ($users as $user) {
-                if($user->subscriptions()->cancelled()->count() > 0 && !$user->isPremium() && $user->calendars()->count()) {
-                    $max_calendars = $user->isEarlySupporter() ? 14 : 1;
+                if(!$user->isPremium()) {
+                    $max_calendars = $user->isEarlySupporter() ? 15 : 2;
+
                     $user->calendars()->orderBy('date_created', 'ASC')->each(function($calendar, $index) use ($max_calendars){
-                        $calendar->disabled = ($index > $max_calendars) ? 0 : 1;
+                        $calendar->disabled = ($index < $max_calendars) ? 0 : 1;
                         $calendar->save();
                     });
                 }
