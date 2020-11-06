@@ -40,6 +40,8 @@ jobs:
       run: npx serverless deploy -f artisan --stage prod
     - name: Deploy queue worker
       run: npx serverless deploy -f worker --stage prod
+    - name: Deploy queue worker
+      run: npx serverless deploy -f console --stage prod
     - name: Actions Status Discord
       uses: sarisia/actions-status-discord@v1.5.2
       with:
