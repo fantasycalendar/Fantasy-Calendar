@@ -384,7 +384,7 @@ function set_up_visitor_inputs(){
 
 				var found_events = get_events_on_day($($trigger[0]));
 
-				items.view_events.visible = found_events.length > 0;
+				items.view_events.visible = function(){ return found_events.length > 0 };
 				items.view_events.disabled = found_events.length == 0;
 
 				if(found_events.length > 1){
@@ -411,7 +411,18 @@ function set_up_visitor_inputs(){
 
 			}else{
 				items.view_events.disabled = true;
-				items.view_events.visible = false;
+				items.view_events.visible = function(){ return false };
+			}
+
+			let show_menu = false;
+			for(var i in items){
+				if(items[i].visible()){
+					show_menu = true
+				}
+			}
+
+			if(!show_menu){
+				return false;
 			}
 
 			return {

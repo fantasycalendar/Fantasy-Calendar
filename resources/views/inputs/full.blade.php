@@ -853,7 +853,7 @@
     				<div class='weather_inputs'>
 
     					<div class='row no-gutters my-2 small-text'>
-    						Custom weather can be configured in custom locations.
+    						Custom weather can be configured in locations.
     					</div>
 
 

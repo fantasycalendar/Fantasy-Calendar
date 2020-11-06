@@ -109,7 +109,7 @@ class User extends Authenticatable implements
      * @return bool
      */
     public function isEarlySupporter() {
-        return $this->email_verified_at <= (new Carbon('2020-03-25'));
+        return $this->email_verified_at <= (new Carbon('2020-11-01'));
     }
 
     /**
@@ -218,7 +218,7 @@ class User extends Authenticatable implements
             $this->marketing_opt_out_at = now();
         }
         $this->save();
-        
+
         return $this;
     }
 

@@ -9,6 +9,7 @@ use Laravel\Cashier\Exceptions\IncompletePayment;
 use Stripe\Exceptions\InvalidRequestException;
 use Redirect;
 use Stripe\Coupon;
+use Stripe\StripeClient;
 
 class SubscriptionController extends Controller
 {
@@ -78,15 +79,28 @@ class SubscriptionController extends Controller
      * @param $level
      * @param $plan
      * @return array|\Illuminate\Http\RedirectResponse
+     * @throws Stripe\Exception\ApiErrorException
      */
     public function update(Request $request, $level, $plan) {
         $user = Auth::user();
+        $stripe = new StripeClient(env('STRIPE_SECRET'));
 
         try {
 
             # If the users was registered before a certain point, apply the 25% off
+            $sub = $user->newSubscription($level, $plan);
 
-            $user->newSubscription($level, $plan)->create($request->input('token'));
+            if($user->isEarlySupporter()) {
+                $coupons = collect($stripe->coupons->all()['data'])->filter(function($coupon) {
+                    return $coupon['name'] == 'Early Supporter';
+                });
+
+                if($coupons->count()) {
+                    $sub->withCoupon($coupons->first()->id);
+                }
+            }
+
+            $sub->create($request->input('token'));
 
             $user->calendars()->each(function($calendar){
                 $calendar->disabled = 0;
