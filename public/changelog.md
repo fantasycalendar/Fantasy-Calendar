@@ -1,5 +1,5 @@
 ## 2.0
-### TBD
+### November 6, 2020
 
 This update has a **lot** of changes. If anything confuses you, check out the [comprehensive helpdocs](https://helpdocs.fantasy-calendar.com/) for detailed information on each topic.
 
