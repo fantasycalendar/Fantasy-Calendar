@@ -530,12 +530,14 @@ var edit_event_ui = {
 
 		if(category_id != -1){
 			var category = get_category(category_id);
-			stats.event_category_id = category.id;
-			stats.settings.color = category.event_settings.color;
-			stats.settings.text = category.event_settings.text;
-			stats.settings.hide = category.event_settings.hide;
-			stats.settings.print = category.event_settings.print;
-			stats.settings.hide_full = category.event_settings.hide_full;
+			if(category !== undefined && category.id != -1){
+				stats.event_category_id = category.id;
+				stats.settings.color = category.event_settings.color;
+				stats.settings.text = category.event_settings.text;
+				stats.settings.hide = category.event_settings.hide;
+				stats.settings.print = category.event_settings.print;
+				stats.settings.hide_full = category.event_settings.hide_full;
+			}
 		}
 
 		eventId = Object.keys(events).length;
