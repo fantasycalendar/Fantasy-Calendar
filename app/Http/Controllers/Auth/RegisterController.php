@@ -75,9 +75,10 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'api_token' => Str::random(60),
-            'reg_ip' => '127.0.0.1',
+            'reg_ip' => ($ip = explode(", ",Arr::get($_SERVER, 'HTTP_X_FORWARDED_FOR'))[0]) ? $ip : request()->ip(),
             'beta_authorised' => 0,
             'permissions' => 6,
+            'migrated' => 1,
             'agreement_id' => Agreement::current()->id,
             'policy_id' => Policy::current()->id,
             'marketing_opt_in_at' => Arr::has($data, 'marketing_acceptance') ? now() : Null
