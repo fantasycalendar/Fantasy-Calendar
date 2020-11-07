@@ -3,6 +3,7 @@
 namespace App\Sharp;
 
 use App\User;
+use App\Sharp\UserMigratedFilter;
 use Code16\Sharp\EntityList\Containers\EntityListDataContainer;
 use Code16\Sharp\EntityList\EntityListQueryParams;
 use Code16\Sharp\EntityList\SharpEntityList;
@@ -71,7 +72,8 @@ class UserList extends SharpEntityList
             ->addInstanceCommand("elevate", GiveUserAppAccess::class)
             ->addInstanceCommand("revoke", RevokeUserAppAccess::class)
             ->addInstanceCommand("impersonate", LoginAsUser::class)
-            ->addInstanceCommand("reset_password", SendUserResetPassword::class);
+            ->addInstanceCommand("reset_password", SendUserResetPassword::class)
+            ->addFilter("migrated", UserMigratedFilter::class);
     }
 
     /**
@@ -89,6 +91,10 @@ class UserList extends SharpEntityList
                 $user_model->where('username', 'like', $word)
                         ->orWhere('email', 'like', $word);
             }
+        }
+
+        if($params->filterFor("migrated")) {
+            $user_model->whereNotNull('agreed_at');
         }
 
         if($params->sortedBy()) {
