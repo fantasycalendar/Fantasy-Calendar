@@ -15,5 +15,6 @@
     ],
     "theme_color": "#2f855a",
     "background_color": "#2f855a",
-    "display": "standalone"
+    "display": "standalone",
+    "start_url": "https://app.fantasy-calendar.com/"
 }
