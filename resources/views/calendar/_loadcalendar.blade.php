@@ -19,7 +19,7 @@
 
 hash = `{{ $calendar->hash }}`;
 
-calendar_name = `{!! $calendar->name !!}`;
+calendar_name = unescapeHtml("{{ $calendar->name }}");
 calendar_id = {{ $calendar->id }};
 static_data = {!! json_encode($calendar->static_data) !!};
 dynamic_data = {!! json_encode($calendar->dynamic_data) !!};
