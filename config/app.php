@@ -27,7 +27,7 @@ return [
     */
 
     'env' => env('APP_ENV', 'production'),
-    'maintenance_key' => 'maintenance-mode-payload',
+    'maintenance_key' => 'maintenance-mode-payload-' . env('APP_ENV'),
 
     /*
     |--------------------------------------------------------------------------
