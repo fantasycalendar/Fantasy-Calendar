@@ -8,6 +8,16 @@ function escapeHtml(unsafe) {
          .replace(/"/g, "&quot;")
          .replace(/'/g, "&#039;");
  }
+ 
+function unescapeHtml(safe) {
+	if(!isNaN(safe)) return safe;
+	return safe
+			.replace(/&amp;/g, '&')
+			.replace(/&lt;/g, '<')
+			.replace(/&gt;/g, '>')
+			.replace(/&quot;/g, '"')
+			.replace(/&#039;/g, `'`)
+}
 
 class execution{
 

@@ -5387,7 +5387,7 @@ function set_up_edit_values(){
 					break;
 
 				default:
-					$(this).val(current_calendar_data[key]);
+					$(this).val(unescapeHtml(current_calendar_data[key]));
 					break;
 			}
 		}
