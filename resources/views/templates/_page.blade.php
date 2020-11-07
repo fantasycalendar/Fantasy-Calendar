@@ -11,7 +11,7 @@
     <meta property="og:title" content="{{ $calendar->name ?? $title ?? "Fantasy Calendar" }}">
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url()->full() }}">
-    <meta property="og:image" content="{{ asset('resources/discord_logo.jpg') }}">
+    <meta property="og:image" content="{{ asset('resources/logo_discord.jpg') }}">
     <meta property="og:description" content="All-in-One Fantasy Calendar Generator - Creation of calendars and time-tracking in your homebrew or pre-made campaign worlds have never been easier!">
 
     @if(Auth::check())
