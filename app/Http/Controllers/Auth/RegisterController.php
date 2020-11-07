@@ -81,7 +81,7 @@ class RegisterController extends Controller
             'migrated' => 1,
             'agreement_id' => Agreement::current()->id,
             'policy_id' => Policy::current()->id,
-            'marketing_opt_in_at' => Arr::has($data, 'marketing_acceptance') ? now() : Null
+            'marketing_opt_in_at' => Arr::has($data, 'marketing_acceptance') ? now() : null
         ]);
     }
 
