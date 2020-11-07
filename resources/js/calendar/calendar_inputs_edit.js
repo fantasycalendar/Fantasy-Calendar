@@ -338,6 +338,10 @@ function set_up_edit_inputs(){
 		set_up_view_values();
 	});
 
+	$(document).on('change', '.week_day_name', function(){
+		populate_first_day_select(static_data.year_data.first_day);
+	});
+
 	$('.add_inputs.timespan .add').click(function(){
 		var name = $('#timespan_name_input');
 		var type = $('#timespan_type_input');
@@ -2577,7 +2581,7 @@ function set_up_edit_inputs(){
 							break;
 
 						default:
-							var value = escapeHtml(target.val());
+							var value = target.val();
 							break;
 					}
 
@@ -2694,7 +2698,7 @@ function add_weekday_to_sortable(parent, key, name){
 		element.push("<div class='main-container'>");
 			element.push("<div class='handle icon-reorder'></div>");
 			element.push("<div class='name-container'>");
-				element.push(`<input type='text' class='form-control name-input small-input dynamic_input' data='year_data.global_week' fc-index='${key}' tabindex='${(key+1)}'/>`);
+				element.push(`<input type='text' class='form-control name-input small-input dynamic_input week_day_name' data='year_data.global_week' fc-index='${key}' tabindex='${(key+1)}'/>`);
 			element.push("</div>");
 			element.push("<div class='remove-spacer'></div>");
 		element.push("</div>");
