@@ -29,6 +29,10 @@ class MigrateUsers extends Command
      * @var int
      */
     private $batch;
+    /**
+     * @var array
+     */
+    private $errors;
 
     /**
      * Create a new command instance.
@@ -37,6 +41,7 @@ class MigrateUsers extends Command
      */
     public function __construct()
     {
+        $this->errors = [];
         parent::__construct();
     }
 
@@ -76,8 +81,20 @@ class MigrateUsers extends Command
         $bar->start();
 
         foreach($users as $user) {
+            $error = false;
+
             foreach(OldCalendar::where('user_id', $user->id)->where('deleted', 0)->get() as $calendar) {
-                ConvertCalendarTo2Point0::dispatch($calendar, $this->batch);
+                try{
+                    ConvertCalendarTo2Point0::dispatch($calendar, $this->batch);
+                } catch (\Throwable $e) {
+                    $this->errors[] = $calendar->hash . ' ('.$calendar->name.'): ' . $e->getMessage();
+                    $error = true;
+                }
+            }
+
+            if($error) {
+                $bar->advance();
+                continue;
             }
 
             $user->migrated = 1;
@@ -92,6 +109,10 @@ class MigrateUsers extends Command
         }
 
         $bar->finish();
+
+        foreach($this->errors as $error) {
+            $this->error($error . "\n");
+        }
 
         $this->info(sprintf("\nMigration finished! %s %s were migrated.", $users->count(), Str::plural('user', $users->count())));
     }

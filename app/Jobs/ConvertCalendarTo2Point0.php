@@ -49,7 +49,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
         Calendar::hash($this->old_calendar->hash)->delete();
 
         if($this->old == null){
-            throw new \Exception("JSON data malformed!");
+            throw new \Exception("JSON data malformed in " . $this->old_calendar->hash);
         }
 
         $this->dynamic = [];
@@ -114,7 +114,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
 			    'offset' => 0
             ];
         }
-        
+
         $this->dynamic['epoch'] = $this->get_epoch($this->dynamic['year'], $this->dynamic['timespan'], $this->dynamic['day']);
 
         $this->static['clock'] = [
