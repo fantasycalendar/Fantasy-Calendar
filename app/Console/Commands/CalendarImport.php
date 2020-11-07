@@ -60,7 +60,7 @@ class CalendarImport extends Command
 
 
         // The heavy lifting. Reach out to the beta and grab a calendar
-        $response = $client->get('https://beta.fantasy-calendar.com/api/calendar/' . $beta_hash, [
+        $response = $client->get('https://app.fantasy-calendar.com/api/calendar/' . $beta_hash, [
             'query' => ['api_key' => env('FC_API_KEY')]
         ]);
         $calendar_data = json_decode($response->getBody()->getContents(), true);
