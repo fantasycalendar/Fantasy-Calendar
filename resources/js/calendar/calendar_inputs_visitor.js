@@ -870,7 +870,7 @@ function repopulate_event_category_lists(){
 
 		if(!category.category_settings.player_usable && !Perms.player_at_least('co-owner')) continue;
 
-		if(typeof category.id !== "undefined") {
+		if(!isNaN(category.id)) {
 			slug = category.id;
 		} else {
 			slug = slugify(category.name);

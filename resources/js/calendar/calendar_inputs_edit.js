@@ -1208,6 +1208,37 @@ function set_up_edit_inputs(){
 
 	});
 
+	$(document).on('change', '.category_name_input', function(){
+
+		let new_name = $(this).val();
+
+		let category_index = $(this).closest('.sortable-container').attr('index')|0;
+
+		event_categories[category_index].name = new_name;
+
+		if(isNaN(event_categories[category_index].id)){
+			let slug = slugify(new_name);
+			
+			for(let index in events){
+				if(events[index].event_category_id == event_categories[category_index].id){
+					events[index].event_category_id = slug;
+				}
+			}
+
+			var default_event_category = static_data.settings.default_category !== undefined ? static_data.settings.default_category : -1;
+			if(default_event_category == event_categories[category_index].id){
+				static_data.settings.default_category = slug;
+			}
+
+			event_categories[category_index].id = slug;
+		}
+
+		repopulate_event_category_lists();
+
+		do_error_check();
+
+	})
+
 
 	$('.add_inputs.events .add').click(function(){
 		var name = $('#event_name_input');
@@ -3807,7 +3838,7 @@ function add_category_to_list(parent, key, data){
 		element.push("<div class='main-container'>");
 			element.push("<div class='expand icon-expand'></div>");
 			element.push("<div class='name-container'>");
-				element.push(`<input type='text' name='name_input' fc-index='name' class='form-control name-input small-input category_dynamic_input dynamic_input' data='${key}' tabindex='${(700+key)}'/>`);
+				element.push(`<input type='text' name='name_input' fc-index='name' class='form-control name-input small-input category_name_input' data='${key}' tabindex='${(700+key)}'/>`);
 			element.push("</div>");
 			element.push('<div class="remove-spacer"></div>');
 		element.push("</div>");
