@@ -28,7 +28,7 @@
     <div class="logo pb-4 pb-md-0 d-flex flex-column flex-md-row align-items-center">
         <img src="{{ asset('resources/footer_logo.png') }}">
         <div class="footer-social-icons px-md-2 border-md-left border-secondary ml-md-2 mt-2 pt-2 pt-md-0 mt-md-0">
-            <a href="https://discord.com/invite/9jjQuzax"><i class="fab fa-discord mx-1 rounded"></i></a>
+            <a href="{{ route('discord') }}"><i class="fab fa-discord mx-1 rounded"></i></a>
             <a href="https://twitter.com/FantasyCalendar"><i class="fab fa-twitter mx-1 rounded"></i></a>
             <a href="https://github.com/fantasycalendar"><i class="fab fa-github mx-1 rounded"></i></a>
         </div>

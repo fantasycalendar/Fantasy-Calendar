@@ -27,6 +27,7 @@ Route::view('/whats-new', 'pages.whats-new')->name('whats-new');
 Route::view('/changelog', 'pages.changelog')->name('changelog');
 Route::view('/faq', 'pages.faq')->name('faq');
 Route::view('/donate', 'pages.donate', ['title'=>'Support the site']);
+Route::view('/discord', 'pages.discord', ['title' => 'Join Our Discord Server!'])->name('discord');
 Route::get('/account-migrated', 'WelcomeController@account_migrated')->name('account-migrated');
 Route::get('/account-migrated-acknowledge', 'WelcomeController@account_migrated_acknowledge')->name('account-migrated-acknowledge');
 
