@@ -151,6 +151,7 @@
                         </div>
 
                     </div>
+                @endif
 
                     <div class='row no-gutters mt-2'>
                         <div class='separator'></div>
@@ -162,6 +163,8 @@
 
                     <div class='container settings_container hidden p-0'>
 
+
+                    @if(!isset($calendar) || (Auth::user() != Null && Auth::user()->can('advance-date', $calendar)))
                         <div class='row no-gutters'>
                             <div class='col-md-6 pl-0 pr-1'>
                                 <label class='form-control checkbox'>
