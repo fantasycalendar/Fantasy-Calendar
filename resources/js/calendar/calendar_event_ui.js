@@ -507,8 +507,6 @@ var edit_event_ui = {
 
 	show_hide_event_testing(){
 
-		console.log(edit_event_ui.event_conditions_container.length == 0 || edit_event_ui.event_is_one_time())
-
 		this.event_occurrences_container.toggleClass('hidden', edit_event_ui.event_conditions_container.length == 0 || edit_event_ui.event_is_one_time());
 		
 	},
