@@ -112,6 +112,8 @@
                         </ol>
                     </div>
 
+                    <span class='hidden'></span>
+
                     <div class='event_occurrences hidden'>
                     
                         <div class='row no-gutters'>
@@ -132,21 +134,22 @@
                                 <button type='button' class='btn btn-info full test_event_btn' years="1000">1000 years</button>
                             </div>
                         </div>
-                    </div>
 
-                    <div class='event_occurrences_list_container hidden my-2'>
-                        <div class='text'></div>
-                        <div class='list hidden row no-gutters'>
-                            <ul class='col half col1 list-unstyled'></ul>
-                            <ul class='col half col2 list-unstyled'></ul>
-                            <div class='full page_number'></div>
-                            <div class='col half pr-1'>
-                                <button type='button' class='btn btn-info full prev' disabled>Previous</button>
-                            </div>
-                            <div class='col half pl-1'>
-                                <button type='button' class='btn btn-info full next' disabled>Next</button>
+                        <div class='event_occurrences_list_container hidden my-2'>
+                            <div class='text'></div>
+                            <div class='list hidden row no-gutters'>
+                                <ul class='col half col1 list-unstyled'></ul>
+                                <ul class='col half col2 list-unstyled'></ul>
+                                <div class='full page_number'></div>
+                                <div class='col half pr-1'>
+                                    <button type='button' class='btn btn-info full prev' disabled>Previous</button>
+                                </div>
+                                <div class='col half pl-1'>
+                                    <button type='button' class='btn btn-info full next' disabled>Next</button>
+                                </div>
                             </div>
                         </div>
+
                     </div>
 
                     <div class='row no-gutters mt-2'>
@@ -154,7 +157,7 @@
                     </div>
                         
                     <div class='row no-gutters mt-2'>
-                        <h4 class='open_settings cursor-pointer'><i class="icon fas fa-angle-right"></i> Settings</h4>
+                        <h4 class='open_settings cursor-pointer user-select-none'><i class="icon fas fa-angle-right"></i> Settings</h4>
                     </div>
 
                     <div class='container settings_container hidden p-0'>
