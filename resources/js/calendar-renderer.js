@@ -32,7 +32,7 @@ const calendar_renderer = {
     },
 
     create_event: function(epoch) {
-        edit_event_ui.create_new_event('New Event', epoch);
+        edit_event_ui.create_new_event('', epoch);
     },
 
     view_event: function(event) {

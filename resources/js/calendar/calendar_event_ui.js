@@ -113,6 +113,14 @@ var edit_event_ui = {
 
 		});
 
+
+		$('.open_settings').click(function(){
+			$('.settings_container').toggleClass('hidden');
+			let closed = $('.settings_container').hasClass("hidden");
+			$(this).find('.icon').toggleClass('fa-angle-right', closed).toggleClass('fa-angle-down', !closed);
+		})
+
+
 		this.condition_presets.on('focusin', function(){
 			$(this).data('val', $(this).val());
 		});
@@ -921,7 +929,7 @@ var edit_event_ui = {
 			}
 
 			var name = this.event_background.find('.event_name').val();
-			name = name !== '' ? name : "New Event";
+			name = name !== '' ? name : "";
 
 			event_check.name = name;
 
@@ -2359,7 +2367,9 @@ function cancel_event_test(){
 
 	try{
 		edit_event_ui.worker_event_tester.terminate();
-	}catch{}
+	}catch(err){
+		console.log(err)
+	}
 
 	hide_loading_screen();
 
