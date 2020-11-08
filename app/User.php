@@ -109,7 +109,7 @@ class User extends Authenticatable implements
      * @return bool
      */
     public function isEarlySupporter() {
-        return $this->date_register <= (new Carbon('2020-11-08'));
+        return $this->created_at <= (new Carbon('2020-11-08'));
     }
 
     /**
