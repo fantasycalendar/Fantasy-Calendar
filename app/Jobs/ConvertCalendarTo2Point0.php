@@ -469,6 +469,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
             'conversion_batch' => $this->conversion_batch ? $this->conversion_batch : Calendar::max('conversion_batch') + 1,
         ]);
 
+
         $eventids = SaveCalendarEvents::dispatchNow($events, [], $this->new_calendar->id);
 
         $this->sanityCheck();
@@ -586,12 +587,12 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                     break;
                 case 'weekly':
                     $conditions = [
-                        ['Weekday', '0', [strval($data->week_day+1)]]
+                        ['Weekday', '0', [$this->static['year_data']['global_week'][$data->week_day]]]
                     ];
                     break;
                 case 'fortnightly':
                     $conditions = [
-                        ['Weekday', '0', [strval($data->week_day+1)]],
+                        ['Weekday', '0', [$this->static['year_data']['global_week'][$data->week_day]]],
                         ['&&'],
                         ['Week', '13', [$data->week_even ? '2' : '1', '0']]
                     ];
@@ -610,7 +611,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                     break;
                 case 'monthly_weekday':
                     $conditions = [
-                        ['Weekday', '0', [strval($data->week_day+1)]],
+                        ['Weekday', '0', [$this->static['year_data']['global_week'][$data->week_day]]],
                         ['&&'],
                         ['Week', '0', ["$data->week_day_number"]]
                     ];
@@ -619,7 +620,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                     $conditions = [
                         ['Month', '0', [strval($data->month-1)]],
                         ['&&'],
-                        ['Weekday', '0', [strval($data->week_day+1)]],
+                        ['Weekday', '0', [$this->static['year_data']['global_week'][$data->week_day]]],
                         ['&&'],
                         ['Week', '0', [$data->week_day_number]]
                     ];
@@ -649,7 +650,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
 
                 case 'every_x_monthly_weekday':
                     $conditions = [
-                        ['Weekday', '0', [strval($data->week_day+1)]],
+                        ['Weekday', '0', [$this->static['year_data']['global_week'][$data->week_day]]],
                         ['&&'],
                         ['Week', '0', [$data->week_day_number]],
                         ['&&'],
@@ -669,7 +670,7 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
 
                 case 'every_x_annually_weekday':
                     $conditions = [
-                        ['Weekday', '0', [strval($data->week_day+1)]],
+                        ['Weekday', '0', [$this->static['year_data']['global_week'][$data->week_day]]],
                         ['&&'],
                         ['Week', '0', [$data->week_day_number]],
                         ['&&'],
@@ -748,10 +749,6 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
 
         if(isset($event->from_date)){
 
-            if(count($conditions) > 0){
-                $conditions[] = ['&&'];
-            }
-
             $group[1][] = ['Date', '2', [
                     strval($event->from_date->year),
                     strval($event->from_date->month-1),
@@ -760,26 +757,27 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                 ]
             ];
 
-        }
-
-        if(isset($event->to_date)){
-
-            if(count($group[1]) > 0){
-                $group[1][] = ['&&'];
+            if(isset($event->to_date)){
+    
+                if(count($group[1]) > 0){
+                    $group[1][] = ['&&'];
+                }
+    
+                $group[1][] = ['Date', '3', [
+                        strval($event->to_date->year),
+                        strval($event->to_date->month-1),
+                        strval($event->to_date->day),
+                        $this->get_epoch($event->to_date->year, $event->to_date->month-1, $event->to_date->day)
+                    ]
+                ];
+    
             }
 
-            $group[1][] = ['Date', '3', [
-                    strval($event->to_date->year),
-                    strval($event->to_date->month-1),
-                    strval($event->to_date->day),
-                    $this->get_epoch($event->to_date->year, $event->to_date->month-1, $event->to_date->day)
-                ]
-            ];
+            if(isset($event->from_date) || isset($event->to_date)){
+                $conditions[] = ['&&'];
+                $conditions[] = $group;
+            }
 
-        }
-
-        if(isset($event->from_date) || isset($event->to_date)){
-            $conditions[] = $group;
         }
 
         return [
