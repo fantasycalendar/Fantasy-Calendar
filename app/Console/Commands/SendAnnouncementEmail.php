@@ -48,6 +48,7 @@ class SendAnnouncementEmail extends Command
                     $user->save();
                 }
             });
+            sleep(1);
         });
     }
 }
