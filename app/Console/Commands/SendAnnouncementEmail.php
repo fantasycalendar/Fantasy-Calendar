@@ -40,7 +40,11 @@ class SendAnnouncementEmail extends Command
      */
     public function handle()
     {
-        $users = User::whereNull('deleted_at')->where('has_sent_announcement', 0);
+        $users = User::whereNull('deleted_at');
+
+        if(!$this->option('force')) {
+            $users = $users->where('has_sent_announcement', 0);
+        }
 
         if(!$this->option('where') && !$this->option('ids')) {
             $this->error("You must supply either a where clause (--where=\"date_register > '2020-01-01'\") or a list of IDs (--ids=1,2,3,500,10000,10)");
@@ -63,13 +67,11 @@ class SendAnnouncementEmail extends Command
             exit(1);
         }
 
-        $users->chunk(10, function($users){
-            $users->each(function($user){
-                if(!$user->has_sent_announcement || $this->option('force')){
-                    Mail::to($user)->queue(new Announcement($user));
-                    $user->has_sent_announcement = true;
-                    $user->save();
-                }
+        $users->chunk(10, function($results){
+            $results->each(function($user){
+                Mail::to($user)->queue(new Announcement($user));
+                $user->has_sent_announcement = true;
+                $user->save();
             });
             sleep(1);
         });
