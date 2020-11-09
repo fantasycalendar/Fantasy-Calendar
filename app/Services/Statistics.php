@@ -24,8 +24,8 @@ class Statistics
     }
 
     public function getUsersVerifiedToday() {
-        $total_users = $this->user->where('active',1)->whereNotNull('date_register')->count();
-        $users_today = $this->user->where('active',1)->where('date_register', '>', now()->subHours(24))->count();
+        $total_users = $this->user->where('active',1)->whereNotNull('created_at')->count();
+        $users_today = $this->user->where('active',1)->where('created_at', '>', now()->subHours(24))->count();
 
         return $this->format($total_users, $users_today);
     }
