@@ -73,15 +73,14 @@ class SendAnnouncementEmail extends Command
 
         $bar->start();
 
-        $users->chunk(10, function($results) use ($bar){
-            $results->each(function($user) use ($bar){
-                Mail::to($user)->queue(new Announcement($user));
-                $user->has_sent_announcement = true;
-                $user->save();
+        $users->each(function($user) use ($bar){
+            Mail::to($user)->queue(new Announcement($user));
+            $user->has_sent_announcement = true;
+            $user->save();
 
-                $bar->advance();
-            });
-            sleep(1);
+            $bar->advance();
+
+            usleep(100000);
         });
 
         $bar->finish();
