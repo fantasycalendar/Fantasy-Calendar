@@ -57,23 +57,35 @@ class SendAnnouncementEmail extends Command
             $users = $users->whereIn('id', explode(',', $ids));
         }
 
-        if(!$users->count()) {
+        $total = $users->count();
+
+        if(!$total) {
             $this->error("No users matched your search. Check your SQL or your IDs and try again.");
             exit(1);
         }
 
-        if($users->count() > 500 && !$this->confirm(sprintf('Found %d users, send them all?', $users->count()))) {
+        if($total > 500 && !$this->confirm(sprintf('Found %d users, send them all?', $total))) {
             $this->warn('Stopping here, no users were sent to.');
             exit(1);
         }
 
-        $users->chunk(10, function($results){
-            $results->each(function($user){
+        $bar = $this->output->createProgressBar($total);
+
+        $bar->start();
+
+        $users->chunk(10, function($results) use ($bar){
+            $results->each(function($user) use ($bar){
                 Mail::to($user)->queue(new Announcement($user));
                 $user->has_sent_announcement = true;
                 $user->save();
+
+                $bar->advance();
             });
             sleep(1);
         });
+
+        $bar->finish();
+
+        $this->info("\nEmail sent to " . $total);
     }
 }
