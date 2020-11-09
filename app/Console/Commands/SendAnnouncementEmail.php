@@ -42,9 +42,12 @@ class SendAnnouncementEmail extends Command
     {
         User::whereNull('agreed_at')->chunk(10, function($users){
             $users->each(function($user){
-                Mail::to($user)->send(new Announcement($user));
+                if(!$user->has_sent_announcement){
+                    Mail::to($user)->queue(new Announcement($user));
+                    $user->has_sent_announcement = true;
+                    $user->save();
+                }
             });
-            sleep(1.5);
         });
     }
 }
