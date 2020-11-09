@@ -986,12 +986,40 @@ function set_up_edit_inputs(){
 		var prev_id = (season_id-1)%static_data.seasons.data.length
 		if(prev_id < 0) prev_id += static_data.seasons.data.length
 
-		var prev_season = static_data.seasons.locations[location_id].seasons[prev_id];
-		var next_season = static_data.seasons.locations[location_id].seasons[(season_id+1)%static_data.seasons.data.length];
+		var next_id = (season_id+1)%static_data.seasons.data.length;
 
-		var season_length = static_data.seasons.data[prev_id].duration+static_data.seasons.data[prev_id].transition_length+static_data.seasons.data[season_id].duration+static_data.seasons.data[season_id].transition_length;
-		var target = static_data.seasons.data[prev_id].duration+static_data.seasons.data[prev_id].transition_length;
-		var perc = target/season_length;
+		if(static_data.seasons.global_settings.periodic_seasons){
+
+			var season_length = static_data.seasons.data[prev_id].duration+static_data.seasons.data[prev_id].transition_length+static_data.seasons.data[season_id].duration+static_data.seasons.data[season_id].transition_length;
+			var target = static_data.seasons.data[prev_id].duration+static_data.seasons.data[prev_id].transition_length;
+			var perc = target/season_length;
+				
+		}else{
+
+			let prev_season = static_data.seasons.data[prev_id];
+			let curr_season = static_data.seasons.data[season_id];
+			let next_season = static_data.seasons.data[next_id];
+
+			let prev_year = 2;
+			if(prev_id > season_id){
+				prev_year--;
+			}
+
+			let next_year = 2;
+			if(next_id < season_id){
+				next_year++;
+			}
+
+			let prev_day = evaluate_calendar_start(static_data, prev_year, prev_season.timespan, prev_season.day).epoch;
+			let curr_day = evaluate_calendar_start(static_data, 2, curr_season.timespan, curr_season.day).epoch-prev_day;
+			let next_day = evaluate_calendar_start(static_data, next_year, next_season.timespan, next_season.day).epoch-prev_day;
+
+			var perc = curr_day/next_day;
+
+		}
+
+		var prev_season = static_data.seasons.locations[location_id].seasons[prev_id];
+		var next_season = static_data.seasons.locations[location_id].seasons[next_id];
 
 		if(static_data.clock.enabled){
 
@@ -1059,12 +1087,40 @@ function set_up_edit_inputs(){
 		var prev_id = (season_id-1)%static_data.seasons.data.length
 		if(prev_id < 0) prev_id += static_data.seasons.data.length
 
-		var prev_season = static_data.seasons.data[prev_id];
-		var next_season = static_data.seasons.data[(season_id+1)%static_data.seasons.data.length];
+		var next_id = (season_id+1)%static_data.seasons.data.length;
 
-		var season_length = static_data.seasons.data[prev_id].duration+static_data.seasons.data[prev_id].transition_length+static_data.seasons.data[season_id].duration+static_data.seasons.data[season_id].transition_length;
-		var target = static_data.seasons.data[prev_id].duration+static_data.seasons.data[prev_id].transition_length;
-		var perc = target/season_length;
+		var prev_season = static_data.seasons.data[prev_id];
+		var next_season = static_data.seasons.data[next_id];
+
+		if(static_data.seasons.global_settings.periodic_seasons){
+
+			var season_length = static_data.seasons.data[prev_id].duration+static_data.seasons.data[prev_id].transition_length+static_data.seasons.data[season_id].duration+static_data.seasons.data[season_id].transition_length;
+			var target = static_data.seasons.data[prev_id].duration+static_data.seasons.data[prev_id].transition_length;
+			var perc = target/season_length;
+				
+		}else{
+
+			let prev_season = static_data.seasons.data[prev_id];
+			let curr_season = static_data.seasons.data[season_id];
+			let next_season = static_data.seasons.data[next_id];
+
+			let prev_year = 2;
+			if(prev_id > season_id){
+				prev_year--;
+			}
+
+			let next_year = 2;
+			if(next_id < season_id){
+				next_year++;
+			}
+
+			let prev_day = evaluate_calendar_start(static_data, prev_year, prev_season.timespan, prev_season.day).epoch;
+			let curr_day = evaluate_calendar_start(static_data, 2, curr_season.timespan, curr_season.day).epoch-prev_day;
+			let next_day = evaluate_calendar_start(static_data, next_year, next_season.timespan, next_season.day).epoch-prev_day;
+
+			var perc = curr_day/next_day;
+			
+		}
 
 		if(static_data.clock.enabled){
 
