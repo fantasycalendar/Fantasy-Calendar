@@ -14,7 +14,7 @@ class AddAnnouncementColumnsToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->boolean('has_sent_announcement');
+            $table->boolean('has_sent_announcement')->default(0);
         });
     }
 
