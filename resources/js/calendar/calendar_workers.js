@@ -2476,10 +2476,10 @@ var event_evaluator = {
 
 					}
 
-				}else if(array[0] === 'Weekday' && (array[1] === "0" || array[1] === "1")){
+				}else if(array[0] === 'Weekday'){
 					var selected = epoch_data[selector];
 					var cond_1 = !isNaN(Number(values[subcon[2]])) ? Number(values[subcon[2]]) : values[subcon[2]];
-					if(!isNaN(cond_1)){
+					if(!isNaN(cond_1) && (array[1] === "0" || array[1] === "1")){
 						cond_1 = event_evaluator.static_data.year_data.global_week[cond_1];
 					}
 					var cond_2 = values[subcon[3]] ? values[subcon[3]] : undefined;
@@ -2611,8 +2611,8 @@ var event_evaluator = {
 
 			this.current_event = event_evaluator.events[event_index];
 
-			if(this.current_event.data.conditions[this.current_event.data.conditions.length-1] == "&&"){
-				this.current_event.data.conditions[this.current_event.data.conditions.length-1].pop();
+			if(this.current_event.data.conditions[this.current_event.data.conditions.length-1].length == 1){
+				this.current_event.data.conditions.pop();
 			}
 
 			if(this.current_event.data.date !== undefined && this.current_event.data.date.length === 3){
