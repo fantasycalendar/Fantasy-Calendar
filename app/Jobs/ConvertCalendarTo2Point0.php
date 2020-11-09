@@ -727,15 +727,15 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
 
                         if(isset($this->moons[$index])){
 
+                            if(count($conditions) % 2 == 1) {
+                                $conditions[] = ['&&'];
+                            }
+
                             $conditions[] = [
                                 'Moons',
                                 '0',
                                 ["$index", $moon->moon_phase]
                             ];
-
-                            if(count($conditions) % 2 == 1 && $index != (count($data->moons)-1)) {
-                                $conditions[] = ['&&'];
-                            }
 
                         }
 
