@@ -14,7 +14,7 @@ class SendAnnouncementEmail extends Command
      *
      * @var string
      */
-    protected $signature = 'announcement:send';
+    protected $signature = 'announcement:send {--ids=} {--where=} {--force}';
 
     /**
      * The console command description.
@@ -40,9 +40,22 @@ class SendAnnouncementEmail extends Command
      */
     public function handle()
     {
-        User::whereNull('agreed_at')->chunk(10, function($users){
+        $users = User::whereNull('agreed_at');
+
+        if($where = $this->option('where')) {
+            $users = $users->whereRaw($where);
+        } else if($ids = $this->option('ids')) {
+            $users = $users->whereIn('id', explode(',', $ids));
+        }
+
+        if($users->count() > 500 && !$this->confirm(sprintf('Found %d users, convert them all?', $users->count()))) {
+            $this->warn('Stopping here, no users were converted.');
+            exit(1);
+        }
+        
+        $users->chunk(10, function($users){
             $users->each(function($user){
-                if(!$user->has_sent_announcement){
+                if(!$user->has_sent_announcement || $this->option('force')){
                     Mail::to($user)->queue(new Announcement($user));
                     $user->has_sent_announcement = true;
                     $user->save();
