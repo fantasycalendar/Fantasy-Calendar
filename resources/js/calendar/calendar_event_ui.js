@@ -389,7 +389,6 @@ var edit_event_ui = {
 					item.remove();
 				}
 
-				//$('#condition_remove_button').click();
 				edit_event_ui.evaluate_condition_selects(edit_event_ui.event_conditions_container);
 				edit_event_ui.show_hide_event_testing();
 				edit_event_ui.inputs_changed = true;
@@ -422,7 +421,6 @@ var edit_event_ui = {
 
 						if(!result.dismiss) {
 							group_list.parent().remove();
-							//$('#condition_remove_button').click();
 							edit_event_ui.evaluate_condition_selects(edit_event_ui.event_conditions_container);
 							edit_event_ui.show_hide_event_testing();
 							edit_event_ui.inputs_changed = true;
@@ -432,7 +430,6 @@ var edit_event_ui = {
 
 				}else{
 					group_list.parent().remove();
-					//$('#condition_remove_button').click();
 					edit_event_ui.evaluate_condition_selects(edit_event_ui.event_conditions_container);
 					edit_event_ui.show_hide_event_testing();
 					edit_event_ui.inputs_changed = true;
@@ -492,14 +489,14 @@ var edit_event_ui = {
 	set_delete_element(element){
 		if(this.delete_hover_element !== undefined){
 			this.delete_hover_element.removeClass('hover').removeClass('cursor-pointer');
-			this.delete_hover_element.find('select').prop('disabled', false);
+			this.delete_hover_element.find('select').not('.condition_operator').prop('disabled', false);
 			this.delete_hover_element.find('input').prop('disabled', false);
 			this.delete_hover_element.find('.icon-reorder').addClass('handle');
 		}
 		this.delete_hover_element = element;
 		if(this.delete_hover_element !== undefined){
 			this.delete_hover_element.addClass('hover').addClass('cursor-pointer');
-			this.delete_hover_element.find('select').prop('disabled', true);
+			this.delete_hover_element.find('select').not('.condition_operator').prop('disabled', true);
 			this.delete_hover_element.find('input').prop('disabled', true);
 			this.delete_hover_element.find('.icon-reorder').removeClass('handle');
 		}
@@ -1350,7 +1347,7 @@ var edit_event_ui = {
 
 			var condition_operator = $(this).children('.condition_operator');
 
-			if(!condition_operator.prop('disabled')){
+			if(!condition_operator.prop('disabled') && $(this).next().length != 0){
 				array.push([condition_operator.val()])
 			}
 
@@ -2027,7 +2024,7 @@ var edit_event_ui = {
 			html.push("</div>");
 			html.push("<div class='handle icon-reorder'></div>");
 			html.push("<ol class='group_list'></ol>");
-			html.push("<select class='form-control condition_operator'>");
+			html.push("<select class='form-control condition_operator' disabled>");
 				html.push("<option value='&&'>AND  - both must be true</option>");
 				html.push("<option value='NAND'>NAND - neither can be true</option>");
 				html.push("<option value='||'>OR   - at least one is true</option>");
@@ -2057,10 +2054,10 @@ var edit_event_ui = {
 
 		element.children().each(function(){
 
-			if($(this).next().length === 0){
-				$(this).children('.condition_operator').prop('disabled', true).addClass('hidden');
+			if($(this).next().length == 0){
+				$(this).find('.condition_operator').prop('disabled', true).addClass('hidden');
 			}else{
-				$(this).children('.condition_operator').prop('disabled', false).removeClass('hidden');
+				$(this).find('.condition_operator').prop('disabled', false).removeClass('hidden');
 			}
 
 			if($(this).hasClass('group')){

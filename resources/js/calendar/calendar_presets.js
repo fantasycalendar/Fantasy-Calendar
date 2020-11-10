@@ -1726,7 +1726,10 @@ function process_donjon(calendar, dynamic_data, static_data){
 		success: true,
 		name: "New Calendar",
 		dynamic_data: dynamic_data,
-		static_data: static_data
+		static_data: static_data,
+		event_categories: [],
+		events: []
+
 	}
 
 }
