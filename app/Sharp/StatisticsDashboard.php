@@ -61,6 +61,9 @@ class StatisticsDashboard extends SharpDashboard
         $user_model = new User();
         $subscription_model = new Subscription();
 
+
+        /* User growth and total users */
+
         $users = $user_model->whereNull('deleted_at')->where('created_at', '<', now()->firstOfMonth())->get();
 
         $user_count_per_month = $users
@@ -76,7 +79,10 @@ class StatisticsDashboard extends SharpDashboard
             $total_users += $number_of_users;
         }
 
-        $agreed_users = $user_model->whereNull('deleted_at')->where('agreed_at', '<', now()->firstOfMonth())->get();
+
+        /* Total users converted to 2.0 per day */
+
+        $agreed_users = $user_model->whereNull('deleted_at')->where('agreed_at', '<', now())->get();
 
         $user_agreements_per_day = $agreed_users
             ->groupBy(function($user) {
@@ -92,7 +98,10 @@ class StatisticsDashboard extends SharpDashboard
             $total_users += $number_of_users;
         }
 
-        $monthly_subscriptions = $subscription_model->where('stripe_plan', '=', 'timekeeper_monthly')->active()->get();
+
+        /* Monthly subscribers per day */
+
+        $monthly_subscriptions = $subscription_model->where('stripe_plan', '=', 'timekeeper_monthly')->get();
         $monthly_grouped_subscription = $monthly_subscriptions->groupBy(function($subscription) {
             return Carbon::parse($subscription->created_at)->format('Y-m-d');
         })->mapWithKeys(function($subscriptions, $date) {
@@ -105,8 +114,11 @@ class StatisticsDashboard extends SharpDashboard
             $monthly_subscriptions_over_time[$date] = $number_of_subscriptions + $monthly_total_subscriptions;
             $monthly_total_subscriptions += $number_of_subscriptions;
         }
+
         
-        $yearly_subscriptions = $subscription_model->where('stripe_plan', '=', 'timekeeper_yearly')->active()->get();
+        /* Yearly subscribers per day */
+
+        $yearly_subscriptions = $subscription_model->where('stripe_plan', '=', 'timekeeper_yearly')->get();
         $yearly_grouped_subscription = $yearly_subscriptions->groupBy(function($subscription) {
             return Carbon::parse($subscription->created_at)->format('Y-m-d');
         })->mapWithKeys(function($subscriptions, $date) {
