@@ -79,6 +79,7 @@ class RegisterController extends Controller
             'beta_authorised' => 0,
             'permissions' => 6,
             'migrated' => 1,
+            'agreed_at' => now(),
             'agreement_id' => Agreement::current()->id,
             'policy_id' => Policy::current()->id,
             'marketing_opt_in_at' => Arr::has($data, 'marketing_acceptance') ? now() : null
