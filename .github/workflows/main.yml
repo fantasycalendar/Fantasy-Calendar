@@ -1,7 +1,6 @@
 on:
-  push:
-    branches:
-      - master
+  release:
+    types: [released]
 name: Deploy master branch
 jobs:
   deploy:
