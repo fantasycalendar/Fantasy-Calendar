@@ -257,8 +257,6 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                         'name' => $name,
                         'seasons' => [
                             [
-                                'name' => '',
-                                'custom_name' => false,
                                 'time' => [
                                     'sunrise' => [
                                         'hour' => $first_season['rise'],
@@ -277,8 +275,6 @@ class ConvertCalendarTo2Point0 implements ShouldQueue
                                 ]
                             ],
                             [
-                                'name' => '',
-                                'custom_name' => false,
                                 'time' => [
                                     'sunrise' => [
                                         'hour' => $second_season['rise'],

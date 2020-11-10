@@ -681,8 +681,6 @@ var preset_data = {
 				'name': 'Cool and Rainy',
 				'seasons': [
 					{
-						'name': 'Winter',
-						'custom_name': true,
 						'weather': {
 							'temp_low': 5,
 							'temp_high': 40,
@@ -691,8 +689,6 @@ var preset_data = {
 						}
 					},
 					{
-						'name': 'Summer',
-						'custom_name': true,
 						'weather': {
 							'temp_low': 60,
 							'temp_high': 85,
@@ -706,8 +702,6 @@ var preset_data = {
 				'name': 'Cool with Dry Winter',
 				'seasons': [
 					{
-						'name': 'Winter',
-						'custom_name': true,
 						'weather': {
 							'temp_low': 5,
 							'temp_high': 40,
@@ -716,8 +710,6 @@ var preset_data = {
 						}
 					},
 					{
-						'name': 'Summer',
-						'custom_name': true,
 						'weather': {
 							'temp_low': 60,
 							'temp_high': 85,
@@ -731,8 +723,6 @@ var preset_data = {
 				'name': 'Warm and Rainy',
 				'seasons': [
 					{
-						'name': 'Winter',
-						'custom_name': true,
 						'weather': {
 							'temp_low': 10,
 							'temp_high': 50,
@@ -741,8 +731,6 @@ var preset_data = {
 						}
 					},
 					{
-						'name': 'Summer',
-						'custom_name': true,
 						'weather': {
 							'temp_low': 50,
 							'temp_high': 85,
@@ -756,8 +744,6 @@ var preset_data = {
 				'name': 'Warm with Dry Summer',
 				'seasons': [
 					{
-						'name': 'Winter',
-						'custom_name': true,
 						'weather': {
 							'temp_low': 10,
 							'temp_high': 60,
@@ -766,8 +752,6 @@ var preset_data = {
 						}
 					},
 					{
-						'name': 'Summer',
-						'custom_name': true,
 						'weather': {
 							'temp_low': 60,
 							'temp_high': 95,
@@ -781,8 +765,6 @@ var preset_data = {
 				'name': 'Warm with Dry Winter',
 				'seasons': [
 					{
-						'name': 'Winter',
-						'custom_name': true,
 						'weather': {
 							'temp_low': 32,
 							'temp_high': 50,
@@ -791,8 +773,6 @@ var preset_data = {
 						}
 					},
 					{
-						'name': 'Summer',
-						'custom_name': true,
 						'weather': {
 							'temp_low': 70,
 							'temp_high': 110,
@@ -806,8 +786,6 @@ var preset_data = {
 				'name': 'Equatorial',
 				'seasons': [
 					{
-						'name': 'Dry',
-						'custom_name': true,
 						'weather': {
 							'temp_low': 60,
 							'temp_high': 100,
@@ -816,8 +794,6 @@ var preset_data = {
 						}
 					},
 					{
-						'name': 'Wet',
-						'custom_name': true,
 						'weather': {
 							'temp_low': 60,
 							'temp_high': 100,
@@ -831,8 +807,6 @@ var preset_data = {
 				'name': 'Monsoon',
 				'seasons': [
 					{
-						'name': 'Dry',
-						'custom_name': true,
 						'weather': {
 							'temp_low': 70,
 							'temp_high': 120,
@@ -841,8 +815,6 @@ var preset_data = {
 						}
 					},
 					{
-						'name': 'Wet',
-						'custom_name': true,
 						'weather': {
 							'temp_low': 70,
 							'temp_high': 120,
@@ -856,8 +828,6 @@ var preset_data = {
 				'name': 'Desert',
 				'seasons': [
 					{
-						'name': 'Dry',
-						'custom_name': true,
 						'weather': {
 							'temp_low': 55,
 							'temp_high': 70,
@@ -866,8 +836,6 @@ var preset_data = {
 						}
 					},
 					{
-						'name': 'Wet',
-						'custom_name': true,
 						'weather': {
 							'temp_low': 65,
 							'temp_high': 110,
@@ -881,8 +849,6 @@ var preset_data = {
 				'name': 'Tropical Savannah',
 				'seasons': [
 					{
-						'name': 'Dry',
-						'custom_name': true,
 						'weather': {
 							'temp_low': 75,
 							'temp_high': 115,
@@ -891,8 +857,6 @@ var preset_data = {
 						}
 					},
 					{
-						'name': 'Wet',
-						'custom_name': true,
 						'weather': {
 							'temp_low': 75,
 							'temp_high': 115,
@@ -906,8 +870,6 @@ var preset_data = {
 				'name': 'Steppes',
 				'seasons': [
 					{
-						'name': 'Winter',
-						'custom_name': true,
 						'weather': {
 							'temp_low': 35,
 							'temp_high': 50,
@@ -916,8 +878,6 @@ var preset_data = {
 						}
 					},
 					{
-						'name': 'Summer',
-						'custom_name': true,
 						'weather': {
 							'temp_low': 70,
 							'temp_high': 115,
@@ -931,8 +891,6 @@ var preset_data = {
 				'name': 'Tundra',
 				'seasons': [
 					{
-						'name': 'Winter',
-						'custom_name': true,
 						'weather': {
 							'temp_low': -35,
 							'temp_high': -15,
@@ -941,8 +899,6 @@ var preset_data = {
 						}
 					},
 					{
-						'name': 'Summer',
-						'custom_name': true,
 						'weather': {
 							'temp_low': 35,
 							'temp_high': 55,
@@ -956,8 +912,6 @@ var preset_data = {
 				'name': 'Polar: Arctic',
 				'seasons': [
 					{
-						'name': 'Winter',
-						'custom_name': true,
 						'weather': {
 							'temp_low': -20,
 							'temp_high': -10,
@@ -966,8 +920,6 @@ var preset_data = {
 						}
 					},
 					{
-						'name': 'Summer',
-						'custom_name': true,
 						'weather': {
 							'temp_low': 50,
 							'temp_high': 70,
@@ -981,8 +933,6 @@ var preset_data = {
 				'name': 'Polar: Antarctic',
 				'seasons': [
 					{
-						'name': 'Winter',
-						'custom_name': true,
 						'weather': {
 							'temp_low': -81,
 							'temp_high': -65,
@@ -991,8 +941,6 @@ var preset_data = {
 						}
 					},
 					{
-						'name': 'Summer',
-						'custom_name': true,
 						'weather': {
 							'temp_low': -22,
 							'temp_high': -15,
@@ -1009,8 +957,6 @@ var preset_data = {
 				"name":"Cool and Rainy",
 				"seasons":[
 					{
-						"name":"Winter",
-						"custom_name":true,
 						"weather":{
 							"temp_low":5,
 							"temp_high":40,
@@ -1019,8 +965,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Spring",
-						"custom_name":true,
 						"weather":{
 							"temp_low":32.5,
 							"temp_high":62.5,
@@ -1029,8 +973,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Summer",
-						"custom_name":true,
 						"weather":{
 							"temp_low":60,
 							"temp_high":85,
@@ -1039,8 +981,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Autumn",
-						"custom_name":true,
 						"weather":{
 							"temp_low":32.5,
 							"temp_high":62.5,
@@ -1054,8 +994,6 @@ var preset_data = {
 				"name":"Cool with Dry Winter",
 				"seasons":[
 					{
-						"name":"Winter",
-						"custom_name":true,
 						"weather":{
 							"temp_low":5,
 							"temp_high":40,
@@ -1064,8 +1002,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Spring",
-						"custom_name":true,
 						"weather":{
 							"temp_low":32.5,
 							"temp_high":62.5,
@@ -1074,8 +1010,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Summer",
-						"custom_name":true,
 						"weather":{
 							"temp_low":60,
 							"temp_high":85,
@@ -1084,8 +1018,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Autumn",
-						"custom_name":true,
 						"weather":{
 							"temp_low":32.5,
 							"temp_high":62.5,
@@ -1099,8 +1031,6 @@ var preset_data = {
 				"name":"Warm and Rainy",
 				"seasons":[
 					{
-						"name":"Winter",
-						"custom_name":true,
 						"weather":{
 							"temp_low":10,
 							"temp_high":50,
@@ -1109,8 +1039,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Spring",
-						"custom_name":true,
 						"weather":{
 							"temp_low":30.0,
 							"temp_high":67.5,
@@ -1119,8 +1047,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Summer",
-						"custom_name":true,
 						"weather":{
 							"temp_low":50,
 							"temp_high":85,
@@ -1129,8 +1055,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Autumn",
-						"custom_name":true,
 						"weather":{
 							"temp_low":30.0,
 							"temp_high":67.5,
@@ -1144,8 +1068,6 @@ var preset_data = {
 				"name":"Warm with Dry Summer",
 				"seasons":[
 					{
-						"name":"Winter",
-						"custom_name":true,
 						"weather":{
 							"temp_low":10,
 							"temp_high":60,
@@ -1154,8 +1076,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Spring",
-						"custom_name":true,
 						"weather":{
 							"temp_low":35.0,
 							"temp_high":77.5,
@@ -1164,8 +1084,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Summer",
-						"custom_name":true,
 						"weather":{
 							"temp_low":60,
 							"temp_high":95,
@@ -1174,8 +1092,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Autumn",
-						"custom_name":true,
 						"weather":{
 							"temp_low":35.0,
 							"temp_high":77.5,
@@ -1189,8 +1105,6 @@ var preset_data = {
 				"name":"Warm with Dry Winter",
 				"seasons":[
 					{
-						"name":"Winter",
-						"custom_name":true,
 						"weather":{
 							"temp_low":32,
 							"temp_high":50,
@@ -1199,8 +1113,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Spring",
-						"custom_name":true,
 						"weather":{
 							"temp_low":51.0,
 							"temp_high":80.0,
@@ -1209,8 +1121,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Summer",
-						"custom_name":true,
 						"weather":{
 							"temp_low":70,
 							"temp_high":110,
@@ -1219,8 +1129,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Autumn",
-						"custom_name":true,
 						"weather":{
 							"temp_low":51.0,
 							"temp_high":80.0,
@@ -1234,8 +1142,6 @@ var preset_data = {
 				"name":"Equatorial",
 				"seasons":[
 					{
-						"name":"Winter",
-						"custom_name":true,
 						"weather":{
 							"temp_low":57,
 							"temp_high":70,
@@ -1244,8 +1150,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Spring",
-						"custom_name":true,
 						"weather":{
 							"temp_low":56.0,
 							"temp_high":68.0,
@@ -1254,8 +1158,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Summer",
-						"custom_name":true,
 						"weather":{
 							"temp_low":55,
 							"temp_high":66,
@@ -1264,8 +1166,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Autumn",
-						"custom_name":true,
 						"weather":{
 							"temp_low":56.0,
 							"temp_high":68.0,
@@ -1279,8 +1179,6 @@ var preset_data = {
 				"name":"Monsoon",
 				"seasons":[
 					{
-						"name":"Winter",
-						"custom_name":true,
 						"weather":{
 							"temp_low":70,
 							"temp_high":90,
@@ -1289,8 +1187,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Spring",
-						"custom_name":true,
 						"weather":{
 							"temp_low":70.0,
 							"temp_high":90.0,
@@ -1299,8 +1195,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Summer",
-						"custom_name":true,
 						"weather":{
 							"temp_low":70,
 							"temp_high":90,
@@ -1309,8 +1203,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Autumn",
-						"custom_name":true,
 						"weather":{
 							"temp_low":70.0,
 							"temp_high":90.0,
@@ -1324,8 +1216,6 @@ var preset_data = {
 				"name":"Warm Desert",
 				"seasons":[
 					{
-						"name":"Winter",
-						"custom_name":true,
 						"weather":{
 							"temp_low":55,
 							"temp_high":70,
@@ -1334,8 +1224,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Spring",
-						"custom_name":true,
 						"weather":{
 							"temp_low":60.0,
 							"temp_high":90.0,
@@ -1344,8 +1232,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Summer",
-						"custom_name":true,
 						"weather":{
 							"temp_low":65,
 							"temp_high":110,
@@ -1354,8 +1240,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Autumn",
-						"custom_name":true,
 						"weather":{
 							"temp_low":60.0,
 							"temp_high":90.0,
@@ -1369,8 +1253,6 @@ var preset_data = {
 				"name":"Cold Desert",
 				"seasons":[
 					{
-						"name":"Winter",
-						"custom_name":true,
 						"weather":{
 							"temp_low":7,
 							"temp_high":25,
@@ -1379,8 +1261,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Spring",
-						"custom_name":true,
 						"weather":{
 							"temp_low":29.5,
 							"temp_high":51.0,
@@ -1389,8 +1269,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Summer",
-						"custom_name":true,
 						"weather":{
 							"temp_low":52,
 							"temp_high":77,
@@ -1399,8 +1277,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Autumn",
-						"custom_name":true,
 						"weather":{
 							"temp_low":29.5,
 							"temp_high":51.0,
@@ -1414,8 +1290,6 @@ var preset_data = {
 				"name":"Tropical Savanna",
 				"seasons":[
 					{
-						"name":"Winter",
-						"custom_name":true,
 						"weather":{
 							"temp_low":75,
 							"temp_high":115,
@@ -1424,8 +1298,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Autumn",
-						"custom_name":true,
 						"weather":{
 							"temp_low":75.0,
 							"temp_high":115.0,
@@ -1434,8 +1306,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Summer",
-						"custom_name":true,
 						"weather":{
 							"temp_low":75,
 							"temp_high":115,
@@ -1444,8 +1314,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Autumn",
-						"custom_name":true,
 						"weather":{
 							"temp_low":75.0,
 							"temp_high":115.0,
@@ -1459,8 +1327,6 @@ var preset_data = {
 				"name":"Steppes",
 				"seasons":[
 					{
-						"name":"Winter",
-						"custom_name":true,
 						"weather":{
 							"temp_low":35,
 							"temp_high":50,
@@ -1469,8 +1335,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Spring",
-						"custom_name":true,
 						"weather":{
 							"temp_low":52.5,
 							"temp_high":82.5,
@@ -1479,8 +1343,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Summer",
-						"custom_name":true,
 						"weather":{
 							"temp_low":70,
 							"temp_high":115,
@@ -1489,8 +1351,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Autumn",
-						"custom_name":true,
 						"weather":{
 							"temp_low":52.5,
 							"temp_high":82.5,
@@ -1504,8 +1364,6 @@ var preset_data = {
 				"name":"Tundra",
 				"seasons":[
 					{
-						"name":"Winter",
-						"custom_name":true,
 						"weather":{
 							"temp_low":-35,
 							"temp_high":-15,
@@ -1514,8 +1372,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Spring",
-						"custom_name":true,
 						"weather":{
 							"temp_low":0.0,
 							"temp_high":20.0,
@@ -1524,8 +1380,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Summer",
-						"custom_name":true,
 						"weather":{
 							"temp_low":35,
 							"temp_high":55,
@@ -1534,8 +1388,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Autumn",
-						"custom_name":true,
 						"weather":{
 							"temp_low":0.0,
 							"temp_high":20.0,
@@ -1549,8 +1401,6 @@ var preset_data = {
 				"name":"Polar: Arctic",
 				"seasons":[
 					{
-						"name":"Winter",
-						"custom_name":true,
 						"weather":{
 							"temp_low":-20,
 							"temp_high":-10,
@@ -1559,8 +1409,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Spring",
-						"custom_name":true,
 						"weather":{
 							"temp_low":15.0,
 							"temp_high":30.0,
@@ -1569,8 +1417,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Summer",
-						"custom_name":true,
 						"weather":{
 							"temp_low":50,
 							"temp_high":70,
@@ -1579,8 +1425,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Autumn",
-						"custom_name":true,
 						"weather":{
 							"temp_low":15.0,
 							"temp_high":30.0,
@@ -1594,8 +1438,6 @@ var preset_data = {
 				"name":"Polar: Antarctic",
 				"seasons":[
 					{
-						"name":"Winter",
-						"custom_name":true,
 						"weather":{
 							"temp_low":-81,
 							"temp_high":-65,
@@ -1604,8 +1446,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Spring",
-						"custom_name":true,
 						"weather":{
 							"temp_low":-51.5,
 							"temp_high":-40.0,
@@ -1614,8 +1454,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Summer",
-						"custom_name":true,
 						"weather":{
 							"temp_low":-22,
 							"temp_high":-15,
@@ -1624,8 +1462,6 @@ var preset_data = {
 						}
 					},
 					{
-						"name":"Autumn",
-						"custom_name":true,
 						"weather":{
 							"temp_low":-51.5,
 							"temp_high":-40.0,
