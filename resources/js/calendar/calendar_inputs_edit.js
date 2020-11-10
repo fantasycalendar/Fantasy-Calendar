@@ -1369,6 +1369,10 @@ function set_up_edit_inputs(){
 				$(this).closest('.sortable-container').remove();
 				$(this).closest('.sortable-container').parent().sortable('refresh');
 				reindex_timespan_sortable();
+				dynamic_date_manager.cap_timespan();
+				dynamic_data.timespan = dynamic_date_manager.timespan;
+				dynamic_data.epoch = dynamic_date_manager.epoch;
+				update_current_day(true);
 				recalc_stats();
 				break;
 

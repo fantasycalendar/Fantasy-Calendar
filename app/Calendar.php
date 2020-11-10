@@ -128,6 +128,10 @@ class Calendar extends Model
 
         $month_id = $this->dynamic_data['timespan'] ?? $this->dynamic_data['month'] ?? 0;
 
+        if(!array_key_exists($month_id, $this->static_data['year_data']['timespans'])) {
+            return "N/A";
+        }
+
         $year = $this->dynamic_data['year'];
         $month = $this->static_data['year_data']['timespans'][$month_id]['name'];
         $day = $this->dynamic_data['day'];
