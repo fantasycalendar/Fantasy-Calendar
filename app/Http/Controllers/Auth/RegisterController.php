@@ -97,6 +97,8 @@ class RegisterController extends Controller
 
         event(new Registered($user = $this->create($request->all())));
 
+        $user->setSettings($request->only(['dark_theme']));
+
         $this->guard()->login($user);
 
         return $this->registered($request, $user)
