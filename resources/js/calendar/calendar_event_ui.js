@@ -2191,11 +2191,7 @@ var edit_event_ui = {
 				edit_event_ui.event_occurrences_page = 1;
 				edit_event_ui.show_event_dates();
 
-				if(edit_event_ui.new_event){
-
-					events.splice(edit_event_ui.event_id, 1);
-
-				}else{
+				if(!edit_event_ui.new_event){
 
 					events[edit_event_ui.event_id].data = clone(edit_event_ui.backup_event_data)
 					edit_event_ui.backup_event_data = {}
