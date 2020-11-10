@@ -61,7 +61,7 @@ class StatisticsDashboard extends SharpDashboard
         $user_model = new User();
         $subscription_model = new Subscription();
 
-        $users = $user_model->where('active', 1)->where('created_at', '<', now()->firstOfMonth())->get();
+        $users = $user_model->whereNull('deleted_at')->where('created_at', '<', now()->firstOfMonth())->get();
 
         $user_count_per_month = $users
             ->groupBy(function($user) {
@@ -76,7 +76,7 @@ class StatisticsDashboard extends SharpDashboard
             $total_users += $number_of_users;
         }
 
-        $agreed_users = $user_model->where('active', 1)->where('agreed_at', '<', now()->firstOfMonth())->get();
+        $agreed_users = $user_model->whereNull('deleted_at')->where('agreed_at', '<', now()->firstOfMonth())->get();
 
         $user_agreements_per_day = $agreed_users
             ->groupBy(function($user) {
