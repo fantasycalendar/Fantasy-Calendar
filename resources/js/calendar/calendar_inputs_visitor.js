@@ -97,7 +97,7 @@ function context_add_event(key, opt){
 
 	var epoch = $(opt.$trigger[0]).attr('epoch')|0;
 
-	edit_event_ui.create_new_event('New Event', epoch);
+	edit_event_ui.create_new_event('', epoch);
 
 }
 

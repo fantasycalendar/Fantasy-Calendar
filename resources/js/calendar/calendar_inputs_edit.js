@@ -1302,7 +1302,7 @@ function set_up_edit_inputs(){
 	$('.add_inputs.events .add').click(function(){
 		var name = $('#event_name_input');
 
-		var name_val = name.val() == "" ? `New Event` : name.val();
+		var name_val = name.val();
 
 		var epoch = undefined;
 
