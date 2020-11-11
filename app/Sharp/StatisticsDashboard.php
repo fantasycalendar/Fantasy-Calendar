@@ -110,7 +110,7 @@ class StatisticsDashboard extends SharpDashboard
         $monthly_subscriptions_over_time = [];
 
         foreach($period as $dateObject) {
-            $date = $date->format('Y-m-d');
+            $date = $dateObject->format('Y-m-d');
 
             $yearly_subscriptions_over_time[$date] = $yearly_subscriptions->where('created_at', '<', $date)->count();
             $monthly_subscriptions_over_time[$date] = $monthly_subscriptions->where('created_at', '<', $date)->count();
