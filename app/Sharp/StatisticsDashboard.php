@@ -4,6 +4,8 @@ namespace App\Sharp;
 
 use App\User;
 
+use Carbon\CarbonPeriod;
+use Illuminate\Support\Arr;
 use Laravel\Cashier\Subscription;
 
 use Code16\Sharp\Dashboard\DashboardQueryParams;
@@ -23,19 +25,19 @@ class StatisticsDashboard extends SharpDashboard
         $this->addWidget(
             SharpLineGraphWidget::make("usergrowth_month")
                 ->setTitle("User growth per month")
-    
+
         )->addWidget(
             SharpLineGraphWidget::make("users_over_time")
                 ->setTitle("Total users over time")
-    
+
         )->addWidget(
             SharpLineGraphWidget::make("agreement_over_time")
                 ->setTitle("2.0 Users Over Time")
-    
+
         )->addWidget(
             SharpLineGraphWidget::make("subs_over_time")
                 ->setTitle("Subscriptions")
-    
+
         );
     }
 
@@ -72,7 +74,7 @@ class StatisticsDashboard extends SharpDashboard
             })->mapWithKeys(function($users, $date) {
                 return [$date => count($users)];
             });
-        
+
         $total_users = 0;
         foreach ($user_count_per_month as $date => $number_of_users) {
             $user_count_over_time[$date] = $number_of_users + $total_users;
@@ -90,7 +92,7 @@ class StatisticsDashboard extends SharpDashboard
             })->mapWithKeys(function($users, $date) {
                 return [$date => count($users)];
             });
-        
+
         $total_users = 0;
         $user_agreement_over_time = [];
         foreach ($user_agreements_per_day as $date => $number_of_users) {
@@ -99,37 +101,19 @@ class StatisticsDashboard extends SharpDashboard
         }
 
 
-        /* Monthly subscribers per day */
+        $period = CarbonPeriod::create(now()->subDays(14),now());
 
         $monthly_subscriptions = $subscription_model->where('stripe_plan', '=', 'timekeeper_monthly')->get();
-        $monthly_grouped_subscription = $monthly_subscriptions->groupBy(function($subscription) {
-            return Carbon::parse($subscription->created_at)->format('Y-m-d');
-        })->mapWithKeys(function($subscriptions, $date) {
-            return [$date => count($subscriptions)];
-        });
-
-        $monthly_total_subscriptions = 0;
-        $monthly_subscriptions_over_time = [];
-        foreach ($monthly_grouped_subscription as $date => $number_of_subscriptions) {
-            $monthly_subscriptions_over_time[$date] = $number_of_subscriptions + $monthly_total_subscriptions;
-            $monthly_total_subscriptions += $number_of_subscriptions;
-        }
-
-        
-        /* Yearly subscribers per day */
-
         $yearly_subscriptions = $subscription_model->where('stripe_plan', '=', 'timekeeper_yearly')->get();
-        $yearly_grouped_subscription = $yearly_subscriptions->groupBy(function($subscription) {
-            return Carbon::parse($subscription->created_at)->format('Y-m-d');
-        })->mapWithKeys(function($subscriptions, $date) {
-            return [$date => count($subscriptions)];
-        });
 
-        $yearly_total_subscriptions = 0;
         $yearly_subscriptions_over_time = [];
-        foreach ($yearly_grouped_subscription as $date => $number_of_subscriptions) {
-            $yearly_subscriptions_over_time[$date] = $number_of_subscriptions + $yearly_total_subscriptions;
-            $yearly_total_subscriptions += $number_of_subscriptions;
+        $monthly_subscriptions_over_time = [];
+
+        foreach($period as $dateObject) {
+            $date = $date->format('Y-m-d');
+
+            $yearly_subscriptions_over_time[$date] = $yearly_subscriptions->where('created_at', '<', $date)->count();
+            $monthly_subscriptions_over_time[$date] = $monthly_subscriptions->where('created_at', '<', $date)->count();
         }
 
         $this->addGraphDataSet(
