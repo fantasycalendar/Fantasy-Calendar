@@ -101,7 +101,7 @@ class StatisticsDashboard extends SharpDashboard
         }
 
 
-        $period = CarbonPeriod::create(now()->subDays(14),now());
+        $period = CarbonPeriod::create($subscription_model->min('created_at'),now());
 
         $monthly_subscriptions = $subscription_model->where('stripe_plan', '=', 'timekeeper_monthly')->get();
         $yearly_subscriptions = $subscription_model->where('stripe_plan', '=', 'timekeeper_yearly')->get();
