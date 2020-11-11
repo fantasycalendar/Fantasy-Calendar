@@ -18,7 +18,7 @@ class LoginAsUser extends InstanceCommand
 
     public function authorizeFor($instanceId): bool
     {
-        return User::findOrFail($instanceId)->beta_authorised == 1;
+        return User::findOrFail($instanceId)->agreed_at !== null;
     }
 
     /**
@@ -28,8 +28,6 @@ class LoginAsUser extends InstanceCommand
      */
     public function execute($instanceId, array $data = []): array
     {
-        $user = User::findOrFail($instanceId);
-
         return $this->link("/admin/loginas/" . $instanceId);
     }
 }
