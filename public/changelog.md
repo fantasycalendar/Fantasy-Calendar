@@ -1,5 +1,5 @@
 ## 2.0.1
-### November X, 2020
+### November 11, 2020
 * Tweaked - Updated the edit event UI with a collapsed settings section to preserve space
 * Tweaked - Hide event testing buttons if the event is an one time event
 * Fixed - Event testing breaking saving of new events
