@@ -1,3 +1,12 @@
+## 2.0.1
+### November X, 2020
+* Tweaked - Updated the edit event UI with a collapsed settings section to preserve space
+* Tweaked - Hide event testing buttons if the event is an one time event
+* Fixed - Event testing breaking saving of new events
+* Fixed - Deleting months sometimes caused date to become invalid
+* Fixed - Donjon calendar import
+* Fixed - Interpolate season data button not working with date-based seasons
+
 ## 2.0
 ### November 6, 2020
 
