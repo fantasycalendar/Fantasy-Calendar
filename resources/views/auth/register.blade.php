@@ -15,6 +15,10 @@
                 password_was_validated: false,
                 password_valid: false,
 
+                get dark_theme(){
+                    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 1 : 0;
+                },
+
                 validate_password: function(){
                     this.password_was_validated = true;
                     this.password_valid = this.password.length > 7 && this.password !== '' && this.password_confirmation !== '' && this.password === this.password_confirmation
@@ -94,6 +98,8 @@
                                 <div class="invalid-feedback" x-show="password_was_validated && password !== password_confirmation">Passwords do not match.</div>
                             </div>
                         </div>
+
+                        <input type='hidden' name='dark_theme' x-model='dark_theme'>
 
                         <div class="form-check p-2">
                             <input type="checkbox" class="form-check-input" name="policy_acceptance" id="policy_acceptance" x-model="agreed" required>
