@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use Illuminate\Auth\Events\Registered;
+use Spatie\Honeypot\ProtectAgainstSpam;
 use Str;
 use Arr;
 
@@ -44,7 +45,7 @@ class RegisterController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest');
+        $this->middleware(['guest', ProtectAgainstSpam::class]);
     }
 
     /**

@@ -23,7 +23,8 @@
         "laravel/ui": "^3.0",
         "league/fractal": "^0.18.0",
         "mews/purifier": "3.3.0",
-        "nesbot/carbon": "^2.31"
+        "nesbot/carbon": "^2.31",
+        "spatie/laravel-honeypot": "^3.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.2",
