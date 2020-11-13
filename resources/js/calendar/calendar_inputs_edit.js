@@ -523,8 +523,6 @@ function set_up_edit_inputs(){
 				$('#has_seasons_container').toggleClass('hidden', true).find('select, input').prop('disabled', true);
 				$('#no_seasons_container').toggleClass('hidden', false);
 
-				$('#map_seasons_to_location').prop('disabled', true).parent().toggleClass('hidden', true);
-
 				var no_locations = !static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled;
 				$('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
 				$('#locations_warning').toggleClass('hidden', !no_locations);
@@ -629,6 +627,7 @@ function set_up_edit_inputs(){
 
 		season_sortable.sortable('refresh');
 		reindex_season_sortable();
+		populate_preset_season_list();
 		evaluate_season_lengths();
 		reindex_location_list();
 		name.val("");
@@ -637,8 +636,6 @@ function set_up_edit_inputs(){
 		var no_seasons = static_data.seasons.data.length == 0;
 		$('#has_seasons_container').toggleClass('hidden', no_seasons).find('select, input').prop('disabled', no_seasons);
 		$('#no_seasons_container').toggleClass('hidden', !no_seasons);
-
-		$('#map_seasons_to_location').prop('disabled', !(static_data.seasons.data.length == 2 || static_data.seasons.data.length == 4)).parent().toggleClass('hidden', !(static_data.seasons.data.length == 2 || static_data.seasons.data.length == 4));
 
 		$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 && !static_data.clock.enabled);
 
@@ -783,39 +780,39 @@ function set_up_edit_inputs(){
 
 	});
 
-	$('#map_seasons_to_location').click(function(){
+	$('#copy_location_data').click(function(){
 
-		if(static_data.seasons.data.length == 2 || static_data.seasons.data.length == 4){
+		var type = location_select.find('option:selected').parent().attr('value');
+		var location = location_select.val();
 
-			var html = [];
+		if(type === "custom"){
+
+			var stats = clone(static_data.seasons.locations[location]);
+
+		}else{
+
+			var location = clone(preset_data.locations[static_data.seasons.data.length][location]);
+			var stats = {
+				name: location.name
+			};
 
 			if(static_data.seasons.data.length == 2){
-				var preset_seasons = ['Winter', 'Summer'];
+				var preset_seasons = ['winter', 'summer'];
 			}else{
-				var preset_seasons = ['Winter', 'Spring', 'Summer', 'Autumn'];
+				var preset_seasons = ['winter', 'spring', 'summer', 'autumn'];
 			}
-
-			html.push(`<div class='container'>`);
-
-
-			html.push(`<div class='row my-1'>`);
-				html.push(`<div class='col-auto pr-1'>`);
-					html.push(`<p>If you have differently named seasons than in our presets, we cannot match them, so this UI is for you to match our preset seasons to your seasons.</p>`);
-				html.push(`</div>`);
-			html.push(`</div>`);
 
 			var valid_preset_order = static_data.seasons.global_settings.preset_order !== undefined && static_data.seasons.global_settings.preset_order.length == static_data.seasons.data.length;
 
-			var preset_order = [];
+			var preset_order = undefined;
 
 			if(!valid_preset_order){
-
+			
 				let season_test = [];
-				let lowercase_preset = preset_seasons.map(name => name.toLowerCase());
 				for(var index in static_data.seasons.data){
 					var season = static_data.seasons.data[index];
-					let preset_index = lowercase_preset.indexOf(season.name.toLowerCase());
-					if(season.name.toLowerCase() == "fall" && static_data.seasons.data.length == 4){
+					let preset_index = preset_seasons.indexOf(season.name.toLowerCase());
+					if(preset_index == -1 && season.name.toLowerCase() == "fall" && static_data.seasons.data.length == 4){
 						preset_index = 3;
 					}
 					if(preset_index > -1){
@@ -834,110 +831,26 @@ function set_up_edit_inputs(){
 
 			}
 
-			for(var index in static_data.seasons.data){
-
-				var season = static_data.seasons.data[index];
-
-				let preset_order_value = preset_order[index];
-
-				html.push(`<div class='row my-1'>`);
-
-					html.push(`<div class='col-auto pr-1'>`);
-
-						html.push(`<select class='form-control season_selector season-input-${Number(index)+1}'>`);
-
-						for(var preset_index in preset_seasons){
-
-							var preset_season = preset_seasons[preset_index];
-
-							if(valid_preset_order){
-								html.push(`<option ${preset_order_value == preset_index ? 'selected' : ""} value='${preset_index}'>${preset_season}</option>`);
-							}else{
-								html.push(`<option ${preset_index == index ? 'selected' : ""} value='${preset_index}'>${preset_season}</option>`);
-							}
-
-						}
-
-						html.push(`</select>`);
-
-					html.push(`</div>`);
-
-					html.push(`<div class='col-auto pl-1 pt-2'>`);
-
-						html.push(` is equal to your season '${season.name}'`);
-
-					html.push(`</div>`);
-
-				html.push(`</div>`);
-
-			}
-
-			html.push(`</div>`);
-
-			swal.fire({
-				title: "Please map the preset's seasons to your seasons",
-				html: html.join(''),
-				showCancelButton: true,
-				confirmButtonColor: '#3085d6',
-				cancelButtonColor: '#d33',
-				confirmButtonText: 'Okay',
-				icon: "info",
-				preConfirm: () => {
-					if(static_data.seasons.data.length == 2){
-						return [
-							Number($('.season-input-1').val()),
-							Number($('.season-input-2').val())
-						]
-					}else{
-						return [
-							Number($('.season-input-1').val()),
-							Number($('.season-input-2').val()),
-							Number($('.season-input-3').val()),
-							Number($('.season-input-4').val())
-						]
-					}
-				}
-			})
-			.then((result) => {
-
-				if(!result.dismiss) {
-
-					static_data.seasons.global_settings.preset_order = result.value;
-
-					error_check('seasons')
-
-				}
-
-			});
-
-		}
-
-	});
-
-	$('#copy_location_data').click(function(){
-
-		var type = location_select.find('option:selected').parent().attr('value');
-		var location = location_select.val();
-
-		if(type === "custom"){
-
-			var stats = clone(static_data.seasons.locations[location]);
-
-		}else{
-
-			var stats = clone(preset_data.locations[static_data.seasons.data.length][location]);
-
 			stats.settings = clone(preset_data.curves);
+			stats.seasons = [];
 
 			for(var i = 0; i < static_data.seasons.data.length; i++){
-				stats.seasons[i].time = clone(static_data.seasons.data[i].time);
-			}
 
-			if(static_data.seasons.global_settings.temp_sys === "metric" || static_data.seasons.global_settings.temp_sys === "both_m"){
-				for(var i = 0; i < static_data.seasons.data.length; i++){
+				var index = i;
+				if(preset_order !== undefined && preset_order.length == static_data.seasons.data.length){
+					index = preset_order[i];
+				}
+				stats.seasons.push(clone(location.seasons[index]));
+
+				stats.seasons[i].time = {}
+				stats.seasons[i].time.sunset = static_data.seasons.data[i].time.sunset;
+				stats.seasons[i].time.sunrise = static_data.seasons.data[i].time.sunrise;
+
+				if(static_data.seasons.global_settings.temp_sys === "metric" || static_data.seasons.global_settings.temp_sys === "both_m"){
 					stats.seasons[i].weather.temp_low = fahrenheit_to_celcius(stats.seasons[i].weather.temp_low);
 					stats.seasons[i].weather.temp_high = fahrenheit_to_celcius(stats.seasons[i].weather.temp_high);
 				}
+
 			}
 
 		}
@@ -2220,6 +2133,23 @@ function set_up_edit_inputs(){
 		rebuild_climate();
 	});
 
+
+	$(document).on('change', '.season .name-input', function(){
+		populate_preset_season_list();
+	});
+
+	$(document).on('focusin', '.preset-season-list', function(e){
+		$(this).data('prev', $(this).val());
+	});
+
+	$(document).on('change', '.preset-season-list', function(){
+		evaluate_clashing_preset_seasons($(this));
+		$(this).data('prev', $(this).val());
+	});
+
+
+
+
 	$('#refresh_calendar_list_select').click(function(){
 		populate_calendar_lists();
 	});
@@ -3216,6 +3146,14 @@ function add_season_to_sortable(parent, key, data){
 		element.push("</div>");
 		element.push("<div class='collapse-container container mb-2'>");
 
+			element.push("<div class='row no-gutters my-1 preset-season-list-container'>");
+				element.push("<div class='col-4 pt-1'>Season type:</div>");
+				element.push("<div class='col'>");
+					element.push(`<select type='number' class='form-control dynamic_input preset-season-list' data='seasons.global_settings.preset_order' fc-index='${key}'>`);
+					element.push("</select>");
+				element.push("</div>");
+			element.push("</div>");
+
 			if(static_data.seasons.global_settings.periodic_seasons){
 
 				element.push(`<div class='row no-gutters mt-2'>`);
@@ -3241,7 +3179,7 @@ function add_season_to_sortable(parent, key, data){
 					element.push("<div class='row no-gutters my-1'>");
 						element.push("<div class='col-4 pt-1'>Month:</div>");
 						element.push("<div class='col'>");
-							element.push(`<select type='number' class='date form-control form-control timespan-list dynamic_input' data='seasons.data.${key}' fc-index='timespan'>`);
+							element.push(`<select type='number' class='date form-control timespan-list dynamic_input' data='seasons.data.${key}' fc-index='timespan'>`);
 							element.push("</select>");
 						element.push("</div>");
 					element.push("</div>");
@@ -3249,7 +3187,7 @@ function add_season_to_sortable(parent, key, data){
 					element.push("<div class='row no-gutters my-1'>");
 						element.push("<div class='col-4 pt-1'>Day:</div>");
 						element.push("<div class='col'>");
-							element.push(`<select type='number' class='date form-control form-control timespan-day-list dynamic_input' data='seasons.data.${key}' fc-index='day'>`);
+							element.push(`<select type='number' class='date form-control timespan-day-list dynamic_input' data='seasons.data.${key}' fc-index='day'>`);
 							element.push("</select>");
 						element.push("</div>");
 					element.push("</div>");
@@ -3535,7 +3473,7 @@ function add_location_to_list(parent, key, data){
 					element.push("<div class='col-auto pt-1'>:</div>");
 
 					element.push("<div class='col pl-1 clock-input'>");
-						element.push(`<input type='number' step="1.0" min='${static_data.clock.minutes*-0.5}' max='${static_data.clock.minutes*0.5}' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings.timezone' clocktype='timezone_minute' fc-index='minute' value='${data.settings.timezone.minute}' />`);
+						element.push(`<input type='number' step="1.0" min='${static_data.clock.minutes*-0.5}' max='${static_data.clock.minutes*0.5}' class='form-control full dynamic_input' data='seasons.locations.${key}.settings.timezone' clocktype='timezone_minute' fc-index='minute' value='${data.settings.timezone.minute}' />`);
 					element.push("</div>");
 
 				element.push("</div>");
@@ -3559,10 +3497,10 @@ function add_location_to_list(parent, key, data){
 				element.push("</div>");
 				element.push("<div class='row no-gutters my-1'>");
 					element.push("<div class='col-6 pr-1'>");
-						element.push(`<input type='float' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='large_noise_frequency' value='${data.settings.large_noise_frequency}' />`);
+						element.push(`<input type='float' class='form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='large_noise_frequency' value='${data.settings.large_noise_frequency}' />`);
 					element.push("</div>");
 					element.push("<div class='col-6 pl-1'>");
-						element.push(`<input type='float' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='large_noise_amplitude' value='${data.settings.large_noise_amplitude}'>`);
+						element.push(`<input type='float' class='form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='large_noise_amplitude' value='${data.settings.large_noise_amplitude}'>`);
 					element.push("</div>");
 				element.push("</div>");
 
@@ -3576,10 +3514,10 @@ function add_location_to_list(parent, key, data){
 				element.push("</div>");
 				element.push("<div class='row no-gutters my-1'>");
 					element.push("<div class='col-6 pr-1'>");
-						element.push(`<input type='float' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='medium_noise_frequency' value='${data.settings.medium_noise_frequency}' />`);
+						element.push(`<input type='float' class='form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='medium_noise_frequency' value='${data.settings.medium_noise_frequency}' />`);
 					element.push("</div>");
 					element.push("<div class='col-6 pl-1'>");
-						element.push(`<input type='float' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='medium_noise_amplitude' value='${data.settings.medium_noise_amplitude}'>`);
+						element.push(`<input type='float' class='form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='medium_noise_amplitude' value='${data.settings.medium_noise_amplitude}'>`);
 					element.push("</div>");
 				element.push("</div>");
 
@@ -3593,10 +3531,10 @@ function add_location_to_list(parent, key, data){
 				element.push("</div>");
 				element.push("<div class='row no-gutters my-1'>");
 					element.push("<div class='col-6 pr-1'>");
-						element.push(`<input type='float' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='small_noise_frequency' value='${data.settings.small_noise_frequency}' />`);
+						element.push(`<input type='float' class='form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='small_noise_frequency' value='${data.settings.small_noise_frequency}' />`);
 					element.push("</div>");
 					element.push("<div class='col-6 pl-1'>");
-						element.push(`<input type='float' class='form-control form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='small_noise_amplitude' value='${data.settings.small_noise_amplitude}'>`);
+						element.push(`<input type='float' class='form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='small_noise_amplitude' value='${data.settings.small_noise_amplitude}'>`);
 					element.push("</div>");
 				element.push("</div>");
 			element.push("</div>");
@@ -4664,6 +4602,7 @@ function reindex_season_sortable(key){
 
 		$('.dynamic_input', this).each(function(){
 			$(this).attr('data', $(this).attr('data').replace(/[0-9]+/g, i));
+			$(this).attr('fc-index', $(this).attr('fc-index').replace(/[0-9]+/g, i));
 		});
 
 		$(this).find(".name-input").prop("tabindex", tabindex)
@@ -4699,6 +4638,10 @@ function reindex_season_sortable(key){
 
 		}
 
+		if($(this).find('.preset-season-list').children().length > 0){
+			static_data.seasons.global_settings.preset_order[i] = $(this).find('.preset-season-list').val()|0;
+		}
+
 	});
 
 	if(!static_data.seasons.global_settings.periodic_seasons){
@@ -4718,8 +4661,8 @@ function reindex_season_sortable(key){
 	if(no_seasons){
 		static_data.seasons.global_settings.preset_order = undefined;
 	}
-
-	$('#map_seasons_to_location').prop('disabled', !(static_data.seasons.data.length == 2 || static_data.seasons.data.length == 4)).parent().toggleClass('hidden', !(static_data.seasons.data.length == 2 || static_data.seasons.data.length == 4));
+	
+	populate_preset_season_list();
 
 	var no_locations = (static_data.seasons.data.length == 0 || !static_data.seasons.global_settings.enable_weather) && !static_data.clock.enabled;
 	$('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
@@ -4729,6 +4672,107 @@ function reindex_season_sortable(key){
 
 }
 
+function populate_preset_season_list(){
+
+	let automatic = detect_automatic_mapping();
+
+	$('.preset-season-list-container').toggleClass('hidden', automatic).prop('disabled', automatic);
+
+	if(!(static_data.seasons.data.length == 2 || static_data.seasons.data.length == 4)){
+		static_data.seasons.global_settings.preset_order = undefined;
+		return;
+	}
+
+	if(static_data.seasons.data.length == 2){
+		var preset_seasons = ['Winter', 'Summer'];
+	}else if(static_data.seasons.data.length == 4){
+		var preset_seasons = ['Winter', 'Spring', 'Summer', 'Autumn'];
+	}
+
+	if(!automatic){
+
+		if(static_data.seasons.global_settings.preset_order === undefined){
+			static_data.seasons.global_settings.preset_order = [];
+		}
+
+		$('.preset-season-list').each(function(i){
+
+			$(this).empty();
+
+			for(let j in preset_seasons){
+				let name = preset_seasons[j];
+				var o = new Option(name, j);
+				$(o).html(name);
+				$(this).append(o);
+			}
+
+			if(static_data.seasons.global_settings.preset_order.length != static_data.seasons.data.length){
+				$(this)[0].selectedIndex = i;
+				static_data.seasons.global_settings.preset_order[i] = i;
+			}else{
+				$(this)[0].selectedIndex = static_data.seasons.global_settings.preset_order[i];
+			}
+		});
+
+	}else{
+
+		$('.preset-season-list').empty();
+
+	}
+
+}
+
+function detect_automatic_mapping(){
+
+	if(static_data.seasons.data.length == 2){
+		var preset_seasons = ['winter', 'summer'];
+	}else if(static_data.seasons.data.length == 4){
+		var preset_seasons = ['winter', 'spring', 'summer', 'autumn'];
+	}else{
+		return false;
+	}
+	
+	let season_test = [];
+	for(var index in static_data.seasons.data){
+		var season = static_data.seasons.data[index];
+		let preset_index = preset_seasons.indexOf(season.name.toLowerCase());
+		if(preset_index == -1 && season.name.toLowerCase() == "fall" && static_data.seasons.data.length == 4){
+			preset_index = 3;
+		}
+		if(preset_index > -1){
+			season_test.push(preset_index)
+		}
+	}
+
+	if(season_test.length == static_data.seasons.data.length){
+		static_data.seasons.global_settings.preset_order = season_test;
+		return true;
+	}
+
+	return false;
+
+}
+
+function evaluate_clashing_preset_seasons(element){
+
+	let season_index = element.closest('.sortable-container').attr('index')|0;
+	let prev_preset_index = element.data('prev')|0;
+	let preset_index = element.val()|0;
+
+	for(var switch_season_index in static_data.seasons.global_settings.preset_order){
+		if(switch_season_index == season_index){
+			continue;
+		}
+		if(static_data.seasons.global_settings.preset_order[switch_season_index] == preset_index){
+			break;
+		}
+	}
+
+	static_data.seasons.global_settings.preset_order[switch_season_index] = prev_preset_index;
+
+	season_sortable.children().eq(switch_season_index).find('.preset-season-list')[0].selectedIndex = prev_preset_index;
+
+}
 
 function reindex_location_list(){
 
@@ -5446,6 +5490,7 @@ function set_up_edit_values(){
 			repopulate_timespan_select(season_sortable.children().last().find('.timespan-list'), static_data.seasons.data[i].timespan, false, false);
 			repopulate_day_select(season_sortable.children().last().find('.timespan-day-list'), static_data.seasons.data[i].day, false, false);
 		}
+		populate_preset_season_list();
 
 		$('.season_middle_btn').toggleClass('hidden', !static_data.clock.enabled || static_data.seasons.data.length < 3);
 
@@ -5457,8 +5502,6 @@ function set_up_edit_values(){
 		var no_seasons = static_data.seasons.data.length == 0;
 		$('#has_seasons_container').toggleClass('hidden', no_seasons).find('select, input').prop('disabled', no_seasons);
 		$('#no_seasons_container').toggleClass('hidden', !no_seasons);
-
-		$('#map_seasons_to_location').prop('disabled', !(static_data.seasons.data.length == 2 || static_data.seasons.data.length == 4)).parent().toggleClass('hidden', !(static_data.seasons.data.length == 2 || static_data.seasons.data.length == 4));
 
 		var no_locations = (static_data.seasons.data.length == 0 || !static_data.seasons.global_settings.enable_weather) && !static_data.clock.enabled;
 		$('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
