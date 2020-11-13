@@ -39,6 +39,7 @@
                 <div class="card-body">
                     <form method="POST" action="{{ route('register') }}" class="container-fluid">
                         @csrf
+                        @honeypot
 
                         <div class="form-group row">
                             <label for="username" class="col-md-4 col-form-label text-md-right">{{ __('Username') }}</label>
@@ -92,9 +93,9 @@
                                     :class="{ 'is-invalid': password_was_validated && !password_valid }"
                                     @keyup="validate_password"
                                     @blur="validate_password">
-                                    
+
                                 <div class="invalid-feedback" x-show="password_was_validated && password.length < 7">Password must be 8 characters long.</div>
-    
+
                                 <div class="invalid-feedback" x-show="password_was_validated && password !== password_confirmation">Passwords do not match.</div>
                             </div>
                         </div>
