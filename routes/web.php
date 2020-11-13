@@ -14,12 +14,6 @@ use App\Http\Controllers\StripeController;
 |
 */
 
-Route::view('/account-deletion-request', 'pages.account-deletion-request')->middleware(['auth', 'account.deletion', 'agreement']);
-Route::post('/set-account-deletion', 'AccountDeletionController@set')->middleware(['auth', 'account.deletion']);
-
-Route::get('/cancel-account-deletion', 'AccountDeletionController@cancel')->name('cancel-account-deletion')->middleware(['auth']);
-
-Route::get('/account-deletion-warning', 'AccountDeletionController@warning')->name('account-deletion-warning')->middleware(['auth']);
 
 Route::get('/', 'WelcomeController@welcome')->name('home');
 Route::view('/welcome', 'welcome')->name('welcome');
@@ -28,19 +22,29 @@ Route::view('/changelog', 'pages.changelog')->name('changelog');
 Route::view('/faq', 'pages.faq')->name('faq');
 Route::view('/donate', 'pages.donate', ['title'=>'Support the site']);
 Route::view('/discord', 'pages.discord', ['title' => 'Join Our Discord Server!'])->name('discord');
+
+
 Route::get('/account-migrated', 'WelcomeController@account_migrated')->name('account-migrated');
 Route::get('/account-migrated-acknowledge', 'WelcomeController@account_migrated_acknowledge')->name('account-migrated-acknowledge');
+Route::view('/account-deletion-request', 'pages.account-deletion-request')->middleware(['auth', 'account.deletion', 'agreement']);
+Route::post('/set-account-deletion', 'AccountDeletionController@set')->middleware(['auth', 'account.deletion']);
+Route::get('/cancel-account-deletion', 'AccountDeletionController@cancel')->name('cancel-account-deletion')->middleware(['auth']);
+Route::get('/account-deletion-warning', 'AccountDeletionController@warning')->name('account-deletion-warning')->middleware(['auth']);
+
 
 Route::get('/terms-and-conditions', 'AgreementController@view')->name('terms-and-conditions');
 Route::get('/privacy-policy', 'PolicyController@view')->name('privacy-policy');
 
+
 Route::get('/prompt-tos', 'AgreementController@show')->name('prompt-tos');
 Route::get('/agreement-accepted', 'AgreementController@accept')->name('agreement-accepted');
+
 
 Route::get('invite/accept', 'InviteController@accept')->name('invite.accept')->middleware(['auth', 'account.deletion', 'agreement']);
 Route::get('invite/reject', 'InviteController@showRejectConfirmation')->name('invite.reject-confirm')->middleware(['auth', 'account.deletion', 'agreement']);
 Route::post('invite/reject', 'InviteController@reject')->name('invite.reject')->middleware(['auth', 'account.deletion', 'agreement']);
 Route::get('invite/register', 'InviteController@register')->name('invite.register')->middleware(['register', 'signed:relative']);
+
 
 // Calendar management
 Route::get('calendars/{calendar}/print', 'CalendarController@print')->name('calendars.print')->middleware(['account.deletion', 'agreement']);
@@ -51,7 +55,6 @@ Route::resource('calendars', 'CalendarController')->middleware(['account.deletio
 // User auth
 Auth::routes(['verify' => true]);
 Route::get('/logout', 'Auth\LoginController@logout');
-
 Route::get('/admin/loginas/{userid}', 'AdminController@loginas')->name('admin.loginas')->middleware('admin');
 
 
