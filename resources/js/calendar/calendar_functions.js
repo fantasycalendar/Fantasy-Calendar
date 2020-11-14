@@ -691,9 +691,11 @@ class date_manager {
 	}
 
 	get epoch(){
-
 		return evaluate_calendar_start(static_data, this.year, this.timespan, this.day).epoch;
+	}
 
+	update_epoch(){
+		this.epoch = evaluate_calendar_start(static_data, this.year, this.timespan, this.day).epoch;
 	}
 
 	get adjusted_year(){

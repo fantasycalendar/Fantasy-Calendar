@@ -90,7 +90,7 @@ day_data_tooltip = {
 
                     }
 
-                }else if(key == "current_cycle"){
+                }else if(key == "cycle"){
 
                     for(var cycle_index in data){
 

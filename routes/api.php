@@ -15,17 +15,17 @@ use Illuminate\Http\Request;
 
 Route::middleware('auth:api')->get('/user', 'Api\UserController@user');
 
-Route::any('/calendar/{id}/clone', 'Api\CalendarController@clone');
-Route::any('/calendar/{id}/owned', 'Api\CalendarController@owned');
-Route::any('/calendar/{id}/users', 'Api\CalendarController@users');
-Route::any('/calendar/{id}/inviteUser', 'Api\CalendarController@inviteUser');
-Route::any('/calendar/{id}/removeUser', 'Api\CalendarController@removeUser');
-Route::any('/calendar/{id}/resend_invite', 'Api\CalendarController@resend_invite');
-Route::any('/calendar/{id}/changeUserRole', 'Api\CalendarController@changeUserRole');
-Route::any('/calendar/{id}/children', 'Api\CalendarController@children');
-Route::any('/calendar/{id}/last_changed', 'Api\CalendarController@last_changed');
-Route::any('/calendar/{id}/dynamic_data', 'Api\CalendarController@dynamic_data');
-Route::any('/calendar/{id}/updatechildren', 'Api\CalendarController@updateChildren');
+Route::any('/calendar/{calendar}/clone', 'Api\CalendarController@clone');
+Route::any('/calendar/{calendar}/owned', 'Api\CalendarController@owned');
+Route::any('/calendar/{calendar}/users', 'Api\CalendarController@users');
+Route::any('/calendar/{calendar}/inviteUser', 'Api\CalendarController@inviteUser');
+Route::any('/calendar/{calendar}/removeUser', 'Api\CalendarController@removeUser');
+Route::any('/calendar/{calendar}/resend_invite', 'Api\CalendarController@resend_invite');
+Route::any('/calendar/{calendar}/changeUserRole', 'Api\CalendarController@changeUserRole');
+Route::any('/calendar/{calendar}/children', 'Api\CalendarController@children');
+Route::any('/calendar/{calendar}/last_changed', 'Api\CalendarController@last_changed');
+Route::any('/calendar/{calendar}/dynamic_data', 'Api\CalendarController@dynamic_data');
+Route::any('/calendar/{calendar}/updatechildren', 'Api\CalendarController@updateChildren');
 Route::apiResource('calendar', 'Api\CalendarController');
 
 

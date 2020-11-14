@@ -183,13 +183,13 @@ var calendar_weather = {
 				if(wind_sys == 'both'){
 					wind_text = `${weather.wind_speed} (${weather.wind_direction})`;
 					if(!static_data.settings.hide_wind_velocity || Perms.player_at_least('co-owner')){
-						wind_text += `<span class='newline'>(${weather.wind_velocity.imperial} MPH | ${weather.wind_velocity.metric} KPH)</span>`;
+						wind_text += `<span class='newline'>(${weather.wind_velocity.imperial} MPH | ${weather.wind_velocity.metric} KPH | ${weather.wind_velocity.knots} KN)</span>`;
 					}
 				}else{
 					var wind_symbol = wind_sys == "imperial" ? "MPH" : "KPH";
 					wind_text = `${weather.wind_speed} (${weather.wind_direction})`
 					if(!static_data.settings.hide_wind_velocity || Perms.player_at_least('co-owner')){
-						wind_text += `(${weather.wind_velocity[wind_sys]} ${wind_symbol})`;
+						wind_text += `<span class='newline'>(${weather.wind_velocity[wind_sys]} ${wind_symbol} | ${weather.wind_velocity.knots} KN)</span>`;
 					}
 				}
 

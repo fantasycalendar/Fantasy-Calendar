@@ -1032,7 +1032,7 @@
                 <div class='row no-gutters bold-text'>
                     <div class='col'>
                        Default category:
-                        <select class='form-control event-category-list static_input protip' data-pt-position="right" data-pt-title="This sets the category to be selected by default when a new event is created" id='default_event_category' data='settings' fc-index='default_category'></select>
+                        <select class='form-control event-category-list protip' data-pt-position="right" data-pt-title="This sets the category to be selected by default when a new event is created" id='default_event_category'></select>
     		      	</div>
                 </div>
             </div>

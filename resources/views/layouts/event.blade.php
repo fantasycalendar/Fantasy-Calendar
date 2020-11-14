@@ -298,8 +298,14 @@
                     </div>
 
                     <div class='row no-gutters mt-3'>
+                        Event look:
+                    </div>
+                    <div class='row no-gutters mt-0'>
                         <div class='col-4'>
-                            Event look: <div class='event-text-output event'>Event name</div>
+                            <div class='event-text-output event'>Event (visible)</div>
+                        </div>
+                        <div class='col-4 px-1'>
+                            <div class='event-text-output hidden_event event'>Event (hidden)</div>
                         </div>
                     </div>
 

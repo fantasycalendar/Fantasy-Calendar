@@ -19,13 +19,7 @@ function context_set_preview_date(key, opt){
 
 	var epoch_data = evaluated_static_data.epoch_data[epoch];
 
-	preview_date_manager.year = convert_year(static_data, epoch_data.year);
-	preview_date_manager.timespan = epoch_data.timespan_number;
-	preview_date_manager.day = epoch_data.day;
-	preview_date_manager.epoch = epoch_data.epoch;
-
-	go_to_preview_date();
-
+	set_preview_date(epoch_data.year, epoch_data.timespan_number, epoch_data.day, epoch_data.epoch);
 }
 
 function context_copy_link_date(element){
@@ -654,6 +648,21 @@ function update_preview_calendar(){
 
 }
 
+function set_preview_date(year, timespan, day, epoch){
+
+	preview_date_manager.year = convert_year(static_data, year);
+	preview_date_manager.timespan = timespan;
+	preview_date_manager.day = day;
+	if(epoch !== undefined){
+		preview_date_manager.epoch = epoch;
+	}else{
+		preview_date_manager.update_epoch()
+	}
+
+	go_to_preview_date();
+
+}
+
 
 function go_to_preview_date(rebuild){
 
@@ -885,8 +894,9 @@ function repopulate_event_category_lists(){
 		$(this).html(html.join("")).val(val);
 	});
 
-    var default_event_category = static_data.settings.default_category !== undefined ? static_data.settings.default_category : -1;
-    $('#default_event_category').val(default_event_category);
+	var default_event_category = static_data.settings.default_category !== undefined ? get_category(static_data.settings.default_category) : {id: -1};
+
+    $('#default_event_category').val(default_event_category.id);
 }
 
 function repopulate_timespan_select(select, val, change, max){

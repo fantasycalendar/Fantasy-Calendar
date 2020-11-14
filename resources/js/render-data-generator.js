@@ -509,7 +509,7 @@ const render_data_generator = {
 
                     var category = era.settings.event_category_id && era.settings.event_category_id > -1 ?  get_category(era.settings.event_category_id) : false;
 
-                    if(category){
+                    if(category && category.id != -1){
                         if(category.event_settings.hide_full){
                             continue;
                         }
@@ -542,9 +542,9 @@ const render_data_generator = {
 
             var category = event.event_category_id && event.event_category_id > -1 ?  get_category(event.event_category_id) : false;
 
-            var category_hide = category ? category.category_settings.hide : false;
+            var category_hide = category && category.id != -1 ? category.category_settings.hide : false;
 
-            if(!Perms.player_at_least('co-owner') && (event.settings.hide || category_hide)){
+            if(!Perms.can_modify_event(event_index) && (event.settings.hide || category_hide)){
                 continue;
             }
 
