@@ -1036,6 +1036,9 @@ class Climate{
 		var wind_velocity_m = wind_info['mph'].replace( /(\d+)/g, function(a, b){
 			return Math.round(b*1.60934,2);
 		});
+		var wind_velocity_k = wind_info['mph'].replace( /(\d+)/g, function(a, b){
+			return Math.round(b*0.868976,2);
+		});
 
 		return {
 			temperature: {
@@ -1065,7 +1068,8 @@ class Climate{
 			wind_speed_desc: wind_info.desciption,
 			wind_velocity: {
 				imperial: wind_velocity_i,
-				metric: wind_velocity_m
+				metric: wind_velocity_m,
+				knots: wind_velocity_k
 			},
 			wind_direction: wind_direction
 		}
