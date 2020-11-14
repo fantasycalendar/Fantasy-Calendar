@@ -2,6 +2,7 @@
 #### November 13, 2020
 * Added - Preview era start date button to eras
 * Added - Hidden event preview when styling events
+* Added - Wind velocity in knots on daily weather
 * Tweaked - Removed map preset seasons, added season type to seasons if matches not found
 * Tweaked - Sidebar made smaller on higher resolution screens
 * Fixed - Copying locations would not respect custom season order
