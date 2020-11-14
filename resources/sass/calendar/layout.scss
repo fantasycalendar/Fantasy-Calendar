@@ -164,9 +164,9 @@ body.page-calendars-index {
     overflow-y: auto;
     order:1;
     max-height: 100%;
-    width: 100%;
-    min-width: $sidebar-width;
-    max-width: $sidebar-width;
+    flex-basis: $sidebar-width;
+    max-width: 25rem;
+    flex-grow: 1;
 }
 
 #input_container.sidebar-mobile-half:not(.inputs_collapsed){
@@ -180,6 +180,7 @@ body.page-calendars-index {
     overflow: hidden;
     padding: 0;
     min-width: 0;
+    max-width: 0;
 }
 
 #input_container > .accordion > .wrap-collapsible:last-child {
@@ -214,14 +215,15 @@ body.page-calendars-index {
     border-radius: 1rem 0 0 1rem;
 
     @media screen and (min-width: 992px) {
-        left: calc(#{$sidebar-width} - 4rem);
+        left: calc(min(#{$sidebar-width}, 25rem) - 4rem);
     }
 }
 
 #calendar_container{
     order:3;
     padding:0 10px 0 10px;
-    flex-grow: 1;
+    flex-grow: 999;
+    flex-basis: 0;
     transition: width 0.5s ease;
     overflow-y: auto;
     max-height: 100%;

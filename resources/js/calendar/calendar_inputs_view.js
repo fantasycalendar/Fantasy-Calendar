@@ -545,4 +545,6 @@ function set_up_view_values(){
 
 	repopulate_location_select_list();
 
+	evaluate_clock_inputs();
+
 }

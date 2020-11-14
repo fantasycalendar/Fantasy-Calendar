@@ -1,20 +1,3 @@
-function get_category(search) {
-	if(static_data.event_data.categories.length == 0){
-		return {id: -1};
-	}
-
-	var results = static_data.event_data.categories.filter(function(element) {
-		return element.id == search;
-	});
-
-	if(results.length < 1) {
-		return {id: -1};
-	}
-
-	return results[0];
-}
-
-
 function update_moon_colors(){
 	moon_colors = [];
 	var html = [];
@@ -408,7 +391,7 @@ function update_cycle_text(){
 			epoch = preview_date.epoch;
 		}
 
-		var view = get_cycle(static_data, evaluated_static_data.epoch_data[preview_date.epoch]).text;
+		var view = get_cycle(static_data, evaluated_static_data.epoch_data[epoch]).text;
 
 		var cycle_text = Mustache.render(format, view);
 

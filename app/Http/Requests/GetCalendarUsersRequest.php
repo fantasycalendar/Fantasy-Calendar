@@ -19,9 +19,7 @@ class GetCalendarUsersRequest extends FormRequest
      */
     public function authorize()
     {
-        $this->calendar = Calendar::active()->hash($this->route('id'))->firstOrFail();
-
-        return $this->user()->can('update', $this->calendar);
+        return $this->user()->can('update', $this->route('calendar'));
     }
 
     /**

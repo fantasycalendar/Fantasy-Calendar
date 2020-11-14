@@ -45,6 +45,7 @@ class UnregisteredCalendarInvitation extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
+                    ->subject(sprintf("Fantasy Calendar Invite From %s", $this->invitation->calendar->user->username))
                     ->greeting("You're invited to collaborate via Fantasy Calendar!")
                     ->line(sprintf("A user called %s has invited you as a player on their calendar '%s'!", $this->invitation->calendar->user->username, $this->invitation->calendar->name))
                     ->line("Get registered below to check it out.")

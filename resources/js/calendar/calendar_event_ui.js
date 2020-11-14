@@ -216,18 +216,29 @@ var edit_event_ui = {
 				edit_event_ui.inputs_changed = true;
 			}
 
+			var value_input = this;
+
 			var output = parent.find('.event-text-output');
 			var input = parent.find('.event-text-input');
 
-			var classes = output.attr('class').split(' ');
-			classes.length = 3;
+			output.each(function(){
 
-			classes.push($(this).val());
-			classes.push(input.not(this).val());
+				var classes = $(this).attr('class').split(' ');
 
-			classes = classes.join(' ');
+				if(classes.indexOf("hidden_event") > -1){
+					classes.length = 4;
+				}else{
+					classes.length = 3;
+				}
 
-			output.prop('class', classes);
+				classes.push($(value_input).val());
+				classes.push(input.not(value_input).val());
+
+				classes = classes.join(' ');
+
+				$(this).prop('class', classes);
+			
+			})
 
 		});
 
@@ -401,7 +412,7 @@ var edit_event_ui = {
 				e.preventDefault();
 				e.stopPropagation();
 
-				if(!$(this).hasClass('.group_list')){
+				if($(this).hasClass('group_list')){
 					var group_list = $(this);
 				}else{
 					var group_list = $(this).find('.group_list');
@@ -1451,6 +1462,10 @@ var edit_event_ui = {
 					condition.find('.input_container').children().each(function(i){
 						$(this).val(element[2][i]);
 					})
+
+				}else if(element[0] == "Cycle"){
+
+					condition.find('.input_container').find(`optgroup[value=${element[2][0]}]`).find(`option[value=${element[2][1]}]`).prop('selected', true);
 
 				}else{
 					condition.find('.input_container').children().each(function(i){

@@ -640,7 +640,7 @@ var calendar_builder = {
 
 								}
 
-								data.current_cycle = get_cycle(this.static_data, data).array;
+								data.cycle = get_cycle(this.static_data, data).array;
 
 								data = this.add_moon_data(
 									this.pre_data.repititions.year_moons[year_index],
@@ -695,7 +695,7 @@ var calendar_builder = {
 							'era': current_era
 						}
 
-						data.current_cycle = get_cycle(this.static_data, data).array;
+						data.cycle = get_cycle(this.static_data, data).array;
 
 						if(current_timespan.type !== "intercalary"){
 
@@ -767,7 +767,7 @@ var calendar_builder = {
 									'era': current_era
 								}
 
-								data.current_cycle = get_cycle(this.static_data, data).array;
+								data.cycle = get_cycle(this.static_data, data).array;
 
 								data = this.add_moon_data(
 									this.pre_data.repititions.year_moons[year_index],
@@ -923,7 +923,7 @@ var calendar_builder = {
 
 								}
 
-								data.current_cycle = get_cycle(this.static_data, data).array;
+								data.cycle = get_cycle(this.static_data, data).array;
 
 								data = this.add_moon_data(
 									this.post_data.repititions.year_moons[year_index],
@@ -977,7 +977,7 @@ var calendar_builder = {
 
 						}
 
-						data.current_cycle = get_cycle(this.static_data, data).array;
+						data.cycle = get_cycle(this.static_data, data).array;
 
 						if(current_timespan.type !== "intercalary"){
 
@@ -1049,7 +1049,7 @@ var calendar_builder = {
 									'era': current_era
 								}
 
-								data.current_cycle = get_cycle(this.static_data, data).array;
+								data.cycle = get_cycle(this.static_data, data).array;
 
 								data = this.add_moon_data(
 									this.post_data.repititions.year_moons[year_index],
@@ -1499,7 +1499,7 @@ var calendar_builder = {
 
 								}
 
-								data.current_cycle = get_cycle(this.static_data, data).array;
+								data.cycle = get_cycle(this.static_data, data).array;
 
 								data = this.add_moon_data(
 									this.pre_data.repititions.year_moons[year_index],
@@ -1555,7 +1555,7 @@ var calendar_builder = {
 
 						}
 
-						data.current_cycle = get_cycle(this.static_data, data).array;
+						data.cycle = get_cycle(this.static_data, data).array;
 
 						if(current_timespan.type !== "intercalary"){
 
@@ -1628,7 +1628,7 @@ var calendar_builder = {
 
 								}
 
-								data.current_cycle = get_cycle(this.static_data, data).array;
+								data.cycle = get_cycle(this.static_data, data).array;
 
 								data = this.add_moon_data(
 									this.pre_data.repititions.year_moons[year_index],
@@ -1784,7 +1784,7 @@ var calendar_builder = {
 
 							}
 
-							data.current_cycle = get_cycle(this.static_data, data).array;
+							data.cycle = get_cycle(this.static_data, data).array;
 
 							data = this.add_moon_data(
 								this.data.repititions.year_moons,
@@ -1847,7 +1847,7 @@ var calendar_builder = {
 
 					}
 
-					data.current_cycle = get_cycle(this.static_data, data).array;
+					data.cycle = get_cycle(this.static_data, data).array;
 
 					if(current_timespan.type !== "intercalary"){
 
@@ -1922,7 +1922,7 @@ var calendar_builder = {
 								'era': current_era
 							}
 
-							data.current_cycle = get_cycle(this.static_data, data).array;
+							data.cycle = get_cycle(this.static_data, data).array;
 
 							data = this.add_moon_data(
 								this.data.repititions.year_moons,
@@ -2065,7 +2065,7 @@ var calendar_builder = {
 
 								}
 
-								data.current_cycle = get_cycle(this.static_data, data).array;
+								data.cycle = get_cycle(this.static_data, data).array;
 
 								data = this.add_moon_data(
 									this.post_data.repititions.year_moons[year_index],
@@ -2120,7 +2120,7 @@ var calendar_builder = {
 							'era': current_era,
 						}
 
-						data.current_cycle = get_cycle(this.static_data, data).array;
+						data.cycle = get_cycle(this.static_data, data).array;
 
 						if(current_timespan.type !== "intercalary"){
 
@@ -2192,7 +2192,7 @@ var calendar_builder = {
 									'era': current_era
 								}
 
-								data.current_cycle = get_cycle(this.static_data, data).array;
+								data.cycle = get_cycle(this.static_data, data).array;
 
 								data = this.add_moon_data(
 									this.post_data.repititions.year_moons[year_index],
@@ -2397,6 +2397,12 @@ var event_evaluator = {
 					var cond_1 = values[subcon[2]]|0;
 					var cond_2 = values[subcon[3]] ? values[subcon[3]]|0 : undefined;
 					var selected = fract(43758.5453 * Math.sin(cond_2 + (78.233 * epoch_data.epoch)))*100;
+
+				}else if(array[0] === "Cycle"){
+
+					var selected_cycle = !isNaN(Number(values[subcon[2]])) ? Number(values[subcon[2]]) : values[subcon[2]];
+					var selected = epoch_data[selector][selected_cycle];
+					var cond_1 = !isNaN(Number(values[subcon[3]])) ? Number(values[subcon[3]]) : values[subcon[3]];
 
 				}else if(array[0] === "Location"){
 

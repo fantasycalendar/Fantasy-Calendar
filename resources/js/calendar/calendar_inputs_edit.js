@@ -1284,7 +1284,6 @@ function set_up_edit_inputs(){
 				dynamic_date_manager.cap_timespan();
 				dynamic_data.timespan = dynamic_date_manager.timespan;
 				dynamic_data.epoch = dynamic_date_manager.epoch;
-				update_current_day(true);
 				recalc_stats();
 				break;
 
@@ -1754,6 +1753,15 @@ function set_up_edit_inputs(){
 		}
 		dynamic_data.current_era = get_current_era(static_data, dynamic_data.epoch);
 	});
+
+	$(document).on('click', '.preview_era_date', function(){
+		let era_id = $(this).closest('.sortable-container').attr('index')|0;
+		console.log(era_id)
+		let era = static_data.eras[era_id];
+		console.log(era)
+		set_preview_date(era.date.year, era.date.timespan, era.date.day, era.date.epoch)
+	});
+
 
 	$(document).on('change', '#season_sortable .date_control', function(){
 		reindex_season_sortable();
@@ -3420,7 +3428,7 @@ function add_location_to_list(parent, key, data){
 
 						element.push("</div>");
 
-						element.push(`<div class='row no-gutters mb-2 protip' data-pt-position="right" data-pt-title="What time the sets rises at the peak of this season, in this location">`);
+						element.push(`<div class='row no-gutters mb-2 protip' data-pt-position="right" data-pt-title="What time the sun sets at the peak of this season, in this location">`);
 
 							element.push("<div class='col-6 pl-0 pr-1 clock-input'>");
 								element.push(`<input type='number' step="1.0" class='form-control text-right full dynamic_input hour_input' clocktype='sunset_hour' data='seasons.locations.${key}.seasons.${i}.time.sunset' fc-index='hour' value='${data.seasons[i].time.sunset.hour}' />`);
@@ -3756,6 +3764,12 @@ function add_era_to_list(parent, key, data){
 					element.push("</div>");
 				element.push("</div>");
 
+				element.push(`<div class='row my-2'>`);
+					element.push("<div class='col'>");
+						element.push(`<div class='btn btn-secondary full preview_era_date'>Preview era start date</div>`);
+					element.push("</div>");
+				element.push("</div>");
+
 				element.push("<div class='row my-2 bold-text'>");
 					element.push("<div class='col'>");
 						element.push("Date settings:");
@@ -3931,8 +3945,11 @@ function add_category_to_list(parent, key, data){
 			element.push("</div>");
 
 			element.push("<div class='row no-gutters'>");
-				element.push("<div class='col'>");
-					element.push(`<div class='half event-text-output event ${data.event_settings.color} ${data.event_settings.text}'>Event name</div>`);
+				element.push("<div class='col-6'>");
+					element.push(`<div class='event-text-output event ${data.event_settings.color} ${data.event_settings.text}'>Event (visible)</div>`);
+				element.push("</div>");
+				element.push("<div class='col-6 px-1'>");
+					element.push(`<div class='event-text-output hidden_event event ${data.event_settings.color} ${data.event_settings.text}'>Event (hidden)</div>`);
 				element.push("</div>");
 			element.push("</div>");
 
@@ -5656,8 +5673,6 @@ function set_up_edit_values(){
 
 	}
 
-	evaluate_clock_inputs();
-
 	evaluate_remove_buttons();
 
 	$('#cycle_test_input').click();
@@ -5673,9 +5688,15 @@ function get_category(search) {
 		return {id: -1};
 	}
 
-	var results = event_categories.filter(function(element) {
-		return element.id == search;
-	});
+	if(isNaN(search)){
+		var results = event_categories.filter(function(element) {
+			return slugify(element.name) == search;
+		});
+	}else{
+		var results = event_categories.filter(function(element) {
+			return element.id == search;
+		});
+	}
 
 	if(results.length < 1) {
 		return {id: -1};
@@ -5683,6 +5704,7 @@ function get_category(search) {
 
 	return results[0];
 }
+
 function empty_edit_values(){
 
 	timespan_sortable.empty()
