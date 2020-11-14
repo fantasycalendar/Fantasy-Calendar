@@ -5,6 +5,7 @@
 * Added - Wind velocity in knots on daily weather
 * Tweaked - Removed map preset seasons, added season type to seasons if matches not found
 * Tweaked - Sidebar made smaller on higher resolution screens
+* Tweaked - Backend performance optimizations
 * Fixed - Copying locations would not respect custom season order
 * Fixed - Cycle-based conditions not being evaluated properly
 * Fixed - Users not being able to see their own hidden events on others' calendars
