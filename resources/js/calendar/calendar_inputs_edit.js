@@ -3992,8 +3992,11 @@ function add_category_to_list(parent, key, data){
 			element.push("</div>");
 
 			element.push("<div class='row no-gutters'>");
-				element.push("<div class='col'>");
-					element.push(`<div class='half event-text-output event ${data.event_settings.color} ${data.event_settings.text}'>Event name</div>`);
+				element.push("<div class='col-6'>");
+					element.push(`<div class='event-text-output event ${data.event_settings.color} ${data.event_settings.text}'>Event (visible)</div>`);
+				element.push("</div>");
+				element.push("<div class='col-6 px-1'>");
+					element.push(`<div class='event-text-output hidden_event event ${data.event_settings.color} ${data.event_settings.text}'>Event (hidden)</div>`);
 				element.push("</div>");
 			element.push("</div>");
 
