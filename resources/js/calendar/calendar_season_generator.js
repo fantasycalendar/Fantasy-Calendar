@@ -82,7 +82,7 @@ class Climate{
 				var preset_seasons = ['Winter', 'Spring', 'Summer', 'Autumn'];
 			}
 
-			var valid_preset_order = this.static_data.seasons.global_settings.preset_order !== undefined && this.static_data.seasons.global_settings.preset_order.length == this.static_data.seasons.data.length;
+			var valid_preset_order = this.static_data.seasons.global_settings.preset_order !== undefined && this.static_data.seasons.global_settings.preset_order.reduce((a, b) => a + b, 0) == this.static_data.seasons.data.reduce((a, b) => a + b, 0);
 
 			var preset_order = undefined;
 
@@ -120,7 +120,7 @@ class Climate{
 				}
 				this.current_location.seasons.push(clone(location.seasons[index]));
 
-				this.current_location.seasons[i].time = {}
+				this.current_location.seasons[i].time = {};
 				this.current_location.seasons[i].time.sunset = this.static_data.seasons.data[i].time.sunset;
 				this.current_location.seasons[i].time.sunrise = this.static_data.seasons.data[i].time.sunrise;
 

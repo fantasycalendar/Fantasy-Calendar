@@ -4726,7 +4726,7 @@ function populate_preset_season_list(){
 				$(this).append(o);
 			}
 
-			if(static_data.seasons.global_settings.preset_order.length != static_data.seasons.data.length){
+			if(static_data.seasons.global_settings.preset_order.reduce((a, b) => a + b, 0) != static_data.seasons.data.reduce((a, b) => a + b, 0)){
 				$(this)[0].selectedIndex = i;
 				static_data.seasons.global_settings.preset_order[i] = i;
 			}else{
