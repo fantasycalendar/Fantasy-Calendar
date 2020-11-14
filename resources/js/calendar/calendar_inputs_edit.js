@@ -4639,6 +4639,9 @@ function reindex_season_sortable(key){
 		}
 
 		if($(this).find('.preset-season-list').children().length > 0){
+			if(static_data.seasons.global_settings.preset_order === undefined){
+				static_data.seasons.global_settings.preset_order = [];
+			}
 			static_data.seasons.global_settings.preset_order[i] = $(this).find('.preset-season-list').val()|0;
 		}
 
