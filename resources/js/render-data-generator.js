@@ -544,7 +544,7 @@ const render_data_generator = {
 
             var category_hide = category && category.id != -1 ? category.category_settings.hide : false;
 
-            if(!Perms.player_at_least('co-owner') && (event.settings.hide || category_hide)){
+            if(!Perms.can_modify_event(event_index) && (event.settings.hide || category_hide)){
                 continue;
             }
 
