@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Calendar;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
@@ -24,6 +25,9 @@ class RouteServiceProvider extends ServiceProvider
     public function boot()
     {
         //
+        Route::bind('calendar', function($hash) {
+            return Calendar::hash($hash)->firstOrFail();
+        });
 
         parent::boot();
     }

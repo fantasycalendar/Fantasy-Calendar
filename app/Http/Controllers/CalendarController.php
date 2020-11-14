@@ -140,12 +140,10 @@ class CalendarController extends Controller
      * @param  int  $id
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function export($id)
+    public function export(Calendar $calendar)
     {
-        $exportdata = PrepCalendarForExport::dispatchNow(Calendar::hash($id)->firstOrFail());
-
         return view('calendar.export', [
-            'exportdata' => $exportdata,
+            'exportdata' => PrepCalendarForExport::dispatchNow($calendar)
         ]);
     }
 

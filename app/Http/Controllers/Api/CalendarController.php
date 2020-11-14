@@ -44,26 +44,22 @@ class CalendarController extends Controller
         return new CalendarCollection($request->user()->calendars);
     }
 
-    public function show(Request $request, Calendar $calendar) {
+    public function show(Calendar $calendar) {
         return $calendar;
     }
 
-    public function clone(Request $request, $id) {
-        return $this->dispatchNow(new CloneCalendar($id, $request->get('new_calendar_name')));
+    public function clone(Request $request, Calendar $calendar) {
+        return $this->dispatchNow(new CloneCalendar($calendar, $request->get('new_calendar_name')));
     }
 
-    public function last_changed(Request $request, $id) {
-        $calendar = Calendar::hash($id)->firstOrFail();
-
+    public function last_changed(Request $request, Calendar $calendar) {
         return [
             'last_dynamic_change' => $calendar->last_dynamic_change,
             'last_static_change' => $calendar->last_static_change,
         ];
     }
 
-    public function children(Request $request, $id) {
-        $calendar = Calendar::hash($id)->firstOrFail();
-
+    public function children(Calendar $calendar) {
         return $calendar->children;
 
     }
@@ -86,29 +82,27 @@ class CalendarController extends Controller
 
     }
 
-    public function owned(Request $request, $id) {
-        $calendar = Calendar::hash($id)->firstOrFail();
-
+    public function owned(Calendar $calendar) {
         CalendarCollection::withoutWrapping();
 
         return new CalendarCollection($calendar->user->calendars->keyBy('hash'));
     }
 
-    public function users(GetCalendarUsersRequest $request, $id) {
-        $users = $request->calendar->users;
+    public function users(GetCalendarUsersRequest $request, Calendar $calendar) {
+        $users = $calendar->users;
 
         $usersResource = new Collection($users, new CalendarUserTransformer());
 
         $result = array_merge(
             $this->manager->createData($usersResource)->toArray()['data'],
-            $request->calendar->invitations()->active()->get()->map(function($invite) { return $invite->transformForCalendar(); })->toArray()
+            $calendar->invitations()->active()->get()->map(function($invite) { return $invite->transformForCalendar(); })->toArray()
         );
 
         return $result;
     }
 
-    public function inviteUser(InviteCalendarUserRequest $request) {
-        $invitation = CalendarInvite::generate($request->calendar, $request->email);
+    public function inviteUser(InviteCalendarUserRequest $request, Calendar $calendar) {
+        $invitation = CalendarInvite::generate($calendar, $request->email);
 
         $invitation->send();
 
@@ -125,23 +119,19 @@ class CalendarController extends Controller
         return $request->invitation->transformForCalendar();
     }
 
-    public function changeUserRole(ChangeUserRoleRequest $request, $id) {
+    public function changeUserRole(ChangeUserRoleRequest $request, Calendar $calendar) {
+        $calendar->users()->updateExistingPivot($request->input('user_id'), $request->only(['user_role']));
+        $calendar->save();
 
-        $request->calendar->users()->updateExistingPivot($request->input('user_id'), $request->only(['user_role']));
-
-        $request->calendar->save();
-
-        return $request->calendar->users;
+        return $calendar->users;
     }
 
-    public function removeUser(RemoveUserFromCalendarRequest $request) {
-        return $request->calendar->removeUser($request->input('user_id'), $request->input('remove_all'), $request->input('email'));
+    public function removeUser(RemoveUserFromCalendarRequest $request, Calendar $calendar) {
+        return $calendar->removeUser($request->input('user_id'), $request->input('remove_all'), $request->input('email'));
     }
 
-    public function dynamic_data(Request $request, $id) {
-        return Calendar::active()
-            ->hash($id)
-            ->firstOrFail()->dynamic_data;
+    public function dynamic_data(Request $request, Calendar $calendar) {
+        return $calendar->dynamic_data;
     }
 
     public function destroy(Request $request, Calendar $calendar) {

@@ -19,9 +19,7 @@ class ChangeUserRoleRequest extends FormRequest
      */
     public function authorize()
     {
-        $this->calendar = Calendar::active()->hash($this->route('id'))->firstOrFail();
-
-        return $this->user()->can('add-users', $this->calendar);
+        return $this->user()->can('add-users', $this->route('calendar'));
     }
 
     /**

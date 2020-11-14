@@ -22,10 +22,10 @@ class CloneCalendar implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($hash, $newName)
+    public function __construct(Calendar $calendar, $newName)
     {
         $this->newName = $newName;
-        $this->sourceCalendar = Calendar::hash($hash)->with('events', 'event_categories')->firstOrFail();
+        $this->sourceCalendar = $calendar;
     }
 
     /**
