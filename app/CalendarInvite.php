@@ -48,7 +48,7 @@ class CalendarInvite extends Model
             return false;
         }
 
-        if($this->email !== $user->email) {
+        if(strcasecmp($this->email, $user->email) !== 0) {
             return false;
         }
 
