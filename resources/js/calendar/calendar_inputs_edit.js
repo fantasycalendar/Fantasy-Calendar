@@ -5627,9 +5627,15 @@ function get_category(search) {
 		return {id: -1};
 	}
 
-	var results = event_categories.filter(function(element) {
-		return element.id == search;
-	});
+	if(isNaN(search)){
+		var results = event_categories.filter(function(element) {
+			return slugify(element.name) == search;
+		});
+	}else{
+		var results = event_categories.filter(function(element) {
+			return element.id == search;
+		});
+	}
 
 	if(results.length < 1) {
 		return {id: -1};
@@ -5637,6 +5643,7 @@ function get_category(search) {
 
 	return results[0];
 }
+
 function empty_edit_values(){
 
 	timespan_sortable.empty()

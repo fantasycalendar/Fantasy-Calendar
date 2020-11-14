@@ -1,20 +1,3 @@
-function get_category(search) {
-	if(static_data.event_data.categories.length == 0){
-		return {id: -1};
-	}
-
-	var results = static_data.event_data.categories.filter(function(element) {
-		return element.id == search;
-	});
-
-	if(results.length < 1) {
-		return {id: -1};
-	}
-
-	return results[0];
-}
-
-
 function update_moon_colors(){
 	moon_colors = [];
 	var html = [];
