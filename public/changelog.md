@@ -12,6 +12,7 @@
 * Fixed - Copied calendars breaking default event category
 * Fixed - Deleting event condition group sometimes deleting the whole event condition container
 * Fixed - Cycle error message caused by adding or removing months
+* Fixed - Current time inputs visible in view mode when clock was disabled
 
 ### 2.0.3 - Insightful Efreet
 #### November 13, 2020
