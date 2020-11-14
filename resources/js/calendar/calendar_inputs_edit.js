@@ -5610,8 +5610,6 @@ function set_up_edit_values(){
 
 	}
 
-	evaluate_clock_inputs();
-
 	evaluate_remove_buttons();
 
 	$('#cycle_test_input').click();
