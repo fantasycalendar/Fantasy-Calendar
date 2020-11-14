@@ -1841,6 +1841,15 @@ function set_up_edit_inputs(){
 		dynamic_data.current_era = get_current_era(static_data, dynamic_data.epoch);
 	});
 
+	$(document).on('click', '.preview_era_date', function(){
+		let era_id = $(this).closest('.sortable-container').attr('index')|0;
+		console.log(era_id)
+		let era = static_data.eras[era_id];
+		console.log(era)
+		set_preview_date(era.date.year, era.date.timespan, era.date.day, era.date.epoch)
+	});
+
+
 	$(document).on('change', '#season_sortable .date_control', function(){
 		reindex_season_sortable();
 	});
@@ -3814,6 +3823,12 @@ function add_era_to_list(parent, key, data){
 								element.push("</div>");
 							element.push("</div>");
 						element.push("</div>");
+					element.push("</div>");
+				element.push("</div>");
+
+				element.push(`<div class='row my-2'>`);
+					element.push("<div class='col'>");
+						element.push(`<div class='btn btn-secondary full preview_era_date'>Preview era start date</div>`);
 					element.push("</div>");
 				element.push("</div>");
 
