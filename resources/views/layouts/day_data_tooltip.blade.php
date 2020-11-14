@@ -26,7 +26,7 @@
 		<tr class='hidden day_data_moon_phase_num_epoch' data_key="moon_phase_num_epoch"><td class='bold-text'>Moon phase count total:</td> <td class='data_container'></td></tr>
 		<tr class='hidden day_data_intercalary' data_key="intercalary"><td class='bold-text'>Is intercalary:</td> <td class='data_container'></td></tr>
 		<tr class='hidden day_data_era' data_key="era"><td class='bold-text'>Era:</td> <td class='data_container'></td></tr>
-		<tr class='hidden day_data_current_cycle' data_key="current_cycle"><td class='bold-text'>Current cycle(s):</td> <td class='data_container'></td></tr>
+		<tr class='hidden day_data_cycle' data_key="cycle"><td class='bold-text'>Current cycle(s):</td> <td class='data_container'></td></tr>
 		<tr class='hidden day_data_season' data_key="season_name"><td class='bold-text'>Season name:</td> <td class='data_container'></td></tr>
 		<tr class='hidden day_data_season' data_key="season_index"><td class='bold-text'>Season index:</td> <td class='data_container'></td></tr>
 		<tr class='hidden day_data_season' data_key="season_perc"><td class='bold-text'>Season percentage:</td> <td class='data_container'></td></tr>

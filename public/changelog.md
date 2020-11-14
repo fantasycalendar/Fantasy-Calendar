@@ -6,6 +6,7 @@
 * Tweaked - Removed map preset seasons, added season type to seasons if matches not found
 * Tweaked - Sidebar made smaller on higher resolution screens
 * Fixed - Copying locations would not respect custom season order
+* Fixed - Cycle-based conditions not being evaluated properly
 * Fixed - Users not being able to see their own hidden events on others' calendars
 * Fixed - Event categories sometimes not being loaded correctly
 * Fixed - Copied calendars breaking default event category
