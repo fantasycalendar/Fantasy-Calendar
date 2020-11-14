@@ -10,7 +10,7 @@
 * Fixed - Users not being able to see their own hidden events on others' calendars
 * Fixed - Event categories sometimes not being loaded correctly
 * Fixed - Copied calendars breaking default event category
-* Fixed - Deleting event condition group sometimes deleting the whole event condition container
+* Fixed - Deleting event condition group sometimes deleted the whole event condition container
 * Fixed - Cycle error message caused by adding or removing months
 * Fixed - Current time inputs visible in view mode when clock was disabled
 
