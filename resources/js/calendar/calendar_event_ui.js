@@ -401,7 +401,7 @@ var edit_event_ui = {
 				e.preventDefault();
 				e.stopPropagation();
 
-				if(!$(this).hasClass('.group_list')){
+				if($(this).hasClass('group_list')){
 					var group_list = $(this);
 				}else{
 					var group_list = $(this).find('.group_list');
