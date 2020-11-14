@@ -391,7 +391,7 @@ function update_cycle_text(){
 			epoch = preview_date.epoch;
 		}
 
-		var view = get_cycle(static_data, evaluated_static_data.epoch_data[preview_date.epoch]).text;
+		var view = get_cycle(static_data, evaluated_static_data.epoch_data[epoch]).text;
 
 		var cycle_text = Mustache.render(format, view);
 
