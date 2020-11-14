@@ -34,19 +34,19 @@
 			<label for="collapsible_statistics" class="lbl-toggle py-2 px-3 card-header"><i class="mr-2 fas fa-chart-pie"></i> Statistics <a target="_blank" data-pt-position="right" data-pt-title='More Info: Statistics' href='{{ helplink('statistics') }}' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
                 <div class='row no-gutters'>
-                    <div class='col-6 bold-text'>
+                    <div class='col-7 bold-text'>
                         Avg. year length:
                     </div>
-                    <div class='col-6 align-left'>
+                    <div class='col-5 align-left'>
                         <div class='detail-text' id='fract_year_length'>
                         </div>
                     </div>
                 </div>
                 <div class='row no-gutters'>
-                    <div class='col-6 bold-text'>
+                    <div class='col-7 bold-text'>
                         Avg. month length:
                     </div>
-                    <div class='col-6 align-left'>
+                    <div class='col-5 align-left'>
                         <div class='detail-text' id='avg_month_length'>
                         </div>
                     </div>
