@@ -1,5 +1,5 @@
 ### 2.0.4 - Stylish Efreet
-#### November 13, 2020
+#### November 15, 2020
 * Added - Preview era start date button to eras
 * Added - Hidden event preview when styling events
 * Added - Wind velocity in knots on daily weather
