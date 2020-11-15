@@ -935,9 +935,6 @@
     					<select class='form-control protip' id='location_select' data-pt-position="right" data-pt-title="The presets work with four seasons (winter, spring, summer, autumn) or two seasons (winter, summer). If you call your seasons the same, the system matches them with the presets' seasons, no matter which order.">
     					</select>
     				</div>
-    				<div class='row no-gutters my-2'>
-    					<input type='button' value='Map preset locations to seasons' class='btn btn-secondary full protip' id='map_seasons_to_location' data-pt-position="right" data-pt-title="This will open an UI where you can map your seasons to the preset location's seasons, as your order might be different from the preset.">
-    				</div>
                     <div class='row no-gutters my-2'>
                         <input type='button' value='Copy current location' class='btn btn-info full' id='copy_location_data'>
                     </div>
