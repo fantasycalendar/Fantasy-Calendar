@@ -2617,8 +2617,10 @@ var event_evaluator = {
 
 			this.current_event = event_evaluator.events[event_index];
 
-			if(this.current_event.data.conditions[this.current_event.data.conditions.length-1].length == 1){
-				this.current_event.data.conditions.pop();
+			if(this.current_event.data.conditions.length != 0){
+				if(this.current_event.data.conditions[this.current_event.data.conditions.length-1].length == 1){
+					this.current_event.data.conditions.pop();
+				}
 			}
 
 			if(this.current_event.data.date !== undefined && this.current_event.data.date.length === 3){
