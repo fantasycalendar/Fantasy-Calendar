@@ -15,6 +15,7 @@
 * Fixed - Cycle error message caused by adding or removing months
 * Fixed - Current time inputs visible in view mode when clock was disabled
 * Fixed - One time events with durations not wrapping around to subsequent years
+* Fixed - Events without conditions could sometimes prevent calendars from loading
 
 ### 2.0.3 - Insightful Efreet
 #### November 13, 2020
