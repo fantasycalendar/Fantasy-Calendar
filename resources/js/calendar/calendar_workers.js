@@ -2617,15 +2617,19 @@ var event_evaluator = {
 
 			this.current_event = event_evaluator.events[event_index];
 
-			if(this.current_event.data.conditions[this.current_event.data.conditions.length-1].length == 1){
-				this.current_event.data.conditions.pop();
+			if(this.current_event.data.conditions.length != 0){
+				if(this.current_event.data.conditions[this.current_event.data.conditions.length-1].length == 1){
+					this.current_event.data.conditions.pop();
+				}
 			}
 
 			if(this.current_event.data.date !== undefined && this.current_event.data.date.length === 3){
 
 				var epoch = evaluate_calendar_start(event_evaluator.static_data, convert_year(event_evaluator.static_data, this.current_event.data.date[0]), this.current_event.data.date[1], this.current_event.data.date[2]).epoch;
+
+				var begin_epoch = this.current_event.data.has_duration ? event_evaluator.start_epoch-this.current_event.data.duration : event_evaluator.start_epoch;
 				
-				if(epoch >= event_evaluator.start_epoch && epoch <= event_evaluator.end_epoch){
+				if(epoch >= begin_epoch && epoch <= event_evaluator.end_epoch){
 
 					add_to_epoch(this.current_event, event_index, epoch);
 
