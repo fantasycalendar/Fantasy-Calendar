@@ -19,6 +19,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         'App\Calendar' => 'App\Policies\CalendarPolicy',
         'App\CalendarEvent' => 'App\Policies\EventPolicy',
+        'App\CalendarEventComment' => 'App\Policies\EventCommentPolicy',
     ];
 
     /**
@@ -61,20 +62,8 @@ class AuthServiceProvider extends ServiceProvider
                 return true;
             }
 
-            if($calendar->setting('comments') === 'players' && $user->can('add-events', $calendar)) {
-                return true;
-            }
+            return $calendar->setting('comments') && $calendar->userHasPerms($user, 'player');
 
-            if($calendar->setting('comments') === 'public') {
-                return true;
-            }
-
-            return false;
-        });
-
-        Gate::define('add-events', function($user, $calendar) {
-            return $user->can('update', $calendar)
-                && $calendar->userHasPerms($user, 'player');
         });
 
         Gate::define('advance-date', function($user, $calendar) {

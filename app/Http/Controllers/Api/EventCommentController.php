@@ -46,7 +46,7 @@ class EventCommentController extends Controller
         ];
 
         if(!auth('api')->user()->can('add-comment', [$commentData])) {
-            throw new AuthorizationException("You're not authorized to comment on this event.");
+            return response()->make(['success' => false, 'message' => "You're not authorized to comment on this event!"]);
         }
 
         $comment = CalendarEventComment::create($commentData);
