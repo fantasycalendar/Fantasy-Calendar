@@ -19,6 +19,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         'App\Calendar' => 'App\Policies\CalendarPolicy',
         'App\CalendarEvent' => 'App\Policies\EventPolicy',
+        'App\CalendarEventComment' => 'App\Policies\EventCommentPolicy',
     ];
 
     /**

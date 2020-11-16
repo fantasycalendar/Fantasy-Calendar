@@ -124,6 +124,11 @@ class EventCommentController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $comment = CalendarEventComment::findOrFail($id);
+        if(!auth('api')->user()->can('delete', $comment)) {
+            return response()->json(['error' => true, 'message' => "You're not authorized to delete that event comment!"]);
+        }
+
+        return response()->json(['success' => $comment->delete(), 'message' => "Comment deleted."]);
     }
 }

@@ -495,6 +495,64 @@ function submit_delete_event(event_id, callback){
 }
 
 
+function get_event_comments(event_id, callback){
+
+	$.ajax({
+		url: window.baseurl+"api/eventcomment/event/"+event_id,
+		type: "get",
+		dataType: "json",
+		success: function ( result ) {
+			callback(result['data']);
+		},
+		error: function ( result ) {
+			callback(false);
+		}
+	});
+
+}
+
+function submit_new_comment(content, event_id, callback) {
+
+    axios.post(window.baseurl+"api/eventcomment", {
+        calendar_id: calendar_id,
+        content: content,
+        event_id: event_id
+    })
+        .then(function (result){
+            if(!result.data.error && result.data != "") {
+                callback(result.data.data.id, result.data.data);
+            } else if(result.data == ""){
+                $.notify(
+                    "Error adding comment."
+                );
+            } else {
+				$.notify(
+					result.data.message
+				);
+            }
+        });
+}
+
+function submit_delete_comment(comment_id, callback){
+
+    axios.delete(window.baseurl+"api/eventcomment/"+comment_id)
+        .then(function (result){
+            if(!result.data.error && result.data != "") {
+                callback(result.data.message);
+            } else if(result.data == ""){
+                $.notify(
+                    "Error adding comment."
+                );
+            } else {
+				$.notify(
+					result.data.message
+				);
+            }
+		});
+		
+}
+
+
 function get_owned_calendars(output){
 	$.ajax({
 		url:window.apiurl+"/calendar/"+hash+"/owned",

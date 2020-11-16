@@ -2522,7 +2522,7 @@ var show_event_ui = {
 		});
 
 		this.event_save_btn.click(function(){
-			create_event_comment(show_event_ui.event_comment_input.trumbowyg('html'), show_event_ui.db_event_id, show_event_ui.add_comment);
+			submit_new_comment(show_event_ui.event_comment_input.trumbowyg('html'), show_event_ui.db_event_id, show_event_ui.add_comment);
 			show_event_ui.event_comment_input.trumbowyg('empty');
 		});
 
@@ -2531,6 +2531,18 @@ var show_event_ui = {
 			show_event_ui.callback_do_close(function(){
 				edit_event_ui.edit_event(show_event_ui.event_id);
 				show_event_ui.clear_ui();
+			});
+		});
+
+		$(document).on('click', '.delete_event', function(){
+			let comment_container = $(this).closest('.event_comment');
+			let comment_id = $(this).attr('comment_id');
+			submit_delete_comment(comment_id, function(){
+                $.notify(
+					"Removed comment.",
+					"success"
+                );
+				comment_container.remove();
 			});
 		});
 
@@ -2625,7 +2637,7 @@ var show_event_ui = {
 
 			for(var index in comments){
 
-				show_event_ui.add_comment(index, comments[index]);
+				show_event_ui.add_comment(comments[index]);
 
 			}
 
@@ -2649,15 +2661,28 @@ var show_event_ui = {
 
 	},
 
-	add_comment: function(index, comment){
+	add_comment: function(comment){
 
 		var content = [];
 
-		content.push(`<div class='event_comment ${comment.comment_owner ? "comment_owner" : ""} ${comment.calendar_owner ? "calendar_owner" : ""}'`);
-		content.push(` date='${comment.date}' comment_id='${index}'>`);
-			content.push(`<p><span class='username'>${comment.username}${comment.calendar_owner ? " (owner)" : ""}</span>`);
-			content.push(`<span class='date'> - ${comment.date}</span></p>`);
-		content.push(`<div class='comment'>${comment.content}</div>`);
+		content.push(`<div class='container p-2 rounded event_comment ${comment.comment_owner ? "comment_owner" : ""} ${comment.calendar_owner ? "calendar_owner" : ""}'`);
+		content.push(` date='${comment.date}' comment_id='${comment.id}'>`);
+			content.push(`<div class='row'>`);
+				content.push(`<div class='col-auto'>`);
+					content.push(`<p><span class='username'>${comment.username}${comment.calendar_owner ? " (owner)" : ""}</span>`);
+					content.push(`<span class='date'> - ${comment.date}</span></p>`);
+				content.push(`</div>`);
+			if(Perms.user_can_delete_comment(comment)){
+				content.push(`<div class='col-auto ml-auto'>`);
+					content.push(`<button class='btn btn-sm btn-danger delete_event' comment_id='${comment.id}'>Delete</button>`);
+				content.push(`</div>`);
+			}
+			content.push(`</div>`);
+			content.push(`<div class='row'>`);
+				content.push(`<div class='col'>`);
+					content.push(`<div class='comment'>${comment.content}</div>`);
+				content.push(`</div>`);
+			content.push(`</div>`);
 		content.push(`</div>`);
 
 		show_event_ui.event_comments.append(content.join(''))
