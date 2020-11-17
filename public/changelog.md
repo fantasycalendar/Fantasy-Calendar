@@ -1,3 +1,8 @@
+### 2.0.5 - Uncorked Efreet
+#### November 17, 2020
+* Fixed - Default event category not being saved properly
+* Fixed - Users not being able to comment on events
+
 ### 2.0.4 - Stylish Efreet
 #### November 15, 2020
 * Added - Preview era start date button to eras
