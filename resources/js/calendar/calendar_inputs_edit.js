@@ -1209,7 +1209,18 @@ function set_up_edit_inputs(){
 
 		do_error_check();
 
-	})
+	});
+
+	$('#default_event_category').change(function(){
+		let new_default_event_category = $(this).val();
+		if(isNaN(new_default_event_category)){
+			let slug = slugify(new_default_event_category);
+			static_data.settings.default_category = slug;
+		}else{
+			static_data.settings.default_category = new_default_event_category;
+		}
+		evaluate_save_button();
+	});
 
 
 	$('.add_inputs.events .add').click(function(){

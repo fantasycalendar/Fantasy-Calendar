@@ -814,7 +814,7 @@ function create_event_comment(content, event_id, callback) {
         event_id: event_id
     })
         .then(function (result){
-            if(!result.data.error && result.data != "") {
+            if(result.data.success && result.data != "") {
                 callback(result.data.data.id, result.data.data);
             } else if(result.data == ""){
                 $.notify(
