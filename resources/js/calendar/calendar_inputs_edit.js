@@ -1964,7 +1964,12 @@ function set_up_edit_inputs(){
 		if(offset_val === undefined || interval_val === undefined) return;
 
 		if(interval_val == ""){
-			interval.toggleClass('invalid', true).attr('error_msg', true ? `${static_data.year_data.leap_days[index].name} is empty, please enter at least one number.` : '');
+			interval.toggleClass('invalid', true).attr('error_msg', true ? `${static_data.year_data.leap_days[index].name} interval is empty, please enter at least one number.` : '');
+			return;
+		}
+
+		if(interval_val == "0"){
+			interval.toggleClass('invalid', true).attr('error_msg', true ? `${static_data.year_data.leap_days[index].name}'s interval is 0, please enter a positive number.` : '');
 			return;
 		}
 
@@ -5277,7 +5282,7 @@ function evaluate_save_button(override){
 
 	if($('#btn_save').length){
 
-		if(errors.length > 0){
+		if(errors.length > 0 || $('.static_input.invalid').length > 0 || $('.dynamic_input.invalid').length > 0){
 
 			var text = "Calendar has errors - can't save"
 
