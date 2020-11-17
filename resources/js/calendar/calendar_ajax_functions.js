@@ -520,7 +520,7 @@ function submit_new_comment(content, event_id, callback) {
     })
         .then(function (result){
             if(!result.data.error && result.data != "") {
-                callback(result.data.data.id, result.data.data);
+                callback(result.data.data);
             } else if(result.data == ""){
                 $.notify(
                     "Error adding comment."
@@ -531,6 +531,31 @@ function submit_new_comment(content, event_id, callback) {
 				);
             }
         });
+}
+
+function submit_edit_comment(comment_id, content, callback){
+
+    axios.patch(window.baseurl+"api/eventcomment/"+comment_id, {
+		content: content
+	})
+        .then(function (result){
+            if(result.data.success && result.data != "") {
+                $.notify(
+					"Comment edited.",
+					"success"
+                );
+				callback();
+            } else if(result.data == ""){
+                $.notify(
+                    "Error editing comment."
+                );
+            } else {
+				$.notify(
+					result.data.message
+				);
+            } 
+		});
+		
 }
 
 function submit_delete_comment(comment_id, callback){

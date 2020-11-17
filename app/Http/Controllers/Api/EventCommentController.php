@@ -113,7 +113,11 @@ class EventCommentController extends Controller
     {
         $comment = CalendarEventComment::find($id);
 
-        return $comment->update($request->all());
+        if(!auth('api')->user()->can('update', $comment)) {
+            return response()->json(['success' => false, 'message' => "You're not authorized to edit that event comment!"]);
+        }
+
+        return response()->json(['success' => $comment->update($request->all())]);
     }
 
     /**
