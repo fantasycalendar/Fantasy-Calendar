@@ -188,12 +188,11 @@
         set_up_view_values();
 
     }
-
-    var do_update_dynamic = debounce(function(type){
-        update_view_dynamic(hash);
-    }, 500);
-
-
+    if(debounce !== undefined){
+        var do_update_dynamic = debounce(function(type){
+            update_view_dynamic(hash);
+        }, 500);
+    }
 
     </script>
 @endpush
