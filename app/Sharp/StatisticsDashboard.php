@@ -84,22 +84,16 @@ class StatisticsDashboard extends SharpDashboard
 
         /* Total users converted to 2.0 per day */
 
-        $agreed_users = $user_model->whereNull('deleted_at')->where('agreed_at', '<', now())->get();
+        $period = CarbonPeriod::create($user_model->whereNull('deleted_at')->min('agreed_at'),now());
 
-        $user_agreements_per_day = $agreed_users
-            ->groupBy(function($user) {
-                return Carbon::parse($user->created_at)->format('Y-m-d');
-            })->mapWithKeys(function($users, $date) {
-                return [$date => count($users)];
-            });
-
-        $total_users = 0;
         $user_agreement_over_time = [];
-        foreach ($user_agreements_per_day as $date => $number_of_users) {
-            $user_agreement_over_time[$date] = $number_of_users + $total_users;
-            $total_users += $number_of_users;
+        foreach($period as $dateObject) {
+            $date = $dateObject->format('Y-m-d');
+            $user_agreement_over_time[$date] = $user_model->whereNull('deleted_at')->where('agreed_at', '<', $date)->count();
         }
 
+
+        /* Total subscriptions per day */
 
         $period = CarbonPeriod::create($subscription_model->min('created_at'),now());
 
