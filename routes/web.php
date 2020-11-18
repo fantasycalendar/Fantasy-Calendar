@@ -91,6 +91,7 @@ Route::post(
 Route::get('/profile', 'SettingsController@profile')->middleware(['auth', 'account.deletion', 'agreement'])->name('profile');
 Route::post('/profile', 'SettingsController@update')->name('settings.update')->middleware(['auth', 'account.deletion', 'agreement']);
 Route::post('/profile/password', 'SettingsController@updatePassword')->middleware(['auth', 'account.deletion', 'agreement']);
+Route::post('/profile/email', 'SettingsController@updateEmail')->middleware(['auth', 'account.deletion', 'agreement']);
 
 Route::get('/error/unavailable', 'ErrorsController@calendarUnavailable')->name('errors.calendar_unavailable');
 // Manual error page routes for the moment

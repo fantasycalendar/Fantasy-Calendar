@@ -11,20 +11,36 @@
             }
         }
 
-        function PasswordManager() {
+
+        function ProfileManager() {
+
             return {
+
                 changing_password: false,
-                valid: false,
+                password_valid: false,
                 new_password: '',
                 new_password_confirmation: '',
                 was_validated: false,
 
                 confirm_password: function() {
                     this.was_validated = true;
-                    this.valid = this.new_password.length > 7 && this.new_password !== '' && this.new_password_confirmation !== '' && this.new_password === this.new_password_confirmation
+                    this.password_valid = this.new_password.length > 7 && this.new_password !== '' && this.new_password_confirmation !== '' && this.new_password === this.new_password_confirmation
+                },
+
+                changing_email: false,
+                email_valid: false,
+                new_email: '',
+                new_email_confirmation: '',
+                was_validated: false,
+
+                confirm_email: function() {
+                    this.was_validated = true;
+                    this.email_valid = validateEmail(this.new_email) && this.new_email === this.new_email_confirmation;
                 }
             }
+
         }
+
     </script>
 @endpush
 
@@ -99,12 +115,14 @@
                 <div class="card">
                     <div class="card-header"><img class="rounded mr-1" style="max-height: 40px;" src="https://unavatar.now.sh/{{ $user->email }}?fallback=http://beta.fantasy-calendar.com/resources/logo-dark.png"> {{ $user->username }}</div>
                     <div class="card-body">
-                        <div class="card-text" x-data="PasswordManager()">
-                            <p><i class="fa fa-envelope"></i>&nbsp;{{ Str::limit($user->email, 26) }}</p>
-                            <p>Registered {{ ($user->created_at) ? $user->created_at->format('Y-m-d') : $user->date_register }}</p>
 
-                            <button class="btn btn-secondary w-100" x-show="!changing_password" @click="changing_password = !changing_password">Change Password</button>
-                            <form action="/profile/password" method="POST" x-show="changing_password">
+                        <p><i class="fa fa-envelope"></i>&nbsp;{{ Str::limit($user->email, 26) }}</p>
+                        <p>Registered {{ ($user->created_at) ? $user->created_at->format('Y-m-d') : $user->date_register }}</p>
+
+                        <div class="card-text" x-data="ProfileManager()">
+
+                            <button class="btn btn-secondary w-100" x-show="!changing_password && !changing_email" @click="changing_password = !changing_password">Change Password</button>
+                            <form action="/profile/password" method="POST" x-show="changing_password && !changing_email">
                                 @csrf
 
                                 <hr>
@@ -119,16 +137,46 @@
                                     type="password"
                                     name="new_password_confirmation"
                                     x-model="new_password_confirmation"
-                                    :class="{ 'is-invalid': was_validated && !valid }"
+                                    :class="{ 'is-invalid': was_validated && !password_valid }"
                                     @keyup="confirm_password"
                                     @blur="confirm_password">
 
                                 <div class="invalid-feedback" x-show="was_validated && new_password !== new_password_confirmation">Passwords do not match.</div>
 
-                                <button class="btn btn-secondary mt-3 w-100" type="submit" :disabled="!was_validated || !valid">Update</button>
+                                <button class="btn btn-primary mt-3 w-100" type="submit" :disabled="!was_validated || !password_valid">Update</button>
                             </form>
-                            <a href="/account-deletion-request" class="btn btn-outline-danger w-100 mt-2" style="border: 0;" x-show="!changing_password">Request Account Deletion</a>
+
+                            <button class="btn btn-secondary w-100 my-2" x-show="!changing_email && !changing_password" @click="changing_email = !changing_email">Change email</button>
+                            <form action="/profile/email" method="POST" x-show="changing_email && !changing_password">
+                                @csrf
+
+                                <hr>
+                                <label class="mt-2" for="new_email">New email</label>
+                                <input class="form-control required" required type="email" name="new_email" x-model="new_email" :class="{ 'is-invalid': was_validated && new_email.length < 7 }" @blur="confirm_email">
+
+                                <label class="mt-2" for="new_email_confirmation">Confirm New Email</label>
+                                <input
+                                    class="form-control required" required
+                                    type="email"
+                                    name="new_email_confirmation"
+                                    x-model="new_email_confirmation"
+                                    :class="{ 'is-invalid': was_validated && !email_valid }"
+                                    @keyup="confirm_email"
+                                    @blur="confirm_email">
+
+                                <div class="invalid-feedback" x-show="was_validated && new_email !== new_email_confirmation">Emails do not match.</div>
+
+                                <button class="btn btn-primary mt-3 w-100" type="submit" :disabled="!was_validated || !email_valid">Update</button>
+                            </form>
+                            <button class="btn btn-danger mt-3 w-100" type="submit" x-show="changing_email || changing_password" @click="
+                                changing_password = false,
+                                changing_email = false
+                            ">Cancel</button>
+
+                            <a href="/account-deletion-request" x-show="!(changing_email || changing_password)" class="btn btn-outline-danger w-100" style="border: 0;">Request Account Deletion</a>
+
                         </div>
+
                     </div>
                 </div>
             </div>
