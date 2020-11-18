@@ -606,6 +606,7 @@ function preview_date_follow(){
 
 	if(preview_date.follow){
 
+		if(typeof dynamic_date_manager == "undefined") set_up_view_values();
 		if(typeof preview_date_manager == "undefined") set_up_visitor_values();
 
 		preview_date_manager.year = dynamic_date_manager.year;
