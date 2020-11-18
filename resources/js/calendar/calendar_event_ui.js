@@ -1149,10 +1149,11 @@ var edit_event_ui = {
 				break;
 
 			case 'every_x_monthly_weekday':
+				console.log(edit_event_ui.data.week_day_num)
 				var result = [
 					['Weekday', '0', [edit_event_ui.data.week_day_name]],
 					['&&'],
-					['Weekday', '8', [edit_event_ui.data.week_day_num]]
+					['Weekday', '8', [edit_event_ui.data.week_day_num]],
 					['&&'],
 					['Month', '13', [repeats, (edit_event_ui.data.timespan_count+1)%repeats]]
 				];
@@ -1182,7 +1183,7 @@ var edit_event_ui = {
 				var result = [
 					['Weekday', '0', [edit_event_ui.data.week_day_name]],
 					['&&'],
-					['Weekday', '8', [edit_event_ui.data.week_day_num]]
+					['Weekday', '8', [edit_event_ui.data.week_day_num]],
 					['&&'],
 					['Month', '0', [edit_event_ui.data.timespan_index]],
 					['&&'],
