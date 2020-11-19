@@ -166,7 +166,7 @@ const render_data_generator = {
 		};
     },
 
-    _create_render_data: function(processed_data, override_render_style){
+    _create_render_data: function(processed_data){
 
         if(processed_data !== undefined){
             this.processed_data = processed_data;
@@ -184,7 +184,7 @@ const render_data_generator = {
         let render_data = {
             "current_epoch": dynamic_data.epoch,
             "preview_epoch": preview_date.epoch,
-            "render_style": override_render_style ?? static_data.settings.layout,
+            "render_style": static_data.settings.layout,
             "timespans": [],
             "event_epochs": {},
             "timespan_event_epochs": {}
