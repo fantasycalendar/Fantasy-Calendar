@@ -125,14 +125,14 @@ class CalendarController extends Controller
      * @param Calendar $calendar
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function edit(Calendar $calendar)
-    {
-        Auth::user()->acknowledgeMigration();
+public function edit(Calendar $calendar)
+{
+    Auth::user()->acknowledgeMigration();
 
-        return view('calendar.edit', [
-            'calendar' => $calendar,
-        ]);
-    }
+    return view('calendar.edit', [
+        'calendar' => $calendar,
+    ]);
+}
 
     /**
      * Show the form for editing the specified resource.
@@ -142,8 +142,6 @@ class CalendarController extends Controller
      */
     public function mini(Calendar $calendar)
     {
-        Auth::user()->acknowledgeMigration();
-
         return view('calendar.mini', [
             'calendar' => $calendar,
         ]);
