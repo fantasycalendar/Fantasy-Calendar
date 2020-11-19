@@ -6,7 +6,7 @@ var calendar_builder = {
     events: {},
     event_categories: {},
 
-	add_moon_data: function(object1, object2, epoch, data, test){
+	add_moon_data: function(object1, object2, epoch, data){
 
 		for(moon_index = 0; moon_index < this.static_data.moons.length; moon_index++){
 

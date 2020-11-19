@@ -487,6 +487,10 @@
             background-color: $m-odd-bg;
         }
 
+        &_names{
+            border-top: 1px solid $calendar-border-color; 
+        }
+
         .timespan_day{
             &.preview_day{
                 box-shadow: inset 0 0 0 3px rgba(191.0, 99.0, 71.0, 0.5);
@@ -496,7 +500,7 @@
                 background-color: $m-current-day;
                 color: #444;
 
-                &:hover {
+                &:hover:not(.single_page_day) {
                     cursor:pointer;
                     background-color: $current-day-color;
                 }
@@ -509,7 +513,7 @@
                 background-color:$gray-secondary;
             }
 
-            &:hover:not(.current_day){
+            &:hover:not(.current_day):not(.single_page_day){
                 background-color: $m-day-hover;
                 cursor:pointer;
             }
