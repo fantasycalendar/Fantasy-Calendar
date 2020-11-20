@@ -49,6 +49,7 @@ Route::get('invite/register', 'InviteController@register')->name('invite.registe
 // Calendar management
 Route::get('calendars/{calendar}/print', 'CalendarController@print')->name('calendars.print')->middleware(['account.deletion', 'agreement']);
 Route::get('calendars/{calendar}/export', 'CalendarController@export')->name('calendars.export')->middleware(['account.deletion', 'agreement']);
+Route::get('calendars/{calendar}/table', 'CalendarController@table')->name('calendars.table')->middleware(['account.deletion', 'agreement']);
 Route::resource('calendars', 'CalendarController')->middleware(['account.deletion', 'agreement']);
 
 

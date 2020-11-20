@@ -134,6 +134,13 @@ class CalendarController extends Controller
         ]);
     }
 
+    public function table(Calendar $calendar)
+    {
+        return view('calendar.table', [
+            'calendar' => $calendar
+        ]);
+    }
+
     /**
      * Show the form for exporting the specified resource.
      *
