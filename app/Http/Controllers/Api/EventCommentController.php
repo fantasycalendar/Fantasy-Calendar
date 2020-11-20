@@ -113,7 +113,11 @@ class EventCommentController extends Controller
     {
         $comment = CalendarEventComment::find($id);
 
-        return $comment->update($request->all());
+        if(!auth('api')->user()->can('update', $comment)) {
+            return response()->json(['success' => false, 'message' => "You're not authorized to edit that event comment!"]);
+        }
+
+        return response()->json(['success' => $comment->update($request->all())]);
     }
 
     /**
@@ -124,6 +128,11 @@ class EventCommentController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $comment = CalendarEventComment::findOrFail($id);
+        if(!auth('api')->user()->can('delete', $comment)) {
+            return response()->json(['error' => true, 'message' => "You're not authorized to delete that event comment!"]);
+        }
+
+        return response()->json(['success' => $comment->delete(), 'message' => "Comment deleted."]);
     }
 }

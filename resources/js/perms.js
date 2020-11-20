@@ -43,6 +43,10 @@ class Perms {
         }
         return this.player_at_least('player');
     }
+
+    user_can_delete_comment(comment){
+        return this.player_at_least('co-owner') || this.owner || comment.comment_owner;
+    }
 }
 
 module.exports = Perms;
