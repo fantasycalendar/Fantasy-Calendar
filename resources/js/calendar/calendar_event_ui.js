@@ -237,7 +237,7 @@ var edit_event_ui = {
 				classes = classes.join(' ');
 
 				$(this).prop('class', classes);
-			
+
 			})
 
 		});
@@ -516,7 +516,7 @@ var edit_event_ui = {
 	show_hide_event_testing(){
 
 		this.event_occurrences_container.toggleClass('hidden', edit_event_ui.event_conditions_container.length == 0 || edit_event_ui.event_is_one_time());
-		
+
 	},
 
 	create_new_event: function(name, epoch){
@@ -871,7 +871,7 @@ var edit_event_ui = {
 			}else if(condition.length == 2){
 				new_search_distance = this.recurse_conditions(condition[1], search_distance)
 			}
-			
+
 			search_distance = new_search_distance > search_distance ? new_search_distance : search_distance;
 		}
 
@@ -894,24 +894,24 @@ var edit_event_ui = {
 				}
 
 			}else{
-			
+
 				var year = false;
 				var month = false;
 				var day = false
 				var ands = 0
-	
+
 				for(var i = 0; i < conditions.length; i++){
 					if(conditions[i].length == 3){
 						if(conditions[i][0] == "Year" && Number(conditions[i][1]) == 0){
 							year = true;
 							date[0] = Number(conditions[i][2][0])
 						}
-	
+
 						if(conditions[i][0] == "Month" && Number(conditions[i][1]) == 0){
 							month = true;
 							date[1] = Number(conditions[i][2][0])
 						}
-	
+
 						if(conditions[i][0] == "Day" && Number(conditions[i][1]) == 0){
 							day = true;
 							date[2] = Number(conditions[i][2][0])
@@ -922,7 +922,7 @@ var edit_event_ui = {
 						}
 					}
 				}
-	
+
 				if(!(year && month && day && ands == 2)){
 					date = [];
 				}
@@ -1024,7 +1024,7 @@ var edit_event_ui = {
 	update_every_nth_presets: function(){
 
 		var repeat_value = this.repeat_input.val()|0;
-		
+
 		var repeat_string = !isNaN(repeat_value) && repeat_value > 1 ? `${ordinal_suffix_of(repeat_value)} ` : (repeat_value == "" ? "nth " : "");
 
 		let inverse_week_day_num = edit_event_ui.data.inverse_week_day_num == 1 ? "last" : ordinal_suffix_of(edit_event_ui.data.inverse_week_day_num) + " to last";
@@ -2115,7 +2115,7 @@ var edit_event_ui = {
 			});
 
 		}else{
-    
+
 			this.build_seasons = event_checker.evaluation_has_season_event(this.event_id);
 
 			if(!this.build_seasons){
@@ -2137,7 +2137,7 @@ var edit_event_ui = {
 
 				});
 			}
-			
+
 
 		}
 
@@ -2192,7 +2192,7 @@ var edit_event_ui = {
 			}else{
 
 				edit_event_ui.event_occurrences = e.data.occurrences;
-				
+
 				var num = edit_event_ui.event_occurrences.length;
 
 				let text = years > 1 ? `the next ${years} years.` : "this year.";
@@ -2437,7 +2437,7 @@ var event_checker = {
         }
 
     }
-    
+
 }
 
 
@@ -2601,7 +2601,7 @@ var show_event_ui = {
 		});
 
 	},
-	
+
 	delete_comment(element){
 		let comment_index = element.attr('comment_index');
 		let comment_id = element.attr('comment_id');
@@ -2634,7 +2634,7 @@ var show_event_ui = {
 		let comment_content = show_event_ui.comments[comment_index].content;
 
 		let comment_container = element.closest('.event_comment');
-		
+
 		let comment_text_container = comment_container.find('.comment');
 		let edit_comment_container = comment_container.find('.edit_comment_container');
 
@@ -2642,13 +2642,13 @@ var show_event_ui = {
 		let cancel_edit_comment_btn = comment_container.find('.cancel_edit_comment_btn');
 
 		let comment_context_btn = comment_container.find('.comment_context_btn');
-		
+
 		comment_context_btn.toggleClass('hidden', true);
 		comment_text_container.toggleClass('hidden', true);
 
 		submit_edit_comment_btn.toggleClass('hidden', false);
 		cancel_edit_comment_btn.toggleClass('hidden', false);
-		
+
 		edit_comment_container.trumbowyg({
 			btns: [
 				['strong', 'em', 'del'],
@@ -2667,14 +2667,14 @@ var show_event_ui = {
 	cancel_edit_comment: function(element){
 
 		let comment_container = element.closest('.event_comment');
-			
+
 		let comment_text_container = comment_container.find('.comment');
 		let edit_comment_container = comment_container.find('.edit_comment_container');
 
 		let comment_context_btn = comment_container.find('.comment_context_btn');
 		let submit_edit_comment_btn = comment_container.find('.submit_edit_comment_btn');
 		let cancel_edit_comment_btn = comment_container.find('.cancel_edit_comment_btn');
-		
+
 		comment_text_container.toggleClass('hidden', false);
 		comment_context_btn.toggleClass('hidden', false);
 
@@ -2817,7 +2817,7 @@ var show_event_ui = {
 				content.push(`</div>`);
 			if(Perms.user_can_delete_comment(comment)){
 				content.push(`<div class='col-auto ml-auto'>`);
-					content.push(`<button class='btn btn-sm btn-secondary comment_context_btn' comment_id='${comment.id}' comment_index='${comment_index}'><i class="fas fa-ellipsis-v"></i></button>`);
+					content.push(`<button class='btn btn-sm btn-outline-secondary border-0 comment_context_btn' comment_id='${comment.id}' comment_index='${comment_index}'><i class="fas fa-ellipsis-v"></i></button>`);
 					if(comment.comment_owner){
 						content.push(`<button class='btn btn-sm btn-primary hidden submit_edit_comment_btn ml-2' comment_id='${comment.id}' comment_index='${comment_index}'>Submit</button>`);
 						content.push(`<button class='btn btn-sm btn-danger hidden cancel_edit_comment_btn ml-2' comment_id='${comment.id}' comment_index='${comment_index}'>Cancel</button>`);
