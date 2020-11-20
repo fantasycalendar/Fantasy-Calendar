@@ -50,7 +50,7 @@
 
                 <div class="col-span-4">
                     @foreach($events as $event)
-                        <x-timeline-event :title="$event->name">
+                        <x-timeline-event title="{{ $event->name }}" date="{{ $event->date }}">
                             {!! $event->description !!}
                         </x-timeline-event>
                     @endforeach
