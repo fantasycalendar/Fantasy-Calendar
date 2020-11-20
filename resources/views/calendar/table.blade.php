@@ -1,20 +1,40 @@
 @extends('templates._calendar-tw')
 
 @section('content')
-    <header>
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 class="text-3xl font-bold leading-tight text-gray-900">
-                Dashboard
-            </h1>
-        </div>
-    </header>
     <main>
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <!-- Replace with your content -->
-            <div class="px-4 py-8 sm:px-0">
-                <div class="border-4 border-dashed border-gray-200 rounded-lg h-96"></div>
+            <div class="grid grid-cols-5 gap-4">
+                <div class="col-span-1 grid place-items-center flex flex-column">
+                    <div class="text-gray-500 grid place-items-center h-20 mb-4">Clock</div>
+                    <div class="text-gray-500 grid place-items-center h-20">Calendar</div>
+                </div>
+                <div class="shadow rounded bg-white col-span-4">
+                    <div class=" m-5">
+                        <div class="mb-5">
+                            <label for="email" class="sr-only">Email</label>
+                            <input type="text" id="email" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-400 rounded-sm" placeholder="Event Title">
+                        </div>
+                        <x-easy-mde name="description" :options="['maxHeight' => '300px']" />
+                    </div>
+                </div>
             </div>
-            <!-- /End replace -->
+
+            <hr class="my-5 bg-gray-800">
+
+            <div class="grid grid-cols-5 gap-4">
+                <div class="col-span-1 h-full grid place-items-center">
+                    WHEEEE
+                </div>
+
+                <div class="col-span-4">
+                    @foreach($events as $event)
+                        <x-timeline-event :title="$event->name">
+                            {!! $event->description !!}
+                        </x-timeline-event>
+                    @endforeach
+                </div>
+            </div>
+
         </div>
     </main>
 

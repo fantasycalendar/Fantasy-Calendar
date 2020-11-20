@@ -137,7 +137,8 @@ class CalendarController extends Controller
     public function table(Calendar $calendar)
     {
         return view('calendar.table', [
-            'calendar' => $calendar
+            'calendar' => $calendar,
+            'events' => $calendar->events->take(5)
         ]);
     }
 

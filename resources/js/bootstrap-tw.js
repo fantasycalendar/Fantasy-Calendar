@@ -47,6 +47,7 @@ window.swal = require('sweetalert2')
 
 window.sanitizeHtml = require('sanitize-html');
 
+window.EasyMDE = require('easymde');
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
