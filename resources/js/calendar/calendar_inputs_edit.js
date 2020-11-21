@@ -1935,6 +1935,10 @@ function set_up_edit_inputs(){
 
 		$('.leap_day_occurance_input').change();
 
+		dynamic_date_manager.cap_timespan();
+		dynamic_data.timespan = dynamic_date_manager.timespan;
+		dynamic_data.epoch = dynamic_date_manager.epoch;
+
 	});
 
 	$(document).on('keyup', '.leap_day_occurance_input', function(){
