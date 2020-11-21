@@ -1,5 +1,5 @@
 ### 2.0.6 - Talkative Efreet
-#### November x, 2020
+#### November 21, 2020
 * Added - Ability to edit and delete event comments
 * Fixed - Calendars with errors still being able to be saved
 * Fixed - Leap days with interval of 0 now shows proper error
