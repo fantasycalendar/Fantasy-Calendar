@@ -7,6 +7,7 @@
 * Fixed - Show month number displaying the wrong number
 * Fixed - Week-in-year calculation being off, throwing off some event conditions
 * Fixed - Hide time from guest viewers would not do anything
+* Fixed - Cycle would error out when changing month interval and offset
 
 ### 2.0.5 - Uncorked Efreet
 #### November 17, 2020
