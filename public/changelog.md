@@ -4,6 +4,8 @@
 * Fixed - Calendars with errors still being able to be saved
 * Fixed - Leap days with interval of 0 now shows proper error
 * Fixed - Some event presets would throw an error
+* Fixed - Show month number displaying the wrong number
+* Fixed - Week-in-year calculation being off, throwing off some event conditions
 
 ### 2.0.5 - Uncorked Efreet
 #### November 17, 2020

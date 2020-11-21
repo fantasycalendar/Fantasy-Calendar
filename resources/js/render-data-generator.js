@@ -190,7 +190,7 @@ const render_data_generator = {
             "timespan_event_epochs": {}
         }
 
-        let indexes = Object.keys(timespans_to_build)
+        let indexes = Object.keys(timespans_to_build);
         let length = indexes.length
 
         let epoch = year_data.start_epoch;
@@ -247,7 +247,7 @@ const render_data_generator = {
             let show_months = timespan.type === "month";
 
             let timespan_data = {
-                "title": static_data.settings.add_month_number ? `${timespan.name} - Month ${index+1}` : timespan.name,
+                "title": static_data.settings.add_month_number ? `${timespan.name} - Month ${timespan.num+1}` : timespan.name,
                 "show_title": true,
                 "weekdays": timespan.week,
                 "short_weekdays": timespan.truncated_week,

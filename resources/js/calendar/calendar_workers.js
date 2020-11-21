@@ -557,6 +557,7 @@ var calendar_builder = {
 		let year_start_data = evaluate_calendar_start(this.static_data, first_eval_year);
 		var year_day = 1 + start_data.epoch - year_start_data.epoch;
 		var year_week_num = 1 + start_data.total_week_num - year_start_data.total_week_num;
+		var inverse_year_week_num = 1 + evaluate_calendar_start(this.static_data, first_eval_year+1).total_week_num - year_start_data.total_week_num;
 
 		var order = Object.keys(this.calendar_list.pre_timespans_to_evaluate);
 
@@ -565,8 +566,6 @@ var calendar_builder = {
         }
 
 		for(var year_i = 0; year_i < order.length; year_i++){
-
-			var year_start_epoch = epoch;
 
 			year_index = parseInt(order[year_i]);
 
@@ -678,7 +677,7 @@ var calendar_builder = {
 							'week_day_name': current_timespan.type !== "intercalary" ? current_timespan.week[week_day-1] : undefined,
 
 							'inverse_month_week_num': undefined,
-							'inverse_year_week_num': undefined,
+							'inverse_year_week_num': current_timespan.type !== "intercalary" ? inverse_year_week_num : undefined,
 							'month_week_num': current_timespan.type !== "intercalary" ? month_week_num : undefined,
 							'year_week_num': current_timespan.type !== "intercalary" ? year_week_num : undefined,
 							'total_week_num': current_timespan.type !== "intercalary" ? total_week_num : undefined,
@@ -724,6 +723,7 @@ var calendar_builder = {
 								week_day = 1;
 								month_week_num++;
 								year_week_num++;
+								inverse_year_week_num--;
 								total_week_num++;
 							}
 
@@ -787,6 +787,7 @@ var calendar_builder = {
 
 				if(!this.static_data.year_data.overflow){
 					year_week_num++;
+					inverse_year_week_num--;
 					total_week_num++;
 				}
 
@@ -809,7 +810,10 @@ var calendar_builder = {
 
 				}
 			}
-			if(year_index != convert_year(this.static_data, this.dynamic_data.year)) year_day = 1;
+			if(year_index != convert_year(this.static_data, this.dynamic_data.year)){
+				year_day = 1;
+				inverse_year_week_num = 1 + evaluate_calendar_start(this.static_data, year_index+1).total_week_num - evaluate_calendar_start(this.static_data, year_index).total_week_num;
+			}
 
 			if(this.static_data.eras.length != 0 && current_era != -1){
 				if(this.static_data.eras[current_era].settings.ends_year){
@@ -821,13 +825,6 @@ var calendar_builder = {
 				}
 			}else{
 				era_year++;
-			}
-
-			let highest_year_week_num = this.data.epochs[epoch-1].year_week_num;
-			for(var j = epoch-1; j >= year_start_epoch; j--){
-				let current_year_week_num = this.data.epochs[j].year_week_num;
-				let inverse_year_week_num = (highest_year_week_num-current_year_week_num)+1;
-				this.data.epochs[j].inverse_year_week_num = inverse_year_week_num;
 			}
 
 		}
@@ -848,8 +845,6 @@ var calendar_builder = {
         execution_time.start();
 
 		for(var year_i = 0; year_i < order.length; year_i++){
-
-			var year_start_epoch = epoch;
 
 			year_index = parseInt(order[year_i]);
 
@@ -961,7 +956,7 @@ var calendar_builder = {
 							'week_day_name': current_timespan.type !== "intercalary" ? current_timespan.week[week_day-1] : undefined,
 
 							'inverse_month_week_num': undefined,
-							'inverse_year_week_num': undefined,
+							'inverse_year_week_num': current_timespan.type !== "intercalary" ? inverse_year_week_num : undefined,
 							'month_week_num': current_timespan.type !== "intercalary" ? month_week_num : undefined,
 							'year_week_num': current_timespan.type !== "intercalary" ? year_week_num : undefined,
 							'total_week_num': current_timespan.type !== "intercalary" ? total_week_num : undefined,
@@ -1006,6 +1001,7 @@ var calendar_builder = {
 								week_day = 1;
 								month_week_num++;
 								year_week_num++;
+								inverse_year_week_num--;
 								total_week_num++;
 							}
 
@@ -1069,6 +1065,7 @@ var calendar_builder = {
 
 				if(!this.static_data.year_data.overflow){
 					year_week_num++;
+					inverse_year_week_num--;
 					total_week_num++;
 				}
 
@@ -1099,7 +1096,11 @@ var calendar_builder = {
 				})
 
 			}
-			if(year_index != convert_year(this.static_data, this.dynamic_data.year)) year_day = 1;
+			if(year_index != convert_year(this.static_data, this.dynamic_data.year)){
+				year_day = 1;
+				inverse_year_week_num = 1 + evaluate_calendar_start(this.static_data, year_index+1).total_week_num - evaluate_calendar_start(this.static_data, year_index).total_week_num;
+			}
+			
 			if(this.static_data.eras.length != 0 && current_era != -1){
 				if(this.static_data.eras[current_era].settings.ends_year){
 					if(!this.static_data.eras[current_era].settings.restart){
@@ -1110,13 +1111,6 @@ var calendar_builder = {
 				}
 			}else{
 				era_year++;
-			}
-
-			let highest_year_week_num = this.data.epochs[epoch-1].year_week_num;
-			for(var j = epoch-1; j >= year_start_epoch; j--){
-				let current_year_week_num = this.data.epochs[j].year_week_num;
-				let inverse_year_week_num = (highest_year_week_num-current_year_week_num)+1;
-				this.data.epochs[j].inverse_year_week_num = inverse_year_week_num;
 			}
 		}
 
@@ -1330,7 +1324,7 @@ var calendar_builder = {
 
 				}
 
-				for(var timespan_index = post_timespan; timespan_index < this.static_data.year_data.timespans.length-1; timespan_index++){
+				for(var timespan_index = post_timespan; timespan_index < this.static_data.year_data.timespans.length; timespan_index++){
 
 					var timespan_object = this.static_data.year_data.timespans[timespan_index];
 
@@ -1413,9 +1407,12 @@ var calendar_builder = {
 		}
 		
 		let year_start_data = evaluate_calendar_start(this.static_data, first_eval_year);
-		year_day = 1 + start_data.epoch - year_start_data.epoch;
-		year_week_num = 1 + start_data.total_week_num - year_start_data.total_week_num;
+		var year_day = 1 + start_data.epoch - year_start_data.epoch;
+		var year_week_num = 1 + start_data.total_week_num - year_start_data.total_week_num;
+		var inverse_year_week_num = 1 + evaluate_calendar_start(this.static_data, first_eval_year+1).total_week_num - year_start_data.total_week_num - year_week_num;
 
+		year_num_timespans = start_data.num_timespans - year_start_data.num_timespans;
+		
 		order = Object.keys(this.calendar_list.pre_timespans_to_evaluate);
 
 		if(order[0] > order[order.length-1]){
@@ -1428,14 +1425,16 @@ var calendar_builder = {
 
 			timespan_list = this.calendar_list.pre_timespans_to_evaluate[year_index];
 
-			let year_start_epoch = epoch;
+			let keys = Object.keys(timespan_list);
+			let length = keys.length;
 
-			for(var i = 0; i < Object.keys(timespan_list).length; i++){
+			for(var i = 0; i < length; i++){
 
-				timespan_index = parseInt(Object.keys(timespan_list)[i]);
+				timespan_index = parseInt(keys[i]);
 
 				count_timespans[timespan_index]++;
 				num_timespans++;
+				year_num_timespans++;
 
 				current_timespan = timespan_list[timespan_index];
 
@@ -1524,7 +1523,7 @@ var calendar_builder = {
 							'era_year': unconvert_year(this.static_data, era_year),
 
 							'timespan_index': timespan_index,
-							'timespan_number': i,
+							'timespan_number': year_num_timespans-1,
 							'timespan_count': count_timespans[timespan_index],
 							'num_timespans': num_timespans,
 							'timespan_name': current_timespan.name,
@@ -1537,7 +1536,7 @@ var calendar_builder = {
 							'week_day_name': current_timespan.type !== "intercalary" ? current_timespan.week[week_day-1] : undefined,
 
 							'inverse_month_week_num': undefined,
-							'inverse_year_week_num': undefined,
+							'inverse_year_week_num': current_timespan.type !== "intercalary" ? inverse_year_week_num : undefined,
 							'month_week_num': current_timespan.type !== "intercalary" ? month_week_num : undefined,
 							'year_week_num': current_timespan.type !== "intercalary" ? year_week_num : undefined,
 							'total_week_num': current_timespan.type !== "intercalary" ? total_week_num : undefined,
@@ -1585,6 +1584,7 @@ var calendar_builder = {
 								month_week_num++;
 								year_week_num++;
 								total_week_num++;
+								inverse_year_week_num--;
 							}
 
 						}
@@ -1668,14 +1668,8 @@ var calendar_builder = {
 				if(!this.static_data.year_data.overflow){
 					year_week_num++;
 					total_week_num++;
+					inverse_year_week_num--;
 				}
-			}
-
-			let highest_year_week_num = this.data.epochs[epoch-1].year_week_num;
-			for(var j = epoch-1; j >= year_start_epoch; j--){
-				let current_year_week_num = this.data.epochs[j].year_week_num;
-				let inverse_year_week_num = (highest_year_week_num-current_year_week_num)+1;
-				this.data.epochs[j].inverse_year_week_num = inverse_year_week_num;
 			}
 
 			if(year_index !== convert_year(this.static_data, this.dynamic_data.year)){
@@ -1691,6 +1685,9 @@ var calendar_builder = {
 					era_year++;
 				}
 				year_day = 1;
+				year_num_timespans = 0;
+				year_week_num = 1;
+				inverse_year_week_num = 1 + evaluate_calendar_start(this.static_data, convert_year(this.static_data, this.dynamic_data.year)+1).total_week_num - evaluate_calendar_start(this.static_data, convert_year(this.static_data, this.dynamic_data.year)).total_week_num;
 			}
 
 		}
@@ -1701,20 +1698,25 @@ var calendar_builder = {
 
 		first_epoch = epoch;
 		first_week_day = week_day;
-		year_week_num = 1;
 
 		var calendar_year_day = year_day;
 		var calendar_era_year = era_year;
 		var calendar_start_epoch = first_epoch;
+		
+		let keys = Object.keys(this.calendar_list.timespans_to_build);
+		let length = keys.length;
 
-		for(var i = 0; i < Object.keys(this.calendar_list.timespans_to_build).length; i++){
+		for(var i = 0; i < length; i++){
 
-			timespan_index = parseInt(Object.keys(this.calendar_list.timespans_to_build)[i]);
+			timespan_index = parseInt(keys[i]);
+
+			this.calendar_list.timespans_to_build[timespan_index].num = year_num_timespans;
 
 			total_day = 0;
 
 			count_timespans[timespan_index]++;
 			num_timespans++;
+			year_num_timespans++;
 
 			current_timespan = this.calendar_list.timespans_to_build[timespan_index];
 
@@ -1818,7 +1820,7 @@ var calendar_builder = {
 						'era_year': unconvert_year(this.static_data, era_year),
 
 						'timespan_index': timespan_index,
-						'timespan_number': i,
+						'timespan_number': year_num_timespans-1,
 						'timespan_count': count_timespans[timespan_index],
 						'num_timespans': num_timespans,
 						'timespan_name': current_timespan.name,
@@ -1831,7 +1833,7 @@ var calendar_builder = {
 						'week_day_name': current_timespan.type !== "intercalary" ? current_timespan.week[week_day-1] : undefined,
 
 						'inverse_month_week_num': undefined,
-						'inverse_year_week_num': undefined,
+						'inverse_year_week_num': current_timespan.type !== "intercalary" ? inverse_year_week_num : undefined,
 						'month_week_num': current_timespan.type !== "intercalary" ? month_week_num : undefined,
 						'year_week_num': current_timespan.type !== "intercalary" ? year_week_num : undefined,
 						'total_week_num': current_timespan.type !== "intercalary" ? total_week_num : undefined,
@@ -1876,6 +1878,7 @@ var calendar_builder = {
 							week_day = 1;
 							month_week_num++;
 							year_week_num++;
+							inverse_year_week_num--;
 							total_week_num++;
 						}
 
@@ -1951,6 +1954,7 @@ var calendar_builder = {
 
 			if(!this.static_data.year_data.overflow){
 				year_week_num++;
+				inverse_year_week_num--;
 				total_week_num++;
 			}
 
@@ -1982,14 +1986,12 @@ var calendar_builder = {
 		var calendar_end_epoch = epoch-1;
 		var calendar_first_week_day = first_week_day;
 
-		let highest_year_week_num = this.data.epochs[calendar_end_epoch].year_week_num;
-		for(var j = calendar_end_epoch; j >= epoch; j--){
-			let current_year_week_num = this.data.epochs[j].year_week_num;
-			let inverse_year_week_num = (highest_year_week_num-current_year_week_num)+1;
-			this.data.epochs[j].inverse_year_week_num = inverse_year_week_num;
-		}
-
 		order = Object.keys(this.calendar_list.post_timespans_to_evaluate);
+
+		if(parseInt(order[0]) > convert_year(this.static_data, this.dynamic_data.year)){
+			year_num_timespans = 0;
+			inverse_year_week_num = 1 + evaluate_calendar_start(this.static_data, parseInt(order[0])+1).total_week_num - evaluate_calendar_start(this.static_data, parseInt(order[0])).total_week_num;
+		}
 
 		for(var year_i = 0; year_i < order.length; year_i++){
 
@@ -1997,18 +1999,22 @@ var calendar_builder = {
 
 			timespan_list = this.calendar_list.post_timespans_to_evaluate[year_index];
 
-			let year_start_epoch = epoch;
+			let keys = Object.keys(timespan_list);
+			let length = keys.length;
 
-			for(var i = 0; i < Object.keys(timespan_list).length; i++){
+			for(var i = 0; i < length; i++){
 
-				timespan_index = parseInt(Object.keys(timespan_list)[i]);
+				timespan_index = parseInt(keys[i]);
 
 				count_timespans[timespan_index]++;
 				num_timespans++;
+				year_num_timespans++;
 
 				current_timespan = timespan_list[timespan_index];
 
 				month_week_num = 1;
+
+				let month_start_epoch = epoch;
 
 				if(!this.static_data.year_data.overflow){
 					week_day = 1;
@@ -2090,7 +2096,7 @@ var calendar_builder = {
 							'era_year': unconvert_year(this.static_data, era_year),
 
 							'timespan_index': timespan_index,
-							'timespan_number': i,
+							'timespan_number': year_num_timespans,
 							'timespan_count': count_timespans[timespan_index],
 							'num_timespans': num_timespans,
 							'timespan_name': current_timespan.name,
@@ -2103,7 +2109,7 @@ var calendar_builder = {
 							'week_day_name': current_timespan.type !== "intercalary" ? current_timespan.week[week_day-1] : undefined,
 
 							'inverse_month_week_num': undefined,
-							'inverse_year_week_num': undefined,
+							'inverse_year_week_num': current_timespan.type !== "intercalary" ? inverse_year_week_num : undefined,
 							'month_week_num': current_timespan.type !== "intercalary" ? month_week_num : undefined,
 							'year_week_num': current_timespan.type !== "intercalary" ? year_week_num : undefined,
 							'total_week_num': current_timespan.type !== "intercalary" ? total_week_num : undefined,
@@ -2149,6 +2155,7 @@ var calendar_builder = {
 								week_day = 1;
 								month_week_num++;
 								year_week_num++;
+								inverse_year_week_num--;
 								total_week_num++;
 							}
 
@@ -2210,12 +2217,35 @@ var calendar_builder = {
 					}
 				}
 
+				let highest_month_week_num = this.data.epochs[epoch-1].month_week_num;
+				let week_day_nums = {};
+
+				for(var j = epoch-1; j >= month_start_epoch; j--){
+
+					let current_month_week_num = this.data.epochs[j].month_week_num;
+					let inverse_month_week_num = (highest_month_week_num-current_month_week_num)+1;
+					this.data.epochs[j].inverse_month_week_num = inverse_month_week_num;
+
+					if(week_day_nums[this.data.epochs[j].week_day] === undefined){
+						week_day_nums[this.data.epochs[j].week_day] = 1;
+					}else{
+						week_day_nums[this.data.epochs[j].week_day]++;
+					}
+	
+					this.data.epochs[j].inverse_week_day_num = week_day_nums[this.data.epochs[j].week_day];
+
+				}
+
 				if(!this.static_data.year_data.overflow){
 					year_week_num++;
+					inverse_year_week_num--;
 					total_week_num++;
 				}
 			}
 			year_day = 1;
+			year_num_timespans = 0;
+			inverse_year_week_num = 1 + evaluate_calendar_start(this.static_data, year_index+1).total_week_num - evaluate_calendar_start(this.static_data, year_index).total_week_num;
+
 			if(this.static_data.eras.length > 0 && current_era != -1){
 				if(this.static_data.eras[current_era].settings.ends_year){
 					if(!this.static_data.eras[current_era].settings.restart){
@@ -2226,13 +2256,6 @@ var calendar_builder = {
 				}
 			}else{
 				era_year++;
-			}
-
-			let highest_year_week_num = this.data.epochs[epoch-1].year_week_num;
-			for(var j = epoch-1; j >= year_start_epoch; j--){
-				let current_year_week_num = this.data.epochs[j].year_week_num;
-				let inverse_year_week_num = (highest_year_week_num-current_year_week_num)+1;
-				this.data.epochs[j].inverse_year_week_num = inverse_year_week_num;
 			}
 
 		}
