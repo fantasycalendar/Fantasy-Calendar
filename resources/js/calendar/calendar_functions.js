@@ -991,6 +991,34 @@ function valid_preview_date(year, timespan, day){
 
 }
 
+/**
+ * This function takes a slug or an index, and returns the appropriate event category, or an empty one with an id of -1
+ *
+ * @param  {string/int}  search   The string slug or id of the event category
+ * @return {object}         	  The event category object
+ * 
+ */
+function get_category(search) {
+	if(event_categories.length == 0){
+		return {id: -1};
+	}
+
+	if(isNaN(search)){
+		var results = event_categories.filter(function(element) {
+			return slugify(element.name) == search;
+		});
+	}else{
+		var results = event_categories.filter(function(element) {
+			return element.id == search;
+		});
+	}
+
+	if(results.length < 1) {
+		return {id: -1};
+	}
+
+	return results[0];
+}
 
 /**
  * This function is used to calculate the current cycle that the calendar is in on any given year.
