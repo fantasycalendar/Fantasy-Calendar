@@ -1,5 +1,11 @@
 @extends('templates._calendar-tw')
 
+@push('head')
+    <script>
+        window.PRELOADED = @json($events)
+    </script>
+@endpush
+
 @section('content')
     <main x-data="{ visible: true }">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
