@@ -806,7 +806,7 @@ function evaluate_settings(){
 
 function eval_clock(){
 
-	if(!static_data.clock.enabled || !static_data.clock.render || isNaN(static_data.clock.hours) || isNaN(static_data.clock.minutes) || isNaN(static_data.clock.offset)){
+	if(!Perms.user_can_see_clock()){
 		$('#clock').css('display', 'none');
 		return;
 	}
@@ -839,7 +839,7 @@ function eval_clock(){
 
 function eval_current_time(){
 
-	if(!static_data.clock.enabled || !static_data.clock.render || isNaN(static_data.clock.hours) || isNaN(static_data.clock.minutes) || isNaN(static_data.clock.offset)){
+	if(!Perms.user_can_see_clock()){
 		$('#clock').css('display', 'none');
 		return;
 	}
@@ -852,7 +852,7 @@ function eval_current_time(){
 
 function evaluate_sun(){
 
-	if(!static_data.clock.enabled || !static_data.clock.render || isNaN(static_data.clock.hours) || isNaN(static_data.clock.minutes) || isNaN(static_data.clock.offset)){
+	if(!Perms.user_can_see_clock()){
 		$('#clock').css('display', 'none');
 		return;
 	}
