@@ -19,7 +19,7 @@ class DisableUnpaidCalendars extends Command
      *
      * @var string
      */
-    protected $description = 'Disables any calendars that require payment';
+    protected $description = 'Disables any calendars that require payment, and unlinks any linked calendars';
 
     /**
      * Create a new command instance.
@@ -45,6 +45,9 @@ class DisableUnpaidCalendars extends Command
 
                     $user->calendars()->orderBy('date_created', 'ASC')->each(function($calendar, $index) use ($max_calendars){
                         $calendar->disabled = ($index < $max_calendars) ? 0 : 1;
+                        $calendar->parent_id = Null;
+                        $calendar->parent_offset = Null;
+                        $calendar->parent_link_date = Null;
                         $calendar->save();
                     });
                 }
