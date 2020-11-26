@@ -146,15 +146,15 @@
                                 <button class="btn btn-primary mt-3 w-100" type="submit" :disabled="!was_validated || !password_valid">Update</button>
                             </form>
 
-                            <button class="btn btn-secondary w-100 my-2" x-show="!changing_email && !changing_password" @click="changing_email = !changing_email">Change email</button>
+                            <button class="btn btn-secondary w-100 my-2" x-show="!changing_email && !changing_password" @click="changing_email = !changing_email">Change Email Address</button>
                             <form action="/profile/email" method="POST" x-show="changing_email && !changing_password">
                                 @csrf
 
                                 <hr>
-                                <label class="mt-2" for="new_email">New email</label>
+                                <label class="mt-2" for="new_email">New Email Address</label>
                                 <input class="form-control required" required type="email" name="new_email" x-model="new_email" :class="{ 'is-invalid': was_validated && new_email.length < 7 }" @blur="confirm_email">
 
-                                <label class="mt-2" for="new_email_confirmation">Confirm New Email</label>
+                                <label class="mt-2" for="new_email_confirmation">Confirm New Email Address</label>
                                 <input
                                     class="form-control required" required
                                     type="email"
