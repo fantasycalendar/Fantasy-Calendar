@@ -15,6 +15,7 @@ use App\CalendarEvent;
 
 use App\Jobs\SaveEventCategories;
 use App\Jobs\SaveCalendarEvents;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -131,6 +132,39 @@ class CalendarController extends Controller
 
         return view('calendar.edit', [
             'calendar' => $calendar,
+        ]);
+    }
+
+    public function table(Calendar $calendar)
+    {
+        $events = $calendar->events->filter(function($event){
+            return count(Arr::get($event->data, 'date'));
+        })->sort(function($left, $right){
+            $leftDate = $left->data['date'];
+            $rightDate = $right->data['date'];
+
+            if($leftDate[0] < $rightDate[0]) {
+                return 1;
+            }
+
+            if($leftDate[0] == $rightDate[0]) {
+                if($leftDate[1] < $rightDate[1]) {
+                    return 1;
+                }
+
+                if($leftDate[1] == $rightDate[1]) {
+                    if($leftDate[2] < $rightDate[2]) {
+                        return 1;
+                    }
+                }
+            }
+
+            return -1;
+        })->take(8);
+
+        return view('calendar.table', [
+            'calendar' => $calendar,
+            'events' => $events
         ]);
     }
 

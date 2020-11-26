@@ -17,6 +17,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/barryvdh/laravel-debugbar" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/barryvdh/laravel-ide-helper" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/barryvdh/reflection-docblock" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/blade-ui-kit/blade-ui-kit" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/bref/bref" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/bref/laravel-bridge" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/brick/math" />

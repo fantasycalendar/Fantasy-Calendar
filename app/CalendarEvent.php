@@ -49,6 +49,19 @@ class CalendarEvent extends Model
         return $value ?? $this->calendar->user->id;
     }
 
+    public function getDateAttribute() {
+        if($date = Arr::get($this->data, 'date')) {
+            $year = $date[0];
+
+            $timespans = Arr::get($this->calendar->static_data['year_data'], 'timespans');
+            $timespan_name = Arr::get($timespans, $date[1])['name'];
+
+            return $timespan_name . " " . $date[2] . ", " . $year;
+        }
+
+        return null;
+    }
+
     public function setting($settingName) {
         if(is_array($this->category_settings) && Arr::has($this->category_settings, $settingName)) {
             return $this->category_settings[$settingName];

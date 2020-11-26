@@ -12,6 +12,7 @@
         "ext-json": "*",
         "aws/aws-sdk-php": "^3.158",
         "barryvdh/laravel-ide-helper": "^2.6",
+        "blade-ui-kit/blade-ui-kit": "^0.2.0",
         "bref/laravel-bridge": "^0.2.0",
         "code16/sharp": "^5.1.2",
         "fideloper/proxy": "^4.0",

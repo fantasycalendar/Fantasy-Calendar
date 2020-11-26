@@ -423,6 +423,22 @@ async function submit_new_event(event_id, callback){
     });
 }
 
+async function submit_new_full_event(event){
+
+	return new Promise((resolve, reject) => {
+		axios.post(window.apiurl+'/event', event)
+			.then(function (result){
+				if(result.data.data !== undefined) {
+					resolve();
+				} else {
+					reject(result.data.message);
+				}
+			}).catch(function(error) {
+				reject(error);
+		});
+	});
+}
+
 function submit_hide_show_event(event_id){
 
 	var edit_event = clone(events[event_id]);

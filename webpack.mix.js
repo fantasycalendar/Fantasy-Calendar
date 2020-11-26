@@ -74,6 +74,13 @@ mix.js('resources/js/app.js', 'public/js')
     .sass('resources/sass/app.scss', 'public/css')
     .sass('resources/sass/app-dark.scss', 'public/css');
 
+mix.js('resources/js/app-tw.js', 'public/js');
+
+require('mix-tailwindcss');
+
+mix.postCss('resources/sass/app-tw.css', 'public/css')
+    .tailwind();
+
 if (mix.inProduction() || process.env.MIXVERSION) {
     mix.version();
 }
