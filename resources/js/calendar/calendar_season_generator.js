@@ -177,11 +177,11 @@ class Climate{
 				var length = sunset-sunrise;
 
 				if(this.shortest_day_time > length){
-					this.shortest_day_time = length;
+					this.shortest_day_time = precisionRound(length, 1);
 				}
 
 				if(this.longest_day_time < length){
-					this.longest_day_time = length;
+					this.longest_day_time = precisionRound(length, 1);
 				}
 
 			}
