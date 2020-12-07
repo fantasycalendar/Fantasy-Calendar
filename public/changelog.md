@@ -1,3 +1,10 @@
+### 2.0.7 - Talkative Efreet
+#### Month day, year
+* Added - Option to change your account's email address
+* Fixed - Commenting styling on dark theme
+* Fixed - Season and weather being off on dated seasons with show only current month setting
+* Fixed - Rounding error within the time-generation of seasons
+
 ### 2.0.6 - Talkative Efreet
 #### November 21, 2020
 * Added - Ability to edit and delete event comments
@@ -66,7 +73,7 @@ The entire UI has been overhauled with many alterations that come with the chang
 
 ##### NEW FEATURES
 * **Mobile device support**
-     * Fantasy-Calendar now supports mobile devices!
+     * F7antasy-Calendar now supports mobile devices!
 * **Dark theme**
      * You can enable this in your profile. Ahhh, comfy retinas.
 * **Intercalary months**
