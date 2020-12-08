@@ -79,16 +79,19 @@ const render_data_generator = {
 
 		let moons = [];
 		for(let moon_index = 0; moon_index < static_data.moons.length; moon_index++){
+
             let moon = static_data.moons[moon_index];
             let phase_name = Object.keys(moon_phases[moon.granularity])[epoch_data.moon_phase[moon_index]];
             let path = moon_phases[moon.granularity][phase_name];
-            
-			moons.push({
-				"index": moon_index,
-				"name": moon.name,
-				"phase": phase_name,
-				"path": path
-            });
+
+            if(!moon.hidden || Perms.player_at_least('co-owner')){
+                moons.push({
+                    "index": moon_index,
+                    "name": moon.name,
+                    "phase": phase_name,
+                    "path": path
+                });
+            }
         }
 
 

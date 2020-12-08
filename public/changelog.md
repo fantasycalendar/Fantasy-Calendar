@@ -4,6 +4,7 @@
 * Fixed - Commenting styling on dark theme
 * Fixed - Season and weather being off on dated seasons with show only current month setting
 * Fixed - Rounding error within the time-generation of seasons
+* Fixed - Hidden moons staying visible to guest viewers
 
 ### 2.0.6 - Talkative Efreet
 #### November 21, 2020
