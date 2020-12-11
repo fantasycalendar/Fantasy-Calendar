@@ -75,7 +75,7 @@ The entire UI has been overhauled with many alterations that come with the chang
 
 ##### NEW FEATURES
 * **Mobile device support**
-     * F7antasy-Calendar now supports mobile devices!
+     * Fantasy-Calendar now supports mobile devices!
 * **Dark theme**
      * You can enable this in your profile. Ahhh, comfy retinas.
 * **Intercalary months**
