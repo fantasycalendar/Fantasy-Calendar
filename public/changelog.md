@@ -1,6 +1,7 @@
 ### 2.0.7 - Talkative Efreet
 #### Month day, year
 * Added - Option to change your account's email address
+* Added - Checkbox to base location sunrise and sunset to season's times
 * Fixed - Commenting styling on dark theme
 * Fixed - Season and weather being off on dated seasons with show only current month setting
 * Fixed - Rounding error within the time-generation of seasons

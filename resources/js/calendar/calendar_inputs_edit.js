@@ -707,6 +707,8 @@ function set_up_edit_inputs(){
 					"minute": 0,
 				},
 
+				"season_based_time": true,
+
 				"large_noise_frequency": 0.015,
 				"large_noise_amplitude": 5.0,
 
@@ -832,6 +834,7 @@ function set_up_edit_inputs(){
 			}
 
 			stats.settings = clone(preset_data.curves);
+			stats.settings.season_based_time = true;
 			stats.seasons = [];
 
 			for(var i = 0; i < static_data.seasons.data.length; i++){
@@ -1068,6 +1071,40 @@ function set_up_edit_inputs(){
 		}
 
 		do_error_check('seasons');
+
+	});
+
+	$(document).on('change', '.season_based_time', function(){
+		let checked = $(this).is(':checked');
+		if(checked){
+			$(this).closest('.sortable-container').find('.location_season').each(function(season_index){
+				$(this).find('.clock_inputs input').each(function(){
+					let [type, time] = $(this).attr('clocktype').split('_');
+					$(this).val(static_data.seasons.data[season_index].time[type][time])
+				}).prop('disabled', true);
+			});
+		}else{
+			$(this).closest('.sortable-container').find('.location_season').each(function(season_index){
+				$(this).find('.clock_inputs input').prop('disabled', false);
+			});
+		}
+	});
+
+	$(document).on('change', '.season_time', function(){
+
+		let index = $(this).closest('.sortable-container').attr('index');
+		
+		let [type, time] = $(this).attr('clocktype').split('_');
+
+		let value = $(this).val();
+
+		for(let location_index in static_data.seasons.locations){
+			let location = static_data.seasons.locations[location_index];
+			if(location.settings.season_based_time){
+				location.seasons[index].time[type][time] = Number(value);
+				location_list.children().eq(location_index).find(`input[clocktype="${$(this).attr('clocktype')}"]`).val(Number(value));
+			}
+		}
 
 	});
 
@@ -3264,11 +3301,11 @@ function add_season_to_sortable(parent, key, data){
 				element.push(`<div class='row no-gutters mb-2 protip' data-pt-position="right" data-pt-title="What time the sun rises at the peak of this season">`);
 
 					element.push("<div class='col-6 pr-1 clock-input'>");
-						element.push(`<input type='number' step="1.0" class='form-control full dynamic_input hour_input' clocktype='sunrise_hour' data='seasons.data.${key}.time.sunrise' fc-index='hour' value='${data.time.sunrise.hour}' />`);
+						element.push(`<input type='number' step="1.0" class='form-control full dynamic_input season_time hour_input' clocktype='sunrise_hour' data='seasons.data.${key}.time.sunrise' fc-index='hour' value='${data.time.sunrise.hour}' />`);
 					element.push("</div>");
 
 					element.push("<div class='col-6 pl-1 clock-input'>");
-						element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunrise_minute' data='seasons.data.${key}.time.sunrise' fc-index='minute' value='${data.time.sunrise.minute}' />`);
+						element.push(`<input type='number' step="1.0" class='form-control full dynamic_input season_time' clocktype='sunrise_minute' data='seasons.data.${key}.time.sunrise' fc-index='minute' value='${data.time.sunrise.minute}' />`);
 					element.push("</div>");
 
 				element.push("</div>");
@@ -3294,11 +3331,11 @@ function add_season_to_sortable(parent, key, data){
 				element.push(`<div class='row no-gutters mb-2 protip' data-pt-position="right" data-pt-title="What time the sun sets at the peak of this season">`);
 
 					element.push("<div class='col-6 pr-1 clock-input'>");
-						element.push(`<input type='number' step="1.0" class='form-control full dynamic_input hour_input' clocktype='sunset_hour' data='seasons.data.${key}.time.sunset' fc-index='hour' value='${data.time.sunset.hour}' />`);
+						element.push(`<input type='number' step="1.0" class='form-control full dynamic_input season_time hour_input' clocktype='sunset_hour' data='seasons.data.${key}.time.sunset' fc-index='hour' value='${data.time.sunset.hour}' />`);
 					element.push("</div>");
 
 					element.push("<div class='col-6 pl-1 clock-input'>");
-						element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunset_minute' data='seasons.data.${key}.time.sunset' fc-index='minute' value='${data.time.sunset.minute}' />`);
+						element.push(`<input type='number' step="1.0" class='form-control full dynamic_input season_time' clocktype='sunset_minute' data='seasons.data.${key}.time.sunset' fc-index='minute' value='${data.time.sunset.minute}' />`);
 					element.push("</div>");
 
 				element.push("</div>");
@@ -3419,13 +3456,13 @@ function add_location_to_list(parent, key, data){
 						element.push(`<div class='row no-gutters mb-2 protip'  data-pt-position="right" data-pt-title="What time the sun rises at the peak of this season, in this location">`);
 
 							element.push("<div class='col-6 pl-0 pr-1 clock-input'>");
-								element.push(`<input type='number' step="1.0" class='form-control text-right full dynamic_input hour_input' clocktype='sunrise_hour' data='seasons.locations.${key}.seasons.${i}.time.sunrise' fc-index='hour' value='${data.seasons[i].time.sunrise.hour}' />`);
+								element.push(`<input type='number' step="1.0" class='form-control text-right full dynamic_input hour_input' clocktype='sunrise_hour' ${data.settings.season_based_time ? "disabled" : ""} data='seasons.locations.${key}.seasons.${i}.time.sunrise' fc-index='hour' value='${data.seasons[i].time.sunrise.hour}' />`);
 							element.push("</div>");
 
 							element.push("<div class='col-auto pt-1'>:</div>");
 
 							element.push("<div class='col pl-1 pr-0 clock-input'>");
-								element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunrise_minute' data='seasons.locations.${key}.seasons.${i}.time.sunrise' fc-index='minute' value='${data.seasons[i].time.sunrise.minute}' />`);
+								element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunrise_minute' ${data.settings.season_based_time ? "disabled" : ""} data='seasons.locations.${key}.seasons.${i}.time.sunrise' fc-index='minute' value='${data.seasons[i].time.sunrise.minute}' />`);
 							element.push("</div>");
 
 						element.push("</div>");
@@ -3451,13 +3488,13 @@ function add_location_to_list(parent, key, data){
 						element.push(`<div class='row no-gutters mb-2 protip' data-pt-position="right" data-pt-title="What time the sun sets at the peak of this season, in this location">`);
 
 							element.push("<div class='col-6 pl-0 pr-1 clock-input'>");
-								element.push(`<input type='number' step="1.0" class='form-control text-right full dynamic_input hour_input' clocktype='sunset_hour' data='seasons.locations.${key}.seasons.${i}.time.sunset' fc-index='hour' value='${data.seasons[i].time.sunset.hour}' />`);
+								element.push(`<input type='number' step="1.0" class='form-control text-right full dynamic_input hour_input' clocktype='sunset_hour' ${data.settings.season_based_time ? "disabled" : ""} data='seasons.locations.${key}.seasons.${i}.time.sunset' fc-index='hour' value='${data.seasons[i].time.sunset.hour}' />`);
 							element.push("</div>");
 
 							element.push("<div class='col-auto pt-1'>:</div>");
 
 							element.push("<div class='col pl-1 pr-0 clock-input'>");
-								element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunset_minute' data='seasons.locations.${key}.seasons.${i}.time.sunset' fc-index='minute' value='${data.seasons[i].time.sunset.minute}' />`);
+								element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunset_minute' ${data.settings.season_based_time ? "disabled" : ""} data='seasons.locations.${key}.seasons.${i}.time.sunset' fc-index='minute' value='${data.seasons[i].time.sunset.minute}' />`);
 							element.push("</div>");
 
 						element.push("</div>");
@@ -3475,6 +3512,15 @@ function add_location_to_list(parent, key, data){
 			}
 
 			element.push(`<div class='clock_inputs ${!static_data.clock.enabled ? "hidden" : ""}'>`);
+
+				element.push(`<div class='row no-gutters my-1 protip' data-pt-position="right" data-pt-title="Checking this will base this location's sunrise and sunset times on your season's sunrise and sunset times, and keep them the same">`);
+					element.push("<div class='form-check col-12 py-2 border rounded'>");
+						element.push(`<input type='checkbox' id='${key}_season_based_time' class='form-check-input dynamic_input season_based_time' data='seasons.locations.${key}.settings' fc-index='season_based_time' ${(data.settings.season_based_time ? "checked" : "")} />`);
+						element.push(`<label for='${key}_season_based_time' class='form-check-label ml-1'>`);
+							element.push("Lock sunset/rise times to season");
+						element.push("</label>");
+					element.push("</div>");
+				element.push("</div>");
 
 				element.push(`<div class='row my-1'>`);
 					element.push("<div class='col'>Timezone:</div>");
@@ -4837,6 +4883,8 @@ function reindex_location_list(){
 					"minute": ($(this).find("input[fc-index='timezone_minute']").val()|0),
 				},
 
+				"season_based_time": $(this).find("input[fc-index='season_based_time']").is(":checked"),
+
 				"large_noise_frequency": Number($(this).find("input[fc-index='large_noise_frequency']").val()),
 				"large_noise_amplitude": Number($(this).find("input[fc-index='large_noise_amplitude']").val()),
 
@@ -5434,17 +5482,17 @@ function populate_calendar_lists(){
 
 function evaluate_clock_inputs(){
 
-	$('.clock_inputs :input, .clock_inputs :button, .render_clock').prop('disabled', !static_data.clock.enabled);
+	$('.clock_inputs :input, .clock_inputs :button, .render_clock').not('[clocktype]').prop('disabled', !static_data.clock.enabled);
 	$('.clock_inputs, .render_clock').toggleClass('hidden', !static_data.clock.enabled);
 
 	$('.do_render_clock :input, .do_render_clock :button').prop('disabled', !static_data.clock.render);
 	$('.do_render_clock').toggleClass('hidden', !static_data.clock.render);
 
 	$('.hour_input').each(function(){
-		$(this).prop('min', 0).prop('max', static_data.clock.hours).prop('disabled', !static_data.clock.enabled).toggleClass('hidden', !static_data.clock.enabled);
+		$(this).prop('min', 0).prop('max', static_data.clock.hours).not('[clocktype]').prop('disabled', !static_data.clock.enabled).toggleClass('hidden', !static_data.clock.enabled);
 	});
 	$('.minute_input').each(function(){
-		$(this).prop('min', 1).prop('max', static_data.clock.minutes-1).prop('disabled', !static_data.clock.enabled).toggleClass('hidden', !static_data.clock.enabled);
+		$(this).prop('min', 1).prop('max', static_data.clock.minutes-1).not('[clocktype]').prop('disabled', !static_data.clock.enabled).toggleClass('hidden', !static_data.clock.enabled);
 	});
 
 	$('input[clocktype="timezone_hour"]').each(function(){
