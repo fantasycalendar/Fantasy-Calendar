@@ -109,8 +109,15 @@
 @endsection
 
 @section('content')
-    <div class="container">
-        <div class="row py-5">
+    <div class="container pt-5">
+        @if($message)
+        <div class='row' x-data="{ 'dismissed': false }">
+            <div class="col-12">
+                <div class="alert alert-info" x-show="!dismissed"><a href="#" class="alert-link ml-2" style="float: right;" @click="dismissed = true"><i class="fa fa-times"></i></a> {{ $message }} </div>
+            </div>
+        </div>
+        @endif
+        <div class="row">
             <div class="col-12 col-md-4">
                 <div class="card">
                     <div class="card-header"><img class="rounded mr-1" style="max-height: 40px;" src="https://unavatar.now.sh/{{ $user->email }}?fallback=http://beta.fantasy-calendar.com/resources/logo-dark.png"> {{ $user->username }}</div>
