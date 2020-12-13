@@ -1,5 +1,5 @@
-### 2.0.7 - Talkative Efreet
-#### Month day, year
+### 2.0.7 - Familiar Efreet
+#### December 13, 2020
 * Added - Option to change your account's email address
 * Added - Checkbox to base location sunrise and sunset to season's times
 * Fixed - Commenting styling on dark theme
