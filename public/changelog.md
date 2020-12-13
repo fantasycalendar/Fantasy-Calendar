@@ -1,10 +1,23 @@
+### 2.0.7 - Talkative Efreet
+#### Month day, year
+* Added - Option to change your account's email address
+* Added - Checkbox to base location sunrise and sunset to season's times
+* Fixed - Commenting styling on dark theme
+* Fixed - Season and weather being off on dated seasons with show only current month setting
+* Fixed - Rounding error within the time-generation of seasons
+* Fixed - Hidden moons staying visible to guest viewers
+
 ### 2.0.6 - Talkative Efreet
-#### November x, 2020
+#### November 21, 2020
 * Added - Ability to edit and delete event comments
 * Added - Updating your email is now possible from your profile
 * Fixed - Calendars with errors still being able to be saved
 * Fixed - Leap days with interval of 0 now shows proper error
 * Fixed - Some event presets would throw an error
+* Fixed - Show month number displaying the wrong number
+* Fixed - Week-in-year calculation being off, throwing off some event conditions
+* Fixed - Hide time from guest viewers would not do anything
+* Fixed - Cycle would error out when changing month interval and offset
 
 ### 2.0.5 - Uncorked Efreet
 #### November 17, 2020

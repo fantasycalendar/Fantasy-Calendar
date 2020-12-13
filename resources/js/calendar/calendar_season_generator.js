@@ -177,11 +177,11 @@ class Climate{
 				var length = sunset-sunrise;
 
 				if(this.shortest_day_time > length){
-					this.shortest_day_time = length;
+					this.shortest_day_time = precisionRound(length, 1);
 				}
 
 				if(this.longest_day_time < length){
-					this.longest_day_time = length;
+					this.longest_day_time = precisionRound(length, 1);
 				}
 
 			}
@@ -367,9 +367,7 @@ class Climate{
 		this.season.current_index = this.season.current_season.index;
 		this.season.next_index = this.season.next_season.index;
 
-		var current_epoch = evaluate_calendar_start(this.static_data, convert_year(this.static_data, this.first_year)).epoch
-
-		while(this.season.next_season.epoch < current_epoch){
+		while(this.season.next_season.epoch < this.start_epoch){
 
 			this.season.local_current_index++;
 			this.season.local_next_index++;
@@ -506,6 +504,19 @@ class Climate{
 		this.weather.next_index = this.weather.next_season.index;
 
 		this.weather.local_season_length = this.weather.next_season.epoch - this.start_epoch;
+
+		while(this.weather.next_season.epoch < this.start_epoch){
+
+			this.weather.local_current_index++;
+			this.weather.local_next_index++;
+
+			this.weather.current_season = this.weather.local_seasons[this.weather.local_current_index];
+			this.weather.next_season = this.weather.local_seasons[this.weather.local_next_index];
+
+			this.weather.current_index = this.weather.current_season.index;
+			this.weather.next_index = this.weather.next_season.index;
+
+		}
 
 	}
 

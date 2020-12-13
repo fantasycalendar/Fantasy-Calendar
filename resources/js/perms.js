@@ -43,6 +43,14 @@ class Perms {
         }
         return this.player_at_least('player');
     }
+
+    user_can_delete_comment(comment){
+        return this.player_at_least('co-owner') || this.owner || comment.comment_owner;
+    }
+
+    user_can_see_clock(){
+        return static_data.clock.enabled && static_data.clock.render && !isNaN(static_data.clock.hours) && !isNaN(static_data.clock.minutes) && !isNaN(static_data.clock.offset) && (this.player_at_least('co-owner') || !static_data.settings.hide_clock);
+    }
 }
 
 module.exports = Perms;

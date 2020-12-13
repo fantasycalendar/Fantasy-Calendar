@@ -69,6 +69,7 @@ class StatisticsDashboard extends SharpDashboard
         $users = $user_model->whereNull('deleted_at')->where('created_at', '<', now()->firstOfMonth())->get();
 
         $user_count_per_month = $users
+            ->sortBy('created_at')
             ->groupBy(function($user) {
                 return Carbon::parse($user->created_at)->format('Y-m');
             })->mapWithKeys(function($users, $date) {

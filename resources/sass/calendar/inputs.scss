@@ -740,6 +740,7 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
 
 #event_comment_mastercontainer .trumbowyg-editor {
     min-height: calc(100% - 37px);
+    background-color: $card-bg-color;
 }
 
 .loading{
@@ -771,7 +772,7 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
 }
 
 .event_comment.comment_owner{
-    background-color: rgba($blue, 0.3);
+    background-color: $calendar-bg-color;
 }
 
 .event_comment:last-child{
@@ -798,6 +799,11 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     font-style: italic;
     color: $main-text-color;
     font-size: .7rem;
+}
+
+body .event_comment .comment_context_btn:not(:hover) {
+    background-color: transparent !important;
+    border: none !important;
 }
 
 .event_desc {

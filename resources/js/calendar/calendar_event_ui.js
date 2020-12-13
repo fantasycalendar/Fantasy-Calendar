@@ -237,7 +237,7 @@ var edit_event_ui = {
 				classes = classes.join(' ');
 
 				$(this).prop('class', classes);
-			
+
 			})
 
 		});
@@ -516,7 +516,7 @@ var edit_event_ui = {
 	show_hide_event_testing(){
 
 		this.event_occurrences_container.toggleClass('hidden', edit_event_ui.event_conditions_container.length == 0 || edit_event_ui.event_is_one_time());
-		
+
 	},
 
 	create_new_event: function(name, epoch){
@@ -871,7 +871,7 @@ var edit_event_ui = {
 			}else if(condition.length == 2){
 				new_search_distance = this.recurse_conditions(condition[1], search_distance)
 			}
-			
+
 			search_distance = new_search_distance > search_distance ? new_search_distance : search_distance;
 		}
 
@@ -894,24 +894,24 @@ var edit_event_ui = {
 				}
 
 			}else{
-			
+
 				var year = false;
 				var month = false;
 				var day = false
 				var ands = 0
-	
+
 				for(var i = 0; i < conditions.length; i++){
 					if(conditions[i].length == 3){
 						if(conditions[i][0] == "Year" && Number(conditions[i][1]) == 0){
 							year = true;
 							date[0] = Number(conditions[i][2][0])
 						}
-	
+
 						if(conditions[i][0] == "Month" && Number(conditions[i][1]) == 0){
 							month = true;
 							date[1] = Number(conditions[i][2][0])
 						}
-	
+
 						if(conditions[i][0] == "Day" && Number(conditions[i][1]) == 0){
 							day = true;
 							date[2] = Number(conditions[i][2][0])
@@ -922,7 +922,7 @@ var edit_event_ui = {
 						}
 					}
 				}
-	
+
 				if(!(year && month && day && ands == 2)){
 					date = [];
 				}
@@ -1024,7 +1024,7 @@ var edit_event_ui = {
 	update_every_nth_presets: function(){
 
 		var repeat_value = this.repeat_input.val()|0;
-		
+
 		var repeat_string = !isNaN(repeat_value) && repeat_value > 1 ? `${ordinal_suffix_of(repeat_value)} ` : (repeat_value == "" ? "nth " : "");
 
 		let inverse_week_day_num = edit_event_ui.data.inverse_week_day_num == 1 ? "last" : ordinal_suffix_of(edit_event_ui.data.inverse_week_day_num) + " to last";
@@ -2116,7 +2116,7 @@ var edit_event_ui = {
 			});
 
 		}else{
-    
+
 			this.build_seasons = event_checker.evaluation_has_season_event(this.event_id);
 
 			if(!this.build_seasons){
@@ -2138,7 +2138,7 @@ var edit_event_ui = {
 
 				});
 			}
-			
+
 
 		}
 
@@ -2193,7 +2193,7 @@ var edit_event_ui = {
 			}else{
 
 				edit_event_ui.event_occurrences = e.data.occurrences;
-				
+
 				var num = edit_event_ui.event_occurrences.length;
 
 				let text = years > 1 ? `the next ${years} years.` : "this year.";
@@ -2438,7 +2438,7 @@ var event_checker = {
         }
 
     }
-    
+
 }
 
 
@@ -2519,11 +2519,13 @@ var show_event_ui = {
 		});
 
 		this.event_background.mousedown(function(){
-			show_event_ui.clear_ui();
+			show_event_ui.callback_do_close(function(){
+				show_event_ui.clear_ui();
+			});
 		});
 
 		this.event_save_btn.click(function(){
-			create_event_comment(show_event_ui.event_comment_input.trumbowyg('html'), show_event_ui.db_event_id, show_event_ui.add_comment);
+			submit_new_comment(show_event_ui.event_comment_input.trumbowyg('html'), show_event_ui.db_event_id, show_event_ui.add_comment);
 			show_event_ui.event_comment_input.trumbowyg('empty');
 		});
 
@@ -2534,6 +2536,153 @@ var show_event_ui = {
 				show_event_ui.clear_ui();
 			});
 		});
+
+		$.contextMenu({
+			selector: ".comment_context_btn",
+			trigger: 'left',
+			items: {
+				edit: {
+					name: "Edit comment",
+					icon: "fas fa-edit",
+					callback: function(key, opt){
+						let element = $(opt.$trigger[0]);
+						show_event_ui.start_edit_comment(element);
+					},
+					disabled: function(key, opt){
+						let element = $(opt.$trigger[0]);
+						let comment_id = Number(element.attr('comment_index'));
+						return !show_event_ui.comments[comment_id].comment_owner;
+					},
+					visible: function(key, opt){
+						let element = $(opt.$trigger[0]);
+						let comment_id = Number(element.attr('comment_index'));
+						return show_event_ui.comments[comment_id].comment_owner;
+					}
+				},
+				delete: {
+					name: "Delete comment",
+					icon: "fas fa-trash-alt",
+					callback: function(key, opt){
+						let element = $(opt.$trigger[0]);
+						show_event_ui.delete_comment(element);
+					}
+				},
+			},
+			zIndex: 1501
+		});
+
+		$(document).on('click', '.submit_edit_comment_btn', function(){
+			let button = $(this);
+
+			let comment_index = $(this).attr('comment_index');
+			let comment = show_event_ui.comments[comment_index];
+
+			let comment_container = button.closest('.event_comment');
+			let comment_id = button.attr('comment_id');
+			let comment_text_container = comment_container.find('.comment');
+			let edit_comment_container = comment_container.find('.edit_comment_container');
+			let content = edit_comment_container.trumbowyg('html');
+
+			if(content == ""){
+                $.notify(
+                    "Comment cannot be empty."
+				);
+				return;
+			};
+
+			submit_edit_comment(comment_id, content, function(){
+				comment_text_container.html(content)
+				comment.content = content;
+				show_event_ui.cancel_edit_comment(button);
+			})
+		});
+
+		$(document).on('click', '.cancel_edit_comment_btn', function(){
+			show_event_ui.cancel_edit_comment($(this));
+		});
+
+	},
+
+	delete_comment(element){
+		let comment_index = element.attr('comment_index');
+		let comment_id = element.attr('comment_id');
+		let comment_container = element.closest('.event_comment');
+		swal.fire({
+			title: "Delete comment?",
+			text: "Are you sure you want to delete this comment? This is irreversible.",
+			icon: "warning",
+			showCancelButton: true,
+			confirmButtonColor: '#d33',
+			cancelButtonColor: '#3085d6',
+			confirmButtonText: 'OK',
+		}).then((result) => {
+			if(!result.dismiss) {
+				submit_delete_comment(comment_id, function(){
+					$.notify(
+						"Removed comment.",
+						"success"
+					);
+					comment_container.remove();
+					show_event_ui.comments.splice(comment_index, 1)
+				});
+			}
+		});
+	},
+
+	start_edit_comment: function(element){
+
+		let comment_index = element.attr('comment_index');
+		let comment_content = show_event_ui.comments[comment_index].content;
+
+		let comment_container = element.closest('.event_comment');
+
+		let comment_text_container = comment_container.find('.comment');
+		let edit_comment_container = comment_container.find('.edit_comment_container');
+
+		let submit_edit_comment_btn = comment_container.find('.submit_edit_comment_btn');
+		let cancel_edit_comment_btn = comment_container.find('.cancel_edit_comment_btn');
+
+		let comment_context_btn = comment_container.find('.comment_context_btn');
+
+		comment_context_btn.toggleClass('hidden', true);
+		comment_text_container.toggleClass('hidden', true);
+
+		submit_edit_comment_btn.toggleClass('hidden', false);
+		cancel_edit_comment_btn.toggleClass('hidden', false);
+
+		edit_comment_container.trumbowyg({
+			btns: [
+				['strong', 'em', 'del'],
+				['superscript', 'subscript'],
+				['link'],
+				['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
+				['unorderedList', 'orderedList'],
+				['removeformat']
+			]
+		}).trumbowyg('html', comment_content);
+
+		edit_comment_container.toggleClass('hidden', false);
+
+	},
+
+	cancel_edit_comment: function(element){
+
+		let comment_container = element.closest('.event_comment');
+
+		let comment_text_container = comment_container.find('.comment');
+		let edit_comment_container = comment_container.find('.edit_comment_container');
+
+		let comment_context_btn = comment_container.find('.comment_context_btn');
+		let submit_edit_comment_btn = comment_container.find('.submit_edit_comment_btn');
+		let cancel_edit_comment_btn = comment_container.find('.cancel_edit_comment_btn');
+
+		comment_text_container.toggleClass('hidden', false);
+		comment_context_btn.toggleClass('hidden', false);
+
+		cancel_edit_comment_btn.toggleClass('hidden', true);
+		submit_edit_comment_btn.toggleClass('hidden', true);
+
+		edit_comment_container.toggleClass('hidden', true).trumbowyg('destroy');
 
 	},
 
@@ -2600,6 +2749,8 @@ var show_event_ui = {
 
 		this.event_comment_mastercontainer.removeClass('hidden');
 
+		this.comments = [];
+
 		if(this.era_id > -1){
 			this.event_comment_mastercontainer.addClass('hidden');
 		}else if(this.db_event_id !== undefined){
@@ -2626,7 +2777,7 @@ var show_event_ui = {
 
 			for(var index in comments){
 
-				show_event_ui.add_comment(index, comments[index]);
+				show_event_ui.add_comment(comments[index]);
 
 			}
 
@@ -2650,15 +2801,37 @@ var show_event_ui = {
 
 	},
 
-	add_comment: function(index, comment){
+	add_comment: function(comment){
+
+		show_event_ui.comments.push(comment);
+
+		let comment_index = show_event_ui.comments.length-1;
 
 		var content = [];
 
-		content.push(`<div class='event_comment ${comment.comment_owner ? "comment_owner" : ""} ${comment.calendar_owner ? "calendar_owner" : ""}'`);
-		content.push(` date='${comment.date}' comment_id='${index}'>`);
-			content.push(`<p><span class='username'>${comment.username}${comment.calendar_owner ? " (owner)" : ""}</span>`);
-			content.push(`<span class='date'> - ${comment.date}</span></p>`);
-		content.push(`<div class='comment'>${comment.content}</div>`);
+		content.push(`<div class='container p-2 rounded event_comment ${comment.comment_owner ? "comment_owner" : ""} ${comment.calendar_owner ? "calendar_owner" : ""}'`);
+		content.push(` date='${comment.date}' comment_id='${comment.id}' comment_index='${comment_index}'>`);
+			content.push(`<div class='row mb-1'>`);
+				content.push(`<div class='col-auto'>`);
+					content.push(`<p><span class='username'>${comment.username}${comment.comment_owner ? " (you)" : (comment.calendar_owner ? " (owner)" : "")}</span>`);
+					content.push(`<span class='date'> - ${comment.date}</span></p>`);
+				content.push(`</div>`);
+			if(Perms.user_can_delete_comment(comment)){
+				content.push(`<div class='col-auto ml-auto'>`);
+					content.push(`<button class='btn btn-sm btn-outline-secondary border-0 comment_context_btn' comment_id='${comment.id}' comment_index='${comment_index}'><i class="fas fa-ellipsis-v"></i></button>`);
+					if(comment.comment_owner){
+						content.push(`<button class='btn btn-sm btn-primary hidden submit_edit_comment_btn ml-2' comment_id='${comment.id}' comment_index='${comment_index}'>Submit</button>`);
+						content.push(`<button class='btn btn-sm btn-danger hidden cancel_edit_comment_btn ml-2' comment_id='${comment.id}' comment_index='${comment_index}'>Cancel</button>`);
+					}
+				content.push(`</div>`);
+			}
+			content.push(`</div>`);
+			content.push(`<div class='row'>`);
+				content.push(`<div class='col'>`);
+					content.push(`<div class='comment'>${comment.content}</div>`);
+					content.push(`<div class='edit_comment_container hidden'></div>`);
+				content.push(`</div>`);
+			content.push(`</div>`);
 		content.push(`</div>`);
 
 		show_event_ui.event_comments.append(content.join(''))
