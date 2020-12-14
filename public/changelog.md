@@ -1,6 +1,7 @@
 ### 2.0.7 - Apologetic Efreet
 #### December x, 2020
 * Fixed - Testing intercalary-based events causing error
+* Fixed - Equinox event sometimes not appearing when show only current month was enabled
 
 ### 2.0.7 - Familiar Efreet
 #### December 13, 2020
