@@ -30,8 +30,7 @@ class SettingsController extends Controller
             'user' => Auth::user(),
             'subscription' => $subscription,
             'subscription_renews_at' => $renews_at,
-            'invoices' => $invoices,
-            'message' => $request->get('message') ?? ""
+            'invoices' => $invoices
         ]);
     }
 
@@ -47,7 +46,7 @@ class SettingsController extends Controller
 
         Notification::route('mail', Auth::user()->email)->notify(new RequestEmailUpdate(Auth::user(), $new_email));
 
-        return redirect()->route('profile', ['message' => "We have sent an email to your current email with the details to update your email!"]);
+        return redirect(route('profile'))->with('alert', "We have sent an email to your current email with the details to update your email!");
     }
 
     public function updateEmail(Request $request) {
@@ -59,7 +58,7 @@ class SettingsController extends Controller
         Auth::user()->email = $request->get('new_email');
         Auth::user()->save();
 
-        return redirect()->route('profile', ['message' => "Email successfully updated!"]);
+        return redirect(route('profile'))->with('alert', "Email successfully updated!");
     }
 
     public function update(StoreUserSettings $request) {

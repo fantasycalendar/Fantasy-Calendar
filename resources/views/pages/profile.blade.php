@@ -110,10 +110,10 @@
 
 @section('content')
     <div class="container pt-5">
-        @if($message)
+        @if(session()->has('alert'))
         <div class='row' x-data="{ 'dismissed': false }">
             <div class="col-12">
-                <div class="alert alert-info" x-show="!dismissed"><a href="#" class="alert-link ml-2" style="float: right;" @click="dismissed = true"><i class="fa fa-times"></i></a> {{ $message }} </div>
+                <div class="alert alert-info" x-show="!dismissed"><a href="#" class="alert-link ml-2" style="float: right;" @click="dismissed = true"><i class="fa fa-times"></i></a> {{ session('alert') }} </div>
             </div>
         </div>
         @endif

@@ -1,5 +1,6 @@
-### 2.0.7 - Apologetic Efreet
-#### December x, 2020
+### 2.0.8 - Sweating Efreet
+#### December 16, 2020
+* Fixed - Profile and subscription pages sometimes not loading
 * Fixed - Testing intercalary-based events causing error
 * Fixed - Equinox event sometimes not appearing when show only current month was enabled
 
