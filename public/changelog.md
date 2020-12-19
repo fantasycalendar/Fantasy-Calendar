@@ -1,5 +1,6 @@
 ### 2.0.9 - Forgetful Efreet
-#### December 16, 2020
+#### December 19, 2020
+* Tweaked - Sorting speed of eras and seasons significantly improved
 * Fixed - Season type resetting when editing seasons
 
 ### 2.0.8 - Sweating Efreet
