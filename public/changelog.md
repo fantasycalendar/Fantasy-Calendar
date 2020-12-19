@@ -1,3 +1,7 @@
+### 2.0.9 - Forgetful Efreet
+#### December 16, 2020
+* Fixed - Season type resetting when editing seasons
+
 ### 2.0.8 - Sweating Efreet
 #### December 16, 2020
 * Fixed - Profile and subscription pages sometimes not loading

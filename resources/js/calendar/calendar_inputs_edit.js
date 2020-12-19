@@ -4730,16 +4730,6 @@ function reindex_season_sortable(key){
 
 	});
 
-	if(!static_data.seasons.global_settings.periodic_seasons){
-		sort_list_by_partial_date(season_sortable);
-	}
-
-	if(key !== undefined){
-		location_list.find(`.location_season[fc-index="${key}"]`).remove();
-	}
-
-	eval_clock();
-
 	var no_seasons = static_data.seasons.data.length == 0;
 	$('#has_seasons_container').toggleClass('hidden', no_seasons).find('select, input').prop('disabled', no_seasons);
 	$('#no_seasons_container').toggleClass('hidden', !no_seasons);
@@ -4749,6 +4739,16 @@ function reindex_season_sortable(key){
 	}
 	
 	populate_preset_season_list();
+
+	if(!static_data.seasons.global_settings.periodic_seasons){
+		sort_list_by_partial_date(season_sortable);
+	}
+
+	if(key !== undefined){
+		location_list.find(`.location_season[fc-index="${key}"]`).remove();
+	}
+
+	eval_clock();
 
 	var no_locations = (static_data.seasons.data.length == 0 || !static_data.seasons.global_settings.enable_weather) && !static_data.clock.enabled;
 	$('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
@@ -4777,9 +4777,7 @@ function populate_preset_season_list(){
 
 	if(!automatic){
 
-		if(static_data.seasons.global_settings.preset_order === undefined){
-			static_data.seasons.global_settings.preset_order = [];
-		}
+		let preset_order = []
 
 		$('.preset-season-list').each(function(i){
 
@@ -4792,13 +4790,18 @@ function populate_preset_season_list(){
 				$(this).append(o);
 			}
 
-			if(static_data.seasons.global_settings.preset_order.reduce((a, b) => a + b, 0) != static_data.seasons.data.reduce((a, b) => a + b, 0)){
+			if(static_data.seasons.global_settings.preset_order === undefined){
 				$(this)[0].selectedIndex = i;
-				static_data.seasons.global_settings.preset_order[i] = i;
+				preset_order.push(i);
 			}else{
 				$(this)[0].selectedIndex = static_data.seasons.global_settings.preset_order[i];
 			}
+			
 		});
+
+		if(static_data.seasons.global_settings.preset_order === undefined){
+			static_data.seasons.global_settings.preset_order = clone(preset_order);
+		}
 
 	}else{
 
@@ -5107,7 +5110,7 @@ function sort_list_by_date(list){
 		var curr_timespan = (curr.find('.timespan-list').val()|0);
 		var curr_day = (curr.find('.timespan-day-list').val()|0);
 
-		list.children().each(function(){
+		list.children().not($(this)).each(function(){
 
 			var comp = $(this);
 			var comp_year = (comp.find('.year-input').val()|0);
@@ -5137,7 +5140,7 @@ function sort_list_by_partial_date(list){
 		var curr_timespan = (curr.find('.timespan-list').val()|0);
 		var curr_day = (curr.find('.timespan-day-list').val()|0);
 
-		list.children().each(function(){
+		list.children().not($(this)).each(function(){
 
 			var comp = $(this);
 			var comp_timespan = (comp.find('.timespan-list').val()|0);
@@ -5578,6 +5581,7 @@ function set_up_edit_values(){
 			repopulate_timespan_select(season_sortable.children().last().find('.timespan-list'), static_data.seasons.data[i].timespan, false, false);
 			repopulate_day_select(season_sortable.children().last().find('.timespan-day-list'), static_data.seasons.data[i].day, false, false);
 		}
+
 		populate_preset_season_list();
 
 		$('.season_middle_btn').toggleClass('hidden', !static_data.clock.enabled || static_data.seasons.data.length < 3);
