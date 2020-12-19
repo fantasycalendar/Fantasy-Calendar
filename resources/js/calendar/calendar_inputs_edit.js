@@ -1786,10 +1786,14 @@ function set_up_edit_inputs(){
 
 
 	$(document).on('change', '#era_list .date_control', function(){
+		debounce_era_reindex();
+	});
+
+	const debounce_era_reindex = debounce(function(){
 		reindex_era_list();
 		eras.evaluate_position();
 		dynamic_data.current_era = get_current_era(static_data, dynamic_data.epoch);
-	});
+	}, 50)
 
 	$(document).on('change', '#era_list .ends_year', function(){
 		evaluate_dynamic_change();
@@ -1812,8 +1816,12 @@ function set_up_edit_inputs(){
 
 
 	$(document).on('change', '#season_sortable .date_control', function(){
-		reindex_season_sortable();
+		season_debounce();
 	});
+
+	const season_debounce = debounce(function(){
+		reindex_season_sortable();
+	}, 50);
 
 	$(document).on('change', '#season_color_enabled', function(){
 
@@ -5103,62 +5111,101 @@ function reindex_era_list(){
 
 function sort_list_by_date(list){
 
-	list.children().each(function(){
+	let array = [];
 
-		var curr = $(this);
-		var curr_year = (curr.find('.year-input').val()|0);
-		var curr_timespan = (curr.find('.timespan-list').val()|0);
-		var curr_day = (curr.find('.timespan-day-list').val()|0);
-
-		list.children().not($(this)).each(function(){
-
-			var comp = $(this);
-			var comp_year = (comp.find('.year-input').val()|0);
-			var comp_timespan = (comp.find('.timespan-list').val()|0);
-			var comp_day = (comp.find('.timespan-day-list').val()|0);
-
-			if(curr_year > comp_year){
-				comp.insertBefore(curr);
-			}else if(curr_year == comp_year){
-				if(curr_timespan > comp_timespan){
-					comp.insertBefore(curr);
-				}else if(curr_timespan == comp_timespan){
-					if(curr_day >= comp_day){
-						comp.insertBefore(curr);
-					}
-				}
-			}
+	list.children().each(function(i){
+		let element = $(this);
+		array.push({
+			year: (element.find('.year-input').val()|0),
+			timespan: (element.find('.timespan-list').val()|0),
+			day: (element.find('.timespan-day-list').val()|0),
+			element: element,
+			order: i
 		});
 	});
+
+	array.sort((a,b) => {
+		if(a.year >= b.year){
+			if(a.year == b.year){
+				if(a.timespan >= b.timespan){
+					if(a.timespan == b.timespan){
+						return a.day > b.day ? 1 : -1;
+					}
+				}else{
+					return -1;
+				}
+			}else{
+				return 1;
+			}
+		}else{
+			return -1;
+		}
+	});
+
+	let change = false;
+	for(let i = 0; i < array.length-1; i++){
+		if(array[i].order != (array[i+1].order-1)){
+			change = true;
+			break;
+		}
+	}
+
+	if(!change){
+		return;
+	}
+
+	let elements = [];
+	for(let i in array){
+		elements.push(array[i].element)
+	}
+
+	list.empty().append(elements);
 }
 
 function sort_list_by_partial_date(list){
 
-	list.children().each(function(){
+	let array = [];
 
-		var curr = $(this);
-		var curr_timespan = (curr.find('.timespan-list').val()|0);
-		var curr_day = (curr.find('.timespan-day-list').val()|0);
-
-		list.children().not($(this)).each(function(){
-
-			var comp = $(this);
-			var comp_timespan = (comp.find('.timespan-list').val()|0);
-			var comp_day = (comp.find('.timespan-day-list').val()|0);
-
-			if(curr_timespan > comp_timespan){
-				comp.insertBefore(curr);
-			}else if(curr_timespan == comp_timespan){
-				if(curr_day >= comp_day){
-					comp.insertBefore(curr);
-				}
-			}
-
+	list.children().each(function(i){
+		let element = $(this);
+		array.push({
+			timespan: (element.find('.timespan-list').val()|0),
+			day: (element.find('.timespan-day-list').val()|0),
+			element: element,
+			order: i
 		});
-
 	});
 
-	list.change();
+	array.sort((a,b) => {
+		if(a.timespan >= a.timespan){
+			if(a.timespan == a.timespan && a.day < b.day){
+				return 1;
+			}else{
+				return -1;
+			}
+		}
+		return -1;
+	});
+
+	let change = false;
+	for(let i = 0; i < array.length-1; i++){
+		if(array[i].order != (array[i+1].order-1)){
+			change = true;
+			break;
+		}
+	}
+
+	if(!change){
+		return;
+	}
+
+	let elements = [];
+	for(let i in array){
+		elements.push(array[i].element)
+	}
+
+	list.empty().append(elements).change();
+	
 }
 
 function reindex_event_category_list(){
