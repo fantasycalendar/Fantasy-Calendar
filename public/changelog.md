@@ -1,3 +1,7 @@
+### 2.0.10 - Sorting Efreet
+#### December 19, 2020
+* Fixed - Date based seasons not sorting correctly
+
 ### 2.0.9 - Forgetful Efreet
 #### December 19, 2020
 * Tweaked - Sorting speed of eras and seasons significantly improved

@@ -4685,6 +4685,10 @@ function reindex_season_sortable(key){
 
 	var tabindex = 400;
 
+	if(!static_data.seasons.global_settings.periodic_seasons){
+		sort_list_by_partial_date(season_sortable);
+	}
+
 	static_data.seasons.data = [];
 
 	season_sortable.children().each(function(i){
@@ -4747,10 +4751,6 @@ function reindex_season_sortable(key){
 	}
 	
 	populate_preset_season_list();
-
-	if(!static_data.seasons.global_settings.periodic_seasons){
-		sort_list_by_partial_date(season_sortable);
-	}
 
 	if(key !== undefined){
 		location_list.find(`.location_season[fc-index="${key}"]`).remove();
@@ -5177,14 +5177,13 @@ function sort_list_by_partial_date(list){
 	});
 
 	array.sort((a,b) => {
-		if(a.timespan >= a.timespan){
-			if(a.timespan == a.timespan && a.day < b.day){
-				return 1;
-			}else{
-				return -1;
+		if(a.timespan >= b.timespan){
+			if(a.timespan == b.timespan){
+				return a.day > b.day ? 1 : -1;
 			}
+		}else{
+			return -1;
 		}
-		return -1;
 	});
 
 	let change = false;
