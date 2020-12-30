@@ -370,6 +370,8 @@ var calendar_builder = {
 			post_search = event.data.search_distance > post_search ? event.data.search_distance : post_search;
 		}
 
+
+		console.log(pre_search, post_search);
 		var days = 0;
 
 		var pre_year = adjusted_year;
@@ -2662,7 +2664,7 @@ var event_evaluator = {
 
 				let search_distance = this.current_event.data.search_distance ? this.current_event.data.search_distance : 0;
 
-				var begin_epoch = this.current_event.lookback ? event_evaluator.start_epoch-this.current_event.lookback : event_evaluator.start_epoch-search_distance;
+				var begin_epoch = this.current_event.lookback ? event_evaluator.start_epoch-this.current_event.lookback-1 : event_evaluator.start_epoch-search_distance-1;
 				var last_epoch = this.current_event.lookahead ? event_evaluator.end_epoch+this.current_event.lookahead : event_evaluator.end_epoch+search_distance;
 
 				for(var epoch = begin_epoch; epoch <= last_epoch; epoch++){
