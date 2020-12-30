@@ -581,6 +581,8 @@ class Climate{
 
 			}
 		}
+		
+		this.season.season_day = Math.floor(this.seasons[this.season.current_index].length + this.season.day - this.season.total_day);
 
 		/* -------------------------------------------------------------------------------------------------------------*/
 	
@@ -639,6 +641,8 @@ class Climate{
 			this.season.total_day = this.seasons[this.season.current_index].length;
 		}
 
+		this.season.season_day = 0;
+
 	}
 
 	get_dynamic_season_data(epoch){
@@ -655,8 +659,6 @@ class Climate{
 		if(this.season.day >= this.season.total_day){
 			this.next_season();
 		}
-
-		this.season.season_day = Math.floor(this.seasons[this.season.current_index].length+this.season.day-this.season.total_day);
 
 		if(this.season.season_day >= this.seasons[this.season.current_index].duration){
 
