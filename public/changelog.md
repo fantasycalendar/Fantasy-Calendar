@@ -1,6 +1,7 @@
 ### 2.0.11 - Entomophobic Efreet
 #### December 19, 2020
 * Fixed - Event-based-events would sometimes not appear across years or months (with *Show Only Current Month* turned on)
+* Fixed - Deleting events in view mode would sometimes cause error that would break calendars
 
 ### 2.0.10 - Sorting Efreet
 #### December 19, 2020
