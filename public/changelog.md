@@ -1,6 +1,6 @@
 ### 2.0.11 - Celebratory Efreet
 #### December 31, 2020
-* Tweaked - Exandrian Calendar preset is now correct, curtsy of [critical role stats](https://www.critrolestats.com/calendar-wm)
+* Tweaked - Exandrian Calendar preset is now correct, courtesy of [critical role stats](https://www.critrolestats.com/calendar-wm)
 * Fixed - Season day sometimes being off by 1 or 2 days - we recommend you double check any events using season day
 * Fixed - Event-based-events would sometimes not appear across years or months (with *Show Only Current Month* turned on)
 * Fixed - Deleting events in view mode would sometimes cause error that would break calendars
