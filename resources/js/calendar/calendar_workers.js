@@ -2265,6 +2265,46 @@ var calendar_builder = {
 		climate_generator = new Climate(this.data.epochs, this.static_data, this.dynamic_data, this.dynamic_data.year, start_data.epoch, epoch-1);
 		this.data.epochs = climate_generator.generate();
 
+		let debug = false;
+		let debugtext = false;
+
+		if(debug || debugtext) {
+
+			var wrong = false;
+			if(Math.abs(this.prevous_year - this.dynamic_data.year) == 1) {
+				if(this.prevous_year !== undefined && this.previous_start_epoch !== undefined && this.previous_end_epoch !== undefined) {
+					if(this.dynamic_data.year > this.prevous_year) {
+						wrong = calendar_start_epoch != this.previous_end_epoch;
+					} else {
+						wrong = calendar_end_epoch != this.previous_start_epoch;
+					}
+				}
+			}
+
+			if(debugtext) {
+				//console.log(this.dynamic_data.year, this.previous_end_epoch, calendar_start_epoch, calendar_end_epoch)
+				console.log(this.dynamic_data.year, calendar_era_year)
+			}
+
+			if(wrong) {
+				console.log("------------------------")
+				console.log("WRONG!")
+				if(this.dynamic_data.year > this.prevous_year) {
+					console.log(this.dynamic_data.year)
+					console.log(this.previous_end_epoch, calendar_start_epoch, calendar_end_epoch)
+				} else {
+					console.log(this.dynamic_data.year)
+					console.log(calendar_start_epoch, calendar_end_epoch, this.previous_start_epoch)
+				}
+				console.log("------------------------")
+			}
+
+			this.previous_end_epoch = calendar_end_epoch+1;
+			this.previous_start_epoch = calendar_start_epoch;
+			this.prevous_year = this.dynamic_data.year;
+
+		}
+
 		return {
 			success: true,
 			static_data: this.static_data,

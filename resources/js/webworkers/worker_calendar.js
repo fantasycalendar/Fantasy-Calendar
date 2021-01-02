@@ -18,7 +18,49 @@ onmessage = e => {
 	calendar_builder.events = e.data.events;
 	calendar_builder.event_categories = e.data.event_categories;
 
-	data = calendar_builder.evaluate_calendar_data();
+	let debug = false;
+
+	if(debug) {
+
+		target_loops = 2000;
+		loops = 0;
+
+		calendar_builder.dynamic_data.year = Math.floor(target_loops / 2);
+		
+		execution_time.start();
+
+		var average_time = 0;
+
+		for(var loops; loops < target_loops; loops++) {
+
+			starttime = performance.now();
+
+			data = calendar_builder.evaluate_calendar_data();
+			calendar_builder.dynamic_data.year++;
+			if(calendar_builder.dynamic_data.year == 0 && !calendar_builder.static_data.settings.year_zero_exists) {
+				calendar_builder.dynamic_data.year++;
+			}
+
+			average_time += precisionRound(performance.now() - starttime, 7)
+
+		}
+
+		average_time = average_time / target_loops;
+
+		console.log(`${average_time}ms`)
+
+		execution_time.end();
+
+		postMessage({
+			processed_data: data,
+			action: e.data.action
+		});
+
+	} else {
+
+		data = calendar_builder.evaluate_calendar_data();
+
+	}
 
 	postMessage({
 		processed_data: data,
