@@ -565,8 +565,8 @@ function set_up_visitor_inputs(){
 			preview_date_manager.timespan = $(this).val()|0;
 		}else{
 			target_timespan.children().eq(preview_date_manager.timespan).prop('selected', true);
-			repopulate_day_select(target_day, preview_date_manager.day, false, false, preview_date_manager.last_valid_day);
 		}
+		repopulate_day_select(target_day, preview_date_manager.day, false, false, preview_date_manager.last_valid_day);
 
 		add_target_timespan.prop('disabled', !preview_date_manager.check_max_timespan((target_timespan.val()|0)+1));
 

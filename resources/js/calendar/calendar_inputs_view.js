@@ -120,13 +120,12 @@ function set_up_view_inputs(){
 	current_timespan.change(function(e){
 
 		if(e.originalEvent){
-			dynamic_date_manager.timespan = $(this).val()|0;
+			dynamic_date_manager.timespan = $(this).val() | 0;
 			evaluate_dynamic_change();
 		}else{
 			current_timespan.children().eq(dynamic_date_manager.timespan).prop('selected', true);
-			repopulate_day_select(current_day, dynamic_date_manager.day, false);
 		}
-
+		repopulate_day_select(current_day, dynamic_date_manager.day, false);
 
 	});
 

@@ -1,6 +1,7 @@
 ### 2.0.12 - Celebratory Efreet
 #### January 2, 2021
 * Fixed - View advanced day data not opening and throwing error
+* Fixed - Day dropdown not refreshing when new month was selected through the month dropdowns
 
 ### 2.0.11 - Celebratory Efreet
 #### December 31, 2020
