@@ -1817,7 +1817,12 @@ function is_leap(static_data, _parent_occurrences, _intervals, _offset) {
 
 		var i = intervals[index];
 
-		if((year-i.offset) % i.interval == 0){
+		let offset = i.offset;
+		if(!static_data.settings.year_zero_exists && year < 0) {
+			offset--;
+		}
+
+		if((year-offset) % i.interval == 0){
 			return !i.negator;
 		}
 
@@ -1832,6 +1837,10 @@ function is_leap_simple(static_data, year, interval, offset) {
 	var year = unconvert_year(static_data, year);
 
 	var offset = offset%interval;
+
+	if(!static_data.settings.year_zero_exists && year < 0){
+		offset--;
+	}
 
 	return (year-offset) % interval == 0;
 
@@ -1949,7 +1958,12 @@ function get_interval_occurrences(static_data, _parent_occurrences, _intervals, 
 
 			var outer = intervals[index];
 
-			var year = outer.offset > 0 ? _parent_occurrences-outer.offset : _parent_occurrences;
+			let offset = outer.offset;
+			if(!static_data.settings.year_zero_exists) {
+				offset--;
+			}
+
+			var year = offset > 0 ? _parent_occurrences - offset : _parent_occurrences;
 
 			var result = year / outer.interval;
 
@@ -1961,7 +1975,12 @@ function get_interval_occurrences(static_data, _parent_occurrences, _intervals, 
 
 				var inner = outer.children[inner_index];
 
-				var year = inner.offset > 0 ? _parent_occurrences-inner.offset : _parent_occurrences;
+				let offset = inner.offset;
+				if(!static_data.settings.year_zero_exists) {
+					offset--;
+				}
+
+				var year = offset > 0 ? _parent_occurrences - offset : _parent_occurrences;
 
 				var result = year / inner.interval;
 
@@ -2026,7 +2045,10 @@ function get_epoch(static_data, year, timespan, day, debug){
 
 			offset = offset ? offset : 0;
 
-			if(year < 0 || static_data.settings.year_zero_exists){
+			if(year < 0 || static_data.settings.year_zero_exists) {
+				if(!static_data.settings.year_zero_exists) {
+					offset--;
+				}
 				var timespan_fraction = Math.ceil((year - offset) / timespan_obj.interval);
 			}else{
 				if(offset > 0){
@@ -2036,6 +2058,9 @@ function get_epoch(static_data, year, timespan, day, debug){
 				}
 			}
 
+			/* if(debug) {
+				console.log(timespan_index, timespan_fraction, offset)
+			} */
 		}
 
 		// Get the number of weeks for that month (check if it has a custom week or not)
