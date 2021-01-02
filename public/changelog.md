@@ -1,3 +1,7 @@
+### 2.0.12 - Celebratory Efreet
+#### January 2, 2021
+* Fixed - View advanced day data not opening and throwing error
+
 ### 2.0.11 - Celebratory Efreet
 #### December 31, 2020
 * Tweaked - Exandrian Calendar preset is now correct, courtesy of [critical role stats](https://www.critrolestats.com/calendar-wm)
