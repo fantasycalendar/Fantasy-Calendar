@@ -3,7 +3,7 @@
 * Fixed - Leap days and months being off by 1 year on negative years with year zero exists turned off
 * Fixed - View advanced day data not opening and throwing error
 * Fixed - Day dropdown not refreshing when new month was selected through the month dropdowns
-* Fixed - Time-based solstice events being off by a few days
+* Fixed - Time-based solstice events sometimes being off by a few days
 
 ### 2.0.11 - Celebratory Efreet
 #### December 31, 2020
