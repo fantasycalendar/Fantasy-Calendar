@@ -1,4 +1,4 @@
-### 2.0.12 - Celebratory Efreet
+### 2.0.12 - Scrutinizing Efreet
 #### January 6, 2021
 * Fixed - Leap days and months being off by 1 year on negative years with year zero exists turned off
 * Fixed - View advanced day data not opening and throwing error
