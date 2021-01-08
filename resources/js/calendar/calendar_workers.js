@@ -370,6 +370,8 @@ var calendar_builder = {
 			post_search = event.data.search_distance > post_search ? event.data.search_distance : post_search;
 		}
 
+
+		console.log(pre_search, post_search);
 		var days = 0;
 
 		var pre_year = adjusted_year;
@@ -608,8 +610,8 @@ var calendar_builder = {
 									'year': unconvert_year(this.static_data, year_index),
 									'era_year': unconvert_year(this.static_data, era_year),
 
-									'timespan_index': undefined,
-									'timespan_number': undefined,
+									'timespan_index': timespan_index,
+									'timespan_number': i,
 									'timespan_count': undefined,
 									'num_timespans': undefined,
 									'timespan_name': undefined,
@@ -737,8 +739,8 @@ var calendar_builder = {
 									'year': unconvert_year(this.static_data, year_index),
 									'era_year': unconvert_year(this.static_data, era_year),
 
-									'timespan_index': undefined,
-									'timespan_number': undefined,
+									'timespan_index': timespan_index,
+									'timespan_number': i,
 									'timespan_count': undefined,
 									'num_timespans': undefined,
 									'timespan_name': undefined,
@@ -887,8 +889,8 @@ var calendar_builder = {
 									'year': unconvert_year(this.static_data, year_index),
 									'era_year': unconvert_year(this.static_data, era_year),
 
-									'timespan_index': undefined,
-									'timespan_number': undefined,
+									'timespan_index': timespan_index,
+									'timespan_number': i,
 									'timespan_count': undefined,
 									'num_timespans': undefined,
 									'timespan_name': undefined,
@@ -1015,8 +1017,8 @@ var calendar_builder = {
 									'year': unconvert_year(this.static_data, year_index),
 									'era_year': unconvert_year(this.static_data, era_year),
 
-									'timespan_index': undefined,
-									'timespan_number': undefined,
+									'timespan_index': timespan_index,
+									'timespan_number': i,
 									'timespan_count': undefined,
 									'num_timespans': undefined,
 									'timespan_name': undefined,
@@ -1467,8 +1469,8 @@ var calendar_builder = {
 									'year': unconvert_year(this.static_data, year_index),
 									'era_year': unconvert_year(this.static_data, era_year),
 
-									'timespan_index': undefined,
-									'timespan_number': undefined,
+									'timespan_index': timespan_index,
+									'timespan_number': i,
 									'timespan_count': undefined,
 									'num_timespans': undefined,
 									'timespan_name': undefined,
@@ -1597,8 +1599,8 @@ var calendar_builder = {
 									'year': unconvert_year(this.static_data, year_index),
 									'era_year': unconvert_year(this.static_data, era_year),
 
-									'timespan_index': undefined,
-									'timespan_number': undefined,
+									'timespan_index': timespan_index,
+									'timespan_number': i,
 									'timespan_count': undefined,
 									'num_timespans': undefined,
 									'timespan_name': undefined,
@@ -1754,8 +1756,8 @@ var calendar_builder = {
 								'year': this.dynamic_data.year,
 								'era_year': unconvert_year(this.static_data, era_year),
 
-								'timespan_index': undefined,
-								'timespan_number': undefined,
+								'timespan_index': timespan_index,
+								'timespan_number': i,
 								'timespan_count': undefined,
 								'num_timespans': undefined,
 								'timespan_name': undefined,
@@ -1896,8 +1898,8 @@ var calendar_builder = {
 								'year': this.dynamic_data.year,
 								'era_year': unconvert_year(this.static_data, era_year),
 
-								'timespan_index': undefined,
-								'timespan_number': undefined,
+								'timespan_number': i,
+								'timespan_number': i,
 								'timespan_count': undefined,
 								'num_timespans': undefined,
 								'timespan_name': undefined,
@@ -2040,8 +2042,8 @@ var calendar_builder = {
 									'year': unconvert_year(this.static_data, year_index),
 									'era_year': unconvert_year(this.static_data, era_year),
 
-									'timespan_index': undefined,
-									'timespan_number': undefined,
+									'timespan_index': timespan_index,
+									'timespan_number': i,
 									'timespan_count': undefined,
 									'num_timespans': undefined,
 									'timespan_name': undefined,
@@ -2169,8 +2171,8 @@ var calendar_builder = {
 									'year': unconvert_year(this.static_data, year_index),
 									'era_year': unconvert_year(this.static_data, era_year),
 
-									'timespan_index': undefined,
-									'timespan_number': undefined,
+									'timespan_index': timespan_index,
+									'timespan_number': i,
 									'timespan_count': undefined,
 									'num_timespans': undefined,
 									'timespan_name': undefined,
@@ -2262,6 +2264,46 @@ var calendar_builder = {
 
 		climate_generator = new Climate(this.data.epochs, this.static_data, this.dynamic_data, this.dynamic_data.year, start_data.epoch, epoch-1);
 		this.data.epochs = climate_generator.generate();
+
+		let debug = false;
+		let debugtext = false;
+
+		if(debug || debugtext) {
+
+			var wrong = false;
+			if(Math.abs(this.prevous_year - this.dynamic_data.year) == 1) {
+				if(this.prevous_year !== undefined && this.previous_start_epoch !== undefined && this.previous_end_epoch !== undefined) {
+					if(this.dynamic_data.year > this.prevous_year) {
+						wrong = calendar_start_epoch != this.previous_end_epoch;
+					} else {
+						wrong = calendar_end_epoch != this.previous_start_epoch;
+					}
+				}
+			}
+
+			if(debugtext) {
+				//console.log(this.dynamic_data.year, this.previous_end_epoch, calendar_start_epoch, calendar_end_epoch)
+				console.log(this.dynamic_data.year, calendar_era_year)
+			}
+
+			if(wrong) {
+				console.log("------------------------")
+				console.log("WRONG!")
+				if(this.dynamic_data.year > this.prevous_year) {
+					console.log(this.dynamic_data.year)
+					console.log(this.previous_end_epoch, calendar_start_epoch, calendar_end_epoch)
+				} else {
+					console.log(this.dynamic_data.year)
+					console.log(calendar_start_epoch, calendar_end_epoch, this.previous_start_epoch)
+				}
+				console.log("------------------------")
+			}
+
+			this.previous_end_epoch = calendar_end_epoch+1;
+			this.previous_start_epoch = calendar_start_epoch;
+			this.prevous_year = this.dynamic_data.year;
+
+		}
 
 		return {
 			success: true,
@@ -2662,7 +2704,7 @@ var event_evaluator = {
 
 				let search_distance = this.current_event.data.search_distance ? this.current_event.data.search_distance : 0;
 
-				var begin_epoch = this.current_event.lookback ? event_evaluator.start_epoch-this.current_event.lookback : event_evaluator.start_epoch-search_distance;
+				var begin_epoch = this.current_event.lookback ? event_evaluator.start_epoch-this.current_event.lookback-1 : event_evaluator.start_epoch-search_distance-1;
 				var last_epoch = this.current_event.lookahead ? event_evaluator.end_epoch+this.current_event.lookahead : event_evaluator.end_epoch+search_distance;
 
 				for(var epoch = begin_epoch; epoch <= last_epoch; epoch++){

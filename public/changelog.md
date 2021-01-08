@@ -1,6 +1,36 @@
-### 2.0.7 - Talkative Efreet
-#### Month day, year
+### 2.0.12 - Scrutinizing Efreet
+#### January 6, 2021
+* Fixed - Leap days and months being off by 1 year on negative years with year zero exists turned off
+* Fixed - View advanced day data not opening and throwing error
+* Fixed - Day dropdown not refreshing when new month was selected through the month dropdowns
+* Fixed - Time-based solstice events sometimes being off by a few days
+
+### 2.0.11 - Celebratory Efreet
+#### December 31, 2020
+* Tweaked - Exandrian Calendar preset is now correct, courtesy of [critical role stats](https://www.critrolestats.com/calendar-wm)
+* Fixed - Season day sometimes being off by 1 or 2 days - we recommend you double check any events using season day
+* Fixed - Event-based-events would sometimes not appear across years or months (with *Show Only Current Month* turned on)
+* Fixed - Deleting events in view mode would sometimes cause error that would break calendars
+
+### 2.0.10 - Sorting Efreet
+#### December 19, 2020
+* Fixed - Date based seasons not sorting correctly
+
+### 2.0.9 - Forgetful Efreet
+#### December 19, 2020
+* Tweaked - Sorting speed of eras and seasons significantly improved
+* Fixed - Season type resetting when editing seasons
+
+### 2.0.8 - Sweating Efreet
+#### December 16, 2020
+* Fixed - Profile and subscription pages sometimes not loading
+* Fixed - Testing intercalary-based events causing error
+* Fixed - Equinox event sometimes not appearing when show only current month was enabled
+
+### 2.0.7 - Familiar Efreet
+#### December 13, 2020
 * Added - Option to change your account's email address
+* Added - Checkbox to base location sunrise and sunset to season's times
 * Fixed - Commenting styling on dark theme
 * Fixed - Season and weather being off on dated seasons with show only current month setting
 * Fixed - Rounding error within the time-generation of seasons
@@ -9,6 +39,7 @@
 ### 2.0.6 - Talkative Efreet
 #### November 21, 2020
 * Added - Ability to edit and delete event comments
+* Added - Updating your email is now possible from your profile
 * Fixed - Calendars with errors still being able to be saved
 * Fixed - Leap days with interval of 0 now shows proper error
 * Fixed - Some event presets would throw an error
@@ -74,7 +105,7 @@ The entire UI has been overhauled with many alterations that come with the chang
 
 ##### NEW FEATURES
 * **Mobile device support**
-     * F7antasy-Calendar now supports mobile devices!
+     * Fantasy-Calendar now supports mobile devices!
 * **Dark theme**
      * You can enable this in your profile. Ahhh, comfy retinas.
 * **Intercalary months**

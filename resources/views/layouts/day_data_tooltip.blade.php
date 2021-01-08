@@ -18,6 +18,7 @@
 		<tr class='hidden day_data_inverse_week_day_num' data_key="inverse_week_day_num"><td class='bold-text'>Inverse week day num:</td> <td class='data_container'></td></tr>
 		<tr class='hidden day_data_month_week_num' data_key="month_week_num"><td class='bold-text'>Month week count:</td> <td class='data_container'></td></tr>
 		<tr class='hidden day_data_inverse_month_week_num' data_key="inverse_month_week_num"><td class='bold-text'>Inverse month week count:</td> <td class='data_container'></td></tr>
+		<tr class='hidden day_data_inverse_year_week_num' data_key="inverse_year_week_num"><td class='bold-text'>Inverse year week count:</td> <td class='data_container'></td></tr>
 		<tr class='hidden day_data_year_week_num' data_key="year_week_num"><td class='bold-text'>Year week count:</td> <td class='data_container'></td></tr>
 		<tr class='hidden day_data_total_week_num' data_key="total_week_num"><td class='bold-text'>Total week count:</td> <td class='data_container'></td></tr>
 		<tr class='hidden day_data_moon_phase' data_key="moon_phase"><td class='bold-text'>Moon phase:</td> <td class='data_container'></td></tr>

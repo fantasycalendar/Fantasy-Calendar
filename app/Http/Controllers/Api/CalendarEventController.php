@@ -114,11 +114,29 @@ class CalendarEventController extends Controller
      */
     public function destroy($id)
     {
-        $event = CalendarEvent::findOrFail($id);
-        if(!auth('api')->user()->can('delete', $event)) {
+        $delete_event = CalendarEvent::findOrFail($id);
+        if(!auth('api')->user()->can('delete', $delete_event)) {
             return response()->json(['error' => true, 'message' => "You're not authorized to delete that event!"]);
         }
 
-        return response()->json(['success' => $event->delete(), 'message' => "Event deleted."]);
+        $calendar_events = $delete_event->calendar->events;
+        foreach($calendar_events as $event){
+            $data = $event->data;
+            if(isset($data['connected_events'])){
+                $changed = false;
+                foreach($data['connected_events'] as $index => $connectedID){
+                    if(intval($connectedID) > $delete_event['sort_by']){
+                        $data['connected_events'][$index] = intval($connectedID-1);
+                        $changed = true;
+                    }
+                }
+                if($changed){
+                    $event->data = $data;
+                    $event->save();
+                }
+            }
+        }
+
+        return response()->json(['success' => $delete_event->delete(), 'message' => "Event deleted."]);
     }
 }
