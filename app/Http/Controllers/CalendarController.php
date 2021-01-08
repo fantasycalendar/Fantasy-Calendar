@@ -159,8 +159,10 @@ class CalendarController extends Controller
                 }
             }
 
-            return -1;
-        })->take(8);
+            return ($left->created_at > $right->created_at) ? -1 : 1;
+        })->take(8)->map(function($event){
+            return array_merge($event->toArray(), ['date' => $event->date]);
+        })->values();
 
         return view('calendar.table', [
             'calendar' => $calendar,

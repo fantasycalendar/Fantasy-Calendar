@@ -1,4 +1,3 @@
-<!-- This example requires Tailwind CSS v2.0+ -->
 <div class="bg-white shadow overflow-hidden sm:rounded-lg mb-4">
     <div class="bg-white px-4 py-3 border-b border-gray-200 sm:px-6">
         <div class="-ml-4 -mt-2 flex items-center justify-between flex-wrap sm:flex-nowrap">

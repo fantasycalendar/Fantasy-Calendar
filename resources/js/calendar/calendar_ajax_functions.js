@@ -429,7 +429,7 @@ async function submit_new_full_event(event){
 		axios.post(window.apiurl+'/event', event)
 			.then(function (result){
 				if(result.data.data !== undefined) {
-					resolve();
+					resolve(result.data.data);
 				} else {
 					reject(result.data.message);
 				}
@@ -569,9 +569,9 @@ function submit_edit_comment(comment_id, content, callback){
 				$.notify(
 					result.data.message
 				);
-            } 
+            }
 		});
-		
+
 }
 
 function submit_delete_comment(comment_id, callback){
@@ -590,7 +590,7 @@ function submit_delete_comment(comment_id, callback){
 				);
             }
 		});
-		
+
 }
 
 
