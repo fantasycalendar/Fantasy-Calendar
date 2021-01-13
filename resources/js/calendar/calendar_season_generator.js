@@ -177,16 +177,16 @@ class Climate{
 				var length = sunset-sunrise;
 
 				if(this.shortest_day_time > length){
-					this.shortest_day_time = precisionRound(length, 1);
+					this.shortest_day_time = precisionRound(length, 3);
 				}
 
 				if(this.longest_day_time < length){
-					this.longest_day_time = precisionRound(length, 1);
+					this.longest_day_time = precisionRound(length, 3);
 				}
 
 			}
 
-			this.middle_day_time = precisionRound(mid(this.shortest_day_time, this.longest_day_time),1);
+			this.middle_day_time = precisionRound(mid(this.shortest_day_time, this.longest_day_time), 3);
 
 			this.solstices_appear = true;
 
@@ -869,7 +869,7 @@ class Climate{
 
 	}
 
-	evaluate_equinoxes(){
+	evaluate_equinoxes() {
 
 		if(this.static_data.clock.enabled){
 
