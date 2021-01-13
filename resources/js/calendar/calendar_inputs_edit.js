@@ -649,44 +649,82 @@ function set_up_edit_inputs(){
 
 	$('#create_season_events').click(function(){
 
-		var html  = '<strong><span style="color:#4D61B3;">Simple</span></strong> season events are based on the <strong>specific start dates</strong> of the seasons.<br><br>';
+		new Promise((resolve, reject) => {
 
-		html     += '<strong><span style="color:#84B356;">Complex</span></strong> season events are based on the <strong>longest and shortest day</strong> of the year.<br>';
-		if(!static_data.clock.enabled){
-			html += '<span style="font-style:italic;font-size:0.8rem;">You need to <strong>enable the clock</strong> for this button to be enabled.</span><br>';
-		}
-		html     += '<br>';
-		html     += '<span style="font-size:0.9rem;">Still unsure? <a href="https://helpdocs.fantasy-calendar.com/topic/seasons#Create_solstice_and_equinox_events" target="_blank">Read more on the Wiki (opens in a new window)</a>.</span><br>';
-
-		swal.fire({
-			title: `Simple or Complex?`,
-			html: html,
-			showCloseButton: true,
-			showCancelButton: true,
-			confirmButtonColor: '#4D61B3',
-			cancelButtonColor: static_data.clock.enabled ? '#84B356' : '#999999',
-			confirmButtonText: 'Simple',
-			cancelButtonText: 'Complex',
-			icon: "question",
-			onOpen: function(){
-				$(swal.getCancelButton()).prop("disabled", !static_data.clock.enabled);
-			}
-		})
-		.then((result) => {
-
-			if(result.dismiss !== "close") {
-
-				var complex = result.dismiss === "cancel";
-
-				var season_events = create_season_events(complex);
-
-				for(index in season_events){
-					events.push(season_events[index])
-					add_event_to_sortable(events_sortable, events.length-1, events[events.length-1]);
+			let found = false;
+			for(let i in events){
+				if(['spring equinox', 'summer solstice', 'autumn equinox', 'winter solstice'].indexOf(events[i].name.toLowerCase()) > -1){
+					found = true;
 				}
-
-				do_error_check();
 			}
+
+			if(found){
+
+				swal.fire({
+					title: `Events exist!`,
+					text: "You already have solstice and equinox events, are you sure you want to create another set?",
+					showCloseButton: false,
+					showCancelButton: true,
+					cancelButtonColor: '#3085d6',
+					confirmButtonColor: '#d33',
+					confirmButtonText: 'Yes',
+					icon: "warning"
+				})
+				.then((result) => {
+					if(result.dismiss === "close" || result.dismiss === "cancel") {
+						reject();
+					}else{
+						resolve();
+					}
+				});
+
+			}else{
+				resolve();
+			}
+
+		}).then(() => {
+
+			var html = '<strong><span style="color:#4D61B3;">Simple</span></strong> season events are based on the <strong>specific start dates</strong> of the seasons.<br><br>';
+
+			html += '<strong><span style="color:#84B356;">Complex</span></strong> season events are based on the <strong>longest and shortest day</strong> of the year.<br>';
+			if(!static_data.clock.enabled) {
+				html += '<span style="font-style:italic;font-size:0.8rem;">You need to <strong>enable the clock</strong> for this button to be enabled.</span><br>';
+			}
+			html += '<br>';
+			html += '<span style="font-size:0.9rem;">Still unsure? <a href="https://helpdocs.fantasy-calendar.com/topic/seasons#Create_solstice_and_equinox_events" target="_blank">Read more on the Wiki (opens in a new window)</a>.</span><br>';
+
+			swal.fire({
+				title: `Simple or Complex?`,
+				html: html,
+				showCloseButton: true,
+				showCancelButton: true,
+				confirmButtonColor: '#4D61B3',
+				cancelButtonColor: static_data.clock.enabled ? '#84B356' : '#999999',
+				confirmButtonText: 'Simple',
+				cancelButtonText: 'Complex',
+				icon: "question",
+				onOpen: function() {
+					$(swal.getCancelButton()).prop("disabled", !static_data.clock.enabled);
+				}
+			})
+			.then((result) => {
+
+				if(result.dismiss !== "close") {
+
+					var complex = result.dismiss === "cancel";
+
+					var season_events = create_season_events(complex);
+
+					for(index in season_events) {
+						events.push(season_events[index])
+						add_event_to_sortable(events_sortable, events.length - 1, events[events.length - 1]);
+					}
+
+					do_error_check();
+
+				}
+			});
+
 		});
 	})
 
