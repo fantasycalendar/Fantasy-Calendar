@@ -625,9 +625,10 @@ var calendar_builder = {
 
 									'inverse_month_week_num': undefined,
 									'inverse_year_week_num': undefined,
-									'month_week_num': undefined,
-									'year_week_num': undefined,
-									'total_week_num': undefined,
+									
+									'month_week_num': current_timespan.type !== "intercalary" ? month_week_num : undefined,
+									'year_week_num': current_timespan.type !== "intercalary" ? year_week_num : undefined,
+									'total_week_num': current_timespan.type !== "intercalary" ? total_week_num : undefined,
 
 									'moon_phase': [],
 									'moon_phase_num_epoch': [],
@@ -717,20 +718,6 @@ var calendar_builder = {
 						year_day++;
 						timespan_day++;
 
-						if(current_timespan.type !== "intercalary"){
-
-							week_day++;
-
-							if(week_day > current_timespan.week.length){
-								week_day = 1;
-								month_week_num++;
-								year_week_num++;
-								inverse_year_week_num--;
-								total_week_num++;
-							}
-
-						}
-
 						for(leap_day_index = 0; leap_day_index < current_timespan.leap_days.length; leap_day_index++){
 							leap_day = current_timespan.leap_days[leap_day_index];
 							if(leap_day.intercalary && leap_day.day === day){
@@ -754,9 +741,10 @@ var calendar_builder = {
 
 									'inverse_month_week_num': undefined,
 									'inverse_year_week_num': undefined,
-									'month_week_num': undefined,
-									'year_week_num': undefined,
-									'total_week_num': undefined,
+									
+									'month_week_num': current_timespan.type !== "intercalary" ? month_week_num : undefined,
+									'year_week_num': current_timespan.type !== "intercalary" ? year_week_num : undefined,
+									'total_week_num': current_timespan.type !== "intercalary" ? total_week_num : undefined,
 
 									'moon_phase': [],
 									'moon_phase_num_epoch': [],
@@ -783,6 +771,20 @@ var calendar_builder = {
 								year_day++;
 								timespan_day++;
 							}
+						}
+
+						if(current_timespan.type !== "intercalary") {
+
+							week_day++;
+
+							if(week_day > current_timespan.week.length) {
+								week_day = 1;
+								month_week_num++;
+								year_week_num++;
+								inverse_year_week_num--;
+								total_week_num++;
+							}
+
 						}
 					}
 				}
@@ -906,9 +908,10 @@ var calendar_builder = {
 
 									'inverse_month_week_num': undefined,
 									'inverse_year_week_num': undefined,
-									'month_week_num': undefined,
-									'year_week_num': undefined,
-									'total_week_num': undefined,
+									
+									'month_week_num': current_timespan.type !== "intercalary" ? month_week_num : undefined,
+									'year_week_num': current_timespan.type !== "intercalary" ? year_week_num : undefined,
+									'total_week_num': current_timespan.type !== "intercalary" ? total_week_num : undefined,
 
 									'moon_phase': [],
 									'moon_phase_num_epoch': [],
@@ -997,20 +1000,6 @@ var calendar_builder = {
 						year_day++;
 						timespan_day++;
 
-						if(current_timespan.type !== "intercalary"){
-
-							week_day++;
-
-							if(week_day > current_timespan.week.length){
-								week_day = 1;
-								month_week_num++;
-								year_week_num++;
-								inverse_year_week_num--;
-								total_week_num++;
-							}
-
-						}
-
 						for(leap_day_index = 0; leap_day_index < current_timespan.leap_days.length; leap_day_index++){
 							leap_day = current_timespan.leap_days[leap_day_index];
 							if(leap_day.intercalary && leap_day.day === day){
@@ -1034,9 +1023,10 @@ var calendar_builder = {
 
 									'inverse_month_week_num': undefined,
 									'inverse_year_week_num': undefined,
-									'month_week_num': undefined,
-									'year_week_num': undefined,
-									'total_week_num': undefined,
+										
+									'month_week_num': current_timespan.type !== "intercalary" ? month_week_num : undefined,
+									'year_week_num': current_timespan.type !== "intercalary" ? year_week_num : undefined,
+									'total_week_num': current_timespan.type !== "intercalary" ? total_week_num : undefined,
 
 									'moon_phase': [],
 									'moon_phase_num_epoch': [],
@@ -1063,6 +1053,20 @@ var calendar_builder = {
 								year_day++;
 								timespan_day++;
 							}
+						}
+
+						if(current_timespan.type !== "intercalary") {
+
+							week_day++;
+
+							if(week_day > current_timespan.week.length) {
+								week_day = 1;
+								month_week_num++;
+								year_week_num++;
+								inverse_year_week_num--;
+								total_week_num++;
+							}
+
 						}
 					}
 				}
@@ -1490,9 +1494,10 @@ var calendar_builder = {
 
 									'inverse_month_week_num': undefined,
 									'inverse_year_week_num': undefined,
-									'month_week_num': undefined,
-									'year_week_num': undefined,
-									'total_week_num': undefined,
+									
+									'month_week_num': current_timespan.type !== "intercalary" ? month_week_num : undefined,
+									'year_week_num': current_timespan.type !== "intercalary" ? year_week_num : undefined,
+									'total_week_num': current_timespan.type !== "intercalary" ? total_week_num : undefined,
 
 									'moon_phase': [],
 									'moon_phase_num_epoch': [],
@@ -1583,20 +1588,6 @@ var calendar_builder = {
 						year_day++;
 						timespan_day++;
 
-						if(current_timespan.type !== "intercalary"){
-
-							week_day++;
-
-							if(week_day > current_timespan.week.length){
-								week_day = 1;
-								month_week_num++;
-								year_week_num++;
-								total_week_num++;
-								inverse_year_week_num--;
-							}
-
-						}
-
 						for(leap_day_index = 0; leap_day_index < current_timespan.leap_days.length; leap_day_index++){
 							leap_day = current_timespan.leap_days[leap_day_index];
 							if(leap_day.intercalary && leap_day.day === day){
@@ -1620,9 +1611,10 @@ var calendar_builder = {
 
 									'inverse_month_week_num': undefined,
 									'inverse_year_week_num': undefined,
-									'month_week_num': undefined,
-									'year_week_num': undefined,
-									'total_week_num': undefined,
+									
+									'month_week_num': current_timespan.type !== "intercalary" ? month_week_num : undefined,
+									'year_week_num': current_timespan.type !== "intercalary" ? year_week_num : undefined,
+									'total_week_num': current_timespan.type !== "intercalary" ? total_week_num : undefined,
 
 									'moon_phase': [],
 									'moon_phase_num_epoch': [],
@@ -1650,6 +1642,20 @@ var calendar_builder = {
 								year_day++;
 								timespan_day++;
 							}
+						}
+
+						if(current_timespan.type !== "intercalary") {
+
+							week_day++;
+
+							if(week_day > current_timespan.week.length) {
+								week_day = 1;
+								month_week_num++;
+								year_week_num++;
+								total_week_num++;
+								inverse_year_week_num--;
+							}
+
 						}
 					}
 				}
@@ -1780,11 +1786,10 @@ var calendar_builder = {
 
 								'inverse_month_week_num': undefined,
 								'inverse_year_week_num': undefined,
-								'month_week_num': undefined,
-								'year_week_num': undefined,
-								'total_week_num': undefined,
-
-
+								
+								'month_week_num': current_timespan.type !== "intercalary" ? month_week_num : undefined,
+								'year_week_num': current_timespan.type !== "intercalary" ? year_week_num : undefined,
+								'total_week_num': current_timespan.type !== "intercalary" ? total_week_num : undefined,
 
 								'moon_phase': [],
 								'moon_phase_num_epoch': [],
@@ -1882,20 +1887,6 @@ var calendar_builder = {
 					year_day++;
 					timespan_day++;
 
-					if(current_timespan.type !== "intercalary"){
-
-						week_day++;
-
-						if(week_day > current_timespan.week.length){
-							week_day = 1;
-							month_week_num++;
-							year_week_num++;
-							inverse_year_week_num--;
-							total_week_num++;
-						}
-
-					}
-
 					total_day++;
 
 					for(leap_day_index = 0; leap_day_index < current_timespan.leap_days.length; leap_day_index++){
@@ -1908,7 +1899,7 @@ var calendar_builder = {
 								'year': this.dynamic_data.year,
 								'era_year': unconvert_year(this.static_data, era_year),
 
-								'timespan_number': i,
+								'timespan_index': timespan_index,
 								'timespan_number': i,
 								'timespan_count': undefined,
 								'num_timespans': undefined,
@@ -1922,9 +1913,10 @@ var calendar_builder = {
 
 								'inverse_month_week_num': undefined,
 								'inverse_year_week_num': undefined,
-								'month_week_num': undefined,
-								'year_week_num': undefined,
-								'total_week_num': undefined,
+								
+								'month_week_num': current_timespan.type !== "intercalary" ? month_week_num : undefined,
+								'year_week_num': current_timespan.type !== "intercalary" ? year_week_num : undefined,
+								'total_week_num': current_timespan.type !== "intercalary" ? total_week_num : undefined,
 
 								'moon_phase': [],
 								'moon_phase_num_epoch': [],
@@ -1957,6 +1949,20 @@ var calendar_builder = {
 							timespan_day++;
 
 						}
+					}
+
+					if(current_timespan.type !== "intercalary") {
+
+						week_day++;
+
+						if(week_day > current_timespan.week.length) {
+							week_day = 1;
+							month_week_num++;
+							year_week_num++;
+							inverse_year_week_num--;
+							total_week_num++;
+						}
+
 					}
 
 					total_day--;
@@ -2071,9 +2077,10 @@ var calendar_builder = {
 
 									'inverse_month_week_num': undefined,
 									'inverse_year_week_num': undefined,
-									'month_week_num': undefined,
-									'year_week_num': undefined,
-									'total_week_num': undefined,
+									
+									'month_week_num': current_timespan.type !== "intercalary" ? month_week_num : undefined,
+									'year_week_num': current_timespan.type !== "intercalary" ? year_week_num : undefined,
+									'total_week_num': current_timespan.type !== "intercalary" ? total_week_num : undefined,
 
 									'moon_phase': [],
 									'moon_phase_num_epoch': [],
@@ -2163,20 +2170,6 @@ var calendar_builder = {
 						year_day++;
 						timespan_day++;
 
-						if(current_timespan.type !== "intercalary"){
-
-							week_day++;
-
-							if(week_day > current_timespan.week.length){
-								week_day = 1;
-								month_week_num++;
-								year_week_num++;
-								inverse_year_week_num--;
-								total_week_num++;
-							}
-
-						}
-
 						for(leap_day_index = 0; leap_day_index < current_timespan.leap_days.length; leap_day_index++){
 							leap_day = current_timespan.leap_days[leap_day_index];
 							if(leap_day.intercalary && leap_day.day === day){
@@ -2200,9 +2193,10 @@ var calendar_builder = {
 
 									'inverse_month_week_num': undefined,
 									'inverse_year_week_num': undefined,
-									'month_week_num': undefined,
-									'year_week_num': undefined,
-									'total_week_num': undefined,
+									
+									'month_week_num': current_timespan.type !== "intercalary" ? month_week_num : undefined,
+									'year_week_num': current_timespan.type !== "intercalary" ? year_week_num : undefined,
+									'total_week_num': current_timespan.type !== "intercalary" ? total_week_num : undefined,
 
 									'moon_phase': [],
 									'moon_phase_num_epoch': [],
@@ -2229,6 +2223,20 @@ var calendar_builder = {
 								year_day++;
 								timespan_day++;
 							}
+						}
+
+						if(current_timespan.type !== "intercalary") {
+
+							week_day++;
+
+							if(week_day > current_timespan.week.length) {
+								week_day = 1;
+								month_week_num++;
+								year_week_num++;
+								inverse_year_week_num--;
+								total_week_num++;
+							}
+
 						}
 					}
 				}
