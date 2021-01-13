@@ -11,6 +11,7 @@
 		<tr class='hidden day_data_epoch' data_key="epoch"><td class='bold-text'>Epoch:</td> <td class='data_container'></td></tr>
 		<tr class='hidden day_data_day' data_key="day"><td class='bold-text'>Day:</td> <td class='data_container'></td></tr>
 		<tr class='hidden day_data_inverse_day' data_key="inverse_day"><td class='bold-text'>Inverse day:</td> <td class='data_container'></td></tr>
+		<tr class='hidden day_data_leap_day' data_key="leap_day"><td class='bold-text'>Leap day index:</td> <td class='data_container'></td></tr>
 		<tr class='hidden day_data_year_day' data_key="year_day"><td class='bold-text'>Year day:</td> <td class='data_container'></td></tr>
 		<tr class='hidden day_data_week_day' data_key="week_day"><td class='bold-text'>Week day:</td> <td class='data_container'></td></tr>
 		<tr class='hidden day_data_week_day_name' data_key="week_day_name"><td class='bold-text'>Week day name:</td> <td class='data_container'></td></tr>
