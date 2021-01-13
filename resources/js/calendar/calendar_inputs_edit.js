@@ -1091,7 +1091,6 @@ function set_up_edit_inputs(){
 			static_data.seasons.data[season_id].time.sunrise.hour = sunrise_h;
 			static_data.seasons.data[season_id].time.sunrise.minute = sunrise_m;
 
-
 			var prev_sunset = prev_season.time.sunset.hour+(prev_season.time.sunset.minute/static_data.clock.minutes);
 			var next_sunset = next_season.time.sunset.hour+(next_season.time.sunset.minute/static_data.clock.minutes);
 
@@ -1106,6 +1105,19 @@ function set_up_edit_inputs(){
 			static_data.seasons.data[season_id].time.sunset.hour = sunset_h;
 			static_data.seasons.data[season_id].time.sunset.minute = sunset_m;
 
+			for(let location_index in static_data.seasons.locations) {
+				let location = static_data.seasons.locations[location_index];
+				if(location.settings.season_based_time) {
+					location.seasons[season_id].time["sunrise"]["hour"] = sunrise_h;
+					location.seasons[season_id].time["sunrise"]["minute"] = sunrise_m;
+					location.seasons[season_id].time["sunset"]["hour"] = sunset_h;
+					location.seasons[season_id].time["sunset"]["minute"] = sunset_m;
+					location_list.children().eq(location_index).find(`input[clocktype="sunrise_hour"]`).val(sunrise_h);
+					location_list.children().eq(location_index).find(`input[clocktype="sunrise_minute"]`).val(sunrise_m);
+					location_list.children().eq(location_index).find(`input[clocktype="sunset_hour"]`).val(sunset_h);
+					location_list.children().eq(location_index).find(`input[clocktype="sunset_minute"]`).val(sunset_m);
+				}
+			}
 		}
 
 		do_error_check('seasons');
