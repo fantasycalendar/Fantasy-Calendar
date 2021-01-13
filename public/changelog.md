@@ -1,3 +1,11 @@
+### 2.0.13 - Squashing Efreet
+#### January 13, 2021
+* Tweaked - Added popup warn if more than 1 set of solstice events exist on event creation
+* Fixed - Interpolate season sunrise and sunset times should also apply that time to locked location times
+* Fixed - Duration-based season rounding, yet again
+* Fixed - Advanced day data dialog, also yet again
+* Fixed - Inverse month and year week number conditions
+
 ### 2.0.12 - Scrutinizing Efreet
 #### January 6, 2021
 * Fixed - Leap days and months being off by 1 year on negative years with year zero exists turned off
