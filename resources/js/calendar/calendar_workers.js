@@ -793,23 +793,25 @@ var calendar_builder = {
 					total_week_num++;
 				}
 
-				let highest_month_week_num = this.data.epochs[epoch-1].month_week_num;
+				let highest_month_week_num = this.data.epochs[epoch-1].month_week_num ?? 0;
 				let week_day_nums = {};
 
 				for(var j = epoch-1; j >= month_start_epoch; j--){
 
-					let current_month_week_num = this.data.epochs[j].month_week_num;
-					let inverse_month_week_num = (highest_month_week_num-current_month_week_num)+1;
-					this.data.epochs[j].inverse_month_week_num = inverse_month_week_num;
+					if(this.data.epochs[j].month_week_num) {
 
-					if(week_day_nums[this.data.epochs[j].week_day] === undefined){
-						week_day_nums[this.data.epochs[j].week_day] = 1;
-					}else{
-						week_day_nums[this.data.epochs[j].week_day]++;
+						let current_month_week_num = this.data.epochs[j].month_week_num;
+						let inverse_month_week_num = (highest_month_week_num-current_month_week_num)+1;
+						this.data.epochs[j].inverse_month_week_num = inverse_month_week_num;
+
+						if(week_day_nums[this.data.epochs[j].week_day] === undefined){
+							week_day_nums[this.data.epochs[j].week_day] = 1;
+						}else{
+							week_day_nums[this.data.epochs[j].week_day]++;
+						}
+		
+						this.data.epochs[j].inverse_week_day_num = week_day_nums[this.data.epochs[j].week_day];
 					}
-	
-					this.data.epochs[j].inverse_week_day_num = week_day_nums[this.data.epochs[j].week_day];
-
 				}
 			}
 			if(year_index != convert_year(this.static_data, this.dynamic_data.year)){
@@ -1071,22 +1073,26 @@ var calendar_builder = {
 					total_week_num++;
 				}
 
-				let highest_month_week_num = this.data.epochs[epoch-1].month_week_num;
+				let highest_month_week_num = this.data.epochs[epoch-1].month_week_num ?? 0;
 				let week_day_nums = {};
 
-				for(var j = epoch-1; j >= month_start_epoch; j--){
+				for(var j = epoch - 1; j >= month_start_epoch; j--) {
 
-					let current_month_week_num = this.data.epochs[j].month_week_num;
-					let inverse_month_week_num = (highest_month_week_num-current_month_week_num)+1;
-					this.data.epochs[j].inverse_month_week_num = inverse_month_week_num;
+					if(this.data.epochs[j].month_week_num) {
 
-					if(week_day_nums[this.data.epochs[j].week_day] === undefined){
-						week_day_nums[this.data.epochs[j].week_day] = 1;
-					}else{
-						week_day_nums[this.data.epochs[j].week_day]++;
+						let current_month_week_num = this.data.epochs[j].month_week_num;
+						let inverse_month_week_num = (highest_month_week_num-current_month_week_num)+1;
+						this.data.epochs[j].inverse_month_week_num = inverse_month_week_num;
+
+						if(week_day_nums[this.data.epochs[j].week_day] === undefined){
+							week_day_nums[this.data.epochs[j].week_day] = 1;
+						}else{
+							week_day_nums[this.data.epochs[j].week_day]++;
+						}
+
+						this.data.epochs[j].inverse_week_day_num = week_day_nums[this.data.epochs[j].week_day];
+
 					}
-
-					this.data.epochs[j].inverse_week_day_num = week_day_nums[this.data.epochs[j].week_day];
 
 				}
 
@@ -1648,22 +1654,26 @@ var calendar_builder = {
 					}
 				}
 
-				let highest_month_week_num = this.data.epochs[epoch-1].month_week_num;
+				let highest_month_week_num = this.data.epochs[epoch-1].month_week_num ?? 0;
 				let week_day_nums = {};
 
-				for(var j = epoch-1; j >= month_start_epoch; j--){
+				for(var j = epoch - 1; j >= month_start_epoch; j--) {
 
-					let current_month_week_num = this.data.epochs[j].month_week_num;
-					let inverse_month_week_num = (highest_month_week_num-current_month_week_num)+1;
-					this.data.epochs[j].inverse_month_week_num = inverse_month_week_num;
+					if(this.data.epochs[j].month_week_num) {
 
-					if(week_day_nums[this.data.epochs[j].week_day] === undefined){
-						week_day_nums[this.data.epochs[j].week_day] = 1;
-					}else{
-						week_day_nums[this.data.epochs[j].week_day]++;
+						let current_month_week_num = this.data.epochs[j].month_week_num;
+						let inverse_month_week_num = (highest_month_week_num-current_month_week_num)+1;
+						this.data.epochs[j].inverse_month_week_num = inverse_month_week_num;
+
+						if(week_day_nums[this.data.epochs[j].week_day] === undefined){
+							week_day_nums[this.data.epochs[j].week_day] = 1;
+						}else{
+							week_day_nums[this.data.epochs[j].week_day]++;
+						}
+		
+						this.data.epochs[j].inverse_week_day_num = week_day_nums[this.data.epochs[j].week_day];
+
 					}
-	
-					this.data.epochs[j].inverse_week_day_num = week_day_nums[this.data.epochs[j].week_day];
 
 				}
 
@@ -1960,22 +1970,26 @@ var calendar_builder = {
 				total_week_num++;
 			}
 
-			let highest_month_week_num = this.data.epochs[epoch-1].month_week_num;
+			let highest_month_week_num = this.data.epochs[epoch-1].month_week_num ?? 0;
 			let week_day_nums = {};
 
 			for(var j = epoch-1; j >= month_start_epoch; j--){
 
-				let current_month_week_num = this.data.epochs[j].month_week_num;
-				let inverse_month_week_num = (highest_month_week_num-current_month_week_num)+1;
-				this.data.epochs[j].inverse_month_week_num = inverse_month_week_num;
+				if(this.data.epochs[j].month_week_num){
 
-				if(week_day_nums[this.data.epochs[j].week_day] === undefined){
-					week_day_nums[this.data.epochs[j].week_day] = 1;
-				}else{
-					week_day_nums[this.data.epochs[j].week_day]++;
+					let current_month_week_num = this.data.epochs[j].month_week_num;
+					let inverse_month_week_num = (highest_month_week_num-current_month_week_num)+1;
+					this.data.epochs[j].inverse_month_week_num = inverse_month_week_num;
+
+					if(week_day_nums[this.data.epochs[j].week_day] === undefined){
+						week_day_nums[this.data.epochs[j].week_day] = 1;
+					}else{
+						week_day_nums[this.data.epochs[j].week_day]++;
+					}
+
+					this.data.epochs[j].inverse_week_day_num = week_day_nums[this.data.epochs[j].week_day];
+
 				}
-
-				this.data.epochs[j].inverse_week_day_num = week_day_nums[this.data.epochs[j].week_day];
 
 			}
 
@@ -2219,22 +2233,26 @@ var calendar_builder = {
 					}
 				}
 
-				let highest_month_week_num = this.data.epochs[epoch-1].month_week_num;
+				let highest_month_week_num = this.data.epochs[epoch-1].month_week_num ?? 0;
 				let week_day_nums = {};
 
-				for(var j = epoch-1; j >= month_start_epoch; j--){
+				for(var j = epoch - 1; j >= month_start_epoch; j--) {
 
-					let current_month_week_num = this.data.epochs[j].month_week_num;
-					let inverse_month_week_num = (highest_month_week_num-current_month_week_num)+1;
-					this.data.epochs[j].inverse_month_week_num = inverse_month_week_num;
+					if(this.data.epochs[j].month_week_num) {
 
-					if(week_day_nums[this.data.epochs[j].week_day] === undefined){
-						week_day_nums[this.data.epochs[j].week_day] = 1;
-					}else{
-						week_day_nums[this.data.epochs[j].week_day]++;
+						let current_month_week_num = this.data.epochs[j].month_week_num;
+						let inverse_month_week_num = (highest_month_week_num-current_month_week_num)+1;
+						this.data.epochs[j].inverse_month_week_num = inverse_month_week_num;
+
+						if(week_day_nums[this.data.epochs[j].week_day] === undefined){
+							week_day_nums[this.data.epochs[j].week_day] = 1;
+						}else{
+							week_day_nums[this.data.epochs[j].week_day]++;
+						}
+		
+						this.data.epochs[j].inverse_week_day_num = week_day_nums[this.data.epochs[j].week_day];
+
 					}
-	
-					this.data.epochs[j].inverse_week_day_num = week_day_nums[this.data.epochs[j].week_day];
 
 				}
 
