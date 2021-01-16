@@ -1,6 +1,7 @@
 ### 2.0.13 - Squashing Efreet
 #### January 13, 2021
 * Tweaked - Added popup warn if more than 1 set of solstice events exist on event creation
+* Fixed - Date-specific events sometimes landing on the wrong date
 * Fixed - Interpolate season sunrise and sunset times should also apply that time to locked location times
 * Fixed - Duration-based season rounding, yet again
 * Fixed - Advanced day data dialog, also yet again
