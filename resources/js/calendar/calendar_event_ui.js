@@ -1325,8 +1325,6 @@ var edit_event_ui = {
 						values.push(val);
 					});
 
-					values.push(evaluate_calendar_start(static_data, values[0], values[1], values[2]).epoch)
-
 				}else{
 
 					$(this).find('.input_container').children().each(function(){

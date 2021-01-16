@@ -2401,6 +2401,8 @@ var event_evaluator = {
 
 		if(Object.keys(epoch_list).length == 0) return false;
 
+		this.stored_epochs = {}
+
 		function evaluate_operator(operator, a, b, c){
 
 			switch(operator){
@@ -2441,6 +2443,16 @@ var event_evaluator = {
 			}
 		}
 
+		function find_stored_epoch(year, timespan, day) {
+			let date_string = `${convert_year(event_evaluator.static_data, year)}-${timespan}-${day}`;
+			let epoch = event_evaluator.stored_epochs[date_string];
+			if(epoch === undefined) {
+				epoch = evaluate_calendar_start(event_evaluator.static_data, convert_year(event_evaluator.static_data, year), timespan, day).epoch;
+				event_evaluator.stored_epochs[date_string] = epoch;
+			}
+			return epoch;
+		}
+
 		function evaluate_condition(epoch_data, array){
 
 			var category = array[0];
@@ -2465,11 +2477,7 @@ var event_evaluator = {
 				}else if(array[0] === "Date"){
 
 					var selected = epoch_data["epoch"];
-					if(values[3] === undefined){
-						values[3] = evaluate_calendar_start(this.static_data, values[0], values[1], values[2]).epoch
-					}
-
-					var cond_1 = values[3];
+					var cond_1 = find_stored_epoch(values[0], values[1], values[2]);
 
 				}else if(array[0] === "Moons"){
 
