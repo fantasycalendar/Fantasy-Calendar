@@ -231,8 +231,8 @@ var condition_mapping = {
 	],
 
 	"Random": [
-		["Random chance is above", 					[["season_perc", ">", 0, 1]],		[["number", "(0-100%)", "Random chance", "", "0", "100"], ["number", "Seed", "Seed", Math.abs(Math.random().toString().substr(7)|0), "0"]]],
-		["Random chance is below", 					[["season_perc", "<", 0, 1]],		[["number", "(0-100%)", "Random chance", "", "0", "100"], ["number", "Seed", "Seed", Math.abs(Math.random().toString().substr(7)|0), "0"]]],
+		["Random chance is above", 					[["season_perc", ">", 0, 1]],		[["number", "(0-100%)", "Random chance", "", "0", "100"], ["number", "Seed", "Seed", 0, "0"]]],
+		["Random chance is below", 					[["season_perc", "<", 0, 1]],		[["number", "(0-100%)", "Random chance", "", "0", "100"], ["number", "Seed", "Seed", 0, "0"]]],
 	],
 
 	"Events": [
