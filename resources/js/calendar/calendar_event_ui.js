@@ -1674,7 +1674,7 @@ var edit_event_ui = {
 				html.push(`<optgroup label='${ordinal_suffix_of(i+1)} cycle group' value='${i}'>`);
 				for(var j = 0; j < static_data.cycles.data[i].names.length; j++){
 					html.push(`<option value='${j}'>`);
-					html.push(static_data.cycles.data[i].names[j]);
+					html.push(`Cycle ${i+1}: ${static_data.cycles.data[i].names[j]}`);
 					html.push("</option>");
 				}
 				html.push("</optgroup>");
