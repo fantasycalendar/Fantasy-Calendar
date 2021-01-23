@@ -1,3 +1,7 @@
+### 2.0.14 - Time-traveling Efreet
+#### January 23, 2021
+* Fixed - Events landing on intercalary leap days that happen at the end of a month not appearing
+
 ### 2.0.13 - Squashing Efreet
 #### January 18, 2021
 * Tweaked - Added popup warn if more than 1 set of solstice events exist on event creation

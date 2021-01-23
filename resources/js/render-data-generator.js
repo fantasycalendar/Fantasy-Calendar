@@ -380,7 +380,7 @@ const render_data_generator = {
 
             if(Perms.player_at_least('co-owner') || !static_data.settings.only_reveal_today || (static_data.settings.only_reveal_today && epoch > dynamic_data.epoch)){
 
-                var filtered_leap_days_end = timespan.leap_days.filter(function(features){
+                var filtered_leap_days_end = timespan.leap_days.filter(function(features) {
                     return features.intercalary && features.day === timespan.length;
                 });
 
@@ -400,7 +400,10 @@ const render_data_generator = {
 
                     for(var leap_day_index in filtered_leap_days_end){
 
-                        timespan_data.days[timespan_data.days.length-1].push(this.get_day_data(epoch));
+                        let day_data = this.get_day_data(epoch);
+                        timespan_data.days[timespan_data.days.length - 1].push(day_data);
+                        render_data.event_epochs[epoch] = day_data;
+                        render_data.timespan_event_epochs[epoch] = timespan_data;
 
                         weekday_number++;
                         epoch++;
@@ -489,7 +492,7 @@ const render_data_generator = {
             };
         }
 
-        this.events_to_send = [];
+        this.events_to_send = {};
 
         if(static_data.settings.hide_events && !Perms.player_at_least('co-owner')){
             return {
