@@ -358,7 +358,6 @@ var calendar_builder = {
 
 		}
 
-
 		var pre_search = 0;
 		var post_search = 0;
 		
@@ -370,8 +369,6 @@ var calendar_builder = {
 			post_search = event.data.search_distance > post_search ? event.data.search_distance : post_search;
 		}
 
-
-		console.log(pre_search, post_search);
 		var days = 0;
 
 		var pre_year = adjusted_year;
