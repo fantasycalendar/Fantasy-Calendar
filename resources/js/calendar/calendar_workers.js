@@ -2632,7 +2632,7 @@ var event_evaluator = {
 
 				if(is_array){
 
-					var is_count = Number(condition[0]) != NaN;
+					var is_count = condition[0] !== "" && condition[0] !== "!" && !isNaN(Number(condition[0]));
 
 					if(is_count){
 
@@ -2676,7 +2676,7 @@ var event_evaluator = {
 
 				if(is_array){
 
-					var is_count = condition[0] !== "" && condition[0] !== "!" && Number(condition[0]) !== NaN;
+					var is_count = condition[0] !== "" && condition[0] !== "!" && !isNaN(Number(condition[0]));
 
 					if(is_count){
 
