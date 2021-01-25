@@ -120,10 +120,12 @@ const render_data_generator = {
 			}
 		}
 
-		let text = ""
+        let text = ""
+        let leap_day = undefined;
 		if(epoch_data.leap_day !== undefined){
 			let index = epoch_data.leap_day;
-			text = static_data.year_data.leap_days[index].name;
+            leap_day = static_data.year_data.leap_days[index];
+            text = leap_day.name;
 		}
 
 		let season_color = epoch_data.season ? (epoch_data.season.color !== undefined ? epoch_data.season.color : false) : false;
@@ -137,7 +139,7 @@ const render_data_generator = {
         let year_day = static_data.settings.add_year_day_number ? epoch_data.year_day : false;
 
 		return {
-			"number": epoch_data.day,
+            "number": leap_day && leap_day.not_numbered ? "" : epoch_data.day - this.day_offset,
 			"text": text,
             "type": "day",
             "weekday": epoch_data.week_day_name,
@@ -183,6 +185,7 @@ const render_data_generator = {
         let timespans_to_build = this.processed_data.timespans_to_build;
         let year_data = this.processed_data.year_data;
         this.epoch_data = this.processed_data.epoch_data;
+        this.day_offset = 0;
 
         let render_data = {
             "current_epoch": dynamic_data.epoch,
@@ -222,6 +225,8 @@ const render_data_generator = {
                 let weekday_number = 1;
 
                 for(var leap_day_index in filtered_leap_days_beforestart){
+
+                    if(filtered_leap_days_beforestart[leap_day_index].not_numbered) this.day_offset++;
 
                     let day_data = this.get_day_data(epoch);
                     timespan_data.days[timespan_data.days.length-1].push(day_data);
@@ -310,7 +315,9 @@ const render_data_generator = {
 
                             let internal_weekday_number = 1;
 
-                            for(var leap_day_index in filtered_leap_days){
+                            for(var leap_day_index in filtered_leap_days) {
+
+                                if(filtered_leap_days[leap_day_index].not_numbered) this.day_offset++;
 
                                 let day_data = this.get_day_data(epoch);
                                 timespan_data.days[timespan_data.days.length-1].push(day_data);
@@ -398,7 +405,9 @@ const render_data_generator = {
                     
                     let weekday_number = 1;
 
-                    for(var leap_day_index in filtered_leap_days_end){
+                    for(var leap_day_index in filtered_leap_days_end) {
+
+                        if(filtered_leap_days_end[leap_day_index].not_numbered) this.day_offset++;
 
                         let day_data = this.get_day_data(epoch);
                         timespan_data.days[timespan_data.days.length - 1].push(day_data);

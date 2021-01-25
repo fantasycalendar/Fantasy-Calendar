@@ -160,6 +160,10 @@ select.invalid {
     background-color: $gray-secondary;
 }
 
+.sortable-container.intercalary .border{
+    border-color: lightgray !important;
+}
+
 .sortable-container.moon_inputs{
     border-radius: 4px;
 }

@@ -1132,7 +1132,7 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object, no
 	for(var i = 1; i <= timespan.length; i++){
 		var appears = does_day_appear(static_data, year, timespan_index, i);
 		if(appears.result || special){
-			days.push("");
+			days.push({ normal_day: true });
 		}
 	}
 
@@ -1173,9 +1173,10 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object, no
 
 					if(leaping){
 
-						days.splice(leap_day.day+offset, 0, `${leap_day.name}`);
+						days.splice(leap_day.day + offset, 0, { normal_day: false, text: `${leap_day.name}`, not_numbered: leap_day.not_numbered });
 						day++;
 						offset++;
+
 					}
 
 				}
@@ -1190,7 +1191,7 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object, no
 
 					if(leaping){
 
-						days.push("");
+						days.push({ normal_day: true });
 						day++;
 
 					}
