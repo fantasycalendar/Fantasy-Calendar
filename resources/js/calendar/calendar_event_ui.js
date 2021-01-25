@@ -1465,6 +1465,10 @@ var edit_event_ui = {
 
 					condition.find('.input_container').find(`optgroup[value=${element[2][0]}]`).find(`option[value=${element[2][1]}]`).prop('selected', true);
 
+				}else if(element[0] == "Date"){
+					condition.find('.input_container').children().first().children().each(function(i){
+						$(this).val(element[2][i]);
+					})
 				}else{
 					condition.find('.input_container').children().each(function(i){
 						$(this).val(element[2][i]);
