@@ -61,6 +61,18 @@ function is_past_current_date(dynamic_data, year, timespan, day){
 
 }
 
+function get_colors_for_season(season_name) {
+	let index = ['spring', 'summer', 'autumn', 'winter', 'fall'].indexOf(season_name.toLowerCase());
+	if(index != -1) {
+		if(index == 0) return "#1ee313";
+		else if(index == 1) return "#e74d0e";
+		else if(index == 2 || index == 4) return "#eabf14";
+		else if(index == 3) return "#0bcfe9";
+	} else {
+		return "#" + Math.floor(Math.random() * 16777215).toString(16);
+	}
+}
+
 function fahrenheit_to_celcius(temp){
 
 	return precisionRound((temp-32)*(5/9), 4);

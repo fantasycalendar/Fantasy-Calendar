@@ -1806,7 +1806,7 @@ function set_up_edit_inputs(){
 		}else{
 			var text = 'Year {{year}} - {{era_name}}';
 		}
-		parent.find('.era_formatting').prop('disabled', !$(this).is(':checked')).val(text).change();
+		parent.find('.era_formatting').prop('disabled', !$(this).is(':checke4d')).val(text).change();
 
 	});
 
@@ -1858,9 +1858,7 @@ function set_up_edit_inputs(){
 
 	$(document).on('click', '.preview_era_date', function(){
 		let era_id = $(this).closest('.sortable-container').attr('index')|0;
-		console.log(era_id)
 		let era = static_data.eras[era_id];
-		console.log(era)
 		set_preview_date(era.date.year, era.date.timespan, era.date.day, era.date.epoch)
 	});
 
@@ -1876,15 +1874,39 @@ function set_up_edit_inputs(){
 	$(document).on('change', '#season_color_enabled', function(){
 
 		var checked = $(this).is(":checked");
+
+		let colors = []
+		for(let index = 0; index < static_data.seasons.data.length; index++){
+			colors.push([])
+			if(index == 0) {
+				colors[index][0] = get_colors_for_season(static_data.seasons.data[index].name);
+				colors[index][1] = get_colors_for_season(static_data.seasons.data[index+1].name);
+			}else if(index == static_data.seasons.data.length-1){
+				colors[index][0] = colors[index-1][1];
+				colors[index][1] = colors[0][0];
+			}else{
+				colors[index][0] = colors[index-1][1]
+				colors[index][1] = get_colors_for_season(static_data.seasons.data[index+1].name);
+			}
+		}
+
+		console.log(colors);
+
 		season_sortable.children().each(function(i){
+
+			if(checked){
+
+				static_data.seasons.data[i].color = colors[i];
+
+				$(this).find('.season_color_enabled').find('.start_color').spectrum("set", static_data.seasons.data[i].color[0]);
+				$(this).find('.season_color_enabled').find('.end_color').spectrum("set", static_data.seasons.data[i].color[1]);
+
+			}else{
+				delete static_data.seasons.data[i].color;
+			}
+
 			$(this).find('.season_color_enabled').toggleClass("hidden", !checked);
 			$(this).find('.season_color_enabled input').prop("disabled", !checked);
-			if(static_data.seasons.data[i].color === undefined || static_data.seasons.data[i].color.length == 0){
-				static_data.seasons.data[i].color =  [
-					"#"+Math.floor(Math.random()*16777215).toString(16),
-					"#"+Math.floor(Math.random()*16777215).toString(16)
-				];
-			}
 		});
 
 		do_error_check();
@@ -2607,199 +2629,205 @@ function set_up_edit_inputs(){
 
 	input_container.change(function(e){
 
-		if(block_inputs) return;
-
-		if(e.originalEvent){
-			var target = $(e.originalEvent.target);
-		}else{
-			var target = $(e.target);
-		}
-
-		if(target.hasClass('invalid')){
-			return;
-		}
-
-		if(target.attr('class') !== undefined && target.attr('class').indexOf('dynamic_input') > -1){
-
-			var data = target.attr('data');
-			var type = data.split('.');
-
-			if(target.hasClass('category_dynamic_input')){
-				var current_calendar_data = event_categories[type[0]];
-			}else{
-				var current_calendar_data = static_data[type[0]];
-			}
-
-			for(var i = 1; i < type.length-1; i++){
-				current_calendar_data = current_calendar_data[type[i]];
-			}
-
-			var key = target.attr('fc-index');
-
-			if(type.includes('cycles') && type.includes('names')){
-
-				current_calendar_data[type[type.length-1]] = [];
-
-				target.closest('.cycle_list').children().each(function(i){
-					current_calendar_data[type[type.length-1]][i] = $(this).val();
-				});
-
-			}else{
-
-				var set = true;
-
-				if(!target.is(':disabled')){
-
-					switch(target.attr('type')){
-						case "number":
-							if(target.attr('step') === "any"){
-								var value = parseFloat(target.val());
-								var min = undefined;
-								var max = undefined;
-								if(target.attr('min')){
-									var min = parseFloat(target.attr('min'));
-								}
-								if(target.attr('max')){
-									var max = parseFloat(target.attr('max'));
-								}
-							}else{
-								var value = parseInt(target.val().split('.')[0]);
-								var min = undefined;
-								var max = undefined;
-								if(target.attr('min')){
-									var min = parseInt(target.attr('min'));
-								}
-								if(target.attr('max')){
-									var max = parseInt(target.attr('max'));
-								}
-							}
-							if(value < min || value > max){
-								if(target.data('prev')){
-									target.val(target.data('prev'));
-									return;
-								}else{
-									set = false;
-								}
-							}
-							target.val(value);
-							break;
-
-						case "checkbox":
-							var value = target.is(":checked");
-							break;
-
-						case "color":
-							var value = target.spectrum("get").toString();
-							break;
-
-						default:
-							var value = target.val();
-							break;
-					}
-
-					if(target.attr('class').indexOf('slider_input') > -1){
-						value = value/100;
-					}
-
-					if(type.length > 1){
-						current_calendar_data = current_calendar_data[type[type.length-1]];
-					}
-
-					if(set) current_calendar_data[key] = value;
-
-				}
-			}
-
-			if(target.hasClass('category_dynamic_input')){
-				var key = type[0];
-				for(var eventkey in events){
-					if(events[eventkey].event_category_id == event_categories[key].id){
-						events[eventkey].settings.hide_full = event_categories[key].event_settings.hide_full;
-						events[eventkey].settings.print = event_categories[key].event_settings.print;
-						events[eventkey].settings.hide = event_categories[key].event_settings.hide;
-						events[eventkey].settings.color = event_categories[key].event_settings.color;
-						events[eventkey].settings.text = event_categories[key].event_settings.text;
-					}
-				}
-				repopulate_event_category_lists();
-			}
-
-			var refresh = target.attr('refresh') === "true" || refresh === undefined;
-
-			if(type[0] === "seasons" && key == "name"){
-				location_list.children().each(function(i){
-					$(this).find('.location_season').each(function(j){
-						$(this).prop('key', j);
-						$(this).children().first().prop('id', `collapsible_seasons_${i}_${j}`);
-						$(this).children().first().next().prop('for', `collapsible_seasons_${i}_${j}`).text(`Season name: ${static_data.seasons.data[j].name}`);
-					});
-				});
-				repopulate_location_select_list();
-			}
-
-			do_error_check(type[0], refresh);
-
-		}else if(target.attr('class') !== undefined && target.attr('class').indexOf('static_input') > -1){
-
-
-			var type = target.attr('data').split('.');
-
-			var current_calendar_data = static_data;
-
-			for(var i = 0; i < type.length; i++){
-				current_calendar_data = current_calendar_data[type[i]];
-			}
-
-			var key = target.attr('fc-index');
-			var key2 = false;
-
-			switch(target.attr('type')){
-				case "number":
-					var value = parseFloat(target.val());
-					break;
-
-				case "checkbox":
-					var value = target.is(":checked");
-					break;
-
-				case "color":
-					var value = target.spectrum("get").toString();
-					break;
-
-				default:
-					value = escapeHtml(target.val());
-					break;
-			}
-
-			current_calendar_data[key] = value;
-
-			var refresh = target.attr('refresh');
-			refresh = refresh === "true" || refresh === undefined;
-
-			if(type.includes('clock')){
-				evaluate_clock_inputs();
-			}
-
-			if(key == "year_zero_exists"){
-				refresh_interval_texts();
-				set_up_view_values();
-				set_up_visitor_values();
-				dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
-				preview_date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, preview_date.year), preview_date.timespan, preview_date.day).epoch;
-			}
-
-			if(target.attr('refresh') == "clock"){
-				eval_clock();
-				evaluate_save_button();
-			}
-
-			evaluate_settings();
-
-			do_error_check(type[0], refresh);
-
-		}
+		update_data(e);
 
 	});
+}
+
+function update_data(e){
+
+	if(block_inputs) return;
+
+	if(e.originalEvent) {
+		var target = $(e.originalEvent.target);
+	} else {
+		var target = $(e.target);
+	}
+
+	if(target.hasClass('invalid')) {
+		return;
+	}
+
+	if(target.attr('class') !== undefined && target.attr('class').indexOf('dynamic_input') > -1) {
+
+		var data = target.attr('data');
+		var type = data.split('.');
+
+		if(target.hasClass('category_dynamic_input')) {
+			var current_calendar_data = event_categories[type[0]];
+		} else {
+			var current_calendar_data = static_data[type[0]];
+		}
+
+		for(var i = 1; i < type.length - 1; i++) {
+			current_calendar_data = current_calendar_data[type[i]];
+		}
+
+		var key = target.attr('fc-index');
+
+		if(type.includes('cycles') && type.includes('names')) {
+
+			current_calendar_data[type[type.length - 1]] = [];
+
+			target.closest('.cycle_list').children().each(function(i) {
+				current_calendar_data[type[type.length - 1]][i] = $(this).val();
+			});
+
+		} else {
+
+			var set = true;
+
+			if(!target.is(':disabled')) {
+
+				switch(target.attr('type')) {
+					case "number":
+						if(target.attr('step') === "any") {
+							var value = parseFloat(target.val());
+							var min = undefined;
+							var max = undefined;
+							if(target.attr('min')) {
+								var min = parseFloat(target.attr('min'));
+							}
+							if(target.attr('max')) {
+								var max = parseFloat(target.attr('max'));
+							}
+						} else {
+							var value = parseInt(target.val().split('.')[0]);
+							var min = undefined;
+							var max = undefined;
+							if(target.attr('min')) {
+								var min = parseInt(target.attr('min'));
+							}
+							if(target.attr('max')) {
+								var max = parseInt(target.attr('max'));
+							}
+						}
+						if(value < min || value > max) {
+							if(target.data('prev')) {
+								target.val(target.data('prev'));
+								return;
+							} else {
+								set = false;
+							}
+						}
+						target.val(value);
+						break;
+
+					case "checkbox":
+						var value = target.is(":checked");
+						break;
+
+					case "color":
+						var value = target.spectrum("get").toString();
+						break;
+
+					default:
+						var value = target.val();
+						break;
+				}
+
+				if(target.attr('class').indexOf('slider_input') > -1) {
+					value = value / 100;
+				}
+
+				if(type.length > 1) {
+					current_calendar_data = current_calendar_data[type[type.length - 1]];
+				}
+
+				if(set) current_calendar_data[key] = value;
+
+			}
+		}
+
+		if(target.hasClass('category_dynamic_input')) {
+			var key = type[0];
+			for(var eventkey in events) {
+				if(events[eventkey].event_category_id == event_categories[key].id) {
+					events[eventkey].settings.hide_full = event_categories[key].event_settings.hide_full;
+					events[eventkey].settings.print = event_categories[key].event_settings.print;
+					events[eventkey].settings.hide = event_categories[key].event_settings.hide;
+					events[eventkey].settings.color = event_categories[key].event_settings.color;
+					events[eventkey].settings.text = event_categories[key].event_settings.text;
+				}
+			}
+			repopulate_event_category_lists();
+		}
+
+		var refresh = target.attr('refresh') === "true" || refresh === undefined;
+
+		if(type[0] === "seasons" && key == "name") {
+			location_list.children().each(function(i) {
+				$(this).find('.location_season').each(function(j) {
+					$(this).prop('key', j);
+					$(this).children().first().prop('id', `collapsible_seasons_${i}_${j}`);
+					$(this).children().first().next().prop('for', `collapsible_seasons_${i}_${j}`).text(`Season name: ${static_data.seasons.data[j].name}`);
+				});
+			});
+			repopulate_location_select_list();
+		}
+
+		do_error_check(type[0], refresh);
+
+	} else if(target.attr('class') !== undefined && target.attr('class').indexOf('static_input') > -1) {
+
+
+		var type = target.attr('data').split('.');
+
+		var current_calendar_data = static_data;
+
+		for(var i = 0; i < type.length; i++) {
+			current_calendar_data = current_calendar_data[type[i]];
+		}
+
+		var key = target.attr('fc-index');
+		var key2 = false;
+
+		switch(target.attr('type')) {
+			case "number":
+				var value = parseFloat(target.val());
+				break;
+
+			case "checkbox":
+				var value = target.is(":checked");
+				break;
+
+			case "color":
+				var value = target.spectrum("get").toString();
+				break;
+
+			default:
+				value = escapeHtml(target.val());
+				break;
+		}
+
+		current_calendar_data[key] = value;
+
+		var refresh = target.attr('refresh');
+		refresh = refresh === "true" || refresh === undefined;
+
+		if(type.includes('clock')) {
+			evaluate_clock_inputs();
+		}
+
+		if(key == "year_zero_exists") {
+			refresh_interval_texts();
+			set_up_view_values();
+			set_up_visitor_values();
+			dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+			preview_date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, preview_date.year), preview_date.timespan, preview_date.day).epoch;
+		}
+
+		if(target.attr('refresh') == "clock") {
+			eval_clock();
+			evaluate_save_button();
+		}
+
+		evaluate_settings();
+
+		do_error_check(type[0], refresh);
+
+	}
+
 }
 
 function add_weekday_to_sortable(parent, key, name){

@@ -1,6 +1,7 @@
 ### 2.0.14 - Time-traveling Efreet
 #### January 23, 2021
 * Tweaked - Cycle condition dropdown now includes which cycle family the condition is point to
+* Tweaked - Enable season day color will now generate a new set of colors and sequence them properly
 * Fixed - Events landing on intercalary leap days that happen at the end of a month not appearing
 * Fixed - Nesting normal event groups inside of number event groups caused events to appear when they shouldn't
 
