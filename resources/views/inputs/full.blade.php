@@ -1059,6 +1059,13 @@
 					</div>
 				</div>
 
+                <button type="button" class="btn btn-secondary col-12 mb-2" x-data @click="$dispatch('open-events-manager'); $nextTick(() => {
+                                                                                                                                setTimeout(() => {
+                                                                                                                                    document.querySelector('.event_manager_search').focus();
+                                                                                                                                }); // has a default time value of 0
+                                                                                                                            });
+                ">Manage Events</button>
+
 				<div class='sortable list-group' id='events_sortable'></div>
 			</div>
 		</div>
