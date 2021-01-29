@@ -1,4 +1,4 @@
-version: '3'
+version: '2'
 
 services:
   fantasydb:
@@ -72,6 +72,7 @@ services:
   fantasy-calendar-npm-install:
     image: node
     user: "1000:1000"
+    mem_limit: 1024m
     ports:
       - "9980:9980"
       - "9988:3001"
@@ -82,6 +83,7 @@ services:
     environment:
       - "BROWSERSYNC=true"
       - "MIXVERSION=true"
+      - "NODE_OPTIONS=--max-old-space-size=4096"
 
 volumes:
   fantasy-calendar-db:
