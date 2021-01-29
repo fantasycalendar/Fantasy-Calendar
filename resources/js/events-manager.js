@@ -58,11 +58,9 @@ const events_manager = {
         }
 
         return window.events.filter((item) => {
-            return (item.event_category_id !== -1
-                ||
-                item.event_category_id !== null)
+            return item.event_category_id < 1
                 &&
-                item.name
+                (item.name
                     .toLowerCase()
                     .includes(this.search.toLowerCase())
                 ||
@@ -72,7 +70,7 @@ const events_manager = {
                 ||
                 item.author && item.author
                     .toLowerCase()
-                    .includes(this.search.toLowerCase());
+                    .includes(this.search.toLowerCase()));
         });
     },
 
