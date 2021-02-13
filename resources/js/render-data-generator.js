@@ -125,7 +125,9 @@ const render_data_generator = {
 		if(epoch_data.leap_day !== undefined){
 			let index = epoch_data.leap_day;
             leap_day = static_data.year_data.leap_days[index];
-            text = leap_day.name;
+            if(leap_day.show_text){
+                text = leap_day.name;
+            }
 		}
 
 		let season_color = epoch_data.season ? (epoch_data.season.color !== undefined ? epoch_data.season.color : false) : false;

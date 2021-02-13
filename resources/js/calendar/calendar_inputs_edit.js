@@ -3022,6 +3022,16 @@ function add_leap_day_to_list(parent, key, data){
 						element.push("</label>");
 					element.push("</div>");
 				element.push("</div>");
+				element.push("</div>");
+
+				element.push(`<div class='row no-gutters my-1 ${data.intercalary ? "" : "hidden"}'>`);
+					element.push(`<div class='form-check col-12 py-2 border rounded protip' data-pt-position="right" data-pt-title="This setting toggles whether this intercalary leap day should show its name in the calendar.">`);
+						element.push(`<input type='checkbox' id='${key}_show_text' class='form-check-input dynamic_input' data='year_data.leap_days.${key}' fc-index='show_text' ${(data.intercalary ? "" : "disabled")} ${(data.show_text ? "checked" : "")}/>`);
+						element.push(`<label for='${key}_show_text' class='form-check-label ml-1'>`);
+							element.push("Show leap day text");
+						element.push("</label>");
+					element.push("</div>");
+				element.push("</div>");
 
 				element.push(`<div class='row no-gutters my-1 ${!data.intercalary ? "" : "hidden"}'>`);
 					element.push("<div class='form-check col-12 py-2 border rounded'>");

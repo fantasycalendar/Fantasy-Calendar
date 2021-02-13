@@ -158,11 +158,21 @@
     margin:0 0 0.2rem 0;
 
     .number{
+        min-height:1.5rem;
         margin-left:5px;
     }
 
     .year_day{
         font-size:0.75rem;
+        margin-left:5px;
+    }
+
+    &.text{
+        display:inline;
+        text-align:center;
+        border-bottom:1px solid $calendar-border-color;
+        padding:0 5px;
+        font-size:0.8rem;
     }
 }
 
