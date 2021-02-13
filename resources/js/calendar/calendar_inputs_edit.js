@@ -1311,6 +1311,7 @@ function set_up_edit_inputs(){
 
 
 	$('.add_inputs.events .add').click(function(){
+
 		var name = $('#event_name_input');
 
 		var name_val = name.val();
@@ -1325,7 +1326,7 @@ function set_up_edit_inputs(){
 			}
 		}
 
-		edit_event_ui.create_new_event(name_val, epoch);
+		window.dispatchEvent(new CustomEvent('event-editor-modal-new-event', { detail: { name: name_val, epoch: epoch } }));
 
 		name.val('');
 

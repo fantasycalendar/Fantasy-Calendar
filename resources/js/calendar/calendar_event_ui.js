@@ -207,41 +207,6 @@ var edit_event_ui = {
 			edit_event_ui.add_preset_conditions(preset, repeats);
 		});
 
-		$(document).on('change', '.event-text-input', function(){
-
-			if($(this).closest('.sortable-container').length){
-				var parent = $(this).closest('.sortable-container');
-			}else{
-				var parent = $(this).closest('#event-form');
-				edit_event_ui.inputs_changed = true;
-			}
-
-			var value_input = this;
-
-			var output = parent.find('.event-text-output');
-			var input = parent.find('.event-text-input');
-
-			output.each(function(){
-
-				var classes = $(this).attr('class').split(' ');
-
-				if(classes.indexOf("hidden_event") > -1){
-					classes.length = 4;
-				}else{
-					classes.length = 3;
-				}
-
-				classes.push($(value_input).val());
-				classes.push(input.not(value_input).val());
-
-				classes = classes.join(' ');
-
-				$(this).prop('class', classes);
-
-			})
-
-		});
-
 		this.event_conditions_container.nestedSortable({
 			handle: ".handle",
 			containerSelector: ".group_list_root, .group_list",

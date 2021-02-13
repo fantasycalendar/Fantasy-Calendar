@@ -37,24 +37,32 @@
 	</div>
 </div>
 
-<div id="event_edit_background" class='clickable_background hidden'>
-	<div class='modal-basic-container'>
+<div
+    x-data="CalendarEventEditor"
+    class='clickable_background'
+    id='event_editor'
+    @event-editor-modal-new-event.window="new_event"
+    @event-editor-modal-edit-event.window="edit_event"
+    x-show='open'
+>
+
+    <div class='modal-basic-container'>
 		<div class='modal-basic-wrapper'>
 			<form id="event-form" class="modal-wrapper container" action="post">
 
 				<div class='close-ui-btn-bg'></div>
-				<i class="close_ui_btn fas fa-times-circle"></i>
+				<i class="close_ui_btn fas fa-times-circle" @click='close'></i>
 
 				<div class='row no-gutters mb-1 modal-form-heading'>
 					<h2 class='event_action_type'><span>Editing Event</span> <i class="fas fa-eye view_event_btn"></i></h2>
 				</div>
 
 				<div class='row no-gutters my-1'>
-					<input type='text' class='form-control event_name' name='event_name' placeholder='Event name' autofocus='' />
+					<input type='text' class='form-control' x-model='event.name' placeholder='Event name' autofocus='' />
 				</div>
 
 				<div class='row no-gutters my-1'>
-					<textarea class='form-control event_desc editable' name='event_desc' placeholder='Event description' autofocus=''></textarea>
+					<textarea class='form-control event_desc editable' x-ref='description' x-model='event.description' placeholder='Event description' autofocus=''></textarea>
 				</div>
 
                 @if(!isset($calendar) || (Auth::user() != Null && Auth::user()->can('advance-date', $calendar)))
@@ -168,14 +176,14 @@
                         <div class='row no-gutters'>
                             <div class='col-md-6 pl-0 pr-1'>
                                 <label class='form-control checkbox'>
-                                    <input type='checkbox' class='event_setting' id='limited_repeat' name='limited_repeat'> Limit repetitions
+                                    <input type='checkbox' class='event_setting' x-model='event.data.limited_repeat'> Limit repetitions
                                 </label>
                             </div>
                             <div class='col-md-6 pl-1 pr-0 form-control'>
                                 <label class='row no-gutters'>
                                     <div class='col-auto pl-4 pr-1'>Limit for</div>
                                     <div class='col-4'>
-                                        <input type='number' min='1' value='1' class='form-control form-control-sm' id='limited_repeat_num' name='limited_repeat_num' disabled>
+                                        <input type='number' min='1' value='1' class='form-control form-control-sm' x-model='event.data.limited_repeat_num' :disabled='!event.data.limited_repeat'>
                                     </div>
                                     <div class='col-auto pl-1 pr-0'>days.</div>
                                 </label>
@@ -189,7 +197,7 @@
                         <div class='row no-gutters'>
                             <div class='col-md-6 pl-0 pr-1'>
                                 <label class='form-control checkbox'>
-                                    <input type='checkbox' class='event_setting' id='has_duration' name='has_duration'> Has duration
+                                    <input type='checkbox' class='event_setting' x-model='event.data.has_duration'> Has duration
                                 </label>
                             </div>
 
@@ -197,7 +205,7 @@
                                 <label class='row no-gutters'>
                                     <div class='col-auto pl-4 pr-1'>Lasts for</div>
                                     <div class='col-4'>
-                                        <input type='number' min='1' value='1' class='form-control form-control-sm' id='duration' name='duration' disabled>
+                                        <input type='number' min='1' value='1' class='form-control form-control-sm' x-model='event.data.duration' :disabled='!event.data.has_duration'>
                                     </div>
                                     <div class='col-auto pl-1 pr-0'>days.</div>
                                 </label>
@@ -211,7 +219,7 @@
                         <div class='row no-gutters mb-2'>
                             <div class='col-12 pl-0 pr-1'>
                                 <label class='form-control checkbox'>
-                                    <input type='checkbox' class='event_setting' id='show_first_last' name='show_first_last'> Show only first and last event
+                                    <input type='checkbox' class='event_setting' x-model='event.data.show_first_last'> Show only first and last event
                                 </label>
                             </div>
                         </div>
@@ -227,7 +235,7 @@
                                 <h5 class='modal-form-heading'>Event Category:</h5>
                             </div>
                             <div class='col pl-0 pl-1'>
-                                <select class="form-control event-category-list" id="event_categories" name='event_categories' placeholder='Event Category'>
+                                <select class="form-control event-category-list" x-model='event.event_category_id' @change="event_category_changed" placeholder='Event Category'>
 
                                 </select>
                             </div>
@@ -238,7 +246,7 @@
                         <div class='row no-gutters'>
                             <div class='col'>
                                 <label class='form-control checkbox'>
-                                    <input type='checkbox' class='event_setting' id='event_hide_full' name='event_hide_full'> Hide ENTIRELY (useful for event-based-events)
+                                    <input type='checkbox' class='event_setting' x-model='event.settings.hide_full'> Hide ENTIRELY (useful for event-based-events)
                                 </label>
                             </div>
                         </div>
@@ -247,7 +255,7 @@
                     <div class='row no-gutters'>
                         <div class='col'>
                             <label class='form-control checkbox'>
-                                <input type='checkbox' class='event_setting' id='event_hide_players' name='event_hide_players'> Hide event 
+                                <input type='checkbox' class='event_setting' x-model='event.settings.hide'> Hide event 
                                 @if(!isset($calendar) || (Auth::user() != Null && !Auth::user()->can('update', $calendar)))
                                     (still visible for owner and co-owners)
                                 @endif
@@ -259,7 +267,7 @@
                         <div class='row no-gutters'>
                             <div class='col'>
                                 <label class='form-control checkbox'>
-                                    <input type='checkbox' class='event_setting' id='event_print_checkbox' name='event_print_checkbox'> Show when printing
+                                    <input type='checkbox' class='event_setting' x-model='event.settings.print'> Show when printing
                                 </label>
                             </div>
                         </div>
@@ -268,7 +276,7 @@
                     <div class='row no-gutters'>
                         <div class='col pr-1'>
                             <h5 class='modal-form-heading'>Color:</h5>
-                            <select id="color_style" name='color_style' class='form-control event-text-input color_display' key='color_display'>
+                            <select x-model='event.settings.color' class='form-control'>
                                 <option>Dark-Solid</option>
                                 <option>Red</option>
                                 <option>Pink</option>
@@ -289,7 +297,7 @@
 
                         <div class='col pl-1'>
                             <h5 class='modal-form-heading'>Display:</h5>
-                            <select id="text_style" name='text_style' class='form-control event-text-input text_display'>
+                            <select x-model='event.settings.text' class='form-control'>
                                 <option value="text">Just text</option>
                                 <option value="dot">• Dot with text</option>
                                 <option value="background">Background</option>
@@ -302,10 +310,10 @@
                     </div>
                     <div class='row no-gutters mt-0'>
                         <div class='col-4'>
-                            <div class='event-text-output event'>Event (visible)</div>
+                            <div class='event-text-output event' :class='event.settings.color + " " + event.settings.text'>Event (visible)</div>
                         </div>
                         <div class='col-4 px-1'>
-                            <div class='event-text-output hidden_event event'>Event (hidden)</div>
+                            <div class='event-text-output hidden_event event' :class='event.settings.color + " " + event.settings.text'>Event (hidden)</div>
                         </div>
                     </div>
 
@@ -321,7 +329,7 @@
                 </div>
 
 				<div class='row no-gutters my-1'>
-					<div class='btn btn-lg btn-primary btn-block' id='btn_event_save'>Save</div>
+					<div class='btn btn-lg btn-primary btn-block' @click="save_event">Save</div>
 				</div>
 				<div class='row no-gutters my-1'>
 					<div class='btn btn-sm btn-danger btn-block' id='btn_event_delete'>Delete</div>
