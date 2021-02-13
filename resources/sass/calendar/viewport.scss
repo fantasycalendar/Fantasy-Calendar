@@ -394,7 +394,6 @@
     }
 
     .number{
-        border-right:1px solid lightgrey;
         padding-right:5px;
     }
 
@@ -405,6 +404,7 @@
     .week_day_name{
         padding-left:5px;
         text-align: left;
+        border-left:1px solid lightgrey;
     }
 
     .event_container{
@@ -481,6 +481,7 @@
     }
 
     .week_day_name {
+        border-top: 1px solid $calendar-border-color;
         border-bottom: 2px solid $calendar-border-color;
     }
 

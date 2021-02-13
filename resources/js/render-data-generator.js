@@ -118,7 +118,9 @@ const render_data_generator = {
                 "moons": [],
                 "has_events": false
 			}
-		}
+        }
+
+        let number = leap_day && leap_day.not_numbered ? "" : epoch_data.day - this.day_offset;
 
         let text = ""
         let leap_day = undefined;
@@ -127,6 +129,9 @@ const render_data_generator = {
             leap_day = static_data.year_data.leap_days[index];
             if(leap_day.show_text){
                 text = leap_day.name;
+                if(static_data.settings.layout == "minimalistic"){
+                    number = "x";
+                }
             }
 		}
 
@@ -141,7 +146,7 @@ const render_data_generator = {
         let year_day = static_data.settings.add_year_day_number ? epoch_data.year_day : false;
 
 		return {
-            "number": leap_day && leap_day.not_numbered ? "" : epoch_data.day - this.day_offset,
+            "number": number,
 			"text": text,
             "type": "day",
             "weekday": epoch_data.week_day_name,
@@ -246,8 +251,10 @@ const render_data_generator = {
                     }
                 }
 
-                for(weekday_number; weekday_number <= static_data.year_data.global_week.length; weekday_number++){
-                    timespan_data.days[timespan_data.days.length-1].push(this.overflow());
+                if(render_data.render_style != "vertical") {
+                    for(weekday_number; weekday_number <= static_data.year_data.global_week.length; weekday_number++){
+                        timespan_data.days[timespan_data.days.length-1].push(this.overflow());
+                    }
                 }
 
                 render_data.timespans.push(timespan_data);
@@ -337,8 +344,10 @@ const render_data_generator = {
                                 }
                             }
 
-                            for(internal_weekday_number; internal_weekday_number <= static_data.year_data.global_week.length; internal_weekday_number++){
-                                timespan_data.days[timespan_data.days.length-1].push(this.overflow());
+                            if(render_data.render_style != "vertical") {
+                                for(internal_weekday_number; internal_weekday_number <= static_data.year_data.global_week.length; internal_weekday_number++){
+                                    timespan_data.days[timespan_data.days.length-1].push(this.overflow());
+                                }
                             }
 
                             render_data.timespans.push(timespan_data);
@@ -353,9 +362,11 @@ const render_data_generator = {
                                 "events": []
                             }
 
-                            if(week_day != timespan.week.length){
-                                for(let internal_weekday_number = 0; internal_weekday_number < week_day; internal_weekday_number++){
-                                    timespan_data.days[timespan_data.days.length-1].push(this.overflow());
+                            if(render_data.render_style != "vertical") {
+                                if(week_day != timespan.week.length){
+                                    for(let internal_weekday_number = 0; internal_weekday_number < week_day; internal_weekday_number++){
+                                        timespan_data.days[timespan_data.days.length-1].push(this.overflow());
+                                    }
                                 }
                             }
 
@@ -427,8 +438,10 @@ const render_data_generator = {
                         }
                     }
 
-                    for(weekday_number; weekday_number <= static_data.year_data.global_week.length; weekday_number++){
-                        timespan_data.days[timespan_data.days.length-1].push(this.overflow());
+                    if(render_data.render_style != "vertical") {
+                        for(weekday_number; weekday_number <= static_data.year_data.global_week.length; weekday_number++){
+                            timespan_data.days[timespan_data.days.length-1].push(this.overflow());
+                        }
                     }
 
                     render_data.timespans.push(timespan_data);

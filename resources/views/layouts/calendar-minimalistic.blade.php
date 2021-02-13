@@ -47,6 +47,7 @@
                                 'current_day': day.epoch == render_data.current_epoch,
                                 'preview_day': day.epoch == render_data.preview_epoch && render_data.preview_epoch != render_data.current_epoch,
                                 'moon_popup': day.moons.length > 0,
+                                'day_title_popup': day.text != '',
                                 'has_weather_popup': day.weather_icon != '',
                                 'has_event': day.events.length > 0
                             }"
