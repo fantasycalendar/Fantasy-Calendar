@@ -90,8 +90,8 @@ function copy_link(epoch_data){
 function context_add_event(key, opt){
 
 	var epoch = $(opt.$trigger[0]).attr('epoch')|0;
-
-	edit_event_ui.create_new_event('', epoch);
+	
+	window.dispatchEvent(new CustomEvent('event-editor-modal-new-event', { detail: { name: "", epoch: epoch } }));
 
 }
 
@@ -179,7 +179,8 @@ function set_up_visitor_inputs(){
 				icon: "fas fa-edit",
 				callback: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					edit_event_ui.edit_event(element.attr('event')|0);
+					let event_id = element.attr('event');
+					window.dispatchEvent(new CustomEvent('event-editor-modal-edit-event', { detail: { event_id: event_id } }));
 				},
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
@@ -268,7 +269,7 @@ function set_up_visitor_inputs(){
 				callback: function(key, opt){
 					let element = $(opt.$trigger[0]);
 					let event_id = element.attr('event');
-					edit_event_ui.query_delete_event(event_id);
+					window.dispatchEvent(new CustomEvent('event-editor-modal-delete-event', { detail: { event_id: event_id } }));
 				},
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);

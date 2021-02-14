@@ -41,8 +41,9 @@
     x-data="CalendarEventEditor"
     class='clickable_background'
     id='event_editor'
-    @event-editor-modal-new-event.window="new_event"
+    @event-editor-modal-new-event.window="create_new_event"
     @event-editor-modal-edit-event.window="edit_event"
+    @event-editor-modal-delete-event.window="query_delete_event"
     x-show='open'
 >
 
@@ -51,51 +52,39 @@
 			<form id="event-form" class="modal-wrapper container" action="post">
 
 				<div class='close-ui-btn-bg'></div>
-				<i class="close_ui_btn fas fa-times-circle" @click='close'></i>
+				<i class="close_ui_btn fas fa-times-circle" @click='callback_do_close'></i>
 
 				<div class='row no-gutters mb-1 modal-form-heading'>
 					<h2 class='event_action_type'><span>Editing Event</span> <i class="fas fa-eye view_event_btn"></i></h2>
 				</div>
 
 				<div class='row no-gutters my-1'>
-					<input type='text' class='form-control' x-model='event.name' placeholder='Event name' autofocus='' />
+					<input type='text' class='form-control' x-model='working_event.name' placeholder='Event name' autofocus='' />
 				</div>
 
 				<div class='row no-gutters my-1'>
-					<textarea class='form-control event_desc editable' x-ref='description' x-model='event.description' placeholder='Event description' autofocus=''></textarea>
+					<textarea class='form-control event_desc editable' x-ref='description' placeholder='Event description' autofocus=''></textarea>
 				</div>
 
                 @if(!isset($calendar) || (Auth::user() != Null && Auth::user()->can('advance-date', $calendar)))
 
-                    <h5 class='row no-gutters mt-2 modal-form-heading'>Condition presets:</h5>
+                    <h5 class='row no-gutters mt-2 modal-form-heading' x-show="new_event">Condition presets:</h5>
 
-                    <div class='row no-gutters mb-1'>
-                        <select class="form-control" id="condition_presets">
-                            <option value='none'>None</option>
-                            <option value='once'>Happens once</option>
-                                <option value='daily'>Daily</option>
-                                <option value='weekly'>Weekly on Wednesday</option>
-                                <option value='fortnightly'>Fortnightly on Wednesday</option>
-                                <option value='monthly_date'>Monthly on this date</option>
-                                <option value='monthly_weekday'>Monthly on the 1st Wednesday</option>
-                                <option value='monthly_inverse_weekday'>Monthly on the last Wednesday</option>
-                                <option value='annually_date'>Annually on this date</option>
-                                <option value='annually_month_weekday'>Annually on the 1st Wednesday date</option>
-                                <option value='annually_inverse_month_weekday'>Annually on the last Wednesday</option>
-                                <option nth value='every_x_day'>Every x day</option>
-                                <option nth value='every_x_weekday'>Every x Wednesday</option>
-                                <option nth value='every_x_monthly_date'>Every x month on the 3rd</option>
-                                <option nth value='every_x_monthly_weekday'>Every x month on the 3rd Wednesday</option>
-                                <option nth value='every_x_inverse_monthly_weekday'>Every x month on the last Wednesday</option>
-                                <option nth value='every_x_annually_date'>Every x year on the 3rd of June</option>
-                                <option nth value='every_x_annually_weekday'>Every x month on the 3rd Wednesday</option>
-                                <option nth value='every_x_inverse_annually_weekday'>Every x year on the last Wednesday in June</option>
-                                <optgroup value='moons' label='Moons' class='hidden'></optgroup>
+                    <div class='row no-gutters mb-1' x-show="new_event">
+                        <select class="form-control" @change='condition_preset_changed' x-model="preset" x-ref="condition_presets">
+                            <template x-for="key in Object.keys(presets)">
+                                <option x-show='presets[key].enabled' x-text='presets[key].text' :value='key'></option>
+                            </template>
+                            <optgroup value='moons' label='Moons' x-show="moon_presets.length > 0">
+                                <template x-for="moon_preset in moon_presets">
+                                    <option x-text='moon_preset.text' :value='moon_preset.value' :moon_index="moon_preset.moon_index"></option>
+                                </template>
+                            </optgroup>
                         </select>
                     </div>
                     
-                    <div class='row no-gutters mb-1 hidden'>
-                        <input type='number' class='form-control' id='repeat_input' name='repeat_input' value='2' min='1' placeholder='Every nth' />
+                    <div class='row no-gutters mb-1' x-show='selected_preset.nth' >
+                        <input type='number' class='form-control' @change='nth_input_changed' x-model='nth' min='1' placeholder='Every nth' />
                     </div>
 
                     <h5 class='row no-gutters my-2 modal-form-heading'>Conditions:</h5>
@@ -104,25 +93,25 @@
                         <div class='col-11 pr-1'>
                             <div class='row p-0'>
                                 <div class='col-6 pr-1'>
-                                    <button type='button' id='add_event_condition' class='btn btn-primary full'>Add condition</button>
+                                    <button type='button' @click='add_condition_clicked' class='btn btn-primary full'>Add condition</button>
                                 </div>
                                 <div class='col-6 pl-1'>
-                                    <button type='button' id='add_event_condition_group' class='btn btn-secondary full'>Add group</button>
+                                    <button type='button' @click='add_group_clicked' class='btn btn-secondary full'>Add group</button>
                                 </div>
                             </div>
                         </div>
                         <div class='col-1 pl-1'>
-                            <button type='button' id='condition_remove_button' class='btn btn-danger full'><i class="icon fas fa-trash-alt"></i></button>
+                            <button type='button' @click='remove_clicked' @mouseenter='remove_mouseover' @mouseleave='remove_mouseout' id='condition_remove_button' class='btn btn-danger full'><i class="icon fas fa-trash-alt"></i></button>
                         </div>
                     </div>
                     <div class='row no-gutters my-2'>
-                        <ol class='form-control group_list_root' id='event_conditions_container'>
+                        <ol class='form-control group_list_root' id='event_conditions_container' x-ref='event_conditions_container'>
                         </ol>
                     </div>
 
                     <span class='hidden'></span>
 
-                    <div class='event_occurrences hidden'>
+                    <div class='event_occurrences' x-show='working_event.data.conditions != []'>
                     
                         <div class='row no-gutters'>
                             <h5>Test event occurrences for the next:</h5>
@@ -166,24 +155,30 @@
                     </div>
                         
                     <div class='row no-gutters mt-2'>
-                        <h4 class='open_settings cursor-pointer user-select-none'><i class="icon fas fa-angle-right"></i> Settings</h4>
+                        <h4 @click='settings_open = !settings_open' class='cursor-pointer user-select-none'>
+                            <i class="icon fas" x-bind:class='{
+                                "fa-angle-right": !settings_open,
+                                "fa-angle-down": settings_open,
+                            }'></i>
+                            Settings
+                        </h4>
                     </div>
 
-                    <div class='container settings_container hidden p-0'>
+                    <div class='container settings_container p-0' x-show="settings_open">
 
 
                     @if(!isset($calendar) || (Auth::user() != Null && Auth::user()->can('advance-date', $calendar)))
                         <div class='row no-gutters'>
                             <div class='col-md-6 pl-0 pr-1'>
                                 <label class='form-control checkbox'>
-                                    <input type='checkbox' class='event_setting' x-model='event.data.limited_repeat'> Limit repetitions
+                                    <input type='checkbox' class='event_setting' x-model='working_event.data.limited_repeat'> Limit repetitions
                                 </label>
                             </div>
                             <div class='col-md-6 pl-1 pr-0 form-control'>
                                 <label class='row no-gutters'>
                                     <div class='col-auto pl-4 pr-1'>Limit for</div>
                                     <div class='col-4'>
-                                        <input type='number' min='1' value='1' class='form-control form-control-sm' x-model='event.data.limited_repeat_num' :disabled='!event.data.limited_repeat'>
+                                        <input type='number' min='1' value='1' class='form-control form-control-sm' x-model='working_event.data.limited_repeat_num' :disabled='!working_event.data.limited_repeat'>
                                     </div>
                                     <div class='col-auto pl-1 pr-0'>days.</div>
                                 </label>
@@ -197,7 +192,7 @@
                         <div class='row no-gutters'>
                             <div class='col-md-6 pl-0 pr-1'>
                                 <label class='form-control checkbox'>
-                                    <input type='checkbox' class='event_setting' x-model='event.data.has_duration'> Has duration
+                                    <input type='checkbox' class='event_setting' x-model='working_event.data.has_duration'> Has duration
                                 </label>
                             </div>
 
@@ -205,7 +200,7 @@
                                 <label class='row no-gutters'>
                                     <div class='col-auto pl-4 pr-1'>Lasts for</div>
                                     <div class='col-4'>
-                                        <input type='number' min='1' value='1' class='form-control form-control-sm' x-model='event.data.duration' :disabled='!event.data.has_duration'>
+                                        <input type='number' min='1' value='1' class='form-control form-control-sm' x-model='working_event.data.duration' :disabled='!working_event.data.has_duration'>
                                     </div>
                                     <div class='col-auto pl-1 pr-0'>days.</div>
                                 </label>
@@ -219,7 +214,7 @@
                         <div class='row no-gutters mb-2'>
                             <div class='col-12 pl-0 pr-1'>
                                 <label class='form-control checkbox'>
-                                    <input type='checkbox' class='event_setting' x-model='event.data.show_first_last'> Show only first and last event
+                                    <input type='checkbox' class='event_setting' x-model='working_event.data.show_first_last'> Show only first and last event
                                 </label>
                             </div>
                         </div>
@@ -235,7 +230,7 @@
                                 <h5 class='modal-form-heading'>Event Category:</h5>
                             </div>
                             <div class='col pl-0 pl-1'>
-                                <select class="form-control event-category-list" x-model='event.event_category_id' @change="event_category_changed" placeholder='Event Category'>
+                                <select class="form-control event-category-list" x-model='working_event.event_category_id' @change="event_category_changed" placeholder='Event Category'>
 
                                 </select>
                             </div>
@@ -246,7 +241,7 @@
                         <div class='row no-gutters'>
                             <div class='col'>
                                 <label class='form-control checkbox'>
-                                    <input type='checkbox' class='event_setting' x-model='event.settings.hide_full'> Hide ENTIRELY (useful for event-based-events)
+                                    <input type='checkbox' class='event_setting' x-model='working_event.settings.hide_full'> Hide ENTIRELY (useful for event-based-events)
                                 </label>
                             </div>
                         </div>
@@ -255,7 +250,7 @@
                     <div class='row no-gutters'>
                         <div class='col'>
                             <label class='form-control checkbox'>
-                                <input type='checkbox' class='event_setting' x-model='event.settings.hide'> Hide event 
+                                <input type='checkbox' class='event_setting' x-model='working_event.settings.hide'> Hide event 
                                 @if(!isset($calendar) || (Auth::user() != Null && !Auth::user()->can('update', $calendar)))
                                     (still visible for owner and co-owners)
                                 @endif
@@ -267,7 +262,7 @@
                         <div class='row no-gutters'>
                             <div class='col'>
                                 <label class='form-control checkbox'>
-                                    <input type='checkbox' class='event_setting' x-model='event.settings.print'> Show when printing
+                                    <input type='checkbox' class='event_setting' x-model='working_event.settings.print'> Show when printing
                                 </label>
                             </div>
                         </div>
@@ -276,7 +271,7 @@
                     <div class='row no-gutters'>
                         <div class='col pr-1'>
                             <h5 class='modal-form-heading'>Color:</h5>
-                            <select x-model='event.settings.color' class='form-control'>
+                            <select x-model='working_event.settings.color' class='form-control'>
                                 <option>Dark-Solid</option>
                                 <option>Red</option>
                                 <option>Pink</option>
@@ -297,7 +292,7 @@
 
                         <div class='col pl-1'>
                             <h5 class='modal-form-heading'>Display:</h5>
-                            <select x-model='event.settings.text' class='form-control'>
+                            <select x-model='working_event.settings.text' class='form-control'>
                                 <option value="text">Just text</option>
                                 <option value="dot">• Dot with text</option>
                                 <option value="background">Background</option>
@@ -310,10 +305,10 @@
                     </div>
                     <div class='row no-gutters mt-0'>
                         <div class='col-4'>
-                            <div class='event-text-output event' :class='event.settings.color + " " + event.settings.text'>Event (visible)</div>
+                            <div class='event-text-output event' :class='working_event.settings.color + " " + working_event.settings.text'>Event (visible)</div>
                         </div>
                         <div class='col-4 px-1'>
-                            <div class='event-text-output hidden_event event' :class='event.settings.color + " " + event.settings.text'>Event (hidden)</div>
+                            <div class='event-text-output hidden_event event' :class='working_event.settings.color + " " + working_event.settings.text'>Event (hidden)</div>
                         </div>
                     </div>
 

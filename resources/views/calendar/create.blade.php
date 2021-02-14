@@ -101,7 +101,6 @@
             set_up_edit_values();
 
             bind_calendar_events();
-            edit_event_ui.bind_events();
             edit_HTML_ui.bind_events();
 
             const queryString = window.location.search;

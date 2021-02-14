@@ -2,7 +2,7 @@
 /* ------------------ Calendar UI class ------------------ */
 /* ------------------------------------------------------- */
 
-var edit_event_ui = {
+var edit_event_ui_x = {
 
 	data: {},
 
@@ -746,7 +746,6 @@ var edit_event_ui = {
 		var conditions = this.create_condition_array(edit_event_ui.event_conditions_container);
 
 		this.date = []
-
 
 		if(conditions.length == 1 || conditions.length == 5){
 
