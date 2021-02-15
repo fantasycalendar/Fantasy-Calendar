@@ -2158,10 +2158,10 @@ const calendar_events_editor = {
 
 	},
 
-	cancel_event_test: function(){
+	cancel_event_test: function(self){
 
 		try {
-			this.worker_event_tester.terminate();
+			self.worker_event_tester.terminate();
 		} catch (err) {
 			console.log(err)
 		}
@@ -2172,7 +2172,7 @@ const calendar_events_editor = {
 
 	run_test_event: function(years) {
 
-		show_loading_screen(true, this.cancel_event_test);
+		show_loading_screen(true, this.cancel_event_test, this);
 
 		if (this.new_event) {
 
