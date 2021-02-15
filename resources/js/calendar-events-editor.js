@@ -8,7 +8,6 @@ const calendar_events_editor = {
 	event_conditions_container: undefined,
 	trumbowyg: undefined,
 	inputs_changed: false,
-	connected_events: [],
 	delete_hover_element: undefined,
 	delete_droppable: false,
 	deleting_clicked: false,
@@ -44,15 +43,13 @@ const calendar_events_editor = {
 		/* Some scripts are loaded after Alpine, so we need to set everything up when the UI is first opened */
 		if(!this.has_initialized){
 
-			this.description_input = $(this.$refs.description);
-
-			this.description_input.trumbowyg();
+			let event_editor_ui = this;
 
 			this.event_conditions_container = $(this.$refs.event_conditions_container);
 
-			this.has_initialized = true;
+			this.description_input = $(this.$refs.description);
 
-			let edit_event_ui = this;
+			this.description_input.trumbowyg();
 
 			this.event_conditions_container.nestedSortable({
 				handle: ".handle",
@@ -73,24 +70,24 @@ const calendar_events_editor = {
 					$("body").removeClass(container.group.options.bodyClass);
 					$('#condition_remove_button .icon').removeClass('wiggle');
 					$('#condition_remove_button .icon').removeClass('faster');
-					if (edit_event_ui.delete_droppable) {
+					if (event_editor_ui.delete_droppable) {
 						item.remove();
 					}
-					edit_event_ui.evaluate_condition_selects(edit_event_ui.event_conditions_container);
-					edit_event_ui.inputs_changed = true;
+					event_editor_ui.evaluate_condition_selects(event_editor_ui.event_conditions_container);
+					event_editor_ui.inputs_changed = true;
 				},
 				tolerance: -5
 			});
 
 			this.event_conditions_container.change(function() {
-				edit_event_ui.show_hide_event_testing();
+				event_editor_ui.show_hide_event_testing();
 			});
 
-			this.evaluate_condition_selects(edit_event_ui.event_conditions_container);
+			this.evaluate_condition_selects(event_editor_ui.event_conditions_container);
 
 			$(document).on('change', '.moon_select', function() {
-				edit_event_ui.evaluate_inputs($(this).closest('.condition'));
-				edit_event_ui.event_is_one_time();
+				event_editor_ui.evaluate_inputs($(this).closest('.condition'));
+				event_editor_ui.event_is_one_time();
 			});
 
 
@@ -102,9 +99,9 @@ const calendar_events_editor = {
 				var lastClass = $(this).closest('.condition_container').attr('class').split(' ').pop();
 				$(this).closest('.condition_container').removeClass(lastClass).addClass(type);
 
-				edit_event_ui.evaluate_inputs($(this).closest('.condition'));
+				event_editor_ui.evaluate_inputs($(this).closest('.condition'));
 
-				edit_event_ui.event_is_one_time();
+				event_editor_ui.event_is_one_time();
 
 			});
 
@@ -117,44 +114,44 @@ const calendar_events_editor = {
 				} else {
 					container.find('.num_group_con').prop('disabled', true).val('');
 				}
-				edit_event_ui.evaluate_condition_selects(edit_event_ui.event_conditions_container);
-				edit_event_ui.event_is_one_time();
+				event_editor_ui.evaluate_condition_selects(event_editor_ui.event_conditions_container);
+				event_editor_ui.event_is_one_time();
 			})
 
 			$(document).on('mouseenter', '.condition', function(e) {
-				if (edit_event_ui.deleting_clicked) {
-					edit_event_ui.set_delete_element($(this));
+				if (event_editor_ui.deleting_clicked) {
+					event_editor_ui.set_delete_element($(this));
 				}
 			});
 
 			$(document).on('mouseleave', '.condition', function(e) {
-				if (edit_event_ui.deleting_clicked) {
+				if (event_editor_ui.deleting_clicked) {
 					if ($(this).parent().hasClass('group_list')) {
-						edit_event_ui.set_delete_element($(this).parent().parent());
+						event_editor_ui.set_delete_element($(this).parent().parent());
 					} else {
-						edit_event_ui.set_delete_element();
+						event_editor_ui.set_delete_element();
 					}
 				}
 			});
 
 			$(document).on('mouseenter', '.group', function(e) {
-				if (edit_event_ui.deleting_clicked) {
-					edit_event_ui.set_delete_element($(this));
+				if (event_editor_ui.deleting_clicked) {
+					event_editor_ui.set_delete_element($(this));
 				}
 			});
 
 			$(document).on('mouseleave', '.group', function(e) {
-				if (edit_event_ui.deleting_clicked) {
+				if (event_editor_ui.deleting_clicked) {
 					if ($(this).parent().hasClass('group_list')) {
-						edit_event_ui.set_delete_element($(this).parent().parent());
+						event_editor_ui.set_delete_element($(this).parent().parent());
 					} else {
-						edit_event_ui.set_delete_element();
+						event_editor_ui.set_delete_element();
 					}
 				}
 			});
 
 			$(document).on('click', '.condition, .condition div, .condition select, .condition span', function(e) {
-				if (edit_event_ui.deleting_clicked) {
+				if (event_editor_ui.deleting_clicked) {
 					e.preventDefault();
 					e.stopPropagation();
 					var item = $(this).closest('.condition');
@@ -168,14 +165,14 @@ const calendar_events_editor = {
 						item.remove();
 					}
 
-					edit_event_ui.evaluate_condition_selects(edit_event_ui.event_conditions_container);
-					edit_event_ui.show_hide_event_testing();
-					edit_event_ui.inputs_changed = true;
+					event_editor_ui.evaluate_condition_selects(event_editor_ui.event_conditions_container);
+					event_editor_ui.show_hide_event_testing();
+					event_editor_ui.inputs_changed = true;
 				}
 			});
 
 			$(document).on('click', '.group, .group .group_list', function(e) {
-				if (edit_event_ui.deleting_clicked) {
+				if (event_editor_ui.deleting_clicked) {
 
 					e.preventDefault();
 					e.stopPropagation();
@@ -200,23 +197,23 @@ const calendar_events_editor = {
 
 							if (!result.dismiss) {
 								group_list.parent().remove();
-								edit_event_ui.evaluate_condition_selects(edit_event_ui.event_conditions_container);
-								edit_event_ui.show_hide_event_testing();
-								edit_event_ui.inputs_changed = true;
+								event_editor_ui.evaluate_condition_selects(event_editor_ui.event_conditions_container);
+								event_editor_ui.show_hide_event_testing();
+								event_editor_ui.inputs_changed = true;
 							}
 
 						});
 
 					} else {
 						group_list.parent().remove();
-						edit_event_ui.evaluate_condition_selects(edit_event_ui.event_conditions_container);
-						edit_event_ui.show_hide_event_testing();
-						edit_event_ui.inputs_changed = true;
+						event_editor_ui.evaluate_condition_selects(event_editor_ui.event_conditions_container);
+						event_editor_ui.show_hide_event_testing();
+						event_editor_ui.inputs_changed = true;
 					}
-
-
 				}
 			});
+
+			this.has_initialized = true;
 
 		}
 
@@ -391,7 +388,8 @@ const calendar_events_editor = {
 		this.moon_presets = [];
 		this.nth = "";
 		this.show_nth = false;
-		this.connected_events = [];
+
+		this.description_input.trumbowyg('html', '');
 
 		this.working_event = {
 			'name': '',
@@ -417,13 +415,19 @@ const calendar_events_editor = {
 			},
 		}
 
+		this.event_testing.occurrences = [];
+		this.event_testing.occurrences_text = [];
+		this.event_testing.visible_occurrences_1 = [];
+		this.event_testing.visible_occurrences_2 = [];
+		this.event_testing.text = "";
+
 		this.event_conditions_container.empty();
 
 	},
 
 	callback_do_close() {
 
-		if (this.has_changed()) {
+		if (this.event_has_changed()) {
 
 			swal.fire({
 				title: "Are you sure?",
@@ -500,7 +504,7 @@ const calendar_events_editor = {
 			}
 		}
 
-		return {
+		return JSON.parse(JSON.stringify({
 			has_duration: this.working_event.data.has_duration,
 			duration: this.working_event.data.duration,
 			show_first_last: this.working_event.data.show_first_last,
@@ -510,7 +514,7 @@ const calendar_events_editor = {
 			connected_events: this.working_event.data.connected_events,
 			date: date,
 			search_distance: search_distance
-		};
+		}));
 
 	},
 
@@ -553,6 +557,9 @@ const calendar_events_editor = {
 	event_is_one_time: function() {
 
 		var date = []
+
+		this.working_event.data.connected_events = [];
+		this.working_event.data.conditions = this.create_condition_array(this.event_conditions_container);
 
 		if (this.working_event.data.conditions.length == 1 || this.working_event.data.conditions.length == 5) {
 
@@ -603,21 +610,25 @@ const calendar_events_editor = {
 
 	},
 
-	has_changed: function() {
+	event_has_changed: function() {
 
 		if (events[this.event_id] && this.inputs_changed) {
+
+			var event_check = clone(events[this.event_id])
 
 			var eventid = events[this.event_id].id;
 
 			if (eventid !== undefined) {
-				this.working_event.id = eventid;
+				event_check.id = eventid;
 			}
 
-			this.working_event.name = this.working_event.name;
+			event_check.description = this.description_input.trumbowyg('html');
 
-			this.working_event.description = this.description_input.trumbowyg('html');
+			event_check.data = this.create_event_data();
 
-			this.working_event.data = this.create_event_data();
+			event_check.settings = clone(this.working_event.settings)
+
+			console.log(event_check.description, events[this.event_id].description)
 
 			return !Object.compare(event_check, events[this.event_id])
 
@@ -964,7 +975,6 @@ const calendar_events_editor = {
 				break;
 
 			case 'every_x_monthly_weekday':
-				console.log(this.epoch_data.week_day_num)
 				var result = [
 					['Weekday', '0', [this.epoch_data.week_day_name]],
 					['&&'],
@@ -1089,7 +1099,7 @@ const calendar_events_editor = {
 
 		var array = [];
 
-		let edit_event_ui = this;
+		let event_editor_ui = this;
 
 		element.children().each(function() {
 
@@ -1124,11 +1134,11 @@ const calendar_events_editor = {
 
 					var event_id = $(this).find('.input_container').find("option:selected").val() | 0;
 
-					if (edit_event_ui.working_event.data.connected_events.indexOf(event_id) == -1) {
-						edit_event_ui.working_event.data.connected_events.push(event_id)
+					if (event_editor_ui.working_event.data.connected_events.indexOf(event_id) == -1) {
+						event_editor_ui.working_event.data.connected_events.push(event_id)
 					}
 
-					values.push(edit_event_ui.working_event.data.connected_events.indexOf(event_id));
+					values.push(event_editor_ui.working_event.data.connected_events.indexOf(event_id));
 
 					if ($(this).find('.input_container').children().eq(1).val() == "") {
 						var val = 0;
@@ -1174,7 +1184,7 @@ const calendar_events_editor = {
 					type = type.find('.num_group_con').val();
 				}
 
-				array.push([type, edit_event_ui.create_condition_array($(this).children('.group_list'))])
+				array.push([type, event_editor_ui.create_condition_array($(this).children('.group_list'))])
 
 			}
 
@@ -1304,7 +1314,7 @@ const calendar_events_editor = {
 
 	evaluate_condition_selects: function(element) {
 
-		let edit_event_ui = this;
+		let event_editor_ui = this;
 
 		element.children().each(function() {
 
@@ -1316,7 +1326,7 @@ const calendar_events_editor = {
 
 			if ($(this).hasClass('group')) {
 
-				edit_event_ui.evaluate_condition_selects($(this).children('.group_list'));
+				event_editor_ui.evaluate_condition_selects($(this).children('.group_list'));
 
 			}
 
@@ -1336,7 +1346,7 @@ const calendar_events_editor = {
 
 				element.children().each(function() {
 					if ($(this).hasClass('group')) {
-						edit_event_ui.evaluate_condition_selects($(this).children('.group_list'));
+						event_editor_ui.evaluate_condition_selects($(this).children('.group_list'));
 					}
 				});
 			}
@@ -1728,7 +1738,7 @@ const calendar_events_editor = {
 					html.push(`${event.name} (this event)`);
 					html.push("</option>");
 				} else {
-					if (check_event_chain(this.event_id | 0, eventId)) {
+					if (this.look_through_event_chain(this.event_id | 0, eventId)) {
 						html.push(`<option value="${eventId}">`);
 						html.push(event.name);
 						html.push("</option>");
@@ -2002,7 +2012,7 @@ const calendar_events_editor = {
 
 	query_delete_event: function($event) {
 		
-		let edit_event_ui = this;
+		let event_editor_ui = this;
 
 		let delete_event_id = $event.detail.event_id;
 
@@ -2058,7 +2068,7 @@ const calendar_events_editor = {
 
 					if ($('#events_sortable').length) {
 
-						edit_event_ui.delete_event(delete_event_id);
+						event_editor_ui.delete_event(delete_event_id);
 
 						events_sortable.children(`[index='${delete_event_id}']`).remove();
 
@@ -2074,7 +2084,7 @@ const calendar_events_editor = {
 						var event_id = events[delete_event_id].id;
 
 						submit_delete_event(event_id, function() {
-							edit_event_ui.delete_event(delete_event_id);
+							event_editor_ui.delete_event(delete_event_id);
 						});
 
 					}
@@ -2105,8 +2115,278 @@ const calendar_events_editor = {
 		let result = RenderDataGenerator.event_deleted(delete_event_id)
 		window.dispatchEvent(new CustomEvent('events-change', { detail: result }));
 
+	},
+
+	build_seasons: false,
+
+	test_event: function(years) {
+
+		if (this.event_is_one_time()) {
+
+			swal.fire({
+				title: "Uh...",
+				text: "This event is a one time event (year, month, day), I'm pretty sure you know the answer to this test.",
+				icon: "warning"
+			});
+
+		} else {
+
+			this.build_seasons = this.evaluation_has_season_event();
+
+			if (!this.build_seasons) {
+				this.run_test_event(years);
+			} else {
+				swal.fire({
+					title: "Warning!",
+					html: "Simulating events that rely on season data can be <strong>incredibly</strong> slow, as we need to generate the seasons for all of the years we simulate. If you hit OK, be prepared to wait a while. Go get a cup of coffee or two, that kind of thing.",
+					showCancelButton: true,
+					confirmButtonColor: '#d33',
+					cancelButtonColor: '#3085d6',
+					confirmButtonText: 'OK',
+					icon: "warning",
+				}).then((result) => {
+
+					if (!result.dismiss) {
+						this.run_test_event(years);
+					}
+
+				});
+
+			}
+
+		}
+
+	},
+
+	cancel_event_test: function(){
+
+		try {
+			this.worker_event_tester.terminate();
+		} catch (err) {
+			console.log(err)
+		}
+
+		hide_loading_screen();
+
+	},
+
+	run_test_event: function(years) {
+
+		show_loading_screen(true, this.cancel_event_test);
+
+		if (this.new_event) {
+
+			events[this.event_id] = {}
+
+			events[this.event_id].data = this.create_event_data();
+
+		} else {
+
+			this.backup_event_data = clone(events[this.event_id].data);
+
+			events[this.event_id].data = this.create_event_data();
+
+		}
+
+		start_year = preview_date.year;
+		end_year = preview_date.year + years;
+
+		this.worker_event_tester = new Worker('/js/webworkers/worker_event_tester.js')
+
+		this.worker_event_tester.postMessage(JSON.parse(JSON.stringify({
+			calendar_name: calendar_name,
+			static_data: static_data,
+			dynamic_data: preview_date,
+			events: events,
+			event_categories: event_categories,
+			owner: Perms.player_at_least('co-owner'),
+			start_year: start_year,
+			end_year: end_year,
+			callback: true,
+			event_id: this.event_id,
+			build_seasons: this.build_seasons
+		})));
+
+		let event_editor_ui = this;
+
+		this.worker_event_tester.onmessage = e => {
+			if (e.data.callback) {
+				update_loading_bar(e.data.percentage, e.data.message);
+			} else {
+
+				event_editor_ui.event_testing.occurrences = e.data.occurrences;
+
+				event_editor_ui.worker_event_tester.terminate()
+
+				event_editor_ui.set_up_event_text(years);
+
+				if (!event_editor_ui.new_event) {
+
+					events[event_editor_ui.event_id].data = clone(event_editor_ui.backup_event_data)
+					event_editor_ui.backup_event_data = {}
+
+				}
+
+				hide_loading_screen();
+
+			}
+		}
+	},
+
+	backup_event_data: {},
+	
+	event_testing: {
+		occurrences: [],
+		occurrences_text: [],
+		visible_occurrences_1: [],
+		visible_occurrences_2: [],
+		page: 1,
+		max_page: 1,
+		items_per_page: 10,
+		text: "",
+	},
+
+	set_up_event_text: function(years){
+		
+		let event_has_changed = this.event_has_changed();
+
+		let num_occurrences = this.event_testing.occurrences.length;
+
+		let text = years > 1 ? `the next ${years} years.` : "this year.";
+		text = `This event will appear <span class='bold-text'>${num_occurrences}</span> time${num_occurrences > 1 ? "s" : ""} in ${text}`;
+
+		this.event_testing.text = text;
+
+		this.event_testing.occurrences_text = [];
+
+		for (var i = 0; i < num_occurrences; i++) {
+
+			let occurrence = this.event_testing.occurrences[i];
+
+			let year = occurrence.year;
+			let timespan = occurrence.timespan;
+			let timespan_name = static_data.year_data.timespans[occurrence.timespan].name;
+			let day = occurrence.day;
+			let intercalary = occurrence.intercalary;
+
+			let pre = "";
+			let post = "";
+
+			if (window.location.pathname != '/calendars/create' && !event_has_changed) {
+				pre = `<a href='${window.baseurl}calendars/${hash}?year=${year}&month=${timespan}&day=${day}' target="_blank">`;
+				post = `</a>`;
+			}
+
+			let text = ""
+			if (intercalary) {
+				text = `${pre}${ordinal_suffix_of(day)} intercalary day of ${timespan_name}, ${year}${post}`
+			} else {
+				text = `${pre}${ordinal_suffix_of(day)} of ${timespan_name}, ${year}${post}`
+			}
+
+			this.event_testing.occurrences_text.push(text);
+
+		}
+
+		this.event_testing.max_page = Math.ceil(num_occurrences / 10);
+
+		this.set_page(1);
+
+	},
+
+	next_page: function(){
+		this.set_page(this.event_testing.page+1);
+	},
+
+	prev_page: function(){
+		this.set_page(this.event_testing.page-1);
+	},
+
+	set_page: function(page) {
+
+		this.event_testing.page = page;
+
+		const start = (this.event_testing.page-1) * this.event_testing.items_per_page;
+		const end = start + this.event_testing.items_per_page;
+
+		this.event_testing.visible_occurrences_1 = this.event_testing.occurrences_text.slice(start, end-5);
+		this.event_testing.visible_occurrences_2 = this.event_testing.occurrences_text.slice(start+5, end);
+
+	},
+
+	checked_events: [],
+
+	evaluation_has_season_event: function() {
+
+		this.check_event_chain(this.event_id, true)
+
+		for (var index in this.checked_events) {
+
+			let event = this.checked_events[index];
+
+			if (JSON.stringify(event.data.conditions).indexOf(`["Season",`) > -1) {
+				this.checked_event_ids = [];
+				return true;
+			}
+
+		}
+
+		this.checked_event_ids = [];
+		return false;
+
+	},
+
+	check_event_chain: function(event_id, working_event) {
+		
+		let current_event = {}
+		if (working_event){
+			current_event = clone(this.working_event);
+		}else{
+			current_event = events[event_id];
+		}
+		this.checked_events.push(current_event);
+
+		if (current_event.data.connected_events !== undefined && current_event.data.connected_events !== "false") {
+
+			for (var connectedId in current_event.data.connected_events) {
+
+				var parent_id = current_event.data.connected_events[connectedId];
+
+				this.check_event_chain(parent_id, false);
+
+			}
+
+		}
+
+	},
+
+	look_through_event_chain: function(child, parent_id) {
+
+		if (events[parent_id].data.connected_events !== undefined && events[parent_id].data.connected_events.length > 0) {
+
+			if (events[parent_id].data.connected_events.includes(child)) {
+
+				return false;
+
+			} else {
+
+				for (var i = 0; i < events[parent_id].data.connected_events.length; i++) {
+
+					var id = events[parent_id].data.connected_events[i];
+
+					var result = this.look_through_event_chain(child, id);
+
+					if (!result) {
+						return false;
+					}
+				}
+			}
+		}
+
+		return true;
 	}
 
 }
+
 
 module.exports = calendar_events_editor;

@@ -119,30 +119,38 @@
 
                         <div class='row no-gutters'>
                             <div class='col-md-3 px-1'>
-                                <button type='button' class='btn btn-info full test_event_btn' years="1">This year</button>
+                                <button type='button' class='btn btn-info full test_event_btn' @click="test_event(1)">This year</button>
                             </div>
                             <div class='col-md-3 px-1'>
-                                <button type='button' class='btn btn-info full test_event_btn' years="10">10 years</button>
+                                <button type='button' class='btn btn-info full test_event_btn' @click="test_event(10)">10 years</button>
                             </div>
                             <div class='col-md-3 px-1'>
-                                <button type='button' class='btn btn-info full test_event_btn' years="100">100 years</button>
+                                <button type='button' class='btn btn-info full test_event_btn' @click="test_event(100)">100 years</button>
                             </div>
                             <div class='col-md-3 px-1'>
-                                <button type='button' class='btn btn-info full test_event_btn' years="1000">1000 years</button>
+                                <button type='button' class='btn btn-info full test_event_btn' @click="test_event(1000)">1000 years</button>
                             </div>
                         </div>
 
-                        <div class='event_occurrences_list_container hidden my-2'>
-                            <div class='text'></div>
-                            <div class='list hidden row no-gutters'>
-                                <ul class='col half col1 list-unstyled'></ul>
-                                <ul class='col half col2 list-unstyled'></ul>
-                                <div class='full page_number'></div>
+                        <div class='event_occurrences_list_container my-2' x-show='event_testing.text != ""'>
+                            <div class='text' x-html='event_testing.text'></div>
+                            <div class='list row no-gutters' x-show='event_testing.occurrences.length > 0'>
+                                <ul class='col half col1 list-unstyled'>
+                                    <template x-for='occurence in event_testing.visible_occurrences_1'>
+                                        <li class='event_occurance' x-html="occurence"></li>
+                                    </template>
+                                </ul>
+                                <ul class='col half col2 list-unstyled'>
+                                    <template x-for='occurence in event_testing.visible_occurrences_2'>
+                                        <li class='event_occurance' x-html="occurence"></li>
+                                    </template>
+                                </ul>
+                                <div class='full page_number' x-text="'Page '+event_testing.page+'/'+event_testing.max_page"></div>
                                 <div class='col half pr-1'>
-                                    <button type='button' class='btn btn-info full prev' disabled>Previous</button>
+                                    <button type='button' class='btn btn-info full' @click='next_page()' :disabled="event_testing.page == 1">Previous</button>
                                 </div>
                                 <div class='col half pl-1'>
-                                    <button type='button' class='btn btn-info full next' disabled>Next</button>
+                                    <button type='button' class='btn btn-info full' @click='prev_page()' :disabled="event_testing.page == event_testing.max_page">Next</button>
                                 </div>
                             </div>
                         </div>
