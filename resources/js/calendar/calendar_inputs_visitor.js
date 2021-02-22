@@ -123,16 +123,6 @@ function get_events_on_day(element){
 
 }
 
-function context_view_events(element){
-
-	var found_events = get_events_on_day(element);
-
-	if(found_events.length == 1){
-		show_event_ui.show_event(found_events[0]);
-	}
-
-}
-
 function set_up_visitor_inputs(){
 
     document.addEventListener('keydown', function(event) {
@@ -163,7 +153,8 @@ function set_up_visitor_inputs(){
 				icon: "fas fa-eye",
 				callback: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					show_event_ui.clicked_event(element)
+					let event_id = element.attr('event');
+					window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { id: event_id, era: element.hasClass('era_event') } }));
 				},
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
@@ -198,7 +189,8 @@ function set_up_visitor_inputs(){
 				icon: "fas fa-eye",
 				callback: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					show_event_ui.clicked_event(element)
+					let event_id = element.attr('event');
+					window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { id: event_id, era: element.hasClass('era_event') } }));
 				},
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
@@ -391,8 +383,10 @@ function set_up_visitor_inputs(){
 						sub_items[event_id] = {
 							name: events[event_id].name,
 							id: event_id,
-							callback: function(key, opt){
-								show_event_ui.show_event(key);
+							callback: function(key, opt) {
+								let element = $(opt.$trigger[0]);
+								let event_id = element.attr('event');
+								window.dispatchEvent(new CustomEvent('event-editor-modal-edit-event', { detail: { event_id: event_id } }));
 							}
 						}
 					}
@@ -425,8 +419,6 @@ function set_up_visitor_inputs(){
 			};
 		}
 	});
-
-	show_event_ui.bind_events();
 
 	target_year = $('#target_year');
 	target_timespan = $('#target_timespan');

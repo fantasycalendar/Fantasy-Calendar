@@ -1,17 +1,29 @@
-<div id="event_show_background" class='clickable_background hidden'>
+<div
+    id="event_show_background"
+    class='clickable_background'
+    x-data="CalendarEventViewer"
+    @event-viewer-modal-view-event.window="view_event"
+    @event-viewer-modal-load-comments.window="load_comments"
+    @event-viewer-modal-submit-comment.window="submit_comment"
+    @event-viewer-modal-add-comment.window="add_comment"
+    @event-viewer-modal-delete-comment.window="delete_comment"
+    @event-viewer-modal-start-edit-comment.window="start_edit_comment"
+    @event-viewer-modal-edit-comment.window="edit_comment"
+    x-show='open'
+>
 	<div class='modal-basic-container'>
 		<div class='modal-basic-wrapper'>
 			<div class='modal-wrapper'>
             
 				<div class='close-ui-btn-bg'></div>
-				<i class="close_ui_btn fas fa-times-circle"></i>
+				<i class="close_ui_btn fas fa-times-circle" @click='callback_do_close(close)'></i>
 
 				<div class='row no-gutters modal-form-heading'>
-					<h2><span class='event_name'>Editing Event</span> <i class="fas fa-pencil-alt edit_event_btn"></i></h2>
+					<h2><span class='event_name' x-text='data.name'>Editing Event</span> <i class="fas fa-pencil-alt edit_event_btn" @click='callback_do_edit'></i></h2>
 				</div>
 				
 				<div class='row'>
-					<div class="event_desc col-12"></div>
+					<div class="col-12" x-html='data.description'></div>
 				</div>
 
 				<div id='event_comment_mastercontainer' class="row">
@@ -22,11 +34,42 @@
 						<h4>Comments:</h4>
 
 						<div class='row'>
-							<div id='event_comments' class='loading col-12'></div>
+							<div id='event_comments' class='col-12'>
+                                <span x-show="comments.length == 0 && can_comment_on_event">No comments on this event yet... Maybe you'll be the first?</span>
+                                <span x-show="!can_comment_on_event">You need to save your calendar before comments can be added to this event!</span>
+                                <template x-for='[index, comment] in Object.entries(comments)'>
+                                    <div
+                                        class='container p-2 rounded event_comment'
+                                        :date='comment.date'
+                                        :comment_id='comment.id'
+                                        x-bind:class='{
+                                            "comment_owner": !comment.comment_owner,
+                                            "calendar_owner": comment.calendar_owner,
+                                        }'
+                                        >
+                                        <div class='row mb-1'>
+                                            <div class='col-auto'>
+                                                <p><span class='username' x-text="comment.username"></span><span class='date' x-text='" - "+comment.date'></span></p>
+                                            </div>
+                                            <div class='col-auto ml-auto'>
+                                                <button class='btn btn-sm btn-outline-secondary border-0 comment_context_btn' :comment_index='index' x-show='!comment.editing'><i class="fas fa-ellipsis-v"></i></button>
+                                                <button class='btn btn-sm btn-primary submit_edit_comment_btn ml-2' @click='submit_edit_comment(index)' :comment_index='index' x-show='comment.editing'>Submit</button>
+                                                <button class='btn btn-sm btn-danger cancel_edit_comment_btn ml-2' @click='cancel_edit_comment(index)' :comment_index='index' x-show='comment.editing'>Cancel</button>
+                                            </div>
+                                        </div>
+                                        <div class='row'>
+                                            <div class='col'>
+                                                <div class='comment' x-show="!comment.editing" x-html='comment.content'></div>
+                                                <div class='edit_comment_container' :id="`comment_edit_input_${index}`" x-show="comment.editing"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
 						@if(Auth::check())
-							<div class='col-12 mt-2' id='event_comment_input_container'>
-								<textarea class='form-control' id='event_comment_input' placeholder='Enter your comment and press submit.' autofocus=''></textarea>
-								<button type='button' class='btn btn-primary mt-2' style="z-index: 200" id='submit_comment'>Submit</button>
+							<div class='col-12 mt-2' id='event_comment_input_container' x-show='user_can_comment && can_comment_on_event'>
+								<textarea x-ref='comment_input' class='form-control' id='event_comment_input' placeholder='Enter your comment and press submit.' autofocus=''></textarea>
+								<button type='button' class='btn btn-primary mt-2' style="z-index: 200" @click='submit_comment'>Submit</button>
 							</div>
 						@endif
 						</div>
@@ -55,7 +98,7 @@
 				<i class="close_ui_btn fas fa-times-circle" @click='callback_do_close'></i>
 
 				<div class='row no-gutters mb-1 modal-form-heading'>
-					<h2 class='event_action_type'><span>Editing Event</span> <i class="fas fa-eye view_event_btn"></i></h2>
+					<h2 class='event_action_type'><span>Editing Event</span> <i class="fas fa-eye view_event_btn" @click='callback_do_view'></i></h2>
 				</div>
 
 				<div class='row no-gutters my-1'>

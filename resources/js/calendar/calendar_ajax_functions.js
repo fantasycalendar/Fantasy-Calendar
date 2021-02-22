@@ -496,7 +496,6 @@ function submit_delete_event(event_id, callback){
 
 
 function get_event_comments(event_id, callback){
-
 	$.ajax({
 		url: window.baseurl+"api/eventcomment/event/"+event_id,
 		type: "get",
@@ -539,6 +538,7 @@ function submit_edit_comment(comment_id, content, callback){
 		content: content
 	})
         .then(function (result){
+			console.log(result)
             if(result.data.success && result.data != "") {
                 $.notify(
 					"Comment edited.",

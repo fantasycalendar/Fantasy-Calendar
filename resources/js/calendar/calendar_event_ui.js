@@ -2,7 +2,7 @@
 /* ------------------ Calendar UI class ------------------ */
 /* ------------------------------------------------------- */
 
-var show_event_ui = {
+var old_show_event_ui = {
 
 	bind_events: function(){
 

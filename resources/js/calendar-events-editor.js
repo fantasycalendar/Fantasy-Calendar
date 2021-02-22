@@ -428,7 +428,6 @@ const calendar_events_editor = {
 	callback_do_close() {
 
 		if (this.event_has_changed()) {
-
 			swal.fire({
 				title: "Are you sure?",
 				text: 'Your changes to this event will not be saved! Are you sure you want to continue?',
@@ -438,16 +437,34 @@ const calendar_events_editor = {
 				icon: "warning",
 			}).then((result) => {
 				if (!result.dismiss) {
-
 					this.close();
-
 				}
 			});
-
 		} else {
-
 			this.close();
+		}
 
+	},
+
+	callback_do_view() {
+
+		if (this.event_has_changed()) {
+			swal.fire({
+				title: "Are you sure?",
+				text: 'Your changes to this event will not be saved! Are you sure you want to continue?',
+				showCancelButton: true,
+				confirmButtonColor: '#d33',
+				cancelButtonColor: '#3085d6',
+				icon: "warning",
+			}).then((result) => {
+				if (!result.dismiss) {
+					window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { id: this.event_id, era: false } }));
+					this.close();
+				}
+			});
+		} else {
+			window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { id: this.event_id, era: false } }));
+			this.close();
 		}
 
 	},

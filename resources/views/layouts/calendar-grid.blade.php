@@ -79,7 +79,12 @@
 
                                 <div class="day_row event_container" x-show="day.events">
                                     <template x-for="calendar_event in day.events">
-                                        <div class="event" :class="calendar_event.class" x-text="calendar_event.name" :event_id="calendar_event.index" @click="view_event($event)"></div>
+                                        <div class="event"
+                                            :class="calendar_event.class"
+                                            x-text="calendar_event.name"
+                                            :event_id="calendar_event.index"
+                                            @click="$dispatch('event-viewer-modal-view-event', { id: calendar_event.index, era: calendar_event.era })"
+                                        ></div>
                                     </template>
                                 </div>
 
