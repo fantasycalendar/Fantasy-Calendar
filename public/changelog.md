@@ -1,3 +1,7 @@
+### 2.0.15 - Industrious Efreet
+#### February 25, 2021
+* Fixed - Calendar export being broken on some calendars
+
 ### 2.0.14 - Time-traveling Efreet
 #### January 23, 2021
 * Tweaked - Cycle condition dropdown now includes which cycle family the condition is point to
