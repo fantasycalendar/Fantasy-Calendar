@@ -11,6 +11,7 @@ const calendar_events_viewer = {
 	db_id: false,
 	data: {},
 	comments: [],
+    comment_editor_content: "",
 
 	has_initialized: false,
 	swal_content: {
@@ -129,60 +130,56 @@ const calendar_events_viewer = {
 		});
 	},
 
-	start_edit_comment(index) {
+	start_edit_comment(comment) {
 
-		for (let entry in this.comments){
-			this.comments[entry].editing = false;
-		}
+		this.cancel_edit_comment();
 
-		let comment = this.comments[index];
+		this.comment_editor_content = comment.content;
 		comment.editing = true;
 
 		console.log(JSON.parse(JSON.stringify(comment)));
-
-		let edit_comment_container = $(document.getElementById(`comment_edit_input_${index}`));
-
-		/* @Axel - This line causes an error with "comment is not defined", dunno why!
-		 * It still works though, which is strange.
-		 */
-		edit_comment_container.trumbowyg({
-			btns: [
-				['strong', 'em', 'del'],
-				['superscript', 'subscript'],
-				['link'],
-				['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
-				['unorderedList', 'orderedList'],
-				['removeformat']
-			]
-		});
-		edit_comment_container.trumbowyg('html', comment.content);
 	},
 
-	submit_edit_comment(index) {
-
-		let edit_comment_container = $(document.getElementById(`comment_edit_input_${index}`));
-
-		let content = edit_comment_container.trumbowyg('html');
-
-		if(content == ""){
+	submit_edit_comment(comment) {
+		if(comment.content === ""){
 			$.notify("Comment cannot be empty.");
 			return;
-		};
+		}
 
-		let event_viewer_ui = this;
+		console.log(JSON.parse(JSON.stringify(comment)));
 
-		submit_edit_comment(this.comments[index].id, content, function() {
-			event_viewer_ui.comments[index].content = content;
-			event_viewer_ui.cancel_edit_comment(index);
-		})
-
+        axios.patch(window.baseurl+"api/eventcomment/"+comment.id, {
+            content: this.comment_editor_content
+        })
+            .then(function (result){
+                console.log(result)
+                if(result.data.success && result.data != "") {
+                    $.notify(
+                        "Comment edited.",
+                        "success"
+                    );
+                } else if(result.data === ""){
+                    $.notify(
+                        "Error editing comment."
+                    );
+                } else {
+                    $.notify(
+                        result.data.message
+                    );
+                }
+            }).then(() => { this.edit_comment_success(comment) });
 	},
 
-	cancel_edit_comment(index) {
-		let comment = this.comments[index];
-		comment.editing = false;
-		$(document.getElementById(`comment_edit_input_${index}`)).trumbowyg('destroy');
-	},
+    edit_comment_success(comment) {
+        comment.content = this.comment_editor_content;
+        this.cancel_edit_comment();
+    },
+
+	cancel_edit_comment() {
+        for (let entry in this.comments){
+            this.comments[entry].editing = false;
+        }
+    },
 
 	delete_comment(index) {
 		let comment = this.comments[index];

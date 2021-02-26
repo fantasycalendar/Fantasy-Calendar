@@ -53,7 +53,7 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/3.2.1/css/font-awesome.min.css">
-    
+
     <link
         rel="stylesheet"
         href="https://unpkg.com/simplebar@latest/dist/simplebar.css"

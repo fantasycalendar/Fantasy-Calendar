@@ -52,23 +52,30 @@
                                                 <p><span class='username' x-text="comment.username"></span><span class='date' x-text='" - "+comment.date'></span></p>
                                             </div>
                                             <div class='col-auto ml-auto'>
-                                                <button class="calendar_action btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" type="button" :id="'dropdownButton-comment'+comment.id" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                                                <button class="calendar_action btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" x-show="!comment.editing" type="button" :id="'dropdownButton-comment'+comment.id" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                                                 <div class="dropdown-menu dropdown-menu-right" :aria-labelledby="'dropdownButton-comment'+comment.id">
-                                                    <button class='dropdown-item' @click="start_edit_comment(index)">
+                                                    <button class='dropdown-item' @click="start_edit_comment(comment)">
                                                         <i class="fa fa-edit"></i> Edit
                                                     </button>
-                                                    <button class="dropdown-item" @click="delete_comment(index)">
+                                                    <button class="dropdown-item" @click="delete_comment(comment)">
                                                         <i class="fa fa-calendar-times"></i> Delete
                                                     </button>
                                                 </div>
-                                                <button class='btn btn-sm btn-primary submit_edit_comment_btn ml-2' @click='submit_edit_comment(index)' :comment_index='index' x-show='comment.editing'>Submit</button>
-                                                <button class='btn btn-sm btn-danger cancel_edit_comment_btn ml-2' @click='cancel_edit_comment(index)' :comment_index='index' x-show='comment.editing'>Cancel</button>
+                                                <button class='btn btn-sm btn-primary submit_edit_comment_btn ml-2' @click='submit_edit_comment(comment)' x-show='comment.editing'>Submit</button>
+                                                <button class='btn btn-sm btn-danger cancel_edit_comment_btn ml-2' @click='cancel_edit_comment(comment)' x-show='comment.editing'>Cancel</button>
                                             </div>
                                         </div>
                                         <div class='row'>
                                             <div class='col'>
                                                 <div class='comment' x-show="!comment.editing" x-html='comment.content'></div>
-                                                <div class='edit_comment_container' :id="`comment_edit_input_${index}`" x-show="comment.editing"></div>
+                                                <alpine-editor
+                                                    x-model="comment_editor_content"
+                                                    data-h1-classes="text-xl"
+                                                    x-show="comment.editing"
+                                                >
+                                                    <div data-type="menu"></div>
+                                                    <div data-type="editor" class="p-2"></div>
+                                                </alpine-editor>
                                             </div>
                                         </div>
                                     </div>
