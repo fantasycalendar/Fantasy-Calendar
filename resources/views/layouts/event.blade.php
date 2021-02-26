@@ -14,14 +14,14 @@
 	<div class='modal-basic-container'>
 		<div class='modal-basic-wrapper'>
 			<div class='modal-wrapper'>
-            
+
 				<div class='close-ui-btn-bg'></div>
 				<i class="close_ui_btn fas fa-times-circle" @click='callback_do_close(close)'></i>
 
 				<div class='row no-gutters modal-form-heading'>
 					<h2><span class='event_name' x-text='data.name'>Editing Event</span> <i class="fas fa-pencil-alt edit_event_btn" @click='callback_do_edit'></i></h2>
 				</div>
-				
+
 				<div class='row'>
 					<div class="col-12" x-html='data.description'></div>
 				</div>
@@ -37,12 +37,12 @@
 							<div id='event_comments' class='col-12'>
                                 <span x-show="comments.length == 0 && can_comment_on_event">No comments on this event yet... Maybe you'll be the first?</span>
                                 <span x-show="!can_comment_on_event">You need to save your calendar before comments can be added to this event!</span>
-                                <template x-for='[index, comment] in Object.entries(comments)'>
+                                <template x-for='(comment, index) in comments'>
                                     <div
                                         class='container p-2 rounded event_comment'
                                         :date='comment.date'
                                         :comment_id='comment.id'
-                                        x-bind:class='{
+                                        :class='{
                                             "comment_owner": !comment.comment_owner,
                                             "calendar_owner": comment.calendar_owner,
                                         }'
@@ -52,7 +52,15 @@
                                                 <p><span class='username' x-text="comment.username"></span><span class='date' x-text='" - "+comment.date'></span></p>
                                             </div>
                                             <div class='col-auto ml-auto'>
-                                                <button class='btn btn-sm btn-outline-secondary border-0 comment_context_btn' :comment_index='index' x-show='!comment.editing'><i class="fas fa-ellipsis-v"></i></button>
+                                                <button class="calendar_action btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" type="button" :id="'dropdownButton-comment'+comment.id" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                                                <div class="dropdown-menu dropdown-menu-right" :aria-labelledby="'dropdownButton-comment'+comment.id">
+                                                    <button class='dropdown-item' @click="start_edit_comment(index)">
+                                                        <i class="fa fa-edit"></i> Edit
+                                                    </button>
+                                                    <button class="dropdown-item" @click="delete_comment(index)">
+                                                        <i class="fa fa-calendar-times"></i> Delete
+                                                    </button>
+                                                </div>
                                                 <button class='btn btn-sm btn-primary submit_edit_comment_btn ml-2' @click='submit_edit_comment(index)' :comment_index='index' x-show='comment.editing'>Submit</button>
                                                 <button class='btn btn-sm btn-danger cancel_edit_comment_btn ml-2' @click='cancel_edit_comment(index)' :comment_index='index' x-show='comment.editing'>Cancel</button>
                                             </div>
@@ -125,7 +133,7 @@
                             </optgroup>
                         </select>
                     </div>
-                    
+
                     <div class='row no-gutters mb-1' x-show='selected_preset.nth' >
                         <input type='number' class='form-control' @change='nth_input_changed' x-model='nth' min='1' placeholder='Every nth' />
                     </div>
@@ -155,7 +163,7 @@
                     <span class='hidden'></span>
 
                     <div class='event_occurrences' x-show='working_event.data.conditions != []'>
-                    
+
                         <div class='row no-gutters'>
                             <h5>Test event occurrences for the next:</h5>
                         </div>
@@ -204,7 +212,7 @@
                     <div class='row no-gutters mt-2'>
                         <div class='separator'></div>
                     </div>
-                        
+
                     <div class='row no-gutters mt-2'>
                         <h4 @click='settings_open = !settings_open' class='cursor-pointer user-select-none'>
                             <i class="icon fas" x-bind:class='{
@@ -274,7 +282,7 @@
                     <div class='row no-gutters my-2'>
                         <div class='separator'></div>
                     </div>
-                    
+
                     @if(!isset($calendar) || count($calendar->event_categories) || (Auth::user() != Null && Auth::user()->can('update', $calendar)))
                         <div class='row mb-2 no-gutters'>
                             <div class='col-auto pl-0 pr-1'>
@@ -301,7 +309,7 @@
                     <div class='row no-gutters'>
                         <div class='col'>
                             <label class='form-control checkbox'>
-                                <input type='checkbox' class='event_setting' x-model='working_event.settings.hide'> Hide event 
+                                <input type='checkbox' class='event_setting' x-model='working_event.settings.hide'> Hide event
                                 @if(!isset($calendar) || (Auth::user() != Null && !Auth::user()->can('update', $calendar)))
                                     (still visible for owner and co-owners)
                                 @endif

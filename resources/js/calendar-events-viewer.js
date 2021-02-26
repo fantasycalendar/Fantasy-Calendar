@@ -40,43 +40,6 @@ const calendar_events_viewer = {
 				]
 			});
 
-			let event_viewer_ui = this;
-
-			$.contextMenu({
-				selector: ".comment_context_btn",
-				trigger: 'left',
-				items: {
-					edit: {
-						name: "Edit comment",
-						icon: "fas fa-edit",
-						callback: function(key, opt) {
-							let element = $(opt.$trigger[0]);
-							let index = Number(element.attr('comment'));
-							window.dispatchEvent(new CustomEvent('event-viewer-modal-start-edit-comment', { detail: { index: index } }));
-						},
-						disabled: function(key, opt) {
-							let element = $(opt.$trigger[0]);
-							let index = Number(element.attr('comment'));
-							return !event_viewer_ui.comments[index].comment_owner;
-						},
-						visible: function(key, opt) {
-							let element = $(opt.$trigger[0]);
-							let index = Number(element.attr('comment'));
-							return event_viewer_ui.comments[index].comment_owner;
-						}
-					},
-					delete: {
-						name: "Delete comment",
-						icon: "fas fa-trash-alt",
-						callback: function(key, opt) {
-							let element = $(opt.$trigger[0]);
-							let index = Number(element.attr('comment'));
-							window.dispatchEvent(new CustomEvent('event-viewer-modal-delete-comment', { detail: { index: index } }));
-						}
-					},
-				},
-				zIndex: 1501
-			});
 
 			this.has_initialized = true;
 
@@ -140,6 +103,7 @@ const calendar_events_viewer = {
 				can_delete: Perms.user_can_delete_comment(comment)
 			})
 		}
+		console.log(JSON.parse(JSON.stringify(this.comments)));
 		this.loading_comments = false;
 
 	},
@@ -165,18 +129,19 @@ const calendar_events_viewer = {
 		});
 	},
 
-	start_edit_comment($event) {
+	start_edit_comment(index) {
 
-		for (let index in this.comments){
-			this.comments[index].editing = false;
+		for (let entry in this.comments){
+			this.comments[entry].editing = false;
 		}
 
-		let index = $event.detail.index;
 		let comment = this.comments[index];
 		comment.editing = true;
 
+		console.log(JSON.parse(JSON.stringify(comment)));
+
 		let edit_comment_container = $(document.getElementById(`comment_edit_input_${index}`));
-		
+
 		/* @Axel - This line causes an error with "comment is not defined", dunno why!
 		 * It still works though, which is strange.
 		 */
@@ -210,7 +175,7 @@ const calendar_events_viewer = {
 			event_viewer_ui.comments[index].content = content;
 			event_viewer_ui.cancel_edit_comment(index);
 		})
-		
+
 	},
 
 	cancel_edit_comment(index) {
@@ -219,8 +184,7 @@ const calendar_events_viewer = {
 		$(document.getElementById(`comment_edit_input_${index}`)).trumbowyg('destroy');
 	},
 
-	delete_comment($event) {
-		let index = $event.detail.index;
+	delete_comment(index) {
 		let comment = this.comments[index];
 		let event_viewer_ui = this;
 		swal.fire({
