@@ -70,53 +70,21 @@
                                             <div class='col'>
                                                 <div class='comment' x-show="!comment.editing" x-html='comment.content'></div>
 
-                                                <alpine-editor
-                                                    x-model="comment.content"
-                                                    data-h1-classes="text-xl"
-                                                    x-show="comment.editing"
-                                                    :id="'editor-comment-' + comment.id"
-                                                >
-                                                    <div data-type="menu" class="btn-toolbar" role="toolbar" aria-label="Editor toolbar">
-                                                        <div class="btn-group mr-2" role="group" aria-label="Editor group">
-                                                            <button
-                                                                type="button"
-                                                                data-command="strong"
-                                                                data-active-class="bg-blue-400"
-                                                                class="bg-gray-500 btn btn-outline-secondary"
-                                                            >
-                                                                Bold
-                                                            </button>
+                                                <div class="rounded border" x-show="comment.editing">
+                                                    <alpine-editor
+                                                        x-model="comment.content"
+                                                        data-h1-classes="text-xl"
+                                                        :id="'editor-comment-' + comment.id"
+                                                    >
+                                                        <div data-type="menu" class="btn-toolbar" role="toolbar" aria-label="Editor toolbar">
+                                                            <div class="btn-group mr-2" role="group" aria-label="Editor group">
+                                                                <x-wysiwyg.action-button command="strong" active="bg-blue-400" class="bg-gray-500" icon="bold"></x-wysiwyg.action-button>
+                                                                <x-wysiwyg.action-button command="em" active="bg-blue-400" class="bg-gray-500" icon="italic"></x-wysiwyg.action-button>
+                                                            </div>
                                                         </div>
-                                                        <div class="btn-group mr-2" role="group" aria-label="Editor group 2">
-                                                            <button
-                                                                type="button"
-                                                                data-command="em"
-                                                                data-active-class="bg-blue-400"
-                                                                class="bg-gray-500 btn btn-outline-secondary"
-                                                            >
-                                                                Emphasize
-                                                            </button>
-                                                            <button
-                                                                type="button"
-                                                                data-command="ordered_list"
-                                                                data-active-class="bg-blue-400"
-                                                                class="bg-gray-500 btn btn-outline-secondary"
-                                                            >
-                                                                Code
-                                                            </button>
-                                                            <button
-                                                                type="button"
-                                                                data-command="heading"
-                                                                data-level="1"
-                                                                data-active-class="bg-blue-400"
-                                                                class="bg-gray-500 btn btn-outline-secondary"
-                                                            >
-                                                                H1
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                    <div data-type="editor" class="p-2"></div>
-                                                </alpine-editor>
+                                                        <div data-type="editor" class="p-2 border-top" style="border-color: black;"></div>
+                                                    </alpine-editor>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
