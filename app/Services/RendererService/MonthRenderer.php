@@ -32,17 +32,16 @@ class MonthRenderer
 
     private function buildMonth($monthID)
     {
-        $year_data = Arr::get($this->calendar->static_data, 'year_data');
+        $year_data = $this->getYearData();
 
         if(Arr::get($year_data, 'overflow')) {
             throw new \Exception('API rendering does not currently support overflowed weekdays.');
         }
 
         $month = Arr::get($year_data, "timespans.$monthID");
+        $monthLength = $this->determineMonthLength($month, $monthID);
 
-        $name = $month['name'];
         $weekdays = collect($month['week'] ?? Arr::get($year_data, 'global_week'));
-        $monthLength = $month['length'];
 
         $weeksInMonth = collect(range(1, (int) (ceil($monthLength / $weekdays->count()))));
 
@@ -58,7 +57,7 @@ class MonthRenderer
         });
 
         return [
-            'name' => $name,
+            'name' => $month['name'],
             'weekdays' => $weekdays,
             'structure' => $structure
         ];
@@ -67,5 +66,32 @@ class MonthRenderer
     private function resolveMonth()
     {
         return $this->calendar->dynamic_data['timespan'] ?? $this->calendar->dynamic_data['month'] ?? 0;
+    }
+
+    private function getYearData()
+    {
+        return Arr::get($this->calendar->static_data, 'year_data');
+    }
+
+    private function determineMonthLength($month, $monthKey)
+    {
+        $length = $month['length'];
+
+        $leapDays = Arr::get($this->calendar->static_data, 'year_data.leap_days');
+
+        foreach($leapDays as $day) {
+            if($this->yearIntersects($day['interval'], $day['offset']) && $monthKey === $day['timespan'] && !$day['intercalary']) {
+                $length++;
+            }
+        }
+        
+        return $length;
+    }
+
+    private function yearIntersects($interval, $offset)
+    {
+        $currentYear = Arr::get($this->calendar->dynamic_data, 'year') + $offset;
+
+        return $currentYear % $interval == 0;
     }
 }
