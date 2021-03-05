@@ -131,17 +131,17 @@ const calendar_events_viewer = {
 	},
 
 	start_edit_comment(comment) {
-
 		this.cancel_edit_comment();
 
-		this.comment_editor_content = comment.content;
 		comment.editing = true;
 
 		console.log(JSON.parse(JSON.stringify(comment)));
 	},
 
 	submit_edit_comment(comment) {
-		if(comment.content === ""){
+        let comment_content = document.querySelector('#editor-comment-'+comment.id+' .ProseMirror').innerHTML;
+
+		if(comment_content === ""){
 			$.notify("Comment cannot be empty.");
 			return;
 		}
@@ -149,7 +149,7 @@ const calendar_events_viewer = {
 		console.log(JSON.parse(JSON.stringify(comment)));
 
         axios.patch(window.baseurl+"api/eventcomment/"+comment.id, {
-            content: this.comment_editor_content
+            content: comment_content
         })
             .then(function (result){
                 console.log(result)
@@ -167,11 +167,11 @@ const calendar_events_viewer = {
                         result.data.message
                     );
                 }
-            }).then(() => { this.edit_comment_success(comment) });
+            }).then(() => { this.edit_comment_success(comment, comment_content) });
 	},
 
-    edit_comment_success(comment) {
-        comment.content = this.comment_editor_content;
+    edit_comment_success(comment, comment_content) {
+        comment.content = comment_content;
         this.cancel_edit_comment();
     },
 
