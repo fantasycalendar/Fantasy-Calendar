@@ -45,16 +45,29 @@ class MonthRenderer
                 $weekNumber => $weekdays->mapWithKeys(function($day) use (&$monthDay){
                     $monthDay++;
 
-                    return [ $day => ($monthDay > $this->determineMonthLength()) ? null : $monthDay ];
+                    $dayInfo = $this->dayInfo((($monthDay > $this->determineMonthLength()) ? null : $monthDay), $day);
+
+                    return [ $day => $dayInfo ];
                 })
             ];
         });
 
         return [
-            'year' => $this->currentYear(),
+            'year' => $this->getYear(),
             'name' => $this->getMonth()['name'],
             'weekdays' => $weekdays,
             'structure' => $structure
+        ];
+    }
+
+    private function dayInfo($dayToCheck, $name)
+    {
+        $day = $this->getDay();
+
+        return [
+            'name' => $name,
+            'month_day' => $dayToCheck,
+            'current' => ($day == $dayToCheck)
         ];
     }
 
@@ -68,9 +81,19 @@ class MonthRenderer
         return Arr::get($this->calendar->static_data, 'year_data');
     }
 
+    private function getYear()
+    {
+        return Arr::get($this->calendar->dynamic_data, 'year');
+    }
+
     private function getMonth()
     {
         return Arr::get($this->getYearData(), "timespans." . $this->resolveMonth());
+    }
+
+    private function getDay()
+    {
+        return Arr::get($this->calendar->dynamic_data, 'day');
     }
 
     private function determineMonthLength()
@@ -90,13 +113,8 @@ class MonthRenderer
 
     private function yearIntersects($interval, $offset)
     {
-        $currentYear = $this->currentYear() + $offset;
+        $currentYear = $this->getYear() + $offset;
 
         return $currentYear % $interval == 0;
-    }
-
-    private function currentYear()
-    {
-        return Arr::get($this->calendar->dynamic_data, 'year');
     }
 }
