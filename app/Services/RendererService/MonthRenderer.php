@@ -46,10 +46,8 @@ class MonthRenderer
             $this->calendar->setDate($date[0], $date[1], $date[2]);
         }
 
-        $month = $this->buildMonth();
-
         $pipelineData = [
-            'render_data' => $month,
+            'render_data' => $this->buildMonth(),
             'calendar' => $this->calendar
         ];
 
@@ -59,6 +57,12 @@ class MonthRenderer
                     ->then($this->verifyData());
     }
 
+    /**
+     * Returns a closure used when verifying our render data
+     * Currently it just returns. Should probably actually
+     * verify the data we pass through it at some point.
+     * @return \Closure
+     */
     private function verifyData()
     {
         return function ($data) {
@@ -66,6 +70,14 @@ class MonthRenderer
         };
     }
 
+    /**
+     * Builds the structure of our month, populating it only with the day of the month
+     * Since we're building the data used for visually rendering a calendar, we must
+     * include days that are not actually fully calendar dates. Each pipeline job
+     * will only be given the days that result in a non-null "month_day" value
+     *
+     * @return array
+     */
     private function buildMonth()
     {
         $weeksInMonth = $this->buildWeekList();
@@ -90,6 +102,16 @@ class MonthRenderer
         ];
     }
 
+    /**
+     * Creates a collection of weeks for use in displaying this month
+     * It doesn't add any days or anything, just a collection that
+     * contains an integer of each week that is within a month.
+     * Example: A month with 30 days and 10-day is built as:
+     *
+     * collect([1, 2, 3]);
+     *
+     * @return \Illuminate\Support\Collection
+     */
     private function buildWeekList()
     {
         $weeks_in_month = ceil($this->calendar->month_length / count($this->calendar->month_week));
