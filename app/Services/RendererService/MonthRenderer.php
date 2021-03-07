@@ -74,7 +74,7 @@ class MonthRenderer
      * Builds the structure of our month, populating it only with the day of the month
      * Since we're building the data used for visually rendering a calendar, we must
      * include days that are not actually fully calendar dates. Each pipeline job
-     * will only be given the days that result in a non-null "month_day" value
+     * should only act on the days that have null "month_day" values if needed
      *
      * @return array
      */
