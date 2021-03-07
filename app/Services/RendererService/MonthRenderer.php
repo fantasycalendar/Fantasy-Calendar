@@ -5,6 +5,8 @@ namespace App\Services\RendererService;
 
 
 use App\Calendar;
+use App\Services\DatePipeline\AddCurrentDate;
+use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Arr;
 
 class MonthRenderer
@@ -13,6 +15,9 @@ class MonthRenderer
      * @var Calendar
      */
     private Calendar $calendar;
+    private array $pipeline = [
+        AddCurrentDate::class
+    ];
 
     /**
      * YearRenderer constructor.
@@ -31,7 +36,22 @@ class MonthRenderer
     {
         $month = $this->buildMonth($this->resolveMonth());
 
-        return $month;
+        $pipelineData = [
+            'render_data' => $month,
+            'calendar' => $this->calendar
+        ];
+
+        return (new Pipeline(app()))
+                    ->send($pipelineData)
+                    ->through($this->pipeline)
+                    ->then($this->verifyData());
+    }
+
+    private function verifyData()
+    {
+        return function ($data) {
+            return $data;
+        };
     }
 
     private function buildMonth($monthID)
@@ -42,12 +62,10 @@ class MonthRenderer
         $monthDay = 0;
         $structure = $weeksInMonth->mapWithKeys(function($weekNumber) use (&$monthDay, $weekdays){
             return [
-                $weekNumber => $weekdays->mapWithKeys(function($day) use (&$monthDay){
+                $weekNumber => $weekdays->map(function($day) use (&$monthDay){
                     $monthDay++;
 
-                    $dayInfo = $this->dayInfo((($monthDay > $this->determineMonthLength()) ? null : $monthDay), $day);
-
-                    return [ $day => $dayInfo ];
+                    return $this->dayInfo((($monthDay > $this->determineMonthLength()) ? null : $monthDay), $day);
                 })
             ];
         });
@@ -56,7 +74,7 @@ class MonthRenderer
             'year' => $this->getYear(),
             'name' => $this->getMonth()['name'],
             'weekdays' => $weekdays,
-            'structure' => $structure
+            'weeks' => $structure
         ];
     }
 
@@ -67,7 +85,6 @@ class MonthRenderer
         return [
             'name' => $name,
             'month_day' => $dayToCheck,
-            'current' => ($day == $dayToCheck)
         ];
     }
 
