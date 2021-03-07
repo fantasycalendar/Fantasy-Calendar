@@ -5,11 +5,29 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Auth;
+use Illuminate\Support\Arr;
 
+/**
+ * @property mixed static_data
+ * @property mixed dynamic_data
+ * @property mixed user
+ * @property mixed current_date_valid
+ * @property mixed year
+ * @property mixed month_id
+ * @property mixed month_name
+ * @property mixed month_length
+ * @property array month
+ * @property mixed day
+ * @property mixed current_era_valid
+ * @property mixed users
+ */
 class Calendar extends Model
 {
     use SoftDeletes;
 
+    /**
+     * @var string
+     */
     protected $table = 'calendars_beta';
 
     protected $with = ['event_categories', 'events'];
@@ -113,6 +131,18 @@ class Calendar extends Model
         return isset($this->static_data['clock']['enabled']) && isset($this->dynamic_data['hour']) && isset($this->dynamic_data['minute']) && $this->static_data['clock']['enabled'];
     }
 
+    public function getCurrentDateValidAttribute() {
+        if(count($this->static_data['year_data']['timespans']) < 1) {
+            return false;
+        }
+
+        if(!Arr::has($this->static_data, "year_data.timespans.{$this->month_id}")) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function getCurrentEraValidAttribute() {
         return (
             count($this->static_data['eras'] ?? []) > 0
@@ -122,21 +152,49 @@ class Calendar extends Model
     }
 
     public function getCurrentDateAttribute() {
-        if(count($this->static_data['year_data']['timespans']) < 1) {
+        if(!$this->current_date_valid) {
             return "N/A";
         }
 
-        $month_id = $this->dynamic_data['timespan'] ?? $this->dynamic_data['month'] ?? 0;
-
-        if(!array_key_exists($month_id, $this->static_data['year_data']['timespans'])) {
-            return "N/A";
-        }
-
-        $year = $this->dynamic_data['year'];
-        $month = $this->static_data['year_data']['timespans'][$month_id]['name'];
+        $year = $this->year;
+        $month = $this->month_name;
         $day = $this->dynamic_data['day'];
 
         return sprintf("%s %s, %s", $day, $month, $year);
+    }
+
+    public function getYearAttribute()
+    {
+        return Arr::get($this->dynamic_data, 'year', 0);
+    }
+
+    public function getMonthIdAttribute()
+    {
+        return Arr::get($this->dynamic_data,
+            'timespan',
+            Arr::get($this->dynamic_data,
+                'month',
+                0));
+    }
+
+    public function getMonthNameAttribute()
+    {
+        return Arr::get($this->static_data, "year_data.timespans.{$this->month_id}.name", null);
+    }
+
+    public function getMonthAttribute()
+    {
+        return Arr::get($this->static_data, "year_data.timespans.{$this->month_id}", []);
+    }
+
+    public function getMonthLengthAttribute()
+    {
+        return Arr::get($this->static_data, "year_data.timespans.{$this->month_id}.length", null);
+    }
+
+    public function getDayAttribute()
+    {
+        return Arr::get($this->dynamic_data, 'day', 0);
     }
 
     public function getCurrentTimeAttribute() {

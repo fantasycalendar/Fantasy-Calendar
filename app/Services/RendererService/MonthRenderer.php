@@ -34,7 +34,7 @@ class MonthRenderer
 
     public function render()
     {
-        $month = $this->buildMonth($this->resolveMonth());
+        $month = $this->buildMonth();
 
         $pipelineData = [
             'render_data' => $month,
@@ -54,9 +54,9 @@ class MonthRenderer
         };
     }
 
-    private function buildMonth($monthID)
+    private function buildMonth()
     {
-        $weekdays = collect($this->getMonth()['week'] ?? Arr::get($this->getYearData(), 'global_week'));
+        $weekdays = collect($this->calendar->month['week'] ?? Arr::get($this->getYearData(), 'global_week'));
         $weeksInMonth = collect(range(1, (int) (ceil($this->determineMonthLength() / $weekdays->count()))));
 
         $monthDay = 0;
@@ -71,8 +71,8 @@ class MonthRenderer
         });
 
         return [
-            'year' => $this->getYear(),
-            'name' => $this->getMonth()['name'],
+            'year' => $this->calendar->year,
+            'name' => $this->calendar->month_name,
             'weekdays' => $weekdays,
             'weeks' => $structure
         ];
@@ -88,24 +88,9 @@ class MonthRenderer
         ];
     }
 
-    private function resolveMonth()
-    {
-        return $this->calendar->dynamic_data['timespan'] ?? $this->calendar->dynamic_data['month'] ?? 0;
-    }
-
     private function getYearData()
     {
         return Arr::get($this->calendar->static_data, 'year_data');
-    }
-
-    private function getYear()
-    {
-        return Arr::get($this->calendar->dynamic_data, 'year');
-    }
-
-    private function getMonth()
-    {
-        return Arr::get($this->getYearData(), "timespans." . $this->resolveMonth());
     }
 
     private function getDay()
@@ -115,12 +100,12 @@ class MonthRenderer
 
     private function determineMonthLength()
     {
-        $length = $this->getMonth()['length'];
+        $length = $this->calendar->month_length;
 
         $leapDays = Arr::get($this->calendar->static_data, 'year_data.leap_days');
 
         foreach($leapDays as $day) {
-            if($this->yearIntersects($day['interval'], $day['offset']) && $this->resolveMonth() === $day['timespan'] && !$day['intercalary']) {
+            if($this->yearIntersectsLeapDay($day['interval'], $day['offset']) && $this->calendar->month_id === $day['timespan'] && !$day['intercalary']) {
                 $length++;
             }
         }
@@ -128,9 +113,9 @@ class MonthRenderer
         return $length;
     }
 
-    private function yearIntersects($interval, $offset)
+    private function yearIntersectsLeapDay($interval, $offset)
     {
-        $currentYear = $this->getYear() + $offset;
+        $currentYear = $this->calendar->year + $offset;
 
         return $currentYear % $interval == 0;
     }
