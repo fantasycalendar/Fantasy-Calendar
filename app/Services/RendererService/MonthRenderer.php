@@ -5,6 +5,7 @@ namespace App\Services\RendererService;
 
 
 use App\Calendar;
+use App\Services\DatePipeline\AddDayName;
 use App\Services\DatePipeline\AddDayType;
 use App\Services\DatePipeline\AddIsCurrentDate;
 use Illuminate\Pipeline\Pipeline;
@@ -19,6 +20,7 @@ class MonthRenderer
     private array $pipeline = [
         AddIsCurrentDate::class,
         AddDayType::class,
+        AddDayName::class,
     ];
 
     /**
