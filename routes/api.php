@@ -42,5 +42,5 @@ Route::get('preset/{id}', Api\PresetController::class.'@show');
 Route::get('presets.html', Api\PresetController::class.'@listHtml');
 
 Route::prefix('render/{calendar}')->group(function() {
-    Route::get('/month', Api\CalendarRendererController::class.'@month');
+    Route::get('/month/{year?}/{month?}/{day?}', Api\CalendarRendererController::class.'@month');
 });

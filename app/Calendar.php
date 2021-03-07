@@ -151,6 +151,17 @@ class Calendar extends Model
         );
     }
 
+    public function setDate($year, $timespan, $day)
+    {
+        $dynamic_data = $this->dynamic_data;
+
+        $dynamic_data['year'] = $year ?? $dynamic_data['year'];
+        $dynamic_data['timespan'] = $timespan ?? $dynamic_data['timespan'];
+        $dynamic_data['day'] = $day ?? $dynamic_data['day'];
+
+        $this->dynamic_data = $dynamic_data;
+    }
+
     public function getCurrentDateAttribute() {
         if(!$this->current_date_valid) {
             return "N/A";

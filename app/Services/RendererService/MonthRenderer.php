@@ -32,8 +32,16 @@ class MonthRenderer
         }
     }
 
-    public function render()
+    /**
+     * @param mixed $date The date you want to render (default is current) - array [year, month, day]
+     * @return mixed
+     */
+    public function render($date = null)
     {
+        if($date) {
+            $this->calendar->setDate($date[0], $date[1], $date[2]);
+        }
+
         $month = $this->buildMonth();
 
         $pipelineData = [
