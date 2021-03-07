@@ -14,7 +14,7 @@ class CalendarRendererController extends Controller
         $date = ( $year || $month || $day )
             ? [ $year, $month, $day ]
             : null;
-        
+
         $renderer = new MonthRenderer($calendar);
 
         return $renderer->render($date);

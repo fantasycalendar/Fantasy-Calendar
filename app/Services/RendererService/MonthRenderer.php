@@ -5,7 +5,8 @@ namespace App\Services\RendererService;
 
 
 use App\Calendar;
-use App\Services\DatePipeline\AddCurrentDate;
+use App\Services\DatePipeline\AddDayType;
+use App\Services\DatePipeline\AddIsCurrentDate;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Arr;
 
@@ -16,7 +17,8 @@ class MonthRenderer
      */
     private Calendar $calendar;
     private array $pipeline = [
-        AddCurrentDate::class
+        AddIsCurrentDate::class,
+        AddDayType::class,
     ];
 
     /**
@@ -58,7 +60,7 @@ class MonthRenderer
     private function verifyData()
     {
         return function ($data) {
-            return $data;
+            return $data['render_data'];
         };
     }
 
@@ -91,7 +93,7 @@ class MonthRenderer
         $day = $this->getDay();
 
         return [
-            'name' => $name,
+            'name' => $dayToCheck ? $name : null,
             'month_day' => $dayToCheck,
         ];
     }
