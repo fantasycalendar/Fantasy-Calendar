@@ -12,6 +12,8 @@ class AddDayType
 
     public function processDay($day)
     {
+        $day['type'] = ($day['month_day'] > 0) ? 'day' : 'overflow';
+
         return $day;
     }
 }
