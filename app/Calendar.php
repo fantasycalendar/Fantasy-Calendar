@@ -8,18 +8,22 @@ use Auth;
 use Illuminate\Support\Arr;
 
 /**
- * @property mixed static_data
- * @property mixed dynamic_data
- * @property mixed user
- * @property mixed current_date_valid
- * @property mixed year
- * @property mixed month_id
- * @property mixed month_name
- * @property mixed month_length
- * @property array month
- * @property mixed day
- * @property mixed current_era_valid
- * @property mixed users
+ * @property mixed static_data Calendar static data
+ * @property mixed dynamic_data Calendar dynamic data
+ * @property mixed user Calendar user
+ * @property mixed current_date_valid Checks whether the current date in dynamic data is valid
+ * @property mixed year The current year
+ * @property mixed year_data Data structure of year_data in static data
+ * @property mixed month_id ID of current month
+ * @property mixed month_name Name of current month
+ * @property mixed month_length Length property of current month (Does not include leap days)
+ * @property mixed month_week Week used by the current month
+ * @property mixed month_true_length Calculated length (Based on current year and leap days)
+ * @property array month Data structure of current month
+ * @property bool overflows_week Checks whether calendar overflows the week
+ * @property mixed day Current day in month
+ * @property mixed current_era_valid Checks whether the current era is valid
+ * @property mixed users Calendar users added by owner of calendar
  */
 class Calendar extends Model
 {
@@ -179,6 +183,11 @@ class Calendar extends Model
         return Arr::get($this->dynamic_data, 'year', 0);
     }
 
+    public function getYearDataAttribute()
+    {
+        return Arr::get($this->static_data, 'year_data');
+    }
+
     public function getMonthIdAttribute()
     {
         return Arr::get($this->dynamic_data,
@@ -186,6 +195,31 @@ class Calendar extends Model
             Arr::get($this->dynamic_data,
                 'month',
                 0));
+    }
+
+    public function getMonthTrueLengthAttribute()
+    {
+        $length = $this->month_length;
+
+        $leapDays = Arr::get($this->static_data, 'year_data.leap_days');
+
+        foreach($leapDays as $day) {
+            if($this->yearIntersectsLeapDay($day['interval'], $day['offset']) && $this->month_id === $day['timespan'] && !$day['intercalary']) {
+                $length++;
+            }
+        }
+
+        return $length;
+    }
+
+    public function getMonthWeekAttribute()
+    {
+        return Arr::get($this->month, 'week', Arr::get($this->year_data, 'global_week'));
+    }
+
+    public function getOverflowsWeekAttribute()
+    {
+        return Arr::get($this->year_data, 'overflows');
     }
 
     public function getMonthNameAttribute()
@@ -297,5 +331,10 @@ class Calendar extends Model
         }
 
         return true;
+    }
+
+    private function yearIntersectsLeapDay($interval, $offset)
+    {
+        return ($this->year + $offset) % $interval == 0;
     }
 }

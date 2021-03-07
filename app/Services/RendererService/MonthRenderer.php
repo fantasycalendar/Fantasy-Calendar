@@ -29,7 +29,7 @@ class MonthRenderer
     {
         $this->calendar = $calendar;
 
-        if(Arr::get($this->getYearData(), 'overflow')) {
+        if($this->calendar->overflows_week) {
             throw new \Exception('API rendering does not currently support overflowed weekdays.');
         }
     }
@@ -66,16 +66,15 @@ class MonthRenderer
 
     private function buildMonth()
     {
-        $weekdays = collect($this->calendar->month['week'] ?? Arr::get($this->getYearData(), 'global_week'));
-        $weeksInMonth = collect(range(1, (int) (ceil($this->determineMonthLength() / $weekdays->count()))));
+        $weeksInMonth = $this->buildWeekList();
 
         $monthDay = 0;
-        $structure = $weeksInMonth->mapWithKeys(function($weekNumber) use (&$monthDay, $weekdays){
+        $structure = $weeksInMonth->mapWithKeys(function($weekNumber) use (&$monthDay){
             return [
-                $weekNumber => $weekdays->map(function($day) use (&$monthDay){
+                $weekNumber => collect($this->calendar->month_week)->map(function($day) use (&$monthDay){
                     $monthDay++;
 
-                    return $this->dayInfo((($monthDay > $this->determineMonthLength()) ? null : $monthDay), $day);
+                    return ['month_day' => $monthDay > $this->calendar->month_length ? null : $monthDay];
                 })
             ];
         });
@@ -83,50 +82,18 @@ class MonthRenderer
         return [
             'year' => $this->calendar->year,
             'name' => $this->calendar->month_name,
-            'weekdays' => $weekdays,
+            'length' => $this->calendar->month_true_length,
+            'weekdays' => $this->calendar->month_week,
             'weeks' => $structure
         ];
     }
 
-    private function dayInfo($dayToCheck, $name)
+    private function buildWeekList()
     {
-        $day = $this->getDay();
+        $weeks_in_month = ceil($this->calendar->month_length / count($this->calendar->month_week));
 
-        return [
-            'name' => $dayToCheck ? $name : null,
-            'month_day' => $dayToCheck,
-        ];
-    }
-
-    private function getYearData()
-    {
-        return Arr::get($this->calendar->static_data, 'year_data');
-    }
-
-    private function getDay()
-    {
-        return Arr::get($this->calendar->dynamic_data, 'day');
-    }
-
-    private function determineMonthLength()
-    {
-        $length = $this->calendar->month_length;
-
-        $leapDays = Arr::get($this->calendar->static_data, 'year_data.leap_days');
-
-        foreach($leapDays as $day) {
-            if($this->yearIntersectsLeapDay($day['interval'], $day['offset']) && $this->calendar->month_id === $day['timespan'] && !$day['intercalary']) {
-                $length++;
-            }
-        }
-
-        return $length;
-    }
-
-    private function yearIntersectsLeapDay($interval, $offset)
-    {
-        $currentYear = $this->calendar->year + $offset;
-
-        return $currentYear % $interval == 0;
+        return collect(
+            range(1, $weeks_in_month)
+        );
     }
 }
