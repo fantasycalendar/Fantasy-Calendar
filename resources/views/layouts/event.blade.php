@@ -20,7 +20,7 @@
 				<i class="close_ui_btn fas fa-times-circle" @click='callback_do_close(close)'></i>
 
 				<div class='row no-gutters modal-form-heading'>
-					<h2><span class='event_name' x-text='data.name'>Editing Event</span> <i class="fas fa-pencil-alt edit_event_btn" @click='callback_do_edit'></i></h2>
+					<h2><span class='event_name' x-text='data.name'>Editing Event</span> <i class="fas fa-pencil-alt edit_event_btn" @click='callback_do_edit' x-show='can_edit'></i></h2>
 				</div>
 
 				<div class='row'>
@@ -52,13 +52,13 @@
                                             <div class='col-auto'>
                                                 <p><span class='username' x-text="comment.username"></span><span class='date' x-text='" - "+comment.date'></span></p>
                                             </div>
-                                            <div class='col-auto ml-auto'>
+                                            <div class='col-auto ml-auto' x-show="comment.comment_owner || comment.can_delete">
                                                 <button class="calendar_action btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" x-show="!comment.editing" type="button" :id="'dropdownButton-comment'+comment.id" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                                                 <div class="dropdown-menu dropdown-menu-right" :aria-labelledby="'dropdownButton-comment'+comment.id">
-                                                    <button class='dropdown-item' @click="start_edit_comment(comment)">
+                                                    <button class='dropdown-item' @click="start_edit_comment(comment)" x-show="comment.comment_owner">
                                                         <i class="fa fa-edit"></i> Edit
                                                     </button>
-                                                    <button class="dropdown-item" @click="delete_comment(comment)">
+                                                    <button class="dropdown-item" @click="delete_comment(comment)" x-show="comment.can_delete">
                                                         <i class="fa fa-calendar-times"></i> Delete
                                                     </button>
                                                 </div>
@@ -92,7 +92,23 @@
                             </div>
 						@if(Auth::check())
 							<div class='col-12 mt-2' id='event_comment_input_container' x-show='user_can_comment && can_comment_on_event'>
-								<textarea x-ref='comment_input' class='form-control' id='event_comment_input' placeholder='Enter your comment and press submit.' autofocus=''></textarea>
+								<!-- <textarea x-ref='comment_input' class='form-control' id='event_comment_input' placeholder='Enter your comment and press submit.' autofocus=''></textarea> -->
+
+                                <div class="rounded border">
+                                    <alpine-editor
+                                        data-h1-classes="text-xl"
+                                        id="editor-comment"
+                                    >
+                                        <div data-type="menu" class="btn-toolbar" role="toolbar" aria-label="Editor toolbar">
+                                            <div class="btn-group mr-2" role="group" aria-label="Editor group">
+                                                <x-wysiwyg.action-button command="strong" active="bg-blue-400" class="bg-gray-500" icon="bold"></x-wysiwyg.action-button>
+                                                <x-wysiwyg.action-button command="em" active="bg-blue-400" class="bg-gray-500" icon="italic"></x-wysiwyg.action-button>
+                                            </div>
+                                        </div>
+                                        <div data-type="editor" class="p-2 border-top" style="border-color: black;"></div>
+                                    </alpine-editor>
+                                </div>
+
 								<button type='button' class='btn btn-primary mt-2' style="z-index: 200" @click='submit_comment'>Submit</button>
 							</div>
 						@endif

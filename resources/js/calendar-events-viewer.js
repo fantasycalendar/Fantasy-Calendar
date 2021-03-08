@@ -3,6 +3,7 @@ const calendar_events_editor = require("./calendar-events-editor");
 const calendar_events_viewer = {
 
 	open: false,
+	can_edit: false,
 	era: false,
 	user_can_comment: false,
 	can_comment_on_event: false,
@@ -11,9 +12,7 @@ const calendar_events_viewer = {
 	db_id: false,
 	data: {},
 	comments: [],
-    comment_editor_content: "",
 
-	has_initialized: false,
 	swal_content: {
 		title: "Cancel comment?",
 		text: "You haven't posted your comment yet, are you sure you want to continue?",
@@ -23,34 +22,8 @@ const calendar_events_viewer = {
 		cancelButtonColor: '#3085d6',
 		confirmButtonText: 'OK',
 	},
-	init() {
-
-		/* Some scripts are loaded after Alpine, so we need to set everything up when the UI is first opened */
-		if (!this.has_initialized) {
-
-			this.comment_input = $(this.$refs.comment_input);
-
-			this.comment_input.trumbowyg({
-				btns: [
-					['strong', 'em', 'del'],
-					['superscript', 'subscript'],
-					['link'],
-					['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
-					['unorderedList', 'orderedList'],
-					['removeformat']
-				]
-			});
-
-
-			this.has_initialized = true;
-
-		}
-
-	},
 
 	view_event($event){
-
-		this.init();
 
 		this.id = $event.detail.id;
 		this.era = $event.detail.era;
@@ -63,9 +36,13 @@ const calendar_events_viewer = {
 		}
 
 		this.open = true;
-
 		this.user_can_comment = Perms.user_can_comment();
 		this.can_comment_on_event = this.db_id !== false;
+		this.can_edit = Perms.can_modify_event(this.id);
+
+		if(this.user_can_comment){
+			document.querySelector('#editor-comment .ProseMirror').innerHTML = "";
+		}
 
 		if(this.db_id) {
 			this.get_event_comments();
@@ -104,7 +81,6 @@ const calendar_events_viewer = {
 				can_delete: Perms.user_can_delete_comment(comment)
 			})
 		}
-		console.log(JSON.parse(JSON.stringify(this.comments)));
 		this.loading_comments = false;
 
 	},
@@ -120,11 +96,11 @@ const calendar_events_viewer = {
 			username: `${comment.username}${comment.comment_owner ? " (you)" : (comment.calendar_owner ? " (owner)" : "")}`,
 			editing: false
 		})
-		this.comment_input.trumbowyg('html', '')
+		document.querySelector('#editor-comment .ProseMirror').innerHTML = "";
 	},
 
-	submit_comment(){
-		let comment_content = this.comment_input.trumbowyg('html');
+	submit_comment() {
+		let comment_content = document.querySelector('#editor-comment .ProseMirror').innerHTML;
 		submit_new_comment(comment_content, this.db_id, function(comment){
 			window.dispatchEvent(new CustomEvent('event-viewer-modal-add-comment', { detail: { comment: comment } }));
 		});
@@ -134,19 +110,15 @@ const calendar_events_viewer = {
 		this.cancel_edit_comment();
 
 		comment.editing = true;
-
-		console.log(JSON.parse(JSON.stringify(comment)));
 	},
 
 	submit_edit_comment(comment) {
         let comment_content = document.querySelector('#editor-comment-'+comment.id+' .ProseMirror').innerHTML;
 
-		if(comment_content === ""){
+		if(comment_content == "" || comment_content == "<p><br></p>"){
 			$.notify("Comment cannot be empty.");
 			return;
 		}
-
-		console.log(JSON.parse(JSON.stringify(comment)));
 
         axios.patch(window.baseurl+"api/eventcomment/"+comment.id, {
             content: comment_content
@@ -181,8 +153,8 @@ const calendar_events_viewer = {
         }
     },
 
-	delete_comment(index) {
-		let comment = this.comments[index];
+	delete_comment(comment) {
+		let index = this.comments.indexOf(comment);
 		let event_viewer_ui = this;
 		swal.fire({
 			title: "Delete comment?",
@@ -207,30 +179,41 @@ const calendar_events_viewer = {
 
 	callback_do_edit: function() {
 
-		if (this.comment_input.trumbowyg('html').length > 0) {
-			swal.fire(swal_content).then((result) => {
-				if (!result.dismiss) {
-					window.dispatchEvent(new CustomEvent('event-editor-modal-edit-event', { detail: { event_id: this.id } }));
-					this.close();
-				}
-			});
-		} else {
+		if (!this.user_can_comment) {
 			window.dispatchEvent(new CustomEvent('event-editor-modal-edit-event', { detail: { event_id: this.id } }));
 			this.close();
+		}else{
+			let comment_content = document.querySelector('#editor-comment .ProseMirror').innerHTML;
+			if(comment_content != "" && comment_content != "<p><br></p>") {
+				swal.fire(this.swal_content).then((result) => {
+					if (!result.dismiss) {
+						window.dispatchEvent(new CustomEvent('event-editor-modal-edit-event', { detail: { event_id: this.id } }));
+						this.close();
+					}
+				});
+			}else{
+				window.dispatchEvent(new CustomEvent('event-editor-modal-edit-event', { detail: { event_id: this.id } }));
+				this.close();
+			}
 		}
 
 	},
 
 	callback_do_close: function() {
 
-		if (this.comment_input.trumbowyg('html').length > 0) {
-			swal.fire(swal_content).then((result) => {
-				if (!result.dismiss) {
-					this.close();
-				}
-			});
-		} else {
+		if (!this.user_can_comment) {
 			this.close();
+		}else{
+			let comment_content = document.querySelector('#editor-comment .ProseMirror').innerHTML;
+			if (comment_content != "" && comment_content != "<p><br></p>") {
+				swal.fire(this.swal_content).then((result) => {
+					if (!result.dismiss) {
+						this.close();
+					}
+				});
+			} else {
+				this.close();
+			}
 		}
 
 	},
@@ -243,10 +226,13 @@ const calendar_events_viewer = {
 		this.db_id = false;
 		this.data = {};
 		this.comments = [];
-		this.comment_input.trumbowyg('html', '');
 		this.loading_comments = true;
 
-	},
+		if (this.user_can_comment) {
+			document.querySelector('#editor-comment .ProseMirror').innerHTML = "";
+		}
+
+	}
 
 }
 
