@@ -69,30 +69,6 @@ const calendar_renderer = {
         this.render_data.preview_epoch = event.detail.preview_epoch;
     },
 
-    register_events: function(event){
-        this.loading_message = "Placing events...";
-
-        let event_data = event.detail;
-        for(let epoch in this.render_data.event_epochs){
-            if(!this.render_data.event_epochs[epoch].has_events){
-                break;
-            }
-            if(this.render_data.event_epochs[epoch].events.length > 0){
-                this.render_data.event_epochs[epoch].events.splice(0, this.render_data.event_epochs[epoch].events.length)
-            }
-            if(this.render_data.timespan_event_epochs[epoch].events.length > 0){
-                this.render_data.timespan_event_epochs[epoch].events.splice(0, this.render_data.timespan_event_epochs[epoch].events.length)
-            }
-            if(event_data[epoch] !== undefined){
-                for(var index in event_data[epoch]){
-                    let calendar_event = event_data[epoch][index];
-                    this.render_data.event_epochs[epoch].events.push(calendar_event)
-                    this.render_data.timespan_event_epochs[epoch].events.push(calendar_event)
-                }
-            }
-        }
-    },
-
     pre_render: function(){
         show_loading_screen_buffered();
     },
@@ -119,13 +95,6 @@ const calendar_renderer = {
             }
         }
         this.render_callbacks = [];
-        this.loaded = true;
-    },
-
-    pre_event_load: function(){
-    },
-
-    post_event_load: function(){
         this.loaded = true;
     }
 

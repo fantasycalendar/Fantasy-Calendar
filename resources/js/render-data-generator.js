@@ -75,13 +75,26 @@ const render_data_generator = {
 
 	},
 
-	get_moon_data: function(epoch_data){
+    get_moon_data: function(epoch_data, events) {
 
 		let moons = [];
-		for(let moon_index = 0; moon_index < static_data.moons.length; moon_index++){
+        for (let moon_index = 0; moon_index < static_data.moons.length; moon_index++) {
+
+            let phase = epoch_data.moon_phase[moon_index];
+
+            for (let index in events) {
+                if (events[index].overrides) {
+                    if (events[index].overrides.moons !== undefined) {
+                        if (events[index].overrides.moons[moon_index] !== undefined) {
+                            let moon_overrides = events[index].overrides.moons[moon_index];
+                            phase = moon_overrides.phase !== undefined ? moon_overrides.phase : phase;
+                        }
+                    }
+                }
+            }
 
             let moon = static_data.moons[moon_index];
-            let phase_name = Object.keys(moon_phases[moon.granularity])[epoch_data.moon_phase[moon_index]];
+            let phase_name = Object.keys(moon_phases[moon.granularity])[phase];
             let path = moon_phases[moon.granularity][phase_name];
 
             if(!moon.hidden || Perms.player_at_least('co-owner')){
@@ -127,11 +140,13 @@ const render_data_generator = {
 		}
 
 		let season_color = epoch_data.season ? (epoch_data.season.color !== undefined ? epoch_data.season.color : false) : false;
-		let weather_icon = this.get_weather_icon(epoch);
+        let weather_icon = this.get_weather_icon(epoch);
+
+        let events = this.event_data[epoch] ? this.event_data[epoch] : [];
 
 		let moons = [];
 		if(!static_data.settings.hide_moons || (static_data.settings.hide_moons && Perms.player_at_least('co-owner'))){
-			moons = this.get_moon_data(epoch_data);
+            moons = this.get_moon_data(epoch_data, events);
 		}
 
         let year_day = static_data.settings.add_year_day_number ? epoch_data.year_day : false;
@@ -146,7 +161,7 @@ const render_data_generator = {
 			"weather_icon": weather_icon,
 			"season_color": season_color,
             "show_event_button": Perms.player_at_least('player'),
-			"events": [],
+            "events": events,
 			"moons": moons,
             "has_events": true
 		};
@@ -169,7 +184,7 @@ const render_data_generator = {
 		};
     },
 
-    _create_render_data: async function(processed_data){
+    _create_render_data: function(processed_data){
 
         if(processed_data !== undefined){
             this.processed_data = processed_data;
@@ -193,7 +208,7 @@ const render_data_generator = {
             "timespan_event_epochs": {}
         }
 
-        let event_data = await this.create_event_data();
+        this.create_event_data();
 
         let indexes = Object.keys(timespans_to_build);
         let length = indexes.length
@@ -441,7 +456,7 @@ const render_data_generator = {
 
     },
 
-	create_render_data: async function(processed_data){
+	create_render_data: function(processed_data){
 
         return new Promise(function(resolve, reject){
 
@@ -532,6 +547,7 @@ const render_data_generator = {
                     this.events_to_send[era.date.epoch].push({
                         "index": era_index,
                         "name": era.name,
+                        "overrides": {},
                         "class": event_class.join(' ')
                     });
                 }
@@ -591,6 +607,7 @@ const render_data_generator = {
                 this.events_to_send[epoch].push({
                     "index": event_index,
                     "name": event_name,
+                    "overrides": event.data.overrides,
                     "class": event_class.join(' ')
                 });
             }
@@ -604,30 +621,26 @@ const render_data_generator = {
 
 	create_event_data: function(){
 
-        return new Promise(function(resolve, reject){
+        let evaluated_event_data = event_evaluator.init(
+            static_data,
+            dynamic_data,
+            events,
+            event_categories,
+            this.epoch_data,
+            undefined,
+            this.processed_data.year_data.start_epoch,
+            this.processed_data.year_data.end_epoch,
+            Perms.player_at_least('co-owner'),
+            false
+        );
 
-            let evaluated_event_data = event_evaluator.init(
-                static_data,
-                dynamic_data,
-                events,
-                event_categories,
-                render_data_generator.processed_data.epoch_data,
-                undefined,
-                render_data_generator.processed_data.year_data.start_epoch,
-                render_data_generator.processed_data.year_data.end_epoch,
-                Perms.player_at_least('co-owner'),
-                false
-            );
+        let event_data = this._create_event_data(evaluated_event_data);
 
-            var result = render_data_generator._create_event_data(evaluated_event_data);
-
-            if(result.success){
-                resolve(result.event_data);
-            }else{
-                reject(result.message);
-            }
-
-        });
+        if (event_data.success) {
+            this.event_data = event_data.event_data;
+        } else {
+            this.event_data = {};
+        }
 
     }
 }
