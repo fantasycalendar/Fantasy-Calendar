@@ -169,7 +169,7 @@ const render_data_generator = {
 		};
     },
 
-    _create_render_data: function(processed_data){
+    _create_render_data: async function(processed_data){
 
         if(processed_data !== undefined){
             this.processed_data = processed_data;
@@ -184,7 +184,7 @@ const render_data_generator = {
         let year_data = this.processed_data.year_data;
         this.epoch_data = this.processed_data.epoch_data;
 
-        let render_data = {
+        this.render_data = {
             "current_epoch": dynamic_data.epoch,
             "preview_epoch": preview_date.epoch,
             "render_style": static_data.settings.layout,
@@ -192,6 +192,8 @@ const render_data_generator = {
             "event_epochs": {},
             "timespan_event_epochs": {}
         }
+
+        let event_data = await this.create_event_data();
 
         let indexes = Object.keys(timespans_to_build);
         let length = indexes.length
@@ -225,15 +227,15 @@ const render_data_generator = {
 
                     let day_data = this.get_day_data(epoch);
                     timespan_data.days[timespan_data.days.length-1].push(day_data);
-                    render_data.event_epochs[epoch] = day_data;
-                    render_data.timespan_event_epochs[epoch] = timespan_data;
+                    this.render_data.event_epochs[epoch] = day_data;
+                    this.render_data.timespan_event_epochs[epoch] = timespan_data;
 
                     weekday_number++;
                     epoch++;
 
                     if(weekday_number > timespan.week.length){
                         weekday_number = 1;
-                        if(render_data.render_style != "vertical"){
+                        if(this.render_data.render_style != "vertical"){
                             timespan_data.days.push([]);
                         }
                     }
@@ -243,7 +245,7 @@ const render_data_generator = {
                     timespan_data.days[timespan_data.days.length-1].push(this.overflow());
                 }
 
-                render_data.timespans.push(timespan_data);
+                this.render_data.timespans.push(timespan_data);
 
             }
 
@@ -266,14 +268,14 @@ const render_data_generator = {
             for(let day_number = 1; day_number <= timespan.length;){
 
                 if(timespan_data.days[timespan_data.days.length-1].length != 0){
-                    if(render_data.render_style != "vertical"){
+                    if(this.render_data.render_style != "vertical"){
                         timespan_data.days.push([])
                     }
                 }
 
                 for(let weekday_number = 1; weekday_number <= timespan.week.length; weekday_number++){
 
-                    if(week_day > weekday_number && show_months && render_data.render_style != "vertical"){
+                    if(week_day > weekday_number && show_months && this.render_data.render_style != "vertical"){
 
                         timespan_data.days[timespan_data.days.length-1].push(this.overflow());
 
@@ -281,8 +283,8 @@ const render_data_generator = {
 
                         let day_data = this.get_day_data(epoch);
                         timespan_data.days[timespan_data.days.length-1].push(day_data);
-                        render_data.event_epochs[epoch] = day_data;
-                        render_data.timespan_event_epochs[epoch] = timespan_data;
+                        this.render_data.event_epochs[epoch] = day_data;
+                        this.render_data.timespan_event_epochs[epoch] = timespan_data;
 
                         epoch++;
 
@@ -296,7 +298,7 @@ const render_data_generator = {
                                 timespan_data.days[timespan_data.days.length-1].push(this.overflow());
                             }
 
-                            render_data.timespans.push(timespan_data);
+                            this.render_data.timespans.push(timespan_data);
 
                             timespan_data = {
                                 "title": "",
@@ -314,15 +316,15 @@ const render_data_generator = {
 
                                 let day_data = this.get_day_data(epoch);
                                 timespan_data.days[timespan_data.days.length-1].push(day_data);
-                                render_data.event_epochs[epoch] = day_data;
-                                render_data.timespan_event_epochs[epoch] = timespan_data;
+                                this.render_data.event_epochs[epoch] = day_data;
+                                this.render_data.timespan_event_epochs[epoch] = timespan_data;
 
                                 internal_weekday_number++;
                                 epoch++;
 
                                 if(internal_weekday_number > timespan.week.length){
                                     internal_weekday_number = 1;
-                                    if(render_data.render_style != "vertical"){
+                                    if(this.render_data.render_style != "vertical"){
                                         timespan_data.days.push([]);
                                     }
                                 }
@@ -332,7 +334,7 @@ const render_data_generator = {
                                 timespan_data.days[timespan_data.days.length-1].push(this.overflow());
                             }
 
-                            render_data.timespans.push(timespan_data);
+                            this.render_data.timespans.push(timespan_data);
 
                             timespan_data = {
                                 "title": static_data.settings.add_month_number ? `${timespan.name} - Month ${index+1}` : timespan.name,
@@ -359,7 +361,7 @@ const render_data_generator = {
 
                             if(week_day > timespan.week.length){
                                 week_day = 1;
-                                if(render_data.render_style == "vertical"){
+                                if(this.render_data.render_style == "vertical"){
                                     day_data.extra_class = "week_end"
                                 }
                             }
@@ -367,7 +369,7 @@ const render_data_generator = {
 
                     }else{
 
-                        if(render_data.render_style != "vertical"){
+                        if(this.render_data.render_style != "vertical"){
                             timespan_data.days[timespan_data.days.length-1].push(this.overflow());
                         }
 
@@ -376,7 +378,7 @@ const render_data_generator = {
                 
             }
 
-            render_data.timespans.push(timespan_data);
+            this.render_data.timespans.push(timespan_data);
 
             if(Perms.player_at_least('co-owner') || !static_data.settings.only_reveal_today || (static_data.settings.only_reveal_today && epoch > dynamic_data.epoch)){
 
@@ -402,15 +404,15 @@ const render_data_generator = {
 
                         let day_data = this.get_day_data(epoch);
                         timespan_data.days[timespan_data.days.length - 1].push(day_data);
-                        render_data.event_epochs[epoch] = day_data;
-                        render_data.timespan_event_epochs[epoch] = timespan_data;
+                        this.render_data.event_epochs[epoch] = day_data;
+                        this.render_data.timespan_event_epochs[epoch] = timespan_data;
 
                         weekday_number++;
                         epoch++;
 
                         if(weekday_number > timespan.week.length){
                             weekday_number = 1;
-                            if(render_data.render_style != "vertical"){
+                            if(this.render_data.render_style != "vertical"){
                                 timespan_data.days.push([]);
                             }
                         }
@@ -420,7 +422,7 @@ const render_data_generator = {
                         timespan_data.days[timespan_data.days.length-1].push(this.overflow());
                     }
 
-                    render_data.timespans.push(timespan_data);
+                    this.render_data.timespans.push(timespan_data);
 
                 }
 
@@ -432,16 +434,14 @@ const render_data_generator = {
 
         }
 
-        this.render_data = render_data;
-
         return {
             success: true,
-            render_data: render_data
+            render_data: this.render_data
         };
 
     },
 
-	create_render_data: function(processed_data){
+	create_render_data: async function(processed_data){
 
         return new Promise(function(resolve, reject){
 
@@ -602,9 +602,22 @@ const render_data_generator = {
         }
     },
 
-	create_event_data: function(evaluated_event_data){
+	create_event_data: function(){
 
         return new Promise(function(resolve, reject){
+
+            let evaluated_event_data = event_evaluator.init(
+                static_data,
+                dynamic_data,
+                events,
+                event_categories,
+                render_data_generator.processed_data.epoch_data,
+                undefined,
+                render_data_generator.processed_data.year_data.start_epoch,
+                render_data_generator.processed_data.year_data.end_epoch,
+                Perms.player_at_least('co-owner'),
+                false
+            );
 
             var result = render_data_generator._create_event_data(evaluated_event_data);
 

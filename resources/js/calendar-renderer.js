@@ -119,6 +119,7 @@ const calendar_renderer = {
             }
         }
         this.render_callbacks = [];
+        this.loaded = true;
     },
 
     pre_event_load: function(){

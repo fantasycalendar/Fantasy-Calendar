@@ -710,7 +710,7 @@ var edit_event_ui = {
 			edit_event_ui.clear_ui();
 
 			eval_apply_changes(function(){
-				rebuild_events();
+				//rebuild_events();
 			});
 
 		}

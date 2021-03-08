@@ -146,6 +146,7 @@ function rebuild_events(event_id){
 		end_epoch: evaluated_static_data.year_data.end_epoch,
 		owner: Perms.player_at_least('co-owner')
 	});
+
 }
 
 
@@ -206,7 +207,7 @@ worker_calendar.onmessage = e => {
 		RenderDataGenerator.create_render_data(e.data.processed_data).then(
 			function(result){
 				window.dispatchEvent(new CustomEvent('render-data-change', {detail: result}));
-				rebuild_events();
+				//rebuild_events();
 			}, function(err){
 				$.notify(err);
 			}
