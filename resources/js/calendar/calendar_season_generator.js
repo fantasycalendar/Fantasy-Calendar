@@ -36,6 +36,32 @@ class Climate{
 
 		this.random = new random(this.static_data.seasons.global_settings.seed);
 
+		this.overrides = [
+			{
+				start_duration: 50,
+				epoch: 150,
+				duration: 50,
+				end_duration: 50,
+				weather: {
+					temperature: {
+						/* actual: [5, 5], */
+						peaks: [0, 10]
+					},
+					precipitation: {
+						chance: 0,
+						intensity: 0,
+						actual: 0
+					}
+				}
+			}
+		];
+
+		for(let index in this.overrides){
+			let override = this.overrides[index];
+			override.start_epoch = override.epoch - override.start_duration;
+			override.end_epoch = override.epoch + override.end_duration + override.duration;
+		}
+
 	}
 
 	get process_seasons(){
@@ -937,13 +963,57 @@ class Climate{
 
 	}
 
+	get_weather_override(epoch) {
+
+		this.weather_overrides = [];
+		for (let override_index in this.overrides) {
+			let override = this.overrides[override_index];
+			if (epoch >= override.start_epoch && epoch <= override.end_epoch) {
+
+				let blend = 0.0;
+
+				if (epoch >= override.start_epoch && epoch <= override.epoch) {
+					blend = (epoch - override.start_epoch) / override.start_duration;
+				} else if (epoch >= override.epoch && epoch <= (override.epoch + override.duration)) {
+					blend = 1.0;
+				} else {
+					blend = (override.end_epoch - epoch) / override.end_duration;
+				}
+
+				for(let blend_index in this.weather_overrides){
+					this.weather_overrides[blend_index].blend = this.weather_overrides[blend_index].blend * (1.0 - blend);
+				}
+
+				this.weather_overrides.push({
+					override: override,
+					blend: blend
+				});
+			}
+		}
+
+	}
+
 	evaluate_weather_data(epoch){
+
+		this.get_weather_override(epoch);
 
 		var curr_season_data = this.current_location.seasons[this.weather.current_index];
 		var next_season_data = this.current_location.seasons[this.weather.next_index];
 
 		var low = lerp(next_season_data.weather.temp_low, curr_season_data.weather.temp_low, this.weather.perc);
 		var high = lerp(next_season_data.weather.temp_high, curr_season_data.weather.temp_high, this.weather.perc);
+
+		for (let override_index in this.weather_overrides) {
+
+			let override = this.weather_overrides[override_index].override;
+			let blend = this.weather_overrides[override_index].blend;
+
+			low = override.weather.temperature.peaks ? lerp(low, override.weather.temperature.peaks[0], blend) : low;
+
+			high = override.weather.temperature.peaks ? lerp(high, override.weather.temperature.peaks[1], blend) : high;
+
+		}
+		
 		var middle = mid(low, high);
 
 		var range_low = mid(low, middle);
@@ -965,6 +1035,19 @@ class Climate{
 
 		var temp = mid(range_low, range_high);
 
+		for (let override_index in this.weather_overrides) {
+
+			let override = this.weather_overrides[override_index].override;
+			let blend = this.weather_overrides[override_index].blend;
+
+			range_low = override.weather.temperature.actual ? lerp(range_low, override.weather.temperature.actual[0], blend) : range_low;
+
+			range_high = override.weather.temperature.actual ? lerp(range_high, override.weather.temperature.actual[1], blend) : range_high;
+
+			temp = override.weather.temperature.actual ? mid(low, high) : temp;
+
+		}
+
 		if(this.static_data.seasons.global_settings.temp_sys === "imperial" || this.static_data.seasons.global_settings.temp_sys === "both_i" || !this.dynamic_data.custom_location){
 			var temperature_range_i = [low, high];
 			var temperature_range_m = [fahrenheit_to_celcius(low), fahrenheit_to_celcius(high)];
@@ -984,10 +1067,6 @@ class Climate{
 			var temperature_actual_i = celcius_to_fahrenheit(temp);
 			var percipitation_table = temp > 0 ? "warm" : "cold";
 		}
-
-		var precipitation_chance = lerp(next_season_data.weather.precipitation, curr_season_data.weather.precipitation, this.weather.perc);
-		var precipitation_intensity = lerp(next_season_data.weather.precipitation_intensity, curr_season_data.weather.precipitation_intensity, this.weather.perc);
-
 
 		var precipitation_chance = lerp(next_season_data.weather.precipitation, curr_season_data.weather.precipitation, this.weather.perc);
 		var precipitation_intensity = lerp(next_season_data.weather.precipitation_intensity, curr_season_data.weather.precipitation_intensity, this.weather.perc);
