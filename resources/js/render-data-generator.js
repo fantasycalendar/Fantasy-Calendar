@@ -77,32 +77,44 @@ const render_data_generator = {
 
     get_moon_data: function(epoch_data, events) {
 
-		let moons = [];
+        let moons = [];
+        moon_loop:
         for (let moon_index = 0; moon_index < static_data.moons.length; moon_index++) {
 
-            let phase = epoch_data.moon_phase[moon_index];
+            let moon = static_data.moons[moon_index];
 
-            for (let index in events) {
-                if (events[index].overrides) {
-                    if (events[index].overrides.moons !== undefined) {
-                        if (events[index].overrides.moons[moon_index] !== undefined) {
-                            let moon_overrides = events[index].overrides.moons[moon_index];
-                            phase = moon_overrides.phase !== undefined ? moon_overrides.phase : phase;
+            if (!moon.hidden || Perms.player_at_least('co-owner')) {
+
+                let phase = epoch_data.moon_phase[moon_index];
+                let phase_name = Object.keys(moon_phases[moon.granularity])[phase];
+                let color = moon.color;
+                let shadow_color = moon.shadow_color ? moon.shadow_color : "#292b4a";
+                let hidden = moon.hidden;
+
+                for (let index in events) {
+                    if (events[index].overrides) {
+                        if (events[index].overrides.moons !== undefined) {
+                            if (events[index].overrides.moons[moon_index] !== undefined) {
+                                let moon_overrides = events[index].overrides.moons[moon_index];
+                                phase = moon_overrides.phase !== undefined ? moon_overrides.phase : phase;
+                                color = moon_overrides.color !== undefined ? moon_overrides.color : color;
+                                shadow_color = moon_overrides.shadow_color !== undefined ? moon_overrides.shadow_color : shadow_color;
+                                hidden = moon_overrides.hidden !== undefined ? moon_overrides.hidden : hidden;
+                                phase_name = moon_overrides.phase_name !== undefined ? moon_overrides.phase_name : phase_name;
+                                if (hidden) continue moon_loop;
+                            }
                         }
                     }
                 }
-            }
+                let path = moon_phases[moon.granularity][phase_name];
 
-            let moon = static_data.moons[moon_index];
-            let phase_name = Object.keys(moon_phases[moon.granularity])[phase];
-            let path = moon_phases[moon.granularity][phase_name];
-
-            if(!moon.hidden || Perms.player_at_least('co-owner')){
                 moons.push({
                     "index": moon_index,
                     "name": moon.name,
                     "phase": phase_name,
-                    "path": path
+                    "path": path,
+                    "color": color,
+                    "shadow_color": shadow_color
                 });
             }
         }

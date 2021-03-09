@@ -1,4 +1,7 @@
 function update_moon_colors(){
+
+	return; 
+
 	moon_colors = [];
 	var html = [];
 

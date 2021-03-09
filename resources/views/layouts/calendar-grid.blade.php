@@ -65,8 +65,8 @@
                                              @mouseenter="moon_mouse_enter(moon, $event)"
                                              @mouseleave="moon_mouse_leave"
                                         >
-                                            <circle cx="16" cy="16" r="10" class="lunar_background"/>
-                                            <path class="lunar_shadow" x-show="moon.path" :d="moon.path"/>
+                                            <circle cx="16" cy="16" r="10" class="lunar_background" :style="`fill: ${moon.color};`" />
+                                            <path class="lunar_shadow" :style="`fill: ${moon.shadow_color};`" x-show="moon.path" :d="moon.path"/>
                                             <circle cx="16" cy="16" r="10" class="lunar_border"/>
                                         </svg>
                                     </template>
