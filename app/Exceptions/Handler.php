@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Support\Facades\App;
 use Throwable;
 use Auth;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
@@ -49,6 +50,10 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+        if(App::environment('local')) {
+            ddd($exception);
+        }
+
         if($this->isApiCall($request)) {
             if(property_exists($exception, 'validator')) {
                 return response()->json([
