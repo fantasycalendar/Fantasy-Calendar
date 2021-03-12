@@ -25,6 +25,7 @@ use Illuminate\Support\Arr;
  * @property mixed day Current day in month
  * @property mixed current_era_valid Checks whether the current era is valid
  * @property mixed users Calendar users added by owner of calendar
+ * @property mixed leap_days
  */
 class Calendar extends Model
 {
@@ -198,21 +199,16 @@ class Calendar extends Model
                 0));
     }
 
+    /*
+     * Calculates the "true" length of a month by checking for leap days that intersect
+     */
     public function getMonthTrueLengthAttribute()
     {
-        $length = $this->month_length;
-
-        $leapDays = Arr::get($this->static_data, 'year_data.leap_days');
-
-        foreach($leapDays as $day) {
-            $leapDay = new LeapDay($day);
-
-            if($leapDay->timespan === $this->month_id && $leapDay->intersectsYear($this->year)) {
-                $length++;
-            }
-        }
-
-        return $length;
+        return $this->month_length + collect($this->leap_days)
+                ->where('timespan', '=', $this->month_id)
+                ->filter(function($leapDay){
+                    return (new LeapDay($leapDay))->intersectsYear($this->year);
+                })->count();
     }
 
     public function getMonthWeekAttribute()
@@ -243,6 +239,11 @@ class Calendar extends Model
     public function getDayAttribute()
     {
         return Arr::get($this->dynamic_data, 'day', 0);
+    }
+
+    public function getLeapDaysAttribute()
+    {
+        return Arr::get($this->static_data, 'year_data.leap_days');
     }
 
     public function getCurrentTimeAttribute() {
