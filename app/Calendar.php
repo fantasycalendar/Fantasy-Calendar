@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Services\CalendarService\LeapDay;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Auth;
@@ -180,7 +181,7 @@ class Calendar extends Model
 
     public function getYearAttribute()
     {
-        return Arr::get($this->dynamic_data, 'year', 0);
+        return (int) Arr::get($this->dynamic_data, 'year', 0);
     }
 
     public function getYearDataAttribute()
@@ -204,7 +205,9 @@ class Calendar extends Model
         $leapDays = Arr::get($this->static_data, 'year_data.leap_days');
 
         foreach($leapDays as $day) {
-            if($this->yearIntersectsLeapDay($day['interval'], $day['offset']) && $this->month_id === $day['timespan'] && !$day['intercalary']) {
+            $leapDay = new LeapDay($day);
+
+            if($leapDay->intersectsYear($this)) {
                 $length++;
             }
         }
@@ -335,6 +338,7 @@ class Calendar extends Model
 
     private function yearIntersectsLeapDay($interval, $offset)
     {
+        return false;
         return ($this->year + $offset) % $interval == 0;
     }
 }

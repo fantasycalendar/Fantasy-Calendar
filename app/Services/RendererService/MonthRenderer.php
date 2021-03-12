@@ -5,6 +5,7 @@ namespace App\Services\RendererService;
 
 
 use App\Calendar;
+use App\Services\CalendarService\LeapDay;
 use App\Services\DatePipeline\AddDayName;
 use App\Services\DatePipeline\AddDayType;
 use App\Services\DatePipeline\AddIsCurrentDate;
@@ -88,7 +89,7 @@ class MonthRenderer
                 $weekNumber => collect($this->calendar->month_week)->map(function($day) use (&$monthDay){
                     $monthDay++;
 
-                    return ['month_day' => $monthDay > $this->calendar->month_length ? null : $monthDay];
+                    return ['month_day' => ($monthDay > $this->calendar->month_true_length) ? null : $monthDay];
                 })
             ];
         });
