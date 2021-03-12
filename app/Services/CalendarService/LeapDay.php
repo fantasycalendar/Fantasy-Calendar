@@ -38,14 +38,14 @@ class LeapDay
         $this->collectIntervals();
     }
 
-    public function intersectsYear(Calendar $calendar)
+    public function intersectsYear(int $year)
     {
-        if($this->intervals->count() === 1) return ['result' => (($calendar->year + $this->offset) % $this->interval) == 0];
+        if($this->intervals->count() === 1) return ['result' => (($year + $this->offset) % $this->interval) == 0];
 
-        $votes = $this->intervals->sortByDesc('years')->map(function($interval) use ($calendar) {
+        $votes = $this->intervals->sortByDesc('years')->map(function($interval) use ($year) {
             $year = ($interval->ignores_offset)
-                ? $calendar->year
-                : $calendar->year - $this->offset;
+                ? $year
+                : $year - $this->offset;
 
             return $interval->voteOnYear($year);
         });

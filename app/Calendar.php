@@ -207,7 +207,7 @@ class Calendar extends Model
         foreach($leapDays as $day) {
             $leapDay = new LeapDay($day);
 
-            if($leapDay->intersectsYear($this)) {
+            if($leapDay->timespan === $this->month_id && $leapDay->intersectsYear($this->year)) {
                 $length++;
             }
         }
