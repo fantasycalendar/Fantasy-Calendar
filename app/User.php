@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Services\Discord\Models\DiscordAuthToken;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\CanResetPassword;
@@ -75,6 +76,10 @@ class User extends Authenticatable implements
      */
     public function calendars() {
         return $this->hasMany('App\Calendar');
+    }
+
+    public function discord_auth() {
+        return $this->hasOne(DiscordAuthToken::class);
     }
 
     /**

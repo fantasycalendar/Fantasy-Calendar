@@ -30,7 +30,7 @@ class DiscordProvider extends ServiceProvider
                 Route::any('/', DiscordController::class.'@ping');
             });
 
-            Route::prefix('auth')->group(function(){
+            Route::prefix('auth')->middleware(['auth'])->group(function(){
                 Route::get('redirect', DiscordController::class.'@redirect');
                 Route::get('callback', DiscordController::class.'@callback');
             });

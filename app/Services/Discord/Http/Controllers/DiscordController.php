@@ -4,6 +4,8 @@
 namespace App\Services\Discord\Http\Controllers;
 
 
+use App\Services\Discord\Models\DiscordAuthToken;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -23,7 +25,24 @@ class DiscordController extends \App\Http\Controllers\Controller
     {
         $user = Socialite::driver('discord')->user();
 
+        if(Auth::user()->discord_auth()->exists()) {
+            Auth::user()->discord_auth->delete();
+        }
+
+        $discordAuth = Auth::user()->discord_auth()->create([
+            'token' => $user->token,
+            'refresh_token' => $user->refreshToken,
+            'avatar' => $user->getAvatar(),
+            'discord_email' => $user->getEmail(),
+            'discord_user_id' => $user->getId(),
+            'discord_username' => $user->getNickname(),
+            'expires_at' => now()->addSeconds($user->expiresIn)
+        ]);
+
         $info = json_encode([
+            $user->token,
+            $refreshToken = $user->refreshToken,
+            $expiresIn = $user->expiresIn,
             $user->getId(),
             $user->getNickname(),
             $user->getName(),

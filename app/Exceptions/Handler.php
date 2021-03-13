@@ -51,7 +51,7 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $exception)
     {
         if(App::environment('local')) {
-            ddd($exception);
+//            ddd($exception);
         }
 
         if($this->isApiCall($request)) {
