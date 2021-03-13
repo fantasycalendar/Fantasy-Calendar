@@ -25,9 +25,14 @@ class DiscordProvider extends ServiceProvider
      */
     public function boot()
     {
-        Route::prefix('discord')->group(function(){
+        Route::prefix('discord')->middleware(['web'])->group(function(){
             Route::prefix('hooks')->group(function(){
                 Route::any('/', DiscordController::class.'@ping');
+            });
+
+            Route::prefix('auth')->group(function(){
+                Route::get('redirect', DiscordController::class.'@redirect');
+                Route::get('callback', DiscordController::class.'@callback');
             });
         });
     }

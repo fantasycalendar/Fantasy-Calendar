@@ -170,6 +170,7 @@ return [
          */
         GrahamCampbell\Markdown\MarkdownServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+        SocialiteProviders\Manager\ServiceProvider::class,
 
         /*
          * Application Service Providers...
