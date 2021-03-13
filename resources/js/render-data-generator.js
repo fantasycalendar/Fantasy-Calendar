@@ -20,9 +20,13 @@ const render_data_generator = {
 			)
 		){
 			return "";
-		}
+        }
+        
+        if(weather.icon){
 
-		if(weather.clouds == "Clear"){
+            return `wi ${weather.icon}`;
+
+        }else if(weather.clouds == "Clear"){
 			if(weather.feature == "Fog"){
 				return `wi wi-fog`;
 			}else{

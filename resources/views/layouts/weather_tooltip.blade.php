@@ -4,7 +4,8 @@
 	<div class='weather_title bold-text'>Weather:</div>
 	<div><span class='bold-text'>Description:</span> <span class='weather_temp_desc'></span></div>
 	<div><span class='bold-text'>Temperature:</span> <span class='weather_temp'></span></div>
-	<div><span class='bold-text'>Wind:</span> <span class='weather_wind'></span></div>
+	<div><span class='bold-text'>Wind:</span> <span class='weather_wind_text'></span></div>
+	<div><span class='weather_wind_speed'></span></div>
 	<div><span class='bold-text'>Precipitation:</span> <span class='weather_precip'></span></div>
 	<div><span class='bold-text'>Clouds:</span> <span class='weather_clouds'></span></div>
 	<div><span class='bold-text'>Feature:</span> <span class='weather_feature'></span></div>
