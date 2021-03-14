@@ -16,7 +16,7 @@ class CreateDiscordInteractionsTable extends Migration
         Schema::create('discord_interactions', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('discord_id');
+            $table->string('discord_id')->nullable();
             $table->string('type');
             $table->json('data');
             $table->string('guild_id')->nullable();

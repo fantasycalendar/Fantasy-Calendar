@@ -16,9 +16,9 @@ abstract class Command
     protected User $user;
     protected string $response;
     private bool $deferred;
-    protected string $discord_nickname;
-    protected string $discord_username;
-    protected string $discord_user_id;
+    protected $discord_nickname;
+    protected $discord_username;
+    protected $discord_user_id;
     protected $discord_auth;
 
     /**
@@ -31,12 +31,12 @@ abstract class Command
     {
         $this->deferred = $deferred;
         $this->interaction_data = $interaction_data;
-        $this->discord_nickname = Arr::get($this->interaction_data, 'member.nick');
+        $this->discord_nickname = Arr::get($this->interaction_data, 'member.nick') ?? Arr::get($this->interaction_data, 'member.user.username');
         $this->discord_username = Arr::get($this->interaction_data, 'member.user.username') . "#" . Arr::get($this->interaction_data, 'member.user.discriminator');
         $this->discord_user_id = Arr::get($this->interaction_data, 'member.user.id');
 
-        $this->bindUser();
         $this->logInteraction();
+        $this->bindUser();
     }
 
     private function bindUser()
@@ -58,7 +58,7 @@ abstract class Command
     private function logInteraction()
     {
         DiscordInteraction::create([
-            'discord_id' => $this->discord_auth->id,
+            'discord_id' => optional($this->discord_auth)->id,
             'channel_id' => Arr::get($this->interaction_data, 'channel_id'),
             'type' => Arr::get($this->interaction_data, 'type'),
             'guild_id' => Arr::get($this->interaction_data, 'guild_id'),
