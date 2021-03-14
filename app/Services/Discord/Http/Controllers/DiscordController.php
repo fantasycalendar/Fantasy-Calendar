@@ -18,7 +18,7 @@ class DiscordController extends \App\Http\Controllers\Controller
     public function __construct()
     {
         $this->middleware(function($request, $next){
-            if(!Auth::check() && !Auth::user()->isPremium()) {
+            if(Auth::check() && !Auth::user()->isPremium()) {
                 return redirect(route('subscription.pricing'))->with('alert', 'Thanks for using Fantasy Calendar! Please subscribe to enable the Discord integration.');
             }
 
