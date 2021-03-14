@@ -14,7 +14,13 @@ class CommandDispatcher
 
         $handlerClass = config('services.discord.command_handlers.' . $configPath);
 
-        return (new $handlerClass($commandData))->handle();
+        try {
+            $response = (new $handlerClass($commandData))->handle();
+        } catch (\Throwable $e) {
+            return $e->getMessage();
+        }
+
+        return $response;
     }
 
     public static function processConfigPath($optionsData)

@@ -11,7 +11,8 @@ use Illuminate\Support\Arr;
 abstract class Command
 {
     protected $interaction_data;
-    private $user;
+    protected $user;
+    protected $response;
 
     /**
      * Command constructor.
@@ -20,6 +21,9 @@ abstract class Command
     public function __construct($interaction_data)
     {
         $this->interaction_data = $interaction_data;
+        $this->discord_nickname = Arr::get($this->interaction_data, 'member.nick');
+        $this->discord_username = Arr::get($this->interaction_data, 'member.user.username') . "#" . Arr::get($this->interaction_data, 'member.user.discriminator');
+        $this->discord_user_id = Arr::get($this->interaction_data, 'member.user.id');
 
         $this->bindUser();
     }
@@ -34,10 +38,30 @@ abstract class Command
         $commandUserId = Arr::get($this->interaction_data, 'member.user.id');
 
         try {
-            $this->user = DiscordAuthToken::whereDiscordUserId($commandUserId)->firstOrFail();
+            $this->user = DiscordAuthToken::whereDiscordUserId($commandUserId)->firstOrFail()->user;
         } catch (\Throwable $e) {
-            throw new DiscordUserInvalidException("Could not bind command to user who invoked it.");
+            throw new DiscordUserInvalidException("Sorry " . $this->discord_nickname . ", but you'll need to connect your Fantasy Calendar and Discord accounts to run commands.\n\nYou can do that here: (Hey Axel, insert a link here)");
         }
+    }
+
+    protected function codeBlock($string)
+    {
+        $this->response .= "```\n$string\n```";
+    }
+
+    protected function blockQuote($string)
+    {
+        $this->response .= "> $string\n";
+    }
+
+    protected function newLine()
+    {
+        $this->response .= "\n";
+    }
+
+    protected function mention()
+    {
+        return '<@' . $this->discord_user_id . '>';
     }
 
     public abstract function handle(): string;

@@ -32,7 +32,8 @@ class DiscordServiceProvider extends ServiceProvider
             });
 
             Route::prefix('auth')->middleware(['web','auth'])->group(function(){
-                Route::get('redirect', DiscordController::class.'@redirect');
+                Route::get('user-redirect', DiscordController::class.'@user_redirect');
+                Route::get('server-owner-redirect',DiscordController::class.'@server_owner_redirect');
                 Route::get('callback', DiscordController::class.'@callback');
                 Route::get('test', DiscordController::class.'@test');
             });
