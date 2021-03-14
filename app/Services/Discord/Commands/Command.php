@@ -6,6 +6,7 @@ namespace App\Services\Discord\Commands;
 
 use App\Services\Discord\Exceptions\DiscordUserInvalidException;
 use App\Services\Discord\Models\DiscordAuthToken;
+use App\Services\Discord\Models\DiscordInteraction;
 use Illuminate\Support\Arr;
 
 abstract class Command
@@ -13,12 +14,18 @@ abstract class Command
     protected $interaction_data;
     protected $user;
     protected $response;
+    /**
+     * @var null
+     */
+    private $deferred;
 
     /**
      * Command constructor.
      * @param $interaction_data
+     * @param null $deferred
+     * @throws DiscordUserInvalidException
      */
-    public function __construct($interaction_data)
+    public function __construct($interaction_data, $deferred = false)
     {
         $this->interaction_data = $interaction_data;
         $this->discord_nickname = Arr::get($this->interaction_data, 'member.nick');
@@ -26,22 +33,39 @@ abstract class Command
         $this->discord_user_id = Arr::get($this->interaction_data, 'member.user.id');
 
         $this->bindUser();
+        $this->logInteraction();
+        $this->deferred = $deferred;
     }
 
     private function bindUser()
     {
         if(!Arr::has($this->interaction_data, 'member.user.id')) {
             dd($this->interaction_data);
-            throw new DiscordUserInvalidException("No user ID found in request.");
+            throw new DiscordUserInvalidException("Whoops! No user ID found in request. Discord messed up?");
         }
 
         $commandUserId = Arr::get($this->interaction_data, 'member.user.id');
 
         try {
-            $this->user = DiscordAuthToken::whereDiscordUserId($commandUserId)->firstOrFail()->user;
+            $this->discord_auth = DiscordAuthToken::whereDiscordUserId($commandUserId)->firstOrFail();
+            $this->user = $this->discord_auth->user;
         } catch (\Throwable $e) {
             throw new DiscordUserInvalidException("Sorry " . $this->discord_nickname . ", but you'll need to connect your Fantasy Calendar and Discord accounts to run commands.\n\nYou can do that here: (Hey Axel, insert a link here)");
         }
+    }
+
+    private function logInteraction()
+    {
+        DiscordInteraction::create([
+            'discord_id' => $this->discord_auth->id,
+            'channel_id' => Arr::get($this->interaction_data, 'channel_id'),
+            'type' => Arr::get($this->interaction_data, 'type'),
+            'guild_id' => Arr::get($this->interaction_data, 'guild_id'),
+            'data' => json_encode(Arr::get($this->interaction_data, 'data')),
+            'discord_user' => json_encode(Arr::get($this->interaction_data, 'member')),
+            'version' => Arr::get($this->interaction_data, 'version'),
+            'responded_at' => $this->deferred ? null : now()
+        ]);
     }
 
     protected function codeBlock($string)

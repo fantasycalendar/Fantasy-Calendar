@@ -5,14 +5,9 @@ namespace App\Services\Discord\Http\Controllers;
 
 
 use App\Services\Discord\Commands\CommandDispatcher;
-use App\Services\Discord\Http\Middleware\VerifyDiscordSignature;
-use App\Services\Discord\Models\DiscordAuthToken;
-use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Socialite\Facades\Socialite;
-use RestCord\DiscordClient;
 
 class DiscordController extends \App\Http\Controllers\Controller
 {
