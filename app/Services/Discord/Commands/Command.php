@@ -7,26 +7,29 @@ namespace App\Services\Discord\Commands;
 use App\Services\Discord\Exceptions\DiscordUserInvalidException;
 use App\Services\Discord\Models\DiscordAuthToken;
 use App\Services\Discord\Models\DiscordInteraction;
+use App\User;
 use Illuminate\Support\Arr;
 
 abstract class Command
 {
-    protected $interaction_data;
-    protected $user;
-    protected $response;
-    /**
-     * @var null
-     */
-    private $deferred;
+    protected array $interaction_data;
+    protected User $user;
+    protected string $response;
+    private bool $deferred;
+    protected string $discord_nickname;
+    protected string $discord_username;
+    protected string $discord_user_id;
+    protected $discord_auth;
 
     /**
      * Command constructor.
      * @param $interaction_data
-     * @param null $deferred
+     * @param bool $deferred
      * @throws DiscordUserInvalidException
      */
     public function __construct($interaction_data, $deferred = false)
     {
+        $this->deferred = $deferred;
         $this->interaction_data = $interaction_data;
         $this->discord_nickname = Arr::get($this->interaction_data, 'member.nick');
         $this->discord_username = Arr::get($this->interaction_data, 'member.user.username') . "#" . Arr::get($this->interaction_data, 'member.user.discriminator');
@@ -34,13 +37,11 @@ abstract class Command
 
         $this->bindUser();
         $this->logInteraction();
-        $this->deferred = $deferred;
     }
 
     private function bindUser()
     {
         if(!Arr::has($this->interaction_data, 'member.user.id')) {
-            dd($this->interaction_data);
             throw new DiscordUserInvalidException("Whoops! No user ID found in request. Discord messed up?");
         }
 
