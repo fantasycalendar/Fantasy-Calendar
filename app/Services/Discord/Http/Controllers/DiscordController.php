@@ -4,6 +4,7 @@
 namespace App\Services\Discord\Http\Controllers;
 
 
+use App\Services\Discord\Commands\CommandDispatcher;
 use App\Services\Discord\Http\Middleware\VerifyDiscordSignature;
 use App\Services\Discord\Models\DiscordAuthToken;
 use Illuminate\Http\Request;
@@ -35,7 +36,7 @@ class DiscordController extends \App\Http\Controllers\Controller
         return [
             'type' => 4,
             'data' => [
-                'content' => Arr::get(request()->get('data'), 'options.0.options.0.value'),
+                'content' => CommandDispatcher::dispatch(request()->all()),
             ]
         ];
     }

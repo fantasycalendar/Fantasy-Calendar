@@ -44,8 +44,8 @@ return [
                 'description' => 'Get information from Fantasy Calendar',
                 'options' => [
                     [
-                        'name' => 'info',
-                        'description' => 'Gets info from Fantasy Calendar',
+                        'name' => 'echo',
+                        'description' => 'Says back what you said.',
                         'type' => 1,
                         'options' => [
                             [
@@ -55,8 +55,19 @@ return [
                                 'required' => true
                             ]
                         ]
+                    ],
+                    [
+                        'name' => 'list',
+                        'description' => 'Lists your Fantasy Calendar calendars.',
+                        'type' => 1
                     ]
                 ]
+            ]
+        ],
+        'command_handlers' => [
+            'fc' => [
+                'echo' => \App\Services\Discord\Commands\Command\EchoHandler::class,
+                'list' => \App\Services\Discord\Commands\Command\ListHandler::class,
             ]
         ]
     ],
