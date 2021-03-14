@@ -57,7 +57,7 @@ class DiscordController extends \App\Http\Controllers\Controller
     public function server_owner_redirect()
     {
         return Socialite::driver('discord')
-            ->scopes(['guilds','applications.commands'])
+            ->scopes(['applications.commands'])
             ->redirect();
     }
 
