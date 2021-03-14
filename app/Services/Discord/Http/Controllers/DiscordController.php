@@ -5,7 +5,9 @@ namespace App\Services\Discord\Http\Controllers;
 
 
 use App\Services\Discord\Commands\CommandDispatcher;
+use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -58,7 +60,12 @@ class DiscordController extends \App\Http\Controllers\Controller
 
     public function callback()
     {
-        $user = Socialite::driver('discord')->user();
+        try {
+            $user = Socialite::driver('discord')->user();
+        } catch (ClientException $e) {
+            Log::error('A user cancelled Discord auth.');
+            return redirect('/');
+        }
 
         if(Auth::user()->discord_auth()->exists()) {
             Auth::user()->discord_auth->delete();
