@@ -180,7 +180,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        App\Providers\DiscordProvider::class,
+        App\Providers\DiscordServiceProvider::class,
 
     ],
 

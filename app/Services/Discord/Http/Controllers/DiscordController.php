@@ -15,10 +15,19 @@ use RestCord\DiscordClient;
 
 class DiscordController extends \App\Http\Controllers\Controller
 {
-    public function ping()
+    public function __construct()
     {
-        Storage::put('test.txt', request()->getContent());
+        $this->middleware(function($request, $next){
+            if(!Auth::check() && !Auth::user()->isPremium()) {
+                return redirect(route('subscription.pricing'))->with('alert', 'Thanks for using Fantasy Calendar! Please subscribe to enable the Discord integration.');
+            }
 
+            return $next($request);
+        })->except('hook');
+    }
+
+    public function hook()
+    {
         if(!request()->has('data')) {
             return ['type' => 1];
         }
@@ -27,7 +36,6 @@ class DiscordController extends \App\Http\Controllers\Controller
             'type' => 4,
             'data' => [
                 'content' => Arr::get(request()->get('data'), 'options.0.options.0.value'),
-//                'content_orig' => request()->get('data')
             ]
         ];
     }

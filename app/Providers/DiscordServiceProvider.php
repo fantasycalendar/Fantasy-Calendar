@@ -7,7 +7,7 @@ use App\Services\Discord\Http\Middleware\VerifyDiscordSignature;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
-class DiscordProvider extends ServiceProvider
+class DiscordServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
@@ -28,7 +28,7 @@ class DiscordProvider extends ServiceProvider
     {
         Route::prefix('discord')->group(function(){
             Route::prefix('hooks')->middleware([VerifyDiscordSignature::class])->group(function(){
-                Route::any('/', DiscordController::class.'@ping');
+                Route::any('/', DiscordController::class.'@hook');
             });
 
             Route::prefix('auth')->middleware(['web','auth'])->group(function(){
