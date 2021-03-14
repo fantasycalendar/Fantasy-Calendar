@@ -25,6 +25,7 @@
         "league/fractal": "^0.18.0",
         "mews/purifier": "3.3.0",
         "nesbot/carbon": "^2.31",
+        "restcord/restcord": "dev-develop",
         "socialiteproviders/discord": "^4.1",
         "spatie/laravel-honeypot": "^3.0"
     },

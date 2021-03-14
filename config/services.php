@@ -38,5 +38,26 @@ return [
         // optional
         'allow_gif_avatars' => (bool)env('DISCORD_AVATAR_GIF', true),
         'avatar_default_extension' => env('DISCORD_EXTENSION_DEFAULT', 'jpg'), // only pick from jpg, png, webp
+        'global_commands' => [
+            'fc' => [
+                'name' => 'fc',
+                'description' => 'Get information from Fantasy Calendar',
+                'options' => [
+                    [
+                        'name' => 'info',
+                        'description' => 'Gets info from Fantasy Calendar',
+                        'type' => 1,
+                        'options' => [
+                            [
+                                'name' => 'echo',
+                                'description' => 'A string to echo',
+                                'type' => 3,
+                                'required' => true
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ]
     ],
 ];

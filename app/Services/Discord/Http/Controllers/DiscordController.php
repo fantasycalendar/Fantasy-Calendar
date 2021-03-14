@@ -4,21 +4,44 @@
 namespace App\Services\Discord\Http\Controllers;
 
 
+use App\Services\Discord\Http\Middleware\VerifyDiscordSignature;
 use App\Services\Discord\Models\DiscordAuthToken;
+use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Socialite\Facades\Socialite;
+use RestCord\DiscordClient;
 
 class DiscordController extends \App\Http\Controllers\Controller
 {
     public function ping()
     {
-        return ['type' => 1];
+        Storage::put('test.txt', request()->getContent());
+
+        if(!request()->has('data')) {
+            return ['type' => 1];
+        }
+
+        return [
+            'type' => 4,
+            'data' => [
+                'content' => Arr::get(request()->get('data'), 'options.0.options.0.value'),
+//                'content_orig' => request()->get('data')
+            ]
+        ];
+    }
+
+    public function test()
+    {
+        return config('services.discord.global_commands.fc');
     }
 
     public function redirect()
     {
-        return Socialite::driver('discord')->redirect();
+        return Socialite::driver('discord')
+            ->scopes(['guilds','applications.commands'])
+            ->redirect();
     }
 
     public function callback()
@@ -52,6 +75,6 @@ class DiscordController extends \App\Http\Controllers\Controller
 
         Storage::put('discord_user.json', $info);
 
-        return $info;
+        return redirect('/discord/auth/test');
     }
 }
