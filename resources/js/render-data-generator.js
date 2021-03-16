@@ -87,6 +87,7 @@ const render_data_generator = {
 
                 let phase = epoch_data.moon_phase[moon_index];
                 let phase_name = Object.keys(moon_phases[moon.granularity])[phase];
+                let custom_phase_name = "";
                 let color = moon.color;
                 let shadow_color = moon.shadow_color ? moon.shadow_color : "#292b4a";
                 let hidden = moon.hidden;
@@ -100,13 +101,15 @@ const render_data_generator = {
                                 color = moon_overrides.color !== undefined ? moon_overrides.color : color;
                                 shadow_color = moon_overrides.shadow_color !== undefined ? moon_overrides.shadow_color : shadow_color;
                                 hidden = moon_overrides.hidden !== undefined ? moon_overrides.hidden : hidden;
-                                phase_name = moon_overrides.phase_name !== undefined ? moon_overrides.phase_name : phase_name;
+                                custom_phase_name = moon_overrides.phase_name !== undefined ? moon_overrides.phase_name : phase_name;
                                 if (hidden) continue moon_loop;
                             }
                         }
                     }
                 }
                 let path = moon_phases[moon.granularity][phase_name];
+
+                phase_name = custom_phase_name == "" ? phase_name : custom_phase_name;
 
                 moons.push({
                     "index": moon_index,
