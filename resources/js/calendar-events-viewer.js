@@ -1,5 +1,3 @@
-const calendar_events_editor = require("./calendar-events-editor");
-
 const calendar_events_viewer = {
 
 	open: false,
@@ -8,6 +6,7 @@ const calendar_events_viewer = {
 	user_can_comment: false,
 	can_comment_on_event: false,
 	loading_comments: true,
+	comment_content: "",
 	id: -1,
 	db_id: false,
 	data: {},
@@ -40,8 +39,8 @@ const calendar_events_viewer = {
 		this.can_comment_on_event = this.db_id !== false;
 		this.can_edit = Perms.can_modify_event(this.id);
 
-		if(this.user_can_comment){
-			document.querySelector('#editor-comment .ProseMirror').innerHTML = "";
+		if (this.user_can_comment && this.can_comment_on_event){
+			document.querySelectorAll('#event_comment_input_container .ProseMirror')[0].innerHTML = "";
 		}
 
 		if(this.db_id) {
@@ -96,14 +95,14 @@ const calendar_events_viewer = {
 			username: `${comment.username}${comment.comment_owner ? " (you)" : (comment.calendar_owner ? " (owner)" : "")}`,
 			editing: false
 		})
-		document.querySelector('#editor-comment .ProseMirror').innerHTML = "";
 	},
 
 	submit_comment() {
-		let comment_content = document.querySelector('#editor-comment .ProseMirror').innerHTML;
+		let comment_content = this.comment_content;
 		submit_new_comment(comment_content, this.db_id, function(comment){
 			window.dispatchEvent(new CustomEvent('event-viewer-modal-add-comment', { detail: { comment: comment } }));
 		});
+		this.comment_content = "";
 	},
 
 	start_edit_comment(comment) {
@@ -113,7 +112,7 @@ const calendar_events_viewer = {
 	},
 
 	submit_edit_comment(comment) {
-        let comment_content = document.querySelector('#editor-comment-'+comment.id+' .ProseMirror').innerHTML;
+        let comment_content = comment.content;
 
 		if(comment_content == "" || comment_content == "<p><br></p>"){
 			$.notify("Comment cannot be empty.");
@@ -183,8 +182,7 @@ const calendar_events_viewer = {
 			window.dispatchEvent(new CustomEvent('event-editor-modal-edit-event', { detail: { event_id: this.id } }));
 			this.close();
 		}else{
-			let comment_content = document.querySelector('#editor-comment .ProseMirror').innerHTML;
-			if(comment_content != "" && comment_content != "<p><br></p>") {
+			if(this.comment_content != "" && this.comment_content != "<p><br></p>") {
 				swal.fire(this.swal_content).then((result) => {
 					if (!result.dismiss) {
 						window.dispatchEvent(new CustomEvent('event-editor-modal-edit-event', { detail: { event_id: this.id } }));
@@ -204,8 +202,7 @@ const calendar_events_viewer = {
 		if (!this.user_can_comment) {
 			this.close();
 		}else{
-			let comment_content = document.querySelector('#editor-comment .ProseMirror').innerHTML;
-			if (comment_content != "" && comment_content != "<p><br></p>") {
+			if (this.comment_content != "" && this.comment_content != "<p><br></p>") {
 				swal.fire(this.swal_content).then((result) => {
 					if (!result.dismiss) {
 						this.close();
@@ -227,10 +224,7 @@ const calendar_events_viewer = {
 		this.data = {};
 		this.comments = [];
 		this.loading_comments = true;
-
-		if (this.user_can_comment) {
-			document.querySelector('#editor-comment .ProseMirror').innerHTML = "";
-		}
+		this.comment_content = "";
 
 	}
 

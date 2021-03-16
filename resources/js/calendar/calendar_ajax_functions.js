@@ -538,7 +538,6 @@ function submit_edit_comment(comment_id, content, callback){
 		content: content
 	})
         .then(function (result){
-			console.log(result)
             if(result.data.success && result.data != "") {
                 $.notify(
 					"Comment edited.",

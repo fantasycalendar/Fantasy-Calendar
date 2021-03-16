@@ -78,7 +78,7 @@
                                                     >
                                                         <div data-type="menu" class="btn-toolbar" role="toolbar" aria-label="Editor toolbar">
                                                             <div class="btn-group mr-2" role="group" aria-label="Editor group">
-                                                                <x-wysiwyg.action-button command="strong" active="bg-blue-400" class="bg-gray-500" icon="bold"></x-wysiwyg.action-button>
+                                                                <x-wysiwyg.action-button command="strong" active="bg-blue-400" class="btn bg-gray-500" icon="bold"></x-wysiwyg.action-button>
                                                                 <x-wysiwyg.action-button command="em" active="bg-blue-400" class="bg-gray-500" icon="italic"></x-wysiwyg.action-button>
                                                             </div>
                                                         </div>
@@ -92,17 +92,47 @@
                             </div>
 						@if(Auth::check())
 							<div class='col-12 mt-2' id='event_comment_input_container' x-show='user_can_comment && can_comment_on_event'>
-								<!-- <textarea x-ref='comment_input' class='form-control' id='event_comment_input' placeholder='Enter your comment and press submit.' autofocus=''></textarea> -->
 
                                 <div class="rounded border">
                                     <alpine-editor
                                         data-h1-classes="text-xl"
                                         id="editor-comment"
+                                        x-model="comment_content"
                                     >
                                         <div data-type="menu" class="btn-toolbar" role="toolbar" aria-label="Editor toolbar">
                                             <div class="btn-group mr-2" role="group" aria-label="Editor group">
-                                                <x-wysiwyg.action-button command="strong" active="bg-blue-400" class="bg-gray-500" icon="bold"></x-wysiwyg.action-button>
-                                                <x-wysiwyg.action-button command="em" active="bg-blue-400" class="bg-gray-500" icon="italic"></x-wysiwyg.action-button>
+                                                <!-- <x-wysiwyg.action-button command="strong" active="bg-blue-400" class="bg-gray-500" icon="bold"></x-wysiwyg.action-button>
+                                                <x-wysiwyg.action-button command="em" active="bg-blue-400" class="bg-gray-500" icon="italic"></x-wysiwyg.action-button> -->
+                                                <button 
+                                                    type="button" 
+                                                    data-command="strong" 
+                                                    data-active-class="bg-blue-400" 
+                                                    class="btn bg-gray-500"
+                                                    style='background-color: transparent !important; border-radius: 0 !important;'
+                                                ><i class="fas fa-bold"></i></button>
+                                                <button 
+                                                    type="button" 
+                                                    data-command="em" 
+                                                    data-active-class="bg-blue-400" 
+                                                    class="btn bg-gray-500"
+                                                    style='background-color: transparent !important; border-radius: 0 !important;'
+                                                ><i class="fas fa-italic"></i></button>
+                                                <button 
+                                                    type="button" 
+                                                    data-command="code" 
+                                                    data-active-class="bg-blue-400" 
+                                                    class="btn bg-gray-500"
+                                                    style='background-color: transparent !important; border-radius: 0 !important;'
+                                                    
+                                                ><i class="fas fa-code"></i></button>
+                                                <button 
+                                                    type="button" 
+                                                    data-command="heading" 
+                                                    data-level="3"
+                                                    data-active-class="bg-blue-400" 
+                                                    class="btn bg-gray-500"
+                                                    style='background-color: transparent !important; border-radius: 0 !important;'
+                                                ><i class="fas fa-heading"></i></button>
                                             </div>
                                         </div>
                                         <div data-type="editor" class="p-2 border-top" style="border-color: black;"></div>
