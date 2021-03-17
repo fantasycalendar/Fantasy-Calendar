@@ -251,7 +251,7 @@
                                         </svg>
                                     </div>
                                     <div class='col-md-11 pl-0 pr-1'>
-                                        <span style="opacity:0.8; font-size:1.4rem;" x-text='moon.name'></span>
+                                        <span style="opacity:0.65; font-size:1.4rem;" x-text='moon.name'></span>
                                     </div>
                                 </div>
                                 <div class='row no-gutters'>
@@ -271,7 +271,7 @@
                                         </label>
                                     </div>
                                     <div class='col-md-8 px-1'>
-                                        <select class='form-control' x-model='moon.phase' :disabled='!moon.override_phase && moon.hidden'>
+                                        <select class='form-control' x-model='moon.phase' :disabled='!moon.override_phase || moon.hidden'>
                                             <template x-for="(phase, index) in moon.phases">
                                                 <option x-text='phase' :value="index"></option>
                                             </template>
