@@ -154,7 +154,7 @@ function set_up_visitor_inputs(){
 				callback: function(key, opt){
 					let element = $(opt.$trigger[0]);
 					let event_id = element.attr('event');
-					window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { id: event_id, era: element.hasClass('era_event') } }));
+					window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { id: event_id, era: element.hasClass('era_event'), epoch: element.parent().parent().attr('epoch') } }));
 				},
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
@@ -171,7 +171,7 @@ function set_up_visitor_inputs(){
 				callback: function(key, opt){
 					let element = $(opt.$trigger[0]);
 					let event_id = element.attr('event');
-					window.dispatchEvent(new CustomEvent('event-editor-modal-edit-event', { detail: { event_id: event_id } }));
+					window.dispatchEvent(new CustomEvent('event-editor-modal-edit-event', { detail: { event_id: event_id, epoch: element.parent().parent().attr('epoch') } }));
 				},
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
@@ -190,7 +190,7 @@ function set_up_visitor_inputs(){
 				callback: function(key, opt){
 					let element = $(opt.$trigger[0]);
 					let event_id = element.attr('event');
-					window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { id: event_id, era: element.hasClass('era_event') } }));
+					window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { id: event_id, era: element.hasClass('era_event'), epoch: element.parent().parent().attr('epoch') } }));
 				},
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);

@@ -71,19 +71,7 @@
                                                 <div class='comment' x-show="!comment.editing" x-html='comment.content'></div>
 
                                                 <div class="rounded border" x-show="comment.editing">
-                                                    <alpine-editor
-                                                        x-model="comment.content"
-                                                        data-h1-classes="text-xl"
-                                                        :id="'editor-comment-' + comment.id"
-                                                    >
-                                                        <div data-type="menu" class="btn-toolbar" role="toolbar" aria-label="Editor toolbar">
-                                                            <div class="btn-group mr-2" role="group" aria-label="Editor group">
-                                                                <x-wysiwyg.action-button command="strong" active="bg-blue-400" class="btn bg-gray-500" icon="bold"></x-wysiwyg.action-button>
-                                                                <x-wysiwyg.action-button command="em" active="bg-blue-400" class="bg-gray-500" icon="italic"></x-wysiwyg.action-button>
-                                                            </div>
-                                                        </div>
-                                                        <div data-type="editor" class="p-2 border-top" style="border-color: black;"></div>
-                                                    </alpine-editor>
+                                                    <div :x-ref="'trumbowyg_comment_'+comment.id"><div></div></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -91,52 +79,10 @@
                                 </template>
                             </div>
 						@if(Auth::check())
-							<div class='col-12 mt-2' id='event_comment_input_container' x-show='user_can_comment && can_comment_on_event'>
+							<div class='col-12 mt-2' x-show='user_can_comment && can_comment_on_event'>
 
                                 <div class="rounded border">
-                                    <alpine-editor
-                                        data-h1-classes="text-xl"
-                                        id="editor-comment"
-                                        x-model="comment_content"
-                                    >
-                                        <div data-type="menu" class="btn-toolbar" role="toolbar" aria-label="Editor toolbar">
-                                            <div class="btn-group mr-2" role="group" aria-label="Editor group">
-                                                <!-- <x-wysiwyg.action-button command="strong" active="bg-blue-400" class="bg-gray-500" icon="bold"></x-wysiwyg.action-button>
-                                                <x-wysiwyg.action-button command="em" active="bg-blue-400" class="bg-gray-500" icon="italic"></x-wysiwyg.action-button> -->
-                                                <button 
-                                                    type="button" 
-                                                    data-command="strong" 
-                                                    data-active-class="bg-blue-400" 
-                                                    class="btn bg-gray-500"
-                                                    style='background-color: transparent !important; border-radius: 0 !important;'
-                                                ><i class="fas fa-bold"></i></button>
-                                                <button 
-                                                    type="button" 
-                                                    data-command="em" 
-                                                    data-active-class="bg-blue-400" 
-                                                    class="btn bg-gray-500"
-                                                    style='background-color: transparent !important; border-radius: 0 !important;'
-                                                ><i class="fas fa-italic"></i></button>
-                                                <button 
-                                                    type="button" 
-                                                    data-command="code" 
-                                                    data-active-class="bg-blue-400" 
-                                                    class="btn bg-gray-500"
-                                                    style='background-color: transparent !important; border-radius: 0 !important;'
-                                                    
-                                                ><i class="fas fa-code"></i></button>
-                                                <button 
-                                                    type="button" 
-                                                    data-command="heading" 
-                                                    data-level="3"
-                                                    data-active-class="bg-blue-400" 
-                                                    class="btn bg-gray-500"
-                                                    style='background-color: transparent !important; border-radius: 0 !important;'
-                                                ><i class="fas fa-heading"></i></button>
-                                            </div>
-                                        </div>
-                                        <div data-type="editor" class="p-2 border-top" style="border-color: black;"></div>
-                                    </alpine-editor>
+                                    <div x-ref="trumbowyg_comment_input"></div>
                                 </div>
 
 								<button type='button' class='btn btn-primary mt-2' style="z-index: 200" @click='submit_comment'>Submit</button>
@@ -269,6 +215,85 @@
                         </div>
 
                     </div>
+
+                    <div class='row no-gutters mt-2'>
+                        <div class='separator'></div>
+                    </div>
+
+                    <div class='row no-gutters mt-2'>
+                        <h4 @click='moon_overrides_open = !moon_overrides_open' class='cursor-pointer user-select-none'>
+                            <i class="icon fas" x-bind:class='{
+                                "fa-angle-right": !moon_overrides_open,
+                                "fa-angle-down": moon_overrides_open,
+                            }'></i>
+                            Moon Overrides
+                        </h4>
+                    </div>
+                    <div class='container settings_container p-0' x-show="moon_overrides_open">
+                        <template x-for="moon in moons">
+                            <div class='p-2 mb-2 border rounded'>
+                                <div class='row no-gutters mb-2'>
+                                    <div class='col-md-1 col-1 px-1'>
+                                        <svg class="moon"
+                                                :moon_id="moon.index"
+                                                preserveAspectRatio="xMidYMid"
+                                                width="38"
+                                                height="38"
+                                                viewBox="0 0 32 32"
+                                                :class="{
+                                                    'opacity-1': moon.hidden,
+                                                    'opacity-5': !moon.hidden
+                                                }"
+                                        >
+                                            <circle cx="16" cy="16" r="10" :style="`fill:${moon.color};`" />
+                                            <path x-show="moon.paths[moon.phase]" :d="moon.paths[moon.phase]" :style="`fill:${moon.shadow_color};`" />
+                                            <circle cx="16" cy="16" r="10" class="lunar_border"/>
+                                        </svg>
+                                    </div>
+                                    <div class='col-md-11 pl-0 pr-1'>
+                                        <span style="opacity:0.8; font-size:1.4rem;" x-text='moon.name'></span>
+                                    </div>
+                                </div>
+                                <div class='row no-gutters'>
+                                    <div class='col-md-4 col-3 px-1'>
+                                        <label class='form-control checkbox'>
+                                            <input type='checkbox' class='event_setting' x-model='moon.hidden'> Hidden
+                                        </label>
+                                    </div>
+                                    <div class='col-md-8 px-1'>
+                                        <input type='text' class='form-control full' x-model='moon.phase_name' placeholder='Custom phase name' :disabled='moon.hidden'>
+                                    </div>
+                                </div>
+                                <div class='row no-gutters'>
+                                    <div class='col-md-4 px-1'>
+                                        <label class='form-control checkbox' :class="{'disabled': moon.hidden}">
+                                            <input type='checkbox' class='event_setting' x-model='moon.override_phase' :disabled='moon.hidden'> Override phase
+                                        </label>
+                                    </div>
+                                    <div class='col-md-8 px-1'>
+                                        <select class='form-control' x-model='moon.phase' :disabled='!moon.override_phase && moon.hidden'>
+                                            <template x-for="(phase, index) in moon.phases">
+                                                <option x-text='phase' :value="index"></option>
+                                            </template>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class='row no-gutters'>
+                                    <div class='col-md-6 col-4 px-1'>
+                                        <label class='form-control checkbox' :class="{'disabled': moon.hidden}">
+                                            <input type='color' class='color inline_moon_color full' x-model="moon.shadow_color" :x-ref="`moon_shadow_color_${moon.index}`" :disabled='moon.hidden'/>
+                                        </label>
+                                    </div>
+                                    <div class='col-md-6 col-4 px-1'>
+                                        <label class='form-control checkbox' :class="{'disabled': moon.hidden}">
+                                            <input type='color' class='color inline_moon_color full' x-model="moon.color" :x-ref="`moon_color_${moon.index}`" :disabled='moon.hidden'/>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
                 @endif
 
                     <div class='row no-gutters mt-2'>

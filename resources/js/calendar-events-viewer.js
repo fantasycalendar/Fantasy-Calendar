@@ -6,7 +6,7 @@ const calendar_events_viewer = {
 	user_can_comment: false,
 	can_comment_on_event: false,
 	loading_comments: true,
-	comment_content: "",
+	comment_editor: undefined,
 	id: -1,
 	db_id: false,
 	data: {},
@@ -26,6 +26,7 @@ const calendar_events_viewer = {
 
 		this.id = $event.detail.id;
 		this.era = $event.detail.era;
+		this.epoch = $event.detail.epoch;
 
 		if(this.era){
 			this.data = static_data.eras[this.id];
@@ -39,8 +40,13 @@ const calendar_events_viewer = {
 		this.can_comment_on_event = this.db_id !== false;
 		this.can_edit = Perms.can_modify_event(this.id);
 
+		if (!this.comment_editor){
+			this.comment_editor = $(this.$refs.trumbowyg_comment_input);
+			this.comment_editor.trumbowyg();
+		}
+
 		if (this.user_can_comment && this.can_comment_on_event){
-			document.querySelectorAll('#event_comment_input_container .ProseMirror')[0].innerHTML = "";
+			this.comment_editor.trumbowyg('html', '');
 		}
 
 		if(this.db_id) {
@@ -81,7 +87,6 @@ const calendar_events_viewer = {
 			})
 		}
 		this.loading_comments = false;
-
 	},
 
 	add_comment($event) {
@@ -93,26 +98,38 @@ const calendar_events_viewer = {
 			calendar_owner: comment.calendar_owner,
 			content: comment.content,
 			username: `${comment.username}${comment.comment_owner ? " (you)" : (comment.calendar_owner ? " (owner)" : "")}`,
-			editing: false
+			editing: false,
+			editor: undefined
 		})
 	},
 
 	submit_comment() {
-		let comment_content = this.comment_content;
+		let comment_content = this.comment_editor.trumbowyg('html');
 		submit_new_comment(comment_content, this.db_id, function(comment){
 			window.dispatchEvent(new CustomEvent('event-viewer-modal-add-comment', { detail: { comment: comment } }));
 		});
-		this.comment_content = "";
+		this.comment_editor.trumbowyg('html', '');
 	},
 
 	start_edit_comment(comment) {
 		this.cancel_edit_comment();
-
 		comment.editing = true;
+		comment.editor = $(this.$refs[`trumbowyg_comment_${comment.id}`]).children().eq(0);
+		comment.editor.trumbowyg({
+			btns: [
+				['strong', 'em', 'del'],
+				['superscript', 'subscript'],
+				['link'],
+				['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
+				['unorderedList', 'orderedList'],
+				['removeformat']
+			]
+		}).trumbowyg('html', comment.content);
 	},
 
 	submit_edit_comment(comment) {
-        let comment_content = comment.content;
+
+        let comment_content = comment.editor.trumbowyg('html');
 
 		if(comment_content == "" || comment_content == "<p><br></p>"){
 			$.notify("Comment cannot be empty.");
@@ -123,7 +140,6 @@ const calendar_events_viewer = {
             content: comment_content
         })
             .then(function (result){
-                console.log(result)
                 if(result.data.success && result.data != "") {
                     $.notify(
                         "Comment edited.",
@@ -148,6 +164,10 @@ const calendar_events_viewer = {
 
 	cancel_edit_comment() {
         for (let entry in this.comments){
+            if(this.comments[entry].editor){
+				this.comments[entry].editor.trumbowyg('destroy');
+				this.comments[entry].editor = undefined;
+			};
             this.comments[entry].editing = false;
         }
     },
@@ -178,31 +198,31 @@ const calendar_events_viewer = {
 
 	callback_do_edit: function() {
 
-		if (!this.user_can_comment) {
-			window.dispatchEvent(new CustomEvent('event-editor-modal-edit-event', { detail: { event_id: this.id } }));
-			this.close();
-		}else{
-			if(this.comment_content != "" && this.comment_content != "<p><br></p>") {
+		if (this.user_can_comment && this.can_comment_on_event) {
+			let comment_content = this.comment_editor.trumbowyg('html');
+			if (comment_content != "" && comment_content != "<p><br></p>") {
 				swal.fire(this.swal_content).then((result) => {
 					if (!result.dismiss) {
-						window.dispatchEvent(new CustomEvent('event-editor-modal-edit-event', { detail: { event_id: this.id } }));
+						window.dispatchEvent(new CustomEvent('event-editor-modal-edit-event', { detail: { event_id: this.id, epoch: this.epoch } }));
 						this.close();
 					}
 				});
-			}else{
-				window.dispatchEvent(new CustomEvent('event-editor-modal-edit-event', { detail: { event_id: this.id } }));
+			} else {
+				window.dispatchEvent(new CustomEvent('event-editor-modal-edit-event', { detail: { event_id: this.id, epoch: this.epoch } }));
 				this.close();
 			}
+		}else{
+			window.dispatchEvent(new CustomEvent('event-editor-modal-edit-event', { detail: { event_id: this.id, epoch: this.epoch } }));
+			this.close();
 		}
 
 	},
 
 	callback_do_close: function() {
 
-		if (!this.user_can_comment) {
-			this.close();
-		}else{
-			if (this.comment_content != "" && this.comment_content != "<p><br></p>") {
+		if (this.user_can_comment && this.can_comment_on_event) {
+			let comment_content = this.comment_editor.trumbowyg('html');
+			if (comment_content != "" && comment_content != "<p><br></p>") {
 				swal.fire(this.swal_content).then((result) => {
 					if (!result.dismiss) {
 						this.close();
@@ -211,6 +231,8 @@ const calendar_events_viewer = {
 			} else {
 				this.close();
 			}
+		} else {
+			this.close();
 		}
 
 	},
@@ -224,7 +246,9 @@ const calendar_events_viewer = {
 		this.data = {};
 		this.comments = [];
 		this.loading_comments = true;
-		this.comment_content = "";
+		if(this.user_can_comment && this.can_comment_on_event) {
+			this.comment_editor.trumbowyg('html');
+		}
 
 	}
 

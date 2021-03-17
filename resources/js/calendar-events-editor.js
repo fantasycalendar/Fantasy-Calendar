@@ -2,6 +2,7 @@ const calendar_events_editor = {
 
 	open: false,
 	new_event: true,
+	moon_overrides_open: false,
 	settings_open: false,
 	event_id: undefined,
 	epoch_data: undefined,
@@ -11,6 +12,7 @@ const calendar_events_editor = {
 	delete_hover_element: undefined,
 	delete_droppable: false,
 	deleting_clicked: false,
+	moons: [],
 
 	working_event: {
 		'name': '',
@@ -25,7 +27,8 @@ const calendar_events_editor = {
 			'conditions': [],
 			'connected_events': [],
 			'date': [],
-			'search_distance': 0
+			'search_distance': 0,
+			'moon_overrides': []
 		},
 		'settings': {
 			'color': 'Dark-Solid',
@@ -38,7 +41,10 @@ const calendar_events_editor = {
 
 	has_initialized: false,
 
-	init(){
+	init($event) {
+
+		let epoch = $event.detail.epoch;
+		this.epoch_data = evaluated_static_data.epoch_data[epoch];
 
 		/* Some scripts are loaded after Alpine, so we need to set everything up when the UI is first opened */
 		if(!this.has_initialized){
@@ -217,6 +223,22 @@ const calendar_events_editor = {
 
 		}
 
+		this.moons = [];
+		for (let index in static_data.moons) {
+			let moon = clone(static_data.moons[index])
+			moon.index = index;
+			moon.hidden = false;
+			moon.shadow_color = moon.shadow_color ? moon.shadow_color : "#292b4a";
+			moon.original_shadow_color = clone(moon.shadow_color);
+			moon.original_color = clone(moon.color);
+			moon.override_phase = false;
+			moon.phase = this.epoch_data.moon_phase[index];
+			moon.phases = clone(Object.keys(moon_phases[moon.granularity]))
+			moon.paths = clone(Object.values(moon_phases[moon.granularity]))
+			moon.phase_name = "";
+			this.moons.push(moon);
+		}
+
 	},
 
 	set_delete_element(element) {
@@ -237,13 +259,10 @@ const calendar_events_editor = {
 
 	create_new_event: function($event) {
 
-		this.init();
+		this.init($event);
 		
 		this.new_event = true;
 		let name = $event.detail.name ?? "New Event";
-
-		let epoch = $event.detail.epoch;
-		this.epoch_data = evaluated_static_data.epoch_data[epoch];
 
 		this.working_event = {
 			'name': name,
@@ -312,12 +331,23 @@ const calendar_events_editor = {
 
 	edit_event: function($event) {
 
-		this.init();
+		this.init($event);
 
 		this.new_event = false;
 
 		this.event_id = $event.detail.event_id;
 		this.working_event = clone(events[this.event_id]);
+
+		if (this.working_event.data.overrides !== undefined){
+			if (this.working_event.data.overrides.moons !== undefined){
+				for (let index in this.working_event.data.overrides.moons) {
+					let moon_data = this.working_event.data.overrides.moons[index];
+					for (let key in moon_data){
+						this.moons[index][key] = moon_data[key];
+					}
+				}
+			}
+		}
 
 		this.description_input.trumbowyg('html', this.working_event.description);
 
@@ -521,6 +551,31 @@ const calendar_events_editor = {
 			}
 		}
 
+		let moon_data = {}
+		for(let index in this.moons){
+			let moon = this.moons[index];
+			moon_data[index] = {};
+			if (moon.hidden){
+				moon_data[index]['hidden'] = true;
+				continue
+			}
+			if(moon.override_phase){
+				moon_data[index]['phase'] = moon.phase;
+			}
+			if(moon.color != moon.original_color){
+				moon_data[index]['color'] = moon.color;
+			}
+			if(moon.shadow_color != moon.original_shadow_color){
+				moon_data[index]['shadow_color'] = moon.shadow_color;
+			}
+			if(moon.phase_name != ""){
+				moon_data[index]['phase_name'] = moon.phase_name;
+			}
+			if (Object.keys(moon_data[index]).length == 0) {
+				delete moon_data[index];
+			}
+		}
+
 		return JSON.parse(JSON.stringify({
 			has_duration: this.working_event.data.has_duration,
 			duration: this.working_event.data.duration,
@@ -530,7 +585,10 @@ const calendar_events_editor = {
 			conditions: conditions,
 			connected_events: this.working_event.data.connected_events,
 			date: date,
-			search_distance: search_distance
+			search_distance: search_distance,
+			overrides: {
+				moons: moon_data
+			}
 		}));
 
 	},
