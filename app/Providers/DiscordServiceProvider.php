@@ -35,9 +35,9 @@ class DiscordServiceProvider extends ServiceProvider
             });
 
             Route::prefix('auth')->middleware(['web','auth'])->group(function(){
-                Route::view('index', 'Discord::pages.connect-account');
-                Route::get('user-redirect', DiscordController::class.'@user_redirect');
-                Route::get('server-owner-redirect',DiscordController::class.'@server_owner_redirect');
+                Route::view('/', 'Discord::pages.connect-account');
+                Route::get('user-redirect', DiscordController::class.'@user_redirect')->name('discord.auth.user');
+                Route::get('server-owner-redirect',DiscordController::class.'@server_owner_redirect')->name('discord.auth.admin');
                 Route::get('callback', DiscordController::class.'@callback');
                 Route::get('test', DiscordController::class.'@test');
             });
