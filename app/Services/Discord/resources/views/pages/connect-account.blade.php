@@ -40,11 +40,37 @@
             background-color: #2f855a;
             color: white;
         }
+        .bg-accent {
+            color: white;
+        }
+        .bg-accent .alert-link {
+            color: white;
+        }
     </style>
+    <script>
+        function confirmDisconnect() {
+            swal.fire({
+                title: "Are you sure?",
+                text: 'Your changes to this event will not be saved! Are you sure you want to continue?',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                icon: "warning",
+            }).then((result) => {
+                if(!result.dismiss) {
+                    self.location = '{{ route('discord.auth.remove') }}';
+                }
+            });
+        }
+    </script>
 @endpush
 
 @section('content')
     <div class="container py-5">
+        @if(session()->has('alert'))
+            <div class="alert alert-info py-3 my-4">{{ session('alert') }}</div>
+        @endif
+
         <h1>Connect your Fantasy Calendar account with Discord!</h1>
         <h4 class="lead" style="opacity: 0.65;">Don't worry, we only use the minimum necessary to make integrations work. As Discord will tell you, neither of the options below lets us read your messages or anything like that.</h4>
 
@@ -87,7 +113,7 @@
                             </h4>
                         </div>
                         <hr class="d-md-none w-100 my-3" style="border-top-color: #246645;">
-                        <a href="#" class="btn btn-outline-danger alert-link">Disconnect</a>
+                        <a href="javascript:" onclick="confirmDisconnect()" class="btn btn-outline-danger alert-link">Disconnect</a>
                     </div>
                 @endunless
             </div>

@@ -40,6 +40,7 @@ class DiscordServiceProvider extends ServiceProvider
                 Route::get('server-owner-redirect',DiscordController::class.'@server_owner_redirect')->name('discord.auth.admin');
                 Route::get('callback', DiscordController::class.'@callback')->name('discord.callback');
                 Route::get('success', DiscordController::class.'@success')->name('discord.success');
+                Route::get('remove', DiscordController::class.'@remove')->name('discord.auth.remove');
             });
         });
     }

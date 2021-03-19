@@ -101,4 +101,11 @@ class DiscordController extends \App\Http\Controllers\Controller
             'discord_user' => Auth::user()->discord_auth
         ]);
     }
+
+    public function remove()
+    {
+        Auth::user()->discord_auth()->delete();
+
+        return redirect(route('discord.index'))->with('alert', 'Your discord account has been disconnected from Fantasy Calendar.');
+    }
 }
