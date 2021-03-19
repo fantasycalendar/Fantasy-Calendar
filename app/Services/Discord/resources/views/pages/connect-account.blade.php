@@ -46,10 +46,10 @@
 @section('content')
     <div class="container py-5">
         <h1>Connect your Fantasy Calendar account with Discord!</h1>
-        <h3 style="opacity: 0.65;">Don't worry, we only use the minimum necessary to make integrations work. As Discord will tell you, neither of the options below lets us read your messages or anything like that.</h3>
+        <h4 class="lead" style="opacity: 0.65;">Don't worry, we only use the minimum necessary to make integrations work. As Discord will tell you, neither of the options below lets us read your messages or anything like that.</h4>
 
         <div class="row">
-            <div class="col-12 flex align-items-center mb-4">
+            <div class="col-12 flex align-items-center mb-3">
                 <div class="connect-box py-4 w-100 border rounded my-4">
 
                     <div class="logo-wrapper">
@@ -66,7 +66,7 @@
                 </div>
             </div>
 
-            <div class="col-12 text-center mt-8 pb-2">
+            <div class="col-12 text-center mt-5 pb-2">
                 <h2>There are two different ways to connect, depending on what you need.</h2>
             </div>
 
