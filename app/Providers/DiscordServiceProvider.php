@@ -35,12 +35,11 @@ class DiscordServiceProvider extends ServiceProvider
             });
 
             Route::prefix('auth')->middleware(['web','auth'])->group(function(){
-                Route::view('/', 'Discord::pages.connect-account');
+                Route::view('/', 'Discord::pages.connect-account')->name('discord.index');
                 Route::get('user-redirect', DiscordController::class.'@user_redirect')->name('discord.auth.user');
                 Route::get('server-owner-redirect',DiscordController::class.'@server_owner_redirect')->name('discord.auth.admin');
-                Route::get('callback', DiscordController::class.'@callback');
-                Route::get('success', DiscordController::class.'@success');
-                Route::get('error', DiscordController::class.'@error');
+                Route::get('callback', DiscordController::class.'@callback')->name('discord.callback');
+                Route::get('success', DiscordController::class.'@success')->name('discord.success');
             });
         });
     }

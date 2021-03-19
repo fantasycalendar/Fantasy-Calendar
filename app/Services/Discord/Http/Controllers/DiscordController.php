@@ -64,14 +64,14 @@ class DiscordController extends \App\Http\Controllers\Controller
             $user = Socialite::driver('discord')->user();
         } catch (ClientException $e) {
             Log::error('A user cancelled Discord auth.');
-            return redirect('/');
+            return redirect(route('discord.index'));
         }
 
         if(Auth::user()->discord_auth()->exists()) {
             Auth::user()->discord_auth->delete();
         }
 
-        $discordAuth = Auth::user()->discord_auth()->create([
+        Auth::user()->discord_auth()->create([
             'token' => $user->token,
             'refresh_token' => $user->refreshToken,
             'avatar' => $user->getAvatar(),
@@ -81,19 +81,14 @@ class DiscordController extends \App\Http\Controllers\Controller
             'expires_at' => now()->addSeconds($user->expiresIn)
         ]);
 
-        $info = json_encode([
-            $user->token,
-            $refreshToken = $user->refreshToken,
-            $expiresIn = $user->expiresIn,
-            $user->getId(),
-            $user->getNickname(),
-            $user->getName(),
-            $user->getEmail(),
-            $user->getAvatar()
+        return redirect(route('discord.success'));
+    }
+
+    public function success()
+    {
+        return view('Discord::pages.success', [
+            'user' => Auth::user(),
+            'discord_user' => Auth::user()->discord_auth
         ]);
-
-        Storage::put('discord_user.json', $info);
-
-        return redirect('/discord/auth/test');
     }
 }
