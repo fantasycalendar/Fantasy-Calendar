@@ -70,23 +70,41 @@
                 <h2>There are two different ways to connect, depending on what you need.</h2>
             </div>
 
-            <div class="col-12 col-md-6">
-                <div class="inner h-100 border rounded w-100 p-3 text-center">
-                    <h4>To use an existing Fantasy Calendar integration <p class="lead small pt-1" style="opacity: 0.7;">in someone else's Discord server</p></h4>
+            <div class="col-12 col-md-6 mb-3">
+                @unless(Auth::user()->discord_auth()->exists())
+                    <div class="inner h-100 border rounded w-100 p-3 text-center">
+                        <h4>To use an existing Fantasy Calendar integration <p class="lead small pt-1" style="opacity: 0.7;">in someone else's Discord server</p></h4>
 
-                    <a href="{{ route('discord.auth.user') }}" class="btn btn-lg btn-discord my-3">Connect with Discord</a>
-                </div>
+                        <a href="{{ route('discord.auth.user') }}" class="btn btn-lg btn-discord my-3">Connect with Discord</a>
+                    </div>
+                @else
+                    <div class="inner h-100 alert alert-success bg-accent p-3 d-flex flex-column flex-md-row align-items-md-center justify-content-between">
+                        <div class="d-flex justify-content-start align-items-center">
+                            <img class="mr-2 rounded-circle" style="max-height: 5rem;" src="{{ Auth::user()->discord_auth->avatar }}" alt="{{ Auth::user()->discord_auth->discord_username }}'s Discord avatar">
+                            <h4 class="mb-0">
+                                <strong class="d-inline-block pb-1">Account connected!</strong><br>
+                                {{ Auth::user()->discord_auth->discord_username }}
+                            </h4>
+                        </div>
+                        <hr class="d-md-none w-100 my-3" style="border-top-color: #246645;">
+                        <a href="#" class="btn btn-outline-danger alert-link">Disconnect</a>
+                    </div>
+                @endunless
             </div>
 
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-md-6 mb-3">
                 <div class="inner h-100 border rounded w-100 p-3 text-center">
                     <h4>To setup a new Fantasy Calendar integration <p class="lead small pt-1" style="opacity: 0.7;">in a Discord server you own or admin</p></h4>
 
-                    <a href="{{ route('discord.auth.admin') }}" class="btn btn-lg btn-discord my-3">Connect with Discord</a>
+                    @unless(Auth::user()->discord_auth()->exists())
+                        <a href="{{ route('discord.auth.admin') }}" class="btn btn-lg btn-discord my-3">Connect with Discord</a>
+                    @else
+                        <a href="{{ route('discord.auth.admin') }}" class="btn btn-lg btn-discord my-3">Add Fantasy Calendar to a Server</a>
+                    @endunless
                 </div>
             </div>
 
-            <div class="col-12 pt-4">
+            <div class="col-12">
                 <div class="inner">
                     <div class="table-responsive mt-2 border rounded">
                         <table class="table">

@@ -15,6 +15,7 @@ class DiscordController extends \App\Http\Controllers\Controller
 {
     public function __construct()
     {
+        // Ensure user is premium
         $this->middleware(function($request, $next){
             if(Auth::check() && !Auth::user()->isPremium()) {
                 return redirect(route('subscription.pricing'))->with('alert', 'Thanks for using Fantasy Calendar! Please subscribe to enable the Discord integration.');
@@ -22,6 +23,15 @@ class DiscordController extends \App\Http\Controllers\Controller
 
             return $next($request);
         })->except('hook');
+
+        // Ensure user has discord auth setup before letting them go to success page
+        $this->middleware(function($request, $next){
+            if(Auth::check() && !Auth::user()->discord_auth()->exists()) {
+                return redirect(route('discord.auth'));
+            }
+
+            return $next($request);
+        })->only('success');
     }
 
     public function hook()
