@@ -39,7 +39,8 @@ class DiscordServiceProvider extends ServiceProvider
                 Route::get('user-redirect', DiscordController::class.'@user_redirect')->name('discord.auth.user');
                 Route::get('server-owner-redirect',DiscordController::class.'@server_owner_redirect')->name('discord.auth.admin');
                 Route::get('callback', DiscordController::class.'@callback');
-                Route::get('test', DiscordController::class.'@test');
+                Route::get('success', DiscordController::class.'@success');
+                Route::get('error', DiscordController::class.'@error');
             });
         });
     }
