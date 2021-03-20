@@ -1806,7 +1806,7 @@ function set_up_edit_inputs(){
 		}else{
 			var text = 'Year {{year}} - {{era_name}}';
 		}
-		parent.find('.era_formatting').prop('disabled', !$(this).is(':checke4d')).val(text).change();
+		parent.find('.era_formatting').prop('disabled', !$(this).is(':checked')).val(text).change();
 
 	});
 
