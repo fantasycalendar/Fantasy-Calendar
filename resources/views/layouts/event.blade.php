@@ -27,7 +27,7 @@
 					<div class="col-12" x-html='data.description'></div>
 				</div>
 
-				<div id='event_comment_mastercontainer' class="row">
+				<div id='event_comment_mastercontainer' x-show="!era" class="row">
 
 					<div class="col-12">
 						<hr>
@@ -480,21 +480,29 @@
 	</div>
 </div>
 
-<div id="html_edit_background" class='clickable_background hidden'>
+<div
+    x-data="CalendarHTMLEditor"
+    class='clickable_background'
+    id="html_edit_background"
+    @html-editor-modal-edit-html.window="edit_html"
+    x-show='open'
+>
 	<div class='modal-basic-container'>
 		<div class='modal-basic-wrapper'>
 			<form id="html-form" class="modal-wrapper" action="post">
 
 				<div class='close-ui-btn-bg'></div>
-				<i class="close_ui_btn fas fa-times-circle"></i>
+				<i class="close_ui_btn fas fa-times-circle" @click='callback_do_close'></i>
 
-				<h2 class='modal-form-heading'>Edit HTML</h2>
-
-				<div class='row'>
-					<textarea class='form-control html_input editable' name='html_input' placeholder='Event description' autofocus=''></textarea>
+				<div class='row no-gutters mb-1 modal-form-heading'>
+					<h2 class='event_action_type'><span>Editing Era Description</span> <i class="fas fa-eye view_event_btn" @click='callback_do_view'></i></h2>
 				</div>
 
-				<div class='btn btn-lg btn-primary btn-block' id='btn_html_save'>Save</div>
+				<div class='row'>
+					<textarea class='form-control' x-ref='html_input' autofocus=''></textarea>
+				</div>
+
+				<div class='btn btn-lg btn-primary btn-block' @click="save_html">Save</div>
 			</form>
 		</div>
 	</div>

@@ -206,7 +206,8 @@ function set_up_visitor_inputs(){
 				icon: "fas fa-edit",
 				callback: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					edit_HTML_ui.edit_era_description(element.attr('event')|0);
+					let era_id = element.attr('event')|0;
+					window.dispatchEvent(new CustomEvent('html-editor-modal-edit-html', { detail: { era_id: era_id } }));
 				},
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);

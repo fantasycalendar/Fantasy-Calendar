@@ -1228,6 +1228,10 @@ function set_up_edit_inputs(){
 
 	});
 
+	$(document).on('click', '.html_edit', function() {
+		let era_id = $(this).closest('.sortable-container').attr('index') | 0;
+		window.dispatchEvent(new CustomEvent('html-editor-modal-edit-html', { detail: { era_id: era_id } }));
+	});
 
 	$('.add_inputs.event_categories .add').click(function(){
 

@@ -29,10 +29,13 @@ const calendar_events_viewer = {
 		this.epoch = $event.detail.epoch;
 
 		if(this.era){
-			this.data = static_data.eras[this.id];
+			this.data = clone(static_data.eras[this.id]);
 		}else{
-			this.data = events[this.id];
+			this.data = clone(events[this.id]);
 			this.db_id = this.data.id !== undefined ? this.data.id : false;
+		}
+		if(this.data.description == ""){
+			this.data.description = "<i>No description.</i>"
 		}
 
 		this.open = true;
@@ -58,6 +61,10 @@ const calendar_events_viewer = {
 	},
 
 	get_event_comments(){
+
+		if(this.era){
+			return;
+		}
 
 		get_event_comments(this.db_id, function(comments){
 			if (comments) {
@@ -203,19 +210,25 @@ const calendar_events_viewer = {
 			if (comment_content != "" && comment_content != "<p><br></p>") {
 				swal.fire(this.swal_content).then((result) => {
 					if (!result.dismiss) {
-						window.dispatchEvent(new CustomEvent('event-editor-modal-edit-event', { detail: { event_id: this.id, epoch: this.epoch } }));
-						this.close();
+						this.dispatch_edit();
 					}
 				});
 			} else {
-				window.dispatchEvent(new CustomEvent('event-editor-modal-edit-event', { detail: { event_id: this.id, epoch: this.epoch } }));
-				this.close();
+				this.dispatch_edit();
 			}
 		}else{
-			window.dispatchEvent(new CustomEvent('event-editor-modal-edit-event', { detail: { event_id: this.id, epoch: this.epoch } }));
-			this.close();
+			this.dispatch_edit();
 		}
 
+	},
+
+	dispatch_edit: function(){
+		if (this.era) {
+			window.dispatchEvent(new CustomEvent('html-editor-modal-edit-html', { detail: { era_id: this.id } }));
+		} else {
+			window.dispatchEvent(new CustomEvent('event-editor-modal-edit-event', { detail: { event_id: this.id, epoch: this.epoch } }));
+		}
+		this.close();
 	},
 
 	callback_do_close: function() {
