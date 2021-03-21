@@ -212,22 +212,6 @@ const calendar_events_editor = {
 
 		}
 
-		this.moons = [];
-		for (let index in static_data.moons) {
-			let moon = clone(static_data.moons[index])
-			moon.index = index;
-			moon.hidden = false;
-			moon.shadow_color = moon.shadow_color ? moon.shadow_color : "#292b4a";
-			moon.original_shadow_color = clone(moon.shadow_color);
-			moon.original_color = clone(moon.color);
-			moon.override_phase = false;
-			moon.phase = this.epoch_data.moon_phase[index];
-			moon.phases = clone(Object.keys(moon_phases[moon.granularity]))
-			moon.paths = clone(Object.values(moon_phases[moon.granularity]))
-			moon.phase_name = "";
-			this.moons.push(moon);
-		}
-
 	},
 
 	set_delete_element(element) {
@@ -293,6 +277,8 @@ const calendar_events_editor = {
 			}
 		}
 
+		this.set_up_moon_data();
+
 		this.event_id = Object.keys(events).length;
 
 		this.populate_condition_presets();
@@ -328,16 +314,7 @@ const calendar_events_editor = {
 		
 		this.working_event = clone(events[this.event_id]);
 
-		if (this.working_event.data.overrides !== undefined){
-			if (this.working_event.data.overrides.moons !== undefined){
-				for (let index in this.working_event.data.overrides.moons) {
-					let moon_data = this.working_event.data.overrides.moons[index];
-					for (let key in moon_data){
-						this.moons[index][key] = moon_data[key];
-					}
-				}
-			}
-		}
+		this.set_up_moon_data();
 
 		this.description_input.trumbowyg('html', this.working_event.description);
 
@@ -698,6 +675,37 @@ const calendar_events_editor = {
 
 			return false;
 
+		}
+
+	},
+
+	set_up_moon_data: function() {
+
+		this.moons = [];
+		for (let index in static_data.moons) {
+			let moon = clone(static_data.moons[index])
+			moon.index = index;
+			moon.hidden = false;
+			moon.shadow_color = moon.shadow_color ? moon.shadow_color : "#292b4a";
+			moon.original_shadow_color = clone(moon.shadow_color);
+			moon.original_color = clone(moon.color);
+			moon.override_phase = false;
+			moon.phase = this.epoch_data.moon_phase[index];
+			moon.phases = clone(Object.keys(moon_phases[moon.granularity]))
+			moon.paths = clone(Object.values(moon_phases[moon.granularity]))
+			moon.phase_name = "";
+			this.moons.push(moon);
+		}
+
+		if (this.working_event.data.overrides !== undefined) {
+			if (this.working_event.data.overrides.moons !== undefined) {
+				for (let index in this.working_event.data.overrides.moons) {
+					let moon_data = this.working_event.data.overrides.moons[index];
+					for (let key in moon_data) {
+						this.moons[index][key] = moon_data[key];
+					}
+				}
+			}
 		}
 
 	},
