@@ -1895,8 +1895,6 @@ function set_up_edit_inputs(){
 			}
 		}
 
-		console.log(colors);
-
 		season_sortable.children().each(function(i){
 
 			if(checked){
@@ -2453,8 +2451,6 @@ function set_up_edit_inputs(){
 		var permissions = dropdown.val();
 
 		update_calendar_user(user_id, permissions, function(success, text){
-
-			console.log(text)
 
 			button.prop('disabled', success);
 			button.attr('permissions_val', permissions);

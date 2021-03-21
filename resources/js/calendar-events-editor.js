@@ -702,8 +702,6 @@ const calendar_events_editor = {
 
 			event_check.settings = clone(this.working_event.settings)
 
-			console.log(event_check.description, events[this.event_id].description)
-
 			return !Object.compare(event_check, events[this.event_id])
 
 		} else {
