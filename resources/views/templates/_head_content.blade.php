@@ -156,7 +156,6 @@
 
     <script src="{{ mix('js/calendar/header.js') }}"></script>
     <script src="{{ mix('js/calendar/calendar_ajax_functions.js') }}"></script>
-    <script src="{{ mix('js/calendar/calendar_event_ui.js') }}"></script>
     <script src="{{ mix('js/calendar/calendar_functions.js') }}"></script>
     <script src="{{ mix('js/calendar/calendar_variables.js') }}"></script>
     <script src="{{ mix('js/calendar/calendar_weather_layout.js') }}"></script>
