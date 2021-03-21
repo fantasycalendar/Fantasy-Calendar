@@ -369,9 +369,6 @@ const calendar_events_editor = {
 
 		events[this.event_id] = clone(this.working_event);
 
-		/* @axel - This is correct, but it doesn't seem to be correct once it gets to the event evaluator */
-		console.log(events[this.event_id].data.connected_events)
-
 		let not_view_page = window.location.pathname.indexOf('/edit') > -1 || window.location.pathname.indexOf('/calendars/create') > -1;
 
 		if (not_view_page) {
