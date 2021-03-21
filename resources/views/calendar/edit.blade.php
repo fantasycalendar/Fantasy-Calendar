@@ -11,8 +11,6 @@
 
         rebuild_calendar('calendar', dynamic_data);
 
-        edit_HTML_ui.bind_events();
-
         set_up_edit_inputs();
         set_up_edit_values();
         set_up_view_values();

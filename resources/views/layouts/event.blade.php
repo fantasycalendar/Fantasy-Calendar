@@ -206,10 +206,10 @@
                                 </ul>
                                 <div class='full page_number' x-text="'Page '+event_testing.page+'/'+event_testing.max_page"></div>
                                 <div class='col half pr-1'>
-                                    <button type='button' class='btn btn-info full' @click='next_page()' :disabled="event_testing.page == 1">Previous</button>
+                                    <button type='button' class='btn btn-info full' @click='prev_page()' :disabled="event_testing.page == 1">Previous</button>
                                 </div>
                                 <div class='col half pl-1'>
-                                    <button type='button' class='btn btn-info full' @click='prev_page()' :disabled="event_testing.page == event_testing.max_page">Next</button>
+                                    <button type='button' class='btn btn-info full' @click='next_page()' :disabled="event_testing.page == event_testing.max_page">Next</button>
                                 </div>
                             </div>
                         </div>
