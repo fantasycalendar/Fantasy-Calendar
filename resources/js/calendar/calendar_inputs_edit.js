@@ -1336,6 +1336,21 @@ function set_up_edit_inputs(){
 
 	});
 
+	$(document).on('click', '.open-edit-event-ui', function() {
+		let event_id = $(this).closest('.sortable-container').attr('index') | 0;
+
+		let epoch = dynamic_data.epoch;
+		if (typeof preview_date !== "undefined" && preview_date.follow) {
+			epoch = dynamic_date_manager.epoch;
+		} else {
+			if (typeof preview_date_manager !== "undefined") {
+				epoch = preview_date_manager.epoch;
+			}
+		}
+
+		window.dispatchEvent(new CustomEvent('event-editor-modal-edit-event', { detail: { event_id: event_id, epoch: epoch } }));
+	});
+
 	$(document).on('click', '.btn_remove', function(){
 
 		if(!$(this).hasClass('disabled')){

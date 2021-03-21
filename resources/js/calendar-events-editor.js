@@ -577,10 +577,10 @@ const calendar_events_editor = {
 
 		return JSON.parse(JSON.stringify({
 			has_duration: this.working_event.data.has_duration,
-			duration: this.working_event.data.duration,
+			duration: this.working_event.data.duration|0,
 			show_first_last: this.working_event.data.show_first_last,
 			limited_repeat: this.working_event.data.limited_repeat,
-			limited_repeat_num: this.working_event.data.limited_repeat_num,
+			limited_repeat_num: this.working_event.data.limited_repeat_num|0,
 			conditions: conditions,
 			connected_events: this.working_event.data.connected_events,
 			date: date,
