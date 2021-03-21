@@ -453,6 +453,8 @@ const calendar_events_editor = {
 
 		this.event_conditions_container.empty();
 
+		evaluate_save_button();
+
 	},
 
 	callback_do_close() {

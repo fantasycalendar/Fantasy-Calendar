@@ -95,6 +95,7 @@ const calendar_html_editor = {
 		this.era_id = false;
 		this.description = false;
 		this.html_input.trumbowyg("html", "");
+		evaluate_save_button();
 
 	}
 
