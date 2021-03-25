@@ -1882,21 +1882,19 @@ function set_up_edit_inputs(){
 				colors[index][0] = get_colors_for_season(static_data.seasons.data[index].name);
 				colors[index][1] = get_colors_for_season(static_data.seasons.data[index+1].name);
 			}else if(index == static_data.seasons.data.length-1){
-				colors[index][0] = colors[index-1][1];
-				colors[index][1] = colors[0][0];
+				colors[index][0] = clone(colors[index-1][1]);
+				colors[index][1] = clone(colors[0][0]);
 			}else{
-				colors[index][0] = colors[index-1][1]
+				colors[index][0] = clone(colors[index-1][1])
 				colors[index][1] = get_colors_for_season(static_data.seasons.data[index+1].name);
 			}
 		}
-
-		console.log(colors);
 
 		season_sortable.children().each(function(i){
 
 			if(checked){
 
-				static_data.seasons.data[i].color = colors[i];
+				static_data.seasons.data[i].color = clone(colors[i]);
 
 				$(this).find('.season_color_enabled').find('.start_color').spectrum("set", static_data.seasons.data[i].color[0]);
 				$(this).find('.season_color_enabled').find('.end_color').spectrum("set", static_data.seasons.data[i].color[1]);
@@ -5761,21 +5759,12 @@ function set_up_edit_values(){
 
 		$('#season_sortable').children().each(function(i){
 
-			if(!Array.isArray(static_data.seasons.data[i].color)){
-				if(typeof static_data.seasons.data[i].color === "string"){
-					static_data.seasons.data[i].color = [
-						static_data.seasons.data[i].color,
-						static_data.seasons.data[i].color
-					]
-				}else if(static_data.seasons.data[i].color === undefined){
-					static_data.seasons.data[i].color = [];
-				}
-			}
-
 			$(this).find('.start_color').spectrum("set", static_data.seasons.data[i].color[0]);
 			$(this).find('.end_color').spectrum("set", static_data.seasons.data[i].color[1]);
 
 		});
+
+		sort_list_by_partial_date($('#season_sortable'));
 
 	}
 
