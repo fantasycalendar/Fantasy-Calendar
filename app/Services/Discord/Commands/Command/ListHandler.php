@@ -14,6 +14,10 @@ class ListHandler extends Command
 
         $this->response .= $this->listCalendars();
 
+        if($this->setting('default_calendar')) {
+            $this->response .= sprintf("\nYour default calendar in this server is **%s**.", $this->getDefaultCalendar()->name);
+        }
+
         return $this->response;
     }
 }

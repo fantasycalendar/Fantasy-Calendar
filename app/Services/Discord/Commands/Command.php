@@ -4,6 +4,7 @@
 namespace App\Services\Discord\Commands;
 
 
+use App\Calendar;
 use App\Services\Discord\Exceptions\DiscordUserInvalidException;
 use App\Services\Discord\Models\DiscordAuthToken;
 use App\Services\Discord\Models\DiscordGuild;
@@ -118,6 +119,15 @@ abstract class Command
         return "```" . $this->user->calendars()->orderBy('name')->get()->map(function($calendar, $index) {
                 return $index . ": " . $calendar->name;
             })->join("\n") . "```";
+    }
+
+    protected function getDefaultCalendar()
+    {
+        if(!$this->setting('default_calendar')) {
+            throw new \Exception('That command requires you to set a default calendar using `/fc use`.');
+        }
+
+        return Calendar::find($this->setting('default_calendar'));
     }
 
     public abstract function handle(): string;
