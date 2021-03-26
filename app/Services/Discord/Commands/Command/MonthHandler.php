@@ -78,9 +78,9 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
     private function buildHeader()
     {
         $header = '┌' . str_repeat('─', $this->lineLength - 2) . '┐' . "\n";
-        $header .= '│' . Str::padBoth(Str::limit($this->month['name'], $this->lineLength - 5), $this->lineLength - 2, '-') . '│' . "\n";
+        $header .= '│' . Str::padBoth(Str::limit($this->month['name'], $this->lineLength - (3 + strlen($this->month['year'])), '') . " ▒ ". $this->month['year'], $this->lineLength, '-') . '│' . "\n";
         $header .= '├' . str_repeat(str_repeat('─', $this->cellLength) . '┬', count($this->month['weekdays']) - 1) . str_repeat('─', $this->cellLength) . '┤' . "\n";
-        $header .= '│' . implode('│', array_map(function($item) { return str_pad($item, $this->cellLength, '-', STR_PAD_LEFT); }, $this->month['weekdays'] )) . '│';
+        $header .= '│' . implode('│', array_map(function($item) { return str_pad(Str::limit($item, $this->cellLength, ''), $this->cellLength, '-', STR_PAD_LEFT); }, $this->month['weekdays'] )) . '│';
         $header .= $this->buildWeeksGlue();
 
         return $header;
@@ -99,7 +99,7 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
     private function determineCellLength()
     {
         return max(
-            max(array_map(function($day) { return strlen($day); }, $this->month['weekdays'])),
+            max(array_map(function($day) { return (strlen($day) > 3) ? 3 : strlen($day); }, $this->month['weekdays'])),
             strlen($this->month['length'])
         );
     }
