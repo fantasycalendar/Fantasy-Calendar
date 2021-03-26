@@ -32,8 +32,6 @@ class RegisterDiscordApplicationCommands extends Command
      */
     public function __construct()
     {
-        $this->setupApiRequests();
-
         parent::__construct();
     }
 
@@ -44,6 +42,7 @@ class RegisterDiscordApplicationCommands extends Command
      */
     public function handle()
     {
+        $this->setupApiRequests();
 
         $res = $this->api_client->get(sprintf($this->api_url . '/applications/%s/commands', env('DISCORD_CLIENT_ID')));
 
