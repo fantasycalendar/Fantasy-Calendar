@@ -24,6 +24,6 @@ class SetDefaultHandler extends \App\Services\Discord\Commands\Command
 
         $this->setting('default_calendar', $default->id);
 
-        return sprintf("Default calendar for this server set to %s, '%s'", $argument, $default->name);
+        return sprintf("Your default calendar for this server set to choice %s: **%s**", $argument, $default->name);
     }
 }
