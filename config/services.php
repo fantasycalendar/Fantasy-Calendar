@@ -81,7 +81,7 @@ return [
             'fc' => [
                 'echo' => \App\Services\Discord\Commands\Command\EchoHandler::class,
                 'list' => \App\Services\Discord\Commands\Command\ListHandler::class,
-                'use' => \App\Services\Discord\Commands\Command\SetDefaultHandler::class,
+                'use' => \App\Services\Discord\Commands\Command\UseHandler::class,
             ]
         ]
     ],

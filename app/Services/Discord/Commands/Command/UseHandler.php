@@ -7,7 +7,7 @@ namespace App\Services\Discord\Commands\Command;
 use App\Calendar;
 use Illuminate\Support\Arr;
 
-class SetDefaultHandler extends \App\Services\Discord\Commands\Command
+class UseHandler extends \App\Services\Discord\Commands\Command
 {
 
     public function handle(): string
