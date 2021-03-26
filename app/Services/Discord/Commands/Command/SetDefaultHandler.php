@@ -4,6 +4,7 @@
 namespace App\Services\Discord\Commands\Command;
 
 
+use App\Calendar;
 use Illuminate\Support\Arr;
 
 class SetDefaultHandler extends \App\Services\Discord\Commands\Command
@@ -11,25 +12,18 @@ class SetDefaultHandler extends \App\Services\Discord\Commands\Command
 
     public function handle(): string
     {
-        $argument = Arr::get($this->interaction_data, 'data.options.0.options.0.value');
+        $argument = $this->interaction( 'data.options.0.options.0.value');
 
-        $calendarHashes = $this->user->calendars->orderBy('name')->mapWithKeys(function($calendar, $index){
-            return [$index => $calendar->hash];
-        });
+        $default = $this->user->calendars()->orderBy('name')->get()->mapWithKeys(function($calendar, $index){
+            return [$index => $calendar];
+        })->get($argument);
 
-        $default = Arr::get($calendarHashes, $argument);
-
-        if(!$default) {
-            return sprintf("No calendar matched %s. Your options are:\n\n%s", $argument, $this->getCalendarList());
+        if(is_null($default)) {
+            return sprintf("No calendar matched %s. Your options are:\n%s", $argument, $this->listCalendars());
         }
 
+        $this->setting('default_calendar', $default->id);
 
-    }
-
-    private function getCalendarList()
-    {
-        return "```" . $this->user->calendars->map(function($calendar, $index) {
-            return $index . ": " . $calendar->name . "\n";
-        }) . "```";
+        return sprintf("Default calendar for this server set to %s, '%s'", $argument, $default->name);
     }
 }

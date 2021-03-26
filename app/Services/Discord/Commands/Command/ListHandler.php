@@ -12,9 +12,7 @@ class ListHandler extends Command
     {
         $this->response = $this->mention() . "'s calendars:\n";
 
-        $this->user->calendars->each(function($calendar){
-            $this->blockQuote($calendar->name);
-        });
+        $this->response .= $this->listCalendars();
 
         return $this->response;
     }

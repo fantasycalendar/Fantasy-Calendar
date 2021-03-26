@@ -6,6 +6,7 @@ namespace App\Services\Discord\Commands;
 
 use App\Services\Discord\Exceptions\DiscordUserInvalidException;
 use App\Services\Discord\Models\DiscordAuthToken;
+use App\Services\Discord\Models\DiscordGuild;
 use App\Services\Discord\Models\DiscordInteraction;
 use App\User;
 use Illuminate\Support\Arr;
@@ -20,6 +21,7 @@ abstract class Command
     protected $discord_username;
     protected $discord_user_id;
     protected $discord_auth;
+    protected $guild;
 
     /**
      * Command constructor.
@@ -31,12 +33,34 @@ abstract class Command
     {
         $this->deferred = $deferred;
         $this->interaction_data = $interaction_data;
-        $this->discord_nickname = Arr::get($this->interaction_data, 'member.nick') ?? Arr::get($this->interaction_data, 'member.user.username');
-        $this->discord_username = Arr::get($this->interaction_data, 'member.user.username') . "#" . Arr::get($this->interaction_data, 'member.user.discriminator');
-        $this->discord_user_id = Arr::get($this->interaction_data, 'member.user.id');
+        $this->discord_nickname = $this->interaction('member.nick') ?? $this->interaction('member.user.username');
+        $this->discord_username = $this->interaction('member.user.username') . "#" . $this->interaction('member.user.discriminator');
+        $this->discord_user_id = $this->interaction('member.user.id');
 
         $this->logInteraction();
         $this->bindUser();
+
+        $this->guild = $this->getGuild();
+    }
+
+    protected function interaction($key)
+    {
+        return Arr::get($this->interaction_data, $key);
+    }
+
+    protected function setting($key, $value = null)
+    {
+        return ($value)
+            ? $this->guild->setSetting($key, $value)
+            : $this->guild->getSetting($key);
+    }
+
+    protected function getGuild()
+    {
+        return DiscordGuild::firstOrCreate(
+            ['guild_id' => $this->interaction('guild_id'), 'discord_auth_id' => $this->discord_auth->id],
+            ['user_id' => $this->user->id]
+        );
     }
 
     private function bindUser()
@@ -51,7 +75,7 @@ abstract class Command
             $this->discord_auth = DiscordAuthToken::whereDiscordUserId($commandUserId)->firstOrFail();
             $this->user = $this->discord_auth->user;
         } catch (\Throwable $e) {
-            throw new DiscordUserInvalidException("Sorry " . $this->discord_nickname . ", but you'll need to connect your Fantasy Calendar and Discord accounts to run commands.\n\nYou can do that here: (Hey Axel, insert a link here)");
+            throw new DiscordUserInvalidException("Sorry " . $this->discord_nickname . ", but you'll need to connect your Fantasy Calendar and Discord accounts to run commands.\n\nYou can do that here: " . route('discord.index'));
         }
     }
 
@@ -59,34 +83,41 @@ abstract class Command
     {
         DiscordInteraction::create([
             'discord_id' => optional($this->discord_auth)->id,
-            'channel_id' => Arr::get($this->interaction_data, 'channel_id'),
-            'type' => Arr::get($this->interaction_data, 'type'),
-            'guild_id' => Arr::get($this->interaction_data, 'guild_id'),
-            'data' => json_encode(Arr::get($this->interaction_data, 'data')),
-            'discord_user' => json_encode(Arr::get($this->interaction_data, 'member')),
-            'version' => Arr::get($this->interaction_data, 'version'),
+            'channel_id' => $this->interaction('channel_id'),
+            'type' => $this->interaction('type'),
+            'guild_id' => $this->interaction('guild_id'),
+            'data' => json_encode($this->interaction('data')),
+            'discord_user' => json_encode($this->interaction('member')),
+            'version' => $this->interaction('version'),
             'responded_at' => $this->deferred ? null : now()
         ]);
     }
 
     protected function codeBlock($string)
     {
-        $this->response .= "```\n$string\n```";
+        return "```\n$string\n```";
     }
 
     protected function blockQuote($string)
     {
-        $this->response .= "> $string\n";
+        return "> $string\n";
     }
 
     protected function newLine()
     {
-        $this->response .= "\n";
+        return "\n";
     }
 
     protected function mention()
     {
         return '<@' . $this->discord_user_id . '>';
+    }
+
+    protected function listCalendars()
+    {
+        return "```" . $this->user->calendars()->orderBy('name')->get()->map(function($calendar, $index) {
+                return $index . ": " . $calendar->name;
+            })->join("\n") . "```";
     }
 
     public abstract function handle(): string;

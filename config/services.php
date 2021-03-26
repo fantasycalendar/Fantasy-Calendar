@@ -60,6 +60,19 @@ return [
                         'name' => 'list',
                         'description' => 'Lists your Fantasy Calendar calendars.',
                         'type' => 1
+                    ],
+                    [
+                        'name' => 'use',
+                        'description' => 'Set the default calendar for use in this server',
+                        'type' => 1,
+                        'options' => [
+                            [
+                                'name' => 'id',
+                                'description' => 'The calendar number, gathered from the list command',
+                                'type' => 4,
+                                'required' => true
+                            ]
+                        ]
                     ]
                 ]
             ]
@@ -68,6 +81,7 @@ return [
             'fc' => [
                 'echo' => \App\Services\Discord\Commands\Command\EchoHandler::class,
                 'list' => \App\Services\Discord\Commands\Command\ListHandler::class,
+                'use' => \App\Services\Discord\Commands\Command\SetDefaultHandler::class,
             ]
         ]
     ],

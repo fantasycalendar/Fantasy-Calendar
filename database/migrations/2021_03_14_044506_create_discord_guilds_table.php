@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDiscordGuildSettingsTable extends Migration
+class CreateDiscordGuildsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CreateDiscordGuildSettingsTable extends Migration
      */
     public function up()
     {
-        Schema::create('discord_guild_settings', function (Blueprint $table) {
+        Schema::create('discord_guilds', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->foreignId('user_id');
             $table->foreignId('discord_auth_id');
             $table->string('guild_id');
-            $table->json('guild_settings');
+            $table->json('guild_settings')->nullable();
             $table->timestamp('responded_at')->nullable();
         });
     }

@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use Illuminate\Console\Command;
 
 class RegisterDiscordApplicationCommands extends Command
@@ -64,9 +65,19 @@ class RegisterDiscordApplicationCommands extends Command
 
     private function createCommand($parameters)
     {
-        $res = $this->api_client->post($this->api_url . '/applications/' . env('DISCORD_CLIENT_ID') . '/commands', [
-            'json' => $parameters
-        ]);
+        try {
+            $res = $this->api_client->post($this->api_url . '/applications/' . env('DISCORD_CLIENT_ID') . '/commands', [
+                'json' => $parameters
+            ]);
+        } catch (ClientException $e) {
+            if($e->hasResponse()) {
+                $this->error($e->getResponse()->getBody());
+            } else {
+                $this->error($e->getMessage());
+            }
+
+            die(1);
+        }
 
         if(!$res->getStatusCode() == 201) {
             $this->error('Discord returned wrong status code for create request on command ' . $parameters['name']);
@@ -81,7 +92,7 @@ class RegisterDiscordApplicationCommands extends Command
 
         if(!$res->getStatusCode() == 204) {
             $this->error('Discord returned wrong status code for delete request on command ' . $id . ".\nResponse body was:");
-            $this->error($res->getBody());
+            dump($res->getBody());
         }
     }
 

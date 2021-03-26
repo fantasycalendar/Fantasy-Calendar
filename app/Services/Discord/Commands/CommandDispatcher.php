@@ -5,6 +5,7 @@ namespace App\Services\Discord\Commands;
 
 
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 
 class CommandDispatcher
 {
@@ -17,6 +18,7 @@ class CommandDispatcher
         try {
             $response = (new $handlerClass($commandData))->handle();
         } catch (\Throwable $e) {
+            Log::error($e->getTraceAsString());
             return $e->getMessage();
         }
 
