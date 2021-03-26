@@ -73,6 +73,11 @@ return [
                                 'required' => true
                             ]
                         ]
+                    ],
+                    [
+                        'name' => 'month',
+                        'description' => "Show the current month of this server's default calendar.",
+                        'type' => 1
                     ]
                 ]
             ]
@@ -82,6 +87,7 @@ return [
                 'echo' => \App\Services\Discord\Commands\Command\EchoHandler::class,
                 'list' => \App\Services\Discord\Commands\Command\ListHandler::class,
                 'use' => \App\Services\Discord\Commands\Command\UseHandler::class,
+                'month' => \App\Services\Discord\Commands\Command\MonthHandler::class,
             ]
         ]
     ],
