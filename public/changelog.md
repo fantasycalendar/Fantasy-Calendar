@@ -6,6 +6,7 @@
 * Tweaked - Intercalary leap days can now exist without changing the order of numbered days in a month, or display its own custom name above the day
 * Fixed - Enabling *Custom year header formatting* on eras causing error
 * Fixed - Weekday leap days not being ordered correcly on their months
+* Fixed - Season type selection dropdown visible with more than 4 seasons
 
 ### 2.0.15 - Industrious Efreet
 #### February 25, 2021
