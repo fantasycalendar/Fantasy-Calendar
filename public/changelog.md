@@ -7,6 +7,7 @@
 * Fixed - Enabling *Custom year header formatting* on eras causing error
 * Fixed - Weekday leap days not being ordered correcly on their months
 * Fixed - Season type selection dropdown visible with more than 4 seasons
+* Fixed - Moon names sometimes breaking on the advanced day data modal
 
 ### 2.0.15 - Industrious Efreet
 #### February 25, 2021
