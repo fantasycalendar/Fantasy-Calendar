@@ -77,37 +77,69 @@ var calendar_builder = {
 
 		}
 
-		var leap_day_offset = 0;
+		let leap_days = this.static_data.year_data.leap_days.filter(leap_day => leap_day.timespan == timespan_index);
+		let normal_leapdays = leap_days.filter(leap_day => !leap_day.adds_week_day && !leap_day.intercalary)
+		let intercalary_leapdays = leap_days.filter(leap_day => !leap_day.adds_week_day && leap_day.intercalary)
+		let week_day_leap_days = leap_days.filter(leap_day => leap_day.adds_week_day)
 
-		// Get all current leap days and check if any of them should be on this timespan
-		for(leap_day_index = 0; leap_day_index < this.static_data.year_data.leap_days.length; leap_day_index++){
 
-			var leap_day = this.static_data.year_data.leap_days[leap_day_index];
+		for (let index in normal_leapdays) {
 
-			if(leap_day.timespan == timespan_index){
+			let leap_day = normal_leapdays[index];
 
-				leap_day.index = leap_day_index;
+			leap_day.index = leap_days.indexOf(leap_day);
 
-				if(is_leap(this.static_data, timespan_fraction, leap_day.interval, leap_day.offset)){
+			if (is_leap(this.static_data, timespan_fraction, leap_day.interval, leap_day.offset)) {
+				timespan.length++;
+			}
 
-					if(leap_day.intercalary){
-						if(timespan.type === 'intercalary'){
-							timespan.length++;
-						}else{
-							timespan.leap_days.push(leap_day);
-						}
+		}
 
-					}else{
-						timespan.length++;
-						if(leap_day.adds_week_day){
-							var location = (leap_day.day)%timespan.week.length;
-							timespan.week.splice(location+leap_day_offset, 0, leap_day.week_day)
-							leap_day_offset++;
-						}
-					}
+		for (let index in intercalary_leapdays) {
+
+			let leap_day = intercalary_leapdays[index];
+
+			leap_day.index = leap_days.indexOf(leap_day);
+
+			if (is_leap(this.static_data, timespan_fraction, leap_day.interval, leap_day.offset)) {
+				if(timespan.type === 'intercalary'){
+					timespan.length++;
+				}else{
+					timespan.leap_days.push(leap_day);
 				}
 			}
+
 		}
+
+		week_day_leap_days.sort((a, b) => a.day - b.day);
+
+		let leap_day_offset = 0;
+		let week_length = timespan.week.length;
+		let before_weekdays = [];
+		let after_weekdays = [];
+
+		for (let index in week_day_leap_days) {
+
+			let leap_day = week_day_leap_days[index];
+
+			leap_day.index = leap_days.indexOf(leap_day);
+
+			if (is_leap(this.static_data, timespan_fraction, leap_day.interval, leap_day.offset)) {
+				timespan.length++;
+				if (leap_day.day == 0) {
+					before_weekdays.push(leap_day.week_day)
+				} else if (leap_day.day == week_length) {
+					after_weekdays.push(leap_day.week_day)
+				} else {
+					let location = leap_day.day % timespan.week.length;
+					timespan.week.splice(location + leap_day_offset, 0, leap_day.week_day)
+					leap_day_offset++;
+				}
+			}
+
+		}
+
+		timespan.week = before_weekdays.concat(timespan.week).concat(after_weekdays);
 
 		return timespan;
 
