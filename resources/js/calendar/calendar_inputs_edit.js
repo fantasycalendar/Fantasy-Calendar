@@ -5084,6 +5084,7 @@ function reindex_cycle_sortable(){
 		static_data.cycles.data[i] = {
 			'length': ($(this).find('.length').val()|0),
 			'offset': ($(this).find('.offset').val()|0),
+			'type': $(this).find('.cycle_type').val(),
 			'names': []
 		};
 

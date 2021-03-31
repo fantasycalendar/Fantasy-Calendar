@@ -8,6 +8,7 @@
 * Fixed - Weekday leap days not being ordered correcly on their months
 * Fixed - Season type selection dropdown visible with more than 4 seasons
 * Fixed - Moon names sometimes breaking on the advanced day data modal
+* Fixed - Cycle type resetting for all cycles when re-ordering or deleting cycles
 
 ### 2.0.15 - Industrious Efreet
 #### February 25, 2021
