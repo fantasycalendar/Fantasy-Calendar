@@ -120,7 +120,7 @@ const render_data_generator = {
 			}
         }
 
-        let number = leap_day && leap_day.not_numbered ? "" : epoch_data.day - this.day_offset;
+        let number = epoch_data.day - this.day_offset;
 
         let text = ""
         let leap_day = undefined;
@@ -134,6 +134,8 @@ const render_data_generator = {
                 }
             }
 		}
+
+        number = leap_day && leap_day.not_numbered ? "" : number;
 
 		let season_color = epoch_data.season ? (epoch_data.season.color !== undefined ? epoch_data.season.color : false) : false;
 		let weather_icon = this.get_weather_icon(epoch);
