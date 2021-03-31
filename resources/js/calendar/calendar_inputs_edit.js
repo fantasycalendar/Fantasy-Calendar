@@ -390,7 +390,8 @@ function set_up_edit_inputs(){
 			'day': 0,
 			'week_day': '',
 			'interval': '1',
-			'offset': 0
+			'offset': 0,
+			'not_numbered': false,
 		};
 
 		if(!static_data.year_data.leap_days){
@@ -3036,6 +3037,25 @@ function add_leap_day_to_list(parent, key, data){
 				element.push("<div class='row no-gutters mt-2 mb-1'>");
 					element.push("<div class='col'>");
 						element.push("<div class='separator'></div>");
+					element.push("</div>");
+				element.push("</div>");
+
+				element.push(`<div class='row no-gutters my-1 ${data.intercalary ? "" : "hidden"}'>`);
+					element.push(`<div class='form-check col-12 py-2 border rounded protip' data-pt-position="right" data-pt-title="This setting toggles whether this intercalary leap day should continue its parent month's day count (for example, day 1, day 2, intercalary, day 3).">`);
+						element.push(`<input type='checkbox' id='${key}_not_numbered' class='form-check-input dynamic_input' data='year_data.leap_days.${key}' fc-index='not_numbered' ${(data.intercalary ? "" : "disabled")} ${(data.not_numbered ? "checked" : "")}/>`);
+						element.push(`<label for='${key}_not_numbered' class='form-check-label ml-1'>`);
+							element.push("Not numbered");
+						element.push("</label>");
+					element.push("</div>");
+				element.push("</div>");
+				element.push("</div>");
+
+				element.push(`<div class='row no-gutters my-1 ${data.intercalary ? "" : "hidden"}'>`);
+					element.push(`<div class='form-check col-12 py-2 border rounded protip' data-pt-position="right" data-pt-title="This setting toggles whether this intercalary leap day should show its name in the calendar.">`);
+						element.push(`<input type='checkbox' id='${key}_show_text' class='form-check-input dynamic_input' data='year_data.leap_days.${key}' fc-index='show_text' ${(data.intercalary ? "" : "disabled")} ${(data.show_text ? "checked" : "")}/>`);
+						element.push(`<label for='${key}_show_text' class='form-check-label ml-1'>`);
+							element.push("Show leap day text");
+						element.push("</label>");
 					element.push("</div>");
 				element.push("</div>");
 

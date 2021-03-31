@@ -64,6 +64,8 @@ var calendar_weather = {
 			this.weather_tooltip_box = $('#weather_tooltip_box');
 			this.base_height = parseInt(this.weather_tooltip_box.css('height'));
 			this.weather_title = $('.weather_title');
+			this.day_title = $('.day_title');
+			this.day_container = $('.day_container');
 			this.moon_title = $('.moon_title');
 			this.moon_container = $('.moon_container');
 			this.weather_temp_desc = $('.weather_temp_desc');
@@ -130,6 +132,20 @@ var calendar_weather = {
 
 			this.moon_title.toggleClass('hidden', !icon.hasClass('moon_popup'));
 			this.moon_container.toggleClass('hidden', !icon.hasClass('moon_popup'));
+
+			this.day_title.toggleClass('hidden', !icon.hasClass('day_title_popup'));
+			this.day_container.toggleClass('hidden', !icon.hasClass('day_title_popup'));
+
+			if(icon.hasClass('day_title_popup')) {
+				let epoch_data = calendar_weather.epoch_data[epoch];
+				if(epoch_data.leap_day !== undefined) {
+					let index = epoch_data.leap_day;
+					leap_day = static_data.year_data.leap_days[index];
+					if(leap_day.show_text) {
+						this.day_container.text(leap_day.name);
+					}
+				}
+			}
 
 			if(icon.hasClass('moon_popup')){
 				this.moon_container.html(this.insert_moons(epoch));

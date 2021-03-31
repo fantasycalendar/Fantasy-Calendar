@@ -158,11 +158,21 @@
     margin:0 0 0.2rem 0;
 
     .number{
+        min-height:1.5rem;
         margin-left:5px;
     }
 
     .year_day{
         font-size:0.75rem;
+        margin-left:5px;
+    }
+
+    &.text{
+        display:inline;
+        text-align:center;
+        border-bottom:1px solid $calendar-border-color;
+        padding:4px 5px;
+        font-size:0.8rem;
     }
 }
 
@@ -384,7 +394,6 @@
     }
 
     .number{
-        border-right:1px solid lightgrey;
         padding-right:5px;
     }
 
@@ -395,6 +404,7 @@
     .week_day_name{
         padding-left:5px;
         text-align: left;
+        border-left:1px solid lightgrey;
     }
 
     .event_container{
@@ -471,6 +481,7 @@
     }
 
     .week_day_name {
+        border-top: 1px solid $calendar-border-color;
         border-bottom: 2px solid $calendar-border-color;
     }
 
