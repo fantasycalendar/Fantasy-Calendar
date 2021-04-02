@@ -196,6 +196,8 @@ worker_climate.onmessage = e => {
 
 worker_calendar.onmessage = e => {
 
+	if(e.data.action == "unit test") return;
+
 	//execution_time.end("Calendar worker took: ")
 
 	evaluated_static_data = {}

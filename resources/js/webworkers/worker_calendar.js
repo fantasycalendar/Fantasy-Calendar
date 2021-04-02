@@ -17,15 +17,14 @@ onmessage = e => {
 	calendar_builder.owner = e.data.owner;
 	calendar_builder.events = e.data.events;
 	calendar_builder.event_categories = e.data.event_categories;
-
-	let debug = false;
+	let debug = e.data.debug !== undefined ? e.data.debug : false;
+	let target_loops = e.data.target_loops !== undefined ? e.data.target_loops : 0;
 
 	if(debug) {
 
-		target_loops = 2000;
 		loops = 0;
 
-		calendar_builder.dynamic_data.year = Math.floor(target_loops / 2);
+		calendar_builder.dynamic_data.year = Math.floor(target_loops / 2)*-1;
 		
 		execution_time.start();
 
@@ -35,7 +34,7 @@ onmessage = e => {
 
 			starttime = performance.now();
 
-			data = calendar_builder.evaluate_calendar_data();
+			data = calendar_builder.evaluate_calendar_data(true, false);
 			calendar_builder.dynamic_data.year++;
 			if(calendar_builder.dynamic_data.year == 0 && !calendar_builder.static_data.settings.year_zero_exists) {
 				calendar_builder.dynamic_data.year++;
