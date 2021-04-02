@@ -133,7 +133,7 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
         $headerLines->push(sprintf("┌%s┐", str_repeat('─', $this->lineLength - 2)));
 
         // Insert name lines
-        $headerLines->push($this->buildNameLines());
+        $headerLines = $headerLines->merge($this->buildNameLines());
 
         // Separator line
         $cellCapLine = $this->weekdays->map(function($weekday) {
@@ -183,7 +183,7 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
                 : $this->lineLength - 2;
 
             return sprintf(self::SEPARATOR_VERTICAL . '%s' . self::SEPARATOR_VERTICAL, Str::padBoth($line, $limit, self::SPACER));
-        })->join("\n");
+        });
     }
 
     private function buildFooter()
