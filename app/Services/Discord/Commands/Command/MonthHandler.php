@@ -43,8 +43,8 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
     const SEPARATOR_HORIZONTAL = '─';
     const SEPARATOR_INTERSECTION = '┼';
 
-    const SEPARATOR_VERTICAL_DOUBLE = '═';
-    const SEPARATOR_HORIZONTAL_DOUBLE = '║';
+    const SEPARATOR_HORIZONTAL_DOUBLE = '═';
+    const SEPARATOR_VERTICAL_DOUBLE = '║';
     const TOP_LEFT_DOUBLE = '╔';
     const TOP_RIGHT_DOUBLE = '╗';
     const BOTTOM_RIGHT_DOUBLE = '╝';
@@ -52,11 +52,21 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
 
     const SPACER = " ";
     const SHADE = '▒';
+    /**
+     * @var null
+     */
+    private $currentWeekIndex;
+    /**
+     * @var null
+     */
+    private $currentWeekDayIndex;
 
     public function handle(): string
     {
         $this->month = (new MonthRenderer($this->getDefaultCalendar()))->render();
-        $this->weeks = collect($this->month['weeks']);
+        $this->weeks = collect($this->month['weeks'])->map(function($week) {
+            return collect($week);
+        });
         $this->weekdays = collect($this->month['weekdays']);
         $this->name = $this->month['name'];
         $this->year = $this->month['year'];
@@ -87,17 +97,121 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
     {
         $response = $this->buildHeader();
 
-        $days = $this->weeks->map(function($week){
-            return '|' . collect($week)->map($this->processWeek())->join('|') . '|';
-        })->join(sprintf('%s%s%s', "\n", $this->buildWeeksGlue(), "\n"));
+        $days = $this->buildDays();
 
-        $response->push($days);
+        $days = $this->outlineCurrentDate($days);
 
-        $response->push($this->buildFooter());
+        $response = $response->merge($days);
 
 //        dd($response);
 
         return str_replace(' ', 	self::SPACER, $response->join("\n"));
+    }
+
+    private function buildDays()
+    {
+        $this->currentWeekIndex = null;
+        $this->currentWeekDayIndex = null;
+
+        // This results in a Collection of week day cell strings and glue. Example:
+        // Illuminate\Support\Collection {#2049
+        //  #items: array:7 [
+        //    1 => "├───┼───┼───┼───┼───┼───┼───┼───┼───┼───┤"
+        //    2 => "│  1│  2│  3│  4│  5│  6│  7│  8│  9│ 10│"
+        //    3 => "├───┼───┼───┼───┼───┼───┼───┼───┼───┼───┤"
+        //    4 => "│ 11│ 12│ 13│ 14│ 15│ 16│ 17│ 18│ 19│ 20│"
+        //    5 => "├───┼───┼───┼───┼───┼───┼───┼───┼───┼───┤"
+        //    6 => "│ 21│ 22│ 23│ 24│ 25│ 26│ 27│ 28│ 29│ 30│"
+        //    7 => "└───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘"
+        //  ]
+        //}
+        $dayContentByWeek = $this->weeks->mapWithKeys(function($days, $index) {
+            if($days->where('is_current')->count()) {
+                $this->currentWeekIndex = $index * 2;
+            }
+
+            // Transforms from "[{"month_day":1,"is_current":true,"type":"day","name":"Sul"},{"month_day":2,"is_current":false,"type":"day","name":"Mol"},...]"
+            // Into "│  1│  2│  3│  4│  5│  6│  7│", spaced based on the cell length
+            $dayTextLines = $days->reduceWithKeys(function($prevDay, $day, $index) {
+                if($day['is_current']) $this->currentWeekDayIndex = ($index * ($this->cellLength + 1) + 1);
+
+                return $prevDay . self::SEPARATOR_VERTICAL . $this->dayContents($day);
+            }) . self::SEPARATOR_VERTICAL;
+
+            return [
+                ($index * 2) - 1 => $this->buildWeeksGlue(),
+                ($index * 2) => $dayTextLines,
+            ];
+        })->push($this->buildFooter());
+
+        return $dayContentByWeek;
+    }
+
+    private function outlineCurrentDate($days)
+    {
+        $days = $days->toArray();
+
+        $stringsToReplace = collect([
+            [
+                'content' => self::TOP_LEFT_DOUBLE,
+                'length' => 1,
+                'X' => -1,
+                'Y' => -1
+            ],
+            [
+                'content' => self::SEPARATOR_HORIZONTAL_DOUBLE,
+                'length' => $this->cellLength,
+                'X' => 0,
+                'Y' => -1,
+            ],
+            [
+                'content' => self::TOP_RIGHT_DOUBLE,
+                'length' => 1,
+                'X' => $this->cellLength,
+                'Y' => -1,
+            ],
+            [
+                'content' => self::SEPARATOR_VERTICAL_DOUBLE,
+                'length' => 1,
+                'X' => -1,
+                'Y' => 0,
+            ],
+            [
+                'content' => self::SEPARATOR_VERTICAL_DOUBLE,
+                'length' => 1,
+                'X' => $this->cellLength,
+                'Y' => 0,
+            ],
+            [
+                'content' => self::BOTTOM_LEFT_DOUBLE,
+                'length' => 1,
+                'X' => -1,
+                'Y' => 1,
+            ],
+            [
+                'content' => self::SEPARATOR_HORIZONTAL_DOUBLE,
+                'length' => $this->cellLength,
+                'X' => 0,
+                'Y' => 1,
+            ],
+            [
+                'content' => self::BOTTOM_RIGHT_DOUBLE,
+                'length' => 1,
+                'X' => $this->cellLength,
+                'Y' => 1,
+            ],
+        ]);
+
+        $stringsToReplace->each(function($replacement) use (&$days) {
+            $x = $this->currentWeekDayIndex + $replacement['X'];
+            $y = $this->currentWeekIndex + $replacement['Y'];
+
+            $days[$y] = mb_substr_replace($days[$y], $replacement['content'], $x, $replacement['length']);
+//            dump($x, $this->currentWeekDayIndex, $y, $this->currentWeekIndex, $replacement, $days);
+
+        });
+
+        return collect($days);
     }
 
     private function buildWeeksGlue()
@@ -107,15 +221,13 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
         return sprintf('%s%s%s', self::EDGE_LEFT_VERTICAL, $glueLine, self::EDGE_RIGHT_VERTICAL);
     }
 
-    private function processWeek()
+    private function dayContents($day)
     {
-        return function($day){
-            $contents = ($day['type'] == 'overflow')
-                ? str_repeat(self::SHADE, $this->cellLength)
-                : $day['month_day'];
+        $contents = ($day['type'] == 'overflow')
+            ? str_repeat(self::SHADE, $this->cellLength)
+            : $day['month_day'];
 
-            return Str::padLeft($contents, $this->cellLength, self::SPACER);
-        };
+        return Str::padLeft($contents, $this->cellLength, self::SPACER);
     }
 
     /**
@@ -147,8 +259,6 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
             return Str::padLeft(Str::limit($weekday, $this->cellLength, ''), $this->cellLength);
         })->join(self::SEPARATOR_VERTICAL);
         $headerLines->push(sprintf('%s%s%s', self::SEPARATOR_VERTICAL, $dayNames, self::SEPARATOR_VERTICAL));
-
-        $headerLines->push($this->buildWeeksGlue());
 
         return $headerLines;
     }
