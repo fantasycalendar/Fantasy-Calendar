@@ -169,7 +169,7 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
         // By word-wrapping quite a bit early. Should help alleviate ugly dangling single 2-4 letter words
         $wrappedNameLines = (strlen($fullNameLine) > $this->lineLength - 4)
             ? collect(explode("\n", wordwrap($fullNameLine, $this->lineLength - 8)))
-            : $fullNameLine;
+            : collect($fullNameLine);
 
         // OK So... I know this is weird.
         // In short, our self::SHADE character is **technically** 3 characters.
