@@ -29,6 +29,8 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
     private $name;
     private $year;
 
+    private $currentWeekIndex = null;
+    private $currentWeekDayIndex = null;
 
     const TOP_LEFT = '┌';
     const TOP_MIDDLE = '┬';
@@ -51,19 +53,15 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
     const BOTTOM_LEFT_DOUBLE = '╚';
 
     const SPACER = " ";
-    const SHADE = '▒';
-    /**
-     * @var null
-     */
-    private $currentWeekIndex;
-    /**
-     * @var null
-     */
-    private $currentWeekDayIndex;
+    const SHADE = "×";
 
+    /*
+     * This gets called by the discord hook, and returns a string containing an entire calendar
+     */
     public function handle(): string
     {
         $this->month = (new MonthRenderer($this->getDefaultCalendar()))->render();
+
         $this->weeks = collect($this->month['weeks'])->map(function($week) {
             return collect($week);
         });
@@ -97,35 +95,32 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
     {
         $response = $this->buildHeader();
 
-        $days = $this->buildDays();
+        $response = $response->merge(
+            $this->outlineCurrentDate(
+                $this->buildDays()
+            )
+        );
 
-        $days = $this->outlineCurrentDate($days);
-
-        $response = $response->merge($days);
-
-//        dd($response);
-
-        return str_replace(' ', 	self::SPACER, $response->join("\n"));
+        return $response->join("\n");
     }
 
+    /**
+     * This returns a Collection of week day cell strings and glue. Example:
+     * Illuminate\Support\Collection {#2049
+     *  #items: array:7 [
+     *    1 => "├───┼───┼───┼───┼───┼───┼───┼───┼───┼───┤"
+     *    2 => "│  1│  2│  3│  4│  5│  6│  7│  8│  9│ 10│"
+     *    3 => "├───┼───┼───┼───┼───┼───┼───┼───┼───┼───┤"
+     *    4 => "│ 11│ 12│ 13│ 14│ 15│ 16│ 17│ 18│ 19│ 20│"
+     *    5 => "├───┼───┼───┼───┼───┼───┼───┼───┼───┼───┤"
+     *    6 => "│ 21│ 22│ 23│ 24│ 25│ 26│ 27│ 28│ 29│ 30│"
+     *    7 => "└───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘"
+     *  ]
+     *}
+     */
     private function buildDays()
     {
-        $this->currentWeekIndex = null;
-        $this->currentWeekDayIndex = null;
-
-        // This results in a Collection of week day cell strings and glue. Example:
-        // Illuminate\Support\Collection {#2049
-        //  #items: array:7 [
-        //    1 => "├───┼───┼───┼───┼───┼───┼───┼───┼───┼───┤"
-        //    2 => "│  1│  2│  3│  4│  5│  6│  7│  8│  9│ 10│"
-        //    3 => "├───┼───┼───┼───┼───┼───┼───┼───┼───┼───┤"
-        //    4 => "│ 11│ 12│ 13│ 14│ 15│ 16│ 17│ 18│ 19│ 20│"
-        //    5 => "├───┼───┼───┼───┼───┼───┼───┼───┼───┼───┤"
-        //    6 => "│ 21│ 22│ 23│ 24│ 25│ 26│ 27│ 28│ 29│ 30│"
-        //    7 => "└───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘"
-        //  ]
-        //}
-        $dayContentByWeek = $this->weeks->mapWithKeys(function($days, $index) {
+        return $this->weeks->mapWithKeys(function($days, $index) {
             if($days->where('is_current')->count()) {
                 $this->currentWeekIndex = $index * 2;
             }
@@ -143,8 +138,6 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
                 ($index * 2) => $dayTextLines,
             ];
         })->push($this->buildFooter());
-
-        return $dayContentByWeek;
     }
 
     private function outlineCurrentDate($days)
@@ -207,8 +200,6 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
             $y = $this->currentWeekIndex + $replacement['Y'];
 
             $days[$y] = mb_substr_replace($days[$y], $replacement['content'], $x, $replacement['length']);
-//            dump($x, $this->currentWeekDayIndex, $y, $this->currentWeekIndex, $replacement, $days);
-
         });
 
         return collect($days);
@@ -273,13 +264,15 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
     private function buildNameLines()
     {
         // Tack on 3 of our shade character and the year to the name header
-        $fullNameLine = sprintf('%s %s %s', $this->name, str_repeat(self::SHADE, 3), $this->year);
+        $yearLine = str_repeat(self::SHADE, 2) . " {$this->year} " . str_repeat(self::SHADE, 2);
 
         // If our name will have more than 2 spaces on either side, we give it some room to breathe
         // By word-wrapping quite a bit early. Should help alleviate ugly dangling single 2-4 letter words
-        $wrappedNameLines = (strlen($fullNameLine) > $this->lineLength - 4)
-            ? collect(explode("\n", wordwrap($fullNameLine, $this->lineLength - 8)))
-            : collect($fullNameLine);
+        $wrappedNameLines = (strlen($this->name) > $this->lineLength - 4)
+            ? collect(explode("\n", wordwrap($this->name, $this->lineLength - 8)))
+            : collect($this->name);
+
+        $wrappedNameLines->prepend($yearLine);
 
         // OK So... I know this is weird.
         // In short, our self::SHADE character is **technically** 3 characters.
@@ -289,9 +282,9 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
         // We **WOULD** offset by 6, except that is further offset by 2 in the opposite direction by the endcaps.
         return $wrappedNameLines->map(function($line) {
             $limit = Str::contains($line, self::SHADE)
-                ? $this->lineLength + 4
+                ? $this->lineLength + 2
                 : $this->lineLength - 2;
-
+//            $limit = $this->lineLength - 2;
             return sprintf(self::SEPARATOR_VERTICAL . '%s' . self::SEPARATOR_VERTICAL, Str::padBoth($line, $limit, self::SPACER));
         });
     }
