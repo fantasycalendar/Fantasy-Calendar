@@ -61,19 +61,17 @@ var calendar_builder = {
 
 		timespan.leap_days = [];
 
+		let timespan_fraction;
+
 		if(timespan.interval == 1){
 
-			var timespan_fraction = year;
+			timespan_fraction = year;
 
 		}else{
 
-			var offset = timespan.offset%timespan.interval;
+			let offset = timespan.offset%timespan.interval;
 
-			if(year < 0 || this.static_data.settings.year_zero_exists){
-				var timespan_fraction = Math.ceil((year - offset) / timespan.interval);
-			}else{
-				var timespan_fraction = Math.floor((year - offset) / timespan.interval);
-			}
+			timespan_fraction = Math.floor((year - offset) / timespan.interval);
 
 		}
 
@@ -81,7 +79,6 @@ var calendar_builder = {
 		let normal_leapdays = leap_days.filter(leap_day => !leap_day.adds_week_day && !leap_day.intercalary)
 		let intercalary_leapdays = leap_days.filter(leap_day => !leap_day.adds_week_day && leap_day.intercalary)
 		let week_day_leap_days = leap_days.filter(leap_day => leap_day.adds_week_day)
-
 
 		for (let index in normal_leapdays) {
 
