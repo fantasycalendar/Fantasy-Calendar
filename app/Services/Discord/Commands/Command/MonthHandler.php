@@ -5,6 +5,7 @@ namespace App\Services\Discord\Commands\Command;
 
 
 use App\Services\RendererService\MonthRenderer;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -60,6 +61,9 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
         $this->name = $this->month['name'];
         $this->year = $this->month['year'];
 
+        $this->cellLength = $this->determineCellLength();
+        $this->lineLength = $this->determineLineLength();
+
         return $this->codeBlock($this->textRender());
     }
 
@@ -81,19 +85,19 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
      */
     private function textRender()
     {
-        $response = "";
-
-        $this->cellLength = $this->determineCellLength();
-        $this->lineLength = $this->determineLineLength();
-
-        $header = $this->buildHeader();
-        $footer = $this->buildFooter();
+        $response = $this->buildHeader();
 
         $days = $this->weeks->map(function($week){
             return '|' . collect($week)->map($this->processWeek())->join('|') . '|';
         })->join(sprintf('%s%s%s', "\n", $this->buildWeeksGlue(), "\n"));
 
-        return str_replace(' ', 	self::SPACER, $header . $days . $footer);
+        $response->push($days);
+
+        $response->push($this->buildFooter());
+
+//        dd($response);
+
+        return str_replace(' ', 	self::SPACER, $response->join("\n"));
     }
 
     private function buildWeeksGlue()
@@ -121,7 +125,7 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
      * ├──┬──┬──┬──┬──┬──┬──┤
      * │Su│Mo│Tu│We│Th│Fr│Sa│
      */
-    private function buildHeader(): string
+    private function buildHeader(): Collection
     {
         $headerLines = collect();
 
@@ -146,7 +150,7 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
 
         $headerLines->push($this->buildWeeksGlue());
 
-        return $headerLines->join("\n") . "\n";
+        return $headerLines;
     }
 
     /**
@@ -184,7 +188,7 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
 
     private function buildFooter()
     {
-        return "\n" . '└' . str_repeat(str_repeat('─', $this->cellLength) . '┴', count($this->month['weekdays']) - 1) . str_repeat('─', $this->cellLength) . '┘' . "\n";
+        return sprintf('%s%s%s', self::BOTTOM_LEFT,str_repeat(str_repeat('─', $this->cellLength) . '┴', count($this->month['weekdays']) - 1) . str_repeat('─', $this->cellLength), self::BOTTOM_RIGHT);
     }
 
     /**
