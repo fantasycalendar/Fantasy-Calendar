@@ -65,7 +65,11 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
         $this->weeks = collect($this->month['weeks'])->map(function($week) {
             return collect($week);
         });
-        $this->weekdays = collect($this->month['weekdays']);
+        $this->weekdays = collect($this->month['weekdays'])->map(function($weekday) {
+            if(strstr($weekday, 'Weekday ') !== false) {
+                return str_replace('Weekday ', '', $weekday);
+            }
+        });
         $this->name = $this->month['name'];
         $this->year = $this->month['year'];
 
@@ -330,7 +334,9 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
      */
     private function findShortestUniquePrefixLength($weekdays, $length = null): int
     {
-        $length = $length ?? $weekdays->map(function($weekday) { return strlen($weekday); })->max();
+        $length = $length ?? $weekdays->map(function($weekday) {
+            return strlen($weekday);
+        })->max();
 
         $matchedShortNames = $weekdays->countBy(function($dayName) use ($length) {
             return Str::limit($dayName, $length, '');
