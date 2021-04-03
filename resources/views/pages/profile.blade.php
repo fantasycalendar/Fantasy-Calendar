@@ -42,6 +42,22 @@
         }
 
     </script>
+    <script>
+        function confirmDisconnect() {
+            swal.fire({
+                title: "Are you sure?",
+                text: "Your Discord account will be disconnected from Fantasy Calendar. Commands will no longer work for you, but you will still need to remove the app from any servers you don't want it in in order to remove it completely.",
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                icon: "warning",
+            }).then((result) => {
+                if(!result.dismiss) {
+                    self.location = '{{ route('discord.auth.remove') }}';
+                }
+            });
+        }
+    </script>
 @endpush
 
 
@@ -71,12 +87,44 @@
                     <p><a href="{{ route('subscription.resume') }}" class="btn btn-primary form-control">Resume Subscription</a></p>
                 @endif
 
-            @if(env('APP_ENV') !== 'production' && $subscription->onGracePeriod())
-                        <p><a href="{{ route('subscription.cancel') }}" class="btn btn-danger form-control">Immediately end benefits</a></p>
+                @if(env('APP_ENV') !== 'production' && $subscription->onGracePeriod())
+                    <p><a href="{{ route('subscription.cancel') }}" class="btn btn-danger form-control">Immediately end benefits</a></p>
                 @endif
             @endunless
         </div>
     </div>
+    @if(!empty(env('DISCORD_CLIENT_ID')))
+        <hr>
+        <div class="row">
+            <div class="col-12 d-flex flex-column flex-md-row align-items-md-center justify-content-between">
+                @if(Auth::user()->discord_auth()->exists())
+                    <div class="inner h-100 alert alert-success bg-accent p-3 d-flex flex-column flex-md-row align-items-md-center justify-content-between">
+                        <div class="d-flex justify-content-start align-items-center">
+                            <img class="mr-2 rounded-circle" style="max-height: 5rem;" src="{{ Auth::user()->discord_auth->avatar }}" alt="{{ Auth::user()->discord_auth->discord_username }}'s Discord avatar">
+                            <h4 class="mb-0">
+                                {{ Auth::user()->discord_auth->discord_username }}
+                            </h4>
+                        </div>
+                        <hr class="d-md-none w-100 my-3" style="border-top-color: #246645;">
+                        <a href="javascript:" onclick="confirmDisconnect()" class="btn btn-outline-danger alert-link">Disconnect</a>
+                    </div>
+                @else
+                    <div>
+                        <h4>Discord Integration</h4>
+                        <p>You can connect your Fantasy Calendar account to Discord!</p>
+                    </div>
+                    <div>
+                        <a href="{{ route('discord.index') }}" class="btn btn-primary">Check it out</a>
+                    </div>
+                @endif
+            </div>
+            @if(!Auth::user()->isPremium())
+                <div class="col-12 alert alert-light">
+                    <small>As a free user, you can use someone else's calendar, but you won't be able to use it for your own, nor add Fantasy Calendar to a new server.</small>
+                </div>
+            @endif
+        </div>
+    @endif
     <hr>
     <form id="settings" method="post">
         @csrf

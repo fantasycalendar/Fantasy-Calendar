@@ -74,7 +74,10 @@ class DiscordController extends \App\Http\Controllers\Controller
             $user = Socialite::driver('discord')->user();
         } catch (ClientException $e) {
             Log::error('A user cancelled Discord auth.');
-            return redirect(route('discord.index'));
+            return redirect(route('discord.index'))->with('alert', 'Account connection cancelled.');
+        } catch (\Throwable $e) {
+            Log::error('A user cancelled Discord auth.');
+            return redirect(route('discord.index'))->with('error', 'There was an error connecting your Discord account! Please try again, and if it happens again, let us know over on our Discord server.');
         }
 
         if(Auth::user()->discord_auth()->exists()) {

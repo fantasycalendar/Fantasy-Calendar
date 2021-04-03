@@ -51,7 +51,7 @@
         function confirmDisconnect() {
             swal.fire({
                 title: "Are you sure?",
-                text: 'Your changes to this event will not be saved! Are you sure you want to continue?',
+                text: "Your Discord account will be disconnected from Fantasy Calendar. Commands will no longer work for you, but you will still need to remove the app from any servers you don't want it in in order to remove it completely.",
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
                 cancelButtonColor: '#3085d6',
@@ -71,30 +71,42 @@
             <div class="alert alert-info py-3 my-4">{{ session('alert') }}</div>
         @endif
 
-        <h1>Connect your Fantasy Calendar account with Discord!</h1>
-        <h4 class="lead" style="opacity: 0.65;">Don't worry, we only use the minimum necessary to make integrations work. As Discord will tell you, neither of the options below lets us read your messages or anything like that.</h4>
+        @if(session()->has('error'))
+            <div class="alert alert-danger py-3 my-4">{{ session('error') }}</div>
+        @endif
+
+        @unless(Auth::user()->discord_auth()->exists())
+            <h1>Connect your Fantasy Calendar account with Discord!</h1>
+            <h4 class="lead" style="opacity: 0.65;">Don't worry, we only use the minimum necessary to make integrations work. As Discord will tell you, neither of the options below lets us read your messages or anything like that.</h4>
+        @endunless
 
         <div class="row">
-            <div class="col-12 flex align-items-center mb-3">
-                <div class="connect-box py-4 w-100 border rounded my-4">
+            @unless(Auth::user()->discord_auth()->exists())
+                <div class="col-12 flex align-items-center mb-3">
+                    <div class="connect-box py-4 w-100 border rounded my-4">
 
-                    <div class="logo-wrapper">
-                        <img src="{{ asset('resources/logo-accent.png') }}" alt="" style="max-height: 5.2rem;">
-                    </div>
+                        <div class="logo-wrapper">
+                            <img src="{{ asset('resources/logo-accent.png') }}" alt="" style="max-height: 5.2rem;">
+                        </div>
 
-                    <div class="logo-wrapper">
-                        <i class="fa fa-arrows-alt-h" style="font-size: 3rem;"></i>
-                    </div>
+                        <div class="logo-wrapper">
+                            <i class="fa fa-arrows-alt-h" style="font-size: 3rem;"></i>
+                        </div>
 
-                    <div class="logo-wrapper">
-                        <i class="fab fa-discord" style="font-size: 5.6rem; margin-bottom: -.7rem;"></i>
+                        <div class="logo-wrapper">
+                            <i class="fab fa-discord" style="font-size: 5.6rem; margin-bottom: -.7rem;"></i>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="col-12 text-center mt-5 pb-2">
-                <h2>There are two different ways to connect, depending on what you need.</h2>
-            </div>
+                <div class="col-12 text-center mt-5 pb-2">
+                    <h2>There are two different ways to connect, depending on what you need.</h2>
+                </div>
+            @else
+                <div class="col-12">
+                    <h1>Account connected!</h1>
+                </div>
+            @endunless
 
             <div class="col-12 col-md-6 mb-3">
                 @unless(Auth::user()->discord_auth()->exists())
@@ -108,7 +120,6 @@
                         <div class="d-flex justify-content-start align-items-center">
                             <img class="mr-2 rounded-circle" style="max-height: 5rem;" src="{{ Auth::user()->discord_auth->avatar }}" alt="{{ Auth::user()->discord_auth->discord_username }}'s Discord avatar">
                             <h4 class="mb-0">
-                                <strong class="d-inline-block pb-1">Account connected!</strong><br>
                                 {{ Auth::user()->discord_auth->discord_username }}
                             </h4>
                         </div>
