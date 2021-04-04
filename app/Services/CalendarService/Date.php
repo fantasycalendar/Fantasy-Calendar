@@ -4,9 +4,12 @@ namespace App\Services\CalendarService;
 
 use App\Calendar;
 use Illuminate\Support\Arr;
+use Illuminate\Database\Eloquent\Concerns\HasAttributes;
 
 class Date
 {
+
+	use HasAttributes;
 
     private Calendar $calendar;
 
