@@ -6,6 +6,20 @@ use App\Calendar;
 use Illuminate\Support\Arr;
 use Illuminate\Database\Eloquent\Concerns\HasAttributes;
 
+/**
+ * Class Date
+ * @package App\Services\CalendarService
+ * @property $year
+ * @property $month
+ * @property $day
+ * @property $epoch
+ * @property $intercalary
+ * @property $countTimespans
+ * @property $numTimespans
+ * @property $totalWeekNum
+ * @property $currentEra
+ * @property $weekday
+ */
 class Date
 {
 
@@ -14,7 +28,7 @@ class Date
     private Calendar $calendar;
 
 	public int $year;
-	public int $timespan;
+	public int $month;
 	public int $day;
 
 	private array $epoch_data;
@@ -33,6 +47,37 @@ class Date
 		$this->month = $month;
 		$this->day = $day;
 		
+	}
+
+	public function __get($name)
+	{
+		return Arr::get($this->epochDetails, $name);
+	}
+
+	private function getEpochDetailsAttribute()
+	{
+
+		if(!$this->epochDetails){
+			$this-calculateEpochDetails();
+		}
+
+		return $this->epochDetails;
+
+	}
+
+    /**
+	  * Master function to calculate the overall epoch details based on the given date
+      */
+	public function calculateEpochDetails(){
+		
+		$this->epochDetails = $this->calculateEpoch($this->year, $this->month, $this->day);
+
+		$this->subtractYearEndingEras();
+
+		$this->calculateEraYear();
+
+		$this->calculateCurrentWeekday();
+
 	}
 
     /**
@@ -162,7 +207,7 @@ class Date
 	}
 
     /**
-	  * Calculates the era year for the given date, and reset it each time it should have
+	  * Calculates the era year for the given date, and reset it each time it should have been reset, based on the era setting 'restarts_year_count'
 	  * In addition, it figures out the current era's index based on the date
       */
 	private function calculateEraYear(int $year){
@@ -236,37 +281,6 @@ class Date
 
 		}
 
-	}
-
-    /**
-	  * Master function to calculate the overall epoch details based on the given date
-      */
-	public function calculateEpochDetails(){
-		
-		$this->epochDetails = $this->calculateEpoch($this->year, $this->month, $this->day);
-
-		$this->subtractYearEndingEras();
-
-		$this->calculateEraYear();
-
-		$this->calculateCurrentWeekday();
-
-	}
-
-	private function getEpochDetailsAttribute()
-	{
-
-		if(!$this->epochDetails){
-			$this-calculateEpochDetails();
-		}
-
-		return $this->epochDetails;
-
-	}
-
-	public function __get($name)
-	{
-		return Arr::get($this->epochDetails, $name);
 	}
 	
 }
