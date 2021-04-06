@@ -7,7 +7,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Database\Eloquent\Concerns\HasAttributes;
 
 /**
- * Class Date
+ * Class Epoch
  * @package App\Services\CalendarService
  * @property $year
  * @property $month
@@ -20,10 +20,9 @@ use Illuminate\Database\Eloquent\Concerns\HasAttributes;
  * @property $currentEra
  * @property $weekday
  */
-class Date
-{
 
-	use HasAttributes;
+class Epoch
+{
 
     private Calendar $calendar;
 
@@ -31,7 +30,7 @@ class Date
 	public int $month;
 	public int $day;
 
-	private array $epoch_data;
+	private array $details;
 
     /**
      * @param $calendar
@@ -39,7 +38,7 @@ class Date
 	 * @param $month
 	 * @param $day
      */
-	public function __construct(Calendar $calendar, int $year, int $month = null, int $day = null){
+	public function __construct(Calendar $calendar, int $year = null, int $month = null, int $day = null){
 
 		$this->calendar = $calendar;
 
@@ -49,28 +48,23 @@ class Date
 		
 	}
 
-	public function __get($name)
-	{
-		return Arr::get($this->epochDetails, $name);
-	}
-
-	private function getEpochDetailsAttribute()
+	private function getDetailsAttribute()
 	{
 
-		if(!$this->epochDetails){
-			$this-calculateEpochDetails();
+		if(!$this->details){
+			$this-calculateDetails();
 		}
 
-		return $this->epochDetails;
+		return $this->details;
 
 	}
 
     /**
 	  * Master function to calculate the overall epoch details based on the given date
       */
-	public function calculateEpochDetails(){
+	public function calculateDetails(){
 		
-		$this->epochDetails = $this->calculateEpoch($this->year, $this->month, $this->day);
+		$this->details = $this->calculateEpoch($this->year, $this->month, $this->day);
 
 		$this->subtractYearEndingEras();
 
@@ -91,7 +85,7 @@ class Date
 	  * - The number of months that has appeared
 	  * - The total number of weeks
 	  * 
-	  * This is only a helper function for the calculateEpochDetails function
+	  * This is only a helper function for the calculateDetails function
       *
       * @param  int              year
       * @param  int  optional    month
@@ -178,27 +172,27 @@ class Date
       */
 	private function subtractYearEndingEras(){
 
-		$this->epochDetails['eraYears'] = [];
+		$this->details['eraYears'] = [];
 		   
 		foreach($this->calendar->eras as $era_index => $era){
 
 			if($era->setting('starting_era')) continue;
 
-			if($era->ends_year && $year > $era->date->year){
+			if($era->ends_year && $year > $era->year){
 
-				$era_exact_data = $era->date->calculateEpoch($era->date->year, $era->date->timespan, $era->date->day);
-				$era_normal_data = $era->date->calculateEpoch($era->date->year+1);
+				$era_exact_data = $this->calculateEpoch($era->year, $era->timespan, $era->day);
+				$era_normal_data = $this->calculateEpoch($era->year+1);
 
-				$this->epochDetails['epoch'] -= ($era_normal_data->epoch - $era_exact_data->epoch);
+				$this->details['epoch'] -= ($era_normal_data['epoch'] - $era_exact_data['epoch']);
 
-				$this->epochDetails['intercalary'] -= ($era_normal_data->intercalary - $era_exact_data->intercalary);
+				$this->details['intercalary'] -= ($era_normal_data['intercalary'] - $era_exact_data['intercalary']);
 
-				for($i = 0; $i < count($era_normal_data->countTimespans); i++){
-					$this->epochDetails['countTimespans'][$i] = $era_normal_data->countTimespans[$i] - $era_exact_data->countTimespans[$i];
+				for($i = 0; $i < count($era_normal_data['countTimespans']); i++){
+					$this->details['countTimespans'][$i] = $era_normal_data['countTimespans'][$i] - $era_exact_data['countTimespans'][$i];
 				}
 
-				$this->epochDetails['numTimespans'] -= ($era_normal_data->numTimespans - $era_exact_data->numTimespans);
-				$this->epochDetails['totalWeekNum'] -= ($era_normal_data->totalWeekNum - $era_exact_data->totalWeekNum);
+				$this->details['numTimespans'] -= ($era_normal_data['numTimespans'] - $era_exact_data['numTimespans']);
+				$this->details['totalWeekNum'] -= ($era_normal_data['totalWeekNum'] - $era_exact_data['totalWeekNum']);
 
 			}
 		
@@ -212,24 +206,24 @@ class Date
       */
 	private function calculateEraYear(int $year){
 
-		$this->epochDetails['eraYear'] = $year;
+		$this->details['eraYear'] = $year;
 
-		$this->epochDetails['currentEra'] = -1;
+		$this->details['currentEra'] = -1;
 
 		foreach($this->calendar->eras as $era_index => $era){
 
-			$this->epochDetails['eraYears'][$era_index] = $era->date->year;
+			$this->details['eraYears'][$era_index] = $era->year;
 
 			if(!$era->setting('starting_era') && $era->setting('restart')
 				&&
 				(
-					$year > $era->date->year
+					$year > $era->year
 					||
-					($year == $era->date->year && $timespan > $era->date->timespan)
+					($year == $era->year && $timespan > $era->timespan)
 					||
-					($year == $era->date->year && $timespan == $era->date->timespan && $day == $era->date->day)
+					($year == $era->year && $timespan == $era->timespan && $day == $era->day)
 					||
-					($this->epochDetails['epoch'] == $era->date->epoch)
+					($this->details['epoch'] == $era->epoch)
 				)
 			){
 
@@ -241,24 +235,24 @@ class Date
 
 					if($prev_era->setting('restarts_year_count')){
 
-						$this->epochDetails['eraYears'][$era_index] -= $this->epochDetails['eraYears'][$i];
+						$this->details['eraYears'][$era_index] -= $this->details['eraYears'][$i];
 
 					}
 
 				}
 
-				$this->epochDetails['eraYear'] = $this->epochDetails['eraYear'] - $this->epochDetails['eraYears'][$era_index];
+				$this->details['eraYear'] = $this->details['eraYear'] - $this->details['eraYears'][$era_index];
 
 			}
 
-			if(!$era->settings->starting_era && $this->epochDetails['epoch'] >= $era->date->epoch && $this->epochDetails['currentEra'] == -1){
-				$this->epochDetails['currentEra'] = $era_index;
+			if(!$era->settings->starting_era && $this->details['epoch'] >= $era->epoch && $this->details['currentEra'] == -1){
+				$this->details['currentEra'] = $era_index;
 			}
 
 		}
 
-		if($era->settings->starting_era && $this->epochDetails['currentEra'] == -1){
-			$this->epochDetails['currentEra'] = 0;
+		if($era->settings->starting_era && $this->details['currentEra'] == -1){
+			$this->details['currentEra'] = 0;
 		}
 
 	}
@@ -269,15 +263,15 @@ class Date
       */
 	private function calculateCurrentWeekday(){
 
-		$this->epochDetails['weekday'] = 1; // TO-DO Adam: Figure out how to determine the weekday if $this-day is not 0
+		$this->details['weekday'] = 1; // TO-DO Adam: Figure out how to determine the weekday if $this-day is not 0
 
 		if($this->calendar->overflows_week){
 
-			$this->epochDetails['weekday'] = ($this->epochDetails['epoch']-1-$this->epochDetails['intercalary']+intval($this->calendar->first_day)) % count($this->calendar->global_week);
+			$this->details['weekday'] = ($this->details['epoch']-1-$this->details['intercalary']+intval($this->calendar->first_day)) % count($this->calendar->global_week);
 
-			if ($this->epochDetails['weekday'] < 0) $this->epochDetails['weekday'] += count($this->calendar->global_week);
+			if ($this->details['weekday'] < 0) $this->details['weekday'] += count($this->calendar->global_week);
 
-			$this->epochDetails['weekday'] += 1;
+			$this->details['weekday'] += 1;
 
 		}
 
