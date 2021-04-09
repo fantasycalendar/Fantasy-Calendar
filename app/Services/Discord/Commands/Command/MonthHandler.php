@@ -65,10 +65,12 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
         $this->weeks = collect($this->month['weeks'])->map(function($week) {
             return collect($week);
         });
-        $this->weekdays = collect($this->month['weekdays'])->map(function($weekday) {
-            if(strstr($weekday, 'Weekday ') !== false) {
-                return str_replace('Weekday ', '', $weekday);
+        $this->weekdays = collect($this->month['weekdays'])->map(function($dayName) {
+            if(strstr($dayName, 'Weekday ') !== false) {
+                $dayName = str_replace('Weekday ', '', $dayName);
             }
+
+            return preg_replace("/[^a-zA-Z]/", "", unicode_to_ascii($dayName));
         });
         $this->name = $this->month['name'];
         $this->year = $this->month['year'];
@@ -132,10 +134,10 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
             // Transforms from "[{"month_day":1,"is_current":true,"type":"day","name":"Sul"},{"month_day":2,"is_current":false,"type":"day","name":"Mol"},...]"
             // Into "│  1│  2│  3│  4│  5│  6│  7│", spaced based on the cell length
             $dayTextLines = $days->reduceWithKeys(function($prevDay, $day, $index) {
-                if($day['is_current']) $this->currentWeekDayIndex = ($index * ($this->cellLength + 1) + 1);
+                    if($day['is_current']) $this->currentWeekDayIndex = ($index * ($this->cellLength + 1) + 1);
 
-                return $prevDay . self::SEPARATOR_VERTICAL . $this->dayContents($day);
-            }) . self::SEPARATOR_VERTICAL;
+                    return $prevDay . self::SEPARATOR_VERTICAL . $this->dayContents($day);
+                }) . self::SEPARATOR_VERTICAL;
 
             return [
                 ($index * 2) - 1 => $this->buildWeeksGlue(),
@@ -332,7 +334,7 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
      * @param null $length
      * @return int|mixed
      */
-    private function findShortestUniquePrefixLength($weekdays, $length = null): int
+    private function findShortestUniquePrefixLength($weekdays, $length = null, $starting = null): int
     {
         $length = $length ?? $weekdays->map(function($weekday) {
             return strlen($weekday);
@@ -342,8 +344,15 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
             return Str::limit($dayName, $length, '');
         })->max();
 
+        if(!$starting && $matchedShortNames > 1) {
+            $starting = $matchedShortNames;
+            $matchedShortNames = 1;
+        } else if($starting == $matchedShortNames) {
+            $matchedShortNames = 1;
+        }
+
         return ($matchedShortNames === 1)
-            ? $this->findShortestUniquePrefixLength($weekdays, $length - 1) // All unique, check one more level
+            ? $this->findShortestUniquePrefixLength($weekdays, $length - 1, $starting) // All unique, check one more level
             : $length + 1; // Found duplicates! That means our length is truncating too far.
     }
 }

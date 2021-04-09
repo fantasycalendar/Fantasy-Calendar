@@ -79,3 +79,13 @@ if(!function_exists('lcmo')){
 
     }
 }
+
+if(!function_exists('unicode_to_ascii')) {
+    function unicode_to_ascii( $str )
+    {
+        return strtr(utf8_decode($str),
+            utf8_decode(
+                'ŠŒŽšœžŸ¥µÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ'),
+            'SOZsozYYuAAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
+    }
+}
