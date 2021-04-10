@@ -46,8 +46,9 @@
                             'current_day': day.epoch == render_data.current_epoch,
                             'preview_day': day.epoch == render_data.preview_epoch && render_data.preview_epoch != render_data.current_epoch,
                         }" :epoch="day.epoch">
+                                <div class="day_row text" x-show="day.text" x-text="day.text"></div>
                                 <div class="day_row d-flex justify-content-between">
-                                    <div class="number" x-text="day.number" x-show="day.number"></div>
+                                    <div class="number" x-text="day.number"></div>
 
                                     <div class="weather_popup center"
                                          x-show="day.weather_icon"
@@ -91,7 +92,7 @@
                                 <button class="btn_create_event btn btn-success day_row flex-grow" @click="$dispatch('event-editor-modal-new-event', { epoch: day.epoch })" :epoch="day.epoch" x-show="day.show_event_button">Create event</button>
 
                                 <div class="day_row">
-                                    <div class="number year_day" x-show="day.year_day" x-text="day.year_day"></div>
+                                    <div class="year_day" x-show="day.year_day" x-text="day.year_day"></div>
                                 </div>
                             </div>
                         </template>

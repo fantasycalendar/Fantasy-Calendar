@@ -118,13 +118,24 @@ const render_data_generator = {
                 "moons": [],
                 "has_events": false
 			}
-		}
+        }
 
-		let text = ""
+        let number = epoch_data.day - this.day_offset;
+
+        let text = ""
+        let leap_day = undefined;
 		if(epoch_data.leap_day !== undefined){
 			let index = epoch_data.leap_day;
-			text = static_data.year_data.leap_days[index].name;
+            leap_day = static_data.year_data.leap_days[index];
+            if(leap_day.show_text){
+                text = leap_day.name;
+                if(static_data.settings.layout == "minimalistic"){
+                    number = "x";
+                }
+            }
 		}
+
+        number = leap_day && leap_day.not_numbered ? "" : number;
 
 		let season_color = epoch_data.season ? (epoch_data.season.color !== undefined ? epoch_data.season.color : false) : false;
 		let weather_icon = this.get_weather_icon(epoch);
@@ -137,7 +148,7 @@ const render_data_generator = {
         let year_day = static_data.settings.add_year_day_number ? epoch_data.year_day : false;
 
 		return {
-			"number": epoch_data.day,
+            "number": number,
 			"text": text,
             "type": "day",
             "weekday": epoch_data.week_day_name,
@@ -183,6 +194,7 @@ const render_data_generator = {
         let timespans_to_build = this.processed_data.timespans_to_build;
         let year_data = this.processed_data.year_data;
         this.epoch_data = this.processed_data.epoch_data;
+        this.day_offset = 0;
 
         let render_data = {
             "current_epoch": dynamic_data.epoch,
@@ -223,6 +235,8 @@ const render_data_generator = {
 
                 for(var leap_day_index in filtered_leap_days_beforestart){
 
+                    if(filtered_leap_days_beforestart[leap_day_index].not_numbered) this.day_offset++;
+
                     let day_data = this.get_day_data(epoch);
                     timespan_data.days[timespan_data.days.length-1].push(day_data);
                     render_data.event_epochs[epoch] = day_data;
@@ -239,8 +253,10 @@ const render_data_generator = {
                     }
                 }
 
-                for(weekday_number; weekday_number <= static_data.year_data.global_week.length; weekday_number++){
-                    timespan_data.days[timespan_data.days.length-1].push(this.overflow());
+                if(render_data.render_style != "vertical") {
+                    for(weekday_number; weekday_number <= static_data.year_data.global_week.length; weekday_number++){
+                        timespan_data.days[timespan_data.days.length-1].push(this.overflow());
+                    }
                 }
 
                 render_data.timespans.push(timespan_data);
@@ -310,7 +326,9 @@ const render_data_generator = {
 
                             let internal_weekday_number = 1;
 
-                            for(var leap_day_index in filtered_leap_days){
+                            for(var leap_day_index in filtered_leap_days) {
+
+                                if(filtered_leap_days[leap_day_index].not_numbered) this.day_offset++;
 
                                 let day_data = this.get_day_data(epoch);
                                 timespan_data.days[timespan_data.days.length-1].push(day_data);
@@ -328,8 +346,10 @@ const render_data_generator = {
                                 }
                             }
 
-                            for(internal_weekday_number; internal_weekday_number <= static_data.year_data.global_week.length; internal_weekday_number++){
-                                timespan_data.days[timespan_data.days.length-1].push(this.overflow());
+                            if(render_data.render_style != "vertical") {
+                                for(internal_weekday_number; internal_weekday_number <= static_data.year_data.global_week.length; internal_weekday_number++){
+                                    timespan_data.days[timespan_data.days.length-1].push(this.overflow());
+                                }
                             }
 
                             render_data.timespans.push(timespan_data);
@@ -344,9 +364,11 @@ const render_data_generator = {
                                 "events": []
                             }
 
-                            if(week_day != timespan.week.length){
-                                for(let internal_weekday_number = 0; internal_weekday_number < week_day; internal_weekday_number++){
-                                    timespan_data.days[timespan_data.days.length-1].push(this.overflow());
+                            if(render_data.render_style != "vertical") {
+                                if(week_day != timespan.week.length){
+                                    for(let internal_weekday_number = 0; internal_weekday_number < week_day; internal_weekday_number++){
+                                        timespan_data.days[timespan_data.days.length-1].push(this.overflow());
+                                    }
                                 }
                             }
 
@@ -398,7 +420,9 @@ const render_data_generator = {
                     
                     let weekday_number = 1;
 
-                    for(var leap_day_index in filtered_leap_days_end){
+                    for(var leap_day_index in filtered_leap_days_end) {
+
+                        if(filtered_leap_days_end[leap_day_index].not_numbered) this.day_offset++;
 
                         let day_data = this.get_day_data(epoch);
                         timespan_data.days[timespan_data.days.length - 1].push(day_data);
@@ -416,8 +440,10 @@ const render_data_generator = {
                         }
                     }
 
-                    for(weekday_number; weekday_number <= static_data.year_data.global_week.length; weekday_number++){
-                        timespan_data.days[timespan_data.days.length-1].push(this.overflow());
+                    if(render_data.render_style != "vertical") {
+                        for(weekday_number; weekday_number <= static_data.year_data.global_week.length; weekday_number++){
+                            timespan_data.days[timespan_data.days.length-1].push(this.overflow());
+                        }
                     }
 
                     render_data.timespans.push(timespan_data);

@@ -1007,14 +1007,17 @@ function repopulate_day_select(select, val, change, no_leaps, max, filter_timesp
 				html.push(`<option value="${0}">Before 1</option>`);
 			}
 
-			for(var i = 0; i < days.length; i++){
+			for(var i = 0, offset = 0; i < days.length; i++){
 
 				var day = days[i];
+				let number = i-offset+1;
+
+				if(!day.normal_day && day.not_numbered) offset++;
 
 				if(max && i >= max) break;
 
 				html.push(`<option value='${i+1}'>`);
-				html.push(day == "" ? `Day ${i+1}` : `Day ${i+1} (${day})`);
+				html.push(day.normal_day ? `Day ${number}` : day.not_numbered ? day.text : `Day ${number} (${day.text})`);
 				html.push('</option>');
 
 			}

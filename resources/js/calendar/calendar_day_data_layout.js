@@ -60,8 +60,8 @@ day_data_tooltip = {
                 }else if(key.indexOf('moon') > -1){
                     for(var moon_index in data){
                         var moon = static_data.moons[moon_index];
-                        var name_array = moon_phases[moon.granularity];
                         if(key == "moon_phase"){
+                            var name_array = Object.keys(moon_phases[moon.granularity]);
                             var moon_data = `${moon.name}: ${name_array[data[moon_index]]}<br>`;
                         }else{
                             var moon_data = `${moon.name}: ${data[moon_index]}<br>`;

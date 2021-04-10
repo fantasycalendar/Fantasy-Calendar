@@ -20,10 +20,10 @@ class UsersTableAddApiToken extends Migration
                                 ->default(null);
         });
 
-        $users = App\User::all();
+        $users = \Illuminate\Support\Facades\DB::select('select * from users');
+
         foreach($users as $user) {
-            $user->api_token = Str::random(60);
-            $user->save();
+            \Illuminate\Support\Facades\DB::update('update users set api_token = ? where id = ?', [Str::random(60), $user->id]);
         }
     }
 

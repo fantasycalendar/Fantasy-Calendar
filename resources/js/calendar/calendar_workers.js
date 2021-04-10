@@ -61,53 +61,82 @@ var calendar_builder = {
 
 		timespan.leap_days = [];
 
+		let timespan_fraction;
+
 		if(timespan.interval == 1){
 
-			var timespan_fraction = year;
+			timespan_fraction = year;
 
 		}else{
 
-			var offset = timespan.offset%timespan.interval;
+			let offset = timespan.offset%timespan.interval;
 
-			if(year < 0 || this.static_data.settings.year_zero_exists){
-				var timespan_fraction = Math.ceil((year - offset) / timespan.interval);
-			}else{
-				var timespan_fraction = Math.floor((year - offset) / timespan.interval);
+			timespan_fraction = Math.floor((year - offset) / timespan.interval);
+
+		}
+
+		let leap_days = this.static_data.year_data.leap_days.filter(leap_day => leap_day.timespan == timespan_index);
+		let normal_leapdays = leap_days.filter(leap_day => !leap_day.adds_week_day && !leap_day.intercalary)
+		let intercalary_leapdays = leap_days.filter(leap_day => !leap_day.adds_week_day && leap_day.intercalary)
+		let week_day_leap_days = leap_days.filter(leap_day => leap_day.adds_week_day)
+
+		for (let index in normal_leapdays) {
+
+			let leap_day = normal_leapdays[index];
+
+			leap_day.index = leap_days.indexOf(leap_day);
+
+			if (is_leap(this.static_data, timespan_fraction, leap_day.interval, leap_day.offset)) {
+				timespan.length++;
 			}
 
 		}
 
-		var leap_day_offset = 0;
+		for (let index in intercalary_leapdays) {
 
-		// Get all current leap days and check if any of them should be on this timespan
-		for(leap_day_index = 0; leap_day_index < this.static_data.year_data.leap_days.length; leap_day_index++){
+			let leap_day = intercalary_leapdays[index];
 
-			var leap_day = this.static_data.year_data.leap_days[leap_day_index];
+			leap_day.index = leap_days.indexOf(leap_day);
 
-			if(leap_day.timespan == timespan_index){
-
-				leap_day.index = leap_day_index;
-
-				if(is_leap(this.static_data, timespan_fraction, leap_day.interval, leap_day.offset)){
-
-					if(leap_day.intercalary){
-						if(timespan.type === 'intercalary'){
-							timespan.length++;
-						}else{
-							timespan.leap_days.push(leap_day);
-						}
-
-					}else{
-						timespan.length++;
-						if(leap_day.adds_week_day){
-							var location = (leap_day.day)%timespan.week.length;
-							timespan.week.splice(location+leap_day_offset, 0, leap_day.week_day)
-							leap_day_offset++;
-						}
-					}
+			if (is_leap(this.static_data, timespan_fraction, leap_day.interval, leap_day.offset)) {
+				if(timespan.type === 'intercalary'){
+					timespan.length++;
+				}else{
+					timespan.leap_days.push(leap_day);
 				}
 			}
+
 		}
+
+		week_day_leap_days.sort((a, b) => a.day - b.day);
+
+		let leap_day_offset = 0;
+		let week_length = timespan.week.length;
+		let before_weekdays = [];
+		let after_weekdays = [];
+
+		for (let index in week_day_leap_days) {
+
+			let leap_day = week_day_leap_days[index];
+
+			leap_day.index = leap_days.indexOf(leap_day);
+
+			if (is_leap(this.static_data, timespan_fraction, leap_day.interval, leap_day.offset)) {
+				timespan.length++;
+				if (leap_day.day == 0) {
+					before_weekdays.push(leap_day.week_day)
+				} else if (leap_day.day == week_length) {
+					after_weekdays.push(leap_day.week_day)
+				} else {
+					let location = leap_day.day % timespan.week.length;
+					timespan.week.splice(location + leap_day_offset, 0, leap_day.week_day)
+					leap_day_offset++;
+				}
+			}
+
+		}
+
+		timespan.week = before_weekdays.concat(timespan.week).concat(after_weekdays);
 
 		return timespan;
 
