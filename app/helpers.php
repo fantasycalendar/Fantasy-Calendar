@@ -75,8 +75,7 @@ if(!function_exists('lcmo')){
             "result" => true,
             "offset" => $x_start,
             "interval" => gmp_lcm($x, $y)
-        ]
-
+        ];
     }
 }
 
