@@ -10,9 +10,11 @@
     "require": {
         "php": "^7.4",
         "ext-json": "*",
+        "ext-sodium": "*",
         "aws/aws-sdk-php": "^3.158",
         "barryvdh/laravel-ide-helper": "^2.6",
-        "bref/laravel-bridge": "^0.2.0",
+        "bref/extra-php-extensions": "^0.10.8",
+        "bref/laravel-bridge": "^1.0",
         "code16/sharp": "^5.1.2",
         "fideloper/proxy": "^4.0",
         "graham-campbell/markdown": "^13.1",
@@ -27,8 +29,7 @@
         "nesbot/carbon": "^2.31",
         "restcord/restcord": "dev-develop",
         "socialiteproviders/discord": "^4.1",
-        "spatie/laravel-honeypot": "^3.0",
-      "ext-sodium": "*"
+        "spatie/laravel-honeypot": "^3.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.2",
