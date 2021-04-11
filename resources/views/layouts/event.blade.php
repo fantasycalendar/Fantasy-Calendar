@@ -114,7 +114,7 @@
 				<i class="close_ui_btn fas fa-times-circle" @click='callback_do_close'></i>
 
 				<div class='row no-gutters mb-1 modal-form-heading'>
-					<h2 class='event_action_type'><span>Editing Event</span> <i class="fas fa-eye view_event_btn" @click='callback_do_view'></i></h2>
+					<h2 class='event_action_type'><span x-text="creation_type"></span> <i class="fas fa-eye view_event_btn" @click='callback_do_view'></i></h2>
 				</div>
 
 				<div class='row no-gutters my-1'>

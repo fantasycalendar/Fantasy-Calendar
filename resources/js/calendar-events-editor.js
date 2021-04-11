@@ -2,6 +2,7 @@ const calendar_events_editor = {
 
 	open: false,
 	new_event: true,
+	creation_type: "Creating Event",
 	moon_overrides_open: false,
 	settings_open: false,
 	event_id: undefined,
@@ -236,6 +237,7 @@ const calendar_events_editor = {
 		
 		this.new_event = true;
 		let name = $event.detail.name ?? "New Event";
+		this.creation_type = "Creating Event"
 
 		this.working_event = {
 			'name': name,
@@ -309,6 +311,8 @@ const calendar_events_editor = {
 		this.init($event);
 
 		this.new_event = false;
+
+		this.creation_type = "Editing Event"
 
 		this.event_id = $event.detail.event_id;
 		
