@@ -496,7 +496,6 @@ function submit_delete_event(event_id, callback){
 
 
 function get_event_comments(event_id, callback){
-
 	$.ajax({
 		url: window.baseurl+"api/eventcomment/event/"+event_id,
 		type: "get",
