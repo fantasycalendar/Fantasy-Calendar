@@ -62,8 +62,8 @@
                                     @mouseenter="moon_mouse_enter(moon, $event)"
                                     @mouseleave="moon_mouse_leave"
                             >
-                                <circle cx="16" cy="16" r="10" class="lunar_background"/>
-                                <path class="lunar_shadow" x-show="moon.path" :d="moon.path"/>
+                                <circle cx="16" cy="16" r="10" class="lunar_background" :style="`fill: ${moon.color};`" />
+                                <path class="lunar_shadow" :style="`fill: ${moon.shadow_color};`" x-show="moon.path" :d="moon.path"/>
                                 <circle cx="16" cy="16" r="10" class="lunar_border"/>
                             </svg>
                         </template>
@@ -71,11 +71,17 @@
 
                     <div class="day_row event_container" x-show="day.events">
                         <template x-for="calendar_event in day.events">
-                            <div class="event" :class="calendar_event.class" x-text="calendar_event.name" :event_id="calendar_event.index" @click="view_event($event)"></div>
+                            <div class="event"
+                                :class="calendar_event.class"
+                                x-text="calendar_event.name"
+                                :event_id="calendar_event.index"
+                                @click="$dispatch('event-viewer-modal-view-event', { id: calendar_event.index, era: calendar_event.era, epoch: day.epoch })"
+                            ></div>
                         </template>
                     </div>
+                    
 
-                    <button class="btn_create_event btn btn-success day_row flex-grow" @click="create_event(day.epoch)" :epoch="day.epoch" x-show="day.show_event_button">Create event</button>
+                    <button class="btn_create_event btn btn-success day_row flex-grow" @click="$dispatch('event-editor-modal-new-event', { epoch: day.epoch })" :epoch="day.epoch" x-show="day.show_event_button">Create event</button>
 
                     <div class="day_row">
                         <div class="number year_day" x-show="day.year_day" x-text="day.year_day"></div>
