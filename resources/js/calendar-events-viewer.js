@@ -45,7 +45,16 @@ const calendar_events_viewer = {
 
 		if (!this.comment_editor){
 			this.comment_editor = $(this.$refs.trumbowyg_comment_input);
-			this.comment_editor.trumbowyg();
+			this.comment_editor.trumbowyg({
+				btns: [
+					['strong', 'em', 'del'],
+					['superscript', 'subscript'],
+					['link'],
+					['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
+					['unorderedList', 'orderedList'],
+					['removeformat']
+				]
+			});
 		}
 
 		if (this.user_can_comment && this.can_comment_on_event){
