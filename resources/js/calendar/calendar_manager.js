@@ -202,13 +202,7 @@ worker_calendar.onmessage = e => {
 
 	if(evaluated_static_data.success){
 
-		RenderDataGenerator.create_render_data(e.data.processed_data).then(
-			function(result){
-				window.dispatchEvent(new CustomEvent('render-data-change', {detail: result}));
-			}, function(err){
-				$.notify(err);
-			}
-		);
+		rerender_calendar(e.data.processed_data);
 
 		calendar_weather.epoch_data = evaluated_static_data.epoch_data;
 		calendar_weather.processed_weather = evaluated_static_data.processed_weather;
@@ -244,7 +238,7 @@ worker_calendar.onmessage = e => {
 }
 
 function rerender_calendar(processed_data) {
-	
+
 	if (processed_data === undefined) processed_data = evaluated_static_data;
 
 	RenderDataGenerator.create_render_data(processed_data).then(
