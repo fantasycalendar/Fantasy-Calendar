@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Services\CalendarService\LeapDay;
+use App\Services\CalendarService\Date;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Auth;
@@ -15,7 +16,8 @@ use Illuminate\Support\Arr;
  * @property mixed current_date_valid Checks whether the current date in dynamic data is valid
  * @property mixed year The current year
  * @property mixed year_data Data structure of year_data in static data
- * @property mixed month_id ID of current month
+ * @property mixed month_index Index of current month
+ * @property mixed month_id Timespan ID of current month
  * @property mixed month_name Name of current month
  * @property mixed month_length Length property of current month (Does not include leap days)
  * @property mixed month_week Week used by the current month
@@ -142,7 +144,7 @@ class Calendar extends Model
             return false;
         }
 
-        if(!Arr::has($this->static_data, "year_data.timespans.{$this->month_id}")) {
+        if(!Arr::has($this->static_data, "year_data.timespans.{$this->month_index}")) {
             return false;
         }
 
@@ -190,7 +192,12 @@ class Calendar extends Model
         return Arr::get($this->static_data, 'year_data');
     }
 
-    public function getMonthIdAttribute()
+    public function getTimespansAttribute()
+    {
+        return collect(Arr::get($this->static_data, 'year_data.timespans'));
+    }
+
+    public function getMonthIndexAttribute()
     {
         return Arr::get($this->dynamic_data,
             'timespan',
@@ -199,21 +206,31 @@ class Calendar extends Model
                 0));
     }
 
+    public function getMonthIdAttribute()
+    {
+        return $this->month->id;
+    }
+
     /*
      * Calculates the "true" length of a month by checking for leap days that intersect
      */
     public function getMonthTrueLengthAttribute()
     {
-        return $this->month_length + collect($this->leap_days)
+        return $this->month_length + $this->leap_days
                 ->where('timespan', '=', $this->month_id)
                 ->filter(function($leapDay){
                     return (new LeapDay($leapDay))->intersectsYear($this->year);
                 })->count();
     }
 
-    public function getMonthWeekAttribute()
+    public function getGlobalWeekAttribute()
     {
-        return Arr::get($this->month, 'week', Arr::get($this->year_data, 'global_week'));
+        return collect(Arr::get($this->year_data, 'global_week'));
+    }
+
+    public function getWeekdaysAttribute()
+    {
+        return $this->month->weekdays;
     }
 
     public function getOverflowsWeekAttribute()
@@ -228,7 +245,9 @@ class Calendar extends Model
 
     public function getMonthAttribute()
     {
-        return Arr::get($this->static_data, "year_data.timespans.{$this->month_id}", []);
+            return isset($this->month)
+                ? $this->month
+                : new Month($this);
     }
 
     public function getMonthLengthAttribute()
@@ -238,12 +257,14 @@ class Calendar extends Model
 
     public function getDayAttribute()
     {
-        return Arr::get($this->dynamic_data, 'day', 0);
+        return Arr::get($this->dynamic_data, 'day', 1) - 1;
     }
 
     public function getLeapDaysAttribute()
     {
-        return Arr::get($this->static_data, 'year_data.leap_days');
+        return collect(Arr::get($this->static_data, 'year_data.leap_days'))->map(function($leap_day){
+            return new LeapDay($leap_day);        
+        });
     }
 
     public function getCurrentTimeAttribute() {
@@ -265,6 +286,11 @@ class Calendar extends Model
         $current_era = $this->static_data['eras'][$current_era_index];
 
         return $current_era['name'];
+    }
+
+    public function getErasAttribute()
+    {
+        return collect(Arr::get($this->static_data, 'eras'));
     }
 
     public function setting($setting_name, $default = false) {
@@ -336,6 +362,18 @@ class Calendar extends Model
 
         return true;
     }
+
+//     /*
+//      *
+//      */
+//     public function setDate(mixed $dateObjectOrYear, int $month = null, int $day = null)
+//     {
+//         $date = ($dateObjectOrYear instanceof Date)
+//             ? $dateObjectOrYear
+//             : new Date($this, $dateObjectOrYear, $month, $day);
+//
+//         $this->date = $date;
+//     }
 
     private function yearIntersectsLeapDay($interval, $offset)
     {

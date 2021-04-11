@@ -44,7 +44,7 @@ class MonthRenderer
     public function render($date = null)
     {
         if($date) {
-            $this->calendar->setDate($date[0], $date[1], $date[2]);
+            $this->calendar->setDate($date[0], $date[1], $date[2] + 1);
         }
 
         $pipelineData = [
@@ -81,25 +81,12 @@ class MonthRenderer
      */
     private function buildMonth()
     {
-        $weeksInMonth = $this->buildWeekList();
-
-        $monthDay = 0;
-        $structure = $weeksInMonth->mapWithKeys(function($weekNumber) use (&$monthDay){
-            return [
-                $weekNumber => collect($this->calendar->month_week)->map(function($day) use (&$monthDay){
-                    $monthDay++;
-
-                    return ['month_day' => ($monthDay > $this->calendar->month_true_length) ? null : $monthDay];
-                })
-            ];
-        });
-
         return [
             'year' => $this->calendar->year,
             'name' => $this->calendar->month_name,
             'length' => $this->calendar->month_true_length,
             'weekdays' => $this->calendar->month_week,
-            'weeks' => $structure
+            'weeks' => $this->calendar->month->getStructure()
         ];
     }
 
