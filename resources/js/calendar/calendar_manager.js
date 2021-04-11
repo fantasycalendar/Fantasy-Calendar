@@ -244,6 +244,9 @@ worker_calendar.onmessage = e => {
 }
 
 function rerender_calendar(processed_data) {
+	
+	if (processed_data === undefined) processed_data = evaluated_static_data;
+
 	RenderDataGenerator.create_render_data(processed_data).then(
 		function(result) {
 			window.dispatchEvent(new CustomEvent('render-data-change', { detail: result }));

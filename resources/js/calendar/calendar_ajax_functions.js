@@ -433,7 +433,7 @@ function submit_hide_show_event(event_id){
         .then(function(result) {
             if(result.data.success) {
 				events[event_id].settings.hide = !events[event_id].settings.hide;
-				rerender_calendar(evaluated_static_data);
+				rerender_calendar();
 				evaluate_save_button();
 			}
 			$.notify(

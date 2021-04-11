@@ -97,7 +97,8 @@ const render_data_generator = {
                         if (events[index].overrides.moons !== undefined) {
                             if (events[index].overrides.moons[moon_index] !== undefined) {
                                 let moon_overrides = events[index].overrides.moons[moon_index];
-                                phase = moon_overrides.phase !== undefined ? moon_overrides.phase : phase;
+                                phase = moon_overrides.phase !== undefined && moon_overrides.override_phase ? moon_overrides.phase : phase;
+                                phase_name = Object.keys(moon_phases[moon.granularity])[phase];
                                 color = moon_overrides.color !== undefined ? moon_overrides.color : color;
                                 shadow_color = moon_overrides.shadow_color !== undefined ? moon_overrides.shadow_color : shadow_color;
                                 hidden = moon_overrides.hidden !== undefined ? moon_overrides.hidden : hidden;
