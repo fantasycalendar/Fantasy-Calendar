@@ -526,6 +526,7 @@ const calendar_events_editor = {
 				continue
 			}
 			if(moon.override_phase){
+				moon_data[index]['override_phase'] = moon.override_phase;
 				moon_data[index]['phase'] = moon.phase;
 			}
 			if(moon.color != moon.original_color){
@@ -832,7 +833,7 @@ const calendar_events_editor = {
 
 		this.moon_presets = [];
 
-		var moon_phase_collection = ''
+		let moon_phase_collection = ''
 
 		for (moon_index in static_data.moons) {
 
