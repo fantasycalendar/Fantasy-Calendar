@@ -111,6 +111,8 @@ window.contextMenu = require('jquery-contextmenu')
  * allows your team to easily build robust real-time web applications.
  */
 
+window.AlpineEditor = require('alpine-editor')
+
 // import Echo from 'laravel-echo'
 
 // window.Pusher = require('pusher-js');

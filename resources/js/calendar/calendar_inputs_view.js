@@ -523,10 +523,6 @@ function repopulate_location_select_list(){
 
 function set_up_view_values(){
 
-    preview_date = clone(dynamic_data);
-
-    preview_date.follow = true;
-
 	dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
 
 	current_year.val(dynamic_date_manager.adjusted_year);
@@ -545,5 +541,9 @@ function set_up_view_values(){
 	repopulate_location_select_list();
 
 	evaluate_clock_inputs();
+
+	dynamic_data.epoch = dynamic_date_manager.epoch;
+
+	preview_date = clone(dynamic_data);
 
 }

@@ -19,11 +19,7 @@ class UsersTableAddRememberToken extends Migration
             $table->timestamps();
         });
 
-        $users = App\User::all();
-        foreach($users as $user) {
-            $user->created_at = $user->date_register;
-            $user->save();
-        }
+        \Illuminate\Support\Facades\DB::update('update users set created_at = date_register');
     }
 
     /**
