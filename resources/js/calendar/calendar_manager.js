@@ -131,7 +131,6 @@ function pre_rebuild_calendar(action, dynamic_data){
 }
 
 var evaluated_static_data = {};
-var evaluated_event_data = {};
 
 function rebuild_calendar(action, dynamic_data){
 
