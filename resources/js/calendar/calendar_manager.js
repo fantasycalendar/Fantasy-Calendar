@@ -213,8 +213,6 @@ worker_calendar.onmessage = e => {
 		climate_charts.evaluate_weather_charts();
 
 		eval_clock();
-
-        update_moon_colors();
 			
 		update_cycle_text();
 
