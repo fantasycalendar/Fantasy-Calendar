@@ -475,8 +475,8 @@
 				<div class='row no-gutters my-1'>
 					<div class='btn btn-lg btn-primary btn-block' @click="save_event">Save</div>
 				</div>
-				<div class='row no-gutters my-1'>
-					<div class='btn btn-sm btn-danger btn-block' id='btn_event_delete'>Delete</div>
+				<div class='row no-gutters my-1' x-show="!new_event">
+					<div class='btn btn-sm btn-danger btn-block' @click="query_delete_event">Delete</div>
 				</div>
 			</form>
 		</div>

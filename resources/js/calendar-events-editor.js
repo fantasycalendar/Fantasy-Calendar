@@ -2080,7 +2080,7 @@ const calendar_events_editor = {
 		
 		let event_editor_ui = this;
 
-		let delete_event_id = $event.detail.event_id;
+		let delete_event_id = $event.detail.event_id === undefined ? this.event_id : $event.detail.event_id;
 
 		var warnings = [];
 
@@ -2177,9 +2177,10 @@ const calendar_events_editor = {
 		}
 
 		events.splice(delete_event_id, 1);
+		
+		rerender_calendar();
 
-		let result = RenderDataGenerator.event_deleted(delete_event_id)
-		window.dispatchEvent(new CustomEvent('events-change', { detail: result }));
+		this.close();
 
 	},
 
