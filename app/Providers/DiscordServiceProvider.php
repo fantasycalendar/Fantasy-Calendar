@@ -31,6 +31,11 @@ class DiscordServiceProvider extends ServiceProvider
 
         View::addNamespace('Discord', app_path('/Services/Discord/resources/views'));
 
+        $this->registerRoutes();
+    }
+
+    private function registerRoutes()
+    {
         Route::prefix('discord')->group(function(){
             Route::prefix('hooks')->middleware([VerifyDiscordSignature::class])->group(function(){
                 Route::any('/', DiscordController::class.'@hook');
