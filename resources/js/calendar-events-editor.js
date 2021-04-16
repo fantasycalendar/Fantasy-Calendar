@@ -13,6 +13,7 @@ const calendar_events_editor = {
 	delete_hover_element: undefined,
 	delete_droppable: false,
 	deleting_clicked: false,
+    has_moons: false,
 	moons: [],
 
 	working_event: {
@@ -234,7 +235,7 @@ const calendar_events_editor = {
 	create_new_event: function($event) {
 
 		this.init($event);
-		
+
 		this.new_event = true;
 		let name = $event.detail.name ?? "New Event";
 		this.creation_type = "Creating Event"
@@ -315,7 +316,7 @@ const calendar_events_editor = {
 		this.creation_type = "Editing Event"
 
 		this.event_id = $event.detail.event_id;
-		
+
 		this.working_event = clone(events[this.event_id]);
 
 		this.set_up_moon_data();
@@ -327,7 +328,7 @@ const calendar_events_editor = {
 		this.evaluate_condition_selects(this.event_conditions_container);
 
 		this.inputs_changed = false;
-		
+
 		this.open = true;
 
 	},
@@ -472,7 +473,7 @@ const calendar_events_editor = {
 	create_event_data: function(){
 
 		let conditions = this.create_condition_array(this.event_conditions_container);
-		
+
 		let search_distance = this.get_search_distance(conditions);
 
 		let date = []
@@ -685,6 +686,10 @@ const calendar_events_editor = {
 	},
 
 	set_up_moon_data: function() {
+
+	    this.has_moons = static_data.moons.length > 0;
+
+	    if(static_data.moons.length == 0) return;
 
 		this.moons = [];
 		for (let index in static_data.moons) {
@@ -2077,7 +2082,7 @@ const calendar_events_editor = {
 	},
 
 	query_delete_event: function($event) {
-		
+
 		let event_editor_ui = this;
 
 		let delete_event_id = $event.detail.event_id === undefined ? this.event_id : $event.detail.event_id;
@@ -2177,7 +2182,7 @@ const calendar_events_editor = {
 		}
 
 		events.splice(delete_event_id, 1);
-		
+
 		rerender_calendar();
 
 		this.close();
@@ -2301,7 +2306,7 @@ const calendar_events_editor = {
 	},
 
 	backup_event_data: {},
-	
+
 	event_testing: {
 		occurrences: [],
 		occurrences_text: [],
@@ -2314,7 +2319,7 @@ const calendar_events_editor = {
 	},
 
 	set_up_event_text: function(years){
-		
+
 		let event_has_changed = this.event_has_changed();
 
 		let num_occurrences = this.event_testing.occurrences.length;
@@ -2404,7 +2409,7 @@ const calendar_events_editor = {
 	},
 
 	check_event_chain: function(event_id, working_event) {
-		
+
 		let current_event = {}
 		if (working_event){
 			current_event = clone(this.working_event);

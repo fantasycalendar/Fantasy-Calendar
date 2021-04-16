@@ -216,7 +216,7 @@
 
                     </div>
 
-                    <div x-show="moons.length > 0">
+                    <div x-show="has_moons">
 
                         <div class='row no-gutters mt-2'>
                             <div class='separator'></div>
