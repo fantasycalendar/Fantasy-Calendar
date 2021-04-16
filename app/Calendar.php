@@ -3,7 +3,8 @@
 namespace App;
 
 use App\Services\CalendarService\LeapDay;
-use App\Services\CalendarService\Date;
+use App\Services\CalendarService\Month;
+use App\Services\CalendarService\Timespan;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Auth;
@@ -28,6 +29,11 @@ use Illuminate\Support\Arr;
  * @property mixed current_era_valid Checks whether the current era is valid
  * @property mixed users Calendar users added by owner of calendar
  * @property mixed leap_days
+ * @property mixed timespans
+ * @property mixed weekdays
+ * @property mixed eras
+ * @property mixed global_week
+ * @property mixed first_day
  */
 class Calendar extends Model
 {
@@ -194,7 +200,9 @@ class Calendar extends Model
 
     public function getTimespansAttribute()
     {
-        return collect(Arr::get($this->static_data, 'year_data.timespans'));
+        return collect(Arr::get($this->static_data, 'year_data.timespans'))->map(function($timespan_details, $timespan_key){
+            return new Timespan(array_merge($timespan_details, ['id' => $timespan_key]), $this);
+        });
     }
 
     public function getMonthIndexAttribute()
@@ -208,6 +216,7 @@ class Calendar extends Model
 
     public function getMonthIdAttribute()
     {
+        return $this->month_index;
         return $this->month->id;
     }
 
@@ -219,7 +228,7 @@ class Calendar extends Model
         return $this->month_length + $this->leap_days
                 ->where('timespan', '=', $this->month_id)
                 ->filter(function($leapDay){
-                    return (new LeapDay($leapDay))->intersectsYear($this->year);
+                    return $leapDay->intersectsYear($this->year);
                 })->count();
     }
 
@@ -245,14 +254,17 @@ class Calendar extends Model
 
     public function getMonthAttribute()
     {
-            return isset($this->month)
-                ? $this->month
-                : new Month($this);
+            return new Month($this);
     }
 
     public function getMonthLengthAttribute()
     {
         return Arr::get($this->static_data, "year_data.timespans.{$this->month_id}.length", null);
+    }
+
+    public function getMonthWeekAttribute()
+    {
+        return $this->month->weekdays;
     }
 
     public function getDayAttribute()
@@ -263,7 +275,7 @@ class Calendar extends Model
     public function getLeapDaysAttribute()
     {
         return collect(Arr::get($this->static_data, 'year_data.leap_days'))->map(function($leap_day){
-            return new LeapDay($leap_day);        
+            return new LeapDay($leap_day);
         });
     }
 

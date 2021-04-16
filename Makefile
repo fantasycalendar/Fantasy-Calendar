@@ -46,7 +46,7 @@ quick_deploy_prod:
 
 local:
 	docker run -it -u $(id -u):$(id -g) -v ${PWD}/:/app -w /app node npm install
-	docker-compose up fantasydb fc-bref-web php fcredis fantasy-calendar-composer-install
+	docker-compose up fantasydb fantasy-calendar php fcredis fantasy-calendar-composer-install
 
 local-hot:
-	docker-compose up fantasydb fc-bref-web php fcredis fantasy-calendar-composer-install fantasy-calendar-npm-install
+	docker-compose up fantasydb fantasy-calendar php fcredis fantasy-calendar-composer-install fantasy-calendar-npm-install

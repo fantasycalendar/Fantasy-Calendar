@@ -4,14 +4,14 @@
 namespace App\Services\Discord\Http\Controllers;
 
 
+use App\Http\Controllers\Controller;
 use App\Services\Discord\Commands\CommandDispatcher;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use Laravel\Socialite\Facades\Socialite;
 
-class DiscordController extends \App\Http\Controllers\Controller
+class DiscordController extends Controller
 {
     public function __construct()
     {

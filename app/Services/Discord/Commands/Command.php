@@ -11,6 +11,7 @@ use App\Services\Discord\Models\DiscordGuild;
 use App\Services\Discord\Models\DiscordInteraction;
 use App\User;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 
 abstract class Command
 {
@@ -73,9 +74,10 @@ abstract class Command
         $commandUserId = Arr::get($this->interaction_data, 'member.user.id');
 
         try {
-            $this->discord_auth = DiscordAuthToken::whereDiscordUserId($commandUserId)->firstOrFail();
+            $this->discord_auth = DiscordAuthToken::discordUserId($commandUserId)->firstOrFail();
             $this->user = $this->discord_auth->user;
         } catch (\Throwable $e) {
+            dd($e);
             throw new DiscordUserInvalidException("Sorry " . $this->discord_nickname . ", but you'll need to connect your Fantasy Calendar and Discord accounts to run commands.\n\nYou can do that here: " . route('discord.index'));
         }
     }

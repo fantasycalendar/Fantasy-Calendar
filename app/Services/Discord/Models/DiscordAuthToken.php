@@ -25,4 +25,8 @@ class DiscordAuthToken extends Model
     public function user() {
         return $this->belongsTo(User::class);
     }
+
+    public function scopeDiscordUserId($query, $user_id) {
+        return $query->where('discord_user_id', '=', $user_id);
+    }
 }

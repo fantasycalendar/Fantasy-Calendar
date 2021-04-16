@@ -72,6 +72,16 @@ class LeapDay
         });
     }
 
+    public function occurrences($timespan_occurrences)
+    {
+        return $timespan_occurrences;
+    }
+
+    public function timespanIs($timespan_id)
+    {
+        return $this->timespan === $timespan_id;
+    }
+
     public function __get($name)
     {
         return Arr::get($this->attributes, $name);
