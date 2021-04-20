@@ -23,7 +23,7 @@ class SettingsController extends Controller
         }
 
         $subscription = Auth::user()->subscriptions()->active()->first();
-        
+
         $renews_at = $subscription ? (new Carbon($subscription->asStripeSubscription()->current_period_end))->toFormattedDateString() : False;
 
         return view('pages.profile', [
@@ -63,7 +63,7 @@ class SettingsController extends Controller
 
     public function update(StoreUserSettings $request) {
         Auth::user()->setSettings($request->only(['dark_theme']));
-        
+
         Auth::user()->setMarketingStatus($request->has('marketing_acceptance'));
 
         return redirect('profile');
