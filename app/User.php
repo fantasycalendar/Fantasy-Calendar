@@ -222,4 +222,11 @@ class User extends Authenticatable implements
         return $this;
     }
 
+    public function getInvitations()
+    {
+        return (CalendarInvite::active()->forUser($this->email)->exists())
+            ? CalendarInvite::active()->forUser($this->email)->get()
+            : [];
+    }
+
 }

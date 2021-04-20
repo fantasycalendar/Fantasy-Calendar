@@ -52,9 +52,7 @@ class CalendarController extends Controller
         $sharedCalendarSimplePagination = $sharedCalendars->simplePaginate(10);
         $sharedCalendars = $sharedCalendars->paginate(10);
 
-        $invitations = (CalendarInvite::active()->forUser(Auth::user()->email)->exists())
-            ? CalendarInvite::active()->forUser(Auth::user()->email)->get()
-            : [];
+        $invitations = auth()->user()->getInvitations();
 
         return view('calendar.list', [
             'title' => "Fantasy Calendar",
