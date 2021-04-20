@@ -31,31 +31,37 @@ class CalendarController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
      */
     public function index(Request $request)
     {
-        $user_calendars = Calendar::active()->search($request->input('search'))->orderBy('disabled');
+        $userCalendars = auth()->user()->calendars()->without(['events', 'event_categories'])->with(['user'])->withCount(['events', 'event_categories', 'users']);
+        $sharedCalendars = auth()->user()->related_calendars()->where('disabled', '=', 0)->without(['events', 'event_categories'])->with(['user'])->withCount(['events', 'event_categories', 'users']);
 
-        $user_calendars = $user_calendars->where('user_id', Auth::user()->id);
+        if($request->has('search')) {
+            $userCalendars = $userCalendars->search($request->input('search'));
+            $sharedCalendars = $sharedCalendars->search($request->input('search'));
+        }
 
-        $calendarSimplePagination = $user_calendars->simplePaginate(10);
-        $user_calendars = $user_calendars->paginate(10);
+        // Laravel's built-in pagination isn't great on mobile, so we (unfortunately) tell it to paginate twice.
+        // We also create two paginations: One for a desktop view and one for a mobile view.
+        // Yeah, I know. There is probably a better way to do this.
+        $calendarSimplePagination = $userCalendars->simplePaginate(10);
+        $userCalendars = $userCalendars->paginate(10);
 
+        $sharedCalendarSimplePagination = $sharedCalendars->simplePaginate(10);
+        $sharedCalendars = $sharedCalendars->paginate(10);
 
-        $shared_calendars = Auth::user()->related_calendars()->where('disabled', '=', 0)->search($request->input('search'));
-
-        $sharedCalendarSimplePagination = $shared_calendars->simplePaginate(10);
-        $shared_calendars = $shared_calendars->paginate(10);
-
-        $invitations = CalendarInvite::active()->forUser(Auth::user()->email)->get();
+        $invitations = (CalendarInvite::active()->forUser(Auth::user()->email)->exists())
+            ? CalendarInvite::active()->forUser(Auth::user()->email)->get()
+            : [];
 
         return view('calendar.list', [
             'title' => "Fantasy Calendar",
             'invitations' => $invitations,
-            'calendars' => $user_calendars,
+            'calendars' => $userCalendars,
             'calendar_pagination' => $calendarSimplePagination,
-            'shared_calendars' => $shared_calendars,
+            'shared_calendars' => $sharedCalendars,
             'shared_pagination' => $sharedCalendarSimplePagination,
             'search' => $request->input('search'),
         ]);
