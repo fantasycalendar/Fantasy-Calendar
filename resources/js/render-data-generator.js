@@ -123,7 +123,6 @@ const render_data_generator = {
             }
         }
 
-
 		return moons;
 
 	},
@@ -238,15 +237,12 @@ const render_data_generator = {
 
         this.create_event_data();
 
-        let indexes = Object.keys(timespans_to_build);
-        let length = indexes.length
-
         let epoch = year_data.start_epoch;
         let week_day = year_data.week_day;
 
-        for(var index = 0; index < length; index++){
+        for(var index = 0; index < timespans_to_build.length; index++){
 
-            let timespan = timespans_to_build[indexes[index]];
+            let timespan = timespans_to_build[index];
 
             var filtered_leap_days_beforestart = timespan.leap_days.filter(function(features){
                 return features.intercalary && features.day === 0;
@@ -428,7 +424,7 @@ const render_data_generator = {
 
                     }
                 }
-                
+
             }
 
             this.render_data.timespans.push(timespan_data);
@@ -450,7 +446,7 @@ const render_data_generator = {
                         "days": [[]],
                         "events": []
                     }
-                    
+
                     let weekday_number = 1;
 
                     for(var leap_day_index in filtered_leap_days_end) {
@@ -502,7 +498,7 @@ const render_data_generator = {
 
         return new Promise(function(resolve, reject){
 
-            var result = render_data_generator._create_render_data(processed_data);
+            let result = render_data_generator._create_render_data(processed_data);
 
             if(result.success){
                 resolve(result.render_data);
@@ -556,7 +552,7 @@ const render_data_generator = {
                 success: true,
                 event_data: this.events_to_send
             }
-        }   
+        }
 
 		if(static_data.eras.length > 0 && !static_data.settings.hide_eras){
 

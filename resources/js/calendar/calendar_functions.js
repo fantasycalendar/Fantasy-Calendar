@@ -8,7 +8,7 @@ function escapeHtml(unsafe) {
          .replace(/"/g, "&quot;")
          .replace(/'/g, "&#039;");
  }
- 
+
 function unescapeHtml(safe) {
 	if(!isNaN(safe)) return safe;
 	return safe
@@ -2152,24 +2152,25 @@ function get_epoch(static_data, year, timespan, day, debug){
 function evaluate_calendar_start(static_data, year, timespan, day, debug){
 
 	//Initiatlize variables
-	var year = (year|0);
-	var timespan = !isNaN(timespan) ? (timespan|0) : 0;
-	var day = !isNaN(day) ? (day|0)-1 : 0;
+	year = (year|0);
+	timespan = !isNaN(timespan) ? (timespan|0) : 0;
+	day = !isNaN(day) ? (day|0)-1 : 0;
 
-	var era_year = year;
+	let era_year = year;
 
-	tmp = get_epoch(static_data, year, timespan, day, debug);
-	var epoch = tmp[0];
-	var intercalary = tmp[1];
-	var count_timespans = tmp[2];
-	var num_timespans = tmp[3];
-	var total_week_num = tmp[4];
-	var era_years = [];
+	let tmp = get_epoch(static_data, year, timespan, day, debug);
+	let epoch = tmp[0];
+	let intercalary = tmp[1];
+	let count_timespans = tmp[2];
+	let num_timespans = tmp[3];
+	let total_week_num = tmp[4];
+	let era_years = [];
+	let current_era = -1;
 
 	// For each era, check if they end the year, subtract the remaining days of that year from the epoch total so we can get proper start of the year
-	for(var era_index = 0; era_index < static_data.eras.length; era_index++){
+	for(let era_index = 0; era_index < static_data.eras.length; era_index++){
 
-		var era = static_data.eras[era_index];
+		let era = static_data.eras[era_index];
 
 		if(era.settings.ends_year && year > convert_year(static_data, era.date.year)){
 
@@ -2179,7 +2180,7 @@ function evaluate_calendar_start(static_data, year, timespan, day, debug){
 			epoch -= (normal_epoch_during_era[0] - era_epoch[0]);
 
 			intercalary -= (normal_epoch_during_era[1] - era_epoch[1]);
-			for(var i = 0; i < normal_epoch_during_era[2].length; i++){
+			for(let i = 0; i < normal_epoch_during_era[2].length; i++){
 				count_timespans[i] = (normal_epoch_during_era[2][i] - era_epoch[2][i]);
 			}
 
@@ -2190,9 +2191,9 @@ function evaluate_calendar_start(static_data, year, timespan, day, debug){
 
 	}
 
-	for(var era_index = 0; era_index < static_data.eras.length; era_index++){
+	for(let era_index = 0; era_index < static_data.eras.length; era_index++){
 
-		var era = static_data.eras[era_index];
+		let era = static_data.eras[era_index];
 
 		era_years[era_index] = convert_year(static_data, era.date.year);
 
@@ -2209,9 +2210,9 @@ function evaluate_calendar_start(static_data, year, timespan, day, debug){
 			)
 		){
 
-			for(var i = 0; i < era_index; i++){
+			for(let i = 0; i < era_index; i++){
 
-				var prev_era = static_data.eras[i];
+				let prev_era = static_data.eras[i];
 
 				if(prev_era.settings.restart){
 
@@ -2229,19 +2230,33 @@ function evaluate_calendar_start(static_data, year, timespan, day, debug){
 
 		}
 
+        if(epoch >= era.date.epoch){
+            current_era = i;
+        }
+
 	}
+
+    if(static_data.eras[0] && current_era === -1 && static_data.eras[0].settings.starting_era){
+        current_era = 0;
+    }
+
+    if(static_data.eras[current_era] && epoch === static_data.eras[current_era].date.epoch && static_data.eras[current_era].settings.restart){
+        era_year = 0;
+    }
+
+	let week_day = 0;
 
 	// Calculate the start of week
 	if(static_data.year_data.overflow){
 
-		var week_day = (epoch-1-intercalary+(Number(static_data.year_data.first_day))) % static_data.year_data.global_week.length;
+		week_day = (epoch-1-intercalary+(Number(static_data.year_data.first_day))) % static_data.year_data.global_week.length;
 
 		if (week_day < 0) week_day += static_data.year_data.global_week.length;
 
 		week_day += 1;
 
 	}else{
-		var week_day = 1;
+		week_day = 1;
 	}
 
 	return {"epoch": epoch,
@@ -2249,7 +2264,8 @@ function evaluate_calendar_start(static_data, year, timespan, day, debug){
 			"week_day": week_day,
 			"count_timespans": count_timespans,
 			"num_timespans": num_timespans,
-			"total_week_num": total_week_num
+			"total_week_num": total_week_num,
+            "current_era": current_era
 		};
 
 }
