@@ -848,7 +848,7 @@ const calendar_data_generator = {
 		this.evaluate_years();
 
         const first_timespan = timespans_to_build[0];
-        const epochs = Object.keys(timespans_to_build[timespans_to_build.length-1].epochs);
+        const epochs = Object.keys(first_timespan.epochs);
 
         const calendar_start_epoch = Number(epochs[0]);
         const calendar_end_epoch = Number(epochs[epochs.length-1]);
