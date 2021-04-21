@@ -848,10 +848,12 @@ const calendar_data_generator = {
 		this.evaluate_years();
 
         const first_timespan = timespans_to_build[0];
-        const epochs = Object.keys(first_timespan.epochs);
+        const last_timespan = timespans_to_build[timespans_to_build.length-1];
+        const start_epochs = Object.keys(first_timespan.epochs);
+        const end_epochs = Object.keys(last_timespan.epochs);
 
-        const calendar_start_epoch = Number(epochs[0]);
-        const calendar_end_epoch = Number(epochs[epochs.length-1]);
+        const calendar_start_epoch = Number(start_epochs[0]);
+        const calendar_end_epoch = Number(end_epochs[end_epochs.length-1]);
         const calendar_week_day = Number(first_timespan.epochs[calendar_start_epoch].week_day);
         const calendar_year_day = Number(first_timespan.epochs[calendar_start_epoch].year_day);
         const calendar_era_year = Number(first_timespan.epochs[calendar_start_epoch].era_year);
