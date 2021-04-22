@@ -2231,7 +2231,7 @@ function evaluate_calendar_start(static_data, year, timespan, day, debug){
 		}
 
         if(epoch >= era.date.epoch){
-            current_era = i;
+            current_era = era_index;
         }
 
 	}
