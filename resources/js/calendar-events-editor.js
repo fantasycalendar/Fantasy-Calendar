@@ -388,7 +388,9 @@ const calendar_events_editor = {
 		this.nth = "";
 		this.show_nth = false;
 
-		this.description_input.trumbowyg('html', '');
+		if(this.description_input) {
+            this.description_input.trumbowyg('html', '');
+        }
 
 		this.working_event = {
 			'name': '',
@@ -420,7 +422,9 @@ const calendar_events_editor = {
 		this.event_testing.visible_occurrences_2 = [];
 		this.event_testing.text = "";
 
-		this.event_conditions_container.empty();
+		if(this.event_conditions_container) {
+            this.event_conditions_container.empty();
+        }
 
 		evaluate_save_button();
 
