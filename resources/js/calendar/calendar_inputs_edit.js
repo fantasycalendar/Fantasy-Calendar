@@ -2208,8 +2208,17 @@ function set_up_edit_inputs(){
 	});
 
 	$(document).on('change', '.timespan_length', function(){
-		var index = $(this).closest('.sortable-container').attr('index')|0;
+
+		let index = $(this).closest('.sortable-container').attr('index')|0;
+
+        dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
+
+        repopulate_timespan_select();
+
 		repopulate_day_select($(`.timespan-day-list`), undefined, undefined, undefined, undefined, index);
+
+        dynamic_data.epoch = dynamic_date_manager.epoch;
+
 	});
 
 	$('#enable_weather').change(function(){
