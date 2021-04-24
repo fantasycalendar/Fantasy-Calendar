@@ -8,7 +8,7 @@ function escapeHtml(unsafe) {
          .replace(/"/g, "&quot;")
          .replace(/'/g, "&#039;");
  }
- 
+
 function unescapeHtml(safe) {
 	if(!isNaN(safe)) return safe;
 	return safe
@@ -1135,39 +1135,41 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object, no
 	self_object = self_object !== undefined ? self_object : false;
 	no_leaps = no_leaps !== undefined ? no_leaps : false;
 
-	var timespan = clone(static_data.year_data.timespans[timespan_index]);
+	let timespan = clone(static_data.year_data.timespans[timespan_index]);
 
 	if(!timespan) return [];
 
-	var days = [];
+	let days = [];
 
-	for(var i = 1; i <= timespan.length; i++){
-		var appears = does_day_appear(static_data, year, timespan_index, i);
+	for(let i = 1; i <= timespan.length; i++){
+		let appears = does_day_appear(static_data, year, timespan_index, i);
 		if(appears.result || special){
 			days.push({ normal_day: true });
 		}
 	}
 
-	var day = i;
+	let day = days.length;
 
 	if(no_leaps){
 		return days;
 	}
 
-	var offset = 0;
+	let offset = 0;
 
-	var leap_days = clone(static_data.year_data.leap_days);
+	let leap_days = clone(static_data.year_data.leap_days);
 
-	for(var leap_day_index = 0; leap_day_index < leap_days.length; leap_day_index++){
+	for(let leap_day_index = 0; leap_day_index < leap_days.length; leap_day_index++){
 		leap_days[leap_day_index].index = leap_day_index;
 	}
 
 	leap_days.sort((a, b) => (a.day > b.day) ? 1 : -1);
 
-	for(var index = 0; index < leap_days.length; index++){
+	let normal_leap_days = leap_days.filter(leap_day => !leap_day.subtracting)
 
-		var leap_day_index = leap_days[index].index;
-		var leap_day = static_data.year_data.leap_days[leap_day_index];
+	for(let index = 0; index < normal_leap_days.length; index++){
+
+		let leap_day_index = normal_leap_days[index].index;
+		let leap_day = static_data.year_data.leap_days[leap_day_index];
 
 		if(self_object && Object.compare(leap_day, self_object)){
 
@@ -1175,13 +1177,13 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object, no
 
 		}else if(leap_day.timespan === timespan_index){
 
-			if(leap_day.intercalary && timespan.type != 'intercalary'){
+			if(leap_day.intercalary && timespan.type !== 'intercalary'){
 
-				var is_there = does_day_appear(static_data, year, timespan_index, leap_day.day-1);
+				let is_there = does_day_appear(static_data, year, timespan_index, leap_day.day-1);
 
 				if(is_there.result || special){
 
-					var leaping = does_leap_day_appear(static_data, year, timespan_index, leap_day_index);
+					let leaping = does_leap_day_appear(static_data, year, timespan_index, leap_day_index);
 
 					if(leaping){
 
@@ -1195,11 +1197,11 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object, no
 
 			}else{
 
-				var is_there = does_day_appear(static_data, year, timespan_index, i);
+				let is_there = does_day_appear(static_data, year, timespan_index, day);
 
 				if(is_there.result || special){
 
-					var leaping = does_leap_day_appear(static_data, year, timespan_index, leap_day_index);
+					let leaping = does_leap_day_appear(static_data, year, timespan_index, leap_day_index);
 
 					if(leaping){
 
@@ -1211,6 +1213,35 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object, no
 			}
 		}
 	}
+
+	let subtracting_leap_days = leap_days.filter(leap_day => leap_day.subtracting)
+
+	for(let index = 0; index < subtracting_leap_days.length; index++){
+
+		let leap_day_index = subtracting_leap_days[index].index;
+		let leap_day = static_data.year_data.leap_days[leap_day_index];
+
+		if(self_object && Object.compare(leap_day, self_object)){
+
+			self_object = false;
+
+		}else{
+
+            let is_there = does_day_appear(static_data, year, timespan_index, day);
+
+            if(is_there.result || special){
+
+                let leaping = does_leap_day_appear(static_data, year, timespan_index, leap_day_index);
+
+                if(leaping){
+
+                    days.pop();
+                    day--;
+
+                }
+            }
+		}
+    }
 
 	return days;
 

@@ -619,6 +619,7 @@
 							<select id='leap_day_type_input' class='custom-select form-control type'>
 								<option selected value='leap-day'>Normal day</option>
 								<option value='intercalary'>Intercalary</option>
+								<option value='subtracting'>Subtracting</option>
 							</select>
 						</div>
 

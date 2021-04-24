@@ -381,10 +381,11 @@ function set_up_edit_inputs(){
 		var name = $('#leap_day_name_input');
 		var type = $('#leap_day_type_input');
 		var id = leap_day_list.children().length;
-		var name_val = name.val() == "" ? `Leap day ${id+1}` : name.val();
+		var name_val = name.val() === "" ? `Leap day ${id+1}` : name.val();
 		stats = {
 			'name': name_val,
-			'intercalary': type.val() == 'intercalary',
+			'intercalary': type.val() === 'intercalary',
+			'subtracting': type.val() === 'subtracting',
 			'timespan': 0,
 			'adds_week_day': false,
 			'day': 0,
@@ -848,7 +849,7 @@ function set_up_edit_inputs(){
 			var preset_order = undefined;
 
 			if(!valid_preset_order){
-			
+
 				let season_test = [];
 				for(var index in static_data.seasons.data){
 					var season = static_data.seasons.data[index];
@@ -947,7 +948,7 @@ function set_up_edit_inputs(){
 			var season_length = static_data.seasons.data[prev_id].duration+static_data.seasons.data[prev_id].transition_length+static_data.seasons.data[season_id].duration+static_data.seasons.data[season_id].transition_length;
 			var target = static_data.seasons.data[prev_id].duration+static_data.seasons.data[prev_id].transition_length;
 			var perc = target/season_length;
-				
+
 		}else{
 
 			let prev_season = static_data.seasons.data[prev_id];
@@ -1051,7 +1052,7 @@ function set_up_edit_inputs(){
 			var season_length = static_data.seasons.data[prev_id].duration+static_data.seasons.data[prev_id].transition_length+static_data.seasons.data[season_id].duration+static_data.seasons.data[season_id].transition_length;
 			var target = static_data.seasons.data[prev_id].duration+static_data.seasons.data[prev_id].transition_length;
 			var perc = target/season_length;
-				
+
 		}else{
 
 			let prev_season = static_data.seasons.data[prev_id];
@@ -1073,7 +1074,7 @@ function set_up_edit_inputs(){
 			let next_day = evaluate_calendar_start(static_data, next_year, next_season.timespan, next_season.day).epoch-prev_day;
 
 			var perc = curr_day/next_day;
-			
+
 		}
 
 		if(static_data.clock.enabled){
@@ -1144,7 +1145,7 @@ function set_up_edit_inputs(){
 	$(document).on('change', '.season_time', function(){
 
 		let index = $(this).closest('.sortable-container').attr('index');
-		
+
 		let [type, time] = $(this).attr('clocktype').split('_');
 
 		let value = $(this).val();
@@ -1282,7 +1283,7 @@ function set_up_edit_inputs(){
 
 		if(isNaN(event_categories[category_index].id)){
 			let slug = slugify(new_name);
-			
+
 			for(let index in events){
 				if(events[index].event_category_id == event_categories[category_index].id){
 					events[index].event_category_id = slug;
@@ -3007,7 +3008,14 @@ function add_leap_day_to_list(parent, key, data){
 
 	var element = [];
 
-	element.push(`<div class='sortable-container list-group-item ${(data.intercalary ? 'intercalary leap-day' : 'leap-day')} collapsed collapsible' type='${(data.intercalary ? 'intercalary' : 'normal')}' index='${key}'>`);
+	let type = 'normal';
+	if(data.intercalary){
+	    type = "intercalary";
+    }else if(data.subtracting){
+	    type = "subtracting";
+    }
+
+	element.push(`<div class='sortable-container list-group-item ${(data.intercalary ? 'intercalary leap-day' : 'leap-day')} collapsed collapsible' type='${type}' index='${key}'>`);
 		element.push("<div class='main-container'>");
 			element.push("<div class='expand icon-expand'></div>");
 			element.push("<div class='name-container'>");
@@ -3026,7 +3034,13 @@ function add_leap_day_to_list(parent, key, data){
 
 			element.push("<div class='row my-2 bold-text big-text italics-text'>");
 				element.push("<div class='col'>");
-					element.push(!data.intercalary ? "Leap day" : "Intercalary leap day");
+				    if(data.intercalary){
+					    element.push("Intercalary leap day");
+                    }else if(data.subtracting){
+					    element.push("Subtracting leap day");
+                    }else{
+					    element.push("Leap day");
+                    }
 				element.push("</div>");
 			element.push("</div>");
 
@@ -3077,20 +3091,20 @@ function add_leap_day_to_list(parent, key, data){
 					element.push("</div>");
 				element.push("</div>");
 
-				element.push(`<div class='row no-gutters my-1 ${!data.intercalary ? "" : "hidden"}'>`);
+				element.push(`<div class='row no-gutters my-1 ${data.intercalary || data.subtracting ? "hidden" : ""}'>`);
 					element.push("<div class='form-check col-12 py-2 border rounded'>");
-						element.push(`<input type='checkbox' id='${key}_adds_week_day' class='form-check-input adds-week-day dynamic_input' data='year_data.leap_days.${key}' fc-index='adds_week_day' ${(!data.intercalary ? "" : "disabled")} ${(data.adds_week_day ? "checked" : "")} />`);
+						element.push(`<input type='checkbox' id='${key}_adds_week_day' class='form-check-input adds-week-day dynamic_input' data='year_data.leap_days.${key}' fc-index='adds_week_day' ${(data.intercalary || data.subtracting ? "disabled" : "")} ${(data.adds_week_day ? "checked" : "")} />`);
 						element.push(`<label for='${key}_adds_week_day' class='form-check-label ml-1'>`);
 							element.push("Adds week day");
 						element.push("</label>");
 					element.push("</div>");
 				element.push("</div>");
 
-				element.push(`<div class='adds_week_day_data_container ${(data.adds_week_day && !data.intercalary ? "" : "hidden")}'>`);
+				element.push(`<div class='adds_week_day_data_container ${(data.adds_week_day ? "" : "hidden")}'>`);
 					element.push("<div class='row no-gutters mt-2'>");
 						element.push("<div class='col'>");
 							element.push("Week day name:");
-							element.push(`<input type='text' class='form-control internal-list-name dynamic_input' data='year_data.leap_days.${key}' fc-index='week_day' ${(data.adds_week_day && !data.intercalary ? "" : "disabled")}/>`);
+							element.push(`<input type='text' class='form-control internal-list-name dynamic_input' data='year_data.leap_days.${key}' fc-index='week_day' ${(data.adds_week_day ? "" : "disabled")}/>`);
 						element.push("</div>");
 					element.push("</div>");
 				element.push("</div>");
@@ -3099,7 +3113,7 @@ function add_leap_day_to_list(parent, key, data){
 					element.push("<div class='row no-gutters mt-2'>");
 						element.push("<div class='col'>");
 							element.push("After which weekday:");
-							element.push(`<select type='number' class='custom-select form-control dynamic_input full week-day-select inclusive' ${(data.adds_week_day && !data.intercalary) ? "" : "disabled"} data='year_data.leap_days.${key}' fc-index='day'>`);
+							element.push(`<select type='number' class='custom-select form-control dynamic_input full week-day-select inclusive' ${data.adds_week_day ? "" : "disabled"} data='year_data.leap_days.${key}' fc-index='day'>`);
 
 								if(data.timespan === undefined){
 									var week = static_data.year_data.global_week;
@@ -3130,7 +3144,7 @@ function add_leap_day_to_list(parent, key, data){
 					element.push("</div>");
 				element.push("</div>");
 
-				element.push("<div class='row no-gutters mt-2 mb-1'>");
+				element.push(`<div class='row no-gutters mt-2 mb-1 ${data.subtracting ? "hidden" : ""}'>`);
 					element.push("<div class='col'>");
 						element.push("<div class='separator'></div>");
 					element.push("</div>");
@@ -3168,7 +3182,7 @@ function add_leap_day_to_list(parent, key, data){
 	element = $(element.join(""))
 
 	element.find('.name-input').val(data.name);
-	element.find('.internal-list-name').val(`${data.week_day && !data.intercalary ? data.week_day : 'Weekday'}`)
+	element.find('.internal-list-name').val(`${data.week_day ? data.week_day : 'Weekday'}`)
 	element.find('.leap_day_occurance_input.offset').prop('disabled', data.interval == "1" || data.interval == 1)
 
 	parent.append(element);
@@ -4323,19 +4337,19 @@ function add_user_to_list(parent, key, data){
 
 function get_errors(){
 
-	var errors = [];
+	let errors = [];
 
-	if(calendar_name == ""){
+	if(calendar_name === ""){
 		errors.push("The calendar name cannot be empty.")
 	}
 
-	if(static_data.year_data.timespans.length != 0){
-		for(var era_i = 0; era_i < static_data.eras.length; era_i++){
-			var era = static_data.eras[era_i];
+	if(static_data.year_data.timespans.length !== 0){
+		for(let era_i = 0; era_i < static_data.eras.length; era_i++){
+			let era = static_data.eras[era_i];
 			if(static_data.year_data.timespans[era.date.timespan]){
-				var appears = does_timespan_appear(static_data, convert_year(static_data, era.date.year), era.date.timespan);
+				let appears = does_timespan_appear(static_data, convert_year(static_data, era.date.year), era.date.timespan);
 				if(!appears.result){
-					if(appears.reason == 'era ended'){
+					if(appears.reason === 'era ended'){
 						errors.push(`Era <i>${era.name}</i> is on a date that doesn't exist due to a previous era ending the year. Please move it to another year.`);
 					}else{
 						errors.push(`Era <i>${era.name}</i> is currently on a leaping month. Please move it to another month.`);
@@ -4346,46 +4360,63 @@ function get_errors(){
 			}
 		}
 
-		for(var era_i = 0; era_i < static_data.eras.length-1; era_i++){
-			var curr = static_data.eras[era_i];
-			var next = static_data.eras[era_i+1];
+		for(let era_i = 0; era_i < static_data.eras.length-1; era_i++){
+			let curr = static_data.eras[era_i];
+			let next = static_data.eras[era_i+1];
 			if(!curr.settings.starting_era && !next.settings.starting_era){
-				if(curr.year == next.date.year && curr.settings.ends_year && next.settings.ends_year){
+				if(curr.year === next.date.year && curr.settings.ends_year && next.settings.ends_year){
 					errors.push(`Eras <i>${curr.name}</i> and <i>${next.name}</i> both end the same year. This is not possible.`);
 				}
-				if(curr.date.year == next.date.year && curr.date.timespan == next.date.timespan && curr.date.day == next.date.day){
+				if(curr.date.year === next.date.year && curr.date.timespan === next.date.timespan && curr.date.day === next.date.day){
 					errors.push(`Eras <i>${static_data.eras[era_i].name}</i> and <i>${static_data.eras[era_i+1].name}</i> both share the same date. One has to come after another.`);
 				}
 			}
 		}
 	}
 
-	if(static_data.year_data.timespans.length != 0){
+	if(static_data.year_data.timespans.length !== 0){
 
 		if(static_data.seasons.global_settings.periodic_seasons){
-			for(var season_i = 0; season_i < static_data.seasons.data.length; season_i++){
-				var season = static_data.seasons.data[season_i];
+			for(let season_i = 0; season_i < static_data.seasons.data.length; season_i++){
+				let season = static_data.seasons.data[season_i];
 				if(static_data.seasons.global_settings.periodic_seasons){
-					if(season.transition_length == 0){
+					if(season.transition_length === 0){
 						errors.push(`Season <i>${season.name}</i> can't have 0 transition length.`);
 					}
 				}else{
-					if(static_data.year_data.timespans[season.timespan].interval != 1){
+					if(static_data.year_data.timespans[season.timespan].interval !== 1){
 						errors.push(`Season <i>${season.name}</i> can't be on a leaping month.`);
 					}
 				}
 			}
 		}else{
 
-			for(var season_i = 0; season_i < static_data.seasons.data.length-1; season_i++){
-				var curr_season = static_data.seasons.data[season_i];
-				var next_season = static_data.seasons.data[season_i+1];
-				if(curr_season.timespan == next_season.timespan && curr_season.day == next_season.day){
+			for(let season_i = 0; season_i < static_data.seasons.data.length-1; season_i++){
+				let curr_season = static_data.seasons.data[season_i];
+				let next_season = static_data.seasons.data[season_i+1];
+				if(curr_season.timespan === next_season.timespan && curr_season.day === next_season.day){
 					errors.push(`Season <i>${curr_season.name}</i> and <i>${next_season.name}</i> cannot be on the same month and day.`);
 				}
 			}
 		}
 	}
+
+	if(static_data.year_data.timespans.length !== 0 && static_data.year_data.leap_days.length !== 0){
+
+	    let subtracting_leap_days = static_data.year_data.leap_days.filter(leap_day => leap_day.subtracting);
+
+	    for(let timespan_index in static_data.year_data.timespans){
+
+	        let timespan = static_data.year_data.timespans[timespan_index];
+
+	        let leap_days_in_timespan = subtracting_leap_days.filter(leap_day => leap_day.timespan === Number(timespan_index));
+
+	        if(timespan.length <= leap_days_in_timespan.length){
+                errors.push(`Month <i>${timespan.name}</i> cannot have fewer than ${leap_days_in_timespan.length+1} days due to its subtracting leap days.`);
+            }
+        }
+
+    }
 
 	return errors;
 
@@ -4740,7 +4771,7 @@ function reindex_timespan_sortable(){
 
 function reindex_leap_day_list(){
 
-	var tabindex = 200;
+	let tabindex = 200;
 
 	static_data.year_data.leap_days = [];
 
@@ -4753,11 +4784,13 @@ function reindex_leap_day_list(){
 		$(this).find('.name-input').prop('tabindex', tabindex+1)
 		tabindex++;
 
-		var intercalary = $(this).attr('type') == 'intercalary';
+		let intercalary = $(this).attr('type') === 'intercalary';
+		let subtracting = $(this).attr('type') === 'subtracting';
 
 		static_data.year_data.leap_days[i] = {
 			'name': $(this).find('.name-input').val(),
 			'intercalary': intercalary,
+			'subtracting': subtracting,
 			'timespan': Number($(this).find('.timespan-list').val()),
 			'adds_week_day': $(this).find('.adds-week-day').is(':checked'),
 			'day': intercalary ? Number($(this).find('.timespan-day-list').val()) : Number($(this).find('.week-day-select').val()),
@@ -4863,7 +4896,7 @@ function reindex_season_sortable(key){
 	if(no_seasons){
 		static_data.seasons.global_settings.preset_order = undefined;
 	}
-	
+
 	populate_preset_season_list();
 
 	if(key !== undefined){
@@ -4919,7 +4952,7 @@ function populate_preset_season_list(){
 			}else{
 				$(this)[0].selectedIndex = static_data.seasons.global_settings.preset_order[i];
 			}
-			
+
 		});
 
 		if(static_data.seasons.global_settings.preset_order === undefined){
@@ -4943,7 +4976,7 @@ function detect_automatic_mapping(){
 	}else{
 		return false;
 	}
-	
+
 	let season_test = [];
 	for(var index in static_data.seasons.data){
 		var season = static_data.seasons.data[index];
@@ -5320,7 +5353,7 @@ function sort_list_by_partial_date(list){
 	}
 
 	list.empty().append(elements).change();
-	
+
 }
 
 function reindex_event_category_list(){
