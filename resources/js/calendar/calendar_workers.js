@@ -206,8 +206,8 @@ const calendar_data_generator = {
 
 		timespan.render = false;
 
-        if(convert_year(this.static_data, this.dynamic_data.year) === year){
-            timespan.render = (!this.static_data.settings.show_current_month) || (this.static_data.settings.show_current_month && timespan_index === this.dynamic_data.timespan);
+        if(this.current_year === year){
+            timespan.render = !this.render_one_month || (this.render_one_month && timespan_index === this.dynamic_data.timespan);
         }
 
 		timespan.week = timespan.week ? timespan.week : clone(this.static_data.year_data.global_week);
@@ -447,6 +447,45 @@ const calendar_data_generator = {
     add_epoch_data: function(epoch, data){
 
 	    this.epochs[epoch] = data;
+
+    },
+
+    /**
+     * This function evaluates whether we need to pad the epoch data with more months in the previous and future year
+     * due to overlapping events.
+     *
+     * If all months are shown, then only add extra data if no months are overlapping years.
+     *
+     * If only one month is shown, calculate whether we need to add
+     *
+     * @returns {{pre: boolean, post: boolean}}
+     */
+    check_pre_post_calculation: function(){
+
+        if(!this.render_one_month) return {
+            pre: this.pre_search,
+            post: this.post_search
+        };
+
+        let render_month = this.timespans[this.current_year].find(timespan => timespan.render);
+        let index = this.timespans[this.current_year].indexOf(render_month);
+
+        let pre_timespans = this.timespans[this.current_year].slice(0,index);
+        let pre_days = pre_timespans.length ? pre_timespans.reduce(function(a, b) {
+            return isNaN(a) ? a.length + b.length : a + b.length ;
+        }) : 0;
+        pre_days = isNaN(pre_days) ? pre_days.length : pre_days;
+
+        let post_timespans = this.timespans[this.current_year].slice(index+1);
+        let post_days = post_timespans.length ? post_timespans.reduce(function(a, b) {
+            return isNaN(a) ? a.length + b.length : a + b.length ;
+        }) : 0;
+        post_days = isNaN(post_days) ? post_days.length : post_days;
+
+        return {
+            pre: this.pre_search > pre_days,
+            post: this.post_search > post_days
+        };
 
     },
 
@@ -713,7 +752,7 @@ const calendar_data_generator = {
 				}
 			}
 
-			if(year !== convert_year(this.static_data, this.dynamic_data.year)){
+			if(year !== this.current_year){
 				if(this.static_data.eras.length > 0 && current_era !== -1){
 					if(this.static_data.eras[current_era].settings.ends_year){
 						if(!this.static_data.eras[current_era].settings.restart){
@@ -728,7 +767,7 @@ const calendar_data_generator = {
 				year_day = 1;
 				year_num_timespans = 0;
 				year_week_num = 1;
-				inverse_year_week_num = 1 + evaluate_calendar_start(this.static_data, convert_year(this.static_data, this.dynamic_data.year)+1).total_week_num - evaluate_calendar_start(this.static_data, convert_year(this.static_data, this.dynamic_data.year)).total_week_num;
+				inverse_year_week_num = 1 + evaluate_calendar_start(this.static_data, this.current_year+1).total_week_num - evaluate_calendar_start(this.static_data, this.current_year).total_week_num;
 			}
 
         }
@@ -771,6 +810,8 @@ const calendar_data_generator = {
         this.epochs = {};
         this.build_seasons = true;
 	    this.callback = false;
+	    this.render_one_month = this.static_data.settings.show_current_month;
+	    this.current_year = convert_year(this.static_data, this.dynamic_data.year);
 
 		this.reset_eras();
 
@@ -840,10 +881,12 @@ const calendar_data_generator = {
 
 		this.timespans = {};
 
-        this.timespans[convert_year(this.static_data, this.dynamic_data.year)] = this.get_timespans_in_year(this.dynamic_data.year);
-        let timespans_to_build = this.timespans[convert_year(this.static_data, this.dynamic_data.year)].filter(timespan => timespan.render)
-        this.evaluate_pre_calculation(this.dynamic_data.year);
-        this.evaluate_post_calculation(this.dynamic_data.year);
+        this.timespans[this.current_year] = this.get_timespans_in_year(this.dynamic_data.year);
+        let timespans_to_build = this.timespans[this.current_year].filter(timespan => timespan.render)
+
+        let should_add_timespans = this.check_pre_post_calculation();
+        if(should_add_timespans.pre) this.evaluate_pre_calculation(this.dynamic_data.year);
+        if(should_add_timespans.post) this.evaluate_post_calculation(this.dynamic_data.year);
 
 		this.evaluate_years();
 
