@@ -2148,7 +2148,7 @@ function get_epoch(static_data, year, timespan, day, debug){
 
 			}
 
-			epoch += added_leap_day;
+			epoch = leap_day.subtracting ? epoch - added_leap_day : epoch + added_leap_day;
 
 		}
 
