@@ -134,7 +134,7 @@ var evaluated_static_data = {};
 
 function rebuild_calendar(action, dynamic_data){
 
-	//execution_time.start()
+	execution_time.start()
 
     worker_calendar.postMessage({
 		calendar_name: calendar_name,
@@ -194,8 +194,6 @@ worker_climate.onmessage = e => {
 
 worker_calendar.onmessage = e => {
 
-	//execution_time.end("Calendar worker took: ")
-
 	evaluated_static_data = {}
 	evaluated_static_data = e.data.processed_data;
 
@@ -207,12 +205,12 @@ worker_calendar.onmessage = e => {
 		calendar_weather.processed_weather = evaluated_static_data.processed_weather;
 		calendar_weather.start_epoch = evaluated_static_data.year_data.start_epoch;
 		calendar_weather.end_epoch = evaluated_static_data.year_data.end_epoch;
-		
+
 		climate_charts.evaluate_day_length_chart();
 		climate_charts.evaluate_weather_charts();
 
 		eval_clock();
-			
+
 		update_cycle_text();
 
 	}else{
