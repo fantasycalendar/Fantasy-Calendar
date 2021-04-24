@@ -687,6 +687,9 @@ class date_manager {
 
 		this.timespans_in_year = get_timespans_in_year(static_data, this.year, true);
 
+		this.cap_timespan();
+		this.cap_day();
+
 	}
 
 	compare(data){
@@ -835,9 +838,9 @@ class date_manager {
 			this.timespan = this.last_timespan.length-1;
 		}
 
-		if(!this.timespans_in_year[this.timespan].result || this.day > this.num_days){
+		if(!this.timespans_in_year[this.timespan].result){
 			this.timespan = this.last_timespan;
-			this.day = this.num_days;
+			this.cap_day();
 		}
 
 	}
