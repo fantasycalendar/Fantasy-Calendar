@@ -76,8 +76,8 @@ var calendar_builder = {
 		}
 
 		let leap_days = this.static_data.year_data.leap_days.filter(leap_day => leap_day.timespan == timespan_index);
-		let normal_leapdays = leap_days.filter(leap_day => !leap_day.adds_week_day && !leap_day.intercalary && !leap_day.subtracting)
-		let subtracting_leapdays = leap_days.filter(leap_day => leap_day.subtracting)
+		let normal_leapdays = leap_days.filter(leap_day => !leap_day.adds_week_day && !leap_day.intercalary && !leap_day.reverse)
+		let reverse_leapdays = leap_days.filter(leap_day => leap_day.reverse)
 		let intercalary_leapdays = leap_days.filter(leap_day => !leap_day.adds_week_day && leap_day.intercalary)
 		let week_day_leap_days = leap_days.filter(leap_day => leap_day.adds_week_day)
 
@@ -93,9 +93,9 @@ var calendar_builder = {
 
 		}
 
-		for (let index in subtracting_leapdays) {
+		for (let index in reverse_leapdays) {
 
-			let leap_day = subtracting_leapdays[index];
+			let leap_day = reverse_leapdays[index];
 
 			leap_day.index = leap_days.indexOf(leap_day);
 

@@ -385,7 +385,7 @@ function set_up_edit_inputs(){
 		stats = {
 			'name': name_val,
 			'intercalary': type.val() === 'intercalary',
-			'subtracting': type.val() === 'subtracting',
+			'reverse': type.val() === 'reverse',
 			'timespan': 0,
 			'adds_week_day': false,
 			'day': 0,
@@ -3022,8 +3022,8 @@ function add_leap_day_to_list(parent, key, data){
 	let type = 'normal';
 	if(data.intercalary){
 	    type = "intercalary";
-    }else if(data.subtracting){
-	    type = "subtracting";
+    }else if(data.reverse){
+	    type = "reverse";
     }
 
 	element.push(`<div class='sortable-container list-group-item ${(data.intercalary ? 'intercalary leap-day' : 'leap-day')} collapsed collapsible' type='${type}' index='${key}'>`);
@@ -3047,8 +3047,8 @@ function add_leap_day_to_list(parent, key, data){
 				element.push("<div class='col'>");
 				    if(data.intercalary){
 					    element.push("Intercalary leap day");
-                    }else if(data.subtracting){
-					    element.push("Subtracting leap day");
+                    }else if(data.reverse){
+					    element.push("Reverse leap day");
                     }else{
 					    element.push("Leap day");
                     }
@@ -3102,9 +3102,9 @@ function add_leap_day_to_list(parent, key, data){
 					element.push("</div>");
 				element.push("</div>");
 
-				element.push(`<div class='row no-gutters my-1 ${data.intercalary || data.subtracting ? "hidden" : ""}'>`);
+				element.push(`<div class='row no-gutters my-1 ${data.intercalary || data.reverse ? "hidden" : ""}'>`);
 					element.push("<div class='form-check col-12 py-2 border rounded'>");
-						element.push(`<input type='checkbox' id='${key}_adds_week_day' class='form-check-input adds-week-day dynamic_input' data='year_data.leap_days.${key}' fc-index='adds_week_day' ${(data.intercalary || data.subtracting ? "disabled" : "")} ${(data.adds_week_day ? "checked" : "")} />`);
+						element.push(`<input type='checkbox' id='${key}_adds_week_day' class='form-check-input adds-week-day dynamic_input' data='year_data.leap_days.${key}' fc-index='adds_week_day' ${(data.intercalary || data.reverse ? "disabled" : "")} ${(data.adds_week_day ? "checked" : "")} />`);
 						element.push(`<label for='${key}_adds_week_day' class='form-check-label ml-1'>`);
 							element.push("Adds week day");
 						element.push("</label>");
@@ -3155,7 +3155,7 @@ function add_leap_day_to_list(parent, key, data){
 					element.push("</div>");
 				element.push("</div>");
 
-				element.push(`<div class='row no-gutters mt-2 mb-1 ${data.subtracting ? "hidden" : ""}'>`);
+				element.push(`<div class='row no-gutters mt-2 mb-1 ${data.reverse ? "hidden" : ""}'>`);
 					element.push("<div class='col'>");
 						element.push("<div class='separator'></div>");
 					element.push("</div>");
@@ -4414,16 +4414,16 @@ function get_errors(){
 
 	if(static_data.year_data.timespans.length !== 0 && static_data.year_data.leap_days.length !== 0){
 
-	    let subtracting_leap_days = static_data.year_data.leap_days.filter(leap_day => leap_day.subtracting);
+	    let reverse_leap_days = static_data.year_data.leap_days.filter(leap_day => leap_day.reverse);
 
 	    for(let timespan_index in static_data.year_data.timespans){
 
 	        let timespan = static_data.year_data.timespans[timespan_index];
 
-	        let leap_days_in_timespan = subtracting_leap_days.filter(leap_day => leap_day.timespan === Number(timespan_index));
+	        let leap_days_in_timespan = reverse_leap_days.filter(leap_day => leap_day.timespan === Number(timespan_index));
 
 	        if(timespan.length <= leap_days_in_timespan.length){
-                errors.push(`Month <i>${timespan.name}</i> cannot have fewer than ${leap_days_in_timespan.length+1} days due to its subtracting leap days.`);
+                errors.push(`Month <i>${timespan.name}</i> cannot have fewer than ${leap_days_in_timespan.length+1} days due to its reverse leap days.`);
             }
         }
 
@@ -4796,12 +4796,12 @@ function reindex_leap_day_list(){
 		tabindex++;
 
 		let intercalary = $(this).attr('type') === 'intercalary';
-		let subtracting = $(this).attr('type') === 'subtracting';
+		let reverse = $(this).attr('type') === 'reverse';
 
 		static_data.year_data.leap_days[i] = {
 			'name': $(this).find('.name-input').val(),
 			'intercalary': intercalary,
-			'subtracting': subtracting,
+			'reverse': reverse,
 			'timespan': Number($(this).find('.timespan-list').val()),
 			'adds_week_day': $(this).find('.adds-week-day').is(':checked'),
 			'day': intercalary ? Number($(this).find('.timespan-day-list').val()) : Number($(this).find('.week-day-select').val()),

@@ -1167,7 +1167,7 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object, no
 
 	leap_days.sort((a, b) => (a.day > b.day) ? 1 : -1);
 
-	let normal_leap_days = leap_days.filter(leap_day => !leap_day.subtracting)
+	let normal_leap_days = leap_days.filter(leap_day => !leap_day.reverse)
 
 	for(let index = 0; index < normal_leap_days.length; index++){
 
@@ -1217,11 +1217,11 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object, no
 		}
 	}
 
-	let subtracting_leap_days = leap_days.filter(leap_day => leap_day.subtracting)
+	let reverse_leap_days = leap_days.filter(leap_day => leap_day.reverse)
 
-	for(let index = 0; index < subtracting_leap_days.length; index++){
+	for(let index = 0; index < reverse_leap_days.length; index++){
 
-		let leap_day_index = subtracting_leap_days[index].index;
+		let leap_day_index = reverse_leap_days[index].index;
 		let leap_day = static_data.year_data.leap_days[leap_day_index];
 
 		if(self_object && Object.compare(leap_day, self_object)){
@@ -2151,7 +2151,7 @@ function get_epoch(static_data, year, timespan, day, debug){
 
 			}
 
-			epoch = leap_day.subtracting ? epoch - added_leap_day : epoch + added_leap_day;
+			epoch = leap_day.reverse ? epoch - added_leap_day : epoch + added_leap_day;
 
 		}
 
