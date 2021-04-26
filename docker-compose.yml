@@ -46,7 +46,6 @@ services:
       - "DB_USERNAME=root"
       - "DB_PASSWORD=root"
       - "REDIS_HOST=fcredis"
-      - "CACHE_DRIVER=redis"
       - "SESSION_DRIVER=redis"
       - "VIEW_COMPILED_PATH=/fantasy-calendar/storage/framework/views"
       - "LOG_CHANNEL=docker"

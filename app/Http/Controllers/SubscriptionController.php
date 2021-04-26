@@ -56,10 +56,6 @@ class SubscriptionController extends Controller
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
     public function subscribe($level, $interval) {
-        if(cache(Auth::user()->id . '_is_premium')) {
-            cache()->forget(Auth::user()->id . '_is_premium');
-        }
-
         // They're subscribed already, send 'em to the subscriptions list
         if(Auth::user()->subscribed('Timekeeper')) {
             return Redirect::route('profile');
@@ -86,10 +82,6 @@ class SubscriptionController extends Controller
      * @throws Stripe\Exception\ApiErrorException
      */
     public function update(Request $request, $level, $plan) {
-        if(cache(Auth::user()->id . '_is_premium')) {
-            cache()->forget(Auth::user()->id . '_is_premium');
-        }
-
         $user = Auth::user();
         $stripe = new StripeClient(env('STRIPE_SECRET'));
 
