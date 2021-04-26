@@ -1,8 +1,6 @@
-### 2.1.0 - Discordant Djinn
-#### Month day, 2021
-* Added - [Discord Bot](custom/link/here) - This premium feature allows you to interact with your calendars through Discord!
-* Added - Moon overriding events - Now you can override the moon of any given day through events, with new colors, phase names, etc
-* Added - Weather overrides - Ever wished you could make it rain? Well now you can! Through this feature, any day's weather can be set manually.
+### 2.0.16 - Stressed Efreet
+#### April 26, 2021
+* Tweaked - Greatly improved database performance when loading certain pages to try and address recent downtime issues
 * Tweaked - Intercalary leap days can now exist without changing the order of numbered days in a month, or display its own custom name above the day
 * Fixed - Enabling *Custom year header formatting* on eras causing error
 * Fixed - Weekday leap days not being ordered correcly on their months
