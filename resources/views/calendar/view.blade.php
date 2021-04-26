@@ -10,6 +10,7 @@
         preview_date = clone(dynamic_data);
         preview_date.follow = true;
 
+        edit_event_ui.bind_events();
 
         set_up_view_inputs();
         set_up_view_values();

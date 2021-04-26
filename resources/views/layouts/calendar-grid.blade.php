@@ -80,16 +80,11 @@
 
                                 <div class="day_row event_container" x-show="day.events">
                                     <template x-for="calendar_event in day.events">
-                                        <div class="event"
-                                            :class="calendar_event.class"
-                                            x-text="calendar_event.name"
-                                            :event_id="calendar_event.index"
-                                            @click="$dispatch('event-viewer-modal-view-event', { id: calendar_event.index, era: calendar_event.era, epoch: day.epoch })"
-                                        ></div>
+                                        <div class="event" :class="calendar_event.class" x-text="calendar_event.name" :event_id="calendar_event.index" @click="view_event($event)"></div>
                                     </template>
                                 </div>
 
-                                <button class="btn_create_event btn btn-success day_row flex-grow" @click="$dispatch('event-editor-modal-new-event', { epoch: day.epoch })" :epoch="day.epoch" x-show="day.show_event_button">Create event</button>
+                                <button class="btn_create_event btn btn-success day_row flex-grow" @click="create_event(day.epoch)" :epoch="day.epoch" x-show="day.show_event_button">Create event</button>
 
                                 <div class="day_row">
                                     <div class="year_day" x-show="day.year_day" x-text="day.year_day"></div>
