@@ -24,17 +24,9 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        //
         Route::bind('calendar', function($hash) {
-            return Calendar::hash($hash)->with([
-                'events',
-                'event_categories',
-                'users' => function($query) {
-                    $query->without('subscriptions');
-                },
-                'user',
-                'parent',
-                'children'
-            ])->firstOrFail();
+            return Calendar::hash($hash)->firstOrFail();
         });
 
         parent::boot();

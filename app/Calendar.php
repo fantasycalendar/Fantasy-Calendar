@@ -36,6 +36,8 @@ class Calendar extends Model
      */
     protected $table = 'calendars_beta';
 
+    protected $with = ['event_categories', 'events'];
+
     protected $casts = [
         'dynamic_data' => 'array',
         'static_data' => 'array',
@@ -116,7 +118,7 @@ class Calendar extends Model
     }
 
     public function isLinked() {
-        return $this->parent_count || $this->children_count;
+        return $this->parent()->exists() || $this->children()->count() > 0;
     }
 
     public function scopeActive($query) {

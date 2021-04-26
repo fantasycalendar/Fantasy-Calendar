@@ -48,7 +48,7 @@
 @section('profile-card')
     <div class="row">
         <div class="col-12 col-md-4">
-            <p><i class="fa fa-calendar"></i> Calendars: {{ $user->calendars_count }}</p>
+            <p><i class="fa fa-calendar"></i> Calendars: {{ $user->calendars->count() }}</p>
         </div>
         <div class="col-12 col-md-8">
             <p><i class="fa fa-layer-group"></i> Subscription: {!! ($user->betaAccess()) ? "Timekeeper <br><small class='pl-3'>(Free for beta participation)</small>" : $user->paymentLevel() !!}</p>
