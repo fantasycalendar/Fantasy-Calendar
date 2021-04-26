@@ -75,50 +75,21 @@ const render_data_generator = {
 
 	},
 
-    get_moon_data: function(epoch_data, events) {
+	get_moon_data: function(epoch_data){
 
-        let moons = [];
-        moon_loop:
-        for (let moon_index = 0; moon_index < static_data.moons.length; moon_index++) {
+		let moons = [];
+		for(let moon_index = 0; moon_index < static_data.moons.length; moon_index++){
 
             let moon = static_data.moons[moon_index];
+            let phase_name = Object.keys(moon_phases[moon.granularity])[epoch_data.moon_phase[moon_index]];
+            let path = moon_phases[moon.granularity][phase_name];
 
-            if (!moon.hidden || Perms.player_at_least('co-owner')) {
-
-                let phase = epoch_data.moon_phase[moon_index];
-                let phase_name = Object.keys(moon_phases[moon.granularity])[phase];
-                let custom_phase_name = "";
-                let color = moon.color;
-                let shadow_color = moon.shadow_color ? moon.shadow_color : "#292b4a";
-                let hidden = moon.hidden;
-
-                for (let index in events) {
-                    if (events[index].overrides) {
-                        if (events[index].overrides.moons !== undefined) {
-                            if (events[index].overrides.moons[moon_index] !== undefined) {
-                                let moon_overrides = events[index].overrides.moons[moon_index];
-                                phase = moon_overrides.phase !== undefined && moon_overrides.override_phase ? moon_overrides.phase : phase;
-                                phase_name = Object.keys(moon_phases[moon.granularity])[phase];
-                                color = moon_overrides.color !== undefined ? moon_overrides.color : color;
-                                shadow_color = moon_overrides.shadow_color !== undefined ? moon_overrides.shadow_color : shadow_color;
-                                hidden = moon_overrides.hidden !== undefined ? moon_overrides.hidden : hidden;
-                                custom_phase_name = moon_overrides.phase_name !== undefined ? moon_overrides.phase_name : phase_name;
-                                if (hidden) continue moon_loop;
-                            }
-                        }
-                    }
-                }
-                let path = moon_phases[moon.granularity][phase_name];
-
-                phase_name = custom_phase_name == "" ? phase_name : custom_phase_name;
-
+            if(!moon.hidden || Perms.player_at_least('co-owner')){
                 moons.push({
                     "index": moon_index,
                     "name": moon.name,
                     "phase": phase_name,
-                    "path": path,
-                    "color": color,
-                    "shadow_color": shadow_color
+                    "path": path
                 });
             }
         }
@@ -167,13 +138,11 @@ const render_data_generator = {
         number = leap_day && leap_day.not_numbered ? "" : number;
 
 		let season_color = epoch_data.season ? (epoch_data.season.color !== undefined ? epoch_data.season.color : false) : false;
-        let weather_icon = this.get_weather_icon(epoch);
-
-        let events = this.event_data[epoch] ? this.event_data[epoch] : [];
+		let weather_icon = this.get_weather_icon(epoch);
 
 		let moons = [];
 		if(!static_data.settings.hide_moons || (static_data.settings.hide_moons && Perms.player_at_least('co-owner'))){
-            moons = this.get_moon_data(epoch_data, events);
+			moons = this.get_moon_data(epoch_data);
 		}
 
         let year_day = static_data.settings.add_year_day_number ? epoch_data.year_day : false;
@@ -188,7 +157,7 @@ const render_data_generator = {
 			"weather_icon": weather_icon,
 			"season_color": season_color,
             "show_event_button": Perms.player_at_least('player'),
-            "events": events,
+			"events": [],
 			"moons": moons,
             "has_events": true
 		};
@@ -227,7 +196,7 @@ const render_data_generator = {
         this.epoch_data = this.processed_data.epoch_data;
         this.day_offset = 0;
 
-        this.render_data = {
+        let render_data = {
             "current_epoch": dynamic_data.epoch,
             "preview_epoch": preview_date.epoch,
             "render_style": static_data.settings.layout,
@@ -235,8 +204,6 @@ const render_data_generator = {
             "event_epochs": {},
             "timespan_event_epochs": {}
         }
-
-        this.create_event_data();
 
         let indexes = Object.keys(timespans_to_build);
         let length = indexes.length
@@ -272,15 +239,15 @@ const render_data_generator = {
 
                     let day_data = this.get_day_data(epoch);
                     timespan_data.days[timespan_data.days.length-1].push(day_data);
-                    this.render_data.event_epochs[epoch] = day_data;
-                    this.render_data.timespan_event_epochs[epoch] = timespan_data;
+                    render_data.event_epochs[epoch] = day_data;
+                    render_data.timespan_event_epochs[epoch] = timespan_data;
 
                     weekday_number++;
                     epoch++;
 
                     if(weekday_number > timespan.week.length){
                         weekday_number = 1;
-                        if(this.render_data.render_style != "vertical"){
+                        if(render_data.render_style != "vertical"){
                             timespan_data.days.push([]);
                         }
                     }
@@ -292,7 +259,7 @@ const render_data_generator = {
                     }
                 }
 
-                this.render_data.timespans.push(timespan_data);
+                render_data.timespans.push(timespan_data);
 
             }
 
@@ -315,14 +282,14 @@ const render_data_generator = {
             for(let day_number = 1; day_number <= timespan.length;){
 
                 if(timespan_data.days[timespan_data.days.length-1].length != 0){
-                    if(this.render_data.render_style != "vertical"){
+                    if(render_data.render_style != "vertical"){
                         timespan_data.days.push([])
                     }
                 }
 
                 for(let weekday_number = 1; weekday_number <= timespan.week.length; weekday_number++){
 
-                    if(week_day > weekday_number && show_months && this.render_data.render_style != "vertical"){
+                    if(week_day > weekday_number && show_months && render_data.render_style != "vertical"){
 
                         timespan_data.days[timespan_data.days.length-1].push(this.overflow());
 
@@ -330,8 +297,8 @@ const render_data_generator = {
 
                         let day_data = this.get_day_data(epoch);
                         timespan_data.days[timespan_data.days.length-1].push(day_data);
-                        this.render_data.event_epochs[epoch] = day_data;
-                        this.render_data.timespan_event_epochs[epoch] = timespan_data;
+                        render_data.event_epochs[epoch] = day_data;
+                        render_data.timespan_event_epochs[epoch] = timespan_data;
 
                         epoch++;
 
@@ -345,7 +312,7 @@ const render_data_generator = {
                                 timespan_data.days[timespan_data.days.length-1].push(this.overflow());
                             }
 
-                            this.render_data.timespans.push(timespan_data);
+                            render_data.timespans.push(timespan_data);
 
                             timespan_data = {
                                 "title": "",
@@ -365,15 +332,15 @@ const render_data_generator = {
 
                                 let day_data = this.get_day_data(epoch);
                                 timespan_data.days[timespan_data.days.length-1].push(day_data);
-                                this.render_data.event_epochs[epoch] = day_data;
-                                this.render_data.timespan_event_epochs[epoch] = timespan_data;
+                                render_data.event_epochs[epoch] = day_data;
+                                render_data.timespan_event_epochs[epoch] = timespan_data;
 
                                 internal_weekday_number++;
                                 epoch++;
 
                                 if(internal_weekday_number > timespan.week.length){
                                     internal_weekday_number = 1;
-                                    if(this.render_data.render_style != "vertical"){
+                                    if(render_data.render_style != "vertical"){
                                         timespan_data.days.push([]);
                                     }
                                 }
@@ -385,7 +352,7 @@ const render_data_generator = {
                                 }
                             }
 
-                            this.render_data.timespans.push(timespan_data);
+                            render_data.timespans.push(timespan_data);
 
                             timespan_data = {
                                 "title": static_data.settings.add_month_number ? `${timespan.name} - Month ${index+1}` : timespan.name,
@@ -414,7 +381,7 @@ const render_data_generator = {
 
                             if(week_day > timespan.week.length){
                                 week_day = 1;
-                                if(this.render_data.render_style == "vertical"){
+                                if(render_data.render_style == "vertical"){
                                     day_data.extra_class = "week_end"
                                 }
                             }
@@ -422,7 +389,7 @@ const render_data_generator = {
 
                     }else{
 
-                        if(this.render_data.render_style != "vertical"){
+                        if(render_data.render_style != "vertical"){
                             timespan_data.days[timespan_data.days.length-1].push(this.overflow());
                         }
 
@@ -431,7 +398,7 @@ const render_data_generator = {
                 
             }
 
-            this.render_data.timespans.push(timespan_data);
+            render_data.timespans.push(timespan_data);
 
             if(Perms.player_at_least('co-owner') || !static_data.settings.only_reveal_today || (static_data.settings.only_reveal_today && epoch > dynamic_data.epoch)){
 
@@ -459,15 +426,15 @@ const render_data_generator = {
 
                         let day_data = this.get_day_data(epoch);
                         timespan_data.days[timespan_data.days.length - 1].push(day_data);
-                        this.render_data.event_epochs[epoch] = day_data;
-                        this.render_data.timespan_event_epochs[epoch] = timespan_data;
+                        render_data.event_epochs[epoch] = day_data;
+                        render_data.timespan_event_epochs[epoch] = timespan_data;
 
                         weekday_number++;
                         epoch++;
 
                         if(weekday_number > timespan.week.length){
                             weekday_number = 1;
-                            if(this.render_data.render_style != "vertical"){
+                            if(render_data.render_style != "vertical"){
                                 timespan_data.days.push([]);
                             }
                         }
@@ -479,7 +446,7 @@ const render_data_generator = {
                         }
                     }
 
-                    this.render_data.timespans.push(timespan_data);
+                    render_data.timespans.push(timespan_data);
 
                 }
 
@@ -491,9 +458,11 @@ const render_data_generator = {
 
         }
 
+        this.render_data = render_data;
+
         return {
             success: true,
-            render_data: this.render_data
+            render_data: render_data
         };
 
     },
@@ -589,7 +558,6 @@ const render_data_generator = {
                     this.events_to_send[era.date.epoch].push({
                         "index": era_index,
                         "name": era.name,
-                        "overrides": {},
                         "class": event_class.join(' '),
                         "era": true
                     });
@@ -650,7 +618,6 @@ const render_data_generator = {
                 this.events_to_send[epoch].push({
                     "index": event_index,
                     "name": event_name,
-                    "overrides": event.data.overrides,
                     "class": event_class.join(' '),
                     "era": false
                 });
@@ -663,28 +630,19 @@ const render_data_generator = {
         }
     },
 
-	create_event_data: function(){
+	create_event_data: function(evaluated_event_data){
 
-        let evaluated_event_data = event_evaluator.init(
-            static_data,
-            dynamic_data,
-            events,
-            event_categories,
-            this.epoch_data,
-            undefined,
-            this.processed_data.year_data.start_epoch,
-            this.processed_data.year_data.end_epoch,
-            Perms.player_at_least('co-owner'),
-            false
-        );
+        return new Promise(function(resolve, reject){
 
-        let event_data = this._create_event_data(evaluated_event_data);
+            var result = render_data_generator._create_event_data(evaluated_event_data);
 
-        if (event_data.success) {
-            this.event_data = event_data.event_data;
-        } else {
-            this.event_data = {};
-        }
+            if(result.success){
+                resolve(result.event_data);
+            }else{
+                reject(result.message);
+            }
+
+        });
 
     }
 }

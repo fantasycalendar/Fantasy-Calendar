@@ -369,7 +369,7 @@ const calendar_events_editor = {
 		if (success) {
 
 			eval_apply_changes(function() {
-				rerender_calendar();
+				rebuild_events();
 			});
 
 		}

@@ -268,19 +268,31 @@ var calendar_weather = {
 
 		insert_moons: function(epoch){
 
-			let render_data = CalendarRenderer.render_data.event_epochs[epoch];
+			let epoch_data = calendar_weather.epoch_data[epoch];
 
 			var moon_text = [];
 
-			for(let index = 0; index < render_data.moons.length; index++){
+			if(Perms.player_at_least('co-owner') || !static_data.settings.hide_moons){
 
-				var moon = render_data.moons[index];
+				for(moon_index = 0; moon_index < static_data.moons.length; moon_index++){
 
-				moon_text.push(`<svg class='moon protip' moon="${moon.index}" preserveAspectRatio="xMidYMid" width="32" height="32" viewBox="0 0 32 32" data-pt-position="top" data-pt-title='${moon.name}, ${moon.phase}'>`);
-					moon_text.push(`<circle cx="16" cy="16" r="10" style="fill: ${moon.color};"/>`);
-					if(moon.path) moon_text.push(`<path style="fill: ${moon.shadow_color};" d="${moon.path}"/>`);
-					moon_text.push(`<circle cx="16" cy="16" r="10" class="lunar_border"/>`);
-				moon_text.push("</svg>");
+					var moon = static_data.moons[moon_index];
+
+					if(!Perms.player_at_least('co-owner') && moon.hidden) continue;
+
+					var name_array = moon_phases[moon.granularity];
+
+					let phase_name = Object.keys(name_array)[epoch_data.moon_phase[moon_index]];
+
+					let moon_path = name_array[phase_name];
+
+					moon_text.push(`<svg class='moon protip' moon="${moon_index}" preserveAspectRatio="xMidYMid" width="32" height="32" viewBox="0 0 32 32" data-pt-position="top" data-pt-title='${moon.name}, ${phase_name}'>`);
+						moon_text.push(`<circle cx="16" cy="16" r="9" class="lunar_background"/>`);
+						if(moon_path) moon_text.push(`<path class="lunar_shadow" d="${moon_path}"/>`);
+						moon_text.push(`<circle cx="16" cy="16" r="10" class="lunar_border"/>`);
+					moon_text.push("</svg>");
+
+				}
 
 			}
 

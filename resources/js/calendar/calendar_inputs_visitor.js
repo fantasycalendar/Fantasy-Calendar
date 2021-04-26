@@ -104,6 +104,25 @@ function context_open_day_data(key, opt){
 
 }
 
+function get_events_on_day(element){
+
+	var epoch = element.attr('epoch')|0;
+	var found_events = [];
+
+	var keys = Object.keys(evaluated_event_data.valid);
+	var length = keys.length;
+
+	for(var i = 0; i < length; i++){
+		var key = keys[i];
+		if(evaluated_event_data.valid[key].indexOf(epoch) > -1){
+			found_events.push(Number(key));
+		}
+	}
+
+	return found_events;
+
+}
+
 function set_up_visitor_inputs(){
 
     document.addEventListener('keydown', function(event) {
@@ -332,11 +351,7 @@ function set_up_visitor_inputs(){
 		name: "View events on this date",
 		icon: "fas fa-eye",
 		callback: function(key, opt){
-			let epoch = $(opt.$trigger[0]).attr('epoch') | 0;
-			let found_events = CalendarRenderer.render_data.event_epochs[epoch].events;
-			let event_id = found_events[0].index;
-			let era_event = found_events[0].era;
-			window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { id: event_id, era: era_event, epoch: epoch } }));
+			context_view_events($(opt.$trigger[0]));
 		}
 	}
 
@@ -355,8 +370,7 @@ function set_up_visitor_inputs(){
 
 				delete items.view_events['items'];
 
-				let epoch = $($trigger[0]).attr('epoch') | 0;
-				let found_events = CalendarRenderer.render_data.event_epochs[epoch].events;
+				var found_events = get_events_on_day($($trigger[0]));
 
 				items.view_events.visible = function(){ return found_events.length > 0 };
 				items.view_events.disabled = found_events.length == 0;
@@ -364,16 +378,16 @@ function set_up_visitor_inputs(){
 				if(found_events.length > 1){
 
 					items.view_events.name = "View events on this date";
-					let sub_items = {};
+					var sub_items = {};
 					for(var i = 0; i < found_events.length; i++){
-						let event_id = found_events[i].index;
-						let event_name = found_events[i].name;
-						let era_event = found_events[i].era;
+						var event_id = found_events[i];
 						sub_items[event_id] = {
-							name: event_name,
+							name: events[event_id].name,
 							id: event_id,
 							callback: function(key, opt) {
-								window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { id: event_id, era: era_event, epoch: epoch } }));
+								let element = $(opt.$trigger[0]);
+								let event_id = element.attr('event');
+								window.dispatchEvent(new CustomEvent('event-editor-modal-edit-event', { detail: { event_id: event_id } }));
 							}
 						}
 					}
@@ -381,7 +395,7 @@ function set_up_visitor_inputs(){
 
 				}else if(found_events.length == 1){
 
-					items.view_events.name = `View event "${events[found_events[0].index].name}"`
+					items.view_events.name = `View event "${events[found_events[0]].name}"`
 
 				}
 
