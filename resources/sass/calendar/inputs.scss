@@ -605,6 +605,10 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     }
 }
 
+.active_layout {
+    //background-color: rgba(250, 224, 66, .2) !important;
+}
+
 /* ------------------ Preset forms ----------------- */
 
 .preset_background .preset-wrapper {

@@ -15,6 +15,11 @@
             load_calendar($event);
             $nextTick(() => { post_render() });
         "
+        @events-change.window="
+            pre_event_load();
+            register_events($event);
+            $nextTick(() => { post_event_load() });
+        "
         @update-epochs.window="update_epochs"
         x-if='loaded'
         x-for="timespan in render_data.timespans"
