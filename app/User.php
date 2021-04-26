@@ -175,7 +175,7 @@ class User extends Authenticatable implements
             cache()->put($this->id . '_is_premium', ($this->subscribedToPlan(['timekeeper_monthly', 'timekeeper_yearly'], 'Timekeeper') || $this->betaAccess()), 30);
         }
 
-        return cache($this->id . 'is_premium');
+        return cache($this->id . '_is_premium');
     }
 
     /**
