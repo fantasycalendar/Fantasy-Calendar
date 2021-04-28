@@ -50,10 +50,6 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-        if(App::environment('local')) {
-            ddd($exception);
-        }
-
         if($this->isApiCall($request)) {
             if(property_exists($exception, 'validator')) {
                 return response()->json([
@@ -65,6 +61,10 @@ class Handler extends ExceptionHandler
             return response()->json([
                 'message' => $exception->getMessage()
             ]);
+        }
+
+        if(App::environment('local')) {
+            ddd($exception);
         }
 
         if($exception instanceof AuthorizationException || $exception instanceof AuthenticationException) {
