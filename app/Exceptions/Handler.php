@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 use Auth;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
@@ -107,7 +108,10 @@ class Handler extends ExceptionHandler
             }
         }
 
-        return parent::render($request, $exception);
+        Log::error($exception->getMessage());
+        Log::error($exception->getTraceAsString());
+
+        return response()->view('errors.error');
     }
 
     protected function isApiCall($request)
