@@ -42,6 +42,7 @@ mix.copyDirectory('resources/images', 'public/resources');
 // Calendar scripts
 mix.copy('resources/js/calendar/header.js', 'public/js/calendar');
 mix.copy('resources/js/calendar/calendar_ajax_functions.js', 'public/js/calendar');
+mix.copy('resources/js/calendar/calendar_event_ui.js', 'public/js/calendar');
 mix.copy('resources/js/calendar/calendar_functions.js', 'public/js/calendar');
 mix.copy('resources/js/calendar/calendar_variables.js', 'public/js/calendar');
 mix.copy('resources/js/calendar/calendar_weather_layout.js', 'public/js/calendar');

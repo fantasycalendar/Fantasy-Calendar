@@ -31,6 +31,10 @@ const calendar_renderer = {
         this.render_data = event.detail;
     },
 
+    create_event: function(epoch) {
+        edit_event_ui.create_new_event('', epoch);
+    },
+
     view_event: function(event) {
         show_event_ui.clicked_event($(event.target));
     },

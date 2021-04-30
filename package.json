@@ -29,7 +29,6 @@
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.15.1",
-        "alpine-editor": "^0.3.1",
         "bootswatch": "^4.5.0",
         "chart.js": "^2.9.3",
         "fuzzysort": "^1.1.4",

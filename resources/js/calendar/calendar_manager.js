@@ -63,36 +63,6 @@ function bind_calendar_events(){
 		evaluate_era_position();
 	});
 
-	$(document).on('change', '.event-text-input', function() {
-
-		var parent = $(this).closest('.sortable-container');
-
-		var value_input = this;
-
-		var output = parent.find('.event-text-output');
-		var input = parent.find('.event-text-input');
-
-		output.each(function() {
-
-			var classes = $(this).attr('class').split(' ');
-
-			if (classes.indexOf("hidden_event") > -1) {
-				classes.length = 4;
-			} else {
-				classes.length = 3;
-			}
-
-			classes.push($(value_input).val());
-			classes.push(input.not(value_input).val());
-
-			classes = classes.join(' ');
-
-			$(this).prop('class', classes);
-
-		})
-
-	});
-
 }
 
 var evaluate_era_position = debounce(function(){

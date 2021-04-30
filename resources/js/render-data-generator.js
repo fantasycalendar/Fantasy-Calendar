@@ -559,8 +559,7 @@ const render_data_generator = {
                     this.events_to_send[era.date.epoch].push({
                         "index": era_index,
                         "name": era.name,
-                        "class": event_class.join(' '),
-                        "era": true
+                        "class": event_class.join(' ')
                     });
                 }
             }
@@ -619,8 +618,7 @@ const render_data_generator = {
                 this.events_to_send[epoch].push({
                     "index": event_index,
                     "name": event_name,
-                    "class": event_class.join(' '),
-                    "era": false
+                    "class": event_class.join(' ')
                 });
             }
         }

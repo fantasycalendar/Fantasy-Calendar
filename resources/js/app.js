@@ -13,6 +13,3 @@ window.Perms = require('./perms');
 window.RenderDataGenerator = require('./render-data-generator')
 window.CalendarRenderer = require('./calendar-renderer')
 window.CalendarLayouts = require('./calendar-layouts')
-window.CalendarEventEditor = require('./calendar-events-editor')
-window.CalendarEventViewer = require('./calendar-events-viewer')
-window.CalendarHTMLEditor = require('./calendar-html-editor')

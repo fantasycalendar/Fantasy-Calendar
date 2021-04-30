@@ -638,9 +638,9 @@ var calendar_builder = {
 
 									'timespan_index': timespan_index,
 									'timespan_number': i,
-									'timespan_count': count_timespans[timespan_index],
-									'num_timespans': num_timespans,
-									'timespan_name': current_timespan.name,
+									'timespan_count': undefined,
+									'num_timespans': undefined,
+									'timespan_name': undefined,
 
 									'epoch': epoch,
 									'day': timespan_day,
@@ -754,9 +754,9 @@ var calendar_builder = {
 
 									'timespan_index': timespan_index,
 									'timespan_number': i,
-									'timespan_count': count_timespans[timespan_index],
-									'num_timespans': num_timespans,
-									'timespan_name': current_timespan.name,
+									'timespan_count': undefined,
+									'num_timespans': undefined,
+									'timespan_name': undefined,
 
 									'epoch': epoch,
 									'day': timespan_day,
@@ -921,9 +921,9 @@ var calendar_builder = {
 
 									'timespan_index': timespan_index,
 									'timespan_number': i,
-									'timespan_count': count_timespans[timespan_index],
-									'num_timespans': num_timespans,
-									'timespan_name': current_timespan.name,
+									'timespan_count': undefined,
+									'num_timespans': undefined,
+									'timespan_name': undefined,
 
 									'epoch': epoch,
 									'day': timespan_day,
@@ -1036,9 +1036,9 @@ var calendar_builder = {
 
 									'timespan_index': timespan_index,
 									'timespan_number': i,
-									'timespan_count': count_timespans[timespan_index],
-									'num_timespans': num_timespans,
-									'timespan_name': current_timespan.name,
+									'timespan_count': undefined,
+									'num_timespans': undefined,
+									'timespan_name': undefined,
 
 									'epoch': epoch,
 									'day': timespan_day,
@@ -1507,9 +1507,9 @@ var calendar_builder = {
 
 									'timespan_index': timespan_index,
 									'timespan_number': i,
-									'timespan_count': count_timespans[timespan_index],
-									'num_timespans': num_timespans,
-									'timespan_name': current_timespan.name,
+									'timespan_count': undefined,
+									'num_timespans': undefined,
+									'timespan_name': undefined,
 
 									'epoch': epoch,
 									'day': timespan_day,
@@ -1624,9 +1624,9 @@ var calendar_builder = {
 
 									'timespan_index': timespan_index,
 									'timespan_number': i,
-									'timespan_count': count_timespans[timespan_index],
-									'num_timespans': num_timespans,
-									'timespan_name': current_timespan.name,
+									'timespan_count': undefined,
+									'num_timespans': undefined,
+									'timespan_name': undefined,
 
 									'epoch': epoch,
 									'day': timespan_day,
@@ -1800,9 +1800,9 @@ var calendar_builder = {
 
 								'timespan_index': timespan_index,
 								'timespan_number': i,
-								'timespan_count': count_timespans[timespan_index],
-								'num_timespans': num_timespans,
-								'timespan_name': current_timespan.name,
+								'timespan_count': undefined,
+								'num_timespans': undefined,
+								'timespan_name': undefined,
 
 								'epoch': epoch,
 								'day': timespan_day,
@@ -1927,9 +1927,9 @@ var calendar_builder = {
 
 								'timespan_index': timespan_index,
 								'timespan_number': i,
-								'timespan_count': count_timespans[timespan_index],
-								'num_timespans': num_timespans,
-								'timespan_name': current_timespan.name,
+								'timespan_count': undefined,
+								'num_timespans': undefined,
+								'timespan_name': undefined,
 
 								'epoch': epoch,
 								'day': timespan_day,
@@ -2090,9 +2090,9 @@ var calendar_builder = {
 
 									'timespan_index': timespan_index,
 									'timespan_number': i,
-									'timespan_count': count_timespans[timespan_index],
-									'num_timespans': num_timespans,
-									'timespan_name': current_timespan.name,
+									'timespan_count': undefined,
+									'num_timespans': undefined,
+									'timespan_name': undefined,
 
 									'epoch': epoch,
 									'day': timespan_day,
@@ -2206,9 +2206,9 @@ var calendar_builder = {
 
 									'timespan_index': timespan_index,
 									'timespan_number': i,
-									'timespan_count': count_timespans[timespan_index],
-									'num_timespans': num_timespans,
-									'timespan_name': current_timespan.name,
+									'timespan_count': undefined,
+									'num_timespans': undefined,
+									'timespan_name': undefined,
 
 									'epoch': epoch,
 									'day': timespan_day,

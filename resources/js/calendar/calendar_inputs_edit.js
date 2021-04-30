@@ -1229,10 +1229,6 @@ function set_up_edit_inputs(){
 
 	});
 
-	$(document).on('click', '.html_edit', function() {
-		let era_id = $(this).closest('.sortable-container').attr('index') | 0;
-		window.dispatchEvent(new CustomEvent('html-editor-modal-edit-html', { detail: { era_id: era_id } }));
-	});
 
 	$('.add_inputs.event_categories .add').click(function(){
 
@@ -1316,7 +1312,6 @@ function set_up_edit_inputs(){
 
 
 	$('.add_inputs.events .add').click(function(){
-
 		var name = $('#event_name_input');
 
 		var name_val = name.val();
@@ -1331,25 +1326,10 @@ function set_up_edit_inputs(){
 			}
 		}
 
-		window.dispatchEvent(new CustomEvent('event-editor-modal-new-event', { detail: { name: name_val, epoch: epoch } }));
+		edit_event_ui.create_new_event(name_val, epoch);
 
 		name.val('');
 
-	});
-
-	$(document).on('click', '.open-edit-event-ui', function() {
-		let event_id = $(this).closest('.sortable-container').attr('index') | 0;
-
-		let epoch = dynamic_data.epoch;
-		if (typeof preview_date !== "undefined" && preview_date.follow) {
-			epoch = dynamic_date_manager.epoch;
-		} else {
-			if (typeof preview_date_manager !== "undefined") {
-				epoch = preview_date_manager.epoch;
-			}
-		}
-
-		window.dispatchEvent(new CustomEvent('event-editor-modal-edit-event', { detail: { event_id: event_id, epoch: epoch } }));
 	});
 
 	$(document).on('click', '.btn_remove', function(){
@@ -2467,6 +2447,8 @@ function set_up_edit_inputs(){
 		var permissions = dropdown.val();
 
 		update_calendar_user(user_id, permissions, function(success, text){
+
+			console.log(text)
 
 			button.prop('disabled', success);
 			button.attr('permissions_val', permissions);
