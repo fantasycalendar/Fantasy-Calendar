@@ -2,12 +2,15 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 use Auth;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -50,10 +53,6 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-        if(App::environment('local')) {
-//            ddd($exception);
-        }
-
         if($this->isApiCall($request)) {
             if(property_exists($exception, 'validator')) {
                 return response()->json([
@@ -65,6 +64,10 @@ class Handler extends ExceptionHandler
             return response()->json([
                 'message' => $exception->getMessage()
             ]);
+        }
+
+        if(App::environment('local')) {
+//            ddd($exception);
         }
 
         if($exception instanceof AuthorizationException || $exception instanceof AuthenticationException) {
@@ -83,6 +86,10 @@ class Handler extends ExceptionHandler
             if($request->is('calendars/*')) {
                 return redirect(route('errors.calendar_unavailable'));
             }
+        }
+
+        if ($exception instanceof QueryException) {
+            return response()->view('errors.default');
         }
 
         if ($this->isHttpException($exception)) {
@@ -105,7 +112,14 @@ class Handler extends ExceptionHandler
                     'title' => $exception->getMessage()
                 ]);
             }
+
+            if (!view()->exists("errors.{$exception->getStatusCode()}")) {
+                return response()->view('errors.default', ['exception' => $exception], 200, $exception->getHeaders());
+            }
         }
+
+        Log::error($exception->getMessage());
+        Log::error($exception->getTraceAsString());
 
         return parent::render($request, $exception);
     }

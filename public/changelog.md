@@ -1,3 +1,14 @@
+### 2.0.16 - Stressed Efreet
+#### April 26, 2021
+* Tweaked - Greatly improved database performance when loading certain pages to try and address recent downtime issues
+* Tweaked - Intercalary leap days can now exist without changing the order of numbered days in a month, or display its own custom name above the day
+* Fixed - Enabling *Custom year header formatting* on eras causing error
+* Fixed - Weekday leap days not being ordered correcly on their months
+* Fixed - Season type selection dropdown visible with more than 4 seasons
+* Fixed - Moon names sometimes breaking on the advanced day data modal
+* Fixed - Cycle type resetting for all cycles when re-ordering or deleting cycles
+* Fixed - Calculation of leaping months with leap days on negative years
+
 ### 2.0.15 - Industrious Efreet
 #### February 25, 2021
 * Fixed - Calendar export being broken on some calendars

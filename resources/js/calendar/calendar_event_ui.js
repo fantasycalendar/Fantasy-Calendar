@@ -1149,7 +1149,6 @@ var edit_event_ui = {
 				break;
 
 			case 'every_x_monthly_weekday':
-				console.log(edit_event_ui.data.week_day_num)
 				var result = [
 					['Weekday', '0', [edit_event_ui.data.week_day_name]],
 					['&&'],
@@ -1316,14 +1315,14 @@ var edit_event_ui = {
 
 				}else if(type === "Date"){
 
-					$(this).find('.input_container').children().each(function(){
-						if($(this).val() == ""){
-							var val = 0;
-						}else{
-							var val = $(this).val();
-						}
-						values.push(val);
-					});
+					let inputs = $(this).find('.input_container').find('.date_control').children();
+					let year = inputs.eq(0).val()|0;
+					let timespan = inputs.eq(1).find('option:selected').val()|0;
+					let day = inputs.eq(2).find('option:selected').val()|0;
+
+					values.push(year);
+					values.push(timespan);
+					values.push(day);
 
 				}else{
 
@@ -1466,6 +1465,10 @@ var edit_event_ui = {
 
 					condition.find('.input_container').find(`optgroup[value=${element[2][0]}]`).find(`option[value=${element[2][1]}]`).prop('selected', true);
 
+				}else if(element[0] == "Date"){
+					condition.find('.input_container').children().first().children().each(function(i){
+						$(this).val(element[2][i]);
+					})
 				}else{
 					condition.find('.input_container').children().each(function(i){
 						$(this).val(element[2][i]);
@@ -1494,6 +1497,8 @@ var edit_event_ui = {
 		element.find('.condition_type').toggleClass('full', condition_selected[0] == "boolean").toggleClass('nomax', condition_selected[0] == "boolean");
 
 		var html = [];
+
+		let new_element = undefined;
 
 		if(type == "Month"){
 
@@ -1542,17 +1547,21 @@ var edit_event_ui = {
 				html.push(">");
 
 			}
+			
+			new_element = $(html.join(''))
 
 		}else if(type == "Date"){
 
 			var type = condition_selected[0][0];
 			var placeholder = condition_selected[0][1];
 			var alt = condition_selected[0][0];
-			var value = dynamic_data.year;
+			var value = this.data.year;
 			var min = condition_selected[0][4];
 			var max = condition_selected[0][5];
 
-			html.push(`<input type='${type}' placeholder='${placeholder}' class='form-control ${placeholder} order-1'`);
+			html.push(`<div class='date_control flex-grow-1'>`);
+
+			html.push(`<input type='${type}' placeholder='${placeholder}' class='date form-control ${placeholder} order-1 year-input'`);
 
 			if(typeof alt !== 'undefined'){
 				html.push(` alt='${alt}'`)
@@ -1572,42 +1581,16 @@ var edit_event_ui = {
 
 			html.push(">");
 
-			html.push("<select class='form-control order-2'>")
+			html.push("<select type='number' class='date form-control order-2 timespan-list'></select>")
 
-			for(var i = 0; i < static_data.year_data.timespans.length; i++){
-				html.push(`<option value='${i}' ${i == dynamic_data.timespan ? "selected" : ""}>`);
-				html.push(static_data.year_data.timespans[i].name);
-				html.push("</option>");
-			}
+			html.push(`<select type='${type}' placeholder='${placeholder}' class='date form-control ${placeholder} order-3 timespan-day-list'></select>`);
 
-			html.push("</select>")
+			html.push(`</div>`);
 
-			var type = condition_selected[2][0];
-			var placeholder = condition_selected[2][1];
-			var alt = condition_selected[2][2];
-			var value = dynamic_data.day;
-			var min = condition_selected[2][4];
-			var max = condition_selected[2][5];
+			new_element = $(html.join(''));
 
-			html.push(`<input type='${type}' placeholder='${placeholder}' class='form-control ${placeholder} order-3'`);
-
-			if(typeof alt !== 'undefined'){
-				html.push(` alt='${alt}'`)
-			}
-
-			if(typeof value !== 'undefined'){
-				html.push(` value='${value}'`);
-			}
-
-			if(typeof min !== 'undefined'){
-				html.push(` min='${min}'`);
-			}
-
-			if(typeof max !== 'undefined'){
-				html.push(` max='${max}'`);
-			}
-
-			html.push(">");
+			repopulate_timespan_select(new_element.find('.timespan-list'), this.data.timespan_index);
+			repopulate_day_select(new_element.find('.timespan-day-list'), this.data.day);
 
 		}else if(type == "Moons"){
 
@@ -1666,6 +1649,8 @@ var edit_event_ui = {
 
 			}
 
+			new_element = $(html.join(''))
+
 		}else if(type == "Cycle"){
 
 			html.push("<select class='form-control order-1'>")
@@ -1682,6 +1667,8 @@ var edit_event_ui = {
 
 			html.push("</select>")
 
+			new_element = $(html.join(''))
+
 		}else if(type == "Era"){
 
 			html.push("<select class='form-control order-1'>");
@@ -1693,6 +1680,8 @@ var edit_event_ui = {
 			}
 
 			html.push("</select>");
+
+			new_element = $(html.join(''))
 
 		}else if(type == "Season"){
 
@@ -1742,6 +1731,8 @@ var edit_event_ui = {
 					html.push(">");
 
 				}
+
+				new_element = $(html.join(''))
 
 			}
 
@@ -1815,6 +1806,8 @@ var edit_event_ui = {
 
 			}
 
+			new_element = $(html.join(''))
+
 		}else if(type == "Location"){
 
 			html.push("<select class='form-control'>")
@@ -1828,6 +1821,8 @@ var edit_event_ui = {
 				html.push("</option>");
 
 			}
+
+			new_element = $(html.join(''))
 
 		}else if(type == "Events"){
 
@@ -1888,6 +1883,8 @@ var edit_event_ui = {
 
 			}
 
+			new_element = $(html.join(''))
+
 		}else if(type === "Random"){
 
 			for(var i = 0; i < condition_selected.length; i++){
@@ -1920,6 +1917,8 @@ var edit_event_ui = {
 				html.push(">");
 
 			}
+
+			new_element = $(html.join(''))
 
 		}else{
 
@@ -1962,9 +1961,11 @@ var edit_event_ui = {
 
 			}
 
+			new_element = $(html.join(''))
+
 		}
 
-		element.find('.input_container').empty().append(html.join(''));
+		element.find('.input_container').empty().append(new_element);
 
 	},
 
