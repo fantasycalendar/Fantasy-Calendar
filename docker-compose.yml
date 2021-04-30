@@ -46,7 +46,7 @@ services:
       dockerfile: setup/php/php.Dockerfile
     volumes:
       - ./:/var/task:ro
-      - /tmp/cache:/var/task/cache
+      - ./cache:/var/task/cache
     user: "1000:1000"
     environment:
       - "APP_ENV=local"
