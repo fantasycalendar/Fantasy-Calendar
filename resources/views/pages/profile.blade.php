@@ -42,22 +42,24 @@
         }
 
     </script>
-    <script>
-        function confirmDisconnect() {
-            swal.fire({
-                title: "Are you sure?",
-                text: "Your Discord account will be disconnected from Fantasy Calendar. Commands will no longer work for you, but you will still need to remove the app from any servers you don't want it in in order to remove it completely.",
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                icon: "warning",
-            }).then((result) => {
-                if(!result.dismiss) {
-                    self.location = '{{ route('discord.auth.remove') }}';
-                }
-            });
-        }
-    </script>
+    @if(!empty(env('DISCORD_CLIENT_ID')))
+        <script>
+            function confirmDisconnect() {
+                swal.fire({
+                    title: "Are you sure?",
+                    text: "Your Discord account will be disconnected from Fantasy Calendar. Commands will no longer work for you, but you will still need to remove the app from any servers you don't want it in in order to remove it completely.",
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    icon: "warning",
+                }).then((result) => {
+                    if(!result.dismiss) {
+                        self.location = '{{ route('discord.auth.remove') }}';
+                    }
+                });
+            }
+        </script>
+    @endif
 @endpush
 
 
@@ -96,11 +98,10 @@
     @if(!empty(env('DISCORD_CLIENT_ID')))
         <hr>
         <div class="row">
-            <div class="col-12 d-flex flex-column flex-md-row align-items-md-center justify-content-between">
+            <div class="col-12 d-flex flex-column flex-md-row align-items-md-center justify-content-between pt-3">
                 @if(Auth::user()->discord_auth()->exists())
-                    <div class="inner h-100 alert alert-success bg-accent p-3 d-flex flex-column flex-md-row align-items-md-center justify-content-between">
+                    <div class="inner h-100 w-100 alert alert-success bg-accent p-3 d-flex flex-column flex-md-row align-items-md-center justify-content-between">
                         <div class="d-flex justify-content-start align-items-center">
-                            <img class="mr-2 rounded-circle" style="max-height: 5rem;" src="{{ Auth::user()->discord_auth->avatar }}" alt="{{ Auth::user()->discord_auth->discord_username }}'s Discord avatar">
                             <h4 class="mb-0">
                                 {{ Auth::user()->discord_auth->discord_username }}
                             </h4>
