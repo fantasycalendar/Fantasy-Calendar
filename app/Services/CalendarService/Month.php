@@ -100,6 +100,11 @@ class Month
     private function insertLeapdaysIntoWeek($weekdays, $leapDays)
 	{
 		$leapdaysCount = $leapDays->count();
+
+		if($leapdaysCount == 0){
+		    return $weekdays;
+        }
+
 		$leapDays = $leapDays->mapWithKeys(function($leapDay, $leapdayIndex) use ($leapdaysCount){
 			return [($leapDay['day'] * ($leapdaysCount+1)) + $leapdayIndex => $leapDay['week_day']];
 		});

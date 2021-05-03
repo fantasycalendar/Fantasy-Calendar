@@ -242,7 +242,7 @@ class Calendar extends Model
 
     public function getOverflowsWeekAttribute()
     {
-        return Arr::get($this->year_data, 'overflows');
+        return Arr::get($this->year_data, 'overflow');
     }
 
     public function getMonthNameAttribute()

@@ -32,9 +32,9 @@ class MonthRenderer
     {
         $this->calendar = $calendar;
 
-        if($this->calendar->overflows_week) {
+        /*if($this->calendar->overflows_week) {
             throw new \Exception('API rendering does not currently support overflowed weekdays.');
-        }
+        }*/
     }
 
     /**
@@ -81,13 +81,7 @@ class MonthRenderer
      */
     private function buildMonth()
     {
-        return [
-            'year' => $this->calendar->year,
-            'name' => $this->calendar->month_name,
-            'length' => $this->calendar->month_true_length,
-            'weekdays' => $this->calendar->month_week,
-            'weeks' => $this->calendar->month->getStructure()
-        ];
+        return $this->calendar->month->getStructure();
     }
 
     /**
