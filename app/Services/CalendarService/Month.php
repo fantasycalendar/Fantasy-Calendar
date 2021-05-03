@@ -70,7 +70,7 @@ class Month
 
     private function buildWeekList()
     {
-        dump($this->calendar->month_week);
+
         $weeks_in_month = ceil($this->month_length / count($this->calendar->month_week));
 
         return collect(
@@ -81,7 +81,7 @@ class Month
     {
         $this->weekdays = $this->buildWeekdays();
 
-         return $this;
+        return $this;
     }
 
     private function buildWeekdays()

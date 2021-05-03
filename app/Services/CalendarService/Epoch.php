@@ -70,6 +70,8 @@ class Epoch
 
 		$this->currentEra = $this->calculateCurrentEra();
 
+		$this->weekday = $this->calculateOverflowedWeekday();
+
 	}
 
 	private function initializeAttributes()
@@ -315,13 +317,6 @@ class Epoch
 	  * If the calendar has overflowing weeks, this calculates the current weekday based on the epoch, number of intercalary days,
 	  * and the first weekday of the first year. If it doesn't have overflowing weeks, it is the first day of the week.
       */
-	private function getWeekdayAttribute(): int
-	{
-        return ($this->calendar->overflows_week)
-            ? $this->calculateOverflowedWeekday()
-            : 0;
-	}
-
 	private function calculateOverflowedWeekday(): int
 	{
         $weekdaysCount = count($this->calendar->global_week);
