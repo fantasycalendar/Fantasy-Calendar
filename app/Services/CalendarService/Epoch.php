@@ -38,6 +38,7 @@ class Epoch
 	public array $details;
     public int $month_id;
     public int $eraYear;
+    public bool $year_zero_exists;
 
     /**
      * @param $calendar
@@ -77,6 +78,7 @@ class Epoch
         foreach($initialDetails as $key => $value) {
             $this->$key = $value;
         }
+        $this->year_zero_exists = $this->calendar->setting('year_zero_exists');
 	}
 
 	private function getMonthIdAttribute()
@@ -125,8 +127,8 @@ class Epoch
 			$timespanOccurrences = $timespan->occurrences($year);
 
 			// Get the number of weeks for that month, based on its occurrences
-			if($this->calendar->overflows_week){
-				$totalWeekNum += abs(floor(($timespan->length * $timespanOccurrences)/count($timespan->weekdays)));
+			if(!$this->calendar->overflows_week){
+				$totalWeekNum += abs(floor(($timespan->length * $timespanOccurrences)/count($timespan->week)));
 			}
 
 			// Count the number of times each month has appeared up to the given year
@@ -150,7 +152,7 @@ class Epoch
 
 				// If we have leap days days that are intercalary, add them to the overall epoch
 				// but also count them separately to remove them from the current week day calculation
-				if($leap_day->is_intercalary || $timespan->is_intercalary){
+				if($leap_day->intercalary || $timespan->intercalary){
 					$historicalIntercalaryCount += $leapDayOccurrences;
 				}
 
@@ -163,7 +165,7 @@ class Epoch
 		$epoch += $day;
 
 		if($this->calendar->overflows_week){
-			$totalWeekNum += floor(($epoch-$historicalIntercalaryCount) / count($this->calendar->weekdays));
+			$totalWeekNum += floor(($epoch-$historicalIntercalaryCount) / count($this->calendar->global_week));
 		}
 
 		return [
@@ -178,6 +180,21 @@ class Epoch
 		];
 	}
 
+    /**
+	  * Converts a year into a zero-indexed year for use in epoch calculation, specifically with year zero existing taken into account
+	  *
+      * @param  int              a non-zero indexed year
+      * @return int              a zero-indexed year
+      */
+	private function convert_year(int $year){
+
+	    if($this->year_zero_exists){
+	        return $year;
+        }else{
+	        return $year > 0 ? $year-1 : $year;
+        }
+
+    }
 
     /**
 	  * Subtracts data from the epoch details due to year ending eras
@@ -189,12 +206,13 @@ class Epoch
     {
 		foreach($this->calendar->eras as $era){
 
-			if($era['settings']['starting_era']) continue;
+			if($era['settings']['starting_era'] ?? false) continue;
 
-			if($era['settings']['ends_year'] && $this->year > $era['date']['year']){
+			if($era['settings']['ends_year'] && $this->year > $this->convert_year($era['date']['year'])){
 
-				$era_exact_data = $this->calculateEpoch($era['date']['year'], $era['date']['timespan'], $era['date']['day']);
-				$era_normal_data = $this->calculateEpoch($era['date']['year']+1);
+				$era_exact_data = $this->calculateEpoch($this->convert_year($era['date']['year']), $era['date']['timespan'], $era['date']['day']-1);
+
+				$era_normal_data = $this->calculateEpoch($this->convert_year($era['date']['year'])+1);
 
 				$this->epoch -= ($era_normal_data['epoch'] - $era_exact_data['epoch']);
 
@@ -226,24 +244,26 @@ class Epoch
 
 		foreach($this->calendar->eras as $era_index => $era){
 
-			$eraYears[$era_index] = $era['date']['year'];
+			$eraYears[$era_index] = $this->convert_year($era['date']['year']);
 
-			if(!$era['settings']['starting_era'] && $era['settings']['restart']
+            $eraEpoch = $this->calculateEpoch($this->convert_year($era['date']['year']), $era['date']['timespan'], $era['date']['day']-1)['epoch'];
+
+			if(!($era['settings']['starting_era'] ?? false) && $era['settings']['restart']
 				&&
 				(
-					$this->year > $era['date']['year']
+					$this->year > $this->convert_year($era['date']['year'])
 					||
-					($this->year == $era['date']['year'] && $this->month > $era['date']['timespan'])
+					($this->year == $this->convert_year($era['date']['year']) && $this->month > $era['date']['timespan'])
 					||
-					($this->year == $era['date']['year'] && $this->month == $era['date']['timespan'] && $this->day == $era['date']['day'])
+					($this->year == $this->convert_year($era['date']['year']) && $this->month == $era['date']['timespan'] && $this->day == $era['date']['day']-1)
 					||
-					($this->epoch == $era['date']['epoch'])
+					($this->epoch == $eraEpoch)
 				)
 			){
 
 				for($i = 0; $i < $era_index; $i++){
 
-					if($era['settings']['starting_era']) continue;
+					if($era['settings']['starting_era'] ?? false) continue;
 
 					$prev_era = $this->calendar->eras[$i];
 
@@ -275,13 +295,15 @@ class Epoch
 
 		foreach($this->calendar->eras as $era_index => $era){
 
-			if(!$era['settings']['starting_era'] && $this->epoch >= $era->epoch && $currentEra == -1){
+            $eraEpoch = $this->calculateEpoch($this->convert_year($era['date']['year']), $era['date']['timespan'], $era['date']['day']-1)['epoch'];
+
+			if(!($era['settings']['starting_era'] ?? false) && $this->epoch >= $eraEpoch && $currentEra == -1){
 				$currentEra = $era_index;
 			}
 
 		}
 
-		if($currentEra != -1 && $this->calendar->eras[$currentEra]['settings']['starting_era']){
+		if($currentEra != -1 && ($this->calendar->eras[$currentEra]['settings']['starting_era'] ?? false)){
 			$currentEra = 0;
 		}
 
