@@ -77,7 +77,6 @@ abstract class Command
             $this->discord_auth = DiscordAuthToken::discordUserId($commandUserId)->firstOrFail();
             $this->user = $this->discord_auth->user;
         } catch (\Throwable $e) {
-            dd($e);
             throw new DiscordUserInvalidException("Sorry " . $this->discord_nickname . ", but you'll need to connect your Fantasy Calendar and Discord accounts to run commands.\n\nYou can do that here: " . route('discord.index'));
         }
     }
