@@ -11,7 +11,6 @@ class Month
     use HasAttributes;
 
     private $calendar;
-    private $length = 0;
     private $weeks;
     private $firstWeekday;
 
@@ -25,6 +24,14 @@ class Month
      * @var mixed
      */
     private $baseLength;
+    /**
+     * @var array|\ArrayAccess|mixed
+     */
+    public $leapdays;
+    /**
+     * @var array|\ArrayAccess|mixed
+     */
+    public $length;
 
     public function __construct(Calendar $calendar)
     {
@@ -46,7 +53,10 @@ class Month
      */
     public function getStructure()
     {
+        dd($this->firstWeekday, $this->length);
 
+        $totalDaysToRender = range(0, ($this->firstWeekday + $this->length));
+        dd($totalDaysToRender);
         // Get month sections
         // Loop through all sections
             // headerRow = ['Monday', 'Tuesday', 'etc',]
@@ -109,7 +119,13 @@ class Month
 
     private function initialize()
     {
+        $this->leapdays = $this->calendar->leap_days
+            ->filter->timespanIs($this->id)
+            ->filter->intersectsYear($this->calendar->year);
+
         $this->weekdays = $this->buildWeekdays();
+
+        $this->length = $this->baseLength + $this->leapdays->count();
 
         $this->firstWeekday = $this->firstEpoch->weekday;
 
@@ -119,30 +135,26 @@ class Month
     private function buildWeekdays()
     {
         $weekdays = collect(Arr::get($this->attributes, 'week', $this->calendar->global_week));
-        $leapDays = $this->calendar->leap_days
-				 ->where('timespan', '=', $this->id)
-				 ->filter->intersectsYear($this->calendar->year)
-                 ->where('adds_week_day', '=', true)
-                 ->sortBy('day')
-                 ->values();
 
-        return $this->insertLeapdaysIntoWeek($weekdays, $leapDays);
+        return $this->insertLeapdaysIntoWeek($weekdays);
     }
 
-    private function insertLeapdaysIntoWeek($weekdays, $leapDays)
+    private function insertLeapdaysIntoWeek($weekdays)
 	{
-		$leapdaysCount = $leapDays->count();
+        $additiveLeapdays = $this->leapdays
+            ->filter->adds_week_day
+            ->sortBy('day');
 
-		if($leapdaysCount == 0){
+        if(empty($additiveLeapdays)){
 		    return $weekdays;
         }
 
-		$leapDays = $leapDays->mapWithKeys(function($leapDay, $leapdayIndex) use ($leapdaysCount){
-			return [($leapDay['day'] * ($leapdaysCount+1)) + $leapdayIndex => $leapDay['week_day']];
+        $leapDays = $this->leapdays->mapWithKeys(function($leapDay, $leapdayIndex) {
+			return [($leapDay->day * ($this->leapdays->count()+1)) + $leapdayIndex => $leapDay->week_day];
 		});
 
-		$weekdays = $weekdays->mapWithKeys(function($weekday, $weekdayIndex) use ($leapdaysCount) {
-			return [(($weekdayIndex + 1) * $leapdaysCount) => $weekday];
+		$weekdays = $weekdays->mapWithKeys(function($weekday, $weekdayIndex) {
+			return [(($weekdayIndex + 1) * $this->leapdays->count()) => $weekday];
 		});
 
 		return $weekdays->union($leapDays)->sortKeys()->values();

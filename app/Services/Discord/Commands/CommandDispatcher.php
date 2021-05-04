@@ -6,6 +6,7 @@ namespace App\Services\Discord\Commands;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class CommandDispatcher
 {
@@ -19,7 +20,8 @@ class CommandDispatcher
             $response = (new $handlerClass($commandData))->handle();
         } catch (\Throwable $e) {
             Log::error($e->getTraceAsString());
-            dump($e);
+            Storage::disk('base')->put('cache/test.txt', $e->getTraceAsString());
+            dd($e->getMessage(), $e->getTraceAsString());
             return $e->getMessage();
         }
 

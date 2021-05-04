@@ -129,8 +129,8 @@ class Epoch
 			$timespanOccurrences = $timespan->occurrences($year);
 
 			// Get the number of weeks for that month, based on its occurrences
-			if(!$this->calendar->overflows_week){
-				$totalWeekNum += abs(floor(($timespan->length * $timespanOccurrences)/count($timespan->week)));
+			if(!$this->calendar->overflows_week && !$timespan->is_intercalary){
+				$totalWeekNum += abs(floor(($timespan->length * $timespanOccurrences)/count($timespan->week ?? $this->calendar->global_week)));
 			}
 
 			// Count the number of times each month has appeared up to the given year
