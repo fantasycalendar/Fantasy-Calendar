@@ -13,6 +13,7 @@ class Month
     private $calendar;
     private $length = 0;
     private $weeks;
+    private $firstWeekday;
 
     public $weekdays;
     /**
@@ -45,19 +46,57 @@ class Month
      */
     public function getStructure()
     {
-        $this->initialize();
-        $weeksInMonth = $this->buildWeekList();
 
-        $monthDay = 0;
-        $structure = $weeksInMonth->mapWithKeys(function($weekNumber) use (&$monthDay){
-            return [
-                $weekNumber => collect($this->calendar->month_week)->map(function($day) use (&$monthDay){
-                    $monthDay++;
+        // Get month sections
+        // Loop through all sections
+            // headerRow = ['Monday', 'Tuesday', 'etc',]
+            // showHeaderRow?
+            // numberOfDays
+            // startAt = 2  ----- Which means (if($sectionDay < $startAt) { 'x' })
+            //
+            // 1. Determine number of rows in section
 
-                    return ['month_day' => ($monthDay > $this->calendar->month_true_length) ? null : $monthDay];
-                })
-            ];
-        });
+        /*
+         *
+         *  "sections": {
+         *      "1": {
+         *          header_row: ['Monday', 'Tuesday', 'etc',],
+         *          header_row_visible: true,
+         *          number_of_days: 2,
+         *          starting_weekday: 2,
+         *          rows: [
+         *              "1": [
+         *                  {
+         *                      month_day: 1,
+         *                      year: 128
+         *                      month: 0
+         *                      day: 0
+         *                      epoch: 47104
+         *                      era_year: 0
+         *                      historicalIntercalaryCount: 0
+         *                      numTimespans: 1536
+         *                      totalWeekNum: 6711
+         *                      week_day:  7
+         *                  },
+         *              ]
+         *          ]
+         *      },
+         *      "2": {
+         *
+         *      }
+         *  }
+         */
+
+//        $monthDay = 0;
+//        $structure = $weeksInMonth->mapWithKeys(function($weekNumber) use (&$monthDay){
+//            return [
+//                $weekNumber => collect($this->calendar->month_week)->map(function($day) use (&$monthDay){
+//                    $monthDay++;
+//
+//                    return ['month_day' => ($monthDay > $this->calendar->month_true_length) ? null : $monthDay];
+//                })
+//            ];
+//        });
 
         return [
             'year' => $this->calendar->year,
@@ -68,18 +107,11 @@ class Month
         ];
     }
 
-    private function buildWeekList()
-    {
-
-        $weeks_in_month = ceil($this->month_length / count($this->calendar->month_week));
-
-        return collect(
-            range(1, $weeks_in_month)
-        );
-    }
     private function initialize()
     {
         $this->weekdays = $this->buildWeekdays();
+
+        $this->firstWeekday = $this->firstEpoch->weekday;
 
         return $this;
     }
