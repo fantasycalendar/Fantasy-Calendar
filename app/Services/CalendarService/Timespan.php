@@ -34,7 +34,10 @@ class Timespan implements Arrayable
             return $year;
         }
 
-        return (int) ceil((12 - $this->offset) / $this->interval);
+        # We do this so we keep offset bound within the interval (ie, if offset > interval, year is not subtracted too much)
+        $offset = $this->offset % $this->interval;
+
+        return (int) floor(($year - $offset) / $this->interval);
     }
 
     public function getLeapDaysAttribute()
