@@ -60,8 +60,12 @@ class Month
 
         $nonIntercalaryLength = $this->baseLength + $this->leapdays->reject->intercalary->count();
 
-        foreach(range(0, $nonIntercalaryLength) as $day) {
-            $offset = $this->leapdays->filter->intercalary->reject->not_numbered->where('day', '<', $day)->count();
+        foreach(range(1, $nonIntercalaryLength) as $day) {
+            $offset = $this->leapdays
+                ->filter->intercalary
+                ->reject->not_numbered
+                ->where('day', '<', $day)
+                ->count();
 
             $sections->push($day + $offset);
 
