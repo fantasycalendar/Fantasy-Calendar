@@ -22,10 +22,22 @@ use Illuminate\Support\Arr;
  * @property $interval
  * @property $intervals
  * @property $offset
+ * @property mixed not_numbered
+ * @property mixed show_text
  */
 class LeapDay
 {
-    private array $attributes;
+    private array $originalAttributes;
+    public string $name;
+    public bool $intercalary;
+    public int $timespan;
+    public bool $adds_week_day;
+    public int $day;
+    public $week_day;
+    public string $interval;
+    public int $offset;
+    public bool $not_numbered;
+    public bool $show_text;
 
     /**
      * Interval constructor.
@@ -33,8 +45,11 @@ class LeapDay
      */
     public function __construct(array $attributes)
     {
-        $this->attributes = $attributes;
+        foreach($attributes as $key => $value) {
+            $this->{$key} = $value;
+        }
 
+        $this->originalAttributes = $attributes;
         $this->collectIntervals();
     }
 
@@ -84,6 +99,6 @@ class LeapDay
 
     public function __get($name)
     {
-        return Arr::get($this->attributes, $name);
+        return Arr::get($this->originalAttributes, $name);
     }
 }
