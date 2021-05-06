@@ -28,16 +28,16 @@ use Illuminate\Support\Arr;
 class LeapDay
 {
     private array $originalAttributes;
-    public string $name;
-    public bool $intercalary;
-    public int $timespan;
-    public bool $adds_week_day;
-    public int $day;
+    public $name;
+    public $intercalary;
+    public $timespan;
+    public $adds_week_day;
+    public $day;
     public $week_day;
-    public string $interval;
-    public int $offset;
-    public bool $not_numbered;
-    public bool $show_text;
+    public $interval;
+    public $offset;
+    public $not_numbered;
+    public $show_text;
 
     /**
      * Interval constructor.
@@ -45,11 +45,18 @@ class LeapDay
      */
     public function __construct(array $attributes)
     {
-        foreach($attributes as $key => $value) {
-            $this->{$key} = $value;
-        }
-
         $this->originalAttributes = $attributes;
+        $this->name = Arr::get($attributes, "name");
+        $this->intercalary = Arr::get($attributes, "intercalary");
+        $this->timespan = Arr::get($attributes, "timespan");
+        $this->adds_week_day = Arr::get($attributes, "adds_week_day", false);
+        $this->day = Arr::get($attributes, "day", 0);
+        $this->week_day = Arr::get($attributes, "week_day", false);
+        $this->interval = Arr::get($attributes, "interval", "1");
+        $this->offset = Arr::get($attributes, "offset", "0");
+        $this->not_numbered = Arr::get($attributes, "not_numbered", false);
+        $this->show_text = Arr::get($attributes, "show_text", false);
+
         $this->collectIntervals();
     }
 
@@ -95,6 +102,13 @@ class LeapDay
     public function timespanIs($timespan_id)
     {
         return $this->timespan === $timespan_id;
+    }
+
+    public function toArray()
+    {
+        return collect(array_keys($this->originalAttributes))
+            ->mapWithKeys(function($name){ return [ $name => $this->{$name}]; })
+            ->toArray();
     }
 
     public function __get($name)

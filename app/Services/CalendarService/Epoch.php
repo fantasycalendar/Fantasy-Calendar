@@ -86,11 +86,6 @@ class Epoch
 	private function getMonthIdAttribute()
 	{
 	    return $this->month;
-        return $this->calendar->timespans->reject(function($timespan){
-			return (($this->year + $timespan->offset) % $timespan->interval) != 0;
-        })
-        ->values()
-        ->pull($this->month);
 	}
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Services\CalendarService;
 
 use App\Calendar;
+use App\Services\CalendarService\Month\SectionsCollection;
 use Illuminate\Database\Eloquent\Concerns\HasAttributes;
 use Illuminate\Support\Arr;
 
@@ -53,13 +54,29 @@ class Month
      */
     public function getStructure()
     {
-        $sectionBreaks = $this->leapdays->filter->intercalary->groupBy('day')->keys();
 
-        $totalDaysToRender = $this->firstWeekday + $this->length;
+        $sectionBreaks = $this->getSectionBreaks();
+        $sections = new SectionsCollection();
+
+        $nonIntercalaryLength = $this->baseLength + $this->leapdays->reject->intercalary->count();
+
+        foreach(range(0, $nonIntercalaryLength) as $day) {
+            $offset = $this->leapdays->filter->intercalary->reject->not_numbered->where('day', '<', $day)->count();
+
+            $sections->push($day + $offset);
+
+            if($sectionBreaks->has($day)) {
+                $sections->insertLeaps($sectionBreaks->get($day));
+            }
+        }
+
+        $sections->fresh();
+
+        dd($sections);
 
         $weeksToRender = intval(ceil($totalDaysToRender / $this->weekdays->count()));
 
-        dd($totalDaysToRender, $this->weekdays, $weeksToRender);
+        dd($sections, $totalDaysToRender, $this->weekdays, $weeksToRender);
         // Get month sections
         // Loop through all sections
             // headerRow = ['Monday', 'Tuesday', 'etc',]
@@ -118,6 +135,11 @@ class Month
             'weekdays' => $this->weekdays,
             'weeks' => $structure
         ];
+    }
+
+    private function getSectionBreaks()
+    {
+        return $this->leapdays->filter->intercalary->groupBy('day');
     }
 
     private function initialize()
