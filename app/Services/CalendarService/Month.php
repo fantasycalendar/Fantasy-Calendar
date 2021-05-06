@@ -24,7 +24,7 @@ class Month
     /**
      * @var mixed
      */
-    private $baseLength;
+    public $baseLength;
     /**
      * @var array|\ArrayAccess|mixed
      */
@@ -55,26 +55,7 @@ class Month
     public function getStructure()
     {
 
-        $sectionBreaks = $this->getSectionBreaks();
-        $sections = new SectionsCollection();
-
-        $nonIntercalaryLength = $this->baseLength + $this->leapdays->reject->intercalary->count();
-
-        foreach(range(1, $nonIntercalaryLength) as $day) {
-            $offset = $this->leapdays
-                ->filter->intercalary
-                ->reject->not_numbered
-                ->where('day', '<', $day)
-                ->count();
-
-            $sections->push($day + $offset);
-
-            if($sectionBreaks->has($day)) {
-                $sections->insertLeaps($sectionBreaks->get($day));
-            }
-        }
-
-        $sections->fresh();
+        $sections = (new SectionsCollection())->build($this);
 
         dd($sections);
 
@@ -141,7 +122,7 @@ class Month
         ];
     }
 
-    private function getSectionBreaks()
+    public function getSectionBreaks()
     {
         return $this->leapdays->filter->intercalary->groupBy('day');
     }
