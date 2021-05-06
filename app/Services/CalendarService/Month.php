@@ -53,10 +53,13 @@ class Month
      */
     public function getStructure()
     {
-        dd($this->firstWeekday, $this->length);
+        $sectionBreaks = $this->leapdays->filter->intercalary->groupBy('day')->keys();
 
-        $totalDaysToRender = range(0, ($this->firstWeekday + $this->length));
-        dd($totalDaysToRender);
+        $totalDaysToRender = $this->firstWeekday + $this->length;
+
+        $weeksToRender = intval(ceil($totalDaysToRender / $this->weekdays->count()));
+
+        dd($totalDaysToRender, $this->weekdays, $weeksToRender);
         // Get month sections
         // Loop through all sections
             // headerRow = ['Monday', 'Tuesday', 'etc',]
@@ -143,18 +146,19 @@ class Month
 	{
         $additiveLeapdays = $this->leapdays
             ->filter->adds_week_day
-            ->sortBy('day');
+            ->sortBy('day')
+            ->values();
 
-        if(empty($additiveLeapdays)){
+        if(!$additiveLeapdays->count()){
 		    return $weekdays;
         }
 
-        $leapDays = $this->leapdays->mapWithKeys(function($leapDay, $leapdayIndex) {
-			return [($leapDay->day * ($this->leapdays->count()+1)) + $leapdayIndex => $leapDay->week_day];
+        $leapDays = $additiveLeapdays->mapWithKeys(function($leapDay, $leapdayIndex) use($additiveLeapdays) {
+			return [($leapDay->day * ($additiveLeapdays->count()+1)) + ($leapdayIndex + 1) => $leapDay->week_day];
 		});
 
-		$weekdays = $weekdays->mapWithKeys(function($weekday, $weekdayIndex) {
-			return [(($weekdayIndex + 1) * $this->leapdays->count()) => $weekday];
+        $weekdays = $weekdays->mapWithKeys(function($weekday, $weekdayIndex) use ($additiveLeapdays) {
+			return [(($weekdayIndex + 1) * ($additiveLeapdays->count()+1)) => $weekday];
 		});
 
 		return $weekdays->union($leapDays)->sortKeys()->values();
