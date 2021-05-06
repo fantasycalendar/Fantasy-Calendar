@@ -4,6 +4,7 @@
 namespace App\Services\CalendarService\Month;
 
 
+use App\Services\CalendarService\Epoch;
 use App\Services\CalendarService\Month;
 use Illuminate\Support\Collection;
 
@@ -45,7 +46,9 @@ class SectionsCollection extends \Illuminate\Support\Collection
                 ->where('day', '<', $day)
                 ->count();
 
-            $this->push($day + $offset);
+            $trueDay = $day + $offset;
+
+            $this->push(Epoch::forMonth($month, null, $trueDay)->toArray());
 
             if($sectionBreaks->has($day)) {
                 $this->insertLeaps($sectionBreaks->get($day));

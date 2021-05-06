@@ -11,16 +11,12 @@ class Month
 {
     use HasAttributes;
 
-    private $calendar;
-    private $weeks;
-    private $firstWeekday;
+    public $calendar;
+    public $weeks;
+    public $firstWeekday;
 
     public $weekdays;
-    /**
-     * @var Epoch
-     */
-    private Epoch $firstEpoch;
-    private $id;
+    public $id;
     /**
      * @var mixed
      */
@@ -33,6 +29,10 @@ class Month
      * @var array|\ArrayAccess|mixed
      */
     public $length;
+    /**
+     * @var Epoch
+     */
+    private Epoch $firstEpoch;
 
     public function __construct(Calendar $calendar)
     {
@@ -59,10 +59,6 @@ class Month
 
         dd($sections);
 
-        $weeksToRender = intval(ceil($totalDaysToRender / $this->weekdays->count()));
-
-        dd($sections, $totalDaysToRender, $this->weekdays, $weeksToRender);
-        // Get month sections
         // Loop through all sections
             // headerRow = ['Monday', 'Tuesday', 'etc',]
             // showHeaderRow?

@@ -325,4 +325,29 @@ class Epoch
 	        ? $weekday + $weekdaysCount
 	        : $weekday;
 	}
+
+	public static function forMonth(Month $month, $year = null, $day = null)
+    {
+        return new self(
+            $month->calendar,
+            $year ?? $month->calendar->year,
+            $month->id,
+            $day
+        );
+    }
+
+    public function toArray()
+    {
+        return [
+            "year" => $this->year,
+            "month" => $this->month,
+            "day" => $this->day,
+            "epoch" => $this->epoch,
+            "era_year" => $this->getEraYearAttribute(),
+            "historicalIntercalaryCount" => $this->historicalIntercalaryCount,
+            "numTimespans" => $this->numTimespans,
+            "totalWeekNum" => $this->totalWeekNum,
+            "weekday" => $this->weekday,
+        ];
+    }
 }
