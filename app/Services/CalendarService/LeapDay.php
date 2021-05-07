@@ -94,9 +94,13 @@ class LeapDay
         });
     }
 
-    public function occurrences($timespan_occurrences)
+    public function occurrences($untilYear)
     {
-        return $timespan_occurrences;
+        return collect(range(0, $untilYear))
+            ->filter(function($year){
+                return $this->intersectsYear($year);
+            })
+            ->count();
     }
 
     public function timespanIs($timespan_id)
