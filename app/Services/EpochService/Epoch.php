@@ -26,9 +26,7 @@ class Epoch
     {
         $processor = new Processor($this->calendar);
 
-        dump($start = microtime(true));
         $this->epochs = $processor->processUntil(1492);
-        dump(microtime(true) - $start);
 
         return $this->epochs;
     }

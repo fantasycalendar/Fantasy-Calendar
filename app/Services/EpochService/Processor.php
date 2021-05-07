@@ -13,6 +13,10 @@ class Processor
      * @var EpochsCollection
      */
     private EpochsCollection $epochs;
+    /**
+     * @var State
+     */
+    public State $state;
 
     public function __construct($calendar)
     {
