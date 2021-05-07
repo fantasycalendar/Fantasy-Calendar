@@ -3,6 +3,7 @@
 namespace App\Services\CalendarService;
 
 use App\Calendar;
+use App\Facades\Epoch as EpochService;
 use App\Services\CalendarService\Month\SectionsCollection;
 use Illuminate\Database\Eloquent\Concerns\HasAttributes;
 use Illuminate\Support\Arr;
@@ -54,8 +55,11 @@ class Month
      */
     public function getStructure()
     {
+        $epoch = EpochService::forCalendar($this->calendar);
 
-        $sections = (new SectionsCollection())->build($this);
+        dd($epoch);
+
+//        $sections = (new SectionsCollection())->build($this);
 
         dd($sections);
 
