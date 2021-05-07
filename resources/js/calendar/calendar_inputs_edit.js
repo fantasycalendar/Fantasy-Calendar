@@ -4911,6 +4911,7 @@ function populate_preset_season_list(){
 	}else{
 
 		$('.preset-season-list').empty();
+		$('.preset-season-list-container').toggleClass('hidden', true).prop('disabled', true);
 
 	}
 
