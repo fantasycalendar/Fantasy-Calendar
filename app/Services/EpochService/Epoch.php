@@ -14,15 +14,6 @@ class Epoch
      * @var Calendar
      */
     private Calendar $calendar;
-    /**
-     * @var EpochsCollection
-     */
-    private EpochsCollection $epochs;
-
-    public function __construct()
-    {
-        $this->epochs = new EpochsCollection();
-    }
 
     public function forCalendar(Calendar $calendar)
     {
@@ -31,8 +22,14 @@ class Epoch
         return $this;
     }
 
-    public function forDateRange(Date $startDate, Date $endDate)
+    public function process()
     {
-        $this->
+        $processor = new Processor($this->calendar);
+
+        dump($start = microtime(true));
+        $this->epochs = $processor->processUntil(1492);
+        dump(microtime(true) - $start);
+
+        return $this->epochs;
     }
 }
