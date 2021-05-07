@@ -26,10 +26,18 @@ class SectionsCollection extends \Illuminate\Support\Collection
         return $this;
     }
 
-    public function insertLeaps($leapdays): SectionsCollection
+    public function insertLeaps($leapdays, $month, $day): SectionsCollection
     {
         $this->fresh();
-        $this->sections->push($leapdays->map->toArray()->toArray());
+
+        $leapdaysWithEpochs = $leapdays->map(function($leapDay, $index) use ($month, $day){
+            $epoch = Epoch::forMonth($month, null, $day + $index + 1)->toArray();
+            $epoch['leap_day'] = $leapDay->toArray();
+
+            return $epoch;
+        });
+
+        $this->sections->push($leapdaysWithEpochs);
 
         return $this;
     }
@@ -37,9 +45,8 @@ class SectionsCollection extends \Illuminate\Support\Collection
     public function build(Month $month)
     {
         $sectionBreaks = $month->getSectionBreaks();
-        $nonIntercalaryLength = $month->baseLength + $month->leapdays->reject->intercalary->count();
 
-        foreach(range(1, $nonIntercalaryLength) as $day) {
+        foreach(range(1, $month->length) as $day) {
             $offset = $month->leapdays
                 ->filter->intercalary
                 ->reject->not_numbered
@@ -51,7 +58,7 @@ class SectionsCollection extends \Illuminate\Support\Collection
             $this->push(Epoch::forMonth($month, null, $trueDay)->toArray());
 
             if($sectionBreaks->has($day)) {
-                $this->insertLeaps($sectionBreaks->get($day));
+                $this->insertLeaps($sectionBreaks->get($day), $month, $day);
             }
         }
 
