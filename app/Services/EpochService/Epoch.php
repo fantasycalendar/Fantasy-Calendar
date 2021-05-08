@@ -17,7 +17,7 @@ class Epoch
 
     public function forCalendar(Calendar $calendar)
     {
-        $this->calendar = $calendar;
+        $this->calendar = $calendar->startOfYear();
 
         return $this;
     }
@@ -26,7 +26,9 @@ class Epoch
     {
         $processor = new Processor($this->calendar);
 
-        $this->epochs = $processor->processUntil(1492);
+        $this->epochs = $processor->processUntil(function($processor){
+            return $processor->state->year = ($this->calendar->year + 1);
+        });
 
         return $this->epochs;
     }

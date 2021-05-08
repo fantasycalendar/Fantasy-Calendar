@@ -14,21 +14,17 @@ class State
     private $calendar;
     private \Illuminate\Support\Collection $statecache;
     private \Illuminate\Support\Collection $previousState;
-    /**
-     * @var null
-     */
-    private $nextYearState;
+    private \Illuminate\Support\Collection $nextYearState;
 
     /**
      * State constructor.
      * @param $calendar
      * @param null $nextYearState
      */
-    public function __construct($calendar, $nextYearState = null)
+    public function __construct($calendar)
     {
         $this->calendar = $calendar;
-        $this->statecache = collect();
-
+        $this->statecache = InitialState::generateFor($calendar->startOfYear());
         $this->nextYearState = InitialState::generateFor($calendar->addYear()->startOfYear());
     }
 
@@ -136,6 +132,11 @@ class State
     private function staticData($key, $default = null)
     {
         return Arr::get($this->calendar->static_data, $key, $default);
+    }
+
+    public function getState()
+    {
+        return $this->statecache;
     }
 
     public function __get($name)

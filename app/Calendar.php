@@ -163,6 +163,20 @@ class Calendar extends Model
         );
     }
 
+    public function addYear()
+    {
+        $this->setDate($this->year + 1, $this->month_index, $this->day);
+
+        return $this;
+    }
+
+    public function startOfYear()
+    {
+        $this->setDate($this->year, 0, 0);
+
+        return $this;
+    }
+
     public function setDate($year, $timespan, $day)
     {
         $dynamic_data = $this->dynamic_data;
@@ -372,18 +386,6 @@ class Calendar extends Model
 
         return true;
     }
-
-//     /*
-//      *
-//      */
-//     public function setDate(mixed $dateObjectOrYear, int $month = null, int $day = null)
-//     {
-//         $date = ($dateObjectOrYear instanceof Date)
-//             ? $dateObjectOrYear
-//             : new Date($this, $dateObjectOrYear, $month, $day);
-//
-//         $this->date = $date;
-//     }
 
     private function yearIntersectsLeapDay($interval, $offset)
     {
