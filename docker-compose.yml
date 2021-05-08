@@ -13,23 +13,10 @@ services:
     ports:
       - "13306:3306"
 
-  fantasy-calendar:
-    container_name: fantasy_calendar
-    depends_on:
-      - php
-    ports:
-      - ${FC_WEB_PORT:-9980}:8080
-    build:
-      context: .
-      dockerfile: setup/nginx/nginx.Dockerfile
-    user: "1000:1000"
-    volumes:
-      - ./:/var/task
-
   fc-bref-web:
     image: bref/fpm-dev-gateway
     ports:
-      - '9985:80'
+      - ${FC_WEB_PORT:-9980}:80
     volumes:
       - .:/var/task
     depends_on:
