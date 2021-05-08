@@ -1,3 +1,7 @@
 alias composer='docker run -it -u $(id -u):$(id -g) -v ${PWD}/:/app composer:2.0.7'
 alias npm='docker run -it -u $(id -u):$(id -g) -v ${PWD}/:/app -w /app node npm'
 alias artisan='docker-compose exec php php artisan'
+alias fc_up='FC_WEB_PORT=9987 FC_BROWSERSYNC_PORT=9980 FC_BROWSERSYNC=true docker-compose up'
+alias fc_nohot='docker-compose up'
+alias fc_upd='FC_WEB_PORT=9987 FC_BROWSERSYNC_PORT=9980 FC_BROWSERSYNC=true docker-compose up -d'
+alias fc_nohotd='docker-compose up -d'

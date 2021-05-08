@@ -1,3 +1,11 @@
+### 2.0.17 - Calm Efreet
+#### May 7, 2021
+* Tweaked - Improved error pages (that we hope you won't see!)
+* Fixed - Season type being visible even when automatic mapping was found
+* Fixed - Issue where season boolean conditions would not show up correctly
+* Fixed - Leap day fractional numbers not being accurate - you might have to double-check your season durations
+* Fixed - Season colors causing errors on certain calendars
+
 ### 2.0.16 - Stressed Efreet
 #### April 26, 2021
 * Tweaked - Greatly improved database performance when loading certain pages to try and address recent downtime issues

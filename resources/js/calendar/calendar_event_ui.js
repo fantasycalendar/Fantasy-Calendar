@@ -1547,7 +1547,7 @@ var edit_event_ui = {
 				html.push(">");
 
 			}
-			
+
 			new_element = $(html.join(''))
 
 		}else if(type == "Date"){
@@ -1732,9 +1732,9 @@ var edit_event_ui = {
 
 				}
 
-				new_element = $(html.join(''))
-
 			}
+
+            new_element = $(html.join(''))
 
 		}else if(type == "Weekday"){
 

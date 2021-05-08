@@ -1,4 +1,4 @@
-version: '2'
+version: '2.1'
 
 services:
   fantasydb:
@@ -18,7 +18,7 @@ services:
     depends_on:
       - php
     ports:
-      - "9987:8080"
+      - ${FC_WEB_PORT:-9980}:8080
     build:
       context: .
       dockerfile: setup/nginx/nginx.Dockerfile
@@ -87,16 +87,16 @@ services:
   fantasy-calendar-npm-install:
     image: node
     user: "1000:1000"
-    mem_limit: 1024m
+    mem_limit: 2048m
     ports:
-      - "9980:9980"
+      - ${FC_BROWSERSYNC_PORT:-9987}:9980
       - "9988:3001"
     working_dir: "/fantasy-calendar"
     volumes:
       - ./:/fantasy-calendar
     command: ["npm", "run", "dev-install-watch"]
     environment:
-      - "BROWSERSYNC=${FC_BROWSERSYNC:false}"
+      - BROWSERSYNC=${FC_BROWSERSYNC:-false}
       - "MIXVERSION=true"
       - "NODE_OPTIONS=--max-old-space-size=4096"
 
