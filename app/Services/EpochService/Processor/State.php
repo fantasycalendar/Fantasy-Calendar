@@ -13,15 +13,23 @@ class State
     public $day = 0;
     private $calendar;
     private \Illuminate\Support\Collection $statecache;
+    private \Illuminate\Support\Collection $previousState;
+    /**
+     * @var null
+     */
+    private $nextYearState;
 
     /**
      * State constructor.
      * @param $calendar
+     * @param null $nextYearState
      */
-    public function __construct($calendar)
+    public function __construct($calendar, $nextYearState = null)
     {
         $this->calendar = $calendar;
         $this->statecache = collect();
+
+        $this->nextYearState = InitialState::generateFor($calendar->addYear()->startOfYear());
     }
 
     public function advance()
@@ -31,12 +39,58 @@ class State
         $this->flushCache();
     }
 
+    public function basics()
+    {
+        return  [
+            // Information that doesn't need next year's state
+        ];
+    }
+
     public function toArray(): array
     {
         return [
             'day' => $this->day,
             'year' => $this->year,
+            'historicalMoonPhaseCounts' => $this->historicalPhaseCounts,
+            'moonPhases' => $this->moonPhases,
         ];
+    }
+
+    /*
+     * Month in the **displayed** year, zero-indexed
+     */
+    private function calculateMonth()
+    {
+        // Compare current day to the previous day's month length
+        if(!$this->previousState->has('month')) {
+            return 0;
+        }
+    }
+
+    private function calculateMonthLength()
+    {
+        //
+    }
+
+    private function calculateMonthIndex()
+    {
+
+    }
+
+    private function calculateMoonPhases()
+    {
+        return $this->calendar->moons
+            ->map(function($moon) {
+                return $moon->setEpoch($this->epoch)->getPhase();
+            });
+    }
+
+    private function calculateHistoricalPhaseCounts()
+    {
+        return $this->calendar->moons
+            ->map(function($moon){
+                return $moon->setEpoch($this->epoch)->getHistoricalPhaseCounts();
+            });
     }
 
     private function calculateYear()
