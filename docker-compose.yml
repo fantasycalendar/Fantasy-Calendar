@@ -40,7 +40,7 @@ services:
 
   php:
     container_name: fantasy_calendar_php
-    image: fc-php
+    image: fc-bref-php
     build:
       context: .
       dockerfile: setup/php/php.Dockerfile
@@ -96,7 +96,7 @@ services:
       - ./:/fantasy-calendar
     command: ["npm", "run", "dev-install-watch"]
     environment:
-      - "BROWSERSYNC=true"
+      - "BROWSERSYNC=${FC_BROWSERSYNC:false}"
       - "MIXVERSION=true"
       - "NODE_OPTIONS=--max-old-space-size=4096"
 
