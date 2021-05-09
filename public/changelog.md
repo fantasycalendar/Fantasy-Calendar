@@ -1,3 +1,9 @@
+
+### 2.0.18 - Attentive Efreet
+#### May 9, 2021
+* Fixed - "Calendar Unavailable" page now loads correctly
+* Fixed - Generalized error page actually loads when appropriate 
+
 ### 2.0.17 - Calm Efreet
 #### May 7, 2021
 * Tweaked - Improved error pages (that we hope you won't see!)
