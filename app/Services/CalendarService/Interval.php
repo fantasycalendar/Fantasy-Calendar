@@ -31,15 +31,6 @@ class Interval
             return 'allow';
         }
 
-//        return [
-//            $this->interval,
-//            $this->negated,
-//            $this->ignores_offset,
-//            $this->years,
-//            $year,
-//            $year % $this->years
-//        ];
-
         return 'abstain';
     }
 }

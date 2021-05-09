@@ -13,34 +13,36 @@ services:
     ports:
       - "13306:3306"
 
-  fantasy-calendar:
-    container_name: fantasy_calendar
-    depends_on:
-      - fantasy-calendar-php
+  fc-bref-web:
+    image: bref/fpm-dev-gateway
     ports:
-      - ${FC_WEB_PORT:-9980}:8080
-    build:
-      context: .
-      dockerfile: setup/nginx/nginx.Dockerfile
-    user: "1000:1000"
+      - ${FC_WEB_PORT:-9980}:80
     volumes:
-      - ./:/fantasy-calendar
+      - .:/var/task
+#      - ./setup/nginx/bref.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+    environment:
+      HANDLER: public/index.php
+      DOCUMENT_ROOT: public
 
-  fantasy-calendar-php:
+  php:
     container_name: fantasy_calendar_php
-    image: fc-php
+    image: fc-bref-php
     build:
       context: .
       dockerfile: setup/php/php.Dockerfile
     volumes:
-      - ./:/fantasy-calendar
+      - ./:/var/task:ro
+      - ./cache:/var/task/cache
     user: "1000:1000"
     environment:
       - "APP_ENV=local"
       - "APP_KEY=base64:ECSIURhDQnHBdx7nRVlwGtPwBU+RZrQCQpmGHesaIUM="
       - "APP_DEBUG=true"
-      - "APP_URL=/"
-      - "COOKIEADDRESS=/"
+      - "APP_URL=http://fantasy-calendar.test:9980/"
+      - "ASSET_URL=http://fantasy-calendar.test:9980/"
+      - "COOKIEADDRESS=http://fantasy-calendar.test:9980/"
       - "DB_HOST=fantasydb"
       - "DB_DATABASE=fantasy-calendar"
       - "DB_USERNAME=root"
@@ -48,7 +50,7 @@ services:
       - "REDIS_HOST=fcredis"
       - "CACHE_DRIVER=redis"
       - "SESSION_DRIVER=redis"
-      - "VIEW_COMPILED_PATH=/fantasy-calendar/storage/framework/views"
+      - "VIEW_COMPILED_PATH=/var/task/storage/framework/views"
       - "LOG_CHANNEL=docker"
 
   selenium:
@@ -61,7 +63,7 @@ services:
     image: redis
     container_name: fcredis
     depends_on:
-      - fantasy-calendar-php
+      - php
 
   fantasy-calendar-composer-install:
     image: composer:2.0.7

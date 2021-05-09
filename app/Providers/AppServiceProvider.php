@@ -6,7 +6,9 @@ use App\CalendarEvent;
 use App\Console\Commands\DownCommand;
 use App\Console\Commands\UpCommand;
 use App\Observers\CalendarEventObserver;
+use App\Services\EpochService\Epoch;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
@@ -22,7 +24,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->singleton('epoch', function($app){
+            return new Epoch();
+        });
+
+        $this->app->bind('mustache', function($app){
+            return new \Mustache_Engine(['entity_flags' => ENT_QUOTES]);
+        });
     }
 
     /**
@@ -48,8 +56,14 @@ class AppServiceProvider extends ServiceProvider
             return new UpCommand();
         });
 
+        Blade::if('setting', function($value) {
+            return auth()->check() && auth()->user()->setting($value);
+        });
 
-        // URL::forceRootUrl(config('app.url'));
+        if(app()->environment(['local'])) {
+            URL::forceRootUrl(config('app.url'));
+        }
+
         Paginator::useBootstrap();
 
         \Illuminate\Pagination\AbstractPaginator::currentPathResolver(function () {

@@ -22,10 +22,22 @@ use Illuminate\Support\Arr;
  * @property $interval
  * @property $intervals
  * @property $offset
+ * @property mixed not_numbered
+ * @property mixed show_text
  */
 class LeapDay
 {
-    private array $attributes;
+    private array $originalAttributes;
+    public $name;
+    public $intercalary;
+    public $timespan;
+    public $adds_week_day;
+    public $day;
+    public $week_day;
+    public $interval;
+    public $offset;
+    public $not_numbered;
+    public $show_text;
 
     /**
      * Interval constructor.
@@ -33,7 +45,17 @@ class LeapDay
      */
     public function __construct(array $attributes)
     {
-        $this->attributes = $attributes;
+        $this->originalAttributes = $attributes;
+        $this->name = Arr::get($attributes, "name");
+        $this->intercalary = Arr::get($attributes, "intercalary");
+        $this->timespan = Arr::get($attributes, "timespan");
+        $this->adds_week_day = Arr::get($attributes, "adds_week_day", false);
+        $this->day = Arr::get($attributes, "day", 0);
+        $this->week_day = Arr::get($attributes, "week_day", false);
+        $this->interval = Arr::get($attributes, "interval", "1");
+        $this->offset = Arr::get($attributes, "offset", "0");
+        $this->not_numbered = Arr::get($attributes, "not_numbered", false);
+        $this->show_text = Arr::get($attributes, "show_text", false);
 
         $this->collectIntervals();
     }
@@ -72,8 +94,39 @@ class LeapDay
         });
     }
 
+    public function occurrences($untilYear)
+    {
+        return collect(range(0, $untilYear))
+            ->filter(function($year){
+                return $this->intersectsYear($year);
+            })
+            ->count();
+    }
+
+    public function occurrencesOnMonthBetweenYears($start, $end, $month)
+    {
+        return collect(range($start, $end))
+            ->filter(function($year) use ($start, $end, $month) {
+                return $this->intersectsYear($year)
+                    && $year !== $end;
+            })
+            ->count();
+    }
+
+    public function timespanIs($timespan_id)
+    {
+        return $this->timespan === $timespan_id;
+    }
+
+    public function toArray()
+    {
+        return collect(array_keys($this->originalAttributes))
+            ->mapWithKeys(function($name){ return [ $name => $this->{$name}]; })
+            ->toArray();
+    }
+
     public function __get($name)
     {
-        return Arr::get($this->attributes, $name);
+        return Arr::get($this->originalAttributes, $name);
     }
 }

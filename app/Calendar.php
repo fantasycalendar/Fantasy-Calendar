@@ -2,7 +2,10 @@
 
 namespace App;
 
+use App\Collections\ErasCollection;
 use App\Services\CalendarService\LeapDay;
+use App\Services\CalendarService\Month;
+use App\Services\CalendarService\Timespan;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Auth;
@@ -15,7 +18,8 @@ use Illuminate\Support\Arr;
  * @property mixed current_date_valid Checks whether the current date in dynamic data is valid
  * @property mixed year The current year
  * @property mixed year_data Data structure of year_data in static data
- * @property mixed month_id ID of current month
+ * @property mixed month_index Index of current month
+ * @property mixed month_id Timespan ID of current month
  * @property mixed month_name Name of current month
  * @property mixed month_length Length property of current month (Does not include leap days)
  * @property mixed month_week Week used by the current month
@@ -26,6 +30,11 @@ use Illuminate\Support\Arr;
  * @property mixed current_era_valid Checks whether the current era is valid
  * @property mixed users Calendar users added by owner of calendar
  * @property mixed leap_days
+ * @property mixed timespans
+ * @property mixed weekdays
+ * @property mixed eras
+ * @property mixed global_week
+ * @property mixed first_day
  */
 class Calendar extends Model
 {
@@ -140,7 +149,7 @@ class Calendar extends Model
             return false;
         }
 
-        if(!Arr::has($this->static_data, "year_data.timespans.{$this->month_id}")) {
+        if(!Arr::has($this->static_data, "year_data.timespans.{$this->month_index}")) {
             return false;
         }
 
@@ -155,6 +164,20 @@ class Calendar extends Model
         );
     }
 
+    public function addYear()
+    {
+        $this->setDate($this->year + 1, $this->month_index, $this->day);
+
+        return $this;
+    }
+
+    public function startOfYear()
+    {
+        $this->setDate($this->year, 0, 0);
+
+        return $this;
+    }
+
     public function setDate($year, $timespan, $day)
     {
         $dynamic_data = $this->dynamic_data;
@@ -164,6 +187,8 @@ class Calendar extends Model
         $dynamic_data['day'] = $day ?? $dynamic_data['day'];
 
         $this->dynamic_data = $dynamic_data;
+
+        return $this;
     }
 
     public function getCurrentDateAttribute() {
@@ -188,7 +213,14 @@ class Calendar extends Model
         return Arr::get($this->static_data, 'year_data');
     }
 
-    public function getMonthIdAttribute()
+    public function getTimespansAttribute()
+    {
+        return collect(Arr::get($this->static_data, 'year_data.timespans'))->map(function($timespan_details, $timespan_key){
+            return new Timespan(array_merge($timespan_details, ['id' => $timespan_key]), $this);
+        });
+    }
+
+    public function getMonthIndexAttribute()
     {
         return Arr::get($this->dynamic_data,
             'timespan',
@@ -197,26 +229,37 @@ class Calendar extends Model
                 0));
     }
 
+    public function getMonthIdAttribute()
+    {
+        return $this->month_index;
+        return $this->month->id;
+    }
+
     /*
      * Calculates the "true" length of a month by checking for leap days that intersect
      */
     public function getMonthTrueLengthAttribute()
     {
-        return $this->month_length + collect($this->leap_days)
+        return $this->month_length + $this->leap_days
                 ->where('timespan', '=', $this->month_id)
                 ->filter(function($leapDay){
-                    return (new LeapDay($leapDay))->intersectsYear($this->year);
+                    return $leapDay->intersectsYear($this->year);
                 })->count();
     }
 
-    public function getMonthWeekAttribute()
+    public function getGlobalWeekAttribute()
     {
-        return Arr::get($this->month, 'week', Arr::get($this->year_data, 'global_week'));
+        return collect(Arr::get($this->year_data, 'global_week'));
+    }
+
+    public function getWeekdaysAttribute()
+    {
+        return $this->month->weekdays;
     }
 
     public function getOverflowsWeekAttribute()
     {
-        return Arr::get($this->year_data, 'overflows');
+        return Arr::get($this->year_data, 'overflow');
     }
 
     public function getMonthNameAttribute()
@@ -226,7 +269,7 @@ class Calendar extends Model
 
     public function getMonthAttribute()
     {
-        return Arr::get($this->static_data, "year_data.timespans.{$this->month_id}", []);
+            return new Month($this);
     }
 
     public function getMonthLengthAttribute()
@@ -234,14 +277,21 @@ class Calendar extends Model
         return Arr::get($this->static_data, "year_data.timespans.{$this->month_id}.length", null);
     }
 
+    public function getMonthWeekAttribute()
+    {
+        return $this->month->weekdays;
+    }
+
     public function getDayAttribute()
     {
-        return Arr::get($this->dynamic_data, 'day', 0);
+        return Arr::get($this->dynamic_data, 'day', 1) - 1;
     }
 
     public function getLeapDaysAttribute()
     {
-        return Arr::get($this->static_data, 'year_data.leap_days');
+        return collect(Arr::get($this->static_data, 'year_data.leap_days'))->map(function($leap_day){
+            return new LeapDay($leap_day);
+        });
     }
 
     public function getCurrentTimeAttribute() {
@@ -263,6 +313,11 @@ class Calendar extends Model
         $current_era = $this->static_data['eras'][$current_era_index];
 
         return $current_era['name'];
+    }
+
+    public function getErasAttribute()
+    {
+        return new ErasCollection(Arr::get($this->static_data, 'eras'));
     }
 
     public function setting($setting_name, $default = false) {
