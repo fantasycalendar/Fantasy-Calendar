@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Collections\ErasCollection;
 use App\Services\CalendarService\LeapDay;
 use App\Services\CalendarService\Month;
 use App\Services\CalendarService\Timespan;
@@ -186,6 +187,8 @@ class Calendar extends Model
         $dynamic_data['day'] = $day ?? $dynamic_data['day'];
 
         $this->dynamic_data = $dynamic_data;
+
+        return $this;
     }
 
     public function getCurrentDateAttribute() {
@@ -314,7 +317,7 @@ class Calendar extends Model
 
     public function getErasAttribute()
     {
-        return collect(Arr::get($this->static_data, 'eras'));
+        return new ErasCollection(Arr::get($this->static_data, 'eras'));
     }
 
     public function setting($setting_name, $default = false) {

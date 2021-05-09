@@ -88,3 +88,12 @@ if(!function_exists('unicode_to_ascii')) {
             'SOZsozYYuAAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
     }
 }
+
+if(!function_exists('ordinal')) {
+    /*
+     * Copied from https://stackoverflow.com/a/3110033
+     */
+    function ordinal($number) {
+        return (new NumberFormatter('en_US', NumberFormatter::ORDINAL))->format($number);
+    }
+}

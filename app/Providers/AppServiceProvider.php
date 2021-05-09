@@ -27,6 +27,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton('epoch', function($app){
             return new Epoch();
         });
+
+        $this->app->register('mustache', function($app){
+            return new \Mustache_Engine(['entity_flags' => ENT_QUOTES]);
+        });
     }
 
     /**

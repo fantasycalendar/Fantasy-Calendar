@@ -26,6 +26,7 @@
         "laravel/ui": "^3.0",
         "league/fractal": "^0.18.0",
         "mews/purifier": "3.3.0",
+        "mustache/mustache": "^2.13",
         "nesbot/carbon": "^2.31",
         "restcord/restcord": "dev-develop",
         "socialiteproviders/discord": "^4.1",

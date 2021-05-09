@@ -20,10 +20,7 @@ class Processor
 
     public function __construct($calendar)
     {
-        $nextYearState = new State($calendar->addYear(1)->firstDayOfYear());
-        $nextYearState->start();
-
-        $this->state = new State($calendar, $nextYearState);
+        $this->state = new State($calendar);
         $this->epochs = new EpochsCollection();
     }
 

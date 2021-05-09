@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 class State
 {
     public $day = 0;
-    private $calendar;
+    protected $calendar;
     private \Illuminate\Support\Collection $statecache;
     private \Illuminate\Support\Collection $previousState;
     private \Illuminate\Support\Collection $nextYearState;
@@ -24,8 +24,8 @@ class State
     public function __construct($calendar)
     {
         $this->calendar = $calendar;
-        $this->statecache = InitialState::generateFor($calendar->startOfYear());
-        $this->nextYearState = InitialState::generateFor($calendar->addYear()->startOfYear());
+        $this->statecache = InitialStateWithEras::generateFor($calendar);
+        $this->nextYearState = InitialStateWithEras::generateFor($calendar->addYear()->startOfYear());
     }
 
     public function advance()
@@ -139,10 +139,15 @@ class State
         return $this->statecache;
     }
 
+    public function __set($name, $value)
+    {
+        $this->statecache->put($name, $value);
+    }
+
     public function __get($name)
     {
         if(!$this->statecache->has($name)) {
-            $this->statecache->put($name, $this->{'calculate'.Str::studly($name)}());
+            $this->{$name} = $this->{'calculate'.Str::studly($name)}();
         }
 
         return $this->statecache->get($name);
