@@ -30,6 +30,10 @@ class Timespan implements Arrayable
 
     public function occurrences($year)
     {
+        $year = ($this->calendar->setting('year_zero_exists'))
+            ? $year
+            : $year - 1;
+
         if($this->interval <= 1) {
             return $year;
         }

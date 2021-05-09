@@ -5,16 +5,19 @@ namespace App\Services\EpochService\Processor;
 
 
 use App\Calendar;
+use App\Services\EpochService\Traits\CalculatesAndCachesProperties;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class State
 {
+    use CalculatesAndCachesProperties;
+
     public $day = 0;
     protected $calendar;
-    private \Illuminate\Support\Collection $statecache;
-    private \Illuminate\Support\Collection $previousState;
-    private \Illuminate\Support\Collection $nextYearState;
+    protected \Illuminate\Support\Collection $previousState;
+    protected \Illuminate\Support\Collection $nextYearState;
 
     /**
      * State constructor.
@@ -24,8 +27,16 @@ class State
     public function __construct($calendar)
     {
         $this->calendar = $calendar;
-        $this->statecache = InitialStateWithEras::generateFor($calendar);
-        $this->nextYearState = InitialStateWithEras::generateFor($calendar->addYear()->startOfYear());
+
+        Log::info('initing state');
+
+        $this->initialize();
+    }
+
+    private function initialize()
+    {
+        $this->statecache = InitialStateWithEras::generateFor($this->calendar);
+        $this->nextYearState = InitialStateWithEras::generateFor($this->calendar->addYear()->startOfYear());
     }
 
     public function advance()
@@ -122,34 +133,8 @@ class State
             });
     }
 
-    private function flushCache()
-    {
-        $this->previousState = $this->statecache;
-
-        $this->statecache = collect();
-    }
-
     private function staticData($key, $default = null)
     {
         return Arr::get($this->calendar->static_data, $key, $default);
-    }
-
-    public function getState()
-    {
-        return $this->statecache;
-    }
-
-    public function __set($name, $value)
-    {
-        $this->statecache->put($name, $value);
-    }
-
-    public function __get($name)
-    {
-        if(!$this->statecache->has($name)) {
-            $this->{$name} = $this->{'calculate'.Str::studly($name)}();
-        }
-
-        return $this->statecache->get($name);
     }
 }

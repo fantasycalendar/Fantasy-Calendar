@@ -28,7 +28,7 @@ class AppServiceProvider extends ServiceProvider
             return new Epoch();
         });
 
-        $this->app->register('mustache', function($app){
+        $this->app->bind('mustache', function($app){
             return new \Mustache_Engine(['entity_flags' => ENT_QUOTES]);
         });
     }
@@ -60,7 +60,10 @@ class AppServiceProvider extends ServiceProvider
             return auth()->check() && auth()->user()->setting($value);
         });
 
-        // URL::forceRootUrl(config('app.url'));
+        if(app()->environment(['local'])) {
+            URL::forceRootUrl(config('app.url'));
+        }
+
         Paginator::useBootstrap();
 
         \Illuminate\Pagination\AbstractPaginator::currentPathResolver(function () {
