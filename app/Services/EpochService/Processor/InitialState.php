@@ -71,7 +71,8 @@ class InitialState
 
     private function calculateTimespanOccurrences()
     {
-        return $this->calendar->timespans->map->occurrences($this->year);
+        return $this->calendar->timespans
+            ->map->occurrences($this->year);
     }
 
     private function calculateTotalLeapdayOccurrences()
@@ -81,7 +82,8 @@ class InitialState
 
     private function calculateLeapdayOccurrences()
     {
-        return $this->calendar->leap_days->map->occurrencesOnMonthBetweenYears($this->epochStartYear, $this->year, 0);
+        return $this->calendar->leap_days
+            ->map->occurrencesOnMonthBetweenYears($this->epochStartYear, $this->year, 0);
     }
 
     private function calculateNumTimespans()
