@@ -3048,7 +3048,6 @@ function add_leap_day_to_list(parent, key, data){
 						element.push("</label>");
 					element.push("</div>");
 				element.push("</div>");
-				element.push("</div>");
 
 				element.push(`<div class='row no-gutters my-1 ${data.intercalary ? "" : "hidden"}'>`);
 					element.push(`<div class='form-check col-12 py-2 border rounded protip' data-pt-position="right" data-pt-title="This setting toggles whether this intercalary leap day should show its name in the calendar.">`);
