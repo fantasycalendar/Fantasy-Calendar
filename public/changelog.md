@@ -1,3 +1,6 @@
+### 2.0.19 - Facepalming Efreet
+#### May 10, 2021
+* Fixed - Intercalary leap days would not properly set their month, causing all sorts of havoc 
 
 ### 2.0.18 - Attentive Efreet
 #### May 9, 2021
