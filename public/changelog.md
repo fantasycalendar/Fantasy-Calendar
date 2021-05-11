@@ -1,3 +1,7 @@
+### 2.1.0 - Adjective Djinn
+#### Month Day, Year
+* Tweaked - Default era formatting tweaked to utilize era year instead of absolute year when era restarts the year count 
+
 ### 2.0.19 - Facepalming Efreet
 #### May 10, 2021
 * Fixed - Intercalary leap days would not properly set their month, causing all sorts of havoc 
