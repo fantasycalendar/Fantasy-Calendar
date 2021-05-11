@@ -194,7 +194,6 @@ const render_data_generator = {
         let timespans_to_build = this.processed_data.timespans_to_build;
         let year_data = this.processed_data.year_data;
         this.epoch_data = this.processed_data.epoch_data;
-        this.day_offset = 0;
 
         let render_data = {
             "current_epoch": dynamic_data.epoch,
@@ -212,6 +211,8 @@ const render_data_generator = {
         let week_day = year_data.week_day;
 
         for(var index = 0; index < length; index++){
+
+            this.day_offset = 0;
 
             let timespan = timespans_to_build[indexes[index]];
 
@@ -395,7 +396,7 @@ const render_data_generator = {
 
                     }
                 }
-                
+
             }
 
             render_data.timespans.push(timespan_data);
@@ -417,7 +418,7 @@ const render_data_generator = {
                         "days": [[]],
                         "events": []
                     }
-                    
+
                     let weekday_number = 1;
 
                     for(var leap_day_index in filtered_leap_days_end) {
@@ -525,7 +526,7 @@ const render_data_generator = {
                 success: true,
                 event_data: this.events_to_send
             }
-        }   
+        }
 
 		if(static_data.eras.length > 0 && !static_data.settings.hide_eras){
 

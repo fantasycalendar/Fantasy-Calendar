@@ -21,11 +21,11 @@ class CalendarEventTransformer extends Fractal\TransformerAbstract {
         ];
 
         $event_settings = [
-            "color" => $event->settings["color"] ?? "Dark-Solid",
-            "text" => $event->settings["text"] ?? "text",
-            "hide" => (bool) $event->settings["hide"] ?? false,
-            "hide_full" => (bool) $event->settings["hide_full"] ?? false,
-            "print" => (bool) $event->settings["print"] ?? false
+            "color" => $event->setting("color", "Dark-Solid"),
+            "text" => $event->setting("text", "text"),
+            "hide" => (bool) $event->setting("hide"),
+            "hide_full" => (bool) $event->setting("hide_full"),
+            "print" => (bool) $event->setting("print")
         ];
 
         return [
