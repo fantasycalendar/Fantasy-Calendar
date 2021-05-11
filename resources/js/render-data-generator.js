@@ -287,7 +287,7 @@ const render_data_generator = {
                     }
                 }
 
-                if(render_data.render_style != "vertical") {
+                if(this.render_data.render_style != "vertical") {
                     for(weekday_number; weekday_number <= static_data.year_data.global_week.length; weekday_number++){
                         timespan_data.days[timespan_data.days.length-1].push(this.overflow());
                     }
@@ -380,7 +380,7 @@ const render_data_generator = {
                                 }
                             }
 
-                            if(render_data.render_style != "vertical") {
+                            if(this.render_data.render_style != "vertical") {
                                 for(internal_weekday_number; internal_weekday_number <= static_data.year_data.global_week.length; internal_weekday_number++){
                                     timespan_data.days[timespan_data.days.length-1].push(this.overflow());
                                 }
@@ -398,7 +398,7 @@ const render_data_generator = {
                                 "events": []
                             }
 
-                            if(render_data.render_style != "vertical") {
+                            if(this.render_data.render_style != "vertical") {
                                 if(week_day != timespan.week.length){
                                     for(let internal_weekday_number = 0; internal_weekday_number < week_day; internal_weekday_number++){
                                         timespan_data.days[timespan_data.days.length-1].push(this.overflow());
@@ -474,7 +474,7 @@ const render_data_generator = {
                         }
                     }
 
-                    if(render_data.render_style != "vertical") {
+                    if(this.render_data.render_style != "vertical") {
                         for(weekday_number; weekday_number <= static_data.year_data.global_week.length; weekday_number++){
                             timespan_data.days[timespan_data.days.length-1].push(this.overflow());
                         }
