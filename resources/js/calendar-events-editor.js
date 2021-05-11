@@ -368,7 +368,7 @@ const calendar_events_editor = {
 		if (success) {
 
 			eval_apply_changes(function() {
-				rebuild_events();
+				rerender_calendar();
 			});
 
 		}

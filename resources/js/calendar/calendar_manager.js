@@ -1,7 +1,6 @@
 var utcDate1 = Date.now();
 
 const worker_calendar = new Worker('/js/webworkers/worker_calendar.js?v='+utcDate1);
-const worker_events = new Worker('/js/webworkers/worker_events.js?v='+utcDate1);
 const worker_climate = new Worker('/js/webworkers/worker_climate.js?v='+utcDate1);
 
 var registered_click_callbacks = {}
@@ -132,7 +131,6 @@ function pre_rebuild_calendar(action, dynamic_data){
 }
 
 var evaluated_static_data = {};
-var evaluated_event_data = {};
 
 function rebuild_calendar(action, dynamic_data){
 
@@ -163,36 +161,6 @@ function rebuild_climate(){
 	});
 }
 
-function rebuild_events(event_id){
-
-	worker_events.postMessage({
-		static_data: static_data,
-		dynamic_data: dynamic_data,
-		epoch_data: evaluated_static_data.epoch_data,
-        events: events,
-        event_categories: event_categories,
-		event_id: event_id,
-		start_epoch: evaluated_static_data.year_data.start_epoch,
-		end_epoch: evaluated_static_data.year_data.end_epoch,
-		owner: Perms.player_at_least('co-owner')
-	});
-}
-
-
-worker_events.onmessage = e => {
-
-	evaluated_event_data = e.data.event_data;
-
-	RenderDataGenerator.create_event_data(evaluated_event_data).then(
-		function(result){
-			window.dispatchEvent(new CustomEvent('events-change', {detail: result} ));
-		}, function(err){
-			$.notify(err);
-		}
-	)
-
-}
-
 worker_climate.onmessage = e => {
 
 	var prev_seasons = calendar_weather.processed_seasons;
@@ -207,7 +175,7 @@ worker_climate.onmessage = e => {
 
 	if(prev_seasons != calendar_weather.processed_seasons || prev_weather != calendar_weather.processed_weather){
 
-		rebuild_all_data(e.data.processed_data);
+		rerender_calendar(e.data.processed_data);
 
 		eval_clock();
 
@@ -233,14 +201,7 @@ worker_calendar.onmessage = e => {
 
 	if(evaluated_static_data.success){
 
-		RenderDataGenerator.create_render_data(e.data.processed_data).then(
-			function(result){
-				window.dispatchEvent(new CustomEvent('render-data-change', {detail: result}));
-				rebuild_events();
-			}, function(err){
-				$.notify(err);
-			}
-		);
+		rerender_calendar(e.data.processed_data);
 
 		calendar_weather.epoch_data = evaluated_static_data.epoch_data;
 		calendar_weather.processed_weather = evaluated_static_data.processed_weather;
@@ -251,8 +212,6 @@ worker_calendar.onmessage = e => {
 		climate_charts.evaluate_weather_charts();
 
 		eval_clock();
-
-        update_moon_colors();
 			
 		update_cycle_text();
 
@@ -275,23 +234,14 @@ worker_calendar.onmessage = e => {
 
 }
 
-function rebuild_all_data(processed_data){
+function rerender_calendar(processed_data) {
+
+	if (processed_data === undefined) processed_data = evaluated_static_data;
 
 	RenderDataGenerator.create_render_data(processed_data).then(
-
-		function(result){
-
-			window.dispatchEvent(new CustomEvent('render-data-change', {detail: result}));
-
-			RenderDataGenerator.create_event_data().then(
-				function(result){
-					window.dispatchEvent(new CustomEvent('events-change', {detail: result} ));
-				}, function(err){
-					$.notify(err);
-				}
-			)
-
-		}, function(err){
+		function(result) {
+			window.dispatchEvent(new CustomEvent('render-data-change', { detail: result }));
+		}, function(err) {
 			$.notify(err);
 		}
 	);
