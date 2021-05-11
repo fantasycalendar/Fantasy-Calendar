@@ -3,8 +3,44 @@
     <meta name="description" content="All-in-One Fantasy Calendar Generator - Creation of calendars and time-tracking in your homebrew or pre-made campaign worlds has never been easier!">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    
+
     <script data-ad-client="ca-pub-3610316180878002" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+    <script>var fuckAdBlock = false, FuckAdBlock = undefined;</script>
+    <script src="{{ asset('/js/vendor/fab.min.js') }}"></script>
+    <script>
+        window.onload = function(){
+            // Function called if AdBlock is not detected
+            function adBlockUndetected() {
+                console.log('Thank you for not blocking ads!');
+            }
+
+            // Function called if AdBlock is detected
+            function adBlockDetected() {
+                var adbox = document.querySelector('div.moneybox');
+                var alert = document.createElement('div');
+                alert.innerHTML = '<div class="alert alert-warning small"><strong>Hate ads?</strong><br>We do too, but the ad that goes here keeps access to this calendar free. Fantasy Calendar is a spare-time project for a team of just two guys, so if you like it please consider supporting us by disabling your adblocker or <a href="{{ route('subscription.pricing') }}">becoming a paid subscriber ($20/year)</a>.<br><br><span class="small">Thanks,<br>-Fantasy Calendar</span></div>';
+                adbox.appendChild(alert);
+                adbox.removeChild(ad);
+                adbox.classList.add("blocked");
+            }
+
+            if(typeof FuckAdBlock === 'undefined') {
+                $(document).ready(adBlockDetected);
+            } else {
+                var myFuckAdBlock = new FuckAdBlock;
+                myFuckAdBlock.on(true, adBlockDetected).on(false, adBlockUndetected);
+                $(document).ready(function() {
+                    myFuckAdBlock.check(['http'], {
+                        http: {
+                            baitMode: 'import',
+                            baitUrl: 'http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js',
+                        },
+                    });
+                });
+            }
+        };
+    </script>
 
     <meta property="og:title" content="{{ $calendar->name ?? $title ?? "Fantasy Calendar" }}">
     <meta property="og:type" content="website">
@@ -55,7 +91,7 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/3.2.1/css/font-awesome.min.css">
-    
+
     <link
         rel="stylesheet"
         href="https://unpkg.com/simplebar@latest/dist/simplebar.css"

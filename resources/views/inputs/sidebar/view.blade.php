@@ -283,14 +283,15 @@
         @endif
 	@endif
 
-    @if(!Auth::check())
+    @guest
         <div class='wrap-collapsible card'>
-            <div id="anad_slot" class="d-none d-md-flex align-items-center moneybox">
+            <div id="anad_slot" class="d-flex w-100 justify-content-center moneybox" style="max-width: 100%;">
 
                 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
                 <!-- Dungeon-Generator-Side-Ad -->
                 <ins class="adsbygoogle"
-                        style="display:inline-block;width:100%;height:300px; padding: 1rem;"
+                        style="display:inline-block !important;max-width:100%;width:300px;height:200px; padding: 1rem;"
+                        data-ad-format="auto"
                         data-ad-client="ca-pub-3610316180878002"
                         data-ad-slot="1552967970"
                         data-adtest="on"></ins>
@@ -300,7 +301,7 @@
 
             </div>
         </div>
-	@endif
+	@endguest
 
 </form>
 
