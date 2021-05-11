@@ -121,9 +121,9 @@
                         @endif
                     </div>
                     <div class="d-none d-lg-block col-lg-1 protip">
-                        <i class="fa fa-calendar-check"></i> {{ $calendar->events->count() }} <br>
-                        @if($calendar->users->count())
-                            <i class="fa fa-user"></i> {{ $calendar->users->count() }}
+                        <i class="fa fa-calendar-check"></i> {{ $calendar->events_count }} <br>
+                        @if($calendar->users_count)
+                            <i class="fa fa-user"></i> {{ $calendar->users_count }}
                         @endif
                     </div>
                     <div class="col-6 col-md-4 col-lg-3 text-right">
@@ -177,8 +177,8 @@
                             @endif
                         </div>
                         <div class="d-none d-lg-block col-lg-1 protip">
-                        <span class="protip" data-pt-delay-in="200" data-pt-title="{{ $calendar->name }} has {{ $calendar->events->count() }} events.">
-                            <i class="fa fa-calendar-check"></i> {{ $calendar->events->count() }}
+                        <span class="protip" data-pt-delay-in="200" data-pt-title="{{ $calendar->name }} has {{ $calendar->events_count }} events.">
+                            <i class="fa fa-calendar-check"></i> {{ $calendar->events_count }}
                         </span>
                         </div>
                         <div class="col-6 col-md-4 col-lg-3 text-right">

@@ -118,7 +118,7 @@ var eras = {
 				}else{
 
 					if(era.settings.restart){
-						var format = `Era year {{era_year}} (year {{year}})`;
+						var format = `Era year {{era_year}} (year {{year}}) - {{era_name}}`;
 					}else{
 						var format = `Year {{year}} - {{era_name}}`
 					}
@@ -273,7 +273,7 @@ var eras = {
 			}
 
 		}else{
-		
+
 			this.set_current_era(-1);
 
 		}

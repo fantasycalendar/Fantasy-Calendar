@@ -848,7 +848,7 @@ function set_up_edit_inputs(){
 			var preset_order = undefined;
 
 			if(!valid_preset_order){
-			
+
 				let season_test = [];
 				for(var index in static_data.seasons.data){
 					var season = static_data.seasons.data[index];
@@ -947,7 +947,7 @@ function set_up_edit_inputs(){
 			var season_length = static_data.seasons.data[prev_id].duration+static_data.seasons.data[prev_id].transition_length+static_data.seasons.data[season_id].duration+static_data.seasons.data[season_id].transition_length;
 			var target = static_data.seasons.data[prev_id].duration+static_data.seasons.data[prev_id].transition_length;
 			var perc = target/season_length;
-				
+
 		}else{
 
 			let prev_season = static_data.seasons.data[prev_id];
@@ -1051,7 +1051,7 @@ function set_up_edit_inputs(){
 			var season_length = static_data.seasons.data[prev_id].duration+static_data.seasons.data[prev_id].transition_length+static_data.seasons.data[season_id].duration+static_data.seasons.data[season_id].transition_length;
 			var target = static_data.seasons.data[prev_id].duration+static_data.seasons.data[prev_id].transition_length;
 			var perc = target/season_length;
-				
+
 		}else{
 
 			let prev_season = static_data.seasons.data[prev_id];
@@ -1073,7 +1073,7 @@ function set_up_edit_inputs(){
 			let next_day = evaluate_calendar_start(static_data, next_year, next_season.timespan, next_season.day).epoch-prev_day;
 
 			var perc = curr_day/next_day;
-			
+
 		}
 
 		if(static_data.clock.enabled){
@@ -1144,7 +1144,7 @@ function set_up_edit_inputs(){
 	$(document).on('change', '.season_time', function(){
 
 		let index = $(this).closest('.sortable-container').attr('index');
-		
+
 		let [type, time] = $(this).attr('clocktype').split('_');
 
 		let value = $(this).val();
@@ -1229,10 +1229,6 @@ function set_up_edit_inputs(){
 
 	});
 
-	$(document).on('click', '.html_edit', function() {
-		let era_id = $(this).closest('.sortable-container').attr('index') | 0;
-		window.dispatchEvent(new CustomEvent('html-editor-modal-edit-html', { detail: { era_id: era_id } }));
-	});
 
 	$('.add_inputs.event_categories .add').click(function(){
 
@@ -1282,7 +1278,7 @@ function set_up_edit_inputs(){
 
 		if(isNaN(event_categories[category_index].id)){
 			let slug = slugify(new_name);
-			
+
 			for(let index in events){
 				if(events[index].event_category_id == event_categories[category_index].id){
 					events[index].event_category_id = slug;
@@ -1316,7 +1312,6 @@ function set_up_edit_inputs(){
 
 
 	$('.add_inputs.events .add').click(function(){
-
 		var name = $('#event_name_input');
 
 		var name_val = name.val();
@@ -1331,25 +1326,10 @@ function set_up_edit_inputs(){
 			}
 		}
 
-		window.dispatchEvent(new CustomEvent('event-editor-modal-new-event', { detail: { name: name_val, epoch: epoch } }));
+		edit_event_ui.create_new_event(name_val, epoch);
 
 		name.val('');
 
-	});
-
-	$(document).on('click', '.open-edit-event-ui', function() {
-		let event_id = $(this).closest('.sortable-container').attr('index') | 0;
-
-		let epoch = dynamic_data.epoch;
-		if (typeof preview_date !== "undefined" && preview_date.follow) {
-			epoch = dynamic_date_manager.epoch;
-		} else {
-			if (typeof preview_date_manager !== "undefined") {
-				epoch = preview_date_manager.epoch;
-			}
-		}
-
-		window.dispatchEvent(new CustomEvent('event-editor-modal-edit-event', { detail: { event_id: event_id, epoch: epoch } }));
 	});
 
 	$(document).on('click', '.btn_remove', function(){
@@ -1819,16 +1799,31 @@ function set_up_edit_inputs(){
 		}
 	});
 
+	$(document).on('change', '.restart_era', function(){
+		let parent = $(this).closest('.sortable-container');
+		let index = parent.attr('index')|0;
+		let checked = $(this).is(':checked')
+		if(!static_data.eras[index].settings.use_custom_format){
+		    let text = "";
+            if(checked) {
+                text = 'Era year {{era_year}} (year {{year}}) - {{era_name}}';
+            } else {
+                text = 'Year {{era_year}} - {{era_name}}';
+            }
+            parent.find('.era_formatting').val(text).change();
+        }
+	});
+
 	$(document).on('change', '.use_custom_format', function(){
 		var parent = $(this).closest('.sortable-container');
 		var index = parent.attr('index')|0;
 		if(static_data.eras[index].settings.restart){
 			var text = 'Era year {{era_year}} (year {{year}}) - {{era_name}}';
 		}else{
-			var text = 'Year {{year}} - {{era_name}}';
+			var text = 'Year {{era_year}} - {{era_name}}';
 		}
+		console.log(text);
 		parent.find('.era_formatting').prop('disabled', !$(this).is(':checked')).val(text).change();
-
 	});
 
 	$(document).on('change', '.starting_era', function(){
@@ -2468,6 +2463,8 @@ function set_up_edit_inputs(){
 
 		update_calendar_user(user_id, permissions, function(success, text){
 
+			console.log(text)
+
 			button.prop('disabled', success);
 			button.attr('permissions_val', permissions);
 
@@ -3065,7 +3062,6 @@ function add_leap_day_to_list(parent, key, data){
 							element.push("Not numbered");
 						element.push("</label>");
 					element.push("</div>");
-				element.push("</div>");
 				element.push("</div>");
 
 				element.push(`<div class='row no-gutters my-1 ${data.intercalary ? "" : "hidden"}'>`);
@@ -3966,7 +3962,7 @@ function add_era_to_list(parent, key, data){
 
 				element.push(`<div class='row no-gutters my-1'>`);
 					element.push("<div class='form-check col-12 py-2 border rounded'>");
-						element.push(`<input type='checkbox' id='${key}_restart_year' class='form-check-input dynamic_input restart' data='eras.${key}.settings' fc-index='restart' ${(data.settings.restart ? "checked" : "")} />`);
+						element.push(`<input type='checkbox' id='${key}_restart_year' class='form-check-input dynamic_input restart_era' data='eras.${key}.settings' fc-index='restart' ${(data.settings.restart ? "checked" : "")} />`);
 						element.push(`<label for='${key}_restart_year' class='form-check-label ml-1'>`);
 							element.push("Restarts year count");
 						element.push("</label>");
@@ -4863,7 +4859,7 @@ function reindex_season_sortable(key){
 	if(no_seasons){
 		static_data.seasons.global_settings.preset_order = undefined;
 	}
-	
+
 	populate_preset_season_list();
 
 	if(key !== undefined){
@@ -4919,7 +4915,7 @@ function populate_preset_season_list(){
 			}else{
 				$(this)[0].selectedIndex = static_data.seasons.global_settings.preset_order[i];
 			}
-			
+
 		});
 
 		if(static_data.seasons.global_settings.preset_order === undefined){
@@ -4929,6 +4925,7 @@ function populate_preset_season_list(){
 	}else{
 
 		$('.preset-season-list').empty();
+		$('.preset-season-list-container').toggleClass('hidden', true).prop('disabled', true);
 
 	}
 
@@ -4943,7 +4940,7 @@ function detect_automatic_mapping(){
 	}else{
 		return false;
 	}
-	
+
 	let season_test = [];
 	for(var index in static_data.seasons.data){
 		var season = static_data.seasons.data[index];
@@ -5208,7 +5205,7 @@ function reindex_era_list(){
 				'starting_era': $(this).find('.starting_era').is(':checked') || $(this).find('.starting_era').val() == "1",
 				'event_category_id': $(this).find('.event-category-list').val(),
 				'ends_year': $(this).find('.ends_year').is(':checked') || $(this).find('.ends_year').val() == "1",
-				'restart': $(this).find('.restart').is(':checked')
+				'restart': $(this).find('.restart_era').is(':checked')
 			},
 			'date': {
 				'year': ($(this).find('.year-input').val()|0),
@@ -5320,7 +5317,7 @@ function sort_list_by_partial_date(list){
 	}
 
 	list.empty().append(elements).change();
-	
+
 }
 
 function reindex_event_category_list(){
@@ -5797,12 +5794,16 @@ function set_up_edit_values(){
 			showInput: true
 		});
 
-		$('#season_sortable').children().each(function(i){
+	    if(static_data.seasons.global_settings.color_enabled){
 
-			$(this).find('.start_color').spectrum("set", static_data.seasons.data[i].color[0]);
-			$(this).find('.end_color').spectrum("set", static_data.seasons.data[i].color[1]);
+            $('#season_sortable').children().each(function(i){
 
-		});
+                $(this).find('.start_color').spectrum("set", static_data.seasons.data[i].color[0]);
+                $(this).find('.end_color').spectrum("set", static_data.seasons.data[i].color[1]);
+
+            });
+
+        }
 
 		if(!static_data.seasons.global_settings.periodic_seasons){
 			sort_list_by_partial_date($('#season_sortable'));

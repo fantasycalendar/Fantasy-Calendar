@@ -49,9 +49,9 @@ class CalendarEvent extends Model
         return $value ?? $this->calendar->user->id;
     }
 
-    public function setting($settingName) {
-        if(is_array($this->category_settings) && Arr::has($this->category_settings, $settingName)) {
-            return $this->category_settings[$settingName];
+    public function setting($settingName, $default = false) {
+        if(is_array($this->settings) && Arr::has($this->settings, $settingName)) {
+            return Arr::get($this->settings, $settingName, $default);
         }
 
         return false;

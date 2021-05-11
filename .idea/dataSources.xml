@@ -20,7 +20,7 @@
       <driver-ref>mysql_aurora</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.mariadb.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql:aurora://localhost:13309/fantasycalendar</jdbc-url>
+      <jdbc-url>jdbc:mysql:aurora://localhost:13310/fantasycalendar</jdbc-url>
     </data-source>
   </component>
 </project>

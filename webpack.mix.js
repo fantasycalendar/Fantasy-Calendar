@@ -11,7 +11,7 @@ const mix = require('laravel-mix');
  |
  */
 
-if(process.env.BROWSERSYNC) {
+if(process.env.BROWSERSYNC === 'true') {
     mix.browserSync({
         proxy: 'fantasy-calendar:8080',
         port: 9980,
@@ -42,6 +42,7 @@ mix.copyDirectory('resources/images', 'public/resources');
 // Calendar scripts
 mix.copy('resources/js/calendar/header.js', 'public/js/calendar');
 mix.copy('resources/js/calendar/calendar_ajax_functions.js', 'public/js/calendar');
+mix.copy('resources/js/calendar/calendar_event_ui.js', 'public/js/calendar');
 mix.copy('resources/js/calendar/calendar_functions.js', 'public/js/calendar');
 mix.copy('resources/js/calendar/calendar_variables.js', 'public/js/calendar');
 mix.copy('resources/js/calendar/calendar_weather_layout.js', 'public/js/calendar');

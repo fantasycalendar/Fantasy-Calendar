@@ -90,8 +90,8 @@ function copy_link(epoch_data){
 function context_add_event(key, opt){
 
 	var epoch = $(opt.$trigger[0]).attr('epoch')|0;
-	
-	window.dispatchEvent(new CustomEvent('event-editor-modal-new-event', { detail: { name: "", epoch: epoch } }));
+
+	edit_event_ui.create_new_event('', epoch);
 
 }
 
@@ -134,8 +134,7 @@ function set_up_visitor_inputs(){
 				icon: "fas fa-eye",
 				callback: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = element.attr('event');
-					window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { id: event_id, era: element.hasClass('era_event'), epoch: element.parent().parent().attr('epoch') } }));
+					show_event_ui.clicked_event(element)
 				},
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
@@ -151,8 +150,7 @@ function set_up_visitor_inputs(){
 				icon: "fas fa-edit",
 				callback: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = element.attr('event');
-					window.dispatchEvent(new CustomEvent('event-editor-modal-edit-event', { detail: { event_id: event_id, epoch: element.parent().parent().attr('epoch') } }));
+					edit_event_ui.edit_event(element.attr('event')|0);
 				},
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
@@ -170,8 +168,7 @@ function set_up_visitor_inputs(){
 				icon: "fas fa-eye",
 				callback: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = element.attr('event');
-					window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { id: event_id, era: element.hasClass('era_event'), epoch: element.parent().parent().attr('epoch') } }));
+					show_event_ui.clicked_event(element)
 				},
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
@@ -187,8 +184,7 @@ function set_up_visitor_inputs(){
 				icon: "fas fa-edit",
 				callback: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let era_id = element.attr('event')|0;
-					window.dispatchEvent(new CustomEvent('html-editor-modal-edit-html', { detail: { era_id: era_id } }));
+					edit_HTML_ui.edit_era_description(element.attr('event')|0);
 				},
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
@@ -243,7 +239,7 @@ function set_up_visitor_inputs(){
 				callback: function(key, opt){
 					let element = $(opt.$trigger[0]);
 					let event_id = element.attr('event');
-					window.dispatchEvent(new CustomEvent('event-editor-modal-delete-event', { detail: { event_id: event_id } }));
+					edit_event_ui.query_delete_event(event_id);
 				},
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
@@ -406,6 +402,8 @@ function set_up_visitor_inputs(){
 			};
 		}
 	});
+
+	show_event_ui.bind_events();
 
 	target_year = $('#target_year');
 	target_timespan = $('#target_timespan');
