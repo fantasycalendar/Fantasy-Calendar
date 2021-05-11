@@ -1145,8 +1145,11 @@ class Gradient{
 	}
 
 	processHEX(val) {
+
+		let stripped_val = val.replace('NaN', "FF")
+
 		//does the hex contain extra char?
-		var hex = (val.length >6)?val.substr(1, val.length - 1):val;
+		var hex = stripped_val.length > 6 ? stripped_val.substr(1, stripped_val.length - 1) : stripped_val;
 		// is it a six character hex?
 
 		if (hex.length > 3) {
@@ -1168,9 +1171,9 @@ class Gradient{
 		}
 		// return our clean values
 		return [
-		parseInt(r, 16),
-		parseInt(g, 16),
-		parseInt(b, 16)
+			parseInt(r, 16),
+			parseInt(g, 16),
+			parseInt(b, 16)
 		]
 	}
 }

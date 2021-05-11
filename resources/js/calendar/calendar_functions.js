@@ -8,7 +8,7 @@ function escapeHtml(unsafe) {
          .replace(/"/g, "&quot;")
          .replace(/'/g, "&#039;");
  }
- 
+
 function unescapeHtml(safe) {
 	if(!isNaN(safe)) return safe;
 	return safe
@@ -1144,7 +1144,7 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object, no
 	for(var i = 1; i <= timespan.length; i++){
 		var appears = does_day_appear(static_data, year, timespan_index, i);
 		if(appears.result || special){
-			days.push("");
+			days.push({ normal_day: true });
 		}
 	}
 
@@ -1185,9 +1185,10 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object, no
 
 					if(leaping){
 
-						days.splice(leap_day.day+offset, 0, `${leap_day.name}`);
+						days.splice(leap_day.day + offset, 0, { normal_day: false, text: `${leap_day.name}`, not_numbered: leap_day.not_numbered });
 						day++;
 						offset++;
+
 					}
 
 				}
@@ -1202,7 +1203,7 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object, no
 
 					if(leaping){
 
-						days.push("");
+						days.push({ normal_day: true });
 						day++;
 
 					}
@@ -1868,15 +1869,29 @@ function is_leap_simple(static_data, year, interval, offset) {
  */
 function get_interval_fractions(_intervals, _offset){
 
-	var intervals = strip_intervals(_intervals, _offset);
+	let intervals = strip_intervals(_intervals, _offset);
 
-	var occurrences = 0;
+	let occurrences = 0;
 
-	for(var index = 0; index < intervals.length; index++){
+	for(let i = 0; i < intervals.length; i++){
 
-		var interval = intervals[index];
+		let interval = intervals[i];
 
-		var result = 1 / interval.interval;
+		let result = 1 / interval.interval;
+
+		if(interval.children){
+
+            for(let j = 0; j < interval.children.length; j++){
+
+                let child = interval.children[j];
+
+                let child_result = 1 / child.interval;
+
+                result += child.negator ? child_result*-1 : child_result;
+
+            }
+
+        }
 
 		occurrences += interval.negator ? result*-1 : result;
 

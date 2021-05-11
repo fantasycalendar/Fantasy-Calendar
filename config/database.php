@@ -58,6 +58,9 @@ return [
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
+            'wait_timeout'  =>  '10',
+            'interactive_timeout'   => '10',
+            'net_read_timeout'  => '10',
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
