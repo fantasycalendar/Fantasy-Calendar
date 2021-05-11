@@ -20,7 +20,7 @@
                 var ad = document.querySelector("ins.adsbygoogle");
                 var adbox = document.querySelector('div.moneybox');
                 var alert = document.createElement('div');
-                alert.innerHTML = '<div class="alert alert-warning small mb-0"><strong>Hate ads?</strong><br>We do too, but the ad that goes here keeps access to this calendar free. Fantasy Calendar is a spare-time project for a team of just two guys, so if you like it please consider supporting us by disabling your adblocker or <a href="{{ route('subscription.pricing') }}">becoming a paid subscriber ($20/year)</a>.<br><br><span class="small">Thanks,<br>-Fantasy Calendar</span></div>';
+                alert.innerHTML = '<div class="alert alert-warning small mb-0 mx-3"><strong>Hate ads?</strong><br>We do too, but the ad that goes here keeps access to this calendar free. Fantasy Calendar is a spare-time project for a team of just two guys, so if you like it please consider supporting us by disabling your adblocker or <a href="{{ route('subscription.pricing') }}">becoming a paid subscriber ($20/year)</a>.<br><br><span class="small">Thanks,<br>-Fantasy Calendar</span></div>';
                 adbox.appendChild(alert);
                 adbox.removeChild(ad);
                 adbox.classList.add("blocked");
