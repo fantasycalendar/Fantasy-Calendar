@@ -283,14 +283,14 @@
         @endif
 	@endif
 
-    @guest
-        <div class='wrap-collapsible card'>
+    @if(!Auth::check() && !$calendar->user->isPremium())
+        <div class='wrap-collapsible card py-3 mb-5'>
             <div id="anad_slot" class="d-flex w-100 justify-content-center moneybox" style="max-width: 100%;">
 
                 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
                 <!-- Dungeon-Generator-Side-Ad -->
                 <ins class="adsbygoogle"
-                        style="display:inline-block !important;max-width:100%;width:300px;height:200px; padding: 1rem;"
+                        style="display:inline-block !important;max-width:100%;width:300px;height:200px;"
                         data-ad-format="auto"
                         data-ad-client="ca-pub-3610316180878002"
                         data-ad-slot="1552967970"
@@ -301,7 +301,7 @@
 
             </div>
         </div>
-	@endguest
+	@endif
 
 </form>
 

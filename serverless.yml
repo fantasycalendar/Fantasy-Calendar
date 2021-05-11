@@ -97,7 +97,9 @@ package:
         - setup/**
         - node_modules/**
         - public/storage
+        - public/vendor
         - resources/assets/**
+        - resources/images/**
         - storage/**
         - tests/**
 
