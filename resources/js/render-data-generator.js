@@ -188,7 +188,7 @@ const render_data_generator = {
 			"weather_icon": weather_icon,
 			"season_color": season_color,
             "show_event_button": Perms.player_at_least('player'),
-            "events": events,
+            "events": events.filter(event => event.show),
 			"moons": moons,
             "has_events": true
 		};
@@ -646,14 +646,30 @@ const render_data_generator = {
                     event_name = `${event_name} (start)`
                 }else if(end){
                     event_name = `${event_name} (end)`
+
+                    let index = this.evaluated_event_data.ends[event_index].indexOf(epoch);
+
+                    let start_epoch = this.evaluated_event_data.starts[event_index][index];
+
+                    if(event.data.show_first_last){
+                        for(let internal_epoch = start_epoch; internal_epoch < epoch; internal_epoch++){
+                            this.add_event_to_epoch(internal_epoch, {
+                                "index": event_index,
+                                "overrides": event.data.overrides,
+                                "show": false
+                            });
+                        }
+                    }
+
                 }
 
-                this.events_to_send[epoch].push({
+                this.add_event_to_epoch(epoch, {
                     "index": event_index,
                     "name": event_name,
                     "overrides": event.data.overrides,
                     "class": event_class.join(' '),
-                    "era": false
+                    "era": false,
+                    "show": true
                 });
             }
         }
@@ -662,6 +678,16 @@ const render_data_generator = {
             success: true,
             event_data: this.events_to_send
         }
+    },
+
+    add_event_to_epoch: function(epoch, data){
+
+	    if(this.events_to_send[epoch] === undefined){
+            this.events_to_send[epoch] = [];
+        }
+
+	    this.events_to_send[epoch].push(data);
+
     },
 
 	create_event_data: function(){
