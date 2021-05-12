@@ -13,7 +13,6 @@ const calendar_events_editor = {
 	delete_hover_element: undefined,
 	delete_droppable: false,
 	deleting_clicked: false,
-    has_moons: false,
 	moons: [],
 
 	working_event: {
@@ -237,7 +236,7 @@ const calendar_events_editor = {
 		this.init($event);
 
 		this.new_event = true;
-		let name = $event.detail.name ?? "New Event";
+		let name = $event.detail.name ?? "";
 		this.creation_type = "Creating Event"
 
 		this.working_event = {
@@ -321,7 +320,9 @@ const calendar_events_editor = {
 
 		this.set_up_moon_data();
 
-		this.description_input.trumbowyg('html', this.working_event.description);
+		if(this.description_input) {
+            this.description_input.trumbowyg('html', this.working_event.description);
+        }
 
 		this.create_conditions(this.working_event.data.conditions, this.event_conditions_container);
 
@@ -336,6 +337,8 @@ const calendar_events_editor = {
 	save_event: function() {
 
 		this.working_event.data = this.create_event_data();
+
+		this.working_event.name = (this.working_event.name === "") ? "New Event" : this.working_event.name;
 
 		this.working_event.description = this.description_input.trumbowyg('html');
 
@@ -369,7 +372,7 @@ const calendar_events_editor = {
 		if (success) {
 
 			eval_apply_changes(function() {
-				rebuild_events();
+				rerender_calendar();
 			});
 
 		}
@@ -430,7 +433,11 @@ const calendar_events_editor = {
 
 	},
 
-	callback_do_close() {
+	confirm_close() {
+	    // Don't do anything if a swal is open.
+	    if(swal.isVisible()) {
+	        return false;
+        }
 
 		if (this.event_has_changed()) {
 			swal.fire({
@@ -451,7 +458,7 @@ const calendar_events_editor = {
 
 	},
 
-	callback_do_view() {
+	confirm_view() {
 
 		if (this.event_has_changed()) {
 			swal.fire({
@@ -690,10 +697,6 @@ const calendar_events_editor = {
 	},
 
 	set_up_moon_data: function() {
-
-	    this.has_moons = static_data.moons.length > 0;
-
-	    if(static_data.moons.length == 0) return;
 
 		this.moons = [];
 		for (let index in static_data.moons) {
@@ -2085,11 +2088,11 @@ const calendar_events_editor = {
 		});
 	},
 
-	query_delete_event: function($event) {
+	confirm_delete_event: function($event) {
 
 		let event_editor_ui = this;
 
-		let delete_event_id = $event.detail.event_id === undefined ? this.event_id : $event.detail.event_id;
+		let delete_event_id = $event.detail.event_id;
 
 		var warnings = [];
 
@@ -2143,7 +2146,7 @@ const calendar_events_editor = {
 
 					if ($('#events_sortable').length) {
 
-						event_editor_ui.delete_event(delete_event_id);
+						this.delete_event(delete_event_id);
 
 						events_sortable.children(`[index='${delete_event_id}']`).remove();
 
@@ -2187,9 +2190,9 @@ const calendar_events_editor = {
 
 		events.splice(delete_event_id, 1);
 
-		rerender_calendar();
+        this.close();
 
-		this.close();
+		rerender_calendar();
 
 	},
 

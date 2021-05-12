@@ -212,7 +212,7 @@ const calendar_events_viewer = {
 		});
 	},
 
-	callback_do_edit: function() {
+	confirm_edit: function() {
 
 		if (this.user_can_comment && this.can_comment_on_event) {
 			let comment_content = this.comment_editor.trumbowyg('html');
@@ -240,9 +240,13 @@ const calendar_events_viewer = {
 		this.close();
 	},
 
-	callback_do_close: function() {
+	confirm_close: function() {
+        // Don't do anything if a swal is open.
+        if(swal.isVisible()) {
+            return false;
+        }
 
-		if (this.user_can_comment && this.can_comment_on_event) {
+        if (this.user_can_comment && this.can_comment_on_event) {
 			let comment_content = this.comment_editor.trumbowyg('html');
 			if (comment_content != "" && comment_content != "<p><br></p>") {
 				swal.fire(this.swal_content).then((result) => {
