@@ -561,19 +561,19 @@ const render_data_generator = {
 
 		if(static_data.eras.length > 0 && !static_data.settings.hide_eras){
 
-			var num_eras = Object.keys(static_data.eras).length;
+			let num_eras = Object.keys(static_data.eras).length;
 
-			for(var era_index = 0; era_index < num_eras; era_index++){
+			for(let era_index = 0; era_index < num_eras; era_index++){
 
-				var era = static_data.eras[era_index];
+				let era = static_data.eras[era_index];
 
 				if(era.settings.show_as_event){
 
                     let event_class = ['era_event'];
 
-                    var category = era.settings.event_category_id && era.settings.event_category_id > -1 ?  get_category(era.settings.event_category_id) : false;
+                    let category = era.settings.event_category_id && era.settings.event_category_id > -1 ?  get_category(era.settings.event_category_id) : false;
 
-                    if(category && category.id != -1){
+                    if(category && category.id !== -1){
                         if(category.event_settings.hide_full){
                             continue;
                         }
@@ -602,17 +602,9 @@ const render_data_generator = {
 
             let event = events[event_index];
 
-            if(event.settings.hide_full){
-                continue;
-            }
+            let category = event.event_category_id && event.event_category_id > -1 ?  get_category(event.event_category_id) : false;
 
-            var category = event.event_category_id && event.event_category_id > -1 ?  get_category(event.event_category_id) : false;
-
-            var category_hide = category && category.id != -1 ? category.category_settings.hide : false;
-
-            if(!Perms.can_modify_event(event_index) && (event.settings.hide || category_hide)){
-                continue;
-            }
+            let category_hide = category && category.id !== -1 ? category.category_settings.hide : false;
 
             let epochs = this.evaluated_event_data.valid[event_index];
 
@@ -620,12 +612,8 @@ const render_data_generator = {
 
                 let epoch = epochs[epoch_index];
 
-                if(this.events_to_send[epoch] === undefined){
-                    this.events_to_send[epoch] = []
-                }
-
-                var start = this.evaluated_event_data.starts[event_index].indexOf(epoch) != -1;
-                var end = this.evaluated_event_data.ends[event_index].indexOf(epoch) != -1;
+                let start = this.evaluated_event_data.starts[event_index].indexOf(epoch) !== -1;
+                let end = this.evaluated_event_data.ends[event_index].indexOf(epoch) !== -1;
 
                 let event_class = [];
                 event_class.push(!event.settings.print ? "d-print-none" : "");
@@ -637,7 +625,7 @@ const render_data_generator = {
 
                 let event_name = event.name;
 
-                if(this.render_data.render_style == "minimalistic" && this.render_data.event_epochs[epoch] !== undefined){
+                if(this.render_data.render_style === "minimalistic" && this.render_data.event_epochs[epoch] !== undefined){
                     let day = this.render_data.event_epochs[epoch];
                     event_name = `${ordinal_suffix_of(day.number)}: ${event_name}`
                 }
@@ -669,7 +657,7 @@ const render_data_generator = {
                     "overrides": event.data.overrides,
                     "class": event_class.join(' '),
                     "era": false,
-                    "show": true
+                    "show": (Perms.can_modify_event(event_index) || !(event.settings.hide || category_hide)) && !event.settings.hide_full
                 });
             }
         }
