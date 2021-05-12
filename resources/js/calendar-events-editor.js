@@ -234,9 +234,9 @@ const calendar_events_editor = {
 	create_new_event: function($event) {
 
 		this.init($event);
-		
+
 		this.new_event = true;
-		let name = $event.detail.name ?? "New Event";
+		let name = $event.detail.name ?? "";
 		this.creation_type = "Creating Event"
 
 		this.working_event = {
@@ -315,7 +315,7 @@ const calendar_events_editor = {
 		this.creation_type = "Editing Event"
 
 		this.event_id = $event.detail.event_id;
-		
+
 		this.working_event = clone(events[this.event_id]);
 
 		this.set_up_moon_data();
@@ -327,7 +327,7 @@ const calendar_events_editor = {
 		this.evaluate_condition_selects(this.event_conditions_container);
 
 		this.inputs_changed = false;
-		
+
 		this.open = true;
 
 	},
@@ -335,6 +335,8 @@ const calendar_events_editor = {
 	save_event: function() {
 
 		this.working_event.data = this.create_event_data();
+
+		this.working_event.name = (this.working_event.name === "") ? "New Event" : this.working_event.name;
 
 		this.working_event.description = this.description_input.trumbowyg('html');
 
@@ -425,7 +427,11 @@ const calendar_events_editor = {
 
 	},
 
-	callback_do_close() {
+	confirm_close() {
+	    // Don't do anything if a swal is open.
+	    if(swal.isVisible()) {
+	        return false;
+        }
 
 		if (this.event_has_changed()) {
 			swal.fire({
@@ -446,7 +452,7 @@ const calendar_events_editor = {
 
 	},
 
-	callback_do_view() {
+	confirm_view() {
 
 		if (this.event_has_changed()) {
 			swal.fire({
@@ -472,7 +478,7 @@ const calendar_events_editor = {
 	create_event_data: function(){
 
 		let conditions = this.create_condition_array(this.event_conditions_container);
-		
+
 		let search_distance = this.get_search_distance(conditions);
 
 		let date = []
@@ -2076,8 +2082,8 @@ const calendar_events_editor = {
 		});
 	},
 
-	query_delete_event: function($event) {
-		
+	confirm_delete_event: function($event) {
+
 		let event_editor_ui = this;
 
 		let delete_event_id = $event.detail.event_id;
@@ -2300,7 +2306,7 @@ const calendar_events_editor = {
 	},
 
 	backup_event_data: {},
-	
+
 	event_testing: {
 		occurrences: [],
 		occurrences_text: [],
@@ -2313,7 +2319,7 @@ const calendar_events_editor = {
 	},
 
 	set_up_event_text: function(years){
-		
+
 		let event_has_changed = this.event_has_changed();
 
 		let num_occurrences = this.event_testing.occurrences.length;
@@ -2403,7 +2409,7 @@ const calendar_events_editor = {
 	},
 
 	check_event_chain: function(event_id, working_event) {
-		
+
 		let current_event = {}
 		if (working_event){
 			current_event = clone(this.working_event);

@@ -9,18 +9,19 @@
     @event-viewer-modal-delete-comment.window="delete_comment"
     @event-viewer-modal-start-edit-comment.window="start_edit_comment"
     @event-viewer-modal-edit-comment.window="edit_comment"
-    x-show='open'
+    @keydown.escape.window="open && confirm_close($event)"
+    x-show.immediate='open'
     x-cloak
 >
 	<div class='modal-basic-container'>
 		<div class='modal-basic-wrapper'>
-			<div class='modal-wrapper'>
+			<div class='modal-wrapper' x-show.transition="open">
 
 				<div class='close-ui-btn-bg'></div>
-				<i class="close_ui_btn fas fa-times-circle" @click='callback_do_close(close)'></i>
+				<i class="close_ui_btn fas fa-times-circle" @click='confirm_close(close)'></i>
 
 				<div class='row no-gutters modal-form-heading'>
-					<h2><span class='event_name' x-text='data.name'>Editing Event</span> <i class="fas fa-pencil-alt edit_event_btn" @click='callback_do_edit' x-show='can_edit'></i></h2>
+					<h2><span class='event_name' x-text='data.name'>Editing Event</span> <i class="fas fa-pencil-alt edit_event_btn" @click='confirm_edit' x-show='can_edit'></i></h2>
 				</div>
 
 				<div class='row'>
@@ -100,25 +101,31 @@
     x-data="CalendarEventEditor"
     class='clickable_background'
     id='event_editor'
-    @event-editor-modal-new-event.window="create_new_event"
-    @event-editor-modal-edit-event.window="edit_event"
-    @event-editor-modal-delete-event.window="query_delete_event"
-    x-show='open'
+    @event-editor-modal-new-event.window="create_new_event($event); $nextTick(() => {
+        document.querySelector('.event_editor_name').focus();
+    });"
+    @event-editor-modal-edit-event.window="edit_event($event); $nextTick(() => {
+        document.querySelector('.event_editor_name').focus();
+    });"
+    @event-editor-modal-delete-event.window="confirm_delete_event"
+    @keydown.escape.window="open && confirm_close($event)"
+    x-show.immediate='open'
+    x-cloak
 >
 
     <div class='modal-basic-container'>
 		<div class='modal-basic-wrapper'>
-			<form id="event-form" class="modal-wrapper container" action="post">
+			<form id="event-form" class="modal-wrapper container" action="post" @click.away="confirm_close" x-show.transition="open">
 
 				<div class='close-ui-btn-bg'></div>
-				<i class="close_ui_btn fas fa-times-circle" @click='callback_do_close'></i>
+				<i class="close_ui_btn fas fa-times-circle" @click='confirm_close'></i>
 
 				<div class='row no-gutters mb-1 modal-form-heading'>
-					<h2 class='event_action_type'><span x-text="creation_type"></span> <i class="fas fa-eye view_event_btn" @click='callback_do_view'></i></h2>
+					<h2 class='event_action_type'><span x-text="creation_type"></span> <i class="fas fa-eye view_event_btn" @click='confirm_view'></i></h2>
 				</div>
 
 				<div class='row no-gutters my-1'>
-					<input type='text' class='form-control' x-model='working_event.name' placeholder='Event name' autofocus='' />
+					<input type='text' class='form-control event_editor_name' x-model='working_event.name' placeholder='Event name' autofocus='' @keydown.enter="save_event" @keydown.esc.stop />
 				</div>
 
 				<div class='row no-gutters my-1'>
@@ -313,7 +320,7 @@
                         </h4>
                     </div>
 
-                    <div class='container settings_container p-0' x-show="settings_open">
+                    <div class='container settings_container p-0' x-show.transition.origin.top="settings_open">
 
 
                     @if(!isset($calendar) || (Auth::user() != Null && Auth::user()->can('advance-date', $calendar)))
@@ -488,17 +495,18 @@
     class='clickable_background'
     id="html_edit_background"
     @html-editor-modal-edit-html.window="edit_html"
-    x-show='open'
+    @keydown.escape.window="open && confirm_close($event)"
+    x-show.immediate='open'
 >
 	<div class='modal-basic-container'>
 		<div class='modal-basic-wrapper'>
-			<form id="html-form" class="modal-wrapper" action="post">
+			<form id="html-form" class="modal-wrapper" action="post" x-show.transition="open">
 
 				<div class='close-ui-btn-bg'></div>
-				<i class="close_ui_btn fas fa-times-circle" @click='callback_do_close'></i>
+				<i class="close_ui_btn fas fa-times-circle" @click='confirm_close'></i>
 
 				<div class='row no-gutters mb-1 modal-form-heading'>
-					<h2 class='event_action_type'><span>Editing Era Description</span> <i class="fas fa-eye view_event_btn" @click='callback_do_view'></i></h2>
+					<h2 class='event_action_type'><span>Editing Era Description</span> <i class="fas fa-eye view_event_btn" @click='confirm_view'></i></h2>
 				</div>
 
 				<div class='row'>
