@@ -483,7 +483,7 @@
 					<div class='btn btn-lg btn-primary btn-block' @click="save_event">Save</div>
 				</div>
 				<div class='row no-gutters my-1'>
-					<div class='btn btn-sm btn-danger btn-block' id='btn_event_delete'>Delete</div>
+					<div class='btn btn-sm btn-danger btn-block' x-show='!new_event' @click='confirm_delete_event({detail: {event_id: event_id}})'>Delete</div>
 				</div>
 			</form>
 		</div>

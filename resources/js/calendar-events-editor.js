@@ -320,7 +320,9 @@ const calendar_events_editor = {
 
 		this.set_up_moon_data();
 
-		this.description_input.trumbowyg('html', this.working_event.description);
+		if(this.description_input) {
+            this.description_input.trumbowyg('html', this.working_event.description);
+        }
 
 		this.create_conditions(this.working_event.data.conditions, this.event_conditions_container);
 
@@ -389,7 +391,9 @@ const calendar_events_editor = {
 		this.nth = "";
 		this.show_nth = false;
 
-		this.description_input.trumbowyg('html', '');
+		if(this.description_input) {
+            this.description_input.trumbowyg('html', '');
+        }
 
 		this.working_event = {
 			'name': '',
@@ -421,7 +425,9 @@ const calendar_events_editor = {
 		this.event_testing.visible_occurrences_2 = [];
 		this.event_testing.text = "";
 
-		this.event_conditions_container.empty();
+		if(this.event_conditions_container) {
+            this.event_conditions_container.empty();
+        }
 
 		evaluate_save_button();
 
@@ -2140,7 +2146,7 @@ const calendar_events_editor = {
 
 					if ($('#events_sortable').length) {
 
-						event_editor_ui.delete_event(delete_event_id);
+						this.delete_event(delete_event_id);
 
 						events_sortable.children(`[index='${delete_event_id}']`).remove();
 
@@ -2184,8 +2190,9 @@ const calendar_events_editor = {
 
 		events.splice(delete_event_id, 1);
 
-		let result = RenderDataGenerator.event_deleted(delete_event_id)
-		window.dispatchEvent(new CustomEvent('events-change', { detail: result }));
+        this.close();
+
+		rerender_calendar();
 
 	},
 
