@@ -1467,7 +1467,7 @@ var edit_event_ui = {
 
 				}else if(element[0] == "Date"){
 					condition.find('.input_container').children().first().children().each(function(i){
-						$(this).val(element[2][i]);
+						$(this).val(element[2][i]).change();
 					})
 				}else{
 					condition.find('.input_container').children().each(function(i){
