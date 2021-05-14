@@ -108,7 +108,7 @@
         document.querySelector('.event_editor_name').focus();
     });"
     @event-editor-modal-delete-event.window="confirm_delete_event"
-    @keydown.escape.window="open && confirm_close($event)"
+    @keydown.escape.window="esc_clicked($event)"
     x-show.immediate='open'
     x-cloak
 >

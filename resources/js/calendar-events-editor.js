@@ -11,8 +11,8 @@ const calendar_events_editor = {
 	trumbowyg: undefined,
 	inputs_changed: false,
 	delete_hover_element: undefined,
-	delete_droppable: false,
-	deleting_clicked: false,
+	isDeletingDroppable: false,
+	isDeletingConditions: false,
 	moons: [],
 
 	working_event: {
@@ -61,7 +61,7 @@ const calendar_events_editor = {
 			this.event_conditions_container.nestedSortable({
 				handle: ".handle",
 				containerSelector: ".group_list_root, .group_list",
-				onDragStart: function(item, container, _super, event) {
+				onDragStart(item, container, _super, event) {
 					item.css({
 						height: item.outerHeight(),
 						width: item.outerWidth()
@@ -72,12 +72,12 @@ const calendar_events_editor = {
 					container.rootGroup.placeholder.css('height', height);
 					$('#condition_remove_button .icon').addClass('wiggle');
 				},
-				onDrop: function(item, container, _super, event) {
+				onDrop(item, container, _super, event) {
 					item.removeClass(container.group.options.draggedClass).removeAttr("style");
 					$("body").removeClass(container.group.options.bodyClass);
 					$('#condition_remove_button .icon').removeClass('wiggle');
 					$('#condition_remove_button .icon').removeClass('faster');
-					if (event_editor_ui.delete_droppable) {
+					if (event_editor_ui.isDeletingDroppable) {
 						item.remove();
 					}
 					event_editor_ui.evaluate_condition_selects(event_editor_ui.event_conditions_container);
@@ -118,13 +118,13 @@ const calendar_events_editor = {
 			})
 
 			$(document).on('mouseenter', '.condition', function(e) {
-				if (event_editor_ui.deleting_clicked) {
+				if (event_editor_ui.isDeletingConditions) {
 					event_editor_ui.set_delete_element($(this));
 				}
 			});
 
 			$(document).on('mouseleave', '.condition', function(e) {
-				if (event_editor_ui.deleting_clicked) {
+				if (event_editor_ui.isDeletingConditions) {
 					if ($(this).parent().hasClass('group_list')) {
 						event_editor_ui.set_delete_element($(this).parent().parent());
 					} else {
@@ -134,13 +134,13 @@ const calendar_events_editor = {
 			});
 
 			$(document).on('mouseenter', '.group', function(e) {
-				if (event_editor_ui.deleting_clicked) {
+				if (event_editor_ui.isDeletingConditions) {
 					event_editor_ui.set_delete_element($(this));
 				}
 			});
 
 			$(document).on('mouseleave', '.group', function(e) {
-				if (event_editor_ui.deleting_clicked) {
+				if (event_editor_ui.isDeletingConditions) {
 					if ($(this).parent().hasClass('group_list')) {
 						event_editor_ui.set_delete_element($(this).parent().parent());
 					} else {
@@ -150,7 +150,7 @@ const calendar_events_editor = {
 			});
 
 			$(document).on('click', '.condition, .condition div, .condition select, .condition span', function(e) {
-				if (event_editor_ui.deleting_clicked) {
+				if (event_editor_ui.isDeletingConditions) {
 					e.preventDefault();
 					e.stopPropagation();
 					var item = $(this).closest('.condition');
@@ -170,7 +170,7 @@ const calendar_events_editor = {
 			});
 
 			$(document).on('click', '.group, .group .group_list', function(e) {
-				if (event_editor_ui.deleting_clicked) {
+				if (event_editor_ui.isDeletingConditions) {
 
 					e.preventDefault();
 					e.stopPropagation();
@@ -231,7 +231,7 @@ const calendar_events_editor = {
 		}
 	},
 
-	create_new_event: function($event) {
+	create_new_event($event) {
 
 		this.init($event);
 
@@ -291,7 +291,7 @@ const calendar_events_editor = {
 
 	},
 
-	event_category_changed: function(){
+	event_category_changed(){
 
 		if (this.working_event.event_category_id != -1) {
 			var category = get_category(this.working_event.event_category_id);
@@ -306,7 +306,7 @@ const calendar_events_editor = {
 
 	},
 
-	edit_event: function($event) {
+	edit_event($event) {
 
 		this.init($event);
 
@@ -334,7 +334,7 @@ const calendar_events_editor = {
 
 	},
 
-	save_event: function() {
+	save_event() {
 
 		this.working_event.data = this.create_event_data();
 
@@ -367,7 +367,7 @@ const calendar_events_editor = {
 
 	},
 
-	submit_event_callback: function(success){
+	submit_event_callback(success){
 
 		if (success) {
 
@@ -379,7 +379,7 @@ const calendar_events_editor = {
 
 	},
 
-	close: function() {
+	close() {
 
 		this.open = false;
 
@@ -433,9 +433,22 @@ const calendar_events_editor = {
 
 	},
 
+    esc_clicked($event) {
+
+	    if(this.isDeletingConditions){
+	        this.remove_clicked();
+	        return;
+        }
+
+	    if(this.open){
+	         this.confirm_close($event);
+        }
+
+    },
+
 	confirm_close() {
-	    // Don't do anything if a swal is open.
-	    if(swal.isVisible()) {
+	    // Don't do anything if a swal is open or the user is deleting conditions
+	    if(swal.isVisible() || this.isDeletingConditions){
 	        return false;
         }
 
@@ -481,7 +494,7 @@ const calendar_events_editor = {
 
 	},
 
-	create_event_data: function(){
+	create_event_data(){
 
 		let conditions = this.create_condition_array(this.event_conditions_container);
 
@@ -576,7 +589,7 @@ const calendar_events_editor = {
 
 	},
 
-	get_search_distance: function(conditions) {
+	get_search_distance(conditions) {
 
 		var search_distance = 0;
 
@@ -591,7 +604,7 @@ const calendar_events_editor = {
 
 	},
 
-	recurse_conditions: function(conditions, search_distance) {
+	recurse_conditions(conditions, search_distance) {
 
 		for (let index in conditions) {
 
@@ -612,7 +625,7 @@ const calendar_events_editor = {
 
 	},
 
-	event_is_one_time: function() {
+	event_is_one_time() {
 
 		var date = []
 
@@ -668,7 +681,7 @@ const calendar_events_editor = {
 
 	},
 
-	event_has_changed: function() {
+	event_has_changed() {
 
 		if (events[this.event_id] && this.inputs_changed) {
 
@@ -696,7 +709,7 @@ const calendar_events_editor = {
 
 	},
 
-	set_up_moon_data: function() {
+	set_up_moon_data() {
 
 		this.moons = [];
 		for (let index in static_data.moons) {
@@ -767,7 +780,7 @@ const calendar_events_editor = {
 
 	},
 
-	condition_preset_changed: function($event){
+	condition_preset_changed($event){
 
 		if (this.preset == this.previous_preset) {
 			return;
@@ -813,7 +826,7 @@ const calendar_events_editor = {
 
 	},
 
-	populate_condition_presets: function(){
+	populate_condition_presets(){
 
 		this.presets.weekly = {
 			text: `Weekly on ${this.epoch_data.week_day_name}`,
@@ -902,13 +915,13 @@ const calendar_events_editor = {
 		})
 	},
 
-	nth_input_changed: function(){
+	nth_input_changed(){
 		this.update_every_nth_presets();
 		this.event_conditions_container.empty();
 		this.add_preset_conditions(this.preset, this.nth);
 	},
 
-	update_every_nth_presets: function(){
+	update_every_nth_presets(){
 
 		var repeat_string = !isNaN(this.nth) && this.nth > 1 ? `Every ${ordinal_suffix_of(this.nth)} ` : (this.nth == "" ? "Every nth" : "Every");
 
@@ -953,7 +966,7 @@ const calendar_events_editor = {
 
 	},
 
-	add_preset_conditions: function(preset, repeats) {
+	add_preset_conditions(preset, repeats) {
 
 		this.inputs_changed = true;
 
@@ -1175,7 +1188,7 @@ const calendar_events_editor = {
 	},
 
 	// This function creates an array for the conditions so that it may be stored
-	create_condition_array: function(element) {
+	create_condition_array(element) {
 
 		var array = [];
 
@@ -1280,7 +1293,7 @@ const calendar_events_editor = {
 	},
 
 	// This function finds and replaces all NAND operators and places !( and ) around them
-	replace_NAND: function(array) {
+	replace_NAND(array) {
 		for (var i = array.length - 1; i > -1; i--) {
 			element = array[i];
 			if (element[1] && Array.isArray(element[1]) && element[1].length > 0) {
@@ -1314,7 +1327,7 @@ const calendar_events_editor = {
 	},
 
 	// This function takes an array of conditions, and the parent which to attach the conditions UI
-	create_conditions: function(array, parent, group_type) {
+	create_conditions(array, parent, group_type) {
 
 		if (!array) {
 			return;
@@ -1396,7 +1409,7 @@ const calendar_events_editor = {
 		}
 	},
 
-	evaluate_condition_selects: function(element) {
+	evaluate_condition_selects(element) {
 
 		let event_editor_ui = this;
 
@@ -1437,30 +1450,30 @@ const calendar_events_editor = {
 		}
 	},
 
-	remove_clicked: function() {
+	remove_clicked() {
 
-		this.deleting_clicked = !this.deleting_clicked;
-		$('#condition_remove_button .icon').toggleClass('wiggle', this.deleting_clicked);
+		this.isDeletingConditions = !this.isDeletingConditions;
+		$('#condition_remove_button .icon').toggleClass('wiggle', this.isDeletingConditions);
 		$('#condition_remove_button .icon').removeClass('faster', false);
-		$('#event_conditions_container').toggleClass('deleting', this.deleting_clicked);
-		$('#add_event_condition').prop('disabled', this.deleting_clicked);
-		$('#add_event_condition_group').prop('disabled', this.deleting_clicked);
-		$('#condition_presets').prop('disabled', this.deleting_clicked);
+		$('#event_conditions_container').toggleClass('deleting', this.isDeletingConditions);
+		$('#add_event_condition').prop('disabled', this.isDeletingConditions);
+		$('#add_event_condition_group').prop('disabled', this.isDeletingConditions);
+		$('#condition_presets').prop('disabled', this.isDeletingConditions);
 
 	},
 
-	remove_mouseover: function($event) {
-		this.delete_droppable = true;
+	remove_mouseover($event) {
+		this.isDeletingDroppable = true;
 		$('#condition_remove_button .icon').addClass('faster');
 	},
 
-	remove_mouseout: function() {
-		this.delete_droppable = false;
+	remove_mouseout() {
+		this.isDeletingDroppable = false;
 		$('#condition_remove_button .icon').removeClass('faster');
 	},
 
 	// This function evaluates what inputs should be connected to any given condition based on its input
-	evaluate_inputs: function(element) {
+	evaluate_inputs(element) {
 
 		this.inputs_changed = true;
 		this.conditions_changed = true;
@@ -1946,7 +1959,7 @@ const calendar_events_editor = {
 
 	},
 
-	add_condition_clicked: function() {
+	add_condition_clicked() {
 
 		this.add_condition(this.event_conditions_container, "Year");
 		this.evaluate_inputs(this.event_conditions_container.children().last())
@@ -1954,7 +1967,7 @@ const calendar_events_editor = {
 
 	},
 
-	add_condition: function(parent, type) {
+	add_condition(parent, type) {
 
 		this.inputs_changed = true;
 
@@ -2037,14 +2050,14 @@ const calendar_events_editor = {
 
 	},
 
-	add_group_clicked: function() {
+	add_group_clicked() {
 
 		this.add_group(this.event_conditions_container, "normal");
 		this.evaluate_condition_selects(this.event_conditions_container);
 
 	},
 
-	add_group: function(parent, group_class) {
+	add_group(parent, group_class) {
 
 		this.inputs_changed = true;
 
@@ -2082,7 +2095,7 @@ const calendar_events_editor = {
 
 	},
 
-	update_radio_button_names: function() {
+	update_radio_button_names() {
 		$(".group_type").each(function(i) {
 			$(this).find("input[type='radio']").attr("name", `${i}_group_type`);
 			var type = $(this).attr('type');
@@ -2090,7 +2103,7 @@ const calendar_events_editor = {
 		});
 	},
 
-	confirm_delete_event: function($event) {
+	confirm_delete_event($event) {
 
 		let event_editor_ui = this;
 
@@ -2200,7 +2213,7 @@ const calendar_events_editor = {
 
 	build_seasons: false,
 
-	test_event: function(years) {
+	test_event(years) {
 
 		if (this.event_is_one_time()) {
 
@@ -2239,7 +2252,7 @@ const calendar_events_editor = {
 
 	},
 
-	cancel_event_test: function(self){
+	cancel_event_test(self){
 
 		try {
 			self.worker_event_tester.terminate();
@@ -2251,7 +2264,7 @@ const calendar_events_editor = {
 
 	},
 
-	run_test_event: function(years) {
+	run_test_event(years) {
 
 		show_loading_screen(true, this.cancel_event_test, this);
 
@@ -2327,7 +2340,7 @@ const calendar_events_editor = {
 		text: "",
 	},
 
-	set_up_event_text: function(years){
+	set_up_event_text(years){
 
 		let event_has_changed = this.event_has_changed();
 
@@ -2375,15 +2388,15 @@ const calendar_events_editor = {
 
 	},
 
-	next_page: function(){
+	next_page(){
 		this.set_page(this.event_testing.page+1);
 	},
 
-	prev_page: function(){
+	prev_page(){
 		this.set_page(this.event_testing.page-1);
 	},
 
-	set_page: function(page) {
+	set_page(page) {
 
 		this.event_testing.page = page;
 
@@ -2397,7 +2410,7 @@ const calendar_events_editor = {
 
 	checked_events: [],
 
-	evaluation_has_season_event: function() {
+	evaluation_has_season_event() {
 
 		this.check_event_chain(this.event_id, true)
 
@@ -2417,7 +2430,7 @@ const calendar_events_editor = {
 
 	},
 
-	check_event_chain: function(event_id, working_event) {
+	check_event_chain(event_id, working_event) {
 
 		let current_event = {}
 		if (working_event){
@@ -2441,7 +2454,7 @@ const calendar_events_editor = {
 
 	},
 
-	look_through_event_chain: function(child, parent_id) {
+	look_through_event_chain(child, parent_id) {
 
 		if (events[parent_id].data.connected_events !== undefined && events[parent_id].data.connected_events.length > 0) {
 
