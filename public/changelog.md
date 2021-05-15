@@ -1,7 +1,6 @@
-### 2.1.0 - Adjective Djinn
-#### Month Day, Year
-* Tweaked - Default era formatting tweaked to utilize era year instead of absolute year when era restarts the year count 
-* Fixed - Date-based events not properly filling out their data when edited 
+### 2.0.20 - Typesetting Efreet
+#### May 10, 2021
+* Fixed - Browser print customization options are no longer disabled. Users can now select portrait or landscape, as well as page sizes and color options.
 
 ### 2.0.19 - Facepalming Efreet
 #### May 10, 2021
