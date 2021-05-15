@@ -95,15 +95,6 @@ function context_add_event(key, opt){
 
 }
 
-function context_open_day_data(key, opt){
-
-	var day_element = $(opt.$trigger[0]);
-	var epoch = day_element.attr('epoch')|0;
-	var epoch_data = evaluated_static_data.epoch_data[epoch];
-	day_data_tooltip.show(day_element, epoch_data);
-
-}
-
 function get_events_on_day(element){
 
 	var epoch = element.attr('epoch')|0;
@@ -344,7 +335,10 @@ function set_up_visitor_inputs(){
 	items.day_data = {
 		name: "View advanced day info",
 		icon: "fas fa-cogs",
-		callback: context_open_day_data,
+		callback: function(key, opt){
+			let epoch = Number($(opt.$trigger[0]).attr('epoch'));
+		    window.dispatchEvent(new CustomEvent('day-data-modal-open', { detail: { element: opt.$trigger[0], epoch: epoch } }));
+        },
 		disabled: function(){
 			return !Perms.player_at_least('co-owner');
 		},
