@@ -3,8 +3,10 @@
 namespace App;
 
 use App\Collections\ErasCollection;
+use App\Services\CalendarService\Era;
 use App\Services\CalendarService\LeapDay;
 use App\Services\CalendarService\Month;
+use App\Services\CalendarService\Moon;
 use App\Services\CalendarService\Timespan;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -178,7 +180,7 @@ class Calendar extends Model
         return $this;
     }
 
-    public function setDate($year, $timespan, $day)
+    public function setDate($year, $timespan = null, $day = null)
     {
         $dynamic_data = $this->dynamic_data;
 
@@ -282,6 +284,13 @@ class Calendar extends Model
         return $this->month->weekdays;
     }
 
+    public function getMoonsAttribute()
+    {
+        return collect(Arr::get($this->static_data, 'moons'))->map(function($moon){
+            return new Moon($moon);
+        });
+    }
+
     public function getDayAttribute()
     {
         return Arr::get($this->dynamic_data, 'day', 1) - 1;
@@ -317,7 +326,9 @@ class Calendar extends Model
 
     public function getErasAttribute()
     {
-        return new ErasCollection(Arr::get($this->static_data, 'eras'));
+        return (new ErasCollection(Arr::get($this->static_data, 'eras')))->map(function($era){
+            return new Era($era);
+        })->sortBy('year');
     }
 
     public function setting($setting_name, $default = false) {

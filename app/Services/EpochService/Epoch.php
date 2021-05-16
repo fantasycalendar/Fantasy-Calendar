@@ -7,6 +7,7 @@ namespace App\Services\EpochService;
 use App\Calendar;
 use App\Collections\EpochsCollection;
 use App\Services\CalendarService\Date;
+use App\Services\CalendarService\Era;
 use App\Services\EpochService\Processor\InitialState;
 use App\Services\EpochService\Processor\State;
 
@@ -45,7 +46,10 @@ class Epoch
                              ->replicate()
                              ->setDate($era->year, $era->month, $era->day);
 
-            $eraEpoch = (new State($calendar))->getState();
+            $eraEpoch = (new Processor($calendar))->processUntil(function($processor) use ($era) {
+                return $processor->state->month >= $era->month
+                    && $processor->state->day >= $era->day;
+            })->last();
 
             $this->epochs->put($date, $eraEpoch);
         }

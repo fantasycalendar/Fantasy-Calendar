@@ -41,13 +41,7 @@ class Month
         $this->calendar = $calendar;
         $this->weeks = collect();
 
-        $firstEpoch = new Epoch($this->calendar, $this->calendar->year, $this->calendar->month_index, 0);
-        $this->firstEpoch = $firstEpoch;
-        $this->id = $firstEpoch->month_id;
-        $this->attributes = $this->calendar->timespans->pull($firstEpoch->month_id)->toArray();
-        $this->baseLength = $this->attributes['length'];
-
-        $this->initialize();
+//        $this->initialize();
     }
 
     /*

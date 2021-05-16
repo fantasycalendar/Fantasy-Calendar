@@ -17,9 +17,9 @@ class Era
     public $description;
     public $settings;
     public $date;
-    private $year;
-    private $day;
-    private $timespan;
+    public $year;
+    public $day;
+    public $month;
 
     public function __construct($attributes)
     {
@@ -30,12 +30,13 @@ class Era
         $this->date = $attributes['date'];
         $this->year = $attributes['date']['year'];
         $this->day = $attributes['date']['day'];
-        $this->timespan = $attributes['date']['timespan'];
+        $this->month = $attributes['date']['timespan'];
     }
 
     public function getEpochSubtractables($calendar)
     {
         $eraEpoch = Epoch::forEra($this);
+        dd($eraEpoch);
 
         $eraFreeCalendar = $calendar
             ->replicate()
@@ -43,8 +44,11 @@ class Era
             ->startOfYear();
 
         $eraFreeEpoch = (new InitialState($eraFreeCalendar))
-            ->generateInitialProperties()
-            ->getState();
+            ->generateInitialProperties()->collect();
+
+        dd($eraEpoch, $eraFreeEpoch);
+
+        return 'YA BIG DUMMY';
     }
 
     public function beforeYear($year)
