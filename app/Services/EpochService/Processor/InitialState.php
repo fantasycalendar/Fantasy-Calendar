@@ -34,10 +34,24 @@ class InitialState
     {
         // Generate and set any initial properties used for the initial state
 
-        dd($this->epoch, $this->totalDaysFromTimespans, $this->calendar->dynamic_data);
+        dump([
+            'epoch' => $this->epoch,
+            'numTimespans' => $this->numTimespans,
+            'totalWeekNum' => $this->totalWeekNum,
+            'historicalIntercalaryCount' => $this->historicalIntercalaryCount,
+            'weekday' => $this->weekday,
+            'timespanCounts' => $this->timespanCounts,
+        ]);
+
+        dd($this->calendar->dynamic_data);
 
         return collect([
             'epoch' => $this->epoch,
+            'numTimespans' => $this->numTimespans,
+            'totalWeekNum' => $this->totalWeekNum,
+            'historicalIntercalaryCount' => $this->historicalIntercalaryCount,
+            'weekday' => $this->weekday,
+            'timespanCounts' => $this->timespanCounts
         ]);
     }
 
@@ -60,14 +74,79 @@ class InitialState
         return $this->calendar->timespans->map->occurrences($this->year);
     }
 
+    private function calculateTotalLeapdayOccurrences()
+    {
+        return $this->leapDayOccurrences->sum();
+    }
+
     private function calculateLeapdayOccurrences()
     {
         return $this->calendar->leap_days->map->occurrencesOnMonthBetweenYears($this->epochStartYear, $this->year, 0);
     }
 
-    private function calculateTotalLeapdayOccurrences()
+    private function calculateNumTimespans()
     {
-        return $this->leapDayOccurrences->sum();
+        return $this->calendar->timespans
+            ->filter(function($timespan){
+                return !$timespan->intercalary;
+            })
+            ->map->occurrences($this->year)
+            ->sum();
+    }
+
+    private function calculateTotalWeekNum()
+    {
+        if($this->calendar->overflows_week){
+			return intval(floor(($this->epoch - $this->historicalIntercalaryCount) / count($this->calendar->global_week)));
+		}else{
+            return $this->calendar->timespans->sum(function($timespan){
+                $timespanDays = $timespan->occurrences($this->year) * $timespan->length;
+                $weekLength = count($timespan->week ?? $this->calendar->global_week))
+                return abs(ceil($timespanDays/$weekLength));
+            });
+        }
+    }
+
+    private function calculateHistoricalIntercalaryCount()
+    {
+        $leapDayIntercalaryDays = $this->calendar->leap_days
+            ->filter(function($leap_day){
+                return $leap_day->intercalary;
+            })
+            ->sum(function($leap_day){
+                return $leap_day->occurrencesOnMonthBetweenYears($this->epochStartYear, $this->year, 0);
+            });
+
+        $timespanIntercalaryDays = $this->calendar->timespans
+            ->filter(function($timespan){
+                return $timespan->intercalary;
+            })
+            ->sum(function($timespan){
+                return $timespan->occurrences($this->year) * $timespan->length;
+            });
+
+        return $leapDayIntercalaryDays + $timespanIntercalaryDays;
+    }
+
+    private function calculateTimespanCounts()
+    {
+        return $this->calendar->timespans->map(function($timespan){
+            return $timespan->occurrences($this->year);
+        });
+    }
+
+    private function calculateWeekday()
+    {
+        $weekdaysCount = count($this->calendar->global_week);
+        $calendarFirstWeekdayIndex = intval($this->calendar->first_day);
+        $totalWeekdaysBeforeToday = ($this->epoch - $this->historicalIntercalaryCount + $calendarFirstWeekdayIndex);
+
+        $weekday = $totalWeekdaysBeforeToday % $weekdaysCount;
+
+        // If we're on a negative year, the result is negative, so add weekdays to result
+	    return ($weekday < 0)
+	        ? $weekday + $weekdaysCount
+	        : $weekday;
     }
 
     private function calculateYear()
