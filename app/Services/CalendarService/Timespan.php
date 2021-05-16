@@ -18,6 +18,9 @@ class Timespan implements Arrayable
 {
     use HasAttributes;
 
+    public $weekdays;
+    public $baseLength;
+
     private Calendar $calendar;
 
     public function __construct($attributes, $calendar)
@@ -26,6 +29,12 @@ class Timespan implements Arrayable
         $this->attributes['is_intercalary'] = ($attributes['type'] == 'intercalary');
 
         $this->calendar = $calendar;
+    }
+
+    public function intersectsYear($year)
+    {
+        $boundOffset = $this->offset % $this->interval;
+        return (($year + $boundOffset) % $this->interval) == 0;
     }
 
     public function occurrences($year)
@@ -48,6 +57,44 @@ class Timespan implements Arrayable
     {
         return $this->calendar->leap_days->filter->timespanIs($this->id);
     }
+
+    public function getDaysInYearAttribute()
+    {
+        $activeLeapDays = $this->leapDays
+            ->filter->intersectsYear($this->calendar->year);
+
+        return $this->length + $activeLeapDays->count();
+    }
+
+    public function getWeekdaysAttribute()
+    {
+        $weekdays = collect(Arr::get($this->attributes, 'week', $this->calendar->global_week));
+
+        return $this->insertLeapdaysIntoWeek($weekdays);
+    }
+
+    private function insertLeapdaysIntoWeek($weekdays)
+	{
+        $additiveLeapdays = $this->leapdays
+            ->filter->intersectsYear($this->calendar->year)
+            ->filter->adds_week_day
+            ->sortBy('day')
+            ->values();
+
+        if(!$additiveLeapdays->count()){
+		    return $weekdays;
+        }
+
+        $leapDays = $additiveLeapdays->mapWithKeys(function($leapDay, $leapdayIndex) use($additiveLeapdays) {
+			return [($leapDay->day * ($additiveLeapdays->count()+1)) + ($leapdayIndex + 1) => $leapDay->week_day];
+		});
+
+        $weekdays = $weekdays->mapWithKeys(function($weekday, $weekdayIndex) use ($additiveLeapdays) {
+			return [(($weekdayIndex + 1) * ($additiveLeapdays->count()+1)) => $weekday];
+		});
+
+		return $weekdays->union($leapDays)->sortKeys()->values();
+	}
 
     public function toArray(): array
     {

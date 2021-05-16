@@ -222,6 +222,11 @@ class Calendar extends Model
         });
     }
 
+    public function getMonthsAttribute()
+    {
+        return $this->timespans->filter->intersectsYear($this->year)->values();
+    }
+
     public function getMonthIndexAttribute()
     {
         return Arr::get($this->dynamic_data,

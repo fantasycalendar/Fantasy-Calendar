@@ -19,10 +19,10 @@ class Moon
     public function __construct($attributes)
     {
         $this->name = $attributes['name'];
-        $this->custom_phase = $attributes['custom_phase'];
+        $this->custom_phase = $attributes['custom_phase'] ?? false;
         $this->color = $attributes['color'];
         $this->hidden = $attributes['hidden'];
-        $this->custom_cycle = $attributes['custom_cycle'];
+        $this->custom_cycle = $attributes['custom_cycle'] ?? false;
         $this->cycle = $attributes['cycle'];
         $this->shift = $attributes['shift'];
         $this->granularity = $attributes['granularity'];

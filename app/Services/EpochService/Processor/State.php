@@ -14,7 +14,7 @@ class State
 {
     use CalculatesAndCachesProperties;
 
-    public $day = 0;
+    public $day = 1;
     protected $calendar;
     protected \Illuminate\Support\Collection $previousState;
     protected \Illuminate\Support\Collection $nextYearState;
@@ -44,13 +44,9 @@ class State
 
     public function advance()
     {
-        dump($this->toArray());
 
         //        Log::info('ENTERING: ' . self::class . '::advance');
         $this->day++;
-        Log::info($this->day);
-
-        if($this->day > 20) dd('Stopping short');
 
         $this->flushCache();
     }
@@ -67,9 +63,9 @@ class State
     {
 //        Log::info('ENTERING: ' . self::class . '::toArray');
         return [
-            'day' => $this->day,
-            'month' => $this->month,
             'year' => $this->year,
+            'month' => $this->month,
+            'day' => $this->day,
             'historicalMoonPhaseCounts' => $this->historicalPhaseCounts,
             'moonPhases' => $this->moonPhases,
         ];
@@ -86,13 +82,33 @@ class State
             return 0;
         }
 
-        return $this->previousState->get('month') + 1;
+        if($this->day > $this->monthLength) {
+
+            $this->day = 0;
+            $this->statecache->forget('monthLength');
+
+            if($this->previousState->get('month')+1 >= count($this->months)){
+                $this->year++;
+                $this->statecache->forget('months');
+                return 0;
+            }
+
+            return $this->previousState->get('month')+1;
+
+        }
+
+        return $this->previousState->get('month');
     }
 
     private function calculateMonthLength()
     {
-//        Log::info('ENTERING: ' . self::class . '::calculateMonthLength');
-        //
+
+        if(!$this->previousState->has('monthLength')) {
+            return $this->months->get($this->previousState->get('month'))->daysInYear;
+        }
+
+        return $this->previousState->get('monthLength');
+
     }
 
     private function calculateMonthIndex()
@@ -117,6 +133,14 @@ class State
             ->map(function($moon){
                 return $moon->setEpoch($this->epoch)->getHistoricalPhaseCounts();
             });
+    }
+
+    private function calculateMonths()
+    {
+        if(!$this->previousState->has('months')){
+            return $this->calendar->months;
+        }
+        return $this->previousState->get('months');
     }
 
     private function calculateYear()
