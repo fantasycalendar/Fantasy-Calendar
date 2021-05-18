@@ -66,7 +66,6 @@ class State
             'year' => $this->year,
             'month' => $this->month,
             'day' => $this->day,
-            'historicalMoonPhaseCounts' => $this->historicalPhaseCounts,
             'moonPhases' => $this->moonPhases,
         ];
     }
@@ -122,16 +121,7 @@ class State
 //        Log::info('ENTERING: ' . self::class . '::calculateMoonPhases');
         return $this->calendar->moons
             ->map(function($moon) {
-                return $moon->setEpoch($this->epoch)->getPhase();
-            });
-    }
-
-    private function calculateHistoricalPhaseCounts()
-    {
-//        Log::info('ENTERING: ' . self::class . '::calculateHistoricalPhaseCounts');
-        return $this->calendar->moons
-            ->map(function($moon){
-                return $moon->setEpoch($this->epoch)->getHistoricalPhaseCounts();
+                return $moon->setEpoch($this->epoch)->getPhases();
             });
     }
 
