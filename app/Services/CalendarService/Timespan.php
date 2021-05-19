@@ -50,7 +50,18 @@ class Timespan implements Arrayable
         # We do this so we keep offset bound within the interval (ie, if offset > interval, year is not subtracted too much)
         $offset = $this->offset % $this->interval;
 
-        return (int) floor(($year - $offset) / $this->interval);
+        if($year < 0 || $this->calendar->setting('year_zero_exists')) {
+            if(!$this->calendar->setting('year_zero_exists')) {
+                $offset--;
+            }
+            return (int) ceil(($year - $offset) / $this->interval);
+        }else{
+            if($offset > 0){
+                return (int) floor(($year + $this->interval - $offset) / $this->interval);
+            }
+        }
+
+        return (int) floor($year / $this->interval);
     }
 
     public function getLeapDaysAttribute()

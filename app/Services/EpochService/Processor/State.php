@@ -47,6 +47,9 @@ class State
 
         //        Log::info('ENTERING: ' . self::class . '::advance');
         $this->day++;
+        $this->epoch++;
+
+        dump($this->toArray());
 
         $this->flushCache();
     }
@@ -66,7 +69,8 @@ class State
             'year' => $this->year,
             'month' => $this->month,
             'day' => $this->day,
-            'moonPhases' => $this->moonPhases,
+            'epoch' => $this->epoch,
+            'monthIndex' => $this->monthIndex
         ];
     }
 
@@ -85,6 +89,7 @@ class State
 
             $this->day = 0;
             $this->statecache->forget('monthLength');
+            $this->statecache->forget('monthIndex');
 
             if($this->previousState->get('month')+1 >= count($this->months)){
                 $this->year++;
@@ -112,13 +117,15 @@ class State
 
     private function calculateMonthIndex()
     {
-//        Log::info('ENTERING: ' . self::class . '::calculateMonthIndex');
+        if(!$this->previousState->has('monthIndex')) {
+            return $this->months->get($this->previousState->get('month'))->id;
+        }
 
+        return $this->previousState->get('monthIndex');
     }
 
     private function calculateMoonPhases()
     {
-//        Log::info('ENTERING: ' . self::class . '::calculateMoonPhases');
         return $this->calendar->moons
             ->map(function($moon) {
                 return $moon->setEpoch($this->epoch)->getPhases();
@@ -172,23 +179,32 @@ class State
     private function calculateEpoch()
     {
 //        Log::info('ENTERING: ' . self::class . '::calculateEpoch');
-        return $this->totalDaysFromTimespans
-            + $this->totalLeapdayOccurrences;
+
+        if(!$this->previousState->has('epoch')){
+            return $this->totalDaysFromTimespans
+                + $this->totalLeapdayOccurrences;
+        }
+
+        return $this->previousState->get('epoch');
     }
 
     private function calculateTotalDaysFromTimespans()
     {
 //        Log::info('ENTERING: ' . self::class . '::calculateTotalDaysFromTimespans');
         return $this->calendar->timespans->sum(function($timespan){
-            return $timespan->occurrences($this->year) * $timespan->length;
+            return $timespan->occurrences($this->year-1) * $timespan->length;
         });
     }
 
     private function calculateTimespanOccurrences()
     {
 //        Log::info('ENTERING: ' . self::class . '::calculateTimespanOccurrences');
-        return $this->calendar->timespans
-            ->map->occurrences($this->year);
+        if(!$this->previousState->has('timespanOccurrences')) {
+            return $this->calendar->timespans
+                ->map->occurrences($this->year-1);
+        }
+
+        return $this->previousState->get('timespanOccurrences');
     }
 
     private function calculateTotalLeapdayOccurrences()
@@ -201,7 +217,7 @@ class State
     {
 //        Log::info('ENTERING: ' . self::class . '::calculateLeapdayOccurrences');
         return $this->calendar->leap_days
-            ->map->occurrencesOnMonthBetweenYears($this->epochStartYear, $this->year, 0);
+            ->map->occurrencesOnMonthBetweenYears($this->epochStartYear, $this->year-1, 0);
     }
 
     private function calculateNumberTimespans()
@@ -209,7 +225,7 @@ class State
 //        Log::info('ENTERING: ' . self::class . '::calculateNumberTimespans');
         return $this->calendar->timespans
             ->reject->intercalary
-            ->map->occurrences($this->year)
+            ->map->occurrences($this->year-1)
             ->sum();
     }
 
@@ -221,7 +237,7 @@ class State
         }
 
         return $this->calendar->timespans->sum(function($timespan){
-            $timespanDays = $timespan->occurrences($this->year) * $timespan->length;
+            $timespanDays = $timespan->occurrences($this->year-1) * $timespan->length;
             $weekLength = count($timespan->week ?? $this->calendar->global_week);
             return abs(ceil($timespanDays/$weekLength));
         });
@@ -232,12 +248,12 @@ class State
 //        Log::info('ENTERING: ' . self::class . '::calculateHistoricalIntercalaryCount');
         $leapDayIntercalaryDays = $this->calendar->leap_days
             ->filter->intercalary
-            ->sum->occurrencesOnMonthBetweenYears($this->epochStartYear, $this->year, 0);
+            ->sum->occurrencesOnMonthBetweenYears($this->epochStartYear, $this->year-1, 0);
 
         $timespanIntercalaryDays = $this->calendar->timespans
             ->filter->intercalary
             ->sum(function($timespan){
-                return $timespan->occurrences($this->year) * $timespan->length;
+                return $timespan->occurrences($this->year-1) * $timespan->length;
             });
 
         return $leapDayIntercalaryDays + $timespanIntercalaryDays;
@@ -247,7 +263,7 @@ class State
     {
 //        Log::info('ENTERING: ' . self::class . '::calculateTimespanCounts');
         return $this->calendar->timespans
-            ->map->occurrences($this->year);
+            ->map->occurrences($this->year-1);
     }
 
     private function calculateWeekday()
