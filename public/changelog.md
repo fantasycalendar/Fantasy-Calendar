@@ -1,3 +1,6 @@
+### 2.X.X - Adjective Efreet
+* Tweaked - Renamed the "Create Calendar" button to "Save Calendar" to avoid confusion
+
 ### 2.0.20 - Typesetting Efreet
 #### May 15, 2021
 * Tweaked - Default era formatting tweaked to utilize era year instead of absolute year when era restarts the year count 
