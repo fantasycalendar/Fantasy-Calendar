@@ -36,7 +36,6 @@ class Era
     public function getEpochSubtractables($calendar)
     {
         $eraEpoch = Epoch::forEra($this);
-        dd($eraEpoch);
 
         $eraFreeCalendar = $calendar
             ->replicate()
@@ -48,7 +47,17 @@ class Era
 
         dd($eraEpoch, $eraFreeEpoch);
 
-        return 'YA BIG DUMMY';
+        $timespanCounts = $eraFreeEpoch->map(function($timespanCount, $index) use ($eraEpoch) {
+            return $timespanCount - $eraEpoch->timespanCounts->get($index);
+        });
+
+        return collect([
+            'timespanCounts' => $timespanCounts,
+            'epoch' => $eraFreeEpoch->epoch - $eraEpoch->epoch,
+            'historicalIntercalaryCount' => $eraFreeEpoch->historicalIntercalaryCount - $eraEpoch->historicalIntercalaryCount,
+            'numTimespans' => $eraFreeEpoch->numTimespans - $eraEpoch->numTimespans,
+            'totalWeekNum' => $eraFreeEpoch->totalWeekNum - $eraEpoch->totalWeekNum,
+        ]);
     }
 
     public function beforeYear($year)

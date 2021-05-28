@@ -40,6 +40,7 @@ class State
 //        Log::info('ENTERING: ' . self::class . '::initialize');
         $this->statecache = InitialStateWithEras::generateFor($this->calendar)->collect();
 //        $this->nextYearState = InitialStateWithEras::generateFor($this->calendar->addYear()->startOfYear())->collect();
+        $this->previousState = collect();
     }
 
     public function advance()
@@ -49,7 +50,7 @@ class State
         $this->day++;
         $this->epoch++;
 
-        dump($this->toArray());
+//        dump($this->toArray());
 
         $this->flushCache();
     }
@@ -65,6 +66,13 @@ class State
     public function toArray(): array
     {
 //        Log::info('ENTERING: ' . self::class . '::toArray');
+//        dump([
+//            'year' => $this->year,
+//            'month' => $this->month,
+//            'day' => $this->day,
+//            'epoch' => $this->epoch,
+//            'monthIndex' => $this->monthIndex
+//        ]);
         return [
             'year' => $this->year,
             'month' => $this->month,
@@ -118,7 +126,7 @@ class State
     private function calculateMonthIndex()
     {
         if(!$this->previousState->has('monthIndex')) {
-            return $this->months->get($this->previousState->get('month'))->id;
+            return $this->months->get($this->month)->id;
         }
 
         return $this->previousState->get('monthIndex');
@@ -143,11 +151,7 @@ class State
     private function calculateYear()
     {
 //        Log::info('ENTERING: ' . self::class . '::calculateYear');
-        if($this->day === 0) {
-            return ($this->calendar->year_zero_exists)
-                ? 0
-                : 1;
-        }
+
 
         return $this->previousState->get('year');
     }
