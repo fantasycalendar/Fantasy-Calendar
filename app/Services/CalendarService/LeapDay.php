@@ -27,6 +27,7 @@ use Illuminate\Support\Arr;
  */
 class LeapDay
 {
+    public Calendar $calendar;
     private array $originalAttributes;
     public $name;
     public $intercalary;
@@ -41,14 +42,16 @@ class LeapDay
 
     /**
      * Interval constructor.
+     * @param $calendar
      * @param $attributes
      */
-    public function __construct(array $attributes)
+    public function __construct(Calendar $calendar, array $attributes)
     {
         $this->originalAttributes = $attributes;
+        $this->calendar = $calendar;
         $this->name = Arr::get($attributes, "name");
         $this->intercalary = Arr::get($attributes, "intercalary");
-        $this->timespan = Arr::get($attributes, "timespan");
+        $this->timespan = $this->calendar->timespans->get(Arr::get($attributes, "timespan"));
         $this->adds_week_day = Arr::get($attributes, "adds_week_day", false);
         $this->day = Arr::get($attributes, "day", 0);
         $this->week_day = Arr::get($attributes, "week_day", false);
@@ -96,6 +99,7 @@ class LeapDay
 
     public function occurrences($untilYear)
     {
+        $untilYear = $this->timespan->occurrences($untilYear);
         return collect(range(0, $untilYear))
             ->filter(function($year){
                 return $this->intersectsYear($year);
@@ -105,6 +109,7 @@ class LeapDay
 
     public function occurrencesOnMonthBetweenYears($start, $end, $month)
     {
+        $end = $this->timespan->occurrences($end);
         return collect(range($start, $end))
             ->filter(function($year) use ($start, $end, $month) {
                 return $this->intersectsYear($year)

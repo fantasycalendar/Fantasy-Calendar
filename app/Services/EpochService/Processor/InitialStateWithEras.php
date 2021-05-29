@@ -26,17 +26,13 @@ class InitialStateWithEras extends InitialState
 
         $eraSubtractables = $this->getSubtractables();
 
-        dd($eraSubtractables);
-
         // The actual work starts here
         $this->timespanCounts = $this->calculateTimespanCounts($state, $eraSubtractables);
 
         $this->epoch -= $eraSubtractables->sum('epoch');
         $this->historicalIntercalaryCount -= $eraSubtractables->sum('historicalIntercalaryCount');
-        $this->numTimespans -= $eraSubtractables->sum('numTimespans');
-        $this->totalWeekNum -= $eraSubtractables->sum('totalWeekNum');
-
-        dd($state->toArray());
+        $this->numberTimespans -= $eraSubtractables->sum('numberTimespans');
+        $this->totalWeekNumber -= $eraSubtractables->sum('totalWeekNumber');
 
         return $this;
     }
@@ -46,7 +42,7 @@ class InitialStateWithEras extends InitialState
         Log::info('ENTERING: ' . self::class . '::calculateTimespanCounts');
         return $state->timespanCounts->map(function($timespanCount, $timespanIndex) use ($eraSubtractables) {
             return $timespanCount - $eraSubtractables->sum(function($era) use ($timespanIndex){
-                    return $era->timespanCount->get($timespanIndex);
+                    return $era->get('timespanCounts')->get($timespanIndex);
                 });
         });
     }

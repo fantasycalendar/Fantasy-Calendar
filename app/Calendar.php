@@ -304,7 +304,7 @@ class Calendar extends Model
     public function getLeapDaysAttribute()
     {
         return collect(Arr::get($this->static_data, 'year_data.leap_days'))->map(function($leap_day){
-            return new LeapDay($leap_day);
+            return new LeapDay($this, $leap_day);
         });
     }
 

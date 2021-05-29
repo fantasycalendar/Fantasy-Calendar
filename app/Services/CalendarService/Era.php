@@ -35,7 +35,8 @@ class Era
 
     public function getEpochSubtractables($calendar)
     {
-        $eraEpoch = Epoch::forEra($this);
+        
+        $eraEpoch = collect(Epoch::forEra($this));
 
         $eraFreeCalendar = $calendar
             ->replicate()
@@ -45,18 +46,16 @@ class Era
         $eraFreeEpoch = (new InitialState($eraFreeCalendar))
             ->generateInitialProperties()->collect();
 
-        dd($eraEpoch, $eraFreeEpoch);
-
-        $timespanCounts = $eraFreeEpoch->map(function($timespanCount, $index) use ($eraEpoch) {
-            return $timespanCount - $eraEpoch->timespanCounts->get($index);
+        $timespanCounts = $eraFreeEpoch->get('timespanCounts')->map(function($timespanCount, $index) use ($eraEpoch) {
+            return $timespanCount - $eraEpoch->get('timespanCounts')->get($index);
         });
 
         return collect([
             'timespanCounts' => $timespanCounts,
-            'epoch' => $eraFreeEpoch->epoch - $eraEpoch->epoch,
-            'historicalIntercalaryCount' => $eraFreeEpoch->historicalIntercalaryCount - $eraEpoch->historicalIntercalaryCount,
-            'numTimespans' => $eraFreeEpoch->numTimespans - $eraEpoch->numTimespans,
-            'totalWeekNum' => $eraFreeEpoch->totalWeekNum - $eraEpoch->totalWeekNum,
+            'epoch' => $eraFreeEpoch->get('epoch') - $eraEpoch->get('epoch'),
+            'historicalIntercalaryCount' => $eraFreeEpoch->get('historicalIntercalaryCount') - $eraEpoch->get('historicalIntercalaryCount'),
+            'numberTimespans' => $eraFreeEpoch->get('numberTimespans') - $eraEpoch->get('numberTimespans'),
+            'totalWeekNumber' => $eraFreeEpoch->get('totalWeekNumber') - $eraEpoch->get('totalWeekNumber'),
         ]);
     }
 
