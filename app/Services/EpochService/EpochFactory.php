@@ -11,7 +11,7 @@ use App\Services\CalendarService\Era;
 use App\Services\EpochService\Processor\InitialState;
 use App\Services\EpochService\Processor\State;
 
-class Epoch
+class EpochFactory
 {
     /**
      * @var Calendar

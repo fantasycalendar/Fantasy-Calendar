@@ -6,7 +6,7 @@ use App\CalendarEvent;
 use App\Console\Commands\DownCommand;
 use App\Console\Commands\UpCommand;
 use App\Observers\CalendarEventObserver;
-use App\Services\EpochService\Epoch;
+use App\Services\EpochService\EpochFactory;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\URL;
@@ -25,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton('epoch', function($app){
-            return new Epoch();
+            return new EpochFactory();
         });
 
         $this->app->bind('mustache', function($app){
