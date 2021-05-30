@@ -229,17 +229,20 @@ class Calendar extends Model
 
     public function getMonthIndexAttribute()
     {
+        return $this->months->filter(function($timespan){
+                return $timespan->id == $this->month_id;
+            })
+            ->keys()
+            ->first();
+    }
+
+    public function getMonthIdAttribute()
+    {
         return Arr::get($this->dynamic_data,
             'timespan',
             Arr::get($this->dynamic_data,
                 'month',
                 0));
-    }
-
-    public function getMonthIdAttribute()
-    {
-        return $this->month_index;
-        return $this->month->id;
     }
 
     /*
@@ -276,7 +279,7 @@ class Calendar extends Model
 
     public function getMonthAttribute()
     {
-            return new Month($this);
+        return new Month($this);
     }
 
     public function getMonthLengthAttribute()

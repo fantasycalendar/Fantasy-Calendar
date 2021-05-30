@@ -4,8 +4,7 @@ namespace App\Services\CalendarService;
 
 use App\Calendar;
 use App\Facades\Epoch as EpochService;
-use App\Services\CalendarService\Month\Section;
-use App\Services\CalendarService\Month\SectionsCollection;
+use App\Services\EpochService\Epoch;
 use Illuminate\Database\Eloquent\Concerns\HasAttributes;
 use Illuminate\Support\Arr;
 
@@ -36,12 +35,15 @@ class Month
      */
     private Epoch $firstEpoch;
 
-    public function __construct(Calendar $calendar)
+    public function __construct(Calendar $calendar, $id = null)
     {
         $this->calendar = $calendar;
         $this->weeks = collect();
+        $this->id = $id ?? $calendar->month_index;
 
-//        $this->initialize();
+//        $this->firstEpoch = EpochService::forCalendarYear($calendar)->where('month', '=', $this->id)->first();
+
+        $this->initialize();
     }
 
     /*
@@ -52,7 +54,7 @@ class Month
     {
         $epochs = EpochService::forCalendarYear($this->calendar);
 
-        dd('EpochService::forCalendarMonth() results:', $epochs);
+        dd('EpochService::forCalendarMonth() results:', $epochs->map->month);
 
 //        $sections = (new SectionsCollection())->build($this);
 //

@@ -30,7 +30,8 @@
         "nesbot/carbon": "^2.31",
         "restcord/restcord": "dev-develop",
         "socialiteproviders/discord": "^4.1",
-        "spatie/laravel-honeypot": "^3.0"
+        "spatie/laravel-honeypot": "^3.0",
+        "ext-gmp": "*"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.2",
