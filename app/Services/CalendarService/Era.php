@@ -7,7 +7,6 @@ namespace App\Services\CalendarService;
 use App\Facades\Epoch;
 use App\Facades\Mustache;
 use App\Services\EpochService\Processor\InitialState;
-use App\Services\EpochService\Processor\InitialStateWithEras;
 use Illuminate\Support\Arr;
 
 class Era

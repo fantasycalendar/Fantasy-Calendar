@@ -52,7 +52,7 @@ class Month
     {
         $epochs = EpochService::forCalendarYear($this->calendar);
 
-        dd('Here they are:', $epochs->keyBy('slug'));
+        dd('Here they are:', $epochs);
 
 //        $sections = (new SectionsCollection())->build($this);
 //

@@ -6,10 +6,7 @@ namespace App\Services\EpochService;
 
 use App\Calendar;
 use App\Collections\EpochsCollection;
-use App\Services\CalendarService\Date;
 use App\Services\CalendarService\Era;
-use App\Services\EpochService\Processor\InitialState;
-use App\Services\EpochService\Processor\State;
 use Illuminate\Support\Facades\Log;
 
 class EpochFactory
@@ -38,48 +35,48 @@ class EpochFactory
 
     public function forDate($year, $month, $day)
     {
-        $dateslug = date_slug($year, $month, $day);
+        $date = date_slug($year, $month, $day);
 
-        if(!$this->epochs->has($dateslug)) {
-            $epochs = $this->processor()->processUntilDate($year, $month, $day);
+        if(!$this->epochs->has($date)) {
+            $calendar = $this->calendar
+                ->replicate()
+                ->setDate($year, $month, $day);
+
+            $this->processor($calendar)
+                ->processUntil(function($processor) use ($year, $month, $day) {
+                    return $processor->state->month >= $month
+                        && $processor->state->day > $day;
+                })->each(function($epoch){
+                    $this->addForDate($epoch);
+                });
         }
 
-        dd($epochs);
-
-        return $this->epochs->get($dateslug);
+        return $this->epochs->get($date);
     }
 
     public function forEra(Era $era)
     {
-        $date = date_slug($era->year, $era->month, $era->day);
+        Log::debug('EpochFactory::forEra - ' . date_slug($era->year, $era->month, $era->day));
 
-        Log::debug('EpochFactory::forEra - ' . $date);
-
-        if(!$this->epochs->has($date)) {
-            $calendar = $this->calendar
-                             ->replicate()
-                             ->setDate($era->year, $era->month, $era->day);
-
-            $epochs = $this->processor($calendar)->processUntil(function($processor) use ($era) {
-                return $processor->state->month >= $era->month
-                    && $processor->state->day > $era->day;
-            });
-
-            $this->epochs = $this->epochs->merge($epochs);
-        }
-
-        return $this->epochs->get($date);
+        return $this->forDate($era->year, $era->month, $era->day);
     }
 
     public function processYear()
     {
         $processor = $this->processor();
 
-        $this->epochs = $this->epochs->merge($processor->processUntil(function($processor){
+        $processor->processUntil(function($processor){
             return $processor->state->year == ($this->calendar->year + 1);
-        }));
+        })->each(function($epoch){
+            $this->addForDate($epoch);
+        });
 
         return $this->epochs;
+    }
+
+    public function addForDate($epoch)
+    {
+        $this->epochs->insert($epoch);
     }
 
     private function processor($calendar = null)

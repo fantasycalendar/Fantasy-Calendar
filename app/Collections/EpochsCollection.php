@@ -10,5 +10,10 @@ use Illuminate\Support\Collection as BaseCollection;
 
 class EpochsCollection extends BaseCollection
 {
-    
+    public function insert(Epoch $epoch)
+    {
+        $this->offsetSet($epoch->slug, $epoch);
+
+        return $this;
+    }
 }
