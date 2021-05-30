@@ -74,7 +74,7 @@ class State
             'timespanCounts' => $this->timespanCounts,
             'historicalIntercalaryCount' => $this->historicalIntercalaryCount,
             'numberTimespans' => $this->numberTimespans,
-            'totalWeekNum' => $this->totalWeekNumber,
+            'totalWeekNumber' => $this->totalWeekNumber,
             'monthIndex' => $this->monthIndex,
             'weekday' => $this->weekday
         ];

@@ -50,9 +50,9 @@ class Month
      */
     public function getStructure()
     {
-        $epochs = EpochService::forCalendar($this->calendar)->process();
+        $epochs = EpochService::forCalendarYear($this->calendar);
 
-        dd($epochs);
+        dd('Here they are:', $epochs->keyBy('slug'));
 
 //        $sections = (new SectionsCollection())->build($this);
 //

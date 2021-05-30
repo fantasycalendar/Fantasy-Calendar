@@ -6,6 +6,7 @@ namespace App\Services\EpochService;
 
 use App\Collections\EpochsCollection;
 use App\Services\EpochService\Processor\State;
+use Illuminate\Support\Facades\Log;
 
 class Processor
 {
@@ -30,7 +31,16 @@ class Processor
             $this->stepForward();
         }
 
-        return $this->epochs;
+        return $this->epochs->keyBy('slug');
+    }
+
+    public function processUntilDate($year, $month, $day)
+    {
+        return $this->processUntil(function($processor) use ($year, $month, $day){
+            return $processor->state->year = $year
+                && $processor->state->month = $month
+                && $processor->state->day = $day;
+        });
     }
 
     public function is($epochNumber)
@@ -54,7 +64,11 @@ class Processor
 
     private function stepForward()
     {
-        $this->epochs->push($this->state->toArray());
+        $epoch = new Epoch($this->state->toArray());
+
+        Log::debug('Stepping forward from: ' . $epoch->slugify());
+
+        $this->epochs->put($epoch->slugify(), $epoch);
 
         $this->state->advance();
     }

@@ -4,7 +4,11 @@
 namespace App\Collections;
 
 
-class EpochsCollection extends \Illuminate\Support\Collection
-{
+use App\Services\EpochService\Epoch;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Collection as BaseCollection;
 
+class EpochsCollection extends BaseCollection
+{
+    
 }

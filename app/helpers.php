@@ -97,3 +97,9 @@ if(!function_exists('ordinal')) {
         return (new NumberFormatter('en_US', NumberFormatter::ORDINAL))->format($number);
     }
 }
+
+if(!function_exists('date_slug')) {
+    function date_slug($year, $month = 0, $day = 0) {
+        return $year.'-'.$month.'-'.$day;
+    }
+}
