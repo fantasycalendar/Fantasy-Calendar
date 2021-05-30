@@ -43,7 +43,7 @@ class Month
 
 //        $this->firstEpoch = EpochService::forCalendarYear($calendar)->where('month', '=', $this->id)->first();
 
-        $this->initialize();
+//        $this->initialize();
     }
 
     /*
