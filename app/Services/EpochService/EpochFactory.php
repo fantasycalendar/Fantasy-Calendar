@@ -22,7 +22,7 @@ class EpochFactory
 
     public function forCalendar(Calendar $calendar)
     {
-        $this->calendar = $calendar->startOfYear();
+        $this->calendar = $calendar->replicate()->startOfYear();
         $this->epochs = new EpochsCollection();
 
         return $this;
@@ -30,7 +30,16 @@ class EpochFactory
 
     public function forCalendarYear(Calendar $calendar)
     {
-        return $this->forCalendar($calendar)->processYear();
+        return $this->forCalendar($calendar)
+            ->processYear()
+            ->epochs
+            ->where('year', '=', $calendar->year);
+    }
+
+    public function forCalendarMonth(Calendar $calendar): EpochsCollection
+    {
+        return $this->forCalendarYear($calendar)
+            ->where('month', '=', $calendar->month_id);
     }
 
     public function forDate($year, $month, $day)
@@ -71,7 +80,7 @@ class EpochFactory
             $this->addForDate($epoch);
         });
 
-        return $this->epochs;
+        return $this;
     }
 
     public function addForDate($epoch)
