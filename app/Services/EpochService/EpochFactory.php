@@ -38,6 +38,7 @@ class EpochFactory
 
     public function forCalendarMonth(Calendar $calendar): EpochsCollection
     {
+
         return $this->forCalendarYear($calendar)
             ->where('month', '=', $calendar->month_id);
     }

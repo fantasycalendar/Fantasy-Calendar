@@ -91,7 +91,7 @@ class State
             return 0;
         }
 
-        if($this->day > $this->monthLength) {
+        if($this->day > $this->months->get($this->previousState->get('month'))->daysInYear) {
 
             $this->day = 1;
             $this->previousState->forget('monthLength');
@@ -108,15 +108,6 @@ class State
         }
 
         return $this->previousState->get('month');
-    }
-
-    private function calculateMonthLength()
-    {
-        if(!$this->previousState->has('monthLength')) {
-            return $this->months->get($this->previousState->get('month'))->daysInYear;
-        }
-
-        return $this->previousState->get('monthLength');
     }
 
     private function calculateMonthIndex()

@@ -109,13 +109,18 @@ class LeapDay
 
     public function occurrencesOnMonthBetweenYears($start, $end, $month)
     {
-        $end = $this->timespan->occurrences($end);
-        return collect(range($start, $end))
-            ->filter(function($year) use ($start, $end, $month) {
-                return $this->intersectsYear($year)
-                    && $year !== $end;
-            })
-            ->count();
+        if($this->intervals->filter->ignores_offset->count() < 1 && $this->intervals->filter->negated->count() < 1) {
+            return $this->intervals
+                ->map(function($interval) use ($end) {
+                    return $interval->contributionToYear($end);
+                })->sum();
+        }
+
+        dd($this->interval);
+
+        dd($this->intervals->map(function($interval){
+            return $interval->contributionToYear($year);
+        }));
     }
 
     public function timespanIs($timespan_id)

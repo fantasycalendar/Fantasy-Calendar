@@ -33,4 +33,13 @@ class Interval
 
         return 'abstain';
     }
+
+    /**
+     * @param $year
+     * @return int
+     */
+    public function contributionToYear($year): int
+    {
+        return (int) ceil($year / $this->interval);
+    }
 }
