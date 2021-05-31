@@ -77,6 +77,8 @@ class EpochFactory
 
         $processor->processUntil(function($processor){
             return $processor->state->year == ($this->calendar->year + 1);
+        })->reject(function($epoch){
+            return $epoch->year != $this->calendar->year;
         })->each(function($epoch){
             $this->addForDate($epoch);
         });

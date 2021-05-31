@@ -51,7 +51,7 @@ class InitialState
     {
         Log::info('ENTERING: '. self::class . '::toArray');
         return [
-            'day' => 0,
+            'day' => 1,
             'month' => 0,
             'year' => $this->year,
             'epoch' => $this->epoch,
@@ -67,7 +67,6 @@ class InitialState
     private function calculateEpoch()
     {
         Log::info('ENTERING: '. self::class . '::calculateEpoch');
-        dump("epoch is", $this->totalDaysFromTimespans + $this->totalLeapdayOccurrences);
 
         return $this->totalDaysFromTimespans
             + $this->totalLeapdayOccurrences;
@@ -159,9 +158,7 @@ class InitialState
 	        : $weekday;
     }
 
-    private function calculateYear()
-    {
-        Log::info('ENTERING: '. self::class . '::calculateYear');
+    private function calculateYear(){
         return $this->calendar->year;
     }
 

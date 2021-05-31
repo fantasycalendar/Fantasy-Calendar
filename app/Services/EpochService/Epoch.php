@@ -22,6 +22,7 @@ class Epoch
 
     public function __construct($attributes)
     {
+
         $this->year = $attributes['year'];
         $this->month = $attributes['month'];
         $this->day = $attributes['day'];

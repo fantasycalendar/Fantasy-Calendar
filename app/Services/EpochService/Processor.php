@@ -25,13 +25,22 @@ class Processor
         $this->epochs = new EpochsCollection();
     }
 
+    public function processWhile($whileCondition)
+    {
+        while($whileCondition($this)) {
+            $this->stepForward();
+        }
+
+        return $this->getEpochs();
+    }
+
     public function processUntil($stopCondition)
     {
         while($this->shouldContinue($stopCondition)) {
             $this->stepForward();
         }
 
-        return $this->epochs->keyBy('slug');
+        return $this->getEpochs();
     }
 
     public function processUntilDate($year, $month, $day)
@@ -41,6 +50,11 @@ class Processor
                 && $processor->state->month = $month
                 && $processor->state->day = $day;
         });
+    }
+
+    public function getEpochs()
+    {
+        return $this->epochs->keyBy('slug');
     }
 
     public function is($epochNumber)
@@ -64,11 +78,13 @@ class Processor
 
     private function stepForward()
     {
-        $epoch = new Epoch($this->state->toArray());
+        $arrayified = $this->state->toArray();
+        $epoch = new Epoch($arrayified);
 
         Log::debug('Stepping forward from: ' . $epoch->slugify());
+        Log::debug(json_encode($arrayified, true));
 
-        $this->epochs->put($epoch->slugify(), $epoch);
+        $this->epochs->insert($epoch);
 
         $this->state->advance();
     }

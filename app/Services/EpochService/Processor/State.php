@@ -15,6 +15,7 @@ class State
     use CalculatesAndCachesProperties;
 
     public $day = 1;
+    public int $year;
     protected $calendar;
     protected \Illuminate\Support\Collection $previousState;
     protected \Illuminate\Support\Collection $nextYearState;
@@ -28,6 +29,7 @@ class State
     {
 //        Log::info('ENTERING: ' . self::class . '::__construct');
         $this->calendar = $calendar;
+        $this->year = $calendar->year;
 
         Log::info('initing state');
         Log::info($calendar->dynamic_data);
@@ -50,7 +52,6 @@ class State
         $this->day++;
         $this->epoch++;
 
-//        dump($this->toArray());
 
         $this->flushCache();
     }
@@ -66,9 +67,10 @@ class State
     public function toArray(): array
     {
 //        Log::info('ENTERING: ' . self::class . '::toArray');
+
         return [
-            'year' => $this->year,
             'month' => $this->month,
+            'year' => $this->year,
             'day' => $this->day,
             'epoch' => $this->epoch,
             'timespanCounts' => $this->timespanCounts,
@@ -133,12 +135,6 @@ class State
             return $this->calendar->months;
         }
         return $this->previousState->get('months');
-    }
-
-    private function calculateYear()
-    {
-//        Log::info('ENTERING: ' . self::class . '::calculateYear');
-        return $this->previousState->get('year');
     }
 
     private function calculateEpoch()
