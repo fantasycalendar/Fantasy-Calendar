@@ -1,5 +1,7 @@
 <?php
 
+use App\Services\CalendarService\Interval;
+
 if(!function_exists('helplink')) {
     function helplink($target = null) {
         return "https://helpdocs.fantasy-calendar.com/" . (($target) ? "topic/" . $target : "");
@@ -22,60 +24,57 @@ if(!function_exists('mb_substr_replace')) {
 
 if(!function_exists('lcmo_bool')) {
     /**
-     * Least Common Multiple Offset (bool) will calculate whether two intervals with individual offsets will ever collide
+     * Least Common Multiple Offset (bool) will calculate whether two intervals with individual offsets will ever intersect
      *
-     * @param  int      x   The first interval
-     * @param  int      y   The second interval
-     * @param  int      a   The first interval's offset
-     * @param  int      b   The second interval's offset
-     * @return bool         Whether these two intervals will ever collide
+     * @param  \App\Services\CalendarService\Interval   x   The first interval
+     * @param  \App\Services\CalendarService\Interval   y   The second interval
+     *
+     * @return bool         Whether these two intervals will ever intersect
      */
-    function lcmo_bool($x, $y, $a, $b){
-        return abs($a - $b) == 0 || abs($a - $b) % gmp_gcd($x, $y) == 0;
+    function lcmo_bool(Interval $x, Interval $y){
+        return abs($x->offset - $y->offset) == 0 || (abs($x->offset - $y->offset) % gmp_gcd($x->interval, $y->interval)) == 0;
     }
 }
 
 if(!function_exists('lcmo')){
     /**
      * Least Common Multiple Offset will calculate whether two intervals with individual offsets will ever collide,
-     * and return an array containing the result, the starting point of their repitition, and how often they repeat
+     * and return an array containing the result, the starting point of their repetition, and how often they repeat
      *
-     * @param  int      x   The first interval
-     * @param  int      y   The second interval
-     * @param  int      a   The first interval's offset
-     * @param  int      b   The second interval's offset
-     * @return array		An array with the result, starting point, and interval
+     * @param  \App\Services\CalendarService\Interval       x   The first interval
+     * @param  \App\Services\CalendarService\Interval       y   The second interval
+     *
+     * @return mixed		                                Either false if the two intervals never intersect, or
+     *                                                      an array with the result, starting point, and interval
      */
-    function lcmo($x, $y, $a, $b){
+    function lcmo(Interval $x, Interval $y){
 
-        if(!lcmo_bool($x, $y, $a, $b)){
-            return ["result" => false];
+        if(!lcmo_bool($x, $y)){
+            return false;
         }
 
-        $x_start = abs($x + $a) % $x;
-        $y_start = abs($y + $b) % $y;
+        $x_start = $x->offset;
+        $y_start = $y->offset;
 
         // If the starts aren't the same, then we need to search for the first instance the intervals' starting points line up
         if($x_start != $y_start){
 
-            // Until the starting points line up, keep increasing them until they do
+            // Until the starting points line up, keep incrementing them until they do
             while($x_start != $y_start){
 
                 while($x_start < $y_start){
-                    $x_start += $x;
+                    $x_start += $x->interval;
                 }
 
                 while($y_start < $x_start){
-                    $y_start += $y;
+                    $y_start += $y->interval;
                 }
             }
         }
 
-        return [
-            "result" => true,
-            "offset" => $x_start,
-            "interval" => gmp_lcm($x, $y)
-        ];
+        $interval = gmp_lcm($x->interval, $y->interval);
+
+        return new Interval(strval($interval), $x_start);
     }
 }
 

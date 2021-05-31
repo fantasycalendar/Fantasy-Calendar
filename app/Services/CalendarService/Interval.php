@@ -4,29 +4,37 @@
 namespace App\Services\CalendarService;
 
 
+use phpDocumentor\Reflection\Types\Collection;
+
 class Interval
 {
-    public string $interval;
-    public bool $negated;
-    public bool $ignores_offset;
-    public int $years;
+    public string $intervalString;
+    public int $interval;
+    public int $offset;
+    public bool $subtractor;
+    public $internalIntervals;
 
     /**
      * Interval constructor.
      * @param $interval
+     * @param $offset
      */
-    public function __construct($interval)
+    public function __construct($interval, $offset)
     {
-        $this->interval = $interval;
-        $this->negated = str_contains($interval, '!');
-        $this->ignores_offset = str_contains($interval, '+');
-        $this->years = intval(str_replace('!', '', $interval));
+        $this->intervalString = $interval;
+        $this->interval = intval(str_replace('!', '', $interval));;
+        $this->subtractor = str_contains($interval, '!');
+        $this->internalIntervals = collect([]);
+
+        // If this interval is not 1 and does not ignore offset, normalize offset to the interval
+        $ignores_offset = str_contains($interval, '+');
+        $this->offset = $this->interval == 1 || $ignores_offset ? 0 : ($this->interval + $offset) % $this->interval;
     }
 
     public function voteOnYear($year)
     {
-        if(($year % $this->years) === 0) {
-            if($this->negated) return 'deny';
+        if((($year-$this->offset) % $this->interval) === 0) {
+            if($this->subtractor) return 'deny';
 
             return 'allow';
         }
