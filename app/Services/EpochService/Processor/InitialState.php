@@ -79,24 +79,42 @@ class InitialState
         });
     }
 
-    private function calculateTimespanOccurrences()
-    {
-        Log::info('ENTERING: '. self::class . '::calculateTimespanOccurrences');
-        return $this->calendar->timespans
-            ->map->occurrences($this->year);
-    }
-
     private function calculateTotalLeapdayOccurrences()
     {
         Log::info('ENTERING: '. self::class . '::calculateTotalLeapdayOccurrences');
-        return $this->leapDayOccurrences->sum();
+        return $this->calendar->timespans->sum(function($timespan){
+            $timespanOccurrences = $timespan->occurrences($this->year);
+            return $timespan->leapDays->sum(function($leapDay) use ($timespanOccurrences){
+                return $leapDay->occurrences($timespanOccurrences);
+            });
+        });
     }
 
-    private function calculateLeapdayOccurrences()
+    private function calculateHistoricalIntercalaryCount()
     {
-        Log::info('ENTERING: '. self::class . '::calculateLeapdayOccurrences');
-        return $this->calendar->leap_days
-            ->map->occurrencesOnMonthBetweenYears($this->epochStartYear, $this->year, 0);
+        Log::info('ENTERING: '. self::class . '::calculateHistoricalIntercalaryCount');
+
+        $intercalaryTimespans = $this->calendar->timespans->filter->intercalary;
+
+        $timespanIntercalaryDays = $intercalaryTimespans->sum(function($timespan){
+            return $timespan->occurrences($this->year) * $timespan->length;
+        });
+
+        $leapDayIntercalaryDays = $intercalaryTimespans->sum(function($timespan){
+            $timespanOccurrences = $timespan->occurrences($this->year);
+            return $timespan->leapDays->filter->intercalary->sum(function($leapDay) use ($timespanOccurrences){
+                return $leapDay->occurrences($timespanOccurrences);
+            });
+        });
+
+        return $leapDayIntercalaryDays + $timespanIntercalaryDays;
+    }
+
+    private function calculateTimespanCounts()
+    {
+        Log::info('ENTERING: '. self::class . '::calculateTimespanCounts');
+        return $this->calendar->timespans
+            ->map->occurrences($this->year);
     }
 
     private function calculateNumberTimespans()
@@ -120,29 +138,6 @@ class InitialState
             $weekLength = count($timespan->week ?? $this->calendar->global_week);
             return abs(ceil($timespanDays/$weekLength));
         });
-    }
-
-    private function calculateHistoricalIntercalaryCount()
-    {
-        Log::info('ENTERING: '. self::class . '::calculateHistoricalIntercalaryCount');
-        $leapDayIntercalaryDays = $this->calendar->leap_days
-            ->filter->intercalary
-            ->sum->occurrencesOnMonthBetweenYears($this->epochStartYear, $this->year, 0);
-
-        $timespanIntercalaryDays = $this->calendar->timespans
-            ->filter->intercalary
-            ->sum(function($timespan){
-                return $timespan->occurrences($this->year) * $timespan->length;
-            });
-
-        return $leapDayIntercalaryDays + $timespanIntercalaryDays;
-    }
-
-    private function calculateTimespanCounts()
-    {
-        Log::info('ENTERING: '. self::class . '::calculateTimespanCounts');
-        return $this->calendar->timespans
-            ->map->occurrences($this->year);
     }
 
     private function calculateWeekday()

@@ -239,7 +239,7 @@ class LeapDay
 
     public function occurrences(int $parentOccurrences)
     {
-        
+
         $occurrences = 0;
 
         $yearZeroExists = $this->calendar->setting('year_zero_exists');
