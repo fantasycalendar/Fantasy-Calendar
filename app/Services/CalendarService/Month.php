@@ -54,7 +54,7 @@ class Month
     {
         $epochs = EpochService::forCalendarYear($this->calendar);
 
-        dd('EpochService::forCalendarMonth() results:', $epochs->map->month);
+        dd('EpochService::forCalendarMonth() results:', $epochs);
 
 //        $sections = (new SectionsCollection())->build($this);
 //

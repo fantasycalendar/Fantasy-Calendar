@@ -39,6 +39,7 @@ class Timespan implements Arrayable
 
     public function occurrences($year)
     {
+
         $year = ($this->calendar->setting('year_zero_exists'))
             ? $year
             : $year - 1;
@@ -46,6 +47,7 @@ class Timespan implements Arrayable
         if($this->interval <= 1) {
             return $year;
         }
+
 
         # We do this so we keep offset bound within the interval (ie, if offset > interval, year is not subtracted too much)
         $offset = $this->offset % $this->interval;

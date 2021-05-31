@@ -69,10 +69,6 @@ class LeapDay
         if($this->intervals->count() === 1) return ['result' => (($year + $this->offset) % $this->interval) == 0];
 
         $votes = $this->intervals->sortByDesc('years')->map(function($interval) use ($year) {
-            $year = ($interval->ignores_offset)
-                ? $year
-                : $year - $this->offset;
-
             return $interval->voteOnYear($year);
         });
 
@@ -277,17 +273,17 @@ class LeapDay
 
                 $year = $outerInterval->offset > 0 ? $parentOccurrences - $outerInterval->offset + $outerInterval->interval : $parentOccurrences;
 
-                $year = $yearZeroExists ? $year - 1 : 0;
+                $year = $yearZeroExists ? $year - 1 : $year;
 
                 $result = $year / $outerInterval->interval;
 
                 $occurrences += $outerInterval->subtractor ? 0 : floor($result);
 
-                foreach($outerInterval->innerIntervals as $innerInterval){
+                foreach($outerInterval->internalIntervals as $innerInterval){
 
                     $year = $innerInterval->offset > 0 ? $parentOccurrences - $innerInterval->offset + $innerInterval->interval : $parentOccurrences;
 
-                    $year = $yearZeroExists ? $year - 1 : 0;
+                    $year = $yearZeroExists ? $year - 1 : $year;
 
                     $result = $year / $innerInterval->interval;
 
@@ -309,7 +305,7 @@ class LeapDay
 
                 $occurrences += $outerInterval->subtractor ? 0 : ceil($result);
 
-                foreach($outerInterval->innerIntervals as $innerInterval){
+                foreach($outerInterval->internalIntervals as $innerInterval){
 
                     $innerOffset = $yearZeroExists ? $innerInterval->offset - 1 : $innerInterval->offset;
 
@@ -317,7 +313,7 @@ class LeapDay
 
                     $result = $year / $innerInterval->interval;
 
-                    $occurrences += $innerInterval->subtractor ? floor($result)*-1 : floor($result);
+                    $occurrences += $innerInterval->subtractor ? cil($result)*-1 : ceil($result);
 
                 }
 
@@ -325,7 +321,7 @@ class LeapDay
 
         }
 
-        return $occurrences;
+        return (int) $occurrences;
 
     }
 
@@ -349,7 +345,7 @@ class LeapDay
 
     public function timespanIs($timespan_id)
     {
-        return $this->timespan === $timespan_id;
+        return $this->timespan->id === $timespan_id;
     }
 
     public function toArray()

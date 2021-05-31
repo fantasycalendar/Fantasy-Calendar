@@ -153,14 +153,6 @@ class State
         return $this->previousState->get('epoch');
     }
 
-    private function calculateTotalDaysFromTimespans()
-    {
-//        Log::info('ENTERING: ' . self::class . '::calculateTotalDaysFromTimespans');
-        return $this->calendar->timespans->sum(function($timespan){
-            return $timespan->occurrences($this->year) * $timespan->length;
-        });
-    }
-
     private function calculateTimespanOccurrences()
     {
 //        Log::info('ENTERING: ' . self::class . '::calculateTimespanOccurrences');
@@ -170,19 +162,6 @@ class State
         }
 
         return $this->previousState->get('timespanOccurrences');
-    }
-
-    private function calculateTotalLeapdayOccurrences()
-    {
-//        Log::info('ENTERING: ' . self::class . '::calculateTotalLeapdayOccurrences');
-        return $this->leapDayOccurrences->sum();
-    }
-
-    private function calculateLeapdayOccurrences()
-    {
-//        Log::info('ENTERING: ' . self::class . '::calculateLeapdayOccurrences');
-        return $this->calendar->leap_days
-            ->map->occurrencesOnMonthBetweenYears($this->epochStartYear, $this->year, 0);
     }
 
     private function calculateNumberTimespans()

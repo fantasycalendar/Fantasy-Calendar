@@ -67,6 +67,8 @@ class InitialState
     private function calculateEpoch()
     {
         Log::info('ENTERING: '. self::class . '::calculateEpoch');
+        dump("epoch is", $this->totalDaysFromTimespans + $this->totalLeapdayOccurrences);
+
         return $this->totalDaysFromTimespans
             + $this->totalLeapdayOccurrences;
     }
