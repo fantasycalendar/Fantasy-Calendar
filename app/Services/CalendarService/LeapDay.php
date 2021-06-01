@@ -5,6 +5,7 @@ namespace App\Services\CalendarService;
 
 
 use App\Calendar;
+use App\Collections\IntervalsCollection;
 use App\Exceptions\InvalidLeapDayIntervalException;
 use FontLib\Table\Type\post;
 use Illuminate\Support\Arr;
@@ -61,7 +62,7 @@ class LeapDay
         $this->not_numbered = Arr::get($attributes, "not_numbered", false);
         $this->show_text = Arr::get($attributes, "show_text", false);
 
-        $this->collectIntervals();
+        $this->intervals = IntervalsCollection::fromString($this->interval, $this->offset)->normalize();
     }
 
     public function intersectsYear(int $year)
@@ -81,158 +82,6 @@ class LeapDay
         return false;
     }
 
-    private function collectIntervals()
-    {
-        $dirtyIntervals = collect(explode(',', $this->interval));
-
-        if(!$dirtyIntervals->count()) {
-            throw new InvalidLeapDayIntervalException('An invalid value was provided for the interval of a leap day: ' . $dirtyIntervals);
-        }
-
-        $offset = $this->offset;
-        $dirtyIntervals = $dirtyIntervals->map(function($interval) use ($offset){
-            return new Interval($interval, $offset);
-        });
-
-        // Remove any subtracting intervals (ones with !) from the front, since they cannot negate anything.
-        while($dirtyIntervals[$dirtyIntervals->count()-1]->subtractor){
-            unset($dirtyIntervals[$dirtyIntervals->count()-1]);
-        }
-
-        // If we only have one interval, we can just return that.
-        if($dirtyIntervals->count() == 1){
-            $this->intervals = $dirtyIntervals;
-            return;
-        }
-
-        $cleanIntervals = collect($dirtyIntervals);
-
-        for($outer_index = 0; $outer_index < $dirtyIntervals->count(); $outer_index++) {
-
-            $outerInterval = $dirtyIntervals->get($outer_index);
-
-            for($inner_index = $outer_index+1; $inner_index < $dirtyIntervals->count(); $inner_index++) {
-
-                $innerInterval = $dirtyIntervals->get($inner_index);
-
-                $collidingInterval = lcmo($outerInterval, $innerInterval);
-
-                if($collidingInterval) {
-
-                    // But if the outer interval has the same LCM as the inner one, remove the outer interval, provided if neither or both are subtractors.
-                    if (
-                        $outerInterval->interval == $collidingInterval->interval
-                        &&
-                        $outerInterval->offset == $collidingInterval->offset
-                        &&
-                        ((!$outerInterval->subtractor && !$innerInterval->subtractor) || ($outerInterval->subtractor && $innerInterval->subtractor))
-                    ) {
-                        $cleanIntervals = $cleanIntervals->reject(function ($interval) use ($outerInterval){
-                            return $interval == $outerInterval;
-                        });
-                        break;
-                    }
-
-                    // If the two intervals cannot cancel each other out, skip to the next outer interval
-                    if($outerInterval->subtractor xor $innerInterval->subtractor){
-                        break;
-                    }
-
-                }else{
-
-                    // If the outer interval did not match the inner interval, and it is a subtractor, and there are no more intervals, remove this interval
-                    if($outer_index+2 >= $dirtyIntervals->count() && $outerInterval->subtractor){
-                        $cleanIntervals = $cleanIntervals->reject(function ($interval) use ($outerInterval){
-                            return $interval == $outerInterval;
-                        });
-                        break;
-                    }
-
-                }
-
-            }
-
-        }
-
-        for($outer_index = 0; $outer_index < $cleanIntervals->count(); $outer_index++) {
-
-            $outerInterval = $cleanIntervals->get($outer_index);
-
-            for ($inner_index = $outer_index + 1; $inner_index < $cleanIntervals->count(); $inner_index++) {
-
-                $innerInterval = $cleanIntervals->get($inner_index);
-
-                $subtractor = (!$outerInterval->subtractor && !$innerInterval->subtractor) || ($outerInterval->subtractor && $innerInterval->subtractor);
-
-                if($subtractor) {
-
-                    $collidingInterval = lcmo($outerInterval, $innerInterval);
-
-                    if ($collidingInterval) {
-
-                        $foundInterval = $outerInterval->internalIntervals->filter(function($interval) use ($collidingInterval, $subtractor){
-                           return $interval->interval == $collidingInterval->interval
-                               && $interval->offset == $collidingInterval->offset
-                               && $interval->subtractor != $subtractor;
-                        })->first();
-
-                        if($foundInterval){
-
-                            $outerInterval = $outerInterval->internalIntervals->reject(function($interval) use ($foundInterval){
-                                return $interval == $foundInterval;
-                            });
-
-                        }else{
-
-                            $collidingInterval->subtractor = true;
-
-                            $outerInterval->internalIntervals->add($collidingInterval);
-
-                        }
-
-                    }
-                }
-
-                foreach($innerInterval->internalIntervals as $innermostInterval){
-
-                    $collidingInterval = lcmo($outerInterval, $innermostInterval);
-
-                    if($collidingInterval){
-
-                        $subtractor = (!$outerInterval->subtractor && !$innermostInterval->subtractor) || ($outerInterval->subtractor && $innermostInterval->subtractor);
-
-                        $foundInterval = $outerInterval->internalIntervals->filter(function($interval) use ($collidingInterval, $subtractor){
-                           return $interval->interval == $collidingInterval->interval
-                               && $interval->offset == $collidingInterval->offset
-                               && $interval->subtractor != $subtractor;
-                        })->first();
-
-                        if($foundInterval){
-
-                            $outerInterval = $outerInterval->internalIntervals->reject(function($interval) use ($foundInterval){
-                                return $interval == $foundInterval;
-                            });
-
-                        }else{
-
-                            $collidingInterval->subtractor = $subtractor;
-
-                            $outerInterval->internalIntervals->add($collidingInterval);
-
-                        }
-
-                    }
-
-                }
-
-            }
-
-        }
-
-        $this->intervals = $cleanIntervals;
-
-    }
-
     public function occurrences(int $parentOccurrences)
     {
 
@@ -242,31 +91,8 @@ class LeapDay
 
         if($parentOccurrences > 0) {
 
-            if($yearZeroExists) {
-
-                $negator_zero_offset = false;
-                $add_zero_offset = false;
-
-                $reversed = $this->intervals->reverse();
-
-                foreach($reversed as $interval){
-
-                    if($interval->offset == 0){
-                        if($interval->subtractor){
-                            $negator_zero_offset = true;
-                            $add_zero_offset = false;
-                        }else{
-                            $negator_zero_offset = false;
-                            $add_zero_offset = true;
-                        }
-                    }
-
-                }
-
-                if($add_zero_offset && !$negator_zero_offset){
+            if($yearZeroExists && $this->intervals->filter->bumpsYearZero->count() > 0) {
                     $occurrences++;
-                }
-
             }
 
             foreach($this->intervals as $outerInterval){
@@ -313,7 +139,7 @@ class LeapDay
 
                     $result = $year / $innerInterval->interval;
 
-                    $occurrences += $innerInterval->subtractor ? cil($result)*-1 : ceil($result);
+                    $occurrences += $innerInterval->subtractor ? ceil($result)*-1 : ceil($result);
 
                 }
 

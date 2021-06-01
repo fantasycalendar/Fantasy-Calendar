@@ -13,6 +13,7 @@ class Interval
     public int $offset;
     public bool $subtractor;
     public $internalIntervals;
+    public bool $bumpsYearZero;
 
     /**
      * Interval constructor.
@@ -29,6 +30,8 @@ class Interval
         // If this interval is not 1 and does not ignore offset, normalize offset to the interval
         $ignores_offset = str_contains($interval, '+');
         $this->offset = $this->interval == 1 || $ignores_offset ? 0 : ($this->interval + $offset) % $this->interval;
+
+        $this->bumpsYearZero = ($this->offset === 0 && !$this->subtractor);
     }
 
     public function voteOnYear($year)

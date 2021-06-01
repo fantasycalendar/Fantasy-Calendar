@@ -85,8 +85,11 @@ class InitialState
         Log::info('ENTERING: '. self::class . '::calculateTotalLeapdayOccurrences');
         return $this->calendar->timespans->sum(function($timespan){
             $timespanOccurrences = $timespan->occurrences($this->year);
-            return $timespan->leapDays->sum(function($leapDay) use ($timespanOccurrences){
-                return $leapDay->occurrences($timespanOccurrences);
+            return $timespan->leapDays->sum(function($leapDay) use ($timespanOccurrences, $timespan){
+                dump("Timespan {$timespan->name} occurrences: " . $timespanOccurrences);
+                $occurrences = $leapDay->occurrences($timespanOccurrences);
+                dump("Leap day {$leapDay->name} occurrences: " . $occurrences);
+                return $occurrences;
             });
         });
     }

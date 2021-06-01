@@ -54,7 +54,13 @@ class Month
     {
         $epochs = EpochService::forCalendarYear($this->calendar);
 
-        dd('EpochService::forCalendarMonth() results:', $epochs);
+        dd('EpochService::forCalendarMonth() results:', $epochs->groupBy('month')->mapWithKeys(function($epochs, $index){
+            return [
+                $this->calendar->months[$index]->name => $epochs->map(function($epoch){
+                    return $epoch->epoch . " : " . $epoch->year . " : " . $this->calendar->months[$epoch->month]->name . " : " . $epoch->day;
+                })
+            ];
+        }));
 
 //        $sections = (new SectionsCollection())->build($this);
 //
