@@ -89,6 +89,7 @@ class InitialState
                 dump("Timespan {$timespan->name} occurrences: " . $timespanOccurrences);
                 $occurrences = $leapDay->occurrences($timespanOccurrences);
                 dump("Leap day {$leapDay->name} occurrences: " . $occurrences);
+                dump($occurrences);
                 return $occurrences;
             });
         });

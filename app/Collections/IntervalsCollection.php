@@ -17,7 +17,12 @@ class IntervalsCollection extends \Illuminate\Support\Collection
             throw new InvalidLeapDayIntervalException('An invalid value was provided for the interval of a leap day: ' . $intervalString);
         }
 
-        return (new self($items))->skipWhile->subtractor->values();
+        return (new self($items))->reverse()->skipWhile->subtractor->reverse()->values();
+    }
+
+    public function bumpsYearZero()
+    {
+      return $this->reject->offset->max('interval')->subtractor;
     }
 
     public function normalize()
@@ -31,7 +36,9 @@ class IntervalsCollection extends \Illuminate\Support\Collection
         $cleanIntervals = new self($this->toArray());
 
         $dirtyIntervals->each(function($outerInterval, $outer_index) use ($dirtyIntervals, &$cleanIntervals) {
+
             $dirtyIntervals->splice($outer_index+1)->each(function($innerInterval) use ($outerInterval, $outer_index, $dirtyIntervals, &$cleanIntervals){
+
                 $collidingInterval = lcmo($outerInterval, $innerInterval);
 
                 if($collidingInterval) {
@@ -55,16 +62,15 @@ class IntervalsCollection extends \Illuminate\Support\Collection
                         return;
                     }
 
-                    return;
-
                 }
 
                 // If the outer interval did not match the inner interval, and it is a subtractor, and there are no more intervals, remove this interval
                 if($outer_index+2 >= $dirtyIntervals->count() && $outerInterval->subtractor){
+
                     $cleanIntervals = $cleanIntervals->reject(function ($interval) use ($outerInterval){
                         return $interval == $outerInterval;
                     });
-                    return;
+
                 }
 
             });
@@ -78,7 +84,7 @@ class IntervalsCollection extends \Illuminate\Support\Collection
 
                 $innerInterval = $cleanIntervals->get($inner_index);
 
-                $subtractor = (!$outerInterval->subtractor && !$innerInterval->subtractor) || ($outerInterval->subtractor && $innerInterval->subtractor);
+                $subtractor = ($outerInterval->subtractor && !$innerInterval->subtractor) || ($outerInterval->subtractor && $innerInterval->subtractor);
 
                 if($subtractor) {
 
@@ -115,7 +121,7 @@ class IntervalsCollection extends \Illuminate\Support\Collection
 
                     if($collidingInterval){
 
-                        $subtractor = (!$outerInterval->subtractor && !$innermostInterval->subtractor) || ($outerInterval->subtractor && $innermostInterval->subtractor);
+                        $subtractor = ($outerInterval->subtractor && !$innermostInterval->subtractor) || ($outerInterval->subtractor && $innermostInterval->subtractor);
 
                         $foundInterval = $outerInterval->internalIntervals->filter(function($interval) use ($collidingInterval, $subtractor){
                             return $interval->interval == $collidingInterval->interval

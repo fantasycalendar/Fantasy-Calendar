@@ -91,8 +91,8 @@ class LeapDay
 
         if($parentOccurrences > 0) {
 
-            if($yearZeroExists && $this->intervals->filter->bumpsYearZero->count() > 0) {
-                    $occurrences++;
+            if($yearZeroExists && $this->intervals->bumpsYearZero()){
+                $occurrences++;
             }
 
             foreach($this->intervals as $outerInterval){
