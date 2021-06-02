@@ -34,6 +34,15 @@ class Interval
         $this->bumpsYearZero = ($this->offset === 0 && !$this->subtractor);
     }
 
+    public function toJson()
+    {
+        return json_encode([
+            'interval' => $this->interval,
+            'subtractor' => $this->subtractor,
+            'offset' => $this->offset
+        ], JSON_PRETTY_PRINT);
+    }
+
     public function voteOnYear($year)
     {
         if((($year-$this->offset) % $this->interval) === 0) {
@@ -52,5 +61,20 @@ class Interval
     public function contributionToYear($year): int
     {
         return (int) ceil($year / $this->interval);
+    }
+
+    public function generateSubIntervals($intervals)
+    {
+        return $intervals->map(function($interval){
+            if(!$interval->subtractor) {
+                $collidingInterval = lcmo($this, $interval);
+
+                if($collidingInterval) {
+
+                }
+            }
+
+            return [$interval->interval . '-' . $this->interval . microtime() => $interval];
+        });
     }
 }
