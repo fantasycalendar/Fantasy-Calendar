@@ -23,7 +23,7 @@ class Era
     public function __construct($attributes)
     {
         $this->name = $attributes['name'];
-        $this->formatting = $attributes['formatting'];
+        $this->formatting = $attributes['formatting'] ?? "";
         $this->description = $attributes['description'];
         $this->settings = $attributes['settings'];
         $this->date = $attributes['date'];
@@ -34,6 +34,8 @@ class Era
 
     public function getEpochSubtractables($calendar)
     {
+
+        dump($this->name);
 
         $eraEpoch = Epoch::forEra($this);
 

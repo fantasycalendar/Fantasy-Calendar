@@ -26,7 +26,7 @@ class Timespan implements Arrayable
     public function __construct($attributes, $calendar)
     {
         $this->attributes = $attributes;
-        $this->attributes['is_intercalary'] = ($attributes['type'] == 'intercalary');
+        $this->attributes['intercalary'] = ($attributes['type'] == 'intercalary');
 
         $this->calendar = $calendar;
     }

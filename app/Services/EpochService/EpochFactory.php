@@ -66,9 +66,9 @@ class EpochFactory
 
     public function forEra(Era $era)
     {
-        Log::debug('EpochFactory::forEra - ' . date_slug($era->year, $era->month, $era->day));
+        Log::debug('EpochFactory::forEra - ' . date_slug($era->year, $era->month, $era->day+1));
 
-        return $this->forDate($era->year, $era->month, $era->day);
+        return $this->forDate($era->year, $era->month, $era->day+1);
     }
 
     public function processYear()

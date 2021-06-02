@@ -105,6 +105,8 @@ class State
                 return 0;
             }
 
+
+
             return $this->previousState->get('month')+1;
 
         }

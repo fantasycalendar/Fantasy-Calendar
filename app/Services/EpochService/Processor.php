@@ -46,9 +46,9 @@ class Processor
     public function processUntilDate($year, $month, $day)
     {
         return $this->processUntil(function($processor) use ($year, $month, $day){
-            return $processor->state->year = $year
-                && $processor->state->month = $month
-                && $processor->state->day = $day;
+            return $processor->state->year == $year
+                && $processor->state->month == $month
+                && $processor->state->day == $day;
         });
     }
 
