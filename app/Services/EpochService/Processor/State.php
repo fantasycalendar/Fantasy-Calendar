@@ -40,6 +40,7 @@ class State
     private function initialize($withEras)
     {
         //        Log::info('ENTERING: ' . self::class . '::initialize');
+        dump($withEras);
         if($withEras) {
             $this->statecache = InitialStateWithEras::generateFor($this->calendar)->collect();
             //        $this->nextYearState = InitialStateWithEras::generateFor($this->calendar->addYear()->startOfYear())->collect();

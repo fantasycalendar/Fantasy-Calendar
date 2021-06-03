@@ -19,7 +19,7 @@ class Processor
      */
     public State $state;
 
-    public function __construct($calendar, $withEras = false)
+    public function __construct($calendar, $withEras = true)
     {
         $this->state = new State($calendar, $withEras);
         $this->epochs = new EpochsCollection();

@@ -72,7 +72,7 @@ class EpochFactory
             ->replicate()
             ->setDate($era->year, $era->month, $era->day+1);
 
-        return $this->processor($calendar)
+        return $this->processor($calendar, false)
             ->processUntil(function($processor) use ($era) {
                 return $processor->state->month >= $era->month
                     && $processor->state->day > $era->day+1;
@@ -99,8 +99,8 @@ class EpochFactory
         $this->epochs->insert($epoch);
     }
 
-    private function processor($calendar = null, $withEras = false)
+    private function processor($calendar = null, $withEras = true)
     {
-        return new Processor($calendar ?? $this->calendar);
+        return new Processor($calendar ?? $this->calendar, $withEras);
     }
 }
