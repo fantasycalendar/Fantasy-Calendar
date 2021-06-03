@@ -85,12 +85,8 @@ class InitialState
         Log::info('ENTERING: '. self::class . '::calculateTotalLeapdayOccurrences');
         return $this->calendar->timespans->sum(function($timespan){
             $timespanOccurrences = $timespan->occurrences($this->year);
-
             return $timespan->leapDays->sum(function($leapDay) use ($timespanOccurrences, $timespan){
-//                dump("Timespan {$timespan->name} occurrences: " . $timespanOccurrences);
                 $occurrences = $leapDay->occurrences($timespanOccurrences);
-//                dump("Leap day {$leapDay->name} occurrences: " . $occurrences);
-//                dump($occurrences);
                 return $occurrences;
             });
         });
@@ -100,20 +96,14 @@ class InitialState
     {
         Log::info('ENTERING: '. self::class . '::calculateHistoricalIntercalaryCount');
 
-        $intercalaryTimespans = $this->calendar->timespans->filter->intercalary;
-
-        $timespanIntercalaryDays = $intercalaryTimespans->sum(function($timespan){
-            return $timespan->occurrences($this->year) * $timespan->length;
-        });
-
-        $leapDayIntercalaryDays = $intercalaryTimespans->sum(function($timespan){
+        return $this->calendar->timespans->sum(function($timespan){
             $timespanOccurrences = $timespan->occurrences($this->year);
-            return $timespan->leapDays->filter->intercalary->sum(function($leapDay) use ($timespanOccurrences){
-                return $leapDay->occurrences($timespanOccurrences);
+            $timespanIntercalaryDays = $timespan->intercalary ? $timespanOccurrences * $timespan->length : 0;
+            $leapDayIntercalaryDays = $timespan->leapDays->sum(function($leapDay) use ($timespanOccurrences, $timespan){
+                return $leapDay->intercalary || $timespan->intercalary ? $leapDay->occurrences($timespanOccurrences) : 0;
             });
+            return $timespanIntercalaryDays + $leapDayIntercalaryDays;
         });
-
-        return $leapDayIntercalaryDays + $timespanIntercalaryDays;
     }
 
     private function calculateTimespanCounts()
