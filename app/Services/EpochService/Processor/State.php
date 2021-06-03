@@ -25,7 +25,7 @@ class State
      * @param $calendar
      * @param null $nextYearState
      */
-    public function __construct($calendar)
+    public function __construct($calendar, $withEras = true)
     {
 //        Log::info('ENTERING: ' . self::class . '::__construct');
         $this->calendar = $calendar;
@@ -34,14 +34,20 @@ class State
         Log::info('initing state');
         Log::info($calendar->dynamic_data);
 
-        $this->initialize();
+        $this->initialize($withEras);
     }
 
-    private function initialize()
+    private function initialize($withEras)
     {
-//        Log::info('ENTERING: ' . self::class . '::initialize');
-        $this->statecache = InitialStateWithEras::generateFor($this->calendar)->collect();
-//        $this->nextYearState = InitialStateWithEras::generateFor($this->calendar->addYear()->startOfYear())->collect();
+        //        Log::info('ENTERING: ' . self::class . '::initialize');
+        if($withEras) {
+            $this->statecache = InitialStateWithEras::generateFor($this->calendar)->collect();
+            //        $this->nextYearState = InitialStateWithEras::generateFor($this->calendar->addYear()->startOfYear())->collect();
+        } else {
+            $this->statecache = InitialState::generateFor($this->calendar)->collect();
+            //        $this->nextYearState = InitialStateWithEras::generateFor($this->calendar->addYear()->startOfYear())->collect();
+        }
+
         $this->previousState = collect();
     }
 

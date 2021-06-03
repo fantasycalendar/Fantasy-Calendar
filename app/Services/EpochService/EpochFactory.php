@@ -68,7 +68,15 @@ class EpochFactory
     {
         Log::debug('EpochFactory::forEra - ' . date_slug($era->year, $era->month, $era->day+1));
 
-        return $this->forDate($era->year, $era->month, $era->day+1);
+        $calendar = $this->calendar
+            ->replicate()
+            ->setDate($era->year, $era->month, $era->day+1);
+
+        return $this->processor($calendar)
+            ->processUntil(function($processor) use ($era) {
+                return $processor->state->month >= $era->month
+                    && $processor->state->day > $era->day+1;
+            })->last();
     }
 
     public function processYear()
@@ -91,7 +99,7 @@ class EpochFactory
         $this->epochs->insert($epoch);
     }
 
-    private function processor($calendar = null)
+    private function processor($calendar = null, $withEras = false)
     {
         return new Processor($calendar ?? $this->calendar);
     }
