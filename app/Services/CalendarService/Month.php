@@ -43,7 +43,7 @@ class Month
 
 //        $this->firstEpoch = EpochService::forCalendarYear($calendar)->where('month', '=', $this->id)->first();
 
-//        $this->initialize();
+        $this->initialize();
     }
 
     /*
@@ -139,8 +139,6 @@ class Month
         $this->weekdays = $this->buildWeekdays();
 
         $this->length = $this->baseLength + $this->leapdays->count();
-
-        $this->firstWeekday = $this->firstEpoch->weekday;
 
         return $this;
     }
