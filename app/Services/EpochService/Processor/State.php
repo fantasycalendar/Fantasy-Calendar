@@ -59,21 +59,22 @@ class State
         $this->weekday++;
         $this->epoch++;
 
+        // Compare current day to the previous day's month length
         if($this->day > $this->months->get($this->month)->daysInYear) {
 
             $this->day = 1;
             $this->month++;
-
 
             if(!$this->calendar->overflows_week){
                 $this->weekday = 0;
                 $this->totalWeekNumber++;
             }
 
+            $this->timespanCounts[$this->monthIndex] = $this->timespanCounts->get($this->monthIndex) + 1;
+
             // To-do: We need to properly increment the first timespan of the year based on the month index
             // It doesn't seem to properly forget the month index either? It's 0 for the entire year.
-            $this->timespanCounts[$this->monthIndex] = $this->timespanCounts->get($this->monthIndex) + 1;
-            $this->previousState->forget('monthIndex');
+            // $this->previousState->forget('monthIndex');
 
             $this->numberTimespans++;
 
@@ -136,10 +137,7 @@ class State
     private function calculateMonth()
     {
 //        Log::info('ENTERING: ' . self::class . '::calculateMonth');
-        // Compare current day to the previous day's month length
         if(!$this->previousState->has('month')) {
-            $this->timespanCounts[$this->monthIndex] = $this->timespanCounts->get($this->monthIndex) + 1;
-            $this->numberTimespans++;
             return 0;
         }
 
@@ -148,11 +146,12 @@ class State
 
     private function calculateMonthIndex()
     {
-        if(!$this->previousState->has('monthIndex')) {
-            return $this->months->get($this->month)->id;
-        }
-
-        return $this->previousState->get('monthIndex');
+        return $this->months->get($this->month)->id;
+//        if(!$this->previousState->has('monthIndex')) {
+//            return $this->months->get($this->month)->id;
+//        }
+//
+//        return $this->previousState->get('monthIndex');
     }
 
     private function calculateMoonPhases()

@@ -35,8 +35,6 @@ class Era
     public function getEpochSubtractables($calendar)
     {
 
-        dump($this->name);
-
         $eraEpoch = Epoch::forEra($this);
 
         $eraFreeCalendar = $calendar
