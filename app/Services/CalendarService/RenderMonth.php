@@ -52,46 +52,17 @@ class RenderMonth
      */
     public function getStructure()
     {
-        /*$calendar = $this->calendar;
-        $timespans = $this->calendar->timespans;
+        $epochs = EpochService::forCalendarMonth($this->calendar);
 
-        $calendar->setDate(1, 0, 1);
+        $result = $epochs->groupBy('monthIndex')->mapWithKeys(function($epochs, $index){
+            return $epochs->groupBy('yearWeekNumber')->map->chunkWhile(function($epoch, $key, $chunk){
+                return $epoch->isIntercalary === $chunk->last()->isIntercalary;
+            })->map->map->map->map(function($epoch) {
+                return $epoch->epoch . " : " . $epoch->year . " : " . $epoch->day . " : " . $epoch->weekday . " : " . $epoch->inverseYearWeekNumber .  " : " . (($epoch->isIntercalary) ? "Yes" : "No");
+            });
+        });
 
-        $epochs = EpochService::forCalendarYear($calendar);
-
-        $lastWeek = $epochs->last();
-
-        for($i = 2; $i < 10; $i++) {
-            $calendar->setDate($i, 0, 1);
-
-            $epochs = EpochService::forCalendarYear($calendar);
-
-            if($epochs->first()->totalWeekNumber - 1 !== $lastWeek->totalWeekNumber) {
-                dd("Previous: ", $lastWeek, $epochs->groupBy('monthIndex')->mapWithKeys(function($epochs, $index) use ($timespans){
-                    return [
-                        $timespans[$index]->name => $epochs->groupBy('totalWeekNumber')->map->map(function($epoch) use ($timespans){
-                            return $epoch->epoch . " : " . $epoch->year . " : " . $timespans[$epoch->monthIndex]->name . " : " . $epoch->day . " : " . $epoch->weekday . " : " . $epoch->inverseMonthWeekNumber .  " : " . (($epoch->isIntercalary) ? "Yes" : "No");
-                        })
-                    ];
-                }));
-            }
-
-            $lastWeek = $epochs->last();
-        }
-
-        dd("all good");*/
-
-        $epochs = EpochService::forCalendarYear($this->calendar);
-
-        $timespans = $this->calendar->timespans;
-
-        dd('EpochService::forCalendarMonth() results:', $epochs->groupBy('monthIndex')->mapWithKeys(function($epochs, $index) use ($timespans){
-            return [
-                $timespans[$index]->name => $epochs->groupBy('totalWeekNumber')->map->map(function($epoch) use ($timespans){
-                    return $epoch->epoch . " : " . $epoch->year . " : " . $timespans[$epoch->monthIndex]->name . " : " . $epoch->day . " : " . $epoch->weekday . " : " . $epoch->inverseYearWeekNumber .  " : " . (($epoch->isIntercalary) ? "Yes" : "No");
-                })
-            ];
-        }));
+        dd($result);
 
 //        $sections = (new SectionsCollection())->build($this);
 //
