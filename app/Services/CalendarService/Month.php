@@ -53,28 +53,34 @@ class Month extends Timespan
             $baseLength = $this->length + $this->activeLeapDays->reject->intercalary->count();
         }
 
-        $baseLengthArray = array_fill(0, $baseLength, $this->intercalary);
+        $daysInYear = collect([])->times($baseLength, function($index){
+            return new MonthDay($index, $this->intercalary);
+        });
 
-        return $this->insertLeapdaysIntoDaysInYear($baseLengthArray);
+        if($this->intercalary) {
+            return $daysInYear;
+        }
+
+        return $this->insertLeapdaysIntoDaysInYear($daysInYear);
 
     }
 
-    private function insertLeapdaysIntoDaysInYear($baseLengthArray)
+    private function insertLeapdaysIntoDaysInYear($daysInYear)
     {
-
-        $baseLengthArray = collect($baseLengthArray);
 
         $intercalaryLeapDays = $this->activeLeapDays->filter->intercalary;
 
         if($intercalaryLeapDays->count()){
-            $offset = 0;
-            $intercalaryLeapDays->each(function($leapDay) use (&$baseLengthArray, &$offset){
-                $baseLengthArray->splice($leapDay->day+$offset, 0, true);
-                $offset++;
+            $offset = 1 / ($intercalaryLeapDays->count()+1);
+            $intercalaryLeapDays->each(function($leapDay) use (&$daysInYear, &$offset, $intercalaryLeapDays){
+                $day = new MonthDay($leapDay->day+$offset, true);
+                $daysInYear->push($day);
+                $offset += 1 / ($intercalaryLeapDays->count()+1);
             });
+            $daysInYear = $daysInYear->sortBy('order')->values();
         }
 
-        return $baseLengthArray;
+        return $daysInYear;
 
     }
 
@@ -99,4 +105,5 @@ class Month extends Timespan
 
 		return $weekdays->union($leapDays)->sortKeys()->values();
 	}
+
 }

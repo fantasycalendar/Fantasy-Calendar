@@ -18,6 +18,10 @@ class Epoch
     public int $totalWeekNumber;
     public int $monthIndex;
     public int $weekday;
+    public int $monthWeekNumber;
+    public int $inverseMonthWeekNumber;
+    public int $yearWeekNumber;
+    public int $inverseYearWeekNumber;
     public string $slug;
     public bool $isIntercalary;
 
@@ -34,6 +38,10 @@ class Epoch
         $this->totalWeekNumber = $attributes['totalWeekNumber'];
         $this->monthIndex = $attributes['monthIndex'];
         $this->weekday = $attributes['weekday'];
+        $this->monthWeekNumber = $attributes['monthWeekNumber'];
+        $this->inverseMonthWeekNumber = $attributes['inverseMonthWeekNumber'];
+        $this->yearWeekNumber = $attributes['yearWeekNumber'];
+        $this->inverseYearWeekNumber = $attributes['inverseYearWeekNumber'];
         $this->isIntercalary = $attributes['isIntercalary'];
 
         $this->slug = $this->slugify();
