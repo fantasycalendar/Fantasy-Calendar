@@ -73,16 +73,16 @@ class State
             $this->day = 1;
             $this->month++;
 
+            $this->monthWeekNumber = 0;
+            $this->previousState->forget('totalMonthWeekNumber');
+            $this->incrementWeek(!$this->calendar->overflows_week);
+
             if($this->month == $this->months->count()){
                 $this->month = 0;
                 $this->year++;
                 $this->previousState->forget('months');
                 $this->previousState->forget('totalYearWeekNumber');
             }
-
-            $this->monthWeekNumber = 0;
-            $this->previousState->forget('totalMonthWeekNumber');
-            $this->incrementWeek(!$this->calendar->overflows_week);
 
             if($this->calendar->overflows_week){
                 $this->incrementWeekday();
@@ -145,9 +145,9 @@ class State
             'monthIndex' => $this->monthIndex,
             'weekday' => $this->weekday,
             'monthWeekNumber' => $this->monthWeekNumber,
-            'inverseMonthWeekNumber' => $this->totalMonthWeekNumber - $this->monthWeekNumber + 1,
+            'inverseMonthWeekNumber' => $this->totalMonthWeekNumber - ($this->monthWeekNumber - 1),
             'yearWeekNumber' => $this->yearWeekNumber,
-            'inverseYearWeekNumber' => $this->totalYearWeekNumber - $this->yearWeekNumber + 1,
+            'inverseYearWeekNumber' => $this->totalYearWeekNumber - ($this->yearWeekNumber - 1),
             'isIntercalary' => $this->isIntercalary()
         ];
     }
@@ -250,7 +250,7 @@ class State
                     return $month->daysInYear->reject->intercalary->count();
                 });
 
-                return (int) floor($totalDaysInYear/ count($this->calendar->global_week));
+                return (int) abs(ceil(($totalDaysInYear + $this->weekday) / count($this->calendar->global_week)));
 
             }
 
