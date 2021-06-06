@@ -28,11 +28,11 @@ class Processor
     /**
      * Processor constructor.
      * @param $calendar
-     * @param bool $withEras
+     * @param $state
      */
-    public function __construct($calendar, $withEras = true)
+    public function __construct(Calendar $calendar, State $state)
     {
-        $this->state = new State($calendar, $withEras);
+        $this->state = $state;
         $this->epochs = new EpochsCollection();
         $this->calendar = $calendar;
     }

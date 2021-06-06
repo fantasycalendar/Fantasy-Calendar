@@ -7,7 +7,7 @@ namespace App\Services\EpochService;
 use App\Calendar;
 use App\Collections\EpochsCollection;
 use App\Services\CalendarService\Era;
-use Illuminate\Support\Facades\Log;
+use App\Services\EpochService\Processor\State;
 
 class EpochFactory
 {
@@ -179,6 +179,15 @@ class EpochFactory
      */
     private function processor($calendar = null, $withEras = true): Processor
     {
-        return new Processor($calendar ?? $this->calendar, $withEras);
+        $calendar = $calendar ?? $this->calendar;
+        $state = new State($calendar);
+
+        if(!$withEras) {
+            $state->disableEras();
+        }
+
+        $state->initialize();
+
+        return new Processor($calendar, $state);
     }
 }

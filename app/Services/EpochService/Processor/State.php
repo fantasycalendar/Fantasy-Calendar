@@ -16,27 +16,38 @@ class State
 {
     use CalculatesAndCachesProperties;
 
-    public $day = 1;
+    public int $day = 1;
     public int $year;
-    protected $calendar;
-    protected \Illuminate\Support\Collection $previousState;
-    protected \Illuminate\Support\Collection $nextYearState;
+    protected Calendar $calendar;
+    protected Collection $previousState;
+    private bool $withEras = true;
 
     /**
      * State constructor.
-     * @param $calendar
-     * @param null $nextYearState
+     * @param Calendar $calendar
+     * @param bool $withEras
      */
-    public function __construct($calendar, $withEras = true)
+    public function __construct(Calendar $calendar)
     {
         $this->calendar = $calendar;
         $this->year = $calendar->year;
-        $this->initialize($withEras);
     }
 
-    private function initialize($withEras)
+    /**
+     * Disables eras on the State instance
+     *
+     * @return $this
+     */
+    public function disableEras(): State
     {
-        if($withEras) {
+        $this->withEras = false;
+
+        return $this;
+    }
+
+    public function initialize()
+    {
+        if($this->withEras) {
             $this->statecache = InitialStateWithEras::generateFor($this->calendar)->collect();
         } else {
             $this->statecache = InitialState::generateFor($this->calendar)->collect();
