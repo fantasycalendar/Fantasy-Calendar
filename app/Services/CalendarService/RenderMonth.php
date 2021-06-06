@@ -54,8 +54,9 @@ class RenderMonth
     {
         $epochs = EpochService::forCalendarYear($this->calendar);
 
-        $result = $epochs->groupBy('monthIndex')->mapWithKeys(function($epochs, $index){
-            return $epochs->groupBy('yearWeekNumber')->map->chunkWhile(function($epoch, $key, $chunk){
+        $timespans = $this->calendar->timespans;
+        $result = $epochs->groupBy('monthIndex')->mapWithKeys(function($epochs, $index) use ($timespans){
+            return [$timespans->get($index)->name => $epochs->groupBy('yearWeekNumber')->map->chunkWhile(function($epoch, $key, $chunk){
                 return $epoch->isIntercalary === $chunk->last()->isIntercalary;
             })->map->map->map->map(function($epoch) {
                 $props = [
@@ -84,7 +85,7 @@ class RenderMonth
                 $string = substr($string, 0, -3);
 
                 return $string;
-            });
+            })];
         });
 
         dd($result);

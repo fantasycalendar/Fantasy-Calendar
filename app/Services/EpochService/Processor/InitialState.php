@@ -56,7 +56,6 @@ class InitialState
             'year' => $this->year,
             'epoch' => $this->epoch,
             'numberTimespans' => $this->numberTimespans,
-            'totalWeekNumber' => $this->totalWeekNumber,
             'historicalIntercalaryCount' => $this->historicalIntercalaryCount,
             'weekday' => $this->weekday,
             'timespanCounts' => $this->timespanCounts
@@ -119,16 +118,6 @@ class InitialState
         return $this->calendar->timespans
             ->map->occurrences($this->year)
             ->sum();
-    }
-
-    private function calculateTotalWeekNumber()
-    {
-        Log::info('ENTERING: '. self::class . '::calculateTotalWeekNumber');
-        if($this->calendar->overflows_week){
-			return intval(floor(($this->epoch - $this->historicalIntercalaryCount) / count($this->calendar->global_week)));
-		}
-
-        return $this->calendar->timespans->reject->intercalary->sum->weeksContributedToYear($this->year-1) + 1;
     }
 
     private function calculateWeekday()

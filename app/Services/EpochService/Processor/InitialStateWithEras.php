@@ -32,7 +32,6 @@ class InitialStateWithEras extends InitialState
         $this->epoch -= $eraSubtractables->sum('epoch');
         $this->historicalIntercalaryCount -= $eraSubtractables->sum('historicalIntercalaryCount');
         $this->numberTimespans -= $eraSubtractables->sum('numberTimespans');
-        $this->totalWeekNumber -= $eraSubtractables->sum('totalWeekNumber');
 
         return $this;
     }

@@ -15,7 +15,6 @@ class Epoch
     public Collection $timespanCounts;
     public int $historicalIntercalaryCount;
     public int $numberTimespans;
-    public int $totalWeekNumber;
     public int $monthIndex;
     public int $weekday;
     public int $monthWeekNumber;
@@ -35,7 +34,6 @@ class Epoch
         $this->timespanCounts = $attributes['timespanCounts'];
         $this->historicalIntercalaryCount = $attributes['historicalIntercalaryCount'];
         $this->numberTimespans = $attributes['numberTimespans'];
-        $this->totalWeekNumber = $attributes['totalWeekNumber'];
         $this->monthIndex = $attributes['monthIndex'];
         $this->weekday = $attributes['weekday'];
         $this->monthWeekNumber = $attributes['monthWeekNumber'];

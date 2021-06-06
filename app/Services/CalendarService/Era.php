@@ -49,21 +49,11 @@ class Era
             return $timespanCount - $eraEpoch->timespanCounts->get($index);
         });
 
-        /*dump($this->name);
-        dump([
-            'epoch' => [$eraFreeEpoch->get('epoch'), $eraEpoch->epoch],
-            'historicalIntercalaryCount' => [$eraFreeEpoch->get('historicalIntercalaryCount'), $eraEpoch->historicalIntercalaryCount],
-            //'numberTimespans' => [$eraFreeEpoch->get('numberTimespans'), $eraEpoch->numberTimespans],
-            //'totalWeekNumber' => [$eraFreeEpoch->get('totalWeekNumber'), $eraEpoch->totalWeekNumber],
-            //'timespanCounts' => [$eraFreeEpoch->get('timespanCounts'), $eraEpoch->timespanCounts],
-        ]);*/
-
         return collect([
             'timespanCounts' => $timespanCounts,
             'epoch' => $eraFreeEpoch->get('epoch') - $eraEpoch->epoch,
             'historicalIntercalaryCount' => $eraFreeEpoch->get('historicalIntercalaryCount') - $eraEpoch->historicalIntercalaryCount,
-            'numberTimespans' => $eraFreeEpoch->get('numberTimespans') - $eraEpoch->numberTimespans,
-            'totalWeekNumber' => $eraFreeEpoch->get('totalWeekNumber') - $eraEpoch->totalWeekNumber,
+            'numberTimespans' => $eraFreeEpoch->get('numberTimespans') - $eraEpoch->numberTimespans
         ]);
     }
 

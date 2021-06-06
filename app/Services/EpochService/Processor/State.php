@@ -120,7 +120,6 @@ class State
             && !$this->isIntercalary()
         ){
             $this->weekday = 0;
-            $this->totalWeekNumber++;
             $this->monthWeekNumber++;
             $this->yearWeekNumber++;
         }
@@ -141,7 +140,6 @@ class State
             'timespanCounts' => $this->timespanCounts,
             'historicalIntercalaryCount' => $this->historicalIntercalaryCount,
             'numberTimespans' => $this->numberTimespans,
-            'totalWeekNumber' => $this->totalWeekNumber,
             'monthIndex' => $this->monthIndex,
             'weekday' => $this->weekday,
             'monthWeekNumber' => $this->monthWeekNumber,
@@ -258,11 +256,7 @@ class State
 
                 $monthDays = $month->daysInYear->reject->intercalary->count();
 
-                $monthIntercalaries = $month->daysInYear->filter->intercalary->count();
-
-                $totalWeekdaysBeforeToday = ($monthDays - $monthIntercalaries + $this->weekday);
-
-                $weeks = abs(ceil($totalWeekdaysBeforeToday / $month->weekdays->count()));
+                $weeks = abs(ceil($monthDays / $month->weekdays->count()));
 
                 return (int) $weeks;
 
@@ -296,17 +290,11 @@ class State
     {
         if(!$this->previousState->has('totalMonthWeekNumber')){
 
-            $monthDays = $this->currentMonth()->daysInYear->filter(function($day){
-                return !$day;
-            })->count();
+            $monthDays = $this->currentMonth()->daysInYear->reject->intercalary->count();
 
-            $monthIntercalaries = $this->currentMonth()->daysInYear->reject(function($day){
-                return !$day;
-            })->count();
+            $totalWeekdaysBeforeToday = ($monthDays + $this->weekday);
 
-            $totalWeekdaysBeforeToday = ($monthDays - $monthIntercalaries + $this->weekday);
-
-            $weeks = abs(ceil($totalWeekdaysBeforeToday / $this->currentMonth()->weekdays->count()))+1;
+            $weeks = abs(ceil($totalWeekdaysBeforeToday / $this->currentMonth()->weekdays->count()));
 
             return (int) $weeks;
 
@@ -370,17 +358,6 @@ class State
     private function calculateNumberTimespans()
     {
         return $this->previousState->get('numberTimespans');
-    }
-
-    /**
-     * Getter for $this->totalWeekNumber
-     * @see CalculatesAndCachesProperties
-     *
-     * @return mixed
-     */
-    private function calculateTotalWeekNumber()
-    {
-        return $this->previousState->get('totalWeekNumber');
     }
 
     /**
