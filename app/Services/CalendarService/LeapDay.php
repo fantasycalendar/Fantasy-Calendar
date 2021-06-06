@@ -123,7 +123,7 @@ class LeapDay
 
             foreach($this->intervals as $outerInterval){
 
-                $outerOffset = $yearZeroExists ? $outerInterval->offset - 1 : $outerInterval->offset;
+                $outerOffset = !$yearZeroExists ? $outerInterval->offset - 1 : $outerInterval->offset;
 
                 $year = $outerOffset > 0 ? $parentOccurrences - $outerOffset : $parentOccurrences;
 
@@ -133,7 +133,7 @@ class LeapDay
 
                 foreach($outerInterval->internalIntervals as $innerInterval){
 
-                    $innerOffset = $yearZeroExists ? $innerInterval->offset - 1 : $innerInterval->offset;
+                    $innerOffset = !$yearZeroExists ? $innerInterval->offset - 1 : $innerInterval->offset;
 
                     $year = $innerOffset > 0 ? $parentOccurrences - $innerOffset : $parentOccurrences;
 

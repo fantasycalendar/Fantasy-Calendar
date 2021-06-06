@@ -5,9 +5,10 @@ namespace App;
 use App\Collections\ErasCollection;
 use App\Services\CalendarService\Era;
 use App\Services\CalendarService\LeapDay;
-use App\Services\CalendarService\Month;
+use App\Services\CalendarService\RenderMonth;
 use App\Services\CalendarService\Moon;
 use App\Services\CalendarService\Timespan;
+use App\Services\CalendarService\Month;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Auth;
@@ -224,7 +225,9 @@ class Calendar extends Model
 
     public function getMonthsAttribute()
     {
-        return $this->timespans->filter->intersectsYear($this->year)->values();
+        return collect(Arr::get($this->static_data, 'year_data.timespans'))->map(function($timespan_details, $timespan_key){
+            return new Month(array_merge($timespan_details, ['id' => $timespan_key]), $this);
+        })->filter->intersectsYear($this->year)->values();
     }
 
     public function getMonthIndexAttribute()
@@ -279,7 +282,7 @@ class Calendar extends Model
 
     public function getMonthAttribute()
     {
-        return new Month($this);
+        return new RenderMonth($this);
     }
 
     public function getMonthLengthAttribute()

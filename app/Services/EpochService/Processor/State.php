@@ -54,13 +54,12 @@ class State
     public function advance()
     {
 
-        //        Log::info('ENTERING: ' . self::class . '::advance');
         $this->day++;
         $this->weekday++;
         $this->epoch++;
 
         // Compare current day to the previous day's month length
-        if($this->day > $this->months->get($this->month)->daysInYear) {
+        if($this->day > $this->currentMonth->daysInYear->count()) {
 
             $this->day = 1;
             $this->month++;
@@ -72,13 +71,7 @@ class State
 
             $this->timespanCounts[$this->monthIndex] = $this->timespanCounts->get($this->monthIndex) + 1;
 
-            // To-do: We need to properly increment the first timespan of the year based on the month index
-            // It doesn't seem to properly forget the month index either? It's 0 for the entire year.
-            // $this->previousState->forget('monthIndex');
-
             $this->numberTimespans++;
-
-            $this->previousState->forget('monthLength');
 
             if($this->month+1 >= count($this->months)){
                 $this->month = 0;
@@ -88,35 +81,27 @@ class State
 
         }
 
-        // To-do: We need to implement using the month class instead of using the timespan class for $this->months
+        if($this->currentMonth->daysInYear[$this->day-1]){
+            $this->historicalIntercalaryCount++;
+        }
 
-        /*if($this->calendar->overflows_week){
-            if($this->weekday > count($this->calendar->global_week)){
+        if($this->calendar->overflows_week){
+            if($this->weekday >= count($this->calendar->global_week)){
                 $this->weekday = 0;
                 $this->totalWeekNumber++;
             }
         }else{
-            if($this->weekday > count($this->months->get($this->month)->weekdays) ){
+            if($this->weekday >= count($this->currentMonth->weekdays) ){
                 $this->weekday = 0;
                 $this->totalWeekNumber++;
             }
-        }*/
+        }
 
         $this->flushCache();
     }
 
-    public function basics()
-    {
-//        Log::info('ENTERING: ' . self::class . '::basics');
-        return  [
-            // Information that doesn't need next year's state
-        ];
-    }
-
     public function toArray(): array
     {
-//        Log::info('ENTERING: ' . self::class . '::toArray');
-
         return [
             'month' => $this->month,
             'year' => $this->year,
@@ -132,26 +117,30 @@ class State
     }
 
     /*
-     * Month in the **displayed** year, zero-indexed
+     * Month index in the **displayed** year, zero-indexed
      */
     private function calculateMonth()
     {
-//        Log::info('ENTERING: ' . self::class . '::calculateMonth');
         if(!$this->previousState->has('month')) {
             return 0;
         }
-
         return $this->previousState->get('month');
     }
 
+    /*
+     * Current month object in the **displayed** year
+     */
+    private function calculateCurrentMonth()
+    {
+        return $this->months->get($this->month);
+    }
+
+    /*
+     * Month index of the current month
+     */
     private function calculateMonthIndex()
     {
-        return $this->months->get($this->month)->id;
-//        if(!$this->previousState->has('monthIndex')) {
-//            return $this->months->get($this->month)->id;
-//        }
-//
-//        return $this->previousState->get('monthIndex');
+        return $this->currentMonth->id;
     }
 
     private function calculateMoonPhases()
@@ -172,24 +161,11 @@ class State
 
     private function calculateEpoch()
     {
-//        Log::info('ENTERING: ' . self::class . '::calculateEpoch');
-
-        if(!$this->previousState->has('epoch')){
-            return $this->totalDaysFromTimespans
-                + $this->totalLeapdayOccurrences;
-        }
-
         return $this->previousState->get('epoch');
     }
 
     private function calculateTimespanOccurrences()
     {
-//        Log::info('ENTERING: ' . self::class . '::calculateTimespanOccurrences');
-        if(!$this->previousState->has('timespanOccurrences')) {
-            return $this->calendar->timespans
-                ->map->occurrences($this->year);
-        }
-
         return $this->previousState->get('timespanOccurrences');
     }
 
@@ -210,18 +186,13 @@ class State
 
     private function calculateTimespanCounts()
     {
-//        Log::info('ENTERING: ' . self::class . '::calculateTimespanOccurrences');
-        if(!$this->previousState->has('timespanCounts')) {
-            return $this->calendar->timespans
-                ->map->occurrences($this->year);
-        }
         return $this->previousState->get('timespanCounts');
     }
 
     private function calculateWeekday()
     {
         // To-do A&A: Cannot get the weekdays from a month, since the months are technically still timespans and not months.
-        return $this->previousState->get('weekday')+1;
+        return $this->previousState->get('weekday');
     }
 
     private function staticData($key, $default = null)
