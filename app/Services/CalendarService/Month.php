@@ -69,7 +69,7 @@ class Month extends Timespan
         if($intercalaryLeapDays->count()){
             $offset = 0;
             $intercalaryLeapDays->each(function($leapDay) use (&$baseLengthArray, &$offset){
-                $baseLengthArray->splice($leapDay->day, $offset, true);
+                $baseLengthArray->splice($leapDay->day+$offset, 0, true);
                 $offset++;
             });
         }
