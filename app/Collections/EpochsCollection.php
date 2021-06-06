@@ -52,4 +52,22 @@ class EpochsCollection extends BaseCollection
     {
         return $this->get(date_slug($year, $month, $day));
     }
+
+    /**
+     * @param $year
+     * @return EpochsCollection
+     */
+    public function whereYear($year): EpochsCollection
+    {
+        return $this->where('year', '=', $year);
+    }
+
+    /**
+     * @param $monthId
+     * @return EpochsCollection
+     */
+    public function whereMonthId($monthId): EpochsCollection
+    {
+        return $this->where('monthId', '=', $monthId);
+    }
 }
