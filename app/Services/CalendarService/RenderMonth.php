@@ -52,14 +52,43 @@ class RenderMonth
      */
     public function getStructure()
     {
+        $calendar = $this->calendar;
+        $timespans = $this->calendar->timespans;
+
+        $calendar->setDate(1, 0, 1);
+
+        $epochs = EpochService::forCalendarYear($calendar);
+
+        $lastWeek = $epochs->last();
+
+        for($i = 2; $i < 10; $i++) {
+            $calendar->setDate($i, 0, 1);
+
+            $epochs = EpochService::forCalendarYear($calendar);
+
+            if($epochs->first()->totalWeekNumber - 1 !== $lastWeek->totalWeekNumber) {
+                dd("Previous: ", $lastWeek, $epochs->groupBy('monthIndex')->mapWithKeys(function($epochs, $index) use ($timespans){
+                    return [
+                        $timespans[$index]->name => $epochs->groupBy('totalWeekNumber')->map->map(function($epoch) use ($timespans){
+                            return $epoch->epoch . " : " . $epoch->year . " : " . $timespans[$epoch->monthIndex]->name . " : " . $epoch->day . " : " . $epoch->weekday . " : " . $epoch->totalWeekNumber .  " : " . (($epoch->isIntercalary) ? "Yes" : "No");
+                        })
+                    ];
+                }));
+            }
+
+            $lastWeek = $epochs->last();
+        }
+
+        dd("all good");
+
         $epochs = EpochService::forCalendarYear($this->calendar);
 
         $timespans = $this->calendar->timespans;
 
         dd('EpochService::forCalendarMonth() results:', $epochs->groupBy('monthIndex')->mapWithKeys(function($epochs, $index) use ($timespans){
             return [
-                $timespans[$index]->name => $epochs->map(function($epoch) use ($timespans){
-                    return $epoch->epoch . " : " . $epoch->year . " : " . $timespans[$epoch->monthIndex]->name . " : " . $epoch->day . " : " . $epoch->weekday;
+                $timespans[$index]->name => $epochs->groupBy('totalWeekNumber')->map->map(function($epoch) use ($timespans){
+                    return $epoch->epoch . " : " . $epoch->year . " : " . $timespans[$epoch->monthIndex]->name . " : " . $epoch->day . " : " . $epoch->weekday . " : " . $epoch->totalWeekNumber .  " : " . (($epoch->isIntercalary) ? "Yes" : "No");
                 })
             ];
         }));

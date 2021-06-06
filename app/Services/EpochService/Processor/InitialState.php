@@ -128,11 +128,7 @@ class InitialState
 			return intval(floor(($this->epoch - $this->historicalIntercalaryCount) / count($this->calendar->global_week)));
 		}
 
-        return $this->calendar->timespans->sum(function($timespan){
-            $timespanDays = $timespan->occurrences($this->year) * $timespan->length;
-            $weekLength = count($timespan->week ?? $this->calendar->global_week);
-            return abs(ceil($timespanDays/$weekLength));
-        });
+        return $this->calendar->timespans->reject->intercalary->sum->weeksContributedToYear($this->year-1) + 1;
     }
 
     private function calculateWeekday()

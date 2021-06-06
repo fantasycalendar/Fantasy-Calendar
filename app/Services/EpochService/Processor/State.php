@@ -5,8 +5,10 @@ namespace App\Services\EpochService\Processor;
 
 
 use App\Calendar;
+use App\Services\CalendarService\Month;
 use App\Services\EpochService\Traits\CalculatesAndCachesProperties;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -51,59 +53,82 @@ class State
         $this->previousState = collect();
     }
 
-    public function advance()
+    /**
+     * @return void
+     */
+    public function advance(): void
     {
-
         $this->day++;
         $this->epoch++;
+        $this->incrementMonth();
+        $this->incrementHistoricalIntercalaryCount();
+        $this->flushCache();
+    }
 
+    private function incrementMonth()
+    {
         // Compare current day to the previous day's month length
-        if($this->day > $this->currentMonth->daysInYear->count()) {
+        if($this->day > $this->currentMonth()->daysInYear->count()) {
 
             $this->day = 1;
             $this->month++;
 
-            if(!$this->calendar->overflows_week){
-                $this->weekday = 0;
-                $this->totalWeekNumber++;
+            if($this->month == $this->months->count()){
+                $this->month = 0;
+                $this->year++;
+                $this->previousState->forget('months');
+            }
+
+            $this->incrementWeek(!$this->calendar->overflows_week);
+
+            if($this->calendar->overflows_week){
+                $this->incrementWeekday();
             }
 
             $this->timespanCounts[$this->monthIndex] = $this->timespanCounts->get($this->monthIndex) + 1;
 
             $this->numberTimespans++;
 
-            if($this->month+1 >= count($this->months)){
-                $this->month = 0;
-                $this->year++;
-                $this->previousState->forget('months');
-            }
-
-        }else{
-            // If the current day is not intercalary, increment the weekday count
-            if(!$this->currentMonth->daysInYear[$this->day-1]){
-                $this->weekday++;
-            }
+            return;
         }
 
-        if($this->currentMonth->daysInYear[$this->day-1]){
-            $this->historicalIntercalaryCount++;
-        }
-
-        if($this->calendar->overflows_week){
-            if($this->weekday >= count($this->calendar->global_week)){
-                $this->weekday = 0;
-                $this->totalWeekNumber++;
-            }
-        }else{
-            if($this->weekday >= count($this->currentMonth->weekdays) ){
-                $this->weekday = 0;
-                $this->totalWeekNumber++;
-            }
-        }
-
-        $this->flushCache();
+        $this->incrementWeekday();
     }
 
+    private function incrementWeekday()
+    {
+        if(!$this->isIntercalary()){
+            $this->weekday++;
+            $this->incrementWeek();
+        }
+    }
+
+    private function incrementHistoricalIntercalaryCount()
+    {
+        if($this->isIntercalary()){
+            $this->historicalIntercalaryCount++;
+        }
+    }
+
+    private function incrementWeek($force = false)
+    {
+        if(
+            ($this->weekday >= $this->weekDayCount() || $force)
+            && !$this->isIntercalary()
+        ){
+            if($this->month === 1) {
+                dump($this->day, $this->month, $this->currentMonth);
+            }
+            $this->weekday = 0;
+            $this->totalWeekNumber++;
+        }
+    }
+
+    /**
+     * Compile our data into an array
+     *
+     * @return array
+     */
     public function toArray(): array
     {
         return [
@@ -116,12 +141,16 @@ class State
             'numberTimespans' => $this->numberTimespans,
             'totalWeekNumber' => $this->totalWeekNumber,
             'monthIndex' => $this->monthIndex,
-            'weekday' => $this->weekday
+            'weekday' => $this->weekday,
+            'isIntercalary' => $this->isIntercalary()
         ];
     }
 
-    /*
+    /**
      * Month index in the **displayed** year, zero-indexed
+     * @see CalculatesAndCachesProperties
+     *
+     * @return int
      */
     private function calculateMonth()
     {
@@ -131,30 +160,19 @@ class State
         return $this->previousState->get('month');
     }
 
-    /*
-     * Current month object in the **displayed** year
+    private function weekdayCount()
+    {
+        return ($this->calendar->overflows_week)
+            ? count($this->calendar->global_week)
+            : count($this->currentMonth()->weekdays);
+    }
+
+    /**
+     * Getter for $this->months
+     * @see CalculatesAndCachesProperties
+     *
+     * @return Collection
      */
-    private function calculateCurrentMonth()
-    {
-        return $this->months->get($this->month);
-    }
-
-    /*
-     * Month index of the current month
-     */
-    private function calculateMonthIndex()
-    {
-        return $this->currentMonth->id;
-    }
-
-    private function calculateMoonPhases()
-    {
-        return $this->calendar->moons
-            ->map(function($moon) {
-                return $moon->setEpoch($this->epoch)->getPhases();
-            });
-    }
-
     private function calculateMonths()
     {
         if(!$this->previousState->has('months')){
@@ -163,39 +181,127 @@ class State
         return $this->previousState->get('months');
     }
 
+    /**
+     * Current month object in the **displayed** year
+     * @see CalculatesAndCachesProperties
+     *
+     * @return Month
+     */
+    private function currentMonth()
+    {
+        return $this->months->get($this->month);
+    }
+
+    /**
+     * Month index of the current month
+     * @see CalculatesAndCachesProperties
+     *
+     * @return int
+     */
+    private function calculateMonthIndex()
+    {
+        return $this->currentMonth()->id;
+    }
+
+    /**
+     * Whether the current day is intercalary
+     * @see CalculatesAndCachesProperties
+     *
+     * @return bool
+     */
+    private function isIntercalary()
+    {
+        return $this->currentMonth()->daysInYear[$this->day-1];
+    }
+
+    /**
+     * Getter for $this->moonPhases
+     * @see CalculatesAndCachesProperties
+     *
+     * @return mixed
+     */
+    private function calculateMoonPhases()
+    {
+        return $this->calendar->moons
+            ->map(function($moon) {
+                return $moon->setEpoch($this->epoch)->getPhases();
+            });
+    }
+
+    /**
+     * Getter for $this->epoch
+     * @see CalculatesAndCachesProperties
+     *
+     * @return mixed
+     */
     private function calculateEpoch()
     {
         return $this->previousState->get('epoch');
     }
 
+    /**
+     * Getter for $this->timespanOccurrences
+     * @see CalculatesAndCachesProperties
+     *
+     * @return mixed
+     */
     private function calculateTimespanOccurrences()
     {
         return $this->previousState->get('timespanOccurrences');
     }
 
-    private function calculateNumberTimespans()
-    {
-        return $this->previousState->get('numberTimespans');
-    }
-
-    private function calculateTotalWeekNumber()
-    {
-        return $this->previousState->get('totalWeekNumber');
-    }
-
-    private function calculateHistoricalIntercalaryCount()
-    {
-        return $this->previousState->get('historicalIntercalaryCount');
-    }
-
+    /**
+     * Getter for $this->timespanCounts
+     * @see CalculatesAndCachesProperties
+     *
+     * @return mixed
+     */
     private function calculateTimespanCounts()
     {
         return $this->previousState->get('timespanCounts');
     }
 
+    /**
+     * Getter for $this->numberTimespans
+     * @see CalculatesAndCachesProperties
+     *
+     * @return mixed
+     */
+    private function calculateNumberTimespans()
+    {
+        return $this->previousState->get('numberTimespans');
+    }
+
+    /**
+     * Getter for $this->totalWeekNumber
+     * @see CalculatesAndCachesProperties
+     *
+     * @return mixed
+     */
+    private function calculateTotalWeekNumber()
+    {
+        return $this->previousState->get('totalWeekNumber');
+    }
+
+    /**
+     * Getter for $this->historicalIntercalaryCount
+     * @see CalculatesAndCachesProperties
+     *
+     * @return mixed
+     */
+    private function calculateHistoricalIntercalaryCount()
+    {
+        return $this->previousState->get('historicalIntercalaryCount');
+    }
+
+    /**
+     * Getter for $this->weekday
+     * @see CalculatesAndCachesProperties
+     *
+     * @return mixed
+     */
     private function calculateWeekday()
     {
-        // To-do A&A: Cannot get the weekdays from a month, since the months are technically still timespans and not months.
         return $this->previousState->get('weekday');
     }
 

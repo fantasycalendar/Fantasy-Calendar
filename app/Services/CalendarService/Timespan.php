@@ -62,6 +62,17 @@ class Timespan implements Arrayable
         return (int) floor($year / $this->interval);
     }
 
+    public function weeksContributedToYear($year)
+    {
+        // Number of weeks contributed on years where leap days that do not add week days existed
+        // Number of weeks contributed on years where leap days that **do** add week days existed
+        // Number of weeks contributed on years where NO leap days existed
+
+        $weekLength = count($this->week ?? $this->calendar->global_week);
+
+        return ceil($this->length / $weekLength) * $year;
+    }
+
     public function getLeapDaysAttribute()
     {
         return $this->calendar->leap_days->filter->timespanIs($this->id);

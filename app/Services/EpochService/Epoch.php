@@ -19,6 +19,7 @@ class Epoch
     public int $monthIndex;
     public int $weekday;
     public string $slug;
+    public bool $isIntercalary;
 
     public function __construct($attributes)
     {
@@ -33,6 +34,7 @@ class Epoch
         $this->totalWeekNumber = $attributes['totalWeekNumber'];
         $this->monthIndex = $attributes['monthIndex'];
         $this->weekday = $attributes['weekday'];
+        $this->isIntercalary = $attributes['isIntercalary'];
 
         $this->slug = $this->slugify();
     }
