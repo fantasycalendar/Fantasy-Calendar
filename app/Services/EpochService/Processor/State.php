@@ -55,7 +55,6 @@ class State
     {
 
         $this->day++;
-        $this->weekday++;
         $this->epoch++;
 
         // Compare current day to the previous day's month length
@@ -79,6 +78,11 @@ class State
                 $this->previousState->forget('months');
             }
 
+        }else{
+            // If the current day is not intercalary, increment the weekday count
+            if(!$this->currentMonth->daysInYear[$this->day-1]){
+                $this->weekday++;
+            }
         }
 
         if($this->currentMonth->daysInYear[$this->day-1]){
