@@ -20,7 +20,13 @@ class EpochFactory
      */
     private EpochsCollection $epochs;
 
-    public function forCalendar(Calendar $calendar)
+    /**
+     * Create an EpochFactory for a specific calendar
+     *
+     * @param Calendar $calendar
+     * @return $this
+     */
+    public function forCalendar(Calendar $calendar): EpochFactory
     {
         $this->calendar = $calendar->replicate()->startOfYear();
         $this->epochs = new EpochsCollection();
@@ -28,78 +34,150 @@ class EpochFactory
         return $this;
     }
 
-    public function forCalendarYear(Calendar $calendar)
+    /**
+     * Generates and returns the epochs for the entire year of a calendar's current date
+     *
+     * @param Calendar $calendar
+     * @return EpochsCollection
+     */
+    public function forCalendarYear(Calendar $calendar): EpochsCollection
     {
-        return $this->forCalendar($calendar)
-            ->processYear()
-            ->epochs
-            ->where('year', '=', $calendar->year);
+        $this->forCalendar($calendar)
+            ->processYear();
+
+        return $this->epochs->where('year', '=', $calendar->year);
     }
 
+    /**
+     * Generates and returns the epochs for the current month of a calendar's set date
+     *
+     * @param Calendar $calendar
+     * @return EpochsCollection
+     */
     public function forCalendarMonth(Calendar $calendar): EpochsCollection
     {
-
         return $this->forCalendarYear($calendar)
-            ->where('month', '=', $calendar->month_id);
+            ->where('monthIndex', '=', $calendar->month_id);
     }
 
-    public function forDate($year, $month, $day)
+    /**
+     * Generates and returns the epoch for a given date
+     *
+     * @param $year
+     * @param $month
+     * @param $day
+     * @return Epoch
+     */
+    public function forDate($year, $month, $day): Epoch
     {
-        $date = date_slug($year, $month, $day);
+        if($this->needsDate($year, $month, $day)) {
+            $epochs = $this->generateForDate($year, $month, $day);
 
-        if(!$this->epochs->has($date)) {
-            $calendar = $this->calendar
-                ->replicate()
-                ->setDate($year, $month, $day);
-
-            $this->processor($calendar)
-                ->processUntil(function($processor) use ($year, $month, $day) {
-                    return $processor->state->month >= $month
-                        && $processor->state->day > $day;
-                })->each(function($epoch){
-                    $this->addForDate($epoch);
-                });
+            $this->rememberEpochs($epochs);
         }
 
-        return $this->epochs->get($date);
+        return $this->getByDate($year, $month, $day);
     }
 
+    /**
+     * Generates and returns the epoch for the date of an era change, without taking any *other* eras into account
+     *
+     * @param Era $era
+     * @return mixed
+     */
     public function forEra(Era $era)
     {
-        Log::debug('EpochFactory::forEra - ' . date_slug($era->year, $era->month, $era->day+1));
-
-        $calendar = $this->calendar
-            ->replicate()
-            ->setDate($era->year, $era->month, $era->day+1);
-
-        return $this->processor($calendar, false)
-            ->processUntil(function($processor) use ($era) {
-                return $processor->state->month >= $era->month
-                    && $processor->state->day > $era->day+1;
-            })->last();
+        return $this->generateForDate($era->year, $era->month, $era->day+1)->last();
     }
 
-    public function processYear()
+    /**
+     * Processes an entire year
+     *
+     * @return $this
+     */
+    private function processYear(): EpochFactory
     {
-        $processor = $this->processor();
+        return $this->rememberEpochs($this->processor()->processYear());
+    }
 
-        $processor->processUntil(function($processor){
-            return $processor->state->year == ($this->calendar->year + 1);
-        })->reject(function($epoch){
-            return $epoch->year != $this->calendar->year;
-        })->each(function($epoch){
-            $this->addForDate($epoch);
-        });
+    /**
+     * Remembers the given epochs
+     *
+     * @param EpochsCollection $epochs
+     * @return $this
+     */
+    private function rememberEpochs(EpochsCollection $epochs): EpochFactory
+    {
+        $this->epochs = $this->epochs->merge($epochs);
 
         return $this;
     }
 
-    public function addForDate($epoch)
+    /**
+     * Check whether the factory needs a given date
+     *
+     * @param $year
+     * @param $month
+     * @param $day
+     * @return bool
+     */
+    private function needsDate($year, $month, $day): bool
     {
-        $this->epochs->insert($epoch);
+        return !$this->hasDate($year, $month, $day);
     }
 
-    private function processor($calendar = null, $withEras = true)
+    /**
+     * Check whether the factory has a given date
+     *
+     * @param $year
+     * @param $month
+     * @param $day
+     * @return bool
+     */
+    private function hasDate($year, $month, $day): bool
+    {
+        return $this->epochs->hasDate($year, $month, $day);
+    }
+
+    /**
+     * Retrieve a specific epoch from the epochs collection
+     *
+     * @param $year
+     * @param $month
+     * @param $day
+     * @return Epoch
+     */
+    private function getByDate($year, $month, $day): Epoch
+    {
+        return $this->epochs->getByDate($year, $month, $day);
+    }
+
+    /**
+     * Generates epochs for a calendar year, up to a specific date
+     *
+     * @param $year
+     * @param $month
+     * @param $day
+     * @return EpochsCollection
+     */
+    private function generateForDate($year, $month, $day): EpochsCollection
+    {
+        $calendar = $this->calendar
+            ->replicate()
+            ->setDate($year, $month, $day);
+
+        return $this->processor($calendar)
+            ->processUntilDate($year, $month, $day);
+    }
+
+    /**
+     * Create a processor, specifying a calendar to create it for and whether to take eras into account.
+     *
+     * @param null $calendar
+     * @param bool $withEras
+     * @return Processor
+     */
+    private function processor($calendar = null, $withEras = true): Processor
     {
         return new Processor($calendar ?? $this->calendar, $withEras);
     }

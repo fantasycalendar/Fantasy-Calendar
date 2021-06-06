@@ -45,6 +45,18 @@ class Epoch
         $this->slug = $this->slugify();
     }
 
+    /**
+     * @param $year
+     * @return bool
+     */
+    public function yearIs($year): bool
+    {
+        return $this->year === $year;
+    }
+
+    /**
+     * @return string
+     */
     public function slugify(): string
     {
         return date_slug($this->year, $this->month, $this->day);

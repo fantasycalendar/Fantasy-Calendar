@@ -4,6 +4,7 @@
 namespace App\Services\EpochService;
 
 
+use App\Calendar;
 use App\Collections\EpochsCollection;
 use App\Services\EpochService\Processor\State;
 use Illuminate\Support\Facades\Log;
@@ -18,11 +19,19 @@ class Processor
      * @var State
      */
     public State $state;
+    private Calendar $calendar;
 
     public function __construct($calendar, $withEras = true)
     {
         $this->state = new State($calendar, $withEras);
         $this->epochs = new EpochsCollection();
+        $this->calendar = $calendar;
+    }
+
+    public function processYear()
+    {
+        return $this->processUntilDate($this->calendar->year + 1)
+                    ->filter->yearIs($this->calendar->year);
     }
 
     public function processWhile($whileCondition)
@@ -43,7 +52,7 @@ class Processor
         return $this->getEpochs();
     }
 
-    public function processUntilDate($year, $month, $day)
+    public function processUntilDate($year, $month = 0, $day = 1)
     {
         return $this->processUntil(function($processor) use ($year, $month, $day){
             return $processor->state->year == $year

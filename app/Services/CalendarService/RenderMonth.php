@@ -52,43 +52,9 @@ class RenderMonth
      */
     public function getStructure()
     {
-        $epochs = EpochService::forCalendarYear($this->calendar);
+        $epochs = EpochService::forCalendarMonth($this->calendar);
 
-        $timespans = $this->calendar->timespans;
-        $result = $epochs->groupBy('monthIndex')->mapWithKeys(function($epochs, $index) use ($timespans){
-            return [$timespans->get($index)->name => $epochs->groupBy('yearWeekNumber')->map->chunkWhile(function($epoch, $key, $chunk){
-                return $epoch->isIntercalary === $chunk->last()->isIntercalary;
-            })->map->map->map->map(function($epoch) {
-                $props = [
-                    'epoch',
-                    'year',
-                    'day',
-                    'weekday',
-                    'yearWeekNumber',
-                    'inverseYearWeekNumber',
-                    'monthWeekNumber',
-                    'inverseMonthWeekNumber',
-                    'isIntercalary'
-                ];
-                $string = '';
-
-                foreach($props as $prop) {
-                    $val = $epoch->{$prop};
-
-                    if(is_bool($val)){
-                        $val = ($val) ? 'Yes' : 'No';
-                    }
-
-                    $string .= $val . " : ";
-                }
-
-                $string = substr($string, 0, -3);
-
-                return $string;
-            })];
-        });
-
-        dd($result);
+        dd($epochs);
 
 //        $sections = (new SectionsCollection())->build($this);
 //
