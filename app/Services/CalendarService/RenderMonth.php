@@ -56,8 +56,6 @@ class RenderMonth
 
         $timespans = $this->calendar->timespans;
 
-        dd($epochs->first());
-
         dd('EpochService::forCalendarMonth() results:', $epochs->groupBy('monthIndex')->mapWithKeys(function($epochs, $index) use ($timespans){
             return [
                 $timespans[$index]->name => $epochs->map(function($epoch) use ($timespans){
