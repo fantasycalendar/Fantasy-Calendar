@@ -22,6 +22,16 @@ class EpochsCollection extends BaseCollection
     }
 
     /**
+     * @param $epochAttributes
+     * @return $this
+     */
+    public function insertFromArray($epochAttributes): EpochsCollection
+    {
+        $this->insert(new Epoch($epochAttributes));
+        return $this;
+    }
+
+    /**
      * @param $year
      * @param int $month
      * @param int $day

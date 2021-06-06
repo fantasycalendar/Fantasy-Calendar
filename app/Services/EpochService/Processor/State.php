@@ -56,7 +56,7 @@ class State
     /**
      * @return void
      */
-    public function advance(): void
+    public function incrementDay(): void
     {
         $this->flushCache();
         $this->day++;

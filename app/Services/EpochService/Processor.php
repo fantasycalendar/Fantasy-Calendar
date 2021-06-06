@@ -7,7 +7,6 @@ namespace App\Services\EpochService;
 use App\Calendar;
 use App\Collections\EpochsCollection;
 use App\Services\EpochService\Processor\State;
-use Illuminate\Support\Facades\Log;
 
 class Processor
 {
@@ -15,12 +14,22 @@ class Processor
      * @var EpochsCollection
      */
     private EpochsCollection $epochs;
+
     /**
      * @var State
      */
     public State $state;
+
+    /**
+     * @var Calendar
+     */
     private Calendar $calendar;
 
+    /**
+     * Processor constructor.
+     * @param $calendar
+     * @param bool $withEras
+     */
     public function __construct($calendar, $withEras = true)
     {
         $this->state = new State($calendar, $withEras);
@@ -28,31 +37,39 @@ class Processor
         $this->calendar = $calendar;
     }
 
+    /**
+     * @return mixed
+     */
     public function processYear()
     {
         return $this->processUntilDate($this->calendar->year + 1)
                     ->filter->yearIs($this->calendar->year);
     }
 
-    public function processWhile($whileCondition)
+    /**
+     * Process until callback $untilCondition returns true
+     *
+     * @param callable $untilCondition
+     * @return EpochsCollection
+     */
+    public function processUntil(callable $untilCondition): EpochsCollection
     {
-        while($whileCondition($this)) {
+        while(!$untilCondition($this)) {
             $this->stepForward();
         }
 
         return $this->getEpochs();
     }
 
-    public function processUntil($stopCondition)
-    {
-        while($this->shouldContinue($stopCondition)) {
-            $this->stepForward();
-        }
-
-        return $this->getEpochs();
-    }
-
-    public function processUntilDate($year, $month = 0, $day = 1)
+    /**
+     * Step forward until a certain date is reached.
+     *
+     * @param $year
+     * @param int $month
+     * @param int $day
+     * @return EpochsCollection
+     */
+    public function processUntilDate($year, $month = 0, $day = 1): EpochsCollection
     {
         return $this->processUntil(function($processor) use ($year, $month, $day){
             return $processor->state->year == $year
@@ -61,40 +78,25 @@ class Processor
         });
     }
 
-    public function getEpochs()
+    /**
+     * Get all of the epochs from this processor, keyed by a date slugged like '2021-6-6'
+     *
+     * @return EpochsCollection
+     */
+    public function getEpochs(): EpochsCollection
     {
         return $this->epochs->keyBy('slug');
     }
 
-    public function is($epochNumber)
+    /**
+     * Step our state forward 1 day
+     *
+     * @return void
+     */
+    private function stepForward(): void
     {
-        return $this->state->day === $epochNumber;
-    }
+        $this->epochs->insertFromArray($this->state->toArray());
 
-    public function isAtLeast($epochNumber)
-    {
-        return $this->state->day >= $epochNumber;
-    }
-
-    private function shouldContinue($stopCondition): bool
-    {
-        if(is_int($stopCondition)) {
-            return !$this->isAtLeast($stopCondition);
-        }
-
-        return !$stopCondition($this);
-    }
-
-    private function stepForward()
-    {
-        $arrayified = $this->state->toArray();
-        $epoch = new Epoch($arrayified);
-
-        Log::debug('Stepping forward from: ' . $epoch->slugify());
-        Log::debug(json_encode($arrayified, true));
-
-        $this->epochs->insert($epoch);
-
-        $this->state->advance();
+        $this->state->incrementDay();
     }
 }
