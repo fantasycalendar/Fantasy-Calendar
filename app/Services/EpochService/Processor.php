@@ -73,7 +73,7 @@ class Processor
     {
         return $this->processUntil(function($processor) use ($year, $month, $day){
             return $processor->state->year == $year
-                && $processor->state->month == $month
+                && $processor->state->monthIndexInYear == $month
                 && $processor->state->day == $day;
         });
     }

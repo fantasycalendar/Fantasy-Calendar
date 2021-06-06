@@ -4,21 +4,22 @@
 namespace App\Services\EpochService;
 
 
+use App\Services\CalendarService\Month;
 use Illuminate\Support\Collection;
 
 class Epoch
 {
+    public int $monthIndexInYear;
     public int $year;
-    public int $month;
+    public Month $month;
     public int $day;
     public int $epoch;
     public Collection $timespanCounts;
     public int $historicalIntercalaryCount;
     public int $numberTimespans;
-    public int $monthIndex;
+    public int $monthId;
     public int $weekdayIndex;
     public string $weekdayName;
-    public string $monthName;
     public int $weeksSinceMonthStart;
     public int $weeksTilMonthEnd;
     public int $weeksSinceYearStart;
@@ -29,6 +30,7 @@ class Epoch
     public function __construct($attributes)
     {
 
+        $this->monthIndexInYear = $attributes['monthIndexInYear'];
         $this->year = $attributes['year'];
         $this->month = $attributes['month'];
         $this->day = $attributes['day'];
@@ -36,8 +38,7 @@ class Epoch
         $this->timespanCounts = $attributes['timespanCounts'];
         $this->historicalIntercalaryCount = $attributes['historicalIntercalaryCount'];
         $this->numberTimespans = $attributes['numberTimespans'];
-        $this->monthName = $attributes['monthName'];
-        $this->monthIndex = $attributes['monthIndex'];
+        $this->monthId = $attributes['monthId'];
         $this->weekdayIndex = $attributes['weekdayIndex'];
         $this->weekdayName = $attributes['weekdayName'];
         $this->weeksSinceMonthStart = $attributes['weeksSinceMonthStart'];
@@ -63,6 +64,6 @@ class Epoch
      */
     public function slugify(): string
     {
-        return date_slug($this->year, $this->month, $this->day);
+        return date_slug($this->year, $this->monthIndexInYear, $this->day);
     }
 }

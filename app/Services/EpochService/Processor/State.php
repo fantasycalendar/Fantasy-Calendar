@@ -68,10 +68,10 @@ class State
         if($this->day > $this->currentMonth()->daysInYear->count()) {
 
             $this->day = 1;
-            $this->month++;
+            $this->monthIndexInYear++;
 
-            if($this->month == $this->months->count()){
-                $this->month = 0;
+            if($this->monthIndexInYear == $this->months->count()){
+                $this->monthIndexInYear = 0;
                 $this->year++;
                 $this->previousState->forget('months');
                 $this->previousState->forget('totalWeeksInYear');
@@ -85,7 +85,7 @@ class State
                 $this->incrementWeekday();
             }
 
-            $this->timespanCounts[$this->monthIndex] = $this->timespanCounts->get($this->monthIndex) + 1;
+            $this->timespanCounts[$this->monthId] = $this->timespanCounts->get($this->monthId) + 1;
 
             $this->numberTimespans++;
 
@@ -134,15 +134,15 @@ class State
     public function toArray(): array
     {
         return [
-            'month' => $this->month,
             'year' => $this->year,
+            'monthIndexInYear' => $this->monthIndexInYear,
             'day' => $this->day,
             'epoch' => $this->epoch,
-            'monthName' => $this->currentMonth()->name,
+            'monthId' => $this->monthId,
+            'month' => $this->currentMonth(),
             'timespanCounts' => $this->timespanCounts,
             'historicalIntercalaryCount' => $this->historicalIntercalaryCount,
             'numberTimespans' => $this->numberTimespans,
-            'monthIndex' => $this->monthIndex,
             'weekdayIndex' => $this->weekdayIndex,
             'weekdayName' => $this->weekdays()->get($this->weekdayIndex),
             'weeksSinceMonthStart' => $this->weeksSinceMonthStart,
@@ -159,12 +159,12 @@ class State
      *
      * @return int
      */
-    private function calculateMonth()
+    private function calculateMonthIndexInYear()
     {
-        if(!$this->previousState->has('month')) {
+        if(!$this->previousState->has('monthIndexInYear')) {
             return 0;
         }
-        return $this->previousState->get('month');
+        return $this->previousState->get('monthIndexInYear');
     }
 
     /**
@@ -207,18 +207,18 @@ class State
      *
      * @return Month
      */
-    private function currentMonth()
+    private function currentMonth(): Month
     {
-        return $this->months->get($this->month);
+        return $this->months->get($this->monthIndexInYear);
     }
 
     /**
-     * Month index of the current month
+     * Timespan id of the current month
      * @see CalculatesAndCachesProperties
      *
      * @return int
      */
-    private function calculateMonthIndex()
+    private function calculateMonthId()
     {
         return $this->currentMonth()->id;
     }
