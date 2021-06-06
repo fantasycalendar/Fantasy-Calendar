@@ -73,7 +73,7 @@ class Processor
     {
         return $this->processUntil(function($processor) use ($year, $month, $day){
             return $processor->state->year == $year
-                && $processor->state->monthIndexInYear == $month
+                && $processor->state->monthIndexOfYear == $month
                 && $processor->state->day == $day;
         });
     }
@@ -97,6 +97,6 @@ class Processor
     {
         $this->epochs->insertFromArray($this->state->toArray());
 
-        $this->state->incrementDay();
+        $this->state->stepForward();
     }
 }

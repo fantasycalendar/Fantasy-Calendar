@@ -52,9 +52,9 @@ class RenderMonth
      */
     public function getStructure()
     {
-        $epochs = EpochService::forCalendarMonth($this->calendar);
+        $epochs = EpochService::forCalendarYear($this->calendar);
 
-        dd($epochs);
+        dd($epochs->map->toArray());
 
 //        $sections = (new SectionsCollection())->build($this);
 //

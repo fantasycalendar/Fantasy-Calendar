@@ -26,6 +26,24 @@ class Month extends Timespan
         $this->initialize();
     }
 
+    /**
+     * Counts the non-intercalary days in this month, as pertains to the current year
+     *
+     * @return int
+     */
+    public function countNormalDays(): int
+    {
+        return $this->daysInYear->reject->intercalary->count();
+    }
+
+    /**
+     * @return int
+     */
+    public function countWeeksInYear(): int
+    {
+        return (int) abs(ceil($this->countNormalDays() / $this->weekdays->count()));
+    }
+
     private function initialize()
     {
         $this->activeLeapDays = $this->leapDays

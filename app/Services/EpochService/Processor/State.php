@@ -7,11 +7,23 @@ namespace App\Services\EpochService\Processor;
 use App\Calendar;
 use App\Services\CalendarService\Month;
 use App\Services\EpochService\Traits\CalculatesAndCachesProperties;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 
+/**
+ * @property int monthIndexOfYear
+ * @property int epoch
+ * @property int dayOfYear
+ * @property int weekdayIndex
+ * @property Collection months
+ * @property int weeksSinceMonthStart
+ * @property Collection timespanCounts
+ * @property int monthId
+ * @property int numberTimespans
+ * @property int historicalIntercalaryCount
+ * @property int weeksSinceYearStart
+ * @property int totalWeeksInMonth
+ * @property int totalWeeksInYear
+ */
 class State
 {
     use CalculatesAndCachesProperties;
@@ -25,7 +37,6 @@ class State
     /**
      * State constructor.
      * @param Calendar $calendar
-     * @param bool $withEras
      */
     public function __construct(Calendar $calendar)
     {
@@ -45,96 +56,40 @@ class State
         return $this;
     }
 
+    /**
+     * Initializes state cache and previous state
+     */
     public function initialize()
     {
-        if($this->withEras) {
-            $this->statecache = InitialStateWithEras::generateFor($this->calendar)->collect();
-        } else {
-            $this->statecache = InitialState::generateFor($this->calendar)->collect();
-        }
-
+        $this->statecache = $this->buildInitialState();
         $this->previousState = collect();
+    }
+
+    /**
+     * Builds the correct initial state, with or without eras
+     *
+     * @return mixed
+     */
+    public function buildInitialState()
+    {
+        $initialStateClass = $this->withEras
+            ? InitialStateWithEras::class
+            : InitialState::class;
+
+        return call_user_func_array([$initialStateClass, 'generateFor'], [$this->calendar])
+            ->collect();
     }
 
     /**
      * Increments the day of the state
      * @return void
      */
-    public function incrementDay(): void
+    public function stepForward(): void
     {
         $this->flushCache();
-        $this->day++;
-        $this->epoch++;
+        $this->incrementDay();
         $this->incrementMonth();
         $this->incrementHistoricalIntercalaryCount();
-    }
-
-    /**
-     * Increments the current month, if needed
-     * @return void
-     */
-    private function incrementMonth(): void
-    {
-        // Compare current day to the previous day's month length
-        if($this->day > $this->currentMonth()->daysInYear->count()) {
-
-            $this->day = 1;
-            $this->monthIndexInYear++;
-
-            if($this->monthIndexInYear == $this->months->count()){
-                $this->monthIndexInYear = 0;
-                $this->year++;
-                $this->previousState->forget('months');
-                $this->previousState->forget('totalWeeksInYear');
-            }
-
-            $this->weeksSinceMonthStart = 0;
-            $this->previousState->forget('totalWeeksInMonth');
-            $this->incrementWeek(!$this->calendar->overflows_week);
-
-            if($this->calendar->overflows_week){
-                $this->incrementWeekday();
-            }
-
-            $this->timespanCounts[$this->monthId] = $this->timespanCounts->get($this->monthId) + 1;
-
-            $this->numberTimespans++;
-
-            return;
-        }
-
-        $this->incrementWeekday();
-    }
-
-    /**
-     * Increments the current weekdayIndex
-     * @return void
-     */
-    private function incrementWeekday(): void
-    {
-        if(!$this->isIntercalary()){
-            $this->weekdayIndex++;
-            $this->incrementWeek();
-        }
-    }
-
-    private function incrementHistoricalIntercalaryCount()
-    {
-        if($this->isIntercalary()){
-            $this->historicalIntercalaryCount++;
-        }
-    }
-
-    private function incrementWeek($force = false)
-    {
-        if(
-            ($this->weekdayIndex >= $this->weekDayCount() || $force)
-            && !$this->isIntercalary()
-        ){
-            $this->weekdayIndex = 0;
-            $this->weeksSinceMonthStart++;
-            $this->weeksSinceYearStart++;
-        }
     }
 
     /**
@@ -146,10 +101,11 @@ class State
     {
         return [
             'year' => $this->year,
-            'monthIndexInYear' => $this->monthIndexInYear,
+            'monthIndexOfYear' => $this->monthIndexOfYear,
             'day' => $this->day,
             'epoch' => $this->epoch,
             'monthId' => $this->monthId,
+            'dayOfYear' => $this->dayOfYear,
             'month' => $this->currentMonth(),
             'timespanCounts' => $this->timespanCounts,
             'historicalIntercalaryCount' => $this->historicalIntercalaryCount,
@@ -164,19 +120,108 @@ class State
         ];
     }
 
-    /**
-     * Month index in the **displayed** year, zero-indexed
-     * @see CalculatesAndCachesProperties
-     *
-     * @return int
+    /*
+     *-------------------------------------------------------------
+     * Methods for Incrementing Values
+     *-------------------------------------------------------------
      */
-    private function calculateMonthIndexInYear()
+
+    /**
+     * Update values that should increase to move one day forward
+     */
+    private function incrementDay(): void
     {
-        if(!$this->previousState->has('monthIndexInYear')) {
-            return 0;
-        }
-        return $this->previousState->get('monthIndexInYear');
+        $this->day++;
+        $this->epoch++;
+        $this->dayOfYear++;
     }
+
+    /**
+     * Increments the current weekdayIndex
+     * @return void
+     */
+    private function incrementWeekday(): void
+    {
+        if(!$this->isIntercalary()){
+            $this->weekdayIndex++;
+            $this->incrementWeek();
+        }
+    }
+
+    /**
+     * @param false $force Whether or not to force the week to move forward even when it (technically) oughtn't
+     */
+    private function incrementWeek($force = false): void
+    {
+        if(
+            ($this->weekdayIndex >= $this->weekDayCount() || $force)
+            && !$this->isIntercalary()
+        ){
+            $this->weekdayIndex = 0;
+            $this->weeksSinceMonthStart++;
+            $this->weeksSinceYearStart++;
+        }
+    }
+
+    /**
+     * Increments the current month, if needed
+     * @return void
+     */
+    private function incrementMonth(): void
+    {
+        if($this->day <= $this->currentMonth()->daysInYear->count()){
+            $this->incrementWeekday();
+            return;
+        }
+
+        $this->day = 1;
+        $this->monthIndexOfYear++;
+
+        if($this->monthIndexOfYear == $this->months->count()){
+            $this->incrementYear();
+        }
+
+        $this->weeksSinceMonthStart = 0;
+        $this->previousState->forget('totalWeeksInMonth');
+        $this->incrementWeek(!$this->calendar->overflows_week);
+
+        if($this->calendar->overflows_week){
+            $this->incrementWeekday();
+        }
+
+        $this->timespanCounts[$this->monthId] = $this->timespanCounts->get($this->monthId) + 1;
+
+        $this->numberTimespans++;
+    }
+
+    /**
+     * @return void
+     */
+    private function incrementHistoricalIntercalaryCount(): void
+    {
+        if($this->isIntercalary()){
+            $this->historicalIntercalaryCount++;
+        }
+    }
+
+    /**
+     * Increments the current year
+     * @return void
+     */
+    private function incrementYear(): void
+    {
+        $this->monthIndexOfYear = 0;
+        $this->year++;
+        $this->previousState->forget('months');
+        $this->previousState->forget('totalWeeksInYear');
+        $this->previousState->forget('dayOfYear');
+    }
+
+    /*
+     * -------------------------------------------------------------
+     * Methods for Fetching Values
+     *-------------------------------------------------------------
+     */
 
     /**
      * The weekdays in the current month
@@ -199,20 +244,6 @@ class State
     }
 
     /**
-     * Getter for $this->months
-     * @see CalculatesAndCachesProperties
-     *
-     * @return Collection
-     */
-    private function calculateMonths()
-    {
-        if(!$this->previousState->has('months')){
-            return $this->calendar->months;
-        }
-        return $this->previousState->get('months');
-    }
-
-    /**
      * Current month object in the **displayed** year
      * @see CalculatesAndCachesProperties
      *
@@ -220,18 +251,7 @@ class State
      */
     private function currentMonth(): Month
     {
-        return $this->months->get($this->monthIndexInYear);
-    }
-
-    /**
-     * Timespan id of the current month
-     * @see CalculatesAndCachesProperties
-     *
-     * @return int
-     */
-    private function calculateMonthId()
-    {
-        return $this->currentMonth()->id;
+        return $this->months->get($this->monthIndexOfYear);
     }
 
     /**
@@ -240,9 +260,52 @@ class State
      *
      * @return bool
      */
-    private function isIntercalary()
+    private function isIntercalary(): bool
     {
         return $this->currentMonth()->daysInYear[$this->day-1]->intercalary;
+    }
+
+    /*
+     * -------------------------------------------------------------
+     * Methods for Calculating Values
+     *-------------------------------------------------------------
+     */
+
+    /**
+     * Month index in the **displayed** year, zero-indexed
+     * @see CalculatesAndCachesProperties
+     *
+     * @return int
+     */
+    private function calculateMonthIndexOfYear(): int
+    {
+        return $this->previousState->get('monthIndexOfYear', 0);
+    }
+
+    /**
+     * Getter for $this->months
+     * @see CalculatesAndCachesProperties
+     *
+     * @return Collection
+     */
+    private function calculateMonths(): Collection
+    {
+        // We're not using the 'default' argument on ->get() here, because $this->calendar->months
+        // regenerates the full collection every time, and we want to avoid doing that for performance reasons.
+        return ($this->previousState->has('months'))
+            ? $this->previousState->get('months')
+            : $this->calendar->months;
+    }
+
+    /**
+     * Timespan id of the current month
+     * @see CalculatesAndCachesProperties
+     *
+     * @return int
+     */
+    private function calculateMonthId(): int
+    {
+        return $this->currentMonth()->id;
     }
 
     /**
@@ -251,12 +314,9 @@ class State
      *
      * @return int
      */
-    private function calculateWeeksSinceYearStart()
+    private function calculateWeeksSinceYearStart(): int
     {
-        if(!$this->previousState->has('weeksSinceYearStart')){
-            return 1;
-        }
-        return $this->previousState->get('weeksSinceYearStart');
+        return $this->previousState->get('weeksSinceYearStart', 1);
     }
 
     /**
@@ -265,32 +325,19 @@ class State
      *
      * @return int
      */
-    private function calculateTotalWeeksInYear()
+    private function calculateTotalWeeksInYear(): int
     {
-        if(!$this->previousState->has('totalWeeksInYear')){
-
-            if($this->calendar->overflows_week){
-
-                $totalDaysInYear = $this->months->sum(function($month) {
-                    return $month->daysInYear->reject->intercalary->count();
-                });
-
-                return (int) abs(ceil(($totalDaysInYear + $this->weekdayIndex) / count($this->calendar->global_week)));
-
-            }
-
-            return $this->months->sum(function($month){
-
-                $monthDays = $month->daysInYear->reject->intercalary->count();
-
-                $weeks = abs(ceil($monthDays / $month->weekdays->count()));
-
-                return (int) $weeks;
-
-            });
-
+        if($this->previousState->has('totalWeeksInYear')){
+            return $this->previousState->get('totalWeeksInYear');
         }
-        return $this->previousState->get('totalWeeksInYear');
+
+        if($this->calendar->overflows_week){
+            $totalDaysInYear = $this->months->sum->countNormalDays();
+
+            return (int) abs(ceil(($totalDaysInYear + $this->weekdayIndex) / $this->calendar->global_week->count()));
+        }
+
+        return $this->months->sum->countWeeksInYear();
     }
 
     /**
@@ -299,12 +346,9 @@ class State
      *
      * @return int
      */
-    private function calculateWeeksSinceMonthStart()
+    private function calculateWeeksSinceMonthStart(): int
     {
-        if(!$this->previousState->has('weeksSinceMonthStart')){
-            return 1;
-        }
-        return $this->previousState->get('weeksSinceMonthStart');
+        return $this->previousState->get('weeksSinceMonthStart', 1);
     }
 
     /**
@@ -313,20 +357,15 @@ class State
      *
      * @return int
      */
-    private function calculateTotalWeeksInMonth()
+    private function calculateTotalWeeksInMonth(): int
     {
-        if(!$this->previousState->has('totalWeeksInMonth')){
-
-            $monthDays = $this->currentMonth()->daysInYear->reject->intercalary->count();
-
-            $totalWeekdaysBeforeToday = ($monthDays + $this->weekdayIndex);
-
-            $weeks = abs(ceil($totalWeekdaysBeforeToday / $this->currentMonth()->weekdays->count()));
-
-            return (int) $weeks;
-
+        if($this->previousState->has('totalWeeksInMonth')){
+            return $this->previousState->get('totalWeeksInMonth');
         }
-        return $this->previousState->get('totalWeeksInMonth');
+
+        $totalWeekdaysBeforeToday = ($this->currentMonth()->countNormalDays() + $this->weekdayIndex);
+
+        return (int) abs(ceil($totalWeekdaysBeforeToday / $this->currentMonth()->weekdays->count()));;
     }
 
     /**
@@ -344,34 +383,34 @@ class State
     }
 
     /**
-     * Getter for $this->epoch
+     * Getter for $this->dayOfYear
      * @see CalculatesAndCachesProperties
      *
-     * @return mixed
+     * @return int
      */
-    private function calculateEpoch()
+    private function calculateDayOfYear(): int
     {
-        return $this->previousState->get('epoch');
+        return $this->previousState->get('dayOfYear', 1);
     }
 
     /**
-     * Getter for $this->timespanOccurrences
+     * Getter for $this->epoch
      * @see CalculatesAndCachesProperties
      *
-     * @return mixed
+     * @return int
      */
-    private function calculateTimespanOccurrences()
+    private function calculateEpoch(): int
     {
-        return $this->previousState->get('timespanOccurrences');
+        return $this->previousState->get('epoch');
     }
 
     /**
      * Getter for $this->timespanCounts
      * @see CalculatesAndCachesProperties
      *
-     * @return mixed
+     * @return Collection
      */
-    private function calculateTimespanCounts()
+    private function calculateTimespanCounts(): Collection
     {
         return $this->previousState->get('timespanCounts');
     }
@@ -380,9 +419,9 @@ class State
      * Getter for $this->numberTimespans
      * @see CalculatesAndCachesProperties
      *
-     * @return mixed
+     * @return int
      */
-    private function calculateNumberTimespans()
+    private function calculateNumberTimespans(): int
     {
         return $this->previousState->get('numberTimespans');
     }
@@ -391,9 +430,9 @@ class State
      * Getter for $this->historicalIntercalaryCount
      * @see CalculatesAndCachesProperties
      *
-     * @return mixed
+     * @return int
      */
-    private function calculateHistoricalIntercalaryCount()
+    private function calculateHistoricalIntercalaryCount(): int
     {
         return $this->previousState->get('historicalIntercalaryCount');
     }
@@ -402,16 +441,10 @@ class State
      * Getter for $this->weekdayIndex
      * @see CalculatesAndCachesProperties
      *
-     * @return mixed
+     * @return int
      */
-    private function calculateWeekdayIndex()
+    private function calculateWeekdayIndex(): int
     {
         return $this->previousState->get('weekdayIndex');
-    }
-
-    private function staticData($key, $default = null)
-    {
-//        Log::info('ENTERING: ' . self::class . '::staticData');
-        return Arr::get($this->calendar->static_data, $key, $default);
     }
 }

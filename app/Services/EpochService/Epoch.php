@@ -9,11 +9,12 @@ use Illuminate\Support\Collection;
 
 class Epoch
 {
-    public int $monthIndexInYear;
+    public int $monthIndexOfYear;
     public int $year;
     public Month $month;
     public int $day;
     public int $epoch;
+    public int $dayOfYear;
     public Collection $timespanCounts;
     public int $historicalIntercalaryCount;
     public int $numberTimespans;
@@ -26,15 +27,16 @@ class Epoch
     public int $weeksTilYearEnd;
     public string $slug;
     public bool $isIntercalary;
+    private array $attributes;
 
     public function __construct($attributes)
     {
-
-        $this->monthIndexInYear = $attributes['monthIndexInYear'];
+        $this->monthIndexOfYear = $attributes['monthIndexOfYear'];
         $this->year = $attributes['year'];
         $this->month = $attributes['month'];
         $this->day = $attributes['day'];
         $this->epoch = $attributes['epoch'];
+        $this->dayOfYear = $attributes['dayOfYear'];
         $this->timespanCounts = $attributes['timespanCounts'];
         $this->historicalIntercalaryCount = $attributes['historicalIntercalaryCount'];
         $this->numberTimespans = $attributes['numberTimespans'];
@@ -48,6 +50,15 @@ class Epoch
         $this->isIntercalary = $attributes['isIntercalary'];
 
         $this->slug = $this->slugify();
+        $this->attributes = $attributes;
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return $this->attributes;
     }
 
     /**
@@ -64,6 +75,6 @@ class Epoch
      */
     public function slugify(): string
     {
-        return date_slug($this->year, $this->monthIndexInYear, $this->day);
+        return date_slug($this->year, $this->monthIndexOfYear, $this->day);
     }
 }
