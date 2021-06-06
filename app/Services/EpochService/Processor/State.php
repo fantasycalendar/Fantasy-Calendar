@@ -29,31 +29,24 @@ class State
      */
     public function __construct($calendar, $withEras = true)
     {
-//        Log::info('ENTERING: ' . self::class . '::__construct');
         $this->calendar = $calendar;
         $this->year = $calendar->year;
-
-        Log::info('initing state');
-        Log::info($calendar->dynamic_data);
-
         $this->initialize($withEras);
     }
 
     private function initialize($withEras)
     {
-        //        Log::info('ENTERING: ' . self::class . '::initialize');
         if($withEras) {
             $this->statecache = InitialStateWithEras::generateFor($this->calendar)->collect();
-            //        $this->nextYearState = InitialStateWithEras::generateFor($this->calendar->addYear()->startOfYear())->collect();
         } else {
             $this->statecache = InitialState::generateFor($this->calendar)->collect();
-            //        $this->nextYearState = InitialStateWithEras::generateFor($this->calendar->addYear()->startOfYear())->collect();
         }
 
         $this->previousState = collect();
     }
 
     /**
+     * Increments the day of the state
      * @return void
      */
     public function incrementDay(): void
@@ -65,7 +58,11 @@ class State
         $this->incrementHistoricalIntercalaryCount();
     }
 
-    private function incrementMonth()
+    /**
+     * Increments the current month, if needed
+     * @return void
+     */
+    private function incrementMonth(): void
     {
         // Compare current day to the previous day's month length
         if($this->day > $this->currentMonth()->daysInYear->count()) {
@@ -77,11 +74,11 @@ class State
                 $this->month = 0;
                 $this->year++;
                 $this->previousState->forget('months');
-                $this->previousState->forget('totalYearWeekNumber');
+                $this->previousState->forget('totalWeeksInYear');
             }
 
-            $this->monthWeekNumber = 0;
-            $this->previousState->forget('totalMonthWeekNumber');
+            $this->weeksSinceMonthStart = 0;
+            $this->previousState->forget('totalWeeksInMonth');
             $this->incrementWeek(!$this->calendar->overflows_week);
 
             if($this->calendar->overflows_week){
@@ -98,10 +95,14 @@ class State
         $this->incrementWeekday();
     }
 
-    private function incrementWeekday()
+    /**
+     * Increments the current weekdayIndex
+     * @return void
+     */
+    private function incrementWeekday(): void
     {
         if(!$this->isIntercalary()){
-            $this->weekday++;
+            $this->weekdayIndex++;
             $this->incrementWeek();
         }
     }
@@ -116,12 +117,12 @@ class State
     private function incrementWeek($force = false)
     {
         if(
-            ($this->weekday >= $this->weekDayCount() || $force)
+            ($this->weekdayIndex >= $this->weekDayCount() || $force)
             && !$this->isIntercalary()
         ){
-            $this->weekday = 0;
-            $this->monthWeekNumber++;
-            $this->yearWeekNumber++;
+            $this->weekdayIndex = 0;
+            $this->weeksSinceMonthStart++;
+            $this->weeksSinceYearStart++;
         }
     }
 
@@ -137,15 +138,17 @@ class State
             'year' => $this->year,
             'day' => $this->day,
             'epoch' => $this->epoch,
+            'monthName' => $this->currentMonth()->name,
             'timespanCounts' => $this->timespanCounts,
             'historicalIntercalaryCount' => $this->historicalIntercalaryCount,
             'numberTimespans' => $this->numberTimespans,
             'monthIndex' => $this->monthIndex,
-            'weekday' => $this->weekday,
-            'monthWeekNumber' => $this->monthWeekNumber,
-            'inverseMonthWeekNumber' => $this->totalMonthWeekNumber - ($this->monthWeekNumber - 1),
-            'yearWeekNumber' => $this->yearWeekNumber,
-            'inverseYearWeekNumber' => $this->totalYearWeekNumber - ($this->yearWeekNumber - 1),
+            'weekdayIndex' => $this->weekdayIndex,
+            'weekdayName' => $this->weekdays()->get($this->weekdayIndex),
+            'weeksSinceMonthStart' => $this->weeksSinceMonthStart,
+            'weeksTilMonthEnd' => $this->totalWeeksInMonth - ($this->weeksSinceMonthStart - 1),
+            'weeksSinceYearStart' => $this->weeksSinceYearStart,
+            'weeksTilYearEnd' => $this->totalWeeksInYear - ($this->weeksSinceYearStart - 1),
             'isIntercalary' => $this->isIntercalary()
         ];
     }
@@ -164,11 +167,24 @@ class State
         return $this->previousState->get('month');
     }
 
-    private function weekdayCount()
+    /**
+     * The weekdays in the current month
+     * @return Collection
+     */
+    private function weekdays(): Collection
     {
         return ($this->calendar->overflows_week)
-            ? count($this->calendar->global_week)
-            : count($this->currentMonth()->weekdays);
+            ? $this->calendar->global_week
+            : $this->currentMonth()->weekdays;
+    }
+
+    /**
+     * The number of weekdays in the current month
+     * @return int
+     */
+    private function weekdayCount(): int
+    {
+        return count($this->weekdays());
     }
 
     /**
@@ -219,28 +235,28 @@ class State
     }
 
     /**
-     * Getter for $this->monthWeekNumber
+     * Getter for $this->weeksSinceMonthStart
      * @see CalculatesAndCachesProperties
      *
      * @return int
      */
-    private function calculateYearWeekNumber()
+    private function calculateWeeksSinceYearStart()
     {
-        if(!$this->previousState->has('yearWeekNumber')){
+        if(!$this->previousState->has('weeksSinceYearStart')){
             return 1;
         }
-        return $this->previousState->get('yearWeekNumber');
+        return $this->previousState->get('weeksSinceYearStart');
     }
 
     /**
-     * Getter for $this->totalYearWeekNumber
+     * Getter for $this->totalWeeksInYear
      * @see CalculatesAndCachesProperties
      *
      * @return int
      */
-    private function calculateTotalYearWeekNumber()
+    private function calculateTotalWeeksInYear()
     {
-        if(!$this->previousState->has('totalYearWeekNumber')){
+        if(!$this->previousState->has('totalWeeksInYear')){
 
             if($this->calendar->overflows_week){
 
@@ -248,7 +264,7 @@ class State
                     return $month->daysInYear->reject->intercalary->count();
                 });
 
-                return (int) abs(ceil(($totalDaysInYear + $this->weekday) / count($this->calendar->global_week)));
+                return (int) abs(ceil(($totalDaysInYear + $this->weekdayIndex) / count($this->calendar->global_week)));
 
             }
 
@@ -263,43 +279,43 @@ class State
             });
 
         }
-        return $this->previousState->get('totalYearWeekNumber');
+        return $this->previousState->get('totalWeeksInYear');
     }
 
     /**
-     * Getter for $this->monthWeekNumber
+     * Getter for $this->weeksSinceMonthStart
      * @see CalculatesAndCachesProperties
      *
      * @return int
      */
-    private function calculateMonthWeekNumber()
+    private function calculateWeeksSinceMonthStart()
     {
-        if(!$this->previousState->has('monthWeekNumber')){
+        if(!$this->previousState->has('weeksSinceMonthStart')){
             return 1;
         }
-        return $this->previousState->get('monthWeekNumber');
+        return $this->previousState->get('weeksSinceMonthStart');
     }
 
     /**
-     * Getter for $this->totalMonthWeekNumber
+     * Getter for $this->totalWeeksInMonth
      * @see CalculatesAndCachesProperties
      *
      * @return int
      */
-    private function calculateTotalMonthWeekNumber()
+    private function calculateTotalWeeksInMonth()
     {
-        if(!$this->previousState->has('totalMonthWeekNumber')){
+        if(!$this->previousState->has('totalWeeksInMonth')){
 
             $monthDays = $this->currentMonth()->daysInYear->reject->intercalary->count();
 
-            $totalWeekdaysBeforeToday = ($monthDays + $this->weekday);
+            $totalWeekdaysBeforeToday = ($monthDays + $this->weekdayIndex);
 
             $weeks = abs(ceil($totalWeekdaysBeforeToday / $this->currentMonth()->weekdays->count()));
 
             return (int) $weeks;
 
         }
-        return $this->previousState->get('totalMonthWeekNumber');
+        return $this->previousState->get('totalWeeksInMonth');
     }
 
     /**
@@ -372,14 +388,14 @@ class State
     }
 
     /**
-     * Getter for $this->weekday
+     * Getter for $this->weekdayIndex
      * @see CalculatesAndCachesProperties
      *
      * @return mixed
      */
-    private function calculateWeekday()
+    private function calculateWeekdayIndex()
     {
-        return $this->previousState->get('weekday');
+        return $this->previousState->get('weekdayIndex');
     }
 
     private function staticData($key, $default = null)

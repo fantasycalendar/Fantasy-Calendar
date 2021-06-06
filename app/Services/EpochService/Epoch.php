@@ -16,11 +16,13 @@ class Epoch
     public int $historicalIntercalaryCount;
     public int $numberTimespans;
     public int $monthIndex;
-    public int $weekday;
-    public int $monthWeekNumber;
-    public int $inverseMonthWeekNumber;
-    public int $yearWeekNumber;
-    public int $inverseYearWeekNumber;
+    public int $weekdayIndex;
+    public string $weekdayName;
+    public string $monthName;
+    public int $weeksSinceMonthStart;
+    public int $weeksTilMonthEnd;
+    public int $weeksSinceYearStart;
+    public int $weeksTilYearEnd;
     public string $slug;
     public bool $isIntercalary;
 
@@ -34,12 +36,14 @@ class Epoch
         $this->timespanCounts = $attributes['timespanCounts'];
         $this->historicalIntercalaryCount = $attributes['historicalIntercalaryCount'];
         $this->numberTimespans = $attributes['numberTimespans'];
+        $this->monthName = $attributes['monthName'];
         $this->monthIndex = $attributes['monthIndex'];
-        $this->weekday = $attributes['weekday'];
-        $this->monthWeekNumber = $attributes['monthWeekNumber'];
-        $this->inverseMonthWeekNumber = $attributes['inverseMonthWeekNumber'];
-        $this->yearWeekNumber = $attributes['yearWeekNumber'];
-        $this->inverseYearWeekNumber = $attributes['inverseYearWeekNumber'];
+        $this->weekdayIndex = $attributes['weekdayIndex'];
+        $this->weekdayName = $attributes['weekdayName'];
+        $this->weeksSinceMonthStart = $attributes['weeksSinceMonthStart'];
+        $this->weeksTilMonthEnd = $attributes['weeksTilMonthEnd'];
+        $this->weeksSinceYearStart = $attributes['weeksSinceYearStart'];
+        $this->weeksTilYearEnd = $attributes['weeksTilYearEnd'];
         $this->isIntercalary = $attributes['isIntercalary'];
 
         $this->slug = $this->slugify();

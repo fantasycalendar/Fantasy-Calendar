@@ -57,7 +57,7 @@ class InitialState
             'epoch' => $this->epoch,
             'numberTimespans' => $this->numberTimespans,
             'historicalIntercalaryCount' => $this->historicalIntercalaryCount,
-            'weekday' => $this->weekday,
+            'weekdayIndex' => $this->weekdayIndex,
             'timespanCounts' => $this->timespanCounts
         ];
     }
@@ -120,9 +120,8 @@ class InitialState
             ->sum();
     }
 
-    private function calculateWeekday()
+    private function calculateWeekdayIndex()
     {
-        Log::info('ENTERING: '. self::class . '::calculateWeekday');
         if(!$this->calendar->overflows_week) return 0;
 
         $weekdaysCount = count($this->calendar->global_week);
