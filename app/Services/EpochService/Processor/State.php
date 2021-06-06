@@ -73,16 +73,16 @@ class State
             $this->day = 1;
             $this->month++;
 
-            $this->monthWeekNumber = 0;
-            $this->previousState->forget('totalMonthWeekNumber');
-            $this->incrementWeek(!$this->calendar->overflows_week);
-
             if($this->month == $this->months->count()){
                 $this->month = 0;
                 $this->year++;
                 $this->previousState->forget('months');
                 $this->previousState->forget('totalYearWeekNumber');
             }
+
+            $this->monthWeekNumber = 0;
+            $this->previousState->forget('totalMonthWeekNumber');
+            $this->incrementWeek(!$this->calendar->overflows_week);
 
             if($this->calendar->overflows_week){
                 $this->incrementWeekday();
