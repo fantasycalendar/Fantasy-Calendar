@@ -87,7 +87,13 @@ class EpochFactory
      */
     public function forEra(Era $era)
     {
-        return $this->generateForDate($era->year, $era->month, $era->day+1)->last();
+        $calendar = $this->calendar->replicate()
+            ->setDate($era->year)
+            ->startOfYear();
+
+        return $this->processor($calendar, false)
+            ->processUntilDate($era->year, $era->month, $era->day+1)
+            ->last();
     }
 
     /**
@@ -179,7 +185,7 @@ class EpochFactory
      */
     private function processor($calendar = null, $withEras = true): Processor
     {
-        $calendar = $calendar ?? $this->calendar;
+        $calendar = $calendar ?? $this->calendar->replicate();
         $state = new State($calendar);
 
         if(!$withEras) {

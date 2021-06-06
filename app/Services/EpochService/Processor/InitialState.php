@@ -7,81 +7,93 @@ namespace App\Services\EpochService\Processor;
 use App\Calendar;
 use App\Facades\Epoch;
 use App\Services\EpochService\Traits\CalculatesAndCachesProperties;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
 class InitialState
 {
-    use CalculatesAndCachesProperties;
-
     protected Calendar $calendar;
+    protected int $year;
 
     /**
      * State constructor.
      * @param $calendar
-     * @param null $nextYearState
      */
     public function __construct($calendar)
     {
-        Log::info('ENTERING: '. self::class . '::__construct');
         $this->calendar = $calendar;
-        $this->statecache = collect();
+        $this->year = $calendar->year;
     }
 
-    public static function generateFor($calendar)
+    /**
+     * @param $calendar
+     * @return Collection
+     */
+    public static function generateFor($calendar): Collection
     {
-        Log::info('ENTERING: '. self::class . '::generateFor');
         return (new self($calendar))->generateInitialProperties();
     }
 
-    public function generateInitialProperties()
+    /**
+     * @return Collection
+     */
+    public function generateInitialProperties(): Collection
     {
-        Log::info('ENTERING: '. self::class . '::generateInitialProperties');
-        // Generate and set any initial properties used for the initial state
-
-        return $this;
+        return $this->collect();
     }
 
-    public function collect()
+    /**
+     * Return this state as a collection
+     *
+     * @return Collection
+     */
+    public function collect(): Collection
     {
-        Log::info('ENTERING: '. self::class . '::collect');
         return collect($this->toArray());
     }
 
-    public function toArray()
+    /**
+     * Provide an initial state in array form
+     *
+     * @return array
+     */
+    public function toArray(): array
     {
-        Log::info('ENTERING: '. self::class . '::toArray');
         return [
-            'day' => 1,
-            'month' => 0,
-            'year' => $this->year,
-            'epoch' => $this->epoch,
-            'numberTimespans' => $this->numberTimespans,
-            'historicalIntercalaryCount' => $this->historicalIntercalaryCount,
-            'weekdayIndex' => $this->weekdayIndex,
-            'timespanCounts' => $this->timespanCounts
+            'epoch' => $this->calculateEpoch(),
+            'numberTimespans' => $this->calculateNumberTimespans(),
+            'historicalIntercalaryCount' => $this->calculateHistoricalIntercalaryCount(),
+            'weekdayIndex' => $this->calculateWeekdayIndex(),
+            'timespanCounts' => $this->calculateTimespanCounts()
         ];
     }
 
-    //
-    private function calculateEpoch()
+    /**
+     * Calculates the epoch
+     *
+     * @return int
+     */
+    private function calculateEpoch(): int
     {
-        Log::info('ENTERING: '. self::class . '::calculateEpoch');
-
-        return $this->totalDaysFromTimespans
-            + $this->totalLeapdayOccurrences;
+        return $this->calculateTotalDaysFromTimespans()
+            + $this->calculateTotalLeapdayOccurrences();
     }
 
-    private function calculateTotalDaysFromTimespans()
+    /**
+     * @return int
+     */
+    private function calculateTotalDaysFromTimespans(): int
     {
-        Log::info('ENTERING: '. self::class . '::calculateTotalDaysFromTimespans');
         return $this->calendar->timespans->sum(function($timespan){
             return $timespan->occurrences($this->year) * $timespan->length;
         });
     }
 
-    private function calculateTotalLeapdayOccurrences()
+    /**
+     * @return int
+     */
+    private function calculateTotalLeapdayOccurrences(): int
     {
-        Log::info('ENTERING: '. self::class . '::calculateTotalLeapdayOccurrences');
         return $this->calendar->timespans->sum(function($timespan){
             $timespanOccurrences = $timespan->occurrences($this->year);
             return $timespan->leapDays->sum(function($leapDay) use ($timespanOccurrences, $timespan){
@@ -91,10 +103,11 @@ class InitialState
         });
     }
 
-    private function calculateHistoricalIntercalaryCount()
+    /**
+     * @return int
+     */
+    private function calculateHistoricalIntercalaryCount(): int
     {
-        Log::info('ENTERING: '. self::class . '::calculateHistoricalIntercalaryCount');
-
         return $this->calendar->timespans->sum(function($timespan){
             $timespanOccurrences = $timespan->occurrences($this->year);
             $timespanIntercalaryDays = $timespan->intercalary ? $timespanOccurrences * $timespan->length : 0;
@@ -105,28 +118,34 @@ class InitialState
         });
     }
 
-    private function calculateTimespanCounts()
+    /**
+     * @return Collection
+     */
+    private function calculateTimespanCounts(): Collection
     {
-        Log::info('ENTERING: '. self::class . '::calculateTimespanCounts');
         return $this->calendar->timespans
             ->map->occurrences($this->year);
     }
 
-    private function calculateNumberTimespans()
+    /**
+     * @return int
+     */
+    private function calculateNumberTimespans(): int
     {
-        Log::info('ENTERING: '. self::class . '::calculateNumberTimespans');
-        return $this->calendar->timespans
-            ->map->occurrences($this->year)
-            ->sum();
+        return $this->calculateTimespanCounts()->sum();
     }
 
-    private function calculateWeekdayIndex()
+    /**
+     * @return int
+     */
+    private function calculateWeekdayIndex(): int
     {
-        if(!$this->calendar->overflows_week) return 0;
+        if(!$this->calendar->overflows_week) {
+            return 0;
+        }
 
-        $weekdaysCount = count($this->calendar->global_week);
-        $firstWeekdayIndex = intval($this->calendar->first_day);
-        $totalWeekdaysBeforeToday = ($this->epoch - $this->historicalIntercalaryCount + $firstWeekdayIndex);
+        $weekdaysCount = $this->calendar->global_week->count();
+        $totalWeekdaysBeforeToday = ($this->calculateEpoch() - $this->calculateHistoricalIntercalaryCount() + intval($this->calendar->first_day));
 
         $weekday = $totalWeekdaysBeforeToday % $weekdaysCount;
 
@@ -135,20 +154,4 @@ class InitialState
 	        ? $weekday + $weekdaysCount
 	        : $weekday;
     }
-
-    private function calculateYear(){
-        return $this->calendar->year;
-    }
-
-    private function calculateEpochStartYear()
-    {
-        Log::info('ENTERING: '. self::class . '::calculateEpochStartYear');
-        return $this->calendar->setting('year_zero_exists')
-            ? 0
-            : 1;
-    }
 }
-
-// |------------|---------------------|
-//              ^                     ^
-//          Era start           Next year start

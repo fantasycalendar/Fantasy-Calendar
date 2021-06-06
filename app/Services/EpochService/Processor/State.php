@@ -76,8 +76,7 @@ class State
             ? InitialStateWithEras::class
             : InitialState::class;
 
-        return call_user_func_array([$initialStateClass, 'generateFor'], [$this->calendar])
-            ->collect();
+        return call_user_func_array([$initialStateClass, 'generateFor'], [$this->calendar->replicate()]);
     }
 
     /**
@@ -174,8 +173,12 @@ class State
             return;
         }
 
+        $this->timespanCounts[$this->monthId] = $this->timespanCounts->get($this->monthId) + 1;
+        $this->numberTimespans++;
+
         $this->day = 1;
         $this->monthIndexOfYear++;
+
 
         if($this->monthIndexOfYear == $this->months->count()){
             $this->incrementYear();
@@ -188,10 +191,6 @@ class State
         if($this->calendar->overflows_week){
             $this->incrementWeekday();
         }
-
-        $this->timespanCounts[$this->monthId] = $this->timespanCounts->get($this->monthId) + 1;
-
-        $this->numberTimespans++;
     }
 
     /**

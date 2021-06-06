@@ -42,16 +42,16 @@ class Era
             ->setDate($this->year + 1)
             ->startOfYear();
 
-        $eraFreeEpoch = (new InitialState($eraFreeCalendar))
-            ->generateInitialProperties()->collect();
+        $eraFreeEpoch = InitialState::generateFor($eraFreeCalendar);
 
         $timespanCounts = $eraFreeEpoch->get('timespanCounts')->map(function($timespanCount, $index) use ($eraEpoch) {
             return $timespanCount - $eraEpoch->timespanCounts->get($index);
         });
 
+
         return collect([
             'timespanCounts' => $timespanCounts,
-            'epoch' => $eraFreeEpoch->get('epoch') - $eraEpoch->epoch,
+            'epoch' => $eraFreeEpoch->get('epoch') - $eraEpoch->epoch - 1,
             'historicalIntercalaryCount' => $eraFreeEpoch->get('historicalIntercalaryCount') - $eraEpoch->historicalIntercalaryCount,
             'numberTimespans' => $eraFreeEpoch->get('numberTimespans') - $eraEpoch->numberTimespans
         ]);

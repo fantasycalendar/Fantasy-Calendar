@@ -4,42 +4,47 @@
 namespace App\Services\EpochService\Processor;
 
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
 class InitialStateWithEras extends InitialState
 {
-    public static function generateFor($calendar)
+    public static function generateFor($calendar): Collection
     {
-        Log::info('ENTERING: ' . self::class . '::generateFor');
         return (new self($calendar))->generateInitialProperties();
     }
 
     /*
      * Correct for things that are missing because of year-ending eras
      */
-    public function generateInitialProperties()
+    public function generateInitialProperties(): Collection
     {
-        Log::info('ENTERING: ' . self::class . '::generateInitialProperties');
-        $state = parent::generateInitialProperties();
+        return ($this->hasApplicableEras())
+            ? $this->takeErasIntoAccount()
+            : parent::generateInitialProperties();
+    }
 
-        if(!$this->hasApplicableEras()) return $state;
-
+    /**
+     * @return Collection
+     */
+    public function takeErasIntoAccount(): Collection
+    {
+        $values = parent::generateInitialProperties()->collect();
         $eraSubtractables = $this->getSubtractables();
 
-        // The actual work starts here
-        $this->timespanCounts = $this->calculateTimespanCounts($state, $eraSubtractables);
+        dump($eraSubtractables);
 
-        $this->epoch -= $eraSubtractables->sum('epoch');
-        $this->historicalIntercalaryCount -= $eraSubtractables->sum('historicalIntercalaryCount');
-        $this->numberTimespans -= $eraSubtractables->sum('numberTimespans');
+        $values->put('timespanCounts', $this->calculateTimespanCounts($values, $eraSubtractables));
+        $values->put('epoch', $values->get('epoch') - $eraSubtractables->sum('epoch'));
+        $values->put('historicalIntercalaryCount', $values->get('historicalIntercalaryCount') - $eraSubtractables->sum('historicalIntercalaryCount'));
+        $values->put('numberTimespans', $values->get('numberTimespans') - $eraSubtractables->sum('numberTimespans'));
 
-        return $this;
+        return $values;
     }
 
     private function calculateTimespanCounts($state, $eraSubtractables)
     {
-        Log::info('ENTERING: ' . self::class . '::calculateTimespanCounts');
-        return $state->timespanCounts->map(function($timespanCount, $timespanIndex) use ($eraSubtractables) {
+        return $state->get('timespanCounts')->map(function($timespanCount, $timespanIndex) use ($eraSubtractables) {
             return $timespanCount - $eraSubtractables->sum(function($era) use ($timespanIndex){
                     return $era->get('timespanCounts')->get($timespanIndex);
                 });
@@ -48,7 +53,6 @@ class InitialStateWithEras extends InitialState
 
     private function getSubtractables()
     {
-        Log::info('ENTERING: ' . self::class . '::getSubtractables');
         return $this->calendar->eras
             ->filter->endsYear()
             ->filter->beforeYear($this->year)
@@ -57,7 +61,6 @@ class InitialStateWithEras extends InitialState
 
     private function hasApplicableEras()
     {
-        Log::info('ENTERING: ' . self::class . '::hasApplicableEras');
         return $this->calendar->eras
                 ->filter->endsYear()
                 ->filter->beforeYear($this->year)
