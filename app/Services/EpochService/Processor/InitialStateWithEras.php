@@ -32,8 +32,6 @@ class InitialStateWithEras extends InitialState
         $values = parent::generateInitialProperties()->collect();
         $eraSubtractables = $this->getSubtractables();
 
-        dump($eraSubtractables);
-
         $values->put('timespanCounts', $this->calculateTimespanCounts($values, $eraSubtractables));
         $values->put('epoch', $values->get('epoch') - $eraSubtractables->sum('epoch'));
         $values->put('historicalIntercalaryCount', $values->get('historicalIntercalaryCount') - $eraSubtractables->sum('historicalIntercalaryCount'));
