@@ -54,7 +54,7 @@ class RenderMonth
     {
         $epochs = EpochService::forCalendarYear($this->calendar);
 
-        dd("Year Epochs: ", $epochs->map->toArray());
+        dd($epochs->map->toArray());
 
 //        $sections = (new SectionsCollection())->build($this);
 //

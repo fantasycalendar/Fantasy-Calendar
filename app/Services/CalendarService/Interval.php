@@ -34,6 +34,18 @@ class Interval
         $this->bumpsYearZero = ($this->offset === 0 && !$this->subtractor);
     }
 
+    /**
+     * Create a new Interval from string, providing offset
+     *
+     * @param $interval
+     * @param $offset
+     * @return Interval
+     */
+    public static function make($interval, $offset): Interval
+    {
+        return new self($interval, $offset);
+    }
+
     public function toJson()
     {
         return json_encode([
@@ -54,6 +66,36 @@ class Interval
         return 'abstain';
     }
 
+    public function isEqual($interval)
+    {
+        return $this == $interval;
+    }
+
+    public function mergeInternalIntervals($collection)
+    {
+        $this->internalIntervals = $this->internalIntervals->merge($collection);
+
+        return $this;
+    }
+
+    public function isRedundant()
+    {
+        return $this->internalIntervals->reject(function($internalInterval){
+            $collidingInterval = lcmo($this, $internalInterval);
+
+            return (!$collidingInterval)
+                && !$this->matchesCollision($collidingInterval, $internalInterval)
+                && ($this->subtractor xor $internalInterval->subtractor);
+        })->count();
+    }
+
+    public function matchesCollision($collidingInterval, $internalInterval)
+    {
+        return $this->interval    == $collidingInterval->interval
+            && $this->offset      == $collidingInterval->offset
+            && $this->subtractor  == $internalInterval->subtractor;
+    }
+
     /**
      * @param $year
      * @return int
@@ -61,20 +103,5 @@ class Interval
     public function contributionToYear($year): int
     {
         return (int) ceil($year / $this->interval);
-    }
-
-    public function generateSubIntervals($intervals)
-    {
-        return $intervals->map(function($interval){
-            if(!$interval->subtractor) {
-                $collidingInterval = lcmo($this, $interval);
-
-                if($collidingInterval) {
-
-                }
-            }
-
-            return [$interval->interval . '-' . $this->interval . microtime() => $interval];
-        });
     }
 }
