@@ -52,18 +52,21 @@ class Interval
             'interval' => $this->interval,
             'subtractor' => $this->subtractor,
             'offset' => $this->offset
-        ], JSON_PRETTY_PRINT);
+        ]);
     }
 
     public function voteOnYear($year)
     {
         if((($year-$this->offset) % $this->interval) === 0) {
-            if($this->subtractor) return 'deny';
-
-            return 'allow';
+            return $this->subtractor ? 'deny' : 'allow';
         }
-
         return 'abstain';
+    }
+
+    public function clearInternalIntervals()
+    {
+        $this->internalIntervals = collect([]);
+        return $this;
     }
 
     public function isEqual($interval)
@@ -81,16 +84,30 @@ class Interval
     public function isRedundant()
     {
         return $this->internalIntervals->reject(function($internalInterval){
-            $collidingInterval = lcmo($this, $internalInterval);
-
-            return (!$collidingInterval)
-                && !$this->matchesCollision($collidingInterval, $internalInterval)
-                && ($this->subtractor xor $internalInterval->subtractor);
-        })->count();
+            return $this->willCollideWith($internalInterval) || !($this->subtractor xor $internalInterval->subtractor);
+        })->count() && !$this->internalIntervals->count();
     }
 
-    public function matchesCollision($collidingInterval, $internalInterval)
+    /**
+     * Determines whether a given interval will ever collide with this one
+     *
+     * @param Interval $interval
+     * @return bool
+     */
+    private function willCollideWith(Interval $interval): bool
     {
+        return lcmo_bool($this, $interval);
+    }
+
+    /**
+     * Determines if the given interval clashes with this one
+     *
+     * @param $internalInterval
+     * @return bool
+     */
+    public function matchesCollisionWith($internalInterval): bool
+    {
+        $collidingInterval = lcmo($this, $internalInterval);
         return $this->interval    == $collidingInterval->interval
             && $this->offset      == $collidingInterval->offset
             && $this->subtractor  == $internalInterval->subtractor;

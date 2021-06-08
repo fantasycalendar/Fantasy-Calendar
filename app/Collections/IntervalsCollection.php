@@ -43,6 +43,11 @@ class IntervalsCollection extends \Illuminate\Support\Collection
         );
     }
 
+    public function toJsons()
+    {
+        return json_encode($this->map->toJson()->values());
+    }
+
     /**
      * Check to see whether or not this collection of intervals (Usually on a Leap Day) should add days on year 0
      *
@@ -69,20 +74,21 @@ class IntervalsCollection extends \Illuminate\Support\Collection
         $cleanIntervals = $this->cleanUpIntervals();
 
         for($outer_index = $cleanIntervals->count()-1; $outer_index >= 0; $outer_index--) {
+
             $outerInterval = $cleanIntervals->get($outer_index);
 
             for ($inner_index = $outer_index + 1; $inner_index < $cleanIntervals->count(); $inner_index++) {
 
                 $innerInterval = $cleanIntervals->get($inner_index);
 
-                if(!$innerInterval->subtractor) {
+                if (!$innerInterval->subtractor) {
 
                     $collidingInterval = lcmo($outerInterval, $innerInterval);
 
                     if ($collidingInterval) {
 
 
-                        $foundInterval = $outerInterval->internalIntervals->filter(function($interval) use ($collidingInterval, $innerInterval){
+                        $foundInterval = $outerInterval->internalIntervals->filter(function ($interval) use ($collidingInterval, $innerInterval) {
 
                             $result = ($interval->interval == $collidingInterval->interval
                                 && $interval->offset == $collidingInterval->offset
@@ -92,12 +98,12 @@ class IntervalsCollection extends \Illuminate\Support\Collection
                             return $result;
                         })->first();
 
-                        if($foundInterval){
+                        if ($foundInterval) {
 
                             $initial = $outerInterval->internalIntervals->count();
 
-                            $outerInterval->internalIntervals = $outerInterval->internalIntervals->reject(function($interval) use ($foundInterval){
-                                if($interval == $foundInterval) {
+                            $outerInterval->internalIntervals = $outerInterval->internalIntervals->reject(function ($interval) use ($foundInterval) {
+                                if ($interval == $foundInterval) {
                                     $first = $interval->toJson();
                                     $second = $foundInterval->toJson();
 
@@ -110,7 +116,7 @@ class IntervalsCollection extends \Illuminate\Support\Collection
 
                             $result = $outerInterval->internalIntervals->toJson();
 
-                        }else{
+                        } else {
 
                             $collidingInterval->subtractor = !$innerInterval->subtractor;
 
@@ -122,28 +128,27 @@ class IntervalsCollection extends \Illuminate\Support\Collection
                     }
                 }
 
-                foreach($innerInterval->internalIntervals as $innermostInterval) {
+                foreach ($innerInterval->internalIntervals as $innermostInterval) {
 
                     $collidingInterval = lcmo($outerInterval, $innermostInterval);
 
-                    if($collidingInterval){
+                    if ($collidingInterval) {
 
                         $negator = (($outerInterval->subtractor && !$innermostInterval->subtractor) || (!$outerInterval->subtractor && !$innermostInterval->subtractor));
 
-
-                        $foundInterval = $outerInterval->internalIntervals->filter(function($interval) use ($collidingInterval, $negator){
+                        $foundInterval = $outerInterval->internalIntervals->filter(function ($interval) use ($collidingInterval, $negator) {
 
                             return $interval->interval == $collidingInterval->interval
                                 && $interval->offset == $collidingInterval->offset
                                 && $interval->subtractor !== $negator;
                         })->first();
 
-                        if($foundInterval){
+                        if ($foundInterval) {
 
                             $initial = $outerInterval->internalIntervals->count();
 
-                            $foundKey = $outerInterval->internalIntervals->filter(function($interval) use ($foundInterval){
-                                if($interval == $foundInterval) {
+                            $foundKey = $outerInterval->internalIntervals->filter(function ($interval) use ($foundInterval) {
+                                if ($interval == $foundInterval) {
                                     $first = $interval->toJson();
                                     $second = $foundInterval->toJson();
 
@@ -158,7 +163,7 @@ class IntervalsCollection extends \Illuminate\Support\Collection
 
                             $result = $outerInterval->internalIntervals->toJson();
 
-                        }else{
+                        } else {
 
                             $collidingInterval->subtractor = $negator;
 
@@ -173,47 +178,28 @@ class IntervalsCollection extends \Illuminate\Support\Collection
 
             }
 
-
         }
 
-//        dd($cleanIntervals);
+        return $this->flattenIntervals($cleanIntervals);
 
-        return $cleanIntervals;
+    }
+
+    private function flattenIntervals($cleanIntervals)
+    {
+        return $cleanIntervals
+            ->map->internalIntervals
+            ->add($cleanIntervals->reject->subtractor)
+            ->flatten()
+            ->map->clearInternalIntervals()
+            ->sortByDesc('interval')
+            ->values();
     }
 
     public function cleanUpIntervals()
     {
-        $dirtyIntervals = $this->map(function($interval, $index){
+        return $this->map(function($interval, $index){
             $interval = clone $interval;
-
             return $interval->mergeInternalIntervals($this->slice($index + 1));
-        })->reject->isRedundant();
-
-        dd($cleanIntervals);
-
-        $dirtyIntervals = $this;
-        $cleanIntervals = new self($this->toArray());
-
-        $dirtyIntervals->each(function($outerInterval, $outer_index) use ($dirtyIntervals, &$cleanIntervals) {
-            $dirtyIntervals->slice($outer_index+1)->each(function($innerInterval) use ($outerInterval, &$cleanIntervals){
-                $collidingInterval = lcmo($outerInterval, $innerInterval);
-                if(!$collidingInterval) {
-                    return true;
-                }
-
-                // But if the outer interval has the same LCM as the inner one, remove the outer interval, provided if neither or both are subtractors.
-                if (Interval::isRedundant($outerInterval, $innerInterval, $collidingInterval)) {
-                    $cleanIntervals = $cleanIntervals->reject->isEqual($collidingInterval);
-
-                    return false;
-                }
-
-                // If the two intervals cannot cancel each other out, skip to the next outer interval
-                return !($outerInterval->subtractor xor $innerInterval->subtractor);
-
-            });
-        });
-
-        return $cleanIntervals->values();
+        })->reject->isRedundant()->map->clearInternalIntervals();
     }
 }
