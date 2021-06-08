@@ -73,7 +73,7 @@ class IntervalsCollection extends \Illuminate\Support\Collection
 
         $cleanIntervals = $this->cleanUpIntervals();
 
-        for($outer_index = $cleanIntervals->count()-1; $outer_index >= 0; $outer_index--) {
+        for($outer_index = $cleanIntervals->count()-2; $outer_index >= 0; $outer_index--) {
 
             $outerInterval = $cleanIntervals->get($outer_index);
 
@@ -87,39 +87,23 @@ class IntervalsCollection extends \Illuminate\Support\Collection
 
                     if ($collidingInterval) {
 
-
                         $foundInterval = $outerInterval->internalIntervals->filter(function ($interval) use ($collidingInterval, $innerInterval) {
-
-                            $result = ($interval->interval == $collidingInterval->interval
+                            return ($interval->interval == $collidingInterval->interval
                                 && $interval->offset == $collidingInterval->offset
                                 && $interval->subtractor == $innerInterval->subtractor);
-
-
-                            return $result;
                         })->first();
 
                         if ($foundInterval) {
 
-                            $initial = $outerInterval->internalIntervals->count();
-
-                            $outerInterval->internalIntervals = $outerInterval->internalIntervals->reject(function ($interval) use ($foundInterval) {
-                                if ($interval == $foundInterval) {
-                                    $first = $interval->toJson();
-                                    $second = $foundInterval->toJson();
-
-                                }
-
+                            $foundKey = $outerInterval->internalIntervals->filter(function ($interval) use ($foundInterval) {
                                 return $interval == $foundInterval;
-                            });
+                            })->keys()->first();
 
-                            $after = $outerInterval->internalIntervals->count();
-
-                            $result = $outerInterval->internalIntervals->toJson();
+                            $outerInterval->internalIntervals->forget($foundKey);
 
                         } else {
 
                             $collidingInterval->subtractor = !$innerInterval->subtractor;
-
 
                             $outerInterval->internalIntervals->push($collidingInterval);
 
@@ -134,39 +118,24 @@ class IntervalsCollection extends \Illuminate\Support\Collection
 
                     if ($collidingInterval) {
 
-                        $negator = (($outerInterval->subtractor && !$innermostInterval->subtractor) || (!$outerInterval->subtractor && !$innermostInterval->subtractor));
-
-                        $foundInterval = $outerInterval->internalIntervals->filter(function ($interval) use ($collidingInterval, $negator) {
+                        $foundInterval = $outerInterval->internalIntervals->filter(function ($interval) use ($collidingInterval, $innermostInterval) {
 
                             return $interval->interval == $collidingInterval->interval
                                 && $interval->offset == $collidingInterval->offset
-                                && $interval->subtractor !== $negator;
+                                && $interval->subtractor == $innermostInterval->subtractor;
                         })->first();
 
                         if ($foundInterval) {
 
-                            $initial = $outerInterval->internalIntervals->count();
-
                             $foundKey = $outerInterval->internalIntervals->filter(function ($interval) use ($foundInterval) {
-                                if ($interval == $foundInterval) {
-                                    $first = $interval->toJson();
-                                    $second = $foundInterval->toJson();
-
-                                }
-
                                 return $interval == $foundInterval;
                             })->keys()->first();
 
                             $outerInterval->internalIntervals->forget($foundKey);
 
-                            $after = $outerInterval->internalIntervals->count();
-
-                            $result = $outerInterval->internalIntervals->toJson();
-
                         } else {
 
-                            $collidingInterval->subtractor = $negator;
-
+                            $collidingInterval->subtractor = !$innermostInterval->subtractor;
 
                             $outerInterval->internalIntervals->add($collidingInterval);
 

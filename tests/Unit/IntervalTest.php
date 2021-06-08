@@ -59,5 +59,16 @@ class IntervalTest extends TestCase
 
         #--------------------------------------------------#
 
+        $intervals = IntervalsCollection::fromString("!300,!180,150,90", 3)
+                ->cleanUpIntervals()
+                ->normalize()
+                ->toJsons();
+
+        $truth = '["{\"interval\":900,\"subtractor\":false,\"offset\":3}","{\"interval\":450,\"subtractor\":true,\"offset\":3}","{\"interval\":300,\"subtractor\":true,\"offset\":3}","{\"interval\":180,\"subtractor\":true,\"offset\":3}","{\"interval\":150,\"subtractor\":false,\"offset\":3}","{\"interval\":90,\"subtractor\":false,\"offset\":3}"]';
+
+        $this->assertTrue($intervals == $truth);
+
+        #--------------------------------------------------#
+
     }
 }
