@@ -83,9 +83,10 @@ class Interval
 
     public function isRedundant()
     {
-        return $this->internalIntervals->reject(function($internalInterval){
-            return $this->willCollideWith($internalInterval) || $this->subtractor == $internalInterval->subtractor;
-        })->count() && !$this->internalIntervals->count();
+        return $this->internalIntervals
+                ->reject->willCollideWith($this)
+                ->count()
+            && !$this->internalIntervals->count();
     }
 
     /**
@@ -94,9 +95,9 @@ class Interval
      * @param Interval $interval
      * @return bool
      */
-    private function willCollideWith(Interval $interval): bool
+    public function willCollideWith(Interval $interval): bool
     {
-        return lcmo_bool($this, $interval);
+        return lcmo_bool($this, $interval) || $this->subtractor == $interval->subtractor;
     }
 
     /**
