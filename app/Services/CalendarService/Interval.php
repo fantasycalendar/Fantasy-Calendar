@@ -84,7 +84,7 @@ class Interval
     public function isRedundant()
     {
         return $this->internalIntervals->reject(function($internalInterval){
-            return $this->willCollideWith($internalInterval) || !($this->subtractor xor $internalInterval->subtractor);
+            return $this->willCollideWith($internalInterval) || $this->subtractor == $internalInterval->subtractor;
         })->count() && !$this->internalIntervals->count();
     }
 
