@@ -33,7 +33,7 @@ services:
       context: .
       dockerfile: setup/php/php.Dockerfile
     volumes:
-      - ./:/var/task:ro
+      - ./:/var/task
       - ./cache:/var/task/cache
     user: "1000:1000"
     environment:
