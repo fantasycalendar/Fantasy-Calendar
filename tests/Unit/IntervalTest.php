@@ -70,5 +70,38 @@ class IntervalTest extends TestCase
 
         #--------------------------------------------------#
 
+        $intervals = IntervalsCollection::fromString("!165105,!2500,9,2", 50)
+                ->cleanUpIntervals()
+                ->normalize()
+                ->toJsons();
+
+        $truth = '["{\"interval\":82552500,\"subtractor\":false,\"offset\":50}","{\"interval\":165105,\"subtractor\":true,\"offset\":50}","{\"interval\":2500,\"subtractor\":true,\"offset\":50}","{\"interval\":18,\"subtractor\":true,\"offset\":14}","{\"interval\":9,\"subtractor\":false,\"offset\":5}","{\"interval\":2,\"subtractor\":false,\"offset\":0}"]';
+
+        $this->assertTrue($intervals == $truth);
+
+        #--------------------------------------------------#
+
+        $intervals = IntervalsCollection::fromString("!100,15,10,4", 15)
+                ->cleanUpIntervals()
+                ->normalize()
+                ->toJsons();
+
+        $truth = '["{\"interval\":100,\"subtractor\":true,\"offset\":15}","{\"interval\":30,\"subtractor\":true,\"offset\":15}","{\"interval\":20,\"subtractor\":true,\"offset\":15}","{\"interval\":15,\"subtractor\":false,\"offset\":0}","{\"interval\":10,\"subtractor\":false,\"offset\":5}","{\"interval\":4,\"subtractor\":false,\"offset\":3}"]';
+
+        $this->assertTrue($intervals == $truth);
+
+        #--------------------------------------------------#
+
+        $intervals = IntervalsCollection::fromString("+50,4", 4)
+                ->cleanUpIntervals()
+                ->normalize()
+                ->toJsons();
+
+        $truth = '["{\"interval\":100,\"subtractor\":true,\"offset\":0}","{\"interval\":50,\"subtractor\":false,\"offset\":0}","{\"interval\":4,\"subtractor\":false,\"offset\":0}"]';
+
+        $this->assertTrue($intervals == $truth);
+
+        #--------------------------------------------------#
+
     }
 }
