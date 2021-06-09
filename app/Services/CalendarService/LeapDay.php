@@ -69,9 +69,9 @@ class LeapDay
      * Determines whether this leap day will appear on the given year
      *
      * @param int $year
-     * @return mixed
+     * @return array|bool
      */
-    public function intersectsYear(int $year): mixed
+    public function intersectsYear(int $year): array|bool
     {
         if($this->intervals->count() === 1) return ['result' => (($year + $this->offset) % $this->interval) == 0];
 
