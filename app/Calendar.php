@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Collections\ErasCollection;
+use App\Collections\MonthsCollection;
 use App\Services\CalendarService\Era;
 use App\Services\CalendarService\LeapDay;
 use App\Services\CalendarService\RenderMonth;
@@ -234,11 +235,13 @@ class Calendar extends Model
 
     public function getMonthsAttribute()
     {
-        if(!isset($this->months_cached[$this->year])) {
-            $this->months_cached[$this->year] = collect(Arr::get($this->static_data, 'year_data.timespans'))->map(function($timespan_details, $timespan_key){
-                return new Month(array_merge($timespan_details, ['id' => $timespan_key]), $this);
-            })->filter->intersectsYear($this->year)->values();
-        }
+        if(isset($this->months_cached[$this->year])) return $this->months_cached[$this->year];
+
+        $yearEndingEra = $this->eras->filter->endsGivenYear($this->year)->first();
+
+        $this->months_cached[$this->year] = MonthsCollection::fromArray(Arr::get($this->static_data, 'year_data.timespans'), $this)
+            ->filter->intersectsYear($this->year)
+            ->endsOn($yearEndingEra)->values();
 
         return $this->months_cached[$this->year];
     }

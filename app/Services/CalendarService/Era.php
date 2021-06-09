@@ -62,9 +62,14 @@ class Era
         return $year > $this->year;
     }
 
-    public function endsYear()
+    public function endsYear(): bool
     {
         return $this->getSetting('ends_year', false) !== false;
+    }
+
+    public function endsGivenYear($year): bool
+    {
+        return $this->endsYear() && $year == $this->year;
     }
 
     public function getSetting($name, $default = false)
