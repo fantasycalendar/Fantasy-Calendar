@@ -4,6 +4,7 @@
 namespace App\Services\CalendarService;
 
 
+use App\Collections\IntervalsCollection;
 use phpDocumentor\Reflection\Types\Collection;
 
 class Interval
@@ -55,7 +56,13 @@ class Interval
         ]);
     }
 
-    public function voteOnYear($year)
+    /**
+     * Provides a vote on whether or not the interval would fall on a certain year
+     *
+     * @param $year
+     * @return string
+     */
+    public function voteOnYear($year): string
     {
         if((($year-$this->offset) % $this->interval) === 0) {
             return $this->subtractor ? 'deny' : 'allow';
@@ -63,25 +70,48 @@ class Interval
         return 'abstain';
     }
 
-    public function clearInternalIntervals()
+    /**
+     * Sets this->internalIntervals to an empty collection
+     *
+     * @return $this
+     */
+    public function clearInternalIntervals(): Interval
     {
-        $this->internalIntervals = collect([]);
+        $this->internalIntervals = new IntervalsCollection();
         return $this;
     }
 
-    public function isEqual($interval)
+    /**
+     * Determines whether or not this interval is the same as another
+     *
+     * @param $interval
+     * @return bool
+     */
+    public function isEqual($interval): bool
     {
         return $this == $interval;
     }
 
-    public function mergeInternalIntervals($collection)
+    /**
+     * Merge the given collection into this->internalIntervals
+     *
+     * @param $collection
+     * @return $this
+     */
+    public function mergeInternalIntervals($collection): Interval
     {
         $this->internalIntervals = $this->internalIntervals->merge($collection);
 
         return $this;
     }
 
-    public function isRedundant()
+
+    /**
+     * Determines whether or not this interval is necessary, given its internal intervals
+     *
+     * @return bool
+     */
+    public function isRedundant(): bool
     {
         return $this->internalIntervals
                 ->reject->willCollideWith($this)
@@ -89,6 +119,13 @@ class Interval
             && !$this->internalIntervals->count();
     }
 
+    /**
+     * Pass through a single interval to `avoidDuplicateCollisionsOnInternal`
+     * or, if given a collection of intervals, do it to *all* of them
+     *
+     * @param $toCheck
+     * @return Interval|IntervalsCollection
+     */
     public function avoidDuplicates($toCheck)
     {
         if($toCheck instanceof Interval) {
@@ -100,35 +137,51 @@ class Interval
         });
     }
 
-    public function avoidDuplicateCollisionsOnInternal(Interval $suspectedCollision)
+    /**
+     * When given an interval or a collection of them, destructively update ourselves following these rules:
+     * - If a given interval would ever collide with us,
+     *      - See if the collision point is already in our internal list
+     *          - If so, remove the first instance of it
+     *          - If not, negate and add it
+     *
+     * We then return **the same interval you gave us**
+     *
+     * @param Interval $suspectedCollision
+     * @return Interval
+     */
+    public function avoidDuplicateCollisionsOnInternal(Interval $suspectedCollision): Interval
     {
-        if ($collidingInterval = lcmo($this, $suspectedCollision)) {
-            $foundInterval = $this->internalIntervals->filter
-                ->collidesWithAttributes($collidingInterval->interval, $collidingInterval->offset, $suspectedCollision->subtractor)
-                ->first();
-
-            if ($foundInterval) {
-                $foundKey = $this->internalIntervals->filter->isEqual($foundInterval)->firstKey();
-
-                $this->internalIntervals->forget($foundKey);
-            } else {
-                $collidingInterval->subtractor = !$suspectedCollision->subtractor;
-
-                $this->internalIntervals->push($collidingInterval);
-            }
+        if (!lcmo_bool($this, $suspectedCollision)) {
+            return $suspectedCollision;
         }
+
+        $this->internalIntervals->cancelOutCollision($this, $suspectedCollision);
 
         return $suspectedCollision;
     }
 
-    public function collidesWithAttributes($interval, $offset, $subtractor)
+    /**
+     * Determines whether this interval has the given attributes.
+     * This is some syntactic sugar for collection filtering.
+     *
+     * @param $interval
+     * @param $offset
+     * @param $subtractor
+     * @return bool
+     */
+    public function attributesAre($interval, $offset, $subtractor): bool
     {
         return ($this->interval == $interval
-        && $this->offset == $offset
-        && $this->subtractor == $subtractor);
+            && $this->offset == $offset
+            && $this->subtractor == $subtractor);
     }
 
-    public function clone()
+    /**
+     * Create a copy of this interval
+     *
+     * @return Interval
+     */
+    public function clone(): Interval
     {
         return clone $this;
     }
@@ -153,9 +206,8 @@ class Interval
     public function matchesCollisionWith($internalInterval): bool
     {
         $collidingInterval = lcmo($this, $internalInterval);
-        return $this->interval    == $collidingInterval->interval
-            && $this->offset      == $collidingInterval->offset
-            && $this->subtractor  == $internalInterval->subtractor;
+
+        return $this->attributesAre($collidingInterval->interval, $collidingInterval->offset, $internalInterval->subtractor);
     }
 
     /**

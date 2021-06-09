@@ -26,12 +26,13 @@ if(!function_exists('lcmo_bool')) {
     /**
      * Least Common Multiple Offset (bool) will calculate whether two intervals with individual offsets will ever intersect
      *
-     * @param  \App\Services\CalendarService\Interval   x   The first interval
-     * @param  \App\Services\CalendarService\Interval   y   The second interval
+     * @param Interval   x   The first interval
+     * @param Interval   y   The second interval
      *
      * @return bool         Whether these two intervals will ever intersect
      */
-    function lcmo_bool(Interval $x, Interval $y){
+    function lcmo_bool(Interval $x, Interval $y): bool
+    {
         return abs($x->offset - $y->offset) == 0 || (abs($x->offset - $y->offset) % gmp_gcd($x->interval, $y->interval)) == 0;
     }
 }
@@ -41,13 +42,14 @@ if(!function_exists('lcmo')){
      * Least Common Multiple Offset will calculate whether two intervals with individual offsets will ever collide,
      * and return an array containing the result, the starting point of their repetition, and how often they repeat
      *
-     * @param  \App\Services\CalendarService\Interval       x   The first interval
-     * @param  \App\Services\CalendarService\Interval       y   The second interval
+     * @param Interval $x   The first interval
+     * @param Interval $y   The second interval
      *
      * @return mixed		                                Either false if the two intervals never intersect, or
      *                                                      an array with the result, starting point, and interval
      */
-    function lcmo(Interval $x, Interval $y){
+    function lcmo(Interval $x, Interval $y)
+    {
 
         if(!lcmo_bool($x, $y)){
             return false;

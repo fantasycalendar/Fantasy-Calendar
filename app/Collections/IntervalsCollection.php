@@ -58,7 +58,13 @@ class IntervalsCollection extends \Illuminate\Support\Collection
         return $this->reject->offset->sortByDesc('interval')->first()->subtractor;
     }
 
-    public function avoidDuplicateCollisions($intervals)
+    /**
+     * Recursively avoid interval collisions
+     *
+     * @param $intervals
+     * @return mixed
+     */
+    public function avoidDuplicateCollisions(IntervalsCollection $intervals): IntervalsCollection
     {
         $intervals = clone $intervals;
 
@@ -91,11 +97,17 @@ class IntervalsCollection extends \Illuminate\Support\Collection
     {
         return ($this->count() === 1)
             ? $this
-            : $this->cleanUpIntervals()
+            : $this->cleanUp()
                    ->avoidDuplicateCollisions($this)
                    ->flattenIntervals();
     }
 
+    /**
+     * Our intervals have internal intervals, we want to flatten to a single list of all of those,
+     * along with any of the "parent" intervals that are **not** subtractors.
+     *
+     * @return mixed
+     */
     private function flattenIntervals()
     {
         return $this
@@ -107,7 +119,13 @@ class IntervalsCollection extends \Illuminate\Support\Collection
             ->values();
     }
 
-    public function cleanUpIntervals()
+    /**
+     * Who knows what users enter, amirite? Clean it up, by avoiding redundancies!
+     * For example, we want "100,!100,50,4,!4" to become just "50".
+     *
+     * @return mixed
+     */
+    public function cleanUp()
     {
         return $this->fresh()
             ->fillDescendants()
@@ -115,15 +133,52 @@ class IntervalsCollection extends \Illuminate\Support\Collection
             ->map->clearInternalIntervals();
     }
 
-    public function fresh()
+    /**
+     * Gets a copy of this collection with all its members freshly cloned.
+     * That's mostly to avoid odd object pass-by-reference issues.
+     *
+     * @return IntervalsCollection
+     */
+    public function fresh(): IntervalsCollection
     {
         return $this->map->clone();
     }
 
-    public function fillDescendants()
+    /**
+     * Give each of our intervals a copy of the list of all the intervals after them in the list
+     *
+     * @return IntervalsCollection
+     */
+    public function fillDescendants(): IntervalsCollection
     {
         return $this->map(function($interval, $index){
             return $interval->mergeInternalIntervals($this->slice($index + 1));
         });
+    }
+
+    /**
+     * Takes an interval, along with an interval we suspect collides with it, and ensures that we either:
+     *    1. Cancel out any duplicate collisions on that interval, OR
+     *    2. Add the collision to that interval's list to be aware of.
+     *
+     * @param $examinedInterval
+     * @param $knownCollision
+     */
+    public function cancelOutCollision($examinedInterval, $knownCollision)
+    {
+        $collidingInterval = lcmo($examinedInterval, $knownCollision);
+        $foundInterval = $this->filter
+            ->attributesAre($collidingInterval->interval, $collidingInterval->offset, $knownCollision->subtractor)
+            ->first();
+
+        if ($foundInterval) {
+            $foundKey = $this->filter->isEqual($foundInterval)->firstKey();
+
+            $this->forget($foundKey);
+        } else {
+            $collidingInterval->subtractor = !$knownCollision->subtractor;
+
+            $this->push($collidingInterval);
+        }
     }
 }

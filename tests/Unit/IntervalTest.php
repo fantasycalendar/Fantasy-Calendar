@@ -16,7 +16,7 @@ class IntervalTest extends TestCase
     {
 
         $intervals = IntervalsCollection::fromString("!1000,746,!373,!5,4", 0)
-            ->cleanUpIntervals()
+            ->cleanUp()
             ->normalize()
             ->toJsons();
 
@@ -27,7 +27,7 @@ class IntervalTest extends TestCase
         #--------------------------------------------------#
 
         $intervals = IntervalsCollection::fromString("400,!100,4", 0)
-            ->cleanUpIntervals()
+            ->cleanUp()
             ->normalize()
             ->toJsons();
 
@@ -38,7 +38,7 @@ class IntervalTest extends TestCase
         #--------------------------------------------------#
 
         $intervals = IntervalsCollection::fromString("!2203,!400,+!100,4,!2", 1)
-                ->cleanUpIntervals()
+                ->cleanUp()
                 ->normalize()
                 ->toJsons();
 
@@ -49,7 +49,7 @@ class IntervalTest extends TestCase
         #--------------------------------------------------#
 
         $intervals = IntervalsCollection::fromString("233,!144,+89,55,!34,+21,13,+!8,!5,3,2", 0)
-                ->cleanUpIntervals()
+                ->cleanUp()
                 ->normalize()
                 ->toJsons();
 
@@ -60,7 +60,7 @@ class IntervalTest extends TestCase
         #--------------------------------------------------#
 
         $intervals = IntervalsCollection::fromString("!300,!180,150,90", 3)
-                ->cleanUpIntervals()
+                ->cleanUp()
                 ->normalize()
                 ->toJsons();
 
@@ -71,7 +71,7 @@ class IntervalTest extends TestCase
         #--------------------------------------------------#
 
         $intervals = IntervalsCollection::fromString("!165105,!2500,9,2", 50)
-                ->cleanUpIntervals()
+                ->cleanUp()
                 ->normalize()
                 ->toJsons();
 
@@ -82,7 +82,7 @@ class IntervalTest extends TestCase
         #--------------------------------------------------#
 
         $intervals = IntervalsCollection::fromString("!100,15,10,4", 15)
-                ->cleanUpIntervals()
+                ->cleanUp()
                 ->normalize()
                 ->toJsons();
 
@@ -93,7 +93,7 @@ class IntervalTest extends TestCase
         #--------------------------------------------------#
 
         $intervals = IntervalsCollection::fromString("+50,4", 4)
-                ->cleanUpIntervals()
+                ->cleanUp()
                 ->normalize()
                 ->toJsons();
 
