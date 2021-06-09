@@ -5,6 +5,7 @@ namespace App\Services\CalendarService;
 use App\Calendar;
 use Illuminate\Database\Eloquent\Concerns\HasAttributes;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 
 class Month extends Timespan
 {
@@ -20,10 +21,9 @@ class Month extends Timespan
      */
     public $activeLeapDays;
 
-    public function __construct($attributes, Calendar $calendar)
+    public function __construct($attributes)
     {
-        parent::__construct($attributes, $calendar);
-        $this->initialize();
+        parent::__construct($attributes);
     }
 
     /**
@@ -37,6 +37,8 @@ class Month extends Timespan
     }
 
     /**
+     * Counts the number of weeks in the year
+     *
      * @return int
      */
     public function countWeeksInYear(): int
@@ -44,26 +46,71 @@ class Month extends Timespan
         return (int) abs(ceil($this->countNormalDays() / $this->weekdays->count()));
     }
 
-    private function initialize()
+    /**
+     * Sets up calendar-specific variables on the month
+     *
+     * @param Calendar $calendar
+     * @return $this
+     */
+    protected function initialize(Calendar $calendar): self
     {
-        $this->activeLeapDays = $this->leapDays
-            ->filter->intersectsYear($this->calendar->year);
+        parent::initialize($calendar);
 
-        $this->weekdays = $this->buildWeekdays();
+        $this->activeLeapDays = $this->leapDays
+            ->filter->intersectsYear($calendar->year);
+
+        $this->weekdays = $this->buildWeekdays($calendar);
 
         $this->daysInYear = $this->buildDaysInYear();
 
         return $this;
     }
 
-    private function buildWeekdays()
+    /**
+     * Builds the month's base week for the calendar's current year
+     *
+     * @param Calendar $calendar
+     * @return Collection
+     */
+    private function buildWeekdays(Calendar $calendar): Collection
     {
-        $weekdays = collect(Arr::get($this->attributes, 'week', $this->calendar->global_week));
+        $weekdays = collect(Arr::get($this->attributes, 'week', $calendar->global_week));
 
         return $this->insertLeapdaysIntoWeek($weekdays);
     }
 
-    private function buildDaysInYear()
+    /**
+     * If there are any leaping weekdays in the year, this method inserts them into the month's week
+     *
+     * @param $weekdays
+     * @return Collection
+     */
+    private function insertLeapdaysIntoWeek($weekdays): Collection
+	{
+        $additiveLeapdays = $this->activeLeapDays
+            ->filter->adds_week_day
+            ->sortBy('day')
+            ->values();
+
+        if(!$additiveLeapdays->count()) return $weekdays;
+
+        $leapDays = $additiveLeapdays->mapWithKeys(function($leapDay, $leapdayIndex) use($additiveLeapdays) {
+			return [($leapDay->day * ($additiveLeapdays->count()+1)) + ($leapdayIndex + 1) => $leapDay->week_day];
+		});
+
+        $weekdays = $weekdays->mapWithKeys(function($weekday, $weekdayIndex) use ($additiveLeapdays) {
+			return [(($weekdayIndex + 1) * ($additiveLeapdays->count()+1)) => $weekday];
+		});
+
+		return $weekdays->union($leapDays)->sortKeys()->values();
+	}
+
+    /**
+     * This determines how many days there will be in the calendar's current year
+     *
+     * @return Collection
+     */
+    private function buildDaysInYear(): Collection
     {
         if($this->intercalary){
             $baseLength = $this->length + $this->activeLeapDays->count();
@@ -83,7 +130,13 @@ class Month extends Timespan
 
     }
 
-    private function insertLeapdaysIntoDaysInYear($daysInYear)
+    /**
+     * Inserts leap days, and intercalary leap days, into the month's days
+     *
+     * @param $daysInYear
+     * @return Collection
+     */
+    private function insertLeapdaysIntoDaysInYear($daysInYear): Collection
     {
 
         $intercalaryLeapDays = $this->activeLeapDays->filter->intercalary;
@@ -101,27 +154,5 @@ class Month extends Timespan
         return $daysInYear;
 
     }
-
-    private function insertLeapdaysIntoWeek($weekdays)
-	{
-        $additiveLeapdays = $this->activeLeapDays
-            ->filter->adds_week_day
-            ->sortBy('day')
-            ->values();
-
-        if(!$additiveLeapdays->count()){
-		    return $weekdays;
-        }
-
-        $leapDays = $additiveLeapdays->mapWithKeys(function($leapDay, $leapdayIndex) use($additiveLeapdays) {
-			return [($leapDay->day * ($additiveLeapdays->count()+1)) + ($leapdayIndex + 1) => $leapDay->week_day];
-		});
-
-        $weekdays = $weekdays->mapWithKeys(function($weekday, $weekdayIndex) use ($additiveLeapdays) {
-			return [(($weekdayIndex + 1) * ($additiveLeapdays->count()+1)) => $weekday];
-		});
-
-		return $weekdays->union($leapDays)->sortKeys()->values();
-	}
 
 }

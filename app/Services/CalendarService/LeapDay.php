@@ -15,7 +15,7 @@ use Illuminate\Support\Arr;
  * @package App\Services\CalendarService
  * @property $name
  * @property $intercalary
- * @property $timespan
+ * @property $timespan_id
  * @property $removes_day
  * @property $removes_week_day
  * @property $adds_week_day
@@ -29,11 +29,11 @@ use Illuminate\Support\Arr;
  */
 class LeapDay
 {
-    public Calendar $calendar;
+    public bool $yearZeroExists;
     private array $originalAttributes;
     public $name;
     public $intercalary;
-    public $timespan;
+    public $timespan_id;
     public $adds_week_day;
     public $day;
     public $week_day;
@@ -50,10 +50,10 @@ class LeapDay
     public function __construct(Calendar $calendar, array $attributes)
     {
         $this->originalAttributes = $attributes;
-        $this->calendar = $calendar;
+        $this->yearZeroExists = $calendar->setting('year_zero_exists');;
         $this->name = Arr::get($attributes, "name");
         $this->intercalary = Arr::get($attributes, "intercalary");
-        $this->timespan = $this->calendar->timespans->get(Arr::get($attributes, "timespan"));
+        $this->timespan_id = Arr::get($attributes, "timespan");
         $this->adds_week_day = Arr::get($attributes, "adds_week_day", false);
         $this->day = Arr::get($attributes, "day", 0);
         $this->week_day = Arr::get($attributes, "week_day", false);
@@ -62,10 +62,16 @@ class LeapDay
         $this->not_numbered = Arr::get($attributes, "not_numbered", false);
         $this->show_text = Arr::get($attributes, "show_text", false);
 
-        $this->intervals = IntervalsCollection::fromString($this->interval, $this->offset)->normalize();
+        $this->intervals = IntervalsCollection::fromString($this->interval, $this->offset)->normalize();;
     }
 
-    public function intersectsYear(int $year)
+    /**
+     * Determines whether this leap day will appear on the given year
+     *
+     * @param int $year
+     * @return bool
+     */
+    public function intersectsYear(int $year): bool
     {
         if($this->intervals->count() === 1) return ['result' => (($year + $this->offset) % $this->interval) == 0];
 
@@ -91,15 +97,22 @@ class LeapDay
      */
     public function occurrences(int $parentOccurrences): int
     {
-        return (int) $this->intervals->occurrences($parentOccurrences, $this->calendar->setting('year_zero_exists'));
+        return (int) $this->intervals->occurrences($parentOccurrences, $this->yearZeroExists);
     }
 
-    public function timespanIs($timespan_id)
+    /**
+     * @param $timespan_id
+     * @return bool
+     */
+    public function timespanIs($timespan_id): bool
     {
-        return $this->timespan->id === $timespan_id;
+        return $this->timespan_id === $timespan_id;
     }
 
-    public function toArray()
+    /**
+     * @return array
+     */
+    public function toArray(): array
     {
         return collect(array_keys($this->originalAttributes))
             ->mapWithKeys(function($name){ return [ $name => $this->{$name}]; })

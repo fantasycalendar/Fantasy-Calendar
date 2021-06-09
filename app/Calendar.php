@@ -226,8 +226,8 @@ class Calendar extends Model
     {
         if(!isset($this->timespans_cached)) {
             $this->timespans_cached = collect(Arr::get($this->static_data, 'year_data.timespans'))->map(function($timespan_details, $timespan_key){
-                return new Timespan(array_merge($timespan_details, ['id' => $timespan_key]), $this);
-            });
+                return new Timespan(array_merge($timespan_details, ['id' => $timespan_key]));
+            })->each->setCalendar($this);
         }
 
         return $this->timespans_cached;

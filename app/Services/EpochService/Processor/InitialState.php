@@ -97,8 +97,7 @@ class InitialState
         return $this->calendar->timespans->sum(function($timespan){
             $timespanOccurrences = $timespan->occurrences($this->year);
             return $timespan->leapDays->sum(function($leapDay) use ($timespanOccurrences, $timespan){
-                $occurrences = $leapDay->occurrences($timespanOccurrences);
-                return $occurrences;
+                return $leapDay->occurrences($timespanOccurrences);
             });
         });
     }
