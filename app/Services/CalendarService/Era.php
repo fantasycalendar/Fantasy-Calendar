@@ -8,6 +8,7 @@ use App\Facades\Epoch;
 use App\Facades\Mustache;
 use App\Services\EpochService\Processor\InitialState;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 
 class Era
 {
@@ -32,9 +33,15 @@ class Era
         $this->month = $attributes['date']['timespan'];
     }
 
-    public function getEpochSubtractables($calendar)
+    /**
+     * Determines the data that is missing from the era ending the year early, and calculates
+     * the differences from a normal year so that the state of the epoch is kept accurate
+     *
+     * @param $calendar
+     * @return Collection
+     */
+    public function getEpochSubtractables($calendar): Collection
     {
-
         $eraEpoch = Epoch::forEra($this);
 
         $eraFreeCalendar = $calendar
@@ -48,7 +55,6 @@ class Era
             return $timespanCount - $eraEpoch->timespanCounts->get($index);
         });
 
-
         return collect([
             'timespanCounts' => $timespanCounts,
             'epoch' => $eraFreeEpoch->get('epoch') - $eraEpoch->epoch - 1,
@@ -57,16 +63,27 @@ class Era
         ]);
     }
 
-    public function beforeYear($year)
+    /**
+     * @param $year
+     * @return bool
+     */
+    public function beforeYear($year): bool
     {
         return $year > $this->year;
     }
 
+    /**
+     * @return bool
+     */
     public function endsYear(): bool
     {
         return $this->getSetting('ends_year', false) !== false;
     }
 
+    /**
+     * @param $year
+     * @return bool
+     */
     public function endsGivenYear($year): bool
     {
         return $this->endsYear() && $year == $this->year;
@@ -77,6 +94,11 @@ class Era
         return Arr::get($this->settings, $name, $default);
     }
 
+    /**
+     * @param $year
+     * @param $eraYear
+     * @return mixed
+     */
     public function getFormat($year, $eraYear)
     {
         return Mustache::render($this->formatting, [
