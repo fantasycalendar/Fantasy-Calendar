@@ -89,6 +89,55 @@ class Interval
             && !$this->internalIntervals->count();
     }
 
+    public function avoidDuplicates($toCheck)
+    {
+        if($toCheck instanceof Interval) {
+            return $this->avoidDuplicateCollisionsOnInternal($toCheck);
+        }
+
+        return $toCheck->map(function($interval){
+            return $this->avoidDuplicateCollisionsOnInternal($interval);
+        });
+    }
+
+    public function avoidDuplicateCollisionsOnInternal(Interval $suspectedCollision)
+    {
+        $collidingInterval = lcmo($this, $suspectedCollision);
+
+        if ($collidingInterval) {
+
+            $foundInterval = $this->internalIntervals->filter(function ($interval) use ($collidingInterval, $suspectedCollision) {
+                return ($interval->interval == $collidingInterval->interval
+                    && $interval->offset == $collidingInterval->offset
+                    && $interval->subtractor == $suspectedCollision->subtractor);
+            })->first();
+
+            if ($foundInterval) {
+
+                $foundKey = $this->internalIntervals->filter(function ($interval) use ($foundInterval) {
+                    return $interval == $foundInterval;
+                })->keys()->first();
+
+                $this->internalIntervals->forget($foundKey);
+
+            } else {
+
+                $collidingInterval->subtractor = !$suspectedCollision->subtractor;
+
+                $this->internalIntervals->push($collidingInterval);
+
+            }
+
+        }
+
+        return $suspectedCollision;
+    }
+
+    public function clone()
+    {
+        return clone $this;
+    }
+
     /**
      * Determines whether a given interval will ever collide with this one
      *

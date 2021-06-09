@@ -7,6 +7,7 @@ use App\Facades\Epoch as EpochService;
 use App\Services\EpochService\Epoch;
 use Illuminate\Database\Eloquent\Concerns\HasAttributes;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Artisan;
 
 class RenderMonth
 {

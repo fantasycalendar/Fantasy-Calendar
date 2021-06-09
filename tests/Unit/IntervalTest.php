@@ -12,13 +12,13 @@ class IntervalTest extends TestCase
      *
      * @return void
      */
-    public function test_example()
+    public function testNormalize()
     {
 
         $intervals = IntervalsCollection::fromString("!1000,746,!373,!5,4", 0)
-                ->cleanUpIntervals()
-                ->normalize()
-                ->toJsons();
+            ->cleanUpIntervals()
+            ->normalize()
+            ->toJsons();
 
         $truth = '["{\"interval\":373000,\"subtractor\":true,\"offset\":0}","{\"interval\":7460,\"subtractor\":false,\"offset\":0}","{\"interval\":1492,\"subtractor\":true,\"offset\":0}","{\"interval\":746,\"subtractor\":false,\"offset\":0}","{\"interval\":20,\"subtractor\":true,\"offset\":0}","{\"interval\":4,\"subtractor\":false,\"offset\":0}"]';
 
@@ -27,9 +27,9 @@ class IntervalTest extends TestCase
         #--------------------------------------------------#
 
         $intervals = IntervalsCollection::fromString("400,!100,4", 0)
-                ->cleanUpIntervals()
-                ->normalize()
-                ->toJsons();
+            ->cleanUpIntervals()
+            ->normalize()
+            ->toJsons();
 
         $truth = '["{\"interval\":400,\"subtractor\":false,\"offset\":0}","{\"interval\":100,\"subtractor\":true,\"offset\":0}","{\"interval\":4,\"subtractor\":false,\"offset\":0}"]';
 

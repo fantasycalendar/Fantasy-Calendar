@@ -55,7 +55,30 @@ class IntervalsCollection extends \Illuminate\Support\Collection
      */
     public function bumpsYearZero()
     {
-      return $this->reject->offset->sortByDesc('interval')->first()->subtractor;
+        return $this->reject->offset->sortByDesc('interval')->first()->subtractor;
+    }
+
+    public function avoidDuplicateCollisions($intervals)
+    {
+        $intervals = clone $intervals;
+
+        if($intervals->count() == 1) {
+            return $intervals;
+        }
+
+        $first = $intervals->shift();
+
+        $suspectedCollisions = $intervals->avoidDuplicateCollisions($intervals);
+
+        return $suspectedCollisions->map(function($interval) use (&$first){
+            if(!$interval->subtractor) {
+                $first->avoidDuplicates($interval);
+            }
+
+            $interval->internalIntervals = $first->avoidDuplicates($interval->internalIntervals);
+
+            return $interval;
+        })->prepend($first);
     }
 
     /**
@@ -66,98 +89,18 @@ class IntervalsCollection extends \Illuminate\Support\Collection
      */
     public function normalize(): IntervalsCollection
     {
-        // If we only have one interval, we can just return it.
-        if($this->count() == 1){
-            return $this;
-        }
-
-        $cleanIntervals = $this->cleanUpIntervals();
-
-        for($outer_index = $cleanIntervals->count()-2; $outer_index >= 0; $outer_index--) {
-
-            $outerInterval = $cleanIntervals->get($outer_index);
-
-            for ($inner_index = $outer_index + 1; $inner_index < $cleanIntervals->count(); $inner_index++) {
-
-                $innerInterval = $cleanIntervals->get($inner_index);
-
-                if (!$innerInterval->subtractor) {
-
-                    $collidingInterval = lcmo($outerInterval, $innerInterval);
-
-                    if ($collidingInterval) {
-
-                        $foundInterval = $outerInterval->internalIntervals->filter(function ($interval) use ($collidingInterval, $innerInterval) {
-                            return ($interval->interval == $collidingInterval->interval
-                                && $interval->offset == $collidingInterval->offset
-                                && $interval->subtractor == $innerInterval->subtractor);
-                        })->first();
-
-                        if ($foundInterval) {
-
-                            $foundKey = $outerInterval->internalIntervals->filter(function ($interval) use ($foundInterval) {
-                                return $interval == $foundInterval;
-                            })->keys()->first();
-
-                            $outerInterval->internalIntervals->forget($foundKey);
-
-                        } else {
-
-                            $collidingInterval->subtractor = !$innerInterval->subtractor;
-
-                            $outerInterval->internalIntervals->push($collidingInterval);
-
-                        }
-
-                    }
-                }
-
-                foreach ($innerInterval->internalIntervals as $innermostInterval) {
-
-                    $collidingInterval = lcmo($outerInterval, $innermostInterval);
-
-                    if ($collidingInterval) {
-
-                        $foundInterval = $outerInterval->internalIntervals->filter(function ($interval) use ($collidingInterval, $innermostInterval) {
-
-                            return $interval->interval == $collidingInterval->interval
-                                && $interval->offset == $collidingInterval->offset
-                                && $interval->subtractor == $innermostInterval->subtractor;
-                        })->first();
-
-                        if ($foundInterval) {
-
-                            $foundKey = $outerInterval->internalIntervals->filter(function ($interval) use ($foundInterval) {
-                                return $interval == $foundInterval;
-                            })->keys()->first();
-
-                            $outerInterval->internalIntervals->forget($foundKey);
-
-                        } else {
-
-                            $collidingInterval->subtractor = !$innermostInterval->subtractor;
-
-                            $outerInterval->internalIntervals->add($collidingInterval);
-
-                        }
-
-                    }
-
-                }
-
-            }
-
-        }
-
-        return $this->flattenIntervals($cleanIntervals);
-
+        return ($this->count() === 1)
+            ? $this
+            : $this->cleanUpIntervals()
+                   ->avoidDuplicateCollisions($this)
+                   ->flattenIntervals();
     }
 
-    private function flattenIntervals($cleanIntervals)
+    private function flattenIntervals()
     {
-        return $cleanIntervals
+        return $this
             ->map->internalIntervals
-            ->add($cleanIntervals->reject->subtractor)
+            ->add($this->reject->subtractor)
             ->flatten()
             ->map->clearInternalIntervals()
             ->sortByDesc('interval')
@@ -166,9 +109,21 @@ class IntervalsCollection extends \Illuminate\Support\Collection
 
     public function cleanUpIntervals()
     {
+        return $this->fresh()
+            ->fillDescendants()
+            ->reject->isRedundant()
+            ->map->clearInternalIntervals();
+    }
+
+    public function fresh()
+    {
+        return $this->map->clone();
+    }
+
+    public function fillDescendants()
+    {
         return $this->map(function($interval, $index){
-            $interval = clone $interval;
             return $interval->mergeInternalIntervals($this->slice($index + 1));
-        })->reject->isRedundant()->map->clearInternalIntervals();
+        });
     }
 }

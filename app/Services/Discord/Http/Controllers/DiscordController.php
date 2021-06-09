@@ -7,6 +7,7 @@ namespace App\Services\Discord\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Services\Discord\Commands\CommandDispatcher;
 use GuzzleHttp\Exception\ClientException;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
