@@ -12,8 +12,8 @@ class Interval
     public string $intervalString;
     public int $interval;
     public int $offset;
-    public bool $subtractor;
-    public $internalIntervals;
+    public bool $subtracts;
+    public IntervalsCollection $internalIntervals;
     public bool $bumpsYearZero;
 
     /**
@@ -25,14 +25,14 @@ class Interval
     {
         $this->intervalString = $interval;
         $this->interval = intval(str_replace('!', '', $interval));;
-        $this->subtractor = str_contains($interval, '!');
-        $this->internalIntervals = collect([]);
+        $this->subtracts = str_contains($interval, '!');
+        $this->internalIntervals = new IntervalsCollection();
 
         // If this interval is not 1 and does not ignore offset, normalize offset to the interval
         $ignores_offset = str_contains($interval, '+');
         $this->offset = $this->interval == 1 || $ignores_offset ? 0 : ($this->interval + $offset) % $this->interval;
 
-        $this->bumpsYearZero = ($this->offset === 0 && !$this->subtractor);
+        $this->bumpsYearZero = ($this->offset === 0 && !$this->subtracts);
     }
 
     /**
@@ -51,7 +51,7 @@ class Interval
     {
         return json_encode([
             'interval' => $this->interval,
-            'subtractor' => $this->subtractor,
+            'subtracts' => $this->subtracts,
             'offset' => $this->offset
         ]);
     }
@@ -65,7 +65,7 @@ class Interval
     public function voteOnYear($year): string
     {
         if((($year-$this->offset) % $this->interval) === 0) {
-            return $this->subtractor ? 'deny' : 'allow';
+            return $this->subtracts ? 'deny' : 'allow';
         }
         return 'abstain';
     }
@@ -166,14 +166,14 @@ class Interval
      *
      * @param $interval
      * @param $offset
-     * @param $subtractor
+     * @param $subtracts
      * @return bool
      */
-    public function attributesAre($interval, $offset, $subtractor): bool
+    public function attributesAre($interval, $offset, $subtracts): bool
     {
         return ($this->interval == $interval
             && $this->offset == $offset
-            && $this->subtractor == $subtractor);
+            && $this->subtracts == $subtracts);
     }
 
     /**
@@ -194,7 +194,7 @@ class Interval
      */
     public function willCollideWith(Interval $interval): bool
     {
-        return lcmo_bool($this, $interval) || $this->subtractor == $interval->subtractor;
+        return lcmo_bool($this, $interval) || $this->subtracts == $interval->subtracts;
     }
 
     /**
@@ -207,7 +207,7 @@ class Interval
     {
         $collidingInterval = lcmo($this, $internalInterval);
 
-        return $this->attributesAre($collidingInterval->interval, $collidingInterval->offset, $internalInterval->subtractor);
+        return $this->attributesAre($collidingInterval->interval, $collidingInterval->offset, $internalInterval->subtracts);
     }
 
     /**

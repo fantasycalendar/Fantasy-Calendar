@@ -18,10 +18,10 @@ class IntervalsCollection extends \Illuminate\Support\Collection
             throw new InvalidLeapDayIntervalException('An invalid value was provided for the interval of a leap day: ' . $intervalString);
         }
 
-        // If the smallest item is a subtractor (!), it contributes nothing. As such, we remove it.
+        // If the smallest item is a subtracts (!), it contributes nothing. As such, we remove it.
         return (new self($items))
             ->reverse()
-            ->skipWhile->subtractor
+            ->skipWhile->subtracts
             ->reverse()
             ->values();
     }
@@ -55,7 +55,7 @@ class IntervalsCollection extends \Illuminate\Support\Collection
      */
     public function bumpsYearZero()
     {
-        return $this->reject->offset->sortByDesc('interval')->first()->subtractor;
+        return $this->reject->offset->sortByDesc('interval')->first()->subtracts;
     }
 
     /**
@@ -77,7 +77,7 @@ class IntervalsCollection extends \Illuminate\Support\Collection
         $suspectedCollisions = $intervals->avoidDuplicateCollisions($intervals);
 
         return $suspectedCollisions->map(function($interval) use (&$first){
-            if(!$interval->subtractor) {
+            if(!$interval->subtracts) {
                 $first->avoidDuplicates($interval);
             }
 
@@ -104,7 +104,7 @@ class IntervalsCollection extends \Illuminate\Support\Collection
 
     /**
      * Our intervals have internal intervals, we want to flatten to a single list of all of those,
-     * along with any of the "parent" intervals that are **not** subtractors.
+     * along with any of the "parent" intervals that are **not** subtractss.
      *
      * @return mixed
      */
@@ -112,7 +112,7 @@ class IntervalsCollection extends \Illuminate\Support\Collection
     {
         return $this
             ->map->internalIntervals
-            ->add($this->reject->subtractor)
+            ->add($this->reject->subtracts)
             ->flatten()
             ->map->clearInternalIntervals()
             ->sortByDesc('interval')
@@ -168,7 +168,7 @@ class IntervalsCollection extends \Illuminate\Support\Collection
     {
         $collidingInterval = lcmo($examinedInterval, $knownCollision);
         $foundInterval = $this->filter
-            ->attributesAre($collidingInterval->interval, $collidingInterval->offset, $knownCollision->subtractor)
+            ->attributesAre($collidingInterval->interval, $collidingInterval->offset, $knownCollision->subtracts)
             ->first();
 
         if ($foundInterval) {
@@ -176,7 +176,7 @@ class IntervalsCollection extends \Illuminate\Support\Collection
 
             $this->forget($foundKey);
         } else {
-            $collidingInterval->subtractor = !$knownCollision->subtractor;
+            $collidingInterval->subtracts = !$knownCollision->subtracts;
 
             $this->push($collidingInterval);
         }

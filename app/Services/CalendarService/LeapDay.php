@@ -103,7 +103,7 @@ class LeapDay
 
                 $result = $year / $outerInterval->interval;
 
-                $occurrences += $outerInterval->subtractor ? 0 : floor($result);
+                $occurrences += $outerInterval->subtracts ? 0 : floor($result);
 
                 foreach($outerInterval->internalIntervals as $innerInterval){
 
@@ -113,7 +113,7 @@ class LeapDay
 
                     $result = $year / $innerInterval->interval;
 
-                    $occurrences += $innerInterval->subtractor ? floor($result)*-1 : floor($result);
+                    $occurrences += $innerInterval->subtracts ? floor($result)*-1 : floor($result);
 
                 }
 
@@ -129,7 +129,7 @@ class LeapDay
 
                 $result = $year / $outerInterval->interval;
 
-                $occurrences += $outerInterval->subtractor ? 0 : ceil($result);
+                $occurrences += $outerInterval->subtracts ? 0 : ceil($result);
 
                 foreach($outerInterval->internalIntervals as $innerInterval){
 
@@ -139,7 +139,7 @@ class LeapDay
 
                     $result = $year / $innerInterval->interval;
 
-                    $occurrences += $innerInterval->subtractor ? ceil($result)*-1 : ceil($result);
+                    $occurrences += $innerInterval->subtracts ? ceil($result)*-1 : ceil($result);
 
                 }
 
@@ -155,7 +155,7 @@ class LeapDay
     {
         return 0;
 
-        /*if($this->intervals->filter->ignores_offset->count() < 1 && $this->intervals->filter->subtractor->count() < 1) {
+        /*if($this->intervals->filter->ignores_offset->count() < 1 && $this->intervals->filter->subtracts->count() < 1) {
             return $this->intervals
                 ->map(function($interval) use ($end) {
                     return $interval->contributionToYear($end);
