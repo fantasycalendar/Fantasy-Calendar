@@ -181,4 +181,30 @@ class IntervalsCollection extends \Illuminate\Support\Collection
             $this->push($collidingInterval);
         }
     }
+
+    /**
+     * Determines how many times each of the intervals has appeared up until the given year
+     *
+     * @param int $year
+     * @param bool $yearZeroExists
+     * @return int
+     */
+    public function occurrences(int $year, bool $yearZeroExists): int
+    {
+        return $this->sum->occurrences($year, $yearZeroExists)
+             + $this->addOneForYearZero($year, $yearZeroExists);
+
+    }
+
+    /**
+     * Adds one additional occurrence to account for years beyond year zero if year zero exists
+     *
+     * @param int $year
+     * @param bool $yearZeroExists
+     * @return int
+     */
+    private function addOneForYearZero(int $year, bool $yearZeroExists): int
+    {
+        return $year > 0 && $yearZeroExists && $this->bumpsYearZero() ? 1 : 0;
+    }
 }

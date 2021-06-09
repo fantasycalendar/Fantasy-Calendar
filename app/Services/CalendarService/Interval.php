@@ -211,11 +211,41 @@ class Interval
     }
 
     /**
-     * @param $year
+     * Determines how many times times this interval has appeared up until the given year
+     *
+     * @param int $year
+     * @param bool $yearZeroExists
      * @return int
      */
-    public function contributionToYear($year): int
+    public function occurrences(int $year, bool $yearZeroExists): int
     {
-        return (int) ceil($year / $this->interval);
+        if($year == 0) {
+            return 0;
+        }
+
+        if($year > 0) {
+
+            $year = $this->offset > 0 ? $year - $this->offset + $this->interval : $year;
+
+            $year = $yearZeroExists ? $year - 1 : $year;
+
+            $result = $year / $this->interval;
+
+            return $this->subtracts ? floor($result) * -1 : floor($result);
+
+        }
+
+        $outerOffset = !$yearZeroExists ? $this->offset - 1 : $this->offset;
+
+        $year = $outerOffset > 0 ? $year - $outerOffset : $year;
+
+        $result = $year / $this->interval;
+
+        return $this->subtracts ? ceil($result) * -1 : ceil($result);
+
+
     }
+
+
+
 }

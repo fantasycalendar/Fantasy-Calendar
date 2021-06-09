@@ -82,91 +82,16 @@ class LeapDay
         return false;
     }
 
-    public function occurrences(int $parentOccurrences)
+    /**
+     * Determines how many times this leap day has appeared up until the given year, or how
+     * many times it has appeared depending on the occurrences of the month that owns it
+     *
+     * @param int $parentOccurrences
+     * @return int
+     */
+    public function occurrences(int $parentOccurrences): int
     {
-
-        $occurrences = 0;
-
-        $yearZeroExists = $this->calendar->setting('year_zero_exists');
-
-        if($parentOccurrences > 0) {
-
-            if($yearZeroExists && $this->intervals->bumpsYearZero()){
-                $occurrences++;
-            }
-
-            foreach($this->intervals as $outerInterval){
-
-                $year = $outerInterval->offset > 0 ? $parentOccurrences - $outerInterval->offset + $outerInterval->interval : $parentOccurrences;
-
-                $year = $yearZeroExists ? $year - 1 : $year;
-
-                $result = $year / $outerInterval->interval;
-
-                $occurrences += $outerInterval->subtracts ? 0 : floor($result);
-
-                foreach($outerInterval->internalIntervals as $innerInterval){
-
-                    $year = $innerInterval->offset > 0 ? $parentOccurrences - $innerInterval->offset + $innerInterval->interval : $parentOccurrences;
-
-                    $year = $yearZeroExists ? $year - 1 : $year;
-
-                    $result = $year / $innerInterval->interval;
-
-                    $occurrences += $innerInterval->subtracts ? floor($result)*-1 : floor($result);
-
-                }
-
-            }
-
-        } else if($parentOccurrences < 0) {
-
-            foreach($this->intervals as $outerInterval){
-
-                $outerOffset = !$yearZeroExists ? $outerInterval->offset - 1 : $outerInterval->offset;
-
-                $year = $outerOffset > 0 ? $parentOccurrences - $outerOffset : $parentOccurrences;
-
-                $result = $year / $outerInterval->interval;
-
-                $occurrences += $outerInterval->subtracts ? 0 : ceil($result);
-
-                foreach($outerInterval->internalIntervals as $innerInterval){
-
-                    $innerOffset = !$yearZeroExists ? $innerInterval->offset - 1 : $innerInterval->offset;
-
-                    $year = $innerOffset > 0 ? $parentOccurrences - $innerOffset : $parentOccurrences;
-
-                    $result = $year / $innerInterval->interval;
-
-                    $occurrences += $innerInterval->subtracts ? ceil($result)*-1 : ceil($result);
-
-                }
-
-            }
-
-        }
-
-        return (int) $occurrences;
-
-    }
-
-    public function occurrencesOnMonthBetweenYears($start, $end, $month)
-    {
-        return 0;
-
-        /*if($this->intervals->filter->ignores_offset->count() < 1 && $this->intervals->filter->subtracts->count() < 1) {
-            return $this->intervals
-                ->map(function($interval) use ($end) {
-                    return $interval->contributionToYear($end);
-                })->sum();
-        }
-
-        dd($this->interval);
-
-        dd($this->intervals->map(function($interval){
-            return $interval->contributionToYear($year);
-        }));*/
+        return (int) $this->intervals->occurrences($parentOccurrences, $this->calendar->setting('year_zero_exists'));
     }
 
     public function timespanIs($timespan_id)
