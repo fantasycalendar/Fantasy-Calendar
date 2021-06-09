@@ -68,6 +68,8 @@ class Calendar extends Model
         'conversion_batch'
     ];
 
+    public $leap_days_cached;
+
     public function user() {
         return $this->belongsTo('App\User');
     }
@@ -309,9 +311,13 @@ class Calendar extends Model
 
     public function getLeapDaysAttribute()
     {
-        return collect(Arr::get($this->static_data, 'year_data.leap_days'))->map(function($leap_day){
-            return new LeapDay($this, $leap_day);
-        });
+        if(!$this->leap_days_cached) {
+            $this->leap_days_cached = collect(Arr::get($this->static_data, 'year_data.leap_days'))->map(function($leap_day){
+                return new LeapDay($this, $leap_day);
+            });
+        }
+
+        return $this->leap_days_cached;
     }
 
     public function getCurrentTimeAttribute() {
