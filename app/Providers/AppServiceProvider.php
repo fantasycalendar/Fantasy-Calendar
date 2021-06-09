@@ -8,6 +8,7 @@ use App\Console\Commands\UpCommand;
 use App\Observers\CalendarEventObserver;
 use App\Services\EpochService\EpochFactory;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
@@ -74,5 +75,19 @@ class AppServiceProvider extends ServiceProvider
 
         Calendar::observe(CalendarObserver::class);
         CalendarEvent::observe(CalendarEventObserver::class);
+
+        Collection::macro('whereAttributes', function($attributes) {
+            return $this->filter(function($item) use ($attributes){
+                foreach($attributes as $name => $value) {
+                    if($item->$name != $value) return false;
+                }
+
+                return true;
+            });
+        });
+
+        Collection::macro('firstKey', function() {
+            return $this->keys()->first();
+        });
     }
 }

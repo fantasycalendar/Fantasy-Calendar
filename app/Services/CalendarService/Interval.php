@@ -102,35 +102,30 @@ class Interval
 
     public function avoidDuplicateCollisionsOnInternal(Interval $suspectedCollision)
     {
-        $collidingInterval = lcmo($this, $suspectedCollision);
-
-        if ($collidingInterval) {
-
-            $foundInterval = $this->internalIntervals->filter(function ($interval) use ($collidingInterval, $suspectedCollision) {
-                return ($interval->interval == $collidingInterval->interval
-                    && $interval->offset == $collidingInterval->offset
-                    && $interval->subtractor == $suspectedCollision->subtractor);
-            })->first();
+        if ($collidingInterval = lcmo($this, $suspectedCollision)) {
+            $foundInterval = $this->internalIntervals->filter
+                ->collidesWithAttributes($collidingInterval->interval, $collidingInterval->offset, $suspectedCollision->subtractor)
+                ->first();
 
             if ($foundInterval) {
-
-                $foundKey = $this->internalIntervals->filter(function ($interval) use ($foundInterval) {
-                    return $interval == $foundInterval;
-                })->keys()->first();
+                $foundKey = $this->internalIntervals->filter->isEqual($foundInterval)->firstKey();
 
                 $this->internalIntervals->forget($foundKey);
-
             } else {
-
                 $collidingInterval->subtractor = !$suspectedCollision->subtractor;
 
                 $this->internalIntervals->push($collidingInterval);
-
             }
-
         }
 
         return $suspectedCollision;
+    }
+
+    public function collidesWithAttributes($interval, $offset, $subtractor)
+    {
+        return ($this->interval == $interval
+        && $this->offset == $offset
+        && $this->subtractor == $subtractor);
     }
 
     public function clone()
