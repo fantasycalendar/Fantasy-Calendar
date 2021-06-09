@@ -100,6 +100,7 @@ class State
     {
         return [
             'year' => $this->year,
+            'eraYear' => $this->eraYear,
             'monthIndexOfYear' => $this->monthIndexOfYear,
             'day' => $this->day,
             'epoch' => $this->epoch,
@@ -445,5 +446,16 @@ class State
     private function calculateWeekdayIndex(): int
     {
         return $this->previousState->get('weekdayIndex');
+    }
+
+    /**
+     * Getter for $this->eraYear
+     * @see CalculatesAndCachesProperties
+     *
+     * @return int
+     */
+    private function calculateEraYear(): int
+    {
+        return $this->previousState->get('eraYear');
     }
 }

@@ -64,7 +64,8 @@ class InitialState
             'numberTimespans' => $this->calculateNumberTimespans(),
             'historicalIntercalaryCount' => $this->calculateHistoricalIntercalaryCount(),
             'weekdayIndex' => $this->calculateWeekdayIndex(),
-            'timespanCounts' => $this->calculateTimespanCounts()
+            'timespanCounts' => $this->calculateTimespanCounts(),
+            'eraYear' => $this->calculateeraYear()
         ];
     }
 
@@ -152,5 +153,20 @@ class InitialState
 	    return ($weekday < 0)
 	        ? $weekday + $weekdaysCount
 	        : $weekday;
+    }
+
+    private function calculateEraYear(): int
+    {
+
+        $eras = $this->calendar->eras
+             ->filter->restartsYearCount()
+             ->filter->beforeYearInclusive($this->year)
+             ->sortByDesc('year');
+
+        if(!$eras->count()) return $this->calendar->year;
+
+        $eraYear = $this->calendar->year - $eras->last()->calculateEraYear($eras);
+
+        return $this->calendar->setting('year_zero_exists') ? $eraYear : $eraYear+1;
     }
 }

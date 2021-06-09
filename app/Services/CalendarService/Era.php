@@ -64,12 +64,29 @@ class Era
     }
 
     /**
+     * @return bool
+     */
+    public function restartsYearCount(): bool
+    {
+        return $this->getSetting('restart', false) !== false;
+    }
+
+    /**
      * @param $year
      * @return bool
      */
     public function beforeYear($year): bool
     {
         return $year > $this->year;
+    }
+
+    /**
+     * @param $year
+     * @return bool
+     */
+    public function beforeYearInclusive($year): bool
+    {
+        return $year >= $this->year;
     }
 
     /**
@@ -93,6 +110,15 @@ class Era
     {
         return Arr::get($this->settings, $name, $default);
     }
+
+public function calculateEraYear(Collection $eras)
+{
+    $eras->pop();
+
+    if(!$eras->count()) return $this->year;
+
+    return $eras->sum->calculateEraYear($eras);
+}
 
     /**
      * @param $year
