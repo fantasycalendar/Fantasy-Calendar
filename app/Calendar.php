@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Auth;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 
 /**
  * @property mixed static_data Calendar static data
@@ -68,7 +69,9 @@ class Calendar extends Model
         'conversion_batch'
     ];
 
-    public $leap_days_cached;
+    public Collection $leap_days_cached;
+    public Collection $timespans_cached;
+    public array $months_cached = [];
 
     public function user() {
         return $this->belongsTo('App\User');
@@ -220,16 +223,24 @@ class Calendar extends Model
 
     public function getTimespansAttribute()
     {
-        return collect(Arr::get($this->static_data, 'year_data.timespans'))->map(function($timespan_details, $timespan_key){
-            return new Timespan(array_merge($timespan_details, ['id' => $timespan_key]), $this);
-        });
+        if(!isset($this->timespans_cached)) {
+            $this->timespans_cached = collect(Arr::get($this->static_data, 'year_data.timespans'))->map(function($timespan_details, $timespan_key){
+                return new Timespan(array_merge($timespan_details, ['id' => $timespan_key]), $this);
+            });
+        }
+
+        return $this->timespans_cached;
     }
 
     public function getMonthsAttribute()
     {
-        return collect(Arr::get($this->static_data, 'year_data.timespans'))->map(function($timespan_details, $timespan_key){
-            return new Month(array_merge($timespan_details, ['id' => $timespan_key]), $this);
-        })->filter->intersectsYear($this->year)->values();
+        if(!isset($this->months_cached[$this->year])) {
+            $this->months_cached[$this->year] = collect(Arr::get($this->static_data, 'year_data.timespans'))->map(function($timespan_details, $timespan_key){
+                return new Month(array_merge($timespan_details, ['id' => $timespan_key]), $this);
+            })->filter->intersectsYear($this->year)->values();
+        }
+
+        return $this->months_cached[$this->year];
     }
 
     public function getMonthIndexAttribute()
@@ -311,7 +322,7 @@ class Calendar extends Model
 
     public function getLeapDaysAttribute()
     {
-        if(!$this->leap_days_cached) {
+        if(!isset($this->leap_days_cached)) {
             $this->leap_days_cached = collect(Arr::get($this->static_data, 'year_data.leap_days'))->map(function($leap_day){
                 return new LeapDay($this, $leap_day);
             });
