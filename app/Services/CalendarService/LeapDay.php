@@ -69,24 +69,24 @@ class LeapDay
      * Determines whether this leap day will appear on the given year
      *
      * @param int $year
-     * @return array|bool
+     * @return bool
      */
-    public function intersectsYear(int $year): array|bool
-    {
-        if($this->intervals->count() === 1) return ['result' => (($year + $this->offset) % $this->interval) == 0];
+public function intersectsYear(int $year): bool
+{
+    if($this->intervals->count() === 1) return ($year + $this->offset) % $this->interval == 0;
 
-        $votes = $this->intervals->sortByDesc('years')->map(function($interval) use ($year) {
-            return $interval->voteOnYear($year);
-        });
+    $votes = $this->intervals->sortByDesc('years')->map(function($interval) use ($year) {
+        return $interval->voteOnYear($year);
+    });
 
-        //
-        foreach($votes as $vote) {
-            if($vote == 'allow') return true;
-            if($vote == 'deny') return false;
-        }
-
-        return false;
+    //
+    foreach($votes as $vote) {
+        if($vote == 'allow') return true;
+        if($vote == 'deny') return false;
     }
+
+    return false;
+}
 
     /**
      * Determines how many times this leap day has appeared up until the given year, or how
