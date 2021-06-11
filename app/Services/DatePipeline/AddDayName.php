@@ -20,8 +20,8 @@ class AddDayName
 
     private function resolveDayName($day)
     {
-        $index = ((intval($day['month_day']) - 1) % count($this->calendar->month_week));
+        $index = ((intval($day['month_day']) - 1) % count($this->calendar->week));
 
-        return Arr::get($this->calendar->month_week, $index);
+        return Arr::get($this->calendar->week, $index);
     }
 }

@@ -104,7 +104,7 @@ class RenderMonth
 //        $monthDay = 0;
 //        $structure = $weeksInMonth->mapWithKeys(function($weekNumber) use (&$monthDay){
 //            return [
-//                $weekNumber => collect($this->calendar->month_week)->map(function($day) use (&$monthDay){
+//                $weekNumber => collect($this->calendar->week)->map(function($day) use (&$monthDay){
 //                    $monthDay++;
 //
 //                    return ['month_day' => ($monthDay > $this->calendar->month_true_length) ? null : $monthDay];

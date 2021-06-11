@@ -9,7 +9,7 @@ class Policy extends Model
 {
     use HasFactory;
 
-    public $fillable = [
+    public array $fillable = [
         'content',
         'in_effect_at'
     ];
@@ -19,7 +19,7 @@ class Policy extends Model
      *
      * @var array
      */
-    protected $casts = [
+    protected array $casts = [
         'in_effect_at' => 'datetime'
     ];
 

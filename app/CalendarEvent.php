@@ -11,7 +11,7 @@ class CalendarEvent extends Model
 {
     use SoftDeletes;
 
-    public $fillable = [
+    public array $fillable = [
         'name',
         'calendar_id',
         'creator_id',
@@ -22,9 +22,9 @@ class CalendarEvent extends Model
         'sort_by',
     ];
 
-    protected $hidden = ['deleted_at', 'category', 'calendar'];
+    protected array $hidden = ['deleted_at', 'category', 'calendar'];
 
-    protected $casts = [
+    protected array $casts = [
         'data' => 'array',
         'settings' => 'array',
     ];

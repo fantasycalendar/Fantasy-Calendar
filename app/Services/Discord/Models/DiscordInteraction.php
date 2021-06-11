@@ -9,7 +9,7 @@ class DiscordInteraction extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
+    protected array $fillable = [
         'discord_id',
         'type',
         'data',
