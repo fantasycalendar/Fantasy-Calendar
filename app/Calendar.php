@@ -10,7 +10,11 @@ use App\Services\CalendarService\RenderMonth;
 use App\Services\CalendarService\Moon;
 use App\Services\CalendarService\Timespan;
 use App\Services\CalendarService\Month;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Auth;
 use Illuminate\Support\Arr;
@@ -40,6 +44,8 @@ use Illuminate\Support\Collection;
  * @property mixed eras
  * @property mixed global_week
  * @property mixed first_day
+ * @property mixed parent_count
+ * @property mixed months_without_eras
  */
 class Calendar extends Model
 {
@@ -48,16 +54,16 @@ class Calendar extends Model
     /**
      * @var string
      */
-    protected $table = 'calendars_beta';
+    protected string $table = 'calendars_beta';
 
-    protected $casts = [
+    protected array $casts = [
         'dynamic_data' => 'array',
         'static_data' => 'array',
     ];
 
-    public $timestamps = false;
+    public bool $timestamps = false;
 
-    public $fillable = [
+    public array $fillable = [
         'user_id',
         'name',
         'dynamic_data',
@@ -74,36 +80,70 @@ class Calendar extends Model
     public Collection $timespans_cached;
     public array $months_cached = [];
 
-    public function user() {
-        return $this->belongsTo('App\User');
+    /**
+     * Hook on the model for when "booted"
+     */
+    protected static function booted()
+    {
+        static::addGlobalScope('active', function(Builder $builder) {
+            $builder->where('deleted', 0);
+        });
     }
 
-    public function users() {
-        return $this->belongsToMany('App\User', 'calendar_user_role')->withPivot('user_role');;
+    /**
+     * Used internally by laravel to bind hash->calendar in routes
+     *
+     * @return string
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'hash';
     }
 
-    public function event_categories() {
-        return $this->hasMany('App\EventCategory')->orderBy('sort_by');
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
-    public function events() {
-        return $this->hasMany('App\CalendarEvent')->orderBy('sort_by');
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'calendar_user_role')->withPivot('user_role');;
     }
 
-    public function parent() {
-        return $this->belongsTo('App\Calendar', 'parent_id');
+    public function event_categories(): HasMany
+    {
+        return $this->hasMany(EventCategory::class)->orderBy('sort_by');
     }
 
-    public function children() {
-        return $this->hasMany('App\Calendar', 'parent_id');
+    public function events(): HasMany
+    {
+        return $this->hasMany(CalendarEvent::class)->orderBy('sort_by');
     }
 
-    public function invitations() {
-        return $this->hasMany('App\CalendarInvite');
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(Calendar::class, 'parent_id');
+    }
+
+    public function children(): HasMany
+    {
+        return $this->hasMany(Calendar::class, 'parent_id');
+    }
+
+    public function invitations(): HasMany
+    {
+        return $this->hasMany(CalendarInvite::class);
     }
 
 
-    public function structureWouldBeModified($static_data){
+    /**
+     * Determines whether a given set of static_data would result in modifying the calendar
+     *
+     * @param $static_data
+     * @return bool
+     */
+    public function structureWouldBeModified($static_data): bool
+    {
 
         if(!$this->isLinked()){
             return false;
@@ -133,27 +173,63 @@ class Calendar extends Model
 
     }
 
-    public function isLinked() {
+    /**
+     * Determine whether or not this calendar is linked to another
+     *
+     * @return bool
+     */
+    public function isLinked(): bool
+    {
         return $this->parent_count || $this->children_count;
     }
 
-    public function scopeActive($query) {
+    /**
+     * Filter for only calendars that are not deleted
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeActive(Builder $query): Builder
+    {
         return $query->where('deleted', 0);
     }
 
-    public function getOwnedAttribute() {
-        if (Auth::check() && ($this->user->id == Auth::user()->id || Auth::user()->isAdmin())) {
-            return true;
-        }
-
-        return false;
+    /**
+     * Determine whether the logged-in user is the owner of this calendar
+     *
+     * @return bool
+     */
+    public function getOwnedAttribute(): bool
+    {
+        return (
+            Auth::check()
+            && (
+                $this->user->id == Auth::user()->id
+                || Auth::user()->isAdmin()
+            )
+        );
     }
 
-    public function getClockEnabledAttribute() {
-        return isset($this->static_data['clock']['enabled']) && isset($this->dynamic_data['hour']) && isset($this->dynamic_data['minute']) && $this->static_data['clock']['enabled'];
+    /**
+     * Determine whether the clock is enabled on this calendar
+     *
+     * @return bool
+     */
+    public function getClockEnabledAttribute(): bool
+    {
+        return isset($this->static_data['clock']['enabled'])
+            && isset($this->dynamic_data['hour'])
+            && isset($this->dynamic_data['minute'])
+            && $this->static_data['clock']['enabled'];
     }
 
-    public function getCurrentDateValidAttribute() {
+    /**
+     * Determine whether the current date on this calendar is valid
+     *
+     * @return bool
+     */
+    public function getCurrentDateValidAttribute(): bool
+    {
         if(count($this->static_data['year_data']['timespans']) < 1) {
             return false;
         }
@@ -165,7 +241,13 @@ class Calendar extends Model
         return true;
     }
 
-    public function getCurrentEraValidAttribute() {
+    /**
+     * Determine whether or not the current era on this calendar is valid
+     *
+     * @return bool
+     */
+    public function getCurrentEraValidAttribute(): bool
+    {
         return (
             count($this->static_data['eras'] ?? []) > 0
 
@@ -173,21 +255,39 @@ class Calendar extends Model
         );
     }
 
-    public function addYear()
+    /**
+     * Add a year to the current date of this calendar
+     *
+     * @return $this
+     */
+    public function addYear(): Calendar
     {
         $this->setDate($this->year + 1, $this->month_index, $this->day);
 
         return $this;
     }
 
-    public function startOfYear()
+    /**
+     * Set this calendar to the start of the calendar year
+     *
+     * @return $this
+     */
+    public function startOfYear(): Calendar
     {
         $this->setDate($this->year, 0, 0);
 
         return $this;
     }
 
-    public function setDate($year, $timespan = null, $day = null)
+    /**
+     * Set the full range of the date on this calendar
+     *
+     * @param $year
+     * @param null $timespan
+     * @param null $day
+     * @return $this
+     */
+    public function setDate($year, $timespan = null, $day = null): Calendar
     {
         $dynamic_data = $this->dynamic_data;
 
@@ -200,7 +300,13 @@ class Calendar extends Model
         return $this;
     }
 
-    public function getCurrentDateAttribute() {
+    /**
+     * Get the current date in a string
+     *
+     * @return string
+     */
+    public function getCurrentDateAttribute(): string
+    {
         if(!$this->current_date_valid) {
             return "N/A";
         }
@@ -212,17 +318,32 @@ class Calendar extends Model
         return sprintf("%s %s, %s", $day, $month, $year);
     }
 
-    public function getYearAttribute()
+    /**
+     * Get the current year of this calendar
+     *
+     * @return int
+     */
+    public function getYearAttribute(): int
     {
         return (int) Arr::get($this->dynamic_data, 'year', 0);
     }
 
-    public function getYearDataAttribute()
+    /**
+     * Get the "year data" for this calendar
+     *
+     * @return array
+     */
+    public function getYearDataAttribute(): array
     {
         return Arr::get($this->static_data, 'year_data');
     }
 
-    public function getTimespansAttribute()
+    /**
+     * Get a collection of the timespans available on this calendar
+     *
+     * @return Collection
+     */
+    public function getTimespansAttribute(): Collection
     {
         if(!isset($this->timespans_cached)) {
             $this->timespans_cached = collect(Arr::get($this->static_data, 'year_data.timespans'))->map(function($timespan_details, $timespan_key){
@@ -233,34 +354,55 @@ class Calendar extends Model
         return $this->timespans_cached;
     }
 
-    public function getMonthsAttribute()
+    /**
+     * Get a collection of the months in this calendar year
+     *
+     * @return MonthsCollection
+     */
+    public function getMonthsAttribute(): MonthsCollection
     {
         if(isset($this->months_cached[$this->year])) return $this->months_cached[$this->year];
 
         $yearEndingEra = $this->eras->filter->endsGivenYear($this->year)->first();
 
-        $this->months_cached[$this->year] = MonthsCollection::fromArray(Arr::get($this->static_data, 'year_data.timespans'), $this)
+        $this->months_cached[$this->year] = $this->months_without_eras
             ->filter->intersectsYear($this->year)
             ->endsOn($yearEndingEra)->values();
 
         return $this->months_cached[$this->year];
     }
 
-    public function getMonthsWithoutErasAttribute()
+    /**
+     * Re-build a MonthsCollection without taking eras into account
+     *
+     * @return MonthsCollection
+     */
+    public function getMonthsWithoutErasAttribute(): MonthsCollection
     {
         return MonthsCollection::fromArray(Arr::get($this->static_data, 'year_data.timespans'), $this);
     }
 
-    public function getMonthIndexAttribute()
+    /**
+     * Get the index of the current month **in the current calendar year**
+     *
+     * @return int
+     */
+    public function getMonthIndexAttribute(): int
     {
         return $this->months->filter(function($timespan){
-                return $timespan->id == $this->month_id;
-            })
+            return $timespan->id == $this->month_id;
+        })
             ->keys()
             ->first();
     }
 
-    public function getMonthIdAttribute()
+    /**
+     * Get the ID of the current month
+     * This is the where the month falls in **all** available timespans in this calendar structure
+     *
+     * @return int
+     */
+    public function getMonthIdAttribute(): int
     {
         return Arr::get($this->dynamic_data,
             'timespan',
@@ -269,10 +411,12 @@ class Calendar extends Model
                 0));
     }
 
-    /*
-     * Calculates the "true" length of a month by checking for leap days that intersect
+    /**
+     * Calculates the "true" length of the current month by checking for leap days that contribute to it
+     *
+     * @return int
      */
-    public function getMonthTrueLengthAttribute()
+    public function getMonthTrueLengthAttribute(): int
     {
         return $this->month_length + $this->leap_days
                 ->where('timespan', '=', $this->month_id)
@@ -281,54 +425,94 @@ class Calendar extends Model
                 })->count();
     }
 
-    public function getGlobalWeekAttribute()
+    /**
+     * Get the global weekdays for this calendar
+     *
+     * @return Collection
+     */
+    public function getGlobalWeekAttribute(): Collection
     {
         return collect(Arr::get($this->year_data, 'global_week'));
     }
 
-    public function getWeekdaysAttribute()
+    /**
+     * Get the list of weekdays for the current month
+     *
+     * @return Collection
+     */
+    public function getWeekdaysAttribute(): Collection
     {
         return $this->month->weekdays;
     }
 
-    public function getOverflowsWeekAttribute()
+    /**
+     * Determine whether this calendar is set to overflow the week
+     *
+     * @return bool
+     */
+    public function getOverflowsWeekAttribute(): bool
     {
-        return Arr::get($this->year_data, 'overflow');
+        return Arr::get($this->year_data, 'overflow', false);
     }
 
-    public function getMonthNameAttribute()
+    /**
+     * Get the name of the current month
+     *
+     * @return string
+     */
+    public function getMonthNameAttribute(): string
     {
-        return Arr::get($this->static_data, "year_data.timespans.{$this->month_id}.name", null);
+        return Arr::get($this->static_data, "year_data.timespans.{$this->month_id}.name", "");
     }
 
-    public function getMonthAttribute()
+    /**
+     * Get a RenderMonth object representing the current month
+     *
+     * @return RenderMonth
+     */
+    public function getMonthAttribute(): RenderMonth
     {
         return new RenderMonth($this);
     }
 
-    public function getMonthLengthAttribute()
+    /**
+     * Get the set length of the current month (not including leap days)
+     *
+     * @return int
+     */
+    public function getMonthLengthAttribute(): int
     {
-        return Arr::get($this->static_data, "year_data.timespans.{$this->month_id}.length", null);
+        return Arr::get($this->static_data, "year_data.timespans.{$this->month_id}.length", 0);
     }
 
-    public function getMonthWeekAttribute()
-    {
-        return $this->month->weekdays;
-    }
-
-    public function getMoonsAttribute()
+    /**
+     * Get the moons of this calendar as a collection of Moon objects
+     *
+     * @return Collection
+     */
+    public function getMoonsAttribute(): Collection
     {
         return collect(Arr::get($this->static_data, 'moons'))->map(function($moon){
             return new Moon($moon);
         });
     }
 
-    public function getDayAttribute()
+    /**
+     * Get the current day set on this calendar
+     *
+     * @return int
+     */
+    public function getDayAttribute(): int
     {
         return Arr::get($this->dynamic_data, 'day', 1) - 1;
     }
 
-    public function getLeapDaysAttribute()
+    /**
+     * Get the leap days on this calendar as a collection
+     *
+     * @return Collection
+     */
+    public function getLeapDaysAttribute(): Collection
     {
         if(!isset($this->leap_days_cached)) {
             $this->leap_days_cached = collect(Arr::get($this->static_data, 'year_data.leap_days'))->map(function($leap_day){
@@ -339,7 +523,13 @@ class Calendar extends Model
         return $this->leap_days_cached;
     }
 
-    public function getCurrentTimeAttribute() {
+    /**
+     * Get the current time on this calendar, in string display format
+     *
+     * @return string
+     */
+    public function getCurrentTimeAttribute(): string
+    {
         if(!$this->static_data['clock']['enabled']) {
             return "N/A";
         }
@@ -347,8 +537,13 @@ class Calendar extends Model
         return $this->dynamic_data['hour'] . ":" . $this->dynamic_data['minute'];
     }
 
-    public function getCurrentEraAttribute() {
-
+    /**
+     * Get the name of the current era on this calendar
+     *
+     * @return string
+     */
+    public function getCurrentEraAttribute(): string
+    {
         if(!$this->current_era_valid){
             return 'N/A';
         }
@@ -360,34 +555,85 @@ class Calendar extends Model
         return $current_era['name'];
     }
 
-    public function getErasAttribute()
+    /**
+     * Get an ErasCollection containing all the eras on this calendar, sorted by year
+     *
+     * @return ErasCollection
+     */
+    public function getErasAttribute(): ErasCollection
     {
         return (new ErasCollection(Arr::get($this->static_data, 'eras')))->map(function($era){
             return new Era($era);
         })->sortBy('year');
     }
 
-    public function setting($setting_name, $default = false) {
+    /**
+     * Determine whether a setting is enabled or disabled on this calendar
+     *
+     * @param $setting_name
+     * @param false $default
+     * @return mixed
+     */
+    public function setting($setting_name, $default = false)
+    {
         return $this->static_data['settings'][$setting_name] ?? $default;
     }
 
+    /**
+     * Set a setting on this calendar
+     *
+     * @param $setting_name
+     * @param $new_value
+     */
     public function setSetting($setting_name, $new_value) {
         $this->static_data['settings'][$setting_name] = $new_value;
     }
 
-    public function scopeSearch($query, $search) {
+    /**
+     * Search for a calendar by name
+     *
+     * @param Builder $query
+     * @param $search
+     * @return Builder
+     */
+    public function scopeSearch(Builder $query, $search): Builder
+    {
         return $query->where('name', 'like', "%$search%");
     }
 
-    public function scopeHash($query, $hash) {
+    /**
+     * Retrieve a calendar by hash
+     *
+     * @param Builder $query
+     * @param $hash
+     * @return Builder
+     */
+    public function scopeHash(Builder $query, $hash): Builder
+    {
         return $query->where('hash', $hash);
     }
 
-    public function scopeUser($query, $user_id) {
+    /**
+     * Retrieve calendars belonging to a user ID
+     *
+     * @param Builder $query
+     * @param $user_id
+     * @return Builder
+     */
+    public function scopeUser(Builder $query, $user_id): Builder
+    {
         return $query->where('user_id', $user_id);
     }
 
-    public function userHasPerms(User $user, $role) {
+    /**
+     * Determine whether a user has a particular role on this calendar
+     *
+     * @param User $user
+     * @param $role
+     * @return bool
+     */
+    public function userHasPerms(User $user, $role): bool
+    {
         $roles = [
             'invitee' => 0,
             'observer' => 10,
@@ -408,15 +654,27 @@ class Calendar extends Model
         return $roles[$userRole] >= $roles[$role];
     }
 
-    public function isPremium() {
+    /**
+     * Determine whether this calendar (via its user) is premium-enabled
+     *
+     * @return bool
+     */
+    public function isPremium(): bool
+    {
         return $this->user->isPremium();
     }
 
-    public function getRouteKeyName() {
-        return 'hash';
-    }
-
-    public function removeUser($user, $remove_all = false, $email = false) {
+    /**
+     * Remove a user from a calendar, optionally specifying to remove all.
+     * You can also specify an email to cancel invitations.
+     *
+     * @param $user
+     * @param false $remove_all
+     * @param false $email
+     * @return bool
+     */
+    public function removeUser($user, $remove_all = false, $email = false): bool
+    {
         $id = ($user instanceof \App\User) ? $user->id : $user;
 
         if($this->users()->where('users.id', $id)->exists()) {
@@ -435,11 +693,5 @@ class Calendar extends Model
         }
 
         return true;
-    }
-
-    private function yearIntersectsLeapDay($interval, $offset)
-    {
-        return false;
-        return ($this->year + $offset) % $interval == 0;
     }
 }
