@@ -9,11 +9,6 @@ use Illuminate\Support\Facades\Log;
 
 class InitialStateWithEras extends InitialState
 {
-    public static function generateFor($calendar): Collection
-    {
-        return (new self($calendar))->generateInitialProperties();
-    }
-
     /*
      * Correct for things that are missing because of year-ending eras
      */

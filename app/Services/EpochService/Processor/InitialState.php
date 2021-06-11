@@ -31,7 +31,7 @@ class InitialState
      */
     public static function generateFor($calendar): Collection
     {
-        return (new self($calendar))->generateInitialProperties();
+        return (new static($calendar))->generateInitialProperties();
     }
 
     /**

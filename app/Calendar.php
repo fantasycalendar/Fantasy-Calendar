@@ -246,6 +246,11 @@ class Calendar extends Model
         return $this->months_cached[$this->year];
     }
 
+    public function getMonthsWithoutErasAttribute()
+    {
+        return MonthsCollection::fromArray(Arr::get($this->static_data, 'year_data.timespans'), $this);
+    }
+
     public function getMonthIndexAttribute()
     {
         return $this->months->filter(function($timespan){

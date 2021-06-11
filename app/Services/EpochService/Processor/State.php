@@ -42,6 +42,7 @@ class State
     {
         $this->calendar = $calendar;
         $this->year = $calendar->year;
+        $this->previousState = collect();
     }
 
     /**
@@ -52,6 +53,7 @@ class State
     public function disableEras(): State
     {
         $this->withEras = false;
+        $this->previousState->put('months', $this->calendar->months_without_eras);
 
         return $this;
     }
@@ -62,7 +64,6 @@ class State
     public function initialize()
     {
         $this->statecache = $this->buildInitialState();
-        $this->previousState = collect();
     }
 
     /**
