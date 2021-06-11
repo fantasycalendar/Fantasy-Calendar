@@ -27,6 +27,7 @@ class Epoch
     public int $weeksTilYearEnd;
     public string $slug;
     public bool $isIntercalary;
+    public array $attachedAttributes = [];
     private array $attributes;
 
     public function __construct($attributes)
@@ -76,5 +77,15 @@ class Epoch
     public function slugify(): string
     {
         return date_slug($this->year, $this->monthIndexOfYear, $this->day);
+    }
+
+    public function __set($name, $value)
+    {
+        return $this->attachedAttributes[$name] = $value;
+    }
+
+    public function __get($name)
+    {
+        return $this->attachedAttributes[$name];
     }
 }

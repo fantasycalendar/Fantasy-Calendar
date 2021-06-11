@@ -63,11 +63,24 @@ class EpochsCollection extends BaseCollection
     }
 
     /**
-     * @param $monthId
+     * @param $monthIndexOfYear
      * @return EpochsCollection
      */
-    public function whereMonthId($monthId): EpochsCollection
+    public function whereMonthIndexOfYear($monthIndexOfYear): EpochsCollection
     {
-        return $this->where('monthId', '=', $monthId);
+        return $this->where('monthIndexOfYear', '=', $monthIndexOfYear);
+    }
+
+    /**
+     *
+     *
+     * @return EpochsCollection
+     */
+    public function chunkByWeeks(): EpochsCollection
+    {
+        return $this->groupBy('weeksSinceMonthStart')
+            ->map->chunkWhile(function($epoch, $key, $chunk) {
+                return $epoch->isIntercalary === $chunk->last()->isIntercalary;
+            });
     }
 }

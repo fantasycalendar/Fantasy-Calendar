@@ -57,7 +57,7 @@ class EpochFactory
     public function forCalendarMonth(Calendar $calendar): EpochsCollection
     {
         return $this->forCalendarYear($calendar)
-            ->whereMonthId($calendar->month_id);
+            ->whereMonthIndexOfYear($calendar->month_index);
     }
 
     /**

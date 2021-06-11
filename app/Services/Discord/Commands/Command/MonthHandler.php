@@ -24,8 +24,8 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
      * @var float|int
      */
     private $lineLength;
-    private \Illuminate\Support\Collection $weeks;
-    private \Illuminate\Support\Collection $weekdays;
+    private Collection $weeks;
+    private Collection $weekdays;
     private $name;
     private $year;
 
@@ -60,20 +60,21 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
      */
     public function handle(): string
     {
-        $this->month = (new MonthRenderer($this->getDefaultCalendar()))->render();
+        $renderData = (new MonthRenderer($this->getDefaultCalendar()))->render();
 
-        $this->weeks = collect($this->month['weeks'])->map(function($week) {
-            return collect($week);
-        });
-        $this->weekdays = collect($this->month['weekdays'])->map(function($dayName) {
+        $this->month = $renderData['month'];
+        $this->year = $renderData['year'];
+        $this->name = $renderData['name'];
+        $this->weeks = $renderData['weeks'];
+        $this->length = $renderData['length'];
+
+        $this->weekdays = $renderData['weekdays']->map(function($dayName) {
             if(strstr($dayName, 'Weekday ') !== false) {
                 $dayName = str_replace('Weekday ', '', $dayName);
             }
 
             return preg_replace("/[^a-zA-Z]/", "", unicode_to_ascii($dayName));
         });
-        $this->name = $this->month['name'];
-        $this->year = $this->month['year'];
 
         $this->cellLength = $this->determineCellLength();
         $this->lineLength = $this->determineLineLength();
@@ -126,15 +127,16 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
      */
     private function buildDays()
     {
-        return $this->weeks->mapWithKeys(function($days, $index) {
-            if($days->where('is_current')->count()) {
+        return $this->weeks->map->mapWithKeys(function($days, $index) {
+            if($days->where('isCurrent')->count()) {
                 $this->currentWeekIndex = $index * 2;
             }
+
 
             // Transforms from "[{"month_day":1,"is_current":true,"type":"day","name":"Sul"},{"month_day":2,"is_current":false,"type":"day","name":"Mol"},...]"
             // Into "│  1│  2│  3│  4│  5│  6│  7│", spaced based on the cell length
             $dayTextLines = $days->reduceWithKeys(function($prevDay, $day, $index) {
-                    if($day['is_current']) $this->currentWeekDayIndex = ($index * ($this->cellLength + 1) + 1);
+                    if(optional($day)->isCurrent) $this->currentWeekDayIndex = ($index * ($this->cellLength + 1) + 1);
 
                     return $prevDay . self::SEPARATOR_VERTICAL . $this->dayContents($day);
                 }) . self::SEPARATOR_VERTICAL;
@@ -148,7 +150,7 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
 
     private function outlineCurrentDate($days)
     {
-        $days = $days->toArray();
+        $days = $days->flatten()->toArray();
 
         $stringsToReplace = collect([
             [
@@ -205,6 +207,10 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
             $x = $this->currentWeekDayIndex + $replacement['X'];
             $y = $this->currentWeekIndex + $replacement['Y'];
 
+            if($y == -1) {
+                dd($days);
+            }
+
             $days[$y] = mb_substr_replace($days[$y], $replacement['content'], $x, $replacement['length']);
         });
 
@@ -213,16 +219,16 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
 
     private function buildWeeksGlue()
     {
-        $glueLine = str_repeat(str_repeat('─', ($this->cellLength)) . '┼', count($this->month['weekdays']) - 1) . str_repeat('─', $this->cellLength);
+        $glueLine = str_repeat(str_repeat('─', ($this->cellLength)) . '┼', $this->weekdays->count() - 1) . str_repeat('─', $this->cellLength);
 
         return sprintf('%s%s%s', self::EDGE_LEFT_VERTICAL, $glueLine, self::EDGE_RIGHT_VERTICAL);
     }
 
     private function dayContents($day)
     {
-        $contents = ($day['type'] == 'overflow')
+        $contents = (empty($day))
             ? str_repeat(self::SHADE, $this->cellLength)
-            : $day['month_day'];
+            : $day->day;
 
         return Str::padLeft($contents, $this->cellLength, self::SPACER);
     }
@@ -297,7 +303,7 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
 
     private function buildFooter()
     {
-        return sprintf('%s%s%s', self::BOTTOM_LEFT,str_repeat(str_repeat('─', $this->cellLength) . '┴', count($this->month['weekdays']) - 1) . str_repeat('─', $this->cellLength), self::BOTTOM_RIGHT);
+        return sprintf('%s%s%s', self::BOTTOM_LEFT,str_repeat(str_repeat('─', $this->cellLength) . '┴', $this->weekdays->count() - 1) . str_repeat('─', $this->cellLength), self::BOTTOM_RIGHT);
     }
 
     /**
@@ -307,7 +313,7 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
      */
     private function determineLineLength()
     {
-        return (($this->cellLength + 1) * count($this->month['weekdays'])) + 1;
+        return (($this->cellLength + 1) * $this->weekdays->count()) + 1;
     }
 
     /**
@@ -320,7 +326,7 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
     {
         return max(
             $this->findShortestUniquePrefixLength($this->weekdays),
-            strlen($this->month['length'])
+            strlen($this->length)
         );
     }
 

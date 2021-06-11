@@ -20,8 +20,6 @@ class MonthRenderer
     private Calendar $calendar;
     private array $pipeline = [
         AddIsCurrentDate::class,
-        AddDayType::class,
-        AddDayName::class,
     ];
 
     /**
