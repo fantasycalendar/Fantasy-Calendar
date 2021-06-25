@@ -34,6 +34,10 @@ class RenderMonth
             return $week->map(function($week){
                 $weekdays = collect(range(0, $this->weekdays->count() - 1));
 
+                if($week->filter->isIntercalary->count() > 0) {
+                    return $weekdays->slice($week->count())->prepend($week->sortBy('day'))->flatten();
+                }
+
                 return $weekdays->mapWithKeys(function($index) use ($week) {
                     return [$index => $week->where('weekdayIndex', $index)->first()];
                 });

@@ -20,7 +20,7 @@ class TextVisualWeek
     public function build($dayLength)
     {
         if($this->hasIntercalary()) {
-            $this->days = $this->days->sortDesc()->values();
+            $this->pushDaysToFrontOfWeek();
         }
 
         $days = $this->days->map(function($item) use ($dayLength){
@@ -32,6 +32,15 @@ class TextVisualWeek
         })->join(TextRenderer::SEPARATOR_VERTICAL);
 
         return TextRenderer::SEPARATOR_VERTICAL . $days . TextRenderer::SEPARATOR_VERTICAL;
+    }
+
+    private function pushDaysToFrontOfWeek()
+    {
+        $length = $this->days->count();
+
+        $this->days = $this->days->filter(function($day){
+            return is_object($day);
+        })->pad($length, null);
     }
 
     public function hasIntercalary(): bool

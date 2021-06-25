@@ -13,7 +13,7 @@ class AddIsCurrentDate
 
     public function processDay($day)
     {
-        if(empty($day)) return $day;
+        if(!$day instanceof Epoch) return null;
 
         $day->isCurrent = ($day->day === $this->calendar->day);
 
