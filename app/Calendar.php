@@ -33,7 +33,7 @@ use Illuminate\Support\Collection;
  * @property mixed month_length Length property of current month (Does not include leap days)
  * @property mixed month_week Week used by the current month
  * @property mixed month_true_length Calculated length (Based on current year and leap days)
- * @property array month Data structure of current month
+ * @property RenderMonth month Data structure of current month
  * @property bool overflows_week Checks whether calendar overflows the week
  * @property mixed day Current day in month
  * @property mixed current_era_valid Checks whether the current era is valid

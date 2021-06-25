@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Concerns\HasAttributes;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class RenderMonth
 {
@@ -45,12 +46,45 @@ class RenderMonth
             'name' => $this->name,
             'length' => $this->daysInYear->count(),
             'weekdays' => $this->weekdays,
-            'weeks' => $weeks
+            'weeks' => $weeks,
+            'min_day_text_length' => max($this->findShortestUniquePrefixLength($this->weekdays), strlen($this->length))
         ];
     }
 
     public function __get($name)
     {
         return $this->calendar->months[$this->id]->$name;
+    }
+
+    /**
+     * Recursively determine the shortest we can make our weekday name(s), while
+     * still keeping the resulting values unique. As an example, if we have days
+     * like 'First' and 'Fifth', for example, 'Fir' and 'Fif' are unique,
+     * while 'Fi' and 'Fi' are not. So we only shorten as far as we can.
+     *
+     * @param $weekdays
+     * @param null $length
+     * @return int|mixed
+     */
+    private function findShortestUniquePrefixLength($weekdays, $length = null, $starting = null): int
+    {
+        $length = $length ?? $weekdays->map(function($weekday) {
+                return strlen($weekday);
+            })->max();
+
+        $matchedShortNames = $weekdays->countBy(function($dayName) use ($length) {
+            return Str::limit($dayName, $length, '');
+        })->max();
+
+        if(!$starting && $matchedShortNames > 1) {
+            $starting = $matchedShortNames;
+            $matchedShortNames = 1;
+        } else if($starting == $matchedShortNames) {
+            $matchedShortNames = 1;
+        }
+
+        return ($matchedShortNames === 1)
+            ? $this->findShortestUniquePrefixLength($weekdays, $length - 1, $starting) // All unique, check one more level
+            : $length + 1; // Found duplicates! That means our length is truncating too far.
     }
 }

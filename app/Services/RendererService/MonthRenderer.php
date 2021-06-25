@@ -11,6 +11,7 @@ use App\Services\DatePipeline\AddDayType;
 use App\Services\DatePipeline\AddIsCurrentDate;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class MonthRenderer
 {
@@ -29,22 +30,13 @@ class MonthRenderer
     public function __construct(Calendar $calendar)
     {
         $this->calendar = $calendar;
-
-        /*if($this->calendar->overflows_week) {
-            throw new \Exception('API rendering does not currently support overflowed weekdays.');
-        }*/
     }
 
     /**
-     * @param mixed $date The date you want to render (default is current) - array [year, month, day]
      * @return mixed
      */
-    public function render($date = null)
+    public function prepare()
     {
-        if($date) {
-            $this->calendar->setDate($date[0], $date[1], $date[2] + 1);
-        }
-
         $pipelineData = [
             'render_data' => $this->calendar->month->getStructure(),
             'calendar' => $this->calendar
@@ -54,6 +46,15 @@ class MonthRenderer
                     ->send($pipelineData)
                     ->through($this->pipeline)
                     ->then($this->verifyData());
+    }
+
+    /**
+     * @param $calendar
+     * @return mixed
+     */
+    public static function prepareFrom($calendar)
+    {
+        return (new static($calendar))->prepare();
     }
 
     /**
