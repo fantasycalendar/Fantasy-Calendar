@@ -35,19 +35,12 @@ class TextMonth
 
     public function build(): string
     {
-        $headerLines = TextMonthHeader::build($this->name, $this->internal_length, $this->year);
-
-        $headerSeparator = TextMonthHeaderSeparator::build($this->minimum_day_length, $this->weekdays->count());
-
-        $dayNameLines = TextMonthDayNames::build($this->minimum_day_length, $this->weekdays);
-
-        $weeksLines = $this->weeks->map->build($this->minimum_day_length, $this->weekdays->count())->flatten();
-
-        // The last line will always be a garbage line that we need to replace. Might fix later.
-        $weeksLines->pop();
-
-        $footerLine = TextMonthFooter::build($this->minimum_day_length, $this->weekdays->count());
-
-        return collect([$headerLines, $headerSeparator, $dayNameLines, $weeksLines, $footerLine])->flatten()->join("\n");
+        return collect([
+            TextMonthHeader::build($this->name, $this->internal_length, $this->year),
+            TextMonthHeaderSeparator::build($this->minimum_day_length, $this->weekdays->count()),
+            TextMonthDayNames::build($this->minimum_day_length, $this->weekdays),
+            $this->weeks->map->build($this->minimum_day_length, $this->weekdays->count())->flatten()->slice(0, -1),
+            TextMonthFooter::build($this->minimum_day_length, $this->weekdays->count())
+        ])->flatten()->join("\n");
     }
 }
