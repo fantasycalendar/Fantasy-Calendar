@@ -5,16 +5,17 @@ namespace App\Services\RendererService\TextRenderer;
 
 
 use App\Services\RendererService\TextRenderer;
+use App\Services\RendererService\TextRenderer\Traits\Buildable;
 use App\Services\RendererService\TextRenderer\Traits\GeneratesTextLines;
 use Illuminate\Support\Str;
 
 class TextMonthHeader
 {
-    use GeneratesTextLines;
+    use GeneratesTextLines, Buildable;
 
-    private $monthName;
-    private $internalLength;
-    private $year;
+    private string $monthName;
+    private int $internalLength;
+    private int $year;
 
     /**
      * TextMonthHeader constructor.
@@ -22,16 +23,11 @@ class TextMonthHeader
      * @param $internalLength
      * @param $year
      */
-    public function __construct($monthName, $internalLength, $year)
+    public function __construct(string $monthName, int $internalLength, int $year)
     {
         $this->monthName = $monthName;
         $this->internalLength = $internalLength - 1;
         $this->year = $year;
-    }
-
-    public static function build(string $monthName, int $internalLength, int $year): self
-    {
-        return (new self($monthName, $internalLength, $year))->initialize();
     }
 
     public function initialize(): self
@@ -57,7 +53,7 @@ class TextMonthHeader
     private function createNameLines()
     {
         // Tack on 3 of our shade character and the year to the name header
-        $yearLine = str_repeat(TextRenderer::SHADE, 2) . " {$this->year} " . str_repeat(TextRenderer::SHADE, 2);
+        $yearLine = str_repeat(TextRenderer::SHADE, 2) . " Year {$this->year} " . str_repeat(TextRenderer::SHADE, 2);
 
         // If our name will have more than 2 spaces on either side, we give it some room to breathe
         // By word-wrapping quite a bit early. Should help alleviate ugly dangling single 2-4 letter words

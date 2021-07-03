@@ -17,4 +17,14 @@ trait GeneratesTextLines
     {
         return count($this->lines);
     }
+
+    public function getLines()
+    {
+        return $this->lines;
+    }
+
+    public function toArray()
+    {
+        return $this->getLines();
+    }
 }

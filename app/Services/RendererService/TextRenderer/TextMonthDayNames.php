@@ -5,28 +5,30 @@ namespace App\Services\RendererService\TextRenderer;
 
 
 use App\Services\RendererService\TextRenderer;
+use App\Services\RendererService\TextRenderer\Traits\Buildable;
 use App\Services\RendererService\TextRenderer\Traits\GeneratesTextLines;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class TextMonthDayNames
 {
-    use GeneratesTextLines;
+    use GeneratesTextLines, Buildable;
 
-    private $dayLength;
-    private $weekdays;
+    private int $dayLength;
+    private Collection $weekdays;
 
-    public function __construct($dayLength, $weekdays)
+    public function __construct(int $dayLength, Collection $weekdays)
     {
         $this->dayLength = $dayLength;
         $this->weekdays = $weekdays;
     }
 
-    public static function build($dayLength, $weekdays)
-    {
-        return (new static($dayLength, $weekdays))->initialize();
-    }
-
-    public function initialize()
+    /**
+     * Initialize the month's day name row
+     *
+     * @return $this
+     */
+    public function initialize(): TextMonthDayNames
     {
         $days = $this->weekdays->map(function($day) {
             return Str::padLeft(Str::limit($day, $this->dayLength, ''), $this->dayLength, ' ');

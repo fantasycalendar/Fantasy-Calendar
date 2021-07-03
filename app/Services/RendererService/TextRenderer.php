@@ -73,6 +73,7 @@ class TextRenderer
     {
         return $this->months
             ->map->build()
+            ->map->toString()
             ->join("\n\n");
     }
 }

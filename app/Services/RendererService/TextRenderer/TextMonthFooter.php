@@ -5,27 +5,28 @@ namespace App\Services\RendererService\TextRenderer;
 
 
 use App\Services\RendererService\TextRenderer;
+use App\Services\RendererService\TextRenderer\Traits\Buildable;
 use App\Services\RendererService\TextRenderer\Traits\GeneratesTextLines;
 
 class TextMonthFooter
 {
-    use GeneratesTextLines;
+    use GeneratesTextLines, Buildable;
 
-    private $dayLength;
-    private $weekLength;
+    private int $dayLength;
+    private int $weekLength;
 
-    public function __construct($dayLength, $weekLength)
+    public function __construct(int $dayLength, int $weekLength)
     {
         $this->dayLength = $dayLength;
         $this->weekLength = $weekLength;
     }
 
-    public static function build($dayLength, $weekLength)
-    {
-        return (new static($dayLength, $weekLength))->initialize();
-    }
-
-    public function initialize()
+    /**
+     * Initialize the bottom row of a month-wide grid
+     *
+     * @return $this
+     */
+    public function initialize(): TextMonthFooter
     {
         $dayBottom = str_repeat(TextRenderer::SEPARATOR_HORIZONTAL, $this->dayLength);
 

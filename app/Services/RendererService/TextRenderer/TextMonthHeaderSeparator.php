@@ -5,11 +5,12 @@ namespace App\Services\RendererService\TextRenderer;
 
 
 use App\Services\RendererService\TextRenderer;
+use App\Services\RendererService\TextRenderer\Traits\Buildable;
 use App\Services\RendererService\TextRenderer\Traits\GeneratesTextLines;
 
 class TextMonthHeaderSeparator
 {
-    use GeneratesTextLines;
+    use GeneratesTextLines, Buildable;
 
     private int $dayLength;
     private int $dayCount;
@@ -23,11 +24,6 @@ class TextMonthHeaderSeparator
     {
         $this->dayLength = $dayLength;
         $this->dayCount = $dayCount;
-    }
-
-    public static function build(int $dayLength, int $dayCount)
-    {
-        return (new static($dayLength, $dayCount))->initialize();
     }
 
     public function initialize()

@@ -32,10 +32,9 @@ class TextWeeksBody
             ->tap(function($weeks){
                 $weeks->last()->removeBottomLine();
             })
-            ->map->toString()
+            ->map->getLines()
+            ->flatten()
             ->toArray();
-
-        dd($this->lines);
 
         return $this;
     }
