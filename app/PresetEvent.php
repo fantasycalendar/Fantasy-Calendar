@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class PresetEvent extends Model
 {
 
-    public array $fillable = [
+    public $fillable = [
         'name',
         'preset_id',
         'event_category_id',
@@ -17,11 +17,11 @@ class PresetEvent extends Model
         'settings',
     ];
 
-    public array $hidden = [
+    public $hidden = [
         'id'
     ];
 
-    protected array $casts = [
+    protected $casts = [
         'data' => 'array',
         'settings' => 'array',
     ];

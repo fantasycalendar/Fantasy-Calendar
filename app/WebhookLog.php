@@ -9,13 +9,13 @@ class WebhookLog extends Model
 {
     use HasFactory;
 
-    protected string $table = 'webhooks_sent';
+    protected $table = 'webhooks_sent';
 
-    protected array $fillable = [
+    protected $fillable = [
         'name', 'json', 'created_at', 'updated_at'
     ];
 
-    protected array $casts = [
+    protected $casts = [
         'json' => 'array'
     ];
 }

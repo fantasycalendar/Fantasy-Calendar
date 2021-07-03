@@ -54,16 +54,16 @@ class Calendar extends Model
     /**
      * @var string
      */
-    protected string $table = 'calendars_beta';
+    protected $table = 'calendars_beta';
 
-    protected array $casts = [
+    protected $casts = [
         'dynamic_data' => 'array',
         'static_data' => 'array',
     ];
 
-    public bool $timestamps = false;
+    public $timestamps = false;
 
-    public array $fillable = [
+    public $fillable = [
         'user_id',
         'name',
         'dynamic_data',

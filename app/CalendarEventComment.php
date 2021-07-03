@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CalendarEventComment extends Model
 {
-    protected array $fillable = [
+    protected $fillable = [
         'user_id',
         'event_id',
         'calendar_id',

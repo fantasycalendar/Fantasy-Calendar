@@ -9,7 +9,7 @@ class Preset extends Model
 {
     use SoftDeletes;
 
-    public array $fillable = [
+    public $fillable = [
         'name',
         'dynamic_data',
         'static_data',
@@ -18,7 +18,7 @@ class Preset extends Model
         'creator_id'
     ];
 
-    protected array $casts = [
+    protected $casts = [
         'dynamic_data' => 'array',
         'static_data' => 'array',
     ];

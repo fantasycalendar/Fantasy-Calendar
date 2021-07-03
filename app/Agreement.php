@@ -9,7 +9,7 @@ class Agreement extends Model
 {
     use HasFactory;
 
-    public array $fillable = [
+    public $fillable = [
         'content',
         'in_effect_at'
     ];
@@ -19,7 +19,7 @@ class Agreement extends Model
      *
      * @var array
      */
-    protected array $casts = [
+    protected $casts = [
         'in_effect_at' => 'datetime'
     ];
 

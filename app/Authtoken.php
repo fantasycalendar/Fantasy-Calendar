@@ -8,7 +8,7 @@ use Carbon\Carbon;
 
 class Authtoken extends Model
 {
-    protected string $table = 'auth_tokens';
+    protected $table = 'auth_tokens';
 
     public function user() {
         return $this->belongsTo('App\User');

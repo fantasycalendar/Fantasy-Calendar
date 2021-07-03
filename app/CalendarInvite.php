@@ -16,7 +16,7 @@ class CalendarInvite extends Model
 {
     use SoftDeletes;
 
-    protected array $fillable = [
+    protected $fillable = [
         'invite_token',
         'expires_on',
         'email',
