@@ -10,9 +10,9 @@ class DiscordAuthToken extends Model
 {
     use HasFactory;
 
-    protected string $table = 'discord_auths';
+    protected $table = 'discord_auths';
 
-    protected array $fillable = [
+    protected $fillable = [
         'discord_user_id',
         'discord_username',
         'token',

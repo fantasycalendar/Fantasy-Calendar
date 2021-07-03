@@ -13,14 +13,14 @@ class DiscordGuild extends Model
 {
     use HasFactory;
 
-    protected array $fillable = [
+    protected $fillable = [
         'user_id',
         'discord_auth_id',
         'guild_id',
         'guild_settings',
     ];
 
-    protected array $casts = [
+    protected $casts = [
         'guild_settings' => 'array'
     ];
 
