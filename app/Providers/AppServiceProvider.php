@@ -94,6 +94,10 @@ class AppServiceProvider extends ServiceProvider
             return $this->toStrings()->join($glue);
         });
 
+        Collection::macro('toArrays', function(){
+            return $this->map->toArray();
+        });
+
         Collection::macro('firstKey', function() {
             return $this->keys()->first();
         });
