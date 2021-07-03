@@ -5,11 +5,13 @@ namespace App\Services\RendererService\TextRenderer;
 
 
 use App\Services\RendererService\TextRenderer;
+use App\Services\RendererService\TextRenderer\Traits\GeneratesTextLines;
 use Illuminate\Support\Str;
 
 class TextMonthHeader
 {
-    public array $lines = [];
+    use GeneratesTextLines;
+
     private $monthName;
     private $internalLength;
     private $year;
@@ -27,17 +29,17 @@ class TextMonthHeader
         $this->year = $year;
     }
 
-    public static function build(string $monthName, int $internalLength, int $year): array
+    public static function build(string $monthName, int $internalLength, int $year): self
     {
         return (new self($monthName, $internalLength, $year))->initialize();
     }
 
-    public function initialize(): array
+    public function initialize(): self
     {
         $this->createTopLine();
         $this->createNameLines();
 
-        return $this->lines;
+        return $this;
     }
 
     private function createTopLine()

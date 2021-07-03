@@ -12,4 +12,9 @@ trait GeneratesTextLines
     {
         return implode("\n", $this->lines);
     }
+
+    public function lineCount()
+    {
+        return count($this->lines);
+    }
 }

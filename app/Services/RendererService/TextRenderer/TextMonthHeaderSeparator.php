@@ -5,9 +5,12 @@ namespace App\Services\RendererService\TextRenderer;
 
 
 use App\Services\RendererService\TextRenderer;
+use App\Services\RendererService\TextRenderer\Traits\GeneratesTextLines;
 
 class TextMonthHeaderSeparator
 {
+    use GeneratesTextLines;
+
     private int $dayLength;
     private int $dayCount;
 
@@ -33,8 +36,10 @@ class TextMonthHeaderSeparator
 
         $weekTop = str_repeat($dayTop . TextRenderer::TOP_MIDDLE, $this->dayCount - 1);
 
-        return [
+        $this->lines = [
             0 => TextRenderer::EDGE_LEFT_VERTICAL . $weekTop . $dayTop . TextRenderer::EDGE_RIGHT_VERTICAL
         ];
+
+        return $this;
     }
 }

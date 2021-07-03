@@ -27,7 +27,7 @@ class TextMonth
         $this->name = $attributes['name'];
         $this->length = $attributes['length'];
         $this->weekdays = $attributes['weekdays'];
-        $this->weeks = $attributes['weeks']->mapInto(TextRealWeek::class);
+        $this->weeks = $attributes['weeks'];
         $this->minimum_day_length = $attributes['min_day_text_length'];
 
         $this->internal_length = (($this->minimum_day_length + 1) * $this->weekdays->count());
@@ -35,12 +35,16 @@ class TextMonth
 
     public function build(): string
     {
-        return collect([
+        $parts = collect([
             TextMonthHeader::build($this->name, $this->internal_length, $this->year),
             TextMonthHeaderSeparator::build($this->minimum_day_length, $this->weekdays->count()),
             TextMonthDayNames::build($this->minimum_day_length, $this->weekdays),
-            $this->weeks->map->build($this->minimum_day_length, $this->weekdays->count())->flatten()->slice(0, -1),
+            TextWeeksBody::build($this->weeks, $this->minimum_day_length, $this->weekdays->count()),
             TextMonthFooter::build($this->minimum_day_length, $this->weekdays->count())
-        ])->flatten()->join("\n");
+        ]);
+
+        dd($parts->toStrings(), $parts);
+
+        return collect($parts)->flatten()->map->toString()->join("\n");
     }
 }
