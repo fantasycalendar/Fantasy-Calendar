@@ -86,6 +86,14 @@ class AppServiceProvider extends ServiceProvider
             });
         });
 
+        Collection::macro('toStrings', function(){
+            return $this->map->toString();
+        });
+
+        Collection::macro('toString', function(string $glue = "\n") {
+            return $this->toStrings()->join($glue);
+        });
+
         Collection::macro('firstKey', function() {
             return $this->keys()->first();
         });
