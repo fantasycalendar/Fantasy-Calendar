@@ -1,3 +1,55 @@
+class Override{
+
+	constructor(data){
+		this.data = data;
+	}
+
+	get start_epoch(){
+		return this.data.epoch - this.data.start_duration;
+	}
+
+	get end_epoch(){
+		return this.data.epoch + this.data.end_duration + this.data.duration;
+	}
+
+	in_range(epoch){
+		return epoch >= this.start_epoch && epoch <= this.end_epoch
+	}
+
+	get_percentage_from_epoch(epoch){
+
+		if(this.in_range(epoch)) {
+			if (epoch >= this.start_epoch && epoch <= this.data.epoch) {
+				return (epoch - this.start_epoch) / this.data.start_duration;
+			} else if (epoch >= this.data.epoch && epoch <= (this.data.epoch + this.data.duration)) {
+				return 1.0;
+			} else {
+				return (this.end_epoch - epoch) / this.data.end_duration;
+			}
+		}
+
+		return 0.0;
+
+	}
+
+	lerp(epoch, type, data){
+
+		if (this.data[type] !== false && this.data[type] !== ""){
+			if(isNaN(this.data[type])){
+				return this.get_percentage_from_epoch(epoch) == 1.0 ? this.data[type] : data;
+			}else{
+				return lerp(data, this.data[type], this.get_percentage_from_epoch(epoch));
+			}
+		}
+
+
+		return data;
+
+	}
+
+}
+
+
 class Climate{
 
 	constructor(
@@ -35,6 +87,35 @@ class Climate{
 		this.wind_direction = false;
 
 		this.random = new random(this.static_data.seasons.global_settings.seed);
+
+		this.static_data.seasons.overrides = [
+			{
+				start_duration: 50,
+				epoch: 5,
+				duration: 50,
+				end_duration: 50,
+				temperature_actual_low: false,
+				temperature_actual_high: false,
+				temperature_peak_low: 100,
+				temperature_peak_high: 100,
+				precipitation_chance: 0,
+				precipitation_intensity: 0,
+				precipitation_actual_chance: 0,
+				precipitation_actual_intensity: 0,
+				precipitation_description: "Acid Rain",
+				clouds: "Purple Clouds",
+				wind_speed_key: "Hurricane",
+				wind_speed_actual: "",
+				wind_direction: "",
+				feature: "",
+				icon: "wi-tsunami"
+			}
+		];
+
+		this.overrides = [];
+		for(let index in this.static_data.seasons.overrides){
+			this.overrides.push(new Override(this.static_data.seasons.overrides[index]))
+		}
 
 	}
 
@@ -944,6 +1025,16 @@ class Climate{
 
 		var low = lerp(next_season_data.weather.temp_low, curr_season_data.weather.temp_low, this.weather.perc);
 		var high = lerp(next_season_data.weather.temp_high, curr_season_data.weather.temp_high, this.weather.perc);
+
+		for (let override_index in this.overrides) {
+
+			let override = this.overrides[override_index];
+
+			low = override.lerp(epoch, "temperature_peak_low", low);
+			high = override.lerp(epoch, "temperature_peak_high", high);
+
+		}
+		
 		var middle = mid(low, high);
 
 		var range_low = mid(low, middle);
@@ -961,6 +1052,17 @@ class Climate{
 		// If the low value happened to go over the high, swap 'em
 		if(range_low > range_high){
 			range_low=range_high+(range_high=range_low)-range_low
+		}
+
+		for (let override_index in this.overrides) {
+
+			let override = this.overrides[override_index];
+
+			if(!override.in_range(epoch)) continue;
+
+			range_low = override.lerp(epoch, "temperature_actual_low", range_low);
+			range_high = override.lerp(epoch, "temperature_actual_high", range_high);
+
 		}
 
 		var temp = mid(range_low, range_high);
@@ -988,10 +1090,6 @@ class Climate{
 		var precipitation_chance = lerp(next_season_data.weather.precipitation, curr_season_data.weather.precipitation, this.weather.perc);
 		var precipitation_intensity = lerp(next_season_data.weather.precipitation_intensity, curr_season_data.weather.precipitation_intensity, this.weather.perc);
 
-
-		var precipitation_chance = lerp(next_season_data.weather.precipitation, curr_season_data.weather.precipitation, this.weather.perc);
-		var precipitation_intensity = lerp(next_season_data.weather.precipitation_intensity, curr_season_data.weather.precipitation_intensity, this.weather.perc);
-
 		var chance = clamp(0.5+this.random.noise(epoch+this.season_length*4, 5.0, 0.35, 0.5), 0.0, 1.0);
 
 		var inner_chance = 0;
@@ -1001,6 +1099,18 @@ class Climate{
 		var clouds = 'Clear';
 		var feature_select = false;
 		var feature = '';
+
+		for (let override_index in this.overrides) {
+
+			let override = this.overrides[override_index];
+
+			if (!override.in_range(epoch)) continue;
+
+			precipitation_chance = override.lerp(epoch, "precipitation_chance", precipitation_chance);
+			precipitation_intensity = override.lerp(epoch, "precipitation_intensity", precipitation_intensity);
+			chance = override.lerp(epoch, "precipitation_actual_chance", chance);
+
+		}
 
 		if(precipitation_chance > chance){
 
@@ -1050,6 +1160,8 @@ class Climate{
 
 		}
 
+		let precipitation_description = precipitation.key;
+
 		if(feature_select && preset_data.feature_table[feature_select]){
 
 			var feature_chance = clamp((0.5+this.random.noise(epoch+this.season_length*9, 10, 0.4, 0.5)), 0.0, 1.0);
@@ -1067,14 +1179,49 @@ class Climate{
 		this.wind_direction = pick_from_table(wind_chance, preset_data.wind.direction_table[this.wind_direction], true).key;
 		var wind_direction = this.wind_direction;
 
-		var wind_info = preset_data.wind.info[wind_speed.key];
-		var wind_velocity_i = wind_info['mph'];
-		var wind_velocity_m = wind_info['mph'].replace( /(\d+)/g, function(a, b){
-			return Math.round(b*1.60934,2);
-		});
-		var wind_velocity_k = wind_info['mph'].replace( /(\d+)/g, function(a, b){
-			return Math.round(b*0.868976,2);
-		});
+		let wind_speed_key = wind_speed.key;
+		let icon = false;
+
+		var wind_speed_actual = false;
+
+		for (let override_index in this.overrides) {
+
+			let override = this.overrides[override_index];
+
+			if (!override.in_range(epoch)) continue;
+
+			clouds = override.lerp(epoch, "clouds", clouds);
+			feature = override.lerp(epoch, "feature", feature);
+			wind_speed_key = override.lerp(epoch, "wind_speed_key", wind_speed_key);
+			wind_direction = override.lerp(epoch, "wind_direction", wind_direction);
+			icon = override.lerp(epoch, "icon", icon);
+			precipitation_description = override.lerp(epoch, "precipitation_description", precipitation_description);
+			wind_speed_actual = override.lerp(epoch, "wind_speed_actual", wind_speed_actual);
+
+		}
+
+		var wind_velocity_i = "";
+		var wind_velocity_m = "";
+		var wind_velocity_k = "";
+
+		if (preset_data.wind.info[wind_speed_key] !== undefined){
+			var wind_info = preset_data.wind.info[wind_speed_key];
+			wind_velocity_i = wind_speed_actual ? wind_speed_actual : wind_info['mph'];
+			wind_velocity_m = wind_velocity_i.replace(/(\d+)/g, function(a, b) {
+				return Math.round(b * 1.60934, 2);
+			});
+			wind_velocity_k = wind_velocity_i.replace(/(\d+)/g, function(a, b) {
+				return Math.round(b * 0.868976, 2);
+			});
+		} else if (wind_speed_actual) {
+			wind_velocity_i = wind_speed_actual;
+			wind_velocity_m = wind_velocity_i.replace(/(\d+)/g, function(a, b) {
+				return Math.round(b * 1.60934, 2);
+			});
+			wind_velocity_k = wind_velocity_i.replace(/(\d+)/g, function(a, b) {
+				return Math.round(b * 0.868976, 2);
+			});
+		}
 
 		return {
 			temperature: {
@@ -1093,21 +1240,22 @@ class Climate{
 				cinematic: temperature_c
 			},
 			precipitation: {
-				key: precipitation.key,
+				key: precipitation_description,
 				chance: precipitation_chance,
 				actual: inner_chance,
 				intensity: precipitation_intensity,
 			},
 			clouds: clouds,
 			feature: feature,
-			wind_speed: wind_speed.key,
-			wind_speed_desc: wind_info.desciption,
+			wind_speed: wind_speed_key,
+			// wind_speed_desc: wind_info.desciption,
 			wind_velocity: {
 				imperial: wind_velocity_i,
 				metric: wind_velocity_m,
 				knots: wind_velocity_k
 			},
-			wind_direction: wind_direction
+			wind_direction: wind_direction,
+			icon: icon
 		}
 
 	}

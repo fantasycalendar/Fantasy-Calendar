@@ -70,7 +70,8 @@ var calendar_weather = {
 			this.moon_container = $('.moon_container');
 			this.weather_temp_desc = $('.weather_temp_desc');
 			this.weather_temp = $('.weather_temp');
-			this.weather_wind = $('.weather_wind');
+			this.weather_wind_text = $('.weather_wind_text');
+			this.weather_wind_speed = $('.weather_wind_speed');
 			this.weather_precip = $('.weather_precip');
 			this.weather_clouds = $('.weather_clouds');
 			this.weather_feature = $('.weather_feature');
@@ -159,7 +160,8 @@ var calendar_weather = {
 				this.weather_title.toggleClass('hidden', !icon.hasClass('moon_popup'));
 				this.weather_temp_desc.parent().toggleClass('hidden', false);
 				this.weather_temp.parent().toggleClass('hidden', false);
-				this.weather_wind.parent().toggleClass('hidden', false);
+				this.weather_wind_text.parent().toggleClass('hidden', false);
+				this.weather_wind_speed.parent().toggleClass('hidden', false);
 				this.weather_precip.parent().toggleClass('hidden', false);
 				this.weather_clouds.parent().toggleClass('hidden', false);
 				this.weather_feature.parent().toggleClass('hidden', false);
@@ -195,18 +197,25 @@ var calendar_weather = {
 
 				var wind_sys = static_data.seasons.global_settings.wind_sys;
 
-				var wind_text = ""
-				if(wind_sys == 'both'){
-					wind_text = `${weather.wind_speed} (${weather.wind_direction})`;
-					if(!static_data.settings.hide_wind_velocity || Perms.player_at_least('co-owner')){
-						wind_text += `<span class='newline'>(${weather.wind_velocity.imperial} MPH | ${weather.wind_velocity.metric} KPH | ${weather.wind_velocity.knots} KN)</span>`;
-					}
-				}else{
-					var wind_symbol = wind_sys == "imperial" ? "MPH" : "KPH";
+				let wind_text = "";
+				if (weather.wind_speed){
 					wind_text = `${weather.wind_speed} (${weather.wind_direction})`
-					if(!static_data.settings.hide_wind_velocity || Perms.player_at_least('co-owner')){
-						wind_text += `<span class='newline'>(${weather.wind_velocity[wind_sys]} ${wind_symbol} | ${weather.wind_velocity.knots} KN)</span>`;
+				}
+
+				let wind_speed_text = "";
+				if(weather.wind_velocity.imperial != ""){
+					if(wind_sys == 'both'){
+						if(!static_data.settings.hide_wind_velocity || Perms.player_at_least('co-owner')){
+							wind_speed_text += `<span class='newline'>(${weather.wind_velocity.imperial} MPH | ${weather.wind_velocity.metric} KPH | ${weather.wind_velocity.knots} KN)</span>`;
+						}
+					}else{
+						var wind_symbol = wind_sys == "imperial" ? "MPH" : "KPH";
+						if(!static_data.settings.hide_wind_velocity || Perms.player_at_least('co-owner')){
+							wind_speed_text += `<span class='newline'>(${weather.wind_velocity[wind_sys]} ${wind_symbol} | ${weather.wind_velocity.knots} KN)</span>`;
+						}
 					}
+				} else {
+					this.weather_wind_speed.parent().toggleClass('hidden', true);
 				}
 
 				this.weather_temp_desc.each(function(){
@@ -217,8 +226,12 @@ var calendar_weather = {
 					$(this).html(temp);
 				}).parent().toggleClass('hidden', static_data.settings.hide_weather_temp !== undefined && static_data.settings.hide_weather_temp && !Perms.player_at_least('co-owner'));
 
-				this.weather_wind.each(function(){
+				this.weather_wind_text.each(function(){
 					$(this).html(wind_text);
+				});
+
+				this.weather_wind_speed.each(function(){
+					$(this).html(wind_speed_text);
 				});
 
 				this.weather_precip.each(function(){
@@ -240,7 +253,8 @@ var calendar_weather = {
 				this.weather_title.toggleClass('hidden', true);
 				this.weather_temp_desc.parent().toggleClass('hidden', true);
 				this.weather_temp.parent().toggleClass('hidden', true);
-				this.weather_wind.parent().toggleClass('hidden', true);
+				this.weather_wind_text.parent().toggleClass('hidden', true);
+				this.weather_wind_speed.parent().toggleClass('hidden', true);
 				this.weather_precip.parent().toggleClass('hidden', true);
 				this.weather_clouds.parent().toggleClass('hidden', true);
 				this.weather_feature.parent().toggleClass('hidden', true);
