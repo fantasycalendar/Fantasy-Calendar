@@ -11,5 +11,13 @@ trait Buildable
         return (new static(...$args))->initialize();
     }
 
-    public abstract function initialize(): self;
+    /**
+     * Stub to satisfy Buildable trait
+     *
+     * @return $this
+     */
+    public function initialize()
+    {
+        return $this;
+    }
 }

@@ -8,7 +8,7 @@ use App\Services\RendererService\TextRenderer;
 use App\Services\RendererService\TextRenderer\Traits\Buildable;
 use App\Services\RendererService\TextRenderer\Traits\GeneratesTextLines;
 
-class TextMonthHeaderSeparator
+class MonthTopper
 {
     use GeneratesTextLines, Buildable;
 

@@ -10,7 +10,7 @@ use App\Services\RendererService\TextRenderer\Traits\GeneratesTextLines;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
-class TextMonthDayNames
+class DayNameRow
 {
     use GeneratesTextLines, Buildable;
 
@@ -28,7 +28,7 @@ class TextMonthDayNames
      *
      * @return $this
      */
-    public function initialize(): TextMonthDayNames
+    public function initialize(): DayNameRow
     {
         $days = $this->weekdays->map(function($day) {
             return Str::padLeft(Str::limit($day, $this->dayLength, ''), $this->dayLength, ' ');

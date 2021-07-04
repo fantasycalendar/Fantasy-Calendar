@@ -8,7 +8,7 @@ use App\Services\RendererService\TextRenderer;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
-class TextVisualWeek
+class VisualWeek
 {
     public Collection $days;
 
@@ -49,5 +49,21 @@ class TextVisualWeek
                 ->filter(function($day){
                     return optional($day)->isIntercalary;
                 })->count() > 0;
+    }
+
+    public function hasCurrentDate(): bool
+    {
+        return $this->days
+            ->filter(function($day){
+                return optional($day)->isCurrent;
+            })->count() > 0;
+    }
+
+    public function getCurrentDate()
+    {
+        return $this->days
+            ->filter(function($day){
+                return optional($day)->isCurrent;
+            })->first()->day;
     }
 }

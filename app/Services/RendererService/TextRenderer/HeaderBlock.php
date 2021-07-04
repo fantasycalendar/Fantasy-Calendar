@@ -9,7 +9,7 @@ use App\Services\RendererService\TextRenderer\Traits\Buildable;
 use App\Services\RendererService\TextRenderer\Traits\GeneratesTextLines;
 use Illuminate\Support\Str;
 
-class TextMonthHeader
+class HeaderBlock
 {
     use GeneratesTextLines, Buildable;
 

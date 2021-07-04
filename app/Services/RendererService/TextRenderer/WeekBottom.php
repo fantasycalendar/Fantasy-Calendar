@@ -8,7 +8,7 @@ use App\Services\RendererService\TextRenderer;
 use App\Services\RendererService\TextRenderer\Traits\Buildable;
 use App\Services\RendererService\TextRenderer\Traits\GeneratesTextLines;
 
-class TextMonthFooter
+class WeekBottom
 {
     use GeneratesTextLines, Buildable;
 
@@ -26,7 +26,7 @@ class TextMonthFooter
      *
      * @return $this
      */
-    public function initialize(): TextMonthFooter
+    public function initialize(): WeekBottom
     {
         $dayBottom = str_repeat(TextRenderer::SEPARATOR_HORIZONTAL, $this->dayLength);
 

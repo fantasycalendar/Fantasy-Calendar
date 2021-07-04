@@ -98,6 +98,22 @@ class AppServiceProvider extends ServiceProvider
             return $this->map->toArray();
         });
 
+        Collection::macro('whereStringContains', function(string $search) {
+            return $this->filter(function($item) use ($search) {
+                if(!is_string($item)) throw new \Exception("I can't search an unstringable object like it's a string!");
+
+                return str_contains($item, $search);
+            });
+        });
+
+        Collection::macro('ensureSingleItem', function(){
+            if($this->count() !== 1) {
+                throw new \Exception('Could not resolve text line of current date to render with! The development team has been notified.');
+            }
+
+            return $this;
+        });
+
         Collection::macro('firstKey', function() {
             return $this->keys()->first();
         });

@@ -21,6 +21,10 @@ class TextMonth
     private $minimum_day_length;
     private $internal_length;
 
+    private array $pipeline = [
+        TextRenderer\Pipeline\HighlightCurrentDay::class
+    ];
+
     public function __construct(array $attributes)
     {
         $this->year = $attributes['year'];
@@ -32,22 +36,25 @@ class TextMonth
         $this->minimum_day_length = $attributes['min_day_text_length'];
 
         $this->internal_length = (($this->minimum_day_length + 1) * $this->weekdays->count());
-        $this->pipeline = (new Pipeline(app()));
     }
 
     public function build(): self
     {
-        $parts = collect([
-            TextMonthHeader::class => TextMonthHeader::build($this->name, $this->internal_length, $this->year),
-            TextMonthHeaderSeparator::class => TextMonthHeaderSeparator::build($this->minimum_day_length, $this->weekdays->count()),
-            TextMonthDayNames::class => TextMonthDayNames::build($this->minimum_day_length, $this->weekdays),
-            TextWeeksBody::class => TextWeeksBody::build($this->weeks, $this->minimum_day_length, $this->weekdays->count()),
-            TextMonthFooter::class => TextMonthFooter::build($this->minimum_day_length, $this->weekdays->count())
-        ]);
+        $parts = [
+            HeaderBlock::class => HeaderBlock::build($this->name, $this->internal_length, $this->year),
+            MonthTopper::class => MonthTopper::build($this->minimum_day_length, $this->weekdays->count()),
+            DayNameRow::class => DayNameRow::build($this->minimum_day_length, $this->weekdays),
+            Weeks::class => Weeks::build($this->weeks, $this->minimum_day_length, $this->weekdays->count()),
+            WeekBottom::class => WeekBottom::build($this->minimum_day_length, $this->weekdays->count())
+        ];
 
-        $this->lines = $parts->toArrays()
-            ->flatten()
-            ->toArray();
+        $payload = PipelinePayload::build($parts, $this->minimum_day_length);
+
+        $this->lines = (new Pipeline(app()))
+            ->send($payload)
+            ->through($this->pipeline)
+            ->then($this->verifyParts())
+            ->getLines();
 
         return $this;
     }
@@ -55,5 +62,18 @@ class TextMonth
     public function toString()
     {
         return implode("\n", $this->lines);
+    }
+
+    /**
+     * Returns a closure used when verifying our render data
+     * Currently it just returns. Should probably actually
+     * verify the data we pass through it at some point.
+     * @return \Closure
+     */
+    private function verifyParts()
+    {
+        return function ($data) {
+            return $data;
+        };
     }
 }
