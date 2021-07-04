@@ -15,7 +15,7 @@ class AddIsCurrentDate
     {
         if(!$day instanceof Epoch) return null;
 
-        $day->isCurrent = ($day->day === $this->calendar->day);
+        $day->isCurrent = ($day->day === $this->calendar->dynamic_data['day']);
 
         return $day;
     }

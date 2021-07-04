@@ -28,7 +28,7 @@ class HighlightCurrentDay
         $firstLine = $payload->getFirstLineOf('weeks');
 
         $cellLength = $payload->getCellLength();
-        $currentDayCellStart = $payload->get('weeks')->getCurrentDate() - 1;
+        $currentDayCellStart = $payload->get('weeks')->getCurrentDate() + $cellLength;
         $currentDayRow = $payload->getCurrentDayRow();
 
         $replacementGroups = collect([
