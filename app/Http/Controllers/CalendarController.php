@@ -139,6 +139,19 @@ class CalendarController extends Controller
     }
 
     /**
+     * Show the form for editing the specified resource.
+     *
+     * @param Calendar $calendar
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
+     */
+    public function mini(Calendar $calendar)
+    {
+        return view('calendar.mini', [
+            'calendar' => $calendar,
+        ]);
+    }
+
+    /**
      * Show the form for exporting the specified resource.
      *
      * @param  int  $id

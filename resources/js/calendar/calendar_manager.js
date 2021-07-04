@@ -199,6 +199,7 @@ worker_calendar.onmessage = e => {
 	//execution_time.end("Calendar worker took: ")
 
 	evaluated_static_data = {}
+	action = e.data.action;
 	evaluated_static_data = e.data.processed_data;
 
 	if(evaluated_static_data.success){
@@ -216,15 +217,19 @@ worker_calendar.onmessage = e => {
 		calendar_weather.processed_weather = evaluated_static_data.processed_weather;
 		calendar_weather.start_epoch = evaluated_static_data.year_data.start_epoch;
 		calendar_weather.end_epoch = evaluated_static_data.year_data.end_epoch;
-		
-		climate_charts.evaluate_day_length_chart();
-		climate_charts.evaluate_weather_charts();
 
-		eval_clock();
-
-        update_moon_colors();
+		if(action !== "mini_page"){
 			
-		update_cycle_text();
+			climate_charts.evaluate_day_length_chart();
+			climate_charts.evaluate_weather_charts();
+
+			eval_clock();
+
+			update_moon_colors();
+				
+			update_cycle_text();
+
+		}
 
 	}else{
 
