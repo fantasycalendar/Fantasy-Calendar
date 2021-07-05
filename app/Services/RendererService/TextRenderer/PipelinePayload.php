@@ -41,11 +41,6 @@ class PipelinePayload
         })->sum->lineCount();
     }
 
-    public function getCurrentDayPos()
-    {
-
-    }
-
     public function getCurrentDayRow()
     {
         $search = TextRenderer::SEPARATOR_VERTICAL
@@ -60,6 +55,11 @@ class PipelinePayload
             ->ensureSingleItem()
             ->keys()
             ->first();
+    }
+
+    public function getCurrentDayCol()
+    {
+        return ($this->get('weeks')->getCurrentWeekday() * ($this->getCellLength() + 1)) + 1;
     }
 
     /**

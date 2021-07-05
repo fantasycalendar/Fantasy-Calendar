@@ -66,4 +66,12 @@ class VisualWeek
                 return optional($day)->isCurrent;
             })->first()->day;
     }
+
+    public function getCurrentWeekDay()
+    {
+        return $this->days
+            ->filter(function($day){
+                return optional($day)->isCurrent;
+            })->first()->weekdayIndex;
+    }
 }

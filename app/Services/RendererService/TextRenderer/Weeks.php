@@ -55,4 +55,11 @@ class Weeks
             ->filter->hasCurrentDate()
             ->first()->getCurrentDate();
     }
+
+    public function getCurrentWeekday()
+    {
+        return $this->weeks
+            ->filter->hasCurrentDate()
+            ->first()->getCurrentWeekday();
+    }
 }

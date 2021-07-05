@@ -8,7 +8,7 @@ use App\Services\RendererService\TextRenderer;
 use App\Services\RendererService\TextRenderer\Traits\GeneratesTextLines;
 use Illuminate\Pipeline\Pipeline;
 
-class TextMonth
+class Month
 {
     use GeneratesTextLines;
 
@@ -55,6 +55,8 @@ class TextMonth
             ->through($this->pipeline)
             ->then($this->verifyParts())
             ->getLines();
+
+        dd($this->lines);
 
         return $this;
     }

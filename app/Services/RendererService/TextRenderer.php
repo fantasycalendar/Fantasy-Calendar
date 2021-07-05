@@ -5,7 +5,7 @@ namespace App\Services\RendererService;
 
 
 use App\Calendar;
-use App\Services\RendererService\TextRenderer\TextMonth;
+use App\Services\RendererService\TextRenderer\Month;
 use Illuminate\Support\Collection;
 
 class TextRenderer
@@ -44,7 +44,7 @@ class TextRenderer
      */
     public function __construct(Collection $months)
     {
-        $this->months = $months->mapInto(TextMonth::class);
+        $this->months = $months->mapInto(Month::class);
     }
 
     /**

@@ -83,6 +83,14 @@ class RealWeek
             ->getCurrentDate();
     }
 
+    public function getCurrentWeekday()
+    {
+        return $this->visualWeeks
+            ->filter->hasCurrentDate()
+            ->first()
+            ->getCurrentWeekday();
+    }
+
     /**
      * @return EpochsCollection
      */

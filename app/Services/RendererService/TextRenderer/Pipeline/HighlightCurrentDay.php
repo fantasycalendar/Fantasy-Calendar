@@ -25,10 +25,8 @@ class HighlightCurrentDay
 
     private function outlineCurrentDate(PipelinePayload $payload)
     {
-        $firstLine = $payload->getFirstLineOf('weeks');
-
         $cellLength = $payload->getCellLength();
-        $currentDayCellStart = $payload->get('weeks')->getCurrentDate() + $cellLength;
+        $currentDayCellStart = $payload->getCurrentDayCol();
         $currentDayRow = $payload->getCurrentDayRow();
 
         $replacementGroups = collect([
