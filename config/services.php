@@ -45,7 +45,7 @@ return [
                 'options' => [
                     [
                         'name' => 'echo',
-                        'description' => 'Says back what you said.',
+                        'description' => 'Says back what you said to test the integration.',
                         'type' => 1,
                         'options' => [
                             [
@@ -55,6 +55,11 @@ return [
                                 'required' => true
                             ]
                         ]
+                    ],
+                    [
+                        'name' => 'help',
+                        'description' => 'Lists the available commands and their functions',
+                        'type' => 1
                     ],
                     [
                         'name' => 'list',
@@ -436,6 +441,7 @@ return [
         ],
         'command_handlers' => [
             'fc' => [
+                'help' => \App\Services\Discord\Commands\Command\HelpHandler::class,
                 'echo' => \App\Services\Discord\Commands\Command\EchoHandler::class,
                 'list' => \App\Services\Discord\Commands\Command\ListHandler::class,
                 'show' => [

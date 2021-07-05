@@ -13,7 +13,7 @@ class RegisterDiscordApplicationCommands extends Command
      *
      * @var string
      */
-    protected $signature = 'discord:register-commands {--list=false}';
+    protected $signature = 'discord:register-commands {--list}';
 
     /**
      * The console command description.
