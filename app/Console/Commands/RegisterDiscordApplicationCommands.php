@@ -13,7 +13,7 @@ class RegisterDiscordApplicationCommands extends Command
      *
      * @var string
      */
-    protected $signature = 'discord:register-commands';
+    protected $signature = 'discord:register-commands {--list=false}';
 
     /**
      * The console command description.
@@ -44,6 +44,16 @@ class RegisterDiscordApplicationCommands extends Command
     public function handle()
     {
         $this->setupApiRequests();
+
+        if($this->option('list')) {
+            $res = $this->api_client->get(sprintf($this->api_url . '/applications/%s/commands', env('DISCORD_CLIENT_ID')));
+
+            $existingCommands = collect(json_decode($res->getBody(), true));
+
+            $this->info($existingCommands);
+
+            return 0;
+        }
 
         $res = $this->api_client->get(sprintf($this->api_url . '/applications/%s/commands', env('DISCORD_CLIENT_ID')));
 

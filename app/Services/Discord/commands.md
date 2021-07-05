@@ -3,6 +3,7 @@
 ---
 
     /fc
+        - help
         - list
         - show
             - date <- (Eventually uses date_format below)
@@ -11,8 +12,8 @@
             - day {--with-hidden-events: false} (For the FUUUTUUUUREE)
             - event {partial name}
             - era
-        - set {date string} <- Tries to determine what date you wanted (Kythorn 25)
-            - date
+        - set
+            - date {date string} <- Tries to determine what date you wanted (Kythorn 25)
             - hour
             - minute
             - day

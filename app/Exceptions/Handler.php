@@ -118,7 +118,7 @@ class Handler extends ExceptionHandler
             }
         }
 
-        Log::error($exception->getMessage());
+        Log::error($exception);
         Log::error($exception->getTraceAsString());
 
         return parent::render($request, $exception);
