@@ -16,8 +16,6 @@ class MonthHandler extends \App\Services\Discord\Commands\Command
      */
     public function handle(): string
     {
-        $renderText = TextRenderer::renderMonth($this->getDefaultCalendar());
-
-        return $this->codeBlock($renderText);
+        return $this->codeBlock(TextRenderer::renderMonth($this->getDefaultCalendar()));
     }
 }
