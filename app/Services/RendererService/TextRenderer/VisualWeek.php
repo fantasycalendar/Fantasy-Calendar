@@ -5,37 +5,41 @@ namespace App\Services\RendererService\TextRenderer;
 
 
 use App\Services\RendererService\TextRenderer;
+use App\Services\RendererService\TextRenderer\Traits\GeneratesTextLines;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class VisualWeek
 {
     public Collection $days;
+    private Collection $lines;
 
     public function __construct($week)
     {
         $this->days = $week;
     }
 
-    public function build($dayLength)
+    public function build($dayLength, $weekLength)
     {
         if($this->hasIntercalary()) {
             $this->pushDaysToFrontOfWeek();
         }
 
-        $days = $this->days->map(function($item) use ($dayLength){
-            if(is_null($item)) {
-                return str_repeat(TextRenderer::SHADE, $dayLength);
-            }
+        $this->lines = $this->days->chunk($weekLength)->map(function($chunk) use ($dayLength, $weekLength){
+            return TextRenderer::SEPARATOR_VERTICAL . $chunk->pad($weekLength, null)->map(function($item) use ($dayLength){
+                if(is_null($item)) {
+                    return str_repeat(TextRenderer::SHADE, $dayLength);
+                }
 
-            $dayContents = ($item->isNumbered)
-                ? $item->visualDay
-                : "*";
+                $dayContents = ($item->isNumbered)
+                    ? $item->visualDay
+                    : "*";
 
-            return Str::padLeft($dayContents, $dayLength, ' ');
-        })->join(TextRenderer::SEPARATOR_VERTICAL);
+                return Str::padLeft($dayContents, $dayLength, ' ');
+            })->join(TextRenderer::SEPARATOR_VERTICAL) . TextRenderer::SEPARATOR_VERTICAL;
+        });
 
-        return TextRenderer::SEPARATOR_VERTICAL . $days . TextRenderer::SEPARATOR_VERTICAL;
+        return $this->lines;
     }
 
     private function pushDaysToFrontOfWeek()
@@ -82,7 +86,12 @@ class VisualWeek
     public function contributedLines()
     {
         return ($this->hasIntercalary())
-            ? 4
-            : 2;
+            ? $this->countLines() + 2
+            : $this->countLines();
+    }
+
+    public function countLines()
+    {
+        return $this->lines->count() * 2;
     }
 }

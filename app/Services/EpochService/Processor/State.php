@@ -157,6 +157,10 @@ class State
             $this->weekdayIndex++;
             $this->incrementWeek();
         } else {
+            if($this->visualWeekdayIndex >= $this->weekdayCount()) {
+                $this->visualWeekdayIndex = -1;
+            }
+
             $this->visualWeekdayIndex++;
         }
     }

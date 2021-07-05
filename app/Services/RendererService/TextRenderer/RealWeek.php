@@ -55,8 +55,8 @@ class RealWeek
         $this->visualWeeks->filter->hasIntercalary()->each(function ($week, $index){
             $this->insertLine(WeekBottom::build($this->dayLength, $this->weekLength)->toString(), $index);
             $this->replaceLine(WeekTopper::build($this->dayLength, $this->weekLength)->toString(), $index+1);
-            $this->insertLine(WeekBottom::build($this->dayLength, $this->weekLength)->toString(), $index+3);
-            $this->replaceLine(WeekTopper::build($this->dayLength, $this->weekLength)->toString(), $index+4);
+            $this->insertLine(WeekBottom::build($this->dayLength, $this->weekLength)->toString(), $index+$week->countLines()+1);
+            $this->replaceLine(WeekTopper::build($this->dayLength, $this->weekLength)->toString(), $index+$week->countLines()+2);
         });
     }
 
@@ -121,14 +121,13 @@ class RealWeek
     private function generateTextLines(): array
     {
         return $this->visualWeeks
-            ->mapWithKeys(function($week, $index) {
-                $weekIndex = $index + (2 * $index);
-                $separatorIndex = $index + (2 * $index) + 1;
-
-                return [
-                    $weekIndex => $week->build($this->dayLength),
-                    $separatorIndex => TextWeekSeparator::build($this->dayLength, $this->weekLength)
-                ];
-            })->values()->toArray();
+            ->map(function($week, $index) {
+                return $week->build($this->dayLength, $this->weekLength)->map(function($visualWeek){
+                    return [
+                        $visualWeek,
+                        TextWeekSeparator::build($this->dayLength, $this->weekLength)
+                    ];
+                });
+            })->flatten()->values()->toArray();
     }
 }
