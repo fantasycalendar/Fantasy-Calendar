@@ -56,8 +56,6 @@ class Month
             ->then($this->verifyParts())
             ->getLines();
 
-        dd($this->lines);
-
         return $this;
     }
 

@@ -43,8 +43,6 @@ class PipelinePayload
 
     public function getCurrentDayRow()
     {
-        dump($this->get('weeks')->getCurrentDayRow());
-
         return $this->get('weeks')->getCurrentDayRow()
              + $this->parts->takeUntil(function($part, $key) { return $key == Weeks::class; })->sum->lineCount() - 1;
     }
