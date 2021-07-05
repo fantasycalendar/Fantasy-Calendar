@@ -75,6 +75,20 @@ class RealWeek
         return $this->visualWeeks->filter->hasCurrentDate()->count() > 0;
     }
 
+    public function getCurrentDateRow()
+    {
+        $currentDateWeek = $this->visualWeeks->filter->hasCurrentDate()->sole();
+
+        $linesToCurrentDate = $currentDateWeek->hasIntercalary()
+            ? 2
+            : 1;
+
+        return $this->visualWeeks
+            ->takeUntil->hasCurrentDate()
+            ->sum->contributedLines()
+            + $linesToCurrentDate;
+    }
+
     public function getCurrentDate()
     {
         return $this->visualWeeks
@@ -89,6 +103,11 @@ class RealWeek
             ->filter->hasCurrentDate()
             ->first()
             ->getCurrentWeekday();
+    }
+
+    public function contributedLines()
+    {
+        return $this->visualWeeks->sum->contributedLines();
     }
 
     /**

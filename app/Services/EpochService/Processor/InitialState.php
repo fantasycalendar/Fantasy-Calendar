@@ -65,7 +65,7 @@ class InitialState
             'historicalIntercalaryCount' => $this->calculateHistoricalIntercalaryCount(),
             'weekdayIndex' => $this->calculateWeekdayIndex(),
             'timespanCounts' => $this->calculateTimespanCounts(),
-            'eraYear' => $this->calculateeraYear()
+            'eraYear' => $this->calculateEraYear()
         ];
     }
 

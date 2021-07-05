@@ -6,8 +6,6 @@ namespace App\Services\RendererService;
 
 use App\Calendar;
 use App\Services\CalendarService\LeapDay;
-use App\Services\DatePipeline\AddDayName;
-use App\Services\DatePipeline\AddDayType;
 use App\Services\DatePipeline\AddIsCurrentDate;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Arr;

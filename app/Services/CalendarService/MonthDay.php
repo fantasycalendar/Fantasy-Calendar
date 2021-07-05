@@ -10,14 +10,19 @@ class MonthDay
     /**
      * @var float
      */
-    public $intercalary;
+    public bool $intercalary;
+    public bool $isNumbered;
+
     /**
-     * @var bool
+     * @param $order
+     * @param $intercalary
+     * @param bool $isNumbered
      */
-    public function __construct($order, $intercalary)
+    public function __construct($order, bool $intercalary, bool $isNumbered = true)
     {
         $this->order = $order;
         $this->intercalary = $intercalary;
+        $this->isNumbered = $isNumbered;
     }
 
 }

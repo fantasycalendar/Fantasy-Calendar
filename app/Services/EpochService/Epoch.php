@@ -13,6 +13,8 @@ class Epoch
     public int $year;
     public Month $month;
     public int $day;
+    public int $visualDay;
+    public bool $isNumbered;
     public int $epoch;
     public int $dayOfYear;
     public Collection $timespanCounts;
@@ -20,6 +22,7 @@ class Epoch
     public int $numberTimespans;
     public int $monthId;
     public int $weekdayIndex;
+    public int $visualWeekdayIndex;
     public string $weekdayName;
     public int $weeksSinceMonthStart;
     public int $weeksTilMonthEnd;
@@ -27,6 +30,7 @@ class Epoch
     public int $weeksTilYearEnd;
     public string $slug;
     public bool $isIntercalary;
+    public bool $isCurrentDate;
     public array $attachedAttributes = [];
     private array $attributes;
 
@@ -36,6 +40,8 @@ class Epoch
         $this->year = $attributes['year'];
         $this->month = $attributes['month'];
         $this->day = $attributes['day'];
+        $this->visualDay = $attributes['visualDay'];
+        $this->isNumbered = $attributes['isNumbered'];
         $this->epoch = $attributes['epoch'];
         $this->dayOfYear = $attributes['dayOfYear'];
         $this->timespanCounts = $attributes['timespanCounts'];
@@ -43,6 +49,7 @@ class Epoch
         $this->numberTimespans = $attributes['numberTimespans'];
         $this->monthId = $attributes['monthId'];
         $this->weekdayIndex = $attributes['weekdayIndex'];
+        $this->visualWeekdayIndex = $attributes['visualWeekdayIndex'];
         $this->weekdayName = $attributes['weekdayName'];
         $this->weeksSinceMonthStart = $attributes['weeksSinceMonthStart'];
         $this->weeksTilMonthEnd = $attributes['weeksTilMonthEnd'];

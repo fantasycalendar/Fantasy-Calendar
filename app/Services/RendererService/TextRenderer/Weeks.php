@@ -51,15 +51,23 @@ class Weeks
 
     public function getCurrentDate()
     {
-        return $this->weeks
-            ->filter->hasCurrentDate()
-            ->first()->getCurrentDate();
+        return $this->getCurrentDateWeek()->getCurrentDate();
     }
 
     public function getCurrentWeekday()
     {
+        return $this->getCurrentDateWeek()->getCurrentWeekday();
+    }
+
+    public function getCurrentDayRow()
+    {
+        return $this->weeks->takeUntil->hasCurrentDate()->sum->contributedLines() + $this->getCurrentDateWeek()->getCurrentDateRow();
+    }
+
+    private function getCurrentDateWeek()
+    {
         return $this->weeks
             ->filter->hasCurrentDate()
-            ->first()->getCurrentWeekday();
+            ->first();
     }
 }

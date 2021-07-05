@@ -28,7 +28,11 @@ class VisualWeek
                 return str_repeat(TextRenderer::SHADE, $dayLength);
             }
 
-            return Str::padLeft($item->day, $dayLength, ' ');
+            $dayContents = ($item->isNumbered)
+                ? $item->visualDay
+                : "*";
+
+            return Str::padLeft($dayContents, $dayLength, ' ');
         })->join(TextRenderer::SEPARATOR_VERTICAL);
 
         return TextRenderer::SEPARATOR_VERTICAL . $days . TextRenderer::SEPARATOR_VERTICAL;
@@ -72,6 +76,13 @@ class VisualWeek
         return $this->days
             ->filter(function($day){
                 return optional($day)->isCurrent;
-            })->first()->weekdayIndex;
+            })->first()->visualWeekdayIndex;
+    }
+
+    public function contributedLines()
+    {
+        return ($this->hasIntercalary())
+            ? 4
+            : 2;
     }
 }

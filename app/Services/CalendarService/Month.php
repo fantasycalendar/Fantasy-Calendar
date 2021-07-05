@@ -144,7 +144,7 @@ class Month extends Timespan
         if($intercalaryLeapDays->count()){
             $offset = 1 / ($intercalaryLeapDays->count()+1);
             $intercalaryLeapDays->each(function($leapDay) use (&$daysInYear, &$offset, $intercalaryLeapDays){
-                $day = new MonthDay($leapDay->day+$offset, true);
+                $day = new MonthDay($leapDay->day+$offset, true, !$leapDay->not_numbered);
                 $daysInYear->push($day);
                 $offset += 1 / ($intercalaryLeapDays->count()+1);
             });

@@ -43,18 +43,10 @@ class PipelinePayload
 
     public function getCurrentDayRow()
     {
-        $search = TextRenderer::SEPARATOR_VERTICAL
-                . Str::padLeft(
-                    $this->get('weeks')->getCurrentDate(),
-                    $this->getCellLength()
-                )
-                . TextRenderer::SEPARATOR_VERTICAL;
+        dump($this->get('weeks')->getCurrentDayRow());
 
-        return collect($this->getLines())
-            ->whereStringContains($search)
-            ->ensureSingleItem()
-            ->keys()
-            ->first();
+        return $this->get('weeks')->getCurrentDayRow()
+             + $this->parts->takeUntil(function($part, $key) { return $key == Weeks::class; })->sum->lineCount() - 1;
     }
 
     public function getCurrentDayCol()

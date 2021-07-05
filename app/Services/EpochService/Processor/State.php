@@ -29,10 +29,12 @@ class State
     use CalculatesAndCachesProperties;
 
     public int $day = 1;
+    public int $visualDay = 1;
     public int $year;
     protected Calendar $calendar;
     protected Collection $previousState;
     private bool $withEras = true;
+    protected int $visualWeekdayIndex = -1;
 
     /**
      * State constructor.
@@ -104,6 +106,8 @@ class State
             'eraYear' => $this->eraYear,
             'monthIndexOfYear' => $this->monthIndexOfYear,
             'day' => $this->day,
+            'visualDay' => $this->visualDay,
+            'isNumbered' => $this->isNumbered(),
             'epoch' => $this->epoch,
             'monthId' => $this->monthId,
             'dayOfYear' => $this->dayOfYear,
@@ -112,12 +116,13 @@ class State
             'historicalIntercalaryCount' => $this->historicalIntercalaryCount,
             'numberTimespans' => $this->numberTimespans,
             'weekdayIndex' => $this->weekdayIndex,
+            'visualWeekdayIndex' => ($this->isIntercalary()) ? $this->visualWeekdayIndex : $this->weekdayIndex,
             'weekdayName' => $this->weekdays()->get($this->weekdayIndex),
             'weeksSinceMonthStart' => $this->weeksSinceMonthStart,
             'weeksTilMonthEnd' => $this->totalWeeksInMonth - ($this->weeksSinceMonthStart - 1),
             'weeksSinceYearStart' => $this->weeksSinceYearStart,
             'weeksTilYearEnd' => $this->totalWeeksInYear - ($this->weeksSinceYearStart - 1),
-            'isIntercalary' => $this->isIntercalary()
+            'isIntercalary' => $this->isIntercalary(),
         ];
     }
 
@@ -132,6 +137,10 @@ class State
      */
     private function incrementDay(): void
     {
+        if($this->isNumbered()) {
+            $this->visualDay++;
+        }
+
         $this->day++;
         $this->epoch++;
         $this->dayOfYear++;
@@ -144,8 +153,11 @@ class State
     private function incrementWeekday(): void
     {
         if(!$this->isIntercalary()){
+            $this->visualWeekdayIndex = -1;
             $this->weekdayIndex++;
             $this->incrementWeek();
+        } else {
+            $this->visualWeekdayIndex++;
         }
     }
 
@@ -179,6 +191,7 @@ class State
         $this->numberTimespans++;
 
         $this->day = 1;
+        $this->visualDay = 1;
         $this->monthIndexOfYear++;
         $this->monthId++;
 
@@ -265,6 +278,17 @@ class State
     private function isIntercalary(): bool
     {
         return $this->currentMonth()->daysInYear[$this->day-1]->intercalary;
+    }
+
+    /**
+     * Whether the current day is intercalary
+     * @see CalculatesAndCachesProperties
+     *
+     * @return bool
+     */
+    private function isNumbered(): bool
+    {
+        return $this->currentMonth()->daysInYear[$this->day-1]->isNumbered;
     }
 
     /*
@@ -460,4 +484,16 @@ class State
     {
         return $this->previousState->get('eraYear');
     }
+
+    /**
+     * Getter for $this->visualWeekdayIndex
+     * @see CalculatesAndCachesProperties
+     *
+     * @return int
+     */
+    private function calculateVisualWeekdayIndex(): int
+    {
+        return $this->previousState->get('visualWeekdayIndex');
+    }
+
 }

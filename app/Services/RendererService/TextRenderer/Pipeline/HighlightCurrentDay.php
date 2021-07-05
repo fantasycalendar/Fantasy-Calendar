@@ -29,6 +29,8 @@ class HighlightCurrentDay
         $currentDayCellStart = $payload->getCurrentDayCol();
         $currentDayRow = $payload->getCurrentDayRow();
 
+        dump($cellLength, $currentDayCellStart, $currentDayRow);
+
         $replacementGroups = collect([
             $currentDayRow - 1 => [
                 [
