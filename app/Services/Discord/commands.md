@@ -1,0 +1,47 @@
+# Commands available
+
+---
+
+    /fc
+        - list
+        - show
+            - date <- (Eventually uses date_format below)
+                - detailed
+            - month {--with-adjacent: false}
+            - day {--with-hidden-events: false} (For the FUUUTUUUUREE)
+            - event {partial name}
+            - era
+        - set {date string} <- Tries to determine what date you wanted (Kythorn 25)
+            - date
+            - hour
+            - minute
+            - day
+            - month
+            - year
+            - setting
+                - default_show: [Default: month]
+                - date_format: [Default: Month Name (##,day name), YYYY]
+                - calendar: {id (from 'list'), partial name, hash, URL}
+        - add
+            - day
+            - days {number:required}
+            - month
+            - months {number:required}
+            - year
+            - years {number:required}
+            - minute
+            - minutes {number:required}
+            - hour
+            - hours {number:required}
+            - event {title:required} (More for the FUUUTUUUREE)
+        - subtract
+            - day
+            - days {number:required}
+            - month
+            - months {number:required}
+            - year
+            - years {number:required}
+            - minute
+            - minutes {number:required}
+            - hour
+            - hours {number:required}
