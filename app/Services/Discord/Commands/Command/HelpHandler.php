@@ -33,8 +33,6 @@ class HelpHandler extends Command
             return $formatted;
         })->join("\n");
 
-        logger()->info(strlen($response));
-
         return $this->codeBlock($response);
     }
 
@@ -51,9 +49,6 @@ class HelpHandler extends Command
         $indentation = str_repeat(' ', 2 * $level);
         $baseCommandString = $indentation . "- {$command['name']}: {$command['description']}\n";
 
-        logger()->info($baseCommandString);
-        logger()->info(static::typeName($command['type']));
-
         if(!array_key_exists("options", $command)) return $baseCommandString;
 
         switch (static::typeName($command['type'])) {
@@ -61,9 +56,6 @@ class HelpHandler extends Command
                 return $baseCommandString;
             case 'subcommand_group':
                 return $baseCommandString . $indentation . "    subcommands: {" . implode(',', array_map(function($option){ return $option['name']; }, $command['options'])) . "}\n";
-//                return $baseCommandString . implode('',array_map(function($item) use ($level) {
-//                        return self::formatOption($item, $level+1);
-//                    }, $command['options']));
         }
 
         return "";
