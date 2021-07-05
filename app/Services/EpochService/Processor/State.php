@@ -170,7 +170,7 @@ class State
      */
     private function incrementMonth(): void
     {
-        if($this->day < $this->currentMonth()->daysInYear->count()){
+        if($this->day <= $this->currentMonth()->daysInYear->count()){
             $this->incrementWeekday();
             return;
         }
