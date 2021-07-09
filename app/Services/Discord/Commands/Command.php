@@ -24,6 +24,7 @@ abstract class Command
     protected $discord_user_id;
     protected $discord_auth;
     protected $guild;
+    protected $options;
 
     /**
      * Command constructor.
@@ -38,6 +39,7 @@ abstract class Command
         $this->discord_nickname = $this->interaction('member.nick') ?? $this->interaction('member.user.username');
         $this->discord_username = $this->interaction('member.user.username') . "#" . $this->interaction('member.user.discriminator');
         $this->discord_user_id = $this->interaction('member.user.id');
+        $this->options = self::getOptions(Arr::get($interaction_data, 'data.options.0'));
 
         $this->logInteraction();
         $this->bindUser();
@@ -129,6 +131,19 @@ abstract class Command
         }
 
         return Calendar::find($this->setting('default_calendar'));
+    }
+
+    protected static function getOptions($data)
+    {
+        switch (Arr::get($data, 'type')) {
+            case 1:
+            case 2:
+                return collect(Arr::get($data, 'options'))->mapWithKeys(function($option){
+                    return self::getOptions($option);
+                });
+            case 3:
+                return [$data['name'] => $data['value']];
+        }
     }
 
     public abstract function handle(): string;
