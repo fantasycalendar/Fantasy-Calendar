@@ -11,7 +11,9 @@ use App\Services\Discord\Models\DiscordGuild;
 use App\Services\Discord\Models\DiscordInteraction;
 use App\User;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 abstract class Command
 {
@@ -24,7 +26,7 @@ abstract class Command
     protected string $discord_nickname;
     protected string $discord_username;
     protected string $discord_user_id;
-    protected array $options;
+    protected Collection $options;
     protected string $called_command;
 
     /**
@@ -109,7 +111,12 @@ abstract class Command
 
     protected function blockQuote($string)
     {
-        return "> $string\n";
+        return "> " . implode("\n> ",explode("\n", $string));
+    }
+
+    protected function heading($string, $min_length)
+    {
+        return Str::padBoth(" {$string} ", $min_length, '=');
     }
 
     protected function newLine()
