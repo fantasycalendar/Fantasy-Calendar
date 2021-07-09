@@ -43,6 +43,9 @@ abstract class Command
         $this->called_command = '/' . self::getCalledCommand($this->interaction('data'));
         $this->options = self::getOptions($this->interaction('data.options.0'));
 
+        logger()->debug(json_encode($this->options));
+        logger()->debug(json_encode($this->interaction('data')));
+
         $this->logInteraction();
         $this->bindUser();
 
@@ -149,13 +152,16 @@ abstract class Command
         switch (Arr::get($data, 'type')) {
             case 1:
             case 2:
-                return collect(Arr::get($data, 'options'))->mapWithKeys(function($option){
-                    return self::getOptions($option);
-                });
+                return (!Arr::has($data, 'options'))
+                    ? []
+                    : collect(Arr::get($data, 'options'))->mapWithKeys(function($option){
+                        return self::getOptions($option);
+                    });
             case 3:
+            case 4:
                 return [$data['name'] => $data['value']];
             default:
-                return null;
+                return [];
         }
     }
 

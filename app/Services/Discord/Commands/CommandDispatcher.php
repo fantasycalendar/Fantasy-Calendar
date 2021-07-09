@@ -19,7 +19,7 @@ class CommandDispatcher
         try {
             $response = (new $handlerClass($commandData))->handle();
         } catch (\Throwable $e) {
-            Log::error($e->getTraceAsString());
+//            Log::error($e->getTraceAsString());
             return $e->getMessage();
         }
 

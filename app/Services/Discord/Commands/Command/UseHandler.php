@@ -12,11 +12,15 @@ class UseHandler extends \App\Services\Discord\Commands\Command
 
     public function handle(): string
     {
-        $argument = $this->interaction( 'data.options.0.options.0.value');
+        $argument = $this->option('id');
 
-        $default = $this->user->calendars()->orderBy('name')->get()->mapWithKeys(function($calendar, $index){
-            return [$index => $calendar];
-        })->get($argument);
+        $default = $this->user->calendars()
+            ->orderBy('name')
+            ->get()
+            ->mapWithKeys(function($calendar, $index){
+                return [$index => $calendar];
+            })
+            ->get($argument);
 
         if(is_null($default)) {
             return sprintf("No calendar matched %s. Your options are:\n%s", $argument, $this->listCalendars());
