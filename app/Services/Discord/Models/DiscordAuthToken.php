@@ -6,6 +6,9 @@ use App\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @method static discordUserId(array|\ArrayAccess|mixed $commandUserId)
+ */
 class DiscordAuthToken extends Model
 {
     use HasFactory;

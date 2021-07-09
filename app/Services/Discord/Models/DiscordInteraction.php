@@ -5,6 +5,9 @@ namespace App\Services\Discord\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @method static create(array $array)
+ */
 class DiscordInteraction extends Model
 {
     use HasFactory;

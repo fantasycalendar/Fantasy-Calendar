@@ -15,17 +15,17 @@ use Illuminate\Support\Facades\Log;
 
 abstract class Command
 {
-    protected array $interaction_data;
     protected User $user;
+    protected $discord_auth;
+    protected DiscordGuild $guild;
+    protected array $interaction_data;
     protected string $response;
     private bool $deferred;
-    protected $discord_nickname;
-    protected $discord_username;
-    protected $discord_user_id;
-    protected $discord_auth;
-    protected $guild;
-    protected $options;
-    protected $called_command;
+    protected string $discord_nickname;
+    protected string $discord_username;
+    protected string $discord_user_id;
+    protected array $options;
+    protected string $called_command;
 
     /**
      * Command constructor.
