@@ -60,6 +60,12 @@ class EpochFactory
             ->whereMonthIndexOfYear($calendar->month_index);
     }
 
+    public function forCalendarDay(Calendar $calendar): Epoch
+    {
+        return $this->forCalendarYear($calendar)
+            ->getByDate($calendar->year, $calendar->month_index, $calendar->day);
+    }
+
     /**
      * Generates and returns the epoch for a given date
      *

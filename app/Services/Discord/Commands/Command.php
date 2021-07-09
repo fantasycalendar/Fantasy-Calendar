@@ -124,9 +124,9 @@ abstract class Command
         return Str::padBoth(" {$string} ", $min_length, '=');
     }
 
-    protected function newLine()
+    protected function newLine($int = 1)
     {
-        return "\n";
+        return str_repeat("\n", $int);
     }
 
     protected function mention()

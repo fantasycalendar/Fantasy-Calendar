@@ -4,6 +4,7 @@ namespace App;
 
 use App\Collections\ErasCollection;
 use App\Collections\MonthsCollection;
+use App\Facades\Epoch;
 use App\Services\CalendarService\Era;
 use App\Services\CalendarService\LeapDay;
 use App\Services\CalendarService\RenderMonth;
@@ -253,6 +254,11 @@ class Calendar extends Model
 
             && ($this->dynamic_data['current_era'] ?? -1) > -1
         );
+    }
+
+    public function getEpochAttribute()
+    {
+        return Epoch::forCalendarDay($this);
     }
 
     /**

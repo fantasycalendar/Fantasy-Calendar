@@ -14,7 +14,7 @@ class DateHandler extends Command
         $calendar = $this->getDefaultCalendar();
 
         $response = $this->heading($calendar->name, strlen($calendar->current_date));
-        $response .= "\n\n";
+        $response .= $this->newLine(2);
         $response .= $calendar->current_date;
 
         return $this->codeBlock($response);

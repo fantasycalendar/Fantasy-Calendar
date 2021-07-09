@@ -155,4 +155,8 @@ class Month extends Timespan
 
     }
 
+    public function __toString(): string
+    {
+        return $this->name;
+    }
 }

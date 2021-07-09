@@ -3,12 +3,7 @@
 namespace App\Services\CalendarService;
 
 use App\Calendar;
-use App\Facades\Epoch as EpochService;
-use App\Services\EpochService\Epoch;
-use Illuminate\Database\Eloquent\Concerns\HasAttributes;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Log;
+use App\Facades\Epoch;
 use Illuminate\Support\Str;
 
 class RenderMonth
@@ -28,7 +23,7 @@ class RenderMonth
      */
     public function getStructure()
     {
-        $epochs = EpochService::forCalendarMonth($this->calendar);
+        $epochs = Epoch::forCalendarMonth($this->calendar);
 
         $weeks = $epochs->chunkByWeeks()->map(function($week){
             return $week->map(function($week){
