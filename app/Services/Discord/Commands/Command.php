@@ -171,15 +171,15 @@ abstract class Command
             case 1:
             case 2:
                 return (!Arr::has($data, 'options'))
-                    ? []
+                    ? collect()
                     : collect(Arr::get($data, 'options'))->mapWithKeys(function($option){
                         return self::getOptions($option);
                     });
             case 3:
             case 4:
-                return [$data['name'] => $data['value']];
+                return collect([$data['name'] => $data['value']]);
             default:
-                return [];
+                return collect();
         }
     }
 
