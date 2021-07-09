@@ -109,6 +109,11 @@ abstract class Command
         return "```\n$string\n```";
     }
 
+    protected function bold($string)
+    {
+        return "**{$string}**";
+    }
+
     protected function blockQuote($string)
     {
         return "> " . implode("\n> ",explode("\n", $string));
