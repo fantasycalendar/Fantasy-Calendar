@@ -25,6 +25,7 @@ abstract class Command
     protected $discord_auth;
     protected $guild;
     protected $options;
+    protected $called_command;
 
     /**
      * Command constructor.
@@ -39,7 +40,8 @@ abstract class Command
         $this->discord_nickname = $this->interaction('member.nick') ?? $this->interaction('member.user.username');
         $this->discord_username = $this->interaction('member.user.username') . "#" . $this->interaction('member.user.discriminator');
         $this->discord_user_id = $this->interaction('member.user.id');
-        $this->options = self::getOptions(Arr::get($interaction_data, 'data.options.0'));
+        $this->called_command = '/' . self::getCalledCommand($this->interaction('data'));
+        $this->options = self::getOptions($this->interaction('data.options.0'));
 
         $this->logInteraction();
         $this->bindUser();
@@ -133,6 +135,15 @@ abstract class Command
         return Calendar::find($this->setting('default_calendar'));
     }
 
+    protected function option($key)
+    {
+        if(!Arr::has($this->options, $key)) {
+            throw new \Exception("No option `{$key}` available to command `{$this->called_command}`");
+        }
+
+        return Arr::get($this->options, $key);
+    }
+
     protected static function getOptions($data)
     {
         switch (Arr::get($data, 'type')) {
@@ -143,6 +154,19 @@ abstract class Command
                 });
             case 3:
                 return [$data['name'] => $data['value']];
+            default:
+                return null;
+        }
+    }
+
+    protected static function getCalledCommand($data)
+    {
+        switch (Arr::get($data, 'type')) {
+            case null:
+            case 2:
+                return Arr::get($data, 'name') . ' ' . self::getCalledCommand(Arr::get($data, 'options.0'));
+            default:
+                return Arr::get($data, 'name');
         }
     }
 

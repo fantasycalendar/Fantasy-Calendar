@@ -11,6 +11,6 @@ class EchoHandler extends Command
 {
     public function handle(): string
     {
-        return Arr::get($this->interaction_data, 'data.options.0.options.0.value');
+        return $this->option('echo');
     }
 }
