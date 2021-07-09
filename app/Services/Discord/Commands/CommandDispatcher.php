@@ -14,28 +14,35 @@ class CommandDispatcher
     {
         $configPath = self::processConfigPath($commandData['data']);
 
-        $handlerClass = config('services.discord.command_handlers.' . $configPath);
-
+        $handlerClass = config('services.discord.command_handlers' . $configPath);
+        
         try {
             $response = (new $handlerClass($commandData))->handle();
         } catch (\Throwable $e) {
-//            Log::error($e->getTraceAsString());
+            Log::error($e->getTraceAsString());
             return $e->getMessage();
         }
 
         return $response;
     }
 
-    public static function processConfigPath($optionsData)
+    public static function processConfigPath($optionsData, $soFar = '.')
     {
         $option = Arr::get($optionsData, '0', $optionsData);
+        $name = Arr::get($option, 'name');
 
-        if(Arr::get($option, 'type') < 3) {
-            if(Arr::has($option, 'options.0.type') && Arr::get($option, 'options.0.type') < 3) {
-                return Arr::get($option, 'name') . '.' . self::processConfigPath($option['options']);
+        if(Arr::has($option, 'options.0')) {
+            $newPath = self::processConfigPath(Arr::get($option, 'options.0'), $soFar . $name . '.');
+
+            if(config('services.discord.command_handlers' . $newPath)) {
+                return self::processConfigPath(Arr::get($option, 'options.0'), $newPath . '.');
             }
         }
 
-        return Arr::get($option, 'name');
+        if(config('services.discord.command_handlers' . $soFar . $name)) {
+            return $soFar . $name;
+        }
+
+        return substr($soFar, 0, strlen($soFar) - 1);
     }
 }

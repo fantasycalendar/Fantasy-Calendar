@@ -152,8 +152,14 @@ abstract class Command
 
     protected function option($key)
     {
-        if(!Arr::has($this->options, $key)) {
-            throw new \Exception("No option `{$key}` available to command `{$this->called_command}`");
+        if(is_array($key)) {
+            foreach($key as $item) {
+                if(Arr::has($this->options, $item)) {
+                    return $this->option($item);
+                }
+            }
+
+            return null;
         }
 
         return Arr::get($this->options, $key);

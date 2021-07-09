@@ -7,6 +7,7 @@ namespace App\Services\EpochService;
 use App\Calendar;
 use App\Collections\EpochsCollection;
 use App\Services\CalendarService\Era;
+use App\Services\EpochService\Processor\InitialStateWithEras;
 use App\Services\EpochService\Processor\State;
 
 class EpochFactory
@@ -63,7 +64,7 @@ class EpochFactory
     public function forCalendarDay(Calendar $calendar): Epoch
     {
         return $this->forCalendarYear($calendar)
-            ->getByDate($calendar->year, $calendar->month_index, $calendar->day);
+            ->getByDate($calendar->year, $calendar->month_index, $calendar->day + 1);
     }
 
     /**
@@ -100,6 +101,30 @@ class EpochFactory
         return $this->processor($calendar, false)
             ->processUntilDate($era->year, $era->month, $era->day+1)
             ->last();
+    }
+
+    public function incrementDay(Calendar $calendar, Epoch $epoch)
+    {
+        return $this->incrementDays($calendar, $epoch, 1);
+    }
+
+    public function incrementDays(Calendar $calendar, Epoch $epoch, $days = 1)
+    {
+        // First we want to check whether we're asking for a date in the same year.
+        // If we are? EZPZ! We've already calculated that year, let's just find it in our epochs array.
+        $theoreticalNewDayOfYear = ($epoch->dayOfYear + $days);
+
+        if(0 < $theoreticalNewDayOfYear && $theoreticalNewDayOfYear < $calendar->year_length) {
+            return $this->epochs->where('epoch', '=', ($epoch->epoch + $days))->sole();
+        }
+
+        // Ok ... So we want a date from _another_ year. Time to think up a different strategy here.
+        // What I would **love** to do is just self::calculateForEpoch($epoch->epoch + $days).
+        // That would be fantastic, and would be a universal strategy, I think.
+        // Otherwise, we have to figure out a guessing-game strategy here
+        //... Which would end up being a calculateForEpoch method. =]
+
+        return $epoch;
     }
 
     /**

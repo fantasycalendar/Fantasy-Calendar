@@ -256,9 +256,19 @@ class Calendar extends Model
         );
     }
 
+    /**
+     * @return mixed
+     */
     public function getEpochAttribute()
     {
         return Epoch::forCalendarDay($this);
+    }
+
+    public function addDay(): Calendar
+    {
+        $epoch = Epoch::incrementDay($this, $this->epoch);
+
+        return $this->setDate($epoch->year, $epoch->monthIndexOfYear, $epoch->day);
     }
 
     /**
@@ -268,9 +278,18 @@ class Calendar extends Model
      */
     public function addYear(): Calendar
     {
-        $this->setDate($this->year + 1, $this->month_index, $this->day);
+        return $this->addYears(1);
+   }
 
-        return $this;
+    /**
+     * Add a set number of years to the current date of this calendar
+     *
+     * @param int $years
+     * @return $this
+     */
+    public function addYears(int $years): Calendar
+    {
+        return $this->setDate($this->year + $years, $this->month_index, $this->day);
     }
 
     /**
@@ -332,6 +351,13 @@ class Calendar extends Model
     public function getYearAttribute(): int
     {
         return (int) Arr::get($this->dynamic_data, 'year', 0);
+    }
+
+    public function getYearLengthAttribute(): int
+    {
+        return $this->months->sum(function($month){
+            return $month->daysInYear->count();
+        });
     }
 
     /**

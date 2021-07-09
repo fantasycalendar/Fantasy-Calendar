@@ -9,6 +9,7 @@ namespace App\Facades;
  * @method static forEra(\App\Services\CalendarService\Era $param)
  * @method static forCalendarYear(\App\Calendar $calendar)
  * @method static forCalendarMonth(\App\Calendar $calendar)
+ * @method static incrementDay(\App\Calendar $param, mixed $epoch)
  */
 class Epoch extends \Illuminate\Support\Facades\Facade
 {
