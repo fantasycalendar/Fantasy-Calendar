@@ -17,23 +17,23 @@ class AddHandler extends Command
     {
         $this->calendar = $this->getDefaultCalendar();
         $action = explode(' ', $this->called_command)[2];
-        $count = $this->option(['days', 'months', 'years', 'minutes', 'hours']);
+        $count = $this->option(['days', 'months', 'years', 'minutes', 'hours']) ?? 1;
 
-        if(method_exists($this, $action)) {
-            $this->$action();
+        $this->$action($count);
 
-            $response = ($count)
-                ? Str::plural($action, $count)
-                : '1 ' . $action;
+        $response = ($count)
+            ? Str::plural($action, $count)
+            : '1 ' . $action;
 
-            return $response . " added!" . $this->newLine(2) . "The new date is:" . $this->newLine() . $this->blockQuote($this->calendar->current_date);
-        }
-
-        return 'Sorry bub, dunno how to do that yet.';
+        return $response . " added!" . $this->newLine(2) . "The new date is:" . $this->newLine() . $this->blockQuote($this->calendar->current_date);
     }
 
-    public function day()
+    public function __call($name, $arguments)
     {
-        $this->calendar->addDay()->save();
+        $method = 'add' . ucfirst($name) . 's';
+
+        $this->calendar
+            ->$method($arguments[0])
+            ->save();
     }
 }
