@@ -193,7 +193,11 @@ class IntervalsCollection extends \Illuminate\Support\Collection
     {
         return $this->sum->occurrences($year, $yearZeroExists)
              + $this->addOneForYearZero($year, $yearZeroExists);
+    }
 
+    public function totalFraction(bool $yearZeroExists): float
+    {
+        return $this->sum->fraction($yearZeroExists);
     }
 
     /**

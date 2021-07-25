@@ -95,6 +95,16 @@ class Timespan implements Arrayable
         return (int) floor($year / $this->interval);
     }
 
+    public function getInterval()
+    {
+        return $this->interval;
+    }
+
+    public function getAverageLengthAttribute(): int
+    {
+        return ($this->length / $this->interval) + $this->leapDays->sum->averageYearContribution;
+    }
+
     public function toArray(): array
     {
         return $this->attributes;

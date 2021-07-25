@@ -9,6 +9,7 @@ use App\Collections\IntervalsCollection;
 use App\Exceptions\InvalidLeapDayIntervalException;
 use FontLib\Table\Type\post;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 /**
  * Class Interval
@@ -62,7 +63,7 @@ class LeapDay
         $this->not_numbered = Arr::get($attributes, "not_numbered", false);
         $this->show_text = Arr::get($attributes, "show_text", false);
 
-        $this->intervals = IntervalsCollection::fromString($this->interval, $this->offset)->normalize();;
+        $this->intervals = IntervalsCollection::fromString($this->interval, $this->offset)->normalize();
     }
 
     /**
@@ -107,6 +108,14 @@ class LeapDay
     }
 
     /**
+     * @return int
+     */
+    public function getAverageYearContribution(): int
+    {
+        return $this->intervals->totalFraction($this->yearZeroExists);
+    }
+
+    /**
      * @return array
      */
     public function toArray(): array
@@ -116,8 +125,12 @@ class LeapDay
             ->toArray();
     }
 
-    public function __get($name)
+    public function __get($key)
     {
-        return Arr::get($this->originalAttributes, $name);
+        if(method_exists($this, 'get'.Str::studly($key).'Attribute')) {
+            return $this->{'get'.Str::studly($key).'Attribute'}();
+        }
+
+        return Arr::get($this->originalAttributes, $key);
     }
 }

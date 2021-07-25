@@ -5,6 +5,8 @@ namespace App\Services\CalendarService;
 
 
 use App\Collections\IntervalsCollection;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use phpDocumentor\Reflection\Types\Collection;
 
 class Interval
@@ -15,6 +17,7 @@ class Interval
     public bool $subtracts;
     public IntervalsCollection $internalIntervals;
     public bool $bumpsYearZero;
+    public $fraction;
 
     /**
      * Interval constructor.
@@ -27,6 +30,12 @@ class Interval
         $this->interval = intval(str_replace('!', '', $interval));;
         $this->subtracts = str_contains($interval, '!');
         $this->internalIntervals = new IntervalsCollection();
+
+        $this->fraction = 1 / $this->interval;
+
+        if($this->subtracts) {
+            $this->fraction *= -1;
+        }
 
         // If this interval is not 1 and does not ignore offset, normalize offset to the interval
         $ignores_offset = str_contains($interval, '+');
@@ -242,10 +251,5 @@ class Interval
         $result = $year / $this->interval;
 
         return $this->subtracts ? ceil($result) * -1 : ceil($result);
-
-
     }
-
-
-
 }

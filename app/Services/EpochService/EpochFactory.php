@@ -77,10 +77,14 @@ class EpochFactory
      */
     public function forDate($year, $month, $day): Epoch
     {
+        dump("Getting for date: " . date_slug($year, $month, $day));
         if($this->needsDate($year, $month, $day)) {
+            dump("DOES need date generated");
             $epochs = $this->generateForDate($year, $month, $day);
+            dump("Generated " . $epochs->count() . " epochs:", $epochs->map->slug);
 
             $this->rememberEpochs($epochs);
+            dump("Remembered");
         }
 
         return $this->getByDate($year, $month, $day);
@@ -103,28 +107,34 @@ class EpochFactory
             ->last();
     }
 
-    public function incrementDay(Calendar $calendar, Epoch $epoch)
+    public function forEpoch($epochNumber): Epoch
     {
-        return $this->incrementDays($calendar, $epoch, 1);
-    }
+//        dd($epochNumber, $this->epochs->map(function($epoch){
+//            return "{$epoch->slug} : {$epoch->monthIndexOfYear} : {$epoch->epoch}";
+//        }));
 
-    public function incrementDays(Calendar $calendar, Epoch $epoch, $days = 1)
-    {
-        // First we want to check whether we're asking for a date in the same year.
-        // If we are? EZPZ! We've already calculated that year, let's just find it in our epochs array.
-        $theoreticalNewDayOfYear = ($epoch->dayOfYear + $days);
+        if(in_array($epochNumber, $this->epochs->pluck('epoch')->toArray())) {
+            dump('It was ... here?!?');
+            $epoch = $this->epochs->sole(function($epoch) use ($epochNumber){
+                return $epoch->epoch == $epochNumber;
+            });
 
-        if(0 < $theoreticalNewDayOfYear && $theoreticalNewDayOfYear < $calendar->year_length) {
-            return $this->epochs->where('epoch', '=', ($epoch->epoch + $days))->sole();
+//            dump($epoch);
+            return $epoch;
         }
 
-        // Ok ... So we want a date from _another_ year. Time to think up a different strategy here.
-        // What I would **love** to do is just self::calculateForEpoch($epoch->epoch + $days).
-        // That would be fantastic, and would be a universal strategy, I think.
-        // Otherwise, we have to figure out a guessing-game strategy here
-        //... Which would end up being a calculateForEpoch method. =]
+        return EpochCalculator::forCalendar($this->calendar->replicate())
+            ->calculate($epochNumber);
+    }
 
-        return $epoch;
+    public function incrementDay(Calendar $calendar, Epoch $epoch): Epoch
+    {
+        return $this->incrementDays($calendar, $epoch);
+    }
+
+    public function incrementDays(Calendar $calendar, Epoch $epoch, $days = 1): Epoch
+    {
+        return $this->forEpoch($epoch->epoch + $days);
     }
 
     /**

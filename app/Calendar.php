@@ -86,7 +86,7 @@ class Calendar extends Model
      */
     protected static function booted()
     {
-        static::addGlobalScope('active', function(Builder $builder) {
+        static::addGlobalScope('active', function (Builder $builder) {
             $builder->where('deleted', 0);
         });
     }
@@ -146,27 +146,27 @@ class Calendar extends Model
     public function structureWouldBeModified($static_data): bool
     {
 
-        if(!$this->isLinked()){
+        if (!$this->isLinked()) {
             return false;
         }
 
-        if($this->static_data['clock']['enabled'] != $static_data['clock']['enabled']){
+        if ($this->static_data['clock']['enabled'] != $static_data['clock']['enabled']) {
             return true;
         }
 
-        if($this->static_data['clock']['hours'] != $static_data['clock']['hours']){
+        if ($this->static_data['clock']['hours'] != $static_data['clock']['hours']) {
             return true;
         }
 
-        if($this->static_data['clock']['minutes'] != $static_data['clock']['minutes']){
+        if ($this->static_data['clock']['minutes'] != $static_data['clock']['minutes']) {
             return true;
         }
 
-        if($this->static_data['year_data'] != $static_data['year_data']){
+        if ($this->static_data['year_data'] != $static_data['year_data']) {
             return true;
         }
 
-        if($this->static_data['eras'] != $static_data['eras']){
+        if ($this->static_data['eras'] != $static_data['eras']) {
             return true;
         }
 
@@ -231,11 +231,11 @@ class Calendar extends Model
      */
     public function getCurrentDateValidAttribute(): bool
     {
-        if(count($this->static_data['year_data']['timespans']) < 1) {
+        if (count($this->static_data['year_data']['timespans']) < 1) {
             return false;
         }
 
-        if(!Arr::has($this->static_data, "year_data.timespans.{$this->month_index}")) {
+        if (!Arr::has($this->static_data, "year_data.timespans.{$this->month_index}")) {
             return false;
         }
 
@@ -266,9 +266,14 @@ class Calendar extends Model
 
     public function addDay(): Calendar
     {
-        $epoch = Epoch::incrementDay($this, $this->epoch);
+        return $this->addDays(1);
+    }
 
-        return $this->setDate($epoch->year, $epoch->monthIndexOfYear, $epoch->day);
+    public function addDays($number): Calendar
+    {
+        $epoch = Epoch::incrementDays($this, $this->epoch, $number);
+
+        return $this->setDate($epoch->year, $epoch->monthId, $epoch->day);
     }
 
     /**
@@ -279,7 +284,17 @@ class Calendar extends Model
     public function addYear(): Calendar
     {
         return $this->addYears(1);
-   }
+    }
+
+    /**
+     * Add a year to the current date of this calendar
+     *
+     * @return $this
+     */
+    public function subYear(): Calendar
+    {
+        return $this->addYears(-1);
+    }
 
     /**
      * Add a set number of years to the current date of this calendar
@@ -323,6 +338,16 @@ class Calendar extends Model
         $this->dynamic_data = $dynamic_data;
 
         return $this;
+    }
+
+    /**
+     * Get the average year length
+     *
+     * @return int
+     */
+    public function getAverageYearLengthAttribute(): int
+    {
+        return $this->timespans->sum->averageLength;
     }
 
     /**

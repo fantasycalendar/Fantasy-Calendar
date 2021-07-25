@@ -197,13 +197,13 @@ class State
         $this->day = 1;
         $this->visualDay = 1;
         $this->monthIndexOfYear++;
-        $this->monthId++;
 
 
         if($this->monthIndexOfYear == $this->months->count()){
             $this->incrementYear();
         }
 
+        $this->monthId = $this->months->get($this->monthIndexOfYear)->id;
         $this->weeksSinceMonthStart = 0;
         $this->previousState->forget('totalWeeksInMonth');
         $this->incrementWeek(!$this->calendar->overflows_week);
