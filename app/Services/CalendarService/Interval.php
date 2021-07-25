@@ -31,12 +31,6 @@ class Interval
         $this->subtracts = str_contains($interval, '!');
         $this->internalIntervals = new IntervalsCollection();
 
-        $this->fraction = 1 / $this->interval;
-
-        if($this->subtracts) {
-            $this->fraction *= -1;
-        }
-
         // If this interval is not 1 and does not ignore offset, normalize offset to the interval
         $ignores_offset = str_contains($interval, '+');
         $this->offset = $this->interval == 1 || $ignores_offset ? 0 : ($this->interval + $offset) % $this->interval;
@@ -251,5 +245,10 @@ class Interval
         $result = $year / $this->interval;
 
         return $this->subtracts ? ceil($result) * -1 : ceil($result);
+    }
+
+    public function fraction()
+    {
+        return (($this->subtracts) ? -1 : 1) / $this->interval;
     }
 }

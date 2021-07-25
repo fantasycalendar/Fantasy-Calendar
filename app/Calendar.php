@@ -304,7 +304,7 @@ class Calendar extends Model
      */
     public function addYears(int $years): Calendar
     {
-        return $this->setDate($this->year + $years, $this->month_index, $this->day);
+        return $this->setDate($this->year + $years, $this->month_id, $this->day);
     }
 
     /**
@@ -345,7 +345,7 @@ class Calendar extends Model
      *
      * @return int
      */
-    public function getAverageYearLengthAttribute(): int
+    public function getAverageYearLengthAttribute(): float
     {
         return $this->timespans->sum->averageLength;
     }
@@ -454,6 +454,20 @@ class Calendar extends Model
     }
 
     /**
+     * Calculates the "true" length of the current month by checking for leap days that contribute to it
+     *
+     * @return int
+     */
+    public function getMonthTrueLengthAttribute(): int
+    {
+        return $this->month_length + $this->leap_days
+                ->where('timespan', '=', $this->month_id)
+                ->filter(function($leapDay){
+                    return $leapDay->intersectsYear($this->year);
+                })->count();
+    }
+
+    /**
      * Get the ID of the current month
      * This is the where the month falls in **all** available timespans in this calendar structure
      *
@@ -466,20 +480,6 @@ class Calendar extends Model
             Arr::get($this->dynamic_data,
                 'month',
                 0));
-    }
-
-    /**
-     * Calculates the "true" length of the current month by checking for leap days that contribute to it
-     *
-     * @return int
-     */
-    public function getMonthTrueLengthAttribute(): int
-    {
-        return $this->month_length + $this->leap_days
-                ->where('timespan', '=', $this->month_id)
-                ->filter(function($leapDay){
-                    return $leapDay->intersectsYear($this->year);
-                })->count();
     }
 
     /**

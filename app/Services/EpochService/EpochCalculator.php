@@ -1,19 +1,17 @@
 <?php
 
-
 namespace App\Services\EpochService;
 
 
 use App\Calendar;
 use App\Facades\Epoch as EpochFactory;
 use App\Services\EpochService\Processor\InitialStateWithEras;
-use Illuminate\Support\Collection;
 
 class EpochCalculator
 {
     private Calendar $calendar;
-    private Collection $initialStates;
     private $targetEpoch;
+    private $averageYearLength;
 
     /**
      * EpochCalculator constructor.
@@ -22,25 +20,28 @@ class EpochCalculator
     public function __construct(Calendar $calendar)
     {
         $this->calendar = $calendar;
-        $this->initialStates = collect();
     }
 
-    public static function forCalendar(Calendar $calendar)
+    /**
+     * @param Calendar $calendar
+     * @return EpochCalculator
+     */
+    public static function forCalendar(Calendar $calendar): EpochCalculator
     {
         return new self($calendar);
     }
 
     public function calculate(int $epoch)
     {
+        $this->averageYearLength= $this->calendar->average_year_length;
+
         $this->targetEpoch = $epoch;
         // Make a best guess of epoch's year, based on year length
         // Hard-coded to 365 until average year length is implemented.
-        $guessYear = floor($epoch / $this->calendar->average_year_length);
 
-        logger()->debug("Starting guess process.\nAverage year length: {$this->calendar->average_year_length}\nSearching for epoch: {$epoch}");
+        $guessYear = floor($epoch / $this->averageYearLength) + $this->calendar->setting('year_zero_exists') + 1;
 
         $year = $this->resolveYear($guessYear);
-        logger()->debug("Landed on {$year} after our checking");
 
         $this->calendar->setDate($year, 0, 1);
 
@@ -60,16 +61,28 @@ class EpochCalculator
             $lowerGuess = InitialStateWithEras::generateFor($calendar)->get('epoch');
             $higherGuess = InitialStateWithEras::generateFor($calendar->addYear())->get('epoch');
 
-            logger()->debug("Checking between {$guessYear} and " . ($guessYear + 1));
 
-            if($lowerGuess > $this->targetEpoch) {
-                $guessYear--;
-            } elseif ($higherGuess <= $this->targetEpoch) {
-                $guessYear++;
-            }
-
+            $guessYear += $this->refinedEstimationDistance($lowerGuess, $higherGuess);
         } while($lowerGuess > $this->targetEpoch || $higherGuess <= $this->targetEpoch);
 
         return $guessYear;
+    }
+
+    private function refinedEstimationDistance($lowerGuess, $higherGuess): int
+    {
+        if($lowerGuess <= $this->targetEpoch && $higherGuess > $this->targetEpoch) return 0;
+
+        $distance = abs($lowerGuess - $this->targetEpoch);
+        $offByYears = $distance / $this->averageYearLength;
+
+        if($offByYears <= 1) {
+            return 1;
+        }
+
+        if ($higherGuess <= $this->targetEpoch) {
+            return floor($offByYears);
+        }
+
+        return -ceil($offByYears);
     }
 }

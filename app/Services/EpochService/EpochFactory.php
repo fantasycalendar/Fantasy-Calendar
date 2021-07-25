@@ -114,7 +114,7 @@ class EpochFactory
 //        }));
 
         if(in_array($epochNumber, $this->epochs->pluck('epoch')->toArray())) {
-            dump('It was ... here?!?');
+//            dump('It was ... here?!?');
             $epoch = $this->epochs->sole(function($epoch) use ($epochNumber){
                 return $epoch->epoch == $epochNumber;
             });

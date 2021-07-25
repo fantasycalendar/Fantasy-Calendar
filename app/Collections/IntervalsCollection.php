@@ -195,11 +195,6 @@ class IntervalsCollection extends \Illuminate\Support\Collection
              + $this->addOneForYearZero($year, $yearZeroExists);
     }
 
-    public function totalFraction(bool $yearZeroExists): float
-    {
-        return $this->sum->fraction($yearZeroExists);
-    }
-
     /**
      * Adds one additional occurrence to account for years beyond year zero if year zero exists
      *

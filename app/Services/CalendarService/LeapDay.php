@@ -110,9 +110,9 @@ class LeapDay
     /**
      * @return int
      */
-    public function getAverageYearContribution(): int
+    public function getAverageYearContributionAttribute(): float
     {
-        return $this->intervals->totalFraction($this->yearZeroExists);
+        return $this->intervals->sum->fraction();
     }
 
     /**
