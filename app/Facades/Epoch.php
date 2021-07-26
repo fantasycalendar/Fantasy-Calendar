@@ -11,6 +11,8 @@ namespace App\Facades;
  * @method static forCalendarMonth(\App\Calendar $calendar)
  * @method static incrementDay(\App\Calendar $param, mixed $epoch)
  * @method static incrementDays(\App\Calendar $param, mixed $epoch, $number)
+ * @method static incrementMonths(\App\Models\Concerns\HasDate $param, $epoch, $number)
+ * @method static incrementYears(int $years, \App\Models\Concerns\HasDate $param)
  */
 class Epoch extends \Illuminate\Support\Facades\Facade
 {

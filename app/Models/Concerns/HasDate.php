@@ -5,40 +5,35 @@ namespace App\Models\Concerns;
 
 
 use App\Calendar;
-use App\Facades\Epoch;
+use App\Facades\Epoch as EpochFactory;
+use App\Services\EpochService\Epoch;
+use Illuminate\Support\Str;
 
+
+/**
+ * Trait HasDate
+ * @package App\Models\Concerns
+ * @method Calendar addMinute()
+ * @method Calendar subMinute()
+ * @method Calendar addHour()
+ * @method Calendar subHour()
+ * @method Calendar addDay()
+ * @method Calendar subDay()
+ * @method Calendar addMonth()
+ * @method Calendar subMonth()
+ * @method Calendar addYear()
+ * @method Calendar subYear()
+ */
 trait HasDate
 {
-    public function addDay(): Calendar
+    public function addDays(int $days = 1): Calendar
     {
-        return $this->addDays(1);
+        return $this->setDateFromEpoch(EpochFactory::incrementDays($days, $this));
     }
 
-    public function addDays($number): Calendar
+    public function addMonths(int $months = 1): Calendar
     {
-        $epoch = Epoch::incrementDays($this, $this->epoch, $number);
-
-        return $this->setDate($epoch->year, $epoch->monthId, $epoch->day);
-    }
-
-    /**
-     * Add a year to the current date of this calendar
-     *
-     * @return $this
-     */
-    public function addYear(): Calendar
-    {
-        return $this->addYears(1);
-    }
-
-    /**
-     * Add a year to the current date of this calendar
-     *
-     * @return $this
-     */
-    public function subYear(): Calendar
-    {
-        return $this->addYears(-1);
+        return $this->setDateFromEpoch(EpochFactory::incrementMonths($months, $this));
     }
 
     /**
@@ -47,9 +42,9 @@ trait HasDate
      * @param int $years
      * @return $this
      */
-    public function addYears(int $years): Calendar
+    public function addYears(int $years = 1): Calendar
     {
-        return $this->setDate($this->year + $years, $this->month_id, $this->day);
+        return $this->setDateFromEpoch(EpochFactory::incrementYears($years, $this));
     }
 
     /**
@@ -83,5 +78,34 @@ trait HasDate
         $this->dynamic_data = $dynamic_data;
 
         return $this;
+    }
+
+    /**
+     * Sets the calendar date from an epoch object
+     *
+     * @param Epoch $epoch
+     * @return Calendar
+     */
+    public function setDateFromEpoch(Epoch $epoch): Calendar
+    {
+        return $this->setDate($epoch->year, $epoch->monthId, $epoch->day);
+    }
+
+    public function __call($method, $arguments)
+    {
+        if(Str::startsWith($method, ['sub', 'add'])) {
+            $number = $arguments[0] ?? 1;
+            if(Str::startsWith($method, 'sub')) {
+                $number *= -1;
+            }
+
+            $dateMethod = Str::replace('sub', 'add', Str::plural($method));
+
+            if(method_exists($this, $dateMethod)) {
+                return $this->$dateMethod($number);
+            }
+        }
+
+        return parent::__call($method, $arguments);
     }
 }

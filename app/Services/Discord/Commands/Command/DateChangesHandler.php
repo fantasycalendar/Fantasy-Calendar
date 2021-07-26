@@ -18,21 +18,27 @@ class DateChangesHandler extends Command
     {
         $this->calendar = $this->getDefaultCalendar();
 
+        $this->calendar->setDate(1491, 0, 1);
+
         $action = explode(' ', $this->called_command)[1];
-        $unit = ucfirst(Str::plural(explode(' ', $this->called_command)[2]));
+        $unit = explode(' ', $this->called_command)[2];
         $count = $this->option(['days', 'months', 'years', 'minutes', 'hours']) ?? 1;
 
-        $method = $action . $unit;
+        $method = $action . ucfirst(Str::plural($unit));
 
         $this->calendar
             ->$method($count)
             ->save();
 
         $response = ($count)
-            ? $count . " " . Str::plural($action, $count)
-            : '1 ' . $action;
+            ? $count . " " . Str::plural($unit, $count)
+            : '1 ' . $unit;
 
-        return $this->blockQuote($response . " added!")
+        $verb = ($action == 'add')
+            ? 'added'
+            : 'subtracted';
+
+        return $this->blockQuote("$response $verb!")
              . $this->newLine(2)
              . $this->codeBlock(TextRenderer::renderMonth($this->getDefaultCalendar()));
     }

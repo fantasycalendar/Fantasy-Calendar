@@ -127,14 +127,32 @@ class EpochFactory
             ->calculate($epochNumber);
     }
 
-    public function incrementDay(Calendar $calendar, Epoch $epoch): Epoch
+    public function incrementDay(Calendar $calendar, Epoch $epoch = null): Epoch
     {
-        return $this->incrementDays($calendar, $epoch);
+        return $this->incrementDays(1, $calendar, $epoch);
     }
 
-    public function incrementDays(Calendar $calendar, Epoch $epoch, $days = 1): Epoch
+    public function incrementDays($days, Calendar $calendar, Epoch $epoch = null): Epoch
     {
+        $epoch = $epoch ?? $calendar->epoch;
+
         return $this->forEpoch($epoch->epoch + $days);
+    }
+
+    public function incrementMonths()
+    {
+        // Basically the same approach as days but with a different metric
+    }
+
+    public function incrementYears()
+    {
+        // If current month of calendar is dumb, take dumb approach
+            // Month has no leap days? Month appears on target year? Just set the year and move on!
+            // Month has fewer leap days than the difference between current day and month length? Just set the year and move on!
+
+        // The only complicated situations: Month leaps and doesn't show up on current year.
+            // If the year has no months, wtf
+            // Walk backward first, if possible. Then forward.
     }
 
     /**
