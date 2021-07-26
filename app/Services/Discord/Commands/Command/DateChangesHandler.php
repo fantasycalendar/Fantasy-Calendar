@@ -17,25 +17,23 @@ class DateChangesHandler extends Command
     public function handle(): string
     {
         $this->calendar = $this->getDefaultCalendar();
-        $action = explode(' ', $this->called_command)[2];
+
+        $action = explode(' ', $this->called_command)[1];
+        $unit = ucfirst(Str::plural(explode(' ', $this->called_command)[2]));
         $count = $this->option(['days', 'months', 'years', 'minutes', 'hours']) ?? 1;
 
-        $this->$action($count);
+        $method = $action . $unit;
+
+        $this->calendar
+            ->$method($count)
+            ->save();
 
         $response = ($count)
             ? $count . " " . Str::plural($action, $count)
             : '1 ' . $action;
 
-        return $response . " added!" . $this->newLine(2) . $this->codeBlock(TextRenderer::renderMonth($this->getDefaultCalendar()));
-    }
-
-    public function __call($name, $arguments)
-    {
-        // addDays, etc.
-        $method = 'add' . ucfirst(Str::plural($name));
-
-        $this->calendar
-            ->$method($arguments[0])
-            ->save();
+        return $this->blockQuote($response . " added!")
+             . $this->newLine(2)
+             . $this->codeBlock(TextRenderer::renderMonth($this->getDefaultCalendar()));
     }
 }
