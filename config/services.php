@@ -460,7 +460,7 @@ return [
                     'year' => \App\Services\Discord\Commands\Command\Set\YearHandler::class,
                     'setting' => \App\Services\Discord\Commands\Command\Set\SettingsHandler::class
                 ],
-                'add' => \App\Services\Discord\Commands\Command\AddHandler::class,
+                'add' => \App\Services\Discord\Commands\Command\DateChangesHandler::class,
                 'subtract' => \App\Services\Discord\Commands\Command\Subtract\SubtractHandler::class,
                 'use' => \App\Services\Discord\Commands\Command\UseHandler::class,
             ]

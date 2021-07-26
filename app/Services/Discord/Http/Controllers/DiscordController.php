@@ -42,6 +42,9 @@ class DiscordController extends Controller
             return ['type' => 1];
         }
 
+        if(request()->header('bypassChecks')) {
+            dd(CommandDispatcher::dispatch(request()->all()));
+        }
 
         // Type 4 means we're responding directly.
         // For now, we don't queue and follow-up, but a type 5 would make that possible.

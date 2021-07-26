@@ -9,7 +9,7 @@ use App\Services\Discord\Commands\Command;
 use App\Services\RendererService\TextRenderer;
 use Illuminate\Support\Str;
 
-class AddHandler extends Command
+class DateChangesHandler extends Command
 {
 
     private Calendar $calendar;
