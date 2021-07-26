@@ -327,7 +327,7 @@ return [
                         ],
                     ],
                     [
-                        'name' => 'subtract',
+                        'name' => 'sub',
                         'description' => 'Subtract to the date of your selected calendar',
                         'type' => 2,
                         'options' => [
@@ -461,7 +461,7 @@ return [
                     'setting' => \App\Services\Discord\Commands\Command\Set\SettingsHandler::class
                 ],
                 'add' => \App\Services\Discord\Commands\Command\DateChangesHandler::class,
-                'subtract' => \App\Services\Discord\Commands\Command\Subtract\SubtractHandler::class,
+                'sub' => \App\Services\Discord\Commands\Command\DateChangesHandler::class,
                 'use' => \App\Services\Discord\Commands\Command\UseHandler::class,
             ]
         ]
