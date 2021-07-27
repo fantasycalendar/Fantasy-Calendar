@@ -4,6 +4,7 @@
 namespace App\Collections;
 
 
+use App\Exceptions\InvalidDateException;
 use App\Services\EpochService\Epoch;
 use Illuminate\Support\Collection as BaseCollection;
 
@@ -49,7 +50,13 @@ class EpochsCollection extends BaseCollection
      */
     public function getByDate($year, $month = 0, $day = 1): Epoch
     {
-        return $this->get(date_slug($year, $month, $day));
+        $date = date_slug($year, $month, $day);
+
+        if(!$this->has($date)) {
+            throw new InvalidDateException("Error trying to retrieve nonexistent date '$date'. Date is either invalid or not generated when we got to this point.");
+        }
+
+        return $this->get($date);
     }
 
     /**
