@@ -153,11 +153,11 @@ class State
     private function incrementWeekday(): void
     {
         if(!$this->isIntercalary()){
-            $this->visualWeekdayIndex = -1;
+            $this->visualWeekdayIndex = 0;
             $this->weekdayIndex++;
             $this->incrementWeek();
         } else {
-            if($this->visualWeekdayIndex >= $this->weekdayCount()) {
+            if(($this->day > 1 && !$this->previousState->get('isIntercalary')) || $this->visualWeekdayIndex >= $this->weekdayCount() -1) {
                 $this->visualWeekdayIndex = -1;
             }
 
@@ -281,7 +281,11 @@ class State
      */
     private function isIntercalary(): bool
     {
-        return $this->currentMonth()->daysInYear[$this->day-1]->intercalary;
+        if(!$this->statecache->has('isIntercalary')) {
+            $this->statecache->put('isIntercalary', $this->currentMonth()->daysInYear[$this->day-1]->intercalary);
+        }
+
+        return $this->statecache->get('isIntercalary');
     }
 
     /**
