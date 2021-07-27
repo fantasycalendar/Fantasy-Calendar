@@ -48,6 +48,7 @@ use Illuminate\Support\Collection;
  * @property mixed first_day
  * @property mixed parent_count
  * @property mixed months_without_eras
+ * @property float average_year_length
  * @method static findOrFail(array|\ArrayAccess|mixed $setting)
  */
 class Calendar extends Model
@@ -488,7 +489,7 @@ class Calendar extends Model
      */
     public function getDayAttribute(): int
     {
-        return Arr::get($this->dynamic_data, 'day', 1) - 1;
+        return Arr::get($this->dynamic_data, 'day', 1);
     }
 
     /**
