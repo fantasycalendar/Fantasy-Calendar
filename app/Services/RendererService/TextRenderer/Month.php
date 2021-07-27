@@ -44,7 +44,7 @@ class Month
             HeaderBlock::class => HeaderBlock::build($this->name, $this->internal_length, $this->year),
             MonthTopper::class => MonthTopper::build($this->minimum_day_length, $this->weekdays->count()),
             DayNameRow::class => DayNameRow::build($this->minimum_day_length, $this->weekdays),
-            Weeks::class => Weeks::build($this->weeks, $this->minimum_day_length, $this->weekdays->count()),
+            Weeks::class => Weeks::build($this->weeks, $this->minimum_day_length, $this->weekdays->count(), $this->month->intercalary),
             WeekBottom::class => WeekBottom::build($this->minimum_day_length, $this->weekdays->count())
         ];
 

@@ -15,13 +15,14 @@ class Weeks
     private EpochsCollection $weeks;
     public int $day_length;
     public int $week_length;
+    private bool $month_is_intercalary;
 
-    public function __construct(EpochsCollection $weeks, int $day_length, int $week_length)
+    public function __construct(EpochsCollection $weeks, int $day_length, int $week_length, bool $month_is_intercalary)
     {
-
         $this->weeks = $weeks->mapInto(RealWeek::class);
         $this->day_length = $day_length;
         $this->week_length = $week_length;
+        $this->month_is_intercalary = $month_is_intercalary;
     }
 
     public function initialize(): self
@@ -61,7 +62,15 @@ class Weeks
 
     public function getCurrentDayRow()
     {
-        return $this->weeks->takeUntil->hasCurrentDate()->sum->contributedLines() + $this->getCurrentDateWeek()->getCurrentDateRow();
+        if($this->month_is_intercalary) {
+            return $this->lineCount();
+        }
+
+        return $this->weeks
+                    ->takeUntil->hasCurrentDate()
+                    ->sum->contributedLines()
+             + $this->getCurrentDateWeek()
+                    ->getCurrentDateRow();
     }
 
     private function getCurrentDateWeek()
