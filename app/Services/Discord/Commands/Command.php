@@ -5,6 +5,7 @@ namespace App\Services\Discord\Commands;
 
 
 use App\Calendar;
+use App\Services\Discord\Exceptions\DiscordCalendarNotSetException;
 use App\Services\Discord\Exceptions\DiscordUserInvalidException;
 use App\Services\Discord\Models\DiscordAuthToken;
 use App\Services\Discord\Models\DiscordGuild;
@@ -35,7 +36,7 @@ abstract class Command
      * @param bool $deferred
      * @throws DiscordUserInvalidException
      */
-    public function __construct($interaction_data, $deferred = false)
+    public function __construct($interaction_data, bool $deferred = false)
     {
         $this->deferred = $deferred;
         $this->interaction_data = $interaction_data;
@@ -54,11 +55,20 @@ abstract class Command
         $this->guild = $this->getGuild();
     }
 
+    /**
+     * @param $key
+     * @return array|\ArrayAccess|mixed
+     */
     protected function interaction($key)
     {
         return Arr::get($this->interaction_data, $key);
     }
 
+    /**
+     * @param $key
+     * @param null $value
+     * @return array|\ArrayAccess|mixed
+     */
     protected function setting($key, $value = null)
     {
         return ($value)
@@ -66,7 +76,12 @@ abstract class Command
             : $this->guild->getSetting($key);
     }
 
-    protected function getGuild()
+    /**
+     * Get the DiscordGuild for this user interaction
+     *
+     * @return DiscordGuild
+     */
+    protected function getGuild(): DiscordGuild
     {
         return DiscordGuild::firstOrCreate(
             ['guild_id' => $this->interaction('guild_id'), 'discord_auth_id' => $this->discord_auth->id],
@@ -74,7 +89,12 @@ abstract class Command
         );
     }
 
-    private function bindUser()
+    /**
+     * Binds the Discord user ID for this interaction to a local FC user
+     *
+     * @throws DiscordUserInvalidException
+     */
+    private function bindUser(): void
     {
         if(!Arr::has($this->interaction_data, 'member.user.id')) {
             throw new DiscordUserInvalidException("Whoops! No user ID found in request. Discord messed up?");
@@ -90,9 +110,14 @@ abstract class Command
         }
     }
 
-    private function logInteraction()
+    /**
+     * Log the discord interaction in our local DB
+     *
+     * @return DiscordInteraction
+     */
+    private function logInteraction(): DiscordInteraction
     {
-        DiscordInteraction::create([
+        return DiscordInteraction::create([
             'discord_id' => optional($this->discord_auth)->id,
             'channel_id' => $this->interaction('channel_id'),
             'type' => $this->interaction('type'),
@@ -104,52 +129,108 @@ abstract class Command
         ]);
     }
 
-    protected function codeBlock($string)
+    /**
+     * Formats the input string into a Markdown code block
+     *
+     * @param string $string
+     * @return string
+     */
+    protected function codeBlock(string $string): string
     {
         return "```\n$string\n```";
     }
 
-    protected function bold($string)
+    /**
+     * Formats the input string to be Markdown bold
+     *
+     * @param string $string
+     * @return string
+     */
+    protected function bold(string $string): string
     {
         return "**{$string}**";
     }
 
-    protected function blockQuote($string)
+    /**
+     * Formats the input string to be a Markdown blockquote
+     *
+     * @param string $string
+     * @return string
+     */
+    protected function blockQuote(string $string): string
     {
         return "> " . implode("\n> ",explode("\n", $string));
     }
 
-    protected function heading($string, $min_length)
+    /**
+     * Creates a nicely-formatted "heading" of a specified length. For example, given
+     * "Harptos" and a length of 40, it will return the following string:
+     * "=============== Harptos ================"
+     *
+     * @param string $string
+     * @param int $min_length
+     * @return string
+     */
+    protected function heading(string $string, int $min_length): string
     {
         return Str::padBoth(" {$string} ", $min_length, '=');
     }
 
-    protected function newLine($int = 1)
+    /**
+     * Creates the specified number of newlines.
+     *
+     * @param int $amount
+     * @return string
+     */
+    protected function newLine(int $amount = 1): string
     {
-        return str_repeat("\n", $int);
+        return str_repeat("\n", $amount);
     }
 
-    protected function mention()
+    /**
+     * Creates a formatted Discord mention for the specified Discord user, if given a Discord user ID.
+     * If no user is specified, default to the user who called the command
+     *
+     * @param string|null $discord_user_id
+     * @return string
+     */
+    protected function mention(string $discord_user_id = null): string
     {
-        return '<@' . $this->discord_user_id . '>';
+        return '<@' . ($discord_user_id ?? $this->discord_user_id) . '>';
     }
 
-    protected function listCalendars()
+    /**
+     * Generates a
+     *
+     * @return string
+     */
+    protected function listCalendars(): string
     {
-        return "```" . $this->user->calendars()->orderBy('name')->get()->map(function($calendar, $index) {
-                return $index . ": " . $calendar->name;
-            })->join("\n") . "```";
+        return $this->codeBlock($this->user->calendars()->orderBy('name')->get()->map(function($calendar, $index) {
+            return $index . ": " . $calendar->name;
+        })->join("\n"));
     }
 
-    protected function getDefaultCalendar()
+    /**
+     * @throws DiscordCalendarNotSetException
+     * @returns Calendar
+     */
+    protected function getDefaultCalendar(): Calendar
     {
         if(!$this->setting('default_calendar')) {
-            throw new \Exception('That command requires you to set a default calendar using `/fc use`.');
+            throw new DiscordCalendarNotSetException('That command requires you to set a default calendar using `/fc use`.');
         }
 
-        return Calendar::find($this->setting('default_calendar'));
+        return Calendar::findOrFail($this->setting('default_calendar'));
     }
 
+    /**
+     * Retrieves an option with a specified name - Or, if given an array of names, returns the first match.
+     * On finding none, returns null.
+     *
+     * @param $key
+     * @return array|\ArrayAccess|mixed|null
+     */
     protected function option($key)
     {
         if(is_array($key)) {
@@ -165,7 +246,11 @@ abstract class Command
         return Arr::get($this->options, $key);
     }
 
-    protected static function getOptions($data)
+    /**
+     * @param $data
+     * @return Collection
+     */
+    protected static function getOptions($data): Collection
     {
         switch (Arr::get($data, 'type')) {
             case 1:
@@ -183,6 +268,13 @@ abstract class Command
         }
     }
 
+    /**
+     * Gets the called command as a string, sans options.
+     * For example, if the user typed "/fc show month", this returns "fc show month"
+     *
+     * @param $data
+     * @return array|\ArrayAccess|mixed|string
+     */
     protected static function getCalledCommand($data)
     {
         switch (Arr::get($data, 'type')) {
@@ -194,5 +286,11 @@ abstract class Command
         }
     }
 
+    /**
+     * Handles the actual incoming Discord interaction, post-setup.
+     * If you're extending this to build a Discord command, this is the method you want to write.
+     *
+     * @return string
+     */
     public abstract function handle(): string;
 }
