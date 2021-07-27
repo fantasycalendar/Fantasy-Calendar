@@ -18,8 +18,6 @@ class DateChangesHandler extends Command
     {
         $this->calendar = $this->getDefaultCalendar();
 
-        $this->calendar->setDate(1491, 0, 1);
-
         $action = explode(' ', $this->called_command)[1];
         $unit = explode(' ', $this->called_command)[2];
         $count = $this->option(['days', 'months', 'years', 'minutes', 'hours']) ?? 1;
