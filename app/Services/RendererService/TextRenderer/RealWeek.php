@@ -81,13 +81,20 @@ class RealWeek
         return $this->visualWeeks->filter->hasCurrentDate()->count() > 0;
     }
 
-    public function getCurrentDateRow()
+    public function getCurrentDateRow(bool $month_is_intercalary)
     {
         $currentDateWeek = $this->visualWeeks->filter->hasCurrentDate()->sole();
 
         $linesToCurrentDate = $currentDateWeek->hasIntercalary()
             ? 2
             : 1;
+
+        if($month_is_intercalary) {
+            $dayCountUpToCurrentDate = $currentDateWeek->days->takeUntil(function($day){
+                    return $day->isCurrent;
+                })->count() + 1;
+            $linesToCurrentDate = (2 * ceil($dayCountUpToCurrentDate / $this->weekLength)) - 1;
+        }
 
         return $this->visualWeeks
             ->takeUntil->hasCurrentDate()

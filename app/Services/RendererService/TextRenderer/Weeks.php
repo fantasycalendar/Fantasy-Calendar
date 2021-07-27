@@ -63,14 +63,16 @@ class Weeks
     public function getCurrentDayRow()
     {
         if($this->month_is_intercalary) {
-            return $this->lineCount();
+            if($this->lineCount() === 1) {
+                return 1;
+            }
         }
 
         return $this->weeks
                     ->takeUntil->hasCurrentDate()
                     ->sum->contributedLines()
              + $this->getCurrentDateWeek()
-                    ->getCurrentDateRow();
+                    ->getCurrentDateRow($this->month_is_intercalary);
     }
 
     private function getCurrentDateWeek()
