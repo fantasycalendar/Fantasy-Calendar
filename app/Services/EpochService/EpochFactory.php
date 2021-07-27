@@ -29,7 +29,7 @@ class EpochFactory
      */
     public function forCalendar(Calendar $calendar): EpochFactory
     {
-        $this->calendar = $calendar->replicate()->startOfYear();
+        $this->calendar = $calendar->replicate();
         $this->epochs = new EpochsCollection();
 
         return $this;
@@ -64,7 +64,7 @@ class EpochFactory
     public function forCalendarDay(Calendar $calendar): Epoch
     {
         return $this->forCalendarYear($calendar)
-            ->getByDate($calendar->year, $calendar->month_index, $calendar->day + 1);
+            ->getByDate($calendar->year, $calendar->month_index, $calendar->day);
     }
 
     /**
@@ -77,14 +77,15 @@ class EpochFactory
      */
     public function forDate($year, $month, $day): Epoch
     {
-        dump("Getting for date: " . date_slug($year, $month, $day));
+        logger()->debug("Getting for date: " . date_slug($year, $month, $day));
         if($this->needsDate($year, $month, $day)) {
-            dump("DOES need date generated");
+            logger()->debug("DOES need date generated");
             $epochs = $this->generateForDate($year, $month, $day);
-            dump("Generated " . $epochs->count() . " epochs:", $epochs->map->slug);
+            logger()->debug("Generated " . $epochs->count() . " epochs:");
+            logger()->debug($epochs->map->slug);
 
             $this->rememberEpochs($epochs);
-            dump("Remembered");
+            logger()->debug("Remembered");
         }
 
         return $this->getByDate($year, $month, $day);
@@ -109,18 +110,10 @@ class EpochFactory
 
     public function forEpoch($epochNumber): Epoch
     {
-//        dd($epochNumber, $this->epochs->map(function($epoch){
-//            return "{$epoch->slug} : {$epoch->monthIndexOfYear} : {$epoch->epoch}";
-//        }));
+        $epochsByNumber = $this->epochs->keyBy('epoch');
 
-        if(in_array($epochNumber, $this->epochs->pluck('epoch')->toArray())) {
-//            dump('It was ... here?!?');
-            $epoch = $this->epochs->sole(function($epoch) use ($epochNumber){
-                return $epoch->epoch == $epochNumber;
-            });
-
-//            dump($epoch);
-            return $epoch;
+        if($epochsByNumber->has($epochNumber)) {
+            return $epochsByNumber->get($epochNumber);
         }
 
         return EpochCalculator::forCalendar($this->calendar->replicate())
@@ -139,8 +132,18 @@ class EpochFactory
         return $this->forEpoch($epoch->epoch + $days);
     }
 
-    public function incrementMonths()
+    public function incrementMonths($months, Calendar $calendar, Epoch $epoch = null): Epoch
     {
+        $target = $this->calendar->month_index + $months;
+
+        if($target >= 0 && $this->calendar->months->has($target)) {
+            $month = $this->calendar->months->get($target);
+
+            $targetDay = min($month->daysInYear->count(), $this->calendar->day);
+
+            return $this->forDate($this->calendar->year, $target, $targetDay);
+        }
+
         // Basically the same approach as days but with a different metric
     }
 
@@ -153,6 +156,16 @@ class EpochFactory
         // The only complicated situations: Month leaps and doesn't show up on current year.
             // If the year has no months, wtf
             // Walk backward first, if possible. Then forward.
+    }
+
+    /**
+     * Gets a list of all the date slugs registered in our global listing
+     *
+     * @return EpochsCollection
+     */
+    public function dateList(): EpochsCollection
+    {
+        return $this->epochs->keys();
     }
 
     /**
@@ -244,7 +257,7 @@ class EpochFactory
      */
     private function processor($calendar = null, $withEras = true): Processor
     {
-        $calendar = $calendar ?? $this->calendar->replicate();
+        $calendar = $calendar ?? $this->calendar->replicate()->startOfYear();
         $state = new State($calendar);
 
         if(!$withEras) {

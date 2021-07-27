@@ -10,7 +10,7 @@ use App\Services\EpochService\Processor\InitialStateWithEras;
 class EpochCalculator
 {
     private Calendar $calendar;
-    private $targetEpoch;
+    private $targetMetric;
     private $averageYearLength;
 
     /**
@@ -35,7 +35,7 @@ class EpochCalculator
     {
         $this->averageYearLength= $this->calendar->average_year_length;
 
-        $this->targetEpoch = $epoch;
+        $this->targetMetric = $epoch;
         // Make a best guess of epoch's year, based on year length
         // Hard-coded to 365 until average year length is implemented.
 
@@ -48,7 +48,7 @@ class EpochCalculator
         $yearStartEpoch = EpochFactory::forCalendarYear($this->calendar)->first();
         $diff = $epoch - $yearStartEpoch->epoch;
 
-        return EpochFactory::incrementDays($this->calendar, $yearStartEpoch, $diff);
+        return EpochFactory::incrementDays($diff, $this->calendar, $yearStartEpoch);
     }
 
     private function resolveYear($guessYear): int
@@ -63,23 +63,23 @@ class EpochCalculator
 
 
             $guessYear += $this->refinedEstimationDistance($lowerGuess, $higherGuess);
-        } while($lowerGuess > $this->targetEpoch || $higherGuess <= $this->targetEpoch);
+        } while($lowerGuess > $this->targetMetric || $higherGuess <= $this->targetMetric);
 
         return $guessYear;
     }
 
     private function refinedEstimationDistance($lowerGuess, $higherGuess): int
     {
-        if($lowerGuess <= $this->targetEpoch && $higherGuess > $this->targetEpoch) return 0;
+        if($lowerGuess <= $this->targetMetric && $higherGuess > $this->targetMetric) return 0;
 
-        $distance = abs($lowerGuess - $this->targetEpoch);
+        $distance = abs($lowerGuess - $this->targetMetric);
         $offByYears = $distance / $this->averageYearLength;
 
         if($offByYears <= 1) {
             return 1;
         }
 
-        if ($higherGuess <= $this->targetEpoch) {
+        if ($higherGuess <= $this->targetMetric) {
             return floor($offByYears);
         }
 

@@ -6,6 +6,7 @@ namespace App\Services\EpochService;
 
 use App\Calendar;
 use App\Collections\EpochsCollection;
+use App\Exceptions\InvalidDateException;
 use App\Services\EpochService\Processor\State;
 
 class Processor
@@ -58,20 +59,27 @@ class Processor
             $this->stepForward();
         }
 
+        $this->epochs->insertFromArray($this->state->toArray());
+
         return $this->getEpochs();
     }
 
     /**
      * Step forward until a certain date is reached.
      *
-     * @param $year
+     * @param int $year
      * @param int $month
      * @param int $day
      * @return EpochsCollection
+     * @throws InvalidDateException
      */
-    public function processUntilDate($year, $month = 0, $day = 1): EpochsCollection
+    public function processUntilDate(int $year, int $month = 0, int $day = 1): EpochsCollection
     {
         return $this->processUntil(function($processor) use ($year, $month, $day){
+            if($processor->state->year >= $year && $processor->state->monthIndexOfYear >= $month && $processor->state->day > $day) {
+                throw new InvalidDateException("Tried to generate past " . date_slug($year, $month, $day - 1) . " to " . date_slug($processor->state->year, $processor->state->monthIndexOfYear, $processor->state->day) . ". Was an invalid date provided?");
+            }
+
             return $processor->state->year == $year
                 && $processor->state->monthIndexOfYear == $month
                 && $processor->state->day == $day;
