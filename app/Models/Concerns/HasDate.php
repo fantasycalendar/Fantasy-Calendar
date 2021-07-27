@@ -26,11 +26,23 @@ use Illuminate\Support\Str;
  */
 trait HasDate
 {
+    /**
+     * Add a set number of days to the current date of this calendar
+     *
+     * @param int $days
+     * @return Calendar
+     */
     public function addDays(int $days = 1): Calendar
     {
         return $this->setDateFromEpoch(EpochFactory::incrementDays($days, $this));
     }
 
+    /**
+     * Add a set number of months to the current date of this calendar
+     *
+     * @param int $months
+     * @return Calendar
+     */
     public function addMonths(int $months = 1): Calendar
     {
         return $this->setDateFromEpoch(EpochFactory::incrementMonths($months, $this));
@@ -40,7 +52,7 @@ trait HasDate
      * Add a set number of years to the current date of this calendar
      *
      * @param int $years
-     * @return $this
+     * @return Calendar
      */
     public function addYears(int $years = 1): Calendar
     {
@@ -50,13 +62,21 @@ trait HasDate
     /**
      * Set this calendar to the start of the calendar year
      *
-     * @return $this
+     * @return Calendar
      */
     public function startOfYear(): Calendar
     {
-        $this->setDate($this->year, 0, 0);
+        return $this->setDate($this->year, $this->months->first()->id, 1);
+    }
 
-        return $this;
+    /**
+     * Set this calendar to the end of the calendar year
+     *
+     * @return Calendar
+     */
+    public function endOfYear(): Calendar
+    {
+        return $this->setDateFromEpoch(EpochFactory::forCalendarYear($this)->last());
     }
 
     /**

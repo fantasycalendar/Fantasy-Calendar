@@ -48,6 +48,7 @@ use Illuminate\Support\Collection;
  * @property mixed first_day
  * @property mixed parent_count
  * @property mixed months_without_eras
+ * @method static findOrFail(array|\ArrayAccess|mixed $setting)
  */
 class Calendar extends Model
 {
