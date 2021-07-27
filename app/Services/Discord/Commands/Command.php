@@ -5,6 +5,7 @@ namespace App\Services\Discord\Commands;
 
 
 use App\Calendar;
+use App\Facades\Epoch;
 use App\Services\Discord\Exceptions\DiscordCalendarNotSetException;
 use App\Services\Discord\Exceptions\DiscordUserInvalidException;
 use App\Services\Discord\Models\DiscordAuthToken;
@@ -221,7 +222,11 @@ abstract class Command
             throw new DiscordCalendarNotSetException('That command requires you to set a default calendar using `/fc use`.');
         }
 
-        return Calendar::findOrFail($this->setting('default_calendar'));
+        $calendar = Calendar::findOrFail($this->setting('default_calendar'));
+
+        Epoch::forCalendar($calendar);
+
+        return $calendar;
     }
 
     /**
