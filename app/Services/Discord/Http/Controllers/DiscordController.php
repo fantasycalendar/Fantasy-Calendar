@@ -14,6 +14,13 @@ use Laravel\Socialite\Facades\Socialite;
 
 class DiscordController extends Controller
 {
+    /**
+     * DiscordController constructor.
+     *
+     * All this really does is add our two middlewares:
+     * - Ensure user is premium
+     * - Make sure discord auth is setup when trying to go to the success page
+     */
     public function __construct()
     {
         // Ensure user is premium
@@ -35,7 +42,12 @@ class DiscordController extends Controller
         })->only('success');
     }
 
-    public function hook()
+    /**
+     * When Discord reaches out to us with a user interaction, it'll hit here.
+     *
+     * @return array|int[]
+     */
+    public function hook(): array
     {
         // Respond to Discord's pings with a 'type' to make them happy
         if(!request()->has('data')) {
@@ -61,11 +73,24 @@ class DiscordController extends Controller
         return config('services.discord.global_commands.fc');
     }
 
-    public function user_redirect()
+    /**
+     * Sends a normal (non-server owner) user to the Discord Oauth2 authorization page
+     * This is just for users who want to use a calendar in a server where FC is already setup.
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function user_redirect(): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         return Socialite::driver('discord')->redirect();
     }
 
+
+    /**
+     * Sends a server-owner user to the Discord Oauth2 authorization page
+     * A user who clicks "Add Fantasy Calendar to A Server"
+     *
+     * @return mixed
+     */
     public function server_owner_redirect()
     {
         return Socialite::driver('discord')
@@ -73,6 +98,12 @@ class DiscordController extends Controller
             ->redirect();
     }
 
+    /**
+     * Users are sent here when they complete the Discord auth process.
+     * All this does is create a DiscordAuth entry for the user
+     *
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function callback()
     {
         try {
@@ -102,6 +133,11 @@ class DiscordController extends Controller
         return redirect(route('discord.success'));
     }
 
+    /**
+     * This is the "Account connected" success page. Pretty straightforward, I think.
+     *
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
     public function success()
     {
         return view('Discord::pages.success', [
@@ -110,6 +146,11 @@ class DiscordController extends Controller
         ]);
     }
 
+    /**
+     * Lets a user disconnect their FC account from Discord, then redirects them to the calendars list with a message confirming as much.
+     *
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function remove()
     {
         Auth::user()->discord_auth()->delete();
