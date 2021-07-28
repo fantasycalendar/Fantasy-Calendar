@@ -77,15 +77,15 @@ class EpochFactory
      */
     public function forDate($year, $month, $day): Epoch
     {
-        logger()->debug("Getting for date: " . date_slug($year, $month, $day));
+//        logger()->debug("Getting for date: " . date_slug($year, $month, $day));
         if($this->needsDate($year, $month, $day)) {
-            logger()->debug("DOES need date generated");
+//            logger()->debug("DOES need date generated");
             $epochs = $this->generateForDate($year, $month, $day);
-            logger()->debug("Generated " . $epochs->count() . " epochs:");
-            logger()->debug($epochs->map->slug);
+//            logger()->debug("Generated " . $epochs->count() . " epochs:");
+//            logger()->debug($epochs->map->slug);
 
             $this->rememberEpochs($epochs);
-            logger()->debug("Remembered");
+//            logger()->debug("Remembered");
         }
 
         return $this->getByDate($year, $month, $day);
@@ -147,11 +147,17 @@ class EpochFactory
         // Basically the same approach as days but with a different metric
     }
 
-    public function incrementYears()
+    public function incrementYears($years, Calendar $calendar, Epoch $epoch = null): Epoch
     {
-        // If current month of calendar is dumb, take dumb approach
-            // Month has no leap days? Month appears on target year? Just set the year and move on!
-            // Month has fewer leap days than the difference between current day and month length? Just set the year and move on!
+        $targetYear = $this->calendar->year + $years;
+
+        if($this->calendar->month->intersectsYear($targetYear)) {
+            $targetMonth = $this->calendar->replicate()->setDate($targetYear);
+
+            $targetDay = min($targetMonth->month->daysInYear->count(), $targetMonth->day);
+
+            return $this->forDate($targetYear, $targetMonth->month_index, $targetDay);
+        }
 
         // The only complicated situations: Month leaps and doesn't show up on current year.
             // If the year has no months, wtf

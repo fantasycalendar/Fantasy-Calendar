@@ -76,7 +76,9 @@ class Processor
     public function processUntilDate(int $year, int $month = 0, int $day = 1): EpochsCollection
     {
         return $this->processUntil(function($processor) use ($year, $month, $day){
-            if($processor->state->year >= $year && $processor->state->monthIndexOfYear >= $month && $processor->state->day > $day) {
+//            logger()->debug("Processing " . date_slug($processor->state->year, $processor->state->monthIndexOfYear, $processor->state->day) . ' to find ' . date_slug($year, $month, $day));
+
+            if($processor->state->year >= $year && $processor->state->monthIndexOfYear > $month) {
                 throw new InvalidDateException("Tried to generate past " . date_slug($year, $month, $day - 1) . " to " . date_slug($processor->state->year, $processor->state->monthIndexOfYear, $processor->state->day) . ". Was an invalid date provided?");
             }
 

@@ -41,7 +41,7 @@ class RenderMonth
 
         return [
             'year' => $this->calendar->year,
-            'month' => $this->calendar->month,
+            'month' => $this->calendar->render_month,
             'name' => $this->name,
             'length' => $this->daysInYear->count(),
             'weekdays' => $this->weekdays,

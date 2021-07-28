@@ -35,7 +35,8 @@ use Illuminate\Support\Collection;
  * @property mixed month_length Length property of current month (Does not include leap days)
  * @property mixed month_week Week used by the current month
  * @property mixed month_true_length Calculated length (Based on current year and leap days)
- * @property RenderMonth month Data structure of current month
+ * @property Month month Object representing the current month, as indicated by dynamic_data
+ * @property RenderMonth render_month Data structure of current month
  * @property bool overflows_week Checks whether calendar overflows the week
  * @property mixed day Current day in month
  * @property mixed current_era_valid Checks whether the current era is valid
@@ -450,12 +451,19 @@ class Calendar extends Model
         return Arr::get($this->static_data, "year_data.timespans.{$this->month_id}.name", "");
     }
 
+    public function getMonthAttribute(): Month
+    {
+        return $this->months->sole(function($month){
+            return $month->id === $this->month_id;
+        });
+    }
+
     /**
      * Get a RenderMonth object representing the current month
      *
      * @return RenderMonth
      */
-    public function getMonthAttribute(): RenderMonth
+    public function getRenderMonthAttribute(): RenderMonth
     {
         return new RenderMonth($this);
     }

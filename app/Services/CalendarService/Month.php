@@ -138,7 +138,6 @@ class Month extends Timespan
      */
     private function insertLeapdaysIntoDaysInYear($daysInYear): Collection
     {
-
         $intercalaryLeapDays = $this->activeLeapDays->filter->intercalary;
 
         if($intercalaryLeapDays->count()){
@@ -152,7 +151,6 @@ class Month extends Timespan
         }
 
         return $daysInYear;
-
     }
 
     public function __toString(): string

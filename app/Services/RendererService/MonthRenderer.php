@@ -36,7 +36,7 @@ class MonthRenderer
     public function prepare()
     {
         $pipelineData = [
-            'render_data' => $this->calendar->month->getStructure(),
+            'render_data' => $this->calendar->render_month->getStructure(),
             'calendar' => $this->calendar
         ];
 

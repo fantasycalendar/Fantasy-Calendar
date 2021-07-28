@@ -28,7 +28,7 @@ class Date
 
     /**
      * @param $calendar
-	 * @param $year 
+	 * @param $year
 	 * @param $month
 	 * @param $day
      */
@@ -37,12 +37,12 @@ class Date
 		$this->calendar = $calendar;
 
 		$this->year = $year ?? $calendar->year;
-		$this->month = $month ?? $calendar->month;
+		$this->month = $month ?? $calendar->month_id;
 		$this->day = $day ?? $calendar->day;
-	    
+
         $this->monthsOfYear = $this->calendar->get_months_of_year($this->year);
 		$this->daysOfMonth = $this->calendar->get_days_of_month($this->year, $this->month);
-		
+
 	}
 
 	/**
@@ -51,7 +51,7 @@ class Date
 	 * @param  int  year
 	 */
 	public function setYear(int $year){
-        
+
         // $date = $date->setYear(1491)->setMonth(30);
 		if($year == $this->year) return $this;
 
@@ -70,7 +70,7 @@ class Date
 		}else{
 
 			$newYear = $year > $this->year ? $year+1 : $year-1;
-			
+
 			$this->setYear($newYear);
 
 		}
@@ -87,7 +87,7 @@ class Date
 		if($month == $this->month) return $this;
 
 		if($month > count($this->monthsOfYear)){
-			
+
 			$this->addYear(1);
 
 			$difference = count($this->monthsOfYear) - $month - 1;
@@ -95,7 +95,7 @@ class Date
 			$this->setMonth($difference);
 
 		}else if($month < 0){
-			
+
 			$this->subtractYear(1);
 
 			$difference = $month + count($this->monthsOfYear);
@@ -126,7 +126,7 @@ class Date
 		if($day == $this->day) return $this;
 
 		if($day >= count($this->daysOfMonth)){
-			
+
 			$this->addMonth(1);
 
 			$difference = count($this->daysOfMonth) - $day - 1;
@@ -134,13 +134,13 @@ class Date
 			$this->setDay($difference);
 
 		}else if($day < 0){
-			
+
 			$this->subtractMonth(1);
 
 			$difference = $day + count($this->daysOfMonth);
 
 			$this->setDay($difference);
-			
+
 		}else{
 
 			$this->day = $day;
