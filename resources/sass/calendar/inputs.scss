@@ -6,7 +6,7 @@ div:focus, button:focus, * button.btn.btn-stock:focus {
 }
 
 #protip_container{
-    z-index:300;
+    z-index:1100;
     position: absolute !important;
 }
 
@@ -838,7 +838,7 @@ body .event_comment .comment_context_btn:not(:hover) {
     color:#B71C1C;
 }
 
-.view_event_btn, .edit_event_btn {
+.event_header_action {
     font-size:1.5rem;
     opacity:0.35;
     margin-left:0.5rem;

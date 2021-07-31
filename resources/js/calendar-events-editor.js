@@ -44,8 +44,8 @@ const calendar_events_editor = {
 
 	init($event) {
 
-		let epoch = $event.detail.epoch;
-		this.epoch_data = evaluated_static_data.epoch_data[epoch];
+		this.epoch = $event.detail.epoch;
+		this.epoch_data = evaluated_static_data.epoch_data[this.epoch];
 
 		/* Some scripts are loaded after Alpine, so we need to set everything up when the UI is first opened */
 		if(!this.has_initialized){
@@ -483,12 +483,12 @@ const calendar_events_editor = {
 				icon: "warning",
 			}).then((result) => {
 				if (!result.dismiss) {
-					window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { id: this.event_id, era: false } }));
+					window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { id: this.event_id, era: false, epoch: this.epoch } }));
 					this.close();
 				}
 			});
 		} else {
-			window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { id: this.event_id, era: false } }));
+			window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { id: this.event_id, era: false, epoch: this.epoch } }));
 			this.close();
 		}
 

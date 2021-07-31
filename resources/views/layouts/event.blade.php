@@ -21,7 +21,10 @@
 				<i class="close_ui_btn fas fa-times-circle" @click='confirm_close(close)'></i>
 
 				<div class='row no-gutters modal-form-heading'>
-					<h2><span class='event_name' x-text='data.name'>Editing Event</span> <i class="fas fa-pencil-alt edit_event_btn" @click='confirm_edit' x-show='can_edit'></i></h2>
+					<h2>
+                        <span class='event_name' x-text='data.name'>Editing Event</span>
+                        <i class="fas fa-pencil-alt event_header_action protip" data-pt-position='bottom' data-pt-title="Edit event" @click='confirm_edit' x-show='can_edit'></i>
+                        <i class="fas fa-clone event_header_action protip" data-pt-position='bottom' data-pt-title="Clone event" @click='confirm_clone' x-show='can_edit'></i></h2>
 				</div>
 
 				<div class='row'>
@@ -121,7 +124,11 @@
 				<i class="close_ui_btn fas fa-times-circle" @click='confirm_close'></i>
 
 				<div class='row no-gutters mb-1 modal-form-heading'>
-					<h2 class='event_action_type'><span x-text="creation_type"></span> <i class="fas fa-eye view_event_btn" @click='confirm_view'></i></h2>
+					<h2 class='event_action_type'>
+                        <span x-text="creation_type"></span>
+                        <i class="fas fa-eye event_header_action protip" data-pt-position='bottom' data-pt-title="Preview event" @click='confirm_view'></i>
+                        <i class="fas fa-clone event_header_action protip" data-pt-position='bottom' data-pt-title="Clone event" @click='confirm_clone'></i>
+                    </h2>
 				</div>
 
 				<div class='row no-gutters my-1'>
@@ -238,7 +245,7 @@
                                 Moon Overrides
                             </h4>
                         </div>
-                        <div class='container settings_container p-0' x-show="moon_overrides_open">
+                        <div class='container settings_container p-0' x-show.transition.origin.top="moon_overrides_open">
                             <template x-for="moon in moons">
                                 <div class='p-2 mb-2 border rounded'>
                                     <div class='row no-gutters mb-2'>
@@ -483,7 +490,7 @@
 					<div class='btn btn-lg btn-primary btn-block' @click="save_event">Save</div>
 				</div>
 				<div class='row no-gutters my-1'>
-					<div class='btn btn-sm btn-danger btn-block' x-show='!new_event' @click='confirm_delete_event({detail: {event_id: event_id}})'>Delete</div>
+                    <div class='btn btn-sm btn-danger btn-block' x-show='!new_event' @click='confirm_delete_event({detail: {event_id: event_id}})'>Delete</div>
 				</div>
 			</form>
 		</div>
@@ -506,7 +513,10 @@
 				<i class="close_ui_btn fas fa-times-circle" @click='confirm_close'></i>
 
 				<div class='row no-gutters mb-1 modal-form-heading'>
-					<h2 class='event_action_type'><span>Editing Era Description</span> <i class="fas fa-eye view_event_btn" @click='confirm_view'></i></h2>
+					<h2 class='event_action_type'>
+                        <span>Editing Era Description</span>
+                        <i class="fas fa-eye event_header_action protip" data-pt-position='bottom' data-pt-title="Preview" @click='confirm_view'></i>
+                    </h2>
 				</div>
 
 				<div class='row'>
