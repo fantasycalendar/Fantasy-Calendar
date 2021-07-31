@@ -20,7 +20,6 @@ class CommandDispatcher
             $response = (new $handlerClass($commandData))->handle();
         } catch (\Throwable $e) {
             Log::error($e->getTraceAsString());
-            dump($e);
             return $e->getMessage();
         }
 

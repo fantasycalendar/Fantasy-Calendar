@@ -5,6 +5,7 @@ namespace App\Models\Concerns;
 
 
 use App\Calendar;
+use App\Exceptions\InvalidDateException;
 use App\Facades\Epoch as EpochFactory;
 use App\Services\EpochService\Epoch;
 use Illuminate\Support\Arr;
@@ -164,18 +165,14 @@ trait HasDate
             ? 1
             : -1;
 
-//        dump("Starting with:", $foundValidMonth, $targetMonthId, $monthDirection, $this->months->map->id);
-
         do {
             $targetMonthId += $monthDirection;
-//            dump("Checking for month: $targetMonthId");
 
-            if(($targetMonthId - 1) > $this->timespans->count()) dd($this->months->map->id);
+            if(($targetMonthId - 1) > $this->timespans->count()) throw new InvalidDateException('No valid months found?! Um. You should never get here. Go bug Axel or Wasp if it happens.');
 
             if($targetMonthId < 0) {
                 $monthDirection = 1;
                 $targetMonthId = $this->month_id + 1;
-//                dump("Got to 0, swapping direction and starting over from $targetMonthId");
             }
 
             if(!$this->months->hasId($targetMonthId)) {
@@ -184,9 +181,7 @@ trait HasDate
 
             $foundValidMonth = true;
         } while($foundValidMonth === false);
-
-//        dd($targetMonthId);
-
+        
         return $targetMonthId;
     }
 

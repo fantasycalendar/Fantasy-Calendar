@@ -54,7 +54,7 @@ class DiscordController extends Controller
             return ['type' => 1];
         }
 
-        if(request()->header('bypassChecks')) {
+        if(request()->header('bypassChecks') && app()->environment('local')) {
             dd("result:", CommandDispatcher::dispatch(request()->all()));
         }
 
