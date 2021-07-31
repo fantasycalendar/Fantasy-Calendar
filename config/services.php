@@ -86,136 +86,136 @@ return [
                                 'description' => 'Displays information about the current date',
                                 'type' => 1
                             ],
-                            [
-                                'name' => 'event',
-                                'description' => 'Searches for an event by name, displaying info on the closest match',
-                                'type' => 1
-                            ],
-                            [
-                                'name' => 'era',
-                                'description' => 'Displays just the current era',
-                                'type' => 1
-                            ],
+//                            [
+//                                'name' => 'event',
+//                                'description' => 'Searches for an event by name, displaying info on the closest match',
+//                                'type' => 1
+//                            ],
+//                            [
+//                                'name' => 'era',
+//                                'description' => 'Displays just the current era',
+//                                'type' => 1
+//                            ],
                         ]
                     ],
-                    [
-                        'name' => 'set',
-                        'description' => 'Set the date of your selected calendar',
-                        'type' => 2,
-                        'options' => [
-                            [
-                                'name' => 'date',
-                                'description' => 'Sets the current date',
-                                'type' => 1,
-                                'options' => [
-                                    [
-                                        'name' => 'datestring',
-                                        'description' => 'A date to set the calendar to.',
-                                        'type' => 3,
-                                        'required' => true
-                                    ]
-                                ]
-                            ],
-                            [
-                                'name' => 'hour',
-                                'description' => 'Sets the current hour',
-                                'type' => 1,
-                                'options' => [
-                                    [
-                                        'name' => 'hour',
-                                        'description' => 'The hour of the day to set',
-                                        'type' => 4,
-                                        'required' => true
-                                    ]
-                                ]
-                            ],
-                            [
-                                'name' => 'minute',
-                                'description' => 'Sets the current minute',
-                                'type' => 1,
-                                'options' => [
-                                    [
-                                        'name' => 'minute',
-                                        'description' => 'The minute of the current hour to set',
-                                        'type' => 4,
-                                        'required' => true
-                                    ]
-                                ]
-                            ],
-                            [
-                                'name' => 'day',
-                                'description' => 'Sets the current day',
-                                'type' => 1,
-                                'options' => [
-                                    [
-                                        'name' => 'day',
-                                        'description' => 'The day to set the calendar to (Number within month or name, if applicable)',
-                                        'type' => 3,
-                                        'required' => true
-                                    ]
-                                ]
-                            ],
-                            [
-                                'name' => 'month',
-                                'description' => 'Sets the current month',
-                                'type' => 1,
-                                'options' => [
-                                    [
-                                        'name' => 'month',
-                                        'description' => 'The name or number of the month to set to',
-                                        'type' => 3,
-                                        'required' => true
-                                    ]
-                                ]
-                            ],
-                            [
-                                'name' => 'year',
-                                'description' => 'Sets the current year',
-                                'type' => 1,
-                                'options' => [
-                                    [
-                                        'name' => 'year',
-                                        'description' => 'The absolute year (ignoring eras) to set to',
-                                        'type' => 4,
-                                        'required' => true
-                                    ]
-                                ]
-                            ],
-                            [
-                                'name' => 'setting',
-                                'description' => 'Change your personal settings for this Discord integration',
-                                'type' => 1,
-                                'options' => [
-                                    [
-                                        'name' => 'name',
-                                        'description' => 'Name of the setting to change',
-                                        'type' => 4,
-                                        'required' => false,
-                                        'choices' => [
-                                            [
-                                                'name' => 'Default show',
-                                                'value' => 1
-                                            ],
-                                            [
-                                                'name' => 'Date format',
-                                                'value' => 2
-                                            ],
-                                            [
-                                                'name' => 'Calendar',
-                                                'value' => 3
-                                            ],
-                                        ]
-                                    ],
-                                    [
-                                        'name' => 'value',
-                                        'description' => 'Value to set the setting to',
-                                        'type' => 4,
-                                        'required' => false
-                                    ]
-                                ]
-                            ],
-                        ]
-                    ],
+//                    [
+//                        'name' => 'set',
+//                        'description' => 'Set the date of your selected calendar',
+//                        'type' => 2,
+//                        'options' => [
+//                            [
+//                                'name' => 'date',
+//                                'description' => 'Sets the current date',
+//                                'type' => 1,
+//                                'options' => [
+//                                    [
+//                                        'name' => 'datestring',
+//                                        'description' => 'A date to set the calendar to.',
+//                                        'type' => 3,
+//                                        'required' => true
+//                                    ]
+//                                ]
+//                            ],
+//                            [
+//                                'name' => 'hour',
+//                                'description' => 'Sets the current hour',
+//                                'type' => 1,
+//                                'options' => [
+//                                    [
+//                                        'name' => 'hour',
+//                                        'description' => 'The hour of the day to set',
+//                                        'type' => 4,
+//                                        'required' => true
+//                                    ]
+//                                ]
+//                            ],
+//                            [
+//                                'name' => 'minute',
+//                                'description' => 'Sets the current minute',
+//                                'type' => 1,
+//                                'options' => [
+//                                    [
+//                                        'name' => 'minute',
+//                                        'description' => 'The minute of the current hour to set',
+//                                        'type' => 4,
+//                                        'required' => true
+//                                    ]
+//                                ]
+//                            ],
+//                            [
+//                                'name' => 'day',
+//                                'description' => 'Sets the current day',
+//                                'type' => 1,
+//                                'options' => [
+//                                    [
+//                                        'name' => 'day',
+//                                        'description' => 'The day to set the calendar to (Number within month or name, if applicable)',
+//                                        'type' => 3,
+//                                        'required' => true
+//                                    ]
+//                                ]
+//                            ],
+//                            [
+//                                'name' => 'month',
+//                                'description' => 'Sets the current month',
+//                                'type' => 1,
+//                                'options' => [
+//                                    [
+//                                        'name' => 'month',
+//                                        'description' => 'The name or number of the month to set to',
+//                                        'type' => 3,
+//                                        'required' => true
+//                                    ]
+//                                ]
+//                            ],
+//                            [
+//                                'name' => 'year',
+//                                'description' => 'Sets the current year',
+//                                'type' => 1,
+//                                'options' => [
+//                                    [
+//                                        'name' => 'year',
+//                                        'description' => 'The absolute year (ignoring eras) to set to',
+//                                        'type' => 4,
+//                                        'required' => true
+//                                    ]
+//                                ]
+//                            ],
+//                            [
+//                                'name' => 'setting',
+//                                'description' => 'Change your personal settings for this Discord integration',
+//                                'type' => 1,
+//                                'options' => [
+//                                    [
+//                                        'name' => 'name',
+//                                        'description' => 'Name of the setting to change',
+//                                        'type' => 4,
+//                                        'required' => false,
+//                                        'choices' => [
+//                                            [
+//                                                'name' => 'Default show',
+//                                                'value' => 1
+//                                            ],
+//                                            [
+//                                                'name' => 'Date format',
+//                                                'value' => 2
+//                                            ],
+//                                            [
+//                                                'name' => 'Calendar',
+//                                                'value' => 3
+//                                            ],
+//                                        ]
+//                                    ],
+//                                    [
+//                                        'name' => 'value',
+//                                        'description' => 'Value to set the setting to',
+//                                        'type' => 4,
+//                                        'required' => false
+//                                    ]
+//                                ]
+//                            ],
+//                        ]
+//                    ],
                     [
                         'name' => 'add',
                         'description' => 'Add to the date of your selected calendar',
@@ -448,18 +448,18 @@ return [
                     'date' => \App\Services\Discord\Commands\Command\Show\DateHandler::class,
                     'month' => \App\Services\Discord\Commands\Command\Show\MonthHandler::class,
                     'day' => \App\Services\Discord\Commands\Command\Show\DayHandler::class,
-                    'event' => \App\Services\Discord\Commands\Command\Show\EventHandler::class,
-                    'era' => \App\Services\Discord\Commands\Command\Show\EraHandler::class,
+//                    'event' => \App\Services\Discord\Commands\Command\Show\EventHandler::class,
+//                    'era' => \App\Services\Discord\Commands\Command\Show\EraHandler::class,
                 ],
-                'set' => [
-                    'date' => \App\Services\Discord\Commands\Command\Set\DateHandler::class,
-                    'hour' => \App\Services\Discord\Commands\Command\Set\HourHandler::class,
-                    'minute' => \App\Services\Discord\Commands\Command\Set\MinuteHandler::class,
-                    'day' => \App\Services\Discord\Commands\Command\Set\DayHandler::class,
-                    'month' => \App\Services\Discord\Commands\Command\Set\MonthHandler::class,
-                    'year' => \App\Services\Discord\Commands\Command\Set\YearHandler::class,
-                    'setting' => \App\Services\Discord\Commands\Command\Set\SettingsHandler::class
-                ],
+//                'set' => [
+//                    'date' => \App\Services\Discord\Commands\Command\Set\DateHandler::class,
+//                    'hour' => \App\Services\Discord\Commands\Command\Set\HourHandler::class,
+//                    'minute' => \App\Services\Discord\Commands\Command\Set\MinuteHandler::class,
+//                    'day' => \App\Services\Discord\Commands\Command\Set\DayHandler::class,
+//                    'month' => \App\Services\Discord\Commands\Command\Set\MonthHandler::class,
+//                    'year' => \App\Services\Discord\Commands\Command\Set\YearHandler::class,
+//                    'setting' => \App\Services\Discord\Commands\Command\Set\SettingsHandler::class
+//                ],
                 'add' => \App\Services\Discord\Commands\Command\DateChangesHandler::class,
                 'sub' => \App\Services\Discord\Commands\Command\DateChangesHandler::class,
                 'use' => \App\Services\Discord\Commands\Command\UseHandler::class,

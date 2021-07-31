@@ -46,7 +46,38 @@ trait HasDate
      */
     public function addMonths(int $months = 1): Calendar
     {
-        return $this->setDateFromEpoch(EpochFactory::incrementMonths($months, $this));
+//        return $this->setDateFromEpoch(EpochFactory::incrementMonths($months, $this));
+        $targetMonth = $this->month_index + $months;
+        if($this->months->has($targetMonth)){
+            return $this->setDate($this->year, $this->months->get($targetMonth)->id);
+        }
+
+        $targetMonthCount = $this->epoch->numberTimespans + $months;
+        $guessYear = (int) floor( $targetMonthCount / $this->average_months_count) + $this->setting('year_zero_exists') + 1;
+        $foundTargetMonthCount = false;
+
+        do {
+            $guessYearMonthCounts = EpochFactory::forCalendarYear($this->replicate()->setDate($guessYear))
+                ->keyBy('numberTimespans')
+                ->map->monthId
+                ->unique();
+
+            if(!$guessYearMonthCounts->has($targetMonthCount)) {
+                $lower = $guessYearMonthCounts->keys()->min();
+
+                if($targetMonthCount < $lower) {
+                    $guessYear--;
+                    continue;
+                }
+
+                $guessYear++;
+                continue;
+            }
+
+            $foundTargetMonthCount = true;
+        } while($foundTargetMonthCount == false);
+
+        return $this->setDate($guessYear, $guessYearMonthCounts->get($targetMonthCount));
     }
 
     /**
@@ -133,18 +164,18 @@ trait HasDate
             ? 1
             : -1;
 
-        dump("Starting with:", $foundValidMonth, $targetMonthId, $monthDirection, $this->months->map->id);
+//        dump("Starting with:", $foundValidMonth, $targetMonthId, $monthDirection, $this->months->map->id);
 
         do {
             $targetMonthId += $monthDirection;
-            dump("Checking for month: $targetMonthId");
+//            dump("Checking for month: $targetMonthId");
 
             if(($targetMonthId - 1) > $this->months->count()) throw new \Exception('Um. What?!');
 
             if($targetMonthId < 0) {
                 $monthDirection = 1;
                 $targetMonthId = $this->month_id + 1;
-                dump("Got to 0, swapping direction and starting over from $targetMonthId");
+//                dump("Got to 0, swapping direction and starting over from $targetMonthId");
             }
 
             if(!$this->months->hasId($targetMonthId)) {

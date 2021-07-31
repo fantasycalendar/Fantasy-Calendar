@@ -39,7 +39,7 @@ class EpochCalculator
         // Make a best guess of epoch's year, based on year length
         // Hard-coded to 365 until average year length is implemented.
 
-        $guessYear = floor($epoch / $this->averageYearLength) + $this->calendar->setting('year_zero_exists') + 1;
+        $guessYear = (int) floor($epoch / $this->averageYearLength) + $this->calendar->setting('year_zero_exists') + 1;
 
         $year = $this->resolveYear($guessYear);
 

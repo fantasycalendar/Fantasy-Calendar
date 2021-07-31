@@ -319,6 +319,13 @@ class Calendar extends Model
         });
     }
 
+    public function getAverageMonthsCountAttribute(): float
+    {
+        return $this->timespans->sum(function($timespan){
+            return 1 / $timespan->interval;
+        });
+    }
+
     /**
      * Get the "year data" for this calendar
      *
