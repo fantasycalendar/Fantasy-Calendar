@@ -275,55 +275,55 @@ return [
                                     ]
                                 ]
                             ],
-                            [
-                                'name' => 'minute',
-                                'description' => 'Add a minute',
-                                'type' => 1
-                            ],
-                            [
-                                'name' => 'minutes',
-                                'description' => 'Add a set number of minutes',
-                                'type' => 1,
-                                'options' => [
-                                    [
-                                        'name' => 'minutes',
-                                        'description' => 'The number of minutes to add',
-                                        'type' => 4,
-                                        'required' => true
-                                    ]
-                                ]
-                            ],
-                            [
-                                'name' => 'hour',
-                                'description' => 'Add a hour',
-                                'type' => 1
-                            ],
-                            [
-                                'name' => 'hours',
-                                'description' => 'Add a set number of hours',
-                                'type' => 1,
-                                'options' => [
-                                    [
-                                        'name' => 'hours',
-                                        'description' => 'The number of hours to add',
-                                        'type' => 4,
-                                        'required' => true
-                                    ]
-                                ]
-                            ],
-                            [
-                                'name' => 'event',
-                                'description' => 'Add an one-time event to the current date of the calendar',
-                                'type' => 1,
-                                'options' => [
-                                    [
-                                        'name' => 'title',
-                                        'description' => 'Title of the event to be added',
-                                        'type' => 3,
-                                        'required' => true
-                                    ]
-                                ]
-                            ],
+//                            [
+//                                'name' => 'minute',
+//                                'description' => 'Add a minute',
+//                                'type' => 1
+//                            ],
+//                            [
+//                                'name' => 'minutes',
+//                                'description' => 'Add a set number of minutes',
+//                                'type' => 1,
+//                                'options' => [
+//                                    [
+//                                        'name' => 'minutes',
+//                                        'description' => 'The number of minutes to add',
+//                                        'type' => 4,
+//                                        'required' => true
+//                                    ]
+//                                ]
+//                            ],
+//                            [
+//                                'name' => 'hour',
+//                                'description' => 'Add a hour',
+//                                'type' => 1
+//                            ],
+//                            [
+//                                'name' => 'hours',
+//                                'description' => 'Add a set number of hours',
+//                                'type' => 1,
+//                                'options' => [
+//                                    [
+//                                        'name' => 'hours',
+//                                        'description' => 'The number of hours to add',
+//                                        'type' => 4,
+//                                        'required' => true
+//                                    ]
+//                                ]
+//                            ],
+//                            [
+//                                'name' => 'event',
+//                                'description' => 'Add an one-time event to the current date of the calendar',
+//                                'type' => 1,
+//                                'options' => [
+//                                    [
+//                                        'name' => 'title',
+//                                        'description' => 'Title of the event to be added',
+//                                        'type' => 3,
+//                                        'required' => true
+//                                    ]
+//                                ]
+//                            ],
                         ],
                     ],
                     [
@@ -385,42 +385,42 @@ return [
                                     ]
                                 ]
                             ],
-                            [
-                                'name' => 'minute',
-                                'description' => 'Subtract a minute',
-                                'type' => 1
-                            ],
-                            [
-                                'name' => 'minutes',
-                                'description' => 'Subtract a set number of minutes',
-                                'type' => 1,
-                                'options' => [
-                                    [
-                                        'name' => 'minutes',
-                                        'description' => 'The number of minutes to subtract',
-                                        'type' => 4,
-                                        'required' => true
-                                    ]
-                                ]
-                            ],
-                            [
-                                'name' => 'hour',
-                                'description' => 'Subtract an hour',
-                                'type' => 1
-                            ],
-                            [
-                                'name' => 'hours',
-                                'description' => 'Subtract a set number of hours',
-                                'type' => 1,
-                                'options' => [
-                                    [
-                                        'name' => 'hours',
-                                        'description' => 'The number of hours to subtract',
-                                        'type' => 4,
-                                        'required' => true
-                                    ]
-                                ]
-                            ],
+//                            [
+//                                'name' => 'minute',
+//                                'description' => 'Subtract a minute',
+//                                'type' => 1
+//                            ],
+//                            [
+//                                'name' => 'minutes',
+//                                'description' => 'Subtract a set number of minutes',
+//                                'type' => 1,
+//                                'options' => [
+//                                    [
+//                                        'name' => 'minutes',
+//                                        'description' => 'The number of minutes to subtract',
+//                                        'type' => 4,
+//                                        'required' => true
+//                                    ]
+//                                ]
+//                            ],
+//                            [
+//                                'name' => 'hour',
+//                                'description' => 'Subtract an hour',
+//                                'type' => 1
+//                            ],
+//                            [
+//                                'name' => 'hours',
+//                                'description' => 'Subtract a set number of hours',
+//                                'type' => 1,
+//                                'options' => [
+//                                    [
+//                                        'name' => 'hours',
+//                                        'description' => 'The number of hours to subtract',
+//                                        'type' => 4,
+//                                        'required' => true
+//                                    ]
+//                                ]
+//                            ],
                         ],
                     ],
                     [
