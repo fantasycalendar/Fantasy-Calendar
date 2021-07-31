@@ -8,6 +8,7 @@ use App\Calendar;
 use App\Facades\Epoch;
 use App\Services\Discord\Commands\Command;
 use App\Services\RendererService\TextRenderer;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 class DateChangesHandler extends Command
@@ -19,9 +20,13 @@ class DateChangesHandler extends Command
     {
         $this->calendar = $this->getDefaultCalendar();
 
+        $this->calendar->setDate(1491, 6, 28);
+
         $action = explode(' ', $this->called_command)[1];
         $unit = explode(' ', $this->called_command)[2];
         $count = $this->option(['days', 'months', 'years', 'minutes', 'hours']) ?? 1;
+
+        if($count === 0) return $this->codeBlock($this->called_command . " 0") . $this->newLine() . "It ... You want to... what?";
 
         $method = $action . ucfirst(Str::plural($unit));
 
@@ -29,9 +34,9 @@ class DateChangesHandler extends Command
             ->$method($count)
             ->save();
 
-        $response = ($count)
-            ? $count . " " . Str::plural($unit, $count)
-            : '1 ' . $unit;
+        $response = ($count !== 1)
+            ? $count . " " . $unit
+            : '1 ' . Str::singular($unit);
 
         $verb = ($action == 'add')
             ? 'added'
@@ -39,6 +44,6 @@ class DateChangesHandler extends Command
 
         return $this->blockQuote("$response $verb!")
              . $this->newLine(2)
-             . $this->codeBlock(TextRenderer::renderMonth($this->getDefaultCalendar()));
+             . $this->codeBlock(TextRenderer::renderMonth($this->calendar));
     }
 }

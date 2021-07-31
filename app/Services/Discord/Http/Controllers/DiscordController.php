@@ -55,7 +55,7 @@ class DiscordController extends Controller
         }
 
         if(request()->header('bypassChecks')) {
-            dd(CommandDispatcher::dispatch(request()->all()));
+            dd("result:", CommandDispatcher::dispatch(request()->all()));
         }
 
         // Type 4 means we're responding directly.

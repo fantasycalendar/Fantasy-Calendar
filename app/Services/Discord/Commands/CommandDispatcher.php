@@ -15,11 +15,12 @@ class CommandDispatcher
         $configPath = self::processConfigPath($commandData['data']);
 
         $handlerClass = config('services.discord.command_handlers' . $configPath);
-        
+
         try {
             $response = (new $handlerClass($commandData))->handle();
         } catch (\Throwable $e) {
             Log::error($e->getTraceAsString());
+            dump($e);
             return $e->getMessage();
         }
 

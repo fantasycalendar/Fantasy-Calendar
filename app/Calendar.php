@@ -189,6 +189,11 @@ class Calendar extends Model
         return $this->parent_count || $this->children_count;
     }
 
+    public function yearIsValid($year): bool
+    {
+        return $this->timespans->filter->intersectsYear($year)->count() > 0;
+    }
+
     /**
      * Filter for only calendars that are not deleted
      *
@@ -240,7 +245,7 @@ class Calendar extends Model
             return false;
         }
 
-        if (!Arr::has($this->static_data, "year_data.timespans.{$this->month_index}")) {
+        if (!Arr::has($this->static_data, "year_data.timespans.{$this->month_id}")) {
             return false;
         }
 

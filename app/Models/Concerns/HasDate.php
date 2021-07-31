@@ -7,6 +7,7 @@ namespace App\Models\Concerns;
 use App\Calendar;
 use App\Facades\Epoch as EpochFactory;
 use App\Services\EpochService\Epoch;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 
@@ -56,7 +57,7 @@ trait HasDate
      */
     public function addYears(int $years = 1): Calendar
     {
-        return $this->setDateFromEpoch(EpochFactory::incrementYears($years, $this));
+        return $this->setDate($this->year + $years);
     }
 
     /**
@@ -83,21 +84,84 @@ trait HasDate
      * Set the full range of the date on this calendar
      *
      * @param $year
-     * @param null $timespan
+     * @param null $timespanId
      * @param null $day
      * @return $this
      */
-    public function setDate($year, $timespan = null, $day = null): Calendar
+    public function setDate($year, $timespanId = null, $day = null): Calendar
     {
         $dynamic_data = $this->dynamic_data;
 
-        $dynamic_data['year'] = $year ?? $dynamic_data['year'];
-        $dynamic_data['timespan'] = $timespan ?? $dynamic_data['timespan'];
-        $dynamic_data['day'] = $day ?? $dynamic_data['day'];
+        $targetYear = $year ?? $dynamic_data['year'];
+        $targetTimespan = $timespanId ?? $dynamic_data['timespan'];
+        $targetDay = $day ?? $dynamic_data['day'];
 
+        $dynamic_data['year'] = $this->findNearestValidYear($targetYear);
+        $this->dynamic_data = $dynamic_data;
+
+        $dynamic_data['timespan'] = $this->findNearestValidMonth($targetTimespan);
+        $this->dynamic_data = $dynamic_data;
+
+        $dynamic_data['day'] = $this->findNearestValidDay($targetDay);
         $this->dynamic_data = $dynamic_data;
 
         return $this;
+    }
+
+    private function findNearestValidYear($targetYear)
+    {
+        if($this->year === $targetYear) return $this->year;
+
+        $searchDirection = $targetYear < $this->year
+            ? -1
+            : 1;
+
+        while(!$this->yearIsValid($targetYear)) {
+            $targetYear += $searchDirection;
+        }
+
+        return $targetYear;
+    }
+
+    private function findNearestValidMonth($monthId)
+    {
+        if($this->months->hasId($monthId)) return $monthId;
+
+        $foundValidMonth = false;
+        $targetMonthId = $this->month_id;
+        $monthDirection = $targetMonthId === 0
+            ? 1
+            : -1;
+
+        dump("Starting with:", $foundValidMonth, $targetMonthId, $monthDirection, $this->months->map->id);
+
+        do {
+            $targetMonthId += $monthDirection;
+            dump("Checking for month: $targetMonthId");
+
+            if(($targetMonthId - 1) > $this->months->count()) throw new \Exception('Um. What?!');
+
+            if($targetMonthId < 0) {
+                $monthDirection = 1;
+                $targetMonthId = $this->month_id + 1;
+                dump("Got to 0, swapping direction and starting over from $targetMonthId");
+            }
+
+            if(!$this->months->hasId($targetMonthId)) {
+                continue;
+            }
+
+            $foundValidMonth = true;
+        } while($foundValidMonth === false);
+
+//        dd($targetMonthId);
+
+        return $targetMonthId;
+    }
+
+    private function findNearestValidDay($day)
+    {
+        return min($this->month->daysInYear->count(), $day);
     }
 
     /**

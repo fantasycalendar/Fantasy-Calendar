@@ -149,19 +149,7 @@ class EpochFactory
 
     public function incrementYears($years, Calendar $calendar, Epoch $epoch = null): Epoch
     {
-        $targetYear = $this->calendar->year + $years;
 
-        if($this->calendar->month->intersectsYear($targetYear)) {
-            $targetMonth = $this->calendar->replicate()->setDate($targetYear);
-
-            $targetDay = min($targetMonth->month->daysInYear->count(), $targetMonth->day);
-
-            return $this->forDate($targetYear, $targetMonth->month_index, $targetDay);
-        }
-
-        // The only complicated situations: Month leaps and doesn't show up on current year.
-            // If the year has no months, wtf
-            // Walk backward first, if possible. Then forward.
     }
 
     /**

@@ -55,4 +55,10 @@ class MonthsCollection extends \Illuminate\Support\Collection
         return $this;
     }
 
+    public function hasId($id): bool
+    {
+        return $this->filter(function($month) use ($id){
+            return $month->id === $id;
+        })->count() === 1;
+    }
 }
