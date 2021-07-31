@@ -5556,7 +5556,7 @@ function evaluate_save_button(override){
 
 		var invalid = errors.length > 0;
 
-		var text = invalid ? "Cannot create yet" : "Create calendar";
+		var text = invalid ? "Cannot create yet" : "Save Calendar";
 
 		var apply_changes_immediately = $('#apply_changes_immediately').is(':checked');
 
