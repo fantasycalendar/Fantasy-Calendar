@@ -231,6 +231,17 @@ const calendar_events_editor = {
 		}
 	},
 
+    clone_event($event) {
+
+	    if($event.detail.event_data === undefined && $event.detail.event_id){
+            $event.detail.event_data = clone(events[$event.detail.event_id]);
+            $event.detail.event_data.name += " (clone)";
+        }
+
+        this.create_new_event($event);
+        this.creation_type = "Cloning Event"
+    },
+
 	create_new_event($event) {
 
 		this.init($event);
@@ -450,19 +461,6 @@ const calendar_events_editor = {
 
     },
 
-    clone() {
-
-	    let new_event = clone(this.working_event);
-        new_event.data = this.create_event_data();
-        new_event.name = ((new_event.name === "") ? "New Event" : new_event.name) + " (clone)";
-        new_event.description = this.description_input.trumbowyg('html');
-
-        this.close();
-
-        window.dispatchEvent(new CustomEvent('event-editor-modal-new-event', { detail: { event_data: new_event, epoch: this.epoch } }));
-
-    },
-
     confirm_clone() {
         // Don't do anything if a swal is open or the user is deleting conditions
         if(swal.isVisible() || this.isDeletingConditions){
@@ -479,7 +477,12 @@ const calendar_events_editor = {
             icon: "warning",
         }).then((result) => {
             if (!result.dismiss) {
-                this.clone();
+                let new_event = clone(this.working_event);
+                new_event.data = this.create_event_data();
+                new_event.name = ((new_event.name === "") ? "New Event" : new_event.name) + " (clone)";
+                new_event.description = this.description_input.trumbowyg('html');
+                this.close();
+                window.dispatchEvent(new CustomEvent('event-editor-modal-clone-event', { detail: { event_data: new_event, epoch: this.epoch } }));
             }
         });
 

@@ -212,6 +212,30 @@ const calendar_events_viewer = {
 		});
 	},
 
+	confirm_clone: function() {
+
+		if (this.user_can_comment && this.can_comment_on_event) {
+			let comment_content = this.comment_editor.trumbowyg('html');
+			if (comment_content != "" && comment_content != "<p><br></p>") {
+				swal.fire(this.swal_content).then((result) => {
+					if (!result.dismiss) {
+						this.dispatch_clone();
+					}
+				});
+			} else {
+				this.dispatch_clone();
+			}
+		}else{
+			this.dispatch_clone();
+		}
+
+	},
+
+    dispatch_clone(){
+	    window.dispatchEvent(new CustomEvent('event-editor-modal-clone-event', { detail: { event_id: this.id, epoch: this.epoch } }));
+        this.close();
+    },
+
 	confirm_edit: function() {
 
 		if (this.user_can_comment && this.can_comment_on_event) {

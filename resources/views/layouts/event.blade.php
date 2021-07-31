@@ -24,7 +24,7 @@
 					<h2>
                         <span class='event_name' x-text='data.name'>Editing Event</span>
                         <i class="fas fa-pencil-alt event_header_action protip" data-pt-position='bottom' data-pt-title="Edit event" @click='confirm_edit' x-show='can_edit'></i>
-                        <i class="fas fa-clone event_header_action protip" data-pt-position='bottom' data-pt-title="Clone event" @click='confirm_clone' x-show='can_edit'></i></h2>
+                        <i class="fas fa-clone event_header_action protip" data-pt-position='bottom' data-pt-title="Clone event" @click='confirm_clone' x-show='can_edit && !era'></i></h2>
 				</div>
 
 				<div class='row'>
@@ -108,6 +108,9 @@
         document.querySelector('.event_editor_name').focus();
     });"
     @event-editor-modal-edit-event.window="edit_event($event); $nextTick(() => {
+        document.querySelector('.event_editor_name').focus();
+    });"
+    @event-editor-modal-clone-event.window="clone_event($event); $nextTick(() => {
         document.querySelector('.event_editor_name').focus();
     });"
     @event-editor-modal-delete-event.window="confirm_delete_event"
