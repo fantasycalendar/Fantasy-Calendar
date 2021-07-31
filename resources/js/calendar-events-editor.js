@@ -239,7 +239,7 @@ const calendar_events_editor = {
 		let name = $event.detail.name ?? "";
 		this.creation_type = "Creating Event"
 
-		this.working_event = {
+		this.working_event = $event.detail.event_data ?? {
 			'name': name,
 			'description': '',
 			'event_category_id': -1,
@@ -264,6 +264,10 @@ const calendar_events_editor = {
 				'hide_full': false
 			},
 		};
+
+        if(this.description_input) {
+            this.description_input.trumbowyg('html', this.working_event.description);
+        }
 
 		var category_id = static_data.settings.default_category !== undefined ? static_data.settings.default_category : -1;
 
@@ -446,16 +450,51 @@ const calendar_events_editor = {
 
     },
 
+    clone() {
+
+	    let new_event = clone(this.working_event);
+        new_event.data = this.create_event_data();
+        new_event.name = ((new_event.name === "") ? "New Event" : new_event.name) + " (clone)";
+        new_event.description = this.description_input.trumbowyg('html');
+
+        this.close();
+
+        window.dispatchEvent(new CustomEvent('event-editor-modal-new-event', { detail: { event_data: new_event, epoch: this.epoch } }));
+
+    },
+
+    confirm_clone() {
+        // Don't do anything if a swal is open or the user is deleting conditions
+        if(swal.isVisible() || this.isDeletingConditions){
+            this.remove_clicked();
+            return false;
+        }
+
+        swal.fire({
+            title: "Clone event?",
+            text: 'Your changes to this event will not be saved! Are you sure you want to continue?',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            icon: "warning",
+        }).then((result) => {
+            if (!result.dismiss) {
+                this.clone();
+            }
+        });
+
+    },
+
 	confirm_close() {
 	    // Don't do anything if a swal is open or the user is deleting conditions
 	    if(swal.isVisible() || this.isDeletingConditions){
 	        return false;
         }
 
-		if (this.event_has_changed()) {
+		if (this.event_has_changed() || this.new_event) {
 			swal.fire({
-				title: "Are you sure?",
-				text: 'Your changes to this event will not be saved! Are you sure you want to continue?',
+				title: "Close event without saving?",
+				text: 'Any changes to this event will not be saved! Are you sure you want to continue?',
 				showCancelButton: true,
 				confirmButtonColor: '#d33',
 				cancelButtonColor: '#3085d6',
@@ -475,7 +514,7 @@ const calendar_events_editor = {
 
 		if (this.event_has_changed()) {
 			swal.fire({
-				title: "Are you sure?",
+				title: "Close event without saving?",
 				text: 'Your changes to this event will not be saved! Are you sure you want to continue?',
 				showCancelButton: true,
 				confirmButtonColor: '#d33',
@@ -693,9 +732,9 @@ const calendar_events_editor = {
 				event_check.id = eventid;
 			}
 
-			event_check.description = this.description_input.trumbowyg('html');
-
 			event_check.data = this.create_event_data();
+
+			event_check.description = this.description_input.trumbowyg('html');
 
 			event_check.settings = clone(this.working_event.settings)
 

@@ -126,8 +126,8 @@
 				<div class='row no-gutters mb-1 modal-form-heading'>
 					<h2 class='event_action_type'>
                         <span x-text="creation_type"></span>
-                        <i class="fas fa-eye event_header_action protip" data-pt-position='bottom' data-pt-title="Preview event" @click='confirm_view'></i>
-                        <i class="fas fa-clone event_header_action protip" data-pt-position='bottom' data-pt-title="Clone event" @click='confirm_clone'></i>
+                        <i class="fas fa-eye event_header_action protip" data-pt-position='bottom' data-pt-title="Preview event" @click='confirm_view' x-show="!new_event"></i>
+                        <i class="fas fa-clone event_header_action protip" data-pt-position='bottom' data-pt-title="Clone event" @click='confirm_clone' x-show="!new_event"></i>
                     </h2>
 				</div>
 
