@@ -98,7 +98,7 @@ trait HasDate
      */
     public function startOfYear(): Calendar
     {
-        return $this->setDate($this->year, $this->months->first()->id, 1);
+        return $this->setDate($this->year, $this->months->keys()->first(), 1);
     }
 
     /**
@@ -170,7 +170,7 @@ trait HasDate
             $targetMonthId += $monthDirection;
 //            dump("Checking for month: $targetMonthId");
 
-            if(($targetMonthId - 1) > $this->months->count()) throw new \Exception('Um. What?!');
+            if(($targetMonthId - 1) > $this->timespans->count()) dd($this->months->map->id);
 
             if($targetMonthId < 0) {
                 $monthDirection = 1;

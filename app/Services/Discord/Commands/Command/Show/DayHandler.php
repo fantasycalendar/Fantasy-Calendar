@@ -14,16 +14,22 @@ class DayHandler extends Command
     {
         $calendar = $this->getDefaultCalendar();
 
-        $dayKeys = $this->dayKeys();
-
+        $labelLength = 0;
         $values = collect($calendar->epoch->toArray())
-            ->only($dayKeys)
-            ->mapWithKeys(function($value, $name) use ($dayKeys) {
+            ->only($this->dayKeys())
+            ->mapWithKeys(function($value, $name){
                 return [
-                    array_search($name, $dayKeys) => ucwords(str_replace('_', ' ', Str::snake($name))) . ": " . $this->stringifyFromType($value)
+                    ucfirst(str_replace('_', ' ', Str::snake($name))) => $this->stringifyFromType($value)
                 ];
             })
-            ->sortKeys();
+            ->tap(function($infobits) use (&$labelLength){
+                $labelLength = $infobits->keys()->max(function($key){
+                    return strlen($key);
+                });
+            })
+            ->map(function($value, $name) use ($labelLength){
+                return Str::padLeft($name, $labelLength + 1, ' ') . " : " . $value;
+            });
 
         $heading = "Today is " . $this->bold($calendar->current_date) . "." . $this->newLine() . "Here are some stats for nerds about this day:";
 
