@@ -144,9 +144,9 @@
 
                 @if(!isset($calendar) || (Auth::user() != Null && Auth::user()->can('advance-date', $calendar)))
 
-                    <h5 class='row no-gutters mt-2 modal-form-heading' x-show="new_event">Condition presets:</h5>
+                    <h5 class='row no-gutters mt-2 modal-form-heading' x-show="new_event && !cloning_event">Condition presets:</h5>
 
-                    <div class='row no-gutters mb-1' x-show="new_event">
+                    <div class='row no-gutters mb-1' x-show="new_event && !cloning_event">
                         <select class="form-control" @change='condition_preset_changed' x-model="preset" x-ref="condition_presets">
                             <template x-for="key in Object.keys(presets)">
                                 <option x-show='presets[key].enabled' x-text='presets[key].text' :value='key'></option>

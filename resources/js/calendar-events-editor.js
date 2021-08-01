@@ -2,6 +2,7 @@ const calendar_events_editor = {
 
 	open: false,
 	new_event: true,
+    cloning_event: false,
 	creation_type: "Creating Event",
 	moon_overrides_open: false,
 	settings_open: false,
@@ -241,6 +242,8 @@ const calendar_events_editor = {
         }
 
         this.new_event = true;
+        this.cloning_event = true;
+
         this.working_event = $event.detail.event_data;
 
         this.creation_type = "Cloning Event"
@@ -248,13 +251,6 @@ const calendar_events_editor = {
         this.set_up_moon_data();
 
         this.event_id = Object.keys(events).length;
-
-        this.populate_condition_presets();
-        this.update_every_nth_presets();
-
-        this.preset = "none";
-
-        this.add_preset_conditions(this.preset, this.nth);
 
         this.create_conditions(this.working_event.data.conditions, this.event_conditions_container);
 
@@ -429,6 +425,7 @@ const calendar_events_editor = {
 		this.moon_presets = [];
 		this.nth = "";
 		this.show_nth = false;
+        this.cloning_event = false;
 
 		if(this.description_input) {
             this.description_input.trumbowyg('html', '');
