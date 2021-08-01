@@ -233,13 +233,36 @@ const calendar_events_editor = {
 
     clone_event($event) {
 
+        this.init($event);
+
 	    if($event.detail.event_data === undefined && $event.detail.event_id){
             $event.detail.event_data = clone(events[$event.detail.event_id]);
             $event.detail.event_data.name += " (clone)";
         }
 
-        this.create_new_event($event);
+        this.new_event = true;
+        this.working_event = $event.detail.event_data;
+
         this.creation_type = "Cloning Event"
+
+        this.set_up_moon_data();
+
+        this.event_id = Object.keys(events).length;
+
+        this.populate_condition_presets();
+        this.update_every_nth_presets();
+
+        this.preset = "none";
+
+        this.add_preset_conditions(this.preset, this.nth);
+
+        this.create_conditions(this.working_event.data.conditions, this.event_conditions_container);
+
+        this.evaluate_condition_selects(this.event_conditions_container);
+
+        this.inputs_changed = false;
+
+        this.open = true;
     },
 
 	create_new_event($event) {
@@ -250,7 +273,7 @@ const calendar_events_editor = {
 		let name = $event.detail.name ?? "";
 		this.creation_type = "Creating Event"
 
-		this.working_event = $event.detail.event_data ?? {
+		this.working_event = {
 			'name': name,
 			'description': '',
 			'event_category_id': -1,
@@ -300,7 +323,8 @@ const calendar_events_editor = {
 
 		this.populate_condition_presets();
 		this.update_every_nth_presets();
-		this.add_preset_conditions(this.preset, this.nth);
+
+        this.add_preset_conditions(this.preset, this.nth);
 
 		this.open = true;
 
