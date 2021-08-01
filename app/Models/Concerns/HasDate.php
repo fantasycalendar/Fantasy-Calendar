@@ -29,6 +29,52 @@ use Illuminate\Support\Str;
 trait HasDate
 {
     /**
+     * Add a set of minutes to the current time of this calendar
+     *
+     * @param $minutes
+     * @return $this
+     */
+    public function addMinutes(int $minutes = 1): Calendar
+    {
+        if(!$this->clock["enabled"]) return $this;
+
+        $dynamic_data = $this->dynamic_data;
+
+        $currentHour = $dynamic_data['hour'];
+        $currentMinute = $dynamic_data['minute'];
+
+        $extraHours = ($currentMinute + $minutes) / $this->clock['minutes'];
+        $extraDays = ($currentHour + $extraHours) / $this->clock['hours'];
+
+        $currentHour = round(fmod($extraDays, 1) * $this->clock['hours'], 4);
+        $currentMinute = floor(fmod($currentHour, 1) * $this->clock['minutes']);
+
+        $this->dynamic_data['hour'] = floor($currentHour);
+        $this->dynamic_data['minute'] = $currentMinute;
+
+        $extraDays = floor($extraDays);
+        if($extraDays != 0){
+            $this->addDays($extraDays);
+        }
+
+        return $this;
+    }
+    /**
+     * Add a set of hours to the current time of this calendar
+     *
+     * @param $hours
+     * @return $this
+     */
+    public function addHours(int $hours = 1): Calendar
+    {
+        if(!$this->clock["enabled"]) return $this;
+
+        $minutes = $hours * $this->clock['minutes'];
+
+        return $this->addMinutes($minutes);
+    }
+
+    /**
      * Add a set number of days to the current date of this calendar
      *
      * @param int $days
@@ -181,7 +227,7 @@ trait HasDate
 
             $foundValidMonth = true;
         } while($foundValidMonth === false);
-        
+
         return $targetMonthId;
     }
 

@@ -326,6 +326,11 @@ class Calendar extends Model
         });
     }
 
+    public function getClockAttribute(): array
+    {
+        return Arr::get($this->static_data, 'clock');
+    }
+
     /**
      * Get the "year data" for this calendar
      *
