@@ -245,6 +245,7 @@ const calendar_events_editor = {
         this.cloning_event = true;
 
         this.working_event = $event.detail.event_data;
+        delete this.working_event['id'];
 
         this.creation_type = "Cloning Event"
 

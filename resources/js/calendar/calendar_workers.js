@@ -2392,7 +2392,7 @@ var event_evaluator = {
 
 		this.static_data = static_data;
 		this.dynamic_data = dynamic_data;
-		this.events = events;
+		this.events = clone(events);
 		this.categories = event_categories;
 		this.epoch_data = epoch_data;
 
@@ -2958,7 +2958,7 @@ var event_evaluator = {
 			}
 
 		}else{
-			
+
 			for(var event_index in this.events){
 				if(this.events[event_index].data.connected_events !== undefined && this.events[event_index].data.connected_events.length > 0){
 					check_event_chain(event_index);
