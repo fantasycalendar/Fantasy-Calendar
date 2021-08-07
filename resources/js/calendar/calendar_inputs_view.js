@@ -544,6 +544,4 @@ function set_up_view_values(){
 
 	dynamic_data.epoch = dynamic_date_manager.epoch;
 
-	preview_date = clone(dynamic_data);
-
 }
