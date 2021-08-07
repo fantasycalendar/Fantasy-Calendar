@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Auth;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 /**
  * @property mixed static_data Calendar static data
@@ -540,11 +541,17 @@ class Calendar extends Model
      */
     public function getCurrentTimeAttribute(): string
     {
-        if(!$this->static_data['clock']['enabled']) {
+        if(!$this->clock_enabled) {
             return "N/A";
         }
 
-        return $this->dynamic_data['hour'] . ":" . $this->dynamic_data['minute'];
+        $hours = strlen($this->clock['hours']);
+        $minutes = strlen($this->clock['minutes']);
+
+        $hour = Str::padLeft($this->dynamic_data['hour'], $hours, '0');
+        $minute = Str::padLeft($this->dynamic_data['minute'], $minutes, '0');
+
+        return $hour . ":" . $minute;
     }
 
     /**

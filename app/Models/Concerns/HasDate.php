@@ -36,7 +36,7 @@ trait HasDate
      */
     public function addMinutes(int $minutes = 1): Calendar
     {
-        if(!$this->clock["enabled"]) return $this;
+        if(!$this->clock_enabled) return $this;
 
         $dynamic_data = $this->dynamic_data;
 
@@ -49,8 +49,10 @@ trait HasDate
         $currentHour = round(fmod($extraDays, 1) * $this->clock['hours'], 4);
         $currentMinute = floor(fmod($currentHour, 1) * $this->clock['minutes']);
 
-        $this->dynamic_data['hour'] = floor($currentHour);
-        $this->dynamic_data['minute'] = $currentMinute;
+        $dynamic_data['hour'] = floor($currentHour);
+        $dynamic_data['minute'] = $currentMinute;
+
+        $this->dynamic_data = $dynamic_data;
 
         $extraDays = floor($extraDays);
         if($extraDays != 0){
@@ -67,7 +69,7 @@ trait HasDate
      */
     public function addHours(int $hours = 1): Calendar
     {
-        if(!$this->clock["enabled"]) return $this;
+        if(!$this->clock_enabled) return $this;
 
         $minutes = $hours * $this->clock['minutes'];
 
