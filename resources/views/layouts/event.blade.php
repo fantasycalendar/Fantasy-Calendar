@@ -299,13 +299,15 @@
                                     </div>
                                     <div class='row no-gutters'>
                                         <div class='col-md-6 col-4 px-1'>
-                                            <label class='form-control checkbox' :class="{'disabled': moon.hidden}">
-                                                <input type='color' class='color inline_moon_color full' x-model="moon.shadow_color" :x-ref="`moon_shadow_color_${moon.index}`" :disabled='moon.hidden'/>
+                                            <label class='form-control checkbox d-flex' :class="{'disabled': moon.hidden}">
+                                                <input type='color' class='color inline_moon_color col' x-model="moon.shadow_color" :x-ref="`moon_shadow_color_${moon.index}`" :disabled='moon.hidden'/>
+                                                <button type="button" class="btn btn-sm btn-outline-info ml-1 small-text" @click="reset_moon_color(moon.index, true)"><i class="fas fa-undo"></i></button>
                                             </label>
                                         </div>
-                                        <div class='col-md-6 col-4 px-1'>
-                                            <label class='form-control checkbox' :class="{'disabled': moon.hidden}">
-                                                <input type='color' class='color inline_moon_color full' x-model="moon.color" :x-ref="`moon_color_${moon.index}`" :disabled='moon.hidden'/>
+                                        <div class='col-md-6 col-4 px-1 col'>
+                                            <label class='form-control checkbox d-flex' :class="{'disabled': moon.hidden}">
+                                                <input type='color' class='color inline_moon_color col' x-model="moon.color" :x-ref="`moon_color_${moon.index}`" :disabled='moon.hidden'/>
+                                                <button type="button" class="btn btn-sm btn-outline-info ml-1 small-text" @click="reset_moon_color(moon.index, false)"><i class="fas fa-undo"></i></button>
                                             </label>
                                         </div>
                                     </div>
