@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Calendar;
+use App\Facades\Epoch;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
@@ -25,7 +26,7 @@ class RouteServiceProvider extends ServiceProvider
     public function boot()
     {
         Route::bind('calendar', function($hash) {
-            return Calendar::hash($hash)->with([
+            $calendar = Calendar::hash($hash)->with([
                 'events',
                 'event_categories',
                 'users' => function($query) {
@@ -35,6 +36,10 @@ class RouteServiceProvider extends ServiceProvider
                 'parent',
                 'children'
             ])->firstOrFail();
+
+            Epoch::forCalendar($calendar);
+
+            return $calendar;
         });
 
         parent::boot();

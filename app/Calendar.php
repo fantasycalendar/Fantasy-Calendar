@@ -235,6 +235,13 @@ class Calendar extends Model
             && $this->static_data['clock']['enabled'];
     }
 
+    public function getDailyMinutesAttribute(): int
+    {
+        return $this->clock_enabled
+            ? $this->clock['hours'] * $this->clock['minutes']
+            : 0;
+    }
+
     /**
      * Determine whether the current date on this calendar is valid
      *

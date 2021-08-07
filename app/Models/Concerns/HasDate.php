@@ -184,7 +184,7 @@ trait HasDate
 
         $dynamic_data['day'] = $this->findNearestValidDay($targetDay);
         $this->dynamic_data = $dynamic_data;
-
+        
         return $this;
     }
 

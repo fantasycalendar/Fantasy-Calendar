@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Events\DateChanged;
+use App\Listeners\UpdateChildCalendars;
 use App\Listeners\UserEventSubscriber;
 use Illuminate\Notifications\Events\NotificationSent;
 use Illuminate\Support\Facades\Event;
@@ -24,6 +26,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         SocialiteWasCalled::class => [
             DiscordExtendSocialite::class.'@handle'
+        ],
+        DateChanged::class => [
+            UpdateChildCalendars::class
         ]
     ];
 
