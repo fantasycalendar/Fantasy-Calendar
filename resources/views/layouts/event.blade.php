@@ -273,7 +273,7 @@
                                             <span style="opacity:0.65; font-size:1.4rem;" x-text='moon.name'></span>
                                         </div>
                                     </div>
-                                    <div class='row no-gutters'>
+                                    <div class='row my-1 no-gutters'>
                                         <div class='col-md-4 col-3 px-1'>
                                             <label class='form-control checkbox'>
                                                 <input type='checkbox' class='event_setting' x-model='moon.hidden'> Hidden
@@ -283,7 +283,7 @@
                                             <input type='text' class='form-control full' x-model='moon.phase_name' placeholder='Custom phase name' :disabled='moon.hidden'>
                                         </div>
                                     </div>
-                                    <div class='row no-gutters'>
+                                    <div class='row my-1 no-gutters'>
                                         <div class='col-md-4 px-1'>
                                             <label class='form-control checkbox' :class="{'disabled': moon.hidden}">
                                                 <input type='checkbox' class='event_setting' x-model='moon.override_phase' :disabled='moon.hidden'> Override phase
@@ -297,17 +297,41 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class='row no-gutters'>
+                                    <div class='row mt-1 no-gutters'>
                                         <div class='col-md-6 col-4 px-1'>
-                                            <label class='form-control checkbox d-flex' :class="{'disabled': moon.hidden}">
-                                                <input type='color' class='color inline_moon_color col' x-model="moon.shadow_color" :x-ref="`moon_shadow_color_${moon.index}`" :disabled='moon.hidden'/>
-                                                <button type="button" class="btn btn-sm btn-outline-info ml-1 small-text" @click="reset_moon_color(moon.index, true)"><i class="fas fa-undo"></i></button>
+                                            <label class='form-control border-0 p-0 input-group color_container' :class="{'disabled': moon.hidden}">
+                                                <input type='color' class='form-control border-right-0 input-lg color inline_moon_color h-100' x-model="moon.shadow_color" :x-ref="`moon_shadow_color_${moon.index}`" :disabled='moon.hidden'/>
+                                                <div class="input-group-append">
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-sm small-text"
+                                                        @click="reset_moon_color(moon.index, true)"
+                                                        :disabled="moon.shadow_color === moon.original_shadow_color"
+                                                        x-bind:class='{
+                                                            "btn-outline-secondary": moon.shadow_color === moon.original_shadow_color,
+                                                            "btn-secondary": moon.shadow_color !== moon.original_shadow_color
+                                                        }'>
+                                                        <i class="fas fa-undo"></i>
+                                                    </button>
+                                                </div>
                                             </label>
                                         </div>
                                         <div class='col-md-6 col-4 px-1 col'>
-                                            <label class='form-control checkbox d-flex' :class="{'disabled': moon.hidden}">
-                                                <input type='color' class='color inline_moon_color col' x-model="moon.color" :x-ref="`moon_color_${moon.index}`" :disabled='moon.hidden'/>
-                                                <button type="button" class="btn btn-sm btn-outline-info ml-1 small-text" @click="reset_moon_color(moon.index, false)"><i class="fas fa-undo"></i></button>
+                                            <label class='form-control border-0 p-0 input-group color_container' :class="{'disabled': moon.hidden}">
+                                                <input type='color' class='form-control border-right-0 input-lg color inline_moon_color h-100' x-model="moon.color" :x-ref="`moon_color_${moon.index}`" :disabled='moon.hidden'/>
+                                                <div class="input-group-append">
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-sm small-text"
+                                                        @click="reset_moon_color(moon.index, false)"
+                                                        :disabled="moon.color === moon.original_color"
+                                                        x-bind:class='{
+                                                            "btn-outline-secondary": moon.color === moon.original_color,
+                                                            "btn-secondary": moon.color !== moon.original_color
+                                                        }'>
+                                                        <i class="fas fa-undo"></i>
+                                                    </button>
+                                                </div>
                                             </label>
                                         </div>
                                     </div>

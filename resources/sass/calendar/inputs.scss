@@ -848,10 +848,9 @@ body .event_comment .comment_context_btn:not(:hover) {
     }
 }
 
-.color {
-    height: 100%;
+.color_container{
+    height: 2rem;
 }
-
 
 @media screen and (max-width: 768px) {
     .clickable_background {
