@@ -1,4 +1,5 @@
 function update_date(new_date){
+
 	if(dynamic_data.year != new_date.year){
 		dynamic_data.day = new_date.day;
 		dynamic_data.timespan = new_date.timespan;
@@ -553,9 +554,9 @@ function submit_edit_comment(comment_id, content, callback){
 				$.notify(
 					result.data.message
 				);
-            } 
+            }
 		});
-		
+
 }
 
 function submit_delete_comment(comment_id, callback){
@@ -574,7 +575,7 @@ function submit_delete_comment(comment_id, callback){
 				);
             }
 		});
-		
+
 }
 
 

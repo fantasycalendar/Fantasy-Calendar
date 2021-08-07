@@ -15,7 +15,7 @@
         set_up_view_inputs();
         set_up_view_values();
         set_up_visitor_values();
-        
+
         bind_calendar_events();
 
         if(!evaluate_queryString(window.location.search)){
@@ -119,6 +119,7 @@
 
                         check_update(true);
                         evaluate_settings();
+                        eval_clock();
                         poll_timer = setTimeout(check_dates, 5000);
 
                     });
@@ -137,6 +138,7 @@
 
                         check_update(false);
                         evaluate_settings();
+                        eval_clock();
                         poll_timer = setTimeout(check_dates, 5000);
 
                     });

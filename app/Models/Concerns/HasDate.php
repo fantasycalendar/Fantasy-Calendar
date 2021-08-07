@@ -8,7 +8,7 @@ use App\Calendar;
 use App\Exceptions\InvalidDateException;
 use App\Facades\Epoch as EpochFactory;
 use App\Services\EpochService\Epoch;
-use Illuminate\Support\Arr;
+use App\Services\EpochService\EpochCalculator;
 use Illuminate\Support\Str;
 
 
@@ -168,13 +168,15 @@ trait HasDate
      * @param null $day
      * @return $this
      */
-    public function setDate($year, $timespanId = null, $day = null): Calendar
+    public function setDate($year, $timespanId = null, $day = null, $hour = null, $minute = null): Calendar
     {
         $dynamic_data = $this->dynamic_data;
 
         $targetYear = $year ?? $dynamic_data['year'];
         $targetTimespan = $timespanId ?? $dynamic_data['timespan'];
         $targetDay = $day ?? $dynamic_data['day'];
+        $targetHour = $hour ?? $dynamic_data['hour'];
+        $targetMinute = $minute ?? $dynamic_data['minute'];
 
         $dynamic_data['year'] = $this->findNearestValidYear($targetYear);
         $this->dynamic_data = $dynamic_data;
@@ -184,7 +186,13 @@ trait HasDate
 
         $dynamic_data['day'] = $this->findNearestValidDay($targetDay);
         $this->dynamic_data = $dynamic_data;
-        
+
+        $dynamic_data['hour'] = $targetHour;
+        $this->dynamic_data = $dynamic_data;
+
+        $dynamic_data['minute'] = $targetMinute;
+        $this->dynamic_data = $dynamic_data;
+
         return $this;
     }
 
@@ -247,6 +255,53 @@ trait HasDate
     public function setDateFromEpoch(Epoch $epoch): Calendar
     {
         return $this->setDate($epoch->year, $epoch->monthId, $epoch->day);
+    }
+
+    public function setDateFromParentCalendar(Calendar $parentCalendar, int $targetEpoch): Calendar
+    {
+
+        $targetEpoch = $targetEpoch - $this->parent_offset;
+
+        $hour = $parentCalendar->dynamic_data['hour'];
+        $minute = $parentCalendar->dynamic_data['minute'];
+
+        if($parentCalendar->clock_enabled && $this->clock_enabled &&
+            (
+                $parentCalendar->clock['hours'] !== $this->clock['hours'] || $parentCalendar->clock['minutes'] !== $this->clock['minutes']
+            )
+        ) {
+
+            $timeScale = $parentCalendar->daily_minutes / $this->daily_minutes;
+
+            $targetEpoch = $targetEpoch * $timeScale;
+
+            $extraHours = fmod($targetEpoch, 1) * $this->clock['hours'];
+            $extraMinutes = intval(floor(fmod($extraHours, 1) * $this->clock['minutes']));
+
+            $parentMinuteInDay = $hour * $parentCalendar->clock['minutes'] + $minute;
+
+            $targetHour = $parentMinuteInDay / $this->clock['minutes'];
+            $targetMinute = intval(floor(fmod($targetHour, 1) * $this->clock['minutes']));
+
+            $hour = intval(floor($extraHours) + floor($targetHour));
+            $minute = $extraMinutes + $targetMinute;
+
+            if($minute >= $this->clock['minutes']){
+                $hour++;
+                $minute -= $this->clock['minutes'];
+            }
+
+            if($hour >= $this->clock['hours']){
+                $targetEpoch++;
+                $hour -= $this->clock['hours'];
+            }
+
+        }
+
+        $epoch = EpochCalculator::forCalendar($this)->calculate($targetEpoch);
+
+        return $this->setDate($epoch->year, $epoch->monthId, $epoch->day, $hour, $minute);
+
     }
 
     public function __call($method, $arguments)

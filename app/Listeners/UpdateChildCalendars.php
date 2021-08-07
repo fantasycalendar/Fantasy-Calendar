@@ -28,9 +28,7 @@ class UpdateChildCalendars
     public function handle(DateChanged $event)
     {
         $event->calendar->children->each(function($child) use ($event){
-            $targetEpoch = $event->epoch - $child->parent_offset;
-
-            Epoch::forCalendar($child);
+            $child->setDateFromParentCalendar($event->calendar, $event->epoch)->save();
         });
     }
 }
