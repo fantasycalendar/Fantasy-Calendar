@@ -1,15 +1,14 @@
-/node_modules
-/public/hot
-/public/storage
-/public/js
-/public/mix-manifest.json
-/public/css
-/public/fonts
-/public/resources
-/public/vendor
-/storage/*.key
-/storage/
-/vendor
+node_modules
+public/hot
+public/storage
+public/js
+public/mix-manifest.json
+public/css
+public/fonts
+public/resources
+public/vendor
+storage/
+vendor
 .env
 .env.backup
 .phpunit.result.cache
@@ -19,14 +18,9 @@ npm-debug.log
 yarn-error.log
 .vscode
 psysh
-*.css.map
-*.sass.map
-*.scss.map
-/resources/sass/*.css
-/resources/sass/calendar/*.css
-.serverless/*
+.serverless/
 
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and WebStorm
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
-.idea/*
+.idea/
