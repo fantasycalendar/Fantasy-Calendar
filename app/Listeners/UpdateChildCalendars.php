@@ -3,11 +3,9 @@
 namespace App\Listeners;
 
 use App\Events\DateChanged;
-use App\Facades\Epoch;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 
-class UpdateChildCalendars
+class UpdateChildCalendars implements ShouldQueue
 {
     /**
      * Create the event listener.
@@ -27,8 +25,9 @@ class UpdateChildCalendars
      */
     public function handle(DateChanged $event)
     {
-        $event->calendar->children->each(function($child) use ($event){
-            $child->setDateFromParentCalendar($event->calendar, $event->epoch)->save();
-        });
+        logger()->info('DateChanged handler, handling for: ' . $event->calendar->children->map->name->join(','));
+        $event->calendar->children
+            ->each->setDateFromParentCalendar($event->calendar, $event->epoch)
+            ->each->save();
     }
 }
