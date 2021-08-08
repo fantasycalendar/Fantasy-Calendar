@@ -95,7 +95,6 @@ trait HasDate
      */
     public function addMonths(int $months = 1): Calendar
     {
-//        return $this->setDateFromEpoch(EpochFactory::incrementMonths($months, $this));
         $targetMonth = $this->month_index + $months;
         if($this->months->has($targetMonth)){
             return $this->setDate($this->year, $this->months->get($targetMonth)->id);
