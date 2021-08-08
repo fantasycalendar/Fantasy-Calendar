@@ -11,9 +11,7 @@ class DateChanged
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public int $epoch;
-    public bool $clockEnabled;
-    public int $minutesPerDay;
+    public int $targetEpoch;
     public Calendar $calendar;
 
     /**
@@ -21,11 +19,9 @@ class DateChanged
      *
      * @return void
      */
-    public function __construct(Calendar $calendar, int $epoch, bool $clockEnabled, int $minutesPerDay = 0)
+    public function __construct(Calendar $calendar, int $targetEpoch)
     {
         $this->calendar = $calendar;
-        $this->epoch = $epoch;
-        $this->clockEnabled = $clockEnabled;
-        $this->minutesPerDay = $minutesPerDay;
+        $this->targetEpoch = $targetEpoch;
     }
 }

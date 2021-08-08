@@ -334,9 +334,9 @@ class Calendar extends Model
         });
     }
 
-    public function getClockAttribute(): array
+    public function getClockAttribute(): Collection
     {
-        return Arr::get($this->static_data, 'clock');
+        return collect(Arr::get($this->static_data, 'clock'));
     }
 
     /**
