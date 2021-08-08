@@ -592,6 +592,29 @@ class Calendar extends Model
     }
 
     /**
+     * @param string|array|\ArrayAccess $input
+     * @param mixed|null $value
+     * @return array|\ArrayAccess|mixed
+     */
+    public function dynamic($input, $value = null)
+    {
+        if (is_string($input) && $value === null) return Arr::get($this->dynamic_data, $input);
+
+        if(!is_array($input)) {
+            $input = [
+                $input => $value
+            ];
+        }
+
+        $dynamic_data = $this->dynamic_data;
+        foreach($input as $key => $value) {
+            $dynamic_data[$key] = $value;
+        }
+
+        return $this->dynamic_data = $dynamic_data;
+    }
+
+    /**
      * Determine whether a setting is enabled or disabled on this calendar
      *
      * @param $setting_name

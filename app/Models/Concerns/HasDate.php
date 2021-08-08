@@ -38,30 +38,34 @@ trait HasDate
     {
         if(!$this->clock_enabled) return $this;
 
-        $dynamic_data = $this->dynamic_data;
+        $hoursAdded = ($this->dynamic('minute') + $minutes) / $this->clock['minutes'];
+        $daysAdded = ($this->dynamic('hour') + $hoursAdded) / $this->clock['hours'];
 
-        $currentHour = $dynamic_data['hour'];
-        $currentMinute = $dynamic_data['minute'];
+        $currentHour = fmod($daysAdded, 1) * $this->clock['hours'];
 
-        $extraHours = ($currentMinute + $minutes) / $this->clock['minutes'];
-
-        $extraDays = ($currentHour + $extraHours) / $this->clock['hours'];
-
-        $currentHour = fmod($extraDays, 1) * $this->clock['hours'];
-
-        $currentMinute = (int) round(fmod($currentHour, 1) * $this->clock['minutes']);
-
-        $dynamic_data['hour'] = (int) floor($currentHour);
-        $dynamic_data['minute'] = $currentMinute;
-
-        $this->dynamic_data = $dynamic_data;
-
-        $extraDays = floor($extraDays);
-        if($extraDays != 0){
-            $this->addDays($extraDays);
+        if($currentHour < 0){
+            $currentHour += $this->clock['hours'];
         }
 
-        return $this;
+        $currentMinute = (int) round(fmod($currentHour, 1) * $this->clock['minutes']);
+        $currentHour = (int) floor($currentHour);
+
+        if($currentMinute === $this->clock['minutes']) {
+            $currentHour++;
+            $currentMinute = 0;
+
+            if($currentHour === $this->clock['hours']) {
+                $daysAdded++;
+                $currentHour = 0;
+            }
+        }
+
+        $this->dynamic([
+            'hour' => $currentHour,
+            'minute' => $currentMinute
+        ]);
+
+        return $this->addDays(floor($daysAdded));
     }
     /**
      * Add a set of hours to the current time of this calendar
@@ -86,7 +90,9 @@ trait HasDate
      */
     public function addDays(int $days = 1): Calendar
     {
-        return $this->setDateFromEpoch(EpochFactory::incrementDays($days, $this));
+        return ($days === 0)
+            ? $this
+            : $this->setDateFromEpoch(EpochFactory::incrementDays($days, $this));
     }
 
     /**
@@ -164,35 +170,23 @@ trait HasDate
     /**
      * Set the full range of the date on this calendar
      *
-     * @param $year
+     * @param $targetYear
      * @param null $timespanId
      * @param null $day
      * @return $this
      */
-    public function setDate($year, $timespanId = null, $day = null, $hour = null, $minute = null): Calendar
+    public function setDate(int $targetYear, $timespanId = null, $day = null, $hour = null, $minute = null): Calendar
     {
-        $dynamic_data = $this->dynamic_data;
+        $targetTimespan = $timespanId ?? $this->dynamic('timespan');
+        $targetDay = $day ?? $this->dynamic('day');
+        $targetHour = $hour ?? $this->dynamic('hour');
+        $targetMinute = $minute ?? $this->dynamic('minute');
 
-        $targetYear = $year ?? $dynamic_data['year'];
-        $targetTimespan = $timespanId ?? $dynamic_data['timespan'];
-        $targetDay = $day ?? $dynamic_data['day'];
-        $targetHour = $hour ?? $dynamic_data['hour'];
-        $targetMinute = $minute ?? $dynamic_data['minute'];
-
-        $dynamic_data['year'] = $this->findNearestValidYear($targetYear);
-        $this->dynamic_data = $dynamic_data;
-
-        $dynamic_data['timespan'] = $this->findNearestValidMonth($targetTimespan);
-        $this->dynamic_data = $dynamic_data;
-
-        $dynamic_data['day'] = $this->findNearestValidDay($targetDay);
-        $this->dynamic_data = $dynamic_data;
-
-        $dynamic_data['hour'] = $targetHour;
-        $this->dynamic_data = $dynamic_data;
-
-        $dynamic_data['minute'] = $targetMinute;
-        $this->dynamic_data = $dynamic_data;
+        $this->dynamic('year', $this->findNearestValidYear($targetYear));
+        $this->dynamic('timespan', $this->findNearestValidMonth($targetTimespan));
+        $this->dynamic('day', $this->findNearestValidDay($targetDay));
+        $this->dynamic('hour', $targetHour);
+        $this->dynamic('minute', $targetMinute);
 
         return $this;
     }
