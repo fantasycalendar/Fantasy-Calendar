@@ -48,9 +48,10 @@ trait HasDate
         $extraDays = ($currentHour + $extraHours) / $this->clock['hours'];
 
         $currentHour = fmod($extraDays, 1) * $this->clock['hours'];
-        $currentMinute = floor(fmod($currentHour, 1) * $this->clock['minutes']);
 
-        $dynamic_data['hour'] = floor($currentHour);
+        $currentMinute = (int) round(fmod($currentHour, 1) * $this->clock['minutes']);
+
+        $dynamic_data['hour'] = (int) floor($currentHour);
         $dynamic_data['minute'] = $currentMinute;
 
         $this->dynamic_data = $dynamic_data;
