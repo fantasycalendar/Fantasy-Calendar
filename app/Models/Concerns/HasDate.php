@@ -264,7 +264,11 @@ trait HasDate
         $hour = $parentCalendar->dynamic_data['hour'];
         $minute = $parentCalendar->dynamic_data['minute'];
 
-        if($parentCalendar->clock_enabled && $this->clock_enabled && $this->daily_minutes !== $parentCalendar->daily_minutes) {
+        if($parentCalendar->clock_enabled && $this->clock_enabled &&
+            (
+                $parentCalendar->clock['hours'] !== $this->clock['hours'] || $parentCalendar->clock['minutes'] !== $this->clock['minutes']
+            )
+        ) {
 
             $timeScale = $parentCalendar->daily_minutes / $this->daily_minutes;
 
