@@ -275,14 +275,14 @@ trait HasDate
             $targetEpoch = $targetEpoch * $timeScale;
 
             $extraHours = fmod($targetEpoch, 1) * $this->clock['hours'];
-            $extraMinutes = intval(floor(fmod($extraHours, 1) * $this->clock['minutes']));
+            $extraMinutes = floor(fmod($extraHours, 1) * $this->clock['minutes']);
 
             $parentMinuteInDay = $hour * $parentCalendar->clock['minutes'] + $minute;
 
             $targetHour = $parentMinuteInDay / $this->clock['minutes'];
-            $targetMinute = intval(floor(fmod($targetHour, 1) * $this->clock['minutes']));
+            $targetMinute = floor(fmod($targetHour, 1) * $this->clock['minutes']);
 
-            $hour = intval(floor($extraHours) + floor($targetHour));
+            $hour = floor($extraHours) + floor($targetHour);
             $minute = $extraMinutes + $targetMinute;
 
             if($minute >= $this->clock['minutes']){
