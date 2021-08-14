@@ -285,6 +285,7 @@ abstract class Command
         switch (Arr::get($data, 'type')) {
             case null:
             case 2:
+            case 1:
                 return Arr::get($data, 'name') . ' ' . self::getCalledCommand(Arr::get($data, 'options.0'));
             default:
                 return Arr::get($data, 'name');
