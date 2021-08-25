@@ -848,7 +848,7 @@ function set_up_edit_inputs(){
 			var preset_order = undefined;
 
 			if(!valid_preset_order){
-			
+
 				let season_test = [];
 				for(var index in static_data.seasons.data){
 					var season = static_data.seasons.data[index];
@@ -947,7 +947,7 @@ function set_up_edit_inputs(){
 			var season_length = static_data.seasons.data[prev_id].duration+static_data.seasons.data[prev_id].transition_length+static_data.seasons.data[season_id].duration+static_data.seasons.data[season_id].transition_length;
 			var target = static_data.seasons.data[prev_id].duration+static_data.seasons.data[prev_id].transition_length;
 			var perc = target/season_length;
-				
+
 		}else{
 
 			let prev_season = static_data.seasons.data[prev_id];
@@ -1051,7 +1051,7 @@ function set_up_edit_inputs(){
 			var season_length = static_data.seasons.data[prev_id].duration+static_data.seasons.data[prev_id].transition_length+static_data.seasons.data[season_id].duration+static_data.seasons.data[season_id].transition_length;
 			var target = static_data.seasons.data[prev_id].duration+static_data.seasons.data[prev_id].transition_length;
 			var perc = target/season_length;
-				
+
 		}else{
 
 			let prev_season = static_data.seasons.data[prev_id];
@@ -1073,7 +1073,7 @@ function set_up_edit_inputs(){
 			let next_day = evaluate_calendar_start(static_data, next_year, next_season.timespan, next_season.day).epoch-prev_day;
 
 			var perc = curr_day/next_day;
-			
+
 		}
 
 		if(static_data.clock.enabled){
@@ -1144,7 +1144,7 @@ function set_up_edit_inputs(){
 	$(document).on('change', '.season_time', function(){
 
 		let index = $(this).closest('.sortable-container').attr('index');
-		
+
 		let [type, time] = $(this).attr('clocktype').split('_');
 
 		let value = $(this).val();
@@ -1282,7 +1282,7 @@ function set_up_edit_inputs(){
 
 		if(isNaN(event_categories[category_index].id)){
 			let slug = slugify(new_name);
-			
+
 			for(let index in events){
 				if(events[index].event_category_id == event_categories[category_index].id){
 					events[index].event_category_id = slug;
@@ -4541,7 +4541,7 @@ function error_check(parent, rebuild){
 		if(parent !== undefined && (parent === "seasons")){
 			rebuild_climate();
 		}else{
-			rebuild_all_data();
+            rebuild_calendar('calendar', dynamic_data);
 			update_current_day(true);
 			evaluate_sun();
 		}
@@ -4863,7 +4863,7 @@ function reindex_season_sortable(key){
 	if(no_seasons){
 		static_data.seasons.global_settings.preset_order = undefined;
 	}
-	
+
 	populate_preset_season_list();
 
 	if(key !== undefined){
@@ -4919,7 +4919,7 @@ function populate_preset_season_list(){
 			}else{
 				$(this)[0].selectedIndex = static_data.seasons.global_settings.preset_order[i];
 			}
-			
+
 		});
 
 		if(static_data.seasons.global_settings.preset_order === undefined){
@@ -4943,7 +4943,7 @@ function detect_automatic_mapping(){
 	}else{
 		return false;
 	}
-	
+
 	let season_test = [];
 	for(var index in static_data.seasons.data){
 		var season = static_data.seasons.data[index];
@@ -5320,7 +5320,7 @@ function sort_list_by_partial_date(list){
 	}
 
 	list.empty().append(elements).change();
-	
+
 }
 
 function reindex_event_category_list(){

@@ -9,16 +9,15 @@ importScripts('/js/calendar/calendar_variables.js?v='+version);
 importScripts('/js/calendar/calendar_season_generator.js?v='+version);
 importScripts('/js/calendar/calendar_workers.js?v='+version);
 
-onmessage = e => {
+onmessage = async (e) => {
 
-	calendar_data_generator.calendar_name = e.data.calendar_name;
 	calendar_data_generator.static_data = e.data.static_data;
 	calendar_data_generator.dynamic_data = e.data.dynamic_data;
 	calendar_data_generator.owner = e.data.owner;
 	calendar_data_generator.events = e.data.events;
 	calendar_data_generator.event_categories = e.data.event_categories;
 
-	let debug = false;
+	let debug = true;
 	let data = {};
 
 	if(debug) {
@@ -38,11 +37,13 @@ onmessage = e => {
 
 			let start_time = performance.now();
 
-            data = calendar_data_generator.run();
+            data = await calendar_data_generator.run();
 
             if(last_epoch){
                 if(last_epoch !==  data.year_data.start_epoch){
                     console.log("WRONG!", calendar_data_generator.dynamic_data.year)
+                }else{
+                    console.log(calendar_data_generator.dynamic_data.year)
                 }
             }
 

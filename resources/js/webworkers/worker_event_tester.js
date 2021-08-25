@@ -5,7 +5,7 @@ importScripts('/js/calendar/calendar_variables.js?v='+version);
 importScripts('/js/calendar/calendar_season_generator.js?v='+version);
 importScripts('/js/calendar/calendar_workers.js?v='+version);
 
-onmessage = e => {
+onmessage = async (e) => {
 
 	calendar_data_generator.calendar_name = e.data.calendar_name;
 	calendar_data_generator.static_data = e.data.static_data;
@@ -14,7 +14,7 @@ onmessage = e => {
 	calendar_data_generator.events = e.data.events;
 	calendar_data_generator.event_categories = e.data.event_categories;
 
-	let calendar_data = calendar_data_generator.run_future(Number(e.data.start_year), Number(e.data.end_year), e.data.build_seasons);
+	let calendar_data = await calendar_data_generator.run_future(Number(e.data.start_year), Number(e.data.end_year), e.data.build_seasons);
 
 	let event_data = event_evaluator.init(
 		e.data.static_data,

@@ -1,6 +1,5 @@
 const calendar_data_generator = {
 
-	calendar_name: '',
 	dynamic_data: {},
 	static_data: {},
     events: {},
@@ -800,16 +799,16 @@ const calendar_data_generator = {
 		if(this.static_data.year_data.timespans.length === 0 || this.static_data.year_data.global_week.length === 0){
 
 			let result = {
-				success: true,
+				success: false,
 				errors: []
 			};
 
 			if(this.static_data.year_data.timespans.length === 0){
-				result.errors.push("You need at least one month.")
+				result.errors.push("Your calendar needs at least one month in order to have any days.")
 			}
 
 			if(this.static_data.year_data.global_week.length === 0){
-				result.errors.push("You need at least one week day.")
+				result.errors.push("Your calendar needs at least one week day to function.")
 			}
 
 			return result;
@@ -828,6 +827,8 @@ const calendar_data_generator = {
 
 		this.evaluate_pre_post();
 
+		return { success: true };
+
     },
 
     /**
@@ -836,95 +837,91 @@ const calendar_data_generator = {
      * @param start_year        The starting year from which to evaluate
      * @param end_year          The ending year to which to evaluate
      * @param build_seasons     Whether to also calculate seasons. May not be needed for the event being tested.
-     * @returns {{end_epoch: number, success: boolean, start_epoch: number, epoch_data: object}}
+     * @returns Promise
      */
     run_future: function(start_year, end_year, build_seasons){
 
-	    this.__init__();
+        return new Promise((resolve, reject) => {
 
-	    this.callback = true;
-	    this.build_seasons = build_seasons;
+            let init = this.__init__();
 
-        start_year = unconvert_year(this.static_data, start_year)
-        end_year = unconvert_year(this.static_data, end_year)
-        this.timespans = this.get_timespans_in_year_range(start_year, end_year);
-        this.evaluate_pre_calculation(start_year);
-        this.evaluate_post_calculation(end_year);
+            if(!init.success) reject(init);
 
-		this.evaluate_years();
+            this.callback = true;
+            this.build_seasons = build_seasons;
 
-        const epochs = Object.keys(this.epochs);
-        const calendar_start_epoch = Number(epochs[0]);
-        const calendar_end_epoch = Number(epochs[epochs.length-1]);
+            start_year = unconvert_year(this.static_data, start_year)
+            end_year = unconvert_year(this.static_data, end_year)
+            this.timespans = this.get_timespans_in_year_range(start_year, end_year);
+            this.evaluate_pre_calculation(start_year);
+            this.evaluate_post_calculation(end_year);
 
-		return {
-			success: true,
-            start_epoch: calendar_start_epoch,
-            end_epoch: calendar_end_epoch,
-			epoch_data: this.epochs
-        }
+            this.evaluate_years();
+
+            const epochs = Object.keys(this.epochs);
+            const calendar_start_epoch = Number(epochs[0]);
+            const calendar_end_epoch = Number(epochs[epochs.length-1]);
+
+            resolve({
+                success: true,
+                start_epoch: calendar_start_epoch,
+                end_epoch: calendar_end_epoch,
+                epoch_data: this.epochs
+            });
+        });
 
     },
 
     /**
      * Primary generation function within the epoch data generation. Returns all the data needed to display a calendar
      *
-     * @returns {{
-     *      year_data: {
-     *          year: int,
-     *          end_epoch: int,
-     *          start_epoch: int,
-     *          year_day: int,
-     *          week_day: int,
-     *          era_year: int
-     *      },
-     *      success: boolean,
-     *      epoch_data: object,
-     *      static_data: object,
-     *      processed_weather: boolean,
-     *      processed_seasons: boolean,
-     *      timespans_to_build: array
-     *  }}
+     * @returns Promise
      */
     run: function(){
 
-		this.__init__();
+        return new Promise((resolve, reject) => {
 
-        this.timespans[this.current_year] = this.get_timespans_in_year(this.dynamic_data.year);
-        let timespans_to_build = this.timespans[this.current_year].filter(timespan => timespan.render)
-        let should_add_timespans = this.check_pre_post_calculation();
-        if(should_add_timespans.pre) this.evaluate_pre_calculation(this.dynamic_data.year);
-        if(should_add_timespans.post) this.evaluate_post_calculation(this.dynamic_data.year);
+            let init = this.__init__();
 
-		this.evaluate_years();
+            if(!init.success) reject(init);
 
-        const first_timespan = timespans_to_build[0];
-        const last_timespan = timespans_to_build[timespans_to_build.length-1];
-        const start_epochs = Object.keys(first_timespan.epochs);
-        const end_epochs = Object.keys(last_timespan.epochs);
+            this.timespans[this.current_year] = this.get_timespans_in_year(this.dynamic_data.year);
+            let timespans_to_build = this.timespans[this.current_year].filter(timespan => timespan.render)
+            let should_add_timespans = this.check_pre_post_calculation();
+            if (should_add_timespans.pre) this.evaluate_pre_calculation(this.dynamic_data.year);
+            if (should_add_timespans.post) this.evaluate_post_calculation(this.dynamic_data.year);
 
-        const calendar_start_epoch = Number(start_epochs[0]);
-        const calendar_end_epoch = Number(end_epochs[end_epochs.length-1]);
-        const calendar_week_day = Number(first_timespan.epochs[calendar_start_epoch].week_day);
-        const calendar_year_day = Number(first_timespan.epochs[calendar_start_epoch].year_day);
-        const calendar_era_year = Number(first_timespan.epochs[calendar_start_epoch].era_year);
+            this.evaluate_years();
 
-		return {
-			success: true,
-			static_data: this.static_data,
-			year_data: {
-				year: this.dynamic_data.year,
-				era_year: unconvert_year(this.static_data, calendar_era_year),
-				start_epoch: calendar_start_epoch,
-				end_epoch: calendar_end_epoch,
-				week_day: calendar_week_day,
-				year_day: calendar_year_day
-			},
-			epoch_data: this.epochs,
-			processed_seasons: this.climate_generator.process_seasons,
-			processed_weather: this.climate_generator.process_weather,
-			timespans_to_build: timespans_to_build
-        }
+            const first_timespan = timespans_to_build[0];
+            const last_timespan = timespans_to_build[timespans_to_build.length - 1];
+            const start_epochs = Object.keys(first_timespan.epochs);
+            const end_epochs = Object.keys(last_timespan.epochs);
+
+            const calendar_start_epoch = Number(start_epochs[0]);
+            const calendar_end_epoch = Number(end_epochs[end_epochs.length - 1]);
+            const calendar_week_day = Number(first_timespan.epochs[calendar_start_epoch].week_day);
+            const calendar_year_day = Number(first_timespan.epochs[calendar_start_epoch].year_day);
+            const calendar_era_year = Number(first_timespan.epochs[calendar_start_epoch].era_year);
+
+            resolve({
+                success: true,
+                static_data: this.static_data,
+                year_data: {
+                    year: this.dynamic_data.year,
+                    era_year: unconvert_year(this.static_data, calendar_era_year),
+                    start_epoch: calendar_start_epoch,
+                    end_epoch: calendar_end_epoch,
+                    week_day: calendar_week_day,
+                    year_day: calendar_year_day
+                },
+                epoch_data: this.epochs,
+                processed_seasons: this.climate_generator.process_seasons,
+                processed_weather: this.climate_generator.process_weather,
+                timespans_to_build: timespans_to_build
+            })
+
+        });
 
     }
 
