@@ -4555,7 +4555,7 @@ function error_check(parent, rebuild){
 		if(parent !== undefined && (parent === "seasons")){
 			rebuild_climate();
 		}else{
-			rebuild_all_data();
+			pre_rebuild_calendar('calendar', dynamic_data);
 			update_current_day(true);
 			evaluate_sun();
 		}

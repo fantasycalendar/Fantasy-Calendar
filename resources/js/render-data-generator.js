@@ -559,7 +559,7 @@ const render_data_generator = {
             }
         }
 
-		if(static_data.eras.length > 0 && !static_data.settings.hide_eras){
+		if(static_data.eras.length > 0 && (Perms.player_at_least('co-owner') || !static_data.settings.hide_eras)){
 
 			let num_eras = Object.keys(static_data.eras).length;
 
@@ -583,16 +583,19 @@ const render_data_generator = {
                         event_class.push(category.event_settings.hide || category.category_settings.hide ? "hidden_event" : "");
                     }
 
-                    if(this.events_to_send[era.date.epoch] === undefined){
-                        this.events_to_send[era.date.epoch] = []
-                    }
+                    let category_hide = category && category.id !== -1 ? category.category_settings.hide : false;
+                    let event_hide = category && category.id !== -1 ? category.event_settings.hide : false;
+                    let event_hide_full = category && category.id !== -1 ? category.event_settings.hide_full : false;
 
-                    this.events_to_send[era.date.epoch].push({
+                    let hide_era = (event_hide || category_hide || event_hide_full) && !Perms.player_at_least('co-owner');
+
+                    this.add_event_to_epoch(era.date.epoch, {
                         "index": era_index,
                         "name": era.name,
                         "overrides": {},
                         "class": event_class.join(' '),
-                        "era": true
+                        "era": true,
+                        "show": !hide_era
                     });
                 }
             }

@@ -15,7 +15,7 @@
 >
 	<div class='modal-basic-container'>
 		<div class='modal-basic-wrapper'>
-			<div class='modal-wrapper' x-show.transition="open">
+			<div class='modal-wrapper' x-on:mousedown.away="confirm_close($event)" x-show.transition="open">
 
 				<div class='close-ui-btn-bg'></div>
 				<i class="close_ui_btn fas fa-times-circle" @click='confirm_close(close)'></i>
@@ -121,7 +121,7 @@
 
     <div class='modal-basic-container'>
 		<div class='modal-basic-wrapper'>
-			<form id="event-form" class="modal-wrapper container" action="post" @click.away="confirm_close" x-show.transition="open">
+			<form id="event-form" class="modal-wrapper container" action="post" x-on:mousedown.away="confirm_close" x-show.transition="open">
 
 				<div class='close-ui-btn-bg'></div>
 				<i class="close_ui_btn fas fa-times-circle" @click='confirm_close'></i>
@@ -533,10 +533,11 @@
     @html-editor-modal-edit-html.window="edit_html"
     @keydown.escape.window="open && confirm_close($event)"
     x-show.immediate='open'
+    x-cloak
 >
 	<div class='modal-basic-container'>
 		<div class='modal-basic-wrapper'>
-			<form id="html-form" class="modal-wrapper" action="post" x-show.transition="open">
+			<form id="html-form" class="modal-wrapper" action="post" x-on:mousedown.away="confirm_close($event)" x-show.transition="open">
 
 				<div class='close-ui-btn-bg'></div>
 				<i class="close_ui_btn fas fa-times-circle" @click='confirm_close'></i>
