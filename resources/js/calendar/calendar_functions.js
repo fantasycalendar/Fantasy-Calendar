@@ -1826,16 +1826,15 @@ function is_leap(static_data, _parent_occurrences, _intervals, _offset) {
 
 	var year = unconvert_year(static_data, _parent_occurrences);
 
-	for(index in intervals){
-
-		var i = intervals[index];
+	for(let i of intervals){
 
 		let offset = i.offset;
-		if(!static_data.settings.year_zero_exists && year < 0) {
+
+		if(!static_data.settings.year_zero_exists && year < 0 && offset !== 0) {
 			offset--;
 		}
 
-		if((year-offset) % i.interval == 0){
+		if((year - offset) % i.interval === 0){
 			return !i.negator;
 		}
 
@@ -1847,15 +1846,17 @@ function is_leap(static_data, _parent_occurrences, _intervals, _offset) {
 
 function is_leap_simple(static_data, year, interval, offset) {
 
-	var year = unconvert_year(static_data, year);
+    if(interval === 1) return true;
 
-	var offset = offset%interval;
+	let cleanYear = Math.abs(unconvert_year(static_data, year));
 
-	if(!static_data.settings.year_zero_exists && year < 0){
-		offset--;
-	}
+    if(!static_data.settings.year_zero_exists && year < 0 && offset === 0){
+        offset++;
+    }
 
-	return (year-offset) % interval == 0;
+    offset = offset > interval || offset < 0 ? offset % interval : offset;
+
+	return (cleanYear - offset) % interval === 0;
 
 }
 
@@ -2048,33 +2049,27 @@ function get_epoch(static_data, year, timespan, day, debug){
 		// Get the current timespan's data
 		var timespan_obj = static_data.year_data.timespans[timespan_index];
 
-		if(timespan_obj.interval == 1){
+        let timespan_fraction = year;
 
-			var timespan_fraction = year;
+        if(timespan_obj.interval > 1){
 
-		}else{
+            let offset = timespan_obj.offset % timespan_obj.interval;
+            offset = offset ? offset : 0;
 
-			var offset = timespan_obj.offset%timespan_obj.interval;
-
-			offset = offset ? offset : 0;
-
-			if(year < 0 || static_data.settings.year_zero_exists) {
-				if(!static_data.settings.year_zero_exists) {
-					offset--;
-				}
-				var timespan_fraction = Math.ceil((year - offset) / timespan_obj.interval);
-			}else{
-				if(offset > 0){
-					var timespan_fraction = Math.floor((year + timespan_obj.interval - offset) / timespan_obj.interval);
-				}else{
-					var timespan_fraction = Math.floor(year / timespan_obj.interval);
-				}
-			}
-
-			/* if(debug) {
-				console.log(timespan_index, timespan_fraction, offset)
-			} */
-		}
+            if(year < 0 || static_data.settings.year_zero_exists) {
+                if(!static_data.settings.year_zero_exists) {
+                    offset--;
+                }
+                timespan_fraction = Math.ceil((year - offset) / timespan_obj.interval);
+                if(timespan_obj.offset === 0) timespan_fraction--;
+            }else{
+                if(offset > 0){
+                    timespan_fraction = Math.floor((year + timespan_obj.interval - offset) / timespan_obj.interval);
+                }else{
+                    timespan_fraction = Math.floor(year / timespan_obj.interval);
+                }
+            }
+        }
 
 		// Get the number of weeks for that month (check if it has a custom week or not)
 		if(!static_data.year_data.overflow){

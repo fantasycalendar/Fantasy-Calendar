@@ -307,6 +307,7 @@ const calendar_data_generator = {
 	    let timespans = [];
         let num_timespans = this.static_data.year_data.timespans.length;
         let ending_day = 0;
+        let hasEndingEra = false;
 
         for(let era_index = 0; era_index < this.static_data.eras.length; era_index++){
 
@@ -316,6 +317,7 @@ const calendar_data_generator = {
 
                 num_timespans = era.date.timespan+1;
                 ending_day = era.date.day;
+                hasEndingEra = true;
 
             }
 
@@ -329,8 +331,8 @@ const calendar_data_generator = {
 
             if(is_leap_simple(this.static_data, convert_year(this.static_data, year), timespan_object.interval, timespan_object.offset) && timespan_data.length > 0){
 
-                if(timespan_index === num_timespans-1){
-                    timespan_data.length = Math.max(timespan_data.length, ending_day);
+                if(timespan_index === num_timespans-1 && hasEndingEra){
+                    timespan_data.length = Math.min(timespan_data.length, ending_day);
                 }
 
                 timespans.push(timespan_data);
@@ -379,6 +381,10 @@ const calendar_data_generator = {
 
                 pre_year--;
 
+                if(pre_year === 0 && !this.static_data.settings.year_zero_exists){
+                    pre_year--;
+                }
+
                 let timespans_in_year = this.get_timespans_in_year(pre_year);
 
                 if(timespans_in_year.length === 0) continue;
@@ -415,6 +421,10 @@ const calendar_data_generator = {
 			while(days < this.post_search){
 
 			    post_year++;
+
+			    if(post_year === 0 && !this.static_data.settings.year_zero_exists){
+                    post_year++;
+                }
 
                 let timespans_in_year = this.get_timespans_in_year(post_year);
 
@@ -494,7 +504,9 @@ const calendar_data_generator = {
      */
     evaluate_years: function(){
 
-	    let start_year = Number(Object.keys(this.timespans)[0]);
+        let years = Object.keys(this.timespans).map(year => Number(year)).sort((a, b) => a - b );
+
+	    let start_year = years[0];
 		let start_data = evaluate_calendar_start(this.static_data, start_year);
 		let era_year = start_data.era_year;
 		let count_timespans = start_data.count_timespans;
@@ -504,20 +516,18 @@ const calendar_data_generator = {
 		let epoch = start_data.epoch;
 		let current_era = start_data.current_era;
 
-		let year_start_data = evaluate_calendar_start(this.static_data, start_year);
+		let year_start_data = evaluate_calendar_start(this.static_data, start_year, undefined, undefined, true);
 		let year_day = 1 + start_data.epoch - year_start_data.epoch;
 		let year_week_num = 1 + start_data.total_week_num - year_start_data.total_week_num;
 		let inverse_year_week_num = 1 + evaluate_calendar_start(this.static_data, start_year+1).total_week_num - year_start_data.total_week_num - year_week_num;
 
 		let year_num_timespans = start_data.num_timespans - year_start_data.num_timespans;
 
-        for(let year_str in this.timespans){
-
-            let year = Number(year_str);
+        for(let year of years){
 
             for(let timespan_str in this.timespans[year]){
 
-                let timespan_index = Number(timespan_str)
+                let timespan_index = Number(timespan_str);
 
                 let current_timespan = this.timespans[year][timespan_index];
 
@@ -554,7 +564,7 @@ const calendar_data_generator = {
                                     'era_year': unconvert_year(this.static_data, era_year),
 
                                     'timespan_index': timespan_index,
-                                    'timespan_number': i,
+                                    'timespan_number': year_num_timespans - 1,
                                     'timespan_count': count_timespans[timespan_index],
                                     'num_timespans': num_timespans,
                                     'timespan_name': current_timespan.name,
@@ -661,7 +671,7 @@ const calendar_data_generator = {
                                     'era_year': unconvert_year(this.static_data, era_year),
 
                                     'timespan_index': timespan_index,
-                                    'timespan_number': i,
+                                    'timespan_number': year_num_timespans - 1,
                                     'timespan_count': count_timespans[timespan_index],
                                     'num_timespans': num_timespans,
                                     'timespan_name': current_timespan.name,
@@ -812,6 +822,7 @@ const calendar_data_generator = {
 	    this.callback = false;
 	    this.render_one_month = this.static_data.settings.show_current_month;
 	    this.current_year = convert_year(this.static_data, this.dynamic_data.year);
+        this.timespans = {};
 
 		this.reset_eras();
 
@@ -879,11 +890,8 @@ const calendar_data_generator = {
 
 		this.__init__();
 
-		this.timespans = {};
-
         this.timespans[this.current_year] = this.get_timespans_in_year(this.dynamic_data.year);
         let timespans_to_build = this.timespans[this.current_year].filter(timespan => timespan.render)
-
         let should_add_timespans = this.check_pre_post_calculation();
         if(should_add_timespans.pre) this.evaluate_pre_calculation(this.dynamic_data.year);
         if(should_add_timespans.post) this.evaluate_post_calculation(this.dynamic_data.year);

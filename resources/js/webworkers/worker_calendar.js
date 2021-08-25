@@ -23,30 +23,41 @@ onmessage = e => {
 
 	if(debug) {
 
-		target_loops = 2000;
-		loops = 0;
+		let from_year = -1000;
+		let to_year = 1000;
 
-		calendar_data_generator.dynamic_data.year = Math.floor(target_loops / 2);
+		calendar_data_generator.dynamic_data.year = from_year;
 
 		execution_time.start();
 
 		let average_time = 0;
 
-		for(let loops; loops < target_loops; loops++) {
+		let last_epoch;
+
+		for(let year = from_year; year <= to_year; year++) {
 
 			let start_time = performance.now();
 
-			data = calendar_data_generator.run();
-			calendar_data_generator.dynamic_data.year++;
-			if(calendar_data_generator.dynamic_data.year === 0 && !calendar_data_generator.static_data.settings.year_zero_exists) {
-				calendar_data_generator.dynamic_data.year++;
-			}
+            data = calendar_data_generator.run();
+
+            if(last_epoch){
+                if(last_epoch !==  data.year_data.start_epoch){
+                    console.log("WRONG!", calendar_data_generator.dynamic_data.year)
+                }
+            }
+
+            last_epoch = data.year_data.end_epoch+1;
+
+            calendar_data_generator.dynamic_data.year++;
+            if(calendar_data_generator.dynamic_data.year === 0 && !calendar_data_generator.static_data.settings.year_zero_exists) {
+                calendar_data_generator.dynamic_data.year++;
+            }
 
 			average_time += precisionRound(performance.now() - start_time, 7)
 
 		}
 
-		average_time = average_time / target_loops;
+		average_time = average_time / to_year;
 
 		console.log(`${average_time}ms`)
 
