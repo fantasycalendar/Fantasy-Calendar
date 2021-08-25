@@ -784,6 +784,8 @@ const calendar_events_editor = {
 
 	set_up_moon_data() {
 
+	    if(!static_data.moons.length) return;
+
 		this.moons = [];
 		for (let index in static_data.moons) {
 			let moon = clone(static_data.moons[index])
@@ -939,6 +941,8 @@ const calendar_events_editor = {
 		}
 
 		this.moon_presets = [];
+
+		if(!static_data.moons.length) return;
 
 		let moon_phase_collection = ''
 

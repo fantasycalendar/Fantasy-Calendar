@@ -366,7 +366,7 @@
                                     <input type='checkbox' class='event_setting' x-model='working_event.data.limited_repeat'> Limit repetitions
                                 </label>
                             </div>
-                            <div class='col-md-6 pl-1 pr-0 form-control'>
+                            <div class='col-md-6 pl-1 pr-0 form-control' x-bind:class='{ "disabled": !working_event.data.limited_repeat }'>
                                 <label class='row no-gutters'>
                                     <div class='col-auto pl-4 pr-1'>Limit for</div>
                                     <div class='col-4'>
@@ -388,7 +388,7 @@
                                 </label>
                             </div>
 
-                            <div class='col-md-6 pl-1 pr-0 form-control'>
+                            <div class='col-md-6 pl-1 pr-0 form-control' x-bind:class='{ "disabled": !working_event.data.has_duration }'>
                                 <label class='row no-gutters'>
                                     <div class='col-auto pl-4 pr-1'>Lasts for</div>
                                     <div class='col-4'>
@@ -405,8 +405,8 @@
 
                         <div class='row no-gutters mb-2'>
                             <div class='col-12 pl-0 pr-1'>
-                                <label class='form-control checkbox'>
-                                    <input type='checkbox' class='event_setting' x-model='working_event.data.show_first_last'> Show only first and last event
+                                <label class='form-control checkbox' x-bind:class='{ "disabled": !working_event.data.has_duration }'>
+                                    <input type='checkbox' class='event_setting' x-model='working_event.data.show_first_last' :disabled='!working_event.data.has_duration'> Show only first and last event
                                 </label>
                             </div>
                         </div>
