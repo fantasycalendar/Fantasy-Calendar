@@ -160,7 +160,7 @@
                     </div>
 
                     <div class='row no-gutters mb-1' x-show='selected_preset.nth' >
-                        <input type='number' class='form-control' @change='nth_input_changed' x-model='nth' min='1' placeholder='Every nth' />
+                        <input type='number' class='form-control' @change='nth_input_changed' x-model='nth' min='1' value="1" x-ref="nth_input" placeholder='Every nth' />
                     </div>
 
                     <h5 class='row no-gutters my-2 modal-form-heading'>Conditions:</h5>

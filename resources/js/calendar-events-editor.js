@@ -57,6 +57,8 @@ const calendar_events_editor = {
 
 			this.description_input = $(this.$refs.description);
 
+			this.nth_input = $(this.$refs.nth_input);
+
 			this.description_input.trumbowyg();
 
 			this.event_conditions_container.nestedSortable({
@@ -423,7 +425,7 @@ const calendar_events_editor = {
 		this.preset = "once";
 		this.previous_preset = "once";
 		this.moon_presets = [];
-		this.nth = "";
+		this.nth = 1;
 		this.show_nth = false;
         this.cloning_event = false;
 
@@ -836,7 +838,7 @@ const calendar_events_editor = {
 	preset: "once",
 	previous_preset: "once",
 	moon_presets: [],
-	nth: "",
+	nth: 2,
 	show_nth: false,
 
 	get selected_preset() {
@@ -846,7 +848,6 @@ const calendar_events_editor = {
 		if (!selected_preset) {
 			selected_preset = this.moon_presets.find(moon_preset => moon_preset.value === this.preset);
 		}
-
 		return selected_preset;
 
 	},
@@ -895,7 +896,13 @@ const calendar_events_editor = {
 
 		this.previous_preset = this.preset;
 
-	},
+        if(this.selected_preset.nth){
+            setTimeout(() => {
+                $(this.$refs.nth_input).focus();
+            }, 100);
+        }
+
+    },
 
 	populate_condition_presets(){
 
