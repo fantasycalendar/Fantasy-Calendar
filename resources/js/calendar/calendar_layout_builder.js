@@ -1,34 +1,3 @@
-function update_moon_colors(){
-	moon_colors = [];
-	var html = [];
-
-	if($('#global_moon_colors').length == 0){
-		html.push("<style type='text/css' id='global_moon_colors'>");
-	}
-
-	for(var index = 0; index < static_data.moons.length; index++){
-
-		let color = static_data.moons[index].color ? static_data.moons[index].color : '#ffffff';
-		let shadow_color = static_data.moons[index].shadow_color ? static_data.moons[index].shadow_color : '#292b4a';
-		html.push(`.moon[moon='${index}'] .lunar_background { fill:${color}; }\n`);
-		html.push(`.moon[moon='${index}'] .lunar_shadow { fill:${shadow_color}; }\n`);
-
-		if(color == '#ffffff') {
-		    color = '#dfdfdf';
-        }
-
-        html.push(`.moon_inputs[index='${index}']{ border: ${color} solid 2px; padding: 2px; }\n`);
-
-	}
-
-	if($('#global_moon_colors').length == 0){
-		html.push("</style>");
-		$(html.join('')).appendTo('head');
-	}else{
-		$('#global_moon_colors').empty().append(html.join(''));
-	}
-}
-
 var eras = {
 
 	current_eras: [],

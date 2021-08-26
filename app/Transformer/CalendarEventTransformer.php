@@ -17,6 +17,7 @@ class CalendarEventTransformer extends Fractal\TransformerAbstract {
             'limited_repeat_num' => (int) $event->data['limited_repeat_num'] ?? 0,
             'conditions' => $event->data['conditions'] ?? [],
             'date' => $event->data['date'] ?? [],
+            'overrides' => $event->data['overrides'] ?? [],
             'search_distance' => (int) $event->data['search_distance'] ?? 0
         ];
 

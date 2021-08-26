@@ -1055,7 +1055,7 @@
 						<input type='text' class='form-control name' id='event_name_input' placeholder='Event name'>
 					</div>
 					<div class="col-auto">
-						<button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
+						<button type='button' class='btn btn-primary add' @click="$dispatch('event-editor-modal-new-event', { epoch: dynamic_data.epoch })"><i class="fa fa-plus"></i></button>
 					</div>
 				</div>
 

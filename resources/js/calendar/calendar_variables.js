@@ -1,12 +1,12 @@
 var condition_mapping = {
-	
+
 	"Date": [
 		["Date is exactly", 			[["date", "==", 0, 1, 2]],		[["number", "Number", "Year", "1"], ["select"], ["number", "Number", "Day", "1"]]],
 		["Date is not", 				[["date", "!=", 0, 1, 2]],		[["number", "Number", "Year", "1"], ["select"], ["number", "Number", "Day", "1"]]],
 		["Date is or later than", 		[["date", ">=", 0, 1, 2]],		[["number", "Number", "Year", "1"], ["select"], ["number", "Number", "Day", "1"]]],
 		["Date is or earlier than", 	[["date", "<=", 0, 1, 2]],		[["number", "Number", "Year", "1"], ["select"], ["number", "Number", "Day", "1"]]],
-		["Date is is later than", 		[["date", ">",  0, 1, 2]],		[["number", "Number", "Year", "1"], ["select"], ["number", "Number", "Day", "1"]]],
-		["Date is earlier than", 		[["date", ">",  0, 1, 2]],		[["number", "Number", "Year", "1"], ["select"], ["number", "Number", "Day", "1"]]],
+		["Date is later than", 	    	[["date", ">",  0, 1, 2]],		[["number", "Number", "Year", "1"], ["select"], ["number", "Number", "Day", "1"]]],
+		["Date is earlier than", 		[["date", "<",  0, 1, 2]],		[["number", "Number", "Year", "1"], ["select"], ["number", "Number", "Day", "1"]]],
 	],
 
 	"Year": [
@@ -55,7 +55,7 @@ var condition_mapping = {
 		["Day in year is later than",		[["year_day", ">", 0]],			[["number", "Number", "Enter yearday number", "1"]]],
 		["Day in year is earlier than",		[["year_day", "<", 0]],			[["number", "Number", "Enter yearday number", "1"]]],
 		["Every nth day in year",			[["year_day", "%", 0, 1]],		[["number", "nth", "Enter yearday interval", "1", "1"], ["number", "offset", "Enter offset for interval", "0", "0"]]],
-		
+
 		["Nth days before the end of the month is exactly", 					[["inverse_day", "==", 0]],		[["number", "Number", "Enter day number", "1"]]],
 		["Nth days before the end of the month is not",							[["inverse_day", "!=", 0]],		[["number", "Number", "Enter day number", "1"]]],
 		["Nth days before the end of the month is exactly or later than",		[["inverse_day", ">=", 0]],		[["number", "Number", "Enter day number", "1"]]],
@@ -153,7 +153,7 @@ var condition_mapping = {
 		["Moon phase is earlier than", 					[["moon_phase", "<", 1]], [["select"]]],
 		["Every nth moon phase",						[["moon_phase", "==", 1],
 											 			["moon_phase_num_epoch", "%", 2, 3]],	[["select"], ["number", "nth", "Enter moon phase interval", "1", "1"], ["number", "offset", "Enter offset for interval", "0", "0"]]],
-		
+
 		["Moon month-phase count is exactly", 			[["moon_phase_num_month", "==", 1]], [["number", "Number", "Enter moon phase count in month", "1", "1"]]],
 		["Moon month-phase count is not", 				[["moon_phase_num_month", "!=", 1]], [["number", "Number", "Enter moon phase count in month", "1", "1"]]],
 		["Moon month-phase count is or later than",		[["moon_phase_num_month", ">=", 1]], [["number", "Number", "Enter moon phase count in month", "1", "1"]]],

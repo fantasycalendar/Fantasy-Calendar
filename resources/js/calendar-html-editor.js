@@ -41,9 +41,13 @@ const calendar_html_editor = {
 
 	},
 
-	callback_do_close() {
+	confirm_close() {
+        // Don't do anything if a swal is open.
+        if(swal.isVisible()) {
+            return false;
+        }
 
-		let description = this.html_input.trumbowyg("html");
+        let description = this.html_input.trumbowyg("html");
 
 		if (description != this.description) {
 			swal.fire({
@@ -64,9 +68,13 @@ const calendar_html_editor = {
 
 	},
 
-	callback_do_view() {
+	confirm_view() {
+        // Don't do anything if a swal is open.
+        if(swal.isVisible()) {
+            return false;
+        }
 
-		let description = this.html_input.trumbowyg("html");
+        let description = this.html_input.trumbowyg("html");
 
 		if (description != this.description) {
 			swal.fire({
