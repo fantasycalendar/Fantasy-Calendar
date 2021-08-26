@@ -1870,17 +1870,31 @@ function is_leap_simple(static_data, year, interval, offset) {
  */
 function get_interval_fractions(_intervals, _offset){
 
-	var intervals = strip_intervals(_intervals, _offset);
+	let intervals = strip_intervals(_intervals, _offset);
 
-	var occurrences = 0;
+	let occurrences = 0;
 
-	for(var index = 0; index < intervals.length; index++){
+	for(let i = 0; i < intervals.length; i++){
 
-		var interval = intervals[index];
+		let interval = intervals[i];
 
-		var result = 1 / interval.interval;
+		let result = 1 / interval.interval;
 
-		occurrences += interval.negator ? result*-1 : result;
+        occurrences += interval.negator ? 0 : result;
+
+		if(interval.children){
+
+            for(let j = 0; j < interval.children.length; j++){
+
+                let child = interval.children[j];
+
+                let child_result = 1 / child.interval;
+
+                occurrences += child.negator ? child_result*-1 : child_result;
+
+            }
+
+        }
 
 	}
 

@@ -1706,13 +1706,9 @@ function set_up_edit_inputs(){
 		container.find('.adds_week_day_data_container input, .adds_week_day_data_container select').prop('disabled', !checked);
 		container.find('.week-day-select').toggleClass('inclusive', checked).prop('disabled', !checked);
 		$('#first_week_day_container').toggleClass('hidden', !checked).find('select').prop('disabled', !checked);
-		$('#overflow_explanation').toggleClass('hidden', !checked);
-		$('#overflow_container').toggleClass('hidden', checked).toggleClass('disabled', checked);
-		if(checked){
-			$('#month_overflow').prop('checked', false).change();
-		}
-		repopulate_weekday_select($(this).closest('.sortable-container').find('.week-day-select'));
+        repopulate_weekday_select($(this).closest('.sortable-container').find('.week-day-select'));
 		container.find('.internal-list-name').change();
+        evaluate_custom_weeks();
 	});
 
 	$('#month_overflow').change(function(){
@@ -1819,16 +1815,31 @@ function set_up_edit_inputs(){
 		}
 	});
 
+	$(document).on('change', '.restart_era', function(){
+		let parent = $(this).closest('.sortable-container');
+		let index = parent.attr('index')|0;
+		let checked = $(this).is(':checked')
+		if(!static_data.eras[index].settings.use_custom_format){
+		    let text = "";
+            if(checked) {
+                text = 'Era year {{era_year}} (year {{year}}) - {{era_name}}';
+            } else {
+                text = 'Year {{era_year}} - {{era_name}}';
+            }
+            parent.find('.era_formatting').val(text).change();
+        }
+	});
+
 	$(document).on('change', '.use_custom_format', function(){
 		var parent = $(this).closest('.sortable-container');
 		var index = parent.attr('index')|0;
 		if(static_data.eras[index].settings.restart){
 			var text = 'Era year {{era_year}} (year {{year}}) - {{era_name}}';
 		}else{
-			var text = 'Year {{year}} - {{era_name}}';
+			var text = 'Year {{era_year}} - {{era_name}}';
 		}
+		console.log(text);
 		parent.find('.era_formatting').prop('disabled', !$(this).is(':checked')).val(text).change();
-
 	});
 
 	$(document).on('change', '.starting_era', function(){
@@ -3066,7 +3077,6 @@ function add_leap_day_to_list(parent, key, data){
 						element.push("</label>");
 					element.push("</div>");
 				element.push("</div>");
-				element.push("</div>");
 
 				element.push(`<div class='row no-gutters my-1 ${data.intercalary ? "" : "hidden"}'>`);
 					element.push(`<div class='form-check col-12 py-2 border rounded protip' data-pt-position="right" data-pt-title="This setting toggles whether this intercalary leap day should show its name in the calendar.">`);
@@ -3966,7 +3976,7 @@ function add_era_to_list(parent, key, data){
 
 				element.push(`<div class='row no-gutters my-1'>`);
 					element.push("<div class='form-check col-12 py-2 border rounded'>");
-						element.push(`<input type='checkbox' id='${key}_restart_year' class='form-check-input dynamic_input restart' data='eras.${key}.settings' fc-index='restart' ${(data.settings.restart ? "checked" : "")} />`);
+						element.push(`<input type='checkbox' id='${key}_restart_year' class='form-check-input dynamic_input restart_era' data='eras.${key}.settings' fc-index='restart' ${(data.settings.restart ? "checked" : "")} />`);
 						element.push(`<label for='${key}_restart_year' class='form-check-label ml-1'>`);
 							element.push("Restarts year count");
 						element.push("</label>");
@@ -4541,7 +4551,7 @@ function error_check(parent, rebuild){
 		if(parent !== undefined && (parent === "seasons")){
 			rebuild_climate();
 		}else{
-            rebuild_calendar('calendar', dynamic_data);
+			pre_rebuild_calendar('calendar', dynamic_data);
 			update_current_day(true);
 			evaluate_sun();
 		}
@@ -4783,12 +4793,19 @@ function evaluate_custom_weeks(){
 		}
 	});
 
+    leap_day_list.children().each(function(i){
+        if($(this).find('.adds-week-day').is(':checked')){
+            custom_week = true;
+        }
+    });
+
 	if(custom_week){
 		$('#month_overflow').prop('checked', !custom_week);
 		static_data.year_data.overflow = false;
 	}
 
 	$('#month_overflow').prop('disabled', custom_week);
+	$('.month_overflow_container').toggleClass("hidden", custom_week)
 	$('#overflow_explanation').toggleClass('hidden', !custom_week);
 
 	populate_first_day_select();
@@ -4929,6 +4946,7 @@ function populate_preset_season_list(){
 	}else{
 
 		$('.preset-season-list').empty();
+		$('.preset-season-list-container').toggleClass('hidden', true).prop('disabled', true);
 
 	}
 
@@ -5208,7 +5226,7 @@ function reindex_era_list(){
 				'starting_era': $(this).find('.starting_era').is(':checked') || $(this).find('.starting_era').val() == "1",
 				'event_category_id': $(this).find('.event-category-list').val(),
 				'ends_year': $(this).find('.ends_year').is(':checked') || $(this).find('.ends_year').val() == "1",
-				'restart': $(this).find('.restart').is(':checked')
+				'restart': $(this).find('.restart_era').is(':checked')
 			},
 			'date': {
 				'year': ($(this).find('.year-input').val()|0),
@@ -5541,7 +5559,7 @@ function evaluate_save_button(override){
 
 		var invalid = errors.length > 0;
 
-		var text = invalid ? "Cannot create yet" : "Create calendar";
+		var text = invalid ? "Cannot create yet" : "Save Calendar";
 
 		var apply_changes_immediately = $('#apply_changes_immediately').is(':checked');
 
@@ -5720,6 +5738,19 @@ function set_up_edit_values(){
 		let weekdayname = static_data.year_data.global_week[i];
 		add_weekday_to_sortable(global_week_sortable, i, weekdayname);
 	}
+
+	let custom_week = static_data.year_data.timespans.filter(t => t?.week?.length > 0).length > 0
+                   || static_data.year_data.leap_days.filter(l => l.adds_week_day).length > 0;
+
+    if(custom_week){
+        $('#month_overflow').prop('checked', !custom_week);
+        static_data.year_data.overflow = false;
+    }
+
+    $('#month_overflow').prop('disabled', custom_week);
+    $('.month_overflow_container').toggleClass("hidden", custom_week)
+    $('#overflow_explanation').toggleClass('hidden', !custom_week);
+
 	populate_first_day_select(static_data.year_data.first_day);
 	$('#first_week_day_container').toggleClass('hidden', !static_data.year_data.overflow || static_data.year_data.global_week.length == 0).find('select').prop('disabled', !static_data.year_data.overflow || static_data.year_data.global_week.length == 0);
 	global_week_sortable.sortable('refresh');
@@ -5797,12 +5828,16 @@ function set_up_edit_values(){
 			showInput: true
 		});
 
-		$('#season_sortable').children().each(function(i){
+	    if(static_data.seasons.global_settings.color_enabled){
 
-			$(this).find('.start_color').spectrum("set", static_data.seasons.data[i].color[0]);
-			$(this).find('.end_color').spectrum("set", static_data.seasons.data[i].color[1]);
+            $('#season_sortable').children().each(function(i){
 
-		});
+                $(this).find('.start_color').spectrum("set", static_data.seasons.data[i].color[0]);
+                $(this).find('.end_color').spectrum("set", static_data.seasons.data[i].color[1]);
+
+            });
+
+        }
 
 		if(!static_data.seasons.global_settings.periodic_seasons){
 			sort_list_by_partial_date($('#season_sortable'));

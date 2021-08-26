@@ -26,7 +26,7 @@
 @endpush
 
 @section('content')
-    <div class="container">
+    <div class="container py-5 error-container">
         <h1>Fantasy Calendar is down for maintenance.</h1>
         <h2>{{ json_decode(Cache::get(config('app.maintenance_key')), true)['message'] ?? "We'll be right back." }}</h2>
     </div>

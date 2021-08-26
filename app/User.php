@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Redis;
 use Laravel\Cashier\Billable;
 use Carbon\Carbon;
 use Arr;
@@ -170,7 +171,11 @@ class User extends Authenticatable implements
     }
 
     public function isPremium() {
-        return $this->subscribedToPlan(['timekeeper_monthly', 'timekeeper_yearly'], 'Timekeeper') || $this->betaAccess();
+        if(!cache()->has($this->id . '_is_premium')) {
+            cache()->put($this->id . '_is_premium', ($this->subscribedToPlan(['timekeeper_monthly', 'timekeeper_yearly'], 'Timekeeper') || $this->betaAccess()), 30);
+        }
+
+        return cache($this->id . '_is_premium');
     }
 
     /**
@@ -220,6 +225,13 @@ class User extends Authenticatable implements
         $this->save();
 
         return $this;
+    }
+
+    public function getInvitations()
+    {
+        return (CalendarInvite::active()->forUser($this->email)->exists())
+            ? CalendarInvite::active()->forUser($this->email)->get()
+            : [];
     }
 
 }

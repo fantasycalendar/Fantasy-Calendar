@@ -88,11 +88,8 @@ function copy_link(epoch_data){
 }
 
 function context_add_event(key, opt){
-
 	var epoch = $(opt.$trigger[0]).attr('epoch')|0;
-	
 	window.dispatchEvent(new CustomEvent('event-editor-modal-new-event', { detail: { name: "", epoch: epoch } }));
-
 }
 
 function context_open_day_data(key, opt){
@@ -153,6 +150,25 @@ function set_up_visitor_inputs(){
 					let element = $(opt.$trigger[0]);
 					let event_id = element.attr('event');
 					window.dispatchEvent(new CustomEvent('event-editor-modal-edit-event', { detail: { event_id: event_id, epoch: element.parent().parent().attr('epoch') } }));
+				},
+				disabled: function(key, opt){
+					let element = $(opt.$trigger[0]);
+					let event_id = element.attr('event');
+					return !Perms.can_modify_event(event_id) || element.hasClass('era_event');
+				},
+				visible: function(key, opt){
+					let element = $(opt.$trigger[0]);
+					let event_id = element.attr('event');
+					return Perms.can_modify_event(event_id) && !element.hasClass('era_event');
+				}
+			},
+			clone: {
+				name: "Clone event",
+				icon: "fas fa-clone",
+				callback: function(key, opt){
+					let element = $(opt.$trigger[0]);
+					let event_id = element.attr('event');
+                    window.dispatchEvent(new CustomEvent('event-editor-modal-clone-event', { detail: { event_id: event_id, epoch: element.parent().parent().attr('epoch') } }));
 				},
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);

@@ -17,15 +17,16 @@ class CalendarEventTransformer extends Fractal\TransformerAbstract {
             'limited_repeat_num' => (int) $event->data['limited_repeat_num'] ?? 0,
             'conditions' => $event->data['conditions'] ?? [],
             'date' => $event->data['date'] ?? [],
+            'overrides' => $event->data['overrides'] ?? [],
             'search_distance' => (int) $event->data['search_distance'] ?? 0
         ];
 
         $event_settings = [
-            "color" => $event->settings["color"] ?? "Dark-Solid",
-            "text" => $event->settings["text"] ?? "text",
-            "hide" => (bool) $event->settings["hide"] ?? false,
-            "hide_full" => (bool) $event->settings["hide_full"] ?? false,
-            "print" => (bool) $event->settings["print"] ?? false
+            "color" => $event->setting("color", "Dark-Solid"),
+            "text" => $event->setting("text", "text"),
+            "hide" => (bool) $event->setting("hide"),
+            "hide_full" => (bool) $event->setting("hide_full"),
+            "print" => (bool) $event->setting("print")
         ];
 
         return [

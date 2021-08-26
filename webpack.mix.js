@@ -11,7 +11,7 @@ const mix = require('laravel-mix');
  |
  */
 
-if(process.env.BROWSERSYNC) {
+if(process.env.BROWSERSYNC === 'true') {
     mix.browserSync({
         proxy: 'fantasy-calendar:8080',
         port: 9980,

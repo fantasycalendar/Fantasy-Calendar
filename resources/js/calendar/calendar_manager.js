@@ -9,32 +9,32 @@ var registered_mousemove_callbacks = {}
 function bind_calendar_events(){
 
 	document.addEventListener('keydown', function(event){
-		for(var callback_id in registered_keydown_callbacks){
-			registered_keydown_callbacks[callback_id](event);
+		for(let callback_id in registered_keydown_callbacks){
+            registered_keydown_callbacks[callback_id](event);
 		}
 	});
 
 	document.addEventListener('click', function(event){
-		for(var callback_id in registered_click_callbacks){
-			registered_click_callbacks[callback_id](event);
+		for(let callback_id in registered_click_callbacks){
+            registered_click_callbacks[callback_id](event);
 		}
 	});
 
 	window.onfocus = function(event){
-		for(var callback_id in registered_onfocus_callbacks){
-			registered_onfocus_callbacks[callback_id](event);
+		for(let callback_id in registered_onfocus_callbacks){
+            registered_onfocus_callbacks[callback_id](event);
 		}
 	};
 
 	window.onblur = function(event){
-		for(var callback_id in registered_onblur_callbacks){
-			registered_onblur_callbacks[callback_id](event);
+		for(let callback_id in registered_onblur_callbacks){
+            registered_onblur_callbacks[callback_id](event);
 		}
 	};
 
 	window.addEventListener('mousemove', function(event){
-		for(var callback_id in registered_mousemove_callbacks){
-			registered_mousemove_callbacks[callback_id](event);
+		for(let callback_id in registered_mousemove_callbacks){
+            registered_mousemove_callbacks[callback_id](event);
 		}
 	});
 
@@ -61,12 +61,12 @@ function bind_calendar_events(){
 
 	$(document).on('change', '.event-text-input', function() {
 
-		var parent = $(this).closest('.sortable-container');
+		let parent = $(this).closest('.sortable-container');
 
-		var value_input = this;
+		let value_input = this;
 
-		var output = parent.find('.event-text-output');
-		var input = parent.find('.event-text-input');
+		let output = parent.find('.event-text-output');
+		let input = parent.find('.event-text-input');
 
 		output.each(function() {
 
@@ -91,15 +91,15 @@ function bind_calendar_events(){
 
 }
 
-var evaluate_era_position = debounce(function(){
+const evaluate_era_position = debounce(function(){
 	eras.evaluate_position();
 }, 50);
 
 function eval_apply_changes(output){
 
-	var apply_changes_immediately = $('#apply_changes_immediately');
+	let apply_changes_immediately = $('#apply_changes_immediately');
 
-	if(apply_changes_immediately.length == 0){
+	if(apply_changes_immediately.length === 0){
 		output();
 	}else if(!apply_changes_immediately.is(':checked')){
 		if(!changes_applied){

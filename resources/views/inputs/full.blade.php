@@ -378,7 +378,7 @@
 					This calendar has a custom week in some months or a leap day is adding a week-day, this will disable overflows between months, because it makes no sense for two weeks that do not go together to overflow into each other. Sorry.
 				</div>
 
-				<div class='row protip' data-pt-position="right" data-pt-title='Enabling this will continue the week in the next month, and disabling overflow will restart the week so that each month starts with the first week day.'>
+				<div class='row protip month_overflow_container' data-pt-position="right" data-pt-title='Enabling this will continue the week in the next month, and disabling overflow will restart the week so that each month starts with the first week day.'>
 					<div class='col-auto pr-1 bold-text'>
 						Overflow weekdays:
 					</div>

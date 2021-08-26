@@ -187,7 +187,7 @@ const render_data_generator = {
 			"weather_icon": weather_icon,
 			"season_color": season_color,
             "show_event_button": Perms.player_at_least('player'),
-            "events": events,
+            "events": events.filter(event => event.show),
 			"moons": moons,
             "has_events": true
 		};
@@ -224,7 +224,6 @@ const render_data_generator = {
         let timespans_to_build = this.processed_data.timespans_to_build;
         let year_data = this.processed_data.year_data;
         this.epoch_data = this.processed_data.epoch_data;
-        this.day_offset = 0;
 
         this.render_data = {
             "current_epoch": dynamic_data.epoch,
@@ -241,6 +240,8 @@ const render_data_generator = {
         let week_day = year_data.week_day;
 
         for(let index = 0; index < timespans_to_build.length; index++){
+
+            this.day_offset = 0;
 
             let timespan = timespans_to_build[index];
 
@@ -554,13 +555,13 @@ const render_data_generator = {
             }
         }
 
-		if(static_data.eras.length > 0 && !static_data.settings.hide_eras){
+		if(static_data.eras.length > 0 && (Perms.player_at_least('co-owner') || !static_data.settings.hide_eras)){
 
-			var num_eras = Object.keys(static_data.eras).length;
+			let num_eras = Object.keys(static_data.eras).length;
 
-			for(var era_index = 0; era_index < num_eras; era_index++){
+			for(let era_index = 0; era_index < num_eras; era_index++){
 
-				var era = static_data.eras[era_index];
+				let era = static_data.eras[era_index];
 
 				if(era.settings.show_as_event){
 
@@ -578,16 +579,19 @@ const render_data_generator = {
                         event_class.push(category.event_settings.hide || category.category_settings.hide ? "hidden_event" : "");
                     }
 
-                    if(this.events_to_send[era.date.epoch] === undefined){
-                        this.events_to_send[era.date.epoch] = []
-                    }
+                    let category_hide = category && category.id !== -1 ? category.category_settings.hide : false;
+                    let event_hide = category && category.id !== -1 ? category.event_settings.hide : false;
+                    let event_hide_full = category && category.id !== -1 ? category.event_settings.hide_full : false;
 
-                    this.events_to_send[era.date.epoch].push({
+                    let hide_era = (event_hide || category_hide || event_hide_full) && !Perms.player_at_least('co-owner');
+
+                    this.add_event_to_epoch(era.date.epoch, {
                         "index": era_index,
                         "name": era.name,
                         "overrides": {},
                         "class": event_class.join(' '),
-                        "era": true
+                        "era": true,
+                        "show": !hide_era
                     });
                 }
             }
@@ -597,17 +601,9 @@ const render_data_generator = {
 
             let event = events[event_index];
 
-            if(event.settings.hide_full){
-                continue;
-            }
-
             let category = event.event_category_id && event.event_category_id > -1 ?  get_category(event.event_category_id) : false;
 
             let category_hide = category && category.id !== -1 ? category.category_settings.hide : false;
-
-            if(!Perms.can_modify_event(event_index) && (event.settings.hide || category_hide)){
-                continue;
-            }
 
             let epochs = this.evaluated_event_data.valid[event_index];
 
@@ -615,12 +611,8 @@ const render_data_generator = {
 
                 let epoch = epochs[epoch_index];
 
-                if(this.events_to_send[epoch] === undefined){
-                    this.events_to_send[epoch] = []
-                }
-
-                var start = this.evaluated_event_data.starts[event_index].indexOf(epoch) !== -1;
-                var end = this.evaluated_event_data.ends[event_index].indexOf(epoch) !== -1;
+                let start = this.evaluated_event_data.starts[event_index].indexOf(epoch) !== -1;
+                let end = this.evaluated_event_data.ends[event_index].indexOf(epoch) !== -1;
 
                 let event_class = [];
                 event_class.push(!event.settings.print ? "d-print-none" : "");
@@ -641,14 +633,30 @@ const render_data_generator = {
                     event_name = `${event_name} (start)`
                 }else if(end){
                     event_name = `${event_name} (end)`
+
+                    let index = this.evaluated_event_data.ends[event_index].indexOf(epoch);
+
+                    let start_epoch = this.evaluated_event_data.starts[event_index][index];
+
+                    if(event.data.show_first_last){
+                        for(let internal_epoch = start_epoch; internal_epoch < epoch; internal_epoch++){
+                            this.add_event_to_epoch(internal_epoch, {
+                                "index": event_index,
+                                "overrides": event.data.overrides,
+                                "show": false
+                            });
+                        }
+                    }
+
                 }
 
-                this.events_to_send[epoch].push({
+                this.add_event_to_epoch(epoch, {
                     "index": event_index,
                     "name": event_name,
                     "overrides": event.data.overrides,
                     "class": event_class.join(' '),
-                    "era": false
+                    "era": false,
+                    "show": (Perms.can_modify_event(event_index) || !(event.settings.hide || category_hide)) && !event.settings.hide_full
                 });
             }
         }
@@ -657,6 +665,16 @@ const render_data_generator = {
             success: true,
             event_data: this.events_to_send
         }
+    },
+
+    add_event_to_epoch: function(epoch, data){
+
+	    if(this.events_to_send[epoch] === undefined){
+            this.events_to_send[epoch] = [];
+        }
+
+	    this.events_to_send[epoch].push(data);
+
     },
 
 	create_event_data: function(){
