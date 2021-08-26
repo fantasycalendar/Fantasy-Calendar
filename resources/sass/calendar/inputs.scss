@@ -852,6 +852,14 @@ body .event_comment .comment_context_btn:not(:hover) {
     height: 2rem;
 }
 
+.event-moon-text{
+    opacity:0.65;
+    overflow:hidden;
+    text-overflow: ellipsis;
+    font-size:1.4rem;
+    white-space: nowrap;
+}
+
 @media screen and (max-width: 768px) {
     .clickable_background {
         width: auto;

@@ -611,6 +611,8 @@ const calendar_events_editor = {
 			}
 		}
 
+
+
 		let moon_data = {}
 		for(let index in this.moons){
 			let moon = this.moons[index];
@@ -795,6 +797,7 @@ const calendar_events_editor = {
 			moon.original_shadow_color = clone(moon.shadow_color);
 			moon.original_color = clone(moon.color);
 			moon.override_phase = false;
+			moon.original_phase = this.epoch_data.moon_phase[index];
 			moon.phase = this.epoch_data.moon_phase[index];
 			moon.phases = clone(Object.keys(moon_phases[moon.granularity]))
 			moon.paths = clone(Object.values(moon_phases[moon.granularity]))
