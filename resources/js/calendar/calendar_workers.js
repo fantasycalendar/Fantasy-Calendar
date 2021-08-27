@@ -328,7 +328,7 @@ const calendar_data_generator = {
 
             let timespan_data = this.create_adjusted_timespan(convert_year(this.static_data, year), timespan_index);
 
-            if(is_leap_simple(this.static_data, convert_year(this.static_data, year), timespan_object.interval, timespan_object.offset) && timespan_data.length > 0){
+            if(is_leap_simple(this.static_data, convert_year(this.static_data, year), timespan_object.interval, timespan_object.offset, true) && timespan_data.length > 0){
 
                 if(timespan_index === num_timespans-1 && hasEndingEra){
                     timespan_data.length = Math.min(timespan_data.length, ending_day);

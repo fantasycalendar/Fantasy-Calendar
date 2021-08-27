@@ -129,6 +129,54 @@ function pre_rebuild_calendar(action, dynamic_data){
 
 var evaluated_static_data = {};
 
+async function testCalendarAccuracy(fromYear = -1000, toYear = 1000){
+
+    calendar_data_generator.static_data = static_data;
+    calendar_data_generator.dynamic_data = dynamic_data;
+    calendar_data_generator.owner = Perms.player_at_least('co-owner');
+    calendar_data_generator.events = events;
+    calendar_data_generator.event_categories = event_categories;
+
+    return new Promise(async (resolve) => {
+
+        let fails = []
+
+        calendar_data_generator.dynamic_data.year = fromYear;
+
+        let result = await calendar_data_generator.run();
+
+        let end_epoch = result.year_data.end_epoch;
+
+        for(let year = fromYear; year < toYear; year++){
+
+            calendar_data_generator.dynamic_data.year++;
+            if(!static_data.settings.year_zero_exists && calendar_data_generator.dynamic_data.year === 0){
+                calendar_data_generator.dynamic_data.year++;
+            }
+
+            console.log(`Testing year ${calendar_data_generator.dynamic_data.year}...`)
+
+            let result = await calendar_data_generator.run();
+
+            if(end_epoch !== result.year_data.start_epoch-1){
+                fails.push(`YEAR ${calendar_data_generator.dynamic_data.year} FAILED! Expected ${end_epoch}, got ${result.year_data.start_epoch}!`)
+            }
+
+            end_epoch = result.year_data.end_epoch;
+
+        }
+
+        if(!fails.length){
+            console.log("Test succeeded, calendar calculation accurate!")
+            resolve();
+        }else{
+            fails.forEach(f => console.log(f));
+            reject();
+        }
+
+    });
+}
+
 async function rebuild_calendar(action, dynamic_data){
 
     calendar_data_generator.static_data = static_data;

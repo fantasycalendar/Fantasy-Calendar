@@ -1844,11 +1844,13 @@ function is_leap(static_data, _parent_occurrences, _intervals, _offset) {
 
 }
 
-function is_leap_simple(static_data, year, interval, offset) {
+function is_leap_simple(static_data, year, interval, offset, debug) {
 
     if(interval === 1) return true;
 
-	let cleanYear = Math.abs(unconvert_year(static_data, year));
+    let cleanYear = unconvert_year(static_data, year);
+
+    cleanYear = !static_data.settings.year_zero_exists || year > 0 ? Math.abs(cleanYear) : cleanYear;
 
     if(!static_data.settings.year_zero_exists && year < 0 && offset === 0){
         offset++;
@@ -1856,7 +1858,7 @@ function is_leap_simple(static_data, year, interval, offset) {
 
     offset = offset > interval || offset < 0 ? offset % interval : offset;
 
-	return (cleanYear - offset) % interval === 0;
+    return (cleanYear - offset) % interval === 0;
 
 }
 
@@ -2038,20 +2040,20 @@ function get_interval_occurrences(static_data, _parent_occurrences, _intervals, 
  *                                          3: num_timespans - The total number of timespans since year 1
  *                                          4: total_week_num - The number of weeks since year 1
  */
-function get_epoch(static_data, year, timespan, day, debug){
+function get_epoch(static_data, year, _timespan, _day, debug){
 
 	// Set up variables
-	var epoch = 0;
-	var timespan = !isNaN(timespan) ? timespan : 0;
-	var day = !isNaN(day) ? day : 0;
-	var intercalary = 0;
-	var actual_year = year;
-	var num_timespans = 0;
-	var count_timespans = [];
-	var total_week_num = 1;
+	let epoch = 0;
+	let timespan = !isNaN(_timespan) ? _timespan : 0;
+	let day = !isNaN(_day) ? _day : 0;
+	let intercalary = 0;
+	let actual_year = year;
+	let num_timespans = 0;
+	let count_timespans = [];
+	let total_week_num = 1;
 
 	// Loop through each timespan
-	for(timespan_index = 0; timespan_index < static_data.year_data.timespans.length; timespan_index++){
+	for(let timespan_index = 0; timespan_index < static_data.year_data.timespans.length; timespan_index++){
 
 		// If the timespan index is lower than the timespan parameter, add a year so we can get the exact epoch for a timespan within a year
 		if(timespan_index < timespan){
@@ -2061,24 +2063,29 @@ function get_epoch(static_data, year, timespan, day, debug){
 		}
 
 		// Get the current timespan's data
-		var timespan_obj = static_data.year_data.timespans[timespan_index];
+		let timespan_obj = static_data.year_data.timespans[timespan_index];
 
         let timespan_fraction = year;
 
         if(timespan_obj.interval > 1){
 
-            let offset = timespan_obj.offset % timespan_obj.interval;
-            offset = offset ? offset : 0;
+            let boundOffset = timespan_obj.offset % timespan_obj.interval;
 
-            if(year < 0 || static_data.settings.year_zero_exists) {
-                if(!static_data.settings.year_zero_exists) {
-                    offset--;
+            if(static_data.settings.year_zero_exists) {
+
+                timespan_fraction = Math.ceil((year - boundOffset) / timespan_obj.interval);
+
+            }else if(year < 0) {
+
+                timespan_fraction = Math.ceil((year - (boundOffset-1)) / timespan_obj.interval);
+
+                if(timespan_obj.offset === 0){
+                    timespan_fraction--;
                 }
-                timespan_fraction = Math.ceil((year - offset) / timespan_obj.interval);
-                if(timespan_obj.offset === 0) timespan_fraction--;
+
             }else{
-                if(offset > 0){
-                    timespan_fraction = Math.floor((year + timespan_obj.interval - offset) / timespan_obj.interval);
+                if(boundOffset > 0){
+                    timespan_fraction = Math.floor((year + timespan_obj.interval - boundOffset) / timespan_obj.interval);
                 }else{
                     timespan_fraction = Math.floor(year / timespan_obj.interval);
                 }
@@ -2108,25 +2115,23 @@ function get_epoch(static_data, year, timespan, day, debug){
 		num_timespans += timespan_fraction;
 
 		// Loop through each leap day
-		for(leap_day_index = 0; leap_day_index < static_data.year_data.leap_days.length; leap_day_index++){
+		for(let leap_day_index = 0; leap_day_index < static_data.year_data.leap_days.length; leap_day_index++){
 
 			// Get the current leap day data
-			var leap_day = static_data.year_data.leap_days[leap_day_index];
-
-			var added_leap_day = 0;
+			let leap_day = static_data.year_data.leap_days[leap_day_index];
 
 			if(timespan_index === leap_day.timespan){
 
-				added_leap_day = get_interval_occurrences(static_data, timespan_fraction, leap_day.interval, leap_day.offset);
+				let added_leap_day = get_interval_occurrences(static_data, timespan_fraction, leap_day.interval, leap_day.offset);
 
 				// If we have leap days days that are intercalary (eg, do not affect the flow of the static_data, add them to the overall epoch, but remove them from the start of the year week day selection)
 				if(leap_day.intercalary || timespan_obj.type === "intercalary"){
 					intercalary += added_leap_day;
 				}
 
-			}
+                epoch += added_leap_day;
 
-			epoch += added_leap_day;
+			}
 
 		}
 
@@ -2147,9 +2152,10 @@ function get_epoch(static_data, year, timespan, day, debug){
  * Further expands on the spine of the calendar calculation. It calculates how many days there has been since day 1, and returns a complex data object.
  *
  * @param  {object}     static_data     The calendar's static_data object.
- * @param  {int}        year            The number of a year passed through the convert_year function.
- * @param  {int}        month           The index of a timespan
- * @param  {int}        day             The day of a that timespan
+ * @param  {int}        _year           The number of a year passed through the convert_year function.
+ * @param  {int}        _timespan       The index of a timespan
+ * @param  {int}        _day            The day of a that timespan (1 indexed)
+ * @param  {bool}       debug           Whether debugging is enabled
  * @return {object}                     An object containing:
  *                                          "epoch" - The number of days since year 1
  *                                          "era_year" - The current era year, if the year count has been reset by eras terminating the year
@@ -2158,12 +2164,12 @@ function get_epoch(static_data, year, timespan, day, debug){
  *                                          "num_timespans" - The total number of timespans since year 1
  *                                          "total_week_num" - The number of weeks since year 1
  */
-function evaluate_calendar_start(static_data, year, timespan, day, debug){
+function evaluate_calendar_start(static_data, _year, _timespan, _day, debug){
 
 	//Initiatlize variables
-	year = (year|0);
-	timespan = !isNaN(timespan) ? (timespan|0) : 0;
-	day = !isNaN(day) ? (day|0)-1 : 0;
+	let year = (_year|0);
+	let timespan = !isNaN(_timespan) ? (_timespan|0) : 0;
+	let day = !isNaN(_day) ? (_day|0)-1 : 0;
 
 	let era_year = year;
 
@@ -2183,8 +2189,8 @@ function evaluate_calendar_start(static_data, year, timespan, day, debug){
 
 		if(era.settings.ends_year && year > convert_year(static_data, era.date.year)){
 
-			era_epoch = get_epoch(static_data, convert_year(static_data, era.date.year), era.date.timespan, era.date.day);
-			normal_epoch_during_era = get_epoch(static_data, convert_year(static_data, era.date.year)+1);
+			let era_epoch = get_epoch(static_data, convert_year(static_data, era.date.year), era.date.timespan, era.date.day);
+			let normal_epoch_during_era = get_epoch(static_data, convert_year(static_data, era.date.year)+1);
 
 			epoch -= (normal_epoch_during_era[0] - era_epoch[0]);
 
@@ -2211,11 +2217,11 @@ function evaluate_calendar_start(static_data, year, timespan, day, debug){
 			(
 				year > convert_year(static_data, era.date.year)
 				||
-				(year == convert_year(static_data, era.date.year) && timespan > era.date.timespan)
+				(year === convert_year(static_data, era.date.year) && timespan > era.date.timespan)
 				||
-				(year == convert_year(static_data, era.date.year) && timespan == era.date.timespan && day == era.date.day)
+				(year === convert_year(static_data, era.date.year) && timespan === era.date.timespan && day === era.date.day)
 				||
-				(epoch == era.date.epoch)
+				(epoch === era.date.epoch)
 			)
 		){
 
