@@ -65,9 +65,15 @@ class Interval
      * @param $year
      * @return string
      */
-    public function voteOnYear($year): string
+    public function voteOnYear($year, $year_zero_exists): string
     {
-        if((($year-$this->offset) % $this->interval) === 0) {
+        $offset = $this->offset;
+
+        if(!$year_zero_exists && $year < 0 && $offset !== 0) {
+            $offset--;
+        }
+
+        if((($year - $offset) % $this->interval) === 0) {
             return $this->subtracts ? 'deny' : 'allow';
         }
         return 'abstain';

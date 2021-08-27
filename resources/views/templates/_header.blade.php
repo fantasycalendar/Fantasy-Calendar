@@ -17,8 +17,8 @@
             <li class="nav-item new-calendar">
                 <a class="nav-link" href="{{ route('calendars.create') }}">New Calendar</a>
             </li>
-            <li class="nav-item"><a href="{{ route('whats-new') }}" class="nav-link">What's New in 2.0</a></li>
-                <li class="nav-item"><a href="{{ route('faq') }}" class="nav-link">FAQs</a></li>
+            <li class="nav-item"><a href="{{ route('faq') }}" class="nav-link">FAQs</a></li>
+            <li class="nav-item"><a href="{{ route('discord') }}" class="nav-link">Discord Integration</a>
         </ul>
         <ul class="navbar-nav">
             @auth

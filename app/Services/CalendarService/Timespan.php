@@ -60,8 +60,16 @@ class Timespan implements Arrayable
      */
     public function intersectsYear($year): bool
     {
-        $boundOffset = $this->offset % $this->interval;
-        return (($year + $boundOffset) % $this->interval) == 0;
+        $absoluteYear = abs($year);
+        $offset = $this->offset;
+
+        if(!$this->year_zero_exists && $year < 0 && $offset === 0){
+            $offset++;
+        }
+
+        $boundOffset = $offset > $this->interval ? $offset % $this->interval : $offset;
+
+        return (($absoluteYear + $boundOffset) % $this->interval) == 0;
     }
 
     /**

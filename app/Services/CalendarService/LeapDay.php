@@ -51,7 +51,7 @@ class LeapDay
     public function __construct(Calendar $calendar, array $attributes)
     {
         $this->originalAttributes = $attributes;
-        $this->yearZeroExists = $calendar->setting('year_zero_exists');;
+        $this->yearZeroExists = $calendar->setting('year_zero_exists');
         $this->name = Arr::get($attributes, "name");
         $this->intercalary = Arr::get($attributes, "intercalary");
         $this->timespan_id = Arr::get($attributes, "timespan");
@@ -75,7 +75,7 @@ class LeapDay
     public function intersectsYear(int $year): bool
     {
         $votes = collect(explode(',', $this->interval))->map(function($interval) use ($year) {
-            return (new Interval($interval, $this->offset))->voteOnYear($year);
+            return (new Interval($interval, $this->offset))->voteOnYear($year, $this->yearZeroExists);
         });
 
         foreach($votes as $vote) {
