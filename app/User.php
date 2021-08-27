@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Services\Discord\Models\DiscordAuthToken;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\CanResetPassword;
@@ -18,7 +19,10 @@ class User extends Authenticatable implements
     MustVerifyEmail,
     CanResetPassword
 {
-    use Notifiable, Billable, SoftDeletes;
+    use Notifiable,
+        Billable,
+        SoftDeletes,
+        HasFactory;
 
     /**
      * The attributes that are mass assignable.
