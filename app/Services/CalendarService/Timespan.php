@@ -60,16 +60,19 @@ class Timespan implements Arrayable
      */
     public function intersectsYear($year): bool
     {
-        $absoluteYear = abs($year);
+        if($this->interval === 1) return true;
+
+        $cleanYear = !$this->yearZeroExists || $year > 0 ? abs($year) : $year;
+
         $offset = $this->offset;
 
-        if(!$this->year_zero_exists && $year < 0 && $offset === 0){
+        if(!$this->yearZeroExists && $year < 0 && $offset === 0){
             $offset++;
         }
 
-        $boundOffset = $offset > $this->interval ? $offset % $this->interval : $offset;
+        $boundOffset = $offset > $this->interval || $offset < 0 ? $offset % $this->interval : $offset;
 
-        return (($absoluteYear + $boundOffset) % $this->interval) == 0;
+        return (($cleanYear - $boundOffset) % $this->interval) == 0;
     }
 
     /**
@@ -80,20 +83,28 @@ class Timespan implements Arrayable
      */
     public function occurrences($year): int
     {
+
         $year = ($this->yearZeroExists)
             ? $year
             : $year - 1;
 
-        if($this->interval <= 1 )return $year;
+        if($this->interval <= 1) return $year;
 
         # We do this so we keep offset bound within the interval (ie, if offset > interval, year is not subtracted too much)
         $offset = $this->offset % $this->interval;
 
-        if($year < 0 || $this->yearZeroExists) {
-            if(!$this->yearZeroExists) {
-                $offset--;
-            }
+        if($this->yearZeroExists) {
+
             return (int) ceil(($year - $offset) / $this->interval);
+
+        }else if($year < 0){
+
+            $occurrences = (int) ceil(($year - ($offset-1)) / $this->interval);
+
+            if($this->offset === 0) $occurrences--;
+
+            return $occurrences;
+
         }else{
             if($offset > 0){
                 return (int) floor(($year + $this->interval - $offset) / $this->interval);

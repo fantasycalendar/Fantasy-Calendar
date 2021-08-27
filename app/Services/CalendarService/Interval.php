@@ -69,7 +69,7 @@ class Interval
     {
         $offset = $this->offset;
 
-        if(!$year_zero_exists && $year < 0 && $offset !== 0) {
+        if(!$year_zero_exists && $year < 0 && $this->offset !== 0) {
             $offset--;
         }
 
