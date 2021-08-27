@@ -256,10 +256,6 @@ class EpochTest extends TestCase
 
         $calendar->setDate($fromYear);
 
-        dump($calendar->months->map(function($month){
-            return $month->name . ": " . $month->daysInYear->count();
-        }));
-
         $epochs = EpochFactory::forCalendarYear($calendar);
 
         $lastYearEndEpoch = $epochs->last()->epoch;
@@ -267,7 +263,6 @@ class EpochTest extends TestCase
         // dump($fromYear . ": " . $epochs->first()->epoch . " - " . $epochs->last()->epoch);
 
         $fromYear++;
-        $failed = false;
         for($year = $fromYear; $year < $toYear; $year++){
 
             if(!$calendar->setting("year_zero_exists") && $year === 0){
@@ -280,18 +275,17 @@ class EpochTest extends TestCase
 
             $thisYearStartEpoch = $epochs->first()->epoch;
 
-            // dump($year . ": " . $thisYearStartEpoch . " - " . $epochs->last()->epoch);
-
-            if($lastYearEndEpoch !== $thisYearStartEpoch-1){
-                $failed = true;
-                break;
+            if(($calendar->setting("year_zero_exists") && $year === 0) || (!$calendar->setting("year_zero_exists") && $year === 1)){
+                $this->assertTrue($thisYearStartEpoch === 0);
             }
+
+            // dump($year . ": " . $lastYearEndEpoch . " : " . $thisYearStartEpoch);
+
+            $this->assertTrue($lastYearEndEpoch === $thisYearStartEpoch-1);
 
             $lastYearEndEpoch = $epochs->last()->epoch;
 
         }
-
-        $this->assertFalse($failed);
 
     }
 }
