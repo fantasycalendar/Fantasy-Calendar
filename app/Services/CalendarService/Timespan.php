@@ -84,7 +84,7 @@ class Timespan implements Arrayable
     public function occurrences($year): int
     {
 
-        $year = ($this->yearZeroExists)
+        $year = ($this->yearZeroExists || $year < 0)
             ? $year
             : $year - 1;
 

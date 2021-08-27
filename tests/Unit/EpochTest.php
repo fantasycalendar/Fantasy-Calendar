@@ -22,7 +22,170 @@ class EpochTest extends TestCase
 
         $user = User::Factory()->create();
 
-        $calendar = Calendar::Factory()
+        $harptos = Calendar::Factory()
+            ->for($user)
+            ->create([
+                "dynamic_data" => [
+                    "epoch" => 0,
+                    "year" => 0,
+                    "timespan" => 0,
+                    "day" => 1
+                ],
+                "static_data" => [
+                    "first_day" => 1,
+                    "overflow" => false,
+                    "year_data" => [
+                        "timespans" => [
+                            [
+                                "name" => "Hammer",
+                                "type" => "month",
+                                "length" => 30,
+                                "interval" => 1,
+                                "offset" => 0
+                            ],
+                            [
+                                "name" => "Midwinter",
+                                "type" => "intercalary",
+                                "length" => 1,
+                                "interval" => 1,
+                                "offset" => 0
+                            ],
+                            [
+                                "name" => "Alturiak (The Claw of Winter)",
+                                "type" => "month",
+                                "length" => 30,
+                                "interval" => 1,
+                                "offset" => 0
+                            ],
+                            [
+                                "name" => "Ches (The Claw of the Sunsets)",
+                                "type" => "month",
+                                "length" => 30,
+                                "interval" => 1,
+                                "offset" => 0
+                            ],
+                            [
+                                "name" => "Tarsakh (The Claw of Storms)",
+                                "type" => "month",
+                                "length" => 30,
+                                "interval" => 1,
+                                "offset" => 0
+                            ],
+                            [
+                                "name" => "Greengrass",
+                                "type" => "intercalary",
+                                "length" => 1,
+                                "interval" => 1,
+                                "offset" => 0
+                            ],
+                            [
+                                "name" => "Mirtul (The Melting)",
+                                "type" => "month",
+                                "length" => 30,
+                                "interval" => 1,
+                                "offset" => 0
+                            ],
+                            [
+                                "name" => "Kythorn (The Time of Flowers)",
+                                "type" => "month",
+                                "length" => 30,
+                                "interval" => 1,
+                                "offset" => 0
+                            ],
+                            [
+                                "name" => "Flamerule (Summertide)",
+                                "type" => "month",
+                                "length" => 30,
+                                "interval" => 1,
+                                "offset" => 0
+                            ],
+                            [
+                                "name" => "Midsummer",
+                                "type" => "intercalary",
+                                "length" => 1,
+                                "interval" => 1,
+                                "offset" => 0
+                            ],
+                            [
+                                "name" => "Eleasis (Highsun)",
+                                "type" => "month",
+                                "length" => 30,
+                                "interval" => 1,
+                                "offset" => 0
+                            ],
+                            [
+                                "name" => "Eleint (The Fading)",
+                                "type" => "month",
+                                "length" => 30,
+                                "interval" => 1,
+                                "offset" => 0
+                            ],
+                            [
+                                "name" => "Highharvestide",
+                                "type" => "intercalary",
+                                "length" => 1,
+                                "interval" => 1,
+                                "offset" => 0
+                            ],
+                            [
+                                "name" => "Marpenoth (Leaffall)",
+                                "type" => "month",
+                                "length" => 30,
+                                "interval" => 1,
+                                "offset" => 0
+                            ],
+                            [
+                                "name" => "Uktar (The Rotting)",
+                                "type" => "month",
+                                "length" => 30,
+                                "interval" => 1,
+                                "offset" => 0
+                            ],
+                            [
+                                "name" => "The Feast of the Moon",
+                                "type" => "intercalary",
+                                "length" => 1,
+                                "interval" => 1,
+                                "offset" => 0
+                            ],
+                            [
+                                "name" => "Nightal (The Drawing Down)",
+                                "type" => "month",
+                                "length" => 30,
+                                "interval" => 1,
+                                "offset" => 0
+                            ]
+                        ],
+                        "leap_days" => [
+                            [
+                                "intercalary" => false,
+                                "timespan" => 9,
+                                "interval" => "4",
+                                "offset" => 0
+                            ]
+                        ],
+                        "global_week" => [
+                            "Weekday 1",
+                            "Weekday 2",
+                            "Weekday 3",
+                            "Weekday 4",
+                            "Weekday 5",
+                            "Weekday 6",
+                            "Weekday 7",
+                            "Weekday 8",
+                            "Weekday 9",
+                            "Weekday 10"
+                        ]
+                    ],
+                    "settings" => [
+                        "year_zero_exists" => false
+                    ]
+                ]
+            ]);
+
+        $this->testCalendar($harptos);
+
+        $crazyLeapCalendar = Calendar::Factory()
             ->for($user)
             ->create([
                 "dynamic_data" => [
@@ -81,20 +244,35 @@ class EpochTest extends TestCase
                 ]
             ]);
 
+        $this->testCalendar($crazyLeapCalendar);
+
+    }
+
+    private function testCalendar($calendar)
+    {
+
         $fromYear = -100;
         $toYear = 100;
 
         $calendar->setDate($fromYear);
 
+        dump($calendar->months->map(function($month){
+            return $month->name . ": " . $month->daysInYear->count();
+        }));
+
         $epochs = EpochFactory::forCalendarYear($calendar);
 
         $lastYearEndEpoch = $epochs->last()->epoch;
 
-        dump($fromYear . ": " . $epochs->first()->epoch . " - " . $epochs->last()->epoch);
+        // dump($fromYear . ": " . $epochs->first()->epoch . " - " . $epochs->last()->epoch);
 
         $fromYear++;
         $failed = false;
         for($year = $fromYear; $year < $toYear; $year++){
+
+            if(!$calendar->setting("year_zero_exists") && $year === 0){
+                continue;
+            }
 
             $calendar->setDate($year);
 
@@ -102,7 +280,7 @@ class EpochTest extends TestCase
 
             $thisYearStartEpoch = $epochs->first()->epoch;
 
-            dump($year . ": " . $thisYearStartEpoch . " - " . $epochs->last()->epoch);
+            // dump($year . ": " . $thisYearStartEpoch . " - " . $epochs->last()->epoch);
 
             if($lastYearEndEpoch !== $thisYearStartEpoch-1){
                 $failed = true;
