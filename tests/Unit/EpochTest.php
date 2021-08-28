@@ -26,12 +26,6 @@ class EpochTest extends TestCase
             ->for($user)
             ->create([
                 "name" => "Haptos",
-                "dynamic_data" => [
-                    "epoch" => 0,
-                    "year" => 0,
-                    "timespan" => 0,
-                    "day" => 1
-                ],
                 "static_data" => [
                     "first_day" => 1,
                     "overflow" => false,
@@ -190,12 +184,6 @@ class EpochTest extends TestCase
             ->for($user)
             ->create([
                 "name" => "Crazy Leap Calendar",
-                "dynamic_data" => [
-                    "epoch" => 0,
-                    "year" => 0,
-                    "timespan" => 0,
-                    "day" => 1
-                ],
                 "static_data" => [
                     "first_day" => 1,
                     "overflow" => true,
@@ -252,12 +240,6 @@ class EpochTest extends TestCase
             ->for($user)
             ->create([
                 "name" => "Leap Day Chaos v1",
-                "dynamic_data" => [
-                    "epoch" => 0,
-                    "year" => 0,
-                    "timespan" => 0,
-                    "day" => 1
-                ],
                 "static_data" => [
                     "first_day" => 1,
                     "overflow" => true,
