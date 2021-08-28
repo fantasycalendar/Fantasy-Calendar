@@ -99,10 +99,10 @@
         <hr>
         <div class="row">
             <div class="col-12 d-flex flex-column flex-md-row align-items-md-center justify-content-between pt-3">
-                @if(Auth::user()->has('discord_auth'))
+                @if($user->has('discord_auth'))
                     <div>
                         <h4>Discord Integration</h4>
-                        <p>Integrated with discord as {{ Auth::user()->discord_auth->discord_username }}.</p>
+                        <p>Integrated with discord as {{ $user->discord_auth->discord_username }}.</p>
                     </div>
                     <div>
                         <a href="{{ route('discord.index') }}" class="btn btn-outline-accent">Manage Integration</a>
@@ -117,7 +117,7 @@
                     </div>
                 @endif
             </div>
-            @if(!Auth::user()->isPremium())
+            @if(!$user->isPremium())
                 <div class="col-12 alert alert-light">
                     <small>As a free user, you can use someone else's calendar, but you won't be able to use it for your own, nor add Fantasy Calendar to a new server.</small>
                 </div>

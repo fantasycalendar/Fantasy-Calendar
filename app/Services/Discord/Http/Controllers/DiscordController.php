@@ -117,7 +117,7 @@ class DiscordController extends Controller
         }
 
         if(Auth::user()->has('discord_auth')) {
-            Auth::user()->discord_auth->delete();
+            Auth::user()->discord_auth()->delete();
         }
 
         Auth::user()->discord_auth()->create([
@@ -130,7 +130,7 @@ class DiscordController extends Controller
             'expires_at' => now()->addSeconds($user->expiresIn)
         ]);
 
-        return redirect(route('discord.success'));
+        return redirect(route('discord.index'))->with('message', 'Your Fantasy Calendar account was successfully connected to Discord!');
     }
 
     /**

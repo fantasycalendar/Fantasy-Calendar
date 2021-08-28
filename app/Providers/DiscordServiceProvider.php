@@ -37,12 +37,13 @@ class DiscordServiceProvider extends ServiceProvider
     private function registerRoutes()
     {
         Route::prefix('discord')->group(function(){
+            Route::view('account', 'Discord::pages.connect-account')->middleware(['web','auth'])->name('discord.index');
+
             Route::prefix('hooks')->middleware([VerifyDiscordSignature::class])->group(function(){
                 Route::any('/', DiscordController::class.'@hook');
             });
 
             Route::prefix('auth')->middleware(['web','auth'])->group(function(){
-                Route::view('/', 'Discord::pages.connect-account')->name('discord.index');
                 Route::get('user-redirect', DiscordController::class.'@user_redirect')->name('discord.auth.user');
                 Route::get('server-owner-redirect',DiscordController::class.'@server_owner_redirect')->name('discord.auth.admin');
                 Route::get('callback', DiscordController::class.'@callback')->name('discord.callback');

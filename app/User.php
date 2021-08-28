@@ -224,6 +224,10 @@ class User extends Authenticatable implements
         return $this->marketing_opt_in_at !== null && $this->marketing_opt_in_at > $this->marketing_opt_out_at;
     }
 
+    public function hasDiscord() {
+        return $this->discord_auth()->exists();
+    }
+
     public function setMarketingStatus($optIn = True) {
         if($optIn){
             $this->policy_id = Policy::current()->id;

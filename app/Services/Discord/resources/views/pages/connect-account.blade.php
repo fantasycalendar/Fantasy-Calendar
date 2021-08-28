@@ -113,6 +113,10 @@
 
 @section('content')
     <div class="container py-5">
+        @if(session()->has('message'))
+            <div class="alert alert-success py-3 my-4">{{ session('message') }}</div>
+        @endif
+
         @if(session()->has('alert'))
             <div class="alert alert-info py-3 my-4">{{ session('alert') }}</div>
         @endif
@@ -121,13 +125,13 @@
             <div class="alert alert-danger py-3 my-4">{{ session('error') }}</div>
         @endif
 
-        @unless(Auth::user()->has('discord_auth'))
+        @unless(Auth::user()->hasDiscord())
             <h1>Connect your Fantasy Calendar account with Discord!</h1>
             <h4 class="lead" style="opacity: 0.65;">Don't worry, we only use the minimum necessary to make integrations work. As Discord will tell you, neither of the options below lets us read your messages or anything like that.</h4>
         @endunless
 
         <div class="row">
-            @unless(Auth::user()->has('discord_auth'))
+            @unless(Auth::user()->hasDiscord())
                 <div class="col-12 flex align-items-center mb-3">
                     <div class="connect-box py-4 w-100 border rounded my-4">
 
@@ -155,7 +159,7 @@
             @endunless
 
             <div class="col-12 col-lg-6 mb-3">
-                @unless(Auth::user()->has('discord_auth'))
+                @unless(Auth::user()->hasDiscord())
                     <div class="inner h-100 border rounded w-100 p-3 text-center">
                         <h4>To use an <strong>existing</strong> Fantasy Calendar integration <p class="lead small pt-1" style="opacity: 0.7;">in someone else's Discord server</p></h4>
 
@@ -179,7 +183,7 @@
                 <div class="inner h-100 border rounded w-100 p-3 text-center">
                     <h4>To setup a <strong>new</strong> Fantasy Calendar integration <p class="lead small pt-1" style="opacity: 0.7;">in a Discord server you own or admin</p></h4>
 
-                    @unless(Auth::user()->has('discord_auth'))
+                    @unless(Auth::user()->hasDiscord())
                         <a href="{{ route('discord.auth.admin') }}" class="btn btn-lg btn-discord my-3">Connect to Your Discord Server</a>
                     @else
                         <a href="{{ route('discord.auth.admin') }}" class="btn btn-lg btn-discord my-3">Add Fantasy Calendar to a Server</a>
@@ -187,24 +191,30 @@
                 </div>
             </div>
 
-            @if(Auth::user()->has('discord_auth'))
-                <div class="table-responsive">
-                    <table class="table col-sm-12">
-                        <thead>
-                        <tr>
-                            <th scope="col" class="pl-2">Command</th>
-                            <th scope="col" class="pl-4 pl-md-0">Description</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @foreach(discord_help() as $command)
+            @if(Auth::user()->hasDiscord())
+                <div class="col-12 pt-4">
+                    <h3 class="text-center">Discord Command Quick Reference</h3>
+                </div>
+
+                <div class="col-12">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
                             <tr>
-                                <td style="font-family: monospace;" class="font-weight-bold pl-2">{{ $command['command'] }}</td>
-                                <td class="italics-text pl-4 pl-md-0">{{ $command['description'] }}</td>
+                                <th scope="col" class="pl-3">Command</th>
+                                <th scope="col" class="pl-4 pl-md-0">Description</th>
                             </tr>
-                        @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                            @foreach(discord_help() as $command)
+                                <tr>
+                                    <td style="font-family: monospace;" class="font-weight-bold pl-3">{{ $command['command'] }}</td>
+                                    <td class="italics-text pl-4 pl-md-0">{{ $command['description'] }}</td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             @else
                 <div class="col-12">
