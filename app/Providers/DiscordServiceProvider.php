@@ -17,7 +17,7 @@ class DiscordServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        require_once(app_path('Services/Discord/helpers.php'));
     }
 
     /**
