@@ -452,7 +452,7 @@ return [
                 'echo' => \App\Services\Discord\Commands\Command\EchoHandler::class,
                 'list' => \App\Services\Discord\Commands\Command\ListHandler::class,
                 'show' => [
-                    'date' => \App\Services\Discord\Commands\Command\Show\LinkHandler::class,
+                    'date' => \App\Services\Discord\Commands\Command\Show\DateHandler::class,
                     'month' => \App\Services\Discord\Commands\Command\Show\MonthHandler::class,
                     'day' => \App\Services\Discord\Commands\Command\Show\DayHandler::class,
                     'link' => \App\Services\Discord\Commands\Command\Show\LinkHandler::class,
