@@ -17,13 +17,14 @@ class CommandDispatcher
         $handlerClass = config('services.discord.command_handlers' . $configPath);
 
         try {
-            $response = (new $handlerClass($commandData))->handle();
+            return (new $handlerClass($commandData))->handle();
         } catch (\Throwable $e) {
             Log::error($e->getTraceAsString());
-            return $e->getMessage();
-        }
 
-        return $response;
+            return (app()->environment('production'))
+                ? "Oops! There was an error. This was probably our fault, not yours."
+                : $e->getMessage();
+        }
     }
 
     public static function processConfigPath($optionsData, $soFar = '.')

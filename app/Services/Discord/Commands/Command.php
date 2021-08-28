@@ -44,10 +44,11 @@ abstract class Command
         $this->discord_nickname = $this->interaction('member.nick') ?? $this->interaction('member.user.username');
         $this->discord_username = $this->interaction('member.user.username') . "#" . $this->interaction('member.user.discriminator');
         $this->discord_user_id = $this->interaction('member.user.id');
-        $this->called_command = '/' . self::getCalledCommand($this->interaction('data'));
         $this->options = self::getOptions($this->interaction('data.options.0'));
+        $this->called_command = '/' . $this->getCalledCommand($this->interaction('data'));
 
         logger()->debug(json_encode($this->options));
+        logger()->debug($this->called_command);
         logger()->debug(json_encode($this->interaction('data')));
 
         $this->logInteraction();
@@ -280,10 +281,14 @@ abstract class Command
      * @param $data
      * @return array|\ArrayAccess|mixed|string
      */
-    protected static function getCalledCommand($data)
+    protected function getCalledCommand($data)
     {
+        logger()->debug('getCalledCommand on ' . json_encode($data));
         switch (Arr::get($data, 'type')) {
             case null:
+                return '';
+            case 4:
+                return $this->options->join(' ');
             case 2:
             case 1:
                 return Arr::get($data, 'name') . ' ' . self::getCalledCommand(Arr::get($data, 'options.0'));
