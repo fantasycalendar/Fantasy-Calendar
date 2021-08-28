@@ -22,9 +22,10 @@ class EpochTest extends TestCase
 
         $user = User::Factory()->create();
 
-        $harptos = Calendar::Factory()
+        $calendar = Calendar::Factory()
             ->for($user)
             ->create([
+                "name" => "Haptos",
                 "dynamic_data" => [
                     "epoch" => 0,
                     "year" => 0,
@@ -183,11 +184,12 @@ class EpochTest extends TestCase
                 ]
             ]);
 
-        $this->testCalendar($harptos);
+        $this->testCalendar($calendar);
 
-        $crazyLeapCalendar = Calendar::Factory()
+        $calendar = Calendar::Factory()
             ->for($user)
             ->create([
+                "name" => "Crazy Leap Calendar",
                 "dynamic_data" => [
                     "epoch" => 0,
                     "year" => 0,
@@ -244,15 +246,188 @@ class EpochTest extends TestCase
                 ]
             ]);
 
-        $this->testCalendar($crazyLeapCalendar);
+        $this->testCalendar($calendar, -1000, 1000);
+
+        $calendar = Calendar::Factory()
+            ->for($user)
+            ->create([
+                "name" => "Leap Day Chaos v1",
+                "dynamic_data" => [
+                    "epoch" => 0,
+                    "year" => 0,
+                    "timespan" => 0,
+                    "day" => 1
+                ],
+                "static_data" => [
+                    "first_day" => 1,
+                    "overflow" => true,
+                    "year_data" => [
+                        "timespans" => [
+                            [
+                                "name" => "Somemonth",
+                                "type" => "month",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 31
+                            ],
+                            [
+                                "name" => "Anothermonth",
+                                "type" => "month",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 30
+                            ],
+                            [
+                                "name" => "Month 3",
+                                "type" => "month",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 29
+                            ],
+                            [
+                                "name" => "Month 4",
+                                "type" => "month",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 28
+                            ],
+                            [
+                                "name" => "Month 5",
+                                "type" => "month",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 27
+                            ],
+                            [
+                                "name" => "Month 6",
+                                "type" => "month",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 32
+                            ],
+                            [
+                                "name" => "Month 7",
+                                "type" => "month",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 33
+                            ],
+                            [
+                                "name" => "Month 8",
+                                "type" => "month",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 31
+                            ],
+                            [
+                                "name" => "Month 9",
+                                "type" => "month",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 31
+                            ],
+                            [
+                                "name" => "Month 10",
+                                "type" => "month",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 30
+                            ],
+                            [
+                                "name" => "Month 11",
+                                "type" => "month",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 31
+                            ],
+                            [
+                                "name" => "Month 12",
+                                "type" => "month",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 20
+                            ],
+                            [
+                                "name" => "Intercalary Month 13",
+                                "type" => "intercalary",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 25
+                            ],
+                            [
+                                "name" => "Intercalary Leap Month",
+                                "type" => "intercalary",
+                                "interval" => 5,
+                                "offset" => 0,
+                                "length" => 10
+                            ],
+                            [
+                                "name" => "Intercalary Leap Month",
+                                "type" => "month",
+                                "interval" => 3,
+                                "offset" => 0,
+                                "length" => 10
+                            ],
+                            [
+                                "name" => "Final",
+                                "type" => "month",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 31
+                            ]
+                        ],
+                        "leap_days" => [
+                            [
+                                "intercalary" => false,
+                                "timespan" => 7,
+                                "interval" => "4",
+                                "offset" => 0
+                            ],
+                            [
+                                "intercalary" => false,
+                                "timespan" => 9,
+                                "interval" => "7",
+                                "offset" => 0
+                            ],
+                            [
+                                "intercalary" => true,
+                                "day" => 31,
+                                "timespan" => 10,
+                                "interval" => "6",
+                                "offset" => 0
+                            ],
+                            [
+                                "intercalary" => true,
+                                "day" => 16,
+                                "timespan" => 8,
+                                "interval" => "8",
+                                "offset" => 0
+                            ]
+                        ],
+                        "global_week" => [
+                            "Weekday 1",
+                            "Weekday 2",
+                            "Weekday 3",
+                            "Weekday 4",
+                            "Weekday 5",
+                            "Weekday 6",
+                            "Weekday 7"
+                        ]
+                    ],
+                    "settings" => [
+                        "year_zero_exists" => false
+                    ]
+                ]
+            ]);
+
+        $this->testCalendar($calendar);
 
     }
 
-    private function testCalendar($calendar)
+    private function testCalendar($calendar, $fromYear = -100, $toYear = 100)
     {
 
-        $fromYear = -100;
-        $toYear = 100;
+        dump("Testing calendar: " . $calendar->name . " (year range: " . $fromYear . " to " . $toYear . ")");
 
         $calendar->setDate($fromYear);
 
