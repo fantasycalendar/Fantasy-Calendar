@@ -18,7 +18,9 @@
                 <a class="nav-link" href="{{ route('calendars.create') }}">New Calendar</a>
             </li>
             <li class="nav-item"><a href="{{ route('faq') }}" class="nav-link">FAQs</a></li>
-            <li class="nav-item"><a href="{{ route('discord') }}" class="nav-link">Discord Integration</a>
+            @if(config('services.discord.enabled'))
+                <li class="nav-item"><a href="{{ route('discord') }}" class="nav-link">Discord Integration</a>
+            @endif
         </ul>
         <ul class="navbar-nav">
             @auth

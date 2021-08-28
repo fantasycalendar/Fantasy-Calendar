@@ -31,6 +31,7 @@ return [
     ],
 
     'discord' => [
+        'enabled' => (!empty(env('DISCORD_CLIENT_ID')) && !empty(env('DISCORD_CLIENT_SECRET')) && !empty(env('DISCORD_REDIRECT_URI'))),
         'client_id' => env('DISCORD_CLIENT_ID'),
         'client_secret' => env('DISCORD_CLIENT_SECRET'),
         'redirect' => env('DISCORD_REDIRECT_URI'),
