@@ -87,6 +87,11 @@ return [
                                 'description' => 'Displays information about the current date',
                                 'type' => 1
                             ],
+                            [
+                                'name' => 'link',
+                                'description' => 'Displays a public view link',
+                                'type' => 1
+                            ]
 //                            [
 //                                'name' => 'event',
 //                                'description' => 'Searches for an event by name, displaying info on the closest match',
@@ -447,9 +452,10 @@ return [
                 'echo' => \App\Services\Discord\Commands\Command\EchoHandler::class,
                 'list' => \App\Services\Discord\Commands\Command\ListHandler::class,
                 'show' => [
-                    'date' => \App\Services\Discord\Commands\Command\Show\DateHandler::class,
+                    'date' => \App\Services\Discord\Commands\Command\Show\LinkHandler::class,
                     'month' => \App\Services\Discord\Commands\Command\Show\MonthHandler::class,
                     'day' => \App\Services\Discord\Commands\Command\Show\DayHandler::class,
+                    'link' => \App\Services\Discord\Commands\Command\Show\LinkHandler::class,
 //                    'event' => \App\Services\Discord\Commands\Command\Show\EventHandler::class,
 //                    'era' => \App\Services\Discord\Commands\Command\Show\EraHandler::class,
                 ],
