@@ -13,11 +13,11 @@ class EpochTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * A basic unit test example.
+     * Test some example calendars to make sure our epoch calculation is correct
      *
      * @return void
      */
-    public function test_example()
+    public function test_example_calendars()
     {
 
         $user = User::Factory()->create();
