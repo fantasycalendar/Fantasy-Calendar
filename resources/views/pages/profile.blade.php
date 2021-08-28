@@ -99,7 +99,7 @@
         <hr>
         <div class="row">
             <div class="col-12 d-flex flex-column flex-md-row align-items-md-center justify-content-between pt-3">
-                @if($user->has('discord_auth'))
+                @if($user->hasDiscord())
                     <div>
                         <h4>Discord Integration</h4>
                         <p>Integrated with discord as {{ $user->discord_auth->discord_username }}.</p>

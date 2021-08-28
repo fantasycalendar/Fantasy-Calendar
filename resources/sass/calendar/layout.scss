@@ -126,6 +126,21 @@ body{
     @media (min-width: 768px) and (hover: none) {
         min-height: 3.6rem;
     }
+
+    .new-nav-item {
+        position: relative;
+
+        & a:after {
+            content: "New!";
+            display: inline;
+            color: $text-green-400;
+            background-color: $bg-green-800;
+            font-size: .8rem;
+            padding: .2rem .6rem;
+            border-radius: 999px;
+            margin-left: .4rem;
+        }
+    }
 }
 
 .page-calendars-edit {
