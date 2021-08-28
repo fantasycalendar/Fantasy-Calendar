@@ -44,19 +44,6 @@ return [
                 'description' => 'Get information from Fantasy Calendar',
                 'options' => [
                     [
-                        'name' => 'echo',
-                        'description' => 'Says back what you said to test the integration.',
-                        'type' => 1,
-                        'options' => [
-                            [
-                                'name' => 'echo',
-                                'description' => 'A string to echo',
-                                'type' => 3,
-                                'required' => true
-                            ]
-                        ]
-                    ],
-                    [
                         'name' => 'help',
                         'description' => 'Lists the available commands and their functions',
                         'type' => 1
@@ -65,6 +52,19 @@ return [
                         'name' => 'list',
                         'description' => 'Lists your Fantasy Calendar calendars.',
                         'type' => 1
+                    ],
+                    [
+                        'name' => 'use',
+                        'description' => 'Set the default calendar for use in this server',
+                        'type' => 1,
+                        'options' => [
+                            [
+                                'name' => 'id',
+                                'description' => 'The calendar number, gathered from the list command',
+                                'type' => 4,
+                                'required' => true
+                            ]
+                        ]
                     ],
                     [
                         'name' => 'show',
@@ -326,6 +326,7 @@ return [
 //                            ],
                         ],
                     ],
+
                     [
                         'name' => 'sub',
                         'description' => 'Subtract to the date of your selected calendar',
@@ -422,20 +423,20 @@ return [
 //                                ]
 //                            ],
                         ],
-                    ],
-                    [
-                        'name' => 'use',
-                        'description' => 'Set the default calendar for use in this server',
-                        'type' => 1,
-                        'options' => [
-                            [
-                                'name' => 'id',
-                                'description' => 'The calendar number, gathered from the list command',
-                                'type' => 4,
-                                'required' => true
+                        [
+                            'name' => 'echo',
+                            'description' => 'Says back what you said (Useful to test the integration.)',
+                            'type' => 1,
+                            'options' => [
+                                [
+                                    'name' => 'echo',
+                                    'description' => 'A string to echo',
+                                    'type' => 3,
+                                    'required' => true
+                                ]
                             ]
-                        ]
-                    ]
+                        ],
+                    ],
                 ]
             ]
         ],

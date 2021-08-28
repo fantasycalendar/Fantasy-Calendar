@@ -34,7 +34,7 @@ class DiscordController extends Controller
 
         // Ensure user has discord auth setup before letting them go to success page
         $this->middleware(function($request, $next){
-            if(Auth::check() && !Auth::user()->discord_auth()->exists()) {
+            if(Auth::check() && !Auth::user()->has('discord_auth')) {
                 return redirect(route('discord.auth'));
             }
 
@@ -116,7 +116,7 @@ class DiscordController extends Controller
             return redirect(route('discord.index'))->with('error', 'There was an error connecting your Discord account! Please try again, and if it happens again, let us know over on our Discord server.');
         }
 
-        if(Auth::user()->discord_auth()->exists()) {
+        if(Auth::user()->has('discord_auth')) {
             Auth::user()->discord_auth->delete();
         }
 

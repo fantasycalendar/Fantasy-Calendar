@@ -46,6 +46,52 @@
         .bg-accent .alert-link {
             color: white;
         }
+
+        @media only screen and (max-width: 768px) {
+            /* Force table to not be like tables anymore */
+            table,
+            thead,
+            tbody,
+            th,
+            td,
+            tr {
+                display: block;
+            }
+
+            /* Hide table headers (but not display: none;, for accessibility) */
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+
+            td {
+                /* Behave like a "row" */
+                border: none;
+                position: relative;
+                padding-left: 50%;
+                white-space: normal;
+                text-align:left;
+            }
+
+            td:before {
+                /* Now like a table header */
+                position: absolute;
+                /* Top/left values mimic padding */
+                top: 6px;
+                left: 6px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align:left;
+                font-weight: bold;
+            }
+
+            /*
+            Label the data
+            */
+            td:before { content: attr(data-title); }
+        }
     </style>
     <script>
         function confirmDisconnect() {
@@ -75,13 +121,13 @@
             <div class="alert alert-danger py-3 my-4">{{ session('error') }}</div>
         @endif
 
-        @unless(Auth::user()->discord_auth()->exists())
+        @unless(Auth::user()->has('discord_auth'))
             <h1>Connect your Fantasy Calendar account with Discord!</h1>
             <h4 class="lead" style="opacity: 0.65;">Don't worry, we only use the minimum necessary to make integrations work. As Discord will tell you, neither of the options below lets us read your messages or anything like that.</h4>
         @endunless
 
         <div class="row">
-            @unless(Auth::user()->discord_auth()->exists())
+            @unless(Auth::user()->has('discord_auth'))
                 <div class="col-12 flex align-items-center mb-3">
                     <div class="connect-box py-4 w-100 border rounded my-4">
 
@@ -108,12 +154,12 @@
                 </div>
             @endunless
 
-            <div class="col-12 col-md-6 mb-3">
-                @unless(Auth::user()->discord_auth()->exists())
+            <div class="col-12 col-lg-6 mb-3">
+                @unless(Auth::user()->has('discord_auth'))
                     <div class="inner h-100 border rounded w-100 p-3 text-center">
-                        <h4>To use an existing Fantasy Calendar integration <p class="lead small pt-1" style="opacity: 0.7;">in someone else's Discord server</p></h4>
+                        <h4>To use an <strong>existing</strong> Fantasy Calendar integration <p class="lead small pt-1" style="opacity: 0.7;">in someone else's Discord server</p></h4>
 
-                        <a href="{{ route('discord.auth.user') }}" class="btn btn-lg btn-discord my-3">Connect with Discord</a>
+                        <a href="{{ route('discord.auth.user') }}" class="btn btn-lg btn-discord my-3">Connect to Use With Discord</a>
                     </div>
                 @else
                     <div class="inner h-100 alert alert-success bg-accent p-3 d-flex flex-column flex-md-row align-items-md-center justify-content-between">
@@ -129,51 +175,71 @@
                 @endunless
             </div>
 
-            <div class="col-12 col-md-6 mb-3">
+            <div class="col-12 col-lg-6 mb-3">
                 <div class="inner h-100 border rounded w-100 p-3 text-center">
-                    <h4>To setup a new Fantasy Calendar integration <p class="lead small pt-1" style="opacity: 0.7;">in a Discord server you own or admin</p></h4>
+                    <h4>To setup a <strong>new</strong> Fantasy Calendar integration <p class="lead small pt-1" style="opacity: 0.7;">in a Discord server you own or admin</p></h4>
 
-                    @unless(Auth::user()->discord_auth()->exists())
-                        <a href="{{ route('discord.auth.admin') }}" class="btn btn-lg btn-discord my-3">Connect with Discord</a>
+                    @unless(Auth::user()->has('discord_auth'))
+                        <a href="{{ route('discord.auth.admin') }}" class="btn btn-lg btn-discord my-3">Connect to Your Discord Server</a>
                     @else
                         <a href="{{ route('discord.auth.admin') }}" class="btn btn-lg btn-discord my-3">Add Fantasy Calendar to a Server</a>
                     @endunless
                 </div>
             </div>
 
-            <div class="col-12">
-                <div class="inner">
-                    <div class="table-responsive mt-2 border rounded">
-                        <table class="table">
-                            <thead>
+            @if(Auth::user()->has('discord_auth'))
+                <div class="table-responsive">
+                    <table class="table col-sm-12">
+                        <thead>
+                        <tr>
+                            <th scope="col" class="pl-2">Command</th>
+                            <th scope="col" class="pl-4 pl-md-0">Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach(discord_help() as $command)
                             <tr>
-                                <th scope="col">What this gives us</th>
-                                <th scope="col">How we use it</th>
+                                <td style="font-family: monospace;" class="font-weight-bold pl-2">{{ $command['command'] }}</td>
+                                <td class="italics-text pl-4 pl-md-0">{{ $command['description'] }}</td>
                             </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <th scope="row">Your email</th>
-                                <td>Used for any notifications about this integration</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Discord ID</th>
-                                <td>Used to associate your Discord account with your Fantasy Calendar account, for permissions</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">List of servers you're in</th>
-                                <td>Required to create commands in servers you own</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Application command creation</th>
-                                <td>Lets us create slash-commands in servers you're in</td>
-                            </tr>
-                            </tbody>
-                        </table>
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <div class="col-12">
+                    <div class="inner">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th scope="col">What this gives us</th>
+                                    <th scope="col">How we use it</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <th scope="row">Your email</th>
+                                    <td>Used for any notifications about this integration</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Discord ID</th>
+                                    <td>Used to associate your Discord account with your Fantasy Calendar account, for permissions</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">List of servers you're in</th>
+                                    <td>Required to create commands in servers you own</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Application command creation</th>
+                                    <td>Lets us create slash-commands in servers you're in</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
+            @endif
         </div>
-
     </div>
 @endsection
