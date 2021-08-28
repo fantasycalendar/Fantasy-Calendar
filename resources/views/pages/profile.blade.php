@@ -42,7 +42,7 @@
         }
 
     </script>
-    @if(!empty(env('DISCORD_CLIENT_ID')))
+    @if(config('services.discord.enabled'))
         <script>
             function confirmDisconnect() {
                 swal.fire({
@@ -89,13 +89,13 @@
                     <p><a href="{{ route('subscription.resume') }}" class="btn btn-primary form-control">Resume Subscription</a></p>
                 @endif
 
-                @if(env('APP_ENV') !== 'production' && $subscription->onGracePeriod())
+                @if(!app()->environment(['production']) && $subscription->onGracePeriod())
                     <p><a href="{{ route('subscription.cancel') }}" class="btn btn-danger form-control">Immediately end benefits</a></p>
                 @endif
             @endunless
         </div>
     </div>
-    @if(!empty(env('DISCORD_CLIENT_ID')))
+    @if(config('services.discord.enabled'))
         <hr>
         <div class="row">
             <div class="col-12 d-flex flex-column flex-md-row align-items-md-center justify-content-between pt-3">
