@@ -99,15 +99,13 @@
         <hr>
         <div class="row">
             <div class="col-12 d-flex flex-column flex-md-row align-items-md-center justify-content-between pt-3">
-                @if(Auth::user()->discord_auth()->exists())
-                    <div class="inner h-100 w-100 alert alert-success bg-accent p-3 d-flex flex-column flex-md-row align-items-md-center justify-content-between">
-                        <div class="d-flex justify-content-start align-items-center">
-                            <h4 class="mb-0">
-                                {{ Auth::user()->discord_auth->discord_username }}
-                            </h4>
-                        </div>
-                        <hr class="d-md-none w-100 my-3" style="border-top-color: #246645;">
-                        <a href="javascript:" onclick="confirmDisconnect()" class="btn btn-outline-danger alert-link">Disconnect</a>
+                @if(Auth::user()->has('discord_auth'))
+                    <div>
+                        <h4>Discord Integration</h4>
+                        <p>Integrated with discord as {{ Auth::user()->discord_auth->discord_username }}.</p>
+                    </div>
+                    <div>
+                        <a href="{{ route('discord.index') }}" class="btn btn-outline-accent">Manage Integration</a>
                     </div>
                 @else
                     <div>
@@ -115,7 +113,7 @@
                         <p>You can connect your Fantasy Calendar account to Discord!</p>
                     </div>
                     <div>
-                        <a href="{{ route('discord.index') }}" class="btn btn-primary">Check it out</a>
+                        <a href="{{ route('discord.index') }}" class="btn btn-outline-accent">Check it out</a>
                     </div>
                 @endif
             </div>
@@ -149,7 +147,7 @@
                 </div>
             </div>
         </div>
-        <button class="btn btn-primary float-right">Save Settings</button>
+        <button class="btn btn-accent float-right">Save Settings</button>
     </form>
 @endsection
 
