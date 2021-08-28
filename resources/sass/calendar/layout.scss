@@ -13,9 +13,20 @@
 .btn.btn-accent {
     background-color: $accent-color;
     border-color: $accent-color;
+    color: white;
 
     &:hover {
         background-color: $accent-color-darker;
+        border-color: $accent-color;
+    }
+}
+
+.btn.btn-outline-accent {
+    background-color: transparent;
+    border-color: $accent-color;
+
+    &:hover {
+        background-color: $accent-color;
         border-color: $accent-color;
     }
 }
