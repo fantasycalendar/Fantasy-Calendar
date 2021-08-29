@@ -126,7 +126,16 @@
 
         </section>
 
-        <section class="comparison_both welcome" id="section4" style="background-color: #212426; background-image: url('{{ asset('resources/gray-square-bg.png') }}');">
+        <section class="fullheight green-border welcome" id="section2" style="background-color: #edf2f7; background-image: url({{ asset('resources/discord/plugin_pattern.png') }}); background-repeat: repeat;">
+            <div class="container">
+                <h3 style="width: 100%; text-align: center;">After many months of work, integration with Discord is finally here!</h3>
+                <img src="{{ asset('resources/discord/integration-bg-2.png') }}" alt="">
+            </div>
+            <h3 class="next-link" style="font-size: 2.3rem; position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section2"><i class="fa fa-chevron-circle-down"></i> See more <i class="fa fa-chevron-circle-down"></i></a></h3>
+        </section>
+
+
+        <section class="comparison_both welcome" id="section3" style="background-color: #212426; background-image: url('{{ asset('resources/gray-square-bg.png') }}');">
             <div class="container mt-5 pt-5">
                 <div class="row">
                     <div class="col-12 col-md-7 text-center text-md-left d-flex flex-column align-items-start justify-content-center">
@@ -160,11 +169,11 @@
             <div class="container py-5">
                 <div class="row">
                     <div class="col-12 col-md-6 text-center text-md-left d-flex flex-column align-items-start justify-content-center">
-                        <h3 style="color:black;">Stats-nerds, we got you.</h3>
-                        <h4 style="color:black;">Quickly access detailed information about the current day with a simple command.</h4>
+                        <h3 style="color:white;">Stats-nerds, we've got you covered.</h3>
+                        <h4 style="color:white;">Quickly access detailed information about the current day with a simple command.</h4>
                     </div>
                     <div class="col-12 col-md-6 text-center text-md-right">
-                        <img src="{{ asset('resources/any-device.png') }}">
+                        <img src="{{ asset('resources/discord/detailed_day_info.png') }}">
                     </div>
                 </div>
             </div>
