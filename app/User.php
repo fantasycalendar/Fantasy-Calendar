@@ -225,7 +225,7 @@ class User extends Authenticatable implements
     }
 
     public function hasDiscord() {
-        return $this->discord_auth()->exists();
+        return $this->isPremium() && $this->discord_auth()->exists();
     }
 
     public function setMarketingStatus($optIn = True) {

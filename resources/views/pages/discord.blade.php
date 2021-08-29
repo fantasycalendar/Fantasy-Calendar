@@ -28,10 +28,11 @@
 
         .fullheight {
             height: 100vh;
+            position: relative;
         }
 
         .green-border {
-            border-bottom: 10px solid green;
+            border-bottom: 10px solid #2f855a;
         }
 
         .comparison_image {
@@ -154,7 +155,7 @@
                         <img src="{{ asset('resources/fc_logo_white_padding.png') }}">
                     </div>
 
-                    <div class="col-2 col-md-2 big-logo-wrapper p-0">
+                    <div class="col-2 col-md-2 big-logo-wrapper p-0 text-center">
                         <img style="max-width:6rem;" src="{{ asset('resources/discord_fc_plus_white.svg') }}">
                     </div>
 
@@ -165,15 +166,15 @@
                 </div>
             </div>
 
-            <h3 style="width: 100%; text-align: center;">After many months of work, integration with Discord is finally here!</h3>
-            <h3 class="next-link" style="font-size: 2.3rem; position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section2"><i class="fa fa-chevron-circle-down"></i> See more <i class="fa fa-chevron-circle-down"></i></a></h3>
-            <div class="overlay"></div>
+            <h3 style="width: 100%; text-align: center;" class="text-white">The long-awaited Discord integration is here!</h3>
+            <h4 class="text-white">Quick to setup, easy to use, and available <strong><a href="{{ route('discord.index') }}">right now</a></strong> to subscribers.</h4>
 
+            <h4 class="next-link" style="font-size: 2.1rem; position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section2"><i class="fa fa-chevron-circle-down"></i> Show me more! <i class="fa fa-chevron-circle-down"></i></a></h4>
         </section>
 
         <section class="fullheight green-border welcome" id="section2" style="background-color: #edf2f7; background-image: url({{ asset('resources/discord/plugin_pattern.png') }}); background-repeat: repeat;">
             <div class="container">
-                <h3 style="width: 100%; text-align: center;"
+                <h3 style="width: 100%; text-align: center; color: #303136"
                     x-data="wordRandomizer"
                     x-init="setInterval(() => { $dispatch('randomize-word') }, 2200)"
                     @randomize-word.window="visible = 0; setTimeout(() => { $dispatch('hidden-word') }, 300)"
@@ -181,28 +182,23 @@
                 >
                     Your <span x-text="word" x-show.opacity.transition.duration.800ms="visible"></span>. Your Calendar. Together.
                 </h3>
+                <h5 style="width: 100%; text-align: center; color: #303136">Track campaign time for your players right from Discord. Yeah, <span class="font-italic">we like it too.</span></h5>
                 <img src="{{ asset('resources/discord/integration-bg-2.png') }}" alt="" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);">
             </div>
-            <h3 class="next-link" style="font-size: 2.3rem; position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section2"><i class="fa fa-chevron-circle-down"></i> See more <i class="fa fa-chevron-circle-down"></i></a></h3>
+            <h4 class="next-link" style="font-size: 2.1rem; position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section3"><i class="fa fa-chevron-circle-down"></i> Show me more! <i class="fa fa-chevron-circle-down"></i></a></h4>
         </section>
 
-
-        <section class="comparison_both welcome" id="section3" style="background-color: #212426; background-image: url('{{ asset('resources/gray-square-bg.png') }}');">
-            <div class="container mt-5 pt-5">
+        <section class="comparison_both welcome" id="section3" style="background-color: #303136; background-image: url('{{ asset('resources/gray-square-bg.png') }}');">
+            <div class="container my-5 py-5">
                 <div class="row">
                     <div class="col-12 col-md-7 text-center text-md-left d-flex flex-column align-items-start justify-content-center">
-                        <h3>The information you need, just one command away.</h3>
+                        <h3 class="text-white">The information you need, just a command away.</h3>
                     </div>
 
                     <div class="col-12 col-md-5 text-center text-md-right">
                         <img src="{{ asset('resources/discord/discord_show_month.png') }}" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);">
                     </div>
                 </div>
-            </div>
-        </section>
-
-        <section class="comparison_both welcome" id="section4" style="background-color: #212426; background-image: url('{{ asset('resources/gray-square-bg.png') }}');">
-            <div class="container mb-5 pb-5">
                 <div class="row">
 
                     <div class="col-12 col-md-5 text-center text-md-left">
@@ -210,22 +206,22 @@
                     </div>
 
                     <div class="col-12 col-md-7 text-center text-md-right d-flex flex-column align-items-end justify-content-center">
-                        <h3>Quickly add or subtract minutes, hours, days, months, or years. <br><br>Thousands of them, even!</h3>
+                        <h3 class="text-white">Quickly add or subtract minutes, hours, days, months, or years. <br><br>Thousands at once, even!</h3>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="py-5" style="position: relative; overflow: hidden;">
-            <div class="background" style="background-image: url('{{ asset('resources/gray-cubic-bg.png') }}'); position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.25; transform: scale(2.2, 2.2)"></div>
+        <section class="py-5" style="position: relative; overflow: hidden; background-color: rgb(44, 47, 51);">
+            <div class="background" style="background-image: url({{ asset('/resources/discord/gray-cubic-bg.png') }});position: absolute;top: 0;left: 0;right: 0;bottom: 0;opacity: 0.03;transform: scale(1.2);"></div>
             <div class="container py-5">
                 <div class="row">
                     <div class="col-12 col-md-6 text-center text-md-left d-flex flex-column align-items-start justify-content-center">
-                        <h3 style="color:white;">Stats-nerds, we've got you covered.</h3>
-                        <h4 style="color:white;">Quickly access detailed information about the current day with a simple command.</h4>
+                        <h3>Stats-nerds, we've got you covered.</h3>
+                        <h4>Quickly access detailed information about the current day with a simple command.</h4>
                     </div>
                     <div class="col-12 col-md-6 text-center text-md-right">
-                        <img src="{{ asset('resources/discord/detailed_day_info.png') }}">
+                        <img src="{{ asset('resources/discord/detailed_day_info.png') }}" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2)">
                     </div>
                 </div>
             </div>
@@ -235,125 +231,51 @@
             <div class="container py-5">
                 <div class="row">
                     <div class="col-12 col-md-6 text-center text-md-left">
-                        <img src="{{ asset('resources/whats-new-dark.png') }}" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);">
+                        <img src="{{ asset('resources/discord/slash_commands.png') }}" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);">
                     </div>
                     <div class="col-12 col-md-6 text-center text-md-right d-flex flex-column align-items-end justify-content-center">
-                        <h3 style="color: white;">What lives in the darkness...</h3>
-                        <h4 style="color: white;">Ok, that's probably a bit dramatic. But dark mode is here! You can enable it on your profile when you are logged in.</h4>
+                        <h3 style="color: white;">Privacy: Respected</h3>
+                        <h4 style="color: white;">
+                            We add new "slash commands" to your Discord server, <strong>not</strong> an always-listening bot.
+                            <br><br>
+                            Even if you use it in private channels, your messages stay yours.
+                        </h4>
                     </div>
                 </div>
             </div>
         </section>
 
         <section class="py-5"  style="position: relative; overflow: hidden;">
-            <div class="background" style="background-image: url('{{ asset('resources/triangle-bg.png') }}'); position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.25; transform: scale(1.5, 1.5)"></div>
+            <div class="background" style="background-image: url('{{ asset('resources/discord/double-bubble-dark.png') }}'); position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.15; transform: scale(1.5, 1.5)"></div>
             <div class="container py-5">
                 <div class="row">
                     <div class="col-12 col-md-6 text-center text-md-left d-flex flex-column align-items-start justify-content-center">
-                        <h3>Helpful Documentation</h3>
-                        <h4>Confused? Some feature doesn't make any sense? Head over to the <a href='https://helpdocs.fantasy-calendar.com/' target='_blank'>helpdocs</a> for help and information about every single feature.</h4>
+                        <h3>Feedback Wanted!</h3>
+                        <h4>Confused? Something not working? Seeing an error message? Wish you could do/see/get something not currently available? Head over to our Discord server and let us know!</h4>
                     </div>
                     <div class="col-12 col-md-6 text-center text-md-right">
-                        <img src="{{ asset('resources/whats-new-helpdocs.png') }}" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);">
+                        <iframe src="https://discord.com/widget?id=399974878134140939&theme=dark" width="350" height="400" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="py-5" style="background-color: #edf2f7;">
+        <section class="py-5" style="background-color: rgb(54, 57, 63);">
             <div class="container" style="max-width: 1300px;">
                 <div class="row">
                     <div class="col-12 text-center">
-                        <h2>And So Much More...</h2>
+                        <h2>Quick-Fire FAQs</h2>
                     </div>
                 </div>
                 <div class="row pt-3 pb-3 justify-content-center">
-                    <div class="col-12 col-md-3 py-2 py-md-0 px-2 ml-md-0 pl-md-0 pr-md-2">
-                        <div class="inner text-center h-100 px-3 rounded" style="background-color: #e2e8f0;">
-                            <div class="row">
-                                <h3 class="pt-4 w-100"><i class="fa fa-infinity"></i></h3>
-                            </div>
-                            <div class="row">
-                                <h5 class="pt-2 w-100">Eras</h5>
-                            </div>
-                            <div class="row">
-                                <p class=" px-4">AD, BC, Dalereckoning, Post-Divergence, The&nbsp;Reign of The Ashmarai... Whatever you call them, you can now record the eras of your world!</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-3 py-2 py-md-0 px-2 px-md-2">
-                        <div class="inner text-center h-100 px-3 rounded" style="background-color: #e2e8f0;">
-                            <div class="row">
-                                <h3 class="pt-4 w-100"><i class="fa fa-th-list"></i></h3>
-                            </div>
-                            <div class="row">
-                                <h5 class="pt-2 w-100">Event Categories</h5>
-                            </div>
-                            <div class="row">
-                                <p class=" px-4">Religious holidays, natural world events, kingdom celebrations, character birthdays, campaign notes... Organize your events for the ways you use them.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-3 py-2 py-md-0 px-2 pl-md-2">
-                        <div class="inner text-center h-100 px-3 rounded" style="background-color: #e2e8f0;">
-                            <div class="row">
-                                <h3 class="pt-4 w-100"><i class="fa fa-calendar-check"></i></h3>
-                            </div>
-                            <div class="row">
-                                <h5 class="pt-2 w-100">Event Conditions</h5>
-                            </div>
-                            <div class="row">
-                                <p class=" px-4">Your events now have support for advanced conditions. Last sunday on three specific months? Check. When all 4 moons are full? <strong>Check.</strong></p>
-                            </div>
-                        </div>
-                    </div>
+                    @include('pages.announcement._card', ['icon' => 'question-circle', 'title' => "How does it work?", 'content' => "You add the Fantasy Calendar integration to a Discord server you own or admin, then type <span style='font-family: monospace; border: 1px solid #6e6e6e; border-radius: 3px; padding: .2rem; font-size: .7rem;'>/fc</span> in that server. Easy as that! You can run <span style='font-family: monospace; border: 1px solid #6e6e6e; border-radius: 3px; padding: .2rem; font-size: .7rem;'>/fc help</span> for help."])
+                    @include('pages.announcement._card', ['icon' => 'plug', 'title' => "Integration?", 'content' => "Yep! That just means a connection between our system and Discord's, to make life easier for you - Now you can keep campaign time right in Discord.."])
+                    @include('pages.announcement._card', ['icon' => 'dollar-sign', 'title' => "Why subscription-only?", 'content' => "In short: Every single /fc command costs us a small amount of money, adding up quickly. It also helps keep the lights on so we can keep making FC better!"])
                 </div>
                 <div class="row pb-1 justify-content-center">
-                    <div class="col-12 col-md-3 py-2 py-md-0 px-2 ml-md-0 pl-md-0 pr-md-2">
-                        <div class="inner text-center h-100 px-3 rounded" style="background-color: #e2e8f0;">
-                            <div class="row">
-                                <h3 class="pt-4 w-100"><i class="fa fa-users"></i></h3>
-                            </div>
-                            <div class="row">
-                                <h5 class="pt-2 w-100">Collaboration</h5>
-                            </div>
-                            <div class="row">
-                                <p class=" px-4">Invite another GM to run events in your world, or let your players help you chronicle the events of the story you're telling together.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-3 py-2 py-md-0 px-2 px-md-2">
-                        <div class="inner text-center h-100 px-3 rounded" style="background-color: #e2e8f0;">
-                            <div class="row">
-                                <h3 class="pt-4 w-100"><i class="fa fa-link"></i></h3>
-                            </div>
-                            <div class="row">
-                                <h5 class="pt-2 w-100">Calendar Linking</h5>
-                            </div>
-                            <div class="row">
-                                <p class=" px-4">Connect two calendars together, make a parent calendar drive the date of child calendars for a 1:1 date conversion in real time.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-3 py-2 py-md-0 px-2 pl-md-2">
-                        <div class="inner text-center h-100 px-3 rounded" style="background-color: #e2e8f0;">
-                            <div class="row">
-                                <h3 class="pt-4 w-100"><i class="fa fa-cogs"></i></h3>
-                            </div>
-                            <div class="row">
-                                <h5 class="pt-2 w-100">Engine Improvements</h5>
-                            </div>
-                            <div class="row justify-content-center">
-                                <ul class="text-left pl-4">
-                                    <li>More accurate leap days</li>
-                                    <li>Intercalary & leap months</li>
-                                    <li>Better weather generation</li>
-                                    <li>Upgraded and improved seasons</li>
-                                    <li>...and more!</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+                    @include('pages.announcement._card', ['icon' => 'user-secret', 'title' => "Does this give you my private messages?", 'content' => "<strong>Nope.</strong> No always-on bots in sight - All Discord sends us is the content of the commands you run, when you run them."])
+                    @include('pages.announcement._card', ['icon' => 'calendar-check', 'title' => "What can I do with it?", 'raw' => true, 'content' => "<ul class='text-left pl-4 m-auto' style='width: 90%;'><li>View the current date</li><li>Display the current month</li><li>Advance time and date</li><li>Share a direct calendar link</li><li>All directly from Discord</li></ul>"])
+                    @include('pages.announcement._card', ['icon' => 'newspaper', 'title' => "We still plan to add:", 'raw' => true, 'content' => "<ul class='text-left pl-4 pb-4 m-auto' style='width: 90%;'><li>Moons</li><li>Events+Categories</li><li>Weather</li><li>Clock</li><li>User management</li></ul>"])
                 </div>
             </div>
         </section>
