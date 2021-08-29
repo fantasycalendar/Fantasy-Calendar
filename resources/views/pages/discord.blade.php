@@ -134,7 +134,7 @@
                     </div>
 
                     <div class="col-12 col-md-7">
-                        <img src="{{ asset('resources/discord_show_month.jpg') }}" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);">
+                        <img src="{{ asset('resources/discord/discord_show_month.png') }}" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);">
                     </div>
                 </div>
             </div>
@@ -145,7 +145,7 @@
                 <div class="row">
 
                     <div class="col-12 col-md-5 text-center text-md-left">
-                        <img src="{{ asset('resources/discord_add_days.jpg') }}" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);">
+                        <img src="{{ asset('resources/discord/discord_add_days.png') }}" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);">
                     </div>
 
                     <div class="col-12 col-md-7 text-center text-md-right d-flex flex-column align-items-end justify-content-center">
