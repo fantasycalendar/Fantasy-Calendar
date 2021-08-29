@@ -69,6 +69,7 @@
             width: 100%;
             z-index: 1;
         }
+
         section img {
             max-width: 100%;
             margin: 1.5rem 0;
@@ -126,32 +127,33 @@
             <h3 style="width: 100%; text-align: center;">After many months of work, integration with Discord is finally here!</h3>
             <h3 class="next-link" style="font-size: 2.3rem; position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section2"><i class="fa fa-chevron-circle-down"></i> See more <i class="fa fa-chevron-circle-down"></i></a></h3>
             <div class="overlay"></div>
+
         </section>
 
-        <section class="comparison_both welcome" id="section2" style="background-color: #edf2f7;">
+        <section class="comparison_both welcome" id="section4" style="background-color: #212426; background-image: url('{{ asset('resources/gray-square-bg.png') }}');">
             <div class="container mt-5 pt-5">
                 <div class="row">
                     <div class="col-12 col-md-5 text-center text-md-left d-flex flex-column align-items-start justify-content-center">
-                        <h1>A fresh, modern look</h1>
+                        <h1>All the information you need at your fingertips</h1>
                     </div>
 
-                    <div class="col-12 col-md-7 text-center text-md-right">
-                        <img src="{{ asset('resources/whats-new-2-0.png') }}" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);">
+                    <div class="col-12 col-md-7">
+                        <img src="{{ asset('resources/discord_page/discord_show_month.jpg') }}" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);">
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="comparison_both welcome" id="section3" style="background-color: #edf2f7;">
+        <section class="comparison_both welcome" id="section4" style="background-color: #212426; background-image: url('{{ asset('resources/gray-square-bg.png') }}');">
             <div class="container mb-5 pb-5">
                 <div class="row">
 
-                    <div class="col-12 col-md-7 text-center text-md-left">
-                        <img src="{{ asset('resources/whats-new-event-colors.png') }}" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);">
+                    <div class="col-12 col-md-5 text-center text-md-left">
+                        <img src="{{ asset('resources/discord_page/discord_add_days.jpg') }}" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);">
                     </div>
 
-                    <div class="col-12 col-md-5 text-center text-md-right d-flex flex-column align-items-end justify-content-center">
-                        <h4>Make your events colorful, to help you and your players distinguish between them.</h4>
+                    <div class="col-12 col-md-7 text-center text-md-right d-flex flex-column align-items-end justify-content-center">
+                        <h3>Quickly add or subtract minutes, hours, days, months, or years. Thousands of them, even!</h3>
                     </div>
                 </div>
             </div>
@@ -162,8 +164,8 @@
             <div class="container py-5">
                 <div class="row">
                     <div class="col-12 col-md-6 text-center text-md-left d-flex flex-column align-items-start justify-content-center">
-                        <h3>Great on any device</h3>
-                        <h4>For a DM on the go, or for players who like to take notes during the session, Fantasy Calendar 2.0 works great on phones and tablets.</h4>
+                        <h3 style="color:black;">Stats-nerds, we got you.</h3>
+                        <h4 style="color:black;">Quickly access detailed information about the current day with a simple command.</h4>
                     </div>
                     <div class="col-12 col-md-6 text-center text-md-right">
                         <img src="{{ asset('resources/any-device.png') }}">
