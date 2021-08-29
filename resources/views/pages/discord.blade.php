@@ -214,7 +214,7 @@
                 <h5 style="width: 100%; text-align: center; color: #303136">Track campaign time for your players right from Discord. Yeah, <span class="font-italic">we like it too.</span></h5>
                 <img src="{{ asset('resources/discord/integration-bg-2.png') }}" alt="" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);">
             </div>
-            <h4 class="next-link" style="font-size: 2.1rem; position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section3"><i class="fa fa-chevron-circle-down"></i> Show me more! <i class="fa fa-chevron-circle-down"></i></a></h4>
+            <h4 class="next-link" style="font-size: 2.1rem; position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section3"><i class="fa fa-chevron-circle-down"></i> There's more?! <i class="fa fa-chevron-circle-down"></i></a></h4>
         </section>
 
         <section class="comparison_both welcome" id="section3" style="background-color: #303136; background-image: url('{{ asset('resources/gray-square-bg.png') }}');">
@@ -298,11 +298,11 @@
                 </div>
                 <div class="row pt-3 pb-3 justify-content-center">
                     @include('pages.announcement._card', ['icon' => 'question-circle', 'title' => "How does it work?", 'content' => "You add the Fantasy Calendar integration to a Discord server you own or admin, then type <span style='font-family: monospace; border: 1px solid #6e6e6e; border-radius: 3px; padding: .2rem; font-size: .7rem;'>/fc</span> in that server. Easy as that! You can run <span style='font-family: monospace; border: 1px solid #6e6e6e; border-radius: 3px; padding: .2rem; font-size: .7rem;'>/fc help</span> for help."])
-                    @include('pages.announcement._card', ['icon' => 'plug', 'title' => "Integration?", 'content' => "Yep! That just means a connection between our system and Discord's, to make life easier for you - Now you can keep campaign time right in Discord.."])
-                    @include('pages.announcement._card', ['icon' => 'dollar-sign', 'title' => "Why subscription-only?", 'content' => "In short: Every single /fc command costs us a small amount of money, adding up quickly. It also helps keep the lights on so we can keep making FC better!"])
+                    @include('pages.announcement._card', ['icon' => 'plug', 'title' => "Integration?", 'content' => "Yep! That just means a connection between our system and Discord's, to make life easier for you - now you can keep track of time right in Discord."])
+                    @include('pages.announcement._card', ['icon' => 'dollar-sign', 'title' => "Why subscription-only?", 'content' => "In short: Every single /fc command costs us a small amount of money, adding up quickly. It also helps keep the lights on so we can keep making Fantasy-Calendar better!"])
                 </div>
                 <div class="row pb-1 justify-content-center">
-                    @include('pages.announcement._card', ['icon' => 'user-secret', 'title' => "Does this give you my private messages?", 'content' => "<strong>Nope.</strong> No always-on bots in sight - All Discord sends us is the content of the commands you run, when you run them."])
+                    @include('pages.announcement._card', ['icon' => 'user-secret', 'title' => "Does this give you my private messages?", 'content' => "<strong>Nope.</strong> No always-on bots in sight! All Discord sends us is the content of the commands you run, when you run them."])
                     @include('pages.announcement._card', ['icon' => 'calendar-check', 'title' => "What can I do with it?", 'raw' => true, 'content' => "<ul class='text-left pl-4 m-auto' style='width: 90%;'><li>View the current date</li><li>Display the current month</li><li>Advance time and date</li><li>Share a direct calendar link</li><li>All directly from Discord</li></ul>"])
                     @include('pages.announcement._card', ['icon' => 'newspaper', 'title' => "We still plan to add:", 'raw' => true, 'content' => "<ul class='text-left pl-4 pb-4 m-auto' style='width: 90%;'><li>Moons</li><li>Events+Categories</li><li>Weather</li><li>Clock</li><li>User management</li></ul>"])
                 </div>
