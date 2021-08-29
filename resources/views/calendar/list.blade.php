@@ -51,6 +51,12 @@
             <div class="alert alert-info"><a href="{{ route('account-migrated-acknowledge') }}" class="alert-link" style="float: right;"><i class="fa fa-times"></i></a> <strong>Welcome to Fantasy Calendar 2.0!</strong> A lot has changed. <br><br>You <a class="alert-link" href="{{ route('whats-new') }}">check out what's new</a> to see a quick overview, or click a calendar below to see for yourself!</div>
         @endif
 
+        @if(!auth()->user()->acknowledged_discord_announcement)
+            <div class="alert alert-info"><a href="{{ route('discord-announcement-acknowledge') }}" class="alert-link" style="float: right;"><i class="fa fa-times"></i></a>
+                <h4><i class="fab fa-discord"></i> <strong>Fantasy-Calendar's Discord Integration</strong> has just landed!</h4> All the information can be found <a class="alert-link" href="{{ route('discord') }}">on this page</a>!
+            </div>
+        @endif
+
         @if(count($invitations))
             @foreach($invitations as $invitation)
                 <div class="alert alert-primary d-md-flex justify-content-between align-content-center">

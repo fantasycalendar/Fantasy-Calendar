@@ -206,6 +206,13 @@ class User extends Authenticatable implements
         return $this;
     }
 
+    public function acknowledgedDiscordAnnouncement() {
+        $this->acknowledged_discord_announcement = 1;
+        $this->save();
+
+        return $this;
+    }
+
     public function hasAgreedToTOS() {
         return $this->agreement_id !== null;
     }

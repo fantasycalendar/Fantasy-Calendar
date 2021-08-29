@@ -29,6 +29,7 @@ Route::view('/donate', 'pages.donate', ['title'=>'Support the site']);
 Route::view('/discord-server', 'pages.discord-server', ['title' => 'Join Our Discord Server!'])->name('discord.server');
 Route::view('/discord', 'pages.discord')->name('discord');
 
+Route::get('/discord-announcement-acknowledge', 'WelcomeController@discord_announcement_acknowledge')->name('discord-announcement-acknowledge');
 
 Route::get('/account-migrated', 'WelcomeController@account_migrated')->name('account-migrated');
 Route::get('/account-migrated-acknowledge', 'WelcomeController@account_migrated_acknowledge')->name('account-migrated-acknowledge');
