@@ -116,47 +116,61 @@
 
     <script>
         window.wordRandomizer = {
-            words:  [
-                'RPGers',
-                'Players',
-                'Community',
-                'Dragons',
-                'Dungeons',
-                'Trenchcoat-Kobolds',
-                'Group',
-                'Table',
-                'Adventurers',
-                'Storytellers',
-                'Jokes',
-                'Friends',
-                'Campaigners',
-                'Lunatics',
-                'Murder-hobos',
-                'Munchkins',
-                'Powergamers',
-                'Minmaxers',
-                'Story Tourists',
-                'Trophy Hunters',
-                'Roleplayers',
-                'Rules Lawyers',
-                'Critters',
-                'Metagamers',
-                'Voicechatters',
-                'Homebrewers',
-                'Agents of Chaos',
-                'Paragons of Good',
-                'Mercenaries',
-                'Explorers',
-                'Soldiers of Fortune',
-                'Pioneers',
-                'Travellers',
-                'Co-Authors',
-                'Nerds',
-                'Geeks',
-            ],
-            word: 'Community',
-            visible: 1
-        }
+                words: [
+                    'RPGers',
+                    'Players',
+                    'Community',
+                    'Dragon Slayers',
+                    'Dungeon Delvers',
+                    'Trenchcoat-Kobolds',
+                    'Group',
+                    'Table',
+                    'Adventurers',
+                    'Storytellers',
+                    'Jokesters',
+                    'Friends',
+                    'Campaigners',
+                    'Lunatics',
+                    'Murder-hobos',
+                    'Munchkins',
+                    'Powergamers',
+                    'Minmaxers',
+                    'Story Tourists',
+                    'Trophy Hunters',
+                    'Roleplayers',
+                    'Rules Lawyers',
+                    'Critters',
+                    'Metagamers',
+                    'Voicechatters',
+                    'Homebrewers',
+                    'Agents of Chaos',
+                    'Paragons of Good',
+                    'Mercenaries',
+                    'Explorers',
+                    'Soldiers of Fortune',
+                    'Pioneers',
+                    'Travellers',
+                    'Co-Authors',
+                    'Nerds',
+                    'Geeks',
+                ],
+                word: 'Community',
+                visible: 1,
+                used_words: [],
+                get_word(){
+                    let index = Math.floor(Math.random() * this.words.length);
+                    let word = this.words[index];
+
+                    this.used_words.push(word);
+                    this.words.splice(index, 1);
+
+                    if (!this.words.length) {
+                        this.words = [...this.used_words];
+                        this.used_words = [];
+                    }
+                    return word;
+                }
+            }
     </script>
 @endpush
 
@@ -166,22 +180,22 @@
             <div class="container">
                 <div class="row justify-content-center align-items-center">
                     <div class="col-12 col-md-5 big-logo-wrapper p-0">
-                        <img src="{{ asset('resources/fc_logo_white_padding.png') }}">
+                        <img class="m-0 m-md-1" src="{{ asset('resources/fc_logo_white_padding.png') }}">
                     </div>
 
                     <div class="col-2 col-md-2 big-logo-wrapper p-0 text-center">
-                        <img style="max-width:6rem;" src="{{ asset('resources/discord_fc_plus_white.svg') }}">
+                        <img class="m-0 m-md-1" style="max-width:3rem;" src="{{ asset('resources/discord_fc_plus_white.svg') }}">
                     </div>
 
                     <div class="col-12 col-md-5 big-logo-wrapper p-0">
-                        <img src="{{ asset('resources/discord/discord_white_padding.png') }}">
+                        <img class="m-0 m-md-1" src="{{ asset('resources/discord/discord_white_padding.png') }}">
                     </div>
 
                 </div>
             </div>
 
             <h3 style="width: 100%; text-align: center;" class="text-white">The long-awaited Discord integration is here!</h3>
-            <h4 class="text-white">Quick to setup, easy to use, and available <strong><a href="{{ route('discord.index') }}">right now</a></strong> to subscribers.</h4>
+            <h4 class="text-white text-center">Quick to setup, easy to use, and available <strong><a href="{{ route('discord.index') }}">right now</a></strong> to subscribers.</h4>
 
             <h4 class="next-link" style="font-size: 2.1rem; position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section2"><i class="fa fa-chevron-circle-down"></i> Show me more! <i class="fa fa-chevron-circle-down"></i></a></h4>
         </section>
@@ -189,10 +203,11 @@
         <section class="fullheight green-border welcome" id="section2" style="background-color: #edf2f7; background-image: url({{ asset('resources/discord/plugin_pattern.png') }}); background-repeat: repeat;">
             <div class="container">
                 <h3 style="width: 100%; text-align: center; color: #303136"
+                    class="display-md-1"
                     x-data="wordRandomizer"
                     x-init="setInterval(() => { $dispatch('randomize-word') }, 2200)"
                     @randomize-word.window="visible = 0; setTimeout(() => { $dispatch('hidden-word') }, 300)"
-                    @hidden-word.window="word = words[Math.floor(Math.random() * words.length)]; visible = 1"
+                    @hidden-word.window="word = get_word(); visible = 1"
                 >
                     Your <span x-text="word" x-show.opacity.transition.duration.800ms="visible"></span>. Your Calendar. Together.
                 </h3>
@@ -219,7 +234,7 @@
                         <img src="{{ asset('resources/discord/discord_add_days.png') }}" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);">
                     </div>
 
-                    <div class="col-12 col-md-7 text-center text-md-right d-flex flex-column align-items-end justify-content-center">
+                    <div class="col-12 col-md-7 text-center text-md-right d-flex flex-column align-items-md-end align-items-center  justify-content-center">
                         <h3 class="text-white">Quickly add or subtract minutes, hours, days, months, or years. <br><br>Thousands at once, even!</h3>
                     </div>
                 </div>
@@ -230,7 +245,7 @@
             <div class="background" style="background-image: url({{ asset('/resources/discord/gray-cubic-bg.png') }});position: absolute;top: 0;left: 0;right: 0;bottom: 0;opacity: 0.03;transform: scale(1.2);"></div>
             <div class="container py-5">
                 <div class="row">
-                    <div class="col-12 col-md-6 text-center text-md-left d-flex flex-column align-items-start justify-content-center">
+                    <div class="col-12 col-md-6 text-center text-md-left d-flex flex-column align-items-md-start align-items-center justify-content-center">
                         <h3>Stats-nerds, we've got you covered.</h3>
                         <h4>Quickly access detailed information about the current day with a simple command.</h4>
                     </div>
@@ -247,7 +262,7 @@
                     <div class="col-12 col-md-6 text-center text-md-left">
                         <img src="{{ asset('resources/discord/slash_commands.png') }}" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);">
                     </div>
-                    <div class="col-12 col-md-6 text-center text-md-right d-flex flex-column align-items-end justify-content-center">
+                    <div class="col-12 col-md-6 text-center text-md-right d-flex flex-column align-items-md-end align-items-center justify-content-center">
                         <h3 style="color: white;">Privacy: Respected</h3>
                         <h4 style="color: white;">
                             We add new "slash commands" to your Discord server, <strong>not</strong> an always-listening bot.
@@ -263,7 +278,7 @@
             <div class="background" style="background-image: url('{{ asset('resources/discord/double-bubble-dark.png') }}'); position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.15; transform: scale(1.5, 1.5)"></div>
             <div class="container py-5">
                 <div class="row">
-                    <div class="col-12 col-md-6 text-center text-md-left d-flex flex-column align-items-start justify-content-center">
+                    <div class="col-12 col-md-6 text-center text-md-left d-flex flex-column align-items-md-start align-items-center justify-content-center">
                         <h3>Feedback Wanted!</h3>
                         <h4>Confused? Something not working? Seeing an error message? Wish you could do/see/get something not currently available? Head over to our Discord server and let us know!</h4>
                     </div>
