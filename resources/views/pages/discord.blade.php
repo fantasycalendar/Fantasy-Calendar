@@ -98,6 +98,51 @@
         }
 
     </style>
+
+    <script>
+        window.wordRandomizer = {
+            words:  [
+                'RPGers',
+                'Players',
+                'Community',
+                'Dragons',
+                'Dungeons',
+                'Trenchcoat-Kobolds',
+                'Group',
+                'Table',
+                'Adventurers',
+                'Storytellers',
+                'Jokes',
+                'Friends',
+                'Campaigners',
+                'Lunatics',
+                'Murder-hobos',
+                'Munchkins',
+                'Powergamers',
+                'Minmaxers',
+                'Story Tourists',
+                'Trophy Hunters',
+                'Roleplayers',
+                'Rules Lawyers',
+                'Critters',
+                'Metagamers',
+                'Voicechatters',
+                'Homebrewers',
+                'Agents of Chaos',
+                'Paragons of Good',
+                'Mercenaries',
+                'Explorers',
+                'Soldiers of Fortune',
+                'Pioneers',
+                'Travellers',
+                'Co-Authors',
+                'Nerds',
+                'Geeks',
+            ],
+            word: 'Community',
+            visible: 1
+        }
+    </script>
 @endpush
 
 @section('content')
@@ -128,8 +173,15 @@
 
         <section class="fullheight green-border welcome" id="section2" style="background-color: #edf2f7; background-image: url({{ asset('resources/discord/plugin_pattern.png') }}); background-repeat: repeat;">
             <div class="container">
-                <h3 style="width: 100%; text-align: center;">After many months of work, integration with Discord is finally here!</h3>
-                <img src="{{ asset('resources/discord/integration-bg-2.png') }}" alt="">
+                <h3 style="width: 100%; text-align: center;"
+                    x-data="wordRandomizer"
+                    x-init="setInterval(() => { $dispatch('randomize-word') }, 2200)"
+                    @randomize-word.window="visible = 0; setTimeout(() => { $dispatch('hidden-word') }, 300)"
+                    @hidden-word.window="word = words[Math.floor(Math.random() * words.length)]; visible = 1"
+                >
+                    Your <span x-text="word" x-show.opacity.transition.duration.800ms="visible"></span>. Your Calendar. Together.
+                </h3>
+                <img src="{{ asset('resources/discord/integration-bg-2.png') }}" alt="" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);">
             </div>
             <h3 class="next-link" style="font-size: 2.3rem; position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section2"><i class="fa fa-chevron-circle-down"></i> See more <i class="fa fa-chevron-circle-down"></i></a></h3>
         </section>
@@ -143,7 +195,7 @@
                     </div>
 
                     <div class="col-12 col-md-5 text-center text-md-right">
-                        <img src="{{ asset('resources/discord/discord_show_month.png') }}" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);">
+                        <img src="{{ asset('resources/discord/discord_show_month.png') }}" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);">
                     </div>
                 </div>
             </div>
@@ -154,7 +206,7 @@
                 <div class="row">
 
                     <div class="col-12 col-md-5 text-center text-md-left">
-                        <img src="{{ asset('resources/discord/discord_add_days.png') }}" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);">
+                        <img src="{{ asset('resources/discord/discord_add_days.png') }}" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);">
                     </div>
 
                     <div class="col-12 col-md-7 text-center text-md-right d-flex flex-column align-items-end justify-content-center">
@@ -183,7 +235,7 @@
             <div class="container py-5">
                 <div class="row">
                     <div class="col-12 col-md-6 text-center text-md-left">
-                        <img src="{{ asset('resources/whats-new-dark.png') }}" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);">
+                        <img src="{{ asset('resources/whats-new-dark.png') }}" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);">
                     </div>
                     <div class="col-12 col-md-6 text-center text-md-right d-flex flex-column align-items-end justify-content-center">
                         <h3 style="color: white;">What lives in the darkness...</h3>
@@ -202,7 +254,7 @@
                         <h4>Confused? Some feature doesn't make any sense? Head over to the <a href='https://helpdocs.fantasy-calendar.com/' target='_blank'>helpdocs</a> for help and information about every single feature.</h4>
                     </div>
                     <div class="col-12 col-md-6 text-center text-md-right">
-                        <img src="{{ asset('resources/whats-new-helpdocs.png') }}" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);">
+                        <img src="{{ asset('resources/whats-new-helpdocs.png') }}" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);">
                     </div>
                 </div>
             </div>
