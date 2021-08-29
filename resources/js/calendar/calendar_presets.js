@@ -343,7 +343,7 @@ function parse_json(json){
             }
         };
 
-		
+
 		if(calendar.dynamic_data !== undefined){
 			var source = '2.0';
 		}else if(calendar.year_len){
@@ -1095,7 +1095,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 					}else{
 						era.settings.ends_year = false;
 					}
-					
+
 					if(current_era.settings.restart !== undefined && typeof current_era.settings.restart === "boolean"){
 						era.settings.restart = current_era.settings.restart;
 					}else{
@@ -1339,7 +1339,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
             }else{
                 throw `Event category ${i+1} does not have name data!`;
 			}
-			
+
 			event_categories.push(category)
 
         }
@@ -1351,7 +1351,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 	}
 
 	let events = []
-	
+
 	console.log("Checking events")
     if(calendar.events !== undefined && Array.isArray(calendar.events)){
         for(var eventId in calendar.events){
@@ -1463,12 +1463,12 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
                 }else{
 
 					if(current_event.data.conditions.length == 5){
-			
+
 						var year = false;
 						var month = false;
 						var day = false
 						var ands = 0
-			
+
 						for(var i = 0; i < current_event.data.conditions.length; i++){
 							if(current_event.data.conditions[i].length == 3){
 
@@ -1480,7 +1480,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 										throw `${event.name} does not have valid date data!`;
 									}
 								}
-			
+
 								if(current_event.data.conditions[i][0] == "Month" && Number(current_event.data.conditions[i][1]) == 0){
 									if(current_event.data.conditions[i][2][0] !== undefined && !isNaN(Number(current_event.data.conditions[i][2][0]))){
 										event.data.date[1] = Number(current_event.data.conditions[i][2][0])
@@ -1489,7 +1489,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 										throw `${event.name} does not have valid date data!`;
 									}
 								}
-			
+
 								if(current_event.data.conditions[i][0] == "Day" && Number(current_event.data.conditions[i][1]) == 0){
 									if(current_event.data.conditions[i][2][0] !== undefined && !isNaN(Number(current_event.data.conditions[i][2][0]))){
 										event.data.date[1] = Number(current_event.data.conditions[i][2][0])
@@ -1504,7 +1504,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 								}
 							}
 						}
-			
+
 						if(!(year && month && day && ands == 2)){
 							event.data.date = [];
 						}
@@ -1524,34 +1524,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
                     throw `${event.name} does not have valid connected events data!`;
                 }
 
-                // CONTINUE HERE
-                array = $.grep(current_event.data.conditions, function(array) {
-                    if(!Array.isArray(array)){
-                        return array;
-                    }
-                    if(array.length == 1){
-                        if(!['^','&&','||','NAND'].includes(array[0])){
-                            return array;
-                        }
-                    }else if(array.length == 2){
-                        // If it's a group
-                        if(!Array.isArray(array[1]) || !['','!'].includes(array[0]) || isNaN(Number(array[0]))){
-                            return array;
-                        }
-                    }else if(array.length == 3){
-                        if(condition_mapping[array[0]] === undefined || isNaN(Number(array[1])) || !Array.isArray(array[2]) || array[2].length == 0){
-                            return array;
-                        }else{
-                            for(var cond = 0; cond < array[2].length; cond++){
-                                if(Array.isArray(array[2][cond])){
-                                    return array;
-                                }
-                            }
-                        }
-                    }
-                });
-
-                if(array.length == 0){
+                if(event_condition_check(current_event.data.conditions)){
                     event.data.conditions = current_event.data.conditions;
                 }else{
                     throw `${event.name} has invalid event conditions!`;
@@ -1560,7 +1533,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
             }else{
                 throw `${event.name} does not have valid data!`;
 			}
-			
+
 			events.push(event)
 
         }
@@ -1639,6 +1612,56 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 
 }
 
+function event_condition_check(conditions){
+
+    let result = true;
+
+    if(!Array.isArray(conditions)){
+        return false;
+    }
+
+    for(let condition of conditions){
+
+        if(!Array.isArray(condition)){
+            return false;
+        }
+
+        if(condition.length === 1){
+            // if it is an operator
+            if(!['^','&&','||','NAND'].includes(condition[0])){
+                return false;
+            }
+        }else if(condition.length === 2){
+            // If it's a group
+            if(!['','!'].includes(condition[0]) || !Array.isArray(condition[1])){
+                if(isNaN(Number(condition[0]))){
+                    return false;
+                }
+            }else{
+                result = event_condition_check(condition[1]);
+            }
+        }else if(condition.length === 3){
+            // if it is a condition
+            if(condition_mapping[condition[0]] === undefined
+                || isNaN(Number(condition[1]))
+                || !Array.isArray(condition[2])
+                || condition[2].length === 0
+                || condition[2].length !== (condition_mapping[condition[0]][condition[1]][2].length + (condition[0] === "Moons" ? 1 : 0)))
+            {
+                return false;
+            }
+        }
+
+        if(!result){
+            break;
+        }
+
+    }
+
+    return result;
+
+}
+
 function process_donjon(calendar, dynamic_data, static_data){
 
 	if(calendar.year !== undefined && !isNaN(Number(calendar.year))){
@@ -1709,9 +1732,9 @@ function process_donjon(calendar, dynamic_data, static_data){
 	var target_first_day = Number(calendar.first_day)+1;
 
 	var first_day = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year)).week_day;
-	
+
 	while(target_first_day != first_day){
-		
+
 		static_data.year_data.first_day++;
 
 		if(static_data.year_data.first_day > static_data.year_data.global_week.length){
