@@ -90,31 +90,6 @@
             font-size: 1.3rem;
         }
 
-        .big-logo-wrapper img{
-            min-width: 3rem;
-            max-width: 100%;
-            margin: auto;
-            display:block;
-        }
-
-        .logo-wrapper {
-            height: 6rem;
-            width: 6rem;
-            display: grid;
-            place-items: center;
-        }
-        .connect-box {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .fa-discord, .discord-color {
-            color: #7289DA;
-        }
-        .discord-bg {
-            background-color: #7289DA;
-        }
-
         @media screen and (max-width: 768px) {
             html {
                 font-size: 16px;
@@ -130,64 +105,30 @@
 
 @section('content')
     <div>
-        <div class="fullheight green-border welcome" style="background-color: #edf2f7; background-image: url({{ asset('resources/discord/integration-bg-1.png') }}); background-size: cover; background-position: center center; background-attachment: fixed;">
+        <section class="fullheight green-border welcome" style="background-color: #edf2f7; background-image: url({{ asset('resources/discord/integration-bg-1.png') }}); background-size: cover; background-position: center center; background-attachment: fixed;">
+            <div class="container">
+                <div class="row justify-content-center align-items-center">
+                    <div class="col-12 col-md-5 big-logo-wrapper p-0">
+                        <img src="{{ asset('resources/fc_logo_white_padding.png') }}">
+                    </div>
 
-            <div class="row justify-content-center align-items-center mb-3 w-100">
+                    <div class="col-2 col-md-2 big-logo-wrapper p-0">
+                        <img style="max-width:6rem;" src="{{ asset('resources/discord_fc_plus_white.svg') }}">
+                    </div>
 
-                <div class="col-12 col-md-5 big-logo-wrapper p-0">
-                    <img src="{{ asset('resources/fc_logo_white_padding.png') }}">
+                    <div class="col-12 col-md-5 big-logo-wrapper p-0">
+                        <img src="{{ asset('resources/discord/discord_white_padding.png') }}">
+                    </div>
+
                 </div>
-
-                <div class="col-2 col-sm-1 big-logo-wrapper p-0">
-                    <img style="max-width:6rem;" src="{{ asset('resources/discord_fc_plus_white.svg') }}">
-                </div>
-
-                <div class="col-12 col-md-5 big-logo-wrapper p-0">
-                    <img src="{{ asset('resources/discord/discord_white_padding.png') }}">
-                </div>
-
             </div>
 
             <h3 style="width: 100%; text-align: center;">After many months of work, integration with Discord is finally here!</h3>
             <h3 class="next-link" style="font-size: 2.3rem; position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section2"><i class="fa fa-chevron-circle-down"></i> See more <i class="fa fa-chevron-circle-down"></i></a></h3>
             <div class="overlay"></div>
-        </div>
-gu
-        <div class="fullheight green-border comparison_image" id="section2" style="background-image: linear-gradient(to right, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.35)), url({{ asset('resources/discord/integration-bg-2.png') }});">
-            <div class="p-4" style="background-color: gray; border-radius:1rem;">
-                <h1 style="width: 100%; text-align: center; color: #2d3748; margin-bottom:1rem;">How does it work?</h1>
-                <h2 style="width: 100%; text-align: center; color: #2d3748; margin-bottom:1.4rem;">In short: You connect to Fantasy Calendar with your Discord account.</h2>
-                <div class="col-12 flex align-items-center mb-3">
-                    <div class="connect-box py-4 w-100 border rounded my-4">
+        </section>
 
-                        <div class="logo-wrapper">
-                            <img src="{{ asset('resources/logo-accent.png') }}" alt="" style="max-height: 5.2rem;">
-                        </div>
-
-                        <div class="logo-wrapper">
-                            <i class="fa fa-arrows-alt-h" style="font-size: 3rem;"></i>
-                        </div>
-
-                        <div class="logo-wrapper">
-                            <i class="fab fa-discord" style="font-size: 5.6rem; margin-bottom: -.7rem;"></i>
-                        </div>
-                    </div>
-                </div>
-                <p class="small text-center" style="opacity: 0.7">Don't worry, though! We can't send messages on your behalf or anything like that.</p>
-                <h3 class="next-link" style="font-size: 2.3rem; position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section3"><i class="fa fa-chevron-circle-down"></i> Take a peek at the new look <i class="fa fa-chevron-circle-down"></i></a></h3>
-                <div class="overlay"></div>
-            </div>
-        </div>
-
-        <div class="fullheight green-border comparison_image" id="section3" style="background-image: linear-gradient(to right, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url({{ asset('resources/whats-new-2-0.png') }})">
-            <h1 style="width: 100%; text-align: center; color: #2d3748; margin-bottom: 1rem;">Enter: Fantasy&nbsp;Calendar&nbsp;2.0.</h1>
-            <h2 style="width: 100%; text-align: center; color: #2d3748; margin-bottom: 1.4rem;">Lovingly crafted to be enjoyable.</h2>
-            <img src="{{ asset('/resources/whats-new-2-0.png') }}">
-            <h3 class="next-link" style="font-size: 2.3rem; position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section4"><i class="fa fa-chevron-circle-down"></i> Looks great! Show me more <i class="fa fa-chevron-circle-down"></i></a></h3>
-            <div class="overlay"></div>
-        </div>
-
-        <section class="comparison_both welcome" id="section4" style="background-color: #edf2f7;">
+        <section class="comparison_both welcome" id="section2" style="background-color: #edf2f7;">
             <div class="container mt-5 pt-5">
                 <div class="row">
                     <div class="col-12 col-md-5 text-center text-md-left d-flex flex-column align-items-start justify-content-center">
@@ -201,7 +142,7 @@ gu
             </div>
         </section>
 
-        <section class="comparison_both welcome" id="section4" style="background-color: #edf2f7;">
+        <section class="comparison_both welcome" id="section3" style="background-color: #edf2f7;">
             <div class="container mb-5 pb-5">
                 <div class="row">
 
