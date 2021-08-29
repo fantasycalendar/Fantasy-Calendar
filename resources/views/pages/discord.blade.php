@@ -129,11 +129,11 @@
         <section class="comparison_both welcome" id="section4" style="background-color: #212426; background-image: url('{{ asset('resources/gray-square-bg.png') }}');">
             <div class="container mt-5 pt-5">
                 <div class="row">
-                    <div class="col-12 col-md-5 text-center text-md-left d-flex flex-column align-items-start justify-content-center">
-                        <h1>All the information you need at your fingertips</h1>
+                    <div class="col-12 col-md-7 text-center text-md-left d-flex flex-column align-items-start justify-content-center">
+                        <h3>The information you need, just one command away.</h3>
                     </div>
 
-                    <div class="col-12 col-md-7">
+                    <div class="col-12 col-md-5 text-center text-md-right">
                         <img src="{{ asset('resources/discord/discord_show_month.png') }}" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);">
                     </div>
                 </div>
@@ -149,7 +149,7 @@
                     </div>
 
                     <div class="col-12 col-md-7 text-center text-md-right d-flex flex-column align-items-end justify-content-center">
-                        <h3>Quickly add or subtract minutes, hours, days, months, or years. Thousands of them, even!</h3>
+                        <h3>Quickly add or subtract minutes, hours, days, months, or years. <br><br>Thousands of them, even!</h3>
                     </div>
                 </div>
             </div>
