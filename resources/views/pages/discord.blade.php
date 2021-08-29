@@ -26,6 +26,20 @@
             color: #246645;
         }
 
+        .discord-bg {
+            background-color: rgb(88, 101, 242);
+        }
+
+        .btn-discord {
+            background-color: rgb(88, 101, 242);
+            transition: all 0.2s ease-in-out;
+            color: white;
+        }
+        .btn-discord:hover {
+            background-color: #2f855a;
+            color: white;
+        }
+
         .fullheight {
             height: 100vh;
             position: relative;
@@ -284,18 +298,18 @@
             <div class="container py-3">
                 <div class="row">
                     <div class="col-12 text-center d-flex flex-column align-items-start justify-content-center">
-                        <h4 class='w-100'><a href='calendars' class='btn btn-lg btn-accent text-white mt-5 mb-2'>Check out your calendars now</a></h4>
+                        <h4 class='w-100'><a href='{{ route('discord.index') }}' class='btn btn-lg btn-discord text-white mt-5 mb-2'>Connect your account now!</a></h4>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-12 text-center d-flex flex-column align-items-start justify-content-center">
-                        <h4 class='w-100'><a href='changelog' class='btn btn btn-secondary text-white mb-5 mt-2'>Read the full changelog</a></h4>
+                        <h4 class='w-100'><a href='{{ route('discord.server') }}' class='btn btn btn-secondary text-white mb-5 mt-2'>Join Our Discord Server</a></h4>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="py-5" style="background-color: #2f855a">
+        <section class="py-5 discord-bg">
             <section class="container">
                 <div class="row">
                     <div class="col-12 text-center text-white">
