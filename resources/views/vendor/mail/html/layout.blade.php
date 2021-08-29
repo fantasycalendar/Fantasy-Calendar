@@ -39,18 +39,17 @@ width: 100% !important;
 <tr>
 <td class="content-cell">
 {{ Illuminate\Mail\Markdown::parse($slot) }}
-
-{{ $subcopy ?? '' }}
 </td>
 </tr>
 </table>
 </td>
 </tr>
-
 {{ $footer ?? '' }}
+{{ $subcopy ?? '' }}
 </table>
 </td>
 </tr>
 </table>
+
 </body>
 </html>

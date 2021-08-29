@@ -14,6 +14,11 @@ use App\Http\Controllers\StripeController;
 |
 */
 
+Route::get('/mailable', function () {
+    $user = App\User::find(1);
+    return new \App\Mail\DiscordAnnouncement($user);
+});
+
 
 Route::get('/', 'WelcomeController@welcome')->name('home');
 Route::view('/welcome', 'welcome')->name('welcome');
