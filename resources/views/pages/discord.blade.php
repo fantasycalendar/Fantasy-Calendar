@@ -90,6 +90,13 @@
             font-size: 1.3rem;
         }
 
+        .big-logo-wrapper img{
+            min-width: 3rem;
+            max-width: 100%;
+            margin: auto;
+            display:block;
+        }
+
         .logo-wrapper {
             height: 6rem;
             width: 6rem;
@@ -124,12 +131,23 @@
 @section('content')
     <div>
         <div class="fullheight green-border welcome" style="background-color: #edf2f7; background-image: url({{ asset('resources/discord/integration-bg-1.png') }}); background-size: cover; background-position: center center; background-attachment: fixed;">
-            <h1 style="width: 100%; text-align: center;">
-                <img style="width: 35rem; max-width:100%;" src="resources/fc_logo_white_padding.png">
-                <img style="height: 5rem;" src="resources/discord_fc_plus_white.svg">
-                <img style="width: 35rem; max-width:100%;" src="resources/discord/discord_white_padding.png">
-            </h1>
-<!--            <h1 style="width: 100%; text-align: center;">Fantasy Calendar <i class="fa fa-heart"></i> Discord</h1>-->
+
+            <div class="row justify-content-center align-items-center mb-3 w-100">
+
+                <div class="col-12 col-md-5 big-logo-wrapper p-0">
+                    <img src="{{ asset('resources/fc_logo_white_padding.png') }}">
+                </div>
+
+                <div class="col-2 col-sm-1 big-logo-wrapper p-0">
+                    <img style="max-width:6rem;" src="{{ asset('resources/discord_fc_plus_white.svg') }}">
+                </div>
+
+                <div class="col-12 col-md-5 big-logo-wrapper p-0">
+                    <img src="{{ asset('resources/discord/discord_white_padding.png') }}">
+                </div>
+
+            </div>
+
             <h3 style="width: 100%; text-align: center;">After many months of work, integration with Discord is finally here!</h3>
             <h3 class="next-link" style="font-size: 2.3rem; position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section2"><i class="fa fa-chevron-circle-down"></i> See more <i class="fa fa-chevron-circle-down"></i></a></h3>
             <div class="overlay"></div>
