@@ -124,34 +124,41 @@
 @section('content')
     <div>
         <div class="fullheight green-border welcome" style="background-color: #edf2f7; background-image: url({{ asset('resources/discord/integration-bg-1.png') }}); background-size: cover; background-position: center center; background-attachment: fixed;">
-            <h1 style="width: 100%; text-align: center;">Fantasy Calendar <i class="fa fa-heart"></i> Discord</h1>
+            <h1 style="width: 100%; text-align: center;">
+                <img style="width: 35rem; max-width:100%;" src="resources/fc_logo_white_padding.png">
+                <img style="height: 5rem;" src="resources/discord_fc_plus_white.svg">
+                <img style="width: 35rem; max-width:100%;" src="resources/discord/discord_white_padding.png">
+            </h1>
+<!--            <h1 style="width: 100%; text-align: center;">Fantasy Calendar <i class="fa fa-heart"></i> Discord</h1>-->
             <h3 style="width: 100%; text-align: center;">After many months of work, integration with Discord is finally here!</h3>
             <h3 class="next-link" style="font-size: 2.3rem; position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section2"><i class="fa fa-chevron-circle-down"></i> See more <i class="fa fa-chevron-circle-down"></i></a></h3>
             <div class="overlay"></div>
         </div>
-
+gu
         <div class="fullheight green-border comparison_image" id="section2" style="background-image: linear-gradient(to right, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.35)), url({{ asset('resources/discord/integration-bg-2.png') }});">
-            <h1 style="width: 100%; text-align: center; color: #2d3748; margin-bottom:1rem;">How does it work?</h1>
-            <h2 style="width: 100%; text-align: center; color: #2d3748; margin-bottom:1.4rem;">In short: You connect to Fantasy Calendar with your Discord account.</h2>
-            <div class="col-12 flex align-items-center mb-3">
-                <div class="connect-box py-4 w-100 border rounded my-4">
+            <div class="p-4" style="background-color: gray; border-radius:1rem;">
+                <h1 style="width: 100%; text-align: center; color: #2d3748; margin-bottom:1rem;">How does it work?</h1>
+                <h2 style="width: 100%; text-align: center; color: #2d3748; margin-bottom:1.4rem;">In short: You connect to Fantasy Calendar with your Discord account.</h2>
+                <div class="col-12 flex align-items-center mb-3">
+                    <div class="connect-box py-4 w-100 border rounded my-4">
 
-                    <div class="logo-wrapper">
-                        <img src="{{ asset('resources/logo-accent.png') }}" alt="" style="max-height: 5.2rem;">
-                    </div>
+                        <div class="logo-wrapper">
+                            <img src="{{ asset('resources/logo-accent.png') }}" alt="" style="max-height: 5.2rem;">
+                        </div>
 
-                    <div class="logo-wrapper">
-                        <i class="fa fa-arrows-alt-h" style="font-size: 3rem;"></i>
-                    </div>
+                        <div class="logo-wrapper">
+                            <i class="fa fa-arrows-alt-h" style="font-size: 3rem;"></i>
+                        </div>
 
-                    <div class="logo-wrapper">
-                        <i class="fab fa-discord" style="font-size: 5.6rem; margin-bottom: -.7rem;"></i>
+                        <div class="logo-wrapper">
+                            <i class="fab fa-discord" style="font-size: 5.6rem; margin-bottom: -.7rem;"></i>
+                        </div>
                     </div>
                 </div>
+                <p class="small text-center" style="opacity: 0.7">Don't worry, though! We can't send messages on your behalf or anything like that.</p>
+                <h3 class="next-link" style="font-size: 2.3rem; position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section3"><i class="fa fa-chevron-circle-down"></i> Take a peek at the new look <i class="fa fa-chevron-circle-down"></i></a></h3>
+                <div class="overlay"></div>
             </div>
-            <p class="small" style="opacity: 0.7">Don't worry, though! We can't send messages on your behalf or anything like that.</p>
-            <h3 class="next-link" style="font-size: 2.3rem; position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section3"><i class="fa fa-chevron-circle-down"></i> Take a peek at the new look <i class="fa fa-chevron-circle-down"></i></a></h3>
-            <div class="overlay"></div>
         </div>
 
         <div class="fullheight green-border comparison_image" id="section3" style="background-image: linear-gradient(to right, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url({{ asset('resources/whats-new-2-0.png') }})">
