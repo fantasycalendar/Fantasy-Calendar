@@ -36,25 +36,18 @@ class SendDiscordAnnouncementEmail extends Command
     /**
      * Execute the console command.
      *
-     * @return int
+     * @return void
      */
     public function handle()
     {
         $users = User::whereNull('deleted_at');
 
-        /*if(!$this->option('force')) {
-            $users = $users->where('has_sent_announcement', 0);
-        }
-
-        if(!$this->option('where') && !$this->option('ids')) {
-            $this->error("You must supply either a where clause (--where=\"date_register > '2020-01-01'\") or a list of IDs (--ids=1,2,3,500,10000,10)");
-            exit(1);
-        }
-
         if($where = $this->option('where')) {
             $users = $users->whereNull('agreed_at')->whereRaw($where);
         } else if($ids = $this->option('ids')) {
             $users = $users->whereIn('id', explode(',', $ids));
+        }else{
+            $users = $users->whereNotNull('marketing_opt_in_at')->where("marketing_opt_in_at", ">", "marketing_opt_in_at");
         }
 
         $total = $users->count();
@@ -67,15 +60,7 @@ class SendDiscordAnnouncementEmail extends Command
         if($total > 500 && !$this->confirm(sprintf('Found %d users, send them all?', $total))) {
             $this->warn('Stopping here, no users were sent to.');
             exit(1);
-        }*/
-
-        if($where = $this->option('where')) {
-            $users = $users->whereNull('agreed_at')->whereRaw($where);
-        } else if($ids = $this->option('ids')) {
-            $users = $users->whereIn('id', explode(',', $ids));
         }
-
-        $total = $users->count();
 
         $bar = $this->output->createProgressBar($total);
 
