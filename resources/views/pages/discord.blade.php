@@ -74,11 +74,7 @@
             max-width: 100%;
             margin: 1.5rem 0;
         }
-
-        h1, h2, h3, h4, p {
-            color: white;
-        }
-
+        
         h3 i {
             font-size: 85%;
         }
