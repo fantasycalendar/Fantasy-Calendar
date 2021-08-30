@@ -245,7 +245,7 @@
             <div class="background" style="background-image: url({{ asset('/resources/discord/gray-cubic-bg.png') }});position: absolute;top: 0;left: 0;right: 0;bottom: 0;opacity: 0.03;transform: scale(1.2);"></div>
             <div class="container py-5">
                 <div class="row">
-                    <div class="col-12 col-md-6 text-center text-md-left d-flex flex-column align-items-md-start align-items-center justify-content-center">
+                    <div class="col-12 col-md-6 text-center text-md-left d-flex flex-column align-items-md-start align-items-center justify-content-center text-white">
                         <h3>Stats-nerds, we've got you covered.</h3>
                         <h4>Quickly access detailed information about the current day with a simple command.</h4>
                     </div>
@@ -274,9 +274,9 @@
             </div>
         </section>
 
-        <section class="py-5"  style="position: relative; overflow: hidden;">
+        <section class="py-5"  style="position: relative; overflow: hidden; background-color: rgb(44, 47, 51);">
             <div class="background" style="background-image: url('{{ asset('resources/discord/double-bubble-dark.png') }}'); position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.15; transform: scale(1.5, 1.5)"></div>
-            <div class="container py-5">
+            <div class="container py-5 text-white">
                 <div class="row">
                     <div class="col-12 col-md-6 text-center text-md-left d-flex flex-column align-items-md-start align-items-center justify-content-center">
                         <h3>Feedback Wanted!</h3>
@@ -289,8 +289,9 @@
             </div>
         </section>
 
-        <section class="py-5" style="background-color: rgb(54, 57, 63);">
-            <div class="container" style="max-width: 1300px;">
+        <section class="py-5" style="position: relative; overflow: hidden; background-color: #222222;">
+            <div class="background" style="background-image: url('{{ asset('resources/discord/webb-dark.png') }}'); position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.15; transform: scale(1.5, 1.5)"></div>
+            <div class="container text-white" style="max-width: 1300px;">
                 <div class="row">
                     <div class="col-12 text-center">
                         <h2>Quick-Fire FAQs</h2>
@@ -309,7 +310,7 @@
             </div>
         </section>
 
-        <section class="py-3">
+        <section class="py-3" style="background-color: #222222;">
             <div class="container py-3">
                 <div class="row">
                     <div class="col-12 text-center d-flex flex-column align-items-start justify-content-center">
