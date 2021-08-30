@@ -105,22 +105,30 @@
                         <p>Integrated with discord as {{ $user->discord_auth->discord_username }}.</p>
                     </div>
                     <div>
-                        <a href="{{ route('discord.index') }}" class="btn btn-outline-accent">Manage Integration</a>
+                        <a href="{{ route('discord.index') }}" class="btn btn-outline-accent w-100">Manage Integration</a>
                     </div>
-                @else
+                @elseif($user->isPremium())
                     <div>
                         <h4>Discord Integration</h4>
                         <p>You can connect your Fantasy Calendar account to Discord!</p>
                     </div>
                     <div>
-                        <a href="{{ route('discord.index') }}" class="btn btn-outline-accent">Check it out</a>
+                        <a href="{{ route('discord.index') }}" class="btn btn-outline-accent w-100">Check it out</a>
+                    </div>
+                @else
+                    <div>
+                        <h4>Discord Integration</h4>
+                        <p>Click the button to check out what it's all about!</p>
+                    </div>
+                    <div>
+                        <a href="{{ route('discord') }}" class="btn btn-outline-accent w-100">Check it out</a>
                     </div>
                 @endif
             </div>
             @if(!$user->isPremium())
-                <div class="col-12 alert alert-light">
-                    <small>As a free user, you can use someone else's calendar, but you won't be able to use it for your own, nor add Fantasy Calendar to a new server.</small>
-                </div>
+            <div class="alert alert-info w-100 m-2">
+                <i class="fas fa-info-circle"></i> Subscribe today to use Fantasy Calendar directly from Discord!
+            </div>
             @endif
         </div>
     @endif

@@ -314,7 +314,13 @@
             <div class="container py-3">
                 <div class="row">
                     <div class="col-12 text-center d-flex flex-column align-items-start justify-content-center">
-                        <h4 class='w-100'><a href='{{ route('discord.index') }}' class='btn btn-lg btn-discord text-white mt-5 mb-2'>Connect your account now!</a></h4>
+                        @if(!Auth::user())
+                        <h4 class='w-100'><a href='{{ route('register') }}' class='btn btn-lg btn-discord text-white mt-5 mb-2'>Register and Subscribe Now to Connect!</a></h4>
+                        @elseif(!Auth::user()->isPremium())
+                        <h4 class='w-100'><a href='{{ route('subscription.pricing') }}' class='btn btn-lg btn-discord text-white mt-5 mb-2'>Subscribe Now to Connect!</a></h4>
+                        @else
+                        <h4 class='w-100'><a href='{{ route('discord.index') }}' class='btn btn-lg btn-discord text-white mt-5 mb-2'>Connect Your Account Now!</a></h4>
+                        @endif
                     </div>
                 </div>
                 <div class="row">
