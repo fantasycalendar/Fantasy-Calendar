@@ -200,9 +200,9 @@
             <h4 class="next-link" style="font-size: 2.1rem; position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section2"><i class="fa fa-chevron-circle-down"></i> Show me more! <i class="fa fa-chevron-circle-down"></i></a></h4>
         </section>
 
-        <section class="fullheight green-border welcome" id="section2" style="background-color: #edf2f7; background-image: url({{ asset('resources/discord/plugin_pattern.png') }}); background-repeat: repeat;">
+        <section class="fullheight green-border welcome text-white" id="section2" style="background-image: url({{ asset('resources/discord/plugin_pattern.png') }}); background-repeat: repeat;">
             <div class="container">
-                <h3 style="width: 100%; text-align: center; color: #303136"
+                <h3 style="width: 100%; text-align: center;"
                     class="display-md-1"
                     x-data="wordRandomizer"
                     x-init="setInterval(() => { $dispatch('randomize-word') }, 2200)"
@@ -211,7 +211,7 @@
                 >
                     Your <span x-text="word" x-show.opacity.transition.duration.800ms="visible"></span>. Your Calendar. Together.
                 </h3>
-                <h5 style="width: 100%; text-align: center; color: #303136">Track campaign time for your players right from Discord. Yeah, <span class="font-italic">we like it too.</span></h5>
+                <h5 style="width: 100%; text-align: center;">Track campaign time for your players right from Discord. Yeah, <span class="font-italic">we like it too.</span></h5>
                 <img src="{{ asset('resources/discord/integration-bg-2.png') }}" alt="" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);">
             </div>
             <h4 class="next-link" style="font-size: 2.1rem; position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section3"><i class="fa fa-chevron-circle-down"></i> There's more?! <i class="fa fa-chevron-circle-down"></i></a></h4>
