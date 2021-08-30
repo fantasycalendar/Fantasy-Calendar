@@ -42,6 +42,16 @@
         }
 
     </script>
+
+    <style>
+
+        .badge-custom{
+            font-size: 45%;
+            vertical-align: middle;
+        }
+
+    </style>
+
     @if(config('services.discord.enabled'))
         <script>
             function confirmDisconnect() {
@@ -101,7 +111,7 @@
             <div class="col-12 d-flex flex-column flex-md-row align-items-md-center justify-content-between pt-3">
                 @if($user->hasDiscord())
                     <div>
-                        <h4>Discord Integration</h4>
+                        <h4>Discord Integration <span class="badge badge-custom badge-success">Connected</span></h4>
                         <p>Integrated with discord as {{ $user->discord_auth->discord_username }}.</p>
                     </div>
                     <div>
@@ -109,7 +119,7 @@
                     </div>
                 @elseif($user->isPremium())
                     <div>
-                        <h4>Discord Integration</h4>
+                        <h4>Discord Integration <span class="badge badge-custom badge-primary">Not connected</span></h4>
                         <p>You can connect your Fantasy Calendar account to Discord!</p>
                     </div>
                     <div>
@@ -117,19 +127,14 @@
                     </div>
                 @else
                     <div>
-                        <h4>Discord Integration</h4>
-                        <p>Click the button to check out what it's all about!</p>
+                        <h4>Discord Integration <span class="badge badge-custom badge-accent">Subscriber only</span></h4>
+                        <p>Subscribe today to use Fantasy Calendar directly from Discord!</p>
                     </div>
                     <div>
                         <a href="{{ route('discord') }}" class="btn btn-outline-accent w-100">Check it out</a>
                     </div>
                 @endif
             </div>
-            @if(!$user->isPremium())
-            <div class="alert alert-info w-100 m-2">
-                <i class="fas fa-info-circle"></i> Subscribe today to use Fantasy Calendar directly from Discord!
-            </div>
-            @endif
         </div>
     @endif
     <hr>
