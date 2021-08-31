@@ -8,11 +8,11 @@ We are proud to announce our very own **Discord integration**! Access your calen
 ![Image showing adding days and displaying a calendar in Discord]({{ asset('resources/discord/discord_show_month.png') }})
 
 @if($user->isPremium())
-It's quick to setup, easy to use, and available **right now**!
+It's quick to set up, easy to use, and available **right now**!
 
 As you're a subscriber, we'd like to take this opportunity to thank you for your support. Fantasy-Calendar is a passion project, and we could not have done it without you!
 @else
-Quick to setup, easy to use, and available **right now** for subscribers. Only $2.49/month (or $24.99/year)!
+Quick to set up, easy to use, and available **right now** for subscribers. Only $2.49/month (or $24.99/year)!
 @endif
 
 @component('mail::button', ['url' => URL::route('discord')])
