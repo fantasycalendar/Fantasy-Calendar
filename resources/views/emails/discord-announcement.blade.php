@@ -1,4 +1,4 @@
-@component('mail::marketing')
+@component('mail::marketing', ['user' => $user])
 # Discord Integration & Large Update
 
 Dear {{ $user->username }},

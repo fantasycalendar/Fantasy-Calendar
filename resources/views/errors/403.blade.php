@@ -1,4 +1,4 @@
-@extends('errors.error')
+@extends('errors.default')
 
 @section('content')
     <div class="site">

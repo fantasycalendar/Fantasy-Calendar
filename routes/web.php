@@ -29,6 +29,9 @@ Route::view('/donate', 'pages.donate', ['title'=>'Support the site']);
 Route::view('/discord-server', 'pages.discord-server', ['title' => 'Join Our Discord Server!'])->name('discord.server');
 Route::view('/discord', 'pages.discord')->name('discord');
 
+Route::view('/unsubscribed', 'pages.unsubscribed')->name('unsubscribed');
+Route::get('/unsubscribe/{user}', 'SettingsController@unsubscribeFromMarketing')->name('unsubscribe')->middleware('signed:relative');
+
 Route::get('/discord-announcement-acknowledge', 'WelcomeController@discord_announcement_acknowledge')->name('discord-announcement-acknowledge');
 
 Route::get('/account-migrated', 'WelcomeController@account_migrated')->name('account-migrated');
