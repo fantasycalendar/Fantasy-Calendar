@@ -84,9 +84,11 @@ custom:
     prod:
       APP_DEBUG: 'false'
       APP_ENV: 'production'
+      DISCORD_COMMAND: 'fc'
     dev:
       APP_DEBUG: 'true'
       APP_ENV: 'development'
+      DISCORD_COMMAND: 'fc-beta'
   ssm:
     prod: 'fantasy-calendar'
     dev: 'fantasy-calendar-dev'

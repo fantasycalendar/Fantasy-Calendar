@@ -40,8 +40,8 @@ return [
         'allow_gif_avatars' => (bool)env('DISCORD_AVATAR_GIF', true),
         'avatar_default_extension' => env('DISCORD_EXTENSION_DEFAULT', 'jpg'), // only pick from jpg, png, webp
         'global_commands' => [
-            'fc' => [
-                'name' => 'fc',
+            env('DISCORD_COMMAND', 'fc') => [
+                'name' => env('DISCORD_COMMAND', 'fc'),
                 'description' => 'Get information from Fantasy Calendar',
                 'options' => [
                     [
@@ -447,7 +447,7 @@ return [
             ]
         ],
         'command_handlers' => [
-            'fc' => [
+            env('DISCORD_COMMAND', 'fc') => [
                 'help' => \App\Services\Discord\Commands\Command\HelpHandler::class,
                 'echo' => \App\Services\Discord\Commands\Command\EchoHandler::class,
                 'list' => \App\Services\Discord\Commands\Command\ListHandler::class,
