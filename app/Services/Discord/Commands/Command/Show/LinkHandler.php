@@ -17,6 +17,6 @@ class LinkHandler extends Command
 
         return "You can view '".$this->bold($calendar->name)."' here: "
             . $this->newLine()
-            . route('calendar.show', $calendar);
+            . route('calendar.view', $calendar);
     }
 }
