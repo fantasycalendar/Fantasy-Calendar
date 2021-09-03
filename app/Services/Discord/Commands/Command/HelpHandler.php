@@ -23,12 +23,9 @@ class HelpHandler extends Command
 
     public function handle(): string
     {
-        logger()->debug('entered handler');
         $commands = collect(config('services.discord.global_commands'));
-        logger()->debug('Obtained commands collection: ' . $commands->count());
 
         $response = $commands->map(function($command){
-            logger()->debug('Mapping ' . $command['name']);
             $formatted = "/{$command['name']}\n";
 
             foreach($command['options'] as $option) {
