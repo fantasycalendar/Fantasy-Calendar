@@ -220,6 +220,10 @@ class CalendarController extends Controller
             return [ 'success' => false, 'error' => 'Unable to update calendar. Please try again later.'];
         }
 
+        if($calendar->parent && $parent_hash_exists && $parent_link_date_exists && $parent_offset_exists){
+            $calendar->parent->save();
+        }
+
         $last_changed = [
             'last_dynamic_change' => $calendar->last_dynamic_change,
             'last_static_change' => $calendar->last_static_change,

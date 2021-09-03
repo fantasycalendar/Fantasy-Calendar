@@ -76,7 +76,6 @@ function update_view_dynamic(calendar_hash){
 		data: {_method: 'PATCH', dynamic_data: JSON.stringify(dynamic_data)},
 		success: function ( result ){
 			last_dynamic_change = new Date(result.last_changed.last_dynamic_change)
-			update_children_dynamic_data();
 		},
 		error: function ( error )
 		{
@@ -89,7 +88,7 @@ function update_view_dynamic(calendar_hash){
 }
 
 
-function update_dynamic(calendar_hash){
+function update_dynamic(calendar_hash, callback){
 
 	$.ajax({
 		url:window.baseurl+"calendars/"+calendar_hash,
@@ -106,7 +105,9 @@ function update_dynamic(calendar_hash){
 
 			last_dynamic_change = new Date(result.last_changed.last_dynamic_change)
 
-			update_children_dynamic_data();
+            if(callback) {
+                callback();
+            }
 
 		},
 		error: function ( error )
@@ -182,12 +183,6 @@ function do_update_all(calendar_hash, success_callback, failure_callback){
 
 			calendar_saved();
 
-			update_children_dynamic_data(function(){
-				if(success_callback !== undefined){
-					success_callback();
-				}
-			});
-
 		},
 		error: function ( error )
 		{
@@ -250,80 +245,58 @@ function link_child_calendar(child_hash, parent_link_date, parent_offset){
 
 	show_loading_screen();
 
-	do_update_all(hash, function(){
-
-		get_all_data(child_hash, function(result){
-
-			var child_static_data = result.static_data;
-			var child_dynamic_data = result.dynamic_data;
-			var converted_date = date_converter.get_date(
-				static_data,
-				child_static_data,
-				dynamic_data,
-				child_dynamic_data,
-				parent_offset
-			);
-
-			child_dynamic_data.year = converted_date.year;
-			child_dynamic_data.timespan = converted_date.timespan;
-			child_dynamic_data.day = converted_date.day;
-			child_dynamic_data.epoch = converted_date.epoch;
-			child_dynamic_data.hour = converted_date.hour;
-			child_dynamic_data.minute = converted_date.minute;
-			child_dynamic_data.current_era = get_current_era(child_static_data, child_dynamic_data.epoch);
-
-			$.ajax({
-				url:window.baseurl+"calendars/"+child_hash,
-				type: "post",
-				dataType: 'json',
-				data: {
-					_method: "PATCH",
-					parent_hash: hash,
-					parent_link_date: parent_link_date,
-					parent_offset: parent_offset,
-					dynamic_data: JSON.stringify(child_dynamic_data),
-				},
-				success: function(result){
-					window.location.reload();
-				},
-				error: function ( error )
-				{
-					$.notify(
-						error
-					);
-				}
-			});
-		});
-
-	});
+$.ajax({
+    url:window.baseurl+"calendars/"+child_hash,
+    type: "post",
+    dataType: 'json',
+    data: {
+        _method: "PATCH",
+        parent_hash: hash,
+        parent_link_date: parent_link_date,
+        parent_offset: parent_offset
+    },
+    success: function(result){
+        update_dynamic(hash, () => {
+            window.location.reload();
+        });
+    },
+    error: function ( error )
+    {
+        $.notify(
+            error
+        );
+    }
+});
 }
 
 function unlink_child_calendar(output, child_hash){
 
+
+
 	show_loading_screen();
 
-	do_update_all(hash, function(){
-		$.ajax({
-			url:window.baseurl+"calendars/"+child_hash,
-			type: "post",
-			dataType: 'json',
-			data: {
-				_method: "PATCH",
-				parent_hash: "",
-				parent_link_date: "",
-				parent_offset: "",
-			},
-			success: function(result){
-				window.location.reload();
-			},
-			error: function ( error )
-			{
-				$.notify(
-					error
-				);
-			}
-		});
-	});
+    $.ajax({
+        url:window.baseurl+"calendars/"+child_hash,
+        type: "post",
+        dataType: 'json',
+        data: {
+            _method: "PATCH",
+            parent_hash: "",
+            parent_link_date: "",
+            parent_offset: "",
+        },
+        success: function(result){
+            update_dynamic(hash, () => {
+                window.location.reload();
+            });
+        },
+        error: function ( error )
+        {
+            $.notify(
+                error
+            );
+        }
+    });
 }
 
 function get_calendar_users(callback) {
@@ -587,74 +560,6 @@ function get_owned_calendars(output){
 		data: {},
 		success: function(result){
 			output(result);
-		},
-		error: function ( error )
-		{
-			$.notify(
-				error
-			);
-		}
-	});
-}
-
-
-function update_children_dynamic_data(output){
-
-	$.ajax({
-		url:window.apiurl+"/calendar/"+hash+"/children",
-		type: "get",
-		dataType: 'json',
-		data: {hash: hash},
-		success: function(result){
-
-			var new_dynamic_data = {};
-
-			for(var i in result){
-
-				var child_hash = result[i].hash;
-
-				var child_static_data = result[i].static_data;
-				var parent_offset = result[i].parent_offset;
-				var child_dynamic_data = result[i].dynamic_data;
-				var converted_date = date_converter.get_date(
-					static_data,
-					child_static_data,
-					dynamic_data,
-					child_dynamic_data,
-					parent_offset
-				);
-
-				child_dynamic_data.year = converted_date.year;
-				child_dynamic_data.timespan = converted_date.timespan;
-				child_dynamic_data.day = converted_date.day;
-				child_dynamic_data.epoch = converted_date.epoch;
-				child_dynamic_data.hour = converted_date.hour;
-				child_dynamic_data.minute = converted_date.minute;
-				child_dynamic_data.current_era = get_current_era(child_static_data, child_dynamic_data.epoch);
-
-				new_dynamic_data[child_hash] = child_dynamic_data;
-
-			}
-
-			$.ajax({
-				url:window.apiurl+"/calendar/"+hash+"/updatechildren",
-				type: "post",
-				dataType: 'json',
-				data: {_method: 'PATCH', data: JSON.stringify(new_dynamic_data)},
-				success: function ( result )
-				{
-					if(output !== undefined){
-						output();
-					}
-				},
-				error: function ( error )
-				{
-					$.notify(
-						error
-					);
-				}
-			});
-
 		},
 		error: function ( error )
 		{
