@@ -5,10 +5,12 @@ namespace App\Services\Discord\Commands\Command;
 
 
 use App\Calendar;
+use App\Services\Discord\Commands\Command\Traits\PremiumCommand;
 use Illuminate\Support\Arr;
 
 class UseHandler extends \App\Services\Discord\Commands\Command
 {
+    use PremiumCommand;
 
     public function handle(): string
     {

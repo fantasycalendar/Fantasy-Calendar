@@ -7,12 +7,14 @@ namespace App\Services\Discord\Commands\Command;
 use App\Calendar;
 use App\Facades\Epoch;
 use App\Services\Discord\Commands\Command;
+use App\Services\Discord\Commands\Command\Traits\PremiumCommand;
 use App\Services\RendererService\TextRenderer;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 class DateChangesHandler extends Command
 {
+    use PremiumCommand;
 
     private Calendar $calendar;
 

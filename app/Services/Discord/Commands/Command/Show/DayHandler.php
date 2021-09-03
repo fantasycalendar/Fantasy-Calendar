@@ -5,10 +5,12 @@ namespace App\Services\Discord\Commands\Command\Show;
 
 
 use App\Services\Discord\Commands\Command;
+use App\Services\Discord\Commands\Command\Traits\PremiumCommand;
 use Illuminate\Support\Str;
 
 class DayHandler extends Command
 {
+    use PremiumCommand;
 
     public function handle(): string
     {

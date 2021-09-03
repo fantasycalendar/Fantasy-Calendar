@@ -13,4 +13,16 @@ class EchoHandler extends Command
     {
         return $this->option('echo');
     }
+
+    // Echo should work for anyone
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    // Should never happen.
+    public function unauthorized_message(): string
+    {
+        return '';
+    }
 }
