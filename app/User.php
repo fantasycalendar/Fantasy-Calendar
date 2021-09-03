@@ -95,7 +95,7 @@ class User extends Authenticatable implements
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function agreement() {
         return $this->belongsTo('App\Agreement');
@@ -180,11 +180,7 @@ class User extends Authenticatable implements
     }
 
     public function isPremium() {
-        if(!cache()->has($this->id . '_is_premium')) {
-            cache()->put($this->id . '_is_premium', ($this->subscribedToPlan(['timekeeper_monthly', 'timekeeper_yearly'], 'Timekeeper') || $this->betaAccess()), 30);
-        }
-
-        return cache($this->id . '_is_premium');
+        return $this->subscribedToPlan(['timekeeper_monthly', 'timekeeper_yearly'], 'Timekeeper') || $this->betaAccess();
     }
 
     /**

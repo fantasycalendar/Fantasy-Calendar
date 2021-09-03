@@ -7,6 +7,8 @@ use App\Services\Discord\Commands\Command;
 
 class HelpHandler extends Command
 {
+    use Command\Traits\PremiumCommand;
+
     public const TYPES = [
         1 => 'subcommand',
         2 => 'subcommand_group',

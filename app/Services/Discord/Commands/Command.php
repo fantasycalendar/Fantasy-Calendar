@@ -5,6 +5,7 @@ namespace App\Services\Discord\Commands;
 
 
 use App\Calendar;
+use App\Services\Discord\Exceptions\UserNotPremiumException;
 use App\Facades\Epoch;
 use App\Services\Discord\Exceptions\DiscordCalendarNotSetException;
 use App\Services\Discord\Exceptions\DiscordUserInvalidException;
@@ -53,6 +54,10 @@ abstract class Command
 
         $this->logInteraction();
         $this->bindUser();
+
+        if(!$this->authorize()) {
+            throw new UserNotPremiumException($this->unauthorized_message());
+        }
 
         $this->guild = $this->getGuild();
     }
@@ -304,4 +309,16 @@ abstract class Command
      * @return string
      */
     public abstract function handle(): string;
+
+    /**
+     * Handles making sure the Discord user calling this command is allowed to do so.
+     * See the "Traits" namespace for some examples.
+     */
+    public abstract function authorize(): bool;
+
+    /**
+     * Returns a string that will be sent back to the user if they are not authorized
+     * to run this command.
+     */
+    public abstract function unauthorized_message(): string;
 }
