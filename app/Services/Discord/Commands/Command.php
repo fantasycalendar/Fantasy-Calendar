@@ -5,6 +5,7 @@ namespace App\Services\Discord\Commands;
 
 
 use App\Calendar;
+use App\Services\Discord\Commands\Command\Response;
 use App\Services\Discord\Exceptions\UserNotPremiumException;
 use App\Facades\Epoch;
 use App\Services\Discord\Exceptions\DiscordCalendarNotSetException;
@@ -31,6 +32,7 @@ abstract class Command
     protected string $discord_user_id;
     protected Collection $options;
     protected string $called_command;
+    protected Response $response_details;
 
     /**
      * Command constructor.
@@ -60,6 +62,17 @@ abstract class Command
         }
 
         $this->guild = $this->getGuild();
+    }
+
+    public function do_handle(): array
+    {
+        $response = $this->handle();
+
+        if($response instanceof Response) {
+            return $response->getMessage();
+        }
+
+        return (new Response($response))->getMessage();
     }
 
     /**

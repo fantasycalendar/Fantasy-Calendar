@@ -5,6 +5,7 @@ namespace App\Services\Discord\Http\Controllers;
 
 
 use App\Http\Controllers\Controller;
+use App\Services\Discord\Commands\Command\Response;
 use App\Services\Discord\Commands\CommandDispatcher;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Facades\Artisan;
@@ -49,23 +50,12 @@ class DiscordController extends Controller
      */
     public function hook(): array
     {
-        // Respond to Discord's pings with a 'type' to make them happy
+        // Respond to Discord's pings with a PONG
         if(!request()->has('data')) {
-            return ['type' => 1];
+            return Response::PONG;
         }
 
-        if(request()->header('bypassChecks') && app()->environment('local')) {
-            dd("result:", CommandDispatcher::dispatch(request()->all()));
-        }
-
-        // Type 4 means we're responding directly.
-        // For now, we don't queue and follow-up, but a type 5 would make that possible.
-        return [
-            'type' => 4,
-            'data' => [
-                'content' => CommandDispatcher::dispatch(request()->all()),
-            ]
-        ];
+        return CommandDispatcher::dispatch(request()->all());
     }
 
     public function test()

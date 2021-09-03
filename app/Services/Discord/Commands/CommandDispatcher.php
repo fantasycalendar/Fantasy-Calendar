@@ -4,6 +4,7 @@
 namespace App\Services\Discord\Commands;
 
 
+use App\Services\Discord\Commands\Command\Response;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -17,13 +18,17 @@ class CommandDispatcher
         $handlerClass = config('services.discord.command_handlers' . $configPath);
 
         try {
-            return (new $handlerClass($commandData))->handle();
+            if(request()->header('bypassChecks') && app()->environment('local')) {
+                dd("result:", (new $handlerClass($commandData))->do_handle());
+            }
+
+            return (new $handlerClass($commandData))->do_handle();
         } catch (\Throwable $e) {
             Log::error($e->getTraceAsString());
 
             return (app()->environment('production'))
-                ? "Oops! There was an error. This was probably our fault, not yours."
-                : $e->getMessage();
+                ? (new Response("Oops! There was an error. This was probably our fault, not yours."))->getMessage()
+                : (new Response($e->getMessage()))->getMessage();
         }
     }
 
