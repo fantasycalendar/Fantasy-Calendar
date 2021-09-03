@@ -67,7 +67,7 @@ class Handler extends ExceptionHandler
         }
 
         if(App::environment('local')) {
-            dump($exception->getTraceAsString());
+            ddd($exception->getTraceAsString());
         }
 
         if($exception instanceof AuthorizationException || $exception instanceof AuthenticationException) {
