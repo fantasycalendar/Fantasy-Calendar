@@ -1799,16 +1799,31 @@ function set_up_edit_inputs(){
 		}
 	});
 
+	$(document).on('change', '.restart_era', function(){
+		let parent = $(this).closest('.sortable-container');
+		let index = parent.attr('index')|0;
+		let checked = $(this).is(':checked')
+		if(!static_data.eras[index].settings.use_custom_format){
+		    let text = "";
+            if(checked) {
+                text = 'Era year {{era_year}} (year {{year}}) - {{era_name}}';
+            } else {
+                text = 'Year {{era_year}} - {{era_name}}';
+            }
+            parent.find('.era_formatting').val(text).change();
+        }
+	});
+
 	$(document).on('change', '.use_custom_format', function(){
 		var parent = $(this).closest('.sortable-container');
 		var index = parent.attr('index')|0;
 		if(static_data.eras[index].settings.restart){
 			var text = 'Era year {{era_year}} (year {{year}}) - {{era_name}}';
 		}else{
-			var text = 'Year {{year}} - {{era_name}}';
+			var text = 'Year {{era_year}} - {{era_name}}';
 		}
+		console.log(text);
 		parent.find('.era_formatting').prop('disabled', !$(this).is(':checked')).val(text).change();
-
 	});
 
 	$(document).on('change', '.starting_era', function(){
@@ -3048,7 +3063,6 @@ function add_leap_day_to_list(parent, key, data){
 						element.push("</label>");
 					element.push("</div>");
 				element.push("</div>");
-				element.push("</div>");
 
 				element.push(`<div class='row no-gutters my-1 ${data.intercalary ? "" : "hidden"}'>`);
 					element.push(`<div class='form-check col-12 py-2 border rounded protip' data-pt-position="right" data-pt-title="This setting toggles whether this intercalary leap day should show its name in the calendar.">`);
@@ -3948,7 +3962,7 @@ function add_era_to_list(parent, key, data){
 
 				element.push(`<div class='row no-gutters my-1'>`);
 					element.push("<div class='form-check col-12 py-2 border rounded'>");
-						element.push(`<input type='checkbox' id='${key}_restart_year' class='form-check-input dynamic_input restart' data='eras.${key}.settings' fc-index='restart' ${(data.settings.restart ? "checked" : "")} />`);
+						element.push(`<input type='checkbox' id='${key}_restart_year' class='form-check-input dynamic_input restart_era' data='eras.${key}.settings' fc-index='restart' ${(data.settings.restart ? "checked" : "")} />`);
 						element.push(`<label for='${key}_restart_year' class='form-check-label ml-1'>`);
 							element.push("Restarts year count");
 						element.push("</label>");
@@ -5191,7 +5205,7 @@ function reindex_era_list(){
 				'starting_era': $(this).find('.starting_era').is(':checked') || $(this).find('.starting_era').val() == "1",
 				'event_category_id': $(this).find('.event-category-list').val(),
 				'ends_year': $(this).find('.ends_year').is(':checked') || $(this).find('.ends_year').val() == "1",
-				'restart': $(this).find('.restart').is(':checked')
+				'restart': $(this).find('.restart_era').is(':checked')
 			},
 			'date': {
 				'year': ($(this).find('.year-input').val()|0),
@@ -5524,7 +5538,7 @@ function evaluate_save_button(override){
 
 		var invalid = errors.length > 0;
 
-		var text = invalid ? "Cannot create yet" : "Create calendar";
+		var text = invalid ? "Cannot create yet" : "Save Calendar";
 
 		var apply_changes_immediately = $('#apply_changes_immediately').is(':checked');
 

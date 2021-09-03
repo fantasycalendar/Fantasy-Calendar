@@ -1,4 +1,4 @@
-@extends('errors.error')
+@extends('errors.default')
 
 @section('content')
     <div class="container py-5 px-3 error-container">
