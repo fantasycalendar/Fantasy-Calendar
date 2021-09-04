@@ -130,11 +130,17 @@
 
                     get_dynamic_data(hash, function(result){
 
+                        if(dynamic_data.is_linked !== is_linked){
+                            window.location.reload();
+                            return;
+                        }
+
                         if(result.error){
                             throw result.message;
                         }
 
-                        dynamic_data = clone(result);
+                        dynamic_data = clone(result.dynamic_data);
+
 
                         check_update(false);
                         evaluate_settings();

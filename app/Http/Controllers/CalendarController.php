@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\CalendarInvite;
+use App\Events\DateChanged;
 use App\Jobs\PrepCalendarForExport;
 use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -220,8 +221,8 @@ class CalendarController extends Controller
             return [ 'success' => false, 'error' => 'Unable to update calendar. Please try again later.'];
         }
 
-        if($calendar->parent && $parent_hash_exists && $parent_link_date_exists && $parent_offset_exists){
-            $calendar->parent->save();
+        if(isset($parent_calendar) && $parent_hash_exists && $parent_link_date_exists && $parent_offset_exists){
+            DateChanged::dispatch($parent_calendar, $parent_calendar->dynamic('epoch'));
         }
 
         $last_changed = [

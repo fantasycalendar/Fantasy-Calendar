@@ -25,7 +25,6 @@ Route::any('/calendar/{calendar}/changeUserRole', 'Api\CalendarController@change
 Route::any('/calendar/{calendar}/children', 'Api\CalendarController@children');
 Route::any('/calendar/{calendar}/last_changed', 'Api\CalendarController@last_changed');
 Route::any('/calendar/{calendar}/dynamic_data', 'Api\CalendarController@dynamic_data');
-Route::any('/calendar/{calendar}/updatechildren', 'Api\CalendarController@updateChildren');
 Route::apiResource('calendar', 'Api\CalendarController');
 
 

@@ -271,8 +271,6 @@ $.ajax({
 
 function unlink_child_calendar(output, child_hash){
 
-
-
 	show_loading_screen();
 
     $.ajax({

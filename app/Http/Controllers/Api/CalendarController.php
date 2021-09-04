@@ -64,24 +64,6 @@ class CalendarController extends Controller
 
     }
 
-    public function updateChildren(Request $request){
-
-        $request = $request->only('data');
-
-        $update_data = json_decode($request['data']);
-
-        foreach($update_data as $hash => $dynamic_data){
-
-            $calendar = Calendar::hash($hash)->firstOrFail();
-
-            $calendar->update( ['dynamic_data' => $dynamic_data ]);
-
-        }
-
-        return [ 'success' => true, 'data' => true ];
-
-    }
-
     public function owned(Calendar $calendar) {
         CalendarCollection::withoutWrapping();
 
@@ -131,7 +113,10 @@ class CalendarController extends Controller
     }
 
     public function dynamic_data(Request $request, Calendar $calendar) {
-        return $calendar->dynamic_data;
+        return [
+            "dynamic_data" => $calendar->dynamic_data,
+            "is_linked" => $calendar->isLinked()
+        ];
     }
 
     public function destroy(Request $request, Calendar $calendar) {
