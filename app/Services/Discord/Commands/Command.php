@@ -319,9 +319,9 @@ abstract class Command
      * Handles the actual incoming Discord interaction, post-setup.
      * If you're extending this to build a Discord command, this is the method you want to write.
      *
-     * @return string
+     * @return string|Response
      */
-    public abstract function handle(): string;
+    public abstract function handle();
 
     /**
      * Handles making sure the Discord user calling this command is allowed to do so.

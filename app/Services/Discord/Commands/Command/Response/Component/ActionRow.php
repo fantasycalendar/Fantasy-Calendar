@@ -19,12 +19,14 @@ class ActionRow extends Component
     {
         return [
             'type' => $this->type,
-            'components' => $this->components->map->build()
+            'components' => $this->components->map->build()->toArray()
         ];
     }
 
     public function addButton($target, $label, $style = 'secondary', $disabled = false)
     {
         $this->components->push(new Button($target, $label, $style = 'secondary', $disabled = false));
+
+        return $this;
     }
 }

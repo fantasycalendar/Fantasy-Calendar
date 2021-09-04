@@ -2,6 +2,7 @@
 
 namespace App\Services\Discord\Commands\Command;
 
+use App\Services\Discord\Commands\Command\Response\Component\ActionRow;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
@@ -47,6 +48,15 @@ class Response
         return $response;
     }
 
+    public function addRow(callable $function)
+    {
+        $row = new ActionRow();
+
+        $this->components->push($function($row));
+
+        return $this;
+    }
+
     public function hasComponents()
     {
         return $this->components->count() > 0;
@@ -54,6 +64,11 @@ class Response
 
     public function buildComponents()
     {
-        return $this->components->map->build();
+        return $this->components->map->build()->toArray();
+    }
+
+    public static function make(string $text_content, string $type = 'basic')
+    {
+        return new self($text_content, $type);
     }
 }

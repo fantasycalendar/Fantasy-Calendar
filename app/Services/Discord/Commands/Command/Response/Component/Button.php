@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 
 class Button extends Component
 {
+    public int $type = 2;
     public array $styles = [
         'primary' => 1,
         'secondary' => 2,
@@ -34,11 +35,13 @@ class Button extends Component
     {
         $response = [
             'type' => $this->type,
-            'style' => $this->style
         ];
 
         if(Str::startsWith($this->target, ['https://', 'http://'])) {
             $response['url'] = $this->target;
+            $this->style = $this->styles['link']; // Override if it's a link or it borks
+        } else {
+            $response['custom_id'] = $this->target;
         }
 
         if($this->emoji) {
@@ -52,6 +55,8 @@ class Button extends Component
         if($this->disabled) {
             $response['disabled'] = true;
         }
+
+        $response['style'] = $this->style;
 
         return $response;
     }

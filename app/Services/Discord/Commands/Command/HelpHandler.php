@@ -4,6 +4,7 @@
 namespace App\Services\Discord\Commands\Command;
 
 use App\Services\Discord\Commands\Command;
+use App\Services\Discord\Commands\Command\Response\Component\ActionRow;
 
 class HelpHandler extends Command
 {
@@ -21,11 +22,11 @@ class HelpHandler extends Command
         9 => 'mentionable'
     ];
 
-    public function handle(): string
+    public function handle(): Response
     {
         $commands = collect(config('services.discord.global_commands'));
 
-        $response = $commands->map(function($command){
+        $responseText = $commands->map(function($command){
             $formatted = "/{$command['name']}\n";
 
             foreach($command['options'] as $option) {
@@ -35,7 +36,9 @@ class HelpHandler extends Command
             return $formatted;
         })->join("\n");
 
-        return $this->codeBlock($response);
+        $responseText = $this->codeBlock($responseText);
+
+        return Response::make($responseText);
     }
 
     /**

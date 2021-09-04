@@ -19,11 +19,12 @@ class CommandDispatcher
 
         try {
             if(request()->header('bypassChecks') && app()->environment('local')) {
-                dd("result:", (new $handlerClass($commandData))->do_handle());
+                dd("result:", json_encode((new $handlerClass($commandData))->do_handle(), JSON_PRETTY_PRINT));
             }
 
             return (new $handlerClass($commandData))->do_handle();
         } catch (\Throwable $e) {
+            Log::error($e->getMessage());
             Log::error($e->getTraceAsString());
 
             return (app()->environment('production'))
