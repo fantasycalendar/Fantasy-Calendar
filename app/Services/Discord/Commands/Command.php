@@ -238,7 +238,10 @@ abstract class Command
     protected function getDefaultCalendar(): Calendar
     {
         if(!$this->setting('default_calendar')) {
-            throw new DiscordCalendarNotSetException('That command requires you to set a default calendar using `/fc use`.');
+            if($this->user->calendars()->count() > 1){
+                throw new DiscordCalendarNotSetException('That command requires you to set a default calendar using `/fc use`.');
+            }
+            $this->setting('default_calendar', 0);
         }
 
         $calendar = Calendar::findOrFail($this->setting('default_calendar'));
