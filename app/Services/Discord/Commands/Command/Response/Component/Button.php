@@ -42,7 +42,7 @@ class Button extends Component
             $response['url'] = $this->target;
             $this->style = $this->styles['link']; // Override if it's a link or it borks
         } else {
-            $response['custom_id'] = $this->target;
+            $response['custom_id'] = config('services.discord.global_command') . '.' . $this->target;
         }
 
         if($this->emoji) {
