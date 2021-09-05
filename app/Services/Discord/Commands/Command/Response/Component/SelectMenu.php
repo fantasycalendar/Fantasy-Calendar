@@ -26,7 +26,7 @@ class SelectMenu extends Component
      */
     public function __construct(string $customId, string $placeholder, int $minSelectedValues = 1, int $maxSelectedValues = 1, $disabled = false)
     {
-        $this->customId = $customId;
+        $this->customId = config('services.discord.global_command') . '.' . $customId;
         $this->placeholder = Str::limit($placeholder, 97);
         $this->minSelectedValues = $minSelectedValues;
         $this->maxSelectedValues = $maxSelectedValues;
