@@ -36,7 +36,7 @@ class ListHandler extends Command
                     });
 
                     return $menu;
-                }, 'fc-dev.list:set_default', 'Choose one of your calendars');
+                }, config('services.discord.global_command') . '.list:set_default', 'Choose one of your calendars');
             });
     }
 
