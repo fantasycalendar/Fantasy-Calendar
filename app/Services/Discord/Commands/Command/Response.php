@@ -17,6 +17,8 @@ class Response
         'update' => 7
     ];
 
+    private int $flags = 0;
+
     private string $text_content;
     private string $type;
     private Collection $components;
@@ -45,7 +47,23 @@ class Response
             $response['data']['components'] = $this->buildComponents();
         }
 
+        if($this->flags > 0) {
+            $response['data']['flags'] = $this->flags;
+        }
+
         return $response;
+    }
+
+    /**
+     * Make the response ephemeral (Only visible to the user)
+     *
+     * @return $this
+     */
+    public function ephemeral(): Response
+    {
+        $this->flags = 1 << 6;
+
+        return $this;
     }
 
     public function addRow(callable $function)

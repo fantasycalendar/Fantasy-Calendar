@@ -51,6 +51,7 @@ class DiscordController extends Controller
     {
         switch(request()->get('type')) {
             case 3:
+                logger()->debug(json_encode(request()->all()));
                 return CommandDispatcher::handleComponent(request()->all());
             case 2:
                 return CommandDispatcher::handleCommand(request()->all());

@@ -23,9 +23,30 @@ class ActionRow extends Component
         ];
     }
 
-    public function addButton($target, $label, $style = 'secondary', $disabled = false)
+    /**
+     * @see Button
+     * @param ...$args
+     * @return $this
+     */
+    public function addButton(...$args): ActionRow
     {
-        $this->components->push(new Button($target, $label, $style = 'secondary', $disabled = false));
+        $this->components->push(new Button(...$args));
+
+        return $this;
+    }
+
+    /**
+     * @see SelectMenu
+     * @param string $customId
+     * @param string $placeholder
+     * @param int $minSelectedValues
+     * @param int $maxSelectedValues
+     * @param bool $disabled
+     * @return $this
+     */
+    public function addSelectMenu(callable $function, ...$args): ActionRow
+    {
+        $this->components->push($function(new SelectMenu(...$args)));
 
         return $this;
     }

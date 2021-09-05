@@ -3,6 +3,7 @@
 namespace App\Services\Discord\Commands\Command\Response\Component;
 
 use App\Services\Discord\Commands\Command\Response\Component;
+use App\Services\Discord\Commands\Command\Response\Emoji;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
@@ -61,10 +62,14 @@ class Button extends Component
         return $response;
     }
 
+    /**
+     * @param $label
+     * @throws \Exception
+     */
     private function initLabel($label): void
     {
         if(is_array($label)) {
-            $this->emoji = Arr::get($label, 'emoji', ':slightly_smiling_face:');
+            $this->emoji = Arr::get(Emoji::make($label), 'emoji', Emoji::make(':slightly_smiling_face:'));
             $this->label = Arr::get($label, 'label', 'A Button');
 
             return;

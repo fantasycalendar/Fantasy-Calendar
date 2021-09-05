@@ -5,6 +5,7 @@ namespace App\Services\Discord\Commands\Command;
 
 use App\Services\Discord\Commands\Command;
 use App\Services\Discord\Commands\Command\Response\Component\ActionRow;
+use App\Services\Discord\Commands\Command\Response\Component\SelectMenu;
 
 class HelpHandler extends Command
 {

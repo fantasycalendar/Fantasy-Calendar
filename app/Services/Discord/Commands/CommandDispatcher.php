@@ -35,7 +35,14 @@ class CommandDispatcher
 
     public static function handleComponent($interactionData)
     {
-        return Response::make('My dude')->getMessage();
+        $interactionIdParts = explode(':', $interactionData['data']['custom_id']);
+        $handlerClass = config('services.discord.command_handlers.'. $interactionIdParts[0]);
+        $interactionFunction = $interactionIdParts[1];
+        $args = $interactionData['data']['values'] ?? explode(';', $interactionIdParts[2] ?? null);
+
+        return (new $handlerClass($interactionData))
+            ->$interactionFunction(...$args)
+            ->getMessage();
     }
 
     public static function processConfigPath($optionsData, $soFar = '.')
