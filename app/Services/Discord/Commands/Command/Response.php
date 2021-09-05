@@ -44,6 +44,7 @@ class Response
         ];
 
         if($this->hasComponents()) {
+            logger()->debug($this->components->toJson());
             $response['data']['components'] = $this->buildComponents();
         }
 

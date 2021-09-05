@@ -4,8 +4,6 @@
 namespace App\Services\Discord\Commands\Command;
 
 use App\Services\Discord\Commands\Command;
-use App\Services\Discord\Commands\Command\Response\Component\ActionRow;
-use App\Services\Discord\Commands\Command\Response\Component\SelectMenu;
 
 class HelpHandler extends Command
 {
@@ -39,7 +37,20 @@ class HelpHandler extends Command
 
         $responseText = $this->codeBlock($responseText);
 
-        return Response::make($responseText);
+        if(!$this->setting('default_calendar')) {
+            $responseText .= $this->newLine(1) . $this->bold('The first thing') . " you should do is set a default calendar:";
+        }
+
+        $response = Response::make($responseText)
+            ->ephemeral();
+
+        if(!$this->setting('default_calendar')) {
+            $response->addRow(function($row) {
+                return $row->addButton('list:handle', 'Set a default calendar now', 'primary');
+            });
+        }
+
+        return $response;
     }
 
     /**
