@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Storage;
 
 class CommandDispatcher
 {
-    public static function dispatch($commandData)
+    public static function handleCommand($commandData)
     {
         $configPath = self::processConfigPath($commandData['data']);
 
@@ -31,6 +31,11 @@ class CommandDispatcher
                 ? (new Response("Oops! There was an error. This was probably our fault, not yours."))->getMessage()
                 : (new Response($e->getMessage()))->getMessage();
         }
+    }
+
+    public static function handleComponent($interactionData)
+    {
+        return Response::make('My dude')->getMessage();
     }
 
     public static function processConfigPath($optionsData, $soFar = '.')

@@ -49,12 +49,15 @@ class DiscordController extends Controller
      */
     public function hook(): array
     {
-        // Respond to Discord's pings with a PONG
-        if(!request()->has('data')) {
-            return Response::PONG;
+        switch(request()->get('type')) {
+            case 3:
+                return CommandDispatcher::handleComponent(request()->all());
+            case 2:
+                return CommandDispatcher::handleCommand(request()->all());
+            case 1:
+            default:
+                return Response::PONG;
         }
-
-        return CommandDispatcher::dispatch(request()->all());
     }
 
     public function test()
