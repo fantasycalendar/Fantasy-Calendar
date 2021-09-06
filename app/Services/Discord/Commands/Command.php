@@ -138,7 +138,7 @@ abstract class Command
             $this->discord_auth = DiscordAuthToken::discordUserId($commandUserId)->firstOrFail();
             $this->user = $this->discord_auth->user;
         } catch (\Throwable $e) {
-            throw new DiscordUserInvalidException();
+            throw new DiscordUserInvalidException("You'll need to be a paid subscriber _(only $2.49/month!)_ on Fantasy Calendar and connect your Discord account to use this integration.");
         }
 
         if(!$this->authorize()) {
