@@ -11,6 +11,7 @@ class Response
     public const PONG = ['type' => 1];
 
     public array $types = [
+        'pong' => 1,
         'basic' => 4,
         'deferred' => 5,
         'deferred_update' => 6,
@@ -67,6 +68,16 @@ class Response
     }
 
     /**
+     * @param Response
+     */
+    public function setType($type): Response
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
      * Make the response ephemeral (Only visible to the user)
      *
      * @return $this
@@ -118,5 +129,10 @@ class Response
     public static function make(string $text_content, string $type = 'basic')
     {
         return new self($text_content, $type);
+    }
+
+    public static function pong()
+    {
+        return new self('', 'pong');
     }
 }

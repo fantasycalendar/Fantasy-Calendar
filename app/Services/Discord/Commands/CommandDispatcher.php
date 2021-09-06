@@ -14,47 +14,42 @@ use Illuminate\Support\Facades\Storage;
 
 class CommandDispatcher
 {
-    public static function dispatch($discordInteraction)
-    {
-        switch($discordInteraction['type']) {
-            case 3:
-                logger()->debug(json_encode(request()->all()));
-                $response = CommandDispatcher::dispatchComponent(request()->all());
-                break;
-            case 2:
-                $response = CommandDispatcher::dispatchCommand(request()->all());
-                break;
-            case 1:
-            default:
-                return Response::PONG;
-        }
+    private const TYPES = [
+        1 => 'Pong',
+        2 => 'Command',
+        3 => 'Component'
+    ];
 
-        return $response->getMessage();
+    public static function dispatch($discordInteraction): array
+    {
+        return self::failGracefully(function() use ($discordInteraction) {
+            return forward_static_call([self::class, 'dispatch'. self::TYPES[$discordInteraction['type']]], $discordInteraction);
+        })->getMessage();
     }
 
     public static function dispatchCommand($commandData): Response
     {
-        logger()->debug(json_encode($commandData));
-        return self::failGracefully(function() use ($commandData){
-            $handlerClass = config('services.discord.command_handlers' . self::processConfigPath($commandData['data']));
+        $handlerClass = config('services.discord.command_handlers' . self::processConfigPath($commandData['data']));
 
-            return (new $handlerClass($commandData))->do_handle();
-        });
+        return (new $handlerClass($commandData))
+            ->do_handle();
     }
 
     public static function dispatchComponent($interactionData): Response
     {
-        logger()->debug(json_encode($interactionData));
-        return self::failGracefully(function() use ($interactionData){
-            $interactionIdParts = explode(':', $interactionData['data']['custom_id']);
+        $interactionIdParts = explode(':', $interactionData['data']['custom_id']);
 
-            $handlerClass = config('services.discord.command_handlers.'. $interactionIdParts[0]);
-            $handlerFunction = $interactionIdParts[1];
-            $args = $interactionData['data']['values'] ?? explode(';', $interactionIdParts[2] ?? null);
+        $handlerClass = config('services.discord.command_handlers.'. $interactionIdParts[0]);
+        $handlerFunction = $interactionIdParts[1];
+        $args = $interactionData['data']['values'] ?? explode(';', $interactionIdParts[2] ?? null);
 
-            return (new $handlerClass($interactionData, $interactionIdParts[0]))
-                ->$handlerFunction(...$args);
-        });
+        return (new $handlerClass($interactionData, $interactionIdParts[0]))
+            ->$handlerFunction(...$args);
+    }
+
+    public static function dispatchPong($discordInteraction)
+    {
+        return Response::pong();
     }
 
     public static function processConfigPath($optionsData, $soFar = '.')
@@ -77,7 +72,7 @@ class CommandDispatcher
         return substr($soFar, 0, strlen($soFar) - 1);
     }
 
-    private static function failGracefully(callable $function): Response
+    public static function failGracefully(callable $function)
     {
         try {
             return $function();
