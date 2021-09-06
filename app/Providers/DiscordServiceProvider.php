@@ -27,7 +27,7 @@ class DiscordServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        if(!config('services.discord.client_id')) return;
+        if(!config('services.discord.enabled')) return;
 
         View::addNamespace('Discord', app_path('/Services/Discord/resources/views'));
 

@@ -38,17 +38,16 @@ class HelpHandler extends Command
 
         $responseText = $this->codeBlock($responseText);
 
-        if(!$this->setting('default_calendar')) {
-            $responseText .= $this->newLine(1) . $this->bold('The first thing') . " you should do is set a default calendar:";
-        }
-
         $response = Response::make($responseText)
             ->ephemeral();
 
         if(!$this->setting('default_calendar')) {
-            $response->addRow(function(ActionRow $row) {
-                return ListHandler::userDefaultCalendarMenu($this->user, $row);
-            });
+            // TODO: ->hasDefaultCalendar()
+
+            $response->appendText($this->newLine(1) . $this->bold('The first thing') . " you should do is set a default calendar:")
+                     ->addRow(function(ActionRow $row) {
+                         return ListHandler::userDefaultCalendarMenu($this->user, $row);
+                     });
         }
 
         return $response;

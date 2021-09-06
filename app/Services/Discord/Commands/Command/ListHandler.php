@@ -50,6 +50,7 @@ class ListHandler extends Command
      */
     public static function userDefaultCalendarMenu(User $user, ActionRow $row): ActionRow
     {
+        // TODO: Check for currently-set calendar and prefill it
         return $row->addSelectMenu(function(SelectMenu $menu) use ($user) {
             $user->calendars->each(function($calendar) use (&$menu){
                 $menu->addOption(

@@ -185,6 +185,19 @@ class Response
         return $this->components->map->build()->toArray();
     }
 
+    /**
+     * Appends text to our text content
+     *
+     * @param string $text
+     * @return $this
+     */
+    public function appendText(string $text): Response
+    {
+        $this->text_content .= $text;
+
+        return $this;
+    }
+
     /* ********************************************************* *
      * Syntactic Sugar Methods - These just make life a bit better
      * ********************************************************* */
@@ -197,7 +210,7 @@ class Response
      * @param string $style
      * @return $this
      */
-    public function singleButton($target, $label, $style = 'primary'): Response
+    public function singleButton(string $target, $label, string $style = 'primary'): Response
     {
         $this->components = collect();
 

@@ -76,7 +76,7 @@ class Button extends Component
         }
 
         if(Str::startsWith($label, ':') && Str::endsWith($label, ':')) {
-            $this->emoji = $label;
+            $this->emoji = Emoji::make($label);
 
             return;
         }

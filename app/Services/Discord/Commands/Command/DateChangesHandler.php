@@ -30,7 +30,7 @@ class DateChangesHandler extends Command
         return $this->change_date($action, $unit, $count);
     }
 
-    public function change_date($action, $unit, $count = 1, $update = false, $hash = null)
+    public function change_date($action, $unit, $count = 1, $update = false)
     {
         if($update && $this->interaction('member.user.id') !== $this->interaction('message.interaction.user.id')) {
             return Response::make("You can only change the date on your own calendars")
@@ -73,7 +73,7 @@ class DateChangesHandler extends Command
         $response = Response::make($responseText)
             ->addRow(function(ActionRow $row) use ($action, $unit, $count, $reverse_action){
                 return $row->addButton("$action:change_date:$reverse_action;$unit;$count;true", ['label' => 'Undo', 'emoji' => ':arrow_left:'])
-                    ->addButton("$action:change_date:$action;$unit;$count;true", 'Again', 'success');
+                           ->addButton("$action:change_date:$action;$unit;$count;true", 'Again', 'success');
             });
 
         if($update) {

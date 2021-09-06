@@ -24,8 +24,10 @@ class ActionRow extends Component
     }
 
     /**
-     * @see Button
-     * @param ...$args
+     * @param $target
+     * @param $label
+     * @param string $style
+     * @param false $disabled
      * @return $this
      */
     public function addButton($target, $label, $style = 'secondary', $disabled = false): ActionRow
