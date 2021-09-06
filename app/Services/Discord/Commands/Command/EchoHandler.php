@@ -21,7 +21,7 @@ class EchoHandler extends Command
     }
 
     // Should never happen.
-    public function unauthorized_message(): string
+    public function unauthorized_response(): string
     {
         return '';
     }

@@ -49,16 +49,7 @@ class DiscordController extends Controller
      */
     public function hook(): array
     {
-        switch(request()->get('type')) {
-            case 3:
-                logger()->debug(json_encode(request()->all()));
-                return CommandDispatcher::handleComponent(request()->all());
-            case 2:
-                return CommandDispatcher::handleCommand(request()->all());
-            case 1:
-            default:
-                return Response::PONG;
-        }
+        return CommandDispatcher::dispatch(request()->all());
     }
 
     public function test()

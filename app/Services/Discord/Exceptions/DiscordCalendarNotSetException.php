@@ -17,11 +17,7 @@ class DiscordCalendarNotSetException extends Exception
     public function __construct($user, $message = null, $code = 0, Throwable $previous = null)
     {
         $message = $message ?? $this->message;
-
         $this->user = $user;
-        logger()->debug("Got here with ");
-        logger()->debug(json_encode($user->toArray()));
-        logger()->debug($this->message);
 
         parent::__construct($message, $code, $previous);
     }

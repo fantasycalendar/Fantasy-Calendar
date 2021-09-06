@@ -38,10 +38,13 @@ class Response
     {
         $response = [
             'type' => $this->type,
-            'data' => [
-                'content' => $this->text_content
-            ]
         ];
+
+        if($this->text_content) {
+            $response['data'] = [
+                'content' => $this->text_content
+            ];
+        }
 
         if($this->hasComponents()) {
             logger()->debug($this->components->toJson());
@@ -53,6 +56,14 @@ class Response
         }
 
         return $response;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTextContent(): string
+    {
+        return $this->text_content;
     }
 
     /**

@@ -2,6 +2,9 @@
 
 namespace App\Services\Discord\Commands\Command\Traits;
 
+use App\Services\Discord\Commands\Command\Response;
+use App\Services\Discord\Exceptions\DiscordUserUnauthorized;
+
 trait PremiumCommand
 {
     public function authorize(): bool
@@ -9,8 +12,12 @@ trait PremiumCommand
         return $this->user->isPremium();
     }
 
-    public function unauthorized_message(): string
+    public function unauthorized(): void
     {
-        return "Fantasy Calendar's Discord integration is available to subscribers!\n\n You can become one here: " . route('subscription.pricing');
+        $response = Response::make("Fantasy Calendar's Discord integration is available to subscribers!")
+            ->singleButton(route('subscription.pricing'), 'Become a Subscriber Now')
+            ->ephemeral();
+
+        throw new DiscordUserUnauthorized($response);
     }
 }

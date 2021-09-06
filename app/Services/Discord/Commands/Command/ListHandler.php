@@ -37,6 +37,7 @@ class ListHandler extends Command
         $this->setting('default_calendar', $id);
 
         return Response::make("Your default calendar for this server has been changed to " . $this->bold($this->getDefaultCalendar()->name))
+            ->singleButton('help:handle', 'Hooray! ...What now?')
             ->ephemeral();
     }
 

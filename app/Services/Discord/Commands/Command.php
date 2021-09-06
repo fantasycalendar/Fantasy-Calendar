@@ -6,7 +6,8 @@ namespace App\Services\Discord\Commands;
 
 use App\Calendar;
 use App\Services\Discord\Commands\Command\Response;
-use App\Services\Discord\Exceptions\UserNotPremiumException;
+use App\Services\Discord\Commands\Command\Traits\FormatsText;
+use App\Services\Discord\Exceptions\DiscordUserUnauthorized;
 use App\Facades\Epoch;
 use App\Services\Discord\Exceptions\DiscordCalendarNotSetException;
 use App\Services\Discord\Exceptions\DiscordUserInvalidException;
@@ -21,6 +22,8 @@ use Illuminate\Support\Str;
 
 abstract class Command
 {
+    use FormatsText;
+
     protected User $user;
     protected $discord_auth;
     protected DiscordGuild $guild;
@@ -60,21 +63,21 @@ abstract class Command
         $this->bindUser();
 
         if(!$this->authorize()) {
-            throw new UserNotPremiumException($this->unauthorized_message());
+            $this->unauthorized();
         }
 
         $this->guild = $this->getGuild();
     }
 
-    public function do_handle(): array
+    public function do_handle(): Response
     {
         $response = $this->handle();
 
         if($response instanceof Response) {
-            return $response->getMessage();
+            return $response;
         }
 
-        return (new Response($response))->getMessage();
+        return (new Response($response));
     }
 
     /**
@@ -149,88 +152,6 @@ abstract class Command
             'version' => $this->interaction('version'),
             'responded_at' => $this->deferred ? null : now()
         ]);
-    }
-
-    /**
-     * Formats the input string into a Markdown code block
-     *
-     * @param string $string
-     * @return string
-     */
-    protected function codeBlock(string $string): string
-    {
-        return "```\n$string\n```";
-    }
-
-    /**
-     * Formats the input string to be Markdown bold
-     *
-     * @param string $string
-     * @return string
-     */
-    protected function bold(string $string): string
-    {
-        return "**{$string}**";
-    }
-
-    /**
-     * Formats the input string to be a Markdown blockquote
-     *
-     * @param string $string
-     * @return string
-     */
-    protected function blockQuote(string $string): string
-    {
-        return "> " . implode("\n> ",explode("\n", $string));
-    }
-
-    /**
-     * Creates a nicely-formatted "heading" of a specified length. For example, given
-     * "Harptos" and a length of 40, it will return the following string:
-     * "=============== Harptos ================"
-     *
-     * @param string $string
-     * @param int $min_length
-     * @return string
-     */
-    protected function heading(string $string, int $min_length): string
-    {
-        return Str::padBoth(" {$string} ", $min_length, '=');
-    }
-
-    /**
-     * Creates the specified number of newlines.
-     *
-     * @param int $amount
-     * @return string
-     */
-    protected function newLine(int $amount = 1): string
-    {
-        return str_repeat("\n", $amount);
-    }
-
-    /**
-     * Creates a formatted Discord mention for the specified Discord user, if given a Discord user ID.
-     * If no user is specified, default to the user who called the command
-     *
-     * @param string|null $discord_user_id
-     * @return string
-     */
-    protected function mention(string $discord_user_id = null): string
-    {
-        return '<@' . ($discord_user_id ?? $this->discord_user_id) . '>';
-    }
-
-    /**
-     * Generates a
-     *
-     * @return string
-     */
-    protected function listCalendars(): string
-    {
-        return $this->codeBlock($this->user->calendars()->orderBy('name')->get()->map(function($calendar, $index) {
-            return $index . ": " . $calendar->name;
-        })->join("\n"));
     }
 
     /**
@@ -339,5 +260,5 @@ abstract class Command
      * Returns a string that will be sent back to the user if they are not authorized
      * to run this command.
      */
-    public abstract function unauthorized_message(): string;
+    public abstract function unauthorized(): void;
 }

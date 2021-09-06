@@ -66,10 +66,6 @@ class Handler extends ExceptionHandler
             ]);
         }
 
-        if(App::environment('local')) {
-            dd($exception->getTraceAsString());
-        }
-
         if($exception instanceof AuthorizationException || $exception instanceof AuthenticationException) {
             if($request->is('calendars/*/edit')) {
                 return redirect(str_replace('/edit','', $request->path()));

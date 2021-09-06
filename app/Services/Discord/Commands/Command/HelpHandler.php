@@ -4,6 +4,7 @@
 namespace App\Services\Discord\Commands\Command;
 
 use App\Services\Discord\Commands\Command;
+use App\Services\Discord\Commands\Command\Response\Component\ActionRow;
 
 class HelpHandler extends Command
 {
@@ -45,8 +46,8 @@ class HelpHandler extends Command
             ->ephemeral();
 
         if(!$this->setting('default_calendar')) {
-            $response->addRow(function($row) {
-                return $row->addButton('list:handle', 'Set a default calendar now', 'primary');
+            $response->addRow(function(ActionRow $row) {
+                return ListHandler::userDefaultCalendarMenu($this->user, $row);
             });
         }
 
