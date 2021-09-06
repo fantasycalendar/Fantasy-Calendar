@@ -69,7 +69,7 @@ class Button extends Component
     private function initLabel($label): void
     {
         if(is_array($label)) {
-            $this->emoji = Arr::get(Emoji::make($label), 'emoji', Emoji::make(':slightly_smiling_face:'));
+            $this->emoji = Emoji::make(Arr::get($label, 'emoji', ':slightly_smiling_face:'));
             $this->label = Arr::get($label, 'label', 'A Button');
 
             return;

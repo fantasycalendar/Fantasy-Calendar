@@ -33,6 +33,7 @@ abstract class Command
     protected Collection $options;
     protected string $called_command;
     protected Response $response_details;
+    private $message_id;
 
     /**
      * Command constructor.
@@ -46,6 +47,7 @@ abstract class Command
         $this->interaction_data = $interaction_data;
         $this->discord_nickname = $this->interaction('member.nick') ?? $this->interaction('member.user.username');
         $this->discord_username = $this->interaction('member.user.username') . "#" . $this->interaction('member.user.discriminator');
+        $this->message_id = $this->interaction('message.id');
         $this->discord_user_id = $this->interaction('member.user.id');
         $this->options = self::getOptions($this->interaction('data.options.0'));
         $this->called_command = '/' . $this->getCalledCommand($this->interaction('data'));
@@ -126,7 +128,7 @@ abstract class Command
             $this->discord_auth = DiscordAuthToken::discordUserId($commandUserId)->firstOrFail();
             $this->user = $this->discord_auth->user;
         } catch (\Throwable $e) {
-            throw new DiscordUserInvalidException("Sorry " . $this->discord_nickname . ", but you'll need to connect your Fantasy Calendar and Discord accounts to run commands.\n\nYou can do that here: " . route('discord.index'));
+            throw new DiscordUserInvalidException();
         }
     }
 
@@ -239,7 +241,7 @@ abstract class Command
     {
         if(!$this->setting('default_calendar')) {
             if($this->user->calendars()->count() > 1){
-                throw new DiscordCalendarNotSetException('That command requires you to set a default calendar using `/fc use`.');
+                throw new DiscordCalendarNotSetException($this->user);
             }
 
             $this->setting('default_calendar', $this->user->calendars->first()->id);

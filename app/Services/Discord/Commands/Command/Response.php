@@ -67,11 +67,29 @@ class Response
         return $this;
     }
 
+    public function updatesMessage(): Response
+    {
+        $this->type = 7;
+
+        return $this;
+    }
+
     public function addRow(callable $function)
     {
         $row = new ActionRow();
 
         $this->components->push($function($row));
+
+        return $this;
+    }
+
+    public function singleButton($target, $label, $style = 'primary'): Response
+    {
+        $this->components = collect();
+
+        $this->addRow(function(ActionRow $row) use ($label, $target, $style){
+            return $row->addButton($target, $label, $style);
+        });
 
         return $this;
     }

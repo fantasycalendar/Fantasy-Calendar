@@ -8,6 +8,7 @@ use App\Services\Discord\Commands\Command;
 use App\Services\Discord\Commands\Command\Response\Component\ActionRow;
 use App\Services\Discord\Commands\Command\Response\Component\SelectMenu;
 use App\Services\Discord\Commands\Command\Traits\PremiumCommand;
+use App\User;
 
 class ListHandler extends Command
 {
@@ -27,16 +28,7 @@ class ListHandler extends Command
         return Response::make('Select one of your calendars to be your default for this server:')
             ->ephemeral()
             ->addRow(function(ActionRow $row){
-                return $row->addSelectMenu(function(SelectMenu $menu){
-                    $this->user->calendars->each(function($calendar) use (&$menu){
-                        $menu->addOption(
-                            $calendar->name, $calendar->id,
-                            "A calendar with {$calendar->events()->count()} events."
-                        );
-                    });
-
-                    return $menu;
-                }, 'list:set_default', 'Choose one of your calendars');
+                return self::userDefaultCalendarMenu($this->user, $row);
             });
     }
 
@@ -46,5 +38,26 @@ class ListHandler extends Command
 
         return Response::make("Your default calendar for this server has been changed to " . $this->bold($this->getDefaultCalendar()->name))
             ->ephemeral();
+    }
+
+    /**
+     * Generate an ActionRow containing a select menu for a user to choose their default calendar
+     *
+     * @param User $user
+     * @param ActionRow $row
+     * @return ActionRow
+     */
+    public static function userDefaultCalendarMenu(User $user, ActionRow $row): ActionRow
+    {
+        return $row->addSelectMenu(function(SelectMenu $menu) use ($user) {
+            $user->calendars->each(function($calendar) use (&$menu){
+                $menu->addOption(
+                    $calendar->name, $calendar->id,
+                    "A calendar with {$calendar->events()->count()} events."
+                );
+            });
+
+            return $menu;
+        }, 'list:set_default', 'Choose one of your calendars');
     }
 }
