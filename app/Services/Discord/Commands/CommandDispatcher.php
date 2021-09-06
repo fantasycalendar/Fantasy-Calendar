@@ -46,7 +46,7 @@ class CommandDispatcher
         $handlerClass = config('services.discord.command_handlers' . self::processConfigPath($commandData['data']));
 
         return (new $handlerClass($commandData))
-            ->do_handle();
+            ->handleInteraction();
     }
 
     /**

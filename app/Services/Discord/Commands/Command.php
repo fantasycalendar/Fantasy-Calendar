@@ -29,7 +29,7 @@ abstract class Command
     protected DiscordGuild $guild;
     protected array $interaction_data;
     protected string $response;
-    private bool $deferred;
+    private bool $deferred = false;
     protected string $discord_nickname;
     protected string $discord_username;
     protected string $discord_user_id;
@@ -41,13 +41,23 @@ abstract class Command
     /**
      * Command constructor.
      * @param $interaction_data
-     * @param bool $deferred
      * @throws DiscordUserInvalidException
      */
-    public function __construct($interaction_data, bool $deferred = false)
+    public function __construct($interaction_data)
     {
-        $this->deferred = $deferred;
         $this->interaction_data = $interaction_data;
+
+        $this->initialize();
+    }
+
+    /**
+     * Initializes some easy-access properties and resolves an FC user
+     * from a Discord user, if possible. Just here to keep our constructor nice and clean.
+     *
+     * @throws DiscordUserInvalidException
+     */
+    private function initialize()
+    {
         $this->discord_nickname = $this->interaction('member.nick') ?? $this->interaction('member.user.username');
         $this->discord_username = $this->interaction('member.user.username') . "#" . $this->interaction('member.user.discriminator');
         $this->message_id = $this->interaction('message.id');
@@ -55,29 +65,26 @@ abstract class Command
         $this->options = self::getOptions($this->interaction('data.options.0'));
         $this->called_command = '/' . $this->getCalledCommand($this->interaction('data'));
 
-        logger()->debug(json_encode($this->options));
-        logger()->debug($this->called_command);
-        logger()->debug(json_encode($this->interaction('data')));
-
         $this->logInteraction();
-        $this->bindUser();
-
-        if(!$this->authorize()) {
-            $this->unauthorized();
-        }
+        $this->resolveUserAccount();
 
         $this->guild = $this->getGuild();
     }
 
-    public function do_handle(): Response
+    /**
+     * Calls the handle() method on whatever child command is extending us.
+     * This makes it so that a simple handle() can just return a string,
+     * which we'll readily convert to a Response object on the fly.
+     *
+     * @return Response
+     */
+    public function handleInteraction(): Response
     {
         $response = $this->handle();
 
-        if($response instanceof Response) {
-            return $response;
-        }
-
-        return (new Response($response));
+        return ($response instanceof Response)
+            ? $response
+            : (new Response($response));
     }
 
     /**
@@ -119,7 +126,7 @@ abstract class Command
      *
      * @throws DiscordUserInvalidException
      */
-    private function bindUser(): void
+    private function resolveUserAccount(): void
     {
         if(!Arr::has($this->interaction_data, 'member.user.id')) {
             throw new DiscordUserInvalidException("Whoops! No user ID found in request. Discord messed up?");
@@ -132,6 +139,10 @@ abstract class Command
             $this->user = $this->discord_auth->user;
         } catch (\Throwable $e) {
             throw new DiscordUserInvalidException();
+        }
+
+        if(!$this->authorize()) {
+            $this->unauthorized();
         }
     }
 
@@ -257,8 +268,7 @@ abstract class Command
     public abstract function authorize(): bool;
 
     /**
-     * Returns a string that will be sent back to the user if they are not authorized
-     * to run this command.
+     * Runs if the user is not authorized.
      */
     public abstract function unauthorized(): void;
 }
