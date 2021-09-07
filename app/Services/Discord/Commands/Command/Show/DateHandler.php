@@ -15,9 +15,12 @@ class DateHandler extends Command
     {
         $calendar = $this->getDefaultCalendar();
 
-        $response = $this->heading($calendar->name, strlen($calendar->current_date));
+        $dateString = sprintf("%s, %s", $calendar->epoch->weekdayName, $calendar->current_date);
+
+        $response = $this->heading($calendar->name, strlen($dateString));
         $response .= $this->newLine(2);
-        $response .= $calendar->current_date;
+        $response .= $dateString;
+        $response .= $this->newLine(1);
 
         return $this->codeBlock($response);
     }
