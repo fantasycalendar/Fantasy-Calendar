@@ -15,9 +15,9 @@ class AddLoginVisitColumnsToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->timestamp('last_interaction')->nullable();
-            $table->timestamp('last_login')->nullable();
-            $table->timestamp('last_visit')->nullable();
+            $table->date('last_interaction')->nullable();
+            $table->date('last_login')->nullable();
+            $table->date('last_visit')->nullable();
         });
     }
 
@@ -28,10 +28,10 @@ class AddLoginVisitColumnsToUsersTable extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->timestamp('last_interaction')->nullable();
-            $table->timestamp('last_login')->nullable();
-            $table->timestamp('last_visit')->nullable();
+        Schema::table('users', function(Blueprint $table){
+            $table->dropColumn('last_interaction');
+            $table->dropColumn('last_login');
+            $table->dropColumn('last_visit');
         });
     }
 }
