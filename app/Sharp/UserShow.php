@@ -37,9 +37,6 @@ class UserShow extends SharpShow
 
         // Replace/complete this code
         $user = User::findOrFail($id);
-        $subscription = Subscription::whereUserId($user->id)
-            ->orderBy('updated_at')
-            ->firstOrFail();
 
         $userData = [
             'username' => $user->username,
@@ -51,15 +48,20 @@ class UserShow extends SharpShow
             'last_visit' => $user->last_visit
         ];
 
-        if($subscription && $subscription->stripe_status == "active"){
-            $userData = array_merge($userData, [
-                "subscription_stripe_plan" => $subscription->stripe_plan,
-                "subscription_created_at" => Carbon::make($subscription->created_at)->toDateString(),
-                "subscription_updated_at" => Carbon::make($subscription->updated_at)->toDateString(),
-                "subscription_ends_at" => isset($subscription->ends_at)
-                    ? Carbon::make($subscription->ends_at)->toDateString()
-                    : null
-            ]);
+        if($user->stripe_id){
+            $subscription = Subscription::whereUserId($user->id)
+                ->orderBy('updated_at')
+                ->firstOrFail();
+            if($subscription && $subscription->stripe_status == "active"){
+                $userData = array_merge($userData, [
+                    "subscription_stripe_plan" => $subscription->stripe_plan,
+                    "subscription_created_at" => Carbon::make($subscription->created_at)->toDateString(),
+                    "subscription_updated_at" => Carbon::make($subscription->updated_at)->toDateString(),
+                    "subscription_ends_at" => isset($subscription->ends_at)
+                        ? Carbon::make($subscription->ends_at)->toDateString()
+                        : null
+                ]);
+        }
         }
 
         return $this->transform($userData);

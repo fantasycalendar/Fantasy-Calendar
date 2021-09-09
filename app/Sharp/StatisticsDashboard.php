@@ -5,6 +5,7 @@ namespace App\Sharp;
 use App\User;
 
 use Carbon\CarbonPeriod;
+use Code16\Sharp\Dashboard\Layout\DashboardLayoutRow;
 use Code16\Sharp\Dashboard\Widgets\SharpBarGraphWidget;
 use Code16\Sharp\Dashboard\Widgets\SharpPieGraphWidget;
 use Illuminate\Support\Arr;
@@ -26,6 +27,14 @@ class StatisticsDashboard extends SharpDashboard
     protected function buildWidgets()
     {
         $this->addWidget(
+            SharpPanelWidget::make("users_active_in_last_thirty_days")
+                ->setInlineTemplate("<h1>{{count}}</h1> users active in the last 30 days")
+
+        )->addWidget(
+            SharpPanelWidget::make("users_active_in_year_to_date")
+                ->setInlineTemplate("<h1>{{count}}</h1> users active in year to date")
+
+        )->addWidget(
             SharpLineGraphWidget::make("subs_over_time")
                 ->setTitle("Subscriptions")
 
@@ -57,9 +66,15 @@ class StatisticsDashboard extends SharpDashboard
      */
     protected function buildWidgetsLayout()
     {
-        $this->addFullWidthWidget("subs_over_time")
-            ->addFullWidthWidget("subs_per_month")
-            ->addFullWidthWidget("subs_of_type")
+        $this->addRow(function(DashboardLayoutRow $row) {
+                $row->addWidget(6, "users_active_in_last_thirty_days")
+                    ->addWidget(6, "users_active_in_year_to_date");
+            })
+            ->addFullWidthWidget("subs_over_time")
+            ->addRow(function(DashboardLayoutRow $row) {
+                $row->addWidget(6, "subs_per_month")
+                    ->addWidget(6, "subs_of_type");
+            })
             ->addFullWidthWidget("usergrowth_month")
             ->addFullWidthWidget("users_over_time")
             ->addFullWidthWidget("agreement_over_time");
@@ -74,7 +89,6 @@ class StatisticsDashboard extends SharpDashboard
     {
 
         $user_model = new User();
-        $subscription_model = new Subscription();
 
         /* User growth and total users */
 
@@ -114,12 +128,12 @@ class StatisticsDashboard extends SharpDashboard
         }
 
         /* Total subscriptions per day */
-
-        $monthly_subscriptions = $subscription_model->where('stripe_plan', '=', 'timekeeper_monthly')->get();
-        $yearly_subscriptions = $subscription_model->where('stripe_plan', '=', 'timekeeper_yearly')->get();
+        $monthly_subscriptions = Subscription::where('stripe_plan', '=', 'timekeeper_monthly')->get();
+        $yearly_subscriptions = Subscription::where('stripe_plan', '=', 'timekeeper_yearly')->get();
 
         $monthly = $monthly_subscriptions
             ->where('created_at', '<', now()->subMonth()->lastOfMonth())
+            ->where('stripe_status', '=', "active")
             ->groupBy(function($subscription) {
                 return Carbon::parse($subscription->created_at)->format('Y-m');
             })->mapWithKeys(function($subscriptions, $date) {
@@ -128,35 +142,48 @@ class StatisticsDashboard extends SharpDashboard
 
         $yearly = $yearly_subscriptions
             ->where('created_at', '<', now()->subMonth()->lastOfMonth())
+            ->where('stripe_status', '=', "active")
             ->groupBy(function($subscription) {
                 return Carbon::parse($subscription->created_at)->format('Y-m');
             })->mapWithKeys(function($subscriptions, $date) {
                 return [$date => count($subscriptions)];
             });
 
-        $yearly_subscriptions_over_time = [];
-        $yearly_subscriptions_per_month = [];
-        $totalYearlyCount = 0;
-        foreach ($yearly as $date => $number_of_subscriptions) {
-            $yearly_subscriptions_per_month[$date] = $number_of_subscriptions;
-            $yearly_subscriptions_over_time[$date] = $number_of_subscriptions + $totalYearlyCount;
-            $totalYearlyCount += $number_of_subscriptions;
-        }
+        $period = CarbonPeriod::create(
+            min($monthly->keys()->first(), $yearly->keys()->first()),
+            '1 month',
+            max($monthly->keys()->last(), $yearly->keys()->last())
+        );
 
         $monthly_subscriptions_over_time = [];
         $monthly_subscriptions_per_month = [];
+        $yearly_subscriptions_over_time = [];
+        $yearly_subscriptions_per_month = [];
         $totalMonthlyCount = 0;
-        foreach ($monthly as $date => $number_of_subscriptions) {
-            $monthly_subscriptions_per_month[$date] = $number_of_subscriptions;
-            $monthly_subscriptions_over_time[$date] = $number_of_subscriptions + $totalMonthlyCount;
-            $totalMonthlyCount += $number_of_subscriptions;
+        $totalYearlyCount = 0;
+
+        foreach ($period as $date) {
+            $dateString = $date->format('Y-m');
+
+            $monthly_subscriptions_per_month[$dateString] = $monthly[$dateString] ?? 0;
+            $yearly_subscriptions_per_month[$dateString] = $yearly[$dateString] ?? 0;
+
+            $monthly_subscriptions_over_time[$dateString] = $monthly_subscriptions_per_month[$dateString] + $totalMonthlyCount;
+            $yearly_subscriptions_over_time[$dateString] = $yearly_subscriptions_per_month[$dateString] + $totalYearlyCount;
+
+            $totalMonthlyCount += $monthly[$dateString] ?? 0;
+            $totalYearlyCount += $yearly[$dateString] ?? 0;
         }
 
-        $this->addGraphDataSet(
-            "subs_over_time",
-            SharpGraphWidgetDataSet::make($monthly_subscriptions_over_time)
-                ->setLabel("Monthly")
-                ->setColor("blue")
+        $users_active_in_last_thirty_days = $user_model->whereNull('deleted_at')->where('last_visit', '>', now()->subDays(30))->get()->count();
+        $users_active_in_year_to_date = $user_model->whereNull('deleted_at')->where('last_visit', '>', now()->startOfYear())->get()->count();
+
+        $this->setPanelData(
+            "users_active_in_last_thirty_days", ["count" => $users_active_in_last_thirty_days]
+        );
+
+        $this->setPanelData(
+            "users_active_in_year_to_date", ["count" => $users_active_in_year_to_date]
         );
 
         $this->addGraphDataSet(
@@ -164,6 +191,13 @@ class StatisticsDashboard extends SharpDashboard
             SharpGraphWidgetDataSet::make($yearly_subscriptions_over_time)
                 ->setLabel("Yearly")
                 ->setColor("red")
+        );
+
+        $this->addGraphDataSet(
+            "subs_over_time",
+            SharpGraphWidgetDataSet::make($monthly_subscriptions_over_time)
+                ->setLabel("Monthly")
+                ->setColor("blue")
         );
 
         $this->addGraphDataSet(
