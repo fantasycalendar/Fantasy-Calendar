@@ -169,19 +169,16 @@ class StatisticsDashboard extends SharpDashboard
             ->count();
 
 
-        $monthly_income_projection = collect(DB::table("users")
+        $monthly_income_projection = DB::table("users")
             ->rightJoin('subscriptions', "users.id", '=', 'subscriptions.user_id')
             ->whereNull('users.deleted_at')
             ->whereNotNull('users.email_verified_at')
             ->where("subscriptions.stripe_status", "=", "active")
             ->select('users.created_at', 'subscriptions.stripe_plan')
-            ->get())
-            ->map(function($user){
-                return (array)$user;
-            })
+            ->get()
             ->sum(function($user){
-                $isYearly = str_contains($user["stripe_plan"], "yearly");
-                return $user['created_at'] > '2020-11-08'
+                $isYearly = str_contains($user->stripe_plan, "yearly");
+                return $user->created_at > '2020-11-08'
                     ? 24.49 / ($isYearly ? 12 : 10)
                     : 19.99 / ($isYearly ? 12 : 10);
             });
