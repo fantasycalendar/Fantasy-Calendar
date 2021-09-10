@@ -243,6 +243,13 @@ class User extends Authenticatable implements
         return $this->isPremium() && $this->discord_auth()->exists();
     }
 
+    public function hasCalendar($calendar)
+    {
+        return $this->calendars()
+            ->whereId($calendar)
+            ->exists();
+    }
+
     public function getInvitations()
     {
         return (CalendarInvite::active()->forUser($this->email)->exists())

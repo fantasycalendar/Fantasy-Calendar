@@ -22,6 +22,11 @@ class HelpHandler extends Command
         9 => 'mentionable'
     ];
 
+    public static function signature(): string
+    {
+        return 'help';
+    }
+
     public function handle(): Response
     {
         $commands = collect(config('services.discord.global_commands'));
@@ -41,14 +46,19 @@ class HelpHandler extends Command
         $response = Response::make($responseText)
             ->ephemeral();
 
-        if(!$this->setting('default_calendar')) {
-            // TODO: ->hasDefaultCalendar()
-
+        if(!$this->setting('default_calendar') || $this->user->hasCalendar($this->setting('default_calendar'))) {
             $response->appendText($this->newLine(1) . $this->bold('The first thing') . " you should do is set a default calendar:")
                      ->addRow(function(ActionRow $row) {
                          return ChooseHandler::userDefaultCalendarMenu($this->user, $row);
                      });
+
+            return $response;
         }
+
+        $response->appendText($this->newLine() . "Give one a try:")
+            ->addRow(function(ActionRow $row) {
+                $row->addButton(self::target(), self::getSignature());
+            });
 
         return $response;
     }

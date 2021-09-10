@@ -271,6 +271,24 @@ abstract class Command
         }
     }
 
+    protected static function target($function = null, $args = null)
+    {
+        if(!method_exists(static::class, $function)) {
+            $function = 'handle';
+        }
+
+        if($args) {
+            return static::signature() . ":$function:" . implode(';', $args);
+        }
+
+        return static::signature() . ":$function";
+    }
+
+    protected static function fullSignature()
+    {
+        return '/' . config('services.discord.global_command') . ' ' . static::signature();
+    }
+
     /**
      * Handles the actual incoming Discord interaction, post-setup.
      * If you're extending this to build a Discord command, this is the method you want to write.
@@ -289,4 +307,10 @@ abstract class Command
      * Runs if the user is not authorized.
      */
     public abstract function unauthorized(): void;
+
+    /**
+     * Gets the expected Discord slash command name of this command
+     * e.g. '/fc help' -> this should return 'help'
+     */
+    public abstract static function signature(): string;
 }

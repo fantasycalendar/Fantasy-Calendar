@@ -13,6 +13,11 @@ use App\User;
 class ChooseHandler extends Command
 {
     use PremiumCommand;
+    
+    public static function signature(): string
+    {
+        return "choose";
+    }
 
     public function handle(): Response
     {
@@ -60,6 +65,6 @@ class ChooseHandler extends Command
             });
 
             return $menu;
-        }, 'choose:set_default', 'Choose one of your calendars');
+        }, self::target('set_default'), 'Choose one of your calendars');
     }
 }
