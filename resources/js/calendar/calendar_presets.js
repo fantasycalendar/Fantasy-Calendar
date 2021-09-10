@@ -488,7 +488,7 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 			}
 
 			if(current_leap_day.interval !== undefined && current_leap_day.interval !== ""){
-				var local_regex = /^\!*[1-9]+[0-9]{0,}$/;
+				var local_regex = /^\+*\!*[1-9]+[0-9]{0,}$/;
 				var intervals = current_leap_day.interval.split(',');
 				for(var j = 0; j < intervals.length; j++){
 					if(!local_regex.test(intervals[j])){
