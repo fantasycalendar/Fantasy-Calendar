@@ -11,6 +11,11 @@ class LinkHandler extends Command
 {
     use PremiumCommand;
 
+    public static function signature(): string
+    {
+        return 'show link';
+    }
+
     public function handle(): string
     {
         $calendar = $this->getDefaultCalendar();

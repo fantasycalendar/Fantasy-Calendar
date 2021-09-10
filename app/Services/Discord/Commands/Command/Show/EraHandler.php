@@ -11,6 +11,11 @@ class EraHandler extends Command
 {
     use PremiumCommand;
 
+    public static function signature(): string
+    {
+        return 'show era';
+    }
+
     public function handle(): string
     {
         return $this->blockQuote("Current era:\n" . $this->bold($this->getDefaultCalendar()->current_era));

@@ -19,6 +19,11 @@ class DateChangesHandler extends Command
 
     private Calendar $calendar;
 
+    public static function signature(): string
+    {
+        return "add"; // Override by calling fullSignature() method instead
+    }
+
     public function handle()
     {
         $action = explode(' ', $this->called_command)[1];

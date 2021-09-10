@@ -16,6 +16,11 @@ class MonthHandler extends Command
 
     private Calendar $calendar;
 
+    public static function signature(): string
+    {
+        return 'show month';
+    }
+
     /**
      * Generate a
      *

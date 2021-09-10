@@ -12,6 +12,11 @@ class DayHandler extends Command
 {
     use PremiumCommand;
 
+    public static function signature(): string
+    {
+        return 'show day';
+    }
+
     public function handle(): string
     {
         $calendar = $this->getDefaultCalendar();

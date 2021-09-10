@@ -3,8 +3,11 @@
 
 namespace App\Services\Discord\Commands\Command;
 
+use App\Services\CalendarService\Month;
 use App\Services\Discord\Commands\Command;
 use App\Services\Discord\Commands\Command\Response\Component\ActionRow;
+use App\Services\Discord\Commands\Command\Show\DateHandler;
+use App\Services\Discord\Commands\Command\Show\MonthHandler;
 
 class HelpHandler extends Command
 {
@@ -46,7 +49,7 @@ class HelpHandler extends Command
         $response = Response::make($responseText)
             ->ephemeral();
 
-        if(!$this->setting('default_calendar') || $this->user->hasCalendar($this->setting('default_calendar'))) {
+        if(!$this->setting('default_calendar') || !$this->user->hasCalendar($this->setting('default_calendar'))) {
             $response->appendText($this->newLine(1) . $this->bold('The first thing') . " you should do is set a default calendar:")
                      ->addRow(function(ActionRow $row) {
                          return ChooseHandler::userDefaultCalendarMenu($this->user, $row);
@@ -57,7 +60,11 @@ class HelpHandler extends Command
 
         $response->appendText($this->newLine() . "Give one a try:")
             ->addRow(function(ActionRow $row) {
-                $row->addButton(self::target(), self::getSignature());
+                return $row->addButton(MonthHandler::target(), MonthHandler::fullSignature(), 'primary')
+                    ->addButton(DateHandler::target(), DateHandler::fullSignature(), 'primary')
+                    ->addButton(DateChangesHandler::target('change_date', ['action' => 'sub', 'unit' => 'day']), DateChangesHandler::fullSignature('sub day'))
+                    ->addButton(DateChangesHandler::target('change_date', ['action' => 'add', 'unit' => 'day']), DateChangesHandler::fullSignature('add day'))
+                    ->addButton(DateChangesHandler::target('change_date', ['action' => 'add', 'unit' => 'days', 'count' => 5]), DateChangesHandler::fullSignature('add days 5'));
             });
 
         return $response;

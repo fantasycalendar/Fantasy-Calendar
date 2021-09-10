@@ -69,8 +69,12 @@ class CommandDispatcher
         $handlerFunction = $interactionIdParts[1];
         $args = $interactionData['data']['values'] ?? explode(';', $interactionIdParts[2] ?? null);
 
-        return (new $handlerClass($interactionData, $interactionIdParts[0]))
+        $response = (new $handlerClass($interactionData, $interactionIdParts[0]))
             ->$handlerFunction(...$args);
+
+        return ($response instanceof Response)
+            ? $response
+            : (new Response($response));
     }
 
     /**

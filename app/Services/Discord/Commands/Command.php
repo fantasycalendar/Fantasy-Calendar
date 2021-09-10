@@ -271,22 +271,24 @@ abstract class Command
         }
     }
 
-    protected static function target($function = null, $args = null)
+    protected static function target($function = null, array $args = null)
     {
-        if(!method_exists(static::class, $function)) {
-            $function = 'handle';
-        }
+        $configpath = Str::replace(' ', '.', static::signature());
+        $function = (method_exists(static::class, $function))
+            ? $function
+            : 'handle';
+        $args = $args
+            ? ":" . implode(';', $args)
+            : "";
 
-        if($args) {
-            return static::signature() . ":$function:" . implode(';', $args);
-        }
-
-        return static::signature() . ":$function";
+        return "$configpath:$function$args";
     }
 
-    protected static function fullSignature()
+    protected static function fullSignature(string $override = null)
     {
-        return '/' . config('services.discord.global_command') . ' ' . static::signature();
+        $signature = $override ?? static::signature();
+
+        return '/' . config('services.discord.global_command') . ' ' . $signature;
     }
 
     /**

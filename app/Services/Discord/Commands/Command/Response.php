@@ -137,9 +137,7 @@ class Response
      */
     public function ephemeral(): Response
     {
-        if(app()->environment('production')) {
-            $this->flags = 1 << 6;
-        }
+        $this->flags = 1 << 6;
 
         return $this;
     }
