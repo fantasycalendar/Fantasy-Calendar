@@ -10,18 +10,11 @@ class DiscordUserHasNoCalendarsException extends DiscordException
 {
     public $defaultMessage = "Uh oh ... You don't have any calendars!\n\n You'll need to create at least one before you can use this integration:";
 
-    public function __construct($message = "", $code = 0, Throwable $previous = null)
+    public function makeResponse($message): Response
     {
-        $message = empty($message)
-            ? $this->defaultMessage
-            : $message;
-
-        parent::__construct($message, $code, $previous);
-    }
-
-    public function getResponse(): Response
-    {
-        return Response::make("Uh oh ... You don't have any calendars!\n\n You'll need to create at least one before you can use this integration:")
+        return ($message instanceof Response)
+            ? $message
+            : Response::make($message)
             ->ephemeral()
             ->addRow(function(ActionRow $row){
                 return $row->addButton(route('calendars.create'), 'Create a Calendar');

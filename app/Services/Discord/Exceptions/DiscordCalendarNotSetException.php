@@ -24,7 +24,7 @@ class DiscordCalendarNotSetException extends DiscordException
     {
         return ($message instanceof Response)
             ? $message
-            :Response::make($message)
+            : Response::make($message)
             ->addRow(function(ActionRow $row) {
                 return ChooseHandler::userDefaultCalendarMenu($this->user, $row);
             })

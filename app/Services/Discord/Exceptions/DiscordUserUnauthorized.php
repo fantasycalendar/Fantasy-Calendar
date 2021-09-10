@@ -10,6 +10,8 @@ class DiscordUserUnauthorized extends DiscordException
 
     public function makeResponse($message)
     {
-        return Response::make($message)->ephemeral();
+        return ($message instanceof Response)
+            ? $message
+            : Response::make($message)->ephemeral();
     }
 }

@@ -10,7 +10,9 @@ class DiscordUserInvalidException extends DiscordException
 
     protected function makeResponse($message): Response
     {
-        return Response::make($message)
+        return ($message instanceof Response)
+            ? $message
+            :Response::make($message)
             ->singleButton(route('discord.index'), 'Subscribe and connect your Fantasy Calendar account today!')
             ->ephemeral();
     }
