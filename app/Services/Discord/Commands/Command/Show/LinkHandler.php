@@ -5,6 +5,7 @@ namespace App\Services\Discord\Commands\Command\Show;
 
 
 use App\Services\Discord\Commands\Command;
+use App\Services\Discord\Commands\Command\Response;
 use App\Services\Discord\Commands\Command\Traits\PremiumCommand;
 
 class LinkHandler extends Command
@@ -16,12 +17,11 @@ class LinkHandler extends Command
         return 'show link';
     }
 
-    public function handle(): string
+    public function handle()
     {
         $calendar = $this->getDefaultCalendar();
 
-        return "You can view '".$this->bold($calendar->name)."' here: "
-            . $this->newLine()
-            . route('calendars.show', $calendar);
+        return Response::make("Check out " . $this->mention() . "'s calendar " . $this->bold($calendar->name) . " on ".config('app.name') . ":")
+            ->singleButton(route('calendars.show', $calendar), $calendar->name);
     }
 }
