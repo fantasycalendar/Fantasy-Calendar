@@ -8,6 +8,7 @@ use App\Calendar;
 use App\Services\Discord\Commands\Command\Response;
 use App\Services\Discord\Commands\Command\Traits\FormatsText;
 use App\Services\Discord\Commands\Command\ChooseHandler;
+use App\Services\Discord\Exceptions\DiscordUserHasNoCalendarsException;
 use App\Services\Discord\Exceptions\DiscordUserUnauthorized;
 use App\Facades\Epoch;
 use App\Services\Discord\Exceptions\DiscordCalendarNotSetException;
@@ -174,6 +175,10 @@ abstract class Command
                 ->whereId($this->setting('default_calendar'))
                 ->firstOrFail();
         } catch (ModelNotFoundException $e) {
+            if(!$this->user->calendars()->count()) {
+                throw new DiscordUserHasNoCalendarsException();
+            }
+
             if(!$this->setting('default_calendar')) {
                 throw new DiscordCalendarNotSetException($this->user);
             }

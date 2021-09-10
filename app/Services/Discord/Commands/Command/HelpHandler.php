@@ -30,44 +30,28 @@ class HelpHandler extends Command
         return 'help';
     }
 
+    /**
+     * Does the heavy lifting
+     *
+     * @return Response
+     */
     public function handle(): Response
     {
-        $commands = collect(config('services.discord.global_commands'));
+        // Create our initial response
+        $response = $this->buildInitialHelp();
 
-        $responseText = $commands->map(function($command){
-            $formatted = "/{$command['name']}\n";
-
-            foreach($command['options'] as $option) {
-                $formatted .= self::formatOption($option);
-            }
-
-            return $formatted;
-        })->join("\n");
-
-        $responseText = $this->codeBlock($responseText);
-
-        $response = Response::make($responseText)
-            ->ephemeral();
-
-        if(!$this->setting('default_calendar') || !$this->user->hasCalendar($this->setting('default_calendar'))) {
-            $response->appendText($this->newLine(1) . $this->bold('The first thing') . " you should do is set a default calendar:")
-                     ->addRow(function(ActionRow $row) {
-                         return ChooseHandler::userDefaultCalendarMenu($this->user, $row);
-                     });
-
-            return $response;
+        // User has no calendars
+        if(!$this->user->calendars()->count()) {
+            return $this->noCalendars($response);
         }
 
-        $response->appendText($this->newLine() . "Give one a try:")
-            ->addRow(function(ActionRow $row) {
-                return $row->addButton(MonthHandler::target(), MonthHandler::fullSignature(), 'primary')
-                    ->addButton(DateHandler::target(), DateHandler::fullSignature(), 'primary')
-                    ->addButton(DateChangesHandler::target('change_date', ['action' => 'sub', 'unit' => 'day']), DateChangesHandler::fullSignature('sub day'))
-                    ->addButton(DateChangesHandler::target('change_date', ['action' => 'add', 'unit' => 'day']), DateChangesHandler::fullSignature('add day'))
-                    ->addButton(DateChangesHandler::target('change_date', ['action' => 'add', 'unit' => 'days', 'count' => 5]), DateChangesHandler::fullSignature('add days 5'));
-            });
+        // User needs to set a default calendar
+        if(!$this->setting('default_calendar') || !$this->user->hasCalendar($this->setting('default_calendar'))) {
+            return $this->needsDefaultCalendarSet($response);
+        }
 
-        return $response;
+        // Success! User is all setup.
+        return $this->success($response);
     }
 
     /**
@@ -105,5 +89,57 @@ class HelpHandler extends Command
         if(!array_key_exists($typeInteger, self::TYPES)) throw new \Exception("Invalid type detected in command definition!");
 
         return self::TYPES[$typeInteger];
+    }
+
+    private function buildInitialHelp()
+    {
+        $commands = collect(config('services.discord.global_commands'));
+
+        $responseText = $commands->map(function($command){
+            $formatted = "/{$command['name']}\n";
+
+            foreach($command['options'] as $option) {
+                $formatted .= self::formatOption($option);
+            }
+
+            return $formatted;
+        })->join("\n");
+
+        $responseText = $this->codeBlock($responseText);
+
+        return Response::make($responseText)
+            ->ephemeral();
+    }
+
+    private function noCalendars($response)
+    {
+        $response->appendText($this->newLine() . "Before you can do any of that, you'll need to create a calendar:")
+            ->singleButton(route('calendars.create'), 'Create a Calendar');
+
+        return $response;
+    }
+
+    private function needsDefaultCalendarSet($response)
+    {
+        $response->appendText($this->newLine(1) . $this->bold('The first thing') . " you should do is set a default calendar:")
+            ->addRow(function(ActionRow $row) {
+                return ChooseHandler::userDefaultCalendarMenu($this->user, $row, $this->setting('default_calendar'));
+            });
+
+        return $response;
+    }
+
+    private function success($response)
+    {
+        $response->appendText($this->newLine() . "Give something a try!:")
+            ->addRow(function(ActionRow $row) {
+                return $row->addButton(MonthHandler::target(), MonthHandler::fullSignature(), 'primary')
+                    ->addButton(DateHandler::target(), DateHandler::fullSignature(), 'primary')
+                    ->addButton(DateChangesHandler::target('change_date', ['action' => 'sub', 'unit' => 'day']), DateChangesHandler::fullSignature('sub day'))
+                    ->addButton(DateChangesHandler::target('change_date', ['action' => 'add', 'unit' => 'day']), DateChangesHandler::fullSignature('add day'))
+                    ->addButton(DateChangesHandler::target('change_date', ['action' => 'add', 'unit' => 'days', 'count' => 5]), DateChangesHandler::fullSignature('add days 5'));
+            });
+
+        return $response;
     }
 }

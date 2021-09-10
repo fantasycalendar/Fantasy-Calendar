@@ -11,12 +11,11 @@ class DiscordException extends \Exception
      * @var Response
      */
     protected Response $response;
+    protected $defaultMessage = null;
 
-    public function __construct($message, $code = 0, Throwable $previous = null)
+    public function __construct($message = null, $code = 0, Throwable $previous = null)
     {
-        $this->response = ($message instanceof Response)
-            ? $message
-            : $this->makeResponse($message);
+        $this->response = $this->makeResponse($message ?? $this->defaultMessage);
 
         $message = $this->response->getTextContent();
 
@@ -28,8 +27,12 @@ class DiscordException extends \Exception
         return $this->response;
     }
 
-    private function makeResponse($message)
+    protected function makeResponse($message)
     {
-        return Response::make($message)->ephemeral();
+        logger('making response');
+
+        return ($message instanceof Response)
+            ? $message
+            : Response::make($message)->ephemeral();
     }
 }

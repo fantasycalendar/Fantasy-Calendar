@@ -8,6 +8,7 @@ use App\Services\Discord\Commands\Command;
 use App\Services\Discord\Commands\Command\Response\Component\ActionRow;
 use App\Services\Discord\Commands\Command\Response\Component\SelectMenu;
 use App\Services\Discord\Commands\Command\Traits\PremiumCommand;
+use App\Services\Discord\Exceptions\DiscordUserHasNoCalendarsException;
 use App\User;
 
 class ChooseHandler extends Command
@@ -22,18 +23,14 @@ class ChooseHandler extends Command
     public function handle(): Response
     {
         if($this->user->calendars->count() < 1) {
-            return Response::make("You don't have any calendars! You'll need to create at least one:")
-                ->ephemeral()
-                ->addRow(function(ActionRow $row){
-                    return $row->addButton(route('calendars.create'), 'Create a Calendar');
-                });
+            throw new DiscordUserHasNoCalendarsException();
         }
 
 
         return Response::make('Select one of your calendars to be your default for this server:')
             ->ephemeral()
             ->addRow(function(ActionRow $row){
-                return self::userDefaultCalendarMenu($this->user, $row);
+                return self::userDefaultCalendarMenu($this->user, $row, $this->getDefaultCalendar()->id);
             });
     }
 
@@ -53,14 +50,16 @@ class ChooseHandler extends Command
      * @param ActionRow $row
      * @return ActionRow
      */
-    public static function userDefaultCalendarMenu(User $user, ActionRow $row): ActionRow
+    public static function userDefaultCalendarMenu(User $user, ActionRow $row, int $default = null): ActionRow
     {
-        // TODO: Check for currently-set calendar and prefill it
-        return $row->addSelectMenu(function(SelectMenu $menu) use ($user) {
-            $user->calendars->each(function($calendar) use (&$menu){
+        logger('Default is ' . $default);
+        return $row->addSelectMenu(function(SelectMenu $menu) use ($user, $default) {
+            $user->calendars->each(function($calendar) use (&$menu, $default){
                 $menu->addOption(
                     $calendar->name, $calendar->id,
-                    "A calendar with {$calendar->events()->count()} events."
+                    "A calendar with {$calendar->events()->count()} events.",
+                    null,
+                    $calendar->id === $default
                 );
             });
 
