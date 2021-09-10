@@ -113,25 +113,24 @@ class HelpHandler extends Command
 
     private function noCalendars($response)
     {
-        $response->appendText($this->newLine() . "Before you can do any of that, you'll need to create a calendar:")
+        return $response
+            ->appendText($this->newLine() . "Before you can do any of that, you'll need to create a calendar:")
             ->singleButton(route('calendars.create'), 'Create a Calendar');
-
-        return $response;
     }
 
     private function needsDefaultCalendarSet($response)
     {
-        $response->appendText($this->newLine(1) . $this->bold('The first thing') . " you should do is set a default calendar:")
+        return $response
+            ->appendText($this->newLine(1) . $this->bold('The first thing') . " you should do is set a default calendar:")
             ->addRow(function(ActionRow $row) {
                 return ChooseHandler::userDefaultCalendarMenu($this->user, $row, $this->setting('default_calendar'));
             });
-
-        return $response;
     }
 
     private function success($response)
     {
-        $response->appendText($this->newLine() . "Give something a try!:")
+        return $response
+            ->appendText($this->newLine() . "Give something a try!:")
             ->addRow(function(ActionRow $row) {
                 return $row->addButton(MonthHandler::target(), MonthHandler::fullSignature(), 'primary')
                     ->addButton(DateHandler::target(), DateHandler::fullSignature(), 'primary')
@@ -139,7 +138,5 @@ class HelpHandler extends Command
                     ->addButton(DateChangesHandler::target('change_date', ['action' => 'add', 'unit' => 'day']), DateChangesHandler::fullSignature('add day'))
                     ->addButton(DateChangesHandler::target('change_date', ['action' => 'add', 'unit' => 'days', 'count' => 5]), DateChangesHandler::fullSignature('add days 5'));
             });
-
-        return $response;
     }
 }
