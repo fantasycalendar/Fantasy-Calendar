@@ -77,8 +77,8 @@ class DateChangesHandler extends Command
 
         $response = Response::make($responseText)
             ->addRow(function(ActionRow $row) use ($action, $unit, $count, $reverse_action){
-                return $row->addButton("$action:change_date:$reverse_action;$unit;$count;true", ['label' => 'Undo', 'emoji' => ':arrow_left:'])
-                           ->addButton("$action:change_date:$action;$unit;$count;true", 'Again', 'success');
+                return $row->addButton("$action:change_date:$reverse_action;$unit;$count;true", ['label' => ucfirst($reverse_action) . " $count instead", 'emoji' => ':arrow_left:'])
+                           ->addButton("$action:change_date:$action;$unit;$count;true", ucfirst($action) ." $count more", 'success');
             });
 
         if($update) {
