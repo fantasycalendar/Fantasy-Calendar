@@ -13,17 +13,18 @@ class DiscordCalendarNotSetException extends DiscordException
     private User $user;
     public $defaultMessage = "You'll need to pick one of your calendars to run that command.";
 
-    public function __construct($user, Response $message = null, $code = 0, Throwable $previous = null)
+    public function __construct($user, $message = null, $code = 0, Throwable $previous = null)
     {
         $this->user = $user;
-        $message = $message ?? $this->defaultMessage;
 
         parent::__construct($message, $code, $previous);
     }
 
     protected function makeResponse($message): Response
     {
-        return Response::make($message)
+        return ($message instanceof Response)
+            ? $message
+            :Response::make($message)
             ->addRow(function(ActionRow $row) {
                 return ChooseHandler::userDefaultCalendarMenu($this->user, $row);
             })
