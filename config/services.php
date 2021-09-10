@@ -51,22 +51,9 @@ return [
                         'type' => 1
                     ],
                     [
-                        'name' => 'list',
-                        'description' => 'Lists your Fantasy Calendar calendars.',
-                        'type' => 1
-                    ],
-                    [
-                        'name' => 'use',
+                        'name' => 'choose',
                         'description' => 'Set the default calendar for use in this server',
                         'type' => 1,
-                        'options' => [
-                            [
-                                'name' => 'id',
-                                'description' => 'The calendar number, gathered from the list command',
-                                'type' => 4,
-                                'required' => true
-                            ]
-                        ]
                     ],
                     [
                         'name' => 'show',
@@ -225,7 +212,7 @@ return [
 //                    ],
                     [
                         'name' => 'add',
-                        'description' => 'Add to the date of your selected calendar',
+                        'description' => 'Advance the date or time of your selected calendar',
                         'type' => 2,
                         'options' => [
                             [
@@ -336,7 +323,7 @@ return [
 
                     [
                         'name' => 'sub',
-                        'description' => 'Subtract to the date of your selected calendar',
+                        'description' => 'Backtrack the date of your selected calendar',
                         'type' => 2,
                         'options' => [
                             [
@@ -430,19 +417,6 @@ return [
 //                                ]
 //                            ],
                         ],
-                        [
-                            'name' => 'echo',
-                            'description' => 'Says back what you said (Useful to test the integration.)',
-                            'type' => 1,
-                            'options' => [
-                                [
-                                    'name' => 'echo',
-                                    'description' => 'A string to echo',
-                                    'type' => 3,
-                                    'required' => true
-                                ]
-                            ]
-                        ],
                     ],
                 ]
             ]
@@ -450,8 +424,6 @@ return [
         'command_handlers' => [
             env('DISCORD_COMMAND', 'fc') => [
                 'help' => \App\Services\Discord\Commands\Command\HelpHandler::class,
-                'echo' => \App\Services\Discord\Commands\Command\EchoHandler::class,
-                'list' => \App\Services\Discord\Commands\Command\ListHandler::class,
                 'show' => [
                     'date' => \App\Services\Discord\Commands\Command\Show\DateHandler::class,
                     'month' => \App\Services\Discord\Commands\Command\Show\MonthHandler::class,
@@ -471,7 +443,7 @@ return [
 //                ],
                 'add' => \App\Services\Discord\Commands\Command\DateChangesHandler::class,
                 'sub' => \App\Services\Discord\Commands\Command\DateChangesHandler::class,
-                'use' => \App\Services\Discord\Commands\Command\UseHandler::class,
+                'choose' => \App\Services\Discord\Commands\Command\ChooseHandler::class,
             ]
         ]
     ],

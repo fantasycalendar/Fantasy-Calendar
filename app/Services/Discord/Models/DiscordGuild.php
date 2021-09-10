@@ -48,6 +48,6 @@ class DiscordGuild extends Model
 
         $this->save();
 
-        return $this->guild_settings;
+        return $value;
     }
 }

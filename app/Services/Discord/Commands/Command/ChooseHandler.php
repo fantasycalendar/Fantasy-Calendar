@@ -10,7 +10,7 @@ use App\Services\Discord\Commands\Command\Response\Component\SelectMenu;
 use App\Services\Discord\Commands\Command\Traits\PremiumCommand;
 use App\User;
 
-class ListHandler extends Command
+class ChooseHandler extends Command
 {
     use PremiumCommand;
 
@@ -60,6 +60,6 @@ class ListHandler extends Command
             });
 
             return $menu;
-        }, 'list:set_default', 'Choose one of your calendars');
+        }, 'choose:set_default', 'Choose one of your calendars');
     }
 }

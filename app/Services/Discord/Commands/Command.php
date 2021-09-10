@@ -7,6 +7,7 @@ namespace App\Services\Discord\Commands;
 use App\Calendar;
 use App\Services\Discord\Commands\Command\Response;
 use App\Services\Discord\Commands\Command\Traits\FormatsText;
+use App\Services\Discord\Commands\Command\ChooseHandler;
 use App\Services\Discord\Exceptions\DiscordUserUnauthorized;
 use App\Facades\Epoch;
 use App\Services\Discord\Exceptions\DiscordCalendarNotSetException;
@@ -15,6 +16,7 @@ use App\Services\Discord\Models\DiscordAuthToken;
 use App\Services\Discord\Models\DiscordGuild;
 use App\Services\Discord\Models\DiscordInteraction;
 use App\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
@@ -103,7 +105,7 @@ abstract class Command
      */
     protected function setting($key, $value = null)
     {
-        return ($value)
+        return ($value !== null)
             ? $this->guild->setSetting($key, $value)
             : $this->guild->getSetting($key);
     }
@@ -165,21 +167,37 @@ abstract class Command
         ]);
     }
 
+    protected function resolveCalendar(): Calendar
+    {
+        try {
+            return $this->user->calendars()
+                ->whereId($this->setting('default_calendar'))
+                ->firstOrFail();
+        } catch (ModelNotFoundException $e) {
+            if(!$this->setting('default_calendar')) {
+                throw new DiscordCalendarNotSetException($this->user);
+            }
+
+            $message = Response::make("Your previously-set default calendar could not be found. Which one should we use, instead?")
+                ->addRow(function(Response\Component\ActionRow $row){
+                    return ChooseHandler::userDefaultCalendarMenu($this->user, $row);
+                })
+                ->addRow(function(Response\Component\ActionRow $row){
+                    return $row->addButton(route('discord'), "Unexpected? We can help!");
+                })
+                ->ephemeral();
+
+            throw new DiscordCalendarNotSetException($this->user, $message);
+        }
+    }
+
     /**
      * @throws DiscordCalendarNotSetException
      * @returns Calendar
      */
-    protected function getDefaultCalendar(): Calendar
+    protected function getDefaultCalendar()
     {
-        if(!$this->setting('default_calendar')) {
-            if($this->user->calendars()->count() > 1){
-                throw new DiscordCalendarNotSetException($this->user);
-            }
-
-            $this->setting('default_calendar', $this->user->calendars->first()->id);
-        }
-
-        $calendar = Calendar::findOrFail($this->setting('default_calendar'));
+        $calendar = $this->resolveCalendar();
 
         Epoch::forCalendar($calendar);
 

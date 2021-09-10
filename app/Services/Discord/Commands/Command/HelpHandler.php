@@ -46,7 +46,7 @@ class HelpHandler extends Command
 
             $response->appendText($this->newLine(1) . $this->bold('The first thing') . " you should do is set a default calendar:")
                      ->addRow(function(ActionRow $row) {
-                         return ListHandler::userDefaultCalendarMenu($this->user, $row);
+                         return ChooseHandler::userDefaultCalendarMenu($this->user, $row);
                      });
         }
 
