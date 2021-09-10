@@ -262,7 +262,6 @@ abstract class Command
      */
     protected function getCalledCommand($data)
     {
-        logger()->debug('getCalledCommand on ' . json_encode($data));
         switch (Arr::get($data, 'type')) {
             case null:
                 return '';

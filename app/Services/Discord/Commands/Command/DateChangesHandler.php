@@ -37,12 +37,12 @@ class DateChangesHandler extends Command
 
     public function change_date($action, $unit, $count = 1, $update = false)
     {
-        if($update && $this->interaction('member.user.id') !== $this->interaction('message.interaction.user.id')) {
+        $this->calendar = $this->getDefaultCalendar();
+
+        if(!$this->user->is($this->calendar->user)) {
             return Response::make("You can only change the date on your own calendars")
                 ->ephemeral();
         }
-
-        $this->calendar = $this->getDefaultCalendar();
 
         $method = $action . ucfirst(Str::plural($unit));
 
