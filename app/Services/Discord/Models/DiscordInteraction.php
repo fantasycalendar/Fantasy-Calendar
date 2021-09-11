@@ -54,12 +54,6 @@ class DiscordInteraction extends Model
      */
     public function getCalledCommand($data = null)
     {
-        logger()->debug('Data');
-        logger()->debug(json_encode($data));
-        logger()->debug('This->data');
-        logger()->debug(json_encode($this->data));
-        $data = $data ?? $this->data;
-
         switch (Arr::get($data, 'type')) {
             case null:
                 return '';
