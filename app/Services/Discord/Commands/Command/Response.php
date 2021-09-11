@@ -10,6 +10,7 @@ use Illuminate\Support\Collection;
 class Response
 {
     public const PONG = ['type' => 1];
+    public const FLAG_EPHEMERAL = 6;
 
     public array $types = [
         'pong' => 1,
@@ -97,6 +98,26 @@ class Response
         return !empty($this->text_content);
     }
 
+    /**
+     * Adds a response flag
+     *
+     * @param int $flagId
+     * @return $this
+     */
+    public function enableFlag(int $flagId): Response
+    {
+        $this->flags = $this->flags | (1 << $flagId);
+
+        return $this;
+    }
+
+    public function disableFlag(int $flagId): Response
+    {
+        $this->flags = $this->flags ^ (1 << $flagId);
+
+        return $this;
+    }
+
     public function hasFlags(): bool
     {
         return $this->flags > 0;
@@ -137,15 +158,9 @@ class Response
      */
     public function ephemeral(): Response
     {
-        if(app()->environment(['development', 'local']) && !config('services.discord.force_ephemeral_in_dev')) {
-            $this->prependText("_(Ephemeral messages not hidden during development)_\n");
-
-            return $this;
-        }
-
-        $this->flags = 1 << 6;
-
-        return $this;
+        return (app()->environment(['development', 'local']) && !config('services.discord.force_ephemeral_in_dev'))
+            ? $this->prependText("_(Ephemeral messages not hidden during development)_\n")
+            : $this->enableFlag(static::FLAG_EPHEMERAL);
     }
 
     /**
