@@ -28,18 +28,22 @@ abstract class Command
     use FormatsText;
 
     protected User $user;
-    protected $discord_auth;
+    protected DiscordAuthToken $discord_auth;
     protected DiscordGuild $guild;
+    protected DiscordInteraction $discord_interaction;
     protected array $interaction_data;
     protected string $response;
-    private bool $deferred = false;
+    /**
+     * @var bool $deferred Set this to true if we're extending this to respond later
+     */
+    protected bool $deferred = false;
     protected string $discord_nickname;
     protected string $discord_username;
     protected string $discord_user_id;
     protected Collection $options;
     protected string $called_command;
     protected Response $response_details;
-    private $message_id;
+    protected $message_id;
 
     /**
      * Command constructor.
@@ -91,6 +95,8 @@ abstract class Command
     }
 
     /**
+     * Helper to get information from our Discord interaction
+     *
      * @param $key
      * @return array|\ArrayAccess|mixed
      */
@@ -100,6 +106,8 @@ abstract class Command
     }
 
     /**
+     * Gets or sets a setting value
+     *
      * @param $key
      * @param null $value
      * @return array|\ArrayAccess|mixed
@@ -112,7 +120,7 @@ abstract class Command
     }
 
     /**
-     * Get the DiscordGuild for this user interaction
+     * Get or create the DiscordGuild for this user interaction
      *
      * @return DiscordGuild
      */
@@ -125,7 +133,7 @@ abstract class Command
     }
 
     /**
-     * Binds the Discord user ID for this interaction to a local FC user
+     * Binds the Discord user ID for this interaction to a local FC user and a local DiscordAuth record
      *
      * @throws DiscordUserInvalidException
      */
@@ -139,8 +147,13 @@ abstract class Command
 
         try {
             $this->discord_auth = DiscordAuthToken::discordUserId($commandUserId)->firstOrFail();
+            $this->discord_interaction->auth_token()->associate($this->discord_auth);
+
             $this->user = $this->discord_auth->user;
-        } catch (\Throwable $e) {
+            $this->discord_interaction->user()->associate($this->user);
+
+            $this->discord_interaction->save();
+        } catch (ModelNotFoundException $e) {
             throw new DiscordUserInvalidException("You'll need to be a paid subscriber _(only $2.49/month!)_ on Fantasy Calendar and connect your Discord account to use this integration.");
         }
 
@@ -152,12 +165,12 @@ abstract class Command
     /**
      * Log the discord interaction in our local DB
      *
-     * @return DiscordInteraction
+     * @return void
      */
-    private function logInteraction(): DiscordInteraction
+    private function logInteraction(): void
     {
-        return DiscordInteraction::create([
-            'discord_id' => optional($this->discord_auth)->id,
+        $this->discord_interaction = DiscordInteraction::create([
+            'discord_id' => null,
             'channel_id' => $this->interaction('channel_id'),
             'type' => $this->interaction('type'),
             'guild_id' => $this->interaction('guild_id'),

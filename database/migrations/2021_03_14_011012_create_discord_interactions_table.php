@@ -1,5 +1,6 @@
 <?php
 
+use App\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,6 +18,7 @@ class CreateDiscordInteractionsTable extends Migration
             $table->id();
             $table->timestamps();
             $table->string('discord_id')->nullable();
+            $table->foreignIdFor(User::class)->nullable();
             $table->string('type');
             $table->json('data');
             $table->string('guild_id')->nullable();

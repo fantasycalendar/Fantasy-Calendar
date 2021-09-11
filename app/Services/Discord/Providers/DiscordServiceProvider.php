@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Providers;
+namespace App\Services\Discord\Providers;
 
 use App\Services\Discord\Http\Controllers\DiscordController;
 use App\Services\Discord\Http\Middleware\VerifyDiscordSignature;
