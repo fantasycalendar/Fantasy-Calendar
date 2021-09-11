@@ -4,14 +4,14 @@
 
     /fc
         - help
-        - list
+        - choose
         - show
             - date <- (Eventually uses date_format below)
                 - detailed
             - month {--with-adjacent: false}
-            - day {--with-hidden-events: false} (For the FUUUTUUUUREE)
+            - day {--with-hidden-events: false} (Option for the FUUUTUUUUREE)
             - event {partial name}
-            - era
+            - era (Future)
         - set
             - date {date string} <- Tries to determine what date you wanted (Kythorn 25)
             - hour
@@ -19,7 +19,7 @@
             - day
             - month
             - year
-            - setting
+            - setting (Future)
                 - default_show: [Default: month]
                 - date_format: [Default: Month Name (##,day name), YYYY]
                 - calendar: {id (from 'list'), partial name, hash, URL}
