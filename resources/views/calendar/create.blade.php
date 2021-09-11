@@ -2,7 +2,7 @@
 
 @push('head')
     <script>
-  
+
         hash = getUrlParameter('id');
 
         window.Perms = new Perms(
@@ -89,6 +89,8 @@
             "location": "Equatorial"
         };
 
+        preview_date = clone(dynamic_data);
+
         $(document).ready(function(){
 
             if(static_data){
@@ -131,7 +133,7 @@
         }
 
     </script>
-    
+
 @endpush
 
 @section('content')
