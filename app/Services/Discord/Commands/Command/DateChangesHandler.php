@@ -43,6 +43,17 @@ class DateChangesHandler extends Command
         return $this->change_date($action, $unit, $count);
     }
 
+    /**
+     * Changes the current date on a calendar by moving a specific unit in a direction by an amount
+     *
+     * @param $action
+     * @param $unit
+     * @param int $count
+     * @param false $update
+     * @return Response|string
+     * @throws DiscordCalendarLinkedException
+     * @throws \App\Services\Discord\Exceptions\DiscordCalendarNotSetException
+     */
     public function change_date($action, $unit, $count = 1, $update = false)
     {
         $this->calendar = $this->getDefaultCalendar();
