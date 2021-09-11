@@ -70,11 +70,11 @@ abstract class Command
         $this->message_id = $this->interaction('message.id');
         $this->discord_user_id = $this->interaction('member.user.id');
         $this->options = self::getOptions($this->interaction('data.options.0'));
-        $this->called_command = '/' . $this->getCalledCommand($this->interaction('data'));
 
         $this->logInteraction();
         $this->resolveUserAccount();
 
+        $this->called_command = '/' . $this->discord_interaction->getCalledCommand();
         $this->guild = $this->getGuild();
     }
 
@@ -263,28 +263,6 @@ abstract class Command
                 return collect([$data['name'] => $data['value']]);
             default:
                 return collect();
-        }
-    }
-
-    /**
-     * Gets the called command as a string, sans options.
-     * For example, if the user typed "/fc show month", this returns "fc show month"
-     *
-     * @param $data
-     * @return array|\ArrayAccess|mixed|string
-     */
-    protected function getCalledCommand($data)
-    {
-        switch (Arr::get($data, 'type')) {
-            case null:
-                return '';
-            case 4:
-                return $this->options->join(' ');
-            case 2:
-            case 1:
-                return Arr::get($data, 'name') . ' ' . self::getCalledCommand(Arr::get($data, 'options.0'));
-            default:
-                return Arr::get($data, 'name');
         }
     }
 
