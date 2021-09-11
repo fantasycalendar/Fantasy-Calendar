@@ -8,6 +8,7 @@ use App\Calendar;
 use App\Services\Discord\Commands\Command\Response;
 use App\Services\Discord\Commands\Command\Traits\FormatsText;
 use App\Services\Discord\Commands\Command\ChooseHandler;
+use App\Services\Discord\Exceptions\DiscordException;
 use App\Services\Discord\Exceptions\DiscordUserHasNoCalendarsException;
 use App\Services\Discord\Exceptions\DiscordUserUnauthorized;
 use App\Facades\Epoch;
@@ -76,6 +77,10 @@ abstract class Command
         $this->options = $this->discord_interaction->options;
         $this->called_command = '/' . $this->discord_interaction->called_command;
         $this->guild = $this->getGuild();
+
+        if(!$this->authorize()) {
+            $this->unauthorized();
+        }
     }
 
     /**
@@ -156,10 +161,6 @@ abstract class Command
             $this->discord_interaction->save();
         } catch (ModelNotFoundException $e) {
             throw new DiscordUserInvalidException();
-        }
-
-        if(!$this->authorize()) {
-            $this->unauthorized();
         }
     }
 
@@ -302,7 +303,8 @@ abstract class Command
     public abstract function authorize(): bool;
 
     /**
-     * Runs if the user is not authorized.
+     * Runs if the user is not authorized. Should throw a DiscordException so we can provide rich interactions back to the user.
+     * @throws DiscordException
      */
     public abstract function unauthorized(): void;
 
