@@ -126,10 +126,10 @@ abstract class Command
      */
     protected function getGuild(): DiscordGuild
     {
-        return DiscordGuild::firstOrCreate(
-            ['guild_id' => $this->interaction('guild_id'), 'discord_auth_id' => $this->discord_auth->id],
-            ['user_id' => $this->user->id]
-        );
+        return DiscordGuild::firstOrCreate([
+            'guild_id' => $this->interaction('guild_id'),
+            'user_id' => $this->user->id
+        ], ['discord_auth_id' => $this->discord_auth->id]);
     }
 
     /**

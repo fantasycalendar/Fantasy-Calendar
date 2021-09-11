@@ -9,9 +9,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 
-/**
- * @method static firstOrCreate(array $array, array $array1)
- */
 class DiscordGuild extends Model
 {
     use HasFactory;
