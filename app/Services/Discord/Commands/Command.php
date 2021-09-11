@@ -211,6 +211,8 @@ abstract class Command
     }
 
     /**
+     * Gets the default calendar for this user in the discord server they're calling from
+     *
      * @throws DiscordCalendarNotSetException
      * @returns Calendar
      */
@@ -246,6 +248,8 @@ abstract class Command
     }
 
     /**
+     * Formats our command options into something we can call associatively
+     *
      * @param $data
      * @return Collection
      */
@@ -267,7 +271,21 @@ abstract class Command
         }
     }
 
-    protected static function target($function = null, array $args = null)
+    /**
+     * Generates our 'target' string format for a method on this command instance
+     * For example, if our `services.discord.global_command` is set to `fc-dev` and we call:
+     * DateChangesHandler::target('change_date', ['action' => 'sub', 'unit' => 'days', 'count' => 5])
+     *
+     * It will return the value
+     * 'fc-dev.add:change_date:add;days;5'
+     *
+     * Which can then be used as a 'target' on a button component.
+     *
+     * @param null $function
+     * @param array|null $args
+     * @return string
+     */
+    protected static function target($function = null, array $args = null): string
     {
         $configpath = Str::replace(' ', '.', static::signature());
         $function = (method_exists(static::class, $function))
@@ -280,7 +298,13 @@ abstract class Command
         return "$configpath:$function$args";
     }
 
-    protected static function fullSignature(string $override = null)
+    /**
+     * Generates a 'signature' for the command, like `/fc add date`
+     *
+     * @param string|null $override
+     * @return string
+     */
+    protected static function fullSignature(string $override = null): string
     {
         $signature = $override ?? static::signature();
 
