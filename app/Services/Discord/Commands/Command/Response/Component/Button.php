@@ -23,6 +23,17 @@ class Button extends Component
     private $emoji;
     private bool $disabled;
 
+    /**
+     * Target is a 'target string' for the Discord button to relate back to
+     * @see Command::target()
+     *
+     *
+     * @param $target
+     * @param $label
+     * @param string $style
+     * @param false $disabled
+     * @throws \Exception
+     */
     public function __construct($target, $label, $style = 'secondary', $disabled = false)
     {
         $this->target = $target;
@@ -32,6 +43,11 @@ class Button extends Component
         $this->initLabel($label);
     }
 
+    /**
+     * Turns the Button into the appropriate array format for Discord
+     *
+     * @return int[]
+     */
     public function build(): array
     {
         $response = [

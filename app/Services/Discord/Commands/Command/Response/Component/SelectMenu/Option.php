@@ -21,7 +21,10 @@ class Option
         $this->default = $default;
     }
 
-    public function build()
+    /**
+     * @return array
+     */
+    public function build(): array
     {
         return [
             'label' => $this->label,

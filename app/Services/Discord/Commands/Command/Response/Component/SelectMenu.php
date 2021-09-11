@@ -50,6 +50,16 @@ class SelectMenu extends Component
         ];
     }
 
+    /**
+     * Adds an option to the selection drop-down that will show up in Discord
+     *
+     * @param $label
+     * @param $value
+     * @param string $description
+     * @param null $emoji
+     * @param false $default
+     * @return $this
+     */
     public function addOption($label, $value, $description = '', $emoji = null, $default = false): SelectMenu
     {
         $this->options->push(new Option($label, $value, $description, $emoji, $default));
