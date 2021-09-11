@@ -99,7 +99,7 @@ class Response
     }
 
     /**
-     * Adds a response flag
+     * Enables a bitwise response flag
      *
      * @param int $flagId
      * @return $this
@@ -111,6 +111,12 @@ class Response
         return $this;
     }
 
+    /**
+     * Disables a bitwise response flag
+     *
+     * @param int $flagId
+     * @return $this
+     */
     public function disableFlag(int $flagId): Response
     {
         $this->flags = $this->flags ^ (1 << $flagId);
@@ -118,6 +124,16 @@ class Response
         return $this;
     }
 
+    public function hasFlag(int $flagId): bool
+    {
+        return $this->flags & (1 << $flagId);
+    }
+
+    /**
+     * Determines whether this response has any flags at all
+     *
+     * @return bool
+     */
     public function hasFlags(): bool
     {
         return $this->flags > 0;
