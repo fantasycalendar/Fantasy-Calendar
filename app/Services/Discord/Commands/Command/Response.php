@@ -217,7 +217,7 @@ class Response
      *
      * @return mixed
      */
-    public function buildComponents()
+    public function buildComponents(): array
     {
         return $this->components->map->build()->toArray();
     }
