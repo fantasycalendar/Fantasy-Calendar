@@ -49,7 +49,8 @@ class DiscordController extends Controller
      */
     public function hook(): array
     {
-        return CommandDispatcher::dispatch(request()->all());
+        return CommandDispatcher::dispatch(request()->all())
+            ->getMessage();
     }
 
     public function test()

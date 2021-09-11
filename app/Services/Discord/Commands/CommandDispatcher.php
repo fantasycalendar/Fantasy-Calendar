@@ -27,14 +27,14 @@ class CommandDispatcher
      * @param $discordInteraction
      * @return array
      */
-    public static function dispatch($discordInteraction): array
+    public static function dispatch($discordInteraction): Response
     {
         return self::failGracefully(function() use ($discordInteraction) {
             $type = self::TYPES[$discordInteraction['type']];
             $method = 'dispatch' . $type;
 
             return forward_static_call([self::class, $method], $discordInteraction);
-        })->getMessage();
+        });
     }
 
     /**
