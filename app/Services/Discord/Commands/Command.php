@@ -148,13 +148,14 @@ abstract class Command
         try {
             $this->discord_auth = DiscordAuthToken::discordUserId($commandUserId)->firstOrFail();
             $this->discord_interaction->auth_token()->associate($this->discord_auth);
+            $this->discord_interaction->save();
 
             $this->user = $this->discord_auth->user;
             $this->discord_interaction->user()->associate($this->user);
 
             $this->discord_interaction->save();
         } catch (ModelNotFoundException $e) {
-            throw new DiscordUserInvalidException("You'll need to be a paid subscriber _(only $2.49/month!)_ on Fantasy Calendar and connect your Discord account to use this integration.");
+            throw new DiscordUserInvalidException();
         }
 
         if(!$this->authorize()) {
