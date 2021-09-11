@@ -137,6 +137,12 @@ class Response
      */
     public function ephemeral(): Response
     {
+        if(app()->environment(['development', 'local'])) {
+            $this->prependText("_(Ephemeral messages not hidden during development)_\n");
+
+            return $this;
+        }
+
         $this->flags = 1 << 6;
 
         return $this;
