@@ -180,7 +180,7 @@ class User extends Authenticatable implements
     }
 
     public function isPremium() {
-        return $this->subscribedToPlan(['timekeeper_monthly', 'timekeeper_yearly'], 'Timekeeper') || $this->betaAccess();
+        return $this->paymentLevel() !== 'Free';
     }
 
     /**
