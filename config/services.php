@@ -36,6 +36,7 @@ return [
         'client_secret' => env('DISCORD_CLIENT_SECRET'),
         'redirect' => env('DISCORD_REDIRECT_URI'),
         'global_command' => env('DISCORD_COMMAND'),
+        'force_ephemeral_in_dev' => env('DISCORD_FORCE_EPHEMERAL', false),
 
         // optional
         'allow_gif_avatars' => (bool)env('DISCORD_AVATAR_GIF', true),
