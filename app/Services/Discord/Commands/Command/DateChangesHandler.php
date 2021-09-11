@@ -9,6 +9,7 @@ use App\Facades\Epoch;
 use App\Services\Discord\Commands\Command;
 use App\Services\Discord\Commands\Command\Response\Component\ActionRow;
 use App\Services\Discord\Commands\Command\Traits\PremiumCommand;
+use App\Services\Discord\Exceptions\DiscordCalendarLinkedException;
 use App\Services\RendererService\TextRenderer;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
@@ -49,6 +50,10 @@ class DateChangesHandler extends Command
         if(!$this->user->is($this->calendar->user)) {
             return Response::make("You can only change the date on your own calendars")
                 ->ephemeral();
+        }
+
+        if($this->calendar->parent()->exists()) {
+            throw new DiscordCalendarLinkedException($this->calendar);
         }
 
         $method = $action . ucfirst(Str::plural($unit));
