@@ -137,6 +137,8 @@ class CommandDispatcher
                 ? "Oops! There was an error. This was probably our fault, not yours. We've been notified about it, and will try to get it fixed when we can."
                 : $e->getMessage();
 
+            logger()->error($e);
+
             return Response::make($errorToReturn)->ephemeral();
         }
     }

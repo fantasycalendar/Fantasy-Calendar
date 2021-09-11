@@ -69,12 +69,12 @@ abstract class Command
         $this->discord_username = $this->interaction('member.user.username') . "#" . $this->interaction('member.user.discriminator');
         $this->message_id = $this->interaction('message.id');
         $this->discord_user_id = $this->interaction('member.user.id');
-        $this->options = self::getOptions($this->interaction('data.options.0'));
 
         $this->logInteraction();
         $this->resolveUserAccount();
 
-        $this->called_command = '/' . $this->discord_interaction->getCalledCommand();
+        $this->options = $this->discord_interaction->options;
+        $this->called_command = '/' . $this->discord_interaction->called_command;
         $this->guild = $this->getGuild();
     }
 
@@ -175,7 +175,7 @@ abstract class Command
             'channel_id' => $this->interaction('channel_id'),
             'type' => $this->interaction('type'),
             'guild_id' => $this->interaction('guild_id'),
-            'data' => json_encode($this->interaction('data')),
+            'data' => $this->interaction('data'),
             'discord_user' => json_encode($this->interaction('member')),
             'version' => $this->interaction('version'),
             'responded_at' => $this->deferred ? null : now()
@@ -245,30 +245,6 @@ abstract class Command
         }
 
         return Arr::get($this->options, $key);
-    }
-
-    /**
-     * Formats our command options into something we can call associatively
-     *
-     * @param $data
-     * @return Collection
-     */
-    protected static function getOptions($data): Collection
-    {
-        switch (Arr::get($data, 'type')) {
-            case 1:
-            case 2:
-                return (!Arr::has($data, 'options'))
-                    ? collect()
-                    : collect(Arr::get($data, 'options'))->mapWithKeys(function($option){
-                        return self::getOptions($option);
-                    });
-            case 3:
-            case 4:
-                return collect([$data['name'] => $data['value']]);
-            default:
-                return collect();
-        }
     }
 
     /**

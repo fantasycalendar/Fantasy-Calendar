@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 
 /**
  * @method static create(array $array)
@@ -25,6 +26,10 @@ class DiscordInteraction extends Model
         'version',
     ];
 
+    protected $casts = [
+        'data' => 'array'
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -33,6 +38,11 @@ class DiscordInteraction extends Model
     public function auth_token(): BelongsTo
     {
         return $this->belongsTo(DiscordAuthToken::class, 'discord_id');
+    }
+
+    public function getCalledCommandAttribute(): string
+    {
+        return self::getCalledCommand($this->data);
     }
 
     /**
@@ -44,6 +54,10 @@ class DiscordInteraction extends Model
      */
     public function getCalledCommand($data = null)
     {
+        logger()->debug('Data');
+        logger()->debug(json_encode($data));
+        logger()->debug('This->data');
+        logger()->debug(json_encode($this->data));
         $data = $data ?? $this->data;
 
         switch (Arr::get($data, 'type')) {
@@ -58,4 +72,37 @@ class DiscordInteraction extends Model
                 return Arr::get($data, 'name');
         }
     }
+
+    /**
+     * @return Collection
+     */
+    public function getOptionsAttribute(): Collection
+    {
+        return self::getOptions($this->data);
+    }
+
+    /**
+     * Formats our command options into something we can call associatively
+     *
+     * @param $data
+     * @return Collection
+     */
+    protected static function getOptions($data): Collection
+    {
+        switch (Arr::get($data, 'type')) {
+            case 1:
+            case 2:
+                return (!Arr::has($data, 'options'))
+                    ? collect()
+                    : collect(Arr::get($data, 'options'))->mapWithKeys(function($option){
+                        return self::getOptions($option);
+                    });
+            case 3:
+            case 4:
+                return collect([$data['name'] => $data['value']]);
+            default:
+                return collect();
+        }
+    }
+
 }
