@@ -14,12 +14,19 @@ use App\User;
 class ChooseHandler extends Command
 {
     use PremiumCommand;
-    
+
     public static function signature(): string
     {
         return "choose";
     }
 
+    /**
+     * Provides user with a menu to choose their calendar for the server in question
+     *
+     * @return Response
+     * @throws DiscordUserHasNoCalendarsException
+     * @throws \App\Services\Discord\Exceptions\DiscordCalendarNotSetException
+     */
     public function handle(): Response
     {
         if($this->user->calendars->count() < 1) {
@@ -34,7 +41,14 @@ class ChooseHandler extends Command
             });
     }
 
-    public function set_default($id)
+    /**
+     * Sets the user's default calendar for the server they're calling us from to a particular ID
+     *
+     * @param $id
+     * @return Response
+     * @throws \App\Services\Discord\Exceptions\DiscordCalendarNotSetException
+     */
+    public function set_default($id): Response
     {
         $this->setting('default_calendar', $id);
 
@@ -48,6 +62,7 @@ class ChooseHandler extends Command
      *
      * @param User $user
      * @param ActionRow $row
+     * @param int|null $default
      * @return ActionRow
      */
     public static function userDefaultCalendarMenu(User $user, ActionRow $row, int $default = null): ActionRow
