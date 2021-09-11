@@ -186,7 +186,20 @@ class Response
     }
 
     /**
-     * Appends text to our text content
+     * Prepends text to our text content without affecting components
+     *
+     * @param string $text
+     * @return $this
+     */
+    public function prependText(string $text): Response
+    {
+        $this->text_content = $text . $this->text_content;
+
+        return $this;
+    }
+
+    /**
+     * Appends text to our text content without affecting components
      *
      * @param string $text
      * @return $this
