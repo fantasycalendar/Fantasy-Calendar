@@ -37,21 +37,17 @@ class HelpHandler extends Command
      */
     public function handle(): Response
     {
-        // Create our initial response
-        $response = $this->buildInitialHelp();
+        $response = $this->createInitialHelpResponse();
 
-        // User has no calendars
         if(!$this->user->calendars()->count()) {
-            return $this->noCalendars($response);
+            return $this->noCalendarsForUser($response);
         }
 
-        // User needs to set a default calendar
         if(!$this->setting('default_calendar') || !$this->user->hasCalendar($this->setting('default_calendar'))) {
-            return $this->needsDefaultCalendarSet($response);
+            return $this->noDefaultCalendarSet($response);
         }
 
-        // Success! User is all setup.
-        return $this->success($response);
+        return $this->includeSuggestedActions($response);
     }
 
     /**
@@ -91,7 +87,12 @@ class HelpHandler extends Command
         return self::TYPES[$typeInteger];
     }
 
-    private function buildInitialHelp()
+    /**
+     * Generates our actual 'help' content and creates it as a response
+     *
+     * @return Response
+     */
+    private function createInitialHelpResponse(): Response
     {
         $commands = collect(config('services.discord.global_commands'));
 
@@ -105,20 +106,30 @@ class HelpHandler extends Command
             return $formatted;
         })->join("\n");
 
-        $responseText = $this->codeBlock($responseText);
-
-        return Response::make($responseText)
+        return Response::make($this->codeBlock($responseText))
             ->ephemeral();
     }
 
-    private function noCalendars($response)
+    /**
+     * Behavior for if our user has no calendars. Adds a link back to the "Create" page.
+     *
+     * @param $response
+     * @return mixed
+     */
+    private function noCalendarsForUser($response)
     {
         return $response
             ->appendText($this->newLine() . "Before you can do any of that, you'll need to create a calendar:")
             ->singleButton(route('calendars.create'), 'Create a Calendar');
     }
 
-    private function needsDefaultCalendarSet($response)
+    /**
+     * Behavior for if user has no default selected
+     *
+     * @param $response
+     * @return mixed
+     */
+    private function noDefaultCalendarSet($response)
     {
         return $response
             ->appendText($this->newLine(1) . $this->bold('The first thing') . " you should do is set a default calendar:")
@@ -127,12 +138,21 @@ class HelpHandler extends Command
             });
     }
 
-    private function success($response)
+    /**
+     * Include some helpful suggestions if the user is all setup. Two notes here:
+     * - We're displaying the **command** on the buttons, not a description.
+     * - These are just some of the most common actions we expect at the moment.
+     *
+     * @param $response
+     * @return mixed
+     */
+    private function includeSuggestedActions($response)
     {
         return $response
             ->appendText($this->newLine() . "Give something a try!:")
             ->addRow(function(ActionRow $row) {
-                return $row->addButton(MonthHandler::target(), MonthHandler::fullSignature(), 'primary')
+                return $row
+                    ->addButton(MonthHandler::target(), MonthHandler::fullSignature(), 'primary')
                     ->addButton(DateHandler::target(), DateHandler::fullSignature(), 'primary')
                     ->addButton(DateChangesHandler::target('change_date', ['action' => 'sub', 'unit' => 'day']), DateChangesHandler::fullSignature('sub day'))
                     ->addButton(DateChangesHandler::target('change_date', ['action' => 'add', 'unit' => 'day']), DateChangesHandler::fullSignature('add day'))
