@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 class Button extends Component
 {
     public int $type = 2;
-    public array $styles = [
+    public static array $styles = [
         'primary' => 1,
         'secondary' => 2,
         'success' => 3,
@@ -37,7 +37,7 @@ class Button extends Component
     public function __construct($target, $label, $style = 'secondary', $disabled = false)
     {
         $this->target = $target;
-        $this->style = $this->styles[$style];
+        $this->style = static::$styles[$style];
         $this->disabled = $disabled;
 
         $this->initLabel($label);
@@ -56,7 +56,7 @@ class Button extends Component
 
         if(Str::startsWith($this->target, ['https://', 'http://'])) {
             $response['url'] = $this->target;
-            $this->style = $this->styles['link']; // Override if it's a link or it borks
+            $this->style = static::$styles['link']; // Override if it's a link or it borks
         } else {
             $response['custom_id'] = config('services.discord.global_command') . '.' . $this->target;
         }

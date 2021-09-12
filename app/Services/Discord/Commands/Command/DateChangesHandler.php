@@ -9,6 +9,7 @@ use App\Services\Discord\Commands\Command;
 use App\Services\Discord\Commands\Command\Response\Component\ActionRow;
 use App\Services\Discord\Commands\Command\Traits\PremiumCommand;
 use App\Services\Discord\Exceptions\DiscordCalendarLinkedException;
+use App\Services\Discord\Exceptions\DiscordCalendarNotSetException;
 use App\Services\RendererService\TextRenderer;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -50,7 +51,7 @@ class DateChangesHandler extends Command
      * @param false $update
      * @return Response|string
      * @throws DiscordCalendarLinkedException
-     * @throws \App\Services\Discord\Exceptions\DiscordCalendarNotSetException
+     * @throws DiscordCalendarNotSetException
      */
     public function change_date($action, $unit, $count = 1, $update = false)
     {
@@ -98,15 +99,61 @@ class DateChangesHandler extends Command
 
         $response = Response::make($responseText)
             ->addRow(function(ActionRow $row) use ($action, $unit, $count, $reverse_action){
-                return $row->addButton("$action:change_date:$reverse_action;$unit;$count;true", ['label' => ucfirst($reverse_action) . " $count instead", 'emoji' => ':arrow_left:'])
+                $row = $row->addButton("$action:change_date:$reverse_action;$unit;$count;true", ['label' => ucfirst($reverse_action) . " $count instead", 'emoji' => ':arrow_left:'])
                            ->addButton("$action:change_date:$action;$unit;$count;true", ucfirst($action) ." $count more", 'success');
+
+                if($this->calendar->children()->exists() && !Str::contains($this->interaction('message.content'), "Child calendar dates:\n")) {
+                    $row->addButton(static::target('appendChildDates'), 'Show Child Dates');
+                }
+
+                return $row;
             });
+
+        if(Str::contains($this->interaction('message.content'), "Child calendar dates:\n")) {
+            return $this->appendChildDates();
+        }
 
         if($update) {
             $response->updatesMessage();
         }
 
         return $response;
+    }
+
+    public function appendChildDates($response = null)
+    {
+        if(!$response) {
+            $response = Response::make($this->interaction('message.content'))
+                ->addRow(function(ActionRow $row){
+                    $originalButtons = $this->interaction('message.components.0.components');
+                    $childrenButton = array_pop($originalButtons);
+
+                    foreach($originalButtons as $component) {
+                        $style = array_search($component['style'], Command\Response\Component\Button::$styles);
+
+                        $row->addButton(str_replace(config('services.discord.global_command') . ".", '', $component['custom_id']), $component['label'], $style);
+                    }
+
+                    $childrenButtonStyle = array_search($childrenButton['style'], Command\Response\Component\Button::$styles);
+                    $row->addButton($childrenButton['custom_id'], $childrenButton['label'], $childrenButtonStyle, true);
+
+                    return $row;
+                })
+                ->updatesMessage();
+        }
+
+        $content = "";
+
+        $calendar = $this->getDefaultCalendar();
+        $minNameLength = $calendar->children->max(fn($child) => strlen($child->name));
+
+        $children = $calendar->children->map(function($calendar) use (&$content, $minNameLength){
+            return Str::padLeft($calendar->name, $minNameLength) . ' : ' . $calendar->current_date;
+        })->join("\n");
+
+        $content .= "\nChild calendar dates:" . $this->codeBlock($children);
+
+        return $response->appendText($content);
     }
 
     private function userWantedZeroChange($action, $unit): Response

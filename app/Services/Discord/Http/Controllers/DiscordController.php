@@ -49,6 +49,7 @@ class DiscordController extends Controller
      */
     public function hook(): array
     {
+        logger()->debug(json_encode(request()->all(), true));
         return CommandDispatcher::dispatch(request()->all())
             ->getMessage();
     }
