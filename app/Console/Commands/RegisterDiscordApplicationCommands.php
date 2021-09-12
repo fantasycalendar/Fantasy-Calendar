@@ -22,7 +22,7 @@ class RegisterDiscordApplicationCommands extends Command
      */
     protected $description = 'Registers Discord application commands via the Discord API.';
 
-    protected $api_url = 'https://discord.com/api/v8';
+    protected $api_url = 'https://discord.com/api/v9';
 
     private $api_client;
 

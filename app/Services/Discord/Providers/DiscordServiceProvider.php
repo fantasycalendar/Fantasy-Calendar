@@ -2,8 +2,11 @@
 
 namespace App\Services\Discord\Providers;
 
+use App\Events\ChildCalendarsUpdated;
 use App\Services\Discord\Http\Controllers\DiscordController;
 use App\Services\Discord\Http\Middleware\VerifyDiscordSignature;
+use App\Services\Discord\Listeners\UpdateParentCalendarResponse;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -32,6 +35,7 @@ class DiscordServiceProvider extends ServiceProvider
         View::addNamespace('Discord', app_path('/Services/Discord/resources/views'));
 
         $this->registerRoutes();
+        $this->registerEventListeners();
     }
 
     private function registerRoutes()
@@ -51,5 +55,10 @@ class DiscordServiceProvider extends ServiceProvider
                 Route::get('remove', DiscordController::class.'@remove')->name('discord.auth.remove');
             });
         });
+    }
+    
+    private function registerEventListeners()
+    {
+        Event::listen(ChildCalendarsUpdated::class, UpdateParentCalendarResponse::class);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Services\Discord\Models;
 
+use App\Calendar;
 use App\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -17,6 +18,7 @@ class DiscordInteraction extends Model
     use HasFactory;
 
     protected $fillable = [
+        'snowflake',
         'discord_id',
         'type',
         'data',
@@ -24,10 +26,14 @@ class DiscordInteraction extends Model
         'channel_id',
         'discord_user',
         'version',
+        'calendar_id',
+        'payload',
     ];
 
     protected $casts = [
-        'data' => 'array'
+        'data' => 'array',
+        'discord_user' => 'array',
+        'payload' => 'array'
     ];
 
     public function user(): BelongsTo
@@ -40,9 +46,31 @@ class DiscordInteraction extends Model
         return $this->belongsTo(DiscordAuthToken::class, 'discord_id');
     }
 
+    public function calendar(): BelongsTo
+    {
+        return $this->belongsTo(Calendar::class);
+    }
+
     public function getCalledCommandAttribute(): string
     {
         return self::getCalledCommand($this->data);
+    }
+
+    public static function latestFor(Calendar $calendar, $type = 2)
+    {
+        return static::where('calendar_id', $calendar->id)
+            ->latest('created_at')
+            ->firstOrFail();
+    }
+
+    public function getMessageTextAttribute()
+    {
+        return Arr::get($this->payload, 'message.content');
+    }
+
+    public function getTokenAttribute(): string
+    {
+        return Arr::get($this->payload, 'token');
     }
 
     /**

@@ -37,7 +37,9 @@ class Button extends Component
     public function __construct($target, $label, $style = 'secondary', $disabled = false)
     {
         $this->target = $target;
-        $this->style = static::$styles[$style];
+        $this->style = is_numeric($style)
+            ? static::$styles[array_search($style, static::$styles)]
+            : static::$styles[$style];
         $this->disabled = $disabled;
 
         $this->initLabel($label);

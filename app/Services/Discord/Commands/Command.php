@@ -152,13 +152,19 @@ abstract class Command
 
         try {
             $this->discord_auth = DiscordAuthToken::discordUserId($commandUserId)->firstOrFail();
-            $this->discord_interaction->auth_token()->associate($this->discord_auth);
-            $this->discord_interaction->save();
+            if($this->discord_interaction->wasRecentlyCreated) {
+                logger()->debug('Interaction was recently created, associate with auth token');
+                $this->discord_interaction->auth_token()->associate($this->discord_auth);
+                $this->discord_interaction->save();
+            }
 
             $this->user = $this->discord_auth->user;
-            $this->discord_interaction->user()->associate($this->user);
+            if($this->discord_interaction->wasRecentlyCreated) {
+                logger()->debug('Interaction was recently created, associate with user');
+                $this->discord_interaction->user()->associate($this->user);
+                $this->discord_interaction->save();
+            }
 
-            $this->discord_interaction->save();
         } catch (ModelNotFoundException $e) {
             throw new DiscordUserInvalidException();
         }
@@ -171,16 +177,27 @@ abstract class Command
      */
     private function logInteraction(): void
     {
-        $this->discord_interaction = DiscordInteraction::create([
-            'discord_id' => null,
-            'channel_id' => $this->interaction('channel_id'),
-            'type' => $this->interaction('type'),
-            'guild_id' => $this->interaction('guild_id'),
-            'data' => $this->interaction('data'),
-            'discord_user' => json_encode($this->interaction('member')),
-            'version' => $this->interaction('version'),
-            'responded_at' => $this->deferred ? null : now()
-        ]);
+//        if(!$this->interaction('message.id')){
+//            $this->discord_interaction = DiscordInteraction::where('snowflake', $this->interaction('message.id'))
+//                ->update([
+//                    'payload' => $this->discord_interaction
+//                ]);
+//        }
+
+        $this->discord_interaction = DiscordInteraction::firstOrCreate([
+                'snowflake' => $this->interaction('id'),
+            ],
+            [
+                'discord_id' => null,
+                'channel_id' => $this->interaction('channel_id'),
+                'type' => $this->interaction('type'),
+                'guild_id' => $this->interaction('guild_id'),
+                'data' => $this->interaction('data'),
+                'discord_user' => $this->interaction('member'),
+                'version' => $this->interaction('version'),
+                'responded_at' => $this->deferred ? null : now(),
+                'payload' => $this->interaction_data,
+            ]);
     }
 
     protected function resolveCalendar(): Calendar
@@ -220,6 +237,11 @@ abstract class Command
     protected function getDefaultCalendar()
     {
         $calendar = $this->resolveCalendar();
+
+        if(!$this->discord_interaction->calendar) {
+            $this->discord_interaction->calendar()->associate($calendar);
+            $this->discord_interaction->save();
+        }
 
         Epoch::forCalendar($calendar);
 

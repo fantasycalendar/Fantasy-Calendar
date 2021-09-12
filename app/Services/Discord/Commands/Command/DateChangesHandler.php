@@ -53,7 +53,7 @@ class DateChangesHandler extends Command
      * @throws DiscordCalendarLinkedException
      * @throws DiscordCalendarNotSetException
      */
-    public function change_date($action, $unit, $count = 1, $update = false)
+    public function change_date($action, $unit, $count = 1, $update = false, $show_children = false)
     {
         $this->calendar = $this->getDefaultCalendar();
 
@@ -75,6 +75,10 @@ class DateChangesHandler extends Command
         $this->calendar
             ->$method($count)
             ->save();
+
+        if(Str::contains($this->interaction('message.content'), "Child calendar dates:")){
+            return Response::make('')->setType('deferred_update');
+        }
 
         $number_units = ($count !== 1)
             ? $count . " " . $unit
@@ -102,16 +106,12 @@ class DateChangesHandler extends Command
                 $row = $row->addButton("$action:change_date:$reverse_action;$unit;$count;true", ['label' => ucfirst($reverse_action) . " $count instead", 'emoji' => ':arrow_left:'])
                            ->addButton("$action:change_date:$action;$unit;$count;true", ucfirst($action) ." $count more", 'success');
 
-                if($this->calendar->children()->exists() && !Str::contains($this->interaction('message.content'), "Child calendar dates:\n")) {
+                if($this->calendar->children()->exists() && !Str::contains($this->interaction('message.content'), "Child calendar dates:")) {
                     $row->addButton(static::target('appendChildDates'), 'Show Child Dates');
                 }
 
                 return $row;
             });
-
-        if(Str::contains($this->interaction('message.content'), "Child calendar dates:\n")) {
-            return $this->appendChildDates();
-        }
 
         if($update) {
             $response->updatesMessage();
@@ -120,18 +120,22 @@ class DateChangesHandler extends Command
         return $response;
     }
 
-    public function appendChildDates($response = null)
+    public function appendChildDates($response = null, $parent = null, $deferred = false)
     {
+        logger(json_encode(optional($response) ?? []));
+        logger("Parent: " . (optional($parent)->name ?? 'None'));
+        logger("Deferred?: " . ($deferred ? "Yes" : "No"));
+
         if(!$response) {
-            $response = Response::make($this->interaction('message.content'))
+            $text = strstr($this->interaction('message.content'), 'Child calendar dates:', true);
+
+            $response = Response::make($text)
                 ->addRow(function(ActionRow $row){
                     $originalButtons = $this->interaction('message.components.0.components');
                     $childrenButton = array_pop($originalButtons);
 
                     foreach($originalButtons as $component) {
-                        $style = array_search($component['style'], Command\Response\Component\Button::$styles);
-
-                        $row->addButton(str_replace(config('services.discord.global_command') . ".", '', $component['custom_id']), $component['label'], $style);
+                        $row->addButton(str_replace(config('services.discord.global_command') . ".", '', $component['custom_id']), $component['label'], $component['style']);
                     }
 
                     $childrenButtonStyle = array_search($childrenButton['style'], Command\Response\Component\Button::$styles);
@@ -140,11 +144,17 @@ class DateChangesHandler extends Command
                     return $row;
                 })
                 ->updatesMessage();
+
+            logger(json_encode($response->getMessage()));
         }
+
+        if($deferred) $response->setType('deferred_update');
+
+
 
         $content = "";
 
-        $calendar = $this->getDefaultCalendar();
+        $calendar = $parent ?? $this->getDefaultCalendar();
         $minNameLength = $calendar->children->max(fn($child) => strlen($child->name));
 
         $children = $calendar->children->map(function($calendar) use (&$content, $minNameLength){

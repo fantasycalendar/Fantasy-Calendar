@@ -48,6 +48,8 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('calendar:demand-payment')
                  ->everyFifteenMinutes()->onOneServer();
+
+        $schedule->command('queue:prune-batches')->daily();
     }
 
     /**
