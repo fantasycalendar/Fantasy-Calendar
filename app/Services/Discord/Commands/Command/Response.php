@@ -180,7 +180,7 @@ class Response
     }
 
     /**
-     * Tells discord to update the contents of the message we're responding to
+     * Tells discord to update the contents of the message whose component interaction we're responding to
      *
      * @return $this
      */
