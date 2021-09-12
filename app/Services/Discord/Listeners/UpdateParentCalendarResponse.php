@@ -34,15 +34,28 @@ class UpdateParentCalendarResponse
     public function handle(ChildCalendarsUpdated $event)
     {
         logger()->debug("We got called on UpdateParentCalendarResponse! Batch ID: {$event->batch->id}");
-        $interaction = DiscordInteraction::latestFor($event->calendar);
+        try {
+            $interaction = DiscordInteraction::latestFor($event->calendar)
+                ->firstOrFail();
+        } catch (\Throwable $e) {
+            return;
+        }
+
+        logger()->debug(json_encode($interaction));
 
         if(!Str::contains($interaction->message_text, 'Child calendar dates:')){
             logger()->debug('message text does not include Child calendar dates: '. $interaction->message_text);
             return;
         }
 
-        $commandInstance = new DateChangesHandler($interaction->payload);
-        $response = $commandInstance->appendChildDates(Response::make($interaction->message_text), $event->calendar);
+        $payload = optional($interaction->parent)->payload ?? $interaction->payload;
+
+        $commandInstance = new DateChangesHandler($payload);
+        $action = explode(' ', $commandInstance->called_command)[1];
+        $unit = explode(' ', $commandInstance->called_command)[2];
+        $count = $commandInstance->option(['days', 'months', 'years', 'minutes', 'hours']) ?? 1;
+
+        $response = $commandInstance->respondWithChildren($action, $unit, $count, false);
 
         $this->api->followupMessage($response, $interaction->token);
     }

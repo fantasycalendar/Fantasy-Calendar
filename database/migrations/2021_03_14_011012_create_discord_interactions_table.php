@@ -18,7 +18,8 @@ class CreateDiscordInteractionsTable extends Migration
         Schema::create('discord_interactions', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('snowflake');
+            $table->string('snowflake')->unique();
+            $table->string('parent_snowflake')->nullable();
             $table->string('discord_id')->nullable();
             $table->foreignIdFor(User::class)->nullable();
             $table->foreignIdFor(Calendar::class)->nullable();

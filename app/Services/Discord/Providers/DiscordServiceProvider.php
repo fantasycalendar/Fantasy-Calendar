@@ -3,6 +3,7 @@
 namespace App\Services\Discord\Providers;
 
 use App\Events\ChildCalendarsUpdated;
+use App\Services\Discord\Events\CalendarChildrenRequested;
 use App\Services\Discord\Http\Controllers\DiscordController;
 use App\Services\Discord\Http\Middleware\VerifyDiscordSignature;
 use App\Services\Discord\Listeners\UpdateParentCalendarResponse;
@@ -60,5 +61,6 @@ class DiscordServiceProvider extends ServiceProvider
     private function registerEventListeners()
     {
         Event::listen(ChildCalendarsUpdated::class, UpdateParentCalendarResponse::class);
+        Event::listen(CalendarChildrenRequested::class, UpdateParentCalendarResponse::class);
     }
 }

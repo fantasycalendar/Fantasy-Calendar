@@ -42,7 +42,7 @@ abstract class Command
     protected string $discord_username;
     protected string $discord_user_id;
     protected Collection $options;
-    protected string $called_command;
+    public string $called_command;
     protected Response $response_details;
     protected $message_id;
 
@@ -177,27 +177,25 @@ abstract class Command
      */
     private function logInteraction(): void
     {
-//        if(!$this->interaction('message.id')){
-//            $this->discord_interaction = DiscordInteraction::where('snowflake', $this->interaction('message.id'))
-//                ->update([
-//                    'payload' => $this->discord_interaction
-//                ]);
-//        }
+        $fill = [
+            'discord_id' => null,
+            'channel_id' => $this->interaction('channel_id'),
+            'type' => $this->interaction('type'),
+            'guild_id' => $this->interaction('guild_id'),
+            'data' => $this->interaction('data'),
+            'discord_user' => $this->interaction('member'),
+            'version' => $this->interaction('version'),
+            'responded_at' => $this->deferred ? null : now(),
+            'payload' => $this->interaction_data,
+        ];
+
+        if($this->interaction('message')) {
+            $fill['parent_snowflake'] = $this->interaction('message.id');
+        }
 
         $this->discord_interaction = DiscordInteraction::firstOrCreate([
                 'snowflake' => $this->interaction('id'),
-            ],
-            [
-                'discord_id' => null,
-                'channel_id' => $this->interaction('channel_id'),
-                'type' => $this->interaction('type'),
-                'guild_id' => $this->interaction('guild_id'),
-                'data' => $this->interaction('data'),
-                'discord_user' => $this->interaction('member'),
-                'version' => $this->interaction('version'),
-                'responded_at' => $this->deferred ? null : now(),
-                'payload' => $this->interaction_data,
-            ]);
+            ], $fill);
     }
 
     protected function resolveCalendar(): Calendar
@@ -255,7 +253,7 @@ abstract class Command
      * @param $key
      * @return array|\ArrayAccess|mixed|null
      */
-    protected function option($key)
+    public function option($key)
     {
         if(is_array($key)) {
             foreach($key as $item) {

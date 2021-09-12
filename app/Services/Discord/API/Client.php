@@ -27,9 +27,19 @@ class Client
         ]);
     }
 
+    public function getMessageContent($token)
+    {
+        return $this->get(sprintf('%s/webhooks/%s/%s/messages/@original', $this->api_url, $this->application_id, $token));
+    }
+
     private function prepareForRequests()
     {
         $this->api_client = new HttpClient();
+    }
+
+    private function get($url)
+    {
+        return $this->request($url,'');
     }
 
     private function post($url, $payload)
@@ -44,7 +54,7 @@ class Client
 
     private function request($url, $payload, $method = 'GET')
     {
-        $this->api_client->request($method, $url, $payload);
+        return $this->api_client->request($method, $url, $payload);
 //        try {
 //        } catch (\Throwable $e) {
 //

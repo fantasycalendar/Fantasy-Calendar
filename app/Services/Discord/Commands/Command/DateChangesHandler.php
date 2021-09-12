@@ -8,6 +8,7 @@ use App\Calendar;
 use App\Services\Discord\Commands\Command;
 use App\Services\Discord\Commands\Command\Response\Component\ActionRow;
 use App\Services\Discord\Commands\Command\Traits\PremiumCommand;
+use App\Services\Discord\Events\CalendarChildrenRequested;
 use App\Services\Discord\Exceptions\DiscordCalendarLinkedException;
 use App\Services\Discord\Exceptions\DiscordCalendarNotSetException;
 use App\Services\RendererService\TextRenderer;
@@ -76,9 +77,18 @@ class DateChangesHandler extends Command
             ->$method($count)
             ->save();
 
-        if(Str::contains($this->interaction('message.content'), "Child calendar dates:")){
-            return Response::make('')->setType('deferred_update');
+        if($show_children || $this->setting('show_children')){
+            logger()->debug('Showing children');
+            return Response::deferred();
         }
+
+        logger()->debug('no children to respond with');
+        return $this->respondWithoutChildren($action, $unit, $count, $update);
+    }
+
+    public function respondWithoutChildren($action, $unit, $count = 1, $update = false, $addButtons = true)
+    {
+        $this->calendar = $this->calendar ?? $this->getDefaultCalendar();
 
         $number_units = ($count !== 1)
             ? $count . " " . $unit
@@ -101,17 +111,37 @@ class DateChangesHandler extends Command
             ? 'sub'
             : 'add';
 
-        $response = Response::make($responseText)
-            ->addRow(function(ActionRow $row) use ($action, $unit, $count, $reverse_action){
-                $row = $row->addButton("$action:change_date:$reverse_action;$unit;$count;true", ['label' => ucfirst($reverse_action) . " $count instead", 'emoji' => ':arrow_left:'])
-                           ->addButton("$action:change_date:$action;$unit;$count;true", ucfirst($action) ." $count more", 'success');
+        $response = Response::make($responseText);
 
-                if($this->calendar->children()->exists() && !Str::contains($this->interaction('message.content'), "Child calendar dates:")) {
-                    $row->addButton(static::target('appendChildDates'), 'Show Child Dates');
+        if($addButtons) {
+            $response = $response->addRow(function(ActionRow $row) use ($action, $unit, $count, $reverse_action){
+                $row = $row->addButton("$action:change_date:$reverse_action;$unit;$count;true;true", ['label' => ucfirst($reverse_action) . " $count instead", 'emoji' => ':arrow_left:'])
+                           ->addButton("$action:change_date:$action;$unit;$count;true;true", ucfirst($action) ." $count more", 'success');
+
+                if($this->calendar->children()->exists()) {
+                    $row->addButton(static::target('appendChildDates'), 'Show Linked Children');
                 }
 
                 return $row;
             });
+        }
+
+        return $response;
+    }
+
+    public function respondWithChildren($action, $unit, $count = 1, $update = false)
+    {
+        $response = $this->respondWithoutChildren($action, $unit, $count, $update, false);
+
+        $reverse_action = ($action == 'add')
+            ? 'sub'
+            : 'add';
+
+        $response = $response->addRow(function(ActionRow $row) use ($action, $unit, $count, $reverse_action){
+            return $row->addButton("$action:change_date:$reverse_action;$unit;$count;true", ['label' => ucfirst($reverse_action) . " $count instead", 'emoji' => ':arrow_left:'])
+                ->addButton("$action:change_date:$action;$unit;$count;true", ucfirst($action) ." $count more", 'success')
+                ->addButton(static::target('appendChildDates'), 'Show Linked Children', 'secondary', true);
+        });
 
         if($update) {
             $response->updatesMessage();

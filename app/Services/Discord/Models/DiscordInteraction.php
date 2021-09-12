@@ -3,6 +3,7 @@
 namespace App\Services\Discord\Models;
 
 use App\Calendar;
+use App\Services\Discord\API\Client;
 use App\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -16,6 +17,11 @@ use Illuminate\Support\Collection;
 class DiscordInteraction extends Model
 {
     use HasFactory;
+
+    public const TYPES = [
+        'command' => 2,
+        'component' => 3
+    ];
 
     protected $fillable = [
         'snowflake',
@@ -51,16 +57,20 @@ class DiscordInteraction extends Model
         return $this->belongsTo(Calendar::class);
     }
 
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(static::class, 'parent_snowflake', 'snowflake');
+    }
+
     public function getCalledCommandAttribute(): string
     {
         return self::getCalledCommand($this->data);
     }
 
-    public static function latestFor(Calendar $calendar, $type = 2)
+    public function scopeLatestFor($query, Calendar $calendar)
     {
-        return static::where('calendar_id', $calendar->id)
-            ->latest('created_at')
-            ->firstOrFail();
+        return $query->where('calendar_id', $calendar->id)
+            ->latest('created_at');
     }
 
     public function getMessageTextAttribute()
@@ -71,6 +81,11 @@ class DiscordInteraction extends Model
     public function getTokenAttribute(): string
     {
         return Arr::get($this->payload, 'token');
+    }
+
+    public function getLatestContentAttribute()
+    {
+        return (new Client())->getMessageContent($this->parent->snowflake);
     }
 
     /**
@@ -125,6 +140,11 @@ class DiscordInteraction extends Model
             default:
                 return collect();
         }
+    }
+
+    public function scopeType($query, $value)
+    {
+        return $query->where('type', '=', self::TYPES[$value]);
     }
 
 }

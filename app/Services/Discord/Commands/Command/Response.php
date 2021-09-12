@@ -6,6 +6,7 @@ use App\Services\Discord\Commands\Command\Response\Component\ActionRow;
 use App\Services\Discord\Commands\Command\Response\Component\SelectMenu;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use phpDocumentor\Reflection\Types\Static_;
 
 class Response
 {
@@ -59,6 +60,10 @@ class Response
         return new self('', 'pong');
     }
 
+    public static function deferred(): Response
+    {
+        return new self('', 'deferred');
+    }
 
     /**
      * Converts this Response into Discord's API message format
@@ -220,6 +225,13 @@ class Response
     public function buildComponents(): array
     {
         return $this->components->map->build()->toArray();
+    }
+
+    public function clearComponents(): self
+    {
+        $this->components = collect();
+
+        return $this;
     }
 
     /**
