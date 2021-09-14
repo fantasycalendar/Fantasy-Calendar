@@ -1826,16 +1826,15 @@ function is_leap(static_data, _parent_occurrences, _intervals, _offset) {
 
 	var year = unconvert_year(static_data, _parent_occurrences);
 
-	for(index in intervals){
-
-		var i = intervals[index];
+	for(let i of intervals){
 
 		let offset = i.offset;
-		if(!static_data.settings.year_zero_exists && year < 0) {
+
+		if(!static_data.settings.year_zero_exists && year < 0 && offset !== 0) {
 			offset--;
 		}
 
-		if((year-offset) % i.interval == 0){
+		if((year - offset) % i.interval === 0){
 			return !i.negator;
 		}
 
@@ -1845,17 +1844,21 @@ function is_leap(static_data, _parent_occurrences, _intervals, _offset) {
 
 }
 
-function is_leap_simple(static_data, year, interval, offset) {
+function is_leap_simple(static_data, year, interval, offset, debug) {
 
-	var year = unconvert_year(static_data, year);
+    if(interval === 1) return true;
 
-	var offset = offset%interval;
+    let cleanYear = unconvert_year(static_data, year);
 
-	if(!static_data.settings.year_zero_exists && year < 0){
-		offset--;
-	}
+    cleanYear = !static_data.settings.year_zero_exists || year > 0 ? Math.abs(cleanYear) : cleanYear;
 
-	return (year-offset) % interval == 0;
+    if(!static_data.settings.year_zero_exists && year < 0 && offset === 0){
+        offset++;
+    }
+
+    offset = offset > interval || offset < 0 ? offset % interval : offset;
+
+    return (cleanYear - offset) % interval === 0;
 
 }
 
@@ -2037,20 +2040,20 @@ function get_interval_occurrences(static_data, _parent_occurrences, _intervals, 
  *                                          3: num_timespans - The total number of timespans since year 1
  *                                          4: total_week_num - The number of weeks since year 1
  */
-function get_epoch(static_data, year, timespan, day, debug){
+function get_epoch(static_data, year, _timespan, _day, debug){
 
 	// Set up variables
-	var epoch = 0;
-	var timespan = !isNaN(timespan) ? timespan : 0;
-	var day = !isNaN(day) ? day : 0;
-	var intercalary = 0;
-	var actual_year = year;
-	var num_timespans = 0;
-	var count_timespans = [];
-	var total_week_num = 1;
+	let epoch = 0;
+	let timespan = !isNaN(_timespan) ? _timespan : 0;
+	let day = !isNaN(_day) ? _day : 0;
+	let intercalary = 0;
+	let actual_year = year;
+	let num_timespans = 0;
+	let count_timespans = [];
+	let total_week_num = 1;
 
 	// Loop through each timespan
-	for(timespan_index = 0; timespan_index < static_data.year_data.timespans.length; timespan_index++){
+	for(let timespan_index = 0; timespan_index < static_data.year_data.timespans.length; timespan_index++){
 
 		// If the timespan index is lower than the timespan parameter, add a year so we can get the exact epoch for a timespan within a year
 		if(timespan_index < timespan){
@@ -2060,35 +2063,34 @@ function get_epoch(static_data, year, timespan, day, debug){
 		}
 
 		// Get the current timespan's data
-		var timespan_obj = static_data.year_data.timespans[timespan_index];
+		let timespan_obj = static_data.year_data.timespans[timespan_index];
 
-		if(timespan_obj.interval == 1){
+        let timespan_fraction = year;
 
-			var timespan_fraction = year;
+        if(timespan_obj.interval > 1){
 
-		}else{
+            let boundOffset = timespan_obj.offset % timespan_obj.interval;
 
-			var offset = timespan_obj.offset%timespan_obj.interval;
+            if(static_data.settings.year_zero_exists) {
 
-			offset = offset ? offset : 0;
+                timespan_fraction = Math.ceil((year - boundOffset) / timespan_obj.interval);
 
-			if(year < 0 || static_data.settings.year_zero_exists) {
-				if(!static_data.settings.year_zero_exists) {
-					offset--;
-				}
-				var timespan_fraction = Math.ceil((year - offset) / timespan_obj.interval);
-			}else{
-				if(offset > 0){
-					var timespan_fraction = Math.floor((year + timespan_obj.interval - offset) / timespan_obj.interval);
-				}else{
-					var timespan_fraction = Math.floor(year / timespan_obj.interval);
-				}
-			}
+            }else if(year < 0) {
 
-			/* if(debug) {
-				console.log(timespan_index, timespan_fraction, offset)
-			} */
-		}
+                timespan_fraction = Math.ceil((year - (boundOffset-1)) / timespan_obj.interval);
+
+                if(timespan_obj.offset === 0){
+                    timespan_fraction--;
+                }
+
+            }else{
+                if(boundOffset > 0){
+                    timespan_fraction = Math.floor((year + timespan_obj.interval - boundOffset) / timespan_obj.interval);
+                }else{
+                    timespan_fraction = Math.floor(year / timespan_obj.interval);
+                }
+            }
+        }
 
 		// Get the number of weeks for that month (check if it has a custom week or not)
 		if(!static_data.year_data.overflow){
@@ -2113,25 +2115,23 @@ function get_epoch(static_data, year, timespan, day, debug){
 		num_timespans += timespan_fraction;
 
 		// Loop through each leap day
-		for(leap_day_index = 0; leap_day_index < static_data.year_data.leap_days.length; leap_day_index++){
+		for(let leap_day_index = 0; leap_day_index < static_data.year_data.leap_days.length; leap_day_index++){
 
 			// Get the current leap day data
-			var leap_day = static_data.year_data.leap_days[leap_day_index];
-
-			var added_leap_day = 0;
+			let leap_day = static_data.year_data.leap_days[leap_day_index];
 
 			if(timespan_index === leap_day.timespan){
 
-				added_leap_day = get_interval_occurrences(static_data, timespan_fraction, leap_day.interval, leap_day.offset);
+				let added_leap_day = get_interval_occurrences(static_data, timespan_fraction, leap_day.interval, leap_day.offset);
 
 				// If we have leap days days that are intercalary (eg, do not affect the flow of the static_data, add them to the overall epoch, but remove them from the start of the year week day selection)
 				if(leap_day.intercalary || timespan_obj.type === "intercalary"){
 					intercalary += added_leap_day;
 				}
 
-			}
+                epoch += added_leap_day;
 
-			epoch += added_leap_day;
+			}
 
 		}
 
@@ -2152,9 +2152,10 @@ function get_epoch(static_data, year, timespan, day, debug){
  * Further expands on the spine of the calendar calculation. It calculates how many days there has been since day 1, and returns a complex data object.
  *
  * @param  {object}     static_data     The calendar's static_data object.
- * @param  {int}        year            The number of a year passed through the convert_year function.
- * @param  {int}        month           The index of a timespan
- * @param  {int}        day             The day of a that timespan
+ * @param  {int}        _year           The number of a year passed through the convert_year function.
+ * @param  {int}        _timespan       The index of a timespan
+ * @param  {int}        _day            The day of a that timespan (1 indexed)
+ * @param  {bool}       debug           Whether debugging is enabled
  * @return {object}                     An object containing:
  *                                          "epoch" - The number of days since year 1
  *                                          "era_year" - The current era year, if the year count has been reset by eras terminating the year
@@ -2163,37 +2164,38 @@ function get_epoch(static_data, year, timespan, day, debug){
  *                                          "num_timespans" - The total number of timespans since year 1
  *                                          "total_week_num" - The number of weeks since year 1
  */
-function evaluate_calendar_start(static_data, year, timespan, day, debug){
+function evaluate_calendar_start(static_data, _year, _timespan, _day, debug){
 
 	//Initiatlize variables
-	var year = (year|0);
-	var timespan = !isNaN(timespan) ? (timespan|0) : 0;
-	var day = !isNaN(day) ? (day|0)-1 : 0;
+	let year = (_year|0);
+	let timespan = !isNaN(_timespan) ? (_timespan|0) : 0;
+	let day = !isNaN(_day) ? (_day|0)-1 : 0;
 
-	var era_year = year;
+	let era_year = year;
 
-	tmp = get_epoch(static_data, year, timespan, day, debug);
-	var epoch = tmp[0];
-	var intercalary = tmp[1];
-	var count_timespans = tmp[2];
-	var num_timespans = tmp[3];
-	var total_week_num = tmp[4];
-	var era_years = [];
+	let tmp = get_epoch(static_data, year, timespan, day, debug);
+	let epoch = tmp[0];
+	let intercalary = tmp[1];
+	let count_timespans = tmp[2];
+	let num_timespans = tmp[3];
+	let total_week_num = tmp[4];
+	let era_years = [];
+	let current_era = -1;
 
 	// For each era, check if they end the year, subtract the remaining days of that year from the epoch total so we can get proper start of the year
-	for(var era_index = 0; era_index < static_data.eras.length; era_index++){
+	for(let era_index = 0; era_index < static_data.eras.length; era_index++){
 
-		var era = static_data.eras[era_index];
+		let era = static_data.eras[era_index];
 
 		if(era.settings.ends_year && year > convert_year(static_data, era.date.year)){
 
-			era_epoch = get_epoch(static_data, convert_year(static_data, era.date.year), era.date.timespan, era.date.day);
-			normal_epoch_during_era = get_epoch(static_data, convert_year(static_data, era.date.year)+1);
+			let era_epoch = get_epoch(static_data, convert_year(static_data, era.date.year), era.date.timespan, era.date.day);
+			let normal_epoch_during_era = get_epoch(static_data, convert_year(static_data, era.date.year)+1);
 
 			epoch -= (normal_epoch_during_era[0] - era_epoch[0]);
 
 			intercalary -= (normal_epoch_during_era[1] - era_epoch[1]);
-			for(var i = 0; i < normal_epoch_during_era[2].length; i++){
+			for(let i = 0; i < normal_epoch_during_era[2].length; i++){
 				count_timespans[i] = (normal_epoch_during_era[2][i] - era_epoch[2][i]);
 			}
 
@@ -2204,9 +2206,9 @@ function evaluate_calendar_start(static_data, year, timespan, day, debug){
 
 	}
 
-	for(var era_index = 0; era_index < static_data.eras.length; era_index++){
+	for(let era_index = 0; era_index < static_data.eras.length; era_index++){
 
-		var era = static_data.eras[era_index];
+		let era = static_data.eras[era_index];
 
 		era_years[era_index] = convert_year(static_data, era.date.year);
 
@@ -2215,17 +2217,17 @@ function evaluate_calendar_start(static_data, year, timespan, day, debug){
 			(
 				year > convert_year(static_data, era.date.year)
 				||
-				(year == convert_year(static_data, era.date.year) && timespan > era.date.timespan)
+				(year === convert_year(static_data, era.date.year) && timespan > era.date.timespan)
 				||
-				(year == convert_year(static_data, era.date.year) && timespan == era.date.timespan && day == era.date.day)
+				(year === convert_year(static_data, era.date.year) && timespan === era.date.timespan && day === era.date.day)
 				||
-				(epoch == era.date.epoch)
+				(epoch === era.date.epoch)
 			)
 		){
 
-			for(var i = 0; i < era_index; i++){
+			for(let i = 0; i < era_index; i++){
 
-				var prev_era = static_data.eras[i];
+				let prev_era = static_data.eras[i];
 
 				if(prev_era.settings.restart){
 
@@ -2243,19 +2245,33 @@ function evaluate_calendar_start(static_data, year, timespan, day, debug){
 
 		}
 
+        if(epoch >= era.date.epoch){
+            current_era = era_index;
+        }
+
 	}
+
+    if(static_data.eras[0] && current_era === -1 && static_data.eras[0].settings.starting_era){
+        current_era = 0;
+    }
+
+    if(static_data.eras[current_era] && epoch === static_data.eras[current_era].date.epoch && static_data.eras[current_era].settings.restart){
+        era_year = 0;
+    }
+
+	let week_day = 0;
 
 	// Calculate the start of week
 	if(static_data.year_data.overflow){
 
-		var week_day = (epoch-1-intercalary+(Number(static_data.year_data.first_day))) % static_data.year_data.global_week.length;
+		week_day = (epoch-1-intercalary+(Number(static_data.year_data.first_day))) % static_data.year_data.global_week.length;
 
 		if (week_day < 0) week_day += static_data.year_data.global_week.length;
 
 		week_day += 1;
 
 	}else{
-		var week_day = 1;
+		week_day = 1;
 	}
 
 	return {"epoch": epoch,
@@ -2263,7 +2279,8 @@ function evaluate_calendar_start(static_data, year, timespan, day, debug){
 			"week_day": week_day,
 			"count_timespans": count_timespans,
 			"num_timespans": num_timespans,
-			"total_week_num": total_week_num
+			"total_week_num": total_week_num,
+            "current_era": current_era
 		};
 
 }

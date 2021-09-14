@@ -92,6 +92,8 @@ const calendar_renderer = {
         }
         this.render_callbacks = [];
         this.loaded = true;
+
+	    execution_time.end("Calculating and rendering calendar took:")
     }
 
 }
