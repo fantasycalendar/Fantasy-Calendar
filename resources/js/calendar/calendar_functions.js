@@ -1879,6 +1879,8 @@ function get_interval_fractions(_intervals, _offset){
 
 		let result = 1 / interval.interval;
 
+        occurrences += interval.negator ? 0 : result;
+
 		if(interval.children){
 
             for(let j = 0; j < interval.children.length; j++){
@@ -1887,13 +1889,11 @@ function get_interval_fractions(_intervals, _offset){
 
                 let child_result = 1 / child.interval;
 
-                result += child.negator ? child_result*-1 : child_result;
+                occurrences += child.negator ? child_result*-1 : child_result;
 
             }
 
         }
-
-		occurrences += interval.negator ? result*-1 : result;
 
 	}
 

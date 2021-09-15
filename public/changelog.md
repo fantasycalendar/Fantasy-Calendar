@@ -1,5 +1,6 @@
 ### 2.X.X - Adjective Efreet
 * Tweaked - Renamed the "Create Calendar" button to "Save Calendar" to avoid confusion
+* Fixed - Issues surrounding hiding/showing the overflow weekdays toggle when custom weeks and leaping weekdays were active 
 
 ### 2.0.20 - Typesetting Efreet
 #### May 15, 2021

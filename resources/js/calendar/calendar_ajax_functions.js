@@ -405,7 +405,7 @@ function submit_hide_show_event(event_id){
         .then(function(result) {
             if(result.data.success) {
 				events[event_id].settings.hide = !events[event_id].settings.hide;
-				rebuild_events();
+				rerender_calendar();
 				evaluate_save_button();
 			}
 			$.notify(
@@ -468,7 +468,6 @@ function submit_delete_event(event_id, callback){
 
 
 function get_event_comments(event_id, callback){
-
 	$.ajax({
 		url: window.baseurl+"api/eventcomment/event/"+event_id,
 		type: "get",

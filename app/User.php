@@ -41,6 +41,9 @@ class User extends Authenticatable implements
         'agreed_at',
         'marketing_opt_in_at',
         'marketing_opt_out_at',
+        'last_interaction',
+        'last_login',
+        'last_visit',
     ];
 
     /**

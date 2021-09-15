@@ -1229,6 +1229,10 @@ function set_up_edit_inputs(){
 
 	});
 
+	$(document).on('click', '.html_edit', function() {
+		let era_id = $(this).closest('.sortable-container').attr('index') | 0;
+		window.dispatchEvent(new CustomEvent('html-editor-modal-edit-html', { detail: { era_id: era_id } }));
+	});
 
 	$('.add_inputs.event_categories .add').click(function(){
 
@@ -1312,6 +1316,7 @@ function set_up_edit_inputs(){
 
 
 	$('.add_inputs.events .add').click(function(){
+
 		var name = $('#event_name_input');
 
 		var name_val = name.val();
@@ -1326,10 +1331,25 @@ function set_up_edit_inputs(){
 			}
 		}
 
-		edit_event_ui.create_new_event(name_val, epoch);
+		window.dispatchEvent(new CustomEvent('event-editor-modal-new-event', { detail: { name: name_val, epoch: epoch } }));
 
 		name.val('');
 
+	});
+
+	$(document).on('click', '.open-edit-event-ui', function() {
+		let event_id = $(this).closest('.sortable-container').attr('index') | 0;
+
+		let epoch = dynamic_data.epoch;
+		if (typeof preview_date !== "undefined" && preview_date.follow) {
+			epoch = dynamic_date_manager.epoch;
+		} else {
+			if (typeof preview_date_manager !== "undefined") {
+				epoch = preview_date_manager.epoch;
+			}
+		}
+
+		window.dispatchEvent(new CustomEvent('event-editor-modal-edit-event', { detail: { event_id: event_id, epoch: epoch } }));
 	});
 
 	$(document).on('click', '.btn_remove', function(){
@@ -1686,13 +1706,9 @@ function set_up_edit_inputs(){
 		container.find('.adds_week_day_data_container input, .adds_week_day_data_container select').prop('disabled', !checked);
 		container.find('.week-day-select').toggleClass('inclusive', checked).prop('disabled', !checked);
 		$('#first_week_day_container').toggleClass('hidden', !checked).find('select').prop('disabled', !checked);
-		$('#overflow_explanation').toggleClass('hidden', !checked);
-		$('#overflow_container').toggleClass('hidden', checked).toggleClass('disabled', checked);
-		if(checked){
-			$('#month_overflow').prop('checked', false).change();
-		}
-		repopulate_weekday_select($(this).closest('.sortable-container').find('.week-day-select'));
+        repopulate_weekday_select($(this).closest('.sortable-container').find('.week-day-select'));
 		container.find('.internal-list-name').change();
+        evaluate_custom_weeks();
 	});
 
 	$('#month_overflow').change(function(){
@@ -2462,8 +2478,6 @@ function set_up_edit_inputs(){
 		var permissions = dropdown.val();
 
 		update_calendar_user(user_id, permissions, function(success, text){
-
-			console.log(text)
 
 			button.prop('disabled', success);
 			button.attr('permissions_val', permissions);
@@ -4537,7 +4551,7 @@ function error_check(parent, rebuild){
 		if(parent !== undefined && (parent === "seasons")){
 			rebuild_climate();
 		}else{
-			rebuild_all_data();
+			pre_rebuild_calendar('calendar', dynamic_data);
 			update_current_day(true);
 			evaluate_sun();
 		}
@@ -4779,12 +4793,19 @@ function evaluate_custom_weeks(){
 		}
 	});
 
+    leap_day_list.children().each(function(i){
+        if($(this).find('.adds-week-day').is(':checked')){
+            custom_week = true;
+        }
+    });
+
 	if(custom_week){
 		$('#month_overflow').prop('checked', !custom_week);
 		static_data.year_data.overflow = false;
 	}
 
 	$('#month_overflow').prop('disabled', custom_week);
+	$('.month_overflow_container').toggleClass("hidden", custom_week)
 	$('#overflow_explanation').toggleClass('hidden', !custom_week);
 
 	populate_first_day_select();
@@ -5717,6 +5738,19 @@ function set_up_edit_values(){
 		let weekdayname = static_data.year_data.global_week[i];
 		add_weekday_to_sortable(global_week_sortable, i, weekdayname);
 	}
+
+	let custom_week = static_data.year_data.timespans.filter(t => t?.week?.length > 0).length > 0
+                   || static_data.year_data.leap_days.filter(l => l.adds_week_day).length > 0;
+
+    if(custom_week){
+        $('#month_overflow').prop('checked', !custom_week);
+        static_data.year_data.overflow = false;
+    }
+
+    $('#month_overflow').prop('disabled', custom_week);
+    $('.month_overflow_container').toggleClass("hidden", custom_week)
+    $('#overflow_explanation').toggleClass('hidden', !custom_week);
+
 	populate_first_day_select(static_data.year_data.first_day);
 	$('#first_week_day_container').toggleClass('hidden', !static_data.year_data.overflow || static_data.year_data.global_week.length == 0).find('select').prop('disabled', !static_data.year_data.overflow || static_data.year_data.global_week.length == 0);
 	global_week_sortable.sortable('refresh');

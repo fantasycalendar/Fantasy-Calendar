@@ -6,7 +6,7 @@ div:focus, button:focus, * button.btn.btn-stock:focus {
 }
 
 #protip_container{
-    z-index:300;
+    z-index:1100;
     position: absolute !important;
 }
 
@@ -605,10 +605,6 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     }
 }
 
-.active_layout {
-    //background-color: rgba(250, 224, 66, .2) !important;
-}
-
 /* ------------------ Preset forms ----------------- */
 
 .preset_background .preset-wrapper {
@@ -740,6 +736,7 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     height: 150px;
     max-height: 150px;
     min-height: 150px;
+    overflow:hidden;
 }
 
 #event_comment_mastercontainer .trumbowyg-editor {
@@ -841,7 +838,7 @@ body .event_comment .comment_context_btn:not(:hover) {
     color:#B71C1C;
 }
 
-.view_event_btn, .edit_event_btn {
+.event_header_action {
     font-size:1.5rem;
     opacity:0.35;
     margin-left:0.5rem;
@@ -851,6 +848,17 @@ body .event_comment .comment_context_btn:not(:hover) {
     }
 }
 
+.color_container{
+    height: 2rem;
+}
+
+.event-moon-text{
+    opacity:0.65;
+    overflow:hidden;
+    text-overflow: ellipsis;
+    font-size:1.4rem;
+    white-space: nowrap;
+}
 
 @media screen and (max-width: 768px) {
     .clickable_background {

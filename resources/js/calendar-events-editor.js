@@ -2,6 +2,7 @@ const calendar_events_editor = {
 
 	open: false,
 	new_event: true,
+    cloning_event: false,
 	creation_type: "Creating Event",
 	moon_overrides_open: false,
 	settings_open: false,
@@ -11,9 +12,8 @@ const calendar_events_editor = {
 	trumbowyg: undefined,
 	inputs_changed: false,
 	delete_hover_element: undefined,
-	delete_droppable: false,
-	deleting_clicked: false,
-    has_moons: false,
+	isDeletingDroppable: false,
+	isDeletingConditions: false,
 	moons: [],
 
 	working_event: {
@@ -45,8 +45,8 @@ const calendar_events_editor = {
 
 	init($event) {
 
-		let epoch = $event.detail.epoch;
-		this.epoch_data = evaluated_static_data.epoch_data[epoch];
+		this.epoch = $event.detail.epoch;
+		this.epoch_data = evaluated_static_data.epoch_data[this.epoch];
 
 		/* Some scripts are loaded after Alpine, so we need to set everything up when the UI is first opened */
 		if(!this.has_initialized){
@@ -57,28 +57,28 @@ const calendar_events_editor = {
 
 			this.description_input = $(this.$refs.description);
 
+			this.nth_input = $(this.$refs.nth_input);
+
 			this.description_input.trumbowyg();
 
 			this.event_conditions_container.nestedSortable({
 				handle: ".handle",
 				containerSelector: ".group_list_root, .group_list",
-				onDragStart: function(item, container, _super, event) {
+				onDragStart(item, container, _super, event) {
 					item.css({
 						height: item.outerHeight(),
 						width: item.outerWidth()
 					})
 					item.addClass(container.group.options.draggedClass)
 					$("body").addClass(container.group.options.bodyClass)
-					var height = item.css("height");
-					container.rootGroup.placeholder.css('height', height);
+					container.rootGroup.placeholder.css('height', item.css("height"));
 					$('#condition_remove_button .icon').addClass('wiggle');
 				},
-				onDrop: function(item, container, _super, event) {
+				onDrop(item, container, _super, event) {
 					item.removeClass(container.group.options.draggedClass).removeAttr("style");
 					$("body").removeClass(container.group.options.bodyClass);
-					$('#condition_remove_button .icon').removeClass('wiggle');
-					$('#condition_remove_button .icon').removeClass('faster');
-					if (event_editor_ui.delete_droppable) {
+					$('#condition_remove_button .icon').removeClass('wiggle').removeClass('faster');
+					if (event_editor_ui.isDeletingDroppable) {
 						item.remove();
 					}
 					event_editor_ui.evaluate_condition_selects(event_editor_ui.event_conditions_container);
@@ -96,10 +96,10 @@ const calendar_events_editor = {
 
 			$(document).on('change', '.condition_type', function() {
 
-				var selected_option = $(this).find(":selected");
-				var type = selected_option.parent().attr('label');
+				let selected_option = $(this).find(":selected");
+				let type = selected_option.parent().attr('label');
 
-				var lastClass = $(this).closest('.condition_container').attr('class').split(' ').pop();
+				let lastClass = $(this).closest('.condition_container').attr('class').split(' ').pop();
 				$(this).closest('.condition_container').removeClass(lastClass).addClass(type);
 
 				event_editor_ui.evaluate_inputs($(this).closest('.condition'));
@@ -107,10 +107,10 @@ const calendar_events_editor = {
 			});
 
 			$(document).on('change', '.group_type input[type="radio"]', function() {
-				var container = $(this).parent().parent().parent();
-				var type = $(this).parent().parent().attr('class');
+				let container = $(this).parent().parent().parent();
+				let type = $(this).parent().parent().attr('class');
 				container.attr('type', type);
-				if (type == "num") {
+				if (type === "num") {
 					container.find('.num_group_con').prop('disabled', false).attr('min', 1).attr('max', Math.max(1, container.find('.group_list').children().length)).val("1");
 				} else {
 					container.find('.num_group_con').prop('disabled', true).val('');
@@ -119,13 +119,13 @@ const calendar_events_editor = {
 			})
 
 			$(document).on('mouseenter', '.condition', function(e) {
-				if (event_editor_ui.deleting_clicked) {
+				if (event_editor_ui.isDeletingConditions) {
 					event_editor_ui.set_delete_element($(this));
 				}
 			});
 
 			$(document).on('mouseleave', '.condition', function(e) {
-				if (event_editor_ui.deleting_clicked) {
+				if (event_editor_ui.isDeletingConditions) {
 					if ($(this).parent().hasClass('group_list')) {
 						event_editor_ui.set_delete_element($(this).parent().parent());
 					} else {
@@ -135,13 +135,13 @@ const calendar_events_editor = {
 			});
 
 			$(document).on('mouseenter', '.group', function(e) {
-				if (event_editor_ui.deleting_clicked) {
+				if (event_editor_ui.isDeletingConditions) {
 					event_editor_ui.set_delete_element($(this));
 				}
 			});
 
 			$(document).on('mouseleave', '.group', function(e) {
-				if (event_editor_ui.deleting_clicked) {
+				if (event_editor_ui.isDeletingConditions) {
 					if ($(this).parent().hasClass('group_list')) {
 						event_editor_ui.set_delete_element($(this).parent().parent());
 					} else {
@@ -151,14 +151,14 @@ const calendar_events_editor = {
 			});
 
 			$(document).on('click', '.condition, .condition div, .condition select, .condition span', function(e) {
-				if (event_editor_ui.deleting_clicked) {
+				if (event_editor_ui.isDeletingConditions) {
 					e.preventDefault();
 					e.stopPropagation();
-					var item = $(this).closest('.condition');
+					let item = $(this).closest('.condition');
 					if (item.parent().hasClass('group_list')) {
-						var parent = item.parent();
+						let parent = item.parent();
 						item.remove();
-						if (parent.children().length == 0) {
+						if (parent.children().length === 0) {
 							parent.parent().remove();
 						}
 					} else {
@@ -171,15 +171,16 @@ const calendar_events_editor = {
 			});
 
 			$(document).on('click', '.group, .group .group_list', function(e) {
-				if (event_editor_ui.deleting_clicked) {
+				if (event_editor_ui.isDeletingConditions) {
 
 					e.preventDefault();
 					e.stopPropagation();
 
+					let group_list;
 					if ($(this).hasClass('group_list')) {
-						var group_list = $(this);
+						group_list = $(this);
 					} else {
-						var group_list = $(this).find('.group_list');
+						group_list = $(this).find('.group_list');
 					}
 
 					if (group_list.children().length > 0) {
@@ -232,12 +233,42 @@ const calendar_events_editor = {
 		}
 	},
 
-	create_new_event: function($event) {
+    clone_event($event) {
+
+        this.init($event);
+
+	    if($event.detail.event_data === undefined && $event.detail.event_id){
+            $event.detail.event_data = clone(events[$event.detail.event_id]);
+            $event.detail.event_data.name += " (clone)";
+        }
+
+        this.new_event = true;
+        this.cloning_event = true;
+
+        this.working_event = $event.detail.event_data;
+        delete this.working_event['id'];
+
+        this.creation_type = "Cloning Event"
+
+        this.set_up_moon_data();
+
+        this.event_id = Object.keys(events).length;
+
+        this.create_conditions(this.working_event.data.conditions, this.event_conditions_container);
+
+        this.evaluate_condition_selects(this.event_conditions_container);
+
+        this.inputs_changed = false;
+
+        this.open = true;
+    },
+
+	create_new_event($event) {
 
 		this.init($event);
 
 		this.new_event = true;
-		let name = $event.detail.name ?? "New Event";
+		let name = $event.detail.name ?? "";
 		this.creation_type = "Creating Event"
 
 		this.working_event = {
@@ -266,11 +297,15 @@ const calendar_events_editor = {
 			},
 		};
 
-		var category_id = static_data.settings.default_category !== undefined ? static_data.settings.default_category : -1;
+        if(this.description_input) {
+            this.description_input.trumbowyg('html', this.working_event.description);
+        }
 
-		if (category_id != -1) {
-			var category = get_category(category_id);
-			if (category !== undefined && category.id != -1) {
+		let category_id = static_data.settings.default_category !== undefined ? static_data.settings.default_category : -1;
+
+		if (category_id !== -1) {
+			let category = get_category(category_id);
+			if (category !== undefined && category.id !== -1) {
 				this.working_event.event_category_id = category.id;
 				this.working_event.settings.color = category.event_settings.color;
 				this.working_event.settings.text = category.event_settings.text;
@@ -286,17 +321,18 @@ const calendar_events_editor = {
 
 		this.populate_condition_presets();
 		this.update_every_nth_presets();
-		this.add_preset_conditions(this.preset, this.nth);
+
+        this.add_preset_conditions(this.preset, this.nth);
 
 		this.open = true;
 
 	},
 
-	event_category_changed: function(){
+	event_category_changed(){
 
-		if (this.working_event.event_category_id != -1) {
-			var category = get_category(this.working_event.event_category_id);
-			if (category !== undefined && category.id != -1) {
+		if (this.working_event.event_category_id !== -1) {
+			let category = get_category(this.working_event.event_category_id);
+			if (category !== undefined && category.id !== -1) {
 				this.working_event.settings.color = category.event_settings.color;
 				this.working_event.settings.text = category.event_settings.text;
 				this.working_event.settings.hide = category.event_settings.hide;
@@ -307,7 +343,7 @@ const calendar_events_editor = {
 
 	},
 
-	edit_event: function($event) {
+	edit_event($event) {
 
 		this.init($event);
 
@@ -321,7 +357,9 @@ const calendar_events_editor = {
 
 		this.set_up_moon_data();
 
-		this.description_input.trumbowyg('html', this.working_event.description);
+		if(this.description_input) {
+            this.description_input.trumbowyg('html', this.working_event.description);
+        }
 
 		this.create_conditions(this.working_event.data.conditions, this.event_conditions_container);
 
@@ -333,9 +371,11 @@ const calendar_events_editor = {
 
 	},
 
-	save_event: function() {
+	save_event() {
 
 		this.working_event.data = this.create_event_data();
+
+		this.working_event.name = (this.working_event.name === "") ? "New Event" : this.working_event.name;
 
 		this.working_event.description = this.description_input.trumbowyg('html');
 
@@ -364,19 +404,19 @@ const calendar_events_editor = {
 
 	},
 
-	submit_event_callback: function(success){
+	submit_event_callback(success){
 
 		if (success) {
 
 			eval_apply_changes(function() {
-				rebuild_events();
+				rerender_calendar();
 			});
 
 		}
 
 	},
 
-	close: function() {
+	close() {
 
 		this.open = false;
 
@@ -385,8 +425,9 @@ const calendar_events_editor = {
 		this.preset = "once";
 		this.previous_preset = "once";
 		this.moon_presets = [];
-		this.nth = "";
+		this.nth = 1;
 		this.show_nth = false;
+        this.cloning_event = false;
 
 		if(this.description_input) {
             this.description_input.trumbowyg('html', '');
@@ -430,12 +471,56 @@ const calendar_events_editor = {
 
 	},
 
-	callback_do_close() {
+    esc_clicked($event) {
 
-		if (this.event_has_changed()) {
+	    if(this.isDeletingConditions){
+	        this.remove_clicked();
+	        return;
+        }
+
+	    if(this.open){
+	         this.confirm_close($event);
+        }
+
+    },
+
+    confirm_clone() {
+        // Don't do anything if a swal is open or the user is deleting conditions
+        if(swal.isVisible() || this.isDeletingConditions){
+            this.remove_clicked();
+            return false;
+        }
+
+        swal.fire({
+            title: "Clone event?",
+            text: 'Your changes to this event will not be saved! Are you sure you want to continue?',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            icon: "warning",
+        }).then((result) => {
+            if (!result.dismiss) {
+                let new_event = clone(this.working_event);
+                new_event.data = this.create_event_data();
+                new_event.name = ((new_event.name === "") ? "New Event" : new_event.name) + " (clone)";
+                new_event.description = this.description_input.trumbowyg('html');
+                this.close();
+                window.dispatchEvent(new CustomEvent('event-editor-modal-clone-event', { detail: { event_data: new_event, epoch: this.epoch } }));
+            }
+        });
+
+    },
+
+	confirm_close() {
+	    // Don't do anything if a swal is open or the user is deleting conditions
+	    if(swal.isVisible() || this.isDeletingConditions){
+	        return false;
+        }
+
+		if (this.event_has_changed() || this.new_event) {
 			swal.fire({
-				title: "Are you sure?",
-				text: 'Your changes to this event will not be saved! Are you sure you want to continue?',
+				title: "Close event without saving?",
+				text: 'Any changes to this event will not be saved! Are you sure you want to continue?',
 				showCancelButton: true,
 				confirmButtonColor: '#d33',
 				cancelButtonColor: '#3085d6',
@@ -451,11 +536,11 @@ const calendar_events_editor = {
 
 	},
 
-	callback_do_view() {
+	confirm_view() {
 
 		if (this.event_has_changed()) {
 			swal.fire({
-				title: "Are you sure?",
+				title: "Close event without saving?",
 				text: 'Your changes to this event will not be saved! Are you sure you want to continue?',
 				showCancelButton: true,
 				confirmButtonColor: '#d33',
@@ -463,18 +548,18 @@ const calendar_events_editor = {
 				icon: "warning",
 			}).then((result) => {
 				if (!result.dismiss) {
-					window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { id: this.event_id, era: false } }));
+					window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { id: this.event_id, era: false, epoch: this.epoch } }));
 					this.close();
 				}
 			});
 		} else {
-			window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { id: this.event_id, era: false } }));
+			window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { id: this.event_id, era: false, epoch: this.epoch } }));
 			this.close();
 		}
 
 	},
 
-	create_event_data: function(){
+	create_event_data(){
 
 		let conditions = this.create_condition_array(this.event_conditions_container);
 
@@ -482,49 +567,51 @@ const calendar_events_editor = {
 
 		let date = []
 
-		if (conditions.length == 1 || conditions.length == 5) {
+		if (conditions.length === 1 || conditions.length === 5) {
 
-			if (conditions.length == 1) {
+			if (conditions.length === 1) {
 
-				if (conditions[0][0] == "Date" && conditions[0][1] == 0) {
+				if (conditions[0][0] === "Date" && conditions[0][1] === 0) {
 					date = [Number(conditions[0][2][0]), Number(conditions[0][2][1]), Number(conditions[0][2][2])];
 				}
 
 			} else {
 
-				var year = false;
-				var month = false;
-				var day = false
-				var ands = 0
+				let year = false;
+				let month = false;
+				let day = false
+				let ands = 0
 
-				for (var i = 0; i < conditions.length; i++) {
-					if (conditions[i].length == 3) {
-						if (conditions[i][0] == "Year" && Number(conditions[i][1]) == 0) {
+				for (let i = 0; i < conditions.length; i++) {
+					if (conditions[i].length === 3) {
+						if (conditions[i][0] === "Year" && Number(conditions[i][1]) === 0) {
 							year = true;
 							date[0] = Number(conditions[i][2][0])
 						}
 
-						if (conditions[i][0] == "Month" && Number(conditions[i][1]) == 0) {
+						if (conditions[i][0] === "Month" && Number(conditions[i][1]) === 0) {
 							month = true;
 							date[1] = Number(conditions[i][2][0])
 						}
 
-						if (conditions[i][0] == "Day" && Number(conditions[i][1]) == 0) {
+						if (conditions[i][0] === "Day" && Number(conditions[i][1]) === 0) {
 							day = true;
 							date[2] = Number(conditions[i][2][0])
 						}
-					} else if (conditions[i].length == 1) {
-						if (conditions[i][0] == "&&") {
+					} else if (conditions[i].length === 1) {
+						if (conditions[i][0] === "&&") {
 							ands++;
 						}
 					}
 				}
 
-				if (!(year && month && day && ands == 2)) {
+				if (!(year && month && day && ands === 2)) {
 					date = [];
 				}
 			}
 		}
+
+
 
 		let moon_data = {}
 		for(let index in this.moons){
@@ -538,16 +625,16 @@ const calendar_events_editor = {
 				moon_data[index]['override_phase'] = moon.override_phase;
 				moon_data[index]['phase'] = moon.phase;
 			}
-			if(moon.color != moon.original_color){
+			if(moon.color !== moon.original_color){
 				moon_data[index]['color'] = moon.color;
 			}
-			if(moon.shadow_color != moon.original_shadow_color){
+			if(moon.shadow_color !== moon.original_shadow_color){
 				moon_data[index]['shadow_color'] = moon.shadow_color;
 			}
-			if(moon.phase_name != ""){
+			if(moon.phase_name !== ""){
 				moon_data[index]['phase_name'] = moon.phase_name;
 			}
-			if (Object.keys(moon_data[index]).length == 0) {
+			if (Object.keys(moon_data[index]).length === 0) {
 				delete moon_data[index];
 			}
 		}
@@ -569,9 +656,9 @@ const calendar_events_editor = {
 
 	},
 
-	get_search_distance: function(conditions) {
+	get_search_distance(conditions) {
 
-		var search_distance = 0;
+		let search_distance = 0;
 
 		if (this.working_event.data.has_duration || this.working_event.data.limited_repeat) {
 			search_distance = this.working_event.data.duration | 0 > search_distance ? this.working_event.data.duration | 0 : search_distance;
@@ -584,7 +671,7 @@ const calendar_events_editor = {
 
 	},
 
-	recurse_conditions: function(conditions, search_distance) {
+	recurse_conditions(conditions, search_distance) {
 
 		for (let index in conditions) {
 
@@ -592,9 +679,9 @@ const calendar_events_editor = {
 
 			let condition = conditions[index];
 
-			if (condition.length == 3 && condition[0] === "Events") {
+			if (condition.length === 3 && condition[0] === "Events") {
 				new_search_distance = Number(condition[2][1]);
-			} else if (condition.length == 2) {
+			} else if (condition.length === 2) {
 				new_search_distance = this.recurse_conditions(condition[1], search_distance)
 			}
 
@@ -605,77 +692,85 @@ const calendar_events_editor = {
 
 	},
 
-	event_is_one_time: function() {
+    reset_moon_color(index, shadow){
 
-		var date = []
+        let color_key = (shadow ? "shadow_" : "") + "color";
+
+        this.moons[index][color_key] = this.moons[index]["original_" + color_key];
+
+    },
+
+	event_is_one_time() {
+
+		let date = []
 
 		this.working_event.data.connected_events = [];
 		this.working_event.data.conditions = this.create_condition_array(this.event_conditions_container);
 
-		if (this.working_event.data.conditions.length == 1 || this.working_event.data.conditions.length == 5) {
+		if (this.working_event.data.conditions.length === 1 || this.working_event.data.conditions.length === 5) {
 
-			if (this.working_event.data.conditions.length == 1) {
+			if (this.working_event.data.conditions.length === 1) {
 
-				if (this.working_event.data.conditions[0][0] == "Date" && this.working_event.data.conditions[0][1] == 0) {
+				if (this.working_event.data.conditions[0][0] === "Date" && this.working_event.data.conditions[0][1] === 0) {
 					return true
 				}
 
 			} else {
 
-				var year = false;
-				var month = false;
-				var day = false
-				var ands = 0
+				let year = false;
+				let month = false;
+				let day = false
+				let ands = 0
 
-				for (var i = 0; i < this.working_event.data.conditions.length; i++) {
-					if (this.working_event.data.conditions[i].length == 3) {
-						if (this.working_event.data.conditions[i][0] == "Year" && Number(this.working_event.data.conditions[i][1]) == 0) {
+				for (let i = 0; i < this.working_event.data.conditions.length; i++) {
+					if (this.working_event.data.conditions[i].length === 3) {
+						if (this.working_event.data.conditions[i][0] === "Year" && Number(this.working_event.data.conditions[i][1]) === 0) {
 							year = true;
 							date[0] = Number(this.working_event.data.conditions[i][2][0])
 						}
 
-						if (this.working_event.data.conditions[i][0] == "Month" && Number(this.working_event.data.conditions[i][1]) == 0) {
+						if (this.working_event.data.conditions[i][0] === "Month" && Number(this.working_event.data.conditions[i][1]) === 0) {
 							month = true;
 							date[1] = Number(this.working_event.data.conditions[i][2][0])
 						}
 
-						if (this.working_event.data.conditions[i][0] == "Day" && Number(this.working_event.data.conditions[i][1]) == 0) {
+						if (this.working_event.data.conditions[i][0] === "Day" && Number(this.working_event.data.conditions[i][1]) === 0) {
 							day = true;
 							date[2] = Number(this.working_event.data.conditions[i][2][0])
 						}
-					} else if (this.working_event.data.conditions[i].length == 1) {
-						if (this.working_event.data.conditions[i][0] == "&&") {
+					} else if (this.working_event.data.conditions[i].length === 1) {
+						if (this.working_event.data.conditions[i][0] === "&&") {
 							ands++;
 						}
 					}
 				}
 
-				if (!(year && month && day && ands == 2)) {
+				if (!(year && month && day && ands === 2)) {
 					date = [];
 				}
 
 			}
 		}
 
-		return date.length > 0 || this.working_event.data.conditions.length == 0;
+		return date.length > 0 || this.working_event.data.conditions.length === 0;
 
 	},
 
-	event_has_changed: function() {
+	event_has_changed() {
 
 		if (events[this.event_id] && this.inputs_changed) {
 
-			var event_check = clone(events[this.event_id])
+			let event_check = clone(events[this.event_id])
 
-			var eventid = events[this.event_id].id;
+			let eventid = events[this.event_id].id;
 
 			if (eventid !== undefined) {
 				event_check.id = eventid;
 			}
 
-			event_check.description = this.description_input.trumbowyg('html');
-
 			event_check.data = this.create_event_data();
+
+			event_check.description = this.description_input.trumbowyg('html');
 
 			event_check.settings = clone(this.working_event.settings)
 
@@ -689,11 +784,9 @@ const calendar_events_editor = {
 
 	},
 
-	set_up_moon_data: function() {
+	set_up_moon_data() {
 
-	    this.has_moons = static_data.moons.length > 0;
-
-	    if(static_data.moons.length == 0) return;
+	    if(!static_data.moons.length) return;
 
 		this.moons = [];
 		for (let index in static_data.moons) {
@@ -704,6 +797,7 @@ const calendar_events_editor = {
 			moon.original_shadow_color = clone(moon.shadow_color);
 			moon.original_color = clone(moon.color);
 			moon.override_phase = false;
+			moon.original_phase = this.epoch_data.moon_phase[index];
 			moon.phase = this.epoch_data.moon_phase[index];
 			moon.phases = clone(Object.keys(moon_phases[moon.granularity]))
 			moon.paths = clone(Object.values(moon_phases[moon.granularity]))
@@ -749,7 +843,7 @@ const calendar_events_editor = {
 	preset: "once",
 	previous_preset: "once",
 	moon_presets: [],
-	nth: "",
+	nth: 2,
 	show_nth: false,
 
 	get selected_preset() {
@@ -757,16 +851,15 @@ const calendar_events_editor = {
 		let selected_preset = this.presets[this.preset];
 
 		if (!selected_preset) {
-			selected_preset = this.moon_presets.find(moon_preset => moon_preset.value == this.preset);
+			selected_preset = this.moon_presets.find(moon_preset => moon_preset.value === this.preset);
 		}
-
 		return selected_preset;
 
 	},
 
-	condition_preset_changed: function($event){
+	condition_preset_changed($event){
 
-		if (this.preset == this.previous_preset) {
+		if (this.preset === this.previous_preset) {
 			return;
 		}
 
@@ -784,14 +877,14 @@ const calendar_events_editor = {
 				icon: "warning",
 			}).then((result) => {
 
-				if (!result.dismiss) {
+				if (result.dismiss) {
 
 					this.update_every_nth_presets();
 
-					this.$event_conditions_container.empty();
+					this.event_conditions_container.empty();
 					this.add_preset_conditions(this.preset, this.nth);
 
-					$(this).data('val', $(this).val());
+                    this.previous_preset = this.preset;
 
 				}
 
@@ -808,9 +901,15 @@ const calendar_events_editor = {
 
 		this.previous_preset = this.preset;
 
-	},
+        if(this.selected_preset.nth){
+            setTimeout(() => {
+                $(this.$refs.nth_input).focus();
+            }, 100);
+        }
 
-	populate_condition_presets: function(){
+    },
+
+	populate_condition_presets(){
 
 		this.presets.weekly = {
 			text: `Weekly on ${this.epoch_data.week_day_name}`,
@@ -826,7 +925,7 @@ const calendar_events_editor = {
 			enabled: !this.epoch_data.intercalary
 		}
 
-		let inverse_week_day_num = this.epoch_data.inverse_week_day_num == 1 ? "last" : ordinal_suffix_of(this.epoch_data.inverse_week_day_num) + " to last";
+		let inverse_week_day_num = this.epoch_data.inverse_week_day_num === 1 ? "last" : ordinal_suffix_of(this.epoch_data.inverse_week_day_num) + " to last";
 
 		this.presets.monthly_inverse_weekday = {
 			text: `Monthly on the ${inverse_week_day_num} ${this.epoch_data.week_day_name}`,
@@ -846,47 +945,49 @@ const calendar_events_editor = {
 
 		this.moon_presets = [];
 
+		if(!static_data.moons.length) return;
+
 		let moon_phase_collection = ''
 
-		for (moon_index in static_data.moons) {
+		for (let moon_index in static_data.moons) {
 
-			var moon = static_data.moons[moon_index];
+			let moon = static_data.moons[moon_index];
 
-			var moon_phase_name = Object.keys(moon_phases[moon.granularity])[this.epoch_data.moon_phase[moon_index]];
+			let moon_phase_name = Object.keys(moon_phases[moon.granularity])[this.epoch_data.moon_phase[moon_index]];
 
 			moon_phase_collection += `${moon.name} is ${moon_phase_name}, `
 
 			this.moon_presets.push({
 				text: `${moon.name} - Every ${moon_phase_name}`,
-				value: "moon_every",
+				value: `moon_every.${moon_index}`,
 				moon_index: moon_index,
 				nth: false
 			})
 
 			this.moon_presets.push({
 				text: `${moon.name} - Every ${ordinal_suffix_of(this.epoch_data.moon_phase_num_month[moon_index])} ${moon_phase_name}`,
-				value: "moon_x_every",
+				value: `moon_x_every.${moon_index}`,
 				moon_index: moon_index,
 				nth: true
 			})
 
 			this.moon_presets.push({
 				text: `${moon.name} - Annually every ${moon_phase_name} in ${this.epoch_data.timespan_name}`,
-				value: "moon_annually",
+				value: `moon_annually.${moon_index}`,
 				moon_index: moon_index,
 				nth: false
 			})
 
 			this.moon_presets.push({
 				text: `${moon.name} - Annually every ${ordinal_suffix_of(this.epoch_data.moon_phase_num_month[moon_index])} ${moon_phase_name} in ${this.epoch_data.timespan_name}`,
-				value: "moon_x_annually",
+				value: `moon_x_annually.${moon_index}`,
 				moon_index: moon_index,
 				nth: true
 			})
 
 			this.moon_presets.push({
 				text: `${moon.name} - Every ${ordinal_suffix_of(this.epoch_data.moon_phase_num_year[moon_index])} ${moon_phase_name} in the year`,
-				value: "moon_yearly",
+				value: `moon_yearly.${moon_index}`,
 				moon_index: moon_index,
 				nth: false
 			})
@@ -899,17 +1000,17 @@ const calendar_events_editor = {
 		})
 	},
 
-	nth_input_changed: function(){
+	nth_input_changed(){
 		this.update_every_nth_presets();
 		this.event_conditions_container.empty();
 		this.add_preset_conditions(this.preset, this.nth);
 	},
 
-	update_every_nth_presets: function(){
+	update_every_nth_presets(){
 
-		var repeat_string = !isNaN(this.nth) && this.nth > 1 ? `Every ${ordinal_suffix_of(this.nth)} ` : (this.nth == "" ? "Every nth" : "Every");
+		let repeat_string = !isNaN(this.nth) && this.nth > 1 ? `Every ${ordinal_suffix_of(this.nth)} ` : (this.nth === "" ? "Every nth" : "Every");
 
-		let inverse_week_day_num = this.epoch_data.inverse_week_day_num == 1 ? "last" : ordinal_suffix_of(this.epoch_data.inverse_week_day_num) + " to last";
+		let inverse_week_day_num = this.epoch_data.inverse_week_day_num === 1 ? "last" : ordinal_suffix_of(this.epoch_data.inverse_week_day_num) + " to last";
 
 		this.presets.every_x_day.text = `${repeat_string} day`;
 
@@ -950,58 +1051,63 @@ const calendar_events_editor = {
 
 	},
 
-	add_preset_conditions: function(preset, repeats) {
+	add_preset_conditions(preset, repeats) {
 
 		this.inputs_changed = true;
+
+		let result;
+        let moon_id;
+
+		[preset, moon_id] = preset.split('.');
 
 		switch (preset) {
 
 			case 'none':
-				var result = [];
+				result = [];
 				break;
 
 			case 'once':
-				var result = [
+				result = [
 					['Date', '0', [this.epoch_data.year, this.epoch_data.timespan_index, this.epoch_data.day]]
 				];
 				break;
 
 			case 'daily':
-				var result = [
+				result = [
 					['Epoch', '6', ["1", "0"]]
 				];
 				break;
 
 			case 'weekly':
-				var result = [
+				result = [
 					['Weekday', '0', [this.epoch_data.week_day_name]]
 				];
 				break;
 
 			case 'fortnightly':
-				var result = [
+				result = [
 					['Weekday', '0', [this.epoch_data.week_day_name]],
 					['&&'],
-					['Week', '20', ['2', this.epoch_data.week_even ? '0' : '1']]
+					['Week', '32', ['2', this.epoch_data.week_even ? '0' : '1']]
 				];
 				break;
 
 			case 'monthly_date':
-				var result = [
+				result = [
 					['Day', '0', [this.epoch_data.day]],
 				];
 				break;
 
 			case 'annually_date':
-				var result = [
-					['Month', '0', [this.epoch_data.timespan_index]],
+				result = [
+					['Month', '0', [this.epoch_data.timespan_]],
 					['&&'],
 					['Day', '0', [this.epoch_data.day]]
 				];
 				break;
 
 			case 'monthly_weekday':
-				var result = [
+				result = [
 					['Weekday', '0', [this.epoch_data.week_day_name]],
 					['&&'],
 					['Weekday', '8', [this.epoch_data.week_day_num]]
@@ -1009,7 +1115,7 @@ const calendar_events_editor = {
 				break;
 
 			case 'monthly_inverse_weekday':
-				var result = [
+				result = [
 					['Weekday', '0', [this.epoch_data.week_day_name]],
 					['&&'],
 					['Weekday', '14', [this.epoch_data.inverse_week_day_num]]
@@ -1017,8 +1123,8 @@ const calendar_events_editor = {
 				break;
 
 			case 'annually_month_weekday':
-				var result = [
-					['Month', '0', [this.epoch_data.timespan_index]],
+				result = [
+					['Month', '0', [this.epoch_data.timespan_]],
 					['&&'],
 					['Weekday', '0', [this.epoch_data.week_day_name]],
 					['&&'],
@@ -1027,7 +1133,7 @@ const calendar_events_editor = {
 				break;
 
 			case 'annually_inverse_month_weekday':
-				var result = [
+				result = [
 					['Month', '0', [this.epoch_data.timespan_index]],
 					['&&'],
 					['Weekday', '0', [this.epoch_data.week_day_name]],
@@ -1037,13 +1143,13 @@ const calendar_events_editor = {
 				break;
 
 			case 'every_x_day':
-				var result = [
+				result = [
 					['Epoch', '6', [repeats, (this.epoch_data.epoch) % repeats]]
 				];
 				break;
 
 			case 'every_x_weekday':
-				var result = [
+				result = [
 					['Weekday', '0', [this.epoch_data.week_day_name]],
 					['&&'],
 					['Week', '20', [repeats, (this.epoch_data.total_week_num) % repeats]]
@@ -1051,7 +1157,7 @@ const calendar_events_editor = {
 				break;
 
 			case 'every_x_monthly_date':
-				var result = [
+				result = [
 					['Day', '0', [this.epoch_data.day]],
 					['&&'],
 					['Month', '13', [repeats, (this.epoch_data.timespan_count + 1) % repeats]]
@@ -1059,7 +1165,7 @@ const calendar_events_editor = {
 				break;
 
 			case 'every_x_monthly_weekday':
-				var result = [
+				result = [
 					['Weekday', '0', [this.epoch_data.week_day_name]],
 					['&&'],
 					['Weekday', '8', [this.epoch_data.week_day_num]],
@@ -1069,7 +1175,7 @@ const calendar_events_editor = {
 				break;
 
 			case 'every_x_inverse_monthly_weekday':
-				var result = [
+				result = [
 					['Weekday', '0', [this.epoch_data.week_day_name]],
 					['&&'],
 					['Weekday', '14', [this.epoch_data.inverse_week_day_num]],
@@ -1079,7 +1185,7 @@ const calendar_events_editor = {
 				break;
 
 			case 'every_x_annually_date':
-				var result = [
+				result = [
 					['Day', '0', [this.epoch_data.day]],
 					['&&'],
 					['Month', '0', [this.epoch_data.timespan_index]],
@@ -1089,7 +1195,7 @@ const calendar_events_editor = {
 				break;
 
 			case 'every_x_annually_weekday':
-				var result = [
+				result = [
 					['Weekday', '0', [this.epoch_data.week_day_name]],
 					['&&'],
 					['Weekday', '8', [this.epoch_data.week_day_num]],
@@ -1101,7 +1207,7 @@ const calendar_events_editor = {
 				break;
 
 			case 'every_x_inverse_annually_weekday':
-				var result = [
+				result = [
 					['Weekday', '0', [this.epoch_data.week_day_name]],
 					['&&'],
 					['Weekday', '14', [this.epoch_data.inverse_week_day_num]],
@@ -1113,50 +1219,50 @@ const calendar_events_editor = {
 				break;
 
 			case 'moon_every':
-				var result = [
-					['Moons', '0', [this.epoch_data.moon_id, this.epoch_data.moon_phase[this.epoch_data.moon_id]]]
+				result = [
+					['Moons', '0', [moon_id, this.epoch_data.moon_phase[moon_id]]]
 				];
 				break;
 
 			case 'moon_x_every':
-				var result = [
-					['Moons', '0', [this.epoch_data.moon_id, this.epoch_data.moon_phase[this.epoch_data.moon_id]]],
+				result = [
+					['Moons', '0', [moon_id, this.epoch_data.moon_phase[moon_id]]],
 					['&&'],
-					['Moons', '7', [this.epoch_data.moon_id, this.epoch_data.moon_phase_num_month[this.epoch_data.moon_id]]]
+					['Moons', '7', [moon_id, this.epoch_data.moon_phase_num_month[moon_id]]]
 				];
 				break;
 
 			case 'moon_annually':
-				var result = [
-					['Moons', '0', [this.epoch_data.moon_id, this.epoch_data.moon_phase[this.epoch_data.moon_id]]],
+				result = [
+					['Moons', '0', [moon_id, this.epoch_data.moon_phase[moon_id]]],
 					['&&'],
 					['Month', '0', [this.epoch_data.timespan_index]]
 				];
 				break;
 
 			case 'moon_x_annually':
-				var result = [
-					['Moons', '0', [this.epoch_data.moon_id, this.epoch_data.moon_phase[this.epoch_data.moon_id]]],
+				result = [
+					['Moons', '0', [moon_id, this.epoch_data.moon_phase[moon_id]]],
 					['&&'],
-					['Moons', '7', [this.epoch_data.moon_id, this.epoch_data.moon_phase_num_month[this.epoch_data.moon_id]]],
+					['Moons', '7', [moon_id, this.epoch_data.moon_phase_num_month[moon_id]]],
 					['&&'],
 					['Month', '0', [this.epoch_data.timespan_index]]
 				];
 				break;
 
 			case 'moon_yearly':
-				var result = [
-					['Moons', '0', [this.epoch_data.moon_id, this.epoch_data.moon_phase[this.epoch_data.moon_id]]],
+				result = [
+					['Moons', '0', [moon_id, this.epoch_data.moon_phase[moon_id]]],
 					['&&'],
-					['Moons', '14', [this.epoch_data.moon_id, this.epoch_data.moon_phase_num_year[this.epoch_data.moon_id]]]
+					['Moons', '14', [moon_id, this.epoch_data.moon_phase_num_year[moon_id]]]
 				];
 				break;
 
 			case 'multimoon_every':
-				var result = [];
-				for (var i = 0; i < static_data.moons.length; i++) {
+				result = [];
+				for (let i = 0; i < static_data.moons.length; i++) {
 					result.push(['Moons', '0', [i, this.epoch_data.moon_phase[i]]])
-					if (i != static_data.moons.length - 1) {
+					if (i !== static_data.moons.length - 1) {
 						result.push(['&&']);
 					}
 				}
@@ -1172,9 +1278,9 @@ const calendar_events_editor = {
 	},
 
 	// This function creates an array for the conditions so that it may be stored
-	create_condition_array: function(element) {
+	create_condition_array(element) {
 
-		var array = [];
+		let array = [];
 
 		let event_editor_ui = this;
 
@@ -1182,9 +1288,9 @@ const calendar_events_editor = {
 
 			if ($(this).hasClass('condition')) {
 
-				var selected_option = $(this).find('.condition_type').find(":selected");
-				var type = selected_option.parent().attr('label');
-				var values = [];
+				let selected_option = $(this).find('.condition_type').find(":selected");
+				let type = selected_option.parent().attr('label');
+				let values = [];
 
 				if (type === "Moons") {
 
@@ -1192,10 +1298,11 @@ const calendar_events_editor = {
 
 					$(this).find('.input_container').children().each(function(i) {
 
-						if ($(this).val() == "") {
-							var val = 0;
+					    let val;
+						if ($(this).val() === "") {
+							val = 0;
 						} else {
-							var val = $(this).val();
+							val = $(this).val();
 						}
 
 						values.push(val);
@@ -1209,39 +1316,41 @@ const calendar_events_editor = {
 
 				} else if (type === "Events") {
 
-					var event_id = $(this).find('.input_container').find("option:selected").val() | 0;
+					let event_id = $(this).find('.input_container').find("option:selected").val() | 0;
 
-					if (event_editor_ui.working_event.data.connected_events.indexOf(event_id) == -1) {
+					if (event_editor_ui.working_event.data.connected_events.indexOf(event_id) === -1) {
 						event_editor_ui.working_event.data.connected_events.push(event_id)
 					}
 
 					values.push(event_editor_ui.working_event.data.connected_events.indexOf(event_id));
 
-					if ($(this).find('.input_container').children().eq(1).val() == "") {
-						var val = 0;
+					let val;
+					if ($(this).find('.input_container').children().eq(1).val() === "") {
+						val = 0;
 					} else {
-						var val = $(this).find('.input_container').children().eq(1).val();
+						val = $(this).find('.input_container').children().eq(1).val();
 					}
 					values.push(val);
 
 				} else if (type === "Date") {
 
-					$(this).find('.input_container').children().each(function() {
-						if ($(this).val() == "") {
-							var val = 0;
-						} else {
-							var val = $(this).val();
-						}
-						values.push(val);
-					});
+					let inputs = $(this).find('.input_container').find('.date_control').children();
+					let year = inputs.eq(0).val()|0;
+					let timespan = inputs.eq(1).find('option:selected').val()|0;
+					let day = inputs.eq(2).find('option:selected').val()|0;
+
+					values.push(year);
+					values.push(timespan);
+					values.push(day);
 
 				} else {
 
 					$(this).find('.input_container').children().each(function() {
-						if ($(this).val() == "") {
-							var val = 0;
+					    let val;
+						if ($(this).val() === "") {
+							val = 0;
 						} else {
-							var val = $(this).val();
+							val = $(this).val();
 						}
 						values.push(val);
 					});
@@ -1251,7 +1360,7 @@ const calendar_events_editor = {
 
 			} else if ($(this).hasClass('group')) {
 
-				var type = $(this).find('.group_type');
+				let type = $(this).find('.group_type');
 
 				if (type.attr("type") === "normal") {
 					type = "";
@@ -1265,9 +1374,9 @@ const calendar_events_editor = {
 
 			}
 
-			var condition_operator = $(this).children('.condition_operator');
+			let condition_operator = $(this).children('.condition_operator');
 
-			if (!condition_operator.prop('disabled') && $(this).next().length != 0) {
+			if (!condition_operator.prop('disabled') && $(this).next().length !== 0) {
 				array.push([condition_operator.val()])
 			}
 
@@ -1277,9 +1386,9 @@ const calendar_events_editor = {
 	},
 
 	// This function finds and replaces all NAND operators and places !( and ) around them
-	replace_NAND: function(array) {
-		for (var i = array.length - 1; i > -1; i--) {
-			element = array[i];
+	replace_NAND(array) {
+		for (let i = array.length - 1; i > -1; i--) {
+			let element = array[i];
 			if (element[1] && Array.isArray(element[1]) && element[1].length > 0) {
 				array[i][1] = replace_NAND(element[1]);
 			} else if (element[0] === "NAND") {
@@ -1290,12 +1399,11 @@ const calendar_events_editor = {
 				i++;
 
 				if (array[i] === "!(") {
-					var j = i;
-					loop:
-					while (array[j] != ")") {
+					let j = i;
+					while (array[j] !== ")") {
 						j++;
 						if (j > 100) {
-							break loop;
+							break;
 						}
 					}
 					array.splice(j, 0, ")")
@@ -1311,28 +1419,28 @@ const calendar_events_editor = {
 	},
 
 	// This function takes an array of conditions, and the parent which to attach the conditions UI
-	create_conditions: function(array, parent, group_type) {
+	create_conditions(array, parent, group_type) {
 
 		if (!array) {
 			return;
 		}
 
-		var increment = group_type === "num" ? 1 : 2;
+		let increment = group_type === "num" ? 1 : 2;
 
-		for (var i = 0; i < array.length; i += increment) {
+		for (let i = 0; i < array.length; i += increment) {
 
-			element = array[i];
+			let element = array[i];
 
 			if (Array.isArray(element[1])) {
 
-				var group_type = "normal";
+				let group_type = "normal";
 				if (element[0] === "!") {
 					group_type = "not";
 				} else if (element[0] >= 1) {
 					group_type = "num";
 				}
 
-				var parent_new = this.add_group(parent, group_type);
+				let parent_new = this.add_group(parent, group_type);
 
 				if (element[0] >= 1) {
 					parent_new.parent().children('.group_type').find('.num_group_con').prop('disabled', false).val(element[0]);
@@ -1366,16 +1474,20 @@ const calendar_events_editor = {
 					condition.find('.event_select').val(this.working_event.data.connected_events[element[2][0]])
 					condition.find('.input_container').children().eq(1).val(element[2][1]);
 
-				} else if (element[0] == "Weekday") {
+				} else if (element[0] === "Weekday") {
 
 					condition.find('.input_container').children().each(function(i) {
 						$(this).val(element[2][i]);
 					})
 
-				} else if (element[0] == "Cycle") {
+				} else if (element[0] === "Cycle") {
 
 					condition.find('.input_container').find(`optgroup[value=${element[2][0]}]`).find(`option[value=${element[2][1]}]`).prop('selected', true);
 
+				} else if (element[0] === "Date"){
+					condition.find('.input_container').children().first().children().each(function(i) {
+						$(this).val(element[2][i]).change();
+					})
 				} else {
 					condition.find('.input_container').children().each(function(i) {
 						$(this).val(element[2][i]);
@@ -1389,13 +1501,13 @@ const calendar_events_editor = {
 		}
 	},
 
-	evaluate_condition_selects: function(element) {
+	evaluate_condition_selects(element) {
 
 		let event_editor_ui = this;
 
 		element.children().each(function() {
 
-			if ($(this).next().length == 0) {
+			if ($(this).next().length === 0) {
 				$(this).find('.condition_operator').prop('disabled', true).addClass('hidden');
 			} else {
 				$(this).find('.condition_operator').prop('disabled', false).removeClass('hidden');
@@ -1430,222 +1542,204 @@ const calendar_events_editor = {
 		}
 	},
 
-	remove_clicked: function() {
+	remove_clicked() {
 
-		this.deleting_clicked = !this.deleting_clicked;
-		$('#condition_remove_button .icon').toggleClass('wiggle', this.deleting_clicked);
-		$('#condition_remove_button .icon').removeClass('faster', false);
-		$('#event_conditions_container').toggleClass('deleting', this.deleting_clicked);
-		$('#add_event_condition').prop('disabled', this.deleting_clicked);
-		$('#add_event_condition_group').prop('disabled', this.deleting_clicked);
-		$('#condition_presets').prop('disabled', this.deleting_clicked);
+		this.isDeletingConditions = !this.isDeletingConditions;
+		$('#condition_remove_button .icon').toggleClass('wiggle', this.isDeletingConditions).removeClass('faster', false);
+		$('#event_conditions_container').toggleClass('deleting', this.isDeletingConditions);
+		$('#add_event_condition').prop('disabled', this.isDeletingConditions);
+		$('#add_event_condition_group').prop('disabled', this.isDeletingConditions);
+		$('#condition_presets').prop('disabled', this.isDeletingConditions);
 
 	},
 
-	remove_mouseover: function($event) {
-		this.delete_droppable = true;
+	remove_mouseover($event) {
+		this.isDeletingDroppable = true;
 		$('#condition_remove_button .icon').addClass('faster');
 	},
 
-	remove_mouseout: function() {
-		this.delete_droppable = false;
+	remove_mouseout() {
+		this.isDeletingDroppable = false;
 		$('#condition_remove_button .icon').removeClass('faster');
 	},
 
 	// This function evaluates what inputs should be connected to any given condition based on its input
-	evaluate_inputs: function(element) {
+	evaluate_inputs(element) {
 
 		this.inputs_changed = true;
 		this.conditions_changed = true;
 
-		var selected_option = element.find('.condition_type').find(":selected");
-		var type = selected_option.parent().attr('label');
-		var selected = selected_option.val();
-		var condition_selected = condition_mapping[type][selected][2];
+		let selected_option = element.find('.condition_type').find(":selected");
+		let type = selected_option.parent().attr('label');
+		let selected = selected_option.val();
+		let condition_selected = condition_mapping[type][selected][2];
 
-		element.find('.input_container').toggleClass('hidden', condition_selected[0] == "boolean");
-		element.find('.condition_type').toggleClass('full', condition_selected[0] == "boolean").toggleClass('nomax', condition_selected[0] == "boolean");
+		element.find('.input_container').toggleClass('hidden', condition_selected[0] === "boolean");
+		element.find('.condition_type').toggleClass('full', condition_selected[0] === "boolean").toggleClass('nomax', condition_selected[0] === "boolean");
 
-		var html = [];
+		let html = [];
 
-		if (type == "Month") {
+		let new_element = undefined;
 
-			var next_start = 0;
+		if (type === "Month") {
 
-			if (condition_selected[0] == "select") {
-				html.push("<select class='form-control order-1'>")
+			for (let i = 0; i < condition_selected.length; i++) {
 
-				for (var i = 0; i < static_data.year_data.timespans.length; i++) {
-					html.push(`<option value='${i}'>`);
-					html.push(static_data.year_data.timespans[i].name);
-					html.push("</option>");
-				}
+                let type = condition_selected[i][0];
+                let placeholder = condition_selected[i][1];
+                let alt = condition_selected[i][2];
+                let value = condition_selected[i][3];
+                let min = condition_selected[i][4];
+                let max = condition_selected[i][5];
 
-				html.push("</select>")
-				next_start++;
+                if (type === "select") {
+
+                    html.push("<select class='form-control order-1'>")
+
+                    for (let i = 0; i < static_data.year_data.timespans.length; i++) {
+                        html.push(`<option value='${i}'>`);
+                        html.push(static_data.year_data.timespans[i].name);
+                        html.push("</option>");
+                    }
+
+                    html.push("</select>")
+
+                }else {
+
+                    html.push(`<input type='${type}' placeholder='${placeholder}' class='form-control ${placeholder} order-2'`);
+
+                    if (typeof alt !== 'undefined') {
+                        html.push(` alt='${alt}'`)
+                    }
+
+                    if (typeof value !== 'undefined') {
+                        html.push(` value='${value}'`);
+                    }
+
+                    if (typeof min !== 'undefined') {
+                        html.push(` min='${min}'`);
+                    }
+
+                    if (typeof max !== 'undefined') {
+                        html.push(` max='${max}'`);
+                    }
+
+                    html.push(">");
+
+                }
+
 			}
 
-			for (var i = next_start; i < condition_selected.length; i++) {
+			new_element = $(html.join(''));
 
-				var type = condition_selected[i][0];
-				var placeholder = condition_selected[i][1];
-				var alt = condition_selected[i][2];
-				var value = condition_selected[i][3];
-				var min = condition_selected[i][4];
-				var max = condition_selected[i][5];
+		} else if (type === "Date") {
 
-				html.push(`<input type='${type}' placeholder='${placeholder}' class='form-control ${placeholder} order-2'`);
+			let type = condition_selected[0][0];
+			let placeholder = condition_selected[0][1];
+			let alt = condition_selected[0][0];
+			let value = this.epoch_data ? this.epoch_data.year : dynamic_data.year;
+			let min = condition_selected[0][4];
+			let max = condition_selected[0][5];
 
-				if (typeof alt !== 'undefined') {
-					html.push(` alt='${alt}'`)
-				}
+			html.push(`<div class='date_control flex-grow-1'>`);
 
-				if (typeof value !== 'undefined') {
-					html.push(` value='${value}'`);
-				}
+			html.push(`<input type='${type}' placeholder='${placeholder}' class='date form-control ${placeholder} order-1 year-input'`);
 
-				if (typeof min !== 'undefined') {
-					html.push(` min='${min}'`);
-				}
-
-				if (typeof max !== 'undefined') {
-					html.push(` max='${max}'`);
-				}
-
-				html.push(">");
-
-			}
-
-		} else if (type == "Date") {
-
-			var type = condition_selected[0][0];
-			var placeholder = condition_selected[0][1];
-			var alt = condition_selected[0][0];
-			var value = this.epoch_data ? this.epoch_data.year : dynamic_data.year;
-			var min = condition_selected[0][4];
-			var max = condition_selected[0][5];
-
-			html.push(`<input type='${type}' placeholder='${placeholder}' class='form-control ${placeholder} order-1'`);
-
-			if (typeof alt !== 'undefined') {
+			if(typeof alt !== 'undefined'){
 				html.push(` alt='${alt}'`)
 			}
 
-			if (typeof value !== 'undefined') {
+			if(typeof value !== 'undefined'){
 				html.push(` value='${value}'`);
 			}
 
-			if (typeof min !== 'undefined') {
+			if(typeof min !== 'undefined'){
 				html.push(` min='${min}'`);
 			}
 
-			if (typeof max !== 'undefined') {
+			if(typeof max !== 'undefined'){
 				html.push(` max='${max}'`);
 			}
 
 			html.push(">");
 
-			html.push("<select class='form-control order-2'>")
+			html.push("<select type='number' class='date form-control order-2 timespan-list'></select>")
 
-			for (var i = 0; i < static_data.year_data.timespans.length; i++) {
-				html.push(`<option value='${i}' ${i == (this.epoch_data ? this.epoch_data.timespan_index : dynamic_data.timespan) ? "selected" : ""}>`);
-				html.push(static_data.year_data.timespans[i].name);
-				html.push("</option>");
-			}
+			html.push(`<select type='${type}' placeholder='${placeholder}' class='date form-control ${placeholder} order-3 timespan-day-list'></select>`);
 
-			html.push("</select>")
+			html.push(`</div>`);
 
-			var type = condition_selected[2][0];
-			var placeholder = condition_selected[2][1];
-			var alt = condition_selected[2][2];
-			var value = this.epoch_data ? this.epoch_data.day : dynamic_data.day;
-			var min = condition_selected[2][4];
-			var max = condition_selected[2][5];
+			new_element = $(html.join(''));
 
-			html.push(`<input type='${type}' placeholder='${placeholder}' class='form-control ${placeholder} order-3'`);
+			repopulate_timespan_select(new_element.find('.timespan-list'), this.epoch_data.timespan_index);
+			repopulate_day_select(new_element.find('.timespan-day-list'), this.epoch_data.day);
 
-			if (typeof alt !== 'undefined') {
-				html.push(` alt='${alt}'`)
-			}
+		} else if (type === "Moons") {
 
-			if (typeof value !== 'undefined') {
-				html.push(` value='${value}'`);
-			}
+			for (let i = 0; i < condition_selected.length; i++) {
 
-			if (typeof min !== 'undefined') {
-				html.push(` min='${min}'`);
-			}
+				let type = condition_selected[i][0];
+				let placeholder = condition_selected[i][1];
+				let alt = condition_selected[i][2];
+				let value = condition_selected[i][3];
+				let min = condition_selected[i][4];
+				let max = condition_selected[i][5];
 
-			if (typeof max !== 'undefined') {
-				html.push(` max='${max}'`);
-			}
+                if (type === "select") {
 
-			html.push(">");
+                    let selected_moon = element.find('.moon_select').val();
 
-		} else if (type == "Moons") {
+                    selected_moon = selected_moon ? selected_moon : 0;
 
-			var next_start = 0;
+                    html.push("<select class='form-control'>")
 
-			if (condition_selected[0] == "select") {
+                    let phases = Object.keys(moon_phases[static_data.moons[selected_moon].granularity]);
 
-				var selected_moon = element.find('.moon_select').val();
+                    for (let i = 0; i < phases.length; i++) {
+                        html.push(`<option value='${i}'>`);
+                        html.push(phases[i]);
+                        html.push("</option>");
+                    }
 
-				selected_moon = selected_moon ? selected_moon : 0;
+                    html.push("</select>")
 
-				html.push("<select class='form-control'>")
 
-				let phases = Object.keys(moon_phases[static_data.moons[selected_moon].granularity]);
 
-				for (var i = 0; i < phases.length; i++) {
-					html.push(`<option value='${i}'>`);
-					html.push(phases[i]);
-					html.push("</option>");
-				}
+                }else{
 
-				html.push("</select>")
+                    html.push(`<input type='${type}' placeholder='${placeholder}' class='form-control ${placeholder} order-1'`);
 
-				next_start++;
+                    if (typeof alt !== 'undefined') {
+                        html.push(` alt='${alt}'`)
+                    }
 
-			}
+                    if (typeof value !== 'undefined') {
+                        html.push(` value='${value}'`);
+                    }
 
-			for (var i = next_start; i < condition_selected.length; i++) {
+                    if (typeof min !== 'undefined') {
+                        html.push(` min='${min}'`);
+                    }
 
-				var type = condition_selected[i][0];
-				var placeholder = condition_selected[i][1];
-				var alt = condition_selected[i][2];
-				var value = condition_selected[i][3];
-				var min = condition_selected[i][4];
-				var max = condition_selected[i][5];
+                    if (typeof max !== 'undefined') {
+                        html.push(` max='${max}'`);
+                    }
 
-				html.push(`<input type='${type}' placeholder='${placeholder}' class='form-control ${placeholder} order-1'`);
+                    html.push(">");
 
-				if (typeof alt !== 'undefined') {
-					html.push(` alt='${alt}'`)
-				}
-
-				if (typeof value !== 'undefined') {
-					html.push(` value='${value}'`);
-				}
-
-				if (typeof min !== 'undefined') {
-					html.push(` min='${min}'`);
-				}
-
-				if (typeof max !== 'undefined') {
-					html.push(` max='${max}'`);
-				}
-
-				html.push(">");
+                }
 
 			}
 
-		} else if (type == "Cycle") {
+			new_element = $(html.join(''));
+
+		} else if (type === "Cycle") {
 
 			html.push("<select class='form-control order-1'>")
 
-			for (var i = 0; i < static_data.cycles.data.length; i++) {
+			for (let i = 0; i < static_data.cycles.data.length; i++) {
 				html.push(`<optgroup label='${ordinal_suffix_of(i + 1)} cycle group' value='${i}'>`);
-				for (var j = 0; j < static_data.cycles.data[i].names.length; j++) {
+				for (let j = 0; j < static_data.cycles.data[i].names.length; j++) {
 					html.push(`<option value='${j}'>`);
 					html.push(`Cycle ${i + 1}: ${static_data.cycles.data[i].names[j]}`);
 					html.push("</option>");
@@ -1653,13 +1747,15 @@ const calendar_events_editor = {
 				html.push("</optgroup>");
 			}
 
-			html.push("</select>")
+			html.push("</select>");
 
-		} else if (type == "Era") {
+			new_element = $(html.join(''));
+
+		} else if (type === "Era") {
 
 			html.push("<select class='form-control order-1'>");
 
-			for (var i = 0; i < static_data.eras.length; i++) {
+			for (let i = 0; i < static_data.eras.length; i++) {
 				html.push(`<option value='${i}'>`);
 				html.push(static_data.eras[i].name);
 				html.push("</option>");
@@ -1667,134 +1763,143 @@ const calendar_events_editor = {
 
 			html.push("</select>");
 
-		} else if (type == "Season") {
+			new_element = $(html.join(''));
 
-			if (condition_selected[0] == "select") {
-				html.push("<select class='form-control order-1'>")
-				for (var i = 0; i < static_data.seasons.data.length; i++) {
-					html.push(`<option value='${i}'>`);
-					html.push(static_data.seasons.data[i].name);
-					html.push("</option>");
-				}
+		} else if (type === "Season") {
 
-				html.push("</select>")
+            for (let i = 0; i < condition_selected.length; i++) {
 
-			} else if (condition_selected[0] == "boolean") {
+                let type = condition_selected[i][0];
+                let placeholder = condition_selected[i][1];
+                let alt = condition_selected[i][2];
+                let value = condition_selected[i][3];
+                let min = condition_selected[i][4];
+                let max = condition_selected[i][5];
 
-				html.push(`<input type='hidden' value='1'>`);
+                if (type === "select") {
+                    html.push("<select class='form-control order-1'>")
+                    for (let i = 0; i < static_data.seasons.data.length; i++) {
+                        html.push(`<option value='${i}'>`);
+                        html.push(static_data.seasons.data[i].name);
+                        html.push("</option>");
+                    }
 
-			} else {
+                    html.push("</select>")
 
-				for (var i = 0; i < condition_selected.length; i++) {
+                } else if (type === "boolean") {
 
-					var type = condition_selected[i][0];
-					var placeholder = condition_selected[i][1];
-					var alt = condition_selected[i][2];
-					var value = condition_selected[i][3];
-					var min = condition_selected[i][4];
-					var max = condition_selected[i][5];
+                    html.push(`<input type='hidden' value='1'>`);
 
-					html.push(`<input type='${type}' placeholder='${placeholder}' class='form-control ${placeholder} order-1'`);
+                } else {
 
-					if (typeof alt !== 'undefined') {
-						html.push(` alt='${alt}'`)
-					}
+                    html.push(`<input type='${type}' placeholder='${placeholder}' class='form-control ${placeholder} order-1'`);
 
-					if (typeof value !== 'undefined') {
-						html.push(` value='${value}'`);
-					}
+                    if (typeof alt !== 'undefined') {
+                        html.push(` alt='${alt}'`)
+                    }
 
-					if (typeof min !== 'undefined') {
-						html.push(` min='${min}'`);
-					}
+                    if (typeof value !== 'undefined') {
+                        html.push(` value='${value}'`);
+                    }
 
-					if (typeof max !== 'undefined') {
-						html.push(` max='${max}'`);
-					}
+                    if (typeof min !== 'undefined') {
+                        html.push(` min='${min}'`);
+                    }
 
-					html.push(">");
+                    if (typeof max !== 'undefined') {
+                        html.push(` max='${max}'`);
+                    }
 
-				}
+                    html.push(">");
+
+                }
+
+            }
+
+			new_element = $(html.join(''));
+
+		} else if (type === "Weekday") {
+
+			for (let i = 0; i < condition_selected.length; i++) {
+
+                let type = condition_selected[i][0];
+                let placeholder = condition_selected[i][1];
+                let alt = condition_selected[i][2];
+                let value = condition_selected[i][3];
+                let min = condition_selected[i][4];
+                let max = condition_selected[i][5];
+
+                if (type === "select") {
+
+                    let weekdays = [];
+
+                    for (let i = 0; i < static_data.year_data.global_week.length; i++) {
+
+                        if (weekdays.indexOf(static_data.year_data.global_week[i]) === -1) {
+                            weekdays.push(static_data.year_data.global_week[i]);
+                        }
+
+                    }
+
+                    for (let i = 0; i < static_data.year_data.timespans.length; i++) {
+
+                        if (static_data.year_data.timespans[i].week) {
+
+                            for (let j = 0; j < static_data.year_data.timespans[i].week.length; j++) {
+
+                                if (weekdays.indexOf(static_data.year_data.timespans[i].week[j]) === -1) {
+                                    weekdays.push(static_data.year_data.timespans[i].week[j]);
+                                }
+                            }
+                        }
+                    }
+
+                    html.push("<select class='form-control'>")
+
+                    for (let index in weekdays) {
+
+                        html.push(`<option>`);
+                        html.push(weekdays[index]);
+                        html.push("</option>");
+
+                    }
+
+                    html.push("</select>");
+
+                } else {
+
+                    html.push(`<input type='${type}' placeholder='${placeholder}' class='form-control ${placeholder} order-1'`);
+
+                    if (typeof alt !== 'undefined') {
+                        html.push(` alt='${alt}'`)
+                    }
+
+                    if (typeof value !== 'undefined') {
+                        html.push(` value='${value}'`);
+                    }
+
+                    if (typeof min !== 'undefined') {
+                        html.push(` min='${min}'`);
+                    }
+
+                    if (typeof max !== 'undefined') {
+                        html.push(` max='${max}'`);
+                    }
+
+                    html.push(">");
+                }
 
 			}
 
-		} else if (type == "Weekday") {
+			new_element = $(html.join(''));
 
-			var next_start = 0;
-
-			if (condition_selected[0] == "select") {
-
-				var weekdays = [];
-
-				for (var i = 0; i < static_data.year_data.global_week.length; i++) {
-
-					if (weekdays.indexOf(static_data.year_data.global_week[i]) == -1) {
-						weekdays.push(static_data.year_data.global_week[i]);
-					}
-
-				}
-
-				for (var i = 0; i < static_data.year_data.timespans.length; i++) {
-
-					if (static_data.year_data.timespans[i].week) {
-
-						for (var j = 0; j < static_data.year_data.timespans[i].week.length; j++) {
-
-							if (weekdays.indexOf(static_data.year_data.timespans[i].week[j]) == -1) {
-								weekdays.push(static_data.year_data.timespans[i].week[j]);
-							}
-						}
-					}
-				}
-
-				html.push("<select class='form-control'>")
-
-				for (var index in weekdays) {
-
-					html.push(`<option>`);
-					html.push(weekdays[index]);
-					html.push("</option>");
-
-				}
-
-				html.push("</select>");
-
-				next_start++;
-
-			}
-
-
-			for (var i = next_start; i < condition_selected.length; i++) {
-
-				html.push(`<input type='${condition_selected[i][0]}' placeholder='${condition_selected[i][1]}' class='form-control ${condition_selected[i][1]}'`);
-
-				if (condition_selected[i][2]) {
-					html.push(` alt='${condition_selected[i][2]}'`)
-				}
-
-				if (condition_selected[i][3]) {
-					html.push(` value='${condition_selected[i][3]}'`);
-				}
-
-				if (condition_selected[i][4]) {
-					html.push(` min='${condition_selected[i][4]}'`);
-				}
-
-				if (condition_selected[i][5]) {
-					html.push(` max='${condition_selected[i][5]}'`);
-				}
-
-				html.push(">");
-
-			}
-
-		} else if (type == "Location") {
+		} else if (type === "Location") {
 
 			html.push("<select class='form-control'>")
 
-			for (var locationId in static_data.seasons.locations) {
+			for (let locationId in static_data.seasons.locations) {
 
-				var location = static_data.seasons.locations[locationId]
+				let location = static_data.seasons.locations[locationId]
 
 				html.push(`<option value="${locationId}">`);
 				html.push(location.name);
@@ -1802,15 +1907,17 @@ const calendar_events_editor = {
 
 			}
 
-		} else if (type == "Events") {
+		    new_element = $(html.join(''));
+
+		} else if (type === "Events") {
 
 			html.push("<select class='event_select form-control'>")
 
-			for (var eventId in events) {
+			for (let eventId in events) {
 
-				var event = events[eventId];
+				let event = events[eventId];
 
-				if (eventId == this.event_id) {
+				if (eventId === this.event_id) {
 					html.push(`<option disabled>`);
 					html.push(`${event.name} (this event)`);
 					html.push("</option>");
@@ -1830,14 +1937,14 @@ const calendar_events_editor = {
 
 			html.push("</select>");
 
-			for (var i = 1; i < condition_selected.length; i++) {
+			for (let i = 1; i < condition_selected.length; i++) {
 
-				var type = condition_selected[i][0];
-				var placeholder = condition_selected[i][1];
-				var alt = condition_selected[i][2];
-				var value = condition_selected[i][3];
-				var min = condition_selected[i][4];
-				var max = condition_selected[i][5];
+				let type = condition_selected[i][0];
+				let placeholder = condition_selected[i][1];
+				let alt = condition_selected[i][2];
+				let value = condition_selected[i][3];
+				let min = condition_selected[i][4];
+				let max = condition_selected[i][5];
 
 				html.push(`<input type='${type}' placeholder='${placeholder}' class='form-control ${placeholder}'`);
 
@@ -1860,17 +1967,19 @@ const calendar_events_editor = {
 				html.push(">");
 
 			}
+
+			new_element = $(html.join(''));
 
 		} else if (type === "Random") {
 
-			for (var i = 0; i < condition_selected.length; i++) {
+			for (let i = 0; i < condition_selected.length; i++) {
 
-				var type = condition_selected[i][0];
-				var placeholder = condition_selected[i][1];
-				var alt = condition_selected[i][2];
-				var value = i == 0 ? condition_selected[i][3] : Math.abs(Math.random().toString().substr(7) | 0);
-				var min = condition_selected[i][4];
-				var max = condition_selected[i][5];
+				let type = condition_selected[i][0];
+				let placeholder = condition_selected[i][1];
+				let alt = condition_selected[i][2];
+				let value = i === 0 ? condition_selected[i][3] : Math.abs(Math.random().toString().substr(7) | 0);
+				let min = condition_selected[i][4];
+				let max = condition_selected[i][5];
 
 				html.push(`<input type='${type}' placeholder='${placeholder}' class='form-control ${placeholder}'`);
 
@@ -1894,54 +2003,58 @@ const calendar_events_editor = {
 
 			}
 
+			new_element = $(html.join(''));
+
 		} else {
 
-			if (condition_selected[0] == "boolean") {
+            for (let i = 0; i < condition_selected.length; i++) {
 
-				html.push(`<input type='hidden' value='1'>`);
+                let type = condition_selected[i][0];
+                let placeholder = condition_selected[i][1];
+                let alt = condition_selected[i][2];
+                let value = condition_selected[i][3];
+                let min = condition_selected[i][4];
+                let max = condition_selected[i][5];
 
-			} else {
+                if (type === "boolean") {
 
-				for (var i = 0; i < condition_selected.length; i++) {
+                    html.push(`<input type='hidden' value='1'>`);
 
-					var type = condition_selected[i][0];
-					var placeholder = condition_selected[i][1];
-					var alt = condition_selected[i][2];
-					var value = condition_selected[i][3];
-					var min = condition_selected[i][4];
-					var max = condition_selected[i][5];
+                }else{
 
-					html.push(`<input type='${type}' placeholder='${placeholder}' class='form-control ${placeholder}'`);
+                    html.push(`<input type='${type}' placeholder='${placeholder}' class='form-control ${placeholder}'`);
 
-					if (typeof alt !== 'undefined') {
-						html.push(` alt='${alt}'`)
-					}
+                    if (typeof alt !== 'undefined') {
+                        html.push(` alt='${alt}'`)
+                    }
 
-					if (typeof value !== 'undefined') {
-						html.push(` value='${value}'`);
-					}
+                    if (typeof value !== 'undefined') {
+                        html.push(` value='${value}'`);
+                    }
 
-					if (typeof min !== 'undefined') {
-						html.push(` min='${min}'`);
-					}
+                    if (typeof min !== 'undefined') {
+                        html.push(` min='${min}'`);
+                    }
 
-					if (typeof max !== 'undefined') {
-						html.push(` max='${max}'`);
-					}
+                    if (typeof max !== 'undefined') {
+                        html.push(` max='${max}'`);
+                    }
 
-					html.push(">");
+                    html.push(">");
 
-				}
+                }
 
-			}
+            }
+
+			new_element = $(html.join(''));
 
 		}
 
-		element.find('.input_container').empty().append(html.join(''));
+		element.find('.input_container').empty().append(new_element);
 
 	},
 
-	add_condition_clicked: function() {
+	add_condition_clicked() {
 
 		this.add_condition(this.event_conditions_container, "Year");
 		this.evaluate_inputs(this.event_conditions_container.children().last())
@@ -1949,17 +2062,17 @@ const calendar_events_editor = {
 
 	},
 
-	add_condition: function(parent, type) {
+	add_condition(parent, type) {
 
 		this.inputs_changed = true;
 
-		var html = [];
+		let html = [];
 
 		html.push("<li class='condition'>");
 		html.push(`<div class='condition_container ${type}'>`);
 		html.push("<div class='handle icon-reorder'></div>");
 		html.push("<select class='form-control moon_select'>");
-		for (var i = 0; i < static_data.moons.length; i++) {
+		for (let i = 0; i < static_data.moons.length; i++) {
 			html.push(`<option value='${i}'>`);
 			html.push(static_data.moons[i].name);
 			html.push("</option>");
@@ -1967,9 +2080,9 @@ const calendar_events_editor = {
 		html.push("</select>");
 		html.push("<select class='form-control condition_type'>");
 
-		var keys = Object.keys(condition_mapping);
+		let keys = Object.keys(condition_mapping);
 
-		for (var i = 0; i < keys.length; i++) {
+		for (let i = 0; i < keys.length; i++) {
 
 			if (
 				(keys[i] === "Era year" && static_data.eras === undefined)
@@ -1995,9 +2108,9 @@ const calendar_events_editor = {
 
 			html.push(`<optgroup label='${keys[i]}'>`);
 
-			var options = condition_mapping[keys[i]];
+			let options = condition_mapping[keys[i]];
 
-			for (var j = 0; j < options.length; j++) {
+			for (let j = 0; j < options.length; j++) {
 
 				html.push(`<option value='${j}'>`);
 				html.push(options[j][0]);
@@ -2019,7 +2132,7 @@ const calendar_events_editor = {
 		html.push("</select>");
 		html.push("</li>");
 
-		var condition = $(html.join(''));
+		let condition = $(html.join(''));
 		parent.append(condition);
 
 		condition.find('.condition_type').select2({
@@ -2032,18 +2145,18 @@ const calendar_events_editor = {
 
 	},
 
-	add_group_clicked: function() {
+	add_group_clicked() {
 
 		this.add_group(this.event_conditions_container, "normal");
 		this.evaluate_condition_selects(this.event_conditions_container);
 
 	},
 
-	add_group: function(parent, group_class) {
+	add_group(parent, group_class) {
 
 		this.inputs_changed = true;
 
-		var html = [];
+		let html = [];
 
 		html.push("<li class='group'>");
 		html.push(`<div class='group_type' type='${group_class}'>`);
@@ -2067,7 +2180,7 @@ const calendar_events_editor = {
 		html.push("</select>");
 		html.push("</li>");
 
-		var group = $(html.join(''));
+		let group = $(html.join(''));
 
 		parent.append(group);
 
@@ -2077,25 +2190,25 @@ const calendar_events_editor = {
 
 	},
 
-	update_radio_button_names: function() {
+	update_radio_button_names() {
 		$(".group_type").each(function(i) {
 			$(this).find("input[type='radio']").attr("name", `${i}_group_type`);
-			var type = $(this).attr('type');
+			let type = $(this).attr('type');
 			$(this).find(`.${type} input[type='radio']`).prop('checked', true);
 		});
 	},
 
-	query_delete_event: function($event) {
+	confirm_delete_event($event) {
 
 		let event_editor_ui = this;
 
-		let delete_event_id = $event.detail.event_id === undefined ? this.event_id : $event.detail.event_id;
+		let delete_event_id = $event.detail.event_id;
 
-		var warnings = [];
+		let warnings = [];
 
-		for (var eventId in events) {
+		for (let eventId in events) {
 			if (events[eventId].data.connected_events !== undefined) {
-				var connected_events = events[eventId].data.connected_events;
+				let connected_events = events[eventId].data.connected_events;
 				if (connected_events.includes(String(delete_event_id)) || connected_events.includes(Number(delete_event_id))) {
 					warnings.push(eventId);
 				}
@@ -2104,12 +2217,12 @@ const calendar_events_editor = {
 
 		if (warnings.length > 0) {
 
-			var html = [];
+			let html = [];
 			html.push(`<div class='text-left'>`)
 			html.push(`<h5>You trying to delete "${events[delete_event_id].name}" which is used in the conditions of the following events:</h5>`)
 			html.push(`<ul>`);
-			for (var i = 0; i < warnings.length; i++) {
-				var warning_event_id = warnings[i];
+			for (let i = 0; i < warnings.length; i++) {
+				let warning_event_id = warnings[i];
 				html.push(`<li>${events[warning_event_id].name}</li>`);
 			}
 			html.push(`</ul>`);
@@ -2143,7 +2256,7 @@ const calendar_events_editor = {
 
 					if ($('#events_sortable').length) {
 
-						event_editor_ui.delete_event(delete_event_id);
+						this.delete_event(delete_event_id);
 
 						events_sortable.children(`[index='${delete_event_id}']`).remove();
 
@@ -2156,7 +2269,7 @@ const calendar_events_editor = {
 
 					} else {
 
-						var event_id = events[delete_event_id].id;
+						let event_id = events[delete_event_id].id;
 
 						submit_delete_event(event_id, function() {
 							event_editor_ui.delete_event(delete_event_id);
@@ -2174,10 +2287,10 @@ const calendar_events_editor = {
 
 	delete_event(delete_event_id) {
 
-		for (var eventId in events) {
+		for (let eventId in events) {
 			if (events[eventId].data.connected_events !== undefined) {
-				for (connectedId in events[eventId].data.connected_events) {
-					var number = Number(events[eventId].data.connected_events[connectedId])
+				for (let connectedId in events[eventId].data.connected_events) {
+					let number = Number(events[eventId].data.connected_events[connectedId])
 					if (number > delete_event_id) {
 						events[eventId].data.connected_events[connectedId] = String(number - 1)
 					}
@@ -2187,15 +2300,15 @@ const calendar_events_editor = {
 
 		events.splice(delete_event_id, 1);
 
-		rerender_calendar();
+        this.close();
 
-		this.close();
+		rerender_calendar();
 
 	},
 
 	build_seasons: false,
 
-	test_event: function(years) {
+	test_event(years) {
 
 		if (this.event_is_one_time()) {
 
@@ -2234,7 +2347,7 @@ const calendar_events_editor = {
 
 	},
 
-	cancel_event_test: function(self){
+	cancel_event_test(self){
 
 		try {
 			self.worker_event_tester.terminate();
@@ -2246,7 +2359,7 @@ const calendar_events_editor = {
 
 	},
 
-	run_test_event: function(years) {
+	run_test_event(years) {
 
 		show_loading_screen(true, this.cancel_event_test, this);
 
@@ -2264,8 +2377,8 @@ const calendar_events_editor = {
 
 		}
 
-		start_year = preview_date.year;
-		end_year = preview_date.year + years;
+		let start_year = preview_date.year;
+		let end_year = preview_date.year + years;
 
 		this.worker_event_tester = new Worker('/js/webworkers/worker_event_tester.js')
 
@@ -2322,7 +2435,7 @@ const calendar_events_editor = {
 		text: "",
 	},
 
-	set_up_event_text: function(years){
+	set_up_event_text(years){
 
 		let event_has_changed = this.event_has_changed();
 
@@ -2335,7 +2448,7 @@ const calendar_events_editor = {
 
 		this.event_testing.occurrences_text = [];
 
-		for (var i = 0; i < num_occurrences; i++) {
+		for (let i = 0; i < num_occurrences; i++) {
 
 			let occurrence = this.event_testing.occurrences[i];
 
@@ -2348,7 +2461,7 @@ const calendar_events_editor = {
 			let pre = "";
 			let post = "";
 
-			if (window.location.pathname != '/calendars/create' && !event_has_changed) {
+			if (window.location.pathname !== '/calendars/create' && !event_has_changed) {
 				pre = `<a href='${window.baseurl}calendars/${hash}?year=${year}&month=${timespan}&day=${day}' target="_blank">`;
 				post = `</a>`;
 			}
@@ -2370,15 +2483,15 @@ const calendar_events_editor = {
 
 	},
 
-	next_page: function(){
+	next_page(){
 		this.set_page(this.event_testing.page+1);
 	},
 
-	prev_page: function(){
+	prev_page(){
 		this.set_page(this.event_testing.page-1);
 	},
 
-	set_page: function(page) {
+	set_page(page) {
 
 		this.event_testing.page = page;
 
@@ -2392,27 +2505,25 @@ const calendar_events_editor = {
 
 	checked_events: [],
 
-	evaluation_has_season_event: function() {
+	evaluation_has_season_event() {
 
 		this.check_event_chain(this.event_id, true)
 
-		for (var index in this.checked_events) {
+		for (let index in this.checked_events) {
 
 			let event = this.checked_events[index];
 
 			if (JSON.stringify(event.data.conditions).indexOf(`["Season",`) > -1) {
-				this.checked_event_ids = [];
 				return true;
 			}
 
 		}
 
-		this.checked_event_ids = [];
 		return false;
 
 	},
 
-	check_event_chain: function(event_id, working_event) {
+	check_event_chain(event_id, working_event) {
 
 		let current_event = {}
 		if (working_event){
@@ -2424,9 +2535,9 @@ const calendar_events_editor = {
 
 		if (current_event.data.connected_events !== undefined && current_event.data.connected_events !== "false") {
 
-			for (var connectedId in current_event.data.connected_events) {
+			for (let connectedId in current_event.data.connected_events) {
 
-				var parent_id = current_event.data.connected_events[connectedId];
+				let parent_id = current_event.data.connected_events[connectedId];
 
 				this.check_event_chain(parent_id, false);
 
@@ -2436,7 +2547,7 @@ const calendar_events_editor = {
 
 	},
 
-	look_through_event_chain: function(child, parent_id) {
+	look_through_event_chain(child, parent_id) {
 
 		if (events[parent_id].data.connected_events !== undefined && events[parent_id].data.connected_events.length > 0) {
 
@@ -2446,11 +2557,11 @@ const calendar_events_editor = {
 
 			} else {
 
-				for (var i = 0; i < events[parent_id].data.connected_events.length; i++) {
+				for (let i = 0; i < events[parent_id].data.connected_events.length; i++) {
 
-					var id = events[parent_id].data.connected_events[i];
+					let id = events[parent_id].data.connected_events[i];
 
-					var result = this.look_through_event_chain(child, id);
+					let result = this.look_through_event_chain(child, id);
 
 					if (!result) {
 						return false;
