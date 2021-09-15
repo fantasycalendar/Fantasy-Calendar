@@ -183,6 +183,8 @@ function do_update_all(calendar_hash, success_callback, failure_callback){
 
 			calendar_saved();
 
+            if(success_callback) success_callback();
+
 		},
 		error: function ( error )
 		{

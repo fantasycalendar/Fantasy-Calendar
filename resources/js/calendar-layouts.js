@@ -25,7 +25,7 @@ const calendar_layouts = {
 
         if(evaluate_save_button()){
             this.open = true;
-            this.current_layout = this.layouts.find(layout => layout.name.toLowerCase() == static_data.settings.layout);
+            this.current_layout = this.layouts.find(layout => layout.name.toLowerCase() === static_data.settings.layout);
         }else{
             $('#btn_layouts').notify(
                 "Please save your calendar before applying a preset.",
