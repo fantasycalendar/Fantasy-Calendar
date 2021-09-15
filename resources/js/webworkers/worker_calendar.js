@@ -9,47 +9,60 @@ importScripts('/js/calendar/calendar_variables.js?v='+version);
 importScripts('/js/calendar/calendar_season_generator.js?v='+version);
 importScripts('/js/calendar/calendar_workers.js?v='+version);
 
-onmessage = e => {
+onmessage = async (e) => {
 
-	calendar_builder.calendar_name = e.data.calendar_name;
-	calendar_builder.static_data = e.data.static_data;
-	calendar_builder.dynamic_data = e.data.dynamic_data;
-	calendar_builder.owner = e.data.owner;
-	calendar_builder.events = e.data.events;
-	calendar_builder.event_categories = e.data.event_categories;
+	calendar_data_generator.static_data = e.data.static_data;
+	calendar_data_generator.dynamic_data = e.data.dynamic_data;
+	calendar_data_generator.owner = e.data.owner;
+	calendar_data_generator.events = e.data.events;
+	calendar_data_generator.event_categories = e.data.event_categories;
 
-	let debug = false;
+	let debug = true;
+	let data = {};
 
 	if(debug) {
 
-		target_loops = 2000;
-		loops = 0;
+		let from_year = -1000;
+		let to_year = 1000;
 
-		calendar_builder.dynamic_data.year = Math.floor(target_loops / 2);
-		
+		calendar_data_generator.dynamic_data.year = from_year;
+
 		execution_time.start();
 
-		var average_time = 0;
+		let average_time = 0;
 
-		for(var loops; loops < target_loops; loops++) {
+		let last_epoch;
 
-			starttime = performance.now();
+		for(let year = from_year; year <= to_year; year++) {
 
-			data = calendar_builder.evaluate_calendar_data();
-			calendar_builder.dynamic_data.year++;
-			if(calendar_builder.dynamic_data.year == 0 && !calendar_builder.static_data.settings.year_zero_exists) {
-				calendar_builder.dynamic_data.year++;
-			}
+			let start_time = performance.now();
 
-			average_time += precisionRound(performance.now() - starttime, 7)
+            data = await calendar_data_generator.run();
+
+            if(last_epoch){
+                if(last_epoch !==  data.year_data.start_epoch){
+                    console.log("WRONG!", calendar_data_generator.dynamic_data.year)
+                }else{
+                    console.log(calendar_data_generator.dynamic_data.year)
+                }
+            }
+
+            last_epoch = data.year_data.end_epoch+1;
+
+            calendar_data_generator.dynamic_data.year++;
+            if(calendar_data_generator.dynamic_data.year === 0 && !calendar_data_generator.static_data.settings.year_zero_exists) {
+                calendar_data_generator.dynamic_data.year++;
+            }
+
+			average_time += precisionRound(performance.now() - start_time, 7)
 
 		}
 
-		average_time = average_time / target_loops;
+		average_time = average_time / to_year;
 
 		console.log(`${average_time}ms`)
 
-		execution_time.end();
+		execution_time.end("Entire execution took:");
 
 		postMessage({
 			processed_data: data,
@@ -58,7 +71,7 @@ onmessage = e => {
 
 	} else {
 
-		data = calendar_builder.evaluate_calendar_data();
+	    data = calendar_data_generator.run();
 
 	}
 
