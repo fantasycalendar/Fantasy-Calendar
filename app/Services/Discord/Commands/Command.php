@@ -31,7 +31,7 @@ abstract class Command
     protected User $user;
     protected DiscordAuthToken $discord_auth;
     protected DiscordGuild $guild;
-    protected DiscordInteraction $discord_interaction;
+    public DiscordInteraction $discord_interaction;
     protected array $interaction_data;
     protected string $response;
     /**
@@ -45,6 +45,7 @@ abstract class Command
     public string $called_command;
     protected Response $response_details;
     protected $message_id;
+    protected array $component_interaction;
 
     /**
      * Command constructor.
@@ -70,6 +71,7 @@ abstract class Command
         $this->discord_username = $this->interaction('member.user.username') . "#" . $this->interaction('member.user.discriminator');
         $this->message_id = $this->interaction('message.id');
         $this->discord_user_id = $this->interaction('member.user.id');
+        $this->component_interaction = $this->parseComponentID();
 
         $this->logInteraction();
         $this->resolveUserAccount();
@@ -94,9 +96,15 @@ abstract class Command
     {
         $response = $this->handle();
 
-        return ($response instanceof Response)
+        $response = ($response instanceof Response)
             ? $response
             : (new Response($response));
+
+        $this->discord_interaction->update([
+            'response' => $response->getMessage()
+        ]);
+
+        return $response;
     }
 
     /**
@@ -110,6 +118,27 @@ abstract class Command
         return Arr::get($this->interaction_data, $key);
     }
 
+    protected function parseComponentID(): array
+    {
+        if(!$this->interaction('data.custom_id')) {
+            return [];
+        }
+
+        $customIdParts = explode(':', $this->interaction('data.custom_id'));
+        return [
+            'command_path' => $customIdParts[0],
+            'method' => $customIdParts[1] ?? 'handle',
+            'arguments' => (isset($customIdParts[2]))
+                ? explode(';', $customIdParts[2])
+                : []
+        ];
+    }
+
+    public function componentArgument($index)
+    {
+        return Arr::get($this->component_interaction, "arguments.$index");
+    }
+
     /**
      * Gets or sets a setting value
      *
@@ -117,7 +146,7 @@ abstract class Command
      * @param null $value
      * @return array|\ArrayAccess|mixed
      */
-    protected function setting($key, $value = null)
+    public function setting($key, $value = null)
     {
         return ($value !== null)
             ? $this->guild->setSetting($key, $value)

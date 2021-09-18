@@ -29,6 +29,8 @@ class CreateDiscordInteractionsTable extends Migration
             $table->string('channel_id')->nullable();
             $table->json('discord_user');
             $table->json('payload');
+            $table->json('response')->nullable();
+            $table->timestamp('responded_at')->nullable();
             $table->integer('version');
         });
     }

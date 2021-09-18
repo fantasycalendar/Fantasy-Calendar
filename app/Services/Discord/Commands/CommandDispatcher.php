@@ -69,12 +69,17 @@ class CommandDispatcher
         $handlerFunction = $interactionIdParts[1];
         $args = $interactionData['data']['values'] ?? explode(';', $interactionIdParts[2] ?? null);
 
-        $response = (new $handlerClass($interactionData, $interactionIdParts[0]))
-            ->$handlerFunction(...$args);
+        /** @var Command $command */
+        $command = (new $handlerClass($interactionData, $interactionIdParts[0]));
 
-        return ($response instanceof Response)
+        $response = $command->$handlerFunction(...$args);
+        $response = ($response instanceof Response)
             ? $response
             : (new Response($response));
+
+        $command->discord_interaction->respondedWith($response);
+
+        return $response;
     }
 
     /**

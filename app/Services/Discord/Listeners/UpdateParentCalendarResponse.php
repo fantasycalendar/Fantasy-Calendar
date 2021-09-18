@@ -43,19 +43,15 @@ class UpdateParentCalendarResponse
 
         logger()->debug(json_encode($interaction));
 
-        if(!Str::contains($interaction->message_text, 'Child calendar dates:')){
-            logger()->debug('message text does not include Child calendar dates: '. $interaction->message_text);
-            return;
-        }
-
         $payload = optional($interaction->parent)->payload ?? $interaction->payload;
 
         $commandInstance = new DateChangesHandler($payload);
-        $action = explode(' ', $commandInstance->called_command)[1];
-        $unit = explode(' ', $commandInstance->called_command)[2];
-        $count = $commandInstance->option(['days', 'months', 'years', 'minutes', 'hours']) ?? 1;
 
-        $response = $commandInstance->respondWithChildren($action, $unit, $count, false);
+        if($commandInstance->setting('show_children') != $event->calendar->id){
+            logger()->debug('Not showing children');
+            return;
+        }
+        $response = $commandInstance->respondWithChildren(null, null, null, false, true);
 
         $this->api->followupMessage($response, $interaction->token);
     }

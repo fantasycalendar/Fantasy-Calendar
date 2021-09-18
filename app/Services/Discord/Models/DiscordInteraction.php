@@ -4,6 +4,7 @@ namespace App\Services\Discord\Models;
 
 use App\Calendar;
 use App\Services\Discord\API\Client;
+use App\Services\Discord\Commands\Command\Response;
 use App\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -34,12 +35,15 @@ class DiscordInteraction extends Model
         'version',
         'calendar_id',
         'payload',
+        'response',
+        'responded_at',
     ];
 
     protected $casts = [
         'data' => 'array',
         'discord_user' => 'array',
-        'payload' => 'array'
+        'payload' => 'array',
+        'response' => 'array',
     ];
 
     public function user(): BelongsTo
@@ -147,4 +151,17 @@ class DiscordInteraction extends Model
         return $query->where('type', '=', self::TYPES[$value]);
     }
 
+    /**
+     * @param $response
+     * @return bool
+     */
+    public function respondedWith($response): bool
+    {
+        $response = ($response instanceof Response)
+            ? $response->getMessage()
+            : $response;
+        $responded_at = now();
+
+        return $this->update(compact('response', 'responded_at'));
+    }
 }

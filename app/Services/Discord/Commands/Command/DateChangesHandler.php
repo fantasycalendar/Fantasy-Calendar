@@ -11,6 +11,8 @@ use App\Services\Discord\Commands\Command\Traits\PremiumCommand;
 use App\Services\Discord\Events\CalendarChildrenRequested;
 use App\Services\Discord\Exceptions\DiscordCalendarLinkedException;
 use App\Services\Discord\Exceptions\DiscordCalendarNotSetException;
+use App\Services\Discord\Exceptions\DiscordException;
+use App\Services\Discord\Exceptions\DiscordUserUnauthorized;
 use App\Services\RendererService\TextRenderer;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -34,13 +36,28 @@ class DateChangesHandler extends Command
     public function handle()
     {
         logger($this->called_command);
-        $action = explode(' ', $this->called_command)[1];
-        $unit = explode(' ', $this->called_command)[2];
-        $count = $this->option(['days', 'months', 'years', 'minutes', 'hours']) ?? 1;
+        $action = $this->getAction();
+        $unit = $this->getUnit();
+        $count = $this->getCount();
 
         if($count === 0) return $this->userWantedZeroChange($action, $unit);
 
         return $this->change_date($action, $unit, $count);
+    }
+
+    public function getAction()
+    {
+        return explode(' ', $this->called_command)[1] ?? $this->componentArgument(0);
+    }
+
+    public function getUnit()
+    {
+        return explode(' ', $this->called_command)[2] ?? $this->componentArgument(1);
+    }
+
+    public function getCount()
+    {
+        return $this->option(['days', 'months', 'years', 'minutes', 'hours']) ?? $this->componentArgument(2) ?? 1;
     }
 
     /**
@@ -58,27 +75,17 @@ class DateChangesHandler extends Command
     {
         $this->calendar = $this->getDefaultCalendar();
 
-        if(!$this->user->is($this->calendar->user)) {
-            return Response::make("You can only change the date on your own calendars")
-                ->ephemeral();
-        }
-
-        if($this->calendar->parent()->exists()) {
-            throw new DiscordCalendarLinkedException($this->calendar);
-        }
+        $this->sanityCheck();
 
         $method = $action . ucfirst(Str::plural($unit));
-
-        if(in_array($unit, ['minute', 'hour', 'minutes', 'hours']) && !$this->calendar->clock_enabled) {
-            return $this->blockQuote("Can't add {$unit} to '{$this->calendar->name}' when the clock is not enabled!");
-        }
 
         $this->calendar
             ->$method($count)
             ->save();
 
-        if($show_children || $this->setting('show_children')){
+        if($this->setting('show_children')){
             logger()->debug('Showing children');
+
             return Response::deferred();
         }
 
@@ -113,29 +120,20 @@ class DateChangesHandler extends Command
 
         $response = Response::make($responseText);
 
-        if($addButtons) {
-            $response = $response->addRow(function(ActionRow $row) use ($action, $unit, $count, $reverse_action){
-                $row = $row->addButton("$action:change_date:$reverse_action;$unit;$count;true;true", ['label' => ucfirst($reverse_action) . " $count instead", 'emoji' => ':arrow_left:'])
-                           ->addButton("$action:change_date:$action;$unit;$count;true;true", ucfirst($action) ." $count more", 'success');
-
-                if($this->calendar->children()->exists()) {
-                    $row->addButton(static::target('appendChildDates'), 'Show Linked Children');
-                }
-
-                return $row;
-            });
-        }
+        $this->addButtons($response);
 
         return $response;
     }
 
-    public function respondWithChildren($action, $unit, $count = 1, $update = false)
+    public function respondWithChildren($action = null, $unit = null, $count = null, $update = false, $followup = false)
     {
+        $action = $action ?? $this->getAction();
+        $unit = $unit ?? $this->getUnit();
+        $count = $count ?? $this->getCount();
+
         $response = $this->respondWithoutChildren($action, $unit, $count, $update, false);
 
-        $reverse_action = ($action == 'add')
-            ? 'sub'
-            : 'add';
+        $reverse_action = $this->reverseAction($action);
 
         $response = $response->addRow(function(ActionRow $row) use ($action, $unit, $count, $reverse_action){
             return $row->addButton("$action:change_date:$reverse_action;$unit;$count;true", ['label' => ucfirst($reverse_action) . " $count instead", 'emoji' => ':arrow_left:'])
@@ -147,53 +145,38 @@ class DateChangesHandler extends Command
             $response->updatesMessage();
         }
 
+        if($followup) {
+            $response = $this->appendChildDates($response);
+        }
+
         return $response;
     }
 
     public function appendChildDates($response = null, $parent = null, $deferred = false)
     {
-        logger(json_encode(optional($response) ?? []));
-        logger("Parent: " . (optional($parent)->name ?? 'None'));
-        logger("Deferred?: " . ($deferred ? "Yes" : "No"));
+        $this->calendar = $parent ?? $this->getDefaultCalendar();
+        $this->setting('show_children', $this->calendar->id);
 
         if(!$response) {
-            $text = strstr($this->interaction('message.content'), 'Child calendar dates:', true);
-
-            $response = Response::make($text)
-                ->addRow(function(ActionRow $row){
-                    $originalButtons = $this->interaction('message.components.0.components');
-                    $childrenButton = array_pop($originalButtons);
-
-                    foreach($originalButtons as $component) {
-                        $row->addButton(str_replace(config('services.discord.global_command') . ".", '', $component['custom_id']), $component['label'], $component['style']);
-                    }
-
-                    $childrenButtonStyle = array_search($childrenButton['style'], Command\Response\Component\Button::$styles);
-                    $row->addButton($childrenButton['custom_id'], $childrenButton['label'], $childrenButtonStyle, true);
-
-                    return $row;
-                })
+            $response = Response::make($this->codeBlock(TextRenderer::renderMonth($this->calendar)))
                 ->updatesMessage();
+
+            $response = $this->addButtons($response);
 
             logger(json_encode($response->getMessage()));
         }
 
         if($deferred) $response->setType('deferred_update');
 
+        return $response->appendText("\nChild calendar dates:" . $this->codeBlock($this->formatChildren($this->calendar)));
+    }
 
+    public function removeChildDates()
+    {
+        $message = strstr($this->discord_interaction->message_text, 'Child calendar dates:', true);
+        $this->calendar = $this->getDefaultCalendar();
 
-        $content = "";
-
-        $calendar = $parent ?? $this->getDefaultCalendar();
-        $minNameLength = $calendar->children->max(fn($child) => strlen($child->name));
-
-        $children = $calendar->children->map(function($calendar) use (&$content, $minNameLength){
-            return Str::padLeft($calendar->name, $minNameLength) . ' : ' . $calendar->current_date;
-        })->join("\n");
-
-        $content .= "\nChild calendar dates:" . $this->codeBlock($children);
-
-        return $response->appendText($content);
+        return $this->addButtons(Response::make($message));
     }
 
     private function userWantedZeroChange($action, $unit): Response
@@ -237,5 +220,73 @@ class DateChangesHandler extends Command
         return Response::make($this->blockQuote($this->called_command)
             . $this->newLine(2)
             . Arr::random($confusionMessages));
+    }
+
+    /**
+     * Verify calendar is owned by user and
+     *
+     * @throws DiscordCalendarLinkedException
+     * @throws DiscordUserUnauthorized
+     */
+    protected function sanityCheck()
+    {
+        if(!$this->user->is($this->calendar->user)) {
+            throw new DiscordUserUnauthorized("You can only change the date on your own calendars");
+        }
+
+        if($this->calendar->parent()->exists()) {
+            throw new DiscordCalendarLinkedException($this->calendar);
+        }
+
+        if(in_array($this->getUnit(), ['minute', 'hour', 'minutes', 'hours']) && !$this->calendar->clock_enabled) {
+            throw new DiscordException($this->blockQuote("Can't add {$this->getUnit()} to '{$this->calendar->name}' when the clock is not enabled!"));
+        }
+    }
+
+    /**
+     * Helper to determine reverse of an action
+     *
+     * @param $action
+     * @return string
+     */
+    protected function reverseAction($action): string
+    {
+        return ($action == 'add')
+            ? 'sub'
+            : 'add';
+    }
+
+    protected function formatChildren($parent): string
+    {
+        $minNameLength = $parent->children->max(fn($child) => strlen($child->name));
+
+        return $parent->children->map(function($calendar) use (&$content, $minNameLength){
+            return Str::padLeft($calendar->name, $minNameLength) . ' : ' . $calendar->current_date;
+        })->join("\n");
+    }
+
+    protected function addButtons(Response $response): Response
+    {
+        $action = $this->getAction();
+        $reverse_action = $this->reverseAction($action);
+        $unit = $this->getUnit();
+        $count = $this->getCount();
+
+        logger()->debug(json_encode(compact('action', 'reverse_action', 'unit', 'count')));
+
+        return $response->addRow(function(ActionRow $row) use ($action, $reverse_action, $unit, $count){
+            $row = $row->addButton("$action:change_date:$reverse_action;$unit;$count;true", ucfirst($reverse_action) . " $count instead")
+                       ->addButton("$action:change_date:$action;$unit;$count;true", ucfirst($action) ." $count more", 'success');
+
+            if($this->calendar->children()->exists()) {
+                if($this->setting('show_children') != $this->calendar->id) {
+                    $row->addButton(static::target('appendChildDates'), 'Show Linked Children');
+                } else {
+                    $row->addButton(static::target('removeChildDates'), "Don't Show Linked Children");
+                }
+            }
+
+            return $row;
+        });
     }
 }
