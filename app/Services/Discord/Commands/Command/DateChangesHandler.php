@@ -84,8 +84,7 @@ class DateChangesHandler extends Command
         $method = $action . ucfirst(Str::plural($unit));
 
         $this->calendar
-            ->$method($count)
-            ->save();
+            ->$method($count);
 
         if($this->setting('show_children') === $this->calendar->id){
             logger()->debug('Showing children');
@@ -93,6 +92,8 @@ class DateChangesHandler extends Command
             $this->discord_interaction->update([
                 'needs_follow_up' => true
             ]);
+
+            $this->calendar->save();
 
             return Response::deferred();
         }
@@ -103,6 +104,8 @@ class DateChangesHandler extends Command
         if($update) {
             $response->updatesMessage();
         }
+
+        $this->calendar->save();
 
         return $response;
     }
