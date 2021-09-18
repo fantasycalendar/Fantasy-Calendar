@@ -26,6 +26,7 @@ class Response
     private string $text_content;
     private string $type;
     private Collection $components;
+    private Collection $embeds;
 
     /**
      * @param string $text_content Text content to accompany a message
@@ -36,6 +37,7 @@ class Response
         $this->text_content = $text_content;
         $this->type = Arr::get($this->types, $type, 4);
         $this->components = collect();
+        $this->embeds = collect();
     }
 
     /**
@@ -88,11 +90,32 @@ class Response
             $response['data']['components'] = $this->buildComponents();
         }
 
+        if($this->hasEmbeds()) {
+            $response['data']['embeds'] = $this->embeds->toArray();
+        }
+
         if($this->hasFlags()) {
             $response['data']['flags'] = $this->getFlags();
         }
 
         return $response;
+    }
+
+    public function embedMedia($url)
+    {
+        $this->embeds->push([
+            'color' => 0x2f855a,
+            'image' => [
+                'url' => $url
+            ]
+        ]);
+
+        return $this;
+    }
+
+    public function hasEmbeds(): bool
+    {
+        return $this->embeds->count() > 0;
     }
 
     /**

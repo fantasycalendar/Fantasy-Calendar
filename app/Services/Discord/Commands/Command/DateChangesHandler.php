@@ -195,12 +195,9 @@ class DateChangesHandler extends Command
             "I'm not sure what you expected to happen.",
             "We're technically always doing that anyway, unless you instruct us otherwise.",
             "Congratulations! You found the easter egg. Now ... Stop it!",
-            "http://i.imgur.com/VUV2KZSt.png",
-            "https://i.imgur.com/XgNFgGQt.jpg",
-            "http://i.imgur.com/7ygyj6nt.jpg",
-            "http://i.imgur.com/XZiz9qzt.jpg",
-            "http://i.imgur.com/SgUGFR1.jpg",
+            "https://i.imgur.com/SgUGFR1.jpg",
             "https://i.imgur.com/dMx3qg1.gif",
+            "https://c.tenor.com/iRRAJt3llV4AAAAC/its-time-to-stop-stop.gif",
             "Task failed successfully! The Date is still $currentDate.",
             "It's already $currentDate! Changing that by 0 won't help you any.",
             "Character idea: A mathematician who ONLY knows how to add 0 to things.",
@@ -223,9 +220,15 @@ class DateChangesHandler extends Command
             $confusionMessages[] = "Can't do that, sorry. $currentDate already has a '0' in it.";
         }
 
-        return Response::make($this->blockQuote($this->called_command)
-            . $this->newLine(2)
-            . Arr::random($confusionMessages));
+        $chosen = Arr::random($confusionMessages);
+
+        $response = Response::make($this->blockQuote($this->called_command) . $this->newLine(2) . $chosen);
+
+        if(Str::startsWith($chosen, 'https://')) {
+            return $response->embedMedia($chosen);
+        }
+
+        return $response;
     }
 
     /**
