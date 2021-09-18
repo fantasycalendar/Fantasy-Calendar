@@ -47,17 +47,21 @@ class DateChangesHandler extends Command
 
     public function getAction()
     {
-        return explode(' ', $this->called_command)[1] ?? $this->componentArgument(0);
+        return explode(' ', $this->called_command)[1]
+            ?? $this->componentArgument(0);
     }
 
     public function getUnit()
     {
-        return explode(' ', $this->called_command)[2] ?? $this->componentArgument(1);
+        return explode(' ', $this->called_command)[2]
+            ?? $this->componentArgument(1);
     }
 
     public function getCount()
     {
-        return $this->option(['days', 'months', 'years', 'minutes', 'hours']) ?? $this->componentArgument(2) ?? 1;
+        return $this->option(['days', 'months', 'years', 'minutes', 'hours'])
+            ?? $this->componentArgument(2)
+            ?? 1;
     }
 
     /**
@@ -83,14 +87,24 @@ class DateChangesHandler extends Command
             ->$method($count)
             ->save();
 
-        if($this->setting('show_children')){
+        if($this->setting('show_children') === $this->calendar->id){
             logger()->debug('Showing children');
+
+            $this->discord_interaction->update([
+                'needs_follow_up' => true
+            ]);
 
             return Response::deferred();
         }
 
         logger()->debug('no children to respond with');
-        return $this->respondWithoutChildren($action, $unit, $count, $update);
+        $response = $this->respondWithoutChildren($action, $unit, $count, $update);
+
+        if($update) {
+            $response->updatesMessage();
+        }
+
+        return $response;
     }
 
     public function respondWithoutChildren($action, $unit, $count = 1, $update = false, $addButtons = true)
@@ -114,13 +128,13 @@ class DateChangesHandler extends Command
             . $current_time
             . $this->codeBlock(TextRenderer::renderMonth($this->calendar));
 
-        $reverse_action = ($action == 'add')
-            ? 'sub'
-            : 'add';
-
         $response = Response::make($responseText);
 
         $this->addButtons($response);
+
+        if($update) {
+            $response->updatesMessage();
+        }
 
         return $response;
     }
@@ -133,23 +147,11 @@ class DateChangesHandler extends Command
 
         $response = $this->respondWithoutChildren($action, $unit, $count, $update, false);
 
-        $reverse_action = $this->reverseAction($action);
-
-        $response = $response->addRow(function(ActionRow $row) use ($action, $unit, $count, $reverse_action){
-            return $row->addButton("$action:change_date:$reverse_action;$unit;$count;true", ['label' => ucfirst($reverse_action) . " $count instead", 'emoji' => ':arrow_left:'])
-                ->addButton("$action:change_date:$action;$unit;$count;true", ucfirst($action) ." $count more", 'success')
-                ->addButton(static::target('appendChildDates'), 'Show Linked Children', 'secondary', true);
-        });
-
         if($update) {
             $response->updatesMessage();
         }
 
-        if($followup) {
-            $response = $this->appendChildDates($response);
-        }
-
-        return $response;
+        return $this->appendChildDates($response);
     }
 
     public function appendChildDates($response = null, $parent = null, $deferred = false)
@@ -161,22 +163,26 @@ class DateChangesHandler extends Command
             $response = Response::make($this->codeBlock(TextRenderer::renderMonth($this->calendar)))
                 ->updatesMessage();
 
-            $response = $this->addButtons($response);
-
             logger(json_encode($response->getMessage()));
         }
+
+        $response->clearComponents();
+        $response = $this->addButtons($response);
 
         if($deferred) $response->setType('deferred_update');
 
         return $response->appendText("\nChild calendar dates:" . $this->codeBlock($this->formatChildren($this->calendar)));
     }
 
-    public function removeChildDates()
+    public function removeChildDates($action = null, $unit = null, $count = null, $update = false)
     {
-        $message = strstr($this->discord_interaction->message_text, 'Child calendar dates:', true);
+        $message = Str::before($this->discord_interaction->message_text, 'Child calendar dates:');
         $this->calendar = $this->getDefaultCalendar();
+        $this->setting('show_children', false);
+        $response = Response::make($message)
+            ->updatesMessage();
 
-        return $this->addButtons(Response::make($message));
+        return $this->addButtons($response);
     }
 
     private function userWantedZeroChange($action, $unit): Response
@@ -223,7 +229,7 @@ class DateChangesHandler extends Command
     }
 
     /**
-     * Verify calendar is owned by user and
+     * Verify a handful of things before allowing the user to change things.
      *
      * @throws DiscordCalendarLinkedException
      * @throws DiscordUserUnauthorized
@@ -267,6 +273,8 @@ class DateChangesHandler extends Command
 
     protected function addButtons(Response $response): Response
     {
+        if($response->hasComponents()) return $response;
+
         $action = $this->getAction();
         $reverse_action = $this->reverseAction($action);
         $unit = $this->getUnit();
@@ -279,11 +287,17 @@ class DateChangesHandler extends Command
                        ->addButton("$action:change_date:$action;$unit;$count;true", ucfirst($action) ." $count more", 'success');
 
             if($this->calendar->children()->exists()) {
-                if($this->setting('show_children') != $this->calendar->id) {
-                    $row->addButton(static::target('appendChildDates'), 'Show Linked Children');
-                } else {
-                    $row->addButton(static::target('removeChildDates'), "Don't Show Linked Children");
+                $show_children = ($this->setting('show_children') == $this->calendar->id);
+                $method = ($show_children)
+                    ? 'removeChildDates'
+                    : 'respondWithChildren';
+
+                $label = 'Show Linked Children';
+                if($show_children) {
+                    $label = "Don't " . $label;
                 }
+
+                $row->addButton(static::target($method, [$action, $unit, $count, true]), $label);
             }
 
             return $row;

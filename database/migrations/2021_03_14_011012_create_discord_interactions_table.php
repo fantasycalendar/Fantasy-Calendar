@@ -19,7 +19,10 @@ class CreateDiscordInteractionsTable extends Migration
             $table->id();
             $table->timestamps();
             $table->string('snowflake')->unique();
+
             $table->string('parent_snowflake')->nullable();
+            $table->index('parent_snowflake');
+
             $table->string('discord_id')->nullable();
             $table->foreignIdFor(User::class)->nullable();
             $table->foreignIdFor(Calendar::class)->nullable();
@@ -31,6 +34,7 @@ class CreateDiscordInteractionsTable extends Migration
             $table->json('payload');
             $table->json('response')->nullable();
             $table->timestamp('responded_at')->nullable();
+            $table->boolean('needs_follow_up')->default(false);
             $table->integer('version');
         });
     }

@@ -26,6 +26,7 @@ class DiscordInteraction extends Model
 
     protected $fillable = [
         'snowflake',
+        'parent_snowflake',
         'discord_id',
         'type',
         'data',
@@ -37,6 +38,7 @@ class DiscordInteraction extends Model
         'payload',
         'response',
         'responded_at',
+        'needs_follow_up',
     ];
 
     protected $casts = [
@@ -146,11 +148,6 @@ class DiscordInteraction extends Model
         }
     }
 
-    public function scopeType($query, $value)
-    {
-        return $query->where('type', '=', self::TYPES[$value]);
-    }
-
     /**
      * @param $response
      * @return bool
@@ -163,5 +160,16 @@ class DiscordInteraction extends Model
         $responded_at = now();
 
         return $this->update(compact('response', 'responded_at'));
+    }
+
+    public function scopeType($query, $value)
+    {
+        return $query->where('type', '=', self::TYPES[$value]);
+    }
+
+    public function scopeNeedsFollowUp($query)
+    {
+        return $query->whereNeedsFollowUp(true)
+                     ->where('created_at', '>', now()->subMinutes(15));
     }
 }

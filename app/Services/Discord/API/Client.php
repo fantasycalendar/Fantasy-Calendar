@@ -3,6 +3,7 @@
 namespace App\Services\Discord\API;
 
 use App\Services\Discord\Commands\Command\Response;
+use App\Services\Discord\Exceptions\DiscordException;
 use GuzzleHttp\Client as HttpClient;
 
 class Client
@@ -54,10 +55,10 @@ class Client
 
     private function request($url, $payload, $method = 'GET')
     {
-        return $this->api_client->request($method, $url, $payload);
-//        try {
-//        } catch (\Throwable $e) {
-//
-//        }
+        try {
+            return $this->api_client->request($method, $url, $payload);
+        } catch (\Throwable $e) {
+            throw new DiscordException($e->getResponse()->getBody()->getContents(true));
+        }
     }
 }

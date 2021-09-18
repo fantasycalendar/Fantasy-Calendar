@@ -35,7 +35,7 @@ class UpdateParentCalendarResponse
     {
         logger()->debug("We got called on UpdateParentCalendarResponse! Batch ID: {$event->batch->id}");
         try {
-            $interaction = DiscordInteraction::latestFor($event->calendar)
+            $interaction = DiscordInteraction::needsFollowUp()->latestFor($event->calendar)
                 ->firstOrFail();
         } catch (\Throwable $e) {
             return;
@@ -54,5 +54,9 @@ class UpdateParentCalendarResponse
         $response = $commandInstance->respondWithChildren(null, null, null, false, true);
 
         $this->api->followupMessage($response, $interaction->token);
+
+        DiscordInteraction::where('calendar_id', $event->calendar->id)->update([
+            'needs_follow_up' => false
+        ]);
     }
 }
