@@ -202,7 +202,7 @@ class Response
      */
     public function ephemeral(): Response
     {
-        return (app()->environment(['development', 'local']) && !config('services.discord.force_ephemeral_in_dev'))
+        return (app()->environment(['local']) && !config('services.discord.force_ephemeral_in_dev'))
             ? $this->prependText("_(Ephemeral messages not hidden during development)_\n")
             : $this->enableFlag(static::FLAG_EPHEMERAL);
     }
