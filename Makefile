@@ -35,10 +35,11 @@ real_deploy_prd:
 
 quick_deploy_dev:
 	composer install --prefer-dist --optimize-autoloader --no-dev --ignore-platform-reqs
-	npm run development
+	npm run production
 	chmod -R 775 ./
 	aws s3 sync ./public s3://fantasy-calendar-dev/
 	serverless deploy --stage=dev --function=web
+	serverless deploy --stage=dev --function=worker
 	serverless deploy --stage=dev --function=console
 
 quick_deploy_prod:
@@ -47,6 +48,8 @@ quick_deploy_prod:
 	chmod -R 775 ./
 	aws s3 sync ./public s3://fantasy-calendar-prod/
 	serverless deploy --stage=prod --function=web
+	serverless deploy --stage=prod --function=worker
+	serverless deploy --stage=prod --function=console
 
 local:
 	docker run -it -u $(id -u):$(id -g) -v ${PWD}/:/app -w /app node npm install
