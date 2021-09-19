@@ -74,6 +74,11 @@ provider:
           Resource: "*"
       -   Effect: "Allow"
           Action:
+            - "sqs:ListQueues"
+          Resource:
+            Fn::Join: ['arn:aws:sqs:region:', !Ref AWS::AccountId, ':*']
+      -   Effect: "Allow"
+          Action:
             - "sqs:*"
           Resource:
             Fn::GetAtt: [ AlertQueue, Arn ]
