@@ -72,8 +72,10 @@ provider:
             - "ses:SendEmail"
             - "sns:Publish"
           Resource: "*"
-      -   Effect: Allow
-          Action: [sqs:SendMessage, sqs:DeleteMessage]
+      -   Effect: "Allow"
+          Action:
+            - "sqs:SendMessage"
+            - "sqs:DeleteMessage"
           Resource:
             Fn::GetAtt: [ AlertQueue, Arn ]
 

@@ -55,6 +55,9 @@ class Client
 
     private function request($url, $payload, $method = 'GET')
     {
+        logger()->debug($url);
+        logger()->debug(json_encode($payload));
+        logger()->debug($method);
         try {
             return $this->api_client->request($method, $url, $payload);
         } catch (\Throwable $e) {
