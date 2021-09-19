@@ -74,19 +74,7 @@ provider:
           Resource: "*"
       -   Effect: "Allow"
           Action:
-            - "sqs:DeleteMessage"
-            - "sqs:GetQueueUrl"
-            - "sqs:ListQueues"
-            - "sqs:ChangeMessageVisibility"
-            - "sqs:SendMessageBatch"
-            - "sqs:ReceiveMessage"
-            - "sqs:SendMessage"
-            - "sqs:GetQueueAttributes"
-            - "sqs:ListQueueTags"
-            - "sqs:ListDeadLetterSourceQueues"
-            - "sqs:DeleteMessageBatch"
-            - "sqs:ChangeMessageVisibilityBatch"
-            - "sqs:SetQueueAttributes"
+            - "sqs:*"
           Resource:
             Fn::GetAtt: [ AlertQueue, Arn ]
 
