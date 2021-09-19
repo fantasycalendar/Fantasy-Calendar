@@ -76,7 +76,7 @@ provider:
           Action:
             - "sqs:ListQueues"
           Resource:
-            Fn::Join: ['arn:aws:sqs:region:', !Ref AWS::AccountId, ':*']
+            Fn::Join: ['', ['arn:aws:sqs:region:', !Ref AWS::AccountId, ':*']]
       -   Effect: "Allow"
           Action:
             - "sqs:*"
