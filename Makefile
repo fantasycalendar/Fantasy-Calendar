@@ -19,6 +19,7 @@ super_duper_confirm:
 
 real_deploy_dev:
 	composer install --prefer-dist --optimize-autoloader --no-dev --ignore-platform-reqs
+	npm install
 	npm run production
 	aws s3 sync ./public s3://fantasy-calendar-dev/
 	date | cat > ./setup/lambda/dev/version.txt
@@ -35,6 +36,7 @@ real_deploy_prd:
 
 quick_deploy_dev:
 	composer install --prefer-dist --optimize-autoloader --no-dev --ignore-platform-reqs
+	npm install
 	npm run production
 	chmod -R 775 ./
 	aws s3 sync ./public s3://fantasy-calendar-dev/

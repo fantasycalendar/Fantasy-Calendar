@@ -18,6 +18,7 @@ provider:
         Ref: Assets
       SQS_QUEUE:
         Ref: AlertQueue
+      SQS_PREFIX: ${ssm:/${self:custom.ssm.${self:custom.stage}}/sqs_prefix}
       DB_HOST: ${ssm:/${self:custom.ssm.${self:custom.stage}}/db_host}
       DB_PORT: 3306
       DB_USERNAME: ${ssm:/${self:custom.ssm.${self:custom.stage}}/db_username}
@@ -33,6 +34,7 @@ provider:
       WEBADDRESS: https://${self:custom.alias}/
       COOKIEADDRESS: ${self:custom.alias}
       CACHE_DRIVER: redis
+      QUEUE_DRIVER: sqs
       SESSION_DRIVER: redis
       REDIS_HOST: ${ssm:/${self:custom.ssm.${self:custom.stage}}/redis_host}
       REDIS_PORT: 6379
