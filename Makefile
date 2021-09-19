@@ -18,7 +18,9 @@ super_duper_confirm:
 	@echo -n "Are you REALLY SUPER VERY sure? This will DEPLOY the current local copy of the code to PRODUCTION, and can take the main app OFFLINE. Be EXTRA sure you meant to do this. [y/N] " && read ans && [ $${ans:-N} = y ]
 
 real_deploy_dev:
+	git checkout .
 	composer install --prefer-dist --optimize-autoloader --no-dev --ignore-platform-reqs
+	rm -rf ./node_modules
 	npm install
 	npm run production
 	aws s3 sync ./public s3://fantasy-calendar-dev/
