@@ -74,14 +74,15 @@ provider:
           Resource: "*"
       -   Effect: "Allow"
           Action:
-            - "sqs:ListQueues"
-          Resource:
-            Fn::Join: ['', ['arn:aws:sqs:us-east-1:', !Ref AWS::AccountId, ':*']]
-      -   Effect: "Allow"
-          Action:
-            - "sqs:*"
+            - "sqs:SendMessage"
+            - "sqs:GetQueueUrl"
           Resource:
             Fn::GetAtt: [ AlertQueue, Arn ]
+      -   Effect: "Allow"
+          Action:
+            - "sqs:ListQueues"
+          Resource:
+            Fn::Join: ['', ['arn:aws:sqs:', ${self:provider.region} ,':', !Ref AWS::AccountId, ':*']]
 
 custom:
   stage: ${opt:stage, 'dev'}
