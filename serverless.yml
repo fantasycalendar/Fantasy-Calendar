@@ -18,7 +18,6 @@ provider:
         Ref: Assets
       SQS_QUEUE:
         Ref: AlertQueue
-      SQS_PREFIX: ${ssm:/${self:custom.ssm.${self:custom.stage}}/sqs_prefix}
       DB_HOST: ${ssm:/${self:custom.ssm.${self:custom.stage}}/db_host}
       DB_PORT: 3306
       DB_USERNAME: ${ssm:/${self:custom.ssm.${self:custom.stage}}/db_username}
@@ -71,18 +70,8 @@ provider:
             - "ses:Publish"
             - "ses:SendEmail"
             - "sns:Publish"
+            - "sqs:*"
           Resource: "*"
-      -   Effect: "Allow"
-          Action:
-            - "sqs:SendMessage"
-            - "sqs:GetQueueUrl"
-          Resource:
-            Fn::GetAtt: [ AlertQueue, Arn ]
-      -   Effect: "Allow"
-          Action:
-            - "sqs:ListQueues"
-          Resource:
-            Fn::Join: ['', ['arn:aws:sqs:', ${self:provider.region} ,':', !Ref AWS::AccountId, ':*']]
 
 custom:
   stage: ${opt:stage, 'dev'}
