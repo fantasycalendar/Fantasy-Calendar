@@ -22,6 +22,7 @@ class Button extends Component
     private string $style;
     private $emoji;
     private bool $disabled;
+    private $user_id = null;
 
     /**
      * Target is a 'target string' for the Discord button to relate back to
@@ -46,11 +47,24 @@ class Button extends Component
     }
 
     /**
+     * Sets the user ID that is allowed to press this button
+     *
+     * @param int $user_id
+     * @return $this
+     */
+    public function setUser(int $user_id): Button
+    {
+        $this->user_id = $user_id;
+
+        return $this;
+    }
+
+    /**
      * Turns the Button into the appropriate array format for Discord
      *
      * @return int[]
      */
-    public function build(): array
+    public function build($user_id): array
     {
         $response = [
             'type' => $this->type,
@@ -60,7 +74,8 @@ class Button extends Component
             $response['url'] = $this->target;
             $this->style = static::$styles['link']; // Override if it's a link or it borks
         } else {
-            $response['custom_id'] = config('services.discord.global_command') . '.' . $this->target;
+            $response['custom_id'] = config('services.discord.global_command') . '.' . $this->target . ':' . ($this->user_id ?? $user_id);
+            logger($response['custom_id']);
         }
 
         if($this->emoji) {

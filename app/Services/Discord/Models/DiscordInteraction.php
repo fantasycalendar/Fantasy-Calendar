@@ -154,12 +154,12 @@ class DiscordInteraction extends Model
      */
     public function respondedWith($response): bool
     {
-        $response = ($response instanceof Response)
+        $response_array = ($response instanceof Response)
             ? $response->getMessage()
             : $response;
         $responded_at = now();
 
-        return $this->update(compact('response', 'responded_at'));
+        return $this->update(compact('response_array', 'responded_at'));
     }
 
     public function scopeType($query, $value)

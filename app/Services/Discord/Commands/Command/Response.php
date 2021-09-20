@@ -27,6 +27,7 @@ class Response
     private string $type;
     private Collection $components;
     private Collection $embeds;
+    private int $user_id = 0;
 
     /**
      * @param string $text_content Text content to accompany a message
@@ -65,6 +66,21 @@ class Response
     public static function deferred(): Response
     {
         return new self('', 'deferred');
+    }
+
+    /**
+     * Sets the user ID that will be required for any buttons in this response
+     *
+     * @param int $user_id
+     * @return $this
+     */
+    public function setUser(int $user_id): Response
+    {
+        logger("Response user set to " . $user_id);
+
+        $this->user_id = $user_id;
+
+        return $this;
     }
 
     /**
@@ -247,7 +263,9 @@ class Response
      */
     public function buildComponents(): array
     {
-        return $this->components->map->build()->toArray();
+        return $this->components
+            ->map->build($this->user_id)
+            ->toArray();
     }
 
     public function clearComponents(): self

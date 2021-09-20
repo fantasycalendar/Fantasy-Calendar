@@ -11,5 +11,5 @@ abstract class Component
      *
      * @return array
      */
-    public abstract function build(): array;
+    public abstract function build($user_id): array;
 }

@@ -15,11 +15,11 @@ class ActionRow extends Component
         $this->components = collect();
     }
 
-    public function build(): array
+    public function build($user_id): array
     {
         return [
             'type' => $this->type,
-            'components' => $this->components->map->build()->toArray()
+            'components' => $this->components->map->build($user_id)->toArray()
         ];
     }
 

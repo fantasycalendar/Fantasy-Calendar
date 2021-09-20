@@ -46,15 +46,17 @@ abstract class Command
     protected Response $response_details;
     protected $message_id;
     protected array $component_interaction;
+    public ?int $interaction_user_id;
 
     /**
      * Command constructor.
      * @param $interaction_data
      * @throws DiscordUserInvalidException
      */
-    public function __construct($interaction_data)
+    public function __construct($interaction_data, int $interaction_user_id = null)
     {
         $this->interaction_data = $interaction_data;
+        $this->interaction_user_id = $interaction_user_id;
 
         $this->initialize();
     }
@@ -100,9 +102,9 @@ abstract class Command
             ? $response
             : (new Response($response));
 
-        $this->discord_interaction->update([
-            'response' => $response->getMessage()
-        ]);
+        $response->setUser(optional($this->user)->id ?? 0);
+
+        $this->discord_interaction->respondedWith($response);
 
         return $response;
     }
@@ -125,18 +127,30 @@ abstract class Command
         }
 
         $customIdParts = explode(':', $this->interaction('data.custom_id'));
+
+        $this->interaction_user_id = $customIdParts[3];
+
         return [
             'command_path' => $customIdParts[0],
             'method' => $customIdParts[1] ?? 'handle',
             'arguments' => (isset($customIdParts[2]))
                 ? explode(';', $customIdParts[2])
-                : []
+                : [],
+            'user_id' => $customIdParts[3],
         ];
     }
 
     public function componentArgument($index)
     {
         return Arr::get($this->component_interaction, "arguments.$index");
+    }
+
+    /**
+     * @return User
+     */
+    public function getUser(): User
+    {
+        return $this->user;
     }
 
     /**
@@ -192,6 +206,12 @@ abstract class Command
                 logger()->debug('Interaction was recently created, associate with user');
                 $this->discord_interaction->user()->associate($this->user);
                 $this->discord_interaction->save();
+            }
+
+            if($this->interaction_user_id && $this->user->id !== $this->interaction_user_id) {
+                logger("Interaction user: {$this->interaction_user_id}");
+                logger("User logged in: {$this->user->id}");
+                throw new DiscordUserUnauthorized("Only the user who ran a command can click the buttons on it.");
             }
 
         } catch (ModelNotFoundException $e) {
@@ -319,7 +339,7 @@ abstract class Command
             : 'handle';
         $args = $args
             ? ":" . implode(';', $args)
-            : "";
+            : ":";
 
         return "$configpath:$function$args";
     }

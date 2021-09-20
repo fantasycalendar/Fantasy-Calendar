@@ -65,17 +65,23 @@ class CommandDispatcher
     {
         $interactionIdParts = explode(':', $interactionData['data']['custom_id']);
 
+        logger(json_encode($interactionIdParts, JSON_PRETTY_PRINT));
+        logger(json_encode($interactionData['data']));
+
         $handlerClass = config('services.discord.command_handlers.'. $interactionIdParts[0]);
         $handlerFunction = $interactionIdParts[1];
         $args = $interactionData['data']['values'] ?? explode(';', $interactionIdParts[2] ?? null);
+        $initiationUserId = $interactionIdParts[3];
 
         /** @var Command $command */
-        $command = (new $handlerClass($interactionData, $interactionIdParts[0]));
+        $command = (new $handlerClass($interactionData, $initiationUserId));
 
         $response = $command->$handlerFunction(...$args);
         $response = ($response instanceof Response)
             ? $response
             : (new Response($response));
+
+        $response->setUser($command->getUser()->id);
 
         $command->discord_interaction->respondedWith($response);
 

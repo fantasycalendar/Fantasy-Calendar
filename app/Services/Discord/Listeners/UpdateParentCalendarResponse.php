@@ -53,6 +53,8 @@ class UpdateParentCalendarResponse
         }
         $response = $commandInstance->respondWithChildren(null, null, null, false, true);
 
+        $response->setUser($event->calendar->user->id);
+
         $this->api->followupMessage($response, $interaction->token);
 
         DiscordInteraction::where('calendar_id', $event->calendar->id)->update([

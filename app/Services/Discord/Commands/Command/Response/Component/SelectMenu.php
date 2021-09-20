@@ -37,11 +37,11 @@ class SelectMenu extends Component
     /**
      * @inheritDoc
      */
-    public function build(): array
+    public function build($user_id): array
     {
         return [
             'type' => $this->type,
-            'custom_id' => $this->customId,
+            'custom_id' => $this->customId . ':' . $user_id,
             'options' => $this->options->map->build()->toArray(),
             'placeholder' => $this->placeholder,
             'min_selected_values' => $this->minSelectedValues,
