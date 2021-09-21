@@ -20,6 +20,7 @@ class Month
     private $weekdays;
     private $minimum_day_length;
     private $internal_length;
+    private $clean_weekdays;
 
     private array $pipeline = [
         TextRenderer\Pipeline\HighlightCurrentDay::class
@@ -32,6 +33,7 @@ class Month
         $this->name = $attributes['name'];
         $this->length = $attributes['length'];
         $this->weekdays = $attributes['weekdays'];
+        $this->clean_weekdays = $attributes['clean_weekdays'];
         $this->weeks = $attributes['weeks'];
         $this->minimum_day_length = $attributes['min_day_text_length'];
 
@@ -43,7 +45,7 @@ class Month
         $parts = [
             HeaderBlock::class => HeaderBlock::build($this->name, $this->internal_length, $this->year),
             MonthTopper::class => MonthTopper::build($this->minimum_day_length, $this->weekdays->count()),
-            DayNameRow::class => DayNameRow::build($this->minimum_day_length, $this->weekdays),
+            DayNameRow::class => DayNameRow::build($this->minimum_day_length, $this->clean_weekdays),
             Weeks::class => Weeks::build($this->weeks, $this->minimum_day_length, $this->weekdays->count(), $this->month->intercalary),
             WeekBottom::class => WeekBottom::build($this->minimum_day_length, $this->weekdays->count())
         ];

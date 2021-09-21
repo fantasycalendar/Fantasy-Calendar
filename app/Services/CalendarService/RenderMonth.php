@@ -45,8 +45,9 @@ class RenderMonth
             'name' => $this->name,
             'length' => $this->daysInYear->count(),
             'weekdays' => $this->weekdays,
+            'clean_weekdays' => $this->cleanWeekdays($this->weekdays),
             'weeks' => $weeks,
-            'min_day_text_length' => max($this->findShortestUniquePrefixLength($this->weekdays), strlen($this->length))
+            'min_day_text_length' => max($this->findShortestUniquePrefixLength($this->cleanWeekdays($this->weekdays)), strlen($this->length))
         ];
     }
 
@@ -67,6 +68,7 @@ class RenderMonth
      */
     private function findShortestUniquePrefixLength($weekdays, $length = null): int
     {
+        log_json($weekdays);
         $length = $length ?? $weekdays->map(function($weekday) {
                 return strlen($weekday);
             })->max();
@@ -78,5 +80,15 @@ class RenderMonth
         return ($matchedShortNames === 1)
             ? $this->findShortestUniquePrefixLength($weekdays, $length - 1) // All unique, check one more level
             : max($length + 1, 3); // Found duplicates! That means our length is truncating too far.
+    }
+
+    private function cleanWeekdays($weekdays)
+    {
+        if($weekdays->count() === $weekdays->filter(fn($day) => is_numeric(str_replace('Weekday ', '', $day)))->count()) {
+            return $weekdays->map(fn($day) => str_replace('Weekday ', '', $day));
+        }
+
+        return $weekdays
+            ->map(fn($day) => words_to_number($day));
     }
 }
