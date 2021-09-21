@@ -21,7 +21,8 @@ class Month
     private $weekdays;
     private $minimum_day_length;
     private $clean_weekdays;
-    private $maximum_text_length;
+    private $desired_maximum_text_length;
+    private $original_min_day_length;
 
     private array $pipeline = [
         TextRenderer\Pipeline\HighlightCurrentDay::class
@@ -37,7 +38,8 @@ class Month
         $this->clean_weekdays = $attributes['clean_weekdays'];
         $this->weeks = $attributes['weeks'];
         $this->minimum_day_length = $attributes['min_day_text_length'];
-        $this->maximum_text_length = $attributes['maximum_text_length'] ?? 2000;
+        $this->original_min_day_length = $attributes['min_day_text_length'];
+        $this->desired_maximum_text_length = $attributes['desired_maximum_text_length'] ?? 2000;
     }
 
     public function build(): self
@@ -45,23 +47,9 @@ class Month
         $this->sanityCheck(); // Make sure we're not gonna _completely_ overblow our text length max.
 
         do {
-            $parts = [
-                HeaderBlock::class => HeaderBlock::build($this->name, $this->internalLength(), $this->year),
-                MonthTopper::class => MonthTopper::build($this->minimum_day_length, $this->weekdays->count()),
-                DayNameRow::class => DayNameRow::build($this->minimum_day_length, $this->clean_weekdays),
-                Weeks::class => Weeks::build($this->weeks, $this->minimum_day_length, $this->weekdays->count(), $this->month->intercalary),
-                WeekBottom::class => WeekBottom::build($this->minimum_day_length, $this->weekdays->count())
-            ];
+            $this->compile();
 
-            $payload = PipelinePayload::build($parts, $this->minimum_day_length);
-
-            $this->lines = (new Pipeline(app()))
-                ->send($payload)
-                ->through($this->pipeline)
-                ->then($this->verifyParts())
-                ->getLines();
-
-            if(mb_strlen($this->toString()) < $this->maximum_text_length) {
+            if(mb_strlen($this->toString()) < $this->desired_maximum_text_length) {
                 return $this;
             }
 
@@ -70,8 +58,34 @@ class Month
         } while ($this->minimum_day_length > 3 && $this->minimum_day_length >= strlen($this->length));
 
 //        logger($this->toString());
+        //
 
-        return $this; // We've done the best we can. If it's _still_ too long ... We can let the receiving end trim it their way.
+        // We tried our best to smartly trim lengths, based on our maximum text length. However ... It didn't really work.
+        // Rather than mangle the user's calendar by squishing it super tight ... Let's just render it how we would have before refinement.
+        // Then anything calling the text renderer can handle trimming our output to their liking.
+        $this->minimum_day_length = $this->original_min_day_length;
+        $this->compile();
+
+        return $this;
+    }
+
+    private function compile()
+    {
+        $parts = [
+            HeaderBlock::class => HeaderBlock::build($this->name, $this->internalLength(), $this->year),
+            MonthTopper::class => MonthTopper::build($this->minimum_day_length, $this->weekdays->count()),
+            DayNameRow::class => DayNameRow::build($this->minimum_day_length, $this->clean_weekdays),
+            Weeks::class => Weeks::build($this->weeks, $this->minimum_day_length, $this->weekdays->count(), $this->month->intercalary),
+            WeekBottom::class => WeekBottom::build($this->minimum_day_length, $this->weekdays->count())
+        ];
+
+        $payload = PipelinePayload::build($parts, $this->minimum_day_length);
+
+        $this->lines = (new Pipeline(app()))
+            ->send($payload)
+            ->through($this->pipeline)
+            ->then($this->verifyParts())
+            ->getLines();
     }
 
     public function toString()

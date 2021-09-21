@@ -37,32 +37,38 @@ class TextRenderer
      * @var Collection
      */
     private Collection $months;
+    private int $preferredMaxLength;
 
     /**
      * TextRenderer constructor.
      * @param Collection $months
      */
-    public function __construct(Collection $months)
+    public function __construct(Collection $months, $preferredMaxLength = 2000)
     {
-        $this->months = $months->mapInto(Month::class);
+        $this->preferredMaxLength = $preferredMaxLength;
+        $this->months = $months->map(function($month) use ($preferredMaxLength) {
+            $month['desired_maximum_text_length'] = $preferredMaxLength;
+
+            return $month;
+        })->mapInto(Month::class);
     }
 
     /**
      * @param Collection $months
      * @return TextRenderer
      */
-    public static function make(Collection $months): TextRenderer
+    public static function make(Collection $months, $preferredMaxLength = 2000): TextRenderer
     {
-        return new static($months);
+        return new static($months, $preferredMaxLength);
     }
 
     /**
      * @param Calendar $calendar
      * @return string
      */
-    public static function renderMonth(Calendar $calendar)
+    public static function renderMonth(Calendar $calendar, $preferredMaxLength = 2000)
     {
-        return static::make(collect([MonthRenderer::prepareFrom($calendar)]))
+        return static::make(collect([MonthRenderer::prepareFrom($calendar)]), $preferredMaxLength)
             ->toString();
     }
 

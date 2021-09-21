@@ -129,7 +129,7 @@ class DateChangesHandler extends Command
         $responseText = $this->blockQuote("$number_units $past_verb!")
             . $this->newLine(2)
             . $current_time
-            . $this->codeBlock(TextRenderer::renderMonth($this->calendar));
+            . $this->renderMonth($this->calendar);
 
         $response = Response::make($responseText);
 
@@ -163,7 +163,7 @@ class DateChangesHandler extends Command
         $this->setting('show_children', $this->calendar->id);
 
         if(!$response) {
-            $response = Response::make($this->codeBlock(TextRenderer::renderMonth($this->calendar)))
+            $response = Response::make($this->renderMonth($this->calendar))
                 ->updatesMessage();
 
             logger(json_encode($response->getMessage()));
@@ -308,5 +308,10 @@ class DateChangesHandler extends Command
 
             return $row;
         });
+    }
+
+    private function renderMonth($calendar)
+    {
+        return $this->codeBlock(Command\Show\MonthHandler::clipMonthToFit(TextRenderer::renderMonth($calendar)));
     }
 }
