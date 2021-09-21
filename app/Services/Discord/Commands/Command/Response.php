@@ -354,7 +354,7 @@ class Response
     public function lengthCheck()
     {
         if(strlen($this->text_content) > 2000) {
-            throw new DiscordResponseTooLongException();
+            throw new DiscordResponseTooLongException(strlen($this->text_content));
         }
 
         return $this;
