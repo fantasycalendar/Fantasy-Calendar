@@ -29,12 +29,23 @@ class MonthHandler extends Command
      */
     public function handle(): string
     {
+        logger('MonthHandler::handle entered');
         $this->calendar = $this->getDefaultCalendar();
+        logger($this->calendar->name);
+
 
         $current_time = ($this->calendar->clock_enabled && !$this->calendar->setting('hide_clock'))
             ? "Current time: ". $this->calendar->current_time
             : "";
 
-        return $current_time . $this->codeBlock(TextRenderer::renderMonth($this->calendar));
+        logger($current_time);
+
+        $month = TextRenderer::renderMonth($this->calendar);
+
+        $response = $current_time . $this->codeBlock($month);
+
+        logger(strlen($response));
+
+        return $current_time . $this->codeBlock($month);
     }
 }

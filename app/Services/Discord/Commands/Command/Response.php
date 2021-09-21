@@ -4,6 +4,8 @@ namespace App\Services\Discord\Commands\Command;
 
 use App\Services\Discord\Commands\Command\Response\Component\ActionRow;
 use App\Services\Discord\Commands\Command\Response\Component\SelectMenu;
+use App\Services\Discord\Exceptions\DiscordException;
+use App\Services\Discord\Exceptions\DiscordResponseTooLongException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use phpDocumentor\Reflection\Types\Static_;
@@ -36,6 +38,8 @@ class Response
     public function __construct(string $text_content, string $type = 'basic')
     {
         $this->text_content = $text_content;
+        $this->lengthCheck();
+
         $this->type = Arr::get($this->types, $type, 4);
         $this->components = collect();
         $this->embeds = collect();
@@ -298,7 +302,7 @@ class Response
     {
         $this->text_content .= $text;
 
-        return $this;
+        return $this->lengthCheck();
     }
 
     /* ********************************************************* *
@@ -345,5 +349,14 @@ class Response
                 }
             }, $target, $placeholder);
         });
+    }
+
+    public function lengthCheck()
+    {
+        if(strlen($this->text_content) > 2000) {
+            throw new DiscordResponseTooLongException();
+        }
+
+        return $this;
     }
 }
