@@ -554,12 +554,12 @@ class Climate{
 
 	generate_periodic_seasons(){
 
-		let season_epoch = this.start_epoch - this.settings.season_offset;
+		let season_epoch = this.start_epoch;
 
 		this.season.year = season_epoch/this.season_length;
 		this.season.next_year = (season_epoch+1)/this.season_length;
 
-		this.season.day = Math.floor(fract(this.season.year)*this.season_length);
+		this.season.day = Math.round(fract(this.season.year)*this.season_length);
 
 		this.season.total_day = 0;
 
@@ -582,7 +582,7 @@ class Climate{
 			}
 		}
 
-		this.season.season_day = Math.floor(this.seasons[this.season.current_index].length + this.season.day - this.season.total_day);
+		this.season.season_day = Math.round(this.seasons[this.season.current_index].length + this.season.day - this.season.total_day);
 
 		/* -------------------------------------------------------------------------------------------------------------*/
 
@@ -591,7 +591,7 @@ class Climate{
 		this.weather.year = weather_epoch/this.season_length;
 		this.weather.next_year = (weather_epoch+1)/this.season_length;
 
-		this.weather.day = Math.floor(fract(this.weather.year)*this.season_length)
+		this.weather.day = Math.round(fract(this.weather.year)*this.season_length)
 
 		this.weather.total_day = 0;
 

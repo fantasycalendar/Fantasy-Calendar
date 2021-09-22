@@ -127,8 +127,6 @@ function pre_rebuild_calendar(action, dynamic_data){
 
 }
 
-var evaluated_static_data = {};
-
 async function testCalendarAccuracy(fromYear = -1000, toYear = 1000){
 
     calendar_data_generator.static_data = static_data;
@@ -176,6 +174,74 @@ async function testCalendarAccuracy(fromYear = -1000, toYear = 1000){
 
     });
 }
+
+async function testSeasonAccuracy(fromYear = 10, toYear = 1000){
+
+    if(static_data.seasons.data.length === 0) return;
+
+    calendar_data_generator.static_data = static_data;
+    calendar_data_generator.dynamic_data = dynamic_data;
+    calendar_data_generator.owner = Perms.player_at_least('co-owner');
+    calendar_data_generator.events = events;
+    calendar_data_generator.event_categories = event_categories;
+
+    return new Promise(async (resolve, reject) => {
+
+        calendar_data_generator.dynamic_data.year = fromYear;
+
+        let result = await calendar_data_generator.run();
+
+        let previous_year_end_season_day = result.epoch_data[result.year_data.end_epoch].season.season_day;
+
+        for(let year = fromYear; year < toYear; year++){
+
+            calendar_data_generator.dynamic_data.year++;
+            if(!static_data.settings.year_zero_exists && calendar_data_generator.dynamic_data.year === 0){
+                calendar_data_generator.dynamic_data.year++;
+            }
+
+            console.log(`Testing year ${calendar_data_generator.dynamic_data.year}...`)
+
+            let result = await calendar_data_generator.run();
+
+            let start_epoch = result.year_data.start_epoch;
+            let end_epoch = result.year_data.end_epoch;
+
+            let current_year_start_season_day = result.epoch_data[start_epoch].season.season_day;
+
+            if(previous_year_end_season_day !== current_year_start_season_day-1 && current_year_start_season_day !== 1){
+                console.error(`YEAR ${calendar_data_generator.dynamic_data.year} FAILED! Start/End Fail. Expected ${current_year_start_season_day}, got ${previous_year_end_season_day}!`);
+                reject(result.epoch_data[start_epoch])
+                return;
+            }
+
+            let prev_season_day = current_year_start_season_day;
+
+            for(let epoch = start_epoch+1; epoch < end_epoch; epoch++){
+
+                let season_day = result.epoch_data[epoch].season.season_day;
+
+                if(prev_season_day !== season_day-1 && season_day !== 1){
+                    console.error(`YEAR ${calendar_data_generator.dynamic_data.year} FAILED! Inner year failed. Expected ${season_day}, got ${prev_season_day}!`)
+                    reject(result)
+                    return;
+                }
+
+                prev_season_day = season_day;
+
+            }
+
+            previous_year_end_season_day = result.epoch_data[result.year_data.end_epoch].season.season_day;
+
+        }
+
+        console.log(`Test succeeded, seasons are accurate across ${Math.abs(fromYear)+Math.abs(toYear)} years!`)
+        resolve();
+
+    });
+}
+
+var evaluated_static_data = {};
 
 async function rebuild_calendar(action, dynamic_data){
 
