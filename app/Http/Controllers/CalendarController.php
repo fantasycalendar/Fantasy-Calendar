@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\CalendarInvite;
 use App\Events\DateChanged;
 use App\Jobs\PrepCalendarForExport;
+use App\Services\RendererService\ImageRenderer;
+use App\Services\RendererService\MonthRenderer;
 use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
@@ -121,6 +123,21 @@ class CalendarController extends Controller
     {
         return view('calendar.view', [
             'calendar' => $calendar,
+        ]);
+    }
+
+    public function renderImage(Calendar $calendar)
+    {
+        return ImageRenderer::renderMonth($calendar)->response('png', 95);
+        return response()->stream(function() use ($calendar) {
+            echo ImageRenderer::renderMonth($calendar);
+        }, 200, [
+            'Content-Disposition' => 'inline; filename="' . Str::slug(Str::ascii($calendar->name)) . '.png"',
+            'Content-Type' => 'image/png',
+            'Last-Modified' => now(),
+            'Cache-control' => 'must-revalidate',
+            'Expires' => now()->addMinutes(5),
+            'Pragma' => 'public'
         ]);
     }
 

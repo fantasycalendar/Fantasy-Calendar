@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\StripeController;
+use Intervention\Image\Facades\Image;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,12 +14,6 @@ use App\Http\Controllers\StripeController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/mailable', function () {
-    $user = App\User::find(1);
-    return new \App\Mail\DiscordAnnouncement($user);
-});
-
 
 Route::get('/', 'WelcomeController@welcome')->name('home');
 Route::view('/welcome', 'welcome')->name('welcome');
@@ -59,6 +54,7 @@ Route::get('invite/register', 'InviteController@register')->name('invite.registe
 // Calendar management
 Route::get('calendars/{calendar}/print', 'CalendarController@print')->name('calendars.print')->middleware(['account.deletion', 'agreement']);
 Route::get('calendars/{calendar}/export', 'CalendarController@export')->name('calendars.export')->middleware(['account.deletion', 'agreement']);
+Route::get('calendars/{calendar}/png/{x?}/{y?}', 'CalendarController@renderImage')->name('calendars.image')->middleware(['account.deletion', 'agreement']);
 Route::resource('calendars', 'CalendarController')->middleware(['account.deletion', 'agreement']);
 
 

@@ -181,6 +181,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Services\Discord\Providers\DiscordServiceProvider::class,
+        Intervention\Image\ImageServiceProvider::class
 
     ],
 
@@ -235,6 +236,7 @@ return [
 
         // Package facades
         'Markdown' => GrahamCampbell\Markdown\Facades\Markdown::class,
+        'Image' => Intervention\Image\Facades\Image::class
     ],
 
 ];
