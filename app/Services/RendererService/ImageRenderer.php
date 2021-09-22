@@ -118,7 +118,7 @@ class ImageRenderer
         $this->grid_line_width = $request->input('grid_line_width', 1);
 
         $this->intercalary_spacing = $request->input('intercalary_spacing', min(max($this->weekday_header_height / 4, 1), 15));
-        
+
     }
 
     private function initializeParametrics()
@@ -417,7 +417,7 @@ class ImageRenderer
 
     private function snapshot()
     {
-        if(!request()->get('debug')) {
+        if(!request()->get('debug') || !app()->environment('local')) {
             return;
         }
 

@@ -117,6 +117,7 @@ functions:
             - ${bref:layer.php-74-fpm}
             - ${bref:extra.redis-php-74}
             - ${bref:extra.gmp-php-74}
+            - ${bref:extra.imagick-php-74}
         events:
             -   http: 'ANY /'
             -   http: 'ANY /{proxy+}'
