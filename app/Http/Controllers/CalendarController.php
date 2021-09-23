@@ -24,9 +24,9 @@ use Illuminate\Support\Str;
 class CalendarController extends Controller
 {
     public function __construct() {
-        $this->middleware('auth')->except('show', 'create');
+        $this->middleware('auth')->except('show', 'create', 'renderImage');
 
-        $this->middleware('verified')->except('show', 'create');
+        $this->middleware('verified')->except('show', 'create', 'renderImage');
 
         $this->authorizeResource(Calendar::class, 'calendar', ['except' => 'update']);
     }
