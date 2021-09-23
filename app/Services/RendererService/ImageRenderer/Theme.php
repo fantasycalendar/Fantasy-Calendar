@@ -13,8 +13,8 @@ class Theme
         $this->attributes = $attributes;
     }
 
-    public function get($key)
+    public function get($key, $default = '#FF0000')
     {
-        return Arr::get($this->attributes, $key, '#4A412A');
+        return Arr::get($this->attributes, $key, $default);
     }
 }

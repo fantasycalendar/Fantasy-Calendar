@@ -22,10 +22,7 @@ class ImageRenderer
     private int $x;
     private int $y;
 
-    private string $background_color;
-    private string $shadow_color;
-    private string $border_color;
-    private string $current_date_color;
+    private ImageRenderer\Theme $theme;
 
     private string $font_file;
     private string $bold_font_file;
@@ -49,8 +46,8 @@ class ImageRenderer
     private int $grid_line_width;
     private float $grid_column_width;
     private float $grid_row_height;
-    private $day_number_size;
-    private $day_number_padding;
+    private int $day_number_size;
+    private int $day_number_padding;
 
     private $weekdays;
     private int $intercalary_spacing;
@@ -102,7 +99,6 @@ class ImageRenderer
         $this->x = $this->parameters->get('width', 400);
         $this->y = $this->parameters->get('height', 240);
 
-        $this->setupTheme();
 
         $this->padding = $this->parameters->get('padding', 0);
         $this->shadow_offset = $this->parameters->get('shadow_offset', 1);
@@ -120,6 +116,8 @@ class ImageRenderer
         $this->grid_line_width = $this->parameters->get('grid_line_width', 1);
 
         $this->intercalary_spacing = $this->parameters->get('intercalary_spacing', min(max($this->weekday_header_height / 4, 1), 15));
+
+        $this->setupTheme();
     }
 
     private function initializeParametrics()
@@ -169,10 +167,16 @@ class ImageRenderer
      */
     private function freshImage(): void
     {
-        $this->image = Image::canvas($this->x,$this->y, $this->background_color);
+        $this->image = Image::canvas($this->x,$this->y, $this->theme->get('background_color'));
         $this->snapshot();
     }
 
+    /**
+     * Draws a drop-shadow on our image (if padding > 20), by:
+     * 1. Creating a rectangle of our theme's shadow_color, the size of our image minus padding
+     * 2. Blurring the image
+     * 3. Creating another rectangle of the same size, of our theme's background_color
+     */
     private function drawDropShadow()
     {
         if($this->padding >= 20) {
@@ -271,7 +275,7 @@ class ImageRenderer
                 $this->grid_bounding_x1 + $dayXOffset + ($this->grid_column_width * $weekdayIndex),
                 $this->padding + $this->header_height + ($this->weekday_header_height / 2),
                 $this->weekday_header_height / 2,
-                $this->colorize(),
+                $this->colorize('text'),
                 'center',
                 'middle',
                 $this->bold_font_file,
@@ -345,8 +349,8 @@ class ImageRenderer
             }
 
             $color = $day->isNumbered
-                ? $this->colorize()
-                : "#72767d";
+                ? 'text'
+                : 'inactive_text';
 
             $text = $day->isNumbered
                 ? $day->visualDay
@@ -361,8 +365,8 @@ class ImageRenderer
                     $dayX + $this->grid_column_width,
                     $row_bottom_y,
                     1,
-                    $this->current_date_color,
-                    $this->colorize(),
+                    $this->colorize('current_date'),
+                    $this->colorize('border'),
                 );
             }
 
@@ -371,7 +375,7 @@ class ImageRenderer
                 $dayX + $this->day_number_padding,
                 $current_row_top_y + $this->day_number_padding,
                 $this->day_number_size,
-                $color,
+                $this->colorize($color),
                 'left'
             );
         });
@@ -398,7 +402,7 @@ class ImageRenderer
     {
         if(!request()->get('debug'))
         {
-            return $this->$type ?? $this->{"{$type}_color"} ?? $this->shadow_color;
+            return $this->theme->get("{$type}_color");
         }
 
         $hash = md5('color' . rand(1, 500)); // modify 'color' to get a different palettes
@@ -471,14 +475,15 @@ class ImageRenderer
 
     private function setupTheme()
     {
-        $theme = ThemeFactory::getTheme($this->parameters->get('theme'));
+        $this->theme = ThemeFactory::getTheme($this->parameters->get('theme'));
+        $overrides = ['shadow_strength'];
 
-        foreach($theme->attributes as $key => $value) {
-            $this->$key = $value;
+        foreach($overrides as $override) {
+            $this->$override = $this->theme->get($override, $this->parameters->get($override, $this->$override));
         }
 
-        $this->font_file = base_path('resources/fonts/Noah-Regular.ttf');
-        $this->bold_font_file = base_path('resources/fonts/Noah-Bold.ttf');
+        $this->font_file = base_path('resources/fonts/'.$this->theme->get('font_name').'-Regular.ttf');
+        $this->bold_font_file = base_path('resources/fonts/'.$this->theme->get('font_name').'-Bold.ttf');
     }
 
     /**
