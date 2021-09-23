@@ -101,8 +101,8 @@ class ImageRenderer
 
     private function mergeParameters()
     {
-        $this->x = $this->parameters->get('width', 400);
-        $this->y = $this->parameters->get('height', 240);
+        $this->x = $this->parameters->get('width', 600);
+        $this->y = $this->parameters->get('height', 480);
 
 
         $this->padding = $this->parameters->get('padding', 0);
@@ -469,7 +469,7 @@ class ImageRenderer
     {
         if(!request()->get('debug'))
         {
-            return $this->theme->get("{$type}_color");
+            return $this->parameters->get("{$type}_color") ?? $this->theme->get("{$type}_color");
         }
 
         $hash = md5('color' . rand(1, 500)); // modify 'color' to get a different palettes
