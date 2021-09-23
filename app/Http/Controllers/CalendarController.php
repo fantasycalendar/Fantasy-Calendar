@@ -128,7 +128,7 @@ class CalendarController extends Controller
 
     public function renderImage(Calendar $calendar)
     {
-        return ImageRenderer::renderMonth($calendar)->response('png', 95);
+        return ImageRenderer::renderMonth($calendar, collect(request()->all()))->response('png', 95);
         return response()->stream(function() use ($calendar) {
             echo ImageRenderer::renderMonth($calendar);
         }, 200, [
