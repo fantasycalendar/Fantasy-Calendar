@@ -203,30 +203,14 @@ const calendar_data_generator = {
 
 		timespan.index = timespan_index;
 
-		timespan.render = false;
-
-        if(this.current_year === year){
-            timespan.render = !this.render_one_month || (this.render_one_month && timespan_index === this.dynamic_data.timespan);
-        }
+		timespan.render = this.current_year === year && (!this.render_one_month || (this.render_one_month && timespan_index === this.dynamic_data.timespan));
 
 		timespan.week = timespan.week ? timespan.week : clone(this.static_data.year_data.global_week);
 		timespan.truncated_week = truncate_weekdays(timespan.week);
 
-		timespan.leap_days = [];
+        let timespan_occurrences = get_timespan_occurrences(this.static_data, year, timespan.interval, timespan.offset);
 
-		let timespan_fraction;
-
-		if(timespan.interval === 1){
-
-			timespan_fraction = year;
-
-		}else{
-
-			let offset = timespan.offset%timespan.interval;
-
-			timespan_fraction = Math.floor((year - offset) / timespan.interval);
-
-		}
+        timespan.leap_days = [];
 
 		let leap_days = this.static_data.year_data.leap_days.filter(leap_day => leap_day.timespan === timespan_index);
 		let normal_leapdays = leap_days.filter(leap_day => !leap_day.adds_week_day && !leap_day.intercalary)
@@ -239,7 +223,7 @@ const calendar_data_generator = {
 
 			leap_day.index = leap_days.indexOf(leap_day);
 
-			if (is_leap(this.static_data, timespan_fraction, leap_day.interval, leap_day.offset)) {
+			if (is_leap(this.static_data, timespan_occurrences, leap_day.interval, leap_day.offset)) {
 				timespan.length++;
 			}
 
@@ -251,7 +235,7 @@ const calendar_data_generator = {
 
 			leap_day.index = leap_days.indexOf(leap_day);
 
-			if (is_leap(this.static_data, timespan_fraction, leap_day.interval, leap_day.offset)) {
+			if (is_leap(this.static_data, timespan_occurrences, leap_day.interval, leap_day.offset)) {
 				if(timespan.type === 'intercalary'){
 					timespan.length++;
 				}else{
@@ -274,7 +258,7 @@ const calendar_data_generator = {
 
 			leap_day.index = leap_days.indexOf(leap_day);
 
-			if (is_leap(this.static_data, timespan_fraction, leap_day.interval, leap_day.offset)) {
+			if (is_leap(this.static_data, timespan_occurrences, leap_day.interval, leap_day.offset)) {
 				timespan.length++;
 				if (leap_day.day === 0) {
 					before_weekdays.push(leap_day.week_day)

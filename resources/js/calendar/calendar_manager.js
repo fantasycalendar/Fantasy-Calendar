@@ -137,44 +137,38 @@ async function testCalendarAccuracy(fromYear = -1000, toYear = 1000){
     calendar_data_generator.events = events;
     calendar_data_generator.event_categories = event_categories;
 
-    return new Promise(async (resolve) => {
+    let currentYear = calendar_data_generator.dynamic_data.year;
 
-        let fails = []
+    calendar_data_generator.dynamic_data.year = fromYear;
 
-        calendar_data_generator.dynamic_data.year = fromYear;
+    let result = await calendar_data_generator.run();
+
+    let end_epoch = result.year_data.end_epoch;
+
+    for(let year = fromYear; year < toYear; year++){
+
+        calendar_data_generator.dynamic_data.year++;
+        if(!static_data.settings.year_zero_exists && calendar_data_generator.dynamic_data.year === 0){
+            calendar_data_generator.dynamic_data.year++;
+        }
+
+        console.log(`Testing year ${calendar_data_generator.dynamic_data.year}...`)
 
         let result = await calendar_data_generator.run();
 
-        let end_epoch = result.year_data.end_epoch;
-
-        for(let year = fromYear; year < toYear; year++){
-
-            calendar_data_generator.dynamic_data.year++;
-            if(!static_data.settings.year_zero_exists && calendar_data_generator.dynamic_data.year === 0){
-                calendar_data_generator.dynamic_data.year++;
-            }
-
-            console.log(`Testing year ${calendar_data_generator.dynamic_data.year}...`)
-
-            let result = await calendar_data_generator.run();
-
-            if(end_epoch !== result.year_data.start_epoch-1){
-                fails.push(`YEAR ${calendar_data_generator.dynamic_data.year} FAILED! Expected ${end_epoch}, got ${result.year_data.start_epoch}!`)
-            }
-
-            end_epoch = result.year_data.end_epoch;
-
+        if(end_epoch !== result.year_data.start_epoch-1){
+            console.error(`YEAR ${calendar_data_generator.dynamic_data.year} FAILED! Expected ${end_epoch+1}, got ${result.year_data.start_epoch}!`)
+            dynamic_data.year = currentYear;
+            return;
         }
 
-        if(!fails.length){
-            console.log("Test succeeded, calendar calculation accurate!")
-            resolve();
-        }else{
-            fails.forEach(f => console.log(f));
-            reject();
-        }
+        end_epoch = result.year_data.end_epoch;
 
-    });
+    }
+
+    console.log("Test succeeded, calendar calculation accurate!")
+    dynamic_data.year = currentYear;
+
 }
 
 async function rebuild_calendar(action, dynamic_data){
