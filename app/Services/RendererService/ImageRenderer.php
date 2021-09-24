@@ -15,6 +15,7 @@ use Intervention\Image\Image as ImageFile;
 
 class ImageRenderer
 {
+    private Collection $cache;
     private Calendar $calendar;
     private Collection $defaults;
     private Collection $parameters;
@@ -60,6 +61,7 @@ class ImageRenderer
     {
         $this->defaults = $this->defaults();
         $this->parameters = $parameters ?? collect();
+        $this->cache = collect();
         $this->calendar = $calendar;
 
         $this->month = $monthRenderData->get('month');
@@ -72,7 +74,7 @@ class ImageRenderer
 
 
         $this->setupTheme();
-        $this->mergeParameters();
+        $this->determineCanvasDimensions();
         $this->initializeParametrics();
         $this->setupThemeOverrides();
 //        dd(['x' => $this->x,'week_length' => $this->week_length,'y' => $this->y,'minimum_weekday_header_height' => $this->minimum_weekday_header_height,'minimum_header_height' => $this->minimum_header_height,'intercalary_spacing' => $this->intercalary_spacing,'intercalary_weeks_count' => $this->intercalary_weeks_count,'weeks_count' => $this->weeks_count, 'bounding_box_height' => $this->grid_bounding_y2 - $this->grid_bounding_y1]);
@@ -92,11 +94,11 @@ class ImageRenderer
             'quality' => 95,
 
             // Callables - Used for responsiveness until a proper responsive system gets put in place. =)
-            'header_height' => fn() => clamp(round($this->y / 7), $this->minimum_header_height, $this->maximum_header_height),
-            'weekday_header_height' => fn() => clamp($this->header_height / 4, 1, 30),
+            'header_height' => fn() => clamp(round(($this->y - ($this->padding * 2)) / 7), $this->minimum_header_height, $this->maximum_header_height),
+            'weekday_header_height' => fn() => clamp($this->header_height / 4, 18, 42),
             'header_divider_width' => fn() => $this->x > 600 ? 2 : 1,
             'weekday_header_divider_width' => fn() => $this->x > 600 ? 2 : 1,
-            'intercalary_spacing' => fn() => clamp($this->weekday_header_height / 4, 1, 30),
+            'intercalary_spacing' => fn() => clamp($this->weekday_header_height / 4, 4, 30),
         ]);
     }
 
@@ -119,11 +121,6 @@ class ImageRenderer
 
         return static::make($calendar, collect(MonthRenderer::prepareFrom($calendar)), $parameters)
             ->render();
-    }
-
-    private function mergeParameters()
-    {
-        $this->determineImageSize();
     }
 
     private function initializeParametrics()
@@ -260,7 +257,7 @@ class ImageRenderer
      * @param $y2
      * @param null $width
      */
-    private function drawColumns($y1, $y2, $width = null)
+    private function drawColumns($y1, $y2)
     {
         for($column = 1; $column < $this->week_length; $column++) {
             $column_x = ($column * $this->grid_column_width) + $this->grid_bounding_x1;
@@ -565,11 +562,11 @@ class ImageRenderer
 
 
         $this->intercalary_spacing = 4;
-        $this->parameters->put('intercalary_spacing', 4);
+//        $this->parameters->put('intercalary_spacing', 4);
 
-        $this->x = $this->week_length * 24;
+        $this->x = $this->week_length * 30;
         $this->y = $this->minimum_weekday_header_height + $this->minimum_header_height + ($this->intercalary_spacing * $this->intercalary_weeks_count * 2) + ($this->weeks_count * 22) + 1;
-        $this->parameters->put('grid_column_width', 24);
+        $this->parameters->put('grid_column_width', 30);
         $this->parameters->put('grid_row_height', 22);
         $this->parameters->put('weekday_header_height', $this->minimum_weekday_header_height);
         $this->parameters->put('header_height', $this->minimum_header_height);
@@ -580,30 +577,45 @@ class ImageRenderer
 
     private function autoSizeWidthOnly()
     {
-        return 600;
+        return (int) ($this->week_length * (
+                ($this->y - $this->header_height) / $this->weeks_count
+            ));
     }
 
     private function autoSizeHeightOnly()
     {
-        return 400;
+        return (int) (($this->weeks_count * (
+                $this->x / $this->week_length
+            )) / 6) * 7;
     }
 
-    private function determineImageSize()
+    /**
+     * Warning: DIRTY STINKY HAX
+     */
+    private function determineCanvasDimensions()
     {
-        $this->x = $this->parameter('width', 0);
-        $this->y = $this->parameter('height', 0);
+        if($this->parameters->has('width') && $this->parameters->has('height')) {
+            $this->y = clamp($this->parameters->get('height'), 240, 1080);
+            $this->x = clamp($this->parameters->get('width'), 240, 1920);
 
-        if(!$this->x && !$this->y) {
-            $this->autoSizeBoth();
-        } else {
-            if(!$this->x) {
-                $this->x = $this->autoSizeWidthOnly();
-            }
-
-            if(!$this->y) {
-                $this->y = $this->autoSizeHeightOnly();
-            }
+            return;
         }
+
+        if($this->parameters->has('height')) {
+            $this->y = clamp($this->parameters->get('height'), 240, 1080);
+            $this->x = clamp($this->autoSizeWidthOnly(), 240, 1920);
+
+            return;
+        }
+
+        if($this->parameters->has('width')) {
+            $this->x = clamp($this->parameters->get('width'), 240, 1920);
+            $this->y = clamp($this->autoSizeHeightOnly(), 240, 1080);
+
+            return;
+        }
+
+        $this->autoSizeBoth();
     }
 
     private function determineTextSize($string, $font_size)
@@ -629,14 +641,17 @@ class ImageRenderer
 
     private function parameter(string $string, $last_resort = null)
     {
-        $result = $this->parameters->get($string)
+        $result = $this->cache->get($string)
+            ?? $this->parameters->get($string)
             ?? $this->theme->get($string)
             ?? $this->defaults->get($string)
             ?? $last_resort;
 
         if(is_callable($result)) {
-            return $result();
+            $result = $result();
         }
+
+        $this->cache->put($string, $result);
 
         return $result;
     }
