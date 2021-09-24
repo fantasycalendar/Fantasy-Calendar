@@ -10,25 +10,34 @@
             }
             html, body {
                 max-width: 100%;
-                max-height: 100%;
-                height: 100%;
-                width: 100%;
+                min-height: 100%;
+                width: 100vw;
+                margin: 0;
+                padding: 0;
             }
             .image_grid {
                 display: grid;
-                grid-template-columns: 1fr 1fr 2fr 2fr 3fr;
+                grid-template-columns: 2fr 3fr 4fr 5fr 6fr;
                 place-items: center;
                 max-width: 100%;
                 width: 100%;
             }
             .image_grid .image {
                 margin: 15px 0;
+                /*max-width: 500px;*/
+            }
+            .image_grid .image img {
+                max-width: 100%;
+                max-height: 100%;
+                height: auto;
+                width: auto;
+                object-fit: contain;
             }
         </style>
     </head>
     <body>
         <div class="image_grid">
-            @foreach(\App\User::find(1)->calendars as $calendar)
+            @foreach(\App\User::find(1)->calendars()->limit(3)->get() as $calendar)
                 @foreach(['small', 'medium', 'large', 'xl', 'xxl'] as $size)
                     <div class="image">
                         <a href="{{ route('calendars.image', ['calendar' => $calendar, 'ext' => 'png', 'size' => $size, 'theme' => request()->input('theme', 'discord')]) }}">

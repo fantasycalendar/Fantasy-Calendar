@@ -135,10 +135,22 @@ class CalendarController extends Controller
             );
         }
 
-        return ImageRenderer::renderMonth($calendar, collect(request()->merge(['ext' => $ext])->all()))->response($ext, request()->input('quality'));
+        $parameters = collect(request()->merge(['ext' => $ext])->all());
+        $cacheName = $calendar->hash . '-' . $calendar->epoch->slug . '-' . sha1($parameters->toJson());
 
-        return response()->stream(function() use ($ext, $calendar) {
-            echo ImageRenderer::renderMonth($calendar, collect(request()->merge(['ext' => $ext])->all()));
+        $start = microtime(1);
+
+        $image = cache()->remember($cacheName, 300, function() use ($ext, $calendar, $parameters){
+            return ImageRenderer::renderMonth($calendar, $parameters);
+        });
+        $end = microtime(1);
+
+        $time = $end - $start;
+
+        logger("Took " . $time);
+
+        return response()->stream(function() use ($parameters, $ext, $calendar, $image) {
+            echo $image;
         }, 200, [
             'Content-Disposition' => 'inline; filename="' . Str::slug(Str::ascii($calendar->name)) . '_' . Str::slug(Str::ascii($calendar->current_date)) . '.'. $ext .'"',
             'Content-Type' => 'image/' . $ext,

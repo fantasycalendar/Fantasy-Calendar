@@ -155,8 +155,8 @@ class ImageRenderer
         $totalIntercalarySpacing = $this->intercalary_spacing * $this->intercalary_weeks_count * 2;
         $this->grid_row_height = ($boundingBoxHeight - $totalIntercalarySpacing) / $this->weeks_count;
 
-        $this->day_number_size = min(max($this->grid_row_height / 4, 12), 38);
-        $this->day_number_padding = min(max($this->day_number_size / 5, 1), 12);
+        $this->day_number_size = clamp($this->parameter('day_number_size', $this->grid_row_height / 4), 12, 38);
+        $this->day_number_padding = clamp($this->day_number_size / 4, 1, 12);
     }
 
     public function render()
@@ -540,7 +540,7 @@ class ImageRenderer
             return;
         }
 
-        $this->image->save($this->snapshotFolder . Str::padLeft($this->savedTimes, 6, '0') . '.jpg');
+        $this->image->save($this->snapshotFolder . Str::padLeft($this->savedTimes, 6, '0') . '.' . $this->parameter('ext'));
         $this->savedTimes++;
     }
 
@@ -580,9 +580,10 @@ class ImageRenderer
     {
         $intercalary_spacing = 4;
         $day_width = 30;
-        $day_height = 22;
+        $day_height = 24;
         $weekday_header_height = $this->minimum_weekday_header_height; // 24
         $header_height = 35; // 50
+        $day_number_size = 10;
 
         // 'small' sizes chosen arbitrarily.
         // The rest are proportional
@@ -608,7 +609,7 @@ class ImageRenderer
 
         $size = $this->parameter('size');
         if($size && Arr::has($size_presets, $size)) {
-            foreach(['intercalary_spacing', 'day_width','day_height','weekday_header_height','header_height'] as $property) {
+            foreach(['intercalary_spacing', 'day_width','day_height','weekday_header_height','header_height', 'day_number_size'] as $property) {
                 $$property /= $size_presets[$size]['divide'];
                 $$property *= $size_presets[$size]['multiply'];
             }
@@ -629,6 +630,7 @@ class ImageRenderer
         $this->parameters->put('grid_row_height', $day_height);
         $this->parameters->put('weekday_header_height', clamp($weekday_header_height, $this->minimum_weekday_header_height, 80));
         $this->parameters->put('header_height', clamp($header_height, $this->minimum_header_height, $this->maximum_header_height));
+        $this->parameters->put('day_number_size', clamp($day_number_size, 10, 50));
 
 //        dd($this->determineTextSize($longest_day_name, $this->minimum_weekday_header_height / 2));
 //        dump(['x' => $this->x,'week_length' => $this->week_length,'y' => $this->y,'minimum_weekday_header_height' => $this->minimum_weekday_header_height,'minimum_header_height' => $this->minimum_header_height,'intercalary_spacing' => $this->intercalary_spacing,'intercalary_weeks_count' => $this->intercalary_weeks_count,'weeks_count' => $this->weeks_count]);

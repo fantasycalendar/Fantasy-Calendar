@@ -62,6 +62,8 @@ services:
   fcredis:
     image: redis
     container_name: fcredis
+    ports:
+      - "6378:6379"
     depends_on:
       - php
 
