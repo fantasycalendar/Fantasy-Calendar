@@ -37,7 +37,15 @@
     </head>
     <body>
         <div class="image_grid">
-            @foreach(\App\User::find(1)->calendars()->limit(3)->get() as $calendar)
+            @foreach(['small', 'medium', 'large', 'xl', 'xxl'] as $size)
+                <div class="image">
+                    <a href="{{ route('calendars.image', ['calendar' => \App\User::find(1)->calendars->first(), 'ext' => 'png', 'size' => $size, 'theme' => request()->input('theme', 'discord')]) }}">
+                        <img src="{{ route('calendars.image', ['calendar' => \App\User::find(1)->calendars->first(), 'ext' => 'png', 'size' => $size, 'theme' => request()->input('theme', 'discord')]) }}" alt="">
+                    </a>
+                </div>
+            @endforeach
+
+            @foreach(\App\User::find(1)->calendars->first()->children as $calendar)
                 @foreach(['small', 'medium', 'large', 'xl', 'xxl'] as $size)
                     <div class="image">
                         <a href="{{ route('calendars.image', ['calendar' => $calendar, 'ext' => 'png', 'size' => $size, 'theme' => request()->input('theme', 'discord')]) }}">

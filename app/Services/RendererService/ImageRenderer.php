@@ -122,8 +122,11 @@ class ImageRenderer
             );
         }
 
-        return static::make($calendar, collect(MonthRenderer::prepareFrom($calendar)), $parameters)
-            ->render();
+        $cacheName = $calendar->hash . '-' . $calendar->epoch->slug . '-' . sha1($parameters->toJson());
+        return cache()->remember($cacheName, 300, function() use ($calendar, $parameters){
+            return static::make($calendar, collect(MonthRenderer::prepareFrom($calendar)), $parameters)
+                ->render();
+        });
     }
 
     private function initializeParametrics()
