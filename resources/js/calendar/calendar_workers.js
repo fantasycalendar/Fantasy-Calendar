@@ -71,21 +71,21 @@ const calendar_data_generator = {
      */
     increment_moon_year_repetitions(year, moon_index, phase){
 
-	    if(this.repetitions[year] === undefined){
-	        this.repetitions[year] = {};
+	    if(this.repetitions.yearly[year] === undefined){
+	        this.repetitions.yearly[year] = {};
         }
 
-	    if(this.repetitions[year][moon_index] === undefined){
-	        this.repetitions[year][moon_index] = {};
+	    if(this.repetitions.yearly[year][moon_index] === undefined){
+	        this.repetitions.yearly[year][moon_index] = {};
         }
 
-	    if(this.repetitions[year][moon_index][phase] === undefined){
-	        this.repetitions[year][moon_index][phase] = 0;
+	    if(this.repetitions.yearly[year][moon_index][phase] === undefined){
+	        this.repetitions.yearly[year][moon_index][phase] = 0;
         }
 
-	    this.repetitions[year][moon_index][phase]++;
+	    this.repetitions.yearly[year][moon_index][phase]++;
 
-	    return this.repetitions[year][moon_index][phase];
+	    return this.repetitions.yearly[year][moon_index][phase];
 
     },
 
@@ -100,25 +100,25 @@ const calendar_data_generator = {
      */
     increment_moon_month_repetitions(year, timespan, moon_index, phase){
 
-	    if(this.repetitions[year] === undefined){
-	        this.repetitions[year] = {};
+	    if(this.repetitions.monthly[year] === undefined){
+	        this.repetitions.monthly[year] = {};
         }
 
-	    if(this.repetitions[year][timespan] === undefined){
-	        this.repetitions[year][timespan] = {};
+	    if(this.repetitions.monthly[year][timespan] === undefined){
+	        this.repetitions.monthly[year][timespan] = {};
         }
 
-	    if(this.repetitions[year][timespan][moon_index] === undefined){
-	        this.repetitions[year][timespan][moon_index] = {};
+	    if(this.repetitions.monthly[year][timespan][moon_index] === undefined){
+	        this.repetitions.monthly[year][timespan][moon_index] = {};
         }
 
-	    if(this.repetitions[year][timespan][moon_index][phase] === undefined){
-	        this.repetitions[year][timespan][moon_index][phase] = 0;
+	    if(this.repetitions.monthly[year][timespan][moon_index][phase] === undefined){
+	        this.repetitions.monthly[year][timespan][moon_index][phase] = 0;
         }
 
-	    this.repetitions[year][timespan][moon_index][phase]++;
+	    this.repetitions.monthly[year][timespan][moon_index][phase]++;
 
-	    return this.repetitions[year][timespan][moon_index][phase];
+	    return this.repetitions.monthly[year][timespan][moon_index][phase];
 
     },
 
@@ -132,21 +132,21 @@ const calendar_data_generator = {
      */
     increment_weekday_repetitions(year, timespan, weekday){
 
-	    if(this.repetitions[year] === undefined){
-	        this.repetitions[year] = {};
+	    if(this.repetitions.weekly[year] === undefined){
+	        this.repetitions.weekly[year] = {};
         }
 
-	    if(this.repetitions[year][timespan] === undefined){
-	        this.repetitions[year][timespan] = {};
+	    if(this.repetitions.weekly[year][timespan] === undefined){
+	        this.repetitions.weekly[year][timespan] = {};
         }
 
-	    if(this.repetitions[year][timespan][weekday] === undefined){
-	        this.repetitions[year][timespan][weekday] = 0;
+	    if(this.repetitions.weekly[year][timespan][weekday] === undefined){
+	        this.repetitions.weekly[year][timespan][weekday] = 0;
         }
 
-	    this.repetitions[year][timespan][weekday]++;
+	    this.repetitions.weekly[year][timespan][weekday]++;
 
-	    return this.repetitions[year][timespan][weekday];
+	    return this.repetitions.weekly[year][timespan][weekday];
 
     },
 
@@ -799,7 +799,11 @@ const calendar_data_generator = {
 
 		}
 
-		this.repetitions = {};
+		this.repetitions = {
+            yearly: {},
+		    monthly: {},
+		    weekly: {}
+        };
         this.epochs = {};
         this.build_seasons = true;
 	    this.callback = false;
