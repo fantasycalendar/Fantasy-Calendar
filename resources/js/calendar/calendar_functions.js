@@ -975,12 +975,12 @@ function valid_preview_date(year, timespan, day){
 			return false;
 		}
 
-		if(year == dynamic_data.year){
+		if(year === dynamic_data.year){
 			if(timespan > dynamic_data.timespan){
 				return false;
 			}
 
-			if(timespan == dynamic_data.timespan && day > dynamic_data.day){
+			if(timespan === dynamic_data.timespan && day > dynamic_data.day){
 				return false;
 			}
 		}
@@ -988,18 +988,17 @@ function valid_preview_date(year, timespan, day){
 	}else if(static_data.settings.only_backwards){
 
         if(!static_data.settings.show_current_month && year > dynamic_data.year){
-
 			return false;
-
         }
 
-		if(timespan > dynamic_data.timespan){
-			return false;
-		}
-
-		if(timespan == dynamic_data.timespan && day > dynamic_data.day){
-			return false;
-		}
+        if(year >= dynamic_data.year) {
+            if (timespan > dynamic_data.timespan) {
+                return false;
+            }
+            if (timespan === dynamic_data.timespan && day > dynamic_data.day) {
+                return false;
+            }
+        }
     }
 
     return true;
