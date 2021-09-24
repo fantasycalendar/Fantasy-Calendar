@@ -20,6 +20,7 @@ class ImageRenderer
     private Calendar $calendar;
     private Collection $defaults;
     private Collection $parameters;
+    private Collection $intercalaryDividerYs;
     private EpochsCollection $weeks;
     private ImageFile $image;
     private ImageRenderer\Theme $theme;
@@ -62,6 +63,7 @@ class ImageRenderer
     {
         $this->defaults = $this->defaults();
         $this->parameters = $parameters ?? collect();
+        $this->intercalaryDividerYs = collect();
         $this->cache = collect();
         $this->calendar = $calendar;
 
@@ -162,8 +164,10 @@ class ImageRenderer
         $this->freshImage();
         $this->drawDropShadow();
         $this->drawHeaderBlock();
-        $this->drawWeekdayNames();
         $this->drawWeeks();
+        $this->drawWeekdayNames();
+        $this->drawColumns();
+        $this->drawIntercalaryDividers();
 
         return $this->image->encode($this->ext, $this->quality);
     }
@@ -209,7 +213,7 @@ class ImageRenderer
             $this->calendar_bounding_x2,
             $this->calendar_bounding_y2,
             $border_width,
-            $this->colorize('background'),
+            $this->colorize('placeholder_background'),
             $this->colorize('border')
         );
     }
@@ -258,15 +262,15 @@ class ImageRenderer
      * @param $y2
      * @param null $width
      */
-    private function drawColumns($y1, $y2)
+    private function drawColumns()
     {
         for($column = 1; $column < $this->week_length; $column++) {
             $column_x = ($column * $this->grid_column_width) + $this->grid_bounding_x1;
             $this->line(
                 $column_x,
-                $y1,
+                $this->padding + $this->header_height,
                 $column_x,
-                $y2,
+                $this->y - $this->padding - 1,
                 1
             );
         }
@@ -280,7 +284,7 @@ class ImageRenderer
         $weekdaysY1 = $this->padding + $this->header_height;
         $weekdaysY2 = $weekdaysY1 + $this->weekday_header_height;
 
-        $this->drawColumns($weekdaysY1, $weekdaysY2, $this->header_divider_width);
+//        $this->drawColumns($weekdaysY1, $weekdaysY2, $this->header_divider_width);
 
         $this->line(
             $this->grid_bounding_x1 + 1,
@@ -363,6 +367,8 @@ class ImageRenderer
 
         if($this->hasIntercalary($visualWeeks)) {
             $isIntercalary = true;
+            $this->intercalaryDividerYs->push($current_row_top_y);
+
             $current_row_top_y += $this->intercalary_spacing;
         }
 
@@ -371,6 +377,10 @@ class ImageRenderer
 
             $current_row_top_y += $this->grid_row_height;
         });
+
+        if($isIntercalary) {
+            $this->intercalaryDividerYs->push($current_row_top_y - $this->intercalary_spacing);
+        }
     }
 
     /**
@@ -392,16 +402,28 @@ class ImageRenderer
     {
         $row_bottom_y = $current_row_top_y + $this->grid_row_height;
 
+        $leading_empty_days = $days->takeWhile(function ($day){
+            return empty($day);
+        })->count();
+
+        $days_left_x = ($leading_empty_days * $this->grid_column_width) + $this->grid_bounding_x1;
+
+        $days_to_fill = $days->skipWhile(function($day) {
+            return empty($day);
+        })->takeWhile(function($day) {
+            return !empty($day);
+        })->count();
+
+        $days_right_x = ($days_to_fill * $this->grid_column_width) + $days_left_x;
+
         $this->rectangle(
-            $this->grid_bounding_x1,
+            $days_left_x,
             $current_row_top_y,
-            $this->grid_bounding_x2,
+            $days_right_x,
             $row_bottom_y,
             1,
-            $this->colorize('placeholder_background'),
+            $this->parameter('background')
         );
-
-        $this->drawColumns($current_row_top_y, $row_bottom_y);
 
         $days->each(function($day) use ($row_bottom_y, $internal_week_number, $current_row_top_y) {
             if(!$day) {
@@ -419,19 +441,18 @@ class ImageRenderer
                 : "N/A";
 
 
-            $background = ($day->isCurrent)
-                ? 'current_date'
-                : 'background';
+            if($day->isCurrent) {
+                $this->rectangle(
+                    $dayX,
+                    $current_row_top_y,
+                    min($dayX + $this->grid_column_width, $this->grid_bounding_x2),
+                    $row_bottom_y,
+                    1,
+                    $this->colorize('current_date'),
+                    $this->colorize('border'),
+                );
+            }
 
-            $this->rectangle(
-                $dayX,
-                $current_row_top_y,
-                min($dayX + $this->grid_column_width, $this->grid_bounding_x2),
-                $row_bottom_y,
-                1,
-                $this->colorize($background),
-                $this->colorize('border'),
-            );
 
             $this->text(
                 $text,
@@ -697,6 +718,20 @@ class ImageRenderer
     public function __get($name)
     {
         return $this->parameter($name);
+    }
+
+    private function drawIntercalaryDividers()
+    {
+        $this->intercalaryDividerYs->each(function($y) {
+            $this->rectangle(
+                $this->grid_bounding_x1,
+                $y,
+                $this->grid_bounding_x2,
+                $y + $this->intercalary_spacing,
+                1,
+                $this->parameter('background')
+            );
+        });
     }
 }
 

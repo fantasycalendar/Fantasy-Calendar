@@ -28,7 +28,7 @@
     </head>
     <body>
         <div class="image_grid">
-            @foreach(\App\User::find(1)->calendars()->limit(5)->get() as $calendar)
+            @foreach(\App\User::find(1)->calendars as $calendar)
                 @foreach(['small', 'medium', 'large', 'xl', 'xxl'] as $size)
                     <div class="image">
                         <a href="{{ route('calendars.image', ['calendar' => $calendar, 'ext' => 'png', 'size' => $size, 'theme' => request()->input('theme', 'discord')]) }}">
