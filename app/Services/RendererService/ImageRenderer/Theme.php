@@ -13,8 +13,13 @@ class Theme
         $this->attributes = $attributes;
     }
 
-    public function get($key, $default = '#FF0000')
+    public function get($key, $default = null)
     {
         return Arr::get($this->attributes, $key, $default);
+    }
+
+    public function font()
+    {
+
     }
 }

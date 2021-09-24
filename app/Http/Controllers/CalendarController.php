@@ -18,6 +18,7 @@ use App\CalendarEvent;
 
 use App\Jobs\SaveEventCategories;
 use App\Jobs\SaveCalendarEvents;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -126,14 +127,19 @@ class CalendarController extends Controller
         ]);
     }
 
-    public function renderImage(Calendar $calendar)
+    public function renderImage(Calendar $calendar, $ext)
     {
-        return ImageRenderer::renderMonth($calendar, collect(request()->all()))->response('png', 95);
+        if(!in_array($ext, ['png', 'jpg'])) {
+            $ext = 'png';
+        }
+
+        return ImageRenderer::renderMonth($calendar, collect(request()->all()))->response($ext, 95);
+
         return response()->stream(function() use ($calendar) {
-            echo ImageRenderer::renderMonth($calendar);
+            echo ImageRenderer::renderMonth($calendar, collect(request()->all()));
         }, 200, [
-            'Content-Disposition' => 'inline; filename="' . Str::slug(Str::ascii($calendar->name)) . '.png"',
-            'Content-Type' => 'image/png',
+            'Content-Disposition' => 'inline; filename="' . Str::slug(Str::ascii($calendar->name)) . '_' . Str::slug(Str::ascii($calendar->current_date)) . '.'. $ext .'"',
+            'Content-Type' => 'image/' . $ext,
             'Last-Modified' => now(),
             'Cache-control' => 'must-revalidate',
             'Expires' => now()->addMinutes(5),

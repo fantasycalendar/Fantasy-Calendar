@@ -132,6 +132,7 @@ functions:
             - ${bref:layer.php-74} # PHP
             - ${bref:extra.gmp-php-74}
             - ${bref:extra.redis-php-74}
+            - ${bref:extra.imagick-php-74}
             - ${bref:layer.console} # The "console" layer
         vpc:
           securityGroupIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/security_group_ids}"] }
@@ -155,6 +156,7 @@ functions:
         - ${bref:layer.php-74} # PHP runtime
         - ${bref:extra.gmp-php-74}
         - ${bref:extra.redis-php-74}
+        - ${bref:extra.imagick-php-74}
         - ${bref:layer.console} # Console layer
       events:
         - schedule:

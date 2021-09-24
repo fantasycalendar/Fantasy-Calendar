@@ -8,21 +8,23 @@ use App\Services\RendererService\ImageRenderer\ThemeFactory;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Imagick;
+use ImagickDraw;
 use Intervention\Image\Facades\Image;
 use Intervention\Image\Image as ImageFile;
 
 class ImageRenderer
 {
-    private Collection $parameters;
     private Calendar $calendar;
-    private ImageFile $image;
-    private Collection $themes;
+    private Collection $defaults;
+    private Collection $parameters;
     private EpochsCollection $weeks;
+    private ImageFile $image;
+    private ImageRenderer\Theme $theme;
+    private $month;
 
     private int $x;
     private int $y;
-
-    private ImageRenderer\Theme $theme;
 
     private string $font_file;
     private string $bold_font_file;
@@ -60,22 +62,52 @@ class ImageRenderer
 
     private int $savedTimes = 0;
     private string $snapshotFolder;
-
+    private $minimum_weekday_header_height = 24;
+    private $maximum_header_height = 180;
+    private $minimum_header_height = 50;
+    private $min_day_text_length;
 
     public function __construct(Calendar $calendar, Collection $monthRenderData, ?Collection $parameters = null)
     {
-        $month = $monthRenderData;
+        $this->defaults = $this->defaults();
         $this->parameters = $parameters ?? collect();
-
-        $this->month = $month->get('month');
-        $this->weeks = $month->get('weeks');
-        $this->weekdays = $month->get('weekdays');
         $this->calendar = $calendar;
 
-        $this->themes = collect();
+        $this->month = $monthRenderData->get('month');
+        $this->weeks = $monthRenderData->get('weeks');
+        $this->weekdays = $monthRenderData->get('clean_weekdays');
+        $this->week_length = $monthRenderData->get('week_length');
+        $this->weeks_count = $monthRenderData->get('weeks_count');
+        $this->intercalary_weeks_count = $monthRenderData->get('intercalary_weeks_count');
+        $this->min_day_text_length = $monthRenderData->get('min_day_text_length');
 
+
+        $this->setupTheme();
         $this->mergeParameters();
         $this->initializeParametrics();
+        $this->setupThemeOverrides();
+//        dd(['x' => $this->x,'week_length' => $this->week_length,'y' => $this->y,'minimum_weekday_header_height' => $this->minimum_weekday_header_height,'minimum_header_height' => $this->minimum_header_height,'intercalary_spacing' => $this->intercalary_spacing,'intercalary_weeks_count' => $this->intercalary_weeks_count,'weeks_count' => $this->weeks_count, 'bounding_box_height' => $this->grid_bounding_y2 - $this->grid_bounding_y1]);
+    }
+
+    public function defaults(): Collection
+    {
+        return collect([
+            'padding' => 0,
+            'shadow_offset' => 1,
+            'shadow_size_difference' => 0,
+            'shadow_strength' => 5,
+            'grid_line_width' => 1,
+            'debug' => 0,
+            'snapshot' => 0,
+            'theme' => 'discord',
+
+            // Callables - Used for responsiveness until a proper responsive system gets put in place. =)
+            'header_height' => function() { return min(max(round($this->y / 7), $this->minimum_header_height), $this->maximum_header_height); },
+            'weekday_header_height' => function() { return min(max($this->header_height / 4, 1), 30); },
+            'header_divider_width' => function() { return $this->x > 600 ? 2 : 1; },
+            'weekday_header_divider_width' => function() { return $this->x > 600 ? 2 : 1; },
+            'intercalary_spacing' => function() { return min(max($this->weekday_header_height / 4, 1), 30); },
+        ]);
     }
 
     public static function make(Calendar $calendar, Collection $monthRenderData, ?Collection $parameters = null)
@@ -87,11 +119,11 @@ class ImageRenderer
     {
         // ?year=1512&month=6&day=1
         // http://fantasy-calendar.test:9980/calendars/66ce6339d200f81223fe2c0934633786?year=1512&month=8&day=8
-        if(request()->has('year') && request()->has('month') && request()->has('day')) {
+        if($parameters->has('year') && $parameters->has('month') && $parameters->has('day')) {
             $calendar->setDate(
-                request()->input('year'),
-                request()->input('month'),
-                request()->input('day')
+                $parameters->get('year'),
+                $parameters->get('month'),
+                $parameters->get('day')
             );
         }
 
@@ -101,33 +133,22 @@ class ImageRenderer
 
     private function mergeParameters()
     {
-        $this->x = $this->parameters->get('width', 600);
-        $this->y = $this->parameters->get('height', 480);
+        $this->determineImageSize();
 
-
-        $this->padding = $this->parameters->get('padding', 0);
-        $this->shadow_offset = $this->parameters->get('shadow_offset', 1);
-        $this->shadow_size_difference = $this->parameters->get('shadow_size_difference', 0);
-        $this->shadow_strength = $this->parameters->get('shadow_strength', 5);
-
-        $this->header_height = $this->parameters->get('header_height', min(max(round($this->y / 7), 50), 180));
-
-        $default_divider_width = $this->x > 600
-            ? 2
-            : 1;
-
-        $this->header_divider_width = $this->parameters->get('header_divider_width', $default_divider_width);
-        $this->weekday_header_height = $this->parameters->get('weekday_header_height', min(round($this->header_height / 3), 42));
-        $this->grid_line_width = $this->parameters->get('grid_line_width', 1);
-
-        $this->intercalary_spacing = $this->parameters->get('intercalary_spacing', min(max($this->weekday_header_height / 4, 1), 15));
-
-        $this->setupTheme();
+        $this->padding = $this->parameter('padding');
+        $this->shadow_offset = $this->parameter('shadow_offset');
+        $this->shadow_size_difference = $this->parameter('shadow_size_difference');
+        $this->shadow_strength = $this->parameter('shadow_strength');
+        $this->header_height = $this->parameter('header_height');
+        $this->header_divider_width = $this->parameter('header_divider_width');
+        $this->weekday_header_height = $this->parameter('weekday_header_height');
+        $this->grid_line_width = $this->parameter('grid_line_width');
+        $this->intercalary_spacing = $this->parameter('intercalary_spacing');
     }
 
     private function initializeParametrics()
     {
-        if($this->parameters->get('debug')) {
+        if($this->parameter('debug') || $this->parameter('snapshot')) {
             $this->snapshotFolder = storage_path("calendarImages/snapshot-" . now()->format('Y-m-d H:i:s') . '/');
 
             if(!Storage::disk('local')->has($this->snapshotFolder)) {
@@ -144,9 +165,6 @@ class ImageRenderer
         $this->grid_bounding_y1 = $this->padding + $this->header_height + $this->weekday_header_height;
         $this->grid_bounding_x2 = $this->calendar_bounding_x2;
         $this->grid_bounding_y2 = $this->calendar_bounding_y2;
-
-        $this->week_length = $this->weekdays->count();
-        $this->weeks_count = $this->calculateWeeksCount();
 
         /* Determine width of grid columns based on the area reserved for days */
         $boundingBoxWidth = $this->grid_bounding_x2 - $this->grid_bounding_x1;
@@ -166,10 +184,10 @@ class ImageRenderer
         $this->freshImage();
         $this->drawDropShadow();
         $this->drawHeaderBlock();
-        $this->drawWeeks();
         $this->drawWeekdayNames();
+        $this->drawWeeks();
 
-        return $this->image->encode('png', 95);
+        return $this->image->encode('jpg', 95);
     }
 
     /**
@@ -298,7 +316,7 @@ class ImageRenderer
 
         $this->weekdays->each(function($weekday, $weekdayIndex) use ($dayXOffset) {
             $this->text(
-                $weekday,
+                Str::limit($weekday, $this->min_day_text_length, ''),
                 $this->grid_bounding_x1 + $dayXOffset + ($this->grid_column_width * $weekdayIndex),
                 $this->padding + $this->header_height + ($this->weekday_header_height / 2),
                 $this->weekday_header_height / 2,
@@ -452,24 +470,11 @@ class ImageRenderer
         }
     }
 
-    private function calculateWeeksCount()
-    {
-        return $this->weeks->map(function($week){
-            return $week->map(function($visualWeek){
-                if($visualWeek->filter(fn($day) => optional($day)->isIntercalary)->count()){
-                    $this->intercalary_weeks_count++;
-                }
-
-                return ceil($visualWeek->count() / $this->week_length);
-            })->sum();
-        })->sum();
-    }
-
     private function colorize($type = null)
     {
         if(!request()->get('debug'))
         {
-            return $this->parameters->get("{$type}_color") ?? $this->theme->get("{$type}_color");
+            return $this->parameter("{$type}_color") ?? $this->theme->get("{$type}_color");
         }
 
         $hash = md5('color' . rand(1, 500)); // modify 'color' to get a different palettes
@@ -536,21 +541,25 @@ class ImageRenderer
             return;
         }
 
-        $this->image->save($this->snapshotFolder . Str::padLeft($this->savedTimes, 6, '0'));
+        $this->image->save($this->snapshotFolder . Str::padLeft($this->savedTimes, 6, '0') . '.jpg');
         $this->savedTimes++;
     }
 
     private function setupTheme()
     {
         $this->theme = ThemeFactory::getTheme($this->parameters->get('theme'));
+
+        $this->font_file = base_path('resources/fonts/'.$this->theme->get('font_name').'-Regular.ttf');
+        $this->bold_font_file = base_path('resources/fonts/'.$this->theme->get('font_name').'-Bold.ttf');
+    }
+
+    private function setupThemeOverrides()
+    {
         $overrides = ['shadow_strength'];
 
         foreach($overrides as $override) {
             $this->$override = $this->theme->get($override, $this->parameters->get($override, $this->$override));
         }
-
-        $this->font_file = base_path('resources/fonts/'.$this->theme->get('font_name').'-Regular.ttf');
-        $this->bold_font_file = base_path('resources/fonts/'.$this->theme->get('font_name').'-Bold.ttf');
     }
 
     /**
@@ -566,6 +575,90 @@ class ImageRenderer
                 fn($day) => optional($day)->isIntercalary
             )->count()
         )->count() > 0;
+    }
+
+    private function autoSizeBoth()
+    {
+//        $longest_day_name = $this->weekdays->sortByDesc(function($weekday){
+//            return Str::length($weekday);
+//        })->first();
+
+
+        $this->intercalary_spacing = 4;
+        $this->parameters->put('intercalary_spacing', 4);
+
+        $this->x = $this->week_length * 24;
+        $this->y = $this->minimum_weekday_header_height + $this->minimum_header_height + ($this->intercalary_spacing * $this->intercalary_weeks_count * 2) + ($this->weeks_count * 22) + 1;
+        $this->parameters->put('grid_column_width', 24);
+        $this->parameters->put('grid_row_height', 22);
+        $this->parameters->put('weekday_header_height', $this->minimum_weekday_header_height);
+        $this->parameters->put('header_height', $this->minimum_header_height);
+
+//        dd($this->determineTextSize($longest_day_name, $this->minimum_weekday_header_height / 2));
+//        dump(['x' => $this->x,'week_length' => $this->week_length,'y' => $this->y,'minimum_weekday_header_height' => $this->minimum_weekday_header_height,'minimum_header_height' => $this->minimum_header_height,'intercalary_spacing' => $this->intercalary_spacing,'intercalary_weeks_count' => $this->intercalary_weeks_count,'weeks_count' => $this->weeks_count]);
+    }
+
+    private function autoSizeWidthOnly()
+    {
+        return 600;
+    }
+
+    private function autoSizeHeightOnly()
+    {
+        return 400;
+    }
+
+    private function determineImageSize()
+    {
+        $this->x = $this->parameter('width', 0);
+        $this->y = $this->parameter('height', 0);
+
+        if(!$this->x && !$this->y) {
+            $this->autoSizeBoth();
+        } else {
+            if(!$this->x) {
+                $this->x = $this->autoSizeWidthOnly();
+            }
+
+            if(!$this->y) {
+                $this->y = $this->autoSizeHeightOnly();
+            }
+        }
+    }
+
+    private function determineTextSize($string, $font_size)
+    {
+        $image = new Imagick();
+        $draw = new ImagickDraw();
+        $draw->setFillColor(new \ImagickPixel('black'));
+        $draw->setStrokeAntialias(true);
+        $draw->setTextAntialias(true);
+        $draw->setFontSize(24);
+        // Set typeface
+        $draw->setFont($this->bold_font_file);
+        // Calculate size
+        $metrics = $image->queryFontMetrics($draw,$string,FALSE);
+        $w=$metrics['textWidth'];
+        $h=$metrics['textHeight'];
+
+        return [
+            'width' => $w,
+            'height' => $h
+        ];
+    }
+
+    private function parameter(string $string, $last_resort = null)
+    {
+        $result = $this->parameters->get($string)
+            ?? $this->theme->get($string)
+            ?? $this->defaults->get($string)
+            ?? $last_resort;
+
+        if(is_callable($result)) {
+            return $result();
+        }
+
+        return $result;
     }
 }
 

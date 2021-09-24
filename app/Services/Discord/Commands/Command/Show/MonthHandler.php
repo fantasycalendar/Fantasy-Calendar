@@ -8,6 +8,7 @@ use App\Calendar;
 use App\Services\Discord\Commands\Command\Traits\PremiumCommand;
 use App\Services\Discord\Exceptions\DiscordCalendarNotSetException;
 use App\Services\Discord\Commands\Command;
+use App\Services\RendererService\ImageRenderer;
 use App\Services\RendererService\TextRenderer;
 use Illuminate\Support\Str;
 
@@ -16,6 +17,11 @@ class MonthHandler extends Command
     use PremiumCommand;
 
     private Calendar $calendar;
+
+    private array $availableRenderers = [
+        'text' => TextRenderer::class,
+        'image' => ImageRenderer::class,
+    ];
 
     public static function signature(): string
     {
@@ -41,7 +47,7 @@ class MonthHandler extends Command
 
         logger($current_time);
 
-        $month = TextRenderer::renderMonth($this->calendar);
+        $month = $this->renderer()::renderMonth($this->calendar);
 
         if(Str::length($month) > 2000) {
             $month = self::clipMonthToFit($month);
@@ -162,5 +168,10 @@ class MonthHandler extends Command
         })->first();
 
         return (Str::substrCount($firstLineOfCurrentdate, TextRenderer::SEPARATOR_HORIZONTAL_DOUBLE) + 2);
+    }
+
+    private function renderer()
+    {
+        return $this->availableRenderers[$this->setting('renderer') ?? 'text'];
     }
 }

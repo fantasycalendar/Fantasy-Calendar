@@ -15,6 +15,10 @@ use Intervention\Image\Facades\Image;
 |
 */
 
+Route::get('/imagetest', function(){
+    return view('pages.imagetest');
+});
+
 Route::get('/', 'WelcomeController@welcome')->name('home');
 Route::view('/welcome', 'welcome')->name('welcome');
 Route::view('/whats-new', 'pages.whats-new')->name('whats-new');
@@ -54,7 +58,7 @@ Route::get('invite/register', 'InviteController@register')->name('invite.registe
 // Calendar management
 Route::get('calendars/{calendar}/print', 'CalendarController@print')->name('calendars.print')->middleware(['account.deletion', 'agreement']);
 Route::get('calendars/{calendar}/export', 'CalendarController@export')->name('calendars.export')->middleware(['account.deletion', 'agreement']);
-Route::get('calendars/{calendar}/png/{x?}/{y?}', 'CalendarController@renderImage')->name('calendars.image')->middleware(['account.deletion', 'agreement']);
+Route::get('calendars/{calendar}.{ext}', 'CalendarController@renderImage')->name('calendars.image')->middleware(['account.deletion', 'agreement']);
 Route::resource('calendars', 'CalendarController')->middleware(['account.deletion', 'agreement']);
 
 

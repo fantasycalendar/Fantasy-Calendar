@@ -10,6 +10,7 @@ class RenderMonth
 {
     public $calendar;
     private $id;
+    private int $intercalary_weeks_count = 0;
 
     public function __construct(Calendar $calendar, $id = null)
     {
@@ -39,15 +40,20 @@ class RenderMonth
             });
         });
 
+        $cleanWeekDays = $this->cleanWeekdays($this->weekdays);
+
         return [
             'year' => $this->calendar->year,
             'month' => $this->calendar->render_month,
             'name' => $this->name,
             'length' => $this->daysInYear->count(),
             'weekdays' => $this->weekdays,
-            'clean_weekdays' => $this->cleanWeekdays($this->weekdays),
+            'week_length' => $this->weekdays->count(),
+            'weeks_count' => $this->calculateWeeksCount($weeks),
+            'intercalary_weeks_count' => $this->intercalary_weeks_count,
+            'clean_weekdays' => $cleanWeekDays,
             'weeks' => $weeks,
-            'min_day_text_length' => max($this->findShortestUniquePrefixLength($this->cleanWeekdays($this->weekdays)), strlen($this->length))
+            'min_day_text_length' => max($this->findShortestUniquePrefixLength($cleanWeekDays), strlen($this->length))
         ];
     }
 
@@ -91,4 +97,18 @@ class RenderMonth
         return $weekdays
             ->map(fn($day) => words_to_number($day));
     }
+
+    private function calculateWeeksCount($weeks)
+    {
+        return $weeks->map(function($week){
+            return $week->map(function($visualWeek){
+                if($visualWeek->filter(fn($day) => optional($day)->isIntercalary)->count()){
+                    $this->intercalary_weeks_count++;
+                }
+
+                return ceil($visualWeek->count() / $this->weekdays->count());
+            })->sum();
+        })->sum();
+    }
+
 }
