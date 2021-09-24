@@ -29,14 +29,6 @@ class ImageRenderer
     private string $font_file;
     private string $bold_font_file;
 
-    private int $padding;
-    private int $shadow_offset;
-    private int $shadow_size_difference;
-    private int $shadow_strength;
-    private int $header_height;
-    private int $header_divider_width;
-    private int $weekday_header_height;
-
     private int $weeks_count;
     private int $week_length;
 
@@ -50,15 +42,12 @@ class ImageRenderer
     private int $grid_bounding_x2;
     private int $grid_bounding_y2;
 
-    private int $grid_line_width;
     private float $grid_column_width;
     private float $grid_row_height;
     private int $day_number_size;
     private int $day_number_padding;
 
     private $weekdays;
-    private int $intercalary_spacing;
-    private int $intercalary_weeks_count = 0;
 
     private int $savedTimes = 0;
     private string $snapshotFolder;
@@ -134,16 +123,6 @@ class ImageRenderer
     private function mergeParameters()
     {
         $this->determineImageSize();
-
-        $this->padding = $this->parameter('padding');
-        $this->shadow_offset = $this->parameter('shadow_offset');
-        $this->shadow_size_difference = $this->parameter('shadow_size_difference');
-        $this->shadow_strength = $this->parameter('shadow_strength');
-        $this->header_height = $this->parameter('header_height');
-        $this->header_divider_width = $this->parameter('header_divider_width');
-        $this->weekday_header_height = $this->parameter('weekday_header_height');
-        $this->grid_line_width = $this->parameter('grid_line_width');
-        $this->intercalary_spacing = $this->parameter('intercalary_spacing');
     }
 
     private function initializeParametrics()
@@ -659,6 +638,11 @@ class ImageRenderer
         }
 
         return $result;
+    }
+
+    public function __get($name)
+    {
+        return $this->parameter($name);
     }
 }
 
