@@ -3,19 +3,23 @@
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <style>
+            * {
+                -webkit-box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                box-sizing: border-box;
+            }
             html, body {
-                max-height: 100vh;
-                max-width: 100vw;
+                max-width: 100%;
+                max-height: 100%;
                 height: 100%;
                 width: 100%;
             }
             .image_grid {
                 display: grid;
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: 1fr 1fr 2fr 2fr 3fr;
                 place-items: center;
-                max-width: 100vw;
+                max-width: 100%;
                 width: 100%;
-                height: 100%;
             }
             .image_grid .image {
                 margin: 15px 0;
@@ -24,8 +28,10 @@
     </head>
     <body>
         <div class="image_grid">
-            @foreach(\App\User::find(1)->calendars as $calendar)
-                <div class="image"><img src="{{ route('calendars.image', ['calendar' => $calendar, 'ext' => 'png']) }}"></div>
+            @foreach(\App\User::find(1)->calendars()->limit(5)->get() as $calendar)
+                @foreach(['small', 'medium', 'large', 'xl', 'xxl'] as $size)
+                    <div class="image"><img src="{{ route('calendars.image', ['calendar' => $calendar, 'ext' => 'png', 'size' => $size, 'theme' => request()->input('theme', 'discord')]) }}" alt=""></div>
+                @endforeach
             @endforeach
         </div>
     </body>
