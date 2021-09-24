@@ -169,7 +169,7 @@ async function testCalendarAccuracy(fromYear = -1000, toYear = 1000){
 
 }
 
-async function testSeasonAccuracy(fromYear = 10, toYear = 1000){
+async function testSeasonAccuracy(fromYear = -100, toYear = 100){
 
     if(static_data.seasons.data.length === 0) return;
 

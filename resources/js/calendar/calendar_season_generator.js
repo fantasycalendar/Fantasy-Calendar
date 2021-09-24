@@ -554,9 +554,10 @@ class Climate{
 
 	generate_periodic_seasons(){
 
-		let season_epoch = this.start_epoch;
+		let season_epoch = this.start_epoch - this.settings.season_offset;
 
 		this.season.year = season_epoch/this.season_length;
+
 		this.season.next_year = (season_epoch+1)/this.season_length;
 
 		this.season.day = Math.round(fract(this.season.year)*this.season_length);
