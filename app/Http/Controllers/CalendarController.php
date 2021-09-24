@@ -133,10 +133,10 @@ class CalendarController extends Controller
             $ext = 'png';
         }
 
-        return ImageRenderer::renderMonth($calendar, collect(request()->all()))->response($ext, 95);
+        return ImageRenderer::renderMonth($calendar, collect(request()->merge(['ext' => $ext])->all()))->response($ext, request()->input('quality'));
 
-        return response()->stream(function() use ($calendar) {
-            echo ImageRenderer::renderMonth($calendar, collect(request()->all()));
+        return response()->stream(function() use ($ext, $calendar) {
+            echo ImageRenderer::renderMonth($calendar, collect(request()->merge(['ext' => $ext])->all()));
         }, 200, [
             'Content-Disposition' => 'inline; filename="' . Str::slug(Str::ascii($calendar->name)) . '_' . Str::slug(Str::ascii($calendar->current_date)) . '.'. $ext .'"',
             'Content-Type' => 'image/' . $ext,

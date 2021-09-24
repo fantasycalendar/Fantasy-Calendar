@@ -297,3 +297,9 @@ if(!function_exists('words_to_number')) {
         return implode('', array_filter($result));
     }
 }
+
+if(!function_exists('clamp')) {
+    function clamp($number, $lower, $upper) {
+        return max($lower, min($upper, $number));
+    }
+}

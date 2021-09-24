@@ -89,13 +89,14 @@ class ImageRenderer
             'debug' => 0,
             'snapshot' => 0,
             'theme' => 'discord',
+            'quality' => 95,
 
             // Callables - Used for responsiveness until a proper responsive system gets put in place. =)
-            'header_height' => function() { return min(max(round($this->y / 7), $this->minimum_header_height), $this->maximum_header_height); },
-            'weekday_header_height' => function() { return min(max($this->header_height / 4, 1), 30); },
-            'header_divider_width' => function() { return $this->x > 600 ? 2 : 1; },
-            'weekday_header_divider_width' => function() { return $this->x > 600 ? 2 : 1; },
-            'intercalary_spacing' => function() { return min(max($this->weekday_header_height / 4, 1), 30); },
+            'header_height' => fn() => clamp(round($this->y / 7), $this->minimum_header_height, $this->maximum_header_height),
+            'weekday_header_height' => fn() => clamp($this->header_height / 4, 1, 30),
+            'header_divider_width' => fn() => $this->x > 600 ? 2 : 1,
+            'weekday_header_divider_width' => fn() => $this->x > 600 ? 2 : 1,
+            'intercalary_spacing' => fn() => clamp($this->weekday_header_height / 4, 1, 30),
         ]);
     }
 
@@ -127,7 +128,7 @@ class ImageRenderer
 
     private function initializeParametrics()
     {
-        if($this->parameter('debug') || $this->parameter('snapshot')) {
+        if($this->parameter('snapshot')) {
             $this->snapshotFolder = storage_path("calendarImages/snapshot-" . now()->format('Y-m-d H:i:s') . '/');
 
             if(!Storage::disk('local')->has($this->snapshotFolder)) {
@@ -166,7 +167,7 @@ class ImageRenderer
         $this->drawWeekdayNames();
         $this->drawWeeks();
 
-        return $this->image->encode('jpg', 95);
+        return $this->image->encode($this->ext, $this->quality);
     }
 
     /**
