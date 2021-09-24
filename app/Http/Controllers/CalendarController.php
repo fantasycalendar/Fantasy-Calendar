@@ -130,7 +130,9 @@ class CalendarController extends Controller
     public function renderImage(Calendar $calendar, $ext)
     {
         if(!in_array($ext, ['png', 'jpg'])) {
-            $ext = 'png';
+            return redirect()->to(
+                route('calendars.image', request()->merge(['calendar' => $calendar->hash, 'ext' => 'png'])->all())
+            );
         }
 
         return ImageRenderer::renderMonth($calendar, collect(request()->merge(['ext' => $ext])->all()))->response($ext, request()->input('quality'));
