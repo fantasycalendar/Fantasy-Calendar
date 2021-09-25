@@ -73,16 +73,14 @@ const calendar_renderer = {
         this.loading_message = "Wrapping up rendering...";
 
         hide_loading_screen();
-
-		eras.evaluate_current_era(
-            static_data,
-            evaluated_static_data.year_data.start_epoch,
-            evaluated_static_data.year_data.end_epoch
-        );
-		eras.set_up_position();
-        eras.evaluate_position();
-
         scroll_to_epoch();
+
+        CalendarYearHeader.update(
+            static_data,
+            dynamic_data,
+            preview_date,
+            evaluated_static_data.epoch_data
+        );
 
         for(let index in this.render_callbacks){
             let callback = this.render_callbacks[index];

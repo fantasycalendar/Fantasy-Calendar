@@ -56,7 +56,6 @@ function bind_calendar_events(){
 
 	$('#calendar_container').on('scroll', function(){
 		calendar_weather.tooltip.hide();
-		evaluate_era_position();
 	});
 
 	$(document).on('change', '.event-text-input', function() {
@@ -90,10 +89,6 @@ function bind_calendar_events(){
 	});
 
 }
-
-const evaluate_era_position = debounce(function(){
-	eras.evaluate_position();
-}, 50);
 
 function eval_apply_changes(output){
 
@@ -268,8 +263,6 @@ async function rebuild_calendar(action, dynamic_data){
         climate_charts.evaluate_weather_charts();
 
         eval_clock();
-
-        update_cycle_text();
 
     }).catch(result => {
         let errors = result.errors.map(e => { return `<li>${e}</li>` });
