@@ -41,7 +41,8 @@ class PresetsSeeder extends Seeder
                 'description' => Arr::get($preset, 'description'),
                 'dynamic_data' => json_encode(Arr::get($preset, 'dynamic_data')),
                 'static_data' => json_encode(Arr::get($preset, 'static_data')),
-                'created_at' => Carbon::now()
+                'created_at' => Carbon::now(),
+                'featured' => Arr::get($preset, 'featured', 0),
             ]);
 
             foreach($categories as $category) {

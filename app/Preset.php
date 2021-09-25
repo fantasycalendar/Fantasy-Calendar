@@ -15,7 +15,8 @@ class Preset extends Model
         'static_data',
         'description',
         'source_calendar_id',
-        'creator_id'
+        'creator_id',
+        'featured',
     ];
 
     protected $casts = [
