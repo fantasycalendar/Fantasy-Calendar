@@ -419,6 +419,11 @@ return [
 //                            ],
                         ],
                     ],
+                    [
+                        'name' => 'experiments',
+                        'description' => "Try experimental ideas we're tinkering with!",
+                        'type' => 1,
+                    ],
                 ]
             ]
         ],
@@ -445,6 +450,7 @@ return [
                 'add' => \App\Services\Discord\Commands\Command\DateChangesHandler::class,
                 'sub' => \App\Services\Discord\Commands\Command\DateChangesHandler::class,
                 'choose' => \App\Services\Discord\Commands\Command\ChooseHandler::class,
+                'experiments' => \App\Services\Discord\Commands\Command\ExperimentsHandler::class,
             ]
         ]
     ],

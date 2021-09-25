@@ -5,6 +5,7 @@ namespace App\Services\Discord\Commands\Command\Show;
 
 
 use App\Calendar;
+use App\Services\Discord\Commands\Command\Response;
 use App\Services\Discord\Commands\Command\Traits\PremiumCommand;
 use App\Services\Discord\Exceptions\DiscordCalendarNotSetException;
 use App\Services\Discord\Commands\Command;
@@ -34,30 +35,52 @@ class MonthHandler extends Command
      * @return string
      * @throws DiscordCalendarNotSetException
      */
-    public function handle(): string
+    public function handle()
     {
         logger('MonthHandler::handle entered');
-        $this->calendar = $this->getDefaultCalendar();
-        logger($this->calendar->name);
+        
+        return $this->respondWith($this->setting('renderer') ?? 'text', $this->getDefaultCalendar());
+    }
+    
+    public static function respondWith($renderer, $calendar)
+    {
+        $renderer = "render" . ucfirst($renderer);
+        
+        return self::$renderer($calendar);
+    }
+
+    /**
+     * @param $calendar
+     * @return Response
+     */
+    public static function renderImage($calendar): Response
+    {
+        return Response::make(self::getCurrentTime($calendar))
+            ->embedMedia($calendar->imageLink('png', ['theme' => 'discord']));
+    }
+
+    /**
+     * @param $calendar
+     * @return string
+     */
+    public static function renderText($calendar): Response
+    {
+        $month = TextRenderer::renderMonth($calendar);
 
 
-        $current_time = ($this->calendar->clock_enabled && !$this->calendar->setting('hide_clock'))
-            ? "Current time: ". $this->calendar->current_time
-            : "";
-
-        logger($current_time);
-
-        $month = $this->renderer()::renderMonth($this->calendar);
-
-        if(Str::length($month) > 2000) {
+        if(Str::length($month) > 1900) {
             $month = self::clipMonthToFit($month);
+            logger(strlen($month));
         }
 
-        $response = $current_time . $this->codeBlock($month);
-
-        logger(strlen($response));
-
-        return $current_time . $this->codeBlock($month);
+        return Response::make(self::getCurrentTime($calendar) . self::codeBlock($month));
+    }
+    
+    public static function getCurrentTime(Calendar $calendar): string
+    {
+        return ($calendar->clock_enabled && !$calendar->setting('hide_clock'))
+            ? "Current time: ". $calendar->current_time
+            : "";
     }
 
     /**

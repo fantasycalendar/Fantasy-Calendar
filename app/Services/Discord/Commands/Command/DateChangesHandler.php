@@ -122,16 +122,10 @@ class DateChangesHandler extends Command
             ? 'added'
             : 'subtracted';
 
-        $current_time = ($this->calendar->clock_enabled && !$this->calendar->setting('hide_clock'))
-            ? "Current time: ". $this->calendar->current_time
-            : "";
-
         $responseText = $this->blockQuote("$number_units $past_verb!")
-            . $this->newLine(2)
-            . $current_time
-            . $this->renderMonth($this->calendar);
+            . $this->newLine(2);
 
-        $response = Response::make($responseText);
+        $response = $this->renderMonth($this->calendar)->prependText($responseText);
 
         $this->addButtons($response);
 
@@ -163,7 +157,7 @@ class DateChangesHandler extends Command
         $this->setting('show_children', $this->calendar->id);
 
         if(!$response) {
-            $response = Response::make($this->renderMonth($this->calendar))
+            $response = $this->renderMonth($this->calendar)
                 ->updatesMessage();
 
             logger(json_encode($response->getMessage()));
@@ -310,8 +304,8 @@ class DateChangesHandler extends Command
         });
     }
 
-    private function renderMonth($calendar)
+    private function renderMonth($calendar): Response
     {
-        return $this->codeBlock(Command\Show\MonthHandler::clipMonthToFit(TextRenderer::renderMonth($calendar)));
+        return Command\Show\MonthHandler::respondWith($this->setting('renderer') ?? 'image', $calendar);
     }
 }

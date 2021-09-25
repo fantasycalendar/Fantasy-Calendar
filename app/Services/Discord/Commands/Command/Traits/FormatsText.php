@@ -12,7 +12,7 @@ trait FormatsText
      * @param string $string
      * @return string
      */
-    protected function codeBlock(string $string): string
+    protected static function codeBlock(string $string): string
     {
         return "```\n$string\n```";
     }
@@ -23,7 +23,7 @@ trait FormatsText
      * @param string $string
      * @return string
      */
-    protected function bold(string $string): string
+    protected static function bold(string $string): string
     {
         return "**{$string}**";
     }
@@ -34,7 +34,7 @@ trait FormatsText
      * @param string $string
      * @return string
      */
-    protected function blockQuote(string $string): string
+    protected static function blockQuote(string $string): string
     {
         return "> " . implode("\n> ",explode("\n", $string));
     }
@@ -48,7 +48,7 @@ trait FormatsText
      * @param int $min_length
      * @return string
      */
-    protected function heading(string $string, int $min_length): string
+    protected static function heading(string $string, int $min_length): string
     {
         return Str::padBoth(" {$string} ", $min_length, '=');
     }
@@ -59,7 +59,7 @@ trait FormatsText
      * @param int $amount
      * @return string
      */
-    protected function newLine(int $amount = 1): string
+    protected static function newLine(int $amount = 1): string
     {
         return str_repeat("\n", $amount);
     }
@@ -71,9 +71,9 @@ trait FormatsText
      * @param string|null $discord_user_id
      * @return string
      */
-    protected function mention(string $discord_user_id = null): string
+    protected static function mention(string $discord_user_id = null): string
     {
-        return '<@' . ($discord_user_id ?? $this->discord_user_id) . '>';
+        return '<@' . ($discord_user_id) . '>';
     }
 
 }

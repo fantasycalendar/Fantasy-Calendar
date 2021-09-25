@@ -743,4 +743,13 @@ class Calendar extends Model
 
         return true;
     }
+
+    public function imageLink($ext, $attributes = [])
+    {
+        return route('calendars.image',
+            array_merge($attributes, [
+                'calendar' => $this,
+                'ext' => $ext,
+            ]));
+    }
 }

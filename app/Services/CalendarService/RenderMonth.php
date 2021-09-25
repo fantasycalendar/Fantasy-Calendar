@@ -74,7 +74,7 @@ class RenderMonth
      */
     private function findShortestUniquePrefixLength($weekdays, $length = null): int
     {
-        log_json($weekdays);
+//        log_json($weekdays);
         $length = $length ?? $weekdays->map(function($weekday) {
                 return strlen($weekday);
             })->max();

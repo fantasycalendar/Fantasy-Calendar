@@ -583,7 +583,7 @@ class ImageRenderer
     {
         $intercalary_spacing = 4;
         $day_width = 30;
-        $day_height = 24;
+        $day_height = 26;
         $weekday_header_height = $this->minimum_weekday_header_height; // 24
         $header_height = 35; // 50
         $day_number_size = 10;
