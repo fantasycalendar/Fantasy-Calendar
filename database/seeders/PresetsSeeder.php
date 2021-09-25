@@ -7,13 +7,15 @@ use Illuminate\Database\Seeder;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class PresetsSeeder extends Seeder
 {
 
 
     public $presets_to_seed = [
-        'gregorian'
+        'database/seeders/presets/gregorian'
     ];
 
     /**
@@ -27,7 +29,7 @@ class PresetsSeeder extends Seeder
         DB::delete('delete from preset_events');
         DB::delete('delete from preset_event_categories');
 
-        foreach($this->presets_to_seed as $name) {
+        foreach($this->presetsToSeed() as $name) {
             $preset = $this->retrieveJson($name);
             $events = $this->retrieveJson($name.'-events');
             $categories = $this->retrieveJson($name.'-categories');
@@ -66,15 +68,24 @@ class PresetsSeeder extends Seeder
         }
     }
 
-    public function retrieveJson($presetName)
+    public function retrieveJson($presetFile)
     {
-        return json_decode(file_get_contents(__DIR__ . '/presets/' . $presetName . '.json'), true);
+        return json_decode(file_get_contents(base_path($presetFile). '.json'), true);
     }
 
     private function presetsToSeed()
     {
-        if(file_exists(base_path('setup/extra-preset-jsons'))) {
+        $presets = [];
+
+        if(Storage::disk('base')->has('setup/extra-preset-jsons/presets')) {
+            $presets = collect(Storage::disk('base')->files('setup/extra-preset-jsons/presets'))->reject(function($file){
+                return Str::endsWith($file, ['-categories.json', '-events.json', '.git']);
+            })->map(function($file){
+                return Str::replace('.json', '', $file);
+            })->toArray();
 
         }
+
+        return array_merge($this->presets_to_seed, $presets);
     }
 }
