@@ -1873,7 +1873,6 @@ function set_up_edit_inputs(){
 
 	const debounce_era_reindex = debounce(function(){
 		reindex_era_list();
-		eras.evaluate_position();
 		dynamic_data.current_era = get_current_era(static_data, dynamic_data.epoch);
 	}, 50)
 
