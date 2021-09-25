@@ -8,6 +8,9 @@ provider:
     stage: ${opt:stage, 'dev'}
     runtime: provided.al2
     versionFunctions: false
+    apiGateway:
+      binaryMediaTypes:
+        - '*/*'
     # So in short, we have two separate sets of env vars in SSM. Most of what happens below is just resolving between our envs
     # So that the environment variables get pulled from the correct set of vars, based on the stage we're deploying
     environment:
@@ -54,6 +57,7 @@ provider:
       DISCORD_REDIRECT_URI: ${ssm:/${self:custom.ssm.${self:custom.stage}}/discord_redirect_uri}
       DISCORD_PUBLIC_KEY: ${ssm:/${self:custom.ssm.${self:custom.stage}}/discord_public_key}
       DISCORD_COMMAND: ${self:custom.environment.${self:custom.stage}.DISCORD_COMMAND}
+      BREF_BINARY_RESPONSES: '1'
     iamRoleStatements:
       # Allow Lambda to read and write files in the S3 buckets
       -   Effect: Allow
