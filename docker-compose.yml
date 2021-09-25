@@ -44,7 +44,7 @@ services:
       - "ASSET_URL=https://fantasy-calendar.test:9980/"
       - "COOKIEADDRESS=https://fantasy-calendar.test:9980/"
       - "DB_HOST=fantasydb"
-      - "DB_DATABASE=fantasy-calendar"
+      - "DB_DATABASE=fantasy-calendar-testing"
       - "DB_USERNAME=root"
       - "DB_PASSWORD=root"
       - "REDIS_HOST=fcredis"

@@ -6,7 +6,8 @@ use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Calendar;
 use App\Facades\Epoch as EpochFactory;
-use PHPUnit\Framework\TestCase;
+use Illuminate\Testing\Concerns\TestDatabases;
+use Tests\TestCase;
 
 class EpochTest extends TestCase
 {

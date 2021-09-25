@@ -6,6 +6,8 @@ COPY --from=redisextra /opt /opt
 COPY --from=gmpextra /opt /opt
 COPY --from=imagickextra /opt /opt
 
+RUN yum -y install mysql
+
 WORKDIR /var/task
 
 COPY . .

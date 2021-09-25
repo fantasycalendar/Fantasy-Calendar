@@ -3,7 +3,7 @@
 namespace Tests\Unit;
 
 use App\Collections\IntervalsCollection;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class IntervalTest extends TestCase
 {
