@@ -6,7 +6,6 @@ services:
     container_name: fc-mariadb
     volumes:
       - fantasy-calendar-db:/var/lib/mysql
-      - ./setup/database.sql:/docker-entrypoint-initdb.d/dump.sql
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: fantasy-calendar
@@ -40,11 +39,11 @@ services:
       - "APP_ENV=local"
       - "APP_KEY=base64:ECSIURhDQnHBdx7nRVlwGtPwBU+RZrQCQpmGHesaIUM="
       - "APP_DEBUG=true"
-      - "APP_URL=https://fantasy-calendar.test:9980/"
-      - "ASSET_URL=https://fantasy-calendar.test:9980/"
-      - "COOKIEADDRESS=https://fantasy-calendar.test:9980/"
+      - "APP_URL=http://fantasy-calendar.test:9980/"
+      - "ASSET_URL=http://fantasy-calendar.test:9980/"
+      - "COOKIEADDRESS=http://fantasy-calendar.test:9980/"
       - "DB_HOST=fantasydb"
-      - "DB_DATABASE=fantasy-calendar-testing"
+      - "DB_DATABASE=fantasy-calendar"
       - "DB_USERNAME=root"
       - "DB_PASSWORD=root"
       - "REDIS_HOST=fcredis"

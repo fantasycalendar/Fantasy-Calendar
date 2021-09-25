@@ -70,4 +70,11 @@ class PresetsSeeder extends Seeder
     {
         return json_decode(file_get_contents(__DIR__ . '/presets/' . $presetName . '.json'), true);
     }
+
+    private function presetsToSeed()
+    {
+        if(file_exists(base_path('setup/extra-preset-jsons'))) {
+
+        }
+    }
 }
