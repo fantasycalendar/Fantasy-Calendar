@@ -27,6 +27,10 @@ real_deploy_dev:
 	date | cat > ./setup/lambda/dev/version.txt
 	chmod -R 775 ./
 	serverless deploy --stage=dev
+	if command -v notify-send &> /dev/null; then \
+  		notify-send -t 8000 "Beta deployment done";\
+  	fi;
+
 
 real_deploy_prd:
 	composer install --prefer-dist --optimize-autoloader --no-dev
@@ -35,6 +39,9 @@ real_deploy_prd:
 	date | cat > ./setup/lambda/dev/version.txt
 	chmod -R 775 ./
 	serverless deploy --stage=prod
+	if command -v notify-send &> /dev/null; then \
+  		notify-send -t 8000 "Production deployment done";\
+  	fi;
 
 quick_deploy_dev:
 	composer install --prefer-dist --optimize-autoloader --no-dev --ignore-platform-reqs
@@ -45,6 +52,9 @@ quick_deploy_dev:
 	serverless deploy --stage=dev --function=web
 	serverless deploy --stage=dev --function=worker
 	serverless deploy --stage=dev --function=console
+	if command -v notify-send &> /dev/null; then \
+  		notify-send -t 8000 "Beta quick deploy done";\
+  	fi;
 
 quick_deploy_prod:
 	composer install --prefer-dist --optimize-autoloader --no-dev
@@ -54,6 +64,9 @@ quick_deploy_prod:
 	serverless deploy --stage=prod --function=web
 	serverless deploy --stage=prod --function=worker
 	serverless deploy --stage=prod --function=console
+	if command -v notify-send &> /dev/null; then \
+  		notify-send -t 8000 "Production quick deploy done";\
+  	fi;
 
 local:
 	docker run -it -u $(id -u):$(id -g) -v ${PWD}/:/app -w /app node npm install
