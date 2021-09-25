@@ -16,6 +16,7 @@
 * Fixed - Improved accuracy of moon repetitions that are used in event conditions
 * Fixed - Average year length and month lengths not being accurate
 * Fixed - Copying the link to dates on calendars would sometimes not work
+* Fixed - Rare issue with event-based-events that would cause a recursion error
 
 ### 2.0.20 - Typesetting Efreet
 #### May 15, 2021
