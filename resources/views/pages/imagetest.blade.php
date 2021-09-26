@@ -17,7 +17,7 @@
             }
             .image_grid {
                 display: grid;
-                grid-template-columns: 2fr 3fr 4fr 5fr 6fr;
+                grid-template-columns: 1fr;
                 place-items: center;
                 max-width: 100%;
                 width: 100%;
@@ -39,20 +39,10 @@
         <div class="image_grid">
             @foreach(['small', 'medium', 'large', 'xl', 'xxl'] as $size)
                 <div class="image">
-                    <a href="{{ route('calendars.image', ['calendar' => \App\User::find(1)->calendars->first(), 'ext' => 'png', 'size' => $size, 'theme' => request()->input('theme', 'discord')]) }}">
-                        <img src="{{ route('calendars.image', ['calendar' => \App\User::find(1)->calendars->first(), 'ext' => 'png', 'size' => $size, 'theme' => request()->input('theme', 'discord')]) }}" alt="">
+                    <a href="{{ route('calendars.image', ['calendar' => \App\Calendar::find(request()->get('id')), 'ext' => 'png', 'size' => $size, 'theme' => request()->input('theme', 'discord')]) }}">
+                        <img src="{{ route('calendars.image', ['calendar' => \App\Calendar::find(request()->get('id')), 'ext' => 'png', 'size' => $size, 'theme' => request()->input('theme', 'discord')]) }}" alt="">
                     </a>
                 </div>
-            @endforeach
-
-            @foreach(\App\User::find(1)->calendars->first()->children as $calendar)
-                @foreach(['small', 'medium', 'large', 'xl', 'xxl'] as $size)
-                    <div class="image">
-                        <a href="{{ route('calendars.image', ['calendar' => $calendar, 'ext' => 'png', 'size' => $size, 'theme' => request()->input('theme', 'discord')]) }}">
-                            <img src="{{ route('calendars.image', ['calendar' => $calendar, 'ext' => 'png', 'size' => $size, 'theme' => request()->input('theme', 'discord')]) }}" alt="">
-                        </a>
-                    </div>
-                @endforeach
             @endforeach
         </div>
     </body>
