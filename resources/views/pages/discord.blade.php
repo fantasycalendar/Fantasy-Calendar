@@ -247,7 +247,7 @@
                 <div class="row">
                     <div class="col-12 col-md-6 text-center text-md-left d-flex flex-column align-items-md-start align-items-center justify-content-center text-white">
                         <h3>Image or text, your choice.</h3>
-                        <h4>We can provide an image or a text render of your calendar, whenever you need it.</h4>
+                        <h4>Prefer something you can paste into a text editor, wiki, or markdown page? The text-renderer will let you do just that.</h4>
                     </div>
                     <div class="col-12 col-md-6 text-center text-md-right">
                         <img src="{{ asset('resources/discord/discord_show_month_text.png') }}" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2)">
