@@ -24,7 +24,6 @@ class ImageRenderer
     private EpochsCollection $weeks;
     private ImageFile $image;
     private ImageRenderer\Theme $theme;
-    private $month;
 
     private int $x;
     private int $max_x = 1080 * 2;
@@ -61,6 +60,12 @@ class ImageRenderer
     private $minimum_header_height = 50;
     private $min_day_text_length;
 
+    /**
+     * ImageRenderer constructor.
+     * @param Calendar $calendar
+     * @param Collection $monthRenderData
+     * @param Collection|null $parameters
+     */
     public function __construct(Calendar $calendar, Collection $monthRenderData, ?Collection $parameters = null)
     {
         $this->defaults = $this->defaults();
@@ -84,6 +89,11 @@ class ImageRenderer
         $this->setupThemeOverrides();
     }
 
+    /**
+     * Returns the defaults, or methods to devise the defaults
+     *
+     * @return Collection
+     */
     public function defaults(): Collection
     {
         return collect([
@@ -96,6 +106,7 @@ class ImageRenderer
             'snapshot' => 0,
             'theme' => 'discord',
             'quality' => 95,
+            'size' => 'md',
 
             // Callables - Used for responsiveness until a proper responsive system gets put in place. =)
             'header_height' => fn() => clamp(round(($this->y - ($this->padding * 2)) / 7), $this->minimum_header_height, $this->maximum_header_height),
@@ -106,18 +117,34 @@ class ImageRenderer
         ]);
     }
 
-    public static function make(Calendar $calendar, Collection $monthRenderData, ?Collection $parameters = null)
+    /**
+     * Create a new ImageRenderer
+     *
+     * @param Calendar $calendar
+     * @param Collection $monthRenderData
+     * @param Collection|null $parameters
+     * @return ImageRenderer
+     */
+    public static function make(Calendar $calendar, Collection $monthRenderData, ?Collection $parameters = null): ImageRenderer
     {
         return new static($calendar, $monthRenderData, $parameters);
     }
 
+    /**
+     * Explicitly render and cache the current month of a given calendar
+     *
+     * @param Calendar $calendar
+     * @param $parameters
+     * @return mixed
+     * @throws \Exception
+     */
     public static function renderMonth(Calendar $calendar, $parameters)
     {
-        if($parameters->has('year') && $parameters->has('month') && $parameters->has('day')) {
+        if($parameters->has('year') && $parameters->has('month_id') && $parameters->has('day')) {
             $calendar->setDate(
-                $parameters->get('year'),
-                $parameters->get('month'),
-                $parameters->get('day')
+                (int) $parameters->get('year'),
+                (int) $parameters->get('month_id'),
+                (int) $parameters->get('day')
             );
         }
 
@@ -469,6 +496,20 @@ class ImageRenderer
         }
     }
 
+    private function drawIntercalaryDividers()
+    {
+        $this->intercalaryDividerYs->each(function($y) {
+            $this->rectangle(
+                $this->grid_bounding_x1,
+                $y,
+                $this->grid_bounding_x2,
+                $y + $this->intercalary_spacing,
+                1,
+                $this->parameter('background')
+            );
+        });
+    }
+
     private function colorize($type = null)
     {
         if(!request()->get('debug'))
@@ -589,11 +630,11 @@ class ImageRenderer
         // The rest are proportional
         // You're welcome, future me!
         $size_presets = [
-            'medium' => [
+            'md' => [
                 'divide' => 3,
                 'multiply' => 4,
             ],
-            'large' => [
+            'lg' => [
                 'divide' => 18,
                 'multiply' => 31
             ],
@@ -624,11 +665,7 @@ class ImageRenderer
         $this->parameters->put('day_number_size', clamp($day_number_size, 10, 50));
 
         $this->x = clamp($this->week_length * $day_width, 240, $this->max_y);
-        $this->y = $this->parameter('weekday_header_height')
-                 + $this->parameter('header_height')
-                 + ($this->intercalary_spacing * $this->intercalary_weeks_count * 2)
-                 + ($this->weeks_count * $day_height)
-                 + 1;
+        $this->y = $this->parameter('weekday_header_height') + $this->parameter('header_height') + ($this->intercalary_spacing * $this->intercalary_weeks_count * 2) + ($this->weeks_count * $day_height) + 1;
     }
 
     private function autoSizeWidthOnly()
@@ -715,20 +752,6 @@ class ImageRenderer
     public function __get($name)
     {
         return $this->parameter($name);
-    }
-
-    private function drawIntercalaryDividers()
-    {
-        $this->intercalaryDividerYs->each(function($y) {
-            $this->rectangle(
-                $this->grid_bounding_x1,
-                $y,
-                $this->grid_bounding_x2,
-                $y + $this->intercalary_spacing,
-                1,
-                $this->parameter('background')
-            );
-        });
     }
 }
 

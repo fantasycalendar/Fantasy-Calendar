@@ -14,6 +14,7 @@
                 width: 100vw;
                 margin: 0;
                 padding: 0;
+                background-color: black;
             }
             .image_grid {
                 display: grid;
@@ -37,7 +38,7 @@
     </head>
     <body>
         <div class="image_grid">
-            @foreach(['small', 'medium', 'large', 'xl', 'xxl'] as $size)
+            @foreach(['sm', 'md', 'lg', 'xl', 'xxl'] as $size)
                 <div class="image">
                     <a href="{{ route('calendars.image', ['calendar' => \App\Calendar::find(request()->get('id')), 'ext' => 'png', 'size' => $size, 'theme' => request()->input('theme', 'discord')]) }}">
                         <img src="{{ route('calendars.image', ['calendar' => \App\Calendar::find(request()->get('id')), 'ext' => 'png', 'size' => $size, 'theme' => request()->input('theme', 'discord')]) }}" alt="">
