@@ -38,14 +38,14 @@ class MonthHandler extends Command
     public function handle()
     {
         logger('MonthHandler::handle entered');
-        
+
         return $this->respondWith($this->setting('renderer') ?? 'text', $this->getDefaultCalendar());
     }
-    
+
     public static function respondWith($renderer, $calendar)
     {
         $renderer = "render" . ucfirst($renderer);
-        
+
         return self::$renderer($calendar);
     }
 
@@ -56,7 +56,7 @@ class MonthHandler extends Command
     public static function renderImage($calendar): Response
     {
         return Response::make(self::getCurrentTime($calendar))
-            ->embedMedia($calendar->imageLink('png', ['theme' => 'discord', 'date_cachebust', $calendar->epoch->slug]));
+            ->embedMedia($calendar->imageLink('png', ['theme' => 'discord', 'size' => 'md', 'date_cachebust', $calendar->epoch->slug]));
     }
 
     /**
@@ -68,14 +68,14 @@ class MonthHandler extends Command
         $month = TextRenderer::renderMonth($calendar);
 
 
-        if(Str::length($month) > 1900) {
+        if(Str::length($month) > 1900 || strlen(explode("\n" ,$month)[0]) > 80) {
             $month = self::clipMonthToFit($month);
             logger(strlen($month));
         }
 
         return Response::make(self::getCurrentTime($calendar) . self::codeBlock($month));
     }
-    
+
     public static function getCurrentTime(Calendar $calendar): string
     {
         return ($calendar->clock_enabled && !$calendar->setting('hide_clock'))
@@ -93,7 +93,7 @@ class MonthHandler extends Command
     {
         logger("got here");
         $month = collect(explode("\n", $month));
-        $dayLength = self::determineDayLength($month);
+        $dayLength = clamp(self::determineDayLength($month), 12, 28);
 
         logger("Day length $dayLength");
         if($dayLength == Str::length($month->first())) {
