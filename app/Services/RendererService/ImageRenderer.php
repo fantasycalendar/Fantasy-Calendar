@@ -549,14 +549,13 @@ class ImageRenderer
      */
     private function colorize($type = null)
     {
-        if(!request()->get('debug'))
-        {
-            return $this->parameter("{$type}_color") ?? $this->theme->get("{$type}_color");
+        if(request()->get('debug')) {
+            $hash = md5('color' . rand(1, 500)); // modify 'color' to get a different palettes
+
+            return "#" . substr($hash, 0, 2) . substr($hash, 2, 2) . substr($hash, 4, 2);
         }
-
-        $hash = md5('color' . rand(1, 500)); // modify 'color' to get a different palettes
-
-        return "#" . substr($hash, 0, 2) . substr($hash, 2, 2) . substr($hash, 4, 2);
+        
+        return $this->parameter("{$type}_color");
     }
 
     /**
