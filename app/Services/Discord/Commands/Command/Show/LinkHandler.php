@@ -21,7 +21,7 @@ class LinkHandler extends Command
     {
         $calendar = $this->getDefaultCalendar();
 
-        return Response::make("Check out " . $this->mention() . "'s calendar " . $this->bold($calendar->name) . " on ".config('app.name') . ":")
+        return Response::make("Check out " . $this->mention($this->discord_user_id) . "'s calendar " . $this->bold($calendar->name) . " on ".config('app.name') . ":")
             ->singleButton(route('calendars.show', $calendar), $calendar->name);
     }
 }
