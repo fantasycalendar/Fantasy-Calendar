@@ -2,13 +2,18 @@ const calendar_renderer = {
 
     loaded: false,
     loading_message: "Initializing...",
+    rerendering: false,
 
     render_callbacks: [],
     scroll_attempts: 0,
 
+
+
     render_data: {
         current_epoch: 0,
         preview_epoch: 0,
+        prev_current_epoch: 0,
+        prev_preview_epoch: 0,
         render_style: "grid",
         timespans: [],
         event_epochs: [],
@@ -74,6 +79,7 @@ const calendar_renderer = {
     },
 
     pre_render: function(){
+        this.rerendering = this.render_data.prev_current_epoch !== this.render_data.current_epoch || this.render_data.prev_preview_epoch !== this.render_data.preview_epoch;
         show_loading_screen_buffered();
     },
 
@@ -82,7 +88,7 @@ const calendar_renderer = {
 
         hide_loading_screen();
 
-        if(!this.loaded) this.scroll_to_epoch();
+        if(!this.loaded || this.rerendering) this.scroll_to_epoch();
 
         CalendarYearHeader.update(
             static_data,
@@ -99,6 +105,9 @@ const calendar_renderer = {
         }
         this.render_callbacks = [];
         this.loaded = true;
+        this.rerendering = false;
+        this.render_data.prev_current_epoch = this.render_data.current_epoch;
+        this.render_data.prev_preview_epoch = this.render_data.preview_epoch;
 
 	    execution_time.end("Calculating and rendering calendar took:")
     },
