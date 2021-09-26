@@ -242,15 +242,30 @@
         </section>
 
         <section class="py-5" style="position: relative; overflow: hidden; background-color: rgb(44, 47, 51);">
-            <div class="background" style="background-image: url({{ asset('/resources/discord/gray-cubic-bg.png') }});position: absolute;top: 0;left: 0;right: 0;bottom: 0;opacity: 0.03;transform: scale(1.2);"></div>
+            <div class="background" style="background-image: url('{{ asset('resources/discord/webb-dark.png') }}'); position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.25; transform: scale(1.5, 1.5)"></div>
             <div class="container py-5">
                 <div class="row">
                     <div class="col-12 col-md-6 text-center text-md-left d-flex flex-column align-items-md-start align-items-center justify-content-center text-white">
-                        <h3>Stats-nerds, we've got you covered.</h3>
-                        <h4>Quickly access detailed information about the current day with a simple command.</h4>
+                        <h3>Image or text, your choice.</h3>
+                        <h4>We can provide an image or a text render of your calendar, whenever you need it.</h4>
                     </div>
                     <div class="col-12 col-md-6 text-center text-md-right">
+                        <img src="{{ asset('resources/discord/discord_show_month_text.png') }}" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2)">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-5" style="position: relative; overflow: hidden; background-color: rgb(44, 47, 51);">
+            <div class="background" style="background-image: url({{ asset('/resources/discord/gray-cubic-bg.png') }});position: absolute;top: 0;left: 0;right: 0;bottom: 0;opacity: 0.03;transform: scale(1.2);"></div>
+            <div class="container py-5">
+                <div class="row">
+                    <div class="col-12 col-md-6 text-center text-md-left">
                         <img src="{{ asset('resources/discord/detailed_day_info.png') }}" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2)">
+                    </div>
+                    <div class="col-12 col-md-6 text-center text-md-right d-flex flex-column align-items-md-end align-items-center justify-content-center text-white">
+                        <h3>Stats-nerds, we've got you covered.</h3>
+                        <h4>Quickly access detailed information about the current day with a simple command.</h4>
                     </div>
                 </div>
             </div>
@@ -259,16 +274,16 @@
         <section class="py-5 darkmode" style="background-color: #222222; background-image: url('{{ asset('resources/gray-square-bg.png') }}');">
             <div class="container py-5">
                 <div class="row">
-                    <div class="col-12 col-md-6 text-center text-md-left">
-                        <img src="{{ asset('resources/discord/slash_commands.png') }}" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);">
-                    </div>
-                    <div class="col-12 col-md-6 text-center text-md-right d-flex flex-column align-items-md-end align-items-center justify-content-center">
+                    <div class="col-12 col-md-6 text-center text-md-left d-flex flex-column align-items-md-start align-items-center justify-content-center">
                         <h3 style="color: white;">Privacy: Respected</h3>
                         <h4 style="color: white;">
                             We add new "slash commands" to your Discord server, <strong>not</strong> an always-listening bot.
                             <br><br>
                             Even if you use it in private channels, your messages stay yours.
                         </h4>
+                    </div>
+                    <div class="col-12 col-md-6 text-center text-md-right">
+                        <img src="{{ asset('resources/discord/slash_commands.png') }}" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);">
                     </div>
                 </div>
             </div>
@@ -278,12 +293,12 @@
             <div class="background" style="background-image: url('{{ asset('resources/discord/double-bubble-dark.png') }}'); position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.15; transform: scale(1.5, 1.5)"></div>
             <div class="container py-5 text-white">
                 <div class="row">
-                    <div class="col-12 col-md-6 text-center text-md-left d-flex flex-column align-items-md-start align-items-center justify-content-center">
+                    <div class="col-12 col-md-6 text-center text-md-left">
+                        <iframe src="https://discord.com/widget?id=399974878134140939&theme=dark" width="350" height="400" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+                    </div>
+                    <div class="col-12 col-md-6 text-center text-md-right d-flex flex-column align-items-md-end align-items-center justify-content-center">
                         <h3>Feedback Wanted!</h3>
                         <h4>Confused? Something not working? Seeing an error message? Wish you could do/see/get something not currently available? Head over to our Discord server and let us know!</h4>
-                    </div>
-                    <div class="col-12 col-md-6 text-center text-md-right">
-                        <iframe src="https://discord.com/widget?id=399974878134140939&theme=dark" width="350" height="400" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
                     </div>
                 </div>
             </div>
