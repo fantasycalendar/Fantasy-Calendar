@@ -155,6 +155,9 @@ class ImageRenderer
         });
     }
 
+    /**
+     * Initializes attributes that are based on other, provided parameters
+     */
     private function initializeParametrics()
     {
         if($this->parameter('snapshot')) {
@@ -188,7 +191,12 @@ class ImageRenderer
         $this->day_number_padding = clamp($this->day_number_size / 4, 1, 12);
     }
 
-    public function render()
+    /**
+     * Performs the rendering steps for creating a calendar image
+     *
+     * @return ImageFile
+     */
+    public function render(): ImageFile
     {
         $this->freshImage();
         $this->drawDropShadow();
@@ -202,6 +210,8 @@ class ImageRenderer
     }
 
     /**
+     * Creates a fresh image of specified size with the appropriate background color
+     *
      * @return void
      */
     private function freshImage(): void
@@ -285,11 +295,7 @@ class ImageRenderer
     }
 
     /**
-     * Draws vertical lines between days
-     *
-     * @param $y1
-     * @param $y2
-     * @param null $width
+     * Draws vertical lines between the days of the month
      */
     private function drawColumns()
     {
@@ -306,7 +312,7 @@ class ImageRenderer
     }
 
     /**
-     * Draws in the names of the weekdays and the lines between them
+     * Draws in the names of the weekdays just beneath the heading
      */
     private function drawWeekdayNames()
     {
@@ -340,7 +346,7 @@ class ImageRenderer
     /**
      * Draws in the week days! It does that through a few layers, keeping track
      * of the current 'y' value of the top of the last drawn week, just to keep things (relatively) tidy.
-     * In short: Our calendar data is formatted as
+     * In short: We nest this through various methods because our calendar data is formatted as
      * [
      *      'calendarWeeks' => [
      *          'visualWeeks' => [
@@ -361,7 +367,8 @@ class ImageRenderer
     }
 
     /**
-     * Takes an individual calendar week and draws its visual weeks
+     * Takes an individual "calendar week" and draws its _visual_ weeks, which is our term
+     * for the actual rows that show up in the drawn calendar.
      *
      * @param $calendarWeek
      * @param $current_row_top_y
@@ -382,8 +389,8 @@ class ImageRenderer
     /**
      * Goes through all of the visual weeks its given and draws them.
      * Additionally, this is where vertical intercalary spacing is applied, since
-     * we want that applied between visual weeks (even if there are "internal" weeks within,
-     * due to overflow by way of long leap days)
+     * we want that applied between visual weeks - even if there are "internal" weeks within,
+     * due to overflow by way of many leap days.
      *
      * @param $visualWeeks
      * @param $current_row_top_y
@@ -412,12 +419,9 @@ class ImageRenderer
 
     /**
      * Draws a singular visual week, by:
-     * 1. drawing the top line
-     * 2. drawing the column lines
-     * 3. drawing the bottom line
-     * 4. filling in the current day background color (if applicable)
-     * 5. filling in the "empty day" background color (if applicable)
-     * 6. drawing the day number (or N/A for non-numbered leap days)
+     * 1. drawing a rectangle spanning all non-empty (non-overflow) days in the week
+     *      1a. drawing a rectangle behind the "current day" if encountered
+     * 2. drawing in the day number (or N/A for non-numbered leap days)
      *
      * @param $days
      * @param $internal_week_number
@@ -496,6 +500,10 @@ class ImageRenderer
         }
     }
 
+    /**
+     * Draws rectangles the width of the calendar, above/below any intercalary weeks (if any)
+     * These are drawn after the column lines in order to act as visual separation
+     */
     private function drawIntercalaryDividers()
     {
         $this->intercalaryDividerYs->each(function($y) {
@@ -510,6 +518,14 @@ class ImageRenderer
         });
     }
 
+    /**
+     * Helper method that gets a specified color from paramteres or the theme
+     * Additionally, when in debug mode, returns random colors to help demonstrate
+     * how the calendars are drawn.
+     *
+     * @param null $type
+     * @return array|\ArrayAccess|mixed|string
+     */
     private function colorize($type = null)
     {
         if(!request()->get('debug'))
@@ -522,6 +538,17 @@ class ImageRenderer
         return "#" . substr($hash, 0, 2) . substr($hash, 2, 2) . substr($hash, 4, 2);
     }
 
+    /**
+     * Draws a rectangle on the canvas
+     *
+     * @param $x1
+     * @param $y1
+     * @param $x2
+     * @param $y2
+     * @param null $border_width
+     * @param null $background
+     * @param null $border_color
+     */
     private function rectangle($x1, $y1, $x2, $y2, $border_width = null, $background = null, $border_color = null)
     {
         $this->image->rectangle(
@@ -541,6 +568,16 @@ class ImageRenderer
         $this->snapshot();
     }
 
+    /**
+     * Draws a line on the canvas
+     *
+     * @param $x1
+     * @param $y1
+     * @param $x2
+     * @param $y2
+     * @param null $width
+     * @param null $color
+     */
     private function line($x1, $y1, $x2, $y2, $width = null, $color = null)
     {
         $this->image->line(
@@ -557,6 +594,18 @@ class ImageRenderer
         $this->snapshot();
     }
 
+    /**
+     * Draws text on the canvas
+     *
+     * @param $text
+     * @param $x
+     * @param $y
+     * @param $size
+     * @param null $color
+     * @param string $align
+     * @param string $valign
+     * @param null $fontFile
+     */
     private function text($text, $x, $y, $size, $color = null, $align = 'center', $valign = 'top', $fontFile = null)
     {
         $this->image->text(
@@ -575,6 +624,12 @@ class ImageRenderer
         $this->snapshot();
     }
 
+    /**
+     * Saves a snapshot of the canvas when called; Used after every drawing method
+     * in order so that ?snapshot=1 captures each step of the rendering process.
+     * quite powerful when paired with &debug=1, as you can then find ordered
+     * images in sequence in storage/app/calendarImages/[datetime].
+     */
     private function snapshot()
     {
         if(!request()->get('snapshot') || !app()->environment('local')) {
@@ -585,6 +640,9 @@ class ImageRenderer
         $this->savedTimes++;
     }
 
+    /**
+     * Bootstraps our theming. Currently primitive, but built to be extensible.
+     */
     private function setupTheme()
     {
         $this->theme = ThemeFactory::getTheme($this->parameters->get('theme'));
@@ -593,6 +651,11 @@ class ImageRenderer
         $this->bold_font_file = base_path('resources/fonts/'.$this->theme->get('font_name').'-Bold.ttf');
     }
 
+    /**
+     * This is run after all the rest of our parameters get setup.
+     * That's primarily to allow themes to directly override
+     * certain directly provided parameters.
+     */
     private function setupThemeOverrides()
     {
         $overrides = ['shadow_strength'];
@@ -617,6 +680,11 @@ class ImageRenderer
         )->count() > 0;
     }
 
+    /**
+     * If the user doesn't provide us with a height and width, we need a way
+     * to determine what those ought to be! While we're at it, we provide
+     * some very simplistic variations, named as bootstrap breakpoints.
+     */
     private function autoSizeBoth()
     {
         $intercalary_spacing = 4;
@@ -668,13 +736,23 @@ class ImageRenderer
         $this->y = $this->parameter('weekday_header_height') + $this->parameter('header_height') + ($this->intercalary_spacing * $this->intercalary_weeks_count * 2) + ($this->weeks_count * $day_height) + 1;
     }
 
-    private function autoSizeWidthOnly()
+    /**
+     * Automatically pick an X if only Y has been specified
+     *
+     * @return int
+     */
+    private function autoSizeWidthOnly(): int
     {
         return (int) ($this->week_length * (
                 ($this->y - $this->header_height) / $this->weeks_count
             ));
     }
 
+    /**
+     * Automatically pick a Y if only X has been specified
+     *
+     * @return float|int
+     */
     private function autoSizeHeightOnly()
     {
         return (int) (($this->weeks_count * (
@@ -683,7 +761,11 @@ class ImageRenderer
     }
 
     /**
-     * Warning: DIRTY STINKY HAX
+     * Determines the sizing of our canvas with four discrete options:
+     * 1. User specified height and width, use those
+     * 2. User specified height only, auto determine width
+     * 3. User specified width only, auto determine height
+     * 4. User specified height nor width, auto determine both
      */
     private function determineCanvasDimensions()
     {
@@ -711,7 +793,16 @@ class ImageRenderer
         $this->autoSizeBoth();
     }
 
-    private function determineTextSize($string, $font_size)
+    /**
+     * Uses ImageMagick to try and determine the size of text
+     *
+     * @param $string
+     * @param $font_size
+     * @return array
+     * @throws \ImagickDrawException
+     * @throws \ImagickException
+     */
+    private function determineTextSize($string, $font_size): array
     {
         $image = new Imagick();
         $draw = new ImagickDraw();
@@ -732,6 +823,17 @@ class ImageRenderer
         ];
     }
 
+    /**
+     * Gets a given parameter, from one of the many places it could be:
+     * - cache (to avoid cascading each time)
+     * - theme
+     * - defaults
+     * - provided $last_resort
+     *
+     * @param string $string
+     * @param null $last_resort
+     * @return array|\ArrayAccess|mixed|null
+     */
     private function parameter(string $string, $last_resort = null)
     {
         $result = $this->cache->get($string)
@@ -749,6 +851,12 @@ class ImageRenderer
         return $result;
     }
 
+    /**
+     * Magic method to get any parameters!
+     *
+     * @param $name
+     * @return array|\ArrayAccess|mixed|null
+     */
     public function __get($name)
     {
         return $this->parameter($name);
