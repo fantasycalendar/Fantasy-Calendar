@@ -433,13 +433,13 @@ class EpochTest extends TestCase
 
             $thisYearStartEpoch = $epochs->first()->epoch;
 
+            //dump($year . ": " . $lastYearEndEpoch . " : " . $thisYearStartEpoch . ' - ' . ($lastYearEndEpoch == $thisYearStartEpoch-1));
+
             if(($calendar->setting("year_zero_exists") && $year === 0) || (!$calendar->setting("year_zero_exists") && $year === 1)){
                 $this->assertTrue($thisYearStartEpoch === 0);
             }
 
-            // dump($year . ": " . $lastYearEndEpoch . " : " . $thisYearStartEpoch);
-
-            $this->assertTrue($lastYearEndEpoch === $thisYearStartEpoch-1);
+            $this->assertTrue($lastYearEndEpoch == $thisYearStartEpoch-1);
 
             $lastYearEndEpoch = $epochs->last()->epoch;
 

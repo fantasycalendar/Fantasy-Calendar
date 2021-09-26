@@ -75,7 +75,7 @@ class LeapDay
     public function intersectsYear(int $year): bool
     {
         $votes = collect(explode(',', $this->interval))->map(function($interval) use ($year) {
-            return (new Interval($interval, $this->offset))->voteOnYear($year, $this->yearZeroExists);
+            return (new Interval($interval, $this->offset))->voteOnYear($year);
         });
 
         foreach($votes as $vote) {

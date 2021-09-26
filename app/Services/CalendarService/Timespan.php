@@ -62,17 +62,13 @@ class Timespan implements Arrayable
     {
         if($this->interval === 1) return true;
 
-        $cleanYear = !$this->yearZeroExists || $year > 0 ? abs($year) : $year;
+        $mod = $year - ($this->offset % $this->interval);
 
-        $offset = $this->offset;
-
-        if(!$this->yearZeroExists && $year < 0 && $offset === 0){
-            $offset++;
+        if($year < 0 && !$this->yearZeroExists){
+            $mod++;
         }
 
-        $boundOffset = $offset > $this->interval || $offset < 0 ? $offset % $this->interval : $offset;
-
-        return (($cleanYear - $boundOffset) % $this->interval) == 0;
+        return ($mod % $this->interval) == 0;
     }
 
     /**
@@ -91,24 +87,24 @@ class Timespan implements Arrayable
         if($this->interval <= 1) return $year;
 
         # We do this so we keep offset bound within the interval (ie, if offset > interval, year is not subtracted too much)
-        $offset = $this->offset % $this->interval;
+        $boundOffset = $this->offset % $this->interval;
 
         if($this->yearZeroExists) {
 
-            return (int) ceil(($year - $offset) / $this->interval);
+            return (int) ceil(($year - $boundOffset) / $this->interval);
 
         }else if($year < 0){
 
-            $occurrences = (int) ceil(($year - ($offset-1)) / $this->interval);
+            $occurrences = (int) ceil(($year - ($boundOffset-1)) / $this->interval);
 
-            if($this->offset === 0) $occurrences--;
+            if($boundOffset === 0) $occurrences--;
 
             return $occurrences;
 
-        }else{
-            if($offset > 0){
-                return (int) floor(($year + $this->interval - $offset) / $this->interval);
-            }
+        }else if($boundOffset > 0){
+
+            return (int) floor(($year + $this->interval - $boundOffset) / $this->interval);
+
         }
 
         return (int) floor($year / $this->interval);
