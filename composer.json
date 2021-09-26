@@ -14,7 +14,6 @@
         "ext-json": "*",
         "ext-sodium": "*",
         "aws/aws-sdk-php": "^3.194",
-        "barryvdh/laravel-ide-helper": "^2.10",
         "bref/extra-php-extensions": "^0.10.8",
         "bref/laravel-bridge": "^1.0",
         "code16/sharp": "^5.1.2",
@@ -25,7 +24,6 @@
         "laravel/cashier": "^12.3.1",
         "laravel/framework": "^8.0",
         "laravel/socialite": "^5.2",
-        "laravel/tinker": "^2.2.0",
         "laravel/ui": "^3.0",
         "league/fractal": "^0.18.0",
         "mews/purifier": "3.3.0",
@@ -36,6 +34,8 @@
         "spatie/laravel-honeypot": "^3.0"
     },
     "require-dev": {
+        "laravel/tinker": "^2.2.0",
+        "barryvdh/laravel-ide-helper": "^2.10",
         "barryvdh/laravel-debugbar": "^3.2",
         "facade/ignition": "^2.3.6",
         "laravel/dusk": "^6.4",
