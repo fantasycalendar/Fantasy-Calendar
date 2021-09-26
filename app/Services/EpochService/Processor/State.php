@@ -157,7 +157,7 @@ class State
             $this->weekdayIndex++;
             $this->incrementWeek();
         } else {
-            if(($this->day > 1 && !$this->previousState->get('isIntercalary')) || $this->visualWeekdayIndex >= $this->weekdayCount() -1) {
+            if(($this->day >= 1 && !$this->previousState->get('isIntercalary')) || $this->visualWeekdayIndex >= $this->weekdayCount() -1) {
                 $this->visualWeekdayIndex = -1;
             }
 
