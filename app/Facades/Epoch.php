@@ -13,6 +13,7 @@ namespace App\Facades;
  * @method static incrementYears(int $years, \App\Models\Concerns\HasDate $param)
  * @method static incrementMonths(int $months, \App\Models\Concerns\HasDate $param)
  * @method static incrementDays(int $days, \App\Models\Concerns\HasDate $param, $epoch = null)
+ * @property string slug
  */
 class Epoch extends \Illuminate\Support\Facades\Facade
 {

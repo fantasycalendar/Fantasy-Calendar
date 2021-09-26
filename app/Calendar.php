@@ -52,6 +52,10 @@ use Illuminate\Support\Str;
  * @property mixed parent_count
  * @property mixed months_without_eras
  * @property float average_year_length
+ * @property string hash
+ * @property Epoch epoch
+ * @property string name
+ * @property string current_date
  * @method static findOrFail(array|\ArrayAccess|mixed $setting)
  */
 class Calendar extends Model

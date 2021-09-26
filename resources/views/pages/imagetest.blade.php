@@ -38,12 +38,22 @@
     </head>
     <body>
         <div class="image_grid">
-            @foreach(['sm', 'md', 'lg', 'xl', 'xxl'] as $size)
-                <div class="image">
-                    <a href="{{ route('calendars.image', ['calendar' => \App\Calendar::find(request()->get('id')), 'ext' => 'png', 'size' => $size, 'theme' => request()->input('theme', 'discord')]) }}">
-                        <img src="{{ route('calendars.image', ['calendar' => \App\Calendar::find(request()->get('id')), 'ext' => 'png', 'size' => $size, 'theme' => request()->input('theme', 'discord')]) }}" alt="">
-                    </a>
-                </div>
+            @php
+                if(request()->has('id')) {
+                    $calendars = \App\Calendar::whereId(request()->input('id'))->get();
+                } else {
+                    $calendars = \App\User::find(1)->calendars;
+                }
+            @endphp
+
+            @foreach($calendars as $calendar)
+                @foreach(['xs', 'sm', 'md', 'lg', 'xl', 'xxl', 'xxxl'] as $size)
+                    <div class="image">
+                        <a href="{{ route('calendars.image', ['calendar' => $calendar, 'ext' => 'png', 'size' => $size, 'theme' => request()->input('theme', 'discord')]) }}">
+                            <img src="{{ route('calendars.image', ['calendar' => $calendar, 'ext' => 'png', 'size' => $size, 'theme' => request()->input('theme', 'discord')]) }}" alt="">
+                        </a>
+                    </div>
+                @endforeach
             @endforeach
         </div>
     </body>

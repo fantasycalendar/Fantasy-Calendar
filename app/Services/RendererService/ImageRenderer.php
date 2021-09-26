@@ -1,19 +1,39 @@
-<?php
+<?php /** @noinspection PhpPrivateFieldCanBeLocalVariableInspection */
 
 namespace App\Services\RendererService;
 
 use App\Calendar;
 use App\Collections\EpochsCollection;
 use App\Services\RendererService\ImageRenderer\ThemeFactory;
+use ArrayAccess;
+use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Imagick;
 use ImagickDraw;
+use ImagickDrawException;
+use ImagickException;
+use ImagickPixel;
 use Intervention\Image\Facades\Image;
 use Intervention\Image\Image as ImageFile;
 
+/**
+ * @property mixed intercalary_weeks_count
+ * @property int padding
+ * @property int header_height
+ * @property int weekday_header_height
+ * @property int intercalary_spacing
+ * @property string ext
+ * @property string quality
+ * @property int shadow_size_difference
+ * @property int shadow_offset
+ * @property int shadow_strength
+ * @property int header_divider_width
+ * @property int grid_line_width
+ * @property string size
+ */
 class ImageRenderer
 {
     private Collection $cache;
@@ -27,8 +47,10 @@ class ImageRenderer
 
     private int $x;
     private int $max_x = 1080 * 2;
+    private int $min_x = 210;
     private int $y;
     private int $max_y = 1920 * 2;
+    private int $min_y = 210;
 
     private string $font_file;
     private string $bold_font_file;
@@ -55,9 +77,9 @@ class ImageRenderer
 
     private int $savedTimes = 0;
     private string $snapshotFolder;
-    private $minimum_weekday_header_height = 20;
-    private $maximum_header_height = 180;
-    private $minimum_header_height = 50;
+    private int $minimum_weekday_header_height = 20;
+    private int $maximum_header_height = 180;
+    private int $minimum_header_height = 50;
     private $min_day_text_length;
 
     /**
@@ -74,7 +96,6 @@ class ImageRenderer
         $this->cache = collect();
         $this->calendar = $calendar;
 
-        $this->month = $monthRenderData->get('month');
         $this->weeks = $monthRenderData->get('weeks');
         $this->weekdays = $monthRenderData->get('clean_weekdays');
         $this->week_length = $monthRenderData->get('week_length');
@@ -85,7 +106,7 @@ class ImageRenderer
 
         $this->setupTheme();
         $this->determineCanvasDimensions();
-        $this->initializeParametrics();
+        $this->initializeParametricProperties();
         $this->setupThemeOverrides();
     }
 
@@ -136,7 +157,7 @@ class ImageRenderer
      * @param Calendar $calendar
      * @param $parameters
      * @return mixed
-     * @throws \Exception
+     * @throws Exception
      */
     public static function renderMonth(Calendar $calendar, $parameters)
     {
@@ -158,7 +179,7 @@ class ImageRenderer
     /**
      * Initializes attributes that are based on other, provided parameters
      */
-    private function initializeParametrics()
+    private function initializeParametricProperties()
     {
         if($this->parameter('snapshot')) {
             $this->snapshotFolder = storage_path("calendarImages/snapshot-" . now()->format('Y-m-d H:i:s') . '/');
@@ -519,12 +540,12 @@ class ImageRenderer
     }
 
     /**
-     * Helper method that gets a specified color from paramteres or the theme
+     * Helper method that gets a specified color from parameters or the theme
      * Additionally, when in debug mode, returns random colors to help demonstrate
      * how the calendars are drawn.
      *
      * @param null $type
-     * @return array|\ArrayAccess|mixed|string
+     * @return string
      */
     private function colorize($type = null)
     {
@@ -577,6 +598,7 @@ class ImageRenderer
      * @param $y2
      * @param null $width
      * @param null $color
+     * @noinspection PhpSameParameterValueInspection
      */
     private function line($x1, $y1, $x2, $y2, $width = null, $color = null)
     {
@@ -606,7 +628,7 @@ class ImageRenderer
      * @param string $valign
      * @param null $fontFile
      */
-    private function text($text, $x, $y, $size, $color = null, $align = 'center', $valign = 'top', $fontFile = null)
+    private function text($text, $x, $y, $size, $color = null, string $align = 'center', string $valign = 'top', $fontFile = null)
     {
         $this->image->text(
             $text,
@@ -688,35 +710,43 @@ class ImageRenderer
     private function autoSizeBoth()
     {
         $intercalary_spacing = 4;
-        $day_width = min($this->min_day_text_length * 6, 30);
+        $day_width = max($this->min_day_text_length * 6, 30);
         $day_height = 26;
         $weekday_header_height = $this->minimum_weekday_header_height; // 24
         $header_height = 35; // 50
         $day_number_size = 10;
 
-        // 'small' sizes chosen arbitrarily.
+        // 'xs' sizes chosen arbitrarily.
         // The rest are proportional
         // You're welcome, future me!
         $size_presets = [
-            'md' => [
+            'sm' => [
                 'divide' => 3,
                 'multiply' => 4,
             ],
-            'lg' => [
+            'md' => [
                 'divide' => 18,
                 'multiply' => 31
             ],
-            'xl' => [
+            'lg' => [
                 'divide' => 12,
                 'multiply' => 25
             ],
-            'xxl' => [
+            'xl' => [
                 'divide' => 72,
+                'multiply' => 175,
+            ],
+            'xxl' => [
+                'divide' => 144,
+                'multiply' => 425,
+            ],
+            'xxxl' => [
+                'divide' => 48,
                 'multiply' => 175,
             ]
         ];
 
-        $size = $this->parameter('size');
+        $size = $this->size;
         if($size && Arr::has($size_presets, $size)) {
             foreach(['intercalary_spacing', 'day_width','day_height','weekday_header_height','header_height', 'day_number_size'] as $property) {
                 $$property /= $size_presets[$size]['divide'];
@@ -732,8 +762,12 @@ class ImageRenderer
         $this->parameters->put('header_height', clamp($header_height, $this->minimum_header_height, $this->maximum_header_height));
         $this->parameters->put('day_number_size', clamp($day_number_size, 10, 50));
 
-        $this->x = clamp($this->week_length * $day_width, 240, $this->max_y);
-        $this->y = $this->parameter('weekday_header_height') + $this->parameter('header_height') + ($this->intercalary_spacing * $this->intercalary_weeks_count * 2) + ($this->weeks_count * $day_height) + 1;
+        $this->x = clamp($this->week_length * $day_width, $this->min_x, $this->max_y);
+        $this->y = $this->weekday_header_height
+                 + $this->header_height
+                 + ($this->intercalary_spacing * $this->intercalary_weeks_count * 2)
+                 + ($this->weeks_count * $day_height)
+                 + 1;
     }
 
     /**
@@ -770,22 +804,22 @@ class ImageRenderer
     private function determineCanvasDimensions()
     {
         if($this->parameters->has('width') && $this->parameters->has('height')) {
-            $this->y = clamp($this->parameters->get('height'), 240, $this->max_x);
-            $this->x = clamp($this->parameters->get('width'), 240, $this->max_y);
+            $this->y = clamp($this->parameters->get('height'), $this->min_y, $this->max_x);
+            $this->x = clamp($this->parameters->get('width'), $this->min_x, $this->max_y);
 
             return;
         }
 
         if($this->parameters->has('height')) {
-            $this->y = clamp($this->parameters->get('height'), 240, $this->max_x);
-            $this->x = clamp($this->autoSizeWidthOnly(), 240, $this->max_y);
+            $this->y = clamp($this->parameters->get('height'), $this->min_y, $this->max_x);
+            $this->x = clamp($this->autoSizeWidthOnly(), $this->min_x, $this->max_y);
 
             return;
         }
 
         if($this->parameters->has('width')) {
-            $this->x = clamp($this->parameters->get('width'), 240, $this->max_y);
-            $this->y = clamp($this->autoSizeHeightOnly(), 240, $this->max_x);
+            $this->x = clamp($this->parameters->get('width'), $this->min_x, $this->max_y);
+            $this->y = clamp($this->autoSizeHeightOnly(), $this->min_y, $this->max_x);
 
             return;
         }
@@ -799,17 +833,17 @@ class ImageRenderer
      * @param $string
      * @param $font_size
      * @return array
-     * @throws \ImagickDrawException
-     * @throws \ImagickException
+     * @throws ImagickDrawException
+     * @throws ImagickException
      */
     private function determineTextSize($string, $font_size): array
     {
         $image = new Imagick();
         $draw = new ImagickDraw();
-        $draw->setFillColor(new \ImagickPixel('black'));
+        $draw->setFillColor(new ImagickPixel('black'));
         $draw->setStrokeAntialias(true);
         $draw->setTextAntialias(true);
-        $draw->setFontSize(24);
+        $draw->setFontSize($font_size);
         // Set typeface
         $draw->setFont($this->bold_font_file);
         // Calculate size
@@ -831,16 +865,16 @@ class ImageRenderer
      * - provided $last_resort
      *
      * @param string $string
-     * @param null $last_resort
-     * @return array|\ArrayAccess|mixed|null
+     * @param string|mixed|null|int $last_resort
+     * @return string|mixed|null|int
      */
     private function parameter(string $string, $last_resort = null)
     {
         $result = $this->cache->get($string)
-            ?? $this->parameters->get($string)
-            ?? $this->theme->get($string)
-            ?? $this->defaults->get($string)
-            ?? $last_resort;
+               ?? $this->parameters->get($string)
+               ?? $this->theme->get($string)
+               ?? $this->defaults->get($string)
+               ?? $last_resort;
 
         if(is_callable($result)) {
             $result = $result();
@@ -855,7 +889,7 @@ class ImageRenderer
      * Magic method to get any parameters!
      *
      * @param $name
-     * @return array|\ArrayAccess|mixed|null
+     * @return string|mixed|null
      */
     public function __get($name)
     {
