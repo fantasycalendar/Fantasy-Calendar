@@ -311,7 +311,7 @@ class Calendar extends Model
 
         $year = $this->year;
         $month = $this->month_name;
-        $day = $this->dynamic_data['day'];
+        $day = $this->day;
 
         return sprintf("%s %s, %s", $day, $month, $year);
     }
@@ -528,7 +528,7 @@ class Calendar extends Model
      */
     public function getDayAttribute(): int
     {
-        return Arr::get($this->dynamic_data, 'day', 1);
+        return clamp(Arr::get($this->dynamic_data, 'day', 1), 1, $this->month->countDaysInYear());
     }
 
     /**

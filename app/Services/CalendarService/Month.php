@@ -43,7 +43,12 @@ class Month extends Timespan
      */
     public function countWeeksInYear(): int
     {
-        return (int) abs(ceil($this->countNormalDays() / $this->weekdays->count()));
+        return abs(ceil($this->countNormalDays() / $this->weekdays->count()));
+    }
+    
+    public function countDaysInYear(): int
+    {
+        return $this->daysInYear->count();
     }
 
     /**

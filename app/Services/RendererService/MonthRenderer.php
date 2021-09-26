@@ -64,8 +64,6 @@ class MonthRenderer
     private function verifyData()
     {
         return function ($data) {
-            dd($data);
-
             return $data['render_data'];
         };
     }
