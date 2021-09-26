@@ -690,7 +690,6 @@ function go_to_preview_date(rebuild){
 		rebuild_calendar('preview', preview_date)
 	}else{
 		update_current_day();
-		scroll_to_epoch();
 	}
 
 }
@@ -707,6 +706,21 @@ function display_preview_back_button(){
 		$('#reset_preview_date_button').prop("disabled", true).toggleClass('hidden', true);
 		preview_date.follow = true;
 	}
+
+}
+
+function update_current_day(recalculate){
+
+    if(recalculate){
+        dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+    }
+
+    window.dispatchEvent(new CustomEvent('update-epochs', {detail: {
+            current_epoch: dynamic_data.epoch,
+            preview_epoch: preview_date.follow ? dynamic_data.epoch : preview_date.epoch
+        }}));
+
+    evaluate_sun();
 
 }
 
@@ -735,7 +749,6 @@ function go_to_dynamic_date(rebuild){
 		rebuild_calendar('preview', dynamic_data)
 	}else{
 		update_current_day(false)
-		scroll_to_epoch();
 	}
 
 }

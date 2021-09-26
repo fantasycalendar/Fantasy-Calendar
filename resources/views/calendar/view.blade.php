@@ -14,7 +14,7 @@
         set_up_view_inputs();
         set_up_view_values();
         set_up_visitor_values();
-        
+
         bind_calendar_events();
 
         if(!evaluate_queryString(window.location.search)){
@@ -181,7 +181,6 @@
             set_up_visitor_values();
         }else{
             update_current_day(false);
-            scroll_to_epoch();
         }
 
         set_up_view_values();

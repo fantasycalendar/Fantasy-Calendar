@@ -446,7 +446,6 @@ function evaluate_dynamic_change(){
 		if(data.rebuild || (!Perms.owner && static_data.settings.only_reveal_today) || !apply_changes_immediately){
 			pre_rebuild_calendar('calendar', dynamic_data)
 		}else{
-			scroll_to_epoch();
 			update_current_day(false);
 		}
 
@@ -464,13 +463,6 @@ function evaluate_dynamic_change(){
 
 	evaluate_save_button();
 
-}
-
-
-function fix_date(){
-	if(current_day.children('option:enabled').length == 0){
-		sub_curr_day.click();
-	}
 }
 
 function repopulate_location_select_list(){

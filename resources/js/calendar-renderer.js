@@ -4,6 +4,7 @@ const calendar_renderer = {
     loading_message: "Initializing...",
 
     render_callbacks: [],
+    scroll_attempts: 0,
 
     render_data: {
         current_epoch: 0,
@@ -69,6 +70,7 @@ const calendar_renderer = {
             preview_date,
             evaluated_static_data.epoch_data
         );
+        this.scroll_to_epoch();
     },
 
     pre_render: function(){
@@ -79,7 +81,8 @@ const calendar_renderer = {
         this.loading_message = "Wrapping up rendering...";
 
         hide_loading_screen();
-        scroll_to_epoch();
+
+        if(!this.loaded) this.scroll_to_epoch();
 
         CalendarYearHeader.update(
             static_data,
@@ -98,6 +101,30 @@ const calendar_renderer = {
         this.loaded = true;
 
 	    execution_time.end("Calculating and rendering calendar took:")
+    },
+
+    scroll_to_epoch: function(){
+
+        if($(`[epoch=${this.render_data.preview_epoch}]`).length && this.render_data.preview_epoch !== this.render_data.current_epoch){
+
+            this.scroll_attempts = 0;
+            return $(`[epoch=${this.render_data.preview_epoch}]`)[0].scrollIntoView({block: "center", inline: "nearest"});
+
+        }else if($(`[epoch=${this.render_data.current_epoch}]`).length){
+
+            this.scroll_attempts = 0;
+            return $(`[epoch=${this.render_data.current_epoch}]`)[0].scrollIntoView({block: "center", inline: "nearest"});
+
+        }
+
+        this.scroll_attempts++;
+
+        if(this.scroll_attempts < 10){
+            setTimeout(this.scroll_to_epoch.bind(this), 100);
+        }else{
+            this.scroll_attempts = 0;
+        }
+
     }
 
 }

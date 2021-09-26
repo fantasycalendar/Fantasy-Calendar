@@ -47,7 +47,6 @@ mix.copy('resources/js/calendar/calendar_variables.js', 'public/js/calendar');
 mix.copy('resources/js/calendar/calendar_weather_layout.js', 'public/js/calendar');
 mix.copy('resources/js/calendar/calendar_day_data_layout.js', 'public/js/calendar');
 mix.copy('resources/js/calendar/calendar_season_generator.js', 'public/js/calendar');
-mix.copy('resources/js/calendar/calendar_layout_builder.js', 'public/js/calendar');
 mix.copy('resources/js/calendar/calendar_inputs_visitor.js', 'public/js/calendar');
 mix.copy('resources/js/calendar/calendar_inputs_view.js', 'public/js/calendar');
 mix.copy('resources/js/calendar/calendar_inputs_edit.js', 'public/js/calendar');
