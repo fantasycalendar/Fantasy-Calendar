@@ -19,6 +19,7 @@ super_duper_confirm:
 
 real_deploy_dev:
 	git checkout .
+	rm -rf ./vendor
 	composer install --prefer-dist --optimize-autoloader --no-dev --ignore-platform-reqs
 	rm -rf ./node_modules
 	npm install
@@ -43,8 +44,11 @@ real_deploy_prd:
   		notify-send -t 8000 "Production deployment done";\
   	fi;
 
+
 quick_deploy_dev:
+	rm -rf ./vendor
 	composer install --prefer-dist --optimize-autoloader --no-dev --ignore-platform-reqs
+	rm -rf ./node_modules
 	npm install
 	npm run production
 	chmod -R 775 ./
