@@ -135,6 +135,10 @@ class CalendarController extends Controller
             );
         }
 
+        if(app()->environment('local') && request()->get('debug')) {
+            return ImageRenderer::renderMonth($calendar, collect(request()->merge(['ext' => $ext])->all()));
+        }
+
         return response()->stream(function() use ($ext, $calendar) {
             echo ImageRenderer::renderMonth($calendar, collect(request()->merge(['ext' => $ext])->all()));
         }, 200, [
