@@ -27,7 +27,9 @@ class ImageRenderer
     private $month;
 
     private int $x;
+    private int $max_x = 1080 * 2;
     private int $y;
+    private int $max_y = 1920 * 2;
 
     private string $font_file;
     private string $bold_font_file;
@@ -80,7 +82,6 @@ class ImageRenderer
         $this->determineCanvasDimensions();
         $this->initializeParametrics();
         $this->setupThemeOverrides();
-//        dd(['x' => $this->x,'week_length' => $this->week_length,'y' => $this->y,'minimum_weekday_header_height' => $this->minimum_weekday_header_height,'minimum_header_height' => $this->minimum_header_height,'intercalary_spacing' => $this->intercalary_spacing,'intercalary_weeks_count' => $this->intercalary_weeks_count,'weeks_count' => $this->weeks_count, 'bounding_box_height' => $this->grid_bounding_y2 - $this->grid_bounding_y1]);
     }
 
     public function defaults(): Collection
@@ -112,8 +113,6 @@ class ImageRenderer
 
     public static function renderMonth(Calendar $calendar, $parameters)
     {
-        // ?year=1512&month=6&day=1
-        // http://fantasy-calendar.test:9980/calendars/66ce6339d200f81223fe2c0934633786?year=1512&month=8&day=8
         if($parameters->has('year') && $parameters->has('month') && $parameters->has('day')) {
             $calendar->setDate(
                 $parameters->get('year'),
@@ -286,8 +285,6 @@ class ImageRenderer
     {
         $weekdaysY1 = $this->padding + $this->header_height;
         $weekdaysY2 = $weekdaysY1 + $this->weekday_header_height;
-
-//        $this->drawColumns($weekdaysY1, $weekdaysY2, $this->header_divider_width);
 
         $this->line(
             $this->grid_bounding_x1 + 1,
@@ -582,7 +579,7 @@ class ImageRenderer
     private function autoSizeBoth()
     {
         $intercalary_spacing = 4;
-        $day_width = 30;
+        $day_width = min($this->min_day_text_length * 6, 30);
         $day_height = 26;
         $weekday_header_height = $this->minimum_weekday_header_height; // 24
         $header_height = 35; // 50
@@ -618,16 +615,7 @@ class ImageRenderer
             }
         }
 
-//        $longest_day_name = $this->weekdays->sortByDesc(function($weekday){
-//            return Str::length($weekday);
-//        })->first();
-
-
         $this->intercalary_spacing = $intercalary_spacing;
-//        $this->parameters->put('intercalary_spacing', 4);
-
-        $this->x = $this->week_length * $day_width;
-        $this->y = $weekday_header_height + $header_height + ($this->intercalary_spacing * $this->intercalary_weeks_count * 2) + ($this->weeks_count * $day_height) + 1;
 
         $this->parameters->put('grid_column_width', $day_width);
         $this->parameters->put('grid_row_height', $day_height);
@@ -635,8 +623,12 @@ class ImageRenderer
         $this->parameters->put('header_height', clamp($header_height, $this->minimum_header_height, $this->maximum_header_height));
         $this->parameters->put('day_number_size', clamp($day_number_size, 10, 50));
 
-//        dd($this->determineTextSize($longest_day_name, $this->minimum_weekday_header_height / 2));
-//        dump(['x' => $this->x,'week_length' => $this->week_length,'y' => $this->y,'minimum_weekday_header_height' => $this->minimum_weekday_header_height,'minimum_header_height' => $this->minimum_header_height,'intercalary_spacing' => $this->intercalary_spacing,'intercalary_weeks_count' => $this->intercalary_weeks_count,'weeks_count' => $this->weeks_count]);
+        $this->x = clamp($this->week_length * $day_width, 240, $this->max_y);
+        $this->y = $this->parameter('weekday_header_height')
+                 + $this->parameter('header_height')
+                 + ($this->intercalary_spacing * $this->intercalary_weeks_count * 2)
+                 + ($this->weeks_count * $day_height)
+                 + 1;
     }
 
     private function autoSizeWidthOnly()
@@ -659,22 +651,22 @@ class ImageRenderer
     private function determineCanvasDimensions()
     {
         if($this->parameters->has('width') && $this->parameters->has('height')) {
-            $this->y = clamp($this->parameters->get('height'), 240, 1080);
-            $this->x = clamp($this->parameters->get('width'), 240, 1920);
+            $this->y = clamp($this->parameters->get('height'), 240, $this->max_x);
+            $this->x = clamp($this->parameters->get('width'), 240, $this->max_y);
 
             return;
         }
 
         if($this->parameters->has('height')) {
-            $this->y = clamp($this->parameters->get('height'), 240, 1080);
-            $this->x = clamp($this->autoSizeWidthOnly(), 240, 1920);
+            $this->y = clamp($this->parameters->get('height'), 240, $this->max_x);
+            $this->x = clamp($this->autoSizeWidthOnly(), 240, $this->max_y);
 
             return;
         }
 
         if($this->parameters->has('width')) {
-            $this->x = clamp($this->parameters->get('width'), 240, 1920);
-            $this->y = clamp($this->autoSizeHeightOnly(), 240, 1080);
+            $this->x = clamp($this->parameters->get('width'), 240, $this->max_y);
+            $this->y = clamp($this->autoSizeHeightOnly(), 240, $this->max_x);
 
             return;
         }
