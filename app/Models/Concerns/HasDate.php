@@ -238,7 +238,7 @@ trait HasDate
 
     private function findNearestValidDay($day)
     {
-        return min($this->month->daysInYear->count(), $day);
+        return clamp($day, 1, $this->month->daysInYear->count());
     }
 
     /**
@@ -251,7 +251,7 @@ trait HasDate
     {
         return $this->setDate($epoch->year, $epoch->monthId, $epoch->day);
     }
-    
+
     public function __call($method, $arguments)
     {
         if(Str::startsWith($method, ['sub', 'add'])) {
