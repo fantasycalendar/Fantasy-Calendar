@@ -762,7 +762,7 @@ class ImageRenderer
         $this->parameters->put('header_height', clamp($header_height, $this->minimum_header_height, $this->maximum_header_height));
         $this->parameters->put('day_number_size', clamp($day_number_size, 10, 50));
 
-        $this->x = clamp($this->week_length * $day_width, $this->min_x, $this->max_y);
+        $this->x = clamp($this->week_length * $day_width, $this->min_x, $this->max_x);
         $this->y = $this->weekday_header_height
                  + $this->header_height
                  + ($this->intercalary_spacing * $this->intercalary_weeks_count * 2)

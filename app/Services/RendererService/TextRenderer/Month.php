@@ -8,6 +8,7 @@ use App\Services\RendererService\TextRenderer;
 use App\Services\RendererService\TextRenderer\Exceptions\TextRendererOutputTooLongException;
 use App\Services\RendererService\TextRenderer\Traits\GeneratesTextLines;
 use Illuminate\Pipeline\Pipeline;
+use Illuminate\Support\Str;
 
 class Month
 {
@@ -35,7 +36,7 @@ class Month
         $this->name = $attributes['name'];
         $this->length = $attributes['length'];
         $this->weekdays = $attributes['weekdays'];
-        $this->clean_weekdays = $attributes['clean_weekdays'];
+        $this->clean_weekdays = $attributes['clean_weekdays']->map(fn($day) => Str::ascii($day));
         $this->weeks = $attributes['weeks'];
         $this->minimum_day_length = $attributes['min_day_text_length'];
         $this->original_min_day_length = $attributes['min_day_text_length'];
@@ -72,7 +73,7 @@ class Month
     private function compile()
     {
         $parts = [
-            HeaderBlock::class => HeaderBlock::build($this->name, $this->internalLength(), $this->year),
+            HeaderBlock::class => HeaderBlock::build(Str::ascii($this->name), $this->internalLength(), $this->year),
             MonthTopper::class => MonthTopper::build($this->minimum_day_length, $this->weekdays->count()),
             DayNameRow::class => DayNameRow::build($this->minimum_day_length, $this->clean_weekdays),
             Weeks::class => Weeks::build($this->weeks, $this->minimum_day_length, $this->weekdays->count(), $this->month->intercalary),
