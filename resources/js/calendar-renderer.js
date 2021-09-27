@@ -115,15 +115,18 @@ const calendar_renderer = {
 
     scroll_to_epoch: function(){
 
-        if($(`[epoch=${this.render_data.preview_epoch}]`).length && this.render_data.preview_epoch !== this.render_data.current_epoch){
+        const previewEpochElement = $(`[epoch=${this.render_data.preview_epoch}]`);
+        const currentEpochElement = $(`[epoch=${this.render_data.current_epoch}]`);
+
+        if(previewEpochElement.length && this.render_data.preview_epoch !== this.render_data.current_epoch){
 
             this.scroll_attempts = 0;
-            return $(`[epoch=${this.render_data.preview_epoch}]`)[0].scrollIntoView({block: "center", inline: "nearest"});
+            return previewEpochElement[0].scrollIntoView({block: "center", inline: "nearest"});
 
-        }else if($(`[epoch=${this.render_data.current_epoch}]`).length){
+        }else if(currentEpochElement.length){
 
             this.scroll_attempts = 0;
-            return $(`[epoch=${this.render_data.current_epoch}]`)[0].scrollIntoView({block: "center", inline: "nearest"});
+            return currentEpochElement[0].scrollIntoView({block: "center", inline: "nearest"});
 
         }
 
