@@ -5239,6 +5239,12 @@ function reindex_era_list(){
 
 	});
 
+    dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
+    dynamic_data.epoch = dynamic_date_manager.epoch;
+
+    preview_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
+    preview_date.epoch = preview_date_manager.epoch;
+
 	do_error_check();
 
 }

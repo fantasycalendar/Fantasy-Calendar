@@ -36,7 +36,7 @@ const calendarYearHeader = {
 
     getYearText(){
 
-        const currentEra = this.era;
+        const currentEra = this.getCurrentEra();
 
         if(currentEra !== -1){
 
@@ -64,14 +64,16 @@ const calendarYearHeader = {
 
     renderYearMustache(inFormat, eraName = false){
 
+        const epochData = this.getEpochData();
+
         let mustacheData = {
-            "year": this.epochData.year,
-            "nth_year": ordinal_suffix_of(this.epochData.year),
-            "abs_year": Math.abs(this.epochData.year),
-            "abs_nth_year": ordinal_suffix_of(Math.abs(this.epochData.year)),
-            "era_year": this.epochData.era_year,
-            "era_nth_year": ordinal_suffix_of(this.epochData.era_year),
-            "abs_era_nth_year": ordinal_suffix_of(Math.abs(this.epochData.era_year))
+            "year": epochData.year,
+            "nth_year": ordinal_suffix_of(epochData.year),
+            "abs_year": Math.abs(epochData.year),
+            "abs_nth_year": ordinal_suffix_of(Math.abs(epochData.year)),
+            "era_year": epochData.era_year,
+            "era_nth_year": ordinal_suffix_of(epochData.era_year),
+            "abs_era_nth_year": ordinal_suffix_of(Math.abs(epochData.era_year))
         };
 
         if(eraName){
@@ -83,6 +85,10 @@ const calendarYearHeader = {
             mustacheData
         );
 
+    },
+
+    getCurrentEra(){
+        return this.getEpochData().era ?? -1;
     },
 
     updateCycleText(){
@@ -102,9 +108,17 @@ const calendarYearHeader = {
 
         return Mustache.render(
             this.cycles.format.replace(/{{/g, '{{{').replace(/}}/g, '}}}'),
-            this.cycle
+            this.getCycle()
         );
 
+    },
+
+    getCycle(){
+        return get_cycle(this.static_data, this.getEpochData()).text;
+    },
+
+    getEpochData(){
+        return this.epoch_data[this.epoch];
     },
 
     get epoch(){
@@ -112,18 +126,6 @@ const calendarYearHeader = {
             ? this.preview_date.epoch
             : this.dynamic_data.epoch;
     },
-
-    get epochData(){
-        return this.epoch_data[this.epoch];
-    },
-
-    get era(){
-        return this.epochData.era ?? -1;
-    },
-
-    get cycle(){
-        return get_cycle(this.static_data, this.epochData).text;
-    }
 
 }
 

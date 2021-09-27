@@ -7,8 +7,6 @@ const calendar_renderer = {
     render_callbacks: [],
     scroll_attempts: 0,
 
-
-
     render_data: {
         current_epoch: 0,
         preview_epoch: 0,
@@ -69,6 +67,7 @@ const calendar_renderer = {
         this.loading_message = "Structuring days...";
         this.render_data.current_epoch = event.detail.current_epoch;
         this.render_data.preview_epoch = event.detail.preview_epoch;
+        console.log('here!?')
         CalendarYearHeader.update(
             static_data,
             dynamic_data,
