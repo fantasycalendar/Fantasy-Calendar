@@ -79,7 +79,6 @@ const calendar_renderer = {
     },
 
     pre_render: function(){
-        this.rerendering = this.render_data.prev_current_epoch !== this.render_data.current_epoch || this.render_data.prev_preview_epoch !== this.render_data.preview_epoch;
         show_loading_screen_buffered();
     },
 
@@ -87,6 +86,8 @@ const calendar_renderer = {
         this.loading_message = "Wrapping up rendering...";
 
         hide_loading_screen();
+
+        this.rerendering = this.render_data.prev_current_epoch !== this.render_data.current_epoch || this.render_data.prev_preview_epoch !== this.render_data.preview_epoch;
 
         if(!this.loaded || this.rerendering) this.scroll_to_epoch();
 

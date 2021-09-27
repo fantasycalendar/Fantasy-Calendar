@@ -1885,6 +1885,7 @@ function set_up_edit_inputs(){
 			era.date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, era.date.year), era.date.timespan, era.date.day).epoch;
 		}
 		dynamic_data.current_era = get_current_era(static_data, dynamic_data.epoch);
+        dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
 	});
 
 	$(document).on('click', '.preview_era_date', function(){

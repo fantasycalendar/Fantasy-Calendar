@@ -62,16 +62,32 @@ const calendarYearHeader = {
 
     },
 
+    renderYearMustache(inFormat, eraName = false){
+
+        let mustacheData = {
+            "year": this.epochData.year,
+            "nth_year": ordinal_suffix_of(this.epochData.year),
+            "abs_year": Math.abs(this.epochData.year),
+            "abs_nth_year": ordinal_suffix_of(Math.abs(this.epochData.year)),
+            "era_year": this.epochData.era_year,
+            "era_nth_year": ordinal_suffix_of(this.epochData.era_year),
+            "abs_era_nth_year": ordinal_suffix_of(Math.abs(this.epochData.era_year))
+        };
+
+        if(eraName){
+            mustacheData["era_name"] = eraName;
+        }
+
+        return Mustache.render(
+            inFormat,
+            mustacheData
+        );
+
+    },
+
     updateCycleText(){
 
-        let cycleText = this.getCycleText();
-
-        if(!cycleText){
-            this.cycle_element
-                .html('')
-                .addClass('hidden')
-                .toggleClass('smaller', false);
-        }
+        const cycleText = this.getCycleText();
 
         this.cycle_element
             .html(cycleText)
@@ -82,9 +98,7 @@ const calendarYearHeader = {
 
     getCycleText(){
 
-        if(this.cycles.data.length === 0){
-            return false;
-        }
+        if(!this.cycles.data.length) return "";
 
         return Mustache.render(
             this.cycles.format.replace(/{{/g, '{{{').replace(/}}/g, '}}}'),
@@ -109,29 +123,6 @@ const calendarYearHeader = {
 
     get cycle(){
         return get_cycle(this.static_data, this.epochData).text;
-    },
-
-    renderYearMustache(inFormat, eraName = false){
-
-        let mustacheData = {
-            "year": this.epochData.year,
-            "nth_year": ordinal_suffix_of(this.epochData.year),
-            "abs_year": Math.abs(this.epochData.year),
-            "abs_nth_year": ordinal_suffix_of(Math.abs(this.epochData.year)),
-            "era_year": this.epochData.era_year,
-            "era_nth_year": ordinal_suffix_of(this.epochData.era_year),
-            "abs_era_nth_year": ordinal_suffix_of(Math.abs(this.epochData.era_year))
-        };
-
-        if(eraName){
-            mustacheData["era_name"] = eraName;
-        }
-
-        return Mustache.render(
-            inFormat,
-            mustacheData
-        );
-
     }
 
 }
