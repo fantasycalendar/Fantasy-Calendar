@@ -53,7 +53,12 @@
 
         @if(!auth()->user()->acknowledged_discord_announcement)
             <div class="alert alert-info"><a href="{{ route('discord-announcement-acknowledge') }}" class="alert-link" style="float: right;"><i class="fa fa-times"></i></a>
-                <h4><i class="fab fa-discord"></i> <strong>Fantasy-Calendar's Discord Integration</strong> has just landed!</h4> All the information can be found <a class="alert-link" href="{{ route('discord') }}">on this page</a>!
+                <h4><i class="fab fa-discord"></i> <strong>Fantasy-Calendar's Discord Integration</strong> has just landed!</h4>
+                @if(!auth()->user()->isPremium())
+                    All the information about this subscriber feature (<a class="alert-link" href="{{ route('subscription.pricing') }}">only $2.49/month!</a>) can be found <a class="alert-link" href="{{ route('discord') }}">on this page</a>!
+                @else
+                    All the information can be found <a class="alert-link" href="{{ route('discord') }}">on this page</a>!
+                @endif
             </div>
         @endif
 
