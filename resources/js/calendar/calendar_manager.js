@@ -127,7 +127,7 @@ function pre_rebuild_calendar(action, dynamic_data){
 
 }
 
-async function testCalendarAccuracy(fromYear = -1000, toYear = 1000){
+async function testCalendarAccuracy(fromYear = -100, toYear = 100){
 
     calendar_data_generator.static_data = static_data;
     calendar_data_generator.dynamic_data = dynamic_data;
@@ -141,26 +141,39 @@ async function testCalendarAccuracy(fromYear = -1000, toYear = 1000){
 
     let result = await calendar_data_generator.run();
 
-    let end_epoch = result.year_data.end_epoch;
+    let lastYearEndEpoch = result.year_data.end_epoch;
 
+    let year_zero_exists = static_data.settings.year_zero_exists;
+
+    fromYear++;
     for(let year = fromYear; year < toYear; year++){
 
-        calendar_data_generator.dynamic_data.year++;
-        if(!static_data.settings.year_zero_exists && calendar_data_generator.dynamic_data.year === 0){
-            calendar_data_generator.dynamic_data.year++;
+        calendar_data_generator.dynamic_data.year = year;
+        if(!year_zero_exists && year === 0){
+            continue;
         }
-
-        console.log(`Testing year ${calendar_data_generator.dynamic_data.year}...`)
 
         let result = await calendar_data_generator.run();
 
-        if(end_epoch !== result.year_data.start_epoch-1){
-            console.error(`YEAR ${calendar_data_generator.dynamic_data.year} FAILED! Expected ${end_epoch+1}, got ${result.year_data.start_epoch}!`)
+        let thisYearStartEpoch = result.year_data.start_epoch;
+
+        console.log(`${year} - Last year ended on ${lastYearEndEpoch} and this year started on ${thisYearStartEpoch} - total of ${Object.keys(result.epoch_data).length}`)
+
+        if((year_zero_exists && year === 0) || (!year_zero_exists && year === 1)){
+            if(thisYearStartEpoch !== 0){
+                console.error(`YEAR ${year} FAILED! Expected 0, got ${thisYearStartEpoch}!`)
+                dynamic_data.year = currentYear;
+                return;
+            }
+        }
+
+        if(lastYearEndEpoch !== thisYearStartEpoch-1){
+            console.error(`YEAR ${year} FAILED! Expected ${lastYearEndEpoch+1}, got ${thisYearStartEpoch}!`)
             dynamic_data.year = currentYear;
             return;
         }
 
-        end_epoch = result.year_data.end_epoch;
+        lastYearEndEpoch = result.year_data.end_epoch;
 
     }
 
