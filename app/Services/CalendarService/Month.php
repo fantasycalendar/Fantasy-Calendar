@@ -45,7 +45,7 @@ class Month extends Timespan
     {
         return abs(ceil($this->countNormalDays() / $this->weekdays->count()));
     }
-    
+
     public function countDaysInYear(): int
     {
         return $this->daysInYear->count();
@@ -62,7 +62,7 @@ class Month extends Timespan
         parent::initialize($calendar);
 
         $this->activeLeapDays = $this->leapDays
-            ->filter->intersectsYear($calendar->year);
+            ->filter->intersectsYear($this->occurrences($calendar->year));
 
         $this->weekdays = $this->buildWeekdays($calendar);
 

@@ -74,6 +74,11 @@ class LeapDay
      */
     public function intersectsYear(int $year): bool
     {
+        // We need to un-normalize the year as otherwise 0 month occurrences results in leap day appearing
+        $year = $year >= 0 && !$this->yearZeroExists
+            ? $year + 1
+            : $year;
+
         $votes = collect(explode(',', $this->interval))->map(function($interval) use ($year) {
             return (new Interval($interval, $this->offset))->voteOnYear($year);
         });

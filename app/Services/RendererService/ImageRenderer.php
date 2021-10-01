@@ -300,11 +300,15 @@ class ImageRenderer
             $this->header_divider_width
         );
 
+        $boundingBoxWidth = $this->grid_bounding_x2 - $this->grid_bounding_x1;
+        $calendarNameTextSize = $this->header_height / 3.5;
+        $calendarNameRatio = $this->determineTextSize($this->calendar->name, $calendarNameTextSize)['width'] / $boundingBoxWidth;
+
         $this->text(
             $this->calendar->name,
             $this->x / 2,
             $this->padding + ($this->header_height / 8),
-            $this->header_height / 3.5
+            clamp(14 * $calendarNameRatio, 0, $calendarNameTextSize)
         );
 
         $this->text(
@@ -554,7 +558,7 @@ class ImageRenderer
 
             return "#" . substr($hash, 0, 2) . substr($hash, 2, 2) . substr($hash, 4, 2);
         }
-        
+
         return $this->parameter("{$type}_color");
     }
 
