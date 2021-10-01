@@ -405,12 +405,62 @@ class EpochTest extends TestCase
 
         $this->testCalendar($calendar);
 
+        $calendar = Calendar::Factory()
+            ->for($user)
+            ->create([
+                "name" => "Simple 2-1 month",
+                "static_data" => [
+                    "first_day" => 1,
+                    "overflow" => false,
+                    "year_data" => [
+                        "timespans" => [
+                            [
+                                "name" => "Somemonth",
+                                "type" => "month",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 1
+                            ],
+                            [
+                                "name" => "Anothermonth",
+                                "type" => "month",
+                                "interval" => 2,
+                                "offset" => 1,
+                                "length" => 1
+                            ]
+                        ],
+                        "leap_days" => [
+                            [
+                                "intercalary" => false,
+                                "timespan" => 1,
+                                "interval" => "2",
+                                "offset" => 0
+                            ]
+                        ],
+                        "global_week" => [
+                            "Weekday 1",
+                            "Weekday 2",
+                            "Weekday 3",
+                            "Weekday 4",
+                            "Weekday 5",
+                            "Weekday 6",
+                            "Weekday 7"
+                        ]
+                    ],
+                    "settings" => [
+                        "year_zero_exists" => false
+                    ]
+                ]
+            ]);
+
+        $this->testCalendar($calendar);
+
     }
 
     private function testCalendar($calendar, $fromYear = -100, $toYear = 100)
     {
 
-        dump("Testing calendar: " . $calendar->name . " (year range: " . $fromYear . " to " . $toYear . ")");
+        // dump("Testing calendar: " . $calendar->name . " (year range: " . $fromYear . " to " . $toYear . ")");
 
         $calendar->setDate($fromYear);
 
@@ -418,22 +468,19 @@ class EpochTest extends TestCase
 
         $lastYearEndEpoch = $epochs->last()->epoch;
 
-        // dump($fromYear . ": " . $epochs->first()->epoch . " - " . $epochs->last()->epoch);
-
         $fromYear++;
         for($year = $fromYear; $year < $toYear; $year++){
 
+            $calendar->setDate($year);
             if(!$calendar->setting("year_zero_exists") && $year === 0){
                 continue;
             }
-
-            $calendar->setDate($year);
 
             $epochs = EpochFactory::forCalendarYear($calendar);
 
             $thisYearStartEpoch = $epochs->first()->epoch;
 
-            //dump($year . ": " . $lastYearEndEpoch . " : " . $thisYearStartEpoch . ' - ' . ($lastYearEndEpoch == $thisYearStartEpoch-1));
+            // dump($year . " - Last year ended on " . $lastYearEndEpoch . " and this year started on " . $thisYearStartEpoch . ' - ' . ($epochs->count()));
 
             if(($calendar->setting("year_zero_exists") && $year === 0) || (!$calendar->setting("year_zero_exists") && $year === 1)){
                 $this->assertTrue($thisYearStartEpoch === 0);
