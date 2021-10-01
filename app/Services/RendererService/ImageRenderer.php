@@ -9,6 +9,7 @@ use ArrayAccess;
 use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Imagick;
@@ -72,6 +73,8 @@ class ImageRenderer
     private float $grid_row_height;
     private int $day_number_size;
     private int $day_number_padding;
+
+    private int $calendarNameTextSize;
 
     private $weekdays;
 
@@ -210,6 +213,11 @@ class ImageRenderer
 
         $this->day_number_size = clamp($this->parameter('day_number_size', $this->grid_row_height / 4), 12, 38);
         $this->day_number_padding = clamp($this->day_number_size / 4, 1, 12);
+
+        $calendarMaxNameTextSize = $this->header_height / 3.5;
+        $determinedCalendarNameWidth = $this->determineTextSize($this->calendar->name, $calendarMaxNameTextSize)['width'];
+        $calendarNameRatio = $boundingBoxWidth / $determinedCalendarNameWidth;
+        $this->calendarNameTextSize = clamp(17 * $calendarNameRatio, 10, $calendarMaxNameTextSize);
     }
 
     /**
@@ -300,15 +308,11 @@ class ImageRenderer
             $this->header_divider_width
         );
 
-        $boundingBoxWidth = $this->grid_bounding_x2 - $this->grid_bounding_x1;
-        $calendarNameTextSize = $this->header_height / 3.5;
-        $calendarNameRatio = $this->determineTextSize($this->calendar->name, $calendarNameTextSize)['width'] / $boundingBoxWidth;
-
         $this->text(
             $this->calendar->name,
             $this->x / 2,
             $this->padding + ($this->header_height / 8),
-            clamp(14 * $calendarNameRatio, 0, $calendarNameTextSize)
+            $this->calendarNameTextSize
         );
 
         $this->text(
