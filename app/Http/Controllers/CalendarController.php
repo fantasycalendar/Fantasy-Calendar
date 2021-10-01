@@ -130,7 +130,7 @@ class CalendarController extends Controller
             return response()->file($pathToFile, $headers);
         }
 
-        if(!in_array($ext, ['png', 'jpg'])) {
+        if(!in_array($ext, ['png', 'jpg', 'jpeg'])) {
             return redirect()->to(
                 route('calendars.image', request()->merge(['calendar' => $calendar->hash, 'ext' => 'png'])->all())
             );
