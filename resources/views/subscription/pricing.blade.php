@@ -101,11 +101,31 @@
                 <h3>What subscribing gets you</h3>
 
                 <ul class="text-left">
-                    <li><strong>Full</strong> calendar functionality</li>
-                    <li><strong>Unlimited</strong> calendars in list</li>
-                    <li><strong>User Management</strong> <p class="small">Users can comment on events and view provided information</p> </li>
-                    <li>Calendar <strong>co-ownership</strong> <p class="small">Co-owners can comment on events, create events, and change the current date.</p></li>
-                    <li>Calendar Linking <p class="small">Link calendars together and drive their dates from a single parent calendar!</p></li>
+                    <li>
+                        <strong>Full</strong> calendar functionality
+                    </li>
+                    <li>
+                        <strong>Unlimited</strong> calendars in list
+                    </li>
+                    <li>
+                        <strong>User Management</strong>
+                        <p class="small">Users can comment on events and view provided information</p>
+                    </li>
+                    <li>
+                        Calendar <strong>co-ownership</strong>
+                        <p class="small">Co-owners can comment on events, create events, and change the current date.</p>
+                    </li>
+                    <li>
+                        Calendar Linking
+                        <p class="small">Link calendars together and drive their dates from a single parent calendar!</p>
+                    </li>
+                    <li>
+                        <strong>Discord Integration</strong> <span class="small"><a href="{{ route('discord') }}}">Read more here.</a></span>
+                        <p class="small">Use your calendars directly within your Discord servers!</p>
+                    </li>
+                    <li>
+                        <small><i>...and more to come!</i></small>
+                    </li>
                 </ul>
 
             </div>
