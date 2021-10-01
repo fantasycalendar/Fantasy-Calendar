@@ -2,24 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\CalendarInvite;
 use App\Events\DateChanged;
 use App\Jobs\PrepCalendarForExport;
 use App\Services\RendererService\ImageRenderer;
-use App\Services\RendererService\MonthRenderer;
-use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 
 use Auth;
 use App\Calendar;
-use App\EventCategory;
-use App\CalendarEvent;
 
 use App\Jobs\SaveEventCategories;
 use App\Jobs\SaveCalendarEvents;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 
 class CalendarController extends Controller
@@ -129,6 +123,13 @@ class CalendarController extends Controller
 
     public function renderImage(Calendar $calendar, $ext)
     {
+        if(Gate::denies('view-image', $calendar)) {
+            $pathToFile = public_path('resources/discord/premium-warning.png');
+            $headers = ['Content-Type' => 'image/png'];
+
+            return response()->file($pathToFile, $headers);
+        }
+
         if(!in_array($ext, ['png', 'jpg'])) {
             return redirect()->to(
                 route('calendars.image', request()->merge(['calendar' => $calendar->hash, 'ext' => 'png'])->all())

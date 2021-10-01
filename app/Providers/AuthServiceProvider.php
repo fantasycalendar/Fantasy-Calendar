@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Calendar;
 use App\CalendarEvent;
 use App\EventCategory;
+use App\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -81,6 +82,10 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('link', function($user, $calendar) {
             return $user->is($calendar->user) && $calendar->isPremium();
+        });
+
+        Gate::define('view-image', function(?User $user, $calendar) {
+            return $calendar->isPremium();
         });
     }
 }
