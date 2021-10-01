@@ -922,8 +922,13 @@
 			<label for="collapsible_locations" class="lbl-toggle py-2 px-3 card-header"><i class="mr-2 fas fa-compass"></i> Locations <a target="_blank" data-pt-position="right" data-pt-title='More Info: Locations' href='{{ helplink('locations') }}' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
 
-                <div id='locations_warning' class='row no-gutters'>
+                <div id='locations_warning' class='row no-gutters mb-2'>
                     You need weather enabled (temperatures, precipitation) or the clock enabled (timezone, sunrise/sunset) for locations to function.
+                </div>
+
+                <div class='row no-gutters'>
+                    <p class="m-0">Preset locations work only with four or two seasons and weather enabled.</p>
+                    <p><small>If you name your seasons winter, spring, summer, and autumn/fall, the system matches them with the presets' seasons, no matter which order.</small></p>
                 </div>
 
                 <div id='locations_warning_hidden' class='hidden'>
@@ -932,7 +937,7 @@
     					Current location:
     				</div>
     				<div class='row no-gutters mb-2'>
-    					<select class='form-control protip' id='location_select' data-pt-position="right" data-pt-title="The presets work with four seasons (winter, spring, summer, autumn) or two seasons (winter, summer). If you call your seasons the same, the system matches them with the presets' seasons, no matter which order.">
+    					<select class='form-control' id='location_select'>
     					</select>
     				</div>
                     <div class='row no-gutters my-2'>

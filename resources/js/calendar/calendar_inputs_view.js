@@ -491,14 +491,13 @@ function repopulate_location_select_list(){
 
 	}
 
-	html.push('<optgroup label="Location Presets" value="preset">');
-	if((static_data.seasons.data.length == 2 || static_data.seasons.data.length == 4) && static_data.seasons.global_settings.enable_weather){
-		for(var i = 0; i < Object.keys(preset_data.locations[static_data.seasons.data.length]).length; i++){
-			html.push(`<option>${Object.keys(preset_data.locations[static_data.seasons.data.length])[i]}</option>`);
-		}
-	}else{
-		html.push(`<option disabled>Presets require two or four seasons and weather enabled.</option>`);
-	}
+    let validSeasons = (static_data.seasons.data.length === 2 || static_data.seasons.data.length === 4) && static_data.seasons.global_settings.enable_weather;
+    let length = validSeasons ? static_data.seasons.data.length : 4;
+
+	html.push(`<optgroup label="Location Presets" value="preset">`);
+    for(var i = 0; i < Object.keys(preset_data.locations[length]).length; i++){
+        html.push(`<option ${!validSeasons ? "disabled" : ""}>${Object.keys(preset_data.locations[length])[i]}</option>`);
+    }
 	html.push('</optgroup>');
 
 

@@ -1,8 +1,11 @@
 ### 2.1.0 - Discordant Djinn
+#### October 3rd, 2021
 * Added - Discord integration!
 * Added - Event moon overrides - Change your moons with events, such as color, phase, phase name, and visibility! 
+* Reworked - Year header no longer updates current era when scrolling - now based entirely on current date
 * Reworked - Completely reworked the event editor and event viewer UI
 * Tweaked - Renamed the "Create Calendar" button to "Save Calendar" to avoid confusion
+* Tweaked - Location list now shows all preset locations, but disable them if requirements are not met
 * Fixed - Linked child calendars sometimes not having the correct date & time, should now be accurate down to the minute
 * Fixed - Day data previewer not working in certain browsers
 * Fixed - Date dropdowns in date selectors (such as in events and eras) being incorrectly set up 
