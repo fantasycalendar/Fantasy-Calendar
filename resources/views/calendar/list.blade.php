@@ -57,7 +57,7 @@
                 @if(!auth()->user()->isPremium())
                     All the information about this subscriber feature (<a class="alert-link" href="{{ route('subscription.pricing') }}">only $2.49/month!</a>) can be found <a class="alert-link" href="{{ route('discord') }}">on this page</a>!
                 @else
-                    All the information can be found <a class="alert-link" href="{{ route('discord') }}">on this page</a>!
+                    All the information can be found <a class="alert-link" href="{{ route('discord') }}">on this page</a> - as a subscriber, you have immediate <a class="alert-link" href="{{ route('discord.index') }}">access</a>!
                 @endif
             </div>
         @endif
