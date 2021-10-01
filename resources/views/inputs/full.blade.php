@@ -1290,8 +1290,9 @@
 
 					@if(Auth::user()->can('add-users', $calendar))
 
-						<div class='row no-gutters mt-1 mb-3'>
-							<p class='m-0'>Invite your friends to collaborate on this calendar! Once they accept your invite, you'll be able to assign them a role.</p>
+						<div class='row no-gutters'>
+							<p class='m-0'>Invite your friends to collaborate!</p>
+                            <p><small>Once they accept your invite, you'll be able to assign them a role.</small></p>
 						</div>
 
 						<div class='row no-gutters my-1'>
@@ -1332,15 +1333,19 @@
 			<!---------------------------------------------->
 			<div class='wrap-collapsible card settings-linking'>
 				<input id="collapsible_linking" class="toggle" type="checkbox">
+
 				<label for="collapsible_linking" class="lbl-toggle py-2 px-3 card-header"><i class="mr-2 fas fa-link"></i> Calendar Linking <a target="_blank" data-pt-position="right" data-pt-title='More Info: Calendar Linking' href='{{ helplink('calendar_linking') }}' class="wiki protip"><i class="icon-question-sign"></i></a></label>
-				<div class="collapsible-content card-body">
+
+                <div class="collapsible-content card-body">
+
+                    <div class='row no-gutters'>
+                        <p class="m-0">Calendar linking allows you to connect two calendar's dates, making one follow the other!</p>
+                        <p><small>This is a complex feature, we recommend you check out the article on <a href='{{ helplink('calendar_linking') }}' target="_blank"><i class="icon-question-sign"></i> Calendar Linking</a>.</small></p>
+                    </div>
 
 					@if(Auth::user()->can('link', $calendar))
 
 						<div id='calendar_link_hide'>
-							<div class='row no-gutters my-1'>
-								<p>Calendar linking is a complex feature, we recommend you check out the article on <a href='{{ helplink('calendar_linking') }}' target="_blank"><i class="icon-question-sign"></i> Calendar Linking</a>.</p>
-							</div>
 
 							@if($calendar->parent != null)
 								<div class='row no-gutters my-1 center-text hidden calendar_link_explanation'>
