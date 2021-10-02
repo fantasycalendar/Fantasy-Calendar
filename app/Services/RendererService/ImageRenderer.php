@@ -173,7 +173,7 @@ class ImageRenderer
         }
 
         $cacheName = $calendar->hash . '-' . $calendar->epoch->slug . '-' . sha1($parameters->toJson());
-        return cache()->remember($cacheName, 300, function() use ($calendar, $parameters){
+        return cache()->remember($cacheName, 3, function() use ($calendar, $parameters){
             return static::make($calendar, collect(MonthRenderer::prepareFrom($calendar)), $parameters)
                 ->render();
         });
@@ -216,8 +216,8 @@ class ImageRenderer
 
         $calendarMaxNameTextSize = $this->header_height / 3.5;
         $determinedCalendarNameWidth = $this->determineTextSize($this->calendar->name, $calendarMaxNameTextSize)['width'];
-        $calendarNameRatio = $boundingBoxWidth / $determinedCalendarNameWidth;
-        $this->calendarNameTextSize = clamp(17 * $calendarNameRatio, 10, $calendarMaxNameTextSize);
+        $calendarNameRatio = ($boundingBoxWidth * 0.95) / $determinedCalendarNameWidth;
+        $this->calendarNameTextSize = clamp($calendarMaxNameTextSize * $calendarNameRatio, 9, $calendarMaxNameTextSize);
     }
 
     /**

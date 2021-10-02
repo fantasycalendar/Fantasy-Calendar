@@ -12,6 +12,7 @@
                 max-width: 100%;
                 min-height: 100%;
                 width: 100vw;
+                height: 100vh;
                 margin: 0;
                 padding: 0;
                 background-color: black;
@@ -20,6 +21,7 @@
                 display: grid;
                 grid-template-columns: 1fr;
                 place-items: center;
+                min-height: 100%;
                 max-width: 100%;
                 width: 100%;
             }
@@ -47,13 +49,11 @@
             @endphp
 
             @foreach($calendars as $calendar)
-                @foreach(['xs', 'sm', 'md', 'lg', 'xl', 'xxl', 'xxxl'] as $size)
-                    <div class="image">
-                        <a href="{{ route('calendars.image', ['calendar' => $calendar, 'ext' => 'png', 'size' => $size, 'theme' => request()->input('theme', 'discord')]) }}">
-                            <img src="{{ route('calendars.image', ['calendar' => $calendar, 'ext' => 'png', 'size' => $size, 'theme' => request()->input('theme', 'discord')]) }}" alt="">
-                        </a>
-                    </div>
-                @endforeach
+                <div class="image">
+                    <a href="{{ route('calendars.image', ['calendar' => $calendar, 'ext' => 'png', 'size' => request()->input('size', 'xxl'), 'theme' => request()->input('theme', 'discord')]) }}">
+                        <img src="{{ route('calendars.image', ['calendar' => $calendar, 'ext' => 'png', 'size' => request()->input('size', 'xxl'), 'theme' => request()->input('theme', 'discord')]) }}" alt="">
+                    </a>
+                </div>
             @endforeach
         </div>
     </body>
