@@ -55,8 +55,10 @@ class MonthHandler extends Command
      */
     public static function renderImage($calendar): Response
     {
+        logger($calendar->imageLink('png', ['theme' => 'discord', 'size' => 'md', 'year' => $calendar->year, 'month_id' => $calendar->month_id, 'day' => $calendar->day]));
+
         return Response::make(self::getCurrentTime($calendar))
-            ->embedMedia($calendar->imageLink('png', ['theme' => 'discord', 'size' => 'md', 'date_cachebust', $calendar->epoch->slug]));
+            ->embedMedia($calendar->imageLink('png', ['theme' => 'discord', 'size' => 'md', 'year' => $calendar->year, 'month_id' => $calendar->month_id, 'day' => $calendar->day]));
     }
 
     /**
