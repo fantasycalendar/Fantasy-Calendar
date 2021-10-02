@@ -224,8 +224,8 @@
                     Your <span x-text="word" x-show.opacity.transition.duration.800ms="visible"></span>. Your Calendar. Together.
                 </h3>
                 <h5 style="width: 100%; text-align: center;">Track campaign time for your players right from Discord. Yeah, <span class="font-italic">we like it too.</span></h5>
-                <img class="d-none d-md-block m-auto" src="{{ asset('resources/discord/integration-bg-2.png') }}" alt="" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); max-height: 80%">
-                <img class="d-block d-md-none m-auto" src="{{ asset('resources/discord/integration-bg-mobile.png') }}" alt="" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); max-height: 60%;">
+                <img class="d-none d-md-block mx-auto" src="{{ asset('resources/discord/integration-bg-2.png') }}" alt="" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); max-height: 80vh">
+                <img class="d-block d-md-none mx-auto" src="{{ asset('resources/discord/integration-bg-mobile.png') }}" alt="" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); max-height: 60%;">
             </div>
             <h4 class="next-link" style="position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section3"><i class="fa fa-chevron-circle-down"></i> There's more?! <i class="fa fa-chevron-circle-down"></i></a></h4>
         </section>
