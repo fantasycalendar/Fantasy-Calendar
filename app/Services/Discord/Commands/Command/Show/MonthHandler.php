@@ -58,7 +58,14 @@ class MonthHandler extends Command
         logger($calendar->imageLink('png', ['theme' => 'discord', 'size' => 'md', 'year' => $calendar->year, 'month_id' => $calendar->month_id, 'day' => $calendar->day]));
 
         return Response::make(self::getCurrentTime($calendar))
-            ->embedMedia($calendar->imageLink('png', ['theme' => 'discord', 'size' => 'md', 'year' => $calendar->year, 'month_id' => $calendar->month_id, 'day' => $calendar->day]));
+            ->embedMedia($calendar->imageLink('png',
+                [
+                    'theme' => 'discord',
+                    'size' => 'md',
+                    'year' => $calendar->year,
+                    'month_id' => $calendar->month_id,
+                    'day' => $calendar->day
+                ]));
     }
 
     /**

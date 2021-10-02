@@ -13,6 +13,7 @@ use App\Services\Discord\Exceptions\DiscordCalendarLinkedException;
 use App\Services\Discord\Exceptions\DiscordCalendarNotSetException;
 use App\Services\Discord\Exceptions\DiscordException;
 use App\Services\Discord\Exceptions\DiscordUserUnauthorized;
+use App\Services\Discord\Jobs\PrewarmDayImageCache;
 use App\Services\RendererService\TextRenderer;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -106,6 +107,10 @@ class DateChangesHandler extends Command
         }
 
         $this->calendar->save();
+
+        if($unit == 'day' && $count == 1) {
+            PrewarmDayImageCache::dispatch($this->calendar, $action);
+        }
 
         return $response;
     }
