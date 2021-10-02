@@ -102,6 +102,10 @@
             font-size: 1.3rem;
         }
 
+        section h4.next-link {
+            font-size: 2.1rem;
+        }
+
         @media screen and (max-width: 768px) {
             html {
                 font-size: 16px;
@@ -109,6 +113,14 @@
 
             .comparison_image img {
                 max-width: 96%;
+            }
+
+            h3 {
+                font-size: 1.6rem;
+            }
+
+            section h4.next-link {
+                font-size: 1.8rem;
             }
         }
 
@@ -197,11 +209,11 @@
             <h3 style="width: 100%; text-align: center;" class="text-white">The long-awaited Discord integration is here!</h3>
             <h4 class="text-white text-center">Quick to setup, easy to use, and available <strong><a href="{{ route('discord.index') }}">right now</a></strong> to subscribers.</h4>
 
-            <h4 class="next-link" style="font-size: 2.1rem; position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section2"><i class="fa fa-chevron-circle-down"></i> Show me more! <i class="fa fa-chevron-circle-down"></i></a></h4>
+            <h4 class="next-link" style="position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section2"><i class="fa fa-chevron-circle-down"></i> Show me more! <i class="fa fa-chevron-circle-down"></i></a></h4>
         </section>
 
         <section class="fullheight green-border welcome text-white" id="section2" style="background-image: url({{ asset('resources/discord/plugin_pattern.png') }}); background-repeat: repeat;">
-            <div class="container">
+            <div class="container" style="max-height: 85vh;">
                 <h3 style="width: 100%; text-align: center;"
                     class="display-md-1"
                     x-data="wordRandomizer"
@@ -212,9 +224,10 @@
                     Your <span x-text="word" x-show.opacity.transition.duration.800ms="visible"></span>. Your Calendar. Together.
                 </h3>
                 <h5 style="width: 100%; text-align: center;">Track campaign time for your players right from Discord. Yeah, <span class="font-italic">we like it too.</span></h5>
-                <img src="{{ asset('resources/discord/integration-bg-2.png') }}" alt="" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);">
+                <img class="d-none d-md-block m-auto" src="{{ asset('resources/discord/integration-bg-2.png') }}" alt="" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); max-height: 80%">
+                <img class="d-block d-md-none m-auto" src="{{ asset('resources/discord/integration-bg-mobile.png') }}" alt="" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); max-height: 60%;">
             </div>
-            <h4 class="next-link" style="font-size: 2.1rem; position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section3"><i class="fa fa-chevron-circle-down"></i> There's more?! <i class="fa fa-chevron-circle-down"></i></a></h4>
+            <h4 class="next-link" style="position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section3"><i class="fa fa-chevron-circle-down"></i> There's more?! <i class="fa fa-chevron-circle-down"></i></a></h4>
         </section>
 
         <section class="comparison_both welcome" id="section3" style="background-color: #303136; background-image: url('{{ asset('resources/gray-square-bg.png') }}');">
