@@ -287,9 +287,31 @@ class DateChangesHandler extends Command
 
         logger()->debug(json_encode(compact('action', 'reverse_action', 'unit', 'count')));
 
-        return $response->addRow(function(ActionRow $row) use ($action, $reverse_action, $unit, $count){
-            $row = $row->addButton("$action:change_date:$reverse_action;$unit;$count;true", ucfirst($reverse_action) . " $count instead")
-                       ->addButton("$action:change_date:$action;$unit;$count;true", ucfirst($action) ." $count more", 'success');
+        return $response->addRow(function(ActionRow $row) use ($unit, $count, $action){
+            switch ($action) {
+                case 'add':
+                    $subButtonLabel = "Sub $count instead";
+                    $subButtonStyle = 'secondary';
+                    $addButtonLabel = "Add $count more";
+                    $addButtonStyle = 'success';
+                    break;
+                case 'sub':
+                    $subButtonLabel = "Sub $count more";
+                    $subButtonStyle = 'success';
+                    $addButtonLabel = "Add $count instead";
+                    $addButtonStyle = 'secondary';
+                    break;
+            }
+
+            $row = $row->addButton(
+                        "sub:change_date:sub;$unit;$count;true",
+                        $subButtonLabel,
+                        $subButtonStyle
+                    )->addButton(
+                       "add:change_date:add;$unit;$count;true",
+                       $addButtonLabel,
+                       $addButtonStyle
+                    );
 
             if($this->calendar->children()->exists()) {
                 $show_children = ($this->setting('show_children') == $this->calendar->id);
