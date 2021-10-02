@@ -108,7 +108,10 @@ package:
         - setup/**
         - node_modules/**
         - public/storage
-        - resources/assets/**
+        - public/vendor/sharp/fonts/*
+        - public/vendor/sharp/vendor.js
+        - resources/images
+        - resources/image-sourcefiles
         - storage/**
         - tests/**
 
