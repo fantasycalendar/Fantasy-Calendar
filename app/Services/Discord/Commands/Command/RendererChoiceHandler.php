@@ -3,56 +3,64 @@
 namespace App\Services\Discord\Commands\Command;
 
 use App\Services\Discord\Commands\Command\Response\Component\ActionRow;
+use App\Services\Discord\Commands\Command\Show\MonthHandler;
 use App\Services\Discord\Commands\Command\Traits\PremiumCommand;
 use App\Services\Discord\Exceptions\DiscordException;
 use Illuminate\Notifications\Action;
+use Illuminate\Support\Arr;
 
 class RendererChoiceHandler extends \App\Services\Discord\Commands\Command
 {
     use PremiumCommand;
+    private $typeDescriptions = [
+        'image' => 'an image',
+        'text' => 'a block of text'
+    ];
+
+    private $oppositeDescriptions = [
+        'image' => 'a block of text',
+        'text' => 'an image'
+    ];
 
     /**
      * @inheritDoc
      */
     public function handle()
     {
-        return Response::make("The features below are experimental! Just a warning: These may not stick around, may change at any time, may break things, or just outright not work. \nHave fun!")
+        $typeDescription = Arr::get($this->typeDescriptions, $this->setting('renderer'), 'image');
+
+        return Response::make("We're currently rendering your calendars as $typeDescription.")
             ->addRow(function(ActionRow $row){
                 $image_renderer_enabled = $this->setting('renderer') == 'image';
                 return $row->addButton(
-                    static::target('toggle_image_renderer'),
-                    $image_renderer_enabled
-                        ? 'Disable Image Renderer'
-                        : 'Replace text rendering with images',
-                    $image_renderer_enabled
-                        ? 'danger'
-                        : 'success');
+                    static::target('switchRenderer'),
+                    "Render as " . $this->oppositeDescriptions[$this->setting('renderer')] . " instead",
+                    'success');
             })->ephemeral();
     }
 
-    public function toggle_image_renderer()
+    public function switchRenderer()
     {
-        if($this->setting('renderer') != 'image') {
-            $this->setting('renderer', 'image');
+        $previousRenderer = $this->setting('renderer') ?? 'image';
+        $renderer = $previousRenderer == 'image'
+            ? 'text'
+            : 'image';
 
-            $response = Response::make('Image renderer enabled!')
-                ->singleButton(static::target('toggle_image_renderer'), 'Nevermind', 'secondary')
-                ->ephemeral();
+        $this->setting('renderer', $renderer);
 
-            try {
-                $calendar = $this->getDefaultCalendar();
-            } catch (\Throwable $e) {
-                return $response->appendText($this->newLine(2) . "If you had a calendar set (" . ChooseHandler::fullSignature() . "), we'd show you what that looks like.");
-            }
+        $response = Response::make(ucfirst($renderer) . ' renderer enabled!')
+            ->singleButton(static::target('switchRenderer'), 'Nevermind', 'secondary')
+            ->ephemeral();
 
-            return $response->appendText($this->newLine(2) . "Here's what it'll look like:" . $this->newLine())
-                ->embedMedia($calendar->imageLink('png', ['theme' => 'discord']));
+        try {
+            $calendar = $this->getDefaultCalendar();
+        } catch (\Throwable $e) {
+            return $response->appendText($this->newLine(2) . "If you had a calendar set (" . ChooseHandler::fullSignature() . "), we'd show you what that looks like.");
         }
 
-        $this->setting('renderer', 'text');
-
-        return Response::make("Image renderer disabled. If something was broken about it, please let us know in our Discord server! We definitely want to hear from you.")
-            ->singleButton(route('discord.server'), 'Join Our Discord Server')
+        return MonthHandler::respondWith($renderer, $calendar)
+            ->prependText(ucfirst($renderer) . " renderer enabled! Here's what it'll look like:" . $this->newLine())
+            ->singleButton(static::target('switchRenderer'), 'Nevermind', 'secondary')
             ->ephemeral();
     }
 
