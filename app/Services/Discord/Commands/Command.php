@@ -177,7 +177,12 @@ abstract class Command
         return DiscordGuild::firstOrCreate([
             'guild_id' => $this->interaction('guild_id'),
             'user_id' => $this->user->id
-        ], ['discord_auth_id' => $this->discord_auth->id]);
+        ], [
+            'discord_auth_id' => $this->discord_auth->id,
+            'guild_settings' => [
+                'renderer' => 'image'
+            ]
+        ]);
     }
 
     /**

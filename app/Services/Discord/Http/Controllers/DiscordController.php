@@ -102,16 +102,13 @@ class DiscordController extends Controller
             return redirect(route('discord.index'))->with('error', 'There was an error connecting your Discord account! Please try again, and if it happens again, let us know over on our Discord server.');
         }
 
-        if(Auth::user()->has('discord_auth')) {
-            Auth::user()->discord_auth()->delete();
-        }
-
-        Auth::user()->discord_auth()->create([
+        Auth::user()->discord_auth()->updateOrCreate([
+            'discord_user_id' => $user->getId(),
+        ], [
             'token' => $user->token,
             'refresh_token' => $user->refreshToken,
             'avatar' => $user->getAvatar(),
             'discord_email' => $user->getEmail(),
-            'discord_user_id' => $user->getId(),
             'discord_username' => $user->getNickname(),
             'expires_at' => now()->addSeconds($user->expiresIn)
         ]);
