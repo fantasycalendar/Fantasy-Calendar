@@ -7,7 +7,7 @@ use App\Services\Discord\Commands\Command\Traits\PremiumCommand;
 use App\Services\Discord\Exceptions\DiscordException;
 use Illuminate\Notifications\Action;
 
-class ExperimentsHandler extends \App\Services\Discord\Commands\Command
+class RendererChoiceHandler extends \App\Services\Discord\Commands\Command
 {
     use PremiumCommand;
 
@@ -61,6 +61,6 @@ class ExperimentsHandler extends \App\Services\Discord\Commands\Command
      */
     public static function signature(): string
     {
-        return "experiments";
+        return "renderer";
     }
 }
