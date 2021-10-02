@@ -77,9 +77,8 @@ class MonthHandler extends Command
         $month = TextRenderer::renderMonth($calendar);
 
 
-        if(Str::length($month) > 1900 || strlen(explode("\n" ,$month)[0]) > 80) {
+        if(Str::length($month) > 1900 || Str::length(explode("\n" ,$month)[0]) > 80) {
             $month = self::clipMonthToFit($month);
-            logger(strlen($month));
         }
 
         return Response::make(self::getCurrentTime($calendar) . self::codeBlock($month));
