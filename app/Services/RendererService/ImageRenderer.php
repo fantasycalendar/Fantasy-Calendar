@@ -173,7 +173,7 @@ class ImageRenderer
         }
 
         $cacheName = $calendar->hash . '-' . $calendar->epoch->slug . '-' . sha1($parameters->toJson());
-        return cache()->remember($cacheName, 3, function() use ($calendar, $parameters){
+        return cache()->remember($cacheName, config('fantasycalendar.renderers.image.cache_ttl'), function() use ($calendar, $parameters){
             return static::make($calendar, collect(MonthRenderer::prepareFrom($calendar)), $parameters)
                 ->render();
         });
