@@ -51,7 +51,9 @@ class FixUnsortedSeasons extends Command
 
             foreach ($calendars as $calendar) {
 
-                $sortedSeasons = collect($calendar->static_data['seasons']['data'])
+                $static_data = $calendar->static_data;
+
+                $sortedSeasons = collect($static_data['seasons']['data'])
                     ->map(function($season, $index){
                         $season['index'] = $index;
                         return $season;
@@ -72,7 +74,10 @@ class FixUnsortedSeasons extends Command
                 if($alreadySorted) continue;
 
                 $calendar->events->each(function($event) use ($sortedSeasons) {
-                    $newConditions = $this->fixSeasonConditions($event['data']['conditions'], $sortedSeasons);
+                    $eventData = $event['data'];
+                    $eventData['conditions'] = $this->fixSeasonConditions($eventData['conditions'], $sortedSeasons);
+                    $event['data'] = $eventData;
+                    $event->save();
                 });
 
                 $sortedSeasons = $sortedSeasons->map(function($season){
@@ -80,19 +85,24 @@ class FixUnsortedSeasons extends Command
                     return $season;
                 });
 
-                // Unsure how to update $calendar->static_data['seasons']['data'] and $event['data']['conditions'] and then save these models
+                $static_data['seasons']['data'] = $sortedSeasons;
+
+                $calendar->static_data = $static_data;
+
+                $calendar->save();
+
             }
         });
     }
 
     private function fixSeasonConditions($conditions, $sortedSeasons){
 
-        foreach($conditions as $condition){
+        foreach($conditions as $index => $condition){
 
             if(count($condition) == 2){
-                $condition[1] = $this->fixSeasonConditions($condition[1], $sortedSeasons);
+                $conditions[$index][1] = $this->fixSeasonConditions($condition[1], $sortedSeasons);
             }else if(count($condition) == 3 && $condition[0] === "Season" && ($condition[1] === "0" || $condition[1] === "1")){
-                $condition[2][0] = strval($sortedSeasons->pluck('index')->search($condition[2][0]));
+                $conditions[$index][2][0] = strval($sortedSeasons->pluck('index')->search($condition[2][0]));
             }
 
         }
