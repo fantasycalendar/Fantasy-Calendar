@@ -100,6 +100,7 @@ class Calendar extends Model
     {
         static::addGlobalScope('active', function (Builder $builder) {
             $builder->where('deleted', 0);
+            $builder->whereNull('deleted_at');
         });
     }
 

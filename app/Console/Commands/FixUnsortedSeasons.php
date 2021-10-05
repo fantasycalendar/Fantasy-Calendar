@@ -4,6 +4,8 @@ namespace App\Console\Commands;
 
 use App\Calendar;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 class FixUnsortedSeasons extends Command
 {
@@ -38,76 +40,79 @@ class FixUnsortedSeasons extends Command
      */
     public function handle()
     {
-        $calendar = Calendar::whereNull('deleted_at');
+        $calendar = Calendar::query();
 
         if($this->option('hash')){
-            $calendar->where('hash', $this->option('hash'));
+            $calendar->hash($this->option('hash'));
         }
 
         $calendar->where('static_data', 'like', '%periodic_seasons":false%')
-            ->where('static_data', 'like', '%"seasons":{"data":[{"%');
+            ->where('static_data', 'like', '%"seasons":{"data":[{"%')
+            ->whereHas('events', function(Builder $query){
+                $query->where('data', 'like', '%"Season","0"%')
+                    ->orWhere('data', 'like', '%"Season","1"%');
+            })
+            ->with('events');
 
-        $calendar->chunk(200, function($calendars) {
+        DB::transaction(function() use ($calendar){
+            $calendar->chunk(1000, function($calendars) {
+                $calendars->each(function($calendar){
 
-            foreach ($calendars as $calendar) {
+                    $static_data = $calendar->static_data;
 
-                $static_data = $calendar->static_data;
+                    $sortedSeasons = collect($static_data['seasons']['data'])
+                        ->map(function($season, $index){
+                            $season['index'] = $index;
+                            return $season;
+                        })->sort(function($a, $b){
+                            if($a['timespan'] != $b['timespan']){
+                                return $a['timespan'] - $b['timespan'];
+                            }
+                            return $a['day'] - $b['day'];
+                        })->values();
 
-                $sortedSeasons = collect($static_data['seasons']['data'])
-                    ->map(function($season, $index){
-                        $season['index'] = $index;
-                        return $season;
-                    })->sort(function($a, $b){
-                        if($a['timespan'] != $b['timespan']){
-                            return $a['timespan'] - $b['timespan'];
+                    $alreadySorted = true;
+                    foreach($sortedSeasons as $index => $season){
+                        if($index !== $season['index']){
+                            $alreadySorted = false;
+                            break;
                         }
-                        return $a['day'] - $b['day'];
-                    })->values();
-
-                $alreadySorted = true;
-                foreach($sortedSeasons as $index => $season){
-                    if($index !== $season['index']){
-                        $alreadySorted = false;
-                        break;
                     }
-                }
-                if($alreadySorted) continue;
+                    if($alreadySorted) return;
 
-                $calendar->events->each(function($event) use ($sortedSeasons) {
-                    $eventData = $event['data'];
-                    $eventData['conditions'] = $this->fixSeasonConditions($eventData['conditions'], $sortedSeasons);
-                    $event['data'] = $eventData;
-                    $event->save();
+                    $calendar->events->each(function($event) use ($sortedSeasons) {
+                        $eventData = $event->data;
+                        $eventData['conditions'] = $this->fixSeasonConditions($eventData['conditions'], $sortedSeasons);
+                        $event->update([
+                            'data' => $eventData
+                        ]);
+                    });
+
+                    $static_data['seasons']['data'] = $sortedSeasons->map(function($season){
+                        unset($season['index']);
+                        return $season;
+                    });
+
+                    $calendar->update([
+                        'static_data' => $static_data
+                    ]);
+
                 });
-
-                $sortedSeasons = $sortedSeasons->map(function($season){
-                    unset($season['index']);
-                    return $season;
-                });
-
-                $static_data['seasons']['data'] = $sortedSeasons;
-
-                $calendar->static_data = $static_data;
-
-                $calendar->save();
-
-            }
+            });
         });
+
+        return 0;
     }
 
     private function fixSeasonConditions($conditions, $sortedSeasons){
-
         foreach($conditions as $index => $condition){
-
             if(count($condition) == 2){
                 $conditions[$index][1] = $this->fixSeasonConditions($condition[1], $sortedSeasons);
             }else if(count($condition) == 3 && $condition[0] === "Season" && ($condition[1] === "0" || $condition[1] === "1")){
                 $conditions[$index][2][0] = strval($sortedSeasons->pluck('index')->search($condition[2][0]));
             }
-
         }
 
         return $conditions;
-
     }
 }
