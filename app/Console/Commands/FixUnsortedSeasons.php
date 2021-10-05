@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Calendar;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
 
 class FixUnsortedSeasons extends Command
@@ -52,7 +53,10 @@ class FixUnsortedSeasons extends Command
                 $query->where('data', 'like', '%"Season","0"%')
                     ->orWhere('data', 'like', '%"Season","1"%');
             })
-            ->with('events');
+            ->with('events', function(HasMany $query){
+                $query->where('data', 'like', '%"Season","0"%')
+                    ->orWhere('data', 'like', '%"Season","1"%');
+            });
 
         DB::transaction(function() use ($calendar){
             $calendar->chunk(1000, function($calendars) {
