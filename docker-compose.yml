@@ -43,7 +43,7 @@ services:
       - "ASSET_URL=http://fantasy-calendar.test:9980/"
       - "COOKIEADDRESS=http://fantasy-calendar.test:9980/"
       - "DB_HOST=fantasydb"
-      - "DB_DATABASE=fantasy-calendar"
+      - "DB_DATABASE=fantasycalendar"
       - "DB_USERNAME=root"
       - "DB_PASSWORD=root"
       - "REDIS_HOST=fcredis"
@@ -51,6 +51,14 @@ services:
       - "SESSION_DRIVER=redis"
       - "VIEW_COMPILED_PATH=/var/task/storage/framework/views"
       - "LOG_CHANNEL=docker"
+      - "MAIL_MAILER=smtp"
+      - 'MAIL_HOST=mailhog'
+      - 'MAIL_PORT=1025'
+      - 'MAIL_USERNAME=test'
+      - 'MAIL_PASSWORD=test'
+      - 'MAIL_ENCRYPTION='
+      - 'MAIL_FROM_ADDRESS=contact@fantasy-calendar.com'
+      - 'MAIL_FROM_NAME="Fantasy Calendar"'
 
   selenium:
     image: selenium/standalone-chrome
@@ -88,6 +96,12 @@ services:
       - BROWSERSYNC=${FC_BROWSERSYNC:-false}
       - "MIXVERSION=true"
       - "NODE_OPTIONS=--max-old-space-size=4096"
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "8025:8025"
+      - "1025:1025"
 
 volumes:
   fantasy-calendar-db:
