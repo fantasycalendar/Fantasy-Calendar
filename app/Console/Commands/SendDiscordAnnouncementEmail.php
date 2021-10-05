@@ -57,26 +57,19 @@ class SendDiscordAnnouncementEmail extends Command
             exit(1);
         }
 
-        if($total > 500 && !$this->confirm(sprintf('Found %d users, send them all?', $total))) {
+        if(!$this->option('force') && $total > 500 && !$this->confirm(sprintf('Found %d users, send them all?', $total))) {
             $this->warn('Stopping here, no users were sent to.');
             exit(1);
         }
 
-        $bar = $this->output->createProgressBar($total);
-
-        $bar->start();
-
-        $users->each(function($user) use ($bar){
+        $users->each(function($user){
+            $this->info($user->email);
             Mail::to($user)->queue(new DiscordAnnouncement($user));
-            $user->has_sent_announcement = true;
-            $user->save();
-
-            $bar->advance();
-
-            #usleep(100000);
+            $user->update([
+                'has_sent_announcement' => true
+            ]);
         });
 
-        $bar->finish();
 
         $this->info("\nEmail sent to " . $total);
     }
