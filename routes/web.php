@@ -29,7 +29,7 @@ Route::view('/discord-server', 'pages.discord-server', ['title' => 'Join Our Dis
 Route::view('/discord', 'pages.discord')->name('discord');
 
 Route::view('/unsubscribed', 'pages.unsubscribed')->name('unsubscribed');
-Route::get('/unsubscribe/{user}', 'SettingsController@unsubscribeFromMarketing')->name('unsubscribe')->middleware('signed:relative');
+Route::get('/unsubscribe/{user}', 'SettingsController@unsubscribeFromMarketing')->name('unsubscribe')->middleware('signed');
 
 Route::get('/discord-announcement-acknowledge', 'WelcomeController@discord_announcement_acknowledge')->name('discord-announcement-acknowledge');
 
