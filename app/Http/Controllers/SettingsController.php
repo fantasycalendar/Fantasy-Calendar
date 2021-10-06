@@ -70,11 +70,14 @@ class SettingsController extends Controller
     }
 
     public function unsubscribeFromMarketing(Request $request) {
-
         Auth::user()->setMarketingStatus(false);
 
-        return redirect('unsubscribed');
-
+        return redirect(route('marketing.subscription-updated'));
     }
 
+    public function resubscribeToMarketing(Request $request) {
+        Auth::user()->setMarketingStatus(true);
+
+        return redirect(route('marketing.subscription-updated'));
+    }
 }

@@ -27,39 +27,52 @@ Route::view('/faq', 'pages.faq')->name('faq');
 Route::view('/donate', 'pages.donate', ['title'=>'Support the site']);
 Route::view('/discord-server', 'pages.discord-server', ['title' => 'Join Our Discord Server!'])->name('discord.server');
 Route::view('/discord', 'pages.discord')->name('discord');
-
-Route::view('/unsubscribed', 'pages.unsubscribed')->name('unsubscribed');
-Route::get('/unsubscribe/{user}', 'SettingsController@unsubscribeFromMarketing')->name('unsubscribe')->middleware('signed');
-
 Route::get('/discord-announcement-acknowledge', 'WelcomeController@discord_announcement_acknowledge')->name('discord-announcement-acknowledge');
-
-Route::get('/account-migrated', 'WelcomeController@account_migrated')->name('account-migrated');
-Route::get('/account-migrated-acknowledge', 'WelcomeController@account_migrated_acknowledge')->name('account-migrated-acknowledge');
-Route::view('/account-deletion-request', 'pages.account-deletion-request')->middleware(['auth', 'account.deletion', 'agreement']);
-Route::post('/set-account-deletion', 'AccountDeletionController@set')->middleware(['auth', 'account.deletion']);
-Route::get('/cancel-account-deletion', 'AccountDeletionController@cancel')->name('cancel-account-deletion')->middleware(['auth']);
-Route::get('/account-deletion-warning', 'AccountDeletionController@warning')->name('account-deletion-warning')->middleware(['auth']);
-
-
 Route::get('/terms-and-conditions', 'AgreementController@view')->name('terms-and-conditions');
 Route::get('/privacy-policy', 'PolicyController@view')->name('privacy-policy');
-
-
 Route::get('/prompt-tos', 'AgreementController@show')->name('prompt-tos');
-Route::get('/agreement-accepted', 'AgreementController@accept')->name('agreement-accepted');
+
+Route::middleware('auth')->group(function(){
+    Route::get('/account-migrated', 'WelcomeController@account_migrated')->name('account-migrated');
+    Route::get('/account-migrated-acknowledge', 'WelcomeController@account_migrated_acknowledge')->name('account-migrated-acknowledge');
+    Route::get('/agreement-accepted', 'AgreementController@accept')->name('agreement-accepted');
+
+    Route::view('/account-deletion-request', 'pages.account-deletion-request')->middleware(['account.deletion', 'agreement']);
+    Route::post('/set-account-deletion', 'AccountDeletionController@set')->middleware(['account.deletion']);
+
+    Route::get('/cancel-account-deletion', 'AccountDeletionController@cancel')->name('cancel-account-deletion')->middleware();
+    Route::get('/account-deletion-warning', 'AccountDeletionController@warning')->name('account-deletion-warning')->middleware();
+});
 
 
-Route::get('invite/accept', 'InviteController@accept')->name('invite.accept')->middleware(['auth', 'account.deletion', 'agreement']);
-Route::get('invite/reject', 'InviteController@showRejectConfirmation')->name('invite.reject-confirm')->middleware(['auth', 'account.deletion', 'agreement']);
-Route::post('invite/reject', 'InviteController@reject')->name('invite.reject')->middleware(['auth', 'account.deletion', 'agreement']);
-Route::get('invite/register', 'InviteController@register')->name('invite.register')->middleware(['register', 'signed:relative']);
+Route::prefix('marketing')->as('marketing.')->middleware('auth')->group(function(){
+    Route::view('/manage-subscription/{user}', 'pages.unsubscribe-confirmation')->name('manage-subscription')->middleware('signed');
+    Route::post('/unsubscribe', 'SettingsController@unsubscribeFromMarketing')->name('unsubscribe');
+    Route::post('/resubscribe', 'SettingsController@resubscribeToMarketing')->name('resubscribe');
+    Route::view('/subscription-updated', 'pages.subscription-updated')->name('subscription-updated');
+});
+
+Route::prefix('invite')->group(function(){
+    Route::middleware(['auth', 'account.deletion', 'agreement'])->group(function(){
+        Route::get('accept', 'InviteController@accept')->name('invite.accept');
+        Route::get('reject', 'InviteController@showRejectConfirmation')->name('invite.reject-confirm');
+        Route::post('reject', 'InviteController@reject')->name('invite.reject');
+    });
+
+    Route::get('register', 'InviteController@register')->name('invite.register')->middleware(['register', 'signed:relative']);
+});
 
 
 // Calendar management
-Route::get('calendars/{calendar}/print', 'CalendarController@print')->name('calendars.print')->middleware(['account.deletion', 'agreement']);
-Route::get('calendars/{calendar}/export', 'CalendarController@export')->name('calendars.export')->middleware(['account.deletion', 'agreement']);
-Route::get('calendars/{calendar}.{ext}', 'CalendarController@renderImage')->name('calendars.image')->middleware(['account.deletion', 'agreement']);
-Route::resource('calendars', 'CalendarController')->middleware(['account.deletion', 'agreement']);
+Route::middleware(['account.deletion', 'agreement'])->group(function(){
+    Route::group(['as' => 'calendars.', 'prefix' => 'calendars'], function(){
+        Route::get('/{calendar}/print', 'CalendarController@print')->name('print');
+        Route::get('/{calendar}/export', 'CalendarController@export')->name('export');
+        Route::get('/{calendar}.{ext}', 'CalendarController@renderImage')->name('image');
+    });
+
+    Route::resource('calendars', 'CalendarController');
+});
 
 
 // User auth
@@ -68,26 +81,19 @@ Route::get('/logout', 'Auth\LoginController@logout');
 Route::get('/admin/loginas/{userid}', 'AdminController@loginas')->name('admin.loginas')->middleware('admin');
 
 
-// Subscription management
 // Pricing page
 Route::get('/pricing', 'SubscriptionController@pricing')->name('subscription.pricing');
 
-// List current subscription
-Route::get('/subscription', 'SubscriptionController@index')->name('subscription.index');
-
-// They want to subscribe!
-Route::get('/subscription/subscribe/{level}/{interval}', 'SubscriptionController@subscribe')->name('subscription.subscribe')->middleware(['account.deletion', 'agreement']);
-Route::post('/subscription/subscribe', 'SubscriptionController@createsubscription')->name('subscription.create')->middleware(['account.deletion', 'agreement']);
-
-// They want to cancel =(
-Route::get('/subscription/cancel', 'SubscriptionController@cancellation')->name('subscription.cancel')->middleware(['account.deletion', 'agreement']);
-Route::post('/subscription/cancel', 'SubscriptionController@cancel')->name('subscription.cancelpost')->middleware(['account.deletion', 'agreement']);
-
-// They want to resume! =)
-Route::get('/subscription/resume', 'SubscriptionController@resume')->name('subscription.resume')->middleware(['account.deletion', 'agreement']);
-
-// They want to upgrade
-Route::post('/subscription/update/{level}/{plan}', 'SubscriptionController@update')->name('subscription.update')->middleware(['account.deletion', 'agreement']);
+// Subscription management
+Route::prefix('subscription')->as('subscription.')->middleware(['account.deletion', 'agreement'])->group(function(){
+    Route::get('/', 'SubscriptionController@index')->name('index');
+    Route::get('/subscribe/{level}/{interval}', 'SubscriptionController@subscribe')->name('subscribe');
+    Route::post('/subscribe', 'SubscriptionController@createsubscription')->name('create');
+    Route::get('/cancel', 'SubscriptionController@cancellation')->name('cancel');
+    Route::post('/cancel', 'SubscriptionController@cancel')->name('cancelpost');
+    Route::get('/resume', 'SubscriptionController@resume')->name('resume');
+    Route::post('/update/{level}/{plan}', 'SubscriptionController@update')->name('update');
+});
 
 Route::post('pricing/coupon', 'SubscriptionController@coupon');
 
@@ -98,16 +104,17 @@ Route::post(
 );
 
 // User profile
-Route::get('/profile', 'SettingsController@profile')->middleware(['auth', 'account.deletion', 'agreement'])->name('profile');
-Route::post('/profile', 'SettingsController@update')->name('settings.update')->middleware(['auth', 'account.deletion', 'agreement']);
-Route::post('/profile/password', 'SettingsController@updatePassword')->middleware(['auth', 'account.deletion', 'agreement']);
-Route::post('/profile/email', 'SettingsController@requestUpdateEmail')->middleware(['auth', 'account.deletion', 'agreement']);
-Route::get('/update-email/{user}', 'SettingsController@updateEmail')->name('update.email')->middleware(['auth', 'account.deletion', 'agreement']);
+Route::prefix('profile')->middleware(['auth', 'account.deletion', 'agreement'])->group(function(){
+    Route::get('/', 'SettingsController@profile')->name('profile');
+    Route::post('/', 'SettingsController@update')->name('settings.update');
+    Route::post('/password', 'SettingsController@updatePassword');
+    Route::post('/email', 'SettingsController@requestUpdateEmail');
+    Route::get('/update-email/{user}', 'SettingsController@updateEmail')->name('update.email');
+});
 
 Route::get('/error/unavailable', 'ErrorsController@calendarUnavailable')->name('errors.calendar_unavailable');
 // Manual error page routes for the moment
 Route::get('/403', 'ErrorsController@error403');
-
 Route::get('/404', 'ErrorsController@error404');
 
 Route::get('/{path}', 'CalendarController@legacy')->where(['url' => 'calendar.php|calendar']);
