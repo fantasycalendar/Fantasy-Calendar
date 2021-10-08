@@ -17,13 +17,13 @@ class RequestLogger
      */
     public function handle(Request $request, Closure $next)
     {
-
+        $referer = parse_url($request->header('referer'));
         if(!$request->is('/api/*') &&
             !$request->is('/profile/') &&
-            !$request->getHost() !== config('app.url')){
+            !$referer['host'] != config('app.url')){
             DB::table('requests')->insert([
-                'domain' => $request->getHost(),
-                'path' => $request->path(),
+                'domain' => $referer['host'],
+                'path' => $referer['path'],
                 'parameters' => json_encode($request->all())
             ]);
         }
