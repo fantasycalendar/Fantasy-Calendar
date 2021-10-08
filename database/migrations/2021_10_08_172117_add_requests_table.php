@@ -16,8 +16,9 @@ class AddRequestsTable extends Migration
         Schema::create('requests', function (Blueprint $table) {
             $table->id();
             $table->string('domain');
+            $table->index('domain');
             $table->string('path');
-            $table->string('params');
+            $table->json('parameters');
             $table->timestamps();
         });
     }
