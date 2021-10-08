@@ -13,12 +13,13 @@ class AddRequestsTable extends Migration
      */
     public function up()
     {
-        Schema::create('requests', function (Blueprint $table) {
+        Schema::create('tracked_requests', function (Blueprint $table) {
             $table->id();
             $table->string('domain');
             $table->index('domain');
             $table->string('path');
             $table->json('parameters');
+            $table->string('target');
             $table->timestamps();
         });
     }
@@ -30,6 +31,6 @@ class AddRequestsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('requests');
+        Schema::dropIfExists('tracked_requests');
     }
 }

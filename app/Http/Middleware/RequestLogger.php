@@ -2,9 +2,9 @@
 
 namespace App\Http\Middleware;
 
+use App\TrackedRequest;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class RequestLogger
 {
@@ -21,11 +21,13 @@ class RequestLogger
         if (isset($referer['host']) &&
             !$request->is('/api/*') &&
             !$request->is('/profile/') &&
-            !$referer['host'] != config('app.url')) {
-            DB::table('requests')->insert([
+            !str_contains(config('app.url'), $referer['host'])) {
+            parse_str($referer['query'] ?? "", $output);
+            TrackedRequest::create([
                 'domain' => $referer['host'],
                 'path' => $referer['path'],
-                'parameters' => json_encode($request->all())
+                'parameters' => json_encode($output),
+                'target' => $request->fullUrl()
             ]);
         }
         return $next($request);
