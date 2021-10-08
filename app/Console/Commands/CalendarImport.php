@@ -58,7 +58,6 @@ class CalendarImport extends Command
 
         $this->info('Attempting import of calendar with hash ' . $beta_hash);
 
-
         // The heavy lifting. Reach out to the beta and grab a calendar
         $response = $client->get('https://app.fantasy-calendar.com/api/calendar/' . $beta_hash, [
             'query' => ['api_key' => env('FC_API_KEY')]
@@ -77,7 +76,6 @@ class CalendarImport extends Command
             $categories[$index]['id'] = Str::slug($category['name']);
         }
 
-
         // Now we loop through all the events and get rid of the original event ID,
         // then set each event's category ID to the slug-name we set earlier.
         $events = $calendar_data['events'];
@@ -90,16 +88,31 @@ class CalendarImport extends Command
             }
 
         }
-        
-        // Now that we've done the above, we can create the calendar
-        $calendar = Calendar::create([
+
+        $calendarFound = Calendar::where("hash", $beta_hash);
+
+        $calendar_data_to_create = [
             'user_id' => 1,
             'name' => $calendar_data['name'],
             'dynamic_data' => $calendar_data['dynamic_data'],
-            'static_data' => $static_data,
-            'hash' => $calendar_data['hash']
-        ]);
+            'static_data' => $static_data
+        ];
 
+        // Now that we've done the above, we can create the calendar
+        $overwrite = false;
+        if($calendarFound){
+            while(!($overwrite == "y" || $overwrite == "n")) {
+                $overwrite = strtolower($this->ask("Calendar already exists locally. Do you want to overwrite the existing calendar (Y) or create a new hash for the incoming calendar (N)?\nY/N"));
+            }
+            if($overwrite === "n"){
+                $calendar_data['hash'] = md5($calendar_data['name'].json_encode($calendar_data['dynamic_data']).json_encode($calendar_data['static_data']).(1).date("D M d, Y G:i").Str::random(10));
+            }
+        }
+
+        $calendar = Calendar::updateOrCreate(
+            ["hash" => $calendar_data['hash']],
+            $calendar_data_to_create
+        );
 
         // We need to tell all categories to use the ID.
         foreach($categories as $index => $category) {
@@ -117,7 +130,7 @@ class CalendarImport extends Command
                 "Calendar '%s' imported: %scalendars/%s/edit",
                 $calendar_data['name'],
                 env('APP_URL'),
-                $calendar_data['hash']
+                $calendar->hash
             )
         );
     }
