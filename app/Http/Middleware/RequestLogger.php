@@ -18,9 +18,10 @@ class RequestLogger
     public function handle(Request $request, Closure $next)
     {
         $referer = parse_url($request->header('referer'));
-        if(!$request->is('/api/*') &&
+        if (isset($referer['host']) &&
+            !$request->is('/api/*') &&
             !$request->is('/profile/') &&
-            !$referer['host'] != config('app.url')){
+            !$referer['host'] != config('app.url')) {
             DB::table('requests')->insert([
                 'domain' => $referer['host'],
                 'path' => $referer['path'],
