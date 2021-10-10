@@ -51,6 +51,7 @@ class RenderMonth
             'week_length' => $this->weekdays->count(),
             'weeks_count' => $this->calculateWeeksCount($weeks),
             'intercalary_weeks_count' => $this->intercalary_weeks_count,
+            'intercalary_month' => $this->calendar->render_month->intercalary,
             'clean_weekdays' => $cleanWeekDays,
             'weeks' => $weeks,
             'min_day_text_length' => max($this->findShortestUniquePrefixLength($cleanWeekDays), strlen($this->length))

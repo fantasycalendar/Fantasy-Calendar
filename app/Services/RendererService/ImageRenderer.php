@@ -84,6 +84,7 @@ class ImageRenderer
     private int $maximum_header_height = 180;
     private int $minimum_header_height = 50;
     private $min_day_text_length;
+    private bool $intercalary_month;
 
     /**
      * ImageRenderer constructor.
@@ -104,6 +105,7 @@ class ImageRenderer
         $this->week_length = $monthRenderData->get('week_length');
         $this->weeks_count = $monthRenderData->get('weeks_count');
         $this->intercalary_weeks_count = $monthRenderData->get('intercalary_weeks_count');
+        $this->intercalary_month = $monthRenderData->get('intercalary_month');
         $this->min_day_text_length = $monthRenderData->get('min_day_text_length');
 
 
@@ -208,7 +210,7 @@ class ImageRenderer
 
         /* Determine height of grid rows based on the area reserved for days */
         $boundingBoxHeight = $this->grid_bounding_y2 - $this->grid_bounding_y1;
-        $totalIntercalarySpacing = $this->intercalary_spacing * $this->intercalary_weeks_count * 2;
+        $totalIntercalarySpacing = !$this->intercalary_month ? $this->intercalary_spacing * $this->intercalary_weeks_count * 2 : 0;
         $this->grid_row_height = ($boundingBoxHeight - $totalIntercalarySpacing) / $this->weeks_count;
 
         $this->day_number_size = clamp($this->parameter('day_number_size', $this->grid_row_height / 4), 12, 38);
@@ -706,7 +708,7 @@ class ImageRenderer
             fn($displayedWeeks) => $displayedWeeks->filter(
                 fn($day) => optional($day)->isIntercalary
             )->count()
-        )->count() > 0;
+        )->count() > 0 && !$this->intercalary_month;
     }
 
     /**
