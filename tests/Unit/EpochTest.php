@@ -27,6 +27,121 @@ class EpochTest extends TestCase
         $calendar = Calendar::Factory()
             ->for($user)
             ->create([
+                "name" => "Calendário Sundrianus",
+                "static_data" => [
+                    "year_data" => [
+                        "first_day" => 3,
+                        "overflow" => true,
+                        "timespans" => [
+                            [
+                                "name" => "Estrela do amanhã",
+                                "type" => "intercalary",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 31
+                            ],
+                            [
+                                "name" => "Sol do amanhecer",
+                                "type" => "intercalary",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 28
+                            ],
+                            [
+                                "name" => "Coração de fogo",
+                                "type" => "intercalary",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 30
+                            ],
+                            [
+                                "name" => "Primeira semente",
+                                "type" => "intercalary",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 31
+                            ],
+                            [
+                                "name" => "Segunda semente",
+                                "type" => "intercalary",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 30
+                            ],
+                            [
+                                "name" => "Ultima semente",
+                                "type" => "intercalary",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 30
+                            ],
+                            [
+                                "name" => "Meio do ano",
+                                "type" => "intercalary",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 31
+                            ],
+                            [
+                                "name" => "Grandeza solar",
+                                "type" => "intercalary",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 31
+                            ],
+                            [
+                                "name" => "Queda polar",
+                                "type" => "intercalary",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 30
+                            ],
+                            [
+                                "name" => "Garra d'água",
+                                "type" => "intercalary",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 31
+                            ],
+                            [
+                                "name" => "Crepúsculo solar",
+                                "type" => "intercalary",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 30
+                            ],
+                            [
+                                "name" => "Estrela do entardecer",
+                                "type" => "intercalary",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 31
+                            ],
+                        ],
+                        "leap_days" => [],
+                        "global_week" => [
+                            "Montag",
+                            "Dienstag",
+                            "Mitvock",
+                            "Donnerstag",
+                            "Freitag",
+                            "Samstag",
+                            "Sonntag"
+                        ]
+                    ],
+                    "settings" => [
+                        "year_zero_exists" => false
+                    ]
+                ]
+            ]);
+
+        $this->testCalendar($calendar);
+
+        /* ---------------------------------------------------------------------- */
+
+        $calendar = Calendar::Factory()
+            ->for($user)
+            ->create([
                 "name" => "Tal'Dorei Player",
                 "static_data" => [
                     "year_data" => [
@@ -138,8 +253,8 @@ class EpochTest extends TestCase
 
         dump("Epoch should be 333248, is " . $epoch->epoch);
         $this->assertTrue($epoch->epoch === 333248);
-        dump("Weekday index should be 0, is " . $epoch->weekdayIndex);
-        $this->assertTrue($epoch->weekdayIndex === 0);
+        dump("Weekday index should be 0, is " . $epoch->visualWeekdayIndex);
+        $this->assertTrue($epoch->visualWeekdayIndex === 0);
 
         /* ---------------------------------------------------------------------- */
 
@@ -271,8 +386,8 @@ class EpochTest extends TestCase
 
         dump("Epoch should be 20597, is " . $epoch->epoch);
         $this->assertTrue($epoch->epoch === 20597);
-        dump("Weekday index should be 4, is " . $epoch->weekdayIndex);
-        $this->assertTrue($epoch->weekdayIndex === 4);
+        dump("Weekday index should be 4, is " . $epoch->visualWeekdayIndex);
+        $this->assertTrue($epoch->visualWeekdayIndex === 4);
 
         /* ---------------------------------------------------------------------- */
 
@@ -739,45 +854,95 @@ class EpochTest extends TestCase
 
             $thisYearStartEpoch = $epochs->first();
 
-            //dump($year . " - Last year ended on " . $lastYearEndEpoch->epoch . " and this year started on " . $thisYearStartEpoch->epoch);
+            dump($year . " - Last year ended on " . $lastYearEndEpoch->epoch . " and this year started on " . $thisYearStartEpoch->epoch);
 
             if(($calendar->setting("year_zero_exists") && $year === 0) || (!$calendar->setting("year_zero_exists") && $year === 1)){
                 $this->assertTrue($thisYearStartEpoch->epoch === 0);
-                $this->assertTrue($thisYearStartEpoch->weekdayIndex === (intval($calendar->static_data['year_data']['first_day'])-1));
+                $expectedVisualWeekdayIndex = $thisYearStartEpoch->isIntercalary ? 0 : (intval($calendar->static_data['year_data']['first_day'])-1);
+                dump($year . " - First year, got weekday index " . $thisYearStartEpoch->visualWeekdayIndex . " and expected " . $expectedVisualWeekdayIndex);
+                $this->assertTrue(
+                    $thisYearStartEpoch->visualWeekdayIndex === $expectedVisualWeekdayIndex
+                    ||
+                    ($thisYearStartEpoch->visualWeekdayIndex === 0 && $thisYearStartEpoch->isIntercalary)
+                );
             }
 
             $this->assertTrue($lastYearEndEpoch->epoch == $thisYearStartEpoch->epoch-1);
 
             if($calendar->overflows_week) {
 
-                //dump($year . " - Last year ended on weekday index " . $lastYearEndEpoch->weekdayIndex . " and this year started on " . $thisYearStartEpoch->weekdayIndex);
+                dump($year . " - Last year ended on weekday index " . $lastYearEndEpoch->visualWeekdayIndex . " and this year started on " . $thisYearStartEpoch->visualWeekdayIndex);
+
+                $weekdayIndexSame = ($lastYearEndEpoch->weekdayIndex == $thisYearStartEpoch->weekdayIndex - 1);
+                $weekdayIndexResetOK = ($lastYearEndEpoch->weekdayIndex === ($calendar->weekdays->count()-1) && $thisYearStartEpoch->weekdayIndex === 0);
+                $visualWeekdayIndexSame = ($lastYearEndEpoch->visualWeekdayIndex == $thisYearStartEpoch->visualWeekdayIndex - 1);
+                $visualWeekdayIndexResetOK = ($lastYearEndEpoch->visualWeekdayIndex === ($calendar->weekdays->count()-1) && $thisYearStartEpoch->visualWeekdayIndex === 0);
+                $visualWeekdayIndexResetIntercalary = ($thisYearStartEpoch->visualWeekdayIndex === 0 && $thisYearStartEpoch->isIntercalary);
+
+                dump([
+                    "weekdayIndexSame" => $weekdayIndexSame,
+                    "weekdayIndexResetOK" => $weekdayIndexResetOK,
+                    "visualWeekdayIndexSame" => $visualWeekdayIndexSame,
+                    "visualWeekdayIndexResetOK" => $visualWeekdayIndexResetOK,
+                    "visualWeekdayIndexResetIntercalary" => $visualWeekdayIndexResetIntercalary,
+                    "isIntercalary" => $thisYearStartEpoch->isIntercalary
+                ]);
+
                 $this->assertTrue(
-                    $lastYearEndEpoch->weekdayIndex == $thisYearStartEpoch->weekdayIndex - 1
+                    $weekdayIndexSame
                     ||
-                    $lastYearEndEpoch->weekdayIndex === ($calendar->weekdays->count()-1) && $thisYearStartEpoch->weekdayIndex === 0
+                    $weekdayIndexResetOK
+                    ||
+                    $visualWeekdayIndexSame
+                    ||
+                    $visualWeekdayIndexResetOK
+                    ||
+                    $visualWeekdayIndexResetIntercalary
                 );
 
-                $epochsByMonth = $epochs->reject->isIntercalary->groupBy->monthId;
+                $epochsByMonth = $epochs->groupBy->monthId;
 
                 $first = true;
                 foreach($epochsByMonth as $epoch){
 
                     if($first){
                         $first = false;
-                        $endWeekdayLastMonth = $epoch->last()->weekdayIndex;
+                        $endWeekdayLastMonth = $epoch->last();
                         continue;
                     }
 
-                    $startWeekdayThisMonth = $epoch->first()->weekdayIndex;
+                    $startWeekdayThisMonth = $epoch->first();
 
-                    //dump($epoch->first()->monthId . " - Last month ended on weekday index " . $endWeekdayLastMonth . " and this month started on " . $startWeekdayThisMonth);
+                    //dump($epoch->first()->monthId . " - Last month ended on weekday index " . $endWeekdayLastMonth->visualWeekdayIndex . " and this month started on " . $startWeekdayThisMonth->visualWeekdayIndex);
+
+                    $weekdayIndexSame = ($endWeekdayLastMonth->weekdayIndex == $startWeekdayThisMonth->weekdayIndex - 1);
+                    $weekdayIndexResetOK = ($endWeekdayLastMonth->weekdayIndex === ($calendar->weekdays->count()-1) && $startWeekdayThisMonth->weekdayIndex === 0);
+                    $visualWeekdayIndexSame = ($endWeekdayLastMonth->visualWeekdayIndex == $startWeekdayThisMonth->visualWeekdayIndex - 1);
+                    $visualWeekdayIndexResetOK = ($endWeekdayLastMonth->visualWeekdayIndex === ($calendar->weekdays->count()-1) && $startWeekdayThisMonth->visualWeekdayIndex === 0);
+                    $visualWeekdayIndexResetIntercalary = ($startWeekdayThisMonth->visualWeekdayIndex === 0 && $startWeekdayThisMonth->isIntercalary);
+
+                    /*dump([
+                        "weekdayIndexSame" => $weekdayIndexSame,
+                        "weekdayIndexResetOK" => $weekdayIndexResetOK,
+                        "visualWeekdayIndexSame" => $visualWeekdayIndexSame,
+                        "visualWeekdayIndexResetOK" => $visualWeekdayIndexResetOK,
+                        "visualWeekdayIndexResetIntercalary" => $visualWeekdayIndexResetIntercalary,
+                        "isIntercalary" => $startWeekdayThisMonth->isIntercalary
+                    ]);*/
+
                     $this->assertTrue(
-                        $endWeekdayLastMonth == $startWeekdayThisMonth - 1
+                        $weekdayIndexSame
                         ||
-                        $endWeekdayLastMonth === ($calendar->weekdays->count()-1) && $startWeekdayThisMonth === 0
+                        $weekdayIndexResetOK
+                        ||
+                        $visualWeekdayIndexSame
+                        ||
+                        $visualWeekdayIndexResetOK
+                        ||
+                        $visualWeekdayIndexResetIntercalary
                     );
 
-                    $endWeekdayLastMonth = $epoch->reject->isIntercalary->last()->weekdayIndex;
+                    $endWeekdayLastMonth = $epoch->last();
 
                 }
 
