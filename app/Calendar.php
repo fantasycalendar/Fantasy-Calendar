@@ -357,6 +357,16 @@ class Calendar extends Model
     }
 
     /**
+     * Get the first weekday for this calendar
+     *
+     * @return array
+     */
+    public function getFirstDayAttribute(): int
+    {
+        return Arr::get($this->year_data, 'first_day');
+    }
+
+    /**
      * Get a collection of the timespans available on this calendar
      *
      * @return Collection

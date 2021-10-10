@@ -145,7 +145,7 @@ class InitialState
         }
 
         $weekdaysCount = $this->calendar->global_week->count();
-        $totalWeekdaysBeforeToday = ($this->calculateEpoch() - $this->calculateHistoricalIntercalaryCount() + intval($this->calendar->first_day));
+        $totalWeekdaysBeforeToday = ($this->calculateEpoch() - $this->calculateHistoricalIntercalaryCount() + intval($this->calendar->first_day) - 1);
 
         $weekday = $totalWeekdaysBeforeToday % $weekdaysCount;
 
