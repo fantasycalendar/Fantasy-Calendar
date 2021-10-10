@@ -19,6 +19,10 @@ Route::get('/imagetest', function(){
     return view('pages.imagetest');
 });
 
+Route::get('/integrationtest', function(){
+    return view('pages.integrationtest');
+})->name("integrationtest");
+
 Route::get('/', 'WelcomeController@welcome')->name('home');
 Route::view('/welcome', 'welcome')->name('welcome');
 Route::view('/whats-new', 'pages.whats-new')->name('whats-new');

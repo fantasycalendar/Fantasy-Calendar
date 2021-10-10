@@ -123,7 +123,7 @@ class CalendarController extends Controller
 
     public function renderImage(Calendar $calendar, $ext)
     {
-        if(Gate::denies('view-image', $calendar)) {
+        if(Gate::denies('view-image', $calendar) && !app()->environment('local')) {
             $pathToFile = public_path('resources/discord/premium-warning.png');
             $headers = ['Content-Type' => 'image/png'];
 
