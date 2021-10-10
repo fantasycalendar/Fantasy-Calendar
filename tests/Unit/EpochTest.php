@@ -6,7 +6,6 @@ use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Calendar;
 use App\Facades\Epoch as EpochFactory;
-use Illuminate\Testing\Concerns\TestDatabases;
 use Tests\TestCase;
 
 class EpochTest extends TestCase
@@ -23,14 +22,268 @@ class EpochTest extends TestCase
 
         $user = User::Factory()->create();
 
+        /* ---------------------------------------------------------------------- */
+
+        $calendar = Calendar::Factory()
+            ->for($user)
+            ->create([
+                "name" => "Tal'Dorei Player",
+                "static_data" => [
+                    "year_data" => [
+                        "first_day" => 2,
+                        "overflow" => true,
+                        "timespans" => [
+                            [
+                                "name" => "Horisal (January)",
+                                "type" => "month",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 29
+                            ],
+                            [
+                                "name" => "Misuthar (Febuary)",
+                                "type" => "month",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 30
+                            ],
+                            [
+                                "name" => "Dualahei (March)",
+                                "type" => "month",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 30
+                            ],
+                            [
+                                "name" => "Thunsheer (April)",
+                                "type" => "month",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 31
+                            ],
+                            [
+                                "name" => "Unndilar (May)",
+                                "type" => "month",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 28
+                            ],
+                            [
+                                "name" => "Brussendar (June)",
+                                "type" => "month",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 31
+                            ],
+                            [
+                                "name" => "Sydenstar (July)",
+                                "type" => "month",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 32
+                            ],
+                            [
+                                "name" => "Fessuran (August)",
+                                "type" => "month",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 29
+                            ],
+                            [
+                                "name" => "Quen'pillar (September)",
+                                "type" => "month",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 27
+                            ],
+                            [
+                                "name" => "Cuersaar (October)",
+                                "type" => "month",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 29
+                            ],
+                            [
+                                "name" => "Duscar (December)",
+                                "type" => "month",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 32
+                            ],
+                        ],
+                        "leap_days" => [],
+                        "global_week" => [
+                            "Miresen (Sunday)",
+                            "Grissen (Monday)",
+                            "Whelsen (Tuesday)",
+                            "Conthsen (Wednesday)",
+                            "Folsen (Thursday)",
+                            "Yulisen (Friday)",
+                            "Da'leysen (Saturday)"
+                        ]
+                    ],
+                    "settings" => [
+                        "year_zero_exists" => true
+                    ]
+                ]
+            ]);
+
+        $this->testCalendar($calendar);
+
+        $calendar->setDate(1016);
+
+        $epochs = EpochFactory::forCalendarYear($calendar);
+
+        $epoch = $epochs->first();
+
+        dump("Epoch should be 333248, is " . $epoch->epoch);
+        $this->assertTrue($epoch->epoch === 333248);
+        dump("Weekday index should be 0, is " . $epoch->weekdayIndex);
+        $this->assertTrue($epoch->weekdayIndex === 0);
+
+        /* ---------------------------------------------------------------------- */
+
+        $calendar = Calendar::Factory()
+            ->for($user)
+            ->create([
+                "name" => "Hasadria",
+                "static_data" => [
+                    "year_data" => [
+                        "first_day" => 2,
+                        "overflow" => true,
+                        "timespans" => [
+                            [
+                                "name" => "Vohault",
+                                "type" => "month",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 30
+                            ],
+                            [
+                                "name" => "Kiradan",
+                                "type" => "month",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 32
+                            ],
+                            [
+                                "name" => "Zihelm",
+                                "type" => "month",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 34
+                            ],
+                            [
+                                "name" => "Felwict",
+                                "type" => "month",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 29
+                            ],
+                            [
+                                "name" => "Shekwick",
+                                "type" => "month",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 33
+                            ],
+                            [
+                                "name" => "Fre",
+                                "type" => "month",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 31
+                            ],
+                            [
+                                "name" => "Xion",
+                                "type" => "month",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 32
+                            ],
+                            [
+                                "name" => "Onna",
+                                "type" => "month",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 31
+                            ],
+                            [
+                                "name" => "Barbok",
+                                "type" => "month",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 28
+                            ],
+                            [
+                                "name" => "Aether",
+                                "type" => "month",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 35
+                            ],
+                            [
+                                "name" => "Vaylex",
+                                "type" => "month",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 33
+                            ],
+                            [
+                                "name" => "Velwim",
+                                "type" => "month",
+                                "interval" => 1,
+                                "offset" => 0,
+                                "length" => 34
+                            ],
+                        ],
+                        "leap_days" => [
+                            [
+                                "intercalary" => false,
+                                "timespan" => 1,
+                                "interval" => "4",
+                                "offset" => 0
+                            ]
+                        ],
+                        "global_week" => [
+                            "Sunday",
+                            "Monday",
+                            "Tuesday",
+                            "Wednesday",
+                            "Thursday",
+                            "Friday",
+                            "Saturday"
+                        ]
+                    ],
+                    "settings" => [
+                        "year_zero_exists" => true
+                    ]
+                ]
+            ]);
+
+        $this->testCalendar($calendar);
+
+        $calendar->setDate(53);
+
+        $epochs = EpochFactory::forCalendarYear($calendar);
+
+        $epoch = $epochs->getByDate(53, 10, 23);
+
+        dump("Epoch should be 20597, is " . $epoch->epoch);
+        $this->assertTrue($epoch->epoch === 20597);
+        dump("Weekday index should be 4, is " . $epoch->weekdayIndex);
+        $this->assertTrue($epoch->weekdayIndex === 4);
+
+        /* ---------------------------------------------------------------------- */
+
         $calendar = Calendar::Factory()
             ->for($user)
             ->create([
                 "name" => "Haptos",
                 "static_data" => [
-                    "first_day" => 1,
-                    "overflow" => false,
                     "year_data" => [
+                        "first_day" => 1,
+                        "overflow" => false,
                         "timespans" => [
                             [
                                 "name" => "Hammer",
@@ -181,14 +434,16 @@ class EpochTest extends TestCase
 
         $this->testCalendar($calendar);
 
+        /* ---------------------------------------------------------------------- */
+
         $calendar = Calendar::Factory()
             ->for($user)
             ->create([
                 "name" => "Crazy Leap Calendar",
                 "static_data" => [
-                    "first_day" => 1,
-                    "overflow" => true,
                     "year_data" => [
+                        "first_day" => 1,
+                        "overflow" => true,
                         "timespans" => [
                             [
                                 "name" => "No leap",
@@ -237,14 +492,16 @@ class EpochTest extends TestCase
 
         $this->testCalendar($calendar, -1000, 1000);
 
+        /* ---------------------------------------------------------------------- */
+
         $calendar = Calendar::Factory()
             ->for($user)
             ->create([
                 "name" => "Leap Day Chaos v1",
                 "static_data" => [
-                    "first_day" => 1,
-                    "overflow" => true,
                     "year_data" => [
+                        "first_day" => 1,
+                        "overflow" => true,
                         "timespans" => [
                             [
                                 "name" => "Somemonth",
@@ -405,14 +662,16 @@ class EpochTest extends TestCase
 
         $this->testCalendar($calendar);
 
+        /* ---------------------------------------------------------------------- */
+
         $calendar = Calendar::Factory()
             ->for($user)
             ->create([
                 "name" => "Simple 2-1 month",
                 "static_data" => [
-                    "first_day" => 1,
-                    "overflow" => false,
                     "year_data" => [
+                        "first_day" => 1,
+                        "overflow" => false,
                         "timespans" => [
                             [
                                 "name" => "Somemonth",
@@ -460,13 +719,13 @@ class EpochTest extends TestCase
     private function testCalendar($calendar, $fromYear = -100, $toYear = 100)
     {
 
-        // dump("Testing calendar: " . $calendar->name . " (year range: " . $fromYear . " to " . $toYear . ")");
+        dump("Testing calendar: " . $calendar->name . " (year range: " . $fromYear . " to " . $toYear . ")");
 
         $calendar->setDate($fromYear);
 
         $epochs = EpochFactory::forCalendarYear($calendar);
 
-        $lastYearEndEpoch = $epochs->last()->epoch;
+        $lastYearEndEpoch = $epochs->last();
 
         $fromYear++;
         for($year = $fromYear; $year < $toYear; $year++){
@@ -478,17 +737,53 @@ class EpochTest extends TestCase
 
             $epochs = EpochFactory::forCalendarYear($calendar);
 
-            $thisYearStartEpoch = $epochs->first()->epoch;
+            $thisYearStartEpoch = $epochs->first();
 
-            // dump($year . " - Last year ended on " . $lastYearEndEpoch . " and this year started on " . $thisYearStartEpoch . ' - ' . ($epochs->count()));
+            //dump($year . " - Last year ended on " . $lastYearEndEpoch->epoch . " and this year started on " . $thisYearStartEpoch->epoch);
 
             if(($calendar->setting("year_zero_exists") && $year === 0) || (!$calendar->setting("year_zero_exists") && $year === 1)){
-                $this->assertTrue($thisYearStartEpoch === 0);
+                $this->assertTrue($thisYearStartEpoch->epoch === 0);
+                $this->assertTrue($thisYearStartEpoch->weekdayIndex === (intval($calendar->static_data['year_data']['first_day'])-1));
             }
 
-            $this->assertTrue($lastYearEndEpoch == $thisYearStartEpoch-1);
+            $this->assertTrue($lastYearEndEpoch->epoch == $thisYearStartEpoch->epoch-1);
 
-            $lastYearEndEpoch = $epochs->last()->epoch;
+            if($calendar->overflows_week) {
+
+                //dump($year . " - Last year ended on weekday index " . $lastYearEndEpoch->weekdayIndex . " and this year started on " . $thisYearStartEpoch->weekdayIndex);
+                $this->assertTrue(
+                    $lastYearEndEpoch->weekdayIndex == $thisYearStartEpoch->weekdayIndex - 1
+                    ||
+                    $lastYearEndEpoch->weekdayIndex === ($calendar->weekdays->count()-1) && $thisYearStartEpoch->weekdayIndex === 0
+                );
+
+                $epochsByMonth = $epochs->reject->isIntercalary->groupBy->monthId;
+
+                $first = true;
+                foreach($epochsByMonth as $epoch){
+
+                    if($first){
+                        $first = false;
+                        $endWeekdayLastMonth = $epoch->last()->weekdayIndex;
+                        continue;
+                    }
+
+                    $startWeekdayThisMonth = $epoch->first()->weekdayIndex;
+
+                    //dump($epoch->first()->monthId . " - Last month ended on weekday index " . $endWeekdayLastMonth . " and this month started on " . $startWeekdayThisMonth);
+                    $this->assertTrue(
+                        $endWeekdayLastMonth == $startWeekdayThisMonth - 1
+                        ||
+                        $endWeekdayLastMonth === ($calendar->weekdays->count()-1) && $startWeekdayThisMonth === 0
+                    );
+
+                    $endWeekdayLastMonth = $epoch->reject->isIntercalary->last()->weekdayIndex;
+
+                }
+
+            }
+
+            $lastYearEndEpoch = $epochs->last();
 
         }
 
