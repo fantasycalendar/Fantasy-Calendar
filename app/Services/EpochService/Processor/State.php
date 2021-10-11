@@ -34,7 +34,8 @@ class State
     protected Calendar $calendar;
     protected Collection $previousState;
     private bool $withEras = true;
-    protected int $visualWeekdayIndex = -1;
+    protected int $visualWeekdayIndex = 0;
+    protected int $visualWeekIndex = 0;
 
     /**
      * State constructor.
@@ -115,9 +116,10 @@ class State
             'timespanCounts' => $this->timespanCounts,
             'historicalIntercalaryCount' => $this->historicalIntercalaryCount,
             'numberTimespans' => $this->numberTimespans,
+            'weekdayName' => $this->weekdays()->get($this->weekdayIndex),
             'weekdayIndex' => $this->weekdayIndex,
             'visualWeekdayIndex' => ($this->isIntercalary()) ? $this->visualWeekdayIndex : $this->weekdayIndex,
-            'weekdayName' => $this->weekdays()->get($this->weekdayIndex),
+            'visualWeekIndex' => $this->visualWeekIndex,
             'weeksSinceMonthStart' => $this->weeksSinceMonthStart,
             'weeksTilMonthEnd' => $this->totalWeeksInMonth - ($this->weeksSinceMonthStart - 1),
             'weeksSinceYearStart' => $this->weeksSinceYearStart,
@@ -152,17 +154,23 @@ class State
      */
     private function incrementWeekday(): void
     {
-        if(!$this->isIntercalary()){
-            $this->visualWeekdayIndex = 0;
-            $this->weekdayIndex++;
-            $this->incrementWeek();
-        } else {
-            if(($this->day >= 1 && !$this->previousState->get('isIntercalary')) || $this->visualWeekdayIndex >= $this->weekdayCount() -1) {
-                $this->visualWeekdayIndex = -1;
+        if($this->isIntercalary()){
+            $this->visualWeekdayIndex++;
+            if(($this->day >= 1 && !$this->previousState->get('isIntercalary')) || $this->visualWeekdayIndex > $this->weekdayCount()-1 || $this->day === 1) {
+                $this->visualWeekdayIndex = 0;
+                $this->visualWeekIndex++;
             }
 
-            $this->visualWeekdayIndex++;
+            return;
         }
+
+        if($this->previousState->get('isIntercalary') && !$this->isIntercalary()){
+            $this->visualWeekIndex++;
+        }
+
+        $this->weekdayIndex++;
+        $this->incrementWeek();
+        $this->visualWeekdayIndex = $this->weekdayIndex;
     }
 
     /**
@@ -170,11 +178,9 @@ class State
      */
     private function incrementWeek($force = false): void
     {
-        if(
-            ($this->weekdayIndex >= $this->weekDayCount() || $force)
-            && !$this->isIntercalary()
-        ){
+        if($this->weekdayIndex >= $this->weekDayCount() || $force){
             $this->weekdayIndex = 0;
+            $this->visualWeekIndex++;
             $this->weeksSinceMonthStart++;
             $this->weeksSinceYearStart++;
         }
@@ -206,11 +212,14 @@ class State
         $this->monthId = $this->months->get($this->monthIndexOfYear)->id;
         $this->weeksSinceMonthStart = 0;
         $this->previousState->forget('totalWeeksInMonth');
-        $this->incrementWeek(!$this->calendar->overflows_week);
 
         if($this->calendar->overflows_week){
             $this->incrementWeekday();
+        }else{
+            $this->incrementWeek(!$this->isIntercalary());
         }
+
+        $this->visualWeekIndex = 0;
     }
 
     /**
