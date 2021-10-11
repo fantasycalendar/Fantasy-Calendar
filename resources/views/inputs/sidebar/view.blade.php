@@ -23,7 +23,8 @@
     @include('inputs.sidebar.header')
 
 	<div class='wrap-collapsible'>
-		<div class='title-text center-text'>View Calendar</div>
+		<div class='title-text center-text mt-0 mb-0'>{{ $calendar->name }}</div>
+        <div class="center-text mt-0 mb-3">By {{ $calendar->user->username }}</div>
 	</div>
 
 	<!---------------------------------------------->
