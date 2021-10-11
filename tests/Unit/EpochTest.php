@@ -24,6 +24,8 @@ class EpochTest extends TestCase
 
         /* ---------------------------------------------------------------------- */
 
+        //
+        // public function testOverlappingEdgeCasesTe()
         $calendar = Calendar::Factory()
             ->for($user)
             ->create([
@@ -854,12 +856,12 @@ class EpochTest extends TestCase
 
             $thisYearStartEpoch = $epochs->first();
 
-            dump($year . " - Last year ended on " . $lastYearEndEpoch->epoch . " and this year started on " . $thisYearStartEpoch->epoch);
+            //dump($year . " - Last year ended on " . $lastYearEndEpoch->epoch . " and this year started on " . $thisYearStartEpoch->epoch);
 
             if(($calendar->setting("year_zero_exists") && $year === 0) || (!$calendar->setting("year_zero_exists") && $year === 1)){
                 $this->assertTrue($thisYearStartEpoch->epoch === 0);
                 $expectedVisualWeekdayIndex = $thisYearStartEpoch->isIntercalary ? 0 : (intval($calendar->static_data['year_data']['first_day'])-1);
-                dump($year . " - First year, got weekday index " . $thisYearStartEpoch->visualWeekdayIndex . " and expected " . $expectedVisualWeekdayIndex);
+                //dump($year . " - First year, got weekday index " . $thisYearStartEpoch->visualWeekdayIndex . " and expected " . $expectedVisualWeekdayIndex);
                 $this->assertTrue(
                     $thisYearStartEpoch->visualWeekdayIndex === $expectedVisualWeekdayIndex
                     ||
@@ -871,7 +873,7 @@ class EpochTest extends TestCase
 
             if($calendar->overflows_week) {
 
-                dump($year . " - Last year ended on weekday index " . $lastYearEndEpoch->visualWeekdayIndex . " and this year started on " . $thisYearStartEpoch->visualWeekdayIndex);
+                //dump($year . " - Last year ended on weekday index " . $lastYearEndEpoch->visualWeekdayIndex . " and this year started on " . $thisYearStartEpoch->visualWeekdayIndex);
 
                 $weekdayIndexSame = ($lastYearEndEpoch->weekdayIndex == $thisYearStartEpoch->weekdayIndex - 1);
                 $weekdayIndexResetOK = ($lastYearEndEpoch->weekdayIndex === ($calendar->weekdays->count()-1) && $thisYearStartEpoch->weekdayIndex === 0);
@@ -879,14 +881,14 @@ class EpochTest extends TestCase
                 $visualWeekdayIndexResetOK = ($lastYearEndEpoch->visualWeekdayIndex === ($calendar->weekdays->count()-1) && $thisYearStartEpoch->visualWeekdayIndex === 0);
                 $visualWeekdayIndexResetIntercalary = ($thisYearStartEpoch->visualWeekdayIndex === 0 && $thisYearStartEpoch->isIntercalary);
 
-                dump([
+                /*dump([
                     "weekdayIndexSame" => $weekdayIndexSame,
                     "weekdayIndexResetOK" => $weekdayIndexResetOK,
                     "visualWeekdayIndexSame" => $visualWeekdayIndexSame,
                     "visualWeekdayIndexResetOK" => $visualWeekdayIndexResetOK,
                     "visualWeekdayIndexResetIntercalary" => $visualWeekdayIndexResetIntercalary,
                     "isIntercalary" => $thisYearStartEpoch->isIntercalary
-                ]);
+                ]);*/
 
                 $this->assertTrue(
                     $weekdayIndexSame
