@@ -32,7 +32,7 @@ class EdgeCaseCalendarsTest extends TestCase
 
             dump("testEdgeCaseCalendars - Testing " . $calendar->name);
 
-            foreach($calendarData['static_data']['date_testcases'] as $testcase){
+            foreach($calendarData['static_data']['epoch_testcases'] as $testcase){
 
                 $testCaseYear = $testcase['year'] ?? 0;
                 $testCaseMonth = $testcase['month'] ?? 0;
