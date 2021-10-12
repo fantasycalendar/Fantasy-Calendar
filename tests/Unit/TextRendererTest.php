@@ -52,17 +52,4 @@ class TextRendererTest extends TestCase
             }
         }
     }
-
-    private function getEdgeCases()
-    {
-        return collect(Storage::disk('base')->files('setup/extra-preset-jsons/edge-case-calendars'))
-            ->map(function($file){
-                return Str::replace('.json', '', $file);
-            })->toArray();
-    }
-
-    private function retrieveJson($presetFile)
-    {
-        return json_decode(file_get_contents(base_path($presetFile). '.json'), true);
-    }
 }
