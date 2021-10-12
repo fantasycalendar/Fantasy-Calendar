@@ -30,7 +30,7 @@ class EdgeCaseCalendarsTest extends TestCase
                 ->for($user)
                 ->create($calendarData);
 
-            dump("testEdgeCaseCalendars - Testing " . $calendar->name);
+            dump("testEdgeCaseCalendars - Testing " . $calendar->name . " between year -100 to 100");
 
             foreach($calendarData['static_data']['epoch_testcases'] as $testcase){
 
@@ -57,6 +57,14 @@ class EdgeCaseCalendarsTest extends TestCase
             }
 
             $this->testCalendar($calendar);
+
+            foreach($calendarData['static_data']['extra_test_range'] as $testRange) {
+
+                dump("testEdgeCaseCalendars - Testing " . $calendar->name . " between year " . $testRange[0] . " to " . $testRange[1]);
+
+                $this->testCalendar($calendar, $testRange[0], $testRange[1]);
+
+            }
 
         }
     }
