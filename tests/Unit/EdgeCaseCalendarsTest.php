@@ -63,7 +63,7 @@ class EdgeCaseCalendarsTest extends TestCase
         }
     }
 
-    private function getEdgeCases(): Coll
+    private function getEdgeCases():
     {
         return collect(Storage::disk('base')->files('setup/extra-preset-jsons/edge-case-calendars'))
             ->map(function($file){
