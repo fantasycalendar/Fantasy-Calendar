@@ -16,8 +16,8 @@ class TextRendererTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * Tests the accuracy of a number of known edge case calendars, testing their epoch flow between years, and weekday
-     * flow, and any additional test cases within the calendar against known hard values
+     * Tests a number of known edge case calendars by render specific dates of the calendar's month in text format
+     * comparing it against known outputs
      */
     public function testTextRenderer()
     {
