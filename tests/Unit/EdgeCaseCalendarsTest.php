@@ -8,7 +8,6 @@ use App\Calendar;
 use App\Facades\Epoch as EpochFactory;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use phpDocumentor\Reflection\Types\Collection;
 use Tests\TestCase;
 
 class EdgeCaseCalendarsTest extends TestCase
@@ -27,14 +26,13 @@ class EdgeCaseCalendarsTest extends TestCase
 
             $calendarData = $this->retrieveJson($filename);
 
-            $testcases = $calendarData['testcases'];
-            unset($calendarData["testcases"]);
-
             $calendar = Calendar::Factory()
                 ->for($user)
                 ->create($calendarData);
 
-            foreach($testcases as $testcase){
+            dump("testEdgeCaseCalendars - Testing " . $calendar->name);
+
+            foreach($calendarData['static_data']['date_testcases'] as $testcase){
 
                 $testCaseYear = $testcase['year'] ?? 0;
                 $testCaseMonth = $testcase['month'] ?? 0;
