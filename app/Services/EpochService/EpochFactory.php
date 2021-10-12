@@ -104,7 +104,7 @@ class EpochFactory
             ->startOfYear();
 
         return $this->processor($calendar, false)
-            ->processUntilDate($era->year, $era->month, $era->day+1)
+            ->processUntilDate($era->year, $era->month, $era->day)
             ->last();
     }
 
@@ -149,7 +149,7 @@ class EpochFactory
 
     public function incrementYears($years, Calendar $calendar, Epoch $epoch = null): Epoch
     {
-        
+
     }
 
     /**
