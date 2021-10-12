@@ -31,6 +31,7 @@ class InitialStateWithEras extends InitialState
         $values->put('epoch', $values->get('epoch') - $eraSubtractables->sum('epoch'));
         $values->put('historicalIntercalaryCount', $values->get('historicalIntercalaryCount') - $eraSubtractables->sum('historicalIntercalaryCount'));
         $values->put('numberTimespans', $values->get('numberTimespans') - $eraSubtractables->sum('numberTimespans'));
+        $values->put('weekdayIndex', $this->determineWeekdayIndex($values->get('epoch'), $values->sum('historicalIntercalaryCount')));
 
         return $values;
     }

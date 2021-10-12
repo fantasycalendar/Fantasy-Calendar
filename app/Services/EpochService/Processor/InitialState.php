@@ -140,19 +140,29 @@ class InitialState
      */
     private function calculateWeekdayIndex(): int
     {
+        return $this->determineWeekdayIndex($this->calculateEpoch(), $this->calculateHistoricalIntercalaryCount());
+    }
+
+    /**
+     * @param int $epoch
+     * @param int $historicalIntercalaryCount
+     * @return int
+     */
+    protected function determineWeekdayIndex(int $epoch, int $historicalIntercalaryCount): int
+    {
         if(!$this->calendar->overflows_week) {
             return 0;
         }
 
         $weekdaysCount = $this->calendar->global_week->count();
-        $totalWeekdaysBeforeToday = ($this->calculateEpoch() - $this->calculateHistoricalIntercalaryCount() + intval($this->calendar->first_day) - 1);
+        $totalWeekdaysBeforeToday = ($epoch - $historicalIntercalaryCount + intval($this->calendar->first_day) - 1);
 
         $weekday = $totalWeekdaysBeforeToday % $weekdaysCount;
 
         // If we're on a negative year, the result is negative, so add weekdays to result
-	    return ($weekday < 0)
-	        ? $weekday + $weekdaysCount
-	        : $weekday;
+        return ($weekday < 0)
+            ? $weekday + $weekdaysCount
+            : $weekday;
     }
 
     private function calculateEraYear(): int
