@@ -219,6 +219,10 @@ class State
             $this->incrementWeek(!$this->isIntercalary());
         }
 
+        if(!$this->previousState->get('isIntercalary') && $this->isIntercalary()){
+            $this->visualWeekdayIndex = 0;
+        }
+
         $this->visualWeekIndex = 0;
     }
 
