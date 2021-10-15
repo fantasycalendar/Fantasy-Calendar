@@ -31,9 +31,6 @@ class EventServiceProvider extends ServiceProvider
         ],
         DateChanged::class => [
             UpdateChildCalendars::class
-        ],
-        WebhookReceived::class => [
-            SubscriptionEventListener::class
         ]
     ];
 
