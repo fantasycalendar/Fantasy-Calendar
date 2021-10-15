@@ -113,6 +113,8 @@ class DiscordController extends Controller
             'expires_at' => now()->addSeconds($user->expiresIn)
         ]);
 
+        logger()->channel('discord')->info("'".Auth::user()->username."' has connected their Discord account to us!");
+
         return redirect(route('discord.index'))->with('message', 'Your Fantasy Calendar account was successfully connected to Discord!');
     }
 

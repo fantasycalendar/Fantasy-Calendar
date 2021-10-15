@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UserSubscribedEvent;
 use Auth;
 use Stripe;
 use Illuminate\Http\Request;
@@ -123,7 +124,7 @@ class SubscriptionController extends Controller
             );
         }
 
-        logger()->channel('discord')->info($user->username . " subscribed on a " . explode('_', $plan)[1] . " basis!");
+        UserSubscribedEvent::dispatch($user, $plan);
 
         return ['success' => true, 'message' => 'Subscribed'];
     }
