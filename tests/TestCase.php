@@ -5,6 +5,8 @@ namespace Tests;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\User;
+use App\Calendar;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -12,10 +14,19 @@ abstract class TestCase extends BaseTestCase
 
     protected function getEdgeCases()
     {
-        return collect(Storage::disk('base')->files('setup/extra-preset-jsons/edge-case-calendars'))
+        $user = User::Factory()->create();
+
+        return collect(Storage::disk('base')
+            ->files('setup/extra-preset-jsons/edge-case-calendars'))
             ->map(function($file){
                 return Str::replace('.json', '', $file);
-            })->toArray();
+            })->map(function($filename){
+                return $this->retrieveJson($filename);
+            })->map(function($calendarData) use ($user) {
+                return Calendar::Factory()
+                    ->for($user)
+                    ->create($calendarData);
+            });
     }
 
     protected function retrieveJson($presetFile)

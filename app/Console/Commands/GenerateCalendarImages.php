@@ -50,6 +50,10 @@ class GenerateCalendarImages extends Command
         $time_start = microtime(true);
         $this->calendar = Calendar::hash($this->argument('hash'))->firstOrFail();
 
+        Storage::disk('base')->put('setup/extra-preset-jsons/edge-case-images/' . Str::slug(Str::ascii($this->calendar->name)) . '_' . Str::slug(Str::ascii($this->calendar->current_date)) . '.png',ImageRenderer::renderMonth($this->calendar, collect(['ext' => 'png'])));
+
+        dd();
+
         $years = $this->collectYears();
         $estimatedTotalImages = ceil($this->calendar->average_year_length * $years->count());
 

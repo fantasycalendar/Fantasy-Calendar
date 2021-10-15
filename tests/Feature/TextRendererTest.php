@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Feature;
 
 use App\Calendar;
 use App\Services\RendererService\TextRenderer;
@@ -21,23 +21,14 @@ class TextRendererTest extends TestCase
      */
     public function testTextRenderer()
     {
-        $user = User::Factory()->create();
+        $this->getEdgeCases()->each(function($calendar){
+            collect($calendar->static_data['textrenderer_testcases'])->each(function($testCase) use ($calendar) {
 
-        foreach($this->getEdgeCases() as $filename) {
+                dump("testTextRenderer - Testing " . $calendar->name);
 
-            $calendarData = $this->retrieveJson($filename);
-
-            $calendar = Calendar::Factory()
-                ->for($user)
-                ->create($calendarData);
-
-            dump("testTextRenderer - Testing " . $calendar->name);
-
-            foreach($calendarData['static_data']["textrenderer_testcases"] as $testcase){
-
-                $testCaseYear = $testcase['year'] ?? 0;
-                $testCaseMonth = $testcase['month'] ?? 0;
-                $testCaseDay = $testcase['day'] ?? 1;
+                $testCaseYear = $testCase['year'] ?? 0;
+                $testCaseMonth = $testCase['month'] ?? 0;
+                $testCaseDay = $testCase['day'] ?? 1;
 
                 $calendar->setDate(
                     $testCaseYear,
@@ -47,9 +38,9 @@ class TextRendererTest extends TestCase
 
                 $renderedMonth = TextRenderer::renderMonth($calendar);
 
-                $this->assertTrue($renderedMonth == $testcase['expected_result']);
+                $this->assertTrue($renderedMonth == $testCase['expected_result']);
 
-            }
-        }
+            });
+        });
     }
 }

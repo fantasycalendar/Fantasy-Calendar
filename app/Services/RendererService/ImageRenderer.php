@@ -164,7 +164,7 @@ class ImageRenderer
      * @return mixed
      * @throws Exception
      */
-    public static function renderMonth(Calendar $calendar, $parameters)
+    public static function renderMonth(Calendar $calendar, $parameters): ImageFile
     {
         if($parameters->has('year') && $parameters->has('month_id') && $parameters->has('day')) {
             $calendar->setDate(

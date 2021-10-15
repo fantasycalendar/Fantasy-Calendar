@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Feature;
 
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -20,23 +20,15 @@ class EdgeCaseCalendarsTest extends TestCase
      */
     public function testEdgeCaseCalendars()
     {
-        $user = User::Factory()->create();
-
-        foreach($this->getEdgeCases() as $filename){
-
-            $calendarData = $this->retrieveJson($filename);
-
-            $calendar = Calendar::Factory()
-                ->for($user)
-                ->create($calendarData);
+        $this->getEdgeCases()->each(function($calendar){
 
             dump("testEdgeCaseCalendars - Testing " . $calendar->name . " between year -100 to 100");
 
-            foreach($calendarData['static_data']['epoch_testcases'] as $testcase){
+            collect($calendar->static_data['epoch_testcases'])->each(function($testCase) use ($calendar) {
 
-                $testCaseYear = $testcase['year'] ?? 0;
-                $testCaseMonth = $testcase['month'] ?? 0;
-                $testCaseDay = $testcase['day'] ?? 1;
+                $testCaseYear = $testCase['year'] ?? 0;
+                $testCaseMonth = $testCase['month'] ?? 0;
+                $testCaseDay = $testCase['day'] ?? 1;
 
                 $calendar->setDate(
                     $testCaseYear,
@@ -46,7 +38,7 @@ class EdgeCaseCalendarsTest extends TestCase
 
                 $epochs = EpochFactory::forCalendarYear($calendar);
 
-                foreach($testcase['expected_values'] as $key => $value){
+                foreach($testCase['expected_values'] as $key => $value){
 
                     $epoch = $epochs->getByDate($testCaseYear, $testCaseMonth, $testCaseDay);
 
@@ -54,19 +46,19 @@ class EdgeCaseCalendarsTest extends TestCase
 
                 }
 
-            }
+            });
 
             $this->testCalendar($calendar);
 
-            foreach($calendarData['static_data']['extra_test_range'] as $testRange) {
+            collect($calendar->static_data['extra_test_range'])->each(function($testRange) use ($calendar) {
 
                 dump("testEdgeCaseCalendars - Testing " . $calendar->name . " between year " . $testRange[0] . " to " . $testRange[1]);
 
                 $this->testCalendar($calendar, $testRange[0], $testRange[1]);
 
-            }
+            });
 
-        }
+        });
     }
 
     private function testCalendar($calendar, $fromYear = -100, $toYear = 100)
