@@ -7,7 +7,7 @@ return [
      */
     'from'       => [
         'name'       => env('APP_NAME', 'Discord Logger'),
-        'avatar_url' => '://app.fantasy-calendar.com/resources/apple-touch-icon.png',
+        'avatar_url' => 'https://app.fantasy-calendar.com/resources/apple-touch-icon.png',
     ],
 
     /**

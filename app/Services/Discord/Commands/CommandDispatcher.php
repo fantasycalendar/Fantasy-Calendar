@@ -149,6 +149,7 @@ class CommandDispatcher
                 : $e->getMessage();
 
             logger()->error($e);
+            logger()->channel('discord')->error($e);
 
             return Response::make($errorToReturn)->ephemeral();
         }
