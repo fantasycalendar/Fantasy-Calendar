@@ -1,5 +1,5 @@
 ### 2.1.0 - Discordant Djinn
-#### October 3rd, 2021
+#### October 15th, 2021
 * Added - Discord integration!
 * Added - Event moon overrides - Change your moons with events, such as color, phase, phase name, and visibility! 
 * Reworked - Year header no longer updates current era when scrolling - now based entirely on current date
