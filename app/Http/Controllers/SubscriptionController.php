@@ -123,6 +123,8 @@ class SubscriptionController extends Controller
             );
         }
 
+        logger()->channel('discord')->info($user->username . " subscribed on a " . explode('_', $plan)[1] . " basis!");
+
         return ['success' => true, 'message' => 'Subscribed'];
     }
 

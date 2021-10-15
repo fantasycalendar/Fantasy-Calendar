@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Events\DateChanged;
+use App\Listeners\SubscriptionEventListener;
 use App\Listeners\UpdateChildCalendars;
 use App\Listeners\UserEventSubscriber;
 use Illuminate\Notifications\Events\NotificationSent;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Laravel\Cashier\Events\WebhookReceived;
 use SocialiteProviders\Discord\DiscordExtendSocialite;
 use SocialiteProviders\Manager\SocialiteWasCalled;
 
@@ -29,6 +31,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         DateChanged::class => [
             UpdateChildCalendars::class
+        ],
+        WebhookReceived::class => [
+            SubscriptionEventListener::class
         ]
     ];
 
