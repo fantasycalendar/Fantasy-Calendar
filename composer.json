@@ -27,6 +27,7 @@
         "laravel/socialite": "^5.2",
         "laravel/ui": "^3.0",
         "league/fractal": "^0.18.0",
+        "marvinlabs/laravel-discord-logger": "^1.1",
         "mews/purifier": "3.3.0",
         "mustache/mustache": "^2.13",
         "nesbot/carbon": "^2.31",
