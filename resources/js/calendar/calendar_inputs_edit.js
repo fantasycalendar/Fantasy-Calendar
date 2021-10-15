@@ -1839,7 +1839,6 @@ function set_up_edit_inputs(){
 		}else{
 			var text = 'Year {{era_year}} - {{era_name}}';
 		}
-		console.log(text);
 		parent.find('.era_formatting').prop('disabled', !$(this).is(':checked')).val(text).change();
 	});
 
