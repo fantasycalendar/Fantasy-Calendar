@@ -45,30 +45,48 @@ class RegisterDiscordApplicationCommands extends Command
     {
         $this->setupApiRequests();
 
+        $res = $this->api_client->get(sprintf($this->api_url . '/applications/%s/commands', env('DISCORD_CLIENT_ID')));
+
+        $existingCommands = collect(json_decode($res->getBody(), true));
+
         if($this->option('list')) {
-            $res = $this->api_client->get(sprintf($this->api_url . '/applications/%s/commands', env('DISCORD_CLIENT_ID')));
-
-            $existingCommands = collect(json_decode($res->getBody(), true));
-
-            $this->info($existingCommands);
+            $this->info($existingCommands->toJson(JSON_PRETTY_PRINT));
 
             return 0;
         }
 
-        $res = $this->api_client->get(sprintf($this->api_url . '/applications/%s/commands', env('DISCORD_CLIENT_ID')));
-
-        $existingCommands = collect(json_decode($res->getBody(), true));
-        $existingCommands->each(function($command){
-            $this->deleteCommand($command['id']);
-        });
-
         $commands = collect(config('services.discord.global_commands'));
 
-        $results = $commands->map(function($command){
-            return $this->createCommand($command);
+        // No commands? Just create them all and exit.
+        if(!count($existingCommands)) {
+            $results = $commands->map(function($command){
+                dd('Would create newly');
+                return $this->createCommand($command);
+            });
+
+            $this->info("Commands created.");
+            $this->info($results->toJson(JSON_PRETTY_PRINT));
+            return 0;
+        }
+
+        // Ok, so we have commands. Let's create any that don't exist.
+        $commands->each(function($command) use ($existingCommands) {
+            if(!$existingCommands->where('name', $command['name'])) {
+                $this->createCommand($command);
+            }
         });
 
-        $this->info($results);
+        // Delete any that no longer exist, update all the ones that do.
+        $existingCommands->each(function($command) {
+            if(!$details = config('services.discord.global_commands.' . $command['name'])) {
+                $this->deleteCommand($command['id']);
+                return;
+            }
+
+            dump($this->updateCommand($command['id'], $details));
+        });
+
+        $this->info('Commands updated.');
 
         return 0;
     }
@@ -77,6 +95,29 @@ class RegisterDiscordApplicationCommands extends Command
     {
         try {
             $res = $this->api_client->post($this->api_url . '/applications/' . env('DISCORD_CLIENT_ID') . '/commands', [
+                'json' => $parameters
+            ]);
+        } catch (ClientException $e) {
+            if($e->hasResponse()) {
+                $this->error($e->getResponse()->getBody());
+            } else {
+                $this->error($e->getMessage());
+            }
+
+            die(1);
+        }
+
+        if(!$res->getStatusCode() == 201) {
+            $this->error('Discord returned wrong status code for create request on command ' . $parameters['name']);
+        }
+
+        return $res->getBody();
+    }
+
+    private function updateCommand($id, $parameters)
+    {
+        try {
+            $res = $this->api_client->patch($this->api_url . '/applications/' . env('DISCORD_CLIENT_ID') . '/commands/' . $id, [
                 'json' => $parameters
             ]);
         } catch (ClientException $e) {
