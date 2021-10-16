@@ -34,7 +34,11 @@ real_deploy_dev:
 
 
 real_deploy_prd:
-	composer install --prefer-dist --optimize-autoloader --no-dev
+	git checkout .
+	rm -rf ./vendor
+	composer install --prefer-dist --optimize-autoloader --no-dev --ignore-platform-reqs
+	rm -rf ./node_modules
+	npm install
 	npm run production
 	aws s3 sync ./public s3://fantasy-calendar-prod/
 	date | cat > ./setup/lambda/dev/version.txt
