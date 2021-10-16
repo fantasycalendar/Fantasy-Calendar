@@ -47,7 +47,12 @@ class SendDiscordAnnouncementEmail extends Command
         } else if($ids = $this->option('ids')) {
             $users = $users->whereIn('id', explode(',', $ids));
         }else{
-            $users = $users->whereNotNull('marketing_opt_in_at')->where("marketing_opt_in_at", ">", "marketing_opt_in_at");
+            $users = $users->where(function($query){
+                    $query->whereNotNull('marketing_opt_in_at')
+                        ->whereNull('marketing_opt_out_at');
+                })->orWhere(function($query){
+                    $query->where("marketing_opt_in_at", ">", "marketing_opt_out_at");
+                });
         }
 
         $total = $users->count();
