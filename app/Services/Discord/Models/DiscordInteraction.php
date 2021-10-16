@@ -48,6 +48,8 @@ class DiscordInteraction extends Model
         'response' => 'array',
     ];
 
+    protected $dateFormat = 'Y-m-d H:i:s';
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

@@ -3,6 +3,8 @@
 namespace App;
 
 use App\Services\Discord\Models\DiscordAuthToken;
+use App\Services\Discord\Models\DiscordGuild;
+use App\Services\Discord\Models\DiscordInteraction;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -80,6 +82,8 @@ class User extends Authenticatable implements
         'delete_requested_at' => 'datetime',
     ];
 
+    protected $dateFormat = 'Y-m-d H:i:s';
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -89,6 +93,14 @@ class User extends Authenticatable implements
 
     public function discord_auth() {
         return $this->hasOne(DiscordAuthToken::class);
+    }
+
+    public function discord_guilds() {
+        return $this->hasMany(DiscordGuild::class);
+    }
+
+    public function discord_interactions() {
+        return $this->hasMany(DiscordInteraction::class);
     }
 
     /**

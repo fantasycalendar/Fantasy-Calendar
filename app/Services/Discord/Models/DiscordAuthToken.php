@@ -25,6 +25,12 @@ class DiscordAuthToken extends Model
         'expires_at'
     ];
 
+    protected $casts = [
+        'expires_at' => 'datetime'
+    ];
+
+    protected $dateFormat = 'Y-m-d H:i:s';
+
     public function user() {
         return $this->belongsTo(User::class);
     }
