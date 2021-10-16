@@ -306,19 +306,19 @@ return [
                                     ]
                                 ]
                             ],
-                            [
-                                'name' => 'event',
-                                'description' => 'Add an one-time event to the current date of the calendar',
-                                'type' => 1,
-                                'options' => [
-                                    [
-                                        'name' => 'title',
-                                        'description' => 'Title of the event to be added',
-                                        'type' => 3,
-                                        'required' => true
-                                    ]
-                                ]
-                            ],
+//                            [
+//                                'name' => 'event',
+//                                'description' => 'Add an one-time event to the current date of the calendar',
+//                                'type' => 1,
+//                                'options' => [
+//                                    [
+//                                        'name' => 'title',
+//                                        'description' => 'Title of the event to be added',
+//                                        'type' => 3,
+//                                        'required' => true
+//                                    ]
+//                                ]
+//                            ],
                         ],
                     ],
 
