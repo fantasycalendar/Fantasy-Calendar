@@ -183,7 +183,7 @@ class StatisticsDashboard extends SharpDashboard
 
         $user_percentage_subscribers = round(($total_subscriptions / $users_created_total)*100, 2);
 
-        $validCalendars = DB::table("calendars_beta")->whereNull('deleted_at');
+        $validCalendars = Calendar::query();
 
         $calendars_created_total = $validCalendars->count();
 
@@ -191,54 +191,35 @@ class StatisticsDashboard extends SharpDashboard
             ->where('date_created', '>', $last30Days)
             ->count();
 
-        $events_created_total = DB::table("calendar_events")
-            ->whereNull('deleted_at')
-            ->count();
+        $events_created_total = CalendarEvent::count();
 
-        $events_created_in_last_thirty_days = DB::table("calendar_events")
-            ->whereNull('deleted_at')
-            ->where('created_at', '>', $last30Days)
-            ->count();
+        $events_created_in_last_thirty_days = CalendarEvent::where('created_at', '>', $last30Days)->count();
 
         /* User growth and total users */
-
-        $userQuery = User::whereNull('deleted_at')
-            ->where('created_at', '<', now()->subMonth()->lastOfMonth())
-            ->select("created_at", "agreed_at")
-            ->get();
-
-        $user_count_per_month = $userQuery
-            ->sortBy('created_at')
-            ->groupBy(function($user) {
-                return Carbon::parse($user->created_at)->format('Y-m');
-            })->mapWithKeys(function($users, $date) {
-                return [$date => count($users)];
-            });
+        $userQuery = User::where('created_at', '<', now()->subMonth()->lastOfMonth());
 
         $total_users = 0;
+        $user_count_per_month = $userQuery
+            ->selectRaw("DATE_FORMAT(created_at,'%Y-%m') as date, count(*) as count")
+            ->orderBy('created_at')
+            ->groupByRaw("DATE_FORMAT(created_at,'%Y-%m')")
+            ->get();
+
         $user_count_over_time = [];
-        foreach ($user_count_per_month as $date => $number_of_users) {
-            $user_count_over_time[$date] = $number_of_users + $total_users;
-            $total_users += $number_of_users;
+        foreach ($user_count_per_month as $date => $result) {
+            $user_count_over_time[$date] = $result->count + $total_users;
+            $total_users += $result->count;
         }
 
         /* Total users converted to 2.0 per day */
 
-        $users_converted_per_month = $userQuery
+        $total_users_converted = $userQuery->where('agreed_at', '<', now()->subMonth()->lastOfMonth())->count();
+        $user_agreement_over_time = $userQuery
             ->where('agreed_at', '<', now()->subMonth()->lastOfMonth())
-            ->sortBy('agreed_at')
-            ->groupBy(function($user) {
-                return Carbon::parse($user->agreed_at)->format('Y-m');
-            })->mapWithKeys(function($users, $date) {
-                return [$date => count($users)];
-            });
-
-        $total_users_converted = 0;
-        $user_agreement_over_time = [];
-        foreach ($users_converted_per_month as $date => $number_of_users) {
-            $user_agreement_over_time[$date] = $number_of_users + $total_users_converted;
-            $total_users_converted += $number_of_users;
-        }
+            ->selectRaw("DATE_FORMAT(agreed_at,'%Y-%m') as date, count(*) as count")
+            ->orderBy('agreed_at')
+            ->groupByRaw("DATE_FORMAT(agreed_at,'%Y-%m')")
+            ->get();
 
         /* Total subscriptions per day */
         $monthly_subscriptions = Subscription::where('stripe_plan', '=', 'timekeeper_monthly')
