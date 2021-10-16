@@ -207,13 +207,12 @@
             </div>
 
             <h3 style="width: 100%; text-align: center;" class="text-white">The long-awaited Discord integration is here!</h3>
-            <h4 class="text-white text-center">Quick to setup, easy to use, and available
-                    @if(Auth::user() && Auth::user()->isPremium())
-                    for you <strong><a href="{{ route('discord.index') }}">right now</a></strong>!</h4>
-                    @else
-                    <strong><a href="{{ route('subscription.pricing') }}">right now</a></strong> for subscribers!</h4>
-                    <span class="text-white text-center">(only $2.49/month)</span>
-                    @endif
+            @if(Auth::user() && Auth::user()->isPremium())
+                <h4 class="text-white text-center">Quick to setup, easy to use, and available for you <strong><a href="{{ route('discord.index') }}">right now</a></strong>!</h4>
+            @else
+                <h4 class="text-white text-center">Quick to setup, easy to use, and available <strong><a href="{{ route('subscription.pricing') }}">right now</a></strong> for subscribers!</h4>
+                <span class="text-white text-center">(only $2.49/month)</span>
+            @endif
 
             <h4 class="next-link" style="position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section2"><i class="fa fa-chevron-circle-down"></i> Show me more! <i class="fa fa-chevron-circle-down"></i></a></h4>
         </section>
