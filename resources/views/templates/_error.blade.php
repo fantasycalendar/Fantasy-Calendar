@@ -253,7 +253,7 @@
         @endenv
 
         <nav class="navbar navbar-expand-lg navbar-dark bg-accent">
-            <a class="navbar-brand" href="{{ route('home') }}">
+            <a class="navbar-brand" href="{{ route('home', [], false) }}">
                 <img class="navbar-logo mr-2" src="{{ asset('resources/header_logo.png') }}">
                 Fantasy Calendar
             </a>
@@ -264,15 +264,15 @@
             <div class="collapse navbar-collapse" id="collapsemenu">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item new-calendar">
-                        <a class="nav-link" href="{{ route('calendars.create') }}">New Calendar</a>
+                        <a class="nav-link" href="{{ route('calendars.create', [], false) }}">New Calendar</a>
                     </li>
-                    <li class="nav-item"><a href="{{ route('whats-new') }}" class="nav-link">What's New in 2.0</a></li>
-                    <li class="nav-item"><a href="{{ route('faq') }}" class="nav-link">FAQs</a></li>
+                    <li class="nav-item"><a href="{{ route('whats-new', [], false) }}" class="nav-link">What's New in 2.0</a></li>
+                    <li class="nav-item"><a href="{{ route('faq', [], false) }}" class="nav-link">FAQs</a></li>
                 </ul>
                 <ul class="navbar-nav">
-                    <li class="nav-item"><a href="{{ route('subscription.pricing') }}" class="nav-link">Subscribe</a></li>
-                    <li class="nav-item"><a href="{{ route('login') }}" class="nav-link">Login</a></li>
-                    <li class="nav-item"><a href="{{ route('register') }}" class="nav-link">Register</a></li>
+                    <li class="nav-item"><a href="{{ route('subscription.pricing', [], false) }}" class="nav-link">Subscribe</a></li>
+                    <li class="nav-item"><a href="{{ route('login', [], false) }}" class="nav-link">Login</a></li>
+                    <li class="nav-item"><a href="{{ route('register', [], false) }}" class="nav-link">Register</a></li>
                 </ul>
             </div>
         </nav>
