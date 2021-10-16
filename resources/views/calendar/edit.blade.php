@@ -124,7 +124,6 @@
                 pre_rebuild_calendar('calendar', dynamic_data)
             }else{
                 update_current_day(false);
-                scroll_to_epoch();
             }
 
             set_up_view_values();

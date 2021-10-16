@@ -1873,7 +1873,6 @@ function set_up_edit_inputs(){
 
 	const debounce_era_reindex = debounce(function(){
 		reindex_era_list();
-		eras.evaluate_position();
 		dynamic_data.current_era = get_current_era(static_data, dynamic_data.epoch);
 	}, 50)
 
@@ -1886,6 +1885,7 @@ function set_up_edit_inputs(){
 			era.date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, era.date.year), era.date.timespan, era.date.day).epoch;
 		}
 		dynamic_data.current_era = get_current_era(static_data, dynamic_data.epoch);
+        dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
 	});
 
 	$(document).on('click', '.preview_era_date', function(){
@@ -5238,6 +5238,12 @@ function reindex_era_list(){
 		static_data.eras[i].date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, static_data.eras[i].date.year), static_data.eras[i].date.timespan, static_data.eras[i].date.day).epoch;
 
 	});
+
+    dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
+    dynamic_data.epoch = dynamic_date_manager.epoch;
+
+    preview_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
+    preview_date.epoch = preview_date_manager.epoch;
 
 	do_error_check();
 

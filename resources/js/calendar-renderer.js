@@ -2,12 +2,16 @@ const calendar_renderer = {
 
     loaded: false,
     loading_message: "Initializing...",
+    rerendering: false,
 
     render_callbacks: [],
+    scroll_attempts: 0,
 
     render_data: {
         current_epoch: 0,
         preview_epoch: 0,
+        prev_current_epoch: 0,
+        prev_preview_epoch: 0,
         render_style: "grid",
         timespans: [],
         event_epochs: [],
@@ -63,6 +67,13 @@ const calendar_renderer = {
         this.loading_message = "Structuring days...";
         this.render_data.current_epoch = event.detail.current_epoch;
         this.render_data.preview_epoch = event.detail.preview_epoch;
+        CalendarYearHeader.update(
+            static_data,
+            dynamic_data,
+            preview_date,
+            evaluated_static_data.epoch_data
+        );
+        this.scroll_to_epoch();
     },
 
     pre_render: function(){
@@ -74,15 +85,16 @@ const calendar_renderer = {
 
         hide_loading_screen();
 
-		eras.evaluate_current_era(
-            static_data,
-            evaluated_static_data.year_data.start_epoch,
-            evaluated_static_data.year_data.end_epoch
-        );
-		eras.set_up_position();
-        eras.evaluate_position();
+        this.rerendering = this.render_data.prev_current_epoch !== this.render_data.current_epoch || this.render_data.prev_preview_epoch !== this.render_data.preview_epoch;
 
-        scroll_to_epoch();
+        if(!this.loaded || this.rerendering) this.scroll_to_epoch();
+
+        CalendarYearHeader.update(
+            static_data,
+            dynamic_data,
+            preview_date,
+            evaluated_static_data.epoch_data
+        );
 
         for(let index in this.render_callbacks){
             let callback = this.render_callbacks[index];
@@ -92,8 +104,38 @@ const calendar_renderer = {
         }
         this.render_callbacks = [];
         this.loaded = true;
+        this.rerendering = false;
+        this.render_data.prev_current_epoch = this.render_data.current_epoch;
+        this.render_data.prev_preview_epoch = this.render_data.preview_epoch;
 
 	    execution_time.end("Calculating and rendering calendar took:")
+    },
+
+    scroll_to_epoch: function(){
+
+        const previewEpochElement = $(`[epoch=${this.render_data.preview_epoch}]`);
+        const currentEpochElement = $(`[epoch=${this.render_data.current_epoch}]`);
+
+        if(previewEpochElement.length && this.render_data.preview_epoch !== this.render_data.current_epoch){
+
+            this.scroll_attempts = 0;
+            return previewEpochElement[0].scrollIntoView({block: "center", inline: "nearest"});
+
+        }else if(currentEpochElement.length){
+
+            this.scroll_attempts = 0;
+            return currentEpochElement[0].scrollIntoView({block: "center", inline: "nearest"});
+
+        }
+
+        this.scroll_attempts++;
+
+        if(this.scroll_attempts < 10){
+            setTimeout(this.scroll_to_epoch.bind(this), 100);
+        }else{
+            this.scroll_attempts = 0;
+        }
+
     }
 
 }

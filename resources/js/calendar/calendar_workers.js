@@ -941,7 +941,7 @@ var event_evaluator = {
 
 		this.static_data = static_data;
 		this.dynamic_data = dynamic_data;
-		this.events = events;
+		this.events = clone(events);
 		this.categories = event_categories;
 		this.epoch_data = epoch_data;
 
