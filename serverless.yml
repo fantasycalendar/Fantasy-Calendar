@@ -107,11 +107,11 @@ package:
         - .idea/**
         - setup/**
         - node_modules/**
-        - public/storage
+        - public/storage/**
         - public/vendor/sharp/fonts/*
         - public/vendor/sharp/vendor.js
-        - resources/images
-        - resources/image-sourcefiles
+        - resources/images/**
+        - resources/image-sourcefiles/**
         - storage/**
         - tests/**
 
