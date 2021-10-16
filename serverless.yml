@@ -146,7 +146,6 @@ functions:
           subnetIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/subnet_ids}"] }
     worker:
       handler: worker.php
-      reservedConcurrency: 7
       layers:
         - ${bref:layer.php-74}
       events:
