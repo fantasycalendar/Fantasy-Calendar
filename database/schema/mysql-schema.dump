@@ -1,0 +1,511 @@
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+DROP TABLE IF EXISTS `agreements`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `agreements` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `content` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `in_effect_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `auth_tokens`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `auth_tokens` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned NOT NULL,
+  `selector` char(12) NOT NULL,
+  `token` varchar(255) NOT NULL,
+  `expires` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `calendar_event_comments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `calendar_event_comments` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) NOT NULL,
+  `event_id` bigint(20) NOT NULL,
+  `calendar_id` bigint(20) NOT NULL,
+  `content` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `calendar_events`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `calendar_events` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `data` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `event_category_id` bigint(20) DEFAULT NULL,
+  `calendar_id` bigint(20) NOT NULL,
+  `settings` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `sort_by` bigint(20) DEFAULT NULL,
+  `creator_id` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `calendar_invites`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `calendar_invites` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `invite_token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `calendar_id` bigint(20) NOT NULL,
+  `handled` tinyint(1) NOT NULL DEFAULT 0,
+  `expires_on` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `resent_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `calendar_user_role`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `calendar_user_role` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) NOT NULL,
+  `calendar_id` bigint(20) NOT NULL,
+  `user_role` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'observer',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `calendars`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `calendars` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `name` varchar(256) NOT NULL,
+  `data` longtext NOT NULL,
+  `hash` varchar(32) NOT NULL,
+  `last_changed` datetime NOT NULL DEFAULT current_timestamp(),
+  `date_created` datetime NOT NULL DEFAULT current_timestamp(),
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `calendars_beta`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `calendars_beta` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `dynamic_data` text NOT NULL,
+  `static_data` text NOT NULL,
+  `hash` varchar(32) DEFAULT '',
+  `last_dynamic_change` datetime NOT NULL DEFAULT current_timestamp(),
+  `last_static_change` datetime NOT NULL DEFAULT current_timestamp(),
+  `disabled` tinyint(1) NOT NULL DEFAULT 0,
+  `date_created` datetime NOT NULL DEFAULT current_timestamp(),
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `parent_id` bigint(20) DEFAULT NULL,
+  `parent_offset` bigint(20) DEFAULT NULL,
+  `parent_link_date` varchar(255) DEFAULT NULL,
+  `converted_at` date DEFAULT NULL,
+  `conversion_batch` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `calendars_beta_hash_unique` (`hash`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `confirm`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `confirm` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `email_key` varchar(64) NOT NULL,
+  `expires` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `discord_auths`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `discord_auths` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `discord_user_id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `discord_username` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `refresh_token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `avatar` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `discord_email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `expires_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `discord_guilds`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `discord_guilds` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `discord_auth_id` bigint(20) unsigned NOT NULL,
+  `guild_id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `guild_settings` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `responded_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `discord_interactions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `discord_interactions` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `snowflake` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `parent_snowflake` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `discord_id` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `user_id` bigint(20) unsigned DEFAULT NULL,
+  `calendar_id` bigint(20) unsigned DEFAULT NULL,
+  `type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `data` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `guild_id` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `channel_id` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `discord_user` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `payload` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `response` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `responded_at` timestamp NULL DEFAULT NULL,
+  `needs_follow_up` tinyint(1) NOT NULL DEFAULT 0,
+  `version` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `discord_interactions_snowflake_unique` (`snowflake`),
+  KEY `discord_interactions_parent_snowflake_index` (`parent_snowflake`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `event_categories`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `event_categories` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `calendar_id` bigint(20) NOT NULL,
+  `category_settings` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `event_settings` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `sort_by` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `failed_jobs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `failed_jobs` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `connection` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `queue` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `failed_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `forgotten`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `forgotten` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `email_key` varchar(64) NOT NULL,
+  `expires` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `job_batches`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `job_batches` (
+  `id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `total_jobs` int(11) NOT NULL,
+  `pending_jobs` int(11) NOT NULL,
+  `failed_jobs` int(11) NOT NULL,
+  `failed_job_ids` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `options` mediumtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `cancelled_at` int(11) DEFAULT NULL,
+  `created_at` int(11) NOT NULL,
+  `finished_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `login_attempts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `login_attempts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `attempts` int(11) NOT NULL,
+  `IP` varchar(20) NOT NULL,
+  `last_login` datetime NOT NULL,
+  `username` varchar(64) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `migrations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `migrations` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `batch` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `password_resets`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `password_resets` (
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `permissions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `permissions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `policies`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `policies` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `content` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `in_effect_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `preset_event_categories`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `preset_event_categories` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `preset_id` bigint(20) NOT NULL,
+  `category_settings` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `event_settings` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `label` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `preset_events`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `preset_events` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `data` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `preset_event_category_id` bigint(20) DEFAULT NULL,
+  `event_category_id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `preset_id` bigint(20) NOT NULL,
+  `settings` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `presets`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `presets` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `source_calendar_id` bigint(20) DEFAULT NULL,
+  `creator_id` bigint(20) DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `dynamic_data` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `static_data` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `featured` tinyint(1) NOT NULL DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `subscription_items`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `subscription_items` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `subscription_id` bigint(20) unsigned NOT NULL,
+  `stripe_id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `stripe_plan` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `quantity` int(11) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `subscription_items_subscription_id_stripe_plan_unique` (`subscription_id`,`stripe_plan`),
+  KEY `subscription_items_stripe_id_index` (`stripe_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `subscriptions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `subscriptions` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `stripe_id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `stripe_status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `stripe_plan` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `quantity` int(11) DEFAULT NULL,
+  `trial_ends_at` timestamp NULL DEFAULT NULL,
+  `ends_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `subscriptions_user_id_stripe_status_index` (`user_id`,`stripe_status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(20) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `api_token` varchar(80) DEFAULT NULL,
+  `permissions` int(11) NOT NULL DEFAULT 6,
+  `email` varchar(255) NOT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT 0,
+  `date_update_pass` datetime NOT NULL DEFAULT current_timestamp(),
+  `date_register` datetime NOT NULL DEFAULT current_timestamp(),
+  `reg_ip` varchar(128) NOT NULL,
+  `beta_authorised` tinyint(1) NOT NULL DEFAULT 0,
+  `stripe_id` varchar(255) DEFAULT NULL,
+  `card_brand` varchar(255) DEFAULT NULL,
+  `card_last_four` varchar(4) DEFAULT NULL,
+  `trial_ends_at` timestamp NULL DEFAULT NULL,
+  `remember_token` varchar(100) DEFAULT NULL,
+  `email_verified_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `settings` varchar(255) DEFAULT NULL,
+  `migrated` tinyint(1) NOT NULL DEFAULT 0,
+  `acknowledged_migration` tinyint(1) NOT NULL DEFAULT 0,
+  `agreed_at` timestamp NULL DEFAULT NULL,
+  `agreement_id` bigint(20) DEFAULT NULL,
+  `marketing_opt_in_at` timestamp NULL DEFAULT NULL,
+  `marketing_opt_out_at` timestamp NULL DEFAULT NULL,
+  `policy_id` bigint(20) DEFAULT NULL,
+  `delete_requested_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `has_sent_announcement` tinyint(1) NOT NULL DEFAULT 0,
+  `acknowledged_discord_announcement` tinyint(1) NOT NULL DEFAULT 0,
+  `last_interaction` date DEFAULT NULL,
+  `last_login` date DEFAULT NULL,
+  `last_visit` date DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `users_id_unique` (`id`),
+  UNIQUE KEY `users_email_unique` (`email`),
+  UNIQUE KEY `users_api_token_unique` (`api_token`),
+  KEY `users_stripe_id_index` (`stripe_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `webhooks_sent`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `webhooks_sent` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `json` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+INSERT INTO `migrations` VALUES (1,'2019_05_03_000001_create_customer_columns',1);
+INSERT INTO `migrations` VALUES (2,'2019_05_03_000002_create_subscriptions_table',1);
+INSERT INTO `migrations` VALUES (3,'2019_05_03_000003_create_subscription_items_table',1);
+INSERT INTO `migrations` VALUES (4,'2019_07_23_024639_users_table_add_remember_token',1);
+INSERT INTO `migrations` VALUES (5,'2019_07_28_175806_users_table_add_api_token',1);
+INSERT INTO `migrations` VALUES (6,'2019_07_28_201841_calendars_table_soft_deletes',1);
+INSERT INTO `migrations` VALUES (7,'2019_07_29_145431_table_for_event_categories',1);
+INSERT INTO `migrations` VALUES (8,'2019_07_29_164424_calendar_data_to_event_categories',1);
+INSERT INTO `migrations` VALUES (9,'2019_07_30_015008_create_calendar_events_table',1);
+INSERT INTO `migrations` VALUES (10,'2019_07_30_030148_calendar_data_to_calendar_events',1);
+INSERT INTO `migrations` VALUES (11,'2019_08_03_190721_create_calendar_event_comments_table',1);
+INSERT INTO `migrations` VALUES (12,'2019_08_09_024742_update_active_users_email_verified',1);
+INSERT INTO `migrations` VALUES (13,'2019_08_09_033452_create_password_resets_table',1);
+INSERT INTO `migrations` VALUES (14,'2019_08_10_125955_add_sort_by_to_calendar_events',1);
+INSERT INTO `migrations` VALUES (15,'2019_08_10_130051_add_sort_by_to_event_categories',1);
+INSERT INTO `migrations` VALUES (16,'2019_08_10_134444_sort_calendar_events',1);
+INSERT INTO `migrations` VALUES (17,'2019_08_10_134740_sort_event_categories',1);
+INSERT INTO `migrations` VALUES (18,'2019_09_06_013211_create_failed_jobs_table',1);
+INSERT INTO `migrations` VALUES (19,'2019_12_13_031153_create_user_settings_column',1);
+INSERT INTO `migrations` VALUES (20,'2020_04_12_231614_update_calendars_beta_links',1);
+INSERT INTO `migrations` VALUES (21,'2020_04_28_014058_add_converted_at_column_to_calendars',1);
+INSERT INTO `migrations` VALUES (22,'2020_04_28_210708_alter_calendar_name_length',1);
+INSERT INTO `migrations` VALUES (23,'2020_07_17_021111_create_calendar_user_role_table',1);
+INSERT INTO `migrations` VALUES (24,'2020_07_31_040550_create_event_creator_column',1);
+INSERT INTO `migrations` VALUES (25,'2020_08_11_025456_update_calendars_to_add_disabled_field',1);
+INSERT INTO `migrations` VALUES (26,'2020_08_22_012513_create_presets_table',1);
+INSERT INTO `migrations` VALUES (27,'2020_08_22_013946_create_preset_events_table',1);
+INSERT INTO `migrations` VALUES (28,'2020_08_22_013952_create_preset_event_categories_table',1);
+INSERT INTO `migrations` VALUES (29,'2020_09_25_032548_create_calendar_invites_table',1);
+INSERT INTO `migrations` VALUES (30,'2020_09_30_230159_create_webhooks_sent_table',1);
+INSERT INTO `migrations` VALUES (31,'2020_10_16_012832_add_migrated_column_to_users_table',1);
+INSERT INTO `migrations` VALUES (32,'2020_10_17_205806_alter_migrated_column_with_default_on_users_table',1);
+INSERT INTO `migrations` VALUES (33,'2020_10_17_222737_create_agreements_table',1);
+INSERT INTO `migrations` VALUES (34,'2020_10_17_222827_add_agreement_column_to_users_table',1);
+INSERT INTO `migrations` VALUES (35,'2020_10_18_121321_create_policies_table',1);
+INSERT INTO `migrations` VALUES (36,'2020_10_29_131206_add_marketing_columns_to_users_table',1);
+INSERT INTO `migrations` VALUES (37,'2020_11_01_012017_add_delete_requested_at_column_to_users_table',1);
+INSERT INTO `migrations` VALUES (38,'2020_11_09_170636_add_announcement_columns_to_users_table',1);
+INSERT INTO `migrations` VALUES (39,'2021_03_13_185744_create_discord_auths_table',1);
+INSERT INTO `migrations` VALUES (40,'2021_03_14_011012_create_discord_interactions_table',1);
+INSERT INTO `migrations` VALUES (41,'2021_03_14_044506_create_discord_guilds_table',1);
+INSERT INTO `migrations` VALUES (42,'2021_04_20_012646_create_user_ids_index',1);
+INSERT INTO `migrations` VALUES (43,'2021_04_20_013002_calendar_indexes',1);
+INSERT INTO `migrations` VALUES (44,'2021_08_29_190621_add_discord_announcement_columns_to_users_table',1);
+INSERT INTO `migrations` VALUES (45,'2021_09_07_225256_add_login_visit_columns_to_users_table',1);
+INSERT INTO `migrations` VALUES (46,'2021_09_12_150121_create_job_batches_table',1);

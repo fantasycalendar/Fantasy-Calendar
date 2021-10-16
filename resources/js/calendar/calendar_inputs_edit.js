@@ -512,7 +512,8 @@ function set_up_edit_inputs(){
 			if(!result.dismiss) {
 				$(this).prop('checked', checked);
 				season_sortable.empty();
-				static_data.seasons.data = []
+				static_data.seasons.data = [];
+                reindex_location_list();
 				evaluate_season_lengths();
 				static_data.seasons.global_settings.periodic_seasons = checked;
 
@@ -1838,7 +1839,6 @@ function set_up_edit_inputs(){
 		}else{
 			var text = 'Year {{era_year}} - {{era_name}}';
 		}
-		console.log(text);
 		parent.find('.era_formatting').prop('disabled', !$(this).is(':checked')).val(text).change();
 	});
 

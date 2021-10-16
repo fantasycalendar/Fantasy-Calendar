@@ -1,34 +1,16 @@
-FROM php:7-fpm
+FROM bref/extra-redis-php-74 as redisextra
+FROM bref/extra-gmp-php-74 as gmpextra
+FROM bref/extra-imagick-php-74 as imagickextra
+FROM bref/php-74-fpm-dev
+COPY --from=redisextra /opt /opt
+COPY --from=gmpextra /opt /opt
+COPY --from=imagickextra /opt /opt
 
-RUN apt-get update && apt-get install -y \
-        libfreetype6-dev \
-        libjpeg62-turbo-dev \
-        libmcrypt-dev \
-        libpng-dev \
-        libzip-dev \
-        unzip \
-    && docker-php-ext-install -j$(nproc) pdo_mysql zip
+RUN yum -y install mysql
 
-RUN pecl install -o -f redis \
-    && rm -rf /tmp/pear \
-    && docker-php-ext-enable redis
-
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends git zip
-
-WORKDIR /var/www/html
-
-RUN curl --silent --show-error https://getcomposer.org/installer | php
-
-WORKDIR /fantasy-calendar
+WORKDIR /var/task
 
 COPY . .
-
-RUN chown -R www-data:www-data /fantasy-calendar
-
-RUN chmod -R 775 /fantasy-calendar
-
-USER www-data
 
 ENV APP_NAME FantasyCalendar
 ENV DB_CONNECTION mysql

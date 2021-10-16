@@ -13,9 +13,21 @@
 .btn.btn-accent {
     background-color: $accent-color;
     border-color: $accent-color;
+    color: white;
 
     &:hover {
         background-color: $accent-color-darker;
+        border-color: $accent-color;
+        color: white;
+    }
+}
+
+.btn.btn-outline-accent {
+    background-color: transparent;
+    border-color: $accent-color;
+
+    &:hover {
+        background-color: $accent-color;
         border-color: $accent-color;
     }
 }
@@ -114,6 +126,21 @@ body{
 .navbar {
     @media (min-width: 768px) and (hover: none) {
         min-height: 3.6rem;
+    }
+
+    .new-nav-item {
+        position: relative;
+
+        & a:after {
+            content: "New!";
+            display: inline;
+            color: $text-green-400;
+            background-color: $bg-green-800;
+            font-size: .8rem;
+            padding: .2rem .6rem;
+            border-radius: 999px;
+            margin-left: .4rem;
+        }
     }
 }
 

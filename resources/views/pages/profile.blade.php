@@ -42,6 +42,34 @@
         }
 
     </script>
+
+    <style>
+
+        .badge-custom{
+            font-size: 45%;
+            vertical-align: middle;
+        }
+
+    </style>
+
+    @if(config('services.discord.enabled'))
+        <script>
+            function confirmDisconnect() {
+                swal.fire({
+                    title: "Are you sure?",
+                    text: "Your Discord account will be disconnected from Fantasy Calendar. Commands will no longer work for you, but you will still need to remove the app from any servers you don't want it in in order to remove it completely.",
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    icon: "warning",
+                }).then((result) => {
+                    if(!result.dismiss) {
+                        self.location = '{{ route('discord.auth.remove') }}';
+                    }
+                });
+            }
+        </script>
+    @endif
 @endpush
 
 
@@ -71,12 +99,44 @@
                     <p><a href="{{ route('subscription.resume') }}" class="btn btn-primary form-control">Resume Subscription</a></p>
                 @endif
 
-            @if(env('APP_ENV') !== 'production' && $subscription->onGracePeriod())
-                        <p><a href="{{ route('subscription.cancel') }}" class="btn btn-danger form-control">Immediately end benefits</a></p>
+                @if(!app()->environment(['production']) && $subscription->onGracePeriod())
+                    <p><a href="{{ route('subscription.cancel') }}" class="btn btn-danger form-control">Immediately end benefits</a></p>
                 @endif
             @endunless
         </div>
     </div>
+    @if(config('services.discord.enabled'))
+        <hr>
+        <div class="row">
+            <div class="col-12 d-flex flex-column flex-md-row align-items-md-center justify-content-between pt-3">
+                @if($user->hasDiscord())
+                    <div>
+                        <h4>Discord Integration <span class="badge badge-custom badge-success">Connected</span></h4>
+                        <p>Integrated with discord as {{ $user->discord_auth->discord_username }}.</p>
+                    </div>
+                    <div>
+                        <a href="{{ route('discord.index') }}" class="btn btn-outline-accent w-100">Manage Integration</a>
+                    </div>
+                @elseif($user->isPremium())
+                    <div>
+                        <h4>Discord Integration <span class="badge badge-custom badge-primary">Not connected</span></h4>
+                        <p>You can connect your Fantasy Calendar account to Discord!</p>
+                    </div>
+                    <div>
+                        <a href="{{ route('discord.index') }}" class="btn btn-outline-accent w-100">Check it out</a>
+                    </div>
+                @else
+                    <div>
+                        <h4>Discord Integration <span class="badge badge-custom badge-accent">Subscriber only</span></h4>
+                        <p>Subscribe today to use Fantasy Calendar directly from Discord!</p>
+                    </div>
+                    <div>
+                        <a href="{{ route('discord') }}" class="btn btn-outline-accent w-100">Check it out</a>
+                    </div>
+                @endif
+            </div>
+        </div>
+    @endif
     <hr>
     <form id="settings" method="post">
         @csrf
@@ -100,7 +160,7 @@
                 </div>
             </div>
         </div>
-        <button class="btn btn-primary float-right">Save Settings</button>
+        <button class="btn btn-accent float-right">Save Settings</button>
     </form>
 @endsection
 

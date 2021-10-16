@@ -6,11 +6,10 @@ namespace App\Services\RendererService;
 
 use App\Calendar;
 use App\Services\CalendarService\LeapDay;
-use App\Services\DatePipeline\AddDayName;
-use App\Services\DatePipeline\AddDayType;
 use App\Services\DatePipeline\AddIsCurrentDate;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class MonthRenderer
 {
@@ -20,8 +19,6 @@ class MonthRenderer
     private Calendar $calendar;
     private array $pipeline = [
         AddIsCurrentDate::class,
-        AddDayType::class,
-        AddDayName::class,
     ];
 
     /**
@@ -31,24 +28,15 @@ class MonthRenderer
     public function __construct(Calendar $calendar)
     {
         $this->calendar = $calendar;
-
-        if($this->calendar->overflows_week) {
-            throw new \Exception('API rendering does not currently support overflowed weekdays.');
-        }
     }
 
     /**
-     * @param mixed $date The date you want to render (default is current) - array [year, month, day]
      * @return mixed
      */
-    public function render($date = null)
+    public function prepare()
     {
-        if($date) {
-            $this->calendar->setDate($date[0], $date[1], $date[2]);
-        }
-
         $pipelineData = [
-            'render_data' => $this->buildMonth(),
+            'render_data' => $this->calendar->render_month->getStructure(),
             'calendar' => $this->calendar
         ];
 
@@ -56,6 +44,15 @@ class MonthRenderer
                     ->send($pipelineData)
                     ->through($this->pipeline)
                     ->then($this->verifyData());
+    }
+
+    /**
+     * @param $calendar
+     * @return mixed
+     */
+    public static function prepareFrom($calendar)
+    {
+        return (new static($calendar))->prepare();
     }
 
     /**
@@ -69,56 +66,5 @@ class MonthRenderer
         return function ($data) {
             return $data['render_data'];
         };
-    }
-
-    /**
-     * Builds the structure of our month, populating it only with the day of the month
-     * Since we're building the data used for visually rendering a calendar, we must
-     * include days that are not actually fully calendar dates. Each pipeline job
-     * should only act on the days that have null "month_day" values if needed
-     *
-     * @return array
-     */
-    private function buildMonth()
-    {
-        $weeksInMonth = $this->buildWeekList();
-
-        $monthDay = 0;
-        $structure = $weeksInMonth->mapWithKeys(function($weekNumber) use (&$monthDay){
-            return [
-                $weekNumber => collect($this->calendar->month_week)->map(function($day) use (&$monthDay){
-                    $monthDay++;
-
-                    return ['month_day' => ($monthDay > $this->calendar->month_true_length) ? null : $monthDay];
-                })
-            ];
-        });
-
-        return [
-            'year' => $this->calendar->year,
-            'name' => $this->calendar->month_name,
-            'length' => $this->calendar->month_true_length,
-            'weekdays' => $this->calendar->month_week,
-            'weeks' => $structure
-        ];
-    }
-
-    /**
-     * Creates a collection of weeks for use in displaying this month
-     * It doesn't add any days or anything, just a collection that
-     * contains an integer of each week that is within a month.
-     * Example: A month with 30 days and 10-day is built as:
-     *
-     * collect([1, 2, 3]);
-     *
-     * @return \Illuminate\Support\Collection
-     */
-    private function buildWeekList()
-    {
-        $weeks_in_month = ceil($this->calendar->month_length / count($this->calendar->month_week));
-
-        return collect(
-            range(1, $weeks_in_month)
-        );
     }
 }

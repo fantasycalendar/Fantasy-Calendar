@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UserSubscribedEvent;
 use Auth;
 use Stripe;
 use Illuminate\Http\Request;
@@ -122,6 +123,8 @@ class SubscriptionController extends Controller
                 [$exception->payment->id, 'redirect' => route('profile')]
             );
         }
+
+        UserSubscribedEvent::dispatch($user, $plan);
 
         return ['success' => true, 'message' => 'Subscribed'];
     }

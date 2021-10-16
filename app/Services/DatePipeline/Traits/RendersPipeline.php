@@ -34,7 +34,7 @@ trait RendersPipeline
 
     public function process()
     {
-        $this->renderData['weeks'] = $this->renderData['weeks']->map(function($week){
+        $this->renderData['weeks'] = $this->renderData['weeks']->map->map(function($week){
             return $week->map(function($day){
                 return $this->processDay($day);
             });

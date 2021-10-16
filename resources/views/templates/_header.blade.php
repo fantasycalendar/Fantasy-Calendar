@@ -17,8 +17,14 @@
             <li class="nav-item new-calendar">
                 <a class="nav-link" href="{{ route('calendars.create') }}">New Calendar</a>
             </li>
-            <li class="nav-item"><a href="{{ route('whats-new') }}" class="nav-link">What's New in 2.0</a></li>
-                <li class="nav-item"><a href="{{ route('faq') }}" class="nav-link">FAQs</a></li>
+            <li class="nav-item"><a href="{{ route('faq') }}" class="nav-link">FAQs</a></li>
+            @if(config('services.discord.enabled'))
+                @unless(Auth::check() && Auth::user()->hasDiscord())
+                    <li class="nav-item new-nav-item"><a href="{{ route('discord') }}" class="nav-link">Discord Integration</a>
+                @else
+                        <li class="nav-item"><a href="{{ route('discord.index') }}" class="nav-link">Discord Integration</a>
+                @endunless
+            @endif
         </ul>
         <ul class="navbar-nav">
             @auth

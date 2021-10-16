@@ -26,7 +26,7 @@
     @env(['development'])
         <script>
             $(document).ready(function() {
-                $.notify("This is the beta deployment of Fantasy Calendar.\nWe will often deploy things here that are incomplete,\n still in the works, or even just broken.", {autoHide: false});
+                $.notify("This is the beta deployment of Fantasy Calendar. Use with caution.", {autoHide: false});
             });
         </script>
     @endenv

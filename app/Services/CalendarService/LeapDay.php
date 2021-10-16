@@ -5,15 +5,18 @@ namespace App\Services\CalendarService;
 
 
 use App\Calendar;
+use App\Collections\IntervalsCollection;
 use App\Exceptions\InvalidLeapDayIntervalException;
+use FontLib\Table\Type\post;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 /**
  * Class Interval
  * @package App\Services\CalendarService
  * @property $name
  * @property $intercalary
- * @property $timespan
+ * @property $timespan_id
  * @property $removes_day
  * @property $removes_week_day
  * @property $adds_week_day
@@ -22,35 +25,64 @@ use Illuminate\Support\Arr;
  * @property $interval
  * @property $intervals
  * @property $offset
+ * @property mixed not_numbered
+ * @property mixed show_text
  */
 class LeapDay
 {
-    private array $attributes;
+    public bool $yearZeroExists;
+    private array $originalAttributes;
+    public $name;
+    public $intercalary;
+    public $timespan_id;
+    public $adds_week_day;
+    public $day;
+    public $week_day;
+    public $interval;
+    public $offset;
+    public $not_numbered;
+    public $show_text;
 
     /**
      * Interval constructor.
+     * @param $calendar
      * @param $attributes
      */
-    public function __construct(array $attributes)
+    public function __construct(Calendar $calendar, array $attributes)
     {
-        $this->attributes = $attributes;
+        $this->originalAttributes = $attributes;
+        $this->yearZeroExists = $calendar->setting('year_zero_exists');
+        $this->name = Arr::get($attributes, "name");
+        $this->intercalary = Arr::get($attributes, "intercalary");
+        $this->timespan_id = Arr::get($attributes, "timespan");
+        $this->adds_week_day = Arr::get($attributes, "adds_week_day", false);
+        $this->day = Arr::get($attributes, "day", 0);
+        $this->week_day = Arr::get($attributes, "week_day", false);
+        $this->interval = Arr::get($attributes, "interval", "1");
+        $this->offset = Arr::get($attributes, "offset", "0");
+        $this->not_numbered = Arr::get($attributes, "not_numbered", false);
+        $this->show_text = Arr::get($attributes, "show_text", false);
 
-        $this->collectIntervals();
+        $this->intervals = IntervalsCollection::fromString($this->interval, $this->offset)->normalize();
     }
 
-    public function intersectsYear(int $year)
+    /**
+     * Determines whether this leap day will appear on the given year
+     *
+     * @param int $year
+     * @return bool
+     */
+    public function intersectsYear(int $year): bool
     {
-        if($this->intervals->count() === 1) return ['result' => (($year + $this->offset) % $this->interval) == 0];
+        // We need to un-normalize the year as otherwise 0 month occurrences results in leap day appearing
+        $year = $year >= 0 && !$this->yearZeroExists
+            ? $year + 1
+            : $year;
 
-        $votes = $this->intervals->sortByDesc('years')->map(function($interval) use ($year) {
-            $year = ($interval->ignores_offset)
-                ? $year
-                : $year - $this->offset;
-
-            return $interval->voteOnYear($year);
+        $votes = collect(explode(',', $this->interval))->map(function($interval) use ($year) {
+            return (new Interval($interval, $this->offset))->voteOnYear($year);
         });
 
-        //
         foreach($votes as $vote) {
             if($vote == 'allow') return true;
             if($vote == 'deny') return false;
@@ -59,21 +91,51 @@ class LeapDay
         return false;
     }
 
-    private function collectIntervals()
+    /**
+     * Determines how many times this leap day has appeared up until the given year, or how
+     * many times it has appeared depending on the occurrences of the month that owns it
+     *
+     * @param int $parentOccurrences
+     * @return int
+     */
+    public function occurrences(int $parentOccurrences): int
     {
-        $this->intervals = collect(explode(',', $this->interval));
-
-        if(!$this->intervals->count()) {
-            throw new InvalidLeapDayIntervalException('An invalid value was provided for the interval of a leap day: ' . $this->interval);
-        }
-
-        $this->intervals = $this->intervals->map(function($interval){
-            return new Interval($interval);
-        });
+        return (int) $this->intervals->occurrences($parentOccurrences, $this->yearZeroExists);
     }
 
-    public function __get($name)
+    /**
+     * @param $timespan_id
+     * @return bool
+     */
+    public function timespanIs($timespan_id): bool
     {
-        return Arr::get($this->attributes, $name);
+        return $this->timespan_id === $timespan_id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAverageYearContributionAttribute(): float
+    {
+        return $this->intervals->sum->fraction();
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return collect(array_keys($this->originalAttributes))
+            ->mapWithKeys(function($name){ return [ $name => $this->{$name}]; })
+            ->toArray();
+    }
+
+    public function __get($key)
+    {
+        if(method_exists($this, 'get'.Str::studly($key).'Attribute')) {
+            return $this->{'get'.Str::studly($key).'Attribute'}();
+        }
+
+        return Arr::get($this->originalAttributes, $key);
     }
 }

@@ -170,6 +170,7 @@ return [
          */
         GrahamCampbell\Markdown\MarkdownServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+        SocialiteProviders\Manager\ServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -179,6 +180,8 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Services\Discord\Providers\DiscordServiceProvider::class,
+        Intervention\Image\ImageServiceProvider::class
 
     ],
 
@@ -233,6 +236,7 @@ return [
 
         // Package facades
         'Markdown' => GrahamCampbell\Markdown\Facades\Markdown::class,
+        'Image' => Intervention\Image\Facades\Image::class
     ],
 
 ];

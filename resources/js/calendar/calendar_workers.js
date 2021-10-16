@@ -71,21 +71,21 @@ const calendar_data_generator = {
      */
     increment_moon_year_repetitions(year, moon_index, phase){
 
-	    if(this.repetitions[year] === undefined){
-	        this.repetitions[year] = {};
+	    if(this.repetitions.yearly[year] === undefined){
+	        this.repetitions.yearly[year] = {};
         }
 
-	    if(this.repetitions[year][moon_index] === undefined){
-	        this.repetitions[year][moon_index] = {};
+	    if(this.repetitions.yearly[year][moon_index] === undefined){
+	        this.repetitions.yearly[year][moon_index] = {};
         }
 
-	    if(this.repetitions[year][moon_index][phase] === undefined){
-	        this.repetitions[year][moon_index][phase] = 0;
+	    if(this.repetitions.yearly[year][moon_index][phase] === undefined){
+	        this.repetitions.yearly[year][moon_index][phase] = 0;
         }
 
-	    this.repetitions[year][moon_index][phase]++;
+	    this.repetitions.yearly[year][moon_index][phase]++;
 
-	    return this.repetitions[year][moon_index][phase];
+	    return this.repetitions.yearly[year][moon_index][phase];
 
     },
 
@@ -100,25 +100,25 @@ const calendar_data_generator = {
      */
     increment_moon_month_repetitions(year, timespan, moon_index, phase){
 
-	    if(this.repetitions[year] === undefined){
-	        this.repetitions[year] = {};
+	    if(this.repetitions.monthly[year] === undefined){
+	        this.repetitions.monthly[year] = {};
         }
 
-	    if(this.repetitions[year][timespan] === undefined){
-	        this.repetitions[year][timespan] = {};
+	    if(this.repetitions.monthly[year][timespan] === undefined){
+	        this.repetitions.monthly[year][timespan] = {};
         }
 
-	    if(this.repetitions[year][timespan][moon_index] === undefined){
-	        this.repetitions[year][timespan][moon_index] = {};
+	    if(this.repetitions.monthly[year][timespan][moon_index] === undefined){
+	        this.repetitions.monthly[year][timespan][moon_index] = {};
         }
 
-	    if(this.repetitions[year][timespan][moon_index][phase] === undefined){
-	        this.repetitions[year][timespan][moon_index][phase] = 0;
+	    if(this.repetitions.monthly[year][timespan][moon_index][phase] === undefined){
+	        this.repetitions.monthly[year][timespan][moon_index][phase] = 0;
         }
 
-	    this.repetitions[year][timespan][moon_index][phase]++;
+	    this.repetitions.monthly[year][timespan][moon_index][phase]++;
 
-	    return this.repetitions[year][timespan][moon_index][phase];
+	    return this.repetitions.monthly[year][timespan][moon_index][phase];
 
     },
 
@@ -132,21 +132,21 @@ const calendar_data_generator = {
      */
     increment_weekday_repetitions(year, timespan, weekday){
 
-	    if(this.repetitions[year] === undefined){
-	        this.repetitions[year] = {};
+	    if(this.repetitions.weekly[year] === undefined){
+	        this.repetitions.weekly[year] = {};
         }
 
-	    if(this.repetitions[year][timespan] === undefined){
-	        this.repetitions[year][timespan] = {};
+	    if(this.repetitions.weekly[year][timespan] === undefined){
+	        this.repetitions.weekly[year][timespan] = {};
         }
 
-	    if(this.repetitions[year][timespan][weekday] === undefined){
-	        this.repetitions[year][timespan][weekday] = 0;
+	    if(this.repetitions.weekly[year][timespan][weekday] === undefined){
+	        this.repetitions.weekly[year][timespan][weekday] = 0;
         }
 
-	    this.repetitions[year][timespan][weekday]++;
+	    this.repetitions.weekly[year][timespan][weekday]++;
 
-	    return this.repetitions[year][timespan][weekday];
+	    return this.repetitions.weekly[year][timespan][weekday];
 
     },
 
@@ -203,30 +203,14 @@ const calendar_data_generator = {
 
 		timespan.index = timespan_index;
 
-		timespan.render = false;
-
-        if(this.current_year === year){
-            timespan.render = !this.render_one_month || (this.render_one_month && timespan_index === this.dynamic_data.timespan);
-        }
+		timespan.render = this.current_year === year && (!this.render_one_month || (this.render_one_month && timespan_index === this.dynamic_data.timespan));
 
 		timespan.week = timespan.week ? timespan.week : clone(this.static_data.year_data.global_week);
 		timespan.truncated_week = truncate_weekdays(timespan.week);
 
-		timespan.leap_days = [];
+        let timespan_occurrences = get_timespan_occurrences(this.static_data, year, timespan.interval, timespan.offset);
 
-		let timespan_fraction;
-
-		if(timespan.interval === 1){
-
-			timespan_fraction = year;
-
-		}else{
-
-			let offset = timespan.offset%timespan.interval;
-
-			timespan_fraction = Math.floor((year - offset) / timespan.interval);
-
-		}
+        timespan.leap_days = [];
 
 		let leap_days = this.static_data.year_data.leap_days.filter(leap_day => leap_day.timespan === timespan_index);
 		let normal_leapdays = leap_days.filter(leap_day => !leap_day.adds_week_day && !leap_day.intercalary)
@@ -239,7 +223,7 @@ const calendar_data_generator = {
 
 			leap_day.index = leap_days.indexOf(leap_day);
 
-			if (is_leap(this.static_data, timespan_fraction, leap_day.interval, leap_day.offset)) {
+			if (is_leap(this.static_data, timespan_occurrences, leap_day.interval, leap_day.offset)) {
 				timespan.length++;
 			}
 
@@ -251,7 +235,7 @@ const calendar_data_generator = {
 
 			leap_day.index = leap_days.indexOf(leap_day);
 
-			if (is_leap(this.static_data, timespan_fraction, leap_day.interval, leap_day.offset)) {
+			if (is_leap(this.static_data, timespan_occurrences, leap_day.interval, leap_day.offset)) {
 				if(timespan.type === 'intercalary'){
 					timespan.length++;
 				}else{
@@ -274,7 +258,7 @@ const calendar_data_generator = {
 
 			leap_day.index = leap_days.indexOf(leap_day);
 
-			if (is_leap(this.static_data, timespan_fraction, leap_day.interval, leap_day.offset)) {
+			if (is_leap(this.static_data, timespan_occurrences, leap_day.interval, leap_day.offset)) {
 				timespan.length++;
 				if (leap_day.day === 0) {
 					before_weekdays.push(leap_day.week_day)
@@ -815,7 +799,11 @@ const calendar_data_generator = {
 
 		}
 
-		this.repetitions = {};
+		this.repetitions = {
+            yearly: {},
+		    monthly: {},
+		    weekly: {}
+        };
         this.epochs = {};
         this.build_seasons = true;
 	    this.callback = false;

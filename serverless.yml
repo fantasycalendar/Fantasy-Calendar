@@ -6,13 +6,18 @@ provider:
     region: us-east-1
     # The stage of the application, e.g. dev, production, staging… ('dev' is the default)
     stage: ${opt:stage, 'dev'}
-    runtime: provided
+    runtime: provided.al2
     versionFunctions: false
+    apiGateway:
+      binaryMediaTypes:
+        - '*/*'
+    # So in short, we have two separate sets of env vars in SSM. Most of what happens below is just resolving between our envs
+    # So that the environment variables get pulled from the correct set of vars, based on the stage we're deploying
     environment:
       APP_KEY: ${ssm:/${self:custom.ssm.${self:custom.stage}}/app_key}
       APP_DEBUG: ${self:custom.environment.${self:custom.stage}.APP_DEBUG}
       APP_ENV: ${self:custom.environment.${self:custom.stage}.APP_ENV}
-      AWS_BUCKET: # environment variable for Laravel
+      AWS_BUCKET:
         Ref: Assets
       SQS_QUEUE:
         Ref: AlertQueue
@@ -31,6 +36,7 @@ provider:
       WEBADDRESS: https://${self:custom.alias}/
       COOKIEADDRESS: ${self:custom.alias}
       CACHE_DRIVER: redis
+      QUEUE_CONNECTION: sqs
       SESSION_DRIVER: redis
       REDIS_HOST: ${ssm:/${self:custom.ssm.${self:custom.stage}}/redis_host}
       REDIS_PORT: 6379
@@ -46,6 +52,12 @@ provider:
       STRIPE_SECRET: ${ssm:/${self:custom.ssm.${self:custom.stage}}/stripe-secret}
       DISCORD_WEBHOOK: ${ssm:/${self:custom.ssm.${self:custom.stage}}/discord-webhook}
       SNS_TOPIC: ${ssm:/${self:custom.ssm.${self:custom.stage}}/sns-topic}
+      DISCORD_CLIENT_ID: ${ssm:/${self:custom.ssm.${self:custom.stage}}/discord_client_id}
+      DISCORD_CLIENT_SECRET: ${ssm:/${self:custom.ssm.${self:custom.stage}}/discord_client_secret}
+      DISCORD_REDIRECT_URI: ${ssm:/${self:custom.ssm.${self:custom.stage}}/discord_redirect_uri}
+      DISCORD_PUBLIC_KEY: ${ssm:/${self:custom.ssm.${self:custom.stage}}/discord_public_key}
+      DISCORD_COMMAND: ${self:custom.environment.${self:custom.stage}.DISCORD_COMMAND}
+      BREF_BINARY_RESPONSES: '1'
     iamRoleStatements:
       # Allow Lambda to read and write files in the S3 buckets
       -   Effect: Allow
@@ -62,11 +74,8 @@ provider:
             - "ses:Publish"
             - "ses:SendEmail"
             - "sns:Publish"
+            - "sqs:*"
           Resource: "*"
-      -   Effect: Allow
-          Action: [sqs:SendMessage, sqs:DeleteMessage]
-          Resource:
-            Fn::GetAtt: [ AlertQueue, Arn ]
 
 custom:
   stage: ${opt:stage, 'dev'}
@@ -78,9 +87,11 @@ custom:
     prod:
       APP_DEBUG: 'false'
       APP_ENV: 'production'
+      DISCORD_COMMAND: 'fc'
     dev:
       APP_DEBUG: 'true'
       APP_ENV: 'development'
+      DISCORD_COMMAND: 'fc-beta'
   ssm:
     prod: 'fantasy-calendar'
     dev: 'fantasy-calendar-dev'
@@ -97,7 +108,10 @@ package:
         - setup/**
         - node_modules/**
         - public/storage
-        - resources/assets/**
+        - public/vendor/sharp/fonts/*
+        - public/vendor/sharp/vendor.js
+        - resources/images
+        - resources/image-sourcefiles
         - storage/**
         - tests/**
 
@@ -108,6 +122,9 @@ functions:
         timeout: 28 # in seconds (API Gateway has a timeout of 29 seconds)
         layers:
             - ${bref:layer.php-74-fpm}
+            - ${bref:extra.redis-php-74}
+            - ${bref:extra.gmp-php-74}
+            - ${bref:extra.imagick-php-74}
         events:
             -   http: 'ANY /'
             -   http: 'ANY /{proxy+}'
@@ -120,14 +137,18 @@ functions:
         timeout: 120 # in seconds
         layers:
             - ${bref:layer.php-74} # PHP
+            - ${bref:extra.gmp-php-74}
+            - ${bref:extra.redis-php-74}
+            - ${bref:extra.imagick-php-74}
             - ${bref:layer.console} # The "console" layer
         vpc:
           securityGroupIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/security_group_ids}"] }
           subnetIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/subnet_ids}"] }
     worker:
       handler: worker.php
+      reservedConcurrency: 7
       layers:
-        - ${bref:layer.php-73}
+        - ${bref:layer.php-74}
       events:
         -   sqs:
               arn:
@@ -141,6 +162,9 @@ functions:
       handler: artisan
       layers:
         - ${bref:layer.php-74} # PHP runtime
+        - ${bref:extra.gmp-php-74}
+        - ${bref:extra.redis-php-74}
+        - ${bref:extra.imagick-php-74}
         - ${bref:layer.console} # Console layer
       events:
         - schedule:
@@ -158,6 +182,7 @@ functions:
           - "./**"
         include:
           - setup/lambda/${opt:stage, 'dev'}/forwarder.js
+          - setup/lambda/${opt:stage, 'dev'}/version.txt
       memorySize: 128
       events:
         -   cloudFront:
@@ -172,6 +197,7 @@ functions:
           - "./**"
         include:
           - setup/lambda/${opt:stage, 'dev'}/security_headers.js
+          - setup/lambda/${opt:stage, 'dev'}/version.txt
       memorySize: 128
       events:
         -   cloudFront:
@@ -181,6 +207,7 @@ functions:
 plugins:
     # We need to include the Bref plugin
     - ./vendor/bref/bref
+    - ./vendor/bref/extra-php-extensions
     - serverless-s3-sync
 
 resources:

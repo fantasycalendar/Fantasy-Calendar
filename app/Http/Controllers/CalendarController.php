@@ -2,28 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\CalendarInvite;
+use App\Events\DateChanged;
 use App\Jobs\PrepCalendarForExport;
-use GrahamCampbell\Markdown\Facades\Markdown;
+use App\Services\RendererService\ImageRenderer;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 
 use Auth;
 use App\Calendar;
-use App\EventCategory;
-use App\CalendarEvent;
 
 use App\Jobs\SaveEventCategories;
 use App\Jobs\SaveCalendarEvents;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 
 class CalendarController extends Controller
 {
     public function __construct() {
-        $this->middleware('auth')->except('show', 'create');
+        $this->middleware('auth')->except('show', 'create', 'renderImage');
 
-        $this->middleware('verified')->except('show', 'create');
+        $this->middleware('verified')->except('show', 'create', 'renderImage');
 
         $this->authorizeResource(Calendar::class, 'calendar', ['except' => 'update']);
     }
@@ -123,6 +121,37 @@ class CalendarController extends Controller
         ]);
     }
 
+    public function renderImage(Calendar $calendar, $ext)
+    {
+        if(Gate::denies('view-image', $calendar) && !app()->environment('local')) {
+            $pathToFile = public_path('resources/discord/premium-warning.png');
+            $headers = ['Content-Type' => 'image/png'];
+
+            return response()->file($pathToFile, $headers);
+        }
+
+        if(!in_array($ext, ['png', 'jpg', 'jpeg'])) {
+            return redirect()->to(
+                route('calendars.image', request()->merge(['calendar' => $calendar->hash, 'ext' => 'png'])->all())
+            );
+        }
+
+        if(app()->environment('local') && request()->get('debug')) {
+            return ImageRenderer::renderMonth($calendar, collect(request()->merge(['ext' => $ext])->all()));
+        }
+
+        return response()->stream(function() use ($ext, $calendar) {
+            echo ImageRenderer::renderMonth($calendar, collect(request()->merge(['ext' => $ext])->all()));
+        }, 200, [
+            'Content-Disposition' => 'inline; filename="' . Str::slug(Str::ascii($calendar->name)) . '_' . Str::slug(Str::ascii($calendar->current_date)) . '.'. $ext .'"',
+            'Content-Type' => 'image/' . $ext,
+            'Last-Modified' => now(),
+            'Cache-control' => 'must-revalidate',
+            'Expires' => now()->addMinutes(5),
+            'Pragma' => 'public'
+        ]);
+    }
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -218,6 +247,10 @@ class CalendarController extends Controller
 
         if($calendar_was_updated == 0) {
             return [ 'success' => false, 'error' => 'Unable to update calendar. Please try again later.'];
+        }
+
+        if(isset($parent_calendar) && $parent_hash_exists && $parent_link_date_exists && $parent_offset_exists){
+            DateChanged::dispatch($parent_calendar, $parent_calendar->dynamic('epoch'));
         }
 
         $last_changed = [

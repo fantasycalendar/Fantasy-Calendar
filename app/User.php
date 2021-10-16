@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Services\Discord\Models\DiscordAuthToken;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\CanResetPassword;
@@ -17,7 +19,10 @@ class User extends Authenticatable implements
     MustVerifyEmail,
     CanResetPassword
 {
-    use Notifiable, Billable, SoftDeletes;
+    use Notifiable,
+        Billable,
+        SoftDeletes,
+        HasFactory;
 
     /**
      * The attributes that are mass assignable.
@@ -36,6 +41,7 @@ class User extends Authenticatable implements
         'agreed_at',
         'marketing_opt_in_at',
         'marketing_opt_out_at',
+        'has_sent_announcement',
         'last_interaction',
         'last_login',
         'last_visit',
@@ -81,6 +87,10 @@ class User extends Authenticatable implements
         return $this->hasMany('App\Calendar');
     }
 
+    public function discord_auth() {
+        return $this->hasOne(DiscordAuthToken::class);
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
@@ -89,7 +99,7 @@ class User extends Authenticatable implements
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function agreement() {
         return $this->belongsTo('App\Agreement');
@@ -174,11 +184,7 @@ class User extends Authenticatable implements
     }
 
     public function isPremium() {
-        if(!cache()->has($this->id . '_is_premium')) {
-            cache()->put($this->id . '_is_premium', ($this->subscribedToPlan(['timekeeper_monthly', 'timekeeper_yearly'], 'Timekeeper') || $this->betaAccess()), 30);
-        }
-
-        return cache($this->id . '_is_premium');
+        return $this->paymentLevel() !== 'Free';
     }
 
     /**
@@ -195,6 +201,13 @@ class User extends Authenticatable implements
 
     public function acknowledgeMigration() {
         $this->acknowledged_migration = 1;
+        $this->save();
+
+        return $this;
+    }
+
+    public function acknowledgedDiscordAnnouncement() {
+        $this->acknowledged_discord_announcement = 1;
         $this->save();
 
         return $this;
@@ -228,6 +241,17 @@ class User extends Authenticatable implements
         $this->save();
 
         return $this;
+    }
+
+    public function hasDiscord() {
+        return $this->isPremium() && $this->discord_auth()->exists();
+    }
+
+    public function hasCalendar($calendar)
+    {
+        return $this->calendars()
+            ->whereId($calendar)
+            ->exists();
     }
 
     public function getInvitations()

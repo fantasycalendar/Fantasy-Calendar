@@ -1,6 +1,25 @@
-### 2.X.X - Adjective Efreet
+### 2.1.0 - Discordant Djinn
+#### October 15th, 2021
+* Added - Discord integration!
+* Added - Event moon overrides - Change your moons with events, such as color, phase, phase name, and visibility! 
+* Reworked - Year header no longer updates current era when scrolling - now based entirely on current date
+* Reworked - Completely reworked the event editor and event viewer UI
 * Tweaked - Renamed the "Create Calendar" button to "Save Calendar" to avoid confusion
-* Fixed - Issues surrounding hiding/showing the overflow weekdays toggle when custom weeks and leaping weekdays were active 
+* Tweaked - Location list now shows all preset locations, but disable them if requirements are not met
+* Fixed - Linked child calendars sometimes not having the correct date & time, should now be accurate down to the minute
+* Fixed - Day data previewer not working in certain browsers
+* Fixed - Date dropdowns in date selectors (such as in events and eras) being incorrectly set up 
+* Fixed - Vastly improved calendar accuracy - this fixes a lot of issues such as moon drifting and weekday weirdness over years  
+* Fixed - Issues surrounding the overflow weekdays checkbox, as it would not disable when it should have
+* Fixed - Season day flow should be more accurate - some calendars with crazy setups may still be inaccurate across years due to floating point errors (curse you javascript!)
+* Fixed - Season colors sometimes not appearing in the right order
+* Fixed - Leap day and leap month appearing on the wrong cycles on negative years or on calendars with year zero enabled
+* Fixed - Issues with the Custom JSON loader when loading calendars exported from Fantasy-Calendar
+* Fixed - Toggling between date-based and length-based season type would sometimes break custom locations
+* Fixed - Improved accuracy of moon repetitions that are used in event conditions
+* Fixed - Average year length and month lengths not being accurate
+* Fixed - Copying the link to dates on calendars would sometimes not work
+* Fixed - Rare issue with event-based-events that would cause a recursion error
 
 ### 2.0.20 - Typesetting Efreet
 #### May 15, 2021

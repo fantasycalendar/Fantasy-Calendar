@@ -101,39 +101,4 @@ abstract class DuskTestCase extends BaseTestCase
 
         return $browser;
     }
-
-    public function getTimekeeperBrowser($browser, $new = false)
-    {
-        $username = $new ? Str::random(20) : 'TestTimekeeperUser';
-
-        $user = $this->getUserLike([
-            'username' => $username,
-            'email' => $username.'@example.com',
-            'beta_authorised' => 1,
-            'reg_ip' => '127.0.0.1'
-        ]);
-
-        $browser->loginAs($user);
-
-        if($user->paymentLevel() != 'Timekeeper') {
-            $browser->visitRoute('subscription.subscribe', ['level' => 'Timekeeper', 'interval' => 'monthly'])
-                ->assertSee('Subscribe to Timekeeper on a monthly basis.')
-                ->type('#card-holder-name', $user->username);
-
-            $browser->waitFor('iframe[name=__privateStripeFrame5]');
-
-            $browser->withinFrame('iframe[name=__privateStripeFrame5]', function($browser){
-                $browser->type('cardnumber', '4242424242424242')
-                    ->type('exp-date', '424')
-                    ->type('cvc', '242')
-                    ->type('postal', '42424');
-            });
-
-            $browser->press('Get subscribed');
-
-            $browser->waitForLocation('/profile');
-        }
-
-        return $browser;
-    }
 }

@@ -122,7 +122,7 @@ function pre_rebuild_calendar(action, dynamic_data){
 
 }
 
-async function testCalendarAccuracy(fromYear = -1000, toYear = 1000){
+async function testCalendarAccuracy(fromYear = -100, toYear = 100){
 
     calendar_data_generator.static_data = static_data;
     calendar_data_generator.dynamic_data = dynamic_data;
@@ -130,47 +130,54 @@ async function testCalendarAccuracy(fromYear = -1000, toYear = 1000){
     calendar_data_generator.events = events;
     calendar_data_generator.event_categories = event_categories;
 
-    return new Promise(async (resolve) => {
+    let currentYear = calendar_data_generator.dynamic_data.year;
 
-        let fails = []
+    calendar_data_generator.dynamic_data.year = fromYear;
 
-        calendar_data_generator.dynamic_data.year = fromYear;
+    let result = await calendar_data_generator.run();
+
+    let lastYearEndEpoch = result.year_data.end_epoch;
+
+    let year_zero_exists = static_data.settings.year_zero_exists;
+
+    fromYear++;
+    for(let year = fromYear; year < toYear; year++){
+
+        calendar_data_generator.dynamic_data.year = year;
+        if(!year_zero_exists && year === 0){
+            continue;
+        }
 
         let result = await calendar_data_generator.run();
 
-        let end_epoch = result.year_data.end_epoch;
+        let thisYearStartEpoch = result.year_data.start_epoch;
 
-        for(let year = fromYear; year < toYear; year++){
+        console.log(`${year} - Last year ended on ${lastYearEndEpoch} and this year started on ${thisYearStartEpoch} - total of ${Object.keys(result.epoch_data).length}`)
 
-            calendar_data_generator.dynamic_data.year++;
-            if(!static_data.settings.year_zero_exists && calendar_data_generator.dynamic_data.year === 0){
-                calendar_data_generator.dynamic_data.year++;
+        if((year_zero_exists && year === 0) || (!year_zero_exists && year === 1)){
+            if(thisYearStartEpoch !== 0){
+                console.error(`YEAR ${year} FAILED! Expected 0, got ${thisYearStartEpoch}!`)
+                dynamic_data.year = currentYear;
+                return;
             }
-
-            console.log(`Testing year ${calendar_data_generator.dynamic_data.year}...`)
-
-            let result = await calendar_data_generator.run();
-
-            if(end_epoch !== result.year_data.start_epoch-1){
-                fails.push(`YEAR ${calendar_data_generator.dynamic_data.year} FAILED! Expected ${end_epoch}, got ${result.year_data.start_epoch}!`)
-            }
-
-            end_epoch = result.year_data.end_epoch;
-
         }
 
-        if(!fails.length){
-            console.log("Test succeeded, calendar calculation accurate!")
-            resolve();
-        }else{
-            fails.forEach(f => console.log(f));
-            reject();
+        if(lastYearEndEpoch !== thisYearStartEpoch-1){
+            console.error(`YEAR ${year} FAILED! Expected ${lastYearEndEpoch+1}, got ${thisYearStartEpoch}!`)
+            dynamic_data.year = currentYear;
+            return;
         }
 
-    });
+        lastYearEndEpoch = result.year_data.end_epoch;
+
+    }
+
+    console.log("Test succeeded, calendar calculation accurate!")
+    dynamic_data.year = currentYear;
+
 }
 
-async function testSeasonAccuracy(fromYear = 10, toYear = 1000){
+async function testSeasonAccuracy(fromYear = -1000, toYear = 1000){
 
     if(static_data.seasons.data.length === 0) return;
 
@@ -180,60 +187,60 @@ async function testSeasonAccuracy(fromYear = 10, toYear = 1000){
     calendar_data_generator.events = events;
     calendar_data_generator.event_categories = event_categories;
 
-    return new Promise(async (resolve, reject) => {
+    let originalYear = calendar_data_generator.dynamic_data.year;
 
-        calendar_data_generator.dynamic_data.year = fromYear;
+    calendar_data_generator.dynamic_data.year = fromYear;
+
+    let result = await calendar_data_generator.run();
+
+    let previous_year_end_season_day = result.epoch_data[result.year_data.end_epoch].season.season_day;
+
+    for(let year = fromYear; year < toYear; year++){
+
+        calendar_data_generator.dynamic_data.year++;
+        if(!static_data.settings.year_zero_exists && calendar_data_generator.dynamic_data.year === 0){
+            calendar_data_generator.dynamic_data.year++;
+        }
+
+        console.log(`Testing year ${calendar_data_generator.dynamic_data.year}...`)
 
         let result = await calendar_data_generator.run();
 
-        let previous_year_end_season_day = result.epoch_data[result.year_data.end_epoch].season.season_day;
+        let start_epoch = result.year_data.start_epoch;
+        let end_epoch = result.year_data.end_epoch;
 
-        for(let year = fromYear; year < toYear; year++){
+        let current_year_start_season_day = result.epoch_data[start_epoch].season.season_day;
 
-            calendar_data_generator.dynamic_data.year++;
-            if(!static_data.settings.year_zero_exists && calendar_data_generator.dynamic_data.year === 0){
-                calendar_data_generator.dynamic_data.year++;
-            }
+        if(previous_year_end_season_day+1 !== current_year_start_season_day && current_year_start_season_day !== 1){
+            console.error(`YEAR ${calendar_data_generator.dynamic_data.year} FAILED! Start/End Fail. Expected ${previous_year_end_season_day+1}, got ${current_year_start_season_day}!`);
+            dynamic_data.year = originalYear;
+            return;
+        }
 
-            console.log(`Testing year ${calendar_data_generator.dynamic_data.year}...`)
+        let prev_season_day = current_year_start_season_day;
 
-            let result = await calendar_data_generator.run();
+        for(let epoch = start_epoch+1; epoch < end_epoch; epoch++){
 
-            let start_epoch = result.year_data.start_epoch;
-            let end_epoch = result.year_data.end_epoch;
+            let season_day = result.epoch_data[epoch].season.season_day;
 
-            let current_year_start_season_day = result.epoch_data[start_epoch].season.season_day;
-
-            if(previous_year_end_season_day !== current_year_start_season_day-1 && current_year_start_season_day !== 1){
-                console.error(`YEAR ${calendar_data_generator.dynamic_data.year} FAILED! Start/End Fail. Expected ${current_year_start_season_day}, got ${previous_year_end_season_day}!`);
-                reject(result.epoch_data[start_epoch])
+            if(prev_season_day+1 !== season_day && season_day !== 1){
+                console.error(`YEAR ${calendar_data_generator.dynamic_data.year} FAILED! Inner year failed. Expected ${prev_season_day+1}, got ${season_day}!`)
+                dynamic_data.year = originalYear;
                 return;
             }
 
-            let prev_season_day = current_year_start_season_day;
-
-            for(let epoch = start_epoch+1; epoch < end_epoch; epoch++){
-
-                let season_day = result.epoch_data[epoch].season.season_day;
-
-                if(prev_season_day !== season_day-1 && season_day !== 1){
-                    console.error(`YEAR ${calendar_data_generator.dynamic_data.year} FAILED! Inner year failed. Expected ${season_day}, got ${prev_season_day}!`)
-                    reject(result)
-                    return;
-                }
-
-                prev_season_day = season_day;
-
-            }
-
-            previous_year_end_season_day = result.epoch_data[result.year_data.end_epoch].season.season_day;
+            prev_season_day = season_day;
 
         }
 
-        console.log(`Test succeeded, seasons are accurate across ${Math.abs(fromYear)+Math.abs(toYear)} years!`)
-        resolve();
+        previous_year_end_season_day = result.epoch_data[result.year_data.end_epoch].season.season_day;
 
-    });
+    }
+
+    console.log(`Test succeeded, seasons are accurate across ${Math.abs(fromYear)+Math.abs(toYear)} years!`)
+
+    dynamic_data.year = originalYear;
+
 }
 
 var evaluated_static_data = {};
@@ -265,6 +272,10 @@ async function rebuild_calendar(action, dynamic_data){
         eval_clock();
 
     }).catch(result => {
+        if(!result?.errors){
+            console.error(result)
+            return;
+        }
         let errors = result.errors.map(e => { return `<li>${e}</li>` });
         error_message(`Errors:<ol>${errors.join()}</ol>`);
     });

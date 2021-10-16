@@ -58,6 +58,7 @@ $hamburger-padding-y        :1rem;
 }
 
 .form-control:disabled, .form-control[readonly]{
+    color: white;
     background-color: $input-disabled-color;
 }
 
@@ -173,4 +174,9 @@ body #content #generator_container .btn:not(.event_name):not(#btn_event_delete):
 
 .page-calendars-index .border-top {
     border-top: 1px solid #888 !important;
+}
+
+.badge-accent{
+    color: #222;
+    background-color: #adb5bd;
 }
