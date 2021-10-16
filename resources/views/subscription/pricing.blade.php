@@ -120,7 +120,7 @@
                         <p class="small">Link calendars together and drive their dates from a single parent calendar!</p>
                     </li>
                     <li>
-                        <strong>Discord Integration</strong> <span class="small"><a href="{{ route('discord') }}}">Read more here.</a></span>
+                        <strong>Discord Integration</strong> <span class="small"><a href="{{ route('discord') }}">Read more here.</a></span>
                         <p class="small">Use your calendars directly within your Discord servers!</p>
                     </li>
                     <li>
