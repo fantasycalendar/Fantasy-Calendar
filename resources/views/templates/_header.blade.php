@@ -38,7 +38,7 @@
                 <li class="nav-item"><a href="{{ route('profile') }}" class="nav-link">Profile</a></li>
                 <li class="nav-item"><a href="{{ route('logout') }}" class="nav-link">Logout</a></li>
             @else
-                <li class="nav-item"><a href="{{ route('subscription.pricing') }}" class="nav-link">Subscribe</a></li>
+                <li class="nav-item"><a href="{{ route('subscription.pricing') }}" class="nav-link">Pricing</a></li>
                 <li class="nav-item"><a href="{{ route('login') }}" class="nav-link">Login</a></li>
                 <li class="nav-item"><a href="{{ route('register') }}" class="nav-link">Register</a></li>
             @endauth

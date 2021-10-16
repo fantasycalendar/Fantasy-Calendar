@@ -207,7 +207,13 @@
             </div>
 
             <h3 style="width: 100%; text-align: center;" class="text-white">The long-awaited Discord integration is here!</h3>
-            <h4 class="text-white text-center">Quick to setup, easy to use, and available <strong><a href="{{ route('discord.index') }}">right now</a></strong> to subscribers.</h4>
+            <h4 class="text-white text-center">Quick to setup, easy to use, and available
+                    @if(Auth::user() && Auth::user()->isPremium())
+                    for you <strong><a href="{{ route('discord.index') }}">right now</a></strong>!</h4>
+                    @else
+                    <strong><a href="{{ route('subscription.pricing') }}">right now</a></strong> for subscribers!</h4>
+                    <span class="text-white text-center">(only $2.49/month)</span>
+                    @endif
 
             <h4 class="next-link" style="position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section2"><i class="fa fa-chevron-circle-down"></i> Show me more! <i class="fa fa-chevron-circle-down"></i></a></h4>
         </section>
@@ -343,7 +349,7 @@
                 <div class="row">
                     <div class="col-12 text-center d-flex flex-column align-items-start justify-content-center">
                         @if(!Auth::user())
-                        <h4 class='w-100'><a href='{{ route('register') }}' class='btn btn-lg btn-discord text-white mt-5 mb-2'>Register and Subscribe Now to Connect!</a></h4>
+                        <h4 class='w-100'><a href='{{ route('subscription.pricing') }}' class='btn btn-lg btn-discord text-white mt-5 mb-2'>Register and Subscribe Now to Connect!</a></h4>
                         @elseif(!Auth::user()->isPremium())
                         <h4 class='w-100'><a href='{{ route('subscription.pricing') }}' class='btn btn-lg btn-discord text-white mt-5 mb-2'>Subscribe Now to Connect!</a></h4>
                         @else

@@ -171,7 +171,7 @@
 
 
                     @guest
-                        <a href="{{ route('register') }}" class="register">Register to subscribe</a>
+                        <a href="{{ route('register') }}"><button type="button" class="btn btn-primary">Register to subscribe</button></a>
                     @else
                         @if(!$betaAccess)
                             @if(!$betaAccess && Auth::user()->subscribedToPlan('timekeeper_monthly', 'Timekeeper'))
