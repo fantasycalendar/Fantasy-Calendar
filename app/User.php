@@ -273,4 +273,8 @@ class User extends Authenticatable implements
             : [];
     }
 
+    public function scopeVerified($query)
+    {
+        $query->whereNotNull('email_verified_at');
+    }
 }
