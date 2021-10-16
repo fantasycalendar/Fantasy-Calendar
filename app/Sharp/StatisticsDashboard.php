@@ -203,49 +203,60 @@ class StatisticsDashboard extends SharpDashboard
             ->selectRaw("DATE_FORMAT(created_at,'%Y-%m') as date, count(*) as count")
             ->orderBy('created_at')
             ->groupByRaw("DATE_FORMAT(created_at,'%Y-%m')")
-            ->get();
+            ->get()
+            ->mapWithKeys(function($result){
+                return [$result->date => $result->count];
+            });
 
         $user_count_over_time = [];
         foreach ($user_count_per_month as $date => $result) {
-            $user_count_over_time[$date] = $result->count + $total_users;
-            $total_users += $result->count;
+            $user_count_over_time[$date] = $result + $total_users;
+            $total_users += $result;
         }
 
         /* Total users converted to 2.0 per day */
 
-        $total_users_converted = $userQuery->where('agreed_at', '<', now()->subMonth()->lastOfMonth())->count();
-        $user_agreement_over_time = $userQuery
+//        $total_users_converted = $userQuery->where('agreed_at', '<', now()->subMonth()->lastOfMonth())->count();
+        $users_converted_per_month = $userQuery
             ->where('agreed_at', '<', now()->subMonth()->lastOfMonth())
             ->selectRaw("DATE_FORMAT(agreed_at,'%Y-%m') as date, count(*) as count")
             ->orderBy('agreed_at')
             ->groupByRaw("DATE_FORMAT(agreed_at,'%Y-%m')")
-            ->get();
+            ->get()
+            ->mapWithKeys(function($result){
+                return [$result->date => $result->count];
+            });
+
+        $total_users_converted = 0;
+        $user_agreement_over_time = [];
+        foreach ($users_converted_per_month as $date => $number_of_users) {
+            $user_agreement_over_time[$date] = $number_of_users + $total_users_converted;
+            $total_users_converted += $number_of_users;
+        }
 
         /* Total subscriptions per day */
         $monthly_subscriptions = Subscription::where('stripe_plan', '=', 'timekeeper_monthly')
             ->where('created_at', '<', now()->subMonth()->lastOfMonth())
-            ->where("stripe_status", "=", "active")
-            ->select("created_at")
-            ->get();
+            ->where("stripe_status", "=", "active");
 
         $yearly_subscriptions = Subscription::where('stripe_plan', '=', 'timekeeper_yearly')
             ->where('created_at', '<', now()->subMonth()->lastOfMonth())
-            ->where("stripe_status", "=", "active")
-            ->select("created_at")
-            ->get();
+            ->where("stripe_status", "=", "active");
 
         $monthly = $monthly_subscriptions
-            ->groupBy(function($subscription) {
-                return Carbon::parse($subscription->created_at)->format('Y-m');
-            })->mapWithKeys(function($subscriptions, $date) {
-                return [$date => count($subscriptions)];
+            ->selectRaw("DATE_FORMAT(created_at,'%Y-%m') as date, count(*) as count")
+            ->orderBy('created_at')
+            ->groupByRaw("DATE_FORMAT(created_at,'%Y-%m')")
+            ->get()->mapWithKeys(function($result){
+                return [$result->date => $result->count];
             });
 
         $yearly = $yearly_subscriptions
-            ->groupBy(function($subscription) {
-                return Carbon::parse($subscription->created_at)->format('Y-m');
-            })->mapWithKeys(function($subscriptions, $date) {
-                return [$date => count($subscriptions)];
+            ->selectRaw("DATE_FORMAT(created_at,'%Y-%m') as date, count(*) as count")
+            ->orderBy('created_at')
+            ->groupByRaw("DATE_FORMAT(created_at,'%Y-%m')")
+            ->get()->mapWithKeys(function($result){
+                return [$result->date => $result->count];
             });
 
         $period = CarbonPeriod::create(
