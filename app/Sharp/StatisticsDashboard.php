@@ -148,23 +148,19 @@ class StatisticsDashboard extends SharpDashboard
 
         $last30Days = now()->subDays(30);
 
-        $users_created_total = DB::table("users")
-            ->whereNull('deleted_at')
-            ->whereNotNull('email_verified_at')
-            ->count();
+        $userQuery = User::query();
 
-        $users_created_in_last_thirty_days = DB::table("users")
-            ->whereNull('deleted_at')
+        $users_created_total = $userQuery->verified()->count();
+
+        $users_created_in_last_thirty_days = $userQuery
             ->where('email_verified_at', '>', $last30Days)
             ->count();
 
-        $users_active_in_last_thirty_days = DB::table("users")
-            ->whereNull('deleted_at')
+        $users_active_in_last_thirty_days = $userQuery
             ->where('last_visit', '>', $last30Days)
             ->count();
 
-        $users_active_in_year_to_date = DB::table("users")
-            ->whereNull('deleted_at')
+        $users_active_in_year_to_date = $userQuery
             ->where('last_visit', '>', now()->startOfYear())
             ->count();
 
@@ -174,14 +170,14 @@ class StatisticsDashboard extends SharpDashboard
             ->whereNull('users.deleted_at')
             ->whereNotNull('users.email_verified_at')
             ->where("subscriptions.stripe_status", "=", "active")
-            ->select('users.created_at', 'subscriptions.stripe_plan')
-            ->get()
-            ->sum(function($user){
-                $isYearly = str_contains($user->stripe_plan, "yearly");
-                return $user->created_at > '2020-11-08'
-                    ? 24.49 / ($isYearly ? 12 : 10)
-                    : 19.99 / ($isYearly ? 12 : 10);
-            });
+            ->selectRaw(
+                'CASE
+                    WHEN (subscriptions.stripe_plan = "timekeeper_yearly" and users.created_at < "2020-11-08") THEN 1.66
+                    WHEN (subscriptions.stripe_plan = "timekeeper_yearly" and users.created_at >= "2020-11-08") THEN 2.04
+                    WHEN (subscriptions.stripe_plan = "timekeeper_monthly" and users.created_at < "2020-11-08") THEN 1.99
+                    WHEN (subscriptions.stripe_plan = "timekeeper_monthly" and users.created_at >= "2020-11-08") THEN 2.49
+                END as value
+            ')->get()->sum('value');
 
         $total_subscriptions = Subscription::where("stripe_status", "=", "active")->count();
 
@@ -206,12 +202,12 @@ class StatisticsDashboard extends SharpDashboard
 
         /* User growth and total users */
 
-        $users = User::whereNull('deleted_at')
+        $userQuery = User::whereNull('deleted_at')
             ->where('created_at', '<', now()->subMonth()->lastOfMonth())
             ->select("created_at", "agreed_at")
             ->get();
 
-        $user_count_per_month = $users
+        $user_count_per_month = $userQuery
             ->sortBy('created_at')
             ->groupBy(function($user) {
                 return Carbon::parse($user->created_at)->format('Y-m');
@@ -228,7 +224,7 @@ class StatisticsDashboard extends SharpDashboard
 
         /* Total users converted to 2.0 per day */
 
-        $users_converted_per_month = $users
+        $users_converted_per_month = $userQuery
             ->where('agreed_at', '<', now()->subMonth()->lastOfMonth())
             ->sortBy('agreed_at')
             ->groupBy(function($user) {
