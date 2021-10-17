@@ -118,7 +118,7 @@ const calendarYearHeader = {
     },
 
     getEpochData(){
-        return this.epoch_data[this.epoch];
+        return this.epoch_data?.[this.epoch];
     },
 
     get epoch(){

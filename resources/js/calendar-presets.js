@@ -266,6 +266,8 @@ const preset_loader = {
 
         dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
 
+        preview_date = clone(dynamic_data);
+
         for(var index in events){
             var event = events[index];
             delete event.preset_event_category_id;
