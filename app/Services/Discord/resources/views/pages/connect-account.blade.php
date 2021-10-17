@@ -168,7 +168,7 @@
                 @else
                     <div class="inner h-100 alert alert-success bg-accent p-3 d-flex flex-column flex-md-row align-items-md-center justify-content-between">
                         <div class="d-flex justify-content-start align-items-center">
-                            <img class="mr-2 rounded-circle" style="max-height: 5rem;" src="{{ Auth::user()->discord_auth->avatar }}" alt="{{ Auth::user()->discord_auth->discord_username }}'s Discord avatar">
+                            <img class="mr-2 rounded-circle" style="max-height: 5rem;" src="{{ Auth::user()->discord_auth->avatar ?? asset('resources/logo-white.png') }}" alt="{{ Auth::user()->discord_auth->discord_username }}'s Discord avatar">
                             <h4 class="mb-0">
                                 {{ Auth::user()->discord_auth->discord_username }}
                             </h4>
