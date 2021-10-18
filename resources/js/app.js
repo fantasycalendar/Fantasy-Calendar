@@ -17,3 +17,7 @@ window.CalendarEventEditor = require('./calendar-events-editor')
 window.CalendarEventViewer = require('./calendar-events-viewer')
 window.CalendarHTMLEditor = require('./calendar-html-editor')
 window.CalendarYearHeader = require('./calendar-year-header')
+
+const Intervals = require('./calendar/interval.js');
+window.Interval = Intervals.Interval;
+window.IntervalsCollection = Intervals.IntervalsCollection;
