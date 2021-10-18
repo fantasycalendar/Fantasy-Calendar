@@ -147,7 +147,10 @@ functions:
     worker:
       handler: worker.php
       layers:
-        - ${bref:layer.php-74}
+        - ${bref:layer.php-74} # PHP
+        - ${bref:extra.gmp-php-74}
+        - ${bref:extra.redis-php-74}
+        - ${bref:extra.imagick-php-74}
       events:
         -   sqs:
               arn:
