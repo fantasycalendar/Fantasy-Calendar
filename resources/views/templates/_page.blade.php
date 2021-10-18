@@ -91,6 +91,14 @@
 
 
 <body class="page page-{{ str_replace('.', '-', Route::currentRouteName()) }} @stack('page-class')">
+        @if(request()->session()->has('admin.id'))
+            <div class="alert alert-danger py-1 mb-0 text-center" style="border-radius: 0;">
+                <div style="max-width: 1100px; margin: auto;">
+                    You are impersonating the user <strong>{{ Auth::user()->username }}</strong>. <a class="badge badge-pill badge-danger" href="{{ route('admin.reverse_impersonate') }}">Reverse Impersonate</a>
+                </div>
+            </div>
+        @endif
+
         @env(['development'])
             <div class="alert alert-danger py-1 mb-0 text-center" style="border-radius: 0;">
                 <div style="max-width: 1100px; margin: auto;">
