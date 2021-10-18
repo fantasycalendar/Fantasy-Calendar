@@ -122,7 +122,7 @@ const calendarYearHeader = {
     },
 
     get epoch(){
-        return this.preview_date.epoch !== this.dynamic_data.epoch
+        return this.preview_date.epoch !== this.dynamic_data.epoch && !this.preview_date.follow
             ? this.preview_date.epoch
             : this.dynamic_data.epoch;
     },
