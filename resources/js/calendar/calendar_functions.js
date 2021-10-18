@@ -1662,13 +1662,17 @@ function time_data_to_string(static_data, time){
 function strip_intervals(_intervals, _offset){
 
 	var intervals = _intervals.split(',')
-	var processed = _intervals.split(',');
 
 	// Remove all negators at the end of the intervals as they won't affect the overall interval occurrence
-	while(processed[processed.length-1].indexOf("!") > -1){
-		processed.splice(processed.length-1, 1)
+	while(intervals[intervals.length-1].indexOf("!") > -1){
 		intervals.splice(intervals.length-1, 1)
 	}
+
+    intervals.sort((a, b) => {
+        return Number(b.replace("!", "").replace("+", "")) - Number(a.replace("!", "").replace("+", ""));
+    });
+
+	let processed = clone(intervals);
 
 	for(var outer_index = 0; outer_index < intervals.length; outer_index++){
 
