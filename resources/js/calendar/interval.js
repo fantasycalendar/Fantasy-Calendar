@@ -24,6 +24,27 @@ class SuperArray extends Array{
         return this.filter(elem => !callback(elem));
     }
 
+    skipWhile(callback){
+        let done = false;
+        return this.filter(elem => {
+            const result = callback(elem);
+            if(!result) done = true;
+            return done || !result;
+        });
+    }
+
+    sum(callback){
+        return this.reduce((sum, elem) => sum + callback(elem), 0);
+    }
+
+    sortByDesc(key){
+        return this.sort((a, b) => b[key] - a[key])
+    }
+
+    sortByAsc(key){
+        return this.sort((a, b) => a[key] - b[key])
+    }
+
 }
 
 class IntervalsCollection extends SuperArray{
@@ -32,14 +53,14 @@ class IntervalsCollection extends SuperArray{
 
         const unitTests = [
             {
-                interval: "400,!100,4",
-                offset: 0,
-                truth: '["{\\"interval\\":400,\\"subtracts\\":false,\\"offset\\":0}","{\\"interval\\":100,\\"subtracts\\":true,\\"offset\\":0}","{\\"interval\\":4,\\"subtracts\\":false,\\"offset\\":0}"]'
-            },
-            {
                 interval: "!1000,746,!373,!5,4",
                 offset: 0,
                 truth: '["{\\"interval\\":373000,\\"subtracts\\":true,\\"offset\\":0}","{\\"interval\\":7460,\\"subtracts\\":false,\\"offset\\":0}","{\\"interval\\":1492,\\"subtracts\\":true,\\"offset\\":0}","{\\"interval\\":746,\\"subtracts\\":false,\\"offset\\":0}","{\\"interval\\":20,\\"subtracts\\":true,\\"offset\\":0}","{\\"interval\\":4,\\"subtracts\\":false,\\"offset\\":0}"]'
+            },
+            {
+                interval: "400,!100,4",
+                offset: 0,
+                truth: '["{\\"interval\\":400,\\"subtracts\\":false,\\"offset\\":0}","{\\"interval\\":100,\\"subtracts\\":true,\\"offset\\":0}","{\\"interval\\":4,\\"subtracts\\":false,\\"offset\\":0}"]'
             },
             {
                 interval: "!2203,!400,+!100,4,!2",
@@ -75,11 +96,18 @@ class IntervalsCollection extends SuperArray{
 
         for(const unitTest of unitTests){
 
-            let intervals = IntervalsCollection.fromString(unitTest.interval, unitTest.offset);
+            let intervals = IntervalsCollection.fromString(unitTest.interval, unitTest.offset).normalize();
 
-            let string = intervals.normalize().toJsons();
+            let string = intervals.toJsons();
 
-            if(unitTest.truth !== string) throw new Error(`${unitTest.interval} failed the test`)
+            if(unitTest.truth !== string) throw new Error(`${unitTest.interval} failed the parity test`)
+
+            let oldMethod = get_interval_fractions(unitTest.interval, unitTest.offset);
+            let newMethod = intervals.sum(interval => interval.fraction());
+
+            if(precisionRound(oldMethod, 10) !== precisionRound(newMethod, 10)){
+                throw new Error(`${unitTest.interval} failed the fraction test`)
+            }
 
         }
 
@@ -95,15 +123,10 @@ class IntervalsCollection extends SuperArray{
             throw new Error("An invalid value was provided for the interval of a leap day.")
         }
 
-        let done = false;
         return new IntervalsCollection(...items)
             .reverse()
-            .filter(interval => {
-                if(!interval.subtracts) done = true;
-                return done || !interval.subtracts;
-            })
+            .skipWhile(interval => interval.subtracts)
             .reverse();
-
     }
 
     static splitFromString(intervalString, offset){
@@ -120,8 +143,8 @@ class IntervalsCollection extends SuperArray{
 
     bumpsYearZero(){
         return this.reject(interval => interval.offset)
-            .sort((a, b) => b.interval - a.interval)
-            .reject(interval => interval.subtracts)?.[0] ?? false;
+            .sortByDesc('interval')
+            .reject(interval => interval.subtracts).shift() !== undefined;
     }
 
     avoidDuplicateCollisions(intervals){
@@ -176,7 +199,7 @@ class IntervalsCollection extends SuperArray{
             .push(this.reject(interval => interval.subtracts))
             .flat()
             .map(interval => interval.clearInternalIntervals())
-            .sort((a, b) => b.interval - a.interval);
+            .sortByDesc("interval");
     }
 
     cancelOutCollision(examinedInterval, knownCollision) {
@@ -195,7 +218,7 @@ class IntervalsCollection extends SuperArray{
     }
 
     occurrences(year, yearZeroExists){
-        return this.reduce((sum, interval) => sum + interval.occurrences(year, yearZeroExists), 0)
+        return this.sum((interval) => interval.occurrences(year, yearZeroExists))
             + this.addOneForYearZero(year, yearZeroExists);
     }
 
@@ -291,9 +314,8 @@ class Interval {
         if(toCheck instanceof Interval){
             return this.avoidDuplicateCollisionsOnInternal(toCheck);
         }
-        return toCheck.map((interval) => {
-            return this.avoidDuplicateCollisionsOnInternal(interval);
-        });
+
+        return toCheck.map(interval => this.avoidDuplicateCollisionsOnInternal(interval));
     }
 
     avoidDuplicateCollisionsOnInternal(suspectedCollision){
