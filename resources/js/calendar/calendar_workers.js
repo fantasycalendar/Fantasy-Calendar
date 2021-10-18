@@ -498,6 +498,7 @@ const calendar_data_generator = {
 		let week_day = start_data.week_day;
 		let epoch = start_data.epoch;
 		let current_era = start_data.current_era;
+		let month_week_num;
 
 		let year_start_data = evaluate_calendar_start(this.static_data, start_year, undefined, undefined, true);
 		let year_day = 1 + start_data.epoch - year_start_data.epoch;
@@ -633,7 +634,7 @@ const calendar_data_generator = {
 
                         if (current_timespan.type !== "intercalary") {
 
-                            data.week_day_num = this.increment_weekday_repetitions(year, data.timespan_index, data.weekday-1);
+                            data.week_day_num = this.increment_weekday_repetitions(year, data.timespan_index, data.week_day-1);
 
                         }
 
