@@ -28,6 +28,6 @@ class LoginAsUser extends InstanceCommand
      */
     public function execute($instanceId, array $data = []): array
     {
-        return $this->link("/admin/loginas/" . $instanceId);
+        return $this->link("/admin/impersonate/" . $instanceId);
     }
 }

@@ -16,10 +16,10 @@ class Admin
      */
     public function handle($request, Closure $next)
     {
-        if (!Auth::check() || !Auth::user()->isAdmin()) {
-            abort(403, 'This page is for admins only.');
+        if ((Auth::check() && Auth::user()->isAdmin()) || request()->session()->has('admin.id')) {
+            return $next($request);
         }
 
-        return $next($request);
+        abort(403, 'This page is for admins only.');
     }
 }
