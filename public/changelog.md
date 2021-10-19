@@ -1,3 +1,12 @@
+### 2.1.1 Tranquil Djinn
+#### October 19th, 2021
+* Fixed - Discord Integration error caused by users not having set their discord avatar
+* Fixed - Calendar presets sometimes not loading correctly
+* Fixed - Year header error appearing if eras were present on calendar load
+* Fixed - Leap day intervals not sorting correctly, causing avg. year length and month length to be off
+* Fixed - Week day number in month being incorrectly set, causing events that were using it to not appear
+* Fixed - Superwide calendars not scrolling horizontally far enough
+
 ### 2.1.0 - Discordant Djinn
 #### October 15th, 2021
 * Added - Discord integration!
