@@ -2,9 +2,9 @@
 
 #calendar {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     flex-wrap: wrap;
-    align-content: flex-start;
+    align-items: center;
     margin-bottom:5px;
     width: 100%;
     color: $main-text-color;
