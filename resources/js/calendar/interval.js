@@ -115,22 +115,37 @@ class IntervalsCollection extends SuperArray{
 
     }
 
-    static fromString(intervalString, offset){
+    static fromIntervalString(intervalString, offset){
 
-        let items = IntervalsCollection.splitFromString(intervalString, offset);
+        const intervals = intervalString.split(',').map(interval => new Interval(interval, offset));
 
-        if(items.length === 0){
+        if(intervals.length === 0){
             throw new Error("An invalid value was provided for the interval of a leap day.")
         }
 
-        return new IntervalsCollection(...items)
+        return new IntervalsCollection(...intervals)
             .reverse()
             .skipWhile(interval => interval.subtracts)
-            .reverse();
+            .reverse()
+            .normalize();
     }
 
-    static splitFromString(intervalString, offset){
-        return intervalString.split(',').map(interval => new Interval(interval, offset));
+    static fromCycle(cycleString, length){
+
+        const intervals = cycleString.split(',').map(offset => new Interval(length, offset));
+
+        return new IntervalsCollection(...intervals).normalize();
+
+    }
+
+    static fromLeapDay(leapDay){
+
+        if(leapDay.cycle){
+            return this.fromCycleString(leapDay.cycles, leapDay.length);
+        }
+
+        return this.fromIntervalString(leapDay.interval, leapDay.offset);
+
     }
 
     toJsons(){
@@ -226,11 +241,29 @@ class IntervalsCollection extends SuperArray{
         return year > 0 && yearZeroExists && this.bumpsYearZero() ? 1 : 0;
     }
 
+    intersectsYear(year, yearZeroExists)
+    {
+        // We need to un-normalize the year as otherwise 0 month occurrences results in leap day appearing
+        year = year >= 0 && !yearZeroExists
+            ? year + 1
+            : year;
+
+        const votes = this.map(interval => interval.voteOnYear(year));
+
+        for(let vote of votes) {
+            if(vote === 'allow') return true;
+            if(vote === 'deny') return false;
+        }
+
+        return false;
+    }
+
 }
 
 class Interval {
 
     constructor(interval, offset) {
+        if(typeof interval === "number") interval = interval.toString();
         this.intervalString = interval;
         this.interval = Number(interval.replace("!", "").replace("+", ""));
         this.subtracts = interval.includes("!");

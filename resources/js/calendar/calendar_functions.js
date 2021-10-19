@@ -2135,11 +2135,13 @@ function get_epoch(static_data, year, _timespan, _day, debug){
 		for(let leap_day_index = 0; leap_day_index < static_data.year_data.leap_days.length; leap_day_index++){
 
 			// Get the current leap day data
-			let leap_day = static_data.year_data.leap_days[leap_day_index];
+			const leap_day = static_data.year_data.leap_days[leap_day_index];
 
 			if(timespan_index === leap_day.timespan){
 
-				let leap_day_occurrences = get_interval_occurrences(static_data, timespan_occurrences, leap_day.interval, leap_day.offset);
+			    const interval = IntervalsCollection.fromLeapDay(leap_day);
+
+				const leap_day_occurrences = interval.occurrences(timespan_occurrences, static_data.settings.year_zero_exists);
 
 				// If we have leap days days that are intercalary (eg, do not affect the flow of the static_data, add them to the overall epoch, but remove them from the start of the year week day selection)
 				if(leap_day.intercalary || timespan_obj.type === "intercalary"){
