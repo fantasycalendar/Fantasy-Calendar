@@ -1,4 +1,4 @@
-### 2.1.1 Tranquil Djinn
+### 2.1.1 - Tranquil Djinn
 #### October 19th, 2021
 * Fixed - Discord Integration error caused by users not having set their discord avatar
 * Fixed - Calendar presets sometimes not loading correctly
