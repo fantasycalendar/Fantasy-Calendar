@@ -212,37 +212,32 @@ const calendar_data_generator = {
 
         timespan.leap_days = [];
 
-		let leap_days = this.static_data.year_data.leap_days.filter(leap_day => leap_day.timespan === timespan_index);
-		let normal_leapdays = leap_days.filter(leap_day => !leap_day.adds_week_day && !leap_day.intercalary)
-		let intercalary_leapdays = leap_days.filter(leap_day => !leap_day.adds_week_day && leap_day.intercalary)
-		let week_day_leap_days = leap_days.filter(leap_day => leap_day.adds_week_day)
+		const leap_days = clone(this.static_data.year_data.leap_days)
+            .filter(leap_day => leap_day.timespan === timespan_index)
+            .map(leap_day => {
+                leap_day.intervalsCollection = IntervalsCollection.make(leap_day);
+                return leap_day;
+            })
+            .filter(leap_day => leap_day.intervalsCollection.intersectsYear(timespan_occurrences));
+
+		const normal_leapdays = leap_days.filter(leap_day => !leap_day.adds_week_day && !leap_day.intercalary)
+		const intercalary_leapdays = leap_days.filter(leap_day => !leap_day.adds_week_day && leap_day.intercalary)
+		const week_day_leap_days = leap_days.filter(leap_day => leap_day.adds_week_day)
 
 		for (let index in normal_leapdays) {
-
 			let leap_day = normal_leapdays[index];
-
 			leap_day.index = leap_days.indexOf(leap_day);
-
-			if (is_leap(this.static_data, timespan_occurrences, leap_day.interval, leap_day.offset)) {
-				timespan.length++;
-			}
-
+			timespan.length++;
 		}
 
 		for (let index in intercalary_leapdays) {
-
 			let leap_day = intercalary_leapdays[index];
-
 			leap_day.index = leap_days.indexOf(leap_day);
-
-			if (is_leap(this.static_data, timespan_occurrences, leap_day.interval, leap_day.offset)) {
-				if(timespan.type === 'intercalary'){
-					timespan.length++;
-				}else{
-					timespan.leap_days.push(leap_day);
-				}
-			}
-
+            if(timespan.type === 'intercalary'){
+                timespan.length++;
+            }else{
+                timespan.leap_days.push(leap_day);
+            }
 		}
 
 		week_day_leap_days.sort((a, b) => a.day - b.day);
@@ -253,24 +248,18 @@ const calendar_data_generator = {
 		let after_weekdays = [];
 
 		for (let index in week_day_leap_days) {
-
 			let leap_day = week_day_leap_days[index];
-
 			leap_day.index = leap_days.indexOf(leap_day);
-
-			if (is_leap(this.static_data, timespan_occurrences, leap_day.interval, leap_day.offset)) {
-				timespan.length++;
-				if (leap_day.day === 0) {
-					before_weekdays.push(leap_day.week_day)
-				} else if (leap_day.day === week_length) {
-					after_weekdays.push(leap_day.week_day)
-				} else {
-					let location = leap_day.day % timespan.week.length;
-					timespan.week.splice(location + leap_day_offset, 0, leap_day.week_day)
-					leap_day_offset++;
-				}
-			}
-
+            timespan.length++;
+            if (leap_day.day === 0) {
+                before_weekdays.push(leap_day.week_day)
+            } else if (leap_day.day === week_length) {
+                after_weekdays.push(leap_day.week_day)
+            } else {
+                let location = leap_day.day % timespan.week.length;
+                timespan.week.splice(location + leap_day_offset, 0, leap_day.week_day)
+                leap_day_offset++;
+            }
 		}
 
 		timespan.week = before_weekdays.concat(timespan.week).concat(after_weekdays);

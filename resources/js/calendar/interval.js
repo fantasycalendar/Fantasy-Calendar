@@ -96,22 +96,13 @@ class IntervalsCollection extends SuperArray{
 
         for(const unitTest of unitTests){
 
-            let intervals = IntervalsCollection.fromString(unitTest.interval, unitTest.offset).normalize();
+            let intervals = IntervalsCollection.fromIntervalString(unitTest.interval, unitTest.offset);
 
             let string = intervals.toJsons();
 
             if(unitTest.truth !== string) throw new Error(`${unitTest.interval} failed the parity test`)
 
-            let oldMethod = get_interval_fractions(unitTest.interval, unitTest.offset);
-            let newMethod = intervals.sum(interval => interval.fraction());
-
-            if(precisionRound(oldMethod, 10) !== precisionRound(newMethod, 10)){
-                throw new Error(`${unitTest.interval} failed the fraction test`)
-            }
-
         }
-
-        console.log("All tests passed!")
 
     }
 
@@ -130,7 +121,7 @@ class IntervalsCollection extends SuperArray{
             .normalize();
     }
 
-    static fromCycle(cycleString, length){
+    static fromCycleString(cycleString, length){
 
         const intervals = cycleString.split(',').map(offset => new Interval(length, offset));
 
@@ -138,13 +129,13 @@ class IntervalsCollection extends SuperArray{
 
     }
 
-    static fromLeapDay(leapDay){
+    static make(object){
 
-        if(leapDay.cycle){
-            return this.fromCycleString(leapDay.cycles, leapDay.length);
+        if(object.cycleLength){
+            return this.fromCycleString(object.cycleIntervals, object.cycleLength);
         }
 
-        return this.fromIntervalString(leapDay.interval, leapDay.offset);
+        return this.fromIntervalString(object.interval, object.offset);
 
     }
 
@@ -218,7 +209,7 @@ class IntervalsCollection extends SuperArray{
     }
 
     cancelOutCollision(examinedInterval, knownCollision) {
-        const collidingInterval = lcmo_quick(examinedInterval, knownCollision);
+        const collidingInterval = lcmo(examinedInterval, knownCollision);
         const foundInterval = this.find((interval) => {
             return interval.attributesAre(collidingInterval.interval, collidingInterval.offset, knownCollision.subtracts)
         });
@@ -353,7 +344,7 @@ class Interval {
 
     avoidDuplicateCollisionsOnInternal(suspectedCollision){
 
-        if(!lcmo_bool_quick(this, suspectedCollision)){
+        if(!lcmo_bool(this, suspectedCollision)){
             return suspectedCollision;
         }
 
@@ -368,8 +359,7 @@ class Interval {
     }
 
     willCollideWith(interval){
-        return lcmo_bool_quick(this, interval)
-            || this.subtracts === interval.subtracts;
+        return lcmo_bool(this, interval) || this.subtracts === interval.subtracts;
     }
 
     occurrences(year, yearZeroExists){
@@ -435,36 +425,33 @@ function lcm(x, y){
 /**
  * Least Common Multiple Offset (bool) will calculate whether two intervals with individual offsets will ever collide
  *
- * @param  {int}    x   The first interval
- * @param  {int}    y   The second interval
- * @param  {int}    a   The first interval's offset
- * @param  {int}    b   The second interval's offset
- * @return {bool}       Whether these two intervals will ever collide
+ * @param  {Interval}    intervalA   The first interval
+ * @param  {Interval}    intervalB   The second interval
+ * @return {boolean}                 Whether these two intervals will ever collide
  */
-function lcmo_bool(x, y, a, b){
-    return Math.abs(a - b) === 0 || Math.abs(a - b) % gcd(x, y) === 0;
+function lcmo_bool(intervalA, intervalB){
+    return Math.abs(intervalA.offset - intervalB.offset) === 0
+        || Math.abs(intervalA.offset - intervalB.offset) % gcd(intervalA.interval, intervalB.interval) === 0;
 }
 
 /**
  * Least Common Multiple Offset will calculate whether two intervals with individual offsets will ever collide,
- * and return an object containing the starting point of their repitition and how often they repeat
+ * and return an object containing the starting point of their repetition and how often they repeat
  *
- * @param  {int}    x   The first interval
- * @param  {int}    y   The second interval
- * @param  {int}    a   The first interval's offset
- * @param  {int}    b   The second interval's offset
- * @return {object}		An object with the interval's  starting point and LCM
+ * @param  {Interval}    intervalA   The first interval
+ * @param  {Interval}    intervalB   The second interval
+ * @return {object}	                 An object with the interval's  starting point and LCM
  */
-function lcmo(x, y, a, b){
+function lcmo(intervalA, intervalB){
 
     // If they never repeat, return false
-    if(!lcmo_bool(x, y, a, b)){
+    if(!lcmo_bool(intervalA, intervalB)){
         return false;
     }
 
     // Store the respective interval's starting points
-    x_start = (Math.abs(x + a) % x)
-    y_start = (Math.abs(y + b) % y)
+    let x_start = (Math.abs(intervalA.interval + intervalA.offset) % intervalA.interval)
+    let y_start = (Math.abs(intervalB.interval + intervalB.offset) % intervalB.interval)
 
     // If the starts aren't the same, then we need to search for the first instance the intervals' starting points line up
     if(x_start !== y_start){
@@ -473,33 +460,18 @@ function lcmo(x, y, a, b){
         while(x_start !== y_start){
 
             while(x_start < y_start){
-                x_start += x;
+                x_start += intervalA.interval;
             }
 
             while(y_start < x_start){
-                y_start += y;
+                y_start += intervalB.interval;
             }
 
         }
     }
 
-    return {
-        "offset": x_start,
-        "interval": lcm(x, y)
-    }
+    return new Interval(lcm(intervalA.interval, intervalB.interval), x_start);
 
 }
 
-function lcmo_bool_quick(a, b){
-    return lcmo_bool(a.interval, b.interval, a.offset, b.offset);
-}
-
-function lcmo_quick(a, b){
-    const interval = lcmo(a.interval, b.interval, a.offset, b.offset);
-    return new Interval(interval.interval.toString(), interval.offset);
-}
-
-module.exports = {
-    IntervalsCollection,
-    Interval
-}
+module.exports = IntervalsCollection;
