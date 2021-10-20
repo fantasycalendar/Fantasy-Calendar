@@ -231,7 +231,8 @@ const render_data_generator = {
             "render_style": static_data.settings.layout,
             "timespans": [],
             "event_epochs": {},
-            "timespan_event_epochs": {}
+            "timespan_event_epochs": {},
+            "current_month_only": static_data.settings.show_current_month,
         }
 
         this.create_event_data();
