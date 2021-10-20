@@ -219,7 +219,7 @@ const calendar_data_generator = {
             })
             .filter(leap_day => {
                 return leap_day.timespan === timespan_index
-                    && IntervalsCollection.make(leap_day).intersectsYear(timespan_occurrences)
+                    && IntervalsCollection.make(leap_day).intersectsYear(timespan_occurrences, static_data.settings.year_zero_exists)
             });
 
 		const normal_leap_days = leap_days.filter(leap_day => !leap_day.adds_week_day && !leap_day.intercalary)

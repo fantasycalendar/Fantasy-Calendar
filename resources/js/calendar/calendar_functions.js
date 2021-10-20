@@ -1003,7 +1003,7 @@ function does_leap_day_appear(static_data, year, timespan_index, leap_day_index)
 
 	let timespan_occurrences = get_timespan_occurrences(static_data, year, timespan.interval, timespan.offset);
 
-	return timespan_appears && IntervalsCollection.make(leap_day).intersectsYear(timespan_occurrences);
+	return timespan_appears && IntervalsCollection.make(leap_day).intersectsYear(timespan_occurrences, static_data.settings.year_zero_exists);
 
 }
 
