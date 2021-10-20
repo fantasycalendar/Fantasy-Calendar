@@ -25,7 +25,7 @@ var moon_tooltip = {
 	element: false,
 	title: "",
 	show: false,
-	
+
 	init: function(){
 		this.tooltip_box = $('#moon_tooltip_box');
 	},
@@ -141,6 +141,7 @@ var calendar_weather = {
 				if(epoch_data.leap_day !== undefined) {
 					let index = epoch_data.leap_day;
 					leap_day = static_data.year_data.leap_days[index];
+                    console.log(leap_day)
 					if(leap_day.show_text) {
 						this.day_container.text(leap_day.name);
 					}
@@ -285,7 +286,7 @@ var calendar_weather = {
 			}
 
 			return moon_text.join('');
-			
+
 		},
 
 		hide: function(){

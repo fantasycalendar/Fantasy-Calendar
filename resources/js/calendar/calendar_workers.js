@@ -213,26 +213,25 @@ const calendar_data_generator = {
         timespan.leap_days = [];
 
 		const leap_days = clone(this.static_data.year_data.leap_days)
-            .filter(leap_day => leap_day.timespan === timespan_index)
-            .map(leap_day => {
-                leap_day.intervalsCollection = IntervalsCollection.make(leap_day);
+            .map((leap_day, index) => {
+                leap_day.index = index;
                 return leap_day;
             })
-            .filter(leap_day => leap_day.intervalsCollection.intersectsYear(timespan_occurrences));
+            .filter(leap_day => {
+                return leap_day.timespan === timespan_index
+                    && IntervalsCollection.make(leap_day).intersectsYear(timespan_occurrences)
+            });
 
-		const normal_leapdays = leap_days.filter(leap_day => !leap_day.adds_week_day && !leap_day.intercalary)
-		const intercalary_leapdays = leap_days.filter(leap_day => !leap_day.adds_week_day && leap_day.intercalary)
+		const normal_leap_days = leap_days.filter(leap_day => !leap_day.adds_week_day && !leap_day.intercalary)
+		const intercalary_leap_days = leap_days.filter(leap_day => !leap_day.adds_week_day && leap_day.intercalary)
 		const week_day_leap_days = leap_days.filter(leap_day => leap_day.adds_week_day)
 
-		for (let index in normal_leapdays) {
-			let leap_day = normal_leapdays[index];
-			leap_day.index = leap_days.indexOf(leap_day);
+		for (let index in normal_leap_days) {
 			timespan.length++;
 		}
 
-		for (let index in intercalary_leapdays) {
-			let leap_day = intercalary_leapdays[index];
-			leap_day.index = leap_days.indexOf(leap_day);
+		for (let index in intercalary_leap_days) {
+			let leap_day = intercalary_leap_days[index];
             if(timespan.type === 'intercalary'){
                 timespan.length++;
             }else{
@@ -249,7 +248,6 @@ const calendar_data_generator = {
 
 		for (let index in week_day_leap_days) {
 			let leap_day = week_day_leap_days[index];
-			leap_day.index = leap_days.indexOf(leap_day);
             timespan.length++;
             if (leap_day.day === 0) {
                 before_weekdays.push(leap_day.week_day)

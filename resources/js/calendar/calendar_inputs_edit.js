@@ -546,7 +546,7 @@ function set_up_edit_inputs(){
 
 	$('.add_inputs.seasons .add').click(function(){
 
-		var fract_year_len = fract_year_length(static_data);
+		var fract_year_len = avg_year_length(static_data);
 
 		var name = $("#season_name_input");
 		var id = season_sortable.children().length;
@@ -5455,13 +5455,13 @@ function evaluate_season_lengths(){
 
 	data.season_offset = static_data.seasons.global_settings.offset;
 
-	var equal = fract_year_length(static_data) == data.season_length;
+	var equal = avg_year_length(static_data) == data.season_length;
 
 	var html = []
 	html.push(`<div class='container'>`)
 	html.push(`<div class='row py-1'>`)
 	html.push(equal ? '<i class="col-auto px-0 mr-1 fas fa-check-circle" style="line-height:1.5;"></i>' : '<i class="col-auto px-0 mr-2 fas fa-exclamation-circle" style="line-height:1.5;"></i>');
-	html.push(`<div class='col px-0'>Season length: ${data.season_length} / ${fract_year_length(static_data)} (year length)</div></div>`)
+	html.push(`<div class='col px-0'>Season length: ${data.season_length} / ${avg_year_length(static_data)} (year length)</div></div>`)
 	html.push(`<div class='row'>${equal ? "The season length and year length are the same, and will not drift away from each other." : "The season length and year length at not the same, and will diverge over time. Use with caution."}</div>`)
 	html.push(`</div>`)
 
@@ -5471,7 +5471,7 @@ function evaluate_season_lengths(){
 }
 
 function recalc_stats(){
-	var year_length = fract_year_length(static_data);
+	var year_length = avg_year_length(static_data);
 	var month_length = avg_month_length(static_data);
 	$('#fract_year_length').text(year_length);
 	$('#fract_year_length').prop('title', year_length);
