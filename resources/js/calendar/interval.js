@@ -172,7 +172,7 @@ export class IntervalsCollection extends utils.SuperArray{
     }
 
     bumpsYearZero(){
-        return this.reject(interval => interval.offset)
+        return this.reject(interval => interval.offset === 0)
             .sortByDesc('interval')
             .reject(interval => interval.subtracts).shift() !== undefined;
     }
