@@ -4,8 +4,8 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-import { IntervalsCollection } from "./calendar/interval.js";
-import FantasyCalendar from "./calendar/calendar.js";
+import FantasyCalendar from "./fantasycalendar/FantasyCalendar.js";
+import IntervalsCollection from "./fantasycalendar/Collections/IntervalsCollection.js";
 
 require('./bootstrap');
 

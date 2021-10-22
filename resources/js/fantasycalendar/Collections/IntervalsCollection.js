@@ -1,4 +1,6 @@
-import * as utils from "../utils.js";
+import * as utils from "../../utils.js";
+import Interval from "../Interval.js";
+import Collection from "./Collection.js";
 
 const intervalCache = {
 
@@ -15,18 +17,18 @@ const intervalCache = {
 
 }
 
-export class IntervalsCollection extends utils.Collection{
+export default class IntervalsCollection extends Collection {
 
-    static fromIntervalString(intervalString, offset){
+    static fromIntervalString(intervalString, offset) {
 
         const cachedIntervalsCollection = intervalCache.get(intervalString, offset);
-        if(cachedIntervalsCollection) return cachedIntervalsCollection;
+        if (cachedIntervalsCollection) return cachedIntervalsCollection;
 
         const intervals = intervalString.toString()
             .split(',')
             .map(interval => new Interval(interval, offset));
 
-        if(intervals.length === 0){
+        if (intervals.length === 0) {
             throw new Error("An invalid value was provided for the interval of a leap day.")
         }
 
@@ -39,10 +41,10 @@ export class IntervalsCollection extends utils.Collection{
         return intervalCache.set(intervalsCollection, intervalString, offset);
     }
 
-    static fromCycleString(cycleString, length){
+    static fromCycleString(cycleString, length) {
 
         const cachedIntervalsCollection = intervalCache.get(cycleString, length);
-        if(cachedIntervalsCollection) return cachedIntervalsCollection;
+        if (cachedIntervalsCollection) return cachedIntervalsCollection;
 
         const intervals = cycleString.toString()
             .split(',')
@@ -54,9 +56,9 @@ export class IntervalsCollection extends utils.Collection{
 
     }
 
-    static make(object){
+    static make(object) {
 
-        if(object.cycleLength){
+        if (object.cycleLength) {
             return this.fromCycleString(object.cycleIntervals, object.cycleLength);
         }
 
@@ -64,19 +66,19 @@ export class IntervalsCollection extends utils.Collection{
 
     }
 
-    toJsons(){
+    toJsons() {
         return JSON.stringify(this.map(interval => interval.toJsons()));
     }
 
-    clone(){
+    clone() {
         return new IntervalsCollection(...this.map(interval => interval.clone()));
     }
 
-    avoidDuplicateCollisions(intervals){
+    avoidDuplicateCollisions(intervals) {
 
         intervals = intervals.clone();
 
-        if(intervals.length === 1){
+        if (intervals.length === 1) {
             return intervals;
         }
 
@@ -86,7 +88,7 @@ export class IntervalsCollection extends utils.Collection{
 
         return suspectedCollisions.map(interval => {
 
-            if(!interval.subtracts) {
+            if (!interval.subtracts) {
                 first.avoidDuplicates(interval);
             }
 
@@ -98,7 +100,7 @@ export class IntervalsCollection extends utils.Collection{
 
     }
 
-    normalize(){
+    normalize() {
         return (this.length === 1)
             ? this
             : this.cleanUp()
@@ -106,20 +108,20 @@ export class IntervalsCollection extends utils.Collection{
                 .flattenIntervals();
     }
 
-    fillDescendants(){
+    fillDescendants() {
         return this.map((interval, index) => {
-            return interval.mergeInternalIntervals(this.slice(index+1));
+            return interval.mergeInternalIntervals(this.slice(index + 1));
         })
     }
 
-    cleanUp(){
+    cleanUp() {
         return this.clone()
             .fillDescendants()
             .reject(interval => interval.isRedundant())
             .map(interval => interval.clearInternalIntervals())
     }
 
-    flattenIntervals(){
+    flattenIntervals() {
         return this.map(interval => interval.internalIntervals)
             .push(this.reject(interval => interval.subtracts))
             .flat()
@@ -142,7 +144,7 @@ export class IntervalsCollection extends utils.Collection{
         }
     }
 
-    totalFraction(){
+    totalFraction() {
         return this.sum(interval => interval.fraction());
     }
 
@@ -154,15 +156,15 @@ export class IntervalsCollection extends utils.Collection{
 
         const votes = this.map(interval => interval.voteOnYear(year));
 
-        for(let vote of votes) {
-            if(vote === 'allow') return true;
-            if(vote === 'deny') return false;
+        for (let vote of votes) {
+            if (vote === 'allow') return true;
+            if (vote === 'deny') return false;
         }
 
         return false;
     }
 
-    occurrences(year, yearZeroExists){
+    occurrences(year, yearZeroExists) {
         return this.sum((interval) => interval.occurrences(year, yearZeroExists))
             + this.addOneForYearZero(year, yearZeroExists);
     }
@@ -171,12 +173,12 @@ export class IntervalsCollection extends utils.Collection{
         return year > 0 && yearZeroExists && this.bumpsYearZero() ? 1 : 0;
     }
 
-    bumpsYearZero(){
+    bumpsYearZero() {
         return !this.reject(interval => interval.offset).sortByDesc('interval').shift()?.subtracts ?? false;
     }
 
     // Temporary
-    static unitTest(){
+    static unitTest() {
 
         const unitTests = [
             {
@@ -221,160 +223,17 @@ export class IntervalsCollection extends utils.Collection{
             }
         ]
 
-        for(const unitTest of unitTests){
+        for (const unitTest of unitTests) {
 
             let intervals = IntervalsCollection.fromIntervalString(unitTest.interval, unitTest.offset);
 
             let string = intervals.toJsons();
 
-            if(unitTest.truth !== string) throw new Error(`${unitTest.interval} failed the parity test`)
+            if (unitTest.truth !== string) throw new Error(`${unitTest.interval} failed the parity test`)
 
         }
 
         console.log("Parity achieved!")
-    }
-
-}
-
-export class Interval {
-
-    constructor(interval, offset) {
-        if(typeof interval === "number") interval = interval.toString();
-        this.intervalString = interval;
-        this.interval = Number(interval.replace("!", "").replace("+", ""));
-        this.subtracts = interval.includes("!");
-        this.internalIntervals = new IntervalsCollection();
-
-        // If this interval is not 1 and does not ignore offset, normalize offset to the interval
-        const ignoresOffset = interval.includes('+');
-        this.offset = this.interval === 1 || ignoresOffset ? 0 : (this.interval + offset) % this.interval;
-    }
-
-    static make(data){
-        const newInterval = new Interval(data.interval.toString(), data.offset);
-        newInterval.subtracts = data.subtracts;
-        newInterval.internalIntervals = new IntervalsCollection(...data.internalIntervals.map(i => Interval.make(i)))
-        return newInterval;
-    }
-
-    clone(){
-        return Interval.make(this.getData())
-    }
-
-    getData(){
-        return {
-            interval: this.interval,
-            subtracts: this.subtracts,
-            offset: this.offset,
-            internalIntervals: this.internalIntervals.map(i => i.getData())
-        }
-    }
-
-    toJsons() {
-        return JSON.stringify({
-            interval: this.interval,
-            subtracts: this.subtracts,
-            offset: this.offset
-        });
-    }
-
-    voteOnYear(year){
-
-        let mod = year - this.offset;
-
-        if(year < 0) {
-            mod++;
-        }
-
-        if(mod % this.interval === 0){
-            return this.subtracts ? 'deny' : 'allow';
-        }
-
-        return 'abstain'
-
-    }
-
-    clearInternalIntervals(){
-        this.internalIntervals = new IntervalsCollection();
-        return this;
-    }
-
-    isEqual(interval){
-        return this.interval === interval.interval
-            && this.offset ===  interval.offset
-            && this.subtracts === interval.subtracts;
-    }
-
-    mergeInternalIntervals(intervals){
-        this.internalIntervals = this.internalIntervals.concat(intervals);
-        return this;
-    }
-
-    isRedundant(){
-        return this.internalIntervals
-                .reject(interval => interval.willCollideWith(this))
-                .length
-            && !this.internalIntervals.length;
-    }
-
-    avoidDuplicates(toCheck){
-        if(toCheck instanceof Interval){
-            return this.avoidDuplicateCollisionsOnInternal(toCheck);
-        }
-
-        return toCheck.map(interval => this.avoidDuplicateCollisionsOnInternal(interval));
-    }
-
-    avoidDuplicateCollisionsOnInternal(suspectedCollision){
-
-        if(!utils.lcmo_bool(this, suspectedCollision)){
-            return suspectedCollision;
-        }
-
-        this.internalIntervals.cancelOutCollision(this, suspectedCollision);
-
-        return suspectedCollision;
-
-    }
-
-    attributesAre(interval, offset, subtracts = false){
-        return this.isEqual({ interval, offset, subtracts });
-    }
-
-    willCollideWith(interval){
-        return utils.lcmo_bool(this, interval) || this.subtracts === interval.subtracts;
-    }
-
-    occurrences(year, yearZeroExists){
-
-        if(year === 0) return 0;
-
-        if(year > 0){
-
-            year = this.offset > 0 ? year - this.offset + this.interval : year;
-
-            year = yearZeroExists ? year - 1 : year;
-
-            const result = year / this.interval;
-
-            return this.subtracts ? Math.floor(result) * -1 : Math.floor(result);
-
-        }
-
-        const outerOffset = this.offset % this.interval;
-
-        let result = (year - (outerOffset-1)) / this.interval;
-
-        if(outerOffset === 0){
-            result--;
-        }
-
-        return this.subtracts ? Math.ceil(result) * -1 : Math.ceil(result);
-
-    }
-
-    fraction(){
-        return (this.subtracts ? -1 : 1) / this.interval;
     }
 
 }
