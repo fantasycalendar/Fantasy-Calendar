@@ -18,7 +18,7 @@ export default class Interval {
     static make(data){
         const newInterval = new Interval(data.interval.toString(), data.offset);
         newInterval.subtracts = data.subtracts;
-        newInterval.internalIntervals = new IntervalsCollection(...data.internalIntervals.map(i => Interval.make(i)))
+        newInterval.internalIntervals = new IntervalsCollection(data.internalIntervals.map(i => Interval.make(i)))
         return newInterval;
     }
 
@@ -55,7 +55,7 @@ export default class Interval {
             return this.subtracts ? 'deny' : 'allow';
         }
 
-        return 'abstain'
+        return 'abstain';
 
     }
 
@@ -71,7 +71,7 @@ export default class Interval {
     }
 
     mergeInternalIntervals(intervals){
-        this.internalIntervals = this.internalIntervals.concat(intervals);
+        this.internalIntervals = this.internalIntervals.concat(collect([...intervals]));
         return this;
     }
 
@@ -138,7 +138,7 @@ export default class Interval {
 
     }
 
-    fraction(){
+    get fraction(){
         return (this.subtracts ? -1 : 1) / this.interval;
     }
 

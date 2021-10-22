@@ -3,7 +3,6 @@ import Moon from "./Moon.js";
 import Era from "./Era.js";
 import Timespan from "./Timespan.js";
 import MonthsCollection from "./Collections/MonthsCollection.js";
-import Collection from "./Collections/Collection.js";
 import HasDates from "./Traits/HasDates.js";
 
 export default class FantasyCalendar {
@@ -87,7 +86,7 @@ export default class FantasyCalendar {
 
     get timespans() {
         if(!this._timespans) {
-            this._timespans = Collection.from(this.yearData['timespans'])
+            this._timespans = collect(this.yearData['timespans'])
                 .map((timespan, index) => {
                     return new Timespan(timespan, index).setCalendar(this);
                 })
@@ -121,11 +120,11 @@ export default class FantasyCalendar {
     }
 
     get averageMonthsCount(){
-        return this.timespans.sum(timespan => timespan.averageYearContribution);
+        return this.timespans.sum("averageYearContribution");
     }
 
     get eras() {
-        return Collection.from(this.static_data['eras']).map(era => {
+        return collect(this.static_data['eras']).map(era => {
             return new Era(era);
         }).sortBy('year');
     }
@@ -148,9 +147,9 @@ export default class FantasyCalendar {
 
     get leapDays() {
         if(!this._leapDays) {
-            this._leapDays = Collection.from(this.yearData['leap_days'].map(leap_day => {
+            this._leapDays = collect(this.yearData['leap_days']).map(leap_day => {
                 return new LeapDay(this, leap_day);
-            }))
+            })
         }
         return this._leapDays;
     }

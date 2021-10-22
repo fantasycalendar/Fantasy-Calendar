@@ -1,7 +1,7 @@
 import Month from "../Month.js";
-import Collection from "./Collection.js";
+import { Collection } from 'collect.js'
 
-export default class MonthsCollection extends Collection {
+export default class MonthsCollection extends Collection{
 
     static fromArray(array, calendar) {
         return MonthsCollection.from(array.map((month, index) => {
@@ -20,14 +20,10 @@ export default class MonthsCollection extends Collection {
         return this;
     }
 
-    last() {
-        return this[this.length - 1];
-    }
-
     hasId(id) {
         return this.filter((month) => {
             return month.id === id;
-        }).length === 1;
+        }).count() === 1;
     }
 
 }

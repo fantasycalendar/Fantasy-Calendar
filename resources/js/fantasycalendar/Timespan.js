@@ -20,7 +20,7 @@ export default class Timespan {
     }
 
     get averageYearContribution() {
-        return this.intervals.totalFraction();
+        return this.intervals.totalFraction;
     }
 
     setCalendar(calendar) {

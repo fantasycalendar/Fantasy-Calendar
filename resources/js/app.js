@@ -3,11 +3,6 @@
  * includes Vue and other libraries. It is a great starting point when
  * building robust, powerful web applications using Vue and Laravel.
  */
-
-import FantasyCalendar from "./fantasycalendar/FantasyCalendar.js";
-import IntervalsCollection from "./fantasycalendar/Collections/IntervalsCollection.js";
-import Collection from "./fantasycalendar/Collections/Collection.js";
-
 require('./bootstrap');
 
 window.CalendarClock = require('./clock')
@@ -23,6 +18,8 @@ window.CalendarHTMLEditor = require('./calendar-html-editor')
 window.CalendarYearHeader = require('./calendar-year-header')
 
 // Calendar specific modules
+import FantasyCalendar from "./fantasycalendar/FantasyCalendar.js";
+import IntervalsCollection from "./fantasycalendar/Collections/IntervalsCollection.js";
+
 window.IntervalsCollection = IntervalsCollection;
 window.FantasyCalendar = FantasyCalendar;
-window.Collection = Collection;

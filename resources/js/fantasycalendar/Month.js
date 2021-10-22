@@ -1,7 +1,6 @@
 import Timespan from "./Timespan.js";
 import MonthDay from "./MonthDay.js";
 import IntervalsCollection from "./Collections/IntervalsCollection.js";
-import Collection from "./Collections/Collection.js";
 
 export default class Month extends Timespan {
 
@@ -25,7 +24,7 @@ export default class Month extends Timespan {
     }
 
     buildWeekdays(calendar) {
-        let weekdays = Collection.from(clone(calendar.globalWeek));
+        let weekdays = collect(clone(calendar.globalWeek));
         return this.insertLeapDaysIntoWeek(weekdays);
     }
 
@@ -66,7 +65,7 @@ export default class Month extends Timespan {
             baseLength = this.baseLength + this.activeLeapDays.reject(leapDay => leapDay.intercalary).length;
         }
 
-        let daysInYear = new Collection().times(baseLength, (index) => {
+        let daysInYear = collect().times(baseLength, (index) => {
             return new MonthDay(index, this.intercalary);
         });
 
