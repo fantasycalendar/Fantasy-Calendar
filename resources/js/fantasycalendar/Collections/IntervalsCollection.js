@@ -38,8 +38,6 @@ export default class IntervalsCollection extends Collection{
             .reverse()
             .normalize();
 
-        console.log(intervalsCollection);
-
         return intervalCache.set(intervalsCollection, intervalString, offset);
     }
 

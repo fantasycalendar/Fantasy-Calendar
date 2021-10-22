@@ -1,4 +1,7 @@
 import EpochsCollection from "../Collections/EpochsCollection.js";
+import State from "./Processor/State.js";
+import Processor from "./Processor.js";
+import EpochCalculator from "./EpochCalculator.js";
 
 export default class EpochFactory {
 
@@ -75,27 +78,6 @@ export default class EpochFactory {
         return this.forEpoch(epoch.epoch + days);
     }
 
-    // Backend has implemented these methods, but they are unused.
-    /*incrementMonths(months, calendar, epoch){
-
-        const targetMonth = this.calendar.monthIndex + months;
-
-        if(targetMonth >= 0 && this.calendar.months.length > targetMonth){
-
-            const month = this.calendar.months[targetMonth];
-
-            const targetDay = min(month.daysInYear.length, this.calendar.day);
-
-            return this.forDate(this.calendar.year, targetMonth, targetDay);
-
-        }
-
-    }
-
-    incrementYears(years, calendar, epoch) {
-
-    }*/
-
     processYear() {
         this.rememberEpochs(this.processor().processYear());
     }
@@ -128,7 +110,7 @@ export default class EpochFactory {
 
     processor(calendar = null, withEras = true){
 
-        calendar = calendar ?? this.calendar.clone().startOfYear();
+        calendar = calendar ?? this.calendar.clone().startOfYear()
         const state = new State(calendar);
         if(!withEras){
             state.disableEras();

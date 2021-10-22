@@ -1,11 +1,22 @@
 import Timespan from "./Timespan.js";
 import MonthDay from "./MonthDay.js";
-import IntervalsCollection from "./Collections/IntervalsCollection.js";
 
 export default class Month extends Timespan {
 
     constructor(month, id) {
         super(month, id);
+    }
+
+    countNormalDays() {
+        return this.daysInYear.reject(day => day.intercalary).count();
+    }
+
+    countWeeksInYear() {
+        return Math.abs(Math.ceil(this.countNormalDays() / this.weekdays.count()));
+    }
+
+    countDaysInYear(){
+        return this.daysInYear.count();
     }
 
     initialize(calendar) {
@@ -23,11 +34,17 @@ export default class Month extends Timespan {
 
     }
 
+    /**
+     * @return Collection
+     */
     buildWeekdays(calendar) {
         let weekdays = collect(clone(calendar.globalWeek));
         return this.insertLeapDaysIntoWeek(weekdays);
     }
 
+    /**
+     * @return Collection
+     */
     insertLeapDaysIntoWeek(weekdays) {
 
         let additiveLeapDays = this.activeLeapDays
@@ -48,7 +65,7 @@ export default class Month extends Timespan {
             return [key, weekday];
         });
 
-        const finalWeekdays = [...leapDays, ...newWeekdays];
+        const finalWeekdays = collect([...leapDays, ...newWeekdays]);
 
         finalWeekdays.sort((a, b) => Number(a[0]) - Number(b[0]))
 
@@ -56,6 +73,9 @@ export default class Month extends Timespan {
 
     }
 
+    /**
+     * @return Collection
+     */
     buildDaysInYear() {
 
         let baseLength = 0;
@@ -77,6 +97,9 @@ export default class Month extends Timespan {
 
     }
 
+    /**
+     * @return Collection
+     */
     insertLeapDaysIntoDaysInYear(daysInYear) {
 
         const intercalaryLeapDays = this.leapDays.filter(leapDay => leapDay.intercalary);

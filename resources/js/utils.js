@@ -91,3 +91,8 @@ export function clamp(t, min, max){
 export function date_slug(year, month, day){
     return `${year}-${month}-${day}`;
 }
+
+
+export function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
