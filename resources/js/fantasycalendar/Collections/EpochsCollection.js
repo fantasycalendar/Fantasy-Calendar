@@ -19,8 +19,6 @@ export default class EpochsCollection extends Collection{
     getByDate(year, month = 0, day = 1) {
         const date = utils.date_slug(year, month, day);
 
-        console.log(this);
-
         if(!this.hasDate(year, month, day)){
             throw new Error(`Error trying to retrieve nonexistent date '${date}'. Date is either invalid or not generated when we got to this point.`)
         }
