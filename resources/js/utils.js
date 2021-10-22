@@ -86,3 +86,8 @@ export function lcmo(intervalA, intervalB) {
 export function clamp(t, min, max){
     return Math.min(Math.max(t, min), max);
 }
+
+
+export function date_slug(year, month, day){
+    return `${year}-${month}-${day}`;
+}

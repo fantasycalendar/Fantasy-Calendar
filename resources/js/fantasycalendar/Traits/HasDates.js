@@ -98,6 +98,10 @@ export default {
         return this.setDate(this.year + years);
     },
 
+    startOfYear() {
+        return this.setDate(this.year, Object.keys(this.months)[0], 1)
+    },
+
     setDate(targetYear, monthId, day) {
         const targetMonth = monthId ?? this.dynamic('timespan');
         const targetDay = day ?? this.dynamic('day');
