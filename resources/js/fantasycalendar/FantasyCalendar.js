@@ -123,6 +123,16 @@ export default class FantasyCalendar {
         return this.timespans.sum("averageYearContribution");
     }
 
+    get averageMonthLength(){
+        return this.averageYearLength / this.timespans.count();
+    }
+
+    get averageYearLength(){
+        return this.timespans.sum(timespan => {
+            return (timespan.averageYearContribution * timespan.baseLength) + timespan.leapDays.sum('averageYearContribution');
+        })
+    }
+
     get eras() {
         return collect(this.static_data['eras']).map(era => {
             return new Era(era);

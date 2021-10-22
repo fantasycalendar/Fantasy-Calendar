@@ -27,7 +27,7 @@ export default class LeapDay {
     }
 
     get averageYearContribution() {
-        return this.intervals.totalFraction();
+        return this.intervals.totalFraction;
     }
 
     timespanIs(id) {
