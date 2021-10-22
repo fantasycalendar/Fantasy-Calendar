@@ -8,18 +8,18 @@ export default class EpochFactory {
     forCalendar(calendar){
 
         this.calendar = calendar.clone();
-        this.epochs = new EpochsCollection();
+        this.epochs = new EpochsCollection({});
 
         return this;
 
     }
 
     forCalendarYear(calendar) {
-
         this.forCalendar(calendar)
             .processYear();
 
-        return this.epochs.whereYear(calendar.year);
+        return this.epochs.whereYear(calendar.year)
+            .keyBy("slug");
     }
 
     forCalendarMonth(calendar) {
@@ -64,8 +64,7 @@ export default class EpochFactory {
 
         if(epoch) return epoch;
 
-        return EpochCalculator.forCalendar(this.calendar.clone())
-            .calculate(epochNumber);
+        return EpochCalculator.forCalendar(this.calendar.clone()).calculate(epochNumber);
 
     }
 
@@ -83,7 +82,10 @@ export default class EpochFactory {
     }
 
     rememberEpochs(epochs){
-        this.epochs = this.epochs.merge(epochs);
+        this.epochs = new EpochsCollection({
+            ...this.epochs.all(),
+            ...epochs.all()
+        })
         return this;
     }
 
@@ -104,14 +106,13 @@ export default class EpochFactory {
             .clone()
             .setDate(year, month, day);
 
-        return this.processor(calendar)
-            .processUntilDate(year, month, day);
+        return this.processor(calendar).processUntilDate(year, month, day);
     }
 
     processor(calendar = null, withEras = true){
 
         calendar = calendar ?? this.calendar.clone().startOfYear()
-        const state = new State(calendar);
+        let state = new State(calendar);
         if(!withEras){
             state.disableEras();
         }

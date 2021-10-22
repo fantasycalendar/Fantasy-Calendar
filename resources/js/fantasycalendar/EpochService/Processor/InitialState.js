@@ -1,4 +1,4 @@
-class InitialState {
+export default class InitialState {
 
     constructor(calendar) {
         this.calendar = calendar;
@@ -34,14 +34,16 @@ class InitialState {
     }
 
     calculateTotalDaysFromTimespans(){
+        let _this = this;
         return this.calendar.timespans.sum((timespan) => {
-            return timespan.occurrences(this.year) * timespan.length;
+            return timespan.occurrences(_this.year) * timespan.baseLength;
         })
     }
 
     calculateTotalLeapDayOccurrences(){
+        let _this = this;
         return this.calendar.timespans.sum((timespan) => {
-            const timespanOccurrences = timespan.occurrences(this.year);
+            const timespanOccurrences = timespan.occurrences(_this.year);
             return timespan.leapDays.sum((leapDay) => {
                 return leapDay.occurrences(timespanOccurrences);
             })
@@ -49,8 +51,9 @@ class InitialState {
     }
 
     calculateHistoricalIntercalaryCount(){
+        let _this = this;
         return this.calendar.timespans.sum(function(timespan){
-            const timespanOccurrences = timespan.occurrences(this.year);
+            const timespanOccurrences = timespan.occurrences(_this.year);
             const timespanIntercalaryDays = timespan.intercalary ? timespanOccurrences * timespan.length : 0;
             const leapDayIntercalaryDays = timespan.leapDays.sum(function(leapDay){
                 return leapDay.intercalary || timespan.intercalary ? leapDay.occurrences(timespanOccurrences) : 0;
@@ -59,12 +62,12 @@ class InitialState {
         });
     }
 
-    calculateNumberTimespans(){
+    calculateTimespanCounts(){
         return this.calendar.timespans.map(timespan => timespan.occurrences(this.year));
     }
 
-    calculateTimespanCounts(){
-        return this.calculateNumberTimespans().sum();
+    calculateNumberTimespans(){
+        return this.calculateTimespanCounts().sum();
     }
 
     calculateWeekdayIndex(){

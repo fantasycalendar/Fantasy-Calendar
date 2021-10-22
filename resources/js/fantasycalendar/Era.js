@@ -1,4 +1,5 @@
 import EpochFactory from "./EpochService/EpochFactory.js";
+import InitialState from "./EpochService/Processor/InitialState.js";
 
 export default class Era {
 
@@ -67,5 +68,10 @@ export default class Era {
         return this.settings[name] ?? fallback;
     }
 
+    calculateEraYear(eras) {
+        eras.pop();
+        if(!eras.count()) return this.year;
+        return eras.sum(era => era.calculateEraYear(eras));
+    }
 
 }

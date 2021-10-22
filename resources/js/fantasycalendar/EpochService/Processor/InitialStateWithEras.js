@@ -1,4 +1,6 @@
-class InitialStateWithEras extends InitialState {
+import InitialState from "./InitialState.js";
+
+export default class InitialStateWithEras extends InitialState {
 
     generateInitialProperties() {
         return (this.hasApplicableEras())
@@ -11,7 +13,7 @@ class InitialStateWithEras extends InitialState {
         const values = super.generateInitialProperties().collect();
         const eraSubtractables = this.getSubtractables();
 
-        values.put('timespanCounts', this.calculateTimespanCounts(values, eraSubtractables));
+        values.put('timespanCounts', this._calculateTimespanCounts(values, eraSubtractables));
         values.put('epoch', values.get('epoch') - eraSubtractables.sum('epoch'));
         values.put('historicalIntercalaryCount', values.get('historicalIntercalaryCount') - eraSubtractables.sum('historicalIntercalaryCount'));
         values.put('numberTimespans', values.get('numberTimespans') - eraSubtractables.sum('numberTimespans'));
@@ -21,7 +23,7 @@ class InitialStateWithEras extends InitialState {
 
     }
 
-    calculateTimespanCounts(state, eraSubtractables) {
+    _calculateTimespanCounts(state, eraSubtractables) {
         return state.get('timespanCounts').map(function(timespanCount, timespanIndex) {
             return timespanCount - eraSubtractables.sum(function(era){
                 return era.get('timespanCounts').get(timespanIndex);
@@ -40,7 +42,7 @@ class InitialStateWithEras extends InitialState {
     hasApplicableEras()
     {
         return this.calendar.eras
-            .filter(era => era.endsYear())
+            .filter(era => era.endsYear)
             .filter(era => era.beforeYear(this.year))
             .count();
     }

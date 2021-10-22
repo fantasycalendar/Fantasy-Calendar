@@ -4,13 +4,13 @@ export default class Processor {
 
     constructor(calendar, state) {
         this.state = state;
-        this.epochs = new EpochsCollection();
+        this.epochs = new EpochsCollection({});
         this.calendar = calendar;
     }
 
     processYear() {
         return this.processUntilDate(this.calendar.year + 1)
-                   .filter(epoch => epoch.yearIs(this.calendar.year));
+            .filter(epoch => epoch.yearIs(this.calendar.year));
     }
 
     processUntil(untilCondition) {
@@ -19,7 +19,7 @@ export default class Processor {
             this.stepForward();
         }
 
-        this.epochs.insertFromArray(this.state.toArray());
+        //this.epochs.insertFromArray(this.state.toArray());
 
         return this.getEpochs();
 
@@ -36,18 +36,18 @@ export default class Processor {
             return processor.state.year === year
                 && processor.state.monthIndexOfYear === month
                 && processor.state.day === day;
-        });
+
+        })
 
     }
 
     getEpochs() {
-        return this.epochs.keyBy('slug');
+        return this.epochs;
     }
 
     stepForward() {
         this.epochs.insertFromArray(this.state.toArray());
-
-        this.state.stepFoward();
+        this.state.stepForward();
     }
 
 

@@ -78,11 +78,11 @@ export default class Month extends Timespan {
      */
     buildDaysInYear() {
 
-        let baseLength = 0;
+        let baseLength;
         if (this.intercalary) {
-            baseLength = this.baseLength + this.activeLeapDays.length;
+            baseLength = this.baseLength + this.activeLeapDays.count();
         } else {
-            baseLength = this.baseLength + this.activeLeapDays.reject(leapDay => leapDay.intercalary).length;
+            baseLength = this.baseLength + this.activeLeapDays.reject(leapDay => leapDay.intercalary).count();
         }
 
         let daysInYear = collect().times(baseLength, (index) => {
@@ -104,9 +104,9 @@ export default class Month extends Timespan {
 
         const intercalaryLeapDays = this.leapDays.filter(leapDay => leapDay.intercalary);
 
-        if (intercalaryLeapDays.length) {
-            let offset = 1 / (intercalaryLeapDays.length + 1);
-            intercalaryLeapDays.forEach((leapDay) => {
+        if (intercalaryLeapDays.count()) {
+            let offset = 1 / (intercalaryLeapDays.count() + 1);
+            intercalaryLeapDays.each((leapDay) => {
                 const day = new MonthDay(
                     leapDay.day + offset,
                     true,
@@ -114,9 +114,10 @@ export default class Month extends Timespan {
                     leapDay.show_text ? leapDay.name : false
                 );
                 daysInYear.push(day);
-                offset += 1 / (intercalaryLeapDays.length + 1);
+                offset += 1 / (intercalaryLeapDays.count() + 1);
             });
-            daysInYear.sortBy("order");
+
+            daysInYear = daysInYear.sortBy("order");
         }
 
         return daysInYear;

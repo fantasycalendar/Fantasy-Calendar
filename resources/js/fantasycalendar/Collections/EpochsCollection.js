@@ -1,5 +1,6 @@
 import { Collection } from 'collect.js'
 import * as utils from "../../utils.js";
+import Epoch from "../EpochService/Epoch.js";
 
 export default class EpochsCollection extends Collection{
 
@@ -18,6 +19,8 @@ export default class EpochsCollection extends Collection{
     getByDate(year, month = 0, day = 1) {
         const date = utils.date_slug(year, month, day);
 
+        console.log(this);
+
         if(!this.hasDate(year, month, day)){
             throw new Error(`Error trying to retrieve nonexistent date '${date}'. Date is either invalid or not generated when we got to this point.`)
         }
@@ -26,7 +29,7 @@ export default class EpochsCollection extends Collection{
     }
 
     whereYear(year) {
-        return this.where('year', year);
+        return this.where('year', "=", year);
     }
 
     whereMonthIndexOfYear(monthIndexOfYear) {

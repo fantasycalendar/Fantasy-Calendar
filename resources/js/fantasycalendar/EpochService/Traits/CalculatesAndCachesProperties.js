@@ -4,12 +4,18 @@ export default function CalculatesAndCachesProperties(obj){
 
     return new Proxy(obj, {
         get: function(target, prop){
-            if(prop in target) Reflect.get(target, prop);
-            const calculateProp = `calculate${utils.capitalizeFirstLetter(prop)}`
-            return Reflect.get(target, calculateProp)();
+            if(target[prop]) return Reflect.get(target, prop);
+            const calculateProp = `calculate${utils.capitalizeFirstLetter(prop)}`;
+            if(!(calculateProp in target)) throw new Error(`Can't find property for ${calculateProp}`);
+            return target[calculateProp];
         },
-        set: function(target, prop){
-            this.stateCache[prop] = target;
+        set: function(target, prop, value){
+            if(prop in target){
+                target[prop] = value;
+            }else{
+                target['stateCache'].put(prop, value);
+            }
+            return true;
         }
     })
 

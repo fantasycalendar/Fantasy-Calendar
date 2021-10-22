@@ -1,4 +1,4 @@
-class Epoch {
+export default class Epoch {
 
     constructor(attributes) {
         this.monthIndexOfYear = attributes['monthIndexOfYear'];

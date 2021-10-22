@@ -99,7 +99,7 @@ export default {
     },
 
     startOfYear() {
-        return this.setDate(this.year, Object.keys(this.months)[0], 1)
+        return this.setDate(this.year, 0, 1)
     },
 
     setDate(targetYear, monthId, day) {
@@ -128,6 +128,8 @@ export default {
         while(!this.yearIsValid(targetYear)){
             targetYear += yearSearchDirection;
         }
+
+        console.log("target year valid")
 
         return targetYear;
 
@@ -161,6 +163,8 @@ export default {
             foundValidMonth = true;
 
         } while(foundValidMonth === false);
+
+        console.log("target month valid")
 
         return targetMonthId;
 

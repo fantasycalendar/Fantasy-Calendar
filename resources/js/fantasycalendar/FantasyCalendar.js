@@ -4,6 +4,7 @@ import Era from "./Era.js";
 import Timespan from "./Timespan.js";
 import MonthsCollection from "./Collections/MonthsCollection.js";
 import HasDates from "./Traits/HasDates.js";
+import EpochFactory from "./EpochService/EpochFactory.js";
 
 export default class FantasyCalendar {
 
@@ -20,6 +21,10 @@ export default class FantasyCalendar {
 
         this.applyTraits();
 
+    }
+
+    clone(){
+        return new FantasyCalendar(clone(this.static_data), clone(this.dynamic_data));
     }
 
     applyTraits(){
@@ -39,7 +44,7 @@ export default class FantasyCalendar {
     }
 
     get day() {
-        return clamp(this.dynamic_data['day'], 1, this.month.daysInYear.length);
+        return clamp(this.dynamic_data['day'], 1, this.month.daysInYear.count());
     }
 
     get yearZeroExists() {
@@ -108,7 +113,7 @@ export default class FantasyCalendar {
     }
 
     yearIsValid(year) {
-        return this.timespans.filter(timespan => timespan.intersectsYear(year)).length > 0;
+        return this.timespans.filter(timespan => timespan.intersectsYear(year)).count() > 0;
     }
 
     get monthsWithoutEras() {
@@ -148,7 +153,7 @@ export default class FantasyCalendar {
     }
 
     get month() {
-        return this.months.find(month => month.id === this.monthId);
+        return this.months.first(month => month.id === this.monthId);
     }
 
     get moons() {
@@ -164,24 +169,8 @@ export default class FantasyCalendar {
         return this._leapDays;
     }
 
-}
+    get epoch(){
+        return new EpochFactory().forCalendarDay(this);
+    }
 
-// ---------------------------------------------------------------------------------------------
-
-
-function MagicGetter(obj) {
-    return new Proxy(obj, {
-        get: function(target, prop) {
-            if(prop in target) return Reflect.get(target, prop);
-
-            if(target['attributes'] && prop in target['attributes']) {
-                return Reflect.get(target, target['attributes'][prop]);
-            }
-
-            const magicProp = `get${capitalizeFirstLetter(prop)}Attribute`;
-            if(magicProp in target) return Reflect.get(target, magicProp);
-
-            throw new Error(`${prop} does not exist in ${obj.constructor.name}`)
-        }
-    })
 }

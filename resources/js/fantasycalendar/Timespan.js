@@ -16,6 +16,11 @@ export default class Timespan {
     }
 
     occurrences(year) {
+
+        year = (this.yearZeroExists || year < 0)
+            ? year
+            : year - 1;
+
         return this.intervals.occurrences(year, this.yearZeroExists);
     }
 
