@@ -6,6 +6,7 @@
 
 import FantasyCalendar from "./fantasycalendar/FantasyCalendar.js";
 import IntervalsCollection from "./fantasycalendar/Collections/IntervalsCollection.js";
+import Collection from "./fantasycalendar/Collections/Collection.js";
 
 require('./bootstrap');
 
@@ -24,3 +25,4 @@ window.CalendarYearHeader = require('./calendar-year-header')
 // Calendar specific modules
 window.IntervalsCollection = IntervalsCollection;
 window.FantasyCalendar = FantasyCalendar;
+window.Collection = Collection;

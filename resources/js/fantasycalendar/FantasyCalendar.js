@@ -4,6 +4,7 @@ import Era from "./Era.js";
 import Timespan from "./Timespan.js";
 import MonthsCollection from "./Collections/MonthsCollection.js";
 import Collection from "./Collections/Collection.js";
+import HasDates from "./Traits/HasDates.js";
 
 export default class FantasyCalendar {
 
@@ -18,6 +19,12 @@ export default class FantasyCalendar {
         this._leapDays = undefined;
         this._eras = undefined;
 
+        this.applyTraits();
+
+    }
+
+    applyTraits(){
+        Object.assign(this, HasDates);
     }
 
     setting(setting_name, fallback = false) {
@@ -58,11 +65,32 @@ export default class FantasyCalendar {
         return this.yearData['first_day']
     }
 
+    get clockEnabled() {
+        return this.clock['enabled'];
+    }
+
+    dynamic(input, value = null){
+        if(typeof input === "string" && value === null) return this.dynamic_data[input];
+
+        if(typeof input !== "object"){
+            input = {
+                [input]: value
+            }
+        }
+
+        for(let [key, value] of Object.entries(input)){
+            this.dynamic_data[key] = value;
+        }
+
+        return this.dynamic_data;
+    }
+
     get timespans() {
         if(!this._timespans) {
-            this._timespans = this.yearData['timespans'].map((timespan, index) => {
-                return new Timespan(timespan, index);
-            }).map(timespan => timespan.setCalendar(this));
+            this._timespans = Collection.from(this.yearData['timespans'])
+                .map((timespan, index) => {
+                    return new Timespan(timespan, index).setCalendar(this);
+                })
         }
 
         return this._timespans;
@@ -80,8 +108,20 @@ export default class FantasyCalendar {
         return this._monthsCached[this.year];
     }
 
+    yearIsValid(year) {
+        return this.timespans.filter(timespan => timespan.intersectsYear(year)).length > 0;
+    }
+
     get monthsWithoutEras() {
         return MonthsCollection.fromArray(this.yearData['timespans'], this);
+    }
+
+    get monthIndex(){
+        return Object.keys(this.months.filter(month => month.id === this.monthId)).shift();
+    }
+
+    get averageMonthsCount(){
+        return this.timespans.sum(timespan => timespan.averageYearContribution);
     }
 
     get eras() {

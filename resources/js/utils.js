@@ -75,3 +75,14 @@ export function lcmo(intervalA, intervalB) {
 
 }
 
+/**
+ * This function clamps a value between a min and a max
+ *
+ * @param  {Number}  t       The value to be clamped
+ * @param  {Number}  min     Minimum value
+ * @param  {Number}  max     Maximum value
+ * @return {Number}          The clamped value
+ */
+export function clamp(t, min, max){
+    return Math.min(Math.max(t, min), max);
+}

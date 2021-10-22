@@ -38,6 +38,12 @@ export default class Collection extends Array {
         return this.filter(elem => !callback(elem));
     }
 
+    unique() {
+        const serialized = this.map(elem => JSON.stringify(elem));
+        const deserialized = Array.from(new Set(serialized)).map(elem => JSON.parse(elem))
+        return new this.constructor(...deserialized);
+    }
+
     skipWhile(callback) {
         let done = false;
         return this.filter(elem => {
@@ -45,6 +51,10 @@ export default class Collection extends Array {
             if (!result) done = true;
             return done || !result;
         });
+    }
+
+    hasId(id){
+        return this.find(elem => elem?.id === id);
     }
 
     sum(callback) {
@@ -55,12 +65,16 @@ export default class Collection extends Array {
         return this.sort((a, b) => b[key] - a[key])
     }
 
-    sortByAsc(key) {
+    sortBy(key) {
         return this.sort((a, b) => a[key] - b[key])
     }
 
-    sortBy(key) {
-        return this.sortByAsc(key);
+    keyBy(key) {
+        return this.map(elem => {
+            const keyed = { [elem[key]]: elem };
+            delete elem[key];
+            return keyed;
+        });
     }
 
 }

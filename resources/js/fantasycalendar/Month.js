@@ -7,26 +7,14 @@ export default class Month extends Timespan {
 
     constructor(month, id) {
         super(month, id);
-        this.intervals = IntervalsCollection.make(month);
-    }
-
-    intersectsYear(year) {
-        return this.intervals.intersectsYear(year, this.yearZeroExists);
-    }
-
-    occurrences(year) {
-        return this.intervals.occurrences(year, this.yearZeroExists);
-    }
-
-    get averageYearContribution() {
-        return this.intervals.totalFraction();
     }
 
     initialize(calendar) {
 
         super.initialize(calendar);
 
-        this.activeLeapDays = this.leapDays.filter(leapDay => leapDay.intersectsYear(this.occurrences(calendar.year)));
+        this.activeLeapDays = this.leapDays
+            .filter(leapDay => leapDay.intersectsYear(this.occurrences(calendar.year)));
 
         this.weekdays = this.buildWeekdays(calendar);
 
