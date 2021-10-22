@@ -111,14 +111,14 @@ class Era
         return Arr::get($this->settings, $name, $default);
     }
 
-public function calculateEraYear(Collection $eras)
-{
-    $eras->pop();
+    public function calculateEraYear(Collection $eras)
+    {
+        $eras->pop();
 
-    if(!$eras->count()) return $this->year;
+        if(!$eras->count()) return $this->year;
 
-    return $eras->sum->calculateEraYear($eras);
-}
+        return $eras->sum->calculateEraYear($eras);
+    }
 
     /**
      * @param $year

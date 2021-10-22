@@ -25,7 +25,7 @@ var moon_tooltip = {
 	element: false,
 	title: "",
 	show: false,
-	
+
 	init: function(){
 		this.tooltip_box = $('#moon_tooltip_box');
 	},
@@ -285,7 +285,7 @@ var calendar_weather = {
 			}
 
 			return moon_text.join('');
-			
+
 		},
 
 		hide: function(){
