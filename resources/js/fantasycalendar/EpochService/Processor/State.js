@@ -268,7 +268,7 @@ export default class State {
     }
 
     calculateDayOfYear(){
-        return this.previousState.get('daysOfYear', 1);
+        return this.previousState.get('dayOfYear', 1);
     }
 
     calculateEpoch(){
