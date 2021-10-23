@@ -22,14 +22,14 @@ export default function CalculatesAndCachesProperties(obj){
             if(originalProp) return originalProp;
 
             const calculatePropName = `calculate${utils.capitalizeFirstLetter(propName)}`;
-            const calculateProp = Reflect.get(target, calculatePropName).bind(receiver);
+            const calculateProp = Reflect.get(target, calculatePropName);
 
             if(!calculateProp) throw new Error(`Can't find property for ${calculatePropName}`);
 
             const statecache = Reflect.get(target, "statecache");
 
             if(!statecache.has(propName) || statecache.get(propName) == null){
-                const value = calculateProp();
+                const value = calculateProp.bind(receiver)();
                 statecache.put(propName, value);
             }
 
