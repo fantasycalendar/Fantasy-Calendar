@@ -254,12 +254,12 @@ export default class State {
     }
 
     calculateWeeksSinceMonthStart(){
-        return this.previousState.get('weeksSinceMonthStart', 0);
+        return this.previousState.get('weeksSinceMonthStart', 1);
     }
 
     calculateTotalWeeksInMonth(){
         if(this.previousState.has('totalWeeksInMonth')){
-            return this.statecache.get('totalWeeksInMonth');
+            return this.previousState.get('totalWeeksInMonth');
         }
 
         const totalWeekdaysBeforeToday = (this.currentMonth().countNormalDays() + this.weekdayIndex);
