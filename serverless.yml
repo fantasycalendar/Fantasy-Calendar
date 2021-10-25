@@ -175,21 +175,6 @@ functions:
       vpc:
         securityGroupIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/security_group_ids}"] }
         subnetIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/subnet_ids}"] }
-    prdhostforward:
-      handler: setup/lambda/${opt:stage, 'dev'}/forwarder.handler
-      runtime: nodejs12.x
-      package:
-        individually: true
-        exclude:
-          - "./**"
-        include:
-          - setup/lambda/${opt:stage, 'dev'}/forwarder.js
-          - setup/lambda/${opt:stage, 'dev'}/version.txt
-      memorySize: 128
-      events:
-        -   cloudFront:
-              eventType: origin-request
-              origin: Website
     prdsecurityheaders:
       handler: setup/lambda/${opt:stage, 'dev'}/security_headers.handler
       runtime: nodejs12.x
@@ -277,6 +262,9 @@ resources:
               OriginPath: "/${opt:stage, 'dev'}"
               CustomOriginConfig:
                 OriginProtocolPolicy: 'https-only' # API Gateway only supports HTTPS
+              OriginCustomHeaders:
+                - HeaderName: 'X-Forwarded-Host'
+                  HeaderValue: ${self:custom.alias}
             # The assets (S3)
             - Id: Assets
               DomainName: !GetAtt Assets.RegionalDomainName
