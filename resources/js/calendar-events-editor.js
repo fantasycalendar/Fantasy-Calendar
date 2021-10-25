@@ -571,7 +571,7 @@ const calendar_events_editor = {
 
 			if (conditions.length === 1) {
 
-				if (conditions[0][0] === "Date" && conditions[0][1] === 0) {
+				if (conditions[0][0] === "Date" && conditions[0][1] === "0") {
 					date = [Number(conditions[0][2][0]), Number(conditions[0][2][1]), Number(conditions[0][2][2])];
 				}
 
