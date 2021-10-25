@@ -7,7 +7,7 @@ alias fc_nohotd='docker-compose up -d'
 alias docker-clean='docker-compose down && docker stop $(docker ps -a -q) && docker system prune -a -f && composer install && docker-compose build'
 
 function composer() {
-    docker run -it -u $(id -u):$(id -g) -v ${PWD}/:/app -w /app fc-bref-composer composer $@;
+    docker run -it -u $(id -u):$(id -g) -v ${PWD}/:/app -v ${PWD}/cache:/tmp/composer-cache -e COMPOSER_CACHE_DIR=/tmp/composer-cache -w /app fc-bref-composer composer $@;
 
     if [ $? -eq 125 ]; then
         docker-compose build composer;
