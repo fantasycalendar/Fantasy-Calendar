@@ -55,7 +55,11 @@ class IntervalsCollection extends \Illuminate\Support\Collection
      */
     public function bumpsYearZero()
     {
-        return !$this->reject->offset->sortByDesc('interval')->first()->subtracts ?? false;
+        $firstValidInterval = $this->reject->offset->sortByDesc('interval')->first();
+
+        if($firstValidInterval) return !$firstValidInterval->subtracts;
+
+        return false;
     }
 
     /**
