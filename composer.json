@@ -8,7 +8,7 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^7.4",
+        "php": "^8.0",
         "ext-gmp": "*",
         "ext-imagick": "*",
         "ext-json": "*",
@@ -28,7 +28,7 @@
         "laravel/ui": "^3.0",
         "league/fractal": "^0.18.0",
         "marvinlabs/laravel-discord-logger": "^1.1",
-        "mews/purifier": "3.3.0",
+        "mews/purifier": "3.3.6",
         "mustache/mustache": "^2.13",
         "nesbot/carbon": "^2.31",
         "restcord/restcord": "dev-develop",

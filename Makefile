@@ -1,4 +1,4 @@
-.DEFAULT_GOAL := quick_deploy_dev
+.DEFAULT_GOAL := initialize_dev
 .PHONY: deploy_dev deploy_prod confirm_beta super_confirm super_duper_confirm
 
 deploy_dev: confirm_beta real_deploy_dev
@@ -76,9 +76,18 @@ quick_deploy_prod:
   		notify-send -t 8000 "Production quick deploy done";\
   	fi;
 
+initialize_dev:
+	yes n | cp ./setup/docker.example.env .env                                                     # Copy env file, don't overwrite
+	docker-compose build                                                                           # Gotta build our images before we can use them
+	docker run -it -u $(id -u):$(id -g) -v ${PWD}/:/app -w /app node npm install                   # NPM install inside docker container to avoid installing on host
+	docker run -it -u $(id -u):$(id -g) -v ${PWD}/:/app -w /app fc-bref-composer composer install  # Composer install inside docker container (it has all our required PHP modules)
+	docker-compose up -d																		   # Start up our docker containers
+	docker-compose exec php php artisan migrate													   # Run migrations
+	docker-compose stop 																		   # Stop docker containers after migrate
+	echo "Dev environment is all set! You can run 'make local' when you're ready to start it up."
+
 local:
-	docker run -it -u $(id -u):$(id -g) -v ${PWD}/:/app -w /app node npm install
-	docker-compose up fantasydb fantasy-calendar php fcredis fantasy-calendar-composer-install
+	docker-compose up
 
 local-hot:
-	docker-compose up fantasydb fantasy-calendar php fcredis fantasy-calendar-composer-install fantasy-calendar-npm-install
+	FC_WEB_PORT=9987 FC_BROWSERSYNC_PORT=9980 FC_BROWSERSYNC=true docker-compose up
