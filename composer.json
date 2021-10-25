@@ -1,10 +1,17 @@
 {
-    "name": "laravel/laravel",
+    "name": "fantasycalendar/fantasy-calendar",
     "type": "project",
-    "description": "The Laravel Framework.",
+    "description": "The world's best tool for creating and tracking calendars in your fantasy world.",
     "keywords": [
-        "framework",
-        "laravel"
+        "fantasy",
+        "calendar",
+        "dnd",
+        "dungeons",
+        "dragons",
+        "novel",
+        "fiction",
+        "calendaring",
+        "worldbuilding"
     ],
     "license": "MIT",
     "require": {
