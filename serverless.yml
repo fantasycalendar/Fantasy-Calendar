@@ -262,7 +262,7 @@ resources:
               OriginPath: "/${opt:stage, 'dev'}"
               CustomOriginConfig:
                 OriginProtocolPolicy: 'https-only' # API Gateway only supports HTTPS
-            OriginCustomHeaders:
+              OriginCustomHeaders:
                 - HeaderName: 'X-Forwarded-Host'
                   HeaderValue: ${self:custom.alias}
             # The assets (S3)
