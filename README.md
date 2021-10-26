@@ -10,40 +10,43 @@ Well, whether you're a GM looking to track the events of a long-running Forgotte
 
 Fantasy-Calendar seeks to do it all, whether you're creating your own complicated calendar with tons of interesting edge-cases, or using presets such as the Forgotten Realms, Eberron, or Exandria for simple time-keeping.
 
-This repository is for the yet-unreleased 2.0 update.
-
 ## Run Using Docker
-We recommend development using [Docker](https://www.docker.com/). Just clone this repo somewhere, `cd` into it, and start it up:
-```bash
-docker-compose up
+We recommend development using [Docker](https://www.docker.com/), as it's what we use and it makes things like setting up the PHP environment a breeze. As long as you already have Docker installed, actually getting up and running is pretty straightforward. First you'll want to run:
+
+```shell
+$ make
 ```
 
-That will create four running containers: 
+That runs the default `initialize_dev` entry in FC's `Makefile`, which:
+- Copies the default .env to the appropriate location
+- Builds all of FC's container images
+- Installs `npm` dependencies
+- Installs `composer` dependencies
+- Starts docker containers
+- Runs `artisan migrate`
+- Stops docker containers
+
+We've also provided a handy `aliases.sh` to make some common tasks/aliases/etc., easier. So, after you've run `make`, we recommend `source aliases.sh`. I'd list all the aliases here, but ... just go read the file, it's super straightforward.
+
+### The Containers
+The default `docker-compose up` will create quite a few containers:
 
 |Container|Purpose|
 |---|-------|
-| `fc-mariadb`| MySQL-compatible database, configured to import `/setup/database.sql` .|
-| `fantasy_calendar`                  | nginx web server, configured to appropriately handle traffic between Laravel and non-Laravel pages.|
+| `fc-mariadb`| MariaDB, configured to create a default database .|
+| `fc-bref-web`                  | nginx web server, configured to appropriately.|
 | `fantasy_calendar_php`              | An extended `php-fpm`  with PDO and composer installed, as well as some default environment variables for a docker setup.|
-| `fantasy-calendar-composer-install` | This is a once-run, randomly-named container that does one thing: runs `composer install` . This makes it so that running a simple `docker-compose up`  or `docker-compose up -d`  any time you pull the latest version of this repo will make sure you have the latest versions of any composer-managed packages.|
 |`selenium` | This is a headless Chrome install used for integration tests |
+|`fcredis`| A [Redis](https://redis.io/) container, used for caching and queues |
+| `fantasy-calendar-composer-install` | This is a once-run, randomly-named container that does one thing: runs `composer install` . This makes it so that running a simple `docker-compose up`  or `docker-compose up -d`  any time you pull the latest version of this repo will make sure you have the latest versions of any composer-managed packages.|
+|`npm`| This runs `npm run dev-install-watch`, which installs deps and automatically rebuilds assets as they change. |
+|`mailhog`| Available on `localhost:8025`, Mailhog captures outgoing mail. |
 
-It may take a moment to build, but once things have settled down from that, you should be able to run `docker exec -it fantasy_calendar_php php artisan migrate` and wait for the migrations to finish. Eventually this will be done automatically.
 
-If everything has gone smoothly, you should have a functional development environment available at http://localhost:9980/.
+If everything has gone smoothly, after `make` and `docker-compose up`, you should have a functional development environment available at http://localhost:9980/.
 
 ## Setting up your own environment
-If you wish to set up your own non-Docker environment, first import `/setup/database.sql` to a MySQL database. 
-
-That will setup a basic database structure¹, as well as seed it with a development account: Username "Admin" with password "Password1".
-
-Once your basic database is in place, copy `.env.example` to `.env`, and fill it with the appropriate data for your environment.
-
-If your database setup and `.env` information is correct, then you should be ready to run `php artisan migrate`. [More info](https://laravel.com/docs/7.x/migrations)
-
-You'll need all the [usual extensions](https://laravel.com/docs/7.x/installation#server-requirements) for a Laravel application, but if you're avoiding Docker then you probably already know that.
-
-    [1] This database will still need to be brought up-to-date using Laravel migrations.
+Fantasy Calendar is just a Laravel app. So you'll need the [usual installation process](https://laravel.com/docs/7.x/installation) for a Laravel application, along with two extra PHP extensions: `imagick` and `gmp`.
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
