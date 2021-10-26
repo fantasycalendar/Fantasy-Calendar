@@ -36,6 +36,20 @@ services:
       - ./cache:/var/task/cache
     user: "1000:1000"
 
+  queue-worker:
+    container_name: fc_queue_worker
+    image: fc-bref-php
+    depends_on:
+      - php
+    build:
+      context: .
+      dockerfile: setup/php/php.Dockerfile
+    volumes:
+      - ./:/var/task
+      - ./cache:/var/task/cache
+    user: "1000:1000"
+    command: ["php", "artisan", "queue:work"]
+
   selenium:
     image: selenium/standalone-chrome
     shm_size: '1gb'
