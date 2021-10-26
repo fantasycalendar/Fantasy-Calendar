@@ -48,7 +48,7 @@ services:
       - ./:/var/task
       - ./cache:/var/task/cache
     user: "1000:1000"
-    command: ["php", "artisan", "queue:work"]
+    command: ["php", "artisan", "queue:listen"]
 
   selenium:
     image: selenium/standalone-chrome
