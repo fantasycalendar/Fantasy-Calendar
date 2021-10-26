@@ -121,10 +121,10 @@ functions:
         handler: public/index.php
         timeout: 28 # in seconds (API Gateway has a timeout of 29 seconds)
         layers:
-            - ${bref:layer.php-74-fpm}
-            - ${bref:extra.redis-php-74}
-            - ${bref:extra.gmp-php-74}
-            - ${bref:extra.imagick-php-74}
+            - ${bref:layer.php-80-fpm}
+            - ${bref:extra.redis-php-80}
+            - ${bref:extra.gmp-php-80}
+            - ${bref:extra.imagick-php-80}
         events:
             -   http: 'ANY /'
             -   http: 'ANY /{proxy+}'
@@ -136,10 +136,10 @@ functions:
         handler: artisan
         timeout: 120 # in seconds
         layers:
-            - ${bref:layer.php-74} # PHP
-            - ${bref:extra.gmp-php-74}
-            - ${bref:extra.redis-php-74}
-            - ${bref:extra.imagick-php-74}
+            - ${bref:layer.php-80} # PHP
+            - ${bref:extra.gmp-php-80}
+            - ${bref:extra.redis-php-80}
+            - ${bref:extra.imagick-php-80}
             - ${bref:layer.console} # The "console" layer
         vpc:
           securityGroupIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/security_group_ids}"] }
@@ -147,10 +147,10 @@ functions:
     worker:
       handler: worker.php
       layers:
-        - ${bref:layer.php-74} # PHP
-        - ${bref:extra.gmp-php-74}
-        - ${bref:extra.redis-php-74}
-        - ${bref:extra.imagick-php-74}
+        - ${bref:layer.php-80} # PHP
+        - ${bref:extra.gmp-php-80}
+        - ${bref:extra.redis-php-80}
+        - ${bref:extra.imagick-php-80}
       events:
         -   sqs:
               arn:
@@ -163,10 +163,10 @@ functions:
       timeout: 6
       handler: artisan
       layers:
-        - ${bref:layer.php-74} # PHP runtime
-        - ${bref:extra.gmp-php-74}
-        - ${bref:extra.redis-php-74}
-        - ${bref:extra.imagick-php-74}
+        - ${bref:layer.php-80} # PHP runtime
+        - ${bref:extra.gmp-php-80}
+        - ${bref:extra.redis-php-80}
+        - ${bref:extra.imagick-php-80}
         - ${bref:layer.console} # Console layer
       events:
         - schedule:
