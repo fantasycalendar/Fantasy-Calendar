@@ -109,6 +109,7 @@ package:
         - .git/**
         - .idea/**
         - setup/**
+        - cache/**
         - node_modules/**
         - public/storage/**
         - public/vendor/sharp/fonts/*
