@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "17d9dc11a77c6ac996c36b2c3b3c31ea",
+    "content-hash": "effed773998f8eb82760883040f68d87",
     "packages": [
         {
             "name": "async-aws/core",
@@ -182,16 +182,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.199.3",
+            "version": "3.199.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "132a1148ebb63d04023837bcf9a36f49b308a0bd"
+                "reference": "587c7765164b22b69b257d48751e5d1662eb0fff"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/132a1148ebb63d04023837bcf9a36f49b308a0bd",
-                "reference": "132a1148ebb63d04023837bcf9a36f49b308a0bd",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/587c7765164b22b69b257d48751e5d1662eb0fff",
+                "reference": "587c7765164b22b69b257d48751e5d1662eb0fff",
                 "shasum": ""
             },
             "require": {
@@ -267,9 +267,9 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.199.3"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.199.6"
             },
-            "time": "2021-10-25T18:17:28+00:00"
+            "time": "2021-10-28T18:20:18+00:00"
         },
         {
             "name": "barryvdh/laravel-ide-helper",
@@ -671,31 +671,33 @@
         },
         {
             "name": "code16/sharp",
-            "version": "v5.4.6",
+            "version": "v6.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/code16/sharp.git",
-                "reference": "a3946b8f42be602096b148babd258d6525aa342f"
+                "reference": "6abdaa87fcea34c2a0dc5b31b6fdbb0a8c14f688"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/code16/sharp/zipball/a3946b8f42be602096b148babd258d6525aa342f",
-                "reference": "a3946b8f42be602096b148babd258d6525aa342f",
+                "url": "https://api.github.com/repos/code16/sharp/zipball/6abdaa87fcea34c2a0dc5b31b6fdbb0a8c14f688",
+                "reference": "6abdaa87fcea34c2a0dc5b31b6fdbb0a8c14f688",
                 "shasum": ""
             },
             "require": {
                 "erusev/parsedown": "^1.7",
-                "intervention/image": "^2.4",
-                "laravel/framework": "^6.0|^7.0|^8.0",
-                "php": ">=7.2.0",
+                "intervention/image": "^2.5",
+                "laravel/framework": "^7.0|^8.0",
+                "php": ">=7.4.0",
                 "spatie/image-optimizer": "^1.2"
             },
             "require-dev": {
+                "brianium/paratest": "^6.3",
                 "dms/phpunit-arraysubset-asserts": "^0.1.0|^0.2.0",
                 "doctrine/dbal": "~2.5",
                 "mockery/mockery": "^1.3.1",
-                "orchestra/testbench": "4.*|5.*|6.*",
-                "phpunit/phpunit": "~8.0|^8.5|^9.3"
+                "nunomaduro/collision": "^5.4",
+                "orchestra/testbench": "5.*|6.*",
+                "phpunit/phpunit": "^8.5|^9.3"
             },
             "type": "library",
             "extra": {
@@ -727,22 +729,22 @@
             "description": "Let's call it a Laravel Content Management Framework",
             "support": {
                 "issues": "https://github.com/code16/sharp/issues",
-                "source": "https://github.com/code16/sharp/tree/v5.4.6"
+                "source": "https://github.com/code16/sharp/tree/v6.5.1"
             },
-            "time": "2021-06-11T10:42:22+00:00"
+            "time": "2021-10-07T17:15:45+00:00"
         },
         {
             "name": "composer/ca-bundle",
-            "version": "1.2.11",
+            "version": "1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/ca-bundle.git",
-                "reference": "0b072d51c5a9c6f3412f7ea3ab043d6603cb2582"
+                "reference": "679333688725c7dd043ff35c547100ccf512f051"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/ca-bundle/zipball/0b072d51c5a9c6f3412f7ea3ab043d6603cb2582",
-                "reference": "0b072d51c5a9c6f3412f7ea3ab043d6603cb2582",
+                "url": "https://api.github.com/repos/composer/ca-bundle/zipball/679333688725c7dd043ff35c547100ccf512f051",
+                "reference": "679333688725c7dd043ff35c547100ccf512f051",
                 "shasum": ""
             },
             "require": {
@@ -789,7 +791,7 @@
             "support": {
                 "irc": "irc://irc.freenode.org/composer",
                 "issues": "https://github.com/composer/ca-bundle/issues",
-                "source": "https://github.com/composer/ca-bundle/tree/1.2.11"
+                "source": "https://github.com/composer/ca-bundle/tree/1.3.0"
             },
             "funding": [
                 {
@@ -805,7 +807,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-09-25T20:32:43+00:00"
+            "time": "2021-10-27T07:42:23+00:00"
         },
         {
             "name": "composer/composer",
@@ -3148,16 +3150,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v8.67.0",
+            "version": "v8.68.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "fc52acafd069aedc079bf8f17d1a4af4ef489b1e"
+                "reference": "abe985ff1fb82dd04aab03bc1dc56e83fe61a59f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/fc52acafd069aedc079bf8f17d1a4af4ef489b1e",
-                "reference": "fc52acafd069aedc079bf8f17d1a4af4ef489b1e",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/abe985ff1fb82dd04aab03bc1dc56e83fe61a59f",
+                "reference": "abe985ff1fb82dd04aab03bc1dc56e83fe61a59f",
                 "shasum": ""
             },
             "require": {
@@ -3249,6 +3251,7 @@
                 "aws/aws-sdk-php": "Required to use the SQS queue driver, DynamoDb failed job storage and SES mail driver (^3.198.1).",
                 "brianium/paratest": "Required to run tests in parallel (^6.0).",
                 "doctrine/dbal": "Required to rename columns and drop SQLite columns (^2.13.3|^3.1.2).",
+                "ext-bcmath": "Required to use the multiple_of validation rule.",
                 "ext-ftp": "Required to use the Flysystem FTP driver.",
                 "ext-gd": "Required to use Illuminate\\Http\\Testing\\FileFactory::image().",
                 "ext-memcached": "Required to use the memcache cache driver.",
@@ -3315,7 +3318,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2021-10-22T13:27:12+00:00"
+            "time": "2021-10-27T12:31:46+00:00"
         },
         {
             "name": "laravel/serializable-closure",
@@ -9604,16 +9607,16 @@
         },
         {
             "name": "facade/ignition",
-            "version": "2.15.0",
+            "version": "2.16.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/facade/ignition.git",
-                "reference": "3ee6e94815462bcf09bca0efc1c9069685df8da3"
+                "reference": "23400e6cc565c9dcae2c53704b4de1c4870c0697"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/facade/ignition/zipball/3ee6e94815462bcf09bca0efc1c9069685df8da3",
-                "reference": "3ee6e94815462bcf09bca0efc1c9069685df8da3",
+                "url": "https://api.github.com/repos/facade/ignition/zipball/23400e6cc565c9dcae2c53704b4de1c4870c0697",
+                "reference": "23400e6cc565c9dcae2c53704b4de1c4870c0697",
                 "shasum": ""
             },
             "require": {
@@ -9677,7 +9680,7 @@
                 "issues": "https://github.com/facade/ignition/issues",
                 "source": "https://github.com/facade/ignition"
             },
-            "time": "2021-10-11T15:24:06+00:00"
+            "time": "2021-10-28T11:47:23+00:00"
         },
         {
             "name": "facade/ignition-contracts",

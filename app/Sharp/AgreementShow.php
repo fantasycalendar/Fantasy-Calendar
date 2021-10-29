@@ -24,7 +24,7 @@ class AgreementShow extends SharpShow
 
         return $this
             ->setCustomTransformer(
-                "content", 
+                "content",
                 new MarkdownAttributeTransformer()
             )->transform($agreement);
     }
@@ -34,7 +34,7 @@ class AgreementShow extends SharpShow
      *
      * @return void
      */
-    public function buildShowFields()
+    public function buildShowFields(): void
     {
          $this->addField(
             SharpShowTextField::make("content")
@@ -46,7 +46,7 @@ class AgreementShow extends SharpShow
      *
      * @return void
      */
-    public function buildShowLayout()
+    public function buildShowLayout(): void
     {
          $this->addSection('content', function(ShowLayoutSection $section) {
               $section->addColumn(12, function(ShowLayoutColumn $column) {
@@ -55,7 +55,7 @@ class AgreementShow extends SharpShow
          });
     }
 
-    function buildShowConfig()
+    function buildShowConfig(): void
     {
         //
     }

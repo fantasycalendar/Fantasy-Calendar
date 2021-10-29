@@ -34,7 +34,7 @@ class CalendarShow extends SharpShow
      *
      * @return void
      */
-    public function buildShowFields()
+    public function buildShowFields(): void
     {
         $this->addField(
             SharpShowTextField::make("name")
@@ -54,7 +54,7 @@ class CalendarShow extends SharpShow
      *
      * @return void
      */
-    public function buildShowLayout()
+    public function buildShowLayout(): void
     {
         $this->addSection('Calendar Info', function(ShowLayoutSection $section) {
             $section->addColumn(6, function(ShowLayoutColumn $column) {
@@ -73,7 +73,7 @@ class CalendarShow extends SharpShow
         });
     }
 
-    function buildShowConfig()
+    function buildShowConfig(): void
     {
         //
     }

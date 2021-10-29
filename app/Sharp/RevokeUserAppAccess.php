@@ -20,7 +20,7 @@ class RevokeUserAppAccess extends InstanceCommand
         return User::findOrFail($instanceId)->migrated == 1;
     }
 
-    public function confirmationText()
+    public function confirmationText(): string
     {
         return "Are you sure you want to revoke this user's app access?";
     }

@@ -25,7 +25,7 @@ class GiveUserAppAccess extends InstanceCommand
         return User::findOrFail($instanceId)->migrated == 0;
     }
 
-    public function confirmationText()
+    public function confirmationText(): string
     {
         return "Are you sure you want to give this user app access?";
     }
