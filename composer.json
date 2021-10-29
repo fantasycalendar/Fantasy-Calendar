@@ -28,7 +28,7 @@
         "fideloper/proxy": "^4.0",
         "graham-campbell/markdown": "^13.1",
         "guzzlehttp/guzzle": "^7.0.1",
-        "intervention/image": "^2.6",
+        "intervention/image": "^2.7",
         "laravel/cashier": "^12.3.1",
         "laravel/framework": "^8.0",
         "laravel/socialite": "^5.2",
