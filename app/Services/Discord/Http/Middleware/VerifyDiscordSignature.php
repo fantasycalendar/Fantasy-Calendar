@@ -3,6 +3,7 @@
 
 namespace App\Services\Discord\Http\Middleware;
 
+use App\Services\Discord\Commands\Command\Response;
 use Closure;
 
 class VerifyDiscordSignature
@@ -25,6 +26,10 @@ class VerifyDiscordSignature
 
         if(!$verified) {
             throw new \Exception('Invalid signature.');
+        }
+
+        if(app()->isDownForMaintenance()) {
+            return new Response(json_decode(cache()->get(config('app.maintenance_key')), true)['message'] ?? "We'll be right back.");
         }
 
         return $next($request);
