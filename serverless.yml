@@ -79,8 +79,6 @@ provider:
           Resource: "*"
 
 custom:
-  bref:
-    separateVendor: true
   stage: ${opt:stage, 'dev'}
   alias: ${self:custom.domain.${self:custom.stage}}
   domain:
