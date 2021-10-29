@@ -45,6 +45,10 @@ class CheckForMaintenanceMode extends Middleware
                 return $next($request);
             }
 
+            if($request->is('calendars/*.png') || $request->is('calendars/*.jpg')) {
+                return response()->file(base_path('resources/images/discord/maintenance-warning.png'), ['Content-Type' => 'image/png']);
+            }
+
             if($request->is('discord/hooks')) {
                 logger()->info($request->fullUrl());
                 return response(
