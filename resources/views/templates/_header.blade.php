@@ -29,7 +29,7 @@
         <ul class="navbar-nav">
             @auth
                 @if(Auth::user()->isAdmin())
-                    <li class="nav-item"><a href="{{ route('code16.sharp.home') }}" class="nav-link">Admin Panel</a></li>
+                    <li class="nav-item"><a href="{{ route('code16.sharp.home') }}" class="nav-link" target="_blank">Admin Panel</a></li>
                 @endif
 
                 @unless(Auth::user()->isPremium())

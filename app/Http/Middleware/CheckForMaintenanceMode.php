@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\Discord\Commands\Command\Response;
 use Cache;
 use Closure;
 use Illuminate\Foundation\Http\Exceptions\MaintenanceModeException;
@@ -42,6 +43,13 @@ class CheckForMaintenanceMode extends Middleware
             if ($this->hasValidBypassCookie($request, $data) ||
                 $this->inExceptArray($request)) {
                 return $next($request);
+            }
+
+            if($request->is('discord/hooks')) {
+                logger()->info($request->fullUrl());
+                return response(
+                    Response::make($data['message'])->getMessage()
+                );
             }
 
             if (isset($data['redirect'])) {

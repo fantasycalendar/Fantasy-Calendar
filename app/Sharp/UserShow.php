@@ -139,12 +139,6 @@ class UserShow extends SharpShow
                 ->hideFilterWithValue("user", function($instanceId) {
                     return $instanceId;
                 })
-        )->addField(
-            SharpShowEntityListField::make('old_calendars', 'old_calendars')
-                ->setLabel('Old Calendars')
-                ->hideFilterWithValue("user", function($instanceId) {
-                    return $instanceId;
-                })
         );
     }
 
@@ -197,8 +191,7 @@ class UserShow extends SharpShow
              })->addColumn(6, function(ShowLayoutColumn $column) {
                  $column->withSingleField("last_discord_command");
              });
-         })->addEntityListSection('user_calendars')
-         ->addEntityListSection('old_calendars');
+         })->addEntityListSection('user_calendars');
     }
 
     function buildShowConfig(): void

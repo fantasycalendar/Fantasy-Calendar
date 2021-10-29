@@ -75,8 +75,7 @@ class CalendarList extends SharpEntityList
             ->addInstanceCommand("edit", EditCalendar::class)
             ->addInstanceCommand("view", ViewCalendar::class)
             ->addInstanceCommand("export", VisitExport::class)
-            ->addInstanceCommand("promote", PromoteToPreset::class)
-            ->addInstanceCommand("reconvert", ReconvertFromLegacy::class);
+            ->addInstanceCommand("promote", PromoteToPreset::class);
     }
 
     /**
