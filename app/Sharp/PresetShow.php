@@ -30,7 +30,7 @@ class PresetShow extends SharpShow
      *
      * @return void
      */
-    public function buildShowFields()
+    public function buildShowFields(): void
     {
          $this->addField(
             SharpShowTextField::make("name")
@@ -45,7 +45,7 @@ class PresetShow extends SharpShow
      *
      * @return void
      */
-    public function buildShowLayout()
+    public function buildShowLayout(): void
     {
 
         $this->addSection('Calendar Info', function(ShowLayoutSection $section) {
@@ -59,7 +59,7 @@ class PresetShow extends SharpShow
         });
     }
 
-    function buildShowConfig()
+    function buildShowConfig(): void
     {
         //
     }

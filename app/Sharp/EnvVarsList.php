@@ -13,7 +13,7 @@ class EnvVarsList extends SharpEntityList
     *
     * @return void
     */
-    public function buildListDataContainers()
+    public function buildListDataContainers(): void
     {
         $this->addDataContainer(
             EntityListDataContainer::make('key')
@@ -31,7 +31,7 @@ class EnvVarsList extends SharpEntityList
     *
     * @return void
     */
-    public function buildListLayout()
+    public function buildListLayout(): void
     {
         $this->addColumn('key', 6, 12);
         $this->addColumn('value', 6, 12);
@@ -42,7 +42,7 @@ class EnvVarsList extends SharpEntityList
     *
     * @return void
     */
-    public function buildListConfig()
+    public function buildListConfig(): void
     {
         //
     }
@@ -70,6 +70,6 @@ class EnvVarsList extends SharpEntityList
 
 //        dd($vars);
 
-        return $vars;
+        return $vars->toArray();
     }
 }

@@ -80,7 +80,7 @@ class UserShow extends SharpShow
      *
      * @return void
      */
-    public function buildShowFields()
+    public function buildShowFields(): void
     {
         $this->addField(
             SharpShowTextField::make("username")
@@ -153,7 +153,7 @@ class UserShow extends SharpShow
      *
      * @return void
      */
-    public function buildShowLayout()
+    public function buildShowLayout(): void
     {
          $this->addSection('Personal Info', function(ShowLayoutSection $section) {
               $section->addColumn(3, function(ShowLayoutColumn $column) {
@@ -201,11 +201,9 @@ class UserShow extends SharpShow
          ->addEntityListSection('old_calendars');
     }
 
-    function buildShowConfig()
+    function buildShowConfig(): void
     {
         $this
-            ->addInstanceCommand("elevate", GiveUserAppAccess::class)
-            ->addInstanceCommand("revoke", RevokeUserAppAccess::class)
             ->addInstanceCommand("impersonate", LoginAsUser::class)
             ->addInstanceCommand("reset_password", SendUserResetPassword::class)
             ->addInstanceCommand("view_on_stripe", VisitStripeCustomer::class);

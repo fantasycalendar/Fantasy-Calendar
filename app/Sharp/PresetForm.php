@@ -25,7 +25,7 @@ class PresetForm extends SharpForm
      * @param array $data
      * @return mixed the instance id
      */
-    public function update($id, array $data)
+    public function update($id, array $data): mixed
     {
         return Preset::find($id)->update($data);
     }
@@ -33,9 +33,9 @@ class PresetForm extends SharpForm
     /**
      * @param $id
      */
-    public function delete($id)
+    public function delete($id): void
     {
-        return Preset::find($id)->delete();
+        Preset::find($id)->delete();
     }
 
     /**
@@ -43,7 +43,7 @@ class PresetForm extends SharpForm
      *
      * @return void
      */
-    public function buildFormFields()
+    public function buildFormFields(): void
     {
         $this->addField(
             SharpFormTextField::make('name')
@@ -59,7 +59,7 @@ class PresetForm extends SharpForm
      *
      * @return void
      */
-    public function buildFormLayout()
+    public function buildFormLayout(): void
     {
         $this->addColumn(6, function(FormLayoutColumn $column) {
             $column->withSingleField('name');
