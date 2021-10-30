@@ -25,6 +25,11 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = []) {
         },
 
         embed: function() {
+            if(this.iframe) {
+                console.log("Already embedded");
+
+                return;
+            }
             let placementElement = document.createElement('div');
             let replaceElement = this.config.element
             replaceElement.parentNode.insertBefore(placementElement, replaceElement);
@@ -40,10 +45,26 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = []) {
             iframe.setAttribute('scrolling', 'no');
 
             this.config.element.replaceWith(iframe);
+            this.iframe = iframe;
+        },
+
+        remoteAction: function(action, params) {
+            this.passMessage({
+                action: action,
+                params: params,
+                source: 'fantasy-calendar-embed'
+            });
         },
 
         passMessage: function(message) {
-            window.postMessage(message, '*')
+            if(this.iframe) {
+                this.iframe.contentWindow.postMessage(message, '*')
+            }
+        },
+
+        test: function() {
+            console.log("Sending a message");
+            this.remoteAction('notify', "This is a message");
         }
     }.constructor(params);
 }

@@ -2,6 +2,10 @@
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+        <script src="//unpkg.com/alpinejs" defer></script>
+        <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+
         <style>
             * {
                 -webkit-box-sizing: border-box;
@@ -50,9 +54,15 @@
                 image_holder.replaceWith(image);
             });
 
+            function doNotify(params) {
+
+            }
+
             window.onmessage = function(event) {
-                console.log(event.data);
-                console.log("We got a message");
+                // $.notify("We got a message:" + event.data, "success");
+                if(typeof event.data === 'object' && event.data.source === 'fantasy-calendar-embed') {
+
+                }
             }
         </script>
     </head>
@@ -61,6 +71,11 @@
             <div class="image_container">
                 <div id="image_holder"></div>
             </div>
+        </div>
+        <div class="notifications_container absolute right-0 bottom-0 w-full h-full flex flex-column content-end" x-data="{ notifications: [] }" @message.window="if(typeof event.data === 'object' && event.data.action === 'notify') { notifications.push(event.data.params); console.log(notifications) }">
+            <template x-for="notification in notifications">
+                <div class="border rounded mt-4 bg-gray-500 text-white" x-text="notification.text"></div>
+            </template>
         </div>
     </body>
 </html>

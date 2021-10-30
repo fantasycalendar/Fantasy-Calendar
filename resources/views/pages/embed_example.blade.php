@@ -44,23 +44,34 @@
                 max-height: 400px;
                 max-width: 600px;
             }
+            #fantasy-calendar-embed {
+                background-color: #323232;
+                color: #f2f2f2;
+                width: 100%;
+                height: 100%;
+                display: grid;
+                place-items: center;
+            }
         </style>
         <script src="{{ asset('/js/embed.js') }}"></script>
     </head>
     <body>
         <div class="image_grid" x-data="FantasyCalendar({
                 hash: 'c9602f8a2a50009fbe06c01ce1d9e835',
-                embedNow: false,
                 element: 'fantasy-calendar-embed',
             })">
             <div class="image_container">
-                <div id="fantasy-calendar-embed"></div>
+                <div id="fantasy-calendar-embed">
+                    The embed will appear here.
+                </div>
             </div>
-            <div class="btn btn-primary" @click="embed">
-                <i class="fa fa-external-link"></i> Embed
-            </div>
-            <div class="alert alert-warning" @click="console.log(config.element)">
-                Do the thing
+            <div class="btn btn-group">
+                <div class="btn btn-primary" @click="embed">
+                    <i class="fa fa-external-link"></i> Embed
+                </div>
+                <div class="btn btn-primary" @click="test">
+                    Test
+                </div>
             </div>
         </div>
     </body>
