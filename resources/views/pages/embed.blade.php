@@ -49,6 +49,11 @@
 
                 image_holder.replaceWith(image);
             });
+
+            window.onmessage = function(event) {
+                console.log(event.data);
+                console.log("We got a message");
+            }
         </script>
     </head>
     <body>

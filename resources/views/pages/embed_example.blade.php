@@ -2,6 +2,8 @@
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="//unpkg.com/alpinejs" defer></script>
+        <link rel="stylesheet" href="{{ asset('css/app.css') }}">
         <style>
             * {
                 -webkit-box-sizing: border-box;
@@ -46,13 +48,19 @@
         <script src="{{ asset('/js/embed.js') }}"></script>
     </head>
     <body>
-        <div class="image_grid">
+        <div class="image_grid" x-data="FantasyCalendar({
+                hash: 'c9602f8a2a50009fbe06c01ce1d9e835',
+                embedNow: false,
+                element: 'fantasy-calendar-embed',
+            })">
             <div class="image_container">
-                <script>
-                    FantasyCalendar({
-                        hash: 'c9602f8a2a50009fbe06c01ce1d9e835'
-                    });
-                </script>
+                <div id="fantasy-calendar-embed"></div>
+            </div>
+            <div class="btn btn-primary" @click="embed">
+                <i class="fa fa-external-link"></i> Embed
+            </div>
+            <div class="alert alert-warning" @click="console.log(config.element)">
+                Do the thing
             </div>
         </div>
     </body>
