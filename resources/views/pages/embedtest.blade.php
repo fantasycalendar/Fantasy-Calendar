@@ -45,7 +45,7 @@
                 let vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
                 let vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
 
-                image.setAttribute('src', "{{ route('calendars.image', ['calendar' => 'f10678ac43a29c7c93387409a54a865c', 'ext' => 'png']) }}?width=" + vw + "&height=" + vh)
+                image.setAttribute('src', "{{ route('calendars.image', ['calendar' => $calendar, 'ext' => 'png']) }}?width=" + vw + "&height=" + vh)
 
                 image_holder.replaceWith(image);
             });

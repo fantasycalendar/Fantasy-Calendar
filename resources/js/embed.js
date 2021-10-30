@@ -1,4 +1,9 @@
 window.FantasyCalendar = window.FantasyCalendar || function FantasyCalendarEmbed(params = []) {
+    if(!params.hash) {
+        console.log("FantasyCalendar error: No hash set.");
+        return;
+    }
+
     let placementElement = document.createElement('div');
     let callingScriptTag = document.scripts[document.scripts.length - 1];
     callingScriptTag.parentNode.insertBefore(placementElement, callingScriptTag);
@@ -7,7 +12,7 @@ window.FantasyCalendar = window.FantasyCalendar || function FantasyCalendarEmbed
 
     let config = {
         element: replaceElement,
-        url: 'http://fantasy-calendar.test:9980/embedtest',
+        url: 'http://fantasy-calendar.test:9980/embedtest/' + params.hash,
         width: params.width ?? replaceElement.parentElement.offsetWidth,
         height: params.height ?? replaceElement.parentElement.offsetHeight,
     }
