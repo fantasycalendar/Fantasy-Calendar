@@ -62,6 +62,7 @@ mix.copy('resources/js/webworkers/worker_event_tester.js', 'public/js/webworkers
 
 // Misc
 mix.copy('resources/js/login.js', 'public/js');
+mix.js('resources/js/embed.js', 'public/js');
 
 // Vendor
 mix.copy('node_modules/trumbowyg/dist/ui/icons.svg', 'public/images');

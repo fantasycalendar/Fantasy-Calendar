@@ -15,6 +15,10 @@ use Intervention\Image\Facades\Image;
 |
 */
 
+Route::get('/embedtest', function(){
+    return view('pages.embedtest');
+});
+
 Route::get('/imagetest', function(){
     return view('pages.imagetest');
 });
