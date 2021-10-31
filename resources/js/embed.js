@@ -50,7 +50,7 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = []) {
 
         remoteAction: function(action, params) {
             this.passMessage({
-                action: action,
+                does: action,
                 params: params,
                 source: 'fantasy-calendar-embed'
             });
@@ -64,7 +64,20 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = []) {
 
         test: function() {
             console.log("Sending a message");
-            this.remoteAction('notify', "This is a message");
+            this.remoteAction('toastify', {
+                type: 'error',
+                message: "This is a message"
+            });
+
+            this.remoteAction('toastify', {
+                type: 'success',
+                message: "This is a message"
+            });
+
+            this.remoteAction('toastify', {
+                type: '',
+                message: "This is a message"
+            });
         }
     }.constructor(params);
 }

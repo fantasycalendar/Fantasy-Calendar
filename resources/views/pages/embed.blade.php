@@ -54,14 +54,33 @@
                 image_holder.replaceWith(image);
             });
 
-            function doNotify(params) {
-
+            function toastify(params) {
+                console.log("Dispatching notify");
+                window.dispatchEvent(new CustomEvent('notify', {detail: params}));
             }
 
             window.onmessage = function(event) {
                 // $.notify("We got a message:" + event.data, "success");
                 if(typeof event.data === 'object' && event.data.source === 'fantasy-calendar-embed') {
+                    console.log("Told to do " + event.data.does + " with " + JSON.stringify(event.data.params))
+                    window[event.data.does](event.data.params);
+                }
+            }
 
+            window.notificationStack = {
+                init: function() {
+                    this.notifications = [];
+                },
+
+                toast: function(message) {
+                    console.log(message)
+                    this.notifications.push(message);
+
+                    var me = this;
+
+                    setTimeout(function(){
+                        me.notifications.pop();
+                    }, 5000);
                 }
             }
         </script>
@@ -72,10 +91,20 @@
                 <div id="image_holder"></div>
             </div>
         </div>
-        <div class="notifications_container absolute right-0 bottom-0 w-full h-full flex flex-column content-end" x-data="{ notifications: [] }" @message.window="if(typeof event.data === 'object' && event.data.action === 'notify') { notifications.push(event.data.params); console.log(notifications) }">
-            <template x-for="notification in notifications">
-                <div class="border rounded mt-4 bg-gray-500 text-white" x-text="notification.text"></div>
-            </template>
+
+        <div x-data="notificationStack" x-init="init" class="fixed bottom-0 flex items-end px-4 py-6 sm:p-6 sm:items-start" @notify.window="toast($event.detail)">
+            <div class="w-full flex flex-col space-y-4 items-end">
+                <template x-for="notification in notifications">
+                    <div class="bg-gray-100 border border-gray-400 text-gray-700 rounded relative" style="box-shadow: 0 10px 15px -3px  rgba(255, 255, 255, 0.1), 0 1px 2px 0 rgba(255, 255, 255, 0.06);" :class="{
+                        'bg-red-100 border-red-400 text-red-700': notification.type == 'error',
+                        'bg-green-100 border-green-400 text-green-700': notification.type == 'success'
+                    }">
+                        <div class="py-2 px-4">
+                            <p class="flex-1 text-sm font-medium" x-text="notification.message"></p>
+                        </div>
+                    </div>
+                </template>
+            </div>
         </div>
     </body>
 </html>
