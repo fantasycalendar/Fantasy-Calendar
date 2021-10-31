@@ -9,7 +9,7 @@ class EmbedController extends Controller
 {
     public function embedCalendar(Calendar $calendar)
     {
-        \Debugbar::disable();
+//        \Debugbar::disable();
 
         return view('pages.embed', [
             'calendar' => $calendar

@@ -11,7 +11,7 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = []) {
 
             this.config = {
                 element: replaceElement,
-                url: 'http://fantasy-calendar.test:9980/embed/' + params.hash,
+                url: 'http://localhost:9980/embed/' + params.hash,
                 width: params.width ?? replaceElement.parentElement.offsetWidth,
                 height: params.height ?? replaceElement.parentElement.offsetHeight,
                 embedNow: params.embedNow ?? true
@@ -60,6 +60,16 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = []) {
             if(this.iframe) {
                 this.iframe.contentWindow.postMessage(message, '*')
             }
+        },
+
+        apitest: function() {
+            this.remoteAction('apiRequest', {
+                method: 'changeDate',
+                data: {
+                    unit: 'days',
+                    count: 5
+                }
+            })
         },
 
         test: function() {

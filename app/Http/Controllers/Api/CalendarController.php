@@ -61,7 +61,6 @@ class CalendarController extends Controller
 
     public function children(Calendar $calendar) {
         return $calendar->children;
-
     }
 
     public function owned(Calendar $calendar) {
@@ -116,6 +115,17 @@ class CalendarController extends Controller
         return [
             "dynamic_data" => $calendar->dynamic_data,
             "is_linked" => $calendar->isLinked()
+        ];
+    }
+
+    public function changeDate(Request $request, Calendar $calendar) {
+        $method = 'add'. ucfirst($request->input('unit'));
+        $count = $request->input('count');
+
+        $calendar->$method($count)->save();
+
+        return [
+            "new_date" => $calendar->current_date
         ];
     }
 

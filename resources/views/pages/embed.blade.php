@@ -59,6 +59,35 @@
                 window.dispatchEvent(new CustomEvent('notify', {detail: params}));
             }
 
+            function apiRequest(params) {
+                @guest
+                    toastify({
+                        type: 'error',
+                        message: 'You must be signed in for this to work!'
+                    });
+
+                    return;
+                @else
+                    let method = params.method;
+                    let data = params.data;
+                    let api_token = '{{ auth()->user()->api_token }}';
+                    fetch('/api/calendars/{{ $calendar->hash }}/' + method, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Success:', data);
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
+                @endguest
+            }
+
             window.onmessage = function(event) {
                 // $.notify("We got a message:" + event.data, "success");
                 if(typeof event.data === 'object' && event.data.source === 'fantasy-calendar-embed') {
@@ -95,7 +124,7 @@
         <div x-data="notificationStack" x-init="init" class="fixed bottom-0 flex items-end px-4 py-6 sm:p-6 sm:items-start" @notify.window="toast($event.detail)">
             <div class="w-full flex flex-col space-y-4 items-end">
                 <template x-for="notification in notifications">
-                    <div class="bg-gray-100 border border-gray-400 text-gray-700 rounded relative" style="box-shadow: 0 10px 15px -3px  rgba(255, 255, 255, 0.1), 0 1px 2px 0 rgba(255, 255, 255, 0.06);" :class="{
+                    <div class="bg-gray-100 border border-gray-400 text-gray-700 rounded relative" style="box-shadow: 0 10px 15px -3px rgba(255, 255, 255, 0.1), 0 1px 2px 0 rgba(255, 255, 255, 0.06);" :class="{
                         'bg-red-100 border-red-400 text-red-700': notification.type == 'error',
                         'bg-green-100 border-green-400 text-green-700': notification.type == 'success'
                     }">
