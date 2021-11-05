@@ -1,4 +1,4 @@
-window.FantasyCalendar = window.FantasyCalendar || function(params = []) {
+window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
     return {
         config: {},
         constructor: function(params) {
@@ -11,7 +11,7 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = []) {
 
             this.config = {
                 element: replaceElement,
-                url: 'http://localhost:9980/embed/' + params.hash,
+                url: 'https://fantasy-calendar.test/embed/' + params.hash,
                 width: params.width ?? replaceElement.parentElement.offsetWidth,
                 height: params.height ?? replaceElement.parentElement.offsetHeight,
                 embedNow: params.embedNow ?? true
@@ -30,6 +30,7 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = []) {
 
                 return;
             }
+
             let placementElement = document.createElement('div');
             let replaceElement = this.config.element
             replaceElement.parentNode.insertBefore(placementElement, replaceElement);
@@ -88,6 +89,10 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = []) {
                 type: '',
                 message: "This is a message"
             });
+        },
+
+        login_form: function() {
+            this.remoteAction('login_form', {});
         }
     }.constructor(params);
 }

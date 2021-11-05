@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+{{--        <link rel="stylesheet" href="{{ asset('css/app.css') }}">--}}
         <script src="//unpkg.com/alpinejs" defer></script>
         <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
 
@@ -54,51 +54,68 @@
                 image_holder.replaceWith(image);
             });
 
-            function toastify(params) {
-                console.log("Dispatching notify");
-                window.dispatchEvent(new CustomEvent('notify', {detail: params}));
+            window.onmessage = function(event) {
+                // $.notify("We got a message:" + event.data, "success");
+                if(typeof event.data === 'object' && event.data.source === 'fantasy-calendar-embed' && typeof window.embeddableActions[event.data.does] === "function") {
+                    console.log("Told to do " + event.data.does + " with " + JSON.stringify(event.data.params))
+                    window.embeddableActions[event.data.does](event.data.params);
+                }
             }
 
-            function apiRequest(params) {
-                @guest
-                    toastify({
-                        type: 'error',
-                        message: 'You must be signed in for this to work!'
-                    });
+            window.FCEmbed = {
+                show_login_form: false,
+                identity: "",
+                password: "",
+                api_token: "",
+                notifications: [],
+                init: function() {
+                    this.notifications = [];
+                    this.api_token = localStorage.getItem('api_token') ?? '';
+                    this.identity = localStorage.getItem('identity') ?? '';
+                },
 
-                    return;
-                @else
-                    let method = params.method;
-                    let data = params.data;
-                    let api_token = '{{ auth()->user()->api_token }}';
-                    fetch('/api/calendars/{{ $calendar->hash }}/' + method, {
+                show: function() {
+                    console.log("Show called!");
+                    this.show_login_form = true;
+                },
+
+                login: function($event) {
+                    $event.preventDefault();
+
+                    fetch('/api/user/login', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify(data)
+                        body: JSON.stringify({
+                            identity: this.identity,
+                            password: this.password
+                        })
                     })
                     .then(response => response.json())
                     .then(data => {
                         console.log('Success:', data);
+                        this.api_token = data.api_token;
+                        localStorage.setItem('api_token', data.api_token);
+                        this.identity = data.username;
+                        localStorage.setItem('identity', data.username);
+
+                        this.show_login_form = false;
+                        this.password = '';
+
+                        this.toast({
+                            "type": 'success',
+                            "message": "Successfully authenticated as " + data.username
+                        });
                     })
                     .catch((error) => {
                         console.error('Error:', error);
+                        this.password = '';
+                        this.toast({
+                            "type": 'error',
+                            "message": error,
+                        })
                     });
-                @endguest
-            }
-
-            window.onmessage = function(event) {
-                // $.notify("We got a message:" + event.data, "success");
-                if(typeof event.data === 'object' && event.data.source === 'fantasy-calendar-embed') {
-                    console.log("Told to do " + event.data.does + " with " + JSON.stringify(event.data.params))
-                    window[event.data.does](event.data.params);
-                }
-            }
-
-            window.notificationStack = {
-                init: function() {
-                    this.notifications = [];
                 },
 
                 toast: function(message) {
@@ -112,16 +129,73 @@
                     }, 5000);
                 }
             }
+
+            window.embeddableActions = {
+                toastify: function(params) {
+                    console.log("Dispatching notify");
+                    window.dispatchEvent(new CustomEvent('notify', {detail: params}));
+                },
+                login_form: function() {
+                    console.log('Dispatching login')
+                    window.dispatchEvent(new CustomEvent('login', {detail: 'Login time'}));
+                },
+                apiRequest: function(params) {
+                    @guest
+                        window.embeddableActions.toastify({
+                            type: 'error',
+                            message: 'You must be signed in for this to work!'
+                        });
+
+                        return;
+                    @else
+                        let method = params.method;
+                        let data = params.data;
+                        let api_token = '{{ auth()->user()->api_token }}';
+                        fetch('/api/calendars/{{ $calendar->hash }}/' + method, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(data)
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('Success:', data);
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                        });
+                    @endguest
+                }
+            }
         </script>
     </head>
-    <body>
+    <body x-data="FCEmbed" @login.window="console.log('here'); show_login_form = true" @notify.window="toast($event.detail)">
         <div class="image_grid">
             <div class="image_container">
                 <div id="image_holder"></div>
             </div>
         </div>
 
-        <div x-data="notificationStack" x-init="init" class="fixed bottom-0 flex items-end px-4 py-6 sm:p-6 sm:items-start" @notify.window="toast($event.detail)">
+        <div x-show="show_login_form" class="fixed top-0 right-0 bottom-0 left-0 flex flex-col items-center p-3 bg-white rounded mt-4 shadow">
+            <div class="login_form" x-show="api_token === ''">
+                <form class="flex flex-col" action="" @submit="login">
+                    <input type="text" placeholder="Username/Email" x-model="identity" class="mb-2">
+                    <input type="password" placeholder="Password" x-model="password">
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
+            <div class="p-5" x-show="api_token != ''">
+                <div class="bg-green-300 border-green-600 text-green-800">
+                    You are already signed in as <span x-text="identity" class="font-bold"></span>.
+                    <br>
+                    <a href="javascript:" @click="api_token = ''; show_login_form = false; localStorage.removeItem('api_token'); localStorage.removeItem('identity');">Sign out</a>
+                    <a href="javascript:" @click="show_login_form = false;">Cancel</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="fixed bottom-0 flex items-end px-4 py-6 sm:p-6 sm:items-start">
             <div class="w-full flex flex-col space-y-4 items-end">
                 <template x-for="notification in notifications">
                     <div class="bg-gray-100 border border-gray-400 text-gray-700 rounded relative" style="box-shadow: 0 10px 15px -3px rgba(255, 255, 255, 0.1), 0 1px 2px 0 rgba(255, 255, 255, 0.06);" :class="{

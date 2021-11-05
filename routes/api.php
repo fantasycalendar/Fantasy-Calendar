@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 |
 */
 
+Route::any('/user/login', 'Api\UserController@authenticate');
 Route::middleware('auth:api')->get('/user', 'Api\UserController@user');
 
 Route::any('/calendar/{calendar}/clone', 'Api\CalendarController@clone');
