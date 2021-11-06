@@ -561,7 +561,9 @@ const calendar_events_editor = {
 
 	create_event_data(){
 
-		let conditions = this.create_condition_array(this.event_conditions_container);
+        let conditions = Perms.player_at_least("co-owner")
+            ? this.create_condition_array(this.event_conditions_container)
+            : [['Date', '0', [this.epoch_data.year, this.epoch_data.timespan_index, this.epoch_data.day]]];
 
 		let search_distance = this.get_search_distance(conditions);
 
