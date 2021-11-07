@@ -172,7 +172,11 @@ export class IntervalsCollection extends utils.SuperArray{
     }
 
     bumpsYearZero(){
-        return !this.reject(interval => interval.offset).sortByDesc('interval').shift()?.subtracts ?? false;
+        const firstValidInterval = this.reject(interval => interval.offset).sortByDesc('interval').shift();
+
+        if(firstValidInterval) return !firstValidInterval.subtracts;
+
+        return false;
     }
 
     // Temporary
