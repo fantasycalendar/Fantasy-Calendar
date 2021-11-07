@@ -1,3 +1,11 @@
+### 2.1.2 - Scrutinizing Djinn
+#### November 7th, 2021
+* Tweaked - Slightly improved leap day calculation speed
+* Tweaked - General backend upgrades and improvements
+* Fixed - Users who were added as players to calendars were not able to create events
+* Fixed - Leap day calculation on very specific interval setups
+* Fixed - Date not updating properly when changing leap day intervals or deleting leap days
+
 ### 2.1.1 - Tranquil Djinn
 #### October 19th, 2021
 * Fixed - Discord Integration error caused by users not having set their discord avatar
