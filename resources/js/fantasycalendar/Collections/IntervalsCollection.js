@@ -174,7 +174,11 @@ export default class IntervalsCollection extends Collection{
     }
 
     bumpsYearZero() {
-        return !this.reject(interval => interval.offset).sortByDesc('interval').shift()?.subtracts ?? false;
+        let foundInterval = this.reject(interval => interval.offset).sortByDesc('interval').shift();
+
+        if(foundInterval) return !foundInterval.subtracts;
+
+        return false;
     }
 
     // Temporary
