@@ -14,9 +14,6 @@ return [
             "list" => \App\Sharp\CalendarList::class,
             "show" => \App\Sharp\CalendarShow::class
         ],
-        "old_calendars" => [
-            "list" => \App\Sharp\OldCalendarList::class,
-        ],
         "presets" => [
             "list" => \App\Sharp\PresetList::class,
             "show" => \App\Sharp\PresetShow::class,
@@ -45,45 +42,60 @@ return [
 
     "menu" => [
         [
+            "label" => "Entities",
+            "entities" => [
+                [
+                    "label" => "Users",
+                    "icon" => "fa-users",
+                    "entity" => "user"
+                ],
+                [
+                    "label" => "Calendars",
+                    "icon" => "fa-calendar",
+                    "entity" => "calendars"
+                ],
+                [
+                    "label" => "Presets",
+                    "icon" => "fa-calendar",
+                    "entity" => "presets"
+                ],
+            ]
+        ],
+        [
+            "label" => "Legal Stuff",
+            "entities" => [
+                [
+                    "label" => "Agreements",
+                    "icon" => "fa-handshake",
+                    "entity" => "agreements"
+                ],
+                [
+                    "label" => "Policies",
+                    "icon" => "fa-file-contract",
+                    "entity" => "policies"
+                ],
+            ]
+        ],
+        [
+            "label" => "Administrative",
+            "entities" => [
+                [
+                    "label" => "Statistics",
+                    "icon" => "fa-chart-bar",
+                    "dashboard" => "statistics"
+                ],
+                [
+                    "label" => "Env Vars",
+                    "icon" => "fa-cog",
+                    "entity" => "env"
+                ],
+            ]
+        ],
+        [
             "label" => "Back to App",
             "icon" => "fa-arrow-left",
             "url" => "/"
         ],
-        [
-            "label" => "Users",
-            "icon" => "fa-users",
-            "entity" => "user"
-        ],
-        [
-            "label" => "Calendars",
-            "icon" => "fa-calendar",
-            "entity" => "calendars"
-        ],
-        [
-            "label" => "Presets",
-            "icon" => "fa-calendar",
-            "entity" => "presets"
-        ],
-        [
-            "label" => "Statistics",
-            "icon" => "fa-chart-bar",
-            "dashboard" => "statistics"
-        ],
-        [
-            "label" => "Agreements",
-            "icon" => "fa-handshake",
-            "entity" => "agreements"
-        ],
-        [
-            "label" => "Policies",
-            "icon" => "fa-file-contract",
-            "entity" => "policies"
-        ],
-        [
-            "label" => "Env Vars",
-            "icon" => "fa-cog",
-            "entity" => "env"
-        ]
     ],
 
     "auth" => [

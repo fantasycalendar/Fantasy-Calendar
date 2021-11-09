@@ -58,6 +58,7 @@ provider:
       DISCORD_PUBLIC_KEY: ${ssm:/${self:custom.ssm.${self:custom.stage}}/discord_public_key}
       DISCORD_COMMAND: ${self:custom.environment.${self:custom.stage}.DISCORD_COMMAND}
       BREF_BINARY_RESPONSES: '1'
+      BREF_AUTOLOAD_PATH: '/tmp/vendor/autoload.php'
     iamRoleStatements:
       # Allow Lambda to read and write files in the S3 buckets
       -   Effect: Allow
@@ -106,6 +107,7 @@ package:
         - .git/**
         - .idea/**
         - setup/**
+        - cache/**
         - node_modules/**
         - public/storage/**
         - public/vendor/sharp/fonts/*
@@ -121,10 +123,10 @@ functions:
         handler: public/index.php
         timeout: 28 # in seconds (API Gateway has a timeout of 29 seconds)
         layers:
-            - ${bref:layer.php-74-fpm}
-            - ${bref:extra.redis-php-74}
-            - ${bref:extra.gmp-php-74}
-            - ${bref:extra.imagick-php-74}
+            - ${bref:layer.php-80-fpm}
+            - ${bref-extra:redis-php-80}
+            - ${bref-extra:gmp-php-80}
+            - ${bref-extra:imagick-php-80}
         events:
             -   http: 'ANY /'
             -   http: 'ANY /{proxy+}'
@@ -136,10 +138,10 @@ functions:
         handler: artisan
         timeout: 120 # in seconds
         layers:
-            - ${bref:layer.php-74} # PHP
-            - ${bref:extra.gmp-php-74}
-            - ${bref:extra.redis-php-74}
-            - ${bref:extra.imagick-php-74}
+            - ${bref:layer.php-80} # PHP
+            - ${bref-extra:gmp-php-80}
+            - ${bref-extra:redis-php-80}
+            - ${bref-extra:imagick-php-80}
             - ${bref:layer.console} # The "console" layer
         vpc:
           securityGroupIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/security_group_ids}"] }
@@ -147,10 +149,10 @@ functions:
     worker:
       handler: worker.php
       layers:
-        - ${bref:layer.php-74} # PHP
-        - ${bref:extra.gmp-php-74}
-        - ${bref:extra.redis-php-74}
-        - ${bref:extra.imagick-php-74}
+        - ${bref:layer.php-80} # PHP
+        - ${bref-extra:gmp-php-80}
+        - ${bref-extra:redis-php-80}
+        - ${bref-extra:imagick-php-80}
       events:
         -   sqs:
               arn:
@@ -163,10 +165,10 @@ functions:
       timeout: 6
       handler: artisan
       layers:
-        - ${bref:layer.php-74} # PHP runtime
-        - ${bref:extra.gmp-php-74}
-        - ${bref:extra.redis-php-74}
-        - ${bref:extra.imagick-php-74}
+        - ${bref:layer.php-80} # PHP runtime
+        - ${bref-extra:gmp-php-80}
+        - ${bref-extra:redis-php-80}
+        - ${bref-extra:imagick-php-80}
         - ${bref:layer.console} # Console layer
       events:
         - schedule:
@@ -175,21 +177,6 @@ functions:
       vpc:
         securityGroupIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/security_group_ids}"] }
         subnetIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/subnet_ids}"] }
-    prdhostforward:
-      handler: setup/lambda/${opt:stage, 'dev'}/forwarder.handler
-      runtime: nodejs12.x
-      package:
-        individually: true
-        exclude:
-          - "./**"
-        include:
-          - setup/lambda/${opt:stage, 'dev'}/forwarder.js
-          - setup/lambda/${opt:stage, 'dev'}/version.txt
-      memorySize: 128
-      events:
-        -   cloudFront:
-              eventType: origin-request
-              origin: Website
     prdsecurityheaders:
       handler: setup/lambda/${opt:stage, 'dev'}/security_headers.handler
       runtime: nodejs12.x
@@ -277,6 +264,9 @@ resources:
               OriginPath: "/${opt:stage, 'dev'}"
               CustomOriginConfig:
                 OriginProtocolPolicy: 'https-only' # API Gateway only supports HTTPS
+              OriginCustomHeaders:
+                - HeaderName: 'X-Forwarded-Host'
+                  HeaderValue: ${self:custom.alias}
             # The assets (S3)
             - Id: Assets
               DomainName: !GetAtt Assets.RegionalDomainName

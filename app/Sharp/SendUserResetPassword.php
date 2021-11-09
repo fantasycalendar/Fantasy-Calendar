@@ -17,7 +17,7 @@ class SendUserResetPassword extends InstanceCommand
         return "Send password reset email";
     }
 
-    public function confirmationText()
+    public function confirmationText(): string
     {
         return "Are you sure you want to send this user a password reset email?";
     }

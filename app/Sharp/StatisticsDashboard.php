@@ -28,7 +28,7 @@ class StatisticsDashboard extends SharpDashboard
     /**
      * Build dashboard's widget using ->addWidget.
      */
-    protected function buildWidgets()
+    protected function buildWidgets(): void
     {
         $this->addWidget(
             SharpPanelWidget::make("calendars_created_total")
@@ -108,7 +108,7 @@ class StatisticsDashboard extends SharpDashboard
     /**
      * Build dashboard's widgets layout.
      */
-    protected function buildWidgetsLayout()
+    protected function buildWidgetsLayout(): void
     {
         $this->addRow(function(DashboardLayoutRow $row) {
                 $row->addWidget(3, "users_created_total")
@@ -143,7 +143,7 @@ class StatisticsDashboard extends SharpDashboard
      *
      * @param DashboardQueryParams $params
      */
-    protected function buildWidgetsData(DashboardQueryParams $params)
+    protected function buildWidgetsData(DashboardQueryParams $params): void
     {
 
         $last30Days = now()->subDays(30);

@@ -5,14 +5,6 @@ FROM bref/php-80-fpm-dev
 COPY --from=redisextra /opt /opt
 COPY --from=gmpextra /opt /opt
 COPY --from=imagickextra /opt /opt
-
-RUN yum -y install mysql
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
 WORKDIR /var/task
-
-COPY . .
-
-ENV APP_NAME FantasyCalendar
-ENV DB_CONNECTION mysql
-ENV DB_PORT 3306
-ENV WEBADDRESS /

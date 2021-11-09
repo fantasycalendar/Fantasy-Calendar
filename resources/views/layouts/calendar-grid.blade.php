@@ -1,4 +1,4 @@
-<div id='calendar' x-data="CalendarRenderer">
+<div id='calendar' x-data="CalendarRenderer" :class="{ 'single_month': render_data.current_month_only }">
 
     <template x-if="!loaded && render_data.timespans.length">
         <div class="modal_background mt-5 pt-5">

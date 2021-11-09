@@ -57,7 +57,7 @@ class DiscordServiceProvider extends ServiceProvider
             });
         });
     }
-    
+
     private function registerEventListeners()
     {
         Event::listen(ChildCalendarsUpdated::class, UpdateParentCalendarResponse::class);

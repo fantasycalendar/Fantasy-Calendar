@@ -31,16 +31,18 @@ class PolicyForm extends SharpForm
      * @param array $data
      * @return mixed the instance id
      */
-    public function update($id, array $data)
+    public function update($id, array $data): mixed
     {
         $policy = $id ? Policy::findOrFail($id) : new Policy;
         $this->save($policy, $data);
+
+        return $id;
     }
 
     /**
      * @param $id
      */
-    public function delete($id)
+    public function delete($id): void
     {
         Policy::findOrFail($id)->find($id)->delete();
     }
@@ -50,7 +52,7 @@ class PolicyForm extends SharpForm
      *
      * @return void
      */
-    public function buildFormFields()
+    public function buildFormFields(): void
     {
         $this->addField(
             SharpFormMarkdownField::make('content')
@@ -66,7 +68,7 @@ class PolicyForm extends SharpForm
      *
      * @return void
      */
-    public function buildFormLayout()
+    public function buildFormLayout(): void
     {
         $this->addColumn(9, function(FormLayoutColumn $column) {
             $column->withSingleField('content');

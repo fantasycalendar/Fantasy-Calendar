@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateDiscordAuthsTable extends Migration
+class RenameOldCalendarsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,7 @@ class UpdateDiscordAuthsTable extends Migration
      */
     public function up()
     {
-        Schema::table('discord_auths', function (Blueprint $table) {
-            $table->string('avatar')->nullable()->change();
-        });
+        Schema::rename('calendars', 'calendars_old');
     }
 
     /**
@@ -25,8 +23,6 @@ class UpdateDiscordAuthsTable extends Migration
      */
     public function down()
     {
-        Schema::table('discord_auths', function (Blueprint $table) {
-            $table->string('avatar')->change();
-        });
+        Schema::rename('calendars_old', 'calendars');
     }
 }

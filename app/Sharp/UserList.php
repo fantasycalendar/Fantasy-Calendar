@@ -15,7 +15,7 @@ class UserList extends SharpEntityList
     *
     * @return void
     */
-    public function buildListDataContainers()
+    public function buildListDataContainers(): void
     {
         $this->addDataContainer(
             EntityListDataContainer::make('username')
@@ -48,7 +48,7 @@ class UserList extends SharpEntityList
     * @return void
     */
 
-    public function buildListLayout()
+    public function buildListLayout(): void
     {
         $this->addColumn('username', 2, 6);
         $this->addColumn('email', 4, 6);
@@ -63,14 +63,12 @@ class UserList extends SharpEntityList
     *
     * @return void
     */
-    public function buildListConfig()
+    public function buildListConfig(): void
     {
         $this->setInstanceIdAttribute('id')
             ->setSearchable()
             ->setDefaultSort('created_at', 'desc')
             ->setPaginated()
-            ->addInstanceCommand("elevate", GiveUserAppAccess::class)
-            ->addInstanceCommand("revoke", RevokeUserAppAccess::class)
             ->addInstanceCommand("impersonate", LoginAsUser::class)
             ->addInstanceCommand("reset_password", SendUserResetPassword::class)
             ->addFilter("migrated", UserMigratedFilter::class);
@@ -108,7 +106,7 @@ class UserList extends SharpEntityList
             }
         )->setCustomTransformer(
             "permissions",
-            function($permissions) {
+            function($permissions, $user, $attribute) {
                 return ($permissions == 1 ? "Admin" : "User");
             }
         )->setCustomTransformer(

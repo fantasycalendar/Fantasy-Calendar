@@ -16,7 +16,7 @@ class CalendarList extends SharpEntityList
     *
     * @return void
     */
-    public function buildListDataContainers()
+    public function buildListDataContainers(): void
     {
         $this->addDataContainer(
             EntityListDataContainer::make('name')
@@ -52,7 +52,7 @@ class CalendarList extends SharpEntityList
     * @return void
     */
 
-    public function buildListLayout()
+    public function buildListLayout(): void
     {
         $this->addColumn('name', 4)
             ->addColumn('user', 2)
@@ -66,7 +66,7 @@ class CalendarList extends SharpEntityList
     *
     * @return void
     */
-    public function buildListConfig()
+    public function buildListConfig(): void
     {
         $this->setInstanceIdAttribute('id')
             ->setSearchable()
@@ -75,8 +75,7 @@ class CalendarList extends SharpEntityList
             ->addInstanceCommand("edit", EditCalendar::class)
             ->addInstanceCommand("view", ViewCalendar::class)
             ->addInstanceCommand("export", VisitExport::class)
-            ->addInstanceCommand("promote", PromoteToPreset::class)
-            ->addInstanceCommand("reconvert", ReconvertFromLegacy::class);
+            ->addInstanceCommand("promote", PromoteToPreset::class);
     }
 
     /**

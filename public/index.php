@@ -21,7 +21,13 @@ define('LARAVEL_START', microtime(true));
 |
 */
 
-require __DIR__.'/../vendor/autoload.php';
+$bref_vendor_path = '/tmp/vendor/autoload.php';
+
+$vendor_path = is_dir('/tmp/vendor') && file_exists($bref_vendor_path)
+    ? $bref_vendor_path
+    : __DIR__.'/../vendor/autoload.php';
+
+require $vendor_path;
 
 /*
 |--------------------------------------------------------------------------

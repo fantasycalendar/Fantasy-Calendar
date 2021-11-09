@@ -35,30 +35,20 @@ services:
       - ./:/var/task
       - ./cache:/var/task/cache
     user: "1000:1000"
-    environment:
-      - "APP_ENV=local"
-      - "APP_KEY=base64:ECSIURhDQnHBdx7nRVlwGtPwBU+RZrQCQpmGHesaIUM="
-      - "APP_DEBUG=true"
-      - "APP_URL=http://fantasy-calendar.test:9980/"
-      - "ASSET_URL=http://fantasy-calendar.test:9980/"
-      - "COOKIEADDRESS=http://fantasy-calendar.test:9980/"
-      - "DB_HOST=fantasydb"
-      - "DB_DATABASE=fantasy-calendar"
-      - "DB_USERNAME=root"
-      - "DB_PASSWORD=root"
-      - "REDIS_HOST=fcredis"
-      - "CACHE_DRIVER=redis"
-      - "SESSION_DRIVER=redis"
-      - "VIEW_COMPILED_PATH=/var/task/storage/framework/views"
-      - "LOG_CHANNEL=docker"
-      - "MAIL_MAILER=smtp"
-      - 'MAIL_HOST=mailhog'
-      - 'MAIL_PORT=1025'
-      - 'MAIL_USERNAME=test'
-      - 'MAIL_PASSWORD=test'
-      - 'MAIL_ENCRYPTION='
-      - 'MAIL_FROM_ADDRESS=contact@fantasy-calendar.com'
-      - 'MAIL_FROM_NAME="Fantasy Calendar"'
+
+  queue-worker:
+    container_name: fc_queue_worker
+    image: fc-bref-php
+    depends_on:
+      - php
+    build:
+      context: .
+      dockerfile: setup/php/php.Dockerfile
+    volumes:
+      - ./:/var/task
+      - ./cache:/var/task/cache
+    user: "1000:1000"
+    command: ["php", "artisan", "queue:listen"]
 
   selenium:
     image: selenium/standalone-chrome
@@ -74,14 +64,17 @@ services:
     depends_on:
       - php
 
-  fantasy-calendar-composer-install:
-    image: composer:2.0.7
+  composer:
+    image: fc-bref-composer
+    build:
+      context: .
+      dockerfile: setup/php/composer.Dockerfile
     user: "1000:1000"
     volumes:
-      - ./:/app
-    command: ["install"]
+      - ./:/var/task
+    command: ["composer", "install"]
 
-  fantasy-calendar-npm-install:
+  npm:
     image: node
     user: "1000:1000"
     mem_limit: 2048m

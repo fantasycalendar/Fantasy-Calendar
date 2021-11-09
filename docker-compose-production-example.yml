@@ -6,33 +6,30 @@ services:
     container_name: fc-mariadb
     volumes:
       - fantasy-calendar-db:/var/lib/mysql
-      - ./setup/database.sql:/docker-entrypoint-initdb.d/dump.sql
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: fantasy-calendar
     ports:
       - "13306:3306"
 
-  fantasy-calendar-php:
+  fpm:
     container_name: fantasy_calendar_php
     image: fc-php
     build:
       context: https://github.com/fantasycalendar/Fantasy-Calendar.git
       dockerfile: Dockerfile
     ports:
-      - "9980:8080"
-    environment:
-      - "APP_ENV=local"
-      - "APP_KEY=base64:ECSIURhDQnHBdx7nRVlwGtPwBU+RZrQCQpmGHesaIUM="
-      - "APP_DEBUG=true"
-      - "APP_URL=http://fantasy-calendar.test:9980/"
-      - "COOKIEADDRESS=http://fantasy-calendar.test:9980/"
-      - "DB_HOST=fantasydb"
-      - "DB_DATABASE=fantasy-calendar"
-      - "DB_USERNAME=root"
-      - "DB_PASSWORD=root"
-      - "REDIS_HOST=fcredis"
-      - "SESSION_DRIVER=redis"
+      - "9980:8080" # Change to your own port of course
+
+  queue-worker:
+    container_name: fantasy_calendar_php
+    depends_on:
+      - fpm
+    image: fc-php
+    build:
+      context: https://github.com/fantasycalendar/Fantasy-Calendar.git
+      dockerfile: Dockerfile
+    command: ["/usr/bin/php", "/var/task/artisan", "queue:work"]
 
   fcredis:
     image: redis

@@ -64,11 +64,6 @@ class Calendar extends Model
         HasDate,
         HasFactory;
 
-    /**
-     * @var string
-     */
-    protected $table = 'calendars_beta';
-
     protected $casts = [
         'dynamic_data' => 'array',
         'static_data' => 'array',

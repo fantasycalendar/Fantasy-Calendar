@@ -80,7 +80,7 @@ class UserShow extends SharpShow
      *
      * @return void
      */
-    public function buildShowFields()
+    public function buildShowFields(): void
     {
         $this->addField(
             SharpShowTextField::make("username")
@@ -139,12 +139,6 @@ class UserShow extends SharpShow
                 ->hideFilterWithValue("user", function($instanceId) {
                     return $instanceId;
                 })
-        )->addField(
-            SharpShowEntityListField::make('old_calendars', 'old_calendars')
-                ->setLabel('Old Calendars')
-                ->hideFilterWithValue("user", function($instanceId) {
-                    return $instanceId;
-                })
         );
     }
 
@@ -153,7 +147,7 @@ class UserShow extends SharpShow
      *
      * @return void
      */
-    public function buildShowLayout()
+    public function buildShowLayout(): void
     {
          $this->addSection('Personal Info', function(ShowLayoutSection $section) {
               $section->addColumn(3, function(ShowLayoutColumn $column) {
@@ -197,15 +191,12 @@ class UserShow extends SharpShow
              })->addColumn(6, function(ShowLayoutColumn $column) {
                  $column->withSingleField("last_discord_command");
              });
-         })->addEntityListSection('user_calendars')
-         ->addEntityListSection('old_calendars');
+         })->addEntityListSection('user_calendars');
     }
 
-    function buildShowConfig()
+    function buildShowConfig(): void
     {
         $this
-            ->addInstanceCommand("elevate", GiveUserAppAccess::class)
-            ->addInstanceCommand("revoke", RevokeUserAppAccess::class)
             ->addInstanceCommand("impersonate", LoginAsUser::class)
             ->addInstanceCommand("reset_password", SendUserResetPassword::class)
             ->addInstanceCommand("view_on_stripe", VisitStripeCustomer::class);

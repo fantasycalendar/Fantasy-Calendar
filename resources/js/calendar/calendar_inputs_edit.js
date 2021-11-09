@@ -1545,6 +1545,7 @@ function set_up_edit_inputs(){
 				$(this).closest('.sortable-container').remove();
 				$(this).closest('.sortable-container').parent().sortable('refresh');
 				static_data.year_data.leap_days.splice(index, 1)
+				dynamic_data.epoch = dynamic_date_manager.epoch;
 				reindex_leap_day_list();
 				recalc_stats();
 				break;
@@ -2212,6 +2213,8 @@ function set_up_edit_inputs(){
 		$(this).toggleClass('invalid', false).attr('error_msg', '');
 
 		$(this).closest('.sortable-container').find('.leap_day_variance_output').html(get_interval_text(false, data));
+
+        dynamic_data.epoch = dynamic_date_manager.epoch;
 
 		do_error_check();
 

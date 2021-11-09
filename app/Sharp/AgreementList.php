@@ -14,7 +14,7 @@ class AgreementList extends SharpEntityList
     *
     * @return void
     */
-    public function buildListDataContainers()
+    public function buildListDataContainers(): void
     {
         $this->addDataContainer(
             EntityListDataContainer::make('id')
@@ -45,7 +45,7 @@ class AgreementList extends SharpEntityList
     * @return void
     */
 
-    public function buildListLayout()
+    public function buildListLayout(): void
     {
         $this->addColumn('id', 2,6);
         $this->addColumn('created_at', 3,6);
@@ -58,7 +58,7 @@ class AgreementList extends SharpEntityList
     *
     * @return void
     */
-    public function buildListConfig()
+    public function buildListConfig(): void
     {
         $this->setInstanceIdAttribute('id')
             ->setSearchable()
@@ -76,7 +76,7 @@ class AgreementList extends SharpEntityList
     {
 
         $agreement_model = Agreement::query();
-        
+
         if($params->sortedBy()) {
             $agreement_model->orderBy($params->sortedBy(), $params->sortedDir());
         }

@@ -41,7 +41,7 @@ class UserForm extends SharpForm
     /**
      * @param $id
      */
-    public function delete($id)
+    public function delete($id): void
     {
         User::findOrFail($id)->find($id)->delete();
     }
@@ -51,7 +51,7 @@ class UserForm extends SharpForm
      *
      * @return void
      */
-    public function buildFormFields()
+    public function buildFormFields(): void
     {
         $this->addField(
             SharpFormTextField::make('username')
@@ -72,7 +72,7 @@ class UserForm extends SharpForm
      *
      * @return void
      */
-    public function buildFormLayout()
+    public function buildFormLayout(): void
     {
         $this->addColumn(6, function(FormLayoutColumn $column) {
             $column->withSingleField('username');
