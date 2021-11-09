@@ -1,4 +1,4 @@
-import { Interval } from "./calendar/interval.js";
+import Interval from "./fantasycalendar/Interval.js";
 
 /**
  * Greatest common divisor is the largest positive integer that divides each of the integers.
@@ -75,51 +75,24 @@ export function lcmo(intervalA, intervalB) {
 
 }
 
-export class SuperArray extends Array {
+/**
+ * This function clamps a value between a min and a max
+ *
+ * @param  {Number}  t       The value to be clamped
+ * @param  {Number}  min     Minimum value
+ * @param  {Number}  max     Maximum value
+ * @return {Number}          The clamped value
+ */
+export function clamp(t, min, max){
+    return Math.min(Math.max(t, min), max);
+}
 
-    reverse() {
-        super.reverse();
-        return this;
-    }
 
-    unshift(elem) {
-        super.unshift(elem);
-        return this;
-    }
+export function date_slug(year, month, day){
+    return `${year}-${month}-${day}`;
+}
 
-    push(elem) {
-        super.push(elem);
-        return this;
-    }
 
-    sort(callback) {
-        super.sort(callback);
-        return this;
-    }
-
-    reject(callback) {
-        return this.filter(elem => !callback(elem));
-    }
-
-    skipWhile(callback) {
-        let done = false;
-        return this.filter(elem => {
-            const result = callback(elem);
-            if(!result) done = true;
-            return done || !result;
-        });
-    }
-
-    sum(callback) {
-        return this.reduce((sum, elem) => sum + callback(elem), 0);
-    }
-
-    sortByDesc(key) {
-        return this.sort((a, b) => b[key] - a[key])
-    }
-
-    sortByAsc(key) {
-        return this.sort((a, b) => a[key] - b[key])
-    }
-
+export function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
 }

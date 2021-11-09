@@ -4,8 +4,6 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-import { IntervalsCollection } from "./calendar/interval.js";
-
 require('./bootstrap');
 
 window.CalendarClock = require('./clock')
@@ -21,5 +19,5 @@ window.CalendarHTMLEditor = require('./calendar-html-editor')
 window.CalendarYearHeader = require('./calendar-year-header')
 
 // Calendar specific modules
+import IntervalsCollection from "./fantasycalendar/Collections/IntervalsCollection.js";
 window.IntervalsCollection = IntervalsCollection;
-
