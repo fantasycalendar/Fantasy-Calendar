@@ -1280,7 +1280,7 @@ function avg_year_length(static_data){
 
 			if(leap_day.timespan === timespan_index){
 
-				avg_length += IntervalsCollection.make(leap_day).totalFraction();
+				avg_length += IntervalsCollection.make(leap_day).totalFraction;
 
 			}
 		}
@@ -1319,7 +1319,7 @@ function avg_month_length(static_data){
 
         const interval = IntervalsCollection.make(leap_day);
 
-        length += interval.sum(interval => interval.fraction());
+        length += interval.totalFraction
 
 	}
 
