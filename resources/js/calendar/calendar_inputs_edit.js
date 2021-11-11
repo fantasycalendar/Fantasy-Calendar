@@ -4351,7 +4351,7 @@ function get_errors(){
 					if(appears.reason == 'era ended'){
 						errors.push(`Era <i>${era.name}</i> is on a date that doesn't exist due to a previous era ending the year. Please move it to another year.`);
 					}else{
-						errors.push(`Era <i>${era.name}</i> is currently on a leaping month. Please move it to another month.`);
+						errors.push(`Era <i>${era.name}</i> is currently on a month that is leaping on that year. Please change its year or move it to another month.`);
 					}
 				}
 			}else{
@@ -4399,6 +4399,18 @@ function get_errors(){
 			}
 		}
 	}
+
+	if(static_data.clock.enabled){
+
+	    if(static_data.clock.hours === 0){
+            errors.push(`If the clock is enabled, you need to have more than 0 hours per day.`);
+        }
+
+	    if(static_data.clock.minutes === 0){
+            errors.push(`If the clock is enabled, you need to have more than 0 minutes per hour.`);
+        }
+
+    }
 
 	return errors;
 
