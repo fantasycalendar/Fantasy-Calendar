@@ -532,7 +532,7 @@ function set_up_edit_inputs(){
 				era_list.children().each(function(){
 					var input = $(this).find('.ends_year');
 					var text = $(this).find('.ends_year_explaination');
-					var parent = input.parent().parent();
+					var parent = input.parent();
 					input.prop('disabled', !checked);
 					parent.toggleClass('disabled', !checked);
 					text.toggleClass('hidden', checked);
