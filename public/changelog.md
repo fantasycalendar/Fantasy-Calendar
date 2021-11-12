@@ -3,6 +3,7 @@
 * Tweaked - Slightly improved leap day calculation speed
 * Tweaked - General backend upgrades and improvements
 * Tweaked - Added additional error checking surrounding the clock durations
+* Tweaked - Made length based seasons default on new calendars
 * Fixed - Users who were added as players to calendars were not able to create events
 * Fixed - Leap day calculation on very specific interval setups
 * Fixed - Date not updating properly when changing leap day intervals or deleting leap days
