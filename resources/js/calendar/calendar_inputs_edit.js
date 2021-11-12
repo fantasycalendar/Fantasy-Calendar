@@ -4915,11 +4915,12 @@ function reindex_season_sortable(key){
 function populate_preset_season_list(){
 
 	let length = static_data.seasons.data.length;
+    let preset_seasons;
 
-	if(length == 2){
-		var preset_seasons = ['Winter', 'Summer'];
-	}else if(length == 4){
-		var preset_seasons = ['Winter', 'Spring', 'Summer', 'Autumn'];
+    if(length === 2){
+		preset_seasons = ['Winter', 'Summer'];
+	}else if(length === 4){
+		preset_seasons = ['Winter', 'Spring', 'Summer', 'Autumn'];
 	}else{
 		static_data.seasons.global_settings.preset_order = undefined;
 		$('.preset-season-list-container').toggleClass('hidden', true).prop('disabled', true);
@@ -4934,13 +4935,17 @@ function populate_preset_season_list(){
 
 		let preset_order = []
 
+        if(new Set((static_data.seasons.global_settings.preset_order ?? [])).size !== length){
+            static_data.seasons.global_settings.preset_order = undefined;
+        }
+
 		$('.preset-season-list').each(function(i){
 
 			$(this).empty();
 
 			for(let j in preset_seasons){
 				let name = preset_seasons[j];
-				var o = new Option(name, j);
+				let o = new Option(name, j);
 				$(o).html(name);
 				$(this).append(o);
 			}
