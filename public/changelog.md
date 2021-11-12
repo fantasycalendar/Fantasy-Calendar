@@ -6,6 +6,8 @@
 * Fixed - Users who were added as players to calendars were not able to create events
 * Fixed - Leap day calculation on very specific interval setups
 * Fixed - Date not updating properly when changing leap day intervals or deleting leap days
+* Fixed - Fixed season type mapping would sometimes not work when adding multiple seasons in a row
+* Fixed - Fixed ends year prematurely option on eras looking disabled after switching season type
 
 ### 2.1.1 - Tranquil Djinn
 #### October 19th, 2021
