@@ -20,62 +20,62 @@
 
         if(has_parent){
 
-            check_last_change(parent_hash, function(change_result){
+            last_mouse_move = Date.now();
+            poll_timer = setTimeout(check_dates, 5000);
+            instapoll = false;
 
-                parent_last_dynamic_change = new Date(change_result.last_dynamic_change)
-                parent_last_static_change = new Date(change_result.last_static_change)
+            $(window).focus(function(){
+                check_dates();
+            })
 
+            registered_mousemove_callbacks['view_update'] = function(){
                 last_mouse_move = Date.now();
-                poll_timer = setTimeout(check_parent_update, 10000);
-                instapoll = false;
-
-                $('#rebuild_calendar_btn').click(function(){
-                    check_rebuild('calendar');
-                    $('.parent_button_container').addClass('hidden');
-                    $('#rebuild_calendar_btn').prop('disabled', true);
-                    poll_timer = setTimeout(check_parent_update, 10000);
-                });
-
-                $(window).focus(function(){
-                    check_parent_update();
-                })
-
-                registered_mousemove_callbacks['view_update'] = function(){
-                    last_mouse_move = Date.now();
-                    if(instapoll){
-                        instapoll = false;
-                        check_parent_update();
-                    }
+                if(instapoll){
+                    instapoll = false;
+                    check_dates();
                 }
-            });
+            }
 
         }
 
     });
 
-    function check_parent_update(){
+    function check_dates(){
 
         if(document.hasFocus() && (Date.now() - last_mouse_move) < 10000){
 
             instapoll = false;
 
-            check_last_change(parent_hash, function(change_result){
+            check_last_change(hash, function(result){
 
-	    		new_dynamic_change = new Date(change_result.last_dynamic_change)
-	    		new_static_change = new Date(change_result.last_static_change)
+                new_dynamic_change = new Date(result.last_dynamic_change)
 
-				if(new_dynamic_change > parent_last_dynamic_change || new_static_change > parent_last_static_change){
+                if(new_dynamic_change > last_dynamic_change){
 
-					$('.parent_button_container').removeClass('hidden');
-					$('#rebuild_calendar_btn').prop('disabled', false);
+                    last_dynamic_change = new_dynamic_change
 
-				}else{
+                    get_dynamic_data(hash, function(result){
 
-					poll_timer = setTimeout(check_parent_update, 10000);
+                        if(result.error){
+                            throw result.message;
+                        }
 
-				}
+                        dynamic_data = clone(result.dynamic_data);
 
-			});
+                        check_update(false);
+                        evaluate_settings();
+                        eval_clock();
+                        poll_timer = setTimeout(check_dates, 5000);
+
+                    });
+
+                }else{
+
+                    poll_timer = setTimeout(check_dates, 5000);
+
+                }
+
+            });
 
         }else{
 
@@ -85,52 +85,34 @@
 
     }
 
-    function check_rebuild(action){
+    function check_update(rebuild){
 
-        get_all_data(parent_hash, function(data_result){
+        var data = dynamic_date_manager.compare(dynamic_data);
 
-            parent_static_data = data_result.static_data;
-            parent_dynamic_data = data_result.dynamic_data;
-            parent_last_dynamic_change = new Date(data_result.last_dynamic_change);
-            parent_last_static_change = new Date(data_result.last_static_change);
+        dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
 
-            var converted_date = date_converter.get_date(parent_static_data, static_data, parent_dynamic_data, dynamic_data, parent_offset);
-            dynamic_data.year = converted_date.year;
-            dynamic_data.timespan = converted_date.timespan;
-            dynamic_data.day = converted_date.day;
-            dynamic_data.epoch = converted_date.epoch;
-            dynamic_data.hour = converted_date.hour;
-            dynamic_data.minute = converted_date.minute;
+        if(preview_date.follow){
+            preview_date = clone(dynamic_data);
+            preview_date.follow = true;
+            preview_date_manager = new date_manager(preview_date.year, preview_date.timespan, preview_date.day);
+        }
 
-            var data = dynamic_date_manager.compare(dynamic_data);
+        current_year.val(dynamic_data.year);
 
-            dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
+        repopulate_timespan_select(current_timespan, dynamic_data.timespan, false);
 
-            if(preview_date.follow){
-                preview_date = clone(dynamic_data);
-                preview_date.follow = true;
-                preview_date_manager = new date_manager(preview_date.year, preview_date.timespan, preview_date.day);
-            }
+        repopulate_day_select(current_day, dynamic_data.day, false);
 
-            current_year.val(dynamic_data.year);
+        display_preview_back_button();
 
-            repopulate_timespan_select(current_timespan, dynamic_data.timespan, false);
+        if(rebuild || ((data.rebuild || static_data.settings.only_reveal_today) && preview_date.follow)){
+            rebuild_calendar('calendar', dynamic_data);
+            set_up_visitor_values();
+        }else{
+            update_current_day(false);
+        }
 
-            repopulate_day_select(current_day, dynamic_data.day, false);
-
-            display_preview_back_button();
-
-            if((data.rebuild || static_data.settings.only_reveal_today) && preview_date.follow){
-                pre_rebuild_calendar('calendar', dynamic_data)
-            }else{
-                update_current_day(false);
-            }
-
-            set_up_view_values();
-
-            evaluate_save_button();
-
-        });
+        set_up_view_values();
 
     }
 

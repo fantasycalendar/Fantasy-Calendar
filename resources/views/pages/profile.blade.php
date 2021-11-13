@@ -194,6 +194,8 @@
 
                                 <hr>
                                 <label class="mt-2" for="new_password">New Password</label>
+                                <input type="hidden" name="username" value="{{ $user->username }}" x-show="false">
+
                                 <input class="form-control required" required type="password" name="new_password" x-model="new_password" :class="{ 'is-invalid': was_validated && new_password.length < 7 }" @blur="confirm_password">
 
                                 <div class="invalid-feedback" x-show="was_validated && new_password.length < 7">Password must be 8 characters long.</div>
