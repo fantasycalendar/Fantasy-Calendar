@@ -1,3 +1,10 @@
+### 2.1.3 - Scrutinizing Djinn
+#### November 16th, 2021
+* Tweaked - Lowered the sensitivity of the auto-scroll that would scroll to the current date
+* Fixed - Some event condition presets resulting in broken conditions
+* Fixed - An intercalary month at the start of the year would break the entire year's weekday flow
+* Fixed - Leap months causing the following months to have incorrect IDs which would break some events
+
 ### 2.1.2 - Scrutinizing Djinn
 #### November 7th, 2021
 * Tweaked - Slightly improved leap day calculation speed
