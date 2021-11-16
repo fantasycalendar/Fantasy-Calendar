@@ -1,4 +1,4 @@
-### 2.1.3 - Scrutinizing Djinn
+### 2.1.3 - Curious Djinn
 #### November 16th, 2021
 * Tweaked - Lowered the sensitivity of the auto-scroll that would scroll to the current date
 * Fixed - Some event condition presets resulting in broken conditions

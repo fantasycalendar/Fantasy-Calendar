@@ -7,11 +7,12 @@ const calendar_renderer = {
     render_callbacks: [],
     scroll_attempts: 0,
 
+    prev_current_epoch: 0,
+    prev_preview_epoch: 0,
+
     render_data: {
         current_epoch: 0,
         preview_epoch: 0,
-        prev_current_epoch: 0,
-        prev_preview_epoch: 0,
         render_style: "grid",
         timespans: [],
         event_epochs: [],
