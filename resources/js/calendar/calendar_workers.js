@@ -497,11 +497,7 @@ const calendar_data_generator = {
 
         for(let year of years){
 
-            for(let timespan_str in this.timespans[year]){
-
-                let timespan_index = Number(timespan_str);
-
-                let current_timespan = this.timespans[year][timespan_index];
+            for(let current_timespan of this.timespans[year]){
 
                 current_timespan.epochs = {}
 
@@ -535,9 +531,9 @@ const calendar_data_generator = {
                                     'year': unconvert_year(this.static_data, year),
                                     'era_year': unconvert_year(this.static_data, era_year),
 
-                                    'timespan_index': timespan_index,
+                                    'timespan_index': current_timespan.index,
                                     'timespan_number': year_num_timespans - 1,
-                                    'timespan_count': count_timespans[timespan_index],
+                                    'timespan_count': count_timespans[current_timespan.index],
                                     'num_timespans': num_timespans,
                                     'timespan_name': current_timespan.name,
 
@@ -587,9 +583,9 @@ const calendar_data_generator = {
                             'year': unconvert_year(this.static_data, year),
                             'era_year': unconvert_year(this.static_data, era_year),
 
-                            'timespan_index': timespan_index,
+                            'timespan_index': current_timespan.index,
                             'timespan_number': year_num_timespans - 1,
-                            'timespan_count': count_timespans[timespan_index],
+                            'timespan_count': count_timespans[current_timespan.index],
                             'num_timespans': num_timespans,
                             'timespan_name': current_timespan.name,
 
@@ -622,7 +618,7 @@ const calendar_data_generator = {
 
                         if (current_timespan.type !== "intercalary") {
 
-                            data.week_day_num = this.increment_weekday_repetitions(year, data.timespan_index, data.week_day-1);
+                            data.week_day_num = this.increment_weekday_repetitions(year, current_timespan.index, data.week_day-1);
 
                         }
 
@@ -642,9 +638,9 @@ const calendar_data_generator = {
                                     'year': unconvert_year(this.static_data, year),
                                     'era_year': unconvert_year(this.static_data, era_year),
 
-                                    'timespan_index': timespan_index,
+                                    'timespan_index': current_timespan.index,
                                     'timespan_number': year_num_timespans - 1,
-                                    'timespan_count': count_timespans[timespan_index],
+                                    'timespan_count': count_timespans[current_timespan.index],
                                     'num_timespans': num_timespans,
                                     'timespan_name': current_timespan.name,
 
