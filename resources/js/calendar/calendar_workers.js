@@ -202,6 +202,7 @@ const calendar_data_generator = {
 		let timespan = clone(this.static_data.year_data.timespans[timespan_index]);
 
 		timespan.index = timespan_index;
+		timespan.intercalary = timespan.type === "intercalary";
 
 		timespan.render = this.current_year === year && (!this.render_one_month || (this.render_one_month && timespan_index === this.dynamic_data.timespan));
 
@@ -874,9 +875,12 @@ const calendar_data_generator = {
             const start_epochs = Object.keys(first_timespan.epochs);
             const end_epochs = Object.keys(last_timespan.epochs);
 
+            const first_nonintercalary_timespan = timespans_to_build.filter(timespan => !timespan.intercalary)[0];
+            const first_nonintercalary_epoch =  Object.entries(first_nonintercalary_timespan.epochs)[0][1];
+            const calendar_week_day = first_nonintercalary_epoch.week_day;
+
             const calendar_start_epoch = Number(start_epochs[0]);
             const calendar_end_epoch = Number(end_epochs[end_epochs.length - 1]);
-            const calendar_week_day = Number(first_timespan.epochs[calendar_start_epoch].week_day);
             const calendar_year_day = Number(first_timespan.epochs[calendar_start_epoch].year_day);
             const calendar_era_year = Number(first_timespan.epochs[calendar_start_epoch].era_year);
 
