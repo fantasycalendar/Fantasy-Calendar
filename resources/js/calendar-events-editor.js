@@ -1090,7 +1090,7 @@ const calendar_events_editor = {
 				result = [
 					['Weekday', '0', [this.epoch_data.week_day_name]],
 					['&&'],
-					['Week', '32', ['2', this.epoch_data.week_even ? '0' : '1']]
+					['Week', '32', ['2', (this.epoch_data.total_week_num % 2).toString()]]
 				];
 				break;
 
@@ -1102,7 +1102,7 @@ const calendar_events_editor = {
 
 			case 'annually_date':
 				result = [
-					['Month', '0', [this.epoch_data.timespan_]],
+					['Month', '0', [this.epoch_data.timespan_index]],
 					['&&'],
 					['Day', '0', [this.epoch_data.day]]
 				];
@@ -1126,7 +1126,7 @@ const calendar_events_editor = {
 
 			case 'annually_month_weekday':
 				result = [
-					['Month', '0', [this.epoch_data.timespan_]],
+					['Month', '0', [this.epoch_data.timespan_index]],
 					['&&'],
 					['Weekday', '0', [this.epoch_data.week_day_name]],
 					['&&'],
