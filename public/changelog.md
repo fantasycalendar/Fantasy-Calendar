@@ -1,3 +1,8 @@
+### 2.1.4 - WHAT Djinn
+#### November xxth, 2021
+* Added - Warning under seasons when a custom location with custom sunrise and sunset times is active 
+* Fixed - Locking a custom location's sunrise and sunset times would cause it to not be saved correctly
+
 ### 2.1.3 - Curious Djinn
 #### November 16th, 2021
 * Tweaked - Lowered the sensitivity of the auto-scroll that would scroll to the current date
