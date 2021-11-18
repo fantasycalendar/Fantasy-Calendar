@@ -515,6 +515,7 @@ function set_up_edit_inputs(){
 				static_data.seasons.data = [];
                 reindex_location_list();
 				evaluate_season_lengths();
+                evaluate_season_daylength_warning();
 				static_data.seasons.global_settings.periodic_seasons = checked;
 
 				$('.season_text.dated').toggleClass('active', !checked);
@@ -631,6 +632,7 @@ function set_up_edit_inputs(){
 		reindex_season_sortable();
 		populate_preset_season_list();
 		evaluate_season_lengths();
+        evaluate_season_daylength_warning();
 		reindex_location_list();
 		name.val("");
 		do_error_check();
@@ -1132,12 +1134,12 @@ function set_up_edit_inputs(){
 			$(this).closest('.sortable-container').find('.location_season').each(function(season_index){
 				$(this).find('.clock_inputs input').each(function(){
 					let [type, time] = $(this).attr('clocktype').split('_');
-					$(this).val(static_data.seasons.data[season_index].time[type][time])
+					$(this).val(static_data.seasons.data[season_index].time[type][time]).change();
 				}).prop('disabled', true);
 			});
 		}else{
 			$(this).closest('.sortable-container').find('.location_season').each(function(season_index){
-				$(this).find('.clock_inputs input').prop('disabled', false);
+				$(this).find('.clock_inputs input').prop('disabled', false).change();
 			});
 		}
 	});
@@ -2308,6 +2310,7 @@ function set_up_edit_inputs(){
 
 	$(document).on('change', '.season-duration', function(){
 		evaluate_season_lengths();
+        evaluate_season_daylength_warning();
 		rebuild_climate();
 	});
 
@@ -5490,6 +5493,31 @@ function evaluate_season_lengths(){
 
 }
 
+function evaluate_season_daylength_warning(){
+
+    if(!$('#season_daylength_text').length) return;
+
+    let disable = static_data.seasons.data.length == 0 || (!static_data.seasons.global_settings.periodic_seasons && static_data.seasons.global_settings.periodic_seasons !== undefined);
+
+    $('#season_daylength_text').toggleClass('hidden', disable).empty();
+
+    if(disable || !dynamic_data.custom_location) return;
+
+    let custom_location = static_data.seasons.locations[dynamic_data.location];
+
+    if(custom_location.season_based_time) return;
+
+    let html = []
+    html.push(`<div class='container'>`)
+    html.push(`<div class='row py-1'>`)
+    html.push('<i class="col-auto px-0 mr-2 fas fa-exclamation-circle" style="line-height:1.5;"></i>');
+    html.push(`<div class='col px-0'>You are currently using a custom location with custom season sunrise and sunset times. Solstices and equinoxes may behave unexpectedly.</div>`)
+    html.push(`</div></div>`);
+
+    $('#season_daylength_text').html(html.join(''));
+
+}
+
 function recalc_stats(){
 	var year_length = avg_year_length(static_data);
 	var month_length = avg_month_length(static_data);
@@ -5498,6 +5526,7 @@ function recalc_stats(){
 	$('#avg_month_length').text(month_length);
 	$('#avg_month_length').prop('title', month_length);
 	evaluate_season_lengths();
+    evaluate_season_daylength_warning();
 }
 
 
@@ -5819,6 +5848,7 @@ function set_up_edit_values(){
 		$('#locations_warning').toggleClass('hidden', !no_locations);
 
 		evaluate_season_lengths();
+        evaluate_season_daylength_warning()
 
 		for(var i = 0; i < static_data.seasons.locations.length; i++){
 			add_location_to_list(location_list, i, static_data.seasons.locations[i]);

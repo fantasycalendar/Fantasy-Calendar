@@ -807,6 +807,8 @@
 
 				<div class='my-1 small-text' id='season_length_text'></div>
 
+				<div class='my-1 small-text warning' id='season_daylength_text'></div>
+
 				<div class='container season_offset_container'>
 					<div class='row mt-2'>
 						Season offset (days):
