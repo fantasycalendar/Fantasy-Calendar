@@ -53,6 +53,12 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+
+        Log::error($exception);
+        Log::error($exception->getTraceAsString());
+
+        dd($exception);
+
         if($this->isApiCall($request)) {
             if(property_exists($exception, 'validator')) {
                 return response()->json([
@@ -113,9 +119,6 @@ class Handler extends ExceptionHandler
                 return response()->view('errors.default', ['exception' => $exception], 200, $exception->getHeaders());
             }
         }
-
-        Log::error($exception);
-        Log::error($exception->getTraceAsString());
 
         return parent::render($request, $exception);
     }

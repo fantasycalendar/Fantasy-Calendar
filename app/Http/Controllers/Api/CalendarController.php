@@ -124,6 +124,8 @@ class CalendarController extends Controller
 
         $calendar->$method($count)->save();
 
+        logger()->info('here');
+
         return [
             "new_date" => $calendar->current_date
         ];

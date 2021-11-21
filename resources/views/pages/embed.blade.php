@@ -46,6 +46,9 @@
             window.addEventListener('DOMContentLoaded', function(event) {
                 let image_holder = document.getElementById('image_holder');
                 let image = document.createElement('img');
+
+                image.setAttribute('id', 'calendar_image');
+
                 let vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
                 let vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
 
@@ -56,7 +59,7 @@
 
             window.onmessage = function(event) {
                 // $.notify("We got a message:" + event.data, "success");
-                if(typeof event.data === 'object' && event.data.source === 'fantasy-calendar-embed' && typeof window.embeddableActions[event.data.does] === "function") {
+                if(typeof event.data === 'object' && event.data.source === 'fantasy-calendar-embed-parent' && typeof window.embeddableActions[event.data.does] === "function") {
                     console.log("Told to do " + event.data.does + " with " + JSON.stringify(event.data.params))
                     window.embeddableActions[event.data.does](event.data.params);
                 }
@@ -72,6 +75,15 @@
                     this.notifications = [];
                     this.api_token = localStorage.getItem('api_token') ?? '';
                     this.identity = localStorage.getItem('identity') ?? '';
+                },
+
+                bubble: function(args) {
+                    console.log(args, 'here')
+                    
+                    window.top.postMessage({
+                        ...args,
+                        source: 'fantasy-calendar-embed-child'
+                    }, '*')
                 },
 
                 show: function() {
@@ -138,34 +150,58 @@
                 login_form: function() {
                     console.log('Dispatching login')
                     window.dispatchEvent(new CustomEvent('login', {detail: 'Login time'}));
+
                 },
                 apiRequest: function(params) {
-                    @guest
-                        window.embeddableActions.toastify({
+                    let method = params.method;
+                    let details = params.data;
+                    let api_token = FCEmbed.api_token;
+
+                    if(!api_token) {
+                        embeddableActions.toastify({
                             type: 'error',
                             message: 'You must be signed in for this to work!'
                         });
 
                         return;
-                    @else
-                        let method = params.method;
-                        let data = params.data;
-                        let api_token = '{{ auth()->user()->api_token }}';
-                        fetch('/api/calendars/{{ $calendar->hash }}/' + method, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify(data)
+                    }
+
+                    fetch('/api/calendar/{{ $calendar->hash }}/' + method, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + api_token
+                        },
+                        body: JSON.stringify(details)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Success:', data);
+
+                        let image = document.getElementById('calendar_image');
+
+                        let vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+                        let vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+
+                        image.setAttribute('src', "{{ route('calendars.image', ['calendar' => $calendar, 'ext' => 'png']) }}?width=" + vw + "&height=" + vh + "&d=" + (new Date()).getTime());
+
+                        this.toastify({
+                            type: 'success',
+                            message: `${details.count} ${details.unit} added.`
                         })
-                        .then(response => response.json())
-                        .then(data => {
-                            console.log('Success:', data);
+
+                        FCEmbed.bubble({
+                            type: 'calendarUpdated'
                         })
-                        .catch((error) => {
-                            console.error('Error:', error);
-                        });
-                    @endguest
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+
+                        this.toastify({
+                            type: 'error',
+                            message: 'An error occurred trying to update the calendar.'
+                        })
+                    });
                 }
             }
         </script>
@@ -178,14 +214,14 @@
         </div>
 
         <div x-show="show_login_form" class="fixed top-0 right-0 bottom-0 left-0 flex flex-col items-center p-3 bg-white rounded mt-4 shadow">
-            <div class="login_form" x-show="api_token === ''">
+            <div class="login_form" x-show="api_token === ''" x-cloak>
                 <form class="flex flex-col" action="" @submit="login">
                     <input type="text" placeholder="Username/Email" x-model="identity" class="mb-2">
                     <input type="password" placeholder="Password" x-model="password">
                     <button type="submit">Submit</button>
                 </form>
             </div>
-            <div class="p-5" x-show="api_token != ''">
+            <div class="p-5" x-show="api_token != ''" x-cloak>
                 <div class="bg-green-300 border-green-600 text-green-800">
                     You are already signed in as <span x-text="identity" class="font-bold"></span>.
                     <br>

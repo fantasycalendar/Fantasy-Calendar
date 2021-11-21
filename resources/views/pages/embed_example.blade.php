@@ -72,7 +72,7 @@
                 <div class="btn btn-primary" @click="test">
                     Test
                 </div>
-                <div class="btn btn-primary" @click="apitest">
+                <div class="btn btn-primary" @click="login_form">
                     API Test
                 </div>
             </div>
