@@ -4,7 +4,7 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
         onUpdate: false,
         constructor: function(params) {
             if(!params.hash) {
-                console.log("FantasyCalendar error: No hash set.");
+                console.error("FantasyCalendar error: No hash set.");
                 return;
             }
 
@@ -33,11 +33,7 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
         },
 
         handleMessage(event) {
-            console.log(event);
-
             if(event.data.source !== 'fantasy-calendar-embed-child' || !this.onUpdate) {
-                console.log(this.onUpdate);
-
                 return;
             }
 

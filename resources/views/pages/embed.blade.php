@@ -78,8 +78,6 @@
                 },
 
                 bubble: function(args) {
-                    console.log(args, 'here')
-                    
                     window.top.postMessage({
                         ...args,
                         source: 'fantasy-calendar-embed-child'
@@ -213,13 +211,63 @@
             </div>
         </div>
 
-        <div x-show="show_login_form" class="fixed top-0 right-0 bottom-0 left-0 flex flex-col items-center p-3 bg-white rounded mt-4 shadow">
+        <div x-show="show_login_form" class="fixed top-0 right-0 bottom-0 left-0 flex flex-col items-center p-3 bg-white rounded m-6 shadow">
             <div class="login_form" x-show="api_token === ''" x-cloak>
-                <form class="flex flex-col" action="" @submit="login">
-                    <input type="text" placeholder="Username/Email" x-model="identity" class="mb-2">
-                    <input type="password" placeholder="Password" x-model="password">
-                    <button type="submit">Submit</button>
-                </form>
+                <div class="min-h-full flex items-center justify-center p-4 sm:px-6 lg:px-8">
+                    <div class="max-w-md w-full space-y-4">
+                        <div>
+                            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                                Sign in to Fantasy Calendar
+                            </h2>
+                            <p class="mt-2 text-center text-sm text-gray-600">
+                                Or
+                                <a href="{{ route('pricing') }}" class="font-medium text-green-600 hover:text-green-500">
+                                    subscribe ($2.49/month)
+                                </a>
+                            </p>
+                        </div>
+                        <form action="" @submit="login" class="space-y-2">
+                            <input type="hidden" name="remember" value="true">
+                            <div class="rounded-md shadow-sm -space-y-px">
+                                <div>
+                                    <label for="identity" class="sr-only">Email address</label>
+                                    <input id="identity" name="identity" type="text" placeholder="Username/Email" autocomplete="email" x-model="identity" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm" placeholder="Email address">
+                                </div>
+                                <div>
+                                    <label for="password" class="sr-only">Password</label>
+                                    <input id="password" name="password" type="password" placeholder="Password" autocomplete="current-password" x-model="password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm" placeholder="Password">
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded">
+                                    <label for="remember-me" class="ml-2 block text-sm text-gray-900">
+                                        Remember me
+                                    </label>
+                                </div>
+
+                                <div class="text-sm">
+                                    <a href="#" class="font-medium text-green-600 hover:text-green-500">
+                                        Forgot your password?
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div>
+                                <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                  <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                                    <!-- Heroicon name: solid/lock-closed -->
+                                    <svg class="h-5 w-5 text-green-500 group-hover:text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                      <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                                    </svg>
+                                  </span>
+                                    Sign in
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
             <div class="p-5" x-show="api_token != ''" x-cloak>
                 <div class="bg-green-300 border-green-600 text-green-800">
