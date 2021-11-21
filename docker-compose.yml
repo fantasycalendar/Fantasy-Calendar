@@ -88,7 +88,7 @@ services:
     environment:
       - BROWSERSYNC=${FC_BROWSERSYNC:-false}
       - "MIXVERSION=true"
-      - "NODE_OPTIONS=--max-old-space-size=4096"
+      - "NODE_OPTIONS=--max-old-space-size=4096 --openssl-legacy-provider"
 
   mailhog:
     image: mailhog/mailhog
