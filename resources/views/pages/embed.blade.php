@@ -212,6 +212,8 @@
         </div>
 
         <div x-show="show_login_form" class="fixed top-0 right-0 bottom-0 left-0 flex flex-col items-center p-3 bg-white rounded m-6 shadow">
+            <span @click="show_login_form = false;" class="absolute top-2 right-2 text-gray-100 cursor-pointer bg-gray-500 rounded-full leading-1 text-center align-top px-2 -pt-1 text-xl hover:bg-gray-700">&times;</span>
+
             <div class="login_form" x-show="api_token === ''" x-cloak>
                 <div class="min-h-full flex items-center justify-center p-4 sm:px-6 lg:px-8">
                     <div class="max-w-md w-full space-y-4">
@@ -221,7 +223,7 @@
                             </h2>
                             <p class="mt-2 text-center text-sm text-gray-600">
                                 Or
-                                <a href="{{ route('pricing') }}" class="font-medium text-green-600 hover:text-green-500">
+                                <a href="{{ route('subscription.pricing') }}" class="font-medium text-green-600 hover:text-green-500">
                                     subscribe ($2.49/month)
                                 </a>
                             </p>
