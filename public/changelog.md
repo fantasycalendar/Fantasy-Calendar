@@ -1,7 +1,8 @@
-### 2.1.4 - WHAT Djinn
-#### November xxth, 2021
+### 2.1.4 - Investigative Djinn
+#### November 25th, 2021
 * Added - Warning under seasons when a custom location with custom sunrise and sunset times is active 
 * Fixed - Locking a custom location's sunrise and sunset times would cause it to not be saved correctly
+* Fixed - Calendars with only intercalary months would fail to build
 
 ### 2.1.3 - Curious Djinn
 #### November 16th, 2021

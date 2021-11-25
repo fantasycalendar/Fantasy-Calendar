@@ -871,9 +871,7 @@ const calendar_data_generator = {
             const start_epochs = Object.keys(first_timespan.epochs);
             const end_epochs = Object.keys(last_timespan.epochs);
 
-            const first_nonintercalary_timespan = timespans_to_build.filter(timespan => !timespan.intercalary)[0];
-            const first_nonintercalary_epoch =  Object.entries(first_nonintercalary_timespan.epochs)[0][1];
-            const calendar_week_day = first_nonintercalary_epoch.week_day;
+            const calendar_week_day =  Object.values(this.epochs).find(epoch => epoch.year === this.current_year && epoch.week_day) ?? 0;
 
             const calendar_start_epoch = Number(start_epochs[0]);
             const calendar_end_epoch = Number(end_epochs[end_epochs.length - 1]);
