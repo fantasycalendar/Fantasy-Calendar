@@ -871,7 +871,7 @@ const calendar_data_generator = {
             const start_epochs = Object.keys(first_timespan.epochs);
             const end_epochs = Object.keys(last_timespan.epochs);
 
-            const calendar_week_day =  Object.values(this.epochs).find(epoch => epoch.year === this.current_year && epoch.week_day) ?? 0;
+            const calendar_week_day =  Object.values(this.epochs).find(epoch => epoch.year === this.current_year && epoch.week_day)?.week_day ?? 0;
 
             const calendar_start_epoch = Number(start_epochs[0]);
             const calendar_end_epoch = Number(end_epochs[end_epochs.length - 1]);
