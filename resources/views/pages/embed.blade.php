@@ -40,6 +40,43 @@
                 width: auto;
                 object-fit: contain;
             }
+
+            .lds-ripple {
+                display: inline-block;
+                position: relative;
+                width: 80px;
+                height: 80px;
+            }
+            .lds-ripple div {
+                position: absolute;
+                border: 4px solid #fff;
+                opacity: 1;
+                border-radius: 50%;
+                animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+            }
+            .lds-ripple div:nth-child(2) {
+                animation-delay: -0.5s;
+            }
+            @keyframes lds-ripple {
+                0% {
+                    top: 36px;
+                    left: 36px;
+                    width: 0;
+                    height: 0;
+                    opacity: 1;
+                }
+                100% {
+                    top: 0px;
+                    left: 0px;
+                    width: 72px;
+                    height: 72px;
+                    opacity: 0;
+                }
+            }
+
+            *[x-cloak] {
+                display: none;
+            }
         </style>
 
         <script>
@@ -67,6 +104,7 @@
 
             window.FCEmbed = {
                 show_login_form: false,
+                image_loading: false,
                 identity: "",
                 password: "",
                 api_token: "",
@@ -129,11 +167,8 @@
                 },
 
                 toast: function(message) {
-                    console.log(message)
                     this.notifications.push(message);
-
-                    var me = this;
-
+                    const me = this;
                     setTimeout(function(){
                         me.notifications.pop();
                     }, 5000);
@@ -164,6 +199,8 @@
                         return;
                     }
 
+                    window.dispatchEvent(new CustomEvent('image-load'));
+
                     fetch('/api/calendar/{{ $calendar->hash }}/' + method, {
                         method: 'POST',
                         headers: {
@@ -183,10 +220,18 @@
 
                         image.setAttribute('src', "{{ route('calendars.image', ['calendar' => $calendar, 'ext' => 'png']) }}?width=" + vw + "&height=" + vh + "&d=" + (new Date()).getTime());
 
-                        this.toastify({
-                            type: 'success',
-                            message: `${details.count} ${details.unit} added.`
-                        })
+                       console.log("Is image loading?", FCEmbed.image_loading);
+
+                       image.onload = function() {
+                            this.toastify({
+                                type: 'success',
+                                message: `${details.count} ${details.unit} added.`
+                            });
+
+                            console.log("Image claims to have loaded!");
+
+                            window.dispatchEvent(new CustomEvent('image-loaded'));
+                        }.bind(this);
 
                         FCEmbed.bubble({
                             type: 'calendarUpdated'
@@ -194,6 +239,7 @@
                     })
                     .catch((error) => {
                         console.error('Error:', error);
+                        window.dispatchEvent(new CustomEvent('image-loaded'));
 
                         this.toastify({
                             type: 'error',
@@ -204,7 +250,12 @@
             }
         </script>
     </head>
-    <body x-data="FCEmbed" @login.window="console.log('here'); show_login_form = true" @notify.window="toast($event.detail)">
+    <body x-data="FCEmbed"
+          @login.window="console.log('here'); show_login_form = true"
+          @notify.window="toast($event.detail)"
+          @image-load.window="console.log('test'); image_loading = true"
+          @image-loaded.window="console.log('hwasdfasdf'); image_loading = false"
+    >
         <div class="image_grid">
             <div class="image_container">
                 <div id="image_holder"></div>
@@ -271,12 +322,16 @@
                     </div>
                 </div>
             </div>
-            <div class="p-5" x-show="api_token != ''" x-cloak>
-                <div class="bg-green-300 border-green-600 text-green-800">
-                    You are already signed in as <span x-text="identity" class="font-bold"></span>.
-                    <br>
-                    <a href="javascript:" @click="api_token = ''; show_login_form = false; localStorage.removeItem('api_token'); localStorage.removeItem('identity');">Sign out</a>
-                    <a href="javascript:" @click="show_login_form = false;">Cancel</a>
+            <div class="w-full h-full p-5 grid place-items-center" x-show="api_token != ''" x-cloak>
+                <div>
+                    <div class="bg-green-100 border-green-300 text-green-600 p-2 rounded mt-12 ">
+                        <div>
+                            You are already signed in as <span x-text="identity" class="font-bold"></span>.
+                        </div>
+                    </div>
+
+                    <a class="inline-block pt-2 text-red-600 text-right w-full" href="javascript:" @click="api_token = ''; show_login_form = false; localStorage.removeItem('api_token'); localStorage.removeItem('identity');">Sign out</a>
+
                 </div>
             </div>
         </div>
@@ -293,6 +348,14 @@
                         </div>
                     </div>
                 </template>
+            </div>
+        </div>
+
+        <div class="absolute top-0 right-0 left-0 bottom-0 w-full h-full grid place-items-center" x-show="image_loading" x-cloak>
+            <div class="bg-gray-800 absolute top-0 left-0 right-0 bottom-0 w-full h-full opacity-60 z-10"></div>
+            <div class="loading-wrapper flex flex-col z-30">
+                <div class="lds-ripple"><div></div><div></div></div>
+                <span class="w-full text-center text-white text-xl font-bold">Loading...</span>
             </div>
         </div>
     </body>
