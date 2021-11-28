@@ -57,7 +57,7 @@
     </head>
     <body>
         <div class="image_grid" x-data="FantasyCalendar({
-                hash: 'c9602f8a2a50009fbe06c01ce1d9e835',
+                hash: 'dfde30abfd3195d1543f8edb3b1ebd10',
                 element: 'fantasy-calendar-embed',
             })">
             <div class="image_container">
@@ -71,6 +71,9 @@
                 </div>
                 <div class="btn btn-primary" @click="test">
                     Test
+                </div>
+                <div class="btn btn-primary" @click="getCurrentDate((result) => console.log(result))">
+                    Get Current Date
                 </div>
                 <div class="btn btn-primary" @click="login_form">
                     API Test

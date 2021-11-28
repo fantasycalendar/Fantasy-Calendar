@@ -27,6 +27,7 @@ Route::any('/calendar/{calendar}/children', 'Api\CalendarController@children');
 Route::any('/calendar/{calendar}/last_changed', 'Api\CalendarController@last_changed');
 Route::any('/calendar/{calendar}/dynamic_data', 'Api\CalendarController@dynamic_data');
 Route::any('/calendar/{calendar}/changeDate', 'Api\CalendarController@changeDate');
+Route::any('/calendar/{calendar}/getCurrentDate', 'Api\CalendarController@getCurrentDate');
 Route::apiResource('calendar', 'Api\CalendarController');
 
 

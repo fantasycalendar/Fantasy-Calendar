@@ -195,11 +195,8 @@
                             type: 'error',
                             message: 'You must be signed in for this to work!'
                         });
-
                         return;
                     }
-
-                    window.dispatchEvent(new CustomEvent('image-load'));
 
                     fetch('/api/calendar/{{ $calendar->hash }}/' + method, {
                         method: 'POST',
@@ -213,6 +210,14 @@
                     .then(data => {
                         console.log('Success:', data);
 
+                        if(method.startsWith('get')){
+                            FCEmbed.bubble({
+                                type: `${method}Response`,
+                                data
+                            });
+                            return;
+                        }
+
                         let image = document.getElementById('calendar_image');
 
                         let vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
@@ -220,21 +225,22 @@
 
                         image.setAttribute('src', "{{ route('calendars.image', ['calendar' => $calendar, 'ext' => 'png']) }}?width=" + vw + "&height=" + vh + "&d=" + (new Date()).getTime());
 
-                       console.log("Is image loading?", FCEmbed.image_loading);
+                        const loadingTimeout = setTimeout(function() {
+                            window.dispatchEvent(new CustomEvent('image-load'));
+                        }, 200)
 
-                       image.onload = function() {
+                        image.onload = function() {
                             this.toastify({
                                 type: 'success',
                                 message: `${details.count} ${details.unit} added.`
                             });
-
-                            console.log("Image claims to have loaded!");
-
+                            clearTimeout(loadingTimeout);
                             window.dispatchEvent(new CustomEvent('image-loaded'));
                         }.bind(this);
 
                         FCEmbed.bubble({
-                            type: 'calendarUpdated'
+                            type: 'calendarUpdated',
+                            data
                         })
                     })
                     .catch((error) => {
@@ -251,10 +257,10 @@
         </script>
     </head>
     <body x-data="FCEmbed"
-          @login.window="console.log('here'); show_login_form = true"
+          @login.window="show_login_form = true"
           @notify.window="toast($event.detail)"
-          @image-load.window="console.log('test'); image_loading = true"
-          @image-loaded.window="console.log('hwasdfasdf'); image_loading = false"
+          @image-load.window="image_loading = true"
+          @image-loaded.window="image_loading = false"
     >
         <div class="image_grid">
             <div class="image_container">

@@ -56,6 +56,7 @@ use Illuminate\Support\Str;
  * @property Epoch epoch
  * @property string name
  * @property string current_date
+ * @property string raw_date
  * @method static findOrFail(array|\ArrayAccess|mixed $setting)
  */
 class Calendar extends Model
@@ -310,6 +311,26 @@ class Calendar extends Model
         $day = $this->day;
 
         return sprintf("%s %s, %s", $day, $month, $year);
+    }
+
+    /**
+     * Get the current date as an array
+     *
+     * @return array
+     */
+    public function getRawDateAttribute(): array
+    {
+        if(!$this->current_date_valid) {
+            return [];
+        }
+
+        return [
+            $this->year,
+            $this->month_id,
+            $this->day,
+            $this->dynamic_data["hour"],
+            $this->dynamic_data["minute"],
+        ];
     }
 
     /**

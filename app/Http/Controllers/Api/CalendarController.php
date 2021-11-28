@@ -122,12 +122,25 @@ class CalendarController extends Controller
         $method = 'add'. ucfirst($request->input('unit'));
         $count = $request->input('count');
 
+        $epoch = $calendar->epoch->epoch;
+
         $calendar->$method($count)->save();
+
+        $dayDifference = abs($epoch - $calendar->epoch->epoch);
 
         logger()->info('here');
 
         return [
-            "new_date" => $calendar->current_date
+            "date_string" => $calendar->current_date,
+            "date" => $calendar->raw_date,
+            "delta" => $dayDifference
+        ];
+    }
+
+    public function getCurrentDate(Request $request, Calendar $calendar) {
+        return [
+            "date_string" => $calendar->current_date,
+            "date" => $calendar->raw_date
         ];
     }
 

@@ -2,20 +2,16 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
     return {
         config: {},
         onUpdate: false,
+        getCurrentDateCallback: false,
         constructor: function(params) {
             if(!params.hash) {
                 console.error("FantasyCalendar error: No hash set.");
                 return;
             }
 
-            this.count = params.count ?? 1;
-            this.unit = params.unit ?? 'days';
-
-            let replaceElement = document.getElementById(params.element) ?? document.scripts[document.scripts.length - 1];
-
             this.config = {
-                element: replaceElement,
-                url: 'https://fantasy-calendar.test/embed/' + params.hash,
+                element: document.getElementById(params.element) ?? document.scripts[document.scripts.length - 1],
+                url: 'http://fantasy-calendar.test:9980/embed/' + params.hash,
                 width: params.width,
                 height: params.height,
                 embedNow: params.embedNow ?? true
@@ -33,16 +29,22 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
         },
 
         handleMessage(event) {
-            if(event.data.source !== 'fantasy-calendar-embed-child' || !this.onUpdate) {
+            if(event.data.source !== 'fantasy-calendar-embed-child') {
                 return;
             }
 
-            this.onUpdate(event.data);
+            if(event.data.type === "getCurrentDateResponse" && this.getCurrentDateCallback){
+                this.getCurrentDateCallback(event.data.data);
+                this.getCurrentDateCallback = false;
+            }
+
+            if(event.data.type === "calendarUpdated" && this.onUpdate){
+                this.onUpdate(event.data);
+            }
         },
 
-        // FantasyCalendar({}).setCalendar().embed()
         setCalendar(hash){
-            this.config.url = 'https://fantasy-calendar.test/embed/' + hash;
+            this.config.url = 'http://fantasy-calendar.test:9980/embed/' + hash;
             if(this.iframe){
                 this.iframe.setAttribute('src', this.config.url);
             }
@@ -53,16 +55,11 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
         embed: function(replaceElement = null) {
             replaceElement = replaceElement ?? this.config.element;
 
-            if(this.iframe) {
-                this.iframe.remove();
-            }
-
             if(typeof replaceElement === 'string') {
-                let found = document.querySelector(replaceElement);
+                const found = document.querySelector(replaceElement);
                 if(!found) {
                     throw new Error(`Invalid selector provided: '${replaceElement}'`);
                 }
-
                 replaceElement = found;
             }
 
@@ -74,11 +71,15 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
                 throw new Error("Could not find element to embed to");
             }
 
-            let placementElement = document.createElement('div');
+            if(this.iframe) {
+                this.iframe.remove();
+            }
+
+            const placementElement = document.createElement('div');
             replaceElement.parentNode.insertBefore(placementElement, replaceElement);
 
             console.log("We were asked to embed");
-            let iframe = document.createElement('iframe');
+            const iframe = document.createElement('iframe');
             iframe.setAttribute('src', this.config.url);
             iframe.setAttribute('width', this.config.width ?? replaceElement.parentElement.offsetWidth);
             iframe.setAttribute('height', this.config.height ?? replaceElement.parentElement.offsetHeight);
@@ -119,40 +120,48 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
             this.changeDateTime("minutes", count);
         },
 
-        subMinutes: function(count = -1){
-            this.changeDateTime("minutes", count);
+        subMinutes: function(count = 1){
+            this.changeDateTime("minutes", count * -1);
         },
 
         addHours: function(count = 1){
             this.changeDateTime("hours", count);
         },
 
-        subHours: function(count = -1){
-            this.changeDateTime("hours", count);
+        subHours: function(count = 1){
+            this.changeDateTime("hours", count * -1);
         },
 
         addDays: function(count = 1){
             this.changeDateTime("days", count);
         },
 
-        subDays: function(count = -1){
-            this.changeDateTime("days", count);
+        subDays: function(count = 1){
+            this.changeDateTime("days", count * -1);
         },
 
         addMonths: function(count = 1){
             this.changeDateTime("months", count);
         },
 
-        subMonths: function(count = -1){
-            this.changeDateTime("months", count);
+        subMonths: function(count = 1){
+            this.changeDateTime("months", count * -1);
         },
 
         addYears: function(count = 1){
             this.changeDateTime("years", count);
         },
 
-        subYears: function(count = -1){
-            this.changeDateTime("years", count);
+        subYears: function(count = 1){
+            this.changeDateTime("years", count * -1);
+        },
+
+        getCurrentDate: function(callback){
+            this.remoteAction('apiRequest', {
+                method: 'getCurrentDate'
+            });
+            if(typeof callback !== "function") return;
+            this.getCurrentDateCallback = callback;
         },
 
         test: function() {
