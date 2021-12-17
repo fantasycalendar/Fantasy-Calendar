@@ -532,7 +532,7 @@ const calendar_data_generator = {
                                     'era_year': unconvert_year(this.static_data, era_year),
 
                                     'timespan_index': current_timespan.index,
-                                    'timespan_number': year_num_timespans - 1,
+                                    'timespan_number': year_num_timespans,
                                     'timespan_count': count_timespans[current_timespan.index],
                                     'num_timespans': num_timespans,
                                     'timespan_name': current_timespan.name,
@@ -584,7 +584,7 @@ const calendar_data_generator = {
                             'era_year': unconvert_year(this.static_data, era_year),
 
                             'timespan_index': current_timespan.index,
-                            'timespan_number': year_num_timespans - 1,
+                            'timespan_number': year_num_timespans,
                             'timespan_count': count_timespans[current_timespan.index],
                             'num_timespans': num_timespans,
                             'timespan_name': current_timespan.name,
@@ -639,7 +639,7 @@ const calendar_data_generator = {
                                     'era_year': unconvert_year(this.static_data, era_year),
 
                                     'timespan_index': current_timespan.index,
-                                    'timespan_number': year_num_timespans - 1,
+                                    'timespan_number': year_num_timespans,
                                     'timespan_count': count_timespans[current_timespan.index],
                                     'num_timespans': num_timespans,
                                     'timespan_name': current_timespan.name,
@@ -742,11 +742,12 @@ const calendar_data_generator = {
 				}else{
 					era_year++;
 				}
-				year_day = 1;
-				year_num_timespans = 0;
-				year_week_num = 1;
 				inverse_year_week_num = 1 + evaluate_calendar_start(this.static_data, this.current_year+1).total_week_num - evaluate_calendar_start(this.static_data, this.current_year).total_week_num;
 			}
+
+            year_day = 1;
+            year_num_timespans = 0;
+            year_week_num = 1;
 
         }
 
