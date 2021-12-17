@@ -872,7 +872,11 @@ const calendar_data_generator = {
             const end_epochs = Object.keys(last_timespan.epochs);
 
             const year = unconvert_year(this.static_data, this.current_year);
-            const calendar_week_day =  Object.values(this.epochs).find(epoch => epoch.year === year && epoch.week_day !== undefined)?.week_day ?? 0;
+            const calendar_week_day = this.render_one_month
+                ? Object.values(first_timespan.epochs)[0]?.week_day ?? 0
+                : Object.values(this.epochs).find(epoch => {
+                    return epoch.year === year && epoch.week_day !== undefined;
+                })?.week_day ?? 0;
 
             const calendar_start_epoch = Number(start_epochs[0]);
             const calendar_end_epoch = Number(end_epochs[end_epochs.length - 1]);
