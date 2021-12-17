@@ -1,3 +1,9 @@
+### 2.1.5 - Festive Djinn
+#### December 17th, 2021 
+* Fixed - Fixed month header number count being off
+* Fixed - Fixed limited repetition events acting wonky when show only current month was active
+* Fixed - Fixed show only current month breaking first weekday flow
+
 ### 2.1.4 - Investigative Djinn
 #### November 25th, 2021
 * Added - Warning under seasons when a custom location with custom sunrise and sunset times is active 
