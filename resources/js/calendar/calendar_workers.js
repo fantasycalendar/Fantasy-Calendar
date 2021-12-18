@@ -532,7 +532,7 @@ const calendar_data_generator = {
                                     'era_year': unconvert_year(this.static_data, era_year),
 
                                     'timespan_index': current_timespan.index,
-                                    'timespan_number': year_num_timespans,
+                                    'timespan_number': year_num_timespans - 1,
                                     'timespan_count': count_timespans[current_timespan.index],
                                     'num_timespans': num_timespans,
                                     'timespan_name': current_timespan.name,
@@ -584,7 +584,7 @@ const calendar_data_generator = {
                             'era_year': unconvert_year(this.static_data, era_year),
 
                             'timespan_index': current_timespan.index,
-                            'timespan_number': year_num_timespans,
+                            'timespan_number': year_num_timespans - 1,
                             'timespan_count': count_timespans[current_timespan.index],
                             'num_timespans': num_timespans,
                             'timespan_name': current_timespan.name,
@@ -639,7 +639,7 @@ const calendar_data_generator = {
                                     'era_year': unconvert_year(this.static_data, era_year),
 
                                     'timespan_index': current_timespan.index,
-                                    'timespan_number': year_num_timespans,
+                                    'timespan_number': year_num_timespans - 1,
                                     'timespan_count': count_timespans[current_timespan.index],
                                     'num_timespans': num_timespans,
                                     'timespan_name': current_timespan.name,
