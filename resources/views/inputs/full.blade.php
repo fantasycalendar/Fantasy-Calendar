@@ -141,6 +141,8 @@
                             <input class='form-control form-control-sm text-right protip' type='number' id='current_hour' data-pt-position='top' data-pt-title="The current hour of day">
                             <span class="px-1">:</span>
                             <input class='form-control form-control-sm protip' type='number' id='current_minute' data-pt-position='top' data-pt-title="The current minute of the hour">
+                            <span class="px-1">:</span>
+                            <input class='form-control form-control-sm protip' type='number' id='current_second' data-pt-position='top' data-pt-title="The current second in the minute">
 
                             <div class='input-group-append'>
                                 <button type='button' class='btn small-text btn-success adjust_minute' val='30'>30m</button>
@@ -225,6 +227,9 @@
 							<div class='col-md-6 col-sm-12'>
 								<input type='number' class="form-control form-control-sm full" id='unit_minutes' placeholder="Minutes">
 							</div>
+							<div class='col-md-6 col-sm-12'>
+								<input type='number' class="form-control form-control-sm full" id='unit_seconds' placeholder="Seconds">
+							</div>
 						</div>
 
 						@if(request()->is('calendars/*/edit') && $calendar->parent == null)
@@ -275,16 +280,19 @@
 				<div class='clock_inputs'>
 
 					<div class='row mt-2'>
-						<div class='col-6 bold-text'>
+						<div class='col-4 bold-text'>
 							Hours:
 						</div>
-						<div class='col-6 pl-0 bold-text'>
+						<div class='col-4 pl-0 bold-text'>
 							Minutes:
+						</div>
+						<div class='col-4 pl-0 bold-text'>
+							Seconds:
 						</div>
 					</div>
 
 					<div class='row mb-2'>
-							<div class='col-6 input-group'>
+							<div class='col-4 input-group'>
 								@if(request()->is('calendars/*/edit') && $calendar->isLinked())
 									{{ Arr::get($calendar->static_data, 'clock.hours') }}
 								@else
@@ -298,7 +306,7 @@
 								@endif
 							</div>
 
-							<div class='col-6 input-group pl-0'>
+							<div class='col-4 input-group pl-0'>
 								@if(request()->is('calendars/*/edit') && $calendar->isLinked())
 									{{ Arr::get($calendar->static_data, 'clock.minutes') }}
 								@else
@@ -308,6 +316,20 @@
 									<input class='form-control form-control-sm static_input' min='1' id='clock_minutes' data='clock' fc-index='minutes' type='number'>
 									<div class='input-group-append'>
 										<button type='button' class='btn btn-sm btn-success' onclick='adjustInput(this, "#clock_minutes", +1);'><i class="icon-plus"></i></button>
+									</div>
+								@endif
+							</div>
+
+							<div class='col-4 input-group pl-0'>
+								@if(request()->is('calendars/*/edit') && $calendar->isLinked())
+									{{ Arr::get($calendar->static_data, 'clock.seconds') }}
+								@else
+									<div class='input-group-prepend'>
+										<button type='button' class='btn btn-sm btn-danger' onclick='adjustInput(this, "#clock_seconds", -1);'><i class="icon-minus"></i></button>
+									</div>
+									<input class='form-control form-control-sm static_input' min='1' id='clock_seconds' data='clock' fc-index='seconds' type='number'>
+									<div class='input-group-append'>
+										<button type='button' class='btn btn-sm btn-success' onclick='adjustInput(this, "#clock_seconds", +1);'><i class="icon-plus"></i></button>
 									</div>
 								@endif
 							</div>

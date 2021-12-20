@@ -35,6 +35,7 @@ function set_up_view_inputs(){
 
 	current_hour = $('#current_hour');
 	current_minute = $('#current_minute');
+	current_second = $('#current_second');
 
 	location_select = $('#location_select');
 
@@ -244,6 +245,39 @@ function set_up_view_inputs(){
 		evaluate_save_button();
 	});
 
+	current_second.change(function(){
+
+		var curr_second = current_second.val()|0;
+        var curr_minute = current_minute.val()|0;
+
+		if(curr_second < 0){
+			curr_second = Math.abs(static_data.clock.seconds+curr_second);
+            curr_minute.val(curr_minute-1).change();
+		}else if(curr_second >= static_data.clock.seconds){
+			curr_second = Math.abs(static_data.clock.seconds-curr_second);
+            curr_minute.val(curr_minute+1).change();
+		}
+
+		dynamic_data.second = curr_second;
+		current_second.val(curr_second);
+
+		var apply_changes_immediately = $('#apply_changes_immediately');
+
+		if(apply_changes_immediately.length == 0){
+			apply_changes_immediately = true;
+		}else{
+			apply_changes_immediately = apply_changes_immediately.is(':checked');
+		}
+
+		if(!apply_changes_immediately){
+			evaluate_apply_show_hide();
+			return;
+		}
+
+		eval_current_time();
+		evaluate_save_button();
+	});
+
 	location_select.change(function(){
 
 		var prev_location_type = dynamic_data.custom_location;
@@ -267,11 +301,13 @@ function set_up_view_inputs(){
 		if(prev_location_type){
 			dynamic_data.hour -= prev_location.settings.timezone.hour;
 			dynamic_data.minute -= prev_location.settings.timezone.minute;
+			dynamic_data.second -= prev_location.settings.timezone?.minute ?? 0;
 		}
 
 		if(dynamic_data.custom_location){
 			dynamic_data.hour += location.settings.timezone.hour;
 			dynamic_data.minute += location.settings.timezone.minute;
+            dynamic_data.second += prev_location.settings.timezone?.minute ?? 0;
 		}
 
 		if(dynamic_data.minute < 0){
@@ -293,6 +329,7 @@ function set_up_view_inputs(){
 
 		current_hour.val(dynamic_data.hour);
 		current_minute.val(dynamic_data.minute);
+		current_second.val(dynamic_data.second);
 
 		if(day_adjust != 0){
 			if(day_adjust > 0){
@@ -331,6 +368,7 @@ function set_up_view_inputs(){
 	$('#unit_days').val("");
 	$('#unit_hours').val("");
 	$('#unit_minutes').val("");
+	$('#unit_seconds').val("");
 
 }
 
@@ -342,6 +380,7 @@ function increment_date_units(current){
 	var unit_days = $('#unit_days').val()|0;
 	var unit_hours = $('#unit_hours').val()|0;
 	var unit_minutes = $('#unit_minutes').val()|0;
+	var unit_seconds = $('#unit_seconds').val()|0;
 
 	if(current){
 		var manager = dynamic_date_manager;
@@ -366,17 +405,24 @@ function increment_date_units(current){
 	}
 
 	let extra_days = 0;
+	let new_hour = dynamic.data.hour;
+	let new_minute = dynamic.data.minute;
+	let new_second = dynamic.data.second;
 
 	if(static_data.clock.enabled){
 
-		let extra_hours = (unit_minutes+dynamic_data.minute)/static_data.clock.minutes;
+		let extra_minutes = (unit_seconds+dynamic_data.second)/static_data.clock.seconds;
+		let extra_hours = (unit_minutes+extra_minutes+dynamic_data.minute)/static_data.clock.minutes;
 		extra_days = (unit_hours+extra_hours+dynamic_data.hour)/static_data.clock.hours;
 
-		var new_hour = precisionRound(fract(extra_days) * static_data.clock.hours, 4);
-		var new_minute = Math.floor(fract(new_hour) * static_data.clock.minutes);
+		new_hour = precisionRound(fract(extra_days) * static_data.clock.hours, 4);
+		new_minute = fract(new_hour) * static_data.clock.minutes;
+		new_second = fract(new_minute) * static_data.clock.seconds;
 
 		extra_days = Math.floor(extra_days);
 		new_hour = Math.floor(new_hour);
+		new_minute = Math.floor(new_minute);
+        new_second = Math.floor(new_second);
 
 	}
 
@@ -393,11 +439,12 @@ function increment_date_units(current){
 	if(current){
 
 		if(static_data.clock.enabled){
-			if(dynamic_data.hour != new_hour || dynamic_data.minute != new_minute){
+			if(dynamic_data.hour !== new_hour || dynamic_data.minute !== new_minute || dynamic_data.second !== new_second){
 				dynamic_data.hour = new_hour
 				dynamic_data.minute = new_minute;
 				current_hour.val(new_hour);
 				current_minute.val(new_minute);
+				current_second.val(new_second);
 				eval_clock();
 			}
 		}
@@ -524,10 +571,11 @@ function set_up_view_values(){
 
 	repopulate_day_select(current_day, dynamic_data.day, false);
 
-	if(static_data.clock && dynamic_data.hour !== undefined && dynamic_data.minute !== undefined){
+	if(static_data.clock){
 
 		current_hour.val(dynamic_data.hour).prop('min', -1).prop('max', static_data.clock.hours);
 		current_minute.val(dynamic_data.minute).prop('min', -1).prop('max', static_data.clock.minutes);
+		current_second.val(dynamic_data.second).prop('min', -1).prop('max', static_data.clock.seconds);
 
 	}
 

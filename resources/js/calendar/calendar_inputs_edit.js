@@ -291,6 +291,7 @@ function set_up_edit_inputs(){
 
 		dynamic_data.hour = 0;
 		dynamic_data.minute = 0;
+		dynamic_data.second = 0;
 
 		evaluate_clock_inputs();
 
@@ -747,6 +748,7 @@ function set_up_edit_inputs(){
 				"timezone": {
 					"hour": 0,
 					"minute": 0,
+					"second": 0,
 				},
 
 				"season_based_time": true,
@@ -4413,6 +4415,10 @@ function get_errors(){
             errors.push(`If the clock is enabled, you need to have more than 0 minutes per hour.`);
         }
 
+	    if(static_data.clock.seconds === 0){
+            errors.push(`If the clock is enabled, you need to have more than 0 seconds per minute.`);
+        }
+
     }
 
 	return errors;
@@ -5048,6 +5054,7 @@ function reindex_location_list(){
 				"timezone": {
 					"hour": ($(this).find("input[fc-index='timezone_hour']").val()|0),
 					"minute": ($(this).find("input[fc-index='timezone_minute']").val()|0),
+					"second": ($(this).find("input[fc-index='timezone_second']").val()|0),
 				},
 
 				"season_based_time": $(this).find("input[fc-index='season_based_time']").is(":checked"),
@@ -5730,7 +5737,10 @@ function evaluate_clock_inputs(){
 		$(this).prop('min', 0).prop('max', static_data.clock.hours).not('[clocktype]').prop('disabled', !static_data.clock.enabled).toggleClass('hidden', !static_data.clock.enabled);
 	});
 	$('.minute_input').each(function(){
-		$(this).prop('min', 1).prop('max', static_data.clock.minutes-1).not('[clocktype]').prop('disabled', !static_data.clock.enabled).toggleClass('hidden', !static_data.clock.enabled);
+		$(this).prop('min', 0).prop('max', static_data.clock.minutes-1).not('[clocktype]').prop('disabled', !static_data.clock.enabled).toggleClass('hidden', !static_data.clock.enabled);
+	});
+	$('.second_input').each(function(){
+		$(this).prop('min', 0).prop('max', static_data.clock.seconds-1).not('[clocktype]').prop('disabled', !static_data.clock.enabled).toggleClass('hidden', !static_data.clock.enabled);
 	});
 
 	$('input[clocktype="timezone_hour"]').each(function(){
@@ -5738,6 +5748,9 @@ function evaluate_clock_inputs(){
 	});
 	$('input[clocktype="timezone_minute"]').each(function(){
 		$(this).prop('min', static_data.clock.minutes*-0.5).prop('max', static_data.clock.minutes*0.5).prop('disabled', !static_data.clock.enabled).toggleClass('hidden', !static_data.clock.enabled);
+	});
+	$('input[clocktype="timezone_second"]').each(function(){
+		$(this).prop('min', static_data.clock.seconds*-0.5).prop('max', static_data.clock.seconds*0.5).prop('disabled', !static_data.clock.enabled).toggleClass('hidden', !static_data.clock.enabled);
 	});
 
 	$('#create_season_events').prop('disabled', static_data.seasons.data.length == 0 && !static_data.clock.enabled);

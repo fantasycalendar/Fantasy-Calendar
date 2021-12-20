@@ -661,7 +661,8 @@ var preset_data = {
 
 		"timezone": {
 			"hour": 0,
-			"minute": 0
+			"minute": 0,
+			"second": 0
 		},
 
 		"large_noise_frequency": 0.015,

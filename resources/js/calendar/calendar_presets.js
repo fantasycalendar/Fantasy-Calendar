@@ -298,6 +298,7 @@ function parse_json(json){
                 "render":false,
                 "hours":24,
                 "minutes":60,
+                "seconds":60,
                 "offset":0,
                 "crowding":0,
             },
@@ -622,6 +623,15 @@ function process_fantasycalendar(calendar, dynamic_data, static_data){
 			static_data.clock.minutes = Number(calendar.static_data.clock.minutes);
 		}else{
 			static_data.clock.minutes = 60;
+		}
+
+		if(calendar.static_data.clock.seconds !== undefined && !isNaN(Number(calendar.static_data.clock.seconds))){
+			if(Number(calendar.static_data.clock.seconds) < 1){
+				throw `Clock has invalid amount of seconds!`;
+			}
+			static_data.clock.seconds = Number(calendar.static_data.clock.seconds);
+		}else{
+			static_data.clock.seconds = 60;
 		}
 
 		if(calendar.static_data.clock.offset !== undefined && !isNaN(Number(calendar.static_data.clock.offset))){

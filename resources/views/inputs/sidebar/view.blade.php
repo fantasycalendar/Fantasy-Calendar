@@ -127,6 +127,8 @@
                         <input class='form-control form-control-sm text-right protip' type='number' id='current_hour' data-pt-position='top' data-pt-title="The current hour of day">
                         <span class="px-1">:</span>
                         <input class='form-control form-control-sm protip' type='number' id='current_minute' data-pt-position='top' data-pt-title="The current minute of the hour">
+                        <span class="px-1">:</span>
+                        <input class='form-control form-control-sm protip' type='number' id='current_second' data-pt-position='top' data-pt-title="The current second in the minute">
 
                         <div class='input-group-append'>
                             <button type='button' class='btn small-text btn-success adjust_minute' val='30'>30m</button>
@@ -211,6 +213,9 @@
                         </div>
                         <div class='col-md-6 col-sm-12'>
                             <input type='number' class="form-control form-control-sm full" id='unit_minutes' placeholder="Minutes">
+                        </div>
+                        <div class='col-md-6 col-sm-12'>
+                            <input type='number' class="form-control form-control-sm full" id='unit_seconds' placeholder="Seconds">
                         </div>
                     </div>
 
