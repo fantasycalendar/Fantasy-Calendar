@@ -15,6 +15,7 @@ use Illuminate\Support\Str;
 /**
  * Trait HasDate
  * @package App\Models\Concerns
+ * @method Calendar addSecond()
  * @method Calendar addMinute()
  * @method Calendar subMinute()
  * @method Calendar addHour()
@@ -29,6 +30,55 @@ use Illuminate\Support\Str;
 trait HasDate
 {
     /**
+     * Add a set of seconds to the current time of this calendar
+     *
+     * @param int $seconds
+     * @return Calendar
+     */
+    public function addSeconds(int $seconds = 1): Calendar
+    {
+        if(!$this->clock_enabled) return $this;
+
+        $minutesAdded = ($this->dynamic('second') + $seconds) / $this->clock['seconds'];
+        $hoursAdded = ($this->dynamic('minute') + $minutesAdded) / $this->clock['minutes'];
+        $daysAdded = ($this->dynamic('hour') + $hoursAdded) / $this->clock['hours'];
+
+        $currentHour = fmod($daysAdded, 1) * $this->clock['hours'];
+
+        if($currentHour < 0){
+            $currentHour += $this->clock['hours'];
+        }
+
+        $currentSecond = (int) round(fmod($currentHour, 1) * $this->clock['seconds']);
+        $currentMinute = (int) round($currentSecond * $this->clock['minutes']);
+        $currentHour = (int) floor($currentHour);
+
+        if($currentSecond === $this->clock['seconds']) {
+            $currentMinute++;
+            $currentSecond = 0;
+
+            if($currentMinute === $this->clock['minutes']) {
+                $currentHour++;
+                $currentMinute = 0;
+
+                if($currentHour === $this->clock['hours']) {
+                    $daysAdded++;
+                    $currentHour = 0;
+                }
+            }
+        }
+
+        $this->dynamic([
+            'hour' => $currentHour,
+            'minute' => $currentMinute,
+            'second' => $currentSecond
+        ]);
+
+        return $this->addDays(floor($daysAdded));
+
+    }
+
+    /**
      * Add a set of minutes to the current time of this calendar
      *
      * @param $minutes
@@ -38,35 +88,11 @@ trait HasDate
     {
         if(!$this->clock_enabled) return $this;
 
-        $hoursAdded = ($this->dynamic('minute') + $minutes) / $this->clock['minutes'];
-        $daysAdded = ($this->dynamic('hour') + $hoursAdded) / $this->clock['hours'];
+        $seconds = $minutes * $this->clock['seconds'];
 
-        $currentHour = fmod($daysAdded, 1) * $this->clock['hours'];
-
-        if($currentHour < 0){
-            $currentHour += $this->clock['hours'];
-        }
-
-        $currentMinute = (int) round(fmod($currentHour, 1) * $this->clock['minutes']);
-        $currentHour = (int) floor($currentHour);
-
-        if($currentMinute === $this->clock['minutes']) {
-            $currentHour++;
-            $currentMinute = 0;
-
-            if($currentHour === $this->clock['hours']) {
-                $daysAdded++;
-                $currentHour = 0;
-            }
-        }
-
-        $this->dynamic([
-            'hour' => $currentHour,
-            'minute' => $currentMinute
-        ]);
-
-        return $this->addDays(floor($daysAdded));
+        return $this->addSeconds($seconds);
     }
+
     /**
      * Add a set of hours to the current time of this calendar
      *
@@ -77,9 +103,9 @@ trait HasDate
     {
         if(!$this->clock_enabled) return $this;
 
-        $minutes = $hours * $this->clock['minutes'];
+        $seconds = $hours * $this->clock['minutes'] * $this->clock['seconds'];
 
-        return $this->addMinutes($minutes);
+        return $this->addSeconds($seconds);
     }
 
     /**
@@ -175,18 +201,20 @@ trait HasDate
      * @param null $day
      * @return $this
      */
-    public function setDate(int $targetYear, $timespanId = null, $day = null, $hour = null, $minute = null): Calendar
+    public function setDate(int $targetYear, $timespanId = null, $day = null, $hour = null, $minute = null, $second = null): Calendar
     {
         $targetTimespan = $timespanId ?? $this->dynamic('timespan');
         $targetDay = $day ?? $this->dynamic('day');
         $targetHour = $hour ?? $this->dynamic('hour');
         $targetMinute = $minute ?? $this->dynamic('minute');
+        $targetSecond = $second ?? $this->dynamic('second');
 
         $this->dynamic('year', $this->findNearestValidYear($targetYear));
         $this->dynamic('timespan', $this->findNearestValidMonth($targetTimespan));
         $this->dynamic('day', $this->findNearestValidDay($targetDay));
         $this->dynamic('hour', $targetHour);
         $this->dynamic('minute', $targetMinute);
+        $this->dynamic('second', $targetSecond);
 
         return $this;
     }

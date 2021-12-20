@@ -170,6 +170,10 @@ class Calendar extends Model
             return true;
         }
 
+        if ($this->static_data['clock']['seconds'] != $static_data['clock']['seconds']) {
+            return true;
+        }
+
         if ($this->static_data['year_data'] != $static_data['year_data']) {
             return true;
         }
@@ -234,13 +238,14 @@ class Calendar extends Model
         return isset($this->static_data['clock']['enabled'])
             && isset($this->dynamic_data['hour'])
             && isset($this->dynamic_data['minute'])
+            && isset($this->dynamic_data['second'])
             && $this->static_data['clock']['enabled'];
     }
 
-    public function getDailyMinutesAttribute(): int
+    public function getDailySecondsAttribute(): int
     {
         return $this->clock_enabled
-            ? $this->clock['hours'] * $this->clock['minutes']
+            ? $this->clock['hours'] * $this->clock['minutes'] * $this->clock['seconds']
             : 0;
     }
 
@@ -566,11 +571,13 @@ class Calendar extends Model
 
         $hours = strlen($this->clock['hours']);
         $minutes = strlen($this->clock['minutes']);
+        $seconds = strlen($this->clock['seconds']);
 
         $hour = Str::padLeft($this->dynamic_data['hour'], $hours, '0');
         $minute = Str::padLeft($this->dynamic_data['minute'], $minutes, '0');
+        $second = Str::padLeft($this->dynamic_data['second'], $seconds, '0');
 
-        return $hour . ":" . $minute;
+        return $hour . ":" . $minute . ":" . $second;
     }
 
     /**

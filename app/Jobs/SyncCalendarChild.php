@@ -41,26 +41,35 @@ class SyncCalendarChild implements ShouldQueue
     {
         $hour = $this->parent->dynamic_data['hour'];
         $minute = $this->parent->dynamic_data['minute'];
+        $second = $this->parent->dynamic_data['second'];
 
         if($this->needsTimeCompensation()) {
-            $dayScalingRatio = $this->parent->daily_minutes / $this->child->daily_minutes;
+
+            $dayScalingRatio = $this->parent->daily_seconds / $this->child->daily_seconds;
 
             // First, calculate the current date/time of the child based on the epoch of the parent
             // Taking into account difference in day scaling ratio
             $this->targetEpoch = $this->targetEpoch * $dayScalingRatio;
 
             $hoursIntoTargetDay = fmod($this->targetEpoch, 1) * $this->child->clock['hours'];
-            $minutesIntoTargetHour = (int) round(fmod($hoursIntoTargetDay, 1) * $this->child->clock['minutes']);
+            $minutesIntoTargetHour = fmod($hoursIntoTargetDay, 1) * $this->child->clock['minutes'];
+            $secondsIntoTargetMinute = fmod($minutesIntoTargetHour, 1) * $this->child->clock['seconds'];
 
-            $parentMinuteInDay = $hour * $this->parent->clock['minutes'] + $minute;
+            $parentSecondInDay = ($hour * $this->parent->clock['minutes'] + $minute) * $this->parent->clock['seconds'] + $second;
 
-            $targetHour = $parentMinuteInDay / $this->child->clock['minutes'];
-            $targetMinute = (int) round(fmod($targetHour, 1) * $this->child->clock['minutes']);
+            $targetHour = $parentSecondInDay / $this->child->clock['seconds'] / $this->child->clock['minutes'];
+            $targetMinute = fmod($targetHour, 1) * $this->child->clock['minutes'];
+            $targetSecond = fmod($targetMinute, 1) * $this->child->clock['second'];
 
             // Take into account time, irrespective of epoch
             $hour = (int) floor($hoursIntoTargetDay) + floor($targetHour);
-            $minute = $minutesIntoTargetHour + $targetMinute;
+            $minute = (int) round($minutesIntoTargetHour) + round($targetMinute);
+            $second = (int) round($secondsIntoTargetMinute) + round($targetSecond);
 
+            if($second >= $this->child->clock['seconds']){
+                $minute++;
+                $second -= $this->child->clock['seconds'];
+            }
 
             if($minute >= $this->child->clock['minutes']){
                 $hour++;
@@ -75,13 +84,13 @@ class SyncCalendarChild implements ShouldQueue
 
         $epoch = EpochCalculator::forCalendar($this->child)->calculate($this->targetEpoch);
 
-        $this->child->setDate($epoch->year, $epoch->monthId, $epoch->day, $hour, $minute)->save();
+        $this->child->setDate($epoch->year, $epoch->monthId, $epoch->day, $hour, $minute, $second)->save();
     }
 
     private function needsTimeCompensation(): bool
     {
         return $this->parent->clock_enabled
             && $this->child->clock_enabled
-            && $this->parent->clock->only(['hours', 'minutes']) !== $this->child->clock->only(['hours', 'minutes']);
+            && $this->parent->clock->only(['hours', 'minutes', 'seconds']) !== $this->child->clock->only(['hours', 'minutes', 'seconds']);
     }
 }
