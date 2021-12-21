@@ -194,25 +194,6 @@ function set_up_view_inputs(){
 
 	});
 
-
-	$('.adjust_minute').click(function(){
-
-		var adjust = $(this).attr('val')|0;
-		var curr_minute = current_minute.val()|0;
-		curr_minute = curr_minute + adjust;
-
-		if(curr_minute < 0){
-			$('.adjust_hour[val=-1]').click();
-			curr_minute = Math.abs(static_data.clock.minutes+curr_minute);
-		}else if(curr_minute >= static_data.clock.minutes){
-			$('.adjust_hour[val=1]').click();
-			curr_minute = Math.abs(static_data.clock.minutes-curr_minute);
-		}
-
-		current_minute.val(curr_minute).change();
-
-	});
-
 	current_minute.change(function(){
 
 		let curr_minute = current_minute.val()|0;
