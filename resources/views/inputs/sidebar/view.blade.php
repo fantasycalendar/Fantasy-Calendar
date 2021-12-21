@@ -120,7 +120,7 @@
 
                     <div class='input-group protip'>
                         <div class='input-group-prepend'>
-                            <button type='button' class='btn small-text btn-danger adjust_hour' val='-1'>1hr</button>
+                            <button type='button' class='btn small-text btn-danger adjust_hour' val='-1'>1h</button>
                         </div>
 
                         <input class='form-control form-control-sm text-right protip' type='number' id='current_hour' data-pt-position='top' data-pt-title="The current hour of day">

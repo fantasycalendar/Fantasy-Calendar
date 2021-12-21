@@ -134,7 +134,7 @@
 
                         <div class='input-group protip'>
                             <div class='input-group-prepend'>
-                                <button type='button' class='btn small-text btn-danger adjust_hour' val='-1'>1hr</button>
+                                <button type='button' class='btn small-text btn-danger adjust_hour' val='-1'>1h</button>
                             </div>
 
                             <input class='form-control form-control-sm text-right protip' type='number' id='current_hour' data-pt-position='top' data-pt-title="The current hour of day">
@@ -283,7 +283,7 @@
 
 				<div class='clock_inputs'>
 
-					<div class='row mt-2'>
+					<div class='row mt-1'>
 						<div class='col-6 bold-text'>
 							Hours:
 						</div>
@@ -300,7 +300,9 @@
                                 </div>
                             @endif
                         </div>
+                    </div>
 
+                    <div class='row mt-1'>
 						<div class='col-6 bold-text'>
 							Minutes:
 						</div>
@@ -317,7 +319,9 @@
                                 </div>
                             @endif
                         </div>
+                    </div>
 
+                    <div class='row mt-1'>
 						<div class='col-6 bold-text'>
 							Seconds:
 						</div>
@@ -334,20 +338,14 @@
                                 </div>
                             @endif
                         </div>
-					</div>
+                    </div>
 
-					<div class='row mt-2 do_render_clock'>
-						<div class='col-6 bold-text'>
-							Offset hours:
-						</div>
-						<div class='col-6 bold-text'>
-							Crowding:
-						</div>
-					</div>
+                    <div class='row mt-1'>
+                        <div class='col-6 do_render_clock bold-text'>
+                            Offset hours:
+                        </div>
 
-					<div class='row mb-1 do_render_clock'>
-
-						<div class='col-6 input-group'>
+                        <div class='col-6 do_render_clock input-group pl-0'>
                             <div class='input-group-prepend'>
                                 <button type='button' class='btn btn-sm btn-danger' onclick='adjustInput(this, "#clock_offset", -1);'><i class="icon-minus"></i></button>
                             </div>
@@ -357,9 +355,15 @@
                             <div class='input-group-append'>
                                 <button type='button' class='btn btn-sm btn-success' onclick='adjustInput(this, "#clock_offset", +1);'><i class="icon-plus"></i></button>
                             </div>
-						</div>
+                        </div>
+                    </div>
 
-						<div class='col-6 pl-0 input-group'>
+                    <div class='row mt-1'>
+                        <div class='col-6 do_render_clock bold-text'>
+                            Crowding:
+                        </div>
+
+                        <div class='col-6 do_render_clock input-group pl-0'>
                             <div class='input-group-prepend'>
                                 <button type='button' class='btn btn-sm btn-danger' onclick='adjustInput(this, "#clock_crowding", -1);'><i class="icon-minus"></i></button>
                             </div>
@@ -369,11 +373,8 @@
                             <div class='input-group-append'>
                                 <button type='button' class='btn btn-sm btn-success' onclick='adjustInput(this, "#clock_crowding", +1);'><i class="icon-plus"></i></button>
                             </div>
-						</div>
-
+                        </div>
 					</div>
-
-
 				</div>
 
 				@if(request()->is('calendars/*/edit') && $calendar->isLinked())
