@@ -203,18 +203,24 @@
                 <div class="collapsible-content container card-body">
 
                     <div class='row no-gutters mx-0'>
-                        <input type='number' class="form-control form-control-sm full" id='unit_years' placeholder="Years">
-                        <input type='number' class="form-control form-control-sm full" id='unit_months' placeholder="Months">
-                        <input type='number' class="form-control form-control-sm full" id='unit_days' placeholder="Days">
+                        <div class='col-md-4 col-sm-12'>
+                            <input type='number' class="form-control form-control-sm full" id='unit_years' placeholder="Years">
+                        </div>
+                        <div class='col-md-4 col-sm-12'>
+                            <input type='number' class="form-control form-control-sm full" id='unit_months' placeholder="Months">
+                        </div>
+                        <div class='col-md-4 col-sm-12'>
+                            <input type='number' class="form-control form-control-sm full" id='unit_days' placeholder="Days">
+                        </div>
                     </div>
                     <div class='row no-gutters mx-0 my-2'>
-                        <div class='col-md-6 col-sm-12'>
+                        <div class='col-md-4 col-sm-12'>
                             <input type='number' class="form-control form-control-sm full" id='unit_hours' placeholder="Hours">
                         </div>
-                        <div class='col-md-6 col-sm-12'>
+                        <div class='col-md-4 col-sm-12'>
                             <input type='number' class="form-control form-control-sm full" id='unit_minutes' placeholder="Minutes">
                         </div>
-                        <div class='col-md-6 col-sm-12'>
+                        <div class='col-md-4 col-sm-12'>
                             <input type='number' class="form-control form-control-sm full" id='unit_seconds' placeholder="Seconds">
                         </div>
                     </div>

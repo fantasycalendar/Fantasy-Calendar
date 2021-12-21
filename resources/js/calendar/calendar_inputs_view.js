@@ -215,18 +215,25 @@ function set_up_view_inputs(){
 
 	current_minute.change(function(){
 
-		var curr_minute = current_minute.val()|0;
+		let curr_minute = current_minute.val()|0;
+        let curr_hour = current_hour.val()|0;
+        let prev_hour = curr_hour;
 
 		if(curr_minute < 0){
-			$('.adjust_hour[val=-1]').click();
 			curr_minute = Math.abs(static_data.clock.minutes+curr_minute);
+            curr_hour -= 1;
 		}else if(curr_minute >= static_data.clock.minutes){
-			$('.adjust_hour[val=1]').click();
 			curr_minute = Math.abs(static_data.clock.minutes-curr_minute);
-		}
+            curr_hour += 1;
+        }
 
 		dynamic_data.minute = curr_minute;
 		current_minute.val(curr_minute);
+
+        if(prev_hour !== curr_hour){
+            current_hour.val(curr_hour).change();
+            return;
+        }
 
 		var apply_changes_immediately = $('#apply_changes_immediately');
 
@@ -247,19 +254,25 @@ function set_up_view_inputs(){
 
 	current_second.change(function(){
 
-		var curr_second = current_second.val()|0;
-        var curr_minute = current_minute.val()|0;
+		let curr_second = current_second.val()|0;
+        let curr_minute = current_minute.val()|0;
+        let prev_minute = curr_minute;
 
 		if(curr_second < 0){
 			curr_second = Math.abs(static_data.clock.seconds+curr_second);
-            curr_minute.val(curr_minute-1).change();
+            curr_minute -= 1;
 		}else if(curr_second >= static_data.clock.seconds){
 			curr_second = Math.abs(static_data.clock.seconds-curr_second);
-            curr_minute.val(curr_minute+1).change();
+            curr_minute += 1;
 		}
 
 		dynamic_data.second = curr_second;
 		current_second.val(curr_second);
+
+        if(prev_minute !== curr_minute){
+            current_minute.val(curr_minute).change();
+            return;
+        }
 
 		var apply_changes_immediately = $('#apply_changes_immediately');
 
@@ -442,6 +455,7 @@ function increment_date_units(current){
 			if(dynamic_data.hour !== new_hour || dynamic_data.minute !== new_minute || dynamic_data.second !== new_second){
 				dynamic_data.hour = new_hour
 				dynamic_data.minute = new_minute;
+				dynamic_data.second = new_second;
 				current_hour.val(new_hour);
 				current_minute.val(new_minute);
 				current_second.val(new_second);
