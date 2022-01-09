@@ -39,10 +39,14 @@ class SyncCalendarChild implements ShouldQueue
      */
     public function handle()
     {
-        $hour = $this->parent->dynamic_data['hour'];
-        $minute = $this->parent->dynamic_data['minute'];
+        $hour = 0;
+        $minute = 0;
 
         if($this->needsTimeCompensation()) {
+
+            $hour = $this->parent->dynamic_data['hour'];
+            $minute = $this->parent->dynamic_data['minute'];
+
             $dayScalingRatio = $this->parent->daily_minutes / $this->child->daily_minutes;
 
             // First, calculate the current date/time of the child based on the epoch of the parent
