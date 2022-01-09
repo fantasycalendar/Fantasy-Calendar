@@ -1,3 +1,8 @@
+### 2.1.6 - Nitpicking Djinn
+#### January 9th, 2022 
+* Fixed - Fixed some linked calendars not syncing properly
+* Fixed - Fixed month number not being accurate when with one-month layout
+
 ### 2.1.5 - Festive Djinn
 #### December 17th, 2021 
 * Fixed - Fixed month header number count being off
