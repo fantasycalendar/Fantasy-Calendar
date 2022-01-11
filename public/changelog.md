@@ -1,3 +1,9 @@
+### 2.1.6 - Ageless Djinn
+#### January 11th, 2022 
+* Fixed - Fixed erroneously taking starting eras into account when calculating epoch
+* Fixed - Fixed starting eras that were previously ending and restarting still maintaining their ending and starting status even after becoming starting eras
+* Fixed - Era year sometimes being off by one
+
 ### 2.1.6 - Nitpicking Djinn
 #### January 9th, 2022 
 * Fixed - Fixed some linked calendars not syncing properly
