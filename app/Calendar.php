@@ -386,7 +386,10 @@ class Calendar extends Model
     {
         if(isset($this->months_cached[$this->year])) return $this->months_cached[$this->year];
 
-        $yearEndingEra = $this->eras->filter->endsGivenYear($this->year)->first();
+        $yearEndingEra = $this->eras
+            ->reject->isStartingEra()
+            ->filter->endsGivenYear($this->year)
+            ->first();
 
         $this->months_cached[$this->year] = $this->months_without_eras
             ->filter->intersectsYear($this->year)

@@ -169,9 +169,10 @@ class InitialState
     {
 
         $eras = $this->calendar->eras
-             ->filter->restartsYearCount()
-             ->filter->beforeYearInclusive($this->year)
-             ->sortByDesc('year');
+            ->reject->isStartingEra()
+            ->filter->restartsYearCount()
+            ->filter->beforeYearInclusive($this->year)
+            ->sortByDesc('year');
 
         if(!$eras->count()) return $this->calendar->year;
 

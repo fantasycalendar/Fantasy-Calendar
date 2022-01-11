@@ -48,6 +48,7 @@ class InitialStateWithEras extends InitialState
     private function getSubtractables()
     {
         return $this->calendar->eras
+            ->reject->isStartingEra()
             ->filter->endsYear()
             ->filter->beforeYear($this->year)
             ->map->getEpochSubtractables($this->calendar);
@@ -56,8 +57,9 @@ class InitialStateWithEras extends InitialState
     private function hasApplicableEras()
     {
         return $this->calendar->eras
-                ->filter->endsYear()
-                ->filter->beforeYear($this->year)
-                ->count();
+            ->reject->isStartingEra()
+            ->filter->endsYear()
+            ->filter->beforeYear($this->year)
+            ->count();
     }
 }
