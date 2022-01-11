@@ -1,4 +1,4 @@
-### 2.1.6 - Ageless Djinn
+### 2.1.7 - Ageless Djinn
 #### January 11th, 2022 
 * Fixed - Fixed erroneously taking starting eras into account when calculating epoch
 * Fixed - Fixed starting eras that were previously ending and restarting still maintaining their ending and starting status even after becoming starting eras
