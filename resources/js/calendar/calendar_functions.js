@@ -1177,7 +1177,7 @@ function get_timespans_in_year(static_data, year, inclusive){
  *
  * @param  {object}     static_data     A calendar static data object
  * @param  {int}        year            The number of a year passed through the convert_year function.
- * @param  {int}        Timespan        The index of the timespan
+ * @param  {int}        timespan        The index of the timespan
  * @return {object}                     An object containing:
  *                                          result - boolean, true if the timespan appears on the given date
  *                                          reason - reason for the timespan to gone, only present if result is false
@@ -1188,7 +1188,9 @@ function does_timespan_appear(static_data, year, timespan){
 
 		var era = static_data.eras[era_index];
 
-		if(era.settings.ends_year && year == convert_year(static_data, era.date.year)){
+        if(era.settings.starting_era) continue;
+
+		if(era.settings.ends_year && year === convert_year(static_data, era.date.year)){
 
 			if(timespan > era.date.timespan){
 
@@ -1203,9 +1205,9 @@ function does_timespan_appear(static_data, year, timespan){
 
 	}
 
-	var timespan = static_data.year_data.timespans[timespan];
+	const timespan_obj = static_data.year_data.timespans[timespan];
 
-	if(is_leap_simple(static_data, year, timespan.interval, timespan.offset)){
+	if(is_leap_simple(static_data, year, timespan_obj.interval, timespan_obj.offset)){
 
 		return {
 			result: true
@@ -1240,6 +1242,8 @@ function does_day_appear(static_data, year, timespan, day){
 	for(var era_index = 0; era_index < static_data.eras.length; era_index++){
 
 		var era = static_data.eras[era_index];
+
+        if(era.settings.starting_era) continue;
 
 		if(era.settings.ends_year && year == convert_year(static_data, era.date.year) && timespan == era.date.timespan && day > era.date.day){
 
@@ -1544,7 +1548,7 @@ function evaluate_calendar_start(static_data, _year, _timespan, _day, debug){
 	let timespan = !isNaN(_timespan) ? (_timespan|0) : 0;
 	let day = !isNaN(_day) ? (_day|0)-1 : 0;
 
-	let era_year = year;
+	let era_year = (_year|0);
 
 	let tmp = get_epoch(static_data, year, timespan, day, debug);
 	let epoch = tmp[0];
@@ -1559,6 +1563,8 @@ function evaluate_calendar_start(static_data, _year, _timespan, _day, debug){
 	for(let era_index = 0; era_index < static_data.eras.length; era_index++){
 
 		let era = static_data.eras[era_index];
+
+        if(era.settings.starting_era) continue;
 
 		if(era.settings.ends_year && year > convert_year(static_data, era.date.year)){
 
@@ -1682,6 +1688,8 @@ function has_year_ending_era(static_data, year){
 	for(var era_index = 0; era_index < static_data.eras.length; era_index++){
 
 		var era = static_data.eras[era_index];
+
+        if(era.settings.starting_era) continue;
 
 		if(era.settings.ends_year && year == convert_year(static_data, era.date.year)){
 

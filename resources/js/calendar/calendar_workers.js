@@ -284,6 +284,8 @@ const calendar_data_generator = {
 
             let era = this.static_data.eras[era_index];
 
+            if(era.settings.starting_era) continue;
+
             if(era.settings.ends_year && convert_year(this.static_data, year) === convert_year(this.static_data, era.date.year) && era.date.timespan < num_timespans+1){
 
                 num_timespans = era.date.timespan+1;
@@ -478,7 +480,7 @@ const calendar_data_generator = {
         let years = Object.keys(this.timespans).map(year => Number(year)).sort((a, b) => a - b );
 
 	    let start_year = years[0];
-		let start_data = evaluate_calendar_start(this.static_data, start_year);
+		let start_data = evaluate_calendar_start(this.static_data, start_year, undefined, undefined, true);
 		let era_year = start_data.era_year;
 		let count_timespans = start_data.count_timespans;
 		let num_timespans = start_data.num_timespans;
@@ -488,7 +490,7 @@ const calendar_data_generator = {
 		let current_era = start_data.current_era;
 		let month_week_num;
 
-		let year_start_data = evaluate_calendar_start(this.static_data, start_year, undefined, undefined, true);
+		let year_start_data = evaluate_calendar_start(this.static_data, start_year);
 		let year_day = 1 + start_data.epoch - year_start_data.epoch;
 		let year_week_num = 1 + start_data.total_week_num - year_start_data.total_week_num;
 		let inverse_year_week_num = 1 + evaluate_calendar_start(this.static_data, start_year+1).total_week_num - year_start_data.total_week_num - year_week_num;
@@ -732,8 +734,9 @@ const calendar_data_generator = {
 
 			if(year !== this.current_year){
 				if(this.static_data.eras.length > 0 && current_era !== -1){
-					if(this.static_data.eras[current_era].settings.ends_year){
-						if(!this.static_data.eras[current_era].settings.restart){
+				    const currentEra = this.static_data.eras[current_era];
+					if(currentEra.settings.ends_year){
+						if(!(currentEra.settings.restart && currentEra.date.year === year)){
 							era_year++;
 						}
 					}else{

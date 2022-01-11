@@ -1891,6 +1891,18 @@ function set_up_edit_inputs(){
         dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
 	});
 
+	$(document).on('change', '#era_list .starting_era', function(){
+		evaluate_dynamic_change();
+		var index = $(this).closest('.sortable-container').attr('index')|0;
+		static_data.eras[index].settings.ends_year = $(this).is(":checked");
+		for(var i in static_data.eras){
+			var era = static_data.eras[i];
+			era.date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, era.date.year), era.date.timespan, era.date.day).epoch;
+		}
+		dynamic_data.current_era = get_current_era(static_data, dynamic_data.epoch);
+        dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
+	});
+
 	$(document).on('click', '.preview_era_date', function(){
 		let era_id = $(this).closest('.sortable-container').attr('index')|0;
 		let era = static_data.eras[era_id];
@@ -5239,6 +5251,8 @@ function reindex_era_list(){
 
 		$(this).attr('key', i);
 
+		const starting_era = $(this).find('.starting_era').is(':checked');
+
 		static_data.eras[i] = {
 			'name': $(this).find('.name-input').val(),
 			'formatting': $(this).find('.era_formatting').val(),
@@ -5246,10 +5260,10 @@ function reindex_era_list(){
 			'settings': {
 				'use_custom_format': $(this).find('.use_custom_format').is(':checked'),
 				'show_as_event': $(this).find('.show_as_event').is(':checked'),
-				'starting_era': $(this).find('.starting_era').is(':checked') || $(this).find('.starting_era').val() == "1",
+				'starting_era': starting_era || $(this).find('.starting_era').val() === "1",
 				'event_category_id': $(this).find('.event-category-list').val(),
-				'ends_year': $(this).find('.ends_year').is(':checked') || $(this).find('.ends_year').val() == "1",
-				'restart': $(this).find('.restart_era').is(':checked')
+				'ends_year': !starting_era && ($(this).find('.ends_year').is(':checked') || $(this).find('.ends_year').val() === "1"),
+				'restart': !starting_era && ($(this).find('.restart_era').is(':checked'))
 			},
 			'date': {
 				'year': ($(this).find('.year-input').val()|0),
