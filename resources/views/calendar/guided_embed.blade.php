@@ -1,5 +1,3 @@
-@extends('templates._calendar-tw')
-
-@section('content')
-    
-@endsection
+<x-app-layout>
+    Test
+</x-app-layout>
