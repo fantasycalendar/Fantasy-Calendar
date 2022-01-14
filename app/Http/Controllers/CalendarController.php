@@ -123,7 +123,9 @@ class CalendarController extends Controller
 
     public function guidedEmbed(Calendar $calendar)
     {
-        return view('calendar.guided_embed');
+        return view('calendar.guided_embed', [
+            'calendar' => $calendar
+        ]);
     }
 
     public function renderImage(Calendar $calendar, $ext)

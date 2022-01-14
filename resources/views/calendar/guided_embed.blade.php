@@ -1,8 +1,13 @@
 @push('head')
+    <script src="{{ mix('js/embed.js') }}"></script>
     <script>
         embedManager = {
-            message: "Test",
-            embedNow: true
+            embedNow: true,
+            fantasyCalendar: FantasyCalendar({
+                hash: '{{ $calendar->hash }}',
+                element: '#fantasy-calendar-embed',
+                embedNow: false
+            })
         }
     </script>
 @endpush
@@ -36,8 +41,8 @@
         </div>
 
         <div class="bg-white overflow-hidden shadow sm:rounded-lg flex-grow">
-            <div class="px-4 py-5 sm:p-6" x-text="message">
-
+            <div class="px-4 py-5 sm:p-6">
+                <div id="fantasy-calendar-embed"></div>
             </div>
         </div>
     </div>

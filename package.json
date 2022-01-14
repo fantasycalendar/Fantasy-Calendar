@@ -1,15 +1,11 @@
 {
     "private": true,
     "scripts": {
-        "dev": "npm run development",
-        "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-        "dev-install-watch": "npm install && npm run watch",
-        "dev-install-watch-poll": "npm install && npm run watch-poll",
-        "watch": "npm run development -- --watch",
-        "watch-poll": "npm run watch -- --watch-poll",
-        "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
-        "prod": "npm run production",
-        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+        "development": "mix",
+        "watch": "mix watch",
+        "watch-poll": "mix watch -- --watch-options-poll=1000",
+        "hot": "mix watch --hot",
+        "production": "mix --production"
     },
     "devDependencies": {
         "axios": "^0.21.1",
@@ -18,8 +14,9 @@
         "browser-sync-webpack-plugin": "2.0.1",
         "cross-env": "^5.2.1",
         "jquery": "^3.5.1",
-        "laravel-mix": "^5.0.7",
+        "laravel-mix": "^6.0.39",
         "lodash": "^4.17.21",
+        "mix-tailwindcss": "^1.3.0",
         "popper.js": "^1.16.1",
         "resolve-url-loader": "^3.1.2",
         "sass": "^1.26.10",
@@ -30,6 +27,7 @@
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.15.1",
         "alpine-editor": "^0.3.1",
+        "autoprefixer": "^10.4.2",
         "bootswatch": "^4.5.0",
         "chart.js": "^2.9.3",
         "fuzzysort": "^1.1.4",
@@ -38,6 +36,7 @@
         "moment": "^2.29.1",
         "mustache": "^3.2.1",
         "notifyjs": "^3.0.0",
+        "postcss": "^8.4.5",
         "progressbar.js": "^1.1.0",
         "protip": "^1.4.21",
         "sanitize-html": "^2.3.2",
@@ -47,6 +46,7 @@
         "sortable": "^2.0.0",
         "sweetalert": "^2.1.2",
         "sweetalert2": "^9.15.2",
+        "tailwindcss": "^3.0.13",
         "trumbowyg": "^2.21.0",
         "weather-icons": "github:fantasycalendar/weather-icons"
     },

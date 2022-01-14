@@ -10,7 +10,7 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
             }
 
             this.config = {
-                element: document.getElementById(params.element) ?? document.scripts[document.scripts.length - 1],
+                element: document.querySelector(params.element) ?? document.scripts[document.scripts.length - 1],
                 url: 'https://fantasy-calendar.test/embed/' + params.hash,
                 width: params.width,
                 height: params.height,
