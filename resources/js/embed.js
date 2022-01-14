@@ -11,7 +11,7 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
 
             this.config = {
                 element: document.getElementById(params.element) ?? document.scripts[document.scripts.length - 1],
-                url: 'http://fantasy-calendar.test:9980/embed/' + params.hash,
+                url: 'https://fantasy-calendar.test/embed/' + params.hash,
                 width: params.width,
                 height: params.height,
                 embedNow: params.embedNow ?? true
@@ -44,7 +44,7 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
         },
 
         setCalendar(hash){
-            this.config.url = 'http://fantasy-calendar.test:9980/embed/' + hash;
+            this.config.url = 'https://fantasy-calendar.test/embed/' + hash;
             if(this.iframe){
                 this.iframe.setAttribute('src', this.config.url);
             }
@@ -64,14 +64,18 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
             }
 
             if(replaceElement !== null && !(replaceElement instanceof HTMLElement)){
-                throw new Error(`Element must be of type HTMLElement or CSS Selector`);
+                if(!this.iframe) {
+                    throw new Error(`Element must be of type HTMLElement or CSS Selector`);
+                }
+
+                replaceElement = this.iframe;
             }
 
             if(!document.body.contains(replaceElement)){
                 throw new Error("Could not find element to embed to");
             }
 
-            if(this.iframe) {
+            if(this.iframe && this.iframe !== replaceElement) {
                 this.iframe.remove();
             }
 
@@ -85,6 +89,7 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
             iframe.setAttribute('height', this.config.height ?? replaceElement.parentElement.offsetHeight);
             iframe.setAttribute('frameborder', '0');
             iframe.setAttribute('scrolling', 'no');
+            iframe.setAttribute('id', 'fantasy-calendar-embed')
 
             replaceElement.replaceWith(iframe);
             this.iframe = iframe;
