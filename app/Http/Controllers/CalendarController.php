@@ -121,6 +121,11 @@ class CalendarController extends Controller
         ]);
     }
 
+    public function guidedEmbed(Calendar $calendar)
+    {
+        return view('calendar.guided_embed');
+    }
+
     public function renderImage(Calendar $calendar, $ext)
     {
         if(Gate::denies('view-image', $calendar) && !app()->environment('local')) {

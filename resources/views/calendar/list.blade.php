@@ -141,6 +141,7 @@
                             <a class='calendar_action btn btn-outline-secondary action-show protip' data-pt-delay-in="500" data-pt-title="View '{{ $calendar->name }}'" href='{{ route('calendars.show', ['calendar'=> $calendar->hash ]) }}'>
                                 <i class="fa fa-eye"></i> <span class="d-none d-md-inline">View</span>
                             </a>
+
                             <button class="calendar_action btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" type="button" id="dropdownButton-{{ $calendar->hash }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                             <div class="calendar_action dropdown-menu dropdown-menu-right" aria-labelledby="dropdownButton-{{ $calendar->hash }}">
                                 <a class='dropdown-item action-edit protip d-md-none' data-pt-delay-in="500" data-pt-title="Edit '{{ $calendar->name }}'" href='{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}'>
@@ -152,13 +153,21 @@
                                 <a class="dropdown-item copy_button action-copy protip" data-pt-delay-in="500" data-pt-title="Copy '{{ $calendar->name }}'" href="javascript:" data-hash="{{ $calendar->hash }}" data-name="{{ $calendar->name }}">
                                     <i class="fa fa-copy"></i> Copy
                                 </a>
+
+                                <div class="dropdown-divider"></div>
+
+                                <a class="dropdown-item action-export protip" data-pt-delay-in="500" data-pt-title="Embed '{{ $calendar->name }}'" href="{{ route('calendars.guided_embed', ['calendar' => $calendar->hash]) }}">
+                                    <i class="fa fa-share-square"></i> Embed
+                                </a>
                                 <a class="dropdown-item action-print protip" data-pt-delay-in="500" data-pt-title="Print '{{ $calendar->name }}'" href="{{ route('calendars.show', ['calendar' => $calendar->hash, 'print' => 1]) }}" >
                                     <i class="fa fa-print"></i> Print
                                 </a>
                                 <a class="dropdown-item action-export protip" data-pt-delay-in="500" data-pt-title="Export '{{ $calendar->name }}'" href="{{ route('calendars.export', ['calendar' => $calendar->hash]) }}" >
                                     <i class="fa fa-file-export"></i> Export
                                 </a>
+
                                 <div class="dropdown-divider"></div>
+
                                 <a class="dropdown-item delete_button action-delete protip" data-pt-delay-in="500" data-pt-title="Delete '{{ $calendar->name }}'" href="javascript:" data-hash="{{ $calendar->hash }}" data-name="{{ $calendar->name }}">
                                     <i class="fa fa-calendar-times"></i> Delete
                                 </a>
