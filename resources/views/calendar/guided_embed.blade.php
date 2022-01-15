@@ -73,7 +73,7 @@
                     <div id="fantasy-calendar-embed"></div>
                 </div>
 
-                <x-button size="lg" @click="$dispatch('modal')"></x-button>
+                <x-button size="lg" @click="$dispatch('modal')">Test</x-button>
             </div>
         </div>
     </div>
