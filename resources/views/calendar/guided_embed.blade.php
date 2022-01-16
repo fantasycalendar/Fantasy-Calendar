@@ -1,22 +1,27 @@
 @push('head')
     <script src="{{ mix('js/embed.js') }}"></script>
     <script>
-        embedManager = {
-            embedNow: true,
-            hash: '{{ $calendar->hash }}',
-            height: 'auto',
-            width: 'auto',
-            fantasyCalendar: FantasyCalendar({
+        function manageEmbed() {
+            return {
+                embedNow: true,
                 hash: '{{ $calendar->hash }}',
-                element: '#fantasy-calendar-embed',
-                embedNow: false
-            })
+                height: 'auto',
+                width: 'auto',
+                fantasyCalendar: FantasyCalendar({
+                    hash: '{{ $calendar->hash }}',
+                    element: '#fantasy-calendar-embed',
+                    embedNow: false
+                }),
+                get code(){
+                    return "FantasyCalendar(\n\thash: '"+this.hash+"'\n)";
+                }
+            }
         }
     </script>
 @endpush
 
 <x-app-layout>
-    <div class="flex" x-data="embedManager" x-init="fantasyCalendar.embed('#fantasy-calendar-embed')">
+    <div class="flex" x-data="manageEmbed()" x-init="fantasyCalendar.embed('#fantasy-calendar-embed')">
         <div class="hidden md:block max-w-sm w-full md:mr-4 space-y-8 divide-y divide-gray-200">
             <div>
                 <div class="text-lg font-medium leading-6 text-gray-900">
@@ -73,12 +78,14 @@
                     <div id="fantasy-calendar-embed"></div>
                 </div>
 
-                <x-button size="lg" @click="$dispatch('modal')">Test</x-button>
+                <div class="flex justify-end pt-6">
+                    <x-button size="lg" @click="$dispatch('modal')">Get code</x-button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <x-modal>
-        Test
-    </x-modal>
+        <x-modal>
+            <pre class="text-left bg-gray-200 rounded p-2 min-w-full text-gray-700"><code>{{ "<script src='" . mix('js/embed.js') . "'></script>" }} <span x-text="code"></span></code></pre>
+        </x-modal>
+    </div>
 </x-app-layout>
