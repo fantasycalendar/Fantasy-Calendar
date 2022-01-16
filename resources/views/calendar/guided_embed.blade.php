@@ -7,13 +7,24 @@
                 hash: '{{ $calendar->hash }}',
                 height: 'auto',
                 width: 'auto',
+                selector: '#fantasy-calendar-embed',
                 fantasyCalendar: FantasyCalendar({
                     hash: '{{ $calendar->hash }}',
                     element: '#fantasy-calendar-embed',
                     embedNow: false
                 }),
                 get code(){
-                    return "FantasyCalendar(\n\thash: '"+this.hash+"'\n)";
+                    let embedCode = "FantasyCalendar(\n\thash: '"+this.hash+"'\n";
+
+                    if(this.selector !== '#fantasy-calendar-embed') {
+                        embedCode += `\tselector: '${this.selector}'\n`;
+                    }
+
+                    if(!this.embedNow) {
+                        embedCode += `\tembedNow: false\n`;
+                    }
+
+                    return embedCode + ")";
                 }
             }
         }
@@ -49,12 +60,10 @@
                         <input type="text" name="calendar-hash" id="calendar-hash" autocomplete="street-address" class="mt-1 text-gray-600 focus:ring-green-500 focus:border-green-500 block leading-loose w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="width">
                     </div>
                 </div>
-            </fieldset>
 
-            <fieldset>
                 <div class="pt-8">
-                    <label for="calendar-hash" class="block font-medium text-gray-700">Element Selector</label>
-                    <input :disabled="embedNow" type="text" name="calendar-hash" id="calendar-hash" autocomplete="street-address" :title="embedNow ? 'Only applicable if embedding manually' : ''" class="disabled:text-gray-500 disabled:bg-gray-300 mt-1 text-gray-600 focus:ring-green-500 focus:border-green-500 block leading-loose w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="hash">
+                    <label for="element_selector" class="block font-medium text-gray-700">Element Selector</label>
+                    <input type="text" name="element_selector" id="element_selector" autocomplete="street-address" class="disabled:text-gray-500 disabled:bg-gray-300 mt-1 text-gray-600 focus:ring-green-500 focus:border-green-500 block leading-loose w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="selector">
                 </div>
 
                 <div class="flex items-start pt-8">
@@ -73,7 +82,7 @@
         </div>
 
         <div class="bg-white overflow-hidden shadow sm:rounded-lg flex-grow">
-            <div class="px-4 py-5 sm:p-6">
+            <div class="px-4 py-5 sm:p-6 overflow-auto">
                 <div style="height: 500px">
                     <div id="fantasy-calendar-embed"></div>
                 </div>
@@ -85,7 +94,11 @@
         </div>
 
         <x-modal>
-            <pre class="text-left bg-gray-200 rounded p-2 min-w-full text-gray-700"><code>{{ "<script src='" . mix('js/embed.js') . "'></script>" }} <span x-text="code"></span></code></pre>
+            <pre class="text-left bg-gray-200 rounded p-2 min-w-full text-gray-700"><code>{{ "<script src='" . mix('js/embed.js') . "'></script>" }}
+&lt;script&gt;
+<span x-text="code"></span>
+&lt;/script&gt;
+</code></pre>
         </x-modal>
     </div>
 </x-app-layout>
