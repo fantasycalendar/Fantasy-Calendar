@@ -1,20 +1,29 @@
+window.fcEmbedDomain = (new URL(document.currentScript.src)).origin;
 window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
     return {
         config: {},
         onUpdate: false,
         getCurrentDateCallback: false,
-        constructor: function(params) {
+        constructor(params) {
             if(!params.hash) {
                 console.error("FantasyCalendar error: No hash set.");
                 return;
             }
 
+            let domain = this.resolveDomain();
+
             this.config = {
                 element: document.querySelector(params.element) ?? document.scripts[document.scripts.length - 1],
-                url: 'https://fantasy-calendar.test/embed/' + params.hash + '?size=' + (params.size ?? 'md'),
-                width: params.width,
-                height: params.height,
+                url: new URL(domain + '/embed/' + params.hash),
                 embedNow: params.embedNow ?? true
+            }
+
+            if(params.width || params.height) {
+                this.config.width = params.width;
+                this.config.height = params.height;
+            } else if(params.size) {
+                this.config.url.searchParams.append('size', params.size);
+                this.config.size = params.size;
             }
 
             this.onUpdate = params.onUpdate;
@@ -29,8 +38,15 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
         },
 
         handleMessage(event) {
-            if(event.data.source !== 'fantasy-calendar-embed-child') {
+            if(event.origin !== this.resolveDomain()) {
                 return;
+            }
+
+            console.log(event);
+
+            if(event.data.type === 'calendarLoaded') {
+                console.log(event);
+                this.postLoad(event.data.data);
             }
 
             if(event.data.type === "getCurrentDateResponse" && this.getCurrentDateCallback){
@@ -44,7 +60,7 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
         },
 
         setCalendar(hash){
-            this.config.url = 'https://fantasy-calendar.test/embed/' + hash;
+            this.config.url.pathname = '/embed/' + hash;
             if(this.iframe){
                 this.iframe.setAttribute('src', this.config.url);
             }
@@ -52,7 +68,7 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
             return this;
         },
 
-        embed: function(replaceElement = null) {
+        embed(replaceElement = null) {
             replaceElement = replaceElement ?? this.config.element;
 
             if(typeof replaceElement === 'string') {
@@ -84,12 +100,16 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
 
             console.log("We were asked to embed");
             const iframe = document.createElement('iframe');
-            iframe.setAttribute('src', this.config.url);
-            iframe.setAttribute('width', this.config.width ?? replaceElement.parentElement.offsetWidth);
-            iframe.setAttribute('height', this.config.height ?? replaceElement.parentElement.offsetHeight);
+            iframe.setAttribute('src', this.config.url.href);
             iframe.setAttribute('frameborder', '0');
             iframe.setAttribute('scrolling', 'no');
             iframe.setAttribute('id', 'fantasy-calendar-embed')
+            iframe.style.margin = 'auto';
+
+            if(!this.config.size) {
+                iframe.setAttribute('width', this.config.width ?? replaceElement.parentElement.offsetWidth);
+                iframe.setAttribute('height', this.config.height ?? replaceElement.parentElement.offsetHeight);
+            }
 
             replaceElement.replaceWith(iframe);
             this.iframe = iframe;
@@ -97,7 +117,7 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
             return this;
         },
 
-        remoteAction: function(action, params) {
+        remoteAction(action, params) {
             this.passMessage({
                 does: action,
                 params: params,
@@ -105,13 +125,13 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
             });
         },
 
-        passMessage: function(message) {
+        passMessage(message) {
             if(this.iframe) {
                 this.iframe.contentWindow.postMessage(message, '*')
             }
         },
 
-        changeDateTime: function(unit, count) {
+        changeDateTime(unit, count) {
             this.remoteAction('apiRequest', {
                 method: 'changeDate',
                 data: {
@@ -121,47 +141,47 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
             });
         },
 
-        addMinutes: function(count = 1){
+        addMinutes(count = 1){
             this.changeDateTime("minutes", count);
         },
 
-        subMinutes: function(count = 1){
+        subMinutes(count = 1){
             this.changeDateTime("minutes", count * -1);
         },
 
-        addHours: function(count = 1){
+        addHours(count = 1){
             this.changeDateTime("hours", count);
         },
 
-        subHours: function(count = 1){
+        subHours(count = 1){
             this.changeDateTime("hours", count * -1);
         },
 
-        addDays: function(count = 1){
+        addDays(count = 1){
             this.changeDateTime("days", count);
         },
 
-        subDays: function(count = 1){
+        subDays(count = 1){
             this.changeDateTime("days", count * -1);
         },
 
-        addMonths: function(count = 1){
+        addMonths(count = 1){
             this.changeDateTime("months", count);
         },
 
-        subMonths: function(count = 1){
+        subMonths(count = 1){
             this.changeDateTime("months", count * -1);
         },
 
-        addYears: function(count = 1){
+        addYears(count = 1){
             this.changeDateTime("years", count);
         },
 
-        subYears: function(count = 1){
+        subYears(count = 1){
             this.changeDateTime("years", count * -1);
         },
 
-        getCurrentDate: function(callback){
+        getCurrentDate(callback){
             this.remoteAction('apiRequest', {
                 method: 'getCurrentDate'
             });
@@ -169,7 +189,7 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
             this.getCurrentDateCallback = callback;
         },
 
-        test: function() {
+        test() {
             console.log("Sending a message");
             this.remoteAction('toastify', {
                 type: 'error',
@@ -187,8 +207,24 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
             });
         },
 
-        login_form: function() {
+        login_form() {
             this.remoteAction('login_form', {});
+        },
+        resolveDomain() {
+            return window.fcEmbedDomain;
+        },
+        resizeIframe(height, width) {
+            if(this.iframe) {
+                this.iframe.style.height = height + 'px';
+                this.iframe.style.width = width + 'px';
+                this.iframe.width = width;
+                this.iframe.height = height;
+            }
+        },
+        postLoad(loadedData) {
+            if(loadedData.height && loadedData.width) {
+                this.resizeIframe(loadedData.height, loadedData.width);
+            }
         }
     }.constructor(params);
 }

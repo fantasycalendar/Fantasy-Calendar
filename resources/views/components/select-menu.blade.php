@@ -4,7 +4,6 @@
             select: function(chosen) {
                 this.chosen = chosen;
                 this.{{ $model }} = chosen.value;
-                console.log("selecting");
                 this.isOpen = false;
             },
             initial: `{{ $default ?? '' }}`,
@@ -12,9 +11,7 @@
             init: function() {
                 let filtered = this.options.filter(option => option.value == this.initial);
 
-                if(filtered.length) {
-                    console.log(filtered, this.select(filtered[0]))
-                }
+                if(filtered.length) this.select(filtered[0])
             }
         }'
      @click.away="isOpen = false"

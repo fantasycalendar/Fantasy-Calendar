@@ -15,8 +15,8 @@
             html, body {
                 max-width: 100%;
                 min-height: 100%;
-                width: 100vw;
-                height: 100vh;
+                width: 100%;
+                height: 100%;
                 margin: 0;
                 padding: 0;
                 background-color: black;
@@ -80,7 +80,8 @@
         </style>
 
         <script>
-            window.addEventListener('DOMContentLoaded', function(event) {
+            window.frameElement.addEventListener('load', function(event) {
+                console.log("Domcontentloaded");
                 let image_holder = document.getElementById('image_holder');
                 let image = document.createElement('img');
 
@@ -89,10 +90,18 @@
                 let vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
                 let vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
 
+                image.onload = function(event){
+                    console.log('loaded');
+                    FCEmbed.bubble({
+                        type: 'calendarLoaded',
+                        data: { height: event.target.naturalHeight, width: event.target.naturalWidth }
+                    })
+                }
+
                 image.setAttribute('src', "{{ route('calendars.image', ['calendar' => $calendar, 'ext' => 'png']) }}?size={{ $size ?? 'md' }}")
 
                 image_holder.replaceWith(image);
-            });
+            }, {once: true});
 
             window.onmessage = function(event) {
                 // $.notify("We got a message:" + event.data, "success");
@@ -116,6 +125,7 @@
                 },
 
                 bubble: function(args) {
+                    console.trace()
                     window.top.postMessage({
                         ...args,
                         source: 'fantasy-calendar-embed-child'
@@ -259,8 +269,8 @@
     <body x-data="FCEmbed"
           @login.window="show_login_form = true"
           @notify.window="toast($event.detail)"
-          @image-load.window="image_loading = true"
-          @image-loaded.window="image_loading = false"
+          @image-loading.window="console.log('image-loading'); image_loading = true"
+          @image-loaded.window="console.log('image-loaded'); image_loading = false"
     >
         <div class="image_grid">
             <div class="image_container">
