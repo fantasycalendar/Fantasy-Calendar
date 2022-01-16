@@ -20,7 +20,7 @@ class Button extends Component
      *
      * @return void
      */
-    public function __construct(public $size)
+    public function __construct(public $size = 'md')
     {
         $this->sizeClasses = $this->sizeSpecific[$size] ?? '';
     }

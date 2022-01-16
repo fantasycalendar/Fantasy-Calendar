@@ -5,6 +5,7 @@
             return {
                 embedNow: true,
                 hash: '{{ $calendar->hash }}',
+                size: 'md',
                 height: 'auto',
                 width: 'auto',
                 selector: '#fantasy-calendar-embed',
@@ -25,6 +26,14 @@
                     }
 
                     return embedCode + ")";
+                },
+                update: function(updated) {
+                    console.log(updated);
+                    this.fantasyCalendar = FantasyCalendar({
+                        hash: this.hash,
+                        element: '#fantasy-calendar-embed',
+                        size: this.size
+                    });
                 }
             }
         }
@@ -32,7 +41,7 @@
 @endpush
 
 <x-app-layout>
-    <div class="flex" x-data="manageEmbed()" x-init="fantasyCalendar.embed('#fantasy-calendar-embed')">
+    <div class="flex" x-data="manageEmbed()" x-init="$nextTick(() => update()); $watch('size', value => update(value))">
         <div class="hidden md:block max-w-sm w-full md:mr-4 space-y-8 divide-y divide-gray-200">
             <div>
                 <div class="text-lg font-medium leading-6 text-gray-900">
@@ -48,6 +57,12 @@
                     <div class="pt-8 col-span-6">
                         <label for="calendar-hash" class="block font-medium text-gray-700">Calendar hash</label>
                         <input type="text" name="calendar-hash" id="calendar-hash" autocomplete="street-address" class="mt-1 text-gray-600 focus:ring-green-500 focus:border-green-500 block leading-loose w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="hash">
+                    </div>
+
+                    <div class="pt-2 col-span-6">
+                        <x-select-menu model="size" default="md" :options="['sm' => 'Small', 'md' => 'Medium', 'lg' => 'Large']">
+                            Size
+                        </x-select-menu>
                     </div>
 
                     <div class="pt-2 col-span-3">
@@ -77,6 +92,8 @@
                         <div class="text-gray-600 w-full" x-show="!embedNow">The calendar won't embed until you call <pre class="my-2 p-2 w-full bg-gray-200 text-gray-800 p-1 rounded-sm">FantasyCalendar.embed()</pre></div>
                     </div>
                 </div>
+
+{{--                Theme dropdown--}}
             </fieldset>
 
         </div>
@@ -87,18 +104,13 @@
                     <div id="fantasy-calendar-embed"></div>
                 </div>
 
-                <div class="flex justify-end pt-6">
-                    <x-button size="lg" @click="$dispatch('modal')">Get code</x-button>
-                </div>
-            </div>
-        </div>
-
-        <x-modal>
-            <pre class="text-left bg-gray-200 rounded p-2 min-w-full text-gray-700"><code>{{ "<script src='" . mix('js/embed.js') . "'></script>" }}
+                <pre class="text-left bg-gray-800 rounded p-4 leading-8 mt-6 min-w-full text-gray-200"><code class="language-html">{{ "<script src='" . mix('js/embed.js') . "'></script>" }}
 &lt;script&gt;
 <span x-text="code"></span>
 &lt;/script&gt;
 </code></pre>
-        </x-modal>
+
+            </div>
+        </div>
     </div>
 </x-app-layout>

@@ -20,8 +20,8 @@
                     <div class="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
                         <x-nav-link href="{{ route('calendars.index') }}">My Calendars</x-nav-link>
                         <x-nav-link href="{{ route('calendars.create') }}">New Calendar</x-nav-link>
-                        <x-nav-link href="{{ route('whats-new') }}">What's new in 2.0</x-nav-link>
                         <x-nav-link href="{{ route('faq') }}">FAQs</x-nav-link>
+                        <x-nav-link href="{{ route('discord') }}">Discord Integration</x-nav-link>
                     </div>
                 </div>
                 <div class="hidden sm:ml-6 sm:flex sm:items-center">

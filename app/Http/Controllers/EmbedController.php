@@ -12,7 +12,8 @@ class EmbedController extends Controller
 //        \Debugbar::disable();
 
         return view('pages.embed', [
-            'calendar' => $calendar
+            'calendar' => $calendar,
+            'size' => request()->get('size')
         ]);
     }
 

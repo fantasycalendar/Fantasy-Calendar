@@ -745,11 +745,11 @@ class ImageRenderer
                 'divide' => 72,
                 'multiply' => 175,
             ],
-            'xxl' => [
+            '2xl' => [
                 'divide' => 144,
                 'multiply' => 425,
             ],
-            'xxxl' => [
+            '3xl' => [
                 'divide' => 48,
                 'multiply' => 175,
             ]
