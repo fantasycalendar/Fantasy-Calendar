@@ -80,29 +80,6 @@
         </style>
 
         <script>
-            window.frameElement.addEventListener('load', function(event) {
-                console.log("Domcontentloaded");
-                let image_holder = document.getElementById('image_holder');
-                let image = document.createElement('img');
-
-                image.setAttribute('id', 'calendar_image');
-
-                let vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
-                let vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
-
-                image.onload = function(event){
-                    console.log('loaded');
-                    FCEmbed.bubble({
-                        type: 'calendarLoaded',
-                        data: { height: event.target.naturalHeight, width: event.target.naturalWidth }
-                    })
-                }
-
-                image.setAttribute('src', "{{ route('calendars.image', ['calendar' => $calendar, 'ext' => 'png']) }}?size={{ $size ?? 'md' }}")
-
-                image_holder.replaceWith(image);
-            }, {once: true});
-
             window.onmessage = function(event) {
                 // $.notify("We got a message:" + event.data, "success");
                 if(typeof event.data === 'object' && event.data.source === 'fantasy-calendar-embed-parent' && typeof window.embeddableActions[event.data.does] === "function") {
@@ -118,14 +95,28 @@
                 password: "",
                 api_token: "",
                 notifications: [],
+                image_url: new URL('{{ route('calendars.image', ['calendar' => $calendar, 'ext' => 'png']) }}'),
+                image_src: '',
                 init: function() {
                     this.notifications = [];
                     this.api_token = localStorage.getItem('api_token') ?? '';
                     this.identity = localStorage.getItem('identity') ?? '';
+
+                    if(['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl'].includes('{{ $size }}')) {
+                        this.changeImageOption('size', '{{ $size }}');
+                    } else {
+                        let vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+                        let vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+
+                        this.changeImageOption('width', vw + "");
+                        this.changeImageOption('height', vh + "");
+                    }
+
+
+                    this.updateImage();
                 },
 
                 bubble: function(args) {
-                    console.trace()
                     window.top.postMessage({
                         ...args,
                         source: 'fantasy-calendar-embed-child'
@@ -182,6 +173,14 @@
                     setTimeout(function(){
                         me.notifications.pop();
                     }, 5000);
+                },
+
+                changeImageOption(name, value) {
+                    this.image_url.searchParams.set(name, value);
+                },
+
+                updateImage: function() {
+                    this.image_src = this.image_url.href;
                 }
             }
 
@@ -239,14 +238,15 @@
                             window.dispatchEvent(new CustomEvent('image-load'));
                         }, 200)
 
-                        image.onload = function() {
+                        image.addEventListener('load', function imageLoadListener(event) {
                             this.toastify({
                                 type: 'success',
                                 message: `${details.count} ${details.unit} added.`
                             });
                             clearTimeout(loadingTimeout);
                             window.dispatchEvent(new CustomEvent('image-loaded'));
-                        }.bind(this);
+                            event.target.removeEventListener(event.type, arguments.callee);
+                        }.bind(this));
 
                         FCEmbed.bubble({
                             type: 'calendarUpdated',
@@ -274,7 +274,7 @@
     >
         <div class="image_grid">
             <div class="image_container">
-                <div id="image_holder"></div>
+                <img id="calendar_image" x-bind:src="image_src">
             </div>
         </div>
 

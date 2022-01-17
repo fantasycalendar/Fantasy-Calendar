@@ -5,15 +5,26 @@
             return {
                 embedNow: true,
                 hash: '{{ $calendar->hash }}',
-                size: 'md',
+                size: 'auto',
                 height: 'auto',
                 width: 'auto',
                 selector: '#fantasy-calendar-embed',
-                fantasyCalendar: FantasyCalendar({
-                    hash: '{{ $calendar->hash }}',
-                    element: '#fantasy-calendar-embed',
-                    embedNow: false
-                }),
+                init: function() {
+
+                    this.$nextTick(function() {
+                        this.fantasyCalendar = FantasyCalendar({
+                            hash: '{{ $calendar->hash }}',
+                            element: '#fantasy-calendar-embed',
+                            size: this.size,
+                        });
+
+                        setTimeout(function() {
+                            this.update('size', 'sm');
+                        }.bind(this), 3000)
+                    }.bind(this));
+                    this.$watch('size', value => this.update('size', value))
+                },
+                fantasyCalendar: null,
                 get code(){
                     let embedCode = "FantasyCalendar(\n\thash: '"+this.hash+"'\n";
 
@@ -27,13 +38,10 @@
 
                     return embedCode + ")";
                 },
-                update: function(updated) {
-                    console.log(updated);
-                    this.fantasyCalendar = FantasyCalendar({
-                        hash: this.hash,
-                        element: '#fantasy-calendar-embed',
-                        size: this.size
-                    });
+                update: function(name, value) {
+                    this.fantasyCalendar.config(name, value);
+
+                    this.fantasyCalendar.embed();
                 }
             }
         }
@@ -41,7 +49,7 @@
 @endpush
 
 <x-app-layout>
-    <div class="flex" x-data="manageEmbed()" x-init="$nextTick(() => update()); $watch('size', value => update(value))">
+    <div class="flex" x-data="manageEmbed()">
         <div class="hidden md:block max-w-sm w-full md:mr-4 space-y-8 divide-y divide-gray-200">
             <div>
                 <div class="text-lg font-medium leading-6 text-gray-900">
@@ -60,17 +68,27 @@
                     </div>
 
                     <div class="pt-2 col-span-6">
-                        <x-select-menu model="size" default="md" :options="['sm' => 'Small', 'md' => 'Medium', 'lg' => 'Large']">
+                        <x-select-menu model="size" default="auto" :options="[
+                                'auto' => 'Autofill available space',
+                                'xs' => 'Tiny',
+                                'sm' => 'Small',
+                                'md' => 'Medium',
+                                'lg' => 'Large',
+                                'xl' => 'Extra Large',
+                                '2xl' => 'Double Extra Large',
+                                '3xl' => 'Triple Extra Large',
+                                'custom' => 'Custom size'
+                            ]">
                             Size
                         </x-select-menu>
                     </div>
 
-                    <div class="pt-2 col-span-3">
+                    <div class="pt-2 col-span-3" x-show="size == 'custom'">
                         <label for="calendar-hash" class="block font-medium text-gray-700">Height</label>
                         <input type="text" name="calendar-hash" id="calendar-hash" autocomplete="street-address" class="mt-1 text-gray-600 focus:ring-green-500 focus:border-green-500 block leading-loose w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="height">
                     </div>
 
-                    <div class="pt-2 col-span-3">
+                    <div class="pt-2 col-span-3" x-show="size == 'custom'">
                         <label for="calendar-hash" class="block font-medium text-gray-700">Width</label>
                         <input type="text" name="calendar-hash" id="calendar-hash" autocomplete="street-address" class="mt-1 text-gray-600 focus:ring-green-500 focus:border-green-500 block leading-loose w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="width">
                     </div>

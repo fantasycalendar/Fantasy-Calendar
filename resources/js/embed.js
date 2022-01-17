@@ -1,9 +1,11 @@
 window.fcEmbedDomain = (new URL(document.currentScript.src)).origin;
 window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
     return {
-        config: {},
+        config_values: {},
         onUpdate: false,
         getCurrentDateCallback: false,
+        initialized: false,
+        sizes: ['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl'],
         constructor(params) {
             if(!params.hash) {
                 console.error("FantasyCalendar error: No hash set.");
@@ -12,27 +14,32 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
 
             let domain = this.resolveDomain();
 
-            this.config = {
+            this.config_values = {
                 element: document.querySelector(params.element) ?? document.scripts[document.scripts.length - 1],
                 url: new URL(domain + '/embed/' + params.hash),
                 embedNow: params.embedNow ?? true
             }
 
-            if(params.width || params.height) {
-                this.config.width = params.width;
-                this.config.height = params.height;
-            } else if(params.size) {
-                this.config.url.searchParams.append('size', params.size);
-                this.config.size = params.size;
+            if(params.size in this.sizes) {
+                this.config_values.url.searchParams.append('size', params.size);
+                this.config_values.size = params.size;
+            } else if(params.width || params.height) {
+                this.config_values.width = params.width;
+                this.config_values.height = params.height;
+            } else {
+                this.config_values.size = 'auto';
             }
 
             this.onUpdate = params.onUpdate;
 
-            if(this.config.embedNow) {
+            if(this.config_values.embedNow) {
                 this.embed();
             }
 
-            window.addEventListener('message', this.handleMessage.bind(this))
+            if(!this.initialized) {
+                window.addEventListener('message', this.handleMessage.bind(this))
+                this.initialized = true;
+            }
 
             return this;
         },
@@ -42,10 +49,11 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
                 return;
             }
 
-            console.log(event);
+            console.trace()
+
+            console.log(event.data.type);
 
             if(event.data.type === 'calendarLoaded') {
-                console.log(event);
                 this.postLoad(event.data.data);
             }
 
@@ -60,16 +68,18 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
         },
 
         setCalendar(hash){
-            this.config.url.pathname = '/embed/' + hash;
+            this.config_values.url.pathname = '/embed/' + hash;
             if(this.iframe){
-                this.iframe.setAttribute('src', this.config.url);
+                this.iframe.setAttribute('src', this.config_values.url.href);
             }
 
             return this;
         },
 
         embed(replaceElement = null) {
-            replaceElement = replaceElement ?? this.config.element;
+            replaceElement = replaceElement ?? this.config_values.element ?? '#fantasy-calendar-embed';
+
+            console.log(replaceElement);
 
             if(typeof replaceElement === 'string') {
                 const found = document.querySelector(replaceElement);
@@ -100,19 +110,23 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
 
             console.log("We were asked to embed");
             const iframe = document.createElement('iframe');
-            iframe.setAttribute('src', this.config.url.href);
+            iframe.setAttribute('src', this.config_values.url.href);
             iframe.setAttribute('frameborder', '0');
             iframe.setAttribute('scrolling', 'no');
             iframe.setAttribute('id', 'fantasy-calendar-embed')
             iframe.style.margin = 'auto';
 
-            if(!this.config.size) {
-                iframe.setAttribute('width', this.config.width ?? replaceElement.parentElement.offsetWidth);
-                iframe.setAttribute('height', this.config.height ?? replaceElement.parentElement.offsetHeight);
+            if(!(this.config_values.size in this.sizes)) {
+                console.log(this.config_values.size + " not a known size, assuming auto.");
+                iframe.setAttribute('width', this.config_values.width ?? replaceElement.parentElement.offsetWidth);
+                iframe.setAttribute('height', this.config_values.height ?? replaceElement.parentElement.offsetHeight);
+            } else {
+                console.log(this.config_values);
             }
 
             replaceElement.replaceWith(iframe);
             this.iframe = iframe;
+            this.config('element', this.iframe);
 
             return this;
         },
@@ -210,21 +224,32 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
         login_form() {
             this.remoteAction('login_form', {});
         },
+
         resolveDomain() {
             return window.fcEmbedDomain;
         },
+
         resizeIframe(height, width) {
-            if(this.iframe) {
-                this.iframe.style.height = height + 'px';
-                this.iframe.style.width = width + 'px';
-                this.iframe.width = width;
-                this.iframe.height = height;
-            }
+            this.iframe.style.height = height + 'px';
+            this.iframe.style.width = width + 'px';
+            this.iframe.width = width;
+            this.iframe.height = height;
         },
+
         postLoad(loadedData) {
             if(loadedData.height && loadedData.width) {
                 this.resizeIframe(loadedData.height, loadedData.width);
             }
+        },
+
+        config(name, value = 'unset') {
+            if(value === 'unset') {
+                delete this.config_values[name];
+                return;
+            }
+
+            this.config_values[name] = value;
+            return value;
         }
     }.constructor(params);
 }
