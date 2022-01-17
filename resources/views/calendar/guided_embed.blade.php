@@ -24,19 +24,6 @@
                     this.$watch('size', value => this.update('size', value))
                 },
                 fantasyCalendar: null,
-                get code(){
-                    let embedCode = "FantasyCalendar(\n\thash: '"+this.hash+"'\n";
-
-                    if(!['#fantasy-calendar-embed', '', '#', '.'].includes(this.selector)) {
-                        embedCode += `\tselector: '${this.selector}'\n`;
-                    }
-
-                    if(!this.embedNow) {
-                        embedCode += `\tembedNow: false\n`;
-                    }
-
-                    return embedCode + ")";
-                },
                 update: function(name, value) {
                     if(name && value) {
                         this.fantasyCalendar.config(name, value);
@@ -131,11 +118,16 @@
                     <div id="fantasy-calendar-embed"></div>
                 </div>
 
-                <pre class="text-left bg-gray-800 rounded p-4 leading-8 mt-6 min-w-full text-gray-200"><code class="language-html">{{ "<script src='" . mix('js/embed.js') . "'></script>" }}
-&lt;script&gt;
-<span x-text="code"></span>
-&lt;/script&gt;
-</code></pre>
+                <div class="text-left bg-gray-800 rounded p-4 leading-8 mt-6 min-w-full text-gray-200 font-mono">
+                    <div>{{ "<script src='" . mix('js/embed.js') . "'></script>" }}</div>
+                    <div>&lt;script&gt;</div>
+                    <div class="pl-6">FantasyCalendar({</div>
+                        <div class="pl-12">hash: '<span x-text="hash"></span>',</div>
+                        <div class="pl-12" x-show="!['#fantasy-calendar-embed', '', '#', '.'].includes(selector)">selector: '<span x-text="selector"></span>'</div>
+                        <div class="pl-12" x-show="!embedNow">embedNow: false,</div>
+                    <div class="pl-6">});</div>
+                    <div>&lt;/script&gt;</div>
+                </div>
 
             </div>
         </div>
