@@ -6,8 +6,8 @@
                 embedNow: true,
                 hash: '{{ $calendar->hash }}',
                 size: 'auto',
-                height: 'auto',
-                width: 'auto',
+                height: '',
+                width: '',
                 selector: '',
                 loading: false,
                 init: function() {
@@ -25,13 +25,13 @@
                 },
                 fantasyCalendar: null,
                 update: function(name, value) {
-                    if(name && value) {
-                        this.fantasyCalendar.config(name, value);
+                    if(value === '') {
+                        return;
                     }
 
-                    this.loading = true;
+                    this.fantasyCalendar.config(name, value);
 
-                    // setTimeout(() => this.loading = false, 1000);
+                    this.loading = true;
 
                     this.fantasyCalendar.embed();
                 }
@@ -57,7 +57,7 @@
             </div>
 
             <fieldset>
-                <div class="grid grid-cols-6 gap-6">
+                <div class="grid grid-cols-6 gap-4">
                     <div class="pt-8 col-span-6">
                         <label for="calendar-hash" class="block font-medium text-gray-700">Calendar hash</label>
                         <input type="text" name="calendar-hash" id="calendar-hash" class="mt-1 text-gray-600 focus:ring-green-500 focus:border-green-500 block leading-loose w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="hash">
@@ -80,13 +80,13 @@
                     </div>
 
                     <div class="pt-2 col-span-3" x-show="size == 'custom'">
-                        <label for="calendar-hash" class="block font-medium text-gray-700">Height</label>
-                        <input type="text" name="calendar-hash" id="calendar-hash" class="mt-1 text-gray-600 focus:ring-green-500 focus:border-green-500 block leading-loose w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="height">
+                        <label for="calendar-height" class="block font-medium text-gray-700">Height</label>
+                        <input placeholder="auto" type="number" min="150" max="1080" name="calendar-height" id="calendar-height" class="mt-1 text-gray-600 focus:ring-green-500 focus:border-green-500 block leading-loose w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="height" @keyup.debounce="update('height', $el.value)">
                     </div>
 
                     <div class="pt-2 col-span-3" x-show="size == 'custom'">
-                        <label for="calendar-hash" class="block font-medium text-gray-700">Width</label>
-                        <input type="text" name="calendar-hash" id="calendar-hash" class="mt-1 text-gray-600 focus:ring-green-500 focus:border-green-500 block leading-loose w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="width">
+                        <label for="calendar-width" class="block font-medium text-gray-700">Width</label>
+                        <input placeholder="auto" type="number" min="300" max="1920" name="calendar-width" id="calendar-width" class="mt-1 text-gray-600 focus:ring-green-500 focus:border-green-500 block leading-loose w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="width" @keyup.debounce="update('width', $el.value)">
                     </div>
                 </div>
 

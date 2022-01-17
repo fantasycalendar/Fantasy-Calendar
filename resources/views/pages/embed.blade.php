@@ -102,8 +102,16 @@
                     this.api_token = localStorage.getItem('api_token') ?? '';
                     this.identity = localStorage.getItem('identity') ?? '';
 
-                    if(['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl'].includes('{{ $size }}')) {
-                        this.changeImageOption('size', '{{ $size }}');
+                    if(['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl'].includes('{{ $size ?? '' }}')) {
+                        this.changeImageOption('size', '{{ $size ?? '' }}');
+                    } else if('{{ $height ?? '' }}' || '{{ $width ?? '' }}') {
+                        if('{{ $height ?? '' }}') {
+                            this.changeImageOption('height', '{{ $height ?? '' }}');
+                        }
+
+                        if('{{ $width ?? '' }}') {
+                            this.changeImageOption('width', '{{ $width ?? '' }}');
+                        }
                     } else {
                         let vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
                         let vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);

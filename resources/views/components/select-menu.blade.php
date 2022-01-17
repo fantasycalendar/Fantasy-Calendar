@@ -16,7 +16,7 @@
         }'
      @click.away="isOpen = false"
     >
-    <label id="listbox-label" class="block text-sm font-medium text-gray-700">
+    <label id="listbox-label" class="block font-medium text-gray-700">
         {{ $slot }}
     </label>
 

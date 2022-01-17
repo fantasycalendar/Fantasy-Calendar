@@ -50,10 +50,6 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
                 return;
             }
 
-            console.trace()
-
-            console.log(event.data.type);
-
             if(event.data.type === 'calendarLoaded') {
                 this.postLoad(event.data.data);
             }
@@ -111,12 +107,44 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
 
             console.log("We were asked to embed");
             const iframe = document.createElement('iframe');
-            if(!this.sizes.includes(this.config_values.size)) {
-                console.log(this.config_values.size + " not a known size, assuming auto.");
-                iframe.setAttribute('width', this.config_values.width ?? replaceElement.parentElement.offsetWidth);
-                iframe.setAttribute('height', this.config_values.height ?? replaceElement.parentElement.offsetHeight);
-            } else {
-                this.config_values.url.searchParams.set('size', this.config_values.size);
+
+            switch (this.config_values.size) {
+                case 'xs':
+                case 'sm':
+                case 'md':
+                case 'lg':
+                case 'xl':
+                case '2xl':
+                case '3xl':
+                    console.log('Using predefined size: ' + this.config_values.size);
+                    // We can't have both a height/width AND a size. I mean, we could. But that would be silly.
+                    this.config_values.url.searchParams.set('size', this.config_values.size);
+                    this.config_values.url.searchParams.delete('height');
+                    this.config_values.url.searchParams.delete('width');
+                    break;
+                case 'custom':
+                    // Custom size can either be both width _or_ height, or both.
+                    // Fallback to parent element size if not specified.
+                    console.log(this.config_values);
+                    console.log('Using custom sizing:');
+                    console.log("Height: " + this.config_values.height);
+                    console.log("Width: " + this.config_values.width);
+                    this.config_values.url.searchParams.delete('size');
+                    if(this.config_values.height) {
+                        this.config_values.url.searchParams.set('height', this.config_values.height);
+                    }
+
+                    if(this.config_values.width) {
+                        this.config_values.url.searchParams.set('width', this.config_values.width);
+                    }
+                    break;
+                default:
+                    // Anything but 'custom' or a predefined size is assumed to be auto.
+                    console.log('Using auto sizing:');
+                    console.log('Height: '+ String(replaceElement.parentElement.offsetHeight));
+                    console.log('Width: '+ String(replaceElement.parentElement.offsetWidth));
+                    iframe.setAttribute('height', String(replaceElement.parentElement.offsetHeight));
+                    iframe.setAttribute('width',  String(replaceElement.parentElement.offsetWidth));
             }
 
             iframe.setAttribute('src', this.config_values.url.href);

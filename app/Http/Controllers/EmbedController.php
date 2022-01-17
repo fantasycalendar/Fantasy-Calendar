@@ -11,10 +11,12 @@ class EmbedController extends Controller
     {
 //        \Debugbar::disable();
 
-        return view('pages.embed', [
-            'calendar' => $calendar,
-            'size' => request()->get('size')
-        ]);
+        return view('pages.embed', array_merge(
+            [
+                'calendar' => $calendar,
+            ],
+            request()->only(['size', 'height', 'width'])
+        ));
     }
 
     public function embedExample()
