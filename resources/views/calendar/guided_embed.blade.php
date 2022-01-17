@@ -8,7 +8,7 @@
                 size: 'auto',
                 height: 'auto',
                 width: 'auto',
-                selector: '#fantasy-calendar-embed',
+                selector: '',
                 loading: false,
                 init: function() {
 
@@ -27,7 +27,7 @@
                 get code(){
                     let embedCode = "FantasyCalendar(\n\thash: '"+this.hash+"'\n";
 
-                    if(this.selector !== '#fantasy-calendar-embed') {
+                    if(!['#fantasy-calendar-embed', '', '#', '.'].includes(this.selector)) {
                         embedCode += `\tselector: '${this.selector}'\n`;
                     }
 
@@ -73,7 +73,7 @@
                 <div class="grid grid-cols-6 gap-6">
                     <div class="pt-8 col-span-6">
                         <label for="calendar-hash" class="block font-medium text-gray-700">Calendar hash</label>
-                        <input type="text" name="calendar-hash" id="calendar-hash" autocomplete="street-address" class="mt-1 text-gray-600 focus:ring-green-500 focus:border-green-500 block leading-loose w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="hash">
+                        <input type="text" name="calendar-hash" id="calendar-hash" class="mt-1 text-gray-600 focus:ring-green-500 focus:border-green-500 block leading-loose w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="hash">
                     </div>
 
                     <div class="pt-2 col-span-6">
@@ -94,18 +94,18 @@
 
                     <div class="pt-2 col-span-3" x-show="size == 'custom'">
                         <label for="calendar-hash" class="block font-medium text-gray-700">Height</label>
-                        <input type="text" name="calendar-hash" id="calendar-hash" autocomplete="street-address" class="mt-1 text-gray-600 focus:ring-green-500 focus:border-green-500 block leading-loose w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="height">
+                        <input type="text" name="calendar-hash" id="calendar-hash" class="mt-1 text-gray-600 focus:ring-green-500 focus:border-green-500 block leading-loose w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="height">
                     </div>
 
                     <div class="pt-2 col-span-3" x-show="size == 'custom'">
                         <label for="calendar-hash" class="block font-medium text-gray-700">Width</label>
-                        <input type="text" name="calendar-hash" id="calendar-hash" autocomplete="street-address" class="mt-1 text-gray-600 focus:ring-green-500 focus:border-green-500 block leading-loose w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="width">
+                        <input type="text" name="calendar-hash" id="calendar-hash" class="mt-1 text-gray-600 focus:ring-green-500 focus:border-green-500 block leading-loose w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="width">
                     </div>
                 </div>
 
                 <div class="pt-8">
                     <label for="element_selector" class="block font-medium text-gray-700">Element Selector</label>
-                    <input type="text" name="element_selector" id="element_selector" autocomplete="street-address" class="disabled:text-gray-500 disabled:bg-gray-300 mt-1 text-gray-600 focus:ring-green-500 focus:border-green-500 block leading-loose w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="selector">
+                    <input type="text" name="element_selector" id="element_selector" placeholder="#fantasy-calendar-embed" class="disabled:text-gray-500 disabled:bg-gray-300 mt-1 text-gray-600 focus:ring-green-500 focus:border-green-500 block leading-loose w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="selector">
                 </div>
 
                 <div class="flex items-start pt-8">
