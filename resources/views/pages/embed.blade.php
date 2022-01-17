@@ -181,6 +181,16 @@
 
                 updateImage: function() {
                     this.image_src = this.image_url.href;
+                },
+
+                imageLoaded: function ($event) {
+                    this.bubble({
+                        type: 'calendarLoaded',
+                        data: {
+                            width: $event.target.naturalWidth,
+                            height: $event.target.naturalHeight
+                        }
+                    });
                 }
             }
 
@@ -274,7 +284,7 @@
     >
         <div class="image_grid">
             <div class="image_container">
-                <img id="calendar_image" x-bind:src="image_src">
+                <img id="calendar_image" x-bind:src="image_src" @load="imageLoaded">
             </div>
         </div>
 

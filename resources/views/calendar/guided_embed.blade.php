@@ -9,6 +9,7 @@
                 height: 'auto',
                 width: 'auto',
                 selector: '#fantasy-calendar-embed',
+                loading: false,
                 init: function() {
 
                     this.$nextTick(function() {
@@ -16,11 +17,9 @@
                             hash: '{{ $calendar->hash }}',
                             element: '#fantasy-calendar-embed',
                             size: this.size,
+                            onUpdate: () => this.loading = false,
+                            onLoad: () => this.loading = false
                         });
-
-                        setTimeout(function() {
-                            this.update('size', 'sm');
-                        }.bind(this), 3000)
                     }.bind(this));
                     this.$watch('size', value => this.update('size', value))
                 },
@@ -39,7 +38,13 @@
                     return embedCode + ")";
                 },
                 update: function(name, value) {
-                    this.fantasyCalendar.config(name, value);
+                    if(name && value) {
+                        this.fantasyCalendar.config(name, value);
+                    }
+
+                    this.loading = true;
+
+                    // setTimeout(() => this.loading = false, 1000);
 
                     this.fantasyCalendar.embed();
                 }
@@ -51,12 +56,16 @@
 <x-app-layout>
     <div class="flex" x-data="manageEmbed()">
         <div class="hidden md:block max-w-sm w-full md:mr-4 space-y-8 divide-y divide-gray-200">
-            <div>
+            <div class="relative">
                 <div class="text-lg font-medium leading-6 text-gray-900">
                     Create your embed code
                 </div>
                 <div class="mt-1 text-sm text-gray-600">
                     Then paste it where you want it. It's that simple.
+                </div>
+
+                <div :class="{ 'animate-spin': loading }" class="absolute text-xl top-0 right-0 p-2 cursor-pointer text-gray-400 hover:text-gray-600 transition transition-color duration-300 ease-in-out" @click="update">
+                    <i class="fa fa-sync"></i>
                 </div>
             </div>
 

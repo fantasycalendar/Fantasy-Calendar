@@ -31,6 +31,7 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
             }
 
             this.onUpdate = params.onUpdate;
+            this.onLoad = params.onLoad;
 
             if(this.config_values.embedNow) {
                 this.embed();
@@ -110,19 +111,20 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
 
             console.log("We were asked to embed");
             const iframe = document.createElement('iframe');
+            if(!this.sizes.includes(this.config_values.size)) {
+                console.log(this.config_values.size + " not a known size, assuming auto.");
+                iframe.setAttribute('width', this.config_values.width ?? replaceElement.parentElement.offsetWidth);
+                iframe.setAttribute('height', this.config_values.height ?? replaceElement.parentElement.offsetHeight);
+            } else {
+                this.config_values.url.searchParams.set('size', this.config_values.size);
+            }
+
             iframe.setAttribute('src', this.config_values.url.href);
             iframe.setAttribute('frameborder', '0');
             iframe.setAttribute('scrolling', 'no');
             iframe.setAttribute('id', 'fantasy-calendar-embed')
             iframe.style.margin = 'auto';
 
-            if(!(this.config_values.size in this.sizes)) {
-                console.log(this.config_values.size + " not a known size, assuming auto.");
-                iframe.setAttribute('width', this.config_values.width ?? replaceElement.parentElement.offsetWidth);
-                iframe.setAttribute('height', this.config_values.height ?? replaceElement.parentElement.offsetHeight);
-            } else {
-                console.log(this.config_values);
-            }
 
             replaceElement.replaceWith(iframe);
             this.iframe = iframe;
@@ -230,6 +232,7 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
         },
 
         resizeIframe(height, width) {
+            console.log('Image sizing:' + height + "," + width);
             this.iframe.style.height = height + 'px';
             this.iframe.style.width = width + 'px';
             this.iframe.width = width;
@@ -240,12 +243,21 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
             if(loadedData.height && loadedData.width) {
                 this.resizeIframe(loadedData.height, loadedData.width);
             }
+
+            if(this.onLoad) {
+                this.onLoad(loadedData);
+            }
         },
 
         config(name, value = 'unset') {
+            console.log("Changing config " + name + " to " + value);
             if(value === 'unset') {
                 delete this.config_values[name];
                 return;
+            }
+
+            if(name === 'size' && value === 'auto') {
+                this.config_values.url.searchParams.delete('size');
             }
 
             this.config_values[name] = value;
