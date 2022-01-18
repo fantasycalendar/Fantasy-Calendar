@@ -108,6 +108,10 @@
                 <div class="pt-8">
                     <label for="element_selector" class="block font-medium text-gray-700">Element Selector</label>
                     <input type="text" name="element_selector" id="element_selector" placeholder="#fantasy-calendar-embed" class="disabled:text-gray-500 disabled:bg-gray-300 mt-1 text-gray-600 focus:ring-green-500 focus:border-green-500 block leading-loose w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="selector">
+
+                    <x-alert type="notice" class="mt-4" x-show="!selector">
+                        Without a selector, the <strong>&lt;script&gt;</strong> tag calling <strong>FantasyCalendar({})</strong> will be replaced.
+                    </x-alert>
                 </div>
 
                 <div class="flex items-start pt-8">
@@ -117,10 +121,11 @@
 
                     <div class="ml-3 text-sm flex-grow">
                         <label for="comments" class="font-medium text-gray-800">Embed Right Away</label>
-                        <p class="text-gray-600 w-full" x-show="embedNow">The calendar will embed immediately on page load</p>
-                        <div class="text-gray-600 w-full" x-show="!embedNow">The calendar won't embed until you call <pre class="my-2 p-2 w-full bg-gray-200 text-gray-800 p-1 rounded-sm">FantasyCalendar.embed()</pre></div>
+                        <p class="text-gray-600 pt-1 w-full" x-show="embedNow"> The calendar will embed immediately on page load</p>
                     </div>
                 </div>
+
+                <x-alert type="warning" x-show="!embedNow" class="mt-4">The calendar won't embed until you call <pre class="my-2 p-2 w-full bg-gray-200 text-gray-800 p-1 rounded-sm">FantasyCalendar.embed()</pre></x-alert>
             </fieldset>
 
         </div>
@@ -138,6 +143,11 @@
                         <div class="pl-12">hash: '<span x-text="hash"></span>',</div>
                         <div class="pl-12" x-show="!['#fantasy-calendar-embed', '', '#', '.'].includes(selector)">selector: '<span x-text="selector"></span>'</div>
                         <div class="pl-12" x-show="!embedNow">embedNow: false,</div>
+                        <div class="pl-12" x-show="size !== 'auto'">size: '<span x-text="size"></span>',</div>
+                        <div x-show="size === 'custom'">
+                            <div class="pl-12" x-show="width">width: <span x-text="width"></span>,</div>
+                            <div class="pl-12" x-show="height">height: <span x-text="height"></span>,</div>
+                        </div>
                     <div class="pl-6">});</div>
                     <div>&lt;/script&gt;</div>
                 </div>

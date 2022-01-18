@@ -4,6 +4,20 @@ module.exports = {
         "./resources/**/*.js",
         "./resources/**/*.vue",
     ],
+    safelist: [
+        {
+            pattern: /bg-(yellow|red|green|blue)-(50|100|200|300|400|500|600|700|800|900)/,
+            variants: ['hover'],
+        },
+        {
+            pattern: /text-(yellow|red|green|blue)-(50|100|200|300|400|500|600|700|800|900)/,
+            variants: ['hover'],
+        },
+        {
+            pattern: /border-(yellow|red|green|blue)/,
+            variants: ['hover'],
+        },
+    ],
     theme: {
         colors: {
             transparent: 'transparent',

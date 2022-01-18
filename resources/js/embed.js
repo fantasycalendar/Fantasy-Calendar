@@ -76,7 +76,7 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
         },
 
         embed(replaceElement = null) {
-            replaceElement = replaceElement ?? this.config_values.element ?? '#fantasy-calendar-embed';
+            replaceElement = replaceElement ?? this.config_values.element;
 
             console.log(replaceElement);
 
