@@ -6,7 +6,7 @@
                 this.{{ $model }} = chosen.value;
                 this.isOpen = false;
             },
-            initial: `{{ $default ?? '' }}`,
+            initial: `{{ $default ?? array_key_first($options) }}`,
             options: JSON.parse(`@json($options)`),
             init: function() {
                 let filtered = this.options.filter(option => option.value == this.initial);

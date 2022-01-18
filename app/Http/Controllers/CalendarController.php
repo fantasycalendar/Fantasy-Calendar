@@ -124,7 +124,22 @@ class CalendarController extends Controller
     public function guidedEmbed(Calendar $calendar)
     {
         return view('calendar.guided_embed', [
-            'calendar' => $calendar
+            'calendar' => $calendar,
+            'sizes' => [
+                'auto' => 'Autofill available space',
+                'xs' => 'Tiny',
+                'sm' => 'Small',
+                'md' => 'Medium',
+                'lg' => 'Large',
+                'xl' => 'Extra Large',
+                '2xl' => 'Double Extra Large',
+                '3xl' => 'Triple Extra Large',
+                'custom' => 'Custom size'
+            ],
+            'themes' => [
+                'fantasy_calendar' => 'Fantasy Calendar',
+                'discord' => 'Discord',
+            ]
         ]);
     }
 

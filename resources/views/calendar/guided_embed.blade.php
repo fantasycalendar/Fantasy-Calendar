@@ -10,6 +10,8 @@
                 width: '',
                 selector: '',
                 loading: false,
+                theme: 'fantasy_calendar',
+                fantasyCalendar: null,
                 init: function() {
 
                     this.$nextTick(function() {
@@ -17,23 +19,27 @@
                             hash: '{{ $calendar->hash }}',
                             element: '#fantasy-calendar-embed',
                             size: this.size,
+                            embedNow: false,
                             onUpdate: () => this.loading = false,
                             onLoad: () => this.loading = false
                         });
                     }.bind(this));
-                    this.$watch('size', value => this.update('size', value))
-                },
-                fantasyCalendar: null,
-                update: function(name, value) {
-                    if(value === '') {
-                        return;
-                    }
 
-                    this.fantasyCalendar.config(name, value);
+                    this.$watch('size', value => this.settingRefreshes('size', value))
+                    this.$watch('theme', value => this.updateSetting('theme', value))
+                },
+                settingRefreshes: function(name, value) {
+                    this.updateSetting(name, value);
 
                     this.loading = true;
 
+                    this.refreshIframe();
+                },
+                refreshIframe: function(){
                     this.fantasyCalendar.embed();
+                },
+                updateSetting: function(name, value) {
+                    this.fantasyCalendar.config(name, value);
                 }
             }
         }
@@ -51,7 +57,7 @@
                     Then paste it where you want it. It's that simple.
                 </div>
 
-                <div :class="{ 'animate-spin': loading }" class="absolute text-xl top-0 right-0 p-2 cursor-pointer text-gray-400 hover:text-gray-600 transition transition-color duration-300 ease-in-out" @click="update">
+                <div :class="{ 'animate-spin': loading }" class="absolute text-xl top-0 right-0 p-2 cursor-pointer text-gray-400 hover:text-gray-600 transition transition-color duration-300 ease-in-out" @click="refreshIframe">
                     <i class="fa fa-sync"></i>
                 </div>
             </div>
@@ -64,17 +70,7 @@
                     </div>
 
                     <div class="pt-2 col-span-6">
-                        <x-select-menu model="size" default="auto" :options="[
-                                'auto' => 'Autofill available space',
-                                'xs' => 'Tiny',
-                                'sm' => 'Small',
-                                'md' => 'Medium',
-                                'lg' => 'Large',
-                                'xl' => 'Extra Large',
-                                '2xl' => 'Double Extra Large',
-                                '3xl' => 'Triple Extra Large',
-                                'custom' => 'Custom size'
-                            ]">
+                        <x-select-menu model="size" default="auto" :options="$sizes">
                             Size
                         </x-select-menu>
                     </div>
@@ -107,7 +103,7 @@
                     </div>
                 </div>
 
-{{--                Theme dropdown--}}
+                <x-select-menu model="theme" default="fantasy_calendar" :options="$themes"></x-select-menu>
             </fieldset>
 
         </div>

@@ -81,7 +81,8 @@
 
         <script>
             window.onmessage = function(event) {
-                // $.notify("We got a message:" + event.data, "success");
+                console.log("Message:", event.data);
+
                 if(typeof event.data === 'object' && event.data.source === 'fantasy-calendar-embed-parent' && typeof window.embeddableActions[event.data.does] === "function") {
                     console.log("Told to do " + event.data.does + " with " + JSON.stringify(event.data.params))
                     window.embeddableActions[event.data.does](event.data.params);
@@ -97,6 +98,7 @@
                 notifications: [],
                 image_url: new URL('{{ route('calendars.image', ['calendar' => $calendar, 'ext' => 'png']) }}'),
                 image_src: '',
+                settings: {},
                 init: function() {
                     this.notifications = [];
                     this.api_token = localStorage.getItem('api_token') ?? '';
@@ -183,6 +185,11 @@
                     }, 5000);
                 },
 
+                updateSetting(setting) {
+                    this.changeImageOption(setting.name, setting.value);
+                    this.updateImage();
+                },
+
                 changeImageOption(name, value) {
                     this.image_url.searchParams.set(name, value);
                 },
@@ -203,14 +210,23 @@
             }
 
             window.embeddableActions = {
+                allowed_settings: ['theme', 'padding'],
                 toastify: function(params) {
                     console.log("Dispatching notify");
                     window.dispatchEvent(new CustomEvent('notify', {detail: params}));
                 },
+                updateSetting: function(params) {
+                    console.log("Told to update a setting: "+ params.name)
+                    if(this.allowed_settings.includes(params.name)) {
+                        window.dispatchEvent(new CustomEvent('updated-setting', {detail: params}))
+                    }
+                },
+                removeSetting: function(params) {
+                    this.image_url.searchParams.delete(params.name);
+                },
                 login_form: function() {
                     console.log('Dispatching login')
                     window.dispatchEvent(new CustomEvent('login', {detail: 'Login time'}));
-
                 },
                 apiRequest: function(params) {
                     let method = params.method;
@@ -287,6 +303,7 @@
     <body x-data="FCEmbed"
           @login.window="show_login_form = true"
           @notify.window="toast($event.detail)"
+          @updated-setting.window="updateSetting($event.detail)"
           @image-loading.window="console.log('image-loading'); image_loading = true"
           @image-loaded.window="console.log('image-loaded'); image_loading = false"
     >

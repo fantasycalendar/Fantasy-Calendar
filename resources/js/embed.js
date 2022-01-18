@@ -99,6 +99,7 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
             }
 
             if(this.iframe && this.iframe !== replaceElement) {
+                console.log("removing old element");
                 this.iframe.remove();
             }
 
@@ -156,7 +157,7 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
 
             replaceElement.replaceWith(iframe);
             this.iframe = iframe;
-            this.config('element', this.iframe);
+            this.config_values.element = this.iframe;
 
             return this;
         },
@@ -281,11 +282,21 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
             console.log("Changing config " + name + " to " + value);
             if(value === 'unset') {
                 delete this.config_values[name];
+                this.remoteAction('removeSetting', {
+                    name
+                });
                 return;
             }
 
             if(name === 'size' && value === 'auto') {
                 this.config_values.url.searchParams.delete('size');
+            }
+
+            if(!['iframe','size', 'height', 'width'].includes(name)) {
+                console.log(name, value);
+                this.remoteAction('updateSetting', {
+                    name, value
+                });
             }
 
             this.config_values[name] = value;
