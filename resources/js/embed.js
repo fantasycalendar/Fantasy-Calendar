@@ -50,6 +50,8 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
                 return;
             }
 
+            console.log("Received " + event.data.type);
+
             if(event.data.type === 'calendarLoaded') {
                 this.postLoad(event.data.data);
             }
@@ -142,6 +144,8 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
                 default:
                     // Anything but 'custom' or a predefined size is assumed to be auto.
                     console.log('Using auto sizing:');
+                    this.config_values.url.searchParams.delete('height');
+                    this.config_values.url.searchParams.delete('width');
                     console.log('Height: '+ String(replaceElement.parentElement.offsetHeight));
                     console.log('Width: '+ String(replaceElement.parentElement.offsetWidth));
                     iframe.setAttribute('height', String(replaceElement.parentElement.offsetHeight));
@@ -280,9 +284,12 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
             }
         },
 
-        config(name, value = 'unset') {
-            console.log("Changing config " + name + " to " + value);
-            if(value === 'unset') {
+        config(name, value = null) {
+            if(value === null) {
+                return this.config_values[name] ?? null;
+            }
+
+            if(value === 'removeSetting') {
                 delete this.config_values[name];
                 this.remoteAction('removeSetting', {
                     name

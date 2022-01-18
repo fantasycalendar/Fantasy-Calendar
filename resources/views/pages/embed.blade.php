@@ -80,13 +80,10 @@
         </style>
 
         <script>
-            window.onmessage = function(event) {
-                console.log("Message:", event.data);
-
-                if(typeof event.data === 'object' && event.data.source === 'fantasy-calendar-embed-parent' && typeof window.embeddableActions[event.data.does] === "function") {
-                    console.log("Told to do " + event.data.does + " with " + JSON.stringify(event.data.params))
-                    window.embeddableActions[event.data.does](event.data.params);
-                }
+            function dispatch(name, detail = {}) {
+                window.dispatchEvent(new CustomEvent(name, {
+                    detail
+                }));
             }
 
             window.FCEmbed = {
@@ -99,6 +96,8 @@
                 image_url: new URL('{{ route('calendars.image', ['calendar' => $calendar, 'ext' => 'png']) }}'),
                 image_src: '',
                 settings: @json($settings),
+                date_change_details: {},
+                date_changed: false,
                 init: function() {
                     this.notifications = [];
                     this.api_token = localStorage.getItem('api_token') ?? '';
@@ -138,7 +137,6 @@
                 },
 
                 show: function() {
-                    console.log("Show called!");
                     this.show_login_form = true;
                 },
 
@@ -157,7 +155,6 @@
                     })
                     .then(response => response.json())
                     .then(data => {
-                        console.log('Success:', data);
                         this.api_token = data.api_token;
                         localStorage.setItem('api_token', data.api_token);
                         this.identity = data.username;
@@ -167,30 +164,36 @@
                         this.password = '';
 
                         this.toast({
-                            "type": 'success',
-                            "message": "Successfully authenticated as " + data.username
+                            detail: {
+                                "type": 'success',
+                                "message": "Successfully authenticated as " + data.username
+                            }
                         });
                     })
                     .catch((error) => {
                         console.error('Error:', error);
                         this.password = '';
                         this.toast({
-                            "type": 'error',
-                            "message": error,
+                            detail: {
+                                "type": 'error',
+                                "message": error,
+                            }
                         })
                     });
                 },
 
-                toast: function(message) {
-                    this.notifications.push(message);
-                    const me = this;
+                toast: function($event) {
+                    console.trace();
+                    this.notifications.push($event.detail);
+
                     setTimeout(function(){
-                        me.notifications.pop();
-                    }, 5000);
+                        this.notifications.pop();
+                    }.bind(this), 5000);
                 },
 
-                updateSetting(setting) {
-                    this.changeImageOption(setting.name, setting.value);
+                updateSetting(event) {
+
+                    this.changeImageOption(event.detail.name, event.detail.value);
                     this.updateImage();
                 },
 
@@ -200,6 +203,7 @@
 
                 updateImage: function() {
                     this.image_src = this.image_url.href;
+                    this.image_loading = true;
                 },
 
                 imageLoaded: function ($event) {
@@ -210,27 +214,49 @@
                             height: $event.target.naturalHeight
                         }
                     });
+
+                    this.image_loading = false;
+
+                    if(this.date_changed === true) {
+                        this.toast({
+                            detail: {
+                                "type": 'success',
+                                "message": `${this.date_change_details.count} ${this.date_change_details.unit} added.`
+                            }
+                        });
+
+                        this.date_changed = false;
+                        this.date_change_details = {};
+                    }
+                },
+
+                dateChanged: function($event) {
+                    this.date_changed = true;
+                    this.date_change_details = $event.detail;
+                },
+
+                acceptMessage: function($event) {
+                    if(typeof $event.data === 'object' && $event.data.source === 'fantasy-calendar-embed-parent' && typeof window.embeddableActions[$event.data.does] === "function") {
+                        window.embeddableActions[$event.data.does]($event.data.params);
+                    }
                 }
             }
 
             window.embeddableActions = {
                 allowed_settings: ['theme', 'padding'],
                 toastify: function(params) {
-                    console.log("Dispatching notify");
-                    window.dispatchEvent(new CustomEvent('notify', {detail: params}));
+                    dispatch('notify', params);
                 },
                 updateSetting: function(params) {
-                    console.log("Told to update a setting: "+ params.name)
                     if(this.allowed_settings.includes(params.name)) {
-                        window.dispatchEvent(new CustomEvent('updated-setting', {detail: params}))
+                        dispatch('updated-setting', params);
                     }
                 },
                 removeSetting: function(params) {
                     this.image_url.searchParams.delete(params.name);
                 },
                 login_form: function() {
-                    console.log('Dispatching login')
-                    window.dispatchEvent(new CustomEvent('login', {detail: 'Login time'}));
+                    dispatch('login');
                 },
                 apiRequest: function(params) {
                     let method = params.method;
@@ -255,7 +281,6 @@
                     })
                     .then(response => response.json())
                     .then(data => {
-                        console.log('Success:', data);
 
                         if(method.startsWith('get')){
                             FCEmbed.bubble({
@@ -265,26 +290,15 @@
                             return;
                         }
 
-                        let image = document.getElementById('calendar_image');
+                        dispatch('date-change', {
+                            count: details.count,
+                            unit: details.unit
+                        })
 
-                        let vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
-                        let vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
-
-                        image.setAttribute('src', "{{ route('calendars.image', ['calendar' => $calendar, 'ext' => 'png']) }}?width=" + vw + "&height=" + vh + "&d=" + (new Date()).getTime());
-
-                        const loadingTimeout = setTimeout(function() {
-                            window.dispatchEvent(new CustomEvent('image-load'));
-                        }, 200)
-
-                        image.addEventListener('load', function imageLoadListener(event) {
-                            this.toastify({
-                                type: 'success',
-                                message: `${details.count} ${details.unit} added.`
-                            });
-                            clearTimeout(loadingTimeout);
-                            window.dispatchEvent(new CustomEvent('image-loaded'));
-                            event.target.removeEventListener(event.type, arguments.callee);
-                        }.bind(this));
+                        dispatch('updated-setting', {
+                            name: 'd',
+                            value: (new Date().getTime())
+                        });
 
                         FCEmbed.bubble({
                             type: 'calendarUpdated',
@@ -293,7 +307,6 @@
                     })
                     .catch((error) => {
                         console.error('Error:', error);
-                        window.dispatchEvent(new CustomEvent('image-loaded'));
 
                         this.toastify({
                             type: 'error',
@@ -306,10 +319,10 @@
     </head>
     <body x-data="FCEmbed"
           @login.window="show_login_form = true"
-          @notify.window="toast($event.detail)"
-          @updated-setting.window="updateSetting($event.detail)"
-          @image-loading.window="console.log('image-loading'); image_loading = true"
-          @image-loaded.window="console.log('image-loaded'); image_loading = false"
+          @notify.window="toast"
+          @updated-setting.window="updateSetting"
+          @message.window="acceptMessage"
+          @date-change.window="dateChanged"
     >
         <div class="image_grid">
             <div class="image_container">

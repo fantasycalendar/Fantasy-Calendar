@@ -28,7 +28,17 @@
                     this.$watch('theme', value => this.updateSetting('theme', value))
                 },
                 settingRefreshes: function(name, value) {
-                    this.updateSetting(name, value);
+                    if(name === 'size' && value === 'auto') {
+                        this.updateSetting('height', 'removeSetting');
+                        this.updateSetting('width', 'removeSetting');
+                    }
+
+                    if(name === 'size' && value === 'custom') {
+                        if (this.width.length) this.updateSetting('width', this.width);
+                        if (this.height.length) this.updateSetting('height', this.height);
+                    }
+
+                    if(!this.updateSetting(name, value)) return;
 
                     this.loading = true;
 
@@ -38,7 +48,12 @@
                     this.fantasyCalendar.embed();
                 },
                 updateSetting: function(name, value) {
+                    if(this.fantasyCalendar.config(name) === value) {
+                        return false;
+                    }
+
                     this.fantasyCalendar.config(name, value);
+                    return true;
                 }
             }
         }
@@ -81,12 +96,12 @@
 
                     <div class="pt-2 col-span-3" x-show="size == 'custom'">
                         <label for="calendar-height" class="block font-medium text-gray-700">Height</label>
-                        <input placeholder="auto" type="number" min="150" max="1080" name="calendar-height" id="calendar-height" class="mt-1 text-gray-600 focus:ring-green-500 focus:border-green-500 block leading-loose w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="height" @keyup.debounce="update('height', $el.value)">
+                        <input placeholder="auto" type="number" min="150" max="1080" name="calendar-height" id="calendar-height" class="mt-1 text-gray-600 focus:ring-green-500 focus:border-green-500 block leading-loose w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="height" @keyup.debounce.500ms="settingRefreshes('height', $el.value)">
                     </div>
 
                     <div class="pt-2 col-span-3" x-show="size == 'custom'">
                         <label for="calendar-width" class="block font-medium text-gray-700">Width</label>
-                        <input placeholder="auto" type="number" min="300" max="1920" name="calendar-width" id="calendar-width" class="mt-1 text-gray-600 focus:ring-green-500 focus:border-green-500 block leading-loose w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="width" @keyup.debounce="update('width', $el.value)">
+                        <input placeholder="auto" type="number" min="300" max="1920" name="calendar-width" id="calendar-width" class="mt-1 text-gray-600 focus:ring-green-500 focus:border-green-500 block leading-loose w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="width" @keyup.debounce.500ms="settingRefreshes('width', $el.value)">
                     </div>
                 </div>
 
