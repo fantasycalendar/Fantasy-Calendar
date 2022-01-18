@@ -148,6 +148,8 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
                     iframe.setAttribute('width',  String(replaceElement.parentElement.offsetWidth));
             }
 
+            console.log("Using URL: " + this.config_values.url.href);
+
             iframe.setAttribute('src', this.config_values.url.href);
             iframe.setAttribute('frameborder', '0');
             iframe.setAttribute('scrolling', 'no');
@@ -294,6 +296,7 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
 
             if(!['iframe','size', 'height', 'width'].includes(name)) {
                 console.log(name, value);
+                this.config_values.url.searchParams.set(name, value);
                 this.remoteAction('updateSetting', {
                     name, value
                 });

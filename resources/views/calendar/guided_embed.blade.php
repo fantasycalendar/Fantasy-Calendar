@@ -19,7 +19,6 @@
                             hash: '{{ $calendar->hash }}',
                             element: '#fantasy-calendar-embed',
                             size: this.size,
-                            embedNow: false,
                             onUpdate: () => this.loading = false,
                             onLoad: () => this.loading = false
                         });
@@ -70,6 +69,11 @@
                     </div>
 
                     <div class="pt-2 col-span-6">
+                        <label for="calendar-theme" class="block font-medium text-gray-700">Theme</label>
+                        <x-select-menu model="theme" default="fantasy_calendar" :options="$themes"></x-select-menu>
+                    </div>
+
+                    <div class="pt-2 col-span-6">
                         <x-select-menu model="size" default="auto" :options="$sizes">
                             Size
                         </x-select-menu>
@@ -102,8 +106,6 @@
                         <div class="text-gray-600 w-full" x-show="!embedNow">The calendar won't embed until you call <pre class="my-2 p-2 w-full bg-gray-200 text-gray-800 p-1 rounded-sm">FantasyCalendar.embed()</pre></div>
                     </div>
                 </div>
-
-                <x-select-menu model="theme" default="fantasy_calendar" :options="$themes"></x-select-menu>
             </fieldset>
 
         </div>

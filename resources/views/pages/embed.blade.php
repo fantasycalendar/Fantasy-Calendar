@@ -98,11 +98,15 @@
                 notifications: [],
                 image_url: new URL('{{ route('calendars.image', ['calendar' => $calendar, 'ext' => 'png']) }}'),
                 image_src: '',
-                settings: {},
+                settings: @json($settings),
                 init: function() {
                     this.notifications = [];
                     this.api_token = localStorage.getItem('api_token') ?? '';
                     this.identity = localStorage.getItem('identity') ?? '';
+
+                    for (const name in this.settings) {
+                        this.image_url.searchParams.set(name, this.settings[name]);
+                    }
 
                     if(['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl'].includes('{{ $size ?? '' }}')) {
                         this.changeImageOption('size', '{{ $size ?? '' }}');
