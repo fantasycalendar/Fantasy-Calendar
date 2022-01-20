@@ -182,9 +182,6 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
                 this._determineSizing();
             }
 
-            const placementElement = document.createElement('div');
-            this._config('element').parentNode.insertBefore(placementElement, this._config('element'));
-
             const iframe = document.createElement('iframe');
 
             if(this.setting('height')) {
