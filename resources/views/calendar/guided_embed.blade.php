@@ -21,10 +21,10 @@
 
                         if(this.size !== 'auto' || this.theme !== 'fantasy_calendar') {
                             code += `\tsettings: {\n`;
-                            code += `${(this.theme !== 'fantasy_calendar'        ? "\t\ttheme: '" + this.theme + "',\n"      : '')}`;
-                            code += `${(this.size !== 'auto'                     ? "\t\tsize: '" + this.size + "',\n"        : '')}`;
-                            code += `${(this.size === 'custom' && this.width     ? "\t\twidth: '" + this.width + "',\n"      : '')}`;
-                            code += `${(this.size === 'custom' && this.height    ? "\t\theight: '" + this.height + "',\n"    : '')}`;
+                                code += `${(this.theme !== 'fantasy_calendar'        ? "\t\ttheme: '" + this.theme + "',\n"      : '')}`;
+                                code += `${(this.size !== 'auto'                     ? "\t\tsize: '" + this.size + "',\n"        : '')}`;
+                                code += `${(this.size === 'custom' && this.width     ? "\t\twidth: '" + this.width + "',\n"      : '')}`;
+                                code += `${(this.size === 'custom' && this.height    ? "\t\theight: '" + this.height + "',\n"    : '')}`;
                             code += `\t},\n`;
                         }
 
