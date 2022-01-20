@@ -37,7 +37,7 @@
         <script>window.bugsnagClient = bugsnag('98440cbeef759631f3d987ab45b26a79')</script>
     @endif
 
-    <script src="{{ mix('/js/app-tw.js') }}"></script>
+    <script src="{{ mix('/js/app-tw.js') }}" defer></script>
     <script src="{{ mix('js/calendar/calendar_functions.js') }}"></script>
     <script src="{{ mix('js/calendar/calendar_ajax_functions.js') }}"></script>
 

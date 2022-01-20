@@ -3,8 +3,8 @@
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="{{ mix('css/app-tw.css') }}">
-{{--        <script src="//unpkg.com/alpinejs" defer></script>--}}
-        <script src="{{ mix('/js/app-tw.js') }}"></script>
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <script src="{{ mix('/js/app-tw.js') }}" defer></script>
 
         <style>
             * {
