@@ -2,9 +2,9 @@
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-{{--        <link rel="stylesheet" href="{{ asset('css/app.css') }}">--}}
-        <script src="//unpkg.com/alpinejs" defer></script>
-        <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="{{ mix('css/app-tw.css') }}">
+{{--        <script src="//unpkg.com/alpinejs" defer></script>--}}
+        <script src="{{ mix('/js/app-tw.js') }}"></script>
 
         <style>
             * {
@@ -395,7 +395,7 @@
                 <div>
                     <div class="bg-green-100 border-green-300 text-green-600 p-2 rounded mt-12 ">
                         <div>
-                            You are already signed in as <span x-text="identity" class="font-bold"></span>.
+                            <i class="fa fa-check-circle"></i> You are already signed in as <span x-text="identity" class="font-bold"></span>.
                         </div>
                     </div>
 
