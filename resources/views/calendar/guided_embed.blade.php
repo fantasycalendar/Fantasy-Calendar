@@ -12,11 +12,32 @@
                 loading: false,
                 theme: 'fantasy_calendar',
                 fantasyCalendar: null,
+                get embedCode() {
+                    let embedUrl = '{{ url('js/embed.js') }}';
+                    let code = "<"+"script src='"+embedUrl+"'></script" + ">\n<" + "script>"; // This is broken up to stop phpstorm from parsing it as code.
+                        code += `\nFantasyCalendar({\n\thash: '${this.hash}',\n`;
+                        code += `${['#fantasy-calendar-embed', '', '#', '.'].includes(this.selector) ? '' : "\tselector: '"+ this.selector +"',\n" }`;
+                        code += `${ !this.embedNow ? "\tembedNow: false,\n" : ''}`;
+
+                        if(this.size !== 'auto' || this.theme !== 'fantasy_calendar') {
+                            code += `\tsettings: {\n`;
+                            code += `${(this.theme !== 'fantasy_calendar'        ? "\t\ttheme: '" + this.theme + "',\n"      : '')}`;
+                            code += `${(this.size !== 'auto'                     ? "\t\tsize: '" + this.size + "',\n"        : '')}`;
+                            code += `${(this.size === 'custom' && this.width     ? "\t\twidth: '" + this.width + "',\n"      : '')}`;
+                            code += `${(this.size === 'custom' && this.height    ? "\t\theight: '" + this.height + "',\n"    : '')}`;
+                            code += `\t},\n`;
+                        }
+
+                    code += "});\n<"+"/script>";
+
+                    return code;
+                },
                 init: function() {
 
                     this.$nextTick(function() {
+                        let hash = '{{ $calendar->hash }}';
                         this.fantasyCalendar = FantasyCalendar({
-                            hash: '{{ $calendar->hash }}',
+                            hash: hash,
                             selector: '#fantasy-calendar-embed',
                             settings: {
                                 size: this.size,
@@ -24,6 +45,7 @@
                                 onLoad: () => this.loading = false
                             }
                         });
+                        console.log(this.embedCode);
                     }.bind(this));
 
                     this.$watch('size', value => this.settingRefreshes('size', value))
@@ -138,22 +160,7 @@
                     <div id="fantasy-calendar-embed"></div>
                 </div>
 
-                <div class="text-left bg-gray-800 rounded p-4 leading-8 mt-6 min-w-full text-gray-200 font-mono">
-                    <div>{{ "<script src='" . mix('js/embed.js') . "'></script>" }}</div>
-                    <div>&lt;script&gt;</div>
-                    <div class="pl-6">FantasyCalendar({</div>
-                        <div class="pl-12">hash: '<span x-text="hash"></span>',</div>
-                        <div class="pl-12" x-show="!['#fantasy-calendar-embed', '', '#', '.'].includes(selector)">selector: '<span x-text="selector"></span>'</div>
-                        <div class="pl-12" x-show="!embedNow">embedNow: false,</div>
-                        <div class="pl-12" x-show="size !== 'auto'">size: '<span x-text="size"></span>',</div>
-                        <div class="pl-12" x-show="theme !== 'fantasy_calendar'">theme: '<span x-text="theme"></span>',</div>
-                        <div x-show="size === 'custom'">
-                            <div class="pl-12" x-show="width">width: <span x-text="width"></span>,</div>
-                            <div class="pl-12" x-show="height">height: <span x-text="height"></span>,</div>
-                        </div>
-                    <div class="pl-6">});</div>
-                    <div>&lt;/script&gt;</div>
-                </div>
+                <pre class="text-left bg-gray-800 rounded p-4 leading-8 mt-6 min-w-full text-gray-200 font-mono"><code x-text="embedCode"></code></pre>
 
             </div>
         </div>

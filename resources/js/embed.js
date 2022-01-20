@@ -17,6 +17,7 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
             onGetDate: null,
             width: null,
             height: null,
+            theme: 'fantasy_calendar',
         },
         get url() {
             const url = new URL(fcEmbedDomain + '/embed/' + this._config('hash'));
