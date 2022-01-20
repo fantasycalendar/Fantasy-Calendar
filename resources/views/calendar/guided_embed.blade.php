@@ -13,18 +13,19 @@
                 theme: 'fantasy_calendar',
                 fantasyCalendar: null,
                 get embedCode() {
-                    let embedUrl = '{{ url('js/embed.js') }}';
-                    let code = "<"+"script src='"+embedUrl+"'></script" + ">\n<" + "script>"; // This is broken up to stop phpstorm from parsing it as code.
-                        code += `\nFantasyCalendar({\n\thash: '${this.hash}',\n`;
-                        code += `${['#fantasy-calendar-embed', '', '#', '.'].includes(this.selector) ? '' : "\tselector: '"+ this.selector +"',\n" }`;
-                        code += `${ !this.embedNow ? "\tembedNow: false,\n" : ''}`;
+                    const embedUrl = '{{ url('js/embed.js') }}';
+
+                    let code = "<"+"script src='"+embedUrl+"'></script" + ">\n<" + "script>\n"; // This is broken up to stop phpstorm from parsing it as code.
+                        code += `FantasyCalendar({\n\thash: '${this.hash}',\n`;
+                        code += !['#fantasy-calendar-embed', '', '#', '.'].includes(this.selector)  ? "\tselector: '" + this.selector + "',\n"  : '';
+                        code += !this.embedNow                                                      ? "\tembedNow: false,\n"                    : '';
 
                         if(this.size !== 'auto' || this.theme !== 'fantasy_calendar') {
                             code += `\tsettings: {\n`;
-                                code += `${(this.theme !== 'fantasy_calendar'        ? "\t\ttheme: '" + this.theme + "',\n"      : '')}`;
-                                code += `${(this.size !== 'auto'                     ? "\t\tsize: '" + this.size + "',\n"        : '')}`;
-                                code += `${(this.size === 'custom' && this.width     ? "\t\twidth: '" + this.width + "',\n"      : '')}`;
-                                code += `${(this.size === 'custom' && this.height    ? "\t\theight: '" + this.height + "',\n"    : '')}`;
+                                code += this.theme !== 'fantasy_calendar'        ? "\t\ttheme: '" + this.theme + "',\n"      : '';
+                                code += this.size !== 'auto'                     ? "\t\tsize: '" + this.size + "',\n"        : '';
+                                code += this.size === 'custom' && this.width     ? "\t\twidth: '" + this.width + "',\n"      : '';
+                                code += this.size === 'custom' && this.height    ? "\t\theight: '" + this.height + "',\n"    : '';
                             code += `\t},\n`;
                         }
 
