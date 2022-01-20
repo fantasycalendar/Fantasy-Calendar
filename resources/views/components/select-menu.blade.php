@@ -21,7 +21,7 @@
     </label>
 
     <div class="mt-1 relative">
-        <button @click="isOpen =! isOpen" type="button" {{ $attributes->merge(['class' => 'bg-white relative w-full border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 sm:text-sm']) }} aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label">
+        <button @click="isOpen =! isOpen" type="button" {{ $attributes->merge(['class' => 'bg-white relative w-full border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500 sm:text-sm']) }} aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label">
         <span class="block truncate" x-text="chosen.label"></span>
             <span class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
             <!-- Heroicon name: solid/selector -->
@@ -38,8 +38,8 @@
             x-show="isOpen"
             >
             <template x-for="option in options">
-                <li class="text-gray-900 cursor-default select-none relative py-2 pl-3 pr-9 hover:text-white hover:bg-green-600"
-                    :class="{ 'text-white bg-green-600': chosen.value == option.value }"
+                <li class="text-gray-900 cursor-default select-none relative py-2 pl-3 pr-9 hover:text-white hover:bg-primary-600"
+                    :class="{ 'text-white bg-primary-600': chosen.value == option.value }"
                     role="option"
                     @click="select(option)"
                 >
@@ -49,9 +49,9 @@
                     <!--
                       Checkmark, only display for chosen option.
 
-                      Highlighted: "text-white", Not Highlighted: "text-green-600"
+                      Highlighted: "text-white", Not Highlighted: "text-primary-600"
                     -->
-                    <span x-show="chosen.value == option.value" class="text-green-600 absolute inset-y-0 right-0 flex items-center pr-4" :class="{ 'text-white': chosen.value == option.value, 'text-green-600': chosen.value != option.value }">
+                    <span x-show="chosen.value == option.value" class="text-primary-600 absolute inset-y-0 right-0 flex items-center pr-4" :class="{ 'text-white': chosen.value == option.value, 'text-primary-600': chosen.value != option.value }">
                       <!-- Heroicon name: solid/check -->
                       <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                         <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />

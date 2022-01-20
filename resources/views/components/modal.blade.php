@@ -38,9 +38,9 @@
                  x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
                  x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
                 <div>
-                    <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
+                    <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-primary-100">
                         <!-- Heroicon name: outline/check -->
-                        <i class="fa fa-check text-green-600"></i>
+                        <i class="fa fa-check text-primary-600"></i>
                     </div>
                     <div class="mt-3 text-center sm:mt-5">
                         {{ $slot }}

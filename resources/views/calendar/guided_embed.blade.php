@@ -82,7 +82,7 @@
                 <div class="grid grid-cols-6 gap-4">
                     <div class="pt-8 col-span-6">
                         <label for="calendar-hash" class="block font-medium text-gray-700">Calendar hash</label>
-                        <input type="text" name="calendar-hash" id="calendar-hash" class="mt-1 text-gray-600 focus:ring-green-500 focus:border-green-500 block leading-loose w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="hash">
+                        <input type="text" name="calendar-hash" id="calendar-hash" class="mt-1 text-gray-600 focus:ring-primary-500 focus:border-primary-500 block leading-loose w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="hash">
                     </div>
 
                     <div class="pt-2 col-span-6">
@@ -98,18 +98,18 @@
 
                     <div class="pt-2 col-span-3" x-show="size == 'custom'">
                         <label for="calendar-height" class="block font-medium text-gray-700">Height</label>
-                        <input placeholder="auto" type="number" min="150" max="1080" name="calendar-height" id="calendar-height" class="mt-1 text-gray-600 focus:ring-green-500 focus:border-green-500 block leading-loose w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="height" @keyup.debounce.500ms="settingRefreshes('height', $el.value)">
+                        <input placeholder="auto" type="number" min="150" max="1080" name="calendar-height" id="calendar-height" class="mt-1 text-gray-600 focus:ring-primary-500 focus:border-primary-500 block leading-loose w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="height" @keyup.debounce.500ms="settingRefreshes('height', $el.value)">
                     </div>
 
                     <div class="pt-2 col-span-3" x-show="size == 'custom'">
                         <label for="calendar-width" class="block font-medium text-gray-700">Width</label>
-                        <input placeholder="auto" type="number" min="300" max="1920" name="calendar-width" id="calendar-width" class="mt-1 text-gray-600 focus:ring-green-500 focus:border-green-500 block leading-loose w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="width" @keyup.debounce.500ms="settingRefreshes('width', $el.value)">
+                        <input placeholder="auto" type="number" min="300" max="1920" name="calendar-width" id="calendar-width" class="mt-1 text-gray-600 focus:ring-primary-500 focus:border-primary-500 block leading-loose w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="width" @keyup.debounce.500ms="settingRefreshes('width', $el.value)">
                     </div>
                 </div>
 
                 <div class="pt-8">
                     <label for="element_selector" class="block font-medium text-gray-700">Element Selector</label>
-                    <input type="text" name="element_selector" id="element_selector" placeholder="#fantasy-calendar-embed" class="disabled:text-gray-500 disabled:bg-gray-300 mt-1 text-gray-600 focus:ring-green-500 focus:border-green-500 block leading-loose w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="selector">
+                    <input type="text" name="element_selector" id="element_selector" placeholder="#fantasy-calendar-embed" class="disabled:text-gray-500 disabled:bg-gray-300 mt-1 text-gray-600 focus:ring-primary-500 focus:border-primary-500 block leading-loose w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="selector">
 
                     <x-alert type="notice" class="mt-4" x-show="!selector">
                         Without a selector, the <strong>&lt;script&gt;</strong> tag calling <strong>FantasyCalendar({})</strong> will be replaced.
@@ -118,7 +118,7 @@
 
                 <div class="flex items-start pt-8">
                     <div class="flex items-center h-5">
-                        <input id="comments" name="comments" type="checkbox" class="focus:ring-green-500 h-4 w-4 text-green-600 border-gray-300 rounded" x-model="embedNow">
+                        <input id="comments" name="comments" type="checkbox" class="focus:ring-primary-500 h-4 w-4 text-primary-600 border-gray-300 rounded" x-model="embedNow">
                     </div>
 
                     <div class="ml-3 text-sm flex-grow">
