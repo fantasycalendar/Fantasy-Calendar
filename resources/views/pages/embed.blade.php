@@ -236,6 +236,7 @@
                 },
 
                 acceptMessage: function($event) {
+                    console.log($event);
                     if(typeof $event.data === 'object' && $event.data.source === 'fantasy-calendar-embed-parent' && typeof window.embeddableActions[$event.data.does] === "function") {
                         window.embeddableActions[$event.data.does]($event.data.params);
                     }
@@ -255,7 +256,7 @@
                 removeSetting: function(params) {
                     this.image_url.searchParams.delete(params.name);
                 },
-                login_form: function() {
+                loginForm: function() {
                     dispatch('login');
                 },
                 apiRequest: function(params) {
@@ -347,7 +348,7 @@
                                 </a>
                             </p>
                         </div>
-                        <form action="" @submit="login" class="space-y-2">
+                        <form action="" @submit.prevent="login" class="space-y-2">
                             <input type="hidden" name="remember" value="true">
                             <div class="rounded-md shadow-sm -space-y-px">
                                 <div>
