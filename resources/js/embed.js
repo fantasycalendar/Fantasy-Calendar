@@ -1,189 +1,63 @@
 window.fcEmbedDomain = (new URL(document.currentScript.src)).origin;
 window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
     return {
-        config_values: {},
-        onUpdate: false,
-        getCurrentDateCallback: false,
-        initialized: false,
-        sizes: ['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl'],
-        constructor(params) {
-            if(!params.hash) {
-                console.error("FantasyCalendar error: No hash set.");
-                return;
+        _initialized: false,
+        // Browser-side config
+        _configuration: {
+            embedNow: true,
+            hash: '',
+            element: null,
+            selector: null,
+        },
+        // Configs passed to embed
+        _embed_settings: {
+            size: 'auto',
+            onUpdate: null,
+            onLoad: null,
+            onGetDate: null,
+            width: null,
+            height: null,
+        },
+        get url() {
+            const url = new URL(fcEmbedDomain + '/embed/' + this._config('hash'));
+
+            for (let [setting, value] of Object.entries(this.setting())) {
+                url.searchParams.set(setting, value);
             }
 
-            let domain = this.resolveDomain();
-
-            this.config_values = {
-                element: document.querySelector(params.element) ?? document.scripts[document.scripts.length - 1],
-                url: new URL(domain + '/embed/' + params.hash),
-                embedNow: params.embedNow ?? true
-            }
-
-            if(params.size in this.sizes) {
-                this.config_values.url.searchParams.append('size', params.size);
-                this.config_values.size = params.size;
-            } else if(params.width || params.height) {
-                this.config_values.width = params.width;
-                this.config_values.height = params.height;
-            } else {
-                this.config_values.size = 'auto';
-            }
-
-            this.onUpdate = params.onUpdate;
-            this.onLoad = params.onLoad;
-
-            if(this.config_values.embedNow) {
-                this.embed();
-            }
-
-            if(!this.initialized) {
-                window.addEventListener('message', this.handleMessage.bind(this))
-                this.initialized = true;
-            }
-
-            return this;
+            return url;
         },
 
-        handleMessage(event) {
-            if(event.origin !== this.resolveDomain()) {
-                return;
-            }
-
-            console.log("Received " + event.data.type);
-
-            if(event.data.type === 'calendarLoaded') {
-                this.postLoad(event.data.data);
-            }
-
-            if(event.data.type === "getCurrentDateResponse" && this.getCurrentDateCallback){
-                this.getCurrentDateCallback(event.data.data);
-                this.getCurrentDateCallback = false;
-            }
-
-            if(event.data.type === "calendarUpdated" && this.onUpdate){
-                this.onUpdate(event.data);
-            }
+        // PUBLIC
+        embed(){
+            this._config('element', this._buildIframe());
         },
-
-        setCalendar(hash){
-            this.config_values.url.pathname = '/embed/' + hash;
-            if(this.iframe){
-                this.iframe.setAttribute('src', this.config_values.url.href);
-            }
-
-            return this;
+        loginForm(){
+            this._remoteAction('loginForm')
         },
-
-        embed(replaceElement = null) {
-            replaceElement = replaceElement ?? this.config_values.element;
-
-            console.log(replaceElement);
-
-            if(typeof replaceElement === 'string') {
-                const found = document.querySelector(replaceElement);
-                if(!found) {
-                    throw new Error(`Invalid selector provided: '${replaceElement}'`);
-                }
-                replaceElement = found;
+        setting(name = null, value = null) {
+            if(!name) {
+                return this._embed_settings;
             }
 
-            if(replaceElement !== null && !(replaceElement instanceof HTMLElement)){
-                if(!this.iframe) {
-                    throw new Error(`Element must be of type HTMLElement or CSS Selector`);
-                }
-
-                replaceElement = this.iframe;
+            if(!value) {
+                return this._embed_settings[name];
             }
 
-            if(!document.body.contains(replaceElement)){
-                throw new Error("Could not find element to embed to");
+            if(value === this._embed_settings[name]) {
+                return value;
             }
 
-            if(this.iframe && this.iframe !== replaceElement) {
-                console.log("removing old element");
-                this.iframe.remove();
+            this._embed_settings[name] = value;
+            if(!['size', 'height', 'width'].includes(name)) {
+                this._remoteAction('updateSetting', {
+                    name, value
+                });
             }
-
-            const placementElement = document.createElement('div');
-            replaceElement.parentNode.insertBefore(placementElement, replaceElement);
-
-            console.log("We were asked to embed");
-            const iframe = document.createElement('iframe');
-
-            switch (this.config_values.size) {
-                case 'xs':
-                case 'sm':
-                case 'md':
-                case 'lg':
-                case 'xl':
-                case '2xl':
-                case '3xl':
-                    console.log('Using predefined size: ' + this.config_values.size);
-                    // We can't have both a height/width AND a size. I mean, we could. But that would be silly.
-                    this.config_values.url.searchParams.set('size', this.config_values.size);
-                    this.config_values.url.searchParams.delete('height');
-                    this.config_values.url.searchParams.delete('width');
-                    break;
-                case 'custom':
-                    // Custom size can either be both width _or_ height, or both.
-                    // Fallback to parent element size if not specified.
-                    console.log(this.config_values);
-                    console.log('Using custom sizing:');
-                    console.log("Height: " + this.config_values.height);
-                    console.log("Width: " + this.config_values.width);
-                    this.config_values.url.searchParams.delete('size');
-                    if(this.config_values.height) {
-                        this.config_values.url.searchParams.set('height', this.config_values.height);
-                    }
-
-                    if(this.config_values.width) {
-                        this.config_values.url.searchParams.set('width', this.config_values.width);
-                    }
-                    break;
-                default:
-                    // Anything but 'custom' or a predefined size is assumed to be auto.
-                    console.log('Using auto sizing:');
-                    this.config_values.url.searchParams.delete('height');
-                    this.config_values.url.searchParams.delete('width');
-                    console.log('Height: '+ String(replaceElement.parentElement.offsetHeight));
-                    console.log('Width: '+ String(replaceElement.parentElement.offsetWidth));
-                    iframe.setAttribute('height', String(replaceElement.parentElement.offsetHeight));
-                    iframe.setAttribute('width',  String(replaceElement.parentElement.offsetWidth));
-            }
-
-            console.log("Using URL: " + this.config_values.url.href);
-
-            iframe.setAttribute('src', this.config_values.url.href);
-            iframe.setAttribute('frameborder', '0');
-            iframe.setAttribute('scrolling', 'no');
-            iframe.setAttribute('id', 'fantasy-calendar-embed')
-            iframe.style.margin = 'auto';
-
-
-            replaceElement.replaceWith(iframe);
-            this.iframe = iframe;
-            this.config_values.element = this.iframe;
-
-            return this;
+            return value;
         },
-
-        remoteAction(action, params) {
-            this.passMessage({
-                does: action,
-                params: params,
-                source: 'fantasy-calendar-embed-parent'
-            });
-        },
-
-        passMessage(message) {
-            if(this.iframe) {
-                this.iframe.contentWindow.postMessage(message, '*')
-            }
-        },
-
         changeDateTime(unit, count) {
-            this.remoteAction('apiRequest', {
+            this._remoteAction('apiRequest', {
                 method: 'changeDate',
                 data: {
                     unit,
@@ -232,85 +106,174 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
             this.changeDateTime("years", count * -1);
         },
 
-        getCurrentDate(callback){
-            this.remoteAction('apiRequest', {
+        getCurrentDate(){
+            this._remoteAction('apiRequest', {
                 method: 'getCurrentDate'
             });
-            if(typeof callback !== "function") return;
-            this.getCurrentDateCallback = callback;
         },
 
-        test() {
-            console.log("Sending a message");
-            this.remoteAction('toastify', {
-                type: 'error',
-                message: "This is a message"
+        // PRIVATE
+        _constructor(params) {
+            this._initialize();
+            this._validateParameters(params);
+            this._setSettings(params);
+            this._config('element', this._determineReplaceElement());
+
+            (this._config('embedNow') === false) || this.embed();
+
+            return this;
+        },
+        _remoteAction(action, params = {}) {
+            this._passMessage({
+                does: action,
+                params: params,
+                source: 'fantasy-calendar-embed-parent'
             });
-
-            this.remoteAction('toastify', {
-                type: 'success',
-                message: "This is a message"
-            });
-
-            this.remoteAction('toastify', {
-                type: '',
-                message: "This is a message"
-            });
         },
 
-        login_form() {
-            this.remoteAction('login_form', {});
-        },
-
-        resolveDomain() {
-            return window.fcEmbedDomain;
-        },
-
-        resizeIframe(height, width) {
-            console.log('Image sizing:' + height + "," + width);
-            this.iframe.style.height = height + 'px';
-            this.iframe.style.width = width + 'px';
-            this.iframe.width = width;
-            this.iframe.height = height;
-        },
-
-        postLoad(loadedData) {
-            if(loadedData.height && loadedData.width) {
-                this.resizeIframe(loadedData.height, loadedData.width);
-            }
-
-            if(this.onLoad) {
-                this.onLoad(loadedData);
+        _passMessage(message) {
+            if(this._config('element')) {
+                this._config('element').contentWindow.postMessage(message, '*')
             }
         },
-
-        config(name, value = null) {
-            if(value === null) {
-                return this.config_values[name] ?? null;
+        _determineSizing() {
+            this.setting('height', this._config('element').parentElement.offsetHeight);
+            this.setting('width', this._config('element').parentElement.offsetWidth);
+        },
+        _validateParameters(params) {
+            // Gotta have a calendar hash. Unless we want to have a placeholder?
+            if(!params.hash) {
+                 throw new Error("You must provide a calendar hash! You can find one in the URL bar of any calendar page on FC, like 'https://app.fantasy-calendar.com/calendars/[HASH]'");
             }
 
-            if(value === 'removeSetting') {
-                delete this.config_values[name];
-                this.remoteAction('removeSetting', {
-                    name
-                });
+            if(typeof params.size === 'string' && !['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', 'auto'].includes(params.size)) {
+                throw new Error("Invalid size specified. Options are ")
+            }
+
+            if(typeof params.size === 'object' && !(params.size.height || params.size.width)) {
+                throw new Error("If you're gonna give me an object for size, you must provide at least a height and/or width! Like { height: 400, width: 600 }")
+            }
+
+            // Element is not required, as we will auto-resolve to the calling script
+            if(params.selector) {
+                if(typeof params.selector !== 'string') {
+                    throw new Error("You must provide a valid CSS selector for us to embed to.");
+                }
+
+                if(!document.querySelector(params.selector)) {
+                    throw new Error(`Could not find selector: '${params.selector}'`);
+                }
+            }
+
+            if(params.onUpdate) {
+                if(!['[object Function]', '[object AsyncFunction]'].includes({}.toString.call(params.onUpdate))) {
+                    throw new Error("onUpdate was specified as something that wasn't a function. ಠ_ಠ");
+                }
+            }
+
+            if(params.onLoad) {
+                if(!['[object Function]', '[object AsyncFunction]'].includes({}.toString.call(params.onLoad))) {
+                    throw new Error("onLoad was specified as something that wasn't a function. ಠ_ಠ");
+                }
+            }
+        },
+        _buildIframe() {
+            if(this.setting('size') === 'auto') {
+                this._determineSizing();
+            }
+
+            const placementElement = document.createElement('div');
+            this._config('element').parentNode.insertBefore(placementElement, this._config('element'));
+
+            const iframe = document.createElement('iframe');
+
+            if(this.setting('height')) {
+                iframe.setAttribute('height', this.setting('height'));
+            }
+
+            if(this.setting('width')) {
+                iframe.setAttribute('width', this.setting('width'));
+            }
+
+            iframe.setAttribute('src', this.url.href);
+            iframe.setAttribute('frameborder', '0');
+            iframe.setAttribute('scrolling', 'no');
+            iframe.setAttribute('id', 'fantasy-calendar-embed')
+            iframe.style.margin = 'auto';
+
+            this._config('element').replaceWith(iframe);
+            return iframe;
+        },
+        _determineReplaceElement() {
+            if(!this._config('selector')) {
+                return document.scripts[document.scripts.length - 1];
+            }
+
+            return document.querySelector(this._config('selector'));
+        },
+
+        _handleMessage(event) {
+            if(event.origin !== window.fcEmbedDomain) {
                 return;
             }
 
-            if(name === 'size' && value === 'auto') {
-                this.config_values.url.searchParams.delete('size');
+            if(event.data.type === 'calendarLoaded') {
+                this._resize(event.data.data.width, event.data.data.height);
+                if(this.setting('onLoad')) {
+                    this.setting('onLoad')();
+                }
             }
 
-            if(!['iframe','size', 'height', 'width'].includes(name)) {
-                console.log(name, value);
-                this.config_values.url.searchParams.set(name, value);
-                this.remoteAction('updateSetting', {
-                    name, value
-                });
+            if(event.data.type === "getCurrentDateResponse" && this.setting('getDate')){
+                this.setting('getDate')(event.data.data);
             }
 
-            this.config_values[name] = value;
+            if(event.data.type === "calendarUpdated" && this.setting('onUpdate')){
+                this.setting('onUpdate')(event.data);
+            }
+        },
+
+        _resize(width, height){
+            let iframe = this._config('element');
+
+            iframe.style.height = height + 'px';
+            iframe.style.width = width + 'px';
+            iframe.width = width;
+            iframe.height = height;
+        },
+
+        _initialize() {
+            if(this._initialized) return;
+
+            window.addEventListener('message', this._handleMessage.bind(this))
+            this.initialized = true;
+        },
+        _config(name = null, value = null) {
+            if(!name) {
+                return this._configuration;
+            }
+
+            if(!value) {
+                return this._configuration[name];
+            }
+
+            this._configuration[name] = value;
             return value;
+        },
+        _setSettings(params) {
+            if(params.settings) {
+                for (let setting of Object.keys(this.setting())) {
+                    if(params.settings.hasOwnProperty(setting)) {
+                        this.setting(setting, params.settings[setting]);
+                    }
+                }
+            }
+
+            for (let config of Object.keys(this._config())) {
+                if(params.hasOwnProperty(config)) {
+                    this._config(config, params[config]);
+                }
+            }
         }
-    }.constructor(params);
+    }._constructor(params);
 }

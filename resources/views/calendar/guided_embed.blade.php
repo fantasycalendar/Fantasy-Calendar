@@ -17,10 +17,12 @@
                     this.$nextTick(function() {
                         this.fantasyCalendar = FantasyCalendar({
                             hash: '{{ $calendar->hash }}',
-                            element: '#fantasy-calendar-embed',
-                            size: this.size,
-                            onUpdate: () => this.loading = false,
-                            onLoad: () => this.loading = false
+                            selector: '#fantasy-calendar-embed',
+                            settings: {
+                                size: this.size,
+                                onUpdate: () => this.loading = false,
+                                onLoad: () => this.loading = false
+                            }
                         });
                     }.bind(this));
 
@@ -48,11 +50,11 @@
                     this.fantasyCalendar.embed();
                 },
                 updateSetting: function(name, value) {
-                    if(this.fantasyCalendar.config(name) === value) {
+                    if(this.fantasyCalendar.setting(name) === value) {
                         return false;
                     }
 
-                    this.fantasyCalendar.config(name, value);
+                    this.fantasyCalendar.setting(name, value);
                     return true;
                 }
             }
@@ -144,6 +146,7 @@
                         <div class="pl-12" x-show="!['#fantasy-calendar-embed', '', '#', '.'].includes(selector)">selector: '<span x-text="selector"></span>'</div>
                         <div class="pl-12" x-show="!embedNow">embedNow: false,</div>
                         <div class="pl-12" x-show="size !== 'auto'">size: '<span x-text="size"></span>',</div>
+                        <div class="pl-12" x-show="theme !== 'fantasy_calendar'">theme: '<span x-text="theme"></span>',</div>
                         <div x-show="size === 'custom'">
                             <div class="pl-12" x-show="width">width: <span x-text="width"></span>,</div>
                             <div class="pl-12" x-show="height">height: <span x-text="height"></span>,</div>
