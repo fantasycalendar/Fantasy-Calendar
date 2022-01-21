@@ -12,6 +12,7 @@
                 loading: false,
                 theme: 'fantasy_calendar',
                 fantasyCalendar: null,
+                notifications: [],
                 get embedCode() {
                     const embedUrl = '{{ url('js/embed.js') }}';
 
@@ -79,6 +80,23 @@
 
                     this.fantasyCalendar.setting(name, value);
                     return true;
+                },
+                copyCode: function() {
+                    console.log(this.$refs.codeBlock);
+                    let range = document.createRange();
+                    range.setStart(this.$refs.codeBlock.firstChild, 0);
+                    range.setEnd(this.$refs.codeBlock.firstChild, this.$refs.codeBlock.firstChild.length);
+                    window.getSelection().removeAllRanges();
+                    window.getSelection().addRange(range);
+
+                    navigator.clipboard.writeText(this.embedCode);
+
+                    this.notify('Copied', 'Your code has been copied')
+                },
+                notify: function(title, body) {
+                    this.notifications.push({
+                        title, body
+                    });
                 }
             }
         }
@@ -161,9 +179,75 @@
                     <div id="fantasy-calendar-embed"></div>
                 </div>
 
-                <pre class="text-left bg-gray-800 rounded p-4 leading-8 mt-6 min-w-full text-gray-200 font-mono"><code x-text="embedCode"></code></pre>
+                <div class="relative cursor-pointer" x-data="{ hovered: false }" @mouseenter="hovered=true" @mouseleave="hovered=false">
+                    <pre class="text-left bg-gray-800 rounded p-4 leading-8 mt-6 min-w-full text-gray-200 font-mono" @click="copyCode"><code x-ref="codeBlock" x-text="embedCode"></code></pre>
+                    <div class="p-1 text-sm bg-gray-700 absolute top-2 right-2 rounded"
+                         x-show="hovered"
+                         x-transition:enter="transform ease-out duration-300 transition"
+                         x-transition:enter-start="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
+                         x-transition:enter-end="translate-y-0 opacity-100 sm:translate-x-0"
+                         x-transition:leave="transition ease-in duration-100"
+                         x-transition:leave-start="opacity-100"
+                         x-transition:leave-end="opacity-0"
+                    >Click to Copy</div>
+                </div>
 
             </div>
         </div>
+
+        <template x-teleport="body">
+            <!-- This example requires Tailwind CSS v2.0+ -->
+            <!-- Global notification live region, render this permanently at the end of the document -->
+            <div aria-live="assertive" class="fixed inset-0 flex items-end px-4 py-6 pointer-events-none sm:p-6 sm:items-start">
+                <div class="w-full flex flex-col items-center space-y-4 sm:items-end">
+                    <template x-for="(notification, index) in notifications">
+                        <div class="max-w-sm w-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden"
+                             x-data="{
+                                info: notification,
+                                show:false,
+                                init: function() {
+                                    setTimeout(() => this.show = true, 100);
+                                    setTimeout(() => this.show = false, 3000);
+                                    setTimeout(() => delete notifications[index], 4000);
+                                },
+                                remove: function() {
+                                    this.show = false;
+                                }
+                             }"
+                             x-show="show"
+                             x-transition:enter="transform ease-out duration-300 transition"
+                             x-transition:enter-start="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
+                             x-transition:enter-end="translate-y-0 opacity-100 sm:translate-x-0"
+                             x-transition:leave="transition ease-in duration-100"
+                             x-transition:leave-start="opacity-100"
+                             x-transition:leave-end="opacity-0">
+                            <div class="p-4">
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0">
+                                        <!-- Heroicon name: outline/check-circle -->
+                                        <svg class="h-6 w-6 text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </div>
+                                    <div class="ml-3 w-0 flex-1 pt-0.5">
+                                        <p class="text-sm font-medium text-gray-900" x-text="info.title"></p>
+                                        <p class="mt-1 text-sm text-gray-500" x-text="info.body"></p>
+                                    </div>
+                                    <div class="ml-4 flex-shrink-0 flex">
+                                        <button class="bg-white rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" @click="remove">
+                                            <span class="sr-only">Close</span>
+                                            <!-- Heroicon name: solid/x -->
+                                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </template>
     </div>
 </x-app-layout>
