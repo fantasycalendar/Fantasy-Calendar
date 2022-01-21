@@ -51,11 +51,10 @@
                                 onLoad: () => this.loading = false
                             }
                         });
+                        this.$watch('size', value => this.settingRefreshes('size', value))
+                        this.$watch('theme', value => this.updateSetting('theme', value))
                         console.log(this.embedCode);
                     }.bind(this));
-
-                    this.$watch('size', value => this.settingRefreshes('size', value))
-                    this.$watch('theme', value => this.updateSetting('theme', value))
                 },
                 settingRefreshes: function(name, value) {
                     if(name === 'size' && value === 'auto') {
@@ -228,9 +227,14 @@
                     <label for="background_color" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
                         Background Color
                     </label>
-                    <div class="mt-1 sm:mt-0 sm:col-span-2">
+                    <div class="mt-1 sm:mt-0 sm:col-span-2 relative">
                         <input x-model="theme_settings.background_color" type="text" name="background_color" id="background_color" autocomplete="family-name" class="max-w-lg block w-full shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md">
+                        <div class="absolute inset-y-1 right-1.5 w-6 rounded shadow-sm" x-bind:style="`background-color: ${theme_settings.background_color};`"></div>
                     </div>
+                </div>
+
+                <div class="flex justify-end">
+                    <x-color-picker name="background_color" model="theme_settings.background_color"></x-color-picker>
                 </div>
 
             </x-slide-over>
