@@ -13,6 +13,7 @@
                 theme: 'fantasy_calendar',
                 fantasyCalendar: null,
                 notifications: [],
+                openSidebar: false,
                 get embedCode() {
                     const embedUrl = '{{ url('js/embed.js') }}';
 
@@ -131,6 +132,10 @@
                         <x-select-menu model="theme" default="fantasy_calendar" :options="$themes"></x-select-menu>
                     </div>
 
+                    <button @click="openSidebar = true">
+                        Open sidebar
+                    </button>
+
                     <div class="pt-2 col-span-6">
                         <x-select-menu model="size" default="auto" :options="$sizes">
                             Size
@@ -194,6 +199,12 @@
 
             </div>
         </div>
+
+        <template x-teleport="body">
+            <x-slide-over model="openSidebar">
+                Testing
+            </x-slide-over>
+        </template>
 
         <template x-teleport="body">
             <!-- This example requires Tailwind CSS v2.0+ -->
