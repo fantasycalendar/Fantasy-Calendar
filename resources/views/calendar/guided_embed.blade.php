@@ -243,7 +243,7 @@
         <template x-teleport="body">
             <!-- This example requires Tailwind CSS v2.0+ -->
             <!-- Global notification live region, render this permanently at the end of the document -->
-            <div aria-live="assertive" class="fixed inset-0 flex items-end px-4 py-6 pointer-events-none sm:p-6 sm:items-start">
+            <div aria-live="assertive" class="fixed inset-0 flex items-end px-4 py-6 pointer-events-none sm:p-6 sm:items-end">
                 <div class="w-full flex flex-col items-center space-y-4 sm:items-end">
                     <template x-for="(notification, index) in notifications">
                         <div class="max-w-sm w-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden"
