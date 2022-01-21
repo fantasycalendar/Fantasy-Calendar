@@ -139,6 +139,7 @@ class CalendarController extends Controller
             'themes' => [
                 'fantasy_calendar' => 'Fantasy Calendar',
                 'discord' => 'Discord',
+                'custom' => 'Custom Theme',
             ]
         ]);
     }

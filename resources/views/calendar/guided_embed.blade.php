@@ -14,6 +14,9 @@
                 fantasyCalendar: null,
                 notifications: [],
                 openSidebar: false,
+                theme_settings: {
+                    background_color: '',
+                },
                 get embedCode() {
                     const embedUrl = '{{ url('js/embed.js') }}';
 
@@ -121,10 +124,10 @@
             </div>
 
             <fieldset>
-                <div class="grid grid-cols-6 gap-4">
+                <div class="grid grid-cols-6 gap-4 items-center">
                     <div class="pt-8 col-span-6">
                         <label for="calendar-hash" class="block font-medium text-gray-700">Calendar hash</label>
-                        <input type="text" name="calendar-hash" id="calendar-hash" class="mt-1 text-gray-600 focus:ring-primary-500 focus:border-primary-500 block leading-loose w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="hash">
+                        <input type="text" name="calendar-hash" id="calendar-hash" class="mt-1 text-gray-600 focus:ring-primary-500 focus:border-primary-500 block w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="hash">
                     </div>
 
                     <div class="pt-2 col-span-6">
@@ -132,9 +135,11 @@
                         <x-select-menu model="theme" default="fantasy_calendar" :options="$themes"></x-select-menu>
                     </div>
 
-                    <button @click="openSidebar = true">
-                        Open sidebar
-                    </button>
+                    <div class="pt-2 col-span-6" x-show="theme === 'custom'">
+                        <x-button class="w-full justify-center shadow-sm border-gray-300" @click="openSidebar = true" role="secondary">
+                            Customize theme
+                        </x-button>
+                    </div>
 
                     <div class="pt-2 col-span-6">
                         <x-select-menu model="size" default="auto" :options="$sizes">
@@ -144,18 +149,18 @@
 
                     <div class="pt-2 col-span-3" x-show="size == 'custom'">
                         <label for="calendar-height" class="block font-medium text-gray-700">Height</label>
-                        <input placeholder="auto" type="number" min="150" max="1080" name="calendar-height" id="calendar-height" class="mt-1 text-gray-600 focus:ring-primary-500 focus:border-primary-500 block leading-loose w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="height" @keyup.debounce.500ms="settingRefreshes('height', $el.value)">
+                        <input placeholder="auto" type="number" min="150" max="1080" name="calendar-height" id="calendar-height" class="mt-1 text-gray-600 focus:ring-primary-500 focus:border-primary-500 block w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="height" @keyup.debounce.500ms="settingRefreshes('height', $el.value)">
                     </div>
 
                     <div class="pt-2 col-span-3" x-show="size == 'custom'">
                         <label for="calendar-width" class="block font-medium text-gray-700">Width</label>
-                        <input placeholder="auto" type="number" min="300" max="1920" name="calendar-width" id="calendar-width" class="mt-1 text-gray-600 focus:ring-primary-500 focus:border-primary-500 block leading-loose w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="width" @keyup.debounce.500ms="settingRefreshes('width', $el.value)">
+                        <input placeholder="auto" type="number" min="300" max="1920" name="calendar-width" id="calendar-width" class="mt-1 text-gray-600 focus:ring-primary-500 focus:border-primary-500 block w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="width" @keyup.debounce.500ms="settingRefreshes('width', $el.value)">
                     </div>
                 </div>
 
                 <div class="pt-8">
                     <label for="element_selector" class="block font-medium text-gray-700">Element Selector</label>
-                    <input type="text" name="element_selector" id="element_selector" placeholder="#fantasy-calendar-embed" class="disabled:text-gray-500 disabled:bg-gray-300 mt-1 text-gray-600 focus:ring-primary-500 focus:border-primary-500 block leading-loose w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="selector">
+                    <input type="text" name="element_selector" id="element_selector" placeholder="#fantasy-calendar-embed" class="disabled:text-gray-500 disabled:bg-gray-300 mt-1 text-gray-600 focus:ring-primary-500 focus:border-primary-500 block w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="selector">
 
                     <x-alert type="notice" class="mt-4" x-show="!selector">
                         Without a selector, the <strong>&lt;script&gt;</strong> tag calling <strong>FantasyCalendar({})</strong> will be replaced.
@@ -186,7 +191,7 @@
 
                 <div class="relative cursor-pointer" x-data="{ hovered: false }" @mouseenter="hovered=true" @mouseleave="hovered=false">
                     <pre class="text-left bg-gray-800 rounded p-4 leading-8 mt-6 min-w-full text-gray-200 font-mono" @click="copyCode"><code x-ref="codeBlock" x-text="embedCode"></code></pre>
-                    <div class="p-1 text-sm bg-gray-700 absolute top-2 right-2 rounded"
+                    <div class="py-1 px-2 text-sm bg-gray-700 absolute top-2 right-2 rounded text-white"
                          x-show="hovered"
                          x-transition:enter="transform ease-out duration-300 transition"
                          x-transition:enter-start="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
@@ -202,7 +207,32 @@
 
         <template x-teleport="body">
             <x-slide-over model="openSidebar">
-                Testing
+                <x-slot name="title">
+                    Customize your theme
+                </x-slot>
+
+                <x-slot name="description">
+                    Select your colors below, and you'll see them reflected in your calendar embed.
+                </x-slot>
+
+                <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                    <label for="background_color" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                        Background Color
+                    </label>
+                    <div class="mt-1 sm:mt-0 sm:col-span-2">
+                        <input x-model="theme_settings.background_color" type="text" name="background_color" id="background_color" autocomplete="family-name" class="max-w-lg block w-full shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md">
+                    </div>
+                </div>
+
+                <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                    <label for="background_color" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                        Background Color
+                    </label>
+                    <div class="mt-1 sm:mt-0 sm:col-span-2">
+                        <input x-model="theme_settings.background_color" type="text" name="background_color" id="background_color" autocomplete="family-name" class="max-w-lg block w-full shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md">
+                    </div>
+                </div>
+
             </x-slide-over>
         </template>
 
@@ -245,7 +275,7 @@
                                         <p class="mt-1 text-sm text-gray-500" x-text="info.body"></p>
                                     </div>
                                     <div class="ml-4 flex-shrink-0 flex">
-                                        <button class="bg-white rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" @click="remove">
+                                        <button class="bg-white rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500" @click="remove">
                                             <span class="sr-only">Close</span>
                                             <!-- Heroicon name: solid/x -->
                                             <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">

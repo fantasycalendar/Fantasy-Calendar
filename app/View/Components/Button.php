@@ -15,14 +15,21 @@ class Button extends Component
         'xl' => 'px-6 py-3 text-base rounded-md',
     ];
 
+    public string $roleClasses = '';
+    public array $roleSpecific = [
+        'primary' => 'text-white bg-primary-600 hover:bg-primary-700 focus:ring-primary-500 border-transparent',
+        'secondary' => 'text-gray-700 bg-white hover:bg-gray-50 focus:ring-primary-500 border-gray-300 '
+    ];
+
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct(public $size = 'md')
+    public function __construct(public $size = 'md', public $role = 'primary')
     {
         $this->sizeClasses = $this->sizeSpecific[$size] ?? '';
+        $this->roleClasses = $this->roleSpecific[$role] ?? '';
     }
 
     /**
