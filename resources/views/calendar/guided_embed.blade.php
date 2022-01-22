@@ -218,17 +218,16 @@
                     <label for="background_color" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
                         Background Color
                     </label>
-                    <div class="mt-1 sm:mt-0 sm:col-span-2">
-                        <input x-model="theme_settings.background_color" type="text" name="background_color" id="background_color" autocomplete="family-name" class="max-w-lg block w-full shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md">
-                    </div>
-                </div>
-
-                <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5 relative">
-                    <label for="background_color" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
-                        Background Color
-                    </label>
 
                     <x-color-picker class="mt-1 sm:mt-0 sm:col-span-2 relative" name="background_color" model="theme_settings.background_color"></x-color-picker>
+                </div>
+
+                <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                    <label for="border_color" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                        Border Color
+                    </label>
+
+                    <x-color-picker class="mt-1 sm:mt-0 sm:col-span-2 relative" name="border_color" model="theme_settings.border_color"></x-color-picker>
                 </div>
 
                 <div class="flex justify-end">

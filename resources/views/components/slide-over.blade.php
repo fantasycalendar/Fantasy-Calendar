@@ -21,7 +21,7 @@
                      x-transition:leave-start="translate-x-0"
                      x-transition:leave-end="translate-x-full"
                 >
-                    <form class="h-full divide-y divide-gray-200 flex flex-col bg-white shadow-xl">
+                    <form class="h-full divide-y divide-gray-200 flex flex-col bg-white shadow-xl" @submit.prevent>
                         <div class="flex-1 h-0 overflow-y-auto">
                             @isset($title)
                                 <div class="py-6 px-4 bg-primary-700 sm:px-6">
