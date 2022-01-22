@@ -17,6 +17,16 @@
                 theme_settings: {
                     background_color: '',
                 },
+                theme_editing: {
+                    background_color: '',
+                    shadow_color: '',
+                    border_color: '',
+                    current_date_color: '',
+                    placeholder_background_color: '',
+                    heading_text_color: '',
+                    text_color: '',
+                    inactive_text_color: '',
+                },
                 get embedCode() {
                     const embedUrl = '{{ url('js/embed.js') }}';
 
@@ -75,6 +85,12 @@
                 },
                 refreshIframe: function(){
                     this.fantasyCalendar.embed();
+                },
+                cancelTheme: function() {
+                    this.openSidebar = false;
+                },
+                persistTheme: function() {
+                    console.log(JSON.parse(JSON.stringify(this.theme_editing)));
                 },
                 updateSetting: function(name, value) {
                     if(this.fantasyCalendar.setting(name) === value) {
@@ -214,26 +230,23 @@
                     Select your colors below, and you'll see them reflected in your calendar embed.
                 </x-slot>
 
-                <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                    <label for="background_color" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
-                        Background Color
-                    </label>
+                @foreach(\App\Services\RendererService\ImageRenderer\ThemeFactory::$themes['fantasy_calendar'] as $field => $value)
+                    @if(in_array($field, ['font_name', 'shadow_strength']))
+                        @continue
+                    @endif
+                    <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                        <label for="{{ $field }}" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                            {{ ucwords(str_replace('_', ' ', $field)) }}
+                        </label>
 
-                    <x-color-picker class="mt-1 sm:mt-0 sm:col-span-2 relative" name="background_color" model="theme_settings.background_color"></x-color-picker>
-                </div>
+                        <x-color-picker class="mt-1 sm:mt-0 sm:col-span-2 relative" default="{{ $value }}" name="{{ $field }}" model="theme_editing.{{ $field }}"></x-color-picker>
+                    </div>
+                @endforeach
 
-                <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                    <label for="border_color" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
-                        Border Color
-                    </label>
-
-                    <x-color-picker class="mt-1 sm:mt-0 sm:col-span-2 relative" name="border_color" model="theme_settings.border_color"></x-color-picker>
-                </div>
-
-                <div class="flex justify-end">
-
-                </div>
-
+                <x-slot name="footer">
+                    <x-button role="secondary" @click="cancelTheme">Cancel</x-button>
+                    <x-button @click="persistTheme">Save theme</x-button>
+                </x-slot>
             </x-slide-over>
         </template>
 

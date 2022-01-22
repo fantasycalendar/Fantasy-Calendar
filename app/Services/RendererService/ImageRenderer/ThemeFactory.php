@@ -10,7 +10,7 @@ class ThemeFactory
      * @var null
      */
     private $name;
-    private static $themes = [
+    public static $themes = [
         'discord' => [
             'background_color' => "#36393F",
             'shadow_color' => "#DCDDDE",

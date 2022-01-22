@@ -42,9 +42,9 @@
         }
     " @click.away="pickerOpen = false" class="relative">
     <input x-model="{{ $attributes->get('model') }}" type="text" name="{{ $attributes->get('name') }}" id="picker_{{ $attributes->get('name') }}" autocomplete="family-name" class="max-w-lg block w-full shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md">
-    <div class="absolute cursor-pointer inset-y-1 right-1.5 w-6 rounded shadow" x-bind:style="`background-color: ${ {{ $attributes->get('model') }} };`" @click="pickerOpen = !pickerOpen"></div>
+    <div class="absolute cursor-pointer inset-y-1 right-1.5 w-6 rounded border border-gray-100 shadow" x-bind:style="`background-color: ${ {{ $attributes->get('model') }} };`" @click="pickerOpen = !pickerOpen"></div>
 
-    <div class="absolute mt-1 w-full p-2 border shadow rounded z-30 bg-white" x-ref="picker_{{ $attributes->get('name') }}"
+    <div class="absolute mt-1 w-full p-2 border border-gray-300 shadow-lg rounded z-30 bg-white" x-ref="picker_{{ $attributes->get('name') }}"
          x-show="pickerOpen"
          x-transition:leave="transition ease-in duration-100"
          x-transition:leave-start="opacity-100"

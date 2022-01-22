@@ -57,13 +57,17 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="flex-shrink-0 px-4 py-4 flex justify-end">
-                            <button @click="{{ $attributes->get('model') }} = false" type="button" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                                Cancel
-                            </button>
-                            <button type="submit" class="ml-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                                Save
-                            </button>
+                        <div class="flex-shrink-0 px-4 py-4 flex justify-end space-x-4">
+                            @unless($footer)
+                                <button @click="{{ $attributes->get('model') }} = false" type="button" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                                    Cancel
+                                </button>
+                                <button type="submit" class="ml-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                                    Save
+                                </button>
+                            @else
+                                {{ $footer }}
+                            @endunless
                         </div>
                     </form>
                 </div>
