@@ -1,6 +1,8 @@
-@push('head')
-    <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
-@endpush
+@once
+    @push('head')
+        <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
+    @endpush
+@endonce
 
 <div {{ $attributes->merge(['class' => '']) }} x-data="{
             hexColor: '',
