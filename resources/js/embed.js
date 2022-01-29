@@ -18,12 +18,21 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
             width: null,
             height: null,
             theme: 'fantasy_calendar',
+            background_color: null,
+            shadow_color: null,
+            border_color: null,
+            current_date_color: null,
+            placeholder_background_color: null,
+            heading_text_color: null,
+            text_color: null,
+            inactive_text_color: null,
         },
         get url() {
             const url = new URL(fcEmbedDomain + '/embed/' + this._config('hash'));
 
             for (let [setting, value] of Object.entries(this.setting())) {
-                url.searchParams.set(setting, value);
+                value && url.searchParams.set(setting, value);
+                value && console.log(`Setting ${setting} to ${value}`)
             }
 
             return url;

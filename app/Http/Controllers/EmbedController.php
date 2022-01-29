@@ -30,6 +30,14 @@ class EmbedController extends Controller
                     'header_divider_width',
                     'weekday_header_divider_width',
                     'intercalary_spacing',
+                    'background_color',
+                    'border_color',
+                    'current_date_color',
+                    'heading_text_color',
+                    'inactive_text_color',
+                    'placeholder_background_color',
+                    'shadow_color',
+                    'text_color'
                 ])
             ],
             request()->only(['size', 'height', 'width'])

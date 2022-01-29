@@ -43,16 +43,16 @@
                                 code += this.size !== 'auto'                     ? "\t\tsize: '" + this.size + "',\n"        : '';
                                 code += this.size === 'custom' && this.width     ? "\t\twidth: '" + this.width + "',\n"      : '';
                                 code += this.size === 'custom' && this.height    ? "\t\theight: '" + this.height + "',\n"    : '';
-                            code += `\t},\n`;
-                        }
 
-                        if(this.theme === 'custom' && Object.entries(this.theme_edited).length) {
-                            code += `\tthemeColors: {\n`
-                                for (const [key, value] of Object.entries(this.theme_edited)) {
-                                    if(['font_name', 'shadow_strength'].includes(key)) continue;
-                                    code += `\t\t${key}: '${value}',\n`
+                                if(this.theme === 'custom' && Object.entries(this.theme_edited).length) {
+                                    for (const [key, value] of Object.entries(this.theme_edited)) {
+                                        if(['font_name', 'shadow_strength'].includes(key)) continue;
+
+                                        code += `\t\t${key}: '${value}',\n`
+                                    }
                                 }
-                            code +=`\t},\n`
+
+                            code += `\t},\n`;
                         }
 
                     code += "});\n<"+"/script>";
