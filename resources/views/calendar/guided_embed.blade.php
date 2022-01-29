@@ -10,10 +10,12 @@
                 width: '',
                 selector: '',
                 loading: false,
-                theme: 'custom',
+                theme: 'blue',
+                base_theme: 'blue',
                 fantasyCalendar: null,
                 notifications: [],
-                openSidebar: true,
+                openSidebar: false,
+                themes_available: @json($themes),
                 theme_settings: {
                     background_color: '',
                 },
@@ -60,7 +62,7 @@
                     return code;
                 },
                 init: function() {
-                    this.theme_editing = clone(this.theme_originals)
+                    this.theme_editing = clone(this.theme_originals[this.theme])
 
                     this.$nextTick(function() {
                         let hash = '{{ $calendar->hash }}';
@@ -69,13 +71,13 @@
                             selector: '#fantasy-calendar-embed',
                             settings: {
                                 size: this.size,
+                                theme: this.theme,
                                 onUpdate: () => this.loading = false,
                                 onLoad: () => this.loading = false
                             }
                         });
                         this.$watch('size', value => this.settingRefreshes('size', value))
                         this.$watch('theme', (value, oldValue) => this.updateTheme('theme', value, oldValue))
-                        console.log(this.embedCode);
                     }.bind(this));
                 },
                 settingRefreshes: function(name, value) {
@@ -102,22 +104,24 @@
                     this.openSidebar = false;
                 },
                 persistTheme: function() {
-                    console.log(JSON.parse(JSON.stringify(this.theme_editing)));
                     this.theme_edited = {};
                     for (const [key, value] of Object.entries(this.theme_editing)) {
-                        if(this.theme_originals[key].value === value.value) continue;
-                        console.log(this.theme_originals[key].value, value.value);
+                        if(this.theme_originals['fantasy_calendar'][key].value === value.value) continue;
                         this.theme_edited[key] = value.value;
                     }
                     this.fantasyCalendar.settings(JSON.parse(JSON.stringify(this.theme_edited)));
-                    console.log(JSON.parse(JSON.stringify(this.theme_edited)));
                 },
                 updateTheme: function(name, value, oldValue) {
-                    console.log(name, value, oldValue);
-                    if(value !== 'custom' && oldValue === 'custom') {
-                        this.theme_editing = clone(this.theme_originals);
-                        this.persistTheme();
+                    if(value === 'custom') {
+                        this.base_theme = oldValue;
+                        this.theme_editing = clone(this.theme_originals[oldValue]);
                     }
+
+                    if(value !== 'custom' && oldValue === 'custom') {
+                        this.theme_editing = clone(this.theme_originals[this.theme]);
+                    }
+
+                    this.persistTheme();
 
                     this.updateSetting(name, value);
                 },
@@ -175,12 +179,12 @@
 
                     <div class="pt-2 col-span-6">
                         <label for="calendar-theme" class="block font-medium text-gray-700">Theme</label>
-                        <x-select-menu model="theme" default="custom" :options="$themes"></x-select-menu>
+                        <x-select-menu model="theme" default="blue" :options="$themes"></x-select-menu>
                     </div>
 
                     <div class="pt-2 col-span-6" x-show="theme === 'custom'">
                         <x-button class="w-full justify-center shadow-sm border-gray-300" @click="openSidebar = true" role="secondary">
-                            Customize theme
+                            Customize theme <span class="text-xs text-gray-400 pl-1" x-show="base_theme">(based on '<span x-text="themes_available[base_theme]"></span>')</span>
                         </x-button>
                     </div>
 

@@ -33,6 +33,18 @@ class ThemeFactory
             'inactive_text_color' => '#717171',
             'font_name' => 'Noah',
             'shadow_strength' => '30',
+        ],
+        'blue' => [
+            'background_color' => '#1e3a8a',
+            'shadow_color' => '#222222',
+            'border_color' => "#222222",
+            'current_date_color' => "#9e6116",
+            'placeholder_background_color' => '#343434',
+            'heading_text_color' => '#ffffff',
+            'text_color' => '#ffffff',
+            'inactive_text_color' => '#717171',
+            'font_name' => 'Noah',
+            'shadow_strength' => '30',
         ]
     ];
 

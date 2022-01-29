@@ -136,22 +136,25 @@ class CalendarController extends Controller
                 '3xl' => 'Triple Extra Large',
                 'custom' => 'Custom size'
             ],
-            'themes' => [
-                'fantasy_calendar' => 'Fantasy Calendar',
-                'discord' => 'Discord',
-                'custom' => 'Custom Theme',
-            ],
-            'themeValues' => collect(\App\Services\RendererService\ImageRenderer\ThemeFactory::$themes['fantasy_calendar'])
-                ->reject(function($value, $key){
-                    return in_array($key, ['font_name', 'shadow_strength']);
+            'themes' => collect(array_keys(\App\Services\RendererService\ImageRenderer\ThemeFactory::$themes))
+                ->mapWithkeys(function($theme){
+                    return [
+                        $theme => ucwords(str_replace('_', ' ', $theme))
+                    ];
+                })->merge(['custom' => 'Custom Theme'])->toArray(),
+            'themeValues' => collect(\App\Services\RendererService\ImageRenderer\ThemeFactory::$themes)
+                ->map(function($theme){
+                    return collect($theme)->reject(function($value, $key){
+                        return in_array($key, ['font_name', 'shadow_strength']);
+                    })
+                        ->map(function($value, $key){
+                            return [
+                                'field' => $key,
+                                'value' => $value,
+                                'title' => ucwords(str_replace(['_', 'color'], [' ', ''], $key))
+                            ];
+                        });
                 })
-                ->map(function($value, $key){
-                return [
-                    'field' => $key,
-                    'value' => $value,
-                    'title' => ucwords(str_replace(['_', 'color'], [' ', ''], $key))
-                ];
-            })
         ]);
     }
 

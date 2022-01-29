@@ -32,7 +32,6 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
 
             for (let [setting, value] of Object.entries(this.setting())) {
                 value && url.searchParams.set(setting, value);
-                value && console.log(`Setting ${setting} to ${value}`)
             }
 
             return url;
@@ -46,7 +45,6 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
             this._remoteAction('loginForm')
         },
         settings(settings) {
-            console.log(settings);
             this._remoteAction('updateSettings', settings);
         },
         setting(name = null, value = null) {
@@ -133,6 +131,7 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
             this._setSettings(params);
             this._config('element', this._determineReplaceElement());
 
+            console.log(this._config('embedNow'));
             (this._config('embedNow') === false) || this.embed();
 
             return this;
@@ -264,7 +263,7 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
                 return this._configuration;
             }
 
-            if(!value) {
+            if(value === null) {
                 return this._configuration[name];
             }
 

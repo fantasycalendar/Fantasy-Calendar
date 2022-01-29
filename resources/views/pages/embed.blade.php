@@ -193,9 +193,7 @@
                 },
 
                 updateSettings(event) {
-                    console.log(event.detail);
                     for (const [name, value] of Object.entries(event.detail)) {
-                        console.log(`Updating ${name} to ${value}`);
                         this.changeImageOption(name, value);
                     }
 
@@ -214,7 +212,6 @@
                         }.bind(this));
                     }
 
-                    console.log(`Option ${name} changed to ${value}`);
                     this.image_url.searchParams.set(name, value);
                 },
 
@@ -253,7 +250,6 @@
                 },
 
                 acceptMessage: function($event) {
-                    console.log($event);
                     if(typeof $event.data === 'object' && $event.data.source === 'fantasy-calendar-embed-parent' && typeof window.embeddableActions[$event.data.does] === "function") {
                         window.embeddableActions[$event.data.does]($event.data.params);
                     }
@@ -267,14 +263,12 @@
                 },
                 updateSettings: function(params) {
                     console.trace();
-                    console.log(params);
                     for([name, value] of Object.entries(params)) {
                         if(!this.allowed_settings.includes(name)) {
                             throw new Error(`Updating setting ${name} is not allowed!`);
                             return;
                         }
 
-                        console.log(`Setting ${name} encountered, safe`);
                     }
 
                     dispatch('updated-settings', params);
