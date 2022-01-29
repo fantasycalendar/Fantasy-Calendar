@@ -27,6 +27,8 @@
                     text_color: '',
                     inactive_text_color: '',
                 },
+                theme_original: @json($themeValues),
+                theme_edited: {},
                 get embedCode() {
                     const embedUrl = '{{ url('js/embed.js') }}';
 
@@ -42,6 +44,15 @@
                                 code += this.size === 'custom' && this.width     ? "\t\twidth: '" + this.width + "',\n"      : '';
                                 code += this.size === 'custom' && this.height    ? "\t\theight: '" + this.height + "',\n"    : '';
                             code += `\t},\n`;
+                        }
+
+                        if(this.theme === 'custom' && Object.entries(this.theme_edited).length) {
+                            code += `\tthemeColors: {\n`
+                                for (const [key, value] of Object.entries(this.theme_edited)) {
+                                    if(['font_name', 'shadow_strength'].includes(key)) continue;
+                                    code += `\t\t${key}: '${value}',\n`
+                                }
+                            code +=`\t},\n`
                         }
 
                     code += "});\n<"+"/script>";
@@ -91,6 +102,13 @@
                 },
                 persistTheme: function() {
                     console.log(JSON.parse(JSON.stringify(this.theme_editing)));
+                    this.theme_edited = {};
+                    for (const [key, value] of Object.entries(this.theme_editing)) {
+                        if(this.theme_original[key] === value) continue;
+                        console.log(this.theme_original[key], value);
+                        this.theme_edited[key] = value;
+                    }
+                    console.log(JSON.parse(JSON.stringify(this.theme_edited)));
                 },
                 updateSetting: function(name, value) {
                     if(this.fantasyCalendar.setting(name) === value) {
@@ -147,7 +165,7 @@
 
                     <div class="pt-2 col-span-6">
                         <label for="calendar-theme" class="block font-medium text-gray-700">Theme</label>
-                        <x-select-menu model="theme" default="fantasy_calendar" :options="$themes"></x-select-menu>
+                        <x-select-menu model="theme" default="custom" :options="$themes"></x-select-menu>
                     </div>
 
                     <div class="pt-2 col-span-6" x-show="theme === 'custom'">
@@ -230,7 +248,7 @@
                     Select your colors below, and you'll see them reflected in your calendar embed.
                 </x-slot>
 
-                @foreach(\App\Services\RendererService\ImageRenderer\ThemeFactory::$themes['fantasy_calendar'] as $field => $value)
+                @foreach($themeValues as $field => $value)
                     @if(in_array($field, ['font_name', 'shadow_strength']))
                         @continue
                     @endif

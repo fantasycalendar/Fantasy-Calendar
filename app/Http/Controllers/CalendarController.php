@@ -140,7 +140,8 @@ class CalendarController extends Controller
                 'fantasy_calendar' => 'Fantasy Calendar',
                 'discord' => 'Discord',
                 'custom' => 'Custom Theme',
-            ]
+            ],
+            'themeValues' => \App\Services\RendererService\ImageRenderer\ThemeFactory::$themes['fantasy_calendar']
         ]);
     }
 

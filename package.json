@@ -25,6 +25,7 @@
         "vue-template-compiler": "^2.6.12"
     },
     "dependencies": {
+        "@alpinejs/intersect": "^3.8.1",
         "@fortawesome/fontawesome-free": "^5.15.1",
         "@jaames/iro": "^5.5.2",
         "@tailwindcss/forms": "^0.4.0",
