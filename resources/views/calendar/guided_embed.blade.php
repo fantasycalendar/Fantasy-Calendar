@@ -27,7 +27,7 @@
                     text_color: '',
                     inactive_text_color: '',
                 },
-                theme_original: @json($themeValues),
+                theme_originals: @json($themeValues),
                 theme_edited: {},
                 get embedCode() {
                     const embedUrl = '{{ url('js/embed.js') }}';
@@ -73,7 +73,7 @@
                             }
                         });
                         this.$watch('size', value => this.settingRefreshes('size', value))
-                        this.$watch('theme', value => this.updateSetting('theme', value))
+                        this.$watch('theme', (value, oldValue) => this.updateTheme('theme', value, oldValue))
                         console.log(this.embedCode);
                     }.bind(this));
                 },
@@ -104,11 +104,20 @@
                     console.log(JSON.parse(JSON.stringify(this.theme_editing)));
                     this.theme_edited = {};
                     for (const [key, value] of Object.entries(this.theme_editing)) {
-                        if(this.theme_original[key] === value) continue;
-                        console.log(this.theme_original[key], value);
+                        if(this.theme_originals[key] === value) continue;
+                        console.log(this.theme_originals[key], value);
                         this.theme_edited[key] = value;
                     }
+                    this.fantasyCalendar.settings(JSON.parse(JSON.stringify(this.theme_edited)));
                     console.log(JSON.parse(JSON.stringify(this.theme_edited)));
+                },
+                updateTheme: function(name, value, oldValue) {
+                    console.log(name, value, oldValue);
+                    if(value !== 'custom' && oldValue === 'custom') {
+                        this.theme_editing = clone(this.theme_originals);
+                    }
+
+                    this.updateSetting(name, value);
                 },
                 updateSetting: function(name, value) {
                     if(this.fantasyCalendar.setting(name) === value) {
@@ -119,7 +128,6 @@
                     return true;
                 },
                 copyCode: function() {
-                    console.log(this.$refs.codeBlock);
                     let range = document.createRange();
                     range.setStart(this.$refs.codeBlock.firstChild, 0);
                     range.setEnd(this.$refs.codeBlock.firstChild, this.$refs.codeBlock.firstChild.length);
@@ -193,7 +201,7 @@
 
                 <div class="pt-8">
                     <label for="element_selector" class="block font-medium text-gray-700">Element Selector</label>
-                    <input type="text" name="element_selector" id="element_selector" placeholder="#fantasy-calendar-embed" class="disabled:text-gray-500 disabled:bg-gray-300 mt-1 text-gray-600 focus:ring-primary-500 focus:border-primary-500 block w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="selector">
+                    <input type="text" name="element_selector" id="element_selector" placeholder="auto" class="disabled:text-gray-500 disabled:bg-gray-300 mt-1 text-gray-600 focus:ring-primary-500 focus:border-primary-500 block w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="selector">
 
                     <x-alert type="notice" class="mt-4" x-show="!selector">
                         Without a selector, the <strong>&lt;script&gt;</strong> tag calling <strong>FantasyCalendar({})</strong> will be replaced.

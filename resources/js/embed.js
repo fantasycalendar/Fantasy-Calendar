@@ -36,6 +36,10 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
         loginForm(){
             this._remoteAction('loginForm')
         },
+        settings(settings) {
+            console.log(settings);
+            this._remoteAction('updateSettings', settings);
+        },
         setting(name = null, value = null) {
             if(!name) {
                 return this._embed_settings;

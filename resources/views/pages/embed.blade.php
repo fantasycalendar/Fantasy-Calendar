@@ -98,6 +98,7 @@
                 settings: @json($settings),
                 date_change_details: {},
                 date_changed: false,
+                theme_settings: ['background_color', 'border_color', 'current_date_color', 'heading_text_color', 'inactive_text_color', 'placeholder_background_color', 'shadow_color', 'text_color'],
                 init: function() {
                     this.notifications = [];
                     this.api_token = localStorage.getItem('api_token') ?? '';
@@ -191,13 +192,29 @@
                     }.bind(this), 5000);
                 },
 
-                updateSetting(event) {
+                updateSettings(event) {
+                    console.log(event.detail);
+                    for (const [name, value] of Object.entries(event.detail)) {
+                        console.log(`Updating ${name} to ${value}`);
+                        this.changeImageOption(name, value);
+                    }
 
+                    this.updateImage();
+                },
+
+                updateSetting(event) {
                     this.changeImageOption(event.detail.name, event.detail.value);
                     this.updateImage();
                 },
 
                 changeImageOption(name, value) {
+                    if(name == 'theme' && value !== 'custom') {
+                        ['background_color', 'border_color', 'current_date_color', 'heading_text_color', 'inactive_text_color', 'placeholder_background_color', 'shadow_color', 'text_color'].forEach(function(name){
+                            this.image_url.searchParams.delete(name);
+                        }.bind(this));
+                    }
+
+                    console.log(`Option ${name} changed to ${value}`);
                     this.image_url.searchParams.set(name, value);
                 },
 
@@ -244,9 +261,23 @@
             }
 
             window.embeddableActions = {
-                allowed_settings: ['theme', 'padding'],
+                allowed_settings: ['theme', 'background_color', 'border_color', 'current_date_color', 'heading_text_color', 'inactive_text_color', 'placeholder_background_color', 'shadow_color', 'text_color'],
                 toastify: function(params) {
                     dispatch('notify', params);
+                },
+                updateSettings: function(params) {
+                    console.trace();
+                    console.log(params);
+                    for([name, value] of Object.entries(params)) {
+                        if(!this.allowed_settings.includes(name)) {
+                            throw new Error(`Updating setting ${name} is not allowed!`);
+                            return;
+                        }
+
+                        console.log(`Setting ${name} encountered, safe`);
+                    }
+
+                    dispatch('updated-settings', params);
                 },
                 updateSetting: function(params) {
                     if(this.allowed_settings.includes(params.name)) {
@@ -322,6 +353,7 @@
           @login.window="show_login_form = true"
           @notify.window="toast"
           @updated-setting.window="updateSetting"
+          @updated-settings.window="updateSettings"
           @message.window="acceptMessage"
           @date-change.window="dateChanged"
     >
