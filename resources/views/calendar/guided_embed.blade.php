@@ -103,12 +103,11 @@
                 },
                 persistTheme: function() {
                     console.log(JSON.parse(JSON.stringify(this.theme_editing)));
-                    return;
                     this.theme_edited = {};
                     for (const [key, value] of Object.entries(this.theme_editing)) {
-                        if(this.theme_originals[key] === value) continue;
-                        console.log(this.theme_originals[key], value);
-                        this.theme_edited[key] = value;
+                        if(this.theme_originals[key].value === value.value) continue;
+                        console.log(this.theme_originals[key].value, value.value);
+                        this.theme_edited[key] = value.value;
                     }
                     this.fantasyCalendar.settings(JSON.parse(JSON.stringify(this.theme_edited)));
                     console.log(JSON.parse(JSON.stringify(this.theme_edited)));
