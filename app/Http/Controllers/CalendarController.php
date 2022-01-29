@@ -141,7 +141,17 @@ class CalendarController extends Controller
                 'discord' => 'Discord',
                 'custom' => 'Custom Theme',
             ],
-            'themeValues' => \App\Services\RendererService\ImageRenderer\ThemeFactory::$themes['fantasy_calendar']
+            'themeValues' => collect(\App\Services\RendererService\ImageRenderer\ThemeFactory::$themes['fantasy_calendar'])
+                ->reject(function($value, $key){
+                    return in_array($key, ['font_name', 'shadow_strength']);
+                })
+                ->map(function($value, $key){
+                return [
+                    'field' => $key,
+                    'value' => $value,
+                    'title' => ucwords(str_replace(['_', 'color'], [' ', ''], $key))
+                ];
+            })
         ]);
     }
 

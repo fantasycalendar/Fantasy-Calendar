@@ -57,7 +57,7 @@ class Handler extends ExceptionHandler
         Log::error($exception);
         Log::error($exception->getTraceAsString());
 
-        dd($exception);
+//        dd($exception);
 
         if($this->isApiCall($request)) {
             if(property_exists($exception, 'validator')) {

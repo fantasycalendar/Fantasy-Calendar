@@ -60,6 +60,7 @@
                     return code;
                 },
                 init: function() {
+                    this.theme_editing = clone(this.theme_originals)
 
                     this.$nextTick(function() {
                         let hash = '{{ $calendar->hash }}';
@@ -102,6 +103,7 @@
                 },
                 persistTheme: function() {
                     console.log(JSON.parse(JSON.stringify(this.theme_editing)));
+                    return;
                     this.theme_edited = {};
                     for (const [key, value] of Object.entries(this.theme_editing)) {
                         if(this.theme_originals[key] === value) continue;
@@ -115,6 +117,7 @@
                     console.log(name, value, oldValue);
                     if(value !== 'custom' && oldValue === 'custom') {
                         this.theme_editing = clone(this.theme_originals);
+                        this.persistTheme();
                     }
 
                     this.updateSetting(name, value);
@@ -256,18 +259,17 @@
                     Select your colors below, and you'll see them reflected in your calendar embed.
                 </x-slot>
 
-                @foreach($themeValues as $field => $value)
-                    @if(in_array($field, ['font_name', 'shadow_strength']))
-                        @continue
-                    @endif
-                    <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                        <label for="{{ $field }}" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
-                            {{ ucwords(str_replace('_', ' ', $field)) }}
-                        </label>
+                <template x-for="(field, index) in theme_editing">
+                    <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-center sm:border-t sm:border-gray-200 sm:pt-5">
+                        <label :for="field.field" class="block text-sm font-medium text-gray-700" x-text="field.title"></label>
 
-                        <x-color-picker class="mt-1 sm:mt-0 sm:col-span-2 relative" default="{{ $value }}" name="{{ $field }}" model="theme_editing.{{ $field }}"></x-color-picker>
+                        <div class="relative col-span-2">
+                            <input x-model="theme_editing[index].value" type="text" class="max-w-lg block w-full shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md" />
+                            <div class="absolute inset-y-1 right-1.5 w-8 rounded border border-gray-200 shadow cursor-events-none" x-bind:style="`background-color: ${theme_editing[index].value}`"></div>
+                            <input type="color" x-model="theme_editing[index].value" class="opacity-0 absolute cursor-pointer inset-y-1 right-1.5 w-8 rounded border border-gray-100 shadow" />
+                        </div>
                     </div>
-                @endforeach
+                </template>
 
                 <x-slot name="footer">
                     <x-button role="secondary" @click="cancelTheme">Cancel</x-button>
