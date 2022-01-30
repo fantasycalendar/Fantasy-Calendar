@@ -15,6 +15,14 @@ use Intervention\Image\Facades\Image;
 |
 */
 
+//Route::post('/requestTest', function(Request $request){
+//    dd($request->all());
+//
+//    return '';
+//});
+
+Route::get('/embed/{calendar}', 'EmbedController@embedCalendar');
+
 Route::get('/imagetest', function(){
     return view('pages.imagetest');
 });
@@ -71,6 +79,7 @@ Route::prefix('invite')->group(function(){
 Route::middleware(['account.deletion', 'agreement'])->group(function(){
     Route::group(['as' => 'calendars.', 'prefix' => 'calendars'], function(){
         Route::get('/{calendar}/print', 'CalendarController@print')->name('print');
+        Route::get('/{calendar}/guided_embed', 'CalendarController@guidedEmbed')->name('guided_embed');
         Route::get('/{calendar}/export', 'CalendarController@export')->name('export');
         Route::get('/{calendar}.{ext}', 'CalendarController@renderImage')->name('image');
     });

@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 |
 */
 
+Route::any('/user/login', 'Api\UserController@authenticate');
 Route::middleware('auth:api')->get('/user', 'Api\UserController@user');
 
 Route::any('/calendar/{calendar}/clone', 'Api\CalendarController@clone');
@@ -25,6 +26,8 @@ Route::any('/calendar/{calendar}/changeUserRole', 'Api\CalendarController@change
 Route::any('/calendar/{calendar}/children', 'Api\CalendarController@children');
 Route::any('/calendar/{calendar}/last_changed', 'Api\CalendarController@last_changed');
 Route::any('/calendar/{calendar}/dynamic_data', 'Api\CalendarController@dynamic_data');
+Route::any('/calendar/{calendar}/changeDate', 'Api\CalendarController@changeDate');
+Route::any('/calendar/{calendar}/getCurrentDate', 'Api\CalendarController@getCurrentDate');
 Route::apiResource('calendar', 'Api\CalendarController');
 
 

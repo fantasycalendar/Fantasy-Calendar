@@ -136,7 +136,7 @@ class ImageRenderer
 
             // Callables - Used for responsiveness until a proper responsive system gets put in place. =)
             'header_height' => fn() => clamp(round(($this->y - ($this->padding * 2)) / 7), $this->minimum_header_height, $this->maximum_header_height),
-            'weekday_header_height' => fn() => clamp($this->header_height / 4, 18, 42),
+            'weekday_header_height' => fn() => clamp($this->header_height / 2, 18, 42),
             'header_divider_width' => fn() => $this->x > 600 ? 2 : 1,
             'weekday_header_divider_width' => fn() => $this->x > 600 ? 2 : 1,
             'intercalary_spacing' => fn() => clamp($this->weekday_header_height / 4, 4, 30),
@@ -705,10 +705,10 @@ class ImageRenderer
     private function hasIntercalary($visualWeeks): bool
     {
         return $visualWeeks->filter(
-            fn($displayedWeeks) => $displayedWeeks->filter(
-                fn($day) => optional($day)->isIntercalary
-            )->count()
-        )->count() > 0 && !$this->intercalary_month;
+                fn($displayedWeeks) => $displayedWeeks->filter(
+                    fn($day) => optional($day)->isIntercalary
+                )->count()
+            )->count() > 0 && !$this->intercalary_month;
     }
 
     /**
@@ -721,7 +721,7 @@ class ImageRenderer
         $intercalary_spacing = 4;
         $day_width = max($this->min_day_text_length * 6, 30);
         $day_height = 26;
-        $weekday_header_height = $this->minimum_weekday_header_height; // 24
+//        $weekday_header_height =  ; // 24
         $header_height = 35; // 50
         $day_number_size = 10;
 
@@ -745,11 +745,11 @@ class ImageRenderer
                 'divide' => 72,
                 'multiply' => 175,
             ],
-            'xxl' => [
+            '2xl' => [
                 'divide' => 144,
                 'multiply' => 425,
             ],
-            'xxxl' => [
+            '3xl' => [
                 'divide' => 48,
                 'multiply' => 175,
             ]
@@ -757,7 +757,7 @@ class ImageRenderer
 
         $size = $this->size;
         if($size && Arr::has($size_presets, $size)) {
-            foreach(['intercalary_spacing', 'day_width','day_height','weekday_header_height','header_height', 'day_number_size'] as $property) {
+            foreach(['intercalary_spacing', 'day_width','day_height','header_height', 'day_number_size'] as $property) {
                 $$property /= $size_presets[$size]['divide'];
                 $$property *= $size_presets[$size]['multiply'];
             }
@@ -767,16 +767,16 @@ class ImageRenderer
 
         $this->parameters->put('grid_column_width', $day_width);
         $this->parameters->put('grid_row_height', $day_height);
-        $this->parameters->put('weekday_header_height', clamp($weekday_header_height, $this->minimum_weekday_header_height, 80));
         $this->parameters->put('header_height', clamp($header_height, $this->minimum_header_height, $this->maximum_header_height));
+        $this->parameters->put('weekday_header_height', clamp($day_height / 2.5, $this->minimum_weekday_header_height, $this->parameters->get('header_height') / 2));
         $this->parameters->put('day_number_size', clamp($day_number_size, 10, 50));
 
         $this->x = clamp($this->week_length * $day_width, $this->min_x, $this->max_x);
         $this->y = $this->weekday_header_height
-                 + $this->header_height
-                 + ($this->intercalary_spacing * $this->intercalary_weeks_count * 2)
-                 + ($this->weeks_count * $day_height)
-                 + 1;
+            + $this->header_height
+            + ($this->intercalary_spacing * $this->intercalary_weeks_count * 2)
+            + ($this->weeks_count * $day_height)
+            + 1;
     }
 
     /**
@@ -799,8 +799,8 @@ class ImageRenderer
     private function autoSizeHeightOnly()
     {
         return (int) (($this->weeks_count * (
-                $this->x / $this->week_length
-            )) / 6) * 7;
+                        $this->x / $this->week_length
+                    )) / 6) * 7;
     }
 
     /**
@@ -880,10 +880,10 @@ class ImageRenderer
     private function parameter(string $string, $last_resort = null)
     {
         $result = $this->cache->get($string)
-               ?? $this->parameters->get($string)
-               ?? $this->theme->get($string)
-               ?? $this->defaults->get($string)
-               ?? $last_resort;
+            ?? $this->parameters->get($string)
+            ?? $this->theme->get($string)
+            ?? $this->defaults->get($string)
+            ?? $last_resort;
 
         if(is_callable($result)) {
             $result = $result();

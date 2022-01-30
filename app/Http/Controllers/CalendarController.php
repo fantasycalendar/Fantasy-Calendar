@@ -121,6 +121,26 @@ class CalendarController extends Controller
         ]);
     }
 
+    public function guidedEmbed(Calendar $calendar)
+    {
+        return view('calendar.guided_embed', [
+            'calendar' => $calendar,
+            'sizes' => [
+                'auto' => 'Autofill available space',
+                'xs' => 'Tiny',
+                'sm' => 'Small',
+                'md' => 'Medium',
+                'lg' => 'Large',
+                'xl' => 'Extra Large',
+                '2xl' => 'Double Extra Large',
+                '3xl' => 'Triple Extra Large',
+                'custom' => 'Custom size'
+            ],
+            'themes' => ImageRenderer\ThemeFactory::getThemeNames(),
+            'themeValues' => ImageRenderer\ThemeFactory::getThemesRich()
+        ]);
+    }
+
     public function renderImage(Calendar $calendar, $ext)
     {
         if(Gate::denies('view-image', $calendar) && !app()->environment('local')) {
