@@ -34,6 +34,17 @@ class ThemeFactory
             'inactive_text_color' => '#72767d',
             'font_name' => 'Noah',
         ],
+        'worldanvil' => [
+            'background_color' => "#ffffff",
+            'shadow_color' => "#dcddde",
+            'border_color' => "#dcddde",
+            'current_date_color' => "#f3f3f4",
+            'placeholder_background_color' => '#f3f3f4',
+            'heading_text_color' => "#243d54",
+            'text_color' => '#243d54',
+            'inactive_text_color' => '#c5c5c5',
+            'font_name' => 'Noah',
+        ],
         'red' => [
             'background_color' => '#b71c1c',
             'shadow_color' => '#c62828',

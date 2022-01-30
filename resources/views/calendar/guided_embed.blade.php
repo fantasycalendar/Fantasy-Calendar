@@ -93,11 +93,10 @@
 
                     if(!this.updateSetting(name, value)) return;
 
-                    this.loading = true;
-
                     this.refreshIframe();
                 },
                 refreshIframe: function(){
+                    this.loading = true;
                     this.fantasyCalendar.embed();
                 },
                 cancelTheme: function() {
@@ -123,6 +122,7 @@
 
                     this.persistTheme();
 
+                    this.loading = true;
                     this.updateSetting(name, value);
                 },
                 updateSetting: function(name, value) {
@@ -182,9 +182,9 @@
                         <x-select-menu model="theme" default="fantasy_calendar" :options="$themes"></x-select-menu>
                     </div>
 
-                    <div class="pt-2 col-span-6" x-show="theme === 'custom'" x-cloak>
-                        <x-button class="w-full justify-center shadow-sm border-gray-300" @click="openSidebar = true" role="secondary">
-                            Customize theme <span class="text-xs text-gray-400 pl-1" x-show="base_theme">(based on '<span x-text="themes_available[base_theme]"></span>')</span>
+                    <div class="col-span-6" x-cloak>
+                        <x-button class="w-full justify-center shadow-sm border-gray-300" @click="theme = 'custom'; openSidebar = true" role="secondary">
+                            Customize theme <span class="text-xs text-gray-400 pl-1" x-show="theme">(based on '<span x-text="themes_available[theme]"></span>')</span>
                         </x-button>
                     </div>
 
