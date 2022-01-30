@@ -1,5 +1,6 @@
-### 2.1.7 - Ageless Djinn
-#### January 11th, 2022 
+### 2.2.0 - Compatible Couatl
+#### January 29th, 2022 
+* Added - Calendar Embedding!
 * Fixed - Fixed erroneously taking starting eras into account when calculating epoch
 * Fixed - Fixed starting eras that were previously ending and restarting still maintaining their ending and starting status even after becoming starting eras
 * Fixed - Era year sometimes being off by one
