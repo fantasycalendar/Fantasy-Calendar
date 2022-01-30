@@ -296,8 +296,10 @@ const render_data_generator = {
 
             let show_months = timespan.type === "month";
 
+            let timespan_epoch_data = Object.values(timespan.epochs)[0];
+
             let timespan_data = {
-                "title": static_data.settings.add_month_number ? `${timespan.name} - Month ${index+1}` : timespan.name,
+                "title": static_data.settings.add_month_number ? `${timespan.name} - Month ${timespan_epoch_data.timespan_number + 1}` : timespan.name,
                 "show_title": true,
                 "weekdays": timespan.week,
                 "short_weekdays": timespan.truncated_week,

@@ -79,7 +79,7 @@ quick_deploy_prod:
 initialize_dev:
 	yes n | cp ./setup/docker.example.env .env                                                     # Copy env file, don't overwrite
 	docker-compose build                                                                           # Gotta build our images before we can use them
-	docker run -it -u $(id -u):$(id -g) -v ${PWD}/:/app -w /app node npm install                   # NPM install inside docker container to avoid installing on host
+	docker run -it -u $(id -u):$(id -g) -v ${PWD}/:/app -w /app node:14 npm install                # NPM install inside docker container to avoid installing on host
 	docker run -it -u $(id -u):$(id -g) -v ${PWD}/:/app -w /app fc-bref-composer composer install  # Composer install inside docker container (it has all our required PHP modules)
 	docker-compose up -d																		   # Start up our docker containers
 	docker-compose exec php php artisan migrate													   # Run migrations

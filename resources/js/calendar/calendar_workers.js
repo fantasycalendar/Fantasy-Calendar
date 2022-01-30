@@ -202,6 +202,7 @@ const calendar_data_generator = {
 		let timespan = clone(this.static_data.year_data.timespans[timespan_index]);
 
 		timespan.index = timespan_index;
+		timespan.intercalary = timespan.type === "intercalary";
 
 		timespan.render = this.current_year === year && (!this.render_one_month || (this.render_one_month && timespan_index === this.dynamic_data.timespan));
 
@@ -212,37 +213,31 @@ const calendar_data_generator = {
 
         timespan.leap_days = [];
 
-		let leap_days = this.static_data.year_data.leap_days.filter(leap_day => leap_day.timespan === timespan_index);
-		let normal_leapdays = leap_days.filter(leap_day => !leap_day.adds_week_day && !leap_day.intercalary)
-		let intercalary_leapdays = leap_days.filter(leap_day => !leap_day.adds_week_day && leap_day.intercalary)
-		let week_day_leap_days = leap_days.filter(leap_day => leap_day.adds_week_day)
+		const leap_days = clone(this.static_data.year_data.leap_days)
+            .map((leap_day, index) => {
+                leap_day.index = index;
+                return leap_day;
+            })
+            .filter(leap_day => {
+                return leap_day.timespan === timespan_index
+                    && IntervalsCollection.make(leap_day).intersectsYear(timespan_occurrences, static_data.settings.year_zero_exists)
+            });
 
-		for (let index in normal_leapdays) {
+		const normal_leap_days = leap_days.filter(leap_day => !leap_day.adds_week_day && !leap_day.intercalary)
+		const intercalary_leap_days = leap_days.filter(leap_day => !leap_day.adds_week_day && leap_day.intercalary)
+		const week_day_leap_days = leap_days.filter(leap_day => leap_day.adds_week_day)
 
-			let leap_day = normal_leapdays[index];
-
-			leap_day.index = leap_days.indexOf(leap_day);
-
-			if (is_leap(this.static_data, timespan_occurrences, leap_day.interval, leap_day.offset)) {
-				timespan.length++;
-			}
-
+		for (let index in normal_leap_days) {
+			timespan.length++;
 		}
 
-		for (let index in intercalary_leapdays) {
-
-			let leap_day = intercalary_leapdays[index];
-
-			leap_day.index = leap_days.indexOf(leap_day);
-
-			if (is_leap(this.static_data, timespan_occurrences, leap_day.interval, leap_day.offset)) {
-				if(timespan.type === 'intercalary'){
-					timespan.length++;
-				}else{
-					timespan.leap_days.push(leap_day);
-				}
-			}
-
+		for (let index in intercalary_leap_days) {
+			let leap_day = intercalary_leap_days[index];
+            if(timespan.type === 'intercalary'){
+                timespan.length++;
+            }else{
+                timespan.leap_days.push(leap_day);
+            }
 		}
 
 		week_day_leap_days.sort((a, b) => a.day - b.day);
@@ -253,24 +248,17 @@ const calendar_data_generator = {
 		let after_weekdays = [];
 
 		for (let index in week_day_leap_days) {
-
 			let leap_day = week_day_leap_days[index];
-
-			leap_day.index = leap_days.indexOf(leap_day);
-
-			if (is_leap(this.static_data, timespan_occurrences, leap_day.interval, leap_day.offset)) {
-				timespan.length++;
-				if (leap_day.day === 0) {
-					before_weekdays.push(leap_day.week_day)
-				} else if (leap_day.day === week_length) {
-					after_weekdays.push(leap_day.week_day)
-				} else {
-					let location = leap_day.day % timespan.week.length;
-					timespan.week.splice(location + leap_day_offset, 0, leap_day.week_day)
-					leap_day_offset++;
-				}
-			}
-
+            timespan.length++;
+            if (leap_day.day === 0) {
+                before_weekdays.push(leap_day.week_day)
+            } else if (leap_day.day === week_length) {
+                after_weekdays.push(leap_day.week_day)
+            } else {
+                let location = leap_day.day % timespan.week.length;
+                timespan.week.splice(location + leap_day_offset, 0, leap_day.week_day)
+                leap_day_offset++;
+            }
 		}
 
 		timespan.week = before_weekdays.concat(timespan.week).concat(after_weekdays);
@@ -295,6 +283,8 @@ const calendar_data_generator = {
         for(let era_index = 0; era_index < this.static_data.eras.length; era_index++){
 
             let era = this.static_data.eras[era_index];
+
+            if(era.settings.starting_era) continue;
 
             if(era.settings.ends_year && convert_year(this.static_data, year) === convert_year(this.static_data, era.date.year) && era.date.timespan < num_timespans+1){
 
@@ -490,7 +480,7 @@ const calendar_data_generator = {
         let years = Object.keys(this.timespans).map(year => Number(year)).sort((a, b) => a - b );
 
 	    let start_year = years[0];
-		let start_data = evaluate_calendar_start(this.static_data, start_year);
+		let start_data = evaluate_calendar_start(this.static_data, start_year, undefined, undefined, true);
 		let era_year = start_data.era_year;
 		let count_timespans = start_data.count_timespans;
 		let num_timespans = start_data.num_timespans;
@@ -500,7 +490,7 @@ const calendar_data_generator = {
 		let current_era = start_data.current_era;
 		let month_week_num;
 
-		let year_start_data = evaluate_calendar_start(this.static_data, start_year, undefined, undefined, true);
+		let year_start_data = evaluate_calendar_start(this.static_data, start_year);
 		let year_day = 1 + start_data.epoch - year_start_data.epoch;
 		let year_week_num = 1 + start_data.total_week_num - year_start_data.total_week_num;
 		let inverse_year_week_num = 1 + evaluate_calendar_start(this.static_data, start_year+1).total_week_num - year_start_data.total_week_num - year_week_num;
@@ -509,11 +499,7 @@ const calendar_data_generator = {
 
         for(let year of years){
 
-            for(let timespan_str in this.timespans[year]){
-
-                let timespan_index = Number(timespan_str);
-
-                let current_timespan = this.timespans[year][timespan_index];
+            for(let current_timespan of this.timespans[year]){
 
                 current_timespan.epochs = {}
 
@@ -547,9 +533,9 @@ const calendar_data_generator = {
                                     'year': unconvert_year(this.static_data, year),
                                     'era_year': unconvert_year(this.static_data, era_year),
 
-                                    'timespan_index': timespan_index,
+                                    'timespan_index': current_timespan.index,
                                     'timespan_number': year_num_timespans - 1,
-                                    'timespan_count': count_timespans[timespan_index],
+                                    'timespan_count': count_timespans[current_timespan.index],
                                     'num_timespans': num_timespans,
                                     'timespan_name': current_timespan.name,
 
@@ -599,9 +585,9 @@ const calendar_data_generator = {
                             'year': unconvert_year(this.static_data, year),
                             'era_year': unconvert_year(this.static_data, era_year),
 
-                            'timespan_index': timespan_index,
+                            'timespan_index': current_timespan.index,
                             'timespan_number': year_num_timespans - 1,
-                            'timespan_count': count_timespans[timespan_index],
+                            'timespan_count': count_timespans[current_timespan.index],
                             'num_timespans': num_timespans,
                             'timespan_name': current_timespan.name,
 
@@ -634,7 +620,7 @@ const calendar_data_generator = {
 
                         if (current_timespan.type !== "intercalary") {
 
-                            data.week_day_num = this.increment_weekday_repetitions(year, data.timespan_index, data.week_day-1);
+                            data.week_day_num = this.increment_weekday_repetitions(year, current_timespan.index, data.week_day-1);
 
                         }
 
@@ -654,9 +640,9 @@ const calendar_data_generator = {
                                     'year': unconvert_year(this.static_data, year),
                                     'era_year': unconvert_year(this.static_data, era_year),
 
-                                    'timespan_index': timespan_index,
+                                    'timespan_index': current_timespan.index,
                                     'timespan_number': year_num_timespans - 1,
-                                    'timespan_count': count_timespans[timespan_index],
+                                    'timespan_count': count_timespans[current_timespan.index],
                                     'num_timespans': num_timespans,
                                     'timespan_name': current_timespan.name,
 
@@ -748,8 +734,9 @@ const calendar_data_generator = {
 
 			if(year !== this.current_year){
 				if(this.static_data.eras.length > 0 && current_era !== -1){
-					if(this.static_data.eras[current_era].settings.ends_year){
-						if(!this.static_data.eras[current_era].settings.restart){
+				    const currentEra = this.static_data.eras[current_era];
+					if(currentEra.settings.ends_year){
+						if(!(currentEra.settings.restart && currentEra.date.year === year)){
 							era_year++;
 						}
 					}else{
@@ -758,11 +745,12 @@ const calendar_data_generator = {
 				}else{
 					era_year++;
 				}
-				year_day = 1;
-				year_num_timespans = 0;
-				year_week_num = 1;
 				inverse_year_week_num = 1 + evaluate_calendar_start(this.static_data, this.current_year+1).total_week_num - evaluate_calendar_start(this.static_data, this.current_year).total_week_num;
 			}
+
+            year_day = 1;
+            year_num_timespans = 0;
+            year_week_num = 1;
 
         }
 
@@ -887,9 +875,15 @@ const calendar_data_generator = {
             const start_epochs = Object.keys(first_timespan.epochs);
             const end_epochs = Object.keys(last_timespan.epochs);
 
+            const year = unconvert_year(this.static_data, this.current_year);
+            const calendar_week_day = this.render_one_month
+                ? Object.values(first_timespan.epochs)[0]?.week_day ?? 0
+                : Object.values(this.epochs).find(epoch => {
+                    return epoch.year === year && epoch.week_day !== undefined;
+                })?.week_day ?? 0;
+
             const calendar_start_epoch = Number(start_epochs[0]);
             const calendar_end_epoch = Number(end_epochs[end_epochs.length - 1]);
-            const calendar_week_day = Number(first_timespan.epochs[calendar_start_epoch].week_day);
             const calendar_year_day = Number(first_timespan.epochs[calendar_start_epoch].year_day);
             const calendar_era_year = Number(first_timespan.epochs[calendar_start_epoch].era_year);
 
@@ -1280,6 +1274,12 @@ var event_evaluator = {
 
 			this.current_event = event_evaluator.events[event_index];
 
+            if(!event_evaluator.event_data.valid[event_index]){
+                event_evaluator.event_data.valid[event_index] = [];
+                event_evaluator.event_data.starts[event_index] = [];
+                event_evaluator.event_data.ends[event_index] = [];
+            }
+
 			if(this.current_event.data.conditions.length != 0){
 				if(this.current_event.data.conditions[this.current_event.data.conditions.length-1].length == 1){
 					this.current_event.data.conditions.pop();
@@ -1288,9 +1288,9 @@ var event_evaluator = {
 
 			if(this.current_event.data.date !== undefined && this.current_event.data.date.length === 3){
 
-				var epoch = evaluate_calendar_start(event_evaluator.static_data, convert_year(event_evaluator.static_data, this.current_event.data.date[0]), this.current_event.data.date[1], this.current_event.data.date[2]).epoch;
+				let epoch = evaluate_calendar_start(event_evaluator.static_data, convert_year(event_evaluator.static_data, this.current_event.data.date[0]), this.current_event.data.date[1], this.current_event.data.date[2]).epoch;
 
-				var begin_epoch = this.current_event.data.has_duration ? event_evaluator.start_epoch-this.current_event.data.duration : event_evaluator.start_epoch;
+				let begin_epoch = this.current_event.data.has_duration ? event_evaluator.start_epoch-this.current_event.data.duration : event_evaluator.start_epoch;
 
 				if(epoch >= begin_epoch && epoch <= event_evaluator.end_epoch){
 
@@ -1302,10 +1302,26 @@ var event_evaluator = {
 
 				let search_distance = this.current_event.data.search_distance ? this.current_event.data.search_distance : 0;
 
-				var begin_epoch = this.current_event.lookback ? event_evaluator.start_epoch-this.current_event.lookback-1 : event_evaluator.start_epoch-search_distance-1;
-				var last_epoch = this.current_event.lookahead ? event_evaluator.end_epoch+this.current_event.lookahead : event_evaluator.end_epoch+search_distance;
+				let begin_epoch = this.current_event.lookback ? event_evaluator.start_epoch-this.current_event.lookback-1 : event_evaluator.start_epoch-search_distance-1;
+				let last_epoch = this.current_event.lookahead ? event_evaluator.end_epoch+this.current_event.lookahead : event_evaluator.end_epoch+search_distance;
 
-				for(var epoch = begin_epoch; epoch <= last_epoch; epoch++){
+                if(this.current_event.data.limited_repeat){
+
+                    const lookbackEpochs = this.current_event.data.limited_repeat_num;
+
+                    for(let subtractiveEpoch = 1; subtractiveEpoch <= lookbackEpochs; subtractiveEpoch++){
+
+                        let landedOn = event_evaluator.event_data.valid[event_index].includes(begin_epoch - subtractiveEpoch);
+
+                        if(landedOn){
+                            begin_epoch += lookbackEpochs-1;
+                            event_evaluator.current_number_of_epochs += lookbackEpochs-1;
+                            break;
+                        }
+                    }
+                }
+
+				for(let epoch = begin_epoch; epoch <= last_epoch; epoch++){
 
 					if(event_evaluator.callback){
 
@@ -1321,33 +1337,20 @@ var event_evaluator = {
 
 					}
 
-					add_event = true
-					if(this.current_event.data.limited_repeat){
-						for(var i = 1; i <= this.current_event.data.limited_repeat_num; i++){
-							if(event_evaluator.event_data.valid[event_index] && event_evaluator.event_data.valid[event_index].includes(epoch-i)){
-								add_event = false
-								epoch += this.current_event.data.limited_repeat_num-1;
-								event_evaluator.current_number_of_epochs += this.current_event.data.limited_repeat_num-1;
-								break;
-							}
-						}
-					}
+                    if(event_evaluator.epoch_data[epoch] !== undefined){
 
-					if(add_event){
+                        if(evaluate_event_group(event_evaluator.epoch_data[epoch], this.current_event.data.conditions)){
 
-						if(event_evaluator.epoch_data[epoch] !== undefined){
+                            add_to_epoch(this.current_event, event_index, epoch);
 
-							var result = evaluate_event_group(event_evaluator.epoch_data[epoch], this.current_event.data.conditions);
+                            if(this.current_event.data.limited_repeat){
+                                epoch += this.current_event.data.limited_repeat_num-1;
+                                event_evaluator.current_number_of_epochs += this.current_event.data.limited_repeat_num-1;
+                            }
 
-							if(result){
+                        }
 
-								add_to_epoch(this.current_event, event_index, epoch);
-
-							}
-
-						}
-
-					}
+                    }
 
 				}
 
@@ -1356,12 +1359,6 @@ var event_evaluator = {
 		}
 
 		function add_to_epoch(event, event_index, epoch){
-
-			if(!event_evaluator.event_data.valid[event_index]){
-				event_evaluator.event_data.valid[event_index] = [];
-				event_evaluator.event_data.starts[event_index] = [];
-				event_evaluator.event_data.ends[event_index] = [];
-			}
 
 			if(event.data.has_duration){
 

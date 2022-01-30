@@ -44,7 +44,7 @@
                     "wind_sys":"metric",
                     "cinematic":false,
                     "enable_weather":false,
-                    "periodic_seasons":false,
+                    "periodic_seasons":true,
                     "color_enabled": false
                 }
             },
@@ -65,8 +65,7 @@
                 "hide_future_weather":false,
                 "add_month_number":false,
                 "add_year_day_number":false,
-                "default_category":-1,
-                "comments": false
+                "default_category":-1
             },
             "cycles":{
                 "format":"",

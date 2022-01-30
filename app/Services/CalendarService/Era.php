@@ -66,6 +66,14 @@ class Era
     /**
      * @return bool
      */
+    public function isStartingEra(): bool
+    {
+        return $this->getSetting('starting_era', false) !== false;
+    }
+
+    /**
+     * @return bool
+     */
     public function restartsYearCount(): bool
     {
         return $this->getSetting('restart', false) !== false;
@@ -111,14 +119,14 @@ class Era
         return Arr::get($this->settings, $name, $default);
     }
 
-public function calculateEraYear(Collection $eras)
-{
-    $eras->pop();
+    public function calculateEraYear(Collection $eras)
+    {
+        $eras->pop();
 
-    if(!$eras->count()) return $this->year;
+        if(!$eras->count()) return $this->year;
 
-    return $eras->sum->calculateEraYear($eras);
-}
+        return $eras->sum->calculateEraYear($eras);
+    }
 
     /**
      * @param $year

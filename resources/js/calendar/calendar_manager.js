@@ -124,6 +124,8 @@ function pre_rebuild_calendar(action, dynamic_data){
 
 async function testCalendarAccuracy(fromYear = -100, toYear = 100){
 
+    execution_time.start();
+
     calendar_data_generator.static_data = static_data;
     calendar_data_generator.dynamic_data = dynamic_data;
     calendar_data_generator.owner = Perms.player_at_least('co-owner');
@@ -174,6 +176,8 @@ async function testCalendarAccuracy(fromYear = -100, toYear = 100){
 
     console.log("Test succeeded, calendar calculation accurate!")
     dynamic_data.year = currentYear;
+
+    execution_time.end("Testing took:");
 
 }
 

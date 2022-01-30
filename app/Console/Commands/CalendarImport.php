@@ -100,7 +100,7 @@ class CalendarImport extends Command
 
         // Now that we've done the above, we can create the calendar
         $overwrite = false;
-        if($calendarFound){
+        if($calendarFound->count()){
             while(!($overwrite == "y" || $overwrite == "n")) {
                 $overwrite = strtolower($this->ask("Calendar already exists locally. Do you want to overwrite the existing calendar (Y) or create a new hash for the incoming calendar (N)?\nY/N"));
             }

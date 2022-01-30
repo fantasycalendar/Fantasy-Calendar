@@ -515,6 +515,7 @@ function set_up_edit_inputs(){
 				static_data.seasons.data = [];
                 reindex_location_list();
 				evaluate_season_lengths();
+                evaluate_season_daylength_warning();
 				static_data.seasons.global_settings.periodic_seasons = checked;
 
 				$('.season_text.dated').toggleClass('active', !checked);
@@ -532,7 +533,7 @@ function set_up_edit_inputs(){
 				era_list.children().each(function(){
 					var input = $(this).find('.ends_year');
 					var text = $(this).find('.ends_year_explaination');
-					var parent = input.parent().parent();
+					var parent = input.parent();
 					input.prop('disabled', !checked);
 					parent.toggleClass('disabled', !checked);
 					text.toggleClass('hidden', checked);
@@ -546,7 +547,7 @@ function set_up_edit_inputs(){
 
 	$('.add_inputs.seasons .add').click(function(){
 
-		var fract_year_len = fract_year_length(static_data);
+		var fract_year_len = avg_year_length(static_data);
 
 		var name = $("#season_name_input");
 		var id = season_sortable.children().length;
@@ -631,6 +632,7 @@ function set_up_edit_inputs(){
 		reindex_season_sortable();
 		populate_preset_season_list();
 		evaluate_season_lengths();
+        evaluate_season_daylength_warning();
 		reindex_location_list();
 		name.val("");
 		do_error_check();
@@ -1132,12 +1134,12 @@ function set_up_edit_inputs(){
 			$(this).closest('.sortable-container').find('.location_season').each(function(season_index){
 				$(this).find('.clock_inputs input').each(function(){
 					let [type, time] = $(this).attr('clocktype').split('_');
-					$(this).val(static_data.seasons.data[season_index].time[type][time])
+					$(this).val(static_data.seasons.data[season_index].time[type][time]).change();
 				}).prop('disabled', true);
 			});
 		}else{
 			$(this).closest('.sortable-container').find('.location_season').each(function(season_index){
-				$(this).find('.clock_inputs input').prop('disabled', false);
+				$(this).find('.clock_inputs input').prop('disabled', false).change();
 			});
 		}
 	});
@@ -1545,6 +1547,7 @@ function set_up_edit_inputs(){
 				$(this).closest('.sortable-container').remove();
 				$(this).closest('.sortable-container').parent().sortable('refresh');
 				static_data.year_data.leap_days.splice(index, 1)
+				dynamic_data.epoch = dynamic_date_manager.epoch;
 				reindex_leap_day_list();
 				recalc_stats();
 				break;
@@ -1888,6 +1891,18 @@ function set_up_edit_inputs(){
         dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
 	});
 
+	$(document).on('change', '#era_list .starting_era', function(){
+		evaluate_dynamic_change();
+		var index = $(this).closest('.sortable-container').attr('index')|0;
+		static_data.eras[index].settings.ends_year = $(this).is(":checked");
+		for(var i in static_data.eras){
+			var era = static_data.eras[i];
+			era.date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, era.date.year), era.date.timespan, era.date.day).epoch;
+		}
+		dynamic_data.current_era = get_current_era(static_data, dynamic_data.epoch);
+        dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
+	});
+
 	$(document).on('click', '.preview_era_date', function(){
 		let era_id = $(this).closest('.sortable-container').attr('index')|0;
 		let era = static_data.eras[era_id];
@@ -2213,6 +2228,8 @@ function set_up_edit_inputs(){
 
 		$(this).closest('.sortable-container').find('.leap_day_variance_output').html(get_interval_text(false, data));
 
+        dynamic_data.epoch = dynamic_date_manager.epoch;
+
 		do_error_check();
 
 	});
@@ -2305,6 +2322,7 @@ function set_up_edit_inputs(){
 
 	$(document).on('change', '.season-duration', function(){
 		evaluate_season_lengths();
+        evaluate_season_daylength_warning();
 		rebuild_climate();
 	});
 
@@ -4348,7 +4366,7 @@ function get_errors(){
 					if(appears.reason == 'era ended'){
 						errors.push(`Era <i>${era.name}</i> is on a date that doesn't exist due to a previous era ending the year. Please move it to another year.`);
 					}else{
-						errors.push(`Era <i>${era.name}</i> is currently on a leaping month. Please move it to another month.`);
+						errors.push(`Era <i>${era.name}</i> is currently on a month that is leaping on that year. Please change its year or move it to another month.`);
 					}
 				}
 			}else{
@@ -4396,6 +4414,18 @@ function get_errors(){
 			}
 		}
 	}
+
+	if(static_data.clock.enabled){
+
+	    if(static_data.clock.hours === 0){
+            errors.push(`If the clock is enabled, you need to have more than 0 hours per day.`);
+        }
+
+	    if(static_data.clock.minutes === 0){
+            errors.push(`If the clock is enabled, you need to have more than 0 minutes per hour.`);
+        }
+
+    }
 
 	return errors;
 
@@ -4900,11 +4930,12 @@ function reindex_season_sortable(key){
 function populate_preset_season_list(){
 
 	let length = static_data.seasons.data.length;
+    let preset_seasons;
 
-	if(length == 2){
-		var preset_seasons = ['Winter', 'Summer'];
-	}else if(length == 4){
-		var preset_seasons = ['Winter', 'Spring', 'Summer', 'Autumn'];
+    if(length === 2){
+		preset_seasons = ['Winter', 'Summer'];
+	}else if(length === 4){
+		preset_seasons = ['Winter', 'Spring', 'Summer', 'Autumn'];
 	}else{
 		static_data.seasons.global_settings.preset_order = undefined;
 		$('.preset-season-list-container').toggleClass('hidden', true).prop('disabled', true);
@@ -4919,13 +4950,17 @@ function populate_preset_season_list(){
 
 		let preset_order = []
 
+        if(new Set((static_data.seasons.global_settings.preset_order ?? [])).size !== length){
+            static_data.seasons.global_settings.preset_order = undefined;
+        }
+
 		$('.preset-season-list').each(function(i){
 
 			$(this).empty();
 
 			for(let j in preset_seasons){
 				let name = preset_seasons[j];
-				var o = new Option(name, j);
+				let o = new Option(name, j);
 				$(o).html(name);
 				$(this).append(o);
 			}
@@ -5216,6 +5251,8 @@ function reindex_era_list(){
 
 		$(this).attr('key', i);
 
+		const starting_era = $(this).find('.starting_era').is(':checked');
+
 		static_data.eras[i] = {
 			'name': $(this).find('.name-input').val(),
 			'formatting': $(this).find('.era_formatting').val(),
@@ -5223,10 +5260,10 @@ function reindex_era_list(){
 			'settings': {
 				'use_custom_format': $(this).find('.use_custom_format').is(':checked'),
 				'show_as_event': $(this).find('.show_as_event').is(':checked'),
-				'starting_era': $(this).find('.starting_era').is(':checked') || $(this).find('.starting_era').val() == "1",
+				'starting_era': starting_era || $(this).find('.starting_era').val() === "1",
 				'event_category_id': $(this).find('.event-category-list').val(),
-				'ends_year': $(this).find('.ends_year').is(':checked') || $(this).find('.ends_year').val() == "1",
-				'restart': $(this).find('.restart_era').is(':checked')
+				'ends_year': !starting_era && ($(this).find('.ends_year').is(':checked') || $(this).find('.ends_year').val() === "1"),
+				'restart': !starting_era && ($(this).find('.restart_era').is(':checked'))
 			},
 			'date': {
 				'year': ($(this).find('.year-input').val()|0),
@@ -5455,13 +5492,13 @@ function evaluate_season_lengths(){
 
 	data.season_offset = static_data.seasons.global_settings.offset;
 
-	var equal = fract_year_length(static_data) == data.season_length;
+	var equal = avg_year_length(static_data) == data.season_length;
 
 	var html = []
 	html.push(`<div class='container'>`)
 	html.push(`<div class='row py-1'>`)
 	html.push(equal ? '<i class="col-auto px-0 mr-1 fas fa-check-circle" style="line-height:1.5;"></i>' : '<i class="col-auto px-0 mr-2 fas fa-exclamation-circle" style="line-height:1.5;"></i>');
-	html.push(`<div class='col px-0'>Season length: ${data.season_length} / ${fract_year_length(static_data)} (year length)</div></div>`)
+	html.push(`<div class='col px-0'>Season length: ${data.season_length} / ${avg_year_length(static_data)} (year length)</div></div>`)
 	html.push(`<div class='row'>${equal ? "The season length and year length are the same, and will not drift away from each other." : "The season length and year length at not the same, and will diverge over time. Use with caution."}</div>`)
 	html.push(`</div>`)
 
@@ -5470,14 +5507,40 @@ function evaluate_season_lengths(){
 
 }
 
+function evaluate_season_daylength_warning(){
+
+    if(!$('#season_daylength_text').length) return;
+
+    let disable = static_data.seasons.data.length == 0 || (!static_data.seasons.global_settings.periodic_seasons && static_data.seasons.global_settings.periodic_seasons !== undefined);
+
+    $('#season_daylength_text').toggleClass('hidden', disable).empty();
+
+    if(disable || !dynamic_data.custom_location) return;
+
+    let custom_location = static_data.seasons.locations[dynamic_data.location];
+
+    if(custom_location.season_based_time) return;
+
+    let html = []
+    html.push(`<div class='container'>`)
+    html.push(`<div class='row py-1'>`)
+    html.push('<i class="col-auto px-0 mr-2 fas fa-exclamation-circle" style="line-height:1.5;"></i>');
+    html.push(`<div class='col px-0'>You are currently using a custom location with custom season sunrise and sunset times. Solstices and equinoxes may behave unexpectedly.</div>`)
+    html.push(`</div></div>`);
+
+    $('#season_daylength_text').html(html.join(''));
+
+}
+
 function recalc_stats(){
-	var year_length = fract_year_length(static_data);
+	var year_length = avg_year_length(static_data);
 	var month_length = avg_month_length(static_data);
 	$('#fract_year_length').text(year_length);
 	$('#fract_year_length').prop('title', year_length);
 	$('#avg_month_length').text(month_length);
 	$('#avg_month_length').prop('title', month_length);
 	evaluate_season_lengths();
+    evaluate_season_daylength_warning();
 }
 
 
@@ -5799,6 +5862,7 @@ function set_up_edit_values(){
 		$('#locations_warning').toggleClass('hidden', !no_locations);
 
 		evaluate_season_lengths();
+        evaluate_season_daylength_warning()
 
 		for(var i = 0; i < static_data.seasons.locations.length; i++){
 			add_location_to_list(location_list, i, static_data.seasons.locations[i]);

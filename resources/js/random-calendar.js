@@ -49,7 +49,7 @@ class RandomCalendar{
 
 		static_data.year_data.global_week = [];
 		for(var i = 0; i < weekdays; i++){
-			static_data.year_data.global_week.push(`Weekday ${i+1}`)			
+			static_data.year_data.global_week.push(`Weekday ${i+1}`)
 		}
 
 		static_data.year_data.overflow = true;
@@ -92,6 +92,10 @@ class RandomCalendar{
 		static_data.moons[longest_moon_index].cycle = year_length/months;
 		static_data.moons[longest_moon_index].granularity = get_moon_granularity(year_length/months);
 
+		static_data.clock.enabled = true;
+		static_data.clock.render = true;
+		static_data.clock.hours = 24;
+		static_data.clock.minutes = 30;
 
 		static_data.seasons.global_settings.periodic_seasons = true;
 
@@ -101,11 +105,11 @@ class RandomCalendar{
 			"name": "Winter",
 			"time": {
 				"sunrise": {
-					"hour": 6,
+					"hour": 10,
 					"minute": 0
 				},
 				"sunset": {
-					"hour": 18,
+					"hour": 17,
 					"minute": 0
 				}
 			},
@@ -119,12 +123,12 @@ class RandomCalendar{
 				"name": "Spring",
 				"time": {
 					"sunrise": {
-						"hour": 6,
-						"minute": 0
+						"hour": 8,
+						"minute": 30
 					},
 					"sunset": {
 						"hour": 18,
-						"minute": 0
+						"minute": 30
 					}
 				},
 				"transition_length": year_length / seasons,
@@ -137,11 +141,11 @@ class RandomCalendar{
 			"name": "Summer",
 			"time": {
 				"sunrise": {
-					"hour": 6,
+					"hour": 7,
 					"minute": 0
 				},
 				"sunset": {
-					"hour": 18,
+					"hour": 20,
 					"minute": 0
 				}
 			},
@@ -155,12 +159,12 @@ class RandomCalendar{
 				"name": "Autumn",
 				"time": {
 					"sunrise": {
-						"hour": 6,
-						"minute": 0
+						"hour": 8,
+						"minute": 30
 					},
 					"sunset": {
 						"hour": 18,
-						"minute": 0
+						"minute": 30
 					}
 				},
 				"transition_length": year_length / seasons,

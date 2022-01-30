@@ -7,11 +7,12 @@ const calendar_renderer = {
     render_callbacks: [],
     scroll_attempts: 0,
 
+    prev_current_epoch: 0,
+    prev_preview_epoch: 0,
+
     render_data: {
         current_epoch: 0,
         preview_epoch: 0,
-        prev_current_epoch: 0,
-        prev_preview_epoch: 0,
         render_style: "grid",
         timespans: [],
         event_epochs: [],
@@ -85,7 +86,7 @@ const calendar_renderer = {
 
         hide_loading_screen();
 
-        this.rerendering = this.render_data.prev_current_epoch !== this.render_data.current_epoch || this.render_data.prev_preview_epoch !== this.render_data.preview_epoch;
+        this.rerendering = this.prev_current_epoch !== this.render_data.current_epoch || this.prev_preview_epoch !== this.render_data.preview_epoch;
 
         if(!this.loaded || this.rerendering) this.scroll_to_epoch();
 
@@ -105,8 +106,8 @@ const calendar_renderer = {
         this.render_callbacks = [];
         this.loaded = true;
         this.rerendering = false;
-        this.render_data.prev_current_epoch = this.render_data.current_epoch;
-        this.render_data.prev_preview_epoch = this.render_data.preview_epoch;
+        this.prev_current_epoch = this.render_data.current_epoch;
+        this.prev_preview_epoch = this.render_data.preview_epoch;
 
 	    execution_time.end("Calculating and rendering calendar took:")
     },

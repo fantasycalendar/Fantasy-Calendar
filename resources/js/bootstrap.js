@@ -123,3 +123,10 @@ window.AlpineEditor = require('alpine-editor')
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
 //     encrypted: true
 // });
+
+/**
+ * Convenient and dependency free wrapper for working with arrays and objects.
+ */
+let collectJS = require('collect.js');
+window.Collection = collectJS.Collection;
+window.collect = collectJS.collect;

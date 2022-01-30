@@ -561,7 +561,9 @@ const calendar_events_editor = {
 
 	create_event_data(){
 
-		let conditions = this.create_condition_array(this.event_conditions_container);
+        let conditions = Perms.player_at_least("co-owner")
+            ? this.create_condition_array(this.event_conditions_container)
+            : [['Date', '0', [this.epoch_data.year, this.epoch_data.timespan_index, this.epoch_data.day]]];
 
 		let search_distance = this.get_search_distance(conditions);
 
@@ -1088,7 +1090,7 @@ const calendar_events_editor = {
 				result = [
 					['Weekday', '0', [this.epoch_data.week_day_name]],
 					['&&'],
-					['Week', '32', ['2', this.epoch_data.week_even ? '0' : '1']]
+					['Week', '32', ['2', (this.epoch_data.total_week_num % 2).toString()]]
 				];
 				break;
 
@@ -1100,7 +1102,7 @@ const calendar_events_editor = {
 
 			case 'annually_date':
 				result = [
-					['Month', '0', [this.epoch_data.timespan_]],
+					['Month', '0', [this.epoch_data.timespan_index]],
 					['&&'],
 					['Day', '0', [this.epoch_data.day]]
 				];
@@ -1124,7 +1126,7 @@ const calendar_events_editor = {
 
 			case 'annually_month_weekday':
 				result = [
-					['Month', '0', [this.epoch_data.timespan_]],
+					['Month', '0', [this.epoch_data.timespan_index]],
 					['&&'],
 					['Weekday', '0', [this.epoch_data.week_day_name]],
 					['&&'],

@@ -305,6 +305,8 @@ function set_up_view_inputs(){
 
 		do_error_check('seasons');
 
+        evaluate_season_daylength_warning();
+
 	});
 
 

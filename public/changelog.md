@@ -1,3 +1,45 @@
+### 2.1.7 - Ageless Djinn
+#### January 11th, 2022 
+* Fixed - Fixed erroneously taking starting eras into account when calculating epoch
+* Fixed - Fixed starting eras that were previously ending and restarting still maintaining their ending and starting status even after becoming starting eras
+* Fixed - Era year sometimes being off by one
+
+### 2.1.6 - Nitpicking Djinn
+#### January 9th, 2022 
+* Fixed - Fixed some linked calendars not syncing properly
+* Fixed - Fixed month number not being accurate when with one-month layout
+
+### 2.1.5 - Festive Djinn
+#### December 17th, 2021 
+* Fixed - Fixed month header number count being off
+* Fixed - Fixed limited repetition events acting wonky when show only current month was active
+* Fixed - Fixed show only current month breaking first weekday flow
+
+### 2.1.4 - Investigative Djinn
+#### November 25th, 2021
+* Added - Warning under seasons when a custom location with custom sunrise and sunset times is active 
+* Fixed - Locking a custom location's sunrise and sunset times would cause it to not be saved correctly
+* Fixed - Calendars with only intercalary months would fail to build
+
+### 2.1.3 - Curious Djinn
+#### November 16th, 2021
+* Tweaked - Lowered the sensitivity of the auto-scroll that would scroll to the current date
+* Fixed - Some event condition presets resulting in broken conditions
+* Fixed - An intercalary month at the start of the year would break the entire year's weekday flow
+* Fixed - Leap months causing the following months to have incorrect IDs which would break some events
+
+### 2.1.2 - Scrutinizing Djinn
+#### November 7th, 2021
+* Tweaked - Slightly improved leap day calculation speed
+* Tweaked - General backend upgrades and improvements
+* Tweaked - Added additional error checking surrounding the clock durations
+* Tweaked - Made length based seasons default on new calendars
+* Fixed - Users who were added as players to calendars were not able to create events
+* Fixed - Leap day calculation on very specific interval setups
+* Fixed - Date not updating properly when changing leap day intervals or deleting leap days
+* Fixed - Fixed season type mapping would sometimes not work when adding multiple seasons in a row
+* Fixed - Fixed ends year prematurely option on eras looking disabled after switching season type
+
 ### 2.1.1 - Tranquil Djinn
 #### October 19th, 2021
 * Fixed - Discord Integration error caused by users not having set their discord avatar
