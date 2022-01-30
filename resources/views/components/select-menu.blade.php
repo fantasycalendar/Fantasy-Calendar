@@ -12,6 +12,10 @@
                 let filtered = this.options.filter(option => option.value == this.initial);
 
                 if(filtered.length) this.select(filtered[0])
+                this.$watch("{{ $model }}", function(chosen){
+                    let selection = this.options.filter(option => option.value == chosen);
+                    if(selection) this.select(selection[0]);
+                }.bind(this))
             }
         }'
      @click.away="isOpen = false"
