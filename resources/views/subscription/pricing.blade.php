@@ -124,6 +124,10 @@
                         <p class="small">Use your calendars directly within your Discord servers!</p>
                     </li>
                     <li>
+                        Calendar <strong>embedding</strong>
+                        <p class="small">Show off your calendars on your websites!</p>
+                    </li>
+                    <li>
                         <small><i>...and more to come!</i></small>
                     </li>
                 </ul>
