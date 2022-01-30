@@ -257,6 +257,33 @@ class ThemeFactory
         $this->name = $name;
     }
 
+    public static function getThemeNames()
+    {
+        return collect(array_keys(static::$themes))
+            ->mapWithkeys(function($theme){
+                return [
+                    $theme => ucwords(str_replace('_', ' ', $theme))
+                ];
+            })->merge(['custom' => 'Custom Theme'])->toArray();
+    }
+
+    public static function getThemesRich()
+    {
+        return collect(\App\Services\RendererService\ImageRenderer\ThemeFactory::$themes)
+            ->map(function($theme){
+                return collect($theme)->reject(function($value, $key){
+                    return in_array($key, ['font_name', 'shadow_strength']);
+                })
+                ->map(function($value, $key){
+                    return [
+                        'field' => $key,
+                        'value' => $value,
+                        'title' => ucwords(str_replace(['_', 'color'], [' ', ''], $key))
+                    ];
+                });
+            });
+    }
+
     public function get()
     {
         return static::getTheme($this->name);
