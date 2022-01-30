@@ -23,8 +23,7 @@
         "sass-loader": "^12.4.0",
         "vue": "^2.6.12",
         "vue-template-compiler": "^2.6.12",
-        "webpack": "^5.67.0",
-        "serverless": "^1.83.3"
+        "webpack": "^5.67.0"
     },
     "optionalDependencies": {
         "fsevents": "^2.3.2"
