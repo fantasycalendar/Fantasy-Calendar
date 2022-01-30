@@ -176,7 +176,7 @@ functions:
       vpc:
         securityGroupIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/security_group_ids}"] }
         subnetIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/subnet_ids}"] }
-    prdsecurityheaders:
+    fcsecurityheaders:
       handler: setup/lambda/${opt:stage, 'dev'}/security_headers.handler
       runtime: nodejs12.x
       package:
