@@ -10,8 +10,8 @@
                 width: '',
                 selector: '',
                 loading: false,
-                theme: 'blue',
-                base_theme: 'blue',
+                theme: 'fantasy_calendar',
+                base_theme: 'fantasy_calendar',
                 fantasyCalendar: null,
                 notifications: [],
                 openSidebar: false,
@@ -179,10 +179,10 @@
 
                     <div class="pt-2 col-span-6">
                         <label for="calendar-theme" class="block font-medium text-gray-700">Theme</label>
-                        <x-select-menu model="theme" default="blue" :options="$themes"></x-select-menu>
+                        <x-select-menu model="theme" default="fantasy_calendar" :options="$themes"></x-select-menu>
                     </div>
 
-                    <div class="pt-2 col-span-6" x-show="theme === 'custom'">
+                    <div class="pt-2 col-span-6" x-show="theme === 'custom'" x-cloak>
                         <x-button class="w-full justify-center shadow-sm border-gray-300" @click="openSidebar = true" role="secondary">
                             Customize theme <span class="text-xs text-gray-400 pl-1" x-show="base_theme">(based on '<span x-text="themes_available[base_theme]"></span>')</span>
                         </x-button>
@@ -209,19 +209,19 @@
                     <label for="element_selector" class="block font-medium text-gray-700">Element Selector</label>
                     <input type="text" name="element_selector" id="element_selector" placeholder="auto" class="disabled:text-gray-500 disabled:bg-gray-300 mt-1 text-gray-600 focus:ring-primary-500 focus:border-primary-500 block w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="selector">
 
-                    <x-alert type="notice" class="mt-4" x-show="!selector">
+                    <x-alert type="notice" class="mt-4" x-show="selector.length <= 1">
                         Without a selector, the <strong>&lt;script&gt;</strong> tag calling <strong>FantasyCalendar({})</strong> will be replaced.
                     </x-alert>
                 </div>
 
                 <div class="flex items-start pt-8">
                     <div class="flex items-center h-5">
-                        <input id="comments" name="comments" type="checkbox" class="focus:ring-primary-500 h-4 w-4 text-primary-600 border-gray-300 rounded" x-model="embedNow">
+                        <input id="embed_now" name="embed_now" type="checkbox" class="focus:ring-primary-500 h-4 w-4 text-primary-600 border-gray-300 rounded disabled:text-primary-800 disabled:opacity-60" x-model="embedNow" x-bind:disabled="selector.length <= 1">
                     </div>
 
                     <div class="ml-3 text-sm flex-grow">
-                        <label for="comments" class="font-medium text-gray-800">Embed Right Away</label>
-                        <p class="text-gray-600 pt-1 w-full" x-show="embedNow"> The calendar will embed immediately on page load</p>
+                        <label for="embed_now" class="font-medium" :class="{'text-gray-400': selector.length <= 1, 'text-gray-800': selector.length > 1}">Embed Right Away</label>
+                        <p class="text-gray-600 pt-1 w-full" :class="{'text-gray-400': selector.length <= 1, 'text-gray-600': selector.length > 1}" x-show="embedNow"> The calendar will embed immediately on page load</p>
                     </div>
                 </div>
 
