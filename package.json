@@ -25,6 +25,9 @@
         "vue-template-compiler": "^2.6.12",
         "webpack": "^5.67.0"
     },
+    "optionalDependencies": {
+        "fsevents": "^2.3.2"
+    },
     "dependencies": {
         "@alpinejs/intersect": "^3.8.1",
         "@fortawesome/fontawesome-free": "^5.15.1",
