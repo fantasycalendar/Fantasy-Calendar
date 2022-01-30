@@ -26,12 +26,15 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
             heading_text_color: null,
             text_color: null,
             inactive_text_color: null,
+            year: null,
+            month_id: null,
+            day: null
         },
         get url() {
             const url = new URL(fcEmbedDomain + '/embed/' + this._config('hash'));
 
             for (let [setting, value] of Object.entries(this.setting())) {
-                value && url.searchParams.set(setting, value);
+                value !== null && url.searchParams.set(setting, value);
             }
 
             return url;
@@ -52,7 +55,7 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
                 return this._embed_settings;
             }
 
-            if(!value) {
+            if(value === null) {
                 return this._embed_settings[name];
             }
 

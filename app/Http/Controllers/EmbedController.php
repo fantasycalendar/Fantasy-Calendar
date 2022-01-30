@@ -37,7 +37,10 @@ class EmbedController extends Controller
                     'inactive_text_color',
                     'placeholder_background_color',
                     'shadow_color',
-                    'text_color'
+                    'text_color',
+                    'year',
+                    'month_id',
+                    'day'
                 ])
             ],
             request()->only(['size', 'height', 'width'])
