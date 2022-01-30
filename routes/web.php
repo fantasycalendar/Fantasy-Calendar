@@ -21,7 +21,6 @@ use Intervention\Image\Facades\Image;
 //    return '';
 //});
 
-Route::get('/embedtest', 'EmbedController@embedExample');
 Route::get('/embed/{calendar}', 'EmbedController@embedCalendar');
 
 Route::get('/imagetest', function(){
