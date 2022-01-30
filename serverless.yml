@@ -62,9 +62,7 @@ provider:
       # Allow Lambda to read and write files in the S3 buckets
       -   Effect: Allow
           Action: s3:*
-          Resource:
-            - Fn::GetAtt: Assets.Arn # the storage bucket
-            - Fn::Join: ['', [Fn::GetAtt: Assets.Arn, '/*']] # everything in the storage bucket
+          Resource: !Join ['/', [!GetAtt Assets.Arn, '*']]
       -   Effect: "Allow"
           Action:
             - "ec2:CreateNetworkInterface"
@@ -176,21 +174,7 @@ functions:
       vpc:
         securityGroupIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/security_group_ids}"] }
         subnetIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/subnet_ids}"] }
-    fcsecurityheaders:
-      handler: setup/lambda/${opt:stage, 'dev'}/security_headers.handler
-      runtime: nodejs12.x
-      package:
-        individually: true
-        exclude:
-          - "./**"
-        include:
-          - setup/lambda/${opt:stage, 'dev'}/security_headers.js
-          - setup/lambda/${opt:stage, 'dev'}/version.txt
-      memorySize: 128
-      events:
-        -   cloudFront:
-              eventType: origin-response
-              origin: Website
+
 
 plugins:
     # We need to include the Bref plugin
@@ -297,6 +281,7 @@ resources:
                 - 'Origin'
                 - 'Referer'
             ViewerProtocolPolicy: redirect-to-https
+            ResponseHeadersPolicyId: !GetAtt CloudFormationHeadersPolicy.Id
           CacheBehaviors:
             - PathPattern: '/vendor/sharp/lang.js'
               AllowedMethods: [GET, HEAD, OPTIONS, PUT, POST, PATCH, DELETE]
@@ -422,6 +407,33 @@ resources:
             # See https://docs.aws.amazon.com/fr_fr/cloudfront/latest/APIReference/API_ViewerCertificate.html
             SslSupportMethod: 'sni-only'
             MinimumProtocolVersion: TLSv1.1_2016
+    CloudFormationHeadersPolicy:
+      Type: AWS::CloudFront::ResponseHeadersPolicy
+      Properties:
+        ResponseHeadersPolicyConfig:
+          Name: Fantasy-Calendar-Headers-Policy
+          Comment: Response headers policy for fantasy calendar
+          CustomHeadersConfig:
+            Items:
+              - Header: fc-deployment
+                Value: ${self:custom.stage}
+                Override: true
+          SecurityHeadersConfig:
+            ContentTypeOptions: # You don't need to specify a value for 'X-Content-Type-Options'.
+              # Simply including it in the template sets its value to 'nosniff'.
+              Override: false
+            ReferrerPolicy:
+              ReferrerPolicy: same-origin
+              Override: false
+            StrictTransportSecurity:
+              AccessControlMaxAgeSec: 63072000
+              IncludeSubdomains: true
+              Preload: true
+              Override: false
+            XSSProtection:
+              ModeBlock: true # You can set ModeBlock to 'true' OR set a value for ReportUri, but not both
+              Protection: true
+              Override: false
     WebsiteDNSName:
       Type: AWS::Route53::RecordSetGroup
       Properties:
