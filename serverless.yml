@@ -58,7 +58,6 @@ provider:
       DISCORD_PUBLIC_KEY: ${ssm:/${self:custom.ssm.${self:custom.stage}}/discord_public_key}
       DISCORD_COMMAND: ${self:custom.environment.${self:custom.stage}.DISCORD_COMMAND}
       BREF_BINARY_RESPONSES: '1'
-      BREF_AUTOLOAD_PATH: '/tmp/vendor/autoload.php'
     iamRoleStatements:
       # Allow Lambda to read and write files in the S3 buckets
       -   Effect: Allow
