@@ -40,17 +40,23 @@ class DisableUnpaidCalendars extends Command
     {
         $users = User::whereHas('subscriptions')->whereHas('calendars')->chunk(100, function($users){
             foreach ($users as $user) {
-                if(!$user->isPremium()) {
-                    $max_calendars = $user->isEarlySupporter() ? 15 : 2;
+                if($user->isPremium()) {
+                    $user->calendars()->disabled()->update([
+                        'disabled' => false
+                    ]);
 
-                    $user->calendars()->orderBy('date_created', 'ASC')->each(function($calendar, $index) use ($max_calendars){
-                        $calendar->disabled = ($index < $max_calendars) ? 0 : 1;
-                        $calendar->parent_id = Null;
-                        $calendar->parent_offset = Null;
-                        $calendar->parent_link_date = Null;
-                        $calendar->save();
-                    });
+                    return;
                 }
+
+                $max_calendars = $user->isEarlySupporter() ? 15 : 2;
+
+                $user->calendars()->orderBy('date_created', 'ASC')->each(function($calendar, $index) use ($max_calendars){
+                    $calendar->disabled = ($index < $max_calendars) ? 0 : 1;
+                    $calendar->parent_id = Null;
+                    $calendar->parent_offset = Null;
+                    $calendar->parent_link_date = Null;
+                    $calendar->save();
+                });
             }
         });
     }
