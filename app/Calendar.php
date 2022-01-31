@@ -708,6 +708,11 @@ class Calendar extends Model
         return $query->where('user_id', $user_id);
     }
 
+    public function scopeDisabled(Builder $query): Builder
+    {
+        return $query->where('disabled', '=', true);
+    }
+
     /**
      * Determine whether a user has a particular role on this calendar
      *
