@@ -1456,7 +1456,7 @@ const calendar_events_editor = {
 
 			} else {
 
-				condition = this.add_condition(parent, element[0]);
+				let condition = this.add_condition(parent, element[0]);
 
 				condition.find('.condition_type').find(`optgroup[label='${element[0]}']`).find(`option[value='${element[1]}']`).prop('selected', true).trigger('change');
 
@@ -2382,7 +2382,7 @@ const calendar_events_editor = {
 		let start_year = preview_date.year;
 		let end_year = preview_date.year + years;
 
-		this.worker_event_tester = new Worker('/js/webworkers/worker_event_tester.js')
+		this.worker_event_tester = new Worker('/js/webworkers/worker_event_tester.js', { type: "module" })
 
 		this.worker_event_tester.postMessage(JSON.parse(JSON.stringify({
 			calendar_name: calendar_name,
@@ -2578,4 +2578,4 @@ const calendar_events_editor = {
 }
 
 
-module.exports = calendar_events_editor;
+export default calendar_events_editor;

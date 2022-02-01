@@ -4,6 +4,8 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
+import calendar_events_editor from "./calendar-events-editor.js";
+
 require('./bootstrap');
 
 window.CalendarClock = require('./clock')
@@ -13,7 +15,7 @@ window.Perms = require('./perms');
 window.RenderDataGenerator = require('./render-data-generator')
 window.CalendarRenderer = require('./calendar-renderer')
 window.CalendarLayouts = require('./calendar-layouts')
-window.CalendarEventEditor = require('./calendar-events-editor')
+window.CalendarEventEditor = calendar_events_editor;
 window.CalendarEventViewer = require('./calendar-events-viewer')
 window.CalendarHTMLEditor = require('./calendar-html-editor')
 window.CalendarYearHeader = require('./calendar-year-header')
