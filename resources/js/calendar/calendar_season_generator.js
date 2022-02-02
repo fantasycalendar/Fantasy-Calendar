@@ -1,4 +1,4 @@
-class Climate{
+export default class Climate{
 
 	constructor(
 		epoch_data,
@@ -39,7 +39,7 @@ class Climate{
 
 		this.wind_direction = false;
 
-		this.random = new random(this.static_data.seasons.global_settings.seed);
+		this.random = new fc.utils.random(this.static_data.seasons.global_settings.seed);
 
 	}
 
@@ -67,7 +67,7 @@ class Climate{
 
 		if(this.dynamic_data.custom_location === false && (this.static_data.seasons.data.length === 2 || this.static_data.seasons.data.length === 4)){
 
-			let preset_season_length = preset_data.locations[this.static_data.seasons.data.length];
+			let preset_season_length = fc.variables.preset_data.locations[this.static_data.seasons.data.length];
 
 			let location = preset_season_length[this.dynamic_data.location] !== undefined ? preset_season_length[this.dynamic_data.location] : preset_season_length[Object.keys(preset_season_length)[0]];
 
@@ -117,7 +117,7 @@ class Climate{
 				if(preset_order !== undefined && preset_order.length === this.static_data.seasons.data.length){
 					index = preset_order[i];
 				}
-				this.current_location.seasons.push(clone(location.seasons[index]));
+				this.current_location.seasons.push(fc.utils.clone(location.seasons[index]));
 
 				this.current_location.seasons[i].time = {};
 				this.current_location.seasons[i].time.sunset = this.static_data.seasons.data[i].time.sunset;
@@ -125,7 +125,7 @@ class Climate{
 
 			}
 
-			this.current_location.settings = preset_data.curves;
+			this.current_location.settings = fc.variables.preset_data.curves;
 
 		}else if(this.dynamic_data.custom_location === true){
 
@@ -135,7 +135,7 @@ class Climate{
 
 			this.current_location = {
 				"seasons": [],
-				"settings": preset_data.curves
+				"settings": fc.variables.preset_data.curves
 			};
 
 			for(let i = 0; i < this.static_data.seasons.data.length; i++){
@@ -150,8 +150,8 @@ class Climate{
 					}
 				});
 
-				this.current_location.seasons[i].time.sunset = clone(this.static_data.seasons.data[i].time.sunset);
-				this.current_location.seasons[i].time.sunrise = clone(this.static_data.seasons.data[i].time.sunrise);
+				this.current_location.seasons[i].time.sunset = fc.utils.clone(this.static_data.seasons.data[i].time.sunset);
+				this.current_location.seasons[i].time.sunrise = fc.utils.clone(this.static_data.seasons.data[i].time.sunrise);
 
 			}
 
@@ -174,16 +174,16 @@ class Climate{
 				let length = sunset-sunrise;
 
 				if(this.shortest_day_time > length){
-					this.shortest_day_time = precisionRound(length, 3);
+					this.shortest_day_time = fc.utils.precisionRound(length, 3);
 				}
 
 				if(this.longest_day_time < length){
-					this.longest_day_time = precisionRound(length, 3);
+					this.longest_day_time = fc.utils.precisionRound(length, 3);
 				}
 
 			}
 
-			this.middle_day_time = precisionRound(mid(this.shortest_day_time, this.longest_day_time), 3);
+			this.middle_day_time = fc.utils.precisionRound(fc.utils.mid(this.shortest_day_time, this.longest_day_time), 3);
 
 			this.solstices_appear = true;
 
@@ -206,16 +206,16 @@ class Climate{
 
 				this._season_length = 0;
 
-				for(let season_index in this.seasons){
+				for(let season of this.seasons){
 
-					let duration = this.seasons[season_index].duration ? this.seasons[season_index].duration : 0;
-					let transition_length = this.seasons[season_index].transition_length ? this.seasons[season_index].transition_length : 90;
+					let duration = season.duration ? season.duration : 0;
+					let transition_length = season.transition_length ? season.transition_length : 90;
 
-					this.seasons[season_index].length = transition_length+duration;
+					season.length = transition_length+duration;
 
-					this.seasons[season_index].start = this._season_length;
+					season.start = this._season_length;
 					this._season_length += transition_length;
-					this.seasons[season_index].end = this._season_length;
+					season.end = this._season_length;
 					this._season_length += duration;
 
 				}
@@ -282,16 +282,16 @@ class Climate{
 
 		this.season.local_seasons = [];
 
-		let year = convert_year(this.static_data, this.first_year)-1;
+		let year = fc.utils.convert_year(this.static_data, this.first_year)-1;
 
 		let index = this.seasons.length-1;
 		if(index < 0){
 			index += this.seasons.length
 		}
 
-		let season = clone(this.seasons[index]);
+		let season = fc.utils.clone(this.seasons[index]);
         season.year = year;
-		season.epoch = evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch-1;
+		season.epoch = fc.utils.evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch-1;
 		season.index = index;
 
 		this.season.local_seasons.push(season)
@@ -304,9 +304,9 @@ class Climate{
 				year--;
 			}
 
-			season = clone(this.seasons[index]);
+			season = fc.utils.clone(this.seasons[index]);
             season.year = year;
-			season.epoch = evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch-1;
+			season.epoch = fc.utils.evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch-1;
 			season.index = index;
 
 			this.season.local_seasons.push(season)
@@ -315,13 +315,13 @@ class Climate{
 
 		this.season.local_seasons.reverse();
 
-		year = convert_year(this.static_data, this.first_year);
+		year = fc.utils.convert_year(this.static_data, this.first_year);
 
 		index = 0;
 
-		season = clone(this.seasons[index]);
+		season = fc.utils.clone(this.seasons[index]);
         season.year = year;
-		season.epoch = evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch-1;
+		season.epoch = fc.utils.evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch-1;
 		season.index = index;
 
 		this.season.local_seasons.push(season)
@@ -334,9 +334,9 @@ class Climate{
 				year++;
 			}
 
-			season = clone(this.seasons[index]);
+			season = fc.utils.clone(this.seasons[index]);
             season.year = year;
-			season.epoch = evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch-1;
+			season.epoch = fc.utils.evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch-1;
 			season.index = index;
 
 			this.season.local_seasons.push(season)
@@ -351,9 +351,9 @@ class Climate{
 				year++;
 			}
 
-			season = clone(this.seasons[index]);
+			season = fc.utils.clone(this.seasons[index]);
             season.year = year;
-			season.epoch = evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch-1;
+			season.epoch = fc.utils.evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch-1;
 			season.index = index;
 
 			this.season.local_seasons.push(season)
@@ -403,9 +403,9 @@ class Climate{
 
 		this.season.season_day = epoch - this.season.current_season.epoch + 1;
 
-		this.season.perc = 1-norm(epoch, this.season.current_season.epoch, this.season.next_season.epoch);
+		this.season.perc = 1-fc.utils.norm(epoch, this.season.current_season.epoch, this.season.next_season.epoch);
 
-		this.season.high_perc = clamp(Math.ceil(this.season.perc*100), 1, 100);
+		this.season.high_perc = fc.utils.clamp(Math.ceil(this.season.perc*100), 1, 100);
 
 		return this.evaluate_season_data(epoch);
 
@@ -415,15 +415,15 @@ class Climate{
 
 		this.weather.local_seasons = [];
 
-		let year = convert_year(this.static_data, this.first_year)-1;
+		let year = fc.utils.convert_year(this.static_data, this.first_year)-1;
 
 		let index = this.seasons.length-1;
 		if(index < 0){
 			index += this.seasons.length
 		}
 
-		let season = clone(this.seasons[index]);
-		season.epoch = evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch-1;
+		let season = fc.utils.clone(this.seasons[index]);
+		season.epoch = fc.utils.evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch-1;
 		season.epoch += this.settings.weather_offset;
 		season.index = index;
 
@@ -437,8 +437,8 @@ class Climate{
 				year--;
 			}
 
-			season = clone(this.seasons[index]);
-			season.epoch = evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch-1;
+			season = fc.utils.clone(this.seasons[index]);
+			season.epoch = fc.utils.evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch-1;
 			season.epoch += this.settings.weather_offset;
 			season.index = index;
 
@@ -449,12 +449,12 @@ class Climate{
 		this.weather.local_seasons.reverse();
 
 
-		year = convert_year(this.static_data, this.first_year);
+		year = fc.utils.convert_year(this.static_data, this.first_year);
 
 		index = 0;
 
-		season = clone(this.seasons[index]);
-		season.epoch = evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch-1;
+		season = fc.utils.clone(this.seasons[index]);
+		season.epoch = fc.utils.evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch-1;
 		season.epoch += this.settings.weather_offset;
 		season.index = index;
 
@@ -468,8 +468,8 @@ class Climate{
 				year++;
 			}
 
-			season = clone(this.seasons[index]);
-			season.epoch = evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch-1;
+			season = fc.utils.clone(this.seasons[index]);
+			season.epoch = fc.utils.evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch-1;
 			season.epoch += this.settings.weather_offset;
 			season.index = index;
 
@@ -485,8 +485,8 @@ class Climate{
 				year++;
 			}
 
-			season = clone(this.seasons[index]);
-			season.epoch = evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch-1;
+			season = fc.utils.clone(this.seasons[index]);
+			season.epoch = fc.utils.evaluate_calendar_start(this.static_data, year, season.timespan, season.day).epoch-1;
 			season.epoch += this.settings.weather_offset;
 			season.index = index;
 
@@ -543,9 +543,9 @@ class Climate{
 
 		this.weather.season_day = epoch - this.weather.current_season.epoch + 1;
 
-		this.weather.perc = 1-norm(epoch, this.weather.current_season.epoch, this.weather.next_season.epoch);
+		this.weather.perc = 1-fc.utils.norm(epoch, this.weather.current_season.epoch, this.weather.next_season.epoch);
 
-		this.weather.high_perc = clamp(Math.ceil(this.weather.perc*100), 1, 100);
+		this.weather.high_perc = fc.utils.clamp(Math.ceil(this.weather.perc*100), 1, 100);
 
 		return this.evaluate_weather_data(epoch);
 
@@ -557,7 +557,7 @@ class Climate{
 
 		this.season.year = season_epoch / this.season_length;
 
-		this.season.day = Math.round(fract(this.season.year)*this.season_length);
+		this.season.day = Math.round(fc.utils.fract(this.season.year)*this.season_length);
 
 		this.season.total_day = 0;
 
@@ -588,7 +588,7 @@ class Climate{
 
 		this.weather.year = weather_epoch/this.season_length;
 
-		this.weather.day = Math.round(fract(this.weather.year)*this.season_length)
+		this.weather.day = Math.round(fc.utils.fract(this.weather.year)*this.season_length)
 
 		this.weather.total_day = 0;
 
@@ -651,7 +651,7 @@ class Climate{
 		this.season.year = season_epoch/this.season_length;
 		this.season.next_year = (season_epoch+1)/this.season_length;
 
-		this.season.day = Math.round(fract(this.season.year)*this.season_length);
+		this.season.day = Math.round(fc.utils.fract(this.season.year)*this.season_length);
 
 		if(this.season.day >= this.season.total_day){
 			this.next_season();
@@ -667,7 +667,7 @@ class Climate{
 
 		}
 
-		this.season.high_perc = clamp(Math.floor(this.season.perc*100), 1, 100);
+		this.season.high_perc = fc.utils.clamp(Math.floor(this.season.perc*100), 1, 100);
 
 		this.season.season_day++;
 
@@ -704,7 +704,7 @@ class Climate{
 		this.weather.year = weather_epoch/this.season_length;
 		this.weather.next_year = (weather_epoch+1)/this.season_length;
 
-		this.weather.day = Math.round(fract(this.weather.year)*this.season_length);
+		this.weather.day = Math.round(fc.utils.fract(this.weather.year)*this.season_length);
 
 		if(this.weather.day >= this.weather.total_day){
 			this.next_weather_season();
@@ -756,16 +756,16 @@ class Climate{
 			let next_sunrise = this.current_location.seasons[this.season.next_index].time.sunrise;
 			let next_sunset = this.current_location.seasons[this.season.next_index].time.sunset;
 
-			let sunrise_minute = Math.round(lerp(next_sunrise.minute, curr_sunrise.minute, this.season.perc));
-			let sunrise_hour = lerp(next_sunrise.hour, curr_sunrise.hour, this.season.perc);
+			let sunrise_minute = Math.round(fc.utils.lerp(next_sunrise.minute, curr_sunrise.minute, this.season.perc));
+			let sunrise_hour = fc.utils.lerp(next_sunrise.hour, curr_sunrise.hour, this.season.perc);
 			let sunrise = sunrise_hour+sunrise_minute/this.static_data.clock.minutes;
 
-			let sunset_minute = Math.round(lerp(next_sunset.minute, curr_sunset.minute, this.season.perc));
-			let sunset_hour = lerp(next_sunset.hour, curr_sunset.hour, this.season.perc);
+			let sunset_minute = Math.round(fc.utils.lerp(next_sunset.minute, curr_sunset.minute, this.season.perc));
+			let sunset_hour = fc.utils.lerp(next_sunset.hour, curr_sunset.hour, this.season.perc);
 			let sunset = sunset_hour+sunset_minute/this.static_data.clock.minutes;
 
-			let sunrise_m = (Math.round(fract(sunrise)*this.static_data.clock.minutes)).toString().length < 2 ? "0"+(Math.round(fract(sunrise)*this.static_data.clock.minutes)).toString() : (Math.round(fract(sunrise)*this.static_data.clock.minutes));
-			let sunset_m = (Math.round(fract(sunset)*this.static_data.clock.minutes)).toString().length < 2 ? "0"+(Math.round(fract(sunset)*this.static_data.clock.minutes)).toString() : (Math.round(fract(sunset)*this.static_data.clock.minutes));
+			let sunrise_m = (Math.round(fc.utils.fract(sunrise)*this.static_data.clock.minutes)).toString().length < 2 ? "0"+(Math.round(fc.utils.fract(sunrise)*this.static_data.clock.minutes)).toString() : (Math.round(fc.utils.fract(sunrise)*this.static_data.clock.minutes));
+			let sunset_m = (Math.round(fc.utils.fract(sunset)*this.static_data.clock.minutes)).toString().length < 2 ? "0"+(Math.round(fc.utils.fract(sunset)*this.static_data.clock.minutes)).toString() : (Math.round(fc.utils.fract(sunset)*this.static_data.clock.minutes));
 
 			let sunrise_s = Math.floor(sunrise)+":"+sunrise_m;
 			let sunset_s = Math.floor(sunset)+":"+sunset_m;
@@ -774,8 +774,8 @@ class Climate{
 
 				if(!this.event_happened){
 
-					high_solstice = this.longest_day_time === precisionRound(sunset-sunrise, 3);
-					low_solstice = this.shortest_day_time === precisionRound(sunset-sunrise, 3);
+					high_solstice = this.longest_day_time === fc.utils.precisionRound(sunset-sunrise, 3);
+					low_solstice = this.shortest_day_time === fc.utils.precisionRound(sunset-sunrise, 3);
 
 					if(high_solstice || low_solstice){
 						this.event_happened = true;
@@ -790,14 +790,14 @@ class Climate{
 
 				}else{
 
-					if(this.low_solstice && !this.high_solstice && this.longest_day_time === precisionRound(sunset-sunrise, 3)){
+					if(this.low_solstice && !this.high_solstice && this.longest_day_time === fc.utils.precisionRound(sunset-sunrise, 3)){
 						high_solstice = true;
 						this.high_solstice = true;
 						this.low_solstice = false;
 						this.high_solstice_epochs.push(epoch);
 					}
 
-					if(this.high_solstice && !this.low_solstice && this.shortest_day_time === precisionRound(sunset-sunrise, 3)){
+					if(this.high_solstice && !this.low_solstice && this.shortest_day_time === fc.utils.precisionRound(sunset-sunrise, 3)){
 						low_solstice = true;
 						this.low_solstice = true;
 						this.high_solstice = false;
@@ -846,12 +846,12 @@ class Climate{
 		let next_sunrise = this.current_location.seasons[next_season].time.sunrise;
 		let next_sunset = this.current_location.seasons[next_season].time.sunset;
 
-		let sunrise_minute = Math.round(lerp(next_sunrise.minute, curr_sunrise.minute, epoch_data.season_precise_perc));
-		let sunrise_hour = lerp(next_sunrise.hour, curr_sunrise.hour, epoch_data.season_precise_perc);
+		let sunrise_minute = Math.round(fc.utils.lerp(next_sunrise.minute, curr_sunrise.minute, epoch_data.season_precise_perc));
+		let sunrise_hour = fc.utils.lerp(next_sunrise.hour, curr_sunrise.hour, epoch_data.season_precise_perc);
 		let sunrise = sunrise_hour+sunrise_minute/this.static_data.clock.minutes;
 
-		let sunset_minute = Math.round(lerp(next_sunset.minute, curr_sunset.minute, epoch_data.season_precise_perc));
-		let sunset_hour = lerp(next_sunset.hour, curr_sunset.hour, epoch_data.season_precise_perc);
+		let sunset_minute = Math.round(fc.utils.lerp(next_sunset.minute, curr_sunset.minute, epoch_data.season_precise_perc));
+		let sunset_hour = fc.utils.lerp(next_sunset.hour, curr_sunset.hour, epoch_data.season_precise_perc);
 		let sunset = sunset_hour+sunset_minute/this.static_data.clock.minutes;
 
 		return {
@@ -941,17 +941,17 @@ class Climate{
 		let curr_season_data = this.current_location.seasons[this.weather.current_index];
 		let next_season_data = this.current_location.seasons[this.weather.next_index];
 
-		let low = lerp(next_season_data.weather.temp_low, curr_season_data.weather.temp_low, this.weather.perc);
-		let high = lerp(next_season_data.weather.temp_high, curr_season_data.weather.temp_high, this.weather.perc);
-		let middle = mid(low, high);
+		let low = fc.utils.lerp(next_season_data.weather.temp_low, curr_season_data.weather.temp_low, this.weather.perc);
+		let high = fc.utils.lerp(next_season_data.weather.temp_high, curr_season_data.weather.temp_high, this.weather.perc);
+		let middle = fc.utils.mid(low, high);
 
-		let range_low = mid(low, middle);
+		let range_low = fc.utils.mid(low, middle);
 		let large = this.random.noise(epoch, 1.0, this.current_location.settings.large_noise_frequency, this.current_location.settings.large_noise_amplitude)*0.5;
 		let medium = this.random.noise(epoch+this.season_length, 1.0, this.current_location.settings.medium_noise_frequency, this.current_location.settings.medium_noise_amplitude)*0.8;
 		let small = this.random.noise(epoch+this.season_length*2, 1.0, this.current_location.settings.small_noise_frequency, this.current_location.settings.small_noise_amplitude);
 		range_low = range_low-large+medium-small;
 
-		let range_high = mid(middle, high);
+		let range_high = fc.utils.mid(middle, high);
 		large = this.random.noise(epoch+this.season_length*1.5, 1.0, this.current_location.settings.large_noise_frequency, this.current_location.settings.large_noise_amplitude)*0.5;
 		medium = this.random.noise(epoch+this.season_length*2.5, 1.0, this.current_location.settings.medium_noise_frequency, this.current_location.settings.medium_noise_amplitude)*0.8;
 		small = this.random.noise(epoch+this.season_length*3.5, 1.0, this.current_location.settings.small_noise_frequency, this.current_location.settings.small_noise_amplitude);
@@ -962,7 +962,7 @@ class Climate{
 			range_low=range_high+(range_high=range_low)-range_low
 		}
 
-		let temp = mid(range_low, range_high);
+		let temp = fc.utils.mid(range_low, range_high);
 
         let temperature_range_i;
         let temperature_range_m;
@@ -975,28 +975,28 @@ class Climate{
 
 		if(this.static_data.seasons.global_settings.temp_sys === "imperial" || this.static_data.seasons.global_settings.temp_sys === "both_i" || !this.dynamic_data.custom_location){
 			temperature_range_i = [low, high];
-			temperature_range_m = [fahrenheit_to_celcius(low), fahrenheit_to_celcius(high)];
+			temperature_range_m = [fc.utils.fahrenheit_to_celcius(low), fc.utils.fahrenheit_to_celcius(high)];
 			temperature_i = [range_low, range_high];
-			temperature_m = [fahrenheit_to_celcius(temperature_i[0]), fahrenheit_to_celcius(temperature_i[1])];
-			temperature_c = pick_from_table(temp, preset_data.temperature_gauge, false).key;
+			temperature_m = [fc.utils.fahrenheit_to_celcius(temperature_i[0]), fc.utils.fahrenheit_to_celcius(temperature_i[1])];
+			temperature_c = fc.utils.pick_from_table(temp, fc.variables.preset_data.temperature_gauge, false).key;
 			temperature_actual_i = temp;
-			temperature_actual_m = fahrenheit_to_celcius(temp);
+			temperature_actual_m = fc.utils.fahrenheit_to_celcius(temp);
 			percipitation_table = temp > 32 ? "warm" : "cold";
 		}else{
-			temperature_range_i = [celcius_to_fahrenheit(low), celcius_to_fahrenheit(high)];
+			temperature_range_i = [fc.utils.celcius_to_fahrenheit(low), fc.utils.celcius_to_fahrenheit(high)];
 			temperature_range_m = [low, high];
 			temperature_m = [range_low, range_high];
-			temperature_i = [celcius_to_fahrenheit(temperature_m[0]), celcius_to_fahrenheit(temperature_m[1])];
-			temperature_c = pick_from_table(celcius_to_fahrenheit(temp), preset_data.temperature_gauge, false).key;
+			temperature_i = [fc.utils.celcius_to_fahrenheit(temperature_m[0]), fc.utils.celcius_to_fahrenheit(temperature_m[1])];
+			temperature_c = fc.utils.pick_from_table(fc.utils.celcius_to_fahrenheit(temp), fc.variables.preset_data.temperature_gauge, false).key;
 			temperature_actual_m = temp;
-			temperature_actual_i = celcius_to_fahrenheit(temp);
+			temperature_actual_i = fc.utils.celcius_to_fahrenheit(temp);
 			percipitation_table = temp > 0 ? "warm" : "cold";
 		}
 
-		let precipitation_chance = lerp(next_season_data.weather.precipitation, curr_season_data.weather.precipitation, this.weather.perc);
-		let precipitation_intensity = lerp(next_season_data.weather.precipitation_intensity, curr_season_data.weather.precipitation_intensity, this.weather.perc);
+		let precipitation_chance = fc.utils.lerp(next_season_data.weather.precipitation, curr_season_data.weather.precipitation, this.weather.perc);
+		let precipitation_intensity = fc.utils.lerp(next_season_data.weather.precipitation_intensity, curr_season_data.weather.precipitation_intensity, this.weather.perc);
 
-		let chance = clamp(0.5+this.random.noise(epoch+this.season_length*4, 5.0, 0.35, 0.5), 0.0, 1.0);
+		let chance = fc.utils.clamp(0.5+this.random.noise(epoch+this.season_length*4, 5.0, 0.35, 0.5), 0.0, 1.0);
 
 		let inner_chance = 0;
 
@@ -1008,15 +1008,15 @@ class Climate{
 
 		if(precipitation_chance > chance){
 
-			inner_chance = clamp((0.5+this.random.noise(epoch+this.season_length*5, 10, 0.3, precipitation_intensity))*precipitation_intensity, 0.0, 1.0);
+			inner_chance = fc.utils.clamp((0.5+this.random.noise(epoch+this.season_length*5, 10, 0.3, precipitation_intensity))*precipitation_intensity, 0.0, 1.0);
 
-			precipitation = pick_from_table(inner_chance, preset_data.precipitation[percipitation_table], true);
+			precipitation = fc.utils.pick_from_table(inner_chance, fc.variables.preset_data.precipitation[percipitation_table], true);
 
 			if(precipitation){
 
-				clouds = preset_data.clouds[precipitation.index];
+				clouds = fc.variables.preset_data.clouds[precipitation.index];
 
-				let wind_type_chance = this.random.roll_dice(epoch+this.season_length, preset_data.wind.type[precipitation.index]);
+				let wind_type_chance = this.random.roll_dice(epoch+this.season_length, fc.variables.preset_data.wind.type[precipitation.index]);
 
 				if(wind_type_chance === 20 || (clouds === "Dark storm clouds" && precipitation.index >= 4)){
 					wind_type_chance += this.random.roll_dice(epoch+this.season_length*6, '1d10');
@@ -1025,28 +1025,28 @@ class Climate{
 					feature_select = 'Rain';
 				}
 
-				wind_speed = pick_from_table(wind_type_chance, preset_data.wind.speed, true);
+				wind_speed = fc.utils.pick_from_table(wind_type_chance, fc.variables.preset_data.wind.speed, true);
 
 			}
 
 		}else{
 
-			let clouds_chance = clamp((0.5+this.random.noise(epoch+this.season_length*7, 10, 0.4, 0.5)), 0.0, 1.0);
+			let clouds_chance = fc.utils.clamp((0.5+this.random.noise(epoch+this.season_length*7, 10, 0.4, 0.5)), 0.0, 1.0);
 
-			let another_precipitation = pick_from_table(clouds_chance-0.25, preset_data.precipitation[percipitation_table], true);
+			let another_precipitation = fc.utils.pick_from_table(clouds_chance-0.25, fc.variables.preset_data.precipitation[percipitation_table], true);
 
 			if(clouds_chance > 0.3 && another_precipitation.index >= 0){
 				let index = another_precipitation.index-1;
 				if(index >= 0){
-					clouds = preset_data.clouds[index];
+					clouds = fc.variables.preset_data.clouds[index];
 				}
 			}
 
-			let wind_type_chance = this.random.roll_dice(epoch+this.season_length*8, preset_data.wind.type[another_precipitation.index]);
+			let wind_type_chance = this.random.roll_dice(epoch+this.season_length*8, fc.variables.preset_data.wind.type[another_precipitation.index]);
 
 			wind_type_chance = wind_type_chance === 20 ? 19 : wind_type_chance;
 
-			wind_speed = pick_from_table(wind_type_chance, preset_data.wind.speed, true);
+			wind_speed = fc.utils.pick_from_table(wind_type_chance, fc.variables.preset_data.wind.speed, true);
 
 			if(wind_speed.key > 4){
 				feature_select = 'Windy';
@@ -1054,24 +1054,24 @@ class Climate{
 
 		}
 
-		if(feature_select && preset_data.feature_table[feature_select]){
+		if(feature_select && fc.variables.preset_data.feature_table[feature_select]){
 
-			let feature_chance = clamp((0.5+this.random.noise(epoch+this.season_length*9, 10, 0.4, 0.5)), 0.0, 1.0);
+			let feature_chance = fc.utils.clamp((0.5+this.random.noise(epoch+this.season_length*9, 10, 0.4, 0.5)), 0.0, 1.0);
 
-			feature = pick_from_table(feature_chance, preset_data.feature_table[feature_select][percipitation_table], false).key;
+			feature = fc.utils.pick_from_table(feature_chance, fc.variables.preset_data.feature_table[feature_select][percipitation_table], false).key;
 
 		}
 
 		if(!this.wind_direction){
-			let table = Object.keys(preset_data.wind.direction_table);
+			let table = Object.keys(fc.variables.preset_data.wind.direction_table);
 			this.wind_direction = table[this.random.random_int_between(epoch+1000, 0, table.length-1)];
 		}
 
-		let wind_chance = clamp((0.5+this.random.noise(epoch+1000, 10, 0.4, 0.5)), 0.0, 1.0);
-		this.wind_direction = pick_from_table(wind_chance, preset_data.wind.direction_table[this.wind_direction], true).key;
+		let wind_chance = fc.utils.clamp((0.5+this.random.noise(epoch+1000, 10, 0.4, 0.5)), 0.0, 1.0);
+		this.wind_direction = fc.utils.pick_from_table(wind_chance, fc.variables.preset_data.wind.direction_table[this.wind_direction], true).key;
 		let wind_direction = this.wind_direction;
 
-		let wind_info = preset_data.wind.info[wind_speed.key];
+		let wind_info = fc.variables.preset_data.wind.info[wind_speed.key];
 		let wind_velocity_i = wind_info['mph'];
 		let wind_velocity_m = wind_info['mph'].replace( /(\d+)/g, function(a, b){
 			return Math.round(b*1.60934,2);
@@ -1132,9 +1132,9 @@ class Gradient{
 	colorAt(number){
 
 		return this.rgbToHex(
-			Math.floor(lerp(this.start[0], this.end[0], number)),
-			Math.floor(lerp(this.start[1], this.end[1], number)),
-			Math.floor(lerp(this.start[2], this.end[2], number))
+			Math.floor(fc.utils.lerp(this.start[0], this.end[0], number)),
+			Math.floor(fc.utils.lerp(this.start[1], this.end[1], number)),
+			Math.floor(fc.utils.lerp(this.start[2], this.end[2], number))
 		)
 
 	}

@@ -109,7 +109,7 @@ const calendar_renderer = {
         this.prev_current_epoch = this.render_data.current_epoch;
         this.prev_preview_epoch = this.render_data.preview_epoch;
 
-	    execution_time.end("Calculating and rendering calendar took:")
+	    fc.utils.execution_time.end("Calculating and rendering calendar took:")
     },
 
     scroll_to_epoch: function(){

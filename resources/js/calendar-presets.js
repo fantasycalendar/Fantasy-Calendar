@@ -157,12 +157,12 @@ const preset_loader = {
                     if(calendar.success){
                         prev_dynamic_data = {}
                         prev_static_data = {}
-                        calendar_name = clone(calendar.name);
-                        static_data = clone(calendar.static_data);
-                        dynamic_data = clone(calendar.dynamic_data);
-                        event_categories = clone(calendar.event_categories);
-                        events = clone(calendar.events);
-                        dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+                        calendar_name = fc.utils.clone(calendar.name);
+                        static_data = fc.utils.clone(calendar.static_data);
+                        dynamic_data = fc.utils.clone(calendar.dynamic_data);
+                        event_categories = fc.utils.clone(calendar.event_categories);
+                        events = fc.utils.clone(calendar.events);
+                        dynamic_data.epoch = evaluate_calendar_start(static_data, fc.utils.convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
                         empty_edit_values();
                         set_up_edit_values();
                         set_up_view_values();
@@ -264,9 +264,9 @@ const preset_loader = {
             dynamic_data.minute = current_date.getMinutes();
         }
 
-        dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+        dynamic_data.epoch = evaluate_calendar_start(static_data, fc.utils.convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
 
-        preview_date = clone(dynamic_data);
+        preview_date = fc.utils.clone(dynamic_data);
 
         for(var index in events){
             var event = events[index];

@@ -103,7 +103,7 @@ function set_up_view_inputs(){
 	current_year.change(function(e){
 
 		if(e.originalEvent){
-			dynamic_date_manager.year = convert_year(static_data, $(this).val()|0);
+			dynamic_date_manager.year = fc.utils.convert_year(static_data, $(this).val()|0);
 			evaluate_dynamic_change();
 		}
 
@@ -251,7 +251,7 @@ function set_up_view_inputs(){
 		if(prev_location_type){
 			var prev_location = static_data.seasons.locations[dynamic_data.location];
 		}else{
-			var prev_location = preset_data.locations[dynamic_data.location];
+			var prev_location = fc.variables.preset_data.locations[dynamic_data.location];
 		}
 
 		dynamic_data.custom_location = location_select.find('option:selected').parent().attr('value') === "custom" && !location_select.find('option:selected').prop('disabled');
@@ -261,7 +261,7 @@ function set_up_view_inputs(){
 		if(dynamic_data.custom_location){
 			var location = static_data.seasons.locations[dynamic_data.location];
 		}else{
-			var location = preset_data.locations[dynamic_data.location];
+			var location = fc.variables.preset_data.locations[dynamic_data.location];
 		}
 
 		if(prev_location_type){
@@ -489,8 +489,8 @@ function repopulate_location_select_list(){
     let length = validSeasons ? static_data.seasons.data.length : 4;
 
 	html.push(`<optgroup label="Location Presets" value="preset">`);
-    for(var i = 0; i < Object.keys(preset_data.locations[length]).length; i++){
-        html.push(`<option ${!validSeasons ? "disabled" : ""}>${Object.keys(preset_data.locations[length])[i]}</option>`);
+    for(var i = 0; i < Object.keys(fc.variables.preset_data.locations[length]).length; i++){
+        html.push(`<option ${!validSeasons ? "disabled" : ""}>${Object.keys(fc.variables.preset_data.locations[length])[i]}</option>`);
     }
 	html.push('</optgroup>');
 
@@ -516,7 +516,7 @@ function repopulate_location_select_list(){
 
 function set_up_view_values(){
 
-	dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
+	dynamic_date_manager = new fc.utils.date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
 
 	current_year.val(dynamic_date_manager.adjusted_year);
 

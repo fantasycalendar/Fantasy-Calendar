@@ -86,7 +86,7 @@ const render_data_generator = {
             if (!moon.hidden || Perms.player_at_least('co-owner')) {
 
                 let phase = epoch_data.moon_phase[moon_index];
-                let phase_name = Object.keys(moon_phases[moon.granularity])[phase];
+                let phase_name = Object.keys(fc.variables.moon_phases[moon.granularity])[phase];
                 let custom_phase_name = "";
                 let color = moon.color;
                 let shadow_color = moon.shadow_color ? moon.shadow_color : "#292b4a";
@@ -98,7 +98,7 @@ const render_data_generator = {
                             if (events[index].overrides.moons[moon_index] !== undefined) {
                                 let moon_overrides = events[index].overrides.moons[moon_index];
                                 phase = moon_overrides.phase !== undefined && moon_overrides.override_phase ? moon_overrides.phase : phase;
-                                phase_name = Object.keys(moon_phases[moon.granularity])[phase];
+                                phase_name = Object.keys(fc.variables.moon_phases[moon.granularity])[phase];
                                 color = moon_overrides.color !== undefined ? moon_overrides.color : color;
                                 shadow_color = moon_overrides.shadow_color !== undefined ? moon_overrides.shadow_color : shadow_color;
                                 hidden = moon_overrides.hidden !== undefined ? moon_overrides.hidden : hidden;
@@ -108,7 +108,7 @@ const render_data_generator = {
                         }
                     }
                 }
-                let path = moon_phases[moon.granularity][phase_name];
+                let path = fc.variables.moon_phases[moon.granularity][phase_name];
 
                 phase_name = custom_phase_name === "" ? phase_name : custom_phase_name;
 
@@ -629,7 +629,7 @@ const render_data_generator = {
 
                 if(this.render_data.render_style === "minimalistic" && this.render_data.event_epochs[epoch] !== undefined){
                     let day = this.render_data.event_epochs[epoch];
-                    event_name = `${ordinal_suffix_of(day.number)}: ${event_name}`
+                    event_name = `${fc.utils.ordinal_suffix_of(day.number)}: ${event_name}`
                 }
 
                 if(start){
@@ -682,7 +682,7 @@ const render_data_generator = {
 
 	create_event_data: function(){
 
-        let evaluated_event_data = event_evaluator.init(
+        let evaluated_event_data = fc.workers.event_evaluator.init(
             static_data,
             dynamic_data,
             events,

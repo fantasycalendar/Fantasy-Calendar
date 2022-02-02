@@ -62,7 +62,7 @@
                     return code;
                 },
                 init: function() {
-                    this.theme_editing = clone(this.theme_originals[this.theme])
+                    this.theme_editing = fc.utils.clone(this.theme_originals[this.theme])
 
                     this.$nextTick(function() {
                         let hash = '{{ $calendar->hash }}';
@@ -113,11 +113,11 @@
                 updateTheme: function(name, value, oldValue) {
                     if(value === 'custom') {
                         this.base_theme = oldValue;
-                        this.theme_editing = clone(this.theme_originals[oldValue]);
+                        this.theme_editing = fc.utils.clone(this.theme_originals[oldValue]);
                     }
 
                     if(value !== 'custom' && oldValue === 'custom') {
-                        this.theme_editing = clone(this.theme_originals[this.theme]);
+                        this.theme_editing = fc.utils.clone(this.theme_originals[this.theme]);
                     }
 
                     this.persistTheme();

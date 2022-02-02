@@ -1731,7 +1731,7 @@ function process_donjon(calendar, dynamic_data, static_data){
 
 	var target_first_day = Number(calendar.first_day)+1;
 
-	var first_day = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year)).week_day;
+	var first_day = evaluate_calendar_start(static_data, fc.utils.convert_year(static_data, dynamic_data.year)).week_day;
 
 	while(target_first_day != first_day){
 
@@ -1741,7 +1741,7 @@ function process_donjon(calendar, dynamic_data, static_data){
 			static_data.year_data.first_day = 1;
 		}
 
-		first_day = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year)).week_day;
+		first_day = evaluate_calendar_start(static_data, fc.utils.convert_year(static_data, dynamic_data.year)).week_day;
 
 	}
 
@@ -1926,7 +1926,7 @@ function convert_old_event(event){
 					result.push(['&&']);
 				}
 			}
-			var conditions = clone(result);
+			var conditions = fc.utils.clone(result);
 			var date = [];
 			return [date, conditions];
 
@@ -1940,7 +1940,7 @@ function convert_old_event(event){
 					result.push(['&&']);
 				}
 			}
-			var conditions = clone(result);
+			var conditions = fc.utils.clone(result);
 			var date = [];
 			return [date, conditions];
 	}

@@ -1,11 +1,8 @@
-var version = new Date().getTime();
-
-importScripts('/js/calendar/calendar_functions.js?v='+version);
-importScripts('/js/calendar/calendar_variables.js?v='+version);
-importScripts('/js/calendar/calendar_season_generator.js?v='+version);
-importScripts('/js/calendar/calendar_workers.js?v='+version);
+import { calendar_data_generator, event_evaluator } from "../calendar/calendar_workers.js";
 
 onmessage = async (e) => {
+
+    debugger;
 
 	calendar_data_generator.calendar_name = e.data.calendar_name;
 	calendar_data_generator.static_data = e.data.static_data;
@@ -33,9 +30,8 @@ onmessage = async (e) => {
 
     let valid_occurrences = [];
 
-    for(let index in occurrences){
+    for(let epoch of occurrences){
 
-        let epoch = occurrences[index];
         let epoch_data = calendar_data.epoch_data[epoch];
 
         if(epoch_data.year >= e.data.start_year && epoch_data.year < e.data.end_year){

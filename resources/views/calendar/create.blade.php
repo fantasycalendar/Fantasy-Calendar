@@ -88,7 +88,7 @@
             "location": "Equatorial"
         };
 
-        preview_date = clone(dynamic_data);
+        preview_date = fc.utils.clone(dynamic_data);
 
         $(document).ready(function(){
 

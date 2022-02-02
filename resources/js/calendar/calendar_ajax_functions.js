@@ -98,7 +98,7 @@ function update_dynamic(calendar_hash, callback){
 		success: function ( result ){
 
 			if(!dynamic_same){
-				prev_dynamic_data = clone(dynamic_data);
+				prev_dynamic_data = fc.utils.clone(dynamic_data);
 			}
 
 			calendar_saved();
@@ -158,24 +158,24 @@ function do_update_all(calendar_hash, success_callback, failure_callback){
 		success: function(result){
 
 			if(!calendar_name_same){
-				prev_calendar_name = clone(calendar_name);
+				prev_calendar_name = fc.utils.clone(calendar_name);
 				document.title = calendar_name + " - Fantasy Calendar";
 			}
 
 			if(!static_same){
-				prev_static_data = clone(static_data);
+				prev_static_data = fc.utils.clone(static_data);
 			}
 
 			if(!dynamic_same){
-				prev_dynamic_data = clone(dynamic_data);
+				prev_dynamic_data = fc.utils.clone(dynamic_data);
 			}
 
 			if(!events_same){
-				prev_events = clone(events);
+				prev_events = fc.utils.clone(events);
 			}
 
 			if(!event_categories_same){
-				prev_event_categories = clone(event_categories);
+				prev_event_categories = fc.utils.clone(event_categories);
 			}
 
 			last_dynamic_change = new Date(result.last_changed.last_dynamic_change)
@@ -368,7 +368,7 @@ function resend_calendar_invite(email, output){
 
 async function submit_new_event(event_id, callback){
 
-	var new_event = clone(events[event_id]);
+	var new_event = fc.utils.clone(events[event_id]);
 	new_event.calendar_id = calendar_id;
 	new_event.sort_by = Object.keys(events).length;
 
@@ -399,7 +399,7 @@ async function submit_new_event(event_id, callback){
 
 function submit_hide_show_event(event_id){
 
-	var edit_event = clone(events[event_id]);
+	var edit_event = fc.utils.clone(events[event_id]);
 	edit_event.calendar_id = calendar_id;
 	edit_event.settings.hide = !edit_event.settings.hide;
 
@@ -424,7 +424,7 @@ function submit_hide_show_event(event_id){
 
 function submit_edit_event(event_id, callback){
 
-	var edit_event = clone(events[event_id]);
+	var edit_event = fc.utils.clone(events[event_id]);
 	edit_event.calendar_id = calendar_id;
 
 	axios.patch(window.apiurl+'/event/'+edit_event.id, edit_event)
@@ -674,7 +674,7 @@ function copy_calendar(calendar_hash, calendar_name, callback){
             swal.fire({
                 icon: "success",
                 title: "Copied!",
-                text: "The calendar " + calendar_name + " has been cloned.",
+                text: "The calendar " + calendar_name + " has been fc.utils.cloned.",
                 button: true
             })
                 .then(success => {

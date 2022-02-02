@@ -124,19 +124,19 @@ function pre_rebuild_calendar(action, dynamic_data){
 
 async function testCalendarAccuracy(fromYear = -100, toYear = 100){
 
-    execution_time.start();
+    fc.utils.execution_time.start();
 
-    calendar_data_generator.static_data = static_data;
-    calendar_data_generator.dynamic_data = dynamic_data;
-    calendar_data_generator.owner = Perms.player_at_least('co-owner');
-    calendar_data_generator.events = events;
-    calendar_data_generator.event_categories = event_categories;
+    fc.workers.calendar_data_generator.static_data = static_data;
+    fc.workers.calendar_data_generator.dynamic_data = dynamic_data;
+    fc.workers.calendar_data_generator.owner = Perms.player_at_least('co-owner');
+    fc.workers.calendar_data_generator.events = events;
+    fc.workers.calendar_data_generator.event_categories = event_categories;
 
-    let currentYear = calendar_data_generator.dynamic_data.year;
+    let currentYear = fc.workers.calendar_data_generator.dynamic_data.year;
 
-    calendar_data_generator.dynamic_data.year = fromYear;
+    fc.workers.calendar_data_generator.dynamic_data.year = fromYear;
 
-    let result = await calendar_data_generator.run();
+    let result = await fc.workers.calendar_data_generator.run();
 
     let lastYearEndEpoch = result.year_data.end_epoch;
 
@@ -145,12 +145,12 @@ async function testCalendarAccuracy(fromYear = -100, toYear = 100){
     fromYear++;
     for(let year = fromYear; year < toYear; year++){
 
-        calendar_data_generator.dynamic_data.year = year;
+        fc.workers.calendar_data_generator.dynamic_data.year = year;
         if(!year_zero_exists && year === 0){
             continue;
         }
 
-        let result = await calendar_data_generator.run();
+        let result = await fc.workers.calendar_data_generator.run();
 
         let thisYearStartEpoch = result.year_data.start_epoch;
 
@@ -177,7 +177,7 @@ async function testCalendarAccuracy(fromYear = -100, toYear = 100){
     console.log("Test succeeded, calendar calculation accurate!")
     dynamic_data.year = currentYear;
 
-    execution_time.end("Testing took:");
+    fc.utils.execution_time.end("Testing took:");
 
 }
 
@@ -185,30 +185,30 @@ async function testSeasonAccuracy(fromYear = -1000, toYear = 1000){
 
     if(static_data.seasons.data.length === 0) return;
 
-    calendar_data_generator.static_data = static_data;
-    calendar_data_generator.dynamic_data = dynamic_data;
-    calendar_data_generator.owner = Perms.player_at_least('co-owner');
-    calendar_data_generator.events = events;
-    calendar_data_generator.event_categories = event_categories;
+    fc.workers.calendar_data_generator.static_data = static_data;
+    fc.workers.calendar_data_generator.dynamic_data = dynamic_data;
+    fc.workers.calendar_data_generator.owner = Perms.player_at_least('co-owner');
+    fc.workers.calendar_data_generator.events = events;
+    fc.workers.calendar_data_generator.event_categories = event_categories;
 
-    let originalYear = calendar_data_generator.dynamic_data.year;
+    let originalYear = fc.workers.calendar_data_generator.dynamic_data.year;
 
-    calendar_data_generator.dynamic_data.year = fromYear;
+    fc.workers.calendar_data_generator.dynamic_data.year = fromYear;
 
-    let result = await calendar_data_generator.run();
+    let result = await fc.workers.calendar_data_generator.run();
 
     let previous_year_end_season_day = result.epoch_data[result.year_data.end_epoch].season.season_day;
 
     for(let year = fromYear; year < toYear; year++){
 
-        calendar_data_generator.dynamic_data.year++;
-        if(!static_data.settings.year_zero_exists && calendar_data_generator.dynamic_data.year === 0){
-            calendar_data_generator.dynamic_data.year++;
+        fc.workers.calendar_data_generator.dynamic_data.year++;
+        if(!static_data.settings.year_zero_exists && fc.workers.calendar_data_generator.dynamic_data.year === 0){
+            fc.workers.calendar_data_generator.dynamic_data.year++;
         }
 
-        console.log(`Testing year ${calendar_data_generator.dynamic_data.year}...`)
+        console.log(`Testing year ${fc.workers.calendar_data_generator.dynamic_data.year}...`)
 
-        let result = await calendar_data_generator.run();
+        let result = await fc.workers.calendar_data_generator.run();
 
         let start_epoch = result.year_data.start_epoch;
         let end_epoch = result.year_data.end_epoch;
@@ -216,7 +216,7 @@ async function testSeasonAccuracy(fromYear = -1000, toYear = 1000){
         let current_year_start_season_day = result.epoch_data[start_epoch].season.season_day;
 
         if(previous_year_end_season_day+1 !== current_year_start_season_day && current_year_start_season_day !== 1){
-            console.error(`YEAR ${calendar_data_generator.dynamic_data.year} FAILED! Start/End Fail. Expected ${previous_year_end_season_day+1}, got ${current_year_start_season_day}!`);
+            console.error(`YEAR ${fc.workers.calendar_data_generator.dynamic_data.year} FAILED! Start/End Fail. Expected ${previous_year_end_season_day+1}, got ${current_year_start_season_day}!`);
             dynamic_data.year = originalYear;
             return;
         }
@@ -228,7 +228,7 @@ async function testSeasonAccuracy(fromYear = -1000, toYear = 1000){
             let season_day = result.epoch_data[epoch].season.season_day;
 
             if(prev_season_day+1 !== season_day && season_day !== 1){
-                console.error(`YEAR ${calendar_data_generator.dynamic_data.year} FAILED! Inner year failed. Expected ${prev_season_day+1}, got ${season_day}!`)
+                console.error(`YEAR ${fc.workers.calendar_data_generator.dynamic_data.year} FAILED! Inner year failed. Expected ${prev_season_day+1}, got ${season_day}!`)
                 dynamic_data.year = originalYear;
                 return;
             }
@@ -251,15 +251,15 @@ var evaluated_static_data = {};
 
 async function rebuild_calendar(action, dynamic_data){
 
-    calendar_data_generator.static_data = static_data;
-    calendar_data_generator.dynamic_data = dynamic_data;
-    calendar_data_generator.owner = Perms.player_at_least('co-owner');
-    calendar_data_generator.events = events;
-    calendar_data_generator.event_categories = event_categories;
+    fc.workers.calendar_data_generator.static_data = static_data;
+    fc.workers.calendar_data_generator.dynamic_data = dynamic_data;
+    fc.workers.calendar_data_generator.owner = Perms.player_at_least('co-owner');
+    fc.workers.calendar_data_generator.events = events;
+    fc.workers.calendar_data_generator.event_categories = event_categories;
 
-    execution_time.start();
+    fc.utils.execution_time.start();
 
-    calendar_data_generator.run().then(result => {
+    fc.workers.calendar_data_generator.run().then(result => {
 
         evaluated_static_data = result;
 
@@ -288,7 +288,7 @@ async function rebuild_calendar(action, dynamic_data){
 
 async function rebuild_climate(){
 
-    let climate_generator = new Climate(
+    let climate_generator = new fc.seasons.Climate(
         evaluated_static_data.epoch_data,
         static_data,
         dynamic_data,

@@ -389,7 +389,7 @@ var climate_charts = {
 
 			var epoch_data = calendar_weather.epoch_data[epoch];
 
-			var day = ordinal_suffix_of(epoch_data.day)
+			var day = fc.utils.ordinal_suffix_of(epoch_data.day)
 			var month_name = epoch_data.timespan_name;
 			var year = epoch_data.year != epoch_data.era_year ? `era year ${epoch_data.era_year} (absolute year ${epoch_data.year})` : `year ${epoch_data.year}`;
 
@@ -536,7 +536,7 @@ var climate_charts = {
 
 			if(epoch_data.weather){
 
-				var day = ordinal_suffix_of(epoch_data.day)
+				var day = fc.utils.ordinal_suffix_of(epoch_data.day)
 				var month_name = epoch_data.timespan_name;
 				var year = epoch_data.year != epoch_data.era_year ? `era year ${epoch_data.era_year} (absolute year ${epoch_data.year})` : `year ${epoch_data.year}`;
 

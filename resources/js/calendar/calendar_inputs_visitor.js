@@ -4,7 +4,7 @@ function context_set_current_date(key, opt){
 
 	var epoch_data = evaluated_static_data.epoch_data[epoch];
 
-	dynamic_date_manager.year = convert_year(static_data, epoch_data.year);
+	dynamic_date_manager.year = fc.utils.convert_year(static_data, epoch_data.year);
 	dynamic_date_manager.timespan = epoch_data.timespan_number;
 	dynamic_date_manager.day = epoch_data.day;
 	dynamic_date_manager.epoch = epoch_data.epoch;
@@ -474,7 +474,7 @@ function set_up_visitor_inputs(){
 
 	});
 
-	var follower_eval = debounce(function(){
+	var follower_eval = fc.utils.debounce(function(){
 
 		$('#go_to_preview_date').click();
 
@@ -534,7 +534,7 @@ function set_up_visitor_inputs(){
 		if(typeof preview_date_manager == "undefined") set_up_visitor_values();
 
 		if(e.originalEvent){
-			preview_date_manager.year = convert_year(static_data, $(this).val()|0);
+			preview_date_manager.year = fc.utils.convert_year(static_data, $(this).val()|0);
 		}
 
 		var year = $(this).val()|0;
@@ -636,7 +636,7 @@ function refresh_preview_inputs(){
 
 function update_preview_calendar(){
 
-	preview_date_manager = new date_manager(target_year.val()|0, target_timespan.val()|0, target_day.val()|0);
+	preview_date_manager = new fc.utils.date_manager(target_year.val()|0, target_timespan.val()|0, target_day.val()|0);
 
 	preview_date.year = preview_date_manager.adjusted_year;
 	preview_date.timespan = preview_date_manager.timespan;
@@ -647,7 +647,7 @@ function update_preview_calendar(){
 
 function set_preview_date(year, timespan, day, epoch){
 
-	preview_date_manager.year = convert_year(static_data, year);
+	preview_date_manager.year = fc.utils.convert_year(static_data, year);
 	preview_date_manager.timespan = timespan;
 	preview_date_manager.day = day;
 	if(epoch !== undefined){
@@ -712,7 +712,7 @@ function display_preview_back_button(){
 function update_current_day(recalculate){
 
     if(recalculate){
-        dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+        dynamic_data.epoch = evaluate_calendar_start(static_data, fc.utils.convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
     }
 
     window.dispatchEvent(new CustomEvent('update-epochs', {detail: {
@@ -917,7 +917,7 @@ function repopulate_timespan_select(select, val, change, max){
 
 	select.each(function(){
 
-		var year = convert_year(static_data, $(this).closest('.date_control').find('.year-input').val()|0);
+		var year = fc.utils.convert_year(static_data, $(this).closest('.date_control').find('.year-input').val()|0);
 
 		var special = $(this).hasClass('timespan_special');
 
@@ -925,7 +925,7 @@ function repopulate_timespan_select(select, val, change, max){
 
 		for(var i = 0; i < static_data.year_data.timespans.length; i++){
 
-			var is_there = does_timespan_appear(static_data, year, i);
+			var is_there = fc.utils.does_timespan_appear(static_data, year, i);
 
 			if(special){
 
@@ -933,7 +933,7 @@ function repopulate_timespan_select(select, val, change, max){
 
 			}else{
 
-				var days = get_days_in_timespan(static_data, year, i);
+				var days = fc.utils.get_days_in_timespan(static_data, year, i);
 
 				if(days.length == 0){
 					is_there.result = false;
@@ -993,7 +993,7 @@ function repopulate_day_select(select, val, change, no_leaps, max, filter_timesp
 
 	select.each(function(){
 
-		var year = convert_year(static_data, $(this).closest('.date_control').find('.year-input').val()|0);
+		var year = fc.utils.convert_year(static_data, $(this).closest('.date_control').find('.year-input').val()|0);
 		var timespan = $(this).closest('.date_control').find('.timespan-list').val()|0;
 		var special = $(this).hasClass('day_special');
 
@@ -1004,14 +1004,14 @@ function repopulate_day_select(select, val, change, no_leaps, max, filter_timesp
 
 			if(exclude_self){
 
-				var self_object = get_calendar_data($(this).attr('data'));
+				var self_object = fc.utils.get_calendar_data($(this).attr('data'));
 
 				if(self_object){
-					var days = get_days_in_timespan(static_data, year, timespan, self_object, no_leaps, special);
+					var days = fc.utils.get_days_in_timespan(static_data, year, timespan, self_object, no_leaps, special);
 				}
 
 			}else{
-				var days = get_days_in_timespan(static_data, year, timespan, undefined, no_leaps, special);
+				var days = fc.utils.get_days_in_timespan(static_data, year, timespan, undefined, no_leaps, special);
 			}
 
 			var html = [];
@@ -1073,7 +1073,7 @@ function set_up_visitor_values(){
 	$('.reset_preview_date_container.right .reset_preview_date').prop("disabled", preview_date.follow).toggleClass('hidden', preview_date.follow);
 	$('.reset_preview_date_container.left .reset_preview_date').prop("disabled", preview_date.follow).toggleClass('hidden', preview_date.follow);
 
-	preview_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
+	preview_date_manager = new fc.utils.date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
 
 
 	target_year.val(preview_date_manager.adjusted_year);

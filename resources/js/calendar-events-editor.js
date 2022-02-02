@@ -238,7 +238,7 @@ const calendar_events_editor = {
         this.init($event);
 
 	    if($event.detail.event_data === undefined && $event.detail.event_id){
-            $event.detail.event_data = clone(events[$event.detail.event_id]);
+            $event.detail.event_data = fc.utils.clone(events[$event.detail.event_id]);
             $event.detail.event_data.name += " (clone)";
         }
 
@@ -353,7 +353,7 @@ const calendar_events_editor = {
 
 		this.event_id = $event.detail.event_id;
 
-		this.working_event = clone(events[this.event_id]);
+		this.working_event = fc.utils.clone(events[this.event_id]);
 
 		this.set_up_moon_data();
 
@@ -379,7 +379,7 @@ const calendar_events_editor = {
 
 		this.working_event.description = this.description_input.trumbowyg('html');
 
-		events[this.event_id] = clone(this.working_event);
+		events[this.event_id] = fc.utils.clone(this.working_event);
 
 		let not_view_page = window.location.pathname.indexOf('/edit') > -1 || window.location.pathname.indexOf('/calendars/create') > -1;
 
@@ -500,7 +500,7 @@ const calendar_events_editor = {
             icon: "warning",
         }).then((result) => {
             if (!result.dismiss) {
-                let new_event = clone(this.working_event);
+                let new_event = fc.utils.clone(this.working_event);
                 new_event.data = this.create_event_data();
                 new_event.name = ((new_event.name === "") ? "New Event" : new_event.name) + " (clone)";
                 new_event.description = this.description_input.trumbowyg('html');
@@ -762,7 +762,7 @@ const calendar_events_editor = {
 
 		if (events[this.event_id] && this.inputs_changed) {
 
-			let event_check = clone(events[this.event_id])
+			let event_check = fc.utils.clone(events[this.event_id])
 
 			let eventid = events[this.event_id].id;
 
@@ -774,7 +774,7 @@ const calendar_events_editor = {
 
 			event_check.description = this.description_input.trumbowyg('html');
 
-			event_check.settings = clone(this.working_event.settings)
+			event_check.settings = fc.utils.clone(this.working_event.settings)
 
 			return !Object.compare(event_check, events[this.event_id])
 
@@ -792,17 +792,17 @@ const calendar_events_editor = {
 
 		this.moons = [];
 		for (let index in static_data.moons) {
-			let moon = clone(static_data.moons[index])
+			let moon = fc.utils.clone(static_data.moons[index])
 			moon.index = index;
 			moon.hidden = false;
 			moon.shadow_color = moon.shadow_color ? moon.shadow_color : "#292b4a";
-			moon.original_shadow_color = clone(moon.shadow_color);
-			moon.original_color = clone(moon.color);
+			moon.original_shadow_color = fc.utils.clone(moon.shadow_color);
+			moon.original_color = fc.utils.clone(moon.color);
 			moon.override_phase = false;
 			moon.original_phase = this.epoch_data.moon_phase[index];
 			moon.phase = this.epoch_data.moon_phase[index];
-			moon.phases = clone(Object.keys(moon_phases[moon.granularity]))
-			moon.paths = clone(Object.values(moon_phases[moon.granularity]))
+			moon.phases = fc.utils.clone(Object.keys(fc.variables.moon_phases[moon.granularity]))
+			moon.paths = fc.utils.clone(Object.values(fc.variables.moon_phases[moon.granularity]))
 			moon.phase_name = "";
 			this.moons.push(moon);
 		}
@@ -921,23 +921,23 @@ const calendar_events_editor = {
 			text: `Fortnightly on ${this.epoch_data.week_day_name}`,
 			enabled: !this.epoch_data.intercalary
 		}
-		this.presets.monthly_date.text = `Monthly on the ${ordinal_suffix_of(this.epoch_data.day)}`;
+		this.presets.monthly_date.text = `Monthly on the ${fc.utils.ordinal_suffix_of(this.epoch_data.day)}`;
 		this.presets.monthly_weekday = {
-			text: `Monthly on the ${ordinal_suffix_of(this.epoch_data.week_day_num)} ${this.epoch_data.week_day_name}`,
+			text: `Monthly on the ${fc.utils.ordinal_suffix_of(this.epoch_data.week_day_num)} ${this.epoch_data.week_day_name}`,
 			enabled: !this.epoch_data.intercalary
 		}
 
-		let inverse_week_day_num = this.epoch_data.inverse_week_day_num === 1 ? "last" : ordinal_suffix_of(this.epoch_data.inverse_week_day_num) + " to last";
+		let inverse_week_day_num = this.epoch_data.inverse_week_day_num === 1 ? "last" : fc.utils.ordinal_suffix_of(this.epoch_data.inverse_week_day_num) + " to last";
 
 		this.presets.monthly_inverse_weekday = {
 			text: `Monthly on the ${inverse_week_day_num} ${this.epoch_data.week_day_name}`,
 			enabled: !this.epoch_data.intercalary
 		}
 
-		this.presets.annually_date.text = `Annually on the ${ordinal_suffix_of(this.epoch_data.day)} of ${this.epoch_data.timespan_name}`;
+		this.presets.annually_date.text = `Annually on the ${fc.utils.ordinal_suffix_of(this.epoch_data.day)} of ${this.epoch_data.timespan_name}`;
 
 		this.presets.annually_month_weekday = {
-			text: `Annually on the ${ordinal_suffix_of(this.epoch_data.week_day_num)} ${this.epoch_data.week_day_name} in ${this.epoch_data.timespan_name}`,
+			text: `Annually on the ${fc.utils.ordinal_suffix_of(this.epoch_data.week_day_num)} ${this.epoch_data.week_day_name} in ${this.epoch_data.timespan_name}`,
 			enabled: !this.epoch_data.intercalary
 		}
 		this.presets.annually_inverse_month_weekday = {
@@ -955,7 +955,7 @@ const calendar_events_editor = {
 
 			let moon = static_data.moons[moon_index];
 
-			let moon_phase_name = Object.keys(moon_phases[moon.granularity])[this.epoch_data.moon_phase[moon_index]];
+			let moon_phase_name = Object.keys(fc.variables.moon_phases[moon.granularity])[this.epoch_data.moon_phase[moon_index]];
 
 			moon_phase_collection += `${moon.name} is ${moon_phase_name}, `
 
@@ -967,7 +967,7 @@ const calendar_events_editor = {
 			})
 
 			this.moon_presets.push({
-				text: `${moon.name} - Every ${ordinal_suffix_of(this.epoch_data.moon_phase_num_month[moon_index])} ${moon_phase_name}`,
+				text: `${moon.name} - Every ${fc.utils.ordinal_suffix_of(this.epoch_data.moon_phase_num_month[moon_index])} ${moon_phase_name}`,
 				value: `moon_x_every.${moon_index}`,
 				moon_index: moon_index,
 				nth: true
@@ -981,14 +981,14 @@ const calendar_events_editor = {
 			})
 
 			this.moon_presets.push({
-				text: `${moon.name} - Annually every ${ordinal_suffix_of(this.epoch_data.moon_phase_num_month[moon_index])} ${moon_phase_name} in ${this.epoch_data.timespan_name}`,
+				text: `${moon.name} - Annually every ${fc.utils.ordinal_suffix_of(this.epoch_data.moon_phase_num_month[moon_index])} ${moon_phase_name} in ${this.epoch_data.timespan_name}`,
 				value: `moon_x_annually.${moon_index}`,
 				moon_index: moon_index,
 				nth: true
 			})
 
 			this.moon_presets.push({
-				text: `${moon.name} - Every ${ordinal_suffix_of(this.epoch_data.moon_phase_num_year[moon_index])} ${moon_phase_name} in the year`,
+				text: `${moon.name} - Every ${fc.utils.ordinal_suffix_of(this.epoch_data.moon_phase_num_year[moon_index])} ${moon_phase_name} in the year`,
 				value: `moon_yearly.${moon_index}`,
 				moon_index: moon_index,
 				nth: false
@@ -1010,9 +1010,9 @@ const calendar_events_editor = {
 
 	update_every_nth_presets(){
 
-		let repeat_string = !isNaN(this.nth) && this.nth > 1 ? `Every ${ordinal_suffix_of(this.nth)} ` : (this.nth === "" ? "Every nth" : "Every");
+		let repeat_string = !isNaN(this.nth) && this.nth > 1 ? `Every ${fc.utils.ordinal_suffix_of(this.nth)} ` : (this.nth === "" ? "Every nth" : "Every");
 
-		let inverse_week_day_num = this.epoch_data.inverse_week_day_num === 1 ? "last" : ordinal_suffix_of(this.epoch_data.inverse_week_day_num) + " to last";
+		let inverse_week_day_num = this.epoch_data.inverse_week_day_num === 1 ? "last" : fc.utils.ordinal_suffix_of(this.epoch_data.inverse_week_day_num) + " to last";
 
 		this.presets.every_x_day.text = `${repeat_string} day`;
 
@@ -1022,10 +1022,10 @@ const calendar_events_editor = {
 			nth: true
 		}
 
-		this.presets.every_x_monthly_date.text = `${repeat_string} month on the ${ordinal_suffix_of(this.epoch_data.day)}`;
+		this.presets.every_x_monthly_date.text = `${repeat_string} month on the ${fc.utils.ordinal_suffix_of(this.epoch_data.day)}`;
 
 		this.presets.every_x_monthly_weekday = {
-			text: `${repeat_string} month on the ${ordinal_suffix_of(this.epoch_data.week_day_num)} ${this.epoch_data.week_day_name}`,
+			text: `${repeat_string} month on the ${fc.utils.ordinal_suffix_of(this.epoch_data.week_day_num)} ${this.epoch_data.week_day_name}`,
 			enabled: !this.epoch_data.intercalary,
 			nth: true
 		}
@@ -1036,10 +1036,10 @@ const calendar_events_editor = {
 			nth: true
 		}
 
-		this.presets.every_x_annually_date.text = `${repeat_string} year on the ${ordinal_suffix_of(this.epoch_data.day)} of ${this.epoch_data.timespan_name}`;
+		this.presets.every_x_annually_date.text = `${repeat_string} year on the ${fc.utils.ordinal_suffix_of(this.epoch_data.day)} of ${this.epoch_data.timespan_name}`;
 
 		this.presets.every_x_annually_weekday = {
-			text: `${repeat_string} year on the ${ordinal_suffix_of(this.epoch_data.week_day_num)} ${this.epoch_data.week_day_name} in ${this.epoch_data.timespan_name}`,
+			text: `${repeat_string} year on the ${fc.utils.ordinal_suffix_of(this.epoch_data.week_day_num)} ${this.epoch_data.week_day_name} in ${this.epoch_data.timespan_name}`,
 			enabled: !this.epoch_data.intercalary,
 			nth: true
 		}
@@ -1574,7 +1574,7 @@ const calendar_events_editor = {
 		let selected_option = element.find('.condition_type').find(":selected");
 		let type = selected_option.parent().attr('label');
 		let selected = selected_option.val();
-		let condition_selected = condition_mapping[type][selected][2];
+		let condition_selected = fc.variables.condition_mapping[type][selected][2];
 
 		element.find('.input_container').toggleClass('hidden', condition_selected[0] === "boolean");
 		element.find('.condition_type').toggleClass('full', condition_selected[0] === "boolean").toggleClass('nomax', condition_selected[0] === "boolean");
@@ -1695,7 +1695,7 @@ const calendar_events_editor = {
 
                     html.push("<select class='form-control'>")
 
-                    let phases = Object.keys(moon_phases[static_data.moons[selected_moon].granularity]);
+                    let phases = Object.keys(fc.variables.moon_phases[static_data.moons[selected_moon].granularity]);
 
                     for (let i = 0; i < phases.length; i++) {
                         html.push(`<option value='${i}'>`);
@@ -1740,7 +1740,7 @@ const calendar_events_editor = {
 			html.push("<select class='form-control order-1'>")
 
 			for (let i = 0; i < static_data.cycles.data.length; i++) {
-				html.push(`<optgroup label='${ordinal_suffix_of(i + 1)} cycle group' value='${i}'>`);
+				html.push(`<optgroup label='${fc.utils.ordinal_suffix_of(i + 1)} cycle group' value='${i}'>`);
 				for (let j = 0; j < static_data.cycles.data[i].names.length; j++) {
 					html.push(`<option value='${j}'>`);
 					html.push(`Cycle ${i + 1}: ${static_data.cycles.data[i].names[j]}`);
@@ -2082,7 +2082,7 @@ const calendar_events_editor = {
 		html.push("</select>");
 		html.push("<select class='form-control condition_type'>");
 
-		let keys = Object.keys(condition_mapping);
+		let keys = Object.keys(fc.variables.condition_mapping);
 
 		for (let i = 0; i < keys.length; i++) {
 
@@ -2110,7 +2110,7 @@ const calendar_events_editor = {
 
 			html.push(`<optgroup label='${keys[i]}'>`);
 
-			let options = condition_mapping[keys[i]];
+			let options = fc.variables.condition_mapping[keys[i]];
 
 			for (let j = 0; j < options.length; j++) {
 
@@ -2138,7 +2138,7 @@ const calendar_events_editor = {
 		parent.append(condition);
 
 		condition.find('.condition_type').select2({
-			matcher: matcher
+			matcher: fc.utils.matcher
 		});
 
 		condition.find('.select2').removeAttr('style');
@@ -2361,7 +2361,7 @@ const calendar_events_editor = {
 
 	},
 
-	run_test_event(years) {
+	async run_test_event(years) {
 
 		show_loading_screen(true, this.cancel_event_test, this);
 
@@ -2373,7 +2373,7 @@ const calendar_events_editor = {
 
 		} else {
 
-			this.backup_event_data = clone(events[this.event_id].data);
+			this.backup_event_data = fc.utils.clone(events[this.event_id].data);
 
 			events[this.event_id].data = this.create_event_data();
 
@@ -2413,7 +2413,7 @@ const calendar_events_editor = {
 
 				if (!event_editor_ui.new_event) {
 
-					events[event_editor_ui.event_id].data = clone(event_editor_ui.backup_event_data)
+					events[event_editor_ui.event_id].data = fc.utils.clone(event_editor_ui.backup_event_data)
 					event_editor_ui.backup_event_data = {}
 
 				}
@@ -2470,9 +2470,9 @@ const calendar_events_editor = {
 
 			let text = ""
 			if (intercalary) {
-				text = `${pre}${ordinal_suffix_of(day)} intercalary day of ${timespan_name}, ${year}${post}`
+				text = `${pre}${fc.utils.ordinal_suffix_of(day)} intercalary day of ${timespan_name}, ${year}${post}`
 			} else {
-				text = `${pre}${ordinal_suffix_of(day)} of ${timespan_name}, ${year}${post}`
+				text = `${pre}${fc.utils.ordinal_suffix_of(day)} of ${timespan_name}, ${year}${post}`
 			}
 
 			this.event_testing.occurrences_text.push(text);
@@ -2529,7 +2529,7 @@ const calendar_events_editor = {
 
 		let current_event = {}
 		if (working_event){
-			current_event = clone(this.working_event);
+			current_event = fc.utils.clone(this.working_event);
 		}else{
 			current_event = events[event_id];
 		}

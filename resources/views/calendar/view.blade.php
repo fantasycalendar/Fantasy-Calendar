@@ -7,7 +7,7 @@
 
         @include('calendar._loadcalendar')
 
-        preview_date = clone(dynamic_data);
+        preview_date = fc.utils.clone(dynamic_data);
         preview_date.follow = true;
 
 
@@ -63,7 +63,7 @@
                 if(year === 0 && !static_data.settings.year_zero_exists){
                     return false;
                 }
-                preview_date_manager.year = convert_year(static_data, year);
+                preview_date_manager.year = fc.utils.convert_year(static_data, year);
 
                 if(timespan < 0 || timespan > preview_date_manager.last_timespan){
                     return false;
@@ -113,8 +113,8 @@
                             throw result.message;
                         }
 
-                        static_data = clone(result.static_data);
-                        dynamic_data = clone(result.dynamic_data);
+                        static_data = fc.utils.clone(result.static_data);
+                        dynamic_data = fc.utils.clone(result.dynamic_data);
 
                         check_update(true);
                         evaluate_settings();
@@ -133,7 +133,7 @@
                             throw result.message;
                         }
 
-                        dynamic_data = clone(result.dynamic_data);
+                        dynamic_data = fc.utils.clone(result.dynamic_data);
 
                         check_update(false);
                         evaluate_settings();
@@ -162,12 +162,12 @@
 
         var data = dynamic_date_manager.compare(dynamic_data);
 
-        dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
+        dynamic_date_manager = new fc.utils.date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
 
         if(preview_date.follow){
-            preview_date = clone(dynamic_data);
+            preview_date = fc.utils.clone(dynamic_data);
             preview_date.follow = true;
-            preview_date_manager = new date_manager(preview_date.year, preview_date.timespan, preview_date.day);
+            preview_date_manager = new fc.utils.date_manager(preview_date.year, preview_date.timespan, preview_date.day);
         }
 
         current_year.val(dynamic_data.year);
@@ -189,7 +189,7 @@
 
     }
     if(debounce !== undefined){
-        var do_update_dynamic = debounce(function(type){
+        var do_update_dynamic = fc.utils.debounce(function(type){
             update_view_dynamic(hash);
         }, 500);
     }

@@ -6,7 +6,7 @@
 
         @include('calendar._loadcalendar')
 
-        preview_date = clone(dynamic_data);
+        preview_date = fc.utils.clone(dynamic_data);
         preview_date.follow = true;
 
         rebuild_calendar('calendar', dynamic_data);
@@ -60,7 +60,7 @@
                             throw result.message;
                         }
 
-                        dynamic_data = clone(result.dynamic_data);
+                        dynamic_data = fc.utils.clone(result.dynamic_data);
 
                         check_update(false);
                         evaluate_settings();
@@ -89,12 +89,12 @@
 
         var data = dynamic_date_manager.compare(dynamic_data);
 
-        dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
+        dynamic_date_manager = new fc.utils.date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
 
         if(preview_date.follow){
-            preview_date = clone(dynamic_data);
+            preview_date = fc.utils.clone(dynamic_data);
             preview_date.follow = true;
-            preview_date_manager = new date_manager(preview_date.year, preview_date.timespan, preview_date.day);
+            preview_date_manager = new fc.utils.date_manager(preview_date.year, preview_date.timespan, preview_date.day);
         }
 
         current_year.val(dynamic_data.year);

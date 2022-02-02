@@ -68,12 +68,12 @@ const calendarYearHeader = {
 
         let mustacheData = {
             "year": epochData.year,
-            "nth_year": ordinal_suffix_of(epochData.year),
+            "nth_year": fc.utils.ordinal_suffix_of(epochData.year),
             "abs_year": Math.abs(epochData.year),
-            "abs_nth_year": ordinal_suffix_of(Math.abs(epochData.year)),
+            "abs_nth_year": fc.utils.ordinal_suffix_of(Math.abs(epochData.year)),
             "era_year": epochData.era_year,
-            "era_nth_year": ordinal_suffix_of(epochData.era_year),
-            "abs_era_nth_year": ordinal_suffix_of(Math.abs(epochData.era_year))
+            "era_nth_year": fc.utils.ordinal_suffix_of(epochData.era_year),
+            "abs_era_nth_year": fc.utils.ordinal_suffix_of(Math.abs(epochData.era_year))
         };
 
         if(eraName){
@@ -114,7 +114,7 @@ const calendarYearHeader = {
     },
 
     getCycle(){
-        return get_cycle(this.static_data, this.getEpochData()).text;
+        return fc.utils.get_cycle(this.static_data, this.getEpochData()).text;
     },
 
     getEpochData(){

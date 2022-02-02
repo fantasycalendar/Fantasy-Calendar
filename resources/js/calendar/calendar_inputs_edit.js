@@ -2,11 +2,11 @@ function set_up_edit_inputs(){
 
 	changes_applied = true;
 
-	prev_calendar_name = clone(calendar_name);
-	prev_dynamic_data = clone(dynamic_data);
-	prev_static_data = clone(static_data);
-	prev_events = clone(events);
-	prev_event_categories = clone(event_categories);
+	prev_calendar_name = fc.utils.clone(calendar_name);
+	prev_dynamic_data = fc.utils.clone(dynamic_data);
+	prev_static_data = fc.utils.clone(static_data);
+	prev_events = fc.utils.clone(events);
+	prev_event_categories = fc.utils.clone(event_categories);
 
 	owned_calendars = {};
 
@@ -444,7 +444,7 @@ function set_up_edit_inputs(){
 		var shift_val = shift.val();
 
 		if(cycle_val == ""){
-			var  len = avg_month_length(static_data);
+			var  len = fc.utils.avg_year_length(static_data);
 			cycle_val = len ? len : 32;
 		}
 
@@ -547,7 +547,7 @@ function set_up_edit_inputs(){
 
 	$('.add_inputs.seasons .add').click(function(){
 
-		var fract_year_len = avg_year_length(static_data);
+		var fract_year_len = fc.utils.avg_year_length(static_data);
 
 		var name = $("#season_name_input");
 		var id = season_sortable.children().length;
@@ -831,11 +831,11 @@ function set_up_edit_inputs(){
 
 		if(type === "custom"){
 
-			var stats = clone(static_data.seasons.locations[location]);
+			var stats = fc.utils.clone(static_data.seasons.locations[location]);
 
 		}else{
 
-			var location = clone(preset_data.locations[static_data.seasons.data.length][location]);
+			var location = fc.utils.clone(fc.variables.preset_data.locations[static_data.seasons.data.length][location]);
 			var stats = {
 				name: location.name
 			};
@@ -875,7 +875,7 @@ function set_up_edit_inputs(){
 
 			}
 
-			stats.settings = clone(preset_data.curves);
+			stats.settings = fc.utils.clone(fc.variables.preset_data.curves);
 			stats.settings.season_based_time = true;
 			stats.seasons = [];
 
@@ -885,7 +885,7 @@ function set_up_edit_inputs(){
 				if(preset_order !== undefined && preset_order.length == static_data.seasons.data.length){
 					index = preset_order[i];
 				}
-				stats.seasons.push(clone(location.seasons[index]));
+				stats.seasons.push(fc.utils.clone(location.seasons[index]));
 
 				stats.seasons[i].time = {}
 				stats.seasons[i].time.sunset = static_data.seasons.data[i].time.sunset;
@@ -967,9 +967,9 @@ function set_up_edit_inputs(){
 				next_year++;
 			}
 
-			let prev_day = evaluate_calendar_start(static_data, prev_year, prev_season.timespan, prev_season.day).epoch;
-			let curr_day = evaluate_calendar_start(static_data, 2, curr_season.timespan, curr_season.day).epoch-prev_day;
-			let next_day = evaluate_calendar_start(static_data, next_year, next_season.timespan, next_season.day).epoch-prev_day;
+			let prev_day = fc.utils.evaluate_calendar_start(static_data, prev_year, prev_season.timespan, prev_season.day).epoch;
+			let curr_day = fc.utils.evaluate_calendar_start(static_data, 2, curr_season.timespan, curr_season.day).epoch-prev_day;
+			let next_day = fc.utils.evaluate_calendar_start(static_data, next_year, next_season.timespan, next_season.day).epoch-prev_day;
 
 			var perc = curr_day/next_day;
 
@@ -1071,9 +1071,9 @@ function set_up_edit_inputs(){
 				next_year++;
 			}
 
-			let prev_day = evaluate_calendar_start(static_data, prev_year, prev_season.timespan, prev_season.day).epoch;
-			let curr_day = evaluate_calendar_start(static_data, 2, curr_season.timespan, curr_season.day).epoch-prev_day;
-			let next_day = evaluate_calendar_start(static_data, next_year, next_season.timespan, next_season.day).epoch-prev_day;
+			let prev_day = fc.utils.evaluate_calendar_start(static_data, prev_year, prev_season.timespan, prev_season.day).epoch;
+			let curr_day = fc.utils.evaluate_calendar_start(static_data, 2, curr_season.timespan, curr_season.day).epoch-prev_day;
+			let next_day = fc.utils.evaluate_calendar_start(static_data, next_year, next_season.timespan, next_season.day).epoch-prev_day;
 
 			var perc = curr_day/next_day;
 
@@ -1693,7 +1693,7 @@ function set_up_edit_inputs(){
 
 	});
 
-	var do_custom_cycle_change = debounce(function(element){
+	var do_custom_cycle_change = fc.utils.debounce(function(element){
 		element.change();
 	}, 350);
 
@@ -1874,7 +1874,7 @@ function set_up_edit_inputs(){
 		debounce_era_reindex();
 	});
 
-	const debounce_era_reindex = debounce(function(){
+	const debounce_era_reindex = fc.utils.debounce(function(){
 		reindex_era_list();
 		dynamic_data.current_era = get_current_era(static_data, dynamic_data.epoch);
 	}, 50)
@@ -1885,10 +1885,10 @@ function set_up_edit_inputs(){
 		static_data.eras[index].settings.ends_year = $(this).is(":checked");
 		for(var i in static_data.eras){
 			var era = static_data.eras[i];
-			era.date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, era.date.year), era.date.timespan, era.date.day).epoch;
+			era.date.epoch = fc.utils.evaluate_calendar_start(static_data, fc.utils.convert_year(static_data, era.date.year), era.date.timespan, era.date.day).epoch;
 		}
 		dynamic_data.current_era = get_current_era(static_data, dynamic_data.epoch);
-        dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
+        dynamic_date_manager = new fc.utils.date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
 	});
 
 	$(document).on('change', '#era_list .starting_era', function(){
@@ -1897,10 +1897,10 @@ function set_up_edit_inputs(){
 		static_data.eras[index].settings.ends_year = $(this).is(":checked");
 		for(var i in static_data.eras){
 			var era = static_data.eras[i];
-			era.date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, era.date.year), era.date.timespan, era.date.day).epoch;
+			era.date.epoch = fc.utils.evaluate_calendar_start(static_data, fc.utils.convert_year(static_data, era.date.year), era.date.timespan, era.date.day).epoch;
 		}
 		dynamic_data.current_era = get_current_era(static_data, dynamic_data.epoch);
-        dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
+        dynamic_date_manager = new fc.utils.date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
 	});
 
 	$(document).on('click', '.preview_era_date', function(){
@@ -1914,7 +1914,7 @@ function set_up_edit_inputs(){
 		season_debounce();
 	});
 
-	const season_debounce = debounce(function(){
+	const season_debounce = fc.utils.debounce(function(){
 		reindex_season_sortable();
 	}, 50);
 
@@ -1929,10 +1929,10 @@ function set_up_edit_inputs(){
 				colors[index][0] = get_colors_for_season(static_data.seasons.data[index].name);
 				colors[index][1] = get_colors_for_season(static_data.seasons.data[index+1].name);
 			}else if(index == static_data.seasons.data.length-1){
-				colors[index][0] = clone(colors[index-1][1]);
-				colors[index][1] = clone(colors[0][0]);
+				colors[index][0] = fc.utils.clone(colors[index-1][1]);
+				colors[index][1] = fc.utils.clone(colors[0][0]);
 			}else{
-				colors[index][0] = clone(colors[index-1][1])
+				colors[index][0] = fc.utils.clone(colors[index-1][1])
 				colors[index][1] = get_colors_for_season(static_data.seasons.data[index+1].name);
 			}
 		}
@@ -1941,7 +1941,7 @@ function set_up_edit_inputs(){
 
 			if(checked){
 
-				static_data.seasons.data[i].color = clone(colors[i]);
+				static_data.seasons.data[i].color = fc.utils.clone(colors[i]);
 
 				$(this).find('.season_color_enabled').find('.start_color').spectrum("set", static_data.seasons.data[i].color[0]);
 				$(this).find('.season_color_enabled').find('.end_color').spectrum("set", static_data.seasons.data[i].color[1]);
@@ -2365,7 +2365,7 @@ function set_up_edit_inputs(){
 		var calendar_hash = $(this).attr('hash');
 
 		var year = Number($(this).closest('.collapse-container').find('.year-input').val());
-		year = convert_year(static_data, year);
+		year = fc.utils.convert_year(static_data, year);
 		var timespan = Number($(this).closest('.collapse-container').find('.timespan-list').val());
 		var day = Number($(this).closest('.collapse-container').find('.timespan-day-list').val());
 
@@ -2388,7 +2388,7 @@ function set_up_edit_inputs(){
 
 				var date = [year, timespan, day];
 
-				var epoch_offset = evaluate_calendar_start(static_data, year, timespan, day).epoch;
+				var epoch_offset = fc.utils.evaluate_calendar_start(static_data, year, timespan, day).epoch;
 
 				link_child_calendar(calendar_hash, date, epoch_offset);
 
@@ -2859,8 +2859,8 @@ function update_data(e){
 			refresh_interval_texts();
 			set_up_view_values();
 			set_up_visitor_values();
-			dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
-			preview_date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, preview_date.year), preview_date.timespan, preview_date.day).epoch;
+			dynamic_data.epoch = fc.utils.evaluate_calendar_start(static_data, fc.utils.convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+			preview_date.epoch = fc.utils.evaluate_calendar_start(static_data, fc.utils.convert_year(static_data, preview_date.year), preview_date.timespan, preview_date.day).epoch;
 		}
 
 		if(target.attr('refresh') == "clock") {
@@ -4273,7 +4273,7 @@ function add_link_to_list(parent, key, locked, calendar){
 		var parent_link_date = [0,0,1];
 	}
 
-	element.find('.year-input').val(unconvert_year(static_data, Number(parent_link_date[0])));
+	element.find('.year-input').val(fc.utils.unconvert_year(static_data, Number(parent_link_date[0])));
 	repopulate_timespan_select(element.find('.timespan-list'), Number(parent_link_date[1]), false)
 	repopulate_day_select(element.find('.timespan-day-list'), Number(parent_link_date[2]), false)
 
@@ -4361,7 +4361,7 @@ function get_errors(){
 		for(var era_i = 0; era_i < static_data.eras.length; era_i++){
 			var era = static_data.eras[era_i];
 			if(static_data.year_data.timespans[era.date.timespan]){
-				var appears = does_timespan_appear(static_data, convert_year(static_data, era.date.year), era.date.timespan);
+				var appears = fc.utils.does_timespan_appear(static_data, fc.utils.convert_year(static_data, era.date.year), era.date.timespan);
 				if(!appears.result){
 					if(appears.reason == 'era ended'){
 						errors.push(`Era <i>${era.name}</i> is on a date that doesn't exist due to a previous era ending the year. Please move it to another year.`);
@@ -4487,7 +4487,7 @@ const creation = {
 
 }
 
-var do_error_check = debounce(function(type, rebuild){
+var do_error_check = fc.utils.debounce(function(type, rebuild){
 
 	evaluate_save_button();
 
@@ -4975,7 +4975,7 @@ function populate_preset_season_list(){
 		});
 
 		if(static_data.seasons.global_settings.preset_order === undefined){
-			static_data.seasons.global_settings.preset_order = clone(preset_order);
+			static_data.seasons.global_settings.preset_order = fc.utils.clone(preset_order);
 		}
 
 	}else{
@@ -5272,14 +5272,14 @@ function reindex_era_list(){
 			}
 		};
 
-		static_data.eras[i].date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, static_data.eras[i].date.year), static_data.eras[i].date.timespan, static_data.eras[i].date.day).epoch;
+		static_data.eras[i].date.epoch = fc.utils.evaluate_calendar_start(static_data, fc.utils.convert_year(static_data, static_data.eras[i].date.year), static_data.eras[i].date.timespan, static_data.eras[i].date.day).epoch;
 
 	});
 
-    dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
+    dynamic_date_manager = new fc.utils.date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
     dynamic_data.epoch = dynamic_date_manager.epoch;
 
-    preview_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
+    preview_date_manager = new fc.utils.date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
     preview_date.epoch = preview_date_manager.epoch;
 
 	do_error_check();
@@ -5403,7 +5403,7 @@ function reindex_event_category_list(){
 
 	});
 
-	event_categories = clone(new_order);
+	event_categories = fc.utils.clone(new_order);
 
 	return;
 }
@@ -5441,7 +5441,7 @@ function reindex_events_sortable(){
 
 	}
 
-	events = clone(new_events);
+	events = fc.utils.clone(new_events);
 
 }
 
@@ -5480,8 +5480,8 @@ function evaluate_season_lengths(){
 		'season_length': 0
 	};
 
-	var epoch_start = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year)).epoch;
-	var epoch_end = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year)+1).epoch-1;
+	var epoch_start = fc.utils.evaluate_calendar_start(static_data, fc.utils.convert_year(static_data, dynamic_data.year)).epoch;
+	var epoch_end = fc.utils.evaluate_calendar_start(static_data, fc.utils.convert_year(static_data, dynamic_data.year)+1).epoch-1;
 	var season_length = epoch_end-epoch_start;
 
 	for(var i = 0; i < static_data.seasons.data.length; i++){
@@ -5492,13 +5492,13 @@ function evaluate_season_lengths(){
 
 	data.season_offset = static_data.seasons.global_settings.offset;
 
-	var equal = avg_year_length(static_data) == data.season_length;
+	var equal = fc.utils.avg_year_length(static_data) == data.season_length;
 
 	var html = []
 	html.push(`<div class='container'>`)
 	html.push(`<div class='row py-1'>`)
 	html.push(equal ? '<i class="col-auto px-0 mr-1 fas fa-check-circle" style="line-height:1.5;"></i>' : '<i class="col-auto px-0 mr-2 fas fa-exclamation-circle" style="line-height:1.5;"></i>');
-	html.push(`<div class='col px-0'>Season length: ${data.season_length} / ${avg_year_length(static_data)} (year length)</div></div>`)
+	html.push(`<div class='col px-0'>Season length: ${data.season_length} / ${fc.utils.avg_year_length(static_data)} (year length)</div></div>`)
 	html.push(`<div class='row'>${equal ? "The season length and year length are the same, and will not drift away from each other." : "The season length and year length at not the same, and will diverge over time. Use with caution."}</div>`)
 	html.push(`</div>`)
 
@@ -5533,8 +5533,8 @@ function evaluate_season_daylength_warning(){
 }
 
 function recalc_stats(){
-	var year_length = avg_year_length(static_data);
-	var month_length = avg_month_length(static_data);
+	var year_length = fc.utils.avg_year_length(static_data);
+	var month_length = fc.utils.avg_year_length(static_data);
 	$('#fract_year_length').text(year_length);
 	$('#fract_year_length').prop('title', year_length);
 	$('#avg_month_length').text(month_length);
@@ -5709,7 +5709,7 @@ function populate_calendar_lists(){
 
 				if(child_calendar.parent_hash){
 
-					var calendar_owner = clone(owned_calendars[child_calendar.parent_hash]);
+					var calendar_owner = fc.utils.clone(owned_calendars[child_calendar.parent_hash]);
 
 					if(calendar_owner.hash == hash){
 						calendar_owner.name = "this calendar";
@@ -5761,7 +5761,7 @@ function evaluate_clock_inputs(){
 function recalculate_era_epochs(){
 
 	for(var i = 0; i < static_data.eras.length; i++){
-		static_data.eras[i].date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, static_data.eras[i].date.year), static_data.eras[i].date.timespan, static_data.eras[i].date.day).epoch;
+		static_data.eras[i].date.epoch = fc.utils.evaluate_calendar_start(static_data, fc.utils.convert_year(static_data, static_data.eras[i].date.year), static_data.eras[i].date.timespan, static_data.eras[i].date.day).epoch;
 	}
 
 }
@@ -5779,7 +5779,7 @@ function set_up_edit_values(){
 		var data = $(this).attr('data');
 		var key = $(this).attr('fc-index');
 
-		var current_calendar_data = get_calendar_data(data);
+		var current_calendar_data = fc.utils.get_calendar_data(data);
 
 		if(current_calendar_data[key] !== undefined){
 
@@ -5793,7 +5793,7 @@ function set_up_edit_values(){
 					break;
 
 				default:
-					$(this).val(unescapeHtml(current_calendar_data[key]));
+					$(this).val(fc.utils.unescapeHtml(current_calendar_data[key]));
 					break;
 			}
 		}
@@ -5933,7 +5933,7 @@ function set_up_edit_values(){
 
 		for(var i = 0; i < static_data.year_data.leap_days.length; i++){
 
-			var leap_day = clone(static_data.year_data.leap_days[i]);
+			var leap_day = fc.utils.clone(static_data.year_data.leap_days[i]);
 
 			add_leap_day_to_list(leap_day_list, i, leap_day);
 
@@ -5941,7 +5941,7 @@ function set_up_edit_values(){
 
 		leap_day_list.children().each(function(i){
 
-			var leap_day = clone(static_data.year_data.leap_days[i]);
+			var leap_day = fc.utils.clone(static_data.year_data.leap_days[i]);
 
 			if(!leap_day.intercalary && leap_day.adds_week_day){
 				repopulate_weekday_select($(this).find('.week-day-select'), leap_day.day, false);
@@ -6120,7 +6120,7 @@ function autoload(popup){
 		dynamic_data = data.dynamic_data;
 		events = data.events;
 		event_categories = data.event_categories;
-		dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+		dynamic_data.epoch = fc.utils.evaluate_calendar_start(static_data, fc.utils.convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
 		empty_edit_values();
 		set_up_edit_values();
 		set_up_view_values();
@@ -6171,7 +6171,7 @@ function get_interval_text(timespan, data){
 		text = "This timespan will appear every";
 
 		if(data.interval > 1){
-			text += " " + ordinal_suffix_of(data.interval)
+			text += " " + fc.utils.ordinal_suffix_of(data.interval)
 		}
 
 		text +=  " year";
@@ -6236,7 +6236,7 @@ function get_interval_text(timespan, data){
 				if(timespan_interval == 1){
 					text += " year"
 				}else{
-					text += ` ${ordinal_suffix_of(timespan_interval*sorted[i])} year (leaping month)`;
+					text += ` ${fc.utils.ordinal_suffix_of(timespan_interval*sorted[i])} year (leaping month)`;
 				}
 
 			}else if(i == 0){
@@ -6246,9 +6246,9 @@ function get_interval_text(timespan, data){
 				}
 
 				if(static_data.year_data.timespans[data.timespan].interval == 1){
-					text += ` ${ordinal_suffix_of(sorted[i])} year`;
+					text += ` ${fc.utils.ordinal_suffix_of(sorted[i])} year`;
 				}else{
-					text += ` ${ordinal_suffix_of(timespan_interval*sorted[i])} ${static_data.year_data.timespans[data.timespan].name}`;
+					text += ` ${fc.utils.ordinal_suffix_of(timespan_interval*sorted[i])} ${static_data.year_data.timespans[data.timespan].name}`;
 				}
 
 				if(values[i].indexOf('+') == -1 || year_offset != 0){
@@ -6261,9 +6261,9 @@ function get_interval_text(timespan, data){
 
 				if(values[i].indexOf('!') != -1){
 					if(timespan_interval == 1){
-						text += `<br>• but not every ${ordinal_suffix_of(sorted[i])} year`;
+						text += `<br>• but not every ${fc.utils.ordinal_suffix_of(sorted[i])} year`;
 					}else{
-						text += `<br>• but not every ${ordinal_suffix_of(timespan_interval*sorted[i])} ${static_data.year_data.timespans[data.timespan].name}`;
+						text += `<br>• but not every ${fc.utils.ordinal_suffix_of(timespan_interval*sorted[i])} ${static_data.year_data.timespans[data.timespan].name}`;
 					}
 
 					if(values[i].indexOf('+') == -1 || year_offset != 0){
@@ -6273,9 +6273,9 @@ function get_interval_text(timespan, data){
 				}else{
 
 					if(timespan_interval == 1){
-						text += `<br>• but also every ${ordinal_suffix_of(sorted[i])} year`;
+						text += `<br>• but also every ${fc.utils.ordinal_suffix_of(sorted[i])} year`;
 					}else{
-						text += `<br>• but also every ${ordinal_suffix_of(timespan_interval*sorted[i])} ${static_data.year_data.timespans[data.timespan].name}`;
+						text += `<br>• but also every ${fc.utils.ordinal_suffix_of(timespan_interval*sorted[i])} ${static_data.year_data.timespans[data.timespan].name}`;
 					}
 
 					if(values[i].indexOf('+') == -1 || year_offset != 0){

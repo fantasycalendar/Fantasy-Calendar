@@ -156,17 +156,12 @@
 
     <script src="{{ mix('js/calendar/header.js') }}"></script>
     <script src="{{ mix('js/calendar/calendar_ajax_functions.js') }}"></script>
-    <script src="{{ mix('js/calendar/calendar_functions.js') }}"></script>
-    <script src="{{ mix('js/calendar/calendar_variables.js') }}"></script>
     <script src="{{ mix('js/calendar/calendar_weather_layout.js') }}"></script>
     <script src="{{ mix('js/calendar/calendar_day_data_layout.js') }}"></script>
-    <script src="{{ mix('js/calendar/calendar_season_generator.js') }}"></script>
     <script src="{{ mix('js/calendar/calendar_inputs_visitor.js') }}"></script>
     <script src="{{ mix('js/calendar/calendar_inputs_view.js') }}"></script>
     <script src="{{ mix('js/calendar/calendar_inputs_edit.js') }}"></script>
     <script src="{{ mix('js/calendar/calendar_manager.js') }}"></script>
-    <script src="{{ mix('js/calendar/calendar_presets.js') }}"></script>
-    <script src="{{ mix('js/calendar/calendar_workers.js') }}"></script>
 
     @if(Auth::check() && Auth::user()->setting('dark_theme'))
         <link rel="stylesheet" href="{{ mix('css/app-dark.css') }}">

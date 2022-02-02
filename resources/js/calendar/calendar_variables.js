@@ -1,4 +1,4 @@
-var condition_mapping = {
+export const condition_mapping = {
 
 	"Date": [
 		["Date is exactly", 			[["date", "==", 0, 1, 2]],		[["number", "Number", "Year", "1"], ["select"], ["number", "Number", "Day", "1"]]],
@@ -245,7 +245,7 @@ var condition_mapping = {
 	]
 }
 
-var moon_paths = [
+export const moon_paths = [
 	"M6.5,16a9.5,9.5 0 1,0 19,0a9.5,9.5 0 1,0 -19,0",
 	"M19.79,6C22.25,7.2,25,9.92,25,16s-2.75,8.8-5.21,10a10.59,10.59,0,0,1-3.79.71A10.72,10.72,0,0,1,16,5.28,10.59,10.59,0,0,1,19.79,6Z",
 	"M19.43,5.86C21.79,7,24.5,9.7,24.5,16s-2.71,9-5.07,10.14a10.55,10.55,0,0,1-3.43.58A10.72,10.72,0,0,1,16,5.28,10.55,10.55,0,0,1,19.43,5.86Z",
@@ -296,7 +296,7 @@ var moon_paths = [
 	"M16,26.72a10.52,10.52,0,0,1-3.77-.7C9.77,24.81,7,22.1,7,16S9.77,7.19,12.23,6A10.52,10.52,0,0,1,16,5.28a10.72,10.72,0,0,1,0,21.44Z"
 ];
 
-var moon_phases = {
+export const moon_phases = {
 	'4': {
         'New Moon':                 moon_paths[0],
         'First Quarter':            moon_paths[12],
@@ -405,7 +405,7 @@ var moon_phases = {
 	}
 };
 
-var preset_data = {
+export const preset_data = {
 
 	temperature_gauge: {
 		'Polar': -40,
@@ -1474,3 +1474,4 @@ var preset_data = {
 		}
 	}
 }
+

@@ -2,7 +2,7 @@
 
 @push('head')
     <script>
-    
+
     $(document).ready(function(){
 
         @include('calendar._loadcalendar')
@@ -40,7 +40,7 @@
 
     });
 
-    var do_update_dynamic = debounce(function(type){
+    var do_update_dynamic = fc.utils.debounce(function(type){
         update_dynamic();
     }, 250);
 
@@ -58,7 +58,7 @@
 
                 last_static_change = new Date(result.last_static_change)
                 last_dynamic_change = new Date(result.last_dynamic_change)
-        
+
                 set_up_view_values();
 
                 set_date(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
@@ -72,7 +72,7 @@
                 dynamic_data = JSON.parse(output.dynamic_data);
 
                 last_dynamic_change = new_dynamic_change;
-        
+
                 set_up_view_values();
 
                 set_date(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);

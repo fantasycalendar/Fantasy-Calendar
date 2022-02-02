@@ -1,3 +1,8 @@
+import Climate from "./calendar_season_generator.js";
+import IntervalsCollection from "../fantasycalendar/Collections/IntervalsCollection.js";
+import * as utils from "./calendar_functions.js"
+import * as variables from "./calendar_variables.js"
+
 const calendar_data_generator = {
 
 	dynamic_data: {},
@@ -157,9 +162,9 @@ const calendar_data_generator = {
 
 		for(let i = 0; i < this.static_data.eras.length; i++){
 			if(this.static_data.eras[i].settings.starting_era) continue;
-			let epoch_data = evaluate_calendar_start(
+			let epoch_data = utils.evaluate_calendar_start(
 			    this.static_data,
-                convert_year(this.static_data, this.static_data.eras[i].date.year),
+                utils.convert_year(this.static_data, this.static_data.eras[i].date.year),
                 this.static_data.eras[i].date.timespan,
                 this.static_data.eras[i].date.day
             );
@@ -199,21 +204,21 @@ const calendar_data_generator = {
      */
     create_adjusted_timespan: function(year, timespan_index){
 
-		let timespan = clone(this.static_data.year_data.timespans[timespan_index]);
+		let timespan = utils.clone(this.static_data.year_data.timespans[timespan_index]);
 
 		timespan.index = timespan_index;
 		timespan.intercalary = timespan.type === "intercalary";
 
 		timespan.render = this.current_year === year && (!this.render_one_month || (this.render_one_month && timespan_index === this.dynamic_data.timespan));
 
-		timespan.week = timespan.week ? timespan.week : clone(this.static_data.year_data.global_week);
-		timespan.truncated_week = truncate_weekdays(timespan.week);
+		timespan.week = timespan.week ? timespan.week : utils.clone(this.static_data.year_data.global_week);
+		timespan.truncated_week = utils.truncate_weekdays(timespan.week);
 
-        let timespan_occurrences = get_timespan_occurrences(this.static_data, year, timespan.interval, timespan.offset);
+        let timespan_occurrences = utils.get_timespan_occurrences(this.static_data, year, timespan.interval, timespan.offset);
 
         timespan.leap_days = [];
 
-		const leap_days = clone(this.static_data.year_data.leap_days)
+		const leap_days = utils.clone(this.static_data.year_data.leap_days)
             .map((leap_day, index) => {
                 leap_day.index = index;
                 return leap_day;
@@ -286,7 +291,7 @@ const calendar_data_generator = {
 
             if(era.settings.starting_era) continue;
 
-            if(era.settings.ends_year && convert_year(this.static_data, year) === convert_year(this.static_data, era.date.year) && era.date.timespan < num_timespans+1){
+            if(era.settings.ends_year && utils.convert_year(this.static_data, year) === utils.convert_year(this.static_data, era.date.year) && era.date.timespan < num_timespans+1){
 
                 num_timespans = era.date.timespan+1;
                 ending_day = era.date.day;
@@ -300,9 +305,9 @@ const calendar_data_generator = {
 
             let timespan_object = this.static_data.year_data.timespans[timespan_index];
 
-            let timespan_data = this.create_adjusted_timespan(convert_year(this.static_data, year), timespan_index);
+            let timespan_data = this.create_adjusted_timespan(utils.convert_year(this.static_data, year), timespan_index);
 
-            if(is_leap_simple(this.static_data, convert_year(this.static_data, year), timespan_object.interval, timespan_object.offset, true) && timespan_data.length > 0){
+            if(utils.is_leap_simple(this.static_data, utils.convert_year(this.static_data, year), timespan_object.interval, timespan_object.offset, true) && timespan_data.length > 0){
 
                 if(timespan_index === num_timespans-1 && hasEndingEra){
                     timespan_data.length = Math.min(timespan_data.length, ending_day);
@@ -331,7 +336,7 @@ const calendar_data_generator = {
 
 	    for(let year = start_year; year < end_year; year++){
 
-	        timespans[convert_year(this.static_data, year)] = this.get_timespans_in_year(year);
+	        timespans[utils.convert_year(this.static_data, year)] = this.get_timespans_in_year(year);
 
         }
 
@@ -362,7 +367,7 @@ const calendar_data_generator = {
 
                 if(timespans_in_year.length === 0) continue;
 
-                this.timespans[convert_year(this.static_data, pre_year)] = timespans_in_year;
+                this.timespans[utils.convert_year(this.static_data, pre_year)] = timespans_in_year;
 
                 let days_in_year = timespans_in_year.reduce(function(a, b) {
                     return isNaN(a) ? a.length + b.length : a + b.length ;
@@ -403,7 +408,7 @@ const calendar_data_generator = {
 
                 if(timespans_in_year.length === 0) continue;
 
-                this.timespans[convert_year(this.static_data, post_year)] = timespans_in_year;
+                this.timespans[utils.convert_year(this.static_data, post_year)] = timespans_in_year;
 
                 let days_in_year = timespans_in_year.reduce(function(a, b) {
                     return isNaN(a) ? a.length + b.length : a + b.length ;
@@ -480,7 +485,7 @@ const calendar_data_generator = {
         let years = Object.keys(this.timespans).map(year => Number(year)).sort((a, b) => a - b );
 
 	    let start_year = years[0];
-		let start_data = evaluate_calendar_start(this.static_data, start_year, undefined, undefined, true);
+		let start_data = utils.evaluate_calendar_start(this.static_data, start_year, undefined, undefined, true);
 		let era_year = start_data.era_year;
 		let count_timespans = start_data.count_timespans;
 		let num_timespans = start_data.num_timespans;
@@ -490,10 +495,10 @@ const calendar_data_generator = {
 		let current_era = start_data.current_era;
 		let month_week_num;
 
-		let year_start_data = evaluate_calendar_start(this.static_data, start_year);
+		let year_start_data = utils.evaluate_calendar_start(this.static_data, start_year);
 		let year_day = 1 + start_data.epoch - year_start_data.epoch;
 		let year_week_num = 1 + start_data.total_week_num - year_start_data.total_week_num;
-		let inverse_year_week_num = 1 + evaluate_calendar_start(this.static_data, start_year+1).total_week_num - year_start_data.total_week_num - year_week_num;
+		let inverse_year_week_num = 1 + utils.evaluate_calendar_start(this.static_data, start_year+1).total_week_num - year_start_data.total_week_num - year_week_num;
 
 		let year_num_timespans = start_data.num_timespans - year_start_data.num_timespans;
 
@@ -530,8 +535,8 @@ const calendar_data_generator = {
                             if (leap_day.intercalary && leap_day.day === day) {
 
                                 let data = {
-                                    'year': unconvert_year(this.static_data, year),
-                                    'era_year': unconvert_year(this.static_data, era_year),
+                                    'year': utils.unconvert_year(this.static_data, year),
+                                    'era_year': utils.unconvert_year(this.static_data, era_year),
 
                                     'timespan_index': current_timespan.index,
                                     'timespan_number': year_num_timespans - 1,
@@ -565,7 +570,7 @@ const calendar_data_generator = {
 
                                 }
 
-                                data.cycle = get_cycle(this.static_data, data).array;
+                                data.cycle = utils.get_cycle(this.static_data, data).array;
 
                                 data = this.add_moon_data(data);
 
@@ -582,8 +587,8 @@ const calendar_data_generator = {
                     if (day > 0) {
 
                         let data = {
-                            'year': unconvert_year(this.static_data, year),
-                            'era_year': unconvert_year(this.static_data, era_year),
+                            'year': utils.unconvert_year(this.static_data, year),
+                            'era_year': utils.unconvert_year(this.static_data, era_year),
 
                             'timespan_index': current_timespan.index,
                             'timespan_number': year_num_timespans - 1,
@@ -616,7 +621,7 @@ const calendar_data_generator = {
 
                         }
 
-                        data.cycle = get_cycle(this.static_data, data).array;
+                        data.cycle = utils.get_cycle(this.static_data, data).array;
 
                         if (current_timespan.type !== "intercalary") {
 
@@ -637,8 +642,8 @@ const calendar_data_generator = {
                             if (leap_day.intercalary && leap_day.day === day) {
 
                                 let data = {
-                                    'year': unconvert_year(this.static_data, year),
-                                    'era_year': unconvert_year(this.static_data, era_year),
+                                    'year': utils.unconvert_year(this.static_data, year),
+                                    'era_year': utils.unconvert_year(this.static_data, era_year),
 
                                     'timespan_index': current_timespan.index,
                                     'timespan_number': year_num_timespans - 1,
@@ -672,7 +677,7 @@ const calendar_data_generator = {
 
                                 }
 
-                                data.cycle = get_cycle(this.static_data, data).array;
+                                data.cycle = utils.get_cycle(this.static_data, data).array;
 
                                 data = this.add_moon_data(data);
 
@@ -745,7 +750,7 @@ const calendar_data_generator = {
 				}else{
 					era_year++;
 				}
-				inverse_year_week_num = 1 + evaluate_calendar_start(this.static_data, this.current_year+1).total_week_num - evaluate_calendar_start(this.static_data, this.current_year).total_week_num;
+				inverse_year_week_num = 1 + utils.evaluate_calendar_start(this.static_data, this.current_year+1).total_week_num - utils.evaluate_calendar_start(this.static_data, this.current_year).total_week_num;
 			}
 
             year_day = 1;
@@ -797,7 +802,7 @@ const calendar_data_generator = {
         this.build_seasons = true;
 	    this.callback = false;
 	    this.render_one_month = this.static_data.settings.show_current_month;
-	    this.current_year = convert_year(this.static_data, this.dynamic_data.year);
+	    this.current_year = utils.convert_year(this.static_data, this.dynamic_data.year);
         this.timespans = {};
 
 		this.reset_eras();
@@ -827,8 +832,8 @@ const calendar_data_generator = {
             this.callback = true;
             this.build_seasons = build_seasons;
 
-            start_year = unconvert_year(this.static_data, start_year)
-            end_year = unconvert_year(this.static_data, end_year)
+            start_year = utils.unconvert_year(this.static_data, start_year)
+            end_year = utils.unconvert_year(this.static_data, end_year)
             this.timespans = this.get_timespans_in_year_range(start_year, end_year);
             this.evaluate_pre_calculation(start_year);
             this.evaluate_post_calculation(end_year);
@@ -875,7 +880,7 @@ const calendar_data_generator = {
             const start_epochs = Object.keys(first_timespan.epochs);
             const end_epochs = Object.keys(last_timespan.epochs);
 
-            const year = unconvert_year(this.static_data, this.current_year);
+            const year = utils.unconvert_year(this.static_data, this.current_year);
             const calendar_week_day = this.render_one_month
                 ? Object.values(first_timespan.epochs)[0]?.week_day ?? 0
                 : Object.values(this.epochs).find(epoch => {
@@ -892,7 +897,7 @@ const calendar_data_generator = {
                 static_data: this.static_data,
                 year_data: {
                     year: this.dynamic_data.year,
-                    era_year: unconvert_year(this.static_data, calendar_era_year),
+                    era_year: utils.unconvert_year(this.static_data, calendar_era_year),
                     start_epoch: calendar_start_epoch,
                     end_epoch: calendar_end_epoch,
                     week_day: calendar_week_day,
@@ -924,7 +929,7 @@ var event_evaluator = {
 
 		this.static_data = static_data;
 		this.dynamic_data = dynamic_data;
-		this.events = clone(events);
+		this.events = utils.clone(events);
 		this.categories = event_categories;
 		this.epoch_data = epoch_data;
 
@@ -961,554 +966,560 @@ var event_evaluator = {
 
 		this.stored_epochs = {}
 
-		function evaluate_operator(operator, a, b, c){
-
-			switch(operator){
-				case '==':
-					return a == b;
-					break;
-				case '!=':
-					return a != b;
-					break;
-				case '>=':
-					return a >= b;
-					break;
-				case '<=':
-					return a <= b;
-					break;
-				case '>':
-					return a > b;
-					break;
-				case '<':
-					return a < b;
-					break;
-				case '%':
-					c = (c)%b;
-					return (a-c)%b==0;
-					break;
-				case '&&':
-					return a&&b;
-					break;
-				case 'NAND':
-					return !(a&&b);
-					break;
-				case '||':
-					return a||b;
-					break;
-				case '^':
-					return a^b;
-					break;
-			}
-		}
-
-		function find_stored_epoch(year, timespan, day) {
-			let date_string = `${convert_year(event_evaluator.static_data, year)}-${timespan}-${day}`;
-			let epoch = event_evaluator.stored_epochs[date_string];
-			if(epoch === undefined) {
-				epoch = evaluate_calendar_start(event_evaluator.static_data, convert_year(event_evaluator.static_data, year), timespan, day).epoch;
-				event_evaluator.stored_epochs[date_string] = epoch;
-			}
-			return epoch;
-		}
-
-		function evaluate_condition(epoch_data, array){
-
-			var category = array[0];
-			var type = array[1];
-			var values = array[2];
-
-			var result = true;
-
-			for(var i = 0; i < condition_mapping[category][type][1].length; i++){
-
-				var subcon = condition_mapping[category][type][1][i];
-				var selector = subcon[0];
-				var operator = subcon[1];
-
-				if(array[0] === "Epoch"){
-
-					var selected = epoch_data[selector];
-					var cond_1 = Number(values[subcon[2]]) != NaN ? Number(values[subcon[2]]) : values[subcon[2]];
-					var cond_2 = values[subcon[3]] ? values[subcon[3]] : undefined;
-					cond_2 = Number(cond_2) != NaN ? Number(cond_2) : cond_2;
-
-				}else if(array[0] === "Date"){
-
-					var selected = epoch_data["epoch"];
-					var cond_1 = find_stored_epoch(values[0], values[1], values[2]);
-
-				}else if(array[0] === "Moons"){
-
-					var selected = epoch_data[selector][values[0]];
-					var cond_1 = values[subcon[2]]|0;
-					var cond_2 = values[subcon[3]] ? values[subcon[3]]|0 : undefined;
-
-				}else if(array[0] === "Season" && epoch_data["season"]){
-
-					var selected = epoch_data["season"][selector];
-					var cond_1 = values[subcon[2]]|0;
-					var cond_2 = values[subcon[3]] ? values[subcon[3]]|0 : undefined;
-
-				}else if(array[0] === "Random"){
-
-					var cond_1 = values[subcon[2]]|0;
-					var cond_2 = values[subcon[3]] ? values[subcon[3]]|0 : undefined;
-					var selected = fract(43758.5453 * Math.sin(cond_2 + (78.233 * epoch_data.epoch)))*100;
-
-				}else if(array[0] === "Cycle"){
-
-					var selected_cycle = !isNaN(Number(values[subcon[2]])) ? Number(values[subcon[2]]) : values[subcon[2]];
-					var selected = epoch_data[selector][selected_cycle];
-					var cond_1 = !isNaN(Number(values[subcon[3]])) ? Number(values[subcon[3]]) : values[subcon[3]];
-
-				}else if(array[0] === "Location"){
-
-					var cond_1 = values[subcon[2]]|0;
-
-					return event_evaluator.dynamic_data.custom_location && evaluate_operator(operator, cond_1, event_evaluator.dynamic_data.location);
-
-				}else if(array[0] === "Events"){
-
-					var cond_1 = values[subcon[2]]|0;
-					cond_1 = this.current_event.data.connected_events[cond_1];
-					var cond_2 = values[subcon[3]]|0;
-
-					if(event_evaluator.event_data.valid[cond_1] === undefined || event_evaluator.event_data.valid[cond_1].length == 0){
-
-						var result = false;
-
-					}else if(operator == "exactly_past"){
-
-						for(var j = 0; j < event_evaluator.event_data.valid[cond_1].length; j++){
-
-							var result = epoch_data.epoch == event_evaluator.event_data.valid[cond_1][j]+cond_2
-
-							if(result) break;
-
-						}
-
-					}else if(operator == "exactly_future"){
-
-						for(var j = 0; j < event_evaluator.event_data.valid[cond_1].length; j++){
-
-							var result = epoch_data.epoch == event_evaluator.event_data.valid[cond_1][j]-cond_2
-
-							if(result) break;
-
-						}
-
-					}else if(operator == "in_past_exc"){
-
-						for(var j = 0; j < event_evaluator.event_data.valid[cond_1].length; j++){
-
-							var result = epoch_data.epoch >= event_evaluator.event_data.valid[cond_1][j]-cond_2 && event_evaluator.event_data.valid[cond_1][j] > epoch_data.epoch
-
-							if(result) break;
-
-						}
-
-					}else if(operator == "in_future_exc"){
-
-						for(var j = 0; j < event_evaluator.event_data.valid[cond_1].length; j++){
-
-							var result = epoch_data.epoch <= event_evaluator.event_data.valid[cond_1][j]+cond_2 && event_evaluator.event_data.valid[cond_1][j] < epoch_data.epoch
-
-							if(result) break;
-
-						}
-
-					}else if(operator == "in_past_inc"){
-
-						for(var j = 0; j < event_evaluator.event_data.valid[cond_1].length; j++){
-
-							var result = epoch_data.epoch >= event_evaluator.event_data.valid[cond_1][j]-cond_2 && event_evaluator.event_data.valid[cond_1][j] >= epoch_data.epoch
-
-							if(result) break;
-
-						}
-
-					}else if(operator == "in_future_inc"){
-
-						for(var j = 0; j < event_evaluator.event_data.valid[cond_1].length; j++){
-
-							var result = epoch_data.epoch <= event_evaluator.event_data.valid[cond_1][j]+cond_2 && event_evaluator.event_data.valid[cond_1][j] <= epoch_data.epoch
-
-							if(result) break;
-
-						}
-
-					}
-
-				}else if(array[0] === 'Weekday'){
-					var selected = epoch_data[selector];
-					var cond_1 = !isNaN(Number(values[subcon[2]])) ? Number(values[subcon[2]]) : values[subcon[2]];
-					if(!isNaN(cond_1) && (array[1] === "0" || array[1] === "1")){
-						cond_1 = event_evaluator.static_data.year_data.global_week[cond_1];
-					}
-					var cond_2 = values[subcon[3]] ? values[subcon[3]] : undefined;
-					cond_2 = !isNaN(Number(cond_2)) ? Number(cond_2) : cond_2;
-
-				}else{
-
-					var selected = epoch_data[selector];
-					var cond_1 = !isNaN(Number(values[subcon[2]])) ? Number(values[subcon[2]]) : values[subcon[2]];
-					var cond_2 = values[subcon[3]] ? values[subcon[3]] : undefined;
-					cond_2 = !isNaN(Number(cond_2)) ? Number(cond_2) : cond_2;
-
-				}
-
-				if(array[0] !== "Events"){
-
-					if(operator == '%'){
-						var result = evaluate_operator("&&", evaluate_operator(operator, selected, cond_1, cond_2), result)
-					}else{
-						if(subcon.length == 4){
-							var result = evaluate_operator("&&", evaluate_operator(operator, selected, cond_1, cond_2), result)
-						}else{
-							var result = evaluate_operator("&&", evaluate_operator(operator, selected, cond_1), result)
-						}
-					}
-
-				}
-
-			}
-
-			return result;
-		}
-
-		function evaluate_event_num_group(epoch_data, array, num){
-
-			var result = false;
-
-			var count_result = 0;
-
-			for(var i = array.length-1; i >= 0; i-=1){
-
-				var condition = array[i];
-
-				var is_array = Array.isArray(condition[1]);
-
-				if(is_array){
-
-					var is_count = condition[0] !== "" && condition[0] !== "!" && !isNaN(Number(condition[0]));
-
-					if(is_count){
-
-						var new_result = evaluate_event_num_group(epoch_data, condition[1], Number(condition[0]));
-
-					}else{
-
-						var new_result = evaluate_event_group(epoch_data, condition[1]);
-
-						new_result = condition[0] === "!" ? !new_result : new_result;
-
-					}
-
-				}else{
-
-					var new_result = evaluate_condition(epoch_data, condition);
-
-				}
-
-				count_result = new_result ? count_result+1 : count_result;
-
-				result = count_result >= num;
-
-				if(result) return true;
-
-			}
-
-			return false;
-
-		}
-
-		function evaluate_event_group(epoch_data, array){
-
-			var result = false;
-
-			for(var i = array.length-1; i >= 0; i-=2){
-
-				var condition = array[i];
-
-				var is_array = Array.isArray(condition[1]);
-
-				if(is_array){
-
-					var is_count = condition[0] !== "" && condition[0] !== "!" && !isNaN(Number(condition[0]));
-
-					if(is_count){
-
-						var new_result = evaluate_event_num_group(epoch_data, condition[1], Number(condition[0]));
-
-					}else{
-
-						var new_result = evaluate_event_group(epoch_data, condition[1]);
-
-						new_result = condition[0] === "!" ? !new_result : new_result;
-
-					}
-
-				}else{
-
-					var new_result = evaluate_condition(epoch_data, condition);
-
-				}
-
-				if(array[i+1]){
-
-					result = evaluate_operator(array[i+1][0], result, new_result);
-
-				}else{
-
-					result = new_result;
-
-				}
-
-			}
-
-			return result;
-
-		}
-
-		function evaluate_event(event_index){
-
-			this.current_event = event_evaluator.events[event_index];
-
-            if(!event_evaluator.event_data.valid[event_index]){
-                event_evaluator.event_data.valid[event_index] = [];
-                event_evaluator.event_data.starts[event_index] = [];
-                event_evaluator.event_data.ends[event_index] = [];
-            }
-
-			if(this.current_event.data.conditions.length != 0){
-				if(this.current_event.data.conditions[this.current_event.data.conditions.length-1].length == 1){
-					this.current_event.data.conditions.pop();
-				}
-			}
-
-			if(this.current_event.data.date !== undefined && this.current_event.data.date.length === 3){
-
-				let epoch = evaluate_calendar_start(event_evaluator.static_data, convert_year(event_evaluator.static_data, this.current_event.data.date[0]), this.current_event.data.date[1], this.current_event.data.date[2]).epoch;
-
-				let begin_epoch = this.current_event.data.has_duration ? event_evaluator.start_epoch-this.current_event.data.duration : event_evaluator.start_epoch;
-
-				if(epoch >= begin_epoch && epoch <= event_evaluator.end_epoch){
-
-					add_to_epoch(this.current_event, event_index, epoch);
-
-				}
-
-			}else{
-
-				let search_distance = this.current_event.data.search_distance ? this.current_event.data.search_distance : 0;
-
-				let begin_epoch = this.current_event.lookback ? event_evaluator.start_epoch-this.current_event.lookback-1 : event_evaluator.start_epoch-search_distance-1;
-				let last_epoch = this.current_event.lookahead ? event_evaluator.end_epoch+this.current_event.lookahead : event_evaluator.end_epoch+search_distance;
-
-                if(this.current_event.data.limited_repeat){
-
-                    const lookbackEpochs = this.current_event.data.limited_repeat_num;
-
-                    for(let subtractiveEpoch = 1; subtractiveEpoch <= lookbackEpochs; subtractiveEpoch++){
-
-                        let landedOn = event_evaluator.event_data.valid[event_index].includes(begin_epoch - subtractiveEpoch);
-
-                        if(landedOn){
-                            begin_epoch += lookbackEpochs-1;
-                            event_evaluator.current_number_of_epochs += lookbackEpochs-1;
-                            break;
-                        }
-                    }
-                }
-
-				for(let epoch = begin_epoch; epoch <= last_epoch; epoch++){
-
-					if(event_evaluator.callback){
-
-                        let percentage = event_evaluator.current_number_of_epochs/event_evaluator.total_number_of_epochs
-
-                        postMessage({
-                            percentage: percentage,
-							message: "Testing event conditions against future calendar data...",
-                            callback: true
-                        })
-
-						event_evaluator.current_number_of_epochs++;
-
-					}
-
-                    if(event_evaluator.epoch_data[epoch] !== undefined){
-
-                        if(evaluate_event_group(event_evaluator.epoch_data[epoch], this.current_event.data.conditions)){
-
-                            add_to_epoch(this.current_event, event_index, epoch);
-
-                            if(this.current_event.data.limited_repeat){
-                                epoch += this.current_event.data.limited_repeat_num-1;
-                                event_evaluator.current_number_of_epochs += this.current_event.data.limited_repeat_num-1;
-                            }
-
-                        }
-
-                    }
-
-				}
-
-			}
-
-		}
-
-		function add_to_epoch(event, event_index, epoch){
-
-			if(event.data.has_duration){
-
-				if(event_evaluator.event_data.valid[event_index].indexOf(epoch) == -1 && epoch >= event_evaluator.start_epoch) {
-					event_evaluator.event_data.valid[event_index].push(epoch);
-					event_evaluator.event_data.starts[event_index].push(epoch);
-				}
-
-				if(!event.data.show_first_last){
-
-					for(var duration = 1; duration < event.data.duration; duration++)
-					{
-						if(event_evaluator.event_data.valid[event_index].indexOf(epoch+duration-1) == -1 && epoch+duration >= event_evaluator.start_epoch) {
-							event_evaluator.event_data.valid[event_index].push(epoch+duration-1);
-						}
-					}
-				}
-
-				if(event_evaluator.event_data.valid[event_index].indexOf(epoch+event.data.duration-1) == -1 && epoch+event.data.duration-1 >= event_evaluator.start_epoch) {
-					event_evaluator.event_data.valid[event_index].push(epoch+event.data.duration-1);
-					event_evaluator.event_data.ends[event_index].push(epoch+event.data.duration-1);
-				}
-
-			}else{
-
-				if(event_evaluator.event_data.valid[event_index].indexOf(epoch) == -1){
-					event_evaluator.event_data.valid[event_index].push(epoch);
-				}
-
-			}
-
-		}
-
-		function check_event_chain(id, lookback, lookahead){
-
-			var current_event = event_evaluator.events[id];
-
-			if(lookback === undefined && lookahead === undefined){
-
-				var lookback = 0;
-
-				if(current_event.data.limited_repeat){
-					lookback = current_event.data.limited_repeat_num;
-				}
-
-				if(current_event.data.search_distance && current_event.data.search_distance > lookback){
-					lookback = current_event.data.search_distance;
-				}
-
-				var lookahead = current_event.data.search_distance ? current_event.data.search_distance : 0;
-
-			}
-
-			current_event.lookback = lookback;
-			current_event.lookahead = lookahead;
-
-			if(current_event.data.connected_events !== undefined && current_event.data.connected_events !== "false"){
-
-				for(var connectedId in current_event.data.connected_events){
-
-					var parent_id = current_event.data.connected_events[connectedId];
-
-					check_event_chain(parent_id, current_event.lookback, current_event.lookahead);
-
-				}
-
-			}
-
-			if(event_evaluator.event_data.valid[id] === undefined){
-
-				evaluate_event(id);
-
-			}
-
-		}
-
-		function get_number_of_events(id){
-
-			var current_event = event_evaluator.events[id];
-
-			if(current_event.data.connected_events !== undefined && current_event.data.connected_events !== "false"){
-
-				var begin_epoch = event_evaluator.start_epoch;
-				var last_epoch = event_evaluator.end_epoch;
-
-				for(var connectedId in current_event.data.connected_events){
-
-					var parent_id = current_event.data.connected_events[connectedId];
-
-					get_number_of_events(parent_id);
-
-					var lookback = 0;
-
-					if(current_event.data.limited_repeat){
-						lookback = current_event.data.limited_repeat_num;
-					}
-
-					if(current_event.data.search_distance && current_event.data.search_distance > lookback){
-						lookback = current_event.data.search_distance;
-					}
-
-					var lookahead = current_event.data.search_distance ? current_event.data.search_distance : 0;
-
-					begin_epoch -= lookback;
-					last_epoch += lookahead;
-
-				}
-
-				event_evaluator.total_number_of_epochs += (last_epoch-begin_epoch);
-
-			}
-
-		}
-
 		if(event_id !== undefined){
 
-			if(event_evaluator.callback !== undefined){
+			if(this.callback !== undefined){
 
-				event_evaluator.total_number_of_epochs = 0;
-				event_evaluator.current_number_of_epochs = 0;
+				this.total_number_of_epochs = 0;
+				this.current_number_of_epochs = 0;
 
-				get_number_of_events(event_id);
+				this.get_number_of_events(event_id);
 
 			}
 
 			if(this.events[event_id].data.connected_events !== undefined && this.events[event_id].data.connected_events.length > 0){
-				check_event_chain(event_id);
+                this.check_event_chain(event_id);
 			}
 
 			if(this.events[event_id].data.connected_events === undefined || this.events[event_id].data.connected_events.length == 0){
-				evaluate_event(event_id);
+                this.evaluate_event(event_id);
 			}
 
 		}else{
 
 			for(var event_index in this.events){
 				if(this.events[event_index].data.connected_events !== undefined && this.events[event_index].data.connected_events.length > 0){
-					check_event_chain(event_index);
+                    this.check_event_chain(event_index);
 				}
 			}
 
 			for(var event_index in this.events){
 				if(this.events[event_index].data.connected_events === undefined || this.events[event_index].data.connected_events.length == 0){
-					evaluate_event(event_index);
+					this.evaluate_event(event_index);
 				}
 			}
 
 		}
 
-	}
+	},
+
+    evaluate_operator(operator, a, b, c){
+
+        switch(operator){
+            case '==':
+                return a == b;
+                break;
+            case '!=':
+                return a != b;
+                break;
+            case '>=':
+                return a >= b;
+                break;
+            case '<=':
+                return a <= b;
+                break;
+            case '>':
+                return a > b;
+                break;
+            case '<':
+                return a < b;
+                break;
+            case '%':
+                c = (c)%b;
+                return (a-c)%b==0;
+                break;
+            case '&&':
+                return a&&b;
+                break;
+            case 'NAND':
+                return !(a&&b);
+                break;
+            case '||':
+                return a||b;
+                break;
+            case '^':
+                return a^b;
+                break;
+        }
+    },
+
+    find_stored_epoch(year, timespan, day) {
+        let date_string = `${utils.convert_year(this.static_data, year)}-${timespan}-${day}`;
+        let epoch = this.stored_epochs[date_string];
+        if(epoch === undefined) {
+            epoch = utils.evaluate_calendar_start(this.static_data, utils.convert_year(this.static_data, year), timespan, day).epoch;
+            this.stored_epochs[date_string] = epoch;
+        }
+        return epoch;
+    },
+
+    evaluate_condition(epoch_data, array){
+
+        var category = array[0];
+        var type = array[1];
+        var values = array[2];
+
+        let result = true;
+
+        for(var i = 0; i < variables.condition_mapping[category][type][1].length; i++){
+
+            var subcon = variables.condition_mapping[category][type][1][i];
+            var selector = subcon[0];
+            var operator = subcon[1];
+
+            if(array[0] === "Epoch"){
+
+                var selected = epoch_data[selector];
+                var cond_1 = Number(values[subcon[2]]) != NaN ? Number(values[subcon[2]]) : values[subcon[2]];
+                var cond_2 = values[subcon[3]] ? values[subcon[3]] : undefined;
+                cond_2 = Number(cond_2) != NaN ? Number(cond_2) : cond_2;
+
+            }else if(array[0] === "Date"){
+
+                var selected = epoch_data["epoch"];
+                var cond_1 = this.find_stored_epoch(values[0], values[1], values[2]);
+
+            }else if(array[0] === "Moons"){
+
+                var selected = epoch_data[selector][values[0]];
+                var cond_1 = values[subcon[2]]|0;
+                var cond_2 = values[subcon[3]] ? values[subcon[3]]|0 : undefined;
+
+            }else if(array[0] === "Season" && epoch_data["season"]){
+
+                var selected = epoch_data["season"][selector];
+                var cond_1 = values[subcon[2]]|0;
+                var cond_2 = values[subcon[3]] ? values[subcon[3]]|0 : undefined;
+
+            }else if(array[0] === "Random"){
+
+                var cond_1 = values[subcon[2]]|0;
+                var cond_2 = values[subcon[3]] ? values[subcon[3]]|0 : undefined;
+                var selected = utils.fract(43758.5453 * Math.sin(cond_2 + (78.233 * epoch_data.epoch)))*100;
+
+            }else if(array[0] === "Cycle"){
+
+                var selected_cycle = !isNaN(Number(values[subcon[2]])) ? Number(values[subcon[2]]) : values[subcon[2]];
+                var selected = epoch_data[selector][selected_cycle];
+                var cond_1 = !isNaN(Number(values[subcon[3]])) ? Number(values[subcon[3]]) : values[subcon[3]];
+
+            }else if(array[0] === "Location"){
+
+                var cond_1 = values[subcon[2]]|0;
+
+                return this.dynamic_data.custom_location && this.evaluate_operator(operator, cond_1, this.dynamic_data.location);
+
+            }else if(array[0] === "Events"){
+
+                var cond_1 = values[subcon[2]]|0;
+                cond_1 = this.current_event.data.connected_events[cond_1];
+                var cond_2 = values[subcon[3]]|0;
+
+                if(this.event_data.valid[cond_1] === undefined || this.event_data.valid[cond_1].length == 0){
+
+                    result = false;
+
+                }else if(operator == "exactly_past"){
+
+                    for(var j = 0; j < this.event_data.valid[cond_1].length; j++){
+
+                        result = epoch_data.epoch == this.event_data.valid[cond_1][j]+cond_2
+
+                        if(result) break;
+
+                    }
+
+                }else if(operator == "exactly_future"){
+
+                    for(var j = 0; j < this.event_data.valid[cond_1].length; j++){
+
+                        result = epoch_data.epoch == this.event_data.valid[cond_1][j]-cond_2
+
+                        if(result) break;
+
+                    }
+
+                }else if(operator == "in_past_exc"){
+
+                    for(var j = 0; j < this.event_data.valid[cond_1].length; j++){
+
+                        result = epoch_data.epoch >= this.event_data.valid[cond_1][j]-cond_2 && this.event_data.valid[cond_1][j] > epoch_data.epoch
+
+                        if(result) break;
+
+                    }
+
+                }else if(operator == "in_future_exc"){
+
+                    for(var j = 0; j < this.event_data.valid[cond_1].length; j++){
+
+                        result = epoch_data.epoch <= this.event_data.valid[cond_1][j]+cond_2 && this.event_data.valid[cond_1][j] < epoch_data.epoch
+
+                        if(result) break;
+
+                    }
+
+                }else if(operator == "in_past_inc"){
+
+                    for(var j = 0; j < this.event_data.valid[cond_1].length; j++){
+
+                        result = epoch_data.epoch >= this.event_data.valid[cond_1][j]-cond_2 && this.event_data.valid[cond_1][j] >= epoch_data.epoch
+
+                        if(result) break;
+
+                    }
+
+                }else if(operator == "in_future_inc"){
+
+                    for(var j = 0; j < this.event_data.valid[cond_1].length; j++){
+
+                        result = epoch_data.epoch <= this.event_data.valid[cond_1][j]+cond_2 && this.event_data.valid[cond_1][j] <= epoch_data.epoch
+
+                        if(result) break;
+
+                    }
+
+                }
+
+            }else if(array[0] === 'Weekday'){
+                var selected = epoch_data[selector];
+                var cond_1 = !isNaN(Number(values[subcon[2]])) ? Number(values[subcon[2]]) : values[subcon[2]];
+                if(!isNaN(cond_1) && (array[1] === "0" || array[1] === "1")){
+                    cond_1 = this.static_data.year_data.global_week[cond_1];
+                }
+                var cond_2 = values[subcon[3]] ? values[subcon[3]] : undefined;
+                cond_2 = !isNaN(Number(cond_2)) ? Number(cond_2) : cond_2;
+
+            }else{
+
+                var selected = epoch_data[selector];
+                var cond_1 = !isNaN(Number(values[subcon[2]])) ? Number(values[subcon[2]]) : values[subcon[2]];
+                var cond_2 = values[subcon[3]] ? values[subcon[3]] : undefined;
+                cond_2 = !isNaN(Number(cond_2)) ? Number(cond_2) : cond_2;
+
+            }
+
+            if(array[0] !== "Events"){
+
+                if(operator == '%'){
+                    result = this.evaluate_operator("&&", this.evaluate_operator(operator, selected, cond_1, cond_2), result)
+                }else{
+                    if(subcon.length == 4){
+                        result = this.evaluate_operator("&&", this.evaluate_operator(operator, selected, cond_1, cond_2), result)
+                    }else{
+                        result = this.evaluate_operator("&&", this.evaluate_operator(operator, selected, cond_1), result)
+                    }
+                }
+
+            }
+
+        }
+
+        return result;
+    },
+
+    evaluate_event_num_group(epoch_data, array, num){
+
+        let result = false;
+        let new_result = false;
+
+        var count_result = 0;
+
+        for(var i = array.length-1; i >= 0; i-=1){
+
+            var condition = array[i];
+
+            var is_array = Array.isArray(condition[1]);
+
+            if(is_array){
+
+                var is_count = condition[0] !== "" && condition[0] !== "!" && !isNaN(Number(condition[0]));
+
+                if(is_count){
+
+                    new_result = this.evaluate_event_num_group(epoch_data, condition[1], Number(condition[0]));
+
+                }else{
+
+                    new_result = this.evaluate_event_group(epoch_data, condition[1]);
+
+                    new_result = condition[0] === "!" ? !new_result : new_result;
+
+                }
+
+            }else{
+
+                new_result = this.evaluate_condition(epoch_data, condition);
+
+            }
+
+            count_result = new_result ? count_result+1 : count_result;
+
+            result = count_result >= num;
+
+            if(result) return true;
+
+        }
+
+        return false;
+
+    },
+
+    evaluate_event_group(epoch_data, array){
+
+        let result = false;
+        let new_result = false;
+
+        for(var i = array.length-1; i >= 0; i-=2){
+
+            var condition = array[i];
+
+            var is_array = Array.isArray(condition[1]);
+
+            if(is_array){
+
+                var is_count = condition[0] !== "" && condition[0] !== "!" && !isNaN(Number(condition[0]));
+
+                if(is_count){
+
+                    new_result = this.evaluate_event_num_group(epoch_data, condition[1], Number(condition[0]));
+
+                }else{
+
+                    new_result = this.evaluate_event_group(epoch_data, condition[1]);
+
+                    new_result = condition[0] === "!" ? !new_result : new_result;
+
+                }
+
+            }else{
+
+                new_result = this.evaluate_condition(epoch_data, condition);
+
+            }
+
+            if(array[i+1]){
+
+                result = this.evaluate_operator(array[i+1][0], result, new_result);
+
+            }else{
+
+                result = new_result;
+
+            }
+
+        }
+
+        return result;
+
+    },
+
+    evaluate_event(event_index){
+
+        this.current_event = this.events[event_index];
+
+        if(!this.event_data.valid[event_index]){
+            this.event_data.valid[event_index] = [];
+            this.event_data.starts[event_index] = [];
+            this.event_data.ends[event_index] = [];
+        }
+
+        if(this.current_event.data.conditions.length != 0){
+            if(this.current_event.data.conditions[this.current_event.data.conditions.length-1].length == 1){
+                this.current_event.data.conditions.pop();
+            }
+        }
+
+        if(this.current_event.data.date !== undefined && this.current_event.data.date.length === 3){
+
+            let epoch = utils.evaluate_calendar_start(this.static_data, utils.convert_year(this.static_data, this.current_event.data.date[0]), this.current_event.data.date[1], this.current_event.data.date[2]).epoch;
+
+            let begin_epoch = this.current_event.data.has_duration ? this.start_epoch-this.current_event.data.duration : this.start_epoch;
+
+            if(epoch >= begin_epoch && epoch <= this.end_epoch){
+
+                this.add_to_epoch(this.current_event, event_index, epoch);
+
+            }
+
+        }else{
+
+            let search_distance = this.current_event.data.search_distance ? this.current_event.data.search_distance : 0;
+
+            let begin_epoch = this.current_event.lookback ? this.start_epoch-this.current_event.lookback-1 : this.start_epoch-search_distance-1;
+            let last_epoch = this.current_event.lookahead ? this.end_epoch+this.current_event.lookahead : this.end_epoch+search_distance;
+
+            if(this.current_event.data.limited_repeat){
+
+                const lookbackEpochs = this.current_event.data.limited_repeat_num;
+
+                for(let subtractiveEpoch = 1; subtractiveEpoch <= lookbackEpochs; subtractiveEpoch++){
+
+                    let landedOn = this.event_data.valid[event_index].includes(begin_epoch - subtractiveEpoch);
+
+                    if(landedOn){
+                        begin_epoch += lookbackEpochs-1;
+                        this.current_number_of_epochs += lookbackEpochs-1;
+                        break;
+                    }
+                }
+            }
+
+            for(let epoch = begin_epoch; epoch <= last_epoch; epoch++){
+
+                if(this.callback){
+
+                    let percentage = this.current_number_of_epochs/this.total_number_of_epochs
+
+                    postMessage({
+                        percentage: percentage,
+                        message: "Testing event conditions against future calendar data...",
+                        callback: true
+                    })
+
+                    this.current_number_of_epochs++;
+
+                }
+
+                if(this.epoch_data[epoch] !== undefined){
+
+                    if(this.evaluate_event_group(this.epoch_data[epoch], this.current_event.data.conditions)){
+
+                        this.add_to_epoch(this.current_event, event_index, epoch);
+
+                        if(this.current_event.data.limited_repeat){
+                            epoch += this.current_event.data.limited_repeat_num-1;
+                            this.current_number_of_epochs += this.current_event.data.limited_repeat_num-1;
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    },
+
+    add_to_epoch(event, event_index, epoch){
+
+        if(event.data.has_duration){
+
+            if(this.event_data.valid[event_index].indexOf(epoch) == -1 && epoch >= this.start_epoch) {
+                this.event_data.valid[event_index].push(epoch);
+                this.event_data.starts[event_index].push(epoch);
+            }
+
+            if(!event.data.show_first_last){
+
+                for(var duration = 1; duration < event.data.duration; duration++)
+                {
+                    if(this.event_data.valid[event_index].indexOf(epoch+duration-1) == -1 && epoch+duration >= this.start_epoch) {
+                        this.event_data.valid[event_index].push(epoch+duration-1);
+                    }
+                }
+            }
+
+            if(this.event_data.valid[event_index].indexOf(epoch+event.data.duration-1) == -1 && epoch+event.data.duration-1 >= this.start_epoch) {
+                this.event_data.valid[event_index].push(epoch+event.data.duration-1);
+                this.event_data.ends[event_index].push(epoch+event.data.duration-1);
+            }
+
+        }else{
+
+            if(this.event_data.valid[event_index].indexOf(epoch) == -1){
+                this.event_data.valid[event_index].push(epoch);
+            }
+
+        }
+
+    },
+
+    check_event_chain(id, lookback, lookahead){
+
+        var current_event = this.events[id];
+
+        if(lookback === undefined && lookahead === undefined){
+
+            var lookback = 0;
+
+            if(current_event.data.limited_repeat){
+                lookback = current_event.data.limited_repeat_num;
+            }
+
+            if(current_event.data.search_distance && current_event.data.search_distance > lookback){
+                lookback = current_event.data.search_distance;
+            }
+
+            var lookahead = current_event.data.search_distance ? current_event.data.search_distance : 0;
+
+        }
+
+        current_event.lookback = lookback;
+        current_event.lookahead = lookahead;
+
+        if(current_event.data.connected_events !== undefined && current_event.data.connected_events !== "false"){
+
+            for(var connectedId in current_event.data.connected_events){
+
+                var parent_id = current_event.data.connected_events[connectedId];
+
+                this.check_event_chain(parent_id, current_event.lookback, current_event.lookahead);
+
+            }
+
+        }
+
+        if(this.event_data.valid[id] === undefined){
+
+            this.evaluate_event(id);
+
+        }
+
+    },
+
+    get_number_of_events(id){
+
+        var current_event = this.events[id];
+
+        if(current_event.data.connected_events !== undefined && current_event.data.connected_events !== "false"){
+
+            var begin_epoch = this.start_epoch;
+            var last_epoch = this.end_epoch;
+
+            for(var connectedId in current_event.data.connected_events){
+
+                var parent_id = current_event.data.connected_events[connectedId];
+
+                this.get_number_of_events(parent_id);
+
+                var lookback = 0;
+
+                if(current_event.data.limited_repeat){
+                    lookback = current_event.data.limited_repeat_num;
+                }
+
+                if(current_event.data.search_distance && current_event.data.search_distance > lookback){
+                    lookback = current_event.data.search_distance;
+                }
+
+                var lookahead = current_event.data.search_distance ? current_event.data.search_distance : 0;
+
+                begin_epoch -= lookback;
+                last_epoch += lookahead;
+
+            }
+
+            this.total_number_of_epochs += (last_epoch-begin_epoch);
+
+        }
+
+    }
 
 };
 
+export {
+    calendar_data_generator,
+    event_evaluator
+}

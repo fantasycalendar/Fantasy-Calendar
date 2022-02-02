@@ -20,6 +20,13 @@ window.CalendarEventViewer = require('./calendar-events-viewer')
 window.CalendarHTMLEditor = require('./calendar-html-editor')
 window.CalendarYearHeader = require('./calendar-year-header')
 
+window.fc = {
+    utils: require('./calendar/calendar_functions.js'),
+    workers: require('./calendar/calendar_workers.js'),
+    seasons: require('./calendar/calendar_season_generator.js'),
+    variables: require('./calendar/calendar_variables.js')
+}
+
 // Calendar specific modules
 import IntervalsCollection from "./fantasycalendar/Collections/IntervalsCollection.js";
 window.IntervalsCollection = IntervalsCollection;

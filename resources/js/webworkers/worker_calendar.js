@@ -27,7 +27,7 @@ onmessage = async (e) => {
 
 		calendar_data_generator.dynamic_data.year = from_year;
 
-		execution_time.start();
+		fc.utils.execution_time.start();
 
 		let average_time = 0;
 
@@ -62,7 +62,7 @@ onmessage = async (e) => {
 
 		console.log(`${average_time}ms`)
 
-		execution_time.end("Entire execution took:");
+		fc.utils.execution_time.end("Entire execution took:");
 
 		postMessage({
 			processed_data: data,
