@@ -1646,7 +1646,7 @@ function event_condition_check(conditions){
                 || isNaN(Number(condition[1]))
                 || !Array.isArray(condition[2])
                 || condition[2].length === 0
-                || condition[2].length !== (condition_mapping[condition[0]][condition[1]][2].length + (condition[0] === "Moons" ? 1 : 0)))
+                || condition[2].length !== (condition_mapping[condition[0]][condition[1]][2].length + (condition[0] === "Moons" || condition[0] === "Cycle" ? 1 : 0)))
             {
                 return false;
             }
