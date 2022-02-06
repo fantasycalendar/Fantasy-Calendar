@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AccountUpdateRequest;
 use App\Notifications\RequestEmailUpdate;
 use App\Http\Requests\StoreUserSettings;
 use App\Http\Requests\UpdatePasswordRequest;
@@ -28,34 +29,39 @@ class SettingsController extends Controller
         ]);
     }
 
-    public function updatePassword(UpdatePasswordRequest $request) {
-        Auth::user()->password = Hash::make($request->get('new_password'));
-        Auth::user()->save();
-
-        return redirect()->to(route('profile'));
-    }
-
-    public function requestUpdateEmail(UpdateEmailRequest $request) {
-        $new_email = $request->get('new_email');
-
-        Notification::route('mail', Auth::user()->email)->notify(new RequestEmailUpdate(Auth::user(), $new_email));
-
-        return redirect(route('profile'))->with('alert', "We have sent an email to your current email with the details to update your email!");
-    }
-
     public function updateEmail(Request $request) {
 
         if(!$request->hasValidSignature() || Auth::user()->email != $request->get('old_email')) {
-            abort(401);
+            abort(401, 'Nope');
         }
 
         Auth::user()->email = $request->get('new_email');
         Auth::user()->save();
 
-        return redirect(route('profile'))->with('alert', "Email successfully updated!");
+        return redirect(route('profile'))->with('alerts', ['email-success' => "Email successfully updated!"]);
     }
 
-    public function update(StoreUserSettings $request) {
+    public function updateAccount(AccountUpdateRequest $request) {
+        $alerts = [];
+
+        if($request->has('email') && $request->get('email') !== $request->user()->email) {
+            $request->user()->notify(new RequestEmailUpdate($request->get('email')));
+
+            $alerts['email'] = "We have sent an email to your current email with the details to update your email!";
+        }
+
+        if($request->get('password')) {
+            $request->user()->update([
+                'password' => Hash::make($request->get('password'))
+            ]);
+
+            $alerts['password'] = "Your password has been updated.";
+        }
+
+        return redirect(route('profile'))->with('alerts', $alerts);
+    }
+
+    public function updateSettings(StoreUserSettings $request) {
         Auth::user()->setSettings([
             'dark_theme' => $request->has('dark_theme')
         ]);

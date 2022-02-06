@@ -18,9 +18,8 @@ class RequestEmailUpdate extends Notification
      *
      * @return void
      */
-    public function __construct(User $user, $new_email)
+    public function __construct($new_email)
     {
-        $this->user = $user;
         $this->new_email = $new_email;
     }
 
@@ -45,9 +44,9 @@ class RequestEmailUpdate extends Notification
     {
         return (new MailMessage)
                     ->subject("Email Change Request")
-                    ->greeting(sprintf('Hello %s,', $this->user->username))
+                    ->greeting(sprintf('Hello %s,', $notifiable->username))
                     ->line(sprintf("You have requested to change your email on your Fantasy-Calendar account to \"%s\". Click the button below to confirm the request.", $this->new_email))
-                    ->action('Confirm Email Change', URL::temporarySignedRoute('update.email', now()->addHour(1), ['user' => $this->user, 'old_email' => $this->user->email, 'new_email' => $this->new_email]))
+                    ->action('Confirm Email Change', URL::temporarySignedRoute('update.email', now()->addHour(), ['user' => $notifiable, 'old_email' => $notifiable->email, 'new_email' => $this->new_email]))
                     ->line('If you did not make this request, please ignore this email and get in contact with us immediately at contact@fantasy-calendar.com');
     }
 

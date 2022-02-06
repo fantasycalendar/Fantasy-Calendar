@@ -123,9 +123,8 @@ Route::post(
 Route::prefix('profile')->middleware(['auth', 'account.deletion', 'agreement'])->group(function(){
     Route::get('/', 'SettingsController@profile')->name('profile');
     Route::get('/billing', 'SettingsController@profile')->name('profile.billing');
-    Route::post('/', 'SettingsController@update')->name('settings.update');
-    Route::post('/password', 'SettingsController@updatePassword');
-    Route::post('/email', 'SettingsController@requestUpdateEmail');
+    Route::post('/settings', 'SettingsController@updateSettings')->name('profile.updateSettings');
+    Route::post('/account', 'SettingsController@updateAccount')->name('profile.updateAccount');
     Route::get('/update-email/{user}', 'SettingsController@updateEmail')->name('update.email');
 });
 
