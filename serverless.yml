@@ -411,7 +411,7 @@ resources:
       Type: AWS::CloudFront::ResponseHeadersPolicy
       Properties:
         ResponseHeadersPolicyConfig:
-          Name: Fantasy-Calendar-Headers-Policy
+          Name: Fantasy-Calendar-Headers-Policy-${self:custom.stage}
           Comment: Response headers policy for fantasy calendar
           CustomHeadersConfig:
             Items:
