@@ -62,7 +62,6 @@
                     return code;
                 },
                 init: function() {
-                    return false;
                     this.theme_editing = clone(this.theme_originals[this.theme])
 
                     this.$nextTick(function() {
