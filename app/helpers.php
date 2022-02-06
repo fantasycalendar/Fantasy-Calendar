@@ -303,3 +303,17 @@ if(!function_exists('clamp')) {
         return max($lower, min($upper, $number));
     }
 }
+
+if(!function_exists('format_timestamp')) {
+    function format_timestamp($timestamp) {
+        return (!$timestamp)
+            ? null
+            : (new Carbon\Carbon($timestamp))->toFormattedDateString();
+    }
+}
+
+if(!function_exists('format_money')) {
+    function format_money($cents) {
+        return number_format($cents / 100, 2);
+    }
+}

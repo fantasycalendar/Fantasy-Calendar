@@ -122,6 +122,7 @@ Route::post(
 // User profile
 Route::prefix('profile')->middleware(['auth', 'account.deletion', 'agreement'])->group(function(){
     Route::get('/', 'SettingsController@profile')->name('profile');
+    Route::get('/billing', 'SettingsController@profile')->name('profile.billing');
     Route::post('/', 'SettingsController@update')->name('settings.update');
     Route::post('/password', 'SettingsController@updatePassword');
     Route::post('/email', 'SettingsController@requestUpdateEmail');

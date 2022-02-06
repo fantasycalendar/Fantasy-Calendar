@@ -1,264 +1,156 @@
-@extends('templates._page')
+<x-app-layout>
+    <!--
+      This example requires Tailwind CSS v2.0+
 
-@push('head')
-    <script>
-        function toggleSetting(name) {
-            document.getElementById(name).value=1-document.getElementById(name).value;
-            if(document.getElementById(name+'_input').getAttribute('checked') === 'checked') {
-                document.getElementById(name+'_input').removeAttribute('checked');
-            } else {
-                document.getElementById(name+'_input').setAttribute('checked', 'checked');
-            }
-        }
+      This example requires some changes to your config:
 
+      ```
+      // tailwind.config.js
+      const colors = require('tailwindcss/colors')
 
-        function ProfileManager() {
+      module.exports = {
+        // ...
+        theme: {
+          extend: {
+            colors: {
+              primary: colors.primary,
+            },
+          },
+        },
+        plugins: [
+          // ...
+          require('@tailwindcss/forms'),
+        ],
+      }
+      ```
+    -->
+    <!--
+      This example requires updating your template:
 
-            return {
+      ```
+      <html class="h-full bg-gray-100">
+      <body class="h-full">
+      ```
+    -->
+    <div class="h-full">
+        <main class="max-w-7xl mx-auto pb-10 lg:px-8">
+            <div class="lg:grid lg:grid-cols-12 lg:gap-x-5">
+                <aside class="py-6 px-2 sm:px-6 lg:py-0 lg:px-0 lg:col-span-3">
+                    <nav class="space-y-1">
+                        <!-- Current: "bg-gray-50 text-primary-600 hover:bg-white", Default: "text-gray-900 hover:text-gray-900 hover:bg-gray-50" -->
+                        <x-left-nav-item icon="cog" label="Account" route="profile"></x-left-nav-item>
+                        <x-left-nav-item icon="credit-card" label="Plan & Billing" route="profile.billing"></x-left-nav-item>
+                        <x-left-nav-item icon="puzzle-piece" label="Integrations" route="profile.billing"></x-left-nav-item>
+                    </nav>
+                </aside>
 
-                changing_password: false,
-                password_valid: false,
-                new_password: '',
-                new_password_confirmation: '',
-                was_validated: false,
+                <!-- Payment details -->
+                <div class="space-y-6 sm:px-6 lg:px-0 lg:col-span-9">
+                    <section aria-labelledby="user-details-heading">
+                        <form action="#" method="POST">
+                            <div class="shadow sm:rounded-md sm:overflow-hidden">
+                                <div class="bg-white dark:bg-gray-800 py-6 px-4 sm:p-6">
+                                    <div>
+                                        <h2 id="user-details-heading" class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">{{ $user->username }}</h2>
+                                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400"><i class="fa fa-user-circle"></i> Registered {{ $user->created_at->format('Y-m-d') }} <i class="fa fa-ellipsis-h px-2"></i> <i class="fa fa-calendar"></i> {{ $user->calendars()->count() }} {{ \Illuminate\Support\Str::plural('Calendar', $user->calendars()->count()) }}</p>
+                                    </div>
 
-                confirm_password: function() {
-                    this.was_validated = true;
-                    this.password_valid = this.new_password.length > 7 && this.new_password !== '' && this.new_password_confirmation !== '' && this.new_password === this.new_password_confirmation
-                },
+                                    <div class="mt-6 grid grid-cols-4 gap-6">
+                                        <div class="col-span-4 sm:col-span-2">
+                                            <x-text-input value="{{ $user->email }}" label="Email Address" type="text" name="email" id="email" autocomplete="email"></x-text-input>
+                                        </div>
 
-                changing_email: false,
-                email_valid: false,
-                new_email: '',
-                new_email_confirmation: '',
-                was_validated: false,
+                                        <div class="col-span-4 sm:col-span-2">
+                                            <x-text-input label="Confirm Email" value="{{ $user->email }}" type="text" name="confirm-email" id="confirm-email" autocomplete="email"></x-text-input>
+                                        </div>
 
-                confirm_email: function() {
-                    this.was_validated = true;
-                    this.email_valid = validateEmail(this.new_email) && this.new_email === this.new_email_confirmation;
-                }
-            }
+                                        <div class="col-span-4 sm:col-span-2">
+                                            <x-text-input label="New Password" type="text" name="new-password" id="new-password" placeholder="************"></x-text-input>
+                                        </div>
 
-        }
+                                        <div class="col-span-4 sm:col-span-2">
+                                            <x-text-input label="Confirm New Password" type="text" name="confirm-password" id="confirm-password" placeholder="************"></x-text-input>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="px-4 py-3 bg-gray-50 dark:bg-gray-700 text-right sm:px-6">
+                                    <x-button type="submit">Save</x-button>
+                                </div>
+                            </div>
+                        </form>
+                    </section>
 
-    </script>
+                    <section aria-labelledby="preferences-heading">
+                        <form method="POST">
+                            @csrf
 
-    <style>
+                            <div class="shadow sm:rounded-md sm:overflow-hidden">
+                                <div class="bg-white dark:bg-gray-800 py-6 px-4 sm:p-6">
+                                    <div>
+                                        <h2 id="preferences-heading" class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">Preferences</h2>
+                                    </div>
 
-        .badge-custom{
-            font-size: 45%;
-            vertical-align: middle;
-        }
+                                    <div class="mt-6 grid grid-cols-4 gap-6">
+                                        <x-input-toggle name="dark_theme" label="Dark theme" description="Your retinas will thank you later." value="{{ $user->setting('dark_theme') ? 'true' : 'false' }}"></x-input-toggle>
+                                        <x-input-toggle name="marketing_acceptance" label="Send me product updates" description="We'll only send you stuff when it's a super big deal - No spam here." value="{{ $user->marketing ? 'true' : 'false' }}"></x-input-toggle>
+                                    </div>
+                                </div>
+                                <div class="px-4 py-3 bg-gray-50 dark:bg-gray-700 text-right sm:px-6">
+                                    <x-button type="submit">Save</x-button>
+                                </div>
+                            </div>
+                        </form>
+                    </section>
 
-    </style>
-
-    @if(config('services.discord.enabled'))
-        <script>
-            function confirmDisconnect() {
-                swal.fire({
-                    title: "Are you sure?",
-                    text: "Your Discord account will be disconnected from Fantasy Calendar. Commands will no longer work for you, but you will still need to remove the app from any servers you don't want it in in order to remove it completely.",
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    icon: "warning",
-                }).then((result) => {
-                    if(!result.dismiss) {
-                        self.location = '{{ route('discord.auth.remove') }}';
-                    }
-                });
-            }
-        </script>
-    @endif
-@endpush
-
-
-@section('profile-card')
-    <div class="row">
-        <div class="col-12 col-md-4">
-            <p><i class="fa fa-calendar"></i> Calendars: {{ $user->calendars_count }}</p>
-        </div>
-        <div class="col-12 col-md-8">
-            <p><i class="fa fa-layer-group"></i> Subscription: {!! ($user->betaAccess()) ? "Timekeeper <br><small class='pl-3'>(Free for beta participation)</small>" : $user->paymentLevel() !!}</p>
-            @empty($subscription)
-                @unless($user->betaAccess())
-                    <p><a class="btn btn-success form-control" href="{{ route('subscription.pricing') }}">Get subscribed</a></p>
-                @else
-                    <p><a href="{{ route('subscription.pricing', ['beta_override' => '1']) }}" class="btn btn-success form-control">Subscribe anyway</a></p>
-                @endunless
-            @else
-                <p><i class="fa fa-credit-card"></i> {{ strtoupper($user->card_brand) }} (...{{ $user->card_last_four }})</p>
-                @unless($subscription->onGracePeriod())
-                    <p><a href="{{ route('subscription.cancel') }}" class="btn btn-danger form-control">Cancel subscription</a></p>
-
-                    <p>Renews on: {{ $subscription_renews_at }}</p>
-                @endunless
-
-                @if($subscription->onGracePeriod())
-                    <p style="color: red;"><i class="fa fa-exclamation-triangle"></i> Cancelled, ending {{ $subscription->ends_at->format('Y-m-d') }}</p>
-                    <p><a href="{{ route('subscription.resume') }}" class="btn btn-primary form-control">Resume Subscription</a></p>
-                @endif
-
-                @if(!app()->environment(['production']) && $subscription->onGracePeriod())
-                    <p><a href="{{ route('subscription.cancel') }}" class="btn btn-danger form-control">Immediately end benefits</a></p>
-                @endif
-            @endunless
-        </div>
+                    @if(count($invoices))
+                        <!-- Billing history -->
+                            <section aria-labelledby="billing-history-heading">
+                                <div class="bg-white dark:bg-gray-800 pt-6 shadow sm:rounded-md sm:overflow-hidden">
+                                    <div class="px-4 sm:px-6">
+                                        <h2 id="billing-history-heading" class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">Billing history</h2>
+                                    </div>
+                                    <div class="mt-6 flex flex-col">
+                                        <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                                            <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                                                <div class="overflow-hidden border-t border-gray-200 dark:border-gray-600">
+                                                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
+                                                        <thead class="bg-gray-50 dark:bg-gray-700">
+                                                        <tr>
+                                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">Date</th>
+                                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">Description</th>
+                                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">Amount</th>
+                                                            <!--
+                                                              `relative` is added here due to a weird bug in Safari that causes `sr-only` headings to introduce overflow on the body on mobile.
+                                                            -->
+                                                            <th scope="col" class="relative px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">
+                                                                <span class="sr-only">View receipt</span>
+                                                            </th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody class="bg-white dark:bg-gray-700 divide-y divide-gray-200 dark:divide-gray-700">
+                                                            @foreach($invoices as $invoice)
+                                                                <tr>
+                                                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-200">
+                                                                        <time datetime="{{ $invoice->date()->format('Y-m-d') }}">{{ $invoice->date()->toFormattedDateString() }}</time>
+                                                                    </td>
+                                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{{ $invoice->lines->first()->description }}</td>
+                                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">USD {{ format_money($invoice->amount_due) }}</td>
+                                                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                                        <a target="_blank" href="{{ $invoice->hosted_invoice_url }}" class="text-primary-600 hover:text-primary-900">View receipt</a>
+                                                                    </td>
+                                                                </tr>
+                                                            @endforeach
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                    @endif
+                </div>
+            </div>
+        </main>
     </div>
-    @if(config('services.discord.enabled'))
-        <hr>
-        <div class="row">
-            <div class="col-12 d-flex flex-column flex-md-row align-items-md-center justify-content-between pt-3">
-                @if($user->hasDiscord())
-                    <div>
-                        <h4>Discord Integration <span class="badge badge-custom badge-success">Connected</span></h4>
-                        <p>Integrated with discord as {{ $user->discord_auth->discord_username }}.</p>
-                    </div>
-                    <div>
-                        <a href="{{ route('discord.index') }}" class="btn btn-outline-accent w-100">Manage Integration</a>
-                    </div>
-                @elseif($user->isPremium())
-                    <div>
-                        <h4>Discord Integration <span class="badge badge-custom badge-primary">Not connected</span></h4>
-                        <p>You can connect your Fantasy Calendar account to Discord!</p>
-                    </div>
-                    <div>
-                        <a href="{{ route('discord.index') }}" class="btn btn-outline-accent w-100">Check it out</a>
-                    </div>
-                @else
-                    <div>
-                        <h4>Discord Integration <span class="badge badge-custom badge-accent">Subscriber only</span></h4>
-                        <p>Subscribe today to use Fantasy Calendar directly from Discord!</p>
-                    </div>
-                    <div>
-                        <a href="{{ route('discord') }}" class="btn btn-outline-accent w-100">Check it out</a>
-                    </div>
-                @endif
-            </div>
-        </div>
-    @endif
-    <hr>
-    <form id="settings" method="post">
-        @csrf
-        <div class="row">
-            <div class="col-12"><h5>Preferences</h5></div>
-            <div class="col-12">
-                <div class="form-check pb-2" onclick="toggleSetting('dark_theme')">
-                    <input id="dark_theme" type="hidden" name="dark_theme" @if(isset($user->settings['dark_theme']) && $user->settings['dark_theme']) value="1" @else value="0" @endisset>
-                    <input id="dark_theme_input" type="checkbox" class="form-check-input" id="dark_theme" @if(isset($user->settings['dark_theme']) && $user->settings['dark_theme']) checked="checked" @endisset>
-                    <label class="form-check-label" for="dark_theme">Enable dark theme</label>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-12">
-                <div class="form-check p-2 mb-3">
-                    <input type="checkbox" class="form-check-input" name="marketing_acceptance" id="marketing_acceptance" @if($user->hasOptedInForMarketing()) checked="checked" @endisset>
-                    <label class="form-check-label protip" data-pt-position="right" data-pt-title='Enabling this gives us consent to send you emails about our products and special offers - no spam! We hate inbox clutter as much as you do!' for="marketing_acceptance">
-                        Send me product updates <i class="fas fa-question-circle"></i>
-                    </label>
-                </div>
-            </div>
-        </div>
-        <button class="btn btn-accent float-right">Save Settings</button>
-    </form>
-@endsection
-
-@section('profile-card-header')
-    User information
-@endsection
-
-@section('content')
-    <div class="container pt-5">
-        @if(session()->has('alert'))
-        <div class='row' x-data="{ 'dismissed': false }">
-            <div class="col-12">
-                <div class="alert alert-info" x-show="!dismissed"><a href="#" class="alert-link ml-2" style="float: right;" @click="dismissed = true"><i class="fa fa-times"></i></a> {{ session('alert') }} </div>
-            </div>
-        </div>
-        @endif
-        <div class="row">
-            <div class="col-12 col-md-4">
-                <div class="card">
-                    <div class="card-header"><img class="rounded mr-1" style="max-height: 40px;" src="https://unavatar.now.sh/{{ $user->email }}?fallback=http://beta.fantasy-calendar.com/resources/logo-dark.png"> {{ $user->username }}</div>
-                    <div class="card-body">
-
-                        <p><i class="fa fa-envelope"></i>&nbsp;{{ Str::limit($user->email, 26) }}</p>
-                        <p>Registered {{ ($user->created_at) ? $user->created_at->format('Y-m-d') : $user->date_register }}</p>
-
-                        <div class="card-text" x-data="ProfileManager()">
-
-                            <button class="btn btn-secondary w-100" x-show="!changing_password && !changing_email" @click="changing_password = !changing_password">Change Password</button>
-                            <form action="/profile/password" method="POST" x-show="changing_password && !changing_email">
-                                @csrf
-
-                                <hr>
-                                <label class="mt-2" for="new_password">New Password</label>
-                                <input type="hidden" name="username" value="{{ $user->username }}" x-show="false">
-
-                                <input class="form-control required" required type="password" name="new_password" x-model="new_password" :class="{ 'is-invalid': was_validated && new_password.length < 7 }" @blur="confirm_password">
-
-                                <div class="invalid-feedback" x-show="was_validated && new_password.length < 7">Password must be 8 characters long.</div>
-
-                                <label class="mt-2" for="new_password_confirmation">Confirm New Password</label>
-                                <input
-                                    class="form-control required" required
-                                    type="password"
-                                    name="new_password_confirmation"
-                                    x-model="new_password_confirmation"
-                                    :class="{ 'is-invalid': was_validated && !password_valid }"
-                                    @keyup="confirm_password"
-                                    @blur="confirm_password">
-
-                                <div class="invalid-feedback" x-show="was_validated && new_password !== new_password_confirmation">Passwords do not match.</div>
-
-                                <button class="btn btn-primary mt-3 w-100" type="submit" :disabled="!was_validated || !password_valid">Update</button>
-                            </form>
-
-                            <button class="btn btn-secondary w-100 my-2" x-show="!changing_email && !changing_password" @click="changing_email = !changing_email">Change Email Address</button>
-                            <form action="/profile/email" method="POST" x-show="changing_email && !changing_password">
-                                @csrf
-
-                                <hr>
-                                <label class="mt-2" for="new_email">New Email Address</label>
-                                <input class="form-control required" required type="email" name="new_email" x-model="new_email" :class="{ 'is-invalid': was_validated && new_email.length < 7 }" @blur="confirm_email">
-
-                                <label class="mt-2" for="new_email_confirmation">Confirm New Email Address</label>
-                                <input
-                                    class="form-control required" required
-                                    type="email"
-                                    name="new_email_confirmation"
-                                    x-model="new_email_confirmation"
-                                    :class="{ 'is-invalid': was_validated && !email_valid }"
-                                    @keyup="confirm_email"
-                                    @blur="confirm_email">
-
-                                <div class="invalid-feedback" x-show="was_validated && new_email !== new_email_confirmation">Emails do not match.</div>
-
-                                <button class="btn btn-primary mt-3 w-100" type="submit" :disabled="!was_validated || !email_valid">Update</button>
-                            </form>
-                            <button class="btn btn-danger mt-3 w-100" type="submit" x-show="changing_email || changing_password" @click="
-                                changing_password = false,
-                                changing_email = false
-                            ">Cancel</button>
-
-                            <a href="/account-deletion-request" x-show="!(changing_email || changing_password)" class="btn btn-outline-danger w-100" style="border: 0;">Request Account Deletion</a>
-
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-8">
-                <div class="card">
-                    <div class="card-header">@yield('profile-card-header')</div>
-                    <div class="card-body">
-                        <div class="card-text">
-                            @yield('profile-card')
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-@endsection
+</x-app-layout>

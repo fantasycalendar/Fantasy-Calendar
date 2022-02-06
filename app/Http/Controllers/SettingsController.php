@@ -16,21 +16,15 @@ use Carbon\Carbon;
 class SettingsController extends Controller
 {
     public function profile(Request $request) {
-        $invoices = null;
+        $subscription = $request->user()->subscriptions()->active()->first();
 
-        if (Auth::user()->hasStripeId()) {
-            $invoices = Auth::user()->invoices();
-        }
-
-        $subscription = Auth::user()->subscriptions()->active()->first();
-
-        $renews_at = $subscription ? (new Carbon($subscription->asStripeSubscription()->current_period_end))->toFormattedDateString() : False;
+//        dd($request->user()->invoices()->first());
 
         return view('pages.profile', [
-            'user' => Auth::user(),
+            'user' => $request->user(),
             'subscription' => $subscription,
-            'subscription_renews_at' => $renews_at,
-            'invoices' => $invoices
+            'subscription_renews_at' => format_timestamp($subscription?->asStripeSubscription()->current_period_end),
+            'invoices' => $request->user()->invoices() ?? null
         ]);
     }
 
@@ -62,7 +56,9 @@ class SettingsController extends Controller
     }
 
     public function update(StoreUserSettings $request) {
-        Auth::user()->setSettings($request->only(['dark_theme']));
+        Auth::user()->setSettings([
+            'dark_theme' => $request->has('dark_theme')
+        ]);
 
         Auth::user()->setMarketingStatus($request->has('marketing_acceptance'));
 

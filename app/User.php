@@ -117,6 +117,16 @@ class User extends Authenticatable implements
         return $this->belongsTo('App\Agreement');
     }
 
+    public function getSubscriptionEndAttribute()
+    {
+        return $this->subscriptions()->active()->first()?->asStripeSubscription()->current_period_end;
+    }
+
+    public function getMarketingAttribute()
+    {
+        return $this->hasOptedInForMarketing();
+    }
+
     /**
      * @return bool
      */
