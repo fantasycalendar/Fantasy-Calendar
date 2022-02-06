@@ -237,7 +237,7 @@
                 </div>
 
                 <div class="relative cursor-pointer" x-data="{ hovered: false }" @mouseenter="hovered=true" @mouseleave="hovered=false">
-                    <pre class="text-left bg-gray-800 rounded p-4 leading-8 mt-6 min-w-full text-gray-200 font-mono overflow-x-auto" @click="copyCode"><code x-ref="codeBlock" x-text="embedCode"></code></pre>
+                    <pre class="text-left bg-gray-900 rounded p-4 leading-8 mt-6 min-w-full text-gray-200 font-mono overflow-x-auto" @click="copyCode"><code x-ref="codeBlock" x-text="embedCode"></code></pre>
                     <div class="py-1 px-2 text-sm bg-gray-700 absolute top-2 right-2 rounded text-white"
                          x-show="hovered"
                          x-transition:enter="transform ease-out duration-300 transition"
