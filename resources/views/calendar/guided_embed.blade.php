@@ -14,7 +14,7 @@
                 base_theme: 'fantasy_calendar',
                 fantasyCalendar: null,
                 notifications: [],
-                openSidebar: true,
+                openSidebar: false,
                 themes_available: @json($themes),
                 theme_settings: {
                     background_color: '',
