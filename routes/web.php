@@ -123,6 +123,7 @@ Route::post(
 Route::prefix('profile')->middleware(['auth', 'account.deletion', 'agreement'])->group(function(){
     Route::view('/', 'profile.account')->name('profile');
     Route::get('/billing', 'SettingsController@billing')->name('profile.billing');
+    Route::get('/integrations', 'SettingsController@integrations')->name('profile.integrations');
     Route::get('/update-email/{user}', 'SettingsController@updateEmail')->name('update.email')->middleware('signed');
 
     Route::post('/settings', 'SettingsController@updateSettings')->name('profile.updateSettings');

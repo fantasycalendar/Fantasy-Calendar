@@ -22,6 +22,10 @@ class SettingsController extends Controller
         ]);
     }
 
+    public function integrations(Request $request) {
+        return view('profile.integrations');
+    }
+
     public function updateEmail(UpdateEmailRequest $request) {
         Auth::user()->email = $request->get('new_email');
         Auth::user()->save();
