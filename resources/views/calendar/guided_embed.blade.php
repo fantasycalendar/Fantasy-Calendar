@@ -14,7 +14,7 @@
                 base_theme: 'fantasy_calendar',
                 fantasyCalendar: null,
                 notifications: [],
-                openSidebar: false,
+                openSidebar: true,
                 themes_available: @json($themes),
                 theme_settings: {
                     background_color: '',
@@ -219,12 +219,12 @@
                     </div>
 
                     <div class="ml-3 text-sm flex-grow">
-                        <label for="embed_now" class="font-medium" :class="{'text-gray-400': selector.length <= 1, 'text-gray-800': selector.length > 1}">Embed Right Away</label>
-                        <p class="text-gray-600 pt-1 w-full" :class="{'text-gray-400': selector.length <= 1, 'text-gray-600': selector.length > 1}" x-show="embedNow"> The calendar will embed immediately on page load</p>
+                        <label for="embed_now" class="font-medium" :class="{'text-gray-400 dark:text-gray-500': selector.length <= 1, 'text-gray-800 dark:text-gray-400': selector.length > 1}">Embed Right Away</label>
+                        <p class="text-gray-600 pt-1 w-full" :class="{'text-gray-400 dark:text-gray-500': selector.length <= 1, 'text-gray-600 dark:text-gray-400': selector.length > 1}" x-show="embedNow"> The calendar will embed immediately on page load</p>
                     </div>
                 </div>
 
-                <x-alert type="warning" x-show="!embedNow" class="mt-4">The calendar won't embed until you call <pre class="my-2 p-2 w-full bg-gray-200 text-gray-800 p-1 rounded-sm">FantasyCalendar.embed()</pre></x-alert>
+                <x-alert type="warning" x-show="!embedNow" class="mt-4">The calendar won't embed until you call <pre class="my-2 p-2 w-full bg-gray-200 dark:bg-gray-700 text-gray-400 p-1 rounded-sm">FantasyCalendar.embed()</pre></x-alert>
             </fieldset>
 
         </div>
@@ -262,13 +262,13 @@
                 </x-slot>
 
                 <template x-for="(field, index) in theme_editing">
-                    <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-center sm:border-t sm:border-gray-200 sm:pt-5">
-                        <label :for="field.field" class="block text-sm font-medium text-gray-700 dark:text-gray-400" x-text="field.title"></label>
+                    <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-center sm:pt-5">
+                        <label :for="field.field" class="block text-sm font-medium text-gray-700 dark:text-gray-300" x-text="field.title"></label>
 
                         <div class="relative col-span-2">
-                            <input x-model="theme_editing[index].value" type="text" class="max-w-lg block w-full shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md" />
-                            <div class="absolute inset-y-1 right-1.5 w-8 rounded border border-gray-200 shadow cursor-events-none" x-bind:style="`background-color: ${theme_editing[index].value}`"></div>
-                            <input type="color" x-model="theme_editing[index].value" class="opacity-0 absolute cursor-pointer inset-y-1 right-1.5 w-8 rounded border border-gray-100 shadow" />
+                            <input x-model="theme_editing[index].value" type="text" class="max-w-lg block w-full shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300" />
+                            <div class="absolute inset-y-1 right-1.5 w-8 rounded border border-gray-200 shadow cursor-events-none dark:border-gray-700" x-bind:style="`background-color: ${theme_editing[index].value}`"></div>
+                            <input type="color" x-model="theme_editing[index].value" class="opacity-0 absolute cursor-pointer inset-y-1 right-1.5 w-8 rounded border border-gray-100 dark:border-gray-700 shadow" />
                         </div>
                     </div>
                 </template>

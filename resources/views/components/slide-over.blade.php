@@ -21,8 +21,8 @@
                      x-transition:leave-start="translate-x-0"
                      x-transition:leave-end="translate-x-full"
                 >
-                    <form class="h-full divide-y divide-gray-200 flex flex-col bg-white shadow-xl" @submit.prevent>
-                        <div class="flex-1 h-0 overflow-y-auto">
+                    <form class="h-full divide-y divide-gray-200 dark:divide-gray-700 flex flex-col bg-white dark:bg-gray-800 shadow-xl" @submit.prevent>
+                        <div class="flex-1 h-0 overflow-y-auto scrollbar">
                             @isset($title)
                                 <div class="py-6 px-4 bg-primary-700 sm:px-6">
                                     <div class="flex items-center justify-between">
@@ -50,8 +50,8 @@
                             @endisset
 
                             <div class="flex-1 flex flex-col justify-between">
-                                <div class="px-4 divide-y divide-gray-200 sm:px-6">
-                                    <div class="space-y-6 pt-6 pb-5">
+                                <div class="px-4 sm:px-6">
+                                    <div class="space-y-6 pt-6 pb-5 divide-y divide-gray-200 dark:divide-gray-700">
                                         {{ $slot }}
                                     </div>
                                 </div>

@@ -5,7 +5,7 @@
 
 @include('templates._head_content_tw')
 
-<body class="page-{{ str_replace('.', '-', Route::currentRouteName()) }} @stack('page-class') @setting('dark_theme') dark @endsetting">
+<body class="scrollbar page-{{ str_replace('.', '-', Route::currentRouteName()) }} @stack('page-class') @setting('dark_theme') dark @endsetting">
 
 <div class="min-h-screen bg-gray-100 dark:bg-gray-900" x-data="{ menu: true }">
     <nav class="bg-primary-700 dark:bg-primary-900 border-b border-gray-200 dark:border-gray-800">
