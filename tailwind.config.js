@@ -1,4 +1,5 @@
 module.exports = {
+    darkMode: 'class',
     content: [
         "./resources/**/*.blade.php",
         "./resources/**/*.js",
@@ -7,16 +8,16 @@ module.exports = {
     ],
     safelist: [
         {
-            pattern: /bg-(yellow|red|green|blue)-(50|100|200|300|400|500|600|700|800|900)/,
-            variants: ['hover'],
+            pattern: /bg-(gray|yellow|red|green|blue)-(50|100|200|300|400|500|600|700|800|900)/,
+            variants: ['hover', 'dark', 'dark:hover'],
         },
         {
-            pattern: /text-(yellow|red|green|blue)-(50|100|200|300|400|500|600|700|800|900)/,
-            variants: ['hover'],
+            pattern: /text-(gray|yellow|red|green|blue)-(50|100|200|300|400|500|600|700|800|900)/,
+            variants: ['hover', 'dark', 'dark:hover'],
         },
         {
-            pattern: /border-(yellow|red|green|blue)/,
-            variants: ['hover'],
+            pattern: /border-(gray|yellow|red|green|blue)/,
+            variants: ['hover', 'dark', 'dark:hover'],
         },
     ],
     theme: {
