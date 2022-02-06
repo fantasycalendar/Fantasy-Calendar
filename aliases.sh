@@ -1,5 +1,5 @@
 alias npm='docker run -it -u $(id -u):$(id -g) -v ${PWD}/:/app -w /app node:14 npm'
-alias npx='docker run -it -e AWS_PROFILE=fc -u $(id -u):$(id -g) -v ${PWD}/:/app -v /tmp/.npm/:/home/node/.npm -v ~/.aws/:/home/node/.aws -w /app node:14 npx'
+alias npx='docker run -it -e AWS_PROFILE=fc -u $(id -u):$(id -g) -v ${PWD}/:/app -v ~/.aws/:/home/node/.aws -w /app node:14 npx'
 alias node='docker run -it -u $(id -u):$(id -g) -v ${PWD}/:/app -w /app node:14'
 alias artisan='docker-compose exec php php artisan'
 alias fc_up='FC_WEB_PORT=9987 FC_BROWSERSYNC_PORT=9980 FC_BROWSERSYNC=true docker-compose up'
