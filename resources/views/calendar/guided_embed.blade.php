@@ -110,6 +110,7 @@
                         this.theme_edited[key] = value.value;
                     }
                     this.fantasyCalendar.settings(JSON.parse(JSON.stringify(this.theme_edited)));
+                    this.openSidebar = false;
                 },
                 updateTheme: function(name, value, oldValue) {
                     if(value === 'custom') {
