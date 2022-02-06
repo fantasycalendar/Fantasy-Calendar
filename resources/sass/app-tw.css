@@ -29,7 +29,6 @@
   /* Scroll track styles (Background) */
   .scrollbar::-webkit-scrollbar-track {
     background: #131314;
-    border-radius: 4px;
   }
   .scrollbar::-webkit-scrollbar-track:hover,
   .scrollbar::-webkit-scrollbar-track:active {
