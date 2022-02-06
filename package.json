@@ -5,7 +5,8 @@
         "watch": "mix watch",
         "watch-poll": "mix watch -- --watch-options-poll=1000",
         "hot": "mix watch --hot",
-        "production": "mix --production"
+        "production": "mix --production",
+        "dev-install-watch": "npm install && npm run watch"
     },
     "devDependencies": {
         "axios": "^0.21.2",
