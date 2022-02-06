@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\AccountUpdateRequest;
+use App\Http\Requests\UpdateAccountRequest;
 use App\Notifications\RequestEmailUpdate;
 use App\Http\Requests\StoreUserSettings;
 use App\Http\Requests\UpdatePasswordRequest;
@@ -16,32 +16,20 @@ use Carbon\Carbon;
 
 class SettingsController extends Controller
 {
-    public function profile(Request $request) {
-        $subscription = $request->user()->subscriptions()->active()->first();
-
-//        dd($request->user()->invoices()->first());
-
-        return view('pages.profile', [
-            'user' => $request->user(),
-            'subscription' => $subscription,
-            'subscription_renews_at' => format_timestamp($subscription?->asStripeSubscription()->current_period_end),
-            'invoices' => $request->user()->invoices() ?? null
+    public function billing(Request $request) {
+        return view('profile.plans-billing',[
+            'invoices' => $request->user()->invoices()
         ]);
     }
 
-    public function updateEmail(Request $request) {
-
-        if(!$request->hasValidSignature() || Auth::user()->email != $request->get('old_email')) {
-            abort(401, 'Nope');
-        }
-
+    public function updateEmail(UpdateEmailRequest $request) {
         Auth::user()->email = $request->get('new_email');
         Auth::user()->save();
 
         return redirect(route('profile'))->with('alerts', ['email-success' => "Email successfully updated!"]);
     }
 
-    public function updateAccount(AccountUpdateRequest $request) {
+    public function updateAccount(UpdateAccountRequest $request) {
         $alerts = [];
 
         if($request->has('email') && $request->get('email') !== $request->user()->email) {

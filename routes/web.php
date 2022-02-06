@@ -121,11 +121,12 @@ Route::post(
 
 // User profile
 Route::prefix('profile')->middleware(['auth', 'account.deletion', 'agreement'])->group(function(){
-    Route::get('/', 'SettingsController@profile')->name('profile');
-    Route::get('/billing', 'SettingsController@profile')->name('profile.billing');
+    Route::view('/', 'profile.account')->name('profile');
+    Route::get('/billing', 'SettingsController@billing')->name('profile.billing');
+    Route::get('/update-email/{user}', 'SettingsController@updateEmail')->name('update.email')->middleware('signed');
+
     Route::post('/settings', 'SettingsController@updateSettings')->name('profile.updateSettings');
     Route::post('/account', 'SettingsController@updateAccount')->name('profile.updateAccount');
-    Route::get('/update-email/{user}', 'SettingsController@updateEmail')->name('update.email');
 });
 
 Route::get('/error/unavailable', 'ErrorsController@calendarUnavailable')->name('errors.calendar_unavailable');

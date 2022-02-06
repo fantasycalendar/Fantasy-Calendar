@@ -14,7 +14,7 @@ class UpdateEmailRequest extends FormRequest
      */
     public function authorize()
     {
-        return Auth::check();
+        return auth()->user()->email === $this->old_email;
     }
 
     /**
