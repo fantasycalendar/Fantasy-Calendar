@@ -129,7 +129,7 @@ class User extends Authenticatable implements
 
     public function getAvatarUrlAttribute()
     {
-        return "https://unavatar.now.sh/{$this->email}?fallback=http://beta.fantasy-calendar.com/resources/logo-dark.png";
+        return "https://unavatar.now.sh/{$this->email}?fallback=https://beta.fantasy-calendar.com/resources/logo-accent.png";
     }
 
     /**

@@ -5,21 +5,36 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UpdateAccountRequest;
 use App\Notifications\RequestEmailUpdate;
 use App\Http\Requests\StoreUserSettings;
-use App\Http\Requests\UpdatePasswordRequest;
 use App\Http\Requests\UpdateEmailRequest;
+use Stripe\BillingPortal\Session as StripeBillingPortalSession;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\URL;
 use Hash;
 use Auth;
-use Carbon\Carbon;
+use Stripe\PromotionCode;
 
 class SettingsController extends Controller
 {
     public function billing(Request $request) {
-        return view('profile.plans-billing',[
-            'invoices' => $request->user()->invoices()
+        $promoCode = ($request->user()->isEarlySupporter())
+            ? cache()->remember('stripePromoCode-' . $request->user()->username, 86400, function() use ($request){
+                return PromotionCode::create([
+                    'coupon' => 'ZdCbraaP',
+                    'customer' => $request->user()->stripeId(),
+                    'expires_at' => now()->addDay()->timestamp,
+                ], $request->user()->stripeOptions())['code'];
+            })
+            : false;
+
+        return view('profile.billing', [
+            'promoCode' => $promoCode
         ]);
+    }
+
+    public function billingPortal(Request $request) {
+        return redirect(StripeBillingPortalSession::create([
+            'customer' => $request->user()->stripeId(),
+            'return_url' => route('profile'),
+        ], $request->user()->stripeOptions())['url']);
     }
 
     public function integrations(Request $request) {

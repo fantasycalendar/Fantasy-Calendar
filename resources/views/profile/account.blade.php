@@ -7,7 +7,7 @@
                 <div class="bg-white dark:bg-gray-800 py-6 px-4 sm:p-6">
                     <div class="flex items-center">
                         <div class="h-12 w-12 rounded-full overflow-hidden mr-3 bg-gray-900 dark:bg-gray-500 border-2 border-gray-900 dark:border-gray-500">
-                            <img src="{{ auth()->user()->avatar_url }}" alt="" class="h-full w-full">
+                            <img src="{{ auth()->user()->avatar_url }}" alt="" class="bg-white h-full w-full">
                         </div>
                         <div>
                             <h2 id="user-details-heading" class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">{{ auth()->user()->username }}</h2>
