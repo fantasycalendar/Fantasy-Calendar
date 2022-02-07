@@ -11,6 +11,10 @@ jobs:
       - uses: actions/setup-node@main
         with:
           node-version: '14'
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
       - name: Run composer
         uses: nick-zh/composer-php@master
         with:
@@ -39,7 +43,7 @@ jobs:
         uses: sarisia/actions-status-discord@v1.5.2
         with:
           webhook: ${{ secrets.DISCORD_FC_BETA_WEBHOOK }}
-          description: "A new version of Fantasy Calendar has been deployed"
+          description: 'FC branch ${{ steps.extract_branch.outputs.branch }} deployed to beta'
           username: "Github"
           avatar_url: "https://beta.fantasy-calendar.com//resources/header_logo.png"
           title: "Deploy success"
