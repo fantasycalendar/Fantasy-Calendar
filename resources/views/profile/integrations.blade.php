@@ -15,7 +15,7 @@
                             <img src="{{ auth()->user()->discord_auth->avatar }}" alt="" class="bg-white h-full w-full">
                         </div>
                         <div>
-                            <h4 class="font-medium">Discord Integration <span class="ml-0.5 py-0.5 px-2 bg-green-200 text-green-800 font-bold text-xs rounded-lg dark:bg-green-500 dark:text-green-800 success">Connected</span></h4>
+                            <h4 class="font-medium">Discord Integration <span class="ml-0.5 py-0.5 px-2 bg-green-200 text-green-800 font-bold text-xs rounded-lg dark:bg-green-900 dark:text-green-500">Connected</span></h4>
                             <p class="text-sm text-gray-500 dark:text-gray-400">Integrated with discord as <strong>{{ auth()->user()->discord_auth->discord_username }}</strong>.</p>
                         </div>
                     </div>
@@ -30,7 +30,7 @@
                             <i class="fa fa-unlink text-xl text-gray-400 dark:text-gray-800"></i>
                         </div>
                         <div>
-                            <h4 class="font-medium">Discord Integration <span class="ml-0.5 py-0.5 px-2 bg-gray-200 text-gray-800 font-bold text-xs rounded-lg dark:bg-gray-500 dark:text-gray-800 primary">Not connected</span></h4>
+                            <h4 class="font-medium">Discord Integration <span class="ml-0.5 py-0.5 px-2 bg-gray-200 text-gray-800 font-bold text-xs rounded-lg dark:bg-gray-900 dark:text-gray-500">Not connected</span></h4>
                             <p class="text-sm text-gray-500 dark:text-gray-400">You can connect your Fantasy Calendar account to Discord!</p>
                         </div>
                     </div>
@@ -45,7 +45,7 @@
                             <i class="fa fa-search-dollar text-xl text-gray-400 dark:text-gray-800"></i>
                         </div>
                         <div>
-                            <h4 class="font-medium">Discord Integration <span class="ml-0.5 py-0.5 px-2 bg-orange-200 text-orange-800 font-bold text-xs rounded-lg dark:bg-orange-500 dark:text-orange-800 accent">Subscriber only</span></h4>
+                            <h4 class="font-medium">Discord Integration <span class="ml-0.5 py-0.5 px-2 bg-orange-200 text-orange-800 font-bold text-xs rounded-lg dark:bg-orange-900 dark:text-orange-500">Subscriber only</span></h4>
                             <p class="text-sm text-gray-500 dark:text-gray-400">Subscribe today to use Fantasy Calendar directly from Discord!</p>
                         </div>
                     </div>

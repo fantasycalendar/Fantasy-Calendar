@@ -4,7 +4,7 @@
     </div>
 
     @unless(isset($footer))
-        <div class="px-4 py-3 bg-gray-50 dark:bg-gray-800 dark:border-t dark:border-gray-600 text-right sm:px-6">
+        <div class="px-4 py-3 bg-gray-50 dark:bg-gray-800 dark:border-t dark:border-gray-700 text-right sm:px-6">
             <x-button type="submit">Save</x-button>
         </div>
     @else

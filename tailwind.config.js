@@ -8,15 +8,15 @@ module.exports = {
     ],
     safelist: [
         {
-            pattern: /bg-(gray|yellow|red|green|blue)-(50|100|200|300|400|500|600|700|800|900)/,
+            pattern: /bg-(.*)-(50|100|200|300|400|500|600|700|800|900)/,
             variants: ['hover', 'dark', 'dark:hover'],
         },
         {
-            pattern: /text-(gray|yellow|red|green|blue)-(50|100|200|300|400|500|600|700|800|900)/,
+            pattern: /text-(.*)-(50|100|200|300|400|500|600|700|800|900)/,
             variants: ['hover', 'dark', 'dark:hover'],
         },
         {
-            pattern: /border-(gray|yellow|red|green|blue)/,
+            pattern: /border-(.*)-(50|100|200|300|400|500|600|700|800|900)/,
             variants: ['hover', 'dark', 'dark:hover'],
         },
     ],

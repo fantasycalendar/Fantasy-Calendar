@@ -14,7 +14,7 @@
 
         <x-slot name="footer">
             <div class="px-4 py-3 bg-gray-50 dark:bg-gray-800 dark:border-t dark:border-gray-600 text-right sm:px-6">
-                <x-button onclick="self.location='{{ route('profile.billing-portal') }}'">Visit the billing portal now</x-button>
+                <x-button-link href="{{ route('profile.billing-portal') }}">Visit the billing portal now</x-button-link>
             </div>
         </x-slot>
     </x-panel>
@@ -63,7 +63,7 @@
                                 <!-- This example requires Tailwind CSS v2.0+ -->
                                     <div class="text-center m-8">
                                         <i class="fa fa-file-invoice text-gray-300 text-3xl"></i>
-                                        <h3 class="mt-2 text-sm font-medium text-gray-900">No payment history</h3>
+                                        <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-300">No payment history</h3>
                                         <p class="mt-1 text-sm text-gray-500">You've never subscribed! Maybe it's time to change that?</p>
                                     </div>
                                 @endif
