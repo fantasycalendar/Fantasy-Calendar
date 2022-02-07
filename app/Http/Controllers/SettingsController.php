@@ -11,14 +11,21 @@ use Illuminate\Http\Request;
 use Hash;
 use Auth;
 use Stripe\PromotionCode;
+use Stripe\StripeClient;
 
 class SettingsController extends Controller
 {
     public function billing(Request $request) {
         $promoCode = ($request->user()->isEarlySupporter())
-            ? cache()->remember('stripePromoCode-' . $request->user()->username, 86400, function() use ($request){
+            ? cache()->remember('stripePromoCode_' . $request->user()->username, 86400, function() use ($request){
+                $stripe = new StripeClient(env('STRIPE_SECRET'));
+
+                $coupon = collect($stripe->coupons->all()['data'])->filter(function($coupon) {
+                    return $coupon['name'] == 'Early Supporter';
+                })->first()->id;
+
                 return PromotionCode::create([
-                    'coupon' => 'ZdCbraaP',
+                    'coupon' => $coupon,
                     'customer' => $request->user()->stripeId(),
                     'expires_at' => now()->addDay()->timestamp,
                 ], $request->user()->stripeOptions())['code'];
