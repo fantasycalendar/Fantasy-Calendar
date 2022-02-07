@@ -14,7 +14,9 @@
 @endif
 
 @env('development')
-    <div class="w-full py-1 bg-red-200 dark:bg-red-900 text-red-800 dark:text-red-200 text-center">This is the beta deployment of Fantasy Calendar. Use with caution.</div>
+    <div class="w-full py-1 bg-red-200 dark:bg-red-900 text-red-800 dark:text-red-200 text-center">
+        This is the beta deployment of Fantasy Calendar. Use with caution.
+    </div>
 @endenv
 
 <div class="min-h-screen bg-gray-100 dark:bg-gray-900" x-data="{ menu: true }">
