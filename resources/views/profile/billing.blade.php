@@ -6,8 +6,8 @@
 
         @if(auth()->user()->isPremium())
             <x-alert type="success">
-                <h4 class="text-lg font-medium">You're subscribed!</h4>
-                <p>You're a subscriber to Fantasy Calendar, and that makes us happy. Thanks for your support.</p>
+                <span class="text-lg font-medium">You're subscribed!</span><br>
+                You're a subscriber to Fantasy Calendar, and that makes us happy. Thanks for your support.
             </x-alert>
 
             <div>
@@ -15,8 +15,8 @@
             </div>
         @else
             <x-alert type="notice">
-                <h4 class="text-lg font-medium">You're not subscribed</h4>
-                <p>Thanks for using Fantasy Calendar! We hope you like it enough to help keep the lights on.</p>
+                <span class="text-lg font-medium">You're not subscribed</span><br>
+                Thanks for using Fantasy Calendar! We hope you like it enough to help keep the lights on.
             </x-alert>
 
             <div>
