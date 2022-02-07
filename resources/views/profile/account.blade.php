@@ -11,7 +11,7 @@
                         </div>
                         <div>
                             <h2 id="user-details-heading" class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">{{ auth()->user()->username }}</h2>
-                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400"><i class="fa fa-user-circle"></i> Registered {{ auth()->user()->created_at->format('Y-m-d') }} <i class="fa fa-ellipsis-h px-2"></i> <i class="fa fa-calendar"></i> {{ auth()->user()->calendars()->count() }} {{ \Illuminate\Support\Str::plural('Calendar', auth()->user()->calendars()->count()) }}</p>
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400"><i class="fa fa-user-circle"></i> Registered {{ auth()->user()->date_register->format('Y-m-d') }} <i class="fa fa-ellipsis-h px-2"></i> <i class="fa fa-calendar"></i> {{ auth()->user()->calendars()->count() }} {{ \Illuminate\Support\Str::plural('Calendar', auth()->user()->calendars()->count()) }}</p>
                         </div>
                     </div>
 

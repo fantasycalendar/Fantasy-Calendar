@@ -80,6 +80,7 @@ class User extends Authenticatable implements
         'settings' => 'json',
         'agreed_at' => 'datetime',
         'delete_requested_at' => 'datetime',
+        'date_register' => 'datetime',
     ];
 
     protected $dateFormat = 'Y-m-d H:i:s';
