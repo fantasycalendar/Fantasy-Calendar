@@ -4,9 +4,25 @@
             <h2 id="user-details-heading" class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">Subscription</h2>
         </div>
 
-        <div>
-            All of our billing is handled through Stripe, and they provide a billing portal where you can manage your subscription to Fantasy Calendar.
-        </div>
+        @if(auth()->user()->isPremium())
+            <x-alert type="success">
+                <h4 class="text-lg font-medium">You're subscribed!</h4>
+                <p>You're a subscriber to Fantasy Calendar, and that makes us happy. Thanks for your support.</p>
+            </x-alert>
+
+            <div>
+                All of our billing is handled through Stripe, and they provide a billing portal where you can manage your subscription to Fantasy Calendar.
+            </div>
+        @else
+            <x-alert type="notice">
+                <h4 class="text-lg font-medium">You're not subscribed</h4>
+                <p>Thanks for using Fantasy Calendar! We hope you like it enough to help keep the lights on.</p>
+            </x-alert>
+
+            <div>
+                All of our billing is handled through Stripe, and they provide a handy billing portal where you can get subscribed to Fantasy Calendar, for only <strong>$2.49/month!</strong>
+            </div>
+        @endif
 
         @if($promoCode)
             <x-alert type="notice">For being an early-supporter for Fantasy Calendar, you get a discount! Just apply this code while checking out on our billing portal below: <strong>{{ $promoCode }}</strong></x-alert>
@@ -14,7 +30,11 @@
 
         <x-slot name="footer">
             <div class="px-4 py-3 bg-gray-50 dark:bg-gray-800 dark:border-t dark:border-gray-600 text-right sm:px-6">
-                <x-button-link href="{{ route('profile.billing-portal') }}">Visit the billing portal now</x-button-link>
+                @if(auth()->user()->isPremium())
+                    <x-button-link role="secondary" href="{{ route('profile.billing-portal') }}">Manage your subscription</x-button-link>
+                @else
+                    <x-button-link href="{{ route('profile.billing-portal') }}">Get subscribed</x-button-link>
+                @endif
             </div>
         </x-slot>
     </x-panel>
@@ -23,7 +43,7 @@
             <div class="bg-white dark:bg-gray-800 pt-6 shadow sm:rounded-md sm:overflow-hidden">
                 <div class="px-4 sm:px-6">
                     <h2 id="billing-history-heading" class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">Billing history</h2>
-                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Here's a quick glance at your last few payments, but for more info you'll need to <a class="text-primary-600 hover:text-primary-900" href="{{ route('profile.billing-portal') }}">visit the Stripe billing portal</a>.</p>
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Here's a quick glance at your last few payments. For more info you can check out <a class="text-primary-600 hover:text-primary-900" href="{{ route('profile.billing-portal') }}">the Stripe billing portal</a>.</p>
                 </div>
                 <div class="mt-6 flex flex-col">
                     <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">

@@ -16,7 +16,7 @@ use Stripe\StripeClient;
 class SettingsController extends Controller
 {
     public function billing(Request $request) {
-        $promoCode = ($request->user()->isEarlySupporter())
+        $promoCode = (!$request->user()->isPremium() && $request->user()->isEarlySupporter())
             ? cache()->remember('stripePromoCode_' . $request->user()->username, 86400, function() use ($request){
                 $stripe = new StripeClient(env('STRIPE_SECRET'));
 
