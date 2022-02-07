@@ -1,6 +1,6 @@
 on:
   push:
-name: Deploy master branch
+name: Deploy commit to beta
 jobs:
   deploy_commit:
     name: Deploy commit to Beta
