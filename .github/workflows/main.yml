@@ -3,8 +3,8 @@ on:
     types: [released]
 name: Deploy master branch
 jobs:
-  deploy:
-    name: deploy
+  deploy_master:
+    name: Deploy Master
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
@@ -33,14 +33,8 @@ jobs:
     - name: Copy assets into S3
       run: |
         aws s3 sync ./public s3://fantasy-calendar-prod/
-    - name: Deploy web function
-      run: npx serverless@2 deploy -f web --stage prod
-    - name: Deploy artisan function
-      run: npx serverless@2 deploy -f artisan --stage prod
-    - name: Deploy queue worker
-      run: npx serverless@2 deploy -f worker --stage prod
-    - name: Deploy queue worker
-      run: npx serverless@2 deploy -f console --stage prod
+    - name: Deploy to prod
+      run: npx serverless@2 deploy --stage prod
     - name: Actions Status Discord
       uses: sarisia/actions-status-discord@v1.5.2
       with:

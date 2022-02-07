@@ -1,0 +1,46 @@
+on:
+  push:
+name: Deploy master branch
+jobs:
+  deploy_commit:
+    name: Deploy commit to Beta
+    if: ${{ contains(github.event.head_commit.message, '--BETA') && (github.event.head_commit.author.username == 'V13Axel' || github.event.head_commit.author.username == 'Haxxer') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@main
+        with:
+          node-version: '14'
+      - name: Run composer
+        uses: nick-zh/composer-php@master
+        with:
+          action: 'install -oa --ignore-platform-reqs --no-dev'
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - name: Create env file
+        run: |
+          cat > .env << EOF
+          APP_ENV=production
+          EOF
+      - name: Install NPM dependencies
+        run: npm install
+      - name: Build production assets
+        run: npm run production
+      - name: Copy assets into S3
+        run: |
+          aws s3 sync ./public s3://fantasy-calendar-dev/
+      - name: Deploy to beta
+        run: npx serverless@2 deploy --stage dev
+      - name: Actions Status Discord
+        uses: sarisia/actions-status-discord@v1.5.2
+        with:
+          webhook: ${{ secrets.DISCORD_FC_BETA_WEBHOOK }}
+          description: "A new version of Fantasy Calendar has been deployed"
+          username: "Github"
+          avatar_url: "https://beta.fantasy-calendar.com//resources/header_logo.png"
+          title: "Deploy success"
+          nodetail: true
