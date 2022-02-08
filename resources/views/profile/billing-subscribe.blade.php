@@ -65,7 +65,7 @@
                     this.ready = false;
                     this.submitting = true;
 
-                    const { error } = await this.stripe.confirmPayment({
+                    const { error } = await this.stripe.confirmSetup({
                         elements: this.elements,
                         confirmParams: {
                             return_url: '{{ route('profile.billing') }}'
