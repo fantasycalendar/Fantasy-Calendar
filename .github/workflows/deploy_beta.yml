@@ -1,5 +1,4 @@
-on:
-  push:
+on: [push, workflow_dispatch]
 name: Deploy commit to beta
 jobs:
   deploy_commit:
