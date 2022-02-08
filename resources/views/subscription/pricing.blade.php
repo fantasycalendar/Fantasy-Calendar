@@ -25,7 +25,7 @@
                                     <ul role="list" class="mt-8 space-y-5 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-x-8 lg:gap-y-5">
                                         @foreach([
                                             'Full calendar functionality',
-                                            'Unlimited calendars',
+                                            'Unlimited number of calendars',
                                             'User Management<p class="text-xs text-gray-500 dark:text-gray-400">Users can comment on events and view provided information</p>',
                                             'Calendar co-ownership<p class="text-xs text-gray-500 dark:text-gray-400">Let others create and comment on events, and control the date</p>',
                                             'Calendar Linking<p class="text-xs text-gray-500 dark:text-gray-400">Have one parent calendar drive the dates of many others</p>',
