@@ -3,7 +3,7 @@ name: Deploy commit to beta
 jobs:
   deploy_commit:
     name: Deploy commit to Beta
-    if: ${{ contains(github.event.head_commit.message, '--BETA') && (github.event.head_commit.author.username == 'V13Axel' || github.event.head_commit.author.username == 'Haxxer') }}
+    if: ${{ (github.event_name == 'push' && contains(github.event.head_commit.message, '--BETA') && (github.event.head_commit.author.username == 'V13Axel' || github.event.head_commit.author.username == 'Haxxer')) || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
