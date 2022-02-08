@@ -1,79 +1,79 @@
 service: fantasy-calendar
 
 provider:
-    name: aws
-    # The AWS region in which to deploy (us-east-1 is the default)
-    region: us-east-1
-    # The stage of the application, e.g. dev, production, staging… ('dev' is the default)
-    stage: ${opt:stage, 'dev'}
-    runtime: provided.al2
-    versionFunctions: false
-    apiGateway:
-      binaryMediaTypes:
-        - '*/*'
-    # So in short, we have two separate sets of env vars in SSM. Most of what happens below is just resolving between our envs
-    # So that the environment variables get pulled from the correct set of vars, based on the stage we're deploying
-    environment:
-      APP_KEY: ${ssm:/${self:custom.ssm.${self:custom.stage}}/app_key}
-      APP_DEBUG: ${self:custom.environment.${self:custom.stage}.APP_DEBUG}
-      APP_ENV: ${self:custom.environment.${self:custom.stage}.APP_ENV}
-      AWS_BUCKET:
-        Ref: Assets
-      SQS_QUEUE:
-        Ref: AlertQueue
-      DB_HOST: ${ssm:/${self:custom.ssm.${self:custom.stage}}/db_host}
-      DB_PORT: 3306
-      DB_USERNAME: ${ssm:/${self:custom.ssm.${self:custom.stage}}/db_username}
-      DB_PASSWORD: ${ssm:/${self:custom.ssm.${self:custom.stage}}/db_password}
-      DB_DATABASE: ${ssm:/${self:custom.ssm.${self:custom.stage}}/db_name}
-      VIEW_COMPILED_PATH: /tmp/storage/framework/views
-      PURIFIER_CACHE_PATH: /tmp/purifier
-      FILESYSTEM_DRIVER_PUBLIC: s3
-      FILESYSTEM_DRIVER: s3
-      MIX_ASSET_URL: https://${self:custom.alias}
-      ASSET_URL: https://${self:custom.alias}
-      APP_URL: https://${self:custom.alias}
-      WEBADDRESS: https://${self:custom.alias}/
-      COOKIEADDRESS: ${self:custom.alias}
-      CACHE_DRIVER: redis
-      QUEUE_CONNECTION: sqs
-      SESSION_DRIVER: redis
-      REDIS_HOST: ${ssm:/${self:custom.ssm.${self:custom.stage}}/redis_host}
-      REDIS_PORT: 6379
-      MAIL_DRIVER: smtp
-      MAIL_HOST: ${ssm:/${self:custom.ssm.${self:custom.stage}}/mail_host}
-      MAIL_PORT: 587
-      MAIL_USERNAME: ${ssm:/${self:custom.ssm.${self:custom.stage}}/mail_username}
-      MAIL_PASSWORD: ${ssm:/${self:custom.ssm.${self:custom.stage}}/mail_password}
-      MAIL_FROM_ADDRESS: ${ssm:/${self:custom.ssm.${self:custom.stage}}/mail_from}
-      MAIL_FROM_NAME: Fantasy Calendar
-      MAIL_ENCRYPTION: tls
-      STRIPE_KEY: ${ssm:/${self:custom.ssm.${self:custom.stage}}/stripe-key}
-      STRIPE_SECRET: ${ssm:/${self:custom.ssm.${self:custom.stage}}/stripe-secret}
-      DISCORD_WEBHOOK: ${ssm:/${self:custom.ssm.${self:custom.stage}}/discord-webhook}
-      SNS_TOPIC: ${ssm:/${self:custom.ssm.${self:custom.stage}}/sns-topic}
-      DISCORD_CLIENT_ID: ${ssm:/${self:custom.ssm.${self:custom.stage}}/discord_client_id}
-      DISCORD_CLIENT_SECRET: ${ssm:/${self:custom.ssm.${self:custom.stage}}/discord_client_secret}
-      DISCORD_REDIRECT_URI: ${ssm:/${self:custom.ssm.${self:custom.stage}}/discord_redirect_uri}
-      DISCORD_PUBLIC_KEY: ${ssm:/${self:custom.ssm.${self:custom.stage}}/discord_public_key}
-      DISCORD_COMMAND: ${self:custom.environment.${self:custom.stage}.DISCORD_COMMAND}
-      BREF_BINARY_RESPONSES: '1'
-    iamRoleStatements:
-      # Allow Lambda to read and write files in the S3 buckets
-      -   Effect: Allow
-          Action: s3:*
-          Resource: !Join ['/', [!GetAtt Assets.Arn, '*']]
-      -   Effect: "Allow"
-          Action:
-            - "ec2:CreateNetworkInterface"
-            - "ec2:DescribeNetworkInterfaces"
-            - "ec2:DetachNetworkInterface"
-            - "ec2:DeleteNetworkInterface"
-            - "ses:Publish"
-            - "ses:SendEmail"
-            - "sns:Publish"
-            - "sqs:*"
-          Resource: "*"
+  name: aws
+  # The AWS region in which to deploy (us-east-1 is the default)
+  region: us-east-1
+  # The stage of the application, e.g. dev, production, staging… ('dev' is the default)
+  stage: ${opt:stage, 'dev'}
+  runtime: provided.al2
+  versionFunctions: false
+  apiGateway:
+    binaryMediaTypes:
+      - '*/*'
+  # So in short, we have two separate sets of env vars in SSM. Most of what happens below is just resolving between our envs
+  # So that the environment variables get pulled from the correct set of vars, based on the stage we're deploying
+  environment:
+    APP_KEY: ${ssm:/${self:custom.ssm.${self:custom.stage}}/app_key}
+    APP_DEBUG: ${self:custom.environment.${self:custom.stage}.APP_DEBUG}
+    APP_ENV: ${self:custom.environment.${self:custom.stage}.APP_ENV}
+    AWS_BUCKET:
+      Ref: Assets
+    SQS_QUEUE:
+      Ref: AlertQueue
+    DB_HOST: ${ssm:/${self:custom.ssm.${self:custom.stage}}/db_host}
+    DB_PORT: 3306
+    DB_USERNAME: ${ssm:/${self:custom.ssm.${self:custom.stage}}/db_username}
+    DB_PASSWORD: ${ssm:/${self:custom.ssm.${self:custom.stage}}/db_password}
+    DB_DATABASE: ${ssm:/${self:custom.ssm.${self:custom.stage}}/db_name}
+    VIEW_COMPILED_PATH: /tmp/storage/framework/views
+    PURIFIER_CACHE_PATH: /tmp/purifier
+    FILESYSTEM_DRIVER_PUBLIC: s3
+    FILESYSTEM_DRIVER: s3
+    MIX_ASSET_URL: https://${self:custom.alias}
+    ASSET_URL: https://${self:custom.alias}
+    APP_URL: https://${self:custom.alias}
+    WEBADDRESS: https://${self:custom.alias}/
+    COOKIEADDRESS: ${self:custom.alias}
+    CACHE_DRIVER: redis
+    QUEUE_CONNECTION: sqs
+    SESSION_DRIVER: redis
+    REDIS_HOST: ${ssm:/${self:custom.ssm.${self:custom.stage}}/redis_host}
+    REDIS_PORT: 6379
+    MAIL_DRIVER: smtp
+    MAIL_HOST: ${ssm:/${self:custom.ssm.${self:custom.stage}}/mail_host}
+    MAIL_PORT: 587
+    MAIL_USERNAME: ${ssm:/${self:custom.ssm.${self:custom.stage}}/mail_username}
+    MAIL_PASSWORD: ${ssm:/${self:custom.ssm.${self:custom.stage}}/mail_password}
+    MAIL_FROM_ADDRESS: ${ssm:/${self:custom.ssm.${self:custom.stage}}/mail_from}
+    MAIL_FROM_NAME: Fantasy Calendar
+    MAIL_ENCRYPTION: tls
+    STRIPE_KEY: ${ssm:/${self:custom.ssm.${self:custom.stage}}/stripe-key}
+    STRIPE_SECRET: ${ssm:/${self:custom.ssm.${self:custom.stage}}/stripe-secret}
+    DISCORD_WEBHOOK: ${ssm:/${self:custom.ssm.${self:custom.stage}}/discord-webhook}
+    SNS_TOPIC: ${ssm:/${self:custom.ssm.${self:custom.stage}}/sns-topic}
+    DISCORD_CLIENT_ID: ${ssm:/${self:custom.ssm.${self:custom.stage}}/discord_client_id}
+    DISCORD_CLIENT_SECRET: ${ssm:/${self:custom.ssm.${self:custom.stage}}/discord_client_secret}
+    DISCORD_REDIRECT_URI: ${ssm:/${self:custom.ssm.${self:custom.stage}}/discord_redirect_uri}
+    DISCORD_PUBLIC_KEY: ${ssm:/${self:custom.ssm.${self:custom.stage}}/discord_public_key}
+    DISCORD_COMMAND: ${self:custom.environment.${self:custom.stage}.DISCORD_COMMAND}
+    BREF_BINARY_RESPONSES: '1'
+  iamRoleStatements:
+    # Allow Lambda to read and write files in the S3 buckets
+    -   Effect: Allow
+        Action: s3:*
+        Resource: !Join ['/', [!GetAtt Assets.Arn, '*']]
+    -   Effect: "Allow"
+        Action:
+          - "ec2:CreateNetworkInterface"
+          - "ec2:DescribeNetworkInterfaces"
+          - "ec2:DetachNetworkInterface"
+          - "ec2:DeleteNetworkInterface"
+          - "ses:Publish"
+          - "ses:SendEmail"
+          - "sns:Publish"
+          - "sqs:*"
+        Resource: "*"
 
 custom:
   stage: ${opt:stage, 'dev'}
@@ -100,87 +100,87 @@ custom:
       deleteRemoved: true
 
 package:
-    exclude:
-        - .git/**
-        - .idea/**
-        - setup/**
-        - cache/**
-        - node_modules/**
-        - public/storage/**
-        - public/vendor/sharp/fonts/*
-        - public/vendor/sharp/vendor.js
-        - resources/images/**
-        - resources/image-sourcefiles/**
-        - storage/**
-        - tests/**
+  exclude:
+    - .git/**
+    - .idea/**
+    - setup/**
+    - cache/**
+    - node_modules/**
+    - public/storage/**
+    - public/vendor/sharp/fonts/*
+    - public/vendor/sharp/vendor.js
+    - resources/images/**
+    - resources/image-sourcefiles/**
+    - storage/**
+    - tests/**
 
 functions:
-    # This function runs the Laravel website/API
-    web:
-        handler: public/index.php
-        timeout: 28 # in seconds (API Gateway has a timeout of 29 seconds)
-        layers:
-            - ${bref:layer.php-80-fpm}
-            - ${bref-extra:redis-php-80}
-            - ${bref-extra:gmp-php-80}
-            - ${bref-extra:imagick-php-80}
-        events:
-            -   http: 'ANY /'
-            -   http: 'ANY /{proxy+}'
-        vpc:
-          securityGroupIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/security_group_ids}"] }
-          subnetIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/subnet_ids}"] }
-    # This function lets us run artisan commands on lambda
-    artisan:
-        handler: artisan
-        timeout: 120 # in seconds
-        layers:
-            - ${bref:layer.php-80} # PHP
-            - ${bref-extra:gmp-php-80}
-            - ${bref-extra:redis-php-80}
-            - ${bref-extra:imagick-php-80}
-            - ${bref:layer.console} # The "console" layer
-        vpc:
-          securityGroupIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/security_group_ids}"] }
-          subnetIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/subnet_ids}"] }
-    worker:
-      handler: worker.php
-      layers:
-        - ${bref:layer.php-80} # PHP
-        - ${bref-extra:gmp-php-80}
-        - ${bref-extra:redis-php-80}
-        - ${bref-extra:imagick-php-80}
-      events:
-        -   sqs:
-              arn:
-                Fn::GetAtt: [ AlertQueue, Arn ]
-              batchSize: 1
-      vpc:
-        securityGroupIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/security_group_ids}"] }
-        subnetIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/subnet_ids}"] }
-    console:
-      timeout: 6
-      handler: artisan
-      layers:
-        - ${bref:layer.php-80} # PHP runtime
-        - ${bref-extra:gmp-php-80}
-        - ${bref-extra:redis-php-80}
-        - ${bref-extra:imagick-php-80}
-        - ${bref:layer.console} # Console layer
-      events:
-        - schedule:
-            rate: rate(1 minute)
-            input: '"schedule:run"'
-      vpc:
-        securityGroupIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/security_group_ids}"] }
-        subnetIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/subnet_ids}"] }
+  # This function runs the Laravel website/API
+  web:
+    handler: public/index.php
+    timeout: 28 # in seconds (API Gateway has a timeout of 29 seconds)
+    layers:
+      - ${bref:layer.php-80-fpm}
+      - ${bref-extra:redis-php-80}
+      - ${bref-extra:gmp-php-80}
+      - ${bref-extra:imagick-php-80}
+    events:
+      -   http: 'ANY /'
+      -   http: 'ANY /{proxy+}'
+    vpc:
+      securityGroupIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/security_group_ids}"] }
+      subnetIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/subnet_ids}"] }
+  # This function lets us run artisan commands on lambda
+  artisan:
+    handler: artisan
+    timeout: 120 # in seconds
+    layers:
+      - ${bref:layer.php-80} # PHP
+      - ${bref-extra:gmp-php-80}
+      - ${bref-extra:redis-php-80}
+      - ${bref-extra:imagick-php-80}
+      - ${bref:layer.console} # The "console" layer
+    vpc:
+      securityGroupIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/security_group_ids}"] }
+      subnetIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/subnet_ids}"] }
+  worker:
+    handler: worker.php
+    layers:
+      - ${bref:layer.php-80} # PHP
+      - ${bref-extra:gmp-php-80}
+      - ${bref-extra:redis-php-80}
+      - ${bref-extra:imagick-php-80}
+    events:
+      -   sqs:
+            arn:
+              Fn::GetAtt: [ AlertQueue, Arn ]
+            batchSize: 1
+    vpc:
+      securityGroupIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/security_group_ids}"] }
+      subnetIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/subnet_ids}"] }
+  console:
+    timeout: 6
+    handler: artisan
+    layers:
+      - ${bref:layer.php-80} # PHP runtime
+      - ${bref-extra:gmp-php-80}
+      - ${bref-extra:redis-php-80}
+      - ${bref-extra:imagick-php-80}
+      - ${bref:layer.console} # Console layer
+    events:
+      - schedule:
+          rate: rate(1 minute)
+          input: '"schedule:run"'
+    vpc:
+      securityGroupIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/security_group_ids}"] }
+      subnetIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/subnet_ids}"] }
 
 
 plugins:
-    # We need to include the Bref plugin
-    - ./vendor/bref/bref
-    - ./vendor/bref/extra-php-extensions
-    - serverless-s3-sync
+  # We need to include the Bref plugin
+  - ./vendor/bref/bref
+  - ./vendor/bref/extra-php-extensions
+  - serverless-s3-sync
 
 resources:
   Resources:
@@ -214,7 +214,7 @@ resources:
                 Principal: '*' # everyone
                 Action: 's3:GetObject' # to read
                 Resource: !Join ['/', [!GetAtt Assets.Arn, '*']] # things in the bucket
-              # alternatively you can write out Resource: 'arn:aws:s3:::<bucket-name>/*'
+            # alternatively you can write out Resource: 'arn:aws:s3:::<bucket-name>/*'
     # The queue
     AlertQueue:
       Type: AWS::SQS::Queue
@@ -284,6 +284,26 @@ resources:
             ResponseHeadersPolicyId: !GetAtt CloudFormationHeadersPolicy.Id
           CacheBehaviors:
             - PathPattern: '/vendor/sharp/lang.js'
+              AllowedMethods: [GET, HEAD, OPTIONS, PUT, POST, PATCH, DELETE]
+              TargetOriginId: Website # the PHP application
+              # Disable caching for the PHP application https://aws.amazon.com/premiumsupport/knowledge-center/prevent-cloudfront-from-caching-files/
+              DefaultTTL: 0
+              MinTTL: 0
+              MaxTTL: 0
+              # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-cloudfront-distribution-forwardedvalues.html
+              ForwardedValues:
+                QueryString: true
+                Cookies:
+                  Forward: all # Forward cookies to use them in PHP
+                # We must *not* forward the `Host` header else it messes up API Gateway
+                Headers:
+                  - 'Accept'
+                  - 'Accept-Language'
+                  - 'Origin'
+                  - 'Referer'
+              ViewerProtocolPolicy: redirect-to-https
+            # Assets will be served under the `/assets/` prefix
+            - PathPattern: '/.well-known/apple-developer-merchantid-domain-association'
               AllowedMethods: [GET, HEAD, OPTIONS, PUT, POST, PATCH, DELETE]
               TargetOriginId: Website # the PHP application
               # Disable caching for the PHP application https://aws.amazon.com/premiumsupport/knowledge-center/prevent-cloudfront-from-caching-files/
@@ -442,9 +462,9 @@ resources:
           - Name: ${self:custom.alias}
             Type: A
             AliasTarget:
-                HostedZoneId: Z2FDTNDATAQYW2
-                DNSName: !GetAtt [CloudFrontDistribution, DomainName]
-                EvaluateTargetHealth: false
+              HostedZoneId: Z2FDTNDATAQYW2
+              DNSName: !GetAtt [CloudFrontDistribution, DomainName]
+              EvaluateTargetHealth: false
   Outputs:
     AssetsOutputKey:
       Value: !Ref Assets
