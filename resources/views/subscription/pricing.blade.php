@@ -57,7 +57,7 @@
                                     </div>
                                 </div>
                                 <div class="mt-4 text-sm">
-                                    <a href="#" class="font-medium text-gray-900">
+                                    <a href="#" class="font-medium text-gray-900 dark:text-gray-200">
                                         Get a free sample
                                         <span class="font-normal text-gray-500"> (20MB) </span>
                                     </a>
