@@ -16,7 +16,7 @@
                         <div class="max-w-lg mx-auto rounded-lg shadow-lg dark:shadow-slate-800 overflow-hidden lg:max-w-none lg:flex">
                             <div class="flex-1 bg-white dark:bg-gray-900 px-6 py-8 lg:p-12">
                                 <h3 class="text-2xl font-extrabold text-gray-900 dark:text-gray-100 sm:text-3xl">Another Subscription?</h3>
-                                <p class="mt-6 text-base text-gray-500 dark:text-gray-300">We hear you! Yet another monthly subscription to add to the list. <br><br> However, Fantasy Calendar is an <a href="https://github.com/fantasycalendar/Fantasy-Calendar" class="text-primary-600 hover:text-primary-700">open source</a> hobby project maintained by two primary developers, and we've made sure the cost is as low as we can get it. Your subscription helps us buy tools and software, <i>and</i> gets you this cool stuff:</p>
+                                <p class="mt-6 text-base text-gray-500 dark:text-gray-300">We hear you! Yet another monthly subscription to add to the list. <br><br> However, Fantasy Calendar is an <a href="https://github.com/fantasycalendar/Fantasy-Calendar" class="text-primary-600 hover:text-primary-700">open source</a> hobby project maintained by two developers in our free time, and we've made sure the cost is as low as we can get it. Your subscription helps us buy tools and software, pay our bills, <i>and</i> gets you this cool stuff:</p>
                                 <div class="mt-8">
                                     <div class="flex items-center">
                                         <h4 class="flex-shrink-0 pr-4 bg-white dark:bg-gray-900 text-sm tracking-wider font-semibold uppercase text-primary-600">What's included</h4>
