@@ -1,216 +1,94 @@
-@extends('templates._page')
-
-@push('head')
-    <style>
-        .subscription-option .inner {
-            padding: 1.5rem .5rem;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            text-align: center;
-            /*box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);*/
-            border-radius: 8px;
-            border: 1px solid rgba(0, 0, 0, 0.08);
-        }
-        .subscription-option .inner > * {
-            padding-left: 1.2rem;
-            padding-right: 1.2rem;
-        }
-        h2 {
-            font-size: 2rem;
-        }
-        h3 {
-            padding: .5rem 0;
-        }
-        h5 {
-            font-size: 0.7rem;
-            color: #757575;
-            min-height: 3.5rem;
-            display: inline-block;
-            padding-top: 0.3rem;
-        }
-        ul.features {
-            margin: 0 0 2rem 0;
-            line-height: 1.5rem;
-            list-style-type: none;
-        }
-        a.btn, a.register {
-            display: inline-block;
-            width: 95%;
-            margin: auto;
-            margin-bottom: initial;
-        }
-        a.disabled {
-            content: 'You are subscribed!';
-            background-color: grey;
-        }
-        .small {
-            font-size: .6rem;
-            line-height: .8rem;
-            margin: 0;
-        }
-        .container {
-            padding-top: 3rem;
-            max-width: 980px;
-        }
-        .custom-checkbox {
-            display: inline-block;
-        }
-        .subscription-option:not(.yearly) .yearly {
-            display: none;
-        }
-        .subscription-option.yearly .monthly {
-            display: none;
-        }
-        .price-label {
-            margin: 48px 0;
-        }
-    </style>
-@endpush
-
-@section('content')
-
-    <div class="container py-4 pb-md-5" x-data="{ yearly: false }">
-        <h1 class="center-text mb-4">Subscribe to Fantasy Calendar</h1>
-
-        @if(session()->has('alert'))
-            <div class="alert alert-info py-3 m-4">{{ session('alert') }}</div>
-        @endif
-
-    @if(!$betaAccess || Auth::user()->isPremium())
-        @elseif($betaAccess)
-            <div class="row">
-                <div class="col-12">
-                    <div class="alert alert-warning">
-                        As a beta user, you already have the Timekeeper tier -  If you just want to show us some love, you can choose to <a href="{{ route('subscription.pricing', ['beta_override' => true]) }}"> subscribe anyway</a> for a discounted price!.
-                    </div>
-                </div>
-            </div>
-        @else
-            <div class="row">
-                <div class="col-12">
-                    <div class="alert alert-warning">
-                        You are already subscribed to Fantasy Calendar - You'll need to <a href="{{ route('subscription.cancel') }}">cancel your subscription</a> if you want to pick a different subscription option.
-                    </div>
-                </div>
-            </div>
-        @endif
-
-        <div class="row py-3 py-md-4 my-lg-4">
-            <div class="col-12 col-lg-8 d-flex flex-column justify-content-center">
-                <h3>What subscribing gets you</h3>
-
-                <ul class="text-left">
-                    <li>
-                        <strong>Full</strong> calendar functionality
-                    </li>
-                    <li>
-                        <strong>Unlimited</strong> calendars in list
-                    </li>
-                    <li>
-                        <strong>User Management</strong>
-                        <p class="small">Users can comment on events and view provided information</p>
-                    </li>
-                    <li>
-                        Calendar <strong>co-ownership</strong>
-                        <p class="small">Co-owners can comment on events, create events, and change the current date.</p>
-                    </li>
-                    <li>
-                        Calendar Linking
-                        <p class="small">Link calendars together and drive their dates from a single parent calendar!</p>
-                    </li>
-                    <li>
-                        <strong>Discord Integration</strong> <span class="small"><a href="{{ route('discord') }}">Read more here.</a></span>
-                        <p class="small">Use your calendars directly within your Discord servers!</p>
-                    </li>
-                    <li>
-                        Calendar <strong>embedding</strong>
-                        <p class="small">Show off your calendars on your websites!</p>
-                    </li>
-                    <li>
-                        <small><i>...and more to come!</i></small>
-                    </li>
-                </ul>
-
-            </div>
-
-
-            <div class="col-12 col-lg-4 subscription-option" :class="{yearly: yearly}">
-                <div class="inner">
-                    <div class="row">
-                        <div class="col-12 text-center py-2">
-                            <span>Monthly</span>
-                            <label class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="#interval_selection" @click="yearly = !yearly">
-                                <span class="custom-control-indicator"></span>
-                            </label>
-                            <span>Yearly</span>
-                        </div>
-                    </div>
-
-                    @if($betaAccess && Auth::user()->isPremium())
-                        <div class="price-label">
-                            <h3>Free<br></h3><p class="small">Because you're awesome <3</p>
-                        </div>
-                    @elseif($earlySupporter)
-                        <div class="price-label" x-show="!yearly">
-                            <h2>$1.99<span class="small"> / month</span><br></h2>
-                            <p><strong>20% off</strong> (early supporter discount - normally $2.49)!</p>
-                        </div>
-                        <div class="price-label" x-show="yearly">
-                            <h2>$19.99<span class="small"> / year</span><br></h2>
-                            <p><strong>20% off</strong> (early supporter discount - normally $24.99)!</p>
-                        </div>
-                    @else
-                        <div class="price-label" x-show="!yearly">
-                            <h3>$2.49<span class="small"> / month</span><br></h3>
-                        </div>
-                        <div class="price-label" x-show="yearly">
-                            <h3>$24.99<span class="small"> / year</span><br></h3>
-                            <p>Two months free (16% discount)!</p>
-                        </div>
-                    @endif
-
-                    <p>All prices include VAT.</p>
-
-
-                    @guest
-                        <a href="{{ route('register') }}"><button type="button" class="btn btn-primary">Register to subscribe</button></a>
-                    @else
-                        @if(!$betaAccess)
-                            @if(!$betaAccess && Auth::user()->subscribedToPlan('timekeeper_monthly', 'Timekeeper'))
-                                @if(Auth::user()->subscriptions->first()->onGracePeriod())
-                                    <a href="{{ route('subscription.resume', ['level' => 'Timekeeper']) }}" class="btn btn-info" x-show="yearly">Resume monthly</a>
-                                @else
-                                    <a href="{{ route('profile') }}" class="btn btn-primary monthly">View your subscription</a>
-                                @endif
-                            @else
-                                <a @unless($subscribed) href="{{ route('subscription.subscribe', ['level' => 'Timekeeper', 'interval' => 'monthly']) }}" @else href="javascript:" @endunless @if($subscribed) onclick="swal('info','This doesn\'t work yet, you\'ll need to cancel and re-subscribe to change plans.', 'info')" @endif class="btn btn-primary subscribe monthly">{{ $subscribed ? 'Switch to' : 'Subscribe' }} Monthly</a>
-                            @endif
-
-                            @if(!$betaAccess && Auth::user()->subscribedToPlan('timekeeper_yearly', 'Timekeeper'))
-                                    @if(Auth::user()->subscriptions->first()->onGracePeriod())
-                                        <a href="{{ route('subscription.resume', ['level' => 'Timekeeper']) }}" class="btn btn-info" x-show="!yearly">Resume yearly</a>
-                                    @else
-                                        <a href="{{ route('profile') }}" class="btn btn-primary monthly">View your subscription</a>
-                                    @endif
-                            @else
-                                <a @unless($subscribed) href="{{ route('subscription.subscribe', ['level' => 'Timekeeper', 'interval' => 'yearly']) }}" @else href="javascript:" @endunless @if($subscribed) onclick="swal('info','This doesn\'t work yet, you\'ll need to cancel and re-subscribe to change plans.', 'info')" @endif class="btn btn-primary subscribe yearly">{{ $subscribed ? 'Switch to' : 'Subscribe' }} Yearly</a>
-                            @endif
-                        @else
-                            <a href="{{ route('profile') }}" class="btn btn-primary monthly">View your subscription</a>
-                        @endif
-                    @endguest
+<x-app-fullwidth-layout>
+    <div class="bg-gray-100">
+        <div class="pt-12 sm:pt-16 lg:pt-20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl lg:text-5xl">Simple no-tricks pricing</h2>
+                    <p class="mt-4 text-xl text-gray-600">If you're not satisfied, contact us within the first 14 days and we'll send you a full refund.</p>
                 </div>
             </div>
         </div>
+        <div class="mt-8 bg-white pb-16 sm:mt-12 sm:pb-20 lg:pb-28">
+            <div class="relative">
+                <div class="absolute inset-0 h-1/2 bg-gray-100"></div>
+                <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="max-w-lg mx-auto rounded-lg shadow-lg overflow-hidden lg:max-w-none lg:flex">
+                        <div class="flex-1 bg-white px-6 py-8 lg:p-12">
+                            <h3 class="text-2xl font-extrabold text-gray-900 sm:text-3xl">Lifetime Membership</h3>
+                            <p class="mt-6 text-base text-gray-500">Lorem ipsum dolor sit amet consect etur adipisicing elit. Itaque amet indis perferendis blanditiis repellendus etur quidem assumenda.</p>
+                            <div class="mt-8">
+                                <div class="flex items-center">
+                                    <h4 class="flex-shrink-0 pr-4 bg-white text-sm tracking-wider font-semibold uppercase text-indigo-600">What's included</h4>
+                                    <div class="flex-1 border-t-2 border-gray-200"></div>
+                                </div>
+                                <ul role="list" class="mt-8 space-y-5 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-x-8 lg:gap-y-5">
+                                    <li class="flex items-start lg:col-span-1">
+                                        <div class="flex-shrink-0">
+                                            <!-- Heroicon name: solid/check-circle -->
+                                            <svg class="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                            </svg>
+                                        </div>
+                                        <p class="ml-3 text-sm text-gray-700">Private forum access</p>
+                                    </li>
 
-        <div class="row">
-            <div class="col-lg-2"></div>
-            <div class="col-12 col-lg-8 text-center my-4 py-3 px-4 border rounded" style="opacity: 0.65;">
-                <small>Have you donated to Fantasy Calendar in the past? If so, we'd love to give you a subscription! Please <a href="mailto:contact@fantasy-calendar.com">contact us</a> with proof of your donation, so we can make that happen.</small>
+                                    <li class="flex items-start lg:col-span-1">
+                                        <div class="flex-shrink-0">
+                                            <!-- Heroicon name: solid/check-circle -->
+                                            <svg class="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                            </svg>
+                                        </div>
+                                        <p class="ml-3 text-sm text-gray-700">Member resources</p>
+                                    </li>
+
+                                    <li class="flex items-start lg:col-span-1">
+                                        <div class="flex-shrink-0">
+                                            <!-- Heroicon name: solid/check-circle -->
+                                            <svg class="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                            </svg>
+                                        </div>
+                                        <p class="ml-3 text-sm text-gray-700">Entry to annual conference</p>
+                                    </li>
+
+                                    <li class="flex items-start lg:col-span-1">
+                                        <div class="flex-shrink-0">
+                                            <!-- Heroicon name: solid/check-circle -->
+                                            <svg class="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                            </svg>
+                                        </div>
+                                        <p class="ml-3 text-sm text-gray-700">Official member t-shirt</p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="py-8 px-6 text-center bg-gray-50 lg:flex-shrink-0 lg:flex lg:flex-col lg:justify-center lg:p-12">
+                            <p class="text-lg leading-6 font-medium text-gray-900">Pay once, own it forever</p>
+                            <div class="mt-4 flex items-center justify-center text-5xl font-extrabold text-gray-900">
+                                <span> $349 </span>
+                                <span class="ml-3 text-xl font-medium text-gray-500"> USD </span>
+                            </div>
+                            <p class="mt-4 text-sm">
+                                <a href="#" class="font-medium text-gray-500 underline"> Learn about our membership policy </a>
+                            </p>
+                            <div class="mt-6">
+                                <div class="rounded-md shadow">
+                                    <a href="#" class="flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-gray-800 hover:bg-gray-900"> Get Access </a>
+                                </div>
+                            </div>
+                            <div class="mt-4 text-sm">
+                                <a href="#" class="font-medium text-gray-900">
+                                    Get a free sample
+                                    <span class="font-normal text-gray-500"> (20MB) </span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="col-lg-2"></div>
         </div>
     </div>
-@endsection
+
+</x-app-fullwidth-layout>
