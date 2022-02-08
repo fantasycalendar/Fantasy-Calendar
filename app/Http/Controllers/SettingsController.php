@@ -33,7 +33,9 @@ class SettingsController extends Controller
             : false;
 
         return view('profile.billing', [
-            'promoCode' => $promoCode
+            'promoCode' => $promoCode,
+            'subscription' => auth()->user()->subscriptions()->active()->first(),
+            'subscription_renews_at' => format_timestamp(auth()->user()->subscription_end)
         ]);
     }
 

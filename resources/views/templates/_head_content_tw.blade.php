@@ -40,6 +40,7 @@
     <script src="{{ mix('/js/app-tw.js') }}" defer></script>
     <script src="{{ mix('js/calendar/calendar_functions.js') }}"></script>
     <script src="{{ mix('js/calendar/calendar_ajax_functions.js') }}"></script>
+    <script src="https://js.stripe.com/v3/"></script>
 
 {{--    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.6.0/dist/alpine.min.js" defer></script>--}}
 

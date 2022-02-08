@@ -215,6 +215,22 @@ class User extends Authenticatable implements
         return $this->paymentLevel() !== 'Free';
     }
 
+    public function subscriptionPrice($interval) {
+        if($this->isEarlySupporter()) {
+            if($interval === 'monthly') {
+                return '$1.99';
+            }
+
+            return '$19.99';
+        }
+
+        if($interval == "monthly") {
+            return '$2.49';
+        }
+
+        return '$24.99';
+    }
+
     /**
      * @return string
      */

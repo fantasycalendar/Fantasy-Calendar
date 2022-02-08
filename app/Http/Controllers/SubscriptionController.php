@@ -69,7 +69,7 @@ class SubscriptionController extends Controller
         $intent = Auth::user()->createSetupIntent();
         $plan = strtolower($level . "_" . $interval);
 
-        return view('subscription.subscribe',[
+        return view('profile.billing-subscribe',[
             'intent' => $intent,
             'level' => $level,
             'plan' => $plan,

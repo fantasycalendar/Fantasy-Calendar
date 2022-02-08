@@ -17,8 +17,9 @@ class Button extends Component
 
     public string $roleClasses = '';
     public array $roleSpecific = [
-        'primary' => 'text-white bg-primary-600 hover:bg-primary-700 dark:bg-primary-800 dark:hover:bg-primary-900 focus:ring-primary-500 border-transparent',
-        'secondary' => 'text-gray-700 bg-white hover:bg-gray-50 focus:ring-primary-500 border-gray-300 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600 dark:border-gray-600'
+        'primary' => 'text-white bg-primary-600 hover:bg-primary-700 dark:bg-primary-900 dark:hover:bg-primary-800 focus:ring-primary-500 border-transparent',
+        'secondary' => 'text-gray-700 bg-white hover:bg-gray-50 focus:ring-primary-500 border-gray-300 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600 dark:border-gray-600',
+        'danger' => 'text-white bg-red-600 hover:bg-red-700 dark:bg-red-900 dark:hover:bg-red-800 focus:ring-red-500 border-transparent',
     ];
 
     /**
