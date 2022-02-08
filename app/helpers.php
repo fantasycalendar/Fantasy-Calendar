@@ -317,3 +317,31 @@ if(!function_exists('format_money')) {
         return number_format($cents / 100, 2);
     }
 }
+
+if(!function_exists('random_fantasy_name')) {
+    function random_fantasy_name() {
+        $names = [
+            'Krusk the Half-orc',
+            'Tenser',
+            'Bigby',
+            'Otto',
+            'Drawmij',
+            'Nystul',
+            'Rary',
+            'Otiluke',
+            'Elminster',
+            'Drizzt Do\'Urden',
+            'Strahd von Zarovich',
+            'Vecna',
+            'Lolth',
+            'Tiamat',
+            'Gruumsh',
+            'Bahamut',
+            'Moradin',
+            'Mystra',
+            'Karsus'
+        ];
+
+        return $names[array_rand($names)];
+    }
+}

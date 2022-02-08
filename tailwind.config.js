@@ -4,7 +4,7 @@ module.exports = {
         "./resources/**/*.blade.php",
         "./resources/**/*.js",
         "./resources/**/*.vue",
-        "./App/View/Components/**/*.php",
+        "./app/View/Components/**/*.php",
     ],
     safelist: [
         {

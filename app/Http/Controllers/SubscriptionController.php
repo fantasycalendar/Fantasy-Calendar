@@ -66,7 +66,9 @@ class SubscriptionController extends Controller
             return Redirect::route('profile');
         }
 
-        $intent = Auth::user()->createSetupIntent();
+        $intent = Auth::user()->createSetupIntent([
+            'payment_method_types' => ['card'],
+        ]);
         $plan = strtolower($level . "_" . $interval);
 
         return view('profile.billing-subscribe',[

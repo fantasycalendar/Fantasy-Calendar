@@ -14,44 +14,45 @@
                     any: function() {
                         console.log(this.stripeError.length);
                         console.log(this.cardholderError.length);
-                        return this.stripeError.length !== 0 || this.cardholderError.length !== 0;
+                        return this.stripeError.length + this.cardholderError.length > 0;
                     }
                 },
                 elements: null,
                 init: function() {
                     this.stripe = Stripe('{{ env('STRIPE_KEY') }}');
+                    const appearance = {
+                        theme: 'stripe',
+                        variables: {
+                            fontFamily: 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+                            colorText: '{{ auth()->user()->setting('dark_theme') ? '#d1d5db' : '#6b7280' }}',
+                            colorBackground: '{{ auth()->user()->setting('dark_theme') ? '#374151' : 'white' }}',
+                            colorTextPlaceholder: '#6b7280',
+                            colorPrimary: '#2f855a'
+                        }
+                    };
                     this.elements = this.stripe.elements({
-                        clientSecret: "{{ $intent->client_secret }}"
+                        clientSecret: "{{ $intent->client_secret }}",
+                        appearance
                     });
 
-                    this.cardElement = this.elements.create('payment', {
-                        'style': {
-                            'base': {
-                                'fontFamily': 'Arial, sans-serif',
-                                'fontSize': '18px',
-                                'color': '#C1C7CD',
-                            },
-                            'invalid': {
-                                'color': 'red',
-                            },
-                        }
-                    });
+                    this.cardElement = this.elements.create('payment');
                     this.clientSecret = "{{ $intent->client_secret }}";
 
                     this.cardElement.mount('#card-element');
-                    this.cardElement.on('change', (event) => {
-                        this.cardtried = true;
-
+                    this.cardElement.on('change', function(event) {
                         if (event.complete) {
+                            this.cardtried = true;
                             this.errors.stripeError = "";
                             this.evaluateErrors();
                         } else if (event.error) {
+                            console.log(event.error);
                             this.errors.stripeError = event.error.message;
                             this.evaluateErrors();
                         }
-                    });
+                    }.bind(this));
                 },
                 evaluateErrors: function() {
+                    console.log(this.errors.any(), this.cardtried);
                     if(!this.cardholder.length) {
                         this.errors.cardholderError = "Cardholder Name is required.";
                     } else {
@@ -65,7 +66,7 @@
                     this.submitting = true;
 
                     const { error } = await this.stripe.confirmPayment({
-                        elements: this.cardElement,
+                        elements: this.elements,
                         confirmParams: {
                             return_url: '{{ route('profile.billing') }}'
                         }
@@ -96,29 +97,30 @@
 
 <x-app-layout>
     <main class="max-w-7xl mx-auto pb-10" x-data="subscription()" x-init="init()">
-        <div class="lg:grid lg:grid-cols-12 lg:gap-x-5">
-            <aside class="pb-6 px-2 sm:px-6 lg:pb-0 lg:px-0 lg:col-span-6">
+        <div class="md:grid md:grid-cols-12 md:gap-x-5">
+            <aside class="pb-6 px-2 sm:px-6 lg:pb-0 md:px-0 md:col-span-6">
                 <div>
-                    <h2 id="user-details-heading" class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">Subscription</h2>
+                    <h2 id="user-details-heading" class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">Payment Details</h2>
                 </div>
 
-                <p>You can cancel your subscription at any point from your <a href="{{ route('profile') }}">profile</a>.</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">We partner with Stripe for billing, your payment info never touches our servers.</p>
 
-                <p class="text-sm text-gray-500 dark:text-gray-400">All of our billing is handled through Stripe, your payment info never touches our servers.</p>
+                <div class="space-y-4 mt-6">
 
-                <div class="space-y-4">
-                    <x-text-input x-bind:class="{ error: errors.cardholderError.length > 0 }" id="card-holder-name" type="text" placeholder="Cardholder Name" x-model="cardholder" @blur="evaluateErrors"></x-text-input>
+                    <div>
+                        <x-text-input x-bind:class="{ error: errors.cardholderError.length > 0 }" id="card-holder-name" type="text" label="Cardholder Name" :placeholder="random_fantasy_name()" x-model="cardholder" @blur="evaluateErrors"></x-text-input>
+                    </div>
 
-                    <x-alert role="danger" id="cardholder-error" x-bind:class="{ hidden: !errors.cardholderError.length }" x-text="errors.cardholderError"></x-alert>
+                    <x-alert type="danger" id="cardholder-error" x-bind:class="{ hidden: !errors.cardholderError.length }" x-text="errors.cardholderError"></x-alert>
 
                     <!-- Stripe Elements Placeholder -->
-                    <div id="card-element" class="text-md dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 mt-1 text-gray-600 focus:ring-primary-500 focus:border-primary-500 block w-full px-2 shadow-sm border-gray-300 rounded-md" @change="onCardElementChange"></div>
+                    <div id="card-element" class="" @change="onCardElementChange"></div>
 
-                    <x-alert role="danger" id="card-errors" x-bind:class="{ hidden: !errors.stripeError.length }" x-text="errors.stripeError"></x-alert>
+                    <x-alert type="danger" id="card-errors" x-bind:class="{ hidden: !errors.stripeError.length }" x-text="errors.stripeError"></x-alert>
                 </div>
             </aside>
 
-            <div class="space-y-6 sm:px-6 lg:px-0 lg:col-span-6">
+            <div class="space-y-6 sm:px-6 md:px-0 md:col-span-6">
                 <h1 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">Order Summary</h1>
                 <x-panel>
 
@@ -158,7 +160,7 @@
                                 id="card-button"
                                 x-bind:disabled="!ready"
                                 @click="ready && cardButtonSubmit()"
-                                class="w-full justify-center"
+                                class="w-full justify-center hover:cursor-pointer disabled:cursor-default"
                             >
                                 <div class="spinner-border text-light mr-2 hidden" :class="{ hidden: !submitting }" role="status">
                                     <span class="sr-only">Loading...</span>
