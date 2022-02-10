@@ -40,7 +40,7 @@
                         <x-nav-link href="{{ route('profile') }}">Profile</x-nav-link>
                         <x-nav-link href="{{ route('logout') }}">Logout</x-nav-link>
                     @else
-                        <x-nav-link href="{{ route('pricing') }}">Pricing</x-nav-link>
+                        <x-nav-link href="{{ route('subscription.pricing') }}">Pricing</x-nav-link>
                         <x-nav-link href="{{ route('login') }}">Login</x-nav-link>
                         <x-nav-link href="{{ route('register') }}">Register</x-nav-link>
                     @endauth
@@ -85,7 +85,7 @@
                     <x-mobile-nav-link href="{{ route('profile') }}">Profile</x-mobile-nav-link>
                     <x-mobile-nav-link href="{{ route('logout') }}">Logout</x-mobile-nav-link>
                 @else
-                    <x-mobile-nav-link href="{{ route('pricing') }}">Pricing</x-mobile-nav-link>
+                    <x-mobile-nav-link href="{{ route('subscription.pricing') }}">Pricing</x-mobile-nav-link>
                     <x-mobile-nav-link href="{{ route('login') }}">Login</x-mobile-nav-link>
                     <x-mobile-nav-link href="{{ route('register') }}">Register</x-mobile-nav-link>
                 @endauth

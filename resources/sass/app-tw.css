@@ -34,4 +34,7 @@
   .scrollbar::-webkit-scrollbar-track:active {
     background: #131314;
   }
+  [x-cloak] {
+    display: none;
+  }
 }
