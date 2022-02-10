@@ -122,7 +122,7 @@ class SubscriptionController extends Controller
 
             return redirect()->route(
                 'cashier.payment',
-                [$exception->payment->id, 'redirect' => route('profile')]
+                [$exception->payment->id, 'redirect' => route('profile.billing')]
             );
         }
 

@@ -3,74 +3,147 @@
         function subscription() {
             return {
                 ready: false,
+                readies: {
+                    Number: false,
+                    Cvc: false,
+                    Expiry: false,
+                    Name: false,
+                    all: function() {
+                        return this.Number
+                            && this.Name
+                            && this.Expiry
+                            && this.Cvc;
+                    }
+                },
                 complete: false,
                 submitting: false,
                 attempted: false,
                 cardholder: "",
                 cardtried: false,
+                cardNumberElement: false,
+                cardExpiryElement: false,
+                cardCvcElement: false,
                 errors: {
-                    stripeError: "",
-                    cardholderError: "",
+                    messages: {
+                        cardNumberError: "",
+                        cardCvcError: "",
+                        cardExpiryError: "",
+                        cardholderError: "",
+                    },
                     any: function() {
-                        console.log(this.stripeError.length);
-                        console.log(this.cardholderError.length);
-                        return this.stripeError.length + this.cardholderError.length > 0;
+                        return this.messages.cardNumberError.length
+                             + this.messages.cardCvcError.length
+                             + this.messages.cardExpiryError.length
+                             + this.messages.cardholderError.length !== 0;
                     }
                 },
                 elements: null,
                 init: function() {
-                    this.stripe = Stripe('{{ env('STRIPE_KEY') }}');
-                    const appearance = {
-                        theme: 'stripe',
-                        variables: {
-                            fontFamily: 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
-                            colorText: '{{ auth()->user()->setting('dark_theme') ? '#d1d5db' : '#6b7280' }}',
-                            colorBackground: '{{ auth()->user()->setting('dark_theme') ? '#374151' : 'white' }}',
-                            colorTextPlaceholder: '#6b7280',
-                            colorPrimary: '#2f855a'
-                        }
-                    };
-                    this.elements = this.stripe.elements({
-                        clientSecret: "{{ $intent->client_secret }}",
-                        appearance
-                    });
+                    console.table(Object.entries(this.errors.messages));
 
-                    this.cardElement = this.elements.create('payment');
+                    this.stripe = Stripe('{{ env('STRIPE_KEY') }}');
+                    this.elements = this.stripe.elements();
+                    const style = {
+                        base: {
+                            fontFamily: 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+                            fontSize: '16px',
+                            color: '#C1C7CD'
+                        },
+                        invalid: {
+                            color: 'red',
+                        },
+                    };
+                    const classes = {
+                        invalid: 'border-red-500 dark:border-red-600',
+                    };
+
+                    this.cardNumberElement = this.elements.create('cardNumber', {
+                        style,
+                        classes
+                    });
                     this.clientSecret = "{{ $intent->client_secret }}";
 
-                    this.cardElement.mount('#card-element');
-                    this.cardElement.on('change', function(event) {
+                    this.cardNumberElement.mount('#cardNumber-element');
+                    this.cardNumberElement.on('change', (event) => {
+                        this.cardtried = true;
+
                         if (event.complete) {
-                            this.cardtried = true;
-                            this.errors.stripeError = "";
+                            this.errors.messages.cardNumberError = "";
+                            this.readies.Number = true;
                             this.evaluateErrors();
                         } else if (event.error) {
-                            console.log(event.error);
-                            this.errors.stripeError = event.error.message;
+                            this.errors.messages.cardNumberError = event.error.message;
+                            this.readies.Number = false;
                             this.evaluateErrors();
                         }
-                    }.bind(this));
+                    });
+
+                    this.cardExpiryElement = this.elements.create('cardExpiry', {
+                        style,
+                        classes
+                    });
+                    this.clientSecret = "{{ $intent->client_secret }}";
+
+                    this.cardExpiryElement.mount('#cardExpiry-element');
+                    this.cardExpiryElement.on('change', (event) => {
+                        this.cardtried = true;
+
+                        if (event.complete) {
+                            this.errors.messages.cardExpiryError = "";
+                            this.readies.Expiry = true;
+                            this.evaluateErrors();
+                        } else if (event.error) {
+                            this.errors.messages.cardExpiryError = event.error.message;
+                            this.readies.Expiry = false;
+                            this.evaluateErrors();
+                        }
+                    });
+
+                    this.cardCvcElement = this.elements.create('cardCvc', {
+                        style,
+                        classes
+                    });
+                    this.clientSecret = "{{ $intent->client_secret }}";
+
+                    this.cardCvcElement.mount('#cardCvc-element');
+                    this.cardCvcElement.on('change', (event) => {
+                        this.cardtried = true;
+
+                        if (event.complete) {
+                            this.errors.messages.cardCvcError = "";
+                            this.readies.Cvc = true;
+                            this.evaluateErrors();
+                        } else if (event.error) {
+                            this.errors.messages.cardCvcError = event.error.message;
+                            this.readies.Cvc = false;
+                            this.evaluateErrors();
+                        }
+                    });
                 },
                 evaluateErrors: function() {
-                    console.log(this.errors.any(), this.cardtried);
                     if(!this.cardholder.length) {
-                        this.errors.cardholderError = "Cardholder Name is required.";
+                        this.errors.messages.cardholderError = "Cardholder Name is required.";
+                        this.readies.Name = false;
                     } else {
-                        this.errors.cardholderError = "";
+                        this.errors.messages.cardholderError = "";
+                        this.readies.Name = true;
                     }
 
-                    this.ready = !this.errors.any() && this.cardtried;
+                    console.table(Object.entries(this.errors.messages));
+
+                    this.ready = !this.errors.any() && this.readies.all();
                 },
                 cardButtonSubmit: async function() {
                     this.ready = false;
                     this.submitting = true;
 
-                    const { error } = await this.stripe.confirmSetup({
-                        elements: this.elements,
-                        confirmParams: {
-                            return_url: '{{ route('profile.billing') }}'
+                    const { setupIntent, error } = await this.stripe.handleCardSetup(
+                        this.clientSecret, this.cardNumberElement, {
+                            payment_method_data: {
+                                billing_details: { name: this.cardholder }
+                            }
                         }
-                    });
+                    );
 
                     if (error) {
                         console.log(error);
@@ -96,7 +169,7 @@
 @endpush
 
 <x-app-layout>
-    <main class="max-w-7xl mx-auto pb-10" x-data="subscription()" x-init="init()">
+    <main class="max-w-7xl mx-auto pb-10" x-data="subscription()">
         <div class="md:grid md:grid-cols-12 md:gap-x-5">
             <aside class="pb-6 px-2 sm:px-6 lg:pb-0 md:px-0 md:col-span-6">
                 <div>
@@ -105,18 +178,52 @@
 
                 <p class="text-sm text-gray-500 dark:text-gray-400">We partner with Stripe for billing, your payment info never touches our servers.</p>
 
-                <div class="space-y-4 mt-6">
+                <div class="mt-6 grid grid-cols-2 gap-4">
 
-                    <div>
-                        <x-text-input x-bind:class="{ error: errors.cardholderError.length > 0 }" id="card-holder-name" type="text" label="Cardholder Name" :placeholder="random_fantasy_name()" x-model="cardholder" @blur="evaluateErrors"></x-text-input>
+                    <div class="col-span-2">
+                        <x-text-input
+                            x-bind:class="{ 'dark:border-red-600 focus:ring-red-500 focus:border-red-500 border-red-300': errors.messages.cardholderError }"
+                            id="card-holder-name"
+                            type="text"
+                            label="Cardholder Name"
+                            :placeholder="random_fantasy_name()"
+                            x-model="cardholder"
+                            @blur="evaluateErrors"
+                            @keyup="evaluateErrors"
+                        ></x-text-input>
                     </div>
 
-                    <x-alert type="danger" id="cardholder-error" x-bind:class="{ hidden: !errors.cardholderError.length }" x-text="errors.cardholderError"></x-alert>
+{{--                    <x-alert type="danger"--}}
+{{--                             class="col-span-2"--}}
+{{--                             id="cardholder-error"--}}
+{{--                             x-show="errors.cardholderError"--}}
+{{--                    >--}}
+{{--                        Cardholder Name is required.--}}
+{{--                    </x-alert>--}}
 
-                    <!-- Stripe Elements Placeholder -->
-                    <div id="card-element" class="" @change="onCardElementChange"></div>
+                    <div class="col-span-2">
+                        <label for="cardNumber-element" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Card Number</label>
+                        <!-- Stripe Elements Placeholder -->
+                        <div id="cardNumber-element" class="border disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600 focus:ring-primary-500 focus:border-primary-500 block w-full py-2.5 px-2 shadow-sm border-gray-300 rounded-md"></div>
+                    </div>
 
-                    <x-alert type="danger" id="card-errors" x-bind:class="{ hidden: !errors.stripeError.length }" x-text="errors.stripeError"></x-alert>
+                    <div class="col-span-1">
+                        <label for="cardCvc-element" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Card CVC</label>
+                        <div id="cardCvc-element" class="border disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 mt-1 text-gray-600 focus:ring-primary-500 focus:border-primary-500 block w-full py-2.5 px-2 shadow-sm border-gray-300 rounded-md"></div>
+                    </div>
+
+                    <div class="col-span-1">
+                        <label for="cardExpiry-element" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Card Expiry</label>
+                        <div id="cardExpiry-element" class="border disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 mt-1 text-gray-600 focus:ring-primary-500 focus:border-primary-500 block w-full py-2.5 px-2 shadow-sm border-gray-300 rounded-md"></div>
+                    </div>
+
+                    <x-alert class="col-span-2" type="danger" id="card-errors" x-show="errors.any()">
+                        <ul class="text-current list-disc ml-4">
+                            <template x-for="message in Object.values(errors.messages).filter((message) => message.length)">
+                                <li class="text-current" x-text="message"></li>
+                            </template>
+                        </ul>
+                    </x-alert>
                 </div>
             </aside>
 
