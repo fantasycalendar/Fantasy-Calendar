@@ -3,19 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Events\UserSubscribedEvent;
-use Auth;
 use Stripe;
 use Illuminate\Http\Request;
 use Laravel\Cashier\Exceptions\IncompletePayment;
 use Stripe\Exceptions\InvalidRequestException;
-use Redirect;
-use Stripe\Coupon;
-use Stripe\StripeClient;
 
 class SubscriptionController extends Controller
 {
     public function __construct() {
-        $this->middleware('auth')->except(['index', 'pricing', 'coupon']);
+        $this->middleware('auth')->except(['pricing']);
     }
 
     /**
@@ -66,20 +62,6 @@ class SubscriptionController extends Controller
         }
 
         UserSubscribedEvent::dispatch($request->user(), $plan);
-
-        return ['success' => true, 'message' => 'Subscribed'];
-    }
-
-    /**
-     * @param Request $request
-     * @param $level
-     * @param $plan
-     * @return array
-     */
-    public function swap(Request $request, $level, $plan) {
-        $user = Auth::user();
-
-        $user->newSubscription($level, $plan)->create($request->input('token'));
 
         return ['success' => true, 'message' => 'Subscribed'];
     }
