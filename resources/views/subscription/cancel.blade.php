@@ -3,7 +3,7 @@
 @push('head')
     <script>
         var afterPost = function() {
-            self.location = '/profile';
+            self.location = '/profile/billing';
         }
     </script>
 @endpush

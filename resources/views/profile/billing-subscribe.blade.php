@@ -65,17 +65,15 @@
 
                     this.cardNumberElement.mount('#cardNumber-element');
                     this.cardNumberElement.on('change', (event) => {
-                        this.cardtried = true;
-
                         if (event.complete) {
                             this.errors.messages.cardNumberError = "";
                             this.readies.Number = true;
-                            this.evaluateErrors();
                         } else if (event.error) {
                             this.errors.messages.cardNumberError = event.error.message;
                             this.readies.Number = false;
-                            this.evaluateErrors();
                         }
+
+                        this.evaluateErrors();
                     });
 
                     this.cardExpiryElement = this.elements.create('cardExpiry', {
@@ -86,17 +84,15 @@
 
                     this.cardExpiryElement.mount('#cardExpiry-element');
                     this.cardExpiryElement.on('change', (event) => {
-                        this.cardtried = true;
-
                         if (event.complete) {
                             this.errors.messages.cardExpiryError = "";
                             this.readies.Expiry = true;
-                            this.evaluateErrors();
                         } else if (event.error) {
                             this.errors.messages.cardExpiryError = event.error.message;
                             this.readies.Expiry = false;
-                            this.evaluateErrors();
                         }
+
+                        this.evaluateErrors();
                     });
 
                     this.cardCvcElement = this.elements.create('cardCvc', {
@@ -107,17 +103,15 @@
 
                     this.cardCvcElement.mount('#cardCvc-element');
                     this.cardCvcElement.on('change', (event) => {
-                        this.cardtried = true;
-
                         if (event.complete) {
                             this.errors.messages.cardCvcError = "";
                             this.readies.Cvc = true;
-                            this.evaluateErrors();
                         } else if (event.error) {
                             this.errors.messages.cardCvcError = event.error.message;
                             this.readies.Cvc = false;
-                            this.evaluateErrors();
                         }
+
+                        this.evaluateErrors();
                     });
                 },
                 evaluateErrors: function() {
