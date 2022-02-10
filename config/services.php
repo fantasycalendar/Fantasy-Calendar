@@ -30,6 +30,10 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'stripe' => [
+        'secret_key' => env('STRIPE_SECRET')
+    ],
+
     'discord' => [
         'enabled' => (!empty(env('DISCORD_CLIENT_ID')) && !empty(env('DISCORD_CLIENT_SECRET')) && !empty(env('DISCORD_REDIRECT_URI'))),
         'client_id' => env('DISCORD_CLIENT_ID'),

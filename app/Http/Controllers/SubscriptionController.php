@@ -23,29 +23,10 @@ class SubscriptionController extends Controller
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function pricing(Request $request) {
-        $subscribed = false;
-        if(Auth::check() && Auth::user()->subscriptions()->active()->get()->count() > 0) {
-            $subscribed = true;
-        }
-
-        $betaAccess = !(!Auth::check() || $request->get('beta_override')) && Auth::user()->betaAccess();
-
         return view('subscription.pricing', [
-            'subscribed' => $subscribed,
-            'earlySupporter' => Auth::user()?->isEarlySupporter(),
-            'betaAccess' => $betaAccess,
-        ]);
-    }
-
-    public function index() {
-        $subscriptions = Auth::user()->subscriptions()->active()->get();
-
-        if(count($subscriptions) < 1) {
-            return Redirect::route('subscription.pricing');
-        }
-
-        return view('subscription.index', [
-            'subscriptions' => $subscriptions
+            'subscribed' => $request->user()?->subscriptions()->active()->count(),
+            'earlySupporter' => $request->user()?->isEarlySupporter(),
+            'betaAccess' => $request->user()?->betaAccess() && !$request->get('beta_override'),
         ]);
     }
 
@@ -54,29 +35,17 @@ class SubscriptionController extends Controller
      * @param $interval
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
-    public function subscribe($level, $interval) {
-        if(cache(Auth::user()->id . '_is_premium')) {
-            cache()->forget(Auth::user()->id . '_is_premium');
-        }
-
-        // They're subscribed already, send 'em to the subscriptions list
-        if(Auth::user()->subscribed('Timekeeper')) {
-            return Redirect::route('profile.billing');
-        }
-
-        $intent = Auth::user()->createSetupIntent([
-            'payment_method_types' => ['card'],
-        ]);
-        $plan = strtolower($level . "_" . $interval);
-
-        return view('profile.billing-subscribe',[
-            'intent' => $intent,
-            'level' => $level,
-            'plan' => $plan,
-            'interval' => $interval,
-            'user' => Auth::user(),
-            'renew_at' => $interval == "yearly" ? now()->addYear()->toFormattedDateString() : now()->addMonth()->toFormattedDateString()
-        ]);
+    public function subscribe(Request $request, $level, $interval) {
+        return $request->user()->subscribed('Timekeeper')
+            ? redirect()->route('profile.billing') // They're subscribed already, send 'em to the subscriptions list
+            : view('profile.billing-subscribe',[
+                'intent' => $request->user()->createSetupIntent(),
+                'level' => $level,
+                'plan' => strtolower($level . "_" . $interval),
+                'interval' => $interval,
+                'user' => $request->user(),
+                'renew_at' => $interval == "yearly" ? now()->addYear()->toFormattedDateString() : now()->addMonth()->toFormattedDateString()
+            ]);
     }
 
     /**
@@ -87,44 +56,16 @@ class SubscriptionController extends Controller
      * @throws Stripe\Exception\ApiErrorException
      */
     public function update(Request $request, $level, $plan) {
-        if(cache(Auth::user()->id . '_is_premium')) {
-            cache()->forget(Auth::user()->id . '_is_premium');
-        }
-
-        $user = Auth::user();
-        $stripe = new StripeClient(env('STRIPE_SECRET'));
-
         try {
-
-            # If the users was registered before a certain point, apply the 25% off
-            $sub = $user->newSubscription($level, $plan);
-
-            if($user->isEarlySupporter()) {
-                $coupons = collect($stripe->coupons->all()['data'])->filter(function($coupon) {
-                    return $coupon['name'] == 'Early Supporter';
-                });
-
-                if($coupons->count()) {
-                    $sub->withCoupon($coupons->first()->id);
-                }
-            }
-
-            $sub->create($request->input('token'));
-
-            $user->calendars()->each(function($calendar){
-                $calendar->disabled = 0;
-                $calendar->save();
-            });
-
+            $request->user()->startSubscription($level, $plan, $request->input('token'));
         } catch (IncompletePayment $exception) {
-
             return redirect()->route(
                 'cashier.payment',
                 [$exception->payment->id, 'redirect' => route('profile.billing')]
             );
         }
 
-        UserSubscribedEvent::dispatch($user, $plan);
+        UserSubscribedEvent::dispatch($request->user(), $plan);
 
         return ['success' => true, 'message' => 'Subscribed'];
     }
@@ -144,19 +85,10 @@ class SubscriptionController extends Controller
     }
 
     /**
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function cancellation() {
-        return view('subscription.cancel', [
-            'subscription' => Auth::user()->subscription('Timekeeper')
-        ]);
-    }
-
-    /**
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function cancel() {
-        $subscription = Auth::user()->subscription('Timekeeper');
+    public function cancel(Request $request) {
+        $subscription = $request->user()->subscription('Timekeeper');
 
         if($subscription->onGracePeriod()) {
             $subscription->cancelNow();
@@ -164,19 +96,17 @@ class SubscriptionController extends Controller
             $subscription->cancel();
         }
 
-        return Redirect::route('profile.billing');
+        return redirect()->route('profile.billing');
     }
 
     /**
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function resume() {
-        if(!Auth::user()->subscription('Timekeeper')->onGracePeriod()) {
-            return Redirect::route('profile.billing');
+    public function resume(Request $request) {
+        if($request->user()->subscription('Timekeeper')->onGracePeriod()) {
+            $request->user()->subscription('Timekeeper')->resume();
         }
 
-        Auth::user()->subscription('Timekeeper')->resume();
-
-        return Redirect::route('profile.billing');
+        return redirect()->route('profile.billing');
     }
 }

@@ -102,11 +102,9 @@ Route::get('/pricing', 'SubscriptionController@pricing')->name('subscription.pri
 
 // Subscription management
 Route::prefix('subscription')->as('subscription.')->middleware(['account.deletion', 'agreement'])->group(function(){
-    Route::get('/', 'SubscriptionController@index')->name('index');
     Route::get('/subscribe/{level}/{interval}', 'SubscriptionController@subscribe')->name('subscribe');
     Route::post('/subscribe', 'SubscriptionController@createsubscription')->name('create');
-    Route::get('/cancel', 'SubscriptionController@cancellation')->name('cancel');
-    Route::post('/cancel', 'SubscriptionController@cancel')->name('cancelpost');
+    Route::post('/cancel', 'SubscriptionController@cancel')->name('cancel');
     Route::get('/resume', 'SubscriptionController@resume')->name('resume');
     Route::post('/update/{level}/{plan}', 'SubscriptionController@update')->name('update');
 });
