@@ -51,8 +51,9 @@ class SettingsController extends Controller
     }
 
     public function updateEmail(UpdateEmailRequest $request) {
-        Auth::user()->email = $request->get('new_email');
-        Auth::user()->save();
+        $request->user()->update([
+            'email' => $request->get('new_email')
+        ]);
 
         return redirect(route('profile'))->with('alerts', ['email-success' => "Email successfully updated!"]);
     }

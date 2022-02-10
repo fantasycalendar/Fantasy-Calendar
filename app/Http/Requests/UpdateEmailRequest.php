@@ -25,7 +25,7 @@ class UpdateEmailRequest extends FormRequest
     public function rules()
     {
         return [
-            'new_email' => ['required', 'string', 'confirmed']
+            'new_email' => ['required', 'string']
         ];
     }
 }
