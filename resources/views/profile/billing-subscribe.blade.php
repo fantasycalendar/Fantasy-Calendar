@@ -171,7 +171,7 @@
 <x-app-layout>
     <main class="max-w-7xl mx-auto pb-10" x-data="subscription()">
         <div class="md:grid md:grid-cols-12 md:gap-x-5">
-            <aside class="pb-6 px-2 sm:px-6 lg:pb-0 md:px-0 md:col-span-6">
+            <aside class="pb-6 px-0 sm:px-6 lg:pb-0 md:px-0 md:col-span-6">
                 <div>
                     <h2 id="user-details-heading" class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">Payment Details</h2>
                 </div>
@@ -225,6 +225,10 @@
                         </ul>
                     </x-alert>
                 </div>
+
+                <div class="px-10">
+                    <div class="border-t border-gray-100 dark:border-gray-700 w-full sm:hidden mt-8 w-full"></div>
+                </div>
             </aside>
 
             <div class="space-y-6 sm:px-6 md:px-0 md:col-span-6">
@@ -234,23 +238,23 @@
                     <h2 class="text-md font-semibold text-gray-800 dark:text-gray-300">Fantasy Calendar Timekeeper subscription</h2>
 
                     <div class='grid grid-cols-2 gap-1'>
-                        <div class="col-span-1 text-gray-700 dark:text-gray-400">
+                        <div class="col-span-2 sm:col-span-1 text-sm sm:text-base -mb-1 sm:mb-0 mt-2 sm:mt-0 text-gray-700 dark:text-gray-400">
                             Payment interval
                         </div>
-                        <div class="col-span-1 text-black dark:text-white">
+                        <div class="col-span-2 sm:col-span-1 text-black dark:text-white">
                             {{ ucwords($interval) }}
                         </div>
-                        <div class="col-span-1 text-gray-700 dark:text-gray-400">
+                        <div class="col-span-2 sm:col-span-1 text-sm sm:text-base -mb-1 sm:mb-0 mt-2 sm:mt-0 text-gray-700 dark:text-gray-400">
                             Price
                         </div>
-                        <div class="col-span-1 text-black dark:text-white">
+                        <div class="col-span-2 sm:col-span-1 text-black dark:text-white">
                             {{ auth()->user()->subscriptionPrice($interval) }}
                             <span class="text-sm text-gray-600 dark:text-gray-400">(includes VAT)</span>
                         </div>
-                        <div class="col-span-1 text-gray-700 dark:text-gray-400">
+                        <div class="col-span-2 sm:col-span-1 text-sm sm:text-base -mb-1 sm:mb-0 mt-2 sm:mt-0 text-gray-700 dark:text-gray-400">
                             Automatically renews on
                         </div>
-                        <div class="col-span-1 text-black dark:text-white">
+                        <div class="col-span-2 sm:col-span-1 text-black dark:text-white">
                             {{ $renew_at }}
                         </div>
                     </div>
