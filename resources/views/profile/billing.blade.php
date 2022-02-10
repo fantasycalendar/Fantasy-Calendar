@@ -55,7 +55,13 @@
 {{--        @endif--}}
 
         <x-slot name="footer">
-            <div class="px-4 py-3 bg-gray-50 dark:bg-gray-800 dark:border-t dark:border-gray-600 text-right sm:px-6">
+            <div class="px-4 py-3 bg-gray-50 dark:bg-gray-800 dark:border-t dark:border-gray-600 text-right sm:px-6 flex sm:justify-end items-center gap-x-2"
+                 @modal-ok.window="if($event.detail.name === 'cancel_subscription') {
+                    cancelling = true;
+                    axios.post('{{ route('subscription.cancel') }}').then(() => self.location.reload());
+                }"
+                 x-data="{ cancelling: false }"
+            >
                 @empty($subscription)
                     @unless(auth()->user()->betaAccess())
                         <x-button-link href="{{ route('subscription.pricing') }}">Get subscribed</x-button-link>
@@ -64,7 +70,10 @@
                     @endunless
                 @else
                     @unless($subscription->onGracePeriod())
-                        <x-button-link role="danger" href="{{ route('subscription.cancel') }}">Cancel subscription</x-button-link>
+                        <x-button ::disabled="cancelling" loading-model="cancelling" @click="$dispatch('modal', { name: 'cancel_subscription' })" role="danger">
+                            <span x-show="!cancelling">Cancel subscription</span>
+                            <span x-show="cancelling" x-cloak>Cancelling</span>
+                        </x-button>
                     @endunless
 
                     @if($subscription->onGracePeriod())
@@ -135,4 +144,14 @@
                 </div>
             </div>
         </section>
+
+    <x-modal name="cancel_subscription" icon="exclamation-triangle" icon-color="red" affirmative-color="red" affirmative-label="Yes, cancel my subscription">
+        <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-50" id="modal-title">Cancelling subscription</h3>
+        <div class="mt-2">
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+                Are you sure you want to cancel your Timekeeper subscription? Your perks will remain active
+                until your subscription runs out, and you can always resume later.
+            </p>
+        </div>
+    </x-modal>
 </x-profile-layout>
