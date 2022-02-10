@@ -36,6 +36,9 @@
                     </div>
                 </div>
                 <div class="hidden sm:ml-6 sm:flex sm:items-center">
+                    @can('administer-app', auth()->user())
+                        <x-nav-link href="{{ route('code16.sharp.home') }}">Admin Panel</x-nav-link>
+                    @endcan
                     @auth
                         <x-nav-link href="{{ route('profile') }}">Profile</x-nav-link>
                         <x-nav-link href="{{ route('logout') }}">Logout</x-nav-link>
@@ -81,6 +84,11 @@
                 <x-mobile-nav-link href="{{ route('calendars.create') }}">New Calendar</x-mobile-nav-link>
                 <x-mobile-nav-link href="{{ route('whats-new') }}">What's new in 2.0</x-mobile-nav-link>
                 <x-mobile-nav-link href="{{ route('faq') }}">FAQs</x-mobile-nav-link>
+
+                @can('administer-app', auth()->user())
+                    <x-mobile-nav-link href="{{ route('code16.sharp.home') }}">Admin Panel</x-mobile-nav-link>
+                @endcan
+
                 @auth
                     <x-mobile-nav-link href="{{ route('profile') }}">Profile</x-mobile-nav-link>
                     <x-mobile-nav-link href="{{ route('logout') }}">Logout</x-mobile-nav-link>

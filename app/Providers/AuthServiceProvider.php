@@ -32,6 +32,8 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
+        Gate::define('administer-app', fn($user) => $user->isAdmin());
+
         Gate::define('attach-event', function($user, $event) {
             $calendar = Calendar::findOrFail($event->calendar_id);
 
