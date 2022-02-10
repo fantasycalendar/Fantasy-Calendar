@@ -50,10 +50,6 @@
             </div>
         @endunless
 
-{{--        @if($promoCode)--}}
-{{--            <x-alert type="notice">For being an early-supporter for Fantasy Calendar, you get a discount! Just apply this code while checking out on our billing portal below: <strong>{{ $promoCode }}</strong></x-alert>--}}
-{{--        @endif--}}
-
         <x-slot name="footer">
             <div class="px-4 py-3 bg-gray-50 dark:bg-gray-800 dark:border-t dark:border-gray-600 text-right sm:px-6 flex sm:justify-end items-center gap-x-2"
                  @modal-ok.window="if($event.detail.name === 'cancel_subscription') {
