@@ -42,7 +42,7 @@ class SettingsController extends Controller
     public function billingPortal(Request $request) {
         return redirect(StripeBillingPortalSession::create([
             'customer' => $request->user()->createOrGetStripeCustomer()->id,
-            'return_url' => route('profile'),
+            'return_url' => route('profile.billing'),
         ], $request->user()->stripeOptions())['url']);
     }
 
