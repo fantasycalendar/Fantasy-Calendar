@@ -9,9 +9,6 @@ use App\Http\Requests\UpdateEmailRequest;
 use Stripe\BillingPortal\Session as StripeBillingPortalSession;
 use Illuminate\Http\Request;
 use Hash;
-use Auth;
-use Stripe\PromotionCode;
-use Stripe\StripeClient;
 
 class SettingsController extends Controller
 {
@@ -58,23 +55,23 @@ class SettingsController extends Controller
     }
 
     public function updateSettings(StoreUserSettings $request) {
-        Auth::user()->setSettings([
+        $request->user()->setSettings([
             'dark_theme' => $request->has('dark_theme')
         ]);
 
-        Auth::user()->setMarketingStatus($request->has('marketing_acceptance'));
+        $request->user()->setMarketingStatus($request->has('marketing_acceptance'));
 
         return redirect('profile');
     }
 
     public function unsubscribeFromMarketing(Request $request) {
-        Auth::user()->setMarketingStatus(false);
+        $request->user()->setMarketingStatus(false);
 
         return redirect(route('marketing.subscription-updated'));
     }
 
     public function resubscribeToMarketing(Request $request) {
-        Auth::user()->setMarketingStatus(true);
+        $request->user()->setMarketingStatus(true);
 
         return redirect(route('marketing.subscription-updated'));
     }
