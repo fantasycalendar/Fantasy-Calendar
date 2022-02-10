@@ -51,13 +51,7 @@
         @endunless
 
         <x-slot name="footer">
-            <div class="px-4 py-3 bg-gray-50 dark:bg-gray-800 dark:border-t dark:border-gray-600 text-right sm:px-6 flex sm:justify-end items-center gap-x-2"
-                 @modal-ok.window="if($event.detail.name === 'cancel_subscription') {
-                    cancelling = true;
-                    axios.post('{{ route('subscription.cancel') }}').then(() => self.location.reload());
-                }"
-                 x-data="{ cancelling: false }"
-            >
+            <div class="px-4 py-3 bg-gray-50 dark:bg-gray-800 dark:border-t dark:border-gray-600 text-right sm:px-6 flex sm:justify-end items-center gap-x-2">
                 @empty($subscription)
                     @unless(auth()->user()->betaAccess())
                         <x-button-link href="{{ route('subscription.pricing') }}">Get subscribed</x-button-link>
@@ -66,10 +60,17 @@
                     @endunless
                 @else
                     @unless($subscription->onGracePeriod())
-                        <x-button ::disabled="cancelling" loading-model="cancelling" @click="$dispatch('modal', { name: 'cancel_subscription' })" role="danger">
-                            <span x-show="!cancelling">Cancel subscription</span>
-                            <span x-show="cancelling" x-cloak>Cancelling</span>
-                        </x-button>
+                        <div @modal-ok.window="if($event.detail.name === 'cancel_subscription') {
+                                cancelling = true;
+                                axios.post('{{ route('subscription.cancel') }}').then(() => self.location.reload());
+                            }"
+                             x-data="{ cancelling: false }"
+                        >
+                            <x-button ::disabled="cancelling" loading-model="cancelling" @click="$dispatch('modal', { name: 'cancel_subscription' })" role="danger">
+                                <span x-show="!cancelling">Cancel subscription</span>
+                                <span x-show="cancelling" x-cloak>Cancelling</span>
+                            </x-button>
+                        </div>
                     @endunless
 
                     @if($subscription->onGracePeriod())
