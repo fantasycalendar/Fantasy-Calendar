@@ -122,7 +122,7 @@ Route::prefix('profile')->middleware(['auth', 'account.deletion', 'agreement'])-
     Route::view('/', 'profile.account')->name('profile');
     Route::get('/billing', 'SettingsController@billing')->name('profile.billing');
     Route::get('/billing-portal', 'SettingsController@billingPortal')->name('profile.billing-portal');
-    Route::get('/integrations', 'SettingsController@integrations')->name('profile.integrations');
+    Route::view('/integrations','profile.integrations')->name('profile.integrations');
     Route::get('/update-email/{user}', 'SettingsController@updateEmail')->name('update.email')->middleware('signed');
 
     Route::post('/settings', 'SettingsController@updateSettings')->name('profile.updateSettings');

@@ -29,10 +29,6 @@ class SettingsController extends Controller
         ], $request->user()->stripeOptions())['url']);
     }
 
-    public function integrations(Request $request) {
-        return view('profile.integrations');
-    }
-
     public function updateEmail(UpdateEmailRequest $request) {
         $request->user()->update([
             'email' => $request->get('new_email')
