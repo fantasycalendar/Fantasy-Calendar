@@ -63,7 +63,7 @@ class SubscriptionController extends Controller
 
         // They're subscribed already, send 'em to the subscriptions list
         if(Auth::user()->subscribed('Timekeeper')) {
-            return Redirect::route('profile');
+            return Redirect::route('profile.billing');
         }
 
         $intent = Auth::user()->createSetupIntent([
@@ -166,7 +166,7 @@ class SubscriptionController extends Controller
             $subscription->cancel();
         }
 
-        return Redirect::route('profile');
+        return Redirect::route('profile.billing');
     }
 
     /**
@@ -174,11 +174,11 @@ class SubscriptionController extends Controller
      */
     public function resume() {
         if(!Auth::user()->subscription('Timekeeper')->onGracePeriod()) {
-            return Redirect::route('profile');
+            return Redirect::route('profile.billing');
         }
 
         Auth::user()->subscription('Timekeeper')->resume();
 
-        return Redirect::route('profile');
+        return Redirect::route('profile.billing');
     }
 }
