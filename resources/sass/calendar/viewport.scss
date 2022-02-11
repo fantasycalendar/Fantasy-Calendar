@@ -91,7 +91,7 @@
         min-height:8rem;
         flex: 1;
         background-color: $card-bg-color;
-        min-width: 5rem;
+        min-width: 7rem;
         position: relative;
         border-top:1px solid $calendar-border-color;
 
@@ -136,7 +136,7 @@
         color: rgba(#98a0a6, 0.6);
         background-image: $disabled-crosshatch;
         cursor: not-allowed;
-        min-width: 5rem;
+        min-width: 7rem;
         border-top:1px solid $calendar-border-color;
 
         &.intercalary{
@@ -257,8 +257,8 @@
     margin: 0.3rem 0 0;
     text-align: left;
     width: 100%;
-    min-width: min-content;
     border-radius: 4px;
+    word-break: break-word;
 
     &_container{
         align-self: center;
