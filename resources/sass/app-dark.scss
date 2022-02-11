@@ -53,8 +53,13 @@ $hamburger-padding-y        :1rem;
 
 // Overrides
 .form-control {
-    background-color: $card-bg-color;
+    background-color: $gray-700;
+    border-color: $gray-600;
     color: white;
+}
+
+.sortable .list-group-item {
+    border: 1px solid $gray-700;
 }
 
 .form-control:disabled, .form-control[readonly]{
