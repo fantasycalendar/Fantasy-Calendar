@@ -3,199 +3,185 @@
 }
 
 .event {
-    font-weight: 500;
+    font-weight: 700;
 }
 
 /* ------------ Dark ----------- */
 .event.Dark-Solid{
-    color: #000000;
+    color: $text-neutral-500;
 }
 .event.Dark-Solid.background{
-    background-color: rgba(#000000, 0.6);
-    color: white;
+    background-color: rgba($text-neutral-900, 0.6);
+    color: $text-neutral-300;
 }
 .event.Dark-Solid.background:hover{
-    background-color: rgba(255, 255, 255, 0.6);
-    color:black;
+    background-color: $text-neutral-800;
 }
 
 /* ------------ Red ----------- */
 .event.Red{
-    color: #9b2c2c;
+    color: $text-red-500;
 }
 .event.Red.background{
-    background-color: rgba(#fed7d7, 0.6);
-    border-color: #9b2c2c;
+    background-color: $bg-red-900;
+    color: $text-red-300;
 }
 .event.Red.background:hover{
-    background-color: rgba(#fc8181, 0.6);
+    background-color: $bg-red-800;
 }
 
 /* ----------- Pink */
 .event.Pink{
-    color: #880E4F;
+    color: $text-pink-500;
 }
 .event.Pink.background{
-    border-color: #97266d;
-    color: #97266d;
-    background-color: rgba(#fed7e2, 0.6);
+    color: $text-pink-300;
+    background-color: $bg-pink-900;
 }
 .event.Pink.background:hover{
-    background-color: rgba(#f687b3, 0.6);
+    background-color: $bg-pink-800;
 }
 
 /* ------------ Purple ----------- */
 .event.Purple{
-    color: #4A148C;
+    color: $text-purple-500;
 }
 .event.Purple.background{
-    border-color: #553c9a;
-    color: #553c9a;
-    background-color: rgba(#e9d8fd, 0.6);
+    color: $text-purple-300;
+    background-color: $bg-purple-900;
 }
 .event.Purple.background:hover{
-    background-color: rgba(#b794f4, 0.6);
+    background-color: $bg-purple-800;
 }
 
 /* ----------- Deep Purple ----------- */
 .event.Deep-Purple{
-    color: #311B92;
+    color: $text-violet-500;
 }
 .event.Deep-Purple.background{
-    border-color: #391690;
-    color: #391690;
-    background-color: rgba(#b5b0ff, 0.6);
+    color: $text-violet-300;
+    background-color: $bg-violet-900;
 }
 .event.Deep-Purple.background:hover{
-    background-color: rgba(#716ec9, 0.6);
+    background-color: $bg-violet-800;
 }
 
 /* ------------ Blue ----------- */
 .event.Blue{
-    color: #0D47A1;
+    color: $text-blue-500;
 }
 .event.Blue.background{
-    border-color: #2c5282;
-    color: #2c5282;
-    background-color: rgba(#bee3f8, 0.6);
+    color: $text-blue-300;
+    background-color: $bg-blue-900;
 }
 .event.Blue.background:hover{
-    background-color: rgba(#63b3ed, 0.6);
+    background-color: $bg-blue-800;
 }
 
 /* ----------- Light-Blue ----------- */
 .event.Light-Blue{
-    color: #0288D1;
+    color: $text-sky-500;
 }
 .event.Light-Blue.background{
-    border-color: #026A98;
-    color: #026A98;
-    background-color: rgba(#acd9ff, 0.6);
+    color: $text-sky-300;
+    background-color: $bg-sky-900;
 }
 .event.Light-Blue.background:hover{
-    background-color: rgba(#4fb1e2, 0.6);
+    background-color: $bg-sky-800;
 }
 
 /* ------------ Cyan ----------- */
 .event.Cyan{
-    color: #006064;
+    color: $text-cyan-500;
 }
 .event.Cyan.background{
-    border-color: #007783;
-    color: #007783;
-    background-color: rgba(#acd8d9, 0.6);
+    color: $text-cyan-300;
+    background-color: $bg-cyan-900;
 }
 .event.Cyan.background:hover{
-    background-color: rgba(#5db0b6, 0.6);
+    background-color: $bg-cyan-800;
 }
 
 /* ----------- Teal ----------- */
 .event.Teal{
-    color: #004D40;
+    color: $text-teal-500;
 }
 .event.Teal.background{
-    border-color: #285e61;
-    color: #285e61;
-    background-color: rgba(#b2f5ea, 0.6);
+    color: $text-teal-300;
+    background-color: $bg-teal-900;
 }
 .event.Teal.background:hover{
-    background-color: rgba(#4fd1c5, 0.6);
+    background-color: $bg-teal-800;
 }
 
 /* ------------ Green ----------- */
 .event.Green{
-    color: #2E7D32;
+    color: $text-emerald-500;
 }
 .event.Green.background{
-    border-color: #276749;
-    color: #276749;
-    background-color: rgba(#c6f6d5, 0.6);
+    color: $text-emerald-300;
+    background-color: $bg-emerald-900;
 }
 .event.Green.background:hover{
-    background-color: rgba(#68d391, 0.6);
+    background-color: $bg-emerald-800;
 }
 
 /* ----------- Light-Green ----------- */
 .event.Light-Green{
-    color: #7CB342;
+    color: $text-green-500;
 }
 .event.Light-Green.background{
-    border-color: #477C18;
-    color: #477C18;
-    background-color: rgba(#c5ffa3, 0.6);
+    color: $text-green-300;
+    background-color: $bg-green-900;
 }
 .event.Light-Green.background:hover{
-    background-color: rgba(#7CB342, 0.6);
+    background-color: $bg-green-800;
 }
 
 /* ----------- Lime ----------- */
 .event.Lime{
-    color: #9E9D24;
+    color: $text-lime-500;
 }
 .event.Lime.background{
-    border-color: #648500;
-    color: #648500;
-    background-color: rgba(#d6edae, 0.6);
+    color: $text-lime-300;
+    background-color: $bg-lime-900;
 }
 .event.Lime.background:hover{
-    background-color: rgba(#aad46d, 0.6);
+    background-color: $bg-lime-800;
 }
 
 /* ------------ Yellow ----------- */
 .event.Yellow{
-    color: #FFEB3B;
+    color: $text-yellow-500;
 }
 .event.Yellow.background{
-    border-color: #975a16;
-    background-color: rgba(#fefcbf, 0.6);
-    color: #975a16;
+    background-color: $bg-yellow-900;
+    color: $text-yellow-300;
 }
 .event.Yellow.background:hover{
-    background-color: rgba(#f6e05e, 0.6);
+    background-color: $bg-yellow-800;
 }
 
 /* ------------ Orange ----------- */
 .event.Orange{
-    color: #FF9100;
+    color: $text-orange-500;
 }
 .event.Orange.background{
-    border-color: #9c4221;
-    color: #9c4221;
-    background-color: rgba(#feebc8, 0.6);
+    color: $text-orange-300;
+    background-color: $bg-orange-900;
 }
 .event.Orange.background:hover{
-    background-color: rgba(#f6ad55, 0.6);
+    background-color: $bg-orange-800;
 }
 
 /* ------------ Blue-Grey ----------- */
 .event.Blue-Grey{
-    color: #455A64;
+    color: $text-gray-500;
 }
 .event.Blue-Grey.background{
-    border-color: #2d3748;
-    color: #2d3748;
-    background-color: rgba(#edf2f7, 0.6);
+    color: $text-gray-300;
+    background-color: $bg-gray-900;
 }
 .event.Blue-Grey.background:hover{
-    background-color: rgba(#cbd5e0, 0.6);
+    background-color: $bg-gray-800;
 }

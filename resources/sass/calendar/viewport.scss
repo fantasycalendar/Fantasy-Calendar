@@ -252,13 +252,13 @@
 }
 
 .event{
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     word-break: break-word;
-    padding: 0.4rem 0.3rem;
+    padding: 0.4rem 0.5rem;
     margin: 0.3rem 0 0;
-    border-left: 0.2rem solid white;
     text-align: left;
     width: 100%;
+    border-radius: 4px;
 
     &_container{
         align-self: center;

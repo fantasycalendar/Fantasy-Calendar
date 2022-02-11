@@ -13,6 +13,7 @@ const mix = require('laravel-mix');
 
 if(process.env.BROWSERSYNC === 'true') {
     mix.browserSync({
+        injectChanges: true,
         proxy: 'fc-bref-web:80',
         port: 9980,
         open: false,
