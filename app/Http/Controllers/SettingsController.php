@@ -2,81 +2,76 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateAccountRequest;
 use App\Notifications\RequestEmailUpdate;
 use App\Http\Requests\StoreUserSettings;
-use App\Http\Requests\UpdatePasswordRequest;
 use App\Http\Requests\UpdateEmailRequest;
+use Stripe\BillingPortal\Session as StripeBillingPortalSession;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\URL;
 use Hash;
-use Auth;
-use Carbon\Carbon;
 
 class SettingsController extends Controller
 {
-    public function profile(Request $request) {
-        $invoices = null;
-
-        if (Auth::user()->hasStripeId()) {
-            $invoices = Auth::user()->invoices();
-        }
-
-        $subscription = Auth::user()->subscriptions()->active()->first();
-
-        $renews_at = $subscription ? (new Carbon($subscription->asStripeSubscription()->current_period_end))->toFormattedDateString() : False;
-
-        return view('pages.profile', [
-            'user' => Auth::user(),
-            'subscription' => $subscription,
-            'subscription_renews_at' => $renews_at,
-            'invoices' => $invoices
+    public function billing(Request $request) {
+        return view('profile.billing', [
+            'subscription' => auth()->user()->subscriptions()->active()->first(),
+            'subscription_renews_at' => format_timestamp(auth()->user()->subscription_end)
         ]);
     }
 
-    public function updatePassword(UpdatePasswordRequest $request) {
-        Auth::user()->password = Hash::make($request->get('new_password'));
-        Auth::user()->save();
-
-        return redirect()->to(route('profile'));
+    public function billingPortal(Request $request) {
+        return redirect(StripeBillingPortalSession::create([
+            'customer' => $request->user()->createOrGetStripeCustomer()->id,
+            'return_url' => route('profile.billing'),
+        ], $request->user()->stripeOptions())['url']);
     }
 
-    public function requestUpdateEmail(UpdateEmailRequest $request) {
-        $new_email = $request->get('new_email');
+    public function updateEmail(UpdateEmailRequest $request) {
+        $request->user()->update([
+            'email' => $request->get('new_email')
+        ]);
 
-        Notification::route('mail', Auth::user()->email)->notify(new RequestEmailUpdate(Auth::user(), $new_email));
-
-        return redirect(route('profile'))->with('alert', "We have sent an email to your current email with the details to update your email!");
+        return redirect(route('profile'))->with('alerts', ['email-success' => "Email successfully updated!"]);
     }
 
-    public function updateEmail(Request $request) {
+    public function updateAccount(UpdateAccountRequest $request) {
+        $alerts = [];
 
-        if(!$request->hasValidSignature() || Auth::user()->email != $request->get('old_email')) {
-            abort(401);
+        if($request->has('email') && $request->get('email') !== $request->user()->email) {
+            $request->user()->notify(new RequestEmailUpdate($request->get('email')));
+
+            $alerts['email'] = "We have sent an email to your current email with the details to update your email!";
         }
 
-        Auth::user()->email = $request->get('new_email');
-        Auth::user()->save();
+        if($request->get('password')) {
+            $request->user()->update([
+                'password' => Hash::make($request->get('password'))
+            ]);
 
-        return redirect(route('profile'))->with('alert', "Email successfully updated!");
+            $alerts['password'] = "Your password has been updated.";
+        }
+
+        return redirect(route('profile'))->with('alerts', $alerts);
     }
 
-    public function update(StoreUserSettings $request) {
-        Auth::user()->setSettings($request->only(['dark_theme']));
+    public function updateSettings(StoreUserSettings $request) {
+        $request->user()->setSettings([
+            'dark_theme' => $request->has('dark_theme')
+        ]);
 
-        Auth::user()->setMarketingStatus($request->has('marketing_acceptance'));
+        $request->user()->setMarketingStatus($request->has('marketing_acceptance'));
 
         return redirect('profile');
     }
 
     public function unsubscribeFromMarketing(Request $request) {
-        Auth::user()->setMarketingStatus(false);
+        $request->user()->setMarketingStatus(false);
 
         return redirect(route('marketing.subscription-updated'));
     }
 
     public function resubscribeToMarketing(Request $request) {
-        Auth::user()->setMarketingStatus(true);
+        $request->user()->setMarketingStatus(true);
 
         return redirect(route('marketing.subscription-updated'));
     }

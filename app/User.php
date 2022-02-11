@@ -16,6 +16,7 @@ use Laravel\Cashier\Billable;
 use Carbon\Carbon;
 use Arr;
 use Str;
+use Stripe\StripeClient;
 
 class User extends Authenticatable implements
     MustVerifyEmail,
@@ -80,6 +81,7 @@ class User extends Authenticatable implements
         'settings' => 'json',
         'agreed_at' => 'datetime',
         'delete_requested_at' => 'datetime',
+        'date_register' => 'datetime',
     ];
 
     protected $dateFormat = 'Y-m-d H:i:s';
@@ -115,6 +117,21 @@ class User extends Authenticatable implements
      */
     public function agreement() {
         return $this->belongsTo('App\Agreement');
+    }
+
+    public function getSubscriptionEndAttribute()
+    {
+        return $this->subscriptions()->active()->first()?->asStripeSubscription()->current_period_end;
+    }
+
+    public function getMarketingAttribute()
+    {
+        return $this->hasOptedInForMarketing();
+    }
+
+    public function getAvatarUrlAttribute()
+    {
+        return "https://unavatar.now.sh/{$this->email}?fallback=https://beta.fantasy-calendar.com/resources/logo-accent.png";
     }
 
     /**
@@ -199,6 +216,22 @@ class User extends Authenticatable implements
         return $this->paymentLevel() !== 'Free';
     }
 
+    public function subscriptionPrice($interval) {
+        if($this->isEarlySupporter()) {
+            if($interval === 'monthly') {
+                return '$1.99';
+            }
+
+            return '$19.99';
+        }
+
+        if($interval == "monthly") {
+            return '$2.49';
+        }
+
+        return '$24.99';
+    }
+
     /**
      * @return string
      */
@@ -271,6 +304,30 @@ class User extends Authenticatable implements
         return (CalendarInvite::active()->forUser($this->email)->exists())
             ? CalendarInvite::active()->forUser($this->email)->get()
             : [];
+    }
+
+    public function startSubscription($level, $plan, $token)
+    {
+        $stripe = new StripeClient(config('services.stripe.secret_key'));
+        # If the users was registered before a certain point, apply the 25% off
+        $sub = $this->newSubscription($level, $plan);
+
+        if($this->isEarlySupporter()) {
+            if($couponId =
+                collect($stripe->coupons->all()['data'])
+                    ->filter(fn($coupon) => $coupon['name'] == 'Early Supporter')
+                    ->first()
+                    ?->id
+            ) {
+                $sub->withCoupon($couponId);
+            }
+        }
+
+        $sub->create($token);
+
+        $this->calendars()->update([
+            'disabled' => 0
+        ]);
     }
 
     public function scopeVerified($query)

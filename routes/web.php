@@ -49,7 +49,7 @@ Route::middleware('auth')->group(function(){
     Route::get('/account-migrated-acknowledge', 'WelcomeController@account_migrated_acknowledge')->name('account-migrated-acknowledge');
     Route::get('/agreement-accepted', 'AgreementController@accept')->name('agreement-accepted');
 
-    Route::view('/account-deletion-request', 'pages.account-deletion-request')->middleware(['account.deletion', 'agreement']);
+    Route::view('/account-deletion-request', 'pages.account-deletion-request')->middleware(['account.deletion', 'agreement'])->name('account-deletion-request');
     Route::post('/set-account-deletion', 'AccountDeletionController@set')->middleware(['account.deletion']);
 
     Route::get('/cancel-account-deletion', 'AccountDeletionController@cancel')->name('cancel-account-deletion')->middleware();
@@ -102,11 +102,9 @@ Route::get('/pricing', 'SubscriptionController@pricing')->name('subscription.pri
 
 // Subscription management
 Route::prefix('subscription')->as('subscription.')->middleware(['account.deletion', 'agreement'])->group(function(){
-    Route::get('/', 'SubscriptionController@index')->name('index');
     Route::get('/subscribe/{level}/{interval}', 'SubscriptionController@subscribe')->name('subscribe');
     Route::post('/subscribe', 'SubscriptionController@createsubscription')->name('create');
-    Route::get('/cancel', 'SubscriptionController@cancellation')->name('cancel');
-    Route::post('/cancel', 'SubscriptionController@cancel')->name('cancelpost');
+    Route::post('/cancel', 'SubscriptionController@cancel')->name('cancel');
     Route::get('/resume', 'SubscriptionController@resume')->name('resume');
     Route::post('/update/{level}/{plan}', 'SubscriptionController@update')->name('update');
 });
@@ -121,11 +119,14 @@ Route::post(
 
 // User profile
 Route::prefix('profile')->middleware(['auth', 'account.deletion', 'agreement'])->group(function(){
-    Route::get('/', 'SettingsController@profile')->name('profile');
-    Route::post('/', 'SettingsController@update')->name('settings.update');
-    Route::post('/password', 'SettingsController@updatePassword');
-    Route::post('/email', 'SettingsController@requestUpdateEmail');
-    Route::get('/update-email/{user}', 'SettingsController@updateEmail')->name('update.email');
+    Route::view('/', 'profile.account')->name('profile');
+    Route::get('/billing', 'SettingsController@billing')->name('profile.billing');
+    Route::get('/billing-portal', 'SettingsController@billingPortal')->name('profile.billing-portal');
+    Route::view('/integrations','profile.integrations')->name('profile.integrations');
+    Route::get('/update-email/{user}', 'SettingsController@updateEmail')->name('update.email')->middleware('signed');
+
+    Route::post('/settings', 'SettingsController@updateSettings')->name('profile.updateSettings');
+    Route::post('/account', 'SettingsController@updateAccount')->name('profile.updateAccount');
 });
 
 Route::get('/error/unavailable', 'ErrorsController@calendarUnavailable')->name('errors.calendar_unavailable');

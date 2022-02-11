@@ -8,8 +8,6 @@ jobs:
   # Build and push to docker hub
   push:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
-
     steps:
       - uses: actions/checkout@v1
       - name: Build and push Docker images

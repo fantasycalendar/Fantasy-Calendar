@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests;
 
-use Auth;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class UpdateEmailRequest extends FormRequest
+class UpdateAccountRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,7 +14,7 @@ class UpdateEmailRequest extends FormRequest
      */
     public function authorize()
     {
-        return auth()->user()->email === $this->old_email;
+        return auth()->check();
     }
 
     /**
@@ -25,7 +25,8 @@ class UpdateEmailRequest extends FormRequest
     public function rules()
     {
         return [
-            'new_email' => ['required', 'string']
+            'email' => ['required', 'string', 'confirmed', Rule::unique('users')->ignore(auth()->user()->id), 'email:rfc'],
+            'password' => ['present', 'string', 'min:8', 'confirmed']
         ];
     }
 }

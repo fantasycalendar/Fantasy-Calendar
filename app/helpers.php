@@ -303,3 +303,45 @@ if(!function_exists('clamp')) {
         return max($lower, min($upper, $number));
     }
 }
+
+if(!function_exists('format_timestamp')) {
+    function format_timestamp($timestamp) {
+        return (!$timestamp)
+            ? null
+            : (new Carbon\Carbon($timestamp))->toFormattedDateString();
+    }
+}
+
+if(!function_exists('format_money')) {
+    function format_money($cents) {
+        return number_format($cents / 100, 2);
+    }
+}
+
+if(!function_exists('random_fantasy_name')) {
+    function random_fantasy_name() {
+        $names = [
+            'Krusk the Half-orc',
+            'Tenser the Lazy',
+            'Bigby "Talk to the Hand" of Veluna',
+            'Otto the Dancer',
+            'Drawmij the Summoner',
+            'Aura Creator Nystul',
+            'Rary, Creator of Telepathic Bond',
+            'Otiluke of the Sphere',
+            'Elminster',
+            'Drizzt Do\'Urden',
+            'Strahd von Zarovich',
+            'Vecna, The Whispered One',
+            'Lolth, Demon Queen of Spiders',
+            'Tiamat, Bane of Bahamut',
+            'Gruumsh One-Eye',
+            'Bahamut the Justice Bringer',
+            'Moradin of the Hammer',
+            'Mystra, Lady of Spells',
+            'Karsus, Unmaker of the Weave'
+        ];
+
+        return $names[array_rand($names)];
+    }
+}
