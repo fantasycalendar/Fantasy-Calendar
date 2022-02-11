@@ -49,7 +49,7 @@ Route::middleware('auth')->group(function(){
     Route::get('/account-migrated-acknowledge', 'WelcomeController@account_migrated_acknowledge')->name('account-migrated-acknowledge');
     Route::get('/agreement-accepted', 'AgreementController@accept')->name('agreement-accepted');
 
-    Route::view('/account-deletion-request', 'pages.account-deletion-request')->middleware(['account.deletion', 'agreement']);
+    Route::view('/account-deletion-request', 'pages.account-deletion-request')->middleware(['account.deletion', 'agreement'])->name('account-deletion-request');
     Route::post('/set-account-deletion', 'AccountDeletionController@set')->middleware(['account.deletion']);
 
     Route::get('/cancel-account-deletion', 'AccountDeletionController@cancel')->name('cancel-account-deletion')->middleware();

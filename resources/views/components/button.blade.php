@@ -1,6 +1,6 @@
 <button
     {{ $attributes->class([
-         "$sizeClasses $roleClasses inline-flex items-center border font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-75",
+         "$sizeClasses $roleClasses inline-flex items-center border font-medium focus:outline-none focus:ring-offset-2 disabled:opacity-75",
     ]) }}
         @if($attributes->has('loading-model'))
             :disabled="{{ $attributes->get('loading-model') }}"
