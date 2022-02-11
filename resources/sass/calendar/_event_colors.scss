@@ -1,193 +1,187 @@
-/* ------------ Dark Red ----------- */
+.event.text, .event.era_event{
+    //background-color: rgba(255, 255, 255, 0.6);
+}
+
+.event {
+    font-weight: 700;
+}
+
+/* ------------ Dark ----------- */
 .event.Dark-Solid{
-    color: #000000;
+    color: $text-neutral-500;
 }
 .event.Dark-Solid.background{
-    background-color: rgba(0,0,0,0.8);
-    color: white;
+    background-color: rgba($text-neutral-50, 0.6);
+    color: $text-neutral-700;
 }
 .event.Dark-Solid.background:hover{
-    background-color: rgba(33,33,33,0.8);
+    background-color: $text-neutral-100;
 }
 
 /* ------------ Red ----------- */
 .event.Red{
-    color: #9b2c2c;
+    color: $text-red-500;
 }
 .event.Red.background{
-    background-color: #fed7d7;
-    border-color: #9b2c2c;
-    color: #9b2c2c;
+    background-color: $bg-red-50;
+    color: $text-red-700;
 }
 .event.Red.background:hover{
-    background-color: #fc8181;
+    background-color: $bg-red-100;
 }
 
 /* ----------- Pink */
 .event.Pink{
-    color: #880E4F;
+    color: $text-pink-500;
 }
 .event.Pink.background{
-    border-color: #97266d;
-    color: #97266d;
-    background-color: #fed7e2;
+    color: $text-pink-700;
+    background-color: $bg-pink-50;
 }
 .event.Pink.background:hover{
-    background-color: #f687b3;
+    background-color: $bg-pink-100;
 }
 
 /* ------------ Purple ----------- */
 .event.Purple{
-    color: #4A148C;
+    color: $text-purple-500;
 }
 .event.Purple.background{
-    border-color: #553c9a;
-    color: #553c9a;
-    background-color: #e9d8fd;
+    color: $text-purple-700;
+    background-color: $bg-purple-50;
 }
 .event.Purple.background:hover{
-    background-color: #b794f4;
+    background-color: $bg-purple-100;
 }
 
 /* ----------- Deep Purple ----------- */
 .event.Deep-Purple{
-    color: #311B92;
+    color: $text-violet-500;
 }
 .event.Deep-Purple.background{
-    border-color: #391690;
-    color: #391690;
-    background-color: #b5b0ff;
+    color: $text-violet-700;
+    background-color: $bg-violet-50;
 }
 .event.Deep-Purple.background:hover{
-    background-color: #716ec9;
+    background-color: $bg-violet-100;
 }
 
 /* ------------ Blue ----------- */
 .event.Blue{
-    color: #0D47A1;
+    color: $text-blue-500;
 }
 .event.Blue.background{
-    border-color: #2c5282;
-    color: #2c5282;
-    background-color: #bee3f8;
+    color: $text-blue-700;
+    background-color: $bg-blue-50;
 }
 .event.Blue.background:hover{
-    background-color: #63b3ed;
+    background-color: $bg-blue-100;
 }
 
 /* ----------- Light-Blue ----------- */
 .event.Light-Blue{
-    color: #0288D1;
+    color: $text-sky-500;
 }
 .event.Light-Blue.background{
-    border-color: #026A98;
-    color: #026A98;
-    background-color: #acd9ff;
+    color: $text-sky-700;
+    background-color: $bg-sky-50;
 }
 .event.Light-Blue.background:hover{
-    background-color: #4fb1e2;
+    background-color: $bg-sky-100;
 }
 
 /* ------------ Cyan ----------- */
 .event.Cyan{
-    color: #006064;
+    color: $text-cyan-500;
 }
 .event.Cyan.background{
-    border-color: #007783;
-    color: #007783;
-    background-color: #acd8d9;
+    color: $text-cyan-700;
+    background-color: $bg-cyan-50;
 }
 .event.Cyan.background:hover{
-    background-color: #5db0b6;
+    background-color: $bg-cyan-100;
 }
 
 /* ----------- Teal ----------- */
 .event.Teal{
-    color: #004D40;
+    color: $text-teal-500;
 }
 .event.Teal.background{
-    border-color: #285e61;
-    color: #285e61;
-    background-color: #b2f5ea;
+    color: $text-teal-700;
+    background-color: $bg-teal-50;
 }
 .event.Teal.background:hover{
-    background-color: #4fd1c5;
+    background-color: $bg-teal-100;
 }
 
 /* ------------ Green ----------- */
 .event.Green{
-    color: #2E7D32;
+    color: $text-emerald-500;
 }
 .event.Green.background{
-    border-color: #276749;
-    color: #276749;
-    background-color: #c6f6d5;
+    color: $text-emerald-700;
+    background-color: $bg-emerald-50;
 }
 .event.Green.background:hover{
-    background-color: #68d391;
+    background-color: $bg-emerald-100;
 }
 
 /* ----------- Light-Green ----------- */
 .event.Light-Green{
-    color: #7CB342;
+    color: $text-green-500;
 }
 .event.Light-Green.background{
-    border-color: #477C18;
-    color: #477C18;
-    background-color: #c5ffa3;
+    color: $text-green-700;
+    background-color: $bg-green-50;
 }
 .event.Light-Green.background:hover{
-    background-color: #7CB342;
+    background-color: $bg-green-100;
 }
 
 /* ----------- Lime ----------- */
 .event.Lime{
-    color: #9E9D24;
+    color: $text-lime-500;
 }
 .event.Lime.background{
-    border-color: #648500;
-    color: #648500;
-    background-color: #d6edae;
+    color: $text-lime-700;
+    background-color: $bg-lime-50;
 }
 .event.Lime.background:hover{
-    background-color: #aad46d;
+    background-color: $bg-lime-100;
 }
 
 /* ------------ Yellow ----------- */
 .event.Yellow{
-    color: #FFEB3B;
+    color: $text-yellow-500;
 }
 .event.Yellow.background{
-    border-color: #975a16;
-    background-color: #fefcbf;
-    color: #975a16;
+    background-color: $bg-yellow-50;
+    color: $text-yellow-700;
 }
 .event.Yellow.background:hover{
-    background-color: #f6e05e;
+    background-color: $bg-yellow-100;
 }
 
 /* ------------ Orange ----------- */
 .event.Orange{
-    color: #FF9100;
+    color: $text-orange-500;
 }
 .event.Orange.background{
-    border-color: #9c4221;
-    color: #9c4221;
-    background-color: #feebc8;
+    color: $text-orange-700;
+    background-color: $bg-orange-50;
 }
 .event.Orange.background:hover{
-    background-color: #f6ad55;
+    background-color: $bg-orange-100;
 }
 
 /* ------------ Blue-Grey ----------- */
 .event.Blue-Grey{
-    color: #455A64;
+    color: $text-gray-500;
 }
 .event.Blue-Grey.background{
-    border-color: #2d3748;
-    color: #2d3748;
-    background-color: #edf2f7;
+    color: $text-gray-700;
+    background-color: $bg-gray-50;
 }
 .event.Blue-Grey.background:hover{
-    background-color: #cbd5e0;
+    background-color: $bg-gray-100;
 }
