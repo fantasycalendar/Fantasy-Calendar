@@ -33,11 +33,11 @@
                                         @foreach([
                                             'Full calendar functionality',
                                             'Unlimited number of calendars',
-                                            'User Management<p class="text-xs text-gray-500 dark:text-gray-400">Users can comment on events and view provided information</p>',
-                                            'Calendar co-ownership<p class="text-xs text-gray-500 dark:text-gray-400">Let others create and comment on events, and control the date</p>',
-                                            'Calendar Linking<p class="text-xs text-gray-500 dark:text-gray-400">Have one parent calendar drive the dates of many others</p>',
+                                            'User Management <p class="text-xs text-gray-500 dark:text-gray-400">Users can comment on events and view provided information</p>',
+                                            'Calendar co-ownership <p class="text-xs text-gray-500 dark:text-gray-400">Let others create and comment on events, and control the date</p>',
+                                            'Calendar Linking <p class="text-xs text-gray-500 dark:text-gray-400">Have one parent calendar drive the dates of many others</p>',
                                             'Discord Integration <span class="text-xs text-primary-600 dark:text-primary-600"><a href="' . route('discord') . '">(more info)</a></span><p class="text-xs text-gray-500 dark:text-gray-400">Use your calendars directly within your Discord servers</p>',
-                                            'Calendar embedding<p class="text-xs text-gray-500 dark:text-gray-400">Show off your calendars on your own websites</p>',
+                                            'Calendar embedding <p class="text-xs text-gray-500 dark:text-gray-400">Show off your calendars on your own websites</p>',
                                             '<small><i>...and more to come!</i></small>',
                                         ] as $benefit)
                                             <li class="flex items-start lg:col-span-1">

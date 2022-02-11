@@ -322,24 +322,24 @@ if(!function_exists('random_fantasy_name')) {
     function random_fantasy_name() {
         $names = [
             'Krusk the Half-orc',
-            'Tenser',
-            'Bigby',
-            'Otto',
-            'Drawmij',
-            'Nystul',
-            'Rary',
-            'Otiluke',
+            'Tenser the Lazy',
+            'Bigby "Talk to the Hand" of Veluna',
+            'Otto the Dancer',
+            'Drawmij the Summoner',
+            'Aura Creator Nystul',
+            'Rary, Creator of Telepathic Bond',
+            'Otiluke of the Sphere',
             'Elminster',
             'Drizzt Do\'Urden',
             'Strahd von Zarovich',
-            'Vecna',
-            'Lolth',
-            'Tiamat',
-            'Gruumsh',
-            'Bahamut',
-            'Moradin',
-            'Mystra',
-            'Karsus'
+            'Vecna, The Whispered One',
+            'Lolth, Demon Queen of Spiders',
+            'Tiamat, Bane of Bahamut',
+            'Gruumsh One-Eye',
+            'Bahamut the Justice Bringer',
+            'Moradin of the Hammer',
+            'Mystra, Lady of Spells',
+            'Karsus, Unmaker of the Weave'
         ];
 
         return $names[array_rand($names)];

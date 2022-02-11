@@ -267,14 +267,9 @@
                                 class="w-full justify-center hover:cursor-pointer disabled:cursor-default"
                                 ::disabled="!ready"
                                 loading-model="submitting"
+                                loading-label="Contacting Stripe..."
                             >
-                                <span x-show="!submitting" class="text-md">
-                                    Confirm {{ $interval }} subscription
-                                </span>
-
-                                <span x-show="submitting" class="text-md">
-                                    Contacting Stripe...
-                                </span>
+                                Confirm {{ $interval }} subscription
                             </x-button>
                         </div>
                     </x-slot>
