@@ -5,6 +5,47 @@
 @import '~bootstrap/scss/bootstrap';
 @import '~bootswatch/dist/darkly/bootswatch';
 
+
+@import '~sweetalert2/src/variables';
+
+$swal2-dark-theme-black: $gray-800;
+$swal2-dark-theme-white: $gray-100;
+$swal2-outline-color: lighten($swal2-outline-color, 10%);
+$swal2-content-color: $gray-300;
+
+$swal2-background: $swal2-dark-theme-black;
+$swal2-html-container-color: $swal2-dark-theme-white;
+$swal2-title-color: $swal2-dark-theme-white;
+$swal2-backdrop: rgba($gray-900, .75);
+
+// FOOTER
+$swal2-footer-border-color: $gray-800;
+$swal2-footer-color: darken($swal2-html-container-color, 15%);
+
+// TIMER POGRESS BAR
+$swal2-timer-progress-bar-background: rgba($swal2-dark-theme-white, .6);
+
+// INPUT
+$swal2-input-color: white;
+$swal2-input-background: $gray-700;
+$swal2-input-border: $gray-600;
+
+// VALIDATION MESSAGE
+$swal2-validation-message-background: lighten($swal2-dark-theme-black, 10%);
+$swal2-validation-message-color: $swal2-dark-theme-white;
+
+// QUEUE
+$swal2-progress-step-background: lighten($swal2-dark-theme-black, 25%);
+
+// COMMON VARIABLES FOR CONFIRM AND CANCEL BUTTONS
+$swal2-button-focus-box-shadow: 0 0 0 1px $swal2-background, 0 0 0 3px $swal2-outline-color;
+
+// TOAST
+$swal2-toast-background: $swal2-dark-theme-black;
+$swal2-toast-button-focus-box-shadow: 0 0 0 1px $swal2-background, 0 0 0 3px $swal2-outline-color;
+
+@import '~sweetalert2/src/sweetalert2';
+
 @import '~@fortawesome/fontawesome-free/scss/fontawesome';
 @import '~@fortawesome/fontawesome-free/scss/solid';
 @import '~@fortawesome/fontawesome-free/scss/brands';
@@ -56,6 +97,22 @@ $hamburger-padding-y        :1rem;
     background-color: $gray-700;
     border-color: $gray-600;
     color: white;
+
+    &:focus {
+        background-color: $gray-700;
+        border-color: $accent-color;
+        box-shadow: 0 0 0 0.2rem rgb(55 90 127 / 25%);
+        color: $gray-300;
+        outline: 0;
+    }
+
+    &::placeholder {
+        color: rgba($gray-400, 0.9);
+    }
+
+    & > option {
+        color: $gray-300;
+    }
 }
 
 .sortable .list-group-item {
