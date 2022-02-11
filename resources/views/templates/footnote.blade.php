@@ -1,7 +1,7 @@
 <style>
     section.footer {
         display: flex;
-        background-color: #323232;
+        background-color: var(--gray-dark);
         justify-content: space-between;
         align-items: center;
         padding: 40px 20px;
@@ -16,7 +16,7 @@
     section.footer .footer-social-icons a i {
         background-color: rgb(47, 133, 90);
         padding: 5px;
-        color: #323232;
+        color: var(--gray-dark);
         font-size: 24px;
     }
     section.footer .footer-social-icons a:hover i {

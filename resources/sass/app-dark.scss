@@ -1,7 +1,7 @@
 // Fonts
 @import url('https://fonts.googleapis.com/css?family=Montserrat:regular,600');
 
-@import '~bootswatch/dist/darkly/variables';
+@import 'darkly-twishvars';
 @import '~bootstrap/scss/bootstrap';
 @import '~bootswatch/dist/darkly/bootswatch';
 
@@ -111,8 +111,8 @@ $hamburger-padding-y        :1rem;
 }
 
 .btn-outline-secondary {
-    color: #888;
-    border-color: #888;
+    color: $gray-500;
+    border-color: $gray-600;
 }
 
 body #content #generator_container .btn:not(.event_name):not(#btn_event_delete):not(#btn_delete):not(.btn-stock) {
@@ -173,10 +173,14 @@ body #content #generator_container .btn:not(.event_name):not(#btn_event_delete):
 }
 
 .page-calendars-index .border-top {
-    border-top: 1px solid #888 !important;
+    border-top: 1px solid $gray-700 !important;
 }
 
 .badge-accent{
     color: #222;
     background-color: #adb5bd;
+}
+
+.calendar-entry .calendar_action .dropdown-item:hover {
+    background-color: $gray-800;
 }

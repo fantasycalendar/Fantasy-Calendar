@@ -18,10 +18,10 @@ $green: #38c172;
 $teal: #4dc0b5;
 $cyan: #6cb2eb;
 
-$calendar-border-color: rgba(0,0,0, 0.5);
-$current-day-color: #9e6116;
-$calendar-bg-color: #222;
-$card-bg-color: #303030;
+$calendar-border-color: $gray-900;
+$current-day-color: rgb(251 146 60);
+$calendar-bg-color: #111827;
+$card-bg-color: $gray-800;
 $accent-color-lighter: #379e6b;
 $accent-color: #2f855a;
 $accent-color-darker: #246645;
@@ -48,11 +48,11 @@ $modal-accent-background: $bg-gray-800;
 $modal-accent-hover-background: $bg-gray-800;
 $modal-content-border-color: $text-gray-800;
 
-$btn-color: #1f5f73;
-$btn-border: #1f4f5e;
+$btn-color: $accent-color-darker;
+$btn-border: $accent-color-darker;
 
-$btn-color-hover: #1f424d;
-$btn-border-hover: #1e4552;
+$btn-color-hover: $accent-color;
+$btn-border-hover: $accent-color;
 
 
 // Minimalist colors
@@ -62,5 +62,5 @@ $m-day-hover: rgba(255, 255, 255, 0.2);
 $m-current-day: #fdb44d;
 
 // SVG image data
-$disabled-crosshatch: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%233d3d3d' fill-opacity='0.3' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");
+$disabled-crosshatch: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23111827' fill-opacity='0.3' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");
 $warning-crosshatch: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23e3342f' fill-opacity='0.3' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");
