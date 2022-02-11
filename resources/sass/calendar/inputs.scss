@@ -1395,6 +1395,24 @@ ol.example li.placeholder:before {
 .moon_inputs .sp-preview {
     min-height: 30px;
 }
+
+body .sp-replacer {
+    padding: 0;
+    height: 100% !important;
+    border: 1px solid $input-border-color;
+    border-radius: 7px;
+    background: transparent;
+}
+
+body .sp-preview {
+    background-image: none;
+    border: 0;
+}
+
 .season .sp-preview {
-    min-height: 10px;
+    min-height: 100%;
+}
+
+.form-control .color {
+    padding: 2px 4px;
 }

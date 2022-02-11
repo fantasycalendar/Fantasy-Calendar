@@ -34,8 +34,9 @@ $main-text-color: rgba(255, 255, 255, 0.8);
 $gray-secondary: $gray-600;
 $action-bg-color: rgba(166, 168, 179, 0.32);
 $action-icon-color: white;
-$weather-tooltip-bg-color: rgba(0, 0, 0, 0.8);
+$weather-tooltip-bg-color: rgba($gray-900, 0.85);
 $input-disabled-color: #848484;
+$input-border-color: $gray-600;
 $handle-color: $gray-400;
 
 $sortable-header-color: rgb(220, 220, 220, 0.5);
