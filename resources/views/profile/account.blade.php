@@ -84,7 +84,7 @@
 
     <section>
         <div class="w-full text-center">
-            <x-button-link href="#" custom-role="text-red-500 dark:text-red-800 focus:ring-red-500 hover:text-white dark:hover:text-white hover:bg-red-600 border-0 focus:border-0 shadow-none">Delete my account</x-button-link>
+            <x-button-link href="{{ route('account-deletion-request') }}" custom-role="text-red-500 dark:text-red-800 focus:ring-red-500 hover:text-white dark:hover:text-white hover:bg-red-600 border-0 focus:border-0 shadow-none">Delete my account</x-button-link>
         </div>
     </section>
 </x-profile-layout>
