@@ -4,6 +4,10 @@
 
 .event {
     font-weight: 700;
+
+    &:hover {
+        background-color: $bg-gray-700;
+    }
 }
 
 /* ------------ Dark ----------- */

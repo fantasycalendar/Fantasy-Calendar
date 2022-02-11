@@ -252,8 +252,8 @@
 			<div class="collapsible-content card-body">
 
 				<div class='row'>
-					<div class='col-3 pr-0 bold-text'>Enable:</div>
-					<div class='col-3 pl-0'>
+					<div class='col-3 bold-text'>Enable:</div>
+					<div class='col-3 text-right'>
 						@if(request()->is('calendars/*/edit') && $calendar->isLinked())
 							{{ Arr::get($calendar->static_data, 'clock.enabled') ? "Yes" : "No" }}
 						@else
@@ -263,8 +263,8 @@
 							</label>
 						@endif
 					</div>
-					<div class='render_clock col-3 p-0 bold-text'>Render:</div>
-					<div class='render_clock col-3 p-0'>
+					<div class='render_clock col-3 bold-text'>Render:</div>
+					<div class='render_clock col-3 text-right'>
 						<label class="custom-control custom-checkbox center-text">
 							<input type="checkbox" class="custom-control-input static_input" id='render_clock' refresh='clock' data='clock' fc-index='render'>
 							<span class="custom-control-indicator"></span>
@@ -888,8 +888,8 @@
     					</div>
 
     					<div class='row no-gutters my-2 protip align-items-center' data-pt-position="right" data-pt-title="In addition of the temperature being shown, you'll also see the description for the temperature of that particular day.">
-    						<div class='col-8 mr-2'>Cinematic temperature description:</div>
-    						<div class='col-4'>
+    						<div class='col-8'>Cinematic temperature description:</div>
+    						<div class='col-4 text-right'>
     							<label class="custom-control custom-checkbox">
     								<input type="checkbox" class="custom-control-input static_input" refresh='false' data='seasons.global_settings' fc-index='cinematic'>
     								<span class="custom-control-indicator"></span>
