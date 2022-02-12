@@ -94,6 +94,7 @@
         min-width: 7rem;
         position: relative;
         border-top:1px solid $calendar-border-color;
+	padding: 2px;
 
         &.empty_timespan_day{
             background-color:$gray-secondary;
