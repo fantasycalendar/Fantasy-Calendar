@@ -552,13 +552,24 @@
         }
 
         .timespan_day{
+            padding:0;
+
+            .number {
+                flex: 1;
+                line-height: 24px;
+            }
+
+            &.preview_day:hover {
+                background-color: lighten($preview-day-color, 10%);
+            }
+
             &.current_day {
                 background-color: $m-current-day;
                 color: #444;
 
                 &:hover {
                     cursor:pointer;
-                    background-color: $current-day-color;
+                    background-color: lighten($current-day-color, 10%);
                 }
                 &:after {
                     height:0px;
