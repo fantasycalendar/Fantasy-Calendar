@@ -19,7 +19,6 @@ $teal: #4dc0b5;
 $cyan: #6cb2eb;
 
 $calendar-border-color: $gray-900;
-$current-day-color: $bg-amber-500;
 $calendar-bg-color: #111827;
 $card-bg-color: $gray-800;
 $accent-color-lighter: #379e6b;
@@ -27,6 +26,8 @@ $accent-color: #2f855a;
 $accent-color-darker: #246645;
 $accent-color-light: $accent-color;
 $accent-color-light: #2f855a;
+$current-day-color: $bg-gray-500;
+$current-day-number-color: $accent-color;
 $sidebar-width: 28%;
 $wiki-link-color: rgba(255,255,255,0.2);
 $wiki-link-hover-color: white;

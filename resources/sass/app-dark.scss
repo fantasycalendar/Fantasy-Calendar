@@ -82,6 +82,9 @@ $hamburger-padding-y        :1rem;
 @import '~select2';
 @import '~select2-bootstrap-theme/dist/select2-bootstrap';
 
+body {
+    color: $text-gray-200;
+}
 .select2-container--default .select2-selection--single,
 .select2-container--bootstrap .select2-selection,
 .select2-container--bootstrap .select2-search--dropdown .select2-search__field,

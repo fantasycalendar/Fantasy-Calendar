@@ -164,8 +164,15 @@
     margin:0 0 0.2rem 0;
 
     .number{
-        min-height:1.5rem;
-        margin-left:5px;
+        margin-left: 6px;
+        margin-top: 6px;
+        border-radius: 100%;
+        width: 26px;
+        height: 26px;
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        line-height: 26px;
     }
 
     .year_day{
@@ -194,8 +201,8 @@
     position: absolute;
     width: 28px;
     left: calc(50% - 14px);
+    top: 9px;
 }
-
 .day_row .title{
     text-align:center;
     -webkit-box-flex: 1;      /* OLD - iOS 6-, Safari 3.1-6 */
@@ -216,6 +223,7 @@
     align-items: center;
     justify-content: center;
     margin: 0 0.2rem;
+    min-height: 32px;
 }
 
 .btn_create_event:hover{
@@ -228,10 +236,10 @@
 }
 
 .day_row .season_color {
-    width: 10px;
-    height: 10px;
-    margin-top: 0.3rem;
-    margin-right: 0.3rem;
+    width: 12px;
+    height: 12px;
+    margin-top: 0.8rem;
+    margin-right: 0.8rem;
     border-radius: 50%;
     opacity: 0.8;
 }
@@ -538,6 +546,12 @@
 }
 .current_day{
     background-image: linear-gradient(to right, rgba($current-day-color, 0.2), rgba($current-day-color, 0.2));
+
+
+    & .number {
+        background-color: $current-day-number-color;
+        color: white;
+    }
 }
 
 .current_day:after {
