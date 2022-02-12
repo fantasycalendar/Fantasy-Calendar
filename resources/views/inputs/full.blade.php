@@ -151,7 +151,7 @@
 				</div>
 
 
-				<div class='date_inputs date_control container mt-3'>
+				<div class='date_inputs date_control preview_date_controls container mt-3'>
 
 					<div class='row'>
 						<h5 class="my-0 py-0">Preview date:</h5>

@@ -57,3 +57,12 @@ $hamburger-padding-y        :1rem;
     color: #fff;
     background-color: #6c757d;
 }
+
+#go_to_preview_date, #preview_date_btn {
+    background-color: $bg-amber-600;
+    border-color: $bg-amber-600;
+
+    &:hover {
+        background-color: $bg-amber-500;
+    }
+}

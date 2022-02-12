@@ -51,7 +51,8 @@
                             @mouseenter="weather_mouse_enter(day, $event)"
                             @mouseleave="weather_mouse_leave"
                             >
-                                <div class="number" x-text="day.number"></div>
+                                <div class="number" x-text="day.number" style="z-index: 10;"></div>
+                                <div class="w-100 h-100" :style="`opacity: 0.2;position: absolute;top: 0;bottom: 0;right: 0;left: 0; background-color: ${day.season_color};`"></div>
                             </div>
                         </template>
                     </div>

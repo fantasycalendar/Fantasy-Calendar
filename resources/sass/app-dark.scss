@@ -211,7 +211,7 @@ body {
     border-color: $gray-600;
 }
 
-body #content #generator_container .btn:not(.event_name):not(#btn_event_delete):not(#btn_delete):not(.btn-stock) {
+body #content #generator_container .btn:not(.event_name):not(#btn_event_delete):not(#btn_delete):not(.btn-stock):not(#go_to_preview_date):not(#preview_date_btn) {
     background-color: $btn-color;
     border-color: $btn-border;
 
@@ -222,6 +222,15 @@ body #content #generator_container .btn:not(.event_name):not(#btn_event_delete):
 
     &:disabled {
         opacity: 0.4;
+    }
+}
+
+#go_to_preview_date, #preview_date_btn {
+    background-color: $bg-amber-800;
+    border-color: $bg-amber-800;
+
+    &:hover {
+        background-color: $bg-amber-900;
     }
 }
 
