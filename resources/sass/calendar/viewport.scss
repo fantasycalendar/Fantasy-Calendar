@@ -212,6 +212,10 @@
     flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
 }
 
+#event_show_background img {
+    max-width: 100%;
+}
+
 .btn_create_event{
     position: relative;
     padding: 0.1rem;
