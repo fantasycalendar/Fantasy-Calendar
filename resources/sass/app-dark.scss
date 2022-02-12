@@ -229,14 +229,6 @@ body #content #generator_container .btn:not(.event_name):not(#btn_event_delete):
     background-image: linear-gradient(to right, rgba($current-day-color, 0.2), rgba($current-day-color, 0.2));
 }
 
-.current_day:after {
-    background-color: $current-day-color;
-    display: block;
-    content: ' ';
-    height: 5px;
-    width: 100%;
-}
-
 .page-link {
     color: $accent-color;
     background-color: transparent;

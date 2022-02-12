@@ -39,6 +39,7 @@
                             'timespan_overflow': day.type == 'overflow',
                             'timespan_day empty_timespan_day': day.type == 'empty',
                             'current_day': day.epoch == render_data.current_epoch,
+                            'season_color_enabled': day.season_color,
                             'preview_day': day.epoch == render_data.preview_epoch && render_data.preview_epoch != render_data.current_epoch,
                         }" :epoch="day.epoch">
                                 <div class="day_row text" x-show="day.text" x-text="day.text"></div>
