@@ -31,6 +31,10 @@
                 border-radius: 0;
                 align-self: stretch;
                 margin: 0;
+
+                .timespan_day {
+                    min-height: fit-content;
+                }
             }
         }
     }
@@ -431,6 +435,11 @@
 
     .timespan_day{
         text-align:left;
+
+        &:not(:last-child) {
+            border-right: 0;
+        }
+
         &.week_end {
             border-bottom:2px solid $calendar-border-color;
         }
