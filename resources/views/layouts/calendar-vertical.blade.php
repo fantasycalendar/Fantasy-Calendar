@@ -30,6 +30,7 @@
                     'timespan_overflow': day.type == 'overflow',
                     'timespan_day empty_timespan_day': day.type == 'empty',
                     'current_day': day.epoch == render_data.current_epoch,
+                    'season_color_enabled': day.season_color,
                     'preview_day': day.epoch == render_data.preview_epoch && render_data.preview_epoch != render_data.current_epoch,
                     [day.extra_class]: day.extra_class
                 }" :epoch="day.epoch">
@@ -79,7 +80,7 @@
                             ></div>
                         </template>
                     </div>
-                    
+
 
                     <button class="btn_create_event btn btn-success day_row flex-grow" @click="$dispatch('event-editor-modal-new-event', { epoch: day.epoch })" :epoch="day.epoch" x-show="day.show_event_button">Create event</button>
 

@@ -151,7 +151,7 @@
 				</div>
 
 
-				<div class='date_inputs date_control container mt-3'>
+				<div class='date_inputs date_control preview_date_controls container mt-3'>
 
 					<div class='row'>
 						<h5 class="my-0 py-0">Preview date:</h5>
@@ -252,8 +252,8 @@
 			<div class="collapsible-content card-body">
 
 				<div class='row'>
-					<div class='col-4 pr-0 bold-text'>Enable:</div>
-					<div class='col-2 pl-0'>
+					<div class='col-3 bold-text'>Enable:</div>
+					<div class='col-3 text-right'>
 						@if(request()->is('calendars/*/edit') && $calendar->isLinked())
 							{{ Arr::get($calendar->static_data, 'clock.enabled') ? "Yes" : "No" }}
 						@else
@@ -263,8 +263,8 @@
 							</label>
 						@endif
 					</div>
-					<div class='render_clock col-4 p-0 bold-text'>Render:</div>
-					<div class='render_clock col-2 p-0'>
+					<div class='render_clock col-3 bold-text'>Render:</div>
+					<div class='render_clock col-3 text-right'>
 						<label class="custom-control custom-checkbox center-text">
 							<input type="checkbox" class="custom-control-input static_input" id='render_clock' refresh='clock' data='clock' fc-index='render'>
 							<span class="custom-control-indicator"></span>
@@ -379,13 +379,13 @@
 				</div>
 
 				<div class='row protip month_overflow_container' data-pt-position="right" data-pt-title='Enabling this will continue the week in the next month, and disabling overflow will restart the week so that each month starts with the first week day.'>
-					<div class='col-auto pr-1 bold-text'>
+					<div class='col-8 pr-1 bold-text'>
 						Overflow weekdays:
 					</div>
 					@if(request()->is('calendars/*/edit') && $calendar->isLinked())
 						{{ Arr::get($calendar->static_data, 'year_data.overflow') ? "Enabled" : "Disabled" }}
 					@else
-						<div class='col-2'>
+						<div class='col-4'>
 							<label class="custom-control custom-checkbox right-text">
 								<input type="checkbox" class="custom-control-input static_input" data='year_data' fc-index='overflow' id='month_overflow'>
 								<span class="custom-control-indicator"></span>
@@ -843,8 +843,8 @@
                 <div id='has_seasons_container' class='hidden'>
 
     				<div class='row no-gutters'>
-    					<div class='col-auto mr-2'>Enable weather:</div>
-    					<div class='col-auto'>
+    					<div class='col-8'>Enable weather:</div>
+    					<div class='col-4 text-right'>
     						<label class="custom-control custom-checkbox">
     							<input type="checkbox" class="custom-control-input static_input" id='enable_weather' refresh='false' data='seasons.global_settings' fc-index='enable_weather'>
     							<span class="custom-control-indicator"></span>
@@ -887,9 +887,9 @@
     						</div>
     					</div>
 
-    					<div class='row no-gutters my-2 protip' data-pt-position="right" data-pt-title="In addition of the temperature being shown, you'll also see the description for the temperature of that particular day.">
-    						<div class='col-auto mr-2'>Cinematic temperature description:</div>
-    						<div class='col-auto'>
+    					<div class='row no-gutters my-2 protip align-items-center' data-pt-position="right" data-pt-title="In addition of the temperature being shown, you'll also see the description for the temperature of that particular day.">
+    						<div class='col-8'>Cinematic temperature description:</div>
+    						<div class='col-4 text-right'>
     							<label class="custom-control custom-checkbox">
     								<input type="checkbox" class="custom-control-input static_input" refresh='false' data='seasons.global_settings' fc-index='cinematic'>
     								<span class="custom-control-indicator"></span>

@@ -138,7 +138,7 @@
             @endcan
 
 
-			<div class='date_control container mt-3'>
+			<div class='date_control preview_date_controls container mt-3'>
 
 				<div class='row'>
 					<h4 class="my-0 py-0">Preview date:</h4>
