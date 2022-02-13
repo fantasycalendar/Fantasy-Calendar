@@ -1,4 +1,4 @@
-<div class="col-span-4 flex items-center justify-between" x-data="{ {{ $attributes->get('name') }}: {{ $attributes->get('value') }} }">
+<div class="col-span-4 flex items-center justify-between" x-data="{ {{ $attributes->get('name') }}: {{ $attributes->get('value') ?? old($attributes->get('name')) ?? 'false' }} }">
     <input type="checkbox" name="{{ $attributes->get('name') }}" class="hidden" x-model="{{ $attributes->get('name') }}">
 
     <span class="flex-grow flex flex-col">
