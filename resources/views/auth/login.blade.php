@@ -25,7 +25,11 @@
                         <x-text-input placeholder="{{ __('Password') }}" id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password"></x-text-input>
                     </div>
 
-                    <x-input-toggle class="form-check-input" type="checkbox" name="remember" id="remember" label="{{ __('Remember Me') }}"></x-input-toggle>
+                    <div>
+                        <x-input-toggle name="remember" id="remember" label="{{ __('Remember Me') }}">
+
+                        </x-input-toggle>
+                    </div>
 
                     <x-button id="login" type="submit" class="justify-center">
                         {{ __('Login') }}

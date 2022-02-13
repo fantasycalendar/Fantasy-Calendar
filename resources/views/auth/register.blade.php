@@ -66,8 +66,8 @@
                             @keyup="validate_password"
                             @blur="validate_password"></x-text-input>
 
-                            <div class="text-red-500" x-show="password_was_validated && password.length < 7"><i class="fa fa-times-circle text-red-600"></i> Password must be 8 characters long.</div>
-                            <div class="text-red-500" x-show="password_was_validated && password !== password_confirmation"><i class="fa fa-times-circle text-red-600"></i> Passwords do not match.</div>
+                            <div x-cloak class="pt-2 text-red-500" x-show="password_was_validated && password.length < 7"><i class="fa fa-times-circle text-red-600"></i> Password must be 8 characters long.</div>
+                            <div x-cloak class="pt-2 text-red-500" x-show="password_was_validated && password !== password_confirmation"><i class="fa fa-times-circle text-red-600"></i> Passwords do not match.</div>
                     </div>
 
                     <input type='hidden' name='dark_theme' x-model='dark_theme'>
