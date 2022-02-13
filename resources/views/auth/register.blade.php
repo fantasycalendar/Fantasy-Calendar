@@ -6,7 +6,7 @@
                 valid_form: false,
                 username: "{{ old('username') }}",
                 email: "{{ old('email') ?? session('email') }}",
-                agreed: false,
+                policy_acceptance: false,
 
                 password: '',
                 password_confirmation: '',
@@ -29,65 +29,76 @@
 
 <x-app-fullwidth-layout body-class="flex flex-col bg-gray-100 dark:bg-gray-900">
     <div class="flex-1 grid place-items-center" x-data='register_form()'>
-        <div class="row justify-content-center">
-            <x-panel>
-                <form method="POST" action="{{ route('register') }}" class="container-fluid">
+        <div class="max-w-md w-full grid">
+            <div>
+                <div class="text-primary-700">
+                    <x-app-logo class="mx-auto h-12 w-auto"></x-app-logo>
+                </div>
+
+                <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Register for your free account</h2>
+                <p class="mt-2 text-center text-sm text-gray-600">
+                    Or
+                    <x-app-link href="{{ route('register') }}"> sign in to an existing account </x-app-link>
+                </p>
+            </div>
+
+            <x-panel class="mt-8">
+                <form method="POST" action="{{ route('register') }}" class="space-y-4">
                     @csrf
                     @honeypot
 
-                    <div class="col-md-6">
-                        <x-text-input id="username" type="text" class="form-control @error('username') is-invalid @enderror" x-model='username' name="username" value="{{ old('username') }}" required autocomplete="username" autofocus>
+                    <div>
+                        <x-text-input id="username" type="text" x-model='username' placeholder="{{ __('Username') }}" name="username" value="{{ old('username') }}" required autocomplete="username" autofocus></x-text-input>
                     </div>
 
-                    <div class="col-md-6">
-                        <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" x-model='email' name="email" value="{{ old('email') ?? session('email') }}" required autocomplete="email">
+                    <div>
+                        <x-text-input id="email" type="email" x-model='email' placeholder="{{ __('Email') }}" name="email" value="{{ old('email') ?? session('email') }}" required autocomplete="email"></x-text-input>
                     </div>
 
-                    <div class="col-md-6">
-                        <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" x-model="password" name="password" required autocomplete="new-password" @blur="validate_password">
+                    <div>
+                        <x-text-input id="password" type="password" x-model="password" placeholder="{{ __('Password') }}" name="password" required autocomplete="new-password" @blur="validate_password"></x-text-input>
                     </div>
 
-                    <div class="form-group row">
-                        <label for="password-confirm" class="col-md-4 col-form-label text-md-right">{{ __('Confirm Password') }}</label>
+                    <div>
+                        <x-text-input id="password-confirm" type="password" class="form-control" placeholder="{{ __('Confirm Password') }}" name="password_confirmation" required autocomplete="new-password"
+                            x-model="password_confirmation"
+                            ::class="{ 'is-invalid': password_was_validated && !password_valid }"
+                            @keyup="validate_password"
+                            @blur="validate_password"></x-text-input>
 
-                        <div class="col-md-6">
-                            <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password"
-                                x-model="password_confirmation"
-                                :class="{ 'is-invalid': password_was_validated && !password_valid }"
-                                @keyup="validate_password"
-                                @blur="validate_password">
-
-                            <div class="invalid-feedback" x-show="password_was_validated && password.length < 7">Password must be 8 characters long.</div>
-
-                            <div class="invalid-feedback" x-show="password_was_validated && password !== password_confirmation">Passwords do not match.</div>
-                        </div>
+                            <div class="text-red-500" x-show="password_was_validated && password.length < 7"><i class="fa fa-times-circle text-red-600"></i> Password must be 8 characters long.</div>
+                            <div class="text-red-500" x-show="password_was_validated && password !== password_confirmation"><i class="fa fa-times-circle text-red-600"></i> Passwords do not match.</div>
                     </div>
 
                     <input type='hidden' name='dark_theme' x-model='dark_theme'>
 
-                    <div class="form-check p-2">
-                        <input type="checkbox" class="form-check-input" name="policy_acceptance" id="policy_acceptance" x-model="agreed" required>
-                        <label class="form-check-label" for="policy_acceptance">I agree to the <a target="_blank" href="{{ route('terms-and-conditions') }}">Terms and Conditions</a>, and the <a target="_blank" href="{{ route('privacy-policy') }}">Privacy and Cookies Policy</a></label>
-                        <small>Residents of the EU are legally entitled to a 14-day cool off period, as explained in the T&Cs</small>
+                    <div>
+                        <x-input-toggle right class="flex-row-reverse space-x-6 space-x-reverse" name="policy_acceptance" id="policy_acceptance" x-model="policy_acceptance" required>
+                            <div>
+                                I agree to the <x-app-link target="_blank" href="{{ route('terms-and-conditions') }}">Terms and Conditions</x-app-link>,
+                                and the <x-app-link target="_blank" href="{{ route('privacy-policy') }}">Privacy and Cookies Policy</x-app-link>
+                            </div>
+                        </x-input-toggle>
+
                     </div>
 
-                    <div class="form-check p-2 mb-3">
-                        <input type="checkbox" class="form-check-input" name="marketing_acceptance" id="marketing_acceptance">
-                        <label class="form-check-label" for="marketing_acceptance">
-                            <strong>(Optional)</strong> I would like to receive occasional emails about products and special offers
-                            <small>(You can withdraw consent at any time on your profile)<small>
-                        </label>
+                    <div class="pb-4">
+                        <x-input-toggle right class="flex-row-reverse space-x-6 space-x-reverse" name="marketing_acceptance" id="marketing_acceptance">
+                            <div>
+                                <strong>(Optional)</strong> I would like to receive occasional emails about products and special offers
+                            </div>
+                        </x-input-toggle>
                     </div>
 
-                    <div class="form-group row mb-0">
-                        <div class="col-md-6 offset-md-4">
-                            <button type="submit" :disabled="username === '' || email === '' || !password_valid || !agreed" class="btn btn-primary">
-                                {{ __('Register') }}
-                            </button>
-                        </div>
-                    </div>
+                    <x-button type="submit" ::disabled="username === '' || email === '' || !password_valid || !policy_acceptance" class="w-full justify-center">
+                        {{ __('Register') }}
+                    </x-button>
                 </form>
+
+                <x-slot name="footer"></x-slot>
             </x-panel>
+
+            <div class="text-xs mt-6 px-10 text-center text-gray-400 dark:text-gray-700">You can withdraw marketing consent at any time on your profile. Residents of the EU are legally entitled to a 14-day cool off period, as explained in the T&Cs.</div>
         </div>
     </div>
 </x-app-fullwidth-layout>
