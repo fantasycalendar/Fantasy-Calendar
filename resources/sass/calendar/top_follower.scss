@@ -18,6 +18,31 @@
     transition: box-shadow 0.3s ease;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 
+    &.single_month {
+        align-self: stretch;
+        margin: 0;
+        width: auto;
+        box-shadow: none;
+        border-bottom: 1px solid $calendar-border-color;
+        border-radius: 0;
+
+        .btn_container {
+            border-radius: 0;
+
+            &:last-child {
+                border-radius: 0 !important;
+            }
+        }
+
+        .btn {
+            border-radius: 0 !important;
+        }
+
+        .btn.sub_year, .btn.add_year {
+            display: none;
+        }
+    }
+
     &.follower_shadow {
         box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
     }

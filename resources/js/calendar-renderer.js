@@ -81,7 +81,7 @@ const calendar_renderer = {
         show_loading_screen_buffered();
     },
 
-    post_render: function(){
+    post_render: function($dispatch){
         this.loading_message = "Wrapping up rendering...";
 
         hide_loading_screen();
@@ -108,6 +108,8 @@ const calendar_renderer = {
         this.rerendering = false;
         this.prev_current_epoch = this.render_data.current_epoch;
         this.prev_preview_epoch = this.render_data.preview_epoch;
+
+        $dispatch('layout-change', {apply: this.render_data.current_month_only ? 'single_month' : ''});
 
 	    execution_time.end("Calculating and rendering calendar took:")
     },

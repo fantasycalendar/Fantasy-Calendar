@@ -1402,7 +1402,7 @@
         <div class='p-2'><button type='button' class='btn btn-primary' id='apply_changes_btn'>Update preview</button></div>
     </div>
 
-	<div id="top_follower" class="step-hide">
+    <div id="top_follower" :class="{ 'single_month': apply == 'single_month' }" x-data="{ apply: '' }" @layout-change.window="apply = $event.detail.apply">
 
 		<div class='parent_button_container hidden d-print-none'>
 			<div class='container d-flex h-100 p-0'>
@@ -1413,8 +1413,11 @@
 		</div>
 
 		<div class='btn_container hidden'>
-			<button class='btn btn-danger btn_preview_date hidden d-print-none' disabled fc-index='year' value='-1'>< Year</button>
-			<button class='btn btn-danger btn_preview_date hidden d-print-none' disabled fc-index='timespan' value='-1'>< Month</button>
+			<button class='btn btn-danger btn_preview_date hidden d-print-none sub_year' disabled fc-index='year' value='-1'>< Year</button>
+            <button class='btn btn-danger btn_preview_date hidden d-print-none sub_month' disabled fc-index='timespan' value='-1'>
+                <span x-cloak x-show="apply != 'single_month'">< Month</span>
+                <span x-cloak x-show="apply == 'single_month'"><i class="fa fa-arrow-left"></i></span>
+            </button>
 		</div>
 
 		<div class='reset_preview_date_container m-1 left'>
@@ -1430,9 +1433,12 @@
         </div>
 
 		<div class='btn_container hidden'>
-			<button class='btn btn-success btn_preview_date hidden d-print-none' disabled fc-index='year' value='1'>Year ></button>
-			<button class='btn btn-success btn_preview_date hidden d-print-none' disabled fc-index='timespan' value='1'>Month ></button>
-		</div>
+			<button class='btn btn-success btn_preview_date hidden d-print-none add_year' disabled fc-index='year' value='1'>Year ></button>
+            <button class='btn btn-success btn_preview_date hidden d-print-none add_month' disabled fc-index='timespan' value='1'>
+                <span x-cloak x-show="apply != 'single_month'">Month ></span>
+                <span x-cloak x-show="apply == 'single_month'"><i class="fa fa-arrow-right"></i></span>
+            </button>
+        </div>
 
 	</div>
 

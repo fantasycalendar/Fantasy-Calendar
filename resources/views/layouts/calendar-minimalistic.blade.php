@@ -1,7 +1,7 @@
-<div id='calendar' class="minimalistic" x-data="CalendarRenderer">
+<div id='calendar' class="minimalistic" x-data="CalendarRenderer" :class="{ 'single_month': render_data.current_month_only }" x-ref="calendar_renderer" x-init="$nextTick(() => $dispatch('layout-change', {apply: render_data.current_month_only ? 'single_month' : ''}))">
 
     <template x-if="!loaded && render_data.timespans.length">
-        <div class="modal_background mt-5 pt-5">
+        <div class="modal_background w-100">
             <div id="modal" class="creation mt-5 py-5 d-flex flex-column align-items-center justify-content-center">
                 <h3 class="text-center" x-text="loading_message"></h3>
                 <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
@@ -13,7 +13,7 @@
         @render-data-change.window="
             pre_render();
             load_calendar($event);
-            $nextTick(() => { post_render() });
+            $nextTick(() => { post_render($dispatch) });
         "
         @update-epochs.window="update_epochs"
         x-if='loaded'
