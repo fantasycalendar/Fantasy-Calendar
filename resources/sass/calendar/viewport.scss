@@ -650,7 +650,7 @@
         z-index: 5;
     }
 
-    & .number {
+    & .number:not(.year_day) {
         background-color: $preview-day-number-color;
         color: white;
     }
