@@ -24,15 +24,23 @@
         margin: 0;
         width: auto;
         box-shadow: none;
-        border-bottom: 1px solid $card-border-color;
+        border-bottom: 1px solid $calendar-border-color;
         border-radius: 0;
 
         .btn_container {
             border-radius: 0;
+
+            &:last-child {
+                border-radius: 0 !important;
+            }
         }
 
         .btn {
             border-radius: 0 !important;
+        }
+
+        .btn.sub_year, .btn.add_year {
+            display: none;
         }
     }
 
