@@ -83,6 +83,7 @@
         grid-auto-columns: 1fr;
         grid-auto-flow: column;
         flex: 1;
+        background-image: $disabled-crosshatch;
 
         &.intercalary{
 
@@ -161,7 +162,6 @@
         min-height:8rem;
         flex: 1;
         color: rgba(#98a0a6, 0.6);
-        background-image: $disabled-crosshatch;
         cursor: not-allowed;
         min-width: 7rem;
         border-top:1px solid $calendar-border-color;
