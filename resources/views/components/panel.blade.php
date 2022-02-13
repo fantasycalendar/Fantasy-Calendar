@@ -1,4 +1,4 @@
-<div class="shadow sm:rounded-md sm:overflow-hidden">
+<div {{ $attributes->merge(['class' => 'shadow sm:rounded-md sm:overflow-hidden']) }}>
     <div class="bg-white dark:bg-gray-800 dark:text-gray-300 py-6 px-4 space-y-6 sm:p-6">
         {{ $slot }}
     </div>

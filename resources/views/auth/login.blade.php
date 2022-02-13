@@ -1,79 +1,55 @@
-@extends('templates._page')
+<x-app-fullwidth-layout body-class="flex flex-col bg-gray-100 dark:bg-gray-900">
+    <div class="flex-1 grid place-items-center">
+        <x-panel class="max-w-md w-full">
+            <div class="grid">
+                <form method="POST" action="{{ route('login') }}" x-data="{ remember: {{ old('remember') ? 'true' : 'false' }} }" class="flex flex-col space-y-4">
+                    @csrf
 
-@section('content')
-<div class="container pt-4">
-    <div class="row no-gutters justify-content-center">
-        <div class="col-lg-8">
-            <div class="card">
-                <div class="card-header">{{ __('Login') }}</div>
+                    <div>
+                        <x-text-input name="identity" placeholder="{{ __('Username') }}" value="{{ old('username') ?? old('email') }}"></x-text-input>
+                        @error('username')
+                        <x-alert type="danger">
+                            <strong>{{ $message }}</strong>
+                        </x-alert>
+                        @enderror
+                    </div>
 
-                <div class="card-body">
-                    <form method="POST" action="{{ route('login') }}">
-                        @csrf
-
-                        <div class="form-group row">
-                            <label for="identity" class="col-md-4 col-form-label text-md-right">{{ __('Username') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="identity" type="text" class="form-control @error('username') is-invalid @enderror @error('email') is-invalid @enderror" name="identity" value="{{ old('username') ?? old('email') }}" required autocomplete="username" autofocus>
-
-                                @error('username')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-
-                                @error('email')
-                                <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
+                    @error('email')
+                        <div>
+                            <x-alert type="danger">
+                                <strong>{{ $message }}</strong>
+                            </x-alert>
                         </div>
+                    @enderror
 
-                        <div class="form-group row">
-                            <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
+                    <div>
+                        <x-text-input placeholder="{{ __('Password') }}" id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password"></x-text-input>
+                    </div>
 
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
-
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
+                    @error('password')
+                        <div>
+                            <x-alert type="danger">
+                                <strong>{{ $message }}</strong>
+                            </x-alert>
                         </div>
+                    @enderror
 
-                        <div class="form-group row">
-                            <div class="col-md-6 offset-md-4">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
+                    <x-input-toggle class="form-check-input" type="checkbox" name="remember" id="remember" label="{{ __('Remember Me') }}"></x-input-toggle>
 
-                                    <label class="form-check-label" for="remember">
-                                        {{ __('Remember Me') }}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
+                    <x-button id="login" type="submit" class="justify-center">
+                        {{ __('Login') }}
+                    </x-button>
 
-                        <div class="form-group row mb-0">
-                            <div class="col-md-8 offset-md-4">
-                                <button id="login" type="submit" class="btn btn-primary">
-                                    {{ __('Login') }}
-                                </button>
-
-                                @if (Route::has('password.request'))
-                                    <a class="btn btn-link" href="{{ route('password.request') }}">
-                                        {{ __('Forgot Your Password?') }}
-                                    </a>
-                                @endif
-                            </div>
-                        </div>
-                    </form>
-                </div>
+                    @if (Route::has('password.request'))
+                        <x-app-link href="{{ route('password.request') }}" class="text-sm text-center">
+                            {{ __('Forgot Your Password?') }}
+                        </x-app-link>
+                    @endif
+                </form>
             </div>
-        </div>
+
+            <x-slot name="footer"></x-slot>
+        </x-panel>
+
     </div>
-</div>
-@endsection
+</x-app-fullwidth-layout>
