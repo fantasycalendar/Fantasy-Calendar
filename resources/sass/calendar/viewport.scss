@@ -84,6 +84,7 @@
         grid-auto-flow: column;
         flex: 1;
         background-image: $disabled-crosshatch;
+        z-index: 8;
 
         &.intercalary{
 
@@ -590,7 +591,7 @@
                 line-height: 24px;
             }
 
-            &.preview_day:hover {
+            &.preview_day:hover:after {
                 background-color: lighten($preview-day-color, 10%);
             }
 
@@ -640,7 +641,17 @@
 }
 
 .preview_day{
-    background-color: rgba($preview-day-color, 0.2);
+    &:before {
+        background-color: rgba($preview-day-color, 0.2);
+        content: ' ';
+        display: block;
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: 0;
+        z-index: 5;
+    }
 
     & .number {
         background-color: $preview-day-number-color;
