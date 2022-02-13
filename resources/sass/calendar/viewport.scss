@@ -31,10 +31,6 @@
                 border-radius: 0;
                 align-self: stretch;
                 margin: 0;
-
-                .timespan_day {
-                    min-height: fit-content;
-                }
             }
         }
     }
@@ -436,6 +432,7 @@
 
     .timespan_day{
         text-align:left;
+        min-height: fit-content;
 
         &:not(:last-child) {
             border-right: 0;
@@ -623,7 +620,7 @@
     background-image: linear-gradient(to right, rgba($current-day-color, 0.2), rgba($current-day-color, 0.2));
 
 
-    & .number {
+    & .number:not(.year_day) {
         background-color: $current-day-number-color;
         color: white;
     }
