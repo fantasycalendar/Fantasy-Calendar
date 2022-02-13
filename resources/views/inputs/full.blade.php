@@ -1402,7 +1402,7 @@
         <div class='p-2'><button type='button' class='btn btn-primary' id='apply_changes_btn'>Update preview</button></div>
     </div>
 
-	<div id="top_follower" class="step-hide">
+    <div id="top_follower" :class="{ 'single_month': apply == 'single_month' }" x-data="{ apply: '' }" @layout-change.window="apply = $event.detail.apply">
 
 		<div class='parent_button_container hidden d-print-none'>
 			<div class='container d-flex h-100 p-0'>

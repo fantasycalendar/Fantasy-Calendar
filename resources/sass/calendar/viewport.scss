@@ -2,28 +2,46 @@
 
 #calendar {
     display: flex;
-    flex-direction: column;
     flex-wrap: wrap;
     align-items: center;
     margin-bottom:5px;
     width: 100%;
     color: $main-text-color;
-    min-height: 85%;
     justify-content: center;
+    flex: 1;
+
+    &:not(.single_month) {
+        padding: 0 14px;
+    }
 
     &.single_month {
-        align-items: stretch;
+        justify-content: stretch;
+
+        .timespan_container {
+            min-width: 100%;
+            min-height: 100%;
+            justify-self: stretch;
+            align-self: stretch;
+            margin: 0;
+            border-radius: 0;
+            box-shadow: none;
+            border-bottom: 1px solid $card-border-color;
+
+            &.vertical {
+                border-radius: 0;
+                align-self: stretch;
+                margin: 0;
+            }
+        }
     }
 }
 
 .timespan {
-
     &_container{
         display: flex;
+        flex-direction: column;
         align-self: flex-start;
         text-align: center;
-        flex-direction: column;
-        flex: 1 0 85%;
         position: relative;
         background-color: $card-bg-color;
         border-radius: 4px;
@@ -38,7 +56,7 @@
             text-align:center;
             overflow: hidden;
             text-overflow: ellipsis;
-            min-width: 5rem;
+            min-width: 7rem;
         }
 
         .week_day_name:not(:last-child){
@@ -57,8 +75,9 @@
     }
 
     &_row {
-        display: flex;
-        flex-direction: row;
+        display: grid;
+        grid-auto-columns: 1fr;
+        grid-auto-flow: column;
         flex: 1;
 
         &.intercalary{
@@ -69,8 +88,9 @@
         }
 
         &_names{
-            display: flex;
-            flex-direction: row;
+            display: grid;
+            grid-auto-columns: 1fr;
+            grid-auto-flow: column;
         }
 
         &_container{
@@ -86,15 +106,16 @@
     }
 
     &_day {
+        box-sizing: border-box;
         display: flex;
         flex-direction: column;
         min-height:8rem;
-        flex: 1;
+        flex: 1 1 0px;
         background-color: $card-bg-color;
         min-width: 7rem;
         position: relative;
         border-top:1px solid $calendar-border-color;
-	padding: 2px;
+	    padding: 2px;
 
         &.empty_timespan_day{
             background-color:$gray-secondary;
@@ -112,11 +133,12 @@
     }
 
     &_intercalary{
+        box-sizing: border-box;
         background-color: $card-bg-color;
         display: flex;
         flex-direction: column;
         min-height:8rem;
-        flex: 1;
+        flex: 1 1 0px;
         min-width: 5rem;
 
         &:not(:first-child){
@@ -606,13 +628,6 @@
     bottom: 2px;
     right: 2px;
     left: 2px;
-}
-
-
-div.copyright {
-    position:sticky;
-    left: 0;
-    right: 0;
 }
 
 .preview_day{

@@ -296,7 +296,7 @@
 
 <div id="calendar_container">
 
-	<div id="top_follower">
+	<div id="top_follower" :class="{ 'single_month': apply == 'single_month' }" x-data="{ apply: '' }" @layout-change.window="apply = $event.detail.apply">
 
 		<div class='btn_container hidden'>
 			<button class='btn btn-danger btn_preview_date hidden d-print-none' disabled fc-index='year' value='-1'>< Year</button>

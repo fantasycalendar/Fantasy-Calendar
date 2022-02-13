@@ -239,9 +239,11 @@ body.page-calendars-index {
 }
 
 #calendar_container{
+    display: flex;
+    flex-direction: column;
     order:3;
-    padding:0 10px 0 10px;
-    flex-grow: 999;
+    padding:0;
+    flex-grow: 1;
     flex-basis: 0;
     transition: width 0.5s ease;
     overflow-y: auto;
