@@ -32,6 +32,7 @@
         "@fortawesome/fontawesome-free": "^5.15.1",
         "@jaames/iro": "^5.5.2",
         "@tailwindcss/forms": "^0.4.0",
+        "@tailwindcss/typography": "^0.5.2",
         "alpine-editor": "^0.3.1",
         "alpinejs": "^3.8.1",
         "autoprefixer": "^10.4.2",
