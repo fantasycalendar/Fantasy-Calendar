@@ -109,33 +109,37 @@
         <footer class="bg-white dark:bg-gray-800 inset-x-0 bottom-0">
             <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 md:flex md:items-center md:justify-between lg:px-8">
                 <div class="flex justify-center space-x-6 md:order-2">
-                    <a href="{{ route('discord.server') }}" class="text-gray-400 hover:text-gray-500">
+                    <a href="{{ route('discord.server') }}" class="text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400">
                         <span class="sr-only">Discord</span>
                         <i class="fab fa-discord text-lg h-6 w-6"></i>
                     </a>
 
-                    <a href="https://twitter.com/FantasyCalendar" class="text-gray-400 hover:text-gray-500">
+                    <a href="https://twitter.com/FantasyCalendar" class="text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400">
                         <span class="sr-only">Twitter</span>
                         <i class="fab fa-twitter text-lg h-6 w-6"></i>
                     </a>
 
-                    <a href="https://github.com/fantasycalendar" class="text-gray-400 hover:text-gray-500">
+                    <a href="https://github.com/fantasycalendar" class="text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400">
                         <span class="sr-only">GitHub</span>
                         <i class="fab fa-github text-lg h-6 w-6"></i>
                     </a>
 
-                    <a href="mailto:contact@fantasy-calendar.com" class="text-gray-400 hover:text-gray-500">
+                    <a href="mailto:contact@fantasy-calendar.com" class="text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400">
                         <span class="sr-only">Email Us</span>
                         <i class="fa fa-envelope text-lg h-6 w-6"></i>
                     </a>
 
-                    <a href="https://fantasycomputer.works/" class="text-gray-400 hover:text-gray-500">
+                    <a href="https://fantasycomputer.works/" class="text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400">
                         <span class="sr-only">Website</span>
                         <i class="fa fa-globe text-lg h-6 w-6"></i>
                     </a>
                 </div>
-                <div class="mt-8 md:mt-0 md:order-1">
-                    <p class="text-center text-base text-gray-400">&copy; {{ date('Y') }} Fantasy Computerworks Ltd.</p>
+                <div class="mt-8 md:mt-0 md:order-1 text-center md:text-left">
+                    <p class="text-base text-gray-400 dark:text-gray-500">&copy; {{ date('Y') }} Fantasy Computerworks Ltd.</p>
+                    <p class="text-base text-gray-400 dark:text-gray-500">
+                        <a class="text-gray-400 dark:text-gray-500 dark:hover:text-gray-400 hover:text-gray-500" href="{{ route('terms-and-conditions') }}">Terms and Conditions</a>
+                            - <a class="text-gray-400 dark:text-gray-500 dark:hover:text-gray-400 hover:text-gray-500" href="{{ route('privacy-policy') }}">Privacy and Cookies Policy</a>
+                    </p>
                 </div>
             </div>
         </footer>
