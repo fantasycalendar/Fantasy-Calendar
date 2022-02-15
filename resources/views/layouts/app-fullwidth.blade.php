@@ -24,8 +24,8 @@
             <div class="flex justify-between h-16 w-full">
                 <div class="flex">
                     <div class="flex-shrink-0 flex items-center">
-                        <a href="{{ route('home') }}" class="flex items-center">
-                            <img class="h-8 w-auto" src="{{ asset('resources/header_logo.png') }}" alt="Fantasy Calender"> <span class="hidden md:inline pl-2 text-lg font-bold text-white dark:text-primary-600">Fantasy Calendar</span>
+                        <a href="{{ route('home') }}" class="flex items-center text-white dark:text-primary-400">
+                            <x-app-logo class="h-8 w-auto" alt="Fantasy Calendar"></x-app-logo> <span class="hidden md:inline pl-2 text-lg font-bold">Fantasy Calendar</span>
                         </a>
                     </div>
                     <div class="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
