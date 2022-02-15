@@ -1,5 +1,3 @@
-@push('page-class', 'dark')
-
 <x-app-fullwidth-layout body-class="flex flex-col bg-gray-100 dark:bg-gray-900">
     <div class="max-w-md w-full m-auto md:mt-12 lg:mt-16">
         <div class="text-primary-700">

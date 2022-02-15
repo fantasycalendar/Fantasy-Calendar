@@ -1,6 +1,3 @@
-@push('page-class', 'dark')
-
-
 @push('head')
 	<script>
 
@@ -76,7 +73,7 @@
 
                     <div>
                         <x-input-toggle right class="flex-row-reverse space-x-6 space-x-reverse" name="policy_acceptance" id="policy_acceptance" x-model="policy_acceptance" required>
-                            <div class="dark:text-gray-400">
+                            <div class="text-gray-600 dark:text-gray-400 -mr-6">
                                 I agree to the <x-app-link target="_blank" href="{{ route('terms-and-conditions') }}">Terms and Conditions</x-app-link>,
                                 and the <x-app-link target="_blank" href="{{ route('privacy-policy') }}">Privacy and Cookies Policy</x-app-link>
                             </div>
@@ -86,7 +83,7 @@
 
                     <div class="pb-4">
                         <x-input-toggle right class="flex-row-reverse space-x-6 space-x-reverse" name="marketing_acceptance" id="marketing_acceptance">
-                            <div class="dark:text-gray-400">
+                            <div class="text-gray-600 dark:text-gray-400 -mr-6">
                                 <strong>(Optional)</strong> I would like to receive occasional emails about products and special offers
                             </div>
                         </x-input-toggle>
