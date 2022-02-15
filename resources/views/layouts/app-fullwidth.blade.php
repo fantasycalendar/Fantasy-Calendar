@@ -18,7 +18,7 @@
     </div>
 @endenv
 
-<div class="min-h-screen {{ $attributes->get('body-class') ?? 'bg-gray-100 dark:bg-gray-900' }}" x-data="{ menu: true }">
+<div class="min-h-screen flex flex-col justify-between {{ $attributes->get('body-class') ?? 'bg-gray-100 dark:bg-gray-900' }}" x-data="{ menu: true }">
     <nav class="bg-primary-700 dark:bg-primary-900 border-b border-gray-200 dark:border-gray-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 w-full">
@@ -101,7 +101,45 @@
         </div>
     </nav>
 
-    {{ $slot }}
+    <div class="mb-auto">
+        {{ $slot }}
+    </div>
+
+    @unless($attributes->has('nofooter'))
+        <footer class="bg-white dark:bg-gray-800 inset-x-0 bottom-0">
+            <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 md:flex md:items-center md:justify-between lg:px-8">
+                <div class="flex justify-center space-x-6 md:order-2">
+                    <a href="{{ route('discord.server') }}" class="text-gray-400 hover:text-gray-500">
+                        <span class="sr-only">Discord</span>
+                        <i class="fab fa-discord text-lg h-6 w-6"></i>
+                    </a>
+
+                    <a href="https://twitter.com/FantasyCalendar" class="text-gray-400 hover:text-gray-500">
+                        <span class="sr-only">Twitter</span>
+                        <i class="fab fa-twitter text-lg h-6 w-6"></i>
+                    </a>
+
+                    <a href="https://github.com/fantasycalendar" class="text-gray-400 hover:text-gray-500">
+                        <span class="sr-only">GitHub</span>
+                        <i class="fab fa-github text-lg h-6 w-6"></i>
+                    </a>
+
+                    <a href="mailto:contact@fantasy-calendar.com" class="text-gray-400 hover:text-gray-500">
+                        <span class="sr-only">Email Us</span>
+                        <i class="fa fa-envelope text-lg h-6 w-6"></i>
+                    </a>
+
+                    <a href="https://fantasycomputer.works/" class="text-gray-400 hover:text-gray-500">
+                        <span class="sr-only">Website</span>
+                        <i class="fa fa-globe text-lg h-6 w-6"></i>
+                    </a>
+                </div>
+                <div class="mt-8 md:mt-0 md:order-1">
+                    <p class="text-center text-base text-gray-400">&copy; {{ date('Y') }} Fantasy Computerworks Ltd.</p>
+                </div>
+            </div>
+        </footer>
+    @endunless
 </div>
 
 <div aria-live="assertive" class="fixed inset-0 flex items-end px-4 py-6 pointer-events-none sm:p-6 sm:items-end" x-data="{ notifications: [], notification: function($event){ this.notifications.push($event.detail) } }" @notification.window="notification">
