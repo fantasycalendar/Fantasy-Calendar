@@ -1,4 +1,11 @@
-<div {{ $attributes->except(['x-model', 'label', 'description', 'name'])->merge(['class' => 'col-span-4 flex items-center justify-between']) }}
+<div {{
+        $attributes->except(['x-model', 'label', 'description', 'name'])
+                   ->class([
+                       'col-span-4 flex items-center justify-between',
+                       'flex-row-reverse space-x-reverse' => $attributes->has('flip'),
+                       'space-x-2' => $attributes->has('flip') && !str_contains($attributes->get('class'), 'space-x')
+                   ])
+    }}
      @unless($attributes->has('x-model'))
         x-data="{ {{ $attributes->get('name') }}: {{ $attributes->get('value') ?? old($attributes->get('name')) ?? 'false' }} }"
      @endunless
@@ -7,8 +14,11 @@
 
     <div class="flex-grow flex flex-col">
         <span class="text-sm font-medium text-gray-900 dark:text-gray-300" id="availability-label">{{ $attributes->get('label') }}</span>
-        @if($slot ?? $attributes->has('description'))
-            <div class="text-sm text-gray-500 dark:text-gray-400" id="availability-description">{{ $slot ?? $attributes->get('description') }}</div>
+        @if($attributes->has('description'))
+            <div class="text-sm text-gray-500 dark:text-gray-400" id="availability-description">{{ $attributes->get('description') }}</div>
+        @endif
+        @if($slot)
+            {{ $slot }}
         @endif
     </div>
 
