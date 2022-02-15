@@ -10,9 +10,9 @@
             </div>
 
             @if (session('status'))
-                <div class="mb-4 font-medium text-sm text-green-600">
+                <x-alert type="success">
                     {{ session('status') }}
-                </div>
+                </x-alert>
             @endif
 
             <form method="POST" action="{{ route('password.email') }}">
@@ -23,7 +23,7 @@
                 </div>
 
                 <div class="flex items-center justify-end mt-4">
-                    <x-button type="submit">
+                    <x-button type="submit" class="w-full justify-center">
                         {{ __('Email Password Reset Link') }}
                     </x-button>
                 </div>
