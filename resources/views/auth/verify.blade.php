@@ -1,5 +1,5 @@
 <x-app-layout body-class="flex flex-col bg-gray-100 dark:bg-gray-900">
-    <div class="max-w-md w-full m-auto md:mt-12 lg:mt-16">
+    <div class="max-w-md w-full mx-auto my-6 md:my-12 lg:my-16">
         <div class="text-primary-700">
             <x-app-logo class="mx-auto h-16 w-auto"></x-app-logo>
         </div>
