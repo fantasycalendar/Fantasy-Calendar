@@ -63,8 +63,8 @@
                                         <span x-show="yearly" x-cloak> $19.99 </span>
                                         <span class="ml-3 text-xl font-medium text-gray-500 dark:text-gray-300"> USD </span>
                                     @else
-                                        <span x-show="!yearly"> $1.99 </span>
-                                        <span x-show="yearly" x-cloak> $19.99 </span>
+                                        <span x-show="!yearly"> $2.49 </span>
+                                        <span x-show="yearly" x-cloak> $24.99 </span>
                                         <span class="ml-3 text-xl font-medium text-gray-500 dark:text-gray-300"> USD </span>
                                     @endif
                                 </div>
