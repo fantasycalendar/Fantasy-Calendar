@@ -1,128 +1,124 @@
-@extends('templates._page')
-
 @push('head')
     <style>
         html {
             scroll-behavior: smooth;
         }
 
-        nav.navbar {
-            position: absolute;
-            right: 0;
-            left: 0;
-            top: 0;
+        nav {
             z-index: 2;
-        }
-
-        .next-link {
-            transition: 0.3s ease all;
-        }
-
-        .next-link:hover {
-            padding-bottom: 8px !important;
-        }
-
-        a:hover {
-            color: #246645;
-        }
-
-        .discord-bg {
-            background-color: rgb(88, 101, 242);
-        }
-
-        .btn-discord {
-            background-color: rgb(88, 101, 242);
-            transition: all 0.2s ease-in-out;
-            color: white;
-        }
-        .btn-discord:hover {
-            background-color: #2f855a;
-            color: white;
-        }
-
-        .fullheight {
-            height: 100vh;
-            position: relative;
-        }
-
-        .green-border {
-            border-bottom: 10px solid #2f855a;
-        }
-
-        .comparison_image {
-            background-size: contain, cover;
-            background-repeat: no-repeat, no-repeat;
-            background-position: center center, center center;
-            background-attachment: fixed, fixed;
-            display: grid;
-            place-items: center;
-            align-content:center;
-            position: relative;
-        }
-
-        .comparison_image img {
-            max-width: 72%;
-            max-height: 60vh;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-
-        .comparison_image h1, .comparison_image h2, .comparison_image img{
-            z-index:2;
-        }
-
-        .welcome {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
-        .overlay {
-            position:absolute;
-            bottom:0;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.12) 0%, rgba(0, 0, 0, 0) 300px) repeat-x bottom center;
-            height: 100%;
+            position: absolute;
             width: 100%;
-            z-index: 1;
         }
 
-        section img {
-            max-width: 100%;
-            margin: 1.5rem 0;
-        }
+    {{--    .next-link {--}}
+    {{--        transition: 0.3s ease all;--}}
+    {{--    }--}}
 
-        h3 i {
-            font-size: 85%;
-        }
+    {{--    .next-link:hover {--}}
+    {{--        padding-bottom: 8px !important;--}}
+    {{--    }--}}
 
-        section h3 {
-            margin-bottom: 1rem;
-        }
+    {{--    a:hover {--}}
+    {{--        color: #246645;--}}
+    {{--    }--}}
 
-        section h4 {
-            font-size: 1.3rem;
-        }
+    {{--    .discord-bg {--}}
+    {{--        background-color: rgb(88, 101, 242);--}}
+    {{--    }--}}
 
-        section h4.next-link {
-            font-size: 2.1rem;
-        }
+    {{--    .btn-discord {--}}
+    {{--        background-color: rgb(88, 101, 242);--}}
+    {{--        transition: all 0.2s ease-in-out;--}}
+    {{--        color: white;--}}
+    {{--    }--}}
+    {{--    .btn-discord:hover {--}}
+    {{--        background-color: #2f855a;--}}
+    {{--        color: white;--}}
+    {{--    }--}}
 
-        @media screen and (max-width: 768px) {
-            html {
-                font-size: 16px;
-            }
+    {{--    .fullheight {--}}
+    {{--        height: 100vh;--}}
+    {{--        position: relative;--}}
+    {{--    }--}}
 
-            .comparison_image img {
-                max-width: 96%;
-            }
+    {{--    .green-border {--}}
+    {{--        border-bottom: 10px solid #2f855a;--}}
+    {{--    }--}}
 
-            h3 {
-                font-size: 1.6rem;
-            }
+    {{--    .comparison_image {--}}
+    {{--        background-size: contain, cover;--}}
+    {{--        background-repeat: no-repeat, no-repeat;--}}
+    {{--        background-position: center center, center center;--}}
+    {{--        background-attachment: fixed, fixed;--}}
+    {{--        display: grid;--}}
+    {{--        place-items: center;--}}
+    {{--        align-content:center;--}}
+    {{--        position: relative;--}}
+    {{--    }--}}
 
-            section h4.next-link {
-                font-size: 1.8rem;
-            }
-        }
+    {{--    .comparison_image img {--}}
+    {{--        max-width: 72%;--}}
+    {{--        max-height: 60vh;--}}
+    {{--        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);--}}
+    {{--    }--}}
+
+    {{--    .comparison_image h1, .comparison_image h2, .comparison_image img{--}}
+    {{--        z-index:2;--}}
+    {{--    }--}}
+
+    {{--    .welcome {--}}
+    {{--        display: flex;--}}
+    {{--        justify-content: center;--}}
+    {{--        align-items: center;--}}
+    {{--        flex-direction: column;--}}
+    {{--    }--}}
+    {{--    .overlay {--}}
+    {{--        position:absolute;--}}
+    {{--        bottom:0;--}}
+    {{--        background: linear-gradient(to top, rgba(0, 0, 0, 0.12) 0%, rgba(0, 0, 0, 0) 300px) repeat-x bottom center;--}}
+    {{--        height: 100%;--}}
+    {{--        width: 100%;--}}
+    {{--        z-index: 1;--}}
+    {{--    }--}}
+
+    {{--    section img {--}}
+    {{--        max-width: 100%;--}}
+    {{--        margin: 1.5rem 0;--}}
+    {{--    }--}}
+
+    {{--    h3 i {--}}
+    {{--        font-size: 85%;--}}
+    {{--    }--}}
+
+    {{--    section h3 {--}}
+    {{--        margin-bottom: 1rem;--}}
+    {{--    }--}}
+
+    {{--    section h4 {--}}
+    {{--        font-size: 1.3rem;--}}
+    {{--    }--}}
+
+    {{--    section h4.next-link {--}}
+    {{--        font-size: 2.1rem;--}}
+    {{--    }--}}
+
+    {{--    @media screen and (max-width: 768px) {--}}
+    {{--        html {--}}
+    {{--            font-size: 16px;--}}
+    {{--        }--}}
+
+    {{--        .comparison_image img {--}}
+    {{--            max-width: 96%;--}}
+    {{--        }--}}
+
+    {{--        h3 {--}}
+    {{--            font-size: 1.6rem;--}}
+    {{--        }--}}
+
+    {{--        section h4.next-link {--}}
+    {{--            font-size: 1.8rem;--}}
+    {{--        }--}}
+    {{--    }--}}
 
     </style>
 
@@ -186,57 +182,56 @@
     </script>
 @endpush
 
-@section('content')
+<x-app-fullwidth-layout>
     <div>
-        <section class="fullheight green-border welcome" style="background-color: #edf2f7; background-image: url({{ asset('resources/discord/integration-bg-1.png') }}); background-size: cover; background-position: center center; background-attachment: fixed;">
-            <div class="container">
-                <div class="row justify-content-center align-items-center">
-                    <div class="col-12 col-md-5 big-logo-wrapper p-0">
-                        <img class="m-0 m-md-1" src="{{ asset('resources/fc_logo_white_padding.png') }}">
-                    </div>
-
-                    <div class="col-2 col-md-2 big-logo-wrapper p-0 text-center">
-                        <img class="m-0 m-md-1" style="max-width:3rem;" src="{{ asset('resources/discord_fc_plus_white.svg') }}">
-                    </div>
-
-                    <div class="col-12 col-md-5 big-logo-wrapper p-0">
-                        <img class="m-0 m-md-1" src="{{ asset('resources/discord/discord_white_padding.png') }}">
-                    </div>
-
+        <section class="min-h-screen pt-16 h-full border-b-4 border-b-primary-600 flex flex-col justify-center items-center relative" style="background-color: #edf2f7; background-image: url({{ asset('resources/discord/integration-bg-1.png') }}); background-size: cover; background-position: center center; background-attachment: fixed;">
+            <div class="flex flex-col md:flex-row justify-center items-center max-w-7xl">
+                <div class="grid place-items-center">
+                    <img class="max-h-60" src="{{ asset('resources/fc_logo_white_padding.png') }}">
                 </div>
+
+                <div class="grid place-items-center">
+                    <img class="max-h-60" style="max-width:3rem;" src="{{ asset('resources/discord_fc_plus_white.svg') }}">
+                </div>
+
+                <div class="grid place-items-center">
+                    <img class="max-h-60" src="{{ asset('resources/discord/discord_white_padding.png') }}">
+                </div>
+
             </div>
 
-            <h3 style="width: 100%; text-align: center;" class="text-white">The long-awaited Discord integration is here!</h3>
+            <h3 class="px-8 w-full text-center text-white text-xl">The long-awaited Discord integration is here!</h3>
             @if(Auth::user() && Auth::user()->isPremium())
-                <h4 class="text-white text-center">Quick to setup, easy to use, and available for you <strong><a href="{{ route('discord.index') }}">right now</a></strong>!</h4>
+                <h4 class="px-8 text-white text-center text-lg">Quick to setup, easy to use, and available for you <x-app-link href="{{ route('discord.index') }}"><strong>right now</strong></x-app-link>!</h4>
             @else
-                <h4 class="text-white text-center">Quick to setup, easy to use, and available <strong><a href="{{ route('subscription.pricing') }}">right now</a></strong> for subscribers!</h4>
-                <span class="text-white text-center">(only $2.49/month)</span>
+                <h4 class="px-8 text-white text-center text-lg">Quick to setup, easy to use, and available <x-app-link href="{{ route('subscription.pricing') }}"><strong>right now</strong></x-app-link> for subscribers!</h4>
+                <span class="px-8 text-white text-center text-md">(only $2.49/month)</span>
             @endif
 
-            <h4 class="next-link" style="position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section2"><i class="fa fa-chevron-circle-down"></i> Show me more! <i class="fa fa-chevron-circle-down"></i></a></h4>
+            <h4 class="absolute bottom-4 w-full text-center z-index-10 text-2xl md:text-xl"><x-app-link href="#section2"><i class="fa fa-chevron-circle-down"></i> Show me more! <i class="fa fa-chevron-circle-down"></i></x-app-link></h4>
         </section>
 
-        <section class="fullheight green-border welcome text-white" id="section2" style="background-image: url({{ asset('resources/discord/plugin_pattern.png') }}); background-repeat: repeat;">
-            <div class="container" style="max-height: 85vh;">
-                <h3 style="width: 100%; text-align: center;"
-                    class="display-md-1"
-                    x-data="wordRandomizer"
-                    x-init="setInterval(() => { $dispatch('randomize-word') }, 2200)"
-                    @randomize-word.window="visible = 0; setTimeout(() => { $dispatch('hidden-word') }, 300)"
-                    @hidden-word.window="word = get_word(); visible = 1"
-                >
-                    Your <span x-text="word" x-show.opacity.transition.duration.800ms="visible"></span>. Your Calendar. Together.
-                </h3>
-                <h5 style="width: 100%; text-align: center;">Track campaign time for your players right from Discord. Yeah, <span class="font-italic">we like it too.</span></h5>
-                <img class="d-none d-md-block mx-auto" src="{{ asset('resources/discord/integration-bg-2.png') }}" alt="" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); max-height: 80vh">
-                <img class="d-block d-md-none mx-auto" src="{{ asset('resources/discord/integration-bg-mobile.png') }}" alt="" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); max-height: 60%;">
+        <section class="min-h-screen max-h-screen h-full border-b-4 border-b-primary-600 flex flex-col justify-center items-center relative text-white" id="section2" style="background-image: url({{ asset('resources/discord/plugin_pattern.png') }}); background-repeat: repeat;">
+            <div class="max-h-5/6 max-w-full w-full pt-10 px-10">
+                <div class="absolute top-8 left-0 right-0">
+                    <h3 class="px-4 w-full text-center text-lg md:text-xl"
+                        x-data="wordRandomizer"
+                        x-init="setInterval(() => { $dispatch('randomize-word') }, 2200)"
+                        @randomize-word.window="visible = 0; setTimeout(() => { $dispatch('hidden-word') }, 300)"
+                        @hidden-word.window="word = get_word(); visible = 1"
+                    >
+                        Your <span x-text="word" x-show.opacity.transition.duration.800ms="visible"></span>. Your Calendar. Together.
+                    </h3>
+                    <h5 class="px-4 w-full text-center text-md md:text-lg">Track campaign time for your players right from Discord. Yeah, <span class="font-italic">we like it too.</span></h5>
+                </div>
+                <img class="hidden md:block" src="{{ asset('resources/discord/integration-bg-2.png') }}" alt="" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); max-height: 76vh">
+                <img class="md:hidden mx-auto" src="{{ asset('resources/discord/integration-bg-mobile.png') }}" alt="" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); max-height: 60vh;">
             </div>
-            <h4 class="next-link" style="position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 21;"><a href="#section3"><i class="fa fa-chevron-circle-down"></i> There's more?! <i class="fa fa-chevron-circle-down"></i></a></h4>
+            <h4 class="absolute bottom-4 w-full text-center z-index-10 text-xl md:text-lg"><x-app-link href="#section3"><i class="fa fa-chevron-circle-down"></i> There's more?! <i class="fa fa-chevron-circle-down"></i></x-app-link></h4>
         </section>
 
-        <section class="comparison_both welcome" id="section3" style="background-color: #303136; background-image: url('{{ asset('resources/gray-square-bg.png') }}');">
-            <div class="container my-5 py-5">
+        <section class="comparison_both flex flex-col justify-center items-center" id="section3" style="background-color: #303136; background-image: url('{{ asset('resources/gray-square-bg.png') }}');">
+            <div class=" my-5 py-5">
                 <div class="row">
                     <div class="col-12 col-md-7 text-center text-md-left d-flex flex-column align-items-start justify-content-center">
                         <h3 class="text-white">The information you need, just a command away.</h3>
@@ -261,7 +256,7 @@
 
         <section class="py-5" style="position: relative; overflow: hidden; background-color: rgb(44, 47, 51);">
             <div class="background" style="background-image: url('{{ asset('resources/discord/webb-dark.png') }}'); position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.25; transform: scale(1.5, 1.5)"></div>
-            <div class="container py-5">
+            <div class=" py-5">
                 <div class="row">
                     <div class="col-12 col-md-6 text-center text-md-left d-flex flex-column align-items-md-start align-items-center justify-content-center text-white">
                         <h3>Image or text, your choice.</h3>
@@ -276,7 +271,7 @@
 
         <section class="py-5" style="position: relative; overflow: hidden; background-color: rgb(44, 47, 51);">
             <div class="background" style="background-image: url({{ asset('/resources/discord/gray-cubic-bg.png') }});position: absolute;top: 0;left: 0;right: 0;bottom: 0;opacity: 0.03;transform: scale(1.2);"></div>
-            <div class="container py-5">
+            <div class=" py-5">
                 <div class="row">
                     <div class="col-12 col-md-6 text-center text-md-left">
                         <img src="{{ asset('resources/discord/detailed_day_info.png') }}" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2)">
@@ -290,7 +285,7 @@
         </section>
 
         <section class="py-5 darkmode" style="background-color: #222222; background-image: url('{{ asset('resources/gray-square-bg.png') }}');">
-            <div class="container py-5">
+            <div class=" py-5">
                 <div class="row">
                     <div class="col-12 col-md-6 text-center text-md-left d-flex flex-column align-items-md-start align-items-center justify-content-center">
                         <h3 style="color: white;">Privacy: Respected</h3>
@@ -309,7 +304,7 @@
 
         <section class="py-5"  style="position: relative; overflow: hidden; background-color: rgb(44, 47, 51);">
             <div class="background" style="background-image: url('{{ asset('resources/discord/double-bubble-dark.png') }}'); position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.15; transform: scale(1.5, 1.5)"></div>
-            <div class="container py-5 text-white">
+            <div class=" py-5 text-white">
                 <div class="row">
                     <div class="col-12 col-md-6 text-center text-md-left">
                         <iframe src="https://discord.com/widget?id=399974878134140939&theme=dark" width="350" height="400" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
@@ -324,7 +319,7 @@
 
         <section class="py-5" style="position: relative; overflow: hidden; background-color: #222222;">
             <div class="background" style="background-image: url('{{ asset('resources/discord/webb-dark.png') }}'); position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.15; transform: scale(1.5, 1.5)"></div>
-            <div class="container text-white" style="max-width: 1300px;">
+            <div class=" text-white" style="max-width: 1300px;">
                 <div class="row">
                     <div class="col-12 text-center">
                         <h2>Quick-Fire FAQs</h2>
@@ -344,28 +339,28 @@
         </section>
 
         <section class="py-3" style="background-color: #222222;">
-            <div class="container py-3">
+            <div class=" py-3">
                 <div class="row">
                     <div class="col-12 text-center d-flex flex-column align-items-start justify-content-center">
                         @if(!Auth::user())
-                        <h4 class='w-100'><a href='{{ route('subscription.pricing') }}' class='btn btn-lg btn-discord text-white mt-5 mb-2'>Register and Subscribe Now to Connect!</a></h4>
+                        <h4 class='w-100'><x-app-link :href='route("subscription.pricing")' class='btn btn-lg btn-discord text-white mt-5 mb-2'>Register and Subscribe Now to Connect!</x-app-link></h4>
                         @elseif(!Auth::user()->isPremium())
-                        <h4 class='w-100'><a href='{{ route('subscription.pricing') }}' class='btn btn-lg btn-discord text-white mt-5 mb-2'>Subscribe Now to Connect!</a></h4>
+                        <h4 class='w-100'><x-app-link :href='route("subscription.pricing")' class='btn btn-lg btn-discord text-white mt-5 mb-2'>Subscribe Now to Connect!</x-app-link></h4>
                         @else
-                        <h4 class='w-100'><a href='{{ route('discord.index') }}' class='btn btn-lg btn-discord text-white mt-5 mb-2'>Connect Your Account Now!</a></h4>
+                        <h4 class='w-100'><x-app-link :href='route("discord.index")' class='btn btn-lg btn-discord text-white mt-5 mb-2'>Connect Your Account Now!</x-app-link></h4>
                         @endif
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-12 text-center d-flex flex-column align-items-start justify-content-center">
-                        <h4 class='w-100'><a href='{{ route('discord.server') }}' class='btn btn btn-secondary text-white mb-5 mt-2'>Join Our Discord Server</a></h4>
+                        <h4 class='w-100'><x-app-link :href='route("discord.server")' class='btn btn btn-secondary text-white mb-5 mt-2'>Join Our Discord Server</x-app-link></h4>
                     </div>
                 </div>
             </div>
         </section>
 
         <section class="py-5 discord-bg">
-            <section class="container">
+            <section class="">
                 <div class="row">
                     <div class="col-12 text-center text-white">
                         <h3>With much more to come!</h3>
@@ -375,4 +370,4 @@
             </section>
         </section>
     </div>
-@endsection
+</x-app-fullwidth-layout>
