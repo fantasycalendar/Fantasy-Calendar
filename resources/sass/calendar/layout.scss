@@ -188,6 +188,44 @@ body.page-calendars-index {
     }
 }
 
+@media screen and (min-width: 799px) and (screen-spanning: single-fold-vertical) {
+    #input_container:not(.inputs_collapsed) {
+        min-width: env(fold-left);
+        margin-right: env(fold-width);
+    }
+
+    #input_collapse_btn.is-active {
+        right: calc(env(fold-left) - env(fold-width));
+        left: auto;
+    }
+}
+
+@media screen and (min-width: 799px) {
+    #input_container.sidebar-surface-duo:not(.inputs_collapsed) {
+        min-width: calc(50% - 46px);
+        margin-right: 87px;
+    }
+
+    #input_collapse_btn.sidebar-surface-duo {
+        &.is-active {
+            right: calc(50% + 46px);
+            left: auto;
+        }
+    }
+
+    #input_container.sidebar-surface-duo-2:not(.inputs_collapsed) {
+        min-width: calc(50% - 16px);
+        margin-right: 32px;
+    }
+
+    #input_collapse_btn.sidebar-surface-duo-2 {
+        &.is-active {
+            right: calc(50% + 16px);
+            left: auto;
+        }
+    }
+}
+
 #input_container.sidebar-mobile-half:not(.inputs_collapsed){
     width: 50vw;
     max-width: 50vw;
@@ -200,6 +238,7 @@ body.page-calendars-index {
     padding: 0;
     min-width: 0;
     max-width: 0;
+    margin-right: 0;
 }
 
 #input_container > .accordion > .wrap-collapsible:last-child {

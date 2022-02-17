@@ -142,8 +142,18 @@
             evaluate_background_size();
         }
 
-        if(window.navigator.userAgent.indexOf("LM-G850") > 0) {
+        if(window.navigator.userAgent.includes("LM-G850")) {
             $("#input_container").addClass('sidebar-mobile-half');
+        }
+
+        if(window.navigator.userAgent.includes('Surface Duo') && !window.navigator.userAgent.includes('Surface Duo 2')) {
+            $("#input_container").addClass('sidebar-surface-duo');
+            $("#input_collapse_btn").addClass('sidebar-surface-duo');
+        }
+
+        if(window.navigator.userAgent.includes('Surface Duo 2')) {
+            $("#input_container").addClass('sidebar-surface-duo-2');
+            $("#input_collapse_btn").addClass('sidebar-surface-duo-2');
         }
     });
 
