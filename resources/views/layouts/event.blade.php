@@ -75,7 +75,7 @@
                                                 <div class='comment' x-show="!comment.editing" x-html='comment.content'></div>
 
                                                 <div class="rounded border" x-show="comment.editing">
-                                                    <div x-ref="commentbrah"><div></div></div>
+                                                    <div :id="'comment-editor-'+comment.index"><div></div></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -299,7 +299,7 @@
                                     <div class='row mt-1 no-gutters'>
                                         <div class='col-md-6 col-4 px-1'>
                                             <label class='form-control border-0 p-0 input-group color_container' :class="{'disabled': moon.hidden}">
-                                                <input type='color' class='form-control border-right-0 input-lg color inline_moon_color h-100' x-model="moon.shadow_color" x-ref="moon_shadow_color" :disabled='moon.hidden'/>
+                                                <input type='color' class='form-control border-right-0 input-lg color inline_moon_color h-100' x-model="moon.shadow_color" :disabled='moon.hidden'/>
                                                 <div class="input-group-append">
                                                     <button
                                                         type="button"
@@ -317,7 +317,7 @@
                                         </div>
                                         <div class='col-md-6 col-4 px-1 col'>
                                             <label class='form-control border-0 p-0 input-group color_container' :class="{'disabled': moon.hidden}">
-                                                <input type='color' class='form-control border-right-0 input-lg color inline_moon_color h-100' x-model="moon.color" x-ref="moon_color_blah" :disabled='moon.hidden'/>
+                                                <input type='color' class='form-control border-right-0 input-lg color inline_moon_color h-100' x-model="moon.color" :disabled='moon.hidden'/>
                                                 <div class="input-group-append">
                                                     <button
                                                         type="button"
