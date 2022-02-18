@@ -18,6 +18,7 @@
         @update-epochs.window="update_epochs"
         x-show='loaded'
         x-for="(timespan, index) in render_data.timespans"
+        x-cloak
     >
         <div class="timespan_container" :class='render_data.render_style'>
 

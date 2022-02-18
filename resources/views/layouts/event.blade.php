@@ -15,7 +15,7 @@
 >
 	<div class='modal-basic-container'>
 		<div class='modal-basic-wrapper'>
-			<div class='modal-wrapper' x-on:mousedown.away="confirm_close($event)" x-transition="open">
+			<div class='modal-wrapper' @mousedown.outside="confirm_close($event)" x-transition x-show="open">
 
 				<div class='close-ui-btn-bg'></div>
 				<i class="close_ui_btn fas fa-times-circle" @click='confirm_close(close)'></i>
@@ -121,7 +121,7 @@
 
     <div class='modal-basic-container'>
 		<div class='modal-basic-wrapper'>
-			<form id="event-form" class="modal-wrapper container" action="post" x-on:mousedown.away="confirm_close" x-transition="open">
+			<form id="event-form" class="modal-wrapper container" action="post" @mousedown.outside="confirm_close" x-transition x-show="open">
 
 				<div class='close-ui-btn-bg'></div>
 				<i class="close_ui_btn fas fa-times-circle" @click='confirm_close'></i>
@@ -241,14 +241,14 @@
 
                         <div class='row no-gutters mt-2'>
                             <h4 @click='moon_overrides_open = !moon_overrides_open' class='cursor-pointer user-select-none'>
-                                <i class="icon fas" x-bind:class='{
+                                <i class="icon fas" :class='{
                                     "fa-angle-right": !moon_overrides_open,
                                     "fa-angle-down": moon_overrides_open,
                                 }'></i>
                                 Moon Overrides
                             </h4>
                         </div>
-                        <div class='container settings_container p-0' x-transition.origin.top="moon_overrides_open">
+                        <div class='container settings_container p-0' x-transition.origin.top x-show="moon_overrides_open">
                             <template x-for="moon in moons">
                                 <div class='p-2 mb-2 border rounded'>
                                     <div class='row no-gutters mb-2'>
@@ -306,7 +306,7 @@
                                                         class="btn btn-sm small-text"
                                                         @click="reset_moon_color(moon.index, true)"
                                                         :disabled="moon.shadow_color === moon.original_shadow_color"
-                                                        x-bind:class='{
+                                                        :class='{
                                                             "btn-outline-secondary": moon.shadow_color === moon.original_shadow_color,
                                                             "btn-secondary": moon.shadow_color !== moon.original_shadow_color
                                                         }'>
@@ -324,7 +324,7 @@
                                                         class="btn btn-sm small-text"
                                                         @click="reset_moon_color(moon.index, false)"
                                                         :disabled="moon.color === moon.original_color"
-                                                        x-bind:class='{
+                                                        :class='{
                                                             "btn-outline-secondary": moon.color === moon.original_color,
                                                             "btn-secondary": moon.color !== moon.original_color
                                                         }'>
@@ -347,7 +347,7 @@
 
                     <div class='row no-gutters mt-2'>
                         <h4 @click='settings_open = !settings_open' class='cursor-pointer user-select-none'>
-                            <i class="icon fas" x-bind:class='{
+                            <i class="icon fas" :class='{
                                 "fa-angle-right": !settings_open,
                                 "fa-angle-down": settings_open,
                             }'></i>
@@ -355,7 +355,7 @@
                         </h4>
                     </div>
 
-                    <div class='container settings_container p-0' x-transition.origin.top="settings_open">
+                    <div class='container settings_container p-0' x-transition.origin.top x-show="settings_open">
 
 
                     @if(!isset($calendar) || (Auth::user() != Null && Auth::user()->can('advance-date', $calendar)))
@@ -365,7 +365,7 @@
                                     <input type='checkbox' class='event_setting' x-model='working_event.data.limited_repeat'> Limit repetitions
                                 </label>
                             </div>
-                            <div class='col-md-6 pl-1 pr-0 form-control' x-bind:class='{ "disabled": !working_event.data.limited_repeat }'>
+                            <div class='col-md-6 pl-1 pr-0 form-control' :class='{ "disabled": !working_event.data.limited_repeat }'>
                                 <label class='row no-gutters'>
                                     <div class='col-auto pl-4 pr-1'>Limit for</div>
                                     <div class='col-4'>
@@ -387,7 +387,7 @@
                                 </label>
                             </div>
 
-                            <div class='col-md-6 pl-1 pr-0 form-control' x-bind:class='{ "disabled": !working_event.data.has_duration }'>
+                            <div class='col-md-6 pl-1 pr-0 form-control' :class='{ "disabled": !working_event.data.has_duration }'>
                                 <label class='row no-gutters'>
                                     <div class='col-auto pl-4 pr-1'>Lasts for</div>
                                     <div class='col-4'>
@@ -404,7 +404,7 @@
 
                         <div class='row no-gutters mb-2'>
                             <div class='col-12 pl-0 pr-1'>
-                                <label class='form-control checkbox' x-bind:class='{ "disabled": !working_event.data.has_duration }'>
+                                <label class='form-control checkbox' :class='{ "disabled": !working_event.data.has_duration }'>
                                     <input type='checkbox' class='event_setting' x-model='working_event.data.show_first_last' :disabled='!working_event.data.has_duration'> Show only first and last event
                                 </label>
                             </div>
@@ -536,7 +536,7 @@
 >
 	<div class='modal-basic-container'>
 		<div class='modal-basic-wrapper'>
-			<form id="html-form" class="modal-wrapper" action="post" x-on:mousedown.away="confirm_close($event)" x-transition="open">
+			<form id="html-form" class="modal-wrapper" action="post" @mousedown.outside="confirm_close($event)" x-transition x-show="open">
 
 				<div class='close-ui-btn-bg'></div>
 				<i class="close_ui_btn fas fa-times-circle" @click='confirm_close'></i>

@@ -27,12 +27,6 @@ const calendar_renderer = {
         hide_weekdays: false
     },
 
-    init(){
-        this.$nextTick(
-            () => this.$dispatch('layout-change', {apply: this.render_data.current_month_only ? 'single_month' : ''})
-        )
-    },
-
     register_render_callback(callback){
         this.render_callbacks.push(callback)
     },
