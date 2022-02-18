@@ -1,4 +1,4 @@
-<div id='calendar' x-data="CalendarRenderer" :class="{ 'single_month': render_data.current_month_only }" x-ref="calendar_renderer" x-init="$nextTick(() => $dispatch('layout-change', {apply: render_data.current_month_only ? 'single_month' : ''}))">
+<div id='calendar' x-data="CalendarRenderer" :class="{ 'single_month': render_data.current_month_only }" x-ref="calendar_renderer">
 
     <template x-if="!loaded && render_data.timespans.length">
         <div class="modal_background w-100">
@@ -16,13 +16,12 @@
             $nextTick(() => { post_render($dispatch) });
         "
         @update-epochs.window="update_epochs"
-        x-if='loaded'
-        x-for="timespan in render_data.timespans"
+        x-show='loaded'
+        x-for="(timespan, index) in render_data.timespans"
     >
-
         <div class="timespan_container" :class='render_data.render_style'>
 
-            <div class='timespan_name'x-text='timespan.title' x-show="timespan.show_title"></div>
+            <div class='timespan_name' x-text='timespan.title' x-show="timespan.show_title"></div>
 
             <div class="timespan_row_container">
                 <div class="timespan_row_names" x-show="timespan.show_weekdays">

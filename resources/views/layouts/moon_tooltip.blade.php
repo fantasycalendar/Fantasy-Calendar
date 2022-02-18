@@ -1,6 +1,5 @@
 <div
 	x-data='moon_tooltip'
-	x-init="init"
 	@moon-mouse-enter.window="
 		element = $event.detail.element;
 		title = $event.detail.title;

@@ -27,6 +27,12 @@ const calendar_renderer = {
         hide_weekdays: false
     },
 
+    init(){
+        this.$nextTick(
+            () => this.$dispatch('layout-change', {apply: this.render_data.current_month_only ? 'single_month' : ''})
+        )
+    },
+
     register_render_callback(callback){
         this.render_callbacks.push(callback)
     },
@@ -34,6 +40,7 @@ const calendar_renderer = {
     load_calendar: function(event){
         this.loading_message = "Building calendar...";
         this.render_data = event.detail;
+        // console.log(JSON.parse(JSON.stringify(event.detail)));
     },
 
     view_event: function(event) {

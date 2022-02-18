@@ -15,7 +15,7 @@
 >
 	<div class='modal-basic-container'>
 		<div class='modal-basic-wrapper'>
-			<div class='modal-wrapper' x-on:mousedown.away="confirm_close($event)" x-show.transition="open">
+			<div class='modal-wrapper' x-on:mousedown.away="confirm_close($event)" x-transition="open">
 
 				<div class='close-ui-btn-bg'></div>
 				<i class="close_ui_btn fas fa-times-circle" @click='confirm_close(close)'></i>
@@ -75,7 +75,7 @@
                                                 <div class='comment' x-show="!comment.editing" x-html='comment.content'></div>
 
                                                 <div class="rounded border" x-show="comment.editing">
-                                                    <div :x-ref="'trumbowyg_comment_'+comment.id"><div></div></div>
+                                                    <div x-ref="commentbrah"><div></div></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -121,7 +121,7 @@
 
     <div class='modal-basic-container'>
 		<div class='modal-basic-wrapper'>
-			<form id="event-form" class="modal-wrapper container" action="post" x-on:mousedown.away="confirm_close" x-show.transition="open">
+			<form id="event-form" class="modal-wrapper container" action="post" x-on:mousedown.away="confirm_close" x-transition="open">
 
 				<div class='close-ui-btn-bg'></div>
 				<i class="close_ui_btn fas fa-times-circle" @click='confirm_close'></i>
@@ -248,7 +248,7 @@
                                 Moon Overrides
                             </h4>
                         </div>
-                        <div class='container settings_container p-0' x-show.transition.origin.top="moon_overrides_open">
+                        <div class='container settings_container p-0' x-transition.origin.top="moon_overrides_open">
                             <template x-for="moon in moons">
                                 <div class='p-2 mb-2 border rounded'>
                                     <div class='row no-gutters mb-2'>
@@ -299,7 +299,7 @@
                                     <div class='row mt-1 no-gutters'>
                                         <div class='col-md-6 col-4 px-1'>
                                             <label class='form-control border-0 p-0 input-group color_container' :class="{'disabled': moon.hidden}">
-                                                <input type='color' class='form-control border-right-0 input-lg color inline_moon_color h-100' x-model="moon.shadow_color" :x-ref="`moon_shadow_color_${moon.index}`" :disabled='moon.hidden'/>
+                                                <input type='color' class='form-control border-right-0 input-lg color inline_moon_color h-100' x-model="moon.shadow_color" x-ref="moon_shadow_color" :disabled='moon.hidden'/>
                                                 <div class="input-group-append">
                                                     <button
                                                         type="button"
@@ -317,7 +317,7 @@
                                         </div>
                                         <div class='col-md-6 col-4 px-1 col'>
                                             <label class='form-control border-0 p-0 input-group color_container' :class="{'disabled': moon.hidden}">
-                                                <input type='color' class='form-control border-right-0 input-lg color inline_moon_color h-100' x-model="moon.color" :x-ref="`moon_color_${moon.index}`" :disabled='moon.hidden'/>
+                                                <input type='color' class='form-control border-right-0 input-lg color inline_moon_color h-100' x-model="moon.color" x-ref="moon_color_blah" :disabled='moon.hidden'/>
                                                 <div class="input-group-append">
                                                     <button
                                                         type="button"
@@ -355,7 +355,7 @@
                         </h4>
                     </div>
 
-                    <div class='container settings_container p-0' x-show.transition.origin.top="settings_open">
+                    <div class='container settings_container p-0' x-transition.origin.top="settings_open">
 
 
                     @if(!isset($calendar) || (Auth::user() != Null && Auth::user()->can('advance-date', $calendar)))
@@ -536,7 +536,7 @@
 >
 	<div class='modal-basic-container'>
 		<div class='modal-basic-wrapper'>
-			<form id="html-form" class="modal-wrapper" action="post" x-on:mousedown.away="confirm_close($event)" x-show.transition="open">
+			<form id="html-form" class="modal-wrapper" action="post" x-on:mousedown.away="confirm_close($event)" x-transition="open">
 
 				<div class='close-ui-btn-bg'></div>
 				<i class="close_ui_btn fas fa-times-circle" @click='confirm_close'></i>
