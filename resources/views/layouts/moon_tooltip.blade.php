@@ -18,6 +18,7 @@
 	"
 	id='moon_tooltip_box'
 	x-show="show"
+    x-cloak
 >
 	<div x-text='title'></div>
 </div>
