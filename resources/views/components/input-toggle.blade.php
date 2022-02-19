@@ -7,7 +7,7 @@
                    ])
     }}
      @unless($attributes->has('x-model'))
-        x-data="{ {{ $attributes->get('name') }}: {{ $attributes->get('value') ?? old($attributes->get('name')) ?? 'false' }} }"
+        x-data="{ {{ $attributes->get('name') }}: '{{ $attributes->get('value') ?? old($attributes->get('name')) ?? 'false' }}' }"
      @endunless
 >
     <input type="checkbox" name="{{ $attributes->get('name') }}" class="hidden" x-model="{{ $attributes->get('name') }}">
