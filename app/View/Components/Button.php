@@ -20,6 +20,7 @@ class Button extends Component
         'primary' => 'text-white bg-primary-600 disabled:hover:bg-primary-600 hover:bg-primary-700 dark:bg-primary-900 disabled:dark:hover:bg-primary-900 dark:hover:bg-primary-800 focus:ring-primary-500 border-transparent shadow-sm',
         'secondary' => 'text-gray-700 bg-white disabled:hover:bg-white hover:bg-gray-50 focus:ring-primary-500 border-gray-300 dark:bg-gray-700 disabled:dark:hover:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600 dark:border-gray-600 shadow-sm',
         'danger' => 'text-white bg-red-600 disabled:hover:bg-red-600 hover:bg-red-700 dark:bg-red-900 disabled:dark:hover:bg-red-900 dark:hover:bg-red-800 focus:ring-red-500 border-transparent shadow-sm',
+        'custom' => '',
     ];
 
     /**
