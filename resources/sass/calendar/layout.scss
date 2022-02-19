@@ -188,44 +188,6 @@ body.page-calendars-index {
     }
 }
 
-@media screen and (min-width: 799px) and (screen-spanning: single-fold-vertical) {
-    #input_container:not(.inputs_collapsed) {
-        min-width: env(fold-left);
-        margin-right: env(fold-width);
-    }
-
-    #input_collapse_btn.is-active {
-        right: calc(env(fold-left) - env(fold-width));
-        left: auto;
-    }
-}
-
-@media screen and (min-width: 799px) {
-    #input_container.sidebar-surface-duo:not(.inputs_collapsed) {
-        min-width: calc(50% - 46px);
-        margin-right: 87px;
-    }
-
-    #input_collapse_btn.sidebar-surface-duo {
-        &.is-active {
-            right: calc(50% + 46px);
-            left: auto;
-        }
-    }
-
-    #input_container.sidebar-surface-duo-2:not(.inputs_collapsed) {
-        min-width: calc(50% - 16px);
-        margin-right: 32px;
-    }
-
-    #input_collapse_btn.sidebar-surface-duo-2 {
-        &.is-active {
-            right: calc(50% + 16px);
-            left: auto;
-        }
-    }
-}
-
 #input_container.sidebar-mobile-half:not(.inputs_collapsed){
     width: 50vw;
     max-width: 50vw;
@@ -277,6 +239,7 @@ body.page-calendars-index {
     }
 }
 
+
 #calendar_container{
     display: flex;
     flex-direction: column;
@@ -289,6 +252,49 @@ body.page-calendars-index {
     max-height: 100%;
     box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
     background-color: $calendar-bg-color;
+}
+
+@media (horizontal-viewport-segments: 2) {
+    #input_container:not(.inputs_collapsed) {
+        min-width: env(viewport-segment-right 0 0);
+        margin-right: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0));
+    }
+
+    #input_collapse_btn.is-active {
+        right: calc(100vw - env(viewport-segment-right 0 0));
+        left: auto;
+    }
+
+
+    #calendar_container{
+        flex-basis: env(viewport-segment-right 0 0);
+    }
+}
+
+@media screen and (min-width: 799px) {
+    //#input_container.sidebar-surface-duo:not(.inputs_collapsed) {
+    //    min-width: calc(50% - 46px);
+    //    margin-right: 87px;
+    //}
+    //
+    //#input_collapse_btn.sidebar-surface-duo {
+    //    &.is-active {
+    //        right: calc(50% + 46px);
+    //        left: auto;
+    //    }
+    //}
+    //
+    //#input_container.sidebar-surface-duo-2:not(.inputs_collapsed) {
+    //    min-width: calc(50% - 16px);
+    //    margin-right: 32px;
+    //}
+    //
+    //#input_collapse_btn.sidebar-surface-duo-2 {
+    //    &.is-active {
+    //        right: calc(50% + 16px);
+    //        left: auto;
+    //    }
+    //}
 }
 
 /************/
