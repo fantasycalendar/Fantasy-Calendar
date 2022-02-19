@@ -200,19 +200,19 @@
 
             </div>
 
-            <h3 class="px-8 w-full text-center text-white text-xl">The long-awaited Discord integration is here!</h3>
+            <h3 class="px-8 font-semibold w-full text-center text-white text-3xl pb-2">The long-awaited Discord integration is here!</h3>
             @if(Auth::user() && Auth::user()->isPremium())
-                <h4 class="px-8 text-white text-center text-lg">Quick to setup, easy to use, and available for you <x-app-link href="{{ route('discord.index') }}"><strong>right now</strong></x-app-link>!</h4>
+                <h4 class="px-8 text-white text-center text-xl">Quick to setup, easy to use, and available for you <x-app-link href="{{ route('discord.index') }}"><strong>right now</strong></x-app-link>!</h4>
             @else
-                <h4 class="px-8 text-white text-center text-lg">Quick to setup, easy to use, and available <x-app-link href="{{ route('subscription.pricing') }}"><strong>right now</strong></x-app-link> for subscribers!</h4>
+                <h4 class="px-8 text-white text-center text-xl">Quick to setup, easy to use, and available <x-app-link href="{{ route('subscription.pricing') }}"><strong>right now</strong></x-app-link> for subscribers!</h4>
                 <span class="px-8 text-white text-center text-md">(only $2.49/month)</span>
             @endif
 
-            <h4 class="absolute bottom-4 w-full text-center z-index-10 text-2xl md:text-xl"><x-app-link href="#section2"><i class="fa fa-chevron-circle-down"></i> Show me more! <i class="fa fa-chevron-circle-down"></i></x-app-link></h4>
+            <h4 class="absolute bottom-4 w-full text-center z-index-10 text-2xl md:text-xl"><x-app-link class="inline-block hover:-translate-y-1 leading-loose transition duration-200" href="#section2"><i class="fa fa-chevron-circle-down"></i> Show me more! <i class="fa fa-chevron-circle-down"></i></x-app-link></h4>
         </section>
 
         <section class="min-h-screen max-h-screen h-full border-b-4 border-b-primary-600 flex flex-col justify-center items-center relative text-white" id="section2" style="background-image: url({{ asset('resources/discord/plugin_pattern.png') }}); background-repeat: repeat;">
-            <div class="max-h-5/6 max-w-full w-full pt-10 px-10">
+            <div class="max-h-5/6 max-w-full w-full pt-10 px-10 flex justify-center">
                 <div class="absolute top-8 left-0 right-0">
                     <h3 class="px-4 w-full text-center text-lg md:text-xl"
                         x-data="wordRandomizer"
@@ -227,29 +227,25 @@
                 <img class="hidden md:block" src="{{ asset('resources/discord/integration-bg-2.png') }}" alt="" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); max-height: 76vh">
                 <img class="md:hidden mx-auto" src="{{ asset('resources/discord/integration-bg-mobile.png') }}" alt="" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); max-height: 60vh;">
             </div>
-            <h4 class="absolute bottom-4 w-full text-center z-index-10 text-xl md:text-lg"><x-app-link href="#section3"><i class="fa fa-chevron-circle-down"></i> There's more?! <i class="fa fa-chevron-circle-down"></i></x-app-link></h4>
+            <h4 class="absolute bottom-4 w-full text-center z-index-10 text-xl md:text-lg"><x-app-link class="inline-block hover:-translate-y-1 leading-loose transition duration-200" href="#section3"><i class="fa fa-chevron-circle-down"></i> There's more?! <i class="fa fa-chevron-circle-down"></i></x-app-link></h4>
         </section>
 
-        <section class="comparison_both flex flex-col justify-center items-center" id="section3" style="background-color: #303136; background-image: url('{{ asset('resources/gray-square-bg.png') }}');">
-            <div class=" my-5 py-5">
-                <div class="row">
-                    <div class="col-12 col-md-7 text-center text-md-left d-flex flex-column align-items-start justify-content-center">
-                        <h3 class="text-white">The information you need, just a command away.</h3>
-                    </div>
-
-                    <div class="col-12 col-md-5 text-center text-md-right">
-                        <img src="{{ asset('resources/discord/discord_show_month.png') }}" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);">
-                    </div>
+        <section class="grid place-items-center py-10" id="section3" style="background-color: #303136; background-image: url('{{ asset('resources/gray-square-bg.png') }}');">
+            <div class="max-w-5xl my-5 py-5 grid sm:grid-cols-12 gap-10">
+                <div class="md:col-span-7 text-center md:text-left flex flex-col items-start justify-center">
+                    <h3 class="text-white text-3xl font-semibold">The information you need, just a command away.</h3>
                 </div>
-                <div class="row">
 
-                    <div class="col-12 col-md-5 text-center text-md-left">
-                        <img src="{{ asset('resources/discord/discord_add_days.png') }}" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);">
-                    </div>
+                <div class="md:col-span-5 text-center md:text-right">
+                    <img src="{{ asset('resources/discord/discord_show_month.png') }}" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);">
+                </div>
 
-                    <div class="col-12 col-md-7 text-center text-md-right d-flex flex-column align-items-md-end align-items-center  justify-content-center">
-                        <h3 class="text-white">Quickly add or subtract minutes, hours, days, months, or years. <br><br>Thousands at once, even!</h3>
-                    </div>
+                <div class="md:col-span-5 text-center md:text-left">
+                    <img src="{{ asset('resources/discord/discord_add_days.png') }}" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);">
+                </div>
+
+                <div class="md:col-span-7 text-center md:text-right flex flex-col md:items-end items-center justify-center">
+                    <h3 class="text-white text-3xl font-semibold">Quickly add or subtract minutes, hours, days, months, or years. <br><br>Thousands at once, even!</h3>
                 </div>
             </div>
         </section>
