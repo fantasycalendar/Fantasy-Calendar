@@ -9,117 +9,6 @@
             position: absolute;
             width: 100%;
         }
-
-    {{--    .next-link {--}}
-    {{--        transition: 0.3s ease all;--}}
-    {{--    }--}}
-
-    {{--    .next-link:hover {--}}
-    {{--        padding-bottom: 8px !important;--}}
-    {{--    }--}}
-
-    {{--    a:hover {--}}
-    {{--        color: #246645;--}}
-    {{--    }--}}
-
-    {{--    .discord-bg {--}}
-    {{--        background-color: rgb(88, 101, 242);--}}
-    {{--    }--}}
-
-    {{--    .btn-discord {--}}
-    {{--        background-color: rgb(88, 101, 242);--}}
-    {{--        transition: all 0.2s ease-in-out;--}}
-    {{--        color: white;--}}
-    {{--    }--}}
-    {{--    .btn-discord:hover {--}}
-    {{--        background-color: #2f855a;--}}
-    {{--        color: white;--}}
-    {{--    }--}}
-
-    {{--    .fullheight {--}}
-    {{--        height: 100vh;--}}
-    {{--        position: relative;--}}
-    {{--    }--}}
-
-    {{--    .green-border {--}}
-    {{--        border-bottom: 10px solid #2f855a;--}}
-    {{--    }--}}
-
-    {{--    .comparison_image {--}}
-    {{--        background-size: contain, cover;--}}
-    {{--        background-repeat: no-repeat, no-repeat;--}}
-    {{--        background-position: center center, center center;--}}
-    {{--        background-attachment: fixed, fixed;--}}
-    {{--        display: grid;--}}
-    {{--        place-items: center;--}}
-    {{--        align-content:center;--}}
-    {{--        position: relative;--}}
-    {{--    }--}}
-
-    {{--    .comparison_image img {--}}
-    {{--        max-width: 72%;--}}
-    {{--        max-height: 60vh;--}}
-    {{--        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);--}}
-    {{--    }--}}
-
-    {{--    .comparison_image h1, .comparison_image h2, .comparison_image img{--}}
-    {{--        z-index:2;--}}
-    {{--    }--}}
-
-    {{--    .welcome {--}}
-    {{--        display: flex;--}}
-    {{--        justify-content: center;--}}
-    {{--        align-items: center;--}}
-    {{--        flex-direction: column;--}}
-    {{--    }--}}
-    {{--    .overlay {--}}
-    {{--        position:absolute;--}}
-    {{--        bottom:0;--}}
-    {{--        background: linear-gradient(to top, rgba(0, 0, 0, 0.12) 0%, rgba(0, 0, 0, 0) 300px) repeat-x bottom center;--}}
-    {{--        height: 100%;--}}
-    {{--        width: 100%;--}}
-    {{--        z-index: 1;--}}
-    {{--    }--}}
-
-    {{--    section img {--}}
-    {{--        max-width: 100%;--}}
-    {{--        margin: 1.5rem 0;--}}
-    {{--    }--}}
-
-    {{--    h3 i {--}}
-    {{--        font-size: 85%;--}}
-    {{--    }--}}
-
-    {{--    section h3 {--}}
-    {{--        margin-bottom: 1rem;--}}
-    {{--    }--}}
-
-    {{--    section h4 {--}}
-    {{--        font-size: 1.3rem;--}}
-    {{--    }--}}
-
-    {{--    section h4.next-link {--}}
-    {{--        font-size: 2.1rem;--}}
-    {{--    }--}}
-
-    {{--    @media screen and (max-width: 768px) {--}}
-    {{--        html {--}}
-    {{--            font-size: 16px;--}}
-    {{--        }--}}
-
-    {{--        .comparison_image img {--}}
-    {{--            max-width: 96%;--}}
-    {{--        }--}}
-
-    {{--        h3 {--}}
-    {{--            font-size: 1.6rem;--}}
-    {{--        }--}}
-
-    {{--        section h4.next-link {--}}
-    {{--            font-size: 1.8rem;--}}
-    {{--        }--}}
-    {{--    }--}}
-
     </style>
 
     <script>
@@ -214,13 +103,13 @@
         <section class="px-6 min-h-screen max-h-screen h-full border-b-4 border-b-primary-600 flex flex-col justify-center items-center relative text-white" id="section2" style="background-image: url({{ asset('resources/discord/plugin_pattern.png') }}); background-repeat: repeat;">
             <div class="max-h-5/6 max-w-full w-full pt-10 px-10 flex justify-center">
                 <div class="absolute top-8 left-0 right-0">
-                    <h3 class="px-4 w-full text-center text-lg md:text-xl"
+                    <h3 class="px-4 w-full text-center text-lg md:text-2xl"
                         x-data="wordRandomizer"
                         x-init="setInterval(() => { $dispatch('randomize-word') }, 2200)"
                         @randomize-word.window="visible = 0; setTimeout(() => { $dispatch('hidden-word') }, 300)"
                         @hidden-word.window="word = get_word(); visible = 1"
                     >
-                        Your <span x-text="word" x-show.opacity.transition.duration.800ms="visible"></span>. Your Calendar. Together.
+                        Your <span x-text="word" x-show="visible" x-transition.opacity.duration.800ms></span>. Your Calendar. Together.
                     </h3>
                     <h5 class="px-4 w-full text-center text-md md:text-lg">Track campaign time for your players right from Discord. Yeah, <span class="font-italic">we like it too.</span></h5>
                 </div>
